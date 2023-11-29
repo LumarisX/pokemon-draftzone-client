@@ -16,4 +16,5 @@ import { TypechartComponent } from './typechart/typechart.component';
 export class AppComponent {
   title = 'DraftZone';
   teams: Team[] = draftTeamList;
+  team = draftTeamList[2];
 }

@@ -1,8 +1,10 @@
-import { Pkmn } from "./pkmn";
+import { Pokemon } from "./pokemon";
 
 export interface Team {
     name: string;
     id: string;
-    members: [Pkmn];
+    format: string;
+    ruleset: string; 
+    members: Pokemon[];
 
 }

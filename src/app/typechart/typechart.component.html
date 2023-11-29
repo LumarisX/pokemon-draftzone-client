@@ -1,1 +1,10 @@
-<p>typechart works!</p>
+<table>
+    <tr>
+        <td></td>
+        <td *ngFor="let type of types">{{type}}</td>
+    </tr>
+    <tr *ngFor="let pokemon of team.members">
+        <td>{{ pokemon.name }}</td>
+        <td *ngFor="let weak of pokemon.getWeak()">{{ weak }}</td>
+    </tr>
+</table>
