@@ -1,4 +1,4 @@
-import { Team } from "./teams";
+import { Team } from "./team";
 
 export const draftTeamList: Team[] = [
   { name: "TBPL", id: "tbpl", members: [{ name: "deoxys" }] },

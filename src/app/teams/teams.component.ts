@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Team } from '../teams';
+import { Team } from '../team';
 
 @Component({
   selector: 'app-teams',

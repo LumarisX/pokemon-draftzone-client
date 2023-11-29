@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { TeamsComponent } from './teams/teams.component';
 import { draftTeamList } from './draft-team-list';
-import { Team } from './teams';
+import { Team } from './team';
 import { TypechartComponent } from './typechart/typechart.component';
 
 @Component({
