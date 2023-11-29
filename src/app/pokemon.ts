@@ -28,6 +28,6 @@ export class Pokemon {
             }
             weak.push(typeWeak);
         }
-        return weak;
+        return weak
     }
 }
