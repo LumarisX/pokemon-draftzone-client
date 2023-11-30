@@ -1,6 +1,9 @@
-<ul>
-    <li>{{ team.name }}</li>
-    <li>{{ team.id }}</li>
-    <li>{{ team.members.length }}</li>
-  </ul>
-  
+<div>
+  <div>{{ team.name }}</div>
+  <div>{{ team.format }}</div>
+  <div>{{ team.ruleset }}</div>
+  <div>
+    <div *ngFor="let pokemon of team.members">{{pokemon.name}}</div>
+  </div>
+</div>
+<br>

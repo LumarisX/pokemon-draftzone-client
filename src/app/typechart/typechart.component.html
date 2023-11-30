@@ -1,10 +1,10 @@
 <table>
     <tr>
         <td></td>
-        <td *ngFor="let type of types">{{type}}</td>
+        <th *ngFor="let type of types">{{type}}</th>
     </tr>
     <tr *ngFor="let pokemon of team.members">
-        <td>{{ pokemon.name }}</td>
+        <th>{{ pokemon.name }}</th>
         <td *ngFor="let weak of pokemon.getWeak()">{{ weak }}</td>
     </tr>
 </table>

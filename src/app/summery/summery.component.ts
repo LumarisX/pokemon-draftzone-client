@@ -3,16 +3,13 @@ import { CommonModule } from '@angular/common';
 import { Team } from '../team';
 
 @Component({
-  selector: 'app-teams',
+  selector: 'summery',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './teams.component.html',
-  styleUrl: './teams.component.css',
+  templateUrl: './summery.component.html',
+  styleUrl: './summery.component.css'
 })
-export class TeamsComponent {
+export class SummeryComponent {
+  
   @Input() team!: Team;
-}
-
-function thing() {
-  console.log("A thing happened");
 }

@@ -13,6 +13,5 @@ import { TypeList } from '../typechart';
 export class TypechartComponent {
 
   types = TypeList
-
   @Input() team!: Team;
 }
