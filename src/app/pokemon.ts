@@ -30,4 +30,15 @@ export class Pokemon {
         }
         return weak
     }
+
+    getSpriteName():string {
+        let spriteName: string;
+        let monData: Record<string, any> = BattlePokedex[this.id]
+        if ("baseSpecies" in BattlePokedex[this.id]) {
+            spriteName = monData["baseSpecies"].toLowerCase().replace(/\s-.]+/g, "") + "-" + monData["forme"].toLowerCase().replace(/[\s-.]+/g, "");
+        } else {
+            spriteName = monData["name"].toLowerCase().replace(/[\s-.]+/g, "");
+        }
+        return spriteName;
+    }
 }
