@@ -10,7 +10,7 @@ import { Team } from '../team';
   styleUrl: './teams.component.css',
 })
 export class TeamsComponent {
-  @Input() team!: Team;
+  @Input() teams!: Team[];
 }
 
 function thing() {

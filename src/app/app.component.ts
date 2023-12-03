@@ -19,6 +19,5 @@ import { BattlePokedex } from './pokedex';
 export class AppComponent {
   title = 'DraftZone';
   teams: Team[] = draftTeamList;
-  team = draftTeamList[2];
   dex = BattlePokedex;
 }
