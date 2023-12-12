@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class ServerService {
 
-  private serverUrl = "http://localhost:9960/users";
+  private serverUrl = "http://localhost:9960";
 
   httpOptions = {
     headers: new HttpHeaders({
@@ -18,6 +18,10 @@ export class ServerService {
   constructor(private http:HttpClient) { }
 
   getUsers(){
-    return (this.http.get(this.serverUrl))
+    return (this.http.get(this.serverUrl + "/users"))
+  }
+
+  getLeagues(){
+    return (this.http.get(this.serverUrl + "/users/lumaris/teams"))
   }
 }

@@ -3,7 +3,7 @@ import { Team } from "./team";
 
 export const draftTeamList: Team[] = [
   {
-    name: "TBPL S8", id: "tbpl", format: "vgc", ruleset: "nd", members: [
+    leagueName: "TBPL S8", leagueId: "tbpl", format: "vgc", ruleset: "nd", team: [
       new Pokemon("charizardmegay", [], true),
       new Pokemon("roaringmoon", [], true),
       new Pokemon("tangrowth", [], true),
@@ -18,7 +18,7 @@ export const draftTeamList: Team[] = [
     ]
   },
   {
-    name: "SCDA Beast", id: "scdabeast", format: "singles", ruleset: "nd", members: [
+    leagueName: "SCDA Beast", leagueId: "scdabeast", format: "singles", ruleset: "nd", team: [
       new Pokemon("xerneas", [], false),
       new Pokemon("kartana", [], false),
       new Pokemon("walkingwake", [], false),
@@ -33,7 +33,7 @@ export const draftTeamList: Team[] = [
     ]
   },
   {
-    name: "SCDA Ultra", id: "scdaultra", format: "vgc", ruleset: "gen9", members: [
+    leagueName: "SCDA Ultra", leagueId: "scdaultra", format: "vgc", ruleset: "gen9", team: [
       new Pokemon("volcarona", [], false),
       new Pokemon("kommoo", [], false),
       new Pokemon("regieleki", [], false),
@@ -47,7 +47,7 @@ export const draftTeamList: Team[] = [
     ]
   },
   {
-    name: "SCDA Safari", id: "scdasafari", format: "vgc", ruleset: "nd", members: [
+    leagueName: "SCDA Safari", leagueId: "scdasafari", format: "vgc", ruleset: "nd", team: [
       new Pokemon("thwackey", [], false),
       new Pokemon("swoobat", [], false),
       new Pokemon("togedemaru", [], false),
@@ -61,7 +61,7 @@ export const draftTeamList: Team[] = [
     ]
   },
   {
-    name: "Evo League", id: "evoleague", format: "vgc", ruleset: "nd", members: [
+    leagueName: "Evo League", leagueId: "evoleague", format: "vgc", ruleset: "nd", team: [
       new Pokemon("archen", [], false),
       new Pokemon("brionne", [], false),
       new Pokemon("foongus", [], false),

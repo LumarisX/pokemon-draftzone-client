@@ -13,10 +13,11 @@ import { Pokemon } from '../pokemon';
 })
 export class SpriteComponent {
   
-  @Input() target!: Pokemon; 
+  @Input() target!: string; 
 
   getPath() {
-    return "https://play.pokemonshowdown.com/sprites/gen5/"+this.target.getSpriteName()+".png"
+    console.log(typeof (this.target))
+    return "https://play.pokemonshowdown.com/sprites/gen5/"+this.target+".png"
   }
 
 }

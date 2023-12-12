@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { TeamsComponent } from './teams/teams.component';
@@ -8,6 +8,7 @@ import { TypechartComponent } from './typechart/typechart.component';
 import { SummeryComponent } from './summery/summery.component';
 import { FilterSearchComponent } from './filter-search/filter-search.component';
 import { BattlePokedex } from './pokedex';
+import { ServerService } from './server.service';
 
 @Component({
   selector: 'app-root',
@@ -18,6 +19,13 @@ import { BattlePokedex } from './pokedex';
 })
 export class AppComponent {
   title = 'DraftZone';
-  teams: Team[] = draftTeamList;
+  teams: Team[] = [];
   dex = BattlePokedex;
+  serverService: ServerService = inject(ServerService);
+
+  constructor() {
+    this.serverService.getLeagues().subscribe(data=> {
+      this.teams = <Team[]>data;
+    });
+  }
 }

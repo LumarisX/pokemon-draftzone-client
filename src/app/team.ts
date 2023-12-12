@@ -1,10 +1,9 @@
 import { Pokemon } from "./pokemon";
 
 export interface Team {
-    name: string;
-    id: string;
+    leagueName: string;
+    leagueId: string;
     format: string;
     ruleset: string; 
-    members: Pokemon[];
-
+    team: Pokemon[];
 }

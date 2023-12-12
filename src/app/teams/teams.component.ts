@@ -1,10 +1,9 @@
-import { Component, Input, Inject, inject } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Team } from '../team';
 import { SpriteService } from '../core/sprite.service';
 import { CoreModule } from '../core/core.module';
 import { SpriteComponent } from '../sprite/sprite.component';
-import { ServerService } from '../server.service';
 
 
 @Component({
@@ -17,10 +16,9 @@ import { ServerService } from '../server.service';
 export class TeamsComponent {
   @Input() teams!: Team[];
   
-  serverService: ServerService = inject(ServerService);
   users = {}
   constructor(private spriteService: SpriteService) {
-    this.serverService.getUsers().subscribe(data=> console.log(data));
+    console.log(this.teams)
   }
 
   spriteDiv(name:string){
