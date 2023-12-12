@@ -18,7 +18,6 @@ export class TeamsComponent {
   
   users = {}
   constructor(private spriteService: SpriteService) {
-    console.log(this.teams)
   }
 
   spriteDiv(name:string){

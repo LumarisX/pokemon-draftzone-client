@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Pokemon } from '../pokemon';
+import { Pokemon, getSpriteName } from '../pokemon';
 
 @Component({
   selector: 'sprite',
@@ -13,11 +13,10 @@ import { Pokemon } from '../pokemon';
 })
 export class SpriteComponent {
   
-  @Input() target!: Pokemon; 
+  @Input() pokemon!: Pokemon; 
 
   getPath() {
-    console.log(this.target)
-    return "https://play.pokemonshowdown.com/sprites/gen5/"+this.target.pid+".png"
+    return "https://play.pokemonshowdown.com/sprites/gen5/"+getSpriteName(this.pokemon)+".png"
   }
 
 }
