@@ -10,8 +10,7 @@ import { SpriteComponent } from '../sprite/sprite.component';
   selector: 'app-teams',
   standalone: true,
   imports: [CommonModule, CoreModule, SpriteComponent],
-  templateUrl: './teams.component.html',
-  styleUrl: './teams.component.css',
+  templateUrl: './teams.component.html'
 })
 export class TeamsComponent {
   @Input() teams!: Team[];

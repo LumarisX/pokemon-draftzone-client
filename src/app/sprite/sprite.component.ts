@@ -8,8 +8,7 @@ import { Pokemon, getSpriteName } from '../pokemon';
   imports: [CommonModule],
   template: `
   <img src={{getPath()}}>
-  `,
-  styleUrl: './sprite.component.css'
+  `
 })
 export class SpriteComponent {
   

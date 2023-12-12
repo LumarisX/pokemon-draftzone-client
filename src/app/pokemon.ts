@@ -20,3 +20,16 @@ export function getSpriteName(pokemon: Pokemon):string {
     }
     return spriteName;
 }
+
+export function getWeak(pokemon: Pokemon) {
+    let weak: number[] = [];
+    for (let t of TypeList) {
+      let typeWeak = 1;
+      for (let type of BattlePokedex[pokemon.pid]["types"]) {
+        let dt = BattleTypeChart[<keyof typeof BattleTypeChart>type.toLowerCase()]["damageTaken"];
+                typeWeak = typeWeak * valueToDamage(dt[<keyof typeof dt>t]);
+            }
+            weak.push(typeWeak);
+        }
+        return weak
+    }

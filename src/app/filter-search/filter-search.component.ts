@@ -10,8 +10,7 @@ import { FormsModule } from '@angular/forms';
     <input class="border" placeholder="Enter search" [(ngModel)]="query" >
     <div *ngFor="let mon of list" (mousedown)="onClick($event)">{{mon}}</div>
 </div>
-  `,
-  styleUrl: './filter-search.component.css'
+  `
 })
 export class FilterSearchComponent {
   list: string[] = [];

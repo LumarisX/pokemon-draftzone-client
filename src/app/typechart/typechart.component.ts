@@ -7,8 +7,7 @@ import { TypeList } from '../typechart';
   selector: 'typechart',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './typechart.component.html',
-  styleUrl: './typechart.component.css'
+  templateUrl: './typechart.component.html'
 })
 export class TypechartComponent {
 
