@@ -2,7 +2,6 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { TeamsComponent } from './teams/teams.component';
-import { draftTeamList } from './draft-team-list';
 import { Team } from './team';
 import { TypechartComponent } from './typechart/typechart.component';
 import { SummeryComponent } from './summery/summery.component';
