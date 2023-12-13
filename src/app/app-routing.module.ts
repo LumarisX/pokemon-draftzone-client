@@ -2,8 +2,8 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
-  {path: '', pathMatch: "full", redirectTo: '/teams'},
-  {path: '**', pathMatch: 'full', redirectTo: '/teams'}
+  {path: '', pathMatch: "full", redirectTo: '/teams/lumaris'},
+  {path: '**', pathMatch: 'full', redirectTo: '/teams/lumaris'}
   ]
 
 @NgModule({

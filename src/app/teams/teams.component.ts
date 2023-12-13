@@ -12,11 +12,16 @@ import { SpriteComponent } from '../sprite/sprite.component';
   imports: [CommonModule, CoreModule, SpriteComponent],
   templateUrl: './teams.component.html'
 })
-export class TeamsComponent {
+export class TeamsComponent implements OnInit{
   @Input() teams!: Team[];
   
   users = {}
-  constructor(private spriteService: SpriteService) {
+  constructor(private spriteService: SpriteService, private route: ActivatesRoute) {
+  }
+  
+  ngOnInit() {
+    let userId = this.route.paramMap.get("userid");
+    
   }
 
   spriteDiv(name:string){

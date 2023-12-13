@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { TeamsComponent } from './teams.component';
 
 const routes: Routes = [
-  { path: 'team', component: TeamsComponent }
+  { path: 'team/:userid', component: TeamsComponent }
   ]
 
 @NgModule({
