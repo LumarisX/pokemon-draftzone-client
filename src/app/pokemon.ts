@@ -13,6 +13,9 @@ export interface Pokemon {
 export function getSpriteName(pokemon: Pokemon):string {
     let spriteName: string;
     let monData: Record<string, any> = BattlePokedex[pokemon.pid]
+    if(monData == undefined) {
+        return "0";
+    }
     if ("baseSpecies" in BattlePokedex[pokemon.pid]) {
         spriteName = monData["baseSpecies"].toLowerCase().replace(/\s-.]+/g, "") + "-" + monData["forme"].toLowerCase().replace(/[\s-.]+/g, "");
     } else {

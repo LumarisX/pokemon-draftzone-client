@@ -12,13 +12,10 @@ import { Team } from './team';
 export class AppComponent implements OnInit {
   title = 'DraftZone';
   teams: Team[] = [];
-  serverService: ServerService = inject(ServerService);
 
   constructor() { }
 
   ngOnInit(): void {
-    this.serverService.getLeagues().subscribe(data => {
-      this.teams = <Team[]>data;
-    });
+    
   }
 }

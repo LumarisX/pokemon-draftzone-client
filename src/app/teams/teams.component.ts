@@ -5,6 +5,7 @@ import { SpriteService } from '../core/sprite.service';
 import { CoreModule } from '../core/core.module';
 import { SpriteComponent } from '../sprite/sprite.component';
 import { ActivatedRoute } from '@angular/router';
+import { ServerService } from '../server.service';
 
 
 @Component({
@@ -14,13 +15,16 @@ import { ActivatedRoute } from '@angular/router';
   templateUrl: './teams.component.html'
 })
 export class TeamsComponent implements OnInit{
-  @Input() teams!: Team[];
+  teams!: Team[];
   
   users = {}
-  constructor(private spriteService: SpriteService, private route: ActivatedRoute) {
+  constructor(private spriteService: SpriteService, private serverServices: ServerService, private route: ActivatedRoute) {
   }
   
   ngOnInit() {
+    this.serverServices.getLeagues().subscribe(data => {
+      this.teams = <Team[]>data;
+    });
     let userId = this.route.snapshot.paramMap.get("userid");
     
   }
