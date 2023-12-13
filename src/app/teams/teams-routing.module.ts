@@ -11,6 +11,6 @@ const routes: Routes = [
   exports: [RouterModule]
 })
 
-export class TeamsRoutingModule {
+export class DraftOverviewRoutingModule {
 
 }
