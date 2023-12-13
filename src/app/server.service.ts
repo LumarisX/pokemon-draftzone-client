@@ -22,6 +22,6 @@ export class ServerService {
   }
 
   getLeagues(){
-    return (this.http.get(this.serverUrl + "/users/hsoj/teams"))
+    return (this.http.get(this.serverUrl + "/users/lumaris/teams"))
   }
 }

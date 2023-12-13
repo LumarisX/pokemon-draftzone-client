@@ -17,7 +17,7 @@ export function getSpriteName(pokemon: Pokemon):string {
         return "0";
     }
     if ("baseSpecies" in BattlePokedex[pokemon.pid]) {
-        spriteName = monData["baseSpecies"].toLowerCase().replace(/\s-.]+/g, "") + "-" + monData["forme"].toLowerCase().replace(/[\s-.]+/g, "");
+        spriteName = monData["baseSpecies"].toLowerCase().replace(/\s-.]+/g, "") + "-" + monData["forme"].toLowerCase().replace(/[\s-.%]+/g, "");
     } else {
         spriteName = monData["name"].toLowerCase().replace(/[\s-.]+/g, "");
     }

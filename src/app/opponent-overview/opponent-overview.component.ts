@@ -6,15 +6,16 @@ import { CoreModule } from '../core/core.module';
 import { SpriteComponent } from '../sprite/sprite.component';
 import { ActivatedRoute } from '@angular/router';
 import { ServerService } from '../server.service';
+import { RouterModule } from '@angular/router';
 
 
 @Component({
-  selector: 'app-teams',
+  selector: 'opponent-overview',
   standalone: true,
-  imports: [CommonModule, CoreModule, SpriteComponent],
-  templateUrl: './teams.component.html'
+  imports: [CommonModule, RouterModule, CoreModule, SpriteComponent],
+  templateUrl: './opponent-overview.component.html'
 })
-export class TeamsComponent implements OnInit{
+export class OpponentOverviewComponent implements OnInit{
   teams!: Team[];
   
   users = {}
@@ -22,10 +23,11 @@ export class TeamsComponent implements OnInit{
   }
   
   ngOnInit() {
+    let teamid = this.route.snapshot.paramMap.get("teamid");
+    console.log(teamid)
     this.serverServices.getLeagues().subscribe(data => {
       this.teams = <Team[]>data;
     });
-    let userId = this.route.snapshot.paramMap.get("userid");
     
   }
 
