@@ -1,10 +1,13 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { TeamsComponent } from './teams/teams.component';
 
 const routes: Routes = [
-  {path: '', pathMatch: "full", redirectTo: '/teams/lumaris'},
-  {path: '**', pathMatch: 'full', redirectTo: '/teams/lumaris'}
-  ]
+  { path: 'drafts', component: TeamsComponent },
+  { path: '', pathMatch: "full", redirectTo: 'drafts' },
+  { path: '**', pathMatch: 'full', redirectTo: 'drafts' }
+  
+]
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
@@ -12,5 +15,5 @@ const routes: Routes = [
 })
 
 export class AppRoutingModule {
-  
+
 }

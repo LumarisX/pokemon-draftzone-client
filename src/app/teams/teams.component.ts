@@ -1,9 +1,10 @@
-import { Component, Input, inject } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Team } from '../team';
 import { SpriteService } from '../core/sprite.service';
 import { CoreModule } from '../core/core.module';
 import { SpriteComponent } from '../sprite/sprite.component';
+import { ActivatedRoute } from '@angular/router';
 
 
 @Component({
@@ -16,11 +17,11 @@ export class TeamsComponent implements OnInit{
   @Input() teams!: Team[];
   
   users = {}
-  constructor(private spriteService: SpriteService, private route: ActivatesRoute) {
+  constructor(private spriteService: SpriteService, private route: ActivatedRoute) {
   }
   
   ngOnInit() {
-    let userId = this.route.paramMap.get("userid");
+    let userId = this.route.snapshot.paramMap.get("userid");
     
   }
 

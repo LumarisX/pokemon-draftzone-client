@@ -1,28 +1,23 @@
-import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
-import { TeamsComponent } from './teams/teams.component';
-import { Team } from './team';
-import { TypechartComponent } from './typechart/typechart.component';
-import { SummeryComponent } from './summery/summery.component';
-import { FilterSearchComponent } from './filter-search/filter-search.component';
-import { BattlePokedex } from './pokedex';
+import { Component, OnInit, inject } from '@angular/core';
 import { ServerService } from './server.service';
+import { Team } from './team';
 
 @Component({
   selector: 'app-root',
-  standalone: true,
-  templateUrl: './app.component.html',
-  imports: [CommonModule, RouterOutlet, TeamsComponent, TypechartComponent, SummeryComponent, FilterSearchComponent],
+  template: `
+    <h1>{{ title }}</h1>
+    <router-outlet></router-outlet>
+  `
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'DraftZone';
   teams: Team[] = [];
-  dex = BattlePokedex;
   serverService: ServerService = inject(ServerService);
 
-  constructor() {
-    this.serverService.getLeagues().subscribe(data=> {
+  constructor() { }
+
+  ngOnInit(): void {
+    this.serverService.getLeagues().subscribe(data => {
       this.teams = <Team[]>data;
     });
   }

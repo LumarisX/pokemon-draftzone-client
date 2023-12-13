@@ -1,11 +1,10 @@
 import { Pokemon } from "./pokemon";
-import { ObjectID } from "mongodb";
 
 export interface Team {
     leagueName?: string;
     leagueId: string;
-    format: string;
+    format: number;
     ruleset: string; 
     team?: Pokemon[];
-    opponent_team_id: ObjectID;
+    opponent_team_id: string;
 }

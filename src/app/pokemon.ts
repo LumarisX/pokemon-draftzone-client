@@ -1,5 +1,5 @@
 import { BattlePokedex } from "./pokedex";
-import { BattleTypeChart } from "./typechart";
+import { BattleTypeChart, TypeList, valueToDamage } from "./typechart";
 
 export interface Pokemon {
     pid: keyof typeof BattlePokedex;
