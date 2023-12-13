@@ -24,4 +24,8 @@ export class ServerService {
   getLeagues(){
     return (this.http.get(this.serverUrl + "/users/lumaris/teams"))
   }
+
+  getOpponents(teamid: string){
+    return (this.http.get(`${this.serverUrl}/users/lumaris/${teamid}`))
+  }
 }

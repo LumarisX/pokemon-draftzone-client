@@ -23,9 +23,8 @@ export class OpponentOverviewComponent implements OnInit{
   }
   
   ngOnInit() {
-    let teamid = this.route.snapshot.paramMap.get("teamid");
-    console.log(teamid)
-    this.serverServices.getLeagues().subscribe(data => {
+    let teamid = <string>this.route.snapshot.paramMap.get("teamid");
+    this.serverServices.getOpponents(teamid).subscribe(data => {
       this.teams = <Team[]>data;
     });
     
