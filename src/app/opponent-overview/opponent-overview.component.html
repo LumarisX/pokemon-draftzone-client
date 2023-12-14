@@ -1,20 +1,20 @@
 <div class="bg-red-100 m-2 rounded-xl p-2 border border-2 border-red-200">
   <div>
-    <p class="bold text-3xl">Drafts</p>
+    <a routerLink="/drafts" class="w-1/6 bg-red-300 rounded-full px-2 my-2 shadow hover:shadow shadow-red-600">Back</a>
+    <p class="bold text-3xl m-2">{{draft.leagueName}}</p>
     <div id="teams" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 grid-flow-row overflow-auto h-auto">
       <a class="team bg-red-300 shadow-md hover:shadow-md shadow-red-600 m-2 p-2 rounded-xl"
-       *ngFor="let draft of draft.opponents">
+       [routerLink]="(draft.opponents.length-i-1).toString()" *ngFor="let opp of draft.opponents.reverse(); let i = index">
         <div class="w-full flex">
-          <div class="text-medium bg-red-200 w-1/3 rounded-full shadow-inner shadow-red-600 p-1 mx-1 text-center">
-            {{ draft.teamName }}</div>
-          <div class="w-1/6"></div>
-          <div class="w-1/4 h-fit text-xs bg-red-200 rounded-full shadow-inner shadow-red-600 p-1 text-center">
-            {{ draft.score }}</div>
-          <div class="w-1/4 h-fit text-xs bg-red-200 rounded-full shadow-inner shadow-red-600 p-1 mx-1 text-center">
-            {{ draft.stage }}</div>
+          <div class="text-medium bg-red-200 w-3/5 rounded-full shadow-inner shadow-red-600 p-1 mx-1 text-center">
+            {{ opp.teamName }}</div>
+          <div class="w-1/5 h-fit text-xs bg-red-200 rounded-full shadow-inner shadow-red-600 p-1 text-center">
+            {{ score(opp.score) }}</div>
+          <div class="w-1/5 h-fit text-xs bg-red-200 rounded-full shadow-inner shadow-red-600 p-1 mx-1 text-center">
+            {{ opp.stage }}</div>
         </div>
         <div class="sprites grid grid-cols-6 px-4 pt-2">
-          <sprite *ngFor="let pokemon of draft.team " [pokemon]="pokemon"></sprite>
+          <sprite *ngFor="let pokemon of opp.team" [pokemon]="pokemon"></sprite>
         </div>
       </a>
     </div>

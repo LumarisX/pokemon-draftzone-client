@@ -34,4 +34,14 @@ export class OpponentOverviewComponent implements OnInit{
   spriteDiv(name:string){
     return this.spriteService.getSprite(name);
   }
+
+  score(a: number[]){
+    let s:string
+    if(a.length == 0){
+      s = "0 - 0";
+    } else {
+      s = `${a[0]}  - ${a[1]}`
+    }
+    return s;
+  }
 }
