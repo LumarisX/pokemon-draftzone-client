@@ -14,7 +14,7 @@ import { LearnsetsComponent } from './learnsets/learnsets.component';
   standalone: true,
   imports: [CommonModule, RouterModule, SummeryComponent, TypechartComponent, LearnsetsComponent, SpeedchartComponent],
   template: `
-    <a routerLink="/drafts">Back</a>
+    <a routerLink="/drafts/{{draft.leagueId}}">Back</a>
     <summery></summery>
     <typechart></typechart>
     <speedchart></speedchart>
