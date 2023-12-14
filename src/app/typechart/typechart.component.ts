@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Team } from '../team';
+import { Draft } from '../team';
 import { TypeList } from '../typechart';
 
 @Component({
@@ -12,5 +12,5 @@ import { TypeList } from '../typechart';
 export class TypechartComponent {
 
   types = TypeList
-  @Input() team!: Team;
+  @Input() team!: Draft;
 }

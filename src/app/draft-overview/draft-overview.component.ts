@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Team } from '../team';
+import { Draft } from '../team';
 import { SpriteService } from '../core/sprite.service';
 import { CoreModule } from '../core/core.module';
 import { SpriteComponent } from '../sprite/sprite.component';
@@ -17,7 +17,7 @@ import { TeamPreviewComponent } from '../team-preview/team-preview.component';
   templateUrl: './draft-overview.component.html'
 })
 export class DraftOverviewComponent implements OnInit{
-  teams!: Team[];
+  teams!: Draft[];
   
   users = {}
   constructor(private spriteService: SpriteService, private serverServices: ServerService, private route: ActivatedRoute) {
@@ -27,7 +27,7 @@ export class DraftOverviewComponent implements OnInit{
     let teamid = this.route.snapshot.paramMap.get("teamid");
     console.log(teamid)
     this.serverServices.getLeagues().subscribe(data => {
-      this.teams = <Team[]>data;
+      this.teams = <Draft[]>data;
     });
     
   }

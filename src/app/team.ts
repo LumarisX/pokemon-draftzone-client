@@ -1,10 +1,19 @@
 import { Pokemon } from "./pokemon";
 
-export interface Team {
+export interface Draft{
     leagueName?: string;
     leagueId: string;
     format: number;
-    ruleset: string; 
-    team?: Pokemon[];
+    ruleset: number; 
     opponent_team_id: string;
+    opponents: OpponentDraft[]
+    owner: string;
+    team: Pokemon[];
+}
+
+export interface OpponentDraft{
+    teamName: string;
+    score: number[];
+    stage: string;
+    team: Pokemon[];
 }

@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Team } from '../team';
+import { Draft } from '../team';
 
 @Component({
   selector: 'summery',
@@ -11,5 +11,5 @@ import { Team } from '../team';
 })
 export class SummeryComponent {
   
-  @Input() team!: Team;
+  @Input() team!: Draft;
 }

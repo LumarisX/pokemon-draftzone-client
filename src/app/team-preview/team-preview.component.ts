@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 import { CoreModule } from '../core/core.module';
 import { SpriteService } from '../core/sprite.service';
 import { SpriteComponent } from '../sprite/sprite.component';
-import { Team } from '../team';
+import { Draft } from '../team';
 
 
 @Component({
@@ -14,7 +14,7 @@ import { Team } from '../team';
   templateUrl: './team-preview.component.html'
 })
 export class TeamPreviewComponent{
-  @Input() team!: Team;
+  @Input() team!: Draft;
 
   constructor(private spriteService: SpriteService) {
   }

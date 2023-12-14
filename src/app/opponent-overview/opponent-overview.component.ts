@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Team } from '../team';
+import { Draft, OpponentDraft } from '../team';
 import { SpriteService } from '../core/sprite.service';
 import { CoreModule } from '../core/core.module';
 import { SpriteComponent } from '../sprite/sprite.component';
@@ -16,7 +16,7 @@ import { RouterModule } from '@angular/router';
   templateUrl: './opponent-overview.component.html'
 })
 export class OpponentOverviewComponent implements OnInit{
-  teams!: Team[];
+  draft!: Draft;
   
   users = {}
   constructor(private spriteService: SpriteService, private serverServices: ServerService, private route: ActivatedRoute) {
@@ -25,7 +25,8 @@ export class OpponentOverviewComponent implements OnInit{
   ngOnInit() {
     let teamid = <string>this.route.snapshot.paramMap.get("teamid");
     this.serverServices.getOpponents(teamid).subscribe(data => {
-      this.teams = <Team[]>data;
+      console.log(data),
+      this.draft = <Draft>data;
     });
     
   }

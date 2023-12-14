@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { ServerService } from './server.service';
-import { Team } from './team';
+import { Draft } from './team';
 
 @Component({
   selector: 'app-root',
@@ -11,7 +11,7 @@ import { Team } from './team';
 })
 export class AppComponent implements OnInit {
   title = 'DraftZone';
-  teams: Team[] = [];
+  teams: Draft[] = [];
 
   constructor() { }
 

@@ -26,6 +26,7 @@ export class ServerService {
   }
 
   getOpponents(teamid: string){
-    return (this.http.get(`${this.serverUrl}/users/lumaris/${teamid}`))
+    return this.http.get(`${this.serverUrl}/users/lumaris/${teamid}`);
+    
   }
 }
