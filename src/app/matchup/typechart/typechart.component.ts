@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Draft } from '../team';
-import { TypeList } from '../typechart';
+import { Draft } from '../../team';
+import { TypeList } from '../../typechart';
 
 @Component({
   selector: 'typechart',

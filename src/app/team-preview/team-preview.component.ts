@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { CoreModule } from '../core/core.module';
-import { SpriteService } from '../core/sprite.service';
+import { CoreModule } from '../sprite/sprite.module';
+import { SpriteService } from '../sprite/sprite.service';
 import { SpriteComponent } from '../sprite/sprite.component';
 import { Draft } from '../team';
 

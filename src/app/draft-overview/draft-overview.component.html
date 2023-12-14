@@ -2,7 +2,7 @@
   <div>
     <p class="bold text-3xl">Drafts</p>
     <div id="teams" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 grid-flow-row overflow-auto h-auto">
-      <team-preview [routerLink]="[team.leagueId]" *ngFor="let team of teams" [team]="team"></team-preview>
+      <team-preview [routerLink]="[team.leagueId]" *ngFor="let team of teams.reverse()" [team]="team"></team-preview>
     </div>
     <button id="addDraft" class="bg-cyan-300 rounded-full p-2 m-3 shadow-md hover:shadow shadow-cyan-600">Add
       Team</button>
