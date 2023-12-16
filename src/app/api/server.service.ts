@@ -15,18 +15,25 @@ export class ServerService {
     })
   }
 
-  constructor(private http:HttpClient) { }
+  constructor(private http: HttpClient) { }
 
-  getUsers(){
+  getUsers() {
     return (this.http.get(this.serverUrl + "/users"))
   }
 
-  getLeagues(){
+  getDraftsList() {
     return (this.http.get(this.serverUrl + "/users/lumaris/teams"))
   }
 
-  getOpponents(teamid: string){
-    return this.http.get(`${this.serverUrl}/users/lumaris/${teamid}`);
-    
+  getDraft(teamName: string) {
+    return this.http.get(`${this.serverUrl}/users/lumaris/${teamName}`);
+  }
+
+  getDraftById(teamId: string) {
+    return this.http.get(`${this.serverUrl}/users/lumaris/${teamId}`);
+  }
+
+  getMatchup(teamId: string, oppId: string) {
+    return this.http.get(`${this.serverUrl}/matchup/${teamId}/${oppId}`);
   }
 }

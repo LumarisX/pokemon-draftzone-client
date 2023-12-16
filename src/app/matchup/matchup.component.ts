@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ServerService } from '../api/server.service';
 import { SpriteService } from '../sprite/sprite.service';
-import { Draft } from '../team';
+import { Draft } from '../draft';
 import { SpeedchartComponent } from './speedchart/speedchart.component';
 import { SummeryComponent } from './summery/summery.component';
 import { TypechartComponent } from './typechart/typechart.component';
@@ -24,14 +24,21 @@ import { LearnsetsComponent } from './learnsets/learnsets.component';
 export class MatchupComponent implements OnInit{
 
   draft!: Draft;
+  matchupData!: {};
   
   constructor(private spriteService: SpriteService, private serverServices: ServerService, private route: ActivatedRoute) { }
 
 
   ngOnInit() {
     let teamid = <string>this.route.snapshot.paramMap.get("teamid");
-    this.serverServices.getOpponents(teamid).subscribe((data) => {
+    let matchid = <string>this.route.snapshot.paramMap.get("matchid");
+    this.serverServices.getDraft(teamid).subscribe((data) => {
       this.draft = <Draft>data;
+      this.serverServices.getMatchup(this.draft._id, matchid).subscribe((data) => {
+        this.matchupData = data;
+        console.log(this.matchupData);
+      });
     });
+
   }
 }

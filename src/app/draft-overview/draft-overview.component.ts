@@ -4,7 +4,7 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ServerService } from '../api/server.service';
 import { CoreModule } from '../sprite/sprite.module';
 import { SpriteService } from '../sprite/sprite.service';
-import { Draft } from '../team';
+import { Draft } from '../draft';
 import { TeamPreviewComponent } from '../team-preview/team-preview.component';
 
 
@@ -23,7 +23,7 @@ export class DraftOverviewComponent implements OnInit{
   
   ngOnInit() {
     let teamid = this.route.snapshot.paramMap.get("teamid");
-    this.serverServices.getLeagues().subscribe(data => {
+    this.serverServices.getDraftsList().subscribe(data => {
       this.teams = <Draft[]>data;
     });
     

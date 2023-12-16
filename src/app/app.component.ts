@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Draft } from './team';
+import { Draft } from './draft';
 
 @Component({
   selector: 'app-root',
