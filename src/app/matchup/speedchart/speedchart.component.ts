@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule,OnInit } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { Pokemon } from '../../pokemon';
 
@@ -8,8 +8,12 @@ import { Pokemon } from '../../pokemon';
   imports: [CommonModule],
   templateUrl: './speedchart.component.html'
 })
-export class SpeedchartComponent {
+export class SpeedchartComponent implements OnInit {
 
   @Input() myTeam!: Pokemon[];
   @Input() oppTeam!: Pokemon[];
+  
+  ngOnInit() {
+    //document.getElementById("base").scrollIntoView()
+  }
 }
