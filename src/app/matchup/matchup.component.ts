@@ -17,27 +17,23 @@ import { LearnsetsComponent } from './learnsets/learnsets.component';
     <a routerLink="/drafts/{{draft.leagueId}}">Back</a>
     <summery></summery>
     <typechart></typechart>
-    <speedchart></speedchart>
+    <speedchart [teamId]="this.draft._id" [oppId]="this.oppId"></speedchart>
     <learnsets></learnsets>
   `
 })
 export class MatchupComponent implements OnInit{
 
   draft!: Draft;
-  matchupData!: {};
+  oppId!: string;
   
   constructor(private spriteService: SpriteService, private serverServices: ServerService, private route: ActivatedRoute) { }
 
 
   ngOnInit() {
-    let teamid = <string>this.route.snapshot.paramMap.get("teamid");
-    let matchid = <string>this.route.snapshot.paramMap.get("matchid");
-    this.serverServices.getDraft(teamid).subscribe((data) => {
+    let teamName = <string>this.route.snapshot.paramMap.get("teamid");
+    this.oppId = <string>this.route.snapshot.paramMap.get("matchid");
+    this.serverServices.getDraft(teamName).subscribe((data) => {
       this.draft = <Draft>data;
-      this.serverServices.getMatchup(this.draft._id, matchid).subscribe((data) => {
-        this.matchupData = data;
-        console.log(this.matchupData);
-      });
     });
 
   }

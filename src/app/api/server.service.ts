@@ -33,7 +33,11 @@ export class ServerService {
     return this.http.get(`${this.serverUrl}/users/lumaris/${teamId}`);
   }
 
-  getMatchup(teamId: string, oppId: string) {
-    return this.http.get(`${this.serverUrl}/matchup/${teamId}/${oppId}`);
+  // getMatchup(teamId: string, oppId: string) {
+  //   return this.http.get(`${this.serverUrl}/matchup/${teamId}/${oppId}`);
+  // }
+
+  getSpeedchart(teamId: string, oppId: string){
+    return this.http.get(`${this.serverUrl}/matchup/${teamId}/${oppId}/speedchart`)
   }
 }

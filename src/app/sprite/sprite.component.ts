@@ -14,8 +14,6 @@ export class SpriteComponent {
   
   @Input() pokemon!: Pokemon; 
 
-
-
   getPath() {
     return "https://play.pokemonshowdown.com/sprites/gen5/"+getSpriteName(this.pokemon)+".png"
   }
