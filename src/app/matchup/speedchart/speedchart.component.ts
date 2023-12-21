@@ -22,7 +22,6 @@ export class SpeedchartComponent implements OnInit {
     this.serverServices.getSpeedchart(this.teamId, this.oppId).subscribe((data) => {
       let [a, b] = <Speedtier[][]>data;
       this.speedchart = this.sortTiers(a,b)
-      console.log(this.speedchart)
     });
     //document.getElementById("base").scrollIntoView()
   }

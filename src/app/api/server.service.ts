@@ -40,4 +40,8 @@ export class ServerService {
   getSpeedchart(teamId: string, oppId: string){
     return this.http.get(`${this.serverUrl}/matchup/${teamId}/${oppId}/speedchart`)
   }
+
+  getSummery(teamId: string, oppId: string){
+    return this.http.get(`${this.serverUrl}/matchup/${teamId}/${oppId}/summery`)
+  }
 }

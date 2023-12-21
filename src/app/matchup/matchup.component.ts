@@ -15,7 +15,7 @@ import { LearnsetsComponent } from './learnsets/learnsets.component';
   imports: [CommonModule, RouterModule, SummeryComponent, TypechartComponent, LearnsetsComponent, SpeedchartComponent],
   template: `
     <a routerLink="/drafts/{{draft.leagueId}}">Back</a>
-    <summery></summery>
+    <summery [teamId]="this.draft._id" [oppId]="this.oppId"></summery>
     <typechart></typechart>
     <speedchart [teamId]="this.draft._id" [oppId]="this.oppId"></speedchart>
     <learnsets></learnsets>

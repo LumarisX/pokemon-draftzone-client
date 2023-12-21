@@ -14,7 +14,7 @@
             {{ opp.stage }}</div>
         </div>
         <div class="sprites grid grid-cols-6 px-4 pt-2">
-          <sprite *ngFor="let pokemon of opp.team" [pokemon]="pokemon"></sprite>
+          <sprite *ngFor="let pokemon of opp.team" [pokemonId]="pokemon.pid"></sprite>
         </div>
       </a>
     </div>

@@ -1,12 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Draft, OpponentDraft } from '../draft';
-import { SpriteService } from '../sprite/sprite.service';
-import { CoreModule } from '../sprite/sprite.module';
-import { SpriteComponent } from '../sprite/sprite.component';
-import { ActivatedRoute } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ServerService } from '../api/server.service';
-import { RouterModule } from '@angular/router';
+import { Draft } from '../draft';
+import { SpriteComponent } from '../sprite/sprite.component';
+import { CoreModule } from '../sprite/sprite.module';
+import { SpriteService } from '../sprite/sprite.service';
 
 
 @Component({
