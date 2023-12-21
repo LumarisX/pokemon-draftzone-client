@@ -7,11 +7,6 @@ export interface Speedtier {
     team?: string;
 }
 
-export interface SummeryChart {
-    blueTeam: Summery[];
-    redTeam: Summery[]
-}
-
 export interface Summery {
     pid: keyof typeof BattlePokedex;
     name: string;
