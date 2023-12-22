@@ -21,45 +21,59 @@ export class SpeedchartComponent implements OnInit {
   ngOnInit() {
     this.serverServices.getSpeedchart(this.teamId, this.oppId).subscribe((data) => {
       let [a, b] = <Speedtier[][]>data;
-      this.speedchart = this.sortTiers(a,b)
+      this.speedchart = this.sortTiers(a, b)
+      this.makeSticky(this.speedchart)
+      this.setBase(this.speedchart)
     });
-    //document.getElementById("base").scrollIntoView()
+    document.getElementById("base")!.scrollIntoView()
   }
 
-  isSticky(stick:boolean | undefined){
-    if(stick){
-      return "sticky"
+  speedClasses(tier: Speedtier | null) {
+    let classes = []
+    if (tier!= undefined && tier.stick) {
+      classes.push("sticky")
     }
-    return ""
+    if (tier!= undefined && tier.base) {
+      classes.push("base")
+    }
+    return classes
   }
 
-  sortTiers(a:Speedtier[], b:Speedtier[]): Speedtier[] {
+  sortTiers(a: Speedtier[], b: Speedtier[]): Speedtier[] {
     let out = []
     let ai = 0;
     let bi = 0;
-    let last: Speedtier | null = null;
     for (let i = 0; i < (a.length + b.length); i++) {
-      let selected: Speedtier;
-      if(ai<a.length && (bi>=b.length || a[ai].speed>b[bi].speed)){
+      if (ai < a.length && (bi >= b.length || a[ai].speed > b[bi].speed)) {
         a[ai]["team"] = "cyan";
-        selected = a[ai++]
+        out.push(a[ai++])
       } else {
         b[bi]["team"] = "red";
-        selected =b[bi++]
+        out.push(b[bi++])
       }
-      if(last != null){
-        if(last.team!=selected.team){
-          last.stick = true;
-        } else {
-          last.stick = false;
-        }
-        out.push(last)
-      }
-      last = selected
-    }
-    if(last != null){
-      out.push(last)
     }
     return out
+  }
+
+  makeSticky(speedchart: Speedtier[]) {
+    for (let i = 0; i < speedchart.length - 1; i++) {
+      if (speedchart[i].team != speedchart[i + 1].team) {
+        speedchart[i].stick = true;
+      }
+    }
+  }
+  
+  setBase(speedchart:Speedtier[]){
+    let slowest: Speedtier | null = null;
+    for (let tier of speedchart) {
+      if (tier.modifiers.length==1 && tier.modifiers[0]=="max+"){
+        if(slowest==null || slowest.speed>tier.speed){
+          slowest = tier;
+        }
+      }
+    }
+    if(slowest!=null){
+    slowest.base=true
+    }
   }
 }

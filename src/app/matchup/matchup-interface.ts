@@ -6,6 +6,7 @@ export type Speedtier = {
     modifiers: string[];
     team?: string;
     stick?: boolean;
+    base?: boolean;
 }
 
 export type Summery = {
