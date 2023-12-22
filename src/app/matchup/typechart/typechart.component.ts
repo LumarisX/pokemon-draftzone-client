@@ -16,16 +16,20 @@ export class TypechartComponent {
 
   @Input() teamId!: string;
   @Input() oppId!: string;
-  aTeam!: Typechart;
-  bTeam!: Typechart;
+  teams!: Typechart[];
+  selectedTeam: number = 0;
   types: (keyof Types)[] = ["Normal", "Grass", "Water", "Fire", "Electric", "Ground", "Rock", "Flying", "Ice", "Fighting", "Poison", "Bug", "Psychic", "Dark", "Ghost", "Dragon", "Steel", "Fairy"];
 
   constructor(private spriteServices: SpriteService, private serverServices: ServerService, private route: ActivatedRoute) { }
 
   ngOnInit() {
     this.serverServices.getTypechart(this.teamId, this.oppId).subscribe((data) => {
-      [this.aTeam, this.bTeam] = <Typechart[]>data;
+      this.teams = <Typechart[]>data;
     });
+  }
+
+  swapTeams(){
+    this.selectedTeam = (this.selectedTeam+1)%this.teams.length;
   }
 
   typeColor(weak: number): string {
