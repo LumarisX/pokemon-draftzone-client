@@ -16,7 +16,7 @@ import { LearnsetsComponent } from './learnsets/learnsets.component';
   template: `
     <a routerLink="/drafts/{{draft.leagueId}}">Back</a>
     <summery [teamId]="this.draft._id" [oppId]="this.oppId"></summery>
-    <typechart></typechart>
+    <typechart [teamId]="this.draft._id" [oppId]="this.oppId"></typechart>
     <speedchart [teamId]="this.draft._id" [oppId]="this.oppId"></speedchart>
     <learnsets></learnsets>
   `

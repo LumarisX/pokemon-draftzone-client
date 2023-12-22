@@ -1,5 +1,5 @@
 <div class="flex flex-wrap items-center overflow-y-auto">
-    <div class="flex flex-row w-full md:w-128 m-4">
+    <div class="flex flex-row w-256 md:w-128 m-4">
         <div class="m-1 w-1/2">
             <div class="bg-slate-400 text-center text-xl text-medium rounded-t-3xl">My Team</div>
             <table id="myOverview" class="table-auto w-full border-4 border-slate-400 rounded-md">
@@ -14,7 +14,7 @@
                         <div class="-mr-2">#</div>
                     </td>
                     <td class="w-12">
-                        <sprite class="w-12" [pokemonId]="pokemon.pid"></sprite>
+                        <sprite [pokemonId]="pokemon.pid"></sprite>
                     </td>
                     <td class="w-32 text">{{pokemon.name}}</td>
                     <td class="w-12 text-center">{{pokemon.baseStats.spe}}</td>
@@ -34,7 +34,7 @@
                     <td class="w-12 text-center">{{pokemon.baseStats.spe}}</td>
                     <td class="w-32 text">{{pokemon.name}}</td>
                     <td class="w-12">
-                        <sprite class="w-12" [pokemonId]="pokemon.pid"></sprite>
+                        <sprite [pokemonId]="pokemon.pid"></sprite>
                     </td>
                     <td class="w-8">
                         <div class="h-12 -ml-2">#</div>

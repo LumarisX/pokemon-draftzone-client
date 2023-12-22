@@ -44,4 +44,8 @@ export class ServerService {
   getSummery(teamId: string, oppId: string){
     return this.http.get(`${this.serverUrl}/matchup/${teamId}/${oppId}/summery`)
   }
+
+  getTypechart(teamId: string, oppId: string){
+    return this.http.get(`${this.serverUrl}/matchup/${teamId}/${oppId}/typechart`)
+  }
 }

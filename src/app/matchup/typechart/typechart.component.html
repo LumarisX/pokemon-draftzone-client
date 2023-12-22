@@ -1,12 +1,45 @@
-<!-- <table>
-    <tr>
-        <td></td>
-        <th *ngFor="let type of types">{{type}}</th>
-    </tr>
-    <tr *ngFor="let pokemon of team.team">
-        <th>{{ pokemon.name }}</th>
-        <td *ngFor="let weak of pokemon.getWeak()">{{ weak }}</td>
-    </tr>
-</table> -->
+<div id="typechartWidget" class="w-fit overflow-auto touch-auto m-4 border-4 border-slate-400">
+    <table class="table-auto">
+        <thead class="">
+            <tr>
+                <th class="sticky left-0 bg-slate-200 border-r-4 border-slate-400"></th>
+                <th class="sticky left-0 bg-slate-200 border-r-4 border-slate-400" *ngFor="let type of types">
+                    <img class="" src="https://play.pokemonshowdown.com/sprites/types/{{type}}.png" alt={{type}}>
+                </th>
+            </tr>
+        </thead>
+        <tbody class="bg-slate-200 border-b-4 border-slate-400">
+            <tr *ngFor="let pokemon of aTeam" class="">
+                <th class="w-12 sticky left-0 bg-slate-200 border-r-4 border-slate-400">
+                    <sprite class="" [pokemonId]="pokemon.pid"></sprite>    
+                </th>
+                <td *ngFor="let type of types" class="text-center" [ngClass]="weakColor(pokemon.weak[type])">{{pokemon.weak[type]}}</td>
+            </tr>
+        </tbody>
+        <tfoot id="typeSum" class="bg-slate-300">
+        </tfoot>
+    </table>
+</div>
 
-<div>typechart</div>
+<div id="typechartWidget" class="w-fit overflow-auto touch-auto m-4 border-4 border-slate-400">
+    <table class="table-auto">
+        <thead class="">
+            <tr>
+                <th class="sticky left-0 bg-slate-200 border-r-4 border-slate-400"></th>
+                <th class="sticky left-0 bg-slate-200 border-r-4 border-slate-400" *ngFor="let type of types">
+                    <img class="" src="https://play.pokemonshowdown.com/sprites/types/{{type}}.png" alt={{type}}>
+                </th>
+            </tr>
+        </thead>
+        <tbody class="bg-slate-200 border-b-4 border-slate-400">
+            <tr *ngFor="let pokemon of bTeam" class="">
+                <th class="w-12 sticky left-0 bg-slate-200 border-r-4 border-slate-400">
+                    <sprite class="" [pokemonId]="pokemon.pid"></sprite>    
+                </th>
+                <td *ngFor="let type of types" class="text-center" [ngClass]="weakColor(pokemon.weak[type])">{{pokemon.weak[type]}}</td>
+            </tr>
+        </tbody>
+        <tfoot id="typeSum" class="bg-slate-300">
+        </tfoot>
+    </table>
+</div>
