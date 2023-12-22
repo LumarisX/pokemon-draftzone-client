@@ -26,18 +26,39 @@ export class SpeedchartComponent implements OnInit {
     //document.getElementById("base").scrollIntoView()
   }
 
+  isSticky(stick:boolean | undefined){
+    if(stick){
+      return "sticky"
+    }
+    return ""
+  }
+
   sortTiers(a:Speedtier[], b:Speedtier[]): Speedtier[] {
     let out = []
     let ai = 0;
     let bi = 0;
+    let last: Speedtier | null = null;
     for (let i = 0; i < (a.length + b.length); i++) {
+      let selected: Speedtier;
       if(ai<a.length && (bi>=b.length || a[ai].speed>b[bi].speed)){
         a[ai]["team"] = "cyan";
-        out.push(a[ai++])
+        selected = a[ai++]
       } else {
         b[bi]["team"] = "red";
-        out.push(b[bi++])
+        selected =b[bi++]
       }
+      if(last != null){
+        if(last.team!=selected.team){
+          last.stick = true;
+        } else {
+          last.stick = false;
+        }
+        out.push(last)
+      }
+      last = selected
+    }
+    if(last != null){
+      out.push(last)
     }
     return out
   }
