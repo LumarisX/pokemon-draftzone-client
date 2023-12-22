@@ -7,18 +7,18 @@ import { Draft } from '../draft';
 import { SpeedchartComponent } from './speedchart/speedchart.component';
 import { SummeryComponent } from './summery/summery.component';
 import { TypechartComponent } from './typechart/typechart.component';
-import { LearnsetsComponent } from './learnsets/learnsets.component';
+import { MovechartComponent } from './movechart/movechart.component';
 
 @Component({
   selector: 'matchup',
   standalone: true,
-  imports: [CommonModule, RouterModule, SummeryComponent, TypechartComponent, LearnsetsComponent, SpeedchartComponent],
+  imports: [CommonModule, RouterModule, SummeryComponent, TypechartComponent, MovechartComponent, SpeedchartComponent],
   template: `
     <a routerLink="/drafts/{{draft.leagueId}}">Back</a>
     <summery [teamId]="this.draft._id" [oppId]="this.oppId"></summery>
     <typechart [teamId]="this.draft._id" [oppId]="this.oppId"></typechart>
     <speedchart [teamId]="this.draft._id" [oppId]="this.oppId"></speedchart>
-    <learnsets></learnsets>
+    <movechart></movechart>
   `
 })
 export class MatchupComponent implements OnInit{
