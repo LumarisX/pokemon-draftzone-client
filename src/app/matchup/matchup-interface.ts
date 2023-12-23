@@ -1,4 +1,5 @@
 import { BattlePokedex } from "../pokedex";
+import { Pokemon } from "../pokemon";
 
 export type Speedtier = {
     name: string;
@@ -78,3 +79,21 @@ export type Movechart = [
         ]
     }
 ]
+
+export type Coveragechart = {
+    pid: Pokemon;
+    coverage: {
+        physical: {
+            [type in keyof Types]: {
+                name: string
+                ePower: number
+            }
+        },
+        special: {
+            [type in keyof Types]: {
+                name: string
+                ePower: number
+            }
+        }
+    }
+}

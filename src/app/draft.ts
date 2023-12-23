@@ -1,6 +1,6 @@
 import { Pokemon } from "./pokemon";
 
-export interface Draft{
+export type Draft = {
     _id: string;
     leagueName?: string;
     leagueId: string;
@@ -9,12 +9,16 @@ export interface Draft{
     opponent_team_id: string;
     opponents: OpponentDraft[]
     owner: string;
-    team: Pokemon[];
+    team: Team[];
 }
 
-export interface OpponentDraft{
+export type OpponentDraft = {
     teamName: string;
     score: number[];
     stage: string;
-    team: Pokemon[];
+    team: Team[];
+}
+
+type Team = {
+    pid: Pokemon
 }
