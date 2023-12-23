@@ -16,7 +16,6 @@ import { SpriteService } from '../sprite/sprite.service';
 })
 export class OpponentOverviewComponent implements OnInit{
   draft!: Draft;
-  
   users = {}
   constructor(private spriteService: SpriteService, private serverServices: ServerService, private route: ActivatedRoute) { }
   
