@@ -15,17 +15,19 @@ import { MovechartComponent } from './movechart/movechart.component';
   imports: [CommonModule, RouterModule, SummeryComponent, TypechartComponent, MovechartComponent, SpeedchartComponent],
   template: `
     <a routerLink="/drafts/{{draft.leagueId}}">Back</a>
-    <summery [teamId]="this.draft._id" [oppId]="this.oppId"></summery>
-    <typechart [teamId]="this.draft._id" [oppId]="this.oppId"></typechart>
-    <speedchart [teamId]="this.draft._id" [oppId]="this.oppId"></speedchart>
-    <movechart></movechart>
+    <div class="flex flex-wrap">
+      <summery [teamId]="this.draft._id" [oppId]="this.oppId"></summery>
+      <typechart [teamId]="this.draft._id" [oppId]="this.oppId"></typechart>
+      <speedchart [teamId]="this.draft._id" [oppId]="this.oppId"></speedchart>
+      <movechart [teamId]="this.draft._id" [oppId]="this.oppId"></movechart>
+    </div>
   `
 })
-export class MatchupComponent implements OnInit{
+export class MatchupComponent implements OnInit {
 
   draft!: Draft;
   oppId!: string;
-  
+
   constructor(private spriteService: SpriteService, private serverServices: ServerService, private route: ActivatedRoute) { }
 
 

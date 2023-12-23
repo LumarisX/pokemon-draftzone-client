@@ -66,3 +66,15 @@ export type Types = {
     hail: number,
     trapped: number
 }
+
+export type Movechart = [
+    {
+        catName: string;
+        moves: [
+            {
+                moveName: string;
+                pokemon: [keyof typeof BattlePokedex]
+            }
+        ]
+    }
+]
