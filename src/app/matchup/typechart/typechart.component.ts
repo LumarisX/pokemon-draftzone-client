@@ -45,7 +45,7 @@ export class TypechartComponent {
       return "bg-emerald-500";
     if (weak < 1)
       return "bg-emerald-400";
-    return ""
+    return "text-slate-200"
   }
 
   weakColor(weak: number): string {
@@ -88,5 +88,11 @@ export class TypechartComponent {
     if (weak < 0) 
       return "bg-rose-400";
     return ""
+  }
+
+  teamColor(inverted:boolean=false) {
+    if((this.selectedTeam >0)==inverted)
+        return "bg-cyan-400"
+    return "bg-red-400"
   }
 }

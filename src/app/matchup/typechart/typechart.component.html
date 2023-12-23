@@ -1,38 +1,50 @@
-<div id="typechartWidget" class="w-fit overflow-auto touch-auto m-4 border-4 border-slate-400">
-    <button (click)="swapTeams()">Swap</button>
-    <table class="table-auto">
+<div id="typechartWidget" class="w-fit m-4">
+    <button (click)="swapTeams()" class="border-t-4 border-x-4 border-slate-400 rounded-t-xl px-3 text-sm border-b" [ngClass]="teamColor(true)">Swap</button>
+    <table class="table-fixed overflow-auto touch-auto border-4 border-slate-400">
         <thead class="">
             <tr class="">
-                <th class="sticky left-0 bg-slate-200 border-r-4 border-slate-400"></th>
-                <th class="sticky left-0 bg-slate-200 border-r-4 border-slate-400" *ngFor="let type of types">
+                <th class="left-0 border-r-4 border-slate-400" [ngClass]="teamColor()"></th>
+                <th class="left-0 bg-slate-300 border-b-2 border-slate-400" *ngFor="let type of types">
                     <img class="" src="https://play.pokemonshowdown.com/sprites/types/{{type}}.png" alt={{type}}>
                 </th>
             </tr>
         </thead>
-        <tbody class="bg-slate-200 border-b-4 border-slate-400">
+        <tbody class="border-b-4 border-slate-400">
             <tr *ngFor="let pokemon of teams[selectedTeam].team" class="">
-                <th class="w-12 bg-slate-200 border-r-4 border-slate-400">
-                    <sprite [pokemonId]="pokemon.pid"></sprite>    
+                <th class="w-12 border-r-4 border-slate-400" [ngClass]="teamColor()">
+                    <sprite [pokemonId]="pokemon.pid"></sprite>
                 </th>
-                <td *ngFor="let type of types" class="text-center" [ngClass]="typeColor(pokemon.weak[type])">{{pokemon.weak[type]}}</td>
+                <td *ngFor="let type of types" class="text-center" [ngClass]="typeColor(pokemon.weak[type])">
+                    {{pokemon.weak[type]}}</td>
             </tr>
         </tbody>
         <tfoot id="typeSum" class="bg-slate-300">
             <tr>
-                <th>Weaknesses</th>
-                <td *ngFor="let type of types" class="text-center" [ngClass]="weakColor(teams[selectedTeam].weaknesses[type])">{{teams[selectedTeam].weaknesses[type]}}</td>
+                <th class="text-xs bg-rose-400">Weaks</th>
+                <td *ngFor="let type of types" class="text-center"
+                    [ngClass]="weakColor(teams[selectedTeam].weaknesses[type])">{{teams[selectedTeam].weaknesses[type]}}
+                </td>
             </tr>
             <tr>
-                <th>Resistances</th>
-                <td *ngFor="let type of types" class="text-center" [ngClass]="resistColor(teams[selectedTeam].resistances[type])">{{teams[selectedTeam].resistances[type]}}</td>
+                <th class="text-xs bg-emerald-400">Resists</th>
+                <td *ngFor="let type of types" class="text-center"
+                    [ngClass]="resistColor(teams[selectedTeam].resistances[type])">
+                    {{teams[selectedTeam].resistances[type]}}</td>
             </tr>
             <tr>
-                <th>Difference</th>
-                <td *ngFor="let type of types" class="text-center" [ngClass]="diffColor(teams[selectedTeam].difference[type])">{{teams[selectedTeam].difference[type]}}</td>
+                <th class="flex">
+                    <div class="w-1/2 h-full bg-emerald-400 text-right text-xs ">Di</div>
+                    <div class="w-1/2 h-full bg-rose-400 text-left text-xs">ff</div>
+                </th>
+                <td *ngFor="let type of types" class="text-center"
+                    [ngClass]="diffColor(teams[selectedTeam].difference[type])">{{teams[selectedTeam].difference[type]}}
+                </td>
             </tr>
             <tr>
-                <th>Differential</th>
-                <td *ngFor="let type of types" class="text-center" [ngClass]="diffColor(teams[selectedTeam].differential[type])">{{teams[selectedTeam].differential[type] | number: '1.0-0'}}</td>
+                <th class="text-xs bg-gradient-to-r from-rose-400 via-slate-200 to-emerald-400">Log</th>
+                <td *ngFor="let type of types" class="text-center"
+                    [ngClass]="diffColor(teams[selectedTeam].differential[type])">
+                    {{teams[selectedTeam].differential[type] | number: '1.0-0'}}</td>
             </tr>
         </tfoot>
     </table>
