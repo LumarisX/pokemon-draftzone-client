@@ -14,8 +14,8 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
       <div class="flex flex-grow justify-end p-2">
         <div class="actions login__block__actions">
           <div class="dropdown" [ngClass]="{'open':showOption}">
-            <div data-toggle="dropdown" (click)="toggleOption()"><div #loginpopup class="zmdi zmdi-more-vert">Lumaris</div></div>
-            <ul class="dropdown-menu pull-right" *ngIf="this.showOption">
+            <div data-toggle="dropdown" (click)="toggleOption()"><div #loginpopup class="px-4">Lumaris</div></div>
+            <ul class="absolute bg-slate-300 p-4 dropdown-menu pull-right" *ngIf="this.showOption">
               <li><a data-block="#l-register" href="">Settings</a></li>
               <li><a data-block="#l-forget-password" href="">Sign out</a></li>
             </ul>
