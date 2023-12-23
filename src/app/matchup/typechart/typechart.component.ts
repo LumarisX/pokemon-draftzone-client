@@ -28,8 +28,8 @@ export class TypechartComponent {
     });
   }
 
-  swapTeams(){
-    this.selectedTeam = (this.selectedTeam+1)%this.teams.length;
+  swapTeams() {
+    this.selectedTeam = (this.selectedTeam + 1) % this.teams.length;
   }
 
   typeColor(weak: number): string {
@@ -45,54 +45,60 @@ export class TypechartComponent {
       return "bg-emerald-500";
     if (weak < 1)
       return "bg-emerald-400";
-    return "text-slate-200"
+    return "text-transparent"
   }
 
   weakColor(weak: number): string {
-    if (weak > 3)
+    if (weak > 5)
       return "bg-rose-600";
-    if (weak > 2)
+    if (weak > 4)
       return "bg-rose-500";
-    if (weak > 1)
+    if (weak > 3)
       return "bg-rose-400";
-    if (weak == 0)
+    if (weak < 1)
+      return "bg-emerald-600";
+    if (weak < 2)
+      return "bg-emerald-500";
+    if (weak < 3)
       return "bg-emerald-400";
     return ""
   }
 
   resistColor(weak: number): string {
-    if (weak > 3)
+    if (weak > 4)
       return "bg-emerald-600";
-    if (weak > 2)
+    if (weak > 3)
       return "bg-emerald-500";
-    if (weak > 1)
+    if (weak > 2)
       return "bg-emerald-400";
-    if (weak = 0)
+    if (weak < 1)
+      return "bg-rose-500"
+    if (weak < 2)
       return "bg-rose-400";
     return ""
   }
 
   diffColor(weak: number): string {
-    if (weak > 3) 
+    if (weak > 3)
       return "bg-emerald-700";
-    if (weak > 2) 
+    if (weak > 2)
       return "bg-emerald-600";
-    if (weak > 1) 
+    if (weak > 1)
       return "bg-emerald-500";
-    if (weak > 0) 
+    if (weak > 0)
       return "bg-emerald-400";
-    if (weak < -2) 
+    if (weak < -2)
       return "bg-rose-600";
-    if (weak < -1) 
+    if (weak < -1)
       return "bg-rose-500";
-    if (weak < 0) 
+    if (weak < 0)
       return "bg-rose-400";
     return ""
   }
 
-  teamColor(inverted:boolean=false) {
-    if((this.selectedTeam >0)==inverted)
-        return "bg-cyan-400"
+  teamColor(inverted: boolean = false) {
+    if ((this.selectedTeam > 0) == inverted)
+      return "bg-cyan-400"
     return "bg-red-400"
   }
 }
