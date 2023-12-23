@@ -30,10 +30,16 @@ export class SpeedchartComponent implements OnInit {
 
   speedClasses(tier: Speedtier | null) {
     let classes = []
-    if (tier!= undefined && tier.stick) {
+    if (tier?.team)
+      classes.push("bg-cyan-400");
+    else
+      classes.push("bg-red-400")
+    if (tier != undefined && tier.stick) {
       classes.push("sticky")
+      classes.push("top-0")
+      classes.push("z-1")
     }
-    if (tier!= undefined && tier.base) {
+    if (tier != undefined && tier.base) {
       classes.push("base")
     }
     return classes
@@ -45,10 +51,10 @@ export class SpeedchartComponent implements OnInit {
     let bi = 0;
     for (let i = 0; i < (a.length + b.length); i++) {
       if (ai < a.length && (bi >= b.length || a[ai].speed > b[bi].speed)) {
-        a[ai]["team"] = "cyan";
+        a[ai]["team"] = true;
         out.push(a[ai++])
       } else {
-        b[bi]["team"] = "red";
+        b[bi]["team"] = false;
         out.push(b[bi++])
       }
     }
@@ -62,18 +68,18 @@ export class SpeedchartComponent implements OnInit {
       }
     }
   }
-  
-  setBase(speedchart:Speedtier[]){
+
+  setBase(speedchart: Speedtier[]) {
     let slowest: Speedtier | null = null;
     for (let tier of speedchart) {
-      if (tier.modifiers.length==1 && tier.modifiers[0]=="max+"){
-        if(slowest==null || slowest.speed>tier.speed){
+      if (tier.modifiers.length == 1 && tier.modifiers[0] == "max+") {
+        if (slowest == null || slowest.speed > tier.speed) {
           slowest = tier;
         }
       }
     }
-    if(slowest!=null){
-    slowest.base=true
+    if (slowest != null) {
+      slowest.base = true
     }
   }
 }

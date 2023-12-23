@@ -4,7 +4,7 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
   selector: 'app-root',
   host: { '(document:click)': 'handleClick($event)' },
   template: `
-    <header class="sticky top-0 w-full bg-slate-300 flex border-b-2 border-slate-400">
+    <header class="sticky top-0 z-10 w-full bg-slate-300 flex border-b-2 border-slate-400">
       <a class="text-xl p-2">DraftZone</a>
       <div class="flex py-2 px-10 space-x-6">
         <a routerLink="/draft">Draft</a>

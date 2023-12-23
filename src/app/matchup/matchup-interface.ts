@@ -4,7 +4,7 @@ export type Speedtier = {
     name: string;
     speed: number;
     modifiers: string[];
-    team?: string;
+    team?: boolean;
     stick?: boolean;
     base?: boolean;
 }
