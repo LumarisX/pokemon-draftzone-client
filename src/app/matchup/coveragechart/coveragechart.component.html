@@ -1,21 +1,27 @@
-<div class="m-4 w-fit grid grid-cols-1 md:grid-cols-2 grid-rows-flex border-4 bg-slate-400 gap-1 border-slate-400">
-    <div class="h-32 max-w-64 w-full flex bg-cyan-400 border-cyan-300 border-2" *ngFor="let pokemon of teams[0]">
-        <div class="h-full w-fit bg-cyan-400">
-            <sprite [pokemonId]="pokemon.pid"></sprite>
-        </div>
-        <div>
-            <div class="w-full h-1/2 text-xs bg-cyan-400 p-1"><img
-                    src="https://play.pokemonshowdown.com/sprites/categories/Physical.png">
-                <div class="grid grid-cols-6 grid-rows-flex p-1 h-auto w-full items-center bg-cyan-300">
-                    <img *ngFor="let type of pokemon.coverage.physical| keyvalue" class=""
-                        src="https://play.pokemonshowdown.com/sprites/types/{{type.key}}.png" title={{type.value.name}}>
-                </div>
-                <div class="w-full h-1/2 text-xs bg-cyan-400 p-1"><img
-                        src="https://play.pokemonshowdown.com/sprites/categories/Special.png">
-                    <div class="grid grid-cols-6 grid-rows-flex p-1 h-auto w-full items-center bg-cyan-300">
-                        <img *ngFor="let type of pokemon.coverage.special| keyvalue" class=""
+<div class="m-4 w-fit">
+    <button (click)="swapTeams()" class="border-t-4 border-x-4 border-slate-400 rounded-t-xl px-3 text-sm border-b"
+        [ngClass]="teamColor(true)">Swap</button>
+    <div class="grid grid-cols-1 md:grid-cols-2 grid-rows-flex border-4 bg-slate-400 gap-1 border-slate-400">
+        <div class="h-32 max-w-64 w-full flex border-2" *ngFor="let pokemon of teams[selectedTeam]"
+            [ngClass]="teamColor()">
+            <div class="h-full w-fit">
+                <sprite [pokemonId]="pokemon.pid"></sprite>
+            </div>
+            <div class="p-2">
+                <div class="w-full h-1/2 text-xs"><img
+                        src="https://play.pokemonshowdown.com/sprites/categories/Physical.png">
+                    <div class="grid grid-cols-6 grid-rows-flex p-1 h-auto w-full items-center">
+                        <img *ngFor="let type of pokemon.coverage.physical| keyvalue" class=""
                             src="https://play.pokemonshowdown.com/sprites/types/{{type.key}}.png"
                             title={{type.value.name}}>
+                    </div>
+                    <div class="w-full h-1/2 text-xs"><img
+                            src="https://play.pokemonshowdown.com/sprites/categories/Special.png">
+                        <div class="grid grid-cols-6 grid-rows-flex p-1 h-auto w-full items-center">
+                            <img *ngFor="let type of pokemon.coverage.special| keyvalue" class=""
+                                src="https://play.pokemonshowdown.com/sprites/types/{{type.key}}.png"
+                                title={{type.value.name}}>
+                        </div>
                     </div>
                 </div>
             </div>

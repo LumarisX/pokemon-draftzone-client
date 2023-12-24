@@ -16,6 +16,7 @@ export class coveragechartComponent implements OnInit {
   @Input() teamId!: string;
   @Input() oppId!: string;
   teams!: Coveragechart[][];
+  selectedTeam: number = 0;
 
   constructor(private serverServices: ServerService, private route: ActivatedRoute) { }
 
@@ -24,6 +25,16 @@ export class coveragechartComponent implements OnInit {
       this.teams = <Coveragechart[][]>data;
     });
 
+  }
+
+  swapTeams() {
+    this.selectedTeam = (this.selectedTeam + 1) % this.teams.length;
+  }
+
+  teamColor(inverted: boolean = false) {
+    if ((this.selectedTeam > 0) == inverted)
+      return "bg-cyan-400"
+    return "bg-red-400"
   }
 
 }
