@@ -21,7 +21,7 @@ import { DraftService } from '../api/draft.service';
 })
 export class DraftOverviewComponent implements OnInit {
   teams: Draft[] = [];
-  users = {}
+  formVisible: boolean = false
 
   constructor(private spriteService: SpriteService, private serverServices: ServerService, private route: ActivatedRoute, private fb: FormBuilder, private draftService: DraftService) { }
 
@@ -87,5 +87,6 @@ export class DraftOverviewComponent implements OnInit {
       response => console.log("Success!", response),
       error => console.error("Error!", error)
     )
+    this.formVisible = false
   }
 }
