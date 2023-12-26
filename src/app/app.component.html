@@ -1,6 +1,6 @@
 <div class="flex flex-col h-screen justify-between">
     <header class="z-10 w-full bg-slate-300 flex border-b-2 border-slate-400">
-        <a class="text-xl p-2">DraftZone</a>
+        <a class="text-xl p-2" routerLink="/">DraftZone</a>
         <div class="flex py-2 px-10 space-x-6">
             <a routerLink="/draft">Draft</a>
             <a class="opacity-50">Planner</a>
@@ -14,7 +14,7 @@
                     </div>
                     <ul class="absolute bg-slate-300 p-4 dropdown-menu pull-right" *ngIf="this.showOption">
                         <li><a data-block="#l-register" class="opacity-50">Settings</a></li>
-                        <li><a data-block="#l-forget-password" class="opacity-50">Sign out</a></li>
+                        <li><a data-block="#l-forget-password" routerLink="/login">Sign out</a></li>
                     </ul>
                 </div>
             </div>
