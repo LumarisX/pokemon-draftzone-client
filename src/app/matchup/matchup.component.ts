@@ -8,22 +8,14 @@ import { SpeedchartComponent } from './speedchart/speedchart.component';
 import { SummeryComponent } from './summery/summery.component';
 import { TypechartComponent } from './typechart/typechart.component';
 import { MovechartComponent } from './movechart/movechart.component';
-import { coveragechartComponent } from "./coveragechart/coveragechart.component";
+import { CoveragechartComponent } from "./coveragechart/coveragechart.component";
+import { OverviewComponent } from './overview/overview.component';
 
 @Component({
     selector: 'matchup',
     standalone: true,
-    template: `
-    <a routerLink="/drafts/{{draft.leagueId}}">Back</a>
-    <div class="flex flex-wrap">
-      <summery [teamId]="this.draft._id" [oppId]="this.oppId"></summery>
-      <typechart [teamId]="this.draft._id" [oppId]="this.oppId"></typechart>
-      <speedchart [teamId]="this.draft._id" [oppId]="this.oppId"></speedchart>
-      <movechart [teamId]="this.draft._id" [oppId]="this.oppId"></movechart>
-      <coveragechart [teamId]="this.draft._id" [oppId]="this.oppId"></coveragechart>
-    </div>
-  `,
-    imports: [CommonModule, RouterModule, SummeryComponent, TypechartComponent, MovechartComponent, SpeedchartComponent, coveragechartComponent]
+    templateUrl: "./matchup.component.html",
+    imports: [CommonModule, RouterModule, SummeryComponent, TypechartComponent, MovechartComponent, SpeedchartComponent, CoveragechartComponent, OverviewComponent]
 })
 export class MatchupComponent implements OnInit {
 

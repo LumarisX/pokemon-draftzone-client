@@ -11,7 +11,7 @@ import { SpriteComponent } from '../../sprite/sprite.component';
   imports: [CommonModule, SpriteComponent],
   templateUrl: './coveragechart.component.html'
 })
-export class coveragechartComponent implements OnInit {
+export class CoveragechartComponent implements OnInit {
 
   @Input() teamId!: string;
   @Input() oppId!: string;

@@ -1,0 +1,11 @@
+<div class="bg-gradient-to-r from-cyan-100 via-slate-100 to-red-100">
+    <a routerLink="/drafts/{{draft.leagueId}}">Back</a>
+    <div class="flex flex-wrap text-xs">
+        <overview [teamId]="this.draft._id" [oppId]="this.oppId"></overview>
+        <summery [teamId]="this.draft._id" [oppId]="this.oppId"></summery>
+        <typechart [teamId]="this.draft._id" [oppId]="this.oppId"></typechart>
+        <speedchart [teamId]="this.draft._id" [oppId]="this.oppId"></speedchart>
+        <movechart [teamId]="this.draft._id" [oppId]="this.oppId"></movechart>
+        <coveragechart [teamId]="this.draft._id" [oppId]="this.oppId"></coveragechart>
+    </div>
+</div>
