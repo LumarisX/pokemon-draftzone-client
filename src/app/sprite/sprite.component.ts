@@ -20,8 +20,8 @@ export class SpriteComponent {
     return "https://play.pokemonshowdown.com/sprites/gen5/" + getSpriteName(this.pokemonId) + ".png"
   }
 
-  isFlipped(){
-    if(this.flipped)
+  isFlipped() {
+    if (this.flipped)
       return "-scale-x-100"
     return
   }

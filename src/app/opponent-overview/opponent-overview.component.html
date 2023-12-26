@@ -2,7 +2,7 @@
   <div class="w-fit bg-cyan-100 p-1 border-2 border-cyan-200 rounded-xl">
     <a routerLink="/drafts" class="bg-cyan-300 rounded-full px-2 shadow hover:shadow shadow-cyan-600">Back</a>
     <div class="h-auto bg-cyan-300 p-2 m-2 rounded-xl shadow-md shadow-cyan-600">
-      <sprite *ngFor="let pokemon of draft.team" [pokemonId]="pokemon.pid" [flipped]="false"></sprite>
+      <sprite *ngFor="let pokemon of draft.team" [pokemonId]="pokemon.pid" [flipped]="true"></sprite>
     </div>
   </div>
   <div class="bg-red-100 rounded-xl p-2 border-2 border-red-200">
