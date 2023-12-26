@@ -17,7 +17,7 @@ export class SummeryComponent implements OnInit {
   @Input() teamId!: string;
   @Input() oppId!: string;
   teams: Summery[][] = [];
-  sortStat: "hp" | "atk" | "def" | "spa" | "spd" | "spe" = "spe"
+  sortBy: "name" | "hp" | "atk" | "def" | "spa" | "spd" | "spe" | null = null
   selectedTeam: number = 0;
 
   constructor(private spriteServices: SpriteService, private serverServices: ServerService, private route: ActivatedRoute) { }
@@ -26,29 +26,35 @@ export class SummeryComponent implements OnInit {
   ngOnInit() {
     this.serverServices.getSummery(this.teamId, this.oppId).subscribe((data) => {
       this.teams = <Summery[][]>data;
-      for(let team in this.teams){
-        this.sortByStat(this.teams[team], this.sortStat)
-      }
+      this.sortByStat("spe")
     });
   }
 
-  sortByStat(data: Summery[], sortStat: "hp" | "atk" | "def" | "spa" | "spd" | "spe"): Summery[] {
-    data.sort((x, y) => {
-      if (x["baseStats"][sortStat] < y["baseStats"][sortStat]) {
-        return (1);
+  sortByStat(sortStat: "hp" | "atk" | "def" | "spa" | "spd" | "spe") {
+    if (sortStat != this.sortBy) {
+      this.sortBy = sortStat;
+      for (let team of this.teams) {
+        team.sort((x, y) => {
+          if (x["baseStats"][sortStat] < y["baseStats"][sortStat]) {
+            return (1);
+          }
+          if (x["baseStats"][sortStat] > y["baseStats"][sortStat]) {
+            return (-1);
+          }
+          return (0);
+        });
       }
-      if (x["baseStats"][sortStat] > y["baseStats"][sortStat]) {
-        return (-1);
+    } else {
+      for (let team of this.teams) {
+        team.reverse()
       }
-      return (0);
-    });
-    return data;
+    }
   }
 
   swapTeams() {
     this.selectedTeam = (this.selectedTeam + 1) % this.teams.length;
   }
-  
+
   teamColor(inverted: boolean = false) {
     if ((this.selectedTeam > 0) == inverted)
       return "bg-cyan-400"
