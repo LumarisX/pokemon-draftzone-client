@@ -54,6 +54,29 @@ export class SummeryComponent implements OnInit {
     }
   }
 
+  sortByName() {
+    if ("name" != this.sortBy) {
+      this.sortBy = "name";
+      this.reversed = true;
+      for (let team of this.teams) {
+        team.sort((x, y) => {
+          if (x["name"] > y["name"]) {
+            return (1);
+          }
+          if (x["name"] < y["name"]) {
+            return (-1);
+          }
+          return (0);
+        });
+      }
+    } else {
+      for (let team of this.teams) {
+        team.reverse()
+      }
+      this.reversed = !this.reversed
+    }
+  }
+
   swapTeams() {
     this.selectedTeam = (this.selectedTeam + 1) % this.teams.length;
   }

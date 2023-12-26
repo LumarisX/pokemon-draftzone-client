@@ -6,8 +6,7 @@ import { CoreModule } from './sprite/sprite.module';
 import { DraftOverviewModule } from './draft-overview/draft-overview.module';
 import { OpponentOverviewModule } from './opponent-overview/opponent-overview.module';
 import { MatchupModule } from './matchup/matchup.module';
-
-
+import { RegistrationModule } from './registration/registration.module';
 
 @NgModule({
   imports: [
@@ -15,10 +14,11 @@ import { MatchupModule } from './matchup/matchup.module';
     DraftOverviewModule,
     OpponentOverviewModule,
     MatchupModule,
+    RegistrationModule,
     CoreModule,
     AppRoutingModule
   ],
-  declarations: [ AppComponent],
+  declarations: [AppComponent],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }

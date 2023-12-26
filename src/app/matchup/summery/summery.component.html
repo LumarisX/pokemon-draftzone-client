@@ -5,7 +5,11 @@
         <tr class="bg-slate-400">
             <th></th>
             <th></th>
-            <th>Name</th>
+            <th (click)='sortByName()'>
+                <div *ngIf='sortBy!="name"'>Name</div>
+                <div *ngIf='sortBy=="name" && !reversed'>Name ↥</div>
+                <div *ngIf='sortBy=="name" && reversed'>Name ↧</div>
+            </th>
             <th>Abilities</th>
             <th (click)='sortByStat("hp")'>
                 <div *ngIf='sortBy!="hp"'>HP</div>
