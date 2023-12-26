@@ -1,0 +1,51 @@
+<div class="flex flex-col items-center justify-center h-full w-full px-6 py-8">
+    <a href="#" class="flex items-center mb-6 text-2xl font-semibold">
+        <img class="w-8 h-8 mr-2" src="../../../13luken.ico" alt="logo">
+        Pokemon DraftZone
+    </a>
+    <div class="w-full bg-slate-100 rounded-lg shadow md:mt-0 sm:max-w-md xl:p-0">
+        <div class="p-4 space-y-4 md:space-y-6 sm:p-8">
+            <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
+                Register a new account
+            </h1>
+            <form class="space-y-4 md:space-y-6" [formGroup]="signupForm">
+                <div>
+                    <label for="username" class="block mb-2 text-sm font-medium text-gray-900">Username</label>
+                    <input formControlName="username" id="username" type="text" name="username" autocomplete="username"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                        placeholder="" required>
+                    <small *ngIf="signupForm.get('username')?.touched && signupForm.get('username')?.invalid"
+                        class="text-red-500">Required</small>
+                </div>
+                <div>
+                    <label for="password" class="block mb-2 text-sm font-medium text-gray-900">New Password</label>
+                    <input type="password" formControlName="password" id="password" name="password"
+                        autocomplete="new-password" placeholder="••••••••"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                        required>
+                    <small *ngIf="signupForm.get('password')?.touched && signupForm.get('password')?.invalid"
+                        class="text-red-500">Required</small>
+                </div>
+                <div>
+                    <label for="confirmpassword" class="block mb-2 text-sm font-medium text-gray-900">Confirm
+                        Password</label>
+                    <input type="password" formControlName="confirmpassword" id="confirmpassword" name="password"
+                        autocomplete="new-password" placeholder="••••••••"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                        required>
+                    <small *ngIf="signupForm.errors && signupForm.errors['different']" class="text-red-500">Passwords do
+                        not match</small>
+                </div>
+                <button [disabled]="signupForm.invalid" type="submit" (click)="onSubmit()"
+                    class="w-full bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-lg px-5 py-2 text-center">Sign
+                    up</button>
+                <p class="text-sm font-light text-gray-500">
+                    Already have an account? <a href="/login/" class="font-medium text-primary-600 hover:underline">Log
+                        in</a>
+                </p>
+            </form>
+            <!-- {{signupForm.value | json}}
+            {{signupForm.errors | json}} -->
+        </div>
+    </div>
+</div>
