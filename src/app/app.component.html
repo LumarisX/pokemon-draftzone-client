@@ -3,8 +3,8 @@
         <a class="text-xl p-2">DraftZone</a>
         <div class="flex py-2 px-10 space-x-6">
             <a routerLink="/draft">Draft</a>
-            <a>Planner</a>
-            <a>Statistics</a>
+            <a class="opacity-50">Planner</a>
+            <a class="opacity-50">Statistics</a>
         </div>
         <div class="flex flex-grow justify-end p-2">
             <div class="actions login__block__actions">
@@ -13,8 +13,8 @@
                         <div #loginpopup class="px-4">Lumaris</div>
                     </div>
                     <ul class="absolute bg-slate-300 p-4 dropdown-menu pull-right" *ngIf="this.showOption">
-                        <li><a data-block="#l-register" href="">Settings</a></li>
-                        <li><a data-block="#l-forget-password" href="">Sign out</a></li>
+                        <li><a data-block="#l-register" class="opacity-50">Settings</a></li>
+                        <li><a data-block="#l-forget-password" class="opacity-50">Sign out</a></li>
                     </ul>
                 </div>
             </div>
@@ -24,6 +24,7 @@
         <router-outlet></router-outlet>
     </main>
     <footer class="z-10 w-full bg-slate-300 flex border-t-2 border-slate-400 justify-end">
-        <a href="https://discord.gg/sQUEBW4UVx"><img class="h-5 mx-5 my-1" src="../assets/icons/discord-mark-blue.svg"></a>
+        <a href="https://discord.gg/sQUEBW4UVx"><img class="h-5 mx-5 my-1"
+                src="../assets/icons/discord-mark-blue.svg"></a>
     </footer>
 </div>
