@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
+import { DraftService } from '../api/draft.service';
 import { ServerService } from '../api/server.service';
 import { Draft } from '../draft';
 import { SpriteComponent } from '../sprite/sprite.component';
@@ -9,8 +10,6 @@ import { CoreModule } from '../sprite/sprite.module';
 import { SpriteService } from '../sprite/sprite.service';
 import { TeamPreviewComponent } from '../team-preview/team-preview.component';
 import { pokemonNameValidator } from '../validators/pokemon.validator';
-import { Pokemon } from '../pokemon';
-import { DraftService } from '../api/draft.service';
 
 
 @Component({
@@ -51,7 +50,6 @@ export class DraftOverviewComponent implements OnInit {
   })
 
   ngOnInit() {
-    let teamid = this.route.snapshot.paramMap.get("teamid");
     this.serverServices.getDraftsList().subscribe(data => {
       this.teams = <Draft[]>data;
     });
@@ -60,15 +58,6 @@ export class DraftOverviewComponent implements OnInit {
 
   spriteDiv(name: string) {
     return this.spriteService.getSprite(name);
-  }
-
-  testEdit() {
-    this.draftForm.setValue({
-      "leagueName": "TBPL S8",
-      "format": "VGC",
-      "ruleset": "Gen9 NatDex",
-      "team": []
-    })
   }
 
   addNewPokemon() {

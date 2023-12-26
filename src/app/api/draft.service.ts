@@ -18,7 +18,10 @@ export class DraftService {
     constructor(private http: HttpClient) { }
 
     newDraft(draftData: any) {
-        console.log(draftData)
         return this.http.post(`${this.serverUrl}/users/lumaris/teams`, draftData)
+    }
+
+    newOpponent(teamID: string, opponentData: any) {
+        return this.http.post(`${this.serverUrl}/users/lumaris/${teamID}/`, opponentData)
     }
 }
