@@ -16,18 +16,19 @@ export class SummeryComponent implements OnInit {
 
   @Input() teamId!: string;
   @Input() oppId!: string;
-  aTeam!: Summery[];
-  bTeam!: Summery[]
+  teams: Summery[][] = [];
   sortStat: "hp" | "atk" | "def" | "spa" | "spd" | "spe" = "spe"
+  selectedTeam: number = 0;
 
   constructor(private spriteServices: SpriteService, private serverServices: ServerService, private route: ActivatedRoute) { }
 
 
   ngOnInit() {
     this.serverServices.getSummery(this.teamId, this.oppId).subscribe((data) => {
-      [this.aTeam, this.bTeam] = <Summery[][]>data;
-      this.aTeam = this.sortByStat(this.aTeam, this.sortStat)
-      this.bTeam = this.sortByStat(this.bTeam, this.sortStat)
+      this.teams = <Summery[][]>data;
+      for(let team in this.teams){
+        this.sortByStat(this.teams[team], this.sortStat)
+      }
     });
   }
 
@@ -42,6 +43,16 @@ export class SummeryComponent implements OnInit {
       return (0);
     });
     return data;
+  }
+
+  swapTeams() {
+    this.selectedTeam = (this.selectedTeam + 1) % this.teams.length;
+  }
+  
+  teamColor(inverted: boolean = false) {
+    if ((this.selectedTeam > 0) == inverted)
+      return "bg-cyan-400"
+    return "bg-red-400"
   }
 }
 
