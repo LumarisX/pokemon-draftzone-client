@@ -32,10 +32,7 @@
                     {{teams[selectedTeam].resistances[type]}}</td>
             </tr>
             <tr>
-                <th class="flex">
-                    <div class="w-1/2 h-full bg-emerald-400 text-right text-xs ">Di</div>
-                    <div class="w-1/2 h-full bg-rose-400 text-left text-xs">ff</div>
-                </th>
+                <th class="text-xs bg-gradient-to-r from-rose-400 from-45% via-slate-200 via-50% to-emerald-400 to-55%">Diff</th>
                 <td *ngFor="let type of types" class="text-center"
                     [ngClass]="diffColor(teams[selectedTeam].difference[type])">{{teams[selectedTeam].difference[type]}}
                 </td>
