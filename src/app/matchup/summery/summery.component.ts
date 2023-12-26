@@ -19,6 +19,7 @@ export class SummeryComponent implements OnInit {
   teams: Summery[][] = [];
   sortBy: "name" | "hp" | "atk" | "def" | "spa" | "spd" | "spe" | null = null
   selectedTeam: number = 0;
+  reversed: boolean = false;
 
   constructor(private spriteServices: SpriteService, private serverServices: ServerService, private route: ActivatedRoute) { }
 
@@ -33,6 +34,7 @@ export class SummeryComponent implements OnInit {
   sortByStat(sortStat: "hp" | "atk" | "def" | "spa" | "spd" | "spe") {
     if (sortStat != this.sortBy) {
       this.sortBy = sortStat;
+      this.reversed = false;
       for (let team of this.teams) {
         team.sort((x, y) => {
           if (x["baseStats"][sortStat] < y["baseStats"][sortStat]) {
@@ -48,6 +50,7 @@ export class SummeryComponent implements OnInit {
       for (let team of this.teams) {
         team.reverse()
       }
+      this.reversed = !this.reversed
     }
   }
 

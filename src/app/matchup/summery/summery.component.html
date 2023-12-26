@@ -7,12 +7,36 @@
             <th></th>
             <th>Name</th>
             <th>Abilities</th>
-            <th (click)='sortByStat("hp")'>HP</th>
-            <th (click)='sortByStat("atk")'>ATK</th>
-            <th (click)='sortByStat("def")'>DEF</th>
-            <th (click)='sortByStat("spa")'>SPA</th>
-            <th (click)='sortByStat("spd")'>SPD</th>
-            <th (click)='sortByStat("spe")'>SPE</th>
+            <th (click)='sortByStat("hp")'>
+                <div *ngIf='sortBy!="hp"'>HP</div>
+                <div *ngIf='sortBy=="hp" && !reversed'>HP ↥</div>
+                <div *ngIf='sortBy=="hp" && reversed'>HP ↧</div>
+            </th>
+            <th (click)='sortByStat("atk")'>
+                <div *ngIf='sortBy!="atk"'>ATK</div>
+                <div *ngIf='sortBy=="atk" && !reversed'>ATK ↥</div>
+                <div *ngIf='sortBy=="atk" && reversed'>ATK ↧</div>
+            </th>
+            <th (click)='sortByStat("def")'>
+                <div *ngIf='sortBy!="def"'>DEF</div>
+                <div *ngIf='sortBy=="def" && !reversed'>DEF ↥</div>
+                <div *ngIf='sortBy=="def" && reversed'>DEF ↧</div>
+            </th>
+            <th (click)='sortByStat("spa")'>
+                <div *ngIf='sortBy!="spa"'>SPA</div>
+                <div *ngIf='sortBy=="spa" && !reversed'>SPA ↥</div>
+                <div *ngIf='sortBy=="spa" && reversed'>SPA ↧</div>
+            </th>
+            <th (click)='sortByStat("spd")'>
+                <div *ngIf='sortBy!="spd"'>SPD</div>
+                <div *ngIf='sortBy=="spd" && !reversed'>SPD ↥</div>
+                <div *ngIf='sortBy=="spd" && reversed'>SPD ↧</div>
+            </th>
+            <th (click)='sortByStat("spe")'>
+                <div *ngIf='sortBy!="spe"'>SPE</div>
+                <div *ngIf='sortBy=="spe" && !reversed'>SPE ↥</div>
+                <div *ngIf='sortBy=="spe" && reversed'>SPE ↧</div>
+            </th>
         </tr>
         <tr *ngFor="let pokemon of teams[selectedTeam]" class="h-12 border-b border-slate-400" [ngClass]="teamColor()">
             <td class="w-8">
