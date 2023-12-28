@@ -10,6 +10,7 @@ import { CoreModule } from '../sprite/sprite.module';
 import { SpriteService } from '../sprite/sprite.service';
 import { TeamPreviewComponent } from '../team-preview/team-preview.component';
 import { pokemonNameValidator } from '../validators/pokemon.validator';
+import { Pokemon } from '../pokemon';
 
 
 @Component({
@@ -30,9 +31,8 @@ export class DraftOverviewComponent implements OnInit {
     ruleset: ['Gen9 NatDex'],
     team: this.fb.array([
       {
-        pokemonName: "charizardmegay",
+        pokemonName: "charizardmegay" as Pokemon,
         shiny: "false",
-        captain: "true"
       }
     ])
   })
@@ -61,7 +61,7 @@ export class DraftOverviewComponent implements OnInit {
   }
 
   addNewPokemon() {
-    if(this.pokemonForm.valid){
+    if (this.pokemonForm.valid) {
       this.draftFormTeam.push(this.fb.control(this.pokemonForm.value))
       this.pokemonForm.setValue(this.default)
     }
@@ -71,11 +71,15 @@ export class DraftOverviewComponent implements OnInit {
     return this.draftForm.get('team') as FormArray
   }
 
-  onSubmit(){
+  //fix depreciated 
+  onSubmit() {
     this.draftService.newDraft(this.draftForm.value).subscribe(
-      response => console.log("Success!", response),
+      response => {
+        console.log("Success!", response)
+        this.formVisible = false
+        this.ngOnInit()
+      },
       error => console.error("Error!", error)
     )
-    this.formVisible = false
   }
 }

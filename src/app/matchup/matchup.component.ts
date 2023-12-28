@@ -12,10 +12,10 @@ import { CoveragechartComponent } from "./coveragechart/coveragechart.component"
 import { OverviewComponent } from './overview/overview.component';
 
 @Component({
-    selector: 'matchup',
-    standalone: true,
-    templateUrl: "./matchup.component.html",
-    imports: [CommonModule, RouterModule, SummeryComponent, TypechartComponent, MovechartComponent, SpeedchartComponent, CoveragechartComponent, OverviewComponent]
+  selector: 'matchup',
+  standalone: true,
+  templateUrl: "./matchup.component.html",
+  imports: [CommonModule, RouterModule, SummeryComponent, TypechartComponent, MovechartComponent, SpeedchartComponent, CoveragechartComponent, OverviewComponent]
 })
 export class MatchupComponent implements OnInit {
 

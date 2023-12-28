@@ -26,11 +26,11 @@ export class OpponentOverviewComponent implements OnInit {
   constructor(private spriteService: SpriteService, private serverServices: ServerService, private route: ActivatedRoute, private fb: FormBuilder, private draftService: DraftService) { }
 
   draftForm = this.fb.group({
-    opponentTeamName: [''],
+    opponentName: [''],
     stage: [''],
     team: this.fb.array([
       {
-        pokemonName: "charizardmegay" as Pokemon,
+        pokemonName: "" as Pokemon,
         shiny: "false",
         captain: "true"
       }

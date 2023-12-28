@@ -5,7 +5,7 @@ export type Draft = {
     leagueName?: string;
     leagueId: string;
     format: number;
-    ruleset: number; 
+    ruleset: number;
     opponent_team_id: string;
     opponents: OpponentDraft[]
     owner: string;
@@ -13,7 +13,7 @@ export type Draft = {
 }
 
 export type OpponentDraft = {
-    teamName: string;
+    opponentName: string;
     score: number[];
     stage: string;
     team: Team[];
