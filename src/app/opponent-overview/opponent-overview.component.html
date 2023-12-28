@@ -9,53 +9,16 @@
     <div *ngIf="!formVisible">
       <p class="bold text-3xl m-2">{{draft.leagueName}}</p>
       <div id="teams" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 grid-flow-row overflow-auto h-auto">
-        <a class="team bg-red-300 shadow-md hover:shadow-md shadow-red-600 m-2 p-2 rounded-xl"
-          [routerLink]="(draft.opponents.length-i-1).toString()"
-          *ngFor="let opp of draft.opponents.reverse(); let i = index">
-          <div class="w-full flex">
-            <div class="text-medium bg-red-200 w-3/5 rounded-full shadow-inner shadow-red-600 p-1 mx-1 text-center">
-              {{ opp.opponentName }}</div>
-            <div class="w-1/5 h-fit text-xs bg-red-200 rounded-full shadow-inner shadow-red-600 p-1 text-center">
-              {{ score(opp.score) }}</div>
-            <div class="w-1/5 h-fit text-xs bg-red-200 rounded-full shadow-inner shadow-red-600 p-1 mx-1 text-center">
-              {{ opp.stage }}</div>
-          </div>
-          <div class="sprites grid grid-cols-6 px-4 pt-2">
-            <sprite *ngFor="let pokemon of opp.team" [pokemonId]="pokemon.pid"></sprite>
-          </div>
-        </a>
+        <opponent-team-preview *ngFor="let opp of draft.opponents.reverse(); let i = index" [team]="opp"
+          [index]="draft.opponents.length-i-1"></opponent-team-preview>
       </div>
       <button (click)="formVisible=true"
         class="bg-red-300 rounded-full p-2 m-3 shadow-md hover:shadow shadow-red-600">Add
         Team</button>
-
-      <div id="teams" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 grid-flow-row overflow-auto h-auto">
-        <div class="team bg-red-200 shadow-md hover:shadow-md shadow-red-600 m-2 rounded-xl">
-          <div class="team bg-red-300 shadow-md hover:shadow-md p-2 rounded-xl">
-            <div class="w-full flex">
-              <div class="text-medium bg-red-200 w-3/5 rounded-full shadow-inner shadow-red-600 p-1 mx-1 text-center">
-                {{ draft.opponents[0].opponentName }}</div>
-              <div class="w-1/5 h-fit text-xs bg-red-200 rounded-full shadow-inner shadow-red-600 p-1 text-center">
-                {{ score(draft.opponents[0].score) }}</div>
-              <div class="w-1/5 h-fit text-xs bg-red-200 rounded-full shadow-inner shadow-red-600 p-1 mx-1 text-center">
-                {{ draft.opponents[0].stage }}</div>
-            </div>
-            <div class="sprites grid grid-cols-6 px-4 pt-2">
-              <sprite *ngFor="let pokemon of draft.opponents[0].team" [pokemonId]="pokemon.pid"></sprite>
-            </div>
-          </div>
-          <div class="flex p-1">
-            <div class="w-1/3 text-center ">Edit</div>
-            <div class="w-1/3 text-center">Score</div>
-            <div class="w-1/3 text-center">Delete</div>
-          </div>
-        </div>
-      </div>
-
     </div>
     <div *ngIf="formVisible">
       <button (click)="formVisible=false"
-        class="bg-red-300 rounded-full p-2 m-3 shadow-md hover:shadow shadow-red-600">Cancel</button>
+        class="bg-red-300 rounded-full p-2 m-3 shadow-md hover:shadow shadow-red-600">Cancel</button>`
       <p class="bold text-3xl">New Draft</p>
       <form [formGroup]="draftForm"
         class="team bg-red-300 shadow-md hover:shadow-md shadow-red-600 m-2 p-2 rounded-xl space-y-3">

@@ -10,12 +10,13 @@ import { SpriteComponent } from '../sprite/sprite.component';
 import { CoreModule } from '../sprite/sprite.module';
 import { SpriteService } from '../sprite/sprite.service';
 import { pokemonNameValidator } from '../validators/pokemon.validator';
+import { OpponentTeamPreviewComponent } from './team-preview/opponent-team-preview.component';
 
 
 @Component({
   selector: 'opponent-overview',
   standalone: true,
-  imports: [CommonModule, RouterModule, CoreModule, SpriteComponent, ReactiveFormsModule],
+  imports: [CommonModule, RouterModule, CoreModule, OpponentTeamPreviewComponent, SpriteComponent, ReactiveFormsModule],
   templateUrl: './opponent-overview.component.html'
 })
 export class OpponentOverviewComponent implements OnInit {

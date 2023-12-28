@@ -90,24 +90,28 @@ export class SummeryComponent implements OnInit {
   }
 
   statColor(statValue: number) {
-    if (statValue > this.baseValue + 52)
+    if (statValue > this.baseValue + 67)
       return "bg-emerald-600"
-    if (statValue > this.baseValue + 37)
+    if (statValue > this.baseValue + 52)
       return "bg-emerald-500"
-    if (statValue > this.baseValue + 22)
+    if (statValue > this.baseValue + 37)
       return "bg-emerald-400"
-    if (statValue > this.baseValue + 7)
+    if (statValue > this.baseValue + 22)
       return "bg-emerald-300"
+    if (statValue > this.baseValue + 7)
+      return "bg-emerald-200"
     if (statValue < this.baseValue + 8 && statValue > this.baseValue - 8)
       return "bg-slate-200"
-    if (statValue < this.baseValue - 52)
+    if (statValue < this.baseValue - 67)
       return "bg-rose-600"
-    if (statValue < this.baseValue - 37)
+    if (statValue < this.baseValue - 52)
       return "bg-rose-500"
-    if (statValue < this.baseValue - 22)
+    if (statValue < this.baseValue - 37)
       return "bg-rose-400"
-    if (statValue < this.baseValue - 7)
+    if (statValue < this.baseValue - 22)
       return "bg-rose-300"
+    if (statValue < this.baseValue - 7)
+      return "bg-rose-200"
     return
   }
 }

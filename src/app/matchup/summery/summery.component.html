@@ -51,7 +51,8 @@
             <td>
                 <div *ngFor="let ability of pokemon.abilities" class="text-center">{{ability}}</div>
             </td>
-            <td class="text-center" [ngClass]="statColor(pokemon.baseStats.hp)">{{pokemon.baseStats.hp}}</td>
+            <td class="text-center border-l-2 border-slate-400" [ngClass]="statColor(pokemon.baseStats.hp)">
+                {{pokemon.baseStats.hp}}</td>
             <td class="text-center" [ngClass]="statColor(pokemon.baseStats.atk)">{{pokemon.baseStats.atk}}</td>
             <td class="text-center" [ngClass]="statColor(pokemon.baseStats.def)">{{pokemon.baseStats.def}}</td>
             <td class="text-center" [ngClass]="statColor(pokemon.baseStats.spa)">{{pokemon.baseStats.spa}}</td>
