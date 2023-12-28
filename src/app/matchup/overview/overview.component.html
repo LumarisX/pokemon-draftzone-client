@@ -9,7 +9,7 @@
                     <th>Name</th>
                     <th>{{sortStat | uppercase}}</th>
                 </tr>
-                <tr *ngFor="let pokemon of aTeam" class="h-12 bg-cyan-300 border-b border-slate-400">
+                <tr *ngFor="let pokemon of aTeam.team" class="h-12 bg-cyan-300 border-b border-slate-400">
                     <td class="w-8">
                         <div class="-mr-2">#</div>
                     </td>
@@ -30,9 +30,9 @@
                     <th></th>
                     <th></th>
                 </tr>
-                <tr *ngFor="let pokemon of bTeam" class="h-12 bg-red-400  border-b border-slate-400">
+                <tr *ngFor="let pokemon of bTeam.team" class="h-12 bg-red-400  border-b border-slate-400">
                     <td class="w-12 text-center">{{pokemon.baseStats.spe}}</td>
-                    <td class="w-32 text">{{pokemon.name}}</td>
+                    <td class="w-32 text-end">{{pokemon.name}}</td>
                     <td class="w-12">
                         <sprite [pokemonId]="pokemon.pid"></sprite>
                     </td>

@@ -17,7 +17,7 @@ export class MovechartComponent {
   @Input() teamId!: string;
   @Input() oppId!: string;
   teams!: Movechart[];
-  selectedTeam: number = 0;
+  selectedTeam: number = 1;
 
   constructor(private spriteServices: SpriteService, private serverServices: ServerService, private route: ActivatedRoute) { }
 
@@ -31,7 +31,7 @@ export class MovechartComponent {
   swapTeams() {
     this.selectedTeam = (this.selectedTeam + 1) % this.teams.length;
   }
-  
+
   teamColor(inverted: boolean = false) {
     if ((this.selectedTeam > 0) == inverted)
       return "bg-cyan-400"

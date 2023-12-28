@@ -30,7 +30,7 @@ export class OpponentOverviewComponent implements OnInit {
     stage: [''],
     team: this.fb.array([
       {
-        pokemonName: "" as Pokemon,
+        pokemonName: "salamencemega" as Pokemon,
         shiny: "false",
         captain: "true"
       }
@@ -81,11 +81,15 @@ export class OpponentOverviewComponent implements OnInit {
     return this.draftForm.get('team') as FormArray
   }
 
+  //fix depreciated 
   onSubmit() {
     this.draftService.newOpponent(this.teamId, this.draftForm.value).subscribe(
-      response => console.log("Success!", response),
+      response => {
+        console.log("Success!", response)
+        this.formVisible = false
+        this.ngOnInit()
+      },
       error => console.error("Error!", error)
     )
-    this.formVisible = false
   }
 }

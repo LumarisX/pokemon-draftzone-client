@@ -17,7 +17,7 @@ export class TypechartComponent {
   @Input() teamId!: string;
   @Input() oppId!: string;
   teams!: Typechart[];
-  selectedTeam: number = 0;
+  selectedTeam: number = 1;
   types: (keyof Types)[] = ["Normal", "Grass", "Water", "Fire", "Electric", "Ground", "Rock", "Flying", "Ice", "Fighting", "Poison", "Bug", "Psychic", "Dark", "Ghost", "Dragon", "Steel", "Fairy"];
 
   constructor(private spriteServices: SpriteService, private serverServices: ServerService, private route: ActivatedRoute) { }

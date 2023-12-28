@@ -16,8 +16,8 @@ export class OverviewComponent implements OnInit {
 
   @Input() teamId!: string;
   @Input() oppId!: string;
-  aTeam!: Summery[];
-  bTeam!: Summery[]
+  aTeam!: Summery;
+  bTeam!: Summery;
   sortStat: "hp" | "atk" | "def" | "spa" | "spd" | "spe" = "spe"
 
   constructor(private spriteServices: SpriteService, private serverServices: ServerService, private route: ActivatedRoute) { }
@@ -25,14 +25,14 @@ export class OverviewComponent implements OnInit {
 
   ngOnInit() {
     this.serverServices.getSummery(this.teamId, this.oppId).subscribe((data) => {
-      [this.aTeam, this.bTeam] = <Summery[][]>data;
+      [this.aTeam, this.bTeam] = <Summery[]>data;
       this.aTeam = this.sortByStat(this.aTeam, this.sortStat)
       this.bTeam = this.sortByStat(this.bTeam, this.sortStat)
     });
   }
 
-  sortByStat(data: Summery[], sortStat: "hp" | "atk" | "def" | "spa" | "spd" | "spe"): Summery[] {
-    data.sort((x, y) => {
+  sortByStat(data: Summery, sortStat: "hp" | "atk" | "def" | "spa" | "spd" | "spe"): Summery {
+    data.team.sort((x, y) => {
       if (x["baseStats"][sortStat] < y["baseStats"][sortStat]) {
         return (1);
       }

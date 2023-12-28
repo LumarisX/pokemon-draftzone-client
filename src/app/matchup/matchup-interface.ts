@@ -11,17 +11,45 @@ export type Speedtier = {
 }
 
 export type Summery = {
-    pid: keyof typeof BattlePokedex;
-    name: string;
-    abilities: string[];
-    types: string[];
-    baseStats: {
-        hp: number,
-        atk: number,
-        def: number,
-        spa: number,
-        spd: number,
-        spe: number
+    team: [{
+        pid: keyof typeof BattlePokedex,
+        name: string,
+        abilities: string[],
+        types: string[],
+        baseStats: {
+            hp: number,
+            atk: number,
+            def: number,
+            spa: number,
+            spd: number,
+            spe: number
+        }
+    }],
+    stats: {
+        mean: {
+            hp: number,
+            atk: number,
+            def: number,
+            spa: number,
+            spd: number,
+            spe: number
+        },
+        median: {
+            hp: number,
+            atk: number,
+            def: number,
+            spa: number,
+            spd: number,
+            spe: number
+        },
+        max: {
+            hp: number,
+            atk: number,
+            def: number,
+            spa: number,
+            spd: number,
+            spe: number
+        }
     }
 }
 

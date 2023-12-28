@@ -17,9 +17,9 @@ export class SummeryComponent implements OnInit {
 
   @Input() teamId!: string;
   @Input() oppId!: string;
-  teams: Summery[][] = [];
+  teams: Summery[] = [];
   sortBy: "name" | "hp" | "atk" | "def" | "spa" | "spd" | "spe" | null = null
-  selectedTeam: number = 0;
+  selectedTeam: number = 1;
   reversed: boolean = false;
   baseValue: number = 80
 
@@ -28,7 +28,7 @@ export class SummeryComponent implements OnInit {
 
   ngOnInit() {
     this.serverServices.getSummery(this.teamId, this.oppId).subscribe((data) => {
-      this.teams = <Summery[][]>data;
+      this.teams = <Summery[]>data;
       this.sortByStat("spe")
     });
   }
@@ -38,7 +38,7 @@ export class SummeryComponent implements OnInit {
       this.sortBy = sortStat;
       this.reversed = false;
       for (let team of this.teams) {
-        team.sort((x, y) => {
+        team.team.sort((x, y) => {
           if (x["baseStats"][sortStat] < y["baseStats"][sortStat]) {
             return (1);
           }
@@ -50,7 +50,7 @@ export class SummeryComponent implements OnInit {
       }
     } else {
       for (let team of this.teams) {
-        team.reverse()
+        team.team.reverse()
       }
       this.reversed = !this.reversed
     }
@@ -61,7 +61,7 @@ export class SummeryComponent implements OnInit {
       this.sortBy = "name";
       this.reversed = true;
       for (let team of this.teams) {
-        team.sort((x, y) => {
+        team.team.sort((x, y) => {
           if (x["name"] > y["name"]) {
             return (1);
           }
@@ -73,7 +73,7 @@ export class SummeryComponent implements OnInit {
       }
     } else {
       for (let team of this.teams) {
-        team.reverse()
+        team.team.reverse()
       }
       this.reversed = !this.reversed
     }
@@ -101,13 +101,13 @@ export class SummeryComponent implements OnInit {
     if (statValue < this.baseValue + 8 && statValue > this.baseValue - 8)
       return "bg-slate-200"
     if (statValue < this.baseValue - 52)
-      return "bg-red-600"
+      return "bg-rose-600"
     if (statValue < this.baseValue - 37)
-      return "bg-red-500"
+      return "bg-rose-500"
     if (statValue < this.baseValue - 22)
-      return "bg-red-400"
+      return "bg-rose-400"
     if (statValue < this.baseValue - 7)
-      return "bg-red-300"
+      return "bg-rose-300"
     return
   }
 }

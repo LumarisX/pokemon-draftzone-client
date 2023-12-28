@@ -16,7 +16,7 @@ export class CoveragechartComponent implements OnInit {
   @Input() teamId!: string;
   @Input() oppId!: string;
   teams!: Coveragechart[][];
-  selectedTeam: number = 0;
+  selectedTeam: number = 1;
 
   constructor(private serverServices: ServerService, private route: ActivatedRoute) { }
 
