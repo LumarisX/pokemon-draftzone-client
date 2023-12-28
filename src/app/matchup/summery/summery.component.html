@@ -53,12 +53,65 @@
             <td class="w-24">
                 <div *ngFor="let ability of pokemon.abilities" class="text-center">{{ability}}</div>
             </td>
-            <td class="w-12 text-center">{{pokemon.baseStats.hp}}</td>
-            <td class="w-12 text-center">{{pokemon.baseStats.atk}}</td>
-            <td class="w-12 text-center">{{pokemon.baseStats.def}}</td>
-            <td class="w-12 text-center">{{pokemon.baseStats.spa}}</td>
-            <td class="w-12 text-center">{{pokemon.baseStats.spd}}</td>
-            <td class="w-12 text-center">{{pokemon.baseStats.spe}}</td>
+            <td class="w-12 text-center" [ngClass]="statColor(pokemon.baseStats.hp)">{{pokemon.baseStats.hp}}</td>
+            <td class="w-12 text-center" [ngClass]="statColor(pokemon.baseStats.atk)">{{pokemon.baseStats.atk}}</td>
+            <td class="w-12 text-center" [ngClass]="statColor(pokemon.baseStats.def)">{{pokemon.baseStats.def}}</td>
+            <td class="w-12 text-center" [ngClass]="statColor(pokemon.baseStats.spa)">{{pokemon.baseStats.spa}}</td>
+            <td class="w-12 text-center" [ngClass]="statColor(pokemon.baseStats.spd)">{{pokemon.baseStats.spd}}</td>
+            <td class="w-12 text-center" [ngClass]="statColor(pokemon.baseStats.spe)">{{pokemon.baseStats.spe}}</td>
+        </tr>
+        <tr>
+            <td class="w-8">
+            </td>
+            <td class="w-12">
+            </td>
+            <td class="w-32">
+                Average
+            </td>
+            <td class="w-24">
+            </td>
+            <td class="w-12 text-center" [ngClass]=""></td>
+            <td class="w-12 text-center" [ngClass]=""></td>
+            <td class="w-12 text-center" [ngClass]=""></td>
+            <td class="w-12 text-center" [ngClass]=""></td>
+            <td class="w-12 text-center" [ngClass]=""></td>
+            <td class="w-12 text-center" [ngClass]=""></td>
+        </tr>
+        <tr>
+            <td class="w-8">
+            </td>
+            <td class="w-12">
+            </td>
+            <td class="w-32">
+                Median
+            </td>
+            <td class="w-24">
+            </td>
+            <td class="w-12 text-center" [ngClass]=""></td>
+            <td class="w-12 text-center" [ngClass]=""></td>
+            <td class="w-12 text-center" [ngClass]=""></td>
+            <td class="w-12 text-center" [ngClass]=""></td>
+            <td class="w-12 text-center" [ngClass]=""></td>
+            <td class="w-12 text-center" [ngClass]=""></td>
+        </tr>
+        <tr>
+            <td class="w-8">
+            </td>
+            <td class="w-12">
+            </td>
+            <td class="w-32">
+                Max
+            </td>
+            <td class="w-24">
+            </td>
+            <td class="w-12 text-center" [ngClass]=""></td>
+            <td class="w-12 text-center" [ngClass]=""></td>
+            <td class="w-12 text-center" [ngClass]=""></td>
+            <td class="w-12 text-center" [ngClass]=""></td>
+            <td class="w-12 text-center" [ngClass]=""></td>
+            <td class="w-12 text-center" [ngClass]=""></td>
         </tr>
     </table>
+    <input type="range" min="20" max="140" [(ngModel)]="baseValue">
+    <input type="number" [(ngModel)]="baseValue" value="{{baseValue}}" class="w-8">
 </div>

@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ServerService } from '../../api/server.service';
 import { SpriteComponent } from "../../sprite/sprite.component";
@@ -9,7 +10,7 @@ import { Summery } from '../matchup-interface';
 @Component({
   selector: 'summery',
   standalone: true,
-  imports: [CommonModule, SpriteComponent],
+  imports: [CommonModule, FormsModule, SpriteComponent],
   templateUrl: './summery.component.html'
 })
 export class SummeryComponent implements OnInit {
@@ -20,6 +21,7 @@ export class SummeryComponent implements OnInit {
   sortBy: "name" | "hp" | "atk" | "def" | "spa" | "spd" | "spe" | null = null
   selectedTeam: number = 0;
   reversed: boolean = false;
+  baseValue: number = 80
 
   constructor(private spriteServices: SpriteService, private serverServices: ServerService, private route: ActivatedRoute) { }
 
@@ -85,6 +87,28 @@ export class SummeryComponent implements OnInit {
     if ((this.selectedTeam > 0) == inverted)
       return "bg-cyan-400"
     return "bg-red-400"
+  }
+
+  statColor(statValue: number) {
+    if (statValue > this.baseValue + 52)
+      return "bg-emerald-600"
+    if (statValue > this.baseValue + 37)
+      return "bg-emerald-500"
+    if (statValue > this.baseValue + 22)
+      return "bg-emerald-400"
+    if (statValue > this.baseValue + 7)
+      return "bg-emerald-300"
+    if (statValue < this.baseValue + 8 && statValue > this.baseValue - 8)
+      return "bg-slate-200"
+    if (statValue < this.baseValue - 52)
+      return "bg-red-600"
+    if (statValue < this.baseValue - 37)
+      return "bg-red-500"
+    if (statValue < this.baseValue - 22)
+      return "bg-red-400"
+    if (statValue < this.baseValue - 7)
+      return "bg-red-300"
+    return
   }
 }
 
