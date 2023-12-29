@@ -8,7 +8,7 @@ import { getSpriteName } from '../pokemon';
   standalone: true,
   imports: [CommonModule],
   template: `
-  <img class="h-full" [ngClass]="isFlipped()" title={{pokemonId}} src={{getPath()}} onerror="this.src='https://play.pokemonshowdown.com/sprites/gen5/0.png';">
+  <img class="h-full w-full" [ngClass]="isFlipped()" title={{pokemonId}} src={{getPath()}} onerror="this.src='https://play.pokemonshowdown.com/sprites/gen5/0.png';">
   `
 })
 export class SpriteComponent {

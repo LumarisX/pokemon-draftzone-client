@@ -10,11 +10,16 @@
                     <th>{{sortStat | uppercase}}</th>
                 </tr>
                 <tr *ngFor="let pokemon of aTeam.team" class="h-12 bg-cyan-300 border-b border-slate-400">
-                    <td class="w-8">
-                        <div class="-mr-2">#</div>
+                    <td class="w-8 -mr-2">
+                        <div>
+                            <img src="../../../assets/icons/tera.svg">
+                        </div>
+                        <div>
+                            <img src="../../../assets/icons/z.svg">
+                        </div>
                     </td>
                     <td class="w-12">
-                        <sprite [pokemonId]="pokemon.pid"></sprite>
+                        <sprite [pokemonId]="pokemon.pid" [flipped]="true"></sprite>
                     </td>
                     <td class="w-32 text">{{pokemon.name}}</td>
                     <td class="w-12 text-center">{{pokemon.baseStats.spe}}</td>
@@ -36,8 +41,13 @@
                     <td class="w-12">
                         <sprite [pokemonId]="pokemon.pid"></sprite>
                     </td>
-                    <td class="w-8">
-                        <div class="h-12 -ml-2">#</div>
+                    <td class="w-8 -ml-2">
+                        <div>
+                            <img src="../../../assets/icons/tera.svg">
+                        </div>
+                        <div>
+                            <img src="../../../assets/icons/z.svg">
+                        </div>
                     </td>
                 </tr>
             </table>
