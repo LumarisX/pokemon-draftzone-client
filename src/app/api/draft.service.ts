@@ -9,14 +9,6 @@ export class DraftService {
 
     constructor(private apiService: ApiService) { }
 
-    newDraft(draftData: any) {
-        return this.apiService.post(`draft/lumaris/teams`, draftData)
-    }
-
-    newOpponent(teamID: string, opponentData: any) {
-        return this.apiService.post(`draft/lumaris/${teamID}/`, opponentData)
-    }
-
     getDraftsList() {
         return (this.apiService.get("draft/lumaris/teams"))
     }
@@ -25,7 +17,15 @@ export class DraftService {
         return this.apiService.get(`draft/lumaris/${teamName}`);
     }
 
+    newDraft(draftData: any) {
+        return this.apiService.post(`draft/lumaris/teams`, draftData)
+    }
+
     getOpponents(teamName: string) {
-        return this.apiService.get(`draft/lumaris/${teamName}/opponents`);
+        return this.apiService.get(`draft/lumaris/${teamName}/matchups`);
+    }
+
+    newOpponent(teamName: string, opponentData: any) {
+        return this.apiService.post(`draft/lumaris/${teamName}/matchups`, opponentData)
     }
 }

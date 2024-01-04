@@ -25,7 +25,7 @@ export class OpponentFormComponent implements OnInit {
     constructor(private spriteService: SpriteService, private serverServices: UserService, private route: ActivatedRoute, private fb: FormBuilder, private draftService: DraftService) { }
 
     draftForm = this.fb.group({
-        opponentName: [''],
+        teamName: [''],
         stage: [''],
         team: this.fb.array([
             {
