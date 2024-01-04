@@ -9,22 +9,22 @@ export class MatchupService {
   constructor(private apiService: ApiService) { }
 
   getSpeedchart(matchupId: string) {
-    return this.apiService.get(`/matchup/${matchupId}/speedchart`)
+    return this.apiService.get(`matchup/${matchupId}/speedchart`)
   }
 
   getSummery(matchupId: string) {
-    return this.apiService.get(`/matchup/${matchupId}/summery`)
+    return this.apiService.get(`matchup/${matchupId}/summery`)
   }
 
   getTypechart(matchupId: string) {
-    return this.apiService.get(`/matchup/${matchupId}/typechart`)
+    return this.apiService.get(`matchup/${matchupId}/typechart`)
   }
 
   getMovechart(matchupId: string) {
-    return this.apiService.get(`/matchup/${matchupId}/movechart`)
+    return this.apiService.get(`matchup/${matchupId}/movechart`)
   }
 
   getCoveragechart(matchupId: string) {
-    return this.apiService.get(`/matchup/${matchupId}/coveragechart`)
+    return this.apiService.get(`matchup/${matchupId}/coveragechart`)
   }
 }

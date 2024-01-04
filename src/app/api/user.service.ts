@@ -9,10 +9,10 @@ export class UserService {
   constructor(private apiService: ApiService) { }
 
   getUsers() {
-    return (this.apiService.get("/users"))
+    return (this.apiService.get("users"))
   }
 
   getDraftById(teamId: string) {
-    return this.apiService.get(`/users/lumaris/${teamId}`);
+    return this.apiService.get(`users/lumaris/${teamId}`);
   }
 }
