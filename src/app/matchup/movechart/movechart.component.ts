@@ -14,15 +14,14 @@ import { Movechart } from '../matchup-interface';
 })
 export class MovechartComponent {
 
-  @Input() teamId!: string;
-  @Input() oppId!: string;
+  @Input() matchupId!: string;
   teams!: Movechart[];
   selectedTeam: number = 1;
 
   constructor(private spriteServices: SpriteService, private serverServices: ServerService, private route: ActivatedRoute) { }
 
   ngOnInit() {
-    this.serverServices.getMovechart(this.teamId, this.oppId).subscribe((data) => {
+    this.serverServices.getMovechart(this.matchupId).subscribe((data) => {
       this.teams = <Movechart[]>data;
       console.log(this.teams)
     });

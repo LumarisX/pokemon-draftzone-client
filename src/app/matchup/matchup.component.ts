@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ServerService } from '../api/server.service';
-import { Draft } from '../draft';
+import { Draft } from '../interfaces/draft';
 import { SpriteComponent } from '../sprite/sprite.component';
 import { CoveragechartComponent } from "./coveragechart/coveragechart.component";
 import { MovechartComponent } from './movechart/movechart.component';
@@ -19,17 +19,11 @@ import { TypechartComponent } from './typechart/typechart.component';
 })
 export class MatchupComponent implements OnInit {
 
-  draft!: Draft;
-  oppId!: string;
+  matchup_id = ""
 
   constructor(private serverServices: ServerService, private route: ActivatedRoute) { }
 
   ngOnInit() {
-    let teamName = <string>this.route.snapshot.paramMap.get("teamid");
-    this.oppId = <string>this.route.snapshot.paramMap.get("matchid");
-    this.serverServices.getDraft(teamName).subscribe((data) => {
-      this.draft = <Draft>data;
-    });
-
+    this.matchup_id = <string>this.route.snapshot.paramMap.get("matchid");
   }
 }

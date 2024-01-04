@@ -12,14 +12,13 @@ import { Speedtier } from '../matchup-interface';
 })
 export class SpeedchartComponent implements OnInit {
 
-  @Input() teamId!: string;
-  @Input() oppId!: string;
+  @Input() matchupId!: string;
   speedchart!: Speedtier[];
 
   constructor(private serverServices: ServerService, private route: ActivatedRoute) { }
 
   ngOnInit() {
-    this.serverServices.getSpeedchart(this.teamId, this.oppId).subscribe((data) => {
+    this.serverServices.getSpeedchart(this.matchupId).subscribe((data) => {
       let [a, b] = <Speedtier[][]>data;
       this.speedchart = this.sortTiers(a, b)
       this.makeSticky(this.speedchart)

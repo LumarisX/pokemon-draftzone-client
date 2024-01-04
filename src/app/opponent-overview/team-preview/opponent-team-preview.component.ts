@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { OpponentDraft } from '../../draft';
 import { SpriteComponent } from '../../sprite/sprite.component';
 import { CoreModule } from '../../sprite/sprite.module';
 import { SpriteService } from '../../sprite/sprite.service';
+import { Matchup } from '../../interfaces/matchup';
 
 @Component({
     selector: 'opponent-team-preview',
@@ -13,7 +13,7 @@ import { SpriteService } from '../../sprite/sprite.service';
     templateUrl: './opponent-team-preview.component.html'
 })
 export class OpponentTeamPreviewComponent {
-    @Input() team!: OpponentDraft;
+    @Input() matchup!: Matchup;
     @Input() index = 0;
 
     constructor(private spriteService: SpriteService) {

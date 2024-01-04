@@ -13,15 +13,15 @@ import { SpriteComponent } from '../../sprite/sprite.component';
 })
 export class CoveragechartComponent implements OnInit {
 
-  @Input() teamId!: string;
-  @Input() oppId!: string;
+  @Input() matchupId!: string;
+
   teams!: Coveragechart[][];
   selectedTeam: number = 1;
 
   constructor(private serverServices: ServerService, private route: ActivatedRoute) { }
 
   ngOnInit() {
-    this.serverServices.getCoveragechart(this.teamId, this.oppId).subscribe((data) => {
+    this.serverServices.getCoveragechart(this.matchupId).subscribe((data) => {
       this.teams = <Coveragechart[][]>data;
     });
 

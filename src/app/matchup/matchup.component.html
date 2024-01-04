@@ -1,6 +1,6 @@
 <div class="bg-gradient-to-r from-cyan-100 via-slate-100 to-red-100">
-    <a routerLink="/drafts/{{draft.leagueId}}"
-        class="bg-slate-300 rounded-full px-2 shadow hover:shadow shadow-slate-600">Back</a>
+    <!-- <a routerLink="/draft/{{draft.leagueId}}"
+        class="bg-slate-300 rounded-full px-2 shadow hover:shadow shadow-slate-600">Back</a> -->
     <!-- <div class="absolute z-0 w-full flex">
         <div class="w-1/2 grid grid-cols-3">
             <sprite class="z-0 w-full" *ngFor="let pokemon of draft.team" [pokemonId]="pokemon.pid" [flipped]="true">
@@ -12,11 +12,11 @@
         </div>
     </div> -->
     <div class="flex flex-wrap text-xs">
-        <overview class="z-10" [teamId]="this.draft._id" [oppId]="this.oppId"></overview>
-        <summery class="z-10" [teamId]="this.draft._id" [oppId]="this.oppId"></summery>
-        <typechart class="z-10" [teamId]="this.draft._id" [oppId]="this.oppId"></typechart>
-        <speedchart class="z-10" [teamId]="this.draft._id" [oppId]="this.oppId"></speedchart>
-        <movechart class="z-10" [teamId]="this.draft._id" [oppId]="this.oppId"></movechart>
-        <coveragechart class="z-10" [teamId]="this.draft._id" [oppId]="this.oppId"></coveragechart>
+        <overview class="z-10" [matchupId]="this.matchup_id"></overview>
+        <summery class="z-10" [matchupId]="this.matchup_id"></summery>
+        <typechart class="z-10" [matchupId]="this.matchup_id"></typechart>
+        <speedchart class="z-10" [matchupId]="this.matchup_id"></speedchart>
+        <movechart class="z-10" [matchupId]="this.matchup_id"></movechart>
+        <coveragechart class="z-10" [matchupId]="this.matchup_id"></coveragechart>
     </div>
 </div>

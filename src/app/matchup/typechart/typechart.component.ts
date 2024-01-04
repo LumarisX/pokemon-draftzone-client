@@ -14,8 +14,7 @@ import { SpriteComponent } from "../../sprite/sprite.component";
 })
 export class TypechartComponent {
 
-  @Input() teamId!: string;
-  @Input() oppId!: string;
+  @Input() matchupId!: string;
   teams!: Typechart[];
   selectedTeam: number = 1;
   types: (keyof Types)[] = ["Normal", "Grass", "Water", "Fire", "Electric", "Ground", "Rock", "Flying", "Ice", "Fighting", "Poison", "Bug", "Psychic", "Dark", "Ghost", "Dragon", "Steel", "Fairy"];
@@ -23,7 +22,7 @@ export class TypechartComponent {
   constructor(private spriteServices: SpriteService, private serverServices: ServerService, private route: ActivatedRoute) { }
 
   ngOnInit() {
-    this.serverServices.getTypechart(this.teamId, this.oppId).subscribe((data) => {
+    this.serverServices.getTypechart(this.matchupId).subscribe((data) => {
       this.teams = <Typechart[]>data;
     });
   }

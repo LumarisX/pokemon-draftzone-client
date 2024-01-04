@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { MatchupComponent } from './matchup.component';
 
 const routes: Routes = [
-  { path: 'drafts/:teamid/:matchid', component: MatchupComponent },
+  { path: 'draft/matchup/:matchid', component: MatchupComponent },
 ]
 
 @NgModule({

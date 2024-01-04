@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { OpponentOverviewComponent } from './opponent-overview.component';
 
 const routes: Routes = [
-  { path: 'drafts/:teamid', component: OpponentOverviewComponent }
+  { path: 'draft/:teamid', component: OpponentOverviewComponent }
 ]
 
 @NgModule({

@@ -18,10 +18,10 @@ export class DraftService {
     constructor(private http: HttpClient) { }
 
     newDraft(draftData: any) {
-        return this.http.post(`${this.serverUrl}/users/lumaris/teams`, draftData)
+        return this.http.post(`${this.serverUrl}/draft/lumaris/teams`, draftData)
     }
 
     newOpponent(teamID: string, opponentData: any) {
-        return this.http.post(`${this.serverUrl}/users/lumaris/${teamID}/`, opponentData)
+        return this.http.post(`${this.serverUrl}/draft/lumaris/${teamID}/`, opponentData)
     }
 }

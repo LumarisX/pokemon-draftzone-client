@@ -15,8 +15,7 @@ import { Summery } from '../matchup-interface';
 })
 export class SummeryComponent implements OnInit {
 
-  @Input() teamId!: string;
-  @Input() oppId!: string;
+  @Input() matchupId!: string;
   teams: Summery[] = [];
   sortBy: "name" | "hp" | "atk" | "def" | "spa" | "spd" | "spe" | null = null
   selectedTeam: number = 1;
@@ -27,7 +26,7 @@ export class SummeryComponent implements OnInit {
 
 
   ngOnInit() {
-    this.serverServices.getSummery(this.teamId, this.oppId).subscribe((data) => {
+    this.serverServices.getSummery(this.matchupId).subscribe((data) => {
       this.teams = <Summery[]>data;
       this.sortByStat("spe")
     });

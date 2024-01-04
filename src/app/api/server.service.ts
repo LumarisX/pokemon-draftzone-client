@@ -22,11 +22,15 @@ export class ServerService {
   }
 
   getDraftsList() {
-    return (this.http.get(this.serverUrl + "/users/lumaris/teams"))
+    return (this.http.get(this.serverUrl + "/draft/lumaris/teams"))
   }
 
   getDraft(teamName: string) {
-    return this.http.get(`${this.serverUrl}/users/lumaris/${teamName}`);
+    return this.http.get(`${this.serverUrl}/draft/lumaris/${teamName}`);
+  }
+
+  getOpponents(teamName: string) {
+    return this.http.get(`${this.serverUrl}/draft/lumaris/${teamName}/opponents`);
   }
 
   getDraftById(teamId: string) {
@@ -37,23 +41,23 @@ export class ServerService {
   //   return this.http.get(`${this.serverUrl}/matchup/${teamId}/${oppId}`);
   // }
 
-  getSpeedchart(teamId: string, oppId: string){
-    return this.http.get(`${this.serverUrl}/matchup/${teamId}/${oppId}/speedchart`)
+  getSpeedchart(matchupId: string) {
+    return this.http.get(`${this.serverUrl}/matchup/${matchupId}/speedchart`)
   }
 
-  getSummery(teamId: string, oppId: string){
-    return this.http.get(`${this.serverUrl}/matchup/${teamId}/${oppId}/summery`)
+  getSummery(matchupId: string) {
+    return this.http.get(`${this.serverUrl}/matchup/${matchupId}/summery`)
   }
 
-  getTypechart(teamId: string, oppId: string){
-    return this.http.get(`${this.serverUrl}/matchup/${teamId}/${oppId}/typechart`)
+  getTypechart(matchupId: string) {
+    return this.http.get(`${this.serverUrl}/matchup/${matchupId}/typechart`)
   }
 
-  getMovechart(teamId: string, oppId: string){
-    return this.http.get(`${this.serverUrl}/matchup/${teamId}/${oppId}/movechart`)
+  getMovechart(matchupId: string) {
+    return this.http.get(`${this.serverUrl}/matchup/${matchupId}/movechart`)
   }
 
-  getCoveragechart(teamId: string, oppId: string){
-    return this.http.get(`${this.serverUrl}/matchup/${teamId}/${oppId}/coveragechart`)
+  getCoveragechart(matchupId: string) {
+    return this.http.get(`${this.serverUrl}/matchup/${matchupId}/coveragechart`)
   }
 }
