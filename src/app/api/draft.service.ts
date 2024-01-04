@@ -21,11 +21,17 @@ export class DraftService {
         return this.apiService.post(`draft/lumaris/teams`, draftData)
     }
 
-    getOpponents(teamName: string) {
+    getMatchups(teamName: string) {
         return this.apiService.get(`draft/lumaris/${teamName}/matchups`);
     }
 
-    newOpponent(teamName: string, opponentData: any) {
-        return this.apiService.post(`draft/lumaris/${teamName}/matchups`, opponentData)
+    newMatchup(teamName: string, matchupData: any) {
+        return this.apiService.post(`draft/lumaris/${teamName}/matchups`, matchupData)
     }
+
+    deleteMatchup(matchupId: string) {
+        return this.apiService.delete(`matchup/${matchupId}`)
+    }
+
+
 }

@@ -18,7 +18,8 @@
             [routerLink]="'/draft/matchup/'+matchup._id">Prep</a>
         <a class="w-1/8 text-center bg-red-300 shadow hover:shadow shadow-red-600 rounded-xl m-2">Edit
         </a>
-        <a class="w-1/8 text-center bg-red-300 shadow hover:shadow shadow-red-600 rounded-xl m-2">Delete
+        <a class="w-1/8 text-center bg-red-300 shadow hover:shadow shadow-red-600 rounded-xl m-2"
+            (click)="deleteMatchup(matchup._id)">Delete
         </a>
     </div>
 </div>

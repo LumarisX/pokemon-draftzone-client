@@ -21,7 +21,12 @@ export class ApiService {
         return this.http.get(`${this.serverUrl}/${path}`)
     }
 
-    post(path: string, data: JSON) {
+    post(path: string, data: any) {
         return this.http.post(`${this.serverUrl}/${path}`, data)
+    }
+
+    delete(path: string) {
+        console.log(`${this.serverUrl}/${path}`)
+        return this.http.delete(`${this.serverUrl}/${path}`)
     }
 }

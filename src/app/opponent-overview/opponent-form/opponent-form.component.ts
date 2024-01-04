@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { FormArray, FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { ActivatedRoute, RouterModule } from "@angular/router";
 import { DraftService } from "../../api/draft.service";
@@ -18,9 +18,11 @@ import { OpponentTeamPreviewComponent } from "../team-preview/opponent-team-prev
     imports: [CommonModule, RouterModule, CoreModule, OpponentTeamPreviewComponent, SpriteComponent, ReactiveFormsModule],
     templateUrl: './opponent-form.component.html'
 })
-export class OpponentFormComponent implements OnInit {
+export class OpponentFormComponent {
 
     @Input() teamId: string = "";
+    @Output() reload = new EventEmitter<boolean>();
+
 
     constructor(private spriteService: SpriteService, private serverServices: UserService, private route: ActivatedRoute, private fb: FormBuilder, private draftService: DraftService) { }
 
@@ -48,10 +50,6 @@ export class OpponentFormComponent implements OnInit {
         captain: [false]
     })
 
-    ngOnInit() {
-
-    }
-
     spriteDiv(name: string) {
         return this.spriteService.getSprite(name);
     }
@@ -69,10 +67,10 @@ export class OpponentFormComponent implements OnInit {
 
     //fix depreciated 
     onSubmit() {
-        this.draftService.newOpponent(this.teamId, this.draftForm.value).subscribe(
+        this.draftService.newMatchup(this.teamId, this.draftForm.value).subscribe(
             response => {
                 console.log("Success!", response)
-                this.ngOnInit()
+                this.reload.emit(true)
             },
             error => console.error("Error!", error)
         )

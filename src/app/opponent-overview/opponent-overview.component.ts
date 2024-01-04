@@ -28,74 +28,21 @@ export class OpponentOverviewComponent implements OnInit {
 
   constructor(private spriteService: SpriteService, private route: ActivatedRoute, private fb: FormBuilder, private draftService: DraftService) { }
 
-  draftForm = this.fb.group({
-    opponentName: [''],
-    stage: [''],
-    team: this.fb.array([
-      {
-        pokemonName: "salamencemega" as Pokemon,
-        shiny: "false",
-        captain: "true"
-      }
-    ])
-  })
-
-  default = {
-    pokemonName: '',
-    shiny: false,
-    captain: true
-  }
-
-  pokemonForm = this.fb.group({
-    pokemonName: ['', [Validators.required, pokemonNameValidator()]],
-    shiny: [false],
-    captain: [false]
-  })
-
   ngOnInit() {
     this.teamId = <string>this.route.snapshot.paramMap.get("teamid");
     this.draftService.getDraft(this.teamId).subscribe(data => {
       this.draft = <Draft>data;
     });
-    this.draftService.getOpponents(this.teamId).subscribe(data => {
+    this.draftService.getMatchups(this.teamId).subscribe(data => {
       this.matchups = <Matchup[]>data;
     });
   }
 
-  spriteDiv(name: string) {
-    return this.spriteService.getSprite(name);
+  reload() {
+    this.draftService.getMatchups(this.teamId).subscribe(data => {
+      this.matchups = <Matchup[]>data;
+    });
+    this.formVisible = false;
   }
 
-  score(a: number[]) {
-    let s: string
-    if (a.length == 0) {
-      s = "0 - 0";
-    } else {
-      s = `${a[0]}  - ${a[1]}`
-    }
-    return s;
-  }
-
-  addNewPokemon() {
-    if (this.pokemonForm.valid) {
-      this.draftFormTeam.push(this.fb.control(this.pokemonForm.value))
-      this.pokemonForm.setValue(this.default)
-    }
-  }
-
-  get draftFormTeam() {
-    return this.draftForm.get('team') as FormArray
-  }
-
-  //fix depreciated 
-  onSubmit() {
-    this.draftService.newOpponent(this.teamId, this.draftForm.value).subscribe(
-      response => {
-        console.log("Success!", response)
-        this.formVisible = false
-        this.ngOnInit()
-      },
-      error => console.error("Error!", error)
-    )
-  }
 }

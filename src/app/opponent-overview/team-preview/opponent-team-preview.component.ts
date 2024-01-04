@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { DraftService } from '../../api/draft.service';
+import { Matchup } from '../../interfaces/matchup';
 import { SpriteComponent } from '../../sprite/sprite.component';
 import { CoreModule } from '../../sprite/sprite.module';
 import { SpriteService } from '../../sprite/sprite.service';
-import { Matchup } from '../../interfaces/matchup';
 
 @Component({
     selector: 'opponent-team-preview',
@@ -15,12 +16,24 @@ import { Matchup } from '../../interfaces/matchup';
 export class OpponentTeamPreviewComponent {
     @Input() matchup!: Matchup;
     @Input() index = 0;
+    @Output() reload = new EventEmitter<boolean>();
 
-    constructor(private spriteService: SpriteService) {
+    constructor(private spriteService: SpriteService, private draftService: DraftService) {
     }
 
     spriteDiv(name: string) {
         return this.spriteService.getSprite(name);
+    }
+
+    //fix depreciated
+    deleteMatchup(matchupId: string) {
+        this.draftService.deleteMatchup(matchupId).subscribe(
+            response => {
+                console.log("Success!", response)
+                this.reload.emit(true)
+            },
+            error => console.error("Error!", error)
+        );
     }
 
     score(a: number[]) {
