@@ -111,17 +111,21 @@ export type Movechart = [
 export type Coveragechart = {
     pid: Pokemon;
     coverage: {
-        physical: {
-            [type in keyof Types]: {
+        physical: [
+            {
                 name: string
-                ePower: number
+                stab: boolean
+                type: keyof Types
+                recommended?: boolean
             }
-        },
-        special: {
-            [type in keyof Types]: {
+        ],
+        special: [
+            {
                 name: string
-                ePower: number
+                stab: boolean
+                type: keyof Types
+                recommended?: boolean
             }
-        }
+        ]
     }
 }

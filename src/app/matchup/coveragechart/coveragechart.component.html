@@ -11,16 +11,17 @@
                 <div class="w-full h-1/2 text-xs"><img
                         src="https://play.pokemonshowdown.com/sprites/categories/Physical.png">
                     <div class="grid grid-cols-6 grid-rows-flex p-1 h-auto w-full items-center">
-                        <img *ngFor="let type of pokemon.coverage.physical| keyvalue" class=""
-                            src="https://play.pokemonshowdown.com/sprites/types/{{type.key}}.png"
-                            title={{type.value.name}}>
+                        <img *ngFor="let move of pokemon.coverage.physical"
+                            [ngClass]="{'opacity-40': !move.recommended}"
+                            src="https://play.pokemonshowdown.com/sprites/types/{{move.type}}.png" title={{move.name}}>
                     </div>
                     <div class="w-full h-1/2 text-xs"><img
                             src="https://play.pokemonshowdown.com/sprites/categories/Special.png">
                         <div class="grid grid-cols-6 grid-rows-flex p-1 h-auto w-full items-center">
-                            <img *ngFor="let type of pokemon.coverage.special| keyvalue" class=""
-                                src="https://play.pokemonshowdown.com/sprites/types/{{type.key}}.png"
-                                title={{type.value.name}}>
+                            <img *ngFor="let move of pokemon.coverage.special"
+                                [ngClass]="{'opacity-50': !move.recommended}"
+                                src="https://play.pokemonshowdown.com/sprites/types/{{move.type}}.png"
+                                title={{move.name}}>
                         </div>
                     </div>
                 </div>
