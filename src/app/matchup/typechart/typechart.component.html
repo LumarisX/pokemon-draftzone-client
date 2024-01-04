@@ -1,5 +1,6 @@
-<div id="typechartWidget" class="w-fit m-4">
-    <button (click)="swapTeams()" class="border-t-4 border-x-4 border-slate-400 rounded-t-xl px-3 text-sm border-b" [ngClass]="teamColor(true)">Swap</button>
+<div class="w-fit">
+    <button (click)="swapTeams()" class="border-t-4 border-x-4 border-slate-400 rounded-t-xl px-3 text-sm border-b"
+        [ngClass]="teamColor(true)">Swap</button>
     <table class="table-fixed overflow-auto touch-auto border-4 border-slate-400">
         <thead class="">
             <tr class="">
@@ -32,7 +33,8 @@
                     {{teams[selectedTeam].resistances[type]}}</td>
             </tr>
             <tr>
-                <th class="text-xs bg-gradient-to-r from-rose-400 from-45% via-slate-200 via-50% to-emerald-400 to-55%">Diff</th>
+                <th class="text-xs bg-gradient-to-r from-rose-400 from-50% to-emerald-400 to-50%">
+                    Diff</th>
                 <td *ngFor="let type of types" class="text-center"
                     [ngClass]="diffColor(teams[selectedTeam].difference[type])">{{teams[selectedTeam].difference[type]}}
                 </td>
