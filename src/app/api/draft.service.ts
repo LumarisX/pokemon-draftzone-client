@@ -1,5 +1,5 @@
-import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { ApiService } from "./api.service";
 
 @Injectable({
     providedIn: 'root'
@@ -7,21 +7,25 @@ import { Injectable } from "@angular/core";
 
 export class DraftService {
 
-    private serverUrl = "http://localhost:9960";
-
-    httpOptions = {
-        headers: new HttpHeaders({
-            'Content-Type': 'application/json'
-        })
-    }
-
-    constructor(private http: HttpClient) { }
+    constructor(private apiService: ApiService) { }
 
     newDraft(draftData: any) {
-        return this.http.post(`${this.serverUrl}/draft/lumaris/teams`, draftData)
+        return this.apiService.post(`/draft/lumaris/teams`, draftData)
     }
 
     newOpponent(teamID: string, opponentData: any) {
-        return this.http.post(`${this.serverUrl}/draft/lumaris/${teamID}/`, opponentData)
+        return this.apiService.post(`/draft/lumaris/${teamID}/`, opponentData)
+    }
+
+    getDraftsList() {
+        return (this.apiService.get("/draft/lumaris/teams"))
+    }
+
+    getDraft(teamName: string) {
+        return this.apiService.get(`/draft/lumaris/${teamName}`);
+    }
+
+    getOpponents(teamName: string) {
+        return this.apiService.get(`/draft/lumaris/${teamName}/opponents`);
     }
 }

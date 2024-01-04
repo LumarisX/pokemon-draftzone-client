@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, Type } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ServerService } from '../../api/server.service';
+import { MatchupService } from '../../api/matchup.service';
+import { SpriteComponent } from "../../sprite/sprite.component";
 import { SpriteService } from '../../sprite/sprite.service';
 import { Typechart, Types } from '../matchup-interface';
-import { SpriteComponent } from "../../sprite/sprite.component";
 
 @Component({
   selector: 'typechart',
@@ -19,10 +19,10 @@ export class TypechartComponent {
   selectedTeam: number = 1;
   types: (keyof Types)[] = ["Normal", "Grass", "Water", "Fire", "Electric", "Ground", "Rock", "Flying", "Ice", "Fighting", "Poison", "Bug", "Psychic", "Dark", "Ghost", "Dragon", "Steel", "Fairy"];
 
-  constructor(private spriteServices: SpriteService, private serverServices: ServerService, private route: ActivatedRoute) { }
+  constructor(private spriteServices: SpriteService, private matchupService: MatchupService, private route: ActivatedRoute) { }
 
   ngOnInit() {
-    this.serverServices.getTypechart(this.matchupId).subscribe((data) => {
+    this.matchupService.getTypechart(this.matchupId).subscribe((data) => {
       this.teams = <Typechart[]>data;
     });
   }

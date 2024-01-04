@@ -3,7 +3,7 @@ import { Component, Input, OnInit } from "@angular/core";
 import { FormArray, FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { ActivatedRoute, RouterModule } from "@angular/router";
 import { DraftService } from "../../api/draft.service";
-import { ServerService } from "../../api/server.service";
+import { UserService } from "../../api/user.service";
 import { Pokemon } from "../../pokemon";
 import { SpriteComponent } from "../../sprite/sprite.component";
 import { CoreModule } from "../../sprite/sprite.module";
@@ -22,7 +22,7 @@ export class OpponentFormComponent implements OnInit {
 
     @Input() teamId: string = "";
 
-    constructor(private spriteService: SpriteService, private serverServices: ServerService, private route: ActivatedRoute, private fb: FormBuilder, private draftService: DraftService) { }
+    constructor(private spriteService: SpriteService, private serverServices: UserService, private route: ActivatedRoute, private fb: FormBuilder, private draftService: DraftService) { }
 
     draftForm = this.fb.group({
         opponentName: [''],

@@ -3,7 +3,6 @@ import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { DraftService } from '../api/draft.service';
-import { ServerService } from '../api/server.service';
 import { Draft } from '../interfaces/draft';
 import { SpriteComponent } from '../sprite/sprite.component';
 import { CoreModule } from '../sprite/sprite.module';
@@ -23,7 +22,7 @@ export class DraftOverviewComponent implements OnInit {
   teams: Draft[] = [];
   formVisible: boolean = false
 
-  constructor(private spriteService: SpriteService, private serverServices: ServerService, private route: ActivatedRoute, private fb: FormBuilder, private draftService: DraftService) { }
+  constructor(private spriteService: SpriteService, private route: ActivatedRoute, private fb: FormBuilder, private draftService: DraftService) { }
 
   draftForm = this.fb.group({
     leagueName: [''],
@@ -50,7 +49,7 @@ export class DraftOverviewComponent implements OnInit {
   })
 
   ngOnInit() {
-    this.serverServices.getDraftsList().subscribe(data => {
+    this.draftService.getDraftsList().subscribe(data => {
       this.teams = <Draft[]>data;
     });
     this.pokemonForm.setValue(this.default)

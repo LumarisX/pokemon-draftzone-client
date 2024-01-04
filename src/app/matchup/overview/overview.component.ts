@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ServerService } from '../../api/server.service';
+import { MatchupService } from '../../api/matchup.service';
 import { SpriteComponent } from "../../sprite/sprite.component";
 import { SpriteService } from '../../sprite/sprite.service';
 import { Summery } from '../matchup-interface';
@@ -19,11 +19,11 @@ export class OverviewComponent implements OnInit {
   bTeam!: Summery;
   sortStat: "hp" | "atk" | "def" | "spa" | "spd" | "spe" = "spe"
 
-  constructor(private spriteServices: SpriteService, private serverServices: ServerService, private route: ActivatedRoute) { }
+  constructor(private spriteServices: SpriteService, private matchupService: MatchupService, private route: ActivatedRoute) { }
 
 
   ngOnInit() {
-    this.serverServices.getSummery(this.matchupId).subscribe((data) => {
+    this.matchupService.getSummery(this.matchupId).subscribe((data) => {
       [this.aTeam, this.bTeam] = <Summery[]>data;
       this.aTeam = this.sortByStat(this.aTeam, this.sortStat)
       this.bTeam = this.sortByStat(this.bTeam, this.sortStat)

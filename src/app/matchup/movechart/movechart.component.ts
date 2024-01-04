@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ServerService } from '../../api/server.service';
-import { SpriteService } from '../../sprite/sprite.service';
+import { MatchupService } from '../../api/matchup.service';
 import { SpriteComponent } from '../../sprite/sprite.component';
+import { SpriteService } from '../../sprite/sprite.service';
 import { Movechart } from '../matchup-interface';
 
 @Component({
@@ -18,10 +18,10 @@ export class MovechartComponent {
   teams!: Movechart[];
   selectedTeam: number = 1;
 
-  constructor(private spriteServices: SpriteService, private serverServices: ServerService, private route: ActivatedRoute) { }
+  constructor(private spriteServices: SpriteService, private matchupService: MatchupService, private route: ActivatedRoute) { }
 
   ngOnInit() {
-    this.serverServices.getMovechart(this.matchupId).subscribe((data) => {
+    this.matchupService.getMovechart(this.matchupId).subscribe((data) => {
       this.teams = <Movechart[]>data;
       console.log(this.teams)
     });

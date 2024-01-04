@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ServerService } from '../../api/server.service';
+import { MatchupService } from '../../api/matchup.service';
 import { Speedtier } from '../matchup-interface';
 
 @Component({
@@ -15,10 +15,10 @@ export class SpeedchartComponent implements OnInit {
   @Input() matchupId!: string;
   speedchart!: Speedtier[];
 
-  constructor(private serverServices: ServerService, private route: ActivatedRoute) { }
+  constructor(private matchupService: MatchupService, private route: ActivatedRoute) { }
 
   ngOnInit() {
-    this.serverServices.getSpeedchart(this.matchupId).subscribe((data) => {
+    this.matchupService.getSpeedchart(this.matchupId).subscribe((data) => {
       let [a, b] = <Speedtier[][]>data;
       this.speedchart = this.sortTiers(a, b)
       this.makeSticky(this.speedchart)

@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { ServerService } from '../../api/server.service';
+import { UserService } from '../../api/user.service';
 import { FormBuilder } from '@angular/forms';
 
 @Component({
@@ -12,6 +12,6 @@ import { FormBuilder } from '@angular/forms';
 })
 export class LoginComponent {
 
-    constructor(private serverServices: ServerService, private fb: FormBuilder) { }
+    constructor(private serverServices: UserService, private fb: FormBuilder) { }
 
 }

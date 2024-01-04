@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ServerService } from '../../api/server.service';
-import { Coveragechart } from '../matchup-interface';
+import { MatchupService } from '../../api/matchup.service';
 import { SpriteComponent } from '../../sprite/sprite.component';
+import { Coveragechart } from '../matchup-interface';
 
 @Component({
   selector: 'coveragechart',
@@ -18,10 +18,10 @@ export class CoveragechartComponent implements OnInit {
   teams!: Coveragechart[][];
   selectedTeam: number = 1;
 
-  constructor(private serverServices: ServerService, private route: ActivatedRoute) { }
+  constructor(private matchupService: MatchupService, private route: ActivatedRoute) { }
 
   ngOnInit() {
-    this.serverServices.getCoveragechart(this.matchupId).subscribe((data) => {
+    this.matchupService.getCoveragechart(this.matchupId).subscribe((data) => {
       this.teams = <Coveragechart[][]>data;
     });
 

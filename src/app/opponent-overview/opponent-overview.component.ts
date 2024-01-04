@@ -3,7 +3,6 @@ import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { DraftService } from '../api/draft.service';
-import { ServerService } from '../api/server.service';
 import { Draft } from '../interfaces/draft';
 import { Pokemon } from '../pokemon';
 import { SpriteComponent } from '../sprite/sprite.component';
@@ -27,7 +26,7 @@ export class OpponentOverviewComponent implements OnInit {
   teamId: string = "";
   formVisible: boolean = false;
 
-  constructor(private spriteService: SpriteService, private serverServices: ServerService, private route: ActivatedRoute, private fb: FormBuilder, private draftService: DraftService) { }
+  constructor(private spriteService: SpriteService, private route: ActivatedRoute, private fb: FormBuilder, private draftService: DraftService) { }
 
   draftForm = this.fb.group({
     opponentName: [''],
@@ -55,10 +54,10 @@ export class OpponentOverviewComponent implements OnInit {
 
   ngOnInit() {
     this.teamId = <string>this.route.snapshot.paramMap.get("teamid");
-    this.serverServices.getDraft(this.teamId).subscribe(data => {
+    this.draftService.getDraft(this.teamId).subscribe(data => {
       this.draft = <Draft>data;
     });
-    this.serverServices.getOpponents(this.teamId).subscribe(data => {
+    this.draftService.getOpponents(this.teamId).subscribe(data => {
       this.matchups = <Matchup[]>data;
     });
   }
