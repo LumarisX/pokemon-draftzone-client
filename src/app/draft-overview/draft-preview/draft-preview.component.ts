@@ -1,19 +1,19 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { CoreModule } from '../sprite/sprite.module';
-import { SpriteService } from '../sprite/sprite.service';
-import { SpriteComponent } from '../sprite/sprite.component';
-import { Draft } from '../interfaces/draft';
+import { CoreModule } from '../../sprite/sprite.module';
+import { SpriteService } from '../../sprite/sprite.service';
+import { SpriteComponent } from '../../sprite/sprite.component';
+import { Draft } from '../../interfaces/draft';
 
 
 @Component({
-  selector: 'team-preview',
+  selector: 'draft-preview',
   standalone: true,
   imports: [CommonModule, RouterModule, CoreModule, SpriteComponent],
-  templateUrl: './team-preview.component.html'
+  templateUrl: './draft-preview.component.html'
 })
-export class TeamPreviewComponent {
+export class DraftPreviewComponent {
   @Input() team!: Draft;
 
   constructor(private spriteService: SpriteService) {

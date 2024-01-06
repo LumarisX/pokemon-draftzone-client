@@ -8,10 +8,10 @@ import { CoreModule } from '../../sprite/sprite.module';
 import { SpriteService } from '../../sprite/sprite.service';
 
 @Component({
-    selector: 'opponent-team-preview',
+    selector: 'opponent-preview',
     standalone: true,
     imports: [CommonModule, RouterModule, CoreModule, SpriteComponent],
-    templateUrl: './opponent-team-preview.component.html'
+    templateUrl: './opponent-preview.component.html'
 })
 export class OpponentTeamPreviewComponent {
     @Input() matchup!: Matchup;

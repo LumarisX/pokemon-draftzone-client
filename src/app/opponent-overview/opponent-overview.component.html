@@ -14,8 +14,8 @@
           class="bg-red-300 rounded-full p-2 m-3 shadow-md hover:shadow shadow-red-600">Add
           Team</button>
         <div id="teams" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 grid-flow-row overflow-auto h-auto">
-          <opponent-team-preview *ngFor="let matchup of matchups.reverse(); let i = index" [matchup]="matchup"
-            [index]="matchups.length-i-1" (reload)="reload()"></opponent-team-preview>
+          <opponent-preview *ngFor="let matchup of matchups.reverse(); let i = index" [matchup]="matchup"
+            [index]="matchups.length-i-1" (reload)="reload()"></opponent-preview>
         </div>
       </div>
       <div *ngIf="formVisible">

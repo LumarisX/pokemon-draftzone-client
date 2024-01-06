@@ -7,7 +7,7 @@ import { Draft } from '../interfaces/draft';
 import { SpriteComponent } from '../sprite/sprite.component';
 import { CoreModule } from '../sprite/sprite.module';
 import { SpriteService } from '../sprite/sprite.service';
-import { TeamPreviewComponent } from '../team-preview/team-preview.component';
+import { DraftPreviewComponent } from './draft-preview/draft-preview.component';
 import { pokemonNameValidator } from '../validators/pokemon.validator';
 import { Pokemon } from '../pokemon';
 
@@ -15,7 +15,7 @@ import { Pokemon } from '../pokemon';
 @Component({
   selector: 'app-teams',
   standalone: true,
-  imports: [CommonModule, RouterModule, CoreModule, TeamPreviewComponent, SpriteComponent, ReactiveFormsModule],
+  imports: [CommonModule, RouterModule, CoreModule, DraftPreviewComponent, SpriteComponent, ReactiveFormsModule],
   templateUrl: './draft-overview.component.html'
 })
 export class DraftOverviewComponent implements OnInit {
