@@ -14,6 +14,7 @@ export type Summery = {
     team: [{
         pid: keyof typeof BattlePokedex,
         name: string,
+        captain: boolean
         abilities: string[],
         types: string[],
         baseStats: {

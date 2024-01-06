@@ -43,7 +43,16 @@
             </th>
         </tr>
         <tr *ngFor="let pokemon of teams[selectedTeam].team" class="h-12 border-b border-slate-400">
-            <td></td>
+            <td>
+                <div *ngIf="pokemon.captain">
+                    <div>
+                        <img src="../../../assets/icons/tera.svg">
+                    </div>
+                    <div>
+                        <img src="../../../assets/icons/z.svg">
+                    </div>
+                </div>
+            </td>
             <td>
                 <sprite [pokemonId]="pokemon.pid"></sprite>
             </td>
