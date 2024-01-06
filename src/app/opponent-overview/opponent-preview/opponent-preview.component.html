@@ -12,14 +12,23 @@
             <sprite *ngFor="let pokemon of matchup.bTeam.team" [pokemonId]="pokemon.pid"></sprite>
         </div>
     </div>
-    <div class="flex">
+    <div class="flex" *ngIf="!deleteConfirm">
         <a class="w-1/4 text-center bg-red-300 shadow hover:shadow shadow-red-600 rounded-xl m-2">Score</a>
         <a class="w-1/2 text-center bg-red-300 shadow hover:shadow shadow-red-600 rounded-xl m-2"
             [routerLink]="'/draft/matchup/'+matchup._id">Prep</a>
         <a class="w-1/8 text-center bg-red-300 shadow hover:shadow shadow-red-600 rounded-xl m-2">Edit
         </a>
         <a class="w-1/8 text-center bg-red-300 shadow hover:shadow shadow-red-600 rounded-xl m-2"
-            (click)="deleteMatchup(matchup._id)">Delete
+            (click)="toggleDeleteConfirm(true)">Delete
         </a>
+    </div>
+    <div class="flex" *ngIf="deleteConfirm">
+        <div class="w-1/2 text-center bg-red-300 shadow hover:shadow shadow-red-600 rounded-xl m-2">Are you sure you
+            want to delete?</div>
+        <div class="w-1/4 text-center bg-red-300 shadow hover:shadow shadow-red-600 rounded-xl m-2"
+            (click)="deleteMatchup(matchup._id)">Yes</div>
+        <div class="w-1/4 text-center bg-red-300 shadow hover:shadow shadow-red-600 rounded-xl m-2"
+            (click)="toggleDeleteConfirm(false)">No
+        </div>
     </div>
 </div>

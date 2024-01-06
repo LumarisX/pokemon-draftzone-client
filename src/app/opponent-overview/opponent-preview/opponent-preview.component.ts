@@ -18,11 +18,17 @@ export class OpponentTeamPreviewComponent {
     @Input() index = 0;
     @Output() reload = new EventEmitter<boolean>();
 
+    deleteConfirm: boolean = false
+
     constructor(private spriteService: SpriteService, private draftService: DraftService) {
     }
 
     spriteDiv(name: string) {
         return this.spriteService.getSprite(name);
+    }
+
+    toggleDeleteConfirm(toggle: boolean = !this.deleteConfirm) {
+        this.deleteConfirm = toggle
     }
 
     //fix depreciated
