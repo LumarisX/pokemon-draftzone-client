@@ -5,7 +5,7 @@
             <div class="p-1">Name</div>
             <input #pokemon formControlName="pokemonName"
                 class="text-medium w-full bg-red-200 rounded-full shadow-inner shadow-red-600 p-1 mx-1 text-center"
-                #input (input)="filter(input.value)" (keyup.enter)="testEnter()">
+                #input (input)="filter(input.value)" (keyup.enter)="this.addPokemonEvent.emit()">
             <div *ngIf="pokemonForm.get('pokemonName')?.touched && pokemonForm.get('pokemonName')?.invalid">Invalid name
             </div>
         </div>
@@ -20,7 +20,6 @@
             <input type="checkbox" formControlName="captain"
                 class="text-medium bg-red-200 rounded-full shadow-inner shadow-red-600 p-1 mx-1 text-center">
         </div>
-        <div class="w-1/8 bg-emerald-200" (click)="deleteForm(formIndex)">Delete</div>
+        <div class="w-1/8 bg-emerald-200" (click)="deletePokemonEvent.emit(formIndex)">Delete</div>
     </div>
 </form>
-<div>{{pokemonForm.value | json}}</div>

@@ -16,10 +16,8 @@ import { Draft } from '../../interfaces/draft';
 export class DraftPreviewComponent {
   @Input() team!: Draft;
 
-  constructor(private spriteService: SpriteService) {
-  }
+  archiveConfirm: boolean = false
 
-  spriteDiv(name: string) {
-    return this.spriteService.getSprite(name);
+  constructor(private spriteService: SpriteService) {
   }
 }

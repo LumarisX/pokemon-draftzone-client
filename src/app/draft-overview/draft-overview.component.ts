@@ -10,12 +10,12 @@ import { SpriteService } from '../sprite/sprite.service';
 import { DraftPreviewComponent } from './draft-preview/draft-preview.component';
 import { pokemonNameValidator } from '../validators/pokemon.validator';
 import { Pokemon } from '../pokemon';
-
+import { DraftFormComponent } from './draft-form/draft-form.component';
 
 @Component({
   selector: 'app-teams',
   standalone: true,
-  imports: [CommonModule, RouterModule, CoreModule, DraftPreviewComponent, SpriteComponent, ReactiveFormsModule],
+  imports: [CommonModule, RouterModule, CoreModule, DraftPreviewComponent, DraftFormComponent, SpriteComponent, ReactiveFormsModule],
   templateUrl: './draft-overview.component.html'
 })
 export class DraftOverviewComponent implements OnInit {

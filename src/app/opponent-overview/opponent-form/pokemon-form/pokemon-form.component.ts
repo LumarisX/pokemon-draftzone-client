@@ -28,23 +28,6 @@ export class PokemonFormComponent {
         })
     }
 
-    deleteForm(index: number) {
-        this.deletePokemonEvent.emit(index)
-    }
-
     filter(input: string) {
-        // if (input != '') {
-        //     let lines = input.split(/\r?\n/)
-        //     if (lines.length > 1) {
-        //         //this.pokemonForm.get('pokemonName')?.setValue(this.pokemonForm.get('pokemonName') + words[0])
-        //         //for (let word of words) {
-        //         this.addPokemonEvent.emit()
-        //         //}
-        //     }
-        // }
-    }
-
-    testEnter() {
-        this.addPokemonEvent.emit()
     }
 }

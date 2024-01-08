@@ -1,22 +1,21 @@
 import { CommonModule } from "@angular/common";
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
-import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from "@angular/forms";
-import { ActivatedRoute, RouterModule } from "@angular/router";
+import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
+import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray, FormControl } from "@angular/forms";
+import { RouterModule, ActivatedRoute } from "@angular/router";
 import { DraftService } from "../../api/draft.service";
 import { UserService } from "../../api/user.service";
+import { PokemonFormComponent } from "../../opponent-overview/opponent-form/pokemon-form/pokemon-form.component";
 import { SpriteComponent } from "../../sprite/sprite.component";
 import { CoreModule } from "../../sprite/sprite.module";
 import { SpriteService } from "../../sprite/sprite.service";
-import { PokemonFormComponent } from "./pokemon-form/pokemon-form.component";
-
 
 @Component({
-    selector: 'opponent-form',
+    selector: 'draft-form',
     standalone: true,
     imports: [CommonModule, RouterModule, CoreModule, SpriteComponent, PokemonFormComponent, ReactiveFormsModule],
-    templateUrl: './opponent-form.component.html'
+    templateUrl: './draft-form.component.html'
 })
-export class OpponentFormComponent implements OnInit {
+export class DraftFormComponent implements OnInit {
 
     @Input() teamId: string = "";
     @Output() reload = new EventEmitter<boolean>();
@@ -24,16 +23,18 @@ export class OpponentFormComponent implements OnInit {
 
     constructor(private spriteService: SpriteService, private serverServices: UserService, private route: ActivatedRoute, private fb: FormBuilder, private draftService: DraftService) { }
 
-    matchupForm!: FormGroup
+    draftForm!: FormGroup
 
     get teamArray(): FormArray {
-        return this.matchupForm?.get('team') as FormArray
+        return this.draftForm?.get('team') as FormArray
     }
 
     ngOnInit(): void {
-        this.matchupForm = new FormGroup({
+        this.draftForm = new FormGroup({
+            leagueName: new FormControl(''),
             teamName: new FormControl(''),
-            stage: new FormControl(''),
+            format: new FormControl(''),
+            ruleset: new FormControl(''),
             team: new FormArray([
                 PokemonFormComponent.addPokemonForm()
             ])
@@ -55,7 +56,7 @@ export class OpponentFormComponent implements OnInit {
 
     //fix depreciated 
     onSubmit() {
-        this.draftService.newMatchup(this.teamId, this.matchupForm.value).subscribe(
+        this.draftService.newMatchup(this.teamId, this.draftForm.value).subscribe(
             response => {
                 console.log("Success!", response)
                 this.reload.emit(true)

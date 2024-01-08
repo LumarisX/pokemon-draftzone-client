@@ -23,14 +23,6 @@ export class OpponentTeamPreviewComponent {
     constructor(private spriteService: SpriteService, private draftService: DraftService) {
     }
 
-    spriteDiv(name: string) {
-        return this.spriteService.getSprite(name);
-    }
-
-    toggleDeleteConfirm(toggle: boolean = !this.deleteConfirm) {
-        this.deleteConfirm = toggle
-    }
-
     //fix depreciated
     deleteMatchup(matchupId: string) {
         this.draftService.deleteMatchup(matchupId).subscribe(
