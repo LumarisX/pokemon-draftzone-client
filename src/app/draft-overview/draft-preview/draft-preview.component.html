@@ -1,32 +1,32 @@
-<div class="bg-cyan-200 shadow-md shadow-cyan-600 m-2 rounded-xl">
-  <div class="bg-cyan-300 shadow-md p-2 rounded-xl">
-    <div class="w-full flex">
-      <div class="text-medium bg-cyan-200 w-3/5 rounded-full shadow-inner shadow-cyan-600 p-1 mx-1 text-center">
+<div class="m-2 shadow-md bg-cyan-200 shadow-cyan-600 rounded-xl">
+  <div class="p-2 shadow-md bg-cyan-300 rounded-xl">
+    <div class="flex w-full">
+      <div class="w-3/5 p-1 mx-1 text-center rounded-full shadow-inner text-medium bg-cyan-200 shadow-cyan-600">
         {{ team.leagueName }}</div>
-      <div class="w-1/5 h-fit text-xs bg-cyan-200 rounded-full shadow-inner shadow-cyan-600 p-1 text-center">
+      <div class="w-1/5 p-1 text-xs text-center rounded-full shadow-inner h-fit bg-cyan-200 shadow-cyan-600">
         {{ team.ruleset }}</div>
-      <div class="w-1/5 h-fit text-xs bg-cyan-200 rounded-full shadow-inner shadow-cyan-600 p-1 mx-1 text-center">
+      <div class="w-1/5 p-1 mx-1 text-xs text-center rounded-full shadow-inner h-fit bg-cyan-200 shadow-cyan-600">
         {{ team.format }}</div>
     </div>
-    <div class="sprites grid grid-cols-6 px-4 pt-2">
+    <div class="grid grid-cols-6 px-4 pt-2 sprites">
       <sprite *ngFor="let pokemon of team.team" [pokemonId]="pokemon.pid"></sprite>
     </div>
   </div>
   <div class="flex" *ngIf="!archiveConfirm">
-    <a class="w-1/4 text-center bg-cyan-300 shadow hover:shadow shadow-cyan-600 rounded-xl m-2 text-cyan-500">Stats</a>
-    <a class="w-1/2 text-center bg-cyan-300 shadow hover:shadow shadow-cyan-600 rounded-xl m-2"
+    <a class="w-1/4 m-2 text-center shadow bg-cyan-300 hover:shadow shadow-cyan-600 rounded-xl text-cyan-500">Stats</a>
+    <a class="w-1/2 m-2 text-center shadow bg-cyan-300 hover:shadow shadow-cyan-600 rounded-xl"
       [routerLink]="'/draft/'+team.leagueId">Matches</a>
-    <a class="w-1/8 text-center bg-cyan-300 shadow hover:shadow shadow-cyan-600 rounded-xl m-2 text-cyan-500">Edit
+    <a class="m-2 text-center shadow w-1/8 bg-cyan-300 hover:shadow shadow-cyan-600 rounded-xl text-cyan-500">Edit
     </a>
-    <a class="w-1/8 text-center bg-cyan-300 shadow hover:shadow shadow-cyan-600 rounded-xl m-2 text-cyan-500"
+    <a class="m-2 text-center shadow w-1/8 bg-cyan-300 hover:shadow shadow-cyan-600 rounded-xl text-cyan-500"
       (click)="archiveConfirm=true">Archive
     </a>
   </div>
   <div class="flex" *ngIf="archiveConfirm">
-    <div class="w-1/2 text-center bg-cyan-300 shadow hover:shadow shadow-cyan-600 rounded-xl m-2">Are you sure you
+    <div class="w-1/2 m-2 text-center shadow bg-cyan-300 hover:shadow shadow-cyan-600 rounded-xl">Are you sure you
       want to archive?</div>
-    <div class="w-1/4 text-center bg-cyan-300 shadow hover:shadow shadow-cyan-600 rounded-xl m-2">Yes</div>
-    <div class="w-1/4 text-center bg-cyan-300 shadow hover:shadow shadow-cyan-600 rounded-xl m-2"
+    <div class="w-1/4 m-2 text-center shadow bg-cyan-300 hover:shadow shadow-cyan-600 rounded-xl">Yes</div>
+    <div class="w-1/4 m-2 text-center shadow bg-cyan-300 hover:shadow shadow-cyan-600 rounded-xl"
       (click)="archiveConfirm=false">No
     </div>
   </div>

@@ -1,7 +1,7 @@
 <div class="">
-    <button (click)="swapTeams()" class="border-t-4 border-x-4 border-slate-400 rounded-t-xl px-2 border-b"
+    <button (click)="swapTeams()" class="px-2 border-t-4 border-b border-x-4 border-slate-400 rounded-t-xl"
         [ngClass]="teamColor(true)">⇄</button>
-    <table id="myOverview" class="table-auto w-full border-4 border-slate-400 rounded-md" [ngClass]="teamColor()">
+    <table id="myOverview" class="w-full border-4 rounded-md table-auto border-slate-400" [ngClass]="teamColor()">
         <tr class="bg-slate-400">
             <th class="w-8"></th>
             <th class="w-12"></th>
@@ -68,7 +68,7 @@
             <td class="text-center" [ngClass]="statColor(pokemon.baseStats.spd)">{{pokemon.baseStats.spd}}</td>
             <td class="text-center" [ngClass]="statColor(pokemon.baseStats.spe)">{{pokemon.baseStats.spe}}</td>
         </tr>
-        <tr class="bg-slate-300 border-t-2 border-slate-400">
+        <tr class="border-t-2 bg-slate-300 border-slate-400">
             <td></td>
             <td></td>
             <td></td>

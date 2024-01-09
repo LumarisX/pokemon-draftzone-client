@@ -1,18 +1,18 @@
-<div class="flex flex-col h-screen justify-between">
-    <header class="z-10 w-full bg-slate-300 flex border-b-2 border-slate-400">
-        <a class="text-xl p-2" routerLink="/">DraftZone</a>
-        <div class="flex py-2 px-10 space-x-6">
+<div class="flex flex-col justify-between h-screen">
+    <header class="z-10 flex w-full border-b-2 bg-slate-300 border-slate-400">
+        <a class="p-2 text-xl" routerLink="/">DraftZone</a>
+        <div class="flex px-10 py-2 space-x-6">
             <a routerLink="/draft">Draft</a>
             <a class="opacity-50">Planner</a>
             <a class="opacity-50">Statistics</a>
         </div>
-        <div class="flex flex-grow justify-end p-2">
+        <div class="flex justify-end flex-grow p-2">
             <div class="actions login__block__actions">
                 <div class="dropdown" [ngClass]="{'open':showOption}">
                     <div data-toggle="dropdown" (click)="toggleOption()">
                         <div #loginpopup class="px-4">Lumaris</div>
                     </div>
-                    <ul class="absolute bg-slate-300 p-4 dropdown-menu pull-right" *ngIf="this.showOption">
+                    <ul class="absolute p-4 bg-slate-300 dropdown-menu pull-right" *ngIf="this.showOption">
                         <li><a data-block="#l-register" class="opacity-50">Settings</a></li>
                         <li><a data-block="#l-forget-password" routerLink="/login">Sign out</a></li>
                     </ul>
@@ -20,10 +20,10 @@
             </div>
         </div>
     </header>
-    <main class="mb-auto overflow-y-auto w-full h-full">
+    <main class="w-full h-full mb-auto overflow-y-auto">
         <router-outlet></router-outlet>
     </main>
-    <footer class="z-10 w-full bg-slate-300 flex border-t-2 border-slate-400 justify-end">
+    <footer class="z-10 flex justify-end w-full border-t-2 bg-slate-300 border-slate-400">
         <a href="https://discord.gg/sQUEBW4UVx"><img class="h-5 mx-5 my-1"
                 src="../assets/icons/discord-mark-blue.svg"></a>
     </footer>

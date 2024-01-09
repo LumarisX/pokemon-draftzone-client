@@ -1,16 +1,16 @@
-<div class="bg-cyan-100 m-2 rounded-xl p-2 border border-2 border-cyan-200">
+<div class="p-2 m-2 border-2 bg-cyan-100 rounded-xl border-cyan-200">
   <div *ngIf="!formVisible">
-    <p class="bold text-3xl" *ngIf="teams">Drafts</p>
-    <div id="teams" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 grid-flow-row overflow-auto h-auto">
+    <p class="text-3xl bold" *ngIf="teams">Drafts</p>
+    <div id="teams" class="grid h-auto grid-flow-row grid-cols-1 overflow-auto md:grid-cols-2 lg:grid-cols-3">
       <draft-preview *ngFor="let team of teams.reverse()" [team]="team"></draft-preview>
     </div>
     <button (click)="formVisible=true"
-      class="bg-cyan-300 rounded-full p-2 m-3 shadow-md hover:shadow shadow-cyan-600">Add
+      class="p-2 m-3 rounded-full shadow-md bg-cyan-300 hover:shadow shadow-cyan-600">Add
       League</button>
   </div>
   <div *ngIf="formVisible">
     <button (click)="formVisible=false"
-      class="bg-cyan-300 rounded-full p-2 m-3 shadow-md hover:shadow shadow-cyan-600">Cancel</button>
+      class="p-2 m-3 rounded-full shadow-md bg-cyan-300 hover:shadow shadow-cyan-600">Cancel</button>
     <draft-form></draft-form>
   </div>
 </div>

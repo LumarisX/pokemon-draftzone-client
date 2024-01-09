@@ -1,10 +1,10 @@
 <form [formGroup]="pokemonForm" autocomplete="off">
-    <div class="w-full flex">
+    <div class="flex w-full">
         <sprite class="w-24 h-24" [pokemonId]="pokemonForm.value.pokemonName"></sprite>
         <div class="w-1/2">
             <div class="p-1">Name</div>
             <input #pokemon formControlName="pokemonName"
-                class="text-medium w-full bg-red-200 rounded-full shadow-inner shadow-red-600 p-1 mx-1 text-center"
+                class="w-full p-1 mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
                 #input (input)="filter(input.value)" (keyup.enter)="this.addPokemonEvent.emit()">
             <div *ngIf="pokemonForm.get('pokemonName')?.touched && pokemonForm.get('pokemonName')?.invalid">Invalid name
             </div>
@@ -12,13 +12,13 @@
         <div class="w-1/8">
             <div class="p-1">Shiny</div>
             <input type="checkbox" formControlName="shiny"
-                class="text-medium bg-red-200 rounded-full shadow-inner shadow-red-600 p-1 mx-1 text-center">
+                class="p-1 mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600">
 
         </div>
         <div class="w-1/8">
             <div class="p-1">Captain</div>
             <input type="checkbox" formControlName="captain"
-                class="text-medium bg-red-200 rounded-full shadow-inner shadow-red-600 p-1 mx-1 text-center">
+                class="p-1 mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600">
         </div>
         <div class="w-1/8 bg-emerald-200" (click)="deletePokemonEvent.emit(formIndex)">Delete</div>
     </div>

@@ -1,13 +1,13 @@
 <div class="border-4 border-slate-400 bg-slate-400">
     <div class="bg-slate-200">
         <div class="flex border-b-2 border-slate-400">
-            <div class="text-medium py-2">Name</div>
-            <div class="text-medium py-2">Desc</div>
-            <div class="text-medium py-2">Spe</div>
+            <div class="py-2 text-medium">Name</div>
+            <div class="py-2 text-medium">Desc</div>
+            <div class="py-2 text-medium">Spe</div>
         </div>
     </div>
-    <div class="max-h-128 w-full md:w-128 overflow-y-auto snap-y snap-mandatory">
-        <div class="snap-start border-b border-slate-400 flex" *ngFor="let tier of speedchart"
+    <div class="w-full overflow-y-auto max-h-128 md:w-128 snap-y snap-mandatory">
+        <div class="flex border-b snap-start border-slate-400" *ngFor="let tier of speedchart"
             [ngClass]="speedClasses(tier)">
             <div>{{tier.name}}</div>
             <div>{{tier.speed}}</div>

@@ -1,23 +1,23 @@
 <div class="w-fit">
-    <button (click)="swapTeams()" class="border-t-4 border-x-4 border-slate-400 rounded-t-xl px-3 text-sm border-b"
+    <button (click)="swapTeams()" class="px-3 text-sm border-t-4 border-b border-x-4 border-slate-400 rounded-t-xl"
         [ngClass]="teamColor(true)">Swap</button>
-    <div class="grid grid-cols-1 md:grid-cols-2 grid-rows-flex border-4 bg-slate-400 gap-1 border-slate-400">
-        <div class="h-32 max-w-64 w-full flex border-2" *ngFor="let pokemon of teams[selectedTeam]"
+    <div class="grid grid-cols-1 gap-1 border-4 md:grid-cols-2 grid-rows-flex bg-slate-400 border-slate-400">
+        <div class="flex w-full h-32 border-2 max-w-64" *ngFor="let pokemon of teams[selectedTeam]"
             [ngClass]="teamColor()">
             <div class="h-full w-fit">
                 <sprite [pokemonId]="pokemon.pid"></sprite>
             </div>
             <div class="p-2">
-                <div class="w-full h-1/2 text-xs"><img
+                <div class="w-full text-xs h-1/2"><img
                         src="https://play.pokemonshowdown.com/sprites/categories/Physical.png">
-                    <div class="grid grid-cols-6 grid-rows-flex p-1 h-auto w-full items-center">
+                    <div class="grid items-center w-full h-auto grid-cols-6 p-1 grid-rows-flex">
                         <img *ngFor="let move of pokemon.coverage.physical"
                             [ngClass]="{'opacity-40': !move.recommended}"
                             src="https://play.pokemonshowdown.com/sprites/types/{{move.type}}.png" title={{move.name}}>
                     </div>
-                    <div class="w-full h-1/2 text-xs"><img
+                    <div class="w-full text-xs h-1/2"><img
                             src="https://play.pokemonshowdown.com/sprites/categories/Special.png">
-                        <div class="grid grid-cols-6 grid-rows-flex p-1 h-auto w-full items-center">
+                        <div class="grid items-center w-full h-auto grid-cols-6 p-1 grid-rows-flex">
                             <img *ngFor="let move of pokemon.coverage.special"
                                 [ngClass]="{'opacity-50': !move.recommended}"
                                 src="https://play.pokemonshowdown.com/sprites/types/{{move.type}}.png"
