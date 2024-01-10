@@ -1,4 +1,5 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
+import { AuthService } from '@auth0/auth0-angular';
 
 @Component({
   selector: 'app-root',
@@ -10,6 +11,8 @@ export class AppComponent {
 
   @ViewChild('loginpopup') private loginpopup!: ElementRef;
   showOption: boolean = false;
+
+  constructor(public auth: AuthService){}
 
   handleClick(event: { target: any; }) {
     if (this.showOption) {
