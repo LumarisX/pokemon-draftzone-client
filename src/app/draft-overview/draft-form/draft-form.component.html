@@ -1,41 +1,70 @@
 <p class="text-3xl bold">New League</p>
-<form [formGroup]="draftForm" (ngSubmit)="onSubmit()"
-  class="p-2 m-2 space-y-3 shadow-md team bg-cyan-300 hover:shadow-md shadow-cyan-600 rounded-xl">
+<button
+  [routerLink]="'/draft/'"
+  class="p-2 m-3 rounded-full shadow-md bg-cyan-300 hover:shadow shadow-cyan-600"
+>
+  Cancel
+</button>
+<form
+  [formGroup]="draftForm"
+  (ngSubmit)="onSubmit()"
+  class="p-2 m-2 space-y-3 shadow-md team bg-cyan-300 hover:shadow-md shadow-cyan-600 rounded-xl"
+>
   <div class="w-full">
     <div class="flex space-x-3">
       <div class="w-1/3">
         <label class="p-1">League Name</label>
-        <input formControlName="leagueName"
-          class="w-full p-1 mx-1 text-center rounded-full shadow-inner text-medium bg-cyan-200 shadow-cyan-600">
+        <input
+          formControlName="leagueName"
+          class="w-full p-1 mx-1 text-center rounded-full shadow-inner text-medium bg-cyan-200 shadow-cyan-600"
+        />
       </div>
       <div class="w-1/3">
         <label class="p-1">Team Name</label>
-        <input formControlName="teamName"
-          class="w-full p-1 mx-1 text-center rounded-full shadow-inner text-medium bg-cyan-200 shadow-cyan-600">
+        <input
+          formControlName="teamName"
+          class="w-full p-1 mx-1 text-center rounded-full shadow-inner text-medium bg-cyan-200 shadow-cyan-600"
+        />
       </div>
       <div class="w-1/6">
         <label class="p-1">Format</label>
-        <input formControlName="format"
-          class="w-full p-1 mx-1 text-center rounded-full shadow-inner text-medium bg-cyan-200 shadow-cyan-600">
+        <input
+          formControlName="format"
+          class="w-full p-1 mx-1 text-center rounded-full shadow-inner text-medium bg-cyan-200 shadow-cyan-600"
+        />
       </div>
       <div class="w-1/6">
         <label class="p-1">Ruleset</label>
-        <input formControlName="ruleset"
-          class="w-full p-1 mx-1 text-center rounded-full shadow-inner text-medium bg-cyan-200 shadow-cyan-600">
+        <input
+          formControlName="ruleset"
+          class="w-full p-1 mx-1 text-center rounded-full shadow-inner text-medium bg-cyan-200 shadow-cyan-600"
+        />
       </div>
     </div>
   </div>
   <div class="p-2 border-2 border-rose-200 rounded-xl">
     <ul>
       <ol *ngFor="let pokemonForm of teamArray.controls; let i = index">
-        <pokemon-form [pokemonForm]="$any(pokemonForm)" [formIndex]="i" (deletePokemonEvent)="deletePokemon($event)"
-          (addPokemonEvent)="addNewPokemon(i, $event)"></pokemon-form>
+        <pokemon-form
+          [pokemonForm]="$any(pokemonForm)"
+          [formIndex]="i"
+          (deletePokemonEvent)="deletePokemon($event)"
+          (addPokemonEvent)="addNewPokemon(i, $event)"
+        ></pokemon-form>
       </ol>
     </ul>
-    <button (click)="addNewPokemon()"
-      class="px-1 my-3 rounded-full shadow bg-cyan-300 hover:shadow shadow-cyan-600">Add</button>
+    <button
+      (click)="addNewPokemon()"
+      class="px-1 my-3 rounded-full shadow bg-cyan-300 hover:shadow shadow-cyan-600"
+    >
+      Add
+    </button>
   </div>
-  <button type="submit"
-    class="w-1/6 px-1 my-3 rounded-full shadow bg-cyan-300 hover:shadow shadow-cyan-600">Submit</button>
+  <button
+    type="submit"
+    class="w-1/6 px-1 my-3 rounded-full shadow bg-cyan-300 hover:shadow shadow-cyan-600"
+  >
+    Submit
+  </button>
 </form>
-{{draftForm.value | json}}<br>
+{{ draftForm.value | json }}<br />

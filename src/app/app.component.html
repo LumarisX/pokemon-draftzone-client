@@ -7,8 +7,11 @@
       <a class="opacity-50">Statistics</a>
     </div>
     <div class="flex justify-end flex-grow p-2">
-      <div class="actions login__block__actions">
+      <div class="px-4">
         <ng-container *ngIf="auth.isAuthenticated$ | async; else loggedOut">
+          <div *ngIf="auth.user$ | async as user">
+            {{ user.name }}
+          </div>
           <button
             (click)="
               auth.logout({

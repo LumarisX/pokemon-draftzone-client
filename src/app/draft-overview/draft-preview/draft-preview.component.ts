@@ -1,23 +1,34 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { DraftService } from '../../api/draft.service';
+import { Draft } from '../../interfaces/draft';
+import { SpriteComponent } from '../../sprite/sprite.component';
 import { CoreModule } from '../../sprite/sprite.module';
 import { SpriteService } from '../../sprite/sprite.service';
-import { SpriteComponent } from '../../sprite/sprite.component';
-import { Draft } from '../../interfaces/draft';
-
 
 @Component({
   selector: 'draft-preview',
   standalone: true,
   imports: [CommonModule, RouterModule, CoreModule, SpriteComponent],
-  templateUrl: './draft-preview.component.html'
+  templateUrl: './draft-preview.component.html',
 })
 export class DraftPreviewComponent {
-  @Input() team!: Draft;
+  teams: Draft[] = [];
+  archiveConfirm = false;
 
-  archiveConfirm: boolean = false
+  constructor(
+    private spriteService: SpriteService,
+    private draftService: DraftService
+  ) {}
 
-  constructor(private spriteService: SpriteService) {
+  ngOnInit() {
+    this.draftService.getDraftsList().subscribe((data) => {
+      this.teams = <Draft[]>data;
+    });
+  }
+
+  spriteDiv(name: string) {
+    return this.spriteService.getSprite(name);
   }
 }
