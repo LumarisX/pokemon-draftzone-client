@@ -3,28 +3,30 @@ import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MatchupService } from '../../api/matchup.service';
 import { SpriteComponent } from '../../sprite/sprite.component';
-import { Coveragechart } from '../matchup-interface';
+import { Coverage } from '../matchup-interface';
+import { CoverageComponent } from './coverage/coverage.component';
 
 @Component({
   selector: 'coveragechart',
   standalone: true,
-  imports: [CommonModule, SpriteComponent],
-  templateUrl: './coveragechart.component.html'
+  imports: [CommonModule, CoverageComponent, SpriteComponent],
+  templateUrl: './coveragechart.component.html',
 })
 export class CoveragechartComponent implements OnInit {
-
   @Input() matchupId!: string;
 
-  teams!: Coveragechart[][];
+  teams!: Coverage[][];
   selectedTeam: number = 0;
 
-  constructor(private matchupService: MatchupService, private route: ActivatedRoute) { }
+  constructor(
+    private matchupService: MatchupService,
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit() {
     this.matchupService.getCoveragechart(this.matchupId).subscribe((data) => {
-      this.teams = <Coveragechart[][]>data;
+      this.teams = <Coverage[][]>data;
     });
-
   }
 
   swapTeams() {
@@ -32,9 +34,7 @@ export class CoveragechartComponent implements OnInit {
   }
 
   teamColor(inverted: boolean = false) {
-    if ((this.selectedTeam > 0) == inverted)
-      return "bg-cyan-400"
-    return "bg-red-400"
+    if (this.selectedTeam > 0 == inverted) return 'bg-cyan-400';
+    return 'bg-red-400';
   }
-
 }
