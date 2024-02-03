@@ -1,37 +1,37 @@
-import { Injectable } from "@angular/core";
-import { ApiService } from "./api.service";
+import { Injectable } from '@angular/core';
+import { ApiService } from './api.service';
+import { AuthService } from '@auth0/auth0-angular';
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root',
 })
-
 export class DraftService {
+  constructor(private apiService: ApiService, private auth: AuthService) {}
 
-    constructor(private apiService: ApiService) { }
+  getDraftsList() {
+    return this.apiService.get('draft/lumaris/teams');
+  }
 
-    getDraftsList() {
-        return (this.apiService.get("draft/lumaris/teams"))
-    }
+  getDraft(teamName: string) {
+    return this.apiService.get(`draft/lumaris/${teamName}`);
+  }
 
-    getDraft(teamName: string) {
-        return this.apiService.get(`draft/lumaris/${teamName}`);
-    }
+  newDraft(draftData: any) {
+    return this.apiService.post(`draft/lumaris/teams`, draftData);
+  }
 
-    newDraft(draftData: any) {
-        return this.apiService.post(`draft/lumaris/teams`, draftData)
-    }
+  getMatchups(teamName: string) {
+    return this.apiService.get(`draft/lumaris/${teamName}/matchups`);
+  }
 
-    getMatchups(teamName: string) {
-        return this.apiService.get(`draft/lumaris/${teamName}/matchups`);
-    }
+  newMatchup(teamName: string, matchupData: any) {
+    return this.apiService.post(
+      `draft/lumaris/${teamName}/matchups`,
+      matchupData
+    );
+  }
 
-    newMatchup(teamName: string, matchupData: any) {
-        return this.apiService.post(`draft/lumaris/${teamName}/matchups`, matchupData)
-    }
-
-    deleteMatchup(matchupId: string) {
-        return this.apiService.delete(`matchup/${matchupId}`)
-    }
-
-
+  deleteMatchup(matchupId: string) {
+    return this.apiService.delete(`matchup/${matchupId}`);
+  }
 }

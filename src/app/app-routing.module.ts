@@ -5,14 +5,12 @@ import { HomeComponent } from './homepage/homepage.component';
 const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'draft', redirectTo: 'draft' },
-  { path: 'error', redirectTo: 'error' }
-]
+  { path: 'error', redirectTo: 'error' },
+  { path: 'test', redirectTo: 'test' },
+];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-
-export class AppRoutingModule {
-
-}
+export class AppRoutingModule {}

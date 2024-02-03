@@ -9,8 +9,16 @@
     <div class="flex justify-end flex-grow p-2">
       <div class="px-4">
         <ng-container *ngIf="auth.isAuthenticated$ | async; else loggedOut">
-          <div *ngIf="auth.user$ | async as user">
-            {{ user.name }}
+          <div *ngIf="auth.user$ | async as user" class="flex h-8">
+            <div>
+              <img
+                src="{{ user.picture }}"
+                class="w-full h-full rounded-full"
+              />
+            </div>
+            <div>
+              {{ user.name }}
+            </div>
           </div>
           <button
             (click)="
