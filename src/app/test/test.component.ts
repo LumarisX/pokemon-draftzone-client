@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { CoreModule } from '../sprite/sprite.module';
-import { HttpClient } from '@angular/common/http';
 import { AuthService } from '@auth0/auth0-angular';
-import { concatMap, map, tap } from 'rxjs';
-import { AuthHttpInterceptor } from '@auth0/auth0-angular';
+import { Observable, concatMap, map, tap } from 'rxjs';
+import { CoreModule } from '../sprite/sprite.module';
+import { Auth0Service } from '../auth/auth0.service';
 
 @Component({
   selector: 'test',
@@ -16,21 +16,33 @@ import { AuthHttpInterceptor } from '@auth0/auth0-angular';
       <ul *ngIf="auth.user$ | async as user">
         <li>{{ user.name }}</li>
         <li>{{ user.email }}</li>
-        <li>
-          <img src="{{ user.picture }}" class="rounded-full" />
-        </li>
+        <li>{{ user.nickname }}</li>
+        <li>{{ user.sub }}</li>
       </ul>
       <div *ngIf="metadata">
         <pre>{{ metadata | json }}</pre>
+      </div>
+      <div *ngIf="accessToken">
+        <pre>{{ accessToken }}</pre>
+      </div>
+      <div *ngIf="drafts">
+        <button (click)="getDrafts()">Get Drafts</button>
+        <pre>{{ drafts | json }}</pre>
       </div>
     </div>
   `,
 })
 export class TestComponent implements OnInit {
   metadata = {};
+  accessToken = 'No token';
+  drafts = {};
 
   // Inject both AuthService and HttpClient
-  constructor(public auth: AuthService, private http: HttpClient) {}
+  constructor(
+    public auth: AuthService,
+    private http: HttpClient,
+    private auth0: Auth0Service
+  ) {}
 
   ngOnInit(): void {
     this.auth.user$
@@ -47,5 +59,25 @@ export class TestComponent implements OnInit {
         tap((meta) => (this.metadata = meta))
       )
       .subscribe();
+
+    this.auth
+      .getAccessTokenSilently()
+      .subscribe((data) => (this.accessToken = data));
+  }
+
+  getDrafts() {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        authorization: `Bearer ${this.accessToken}`,
+      }),
+    };
+
+    console.log('here');
+    this.http
+      .get(`http://localhost:9960/draft/lumaris/teams`, httpOptions)
+      .subscribe((data) => {
+        this.drafts = data;
+      });
   }
 }
