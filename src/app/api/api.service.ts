@@ -1,32 +1,30 @@
-import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { Injectable } from "@angular/core";
-
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { AuthService } from '../auth/auth0.service';
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root',
 })
-
 export class ApiService {
+  private serverUrl = 'http://localhost:9960';
 
-    private serverUrl = "http://localhost:9960";
+  constructor(private http: HttpClient, private auth: AuthService) {}
 
-    httpOptions = {
-        headers: new HttpHeaders({
-            'Content-Type': 'application/json'
-        })
-    }
+  get(path: string) {
+    let httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        authorization: `Bearer ${this.auth.getAccessToken()}`,
+      }),
+    };
+    return this.http.get(`${this.serverUrl}/${path}`, httpOptions);
+  }
 
-    constructor(private http: HttpClient) { }
+  post(path: string, data: any) {
+    return this.http.post(`${this.serverUrl}/${path}`, data);
+  }
 
-    get(path: string) {
-        return this.http.get(`${this.serverUrl}/${path}`)
-    }
-
-    post(path: string, data: any) {
-        return this.http.post(`${this.serverUrl}/${path}`, data)
-    }
-
-    delete(path: string) {
-        console.log(`${this.serverUrl}/${path}`)
-        return this.http.delete(`${this.serverUrl}/${path}`)
-    }
+  delete(path: string) {
+    console.log(`${this.serverUrl}/${path}`);
+    return this.http.delete(`${this.serverUrl}/${path}`);
+  }
 }

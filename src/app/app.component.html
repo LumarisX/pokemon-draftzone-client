@@ -8,8 +8,8 @@
     </div>
     <div class="flex justify-end flex-grow p-2">
       <div class="px-4">
-        <ng-container *ngIf="auth.isAuthenticated$ | async; else loggedOut">
-          <div *ngIf="auth.user$ | async as user" class="flex h-8">
+        <ng-container *ngIf="auth.isAuthenticated() | async; else loggedOut">
+          <div *ngIf="auth.user() | async as user" class="flex h-8">
             <div>
               <img
                 src="{{ user.picture }}"
@@ -20,19 +20,11 @@
               {{ user.name }}
             </div>
           </div>
-          <button
-            (click)="
-              auth.logout({
-                logoutParams: { returnTo: 'http://localhost:4200/' }
-              })
-            "
-          >
-            Log out
-          </button>
+          <button (click)="auth.logout()">Log out</button>
         </ng-container>
 
         <ng-template #loggedOut>
-          <button (click)="auth.loginWithPopup()">Log in</button>
+          <button (click)="auth.login()">Log in</button>
         </ng-template>
       </div>
     </div>
