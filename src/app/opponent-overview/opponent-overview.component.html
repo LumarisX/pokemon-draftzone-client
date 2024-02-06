@@ -1,29 +1,27 @@
 <div class="flex m-2 space-x-2">
   <div class="w-[7.5%] bg-cyan-100 p-1 border-2 border-cyan-200 rounded-xl">
-    <a routerLink="/draft" class="px-2 rounded-full shadow bg-cyan-300 hover:shadow shadow-cyan-600">Back</a>
-    <div class="h-auto p-2 m-2 shadow-md bg-cyan-300 rounded-xl shadow-cyan-600">
-      <sprite class="flex justify-center" *ngFor="let pokemon of draft.team" [pokemonId]="pokemon.pid" [flipped]="true">
+    <a
+      routerLink="/draft"
+      class="px-2 rounded-full shadow bg-cyan-300 hover:shadow shadow-cyan-600"
+      >Back</a
+    >
+    <div
+      class="h-auto p-2 m-2 shadow-md bg-cyan-300 rounded-xl shadow-cyan-600"
+    >
+      <sprite
+        class="flex justify-center"
+        *ngFor="let pokemon of draft.team"
+        [pokemonId]="pokemon.pid"
+        [flipped]="true"
+      >
       </sprite>
     </div>
   </div>
+
   <div class="bg-red-100 w-[92.5%] rounded-xl p-2 border-2 border-red-200">
     <div>
-      <p class="m-2 text-3xl bold">{{draft.leagueName}}</p>
-      <div *ngIf="!formVisible">
-        <button (click)="formVisible=true"
-          class="p-2 m-3 bg-red-300 rounded-full shadow-md hover:shadow shadow-red-600">Add
-          Team</button>
-        <div id="teams" class="grid h-auto grid-flow-row grid-cols-1 overflow-auto md:grid-cols-2 lg:grid-cols-3">
-          <opponent-preview *ngFor="let matchup of matchups.reverse(); let i = index" [matchup]="matchup"
-            [index]="matchups.length-i-1" (reload)="reload()"></opponent-preview>
-        </div>
-      </div>
-      <div *ngIf="formVisible">
-        <button (click)="formVisible=false"
-          class="p-2 m-3 bg-red-300 rounded-full shadow-md hover:shadow shadow-red-600">Cancel</button>
-        <opponent-form [teamId]="teamId" (reload)="reload()"></opponent-form>
-      </div>
+      <p class="m-2 text-3xl bold">{{ draft.leagueName }}</p>
+      <router-outlet></router-outlet>
     </div>
   </div>
-
 </div>

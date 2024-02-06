@@ -1,4 +1,12 @@
-<p class="text-3xl bold">New Draft</p>
+<div class="flex">
+  <button
+    [routerLink]="'/draft/' + teamId"
+    class="p-2 m-3 bg-red-300 rounded-full shadow-md hover:shadow shadow-red-600"
+  >
+    Cancel
+  </button>
+  <p class="text-3xl bold">New Draft</p>
+</div>
 <form
   [formGroup]="matchupForm"
   (ngSubmit)="onSubmit()"

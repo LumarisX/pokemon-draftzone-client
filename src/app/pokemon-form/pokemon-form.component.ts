@@ -7,9 +7,9 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { Pokemon } from '../../../interfaces/draft';
-import { SpriteComponent } from '../../../sprite/sprite.component';
-import { CoreModule } from '../../../sprite/sprite.module';
+import { Pokemon } from '../interfaces/draft';
+import { SpriteComponent } from '../sprite/sprite.component';
+import { CoreModule } from '../sprite/sprite.module';
 
 @Component({
   selector: 'pokemon-form',
