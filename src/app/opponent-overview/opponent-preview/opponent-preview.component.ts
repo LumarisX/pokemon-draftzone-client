@@ -28,11 +28,11 @@ export class OpponentTeamPreviewComponent implements OnInit {
 
   ngOnInit(): void {
     this.teamId = <string>this.route.snapshot.paramMap.get('teamid');
-    console.log(this.teamId);
+    console.log(this.route.snapshot.paramMap);
     this.draftService.getDraft(this.teamId).subscribe((data) => {
       this.draft = <Draft>data;
     });
-    this.draftService.getMatchups(this.teamId).subscribe((data) => {
+    this.draftService.getMatchupList(this.teamId).subscribe((data) => {
       this.matchups = <Matchup[]>data;
     });
   }

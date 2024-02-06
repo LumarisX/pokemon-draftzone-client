@@ -21,7 +21,7 @@ export class DraftService {
     return this.apiService.post(`draft/teams`, draftData);
   }
 
-  getMatchups(teamName: string) {
+  getMatchupList(teamName: string) {
     return this.apiService.get(`draft/${teamName}/matchups`);
   }
 

@@ -1,8 +1,7 @@
 <button
-  [routerLink]="'new'"
   class="p-2 m-3 bg-red-300 rounded-full shadow-md hover:shadow shadow-red-600"
 >
-  Add Team
+  <a [routerLink]="'new'"> Add Team </a>
 </button>
 <div
   id="teams"
@@ -46,7 +45,9 @@
           >Prep</a
         >
         <a
-          class="m-2 text-center text-red-400 bg-red-300 shadow w-1/8 hover:shadow shadow-red-600 rounded-xl"
+          class="m-2 text-center bg-red-300 shadow w-1/8 hover:shadow shadow-red-600 rounded-xl"
+          [routerLink]="'edit'"
+          [queryParams]="{ matchup: matchup._id | json }"
           >Edit
         </a>
         <a

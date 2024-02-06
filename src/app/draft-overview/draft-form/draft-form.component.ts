@@ -2,20 +2,17 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import {
   FormArray,
-  FormBuilder,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
 } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { DraftService } from '../../api/draft.service';
-import { UserService } from '../../api/user.service';
+import { Draft, Pokemon } from '../../interfaces/draft';
 import { PokemonFormComponent } from '../../pokemon-form/pokemon-form.component';
 import { SpriteComponent } from '../../sprite/sprite.component';
 import { CoreModule } from '../../sprite/sprite.module';
 import { SpriteService } from '../../sprite/sprite.service';
-import { ApiService } from '../../api/api.service';
-import { Draft, Pokemon } from '../../interfaces/draft';
 
 @Component({
   selector: 'draft-form',

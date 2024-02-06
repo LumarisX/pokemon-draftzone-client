@@ -29,6 +29,8 @@ import { SpriteService } from '../../sprite/sprite.service';
 })
 export class OpponentFormComponent implements OnInit {
   teamId: string = '';
+  matchupId: string = '';
+  title: string = 'New Matchup';
   @Output() reload = new EventEmitter<boolean>();
 
   constructor(
@@ -44,11 +46,18 @@ export class OpponentFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.teamId = <string>this.route.snapshot.paramMap.get('teamid');
+    this.teamId = <string>(
+      this.route.parent!.parent!.snapshot.paramMap.get('teamid')
+    );
     this.matchupForm = new FormGroup({
       teamName: new FormControl(''),
       stage: new FormControl(''),
       team: new FormArray([PokemonFormComponent.addPokemonForm()]),
+    });
+    this.route.queryParams.subscribe((params) => {
+      this.draftService.getMatchupList(this.teamId).subscribe((matchups) => {
+        console.log(matchups);
+      });
     });
   }
 
