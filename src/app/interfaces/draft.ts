@@ -1,15 +1,18 @@
-import { Pokemon } from "../pokemon";
+import { PokemonId } from '../pokemon';
 
 export type Draft = {
-    _id: string;
-    leagueName?: string;
-    leagueId: string;
-    format: number;
-    ruleset: number;
-    owner: string;
-    team: Team[];
-}
+  _id: string;
+  leagueName: string;
+  teamName?: string;
+  leagueId: string;
+  format: number;
+  ruleset: number;
+  owner: string;
+  team: Pokemon[];
+};
 
-type Team = {
-    pid: Pokemon
-}
+export type Pokemon = {
+  pid: PokemonId | '';
+  shiny?: boolean;
+  captain?: boolean;
+};

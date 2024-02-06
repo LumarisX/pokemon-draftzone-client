@@ -24,16 +24,11 @@ const routes: Routes = [
         canActivate: [AuthGuard],
       },
       {
-        path: 'edit/:teamid',
+        path: 'edit',
         loadChildren: () =>
           import('./draft-form/draft-form.module').then(
             (m) => m.DraftFormModule
           ),
-        canActivate: [AuthGuard],
-      },
-      {
-        path: 'edit',
-        redirectTo: '',
         canActivate: [AuthGuard],
       },
     ],

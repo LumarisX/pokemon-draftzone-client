@@ -9,7 +9,6 @@ export class AuthService {
 
   setAccessToken() {
     this.auth0.getAccessTokenSilently().subscribe((token) => {
-      console.log('whoogoo');
       if (token) {
         localStorage.setItem('access_token', token);
       }
