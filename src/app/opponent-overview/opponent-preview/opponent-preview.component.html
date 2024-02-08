@@ -10,19 +10,19 @@
   <div *ngFor="let matchup of matchups.reverse(); let i = index">
     <div class="m-2 bg-red-200 shadow-md shadow-red-600 rounded-xl">
       <div class="p-2 bg-red-300 shadow-md rounded-xl">
-        <div class="flex w-full">
+        <div class="flex w-full h-fit">
           <div
-            class="w-3/5 p-1 mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
+            class="w-3/5 h-full p-1 mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
           >
             {{ matchup.bTeam.teamName }}
           </div>
           <div
-            class="w-1/5 p-1 text-xs text-center bg-red-200 rounded-full shadow-inner h-fit shadow-red-600"
+            class="w-1/5 h-full p-1 text-xs text-center bg-red-200 rounded-full shadow-inner shadow-red-600"
           >
             {{ score(matchup.score) }}
           </div>
           <div
-            class="w-1/5 p-1 mx-1 text-xs text-center bg-red-200 rounded-full shadow-inner h-fit shadow-red-600"
+            class="w-1/5 h-full p-1 mx-1 text-xs text-center bg-red-200 rounded-full shadow-inner shadow-red-600"
           >
             {{ matchup.stage }}
           </div>
@@ -36,7 +36,9 @@
       </div>
       <div class="flex" *ngIf="!deleteConfirm">
         <a
-          class="w-1/4 m-2 text-center text-red-400 bg-red-300 shadow hover:shadow shadow-red-600 rounded-xl"
+          class="w-1/4 m-2 text-center bg-red-300 shadow hover:shadow shadow-red-600 rounded-xl"
+          [routerLink]="'score'"
+          [queryParams]="{ matchup: matchup._id | json }"
           >Score</a
         >
         <a

@@ -32,6 +32,14 @@ const routes: Routes = [
           ),
         canActivate: [AuthGuard],
       },
+      {
+        path: 'score',
+        loadChildren: () =>
+          import('./opponent-score/opponent-score.module').then(
+            (m) => m.OpponentScoreModule
+          ),
+        canActivate: [AuthGuard],
+      },
     ],
   },
 ];

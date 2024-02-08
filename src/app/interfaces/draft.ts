@@ -7,6 +7,11 @@ export type Draft = {
   leagueId: string;
   format: number;
   ruleset: number;
+  score: {
+    wins: number;
+    loses: number;
+    diff: number;
+  };
   owner: string;
   team: Pokemon[];
 };

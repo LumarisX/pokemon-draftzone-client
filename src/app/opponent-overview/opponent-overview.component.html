@@ -20,7 +20,14 @@
 
   <div class="bg-red-100 w-[92.5%] rounded-xl p-2 border-2 border-red-200">
     <div>
-      <p class="m-2 text-3xl bold">{{ draft.leagueName }}</p>
+      <div class="flex">
+        <h1 class="m-2 text-3xl bold">{{ draft.leagueName }}</h1>
+        <h2 class="m-2 text-2xl bold">
+          {{ draft.score.wins }} - {{ draft.score.loses }} ｜
+          {{ draft.score.diff }}
+        </h2>
+        <h2 class="m-2 text-2xl bold"></h2>
+      </div>
       <router-outlet></router-outlet>
     </div>
   </div>
