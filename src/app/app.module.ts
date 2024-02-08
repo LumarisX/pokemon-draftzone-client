@@ -1,13 +1,13 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { AuthModule } from '@auth0/auth0-angular';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { CoreModule } from './sprite/sprite.module';
 import { DraftOverviewModule } from './draft-overview/draft-overview.module';
-import { OpponentOverviewModule } from './opponent-overview/opponent-overview.module';
-import { MatchupModule } from './matchup/matchup.module';
 import { ErrorModule } from './error/error.module';
-import { AuthModule } from '@auth0/auth0-angular';
+import { MatchupOverviewModule } from './matchup-overview/matchup-overview.module';
+import { OpponentOverviewModule } from './opponent-overview/opponent-overview.module';
+import { CoreModule } from './sprite/sprite.module';
 import { TestModule } from './test/test.module';
 
 @NgModule({
@@ -47,7 +47,7 @@ import { TestModule } from './test/test.module';
       },
     }),
     OpponentOverviewModule,
-    MatchupModule,
+    MatchupOverviewModule,
     TestModule,
     CoreModule,
     AppRoutingModule,

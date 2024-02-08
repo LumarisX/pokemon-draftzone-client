@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { MatchupService } from '../../api/matchup.service';
-import { SpriteComponent } from '../../sprite/sprite.component';
-import { Coverage } from '../matchup-interface';
+import { Coverage } from '../../matchup-interface';
 import { CoverageComponent } from './coverage/coverage.component';
+import { MatchupService } from '../../../api/matchup.service';
+import { SpriteComponent } from '../../../sprite/sprite.component';
 
 @Component({
   selector: 'coveragechart',

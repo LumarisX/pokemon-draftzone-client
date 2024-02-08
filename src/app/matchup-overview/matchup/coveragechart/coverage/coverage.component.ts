@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
-import { SpriteComponent } from '../../../sprite/sprite.component';
-import { Coverage } from '../../matchup-interface';
+import { Component, Input } from '@angular/core';
+import { SpriteComponent } from '../../../../sprite/sprite.component';
+import { Coverage } from '../../../matchup-interface';
 
 @Component({
   selector: 'coverage',

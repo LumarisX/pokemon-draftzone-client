@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { OpponentOverviewComponent } from './opponent-overview.component';
 import { AuthGuard } from '@auth0/auth0-angular';
+import { MatchupOverviewComponent } from '../matchup-overview/matchup-overview.component';
 
 const routes: Routes = [
   {
