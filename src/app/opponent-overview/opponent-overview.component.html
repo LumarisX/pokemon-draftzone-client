@@ -1,34 +1,18 @@
-<div class="flex m-2 space-x-2">
-  <div class="w-[7.5%] bg-cyan-100 p-1 border-2 border-cyan-200 rounded-xl">
-    <a
-      routerLink="/draft"
-      class="px-2 rounded-full shadow bg-cyan-300 hover:shadow shadow-cyan-600"
-      >Back</a
-    >
-    <div
-      class="h-auto p-2 m-2 shadow-md bg-cyan-300 rounded-xl shadow-cyan-600"
-    >
-      <sprite
-        class="flex justify-center"
-        *ngFor="let pokemon of draft.team"
-        [pokemonId]="pokemon.pid"
-        [flipped]="true"
+<div class="m-2">
+  <div class="w-full p-2">
+    <div class="flex">
+      <a
+        routerLink="/draft"
+        class="flex justify-center px-2 text-center rounded-full shadow bg-cyan-300 hover:shadow shadow-cyan-600"
+        >Back</a
       >
-      </sprite>
+      <h1 class="m-2 text-3xl bold">{{ draft.leagueName }}</h1>
+      <h2 class="m-2 text-2xl bold">
+        {{ draft.score.wins }} - {{ draft.score.loses }} ｜
+        {{ draft.score.diff }}
+      </h2>
     </div>
   </div>
-
-  <div class="bg-red-100 w-[92.5%] rounded-xl p-2 border-2 border-red-200">
-    <div>
-      <div class="flex">
-        <h1 class="m-2 text-3xl bold">{{ draft.leagueName }}</h1>
-        <h2 class="m-2 text-2xl bold">
-          {{ draft.score.wins }} - {{ draft.score.loses }} ｜
-          {{ draft.score.diff }}
-        </h2>
-        <h2 class="m-2 text-2xl bold"></h2>
-      </div>
-      <router-outlet></router-outlet>
-    </div>
-  </div>
+  <hr class="w-full h-1 my-2 bg-gray-100 border-0 rounded dark:bg-gray-600" />
+  <router-outlet></router-outlet>
 </div>

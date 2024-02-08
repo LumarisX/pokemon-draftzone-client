@@ -13,6 +13,7 @@ import { PokemonFormComponent } from '../../pokemon-form/pokemon-form.component'
 import { SpriteComponent } from '../../sprite/sprite.component';
 import { CoreModule } from '../../sprite/sprite.module';
 import { SpriteService } from '../../sprite/sprite.service';
+import { MatchupService } from '../../api/matchup.service';
 
 @Component({
   selector: 'opponent-form',
@@ -55,6 +56,12 @@ export class OpponentScoreComponent implements OnInit {
       score: new FormControl(''),
       team: new FormArray([PokemonFormComponent.addPokemonForm()]),
     });
+    this.bTeamForm = new FormGroup({
+      pokePaste: new FormControl(''),
+      score: new FormControl(''),
+      team: new FormArray([PokemonFormComponent.addPokemonForm()]),
+    });
+    this.draftService.getMatchupList;
   }
 
   addNewPokemon(

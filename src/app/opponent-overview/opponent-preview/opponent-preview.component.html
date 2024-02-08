@@ -1,80 +1,100 @@
-<button
-  class="p-2 m-3 bg-red-300 rounded-full shadow-md hover:shadow shadow-red-600"
->
-  <a [routerLink]="'new'"> Add Team </a>
-</button>
-<div
-  id="teams"
-  class="grid h-auto grid-flow-row grid-cols-1 overflow-auto md:grid-cols-2 lg:grid-cols-3"
->
-  <div *ngFor="let matchup of matchups.reverse(); let i = index">
-    <div class="m-2 bg-red-200 shadow-md shadow-red-600 rounded-xl">
-      <div class="p-2 bg-red-300 shadow-md rounded-xl">
-        <div class="flex w-full h-fit">
-          <div
-            class="w-3/5 h-full p-1 mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
-          >
-            {{ matchup.bTeam.teamName }}
+<div class="flex space-x-2">
+  <div class="w-[7.5%] bg-cyan-100 p-1 border-2 border-cyan-200 rounded-xl">
+    <div
+      class="h-auto p-2 m-2 shadow-md bg-cyan-300 rounded-xl shadow-cyan-600"
+    >
+      <sprite
+        class="flex justify-center"
+        *ngFor="let pokemon of draft.team"
+        [pokemonId]="pokemon.pid"
+        [flipped]="true"
+      >
+      </sprite>
+    </div>
+  </div>
+
+  <div class="bg-red-100 w-[92.5%] rounded-xl p-2 border-2 border-red-200">
+    <div>
+      <button
+        class="p-2 m-3 bg-red-300 rounded-full shadow-md hover:shadow shadow-red-600"
+      >
+        <a [routerLink]="'new'"> Add Team </a>
+      </button>
+      <div
+        id="teams"
+        class="grid h-auto grid-flow-row grid-cols-1 overflow-auto md:grid-cols-2 lg:grid-cols-3"
+      >
+        <div *ngFor="let matchup of matchups.reverse(); let i = index">
+          <div class="m-2 bg-red-200 shadow-md shadow-red-600 rounded-xl">
+            <div class="p-2 bg-red-300 shadow-md rounded-xl">
+              <div class="flex w-full h-fit">
+                <div
+                  class="w-3/5 h-full p-1 mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
+                >
+                  {{ matchup.bTeam.teamName }}
+                </div>
+                <div
+                  class="w-1/5 h-full p-1 text-xs text-center bg-red-200 rounded-full shadow-inner shadow-red-600"
+                >
+                  {{ score(matchup.score) }}
+                </div>
+                <div
+                  class="w-1/5 h-full p-1 mx-1 text-xs text-center bg-red-200 rounded-full shadow-inner shadow-red-600"
+                >
+                  {{ matchup.stage }}
+                </div>
+              </div>
+              <div class="grid grid-cols-6 px-4 pt-2 sprites">
+                <sprite
+                  *ngFor="let pokemon of matchup.bTeam.team"
+                  [pokemonId]="pokemon.pid"
+                ></sprite>
+              </div>
+            </div>
+            <div class="flex" *ngIf="!deleteConfirm">
+              <a
+                class="w-1/4 m-2 text-center bg-red-300 shadow hover:shadow shadow-red-600 rounded-xl"
+                [routerLink]="'score'"
+                [queryParams]="{ matchup: matchup._id | json }"
+                >Score</a
+              >
+              <a
+                class="w-1/2 m-2 text-center bg-red-300 shadow hover:shadow shadow-red-600 rounded-xl"
+                [routerLink]="'/draft/matchup/' + matchup._id"
+                >Prep</a
+              >
+              <a
+                class="m-2 text-center bg-red-300 shadow w-1/8 hover:shadow shadow-red-600 rounded-xl"
+                [routerLink]="'edit'"
+                [queryParams]="{ matchup: matchup._id | json }"
+                >Edit
+              </a>
+              <a
+                class="m-2 text-center bg-red-300 shadow w-1/8 hover:shadow shadow-red-600 rounded-xl"
+                (click)="deleteConfirm = true"
+                >Delete
+              </a>
+            </div>
+            <div class="flex" *ngIf="deleteConfirm">
+              <div
+                class="w-1/2 m-2 text-center bg-red-300 shadow hover:shadow shadow-red-600 rounded-xl"
+              >
+                Are you sure you want to delete?
+              </div>
+              <div
+                class="w-1/4 m-2 text-center bg-red-300 shadow hover:shadow shadow-red-600 rounded-xl"
+                (click)="deleteMatchup(matchup._id)"
+              >
+                Yes
+              </div>
+              <div
+                class="w-1/4 m-2 text-center bg-red-300 shadow hover:shadow shadow-red-600 rounded-xl"
+                (click)="deleteConfirm = false"
+              >
+                No
+              </div>
+            </div>
           </div>
-          <div
-            class="w-1/5 h-full p-1 text-xs text-center bg-red-200 rounded-full shadow-inner shadow-red-600"
-          >
-            {{ score(matchup.score) }}
-          </div>
-          <div
-            class="w-1/5 h-full p-1 mx-1 text-xs text-center bg-red-200 rounded-full shadow-inner shadow-red-600"
-          >
-            {{ matchup.stage }}
-          </div>
-        </div>
-        <div class="grid grid-cols-6 px-4 pt-2 sprites">
-          <sprite
-            *ngFor="let pokemon of matchup.bTeam.team"
-            [pokemonId]="pokemon.pid"
-          ></sprite>
-        </div>
-      </div>
-      <div class="flex" *ngIf="!deleteConfirm">
-        <a
-          class="w-1/4 m-2 text-center bg-red-300 shadow hover:shadow shadow-red-600 rounded-xl"
-          [routerLink]="'score'"
-          [queryParams]="{ matchup: matchup._id | json }"
-          >Score</a
-        >
-        <a
-          class="w-1/2 m-2 text-center bg-red-300 shadow hover:shadow shadow-red-600 rounded-xl"
-          [routerLink]="'/draft/matchup/' + matchup._id"
-          >Prep</a
-        >
-        <a
-          class="m-2 text-center bg-red-300 shadow w-1/8 hover:shadow shadow-red-600 rounded-xl"
-          [routerLink]="'edit'"
-          [queryParams]="{ matchup: matchup._id | json }"
-          >Edit
-        </a>
-        <a
-          class="m-2 text-center bg-red-300 shadow w-1/8 hover:shadow shadow-red-600 rounded-xl"
-          (click)="deleteConfirm = true"
-          >Delete
-        </a>
-      </div>
-      <div class="flex" *ngIf="deleteConfirm">
-        <div
-          class="w-1/2 m-2 text-center bg-red-300 shadow hover:shadow shadow-red-600 rounded-xl"
-        >
-          Are you sure you want to delete?
-        </div>
-        <div
-          class="w-1/4 m-2 text-center bg-red-300 shadow hover:shadow shadow-red-600 rounded-xl"
-          (click)="deleteMatchup(matchup._id)"
-        >
-          Yes
-        </div>
-        <div
-          class="w-1/4 m-2 text-center bg-red-300 shadow hover:shadow shadow-red-600 rounded-xl"
-          (click)="deleteConfirm = false"
-        >
-          No
         </div>
       </div>
     </div>
