@@ -29,7 +29,7 @@
             </div>
           </td>
           <td class="w-20">
-            <sprite [pokemonId]="pokemon.pid" [flipped]="true"></sprite>
+            <sprite [pokemon]="pokemon" [flipped]="true"></sprite>
           </td>
           <td class="w-32 text">{{ pokemon.name }}</td>
           <td class="w-12 text-center">{{ pokemon.baseStats.spe }}</td>
@@ -57,7 +57,7 @@
           <td class="w-12 text-center">{{ pokemon.baseStats.spe }}</td>
           <td class="w-32 text-end">{{ pokemon.name }}</td>
           <td class="w-20">
-            <sprite [pokemonId]="pokemon.pid"></sprite>
+            <sprite [pokemon]="pokemon"></sprite>
           </td>
           <td>
             <div class="w-8 -ml-2" *ngIf="pokemon.captain">

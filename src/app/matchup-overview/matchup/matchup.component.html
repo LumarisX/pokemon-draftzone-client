@@ -1,22 +1,25 @@
 <div class="bg-gradient-to-r from-cyan-100 via-slate-100 to-red-100">
-    <!-- <a routerLink="/draft/{{draft.leagueId}}"
+  <!-- <a routerLink="/draft/{{draft.leagueId}}"
         class="px-2 rounded-full shadow bg-slate-300 hover:shadow shadow-slate-600">Back</a> -->
-    <!-- <div class="absolute z-0 flex w-full">
+  <!-- <div class="absolute z-0 flex w-full">
         <div class="grid w-1/2 grid-cols-3">
-            <sprite class="z-0 w-full" *ngFor="let pokemon of draft.team" [pokemonId]="pokemon.pid" [flipped]="true">
+            <sprite class="z-0 w-full" *ngFor="let pokemon of draft.team" [pokemon]="pokemon" [flipped]="true">
             </sprite>
         </div>
         <div class="grid w-1/2 grid-cols-3">
-            <sprite class="z-0 w-full" *ngFor="let pokemon of draft.team" [pokemonId]="pokemon.pid">
+            <sprite class="z-0 w-full" *ngFor="let pokemon of draft.team" [pokemon]="pokemon">
             </sprite>
         </div>
     </div> -->
-    <div class="flex flex-wrap p-2 text-xs">
-        <overview class="z-10 m-2" [matchupId]="this.matchup_id"></overview>
-        <summery class="z-10 m-2" [matchupId]="this.matchup_id"></summery>
-        <typechart class="z-10 m-2" [matchupId]="this.matchup_id"></typechart>
-        <speedchart class="z-10 m-2" [matchupId]="this.matchup_id"></speedchart>
-        <movechart class="z-10 m-2" [matchupId]="this.matchup_id"></movechart>
-        <coveragechart class="z-10 m-2" [matchupId]="this.matchup_id"></coveragechart>
-    </div>
+  <div class="flex flex-wrap p-2 text-xs">
+    <overview class="z-10 m-2" [matchupId]="this.matchup_id"></overview>
+    <summery class="z-10 m-2" [matchupId]="this.matchup_id"></summery>
+    <typechart class="z-10 m-2" [matchupId]="this.matchup_id"></typechart>
+    <speedchart class="z-10 m-2" [matchupId]="this.matchup_id"></speedchart>
+    <movechart class="z-10 m-2" [matchupId]="this.matchup_id"></movechart>
+    <coveragechart
+      class="z-10 m-2"
+      [matchupId]="this.matchup_id"
+    ></coveragechart>
+  </div>
 </div>

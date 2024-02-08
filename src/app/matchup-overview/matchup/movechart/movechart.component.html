@@ -1,19 +1,35 @@
 <div class="">
-    <button (click)="swapTeams()" class="px-2 border-t-4 border-b border-x-4 border-slate-400 rounded-t-xl"
-        [ngClass]="teamColor(true)">⇄</button>
-    <div class="overflow-auto border-4 max-h-128 w-128 border-slate-400 bg-slate-400">
-        <div *ngFor="let category of this.teams[selectedTeam]">
-            <div class="sticky top-0 left-0 text-lg font-bold text-center border-b-2 bg-slate-300 border-slate-400">
-                {{category.catName}}
-            </div>
-            <div class="">
-                <div class="flex border-b-2 border-slate-400 bg-slate-200" *ngFor="let move of category.moves">
-                    <div class="w-1/3 border-r border-slate-400">{{move.moveName}}</div>
-                    <div class="flex flex-row flex-wrap w-2/3">
-                        <sprite class="h-8" *ngFor="let pokemon of move.pokemon" [pokemonId]="pokemon"></sprite>
-                    </div>
-                </div>
-            </div>
+  <button
+    (click)="swapTeams()"
+    class="px-2 border-t-4 border-b border-x-4 border-slate-400 rounded-t-xl"
+    [ngClass]="teamColor(true)"
+  >
+    ⇄
+  </button>
+  <div
+    class="overflow-auto border-4 max-h-128 w-128 border-slate-400 bg-slate-400"
+  >
+    <div *ngFor="let category of this.teams[selectedTeam]">
+      <div
+        class="sticky top-0 left-0 text-lg font-bold text-center border-b-2 bg-slate-300 border-slate-400"
+      >
+        {{ category.catName }}
+      </div>
+      <div class="">
+        <div
+          class="flex border-b-2 border-slate-400 bg-slate-200"
+          *ngFor="let move of category.moves"
+        >
+          <div class="w-1/3 border-r border-slate-400">{{ move.moveName }}</div>
+          <div class="flex flex-row flex-wrap w-2/3">
+            <sprite
+              class="h-8"
+              *ngFor="let pokemon of move.pokemon"
+              [pokemon]="{ pid: pokemon }"
+            ></sprite>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 </div>

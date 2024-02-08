@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { PokemonId, getSpriteName } from '../pokemon';
+import { Pokemon } from '../interfaces/draft';
+import { getSpriteName } from '../pokemon';
 
 @Component({
   selector: 'sprite',
@@ -10,22 +11,30 @@ import { PokemonId, getSpriteName } from '../pokemon';
     <img
       class="h-full w-full"
       [ngClass]="isFlipped()"
-      title="{{ pokemonId }}"
+      title="{{ pokemon.pid }}"
       src="{{ getPath() }}"
       onerror="this.src='https://play.pokemonshowdown.com/sprites/gen5/0.png';"
     />
   `,
 })
 export class SpriteComponent {
-  @Input() pokemonId!: PokemonId | '';
+  @Input() pokemon!: Pokemon;
   @Input() flipped? = false;
 
   getPath() {
-    return (
-      'https://play.pokemonshowdown.com/sprites/gen5/' +
-      getSpriteName(this.pokemonId) +
-      '.png'
-    );
+    if (this.pokemon.shiny) {
+      return (
+        'https://play.pokemonshowdown.com/sprites/gen5-shiny/' +
+        getSpriteName(this.pokemon.pid) +
+        '.png'
+      );
+    } else {
+      return (
+        'https://play.pokemonshowdown.com/sprites/gen5/' +
+        getSpriteName(this.pokemon.pid) +
+        '.png'
+      );
+    }
   }
 
   isFlipped() {
