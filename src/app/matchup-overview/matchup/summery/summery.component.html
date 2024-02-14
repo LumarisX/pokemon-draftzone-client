@@ -141,7 +141,9 @@
     <tr class="bg-slate-300">
       <td></td>
       <td></td>
-      <td></td>
+      <td>
+        <input type="range" min="20" max="140" [(ngModel)]="baseValue" />
+      </td>
       <td class="text-center">Median</td>
       <td
         class="text-center"
@@ -183,7 +185,14 @@
     <tr class="bg-slate-300">
       <td></td>
       <td></td>
-      <td></td>
+      <td class="flex justify-center">
+        <input
+          type="number"
+          [(ngModel)]="baseValue"
+          value="{{ baseValue }}"
+          class="w-8"
+        />
+      </td>
       <td class="text-center">Max</td>
       <td
         class="text-center"
@@ -223,11 +232,4 @@
       </td>
     </tr>
   </table>
-  <input type="range" min="20" max="140" [(ngModel)]="baseValue" />
-  <input
-    type="number"
-    [(ngModel)]="baseValue"
-    value="{{ baseValue }}"
-    class="w-8"
-  />
 </div>
