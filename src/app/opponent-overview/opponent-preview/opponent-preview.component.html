@@ -60,7 +60,8 @@
               >
               <a
                 class="w-1/2 m-2 text-center bg-red-300 shadow hover:shadow shadow-red-600 rounded-xl"
-                [routerLink]="'/draft/matchup/' + matchup._id"
+                [routerLink]="'matchup/'"
+                [queryParams]="{ id: matchup._id }"
                 >Prep</a
               >
               <a

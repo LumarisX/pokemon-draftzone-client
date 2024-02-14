@@ -1,17 +1,22 @@
 <div class="border-4 border-slate-400 bg-slate-400">
-    <div class="bg-slate-200">
-        <div class="flex border-b-2 border-slate-400">
-            <div class="py-2 text-medium">Name</div>
-            <div class="py-2 text-medium">Desc</div>
-            <div class="py-2 text-medium">Spe</div>
-        </div>
+  <div class="bg-slate-200">
+    <div class="flex border-b-2 border-slate-400">
+      <div class="py-2 text-medium">Name</div>
+      <div class="py-2 text-medium">Desc</div>
+      <div class="py-2 text-medium">Spe</div>
     </div>
-    <div class="w-full overflow-y-auto max-h-128 md:w-128 snap-y snap-mandatory">
-        <div class="flex border-b snap-start border-slate-400" *ngFor="let tier of speedchart"
-            [ngClass]="speedClasses(tier)">
-            <div>{{tier.name}}</div>
-            <div>{{tier.speed}}</div>
-            <div>{{tier.modifiers}}</div>
-        </div>
+  </div>
+  <div class="w-full overflow-y-auto max-h-128 md:w-128 snap-y snap-mandatory">
+    <div *ngFor="let tier of speedchart.tiers">
+      <div
+        *ngIf="filtered(tier)"
+        class="flex space-x-2 border-b snap-start border-slate-400"
+        [ngClass]="speedClasses(tier)"
+      >
+        <div>{{ tier.name }}</div>
+        <div>{{ tier.speed }}</div>
+        <div>{{ tier.modifiers }}</div>
+      </div>
     </div>
+  </div>
 </div>

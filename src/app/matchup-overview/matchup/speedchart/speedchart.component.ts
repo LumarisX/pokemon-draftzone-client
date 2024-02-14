@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Speedtier } from '../../matchup-interface';
+import { SpeedChart, Speedtier } from '../../matchup-interface';
 import { MatchupService } from '../../../api/matchup.service';
 
 @Component({
@@ -12,73 +12,62 @@ import { MatchupService } from '../../../api/matchup.service';
 })
 export class SpeedchartComponent implements OnInit {
   @Input() matchupId!: string;
-  speedchart!: Speedtier[];
+  speedchart!: SpeedChart;
 
-  constructor(
-    private matchupService: MatchupService,
-    private route: ActivatedRoute
-  ) {}
+  constructor(private matchupService: MatchupService) {}
 
   ngOnInit() {
     this.matchupService.getSpeedchart(this.matchupId).subscribe((data) => {
-      let [a, b] = <Speedtier[][]>data;
-      this.speedchart = this.sortTiers(a, b);
+      this.speedchart = <SpeedChart>data;
+      this.speedchart.tiers.sort(this.sortTiers);
       this.makeSticky(this.speedchart);
-      this.setBase(this.speedchart);
     });
     document.getElementById('base')!.scrollIntoView();
   }
 
-  speedClasses(tier: Speedtier | null) {
+  speedClasses(tier: Speedtier) {
     let classes = [];
-    if (tier?.team) classes.push('bg-cyan-400');
+    if (tier.team == 0) classes.push('bg-cyan-400');
     else classes.push('bg-red-400');
     if (tier != undefined && tier.stick) {
       classes.push('sticky');
       classes.push('top-0');
       classes.push('z-1');
     }
-    if (tier != undefined && tier.base) {
-      classes.push('base');
-    }
     return classes;
   }
 
-  sortTiers(a: Speedtier[], b: Speedtier[]): Speedtier[] {
-    let out = [];
-    let ai = 0;
-    let bi = 0;
-    for (let i = 0; i < a.length + b.length; i++) {
-      if (ai < a.length && (bi >= b.length || a[ai].speed > b[bi].speed)) {
-        a[ai]['team'] = true;
-        out.push(a[ai++]);
-      } else {
-        b[bi]['team'] = false;
-        out.push(b[bi++]);
-      }
-    }
-    return out;
+  sortTiers(a: Speedtier, b: Speedtier): number {
+    if (a.speed > b.speed) return -1;
+    if (a.speed < b.speed) return 1;
+    return 0;
   }
 
-  makeSticky(speedchart: Speedtier[]) {
-    for (let i = 0; i < speedchart.length - 1; i++) {
-      if (speedchart[i].team != speedchart[i + 1].team) {
-        speedchart[i].stick = true;
+  makeSticky(speedchart: SpeedChart) {
+    for (let i = 0; i < speedchart.tiers.length - 1; i++) {
+      if (speedchart.tiers[i].team != speedchart.tiers[i + 1].team) {
+        speedchart.tiers[i].stick = true;
       }
     }
   }
 
-  setBase(speedchart: Speedtier[]) {
-    let slowest: Speedtier | null = null;
-    for (let tier of speedchart) {
-      if (tier.modifiers.length == 1 && tier.modifiers[0] == 'max+') {
-        if (slowest == null || slowest.speed > tier.speed) {
-          slowest = tier;
-        }
-      }
+  filtered(tier: Speedtier) {
+    let bad = [
+      'Stage 2',
+      'scarf',
+      'tailwind',
+      'Unburden',
+      'Quick Feet',
+      'Stage 1',
+      'Stage -1',
+      'paralyzed',
+      'base',
+      'min-',
+      'ironball',
+    ];
+    for (let mod of bad) {
+      if (tier.modifiers.includes(mod)) return false;
     }
-    if (slowest != null) {
-      slowest.base = true;
-    }
+    return true;
   }
 }

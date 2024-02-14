@@ -5,9 +5,13 @@ export type Speedtier = {
   name: string;
   speed: number;
   modifiers: string[];
-  team?: boolean;
+  team: number;
   stick?: boolean;
-  base?: boolean;
+};
+
+export type SpeedChart = {
+  tiers: Speedtier[];
+  modifiers: string[];
 };
 
 export type Summery = {

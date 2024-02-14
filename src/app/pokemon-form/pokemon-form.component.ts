@@ -32,12 +32,12 @@ export class PokemonFormComponent {
   constructor(private fb: FormBuilder) {}
 
   static addPokemonForm(
-    pokemonData: Pokemon = { pid: '', shiny: false, captain: false }
+    pokemonData: Pokemon = { pid: '', shiny: false, capt: {} }
   ): FormGroup {
     return new FormGroup({
       pokemonName: new FormControl(pokemonData.pid),
       shiny: new FormControl(pokemonData.shiny),
-      captain: new FormControl(pokemonData.captain),
+      capt: new FormControl(pokemonData.capt),
     });
   }
 
