@@ -1,0 +1,12 @@
+<div class="m-2 border w-fit border-slate-300">
+  <input
+    class="border border-slate-200"
+    [(ngModel)]="query"
+    (input)="sendQuery(query)"
+  />
+  <div class="absolute overflow-y-auto bg-slate-100 max-h-48">
+    <div *ngFor="let result of results" (click)="select(result)">
+      {{ result }}
+    </div>
+  </div>
+</div>

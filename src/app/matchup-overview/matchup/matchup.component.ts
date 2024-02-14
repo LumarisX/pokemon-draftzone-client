@@ -1,14 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { Component, Input } from '@angular/core';
+import { RouterModule } from '@angular/router';
+import { SpriteComponent } from '../../sprite/sprite.component';
 import { CoveragechartComponent } from './coveragechart/coveragechart.component';
 import { MovechartComponent } from './movechart/movechart.component';
 import { OverviewComponent } from './overview/overview.component';
 import { SpeedchartComponent } from './speedchart/speedchart.component';
 import { SummeryComponent } from './summery/summery.component';
 import { TypechartComponent } from './typechart/typechart.component';
-import { UserService } from '../../api/user.service';
-import { SpriteComponent } from '../../sprite/sprite.component';
 
 @Component({
   selector: 'matchup',
@@ -26,15 +25,8 @@ import { SpriteComponent } from '../../sprite/sprite.component';
     OverviewComponent,
   ],
 })
-export class MatchupComponent implements OnInit {
-  matchup_id = '';
+export class MatchupComponent {
+  @Input() matchup_id = '';
 
-  constructor(
-    private serverServices: UserService,
-    private route: ActivatedRoute
-  ) {}
-
-  ngOnInit() {
-    this.matchup_id = <string>this.route.snapshot.paramMap.get('matchid');
-  }
+  constructor() {}
 }

@@ -6,11 +6,12 @@ import { AuthService as Auth0Service } from '@auth0/auth0-angular';
 import { concatMap, map, tap } from 'rxjs';
 import { AuthService } from '../auth/auth0.service';
 import { CoreModule } from '../sprite/sprite.module';
+import { FilterComponent } from './filter/filter.component';
 
 @Component({
   selector: 'test',
   standalone: true,
-  imports: [CommonModule, RouterModule, CoreModule],
+  imports: [CommonModule, FilterComponent, RouterModule, CoreModule],
   template: `
     <div class="p-2 m-2 border-2 bg-cyan-100 rounded-xl border-cyan-200">
       <ul *ngIf="auth0.user$ | async as user">
@@ -30,6 +31,9 @@ import { CoreModule } from '../sprite/sprite.module';
         <pre>{{ drafts | json }}</pre>
       </div>
     </div>
+    <filter></filter>
+    <filter></filter>
+    <filter></filter>
   `,
 })
 export class TestComponent implements OnInit {
