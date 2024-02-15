@@ -26,7 +26,6 @@ export class MovechartComponent {
   ngOnInit() {
     this.matchupService.getMovechart(this.matchupId).subscribe((data) => {
       this.teams = <Movechart[]>data;
-      console.log(this.teams);
     });
   }
 

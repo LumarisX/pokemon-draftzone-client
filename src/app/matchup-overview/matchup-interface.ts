@@ -1,3 +1,4 @@
+import { Pokemon } from '../interfaces/draft';
 import { BattlePokedex } from '../pokedex';
 import { PokemonId } from '../pokemon';
 
@@ -16,10 +17,8 @@ export type SpeedChart = {
 
 export type Summery = {
   team: [
-    {
-      pid: keyof typeof BattlePokedex;
+    Pokemon & {
       name: string;
-      captain: boolean;
       abilities: string[];
       types: string[];
       baseStats: {
