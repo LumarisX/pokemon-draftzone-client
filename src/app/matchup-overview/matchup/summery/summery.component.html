@@ -1,7 +1,7 @@
 <div class="">
   <button
     (click)="swapTeams()"
-    class="px-2 border-t-4 border-b border-x-4 border-slate-400 rounded-t-xl"
+    class="px-3 border-t-4 border-b border-x-4 border-slate-400 rounded-t-xl"
     [ngClass]="teamColor(true)"
   >
     ⇄
@@ -56,11 +56,14 @@
       class="h-12 border-b border-slate-400"
     >
       <td>
-        <div *ngIf="pokemon.capt">
-          <div>
-            <img src="../../../assets/icons/tera.svg" />
+        <div *ngIf="pokemon.capt" class="w-6">
+          <div *ngIf="pokemon.capt.tera">
+            <img
+              src="../../../assets/icons/tera.svg"
+              title="{{ pokemon.capt.tera }}"
+            />
           </div>
-          <div>
+          <div *ngIf="pokemon.capt.z">
             <img src="../../../assets/icons/z.svg" />
           </div>
         </div>

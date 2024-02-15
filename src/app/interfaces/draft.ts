@@ -21,5 +21,6 @@ export type Pokemon = {
   shiny?: boolean;
   capt?: {
     tera?: String[];
+    z?: boolean;
   };
 };
