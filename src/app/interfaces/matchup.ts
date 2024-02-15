@@ -6,6 +6,7 @@ export type Matchup = {
   bTeam: Side;
   score: number[];
   stage: string;
+  replay: String[];
 };
 
 type Side = {
@@ -13,6 +14,12 @@ type Side = {
   teamName: string;
   team: Team[];
   name?: string;
+  stats: {
+    pid: PokemonId;
+    kills?: number;
+    deaths?: number;
+  }[];
+  paste?: String;
 };
 
 type Team = {

@@ -6,6 +6,7 @@ const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'draft', redirectTo: 'draft' },
   { path: 'error', redirectTo: 'error' },
+  { path: 'matchup', redirectTo: 'draft' },
   { path: 'test', redirectTo: 'test' },
 ];
 
