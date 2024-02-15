@@ -7,7 +7,7 @@
     ⇄
   </button>
   <div
-    class="grid grid-cols-1 gap-1 border-4 grid-rows-flex bg-slate-400 border-slate-400"
+    class="grid grid-cols-1 gap-1 overflow-y-auto border-4 grid-rows-flex bg-slate-400 border-slate-400 max-h-128"
   >
     <div *ngFor="let pokemon of teams[selectedTeam]" [ngClass]="teamColor()">
       <coverage [pokemon]="pokemon"></coverage>
