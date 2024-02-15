@@ -12,8 +12,6 @@ import { Pokemon } from '../../interfaces/draft';
 import { PokemonFormComponent } from '../../pokemon-form/pokemon-form.component';
 import { SpriteComponent } from '../../sprite/sprite.component';
 import { CoreModule } from '../../sprite/sprite.module';
-import { SpriteService } from '../../sprite/sprite.service';
-import { MatchupService } from '../../api/matchup.service';
 
 @Component({
   selector: 'opponent-form',
@@ -35,7 +33,6 @@ export class OpponentScoreComponent implements OnInit {
   @Output() reload = new EventEmitter<boolean>();
 
   constructor(
-    private spriteService: SpriteService,
     private draftService: DraftService,
     private route: ActivatedRoute
   ) {}

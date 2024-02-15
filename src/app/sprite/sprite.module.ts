@@ -1,9 +1,7 @@
-import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
-import { SpriteService } from './sprite.service';
+import { NgModule } from '@angular/core';
 
 @NgModule({
-    imports: [ HttpClientModule ],
-    providers: [ SpriteService ]
+  imports: [HttpClientModule],
 })
-export class CoreModule { }
+export class CoreModule {}

@@ -1,10 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Typechart, Types } from '../../matchup-interface';
 import { MatchupService } from '../../../api/matchup.service';
 import { SpriteComponent } from '../../../sprite/sprite.component';
-import { SpriteService } from '../../../sprite/sprite.service';
+import { Typechart, Types } from '../../matchup-interface';
 
 @Component({
   selector: 'typechart',
@@ -37,11 +35,7 @@ export class TypechartComponent {
     'Fairy',
   ];
 
-  constructor(
-    private spriteServices: SpriteService,
-    private matchupService: MatchupService,
-    private route: ActivatedRoute
-  ) {}
+  constructor(private matchupService: MatchupService) {}
 
   ngOnInit() {
     this.matchupService.getTypechart(this.matchupId).subscribe((data) => {

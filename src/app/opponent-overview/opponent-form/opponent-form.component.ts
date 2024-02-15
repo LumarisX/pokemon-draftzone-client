@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import {
   FormArray,
   FormControl,
@@ -12,7 +12,6 @@ import { Pokemon } from '../../interfaces/draft';
 import { PokemonFormComponent } from '../../pokemon-form/pokemon-form.component';
 import { SpriteComponent } from '../../sprite/sprite.component';
 import { CoreModule } from '../../sprite/sprite.module';
-import { SpriteService } from '../../sprite/sprite.service';
 
 @Component({
   selector: 'opponent-form',
@@ -34,7 +33,6 @@ export class OpponentFormComponent implements OnInit {
   @Output() reload = new EventEmitter<boolean>();
 
   constructor(
-    private spriteService: SpriteService,
     private draftService: DraftService,
     private route: ActivatedRoute
   ) {}
@@ -59,10 +57,6 @@ export class OpponentFormComponent implements OnInit {
         console.log(matchups);
       });
     });
-  }
-
-  spriteDiv(name: string) {
-    return this.spriteService.getSprite(name);
   }
 
   addNewPokemon(

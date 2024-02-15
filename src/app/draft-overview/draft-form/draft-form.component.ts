@@ -12,7 +12,6 @@ import { Draft, Pokemon } from '../../interfaces/draft';
 import { PokemonFormComponent } from '../../pokemon-form/pokemon-form.component';
 import { SpriteComponent } from '../../sprite/sprite.component';
 import { CoreModule } from '../../sprite/sprite.module';
-import { SpriteService } from '../../sprite/sprite.service';
 
 @Component({
   selector: 'draft-form',
@@ -32,7 +31,6 @@ export class DraftFormComponent implements OnInit {
   title: string = 'New League';
 
   constructor(
-    private spriteService: SpriteService,
     private route: ActivatedRoute,
     private draftService: DraftService
   ) {}
@@ -73,10 +71,6 @@ export class DraftFormComponent implements OnInit {
         });
       }
     });
-  }
-
-  spriteDiv(name: string) {
-    return this.spriteService.getSprite(name);
   }
 
   addNewPokemon(
