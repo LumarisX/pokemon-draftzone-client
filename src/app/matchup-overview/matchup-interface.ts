@@ -88,6 +88,7 @@ export type Types = {
   Psychic: number;
   Rock: number;
   Steel: number;
+  Stellar: number;
   Water: number;
   brn: number;
   par: number;

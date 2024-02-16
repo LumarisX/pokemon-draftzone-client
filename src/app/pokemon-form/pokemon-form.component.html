@@ -7,11 +7,8 @@
     <div class="w-1/2">
       <div class="p-1">Name</div>
       <input
-        #pokemon
         formControlName="pokemonName"
         class="w-full p-1 mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
-        #input
-        (input)="filter(input.value)"
         (keyup.enter)="this.addPokemonEvent.emit()"
       />
       <div
@@ -31,13 +28,175 @@
         class="p-1 mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
       />
     </div>
-    <div class="w-1/8">
+    <div class="w-1/8" formGroupName="capt">
       <div class="p-1">Captain</div>
-      <input
-        type="checkbox"
-        formControlName="captain"
-        class="p-1 mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
-      />
+      <div>
+        <div class="p-1">Tera:</div>
+        <div formGroupName="tera" class="overflow-x-auto max-h-20">
+          <label class="flex items-center">
+            <input
+              type="checkbox"
+              formControlName="Normal"
+              class="mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
+            />
+            <span>Normal</span>
+          </label>
+          <label class="flex items-center">
+            <input
+              type="checkbox"
+              formControlName="Fire"
+              class="mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
+            />
+            <span>Fire</span>
+          </label>
+          <label class="flex items-center">
+            <input
+              type="checkbox"
+              formControlName="Water"
+              class="mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
+            />
+            <span>Water</span>
+          </label>
+          <label class="flex items-center">
+            <input
+              type="checkbox"
+              formControlName="Electric"
+              class="mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
+            />
+            <span>Electric</span>
+          </label>
+          <label class="flex items-center">
+            <input
+              type="checkbox"
+              formControlName="Grass"
+              class="mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
+            />
+            <span>Grass</span>
+          </label>
+          <label class="flex items-center">
+            <input
+              type="checkbox"
+              formControlName="Ice"
+              class="mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
+            />
+            <span>Ice</span>
+          </label>
+          <label class="flex items-center">
+            <input
+              type="checkbox"
+              formControlName="Fighting"
+              class="mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
+            />
+            <span>Fighting</span>
+          </label>
+          <label class="flex items-center">
+            <input
+              type="checkbox"
+              formControlName="Poison"
+              class="mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
+            />
+            <span>Poison</span>
+          </label>
+          <label class="flex items-center">
+            <input
+              type="checkbox"
+              formControlName="Ground"
+              class="mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
+            />
+            <span>Ground</span>
+          </label>
+          <label class="flex items-center">
+            <input
+              type="checkbox"
+              formControlName="Flying"
+              class="mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
+            />
+            <span>Flying</span>
+          </label>
+          <label class="flex items-center">
+            <input
+              type="checkbox"
+              formControlName="Psychic"
+              class="mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
+            />
+            <span>Psychic</span>
+          </label>
+          <label class="flex items-center">
+            <input
+              type="checkbox"
+              formControlName="Bug"
+              class="mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
+            />
+            <span>Bug</span>
+          </label>
+          <label class="flex items-center">
+            <input
+              type="checkbox"
+              formControlName="Rock"
+              class="mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
+            />
+            <span>Rock</span>
+          </label>
+          <label class="flex items-center">
+            <input
+              type="checkbox"
+              formControlName="Ghost"
+              class="mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
+            />
+            <span>Ghost</span>
+          </label>
+          <label class="flex items-center">
+            <input
+              type="checkbox"
+              formControlName="Dragon"
+              class="mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
+            />
+            <span>Dragon</span>
+          </label>
+          <label class="flex items-center">
+            <input
+              type="checkbox"
+              formControlName="Dark"
+              class="mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
+            />
+            <span>Dark</span>
+          </label>
+          <label class="flex items-center">
+            <input
+              type="checkbox"
+              formControlName="Steel"
+              class="mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
+            />
+            <span>Steel</span>
+          </label>
+          <label class="flex items-center">
+            <input
+              type="checkbox"
+              formControlName="Fairy"
+              class="mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
+            />
+            <span>Fairy</span>
+          </label>
+          <label class="flex items-center">
+            <input
+              type="checkbox"
+              formControlName="Stellar"
+              class="mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
+            />
+            <span>Stellar</span>
+          </label>
+        </div>
+        <div class="p-1">
+          <label>
+            Z:
+            <input
+              type="checkbox"
+              formControlName="z"
+              class="p-1 mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
+            />
+          </label>
+        </div>
+      </div>
     </div>
     <div
       class="w-1/8 bg-emerald-200"
