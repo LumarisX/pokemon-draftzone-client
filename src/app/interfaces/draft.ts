@@ -10,7 +10,7 @@ export type Draft = {
   score: {
     wins: number;
     loses: number;
-    diff: number;
+    diff: string;
   };
   owner: string;
   team: Pokemon[];

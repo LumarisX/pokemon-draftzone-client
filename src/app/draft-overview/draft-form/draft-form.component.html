@@ -15,34 +15,42 @@
   class="p-2 m-2 space-y-3 shadow-md team bg-cyan-300 hover:shadow-md shadow-cyan-600 rounded-xl"
 >
   <div class="w-full">
-    <div class="flex space-x-3">
-      <div class="w-1/3">
-        <label class="p-1">League Name</label>
+    <div class="grid grid-cols-4 gap-4">
+      <div>
+        <label class="block mb-1 font-bold">League Name</label>
         <input
           formControlName="leagueName"
-          class="w-full p-1 mx-1 text-center rounded-full shadow-inner text-medium bg-cyan-200 shadow-cyan-600"
+          class="w-full px-4 py-2 text-base text-center rounded-full shadow-md bg-cyan-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:bg-cyan-100"
         />
       </div>
-      <div class="w-1/3">
-        <label class="p-1">Team Name</label>
+      <div>
+        <label class="block mb-1 font-bold">Team Name</label>
         <input
           formControlName="teamName"
-          class="w-full p-1 mx-1 text-center rounded-full shadow-inner text-medium bg-cyan-200 shadow-cyan-600"
+          class="w-full px-4 py-2 text-base text-center rounded-full shadow-md bg-cyan-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:bg-cyan-100"
         />
       </div>
-      <div class="w-1/6">
-        <label class="p-1">Format</label>
-        <input
+      <div>
+        <label class="block mb-1 font-bold">Format</label>
+        <select
           formControlName="format"
-          class="w-full p-1 mx-1 text-center rounded-full shadow-inner text-medium bg-cyan-200 shadow-cyan-600"
-        />
+          class="w-full px-4 py-2 text-base text-center rounded-full shadow-md bg-cyan-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:bg-cyan-100"
+        >
+          <option *ngFor="let format of formats" value="{{ format }}">
+            {{ format }}
+          </option>
+        </select>
       </div>
-      <div class="w-1/6">
-        <label class="p-1">Ruleset</label>
-        <input
+      <div>
+        <label class="block mb-1 font-bold">Ruleset</label>
+        <select
           formControlName="ruleset"
-          class="w-full p-1 mx-1 text-center rounded-full shadow-inner text-medium bg-cyan-200 shadow-cyan-600"
-        />
+          class="w-full px-4 py-2 text-base text-center rounded-full shadow-md bg-cyan-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:bg-cyan-100"
+        >
+          <option *ngFor="let ruleset of rulesets" value="{{ ruleset }}">
+            {{ ruleset }}
+          </option>
+        </select>
       </div>
     </div>
   </div>
@@ -71,4 +79,4 @@
     Submit
   </button>
 </form>
-<!-- {{ draftForm.value | json }} -->
+{{ draftForm.value | json }}

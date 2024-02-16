@@ -2,15 +2,23 @@
   <div class="flex w-full">
     <sprite
       class="w-24 h-24"
-      [pokemon]="{ pid: pokemonForm.value.pokemonName }"
+      [pokemon]="{
+        pid: pokemonForm.value.pokemonName,
+        shiny: pokemonForm.value.shiny
+      }"
     ></sprite>
-    <div class="w-1/2">
+    <div class="relative w-1/2">
       <div class="p-1">Name</div>
       <input
         formControlName="pokemonName"
-        class="w-full p-1 mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
+        [(ngModel)]="pokemonName"
+        class="w-full px-4 py-1 mx-1 rounded-full bg-slate-100text-medium"
         (keyup.enter)="this.addPokemonEvent.emit()"
       />
+      <filter
+        [query]="pokemonName"
+        (querySelected)="pokemonName = $event"
+      ></filter>
       <div
         *ngIf="
           pokemonForm.get('pokemonName')?.touched &&
@@ -25,7 +33,7 @@
       <input
         type="checkbox"
         formControlName="shiny"
-        class="p-1 mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
+        class="p-1 mx-1 text-center rounded-full text-medium"
       />
     </div>
     <div class="w-1/8" formGroupName="capt">
@@ -37,7 +45,7 @@
             <input
               type="checkbox"
               formControlName="Normal"
-              class="mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
+              class="mx-1 text-center rounded-full text-medium"
             />
             <span>Normal</span>
           </label>
@@ -45,7 +53,7 @@
             <input
               type="checkbox"
               formControlName="Fire"
-              class="mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
+              class="mx-1 text-center rounded-full text-medium"
             />
             <span>Fire</span>
           </label>
@@ -53,7 +61,7 @@
             <input
               type="checkbox"
               formControlName="Water"
-              class="mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
+              class="mx-1 text-center rounded-full text-medium"
             />
             <span>Water</span>
           </label>
@@ -61,7 +69,7 @@
             <input
               type="checkbox"
               formControlName="Electric"
-              class="mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
+              class="mx-1 text-center rounded-full text-medium"
             />
             <span>Electric</span>
           </label>
@@ -69,7 +77,7 @@
             <input
               type="checkbox"
               formControlName="Grass"
-              class="mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
+              class="mx-1 text-center rounded-full text-medium"
             />
             <span>Grass</span>
           </label>
@@ -77,7 +85,7 @@
             <input
               type="checkbox"
               formControlName="Ice"
-              class="mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
+              class="mx-1 text-center rounded-full text-medium"
             />
             <span>Ice</span>
           </label>
@@ -85,7 +93,7 @@
             <input
               type="checkbox"
               formControlName="Fighting"
-              class="mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
+              class="mx-1 text-center rounded-full text-medium"
             />
             <span>Fighting</span>
           </label>
@@ -93,7 +101,7 @@
             <input
               type="checkbox"
               formControlName="Poison"
-              class="mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
+              class="mx-1 text-center rounded-full text-medium"
             />
             <span>Poison</span>
           </label>
@@ -101,7 +109,7 @@
             <input
               type="checkbox"
               formControlName="Ground"
-              class="mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
+              class="mx-1 text-center rounded-full text-medium"
             />
             <span>Ground</span>
           </label>
@@ -109,7 +117,7 @@
             <input
               type="checkbox"
               formControlName="Flying"
-              class="mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
+              class="mx-1 text-center rounded-full text-medium"
             />
             <span>Flying</span>
           </label>
@@ -117,7 +125,7 @@
             <input
               type="checkbox"
               formControlName="Psychic"
-              class="mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
+              class="mx-1 text-center rounded-full text-medium"
             />
             <span>Psychic</span>
           </label>
@@ -125,7 +133,7 @@
             <input
               type="checkbox"
               formControlName="Bug"
-              class="mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
+              class="mx-1 text-center rounded-full text-medium"
             />
             <span>Bug</span>
           </label>
@@ -133,7 +141,7 @@
             <input
               type="checkbox"
               formControlName="Rock"
-              class="mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
+              class="mx-1 text-center rounded-full text-medium"
             />
             <span>Rock</span>
           </label>
@@ -141,7 +149,7 @@
             <input
               type="checkbox"
               formControlName="Ghost"
-              class="mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
+              class="mx-1 text-center rounded-full text-medium"
             />
             <span>Ghost</span>
           </label>
@@ -149,7 +157,7 @@
             <input
               type="checkbox"
               formControlName="Dragon"
-              class="mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
+              class="mx-1 text-center rounded-full text-medium"
             />
             <span>Dragon</span>
           </label>
@@ -157,7 +165,7 @@
             <input
               type="checkbox"
               formControlName="Dark"
-              class="mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
+              class="mx-1 text-center rounded-full text-medium"
             />
             <span>Dark</span>
           </label>
@@ -165,7 +173,7 @@
             <input
               type="checkbox"
               formControlName="Steel"
-              class="mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
+              class="mx-1 text-center rounded-full text-medium"
             />
             <span>Steel</span>
           </label>
@@ -173,7 +181,7 @@
             <input
               type="checkbox"
               formControlName="Fairy"
-              class="mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
+              class="mx-1 text-center rounded-full text-medium"
             />
             <span>Fairy</span>
           </label>
@@ -181,7 +189,7 @@
             <input
               type="checkbox"
               formControlName="Stellar"
-              class="mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
+              class="mx-1 text-center rounded-full text-medium"
             />
             <span>Stellar</span>
           </label>
@@ -192,17 +200,14 @@
             <input
               type="checkbox"
               formControlName="z"
-              class="p-1 mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
+              class="p-1 mx-1 text-center rounded-full text-medium"
             />
           </label>
         </div>
       </div>
     </div>
-    <div
-      class="w-1/8 bg-emerald-200"
-      (click)="deletePokemonEvent.emit(formIndex)"
-    >
-      Delete
+    <div class="w-6" (click)="deletePokemonEvent.emit(formIndex)">
+      <img src="../../../assets/icons/trash.svg" title="Delete" />
     </div>
   </div>
 </form>

@@ -12,6 +12,7 @@ import { Draft, Pokemon } from '../../interfaces/draft';
 import { PokemonFormComponent } from '../../pokemon-form/pokemon-form.component';
 import { SpriteComponent } from '../../sprite/sprite.component';
 import { CoreModule } from '../../sprite/sprite.module';
+import { DataService } from '../../api/data.service';
 
 @Component({
   selector: 'draft-form',
@@ -29,10 +30,13 @@ import { CoreModule } from '../../sprite/sprite.module';
 export class DraftFormComponent implements OnInit {
   teamId: string = '';
   title: string = 'New League';
+  formats = [];
+  rulesets = [];
 
   constructor(
     private route: ActivatedRoute,
-    private draftService: DraftService
+    private draftService: DraftService,
+    private dataService: DataService
   ) {}
 
   draftForm!: FormGroup;
@@ -47,8 +51,15 @@ export class DraftFormComponent implements OnInit {
       teamName: new FormControl(''),
       format: new FormControl(''),
       ruleset: new FormControl(''),
-
       team: new FormArray([PokemonFormComponent.addPokemonForm()]),
+    });
+
+    this.dataService.getFormats().subscribe((formats) => {
+      this.formats = <any>formats;
+    });
+
+    this.dataService.getRulesets().subscribe((rulesets) => {
+      this.rulesets = <any>rulesets;
     });
 
     this.route.queryParams.subscribe((params) => {

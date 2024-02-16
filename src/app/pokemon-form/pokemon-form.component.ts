@@ -1,20 +1,22 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
-  FormBuilder,
   FormControl,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { DataService } from '../api/data.service';
 import { Pokemon } from '../interfaces/draft';
 import { SpriteComponent } from '../sprite/sprite.component';
 import { CoreModule } from '../sprite/sprite.module';
+import { FilterComponent } from '../test/filter/filter.component';
 
 @Component({
   selector: 'pokemon-form',
   standalone: true,
+  templateUrl: './pokemon-form.component.html',
   imports: [
     CommonModule,
     RouterModule,
@@ -22,14 +24,16 @@ import { CoreModule } from '../sprite/sprite.module';
     CoreModule,
     SpriteComponent,
     ReactiveFormsModule,
+    FilterComponent,
   ],
-  templateUrl: './pokemon-form.component.html',
 })
-export class PokemonFormComponent {
+export class PokemonFormComponent implements OnInit {
   @Input() pokemonForm!: FormGroup;
   @Input() formIndex!: number;
   @Output() deletePokemonEvent = new EventEmitter<number>();
   @Output() addPokemonEvent = new EventEmitter<Pokemon>();
+
+  pokemonName = '';
 
   static teraChecked = false;
 
@@ -55,7 +59,11 @@ export class PokemonFormComponent {
     'Stellar',
   ];
 
-  constructor(private fb: FormBuilder) {}
+  constructor() {}
+
+  ngOnInit(): void {
+    this.pokemonName = this.pokemonForm.get('pokemonName')?.value;
+  }
 
   static addPokemonForm(
     pokemonData: Pokemon = {
@@ -83,6 +91,4 @@ export class PokemonFormComponent {
       }),
     });
   }
-
-  filter(input: string) {}
 }

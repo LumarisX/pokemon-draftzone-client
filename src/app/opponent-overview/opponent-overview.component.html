@@ -1,19 +1,22 @@
 <div class="m-2">
-  <div class="w-full p-2">
-    <div class="flex">
+  <div class="w-full">
+    <div class="flex items-center justify-between mx-4">
       <button
         routerLink="/draft"
-        class="px-3 py-2 text-sm text-white rounded-md bg-slate-500"
+        class="px-3 py-2 text-sm text-white rounded-md bg-slate-500 hover:bg-slate-600 focus:outline-none focus:bg-slate-600"
       >
         Back
       </button>
-      <h1 class="m-2 text-3xl bold">{{ draft.leagueName }}</h1>
-      <h2 class="m-2 text-2xl bold">
-        {{ draft.score.wins }} - {{ draft.score.loses }} ｜
-        {{ draft.score.diff }}
-      </h2>
+      <div class="">
+        <h1 class="text-3xl font-bold text-gray-800">{{ draft.leagueName }}</h1>
+        <h2 class="text-2xl font-bold text-gray-600">
+          {{ draft.score.wins }} - {{ draft.score.loses }} |
+          {{ draft.score.diff }}
+        </h2>
+      </div>
     </div>
   </div>
-  <hr class="w-full h-1 my-2 bg-gray-100 border-0 rounded dark:bg-gray-600" />
+
+  <hr class="w-full h-1 my-2 bg-gray-600 border-0 rounded" />
   <router-outlet></router-outlet>
 </div>
