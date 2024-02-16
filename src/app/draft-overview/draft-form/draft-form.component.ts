@@ -47,6 +47,7 @@ export class DraftFormComponent implements OnInit {
       teamName: new FormControl(''),
       format: new FormControl(''),
       ruleset: new FormControl(''),
+
       team: new FormArray([PokemonFormComponent.addPokemonForm()]),
     });
 
@@ -55,7 +56,6 @@ export class DraftFormComponent implements OnInit {
         this.teamId = JSON.parse(params['draft']);
         this.draftService.getDraft(this.teamId).subscribe((data) => {
           let draft = <Draft>data;
-          console.log(draft);
           this.title = draft.leagueName;
           let pokemonForms: FormGroup[] = [];
           for (let pokemon of draft.team) {
