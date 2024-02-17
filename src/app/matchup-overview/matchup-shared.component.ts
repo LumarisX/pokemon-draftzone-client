@@ -7,7 +7,7 @@ import { MatchupComponent } from './matchup/matchup.component';
   selector: 'matchup-shared',
   standalone: true,
   template: `
-    <div class="bg-gradient-to-r from-cyan-100 via-slate-100 to-red-100">
+    <div class="bg-gradient-to-r from-cyan-100 via-slate-100 to-red-100 ">
       <matchup [matchupId]="matchupId"></matchup>
     </div>
   `,

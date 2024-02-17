@@ -4,8 +4,8 @@
       <h1 class="w-full text-xl font-bold text-center">Team Overview</h1>
       <button
         (click)="swapTeams()"
-        class="px-3 mx-1 mt-2 ml-auto text-sm rounded-md"
-        [ngClass]="teamColor(true)"
+        class="px-3 mx-1 mt-2 ml-auto text-sm rounded-md shadow-md"
+        [ngClass]="clickColor(true)"
       >
         ⇄
       </button>
@@ -20,38 +20,38 @@
     <tr class="bg-slate-400">
       <th></th>
       <th class="w-12"></th>
-      <th (click)="sortByName()" class="w-32">
+      <th (click)="sortByName()" class="w-32 hover:text-slate-200">
         <div *ngIf="sortBy != 'name'">Name</div>
         <div *ngIf="sortBy == 'name' && !reversed">Name ↥</div>
         <div *ngIf="sortBy == 'name' && reversed">Name ↧</div>
       </th>
       <th class="w-24">Abilities</th>
-      <th (click)="sortByStat('hp')" class="w-12">
+      <th (click)="sortByStat('hp')" class="w-12 hover:text-slate-200">
         <div *ngIf="sortBy != 'hp'">HP</div>
         <div *ngIf="sortBy == 'hp' && !reversed">HP ↥</div>
         <div *ngIf="sortBy == 'hp' && reversed">HP ↧</div>
       </th>
-      <th (click)="sortByStat('atk')" class="w-12">
+      <th (click)="sortByStat('atk')" class="w-12 hover:text-slate-200">
         <div *ngIf="sortBy != 'atk'">ATK</div>
         <div *ngIf="sortBy == 'atk' && !reversed">ATK ↥</div>
         <div *ngIf="sortBy == 'atk' && reversed">ATK ↧</div>
       </th>
-      <th (click)="sortByStat('def')" class="w-12">
+      <th (click)="sortByStat('def')" class="w-12 hover:text-slate-200">
         <div *ngIf="sortBy != 'def'">DEF</div>
         <div *ngIf="sortBy == 'def' && !reversed">DEF ↥</div>
         <div *ngIf="sortBy == 'def' && reversed">DEF ↧</div>
       </th>
-      <th (click)="sortByStat('spa')" class="w-12">
+      <th (click)="sortByStat('spa')" class="w-12 hover:text-slate-200">
         <div *ngIf="sortBy != 'spa'">SPA</div>
         <div *ngIf="sortBy == 'spa' && !reversed">SPA ↥</div>
         <div *ngIf="sortBy == 'spa' && reversed">SPA ↧</div>
       </th>
-      <th (click)="sortByStat('spd')" class="w-12">
+      <th (click)="sortByStat('spd')" class="w-12 hover:text-slate-200">
         <div *ngIf="sortBy != 'spd'">SPD</div>
         <div *ngIf="sortBy == 'spd' && !reversed">SPD ↥</div>
         <div *ngIf="sortBy == 'spd' && reversed">SPD ↧</div>
       </th>
-      <th (click)="sortByStat('spe')" class="w-12">
+      <th (click)="sortByStat('spe')" class="w-12 hover:text-slate-200">
         <div *ngIf="sortBy != 'spe'">SPE</div>
         <div *ngIf="sortBy == 'spe' && !reversed">SPE ↥</div>
         <div *ngIf="sortBy == 'spe' && reversed">SPE ↧</div>
@@ -77,7 +77,7 @@
       <td>
         <sprite [pokemon]="pokemon"></sprite>
       </td>
-      <td>{{ pokemon.name }}</td>
+      <td class="text-sm">{{ pokemon.name }}</td>
       <td>
         <div *ngFor="let ability of pokemon.abilities" class="text-center">
           {{ ability }}

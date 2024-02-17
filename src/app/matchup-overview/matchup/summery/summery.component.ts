@@ -79,6 +79,12 @@ export class SummeryComponent implements OnInit {
     return 'bg-red-400';
   }
 
+  clickColor(inverted: boolean = false) {
+    if (this.selectedTeam > 0 == inverted)
+      return 'bg-cyan-400 hover:bg-cyan-300';
+    return 'bg-red-400 hover:bg-red-300';
+  }
+
   statColor(statValue: number) {
     if (statValue > this.baseValue + 67) return 'bg-emerald-600';
     if (statValue > this.baseValue + 52) return 'bg-emerald-500';

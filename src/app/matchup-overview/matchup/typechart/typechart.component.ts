@@ -91,4 +91,10 @@ export class TypechartComponent {
     if (this.selectedTeam > 0 == inverted) return 'bg-cyan-400';
     return 'bg-red-400';
   }
+
+  clickColor(inverted: boolean = false) {
+    if (this.selectedTeam > 0 == inverted)
+      return 'bg-cyan-400 hover:bg-cyan-300';
+    return 'bg-red-400 hover:bg-red-300';
+  }
 }
