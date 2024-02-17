@@ -1,12 +1,19 @@
 <div class="w-fit">
-  <button
-    (click)="swapTeams()"
-    class="px-3 text-sm border-t-4 border-b border-x-4 border-slate-400 rounded-t-xl"
-    [ngClass]="teamColor(true)"
+  <div class="flex w-full px-1 bg-slate-400 rounded-t-xl">
+    <div class="flex w-full pb-1 border-b border-slate-300">
+      <h1 class="w-full text-xl font-bold text-center">Defensive Type Chart</h1>
+      <button
+        (click)="swapTeams()"
+        class="px-3 mx-1 mt-2 ml-auto text-sm rounded-md"
+        [ngClass]="teamColor(true)"
+      >
+        ⇄
+      </button>
+    </div>
+  </div>
+  <table
+    class="overflow-auto border-4 table-fixed bg-slate-100 touch-auto border-slate-400"
   >
-    ⇄
-  </button>
-  <table class="overflow-auto border-4 table-fixed touch-auto border-slate-400">
     <thead class="">
       <tr class="">
         <th
@@ -90,4 +97,5 @@
       </tr>
     </tfoot>
   </table>
+  <div class="w-full h-3 rounded-b-full bg-slate-400"></div>
 </div>

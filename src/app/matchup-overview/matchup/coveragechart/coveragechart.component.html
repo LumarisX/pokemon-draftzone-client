@@ -1,11 +1,16 @@
 <div class="w-fit">
-  <button
-    (click)="swapTeams()"
-    class="px-3 text-sm border-t-4 border-b border-x-4 border-slate-400 rounded-t-xl"
-    [ngClass]="teamColor(true)"
-  >
-    ⇄
-  </button>
+  <div class="flex w-full px-1 bg-slate-400 rounded-t-xl">
+    <div class="flex w-full pb-1 border-b border-slate-300">
+      <h1 class="w-full text-xl font-bold text-center">Move Coverage</h1>
+      <button
+        (click)="swapTeams()"
+        class="px-3 mx-1 mt-2 ml-auto text-sm rounded-md"
+        [ngClass]="teamColor(true)"
+      >
+        ⇄
+      </button>
+    </div>
+  </div>
   <div
     class="grid grid-cols-1 gap-1 overflow-y-auto border-4 grid-rows-flex bg-slate-400 border-slate-400 max-h-128"
   >
@@ -13,4 +18,5 @@
       <coverage [pokemon]="pokemon"></coverage>
     </div>
   </div>
+  <div class="w-full h-3 rounded-b-full bg-slate-400"></div>
 </div>

@@ -1,8 +1,10 @@
 <div class="flex flex-wrap items-center overflow-y-auto">
   <div class="flex flex-row w-256 md:w-128">
     <div class="w-1/2 m-1">
-      <div class="text-xl text-center bg-slate-400 text-medium rounded-t-3xl">
-        {{ aTeam.teamName }}
+      <div class="px-1 bg-slate-400 rounded-t-xl">
+        <div class="text-xl font-bold text-center border-b border-slate-300">
+          {{ aTeam.teamName }}
+        </div>
       </div>
       <table
         id="myOverview"
@@ -11,7 +13,7 @@
         <tr class="bg-slate-400">
           <th></th>
           <th></th>
-          <th>Name</th>
+          <th class="text-left">Name</th>
           <th>{{ sortStat | uppercase }}</th>
         </tr>
         <tr
@@ -38,10 +40,13 @@
           <td class="w-12 text-center">{{ pokemon.baseStats.spe }}</td>
         </tr>
       </table>
+      <div class="w-full h-3 rounded-b-full bg-slate-400"></div>
     </div>
     <div class="w-1/2 m-1">
-      <div class="text-xl text-center bg-slate-400 text-medium rounded-t-3xl">
-        {{ bTeam.teamName }}
+      <div class="px-1 bg-slate-400 rounded-t-xl">
+        <div class="text-xl font-bold text-center border-b border-slate-300">
+          {{ bTeam.teamName }}
+        </div>
       </div>
       <table
         id="oppOverview"
@@ -49,7 +54,7 @@
       >
         <tr class="bg-slate-400">
           <th>{{ sortStat | uppercase }}</th>
-          <th>Name</th>
+          <th class="text-right">Name</th>
           <th></th>
           <th></th>
         </tr>
@@ -77,6 +82,7 @@
           </td>
         </tr>
       </table>
+      <div class="w-full h-3 rounded-b-full bg-slate-400"></div>
     </div>
   </div>
 </div>
