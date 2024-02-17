@@ -31,6 +31,7 @@ export type Summery = {
       };
     }
   ];
+  teamName: String;
   stats: {
     mean: {
       hp: number;
