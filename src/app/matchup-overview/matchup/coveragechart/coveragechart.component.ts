@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Coverage } from '../../matchup-interface';
+import { CoverageChart } from '../../matchup-interface';
 import { CoverageComponent } from './coverage/coverage.component';
 import { MatchupService } from '../../../api/matchup.service';
 import { SpriteComponent } from '../../../sprite/sprite.component';
@@ -15,7 +15,7 @@ import { SpriteComponent } from '../../../sprite/sprite.component';
 export class CoveragechartComponent implements OnInit {
   @Input() matchupId!: string;
 
-  teams!: Coverage[][];
+  teams!: CoverageChart[][];
   selectedTeam: number = 0;
 
   constructor(
@@ -25,7 +25,7 @@ export class CoveragechartComponent implements OnInit {
 
   ngOnInit() {
     this.matchupService.getCoveragechart(this.matchupId).subscribe((data) => {
-      this.teams = <Coverage[][]>data;
+      this.teams = <CoverageChart[][]>data;
     });
   }
 

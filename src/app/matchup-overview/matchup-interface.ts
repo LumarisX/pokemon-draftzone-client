@@ -59,7 +59,7 @@ export type Summery = {
   };
 };
 
-export type Typechart = {
+export type TypeChart = {
   team: {
     pid: keyof typeof BattlePokedex;
     weak: Types;
@@ -103,7 +103,7 @@ export type Types = {
   trapped: number;
 };
 
-export type Movechart = [
+export type MoveChart = [
   {
     catName: string;
     moves: [
@@ -115,7 +115,7 @@ export type Movechart = [
   }
 ];
 
-export type Coverage = {
+export type CoverageChart = {
   pid: PokemonId;
   coverage: {
     physical: [

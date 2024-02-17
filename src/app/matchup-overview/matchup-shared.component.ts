@@ -8,7 +8,7 @@ import { MatchupComponent } from './matchup/matchup.component';
   standalone: true,
   template: `
     <div class="bg-gradient-to-r from-cyan-100 via-slate-100 to-red-100">
-      <matchup [matchup_id]="matchupId"></matchup>
+      <matchup [matchupId]="matchupId"></matchup>
     </div>
   `,
   imports: [CommonModule, MatchupComponent, RouterModule],

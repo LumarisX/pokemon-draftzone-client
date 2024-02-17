@@ -12,8 +12,7 @@ import { Summery } from '../../matchup-interface';
   templateUrl: './summery.component.html',
 })
 export class SummeryComponent implements OnInit {
-  @Input() matchupId!: string;
-  teams: Summery[] = [];
+  @Input() teams: Summery[] = [];
   sortBy: 'name' | 'hp' | 'atk' | 'def' | 'spa' | 'spd' | 'spe' | null = null;
   selectedTeam: number = 1;
   reversed: boolean = false;
@@ -22,10 +21,7 @@ export class SummeryComponent implements OnInit {
   constructor(private matchupService: MatchupService) {}
 
   ngOnInit() {
-    this.matchupService.getSummery(this.matchupId).subscribe((data) => {
-      this.teams = <Summery[]>data;
-      this.sortByStat('spe');
-    });
+    this.sortByStat('spe');
   }
 
   sortByStat(sortStat: 'hp' | 'atk' | 'def' | 'spa' | 'spd' | 'spe') {

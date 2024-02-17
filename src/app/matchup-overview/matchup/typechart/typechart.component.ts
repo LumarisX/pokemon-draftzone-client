@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { MatchupService } from '../../../api/matchup.service';
 import { SpriteComponent } from '../../../sprite/sprite.component';
-import { Typechart, Types } from '../../matchup-interface';
+import { TypeChart, Types } from '../../matchup-interface';
 
 @Component({
   selector: 'typechart',
@@ -12,7 +12,7 @@ import { Typechart, Types } from '../../matchup-interface';
 })
 export class TypechartComponent {
   @Input() matchupId!: string;
-  teams!: Typechart[];
+  teams!: TypeChart[];
   selectedTeam: number = 1;
   types: (keyof Types)[] = [
     'Normal',
@@ -39,7 +39,7 @@ export class TypechartComponent {
 
   ngOnInit() {
     this.matchupService.getTypechart(this.matchupId).subscribe((data) => {
-      this.teams = <Typechart[]>data;
+      this.teams = <TypeChart[]>data;
     });
   }
 

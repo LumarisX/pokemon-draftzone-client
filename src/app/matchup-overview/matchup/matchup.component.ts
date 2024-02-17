@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { SpriteComponent } from '../../sprite/sprite.component';
 import { CoveragechartComponent } from './coveragechart/coveragechart.component';
@@ -8,6 +8,14 @@ import { OverviewComponent } from './overview/overview.component';
 import { SpeedchartComponent } from './speedchart/speedchart.component';
 import { SummeryComponent } from './summery/summery.component';
 import { TypechartComponent } from './typechart/typechart.component';
+import {
+  CoverageChart,
+  MoveChart,
+  SpeedChart,
+  Summery,
+  TypeChart,
+} from '../matchup-interface';
+import { MatchupService } from '../../api/matchup.service';
 
 @Component({
   selector: 'matchup',
@@ -25,8 +33,32 @@ import { TypechartComponent } from './typechart/typechart.component';
     OverviewComponent,
   ],
 })
-export class MatchupComponent {
-  @Input() matchup_id = '';
+export class MatchupComponent implements OnInit {
+  @Input() matchupId = '';
 
-  constructor() {}
+  coverageChart: CoverageChart[][] = [];
+  moveChart: MoveChart[] = [];
+  speedChart: SpeedChart | null = null;
+  summery: Summery[] = [];
+  typeChart: TypeChart[] = [];
+
+  constructor(private matchupService: MatchupService) {}
+
+  ngOnInit(): void {
+    this.matchupService.getCoveragechart(this.matchupId).subscribe((data) => {
+      this.coverageChart = <CoverageChart[][]>data;
+    });
+    this.matchupService.getMovechart(this.matchupId).subscribe((data) => {
+      this.moveChart = <MoveChart[]>data;
+    });
+    this.matchupService.getTypechart(this.matchupId).subscribe((data) => {
+      this.typeChart = <TypeChart[]>data;
+    });
+    this.matchupService.getSummery(this.matchupId).subscribe((data) => {
+      this.summery = <Summery[]>data;
+    });
+    this.matchupService.getSpeedchart(this.matchupId).subscribe((data) => {
+      this.speedChart = <SpeedChart>data;
+    });
+  }
 }
