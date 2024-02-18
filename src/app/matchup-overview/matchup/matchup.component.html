@@ -1,8 +1,8 @@
 <div class="flex flex-wrap p-2 text-xs">
-  <overview class="z-10 m-2" [matchupId]="this.matchupId"></overview>
+  <overview class="z-10 m-2" [teams]="summery"></overview>
   <summery class="z-10 m-2" [teams]="summery"></summery>
-  <typechart class="z-10 m-2" [matchupId]="this.matchupId"></typechart>
-  <speedchart class="z-10 m-2" [matchupId]="this.matchupId"></speedchart>
-  <movechart class="z-10 m-2" [matchupId]="this.matchupId"></movechart>
-  <coveragechart class="z-10 m-2" [matchupId]="this.matchupId"></coveragechart>
+  <typechart class="z-10 m-2" [teams]="typeChart"></typechart>
+  <speedchart class="z-10 m-2" [speedchart]="speedChart"></speedchart>
+  <movechart class="z-10 m-2" [teams]="moveChart"></movechart>
+  <coveragechart class="z-10 m-2" [teams]="coverageChart"></coveragechart>
 </div>

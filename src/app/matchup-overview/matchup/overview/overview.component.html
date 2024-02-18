@@ -3,7 +3,7 @@
     <div class="w-1/2 m-1">
       <div class="px-1 bg-slate-400 rounded-t-xl">
         <div class="text-xl font-bold text-center border-b border-slate-300">
-          {{ aTeam.teamName }}
+          {{ teams[0].teamName }}
         </div>
       </div>
       <table
@@ -17,7 +17,7 @@
           <th>{{ sortStat | uppercase }}</th>
         </tr>
         <tr
-          *ngFor="let pokemon of aTeam.team"
+          *ngFor="let pokemon of teams[0].team"
           class="h-12 border-b bg-cyan-300 border-slate-400"
         >
           <td class="w-fit">
@@ -45,7 +45,7 @@
     <div class="w-1/2 m-1">
       <div class="px-1 bg-slate-400 rounded-t-xl">
         <div class="text-xl font-bold text-center border-b border-slate-300">
-          {{ bTeam.teamName }}
+          {{ teams[1].teamName }}
         </div>
       </div>
       <table
@@ -59,7 +59,7 @@
           <th></th>
         </tr>
         <tr
-          *ngFor="let pokemon of bTeam.team"
+          *ngFor="let pokemon of teams[1].team"
           class="h-12 bg-red-400 border-b border-slate-400"
         >
           <td class="w-12 text-center">{{ pokemon.baseStats.spe }}</td>

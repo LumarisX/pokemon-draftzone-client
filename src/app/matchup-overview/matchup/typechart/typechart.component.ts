@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { MatchupService } from '../../../api/matchup.service';
 import { SpriteComponent } from '../../../sprite/sprite.component';
 import { TypeChart, Types } from '../../matchup-interface';
 
@@ -11,8 +10,7 @@ import { TypeChart, Types } from '../../matchup-interface';
   imports: [CommonModule, SpriteComponent],
 })
 export class TypechartComponent {
-  @Input() matchupId!: string;
-  teams!: TypeChart[];
+  @Input() teams!: TypeChart[];
   selectedTeam: number = 1;
   types: (keyof Types)[] = [
     'Normal',
@@ -35,13 +33,7 @@ export class TypechartComponent {
     'Fairy',
   ];
 
-  constructor(private matchupService: MatchupService) {}
-
-  ngOnInit() {
-    this.matchupService.getTypechart(this.matchupId).subscribe((data) => {
-      this.teams = <TypeChart[]>data;
-    });
-  }
+  constructor() {}
 
   swapTeams() {
     this.selectedTeam = (this.selectedTeam + 1) % this.teams.length;

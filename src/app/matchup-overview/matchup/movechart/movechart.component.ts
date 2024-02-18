@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { MatchupService } from '../../../api/matchup.service';
 import { SpriteComponent } from '../../../sprite/sprite.component';
 import { MoveChart } from '../../matchup-interface';
 
@@ -11,17 +10,10 @@ import { MoveChart } from '../../matchup-interface';
   templateUrl: './movechart.component.html',
 })
 export class MovechartComponent {
-  @Input() matchupId!: string;
-  teams!: MoveChart[];
+  @Input() teams!: MoveChart[];
   selectedTeam: number = 1;
 
-  constructor(private matchupService: MatchupService) {}
-
-  ngOnInit() {
-    this.matchupService.getMovechart(this.matchupId).subscribe((data) => {
-      this.teams = <MoveChart[]>data;
-    });
-  }
+  constructor() {}
 
   swapTeams() {
     this.selectedTeam = (this.selectedTeam + 1) % this.teams.length;

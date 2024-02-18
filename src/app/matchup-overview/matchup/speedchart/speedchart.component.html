@@ -16,7 +16,10 @@
       <div class="py-2 text-medium">Spe</div>
     </div>
   </div>
-  <div class="w-full overflow-y-auto max-h-128 md:w-128 snap-y snap-mandatory">
+  <div
+    *ngIf="speedchart"
+    class="w-full overflow-y-auto max-h-128 md:w-128 snap-y snap-mandatory"
+  >
     <div *ngFor="let tier of speedchart.tiers">
       <div
         *ngIf="filtered(tier)"
