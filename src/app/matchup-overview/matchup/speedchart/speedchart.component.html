@@ -1,19 +1,47 @@
 <div class="flex w-full px-1 bg-slate-400 rounded-t-xl">
   <div class="flex w-full pb-1 border-b border-slate-300">
     <h1 class="w-full text-xl font-bold text-center">Speed Table</h1>
-    <img
-      class="px-1 mx-1 mt-2 ml-auto text-sm rounded-md w-7 bg-slate-300"
-      src="../../../assets/icons/filter.svg"
-      title="Filter"
-    />
+    <div class="relative w-8 mx-1 mt-2 ml-auto">
+      <div
+        (click)="showFilter = !showFilter"
+        class="px-1 rounded-md cursor-pointer bg-slate-300 hover:bg-slate-200"
+      >
+        <img
+          class="w-full"
+          src="../../../assets/icons/filter.svg"
+          title="Filter"
+        />
+      </div>
+      <div
+        class="absolute mt-2 bg-white border rounded-md shadow-lg z-5000"
+        *ngIf="showFilter"
+        style="right: 0"
+      >
+        <div
+          *ngFor="let modifier of speedchart?.modifiers"
+          class="flex px-1 space-x-1 z-5000"
+        >
+          <input
+            type="checkbox"
+            id="{{ modifier }}"
+            name="{{ modifier }}"
+            value="{{ modifier }}"
+          />
+          <label for="{{ modifier }}">{{ modifier }}</label>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 <div class="border-4 border-slate-400 bg-slate-400">
   <div class="bg-slate-200">
-    <div class="flex border-b-2 border-slate-400">
-      <div class="py-2 text-medium">Name</div>
-      <div class="py-2 text-medium">Desc</div>
-      <div class="py-2 text-medium">Spe</div>
+    <div class="flex space-x-2 border-b-2 border-slate-400">
+      <div class="w-10 pl-2"></div>
+      <div class="px-1 text-lg font-bold">Name</div>
+      <div class="flex items-center justify-end flex-grow ml-auto">
+        <div class="w-24 mr-4 text-lg font-bold text-center">Modifiers</div>
+        <div class="w-16 mr-4 text-lg font-bold text-center">Speed</div>
+      </div>
     </div>
   </div>
   <div
@@ -26,12 +54,102 @@
         class="flex space-x-2 border-b snap-start border-slate-400"
         [ngClass]="speedClasses(tier)"
       >
-        <div>{{ tier.name }}</div>
-        <div>{{ tier.speed }}</div>
-        <div>
-          {{ tier.modifiers }}
-          <div *ngIf="tier.modifiers.includes('max+')" class="w-4">
-            <img src="../../../../assets/icons/circle-plus.svg" />
+        <sprite
+          class="w-10 pl-2 h-fit"
+          [pokemon]="{ pid: 'roaringmoon' }"
+          [flipped]="true"
+        ></sprite>
+        <div class="px-1 text-lg">{{ tier.name }}</div>
+        <div class="flex justify-end flex-grow ml-auto">
+          <div class="flex h-5 space-x-1">
+            <div *ngIf="tier.modifiers.includes('max+')" class="flex space-x-1">
+              <img
+                class="h-full border rounded-full bg-slate-200 border-slate-500"
+                src="../../../../assets/icons/speedchart/m.svg"
+                title="Max Speed"
+                alt="Max"
+              />
+
+              <img
+                class="h-full border rounded-full bg-slate-200 border-slate-500"
+                src="../../../../assets/icons/speedchart/circle-plus.svg"
+                title="+ Nature"
+                alt="+"
+              />
+            </div>
+            <img
+              *ngIf="tier.modifiers.includes('max')"
+              class="h-full border rounded-full bg-slate-200 border-slate-500"
+              src="../../../../assets/icons/speedchart/m.svg"
+              title="+ Max Speed"
+              alt="Max"
+            />
+            <img
+              class="h-full border rounded-full bg-slate-200 border-slate-500"
+              *ngIf="tier.modifiers.includes('scarf')"
+              src="../../../../assets/icons/speedchart/scarf.svg"
+              title="Choice Scarf"
+              alt="Choice Scarf"
+            />
+            <img
+              class="h-full border rounded-full bg-slate-200 border-slate-500"
+              *ngIf="tier.modifiers.includes('tailwind')"
+              src="../../../../assets/icons/speedchart/tailwind.svg"
+              title="Tailwind"
+              alt="Tailwind"
+            />
+            <img
+              class="h-full border rounded-full bg-slate-200 border-slate-500"
+              *ngIf="tier.modifiers.includes('paralyzed')"
+              src="../../../../assets/icons/speedchart/paralyzed.svg"
+              title="Paralyzed"
+              alt="Paralyzed"
+            />
+            <img
+              class="h-full border rounded-full bg-slate-200 border-slate-500"
+              *ngIf="tier.modifiers.includes('Quark Drive')"
+              src="../../../../assets/icons/speedchart/booster.svg"
+              title="Quark Drive"
+              alt="Quark Drive"
+            />
+            <img
+              class="h-full border rounded-full bg-slate-200 border-slate-500"
+              *ngIf="tier.modifiers.includes('Protosynthesis')"
+              src="../../../../assets/icons/speedchart/booster.svg"
+              title="Protosynthesis"
+              alt="Protosynthesis"
+            />
+            <img
+              class="h-full border rounded-full bg-slate-200 border-slate-500"
+              *ngIf="tier.modifiers.includes('Sand Rush')"
+              src="../../../../assets/icons/speedchart/sand.svg"
+              title="Sand Rush"
+              alt="Sand Rush"
+            />
+            <img
+              class="h-full border rounded-full bg-slate-200 border-slate-500"
+              *ngIf="tier.modifiers.includes('Swift Swim')"
+              src="../../../../assets/icons/speedchart/rain.svg"
+              title="Swift Swim"
+              alt="Swift Swim"
+            />
+            <img
+              class="h-full border rounded-full bg-slate-200 border-slate-500"
+              *ngIf="tier.modifiers.includes('Chlorophyll')"
+              src="../../../../assets/icons/speedchart/sun.svg"
+              title="Chlorophyll"
+              alt="Chlorophyll"
+            />
+            <img
+              class="h-full border rounded-full bg-slate-200 border-slate-500"
+              *ngIf="tier.modifiers.includes('Slush Rush')"
+              src="../../../../assets/icons/speedchart/snow.svg"
+              title="Slush Rush"
+              alt="Slush Rush"
+            />
+          </div>
+          <div class="w-16 text-lg font-semibold text-center">
+            {{ tier.speed }}
           </div>
         </div>
       </div>

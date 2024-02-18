@@ -1,15 +1,17 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { SpeedChart, Speedtier } from '../../matchup-interface';
+import { SpriteComponent } from '../../../sprite/sprite.component';
 
 @Component({
   selector: 'speedchart',
   standalone: true,
-  imports: [CommonModule],
   templateUrl: './speedchart.component.html',
+  imports: [CommonModule, SpriteComponent],
 })
 export class SpeedchartComponent {
   @Input() speedchart!: SpeedChart | null;
+  showFilter: boolean = false;
 
   constructor() {}
 
@@ -42,13 +44,10 @@ export class SpeedchartComponent {
   filtered(tier: Speedtier) {
     let bad = [
       'Stage 2',
-      'scarf',
-      'tailwind',
       'Unburden',
       'Quick Feet',
       'Stage 1',
       'Stage -1',
-      'paralyzed',
       'base',
       'min-',
       'ironball',

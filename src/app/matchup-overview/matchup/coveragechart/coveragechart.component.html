@@ -14,8 +14,11 @@
   <div
     class="grid grid-cols-1 gap-1 overflow-y-auto border-4 grid-rows-flex bg-slate-400 border-slate-400 max-h-128"
   >
-    <div *ngFor="let pokemon of teams[selectedTeam]" [ngClass]="teamColor()">
-      <coverage [pokemon]="pokemon"></coverage>
+    <div *ngFor="let pokemon of coverage[selectedTeam]" [ngClass]="teamColor()">
+      <coverage
+        [pokemon]="pokemon"
+        [typechart]="typecharts[(selectedTeam + 1) % typecharts.length]"
+      ></coverage>
     </div>
   </div>
   <div class="w-full h-3 rounded-b-full bg-slate-400"></div>

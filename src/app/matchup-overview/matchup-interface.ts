@@ -104,17 +104,17 @@ export type Types = {
   trapped: number;
 };
 
-export type MoveChart = [
-  {
-    catName: string;
-    moves: [
-      {
-        moveName: string;
-        pokemon: [keyof typeof BattlePokedex];
-      }
-    ];
-  }
-];
+export type MoveChart = MoveCategory[];
+
+export type MoveCategory = {
+  catName: string;
+  moves: [
+    {
+      moveName: string;
+      pokemon: [keyof typeof BattlePokedex];
+    }
+  ];
+};
 
 export type CoverageChart = {
   pid: PokemonId;

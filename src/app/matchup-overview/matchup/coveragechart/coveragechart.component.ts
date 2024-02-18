@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { SpriteComponent } from '../../../sprite/sprite.component';
-import { CoverageChart } from '../../matchup-interface';
+import { CoverageChart, TypeChart } from '../../matchup-interface';
 import { CoverageComponent } from './coverage/coverage.component';
 
 @Component({
@@ -11,13 +11,14 @@ import { CoverageComponent } from './coverage/coverage.component';
   templateUrl: './coveragechart.component.html',
 })
 export class CoveragechartComponent {
-  @Input() teams!: CoverageChart[][];
+  @Input() coverage!: CoverageChart[][];
+  @Input() typecharts!: TypeChart[];
   selectedTeam: number = 0;
 
   constructor() {}
 
   swapTeams() {
-    this.selectedTeam = (this.selectedTeam + 1) % this.teams.length;
+    this.selectedTeam = (this.selectedTeam + 1) % this.coverage.length;
   }
 
   teamColor(inverted: boolean = false) {

@@ -2,12 +2,18 @@ import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { SpriteComponent } from '../../../sprite/sprite.component';
 import { MoveChart } from '../../matchup-interface';
+import { MoveCategoryComponent } from './move-category/move-category.component';
 
 @Component({
   selector: 'movechart',
   standalone: true,
-  imports: [CommonModule, SpriteComponent],
   templateUrl: './movechart.component.html',
+  imports: [
+    CommonModule,
+    SpriteComponent,
+    MovechartComponent,
+    MoveCategoryComponent,
+  ],
 })
 export class MovechartComponent {
   @Input() teams!: MoveChart[];

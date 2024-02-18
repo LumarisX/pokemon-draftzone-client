@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { SpriteComponent } from '../../../../sprite/sprite.component';
-import { CoverageChart } from '../../../matchup-interface';
+import { CoverageChart, TypeChart } from '../../../matchup-interface';
 
 @Component({
   selector: 'coverage',
@@ -11,6 +11,7 @@ import { CoverageChart } from '../../../matchup-interface';
 })
 export class CoverageComponent {
   @Input() pokemon!: CoverageChart;
+  @Input() typechart!: TypeChart;
 
   constructor() {}
 
