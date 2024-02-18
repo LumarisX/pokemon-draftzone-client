@@ -25,7 +25,12 @@
       >
         <div>{{ tier.name }}</div>
         <div>{{ tier.speed }}</div>
-        <div>{{ tier.modifiers }}</div>
+        <div>
+          {{ tier.modifiers }}
+          <div *ngIf="tier.modifiers.includes('max+')" class="w-4">
+            <img src="../../../../assets/icons/circle-plus.svg" />
+          </div>
+        </div>
       </div>
     </div>
   </div>
