@@ -112,8 +112,7 @@ export type MoveCategory = {
   ];
 };
 
-export type CoverageChart = {
-  pid: PokemonId;
+export type CoverageChart = Pokemon & {
   coverage: {
     physical: [
       {

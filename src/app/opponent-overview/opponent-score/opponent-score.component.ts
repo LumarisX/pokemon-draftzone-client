@@ -63,7 +63,7 @@ export class OpponentScoreComponent implements OnInit {
 
   addNewPokemon(
     index: number = this.aTeamArray.length,
-    pokemonData: Pokemon = { pid: '' }
+    pokemonData: Pokemon = { pid: '', name: '' }
   ) {
     console.log(index);
     this.aTeamArray?.insert(

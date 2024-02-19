@@ -11,7 +11,7 @@ import { getSpriteName } from '../pokemon';
     <img
       class="h-full w-full"
       [ngClass]="isFlipped()"
-      title="{{ pokemon.pid }}"
+      title="{{ pokemon.name }}"
       src="{{ getPath() }}"
       onerror="this.src='https://play.pokemonshowdown.com/sprites/gen5/0.png';"
     />

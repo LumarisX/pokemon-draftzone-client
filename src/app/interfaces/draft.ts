@@ -19,8 +19,9 @@ export type Draft = {
 export type Pokemon = {
   pid: PokemonId | '';
   shiny?: boolean;
+  name: string;
   capt?: {
-    tera?: String[];
+    tera?: string[];
     z?: boolean;
   };
 };

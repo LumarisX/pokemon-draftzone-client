@@ -1,4 +1,5 @@
 import { PokemonId } from '../pokemon';
+import { Pokemon } from './draft';
 
 export type Matchup = {
   _id: string;
@@ -12,7 +13,7 @@ export type Matchup = {
 type Side = {
   _id?: string;
   teamName: string;
-  team: Team[];
+  team: Pokemon[];
   name?: string;
   stats: {
     pid: PokemonId;
@@ -20,8 +21,4 @@ type Side = {
     deaths?: number;
   }[];
   paste?: String;
-};
-
-type Team = {
-  pid: PokemonId;
 };

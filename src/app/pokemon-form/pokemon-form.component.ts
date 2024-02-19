@@ -69,6 +69,7 @@ export class PokemonFormComponent implements OnInit {
     pokemonData: Pokemon = {
       pid: '',
       shiny: false,
+      name: '',
       capt: { tera: [], z: false },
     }
   ): FormGroup {

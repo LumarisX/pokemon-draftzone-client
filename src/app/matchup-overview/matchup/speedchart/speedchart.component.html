@@ -56,10 +56,10 @@
       >
         <sprite
           class="w-10 pl-2 h-fit"
-          [pokemon]="{ pid: 'roaringmoon' }"
+          [pokemon]="tier.pokemon"
           [flipped]="true"
         ></sprite>
-        <div class="px-1 text-lg">{{ tier.pokemon.pid }}</div>
+        <div class="px-1 text-lg">{{ tier.pokemon.name }}</div>
         <div class="flex justify-end flex-grow ml-auto">
           <div class="flex h-5 space-x-1">
             <div *ngIf="tier.modifiers.includes('max+')" class="flex space-x-1">

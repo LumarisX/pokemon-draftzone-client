@@ -86,7 +86,7 @@ export class DraftFormComponent implements OnInit {
 
   addNewPokemon(
     index: number = this.teamArray.length,
-    pokemonData: Pokemon = { pid: '' }
+    pokemonData: Pokemon = { pid: '', name: '' }
   ) {
     console.log(index);
     this.teamArray?.insert(
