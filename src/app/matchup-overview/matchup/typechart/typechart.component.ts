@@ -1,7 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core';
 import { SpriteComponent } from '../../../sprite/sprite.component';
 import { TypeChart, Types } from '../../matchup-interface';
+import { Pokemon } from '../../../interfaces/draft';
 
 @Component({
   selector: 'typechart',
@@ -9,7 +16,7 @@ import { TypeChart, Types } from '../../matchup-interface';
   templateUrl: './typechart.component.html',
   imports: [CommonModule, SpriteComponent],
 })
-export class TypechartComponent implements OnInit {
+export class TypechartComponent implements OnChanges {
   @Input() typecharts!: TypeChart[];
   selectedTeam: number = 1;
   types: (keyof Types)[] = [
@@ -32,20 +39,21 @@ export class TypechartComponent implements OnInit {
     'Steel',
     'Fairy',
   ];
-  
-  weaknesses = {}
-  resistances = {}
-  difference = {}
-  differential = {}
+
+  weaknesses: number[] = [];
+  resistances: number[] = [];
+  difference: number[] = [];
+  differential: number[] = [];
 
   constructor() {}
-  
-  ngOnInit(){
-    summerize()
+
+  ngOnChanges(changes: SimpleChanges): void {
+    this.summerize();
   }
 
   swapTeams() {
     this.selectedTeam = (this.selectedTeam + 1) % this.typecharts.length;
+    this.summerize();
   }
 
   typeColor(weak: number): string {
@@ -95,30 +103,41 @@ export class TypechartComponent implements OnInit {
 
   clickColor(inverted: boolean = false) {
     if (this.selectedTeam > 0 == inverted)
-      return 'bg-cyan-400 hover:bg-cyan-300';
-    return 'bg-red-400 hover:bg-red-300';
+      return 'bg-cyan-400 hover:bg-cyan-300 cursor-pointer';
+    return 'bg-red-400 hover:bg-red-300 cursor-pointer';
   }
-  
-  summerize() {
-    for (let t of this.types) {
-      this.weaknesses[t] = 0
-      this.resistances[t] = 0
-      this.difference[t] = 0
-      this.differential[t] = 0
+
+  toggleVisible(
+    pokemon: Pokemon & {
+      weak: Types;
+      disabled?: Boolean;
     }
-    for (let pokemon of this.typecharts[selectedTeam].team) {
-      for (let t of this.types) {
-        if (pokemon.weak[t] > 1) {
-          this.weaknesses[t]++
-          this.difference[t]--
-        } else if (pokemon.weak[t] < 1) {
-          this.resistances[type]++
-          this.difference[type]++
-        }
-        if (pokemon.weak[type] > 0) {
-          this.differential[type] -= Math.log2(pokemon.weak[type])
-        } else {
-          this.differential[type] += 2
+  ) {
+    pokemon.disabled = !pokemon.disabled;
+    console.log(pokemon);
+    this.summerize();
+  }
+
+  summerize() {
+    this.weaknesses = new Array(this.types.length).fill(0);
+    this.resistances = new Array(this.types.length).fill(0);
+    this.difference = new Array(this.types.length).fill(0);
+    this.differential = new Array(this.types.length).fill(0);
+    for (let pokemon of this.typecharts[this.selectedTeam].team) {
+      if (!pokemon.disabled) {
+        for (let t in this.types) {
+          if (pokemon.weak[this.types[t]] > 1) {
+            this.weaknesses[t]++;
+            this.difference[t]--;
+          } else if (pokemon.weak[this.types[t]] < 1) {
+            this.resistances[t]++;
+            this.difference[t]++;
+          }
+          if (pokemon.weak[this.types[t]] > 0) {
+            this.differential[t] -= Math.log2(pokemon.weak[this.types[t]]);
+          } else {
+            this.differential[t] += 2;
+          }
         }
       }
     }

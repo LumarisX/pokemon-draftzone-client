@@ -33,12 +33,19 @@
       </tr>
     </thead>
     <tbody class="border-b-4 border-slate-400">
-      <tr *ngFor="let pokemon of teams[selectedTeam].team" class="">
-        <th class="w-12 border-r-4 border-slate-400" [ngClass]="teamColor()">
-          <sprite [pokemon]="pokemon"></sprite>
+      <tr *ngFor="let pokemon of typecharts[selectedTeam].team" class="">
+        <th
+          class="w-12 border-r-4 border-slate-400"
+          [ngClass]="clickColor()"
+          (click)="toggleVisible(pokemon)"
+        >
+          <sprite
+            [pokemon]="pokemon"
+            [class.opacity-60]="pokemon.disabled"
+          ></sprite>
         </th>
         <td
-          *ngFor="let type of types"
+          *ngFor="let type of !pokemon.disabled ? types : []"
           class="text-center"
           [ngClass]="typeColor(pokemon.weak[type])"
         >
@@ -50,21 +57,21 @@
       <tr>
         <th class="text-xs bg-rose-400">Weaks</th>
         <td
-          *ngFor="let type of types"
+          *ngFor="let weakness of weaknesses"
           class="text-center"
-          [ngClass]="weakColor(teams[selectedTeam].weaknesses[type])"
+          [ngClass]="weakColor(weakness)"
         >
-          {{ weaknesses[type] }}
+          {{ weakness }}
         </td>
       </tr>
       <tr>
         <th class="text-xs bg-emerald-400">Resists</th>
         <td
-          *ngFor="let type of types"
+          *ngFor="let resistance of resistances"
           class="text-center"
-          [ngClass]="resistColor(teams[selectedTeam].resistances[type])"
+          [ngClass]="resistColor(resistance)"
         >
-          {{ resistances[type] }}
+          {{ resistance }}
         </td>
       </tr>
       <tr>
@@ -74,11 +81,11 @@
           Diff
         </th>
         <td
-          *ngFor="let type of types"
+          *ngFor="let diff of difference"
           class="text-center"
-          [ngClass]="diffColor(teams[selectedTeam].difference[type])"
+          [ngClass]="diffColor(diff)"
         >
-          {{ difference[type] }}
+          {{ diff }}
         </td>
       </tr>
       <tr>
@@ -88,11 +95,11 @@
           Log
         </th>
         <td
-          *ngFor="let type of types"
+          *ngFor="let diff of differential"
           class="text-center"
-          [ngClass]="diffColor(teams[selectedTeam].differential[type])"
+          [ngClass]="diffColor(diff)"
         >
-          {{ differential[type] | number : "1.0-0" }}
+          {{ diff | number : "1.0-0" }}
         </td>
       </tr>
     </tfoot>

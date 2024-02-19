@@ -3,7 +3,7 @@ import { BattlePokedex } from '../pokedex';
 import { PokemonId } from '../pokemon';
 
 export type Speedtier = {
-  name: string;
+  pokemon: Pokemon;
   speed: number;
   modifiers: string[];
   team: number;
@@ -61,11 +61,10 @@ export type Summery = {
 };
 
 export type TypeChart = {
-  team: {
-    pid: keyof typeof BattlePokedex;
+  team: (Pokemon & {
     weak: Types;
-    enabled?: Boolean;
-  }[];
+    disabled?: Boolean;
+  })[];
 };
 
 export type Types = {
