@@ -64,11 +64,8 @@ export type TypeChart = {
   team: {
     pid: keyof typeof BattlePokedex;
     weak: Types;
+    enabled?: Boolean;
   }[];
-  weaknesses: Types;
-  resistances: Types;
-  difference: Types;
-  differential: Types;
 };
 
 export type Types = {

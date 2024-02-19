@@ -54,7 +54,7 @@
           class="text-center"
           [ngClass]="weakColor(teams[selectedTeam].weaknesses[type])"
         >
-          {{ teams[selectedTeam].weaknesses[type] }}
+          {{ weaknesses[type] }}
         </td>
       </tr>
       <tr>
@@ -64,7 +64,7 @@
           class="text-center"
           [ngClass]="resistColor(teams[selectedTeam].resistances[type])"
         >
-          {{ teams[selectedTeam].resistances[type] }}
+          {{ resistances[type] }}
         </td>
       </tr>
       <tr>
@@ -78,7 +78,7 @@
           class="text-center"
           [ngClass]="diffColor(teams[selectedTeam].difference[type])"
         >
-          {{ teams[selectedTeam].difference[type] }}
+          {{ difference[type] }}
         </td>
       </tr>
       <tr>
@@ -92,7 +92,7 @@
           class="text-center"
           [ngClass]="diffColor(teams[selectedTeam].differential[type])"
         >
-          {{ teams[selectedTeam].differential[type] | number : "1.0-0" }}
+          {{ differential[type] | number : "1.0-0" }}
         </td>
       </tr>
     </tfoot>

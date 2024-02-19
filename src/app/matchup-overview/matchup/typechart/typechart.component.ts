@@ -9,8 +9,8 @@ import { TypeChart, Types } from '../../matchup-interface';
   templateUrl: './typechart.component.html',
   imports: [CommonModule, SpriteComponent],
 })
-export class TypechartComponent {
-  @Input() teams!: TypeChart[];
+export class TypechartComponent implements OnInit {
+  @Input() typecharts!: TypeChart[];
   selectedTeam: number = 1;
   types: (keyof Types)[] = [
     'Normal',
@@ -32,11 +32,20 @@ export class TypechartComponent {
     'Steel',
     'Fairy',
   ];
+  
+  weaknesses = {}
+  resistances = {}
+  difference = {}
+  differential = {}
 
   constructor() {}
+  
+  ngOnInit(){
+    summerize()
+  }
 
   swapTeams() {
-    this.selectedTeam = (this.selectedTeam + 1) % this.teams.length;
+    this.selectedTeam = (this.selectedTeam + 1) % this.typecharts.length;
   }
 
   typeColor(weak: number): string {
@@ -88,5 +97,30 @@ export class TypechartComponent {
     if (this.selectedTeam > 0 == inverted)
       return 'bg-cyan-400 hover:bg-cyan-300';
     return 'bg-red-400 hover:bg-red-300';
+  }
+  
+  summerize() {
+    for (let t of this.types) {
+      this.weaknesses[t] = 0
+      this.resistances[t] = 0
+      this.difference[t] = 0
+      this.differential[t] = 0
+    }
+    for (let pokemon of this.typecharts[selectedTeam].team) {
+      for (let t of this.types) {
+        if (pokemon.weak[t] > 1) {
+          this.weaknesses[t]++
+          this.difference[t]--
+        } else if (pokemon.weak[t] < 1) {
+          this.resistances[type]++
+          this.difference[type]++
+        }
+        if (pokemon.weak[type] > 0) {
+          this.differential[type] -= Math.log2(pokemon.weak[type])
+        } else {
+          this.differential[type] += 2
+        }
+      }
+    }
   }
 }
