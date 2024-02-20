@@ -3,7 +3,7 @@ import { PokemonId } from '../pokemon';
 export type Draft = {
   _id: string;
   leagueName: string;
-  teamName?: string;
+  teamName: string;
   leagueId: string;
   format: number;
   ruleset: number;

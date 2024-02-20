@@ -16,6 +16,10 @@ export class DraftService {
     return this.apiService.get(`draft/${teamName}`);
   }
 
+  getMatchup(teamName: string) {
+    return this.apiService.get(`draft/${teamName}`);
+  }
+
   newDraft(draftData: Object) {
     return this.apiService.post(`draft/teams`, draftData);
   }

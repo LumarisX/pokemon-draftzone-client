@@ -1,12 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import {
+  AbstractControl,
   FormArray,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
+  Validators,
 } from '@angular/forms';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { DraftService } from '../../api/draft.service';
 import { Draft, Pokemon } from '../../interfaces/draft';
 import { PokemonFormComponent } from '../../pokemon-form/pokemon-form.component';
@@ -38,7 +40,7 @@ export class DraftFormComponent implements OnInit {
     private route: ActivatedRoute,
     private draftService: DraftService,
     private dataService: DataService,
-    private apiService: ApiService
+    private router: Router
   ) {}
 
   draftForm!: FormGroup;
@@ -48,13 +50,16 @@ export class DraftFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.draftForm = new FormGroup({
-      leagueName: new FormControl(''),
-      teamName: new FormControl(''),
-      format: new FormControl(''),
-      ruleset: new FormControl(''),
-      team: new FormArray([PokemonFormComponent.addPokemonForm()]),
-    });
+    this.draftForm = new FormGroup(
+      {
+        leagueName: new FormControl('', Validators.required),
+        teamName: new FormControl('', Validators.required),
+        format: new FormControl('', Validators.required),
+        ruleset: new FormControl('', Validators.required),
+        team: new FormArray([PokemonFormComponent.addPokemonForm()]),
+      },
+      [this.validateDraftForm]
+    );
 
     this.dataService.getFormats().subscribe((formats) => {
       this.formats = <any>formats;
@@ -74,13 +79,19 @@ export class DraftFormComponent implements OnInit {
           for (let pokemon of draft.team) {
             pokemonForms.push(PokemonFormComponent.addPokemonForm(pokemon));
           }
-          this.draftForm = new FormGroup({
-            leagueName: new FormControl(draft.leagueName),
-            teamName: new FormControl(draft.teamName),
-            format: new FormControl(draft.format),
-            ruleset: new FormControl(draft.ruleset),
-            team: new FormArray(pokemonForms),
-          });
+          this.draftForm = new FormGroup(
+            {
+              leagueName: new FormControl(
+                draft.leagueName,
+                Validators.required
+              ),
+              teamName: new FormControl(draft.teamName, Validators.required),
+              format: new FormControl(draft.format, Validators.required),
+              ruleset: new FormControl(draft.ruleset, Validators.required),
+              team: new FormArray(pokemonForms),
+            },
+            [this.validateDraftForm]
+          );
         });
       }
     });
@@ -101,13 +112,27 @@ export class DraftFormComponent implements OnInit {
     this.teamArray?.removeAt(index);
   }
 
-  //fix depreciated
+  validateDraftForm(control: AbstractControl) {
+    const formGroup = control as FormGroup;
+    const teamArray = formGroup.get('team') as FormArray;
+    if (teamArray.length === 0) {
+      return { noTeams: true };
+    }
+    return null;
+  }
+
   onSubmit() {
-    this.draftService.newDraft(this.draftForm.value).subscribe(
-      (response) => {
-        console.log('Success!', response);
-      },
-      (error) => console.error('Error!', error)
-    );
+    if (this.draftForm.valid) {
+      this.draftService.newDraft(this.draftForm.value).subscribe(
+        (response) => {
+          console.log('Success!', response);
+          // Redirect to '/draft' route
+          this.router.navigate(['/draft']);
+        },
+        (error) => console.error('Error!', error)
+      );
+    } else {
+      console.log('Form is invalid.');
+    }
   }
 }
