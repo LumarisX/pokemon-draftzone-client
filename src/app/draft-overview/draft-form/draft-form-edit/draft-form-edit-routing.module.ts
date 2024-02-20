@@ -1,11 +1,10 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { DraftPreviewComponent } from './draft-preview.component';
+import { DraftFormEditComponent } from './draft-form-edit.component';
 const routes: Routes = [
   {
     path: '',
-    pathMatch: 'full',
-    component: DraftPreviewComponent,
+    component: DraftFormEditComponent,
   },
 ];
 
@@ -13,4 +12,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class DraftPreviewRoutingModule {}
+export class DraftFormEditRoutingModule {}

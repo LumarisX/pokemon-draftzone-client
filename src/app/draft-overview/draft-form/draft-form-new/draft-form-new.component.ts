@@ -9,16 +9,15 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { DraftService } from '../../api/draft.service';
-import { Draft, Pokemon } from '../../interfaces/draft';
-import { PokemonFormComponent } from '../../pokemon-form/pokemon-form.component';
-import { SpriteComponent } from '../../sprite/sprite.component';
-import { CoreModule } from '../../sprite/sprite.module';
-import { DataService } from '../../api/data.service';
-import { ApiService } from '../../api/api.service';
+import { DataService } from '../../../api/data.service';
+import { DraftService } from '../../../api/draft.service';
+import { Draft, Pokemon } from '../../../interfaces/draft';
+import { PokemonFormComponent } from '../../../pokemon-form/pokemon-form.component';
+import { SpriteComponent } from '../../../sprite/sprite.component';
+import { CoreModule } from '../../../sprite/sprite.module';
 
 @Component({
-  selector: 'draft-form',
+  selector: 'draft-form-new',
   standalone: true,
   imports: [
     CommonModule,
@@ -28,9 +27,9 @@ import { ApiService } from '../../api/api.service';
     PokemonFormComponent,
     ReactiveFormsModule,
   ],
-  templateUrl: './draft-form.component.html',
+  templateUrl: './draft-form-new.component.html',
 })
-export class DraftFormComponent implements OnInit {
+export class DraftFormNewComponent implements OnInit {
   teamId: string = '';
   title: string = 'New League';
   formats = [];

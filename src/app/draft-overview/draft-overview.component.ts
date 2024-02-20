@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { SpriteComponent } from '../sprite/sprite.component';
 import { CoreModule } from '../sprite/sprite.module';
-import { DraftFormComponent } from './draft-form/draft-form.component';
+import { DraftFormCoreComponent } from './draft-form/draft-form-core/draft-form-core.component';
 import { DraftPreviewComponent } from './draft-preview/draft-preview.component';
 
 @Component({
@@ -15,7 +15,7 @@ import { DraftPreviewComponent } from './draft-preview/draft-preview.component';
     RouterModule,
     CoreModule,
     DraftPreviewComponent,
-    DraftFormComponent,
+    DraftFormCoreComponent,
     SpriteComponent,
     ReactiveFormsModule,
   ],

@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { DraftFormComponent } from './draft-form.component';
+import { DraftFormCoreComponent } from './draft-form-core.component';
 const routes: Routes = [
   {
     path: '',
-    component: DraftFormComponent,
+    component: DraftFormCoreComponent,
   },
 ];
 

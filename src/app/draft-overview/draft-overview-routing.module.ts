@@ -18,16 +18,16 @@ const routes: Routes = [
       {
         path: 'new',
         loadChildren: () =>
-          import('./draft-form/draft-form.module').then(
-            (m) => m.DraftFormModule
+          import('./draft-form/draft-form-new/draft-form-new.module').then(
+            (m) => m.DraftFormNewModule
           ),
         canActivate: [AuthGuard],
       },
       {
         path: 'edit',
         loadChildren: () =>
-          import('./draft-form/draft-form.module').then(
-            (m) => m.DraftFormModule
+          import('./draft-form/draft-form-edit/draft-form-edit.module').then(
+            (m) => m.DraftFormEditModule
           ),
         canActivate: [AuthGuard],
       },
