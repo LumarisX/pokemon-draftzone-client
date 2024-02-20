@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import {
   AbstractControl,
   FormArray,
@@ -31,36 +31,21 @@ import { ApiService } from '../../../api/api.service';
   templateUrl: './draft-form-core.component.html',
 })
 export class DraftFormCoreComponent implements OnInit {
-  teamId: string = '';
-  title: string = 'New League';
   formats = [];
   rulesets = [];
+  @Input() draftForm!: FormGroup;
 
   constructor(
-    private route: ActivatedRoute,
     private draftService: DraftService,
     private dataService: DataService,
     private router: Router
   ) {}
-
-  draftForm!: FormGroup;
 
   get teamArray(): FormArray {
     return this.draftForm?.get('team') as FormArray;
   }
 
   ngOnInit(): void {
-    this.draftForm = new FormGroup(
-      {
-        leagueName: new FormControl('', Validators.required),
-        teamName: new FormControl('', Validators.required),
-        format: new FormControl('', Validators.required),
-        ruleset: new FormControl('', Validators.required),
-        team: new FormArray([PokemonFormComponent.addPokemonForm()]),
-      },
-      [this.validateDraftForm]
-    );
-
     this.dataService.getFormats().subscribe((formats) => {
       this.formats = <any>formats;
     });
@@ -68,33 +53,8 @@ export class DraftFormCoreComponent implements OnInit {
     this.dataService.getRulesets().subscribe((rulesets) => {
       this.rulesets = <any>rulesets;
     });
-
-    this.route.queryParams.subscribe((params) => {
-      if ('draft' in params) {
-        this.teamId = JSON.parse(params['draft']);
-        this.draftService.getDraft(this.teamId).subscribe((data) => {
-          let draft = <Draft>data;
-          this.title = draft.leagueName;
-          let pokemonForms: FormGroup[] = [];
-          for (let pokemon of draft.team) {
-            pokemonForms.push(PokemonFormComponent.addPokemonForm(pokemon));
-          }
-          this.draftForm = new FormGroup(
-            {
-              leagueName: new FormControl(
-                draft.leagueName,
-                Validators.required
-              ),
-              teamName: new FormControl(draft.teamName, Validators.required),
-              format: new FormControl(draft.format, Validators.required),
-              ruleset: new FormControl(draft.ruleset, Validators.required),
-              team: new FormArray(pokemonForms),
-            },
-            [this.validateDraftForm]
-          );
-        });
-      }
-    });
+    console.log(this.draftForm);
+    this.draftForm.setValidators(this.validateDraftForm);
   }
 
   addNewPokemon(

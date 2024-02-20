@@ -1,14 +1,3 @@
-<div class="flex">
-  <button
-    [routerLink]="'/draft/'"
-    class="p-2 m-3 rounded-full shadow-md bg-cyan-300 hover:shadow shadow-cyan-600"
-  >
-    Cancel
-  </button>
-  <div>
-    <p class="text-3xl bold">{{ title }}</p>
-  </div>
-</div>
 <form
   [formGroup]="draftForm"
   (ngSubmit)="onSubmit()"
@@ -80,4 +69,4 @@
     Submit
   </button>
 </form>
-<!-- {{ draftForm.value | json }} -->
+{{ draftForm.value | json }}
