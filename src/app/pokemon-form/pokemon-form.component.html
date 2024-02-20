@@ -3,27 +3,25 @@
     <sprite
       class="w-24 h-24"
       [pokemon]="{
-        pid: pokemonForm.value.pokemonName,
-        name: pokemonForm.value.pokemonName,
+        pid: pokemonForm.value.pid,
+        name: pokemonForm.value.name,
         shiny: pokemonForm.value.shiny
       }"
     ></sprite>
     <div class="relative w-1/2">
       <div class="p-1">Name</div>
       <input
-        formControlName="pokemonName"
-        [(ngModel)]="pokemonName"
+        formControlName="name"
         class="w-full px-4 py-1 mx-1 rounded-full bg-slate-100text-medium"
         (keyup.enter)="this.addPokemonEvent.emit()"
       />
       <filter
-        [query]="pokemonName"
-        (querySelected)="pokemonName = $event"
+        [query]="pokemonForm.value.name"
+        (querySelected)="resultSelected($event)"
       ></filter>
       <div
         *ngIf="
-          pokemonForm.get('pokemonName')?.touched &&
-          pokemonForm.get('pokemonName')?.invalid
+          pokemonForm.get('name')?.touched && pokemonForm.get('name')?.invalid
         "
       >
         Invalid name

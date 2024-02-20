@@ -4,7 +4,7 @@ import { TestRoutingModule } from './test-routing.module';
 import { TestComponent } from './test.component';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthHttpInterceptor, AuthModule } from '@auth0/auth0-angular';
-import { FilterComponent } from './filter/filter.component';
+import { FilterComponent } from '../filter/filter.component';
 
 @NgModule({
   imports: [CommonModule, TestComponent, FilterComponent, TestRoutingModule],

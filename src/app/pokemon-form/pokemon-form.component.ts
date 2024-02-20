@@ -11,7 +11,7 @@ import { DataService } from '../api/data.service';
 import { Pokemon } from '../interfaces/draft';
 import { SpriteComponent } from '../sprite/sprite.component';
 import { CoreModule } from '../sprite/sprite.module';
-import { FilterComponent } from '../test/filter/filter.component';
+import { FilterComponent } from '../filter/filter.component';
 
 @Component({
   selector: 'pokemon-form',
@@ -33,7 +33,7 @@ export class PokemonFormComponent implements OnInit {
   @Output() deletePokemonEvent = new EventEmitter<number>();
   @Output() addPokemonEvent = new EventEmitter<Pokemon>();
 
-  pokemonName = '';
+  pokemon: Pokemon = { name: '', pid: '' };
 
   static teraChecked = false;
 
@@ -62,7 +62,7 @@ export class PokemonFormComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-    this.pokemonName = this.pokemonForm.get('pokemonName')?.value;
+    this.pokemon = this.pokemonForm.get('pokemonName')?.value;
   }
 
   static addPokemonForm(
@@ -84,12 +84,18 @@ export class PokemonFormComponent implements OnInit {
       this.teraChecked = true;
     }
     return new FormGroup({
-      pokemonName: new FormControl(pokemonData.pid),
+      name: new FormControl(pokemonData.name),
+      pid: new FormControl(pokemonData.pid),
       shiny: new FormControl(pokemonData.shiny),
       capt: new FormGroup({
         tera: teraFormGroup,
         z: new FormControl(''),
       }),
     });
+  }
+
+  resultSelected($event: Pokemon) {
+    console.log($event);
+    this.pokemonForm.patchValue({ name: $event.name, pid: $event.pid });
   }
 }

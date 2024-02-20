@@ -13,6 +13,7 @@ import { PokemonFormComponent } from '../../pokemon-form/pokemon-form.component'
 import { SpriteComponent } from '../../sprite/sprite.component';
 import { CoreModule } from '../../sprite/sprite.module';
 import { DataService } from '../../api/data.service';
+import { ApiService } from '../../api/api.service';
 
 @Component({
   selector: 'draft-form',
@@ -36,7 +37,8 @@ export class DraftFormComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private draftService: DraftService,
-    private dataService: DataService
+    private dataService: DataService,
+    private apiService: ApiService
   ) {}
 
   draftForm!: FormGroup;
@@ -101,7 +103,7 @@ export class DraftFormComponent implements OnInit {
 
   //fix depreciated
   onSubmit() {
-    this.draftService.newMatchup(this.teamId, this.draftForm.value).subscribe(
+    this.draftService.newDraft(this.draftForm.value).subscribe(
       (response) => {
         console.log('Success!', response);
       },

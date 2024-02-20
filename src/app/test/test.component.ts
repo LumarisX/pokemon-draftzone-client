@@ -6,7 +6,7 @@ import { AuthService as Auth0Service } from '@auth0/auth0-angular';
 import { concatMap, map, tap } from 'rxjs';
 import { AuthService } from '../auth/auth0.service';
 import { CoreModule } from '../sprite/sprite.module';
-import { FilterComponent } from './filter/filter.component';
+import { FilterComponent } from '../filter/filter.component';
 
 @Component({
   selector: 'test',

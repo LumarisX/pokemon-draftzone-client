@@ -20,7 +20,14 @@ export class ApiService {
   }
 
   post(path: string, data: any) {
-    return this.http.post(`${this.serverUrl}/${path}`, data);
+    let httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        authorization: `Bearer ${this.auth.getAccessToken()}`,
+      }),
+    };
+    console.log(data);
+    return this.http.post(`${this.serverUrl}/${path}`, data, httpOptions);
   }
 
   delete(path: string) {

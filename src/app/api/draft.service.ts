@@ -6,7 +6,7 @@ import { AuthService } from '../auth/auth0.service';
   providedIn: 'root',
 })
 export class DraftService {
-  constructor(private apiService: ApiService, private auth: AuthService) {}
+  constructor(private apiService: ApiService) {}
 
   getDraftsList() {
     return this.apiService.get('draft/teams');
@@ -16,7 +16,7 @@ export class DraftService {
     return this.apiService.get(`draft/${teamName}`);
   }
 
-  newDraft(draftData: any) {
+  newDraft(draftData: Object) {
     return this.apiService.post(`draft/teams`, draftData);
   }
 
@@ -24,7 +24,7 @@ export class DraftService {
     return this.apiService.get(`draft/${teamName}/matchups`);
   }
 
-  newMatchup(teamName: string, matchupData: any) {
+  newMatchup(teamName: string, matchupData: Object) {
     return this.apiService.post(`draft/${teamName}/matchups`, matchupData);
   }
 

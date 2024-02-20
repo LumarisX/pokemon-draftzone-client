@@ -7,10 +7,10 @@ import {
   Output,
   SimpleChanges,
 } from '@angular/core';
-import { CoreModule } from '../../sprite/sprite.module';
-import { ApiService } from '../../api/api.service';
+import { CoreModule } from '../sprite/sprite.module';
+import { ApiService } from '../api/api.service';
 import { FormsModule } from '@angular/forms';
-
+import { Pokemon } from '../interfaces/draft';
 @Component({
   selector: 'filter',
   standalone: true,
@@ -19,9 +19,9 @@ import { FormsModule } from '@angular/forms';
 })
 export class FilterComponent implements OnChanges {
   @Input() query: string = '';
-  @Output() querySelected: EventEmitter<string> = new EventEmitter<string>();
+  @Output() querySelected: EventEmitter<Pokemon> = new EventEmitter<Pokemon>();
   enabled = false;
-  results: string[] = [];
+  results: Pokemon[] = [];
   constructor(private apiService: ApiService) {}
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -37,15 +37,14 @@ export class FilterComponent implements OnChanges {
       this.apiService
         .get(`test/search?q=${this.query}`)
         .subscribe((results) => {
-          console.log(results);
-          this.results = <string[]>results;
+          this.results = <Pokemon[]>results;
         });
     } else {
       this.results = [];
     }
   }
 
-  select(value: string) {
+  select(value: Pokemon) {
     this.results = [];
     this.enabled = false;
     this.querySelected.emit(value);
