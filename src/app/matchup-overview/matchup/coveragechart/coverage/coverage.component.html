@@ -1,50 +1,89 @@
-<div class="flex w-full h-32 border-2 max-w-64">
-  <div class="h-full w-fit">
-    <sprite [pokemon]="pokemon"></sprite>
-  </div>
-  <div class="p-1">
-    <div class="flex w-full space-x-2 text-xs h-1/2">
-      <div class="flex items-center h-full">
+<div class="flex flex-col w-full h-auto p-4 space-y-4 max-w-64">
+  <!-- Pokemon Sprite and Moves -->
+  <div class="flex flex-wrap space-x-4">
+    <div class="w-auto">
+      <sprite [pokemon]="pokemon"></sprite>
+    </div>
+    <div class="flex flex-col space-y-2">
+      <!-- Reduced space between elements -->
+      <div class="flex items-center space-x-2">
         <img
-          class="scale-125 h-fit w-fit"
+          class="w-auto h-6"
           src="https://play.pokemonshowdown.com/sprites/categories/Physical.png"
+          alt="Physical Moves"
         />
+        <div class="grid grid-cols-6 gap-1">
+          <img
+            *ngFor="let move of pokemon.coverage.physical"
+            [ngClass]="{ 'opacity-40': !move.recommended }"
+            (click)="move.recommended = !move.recommended"
+            src="https://play.pokemonshowdown.com/sprites/types/{{
+              move.type
+            }}.png"
+            title="{{ move.name }}"
+          />
+        </div>
       </div>
-      <div
-        class="grid items-center w-full h-auto grid-cols-6 p-1 grid-rows-flex"
-      >
+      <div class="flex items-center space-x-2">
         <img
-          *ngFor="let move of pokemon.coverage.physical"
-          [ngClass]="{ 'opacity-40': !move.recommended }"
-          (click)="move.recommended = !move.recommended"
-          src="https://play.pokemonshowdown.com/sprites/types/{{
-            move.type
-          }}.png"
-          title="{{ move.name }}"
-        />
-      </div>
-    </div>
-    <div class="flex w-full space-x-2 text-xs h-1/2">
-      <div class="flex items-center h-full">
-        <img
-          class="scale-125 h-fit w-fit"
+          class="w-auto h-6"
           src="https://play.pokemonshowdown.com/sprites/categories/Special.png"
+          alt="Special Moves"
         />
-      </div>
-      <div
-        class="grid items-center w-full h-auto grid-cols-6 p-1 grid-rows-flex"
-      >
-        <img
-          *ngFor="let move of pokemon.coverage.special"
-          [ngClass]="{ 'opacity-40': !move.recommended }"
-          (click)="move.recommended = !move.recommended"
-          src="https://play.pokemonshowdown.com/sprites/types/{{
-            move.type
-          }}.png"
-          title="{{ move.name }}"
-        />
+        <div class="grid grid-cols-6 gap-1">
+          <img
+            *ngFor="let move of pokemon.coverage.special"
+            [ngClass]="{ 'opacity-40': !move.recommended }"
+            (click)="move.recommended = !move.recommended"
+            src="https://play.pokemonshowdown.com/sprites/types/{{
+              move.type
+            }}.png"
+            title="{{ move.name }}"
+          />
+        </div>
       </div>
     </div>
   </div>
-  <div>{{ calcCoverage() }}</div>
+
+  <!-- Pokemon Effectiveness Boxes -->
+  <div class="flex flex-wrap justify-between">
+    <!-- Super Effective Pokemon -->
+    <div class="w-1/3 p-2 border">
+      <!-- Reduced padding -->
+      <h3 class="mb-2 text-lg font-bold">Super Effective:</h3>
+      <div class="flex flex-wrap justify-start">
+        <ng-container *ngFor="let pokemon of calcCoverage().se">
+          <div class="w-1/4">
+            <sprite [pokemon]="pokemon"></sprite>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+
+    <!-- Effective Pokemon -->
+    <div class="w-1/3 p-2 border">
+      <!-- Reduced padding -->
+      <h3 class="mb-2 text-lg font-bold">Effective:</h3>
+      <div class="flex flex-wrap justify-start">
+        <ng-container *ngFor="let pokemon of calcCoverage().e">
+          <div class="w-1/4">
+            <sprite [pokemon]="pokemon"></sprite>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+
+    <!-- Not Very Effective Pokemon -->
+    <div class="w-1/3 p-2 border">
+      <!-- Reduced padding -->
+      <h3 class="mb-2 text-lg font-bold">Not Very Effective:</h3>
+      <div class="flex flex-wrap justify-start">
+        <ng-container *ngFor="let pokemon of calcCoverage().ne">
+          <div class="w-1/4">
+            <sprite [pokemon]="pokemon"></sprite>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
 </div>

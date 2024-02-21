@@ -19,14 +19,32 @@ export class CoverageComponent {
     let selectedMoves = [];
     for (let move of this.pokemon.coverage.physical) {
       if (move.recommended) {
-        selectedMoves.push(move.type);
+        selectedMoves.push(move);
       }
     }
     for (let move of this.pokemon.coverage.special) {
       if (move.recommended) {
-        selectedMoves.push(move.type);
+        selectedMoves.push(move);
       }
     }
-    return selectedMoves;
+    let superEffective = [];
+    let effective = [];
+    let notVeryEffective = [];
+    for (let pokemon of this.typechart.team) {
+      let max = 0;
+      for (let move of selectedMoves) {
+        if (max < pokemon.weak[move.type]) {
+          max = pokemon.weak[move.type];
+        }
+      }
+      if (max > 1) {
+        superEffective.push({ pid: pokemon.pid, name: pokemon.name });
+      } else if (max == 1) {
+        effective.push({ pid: pokemon.pid, name: pokemon.name });
+      } else {
+        notVeryEffective.push({ pid: pokemon.pid, name: pokemon.name });
+      }
+    }
+    return { se: superEffective, e: effective, ne: notVeryEffective };
   }
 }
