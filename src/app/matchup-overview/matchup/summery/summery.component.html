@@ -28,7 +28,9 @@
         <div *ngIf="sortBy == 'name' && !reversed">Name ↥</div>
         <div *ngIf="sortBy == 'name' && reversed">Name ↧</div>
       </th>
+      <th class="w-16">Types</th>
       <th class="w-24">Abilities</th>
+
       <th
         (click)="sortByStat('hp')"
         class="w-12 cursor-pointer hover:text-slate-200"
@@ -100,6 +102,15 @@
       </td>
       <td class="text-sm">{{ pokemon.name }}</td>
       <td>
+        <div *ngFor="let type of pokemon.types" class="text-center">
+          <img
+            class=""
+            src="https://play.pokemonshowdown.com/sprites/types/{{ type }}.png"
+            alt="{{ type }}"
+          />
+        </div>
+      </td>
+      <td>
         <div *ngFor="let ability of pokemon.abilities" class="text-center">
           {{ ability }}
         </div>
@@ -127,6 +138,7 @@
       </td>
     </tr>
     <tr class="border-t-2 bg-slate-300 border-slate-400">
+      <td></td>
       <td></td>
       <td></td>
       <td></td>
@@ -180,6 +192,7 @@
           class="w-8 bg-transparent"
         />
       </td>
+      <td></td>
       <td class="text-center">Median</td>
       <td
         class="text-center"
@@ -219,6 +232,7 @@
       </td>
     </tr>
     <tr class="bg-slate-300">
+      <td></td>
       <td></td>
       <td></td>
       <td></td>
