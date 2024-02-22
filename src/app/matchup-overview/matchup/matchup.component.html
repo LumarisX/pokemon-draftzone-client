@@ -1,11 +1,12 @@
-<div class="flex flex-wrap p-2 text-xs">
-  <overview class="z-10 m-2" [teams]="summery"></overview>
-  <summery class="z-10 m-2" [teams]="summery"></summery>
-  <typechart class="z-10 m-2" [typecharts]="typeChart"></typechart>
-  <speedchart class="z-10 m-2" [speedchart]="speedChart"></speedchart>
-  <movechart class="z-10 m-2" [teams]="moveChart"></movechart>
+<div class="flex flex-wrap justify-center gap-4 p-4 text-xs">
+  <overview class="z-10" [teams]="summery"></overview>
+  <summery class="z-10" [teams]="summery"></summery>
+  <speedchart class="z-10" [speedchart]="speedChart"></speedchart>
+
+  <typechart class="z-10" [typecharts]="typeChart"></typechart>
+  <movechart class="z-10 h-128" [teams]="moveChart"></movechart>
   <coveragechart
-    class="z-10 m-2"
+    class="z-10 w-128"
     [coverage]="coverageChart"
     [typecharts]="typeChart"
   ></coveragechart>

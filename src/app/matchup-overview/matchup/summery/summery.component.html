@@ -1,4 +1,4 @@
-<div>
+<div class="w-fit">
   <div class="flex w-full px-1 bg-slate-400 rounded-t-xl">
     <div class="flex w-full pb-1 border-b border-slate-300">
       <h1 class="w-full text-xl font-bold text-center">Team Overview</h1>
@@ -28,7 +28,7 @@
         <div *ngIf="sortBy == 'name' && !reversed">Name ↥</div>
         <div *ngIf="sortBy == 'name' && reversed">Name ↧</div>
       </th>
-      <th class="w-16">Types</th>
+      <th class="w-16 text-left">Types</th>
       <th class="w-24">Abilities</th>
 
       <th
@@ -102,14 +102,13 @@
       </td>
       <td class="text-sm">{{ pokemon.name }}</td>
       <td>
-        <div *ngFor="let type of pokemon.types" class="text-center">
-          <img
-            class=""
-            src="https://play.pokemonshowdown.com/sprites/types/{{ type }}.png"
-            alt="{{ type }}"
-          />
-        </div>
+        <img
+          *ngFor="let type of pokemon.types"
+          src="https://play.pokemonshowdown.com/sprites/types/{{ type }}.png"
+          alt="{{ type }}"
+        />
       </td>
+
       <td>
         <div *ngFor="let ability of pokemon.abilities" class="text-center">
           {{ ability }}

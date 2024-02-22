@@ -33,7 +33,7 @@
     </div>
   </div>
 </div>
-<div class="border-4 border-slate-400 bg-slate-400">
+<div class="w-full border-4 border-slate-400 bg-slate-400">
   <div class="bg-slate-200">
     <div class="flex space-x-2 border-b-2 border-slate-400">
       <div class="w-10 pl-2"></div>
@@ -46,7 +46,7 @@
   </div>
   <div
     *ngIf="speedchart"
-    class="w-full overflow-y-auto max-h-128 md:w-128 snap-y snap-mandatory"
+    class="w-full overflow-y-auto max-h-192 snap-y snap-mandatory"
   >
     <div *ngFor="let tier of speedchart.tiers">
       <div
