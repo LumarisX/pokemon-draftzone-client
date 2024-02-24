@@ -79,7 +79,7 @@ export class TestComponent implements OnInit {
 
     console.log('here');
     this.http
-      .get(`https://api.pokemondraftzone.com:9960/draft/test`, httpOptions)
+      .get(`https://api.pokemondraftzone.com/draft/test`, httpOptions)
       .subscribe((data) => {
         this.drafts = data;
       });
