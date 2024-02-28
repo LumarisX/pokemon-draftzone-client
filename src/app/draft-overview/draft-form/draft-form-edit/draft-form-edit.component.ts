@@ -59,6 +59,7 @@ export class DraftFormEditComponent implements OnInit {
           let draft = <Draft>data;
           let pokemonForms: FormGroup[] = [];
           for (let pokemon of draft.team) {
+            console.log(pokemon)
             pokemonForms.push(PokemonFormComponent.addPokemonForm(pokemon));
           }
           this.draftForm = new FormGroup({

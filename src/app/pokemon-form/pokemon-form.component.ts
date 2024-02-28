@@ -35,8 +35,6 @@ export class PokemonFormComponent implements OnInit {
 
   pokemon: Pokemon = { name: '', pid: '' };
 
-  static teraChecked = false;
-
   static teraTypes = [
     'Normal',
     'Grass',
@@ -80,14 +78,13 @@ export class PokemonFormComponent implements OnInit {
         new FormControl(pokemonData.capt?.tera?.includes(option))
       );
     });
-    if ('capt' in pokemonData && 'tera' in pokemonData.capt!) {
-      this.teraChecked = true;
-    }
     return new FormGroup({
       name: new FormControl(pokemonData.name),
       pid: new FormControl(pokemonData.pid),
       shiny: new FormControl(pokemonData.shiny),
+      captCheck: new FormControl(false),
       capt: new FormGroup({
+        teraCheck: new FormControl(false),
         tera: teraFormGroup,
         z: new FormControl(''),
       }),

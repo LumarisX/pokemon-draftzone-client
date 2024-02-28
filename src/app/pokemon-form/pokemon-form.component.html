@@ -1,7 +1,7 @@
 <form [formGroup]="pokemonForm" autocomplete="off">
-  <div class="flex w-full">
+  <div class="flex w-full items-center">
     <sprite
-      class="w-24 h-24"
+      class="w-1/8"
       [pokemon]="{
         pid: pokemonForm.value.pid,
         name: pokemonForm.value.name,
@@ -9,7 +9,7 @@
       }"
     ></sprite>
     <div class="relative w-1/2">
-      <div class="p-1">Name</div>
+      <label class="p-1 font-semibold">Name</label>
       <input
         formControlName="name"
         class="w-full px-4 py-1 mx-1 rounded-full bg-slate-100text-medium"
@@ -27,19 +27,23 @@
         Invalid name
       </div>
     </div>
-    <div class="w-1/8">
-      <div class="p-1">Shiny</div>
+    <div class="w-1/8 ">
+      <label class="p-1 font-semibold flex items-center justify-center">Shiny
       <input
         type="checkbox"
         formControlName="shiny"
         class="p-1 mx-1 text-center rounded-full text-medium"
       />
+      </label>
     </div>
-    <div class="w-1/8" formGroupName="capt">
-      <div class="p-1">Captain</div>
-      <div>
-        <div class="p-1">Tera:</div>
-        <div formGroupName="tera" class="overflow-x-auto max-h-20">
+    <div class="w-1/8" >
+      <label class="p-1 font-semibold flex items-center justify-center">Captain
+      <input type="checkbox" formControlName="captCheck" class="mx-1 text-medium" /></label>
+      <div *ngIf="pokemonForm.get('captCheck')?.value" formGroupName="capt" class="flex flex-col items-center justify-center">
+        <label class="p-1">Tera
+          <input type="checkbox" formControlName="teraCheck" class="mx-1 text-medium" />
+        </label>
+        <div *ngIf="pokemonForm.get('capt.teraCheck')?.value" formGroupName="tera" class="overflow-y-auto max-h-20 border">
           <label class="flex items-center">
             <input
               type="checkbox"
@@ -205,8 +209,10 @@
         </div>
       </div>
     </div>
-    <div class="w-6" (click)="deletePokemonEvent.emit(formIndex)">
-      <img src="../../../assets/icons/trash.svg" title="Delete" />
+    <div class="w-1/8 flex items-center justify-center">
+      <div class="w-1/3 bg-slate-200 p-1 rounded-full" (click)="deletePokemonEvent.emit(formIndex)">
+        <img src="../../../assets/icons/trash.svg" title="Delete" />
+      </div>
     </div>
   </div>
 </form>

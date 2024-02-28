@@ -35,7 +35,7 @@ export class FilterComponent implements OnChanges {
   sendQuery() {
     if (this.query != '') {
       this.apiService
-        .get(`test/search?q=${this.query}`)
+        .get(`data/search?q=${this.query}`)
         .subscribe((results) => {
           this.results = <Pokemon[]>results;
         });
