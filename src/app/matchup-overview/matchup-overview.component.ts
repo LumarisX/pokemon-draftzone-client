@@ -36,7 +36,6 @@ export class MatchupOverviewComponent implements OnInit {
   share() {
     this.shared = true;
     this.copyText = 'Copy';
-    this.inputFieldRef.nativeElement.select();
   }
 
   copyToClipboard() {

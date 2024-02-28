@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatchupService } from '../../../api/matchup.service';
 import { SpriteComponent } from '../../../sprite/sprite.component';
 import { Summery } from '../../matchup-interface';
 
@@ -11,18 +10,34 @@ import { Summery } from '../../matchup-interface';
   imports: [CommonModule, FormsModule, SpriteComponent],
   templateUrl: './summery.component.html',
 })
-export class SummeryComponent implements OnInit {
-  @Input() teams: Summery[] = [];
+export class SummeryComponent {
+
+  _teams: Summery[] = []
   sortBy: 'name' | 'hp' | 'atk' | 'def' | 'spa' | 'spd' | 'spe' | null = null;
+  @Input() 
+  set teams(summeries: Summery[]) {
+    for(let summery of summeries){
+      summery.team.sort((x, y) => {
+        if (x['baseStats']['spe'] < y['baseStats']['spe']) {
+          return 1;
+        }
+        if (x['baseStats']['spe'] > y['baseStats']['spe']) {
+          return -1;
+        }
+        return 0;
+      });
+    }
+    this.sortBy = 'spe'
+    this._teams = summeries;
+  }
+  get teams(): Summery[] {
+    return this._teams;
+  }
   selectedTeam: number = 1;
   reversed: boolean = false;
   baseValue: number = 80;
 
-  constructor(private matchupService: MatchupService) {}
-
-  ngOnInit() {
-    this.sortByStat('spe');
-  }
+  constructor() {}
 
   sortByStat(sortStat: 'hp' | 'atk' | 'def' | 'spa' | 'spd' | 'spe') {
     if (sortStat != this.sortBy) {

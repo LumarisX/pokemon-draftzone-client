@@ -40,6 +40,7 @@ export class MatchupComponent implements OnInit {
   moveChart: MoveChart[] = [];
   speedChart: SpeedChart | null = null;
   summery: Summery[] = [];
+  overview: Summery[] = [];
   typeChart: TypeChart[] = [];
 
   constructor(private matchupService: MatchupService) {}
@@ -55,10 +56,12 @@ export class MatchupComponent implements OnInit {
       this.typeChart = <TypeChart[]>data;
     });
     this.matchupService.getSummery(this.matchupId).subscribe((data) => {
-      this.summery = <Summery[]>data;
+      this.overview = <Summery[]>data;
+      this.summery = <Summery[]>JSON.parse(JSON.stringify(data));
     });
     this.matchupService.getSpeedchart(this.matchupId).subscribe((data) => {
       this.speedChart = <SpeedChart>data;
     });
+
   }
 }

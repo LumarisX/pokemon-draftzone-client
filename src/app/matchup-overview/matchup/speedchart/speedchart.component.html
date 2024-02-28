@@ -62,45 +62,44 @@
         <div class="px-1 text-lg">{{ tier.pokemon.name }}</div>
         <div class="flex justify-end flex-grow ml-auto">
           <div class="flex h-5 space-x-1">
-            <div *ngIf="tier.modifiers.includes('max+')" class="flex space-x-1">
-              <img
-                class="h-full border rounded-full bg-slate-200 border-slate-500"
-                src="../../../../assets/icons/speedchart/m.svg"
-                title="Max Speed"
-                alt="Max"
-              />
-
-              <img
-                class="h-full border rounded-full bg-slate-200 border-slate-500"
-                src="../../../../assets/icons/speedchart/circle-plus.svg"
-                title="+ Nature"
-                alt="+"
-              />
-            </div>
             <img
-              *ngIf="tier.modifiers.includes('max')"
+            *ngIf="tier.modifiers.includes('Positive')"
+              class="h-full border rounded-full bg-slate-200 border-slate-500"
+              src="../../../../assets/icons/speedchart/circle-plus.svg"
+              title="+ Nature"
+              alt="+"
+            />
+            <img
+              *ngIf="tier.modifiers.includes('Negative')"
+                class="h-full border rounded-full bg-slate-200 border-slate-500"
+                src="../../../../assets/icons/speedchart/circle-minus.svg"
+                title="- Nature"
+                alt="-"
+              />
+            <img
+              *ngIf="tier.modifiers.includes('252')"
               class="h-full border rounded-full bg-slate-200 border-slate-500"
               src="../../../../assets/icons/speedchart/m.svg"
-              title="+ Max Speed"
-              alt="Max"
+              title="252 evs"
+              alt="252"
             />
             <img
               class="h-full border rounded-full bg-slate-200 border-slate-500"
-              *ngIf="tier.modifiers.includes('scarf')"
+              *ngIf="tier.modifiers.includes('Scarf')"
               src="../../../../assets/icons/speedchart/scarf.svg"
               title="Choice Scarf"
               alt="Choice Scarf"
             />
             <img
               class="h-full border rounded-full bg-slate-200 border-slate-500"
-              *ngIf="tier.modifiers.includes('tailwind')"
+              *ngIf="tier.modifiers.includes('Tailwind')"
               src="../../../../assets/icons/speedchart/tailwind.svg"
               title="Tailwind"
               alt="Tailwind"
             />
             <img
               class="h-full border rounded-full bg-slate-200 border-slate-500"
-              *ngIf="tier.modifiers.includes('paralyzed')"
+              *ngIf="tier.modifiers.includes('Tailwind')"
               src="../../../../assets/icons/speedchart/paralyzed.svg"
               title="Paralyzed"
               alt="Paralyzed"

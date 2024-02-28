@@ -13,6 +13,7 @@ export type Speedtier = {
 export type SpeedChart = {
   tiers: Speedtier[];
   modifiers: string[];
+  level: number;
 };
 
 export type Summery = {
