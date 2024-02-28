@@ -9,18 +9,19 @@
     <div class="flex justify-end flex-grow p-2">
       <div class="px-4">
         <ng-container *ngIf="auth.isAuthenticated() | async; else loggedOut">
-          <div *ngIf="auth.user() | async as user" class="flex h-8">
-            <div>
+          <div *ngIf="auth.user() | async as user" class="flex h-8" (click) = "userDropdown = !userDropdown">
+            <div class="space-x-2 flex h-full items-center">
               <img
-                src="{{ user.picture }}"
-                class="w-full h-full rounded-full"
+              src="{{ user.picture }}"
+              class="h-full rounded-full"
               />
-            </div>
-            <div>
-              {{ user.name }}
+              <div>{{ user.name }}</div>
+              
             </div>
           </div>
-          <button (click)="auth.logout()">Log out</button>
+          <div *ngIf="userDropdown" class="">
+            <button (click)="auth.logout()">Log out</button>
+          </div> 
         </ng-container>
 
         <ng-template #loggedOut>

@@ -16,29 +16,23 @@ import { TestModule } from './test/test.module';
     DraftOverviewModule,
     ErrorModule,
     AuthModule.forRoot({
-      // The domain and clientId were configured in the previous chapter
       domain: 'dev-wspjxi5f6mjqsjea.us.auth0.com',
       clientId: 'nAyvHSOL1PbsFZfodzgIjRgYBUA1M1DH',
 
       authorizationParams: {
         redirect_uri: window.location.origin,
 
-        // Request this audience at user authentication time
         audience: 'https://dev-wspjxi5f6mjqsjea.us.auth0.com/api/v2/',
       },
 
-      // Specify configuration for the interceptor
       httpInterceptor: {
         allowedList: [
           {
-            // Match any request that starts 'https://dev-wspjxi5f6mjqsjea.us.auth0.com/api/v2/' (note the asterisk)
             uri: 'https://dev-wspjxi5f6mjqsjea.us.auth0.com/api/v2/*',
             tokenOptions: {
               authorizationParams: {
-                // The attached token should target this audience
                 audience: 'https://dev-wspjxi5f6mjqsjea.us.auth0.com/api/v2/',
 
-                // The attached token should have these scopes
                 scope: 'read:current_user',
               },
             },

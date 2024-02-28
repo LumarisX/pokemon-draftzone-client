@@ -6,5 +6,8 @@ import { AuthService } from './auth/auth0.service';
   templateUrl: './app.component.html',
 })
 export class AppComponent {
+
+  userDropdown = false
+
   constructor(public auth: AuthService) {}
 }
