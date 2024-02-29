@@ -22,6 +22,9 @@ export class SpriteComponent {
   @Input() flipped? = false;
 
   getPath() {
+    if (!this.pokemon) {
+      return 'https://play.pokemonshowdown.com/sprites/gen5-shiny/0.png';
+    }
     if (this.pokemon.shiny) {
       return (
         'https://play.pokemonshowdown.com/sprites/gen5-shiny/' +

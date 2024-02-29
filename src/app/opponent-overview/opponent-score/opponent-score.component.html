@@ -1,108 +1,167 @@
-<div class="flex">
-  <button
-    class="p-2 m-3 bg-red-300 rounded-full shadow-md hover:shadow shadow-red-600"
-  >
-    <a [routerLink]="'/draft/' + teamId">Cancel</a>
-  </button>
-  <p class="text-3xl bold">Score</p>
-</div>
-<div class="flex">
-  <form
-    [formGroup]="aTeamForm"
-    class="w-1/2 p-2 m-2 space-y-3 shadow-md bg-cyan-300 team hover:shadow-md shadow-cyan-600 rounded-xl"
-  >
-    <div class="w-full">
-      <div class="flex space-x-3">
-        <div class="w-1/3">
-          <label class="p-1">PokePaste</label>
-          <input
-            formControlName="pokePaste"
-            class="w-full p-1 mx-1 text-center rounded-full shadow-inner bg-cyan-200 text-medium shadow-cyan-600"
-          />
+<form [formGroup]="scoreForm">
+  <div class="flex w-flex">
+    <div class="w-1/4">
+      <button
+        class="p-2 m-3 rounded-lg shadow-md bg-slate-200 hover:shadow shadow-slate-600"
+      >
+        <a [routerLink]="'/draft/' + teamId">Cancel</a>
+      </button>
+    </div>
+    <div class="flex items-center justify-center w-1/2">
+      <p class="text-3xl bold">Score</p>
+    </div>
+    <div class="w-1/4"></div>
+  </div>
+  <div class="flex">
+    <div class="w-1/2">
+      <div class="flex justify-end w-full">
+        <input
+          formControlName="score"
+          class="w-8 h-8 p-1 mx-1 text-center shadow-inner bg-cyan-200 text-medium shadow-cyan-600"
+        />
+      </div>
+      <div
+        formGroupName="aTeam"
+        class="p-2 m-2 space-y-3 shadow-md bg-cyan-300 team shadow-cyan-600 rounded-xl"
+      >
+        <div class="w-full">
+          <div class="flex space-x-3">
+            <div class="w-1/3">
+              <label class="p-1"
+                >Replay<input
+                  formControlName="replay"
+                  class="w-full p-1 mx-1 text-center rounded-full shadow-inner bg-cyan-200 text-medium shadow-cyan-600"
+              /></label>
+            </div>
+            <div class="w-1/3">
+              <label class="p-1"
+                >PokePaste<input
+                  formControlName="pokePaste"
+                  class="w-full p-1 mx-1 text-center rounded-full shadow-inner bg-cyan-200 text-medium shadow-cyan-600"
+              /></label>
+            </div>
+          </div>
         </div>
-        <div class="w-1/3">
-          `
-          <label class="p-1">Score</label>
-          <input
-            formControlName="score"
-            class="w-full p-1 mx-1 text-center rounded-full shadow-inner bg-cyan-200 text-medium shadow-cyan-600"
-          />
+        <div class="p-2 border-2 border-cyan-200 rounded-xl">
+          <div class="grid grid-cols-1 lg:grid-cols-2 md:grid-cols-1 gap-x-4">
+            <div
+              *ngFor="let pokemon of matchup.aTeam.team; let i = index"
+              class="flex space-x-4"
+            >
+              <sprite class="w-1/4" [pokemon]="pokemon"></sprite>
+              <label class="w-1/4"
+                >Brought
+                <input
+                  type="number"
+                  min="0"
+                  class="w-full p-1 mx-1 text-center rounded-md shadow-inner bg-cyan-200 text-medium shadow-cyan-600"
+              /></label>
+              <label class="w-1/4"
+                >Kills
+                <input
+                  type="number"
+                  min="0"
+                  class="w-full p-1 mx-1 text-center rounded-md shadow-inner bg-cyan-200 text-medium shadow-cyan-600"
+              /></label>
+              <label class="w-1/4"
+                >Deaths
+                <input
+                  type="number"
+                  min="0"
+                  class="w-full p-1 mx-1 text-center rounded-md shadow-inner bg-cyan-200 text-medium shadow-cyan-600"
+              /></label>
+            </div>
+          </div>
+          <button
+            (click)="addANewPokemon()"
+            class="px-2 py-1 my-3 rounded-full shadow bg-cyan-300 hover:shadow shadow-cyan-600"
+          >
+            Add
+          </button>
         </div>
       </div>
     </div>
-    <div class="p-2 border-2 border-rose-200 rounded-xl">
-      <ul>
-        <ol *ngFor="let pokemonForm of aTeamArray.controls; let i = index">
-          <pokemon-form
-            [pokemonForm]="$any(pokemonForm)"
-            [formIndex]="i"
-            (deletePokemonEvent)="deletePokemon($event)"
-            (addPokemonEvent)="addNewPokemon(i, $event)"
-          ></pokemon-form>
-        </ol>
-      </ul>
-      <button
-        (click)="addNewPokemon()"
-        class="px-1 my-3 rounded-full shadow bg-cyan-300 hover:shadow shadow-cyan-600"
+    <div class="w-1/2">
+      <input
+        formControlName="score"
+        class="w-8 h-8 p-1 mx-1 text-center bg-red-200 shadow-inner text-medium shadow-red-600"
+      />
+      <div
+        formGroupName="bTeam"
+        class="p-2 m-2 space-y-3 bg-red-300 shadow-md team shadow-red-600 rounded-xl"
       >
-        Add
-      </button>
-    </div>
-    <button
-      type="submit"
-      class="w-1/6 px-1 my-3 rounded-full shadow bg-cyan-300 hover:shadow shadow-cyan-600"
-    >
-      Submit
-    </button>
-    {{ aTeamForm.value | json }}<br />
-  </form>
+        <div class="w-full">
+          <div class="flex justify-end space-x-3">
+            <div class="w-1/3">
+              <label class="p-1"
+                >PokePaste
+                <input
+                  formControlName="pokePaste"
+                  class="w-full p-1 mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
+              /></label>
+            </div>
+            <div class="w-1/3">
+              <label class="p-1"
+                >Replay
+                <input
+                  formControlName="replay"
+                  class="w-full p-1 mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
+              /></label>
+            </div>
+          </div>
+        </div>
+        <div class="p-2 border-2 border-rose-200 rounded-xl">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-4">
+            <div
+              *ngFor="let pokemon of matchup.bTeam.team; let i = index"
+              class="flex space-x-4"
+            >
+              <sprite [pokemon]="pokemon" class="w-1/4"></sprite>
+              <label class="w-1/4"
+                >Brought
+                <input
+                  type="number"
+                  min="0"
+                  class="w-full p-1 mx-1 text-center bg-red-200 rounded-md shadow-inner text-medium shadow-red-600"
+                />
+              </label>
+              <label class="w-1/4"
+                >Kills
+                <input
+                  type="number"
+                  min="0"
+                  class="w-full p-1 mx-1 text-center bg-red-200 rounded-md shadow-inner text-medium shadow-red-600"
+                />
+              </label>
+              <label class="w-1/4"
+                >Deaths
+                <input
+                  type="number"
+                  min="0"
+                  class="w-full p-1 mx-1 text-center bg-red-200 rounded-md shadow-inner text-medium shadow-red-600"
+                />
+              </label>
+            </div>
+          </div>
 
-  <form
-    [formGroup]="bTeamForm"
-    class="w-1/2 p-2 m-2 space-y-3 bg-red-300 shadow-md team hover:shadow-md shadow-red-600 rounded-xl"
-  >
-    <div class="w-full">
-      <div class="flex space-x-3">
-        <div class="w-1/3">
-          <label class="p-1">PokePaste</label>
-          <input
-            formControlName="pokePaste"
-            class="w-full p-1 mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
-          />
-        </div>
-        <div class="w-1/3">
-          <label class="p-1">Score</label>
-          <input
-            formControlName="score"
-            class="w-full p-1 mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
-          />
+          <button
+            (click)="addBNewPokemon()"
+            class="px-2 py-1 my-3 bg-red-300 rounded-full shadow hover:shadow shadow-red-600"
+          >
+            Add
+          </button>
         </div>
       </div>
     </div>
-    <div class="p-2 border-2 border-rose-200 rounded-xl">
-      <ul>
-        <ol *ngFor="let pokemonForm of aTeamArray.controls; let i = index">
-          <pokemon-form
-            [pokemonForm]="$any(pokemonForm)"
-            [formIndex]="i"
-            (deletePokemonEvent)="deletePokemon($event)"
-            (addPokemonEvent)="addNewPokemon(i, $event)"
-          ></pokemon-form>
-        </ol>
-      </ul>
-      <button
-        (click)="addNewPokemon()"
-        class="px-1 my-3 bg-red-300 rounded-full shadow hover:shadow shadow-red-600"
-      >
-        Add
-      </button>
-    </div>
+  </div>
+  <div class="flex justify-center w-full">
     <button
       type="submit"
-      class="w-1/6 px-1 my-3 bg-red-300 rounded-full shadow hover:shadow shadow-red-600"
+      class="w-1/6 py-1 my-3 rounded-full shadow bg-slate-200 hover:shadow shadow-slate-600"
     >
       Submit
     </button>
-    {{ bTeamForm.value | json }}<br />
-  </form>
-</div>
+  </div>
+
+  {{ scoreForm.value | json }}
+</form>

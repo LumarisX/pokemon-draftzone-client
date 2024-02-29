@@ -5,7 +5,7 @@ import { AuthService } from '../auth/auth0.service';
   providedIn: 'root',
 })
 export class ApiService {
-  private serverUrl = 'http://localhost:9960';
+  private serverUrl = 'https://api.pokemondraftzone.com';
 
   constructor(private http: HttpClient, private auth: AuthService) {}
 
