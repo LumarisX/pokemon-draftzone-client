@@ -16,8 +16,8 @@ export class DraftService {
     return this.apiService.get(`draft/${teamName}`);
   }
 
-  getMatchup(teamName: string) {
-    return this.apiService.get(`draft/${teamName}`);
+  getMatchup(teamName: string, matchupId: string) {
+    return this.apiService.get(`draft/${teamName}/${matchupId}`);
   }
 
   newDraft(draftData: Object) {
@@ -34,6 +34,10 @@ export class DraftService {
 
   newMatchup(teamName: string, matchupData: Object) {
     return this.apiService.post(`draft/${teamName}/matchups`, matchupData);
+  }
+
+  editMatchup(teamName: string, matchupId: string, matchupData: Object) {
+    return this.apiService.patch(`draft/${teamName}/${matchupId}`, matchupData);
   }
 
   deleteMatchup(matchupId: string) {

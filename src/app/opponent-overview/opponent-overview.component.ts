@@ -6,7 +6,6 @@ import { DraftService } from '../api/draft.service';
 import { Draft } from '../interfaces/draft';
 import { SpriteComponent } from '../sprite/sprite.component';
 import { CoreModule } from '../sprite/sprite.module';
-import { OpponentFormComponent } from './opponent-form/opponent-form.component';
 import { OpponentTeamPreviewComponent } from './opponent-preview/opponent-preview.component';
 
 @Component({
@@ -18,7 +17,6 @@ import { OpponentTeamPreviewComponent } from './opponent-preview/opponent-previe
     CoreModule,
     OpponentTeamPreviewComponent,
     SpriteComponent,
-    OpponentFormComponent,
     ReactiveFormsModule,
   ],
   templateUrl: './opponent-overview.component.html',

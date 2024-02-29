@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { OpponentFormComponent } from './opponent-form.component';
+import { OpponentFormEditComponent } from './opponent-form-edit.component';
 const routes: Routes = [
   {
     path: '',
-    component: OpponentFormComponent,
+    component: OpponentFormEditComponent,
   },
 ];
 
@@ -12,4 +12,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class OpponentFormRoutingModule {}
+export class OpponentFormEditRoutingModule {}

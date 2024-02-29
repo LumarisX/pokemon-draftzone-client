@@ -20,17 +20,17 @@ const routes: Routes = [
       {
         path: 'new',
         loadChildren: () =>
-          import('./opponent-form/opponent-form.module').then(
-            (m) => m.OpponentFormModule
-          ),
+          import(
+            './opponent-form/opponent-form-new/opponent-form-new.module'
+          ).then((m) => m.OpponentFormNewModule),
         canActivate: [AuthGuard],
       },
       {
         path: 'edit',
         loadChildren: () =>
-          import('./opponent-form/opponent-form.module').then(
-            (m) => m.OpponentFormModule
-          ),
+          import(
+            './opponent-form/opponent-form-edit/opponent-form-edit.module'
+          ).then((m) => m.OpponentFormEditModule),
         canActivate: [AuthGuard],
       },
       {
