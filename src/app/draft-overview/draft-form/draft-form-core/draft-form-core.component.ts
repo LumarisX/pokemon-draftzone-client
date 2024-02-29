@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
   AbstractControl,
   FormArray,
@@ -34,12 +34,8 @@ export class DraftFormCoreComponent implements OnInit {
   formats = [];
   rulesets = [];
   @Input() draftForm!: FormGroup;
-
-  constructor(
-    private draftService: DraftService,
-    private dataService: DataService,
-    private router: Router
-  ) {}
+  @Output() formSubmitted = new EventEmitter<FormGroup>();
+  constructor(private dataService: DataService) {}
 
   get teamArray(): FormArray {
     return this.draftForm?.get('team') as FormArray;
@@ -83,14 +79,7 @@ export class DraftFormCoreComponent implements OnInit {
 
   onSubmit() {
     if (this.draftForm.valid) {
-      this.draftService.newDraft(this.draftForm.value).subscribe(
-        (response) => {
-          console.log('Success!', response);
-          // Redirect to '/draft' route
-          this.router.navigate(['/draft']);
-        },
-        (error) => console.error('Error!', error)
-      );
+      this.formSubmitted.emit(this.draftForm.value);
     } else {
       console.log('Form is invalid.');
     }

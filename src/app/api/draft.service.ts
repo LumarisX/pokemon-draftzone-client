@@ -24,6 +24,10 @@ export class DraftService {
     return this.apiService.post(`draft/teams`, draftData);
   }
 
+  editDraft(draftId: string, draftData: Object) {
+    return this.apiService.patch(`draft/${draftId}`, draftData);
+  }
+
   getMatchupList(teamName: string) {
     return this.apiService.get(`draft/${teamName}/matchups`);
   }

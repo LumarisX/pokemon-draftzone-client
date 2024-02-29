@@ -36,6 +36,7 @@ export class DraftFormEditComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private draftService: DraftService
   ) {}
 
@@ -59,7 +60,7 @@ export class DraftFormEditComponent implements OnInit {
           let draft = <Draft>data;
           let pokemonForms: FormGroup[] = [];
           for (let pokemon of draft.team) {
-            console.log(pokemon)
+            console.log(pokemon);
             pokemonForms.push(PokemonFormComponent.addPokemonForm(pokemon));
           }
           this.draftForm = new FormGroup({
@@ -72,5 +73,16 @@ export class DraftFormEditComponent implements OnInit {
         });
       }
     });
+  }
+
+  editDraft(formData: Object) {
+    this.draftService.editDraft(this.teamId, formData).subscribe(
+      (response) => {
+        console.log('Success!', response);
+        // Redirect to '/draft' route
+        this.router.navigate(['/draft']);
+      },
+      (error) => console.error('Error!', error)
+    );
   }
 }

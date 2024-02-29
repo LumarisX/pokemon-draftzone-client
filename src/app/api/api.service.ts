@@ -5,7 +5,7 @@ import { AuthService } from '../auth/auth0.service';
   providedIn: 'root',
 })
 export class ApiService {
-  private serverUrl = 'https://api.pokemondraftzone.com';
+  private serverUrl = 'http://localhost:9960';
 
   constructor(private http: HttpClient, private auth: AuthService) {}
 
@@ -28,6 +28,17 @@ export class ApiService {
     };
     console.log(data);
     return this.http.post(`${this.serverUrl}/${path}`, data, httpOptions);
+  }
+
+  patch(path: string, data: any) {
+    let httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        authorization: `Bearer ${this.auth.getAccessToken()}`,
+      }),
+    };
+    console.log(data);
+    return this.http.patch(`${this.serverUrl}/${path}`, data, httpOptions);
   }
 
   delete(path: string) {

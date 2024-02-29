@@ -9,4 +9,7 @@
     <p class="text-3xl font-bold">Edit League</p>
   </div>
 </div>
-<draft-form-core [draftForm]="draftForm"></draft-form-core>
+<draft-form-core
+  [draftForm]="draftForm"
+  (formSubmitted)="editDraft($event)"
+></draft-form-core>

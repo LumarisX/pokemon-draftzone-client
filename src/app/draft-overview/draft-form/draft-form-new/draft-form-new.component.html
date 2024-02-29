@@ -9,4 +9,7 @@
     <p class="text-3xl font-bold">New League</p>
   </div>
 </div>
-<draft-form-core [draftForm]="draftForm"></draft-form-core>
+<draft-form-core
+  [draftForm]="draftForm"
+  (formSubmitted)="newDraft($event)"
+></draft-form-core>
