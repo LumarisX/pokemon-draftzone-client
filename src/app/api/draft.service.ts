@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { AuthService } from '../auth/auth0.service';
+import { Matchup } from '../interfaces/matchup';
 
 @Injectable({
   providedIn: 'root',
@@ -16,8 +17,8 @@ export class DraftService {
     return this.apiService.get(`draft/${teamName}`);
   }
 
-  getMatchup(teamName: string, matchupId: string) {
-    return this.apiService.get(`draft/${teamName}/${matchupId}`);
+  getMatchup(matchupId: string) {
+    return this.apiService.get(`draft/matchup/${matchupId}`);
   }
 
   newDraft(draftData: Object) {
@@ -36,8 +37,8 @@ export class DraftService {
     return this.apiService.post(`draft/${teamName}/matchups`, matchupData);
   }
 
-  editMatchup(teamName: string, matchupId: string, matchupData: Object) {
-    return this.apiService.patch(`draft/${teamName}/${matchupId}`, matchupData);
+  editMatchup(matchupId: string, matchupData: Object) {
+    return this.apiService.patch(`draft/matchup/${matchupId}`, matchupData);
   }
 
   deleteMatchup(matchupId: string) {

@@ -2,6 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { MatchupComponent } from './matchup/matchup.component';
+import { DraftService } from '../api/draft.service';
+import { Matchup } from '../interfaces/matchup';
 
 @Component({
   selector: 'matchup-overview',
@@ -10,6 +12,7 @@ import { MatchupComponent } from './matchup/matchup.component';
   imports: [CommonModule, MatchupComponent, RouterModule],
 })
 export class MatchupOverviewComponent implements OnInit {
+  matchup: Matchup | null = null;
   matchupId = '';
   shared = false;
   copyText = 'Copy';
@@ -18,7 +21,10 @@ export class MatchupOverviewComponent implements OnInit {
 
   @ViewChild('inputFieldRef') inputFieldRef!: ElementRef;
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(
+    private route: ActivatedRoute,
+    private draftService: DraftService
+  ) {}
 
   ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
@@ -30,6 +36,9 @@ export class MatchupOverviewComponent implements OnInit {
       if (leagueId) {
         this.leagueId = leagueId;
       }
+      this.draftService.getMatchup(this.matchupId).subscribe((data) => {
+        this.matchup = <Matchup>data;
+      });
     });
   }
 
