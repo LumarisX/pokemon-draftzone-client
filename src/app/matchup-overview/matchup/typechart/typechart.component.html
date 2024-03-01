@@ -35,7 +35,7 @@
     <tbody class="border-b-4 border-slate-400">
       <tr *ngFor="let pokemon of typecharts[selectedTeam].team" class="">
         <th
-          class="w-12 border-r-4 border-slate-400"
+          class="w-12 border-r-4 border-r-slate-400"
           [ngClass]="clickColor()"
           (click)="toggleVisible(pokemon)"
         >
@@ -45,9 +45,9 @@
           ></sprite>
         </th>
         <td
-          *ngFor="let type of !pokemon.disabled ? types : []"
-          class="text-center"
-          [ngClass]="typeColor(pokemon.weak[type])"
+          *ngFor="let type of types"
+          class="text-center border"
+          [ngClass]="typeColor(pokemon.weak[type], pokemon.disabled!)"
         >
           {{ pokemon.weak[type] }}
         </td>

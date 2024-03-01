@@ -56,14 +56,15 @@ export class TypechartComponent implements OnChanges {
     this.summerize();
   }
 
-  typeColor(weak: number): string {
-    if (weak > 4) return 'bg-rose-600';
-    if (weak > 2) return 'bg-rose-500';
-    if (weak > 1) return 'bg-rose-400';
-    if (weak < 0.25) return 'bg-emerald-600';
-    if (weak < 0.5) return 'bg-emerald-500';
-    if (weak < 1) return 'bg-emerald-400';
-    return 'text-transparent';
+  typeColor(weak: number, disbaled: Boolean): string {
+    if (disbaled) return 'text-transparent border-slate-300';
+    if (weak > 4) return 'bg-rose-600 border-rose-600';
+    if (weak > 2) return 'bg-rose-500  border-rose-500';
+    if (weak > 1) return 'bg-rose-400  border-rose-400';
+    if (weak < 0.25) return 'bg-emerald-600  border-emerald-600';
+    if (weak < 0.5) return 'bg-emerald-500  border-emerald-500';
+    if (weak < 1) return 'bg-emerald-400  border-emerald-500';
+    return 'text-transparent border-slate-300';
   }
 
   weakColor(weak: number): string {

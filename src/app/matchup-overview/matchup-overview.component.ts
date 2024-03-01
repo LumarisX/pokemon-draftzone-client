@@ -30,7 +30,8 @@ export class MatchupOverviewComponent implements OnInit {
     this.route.queryParams.subscribe((params) => {
       if ('id' in params) {
         this.matchupId = params['id'];
-        this.shareUrl = 'localhost:4200/matchup/' + this.matchupId;
+        this.shareUrl =
+          'https://pokemondraftzone.com/matchup/' + this.matchupId;
       }
       let leagueId = this.route.snapshot.paramMap.get('teamid');
       if (leagueId) {

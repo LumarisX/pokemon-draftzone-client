@@ -63,7 +63,7 @@
         <div class="flex justify-end flex-grow ml-auto">
           <div class="flex h-5 space-x-1">
             <img
-            *ngIf="tier.modifiers.includes('Positive')"
+              *ngIf="tier.modifiers.includes('Positive')"
               class="h-full border rounded-full bg-slate-200 border-slate-500"
               src="../../../../assets/icons/speedchart/circle-plus.svg"
               title="+ Nature"
@@ -71,11 +71,11 @@
             />
             <img
               *ngIf="tier.modifiers.includes('Negative')"
-                class="h-full border rounded-full bg-slate-200 border-slate-500"
-                src="../../../../assets/icons/speedchart/circle-minus.svg"
-                title="- Nature"
-                alt="-"
-              />
+              class="h-full border rounded-full bg-slate-200 border-slate-500"
+              src="../../../../assets/icons/speedchart/circle-minus.svg"
+              title="- Nature"
+              alt="-"
+            />
             <img
               *ngIf="tier.modifiers.includes('252')"
               class="h-full border rounded-full bg-slate-200 border-slate-500"
@@ -99,7 +99,7 @@
             />
             <img
               class="h-full border rounded-full bg-slate-200 border-slate-500"
-              *ngIf="tier.modifiers.includes('Tailwind')"
+              *ngIf="tier.modifiers.includes('Paralyzed')"
               src="../../../../assets/icons/speedchart/paralyzed.svg"
               title="Paralyzed"
               alt="Paralyzed"

@@ -1,4 +1,4 @@
-<div class="w-fit">
+<div class="">
   <div class="flex w-full px-1 bg-slate-400 rounded-t-xl">
     <div class="flex w-full pb-1 border-b border-slate-300">
       <h1 class="w-full text-xl font-bold text-center">Move Coverage</h1>
@@ -14,8 +14,13 @@
   <div
     class="grid grid-cols-1 gap-1 overflow-y-auto border-4 grid-rows-flex bg-slate-400 border-slate-400 max-h-128"
   >
-    <div *ngFor="let pokemon of coverage[selectedTeam]" [ngClass]="teamColor()">
+    <div
+      *ngFor="let pokemon of coverage[selectedTeam]"
+      class="w-full"
+      [ngClass]="teamColor()"
+    >
       <coverage
+        class="w-full"
         [pokemon]="pokemon"
         [typechart]="typecharts[(selectedTeam + 1) % typecharts.length]"
       ></coverage>
