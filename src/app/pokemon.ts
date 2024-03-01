@@ -13,7 +13,7 @@ export function getSpriteName(pokemonId: PokemonId | ''): string {
   }
   if ('baseSpecies' in BattlePokedex[pokemonId]) {
     spriteName =
-      monData['baseSpecies'].toLowerCase().replace(/\s-.]+/g, '') +
+      monData['baseSpecies'].toLowerCase().replace(/[\s-.]+/g, '') +
       '-' +
       monData['forme'].toLowerCase().replace(/[\s-.%]+/g, '');
   } else {
