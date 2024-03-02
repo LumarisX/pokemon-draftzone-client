@@ -55,20 +55,20 @@
     </tbody>
     <tfoot id="typeSum" class="bg-slate-300">
       <tr>
-        <th class="text-xs bg-rose-400">Weaks</th>
+        <th class="text-xs border bg-rose-400 border-slate-400">Weaks</th>
         <td
           *ngFor="let weakness of weaknesses"
-          class="text-center"
+          class="text-center border"
           [ngClass]="weakColor(weakness)"
         >
           {{ weakness }}
         </td>
       </tr>
       <tr>
-        <th class="text-xs bg-emerald-400">Resists</th>
+        <th class="text-xs border bg-emerald-400 border-slate-400">Resists</th>
         <td
           *ngFor="let resistance of resistances"
-          class="text-center"
+          class="text-center border"
           [ngClass]="resistColor(resistance)"
         >
           {{ resistance }}
@@ -76,13 +76,13 @@
       </tr>
       <tr>
         <th
-          class="text-xs bg-gradient-to-r from-rose-400 from-50% to-emerald-400 to-50%"
+          class="text-xs bg-gradient-to-r from-rose-400 from-50% to-emerald-400 to-50% border border-slate-400"
         >
           Diff
         </th>
         <td
           *ngFor="let diff of difference"
-          class="text-center"
+          class="text-center border"
           [ngClass]="diffColor(diff)"
         >
           {{ diff }}
@@ -90,13 +90,13 @@
       </tr>
       <tr>
         <th
-          class="text-xs bg-gradient-to-r from-rose-400 via-slate-200 to-emerald-400"
+          class="text-xs border bg-gradient-to-r from-rose-400 via-slate-200 to-emerald-400 border-slate-400"
         >
           Log
         </th>
         <td
           *ngFor="let diff of differential"
-          class="text-center"
+          class="text-center border"
           [ngClass]="diffColor(diff)"
         >
           {{ diff | number : "1.0-0" }}
