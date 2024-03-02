@@ -35,6 +35,28 @@ export class PokemonFormComponent implements OnInit {
 
   pokemon: Pokemon = { name: '', pid: '' };
 
+  teraTypes = [
+    'Normal',
+    'Grass',
+    'Water',
+    'Fire',
+    'Electric',
+    'Ground',
+    'Rock',
+    'Flying',
+    'Ice',
+    'Fighting',
+    'Poison',
+    'Bug',
+    'Psychic',
+    'Dark',
+    'Ghost',
+    'Dragon',
+    'Steel',
+    'Fairy',
+    'Stellar',
+  ];
+
   static teraTypes = [
     'Normal',
     'Grass',

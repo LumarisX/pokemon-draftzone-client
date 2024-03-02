@@ -1,5 +1,5 @@
 <form [formGroup]="pokemonForm" autocomplete="off">
-  <div class="flex w-full items-center">
+  <div class="flex items-center w-full">
     <sprite
       class="w-1/8"
       [pokemon]="{
@@ -27,191 +27,76 @@
         Invalid name
       </div>
     </div>
-    <div class="w-1/8 ">
-      <label class="p-1 font-semibold flex items-center justify-center">Shiny
-      <input
-        type="checkbox"
-        formControlName="shiny"
-        class="p-1 mx-1 text-center rounded-full text-medium"
-      />
+    <div class="w-1/8">
+      <label class="flex items-center justify-center p-1 font-semibold"
+        >Shiny
+        <input
+          type="checkbox"
+          formControlName="shiny"
+          class="p-1 mx-1 text-center rounded-full text-medium"
+        />
       </label>
     </div>
-    <div class="w-1/8" >
-      <label class="p-1 font-semibold flex items-center justify-center">Captain
-      <input type="checkbox" formControlName="captCheck" class="mx-1 text-medium" /></label>
-      <div *ngIf="pokemonForm.get('captCheck')?.value" formGroupName="capt" class="flex flex-col items-center justify-center">
-        <label class="p-1">Tera
-          <input type="checkbox" formControlName="teraCheck" class="mx-1 text-medium" />
+    <div class="w-1/6">
+      <label class="flex items-center justify-center p-1 font-semibold"
+        >Captain
+        <input
+          type="checkbox"
+          formControlName="captCheck"
+          class="mx-1 text-medium"
+      /></label>
+      <div
+        *ngIf="pokemonForm.get('captCheck')?.value"
+        formGroupName="capt"
+        class="flex items-center justify-center"
+      >
+        <label class="p-1">
+          Z:
+          <input
+            type="checkbox"
+            formControlName="z"
+            class="p-1 mx-1 text-center rounded-full text-medium"
+          />
         </label>
-        <div *ngIf="pokemonForm.get('capt.teraCheck')?.value" formGroupName="tera" class="overflow-y-auto max-h-20 border">
-          <label class="flex items-center">
-            <input
-              type="checkbox"
-              formControlName="Normal"
-              class="mx-1 text-center rounded-full text-medium"
-            />
-            <span>Normal</span>
-          </label>
-          <label class="flex items-center">
-            <input
-              type="checkbox"
-              formControlName="Fire"
-              class="mx-1 text-center rounded-full text-medium"
-            />
-            <span>Fire</span>
-          </label>
-          <label class="flex items-center">
-            <input
-              type="checkbox"
-              formControlName="Water"
-              class="mx-1 text-center rounded-full text-medium"
-            />
-            <span>Water</span>
-          </label>
-          <label class="flex items-center">
-            <input
-              type="checkbox"
-              formControlName="Electric"
-              class="mx-1 text-center rounded-full text-medium"
-            />
-            <span>Electric</span>
-          </label>
-          <label class="flex items-center">
-            <input
-              type="checkbox"
-              formControlName="Grass"
-              class="mx-1 text-center rounded-full text-medium"
-            />
-            <span>Grass</span>
-          </label>
-          <label class="flex items-center">
-            <input
-              type="checkbox"
-              formControlName="Ice"
-              class="mx-1 text-center rounded-full text-medium"
-            />
-            <span>Ice</span>
-          </label>
-          <label class="flex items-center">
-            <input
-              type="checkbox"
-              formControlName="Fighting"
-              class="mx-1 text-center rounded-full text-medium"
-            />
-            <span>Fighting</span>
-          </label>
-          <label class="flex items-center">
-            <input
-              type="checkbox"
-              formControlName="Poison"
-              class="mx-1 text-center rounded-full text-medium"
-            />
-            <span>Poison</span>
-          </label>
-          <label class="flex items-center">
-            <input
-              type="checkbox"
-              formControlName="Ground"
-              class="mx-1 text-center rounded-full text-medium"
-            />
-            <span>Ground</span>
-          </label>
-          <label class="flex items-center">
-            <input
-              type="checkbox"
-              formControlName="Flying"
-              class="mx-1 text-center rounded-full text-medium"
-            />
-            <span>Flying</span>
-          </label>
-          <label class="flex items-center">
-            <input
-              type="checkbox"
-              formControlName="Psychic"
-              class="mx-1 text-center rounded-full text-medium"
-            />
-            <span>Psychic</span>
-          </label>
-          <label class="flex items-center">
-            <input
-              type="checkbox"
-              formControlName="Bug"
-              class="mx-1 text-center rounded-full text-medium"
-            />
-            <span>Bug</span>
-          </label>
-          <label class="flex items-center">
-            <input
-              type="checkbox"
-              formControlName="Rock"
-              class="mx-1 text-center rounded-full text-medium"
-            />
-            <span>Rock</span>
-          </label>
-          <label class="flex items-center">
-            <input
-              type="checkbox"
-              formControlName="Ghost"
-              class="mx-1 text-center rounded-full text-medium"
-            />
-            <span>Ghost</span>
-          </label>
-          <label class="flex items-center">
-            <input
-              type="checkbox"
-              formControlName="Dragon"
-              class="mx-1 text-center rounded-full text-medium"
-            />
-            <span>Dragon</span>
-          </label>
-          <label class="flex items-center">
-            <input
-              type="checkbox"
-              formControlName="Dark"
-              class="mx-1 text-center rounded-full text-medium"
-            />
-            <span>Dark</span>
-          </label>
-          <label class="flex items-center">
-            <input
-              type="checkbox"
-              formControlName="Steel"
-              class="mx-1 text-center rounded-full text-medium"
-            />
-            <span>Steel</span>
-          </label>
-          <label class="flex items-center">
-            <input
-              type="checkbox"
-              formControlName="Fairy"
-              class="mx-1 text-center rounded-full text-medium"
-            />
-            <span>Fairy</span>
-          </label>
-          <label class="flex items-center">
-            <input
-              type="checkbox"
-              formControlName="Stellar"
-              class="mx-1 text-center rounded-full text-medium"
-            />
-            <span>Stellar</span>
-          </label>
-        </div>
-        <div class="p-1">
-          <label>
-            Z:
-            <input
-              type="checkbox"
-              formControlName="z"
-              class="p-1 mx-1 text-center rounded-full text-medium"
-            />
-          </label>
-        </div>
+        <label class="p-1"
+          >Tera
+          <input
+            type="checkbox"
+            formControlName="teraCheck"
+            class="mx-1 text-medium"
+          />
+        </label>
       </div>
     </div>
-    <div class="w-1/8 flex items-center justify-center">
-      <div class="w-1/3 bg-slate-200 p-1 rounded-full" (click)="deletePokemonEvent.emit(formIndex)">
+    <div class="flex items-center justify-center w-1/12">
+      <div
+        class="w-1/2 p-1 border-2 rounded-full bg-slate-100 border-slate-400 hover:bg-slate-300"
+        (click)="deletePokemonEvent.emit(formIndex)"
+      >
         <img src="../../../assets/icons/trash.svg" title="Delete" />
+      </div>
+    </div>
+  </div>
+  <div formGroupName="capt" class="w-full px-8">
+    <div
+      *ngIf="pokemonForm.get('capt.teraCheck')?.value"
+      formGroupName="tera"
+      class="grid grid-cols-19"
+    >
+      <div
+        *ngFor="let type of teraTypes"
+        class="flex flex-col items-center space-y-1"
+      >
+        <img
+          class=""
+          src="https://play.pokemonshowdown.com/sprites/types/{{ type }}.png"
+          alt="{{ type }}"
+        />
+        <input
+          type="checkbox"
+          formControlName="{{ type }}"
+          class="mx-auto rounded-full text-medium"
+        />
       </div>
     </div>
   </div>
