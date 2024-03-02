@@ -1,4 +1,4 @@
-<form [formGroup]="scoreForm">
+<form *ngIf="scoreForm" [formGroup]="scoreForm">
   <div class="flex w-flex">
     <div class="w-1/4">
       <button
@@ -7,149 +7,177 @@
         <a [routerLink]="'/draft/' + teamId">Cancel</a>
       </button>
     </div>
-    <div class="flex items-center justify-center w-1/2">
-      <p class="text-3xl bold">Score</p>
+    <div class="flex items-end justify-center w-1/2">
+      <p class="text-3xl font-bold">Score</p>
     </div>
-    <div class="w-1/4"></div>
+    <div class="flex items-center justify-center w-1/4">
+      <p class="font-semibold">Replay</p>
+      <input
+        formControlName="replay"
+        class="w-full p-1 mx-1 text-center rounded-full shadow-inner bg-slate-200 text-medium shadow-slate-600"
+      />
+    </div>
   </div>
   <div class="flex">
     <div class="w-1/2">
-      <div class="flex justify-end w-full">
-        <input
-          formControlName="score"
-          class="w-8 h-8 p-1 mx-1 text-center shadow-inner bg-cyan-200 text-medium shadow-cyan-600"
-        />
-      </div>
       <div
         formGroupName="aTeam"
         class="p-2 m-2 space-y-3 shadow-md bg-cyan-300 team shadow-cyan-600 rounded-xl"
       >
-        <div class="w-full">
-          <div class="flex space-x-3">
-            <div class="w-1/3">
-              <label class="p-1"
-                >Replay<input
-                  formControlName="replay"
-                  class="w-full p-1 mx-1 text-center rounded-full shadow-inner bg-cyan-200 text-medium shadow-cyan-600"
-              /></label>
-            </div>
-            <div class="w-1/3">
-              <label class="p-1"
-                >PokePaste<input
+        <div class="flex w-full">
+          <div class="w-1/2">
+            <div class="w-2/3">
+              <label class="p-1">
+                <span>PokePaste</span>
+                <input
                   formControlName="pokePaste"
                   class="w-full p-1 mx-1 text-center rounded-full shadow-inner bg-cyan-200 text-medium shadow-cyan-600"
               /></label>
+            </div>
+          </div>
+          <div class="w-1/2">
+            <div class="flex justify-end w-2/3 h-full ml-auto">
+              <input
+                formControlName="score"
+                type="number"
+                min="0"
+                class="w-full h-16 p-1 text-3xl font-bold text-center rounded-lg shadow-inner max-w-16 bg-cyan-200 shadow-cyan-600"
+              />
             </div>
           </div>
         </div>
         <div class="p-2 border-2 border-cyan-200 rounded-xl">
-          <div class="grid grid-cols-1 lg:grid-cols-2 md:grid-cols-1 gap-x-4">
+          <div
+            class="grid grid-cols-1 lg:grid-cols-2 md:grid-cols-1 gap-x-4"
+            formArrayName="team"
+          >
             <div
-              *ngFor="let pokemon of matchup.aTeam.team; let i = index"
-              class="flex space-x-4"
+              *ngFor="let pokemonForm of aTeamArray.controls; let i = index"
+              class="flex"
+              formGroupName="{{ i }}"
             >
-              <sprite class="w-1/4" [pokemon]="pokemon"></sprite>
-              <label class="w-1/4"
-                >Brought
-                <input
-                  type="number"
-                  min="0"
-                  class="w-full p-1 mx-1 text-center rounded-md shadow-inner bg-cyan-200 text-medium shadow-cyan-600"
-              /></label>
-              <label class="w-1/4"
-                >Kills
-                <input
-                  type="number"
-                  min="0"
-                  class="w-full p-1 mx-1 text-center rounded-md shadow-inner bg-cyan-200 text-medium shadow-cyan-600"
-              /></label>
-              <label class="w-1/4"
-                >Deaths
-                <input
-                  type="number"
-                  min="0"
-                  class="w-full p-1 mx-1 text-center rounded-md shadow-inner bg-cyan-200 text-medium shadow-cyan-600"
-              /></label>
+              <sprite
+                class="w-1/4 h-fit"
+                [pokemon]="pokemonForm.value.pokemon"
+              ></sprite>
+              <div class="w-3/4">
+                <div class="grid grid-cols-2 gap-2 md:grid-cols-4">
+                  <span class="text-xs">Brought</span>
+                  <span class="text-xs">Direct Kills</span>
+                  <span class="text-xs">Indirect Kills</span>
+                  <span class="text-xs">Deaths</span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2 md:grid-cols-4">
+                  <input
+                    type="number"
+                    formControlName="brought"
+                    min="0"
+                    class="w-full p-1 mx-1 text-center rounded-md shadow-inner bg-cyan-200 text-medium shadow-cyan-600"
+                  />
+                  <input
+                    type="number"
+                    formControlName="kills"
+                    min="0"
+                    class="w-full p-1 mx-1 text-center rounded-md shadow-inner bg-cyan-200 text-medium shadow-cyan-600"
+                  />
+                  <input
+                    type="number"
+                    formControlName="indirect"
+                    min="0"
+                    class="w-full p-1 mx-1 text-center rounded-md shadow-inner bg-cyan-200 text-medium shadow-cyan-600"
+                  />
+                  <input
+                    type="number"
+                    formControlName="deaths"
+                    min="0"
+                    class="w-full p-1 mx-1 text-center rounded-md shadow-inner bg-cyan-200 text-medium shadow-cyan-600"
+                  />
+                </div>
+              </div>
             </div>
           </div>
-          <button
-            (click)="addANewPokemon()"
-            class="px-2 py-1 my-3 rounded-full shadow bg-cyan-300 hover:shadow shadow-cyan-600"
-          >
-            Add
-          </button>
         </div>
       </div>
     </div>
     <div class="w-1/2">
-      <input
-        formControlName="score"
-        class="w-8 h-8 p-1 mx-1 text-center bg-red-200 shadow-inner text-medium shadow-red-600"
-      />
       <div
         formGroupName="bTeam"
         class="p-2 m-2 space-y-3 bg-red-300 shadow-md team shadow-red-600 rounded-xl"
       >
-        <div class="w-full">
-          <div class="flex justify-end space-x-3">
-            <div class="w-1/3">
-              <label class="p-1"
-                >PokePaste
+        <div class="flex w-full">
+          <div class="w-1/2">
+            <div class="flex w-2/3 h-full">
+              <input
+                formControlName="score"
+                type="number"
+                min="0"
+                class="w-full h-16 p-1 text-3xl font-bold text-center bg-red-200 rounded-lg shadow-inner max-w-16 shadow-red-600"
+              />
+            </div>
+          </div>
+          <div class="w-1/2">
+            <div class="flex justify-end w-2/3 ml-auto">
+              <label class="p-1">
+                <span>PokePaste</span>
                 <input
                   formControlName="pokePaste"
                   class="w-full p-1 mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
               /></label>
             </div>
-            <div class="w-1/3">
-              <label class="p-1"
-                >Replay
-                <input
-                  formControlName="replay"
-                  class="w-full p-1 mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
-              /></label>
-            </div>
           </div>
         </div>
-        <div class="p-2 border-2 border-rose-200 rounded-xl">
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-4">
+        <div class="p-2 border-2 border-red-200 rounded-xl">
+          <div
+            class="grid grid-cols-1 lg:grid-cols-2 md:grid-cols-1 gap-x-4"
+            formArrayName="team"
+          >
             <div
-              *ngFor="let pokemon of matchup.bTeam.team; let i = index"
-              class="flex space-x-4"
+              *ngFor="let pokemonForm of bTeamArray.controls; let i = index"
+              class="flex"
+              formGroupName="{{ i }}"
             >
-              <sprite [pokemon]="pokemon" class="w-1/4"></sprite>
-              <label class="w-1/4"
-                >Brought
-                <input
-                  type="number"
-                  min="0"
-                  class="w-full p-1 mx-1 text-center bg-red-200 rounded-md shadow-inner text-medium shadow-red-600"
-                />
-              </label>
-              <label class="w-1/4"
-                >Kills
-                <input
-                  type="number"
-                  min="0"
-                  class="w-full p-1 mx-1 text-center bg-red-200 rounded-md shadow-inner text-medium shadow-red-600"
-                />
-              </label>
-              <label class="w-1/4"
-                >Deaths
-                <input
-                  type="number"
-                  min="0"
-                  class="w-full p-1 mx-1 text-center bg-red-200 rounded-md shadow-inner text-medium shadow-red-600"
-                />
-              </label>
+              <sprite
+                class="w-1/4 h-fit"
+                [pokemon]="pokemonForm.value.pokemon"
+              ></sprite>
+              <div class="w-3/4">
+                <div class="grid grid-cols-2 gap-2 md:grid-cols-4">
+                  <span class="text-xs">Brought</span>
+                  <span class="text-xs">Direct Kills</span>
+                  <span class="text-xs">Indirect Kills</span>
+                  <span class="text-xs">Deaths</span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2 md:grid-cols-4">
+                  <input
+                    type="number"
+                    formControlName="brought"
+                    min="0"
+                    class="w-full p-1 mx-1 text-center bg-red-200 rounded-md shadow-inner text-medium shadow-red-600"
+                  />
+                  <input
+                    type="number"
+                    formControlName="kills"
+                    min="0"
+                    class="w-full p-1 mx-1 text-center bg-red-200 rounded-md shadow-inner text-medium shadow-red-600"
+                  />
+                  <input
+                    type="number"
+                    formControlName="indirect"
+                    min="0"
+                    class="w-full p-1 mx-1 text-center bg-red-200 rounded-md shadow-inner text-medium shadow-red-600"
+                  />
+                  <input
+                    type="number"
+                    formControlName="deaths"
+                    min="0"
+                    class="w-full p-1 mx-1 text-center bg-red-200 rounded-md shadow-inner text-medium shadow-red-600"
+                  />
+                </div>
+              </div>
             </div>
           </div>
-
-          <button
-            (click)="addBNewPokemon()"
-            class="px-2 py-1 my-3 bg-red-300 rounded-full shadow hover:shadow shadow-red-600"
-          >
-            Add
-          </button>
         </div>
       </div>
     </div>
@@ -162,6 +190,6 @@
       Submit
     </button>
   </div>
-
-  {{ scoreForm.value | json }}
+  <!-- 
+  {{ scoreForm.value | json }} -->
 </form>
