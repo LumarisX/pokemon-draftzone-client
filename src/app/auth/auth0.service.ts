@@ -34,7 +34,7 @@ export class AuthService {
   logout() {
     this.auth0
       .logout({
-        logoutParams: { returnTo: 'http://localhost:4200/' },
+        logoutParams: {},
       })
       .subscribe((response) => {
         this.removeAccessToken();
