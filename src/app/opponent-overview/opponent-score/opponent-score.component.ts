@@ -92,7 +92,7 @@ export class OpponentScoreComponent implements OnInit {
   onSubmit() {
     console.log('submitted');
     this.draftService
-      .editMatchup(this.matchupId, this.scoreForm.value)
+      .scoreMatchup(this.matchupId, this.scoreForm.value)
       .subscribe({
         next: (response) => {
           console.log('Success!', response);
