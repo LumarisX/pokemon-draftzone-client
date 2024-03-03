@@ -11,12 +11,11 @@ import { Summery } from '../../matchup-interface';
   templateUrl: './summery.component.html',
 })
 export class SummeryComponent {
-
-  _teams: Summery[] = []
+  _teams: Summery[] = [];
   sortBy: 'name' | 'hp' | 'atk' | 'def' | 'spa' | 'spd' | 'spe' | null = null;
-  @Input() 
+  @Input()
   set teams(summeries: Summery[]) {
-    for(let summery of summeries){
+    for (let summery of summeries) {
       summery.team.sort((x, y) => {
         if (x['baseStats']['spe'] < y['baseStats']['spe']) {
           return 1;
@@ -27,7 +26,7 @@ export class SummeryComponent {
         return 0;
       });
     }
-    this.sortBy = 'spe'
+    this.sortBy = 'spe';
     this._teams = summeries;
   }
   get teams(): Summery[] {

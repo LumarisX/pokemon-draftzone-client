@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {
+  Form,
   FormArray,
   FormBuilder,
   FormGroup,
@@ -87,6 +88,17 @@ export class OpponentScoreComponent implements OnInit {
 
   get bTeamArray(): FormArray {
     return this.scoreForm.get('bTeam.team') as FormArray;
+  }
+
+  statCount(teamArray: FormArray, controlNames: string[]) {
+    let total = 0;
+    for (let control of teamArray.controls) {
+      for (let name of controlNames) {
+        total += control.get(name)?.value;
+      }
+    }
+
+    return total;
   }
 
   onSubmit() {

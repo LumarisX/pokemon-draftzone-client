@@ -47,6 +47,21 @@
           </div>
         </div>
         <div class="p-2 border-2 border-cyan-200 rounded-xl">
+          <div class="flex justify-center w-full space-x-4">
+            <div class="flex space-x-2">
+              <div class="font-semibold">Brought:</div>
+              <div>{{ statCount(aTeamArray, ["brought"]) }}</div>
+            </div>
+            <div class="flex space-x-2">
+              <div class="font-semibold">Deaths:</div>
+              <div>{{ statCount(aTeamArray, ["deaths"]) }}</div>
+            </div>
+            <div class="flex space-x-2">
+              <div class="font-semibold">Kills:</div>
+
+              <div>{{ statCount(aTeamArray, ["kills", "indirect"]) }}</div>
+            </div>
+          </div>
           <div
             class="grid grid-cols-1 lg:grid-cols-2 md:grid-cols-1 gap-x-4"
             formArrayName="team"
@@ -60,39 +75,41 @@
                 class="w-1/4 h-fit"
                 [pokemon]="pokemonForm.value.pokemon"
               ></sprite>
-              <div class="w-3/4">
-                <div class="grid grid-cols-2 gap-2 md:grid-cols-4">
-                  <span class="text-xs">Brought</span>
-                  <span class="text-xs">Direct Kills</span>
-                  <span class="text-xs">Indirect Kills</span>
-                  <span class="text-xs">Deaths</span>
-                </div>
+              <div class="flex items-center w-3/4">
+                <div>
+                  <div class="grid grid-cols-2 gap-2 md:grid-cols-4">
+                    <span class="text-xs">Brought</span>
+                    <span class="text-xs">Direct Kills</span>
+                    <span class="text-xs">Indirect Kills</span>
+                    <span class="text-xs">Deaths</span>
+                  </div>
 
-                <div class="grid grid-cols-2 gap-2 md:grid-cols-4">
-                  <input
-                    type="number"
-                    formControlName="brought"
-                    min="0"
-                    class="w-full p-1 mx-1 text-center rounded-md shadow-inner bg-cyan-200 text-medium shadow-cyan-600"
-                  />
-                  <input
-                    type="number"
-                    formControlName="kills"
-                    min="0"
-                    class="w-full p-1 mx-1 text-center rounded-md shadow-inner bg-cyan-200 text-medium shadow-cyan-600"
-                  />
-                  <input
-                    type="number"
-                    formControlName="indirect"
-                    min="0"
-                    class="w-full p-1 mx-1 text-center rounded-md shadow-inner bg-cyan-200 text-medium shadow-cyan-600"
-                  />
-                  <input
-                    type="number"
-                    formControlName="deaths"
-                    min="0"
-                    class="w-full p-1 mx-1 text-center rounded-md shadow-inner bg-cyan-200 text-medium shadow-cyan-600"
-                  />
+                  <div class="grid grid-cols-2 gap-2 md:grid-cols-4">
+                    <input
+                      type="number"
+                      formControlName="brought"
+                      min="0"
+                      class="w-full p-1 mx-1 text-center rounded-md shadow-inner bg-cyan-200 text-medium shadow-cyan-600"
+                    />
+                    <input
+                      type="number"
+                      formControlName="kills"
+                      min="0"
+                      class="w-full p-1 mx-1 text-center rounded-md shadow-inner bg-cyan-200 text-medium shadow-cyan-600"
+                    />
+                    <input
+                      type="number"
+                      formControlName="indirect"
+                      min="0"
+                      class="w-full p-1 mx-1 text-center rounded-md shadow-inner bg-cyan-200 text-medium shadow-cyan-600"
+                    />
+                    <input
+                      type="number"
+                      formControlName="deaths"
+                      min="0"
+                      class="w-full p-1 mx-1 text-center rounded-md shadow-inner bg-cyan-200 text-medium shadow-cyan-600"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -128,6 +145,21 @@
           </div>
         </div>
         <div class="p-2 border-2 border-red-200 rounded-xl">
+          <div class="flex justify-center w-full space-x-4">
+            <div class="flex space-x-2">
+              <div class="font-semibold">Brought:</div>
+              <div>{{ statCount(bTeamArray, ["brought"]) }}</div>
+            </div>
+            <div class="flex space-x-2">
+              <div class="font-semibold">Deaths:</div>
+              <div>{{ statCount(bTeamArray, ["deaths"]) }}</div>
+            </div>
+            <div class="flex space-x-2">
+              <div class="font-semibold">Kills:</div>
+
+              <div>{{ statCount(bTeamArray, ["kills", "indirect"]) }}</div>
+            </div>
+          </div>
           <div
             class="grid grid-cols-1 lg:grid-cols-2 md:grid-cols-1 gap-x-4"
             formArrayName="team"
@@ -141,39 +173,41 @@
                 class="w-1/4 h-fit"
                 [pokemon]="pokemonForm.value.pokemon"
               ></sprite>
-              <div class="w-3/4">
-                <div class="grid grid-cols-2 gap-2 md:grid-cols-4">
-                  <span class="text-xs">Brought</span>
-                  <span class="text-xs">Direct Kills</span>
-                  <span class="text-xs">Indirect Kills</span>
-                  <span class="text-xs">Deaths</span>
-                </div>
+              <div class="flex items-center w-3/4">
+                <div>
+                  <div class="grid grid-cols-2 gap-2 md:grid-cols-4">
+                    <span class="text-xs">Brought</span>
+                    <span class="text-xs">Direct Kills</span>
+                    <span class="text-xs">Indirect Kills</span>
+                    <span class="text-xs">Deaths</span>
+                  </div>
 
-                <div class="grid grid-cols-2 gap-2 md:grid-cols-4">
-                  <input
-                    type="number"
-                    formControlName="brought"
-                    min="0"
-                    class="w-full p-1 mx-1 text-center bg-red-200 rounded-md shadow-inner text-medium shadow-red-600"
-                  />
-                  <input
-                    type="number"
-                    formControlName="kills"
-                    min="0"
-                    class="w-full p-1 mx-1 text-center bg-red-200 rounded-md shadow-inner text-medium shadow-red-600"
-                  />
-                  <input
-                    type="number"
-                    formControlName="indirect"
-                    min="0"
-                    class="w-full p-1 mx-1 text-center bg-red-200 rounded-md shadow-inner text-medium shadow-red-600"
-                  />
-                  <input
-                    type="number"
-                    formControlName="deaths"
-                    min="0"
-                    class="w-full p-1 mx-1 text-center bg-red-200 rounded-md shadow-inner text-medium shadow-red-600"
-                  />
+                  <div class="grid grid-cols-2 gap-2 md:grid-cols-4">
+                    <input
+                      type="number"
+                      formControlName="brought"
+                      min="0"
+                      class="w-full p-1 mx-1 text-center bg-red-200 rounded-md shadow-inner text-medium shadow-red-600"
+                    />
+                    <input
+                      type="number"
+                      formControlName="kills"
+                      min="0"
+                      class="w-full p-1 mx-1 text-center bg-red-200 rounded-md shadow-inner text-medium shadow-red-600"
+                    />
+                    <input
+                      type="number"
+                      formControlName="indirect"
+                      min="0"
+                      class="w-full p-1 mx-1 text-center bg-red-200 rounded-md shadow-inner text-medium shadow-red-600"
+                    />
+                    <input
+                      type="number"
+                      formControlName="deaths"
+                      min="0"
+                      class="w-full p-1 mx-1 text-center bg-red-200 rounded-md shadow-inner text-medium shadow-red-600"
+                    />
+                  </div>
                 </div>
               </div>
             </div>

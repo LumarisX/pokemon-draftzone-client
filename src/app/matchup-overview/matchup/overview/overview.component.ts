@@ -12,23 +12,6 @@ import { Summery } from '../../matchup-interface';
 })
 export class OverviewComponent {
   @Input() teams: Summery[] = [];
-  sortStat: 'hp' | 'atk' | 'def' | 'spa' | 'spd' | 'spe' = 'spe';
 
   constructor(private matchupService: MatchupService) {}
-
-  sortByStat(
-    data: Summery,
-    sortStat: 'hp' | 'atk' | 'def' | 'spa' | 'spd' | 'spe'
-  ): Summery {
-    data.team.sort((x, y) => {
-      if (x['baseStats'][sortStat] < y['baseStats'][sortStat]) {
-        return 1;
-      }
-      if (x['baseStats'][sortStat] > y['baseStats'][sortStat]) {
-        return -1;
-      }
-      return 0;
-    });
-    return data;
-  }
 }

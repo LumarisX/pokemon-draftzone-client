@@ -57,11 +57,21 @@ export class MatchupComponent implements OnInit {
     });
     this.matchupService.getSummery(this.matchupId).subscribe((data) => {
       this.overview = <Summery[]>data;
+      for (let summery of this.overview) {
+        summery.team.sort((x, y) => {
+          if (x['baseStats']['spe'] < y['baseStats']['spe']) {
+            return 1;
+          }
+          if (x['baseStats']['spe'] > y['baseStats']['spe']) {
+            return -1;
+          }
+          return 0;
+        });
+      }
       this.summery = <Summery[]>JSON.parse(JSON.stringify(data));
     });
     this.matchupService.getSpeedchart(this.matchupId).subscribe((data) => {
       this.speedChart = <SpeedChart>data;
     });
-
   }
 }
