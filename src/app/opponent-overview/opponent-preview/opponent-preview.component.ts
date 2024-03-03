@@ -48,13 +48,9 @@ export class OpponentTeamPreviewComponent implements OnInit {
     );
   }
 
-  score(a: number[]) {
+  score(matchup: Matchup) {
     let s: string;
-    if (a.length == 0) {
-      s = '0 - 0';
-    } else {
-      s = `${a[0]}  - ${a[1]}`;
-    }
+    s = `${matchup.aTeam.score}  - ${matchup.bTeam.score}`;
     return s;
   }
 }

@@ -5,20 +5,23 @@ export type Matchup = {
   _id: string;
   aTeam: Side;
   bTeam: Side;
-  score: number[];
   stage: string;
-  replay: String[];
+  replay: String;
 };
 
-type Side = {
+export type Side = {
   _id?: string;
   teamName: string;
   team: Pokemon[];
   name?: string;
   stats: {
-    pid: PokemonId;
-    kills?: number;
-    deaths?: number;
-  }[];
+    [key in PokemonId]: {
+      kills?: number;
+      deaths?: number;
+      indirect?: number;
+      brought: number;
+    };
+  };
+  score: number;
   paste?: String;
 };

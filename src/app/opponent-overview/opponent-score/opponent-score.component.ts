@@ -5,14 +5,15 @@ import {
   FormGroup,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { DraftService } from '../../api/draft.service';
-import { Matchup } from '../../interfaces/matchup';
+import { Matchup, Side } from '../../interfaces/matchup';
 import { CommonModule } from '@angular/common';
 import { PokemonFormComponent } from '../../pokemon-form/pokemon-form.component';
 import { SpriteComponent } from '../../sprite/sprite.component';
 import { CoreModule } from '../../sprite/sprite.module';
 import { Pokemon } from '../../interfaces/draft';
+import { PokemonId } from '../../pokemon';
 
 @Component({
   selector: 'opponent-form',
@@ -37,11 +38,12 @@ export class OpponentScoreComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private draftService: DraftService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
-    this.matchupId =
+    this.teamId =
       this.route.parent!.parent!.snapshot.paramMap.get('teamid') || '';
     this.route.queryParams.subscribe((params) => {
       if ('matchup' in params) {
@@ -56,30 +58,27 @@ export class OpponentScoreComponent implements OnInit {
 
   private initForm(): void {
     this.scoreForm = this.fb.group({
-      aTeam: this.fb.group({
-        pokePaste: [''],
-        score: [''],
-        team: this.fb.array(this.initTeamArray(this.matchup.aTeam.team)),
-      }),
-      bTeam: this.fb.group({
-        pokePaste: [''],
-        score: [''],
-        team: this.fb.array(this.initTeamArray(this.matchup.bTeam.team)),
-      }),
+      aTeam: this.sideForm(this.matchup.aTeam),
+      bTeam: this.sideForm(this.matchup.bTeam),
       replay: [''],
     });
   }
 
-  private initTeamArray(team: Pokemon[]): FormGroup[] {
-    return team.map((pokemon) =>
+  private sideForm(side: Side): FormGroup {
+    let teamGroup = side.team.map((pokemon: Pokemon) =>
       this.fb.group({
         pokemon: pokemon,
-        kills: [''],
-        deaths: [''],
-        indirect: [''],
-        brought: [''],
+        kills: [side.stats[<PokemonId>pokemon.pid]?.kills],
+        deaths: [side.stats[<PokemonId>pokemon.pid]?.deaths],
+        indirect: [side.stats[<PokemonId>pokemon.pid]?.indirect],
+        brought: [side.stats[<PokemonId>pokemon.pid]?.brought],
       })
     );
+    return this.fb.group({
+      paste: [side.paste],
+      score: [side.score],
+      team: this.fb.array(teamGroup),
+    });
   }
 
   get aTeamArray(): FormArray {
@@ -88,5 +87,20 @@ export class OpponentScoreComponent implements OnInit {
 
   get bTeamArray(): FormArray {
     return this.scoreForm.get('bTeam.team') as FormArray;
+  }
+
+  onSubmit() {
+    console.log('submitted');
+    this.draftService
+      .editMatchup(this.matchupId, this.scoreForm.value)
+      .subscribe({
+        next: (response) => {
+          console.log('Success!', response);
+          this.router.navigate([`/draft/${this.teamId}`]);
+        },
+        error: (error) => {
+          console.error('Error!', error);
+        },
+      });
   }
 }

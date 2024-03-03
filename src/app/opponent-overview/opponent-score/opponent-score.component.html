@@ -1,4 +1,4 @@
-<form *ngIf="scoreForm" [formGroup]="scoreForm">
+<form *ngIf="scoreForm" [formGroup]="scoreForm" (submit)="onSubmit()">
   <div class="flex w-flex">
     <div class="w-1/4">
       <button
@@ -30,7 +30,7 @@
               <label class="p-1">
                 <span>PokePaste</span>
                 <input
-                  formControlName="pokePaste"
+                  formControlName="paste"
                   class="w-full p-1 mx-1 text-center rounded-full shadow-inner bg-cyan-200 text-medium shadow-cyan-600"
               /></label>
             </div>
@@ -121,7 +121,7 @@
               <label class="p-1">
                 <span>PokePaste</span>
                 <input
-                  formControlName="pokePaste"
+                  formControlName="paste"
                   class="w-full p-1 mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
               /></label>
             </div>

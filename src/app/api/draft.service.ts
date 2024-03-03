@@ -44,4 +44,8 @@ export class DraftService {
   deleteMatchup(matchupId: string) {
     return this.apiService.delete(`matchup/${matchupId}`);
   }
+
+  scoreMatchup(matchupId: string, scoreData: Object) {
+    return this.apiService.patch(`draft/matchup/${matchupId}/score`, scoreData);
+  }
 }
