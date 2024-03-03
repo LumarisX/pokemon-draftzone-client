@@ -60,7 +60,7 @@ export class OpponentScoreComponent implements OnInit {
     this.scoreForm = this.fb.group({
       aTeam: this.sideForm(this.matchup.aTeam),
       bTeam: this.sideForm(this.matchup.bTeam),
-      replay: [''],
+      replay: [this.matchup.replay],
     });
   }
 

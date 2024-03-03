@@ -6,7 +6,7 @@ export type Matchup = {
   aTeam: Side;
   bTeam: Side;
   stage: string;
-  replay: String;
+  replay?: String;
 };
 
 export type Side = {
