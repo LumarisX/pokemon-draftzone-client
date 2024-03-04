@@ -32,7 +32,7 @@
         </th>
       </tr>
     </thead>
-    <tbody class="border-b-4 border-slate-400">
+    <tbody class="">
       <tr *ngFor="let pokemon of typecharts[selectedTeam].team" class="">
         <th
           class="w-12 border-r-4 border-r-slate-400"
@@ -53,6 +53,24 @@
         </td>
       </tr>
     </tbody>
+    <thead class="border-b-4 border-slate-400">
+      <tr class="">
+        <th
+          class="left-0 border-r-4 border-slate-400"
+          [ngClass]="teamColor()"
+        ></th>
+        <th
+          class="left-0 border-t-2 bg-slate-300 border-slate-400"
+          *ngFor="let type of types"
+        >
+          <img
+            class=""
+            src="https://play.pokemonshowdown.com/sprites/types/{{ type }}.png"
+            alt="{{ type }}"
+          />
+        </th>
+      </tr>
+    </thead>
     <tfoot id="typeSum" class="bg-slate-300">
       <tr>
         <th class="text-xs border bg-rose-400 border-slate-400">Weaks</th>

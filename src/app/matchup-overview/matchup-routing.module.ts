@@ -19,7 +19,6 @@ const routes: Routes = [
   {
     path: 'matchup/:id',
     component: MatchupSharedComponent,
-    canActivate: [AuthGuard],
   },
 ];
 
