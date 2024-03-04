@@ -13,7 +13,6 @@ import { Matchup } from '../interfaces/matchup';
 })
 export class MatchupOverviewComponent implements OnInit {
   matchup: Matchup | null = null;
-  teamId = '';
   matchupId = '';
   shared = false;
   copyText = 'Copy';
@@ -28,9 +27,6 @@ export class MatchupOverviewComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.teamId = <string>(
-      this.route.parent!.parent!.snapshot.paramMap.get('teamid')
-    );
     this.route.queryParams.subscribe((params) => {
       if ('id' in params) {
         this.matchupId = params['id'];
@@ -42,7 +38,7 @@ export class MatchupOverviewComponent implements OnInit {
         this.leagueId = leagueId;
       }
       this.draftService
-        .getMatchup(this.matchupId, this.teamId)
+        .getMatchup(this.matchupId, this.leagueId)
         .subscribe((data) => {
           this.matchup = <Matchup>data;
         });
