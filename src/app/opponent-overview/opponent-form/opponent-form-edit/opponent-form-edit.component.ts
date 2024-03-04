@@ -56,32 +56,36 @@ export class OpponentFormEditComponent implements OnInit {
     this.route.queryParams.subscribe((params) => {
       if ('matchup' in params) {
         this.matchupId = JSON.parse(params['matchup']);
-        this.draftService.getMatchup(this.matchupId).subscribe((data) => {
-          let matchup = <Matchup>data;
-          let pokemonForms: FormGroup[] = [];
-          for (let pokemon of matchup.bTeam.team) {
-            pokemonForms.push(PokemonFormComponent.addPokemonForm(pokemon));
-          }
-          this.opponentForm = new FormGroup({
-            teamName: new FormControl(
-              matchup.bTeam.teamName,
-              Validators.required
-            ),
-            stage: new FormControl(matchup.stage, Validators.required),
-            team: new FormArray(pokemonForms),
+        this.draftService
+          .getMatchup(this.matchupId, this.teamId)
+          .subscribe((data) => {
+            let matchup = <Matchup>data;
+            let pokemonForms: FormGroup[] = [];
+            for (let pokemon of matchup.bTeam.team) {
+              pokemonForms.push(PokemonFormComponent.addPokemonForm(pokemon));
+            }
+            this.opponentForm = new FormGroup({
+              teamName: new FormControl(
+                matchup.bTeam.teamName,
+                Validators.required
+              ),
+              stage: new FormControl(matchup.stage, Validators.required),
+              team: new FormArray(pokemonForms),
+            });
           });
-        });
       }
     });
   }
 
   editMatchup(formData: Object) {
-    this.draftService.editMatchup(this.matchupId, formData).subscribe(
-      (response) => {
-        console.log('Success!', response);
-        this.router.navigate([`/draft/${this.teamId}`]);
-      },
-      (error) => console.error('Error!', error)
-    );
+    this.draftService
+      .editMatchup(this.matchupId, this.teamId, formData)
+      .subscribe(
+        (response) => {
+          console.log('Success!', response);
+          this.router.navigate([`/draft/${this.teamId}`]);
+        },
+        (error) => console.error('Error!', error)
+      );
   }
 }

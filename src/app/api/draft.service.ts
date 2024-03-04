@@ -17,8 +17,8 @@ export class DraftService {
     return this.apiService.get(`draft/${teamName}`);
   }
 
-  getMatchup(matchupId: string) {
-    return this.apiService.get(`draft/matchup/${matchupId}`);
+  getMatchup(matchupId: string, teamId: string) {
+    return this.apiService.get(`draft/${teamId}/${matchupId}`);
   }
 
   newDraft(draftData: Object) {
@@ -37,15 +37,18 @@ export class DraftService {
     return this.apiService.post(`draft/${teamName}/matchups`, matchupData);
   }
 
-  editMatchup(matchupId: string, matchupData: Object) {
-    return this.apiService.patch(`draft/matchup/${matchupId}`, matchupData);
+  editMatchup(matchupId: string, teamId: string, matchupData: Object) {
+    return this.apiService.patch(`draft/${teamId}/${matchupId}`, matchupData);
   }
 
   deleteMatchup(matchupId: string) {
     return this.apiService.delete(`matchup/${matchupId}`);
   }
 
-  scoreMatchup(matchupId: string, scoreData: Object) {
-    return this.apiService.patch(`draft/matchup/${matchupId}/score`, scoreData);
+  scoreMatchup(matchupId: string, teamId: string, scoreData: Object) {
+    return this.apiService.patch(
+      `draft/${teamId}/${matchupId}/score`,
+      scoreData
+    );
   }
 }

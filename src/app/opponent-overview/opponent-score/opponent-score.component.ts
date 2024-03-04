@@ -49,10 +49,12 @@ export class OpponentScoreComponent implements OnInit {
     this.route.queryParams.subscribe((params) => {
       if ('matchup' in params) {
         this.matchupId = JSON.parse(params['matchup']);
-        this.draftService.getMatchup(this.matchupId).subscribe((data) => {
-          this.matchup = data as Matchup;
-          this.initForm();
-        });
+        this.draftService
+          .getMatchup(this.matchupId, this.teamId)
+          .subscribe((data) => {
+            this.matchup = data as Matchup;
+            this.initForm();
+          });
       }
     });
   }
@@ -104,7 +106,7 @@ export class OpponentScoreComponent implements OnInit {
   onSubmit() {
     console.log('submitted');
     this.draftService
-      .scoreMatchup(this.matchupId, this.scoreForm.value)
+      .scoreMatchup(this.matchupId, this.teamId, this.scoreForm.value)
       .subscribe({
         next: (response) => {
           console.log('Success!', response);
