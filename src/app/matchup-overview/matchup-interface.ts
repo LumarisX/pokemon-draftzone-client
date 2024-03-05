@@ -1,6 +1,5 @@
 import { Pokemon } from '../interfaces/draft';
 import { BattlePokedex } from '../pokedex';
-import { PokemonId } from '../pokemon';
 
 export type Speedtier = {
   pokemon: Pokemon;
@@ -16,7 +15,7 @@ export type SpeedChart = {
   level: number;
 };
 
-export type Summery = {
+export type summary = {
   team: [
     Pokemon & {
       name: string;
@@ -86,7 +85,6 @@ export type Types = {
   Psychic: number;
   Rock: number;
   Steel: number;
-  Stellar: number;
   Water: number;
   brn: number;
   par: number;

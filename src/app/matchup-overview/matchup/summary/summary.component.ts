@@ -2,21 +2,21 @@ import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { SpriteComponent } from '../../../sprite/sprite.component';
-import { Summery } from '../../matchup-interface';
+import { summary } from '../../matchup-interface';
 
 @Component({
-  selector: 'summery',
+  selector: 'summary',
   standalone: true,
   imports: [CommonModule, FormsModule, SpriteComponent],
-  templateUrl: './summery.component.html',
+  templateUrl: './summary.component.html',
 })
-export class SummeryComponent {
-  _teams: Summery[] = [];
+export class summaryComponent {
+  _teams: summary[] = [];
   sortBy: 'name' | 'hp' | 'atk' | 'def' | 'spa' | 'spd' | 'spe' | null = null;
   @Input()
-  set teams(summeries: Summery[]) {
-    for (let summery of summeries) {
-      summery.team.sort((x, y) => {
+  set teams(summeries: summary[]) {
+    for (let summary of summeries) {
+      summary.team.sort((x, y) => {
         if (x['baseStats']['spe'] < y['baseStats']['spe']) {
           return 1;
         }
@@ -29,7 +29,7 @@ export class SummeryComponent {
     this.sortBy = 'spe';
     this._teams = summeries;
   }
-  get teams(): Summery[] {
+  get teams(): summary[] {
     return this._teams;
   }
   selectedTeam: number = 1;

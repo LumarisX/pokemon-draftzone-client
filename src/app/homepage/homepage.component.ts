@@ -4,13 +4,11 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
 @Component({
-  selector: 'app-teams',
+  selector: 'homepage',
   standalone: true,
   imports: [CommonModule, RouterModule, ReactiveFormsModule],
-  templateUrl: './homepage.component.html'
+  templateUrl: './homepage.component.html',
 })
 export class HomeComponent {
-
-  constructor() { }
-
+  constructor() {}
 }

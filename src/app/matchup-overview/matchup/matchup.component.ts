@@ -6,13 +6,13 @@ import { CoveragechartComponent } from './coveragechart/coveragechart.component'
 import { MovechartComponent } from './movechart/movechart.component';
 import { OverviewComponent } from './overview/overview.component';
 import { SpeedchartComponent } from './speedchart/speedchart.component';
-import { SummeryComponent } from './summery/summery.component';
+import { summaryComponent } from './summary/summary.component';
 import { TypechartComponent } from './typechart/typechart.component';
 import {
   CoverageChart,
   MoveChart,
   SpeedChart,
-  Summery,
+  summary,
   TypeChart,
 } from '../matchup-interface';
 import { MatchupService } from '../../api/matchup.service';
@@ -24,7 +24,7 @@ import { MatchupService } from '../../api/matchup.service';
   imports: [
     CommonModule,
     RouterModule,
-    SummeryComponent,
+    summaryComponent,
     SpriteComponent,
     TypechartComponent,
     MovechartComponent,
@@ -39,8 +39,8 @@ export class MatchupComponent implements OnInit {
   coverageChart: CoverageChart[][] = [];
   moveChart: MoveChart[] = [];
   speedChart: SpeedChart | null = null;
-  summery: Summery[] = [];
-  overview: Summery[] = [];
+  summary: summary[] = [];
+  overview: summary[] = [];
   typeChart: TypeChart[] = [];
 
   constructor(private matchupService: MatchupService) {}
@@ -55,10 +55,10 @@ export class MatchupComponent implements OnInit {
     this.matchupService.getTypechart(this.matchupId).subscribe((data) => {
       this.typeChart = <TypeChart[]>data;
     });
-    this.matchupService.getSummery(this.matchupId).subscribe((data) => {
-      this.overview = <Summery[]>data;
-      for (let summery of this.overview) {
-        summery.team.sort((x, y) => {
+    this.matchupService.getsummary(this.matchupId).subscribe((data) => {
+      this.overview = <summary[]>data;
+      for (let summary of this.overview) {
+        summary.team.sort((x, y) => {
           if (x['baseStats']['spe'] < y['baseStats']['spe']) {
             return 1;
           }
@@ -68,7 +68,7 @@ export class MatchupComponent implements OnInit {
           return 0;
         });
       }
-      this.summery = <Summery[]>JSON.parse(JSON.stringify(data));
+      this.summary = <summary[]>JSON.parse(JSON.stringify(data));
     });
     this.matchupService.getSpeedchart(this.matchupId).subscribe((data) => {
       this.speedChart = <SpeedChart>data;

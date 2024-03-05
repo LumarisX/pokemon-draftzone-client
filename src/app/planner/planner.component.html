@@ -1,0 +1,70 @@
+<form [formGroup]="myForm">
+  <div class="flex p-4 space-x-4">
+    <div>
+      <label for="format">Format</label>
+      <select formControlName="format" id="format">
+        <option value="" disabled selected>Select Format</option>
+        <option value="format1">Format 1</option>
+        <option value="format2">Format 2</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="ruleset">Ruleset</label>
+      <select formControlName="ruleset" id="ruleset">
+        <option value="" disabled selected>Select Ruleset</option>
+        <option value="ruleset1">Ruleset 1</option>
+        <option value="ruleset2">Ruleset 2</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="min">Min</label>
+      <input type="number" formControlName="min" id="min" min="0" max="18" />
+    </div>
+
+    <div>
+      <label for="max">Max</label>
+      <input type="number" formControlName="max" id="max" min="0" max="18" />
+    </div>
+
+    <div>
+      <label for="tier">Tier</label>
+      <select formControlName="tier" id="tier">
+        <option value="" disabled selected>Select Tier</option>
+        <option value="points">Points</option>
+        <option value="tiers">Tiers</option>
+      </select>
+    </div>
+
+    <div *ngIf="myForm.get('tier')?.value === 'points'">
+      <label for="totalPoints">Total Points</label>
+      <input type="number" formControlName="totalPoints" id="totalPoints" />
+    </div>
+  </div>
+  <div formArrayName="team">
+    <div
+      *ngFor="let teamCtrl of teamFormArray.controls; let i = index"
+      [formGroupName]="i"
+      class="flex"
+    >
+      <div>
+        <label for="pid{{ i }}">PID</label>
+        <input type="text" formControlName="pid" id="pid{{ i }}" />
+      </div>
+      <div>
+        <label for="capt{{ i }}">Capt</label>
+        <input type="text" formControlName="capt" id="capt{{ i }}" />
+      </div>
+      <div>
+        <label for="tier{{ i }}">Tier</label>
+        <input type="tier" formControlName="tier" id="tier{{ i }}" />
+      </div>
+    </div>
+  </div>
+  <typechart [typechart]="typechart"></typechart>
+  <summary [summary]="summary"></summary>
+</form>
+{{ myForm.value | json }}
+<!-- Typechart include multi Type Pokemon Settings Settings List Pokemon Move chart
+Recommended Pokemon Pokemon summary -->
