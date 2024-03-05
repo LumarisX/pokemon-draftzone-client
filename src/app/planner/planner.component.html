@@ -62,8 +62,10 @@
       </div>
     </div>
   </div>
-  <typechart [typechart]="typechart"></typechart>
-  <summary [summary]="summary"></summary>
+  <div>
+    <typechart *ngIf="typechart" [typechart]="typechart"></typechart>
+    <summary *ngIf="summary" [summary]="summary"></summary>
+  </div>
 </form>
 {{ myForm.value | json }}
 <!-- Typechart include multi Type Pokemon Settings Settings List Pokemon Move chart

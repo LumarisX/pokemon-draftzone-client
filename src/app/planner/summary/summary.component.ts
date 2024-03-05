@@ -10,7 +10,7 @@ import { SpriteComponent } from '../../sprite/sprite.component';
   imports: [CommonModule, FormsModule, SpriteComponent],
   templateUrl: './summary.component.html',
 })
-export class summaryComponent {
+export class SummaryComponent {
   _team!: summary;
   sortBy: 'name' | 'hp' | 'atk' | 'def' | 'spa' | 'spd' | 'spe' | null = null;
 

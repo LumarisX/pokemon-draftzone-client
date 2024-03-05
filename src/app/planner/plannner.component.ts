@@ -10,11 +10,12 @@ import {
 } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { PlannerService } from '../api/planner.service';
-import { summary, TypeChart } from '../matchup-overview/matchup-interface';
+import { TypeChart, summary } from '../matchup-overview/matchup-interface';
 import { SpriteComponent } from '../sprite/sprite.component';
 import { Planner } from './planner.interface';
-import { summaryComponent } from './summary/summary.component';
 import { TypechartComponent } from './typechart/typechart.component';
+import { SummaryComponent } from './summary/summary.component';
+import { PokemonId } from '../pokemon';
 
 @Component({
   selector: 'planner',
@@ -24,7 +25,7 @@ import { TypechartComponent } from './typechart/typechart.component';
     CommonModule,
     RouterModule,
     TypechartComponent,
-    summaryComponent,
+    SummaryComponent,
     ReactiveFormsModule,
     FormsModule,
     SpriteComponent,
@@ -41,14 +42,6 @@ export class PlannerComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.plannerService
-      .getPlannerDetails(['deoxys', 'clefable', 'deino', 'minior'])
-      .subscribe((data) => {
-        let planner = <Planner>data;
-        this.typechart = planner.typechart;
-        this.summary = planner.summary;
-      });
-
     this.myForm = this.fb.group({
       format: ['', Validators.required],
       ruleset: ['', Validators.required],
@@ -71,6 +64,17 @@ export class PlannerComponent implements OnInit {
     });
     this.myForm.get('max')?.valueChanges.subscribe((value: number) => {
       this.adjustTeamArray(value);
+    });
+  }
+
+  updateDetails() {
+    const team = this.teamFormArray.controls.map(
+      (control) => control.get('pid')?.value
+    );
+    this.plannerService.getPlannerDetails(team).subscribe((data) => {
+      let planner = <Planner>data;
+      this.typechart = planner.typechart;
+      this.summary = planner.summary;
     });
   }
 

@@ -6,7 +6,7 @@ import { CoveragechartComponent } from './coveragechart/coveragechart.component'
 import { MovechartComponent } from './movechart/movechart.component';
 import { OverviewComponent } from './overview/overview.component';
 import { SpeedchartComponent } from './speedchart/speedchart.component';
-import { summaryComponent } from './summary/summary.component';
+import { SummaryComponent } from './summary/summary.component';
 import { TypechartComponent } from './typechart/typechart.component';
 import {
   CoverageChart,
@@ -24,7 +24,7 @@ import { MatchupService } from '../../api/matchup.service';
   imports: [
     CommonModule,
     RouterModule,
-    summaryComponent,
+    SummaryComponent,
     SpriteComponent,
     TypechartComponent,
     MovechartComponent,

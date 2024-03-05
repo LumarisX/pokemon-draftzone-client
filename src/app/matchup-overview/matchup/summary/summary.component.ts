@@ -10,7 +10,7 @@ import { summary } from '../../matchup-interface';
   imports: [CommonModule, FormsModule, SpriteComponent],
   templateUrl: './summary.component.html',
 })
-export class summaryComponent {
+export class SummaryComponent {
   _teams: summary[] = [];
   sortBy: 'name' | 'hp' | 'atk' | 'def' | 'spa' | 'spd' | 'spe' | null = null;
   @Input()
