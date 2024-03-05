@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AuthService as Auth0Service } from '@auth0/auth0-angular';
+import { Observable, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -41,8 +42,14 @@ export class AuthService {
       });
   }
 
-  isAuthenticated() {
-    return this.auth0.isAuthenticated$;
+  isAuthenticated(): Observable<boolean> {
+    return this.auth0.isAuthenticated$.pipe(
+      tap((loggedIn) => {
+        if (loggedIn) {
+          this.setAccessToken();
+        }
+      })
+    );
   }
 
   user() {
