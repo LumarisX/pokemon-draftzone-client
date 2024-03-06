@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import {
+  AbstractControl,
   FormArray,
   FormBuilder,
   FormGroup,
@@ -11,11 +12,14 @@ import {
 import { RouterModule } from '@angular/router';
 import { PlannerService } from '../api/planner.service';
 import { TypeChart, summary } from '../matchup-overview/matchup-interface';
+import { BattlePokedex } from '../pokedex';
+import { PokemonId } from '../pokemon';
 import { SpriteComponent } from '../sprite/sprite.component';
 import { Planner } from './planner.interface';
-import { TypechartComponent } from './typechart/typechart.component';
 import { SummaryComponent } from './summary/summary.component';
-import { PokemonId } from '../pokemon';
+import { TypechartComponent } from './typechart/typechart.component';
+import { FilterComponent } from '../filter/filter.component';
+import { Pokemon } from '../interfaces/draft';
 
 @Component({
   selector: 'planner',
@@ -24,6 +28,7 @@ import { PokemonId } from '../pokemon';
   imports: [
     CommonModule,
     RouterModule,
+    FilterComponent,
     TypechartComponent,
     SummaryComponent,
     ReactiveFormsModule,
@@ -33,6 +38,7 @@ import { PokemonId } from '../pokemon';
 })
 export class PlannerComponent implements OnInit {
   myForm!: FormGroup;
+  team: PokemonId[] = []
   typechart!: TypeChart;
   summary!: summary;
 
@@ -68,14 +74,25 @@ export class PlannerComponent implements OnInit {
   }
 
   updateDetails() {
-    const team = this.teamFormArray.controls.map(
-      (control) => control.get('pid')?.value
-    );
-    this.plannerService.getPlannerDetails(team).subscribe((data) => {
-      let planner = <Planner>data;
-      this.typechart = planner.typechart;
-      this.summary = planner.summary;
-    });
+    let newteam: PokemonId[] = []
+    for(let pokemon of this.teamFormArray.controls){
+      let pid = pokemon.get('pid')?.value
+      if(pid in BattlePokedex){
+        newteam.push(pid)
+      }
+    }
+    if(newteam.toString() != this.team.toString()){
+      this.team = newteam
+      this.plannerService.getPlannerDetails(this.team).subscribe((data) => {
+        let planner = <Planner>data;
+        this.typechart = planner.typechart;
+        this.summary = planner.summary;
+      });
+    }
+  }
+
+  resultSelected(formGroup: AbstractControl, $event: Pokemon) {
+    formGroup.patchValue({ name: $event.name, pid: $event.pid });
   }
 
   maxValidator(max: number) {
@@ -109,7 +126,8 @@ export class PlannerComponent implements OnInit {
   createTeamFormGroup(): FormGroup {
     return this.fb.group({
       pid: ['', Validators.required],
-      capt: ['', Validators.required],
+      name: ['', Validators.required],
+      capt: [false, Validators.required],
       tier: [''],
     });
   }

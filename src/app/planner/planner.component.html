@@ -1,5 +1,5 @@
 <form [formGroup]="myForm">
-  <div class="flex p-4 space-x-4">
+  <div class="flex p-4 space-x-4 bg-slate-200">
     <div>
       <label for="format">Format</label>
       <select formControlName="format" id="format">
@@ -49,20 +49,24 @@
       class="flex"
     >
       <div>
-        <label for="pid{{ i }}">PID</label>
-        <input type="text" formControlName="pid" id="pid{{ i }}" />
+        <label for="name{{ i }}">Name</label>
+        <input type="text" formControlName="name" id="name{{ i }} " (input)="updateDetails()" />
+        <filter [query]="teamCtrl.get('name')?.value"
+        (querySelected)="resultSelected(teamCtrl, $event)"
+      ></filter>
       </div>
-      <div>
-        <label for="capt{{ i }}">Capt</label>
-        <input type="text" formControlName="capt" id="capt{{ i }}" />
-      </div>
+      
       <div>
         <label for="tier{{ i }}">Tier</label>
         <input type="tier" formControlName="tier" id="tier{{ i }}" />
       </div>
+      <div>
+        <label for="capt{{ i }}">Capt</label>
+        <input type="checkbox" formControlName="capt" id="capt{{ i }}" />
+      </div>
     </div>
   </div>
-  <div>
+  <div class="flex">
     <typechart *ngIf="typechart" [typechart]="typechart"></typechart>
     <summary *ngIf="summary" [summary]="summary"></summary>
   </div>
