@@ -2,16 +2,32 @@ import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { SpeedChart, Speedtier } from '../../matchup-interface';
 import { SpriteComponent } from '../../../sprite/sprite.component';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'speedchart',
   standalone: true,
   templateUrl: './speedchart.component.html',
-  imports: [CommonModule, SpriteComponent],
+  imports: [CommonModule, FormsModule, SpriteComponent],
 })
 export class SpeedchartComponent {
   @Input() speedchart!: SpeedChart | null;
   showFilter: boolean = false;
+
+  modifiers: {
+    [key: string]: boolean;
+  } = {
+    '252': true,
+    Positive: true,
+    '0': true,
+    Negative: true,
+    'Swift Swim': true,
+    'Sand Rush': true,
+    Chlorophyll: true,
+    'Slush Rush': true,
+    Protosynthesis: true,
+    'Quark Drive': true,
+  };
 
   constructor() {}
 
@@ -33,27 +49,23 @@ export class SpeedchartComponent {
     return 0;
   }
 
-  makeSticky(speedchart: SpeedChart) {
-    for (let i = 0; i < speedchart.tiers.length - 1; i++) {
-      if (speedchart.tiers[i].team != speedchart.tiers[i + 1].team) {
-        speedchart.tiers[i].stick = true;
-      }
-    }
-  }
+  // makeSticky(speedchart: SpeedChart) {
+  //   for (let i = 0; i < speedchart.tiers.length - 1; i++) {
+  //     if (speedchart.tiers[i].team != speedchart.tiers[i + 1].team) {
+  //       speedchart.tiers[i].stick = true;
+  //     }
+  //   }
+  // }
 
   filtered(tier: Speedtier) {
-    let bad = [
-      'Stage 2',
-      'Unburden',
-      'Quick Feet',
-      'Stage 1',
-      'Stage -1',
-      'base',
-      'min-',
-      'ironball',
-    ];
-    for (let mod of bad) {
-      if (tier.modifiers.includes(mod)) return false;
+    for (let mod of tier.modifiers) {
+      if (mod in this.modifiers) {
+        if (!this.modifiers[mod]) {
+          return false;
+        }
+      } else {
+        return false;
+      }
     }
     return true;
   }

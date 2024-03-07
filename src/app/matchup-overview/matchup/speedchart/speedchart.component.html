@@ -13,9 +13,8 @@
         />
       </div>
       <div
-        class="absolute mt-2 bg-white border rounded-md shadow-lg z-5000"
+        class="absolute right-0 mt-2 bg-white border rounded-md shadow-lg z-5000"
         *ngIf="showFilter"
-        style="right: 0"
       >
         <div
           *ngFor="let modifier of speedchart?.modifiers"
@@ -26,6 +25,7 @@
             id="{{ modifier }}"
             name="{{ modifier }}"
             value="{{ modifier }}"
+            [(ngModel)]="modifiers[modifier]"
           />
           <label for="{{ modifier }}">{{ modifier }}</label>
         </div>
@@ -60,91 +60,127 @@
           [flipped]="true"
         ></sprite>
         <div class="px-1 text-lg">{{ tier.pokemon.name }}</div>
-        <div class="flex justify-end flex-grow ml-auto">
+        <div class="flex items-center justify-end flex-grow ml-auto">
           <div class="flex h-5 space-x-1">
             <img
+              *ngIf="tier.modifiers.includes('252')"
+              class="h-full border rounded-full bg-slate-200 border-slate-700"
+              src="../../../../assets/icons/speedchart/252.svg"
+              title="252 evs"
+              alt="252"
+            />
+            <img
+              *ngIf="tier.modifiers.includes('0')"
+              class="h-full border rounded-full bg-slate-200 border-slate-700"
+              src="../../../../assets/icons/speedchart/0.svg"
+              title="0 evs"
+              alt="0"
+            />
+            <img
               *ngIf="tier.modifiers.includes('Positive')"
-              class="h-full border rounded-full bg-slate-200 border-slate-500"
-              src="../../../../assets/icons/speedchart/circle-plus.svg"
+              class="h-full border rounded-full bg-slate-200 border-slate-700"
+              src="../../../../assets/icons/speedchart/plus.svg"
               title="+ Nature"
               alt="+"
             />
             <img
               *ngIf="tier.modifiers.includes('Negative')"
-              class="h-full border rounded-full bg-slate-200 border-slate-500"
-              src="../../../../assets/icons/speedchart/circle-minus.svg"
+              class="h-full border rounded-full bg-slate-200 border-slate-700"
+              src="../../../../assets/icons/speedchart/minus.svg"
               title="- Nature"
               alt="-"
             />
             <img
-              *ngIf="tier.modifiers.includes('252')"
-              class="h-full border rounded-full bg-slate-200 border-slate-500"
-              src="../../../../assets/icons/speedchart/m.svg"
-              title="252 evs"
-              alt="252"
+              *ngIf="tier.modifiers.includes('Stage 1')"
+              class="h-full border rounded-full bg-slate-200 border-slate-700"
+              src="../../../../assets/icons/speedchart/plus1.svg"
+              title="+1 Stage"
+              alt="Stage 1"
             />
             <img
-              class="h-full border rounded-full bg-slate-200 border-slate-500"
+              *ngIf="tier.modifiers.includes('Stage 2')"
+              class="h-full border rounded-full bg-slate-200 border-slate-700"
+              src="../../../../assets/icons/speedchart/plus2.svg"
+              title="+2 Stage"
+              alt="Stage 2"
+            />
+            <img
+              *ngIf="tier.modifiers.includes('Stage -1')"
+              class="h-full border rounded-full bg-slate-200 border-slate-700"
+              src="../../../../assets/icons/speedchart/minus1.svg"
+              title="-1 Stage"
+              alt="Stage -1"
+            />
+
+            <img
+              class="h-full border rounded-full bg-slate-200 border-slate-700"
               *ngIf="tier.modifiers.includes('Scarf')"
               src="../../../../assets/icons/speedchart/scarf.svg"
               title="Choice Scarf"
               alt="Choice Scarf"
             />
             <img
-              class="h-full border rounded-full bg-slate-200 border-slate-500"
+              class="h-full border rounded-full bg-slate-200 border-slate-700"
               *ngIf="tier.modifiers.includes('Tailwind')"
               src="../../../../assets/icons/speedchart/tailwind.svg"
               title="Tailwind"
               alt="Tailwind"
             />
             <img
-              class="h-full border rounded-full bg-slate-200 border-slate-500"
+              class="h-full border rounded-full bg-slate-200 border-slate-700"
               *ngIf="tier.modifiers.includes('Paralyzed')"
               src="../../../../assets/icons/speedchart/paralyzed.svg"
               title="Paralyzed"
               alt="Paralyzed"
             />
             <img
-              class="h-full border rounded-full bg-slate-200 border-slate-500"
+              class="h-full border rounded-full bg-slate-200 border-slate-700"
               *ngIf="tier.modifiers.includes('Quark Drive')"
               src="../../../../assets/icons/speedchart/booster.svg"
               title="Quark Drive"
               alt="Quark Drive"
             />
             <img
-              class="h-full border rounded-full bg-slate-200 border-slate-500"
+              class="h-full border rounded-full bg-slate-200 border-slate-700"
               *ngIf="tier.modifiers.includes('Protosynthesis')"
               src="../../../../assets/icons/speedchart/booster.svg"
               title="Protosynthesis"
               alt="Protosynthesis"
             />
             <img
-              class="h-full border rounded-full bg-slate-200 border-slate-500"
+              class="h-full border rounded-full bg-slate-200 border-slate-700"
               *ngIf="tier.modifiers.includes('Sand Rush')"
               src="../../../../assets/icons/speedchart/sand.svg"
               title="Sand Rush"
               alt="Sand Rush"
             />
             <img
-              class="h-full border rounded-full bg-slate-200 border-slate-500"
+              class="h-full border rounded-full bg-slate-200 border-slate-700"
               *ngIf="tier.modifiers.includes('Swift Swim')"
               src="../../../../assets/icons/speedchart/rain.svg"
               title="Swift Swim"
               alt="Swift Swim"
             />
             <img
-              class="h-full border rounded-full bg-slate-200 border-slate-500"
+              class="h-full border rounded-full bg-slate-200 border-slate-700"
               *ngIf="tier.modifiers.includes('Chlorophyll')"
               src="../../../../assets/icons/speedchart/sun.svg"
               title="Chlorophyll"
               alt="Chlorophyll"
             />
             <img
-              class="h-full border rounded-full bg-slate-200 border-slate-500"
+              class="h-full border rounded-full bg-slate-200 border-slate-700"
               *ngIf="tier.modifiers.includes('Slush Rush')"
               src="../../../../assets/icons/speedchart/snow.svg"
               title="Slush Rush"
               alt="Slush Rush"
+            />
+            <img
+              class="h-full border rounded-full bg-slate-200 border-slate-700"
+              *ngIf="tier.modifiers.includes('Ironball')"
+              src="../../../../assets/icons/speedchart/ironball.svg"
+              title="Ironball"
+              alt="Ironball"
             />
           </div>
           <div class="w-16 text-lg font-semibold text-center">
