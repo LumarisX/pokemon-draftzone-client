@@ -37,10 +37,11 @@ import { Pokemon } from '../interfaces/draft';
   ],
 })
 export class PlannerComponent implements OnInit {
-  myForm!: FormGroup;
-  team: PokemonId[] = []
+  plannerForm!: FormGroup;
+  team: PokemonId[] = [];
   typechart!: TypeChart;
   summary!: summary;
+  tabSelected = 0;
 
   constructor(
     private fb: FormBuilder,
@@ -48,41 +49,73 @@ export class PlannerComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.myForm = this.fb.group({
+    this.plannerForm = this.fb.group({
       format: ['', Validators.required],
       ruleset: ['', Validators.required],
-      min: [0, [Validators.required, Validators.min(0)]],
-      max: [0, [Validators.required, Validators.min(0), Validators.max(18)]],
-      tier: ['', Validators.required],
-      totalPoints: [''],
+      min: [11, [Validators.required, Validators.min(0)]], //set to 10
+      max: [11, [Validators.required, Validators.min(0), Validators.max(18)]], //set to 12
+      system: ['points', Validators.required],
+      totalPoints: [160], // set to 0
       team: this.fb.array([]),
     });
 
-    this.myForm.get('max')?.valueChanges.subscribe((value: number) => {
-      this.myForm
+    this.plannerForm.get('max')?.valueChanges.subscribe((value: number) => {
+      this.plannerForm
         .get('min')
         ?.setValidators([
           Validators.required,
           Validators.min(0),
           this.maxValidator(value),
         ]);
-      this.myForm.get('min')?.updateValueAndValidity();
+      this.plannerForm.get('min')?.updateValueAndValidity();
     });
-    this.myForm.get('max')?.valueChanges.subscribe((value: number) => {
+    this.plannerForm.get('max')?.valueChanges.subscribe((value: number) => {
       this.adjustTeamArray(value);
     });
+
+    this.adjustTeamArray(12);
+  }
+
+  get isPoints() {
+    return this.plannerForm.get('system')?.value === 'points';
+  }
+
+  get remainingPoints() {
+    let total: number = 0;
+    for (let control of this.teamFormArray?.controls) {
+      total += control.get('value')?.value;
+    }
+    return this.plannerForm.get('totalPoints')?.value - total;
+  }
+
+  get tieredCount() {
+    let total: number = 0;
+    for (let control of this.teamFormArray?.controls) {
+      if (control.get('pid')?.value != '') {
+        total++;
+      }
+    }
+    return total;
+  }
+
+  get remainingPokemon() {
+    let mons = this.plannerForm.get('min')?.value - this.tieredCount;
+    if (mons > 1) {
+      return mons;
+    }
+    return 1;
   }
 
   updateDetails() {
-    let newteam: PokemonId[] = []
-    for(let pokemon of this.teamFormArray.controls){
-      let pid = pokemon.get('pid')?.value
-      if(pid in BattlePokedex){
-        newteam.push(pid)
+    let newteam: PokemonId[] = [];
+    for (let pokemon of this.teamFormArray.controls) {
+      let pid = pokemon.get('pid')?.value;
+      if (pid in BattlePokedex) {
+        newteam.push(pid);
       }
     }
-    if(newteam.toString() != this.team.toString()){
-      this.team = newteam
+    if (newteam.toString() != this.team.toString()) {
+      this.team = newteam;
       this.plannerService.getPlannerDetails(this.team).subscribe((data) => {
         let planner = <Planner>data;
         this.typechart = planner.typechart;
@@ -93,6 +126,7 @@ export class PlannerComponent implements OnInit {
 
   resultSelected(formGroup: AbstractControl, $event: Pokemon) {
     formGroup.patchValue({ name: $event.name, pid: $event.pid });
+    this.updateDetails();
   }
 
   maxValidator(max: number) {
@@ -115,12 +149,13 @@ export class PlannerComponent implements OnInit {
     } else if (newSize < currentSize) {
       for (let i = currentSize; i > newSize; i--) {
         this.teamFormArray.removeAt(i - 1);
+        this.updateDetails();
       }
     }
   }
 
   get teamFormArray(): FormArray {
-    return this.myForm.get('team') as FormArray;
+    return this.plannerForm.get('team') as FormArray;
   }
 
   createTeamFormGroup(): FormGroup {
@@ -129,6 +164,7 @@ export class PlannerComponent implements OnInit {
       name: ['', Validators.required],
       capt: [false, Validators.required],
       tier: [''],
+      value: [0],
     });
   }
 }
