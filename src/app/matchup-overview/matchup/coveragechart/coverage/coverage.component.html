@@ -12,7 +12,7 @@
         >
           <img
             class="w-auto h-6"
-            src="https://play.pokemonshowdown.com/sprites/categories/Physical.png"
+            src="../../../../../assets/icons/moves/move-physical.png"
             alt="Physical Moves"
           />
           <div class="grid grid-cols-5 gap-1">
@@ -20,8 +20,8 @@
               *ngFor="let move of pokemon.coverage.physical"
               [ngClass]="{ 'opacity-40': !move.recommended }"
               (click)="move.recommended = !move.recommended"
-              src="https://play.pokemonshowdown.com/sprites/types/{{
-                move.type
+              src="../../../../../assets/icons/types/{{
+                move.type.toLowerCase()
               }}.png"
               title="{{ move.name }}"
             />
@@ -32,7 +32,7 @@
         >
           <img
             class="w-auto h-6"
-            src="https://play.pokemonshowdown.com/sprites/categories/Special.png"
+            src="../../../../../assets/icons/moves/move-special.png"
             alt="Special Moves"
           />
           <div class="grid grid-cols-5 gap-1">
@@ -40,8 +40,8 @@
               *ngFor="let move of pokemon.coverage.special"
               [ngClass]="{ 'opacity-40': !move.recommended }"
               (click)="move.recommended = !move.recommended"
-              src="https://play.pokemonshowdown.com/sprites/types/{{
-                move.type
+              src="../../../../../assets/icons/types/{{
+                move.type.toLowerCase()
               }}.png"
               title="{{ move.name }}"
             />
