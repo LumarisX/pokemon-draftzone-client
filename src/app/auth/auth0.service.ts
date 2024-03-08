@@ -42,14 +42,8 @@ export class AuthService {
       });
   }
 
-  isAuthenticated(): Observable<boolean> {
-    return this.auth0.isAuthenticated$.pipe(
-      tap((loggedIn) => {
-        if (loggedIn) {
-          this.setAccessToken();
-        }
-      })
-    );
+  isAuthenticated() {
+    return this.auth0.isAuthenticated$
   }
 
   user() {

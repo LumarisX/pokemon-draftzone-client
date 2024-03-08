@@ -1,5 +1,5 @@
 <div class="flex flex-col justify-between h-screen">
-  <header class="z-10 flex w-full border-b-2 bg-slate-300 border-slate-400">
+  <header class="z-10 flex w-full border-b-2 bg-slate-300 border-slate-400 p-2">
     <div class="flex items-center justify-center w-32 hover:bg-slate-200">
       <a class="text-xl" routerLink="/">DraftZone</a>
     </div>
@@ -14,8 +14,8 @@
         <a class="opacity-50">Statistics</a>
       </div>
     </div>
-    <div class="flex justify-end flex-grow p-2">
-      <div class="px-4">
+    <div class="flex justify-end flex-grow h-full">
+      <div class="px-4  hover:bg-slate-200 h-full">
         <ng-container *ngIf="auth.isAuthenticated() | async; else loggedOut">
           <div
             *ngIf="auth.user() | async as user"
