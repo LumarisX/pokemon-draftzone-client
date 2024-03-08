@@ -15,7 +15,7 @@ export type SpeedChart = {
   level: number;
 };
 
-export type summary = {
+export type Summary = {
   team: [
     Pokemon & {
       name: string;
@@ -131,3 +131,15 @@ export type CoverageChart = Pokemon & {
     ];
   };
 };
+
+export type MatchupData = {
+  format: string,
+  ruleset: string,
+  level: number,
+  speedchart: SpeedChart,
+  summery: Summary[],
+  overview: Summary[],
+  typechart: TypeChart[],
+  movechart: MoveChart[],
+  coveragechart: CoverageChart[][]
+}

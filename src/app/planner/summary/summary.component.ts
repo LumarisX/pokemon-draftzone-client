@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { summary } from '../../matchup-overview/matchup-interface';
+import { Summary } from '../../matchup-overview/matchup-interface';
 import { SpriteComponent } from '../../sprite/sprite.component';
 
 @Component({
@@ -11,11 +11,11 @@ import { SpriteComponent } from '../../sprite/sprite.component';
   templateUrl: './summary.component.html',
 })
 export class SummaryComponent {
-  _team!: summary;
+  _team!: Summary;
   sortBy: 'name' | 'hp' | 'atk' | 'def' | 'spa' | 'spd' | 'spe' | null = null;
 
   @Input()
-  set summary(sum: summary) {
+  set summary(sum: Summary) {
     sum.team.sort((x, y) => {
       if (x['baseStats']['spe'] < y['baseStats']['spe']) {
         return 1;
@@ -29,7 +29,7 @@ export class SummaryComponent {
     this.sortBy = 'spe';
     this._team = sum;
   }
-  get summary(): summary {
+  get summary(): Summary {
     return this._team;
   }
   reversed: boolean = false;

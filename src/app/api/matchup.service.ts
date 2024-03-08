@@ -7,6 +7,10 @@ import { ApiService } from './api.service';
 export class MatchupService {
   constructor(private apiService: ApiService) {}
 
+  getMatchup(matchupId: string){
+    return this.apiService.get(`matchup/${matchupId}`);
+  }
+
   getSpeedchart(matchupId: string) {
     return this.apiService.get(`matchup/${matchupId}/speedchart`);
   }

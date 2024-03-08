@@ -13,7 +13,7 @@ import { getSpriteName } from '../pokemon';
       [ngClass]="isFlipped()"
       title="{{ pokemon.name }}"
       src="{{ getPath() }}"
-      onerror="this.src='https://play.pokemonshowdown.com/sprites/gen5/0.png';"
+      onerror="this.src='../../assets/icons/unknown.svg'"
     />
   `,
 })
@@ -23,7 +23,7 @@ export class SpriteComponent {
 
   getPath() {
     if (!this.pokemon) {
-      return 'https://play.pokemonshowdown.com/sprites/gen5-shiny/0.png';
+      return '../../assets/icons/unknown.svg';
     }
     if (this.pokemon.shiny) {
       return (

@@ -11,7 +11,7 @@ import {
 } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { PlannerService } from '../api/planner.service';
-import { TypeChart, summary } from '../matchup-overview/matchup-interface';
+import { TypeChart, Summary } from '../matchup-overview/matchup-interface';
 import { BattlePokedex } from '../pokedex';
 import { PokemonId } from '../pokemon';
 import { SpriteComponent } from '../sprite/sprite.component';
@@ -40,7 +40,7 @@ export class PlannerComponent implements OnInit {
   plannerForm!: FormGroup;
   team: PokemonId[] = [];
   typechart!: TypeChart;
-  summary!: summary;
+  summary!: Summary;
   tabSelected = 0;
 
   constructor(

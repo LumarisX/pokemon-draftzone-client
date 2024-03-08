@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { SpriteComponent } from '../../../sprite/sprite.component';
-import { summary } from '../../matchup-interface';
+import { Summary } from '../../matchup-interface';
 
 @Component({
   selector: 'summary',
@@ -11,10 +11,10 @@ import { summary } from '../../matchup-interface';
   templateUrl: './summary.component.html',
 })
 export class SummaryComponent {
-  _teams: summary[] = [];
+  _teams: Summary[] = [];
   sortBy: 'name' | 'hp' | 'atk' | 'def' | 'spa' | 'spd' | 'spe' | null = null;
   @Input()
-  set teams(summeries: summary[]) {
+  set teams(summeries: Summary[]) {
     for (let summary of summeries) {
       summary.team.sort((x, y) => {
         if (x['baseStats']['spe'] < y['baseStats']['spe']) {
@@ -29,7 +29,7 @@ export class SummaryComponent {
     this.sortBy = 'spe';
     this._teams = summeries;
   }
-  get teams(): summary[] {
+  get teams(): Summary[] {
     return this._teams;
   }
   selectedTeam: number = 1;

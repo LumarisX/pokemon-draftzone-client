@@ -1,6 +1,6 @@
-import { summary, TypeChart } from '../matchup-overview/matchup-interface';
+import { Summary, TypeChart } from '../matchup-overview/matchup-interface';
 
 export type Planner = {
-  summary: summary;
+  summary: Summary;
   typechart: TypeChart;
 };

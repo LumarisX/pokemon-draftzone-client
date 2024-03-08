@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { MatchupService } from '../../../api/matchup.service';
 import { SpriteComponent } from '../../../sprite/sprite.component';
-import { summary } from '../../matchup-interface';
+import { Summary } from '../../matchup-interface';
 
 @Component({
   selector: 'overview',
@@ -11,7 +11,7 @@ import { summary } from '../../matchup-interface';
   templateUrl: './overview.component.html',
 })
 export class OverviewComponent {
-  @Input() teams: summary[] = [];
+  @Input() teams: Summary[] = [];
 
   constructor(private matchupService: MatchupService) {}
 }
