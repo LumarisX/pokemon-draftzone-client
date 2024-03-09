@@ -1,6 +1,6 @@
 <div class="bg-gradient-to-r from-cyan-100 via-slate-100 to-red-100">
   <div class="flex px-2 pt-2">
-    <div class="w-1/4">
+    <div class="w-fit">
       <button
         routerLink="/draft/{{ leagueId }}"
         class="px-3 py-2 text-sm text-white rounded-md bg-slate-500 hover:bg-slate-600 focus:outline-none focus:bg-slate-600"
@@ -8,15 +8,27 @@
         Back
       </button>
     </div>
-    <div class="flex justify-center w-1/2">
-      <!-- <div *ngIf="matchup">
-        <div>League Name</div>
-      <div>{{ matchup.stage }}</div>
-      <div>{{ matchup.format }}</div>
-      <div>{{ matchup.stage }}</div>
-      </div> -->
+    <div class="flex justify-center flex-grow">
+      <div *ngIf="matchupData" class="flex flex-wrap justify-between gap-8">
+        <div class="w-full text-center sm:w-auto">
+          <p class="text-sm font-semibold text-gray-500">League Name</p>
+          <p class="text-xl font-bold">{{ matchupData.leagueName }}</p>
+        </div>
+        <div class="w-full text-center sm:w-auto">
+          <p class="text-sm font-semibold text-gray-500">Stage</p>
+          <p class="text-xl font-bold">{{ matchupData.stage }}</p>
+        </div>
+        <div class="w-full text-center sm:w-auto">
+          <p class="text-sm font-semibold text-gray-500">Ruleset</p>
+          <p class="text-xl font-bold">{{ matchupData.ruleset }}</p>
+        </div>
+        <div class="w-full text-center sm:w-auto">
+          <p class="text-sm font-semibold text-gray-500">Format</p>
+          <p class="text-xl font-bold">{{ matchupData.format }}</p>
+        </div>
+      </div>
     </div>
-    <div class="flex justify-end w-1/4">
+    <div class="flex items-start justify-end w-fit">
       <button
         class="px-3 py-2 text-sm text-white rounded-md bg-slate-500 hover:bg-slate-600 focus:outline-none focus:bg-slate-600"
         (click)="share()"
@@ -52,5 +64,5 @@
     </div>
   </div>
 
-  <matchup [matchupId]="matchupId"></matchup>
+  <matchup *ngIf="matchupData" [matchupData]="matchupData"></matchup>
 </div>

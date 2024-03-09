@@ -1,7 +1,18 @@
-<div class="flex flex-wrap justify-center gap-4 p-4 text-xs" *ngIf="matchupData">
+<div
+  class="flex flex-wrap justify-center gap-4 p-4 text-xs"
+  *ngIf="matchupData"
+>
   <overview class="z-10" [teams]="matchupData.summery"></overview>
-  <summary class="z-10" [teams]="matchupData.summery" style="list-style: none"></summary>
-  <speedchart class="z-10" [speedchart]="matchupData.speedchart"></speedchart>
+  <summary
+    class="z-10"
+    [teams]="matchupData.summery"
+    style="list-style: none"
+  ></summary>
+  <speedchart
+    class="z-10"
+    [speedchart]="matchupData.speedchart"
+    [level]="matchupData.level"
+  ></speedchart>
   <typechart class="z-10" [typecharts]="matchupData.typechart"></typechart>
   <movechart class="z-10 h-128" [teams]="matchupData.movechart"></movechart>
   <coveragechart

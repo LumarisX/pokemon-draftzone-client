@@ -133,13 +133,15 @@ export type CoverageChart = Pokemon & {
 };
 
 export type MatchupData = {
-  format: string,
-  ruleset: string,
-  level: number,
-  speedchart: SpeedChart,
-  summery: Summary[],
-  overview: Summary[],
-  typechart: TypeChart[],
-  movechart: MoveChart[],
-  coveragechart: CoverageChart[][]
-}
+  format: string;
+  ruleset: string;
+  level: number;
+  leagueName: string;
+  stage: string;
+  speedchart: SpeedChart;
+  summery: Summary[];
+  overview: Summary[];
+  typechart: TypeChart[];
+  movechart: MoveChart[];
+  coveragechart: CoverageChart[][];
+};

@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
+import { MatchupService } from '../api/matchup.service';
+import { MatchupData, Summary } from './matchup-interface';
 import { MatchupComponent } from './matchup/matchup.component';
-import { DraftService } from '../api/draft.service';
-import { Matchup } from '../interfaces/matchup';
 
 @Component({
   selector: 'matchup-overview',
@@ -12,7 +12,7 @@ import { Matchup } from '../interfaces/matchup';
   imports: [CommonModule, MatchupComponent, RouterModule],
 })
 export class MatchupOverviewComponent implements OnInit {
-  matchup: Matchup | null = null;
+  matchupData: MatchupData | null = null;
   matchupId = '';
   shared = false;
   copyText = 'Copy';
@@ -23,7 +23,7 @@ export class MatchupOverviewComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private draftService: DraftService
+    private matchupService: MatchupService
   ) {}
 
   ngOnInit(): void {
@@ -37,11 +37,21 @@ export class MatchupOverviewComponent implements OnInit {
       if (leagueId) {
         this.leagueId = leagueId;
       }
-      this.draftService
-        .getMatchup(this.matchupId, this.leagueId)
-        .subscribe((data) => {
-          this.matchup = <Matchup>data;
-        });
+      this.matchupService.getMatchup(this.matchupId).subscribe((data) => {
+        this.matchupData = <MatchupData>data;
+        for (let summary of this.matchupData.summery) {
+          summary.team.sort((x, y) => {
+            if (x['baseStats']['spe'] < y['baseStats']['spe']) {
+              return 1;
+            }
+            if (x['baseStats']['spe'] > y['baseStats']['spe']) {
+              return -1;
+            }
+            return 0;
+          });
+        }
+        this.matchupData.overview = <Summary[]>JSON.parse(JSON.stringify(data));
+      });
     });
   }
 
