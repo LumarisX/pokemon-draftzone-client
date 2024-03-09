@@ -20,8 +20,8 @@
               *ngFor="let move of pokemon.coverage.physical"
               [ngClass]="{ 'opacity-40': !move.recommended }"
               (click)="move.recommended = !move.recommended"
-              src="../../../../../assets/icons/types/{{
-                move.type.toLowerCase()
+              src="https://play.pokemonshowdown.com/sprites/types/{{
+                move.type
               }}.png"
               title="{{ move.name }}"
             />
@@ -40,8 +40,8 @@
               *ngFor="let move of pokemon.coverage.special"
               [ngClass]="{ 'opacity-40': !move.recommended }"
               (click)="move.recommended = !move.recommended"
-              src="../../../../../assets/icons/types/{{
-                move.type.toLowerCase()
+              src="https://play.pokemonshowdown.com/sprites/types/{{
+                move.type
               }}.png"
               title="{{ move.name }}"
             />
