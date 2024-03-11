@@ -1,22 +1,24 @@
-<div class="flex w-full px-1 bg-slate-400 rounded-t-xl">
-  <div class="flex w-full pb-1 border-b border-slate-300">
-    <h1 class="w-full text-xl font-bold text-center">Learned Moves</h1>
-    <button
-      (click)="swapTeams()"
-      class="px-3 mx-1 mt-2 ml-auto text-sm rounded-md shadow-md"
-      [ngClass]="clickColor(true)"
-    >
-      ⇄
-    </button>
+<div class="flex flex-col h-full">
+  <div class="flex w-full px-1 bg-slate-400 rounded-t-xl">
+    <div class="flex w-full pb-1 border-b border-slate-300">
+      <h1 class="w-full text-xl font-bold text-center">Learned Moves</h1>
+      <button
+        (click)="swapTeams()"
+        class="px-3 mx-1 mt-2 ml-auto text-sm rounded-md shadow-md"
+        [ngClass]="clickColor(true)"
+      >
+        ⇄
+      </button>
+    </div>
   </div>
-</div>
-<div
-  class="w-full h-full overflow-y-auto border-4 border-slate-400 bg-slate-400"
->
-  <move-category
-    *ngFor="let category of this.teams[selectedTeam]"
-    [category]="category"
+  <div
+    class="w-full h-full overflow-y-auto border-4 border-slate-400 bg-slate-400"
   >
-  </move-category>
+    <move-category
+      *ngFor="let category of this.teams[selectedTeam]"
+      [category]="category"
+    >
+    </move-category>
+  </div>
+  <div class="w-full h-3 rounded-b-full bg-slate-400"></div>
 </div>
-<div class="w-full h-3 rounded-b-full bg-slate-400"></div>

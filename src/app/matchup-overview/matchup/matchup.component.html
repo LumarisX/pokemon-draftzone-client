@@ -4,7 +4,7 @@
 >
   <overview class="z-10" [teams]="matchupData.summery"></overview>
   <summary
-    class="z-10"
+    class="z-10 overflow-x-auto"
     [teams]="matchupData.summery"
     style="list-style: none"
   ></summary>
@@ -13,8 +13,11 @@
     [speedchart]="matchupData.speedchart"
     [level]="matchupData.level"
   ></speedchart>
-  <typechart class="z-10" [typecharts]="matchupData.typechart"></typechart>
-  <movechart class="z-10 h-128" [teams]="matchupData.movechart"></movechart>
+  <typechart
+    class="z-10 overflow-x-auto"
+    [typecharts]="matchupData.typechart"
+  ></typechart>
+  <movechart class="z-10 max-h-128" [teams]="matchupData.movechart"></movechart>
   <coveragechart
     class="z-10 w-128"
     [coverage]="matchupData.coveragechart"
