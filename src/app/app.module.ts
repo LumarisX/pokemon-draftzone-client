@@ -8,7 +8,6 @@ import { ErrorModule } from './error/error.module';
 import { MatchupOverviewModule } from './matchup-overview/matchup-overview.module';
 import { OpponentOverviewModule } from './opponent-overview/opponent-overview.module';
 import { CoreModule } from './sprite/sprite.module';
-import { TestModule } from './test/test.module';
 
 @NgModule({
   imports: [
@@ -42,7 +41,6 @@ import { TestModule } from './test/test.module';
     }),
     OpponentOverviewModule,
     MatchupOverviewModule,
-    TestModule,
     CoreModule,
     AppRoutingModule,
   ],

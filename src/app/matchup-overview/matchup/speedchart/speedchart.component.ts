@@ -12,6 +12,7 @@ import { FormsModule } from '@angular/forms';
 })
 export class SpeedchartComponent {
   @Input() speedchart!: SpeedChart | null;
+  @Input() level = 100;
   showFilter: boolean = false;
 
   modifiers: {

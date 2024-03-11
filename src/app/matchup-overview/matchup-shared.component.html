@@ -1,0 +1,23 @@
+<div class="bg-gradient-to-r from-cyan-100 via-slate-100 to-red-100">
+  <div class="flex justify-center w-full pt-2">
+    <div *ngIf="matchupData" class="flex flex-wrap justify-between gap-8">
+      <div class="w-full text-center sm:w-auto">
+        <p class="text-sm font-semibold text-gray-500">League Name</p>
+        <p class="text-xl font-bold">{{ matchupData.leagueName }}</p>
+      </div>
+      <div class="w-full text-center sm:w-auto">
+        <p class="text-sm font-semibold text-gray-500">Stage</p>
+        <p class="text-xl font-bold">{{ matchupData.stage }}</p>
+      </div>
+      <div class="w-full text-center sm:w-auto">
+        <p class="text-sm font-semibold text-gray-500">Ruleset</p>
+        <p class="text-xl font-bold">{{ matchupData.ruleset }}</p>
+      </div>
+      <div class="w-full text-center sm:w-auto">
+        <p class="text-sm font-semibold text-gray-500">Format</p>
+        <p class="text-xl font-bold">{{ matchupData.format }}</p>
+      </div>
+    </div>
+  </div>
+  <matchup *ngIf="matchupData" [matchupData]="matchupData"></matchup>
+</div>

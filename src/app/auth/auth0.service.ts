@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AuthService as Auth0Service } from '@auth0/auth0-angular';
-import { Observable, tap } from 'rxjs';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -17,8 +17,8 @@ export class AuthService {
   }
 
   // Method to get the access token from localStorage
-  getAccessToken(): string | null {
-    return localStorage.getItem('access_token');
+  getAccessToken(): Observable<string> {
+    return this.auth0.getAccessTokenSilently();
   }
 
   // Method to remove the access token from localStorage
@@ -43,7 +43,7 @@ export class AuthService {
   }
 
   isAuthenticated() {
-    return this.auth0.isAuthenticated$
+    return this.auth0.isAuthenticated$;
   }
 
   user() {

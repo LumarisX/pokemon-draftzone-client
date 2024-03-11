@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AuthService } from '../auth/auth0.service';
+import { Observable, switchMap } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
@@ -9,40 +10,51 @@ export class ApiService {
 
   constructor(private http: HttpClient, private auth: AuthService) {}
 
-  get(path: string) {
-    let httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        authorization: `Bearer ${this.auth.getAccessToken()}`,
-      }),
-    };
-    return this.http.get(`${this.serverUrl}/${path}`, httpOptions);
+  get(path: string): Observable<any> {
+    return this.auth.getAccessToken().pipe(
+      switchMap((token: string) => {
+        let httpOptions = {
+          headers: new HttpHeaders({
+            'Content-Type': 'application/json',
+            authorization: `Bearer ${token}`,
+          }),
+        };
+        return this.http.get(`${this.serverUrl}/${path}`, httpOptions);
+      })
+    );
+  }
+  // Method to make a POST request with authorization header
+  post(path: string, data: any): Observable<any> {
+    return this.auth.getAccessToken().pipe(
+      switchMap((token: string) => {
+        let httpOptions = {
+          headers: new HttpHeaders({
+            'Content-Type': 'application/json',
+            authorization: `Bearer ${token}`,
+          }),
+        };
+        return this.http.post(`${this.serverUrl}/${path}`, data, httpOptions);
+      })
+    );
   }
 
-  post(path: string, data: any) {
-    let httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        authorization: `Bearer ${this.auth.getAccessToken()}`,
-      }),
-    };
-    console.log(data);
-    return this.http.post(`${this.serverUrl}/${path}`, data, httpOptions);
+  // Method to make a PATCH request with authorization header
+  patch(path: string, data: any): Observable<any> {
+    return this.auth.getAccessToken().pipe(
+      switchMap((token: string) => {
+        let httpOptions = {
+          headers: new HttpHeaders({
+            'Content-Type': 'application/json',
+            authorization: `Bearer ${token}`,
+          }),
+        };
+        return this.http.patch(`${this.serverUrl}/${path}`, data, httpOptions);
+      })
+    );
   }
 
-  patch(path: string, data: any) {
-    let httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        authorization: `Bearer ${this.auth.getAccessToken()}`,
-      }),
-    };
-    console.log(data);
-    return this.http.patch(`${this.serverUrl}/${path}`, data, httpOptions);
-  }
-
-  delete(path: string) {
-    console.log(`${this.serverUrl}/${path}`);
+  // Method to make a DELETE request
+  delete(path: string): Observable<any> {
     return this.http.delete(`${this.serverUrl}/${path}`);
   }
 }
