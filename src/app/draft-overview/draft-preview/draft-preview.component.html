@@ -3,14 +3,16 @@
 </div>
 <div
   id="teams"
-  class="grid h-auto grid-flow-row grid-cols-1 overflow-auto md:grid-cols-2 lg:grid-cols-3"
+  class="grid h-auto grid-flow-row grid-cols-1 overflow-auto md:grid-cols-2 lg:grid-cols-3 gap-4 p-2"
 >
   <div *ngFor="let team of teams">
-    <div class="m-2 shadow-md bg-cyan-200 shadow-cyan-600 rounded-xl">
-      <div class="p-2 shadow-md bg-cyan-300 rounded-xl">
+    <div
+      class="shadow-md bg-cyan-200 shadow-cyan-600 rounded-xl h-full flex flex-col"
+    >
+      <div class="p-2 shadow-md bg-cyan-300 rounded-xl flex-grow">
         <div class="flex w-full">
           <div
-            class="w-3/5 p-1 mx-1 font-semibold text-center rounded-full shadow-inner text-medium bg-cyan-200 shadow-cyan-600"
+            class="w-3/5 p-1 mx-1 flex font-semibold text-center rounded-full shadow-inner justify-center items-center text-medium bg-cyan-200 shadow-cyan-600"
           >
             {{ team.leagueName }}
           </div>
@@ -50,7 +52,6 @@
         </a>
         <a
           class="w-1/6 m-2 text-center shadow bg-cyan-300 hover:shadow shadow-cyan-600 rounded-xl text-cyan-500"
-          (click)="archiveConfirm = true"
           >Archive
         </a>
       </div>
