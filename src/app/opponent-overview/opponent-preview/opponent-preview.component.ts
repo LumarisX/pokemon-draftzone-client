@@ -6,12 +6,13 @@ import { Matchup } from '../../interfaces/matchup';
 import { SpriteComponent } from '../../sprite/sprite.component';
 import { CoreModule } from '../../sprite/sprite.module';
 import { Draft } from '../../interfaces/draft';
+import { LoadingComponent } from "../../loading/loading.component";
 
 @Component({
-  selector: 'opponent-preview',
-  standalone: true,
-  imports: [CommonModule, RouterModule, CoreModule, SpriteComponent],
-  templateUrl: './opponent-preview.component.html',
+    selector: 'opponent-preview',
+    standalone: true,
+    templateUrl: './opponent-preview.component.html',
+    imports: [CommonModule, RouterModule, CoreModule, SpriteComponent, LoadingComponent]
 })
 export class OpponentTeamPreviewComponent implements OnInit {
   index = 0;
@@ -19,7 +20,7 @@ export class OpponentTeamPreviewComponent implements OnInit {
   draft!: Draft;
   matchups!: Matchup[];
   teamId: string = '';
-  
+
   constructor(
     private draftService: DraftService,
     private route: ActivatedRoute

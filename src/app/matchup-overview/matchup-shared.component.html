@@ -19,5 +19,6 @@
       </div>
     </div>
   </div>
+  <loading *ngIf="!matchupData"></loading>
   <matchup *ngIf="matchupData" [matchupData]="matchupData"></matchup>
 </div>

@@ -1,7 +1,9 @@
 <div class="flex items-center px-6 py-1">
   <p class="text-3xl font-bold">Drafts</p>
 </div>
+<loading *ngIf="!teams"></loading>
 <div
+  *ngIf="teams"
   id="teams"
   class="grid h-auto grid-flow-row grid-cols-1 overflow-auto md:grid-cols-2 lg:grid-cols-3 gap-4 p-2"
 >

@@ -22,7 +22,9 @@
       >
         <a [routerLink]="'new'"> Add Team </a>
       </button>
+      <loading *ngIf="!matchups"></loading>
       <div
+        *ngIf="matchups"
         id="teams"
         class="grid h-auto grid-flow-row grid-cols-1 overflow-auto md:grid-cols-2 lg:grid-cols-3"
       >

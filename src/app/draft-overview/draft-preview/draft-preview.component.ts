@@ -5,15 +5,16 @@ import { DraftService } from '../../api/draft.service';
 import { Draft } from '../../interfaces/draft';
 import { SpriteComponent } from '../../sprite/sprite.component';
 import { CoreModule } from '../../sprite/sprite.module';
+import { LoadingComponent } from "../../loading/loading.component";
 
 @Component({
-  selector: 'draft-preview',
-  standalone: true,
-  imports: [CommonModule, RouterModule, CoreModule, SpriteComponent],
-  templateUrl: './draft-preview.component.html',
+    selector: 'draft-preview',
+    standalone: true,
+    templateUrl: './draft-preview.component.html',
+    imports: [CommonModule, RouterModule, CoreModule, SpriteComponent, LoadingComponent]
 })
 export class DraftPreviewComponent {
-  teams: Draft[] = [];
+  teams: Draft[] | null = null;
   archiveConfirm = false;
 
   constructor(private draftService: DraftService) {}

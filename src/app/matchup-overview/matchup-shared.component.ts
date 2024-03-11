@@ -4,12 +4,13 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { MatchupComponent } from './matchup/matchup.component';
 import { MatchupData, Summary } from './matchup-interface';
 import { MatchupService } from '../api/matchup.service';
+import { LoadingComponent } from '../loading/loading.component';
 
 @Component({
   selector: 'matchup-shared',
   standalone: true,
   templateUrl: 'matchup-shared.component.html',
-  imports: [CommonModule, MatchupComponent, RouterModule],
+  imports: [CommonModule,LoadingComponent, MatchupComponent, RouterModule],
 })
 export class MatchupSharedComponent implements OnInit {
   matchupId = '';

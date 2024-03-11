@@ -8,6 +8,7 @@
         Back
       </button>
     </div>
+
     <div class="flex justify-center flex-grow">
       <div *ngIf="matchupData" class="flex flex-wrap justify-between gap-x-8">
         <div class="w-full text-center sm:w-auto">
@@ -63,6 +64,6 @@
       </button>
     </div>
   </div>
-
+  <loading *ngIf="!matchupData"></loading>
   <matchup *ngIf="matchupData" [matchupData]="matchupData"></matchup>
 </div>

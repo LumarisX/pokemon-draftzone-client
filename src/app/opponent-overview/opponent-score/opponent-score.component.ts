@@ -1,33 +1,34 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import {
-  Form,
   FormArray,
   FormBuilder,
   FormGroup,
-  ReactiveFormsModule,
+  ReactiveFormsModule
 } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { DraftService } from '../../api/draft.service';
+import { Pokemon } from '../../interfaces/draft';
 import { Matchup, Side } from '../../interfaces/matchup';
-import { CommonModule } from '@angular/common';
+import { LoadingComponent } from "../../loading/loading.component";
+import { PokemonId } from '../../pokemon';
 import { PokemonFormComponent } from '../../pokemon-form/pokemon-form.component';
 import { SpriteComponent } from '../../sprite/sprite.component';
 import { CoreModule } from '../../sprite/sprite.module';
-import { Pokemon } from '../../interfaces/draft';
-import { PokemonId } from '../../pokemon';
 
 @Component({
-  selector: 'opponent-form',
-  standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule,
-    CoreModule,
-    SpriteComponent,
-    PokemonFormComponent,
-    ReactiveFormsModule,
-  ],
-  templateUrl: './opponent-score.component.html',
+    selector: 'opponent-form',
+    standalone: true,
+    templateUrl: './opponent-score.component.html',
+    imports: [
+        CommonModule,
+        RouterModule,
+        CoreModule,
+        SpriteComponent,
+        PokemonFormComponent,
+        ReactiveFormsModule,
+        LoadingComponent
+    ]
 })
 export class OpponentScoreComponent implements OnInit {
   teamId: string = '';

@@ -1,3 +1,4 @@
+<loading *ngIf="!scoreForm"></loading>
 <form *ngIf="scoreForm" [formGroup]="scoreForm" (submit)="onSubmit()">
   <div class="flex w-flex">
     <div class="w-1/4">

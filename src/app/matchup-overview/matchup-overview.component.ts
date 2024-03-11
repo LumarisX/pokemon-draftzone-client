@@ -4,12 +4,13 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { MatchupService } from '../api/matchup.service';
 import { MatchupData, Summary } from './matchup-interface';
 import { MatchupComponent } from './matchup/matchup.component';
+import { LoadingComponent } from '../loading/loading.component';
 
 @Component({
   selector: 'matchup-overview',
   standalone: true,
   templateUrl: 'matchup-overview.component.html',
-  imports: [CommonModule, MatchupComponent, RouterModule],
+  imports: [CommonModule, LoadingComponent, MatchupComponent, RouterModule],
 })
 export class MatchupOverviewComponent implements OnInit {
   matchupData: MatchupData | null = null;
