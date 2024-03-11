@@ -8,6 +8,7 @@ import { AuthService } from './auth/auth0.service';
 export class AppComponent {
 
   userDropdown = false
+  menuDropdown = false
 
   constructor(public auth: AuthService) {}
 }
