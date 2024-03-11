@@ -19,8 +19,7 @@ export class OpponentTeamPreviewComponent implements OnInit {
   draft!: Draft;
   matchups!: Matchup[];
   teamId: string = '';
-  deleteConfirm: boolean = false;
-
+  
   constructor(
     private draftService: DraftService,
     private route: ActivatedRoute

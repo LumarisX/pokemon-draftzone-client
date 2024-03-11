@@ -1,7 +1,9 @@
 <div class="flex space-x-2">
-  <div class="w-[7.5%] bg-cyan-100 p-1 border-2 border-cyan-200 rounded-xl">
+  <div
+    class="w-1/6 max-w-28 bg-cyan-100 p-1 border-2 border-cyan-200 rounded-xl"
+  >
     <div
-      class="h-auto p-2 m-2 shadow-md bg-cyan-300 rounded-xl shadow-cyan-600"
+      class="h-auto p-1 m-1 sm:p-2 sm:m-2 shadow-md bg-cyan-300 rounded-xl shadow-cyan-600"
     >
       <sprite
         class="flex justify-center"
@@ -13,7 +15,7 @@
     </div>
   </div>
 
-  <div class="bg-red-100 w-[92.5%] rounded-xl p-2 border-2 border-red-200">
+  <div class="bg-red-100 w-full rounded-xl p-1 lg:p-2 border-2 border-red-200">
     <div>
       <button
         class="p-2 m-3 bg-red-300 rounded-lg shadow-md hover:shadow shadow-red-600"
@@ -51,7 +53,7 @@
                 ></sprite>
               </div>
             </div>
-            <div class="flex" *ngIf="!deleteConfirm">
+            <div class="flex">
               <a
                 class="w-1/6 m-2 text-center bg-red-300 shadow hover:shadow shadow-red-600 rounded-xl"
                 [routerLink]="'score'"
@@ -72,28 +74,9 @@
               </a>
               <a
                 class="w-1/6 m-2 text-center bg-red-300 shadow hover:shadow shadow-red-600 rounded-xl"
-                (click)="deleteConfirm = true"
+                (click)="deleteMatchup(matchup._id)"
                 >Delete
               </a>
-            </div>
-            <div class="flex" *ngIf="deleteConfirm">
-              <div
-                class="w-1/2 m-2 text-center bg-red-300 shadow hover:shadow shadow-red-600 rounded-xl"
-              >
-                Are you sure you want to delete?
-              </div>
-              <div
-                class="w-1/4 m-2 text-center bg-red-300 shadow hover:shadow shadow-red-600 rounded-xl"
-                (click)="deleteMatchup(matchup._id)"
-              >
-                Yes
-              </div>
-              <div
-                class="w-1/4 m-2 text-center bg-red-300 shadow hover:shadow shadow-red-600 rounded-xl"
-                (click)="deleteConfirm = false"
-              >
-                No
-              </div>
             </div>
           </div>
         </div>
