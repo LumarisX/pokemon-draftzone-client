@@ -107,31 +107,19 @@ export class SpeedchartComponent {
     }
   }
 
-  toggleColor(s: {
-    pokemon: Pokemon & {
-      name: string;
-      abilities: string[];
-      types: string[];
-      baseStats: {
-        hp: number;
-        atk: number;
-        def: number;
-        spa: number;
-        spd: number;
-        spe: number;
-      };
-    };
-    team: number;
-  }) {
+  viewColor(pid: string) {
+    if (pid in this.views && this.views[pid]) {
+      return ['opacity-50'];
+    }
+    return [];
+  }
+
+  buttonColor(team: number) {
     let classes = [];
-    if (s.team == 0) {
+    if (team == 0) {
       classes.push('bg-cyan-400 hover:bg-cyan-300');
     } else {
       classes.push('bg-red-400 hover:bg-red-300');
-    }
-
-    if (s.pokemon.pid in this.views && this.views[s.pokemon.pid]) {
-      classes.push('opacity-50');
     }
     return classes;
   }

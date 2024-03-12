@@ -53,10 +53,15 @@
       <div
         *ngFor="let s of speeds"
         class="flex w-20 border-b border-slate-400 px-2"
-        [ngClass]="toggleColor(s)"
+        [ngClass]="buttonColor(s.team)"
         (click)="toggleView(s.pokemon.pid)"
       >
-        <sprite class="w-1/2" [flipped]="true" [pokemon]="s.pokemon"></sprite>
+        <sprite
+          class="w-1/2"
+          [ngClass]="viewColor(s.pokemon.pid)"
+          [flipped]="true"
+          [pokemon]="s.pokemon"
+        ></sprite>
         <div
           class="w-1/2 flex items-center justify-center font-semibold text-lg"
         >
