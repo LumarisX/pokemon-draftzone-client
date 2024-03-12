@@ -11,7 +11,7 @@
     <div class="flex items-end justify-center w-1/2">
       <p class="text-3xl font-bold">Score</p>
     </div>
-    <div class="flex items-center justify-center w-1/4">
+    <div class="flex items-center justify-center w-1/4 flex-col sm:flex-row">
       <p class="font-semibold">Replay</p>
       <input
         formControlName="replay"
@@ -27,7 +27,7 @@
       >
         <div class="flex w-full">
           <div class="w-1/2">
-            <div class="w-2/3">
+            <div class="sm:w-2/3 w-full">
               <label class="p-1">
                 <span>PokePaste</span>
                 <input
@@ -48,28 +48,28 @@
           </div>
         </div>
         <div class="p-2 border-2 border-cyan-200 rounded-xl">
-          <div class="flex justify-center w-full space-x-4">
-            <div class="flex space-x-2">
+          <div class="grid sm:grid-cols-3 grid-cols-1 w-full gap-x-4">
+            <div class="flex space-x-2 justify-center">
               <div class="font-semibold">Brought:</div>
-              <div>{{ statCount(aTeamArray, ["brought"]) }}</div>
+              <div>{{ statCount(bTeamArray, ["brought"]) }}</div>
             </div>
-            <div class="flex space-x-2">
+            <div class="flex space-x-2 justify-center">
               <div class="font-semibold">Deaths:</div>
-              <div>{{ statCount(aTeamArray, ["deaths"]) }}</div>
+              <div>{{ statCount(bTeamArray, ["deaths"]) }}</div>
             </div>
-            <div class="flex space-x-2">
+            <div class="flex space-x-2 justify-center">
               <div class="font-semibold">Kills:</div>
 
-              <div>{{ statCount(aTeamArray, ["kills", "indirect"]) }}</div>
+              <div>{{ statCount(bTeamArray, ["kills", "indirect"]) }}</div>
             </div>
           </div>
           <div
-            class="grid grid-cols-1 lg:grid-cols-2 md:grid-cols-1 gap-x-4"
+            class="grid grid-cols-1 lg:grid-cols-2 sm:grid-cols-1 gap-x-4"
             formArrayName="team"
           >
             <div
               *ngFor="let pokemonForm of aTeamArray.controls; let i = index"
-              class="flex"
+              class="flex items-center"
               formGroupName="{{ i }}"
             >
               <sprite
@@ -77,33 +77,36 @@
                 [pokemon]="pokemonForm.value.pokemon"
               ></sprite>
               <div class="flex items-center w-3/4">
-                <div>
-                  <div class="grid grid-cols-2 gap-2 md:grid-cols-4">
+                <div class="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                  <div>
                     <span class="text-xs">Brought</span>
-                    <span class="text-xs">Direct Kills</span>
-                    <span class="text-xs">Indirect Kills</span>
-                    <span class="text-xs">Deaths</span>
-                  </div>
-
-                  <div class="grid grid-cols-2 gap-2 md:grid-cols-4">
                     <input
                       type="number"
                       formControlName="brought"
                       min="0"
                       class="w-full p-1 mx-1 text-center rounded-md shadow-inner bg-cyan-200 text-medium shadow-cyan-600"
                     />
+                  </div>
+                  <div>
+                    <span class="text-xs">Direct</span>
                     <input
                       type="number"
                       formControlName="kills"
                       min="0"
                       class="w-full p-1 mx-1 text-center rounded-md shadow-inner bg-cyan-200 text-medium shadow-cyan-600"
                     />
+                  </div>
+                  <div>
+                    <span class="text-xs">Indirect</span>
                     <input
                       type="number"
                       formControlName="indirect"
                       min="0"
                       class="w-full p-1 mx-1 text-center rounded-md shadow-inner bg-cyan-200 text-medium shadow-cyan-600"
                     />
+                  </div>
+                  <div>
+                    <span class="text-xs">Deaths</span>
                     <input
                       type="number"
                       formControlName="deaths"
@@ -135,7 +138,7 @@
             </div>
           </div>
           <div class="w-1/2">
-            <div class="flex justify-end w-2/3 ml-auto">
+            <div class="flex justify-end sm:w-2/3 w-full ml-auto">
               <label class="p-1">
                 <span>PokePaste</span>
                 <input
@@ -146,28 +149,28 @@
           </div>
         </div>
         <div class="p-2 border-2 border-red-200 rounded-xl">
-          <div class="flex justify-center w-full space-x-4">
-            <div class="flex space-x-2">
+          <div class="grid sm:grid-cols-3 grid-cols-1 w-full gap-x-4">
+            <div class="flex space-x-2 justify-center">
               <div class="font-semibold">Brought:</div>
               <div>{{ statCount(bTeamArray, ["brought"]) }}</div>
             </div>
-            <div class="flex space-x-2">
+            <div class="flex space-x-2 justify-center">
               <div class="font-semibold">Deaths:</div>
               <div>{{ statCount(bTeamArray, ["deaths"]) }}</div>
             </div>
-            <div class="flex space-x-2">
+            <div class="flex space-x-2 justify-center">
               <div class="font-semibold">Kills:</div>
 
               <div>{{ statCount(bTeamArray, ["kills", "indirect"]) }}</div>
             </div>
           </div>
           <div
-            class="grid grid-cols-1 lg:grid-cols-2 md:grid-cols-1 gap-x-4"
+            class="grid grid-cols-1 lg:grid-cols-2 sm:grid-cols-1 gap-x-4"
             formArrayName="team"
           >
             <div
               *ngFor="let pokemonForm of bTeamArray.controls; let i = index"
-              class="flex"
+              class="flex items-center"
               formGroupName="{{ i }}"
             >
               <sprite
@@ -175,38 +178,41 @@
                 [pokemon]="pokemonForm.value.pokemon"
               ></sprite>
               <div class="flex items-center w-3/4">
-                <div>
-                  <div class="grid grid-cols-2 gap-2 md:grid-cols-4">
+                <div class="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                  <div>
                     <span class="text-xs">Brought</span>
-                    <span class="text-xs">Direct Kills</span>
-                    <span class="text-xs">Indirect Kills</span>
-                    <span class="text-xs">Deaths</span>
-                  </div>
-
-                  <div class="grid grid-cols-2 gap-2 md:grid-cols-4">
                     <input
                       type="number"
                       formControlName="brought"
                       min="0"
-                      class="w-full p-1 mx-1 text-center bg-red-200 rounded-md shadow-inner text-medium shadow-red-600"
+                      class="w-full p-1 mx-1 text-center rounded-md shadow-inner bg-red-200 text-medium shadow-red-600"
                     />
+                  </div>
+                  <div>
+                    <span class="text-xs">Direct</span>
                     <input
                       type="number"
                       formControlName="kills"
                       min="0"
-                      class="w-full p-1 mx-1 text-center bg-red-200 rounded-md shadow-inner text-medium shadow-red-600"
+                      class="w-full p-1 mx-1 text-center rounded-md shadow-inner bg-red-200 text-medium shadow-red-600"
                     />
+                  </div>
+                  <div>
+                    <span class="text-xs">Indirect</span>
                     <input
                       type="number"
                       formControlName="indirect"
                       min="0"
-                      class="w-full p-1 mx-1 text-center bg-red-200 rounded-md shadow-inner text-medium shadow-red-600"
+                      class="w-full p-1 mx-1 text-center rounded-md shadow-inner bg-red-200 text-medium shadow-red-600"
                     />
+                  </div>
+                  <div>
+                    <span class="text-xs">Deaths</span>
                     <input
                       type="number"
                       formControlName="deaths"
                       min="0"
-                      class="w-full p-1 mx-1 text-center bg-red-200 rounded-md shadow-inner text-medium shadow-red-600"
+                      class="w-full p-1 mx-1 text-center rounded-md shadow-inner bg-red-200 text-medium shadow-red-600"
                     />
                   </div>
                 </div>

@@ -1,14 +1,14 @@
 <form [formGroup]="pokemonForm" autocomplete="off">
-  <div class="flex items-center w-full">
+  <div class="grid grid-cols-8 items-center w-full">
     <sprite
-      class="w-1/8"
+      class="col-span-2 sm:col-span-1"
       [pokemon]="{
         pid: pokemonForm.value.pid,
         name: pokemonForm.value.name,
         shiny: pokemonForm.value.shiny
       }"
     ></sprite>
-    <div class="relative w-1/2">
+    <div class="relative col-span-6 sm:col-span-4">
       <label class="p-1 font-semibold">Name</label>
       <input
         formControlName="name"
@@ -27,7 +27,7 @@
         Invalid name
       </div>
     </div>
-    <div class="w-1/8">
+    <div class="col-span-3 sm:col-span-1">
       <label class="flex items-center justify-center p-1 font-semibold"
         >Shiny
         <input
@@ -37,7 +37,7 @@
         />
       </label>
     </div>
-    <div class="w-1/6">
+    <div class="col-span-3 sm:col-span-1">
       <label class="flex items-center justify-center p-1 font-semibold"
         >Captain
         <input
@@ -68,7 +68,7 @@
         </label>
       </div>
     </div>
-    <div class="flex items-center justify-center w-1/12">
+    <div class="flex items-center justify-center col-span-2 sm:col-span-1">
       <div
         class="w-1/2 p-1 border-2 rounded-full bg-slate-100 border-slate-400 hover:bg-slate-300"
         (click)="deletePokemonEvent.emit(formIndex)"
@@ -77,11 +77,11 @@
       </div>
     </div>
   </div>
-  <div formGroupName="capt" class="w-full px-8">
+  <div formGroupName="capt" class="w-full px-8 col-span-full">
     <div
       *ngIf="pokemonForm.get('capt.teraCheck')?.value"
       formGroupName="tera"
-      class="grid grid-cols-19"
+      class="grid sm:grid-cols-12 grid-cols-7"
     >
       <div
         *ngFor="let type of teraTypes"
