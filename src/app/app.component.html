@@ -1,6 +1,6 @@
 <div class="flex flex-col justify-between h-dvh">
   <header class="z-10 flex w-full border-b-2 bg-slate-300 border-slate-400 p-2">
-    <div class="flex relative">
+    <div class="flex relative sm:hidden">
       <button
         (click)="menuDropdown = !menuDropdown"
         id="dropdownButton"
@@ -8,38 +8,43 @@
       >
         <img class="" src="../assets/icons/menu.svg" />
       </button>
+      <div
+        class="flex items-center justify-center w-28 mx-2 hover:bg-slate-200 rounded"
+      >
+        <a class="text-xl" routerLink="/">DraftZone</a>
+      </div>
 
       <div
         *ngIf="menuDropdown"
         (click)="menuDropdown = false"
-        class="sm:flex block sm:hidden flex-col absolute top-full left-0 bg-white border border-gray-200 rounded-md shadow-md"
+        class="sm:flex block sm:hidden flex-col absolute top-full p-2 left-0 bg-white border border-gray-200 rounded-md shadow-md"
       >
         <div class="flex items-center h-full px-3 hover:bg-slate-200">
           <a routerLink="/draft">Drafts</a>
         </div>
-        <div class="flex items-center h-full px-3 hover:bg-slate-200">
+        <div class="flex items-center h-full px-3">
           <a class="opacity-50">Planner</a>
         </div>
-        <div class="flex items-center h-full px-3 hover:bg-slate-200">
+        <div class="flex items-center h-full px-3">
           <a class="opacity-50">Statistics</a>
         </div>
       </div>
-      <div class="hidden sm:block sm:flex">
-        <div
-          class="flex items-center justify-center w-32 hover:bg-slate-200 rounded"
-        >
-          <a class="text-xl" routerLink="/">DraftZone</a>
+    </div>
+    <div class="hidden sm:block sm:flex">
+      <div
+        class="flex items-center justify-center w-28 hover:bg-slate-200 rounded"
+      >
+        <a class="text-xl" routerLink="/">DraftZone</a>
+      </div>
+      <div class="flex">
+        <div class="flex items-center h-full px-3 hover:bg-slate-200 rounded">
+          <a routerLink="/draft">Drafts</a>
         </div>
-        <div class="flex">
-          <div class="flex items-center h-full px-3 hover:bg-slate-200 rounded">
-            <a routerLink="/draft">Drafts</a>
-          </div>
-          <div class="flex items-center h-full px-3 hover:bg-slate-200 rounded">
-            <a class="opacity-50">Planner</a>
-          </div>
-          <div class="flex items-center h-full px-3 hover:bg-slate-200 rounded">
-            <a class="opacity-50">Statistics</a>
-          </div>
+        <div class="flex items-center h-full px-3 rounded">
+          <a class="opacity-50">Planner</a>
+        </div>
+        <div class="flex items-center h-full px-3 rounded">
+          <a class="opacity-50">Statistics</a>
         </div>
       </div>
     </div>
