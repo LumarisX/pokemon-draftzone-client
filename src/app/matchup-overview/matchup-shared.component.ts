@@ -39,7 +39,7 @@ export class MatchupSharedComponent implements OnInit {
             return 0;
           });
         }
-        this.matchupData.overview = <Summary[]>JSON.parse(JSON.stringify(data));
+        this.matchupData.overview = <Summary[]>JSON.parse(JSON.stringify(this.matchupData.summary));
       });
     });
   }

@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { SpeedChart, Speedtier } from '../../matchup-interface';
+import { SpeedChart, Speedtier, Summary } from '../../matchup-interface';
 import { SpriteComponent } from '../../../sprite/sprite.component';
 import { FormsModule } from '@angular/forms';
+import { Pokemon } from '../../../interfaces/draft';
 
 @Component({
   selector: 'speedchart',
@@ -12,6 +13,63 @@ import { FormsModule } from '@angular/forms';
 })
 export class SpeedchartComponent {
   @Input() speedchart!: SpeedChart | null;
+  private _speeds: {
+    pokemon: Pokemon & {
+      name: string;
+      abilities: string[];
+      types: string[];
+      baseStats: {
+        hp: number;
+        atk: number;
+        def: number;
+        spa: number;
+        spd: number;
+        spe: number;
+      };
+    };
+    team: number;
+  }[] = [];
+  @Input() set speeds(summaries: Summary[]) {
+    let c0 = 0;
+    let c1 = 0;
+    for (
+      let i = 0;
+      i < summaries[0].team.length + summaries[1].team.length;
+      i++
+    ) {
+      if (
+        c1 >= summaries[1].team.length ||
+        summaries[0].team[c0].baseStats.spe >
+          summaries[1].team[c1].baseStats.spe
+      ) {
+        this._speeds.push({ pokemon: summaries[0].team[c0], team: 0 });
+        c0++;
+      } else {
+        this._speeds.push({ pokemon: summaries[1].team[c1], team: 1 });
+        c1++;
+      }
+    }
+  }
+
+  get speeds(): {
+    pokemon: Pokemon & {
+      name: string;
+      abilities: string[];
+      types: string[];
+      baseStats: {
+        hp: number;
+        atk: number;
+        def: number;
+        spa: number;
+        spd: number;
+        spe: number;
+      };
+    };
+    team: number;
+  }[] {
+    return this._speeds;
+  }
+
   @Input() level = 100;
   showFilter: boolean = false;
 
@@ -30,16 +88,50 @@ export class SpeedchartComponent {
     'Quark Drive': true,
   };
 
+  views: { [key: string]: boolean } = {};
+
   constructor() {}
 
-  speedClasses(tier: Speedtier) {
+  teamColor(team: number) {
     let classes = [];
-    if (tier.team == 0) classes.push('bg-cyan-400');
+    if (team == 0) classes.push('bg-cyan-400');
     else classes.push('bg-red-400');
-    if (tier != undefined && tier.stick) {
-      classes.push('sticky');
-      classes.push('top-0');
-      classes.push('z-1');
+    return classes;
+  }
+
+  toggleView(pid: string) {
+    if (pid in this.views) {
+      this.views[pid] = !this.views[pid];
+    } else {
+      this.views[pid] = true;
+    }
+  }
+
+  toggleColor(s: {
+    pokemon: Pokemon & {
+      name: string;
+      abilities: string[];
+      types: string[];
+      baseStats: {
+        hp: number;
+        atk: number;
+        def: number;
+        spa: number;
+        spd: number;
+        spe: number;
+      };
+    };
+    team: number;
+  }) {
+    let classes = [];
+    if (s.team == 0) {
+      classes.push('bg-cyan-400 hover:bg-cyan-300');
+    } else {
+      classes.push('bg-red-400 hover:bg-red-300');
+    }
+
+    if (s.pokemon.pid in this.views && this.views[s.pokemon.pid]) {
+      classes.push('opacity-50');
     }
     return classes;
   }
@@ -50,15 +142,10 @@ export class SpeedchartComponent {
     return 0;
   }
 
-  // makeSticky(speedchart: SpeedChart) {
-  //   for (let i = 0; i < speedchart.tiers.length - 1; i++) {
-  //     if (speedchart.tiers[i].team != speedchart.tiers[i + 1].team) {
-  //       speedchart.tiers[i].stick = true;
-  //     }
-  //   }
-  // }
-
   filtered(tier: Speedtier) {
+    if (tier.pokemon.pid in this.views && this.views[tier.pokemon.pid]) {
+      return false;
+    }
     for (let mod of tier.modifiers) {
       if (mod in this.modifiers) {
         if (!this.modifiers[mod]) {

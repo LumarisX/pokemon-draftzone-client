@@ -2,7 +2,7 @@
   class="flex flex-wrap justify-center gap-4 p-4 text-xs"
   *ngIf="matchupData"
 >
-  <overview class="z-10" [teams]="matchupData.summary"></overview>
+  <overview class="z-10" [teams]="matchupData.overview"></overview>
   <summary
     class="z-10 overflow-x-auto"
     [teams]="matchupData.summary"
@@ -11,6 +11,7 @@
   <speedchart
     class="z-10"
     [speedchart]="matchupData.speedchart"
+    [speeds]="matchupData.overview"
     [level]="matchupData.level"
   ></speedchart>
   <typechart
