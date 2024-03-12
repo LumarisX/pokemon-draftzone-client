@@ -14,8 +14,8 @@ export class SummaryComponent {
   _teams: Summary[] = [];
   sortBy: 'name' | 'hp' | 'atk' | 'def' | 'spa' | 'spd' | 'spe' | null = null;
   @Input()
-  set teams(summeries: Summary[]) {
-    for (let summary of summeries) {
+  set teams(summaries: Summary[]) {
+    for (let summary of summaries) {
       summary.team.sort((x, y) => {
         if (x['baseStats']['spe'] < y['baseStats']['spe']) {
           return 1;
@@ -27,7 +27,7 @@ export class SummaryComponent {
       });
     }
     this.sortBy = 'spe';
-    this._teams = summeries;
+    this._teams = summaries;
   }
   get teams(): Summary[] {
     return this._teams;

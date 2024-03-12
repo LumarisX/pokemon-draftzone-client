@@ -139,7 +139,7 @@ export type MatchupData = {
   leagueName: string;
   stage: string;
   speedchart: SpeedChart;
-  summery: Summary[];
+  summary: Summary[];
   overview: Summary[];
   typechart: TypeChart[];
   movechart: MoveChart[];

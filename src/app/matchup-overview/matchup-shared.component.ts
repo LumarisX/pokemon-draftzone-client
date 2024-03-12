@@ -28,7 +28,7 @@ export class MatchupSharedComponent implements OnInit {
       }
       this.matchupService.getMatchup(this.matchupId).subscribe((data) => {
         this.matchupData = <MatchupData>data;
-        for (let summary of this.matchupData.summery) {
+        for (let summary of this.matchupData.summary) {
           summary.team.sort((x, y) => {
             if (x['baseStats']['spe'] < y['baseStats']['spe']) {
               return 1;
