@@ -30,8 +30,12 @@ export class OpponentOverviewComponent implements OnInit {
     private draftService: DraftService
   ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.teamId = <string>this.route.snapshot.paramMap.get('teamid');
+    this.reload();
+  }
+
+  reload() {
     this.draftService.getDraft(this.teamId).subscribe((data) => {
       this.draft = <Draft>data;
     });

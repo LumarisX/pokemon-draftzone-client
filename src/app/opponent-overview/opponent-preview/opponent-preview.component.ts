@@ -1,34 +1,45 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { DraftService } from '../../api/draft.service';
+import { Draft } from '../../interfaces/draft';
 import { Matchup } from '../../interfaces/matchup';
+import { LoadingComponent } from '../../loading/loading.component';
 import { SpriteComponent } from '../../sprite/sprite.component';
 import { CoreModule } from '../../sprite/sprite.module';
-import { Draft } from '../../interfaces/draft';
-import { LoadingComponent } from "../../loading/loading.component";
 
 @Component({
-    selector: 'opponent-preview',
-    standalone: true,
-    templateUrl: './opponent-preview.component.html',
-    imports: [CommonModule, RouterModule, CoreModule, SpriteComponent, LoadingComponent]
+  selector: 'opponent-preview',
+  standalone: true,
+  templateUrl: './opponent-preview.component.html',
+  imports: [
+    CommonModule,
+    RouterModule,
+    CoreModule,
+    SpriteComponent,
+    LoadingComponent,
+  ],
 })
 export class OpponentTeamPreviewComponent implements OnInit {
   index = 0;
-  @Output() reload = new EventEmitter<boolean>();
-  draft!: Draft;
-  matchups!: Matchup[];
+  draft: Draft | null = null;
+  matchups: Matchup[] | null = null;
   teamId: string = '';
 
   constructor(
     private draftService: DraftService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
     this.teamId = <string>this.route.snapshot.paramMap.get('teamid');
-    console.log(this.route.snapshot.paramMap);
+    this.reload();
+  }
+
+  reload() {
+    this.draft = null;
+    this.matchups = null;
     this.draftService.getDraft(this.teamId).subscribe((data) => {
       this.draft = <Draft>data;
     });
@@ -37,12 +48,11 @@ export class OpponentTeamPreviewComponent implements OnInit {
     });
   }
 
-  //fix depreciated
   deleteMatchup(matchupId: string) {
     this.draftService.deleteMatchup(matchupId).subscribe(
       (response) => {
+        this.reload();
         console.log('Success!', response);
-        this.reload.emit(true);
       },
       (error) => console.error('Error!', error)
     );

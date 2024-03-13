@@ -1,9 +1,10 @@
 <div class="flex space-x-2">
   <div
-    class="w-1/6 max-w-28 sm:block hidden bg-cyan-100 p-1 border-2 border-cyan-200 rounded-xl"
+    *ngIf="draft"
+    class="hidden w-1/6 p-1 border-2 max-w-28 sm:block bg-cyan-100 border-cyan-200 rounded-xl"
   >
     <div
-      class="h-auto p-1 m-1 sm:p-2 sm:m-2 shadow-md bg-cyan-300 rounded-xl shadow-cyan-600"
+      class="h-auto p-1 m-1 shadow-md sm:p-2 sm:m-2 bg-cyan-300 rounded-xl shadow-cyan-600"
     >
       <sprite
         class="flex justify-center"
@@ -15,7 +16,7 @@
     </div>
   </div>
 
-  <div class="bg-red-100 w-full rounded-xl p-1 lg:p-2 border-2 border-red-200">
+  <div class="w-full p-1 bg-red-100 border-2 border-red-200 rounded-xl lg:p-2">
     <div>
       <button
         class="p-2 m-3 bg-red-300 rounded-lg shadow-md hover:shadow shadow-red-600"
