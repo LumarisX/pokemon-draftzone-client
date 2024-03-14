@@ -27,7 +27,7 @@ const routes: Routes = [
         canActivate: [AuthGuard],
       },
       {
-        path: 'stats',
+        path: ':teamId/stats',
         component: DraftStatsComponent,
         canActivate: [AuthGuard],
       },

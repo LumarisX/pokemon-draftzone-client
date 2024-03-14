@@ -1,1 +1,39 @@
-<p>draft-stats works!</p>
+<div
+  class="p-2 border rounded-lg bg-slate-200 border-slate-300 w-fit"
+  *ngIf="teamStats"
+>
+  <table class="table-auto">
+    <thead>
+      <tr>
+        <th></th>
+        <th class="cursor-pointer" (click)="sortByStat('name')">Name</th>
+        <th class="cursor-pointer" (click)="sortByStat('brought')">Brought</th>
+        <th class="cursor-pointer" (click)="sortByStat('kills')">
+          Direct Kills
+        </th>
+        <th class="cursor-pointer" (click)="sortByStat('indirect')">
+          Indirect Kills
+        </th>
+        <th class="cursor-pointer" (click)="sortByStat('deaths')">Deaths</th>
+        <th class="cursor-pointer" (click)="sortByStat('kdr')">KDR</th>
+        <th class="cursor-pointer" (click)="sortByStat('kpg')">
+          Kills per Game
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="bg-gray-100" *ngFor="let stats of teamStats">
+        <td class="border">
+          <sprite [pokemon]="stats.pokemon"></sprite>
+        </td>
+        <td class="border">{{ stats.pokemon.name }}</td>
+        <td class="border">{{ stats.brought }}</td>
+        <td class="border">{{ stats.kills }}</td>
+        <td class="border">{{ stats.indirect }}</td>
+        <td class="border">{{ stats.deaths }}</td>
+        <td class="border">{{ stats.kdr }}</td>
+        <td class="border">{{ stats.kpg | number : "1.0-2" }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

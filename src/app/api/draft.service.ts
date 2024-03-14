@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
-import { AuthService } from '../auth/auth0.service';
-import { Matchup } from '../interfaces/matchup';
 
 @Injectable({
   providedIn: 'root',
@@ -47,6 +45,10 @@ export class DraftService {
 
   deleteMatchup(matchupId: string) {
     return this.apiService.delete(`matchup/${matchupId}`);
+  }
+
+  archiveDraft(teamName: string) {
+    return this.apiService.delete(`draft/${teamName}/archive`);
   }
 
   scoreMatchup(matchupId: string, teamId: string, scoreData: Object) {

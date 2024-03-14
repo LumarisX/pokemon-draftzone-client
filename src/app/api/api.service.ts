@@ -6,8 +6,8 @@ import { Observable, switchMap } from 'rxjs';
   providedIn: 'root',
 })
 export class ApiService {
-  // private serverUrl = 'https://api.pokemondraftzone.com';
-  private serverUrl = 'http://localhost:9960';
+  private serverUrl = 'https://api.pokemondraftzone.com';
+  // private serverUrl = 'http://localhost:9960';
 
   constructor(private http: HttpClient, private auth: AuthService) {}
 
@@ -56,6 +56,16 @@ export class ApiService {
 
   // Method to make a DELETE request
   delete(path: string): Observable<any> {
-    return this.http.delete(`${this.serverUrl}/${path}`);
+    return this.auth.getAccessToken().pipe(
+      switchMap((token: string) => {
+        let httpOptions = {
+          headers: new HttpHeaders({
+            'Content-Type': 'application/json',
+            authorization: `Bearer ${token}`,
+          }),
+        };
+        return this.http.delete(`${this.serverUrl}/${path}`, httpOptions);
+      })
+    );
   }
 }
