@@ -21,6 +21,10 @@ export class DraftService {
     return this.apiService.get(`draft/${teamId}/${matchupId}`);
   }
 
+  getStats(teamName: string) {
+    return this.apiService.get(`draft/${teamName}/stats`);
+  }
+
   newDraft(draftData: Object) {
     return this.apiService.post(`draft/teams`, draftData);
   }

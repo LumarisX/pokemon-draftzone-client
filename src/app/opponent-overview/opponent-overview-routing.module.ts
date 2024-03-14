@@ -2,6 +2,10 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from '@auth0/auth0-angular';
 import { OpponentOverviewComponent } from './opponent-overview.component';
+import { OpponentTeamPreviewComponent } from './opponent-preview/opponent-preview.component';
+import { OpponentFormNewComponent } from './opponent-form/opponent-form-new/opponent-form-new.component';
+import { OpponentFormEditComponent } from './opponent-form/opponent-form-edit/opponent-form-edit.component';
+import { OpponentScoreComponent } from './opponent-score/opponent-score.component';
 
 const routes: Routes = [
   {
@@ -10,34 +14,22 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        loadChildren: () =>
-          import('./opponent-preview/opponent-preview.module').then(
-            (m) => m.OpponentPreviewModule
-          ),
+        component: OpponentTeamPreviewComponent,
         canActivate: [AuthGuard],
       },
       {
         path: 'new',
-        loadChildren: () =>
-          import(
-            './opponent-form/opponent-form-new/opponent-form-new.module'
-          ).then((m) => m.OpponentFormNewModule),
+        component: OpponentFormNewComponent,
         canActivate: [AuthGuard],
       },
       {
         path: 'edit',
-        loadChildren: () =>
-          import(
-            './opponent-form/opponent-form-edit/opponent-form-edit.module'
-          ).then((m) => m.OpponentFormEditModule),
+        component: OpponentFormEditComponent,
         canActivate: [AuthGuard],
       },
       {
         path: 'score',
-        loadChildren: () =>
-          import('./opponent-score/opponent-score.module').then(
-            (m) => m.OpponentScoreModule
-          ),
+        component: OpponentScoreComponent,
         canActivate: [AuthGuard],
       },
     ],

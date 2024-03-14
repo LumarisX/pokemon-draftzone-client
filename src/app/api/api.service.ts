@@ -6,7 +6,8 @@ import { Observable, switchMap } from 'rxjs';
   providedIn: 'root',
 })
 export class ApiService {
-  private serverUrl = 'https://api.pokemondraftzone.com';
+  // private serverUrl = 'https://api.pokemondraftzone.com';
+  private serverUrl = 'http://localhost:9960';
 
   constructor(private http: HttpClient, private auth: AuthService) {}
 
