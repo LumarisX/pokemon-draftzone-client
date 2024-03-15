@@ -1,15 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { DraftService } from '../../api/draft.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { Stats } from './draft-stats.interface';
 import { CommonModule } from '@angular/common';
 import { SpriteComponent } from '../../sprite/sprite.component';
+import { LoadingComponent } from '../../loading/loading.component';
 
 @Component({
   selector: 'draft-stats',
   standalone: true,
   templateUrl: './draft-stats.component.html',
-  imports: [CommonModule, SpriteComponent],
+  imports: [CommonModule, RouterModule, SpriteComponent, LoadingComponent],
 })
 export class DraftStatsComponent implements OnInit {
   constructor(
