@@ -50,9 +50,7 @@ export class OpponentFormEditComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.teamId = <string>(
-      this.route.parent!.parent!.snapshot.paramMap.get('teamid')
-    );
+    this.teamId = <string>this.route.parent!.snapshot.paramMap.get('teamid');
     this.route.queryParams.subscribe((params) => {
       if ('matchup' in params) {
         this.matchupId = JSON.parse(params['matchup']);

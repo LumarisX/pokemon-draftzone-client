@@ -23,13 +23,12 @@ import { CoreModule } from '../../sprite/sprite.module';
 export class OpponentTeamPreviewComponent implements OnInit {
   index = 0;
   draft: Draft | null = null;
-  matchups: Matchup[] | null = null;
+  matchups: (Matchup & { deleteConfirm: boolean })[] | null = null;
   teamId: string = '';
 
   constructor(
     private draftService: DraftService,
-    private route: ActivatedRoute,
-    private router: Router
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
@@ -44,7 +43,7 @@ export class OpponentTeamPreviewComponent implements OnInit {
       this.draft = <Draft>data;
     });
     this.draftService.getMatchupList(this.teamId).subscribe((data) => {
-      this.matchups = <Matchup[]>data;
+      this.matchups = <(Matchup & { deleteConfirm: boolean })[]>data;
     });
   }
 

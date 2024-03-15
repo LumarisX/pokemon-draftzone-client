@@ -20,14 +20,13 @@ import { LoadingComponent } from '../../loading/loading.component';
   ],
 })
 export class DraftPreviewComponent {
-  teams: Draft[] | null = null;
-  archiveConfirm = false;
+  teams: (Draft & { archiveConfirm: boolean })[] | null = null;
 
   constructor(private draftService: DraftService) {}
 
   ngOnInit() {
     this.draftService.getDraftsList().subscribe((data) => {
-      this.teams = <Draft[]>data;
+      this.teams = <(Draft & { archiveConfirm: boolean })[]>data;
     });
   }
 

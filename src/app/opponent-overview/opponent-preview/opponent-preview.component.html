@@ -56,7 +56,7 @@
                 ></sprite>
               </div>
             </div>
-            <div class="flex">
+            <div class="flex" *ngIf="!matchup.deleteConfirm">
               <a
                 class="w-1/6 m-2 text-center bg-red-300 shadow hover:shadow shadow-red-600 rounded-xl"
                 [routerLink]="'score'"
@@ -77,9 +77,28 @@
               </a>
               <a
                 class="w-1/6 m-2 text-center bg-red-300 shadow hover:shadow shadow-red-600 rounded-xl"
-                (click)="deleteMatchup(matchup._id)"
+                (click)="matchup.deleteConfirm = true"
                 >Delete
               </a>
+            </div>
+            <div class="flex" *ngIf="matchup.deleteConfirm">
+              <div
+                class="w-2/3 m-2 text-center bg-red-300 shadow shadow-red-600 rounded-xl"
+              >
+                Are you sure you want to delete?
+              </div>
+              <div
+                class="w-1/6 m-2 text-center bg-red-300 shadow cursor-pointer hover:shadow shadow-red-600 rounded-xl"
+                (click)="deleteMatchup(matchup._id)"
+              >
+                Yes
+              </div>
+              <div
+                class="w-1/6 m-2 text-center bg-red-300 shadow cursor-pointer hover:shadow shadow-red-600 rounded-xl"
+                (click)="matchup.deleteConfirm = false"
+              >
+                No
+              </div>
             </div>
           </div>
         </div>

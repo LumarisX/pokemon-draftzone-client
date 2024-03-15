@@ -116,7 +116,6 @@ export class PokemonFormComponent implements OnInit {
   }
 
   resultSelected($event: Pokemon) {
-    console.log($event);
     this.pokemonForm.patchValue({ name: $event.name, pid: $event.pid });
   }
 }

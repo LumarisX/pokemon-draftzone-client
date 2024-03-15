@@ -41,9 +41,7 @@ export class OpponentFormNewComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.teamId = <string>(
-      this.route.parent!.parent!.snapshot.paramMap.get('teamid')
-    );
+    this.teamId = <string>this.route.parent!.snapshot.paramMap.get('teamid');
   }
 
   opponentForm: FormGroup = new FormGroup({

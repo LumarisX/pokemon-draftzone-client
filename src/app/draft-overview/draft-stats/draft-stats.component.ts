@@ -50,27 +50,23 @@ export class DraftStatsComponent implements OnInit {
     if (sortStat != this.sortBy) {
       this.sortBy = sortStat;
       this.reversed = false;
-      if (sortStat == 'name') {
-        this.teamStats.sort((x, y) => {
-          if (x.pokemon.name > y.pokemon.name) {
-            return 1;
-          }
-          if (x.pokemon.name < y.pokemon.name) {
-            return -1;
-          }
-          return 0;
-        });
-      } else {
-        this.teamStats.sort((x, y) => {
+      this.teamStats.sort((x, y) => {
+        if (sortStat != 'name') {
           if (x[sortStat] < y[sortStat]) {
             return 1;
           }
           if (x[sortStat] > y[sortStat]) {
             return -1;
           }
-          return 0;
-        });
-      }
+        }
+        if (x.pokemon.name > y.pokemon.name) {
+          return 1;
+        }
+        if (x.pokemon.name < y.pokemon.name) {
+          return -1;
+        }
+        return 0;
+      });
     } else {
       this.teamStats.reverse();
       this.reversed = !this.reversed;
