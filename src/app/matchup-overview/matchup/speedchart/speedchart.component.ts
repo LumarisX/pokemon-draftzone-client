@@ -88,7 +88,7 @@ export class SpeedchartComponent {
     'Quark Drive': true,
   };
 
-  views: { [key: string]: boolean } = {};
+  enabledMons: { [key: string]: boolean } = {};
 
   constructor() {}
 
@@ -100,15 +100,18 @@ export class SpeedchartComponent {
   }
 
   toggleView(pid: string) {
-    if (pid in this.views) {
-      this.views[pid] = !this.views[pid];
+    if (pid in this.enabledMons) {
+      delete this.enabledMons[pid];
     } else {
-      this.views[pid] = true;
+      this.enabledMons[pid] = true;
     }
   }
 
   viewColor(pid: string) {
-    if (pid in this.views && this.views[pid]) {
+    if (
+      Object.keys(this.enabledMons).length > 0 &&
+      !(pid in this.enabledMons)
+    ) {
       return ['opacity-50'];
     }
     return [];
@@ -131,7 +134,10 @@ export class SpeedchartComponent {
   }
 
   filtered(tier: Speedtier) {
-    if (tier.pokemon.pid in this.views && this.views[tier.pokemon.pid]) {
+    if (
+      Object.keys(this.enabledMons).length > 0 &&
+      !(tier.pokemon.pid in this.enabledMons)
+    ) {
       return false;
     }
     for (let mod of tier.modifiers) {
