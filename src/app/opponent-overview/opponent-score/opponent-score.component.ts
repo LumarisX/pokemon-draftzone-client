@@ -45,8 +45,7 @@ export class OpponentScoreComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.teamId =
-      this.route.parent!.parent!.snapshot.paramMap.get('teamid') || '';
+    this.teamId = this.route.parent!.snapshot.paramMap.get('teamid') || '';
     this.route.queryParams.subscribe((params) => {
       if ('matchup' in params) {
         this.matchupId = JSON.parse(params['matchup']);
