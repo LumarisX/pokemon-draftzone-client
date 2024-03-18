@@ -24,6 +24,16 @@ export class ApiService {
       })
     );
   }
+
+  getUnauth(path: string): Observable<any> {
+    let httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      }),
+    };
+    return this.http.get(`${this.serverUrl}/${path}`, httpOptions);
+  }
+
   // Method to make a POST request with authorization header
   post(path: string, data: any): Observable<any> {
     return this.auth.getAccessToken().pipe(

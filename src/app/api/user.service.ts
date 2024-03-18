@@ -2,14 +2,13 @@ import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UserService {
-
-  constructor(private apiService: ApiService) { }
+  constructor(private apiService: ApiService) {}
 
   getUsers() {
-    return (this.apiService.get("users"))
+    return this.apiService.get('users');
   }
 
   getDraftById(teamId: string) {

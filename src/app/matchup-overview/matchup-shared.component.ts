@@ -10,7 +10,7 @@ import { LoadingComponent } from '../loading/loading.component';
   selector: 'matchup-shared',
   standalone: true,
   templateUrl: 'matchup-shared.component.html',
-  imports: [CommonModule,LoadingComponent, MatchupComponent, RouterModule],
+  imports: [CommonModule, LoadingComponent, MatchupComponent, RouterModule],
 })
 export class MatchupSharedComponent implements OnInit {
   matchupId = '';
@@ -26,7 +26,7 @@ export class MatchupSharedComponent implements OnInit {
       if ('id' in params) {
         this.matchupId = params['id'];
       }
-      this.matchupService.getMatchup(this.matchupId).subscribe((data) => {
+      this.matchupService.getSharedMatchup(this.matchupId).subscribe((data) => {
         this.matchupData = <MatchupData>data;
         for (let summary of this.matchupData.summary) {
           summary.team.sort((x, y) => {
@@ -39,7 +39,9 @@ export class MatchupSharedComponent implements OnInit {
             return 0;
           });
         }
-        this.matchupData.overview = <Summary[]>JSON.parse(JSON.stringify(this.matchupData.summary));
+        this.matchupData.overview = <Summary[]>(
+          JSON.parse(JSON.stringify(this.matchupData.summary))
+        );
       });
     });
   }

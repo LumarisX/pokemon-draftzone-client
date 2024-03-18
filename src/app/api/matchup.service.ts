@@ -7,8 +7,12 @@ import { ApiService } from './api.service';
 export class MatchupService {
   constructor(private apiService: ApiService) {}
 
-  getMatchup(matchupId: string){
+  getMatchup(matchupId: string) {
     return this.apiService.get(`matchup/${matchupId}`);
+  }
+
+  getSharedMatchup(matchupId: string) {
+    return this.apiService.getUnauth(`matchup/${matchupId}`);
   }
 
   getSpeedchart(matchupId: string) {
