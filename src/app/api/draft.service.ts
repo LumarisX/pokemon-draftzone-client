@@ -51,6 +51,10 @@ export class DraftService {
     return this.apiService.delete(`draft/${teamName}/archive`);
   }
 
+  deleteDraft(teamName: string) {
+    return this.apiService.delete(`draft/${teamName}`);
+  }
+
   scoreMatchup(matchupId: string, teamId: string, scoreData: Object) {
     return this.apiService.patch(
       `draft/${teamId}/${matchupId}/score`,

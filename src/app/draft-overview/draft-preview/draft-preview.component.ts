@@ -20,19 +20,36 @@ import { LoadingComponent } from '../../loading/loading.component';
   ],
 })
 export class DraftPreviewComponent {
-  teams: (Draft & { archiveConfirm: boolean })[] | null = null;
+  teams: (Draft & { menu: 'main' | 'archive' | 'edit' | 'delete' })[] | null =
+    null;
 
   constructor(private draftService: DraftService) {}
 
   ngOnInit() {
+    this.reload();
+  }
+
+  reload() {
+    this.teams = null;
     this.draftService.getDraftsList().subscribe((data) => {
-      this.teams = <(Draft & { archiveConfirm: boolean })[]>data;
+      this.teams = <
+        (Draft & { menu: 'main' | 'archive' | 'edit' | 'delete' })[]
+      >data;
+      for (let team of this.teams) {
+        team.menu = 'main';
+      }
     });
   }
 
   archive(teamId: string) {
     this.draftService.archiveDraft(teamId).subscribe((data) => {
-      console.log(data);
+      this.reload();
+    });
+  }
+
+  delete(teamId: string) {
+    this.draftService.deleteDraft(teamId).subscribe((data) => {
+      this.reload();
     });
   }
 }

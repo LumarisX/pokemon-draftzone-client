@@ -3,19 +3,15 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
   AbstractControl,
   FormArray,
-  FormControl,
   FormGroup,
   ReactiveFormsModule,
-  Validators,
 } from '@angular/forms';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { DraftService } from '../../../api/draft.service';
-import { Draft, Pokemon } from '../../../interfaces/draft';
+import { RouterModule } from '@angular/router';
+import { DataService } from '../../../api/data.service';
+import { Pokemon } from '../../../interfaces/draft';
 import { PokemonFormComponent } from '../../../pokemon-form/pokemon-form.component';
 import { SpriteComponent } from '../../../sprite/sprite.component';
 import { CoreModule } from '../../../sprite/sprite.module';
-import { DataService } from '../../../api/data.service';
-import { ApiService } from '../../../api/api.service';
 
 @Component({
   selector: 'draft-form-core',
