@@ -51,25 +51,25 @@
           <div class="grid sm:grid-cols-3 grid-cols-1 w-full gap-x-4">
             <div class="flex space-x-2 justify-center">
               <div class="font-semibold">Brought:</div>
-              <div>{{ statCount(bTeamArray, ["brought"]) }}</div>
+              <div>{{ statCount(aTeamArray, ["brought"]) }}</div>
             </div>
             <div class="flex space-x-2 justify-center">
               <div class="font-semibold">Deaths:</div>
-              <div>{{ statCount(bTeamArray, ["deaths"]) }}</div>
+              <div>{{ statCount(aTeamArray, ["deaths"]) }}</div>
             </div>
             <div class="flex space-x-2 justify-center">
               <div class="font-semibold">Kills:</div>
 
-              <div>{{ statCount(bTeamArray, ["kills", "indirect"]) }}</div>
+              <div>{{ statCount(aTeamArray, ["kills", "indirect"]) }}</div>
             </div>
           </div>
           <div
-            class="grid grid-cols-1 lg:grid-cols-2 sm:grid-cols-1 gap-x-4"
+            class="grid grid-cols-1 lg:grid-cols-2 sm:grid-cols-1 gap-x-4 gap-y-2"
             formArrayName="team"
           >
             <div
               *ngFor="let pokemonForm of aTeamArray.controls; let i = index"
-              class="flex items-center"
+              class="flex items-center border border-cyan-200 rounded-xl p-1"
               formGroupName="{{ i }}"
             >
               <sprite
@@ -84,7 +84,7 @@
                       type="number"
                       formControlName="brought"
                       min="0"
-                      class="w-full p-1 mx-1 text-center rounded-md shadow-inner bg-cyan-200 text-medium shadow-cyan-600"
+                      class="w-full p-1 text-center rounded-md shadow-inner bg-cyan-200 text-medium shadow-cyan-600"
                     />
                   </div>
                   <div>
@@ -93,7 +93,7 @@
                       type="number"
                       formControlName="kills"
                       min="0"
-                      class="w-full p-1 mx-1 text-center rounded-md shadow-inner bg-cyan-200 text-medium shadow-cyan-600"
+                      class="w-full p-1 text-center rounded-md shadow-inner bg-cyan-200 text-medium shadow-cyan-600"
                     />
                   </div>
                   <div>
@@ -102,7 +102,7 @@
                       type="number"
                       formControlName="indirect"
                       min="0"
-                      class="w-full p-1 mx-1 text-center rounded-md shadow-inner bg-cyan-200 text-medium shadow-cyan-600"
+                      class="w-full p-1 text-center rounded-md shadow-inner bg-cyan-200 text-medium shadow-cyan-600"
                     />
                   </div>
                   <div>
@@ -111,7 +111,7 @@
                       type="number"
                       formControlName="deaths"
                       min="0"
-                      class="w-full p-1 mx-1 text-center rounded-md shadow-inner bg-cyan-200 text-medium shadow-cyan-600"
+                      class="w-full p-1 text-center rounded-md shadow-inner bg-cyan-200 text-medium shadow-cyan-600"
                     />
                   </div>
                 </div>
@@ -165,12 +165,12 @@
             </div>
           </div>
           <div
-            class="grid grid-cols-1 lg:grid-cols-2 sm:grid-cols-1 gap-x-4"
+            class="grid grid-cols-1 lg:grid-cols-2 sm:grid-cols-1 gap-x-4 gap-y-2"
             formArrayName="team"
           >
             <div
               *ngFor="let pokemonForm of bTeamArray.controls; let i = index"
-              class="flex items-center"
+              class="flex items-center border border-red-200 rounded-xl p-1"
               formGroupName="{{ i }}"
             >
               <sprite
@@ -178,14 +178,14 @@
                 [pokemon]="pokemonForm.value.pokemon"
               ></sprite>
               <div class="flex items-center w-3/4">
-                <div class="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                <div class="grid grid-cols-2 gap-2 sm:grid-cols-4 px-2 py-1">
                   <div>
                     <span class="text-xs">Brought</span>
                     <input
                       type="number"
                       formControlName="brought"
                       min="0"
-                      class="w-full p-1 mx-1 text-center rounded-md shadow-inner bg-red-200 text-medium shadow-red-600"
+                      class="w-full p-1 text-center rounded-md shadow-inner bg-red-200 text-medium shadow-red-600"
                     />
                   </div>
                   <div>
@@ -194,7 +194,7 @@
                       type="number"
                       formControlName="kills"
                       min="0"
-                      class="w-full p-1 mx-1 text-center rounded-md shadow-inner bg-red-200 text-medium shadow-red-600"
+                      class="w-full p-1 text-center rounded-md shadow-inner bg-red-200 text-medium shadow-red-600"
                     />
                   </div>
                   <div>
@@ -203,7 +203,7 @@
                       type="number"
                       formControlName="indirect"
                       min="0"
-                      class="w-full p-1 mx-1 text-center rounded-md shadow-inner bg-red-200 text-medium shadow-red-600"
+                      class="w-full p-1 text-center rounded-md shadow-inner bg-red-200 text-medium shadow-red-600"
                     />
                   </div>
                   <div>
@@ -212,7 +212,7 @@
                       type="number"
                       formControlName="deaths"
                       min="0"
-                      class="w-full p-1 mx-1 text-center rounded-md shadow-inner bg-red-200 text-medium shadow-red-600"
+                      class="w-full p-1 text-center rounded-md shadow-inner bg-red-200 text-medium shadow-red-600"
                     />
                   </div>
                 </div>
@@ -231,6 +231,5 @@
       Submit
     </button>
   </div>
-  <!-- 
-  {{ scoreForm.value | json }} -->
+  <!-- {{ scoreForm.value | json }} -->
 </form>
