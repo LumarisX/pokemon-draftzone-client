@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AuthService } from '../auth/auth0.service';
 import { Observable, switchMap } from 'rxjs';
@@ -23,6 +23,16 @@ export class ApiService {
         return this.http.get(`${this.serverUrl}/${path}`, httpOptions);
       })
     );
+  }
+
+  getDataWithParams(path: string, params: HttpParams): Observable<any> {
+    let httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      }),
+      params: params,
+    };
+    return this.http.get(`${this.serverUrl}/${path}`, httpOptions);
   }
 
   getUnauth(path: string): Observable<any> {

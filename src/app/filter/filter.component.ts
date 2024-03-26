@@ -11,6 +11,7 @@ import { CoreModule } from '../sprite/sprite.module';
 import { ApiService } from '../api/api.service';
 import { FormsModule } from '@angular/forms';
 import { Pokemon } from '../interfaces/draft';
+import { HttpParams } from '@angular/common/http';
 @Component({
   selector: 'filter',
   standalone: true,
@@ -34,8 +35,11 @@ export class FilterComponent implements OnChanges {
 
   sendQuery() {
     if (this.query != '') {
+      let params = new HttpParams()
+        .set('query', this.query)
+        .set('ruleset', 'Paldea Dex');
       this.apiService
-        .get(`data/search?q=${this.query}`)
+        .getDataWithParams(`data/search`, params)
         .subscribe((results) => {
           this.results = <Pokemon[]>results;
         });
