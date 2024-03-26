@@ -4,12 +4,18 @@ import { SpeedChart, Speedtier, Summary } from '../../matchup-interface';
 import { SpriteComponent } from '../../../sprite/sprite.component';
 import { FormsModule } from '@angular/forms';
 import { Pokemon } from '../../../interfaces/draft';
+import { SpeedModifierIconComponent } from './speed-modifier-icon.component';
 
 @Component({
   selector: 'speedchart',
   standalone: true,
   templateUrl: './speedchart.component.html',
-  imports: [CommonModule, FormsModule, SpriteComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    SpriteComponent,
+    SpeedModifierIconComponent,
+  ],
 })
 export class SpeedchartComponent {
   @Input() speedchart!: SpeedChart | null;
@@ -86,6 +92,7 @@ export class SpeedchartComponent {
     'Slush Rush': true,
     Protosynthesis: true,
     'Quark Drive': true,
+    'Quick Feet': true,
   };
 
   enabledMons: [
