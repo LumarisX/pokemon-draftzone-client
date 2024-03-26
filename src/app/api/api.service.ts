@@ -2,12 +2,12 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AuthService } from '../auth/auth0.service';
 import { Observable, switchMap } from 'rxjs';
+import { environment } from '../../environments/environment';
 @Injectable({
   providedIn: 'root',
 })
 export class ApiService {
-  private serverUrl = 'https://api.pokemondraftzone.com';
-  // private serverUrl = 'http://localhost:9960';
+  private serverUrl = environment.apiUrl;
 
   constructor(private http: HttpClient, private auth: AuthService) {}
 
