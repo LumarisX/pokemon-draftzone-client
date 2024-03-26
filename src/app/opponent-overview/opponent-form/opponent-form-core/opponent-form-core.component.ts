@@ -12,6 +12,7 @@ import { Pokemon } from '../../../interfaces/draft';
 import { PokemonFormComponent } from '../../../pokemon-form/pokemon-form.component';
 import { SpriteComponent } from '../../../sprite/sprite.component';
 import { CoreModule } from '../../../sprite/sprite.module';
+import { PokemonId } from '../../../pokemon';
 
 @Component({
   selector: 'opponent-form-core',
@@ -29,22 +30,24 @@ import { CoreModule } from '../../../sprite/sprite.module';
 export class OpponentFormCoreComponent implements OnInit {
   @Input() opponentForm!: FormGroup;
   @Output() formSubmitted = new EventEmitter<FormGroup>();
+  importing = false;
   constructor() {}
 
   get teamArray(): FormArray {
     return this.opponentForm?.get('team') as FormArray;
   }
 
+  set teamArray(array: FormArray) {
+    this.opponentForm?.get('team')?.setValue(array);
+  }
+
   ngOnInit(): void {
     this.opponentForm.setValidators(this.validateDraftForm);
   }
 
-  addNewPokemon(
-    index: number = this.teamArray.length,
-    pokemonData: Pokemon = { pid: '', name: '' }
-  ) {
+  addNewPokemon(index: number, pokemonData: Pokemon = { pid: '', name: '' }) {
     this.teamArray?.insert(
-      index + 1,
+      index,
       PokemonFormComponent.addPokemonForm(pokemonData)
     );
   }
@@ -68,5 +71,19 @@ export class OpponentFormCoreComponent implements OnInit {
     } else {
       console.log('Form is invalid.');
     }
+  }
+
+  importPokemon(data: string) {
+    this.teamArray.clear();
+    data
+      .split(/\n|,/)
+      .map((string) => string.trim())
+      .forEach((name) => {
+        this.addNewPokemon(this.teamArray.length, {
+          pid: name.toLowerCase() as PokemonId,
+          name: name,
+        });
+      });
+    this.importing = false;
   }
 }

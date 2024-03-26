@@ -2,8 +2,9 @@
   "name": "pokemon-draftzone-client",
   "version": "0.5.1",
   "scripts": {
-    "dev": "ng serve --configuration=development",
-    "prod": "ng serve",
+    "local-dev": "ng serve --configuration=development",
+    "prod": "ng serve --configuration=production",
+    "api-dev": "ng serve --configuration=api-dev",
     "build": "ng build"
   },
   "private": true,

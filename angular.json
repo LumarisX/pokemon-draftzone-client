@@ -16,17 +16,10 @@
             "outputPath": "dist/pokemon-draftzone-client",
             "index": "src/index.html",
             "browser": "src/main.ts",
-            "polyfills": [
-              "zone.js"
-            ],
+            "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.app.json",
-            "assets": [
-              "src/13luken.ico",
-              "src/assets"
-            ],
-            "styles": [
-              "src/styles.css"
-            ],
+            "assets": ["src/13luken.ico", "src/assets"],
+            "styles": ["src/styles.css"],
             "scripts": []
           },
           "configurations": {
@@ -55,6 +48,11 @@
                   "with": "src/environments/environment.dev.ts"
                 }
               ]
+            },
+            "api-dev": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
             }
           },
           "defaultConfiguration": "production"
@@ -67,6 +65,9 @@
             },
             "development": {
               "buildTarget": "pokemon-draftzone-client:build:development"
+            },
+            "api-dev": {
+              "buildTarget": "pokemon-draftzone-client:build:api-dev"
             }
           },
           "defaultConfiguration": "development"
@@ -80,18 +81,10 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "polyfills": [
-              "zone.js",
-              "zone.js/testing"
-            ],
+            "polyfills": ["zone.js", "zone.js/testing"],
             "tsConfig": "tsconfig.spec.json",
-            "assets": [
-              "src/13luken.ico",
-              "src/assets"
-            ],
-            "styles": [
-              "src/styles.css"
-            ],
+            "assets": ["src/13luken.ico", "src/assets"],
+            "styles": ["src/styles.css"],
             "scripts": []
           }
         }

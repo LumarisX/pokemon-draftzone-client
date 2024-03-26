@@ -24,28 +24,62 @@
     </div>
   </div>
   <div class="p-2 border-2 border-red-200 rounded-xl">
-    <div class="grid gap-x-4 md:grid-cols-1 lg:grid-cols-2">
-      <pokemon-form
-        *ngFor="let pokemonForm of teamArray.controls; let i = index"
-        [pokemonForm]="$any(pokemonForm)"
-        class="w-full"
-        [formIndex]="i"
-        (deletePokemonEvent)="deletePokemon($event)"
-        (addPokemonEvent)="addNewPokemon(i, $event)"
-      ></pokemon-form>
-    </div>
-
-    <div class="flex justify-center w-full">
+    <ng-container *ngIf="!importing; else importMenu">
       <button
         type="button"
-        (click)="addNewPokemon()"
-        class="w-32 px-1 my-3 font-bold rounded-full shadow bg-slate-200 hover:bg-slate-100 shadow-slate-600"
+        (click)="importing = true"
+        class="flex items-center justify-center w-32 px-1 my-3 h-6 font-bold rounded-full shadow bg-slate-200 hover:bg-slate-100 shadow-slate-600"
       >
-        Add Pokemon
+        Import
+        <img class="h-full" src="../../../../assets/icons/import.svg" />
       </button>
-    </div>
+      <div class="grid gap-x-4 md:grid-cols-1 lg:grid-cols-2">
+        <pokemon-form
+          *ngFor="let pokemonForm of teamArray.controls; let i = index"
+          [pokemonForm]="$any(pokemonForm)"
+          [formIndex]="i"
+          (deletePokemonEvent)="deletePokemon($event)"
+          (addPokemonEvent)="addNewPokemon(i + 1, $event)"
+          class="w-full"
+        ></pokemon-form>
+      </div>
+      <div class="flex justify-center w-full">
+        <button
+          type="button"
+          (click)="addNewPokemon(teamArray.length)"
+          class="w-48 px-1 my-3 font-bold rounded-full shadow bg-slate-200 hover:bg-slate-100 shadow-slate-600"
+        >
+          Add Pokemon
+        </button>
+      </div>
+    </ng-container>
+    <ng-template #importMenu>
+      <button
+        type="button"
+        (click)="importing = false"
+        class="flex items-center justify-center w-32 px-1 my-3 h-6 font-bold rounded-full shadow bg-slate-200 hover:bg-slate-100 shadow-slate-600"
+      >
+        Cancel
+      </button>
+      <div class="flex justify-center w-full">
+        <button
+          type="button"
+          (click)="importPokemon(textAreaInfo.value)"
+          class="w-32 px-1 my-3 font-bold rounded-full shadow bg-slate-200 hover:bg-slate-100 shadow-slate-600"
+        >
+          Import
+        </button>
+      </div>
+      <div class="flex justify-center w-full">
+        <textarea
+          #textAreaInfo
+          class="h-96 w-2/3 max-w-128 p-2 resize-none rounded"
+          placeholder="Deoxys&#10;Minior&#10;Clefable&#10;..."
+        ></textarea>
+      </div>
+    </ng-template>
   </div>
-  <div class="flex justify-end w-full">
+  <div class="flex justify-end w-full" *ngIf="!importing">
     <button
       type="submit"
       class="w-24 p-1 mx-4 text-xl font-bold rounded-full shadow bg-slate-200 hover:bg-slate-100 shadow-slate-600"
