@@ -12,6 +12,7 @@ import { Pokemon } from '../../../interfaces/draft';
 import { PokemonFormComponent } from '../../../pokemon-form/pokemon-form.component';
 import { SpriteComponent } from '../../../sprite/sprite.component';
 import { CoreModule } from '../../../sprite/sprite.module';
+import { PokemonId } from '../../../pokemon';
 
 @Component({
   selector: 'draft-form-core',
@@ -31,6 +32,7 @@ export class DraftFormCoreComponent implements OnInit {
   rulesets = [];
   @Input() draftForm!: FormGroup;
   @Output() formSubmitted = new EventEmitter<FormGroup>();
+  importing = false;
   constructor(private dataService: DataService) {}
 
   get teamArray(): FormArray {
@@ -79,5 +81,19 @@ export class DraftFormCoreComponent implements OnInit {
     } else {
       console.log('Form is invalid.');
     }
+  }
+
+  importPokemon(data: string) {
+    this.teamArray.clear();
+    data
+      .split(/\n|,/)
+      .map((string) => string.trim())
+      .forEach((name) => {
+        this.addNewPokemon(this.teamArray.length, {
+          pid: name.toLowerCase() as PokemonId,
+          name: name,
+        });
+      });
+    this.importing = false;
   }
 }
