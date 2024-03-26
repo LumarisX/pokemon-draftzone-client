@@ -17,12 +17,12 @@
         />
       </div>
       <div
-        class="absolute right-0 mt-2 bg-white border rounded-md shadow-lg z-5000"
+        class="absolute right-0 mt-2 w-28 p-1 bg-white divide-y border rounded-md shadow-lg z-5000"
         *ngIf="showFilter"
       >
         <div
           *ngFor="let modifier of speedchart?.modifiers"
-          class="flex px-1 space-x-1 z-5000"
+          class="flex space-x-1 py-1 z-5000"
         >
           <input
             type="checkbox"
@@ -54,11 +54,11 @@
         *ngFor="let s of speeds"
         class="flex w-20 border-b border-slate-400 px-2"
         [ngClass]="buttonColor(s.team)"
-        (click)="toggleView(s.pokemon.pid)"
+        (click)="toggleView(s)"
       >
         <sprite
           class="w-1/2"
-          [ngClass]="viewColor(s.pokemon.pid)"
+          [ngClass]="viewColor(s)"
           [flipped]="true"
           [pokemon]="s.pokemon"
         ></sprite>
@@ -84,7 +84,7 @@
             [pokemon]="tier.pokemon"
             [flipped]="true"
           ></sprite>
-          <div class="flex items-center">
+          <div class="flex items-center min-w-24">
             <div class="flex h-5 space-x-1">
               <img
                 *ngIf="tier.modifiers.includes('252')"

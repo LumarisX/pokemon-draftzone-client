@@ -88,7 +88,10 @@ export class SpeedchartComponent {
     'Quark Drive': true,
   };
 
-  enabledMons: { [key: string]: boolean } = {};
+  enabledMons: [
+    aTeam: { [key: string]: boolean },
+    bTeam: { [key: string]: boolean }
+  ] = [{}, {}];
 
   constructor() {}
 
@@ -99,18 +102,48 @@ export class SpeedchartComponent {
     return classes;
   }
 
-  toggleView(pid: string) {
-    if (pid in this.enabledMons) {
-      delete this.enabledMons[pid];
+  toggleView(s: {
+    pokemon: Pokemon & {
+      name: string;
+      abilities: string[];
+      types: string[];
+      baseStats: {
+        hp: number;
+        atk: number;
+        def: number;
+        spa: number;
+        spd: number;
+        spe: number;
+      };
+    };
+    team: number;
+  }) {
+    if (s.pokemon.pid in this.enabledMons[s.team]) {
+      delete this.enabledMons[s.team][s.pokemon.pid];
     } else {
-      this.enabledMons[pid] = true;
+      this.enabledMons[s.team][s.pokemon.pid] = true;
     }
   }
 
-  viewColor(pid: string) {
+  viewColor(s: {
+    pokemon: Pokemon & {
+      name: string;
+      abilities: string[];
+      types: string[];
+      baseStats: {
+        hp: number;
+        atk: number;
+        def: number;
+        spa: number;
+        spd: number;
+        spe: number;
+      };
+    };
+    team: number;
+  }) {
     if (
-      Object.keys(this.enabledMons).length > 0 &&
-      !(pid in this.enabledMons)
+      Object.keys(this.enabledMons[s.team]).length > 0 &&
+      !(s.pokemon.pid in this.enabledMons[s.team])
     ) {
       return ['opacity-50'];
     }
@@ -135,8 +168,8 @@ export class SpeedchartComponent {
 
   filtered(tier: Speedtier) {
     if (
-      Object.keys(this.enabledMons).length > 0 &&
-      !(tier.pokemon.pid in this.enabledMons)
+      Object.keys(this.enabledMons[tier.team]).length > 0 &&
+      !(tier.pokemon.pid in this.enabledMons[tier.team])
     ) {
       return false;
     }
