@@ -2,7 +2,7 @@
   class="sticky top-0 left-0 flex w-full text-lg font-bold border-b-2 bg-slate-300 border-slate-400"
 >
   <div class="flex items-center justify-center flex-grow">
-    {{ category.catName }}
+    {{ category.categoryName }}
   </div>
   <div
     (click)="show = !show"
@@ -37,7 +37,7 @@
       <sprite
         class="h-8"
         *ngFor="let pokemon of move.pokemon"
-        [pokemon]="{ pid: pokemon, name: pokemon }"
+        [pokemon]="pokemon"
       ></sprite>
     </div>
   </div>

@@ -102,13 +102,8 @@ export type Types = {
 export type MoveChart = MoveCategory[];
 
 export type MoveCategory = {
-  catName: string;
-  moves: [
-    {
-      moveName: string;
-      pokemon: [keyof typeof BattlePokedex];
-    }
-  ];
+  categoryName: string;
+  moves: { moveName: string; pokemon: Pokemon[] }[];
 };
 
 export type CoverageChart = Pokemon & {
