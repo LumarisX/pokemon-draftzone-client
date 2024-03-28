@@ -93,6 +93,8 @@ export class SpeedchartComponent {
     Protosynthesis: true,
     'Quark Drive': true,
     'Quick Feet': true,
+    Unburden: true,
+    'Surge Surfer': true,
   };
 
   enabledMons: [

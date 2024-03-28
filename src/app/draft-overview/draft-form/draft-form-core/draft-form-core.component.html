@@ -27,6 +27,7 @@
           formControlName="format"
           class="w-full px-4 py-2 text-base text-center rounded-full shadow-md bg-cyan-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:bg-cyan-100"
         >
+          <option value="" disabled selected>Select Format</option>
           <option *ngFor="let format of formats" value="{{ format }}">
             {{ format }}
           </option>
@@ -38,6 +39,7 @@
           formControlName="ruleset"
           class="w-full px-4 py-2 text-base text-center rounded-full shadow-md bg-cyan-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:bg-cyan-100"
         >
+          <option value="" disabled selected>Select Ruleset</option>
           <option *ngFor="let ruleset of rulesets" value="{{ ruleset }}">
             {{ ruleset }}
           </option>
@@ -50,7 +52,7 @@
       <button
         type="button"
         (click)="importing = true"
-        class="flex items-center justify-center w-32 px-1 my-3 h-6 font-bold rounded-full shadow bg-slate-200 hover:bg-slate-100 shadow-slate-600"
+        class="flex items-center justify-center w-32 h-6 px-1 my-3 font-bold rounded-full shadow bg-slate-200 hover:bg-slate-100 shadow-slate-600"
       >
         Import
         <img class="h-full" src="../../../../assets/icons/import.svg" />
@@ -80,7 +82,7 @@
       <button
         type="button"
         (click)="importing = false"
-        class="flex items-center justify-center w-32 px-1 my-3 h-6 font-bold rounded-full shadow bg-slate-200 hover:bg-slate-100 shadow-slate-600"
+        class="flex items-center justify-center w-32 h-6 px-1 my-3 font-bold rounded-full shadow bg-slate-200 hover:bg-slate-100 shadow-slate-600"
       >
         Cancel
       </button>
@@ -96,7 +98,7 @@
       <div class="flex justify-center w-full">
         <textarea
           #textAreaInfo
-          class="h-96 w-2/3 max-w-128 p-2 resize-none rounded"
+          class="w-2/3 p-2 rounded resize-none h-96 max-w-128"
           placeholder="Deoxys&#10;Minior&#10;Clefable&#10;..."
         ></textarea>
       </div>

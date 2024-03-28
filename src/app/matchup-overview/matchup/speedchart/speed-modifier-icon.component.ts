@@ -109,6 +109,16 @@ export class SpeedModifierIconComponent {
       title: 'Quick Feet',
       alt: 'Quick Feet',
     },
+    Unburden: {
+      path: '../../../../assets/icons/speedchart/unburden.svg',
+      title: 'Unburden',
+      alt: 'Unburden',
+    },
+    'Surge Surfer': {
+      path: '../../../../assets/icons/speedchart/surf.svg',
+      title: 'Surge Surfer',
+      alt: 'Surge Surfer',
+    },
   };
 
   constructor() {}
