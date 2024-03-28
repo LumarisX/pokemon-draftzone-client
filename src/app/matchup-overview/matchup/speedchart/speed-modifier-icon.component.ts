@@ -99,11 +99,15 @@ export class SpeedModifierIconComponent {
       title: 'Slush Rush',
       alt: 'Slush Rush',
     },
-
     'Iron Ball': {
       path: '../../../../assets/icons/speedchart/ironball.svg',
       title: 'Iron Ball',
       alt: 'Iron Ball',
+    },
+    'Quick Feet': {
+      path: '../../../../assets/icons/speedchart/flameorb.svg',
+      title: 'Quick Feet',
+      alt: 'Quick Feet',
     },
   };
 
