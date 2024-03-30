@@ -4,8 +4,9 @@
       <label for="format">Format</label>
       <select formControlName="format" id="format">
         <option value="" disabled selected>Select Format</option>
-        <option value="format1">Format 1</option>
-        <option value="format2">Format 2</option>
+        <option *ngFor="let format of formats" value="{{ format }}">
+          {{ format }}
+        </option>
       </select>
     </div>
 
@@ -13,8 +14,9 @@
       <label for="ruleset">Ruleset</label>
       <select formControlName="ruleset" id="ruleset">
         <option value="" disabled selected>Select Ruleset</option>
-        <option value="ruleset1">Ruleset 1</option>
-        <option value="ruleset2">Ruleset 2</option>
+        <option *ngFor="let ruleset of rulesets" value="{{ ruleset }}">
+          {{ ruleset }}
+        </option>
       </select>
     </div>
 
@@ -31,7 +33,7 @@
     <div>
       <label for="tier">Tier</label>
       <select formControlName="system">
-        <option value="" disabled selected>Select Tier</option>
+        <option value="" disabled selected>Select Value Type</option>
         <option value="points">Points</option>
         <option value="tiers">Tiers</option>
       </select>
@@ -94,26 +96,34 @@
     </div>
     <div class="w-3/4">
       <div class="flex w-full h-[10%] bg-cyan-300">
-        <div class="p-2" (click)="tabSelected = 0">Summary</div>
-        <div class="p-2" (click)="tabSelected = 1">Typechart</div>
-        <div class="p-2" (click)="tabSelected = 2">Moves</div>
-        <div class="p-2" (click)="tabSelected = 3">Find</div>
+        <div class="p-2 cursor-pointer" (click)="tabSelected = 0">Summary</div>
+        <div class="p-2 cursor-pointer" (click)="tabSelected = 1">
+          Typechart
+        </div>
+        <div class="p-2 cursor-pointer" (click)="tabSelected = 2">Moves</div>
+        <div class="p-2 cursor-pointer" (click)="tabSelected = 3">Find</div>
       </div>
       <div class="w-full bg-yellow-200 h-[90%]">
-        <typechart
-          class="h-full"
-          *ngIf="tabSelected == 1 && typechart"
-          [typechart]="typechart"
-        ></typechart>
         <summary
           class="list-none"
           *ngIf="tabSelected == 0 && summary"
           [summary]="summary"
         ></summary>
+        <typechart
+          class="h-full"
+          *ngIf="tabSelected == 1 && typechart"
+          [typechart]="typechart"
+        ></typechart>
+        <moves
+          class="h-full"
+          *ngIf="tabSelected == 2"
+          [movechart]="movechart"
+        ></moves>
+        <finder class="h-full" *ngIf="tabSelected == 3"></finder>
       </div>
     </div>
   </div>
 </form>
-{{ plannerForm.value | json }}
+{{ plannerForm.value | json }} {{ tabSelected | json }}
 <!-- Typechart include multi Type Pokemon Settings Settings List Pokemon Move chart
 Recommended Pokemon Pokemon summary -->

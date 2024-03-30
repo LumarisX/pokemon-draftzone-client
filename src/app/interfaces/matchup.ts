@@ -14,14 +14,15 @@ export type Side = {
   teamName: string;
   team: Pokemon[];
   name?: string;
-  stats: {
-    [key in PokemonId]: {
+  stats: [
+    string & PropertyKey,
+    {
       kills?: number;
       deaths?: number;
       indirect?: number;
       brought: number;
-    };
-  };
+    } & any
+  ];
   score: number;
   paste?: String;
 };

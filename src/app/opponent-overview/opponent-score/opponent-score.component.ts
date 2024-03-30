@@ -68,13 +68,14 @@ export class OpponentScoreComponent implements OnInit {
   }
 
   private sideForm(side: Side): FormGroup {
+    let stats = Object.fromEntries(side.stats);
     let teamGroup = side.team.map((pokemon: Pokemon) =>
       this.fb.group({
         pokemon: pokemon,
-        kills: [side.stats[<PokemonId>pokemon.pid]?.kills],
-        deaths: [side.stats[<PokemonId>pokemon.pid]?.deaths],
-        indirect: [side.stats[<PokemonId>pokemon.pid]?.indirect],
-        brought: [side.stats[<PokemonId>pokemon.pid]?.brought],
+        kills: [stats[<PokemonId>pokemon.pid]?.kills],
+        deaths: [stats[<PokemonId>pokemon.pid]?.deaths],
+        indirect: [stats[<PokemonId>pokemon.pid]?.indirect],
+        brought: [stats[<PokemonId>pokemon.pid]?.brought],
       })
     );
     return this.fb.group({
