@@ -17,12 +17,12 @@
         />
       </div>
       <div
-        class="absolute right-0 mt-2 w-28 p-1 bg-white divide-y border rounded-md shadow-lg z-5000"
+        class="absolute right-0 p-1 mt-2 bg-white border divide-y rounded-md shadow-lg w-28 z-5000"
         *ngIf="showFilter"
       >
         <div
           *ngFor="let modifier of speedchart?.modifiers"
-          class="flex space-x-1 py-1 z-5000"
+          class="flex h-6 py-1 space-x-1 z-5000"
         >
           <input
             type="checkbox"
@@ -31,6 +31,7 @@
             value="{{ modifier }}"
             [(ngModel)]="modifiers[modifier]"
           />
+          <speed-modifier-icon [modifier]="modifier"></speed-modifier-icon>
           <label for="{{ modifier }}">{{ modifier }}</label>
         </div>
       </div>
@@ -40,9 +41,9 @@
 <div class="w-full border-4 border-slate-400 bg-slate-400">
   <div class="bg-slate-200">
     <div class="flex space-x-2 border-b-2 border-slate-400">
-      <div class="w-20 text-center font-bold">Base Speed</div>
+      <div class="w-20 font-bold text-center">Base Speed</div>
       <div class="flex items-center justify-end flex-grow ml-auto">
-        <div class="mr-4 font-bold flex-grow text-center">Modifiers</div>
+        <div class="flex-grow mr-4 font-bold text-center">Modifiers</div>
         <div class="mr-4 font-bold text-center">Speed</div>
         <div class="w-4"></div>
       </div>
@@ -52,7 +53,7 @@
     <div *ngIf="speeds" class="border-r-2 border-slate-400">
       <div
         *ngFor="let s of speeds"
-        class="flex w-20 border-b border-slate-400 px-2"
+        class="flex w-20 px-2 border-b border-slate-400"
         [ngClass]="buttonColor(s.team)"
         (click)="toggleView(s)"
       >
@@ -63,7 +64,7 @@
           [pokemon]="s.pokemon"
         ></sprite>
         <div
-          class="w-1/2 flex items-center justify-center font-semibold text-lg"
+          class="flex items-center justify-center w-1/2 text-lg font-semibold"
         >
           {{ s.pokemon.baseStats.spe }}
         </div>

@@ -49,6 +49,26 @@ export class SpeedModifierIconComponent {
       title: '+2 Stage',
       alt: 'Stage 2',
     },
+    'Stage 3': {
+      path: '../../../../assets/icons/speedchart/plus3.svg',
+      title: '+3 Stage',
+      alt: 'Stage 3',
+    },
+    'Stage 4': {
+      path: '../../../../assets/icons/speedchart/plus4.svg',
+      title: '+4 Stage',
+      alt: 'Stage 4',
+    },
+    'Stage 5': {
+      path: '../../../../assets/icons/speedchart/plus5.svg',
+      title: '+5 Stage',
+      alt: 'Stage 5',
+    },
+    'Stage 6': {
+      path: '../../../../assets/icons/speedchart/plus6.svg',
+      title: '+6 Stage',
+      alt: 'Stage 6',
+    },
     'Stage -1': {
       path: '../../../../assets/icons/speedchart/minus1.svg',
       title: '-1 Stage',
@@ -64,7 +84,7 @@ export class SpeedModifierIconComponent {
       title: 'Tailwind',
       alt: 'Tailwind',
     },
-    Paralyzed: {
+    Paralysis: {
       path: '../../../../assets/icons/speedchart/paralyzed.svg',
       title: 'Paralyzed',
       alt: 'Paralyzed',
@@ -99,11 +119,25 @@ export class SpeedModifierIconComponent {
       title: 'Slush Rush',
       alt: 'Slush Rush',
     },
-
     'Iron Ball': {
       path: '../../../../assets/icons/speedchart/ironball.svg',
       title: 'Iron Ball',
       alt: 'Iron Ball',
+    },
+    'Quick Feet': {
+      path: '../../../../assets/icons/speedchart/flameorb.svg',
+      title: 'Quick Feet',
+      alt: 'Quick Feet',
+    },
+    Unburden: {
+      path: '../../../../assets/icons/speedchart/unburden.svg',
+      title: 'Unburden',
+      alt: 'Unburden',
+    },
+    'Surge Surfer': {
+      path: '../../../../assets/icons/speedchart/surf.svg',
+      title: 'Surge Surfer',
+      alt: 'Surge Surfer',
     },
   };
 

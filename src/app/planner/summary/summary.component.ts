@@ -11,7 +11,7 @@ import { SpriteComponent } from '../../sprite/sprite.component';
   templateUrl: './summary.component.html',
 })
 export class SummaryComponent {
-  _team!: Summary;
+  _summary!: Summary;
   sortBy: 'name' | 'hp' | 'atk' | 'def' | 'spa' | 'spd' | 'spe' | null = null;
 
   @Input()
@@ -27,10 +27,10 @@ export class SummaryComponent {
     });
 
     this.sortBy = 'spe';
-    this._team = sum;
+    this._summary = sum;
   }
   get summary(): Summary {
-    return this._team;
+    return this._summary;
   }
   reversed: boolean = false;
   baseValue: number = 80;

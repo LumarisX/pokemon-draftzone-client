@@ -11,7 +11,11 @@ import {
 } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { PlannerService } from '../api/planner.service';
-import { TypeChart, Summary } from '../matchup-overview/matchup-interface';
+import {
+  TypeChart,
+  Summary,
+  MoveChart,
+} from '../matchup-overview/matchup-interface';
 import { BattlePokedex } from '../pokedex';
 import { PokemonId } from '../pokemon';
 import { SpriteComponent } from '../sprite/sprite.component';
@@ -20,6 +24,9 @@ import { SummaryComponent } from './summary/summary.component';
 import { TypechartComponent } from './typechart/typechart.component';
 import { FilterComponent } from '../filter/filter.component';
 import { Pokemon } from '../interfaces/draft';
+import { DataService } from '../api/data.service';
+import { MoveComponent } from './moves/moves.component';
+import { FinderComponent } from './finder/finder.component';
 
 @Component({
   selector: 'planner',
@@ -31,6 +38,8 @@ import { Pokemon } from '../interfaces/draft';
     FilterComponent,
     TypechartComponent,
     SummaryComponent,
+    MoveComponent,
+    FinderComponent,
     ReactiveFormsModule,
     FormsModule,
     SpriteComponent,
@@ -42,13 +51,25 @@ export class PlannerComponent implements OnInit {
   typechart!: TypeChart;
   summary!: Summary;
   tabSelected = 0;
+  formats = [];
+  rulesets = [];
+  movechart: MoveChart = [];
 
   constructor(
     private fb: FormBuilder,
-    private plannerService: PlannerService
+    private plannerService: PlannerService,
+    private dataService: DataService
   ) {}
 
   ngOnInit(): void {
+    this.dataService.getFormats().subscribe((formats) => {
+      this.formats = <any>formats;
+    });
+
+    this.dataService.getRulesets().subscribe((rulesets) => {
+      this.rulesets = <any>rulesets;
+    });
+
     this.plannerForm = this.fb.group({
       format: ['', Validators.required],
       ruleset: ['', Validators.required],
@@ -74,6 +95,15 @@ export class PlannerComponent implements OnInit {
     });
 
     this.adjustTeamArray(12);
+
+    const formData = sessionStorage.getItem('plannerFormData');
+    if (formData) {
+      this.plannerForm.patchValue(JSON.parse(formData));
+      this.updateDetails();
+    }
+    this.plannerForm.valueChanges.subscribe((value) => {
+      sessionStorage.setItem('plannerFormData', JSON.stringify(value));
+    });
   }
 
   get isPoints() {
@@ -120,6 +150,7 @@ export class PlannerComponent implements OnInit {
         let planner = <Planner>data;
         this.typechart = planner.typechart;
         this.summary = planner.summary;
+        this.movechart = planner.movechart;
       });
     }
   }
