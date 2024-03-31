@@ -80,7 +80,7 @@ export class OpponentFormCoreComponent implements OnInit {
       .map((string) => string.trim())
       .forEach((name) => {
         this.addNewPokemon(this.teamArray.length, {
-          pid: name.toLowerCase() as PokemonId,
+          pid: name.toLowerCase().replace(/[^a-z0-9]+/g, '') as PokemonId,
           name: name,
         });
       });
