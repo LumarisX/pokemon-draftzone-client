@@ -8,7 +8,7 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import { CoreModule } from '../sprite/sprite.module';
-import { ApiService } from '../api/api.service';
+import { ApiService } from '../services/api/api.service';
 import { FormsModule } from '@angular/forms';
 import { Pokemon } from '../interfaces/draft';
 import { HttpParams } from '@angular/common/http';

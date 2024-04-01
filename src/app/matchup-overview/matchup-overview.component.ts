@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import { MatchupService } from '../api/matchup.service';
+import { MatchupService } from '../services/api/matchup.service';
 import { MatchupData, Summary } from './matchup-interface';
 import { MatchupComponent } from './matchup/matchup.component';
 import { LoadingComponent } from '../loading/loading.component';
@@ -51,7 +51,9 @@ export class MatchupOverviewComponent implements OnInit {
             return 0;
           });
         }
-        this.matchupData.overview = <Summary[]>JSON.parse(JSON.stringify(this.matchupData.summary));
+        this.matchupData.overview = <Summary[]>(
+          JSON.parse(JSON.stringify(this.matchupData.summary))
+        );
       });
     });
   }

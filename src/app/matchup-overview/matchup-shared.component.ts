@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { MatchupComponent } from './matchup/matchup.component';
 import { MatchupData, Summary } from './matchup-interface';
-import { MatchupService } from '../api/matchup.service';
+import { MatchupService } from '../services/api/matchup.service';
 import { LoadingComponent } from '../loading/loading.component';
 
 @Component({

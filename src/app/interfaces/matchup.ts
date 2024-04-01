@@ -1,4 +1,4 @@
-import { PokemonId } from '../pokemon';
+import { PokemonId } from '../pokedex';
 import { Pokemon } from './draft';
 
 export type Matchup = {

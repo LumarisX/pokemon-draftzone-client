@@ -8,7 +8,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { DraftService } from '../../../api/draft.service';
+import { DraftService } from '../../../services/api/draft.service';
 import { Matchup } from '../../../interfaces/matchup';
 import { PokemonFormComponent } from '../../../pokemon-form/pokemon-form.component';
 import { SpriteComponent } from '../../../sprite/sprite.component';

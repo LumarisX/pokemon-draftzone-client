@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { Pokemon } from '../interfaces/draft';
-import { getSpriteName } from '../pokemon';
+import { getSpriteName } from '../pokedex';
 
 @Component({
   selector: 'sprite',

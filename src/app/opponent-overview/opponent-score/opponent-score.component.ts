@@ -7,11 +7,11 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { DraftService } from '../../api/draft.service';
+import { DraftService } from '../../services/api/draft.service';
 import { Pokemon } from '../../interfaces/draft';
 import { Matchup, Side } from '../../interfaces/matchup';
 import { LoadingComponent } from '../../loading/loading.component';
-import { PokemonId } from '../../pokemon';
+import { PokemonId } from '../../pokedex';
 import { PokemonFormComponent } from '../../pokemon-form/pokemon-form.component';
 import { SpriteComponent } from '../../sprite/sprite.component';
 import { CoreModule } from '../../sprite/sprite.module';

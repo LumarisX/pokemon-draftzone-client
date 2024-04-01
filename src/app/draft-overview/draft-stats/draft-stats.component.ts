@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DraftService } from '../../api/draft.service';
+import { DraftService } from '../../services/api/draft.service';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { Stats } from './draft-stats.interface';
 import { CommonModule } from '@angular/common';

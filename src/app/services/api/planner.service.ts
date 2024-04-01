@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { PokemonId } from '../pokemon';
+import { PokemonId } from '../../pokedex';
 import { ApiService } from './api.service';
 
 @Injectable({

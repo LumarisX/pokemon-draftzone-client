@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { DraftService } from '../../api/draft.service';
+import { DraftService } from '../../services/api/draft.service';
 import { Draft } from '../../interfaces/draft';
 import { SpriteComponent } from '../../sprite/sprite.component';
 import { CoreModule } from '../../sprite/sprite.module';

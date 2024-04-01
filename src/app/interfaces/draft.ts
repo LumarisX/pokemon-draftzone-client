@@ -1,4 +1,4 @@
-import { PokemonId } from '../pokemon';
+import { PokemonId } from '../pokedex';
 
 export type Draft = {
   _id: string;

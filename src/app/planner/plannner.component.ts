@@ -10,21 +10,20 @@ import {
   Validators,
 } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { PlannerService } from '../api/planner.service';
+import { PlannerService } from '../services/api/planner.service';
 import {
   TypeChart,
   Summary,
   MoveChart,
 } from '../matchup-overview/matchup-interface';
-import { BattlePokedex } from '../pokedex';
-import { PokemonId } from '../pokemon';
+import { PokemonId } from '../pokedex';
 import { SpriteComponent } from '../sprite/sprite.component';
 import { Planner } from './planner.interface';
 import { SummaryComponent } from './summary/summary.component';
 import { TypechartComponent } from './typechart/typechart.component';
 import { FilterComponent } from '../filter/filter.component';
 import { Pokemon } from '../interfaces/draft';
-import { DataService } from '../api/data.service';
+import { DataService } from '../services/api/data.service';
 import { MoveComponent } from './moves/moves.component';
 import { FinderComponent } from './finder/finder.component';
 

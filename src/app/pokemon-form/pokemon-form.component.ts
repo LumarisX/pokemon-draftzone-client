@@ -7,7 +7,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { DataService } from '../api/data.service';
+import { DataService } from '../services/api/data.service';
 import { Pokemon } from '../interfaces/draft';
 import { SpriteComponent } from '../sprite/sprite.component';
 import { CoreModule } from '../sprite/sprite.module';

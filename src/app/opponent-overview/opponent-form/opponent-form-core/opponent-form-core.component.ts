@@ -7,12 +7,12 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { DataService } from '../../../api/data.service';
+import { DataService } from '../../../services/api/data.service';
 import { Pokemon } from '../../../interfaces/draft';
 import { PokemonFormComponent } from '../../../pokemon-form/pokemon-form.component';
 import { SpriteComponent } from '../../../sprite/sprite.component';
 import { CoreModule } from '../../../sprite/sprite.module';
-import { PokemonId } from '../../../pokemon';
+import { PokemonId } from '../../../pokedex';
 
 @Component({
   selector: 'opponent-form-core',

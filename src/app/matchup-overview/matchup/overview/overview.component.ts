@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
-import { MatchupService } from '../../../api/matchup.service';
+import { MatchupService } from '../../../services/api/matchup.service';
 import { SpriteComponent } from '../../../sprite/sprite.component';
 import { Summary } from '../../matchup-interface';
 
