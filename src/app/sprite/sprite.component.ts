@@ -27,15 +27,13 @@ export class SpriteComponent {
     }
     if (this.pokemon.shiny) {
       return (
-        // 'https://play.pokemonshowdown.com/sprites/gen5-shiny/' +
-        'https://play.pokemonshowdown.com/sprites/afd-shiny/' +
+        'https://play.pokemonshowdown.com/sprites/gen5-shiny/' +
         getSpriteName(this.pokemon.pid) +
         '.png'
       );
     } else {
       return (
-        // 'https://play.pokemonshowdown.com/sprites/gen5/' +
-        'https://play.pokemonshowdown.com/sprites/afd/' +
+        'https://play.pokemonshowdown.com/sprites/gen5/' +
         getSpriteName(this.pokemon.pid) +
         '.png'
       );
