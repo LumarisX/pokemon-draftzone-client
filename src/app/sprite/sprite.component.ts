@@ -10,6 +10,7 @@ import { getSpriteName } from '../pokemon';
   template: `
     <img
       class="h-full w-full"
+      *ngIf="pokemon.pid"
       [ngClass]="isFlipped()"
       title="{{ pokemon.name }}"
       src="{{ getPath() }}"
