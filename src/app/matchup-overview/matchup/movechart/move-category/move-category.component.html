@@ -1,5 +1,5 @@
 <div
-  class="sticky top-0 left-0 flex w-full text-lg font-bold border-b-2 bg-slate-300 border-slate-400"
+  class="sticky top-0 left-0 z-10 flex w-full text-lg font-bold border-t border-b bg-slate-300 border-slate-400"
 >
   <div class="flex items-center justify-center flex-grow">
     {{ category.categoryName }}
@@ -25,7 +25,7 @@
 
 <div *ngIf="show">
   <div
-    class="flex border-b-2 border-slate-400 bg-slate-200"
+    class="z-10 flex border-y border-slate-400 bg-slate-200"
     *ngFor="let move of category.moves"
   >
     <div

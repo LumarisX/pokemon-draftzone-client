@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { Meta } from '@angular/platform-browser';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import { MatchupComponent } from './matchup/matchup.component';
-import { MatchupData, Summary } from './matchup-interface';
 import { MatchupService } from '../api/matchup.service';
 import { LoadingComponent } from '../loading/loading.component';
+import { MatchupData, Summary } from './matchup-interface';
+import { MatchupComponent } from './matchup/matchup.component';
 
 @Component({
   selector: 'matchup-shared',
@@ -18,7 +19,8 @@ export class MatchupSharedComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private matchupService: MatchupService
+    private matchupService: MatchupService,
+    private meta: Meta
   ) {}
 
   ngOnInit(): void {
@@ -42,6 +44,16 @@ export class MatchupSharedComponent implements OnInit {
         this.matchupData.overview = <Summary[]>(
           JSON.parse(JSON.stringify(this.matchupData.summary))
         );
+        if (this.matchupData) {
+          this.meta.updateTag({
+            name: 'title',
+            content: `${this.matchupData.leagueName} ${this.matchupData.stage} | ${this.matchupData.overview[0].teamName} vs ${this.matchupData.overview[1].teamName}`,
+          });
+          this.meta.updateTag({
+            name: 'description',
+            content: `View the matchup between ${this.matchupData.overview[0].teamName} and ${this.matchupData.overview[1].teamName}.`,
+          });
+        }
       });
     });
   }
