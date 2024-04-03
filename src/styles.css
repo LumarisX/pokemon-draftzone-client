@@ -8,6 +8,17 @@
   grid-template-columns: repeat(19, minmax(0, 1fr));
 }
 
+sprite {
+  -webkit-filter: drop-shadow(1px 0px 0 theme("colors.slate.500"))
+    drop-shadow(-1px 0px 0 theme("colors.slate.500"))
+    drop-shadow(0px -1px 0 theme("colors.slate.500"))
+    drop-shadow(0px 1px 0 theme("colors.slate.500"));
+  filter: drop-shadow(1px 0px 0 theme("colors.slate.500"))
+    drop-shadow(-1px 0px 0 theme("colors.slate.500"))
+    drop-shadow(0px -1px 0 theme("colors.slate.500"))
+    drop-shadow(0px 1px 0 theme("colors.slate.500"));
+}
+
 @layer utilities {
   /*tera scrollbar*/
   .scrollbar-tera::-webkit-scrollbar {

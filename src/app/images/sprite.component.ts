@@ -13,19 +13,18 @@ import { getSpriteName } from '../pokemon';
       *ngIf="pokemon.pid"
       [ngClass]="isFlipped()"
       title="{{ pokemon.name }}"
-      src="{{ getPath() }}"
-      onerror="this.src='../../assets/icons/unknown.svg'"
+      src="{{ getPath('home') }}"
+      onerror="this.src='../../../../assets/icons/unknown.svg'"
     />
   `,
 })
 export class SpriteComponent {
   @Input() pokemon!: Pokemon;
   @Input() flipped? = false;
-  source: 'home' | 'serebii' | 'ps' = 'ps';
 
-  getPath() {
+  getPath(source: 'home' | 'serebii' | 'bw' | 'sv' | 'ani' | '?') {
     if (this.pokemon) {
-      if (this.source == 'home') {
+      if (source == 'home') {
         if (this.pokemon.shiny) {
           return (
             'https://img.pokemondb.net/sprites/home/shiny/' +
@@ -39,7 +38,7 @@ export class SpriteComponent {
             '.png'
           );
         }
-      } else if (this.source == 'ps') {
+      } else if (source == 'bw') {
         if (this.pokemon.shiny) {
           return (
             'https://play.pokemonshowdown.com/sprites/gen5-shiny/' +
@@ -53,17 +52,45 @@ export class SpriteComponent {
             '.png'
           );
         }
-      } else if (this.source == 'serebii') {
+      } else if (source == 'sv') {
+        if (this.pokemon.shiny) {
+          return (
+            'https://play.pokemonshowdown.com/sprites/dex-shiny/' +
+            getSpriteName(this.pokemon.pid, 'ps') +
+            '.png'
+          );
+        } else {
+          return (
+            'https://play.pokemonshowdown.com/sprites/dex/' +
+            getSpriteName(this.pokemon.pid, 'ps') +
+            '.png'
+          );
+        }
+      } else if (source == 'ani') {
+        if (this.pokemon.shiny) {
+          return (
+            'https://play.pokemonshowdown.com/sprites/ani-shiny/' +
+            getSpriteName(this.pokemon.pid, 'ps') +
+            '.gif'
+          );
+        } else {
+          return (
+            'https://play.pokemonshowdown.com/sprites/ani/' +
+            getSpriteName(this.pokemon.pid, 'ps') +
+            '.gif'
+          );
+        }
+      } else if (source == 'serebii') {
         if (this.pokemon.shiny) {
           return (
             'https://serebii.net/Shiny/SV/new/' +
-            getSpriteName(this.pokemon.pid, this.source) +
+            getSpriteName(this.pokemon.pid, source) +
             '.png'
           );
         } else {
           return (
             'https://serebii.net/scarletviolet/pokemon/new/' +
-            getSpriteName(this.pokemon.pid, this.source) +
+            getSpriteName(this.pokemon.pid, source) +
             '.png'
           );
         }
@@ -74,6 +101,6 @@ export class SpriteComponent {
 
   isFlipped() {
     if (this.flipped) return '-scale-x-100';
-    return;
+    return '';
   }
 }
