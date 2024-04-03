@@ -46,12 +46,20 @@ export class MatchupSharedComponent implements OnInit {
         );
         if (this.matchupData) {
           this.meta.updateTag({
-            name: 'title',
+            name: 'og:title',
             content: `${this.matchupData.leagueName} ${this.matchupData.stage} | ${this.matchupData.overview[0].teamName} vs ${this.matchupData.overview[1].teamName}`,
           });
           this.meta.updateTag({
-            name: 'description',
+            name: 'og:description',
             content: `View the matchup between ${this.matchupData.overview[0].teamName} and ${this.matchupData.overview[1].teamName}.`,
+          });
+          this.meta.updateTag({
+            name: 'og:image',
+            content: 'https://pokemondraftzone.com/13luken.ico',
+          });
+          this.meta.updateTag({
+            name: 'og:url',
+            content: this.route.snapshot.url.join('/'),
           });
         }
       });
