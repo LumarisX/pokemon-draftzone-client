@@ -20,23 +20,10 @@ import { Pokemon } from '../interfaces/draft';
         <img
           *ngFor="let type of pokemon.capt?.tera"
           src="../../../assets/icons/tera_types/Tera{{ type }}.png"
+          alt="{{ type }}"
         />
       </div>
     </div>
-
-    <!-- <div
-      (mouseover)="terasShowing = true"
-      (mouseleave)="terasShowing = false"
-      class="w-fit h-fit"
-    >
-      <img *ngIf="false" src="../../../assets/icons/tera.svg" />
-      <div *ngIf="true" class="grid-flow-col w-fit h-fit">
-        <img
-          *ngFor="let type of pokemon.capt?.tera"
-          src="../../../assets/icons/tera_types/Tera{{ type }}.png"
-        />
-      </div>
-    </div> -->
   `,
 })
 export class TeraComponent {
