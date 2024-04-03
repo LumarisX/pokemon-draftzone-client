@@ -21,24 +21,55 @@ import { getSpriteName } from '../pokemon';
 export class SpriteComponent {
   @Input() pokemon!: Pokemon;
   @Input() flipped? = false;
+  source: 'home' | 'serebii' | 'ps' = 'ps';
 
   getPath() {
-    if (!this.pokemon) {
-      return '../../assets/icons/unknown.svg';
+    if (this.pokemon) {
+      if (this.source == 'home') {
+        if (this.pokemon.shiny) {
+          return (
+            'https://img.pokemondb.net/sprites/home/shiny/' +
+            getSpriteName(this.pokemon.pid, 'pd') +
+            '.png'
+          );
+        } else {
+          return (
+            'https://img.pokemondb.net/sprites/home/normal/' +
+            getSpriteName(this.pokemon.pid, 'pd') +
+            '.png'
+          );
+        }
+      } else if (this.source == 'ps') {
+        if (this.pokemon.shiny) {
+          return (
+            'https://play.pokemonshowdown.com/sprites/gen5-shiny/' +
+            getSpriteName(this.pokemon.pid, 'ps') +
+            '.png'
+          );
+        } else {
+          return (
+            'https://play.pokemonshowdown.com/sprites/gen5/' +
+            getSpriteName(this.pokemon.pid, 'ps') +
+            '.png'
+          );
+        }
+      } else if (this.source == 'serebii') {
+        if (this.pokemon.shiny) {
+          return (
+            'https://serebii.net/Shiny/SV/new/' +
+            getSpriteName(this.pokemon.pid, this.source) +
+            '.png'
+          );
+        } else {
+          return (
+            'https://serebii.net/scarletviolet/pokemon/new/' +
+            getSpriteName(this.pokemon.pid, this.source) +
+            '.png'
+          );
+        }
+      }
     }
-    if (this.pokemon.shiny) {
-      return (
-        'https://play.pokemonshowdown.com/sprites/gen5-shiny/' +
-        getSpriteName(this.pokemon.pid) +
-        '.png'
-      );
-    } else {
-      return (
-        'https://play.pokemonshowdown.com/sprites/gen5/' +
-        getSpriteName(this.pokemon.pid) +
-        '.png'
-      );
-    }
+    return '../../assets/icons/unknown.svg';
   }
 
   isFlipped() {

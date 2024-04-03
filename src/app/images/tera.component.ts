@@ -12,17 +12,28 @@ import { Pokemon } from '../interfaces/draft';
       (mouseover)="terasShowing = true"
       (mouseleave)="terasShowing = false"
     >
-      <img *ngIf="!terasShowing" src="../../../assets/icons/tera.svg" />
-      <div
-        *ngIf="terasShowing"
-        class="absolute flex flex-col items-center max-h-36 overflow-y-auto scrollbar-tera"
+      <ng-container
+        *ngIf="
+          terasShowing &&
+            pokemon.capt &&
+            pokemon.capt.tera &&
+            pokemon.capt.tera.length > 0;
+          else types
+        "
       >
-        <img
-          *ngFor="let type of pokemon.capt?.tera"
-          src="../../../assets/icons/tera_types/Tera{{ type }}.png"
-          alt="{{ type }}"
-        />
-      </div>
+        <div
+          class="absolute flex flex-col items-center max-h-36 overflow-y-auto scrollbar-tera"
+        >
+          <img
+            *ngFor="let type of pokemon.capt?.tera"
+            src="../../../assets/icons/tera_types/Tera{{ type }}.png"
+            alt="{{ type }}"
+          />
+        </div>
+      </ng-container>
+      <ng-template #types>
+        <img src="../../../assets/icons/tera.svg" />
+      </ng-template>
     </div>
   `,
 })
