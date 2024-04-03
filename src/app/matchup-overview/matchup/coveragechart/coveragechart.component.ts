@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { SpriteComponent } from '../../../sprite/sprite.component';
+import { SpriteComponent } from '../../../images/sprite.component';
 import { CoverageChart, TypeChart } from '../../matchup-interface';
 import { CoverageComponent } from './coverage/coverage.component';
 

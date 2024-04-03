@@ -7,12 +7,10 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { DataService } from '../../../api/data.service';
 import { Pokemon } from '../../../interfaces/draft';
-import { PokemonFormComponent } from '../../../pokemon-form/pokemon-form.component';
-import { SpriteComponent } from '../../../sprite/sprite.component';
-import { CoreModule } from '../../../sprite/sprite.module';
 import { PokemonId } from '../../../pokemon';
+import { PokemonFormComponent } from '../../../pokemon-form/pokemon-form.component';
+import { SpriteComponent } from '../../../images/sprite.component';
 
 @Component({
   selector: 'opponent-form-core',
@@ -20,7 +18,6 @@ import { PokemonId } from '../../../pokemon';
   imports: [
     CommonModule,
     RouterModule,
-    CoreModule,
     SpriteComponent,
     PokemonFormComponent,
     ReactiveFormsModule,

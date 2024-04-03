@@ -7,11 +7,9 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { DataService } from '../api/data.service';
-import { Pokemon } from '../interfaces/draft';
-import { SpriteComponent } from '../sprite/sprite.component';
-import { CoreModule } from '../sprite/sprite.module';
 import { FilterComponent } from '../filter/filter.component';
+import { Pokemon } from '../interfaces/draft';
+import { SpriteComponent } from '../images/sprite.component';
 
 @Component({
   selector: 'pokemon-form',
@@ -21,7 +19,6 @@ import { FilterComponent } from '../filter/filter.component';
     CommonModule,
     RouterModule,
     FormsModule,
-    CoreModule,
     SpriteComponent,
     ReactiveFormsModule,
     FilterComponent,

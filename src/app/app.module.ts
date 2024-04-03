@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { RouterModule } from '@angular/router';
 import { AuthModule } from '@auth0/auth0-angular';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -7,13 +8,14 @@ import { DraftOverviewModule } from './draft-overview/draft-overview.module';
 import { ErrorModule } from './error/error.module';
 import { MatchupOverviewModule } from './matchup-overview/matchup-overview.module';
 import { OpponentOverviewModule } from './opponent-overview/opponent-overview.module';
-import { CoreModule } from './sprite/sprite.module';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   imports: [
     BrowserModule,
     DraftOverviewModule,
     ErrorModule,
+    HttpClientModule,
     AuthModule.forRoot({
       domain: 'dev-wspjxi5f6mjqsjea.us.auth0.com',
       clientId: 'nAyvHSOL1PbsFZfodzgIjRgYBUA1M1DH',
@@ -41,7 +43,7 @@ import { CoreModule } from './sprite/sprite.module';
     }),
     OpponentOverviewModule,
     MatchupOverviewModule,
-    CoreModule,
+    RouterModule,
     AppRoutingModule,
   ],
   declarations: [AppComponent],

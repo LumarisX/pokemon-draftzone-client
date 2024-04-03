@@ -1,24 +1,17 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { DraftService } from '../../api/draft.service';
 import { Draft } from '../../interfaces/draft';
 import { Matchup } from '../../interfaces/matchup';
 import { LoadingComponent } from '../../loading/loading.component';
-import { SpriteComponent } from '../../sprite/sprite.component';
-import { CoreModule } from '../../sprite/sprite.module';
+import { SpriteComponent } from '../../images/sprite.component';
 
 @Component({
   selector: 'opponent-preview',
   standalone: true,
   templateUrl: './opponent-preview.component.html',
-  imports: [
-    CommonModule,
-    RouterModule,
-    CoreModule,
-    SpriteComponent,
-    LoadingComponent,
-  ],
+  imports: [CommonModule, RouterModule, SpriteComponent, LoadingComponent],
 })
 export class OpponentTeamPreviewComponent implements OnInit {
   index = 0;

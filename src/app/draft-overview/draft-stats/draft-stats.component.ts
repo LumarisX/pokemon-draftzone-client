@@ -3,7 +3,7 @@ import { DraftService } from '../../api/draft.service';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { Stats } from './draft-stats.interface';
 import { CommonModule } from '@angular/common';
-import { SpriteComponent } from '../../sprite/sprite.component';
+import { SpriteComponent } from '../../images/sprite.component';
 import { LoadingComponent } from '../../loading/loading.component';
 
 @Component({

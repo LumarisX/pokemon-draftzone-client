@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { SpriteComponent } from '../../../sprite/sprite.component';
+import { SpriteComponent } from '../../../images/sprite.component';
 import { MoveChart } from '../../matchup-interface';
 import { MoveCategoryComponent } from './move-category/move-category.component';
 

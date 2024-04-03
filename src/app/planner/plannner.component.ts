@@ -18,7 +18,7 @@ import {
 } from '../matchup-overview/matchup-interface';
 import { BattlePokedex } from '../pokedex';
 import { PokemonId } from '../pokemon';
-import { SpriteComponent } from '../sprite/sprite.component';
+import { SpriteComponent } from '../images/sprite.component';
 import { Planner } from './planner.interface';
 import { SummaryComponent } from './summary/summary.component';
 import { TypechartComponent } from './typechart/typechart.component';

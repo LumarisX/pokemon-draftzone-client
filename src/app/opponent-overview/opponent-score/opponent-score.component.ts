@@ -13,8 +13,7 @@ import { Matchup, Side } from '../../interfaces/matchup';
 import { LoadingComponent } from '../../loading/loading.component';
 import { PokemonId } from '../../pokemon';
 import { PokemonFormComponent } from '../../pokemon-form/pokemon-form.component';
-import { SpriteComponent } from '../../sprite/sprite.component';
-import { CoreModule } from '../../sprite/sprite.module';
+import { SpriteComponent } from '../../images/sprite.component';
 
 @Component({
   selector: 'opponent-form',
@@ -23,7 +22,6 @@ import { CoreModule } from '../../sprite/sprite.module';
   imports: [
     CommonModule,
     RouterModule,
-    CoreModule,
     SpriteComponent,
     PokemonFormComponent,
     ReactiveFormsModule,

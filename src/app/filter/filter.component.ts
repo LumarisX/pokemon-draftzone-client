@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { HttpParams } from '@angular/common/http';
 import {
   Component,
   EventEmitter,
@@ -7,15 +8,13 @@ import {
   Output,
   SimpleChanges,
 } from '@angular/core';
-import { CoreModule } from '../sprite/sprite.module';
-import { ApiService } from '../api/api.service';
 import { FormsModule } from '@angular/forms';
+import { ApiService } from '../api/api.service';
 import { Pokemon } from '../interfaces/draft';
-import { HttpParams } from '@angular/common/http';
 @Component({
   selector: 'filter',
   standalone: true,
-  imports: [CommonModule, FormsModule, CoreModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: 'filter.component.html',
 })
 export class FilterComponent implements OnChanges {

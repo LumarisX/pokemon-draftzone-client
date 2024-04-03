@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Summary } from '../../matchup-overview/matchup-interface';
-import { SpriteComponent } from '../../sprite/sprite.component';
+import { SpriteComponent } from '../../images/sprite.component';
 
 @Component({
   selector: 'summary',

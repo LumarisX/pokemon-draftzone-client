@@ -11,8 +11,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { DraftService } from '../../../api/draft.service';
 import { Matchup } from '../../../interfaces/matchup';
 import { PokemonFormComponent } from '../../../pokemon-form/pokemon-form.component';
-import { SpriteComponent } from '../../../sprite/sprite.component';
-import { CoreModule } from '../../../sprite/sprite.module';
+import { SpriteComponent } from '../../../images/sprite.component';
 import { OpponentFormCoreComponent } from '../opponent-form-core/opponent-form-core.component';
 
 @Component({
@@ -21,7 +20,6 @@ import { OpponentFormCoreComponent } from '../opponent-form-core/opponent-form-c
   imports: [
     CommonModule,
     RouterModule,
-    CoreModule,
     OpponentFormCoreComponent,
     SpriteComponent,
     PokemonFormComponent,

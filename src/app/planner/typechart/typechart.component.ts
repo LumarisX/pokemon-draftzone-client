@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { Pokemon } from '../../interfaces/draft';
 import { TypeChart, Types } from '../../matchup-overview/matchup-interface';
-import { SpriteComponent } from '../../sprite/sprite.component';
+import { SpriteComponent } from '../../images/sprite.component';
 
 @Component({
   selector: 'typechart',

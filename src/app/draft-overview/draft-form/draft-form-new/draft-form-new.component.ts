@@ -1,19 +1,17 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import {
-  AbstractControl,
   FormArray,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { PokemonFormComponent } from '../../../pokemon-form/pokemon-form.component';
-import { SpriteComponent } from '../../../sprite/sprite.component';
-import { CoreModule } from '../../../sprite/sprite.module';
-import { DraftFormCoreComponent } from '../draft-form-core/draft-form-core.component';
+import { Router, RouterModule } from '@angular/router';
 import { DraftService } from '../../../api/draft.service';
+import { PokemonFormComponent } from '../../../pokemon-form/pokemon-form.component';
+import { SpriteComponent } from '../../../images/sprite.component';
+import { DraftFormCoreComponent } from '../draft-form-core/draft-form-core.component';
 
 @Component({
   selector: 'draft-form-new',
@@ -21,7 +19,6 @@ import { DraftService } from '../../../api/draft.service';
   imports: [
     CommonModule,
     RouterModule,
-    CoreModule,
     SpriteComponent,
     DraftFormCoreComponent,
     PokemonFormComponent,

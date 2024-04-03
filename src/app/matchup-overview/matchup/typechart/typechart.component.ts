@@ -6,7 +6,7 @@ import {
   OnInit,
   SimpleChanges,
 } from '@angular/core';
-import { SpriteComponent } from '../../../sprite/sprite.component';
+import { SpriteComponent } from '../../../images/sprite.component';
 import { TypeChart, Types } from '../../matchup-interface';
 import { Pokemon } from '../../../interfaces/draft';
 

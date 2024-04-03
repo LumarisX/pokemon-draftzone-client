@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { SpeedChart, Speedtier, Summary } from '../../matchup-interface';
-import { SpriteComponent } from '../../../sprite/sprite.component';
+import { SpriteComponent } from '../../../images/sprite.component';
 import { FormsModule } from '@angular/forms';
 import { Pokemon } from '../../../interfaces/draft';
 import { SpeedModifierIconComponent } from './speed-modifier-icon.component';

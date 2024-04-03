@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import {
-  AbstractControl,
   FormArray,
   FormControl,
   FormGroup,
@@ -9,12 +8,10 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { DataService } from '../../../api/data.service';
 import { DraftService } from '../../../api/draft.service';
-import { Draft, Pokemon } from '../../../interfaces/draft';
+import { Draft } from '../../../interfaces/draft';
 import { PokemonFormComponent } from '../../../pokemon-form/pokemon-form.component';
-import { SpriteComponent } from '../../../sprite/sprite.component';
-import { CoreModule } from '../../../sprite/sprite.module';
+import { SpriteComponent } from '../../../images/sprite.component';
 import { DraftFormCoreComponent } from '../draft-form-core/draft-form-core.component';
 
 @Component({
@@ -23,7 +20,6 @@ import { DraftFormCoreComponent } from '../draft-form-core/draft-form-core.compo
   imports: [
     CommonModule,
     RouterModule,
-    CoreModule,
     DraftFormCoreComponent,
     SpriteComponent,
     PokemonFormComponent,
