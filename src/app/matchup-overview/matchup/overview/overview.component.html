@@ -23,10 +23,7 @@
           <td class="w-fit">
             <div *ngIf="pokemon.capt" class="w-6 -mr-2">
               <div *ngIf="pokemon.capt.tera">
-                <img
-                  src="../../../assets/icons/tera.svg"
-                  title="{{ pokemon.capt.tera }}"
-                />
+                <tera [pokemon]="pokemon"></tera>
               </div>
               <div *ngIf="pokemon.capt.z">
                 <img src="../../../assets/icons/z.svg" />
@@ -70,10 +67,7 @@
           <td class="w-fit">
             <div *ngIf="pokemon.capt" class="w-6 -ml-2">
               <div *ngIf="pokemon.capt.tera">
-                <img
-                  src="../../../assets/icons/tera.svg"
-                  title="{{ pokemon.capt.tera }}"
-                />
+                <tera [pokemon]="pokemon"></tera>
               </div>
               <div *ngIf="pokemon.capt.z">
                 <img src="../../../assets/icons/z.svg" />

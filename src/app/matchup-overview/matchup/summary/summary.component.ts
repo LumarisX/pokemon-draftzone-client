@@ -3,12 +3,13 @@ import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { SpriteComponent } from '../../../images/sprite.component';
 import { Summary } from '../../matchup-interface';
+import { TeraComponent } from '../../../images/tera.component';
 
 @Component({
   selector: 'summary',
   standalone: true,
-  imports: [CommonModule, FormsModule, SpriteComponent],
   templateUrl: './summary.component.html',
+  imports: [CommonModule, FormsModule, SpriteComponent, TeraComponent],
 })
 export class SummaryComponent {
   _teams: Summary[] = [];

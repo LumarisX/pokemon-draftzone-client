@@ -19,7 +19,7 @@
   >
     <tr class="bg-slate-400">
       <th class=""></th>
-      <th class="min-w-8 w-12"></th>
+      <th class="w-12 min-w-8"></th>
       <th
         (click)="sortByName()"
         class="w-32 cursor-pointer hover:text-slate-200"
@@ -87,10 +87,7 @@
       <td>
         <div *ngIf="pokemon.capt" class="w-6">
           <div *ngIf="pokemon.capt.tera">
-            <img
-              src="../../../assets/icons/tera.svg"
-              title="{{ pokemon.capt.tera }}"
-            />
+            <tera [pokemon]="pokemon"></tera>
           </div>
           <div *ngIf="pokemon.capt.z">
             <img src="../../../assets/icons/z.svg" />

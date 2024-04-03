@@ -4,6 +4,44 @@
 @tailwind utilities;
 
 .grid-cols-19 {
-    display: grid;
-    grid-template-columns: repeat(19, minmax(0, 1fr));
+  display: grid;
+  grid-template-columns: repeat(19, minmax(0, 1fr));
+}
+
+@layer utilities {
+  /*tera scrollbar*/
+  .scrollbar-tera::-webkit-scrollbar {
+    width: 2px;
+    height: 2px;
   }
+
+  .scrollbar-tera::-webkit-scrollbar-track {
+    border-radius: 100vh;
+    background: #f1f5f9;
+  }
+
+  .scrollbar-tera::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 100vh;
+  }
+
+  /*scrollbar*/
+  ::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: theme("colors.slate.100");
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: theme("colors.slate.300");
+    border-radius: 100vh;
+    border: 2px solid theme("colors.slate.200");
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: theme("colors.slate.350");
+  }
+}

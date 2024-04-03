@@ -10,6 +10,11 @@ module.exports = {
       width: {
         "1/8": "12.5%",
       },
+      colors: {
+        slate: {
+          350: "#B0BCCC",
+        },
+      },
     },
   },
   plugins: [],

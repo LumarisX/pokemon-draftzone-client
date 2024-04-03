@@ -1,48 +1,52 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { Pokemon } from '../interfaces/draft';
-import { getSpriteName } from '../pokemon';
 
 @Component({
   selector: 'tera',
   standalone: true,
   imports: [CommonModule],
   template: `
-    <img
-      class="h-full w-full"
-      *ngIf="pokemon.pid"
-      [ngClass]="isFlipped()"
-      title="{{ pokemon.name }}"
-      src="{{ getPath() }}"
-      onerror="this.src='../../assets/icons/unknown.svg'"
-    />
+    <div
+      class="relative flex justify-center items-center"
+      (mouseover)="terasShowing = true"
+      (mouseleave)="terasShowing = false"
+    >
+      <img *ngIf="!terasShowing" src="../../../assets/icons/tera.svg" />
+      <div
+        *ngIf="terasShowing"
+        class="absolute flex flex-col items-center max-h-36 overflow-y-auto scrollbar-tera"
+      >
+        <img
+          *ngFor="let type of pokemon.capt?.tera"
+          src="../../../assets/icons/tera_types/Tera{{ type }}.png"
+        />
+      </div>
+    </div>
+
+    <!-- <div
+      (mouseover)="terasShowing = true"
+      (mouseleave)="terasShowing = false"
+      class="w-fit h-fit"
+    >
+      <img *ngIf="false" src="../../../assets/icons/tera.svg" />
+      <div *ngIf="true" class="grid-flow-col w-fit h-fit">
+        <img
+          *ngFor="let type of pokemon.capt?.tera"
+          src="../../../assets/icons/tera_types/Tera{{ type }}.png"
+        />
+      </div>
+    </div> -->
   `,
 })
 export class TeraComponent {
   @Input() pokemon!: Pokemon;
-  @Input() flipped? = false;
+  terasShowing: boolean = false;
 
-  getPath() {
-    if (!this.pokemon) {
-      return '../../assets/icons/unknown.svg';
-    }
-    if (this.pokemon.shiny) {
-      return (
-        'https://play.pokemonshowdown.com/sprites/gen5-shiny/' +
-        getSpriteName(this.pokemon.pid) +
-        '.png'
-      );
-    } else {
-      return (
-        'https://play.pokemonshowdown.com/sprites/gen5/' +
-        getSpriteName(this.pokemon.pid) +
-        '.png'
-      );
-    }
-  }
-
-  isFlipped() {
-    if (this.flipped) return '-scale-x-100';
-    return;
+  showTeras() {
+    this.terasShowing = true;
+    setTimeout(() => {
+      this.terasShowing = false;
+    }, 1000);
   }
 }
