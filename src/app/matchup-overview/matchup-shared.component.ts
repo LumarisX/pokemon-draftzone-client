@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component } from '@angular/core';
 import { Meta } from '@angular/platform-browser';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { MatchupService } from '../api/matchup.service';
@@ -13,7 +13,7 @@ import { MatchupComponent } from './matchup/matchup.component';
   templateUrl: 'matchup-shared.component.html',
   imports: [CommonModule, LoadingComponent, MatchupComponent, RouterModule],
 })
-export class MatchupSharedComponent implements OnInit {
+export class MatchupSharedComponent implements AfterViewInit {
   matchupId = '';
   matchupData: MatchupData | null = null;
 
@@ -23,7 +23,16 @@ export class MatchupSharedComponent implements OnInit {
     private meta: Meta
   ) {}
 
-  ngOnInit(): void {
+  ngAfterViewInit(): void {
+    this.meta.updateTag({
+      name: 'og:url',
+      content:
+        'https://pokemondraftzone.com/' + this.route.snapshot.url.join('/'),
+    });
+    this.meta.updateTag({
+      name: 'og:image',
+      content: 'https://pokemondraftzone.com/13luken.ico',
+    });
     this.route.params.subscribe((params) => {
       if ('id' in params) {
         this.matchupId = params['id'];
@@ -52,14 +61,6 @@ export class MatchupSharedComponent implements OnInit {
           this.meta.updateTag({
             name: 'og:description',
             content: `View the matchup between ${this.matchupData.overview[0].teamName} and ${this.matchupData.overview[1].teamName}.`,
-          });
-          this.meta.updateTag({
-            name: 'og:image',
-            content: 'https://pokemondraftzone.com/13luken.ico',
-          });
-          this.meta.updateTag({
-            name: 'og:url',
-            content: this.route.snapshot.url.join('/'),
           });
         }
       });

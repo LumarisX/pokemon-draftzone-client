@@ -1,6 +1,6 @@
 <div class="flex flex-col justify-between h-dvh">
-  <header class="z-10 flex w-full border-b-2 bg-slate-300 border-slate-400 p-2">
-    <div class="flex relative sm:hidden">
+  <header class="z-10 flex w-full p-2 border-b-2 bg-slate-300 border-slate-400">
+    <div class="relative flex sm:hidden">
       <button
         (click)="menuDropdown = !menuDropdown"
         id="dropdownButton"
@@ -9,7 +9,7 @@
         <img class="" src="../assets/icons/menu.svg" />
       </button>
       <div
-        class="flex items-center justify-center w-28 mx-2 hover:bg-slate-200 rounded"
+        class="flex items-center justify-center mx-2 rounded w-28 hover:bg-slate-200"
       >
         <a class="text-xl" routerLink="/">DraftZone</a>
       </div>
@@ -17,7 +17,7 @@
       <div
         *ngIf="menuDropdown"
         (click)="menuDropdown = false"
-        class="sm:flex block sm:hidden flex-col absolute top-full p-2 left-0 bg-white border border-gray-200 rounded-md shadow-md"
+        class="absolute left-0 flex-col block p-2 bg-white border border-gray-200 rounded-md shadow-md sm:flex sm:hidden top-full"
       >
         <div class="flex items-center h-full px-3 hover:bg-slate-200">
           <a routerLink="/draft">Drafts</a>
@@ -30,14 +30,14 @@
         </div>
       </div>
     </div>
-    <div class="hidden sm:block sm:flex">
+    <div class="hidden sm:flex">
       <div
-        class="flex items-center justify-center w-28 hover:bg-slate-200 rounded"
+        class="flex items-center justify-center rounded w-28 hover:bg-slate-200"
       >
         <a class="text-xl" routerLink="/">DraftZone</a>
       </div>
       <div class="flex">
-        <div class="flex items-center h-full px-3 hover:bg-slate-200 rounded">
+        <div class="flex items-center h-full px-3 rounded hover:bg-slate-200">
           <a routerLink="/draft">Drafts</a>
         </div>
         <div class="flex items-center h-full px-3 rounded">
@@ -49,7 +49,7 @@
       </div>
     </div>
     <div class="flex justify-end flex-grow h-full">
-      <div class="px-4 hover:bg-slate-200 h-full">
+      <div class="h-full px-4 hover:bg-slate-200">
         <ng-container *ngIf="auth.isAuthenticated() | async; else loggedOut">
           <div
             *ngIf="auth.user() | async as user"
@@ -75,11 +75,19 @@
   <main class="w-full h-full mb-auto overflow-y-auto">
     <router-outlet></router-outlet>
   </main>
-  <footer
-    class="z-10 flex justify-end w-full border-t-2 bg-slate-300 border-slate-400"
-  >
-    <a href="https://discord.gg/sQUEBW4UVx" target="_blank"
-      ><img class="h-5 mx-5 my-1" src="../assets/icons/discord-mark-blue.svg"
-    /></a>
+  <footer class="z-10 flex w-full border-t-2 bg-slate-300 border-slate-400">
+    <div class="flex items-center w-1/2">
+      <a href="https://www.buymeacoffee.com/xlumarisxu" class="mx-2 w-fit">
+        <div class="hidden text-xs sm:block">
+          Support the creator and keep the site ad-free
+        </div>
+        <div class="block text-sm sm:hidden">Donate</div>
+      </a>
+    </div>
+    <div class="flex justify-end w-1/2">
+      <a href="https://discord.gg/sQUEBW4UVx" target="_blank"
+        ><img class="h-5 mx-5 my-1" src="../assets/icons/discord-mark-blue.svg"
+      /></a>
+    </div>
   </footer>
 </div>
