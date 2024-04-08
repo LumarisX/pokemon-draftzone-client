@@ -45,6 +45,7 @@ sprite {
 
   ::-webkit-scrollbar-track {
     background: theme("colors.slate.100");
+    border-radius: 100vh;
   }
 
   ::-webkit-scrollbar-thumb {

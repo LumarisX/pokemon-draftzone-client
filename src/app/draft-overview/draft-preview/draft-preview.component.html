@@ -12,19 +12,19 @@
       class="flex flex-col h-full shadow-md bg-cyan-200 shadow-cyan-600 rounded-xl"
     >
       <div class="flex-grow p-2 shadow-md bg-cyan-300 rounded-xl">
-        <div class="flex w-full">
+        <div class="flex w-full space-x-2 h-fit">
           <div
-            class="flex items-center justify-center w-3/5 p-1 mx-1 font-semibold text-center rounded-full shadow-inner text-medium bg-cyan-200 shadow-cyan-600"
+            class="flex items-center justify-center w-3/5 h-auto p-1 overflow-hidden font-semibold text-center whitespace-normal rounded-full shadow-inner text-medium bg-cyan-200 shadow-cyan-600 overflow-ellipsis"
           >
             {{ team.leagueName }}
           </div>
           <div
-            class="w-1/5 p-1 text-xs font-semibold text-center rounded-full shadow-inner h-fit bg-cyan-200 shadow-cyan-600"
+            class="flex items-center justify-center w-1/5 h-auto p-1 overflow-hidden text-xs font-semibold whitespace-normal rounded-full shadow-inner bg-cyan-200 shadow-cyan-600 overflow-ellipsis"
           >
             {{ team.ruleset }}
           </div>
           <div
-            class="w-1/5 p-1 mx-1 text-xs font-semibold text-center rounded-full shadow-inner h-fit bg-cyan-200 shadow-cyan-600"
+            class="flex items-center justify-center w-1/5 h-auto p-1 overflow-hidden text-xs font-semibold text-center whitespace-normal rounded-full shadow-inner bg-cyan-200 shadow-cyan-600 overflow-ellipsis"
           >
             {{ team.format }}
           </div>
@@ -48,7 +48,7 @@
           >Matches</a
         >
         <a
-          class="w-1/6 m-2 text-center shadow bg-cyan-300 hover:shadow shadow-cyan-600 rounded-xl cursor-pointer"
+          class="w-1/6 m-2 text-center shadow cursor-pointer bg-cyan-300 hover:shadow shadow-cyan-600 rounded-xl"
           (click)="team.menu = 'edit'"
           >Edit
         </a>
@@ -65,13 +65,13 @@
           Are you sure you want to archive?
         </div>
         <div
-          class="w-1/6 m-2 justify-center items-center flex shadow cursor-pointer bg-cyan-300 hover:shadow shadow-cyan-600 rounded-xl"
+          class="flex items-center justify-center w-1/6 m-2 shadow cursor-pointer bg-cyan-300 hover:shadow shadow-cyan-600 rounded-xl"
           (click)="archive(team.leagueId)"
         >
           Yes
         </div>
         <div
-          class="w-1/6 m-2 justify-center items-center flex shadow cursor-pointer bg-cyan-300 hover:shadow shadow-cyan-600 rounded-xl"
+          class="flex items-center justify-center w-1/6 m-2 shadow cursor-pointer bg-cyan-300 hover:shadow shadow-cyan-600 rounded-xl"
           (click)="team.menu = 'main'"
         >
           No
@@ -79,7 +79,7 @@
       </div>
       <div class="flex" *ngIf="team.menu == 'edit'">
         <a
-          class="w-1/6 m-2 text-center shadow bg-cyan-300 hover:shadow shadow-cyan-600 cursor-pointer rounded-xl"
+          class="w-1/6 m-2 text-center shadow cursor-pointer bg-cyan-300 hover:shadow shadow-cyan-600 rounded-xl"
           (click)="team.menu = 'main'"
           >Back</a
         >
@@ -106,13 +106,13 @@
           Are you sure you want to delete?
         </div>
         <div
-          class="w-1/6 m-2 justify-center items-center flex shadow cursor-pointer bg-cyan-300 hover:shadow shadow-cyan-600 rounded-xl"
+          class="flex items-center justify-center w-1/6 m-2 shadow cursor-pointer bg-cyan-300 hover:shadow shadow-cyan-600 rounded-xl"
           (click)="delete(team.leagueId)"
         >
           Yes
         </div>
         <div
-          class="w-1/6 m-2 justify-center items-center flex shadow cursor-pointer bg-cyan-300 hover:shadow shadow-cyan-600 rounded-xl"
+          class="flex items-center justify-center w-1/6 m-2 shadow cursor-pointer bg-cyan-300 hover:shadow shadow-cyan-600 rounded-xl"
           (click)="team.menu = 'main'"
         >
           No

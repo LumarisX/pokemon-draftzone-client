@@ -32,19 +32,19 @@
         <div *ngFor="let matchup of matchups; let i = index">
           <div class="m-2 bg-red-200 shadow-md shadow-red-600 rounded-xl">
             <div class="p-2 bg-red-300 shadow-md rounded-xl">
-              <div class="flex w-full h-fit">
+              <div class="flex w-full space-x-2 h-fit">
                 <div
-                  class="w-3/5 h-full p-1 mx-1 font-semibold text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
+                  class="w-1/2 h-auto p-1 overflow-hidden font-semibold text-center whitespace-normal bg-red-200 rounded-full shadow-inner overflow-ellipsis text-medium shadow-red-600"
                 >
                   {{ matchup.bTeam.teamName }}
                 </div>
                 <div
-                  class="w-1/5 h-full p-1 text-xs font-semibold text-center bg-red-200 rounded-full shadow-inner shadow-red-600"
+                  class="flex items-center justify-center w-1/6 h-auto p-1 overflow-hidden text-xs font-semibold whitespace-normal bg-red-200 rounded-full shadow-inner overflow-ellipsis shadow-red-600"
                 >
                   {{ score(matchup) }}
                 </div>
                 <div
-                  class="w-1/5 h-full p-1 mx-1 text-xs font-semibold text-center bg-red-200 rounded-full shadow-inner shadow-red-600"
+                  class="flex items-center justify-center w-1/3 h-auto p-1 overflow-hidden text-xs font-semibold whitespace-normal bg-red-200 rounded-full shadow-inner overflow-ellipsis shadow-red-600"
                 >
                   {{ matchup.stage }}
                 </div>
