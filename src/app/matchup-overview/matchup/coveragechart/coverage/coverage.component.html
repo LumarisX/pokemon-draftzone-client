@@ -50,40 +50,32 @@
       </div>
     </div>
     <div class="flex flex-col w-1/3 space-y-1">
-      <div
-        *ngIf="calcCoverage().se.length > 0"
-        class="p-1 border-2 rounded-lg bg-emerald-300 border-emerald-500"
-      >
-        <div class="flex">
-          <h3 class="font-semibold">Super Effective</h3>
-          <h4 class="justify-end ml-auto font-semibold">
-            {{ calcCoverage().se.length / typechart.team.length | percent }}
-          </h4>
+      <div class="p-1 border-2 rounded-lg border-slate-200">
+        <div class="flex p-1">
+          <div
+            class="w-1/3 mx-2 text-center rounded-full bg-emerald-300 border-emerald-400"
+          >
+            {{ calcCoverage().se }}
+          </div>
+          <div
+            class="w-1/3 mx-2 text-center rounded-full bg-slate-300 border-slate-400"
+          >
+            {{ calcCoverage().e }}
+          </div>
+          <div
+            class="w-1/3 mx-2 text-center rounded-full bg-rose-300 border-rose-400"
+          >
+            {{ calcCoverage().ne }}
+          </div>
         </div>
         <div class="flex flex-wrap justify-center">
-          <sprite
-            class="w-1/4"
-            *ngFor="let pokemon of calcCoverage().se"
-            [pokemon]="pokemon"
-          ></sprite>
-        </div>
-      </div>
-      <div
-        *ngIf="calcCoverage().ne.length > 0"
-        class="p-1 border-2 rounded-lg bg-rose-300 border-rose-500"
-      >
-        <div class="flex">
-          <h3 class="font-semibold">Not Very Effective</h3>
-          <h4 class="justify-end ml-auto font-semibold">
-            {{ calcCoverage().ne.length / typechart.team.length | percent }}
-          </h4>
-        </div>
-        <div class="flex flex-wrap justify-center">
-          <sprite
-            class="w-1/4"
-            *ngFor="let pokemon of calcCoverage().ne"
-            [pokemon]="pokemon"
-          ></sprite>
+          <div
+            class="w-1/4 rounded-xl"
+            *ngFor="let pokemon of calcCoverage().team"
+            [ngClass]="seColor(pokemon.max)"
+          >
+            <sprite [pokemon]="pokemon.pokemon"></sprite>
+          </div>
         </div>
       </div>
     </div>

@@ -28,6 +28,7 @@ import { Pokemon } from '../interfaces/draft';
             *ngFor="let type of pokemon.capt?.tera"
             src="../../../assets/icons/tera_types/Tera{{ type }}.png"
             alt="{{ type }}"
+            title="{{ type }}"
           />
         </div>
       </ng-container>

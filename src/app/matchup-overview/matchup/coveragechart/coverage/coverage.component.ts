@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit, effect } from '@angular/core';
 import { SpriteComponent } from '../../../../images/sprite.component';
-import { CoverageChart, TypeChart } from '../../../matchup-interface';
+import { CoverageChart, TypeChart, Types } from '../../../matchup-interface';
+import { Pokemon } from '../../../../interfaces/draft';
 
 @Component({
   selector: 'coverage',
@@ -9,42 +10,67 @@ import { CoverageChart, TypeChart } from '../../../matchup-interface';
   imports: [CommonModule, SpriteComponent],
   templateUrl: './coverage.component.html',
 })
-export class CoverageComponent {
+export class CoverageComponent implements OnInit {
   @Input() pokemon!: CoverageChart;
   @Input() typechart!: TypeChart;
-
   constructor() {}
 
-  calcCoverage() {
-    let selectedMoves = [];
-    for (let move of this.pokemon.coverage.physical) {
-      if (move.recommended) {
-        selectedMoves.push(move);
-      }
-    }
-    for (let move of this.pokemon.coverage.special) {
-      if (move.recommended) {
-        selectedMoves.push(move);
-      }
-    }
-    let superEffective = [];
-    let effective = [];
-    let notVeryEffective = [];
-    for (let pokemon of this.typechart.team) {
-      let max = 0;
-      for (let move of selectedMoves) {
-        if (max < pokemon.weak[move.type]) {
-          max = pokemon.weak[move.type];
-        }
-      }
-      if (max > 1) {
-        superEffective.push({ pid: pokemon.pid, name: pokemon.name });
-      } else if (max == 1) {
-        effective.push({ pid: pokemon.pid, name: pokemon.name });
+  ngOnInit(): void {
+    this.calcCoverage();
+  }
+
+  calcCoverage(): {
+    team: {
+      pokemon: Pokemon & {
+        weak: Types;
+        disabled?: Boolean | undefined;
+      };
+      max: number;
+    }[];
+    se: number;
+    e: number;
+    ne: number;
+  } {
+    const selectedMoves = [
+      ...this.pokemon.coverage.physical
+        .concat(this.pokemon.coverage.special)
+        .filter((move) => move.recommended),
+    ];
+
+    let out = {
+      team: this.typechart.team
+        .map((pokemon) => ({
+          pokemon,
+          max: Math.max(
+            ...selectedMoves.map((move) => pokemon.weak[move.type])
+          ),
+        }))
+        .sort((x, y) => y.max - x.max),
+      se: 0,
+      e: 0,
+      ne: 0,
+    };
+    console.log(this.pokemon.pid);
+    out.team.forEach((pokemon) => {
+      if (pokemon.max > 1) {
+        out.se++;
+      } else if (pokemon.max < 1) {
+        out.ne++;
       } else {
-        notVeryEffective.push({ pid: pokemon.pid, name: pokemon.name });
+        out.e++;
       }
+    });
+
+    return out;
+  }
+
+  seColor(max: number) {
+    if (max > 1) {
+      return 'bg-emerald-300 border border-emerald-400';
+    } else if (max == 1) {
+      return 'bg-slate-300 border border-slate-400';
+    } else {
+      return 'bg-rose-300 border border-rose-400';
     }
-    return { se: superEffective, e: effective, ne: notVeryEffective };
   }
 }
