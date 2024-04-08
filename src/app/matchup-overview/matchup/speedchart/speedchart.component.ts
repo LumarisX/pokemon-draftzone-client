@@ -97,10 +97,7 @@ export class SpeedchartComponent {
     'Surge Surfer': true,
   };
 
-  enabledMons: [
-    aTeam: { [key: string]: boolean },
-    bTeam: { [key: string]: boolean }
-  ] = [{}, {}];
+  enabledMons: [aTeam: string | null, bTeam: string | null] = [null, null];
 
   constructor() {}
 
@@ -127,10 +124,10 @@ export class SpeedchartComponent {
     };
     team: number;
   }) {
-    if (s.pokemon.pid in this.enabledMons[s.team]) {
-      delete this.enabledMons[s.team][s.pokemon.pid];
+    if (this.enabledMons[s.team] == s.pokemon.pid) {
+      this.enabledMons[s.team] = null;
     } else {
-      this.enabledMons[s.team][s.pokemon.pid] = true;
+      this.enabledMons[s.team] = s.pokemon.pid;
     }
   }
 
@@ -151,8 +148,8 @@ export class SpeedchartComponent {
     team: number;
   }) {
     if (
-      Object.keys(this.enabledMons[s.team]).length > 0 &&
-      !(s.pokemon.pid in this.enabledMons[s.team])
+      this.enabledMons[s.team] &&
+      s.pokemon.pid !== this.enabledMons[s.team]
     ) {
       return ['opacity-50'];
     }
@@ -177,8 +174,8 @@ export class SpeedchartComponent {
 
   filtered(tier: Speedtier) {
     if (
-      Object.keys(this.enabledMons[tier.team]).length > 0 &&
-      !(tier.pokemon.pid in this.enabledMons[tier.team])
+      this.enabledMons[tier.team] &&
+      tier.pokemon.pid !== this.enabledMons[tier.team]
     ) {
       return false;
     }
