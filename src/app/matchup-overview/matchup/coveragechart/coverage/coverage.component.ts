@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit, effect } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { SpriteComponent } from '../../../../images/sprite.component';
-import { CoverageChart, TypeChart, Types } from '../../../matchup-interface';
 import { Pokemon } from '../../../../interfaces/draft';
+import { CoverageChart, TypeChart, Types } from '../../../matchup-interface';
 
 @Component({
   selector: 'coverage',
@@ -13,55 +13,51 @@ import { Pokemon } from '../../../../interfaces/draft';
 export class CoverageComponent implements OnInit {
   @Input() pokemon!: CoverageChart;
   @Input() typechart!: TypeChart;
+  coverage: {
+    pokemon: Pokemon & {
+      weak: Types;
+      disabled?: Boolean | undefined;
+    };
+    max: number;
+  }[] = [];
+  se: number = 0;
+  e: number = 0;
+  ne: number = 0;
+
   constructor() {}
 
   ngOnInit(): void {
-    this.calcCoverage();
+    this.updateCoverage();
   }
 
-  calcCoverage(): {
-    team: {
-      pokemon: Pokemon & {
-        weak: Types;
-        disabled?: Boolean | undefined;
-      };
-      max: number;
-    }[];
-    se: number;
-    e: number;
-    ne: number;
-  } {
+  updateCoverage() {
     const selectedMoves = [
       ...this.pokemon.coverage.physical
         .concat(this.pokemon.coverage.special)
         .filter((move) => move.recommended),
     ];
 
-    let out = {
-      team: this.typechart.team
-        .map((pokemon) => ({
-          pokemon,
-          max: Math.max(
-            ...selectedMoves.map((move) => pokemon.weak[move.type])
-          ),
-        }))
-        .sort((x, y) => y.max - x.max),
-      se: 0,
-      e: 0,
-      ne: 0,
-    };
-    console.log(this.pokemon.pid);
-    out.team.forEach((pokemon) => {
+    this.coverage = this.typechart.team
+      .map((pokemon) => ({
+        pokemon,
+        max: Math.max(...selectedMoves.map((move) => pokemon.weak[move.type])),
+      }))
+      .sort((x, y) => y.max - x.max);
+    this.se = 0;
+    this.e = 0;
+    this.ne = 0;
+    this.coverage.forEach((pokemon) => {
       if (pokemon.max > 1) {
-        out.se++;
+        this.se++;
       } else if (pokemon.max < 1) {
-        out.ne++;
+        this.ne++;
       } else {
-        out.e++;
+        this.e++;
       }
     });
-
-    return out;
+    this.se = Math.round((this.se / this.coverage.length) * 100);
+    this.e = Math.round((this.e / this.coverage.length) * 100);
+    this.ne = Math.round((this.ne / this.coverage.length) * 100);
   }
 
   seColor(max: number) {
