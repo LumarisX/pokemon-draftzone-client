@@ -6,12 +6,19 @@ import { MatchupService } from '../api/matchup.service';
 import { LoadingComponent } from '../loading/loading.component';
 import { MatchupData, Summary } from './matchup-interface';
 import { MatchupComponent } from './matchup/matchup.component';
+import { SpriteComponent } from '../images/sprite.component';
 
 @Component({
   selector: 'matchup-overview',
   standalone: true,
   templateUrl: 'matchup-overview.component.html',
-  imports: [CommonModule, LoadingComponent, MatchupComponent, RouterModule],
+  imports: [
+    CommonModule,
+    LoadingComponent,
+    MatchupComponent,
+    RouterModule,
+    SpriteComponent,
+  ],
 })
 export class MatchupOverviewComponent implements OnInit {
   matchupData: MatchupData | null = null;

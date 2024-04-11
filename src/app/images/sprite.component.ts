@@ -13,7 +13,7 @@ import { getSpriteName } from '../pokemon';
       *ngIf="pokemon.pid"
       [ngClass]="isFlipped()"
       title="{{ pokemon.name }}"
-      src="{{ getPath('home') }}"
+      src="{{ getPath('bw') }}"
       onerror="this.src='../../../../assets/icons/unknown.svg'"
     />
   `,
@@ -22,7 +22,7 @@ export class SpriteComponent {
   @Input() pokemon!: Pokemon;
   @Input() flipped? = false;
 
-  getPath(source: 'home' | 'serebii' | 'bw' | 'sv' | 'ani' | '?') {
+  getPath(source: 'home' | 'serebii' | 'icon' | 'bw' | 'sv' | 'ani' | '?') {
     if (this.pokemon) {
       if (source == 'home') {
         if (this.pokemon.shiny) {
@@ -52,6 +52,12 @@ export class SpriteComponent {
             '.png'
           );
         }
+      } else if (source == 'icon') {
+        return (
+          'https://img.pokemondb.net/sprites/scarlet-violet/icon/' +
+          getSpriteName(this.pokemon.pid, 'pd') +
+          '.png'
+        );
       } else if (source == 'sv') {
         if (this.pokemon.shiny) {
           return (

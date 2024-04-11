@@ -3376,8 +3376,8 @@ export const BattlePokedex: {
   meowsticf: {
     name: 'Meowstic-F',
     ps: 'meowstic-f',
-    serebii: '678',
-    pd: 'meowstic-f',
+    serebii: '678-f',
+    pd: 'meowstic-female',
   },
   honedge: { name: 'Honedge', ps: 'honedge', serebii: '679', pd: 'honedge' },
   doublade: {
@@ -4633,8 +4633,8 @@ export const BattlePokedex: {
   indeedeef: {
     name: 'Indeedee-F',
     ps: 'indeedee-f',
-    serebii: '876',
-    pd: 'indeedee-f',
+    serebii: '876-f',
+    pd: 'indeedee-female',
   },
   morpeko: { name: 'Morpeko', ps: 'morpeko', serebii: '877', pd: 'morpeko' },
   morpekohangry: {
@@ -4823,8 +4823,8 @@ export const BattlePokedex: {
   basculegionf: {
     name: 'Basculegion-F',
     ps: 'basculegion-f',
-    serebii: '902',
-    pd: 'basculegion-f',
+    serebii: '902-f',
+    pd: 'basculegion-female',
   },
   sneasler: {
     name: 'Sneasler',
@@ -4904,8 +4904,8 @@ export const BattlePokedex: {
   oinkolognef: {
     name: 'Oinkologne-F',
     ps: 'oinkologne-f',
-    serebii: '916',
-    pd: 'oinkologne-f',
+    serebii: '916-f',
+    pd: 'oinkologne-female',
   },
   tarountula: {
     name: 'Tarountula',
