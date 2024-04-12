@@ -51,11 +51,12 @@
   ::-webkit-scrollbar-thumb {
     background: theme("colors.slate.300");
     border-radius: 100vh;
-    border: 2px solid theme("colors.slate.200");
+    border: 2px solid theme("colors.slate.100");
   }
 
   ::-webkit-scrollbar-thumb:hover {
     background: theme("colors.slate.350");
-
+    border: 1px solid theme("colors.slate.100");
+    
   }
 }
