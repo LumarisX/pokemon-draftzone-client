@@ -4,7 +4,7 @@
 >
   <overview class="z-10" [teams]="matchupData.overview"></overview>
   <summary
-    class="z-10 overflow-x-auto"
+    class="z-10 max-w-full w-fit"
     [teams]="matchupData.summary"
     style="list-style: none"
   ></summary>
@@ -15,7 +15,7 @@
     [level]="matchupData.level"
   ></speedchart>
   <typechart
-    class="z-10 overflow-x-auto"
+    class="z-10 max-w-full w-fit"
     [typecharts]="matchupData.typechart"
   ></typechart>
   <movechart class="z-10 max-h-128" [teams]="matchupData.movechart"></movechart>

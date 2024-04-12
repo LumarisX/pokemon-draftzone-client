@@ -13,4 +13,8 @@ export class MoveCategoryComponent {
   @Input() category!: MoveCategory;
   show: boolean = true;
   constructor() {}
+
+  typeBorder(type: string) {
+    return ['border-' + type.toLowerCase()];
+  }
 }
