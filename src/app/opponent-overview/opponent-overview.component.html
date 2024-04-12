@@ -7,8 +7,10 @@
       >
         Back
       </button>
-      <div *ngIf="draft">
-        <h1 class="text-3xl font-bold text-gray-800">{{ draft.leagueName }}</h1>
+      <div *ngIf="draft" class="text-right">
+        <h1 class="text-3xl font-bold text-gray-800">
+          {{ draft.leagueName }}
+        </h1>
         <h2 class="text-2xl font-bold text-gray-600">
           {{ draft.score.wins }} - {{ draft.score.loses }} |
           {{ draft.score.diff }}

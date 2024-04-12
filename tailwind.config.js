@@ -33,6 +33,9 @@ module.exports = {
         steel: "#a9aaba",
         water: "#399eff",
       },
+      fontSize: {
+        "2xs": ".5rem",
+      },
     },
   },
   plugins: [],
