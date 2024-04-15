@@ -103,7 +103,7 @@ export type MoveChart = MoveCategory[];
 
 export type MoveCategory = {
   categoryName: string;
-  moves: { moveName: string; pokemon: Pokemon[] }[];
+  moves: { name: string; type: string; pokemon: Pokemon[] }[];
 };
 
 export type CoverageChart = Pokemon & {

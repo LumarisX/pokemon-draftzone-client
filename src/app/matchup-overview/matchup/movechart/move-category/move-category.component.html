@@ -28,12 +28,15 @@
     class="z-10 flex border-y border-slate-400 bg-slate-200"
     *ngFor="let move of category.moves"
   >
-    <div
-      class="flex items-center justify-center w-1/3 px-2 border-r border-slate-400"
-    >
-      {{ move.moveName }}
+    <div class="flex items-center w-1/3 p-1 border-r border-slate-400">
+      <div
+        class="flex justify-center w-full py-1 font-semibold border-2 rounded"
+        [ngClass]="typeBorder(move.type)"
+      >
+        {{ move.name }}
+      </div>
     </div>
-    <div class="flex flex-row flex-wrap w-2/3">
+    <div class="flex flex-row flex-wrap w-2/3 px-1">
       <sprite
         class="h-8"
         *ngFor="let pokemon of move.pokemon"

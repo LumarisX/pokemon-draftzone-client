@@ -1,4 +1,4 @@
-<div class="w-fit">
+<div class="w-full">
   <div class="flex w-full px-1 bg-slate-400 rounded-t-xl">
     <div class="flex w-full pb-1 border-b border-slate-300">
       <h1 class="w-full text-xl font-bold text-center">Defensive Type Chart</h1>
@@ -11,116 +11,122 @@
       </button>
     </div>
   </div>
-  <table
-    class="overflow-auto border-4 table-fixed bg-slate-100 touch-auto border-slate-400"
-  >
-    <thead class="">
-      <tr class="">
-        <th
-          class="left-0 border-r-4 border-slate-400"
-          [ngClass]="teamColor()"
-        ></th>
-        <th
-          class="left-0 border-b-2 bg-slate-300 border-slate-400"
-          *ngFor="let type of types"
-        >
-          <img
-            class=""
-            src="https://play.pokemonshowdown.com/sprites/types/{{ type }}.png"
-            alt="{{ type }}"
-          />
-        </th>
-      </tr>
-    </thead>
-    <tbody class="">
-      <tr *ngFor="let pokemon of typecharts[selectedTeam].team" class="">
-        <th
-          class="w-12 border-r-4 border-r-slate-400"
-          [ngClass]="clickColor()"
-          (click)="toggleVisible(pokemon)"
-        >
-          <sprite
-            [pokemon]="pokemon"
-            [class.opacity-60]="pokemon.disabled"
-          ></sprite>
-        </th>
-        <td
-          *ngFor="let type of types"
-          class="text-center border"
-          [ngClass]="typeColor(pokemon.weak[type], pokemon.disabled!)"
-        >
-          {{ pokemon.weak[type] }}
-        </td>
-      </tr>
-    </tbody>
-    <thead class="border-b-4 border-slate-400">
-      <tr class="">
-        <th
-          class="left-0 border-r-4 border-slate-400"
-          [ngClass]="teamColor()"
-        ></th>
-        <th
-          class="left-0 border-t-2 bg-slate-300 border-slate-400"
-          *ngFor="let type of types"
-        >
-          <img
-            class="min-w-6"
-            src="https://play.pokemonshowdown.com/sprites/types/{{ type }}.png"
-            alt="{{ type }}"
-          />
-        </th>
-      </tr>
-    </thead>
-    <tfoot id="typeSum" class="bg-slate-300">
-      <tr>
-        <th class="text-xs border bg-rose-400 border-slate-400">Weaks</th>
-        <td
-          *ngFor="let weakness of weaknesses"
-          class="text-center border"
-          [ngClass]="weakColor(weakness)"
-        >
-          {{ weakness }}
-        </td>
-      </tr>
-      <tr>
-        <th class="text-xs border bg-emerald-400 border-slate-400">Resists</th>
-        <td
-          *ngFor="let resistance of resistances"
-          class="text-center border"
-          [ngClass]="resistColor(resistance)"
-        >
-          {{ resistance }}
-        </td>
-      </tr>
-      <tr>
-        <th
-          class="text-xs bg-gradient-to-r from-rose-400 from-50% to-emerald-400 to-50% border border-slate-400"
-        >
-          Diff
-        </th>
-        <td
-          *ngFor="let diff of difference"
-          class="text-center border"
-          [ngClass]="diffColor(diff)"
-        >
-          {{ diff }}
-        </td>
-      </tr>
-      <tr>
-        <th
-          class="text-xs border bg-gradient-to-r from-rose-400 via-slate-200 to-emerald-400 border-slate-400"
-        >
-          Log
-        </th>
-        <td
-          *ngFor="let diff of differential"
-          class="text-center border"
-          [ngClass]="diffColor(diff)"
-        >
-          {{ diff | number : "1.0-0" }}
-        </td>
-      </tr>
-    </tfoot>
-  </table>
+  <div class="w-full overflow-x-auto border-4 border-slate-400">
+    <table class="table-fixed bg-slate-100">
+      <thead class="">
+        <tr class="">
+          <th
+            class="border-l border-r-4 border-slate-400"
+            [ngClass]="teamColor()"
+          ></th>
+          <th
+            class="border-b-2 bg-slate-300 border-slate-400"
+            *ngFor="let type of types"
+          >
+            <img
+              class=""
+              src="https://play.pokemonshowdown.com/sprites/types/{{
+                type
+              }}.png"
+              alt="{{ type }}"
+            />
+          </th>
+        </tr>
+      </thead>
+      <tbody class="">
+        <tr *ngFor="let pokemon of typecharts[selectedTeam].team" class="">
+          <th
+            class="w-12 border-l border-r-4 border-slate-400"
+            [ngClass]="clickColor()"
+            (click)="toggleVisible(pokemon)"
+          >
+            <sprite
+              [pokemon]="pokemon"
+              [class.opacity-60]="pokemon.disabled"
+            ></sprite>
+          </th>
+          <td
+            *ngFor="let type of types"
+            class="text-center border"
+            [ngClass]="typeColor(pokemon.weak[type], pokemon.disabled!)"
+          >
+            {{ pokemon.weak[type] }}
+          </td>
+        </tr>
+      </tbody>
+      <thead class="border-b-4 border-slate-400">
+        <tr class="">
+          <th
+            class="border-l border-r-4 border-slate-400"
+            [ngClass]="teamColor()"
+          ></th>
+          <th
+            class="border-t-2 bg-slate-300 border-slate-400"
+            *ngFor="let type of types"
+          >
+            <img
+              class="min-w-6"
+              src="https://play.pokemonshowdown.com/sprites/types/{{
+                type
+              }}.png"
+              alt="{{ type }}"
+            />
+          </th>
+        </tr>
+      </thead>
+      <tfoot id="typeSum" class="bg-slate-300">
+        <tr>
+          <th class="text-xs border bg-rose-400 border-slate-400">Weaks</th>
+          <td
+            *ngFor="let weakness of weaknesses"
+            class="text-center border"
+            [ngClass]="weakColor(weakness)"
+          >
+            {{ weakness }}
+          </td>
+        </tr>
+        <tr>
+          <th class="text-xs border bg-emerald-400 border-slate-400">
+            Resists
+          </th>
+          <td
+            *ngFor="let resistance of resistances"
+            class="text-center border"
+            [ngClass]="resistColor(resistance)"
+          >
+            {{ resistance }}
+          </td>
+        </tr>
+        <tr>
+          <th
+            class="text-xs bg-gradient-to-r from-rose-400 from-50% to-emerald-400 to-50% border border-slate-400"
+          >
+            Diff
+          </th>
+          <td
+            *ngFor="let diff of difference"
+            class="text-center border"
+            [ngClass]="diffColor(diff)"
+          >
+            {{ diff }}
+          </td>
+        </tr>
+        <tr>
+          <th
+            class="text-xs border bg-gradient-to-r from-rose-400 via-slate-200 to-emerald-400 border-slate-400"
+          >
+            Log
+          </th>
+          <td
+            *ngFor="let diff of differential"
+            class="text-center border"
+            [ngClass]="diffColor(diff)"
+          >
+            {{ diff | number : "1.0-0" }}
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
   <div class="w-full h-3 rounded-b-full bg-slate-400"></div>
 </div>

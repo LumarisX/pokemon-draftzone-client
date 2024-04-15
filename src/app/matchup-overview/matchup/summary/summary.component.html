@@ -1,4 +1,4 @@
-<div class="w-fit">
+<div class="w-full">
   <div class="flex w-full px-1 bg-slate-400 rounded-t-xl">
     <div class="flex w-full pb-1 border-b border-slate-300">
       <h1 class="w-full text-xl font-bold text-center">Team Overview</h1>
@@ -12,266 +12,267 @@
     </div>
   </div>
 
-  <table
-    id="myOverview"
-    class="w-full border-4 rounded-md table-auto border-slate-400"
-    [ngClass]="teamColor()"
-  >
-    <tr class="bg-slate-400">
-      <th class=""></th>
-      <th class="w-12 min-w-8"></th>
-      <th
-        (click)="sortByName()"
-        class="w-32 cursor-pointer hover:text-slate-200"
-      >
-        <div *ngIf="sortBy != 'name'">Name</div>
-        <div *ngIf="sortBy == 'name' && !reversed">Name ↥</div>
-        <div *ngIf="sortBy == 'name' && reversed">Name ↧</div>
-      </th>
-      <th class="w-16 text-left">Types</th>
-      <th class="w-24">Abilities</th>
-
-      <th
-        (click)="sortByStat('hp')"
-        class="w-12 cursor-pointer hover:text-slate-200"
-      >
-        <div *ngIf="sortBy != 'hp'">HP</div>
-        <div *ngIf="sortBy == 'hp' && !reversed">HP ↥</div>
-        <div *ngIf="sortBy == 'hp' && reversed">HP ↧</div>
-      </th>
-      <th
-        (click)="sortByStat('atk')"
-        class="w-12 cursor-pointer hover:text-slate-200"
-      >
-        <div *ngIf="sortBy != 'atk'">ATK</div>
-        <div *ngIf="sortBy == 'atk' && !reversed">ATK ↥</div>
-        <div *ngIf="sortBy == 'atk' && reversed">ATK ↧</div>
-      </th>
-      <th
-        (click)="sortByStat('def')"
-        class="w-12 cursor-pointer hover:text-slate-200"
-      >
-        <div *ngIf="sortBy != 'def'">DEF</div>
-        <div *ngIf="sortBy == 'def' && !reversed">DEF ↥</div>
-        <div *ngIf="sortBy == 'def' && reversed">DEF ↧</div>
-      </th>
-      <th
-        (click)="sortByStat('spa')"
-        class="w-12 cursor-pointer hover:text-slate-200"
-      >
-        <div *ngIf="sortBy != 'spa'">SPA</div>
-        <div *ngIf="sortBy == 'spa' && !reversed">SPA ↥</div>
-        <div *ngIf="sortBy == 'spa' && reversed">SPA ↧</div>
-      </th>
-      <th
-        (click)="sortByStat('spd')"
-        class="w-12 cursor-pointer hover:text-slate-200"
-      >
-        <div *ngIf="sortBy != 'spd'">SPD</div>
-        <div *ngIf="sortBy == 'spd' && !reversed">SPD ↥</div>
-        <div *ngIf="sortBy == 'spd' && reversed">SPD ↧</div>
-      </th>
-      <th
-        (click)="sortByStat('spe')"
-        class="w-12 cursor-pointer hover:text-slate-200"
-      >
-        <div *ngIf="sortBy != 'spe'">SPE</div>
-        <div *ngIf="sortBy == 'spe' && !reversed">SPE ↥</div>
-        <div *ngIf="sortBy == 'spe' && reversed">SPE ↧</div>
-      </th>
-    </tr>
-    <tr
-      *ngFor="let pokemon of teams[selectedTeam].team"
-      class="h-12 border-b border-slate-400"
+  <div class="w-full overflow-x-auto border-4 border-slate-400">
+    <table
+      id="myOverview"
+      class="w-full rounded-md table-auto"
+      [ngClass]="teamColor()"
     >
-      <td>
-        <div *ngIf="pokemon.capt" class="w-6">
-          <div *ngIf="pokemon.capt.tera">
-            <tera [pokemon]="pokemon"></tera>
+      <tr class="bg-slate-400">
+        <th class=""></th>
+        <th class="w-12 min-w-8"></th>
+        <th
+          (click)="sortByName()"
+          class="w-24 cursor-pointer hover:text-slate-200"
+        >
+          <div *ngIf="sortBy != 'name'">Name</div>
+          <div *ngIf="sortBy == 'name' && !reversed">Name ↥</div>
+          <div *ngIf="sortBy == 'name' && reversed">Name ↧</div>
+        </th>
+        <th class="w-16 text-left">Types</th>
+        <th class="w-20">Abilities</th>
+        <th
+          (click)="sortByStat('hp')"
+          class="w-12 cursor-pointer hover:text-slate-200"
+        >
+          <div *ngIf="sortBy != 'hp'">HP</div>
+          <div *ngIf="sortBy == 'hp' && !reversed">HP ↥</div>
+          <div *ngIf="sortBy == 'hp' && reversed">HP ↧</div>
+        </th>
+        <th
+          (click)="sortByStat('atk')"
+          class="w-12 cursor-pointer hover:text-slate-200"
+        >
+          <div *ngIf="sortBy != 'atk'">ATK</div>
+          <div *ngIf="sortBy == 'atk' && !reversed">ATK ↥</div>
+          <div *ngIf="sortBy == 'atk' && reversed">ATK ↧</div>
+        </th>
+        <th
+          (click)="sortByStat('def')"
+          class="w-12 cursor-pointer hover:text-slate-200"
+        >
+          <div *ngIf="sortBy != 'def'">DEF</div>
+          <div *ngIf="sortBy == 'def' && !reversed">DEF ↥</div>
+          <div *ngIf="sortBy == 'def' && reversed">DEF ↧</div>
+        </th>
+        <th
+          (click)="sortByStat('spa')"
+          class="w-12 cursor-pointer hover:text-slate-200"
+        >
+          <div *ngIf="sortBy != 'spa'">SPA</div>
+          <div *ngIf="sortBy == 'spa' && !reversed">SPA ↥</div>
+          <div *ngIf="sortBy == 'spa' && reversed">SPA ↧</div>
+        </th>
+        <th
+          (click)="sortByStat('spd')"
+          class="w-12 cursor-pointer hover:text-slate-200"
+        >
+          <div *ngIf="sortBy != 'spd'">SPD</div>
+          <div *ngIf="sortBy == 'spd' && !reversed">SPD ↥</div>
+          <div *ngIf="sortBy == 'spd' && reversed">SPD ↧</div>
+        </th>
+        <th
+          (click)="sortByStat('spe')"
+          class="w-12 cursor-pointer hover:text-slate-200"
+        >
+          <div *ngIf="sortBy != 'spe'">SPE</div>
+          <div *ngIf="sortBy == 'spe' && !reversed">SPE ↥</div>
+          <div *ngIf="sortBy == 'spe' && reversed">SPE ↧</div>
+        </th>
+      </tr>
+      <tr
+        *ngFor="let pokemon of teams[selectedTeam].team"
+        class="h-12 border-b border-slate-400"
+      >
+        <td>
+          <div *ngIf="pokemon.capt" class="w-6">
+            <div *ngIf="pokemon.capt.tera">
+              <tera [pokemon]="pokemon"></tera>
+            </div>
+            <div *ngIf="pokemon.capt.z">
+              <img src="../../../assets/icons/z.svg" />
+            </div>
           </div>
-          <div *ngIf="pokemon.capt.z">
-            <img src="../../../assets/icons/z.svg" />
-          </div>
-        </div>
-      </td>
-      <td>
-        <sprite [pokemon]="pokemon"></sprite>
-      </td>
-      <td class="text-sm">{{ pokemon.name }}</td>
-      <td>
-        <img
-          *ngFor="let type of pokemon.types"
-          src="https://play.pokemonshowdown.com/sprites/types/{{ type }}.png"
-          alt="{{ type }}"
-        />
-      </td>
+        </td>
+        <td>
+          <sprite [pokemon]="pokemon"></sprite>
+        </td>
+        <td class="text-sm">{{ pokemon.name }}</td>
+        <td>
+          <img
+            *ngFor="let type of pokemon.types"
+            src="https://play.pokemonshowdown.com/sprites/types/{{ type }}.png"
+            alt="{{ type }}"
+          />
+        </td>
 
-      <td>
-        <div *ngFor="let ability of pokemon.abilities" class="text-center">
-          {{ ability }}
-        </div>
-      </td>
-      <td
-        class="text-center border-l-2 border-slate-400"
-        [ngClass]="statColor(pokemon.baseStats.hp)"
-      >
-        {{ pokemon.baseStats.hp }}
-      </td>
-      <td class="text-center" [ngClass]="statColor(pokemon.baseStats.atk)">
-        {{ pokemon.baseStats.atk }}
-      </td>
-      <td class="text-center" [ngClass]="statColor(pokemon.baseStats.def)">
-        {{ pokemon.baseStats.def }}
-      </td>
-      <td class="text-center" [ngClass]="statColor(pokemon.baseStats.spa)">
-        {{ pokemon.baseStats.spa }}
-      </td>
-      <td class="text-center" [ngClass]="statColor(pokemon.baseStats.spd)">
-        {{ pokemon.baseStats.spd }}
-      </td>
-      <td class="text-center" [ngClass]="statColor(pokemon.baseStats.spe)">
-        {{ pokemon.baseStats.spe }}
-      </td>
-    </tr>
-    <tr class="border-t-2 bg-slate-300 border-slate-400">
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td class="text-center">Average</td>
-      <td
-        class="text-center"
-        [ngClass]="statColor(teams[selectedTeam].stats.mean.hp)"
-      >
-        {{ teams[selectedTeam].stats.mean.hp }}
-      </td>
-      <td
-        class="text-center"
-        [ngClass]="statColor(teams[selectedTeam].stats.mean.atk)"
-      >
-        {{ teams[selectedTeam].stats.mean.atk }}
-      </td>
-      <td
-        class="text-center"
-        [ngClass]="statColor(teams[selectedTeam].stats.mean.def)"
-      >
-        {{ teams[selectedTeam].stats.mean.def }}
-      </td>
-      <td
-        class="text-center"
-        [ngClass]="statColor(teams[selectedTeam].stats.mean.spa)"
-      >
-        {{ teams[selectedTeam].stats.mean.spa }}
-      </td>
-      <td
-        class="text-center"
-        [ngClass]="statColor(teams[selectedTeam].stats.mean.spd)"
-      >
-        {{ teams[selectedTeam].stats.mean.spd }}
-      </td>
-      <td
-        class="text-center"
-        [ngClass]="statColor(teams[selectedTeam].stats.mean.spe)"
-      >
-        {{ teams[selectedTeam].stats.mean.spe }}
-      </td>
-    </tr>
-    <tr class="bg-slate-300">
-      <td></td>
-      <td></td>
-      <td class="flex">
-        <input type="range" min="20" max="140" [(ngModel)]="baseValue" />
-        <input
-          type="number"
-          [(ngModel)]="baseValue"
-          min="20"
-          max="140"
-          value="{{ baseValue }}"
-          class="w-8 bg-transparent"
-        />
-      </td>
-      <td></td>
-      <td class="text-center">Median</td>
-      <td
-        class="text-center"
-        [ngClass]="statColor(teams[selectedTeam].stats.median.hp)"
-      >
-        {{ teams[selectedTeam].stats.median.hp }}
-      </td>
-      <td
-        class="text-center"
-        [ngClass]="statColor(teams[selectedTeam].stats.median.atk)"
-      >
-        {{ teams[selectedTeam].stats.median.atk }}
-      </td>
-      <td
-        class="text-center"
-        [ngClass]="statColor(teams[selectedTeam].stats.median.def)"
-      >
-        {{ teams[selectedTeam].stats.median.def }}
-      </td>
-      <td
-        class="text-center"
-        [ngClass]="statColor(teams[selectedTeam].stats.median.spa)"
-      >
-        {{ teams[selectedTeam].stats.median.spa }}
-      </td>
-      <td
-        class="text-center"
-        [ngClass]="statColor(teams[selectedTeam].stats.median.spd)"
-      >
-        {{ teams[selectedTeam].stats.median.spd }}
-      </td>
-      <td
-        class="text-center"
-        [ngClass]="statColor(teams[selectedTeam].stats.median.spe)"
-      >
-        {{ teams[selectedTeam].stats.median.spe }}
-      </td>
-    </tr>
-    <tr class="bg-slate-300">
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td class="text-center">Max</td>
-      <td
-        class="text-center"
-        [ngClass]="statColor(teams[selectedTeam].stats.max.hp)"
-      >
-        {{ teams[selectedTeam].stats.max.hp }}
-      </td>
-      <td
-        class="text-center"
-        [ngClass]="statColor(teams[selectedTeam].stats.max.atk)"
-      >
-        {{ teams[selectedTeam].stats.max.atk }}
-      </td>
-      <td
-        class="text-center"
-        [ngClass]="statColor(teams[selectedTeam].stats.max.def)"
-      >
-        {{ teams[selectedTeam].stats.max.def }}
-      </td>
-      <td
-        class="text-center"
-        [ngClass]="statColor(teams[selectedTeam].stats.max.spa)"
-      >
-        {{ teams[selectedTeam].stats.max.spa }}
-      </td>
-      <td
-        class="text-center"
-        [ngClass]="statColor(teams[selectedTeam].stats.max.spd)"
-      >
-        {{ teams[selectedTeam].stats.max.spd }}
-      </td>
-      <td
-        class="text-center"
-        [ngClass]="statColor(teams[selectedTeam].stats.max.spe)"
-      >
-        {{ teams[selectedTeam].stats.max.spe }}
-      </td>
-    </tr>
-  </table>
+        <td>
+          <div *ngFor="let ability of pokemon.abilities" class="text-center">
+            {{ ability }}
+          </div>
+        </td>
+        <td
+          class="text-center border-l-2 border-slate-400"
+          [ngClass]="statColor(pokemon.baseStats.hp)"
+        >
+          {{ pokemon.baseStats.hp }}
+        </td>
+        <td class="text-center" [ngClass]="statColor(pokemon.baseStats.atk)">
+          {{ pokemon.baseStats.atk }}
+        </td>
+        <td class="text-center" [ngClass]="statColor(pokemon.baseStats.def)">
+          {{ pokemon.baseStats.def }}
+        </td>
+        <td class="text-center" [ngClass]="statColor(pokemon.baseStats.spa)">
+          {{ pokemon.baseStats.spa }}
+        </td>
+        <td class="text-center" [ngClass]="statColor(pokemon.baseStats.spd)">
+          {{ pokemon.baseStats.spd }}
+        </td>
+        <td class="text-center" [ngClass]="statColor(pokemon.baseStats.spe)">
+          {{ pokemon.baseStats.spe }}
+        </td>
+      </tr>
+      <tr class="border-t-2 bg-slate-300 border-slate-400">
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td class="text-center">Average</td>
+        <td
+          class="text-center"
+          [ngClass]="statColor(teams[selectedTeam].stats.mean.hp)"
+        >
+          {{ teams[selectedTeam].stats.mean.hp }}
+        </td>
+        <td
+          class="text-center"
+          [ngClass]="statColor(teams[selectedTeam].stats.mean.atk)"
+        >
+          {{ teams[selectedTeam].stats.mean.atk }}
+        </td>
+        <td
+          class="text-center"
+          [ngClass]="statColor(teams[selectedTeam].stats.mean.def)"
+        >
+          {{ teams[selectedTeam].stats.mean.def }}
+        </td>
+        <td
+          class="text-center"
+          [ngClass]="statColor(teams[selectedTeam].stats.mean.spa)"
+        >
+          {{ teams[selectedTeam].stats.mean.spa }}
+        </td>
+        <td
+          class="text-center"
+          [ngClass]="statColor(teams[selectedTeam].stats.mean.spd)"
+        >
+          {{ teams[selectedTeam].stats.mean.spd }}
+        </td>
+        <td
+          class="text-center"
+          [ngClass]="statColor(teams[selectedTeam].stats.mean.spe)"
+        >
+          {{ teams[selectedTeam].stats.mean.spe }}
+        </td>
+      </tr>
+      <tr class="bg-slate-300">
+        <td></td>
+        <td></td>
+        <td class="flex">
+          <input type="range" min="20" max="140" [(ngModel)]="baseValue" />
+          <input
+            type="number"
+            [(ngModel)]="baseValue"
+            min="20"
+            max="140"
+            value="{{ baseValue }}"
+            class="w-8 bg-transparent"
+          />
+        </td>
+        <td></td>
+        <td class="text-center">Median</td>
+        <td
+          class="text-center"
+          [ngClass]="statColor(teams[selectedTeam].stats.median.hp)"
+        >
+          {{ teams[selectedTeam].stats.median.hp }}
+        </td>
+        <td
+          class="text-center"
+          [ngClass]="statColor(teams[selectedTeam].stats.median.atk)"
+        >
+          {{ teams[selectedTeam].stats.median.atk }}
+        </td>
+        <td
+          class="text-center"
+          [ngClass]="statColor(teams[selectedTeam].stats.median.def)"
+        >
+          {{ teams[selectedTeam].stats.median.def }}
+        </td>
+        <td
+          class="text-center"
+          [ngClass]="statColor(teams[selectedTeam].stats.median.spa)"
+        >
+          {{ teams[selectedTeam].stats.median.spa }}
+        </td>
+        <td
+          class="text-center"
+          [ngClass]="statColor(teams[selectedTeam].stats.median.spd)"
+        >
+          {{ teams[selectedTeam].stats.median.spd }}
+        </td>
+        <td
+          class="text-center"
+          [ngClass]="statColor(teams[selectedTeam].stats.median.spe)"
+        >
+          {{ teams[selectedTeam].stats.median.spe }}
+        </td>
+      </tr>
+      <tr class="bg-slate-300">
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td class="text-center">Max</td>
+        <td
+          class="text-center"
+          [ngClass]="statColor(teams[selectedTeam].stats.max.hp)"
+        >
+          {{ teams[selectedTeam].stats.max.hp }}
+        </td>
+        <td
+          class="text-center"
+          [ngClass]="statColor(teams[selectedTeam].stats.max.atk)"
+        >
+          {{ teams[selectedTeam].stats.max.atk }}
+        </td>
+        <td
+          class="text-center"
+          [ngClass]="statColor(teams[selectedTeam].stats.max.def)"
+        >
+          {{ teams[selectedTeam].stats.max.def }}
+        </td>
+        <td
+          class="text-center"
+          [ngClass]="statColor(teams[selectedTeam].stats.max.spa)"
+        >
+          {{ teams[selectedTeam].stats.max.spa }}
+        </td>
+        <td
+          class="text-center"
+          [ngClass]="statColor(teams[selectedTeam].stats.max.spd)"
+        >
+          {{ teams[selectedTeam].stats.max.spd }}
+        </td>
+        <td
+          class="text-center"
+          [ngClass]="statColor(teams[selectedTeam].stats.max.spe)"
+        >
+          {{ teams[selectedTeam].stats.max.spe }}
+        </td>
+      </tr>
+    </table>
+  </div>
   <div class="w-full h-3 rounded-b-full bg-slate-400"></div>
 </div>
