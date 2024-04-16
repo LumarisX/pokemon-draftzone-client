@@ -24,7 +24,6 @@ export class MatchupOverviewComponent implements OnInit {
   matchupData: MatchupData | null = null;
   matchupId = '';
   shared = false;
-  copyText = 'Copy';
   shareUrl = '';
   leagueId = '';
 
@@ -85,13 +84,7 @@ export class MatchupOverviewComponent implements OnInit {
     });
   }
 
-  share() {
-    this.shared = true;
-    this.copyText = 'Copy';
-  }
-
   copyToClipboard() {
-    this.copyText = 'Copied!';
     navigator.clipboard
       .writeText(this.shareUrl)
       .then(() => {
