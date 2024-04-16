@@ -1,5 +1,5 @@
 <form [formGroup]="pokemonForm" autocomplete="off">
-  <div class="grid grid-cols-8 items-center w-full">
+  <div class="grid items-center w-full grid-cols-8">
     <sprite
       class="col-span-2 sm:col-span-1"
       [pokemon]="{
@@ -81,7 +81,7 @@
     <div
       *ngIf="pokemonForm.get('capt.teraCheck')?.value"
       formGroupName="tera"
-      class="grid sm:grid-cols-12 grid-cols-7"
+      class="grid grid-cols-7 sm:grid-cols-12"
     >
       <div
         *ngFor="let type of teraTypes"
@@ -89,7 +89,8 @@
       >
         <img
           class=""
-          src="https://play.pokemonshowdown.com/sprites/types/{{ type }}.png"
+          src="../../../assets/icons/types/{{ type }}.png"
+          onerror="this.src='../../../assets/icons/types/Unknown.png'"
           alt="{{ type }}"
         />
         <input

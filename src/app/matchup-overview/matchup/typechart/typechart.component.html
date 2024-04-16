@@ -25,9 +25,8 @@
           >
             <img
               class=""
-              src="https://play.pokemonshowdown.com/sprites/types/{{
-                type
-              }}.png"
+              src="../../../../assets/icons/types/{{ type }}.png"
+              onerror="this.src='../../../../assets/icons/types/Unknown.png'"
               alt="{{ type }}"
             />
           </th>
@@ -66,9 +65,8 @@
           >
             <img
               class="min-w-6"
-              src="https://play.pokemonshowdown.com/sprites/types/{{
-                type
-              }}.png"
+              src="../../../../assets/icons/types/{{ type }}.png"
+              onerror="this.src='../../../../assets/icons/types/Unknown.png'"
               alt="{{ type }}"
             />
           </th>
@@ -76,7 +74,9 @@
       </thead>
       <tfoot id="typeSum" class="bg-slate-300">
         <tr>
-          <th class="text-xs border bg-rose-400 border-slate-400">Weaks</th>
+          <th class="text-xs border border-r-2 bg-rose-400 border-slate-400">
+            Weaks
+          </th>
           <td
             *ngFor="let weakness of weaknesses"
             class="text-center border"
@@ -86,7 +86,7 @@
           </td>
         </tr>
         <tr>
-          <th class="text-xs border bg-emerald-400 border-slate-400">
+          <th class="text-xs border border-r-2 bg-emerald-400 border-slate-400">
             Resists
           </th>
           <td
@@ -99,7 +99,7 @@
         </tr>
         <tr>
           <th
-            class="text-xs bg-gradient-to-r from-rose-400 from-50% to-emerald-400 to-50% border border-slate-400"
+            class="text-xs bg-gradient-to-r from-rose-400 from-50% to-emerald-400 to-50% border border-slate-400 border-r-2"
           >
             Diff
           </th>
@@ -113,7 +113,7 @@
         </tr>
         <tr>
           <th
-            class="text-xs border bg-gradient-to-r from-rose-400 via-slate-200 to-emerald-400 border-slate-400"
+            class="text-xs border border-r-2 bg-gradient-to-r from-rose-400 via-slate-200 to-emerald-400 border-slate-400"
           >
             Log
           </th>

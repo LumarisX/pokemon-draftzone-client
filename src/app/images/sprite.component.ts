@@ -29,7 +29,7 @@ export class SpriteComponent {
     return this._pokemon;
   }
 
-  source: 'home' | 'serebii' | 'icon' | 'bw' | 'sv' | 'ani' | '?' = 'serebii';
+  source: 'home' | 'serebii' | 'icon' | 'bw' | 'sv' | 'ani' | '?' = 'home';
   _pokemon!: Pokemon;
   path = '../../../../assets/icons/unknown.svg';
   _classes: string[] = [];

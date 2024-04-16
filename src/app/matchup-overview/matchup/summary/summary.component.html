@@ -101,7 +101,8 @@
         <td>
           <img
             *ngFor="let type of pokemon.types"
-            src="https://play.pokemonshowdown.com/sprites/types/{{ type }}.png"
+            src="../../../assets/icons/types/{{ type }}.png"
+            onerror="this.src='../../../assets/icons/types/Unknown.png'"
             alt="{{ type }}"
           />
         </td>
