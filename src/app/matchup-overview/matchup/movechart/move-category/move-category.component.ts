@@ -11,7 +11,7 @@ import { MoveCategory } from '../../../matchup-interface';
 })
 export class MoveCategoryComponent {
   @Input() category!: MoveCategory;
-  show: boolean = true;
+  show: boolean = false;
   constructor() {}
 
   typeBorder(type: string) {

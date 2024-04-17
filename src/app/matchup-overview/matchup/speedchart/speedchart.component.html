@@ -12,26 +12,53 @@
       >
         <img
           class="w-full"
+          *ngIf="!showFilter"
           src="../../../assets/icons/filter.svg"
+          alt="Filter"
           title="Filter"
+        />
+        <img
+          class="w-full"
+          *ngIf="showFilter"
+          src="../../../assets/icons/close.svg"
+          alt="Close"
+          title="Close"
         />
       </div>
       <div
-        class="absolute right-0 p-1 mt-2 bg-white border divide-y rounded-md shadow-lg w-28 z-5000"
+        class="absolute right-0 w-32 p-1 mt-2 bg-white border divide-y rounded-md shadow-lg z-5000"
         *ngIf="showFilter"
       >
         <div
+          class="font-semibold text-center rounded hover:bg-slate-100"
+          (click)="resetModifiers()"
+        >
+          Reset
+        </div>
+        <div
           *ngFor="let modifier of speedchart?.modifiers"
-          class="flex h-6 py-1 space-x-1 z-5000"
+          class="flex items-center py-1 space-x-1 h-fit z-5000"
         >
           <input
             type="checkbox"
+            class="accent-cyan-400"
             id="{{ modifier }}"
             name="{{ modifier }}"
             value="{{ modifier }}"
-            [(ngModel)]="modifiers[modifier]"
+            [(ngModel)]="modifiers[0][modifier]"
           />
-          <speed-modifier-icon [modifier]="modifier"></speed-modifier-icon>
+          <input
+            type="checkbox"
+            class="accent-red-400"
+            id="{{ modifier }}"
+            name="{{ modifier }}"
+            value="{{ modifier }}"
+            [(ngModel)]="modifiers[1][modifier]"
+          />
+          <speed-modifier-icon
+            class="w-5 h-5"
+            [modifier]="modifier"
+          ></speed-modifier-icon>
           <label for="{{ modifier }}">{{ modifier }}</label>
         </div>
       </div>

@@ -1,6 +1,6 @@
 <div class="flex flex-col justify-between h-dvh">
   <header class="z-10 flex w-full p-2 border-b-2 bg-slate-300 border-slate-400">
-    <div class="relative flex sm:hidden">
+    <div class="relative flex">
       <button
         (click)="menuDropdown = !menuDropdown"
         id="dropdownButton"
@@ -8,12 +8,6 @@
       >
         <img class="" src="../assets/icons/menu.svg" />
       </button>
-      <div
-        class="flex items-center justify-center mx-2 rounded w-28 hover:bg-slate-200"
-      >
-        <a class="text-xl" routerLink="/">DraftZone</a>
-      </div>
-
       <div
         *ngIf="menuDropdown"
         (click)="menuDropdown = false"
@@ -29,14 +23,12 @@
           <a class="opacity-50">Statistics</a>
         </div>
       </div>
-    </div>
-    <div class="hidden sm:flex">
       <div
         class="flex items-center justify-center rounded w-28 hover:bg-slate-200"
       >
-        <a class="text-xl" routerLink="/">DraftZone</a>
+        <a class="text-xl font-semibold" routerLink="/">DraftZone</a>
       </div>
-      <div class="flex">
+      <div class="hidden sm:flex">
         <div class="flex items-center h-full px-3 rounded hover:bg-slate-200">
           <a routerLink="/draft">Drafts</a>
         </div>

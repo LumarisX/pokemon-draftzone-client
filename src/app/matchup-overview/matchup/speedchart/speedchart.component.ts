@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { SpeedChart, Speedtier, Summary } from '../../matchup-interface';
 import { SpriteComponent } from '../../../images/sprite.component';
 import { FormsModule } from '@angular/forms';
@@ -17,7 +17,7 @@ import { SpeedModifierIconComponent } from './speed-modifier-icon.component';
     SpeedModifierIconComponent,
   ],
 })
-export class SpeedchartComponent {
+export class SpeedchartComponent implements OnInit {
   @Input() speedchart!: SpeedChart | null;
   private _speeds: {
     pokemon: Pokemon & {
@@ -79,27 +79,42 @@ export class SpeedchartComponent {
   @Input() level = 100;
   showFilter: boolean = false;
 
-  modifiers: {
-    [key: string]: boolean;
-  } = {
-    '252': true,
-    Positive: true,
-    '0': true,
-    Negative: true,
-    'Swift Swim': true,
-    'Sand Rush': true,
-    Chlorophyll: true,
-    'Slush Rush': true,
-    Protosynthesis: true,
-    'Quark Drive': true,
-    'Quick Feet': true,
-    Unburden: true,
-    'Surge Surfer': true,
-  };
+  modifiers: [
+    {
+      [key: string]: boolean;
+    },
+    {
+      [key: string]: boolean;
+    }
+  ] = [{}, {}];
 
   enabledMons: [aTeam: string | null, bTeam: string | null] = [null, null];
 
   constructor() {}
+
+  ngOnInit() {
+    this.resetModifiers();
+  }
+
+  resetModifiers() {
+    for (let team in this.modifiers) {
+      this.modifiers[team] = {
+        '252': true,
+        Positive: true,
+        '0': true,
+        Negative: true,
+        'Swift Swim': true,
+        'Sand Rush': true,
+        Chlorophyll: true,
+        'Slush Rush': true,
+        Protosynthesis: true,
+        'Quark Drive': true,
+        'Quick Feet': true,
+        Unburden: true,
+        'Surge Surfer': true,
+      };
+    }
+  }
 
   teamColor(team: number) {
     let classes = [];
@@ -180,8 +195,8 @@ export class SpeedchartComponent {
       return false;
     }
     for (let mod of tier.modifiers) {
-      if (mod in this.modifiers) {
-        if (!this.modifiers[mod]) {
+      if (mod in this.modifiers[tier.team]) {
+        if (!this.modifiers[tier.team][mod]) {
           return false;
         }
       } else {

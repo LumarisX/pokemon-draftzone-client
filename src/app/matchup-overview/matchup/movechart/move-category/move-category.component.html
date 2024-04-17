@@ -1,11 +1,11 @@
 <div
-  class="sticky top-0 left-0 z-10 flex w-full text-lg font-bold border-t border-b bg-slate-300 border-slate-400"
+  (click)="show = !show"
+  class="sticky top-0 left-0 z-10 flex w-full text-lg font-bold border-t border-b min-w-96 bg-slate-300 border-slate-400"
 >
   <div class="flex items-center justify-center flex-grow">
     {{ category.categoryName }}
   </div>
   <div
-    (click)="show = !show"
     class="items-center justify-end w-4 h-4 m-2 ml-auto border rounded cursor-pointer border-slate-500 bg-slate-400 hover:bg-slate-200"
   >
     <img
