@@ -50,7 +50,7 @@ export class PlannerComponent implements OnInit {
   team: PokemonId[] = [];
   typechart!: TypeChart;
   summary!: Summary;
-  tabSelected = 1;
+  tabSelected = 0;
   formats = [];
   rulesets = [];
   movechart: MoveChart = [];

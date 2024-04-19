@@ -2,6 +2,7 @@
   <table class="table-fixed h-fit">
     <thead class="bg-slate-400">
       <tr>
+        <th class="w-12"></th>
         <th
           (click)="sortByName()"
           class="w-32 cursor-pointer hover:text-slate-200"
@@ -81,9 +82,11 @@
             </div>
           </div>
         </td> -->
-          <td class="flex items-center w-32 h-full text-sm">
-            <sprite [pokemon]="pokemon" class="w-12 h-12 mx-2"></sprite>
-            <div class="flex items-center">
+          <td class="w-12">
+            <sprite [pokemon]="pokemon"></sprite>
+          </td>
+          <td class="w-32">
+            <div class="flex items-center w-full h-full text-sm">
               {{ pokemon.name }}
             </div>
           </td>
@@ -149,6 +152,7 @@
   <table class="table-fixed h-fit">
     <tfoot class="sticky bottom-0">
       <tr class="border-t-2 bg-slate-300 border-slate-400">
+        <td class="w-12"></td>
         <td class="w-32"></td>
         <td class="w-12"></td>
         <td class="w-24 text-center">Average</td>
@@ -190,6 +194,7 @@
         </td>
       </tr>
       <tr class="bg-slate-300">
+        <td></td>
         <td class="flex w-32">
           <input type="range" min="20" max="140" [(ngModel)]="baseValue" />
           <input
@@ -223,6 +228,7 @@
         </td>
       </tr>
       <tr class="bg-slate-300">
+        <td></td>
         <td></td>
         <td></td>
         <td class="text-center">Max</td>
