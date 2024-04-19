@@ -37,6 +37,15 @@
     border-radius: 100vh;
   }
 
+  .scrollbar-hidden::-webkit-scrollbar {
+    display: none;
+  }
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .scrollbar-hidden {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+
   /*scrollbar*/
   ::-webkit-scrollbar {
     width: 12px;
@@ -57,6 +66,5 @@
   ::-webkit-scrollbar-thumb:hover {
     background: theme("colors.slate.350");
     border: 1px solid theme("colors.slate.100");
-    
   }
 }
