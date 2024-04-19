@@ -1,4 +1,9 @@
-<div class="h-full overflow-y-auto border-4 border-slate-400 bg-slate-400">
-  <move-category *ngFor="let category of this.movechart" [category]="category">
-  </move-category>
+<div class="h-full overflow-y-auto max-w-192">
+  <div class="border-4 border-slate-400 bg-slate-400 h-fit">
+    <move-category
+      *ngFor="let category of this.movechart"
+      [category]="category"
+    >
+    </move-category>
+  </div>
 </div>
