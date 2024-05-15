@@ -9,6 +9,6 @@ export class PlannerService {
   constructor(private apiService: ApiService) {}
 
   getPlannerDetails(team: PokemonId[]) {
-    return this.apiService.get('planner?team=' + team);
+    return this.apiService.getUnauth('planner?team=' + team);
   }
 }

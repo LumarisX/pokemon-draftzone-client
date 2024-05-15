@@ -8,10 +8,10 @@ export class DataService {
   constructor(private apiService: ApiService) {}
 
   getFormats() {
-    return this.apiService.get('data/formats');
+    return this.apiService.getUnauth('data/formats');
   }
 
   getRulesets() {
-    return this.apiService.get('data/rulesets');
+    return this.apiService.getUnauth('data/rulesets');
   }
 }
