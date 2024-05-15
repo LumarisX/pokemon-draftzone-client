@@ -3,11 +3,12 @@
 >
   <table class="table-fixed">
     <thead>
-      <tr class="border-b-2 bg-slate-300 border-slate-400">
+      <tr class="">
+        <th class="w-12 border-r-4 border-r-slate-400"></th>
         <th
-          class="w-12 border-b-2 border-r-4 border-r-slate-400 border-b-cyan-400 bg-cyan-400"
-        ></th>
-        <th class="w-8" *ngFor="let type of types">
+          class="w-8 border-b-2 bg-slate-300 border-slate-400"
+          *ngFor="let type of types"
+        >
           <img
             class=""
             src="../../../assets/icons/types/{{ type }}.png"
@@ -20,10 +21,10 @@
   </table>
   <div class="overflow-y-auto scrollbar-hidden">
     <table class="table-fixed">
-      <tbody class="border-y border-cyan-400">
+      <tbody class="">
         <tr *ngFor="let pokemon of typechart.team" class="">
           <th
-            class="w-12 border-r-4 cursor-pointer border-r-slate-400 bg-cyan-400 hover:bg-cyan-300"
+            class="w-12 border-r-4 cursor-pointer border-r-slate-400 hover:bg-slate-100"
             (click)="toggleVisible(pokemon)"
           >
             <sprite
@@ -45,9 +46,7 @@
   <table class="table-fixed">
     <thead class="border-b-4 border-slate-400">
       <tr class="">
-        <th
-          class="w-12 border-t-2 border-l border-r-4 border-cyan-400 border-r-slate-400 bg-cyan-400"
-        ></th>
+        <th class="w-12 border-l border-r-4 border-r-slate-400"></th>
         <th
           class="w-8 border-t-2 bg-slate-300 border-slate-400"
           *ngFor="let type of types"

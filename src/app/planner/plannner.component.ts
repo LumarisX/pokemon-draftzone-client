@@ -10,23 +10,23 @@ import {
   Validators,
 } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { DataService } from '../api/data.service';
 import { PlannerService } from '../api/planner.service';
+import { FilterComponent } from '../filter/filter.component';
+import { SpriteComponent } from '../images/sprite.component';
+import { Pokemon } from '../interfaces/draft';
 import {
-  TypeChart,
-  Summary,
   MoveChart,
+  Summary,
+  TypeChart,
 } from '../matchup-overview/matchup-interface';
 import { BattlePokedex } from '../pokedex';
 import { PokemonId } from '../pokemon';
-import { SpriteComponent } from '../images/sprite.component';
+import { FinderComponent } from './finder/finder.component';
+import { MoveComponent } from './moves/moves.component';
 import { Planner } from './planner.interface';
 import { SummaryComponent } from './summary/summary.component';
 import { TypechartComponent } from './typechart/typechart.component';
-import { FilterComponent } from '../filter/filter.component';
-import { Pokemon } from '../interfaces/draft';
-import { DataService } from '../api/data.service';
-import { MoveComponent } from './moves/moves.component';
-import { FinderComponent } from './finder/finder.component';
 
 @Component({
   selector: 'planner',
@@ -73,10 +73,10 @@ export class PlannerComponent implements OnInit {
     this.plannerForm = this.fb.group({
       format: ['', Validators.required],
       ruleset: ['', Validators.required],
-      min: [11, [Validators.required, Validators.min(0)]], //set to 10
-      max: [11, [Validators.required, Validators.min(0), Validators.max(18)]], //set to 12
+      min: [10, [Validators.required, Validators.min(0)]], //set to 10
+      max: [12, [Validators.required, Validators.min(0), Validators.max(18)]], //set to 12
       system: ['points', Validators.required],
-      totalPoints: [160], // set to 0
+      totalPoints: [100], // set to 0
       team: this.fb.array([]),
     });
 
@@ -96,13 +96,13 @@ export class PlannerComponent implements OnInit {
 
     this.adjustTeamArray(12);
 
-    const formData = sessionStorage.getItem('plannerFormData');
+    const formData = localStorage.getItem('plannerFormData');
     if (formData) {
       this.plannerForm.patchValue(JSON.parse(formData));
       this.updateDetails();
     }
     this.plannerForm.valueChanges.subscribe((value) => {
-      sessionStorage.setItem('plannerFormData', JSON.stringify(value));
+      localStorage.setItem('plannerFormData', JSON.stringify(value));
     });
   }
 
@@ -134,6 +134,27 @@ export class PlannerComponent implements OnInit {
       return mons;
     }
     return 1;
+  }
+
+  resetForm() {
+    this.plannerForm = this.fb.group({
+      format: ['', Validators.required],
+      ruleset: ['', Validators.required],
+      min: [10, [Validators.required, Validators.min(0)]], //set to 10
+      max: [12, [Validators.required, Validators.min(0), Validators.max(18)]], //set to 12
+      system: ['points', Validators.required],
+      totalPoints: [100], // set to 0
+      team: this.fb.array([]),
+    });
+
+    this.typechart = {} as TypeChart;
+    this.summary = {} as Summary;
+    this.movechart = [];
+    localStorage.setItem(
+      'plannerFormData',
+      JSON.stringify(this.plannerForm.value)
+    );
+    this.ngOnInit();
   }
 
   updateDetails() {
@@ -197,5 +218,17 @@ export class PlannerComponent implements OnInit {
       tier: [''],
       value: [0],
     });
+  }
+
+  tabColor(tab: number) {
+    return tab == this.tabSelected
+      ? 'border-slate-400 hover:bg-slate-200 bg-slate-100'
+      : 'border-slate-300 hover:bg-slate-100 bg-white';
+  }
+
+  minMaxStyle(i: number) {
+    return i < this.plannerForm.get('min')?.value
+      ? 'border-slate-500'
+      : 'border-slate-300 text-slate-500';
   }
 }
