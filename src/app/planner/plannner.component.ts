@@ -140,10 +140,10 @@ export class PlannerComponent implements OnInit {
     this.plannerForm = this.fb.group({
       format: ['', Validators.required],
       ruleset: ['', Validators.required],
-      min: [10, [Validators.required, Validators.min(0)]], //set to 10
-      max: [12, [Validators.required, Validators.min(0), Validators.max(18)]], //set to 12
+      min: [10, [Validators.required, Validators.min(0)]],
+      max: [12, [Validators.required, Validators.min(0), Validators.max(18)]],
       system: ['points', Validators.required],
-      totalPoints: [100], // set to 0
+      totalPoints: [100],
       team: this.fb.array([]),
     });
 
