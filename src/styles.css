@@ -20,6 +20,14 @@
   z-index: 0;
 }
 
+@font-face {
+  font-family: 'Nasalization RG';
+  src: url('./assets/fonts/nasalization-rg.otf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
 @layer utilities {
   /*tera scrollbar*/
   .scrollbar-tera::-webkit-scrollbar {

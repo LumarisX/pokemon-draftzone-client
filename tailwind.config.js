@@ -2,6 +2,9 @@
 module.exports = {
   content: ["./src/**/*.{html,ts,tsx,jsx}"],
   theme: {
+    fontFamily: {
+      nasa: ["Nasalization RG", "sans-serif"],
+    },
     extend: {
       spacing: {
         128: "32rem",

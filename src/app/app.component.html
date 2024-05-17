@@ -13,29 +13,34 @@
         (click)="menuDropdown = false"
         class="absolute left-0 flex-col block p-2 bg-white border border-gray-200 rounded-md shadow-md sm:flex sm:hidden top-full"
       >
-        <div class="flex items-center h-full px-3 hover:bg-slate-200">
+        <div class="flex items-center h-full px-3 font-nasa hover:bg-slate-200">
           <a routerLink="/draft">Drafts</a>
         </div>
-        <div class="flex items-center h-full px-3 hover:bg-slate-200">
+        <div class="flex items-center h-full px-3 font-nasa hover:bg-slate-200">
           <a routerLink="/planner">Planner</a>
         </div>
-        <div class="flex items-center h-full px-3">
+        <div class="flex items-center h-full px-3 font-nasa">
           <a class="opacity-50">Statistics</a>
         </div>
       </div>
       <div
         class="flex items-center justify-center rounded w-28 hover:bg-slate-200"
       >
-        <a class="text-xl font-semibold" routerLink="/">DraftZone</a>
+        <img
+          src="../assets/logo.png"
+          class="px-2 text-xl font-semibold"
+          alt="DraftZone"
+          routerLink="/"
+        />
       </div>
-      <div class="hidden sm:flex">
-        <div class="flex items-center h-full px-3 rounded hover:bg-slate-200">
+      <div class="hidden space-x-2 sm:flex font-nasa">
+        <div class="flex items-center h-full px-2 rounded hover:bg-slate-200">
           <a routerLink="/draft">Drafts</a>
         </div>
-        <div class="flex items-center h-full px-3 rounded hover:bg-slate-200">
+        <div class="flex items-center h-full px-2 rounded hover:bg-slate-200">
           <a routerLink="/planner">Planner</a>
         </div>
-        <div class="flex items-center h-full px-3 rounded">
+        <div class="flex items-center h-full px-2 rounded">
           <a class="opacity-50">Statistics</a>
         </div>
       </div>
