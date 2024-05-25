@@ -4,14 +4,14 @@
       <button
         (click)="menuDropdown = !menuDropdown"
         id="dropdownButton"
-        class="block w-8 px-1 py-1 text-gray-800 bg-gray-200 rounded-md sm:hidden focus:outline-none"
+        class="block w-8 px-1 py-1 mr-2 text-gray-800 bg-gray-200 rounded-md sm:hidden focus:outline-none"
       >
         <img class="" src="../assets/icons/menu.svg" />
       </button>
       <div
         *ngIf="menuDropdown"
         (click)="menuDropdown = false"
-        class="absolute left-0 flex-col block p-2 bg-white border border-gray-200 rounded-md shadow-md sm:flex sm:hidden top-full"
+        class="absolute left-0 flex-col block p-2 bg-white border border-gray-200 divide-y rounded-md shadow-md sm:flex sm:hidden top-full"
       >
         <div class="flex items-center h-full px-3 font-nasa hover:bg-slate-200">
           <a routerLink="/draft">Drafts</a>
@@ -28,12 +28,12 @@
       >
         <img
           src="../assets/logo.png"
-          class="mx-2 text-xl font-semibold"
+          class="text-xl font-semibold"
           alt="DraftZone"
           routerLink="/"
         />
       </div>
-      <div class="hidden space-x-2 sm:flex font-nasa">
+      <div class="hidden px-2 space-x-2 sm:flex font-nasa">
         <div class="flex items-center h-full px-2 rounded hover:bg-slate-200">
           <a routerLink="/draft">Drafts</a>
         </div>

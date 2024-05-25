@@ -17,6 +17,11 @@ module.exports = {
         slate: {
           350: "#B0BCCC",
         },
+        deoxys: {
+          red: "#F15B42",
+          cyan: "#0FB6CD",
+          purple: "#9B65AA",
+        },
         bug: "#b0c435",
         dark: "#6d5b50",
         dragon: "#7a6fb2",
