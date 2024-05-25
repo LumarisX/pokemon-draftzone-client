@@ -116,6 +116,7 @@
             <div class="w-1/2">
               <input
                 type="text"
+                spellcheck="false"
                 class="w-full p-1 border rounded-lg"
                 [ngClass]="minMaxStyle(i)"
                 formControlName="name"
@@ -128,6 +129,7 @@
             <div class="w-1/4" *ngIf="!isPoints">
               <input
                 type="text"
+                spellcheck="false"
                 [ngClass]="minMaxStyle(i)"
                 class="w-full p-1 font-semibold text-center border rounded-lg"
                 formControlName="tier"
