@@ -165,7 +165,7 @@ export const BattlePokedex: {
   },
   raticatealolatotem: {
     name: 'Raticate-Alola-Totem',
-    ps: 'raticate-alolatotem',
+    ps: 'raticate-alola',
     serebii: '020',
     pd: 'raticate-alolan',
   },
@@ -633,7 +633,7 @@ export const BattlePokedex: {
   },
   farfetchdgalar: {
     name: 'Farfetch’d-Galar',
-    ps: 'farfetch’d-galar',
+    ps: 'farfetchd-galar',
     serebii: '083',
     pd: 'farfetchd-galarian',
   },
@@ -740,7 +740,7 @@ export const BattlePokedex: {
   },
   marowakalolatotem: {
     name: 'Marowak-Alola-Totem',
-    ps: 'marowak-alolatotem',
+    ps: 'marowak-alola',
     serebii: '105',
     pd: 'marowak-alolan',
   },
@@ -3285,7 +3285,7 @@ export const BattlePokedex: {
   },
   greninjabond: {
     name: 'Greninja-Bond',
-    ps: 'greninja-bond',
+    ps: 'greninja-ash',
     serebii: '658',
     pd: 'greninja-ash',
   },
@@ -3718,7 +3718,7 @@ export const BattlePokedex: {
   },
   oricoriopau: {
     name: "Oricorio-Pa'u",
-    ps: "oricorio-pa'u",
+    ps: 'oricorio-pau',
     serebii: '741',
     pd: 'oricorio-pau',
   },
@@ -4070,7 +4070,7 @@ export const BattlePokedex: {
   },
   mimikyubustedtotem: {
     name: 'Mimikyu-Busted-Totem',
-    ps: 'mimikyu-bustedtotem',
+    ps: 'mimikyu-busted',
     serebii: '778',
     pd: 'mimikyu-busted',
   },
@@ -4472,7 +4472,7 @@ export const BattlePokedex: {
   },
   toxtricitylowkeygmax: {
     name: 'Toxtricity-Low-Key-Gmax',
-    ps: 'toxtricity-lowkeygmax',
+    ps: 'toxtricity-gmax',
     serebii: '849',
     pd: 'toxtricity-gigantamax',
   },
