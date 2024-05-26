@@ -18,7 +18,10 @@
     class="z-10 max-w-full w-fit"
     [typecharts]="matchupData.typechart"
   ></typechart>
-  <movechart class="z-10 max-h-128" [teams]="matchupData.movechart"></movechart>
+  <movechart
+    class="z-10 w-full sm:w-fit max-h-128"
+    [teams]="matchupData.movechart"
+  ></movechart>
   <coveragechart
     class="z-10 w-128"
     [coverage]="matchupData.coveragechart"

@@ -9,7 +9,7 @@ import { getSpriteName } from '../pokemon';
   imports: [CommonModule],
   template: `
     <img
-      class="h-full w-full -z-100"
+      class="h-full w-full -z-100 object-contain"
       *ngIf="pokemon.pid"
       [ngClass]="this.classes"
       title="{{ pokemon.name }}"
