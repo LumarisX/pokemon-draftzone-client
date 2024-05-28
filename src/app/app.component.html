@@ -13,44 +13,58 @@
         (click)="menuDropdown = false"
         class="absolute left-0 flex-col block p-2 bg-white border border-gray-200 divide-y rounded-md shadow-md sm:flex sm:hidden top-full"
       >
-        <div class="flex items-center h-full px-3 font-nasa hover:bg-slate-200">
-          <a routerLink="/draft">Drafts</a>
+        <div
+          routerLink="/draft"
+          class="flex items-center h-full px-3 font-nasa hover:cursor-pointer hover:bg-slate-200"
+        >
+          Drafts
         </div>
-        <div class="flex items-center h-full px-3 font-nasa hover:bg-slate-200">
-          <a routerLink="/planner">Planner</a>
+        <div
+          routerLink="/planner"
+          class="flex items-center h-full px-3 font-nasa hover:cursor-pointer hover:bg-slate-200"
+        >
+          Planner
         </div>
-        <div class="flex items-center h-full px-3 font-nasa">
-          <a class="opacity-50">Statistics</a>
+        <div class="flex items-center h-full px-3 opacity-50 font-nasa">
+          Statistics
         </div>
       </div>
       <div
-        class="flex items-center justify-center rounded w-28 hover:bg-slate-200"
+        routerLink="/"
+        class="flex items-center justify-center rounded w-28 hover:cursor-pointer hover:bg-slate-200"
       >
         <img
           src="../assets/logo.png"
           class="text-xl font-semibold"
           alt="DraftZone"
-          routerLink="/"
         />
       </div>
       <div class="hidden px-2 space-x-2 sm:flex font-nasa">
-        <div class="flex items-center h-full px-2 rounded hover:bg-slate-200">
-          <a routerLink="/draft">Drafts</a>
+        <div
+          routerLink="/draft"
+          class="flex items-center h-full px-2 rounded hover:cursor-pointer hover:bg-slate-200"
+        >
+          Drafts
         </div>
-        <div class="flex items-center h-full px-2 rounded hover:bg-slate-200">
-          <a routerLink="/planner">Planner</a>
+        <div
+          routerLink="/planner"
+          class="flex items-center h-full px-2 rounded hover:cursor-pointer hover:bg-slate-200"
+        >
+          Planner
         </div>
-        <div class="flex items-center h-full px-2 rounded">
-          <a class="opacity-50">Statistics</a>
+        <div
+          class="flex items-center h-full px-2 rounded opacity-50 hover:cursor-pointer hover:bg-slate-200"
+        >
+          Statistics
         </div>
       </div>
     </div>
     <div class="flex justify-end flex-grow h-full">
-      <div class="h-full px-4 hover:bg-slate-200">
+      <div class="flex flex-col items-center justify-center h-full">
         <ng-container *ngIf="auth.isAuthenticated() | async; else loggedOut">
           <div
             *ngIf="auth.user() | async as user"
-            class="flex h-8"
+            class="flex h-8 px-2 py-1 rounded-lg hover:bg-slate-200 hover:cursor-pointer"
             (click)="userDropdown = !userDropdown"
           >
             <div class="flex items-center h-full space-x-2">
@@ -58,13 +72,21 @@
               <div>{{ user.name }}</div>
             </div>
           </div>
-          <div *ngIf="userDropdown" class="">
+          <div
+            *ngIf="userDropdown"
+            class="px-2 py-1 rounded-lg hover:bg-slate-200 hover:cursor-pointer"
+          >
             <button (click)="auth.logout()">Log out</button>
           </div>
         </ng-container>
 
         <ng-template #loggedOut>
-          <button (click)="auth.login()">Log in</button>
+          <button
+            class="px-2 py-1 rounded-lg hover:bg-slate-200 hover:cursor-pointer"
+            (click)="auth.login()"
+          >
+            Log in
+          </button>
         </ng-template>
       </div>
     </div>
