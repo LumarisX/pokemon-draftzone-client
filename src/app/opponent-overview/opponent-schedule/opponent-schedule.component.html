@@ -1,0 +1,57 @@
+<div class="container p-4 mx-auto">
+  <div class="flex flex-col items-center space-y-4">
+    <div class="w-full max-w-md">
+      <label class="block text-sm font-medium text-gray-700"
+        >Select Date and Time</label
+      >
+      <input
+        type="datetime-local"
+        [(ngModel)]="selectedDateTime"
+        (change)="updateTimes()"
+        step="300"
+        class="block w-full p-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+      />
+    </div>
+    <div class="relative w-full max-w-md">
+      <label class="block text-sm font-medium text-gray-700"
+        >Search Time Zone</label
+      >
+      <input
+        type="text"
+        placeholder="Search time zones..."
+        (input)="filterTimeZones($event)"
+        class="block w-full p-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+      />
+      <select
+        [(ngModel)]="selectedTimeZone"
+        (change)="updateTimes()"
+        size="5"
+        class="absolute z-10 block w-full p-2 mt-1 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+      >
+        <option *ngFor="let tz of filteredTimeZones" [value]="tz">
+          {{ tz }}
+        </option>
+      </select>
+    </div>
+    <div class="w-full max-w-md">
+      <label class="block text-sm font-medium text-gray-700">Local Time</label>
+      <input
+        type="text"
+        [value]="localTime"
+        readonly
+        class="block w-full p-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+      />
+    </div>
+    <div class="w-full max-w-md">
+      <label class="block text-sm font-medium text-gray-700"
+        >Converted Time</label
+      >
+      <input
+        type="text"
+        [value]="convertedTime"
+        readonly
+        class="block w-full p-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+      />
+    </div>
+  </div>
+</div>

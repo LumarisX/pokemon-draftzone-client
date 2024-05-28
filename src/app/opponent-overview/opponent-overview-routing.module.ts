@@ -6,6 +6,7 @@ import { OpponentTeamPreviewComponent } from './opponent-preview/opponent-previe
 import { OpponentFormNewComponent } from './opponent-form/opponent-form-new/opponent-form-new.component';
 import { OpponentFormEditComponent } from './opponent-form/opponent-form-edit/opponent-form-edit.component';
 import { OpponentScoreComponent } from './opponent-score/opponent-score.component';
+import { OpponentSchedule } from './opponent-schedule/opponent-schedule.component';
 
 const routes: Routes = [
   {
@@ -30,6 +31,11 @@ const routes: Routes = [
       {
         path: 'score',
         component: OpponentScoreComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'schedule',
+        component: OpponentSchedule,
         canActivate: [AuthGuard],
       },
     ],

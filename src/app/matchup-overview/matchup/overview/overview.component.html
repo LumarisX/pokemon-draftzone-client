@@ -60,7 +60,9 @@
           class="h-12 bg-red-400 border-b border-slate-400"
         >
           <td class="w-12 text-center">{{ pokemon.baseStats.spe }}</td>
-          <td class="w-32 text-end">{{ pokemon.name }}</td>
+          <td class="w-32 text-xs text-end">
+            {{ pokemon.name }}
+          </td>
           <td class="w-20">
             <sprite [pokemon]="pokemon"></sprite>
           </td>
