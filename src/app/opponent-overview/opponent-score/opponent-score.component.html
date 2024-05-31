@@ -3,15 +3,16 @@
   <div class="flex w-flex">
     <div class="w-1/4">
       <button
-        class="p-2 m-3 rounded-lg shadow-md bg-slate-200 hover:shadow shadow-slate-600"
+        [routerLink]="'/draft/' + teamId"
+        class="p-2 m-3 font-medium text-white bg-gray-500 rounded-md shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-gray-500"
       >
-        <a [routerLink]="'/draft/' + teamId">Cancel</a>
+        Cancel
       </button>
     </div>
     <div class="flex items-end justify-center w-1/2">
       <p class="text-3xl font-bold">Score</p>
     </div>
-    <div class="flex items-center justify-center w-1/4 flex-col sm:flex-row">
+    <div class="flex flex-col items-center justify-center w-1/4 sm:flex-row">
       <p class="font-semibold">Replay</p>
       <input
         formControlName="replay"
@@ -28,7 +29,7 @@
       >
         <div class="flex w-full">
           <div class="w-1/2">
-            <div class="sm:w-2/3 w-full">
+            <div class="w-full sm:w-2/3">
               <label class="p-1">
                 <span>PokePaste</span>
                 <input
@@ -50,16 +51,16 @@
           </div>
         </div>
         <div class="p-2 border-2 border-cyan-200 rounded-xl">
-          <div class="grid sm:grid-cols-3 grid-cols-1 w-full gap-x-4">
-            <div class="flex space-x-2 justify-center">
+          <div class="grid w-full grid-cols-1 sm:grid-cols-3 gap-x-4">
+            <div class="flex justify-center space-x-2">
               <div class="font-semibold">Brought:</div>
               <div>{{ statCount(aTeamArray, ["brought"]) }}</div>
             </div>
-            <div class="flex space-x-2 justify-center">
+            <div class="flex justify-center space-x-2">
               <div class="font-semibold">Deaths:</div>
               <div>{{ statCount(aTeamArray, ["deaths"]) }}</div>
             </div>
-            <div class="flex space-x-2 justify-center">
+            <div class="flex justify-center space-x-2">
               <div class="font-semibold">Kills:</div>
 
               <div>{{ statCount(aTeamArray, ["kills", "indirect"]) }}</div>
@@ -71,7 +72,7 @@
           >
             <div
               *ngFor="let pokemonForm of aTeamArray.controls; let i = index"
-              class="flex items-center border border-cyan-200 rounded-xl p-1"
+              class="flex items-center p-1 border border-cyan-200 rounded-xl"
               formGroupName="{{ i }}"
             >
               <sprite
@@ -140,7 +141,7 @@
             </div>
           </div>
           <div class="w-1/2">
-            <div class="flex justify-end sm:w-2/3 w-full ml-auto">
+            <div class="flex justify-end w-full ml-auto sm:w-2/3">
               <label class="p-1">
                 <span>PokePaste</span>
                 <input
@@ -152,16 +153,16 @@
           </div>
         </div>
         <div class="p-2 border-2 border-red-200 rounded-xl">
-          <div class="grid sm:grid-cols-3 grid-cols-1 w-full gap-x-4">
-            <div class="flex space-x-2 justify-center">
+          <div class="grid w-full grid-cols-1 sm:grid-cols-3 gap-x-4">
+            <div class="flex justify-center space-x-2">
               <div class="font-semibold">Brought:</div>
               <div>{{ statCount(bTeamArray, ["brought"]) }}</div>
             </div>
-            <div class="flex space-x-2 justify-center">
+            <div class="flex justify-center space-x-2">
               <div class="font-semibold">Deaths:</div>
               <div>{{ statCount(bTeamArray, ["deaths"]) }}</div>
             </div>
-            <div class="flex space-x-2 justify-center">
+            <div class="flex justify-center space-x-2">
               <div class="font-semibold">Kills:</div>
 
               <div>{{ statCount(bTeamArray, ["kills", "indirect"]) }}</div>
@@ -173,7 +174,7 @@
           >
             <div
               *ngFor="let pokemonForm of bTeamArray.controls; let i = index"
-              class="flex items-center border border-red-200 rounded-xl p-1"
+              class="flex items-center p-1 border border-red-200 rounded-xl"
               formGroupName="{{ i }}"
             >
               <sprite
@@ -181,14 +182,14 @@
                 [pokemon]="pokemonForm.value.pokemon"
               ></sprite>
               <div class="flex items-center w-3/4">
-                <div class="grid grid-cols-2 gap-2 sm:grid-cols-4 px-2 py-1">
+                <div class="grid grid-cols-2 gap-2 px-2 py-1 sm:grid-cols-4">
                   <div>
                     <span class="text-xs">Brought</span>
                     <input
                       type="number"
                       formControlName="brought"
                       min="0"
-                      class="w-full p-1 text-center rounded-md shadow-inner bg-red-200 text-medium shadow-red-600"
+                      class="w-full p-1 text-center bg-red-200 rounded-md shadow-inner text-medium shadow-red-600"
                     />
                   </div>
                   <div>
@@ -197,7 +198,7 @@
                       type="number"
                       formControlName="kills"
                       min="0"
-                      class="w-full p-1 text-center rounded-md shadow-inner bg-red-200 text-medium shadow-red-600"
+                      class="w-full p-1 text-center bg-red-200 rounded-md shadow-inner text-medium shadow-red-600"
                     />
                   </div>
                   <div>
@@ -206,7 +207,7 @@
                       type="number"
                       formControlName="indirect"
                       min="0"
-                      class="w-full p-1 text-center rounded-md shadow-inner bg-red-200 text-medium shadow-red-600"
+                      class="w-full p-1 text-center bg-red-200 rounded-md shadow-inner text-medium shadow-red-600"
                     />
                   </div>
                   <div>
@@ -215,7 +216,7 @@
                       type="number"
                       formControlName="deaths"
                       min="0"
-                      class="w-full p-1 text-center rounded-md shadow-inner bg-red-200 text-medium shadow-red-600"
+                      class="w-full p-1 text-center bg-red-200 rounded-md shadow-inner text-medium shadow-red-600"
                     />
                   </div>
                 </div>
