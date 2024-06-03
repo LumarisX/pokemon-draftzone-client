@@ -2,8 +2,15 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import moment, { Moment } from 'moment-timezone';
 import { DraftService } from '../../api/draft.service';
+import dayjs, { Dayjs } from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+import duration from 'dayjs/plugin/duration';
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.extend(duration);
 
 @Component({
   selector: 'opponent-schedule',
@@ -18,22 +25,19 @@ export class OpponentSchedule implements OnInit {
   selectedTime: string = '';
   opponentTimeZone: string = '';
   localTimeZone: string = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  localTimeOffset: string = moment.tz(this.localTimeZone).format('UTCZ');
-  timeZones: { offset: string; name: string }[] = moment.tz
-    .names()
-    .filter((tz) => !tz.toLowerCase().includes('etc/'))
-    .sort((a, b) => moment.tz(a).utcOffset() - moment.tz(b).utcOffset())
+  localTimeOffset: string = dayjs().tz(this.localTimeZone).format('UTCZ');
+  timeZones = Intl.supportedValuesOf('timeZone')
+    .sort((a, b) => dayjs().tz(a).utcOffset() - dayjs().tz(b).utcOffset())
     .map((tz) => ({
-      offset: moment.tz(tz).format('UTCZ'),
+      offset: dayjs().tz(tz).format('UTCZ'),
       name: tz,
     }));
-
   filteredTimeZones: { offset: string; name: string }[] = this.timeZones;
   convertedTime: string = '';
   convertedDate: string = '';
   timeDifference: string = '';
   timeData = {
-    dateTime: moment(),
+    dateTime: dayjs().utc(),
     email: false,
     emailTime: 1,
   };
@@ -53,7 +57,7 @@ export class OpponentSchedule implements OnInit {
           .getGameTime(this.matchupId, this.teamId)
           .subscribe((data) => {
             this.timeData = {
-              dateTime: moment(data.gameTime),
+              dateTime: dayjs(data.gameTime),
               email: data.reminder >= 0,
               emailTime: 2,
             };
@@ -71,7 +75,7 @@ export class OpponentSchedule implements OnInit {
 
   updateTimes(source: 'local' | 'converted' = 'local') {
     if (source === 'local') {
-      this.timeData.dateTime = moment.tz(
+      this.timeData.dateTime = dayjs.tz(
         `${this.selectedDate}T${this.selectedTime}`,
         this.localTimeZone
       );
@@ -81,7 +85,7 @@ export class OpponentSchedule implements OnInit {
       this.convertedTime = convertedDateTime.format('HH:mm');
       this.convertedDate = convertedDateTime.format('YYYY-MM-DD');
     } else if (source === 'converted') {
-      const convertedDateTime = moment.tz(
+      const convertedDateTime = dayjs.tz(
         `${this.convertedDate}T${this.convertedTime}`,
         this.opponentTimeZone
       );
@@ -92,10 +96,10 @@ export class OpponentSchedule implements OnInit {
     this.calculateTimeDifference(this.timeData.dateTime);
   }
 
-  calculateTimeDifference(localDateTime: Moment) {
+  calculateTimeDifference(localDateTime: Dayjs) {
     if (this.timeData.dateTime.isValid()) {
-      const currentTime = moment();
-      const duration = moment.duration(localDateTime.diff(currentTime));
+      const currentTime = dayjs();
+      const duration = dayjs.duration(localDateTime.diff(currentTime));
       const isPast = localDateTime.isBefore(currentTime);
       const days = Math.floor(Math.abs(duration.asDays()));
       const hours = Math.abs(duration.hours());

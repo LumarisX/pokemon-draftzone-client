@@ -6,7 +6,10 @@ import { MatchupService } from '../api/matchup.service';
 import { LoadingComponent } from '../loading/loading.component';
 import { MatchupData, Summary } from './matchup-interface';
 import { MatchupComponent } from './matchup/matchup.component';
-import moment from 'moment';
+import duration from 'dayjs/plugin/duration';
+import dayjs from 'dayjs';
+
+dayjs.extend(duration);
 
 @Component({
   selector: 'matchup-shared',
@@ -56,11 +59,11 @@ export class MatchupSharedComponent implements AfterViewInit {
           JSON.parse(JSON.stringify(this.matchupData.summary))
         );
         if ('gameTime' in this.matchupData) {
-          let gameTime = moment(this.matchupData.gameTime);
+          let gameTime = dayjs(this.matchupData.gameTime);
           if (gameTime.isValid()) {
-            const currentTime = moment();
+            const currentTime = dayjs();
             if (!gameTime.isBefore(currentTime)) {
-              const duration = moment.duration(gameTime.diff(currentTime));
+              const duration = dayjs.duration(gameTime.diff(currentTime));
               const days = Math.floor(Math.abs(duration.asDays()));
               const hours = Math.abs(duration.hours());
               this.timeString =
