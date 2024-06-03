@@ -61,4 +61,13 @@ export class DraftService {
       scoreData
     );
   }
+  getGameTime(matchupId: string, teamId: string) {
+    return this.apiService.get(`draft/${teamId}/${matchupId}/schedule`);
+  }
+  scheduleMatchup(matchupId: string, teamId: string, timeData: Object) {
+    return this.apiService.patch(
+      `draft/${teamId}/${matchupId}/schedule`,
+      timeData
+    );
+  }
 }
