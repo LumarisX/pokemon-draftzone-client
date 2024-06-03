@@ -133,6 +133,7 @@ export type MatchupData = {
   level: number;
   leagueName: string;
   stage: string;
+  gameTime: string;
   speedchart: SpeedChart;
   summary: Summary[];
   overview: Summary[];

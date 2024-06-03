@@ -17,6 +17,10 @@
         <p class="text-sm font-semibold text-gray-500">Format</p>
         <p class="text-xl font-bold">{{ matchupData.format }}</p>
       </div>
+      <div *ngIf="timeString" class="w-full text-center sm:w-auto">
+        <p class="text-sm font-semibold text-gray-500">Game Time</p>
+        <p class="text-xl font-bold">{{ timeString }}</p>
+      </div>
     </div>
   </div>
   <loading *ngIf="!matchupData"></loading>

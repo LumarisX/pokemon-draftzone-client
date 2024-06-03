@@ -6,6 +6,7 @@ import { MatchupService } from '../api/matchup.service';
 import { LoadingComponent } from '../loading/loading.component';
 import { MatchupData, Summary } from './matchup-interface';
 import { MatchupComponent } from './matchup/matchup.component';
+import moment from 'moment';
 
 @Component({
   selector: 'matchup-shared',
@@ -16,6 +17,7 @@ import { MatchupComponent } from './matchup/matchup.component';
 export class MatchupSharedComponent implements AfterViewInit {
   matchupId = '';
   matchupData: MatchupData | null = null;
+  timeString: string | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -53,6 +55,21 @@ export class MatchupSharedComponent implements AfterViewInit {
         this.matchupData.overview = <Summary[]>(
           JSON.parse(JSON.stringify(this.matchupData.summary))
         );
+        if ('gameTime' in this.matchupData) {
+          let gameTime = moment(this.matchupData.gameTime);
+          if (gameTime.isValid()) {
+            const currentTime = moment();
+            if (!gameTime.isBefore(currentTime)) {
+              const duration = moment.duration(gameTime.diff(currentTime));
+              const days = Math.floor(Math.abs(duration.asDays()));
+              const hours = Math.abs(duration.hours());
+              this.timeString =
+                days > 0 ? `${days} days ${hours} hours` : `${hours} hours`;
+            } else {
+              this.timeString = 'Already past';
+            }
+          }
+        }
         if (this.matchupData) {
           this.meta.updateTag({
             name: 'og:title',
