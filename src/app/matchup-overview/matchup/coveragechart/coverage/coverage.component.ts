@@ -3,12 +3,13 @@ import { Component, Input, OnInit } from '@angular/core';
 import { SpriteComponent } from '../../../../images/sprite.component';
 import { Pokemon } from '../../../../interfaces/draft';
 import { CoverageChart, TypeChart, Types } from '../../../matchup-interface';
+import { EffectivenessChartComponent } from './stacked-bar-chart/effectiveness-chart.component';
 
 @Component({
   selector: 'coverage',
   standalone: true,
-  imports: [CommonModule, SpriteComponent],
   templateUrl: './coverage.component.html',
+  imports: [CommonModule, SpriteComponent, EffectivenessChartComponent],
 })
 export class CoverageComponent implements OnInit {
   @Input() pokemon!: CoverageChart;
@@ -55,9 +56,9 @@ export class CoverageComponent implements OnInit {
         this.e++;
       }
     });
-    this.se = Math.round((this.se / this.coverage.length) * 100);
-    this.e = Math.round((this.e / this.coverage.length) * 100);
-    this.ne = Math.round((this.ne / this.coverage.length) * 100);
+    this.se = this.se / this.coverage.length;
+    this.e = this.e / this.coverage.length;
+    this.ne = this.ne / this.coverage.length;
   }
 
   seColor(max: number) {

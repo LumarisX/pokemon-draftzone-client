@@ -43,3 +43,4 @@ Thumbs.db
 
 # Manual
 src/app/api/api.service.ts
+src/app/charts/
