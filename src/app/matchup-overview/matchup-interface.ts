@@ -16,46 +16,44 @@ export type SpeedChart = {
 };
 
 export type Summary = {
-  team: [
-    Pokemon & {
-      name: string;
-      abilities: string[];
-      types: string[];
-      baseStats: {
-        hp: number;
-        atk: number;
-        def: number;
-        spa: number;
-        spd: number;
-        spe: number;
-      };
-    }
-  ];
+  team: (Pokemon & {
+    name: string;
+    abilities: string[];
+    types: string[];
+    baseStats: {
+      hp: number;
+      atk: number;
+      def: number;
+      spa: number;
+      spd: number;
+      spe: number;
+    };
+  })[];
   teamName: String;
   stats: {
     mean: {
-      hp: number;
-      atk: number;
-      def: number;
-      spa: number;
-      spd: number;
-      spe: number;
+      hp?: number;
+      atk?: number;
+      def?: number;
+      spa?: number;
+      spd?: number;
+      spe?: number;
     };
     median: {
-      hp: number;
-      atk: number;
-      def: number;
-      spa: number;
-      spd: number;
-      spe: number;
+      hp?: number;
+      atk?: number;
+      def?: number;
+      spa?: number;
+      spd?: number;
+      spe?: number;
     };
     max: {
-      hp: number;
-      atk: number;
-      def: number;
-      spa: number;
-      spd: number;
-      spe: number;
+      hp?: number;
+      atk?: number;
+      def?: number;
+      spa?: number;
+      spd?: number;
+      spe?: number;
     };
   };
 };

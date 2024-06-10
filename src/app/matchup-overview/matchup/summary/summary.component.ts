@@ -100,7 +100,10 @@ export class SummaryComponent {
     return 'bg-red-400 hover:bg-red-300';
   }
 
-  statColor(statValue: number) {
+  statColor(statValue: number | undefined) {
+    if (statValue === undefined) {
+      return;
+    }
     if (statValue > this.baseValue + 67) return 'bg-emerald-600';
     if (statValue > this.baseValue + 52) return 'bg-emerald-500';
     if (statValue > this.baseValue + 37) return 'bg-emerald-400';

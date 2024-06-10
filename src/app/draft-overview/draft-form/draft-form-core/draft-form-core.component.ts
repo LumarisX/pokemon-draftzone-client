@@ -9,7 +9,7 @@ import {
 import { RouterModule } from '@angular/router';
 import { DataService } from '../../../api/data.service';
 import { Pokemon } from '../../../interfaces/draft';
-import { PokemonId } from '../../../pokemon';
+import { PokemonId, getPidByName } from '../../../pokemon';
 import { PokemonFormComponent } from '../../../pokemon-form/pokemon-form.component';
 import { SpriteComponent } from '../../../images/sprite.component';
 
@@ -88,7 +88,7 @@ export class DraftFormCoreComponent implements OnInit {
       .map((string) => string.trim())
       .forEach((name) => {
         this.addNewPokemon(this.teamArray.length, {
-          pid: name.toLowerCase().replace(/[^a-z0-9]+/g, '') as PokemonId,
+          pid: getPidByName(name) ?? '',
           name: name,
         });
       });

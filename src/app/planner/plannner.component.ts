@@ -21,12 +21,17 @@ import {
   TypeChart,
 } from '../matchup-overview/matchup-interface';
 import { BattlePokedex } from '../pokedex';
-import { PokemonId } from '../pokemon';
+import { PokemonId, getPidByName } from '../pokemon';
 import { FinderComponent } from './finder/finder.component';
 import { MoveComponent } from './moves/moves.component';
-import { Planner } from './planner.interface';
 import { SummaryComponent } from './summary/summary.component';
 import { TypechartComponent } from './typechart/typechart.component';
+
+type Planner = {
+  summary: Summary;
+  typechart: TypeChart;
+  movechart: MoveChart;
+};
 
 @Component({
   selector: 'planner',
@@ -47,8 +52,8 @@ import { TypechartComponent } from './typechart/typechart.component';
 })
 export class PlannerComponent implements OnInit {
   plannerForm!: FormGroup;
-  team: PokemonId[] = [];
   typechart!: TypeChart;
+  team: PokemonId[] = [];
   summary!: Summary;
   tabSelected = 0;
   formats = [];
@@ -94,7 +99,7 @@ export class PlannerComponent implements OnInit {
       this.adjustTeamArray(value);
     });
 
-    this.adjustTeamArray(12);
+    this.adjustTeamArray(this.plannerForm.get('max')?.value ?? 1);
 
     const formData = localStorage.getItem('plannerFormData');
     if (formData) {
@@ -136,6 +141,10 @@ export class PlannerComponent implements OnInit {
     return 1;
   }
 
+  get teamFormArray(): FormArray {
+    return this.plannerForm.get('team') as FormArray;
+  }
+
   resetForm() {
     this.plannerForm = this.fb.group({
       format: ['', Validators.required],
@@ -158,15 +167,26 @@ export class PlannerComponent implements OnInit {
   }
 
   updateDetails() {
-    let newteam: PokemonId[] = [];
+    this.team = [];
     for (let pokemon of this.teamFormArray.controls) {
       let pid = pokemon.get('pid')?.value;
       if (pid in BattlePokedex) {
-        newteam.push(pid);
+        this.team.push(pid);
       }
     }
-    if (newteam.toString() != this.team.toString()) {
-      this.team = newteam;
+    if (this.team.length == 0) {
+      this.typechart = { team: [] };
+      this.summary = {
+        team: [],
+        teamName: '',
+        stats: {
+          mean: {},
+          median: {},
+          max: {},
+        },
+      };
+      this.movechart = [];
+    } else {
       this.plannerService.getPlannerDetails(this.team).subscribe((data) => {
         let planner = <Planner>data;
         this.typechart = planner.typechart;
@@ -178,7 +198,6 @@ export class PlannerComponent implements OnInit {
 
   resultSelected(formGroup: AbstractControl, $event: Pokemon) {
     formGroup.patchValue({ name: $event.name, pid: $event.pid });
-    this.updateDetails();
   }
 
   maxValidator(max: number) {
@@ -206,18 +225,28 @@ export class PlannerComponent implements OnInit {
     }
   }
 
-  get teamFormArray(): FormArray {
-    return this.plannerForm.get('team') as FormArray;
-  }
-
   createTeamFormGroup(): FormGroup {
-    return this.fb.group({
+    const teamFormGroup = this.fb.group({
       pid: ['', Validators.required],
       name: ['', Validators.required],
       capt: [false, Validators.required],
       tier: [''],
       value: [0],
     });
+    teamFormGroup.get('name')?.valueChanges.subscribe((name) => {
+      if (name !== null) {
+        let pid = getPidByName(name);
+        if (teamFormGroup.get('pid')?.value != pid) {
+          teamFormGroup.patchValue({ pid: pid });
+        }
+      }
+    });
+
+    teamFormGroup.get('pid')?.valueChanges.subscribe((pid) => {
+      this.updateDetails();
+    });
+
+    return teamFormGroup;
   }
 
   tabColor(tab: number) {
