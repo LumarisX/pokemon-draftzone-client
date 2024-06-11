@@ -26,6 +26,7 @@ import { FinderComponent } from './finder/finder.component';
 import { MoveComponent } from './moves/moves.component';
 import { SummaryComponent } from './summary/summary.component';
 import { TypechartComponent } from './typechart/typechart.component';
+import { group } from 'd3';
 
 type Planner = {
   summary: Summary;
@@ -52,9 +53,15 @@ type Planner = {
 })
 export class PlannerComponent implements OnInit {
   plannerForm!: FormGroup;
-  typechart!: TypeChart;
+  typechart: TypeChart = {
+    team: [],
+  };
   team: PokemonId[] = [];
-  summary!: Summary;
+  summary: Summary = {
+    team: [],
+    teamName: '',
+    stats: { mean: {}, median: {}, max: {} },
+  };
   tabSelected = 0;
   selectedDraft = 0;
   formats = [];
@@ -68,8 +75,22 @@ export class PlannerComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.plannerForm = this.fb.group({
-      drafts: this.fb.array([this.createDraftFormGroup()]),
+    // Populate form data from localStorage if available
+    const storedPlannerData = localStorage.getItem('plannerFormData');
+    if (storedPlannerData) {
+      let data = JSON.parse(storedPlannerData);
+      this.plannerForm = this.fb.group({
+        drafts: this.fb.array([]),
+      });
+    } else {
+      this.plannerForm = this.fb.group({
+        drafts: this.fb.array([this.createDraftFormGroup()]),
+      });
+    }
+
+    // Listen for form changes and save to localStorage
+    this.draftArray.valueChanges.subscribe((value) => {
+      localStorage.setItem('plannerFormData', JSON.stringify(value));
     });
 
     // Initialize formats and rulesets
@@ -80,46 +101,6 @@ export class PlannerComponent implements OnInit {
     this.dataService.getRulesets().subscribe((rulesets) => {
       this.rulesets = <any>rulesets;
     });
-
-    // Load data from local storage
-    const formData = localStorage.getItem('plannerFormData');
-    if (formData) {
-      this.plannerForm.patchValue(JSON.parse(formData));
-      if (this.plannerForm.valid) {
-        this.populateTeamFromLocalStorage(JSON.parse(formData));
-      } else {
-        this.plannerForm = this.fb.group({
-          drafts: this.fb.array([this.createDraftFormGroup()]),
-        });
-      }
-      this.updateDetails();
-    }
-
-    // Listen to form changes for validation and storage
-    this.plannerForm.valueChanges.subscribe((value) => {
-      localStorage.setItem('plannerFormData', JSON.stringify(value));
-    });
-
-    this.getDraftFormGroup()
-      .get('max')
-      ?.valueChanges.subscribe((value: number) => {
-        this.getDraftFormGroup()
-          .get('min')
-          ?.setValidators([
-            Validators.required,
-            Validators.min(0),
-            this.maxValidator(value),
-          ]);
-        this.getDraftFormGroup().get('min')?.updateValueAndValidity();
-      });
-
-    this.getDraftFormGroup()
-      .get('max')
-      ?.valueChanges.subscribe((value: number) => {
-        this.adjustTeamArray(value);
-      });
-
-    this.adjustTeamArray(this.getDraftFormGroup().get('max')?.value ?? 1);
   }
 
   get isPoints() {
@@ -155,6 +136,10 @@ export class PlannerComponent implements OnInit {
 
   get draftArray(): FormArray {
     return this.plannerForm.get('drafts') as FormArray;
+  }
+
+  get draftArraySize(): number {
+    return this.plannerForm ? this.draftArray.length ?? 0 : 0;
   }
 
   resetForm() {
@@ -218,33 +203,54 @@ export class PlannerComponent implements OnInit {
     };
   }
 
-  adjustTeamArray(newSize: number): void {
-    const currentSize = this.teamFormArray.length;
-    if (newSize > currentSize) {
-      for (let i = currentSize; i < newSize; i++) {
-        this.teamFormArray.push(this.createTeamFormGroup());
-      }
-    } else if (newSize < currentSize) {
-      for (let i = currentSize; i > newSize; i--) {
-        this.teamFormArray.removeAt(i - 1);
-        this.updateDetails();
+  adjustTeamArray(team: FormArray | undefined, newSize: number): void {
+    if (team) {
+      const currentSize = team.length;
+      if (newSize > currentSize) {
+        for (let i = currentSize; i < newSize; i++) {
+          team.push(this.createTeamFormGroup());
+        }
+      } else if (newSize < currentSize) {
+        for (let i = currentSize; i > newSize; i--) {
+          team.removeAt(i - 1);
+          this.updateDetails();
+        }
       }
     }
   }
 
   createDraftFormGroup(): FormGroup {
     const max = 12;
-
     let group = this.fb.group({
       format: ['', Validators.required],
       ruleset: ['', Validators.required],
-      draftName: ['Draft ' + 1],
+      draftName: ['Draft ' + (this.draftArraySize + 1)],
       min: [10, [Validators.required, Validators.min(0)]],
       max: [max, [Validators.required, Validators.min(0), Validators.max(18)]],
       system: ['points', Validators.required],
       totalPoints: [100],
       team: this.fb.array([]),
     });
+
+    group.get('max')?.valueChanges.subscribe((value: number | null) => {
+      if (value) {
+        this.getDraftFormGroup()
+          .get('min')
+          ?.setValidators([
+            Validators.required,
+            Validators.min(0),
+            this.maxValidator(value),
+          ]);
+        group.get('min')?.updateValueAndValidity();
+      }
+    });
+
+    group.get('max')?.valueChanges.subscribe((value: number | null) => {
+      if (value) this.adjustTeamArray(group.get('team') as FormArray, value);
+    });
+
+    this.adjustTeamArray(group.get('team') as FormArray, max);
+
     return group;
   }
 
@@ -295,12 +301,18 @@ export class PlannerComponent implements OnInit {
   }
 
   populateTeamFromLocalStorage(formData: any): void {
-    const teamArray = formData.drafts[0]?.team || [];
-    const teamFormArray = this.getDraftFormGroup().get('team') as FormArray;
-    teamArray.forEach((teamMember: any) => {
-      const teamFormGroup = this.createTeamFormGroup();
-      teamFormGroup.patchValue(teamMember);
-      teamFormArray.push(teamFormGroup);
-    });
+    for (let i of formData.drafts) {
+      const teamArray = formData.drafts[i]?.team || [];
+      const teamFormArray = teamArray.get('team') as FormArray;
+      teamArray.forEach((teamMember: any) => {
+        const teamFormGroup = this.createTeamFormGroup();
+        teamFormGroup.patchValue(teamMember);
+        teamFormArray.push(teamFormGroup);
+      });
+    }
+  }
+
+  switchDrafts(index: number) {
+    this.selectedDraft = index;
   }
 }

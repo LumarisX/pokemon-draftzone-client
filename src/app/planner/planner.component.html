@@ -1,15 +1,18 @@
 <form [formGroup]="plannerForm" class="h-full">
   <button type="submit" style="display: none"></button>
   <div formArrayName="drafts" class="h-full">
-    <!-- <div
-      *ngFor="let draftCtrl of draftArray.controls; let j = index"
-      [formGroupName]="j"
-      (click)="selectedDraft = j; updateDetails()"
-    >
-      {{ draftCtrl.get("draftName")?.value }}
+    <div class="flex">
+      <div
+        class="flex flex-wrap p-2 space-x-4 space-y-1 bg-slate-200"
+        *ngFor="let draftCtrl of draftArray.controls; let j = index"
+        [formGroupName]="j"
+        (click)="selectedDraft = j; updateDetails()"
+      >
+        <input (click)="switchDrafts(j)" formControlName="draftName" />
+      </div>
+      <button *ngIf="draftArraySize < 5" (click)="addDraft()">+</button>
     </div>
-    <button (click)="addDraft()">Add Draft</button> -->
-    <div [formGroupName]="selectedDraft" class="flex flex-col h-full">
+    <div [formGroup]="getDraftFormGroup()" class="flex flex-col h-full">
       <div class="flex flex-wrap p-2 space-x-4 space-y-1 bg-slate-200">
         <div class="space-x-1">
           <label for="format" class="font-bold">Format</label>
@@ -297,8 +300,6 @@
         </div>
       </div>
     </div>
+    {{ plannerForm.value | json }} {{ tabSelected | json }}
   </div>
 </form>
-{{ plannerForm.value | json }} {{ tabSelected | json }}
-<!-- Typechart include multi Type Pokemon Settings Settings List Pokemon Move chart
-Recommended Pokemon Pokemon summary -->
