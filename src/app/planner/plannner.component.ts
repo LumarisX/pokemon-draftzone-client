@@ -126,7 +126,7 @@ export class PlannerComponent implements OnInit {
   get tieredCount() {
     let total: number = 0;
     for (let control of this.teamFormArray?.controls) {
-      if (control.get('pid')?.value != '') {
+      if (control.get('pid')?.value != null) {
         total++;
       }
     }
@@ -135,10 +135,7 @@ export class PlannerComponent implements OnInit {
 
   get remainingPokemon() {
     let mons = this.plannerForm.get('min')?.value - this.tieredCount;
-    if (mons > 1) {
-      return mons;
-    }
-    return 1;
+    return mons > 1 ? mons : 1;
   }
 
   get teamFormArray(): FormArray {
@@ -231,7 +228,7 @@ export class PlannerComponent implements OnInit {
       name: ['', Validators.required],
       capt: [false, Validators.required],
       tier: [''],
-      value: [0],
+      value: [],
     });
     teamFormGroup.get('name')?.valueChanges.subscribe((name) => {
       if (name !== null) {
