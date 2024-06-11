@@ -56,6 +56,7 @@ export class PlannerComponent implements OnInit {
   team: PokemonId[] = [];
   summary!: Summary;
   tabSelected = 0;
+  selectedDraft = 0;
   formats = [];
   rulesets = [];
   movechart: MoveChart = [];
@@ -67,6 +68,11 @@ export class PlannerComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.plannerForm = this.fb.group({
+      drafts: this.fb.array([this.createDraftFormGroup()]),
+    });
+
+    // Initialize formats and rulesets
     this.dataService.getFormats().subscribe((formats) => {
       this.formats = <any>formats;
     });
@@ -75,44 +81,49 @@ export class PlannerComponent implements OnInit {
       this.rulesets = <any>rulesets;
     });
 
-    this.plannerForm = this.fb.group({
-      format: ['', Validators.required],
-      ruleset: ['', Validators.required],
-      min: [10, [Validators.required, Validators.min(0)]], //set to 10
-      max: [12, [Validators.required, Validators.min(0), Validators.max(18)]], //set to 12
-      system: ['points', Validators.required],
-      totalPoints: [100], // set to 0
-      team: this.fb.array([]),
-    });
-
-    this.plannerForm.get('max')?.valueChanges.subscribe((value: number) => {
-      this.plannerForm
-        .get('min')
-        ?.setValidators([
-          Validators.required,
-          Validators.min(0),
-          this.maxValidator(value),
-        ]);
-      this.plannerForm.get('min')?.updateValueAndValidity();
-    });
-    this.plannerForm.get('max')?.valueChanges.subscribe((value: number) => {
-      this.adjustTeamArray(value);
-    });
-
-    this.adjustTeamArray(this.plannerForm.get('max')?.value ?? 1);
-
+    // Load data from local storage
     const formData = localStorage.getItem('plannerFormData');
     if (formData) {
       this.plannerForm.patchValue(JSON.parse(formData));
+      if (this.plannerForm.valid) {
+        this.populateTeamFromLocalStorage(JSON.parse(formData));
+      } else {
+        this.plannerForm = this.fb.group({
+          drafts: this.fb.array([this.createDraftFormGroup()]),
+        });
+      }
       this.updateDetails();
     }
+
+    // Listen to form changes for validation and storage
     this.plannerForm.valueChanges.subscribe((value) => {
       localStorage.setItem('plannerFormData', JSON.stringify(value));
     });
+
+    this.getDraftFormGroup()
+      .get('max')
+      ?.valueChanges.subscribe((value: number) => {
+        this.getDraftFormGroup()
+          .get('min')
+          ?.setValidators([
+            Validators.required,
+            Validators.min(0),
+            this.maxValidator(value),
+          ]);
+        this.getDraftFormGroup().get('min')?.updateValueAndValidity();
+      });
+
+    this.getDraftFormGroup()
+      .get('max')
+      ?.valueChanges.subscribe((value: number) => {
+        this.adjustTeamArray(value);
+      });
+
+    this.adjustTeamArray(this.getDraftFormGroup().get('max')?.value ?? 1);
   }
 
   get isPoints() {
-    return this.plannerForm.get('system')?.value === 'points';
+    return this.getDraftFormGroup().get('system')?.value === 'points';
   }
 
   get remainingPoints() {
@@ -120,7 +131,7 @@ export class PlannerComponent implements OnInit {
     for (let control of this.teamFormArray?.controls) {
       total += control.get('value')?.value;
     }
-    return this.plannerForm.get('totalPoints')?.value - total;
+    return this.getDraftFormGroup().get('totalPoints')?.value - total;
   }
 
   get tieredCount() {
@@ -134,25 +145,24 @@ export class PlannerComponent implements OnInit {
   }
 
   get remainingPokemon() {
-    let mons = this.plannerForm.get('min')?.value - this.tieredCount;
+    let mons = this.getDraftFormGroup().get('min')?.value - this.tieredCount;
     return mons > 1 ? mons : 1;
   }
 
   get teamFormArray(): FormArray {
-    return this.plannerForm.get('team') as FormArray;
+    return this.getDraftFormGroup().get('team') as FormArray;
+  }
+
+  get draftArray(): FormArray {
+    return this.plannerForm.get('drafts') as FormArray;
   }
 
   resetForm() {
     this.plannerForm = this.fb.group({
-      format: ['', Validators.required],
-      ruleset: ['', Validators.required],
-      min: [10, [Validators.required, Validators.min(0)]],
-      max: [12, [Validators.required, Validators.min(0), Validators.max(18)]],
-      system: ['points', Validators.required],
-      totalPoints: [100],
-      team: this.fb.array([]),
+      drafts: this.fb.array([this.createDraftFormGroup()]),
     });
 
+    // Reset properties
     this.typechart = {} as TypeChart;
     this.summary = {} as Summary;
     this.movechart = [];
@@ -222,6 +232,22 @@ export class PlannerComponent implements OnInit {
     }
   }
 
+  createDraftFormGroup(): FormGroup {
+    const max = 12;
+
+    let group = this.fb.group({
+      format: ['', Validators.required],
+      ruleset: ['', Validators.required],
+      draftName: ['Draft ' + 1],
+      min: [10, [Validators.required, Validators.min(0)]],
+      max: [max, [Validators.required, Validators.min(0), Validators.max(18)]],
+      system: ['points', Validators.required],
+      totalPoints: [100],
+      team: this.fb.array([]),
+    });
+    return group;
+  }
+
   createTeamFormGroup(): FormGroup {
     const teamFormGroup = this.fb.group({
       pid: ['', Validators.required],
@@ -246,6 +272,16 @@ export class PlannerComponent implements OnInit {
     return teamFormGroup;
   }
 
+  addDraft() {
+    this.draftArray.push(this.createDraftFormGroup());
+  }
+
+  getDraftFormGroup(): FormGroup {
+    return (this.plannerForm.get('drafts') as FormArray).at(
+      this.selectedDraft
+    ) as FormGroup;
+  }
+
   tabColor(tab: number) {
     return tab == this.tabSelected
       ? 'border-slate-400 hover:bg-slate-200 bg-slate-100'
@@ -253,8 +289,18 @@ export class PlannerComponent implements OnInit {
   }
 
   minMaxStyle(i: number) {
-    return i < this.plannerForm.get('min')?.value
+    return i < this.getDraftFormGroup().get('min')?.value
       ? 'border-slate-500'
       : 'border-slate-300 text-slate-500';
+  }
+
+  populateTeamFromLocalStorage(formData: any): void {
+    const teamArray = formData.drafts[0]?.team || [];
+    const teamFormArray = this.getDraftFormGroup().get('team') as FormArray;
+    teamArray.forEach((teamMember: any) => {
+      const teamFormGroup = this.createTeamFormGroup();
+      teamFormGroup.patchValue(teamMember);
+      teamFormArray.push(teamFormGroup);
+    });
   }
 }
