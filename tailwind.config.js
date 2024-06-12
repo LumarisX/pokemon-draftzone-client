@@ -15,6 +15,8 @@ module.exports = {
       },
       colors: {
         slate: {
+          150: "#EAEFF5",
+          250: "#D7DFE9",
           350: "#B0BCCC",
         },
         deoxys: {

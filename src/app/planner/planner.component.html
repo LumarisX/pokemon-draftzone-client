@@ -14,7 +14,8 @@
       </div>
       <div class="flex w-full p-0.5 space-x-2">
         <div
-          class="flex overflow-x-auto border rounded border-slate-500 bg-slate-100 hover:bg-slate-50 hover:cursor-pointer"
+          [ngClass]="selectedDraftsStyle(j)"
+          class="flex overflow-x-auto border rounded border-slate-500 hover:cursor-pointer"
           *ngFor="let draftCtrl of draftArray.controls; let j = index"
           [formGroupName]="j"
           (click)="switchDrafts(j)"

@@ -380,4 +380,10 @@ export class PlannerComponent implements OnInit {
     this.selectedDraft = index;
     this.updateDetails();
   }
+
+  selectedDraftsStyle(index: number) {
+    return index == this.selectedDraft
+      ? 'bg-slate-100 '
+      : 'bg-slate-250 hover:bg-slate-150';
+  }
 }
