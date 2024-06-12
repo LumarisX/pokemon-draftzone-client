@@ -26,7 +26,6 @@ import { FinderComponent } from './finder/finder.component';
 import { MoveComponent } from './moves/moves.component';
 import { SummaryComponent } from './summary/summary.component';
 import { TypechartComponent } from './typechart/typechart.component';
-import { group } from 'd3';
 
 type Planner = {
   summary: Summary;
@@ -67,6 +66,7 @@ export class PlannerComponent implements OnInit {
   formats = [];
   rulesets = [];
   movechart: MoveChart = [];
+  draftSize = 0;
 
   constructor(
     private fb: FormBuilder,
@@ -80,13 +80,34 @@ export class PlannerComponent implements OnInit {
     if (storedPlannerData) {
       let data = JSON.parse(storedPlannerData);
       this.plannerForm = this.fb.group({
-        drafts: this.fb.array([]),
+        drafts: this.fb.array(
+          data.map(
+            (value: {
+              format: string;
+              ruleset: string;
+              draftName: string;
+              min: number;
+              max: number;
+              system: string;
+              totalPoints: number;
+              team: {
+                name: string;
+                pid: string;
+                value: string;
+                tier: string;
+                capt: boolean;
+              }[];
+            }) => this.createDraftFormGroup(value)
+          )
+        ),
       });
     } else {
       this.plannerForm = this.fb.group({
         drafts: this.fb.array([this.createDraftFormGroup()]),
       });
     }
+
+    this.updateDetails();
 
     // Listen for form changes and save to localStorage
     this.draftArray.valueChanges.subscribe((value) => {
@@ -136,10 +157,6 @@ export class PlannerComponent implements OnInit {
 
   get draftArray(): FormArray {
     return this.plannerForm.get('drafts') as FormArray;
-  }
-
-  get draftArraySize(): number {
-    return this.plannerForm ? this.draftArray.length ?? 0 : 0;
   }
 
   resetForm() {
@@ -219,22 +236,53 @@ export class PlannerComponent implements OnInit {
     }
   }
 
-  createDraftFormGroup(): FormGroup {
-    const max = 12;
+  createDraftFormGroup(
+    data: {
+      format: string;
+      ruleset: string;
+      draftName: string;
+      min: number;
+      max: number;
+      system: string;
+      totalPoints: number;
+      team: {
+        name: string;
+        pid: string;
+        value: string;
+        tier: string;
+        capt: boolean;
+      }[];
+    } = {
+      format: '',
+      ruleset: '',
+      draftName: 'Draft ' + (this.draftSize + 1),
+      min: 10,
+      max: 12,
+      system: 'points',
+      totalPoints: 100,
+      team: [],
+    }
+  ): FormGroup {
+    let teamArray = this.fb.array(
+      data.team.map((mon) => this.createTeamFormGroup(mon))
+    );
     let group = this.fb.group({
-      format: ['', Validators.required],
-      ruleset: ['', Validators.required],
-      draftName: ['Draft ' + (this.draftArraySize + 1)],
-      min: [10, [Validators.required, Validators.min(0)]],
-      max: [max, [Validators.required, Validators.min(0), Validators.max(18)]],
-      system: ['points', Validators.required],
-      totalPoints: [100],
-      team: this.fb.array([]),
+      format: [data.format, Validators.required],
+      ruleset: [data.ruleset, Validators.required],
+      draftName: [data.draftName],
+      min: [data.min, [Validators.required, Validators.min(0)]],
+      max: [
+        data.max,
+        [Validators.required, Validators.min(0), Validators.max(18)],
+      ],
+      system: [data.system, Validators.required],
+      totalPoints: [data.totalPoints],
+      team: teamArray,
     });
 
     group.get('max')?.valueChanges.subscribe((value: number | null) => {
       if (value) {
-        this.getDraftFormGroup()
+        group
           .get('min')
           ?.setValidators([
             Validators.required,
@@ -249,18 +297,26 @@ export class PlannerComponent implements OnInit {
       if (value) this.adjustTeamArray(group.get('team') as FormArray, value);
     });
 
-    this.adjustTeamArray(group.get('team') as FormArray, max);
-
+    this.adjustTeamArray(group.get('team') as FormArray, data.max);
+    this.draftSize++;
     return group;
   }
 
-  createTeamFormGroup(): FormGroup {
+  createTeamFormGroup(
+    data: {
+      name: string;
+      pid: string;
+      value: string | null;
+      tier: string;
+      capt: boolean;
+    } = { pid: '', name: '', capt: false, tier: '', value: null }
+  ): FormGroup {
     const teamFormGroup = this.fb.group({
-      pid: ['', Validators.required],
-      name: ['', Validators.required],
-      capt: [false, Validators.required],
-      tier: [''],
-      value: [],
+      pid: [data.pid, Validators.required],
+      name: [data.name, Validators.required],
+      capt: [data.capt, Validators.required],
+      tier: [data.tier],
+      value: [data.value],
     });
     teamFormGroup.get('name')?.valueChanges.subscribe((name) => {
       if (name !== null) {

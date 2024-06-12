@@ -10,7 +10,7 @@
       >
         <input (click)="switchDrafts(j)" formControlName="draftName" />
       </div>
-      <button *ngIf="draftArraySize < 5" (click)="addDraft()">+</button>
+      <button *ngIf="draftSize < 5" (click)="addDraft()">+</button>
     </div>
     <div [formGroup]="getDraftFormGroup()" class="flex flex-col h-full">
       <div class="flex flex-wrap p-2 space-x-4 space-y-1 bg-slate-200">
