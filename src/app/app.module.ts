@@ -1,5 +1,6 @@
+import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { AuthModule } from '@auth0/auth0-angular';
 import { AppRoutingModule } from './app-routing.module';
@@ -8,11 +9,10 @@ import { DraftOverviewModule } from './draft-overview/draft-overview.module';
 import { ErrorModule } from './error/error.module';
 import { MatchupOverviewModule } from './matchup-overview/matchup-overview.module';
 import { OpponentOverviewModule } from './opponent-overview/opponent-overview.module';
-import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   imports: [
-    BrowserModule,
+    BrowserAnimationsModule,
     DraftOverviewModule,
     ErrorModule,
     HttpClientModule,

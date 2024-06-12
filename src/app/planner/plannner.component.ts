@@ -1,3 +1,10 @@
+import {
+  animate,
+  state,
+  style,
+  transition,
+  trigger,
+} from '@angular/animations';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import {
@@ -26,6 +33,7 @@ import { FinderComponent } from './finder/finder.component';
 import { MoveComponent } from './moves/moves.component';
 import { SummaryComponent } from './summary/summary.component';
 import { TypechartComponent } from './typechart/typechart.component';
+import { select } from 'd3';
 
 type Planner = {
   summary: Summary;
@@ -49,6 +57,13 @@ type Planner = {
     FormsModule,
     SpriteComponent,
   ],
+  animations: [
+    trigger('growIn', [
+      state('void', style({ height: '0', overflow: 'hidden' })),
+      state('*', style({ height: '*' })),
+      transition('void <=> *', [animate('0.5s ease-in-out')]),
+    ]),
+  ],
 })
 export class PlannerComponent implements OnInit {
   plannerForm!: FormGroup;
@@ -67,6 +82,7 @@ export class PlannerComponent implements OnInit {
   rulesets = [];
   movechart: MoveChart = [];
   draftSize = 0;
+  settings = true;
 
   constructor(
     private fb: FormBuilder,
@@ -139,7 +155,8 @@ export class PlannerComponent implements OnInit {
   get tieredCount() {
     let total: number = 0;
     for (let control of this.teamFormArray?.controls) {
-      if (control.get('pid')?.value != null) {
+      let value = control.get('pid')?.value;
+      if (value != null && value != '') {
         total++;
       }
     }
@@ -159,20 +176,10 @@ export class PlannerComponent implements OnInit {
     return this.plannerForm.get('drafts') as FormArray;
   }
 
-  resetForm() {
-    this.plannerForm = this.fb.group({
-      drafts: this.fb.array([this.createDraftFormGroup()]),
-    });
-
-    // Reset properties
-    this.typechart = {} as TypeChart;
-    this.summary = {} as Summary;
-    this.movechart = [];
-    localStorage.setItem(
-      'plannerFormData',
-      JSON.stringify(this.plannerForm.value)
-    );
-    this.ngOnInit();
+  deletePlan(index: number) {
+    this.draftArray.removeAt(index);
+    this.draftSize--;
+    this.selectedDraft = 0;
   }
 
   updateDetails() {
@@ -336,6 +343,7 @@ export class PlannerComponent implements OnInit {
 
   addDraft() {
     this.draftArray.push(this.createDraftFormGroup());
+    this.selectedDraft = this.draftSize - 1;
   }
 
   getDraftFormGroup(): FormGroup {
@@ -370,5 +378,6 @@ export class PlannerComponent implements OnInit {
 
   switchDrafts(index: number) {
     this.selectedDraft = index;
+    this.updateDetails();
   }
 }

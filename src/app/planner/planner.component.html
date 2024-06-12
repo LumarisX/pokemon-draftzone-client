@@ -1,24 +1,56 @@
 <form [formGroup]="plannerForm" class="h-full">
   <button type="submit" style="display: none"></button>
-  <div formArrayName="drafts" class="h-full">
-    <div class="flex">
+  <div formArrayName="drafts" class="flex flex-col h-full">
+    <div
+      class="flex items-center p-1 space-x-1 overflow-x-auto border-b-2 overflow-y-clip h-fit bg-slate-200 border-slate-300"
+    >
       <div
-        class="flex flex-wrap p-2 space-x-4 space-y-1 bg-slate-200"
-        *ngFor="let draftCtrl of draftArray.controls; let j = index"
-        [formGroupName]="j"
-        (click)="selectedDraft = j; updateDetails()"
+        class="flex items-center font-semibold w-20 px-1 py-0.5 border bg-slate-100 hover:bg-slate-50 hover:cursor-pointer rounded border-slate-500"
+        (click)="settings = !settings"
       >
-        <input (click)="switchDrafts(j)" formControlName="draftName" />
+        <img src="../../assets/icons/gear.svg" class="w-5" />
+        <div *ngIf="!settings" class="px-1">Show</div>
+        <div *ngIf="settings" class="px-1">Hide</div>
       </div>
-      <button *ngIf="draftSize < 5" (click)="addDraft()">+</button>
+      <div class="flex w-full p-0.5 space-x-2">
+        <div
+          class="flex overflow-x-auto border rounded border-slate-500 bg-slate-100 hover:bg-slate-50 hover:cursor-pointer"
+          *ngFor="let draftCtrl of draftArray.controls; let j = index"
+          [formGroupName]="j"
+          (click)="switchDrafts(j)"
+        >
+          <input
+            class="w-32 px-2 py-0.5 text-sm rounded bg-inherit text-ellipsis"
+            formControlName="draftName"
+          />
+          <img
+            class="w-4 m-1"
+            src="../../assets/icons/trash.svg"
+            (click)="deletePlan(j)"
+          />
+        </div>
+        <button *ngIf="draftSize < 5" (click)="addDraft()">
+          <img
+            class="h-8 p-1 border rounded border-slate-500 bg-slate-100 hover:bg-slate-50 hover:cursor-pointer"
+            src="../../assets/icons/plus.svg"
+          />
+        </button>
+      </div>
     </div>
-    <div [formGroup]="getDraftFormGroup()" class="flex flex-col h-full">
-      <div class="flex flex-wrap p-2 space-x-4 space-y-1 bg-slate-200">
+    <div
+      [formGroup]="getDraftFormGroup()"
+      class="flex flex-col flex-grow overflow-auto"
+    >
+      <div
+        *ngIf="settings"
+        @growIn
+        class="flex flex-wrap items-center px-2 pb-1 space-x-4 space-y-1 border-b-2 border-slate-300 rounded-b-xl bg-slate-200"
+      >
         <div class="space-x-1">
           <label for="format" class="font-bold">Format</label>
           <select
             formControlName="format"
-            class="p-1 font-semibold rounded"
+            class="p-0.5 font-semibold rounded"
             id="format"
           >
             <option value="" disabled selected>Select Format</option>
@@ -32,7 +64,7 @@
           <label for="ruleset" class="font-bold">Ruleset</label>
           <select
             formControlName="ruleset"
-            class="p-1 font-semibold rounded"
+            class="p-0.5 font-semibold rounded"
             id="ruleset"
           >
             <option value="" disabled selected>Select Ruleset</option>
@@ -46,7 +78,7 @@
           <label for="min" class="font-bold">Min</label>
           <input
             type="number"
-            class="p-1 font-semibold text-center rounded"
+            class="w-12 p-0.5 font-semibold text-center rounded"
             formControlName="min"
             id="min"
             min="0"
@@ -58,7 +90,7 @@
           <label for="max" class="font-bold">Max</label>
           <input
             type="number"
-            class="p-1 font-semibold text-center rounded"
+            class="w-12 p-0.5 font-semibold text-center rounded"
             formControlName="max"
             id="max"
             min="0"
@@ -68,7 +100,10 @@
 
         <div class="space-x-1">
           <label for="tier" class="font-bold">Tier</label>
-          <select formControlName="system" class="p-1 font-semibold rounded">
+          <select
+            formControlName="system"
+            class="w-20 p-0.5 font-semibold rounded"
+          >
             <option value="" disabled selected>Select Value Type</option>
             <option value="points">Points</option>
             <option value="tiers">Tiers</option>
@@ -79,13 +114,13 @@
           <label for="totalPoints">Total Points</label>
           <input
             type="number"
-            class="p-1 rounded"
+            class="w-16 p-0.5 rounded"
             formControlName="totalPoints"
             id="totalPoints"
           />
         </div>
         <button
-          class="p-1 border-2 rounded-lg hover:bg-slate-300 bg-slate-100 border-slate-400"
+          class="p-0.5 border-2 text-sm rounded hover:bg-slate-300 bg-slate-100 border-slate-400"
           routerLink="/draft/new"
           [queryParams]="{
             team: team,
@@ -94,12 +129,6 @@
           }"
         >
           Save to New League
-        </button>
-        <button
-          class="p-1 border-2 rounded-lg hover:bg-slate-300 bg-slate-100 border-slate-400"
-          (click)="resetForm()"
-        >
-          Reset
         </button>
       </div>
       <div class="flex flex-grow min-h-0 divide-x-4 divide-slate-200">
@@ -300,6 +329,6 @@
         </div>
       </div>
     </div>
-    {{ plannerForm.value | json }} {{ tabSelected | json }}
   </div>
 </form>
+<!-- {{ plannerForm.value | json }} {{ tabSelected | json }} -->
