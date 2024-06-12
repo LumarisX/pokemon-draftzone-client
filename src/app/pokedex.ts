@@ -148,7 +148,7 @@ export const BattlePokedex: {
   },
   rattata: { name: ['Rattata'], ps: 'rattata', serebii: '019', pd: 'rattata' },
   rattataalola: {
-    name: ['Rattata-Alola', 'Alolan Rattata'],
+    name: ['Rattata-Alola', 'Alolan Rattata', 'Rattata-A'],
     ps: 'rattata-alola',
     serebii: '019-a',
     pd: 'rattata-alolan',
@@ -160,13 +160,13 @@ export const BattlePokedex: {
     pd: 'raticate',
   },
   raticatealola: {
-    name: ['Raticate-Alola', 'Alolan Raticate'],
+    name: ['Raticate-Alola', 'Alolan Raticate', 'Raticate-A'],
     ps: 'raticate-alola',
     serebii: '020-a',
     pd: 'raticate-alolan',
   },
   raticatealolatotem: {
-    name: ['Raticate-Alola-Totem'],
+    name: ['Raticate-Alola-Totem', 'Raticate-A'],
     ps: 'raticate-alola',
     serebii: '020-a',
     pd: 'raticate-alolan',
@@ -243,7 +243,7 @@ export const BattlePokedex: {
     pd: 'pikachu-kalos-cap',
   },
   pikachualola: {
-    name: ['Pikachu-Alola', 'Alolan Pikachu'],
+    name: ['Pikachu-Alola', 'Alolan Pikachu', 'Pikachu-A'],
     ps: 'pikachu-alola',
     serebii: '025-a',
     pd: 'pikachu-alola-cap',
@@ -274,7 +274,7 @@ export const BattlePokedex: {
   },
   raichu: { name: ['Raichu'], ps: 'raichu', serebii: '026', pd: 'raichu' },
   raichualola: {
-    name: ['Raichu-Alola', 'Alolan Raichu'],
+    name: ['Raichu-Alola', 'Alolan Raichu', 'Raichu-A'],
     ps: 'raichu-alola',
     serebii: '026-a',
     pd: 'raichu-alolan',
@@ -286,7 +286,7 @@ export const BattlePokedex: {
     pd: 'sandshrew',
   },
   sandshrewalola: {
-    name: ['Sandshrew-Alola', 'Alolan Sandshrew'],
+    name: ['Sandshrew-Alola', 'Alolan Sandshrew', 'Sandshrew-A'],
     ps: 'sandshrew-alola',
     serebii: '027-a',
     pd: 'sandshrew-alolan',
@@ -298,13 +298,13 @@ export const BattlePokedex: {
     pd: 'sandslash',
   },
   sandslashalola: {
-    name: ['Sandslash-Alola', 'Alolan Sandslash'],
+    name: ['Sandslash-Alola', 'Alolan Sandslash', 'Sandslash-A'],
     ps: 'sandslash-alola',
     serebii: '028-a',
     pd: 'sandslash-alolan',
   },
   nidoranf: {
-    name: ['Nidoran-F'],
+    name: ['Nidoran-F', 'Nidoran-Female'],
     ps: 'nidoranf',
     serebii: '029',
     pd: 'nidoran-f',
@@ -353,7 +353,7 @@ export const BattlePokedex: {
   },
   vulpix: { name: ['Vulpix'], ps: 'vulpix', serebii: '037', pd: 'vulpix' },
   vulpixalola: {
-    name: ['Vulpix-Alola', 'Alolan Vulpix'],
+    name: ['Vulpix-Alola', 'Alolan Vulpix', 'Vulpix-A'],
     ps: 'vulpix-alola',
     serebii: '037-a',
     pd: 'vulpix-alolan',
@@ -365,7 +365,7 @@ export const BattlePokedex: {
     pd: 'ninetales',
   },
   ninetalesalola: {
-    name: ['Ninetales-Alola', 'Alolan Ninetales'],
+    name: ['Ninetales-Alola', 'Alolan Ninetales', 'Ninetales-A'],
     ps: 'ninetales-alola',
     serebii: '038-a',
     pd: 'ninetales-alolan',
@@ -408,27 +408,27 @@ export const BattlePokedex: {
   },
   diglett: { name: ['Diglett'], ps: 'diglett', serebii: '050', pd: 'diglett' },
   diglettalola: {
-    name: ['Diglett-Alola', 'Alolan Diglett'],
+    name: ['Diglett-Alola', 'Alolan Diglett', 'Diglett-A'],
     ps: 'diglett-alola',
     serebii: '050-a',
     pd: 'diglett-alolan',
   },
   dugtrio: { name: ['Dugtrio'], ps: 'dugtrio', serebii: '051', pd: 'dugtrio' },
   dugtrioalola: {
-    name: ['Dugtrio-Alola', 'Alolan Dugtrio'],
+    name: ['Dugtrio-Alola', 'Alolan Dugtrio', 'Dugtrio-A'],
     ps: 'dugtrio-alola',
     serebii: '051-a',
     pd: 'dugtrio-alolan',
   },
   meowth: { name: ['Meowth'], ps: 'meowth', serebii: '052', pd: 'meowth' },
   meowthalola: {
-    name: ['Meowth-Alola', 'Alolan Meowth'],
+    name: ['Meowth-Alola', 'Alolan Meowth', 'Meowth-A'],
     ps: 'meowth-alola',
     serebii: '052-a',
     pd: 'meowth-alolan',
   },
   meowthgalar: {
-    name: ['Meowth-Galar', 'Galarian Meowth'],
+    name: ['Meowth-Galar', 'Galarian Meowth', 'Meowth-G'],
     ps: 'meowth-galar',
     serebii: '052-g',
     pd: 'meowth-galarian',
@@ -441,7 +441,7 @@ export const BattlePokedex: {
   },
   persian: { name: ['Persian'], ps: 'persian', serebii: '053', pd: 'persian' },
   persianalola: {
-    name: ['Persian-Alola', 'Alolan Persian'],
+    name: ['Persian-Alola', 'Alolan Persian', 'Persian-A'],
     ps: 'persian-alola',
     serebii: '053-a',
     pd: 'persian-alolan',
@@ -462,7 +462,7 @@ export const BattlePokedex: {
     pd: 'growlithe',
   },
   growlithehisui: {
-    name: ['Growlithe-Hisui', 'Hisuian Growlithe'],
+    name: ['Growlithe-Hisui', 'Hisuian Growlithe', 'Growlithe-H'],
     ps: 'growlithe-hisui',
     serebii: '058-h',
     pd: 'growlithe-hisuian',
@@ -474,7 +474,7 @@ export const BattlePokedex: {
     pd: 'arcanine',
   },
   arcaninehisui: {
-    name: ['Arcanine-Hisui', 'Hisuian Arcanine'],
+    name: ['Arcanine-Hisui', 'Hisuian Arcanine', 'Arcanine-H'],
     ps: 'arcanine-hisui',
     serebii: '059-h',
     pd: 'arcanine-hisuian',
@@ -547,7 +547,7 @@ export const BattlePokedex: {
   },
   geodude: { name: ['Geodude'], ps: 'geodude', serebii: '074', pd: 'geodude' },
   geodudealola: {
-    name: ['Geodude-Alola', 'Alolan Geodude'],
+    name: ['Geodude-Alola', 'Alolan Geodude', 'Geodude-A'],
     ps: 'geodude-alola',
     serebii: '074-a',
     pd: 'geodude-alolan',
@@ -559,21 +559,21 @@ export const BattlePokedex: {
     pd: 'graveler',
   },
   graveleralola: {
-    name: ['Graveler-Alola', 'Alolan Graveler'],
+    name: ['Graveler-Alola', 'Alolan Graveler', 'Graveler-A'],
     ps: 'graveler-alola',
     serebii: '075-a',
     pd: 'graveler-alolan',
   },
   golem: { name: ['Golem'], ps: 'golem', serebii: '076', pd: 'golem' },
   golemalola: {
-    name: ['Golem-Alola', 'Alolan Golem'],
+    name: ['Golem-Alola', 'Alolan Golem', 'Golem-A'],
     ps: 'golem-alola',
     serebii: '076-a',
     pd: 'golem-alolan',
   },
   ponyta: { name: ['Ponyta'], ps: 'ponyta', serebii: '077', pd: 'ponyta' },
   ponytagalar: {
-    name: ['Ponyta-Galar', 'Galarian Ponyta'],
+    name: ['Ponyta-Galar', 'Galarian Ponyta', 'Ponyta-G'],
     ps: 'ponyta-galar',
     serebii: '077-g',
     pd: 'ponyta-galarian',
@@ -585,7 +585,7 @@ export const BattlePokedex: {
     pd: 'rapidash',
   },
   rapidashgalar: {
-    name: ['Rapidash-Galar', 'Galarian Rapidash'],
+    name: ['Rapidash-Galar', 'Galarian Rapidash', 'Rapidash-G'],
     ps: 'rapidash-galar',
     serebii: '078-g',
     pd: 'rapidash-galarian',
@@ -597,7 +597,7 @@ export const BattlePokedex: {
     pd: 'slowpoke',
   },
   slowpokegalar: {
-    name: ['Slowpoke-Galar', 'Galarian Slowpoke'],
+    name: ['Slowpoke-Galar', 'Galarian Slowpoke', 'Slowpoke-G'],
     ps: 'slowpoke-galar',
     serebii: '079-g',
     pd: 'slowpoke-galarian',
@@ -610,7 +610,7 @@ export const BattlePokedex: {
     pd: 'slowbro-mega',
   },
   slowbrogalar: {
-    name: ['Slowbro-Galar', 'Galarian Slowbro'],
+    name: ['Slowbro-Galar', 'Galarian Slowbro', 'Slowbro-G'],
     ps: 'slowbro-galar',
     serebii: '080-g',
     pd: 'slowbro-galarian',
@@ -634,7 +634,7 @@ export const BattlePokedex: {
     pd: 'farfetchd',
   },
   farfetchdgalar: {
-    name: ['Farfetch’d-Galar', 'Galarian Farfetch’d'],
+    name: ['Farfetch’d-Galar', 'Galarian Farfetch’d', 'Farfetch’d-G'],
     ps: 'farfetchd-galar',
     serebii: '083-g',
     pd: 'farfetchd-galarian',
@@ -645,14 +645,14 @@ export const BattlePokedex: {
   dewgong: { name: ['Dewgong'], ps: 'dewgong', serebii: '087', pd: 'dewgong' },
   grimer: { name: ['Grimer'], ps: 'grimer', serebii: '088', pd: 'grimer' },
   grimeralola: {
-    name: ['Grimer-Alola', 'Alolan Grimer'],
+    name: ['Grimer-Alola', 'Alolan Grimer', 'Grimer-A'],
     ps: 'grimer-alola',
     serebii: '088-a',
     pd: 'grimer-alolan',
   },
   muk: { name: ['Muk'], ps: 'muk', serebii: '089', pd: 'muk' },
   mukalola: {
-    name: ['Muk-Alola', 'Alolan Muk'],
+    name: ['Muk-Alola', 'Alolan Muk', 'Muk-A'],
     ps: 'muk-alola',
     serebii: '089-a',
     pd: 'muk-alolan',
@@ -697,7 +697,7 @@ export const BattlePokedex: {
   },
   voltorb: { name: ['Voltorb'], ps: 'voltorb', serebii: '100', pd: 'voltorb' },
   voltorbhisui: {
-    name: ['Voltorb-Hisui', 'Hisuian Voltorb'],
+    name: ['Voltorb-Hisui', 'Hisuian Voltorb', 'Voltorb-H'],
     ps: 'voltorb-hisui',
     serebii: '100-h',
     pd: 'voltorb-hisuian',
@@ -709,7 +709,7 @@ export const BattlePokedex: {
     pd: 'electrode',
   },
   electrodehisui: {
-    name: ['Electrode-Hisui', 'Hisuian Electrode'],
+    name: ['Electrode-Hisui', 'Hisuian Electrode', 'Electrode-H'],
     ps: 'electrode-hisui',
     serebii: '101-h',
     pd: 'electrode-hisuian',
@@ -727,7 +727,7 @@ export const BattlePokedex: {
     pd: 'exeggutor',
   },
   exeggutoralola: {
-    name: ['Exeggutor-Alola', 'Alolan Exeggutor'],
+    name: ['Exeggutor-Alola', 'Alolan Exeggutor', 'Exeggutor-A'],
     ps: 'exeggutor-alola',
     serebii: '103-a',
     pd: 'exeggutor-alolan',
@@ -735,13 +735,13 @@ export const BattlePokedex: {
   cubone: { name: ['Cubone'], ps: 'cubone', serebii: '104', pd: 'cubone' },
   marowak: { name: ['Marowak'], ps: 'marowak', serebii: '105', pd: 'marowak' },
   marowakalola: {
-    name: ['Marowak-Alola', 'Alolan Marowak'],
+    name: ['Marowak-Alola', 'Alolan Marowak', 'Marowak-A'],
     ps: 'marowak-alola',
     serebii: '105-a',
     pd: 'marowak-alolan',
   },
   marowakalolatotem: {
-    name: ['Marowak-Alola-Totem'],
+    name: ['Marowak-Alola-Totem', 'Marowak-A'],
     ps: 'marowak-alola',
     serebii: '105-a',
     pd: 'marowak-alolan',
@@ -767,7 +767,7 @@ export const BattlePokedex: {
   koffing: { name: ['Koffing'], ps: 'koffing', serebii: '109', pd: 'koffing' },
   weezing: { name: ['Weezing'], ps: 'weezing', serebii: '110', pd: 'weezing' },
   weezinggalar: {
-    name: ['Weezing-Galar', 'Galarian Weezing'],
+    name: ['Weezing-Galar', 'Galarian Weezing', 'Weezing-G'],
     ps: 'weezing-galar',
     serebii: '110-g',
     pd: 'weezing-galarian',
@@ -796,7 +796,7 @@ export const BattlePokedex: {
   starmie: { name: ['Starmie'], ps: 'starmie', serebii: '121', pd: 'starmie' },
   mrmime: { name: ['Mr. Mime'], ps: 'mrmime', serebii: '122', pd: 'mr-mime' },
   mrmimegalar: {
-    name: ['Mr. Mime-Galar', 'Galarian Mr. Mime'],
+    name: ['Mr. Mime-Galar', 'Galarian Mr. Mime', 'Mr. Mime-G'],
     ps: 'mrmime-galar',
     serebii: '122-g',
     pd: 'mr-mime-galarian',
@@ -819,19 +819,19 @@ export const BattlePokedex: {
   },
   tauros: { name: ['Tauros'], ps: 'tauros', serebii: '128', pd: 'tauros' },
   taurospaldeacombat: {
-    name: ['Tauros-Paldea-Combat', 'Paldean Tauros Combat'],
+    name: ['Tauros-Paldea-Combat', 'Paldean Tauros Combat', 'Tauros-P'],
     ps: 'tauros-paldeacombat',
     serebii: '128',
     pd: 'tauros-paldean-combat',
   },
   taurospaldeablaze: {
-    name: ['Tauros-Paldea-Blaze', 'Paldean Tauros Blaze'],
+    name: ['Tauros-Paldea-Blaze', 'Paldean Tauros Blaze', 'Tauros-P'],
     ps: 'tauros-paldeablaze',
     serebii: '128',
     pd: 'tauros-paldean-blaze',
   },
   taurospaldeaaqua: {
-    name: ['Tauros-Paldea-Aqua', 'Paldean Tauros Aqua'],
+    name: ['Tauros-Paldea-Aqua', 'Paldean Tauros Aqua', 'Tauros-P'],
     ps: 'tauros-paldeaaqua',
     serebii: '128',
     pd: 'tauros-paldean-aqua',
@@ -919,21 +919,21 @@ export const BattlePokedex: {
     pd: 'articuno',
   },
   articunogalar: {
-    name: ['Articuno-Galar', 'Galarian Articuno'],
+    name: ['Articuno-Galar', 'Galarian Articuno', 'Articuno-G'],
     ps: 'articuno-galar',
     serebii: '144-g',
     pd: 'articuno-galarian',
   },
   zapdos: { name: ['Zapdos'], ps: 'zapdos', serebii: '145', pd: 'zapdos' },
   zapdosgalar: {
-    name: ['Zapdos-Galar', 'Galarian Zapdos'],
+    name: ['Zapdos-Galar', 'Galarian Zapdos', 'Zapdos-G'],
     ps: 'zapdos-galar',
     serebii: '145-g',
     pd: 'zapdos-galarian',
   },
   moltres: { name: ['Moltres'], ps: 'moltres', serebii: '146', pd: 'moltres' },
   moltresgalar: {
-    name: ['Moltres-Galar', 'Galarian Moltres'],
+    name: ['Moltres-Galar', 'Galarian Moltres', 'Moltres-G'],
     ps: 'moltres-galar',
     serebii: '146-g',
     pd: 'moltres-galarian',
@@ -992,7 +992,7 @@ export const BattlePokedex: {
     pd: 'typhlosion',
   },
   typhlosionhisui: {
-    name: ['Typhlosion-Hisui', 'Hisuian Typhlosion'],
+    name: ['Typhlosion-Hisui', 'Hisuian Typhlosion', 'Typhlosion-H'],
     ps: 'typhlosion-hisui',
     serebii: '157-h',
     pd: 'typhlosion-hisuian',
@@ -1122,7 +1122,7 @@ export const BattlePokedex: {
   yanma: { name: ['Yanma'], ps: 'yanma', serebii: '193', pd: 'yanma' },
   wooper: { name: ['Wooper'], ps: 'wooper', serebii: '194', pd: 'wooper' },
   wooperpaldea: {
-    name: ['Wooper-Paldea', 'Paldean Wooper'],
+    name: ['Wooper-Paldea', 'Paldean Wooper', 'Wooper-P'],
     ps: 'wooper-paldea',
     serebii: '194-p',
     pd: 'wooper-paldean',
@@ -1143,7 +1143,7 @@ export const BattlePokedex: {
     pd: 'slowking',
   },
   slowkinggalar: {
-    name: ['Slowking-Galar', 'Galarian Slowking'],
+    name: ['Slowking-Galar', 'Galarian Slowking', 'Slowking-G'],
     ps: 'slowking-galar',
     serebii: '199-g',
     pd: 'slowking-galarian',
@@ -1207,7 +1207,7 @@ export const BattlePokedex: {
     pd: 'qwilfish',
   },
   qwilfishhisui: {
-    name: ['Qwilfish-Hisui', 'Hisuian Qwilfish'],
+    name: ['Qwilfish-Hisui', 'Hisuian Qwilfish', 'Qwilfish-H'],
     ps: 'qwilfish-hisui',
     serebii: '211-h',
     pd: 'qwilfish-hisuian',
@@ -1234,7 +1234,7 @@ export const BattlePokedex: {
   },
   sneasel: { name: ['Sneasel'], ps: 'sneasel', serebii: '215', pd: 'sneasel' },
   sneaselhisui: {
-    name: ['Sneasel-Hisui', 'Hisuian Sneasel'],
+    name: ['Sneasel-Hisui', 'Hisuian Sneasel', 'Sneasel-H'],
     ps: 'sneasel-hisui',
     serebii: '215-h',
     pd: 'sneasel-hisuian',
@@ -1267,7 +1267,7 @@ export const BattlePokedex: {
   },
   corsola: { name: ['Corsola'], ps: 'corsola', serebii: '222', pd: 'corsola' },
   corsolagalar: {
-    name: ['Corsola-Galar', 'Galarian Corsola'],
+    name: ['Corsola-Galar', 'Galarian Corsola', 'Corsola-G'],
     ps: 'corsola-galar',
     serebii: '222-g',
     pd: 'corsola-galarian',
@@ -1449,14 +1449,14 @@ export const BattlePokedex: {
     pd: 'zigzagoon',
   },
   zigzagoongalar: {
-    name: ['Zigzagoon-Galar', 'Galarian Zigzagoon'],
+    name: ['Zigzagoon-Galar', 'Galarian Zigzagoon', 'Zigzagoon-G'],
     ps: 'zigzagoon-galar',
     serebii: '263-g',
     pd: 'zigzagoon-galarian',
   },
   linoone: { name: ['Linoone'], ps: 'linoone', serebii: '264', pd: 'linoone' },
   linoonegalar: {
-    name: ['Linoone-Galar', 'Galarian Linoone'],
+    name: ['Linoone-Galar', 'Galarian Linoone', 'Linoone-G'],
     ps: 'linoone-galar',
     serebii: '264-g',
     pd: 'linoone-galarian',
@@ -2525,7 +2525,7 @@ export const BattlePokedex: {
     pd: 'samurott',
   },
   samurotthisui: {
-    name: ['Samurott-Hisui', 'Hisuian Samurott'],
+    name: ['Samurott-Hisui', 'Hisuian Samurott', 'Samurott-H'],
     ps: 'samurott-hisui',
     serebii: '503-h',
     pd: 'samurott-hisuian',
@@ -2708,7 +2708,7 @@ export const BattlePokedex: {
     pd: 'lilligant',
   },
   lilliganthisui: {
-    name: ['Lilligant-Hisui', 'Hisuian Lilligant'],
+    name: ['Lilligant-Hisui', 'Hisuian Lilligant', 'Lilligant-H'],
     ps: 'lilligant-hisui',
     serebii: '549-h',
     pd: 'lilligant-hisuian',
@@ -2751,7 +2751,7 @@ export const BattlePokedex: {
     pd: 'darumaka',
   },
   darumakagalar: {
-    name: ['Darumaka-Galar', 'Galarian Darumaka'],
+    name: ['Darumaka-Galar', 'Galarian Darumaka', 'Darumaka-G'],
     ps: 'darumaka-galar',
     serebii: '554-g',
     pd: 'darumaka-galarian',
@@ -2769,13 +2769,13 @@ export const BattlePokedex: {
     pd: 'darmanitan-zen',
   },
   darmanitangalar: {
-    name: ['Darmanitan-Galar', 'Galarian Darmanitan'],
+    name: ['Darmanitan-Galar', 'Galarian Darmanitan', 'Darmanitan-G'],
     ps: 'darmanitan-galar',
     serebii: '555-g',
     pd: 'darmanitan-galarian-standard',
   },
   darmanitangalarzen: {
-    name: ['Darmanitan-Galar-Zen'],
+    name: ['Darmanitan-Galar-Zen', 'Darmanitan-G'],
     ps: 'darmanitan-galarzen',
     serebii: '555-gz',
     pd: 'darmanitan-galarian-zen',
@@ -2798,7 +2798,7 @@ export const BattlePokedex: {
   },
   yamask: { name: ['Yamask'], ps: 'yamask', serebii: '562', pd: 'yamask' },
   yamaskgalar: {
-    name: ['Yamask-Galar', 'Galarian Yamask'],
+    name: ['Yamask-Galar', 'Galarian Yamask', 'Yamask-G'],
     ps: 'yamask-galar',
     serebii: '562-g',
     pd: 'yamask-galarian',
@@ -2848,14 +2848,14 @@ export const BattlePokedex: {
   },
   zorua: { name: ['Zorua'], ps: 'zorua', serebii: '570', pd: 'zorua' },
   zoruahisui: {
-    name: ['Zorua-Hisui', 'Hisuian Zorua'],
+    name: ['Zorua-Hisui', 'Hisuian Zorua', 'Zorua-H'],
     ps: 'zorua-hisui',
     serebii: '570-h',
     pd: 'zorua-hisuian',
   },
   zoroark: { name: ['Zoroark'], ps: 'zoroark', serebii: '571', pd: 'zoroark' },
   zoroarkhisui: {
-    name: ['Zoroark-Hisui', 'Hisuian Zoroark'],
+    name: ['Zoroark-Hisui', 'Hisuian Zoroark', 'Zoroark-H'],
     ps: 'zoroark-hisui',
     serebii: '571-h',
     pd: 'zoroark-hisuian',
@@ -3048,7 +3048,7 @@ export const BattlePokedex: {
     pd: 'stunfisk',
   },
   stunfiskgalar: {
-    name: ['Stunfisk-Galar', 'Galarian Stunfisk'],
+    name: ['Stunfisk-Galar', 'Galarian Stunfisk', 'Stunfisk-G'],
     ps: 'stunfisk-galar',
     serebii: '618-g',
     pd: 'stunfisk-galarian',
@@ -3089,7 +3089,7 @@ export const BattlePokedex: {
     pd: 'braviary',
   },
   braviaryhisui: {
-    name: ['Braviary-Hisui', 'Hisuian Braviary'],
+    name: ['Braviary-Hisui', 'Hisuian Braviary', 'Braviary-H'],
     ps: 'braviary-hisui',
     serebii: '628-h',
     pd: 'braviary-hisuian',
@@ -3147,25 +3147,25 @@ export const BattlePokedex: {
     pd: 'virizion',
   },
   tornadus: {
-    name: ['Tornadus'],
+    name: ['Tornadus', 'Tornadus-Incarnate', 'Tornadus-I'],
     ps: 'tornadus',
     serebii: '641',
     pd: 'tornadus',
   },
   tornadustherian: {
-    name: ['Tornadus-Therian'],
+    name: ['Tornadus-Therian', 'Tornadus-T'],
     ps: 'tornadus-therian',
     serebii: '641-t',
     pd: 'tornadus-therian',
   },
   thundurus: {
-    name: ['Thundurus'],
+    name: ['Thundurus', 'Thundurus-Incarnate', 'Thundurus-I'],
     ps: 'thundurus',
     serebii: '642',
     pd: 'thundurus',
   },
   thundurustherian: {
-    name: ['Thundurus-Therian'],
+    name: ['Thundurus-Therian', 'Thundurus-T'],
     ps: 'thundurus-therian',
     serebii: '642-t',
     pd: 'thundurus-therian',
@@ -3178,13 +3178,13 @@ export const BattlePokedex: {
   },
   zekrom: { name: ['Zekrom'], ps: 'zekrom', serebii: '644', pd: 'zekrom' },
   landorus: {
-    name: ['Landorus'],
+    name: ['Landorus', 'Landorus-Incarnate', 'Landorus-I'],
     ps: 'landorus',
     serebii: '645',
     pd: 'landorus',
   },
   landorustherian: {
-    name: ['Landorus-Therian'],
+    name: ['Landorus-Therian', 'Landorus-T'],
     ps: 'landorus-therian',
     serebii: '645-t',
     pd: 'landorus-therian',
@@ -3376,7 +3376,7 @@ export const BattlePokedex: {
     pd: 'meowstic',
   },
   meowsticf: {
-    name: ['Meowstic-F'],
+    name: ['Meowstic-F', 'Meowstic-Female'],
     ps: 'meowstic-f',
     serebii: '678-f',
     pd: 'meowstic-female',
@@ -3480,14 +3480,14 @@ export const BattlePokedex: {
   goomy: { name: ['Goomy'], ps: 'goomy', serebii: '704', pd: 'goomy' },
   sliggoo: { name: ['Sliggoo'], ps: 'sliggoo', serebii: '705', pd: 'sliggoo' },
   sliggoohisui: {
-    name: ['Sliggoo-Hisui', 'Hisuian Sliggoo'],
+    name: ['Sliggoo-Hisui', 'Hisuian Sliggoo', 'Sliggoo-H'],
     ps: 'sliggoo-hisui',
     serebii: '705-h',
     pd: 'sliggoo-hisuian',
   },
   goodra: { name: ['Goodra'], ps: 'goodra', serebii: '706', pd: 'goodra' },
   goodrahisui: {
-    name: ['Goodra-Hisui', 'Hisuian Goodra'],
+    name: ['Goodra-Hisui', 'Hisuian Goodra', 'Goodra-H'],
     ps: 'goodra-hisui',
     serebii: '706-h',
     pd: 'goodra-hisuian',
@@ -3561,7 +3561,7 @@ export const BattlePokedex: {
   },
   avalugg: { name: ['Avalugg'], ps: 'avalugg', serebii: '713', pd: 'avalugg' },
   avalugghisui: {
-    name: ['Avalugg-Hisui', 'Hisuian Avalugg'],
+    name: ['Avalugg-Hisui', 'Hisuian Avalugg', 'Avalugg-H'],
     ps: 'avalugg-hisui',
     serebii: '713-h',
     pd: 'avalugg-hisuian',
@@ -3623,7 +3623,7 @@ export const BattlePokedex: {
     pd: 'decidueye',
   },
   decidueyehisui: {
-    name: ['Decidueye-Hisui', 'Hisuian Decidueye'],
+    name: ['Decidueye-Hisui', 'Hisuian Decidueye', 'Decidueye-H'],
     ps: 'decidueye-hisui',
     serebii: '724-h',
     pd: 'decidueye-hisuian',
@@ -4648,7 +4648,7 @@ export const BattlePokedex: {
     pd: 'indeedee',
   },
   indeedeef: {
-    name: ['Indeedee-F'],
+    name: ['Indeedee-F', 'Indeedee-Female'],
     ps: 'indeedee-f',
     serebii: '876-f',
     pd: 'indeedee-female',
@@ -4838,7 +4838,7 @@ export const BattlePokedex: {
     pd: 'basculegion',
   },
   basculegionf: {
-    name: ['Basculegion-F'],
+    name: ['Basculegion-F', 'Basculegion-Female'],
     ps: 'basculegion-f',
     serebii: '902-f',
     pd: 'basculegion-female',
@@ -4856,13 +4856,13 @@ export const BattlePokedex: {
     pd: 'overqwil',
   },
   enamorus: {
-    name: ['Enamorus'],
+    name: ['Enamorus', 'Enamorus-Incarnate', 'Enamorus-I'],
     ps: 'enamorus',
     serebii: '905',
     pd: 'enamorus',
   },
   enamorustherian: {
-    name: ['Enamorus-Therian'],
+    name: ['Enamorus-Therian', 'Enamorus-T'],
     ps: 'enamorus-therian',
     serebii: '905-t',
     pd: 'enamorus-therian',
@@ -4919,7 +4919,7 @@ export const BattlePokedex: {
     pd: 'oinkologne',
   },
   oinkolognef: {
-    name: ['Oinkologne-F'],
+    name: ['Oinkologne-F', 'Oinkologne-Female'],
     ps: 'oinkologne-f',
     serebii: '916-f',
     pd: 'oinkologne-female',
