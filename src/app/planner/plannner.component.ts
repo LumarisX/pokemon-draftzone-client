@@ -92,7 +92,7 @@ export class PlannerComponent implements OnInit {
 
   ngOnInit(): void {
     // Populate form data from localStorage if available
-    const storedPlannerData = localStorage.getItem('plannerFormData');
+    const storedPlannerData = localStorage.getItem('plannerData');
     if (storedPlannerData) {
       let data = JSON.parse(storedPlannerData);
       this.plannerForm = this.fb.group({
@@ -127,7 +127,7 @@ export class PlannerComponent implements OnInit {
 
     // Listen for form changes and save to localStorage
     this.draftArray.valueChanges.subscribe((value) => {
-      localStorage.setItem('plannerFormData', JSON.stringify(value));
+      localStorage.setItem('plannerData', JSON.stringify(value));
     });
 
     // Initialize formats and rulesets

@@ -1,5 +1,3 @@
-import { PokemonId } from './pokemon';
-
 export const BattlePokedex: {
   [key: string]: {
     name: string[];

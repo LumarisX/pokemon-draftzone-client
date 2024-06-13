@@ -165,10 +165,10 @@
                     [ngClass]="minMaxStyle(i)"
                     formControlName="name"
                   />
-                  <!-- <filter
-                [query]="teamCtrl.get('name')?.value"
-                (querySelected)="resultSelected(teamCtrl, $event)"
-              ></filter> -->
+                  <filter
+                    [query]="teamCtrl.get('name')?.value"
+                    (querySelected)="resultSelected(teamCtrl, $event)"
+                  ></filter>
                 </div>
                 <div class="w-1/4" *ngIf="!isPoints">
                   <input
