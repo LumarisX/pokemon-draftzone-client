@@ -21,7 +21,6 @@ export class SpeedchartComponent implements OnInit {
   @Input() speedchart!: SpeedChart | null;
   private _speeds: {
     pokemon: Pokemon & {
-      name: string;
       abilities: string[];
       types: string[];
       baseStats: {
@@ -35,31 +34,36 @@ export class SpeedchartComponent implements OnInit {
     };
     team: number;
   }[] = [];
+
   @Input() set speeds(summaries: Summary[]) {
-    let c0 = 0;
-    let c1 = 0;
-    for (
-      let i = 0;
-      i < summaries[0].team.length + summaries[1].team.length;
-      i++
-    ) {
-      if (
-        c1 >= summaries[1].team.length ||
-        summaries[0].team[c0].baseStats.spe >
-          summaries[1].team[c1].baseStats.spe
-      ) {
-        this._speeds.push({ pokemon: summaries[0].team[c0], team: 0 });
-        c0++;
-      } else {
-        this._speeds.push({ pokemon: summaries[1].team[c1], team: 1 });
-        c1++;
-      }
-    }
+    this._speeds = [];
+    let combined: {
+      pokemon: Pokemon & {
+        abilities: string[];
+        types: string[];
+        baseStats: {
+          hp: number;
+          atk: number;
+          def: number;
+          spa: number;
+          spd: number;
+          spe: number;
+        };
+      };
+      team: number;
+    }[] = [];
+    summaries[0].team.forEach((pokemon) => {
+      combined.push({ pokemon: pokemon, team: 0 });
+    });
+    summaries[1].team.forEach((pokemon) => {
+      combined.push({ pokemon: pokemon, team: 1 });
+    });
+    combined.sort((a, b) => b.pokemon.baseStats.spe - a.pokemon.baseStats.spe);
+    this._speeds = combined;
   }
 
   get speeds(): {
     pokemon: Pokemon & {
-      name: string;
       abilities: string[];
       types: string[];
       baseStats: {
@@ -73,6 +77,7 @@ export class SpeedchartComponent implements OnInit {
     };
     team: number;
   }[] {
+    console.log(this._speeds);
     return this._speeds;
   }
 
