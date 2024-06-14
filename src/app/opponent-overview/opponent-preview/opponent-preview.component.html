@@ -19,15 +19,17 @@
   <div class="w-full p-1 bg-red-100 border-2 border-red-200 rounded-xl lg:p-2">
     <div>
       <button
+        [routerLink]="'new'"
         class="p-2 m-3 bg-red-300 rounded-lg shadow-md hover:shadow shadow-red-600"
+        title="Add Matchup"
       >
-        <a [routerLink]="'new'"> Add Match </a>
+        <img src="../../../assets/icons/plus.svg" class="w-6" />
       </button>
       <loading *ngIf="!matchups"></loading>
       <div
         *ngIf="matchups"
         id="teams"
-        class="grid h-auto grid-flow-row grid-cols-1 overflow-auto md:grid-cols-2 lg:grid-cols-3"
+        class="grid h-auto grid-flow-row grid-cols-1 overflow-auto md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4"
       >
         <div *ngFor="let matchup of matchups; let i = index">
           <div class="m-2 bg-red-200 shadow-md shadow-red-600 rounded-xl">
