@@ -19,13 +19,12 @@ import { OpponentOverviewModule } from './opponent-overview/opponent-overview.mo
     AuthModule.forRoot({
       domain: 'dev-wspjxi5f6mjqsjea.us.auth0.com',
       clientId: 'nAyvHSOL1PbsFZfodzgIjRgYBUA1M1DH',
-
+      useRefreshTokens: true,
+      cacheLocation: 'localstorage',
       authorizationParams: {
         redirect_uri: window.location.origin,
-
         audience: 'https://dev-wspjxi5f6mjqsjea.us.auth0.com/api/v2/',
       },
-
       httpInterceptor: {
         allowedList: [
           {
