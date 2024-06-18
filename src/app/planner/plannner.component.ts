@@ -33,7 +33,6 @@ import { FinderComponent } from './finder/finder.component';
 import { MoveComponent } from './moves/moves.component';
 import { SummaryComponent } from './summary/summary.component';
 import { TypechartComponent } from './typechart/typechart.component';
-import { select } from 'd3';
 
 type Planner = {
   summary: Summary;
@@ -180,6 +179,7 @@ export class PlannerComponent implements OnInit {
     this.draftArray.removeAt(index);
     this.draftSize--;
     this.selectedDraft = 0;
+    this.updateDetails();
   }
 
   updateDetails() {
@@ -344,6 +344,7 @@ export class PlannerComponent implements OnInit {
   addDraft() {
     this.draftArray.push(this.createDraftFormGroup());
     this.selectedDraft = this.draftSize - 1;
+    this.updateDetails();
   }
 
   getDraftFormGroup(): FormGroup {

@@ -5,6 +5,13 @@ import { SpriteComponent } from '../../../images/sprite.component';
 import { FormsModule } from '@angular/forms';
 import { Pokemon } from '../../../interfaces/draft';
 import { SpeedModifierIconComponent } from './speed-modifier-icon.component';
+import {
+  animate,
+  state,
+  style,
+  transition,
+  trigger,
+} from '@angular/animations';
 
 @Component({
   selector: 'speedchart',
@@ -15,6 +22,13 @@ import { SpeedModifierIconComponent } from './speed-modifier-icon.component';
     FormsModule,
     SpriteComponent,
     SpeedModifierIconComponent,
+  ],
+  animations: [
+    trigger('growIn', [
+      state('void', style({ height: '0', overflow: 'hidden' })),
+      state('*', style({ height: '*' })),
+      transition('void <=> *', [animate('0.5s ease-in-out')]),
+    ]),
   ],
 })
 export class SpeedchartComponent implements OnInit {

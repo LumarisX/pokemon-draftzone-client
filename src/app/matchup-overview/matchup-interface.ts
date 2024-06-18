@@ -17,7 +17,6 @@ export type SpeedChart = {
 
 export type Summary = {
   team: (Pokemon & {
-    name: string;
     abilities: string[];
     types: string[];
     baseStats: {

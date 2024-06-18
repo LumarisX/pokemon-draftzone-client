@@ -104,6 +104,7 @@
       <div *ngFor="let tier of speedchart.tiers">
         <div
           *ngIf="filtered(tier)"
+          @growIn
           class="flex space-x-3 border-b snap-start border-slate-400"
           [ngClass]="teamColor(tier.team)"
         >
