@@ -10,6 +10,7 @@ import { RouterModule } from '@angular/router';
 import { FilterComponent } from '../filter/filter.component';
 import { Pokemon } from '../interfaces/draft';
 import { SpriteComponent } from '../images/sprite.component';
+import { getPidByName } from '../pokemon';
 
 @Component({
   selector: 'pokemon-form',
@@ -97,7 +98,7 @@ export class PokemonFormComponent implements OnInit {
       );
     });
 
-    return new FormGroup({
+    let group = new FormGroup({
       name: new FormControl(pokemonData.name),
       pid: new FormControl(pokemonData.pid),
       shiny: new FormControl(pokemonData.shiny),
@@ -110,6 +111,17 @@ export class PokemonFormComponent implements OnInit {
         z: new FormControl(''),
       }),
     });
+
+    group.get('name')?.valueChanges.subscribe((name) => {
+      if (name !== null) {
+        let pid = getPidByName(name);
+        if (group.get('pid')?.value != pid) {
+          group.patchValue({ pid: pid });
+        }
+      }
+    });
+
+    return group;
   }
 
   resultSelected($event: Pokemon) {

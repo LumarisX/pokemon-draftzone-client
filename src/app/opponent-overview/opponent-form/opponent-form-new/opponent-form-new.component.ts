@@ -31,6 +31,7 @@ export class OpponentFormNewComponent implements OnInit {
   title: string = 'New League';
   formats = [];
   rulesets = [];
+  opponentForm!: FormGroup;
 
   constructor(
     private router: Router,
@@ -39,14 +40,17 @@ export class OpponentFormNewComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    let teamArray = [];
+    for (let i = 0; i < 10; i++) {
+      teamArray.push(PokemonFormComponent.addPokemonForm());
+    }
+    this.opponentForm = new FormGroup({
+      teamName: new FormControl('', Validators.required),
+      stage: new FormControl('', Validators.required),
+      team: new FormArray(teamArray),
+    });
     this.teamId = <string>this.route.parent!.snapshot.paramMap.get('teamid');
   }
-
-  opponentForm: FormGroup = new FormGroup({
-    teamName: new FormControl('', Validators.required),
-    stage: new FormControl('', Validators.required),
-    team: new FormArray([PokemonFormComponent.addPokemonForm()]),
-  });
 
   newMatchup(formData: Object) {
     this.draftService.newMatchup(this.teamId, formData).subscribe(

@@ -25,7 +25,16 @@ export class FilterComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (this.enabled) {
-      this.results = this.filterService.getResults(this.query);
+      if (this.query != '') {
+        let results = this.filterService.getResults(this.query);
+        if (results[0].name.toLowerCase() != this.query.toLowerCase()) {
+          this.results = results;
+        } else {
+          this.results = [];
+        }
+      } else {
+        this.results = [];
+      }
     } else {
       this.enabled = true;
     }

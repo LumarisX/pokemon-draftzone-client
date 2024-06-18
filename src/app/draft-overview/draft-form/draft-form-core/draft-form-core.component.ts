@@ -45,7 +45,6 @@ export class DraftFormCoreComponent implements OnInit {
     this.dataService.getRulesets().subscribe((rulesets) => {
       this.rulesets = <any>rulesets;
     });
-    console.log(this.draftForm);
     this.draftForm.setValidators(this.validateDraftForm);
   }
 
