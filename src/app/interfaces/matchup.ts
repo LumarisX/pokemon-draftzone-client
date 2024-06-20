@@ -6,6 +6,33 @@ export type Matchup = {
   aTeam: Side;
   bTeam: Side;
   stage: string;
+  matches: Match[];
+};
+export type Match = {
+  aTeam: {
+    stats: [
+      string & PropertyKey,
+      {
+        kills?: number;
+        deaths?: number;
+        indirect?: number;
+        brought: number;
+      } & any
+    ];
+    score: number;
+  };
+  bTeam: {
+    stats: [
+      string & PropertyKey,
+      {
+        kills?: number;
+        deaths?: number;
+        indirect?: number;
+        brought: number;
+      } & any
+    ];
+    score: number;
+  };
   replay?: String;
 };
 
@@ -14,15 +41,5 @@ export type Side = {
   teamName: string;
   team: Pokemon[];
   name?: string;
-  stats: [
-    string & PropertyKey,
-    {
-      kills?: number;
-      deaths?: number;
-      indirect?: number;
-      brought: number;
-    } & any
-  ];
-  score: number;
   paste?: String;
 };

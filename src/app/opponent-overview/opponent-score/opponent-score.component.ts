@@ -9,7 +9,7 @@ import {
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { DraftService } from '../../api/draft.service';
 import { Pokemon } from '../../interfaces/draft';
-import { Matchup, Side } from '../../interfaces/matchup';
+import { Match, Matchup, Side } from '../../interfaces/matchup';
 import { LoadingComponent } from '../../loading/loading.component';
 import { PokemonId } from '../../pokemon';
 import { PokemonFormComponent } from '../../pokemon-form/pokemon-form.component';
@@ -50,6 +50,7 @@ export class OpponentScoreComponent implements OnInit {
         this.draftService
           .getMatchup(this.matchupId, this.teamId)
           .subscribe((data) => {
+            console.log(this.matchupId, this.teamId, data);
             this.matchup = data as Matchup;
             this.initForm();
           });
@@ -59,15 +60,15 @@ export class OpponentScoreComponent implements OnInit {
 
   private initForm(): void {
     this.scoreForm = this.fb.group({
-      aTeam: this.sideForm(this.matchup.aTeam),
-      bTeam: this.sideForm(this.matchup.bTeam),
-      replay: [this.matchup.replay],
+      aTeam: this.sideForm(this.matchup, 'aTeam'),
+      bTeam: this.sideForm(this.matchup, 'bTeam'),
+      replay: [this.matchup.matches[0].replay],
     });
   }
 
-  private sideForm(side: Side): FormGroup {
-    let stats = Object.fromEntries(side.stats);
-    let teamGroup = side.team.map((pokemon: Pokemon) =>
+  private sideForm(matchup: Matchup, side: 'aTeam' | 'bTeam'): FormGroup {
+    let stats = Object.fromEntries(matchup.matches[0][side].stats);
+    let teamGroup = matchup[side].team.map((pokemon: Pokemon) =>
       this.fb.group({
         pokemon: pokemon,
         kills: [stats[<PokemonId>pokemon.pid]?.kills],
@@ -77,8 +78,8 @@ export class OpponentScoreComponent implements OnInit {
       })
     );
     return this.fb.group({
-      paste: [side.paste],
-      score: [side.score],
+      paste: [matchup[side].paste],
+      score: [matchup.matches[0][side].score],
       team: this.fb.array(teamGroup),
     });
   }
