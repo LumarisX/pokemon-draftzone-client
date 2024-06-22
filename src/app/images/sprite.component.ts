@@ -38,9 +38,11 @@ export class SpriteComponent {
   }
   get classes() {
     if (this.flipped) this._classes.push('-scale-x-100');
+    if (this.disabled) this._classes.push('opacity-40');
     return this._classes;
   }
   @Input() flipped? = false;
+  @Input() disabled? = false;
 
   updateData(pokemon: Pokemon) {
     switch (this.source) {

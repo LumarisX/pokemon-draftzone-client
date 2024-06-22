@@ -40,30 +40,45 @@
   <div class="flex items-end justify-center w-1/2">
     <p class="text-3xl font-bold">Score</p>
   </div>
-  <div formArrayName="matches" class="flex w-full p-0.5 space-x-2">
-    <div
-      class="flex overflow-x-auto border rounded border-slate-500 hover:cursor-pointer"
-      *ngFor="let draftCtrl of matchesFormArray.controls; let i = index"
-      [formGroupName]="i"
-      (click)="switchMatch(i)"
-    >
+  <div class="flex w-full">
+    <div formArrayName="matches" class="flex w-1/2 p-0.5 space-x-2">
       <div
-        class="w-32 flex px-2 py-0.5 text-sm rounded bg-inherit text-ellipsis"
+        class="flex overflow-x-auto border rounded border-slate-500 hover:cursor-pointer"
+        *ngFor="let matchCtrl of matchesFormArray.controls; let i = index"
+        [formGroupName]="i"
+        (click)="switchMatch(i)"
       >
-        Game {{ i + 1 }}
-        <img
-          class="w-4 m-1"
-          src="../../assets/icons/trash.svg"
-          (click)="deleteMatch(i)"
-        />
+        <div
+          class="w-32 flex px-2 py-0.5 text-sm rounded bg-inherit text-ellipsis"
+        >
+          Game {{ i + 1 }}
+          <img
+            class="w-4 m-1"
+            src="../../assets/icons/trash.svg"
+            (click)="deleteMatch(i)"
+          />
+        </div>
       </div>
+      <button (click)="addMatch()">
+        <img
+          class="h-8 p-1 border rounded border-slate-500 bg-slate-100 hover:bg-slate-50 hover:cursor-pointer"
+          src="../../assets/icons/plus.svg"
+        />
+      </button>
     </div>
-    <button (click)="addMatch()">
-      <img
-        class="h-8 p-1 border rounded border-slate-500 bg-slate-100 hover:bg-slate-50 hover:cursor-pointer"
-        src="../../assets/icons/plus.svg"
-      />
-    </button>
+    <div class="justify-end w-1/2">
+      <label class="p-1">
+        <span>Replay</span>
+        <input
+          spellcheck="false"
+          class="p-1 mx-1 text-center rounded-full shadow-inner bg-slate-200 text-medium shadow-slate-600"
+      /></label>
+      <button
+        class="px-6 py-1 my-2 rounded-full shadow opacity-50 bg-slate-200 hover:shadow shadow-slate-600"
+      >
+        Analyze
+      </button>
+    </div>
   </div>
 
   <div formArrayName="matches">
@@ -75,11 +90,7 @@
             class="p-2 m-2 space-y-3 shadow-md bg-cyan-300 team shadow-cyan-600 rounded-xl"
           >
             <div class="p-2 border-2 border-cyan-200 rounded-xl">
-              <div class="grid w-full grid-cols-1 sm:grid-cols-3 gap-x-4">
-                <div class="flex justify-center space-x-2">
-                  <div class="font-semibold">Brought:</div>
-                  <div>{{ statCount(aTeamArray, ["brought"]) }}</div>
-                </div>
+              <div class="grid w-full grid-cols-1 sm:grid-cols-2 gap-x-4">
                 <div class="flex justify-center space-x-2">
                   <div class="font-semibold">Deaths:</div>
                   <div>{{ statCount(aTeamArray, ["deaths"]) }}</div>
@@ -100,6 +111,7 @@
                 >
                   <sprite
                     class="w-1/4 h-fit"
+                    [disabled]="!pokemonForm.value.brought"
                     [pokemon]="pokemonForm.value.pokemon"
                   ></sprite>
                   <div class="flex items-center w-3/4">
@@ -153,11 +165,7 @@
             class="p-2 m-2 space-y-3 bg-red-300 shadow-md team shadow-red-600 rounded-xl"
           >
             <div class="p-2 border-2 border-red-200 rounded-xl">
-              <div class="grid w-full grid-cols-1 sm:grid-cols-3 gap-x-4">
-                <div class="flex justify-center space-x-2">
-                  <div class="font-semibold">Brought:</div>
-                  <div>{{ statCount(bTeamArray, ["brought"]) }}</div>
-                </div>
+              <div class="grid w-full grid-cols-1 sm:grid-cols-2 gap-x-4">
                 <div class="flex justify-center space-x-2">
                   <div class="font-semibold">Deaths:</div>
                   <div>{{ statCount(bTeamArray, ["deaths"]) }}</div>
@@ -179,6 +187,7 @@
                 >
                   <sprite
                     class="w-1/4 h-fit"
+                    [disabled]="!pokemonForm.value.brought"
                     [pokemon]="pokemonForm.value.pokemon"
                   ></sprite>
                   <div class="flex items-center w-3/4">
