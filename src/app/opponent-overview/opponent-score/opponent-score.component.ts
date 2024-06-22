@@ -8,12 +8,12 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { DraftService } from '../../api/draft.service';
+import { SpriteComponent } from '../../images/sprite.component';
 import { Pokemon } from '../../interfaces/draft';
-import { Match, Matchup, Side } from '../../interfaces/matchup';
+import { Matchup } from '../../interfaces/matchup';
 import { LoadingComponent } from '../../loading/loading.component';
 import { PokemonId } from '../../pokemon';
 import { PokemonFormComponent } from '../../pokemon-form/pokemon-form.component';
-import { SpriteComponent } from '../../images/sprite.component';
 
 @Component({
   selector: 'opponent-form',
@@ -34,6 +34,8 @@ export class OpponentScoreComponent implements OnInit {
   title: string = 'New Matchup';
   matchup!: Matchup;
   scoreForm!: FormGroup;
+  matchSize = 1;
+  selectedMatch = 0;
 
   constructor(
     private fb: FormBuilder,
@@ -59,16 +61,46 @@ export class OpponentScoreComponent implements OnInit {
   }
 
   private initForm(): void {
+    let matchArray = [];
+    for (let i in this.matchup.matches) {
+      matchArray.push(
+        this.fb.group({
+          aTeam: this.sideForm(
+            this.matchup.aTeam.team,
+            this.matchup.matches[i].aTeam
+          ),
+          bTeam: this.sideForm(
+            this.matchup.bTeam.team,
+            this.matchup.matches[i].bTeam
+          ),
+          replay: this.matchup.matches[i].replay,
+        })
+      );
+    }
     this.scoreForm = this.fb.group({
-      aTeam: this.sideForm(this.matchup, 'aTeam'),
-      bTeam: this.sideForm(this.matchup, 'bTeam'),
-      replay: [this.matchup.matches[0].replay],
+      aTeamPaste: this.matchup.aTeam.paste,
+      bTeamPaste: this.matchup.bTeam.paste,
+      matches: this.fb.array(matchArray),
     });
   }
 
-  private sideForm(matchup: Matchup, side: 'aTeam' | 'bTeam'): FormGroup {
-    let stats = Object.fromEntries(matchup.matches[0][side].stats);
-    let teamGroup = matchup[side].team.map((pokemon: Pokemon) =>
+  get matchesFormArray(): FormArray {
+    return this.scoreForm.get('matches') as FormArray;
+  }
+
+  get selectedMatchForm(): FormGroup {
+    return this.matchesFormArray.controls[this.selectedMatch] as FormGroup;
+  }
+
+  private sideForm(
+    team: Pokemon[],
+    side: {
+      stats: [string, any][];
+      score: number;
+    } = { stats: [], score: 0 }
+  ): FormGroup {
+    let stats = Object.fromEntries(side.stats);
+    let teamGroup = team.map((pokemon: Pokemon) =>
       this.fb.group({
         pokemon: pokemon,
         kills: [stats[<PokemonId>pokemon.pid]?.kills],
@@ -78,18 +110,21 @@ export class OpponentScoreComponent implements OnInit {
       })
     );
     return this.fb.group({
-      paste: [matchup[side].paste],
-      score: [matchup.matches[0][side].score],
+      score: [side.score],
       team: this.fb.array(teamGroup),
     });
   }
 
   get aTeamArray(): FormArray {
-    return this.scoreForm.get('aTeam.team') as FormArray;
+    return this.matchesFormArray.controls[this.selectedMatch].get(
+      'aTeam.team'
+    ) as FormArray;
   }
 
   get bTeamArray(): FormArray {
-    return this.scoreForm.get('bTeam.team') as FormArray;
+    return this.matchesFormArray.controls[this.selectedMatch].get(
+      'bTeam.team'
+    ) as FormArray;
   }
 
   statCount(teamArray: FormArray, controlNames: string[]) {
@@ -103,7 +138,7 @@ export class OpponentScoreComponent implements OnInit {
     return total;
   }
 
-  onSubmit() {
+  submit() {
     this.draftService
       .scoreMatchup(this.matchupId, this.teamId, this.scoreForm.value)
       .subscribe({
@@ -115,5 +150,27 @@ export class OpponentScoreComponent implements OnInit {
           console.error('Error!', error);
         },
       });
+  }
+
+  addMatch() {
+    this.matchesFormArray.push(
+      this.fb.group({
+        aTeam: this.sideForm(this.matchup.aTeam.team),
+        bTeam: this.sideForm(this.matchup.bTeam.team),
+        replay: '',
+      })
+    );
+    this.selectedMatch = this.matchSize - 1;
+    return;
+  }
+
+  deleteMatch(index: number) {
+    this.matchesFormArray.removeAt(index);
+    this.matchSize--;
+    this.selectedMatch = 0;
+  }
+
+  switchMatch(index: number) {
+    this.selectedMatch = index;
   }
 }
