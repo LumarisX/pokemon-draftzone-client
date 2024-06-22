@@ -1,5 +1,5 @@
 <loading *ngIf="!scoreForm"></loading>
-<form *ngIf="scoreForm" [formGroup]="scoreForm" (submit)="onSubmit()">
+<form *ngIf="scoreForm" [formGroup]="scoreForm">
   <div class="flex w-flex">
     <div class="w-1/4">
       <button
@@ -8,232 +8,230 @@
       >
         Cancel
       </button>
-    </div>
-    <div class="flex items-end justify-center w-1/2">
-      <p class="text-3xl font-bold">Score</p>
-    </div>
-    <div class="flex flex-col items-center justify-center w-1/4 sm:flex-row">
-      <p class="font-semibold">Replay</p>
-      <input
-        formControlName="replay"
-        spellcheck="false"
-        class="w-full p-1 mx-1 text-center rounded-full shadow-inner bg-slate-200 text-medium shadow-slate-600"
-      />
+      <button
+        type="submit"
+        class="w-1/6 py-1 my-3 rounded-full shadow bg-slate-200 hover:shadow shadow-slate-600"
+        (click)="submit()"
+      >
+        Submit
+      </button>
     </div>
   </div>
-  <div class="flex">
-    <div class="w-1/2">
-      <div
-        formGroupName="aTeam"
-        class="p-2 m-2 space-y-3 shadow-md bg-cyan-300 team shadow-cyan-600 rounded-xl"
-      >
-        <div class="flex w-full">
-          <div class="w-1/2">
-            <div class="w-full sm:w-2/3">
-              <label class="p-1">
-                <span>PokePaste</span>
-                <input
-                  formControlName="paste"
-                  spellcheck="false"
-                  class="w-full p-1 mx-1 text-center rounded-full shadow-inner bg-cyan-200 text-medium shadow-cyan-600"
-              /></label>
-            </div>
-          </div>
-          <div class="w-1/2">
-            <div class="flex justify-end w-2/3 h-full ml-auto">
-              <input
-                formControlName="score"
-                type="number"
-                min="0"
-                class="w-full h-16 p-1 text-3xl font-bold text-center rounded-lg shadow-inner max-w-16 bg-cyan-200 shadow-cyan-600"
-              />
-            </div>
-          </div>
-        </div>
-        <div class="p-2 border-2 border-cyan-200 rounded-xl">
-          <div class="grid w-full grid-cols-1 sm:grid-cols-3 gap-x-4">
-            <div class="flex justify-center space-x-2">
-              <div class="font-semibold">Brought:</div>
-              <div>{{ statCount(aTeamArray, ["brought"]) }}</div>
-            </div>
-            <div class="flex justify-center space-x-2">
-              <div class="font-semibold">Deaths:</div>
-              <div>{{ statCount(aTeamArray, ["deaths"]) }}</div>
-            </div>
-            <div class="flex justify-center space-x-2">
-              <div class="font-semibold">Kills:</div>
-
-              <div>{{ statCount(aTeamArray, ["kills", "indirect"]) }}</div>
-            </div>
-          </div>
-          <div
-            class="grid grid-cols-1 lg:grid-cols-2 sm:grid-cols-1 gap-x-4 gap-y-2"
-            formArrayName="team"
-          >
-            <div
-              *ngFor="let pokemonForm of aTeamArray.controls; let i = index"
-              class="flex items-center p-1 border border-cyan-200 rounded-xl"
-              formGroupName="{{ i }}"
-            >
-              <sprite
-                class="w-1/4 h-fit"
-                [pokemon]="pokemonForm.value.pokemon"
-              ></sprite>
-              <div class="flex items-center w-3/4">
-                <div class="grid grid-cols-2 gap-2 sm:grid-cols-4">
-                  <div>
-                    <span class="text-xs">Brought</span>
-                    <input
-                      type="number"
-                      formControlName="brought"
-                      min="0"
-                      class="w-full p-1 text-center rounded-md shadow-inner bg-cyan-200 text-medium shadow-cyan-600"
-                    />
-                  </div>
-                  <div>
-                    <span class="text-xs">Direct</span>
-                    <input
-                      type="number"
-                      formControlName="kills"
-                      min="0"
-                      class="w-full p-1 text-center rounded-md shadow-inner bg-cyan-200 text-medium shadow-cyan-600"
-                    />
-                  </div>
-                  <div>
-                    <span class="text-xs">Indirect</span>
-                    <input
-                      type="number"
-                      formControlName="indirect"
-                      min="0"
-                      class="w-full p-1 text-center rounded-md shadow-inner bg-cyan-200 text-medium shadow-cyan-600"
-                    />
-                  </div>
-                  <div>
-                    <span class="text-xs">Deaths</span>
-                    <input
-                      type="number"
-                      formControlName="deaths"
-                      min="0"
-                      class="w-full p-1 text-center rounded-md shadow-inner bg-cyan-200 text-medium shadow-cyan-600"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+  <div class="flex w-full">
+    <div class="w-1/3 sm:w-1/3">
+      <label class="p-1">
+        <span>PokePaste</span>
+        <input
+          formControlName="aTeamPaste"
+          spellcheck="false"
+          class="w-full p-1 mx-1 text-center rounded-full shadow-inner bg-cyan-200 text-medium shadow-cyan-600"
+      /></label>
     </div>
-    <div class="w-1/2">
-      <div
-        formGroupName="bTeam"
-        class="p-2 m-2 space-y-3 bg-red-300 shadow-md team shadow-red-600 rounded-xl"
-      >
-        <div class="flex w-full">
-          <div class="w-1/2">
-            <div class="flex w-2/3 h-full">
-              <input
-                formControlName="score"
-                type="number"
-                min="0"
-                class="w-full h-16 p-1 text-3xl font-bold text-center bg-red-200 rounded-lg shadow-inner max-w-16 shadow-red-600"
-              />
-            </div>
-          </div>
-          <div class="w-1/2">
-            <div class="flex justify-end w-full ml-auto sm:w-2/3">
-              <label class="p-1">
-                <span>PokePaste</span>
-                <input
-                  formControlName="paste"
-                  spellcheck="false"
-                  class="w-full p-1 mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
-              /></label>
-            </div>
-          </div>
-        </div>
-        <div class="p-2 border-2 border-red-200 rounded-xl">
-          <div class="grid w-full grid-cols-1 sm:grid-cols-3 gap-x-4">
-            <div class="flex justify-center space-x-2">
-              <div class="font-semibold">Brought:</div>
-              <div>{{ statCount(bTeamArray, ["brought"]) }}</div>
-            </div>
-            <div class="flex justify-center space-x-2">
-              <div class="font-semibold">Deaths:</div>
-              <div>{{ statCount(bTeamArray, ["deaths"]) }}</div>
-            </div>
-            <div class="flex justify-center space-x-2">
-              <div class="font-semibold">Kills:</div>
-
-              <div>{{ statCount(bTeamArray, ["kills", "indirect"]) }}</div>
-            </div>
-          </div>
-          <div
-            class="grid grid-cols-1 lg:grid-cols-2 sm:grid-cols-1 gap-x-4 gap-y-2"
-            formArrayName="team"
-          >
-            <div
-              *ngFor="let pokemonForm of bTeamArray.controls; let i = index"
-              class="flex items-center p-1 border border-red-200 rounded-xl"
-              formGroupName="{{ i }}"
-            >
-              <sprite
-                class="w-1/4 h-fit"
-                [pokemon]="pokemonForm.value.pokemon"
-              ></sprite>
-              <div class="flex items-center w-3/4">
-                <div class="grid grid-cols-2 gap-2 px-2 py-1 sm:grid-cols-4">
-                  <div>
-                    <span class="text-xs">Brought</span>
-                    <input
-                      type="number"
-                      formControlName="brought"
-                      min="0"
-                      class="w-full p-1 text-center bg-red-200 rounded-md shadow-inner text-medium shadow-red-600"
-                    />
-                  </div>
-                  <div>
-                    <span class="text-xs">Direct</span>
-                    <input
-                      type="number"
-                      formControlName="kills"
-                      min="0"
-                      class="w-full p-1 text-center bg-red-200 rounded-md shadow-inner text-medium shadow-red-600"
-                    />
-                  </div>
-                  <div>
-                    <span class="text-xs">Indirect</span>
-                    <input
-                      type="number"
-                      formControlName="indirect"
-                      min="0"
-                      class="w-full p-1 text-center bg-red-200 rounded-md shadow-inner text-medium shadow-red-600"
-                    />
-                  </div>
-                  <div>
-                    <span class="text-xs">Deaths</span>
-                    <input
-                      type="number"
-                      formControlName="deaths"
-                      min="0"
-                      class="w-full p-1 text-center bg-red-200 rounded-md shadow-inner text-medium shadow-red-600"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+    <div class="w-1/3 sm:w-1/3">
+      <label class="p-1">
+        <span>PokePaste</span>
+        <input
+          formControlName="bTeamPaste"
+          spellcheck="false"
+          class="w-full p-1 mx-1 text-center bg-red-200 rounded-full shadow-inner text-medium shadow-red-600"
+      /></label>
     </div>
   </div>
-  <div class="flex justify-center w-full">
-    <button
-      type="submit"
-      class="w-1/6 py-1 my-3 rounded-full shadow bg-slate-200 hover:shadow shadow-slate-600"
+  <div class="flex items-end justify-center w-1/2">
+    <p class="text-3xl font-bold">Score</p>
+  </div>
+  <div formArrayName="matches" class="flex w-full p-0.5 space-x-2">
+    <div
+      class="flex overflow-x-auto border rounded border-slate-500 hover:cursor-pointer"
+      *ngFor="let draftCtrl of matchesFormArray.controls; let i = index"
+      [formGroupName]="i"
+      (click)="switchMatch(i)"
     >
-      Submit
+      <div
+        class="w-32 flex px-2 py-0.5 text-sm rounded bg-inherit text-ellipsis"
+      >
+        Game {{ i + 1 }}
+        <img
+          class="w-4 m-1"
+          src="../../assets/icons/trash.svg"
+          (click)="deleteMatch(i)"
+        />
+      </div>
+    </div>
+    <button (click)="addMatch()">
+      <img
+        class="h-8 p-1 border rounded border-slate-500 bg-slate-100 hover:bg-slate-50 hover:cursor-pointer"
+        src="../../assets/icons/plus.svg"
+      />
     </button>
   </div>
-  <!-- {{ scoreForm.value | json }} -->
+
+  <div formArrayName="matches">
+    <div [formGroup]="selectedMatchForm">
+      <div class="flex">
+        <div class="w-1/2">
+          <div
+            formGroupName="aTeam"
+            class="p-2 m-2 space-y-3 shadow-md bg-cyan-300 team shadow-cyan-600 rounded-xl"
+          >
+            <div class="p-2 border-2 border-cyan-200 rounded-xl">
+              <div class="grid w-full grid-cols-1 sm:grid-cols-3 gap-x-4">
+                <div class="flex justify-center space-x-2">
+                  <div class="font-semibold">Brought:</div>
+                  <div>{{ statCount(aTeamArray, ["brought"]) }}</div>
+                </div>
+                <div class="flex justify-center space-x-2">
+                  <div class="font-semibold">Deaths:</div>
+                  <div>{{ statCount(aTeamArray, ["deaths"]) }}</div>
+                </div>
+                <div class="flex justify-center space-x-2">
+                  <div class="font-semibold">Kills:</div>
+                  <div>{{ statCount(aTeamArray, ["kills", "indirect"]) }}</div>
+                </div>
+              </div>
+              <div
+                class="grid grid-cols-1 lg:grid-cols-2 sm:grid-cols-1 gap-x-4 gap-y-2"
+                formArrayName="team"
+              >
+                <div
+                  *ngFor="let pokemonForm of aTeamArray.controls; let i = index"
+                  class="flex items-center p-1 border border-cyan-200 rounded-xl"
+                  formGroupName="{{ i }}"
+                >
+                  <sprite
+                    class="w-1/4 h-fit"
+                    [pokemon]="pokemonForm.value.pokemon"
+                  ></sprite>
+                  <div class="flex items-center w-3/4">
+                    <div class="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                      <div>
+                        <span class="text-xs">Brought</span>
+                        <input
+                          type="checkbox"
+                          formControlName="brought"
+                          min="0"
+                          class="p-1 text-center rounded-md shadow-inner bg-cyan-200 text-medium shadow-cyan-600"
+                        />
+                      </div>
+                      <div>
+                        <span class="text-xs">Direct</span>
+                        <input
+                          type="number"
+                          formControlName="kills"
+                          min="0"
+                          class="w-full p-1 text-center rounded-md shadow-inner bg-cyan-200 text-medium shadow-cyan-600"
+                        />
+                      </div>
+                      <div>
+                        <span class="text-xs">Indirect</span>
+                        <input
+                          type="number"
+                          formControlName="indirect"
+                          min="0"
+                          class="w-full p-1 text-center rounded-md shadow-inner bg-cyan-200 text-medium shadow-cyan-600"
+                        />
+                      </div>
+                      <div>
+                        <span class="text-xs">Fainted</span>
+                        <input
+                          type="checkbox"
+                          formControlName="deaths"
+                          min="0"
+                          class="p-1 text-center rounded-md shadow-inner bg-cyan-200 text-medium shadow-cyan-600"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="w-1/2">
+          <div
+            formGroupName="bTeam"
+            class="p-2 m-2 space-y-3 bg-red-300 shadow-md team shadow-red-600 rounded-xl"
+          >
+            <div class="p-2 border-2 border-red-200 rounded-xl">
+              <div class="grid w-full grid-cols-1 sm:grid-cols-3 gap-x-4">
+                <div class="flex justify-center space-x-2">
+                  <div class="font-semibold">Brought:</div>
+                  <div>{{ statCount(bTeamArray, ["brought"]) }}</div>
+                </div>
+                <div class="flex justify-center space-x-2">
+                  <div class="font-semibold">Deaths:</div>
+                  <div>{{ statCount(bTeamArray, ["deaths"]) }}</div>
+                </div>
+                <div class="flex justify-center space-x-2">
+                  <div class="font-semibold">Kills:</div>
+
+                  <div>{{ statCount(bTeamArray, ["kills", "indirect"]) }}</div>
+                </div>
+              </div>
+              <div
+                class="grid grid-cols-1 lg:grid-cols-2 sm:grid-cols-1 gap-x-4 gap-y-2"
+                formArrayName="team"
+              >
+                <div
+                  *ngFor="let pokemonForm of bTeamArray.controls; let i = index"
+                  class="flex items-center p-1 border border-red-200 rounded-xl"
+                  formGroupName="{{ i }}"
+                >
+                  <sprite
+                    class="w-1/4 h-fit"
+                    [pokemon]="pokemonForm.value.pokemon"
+                  ></sprite>
+                  <div class="flex items-center w-3/4">
+                    <div
+                      class="grid grid-cols-2 gap-2 px-2 py-1 sm:grid-cols-4"
+                    >
+                      <div>
+                        <span class="text-xs">Brought</span>
+                        <input
+                          type="checkbox"
+                          formControlName="brought"
+                          min="0"
+                          class="p-1 text-center bg-red-200 rounded-md shadow-inner text-medium shadow-red-600"
+                        />
+                      </div>
+                      <div>
+                        <span class="text-xs">Direct</span>
+                        <input
+                          type="number"
+                          formControlName="kills"
+                          min="0"
+                          class="w-full p-1 text-center bg-red-200 rounded-md shadow-inner text-medium shadow-red-600"
+                        />
+                      </div>
+                      <div>
+                        <span class="text-xs">Indirect</span>
+                        <input
+                          type="number"
+                          formControlName="indirect"
+                          min="0"
+                          class="w-full p-1 text-center bg-red-200 rounded-md shadow-inner text-medium shadow-red-600"
+                        />
+                      </div>
+                      <div>
+                        <span class="text-xs">Fainted</span>
+                        <input
+                          type="checkbox"
+                          formControlName="deaths"
+                          min="0"
+                          class="p-1 text-center bg-red-200 rounded-md shadow-inner text-medium shadow-red-600"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="flex justify-center w-full"></div>
+  {{ scoreForm.value | json }}
+  {{ selectedMatch | json }}
 </form>
