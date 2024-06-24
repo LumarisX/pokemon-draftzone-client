@@ -1,8 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import {
+  AbstractControl,
   FormArray,
   FormBuilder,
+  FormControl,
   FormGroup,
   ReactiveFormsModule,
 } from '@angular/forms';
@@ -100,15 +102,31 @@ export class OpponentScoreComponent implements OnInit {
     } = { stats: [], score: 0 }
   ): FormGroup {
     let stats = Object.fromEntries(side.stats);
-    let teamGroup = team.map((pokemon: Pokemon) =>
-      this.fb.group({
+    let teamGroup = team.map((pokemon: Pokemon) => {
+      let monGroup = this.fb.group({
         pokemon: pokemon,
         kills: [stats[<PokemonId>pokemon.pid]?.kills],
-        deaths: [stats[<PokemonId>pokemon.pid]?.deaths],
+        fainted: [stats[<PokemonId>pokemon.pid]?.deaths],
         indirect: [stats[<PokemonId>pokemon.pid]?.indirect],
         brought: [stats[<PokemonId>pokemon.pid]?.brought],
-      })
-    );
+      });
+      monGroup.get('fainted')?.valueChanges.subscribe((fainted) => {
+        if (monGroup.get('fainted')?.value) {
+          monGroup.patchValue({ brought: 1 });
+        }
+      });
+      monGroup.get('kills')?.valueChanges.subscribe((kills) => {
+        if (monGroup.get('kills')?.value) {
+          monGroup.patchValue({ brought: 1 });
+        }
+      });
+      monGroup.get('indirect')?.valueChanges.subscribe((indirect) => {
+        if (monGroup.get('indirect')?.value) {
+          monGroup.patchValue({ brought: 1 });
+        }
+      });
+      return monGroup;
+    });
     return this.fb.group({
       score: [side.score],
       team: this.fb.array(teamGroup),
@@ -168,6 +186,10 @@ export class OpponentScoreComponent implements OnInit {
     this.matchesFormArray.removeAt(index);
     this.matchSize--;
     this.selectedMatch = 0;
+  }
+
+  spriteBrought(pokemonForm: AbstractControl<any, any>) {
+    return pokemonForm.value.brought ? '' : 'opacity-40';
   }
 
   switchMatch(index: number) {
