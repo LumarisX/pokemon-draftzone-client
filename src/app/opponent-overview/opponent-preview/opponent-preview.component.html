@@ -31,97 +31,98 @@
         id="teams"
         class="grid h-auto grid-flow-row grid-cols-1 overflow-auto md:grid-cols-2 lg:grid-cols-3"
       >
-        <div *ngFor="let matchup of matchups; let i = index">
-          <div class="m-2 bg-red-200 shadow-md shadow-red-600 rounded-xl">
-            <div class="p-2 bg-red-300 shadow-md rounded-xl">
-              <div class="flex items-center w-full space-x-2 h-fit">
-                <div
-                  class="w-1/2 h-auto p-1 overflow-hidden font-semibold text-center whitespace-normal bg-red-200 rounded-full shadow-inner overflow-ellipsis text-medium shadow-red-600"
-                >
-                  {{ matchup.bTeam.teamName }}
-                </div>
-                <div
-                  class="flex items-center justify-center w-1/6 p-1 overflow-hidden text-xs font-semibold whitespace-normal bg-red-200 rounded-full shadow-inner h-fit overflow-ellipsis shadow-red-600"
-                >
-                  {{ score(matchup) }}
-                </div>
-                <div
-                  class="flex items-center justify-center w-1/3 p-1 overflow-hidden text-xs font-semibold text-center whitespace-normal bg-red-200 rounded-full shadow-inner h-fit overflow-ellipsis shadow-red-600"
-                >
-                  {{ matchup.stage }}
-                </div>
+        <div
+          *ngFor="let matchup of matchups; let i = index"
+          class="flex flex-col m-2 bg-red-200 shadow-md shadow-red-600 rounded-xl"
+        >
+          <div class="flex-grow p-2 bg-red-300 shadow-md rounded-xl">
+            <div class="flex items-center w-full space-x-2 h-fit">
+              <div
+                class="w-1/2 h-auto p-1 overflow-hidden font-semibold text-center whitespace-normal bg-red-200 rounded-full shadow-inner overflow-ellipsis text-medium shadow-red-600"
+              >
+                {{ matchup.bTeam.teamName }}
               </div>
-              <div class="grid grid-cols-6 px-4 pt-2 sprites">
-                <sprite
-                  *ngFor="let pokemon of matchup.bTeam.team"
-                  [pokemon]="pokemon"
-                ></sprite>
+              <div
+                class="flex items-center justify-center w-1/6 p-1 overflow-hidden text-xs font-semibold whitespace-normal bg-red-200 rounded-full shadow-inner h-fit overflow-ellipsis shadow-red-600"
+              >
+                {{ score(matchup) }}
               </div>
+              <div
+                class="flex items-center justify-center w-1/3 p-1 overflow-hidden text-xs font-semibold text-center whitespace-normal bg-red-200 rounded-full shadow-inner h-fit overflow-ellipsis shadow-red-600"
+              >
+                {{ matchup.stage }}
+              </div>
+            </div>
+            <div class="grid grid-cols-6 px-4 pt-2 sprites">
+              <sprite
+                *ngFor="let pokemon of matchup.bTeam.team"
+                [pokemon]="pokemon"
+              ></sprite>
+            </div>
+          </div>
+          <div
+            class="flex items-center p-2 h-fit"
+            *ngIf="!matchup.deleteConfirm"
+          >
+            <a
+              class="flex-grow p-1 font-semibold text-center bg-red-300 shadow h-fit hover:shadow shadow-red-600 rounded-xl"
+              [routerLink]="'matchup/'"
+              [queryParams]="{ id: matchup._id }"
+              >View Matchup</a
+            >
+            <div
+              class="grid items-center justify-center grid-cols-4 gap-2 px-2"
+            >
+              <img
+                class="w-8 h-8 p-1 bg-red-300 shadow hover:shadow rounded-xl hover:cursor-pointer shadow-red-600"
+                [routerLink]="'score'"
+                [queryParams]="{ matchup: matchup._id | json }"
+                title="Score"
+                src="../../../assets/icons/score.svg"
+                alt="Score"
+              />
+              <img
+                class="w-8 h-8 p-1 bg-red-300 shadow hover:shadow rounded-xl hover:cursor-pointer shadow-red-600"
+                [routerLink]="'schedule'"
+                [queryParams]="{ matchup: matchup._id | json }"
+                src="../../../assets/icons/clock.svg"
+                title="Schedule"
+                alt="Schedule"
+              />
+              <img
+                class="w-8 h-8 p-1 bg-red-300 shadow hover:shadow rounded-xl hover:cursor-pointer shadow-red-600"
+                [routerLink]="'edit'"
+                [queryParams]="{ matchup: matchup._id | json }"
+                src="../../../assets/icons/edit.svg"
+                title="Edit"
+                alt="Edit"
+              />
+              <img
+                class="w-8 h-8 p-1 bg-red-300 shadow hover:shadow rounded-xl hover:cursor-pointer shadow-red-600"
+                src="../../../assets/icons/trash.svg"
+                (click)="matchup.deleteConfirm = true"
+                title="Delete"
+                alt="Delete"
+              />
+            </div>
+          </div>
+          <div class="flex" *ngIf="matchup.deleteConfirm">
+            <div
+              class="w-2/3 m-2 text-center bg-red-300 shadow shadow-red-600 rounded-xl"
+            >
+              Are you sure you want to delete?
             </div>
             <div
-              class="flex items-center p-2 h-fit"
-              *ngIf="!matchup.deleteConfirm"
+              class="flex items-center justify-center w-1/6 m-2 bg-red-300 shadow cursor-pointer hover:shadow shadow-red-600 rounded-xl"
+              (click)="deleteMatchup(matchup._id)"
             >
-              <a
-                class="flex-grow p-1 font-semibold text-center bg-red-300 shadow h-fit hover:shadow shadow-red-600 rounded-xl"
-                [routerLink]="'matchup/'"
-                [queryParams]="{ id: matchup._id }"
-                >View Matchup</a
-              >
-              <div
-                class="grid items-center justify-center grid-cols-4 gap-2 px-2"
-              >
-                <img
-                  class="w-8 h-8 p-1 bg-red-300 shadow hover:shadow rounded-xl hover:cursor-pointer shadow-red-600"
-                  [routerLink]="'score'"
-                  [queryParams]="{ matchup: matchup._id | json }"
-                  title="Score"
-                  src="../../../assets/icons/score.svg"
-                  alt="Score"
-                />
-                <img
-                  class="w-8 h-8 p-1 bg-red-300 shadow hover:shadow rounded-xl hover:cursor-pointer shadow-red-600"
-                  [routerLink]="'schedule'"
-                  [queryParams]="{ matchup: matchup._id | json }"
-                  src="../../../assets/icons/clock.svg"
-                  title="Schedule"
-                  alt="Schedule"
-                />
-                <img
-                  class="w-8 h-8 p-1 bg-red-300 shadow hover:shadow rounded-xl hover:cursor-pointer shadow-red-600"
-                  [routerLink]="'edit'"
-                  [queryParams]="{ matchup: matchup._id | json }"
-                  src="../../../assets/icons/edit.svg"
-                  title="Edit"
-                  alt="Edit"
-                />
-                <img
-                  class="w-8 h-8 p-1 bg-red-300 shadow hover:shadow rounded-xl hover:cursor-pointer shadow-red-600"
-                  src="../../../assets/icons/trash.svg"
-                  (click)="matchup.deleteConfirm = true"
-                  title="Delete"
-                  alt="Delete"
-                />
-              </div>
+              Yes
             </div>
-            <div class="flex" *ngIf="matchup.deleteConfirm">
-              <div
-                class="w-2/3 m-2 text-center bg-red-300 shadow shadow-red-600 rounded-xl"
-              >
-                Are you sure you want to delete?
-              </div>
-              <div
-                class="flex items-center justify-center w-1/6 m-2 bg-red-300 shadow cursor-pointer hover:shadow shadow-red-600 rounded-xl"
-                (click)="deleteMatchup(matchup._id)"
-              >
-                Yes
-              </div>
-              <div
-                class="flex items-center justify-center w-1/6 m-2 bg-red-300 shadow cursor-pointer hover:shadow shadow-red-600 rounded-xl"
-                (click)="matchup.deleteConfirm = false"
-              >
-                No
-              </div>
+            <div
+              class="flex items-center justify-center w-1/6 m-2 bg-red-300 shadow cursor-pointer hover:shadow shadow-red-600 rounded-xl"
+              (click)="matchup.deleteConfirm = false"
+            >
+              No
             </div>
           </div>
         </div>
