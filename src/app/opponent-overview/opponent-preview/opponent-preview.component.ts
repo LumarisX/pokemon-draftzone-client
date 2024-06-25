@@ -51,6 +51,7 @@ export class OpponentTeamPreviewComponent implements OnInit {
   }
 
   score(matchup: Matchup): string {
-    return `${matchup.matches[0].aTeam.score}  - ${matchup.matches[0].bTeam.score}`;
+    // return `${matchup.matches[0].aTeam.score}  - ${matchup.matches[0].bTeam.score}`;
+    return '';
   }
 }

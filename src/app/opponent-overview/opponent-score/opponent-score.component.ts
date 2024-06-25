@@ -76,6 +76,7 @@ export class OpponentScoreComponent implements OnInit {
             this.matchup.matches[i].bTeam
           ),
           replay: this.matchup.matches[i].replay,
+          winner: '',
         })
       );
     }
@@ -98,8 +99,7 @@ export class OpponentScoreComponent implements OnInit {
     team: Pokemon[],
     side: {
       stats: [string, any][];
-      score: number;
-    } = { stats: [], score: 0 }
+    } = { stats: [] }
   ): FormGroup {
     let stats = Object.fromEntries(side.stats);
     let teamGroup = team.map((pokemon: Pokemon) => {
@@ -128,7 +128,6 @@ export class OpponentScoreComponent implements OnInit {
       return monGroup;
     });
     return this.fb.group({
-      score: [side.score],
       team: this.fb.array(teamGroup),
     });
   }
@@ -176,6 +175,7 @@ export class OpponentScoreComponent implements OnInit {
         aTeam: this.sideForm(this.matchup.aTeam.team),
         bTeam: this.sideForm(this.matchup.bTeam.team),
         replay: '',
+        winner: '',
       })
     );
     this.selectedMatch = this.matchSize - 1;

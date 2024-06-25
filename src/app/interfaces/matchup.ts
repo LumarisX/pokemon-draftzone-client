@@ -19,7 +19,6 @@ export type Match = {
         brought: number;
       } & any
     ];
-    score: number;
   };
   bTeam: {
     stats: [
@@ -31,9 +30,9 @@ export type Match = {
         brought: number;
       } & any
     ];
-    score: number;
   };
   replay?: String;
+  winner: '' | 'a' | 'b';
 };
 
 export type Side = {
