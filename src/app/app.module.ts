@@ -9,6 +9,7 @@ import { DraftOverviewModule } from './draft-overview/draft-overview.module';
 import { ErrorModule } from './error/error.module';
 import { MatchupOverviewModule } from './matchup-overview/matchup-overview.module';
 import { OpponentOverviewModule } from './opponent-overview/opponent-overview.module';
+import { ReplayModule } from './replay/replay.module';
 
 @NgModule({
   imports: [
@@ -16,6 +17,7 @@ import { OpponentOverviewModule } from './opponent-overview/opponent-overview.mo
     DraftOverviewModule,
     ErrorModule,
     HttpClientModule,
+    ReplayModule,
     AuthModule.forRoot({
       domain: 'dev-wspjxi5f6mjqsjea.us.auth0.com',
       clientId: 'nAyvHSOL1PbsFZfodzgIjRgYBUA1M1DH',

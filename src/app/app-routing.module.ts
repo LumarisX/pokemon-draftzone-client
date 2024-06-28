@@ -12,6 +12,7 @@ const routes: Routes = [
   { path: 'error', redirectTo: 'error' },
   { path: 'matchup', redirectTo: 'draft' },
   { path: 'test', redirectTo: 'test' },
+  { path: 'replay', redirectTo: 'replay' },
   { path: '**', component: HomeComponent },
 ];
 
