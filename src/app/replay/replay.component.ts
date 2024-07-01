@@ -5,10 +5,7 @@ import { RouterModule } from '@angular/router';
 import { ReplayService } from '../api/replay.service';
 
 type Team = {
-  detail: string;
-  nickname: string;
-  pid: string;
-  hpp: number;
+  name: string;
   kills: [number, number];
   damageDealt: number;
   damageTaken: number;
@@ -33,7 +30,6 @@ export class ReplayComponent {
         gameTime: number;
         stats: {
           username: undefined | string;
-          teamSize: undefined | number;
           totalKills: number;
           totalDeaths: number;
           team: Team[];
@@ -59,7 +55,7 @@ export class ReplayComponent {
   }
 
   monString(mon: Team) {
-    let teamString = `${mon.detail.split(',')[0]}: `;
+    let teamString = `${mon.name}: `;
     teamString +=
       mon.kills[1] > 0
         ? `${mon.kills[0]} Direct Kills, ${mon.kills[1]} Indirect Kills`
