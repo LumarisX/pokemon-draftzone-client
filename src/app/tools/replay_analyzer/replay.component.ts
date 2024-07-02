@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { ReplayService } from '../api/replay.service';
+import { ReplayService } from '../../api/replay.service';
 
 type Team = {
   name: string;
@@ -15,7 +15,7 @@ type Team = {
 };
 
 @Component({
-  selector: 'app-teams',
+  selector: 'replay-analyzer',
   standalone: true,
   imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './replay.component.html',
