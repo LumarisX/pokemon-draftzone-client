@@ -21,8 +21,7 @@ type Team = {
   templateUrl: './replay.component.html',
 })
 export class ReplayComponent {
-  replayURI: string =
-    'https://replay.pokemonshowdown.com/gen9doublescustomgame-2154029628';
+  replayURI: string = '';
   replayData:
     | {
         gametype: string;
