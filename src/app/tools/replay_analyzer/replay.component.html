@@ -1,35 +1,49 @@
-<div class="p-2 m-2 border-2 bg-cyan-100 rounded-xl border-cyan-200">
-  Replay <input [(ngModel)]="replayURI" type="text" class="p-1 mx-2 w-96" />
-  <button
-    (click)="analyze()"
-    class="p-1 border-2 bg-cyan-200 rounded-xl border-cyan-300"
-  >
-    Analyze
-  </button>
-</div>
-<div
-  *ngIf="replayData"
-  class="p-2 m-2 border-2 bg-slate-100 rounded-xl border-slate-200"
->
-  <div>
-    {{ replayData.gametype }} | Gen {{ replayData.genNum }} |
-    {{ replayData.turns }} turns | Game time:
-    {{ toMinutes(replayData.gameTime) }} minutes
-    {{ remainingSeconds(replayData.gameTime) }} seconds
+<div class="flex justify-center w-full">
+  <div class="p-2 m-2 border-2 w-fit bg-slate-100 rounded-xl border-slate-400">
+    Replay <input [(ngModel)]="replayURI" type="text" class="p-1 mx-2 w-96" />
+    <button
+      (click)="analyze()"
+      class="px-2 py-1 border-2 shadow bg-slate-200 rounded-xl border-slate-400"
+    >
+      Analyze
+    </button>
   </div>
-  <br />
-  <div>
-    <div *ngFor="let player of replayData.stats">
-      {{ player.username }}
-      <div *ngFor="let mon of player.team">
-        {{ monString(mon) }}
+</div>
+<div *ngIf="replayData" class="flex justify-center w-full p-2">
+  <div
+    class="flex flex-col items-center p-2 border-2 w-fit bg-slate-100 rounded-xl border-slate-400"
+  >
+    <div>
+      {{
+        replayData.gametype.charAt(0).toUpperCase() +
+          replayData.gametype.slice(1)
+      }}
+      | Gen {{ replayData.genNum }} | {{ replayData.turns }} turns | Game time:
+      {{ toMinutes(replayData.gameTime) }} minutes
+      {{ remainingSeconds(replayData.gameTime) }} seconds
+    </div>
+    <br />
+    <div class="space-y-4 w-fit">
+      <div
+        *ngFor="let player of replayData.stats; let playerNum = index"
+        [ngClass]="playerClass(playerNum + 1)"
+        class="p-1 border rounded border-slate-400"
+      >
+        {{ player.username }}
+        <div *ngFor="let mon of player.team">
+          {{ monString(mon) }}
+        </div>
       </div>
       <br />
     </div>
-  </div>
-  <div>
-    <div *ngFor="let event of replayData.events">
-      Turn {{ event.turn }}: {{ event.message }}
+    <div class="border w-fit border-slate-400">
+      <div
+        *ngFor="let event of replayData.events"
+        class="p-1"
+        [ngClass]="playerClass(event.player)"
+      >
+        Turn {{ event.turn }}: {{ event.message }}
+      </div>
     </div>
   </div>
 </div>

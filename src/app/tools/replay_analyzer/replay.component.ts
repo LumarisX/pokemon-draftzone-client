@@ -21,7 +21,8 @@ type Team = {
   templateUrl: './replay.component.html',
 })
 export class ReplayComponent {
-  replayURI: string = '';
+  replayURI: string =
+    'https://replay.pokemonshowdown.com/gen9doublescustomgame-2154029628';
   replayData:
     | {
         gametype: string;
@@ -62,5 +63,16 @@ export class ReplayComponent {
         : `${mon.kills[0]} Kills`;
     teamString += mon.fainted ? `, Fainted` : '';
     return teamString;
+  }
+
+  playerClass(index: number) {
+    if (index === 1) {
+      return 'bg-cyan-200';
+    }
+    if (index === 2) {
+      return 'bg-red-200';
+    }
+
+    return '';
   }
 }
