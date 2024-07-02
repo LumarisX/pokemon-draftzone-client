@@ -3,16 +3,7 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { ReplayService } from '../api/replay.service';
-
-type Team = {
-  name: string;
-  kills: [number, number];
-  damageDealt: number;
-  damageTaken: number;
-  hpRestored: number;
-  fainted: boolean;
-  brought: boolean;
-};
+import { ReplayData, ReplayMon } from './replay.interface';
 
 @Component({
   selector: 'app-teams',
@@ -22,22 +13,7 @@ type Team = {
 })
 export class ReplayComponent {
   replayURI: string = '';
-  replayData:
-    | {
-        gametype: string;
-        genNum: number;
-        turns: number;
-        gameTime: number;
-        stats: {
-          username: undefined | string;
-          totalKills: number;
-          totalDeaths: number;
-          team: Team[];
-          win: boolean;
-        }[];
-        events: { player: number; turn: number; message: string }[];
-      }
-    | undefined;
+  replayData: ReplayData | undefined;
   constructor(private replayService: ReplayService) {}
 
   analyze() {
@@ -54,7 +30,7 @@ export class ReplayComponent {
     return Math.floor(seconds / 60);
   }
 
-  monString(mon: Team) {
+  monString(mon: ReplayMon) {
     let teamString = `${mon.name}: `;
     teamString +=
       mon.kills[1] > 0
