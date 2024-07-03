@@ -71,7 +71,7 @@ export class OpponentScoreComponent implements OnInit {
         bTeam: this.sideForm(this.matchup.bTeam.team),
         replay: '',
         winner: '',
-        analyzed: false,
+        analyzed: true,
       });
       matchGroup.get('replay')?.valueChanges.subscribe((replay) => {
         if (matchGroup.get('analyzed')?.value) {
@@ -92,7 +92,7 @@ export class OpponentScoreComponent implements OnInit {
           ),
           replay: this.matchup.matches[i].replay,
           winner: this.matchup.matches[i].winner || '',
-          analyzed: false,
+          analyzed: true,
         });
         matchGroup.get('replay')?.valueChanges.subscribe((replay) => {
           if (matchGroup.get('analyzed')?.value) {
@@ -135,6 +135,15 @@ export class OpponentScoreComponent implements OnInit {
       monGroup.get('fainted')?.valueChanges.subscribe((fainted) => {
         if (monGroup.get('fainted')?.value) {
           monGroup.patchValue({ brought: 1 });
+        }
+        let a = this.statCount(this.aTeamArray, ['fainted']);
+        let b = this.statCount(this.bTeamArray, ['fainted']);
+        if (a > b) {
+          this.changeWinner('b');
+        } else if (a < b) {
+          this.changeWinner('a');
+        } else {
+          this.changeWinner('');
         }
       });
       monGroup.get('kills')?.valueChanges.subscribe((kills) => {
@@ -197,7 +206,7 @@ export class OpponentScoreComponent implements OnInit {
       bTeam: this.sideForm(this.matchup.bTeam.team),
       replay: '',
       winner: false,
-      analyzed: false,
+      analyzed: true,
     });
     matchGroup.get('replay')?.valueChanges.subscribe((replay) => {
       if (matchGroup.get('analyzed')?.value) {
@@ -292,7 +301,7 @@ export class OpponentScoreComponent implements OnInit {
     }
   }
 
-  changeWinner(player: 'a' | 'b') {
+  changeWinner(player: 'a' | 'b' | '') {
     if (this.selectedMatchForm.get('winner')?.value == player) {
       this.selectedMatchForm.patchValue({ winner: '' });
     } else {
@@ -316,6 +325,27 @@ export class OpponentScoreComponent implements OnInit {
     return this.selectedMatchForm.get('analyzed')?.value
       ? 'shadow-none opacity-50'
       : 'hover:bg-slate-250 shadow';
+  }
+
+  broughtCaution() {
+    return this.statCount(this.aTeamArray, ['brought']) ===
+      this.statCount(this.bTeamArray, ['brought'])
+      ? ''
+      : 'px-2 bg-yellow-200 rounded-full';
+  }
+
+  aKillCaution() {
+    return this.statCount(this.aTeamArray, ['kills', 'indirect']) ===
+      this.statCount(this.bTeamArray, ['fainted'])
+      ? ''
+      : 'px-2 bg-yellow-200 rounded-full';
+  }
+
+  bKillCaution() {
+    return this.statCount(this.bTeamArray, ['kills', 'indirect']) ===
+      this.statCount(this.aTeamArray, ['fainted'])
+      ? ''
+      : 'px-2 bg-yellow-200 rounded-full';
   }
 
   getWins(player: 'a' | 'b') {
