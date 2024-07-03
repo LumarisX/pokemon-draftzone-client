@@ -1882,14 +1882,14 @@ export const BattlePokedex: {
   },
   kyogre: { name: ['Kyogre'], ps: 'kyogre', serebii: '382', pd: 'kyogre' },
   kyogreprimal: {
-    name: ['Kyogre-Primal'],
+    name: ['Kyogre-Primal', 'Primal Kyogre'],
     ps: 'kyogre-primal',
     serebii: '382-p',
     pd: 'kyogre-primal',
   },
   groudon: { name: ['Groudon'], ps: 'groudon', serebii: '383', pd: 'groudon' },
   groudonprimal: {
-    name: ['Groudon-Primal'],
+    name: ['Groudon-Primal', 'Primal Groudon'],
     ps: 'groudon-primal',
     serebii: '383-p',
     pd: 'groudon-primal',
