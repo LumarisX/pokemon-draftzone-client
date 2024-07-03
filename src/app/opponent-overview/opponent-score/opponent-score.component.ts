@@ -16,7 +16,7 @@ import { LoadingComponent } from '../../loading/loading.component';
 import { PokemonId, getPidByName } from '../../pokemon';
 import { PokemonFormComponent } from '../../pokemon-form/pokemon-form.component';
 import { ReplayService } from '../../api/replay.service';
-import { ReplayData } from '../../replay/replay.interface';
+import { ReplayData } from '../../tools/replay_analyzer/replay.interface';
 
 @Component({
   selector: 'opponent-form',
