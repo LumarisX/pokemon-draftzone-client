@@ -65,6 +65,7 @@ export class OpponentScoreComponent implements OnInit {
 
   private initForm(): void {
     let matchArray = [];
+
     for (let i in this.matchup.matches) {
       let matchGroup = this.fb.group({
         aTeam: this.sideForm(
@@ -76,7 +77,7 @@ export class OpponentScoreComponent implements OnInit {
           this.matchup.matches[i].bTeam
         ),
         replay: this.matchup.matches[i].replay,
-        winner: false,
+        winner: this.matchup.matches[i].winner || '',
         analyzed: false,
       });
       matchGroup.get('replay')?.valueChanges.subscribe((replay) => {

@@ -32,7 +32,7 @@ export type Match = {
     ];
   };
   replay?: String;
-  winner: '' | 'a' | 'b';
+  winner?: null | 'a' | 'b';
 };
 
 export type Side = {
