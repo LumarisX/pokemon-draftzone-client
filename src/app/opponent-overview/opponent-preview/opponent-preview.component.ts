@@ -61,7 +61,7 @@ export class OpponentTeamPreviewComponent implements OnInit {
           bScore++;
         }
       });
-    } else {
+    } else if (matchup.matches.length > 1) {
       aScore = matchup.matches[0].aTeam.score;
       bScore = matchup.matches[0].bTeam.score;
     }
