@@ -1,4 +1,3 @@
-import { PokemonId } from '../pokemon';
 import { Pokemon } from './draft';
 
 export type Matchup = {

@@ -88,8 +88,8 @@ export class OpponentScoreComponent implements OnInit {
       matchArray.push(matchGroup);
     }
     this.scoreForm = this.fb.group({
-      aTeamPaste: this.matchup.aTeam.paste,
-      bTeamPaste: this.matchup.bTeam.paste,
+      aTeamPaste: this.matchup.aTeam.paste || '',
+      bTeamPaste: this.matchup.bTeam.paste || '',
       matches: this.fb.array(matchArray),
     });
   }
@@ -189,7 +189,7 @@ export class OpponentScoreComponent implements OnInit {
         matchGroup.patchValue({ analyzed: false });
       }
     });
-
+    this.matchSize++;
     this.matchesFormArray.push(matchGroup);
     this.selectedMatch = this.matchSize - 1;
     return;
