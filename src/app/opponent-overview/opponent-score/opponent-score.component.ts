@@ -65,19 +65,12 @@ export class OpponentScoreComponent implements OnInit {
 
   private initForm(): void {
     let matchArray = [];
-
-    for (let i in this.matchup.matches) {
+    if (this.matchup.matches.length === 0) {
       let matchGroup = this.fb.group({
-        aTeam: this.sideForm(
-          this.matchup.aTeam.team,
-          this.matchup.matches[i].aTeam
-        ),
-        bTeam: this.sideForm(
-          this.matchup.bTeam.team,
-          this.matchup.matches[i].bTeam
-        ),
-        replay: this.matchup.matches[i].replay,
-        winner: this.matchup.matches[i].winner || '',
+        aTeam: this.sideForm(this.matchup.aTeam.team),
+        bTeam: this.sideForm(this.matchup.bTeam.team),
+        replay: '',
+        winner: '',
         analyzed: false,
       });
       matchGroup.get('replay')?.valueChanges.subscribe((replay) => {
@@ -86,6 +79,28 @@ export class OpponentScoreComponent implements OnInit {
         }
       });
       matchArray.push(matchGroup);
+    } else {
+      for (let i in this.matchup.matches) {
+        let matchGroup = this.fb.group({
+          aTeam: this.sideForm(
+            this.matchup.aTeam.team,
+            this.matchup.matches[i].aTeam
+          ),
+          bTeam: this.sideForm(
+            this.matchup.bTeam.team,
+            this.matchup.matches[i].bTeam
+          ),
+          replay: this.matchup.matches[i].replay,
+          winner: this.matchup.matches[i].winner || '',
+          analyzed: false,
+        });
+        matchGroup.get('replay')?.valueChanges.subscribe((replay) => {
+          if (matchGroup.get('analyzed')?.value) {
+            matchGroup.patchValue({ analyzed: false });
+          }
+        });
+        matchArray.push(matchGroup);
+      }
     }
     this.scoreForm = this.fb.group({
       aTeamPaste: this.matchup.aTeam.paste || '',
