@@ -9,7 +9,7 @@ export class ReplayService {
 
   analyzeReplay(replayURI: string) {
     return this.apiService.getUnauth(
-      `replay/analyze/${encodeURIComponent(replayURI)}`
+      `replay/analyze/${encodeURIComponent(replayURI.trim())}`
     );
   }
 }
