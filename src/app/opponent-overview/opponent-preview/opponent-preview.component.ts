@@ -51,9 +51,9 @@ export class OpponentTeamPreviewComponent implements OnInit {
   }
 
   score(matchup: Matchup): string {
-    let aScore = 0;
-    let bScore = 0;
     if (matchup.matches.length > 1) {
+      let aScore = 0;
+      let bScore = 0;
       matchup.matches.forEach((match) => {
         if (match.winner === 'a') {
           aScore++;
@@ -61,10 +61,11 @@ export class OpponentTeamPreviewComponent implements OnInit {
           bScore++;
         }
       });
-    } else if (matchup.matches.length > 1) {
-      aScore = matchup.matches[0].aTeam.score;
-      bScore = matchup.matches[0].bTeam.score;
+      return `${aScore} - ${bScore}`;
+    } else if (matchup.matches.length > 0) {
+      return `${matchup.matches[0].aTeam.score} - ${matchup.matches[0].bTeam.score}`;
+    } else {
+      return 'Unscored';
     }
-    return `${aScore} - ${bScore}`;
   }
 }
