@@ -22,13 +22,14 @@ export class CoveragechartComponent {
   }
 
   teamColor(inverted: boolean = false) {
-    if (this.selectedTeam > 0 == inverted) return 'bg-cyan-400';
-    return 'bg-red-400';
+    if (this.selectedTeam > 0 == inverted)
+      return 'bg-cyan-400 dark:bg-cyan-500';
+    return 'bg-red-400 dark:bg-red-500';
   }
 
   clickColor(inverted: boolean = false) {
     if (this.selectedTeam > 0 == inverted)
-      return 'bg-cyan-400 hover:bg-cyan-300';
-    return 'bg-red-400 hover:bg-red-300';
+      return 'bg-cyan-400 dark:bg-cyan-500 hover:bg-cyan-300';
+    return 'bg-red-400 dark:bg-red-500 hover:bg-red-300';
   }
 }

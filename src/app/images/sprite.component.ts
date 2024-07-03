@@ -50,7 +50,7 @@ export class SpriteComponent {
         this.path = `https://img.pokemondb.net/sprites/home/${
           pokemon.shiny ? 'shiny' : 'normal'
         }/${getSpriteName(pokemon.pid, 'pd')}.png`;
-        this.classes.push('sprite-border');
+        this.classes.push('sprite-border dark:sprite-border-dark');
         break;
       case 'bw':
         this.path = `https://play.pokemonshowdown.com/sprites/gen5${

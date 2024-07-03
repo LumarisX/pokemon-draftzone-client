@@ -2,10 +2,10 @@
   <button type="submit" style="display: none"></button>
   <div formArrayName="drafts" class="flex flex-col h-full">
     <div
-      class="flex items-center p-1 space-x-1 overflow-x-auto border-b-2 overflow-y-clip h-fit bg-slate-200 border-slate-300"
+      class="flex items-center p-1 space-x-1 overflow-x-auto border-b-2 overflow-y-clip h-fit bg-slate-200 dark:bg-slate-700 border-slate-300 dark:border-slate-600"
     >
       <div
-        class="flex items-center font-semibold w-20 px-1 py-0.5 border bg-slate-100 hover:bg-slate-50 hover:cursor-pointer rounded border-slate-500"
+        class="flex items-center font-semibold w-20 px-1 py-0.5 border bg-slate-100 dark:bg-slate-800 hover:bg-slate-50 hover:cursor-pointer rounded border-slate-500 dark:border-slate-400"
         (click)="settings = !settings"
       >
         <img src="../../assets/icons/gear.svg" class="w-5" />
@@ -15,7 +15,7 @@
       <div class="flex w-full p-0.5 space-x-2">
         <div
           [ngClass]="selectedDraftsStyle(j)"
-          class="flex overflow-x-auto border rounded border-slate-500 hover:cursor-pointer"
+          class="flex overflow-x-auto border rounded border-slate-500 dark:border-slate-400 hover:cursor-pointer"
           *ngFor="let draftCtrl of draftArray.controls; let j = index"
           [formGroupName]="j"
           (click)="switchDrafts(j)"
@@ -32,7 +32,7 @@
         </div>
         <button *ngIf="draftSize < 5" (click)="addDraft()">
           <img
-            class="h-8 p-1 border rounded border-slate-500 bg-slate-100 hover:bg-slate-50 hover:cursor-pointer"
+            class="h-8 p-1 border rounded border-slate-500 dark:border-slate-400 bg-slate-100 dark:bg-slate-800 hover:bg-slate-50 hover:cursor-pointer"
             src="../../assets/icons/plus.svg"
           />
         </button>
@@ -45,7 +45,7 @@
       <div
         *ngIf="settings"
         @growIn
-        class="flex flex-wrap items-center px-2 pb-1 space-x-4 space-y-1 border-b-2 border-slate-300 rounded-b-xl bg-slate-200"
+        class="flex flex-wrap items-center px-2 pb-1 space-x-4 space-y-1 border-b-2 border-slate-300 dark:border-slate-600 rounded-b-xl bg-slate-200 dark:bg-slate-700"
       >
         <div class="space-x-1">
           <label for="format" class="font-bold">Format</label>
@@ -121,7 +121,7 @@
           />
         </div>
         <button
-          class="p-0.5 border-2 text-sm rounded hover:bg-slate-300 bg-slate-100 border-slate-400"
+          class="p-0.5 border-2 text-sm rounded hover:bg-slate-300 bg-slate-100 dark:bg-slate-800 border-slate-400 dark:border-slate-500"
           routerLink="/draft/new"
           [queryParams]="{
             team: team,
@@ -136,7 +136,7 @@
         <div class="flex-col hidden divide-y-2 w-96 divide-slate-200 md:flex">
           <div class="flex-grow min-h-0 p-1 overflow-y-auto">
             <div
-              class="sticky flex w-full space-x-4 font-semibold border-b-2 border-slate-300"
+              class="sticky flex w-full space-x-4 font-semibold border-b-2 border-slate-300 dark:border-slate-600"
             >
               <div class="w-1/8"></div>
               <div class="w-1/2">Name</div>
@@ -265,7 +265,7 @@
               *ngIf="tabSelected == 4"
             >
               <div
-                class="sticky flex w-full space-x-3 font-semibold border-b-2 border-slate-300"
+                class="sticky flex w-full space-x-3 font-semibold border-b-2 border-slate-300 dark:border-slate-600"
               >
                 <div class="w-1/8"></div>
                 <div class="w-1/2">Name</div>

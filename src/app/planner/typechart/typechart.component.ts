@@ -45,44 +45,69 @@ export class TypechartComponent implements OnChanges {
   }
 
   typeColor(weak: number, disbaled: Boolean): string {
-    if (disbaled) return 'text-transparent border-slate-200';
-    if (weak > 4) return 'bg-rose-600 border-rose-700';
-    if (weak > 2) return 'bg-rose-500  border-rose-600';
-    if (weak > 1) return 'bg-rose-400  border-rose-500';
-    if (weak < 0.25) return 'bg-emerald-600  border-emerald-700';
-    if (weak < 0.5) return 'bg-emerald-500  border-emerald-600';
-    if (weak < 1) return 'bg-emerald-400  border-emerald-500';
-    return 'text-transparent border-slate-200';
+    if (disbaled)
+      return 'text-transparent border-slate-200 dark:border-slate-700';
+    if (weak > 4)
+      return 'bg-rose-600 dark:bg-rose-300 border-rose-700 dark:border-rose-200';
+    if (weak > 2)
+      return 'bg-rose-500 dark:bg-rose-400  border-rose-600 dark:border-rose-300';
+    if (weak > 1)
+      return 'bg-rose-400 dark:bg-rose-500  border-rose-500 dark:border-rose-400';
+    if (weak < 0.25)
+      return 'bg-emerald-600 dark:bg-emerald-300  border-emerald-700 dark:border-emerald-200';
+    if (weak < 0.5)
+      return 'bg-emerald-500 dark:bg-emerald-400  border-emerald-600 dark:border-emerald-300';
+    if (weak < 1)
+      return 'bg-emerald-400 dark:bg-emerald-500  border-emerald-500 dark:border-emerald-400';
+    return 'text-transparent border-slate-200 dark:border-slate-700';
   }
 
   weakColor(weak: number): string {
-    if (weak > 5) return 'bg-rose-600 border-rose-700';
-    if (weak > 4) return 'bg-rose-500  border-rose-600';
-    if (weak > 3) return 'bg-rose-400  border-rose-500';
-    if (weak < 1) return 'bg-emerald-600  border-emerald-700';
-    if (weak < 2) return 'bg-emerald-500  border-emerald-600';
-    if (weak < 3) return 'bg-emerald-400 border-emerald-500';
-    return 'border-slate-400';
+    if (weak > 5)
+      return 'bg-rose-600 dark:bg-rose-300 border-rose-700 dark:border-rose-200';
+    if (weak > 4)
+      return 'bg-rose-500 dark:bg-rose-400  border-rose-600 dark:border-rose-300';
+    if (weak > 3)
+      return 'bg-rose-400 dark:bg-rose-500  border-rose-500 dark:border-rose-400';
+    if (weak < 1)
+      return 'bg-emerald-600 dark:bg-emerald-300  border-emerald-700 dark:border-emerald-200';
+    if (weak < 2)
+      return 'bg-emerald-500 dark:bg-emerald-400  border-emerald-600 dark:border-emerald-300';
+    if (weak < 3)
+      return 'bg-emerald-400 dark:bg-emerald-500 border-emerald-500 dark:border-emerald-400';
+    return 'border-slate-400 dark:border-slate-500';
   }
 
   resistColor(weak: number): string {
-    if (weak > 4) return 'bg-emerald-600 border-emerald-700';
-    if (weak > 3) return 'bg-emerald-500 border-emerald-600';
-    if (weak > 2) return 'bg-emerald-400 border-emerald-500';
-    if (weak < 1) return 'bg-rose-500 border-rose-600';
-    if (weak < 2) return 'bg-rose-400 border-rose-500';
-    return 'border-slate-400';
+    if (weak > 4)
+      return 'bg-emerald-600 dark:bg-emerald-300 border-emerald-700 dark:border-emerald-200';
+    if (weak > 3)
+      return 'bg-emerald-500 dark:bg-emerald-400 border-emerald-600 dark:border-emerald-300';
+    if (weak > 2)
+      return 'bg-emerald-400 dark:bg-emerald-500 border-emerald-500 dark:border-emerald-400';
+    if (weak < 1)
+      return 'bg-rose-500 dark:bg-rose-400 border-rose-600 dark:border-rose-300';
+    if (weak < 2)
+      return 'bg-rose-400 dark:bg-rose-500 border-rose-500 dark:border-rose-400';
+    return 'border-slate-400 dark:border-slate-500';
   }
 
   diffColor(weak: number): string {
-    if (weak > 3) return 'bg-emerald-700 border-emerald-800';
-    if (weak > 2) return 'bg-emerald-600 border-emerald-700';
-    if (weak > 1) return 'bg-emerald-500 border-emerald-600';
-    if (weak > 0) return 'bg-emerald-400 border-emerald-500';
-    if (weak < -2) return 'bg-rose-600 border-rose-700';
-    if (weak < -1) return 'bg-rose-500 border-rose-600';
-    if (weak < 0) return 'bg-rose-400 border-rose-500';
-    return 'border-slate-400';
+    if (weak > 3)
+      return 'bg-emerald-700 dark:bg-emerald-200 border-emerald-800 dark:border-emerald-100';
+    if (weak > 2)
+      return 'bg-emerald-600 dark:bg-emerald-300 border-emerald-700 dark:border-emerald-200';
+    if (weak > 1)
+      return 'bg-emerald-500 dark:bg-emerald-400 border-emerald-600 dark:border-emerald-300';
+    if (weak > 0)
+      return 'bg-emerald-400 dark:bg-emerald-500 border-emerald-500 dark:border-emerald-400';
+    if (weak < -2)
+      return 'bg-rose-600 dark:bg-rose-300 border-rose-700 dark:border-rose-200';
+    if (weak < -1)
+      return 'bg-rose-500 dark:bg-rose-400 border-rose-600 dark:border-rose-300';
+    if (weak < 0)
+      return 'bg-rose-400 dark:bg-rose-500 border-rose-500 dark:border-rose-400';
+    return 'border-slate-400 dark:border-slate-500';
   }
 
   toggleVisible(

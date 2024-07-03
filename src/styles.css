@@ -20,6 +20,17 @@
   z-index: 0;
 }
 
+.sprite-border-dark {
+  -webkit-filter: drop-shadow(1px 0px 0 theme("colors.slate.200"))
+    drop-shadow(-1px 0px 0 theme("colors.slate.200"))
+    drop-shadow(0px -1px 0 theme("colors.slate.200"))
+    drop-shadow(0px 1px 0 theme("colors.slate.200"));
+  filter: drop-shadow(1px 0px 0 theme("colors.slate.200"))
+    drop-shadow(-1px 0px 0 theme("colors.slate.200"))
+    drop-shadow(0px -1px 0 theme("colors.slate.200"))
+    drop-shadow(0px 1px 0 theme("colors.slate.200"));
+}
+
 @font-face {
   font-family: 'Nasalization RG';
   src: url('./assets/fonts/nasalization-rg.otf') format('truetype');

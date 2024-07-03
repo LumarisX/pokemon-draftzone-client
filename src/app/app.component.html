@@ -1,17 +1,19 @@
-<div class="flex flex-col justify-between h-dvh">
-  <header class="z-10 flex w-full p-2 border-b-2 bg-slate-300 border-slate-400">
+<div class="flex flex-col justify-between h-dvh dark:text-slate-100">
+  <header
+    class="z-10 flex w-full p-2 border-b-2 bg-slate-300 dark:bg-slate-600 border-slate-400 dark:border-slate-500"
+  >
     <div class="relative flex">
       <button
         (click)="menuDropdown = !menuDropdown"
         id="dropdownButton"
-        class="block w-8 px-1 py-1 mr-2 text-gray-800 bg-gray-200 rounded-md sm:hidden focus:outline-none"
+        class="block w-8 px-1 py-1 mr-2 text-$3-800 dark:text-$3-100 bg-$3-200 dark:bg-$3-200 rounded-md sm:hidden focus:outline-none"
       >
         <img class="" src="../assets/icons/menu.svg" />
       </button>
       <div
         *ngIf="menuDropdown"
         (click)="menuDropdown = false"
-        class="absolute left-0 flex-col block p-2 bg-white border border-gray-200 divide-y rounded-md shadow-md sm:flex top-full"
+        class="absolute left-0 flex-col block p-2 bg-white border border-$3-200 dark:border-$3-200 divide-y rounded-md shadow-md sm:flex top-full"
       >
         <div
           routerLink="/draft"
@@ -103,10 +105,12 @@
       </div>
     </div>
   </header>
-  <main class="w-full h-full mb-auto overflow-y-auto">
+  <main class="w-full h-full mb-auto overflow-y-auto dark:bg-slate-900">
     <router-outlet></router-outlet>
   </main>
-  <footer class="z-10 flex w-full border-t-2 bg-slate-300 border-slate-400">
+  <footer
+    class="z-10 flex w-full border-t-2 bg-slate-300 dark:bg-slate-600 border-slate-400 dark:border-slate-500"
+  >
     <div class="flex w-1/2 mx-5 my-1 space-x-3">
       <a href="https://play.pokemonshowdown.com" target="_blank"
         ><img class="h-5" src="../assets/icons/media/showdown.png"

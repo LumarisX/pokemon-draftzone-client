@@ -42,10 +42,10 @@ export class ReplayComponent {
 
   playerClass(index: number) {
     if (index === 1) {
-      return 'bg-cyan-200';
+      return 'bg-cyan-200 dark:bg-cyan-700';
     }
     if (index === 2) {
-      return 'bg-red-200';
+      return 'bg-red-200 dark:bg-red-700';
     }
 
     return '';

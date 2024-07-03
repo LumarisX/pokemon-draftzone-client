@@ -1,9 +1,11 @@
 <div class="flex flex-col items-center w-full">
-  <div class="p-2 m-2 border-2 w-fit bg-slate-100 rounded-xl border-slate-400">
+  <div
+    class="p-2 m-2 border-2 w-fit bg-slate-100 dark:bg-slate-800 rounded-xl border-slate-400 dark:border-slate-500"
+  >
     Replay <input [(ngModel)]="replayURI" type="text" class="p-1 mx-2 w-96" />
     <button
       (click)="analyze()"
-      class="px-2 py-1 border-2 shadow bg-slate-200 rounded-xl border-slate-400"
+      class="px-2 py-1 border-2 shadow bg-slate-200 dark:bg-slate-700 rounded-xl border-slate-400 dark:border-slate-500"
     >
       Analyze
     </button>
@@ -18,7 +20,7 @@
 </div>
 <div *ngIf="replayData" class="flex justify-center w-full p-2">
   <div
-    class="flex flex-col items-center p-2 border-2 w-fit bg-slate-100 rounded-xl border-slate-400"
+    class="flex flex-col items-center p-2 border-2 w-fit bg-slate-100 dark:bg-slate-800 rounded-xl border-slate-400 dark:border-slate-500"
   >
     <div>
       {{
@@ -34,7 +36,7 @@
       <div
         *ngFor="let player of replayData.stats; let playerNum = index"
         [ngClass]="playerClass(playerNum + 1)"
-        class="p-1 border rounded border-slate-400"
+        class="p-1 border rounded border-slate-400 dark:border-slate-500"
       >
         {{ player.username }}
         <div *ngFor="let mon of player.team">
@@ -43,7 +45,7 @@
       </div>
       <br />
     </div>
-    <div class="border w-fit border-slate-400">
+    <div class="border w-fit border-slate-400 dark:border-slate-500">
       <div
         *ngFor="let event of replayData.events"
         class="p-1"

@@ -317,7 +317,7 @@ export class OpponentScoreComponent implements OnInit {
 
   gameClass(i: number) {
     return this.selectedMatch == i
-      ? 'bg-slate-100'
+      ? 'bg-slate-100 dark:bg-slate-800'
       : 'bg-slate-250 hover:bg-slate-200';
   }
 

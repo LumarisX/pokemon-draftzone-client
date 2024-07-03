@@ -1,6 +1,8 @@
 <div class="">
-  <div class="flex w-full px-1 bg-slate-400 rounded-t-xl">
-    <div class="flex w-full pb-1 border-b border-slate-300">
+  <div class="flex w-full px-1 bg-slate-400 dark:bg-slate-500 rounded-t-xl">
+    <div
+      class="flex w-full pb-1 border-b border-slate-300 dark:border-slate-600"
+    >
       <h1 class="w-full text-xl font-bold text-center">Move Coverage</h1>
       <button
         (click)="swapTeams()"
@@ -12,7 +14,7 @@
     </div>
   </div>
   <div
-    class="grid grid-cols-1 gap-1 overflow-y-auto border-4 grid-rows-flex bg-slate-400 border-slate-400 max-h-128"
+    class="grid grid-cols-1 gap-1 overflow-y-auto border-4 grid-rows-flex bg-slate-400 dark:bg-slate-500 border-slate-400 dark:border-slate-500 max-h-128"
   >
     <div
       *ngFor="let pokemon of coverage[selectedTeam]"
@@ -26,5 +28,5 @@
       ></coverage>
     </div>
   </div>
-  <div class="w-full h-3 rounded-b-full bg-slate-400"></div>
+  <div class="w-full h-3 rounded-b-full bg-slate-400 dark:bg-slate-500"></div>
 </div>
