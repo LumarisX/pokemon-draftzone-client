@@ -8,18 +8,8 @@
   <div
     class="items-center justify-end w-4 h-4 m-2 ml-auto border rounded cursor-pointer border-menu-500 bg-menu-400 hover:bg-menu-200"
   >
-    <img
-      *ngIf="show"
-      class="h-full"
-      src="../../../../../assets/icons/minus.svg"
-      title="Hide"
-    />
-    <img
-      *ngIf="!show"
-      class="h-full"
-      src="../../../../../assets/icons/plus.svg"
-      title="Expand"
-    />
+    <minus-svg *ngIf="show" class="h-full" title="Hide"></minus-svg>
+    <plus-svg *ngIf="!show" class="h-full" title="Expand"></plus-svg>
   </div>
 </div>
 

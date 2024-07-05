@@ -3,14 +3,14 @@
   <div class="flex px-2 w-fleft-px">
     <button
       [routerLink]="'/draft/' + teamId"
-      class="p-2 font-medium text-white bg-menu-500 rounded-md shadow-sm hover:bg-menu-700 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-menu-500"
+      class="p-2 font-medium text-white rounded-md shadow-sm bg-menu-500 hover:bg-menu-700 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-menu-500"
     >
       Cancel
     </button>
     <div class="flex-grow"></div>
     <button
       type="submit"
-      class="p-2 font-medium text-white bg-menu-500 rounded-md shadow-sm hover:bg-menu-700 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-menu-500"
+      class="p-2 font-medium text-white rounded-md shadow-sm bg-menu-500 hover:bg-menu-700 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-menu-500"
       (click)="submit()"
     >
       Submit
@@ -36,7 +36,7 @@
     </div>
     <div class="flex w-1/2">
       <div
-        class="flex items-center justify-center w-12 m-1 bg-bTeam-200 border-2 border-bTeam-300 rounded"
+        class="flex items-center justify-center w-12 m-1 border-2 rounded bg-bTeam-200 border-bTeam-300"
       >
         <div class="text-4xl">{{ getWins("b") }}</div>
       </div>
@@ -47,7 +47,7 @@
           <input
             formControlName="bTeamPaste"
             spellcheck="false"
-            class="w-full p-1 mx-1 text-center bg-bTeam-200 rounded-full shadow-inner text-medium shadow-bTeam-600"
+            class="w-full p-1 mx-1 text-center rounded-full shadow-inner bg-bTeam-200 text-medium shadow-bTeam-600"
         /></label>
       </div>
     </div>
@@ -69,19 +69,17 @@
           [ngClass]="gameClass(i)"
         >
           Game {{ i + 1 }}
-          <img
+          <trash-svg
             class="m-1 max-w-4 min-w-4"
             *ngIf="i > 0"
-            src="../../assets/icons/trash.svg"
             (click)="deleteMatch(i)"
-          />
+          ></trash-svg>
         </div>
       </div>
       <button (click)="addMatch()">
-        <img
+        <plus-svg
           class="h-8 p-1 border rounded max-w-8 min-w-8 border-menu-500 bg-menu-100 hover:bg-menu-150 hover:cursor-pointer"
-          src="../../assets/icons/plus.svg"
-        />
+        ></plus-svg>
       </button>
     </div>
 
@@ -225,12 +223,12 @@
         <div class="w-1/2">
           <div
             formGroupName="bTeam"
-            class="p-2 m-2 space-y-3 bg-bTeam-300 shadow-md team shadow-bTeam-600 rounded-xl"
+            class="p-2 m-2 space-y-3 shadow-md bg-bTeam-300 team shadow-bTeam-600 rounded-xl"
           >
             <div class="p-2 border-2 border-bTeam-200 rounded-xl">
               <div class="flex w-full pb-1">
                 <div
-                  class="flex justify-center bg-bTeam-200 border border-bTeam-400 rounded-full h-fit w-28 hover:cursor-pointer hover:bg-bTeam-100"
+                  class="flex justify-center border rounded-full bg-bTeam-200 border-bTeam-400 h-fit w-28 hover:cursor-pointer hover:bg-bTeam-100"
                   (click)="changeWinner('b')"
                 >
                   <div [ngClass]="winnerClass('b')">Winner</div>
@@ -264,7 +262,7 @@
               >
                 <div
                   *ngFor="let pokemonForm of bTeamArray.controls; let i = index"
-                  class="p-1 border border-bTeam-200 rounded-lg"
+                  class="p-1 border rounded-lg border-bTeam-200"
                   formGroupName="{{ i }}"
                 >
                   <div class="flex">

@@ -1,74 +1,74 @@
 /** @type {import('tailwindcss').Config} */
 
-const { createThemes } = require("tw-colors");
-const colors = require("tailwindcss/colors");
+import { createThemes } from 'tw-colors';
+import colors from 'tailwindcss/colors';
 
-module.exports = {
-  content: ["./src/**/*.{html,ts,tsx,jsx}"],
+export default {
+  content: ['./src/**/*.{html,ts,tsx,jsx}'],
   theme: {
     fontFamily: {
-      nasa: ["Nasalization RG", "sans-serif"],
+      nasa: ['Nasalization RG', 'sans-serif'],
     },
     extend: {
       spacing: {
-        128: "32rem",
-        192: "48rem",
+        128: '32rem',
+        192: '48rem',
       },
       width: {
-        "1/8": "12.5%",
+        '1/8': '12.5%',
       },
       colors: {
         slate: {
-          150: "#EAEFF5",
-          250: "#D7DFE9",
-          350: "#B0BCCC",
+          150: '#EAEFF5',
+          250: '#D7DFE9',
+          350: '#B0BCCC',
         },
         cyan: {
-          150: "#BAF7FD",
-          250: "#86EEFB",
-          350: "#45DEF4",
-          450: "#14C5E1",
-          550: "#07A4C3",
-          650: "#0B83A1",
-          750: "#126983",
-          850: "#16566C",
+          150: '#BAF7FD',
+          250: '#86EEFB',
+          350: '#45DEF4',
+          450: '#14C5E1',
+          550: '#07A4C3',
+          650: '#0B83A1',
+          750: '#126983',
+          850: '#16566C',
         },
         red: {
-          150: "#FED6D6",
-          250: "#FDB8B8",
-          350: "#FA8B8B",
-          450: "#F45B5B",
-          550: "#E63535",
-          650: "#CB2121",
-          750: "#A91C1C",
-          850: "#8C1C1C",
+          150: '#FED6D6',
+          250: '#FDB8B8',
+          350: '#FA8B8B',
+          450: '#F45B5B',
+          550: '#E63535',
+          650: '#CB2121',
+          750: '#A91C1C',
+          850: '#8C1C1C',
         },
         deoxys: {
-          red: "#F15B42",
-          cyan: "#0FB6CD",
-          purple: "#9B65AA",
+          red: '#F15B42',
+          cyan: '#0FB6CD',
+          purple: '#9B65AA',
         },
-        bug: "#b0c435",
-        dark: "#6d5b50",
-        dragon: "#7a6fb2",
-        electric: "#eec74f",
-        fairy: "#ff6ddc",
-        fighting: "#a4573e",
-        fire: "#fd5538",
-        flying: "#a5ace4",
-        ghost: "#3f3874",
-        grass: "#83cc59",
-        ground: "#c6af81",
-        ice: "#58c7e0",
-        normal: "#a5a39c",
-        poison: "#9c7593",
-        psychic: "#d4869e",
-        rock: "#bea255",
-        steel: "#a9aaba",
-        water: "#399eff",
+        bug: '#b0c435',
+        dark: '#6d5b50',
+        dragon: '#7a6fb2',
+        electric: '#eec74f',
+        fairy: '#ff6ddc',
+        fighting: '#a4573e',
+        fire: '#fd5538',
+        flying: '#a5ace4',
+        ghost: '#3f3874',
+        grass: '#83cc59',
+        ground: '#c6af81',
+        ice: '#58c7e0',
+        normal: '#a5a39c',
+        poison: '#9c7593',
+        psychic: '#d4869e',
+        rock: '#bea255',
+        steel: '#a9aaba',
+        water: '#399eff',
       },
       fontSize: {
-        "2xs": ".5rem",
+        '2xs': '.5rem',
       },
     },
   },
@@ -80,7 +80,7 @@ module.exports = {
           aTeam: colors.cyan,
           bTeam: colors.red,
           menu: colors.slate,
-          textColor: {
+          symbolColor: {
             main: colors.black,
           },
           spriteBorder: colors.slate[500],
@@ -109,23 +109,23 @@ module.exports = {
         dark: {
           page: colors.slate[900],
           aTeam: {
-            100: "#07A4C3",
+            100: '#07A4C3',
             200: colors.cyan[600],
-            300: "#0B83A1",
+            300: '#0B83A1',
             400: colors.cyan[700],
-            500: "#126983",
+            500: '#126983',
             600: colors.cyan[800],
-            700: "#16566C",
+            700: '#16566C',
             800: colors.cyan[950],
           },
           bTeam: {
-            100: "#E63535",
+            100: '#E63535',
             200: colors.red[600],
-            300: "#CB2121",
+            300: '#CB2121',
             400: colors.red[700],
-            500: "#A91C1C",
+            500: '#A91C1C',
             600: colors.red[800],
-            700: "#8C1C1C",
+            700: '#8C1C1C',
             800: colors.red[950],
           },
           menu: {
@@ -138,7 +138,7 @@ module.exports = {
             700: colors.slate[200],
             800: colors.slate[100],
           },
-          textColor: {
+          symbolColor: {
             main: colors.gray[200],
           },
           spriteBorder: colors.slate[400],
@@ -169,7 +169,7 @@ module.exports = {
           aTeam: colors.teal,
           bTeam: colors.yellow,
           menu: colors.slate,
-          textColor: {
+          symbolColor: {
             main: colors.black,
           },
           spriteBorder: colors.slate[500],
@@ -198,8 +198,8 @@ module.exports = {
       },
       {
         defaultTheme: {
-          light: "light",
-          dark: "dark",
+          light: 'light',
+          dark: 'dark',
         },
       }
     ),

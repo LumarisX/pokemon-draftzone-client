@@ -8,10 +8,11 @@ import {
 } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { DataService } from '../../../api/data.service';
-import { Pokemon } from '../../../interfaces/draft';
-import { PokemonId, getPidByName } from '../../../pokemon';
-import { PokemonFormComponent } from '../../../pokemon-form/pokemon-form.component';
 import { SpriteComponent } from '../../../images/sprite.component';
+import { Pokemon } from '../../../interfaces/draft';
+import { getPidByName } from '../../../pokemon';
+import { PokemonFormComponent } from '../../../pokemon-form/pokemon-form.component';
+import { ImportSVG } from '../../../../assets/icons/import.component';
 
 @Component({
   selector: 'draft-form-core',
@@ -21,6 +22,7 @@ import { SpriteComponent } from '../../../images/sprite.component';
     RouterModule,
     SpriteComponent,
     PokemonFormComponent,
+    ImportSVG,
     ReactiveFormsModule,
   ],
   templateUrl: './draft-form-core.component.html',
@@ -52,7 +54,6 @@ export class DraftFormCoreComponent implements OnInit {
     index: number = this.teamArray.length,
     pokemonData: Pokemon = { pid: '', name: '' }
   ) {
-    console.log(index);
     this.teamArray?.insert(
       index + 1,
       PokemonFormComponent.addPokemonForm(pokemonData)

@@ -12,6 +12,8 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
+import { CloseSVG } from '../../../../assets/icons/close.component';
+import { FilterSVG } from '../../../../assets/icons/filter.component';
 
 @Component({
   selector: 'speedchart',
@@ -21,6 +23,8 @@ import {
     CommonModule,
     FormsModule,
     SpriteComponent,
+    CloseSVG,
+    FilterSVG,
     SpeedModifierIconComponent,
   ],
   animations: [
@@ -91,7 +95,6 @@ export class SpeedchartComponent implements OnInit {
     };
     team: number;
   }[] {
-    console.log(this._speeds);
     return this._speeds;
   }
 

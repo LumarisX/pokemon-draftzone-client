@@ -45,7 +45,6 @@ export class DraftFormNewComponent implements OnInit {
     let teamArray: AbstractControl[] = [];
     this.route.queryParams.subscribe((params) => {
       if ('team' in params) {
-        console.log(JSON.stringify(params['team']));
         for (let pid of params['team']) {
           teamArray.push(
             PokemonFormComponent.addPokemonForm({

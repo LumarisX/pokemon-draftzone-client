@@ -1,5 +1,5 @@
 <div
-  class="flex flex-col justify-between h-dvh text-textColor-main bg-page"
+  class="flex flex-col justify-between h-dvh text-symbolColor-main bg-page"
   [ngClass]="checkTheme()"
 >
   <header class="z-10 flex w-full p-2 border-b-2 bg-menu-300 border-menu-400">
@@ -9,7 +9,19 @@
         id="dropdownButton"
         class="block w-8 px-1 py-1 mr-2 rounded-md text-menu-800 bg-menu-200 sm:hidden focus:outline-none"
       >
-        <img class="" src="../assets/icons/menu.svg" />
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="stroke-symbolColor-main"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 6h16M4 12h16M4 18h16"
+          />
+        </svg>
       </button>
       <div
         *ngIf="menuDropdown"

@@ -11,6 +11,7 @@ import { Pokemon } from '../../../interfaces/draft';
 import { PokemonId, getPidByName } from '../../../pokemon';
 import { PokemonFormComponent } from '../../../pokemon-form/pokemon-form.component';
 import { SpriteComponent } from '../../../images/sprite.component';
+import { ImportSVG } from '../../../../assets/icons/import.component';
 
 @Component({
   selector: 'opponent-form-core',
@@ -20,6 +21,7 @@ import { SpriteComponent } from '../../../images/sprite.component';
     RouterModule,
     SpriteComponent,
     PokemonFormComponent,
+    ImportSVG,
     ReactiveFormsModule,
   ],
   templateUrl: './opponent-form-core.component.html',

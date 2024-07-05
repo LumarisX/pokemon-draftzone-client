@@ -6,12 +6,27 @@ import { Draft } from '../../interfaces/draft';
 import { Matchup } from '../../interfaces/matchup';
 import { LoadingComponent } from '../../loading/loading.component';
 import { SpriteComponent } from '../../images/sprite.component';
+import { ClockSVG } from '../../../assets/icons/clock.component';
+import { TrashSVG } from '../../../assets/icons/trash.component';
+import { PlusSVG } from '../../../assets/icons/plus.component';
+import { EditSVG } from '../../../assets/icons/edit.component';
+import { ScoreSVG } from '../../../assets/icons/score.component';
 
 @Component({
   selector: 'opponent-preview',
   standalone: true,
   templateUrl: './opponent-preview.component.html',
-  imports: [CommonModule, RouterModule, SpriteComponent, LoadingComponent],
+  imports: [
+    CommonModule,
+    RouterModule,
+    SpriteComponent,
+    ClockSVG,
+    TrashSVG,
+    PlusSVG,
+    LoadingComponent,
+    EditSVG,
+    ScoreSVG,
+  ],
 })
 export class OpponentTeamPreviewComponent implements OnInit {
   index = 0;

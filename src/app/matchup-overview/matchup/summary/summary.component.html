@@ -86,12 +86,8 @@
       >
         <td>
           <div *ngIf="pokemon.capt" class="w-6">
-            <div *ngIf="pokemon.capt.tera">
-              <tera [pokemon]="pokemon"></tera>
-            </div>
-            <div *ngIf="pokemon.capt.z">
-              <img src="../../../assets/icons/z.svg" />
-            </div>
+            <tera *ngIf="pokemon.capt.tera" [pokemon]="pokemon"></tera>
+            <z-svg *ngIf="pokemon.capt.z"></z-svg>
           </div>
         </td>
         <td>

@@ -27,7 +27,6 @@ export class EffectivenessChartComponent implements OnInit, OnChanges {
 
   ngOnChanges(): void {
     if (this.svg) this.drawBars(this.data);
-    console.log('updated');
   }
 
   createSvg(): void {

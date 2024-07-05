@@ -22,12 +22,8 @@
         >
           <td class="w-fit">
             <div *ngIf="pokemon.capt" class="w-6 -mr-2">
-              <div *ngIf="pokemon.capt.tera">
-                <tera [pokemon]="pokemon"></tera>
-              </div>
-              <div *ngIf="pokemon.capt.z">
-                <img src="../../../assets/icons/z.svg" />
-              </div>
+              <tera *ngIf="pokemon.capt.tera" [pokemon]="pokemon"></tera>
+              <z-svg *ngIf="pokemon.capt.z"></z-svg>
             </div>
           </td>
           <td class="w-20">
@@ -57,7 +53,7 @@
         </tr>
         <tr
           *ngFor="let pokemon of teams[1].team"
-          class="h-12 bg-bTeam-400 border-b border-menu-400"
+          class="h-12 border-b bg-bTeam-400 border-menu-400"
         >
           <td class="w-12 text-center">{{ pokemon.baseStats.spe }}</td>
           <td class="w-32 text-xs text-end">
@@ -68,12 +64,8 @@
           </td>
           <td class="w-fit">
             <div *ngIf="pokemon.capt" class="w-6 -ml-2">
-              <div *ngIf="pokemon.capt.tera">
-                <tera [pokemon]="pokemon"></tera>
-              </div>
-              <div *ngIf="pokemon.capt.z">
-                <img src="../../../assets/icons/z.svg" />
-              </div>
+              <tera *ngIf="pokemon.capt.tera" [pokemon]="pokemon"></tera>
+              <z-svg *ngIf="pokemon.capt.z"></z-svg>
             </div>
           </td>
         </tr>

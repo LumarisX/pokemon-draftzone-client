@@ -43,27 +43,25 @@
           >Matches</a
         >
         <div class="grid items-center justify-center grid-cols-3 gap-2 px-2">
-          <img
+          <barchart-svg
             class="w-8 h-8 p-1 shadow rounded-xl hover:cursor-pointer hover:shadow bg-aTeam-300 shadow-aTeam-600"
             [routerLink]="team.leagueId + '/stats'"
             title="Stats"
-            src="../../../assets/icons/barchart.svg"
             alt="Stats"
-          />
-          <img
+          ></barchart-svg>
+          <edit-svg
             class="w-8 h-8 p-1 shadow rounded-xl hover:cursor-pointer hover:shadow bg-aTeam-300 shadow-aTeam-600"
             (click)="team.menu = 'edit'"
             title="Edit"
-            src="../../../assets/icons/edit.svg"
             alt="Edit"
-          />
-          <img
+          ></edit-svg>
+          <archive-svg
             class="w-8 h-8 p-1 shadow rounded-xl hover:cursor-pointer hover:shadow bg-aTeam-300 shadow-aTeam-600"
-            src="../../../assets/icons/archive.svg"
+            alt="Archive"
             title="Archive"
             (click)="team.menu = 'archive'"
-            alt="Archive"
-          />
+          >
+          </archive-svg>
         </div>
       </div>
       <div class="flex" *ngIf="team.menu == 'archive'">
@@ -134,5 +132,5 @@
   class="flex items-center p-1 m-3 rounded-lg shadow-md bg-aTeam-300 hover:shadow shadow-aTeam-600"
   title="Add League"
 >
-  <img src="../../../assets/icons/plus.svg" class="w-6" />
+  <plus-svg class="w-6"></plus-svg>
 </button>

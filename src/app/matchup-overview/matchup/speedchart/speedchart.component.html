@@ -10,20 +10,18 @@
         (click)="showFilter = !showFilter"
         class="px-1 rounded-md cursor-pointer bg-menu-300 hover:bg-menu-200"
       >
-        <img
+        <filter-svg
           class="w-full"
           *ngIf="!showFilter"
-          src="../../../assets/icons/filter.svg"
           alt="Filter"
           title="Filter"
-        />
-        <img
+        ></filter-svg>
+        <close-svg
           class="w-full"
           *ngIf="showFilter"
-          src="../../../assets/icons/close.svg"
           alt="Close"
           title="Close"
-        />
+        ></close-svg>
       </div>
       <div
         class="absolute right-0 w-32 p-1 mt-2 bg-white border divide-y rounded-md shadow-lg z-5000"

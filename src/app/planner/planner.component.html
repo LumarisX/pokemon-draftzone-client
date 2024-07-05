@@ -8,7 +8,7 @@
         class="flex items-center font-semibold w-20 px-1 py-0.5 border bg-menu-100 hover:bg-menu-50 hover:cursor-pointer rounded border-menu-500"
         (click)="settings = !settings"
       >
-        <img src="../../assets/icons/gear.svg" class="w-5" />
+        <gear-svg class="w-5"></gear-svg>
         <div *ngIf="!settings" class="px-1">Show</div>
         <div *ngIf="settings" class="px-1">Hide</div>
       </div>
@@ -24,17 +24,12 @@
             class="w-32 px-2 py-0.5 text-sm rounded bg-inherit text-ellipsis"
             formControlName="draftName"
           />
-          <img
-            class="w-4 m-1"
-            src="../../assets/icons/trash.svg"
-            (click)="deletePlan(j)"
-          />
+          <trash-svg class="w-4 m-1" (click)="deletePlan(j)"></trash-svg>
         </div>
         <button *ngIf="draftSize < 5" (click)="addDraft()">
-          <img
+          <plus-svg
             class="h-8 p-1 border rounded border-menu-500 bg-menu-100 hover:bg-menu-50 hover:cursor-pointer"
-            src="../../assets/icons/plus.svg"
-          />
+          ></plus-svg>
         </button>
       </div>
     </div>

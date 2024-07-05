@@ -92,7 +92,6 @@ export class TypechartComponent implements OnChanges {
     }
   ) {
     pokemon.disabled = !pokemon.disabled;
-    console.log(pokemon);
     this.summerize();
   }
 

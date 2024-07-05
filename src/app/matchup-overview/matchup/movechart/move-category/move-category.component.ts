@@ -9,11 +9,13 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
+import { PlusSVG } from '../../../../../assets/icons/plus.component';
+import { MinusSVG } from '../../../../../assets/icons/minus.component';
 
 @Component({
   selector: 'move-category',
   standalone: true,
-  imports: [CommonModule, SpriteComponent],
+  imports: [CommonModule, PlusSVG, MinusSVG, SpriteComponent],
   templateUrl: './move-category.component.html',
   animations: [
     trigger('growIn', [

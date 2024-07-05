@@ -5,12 +5,25 @@ import { DraftService } from '../../api/draft.service';
 import { Draft } from '../../interfaces/draft';
 import { LoadingComponent } from '../../loading/loading.component';
 import { SpriteComponent } from '../../images/sprite.component';
+import { ArchiveSVG } from '../../../assets/icons/archive.component';
+import { EditSVG } from '../../../assets/icons/edit.component';
+import { BarChartSVG } from '../../../assets/icons/barchart.component';
+import { PlusSVG } from '../../../assets/icons/plus.component';
 
 @Component({
   selector: 'draft-preview',
   standalone: true,
   templateUrl: './draft-preview.component.html',
-  imports: [CommonModule, RouterModule, SpriteComponent, LoadingComponent],
+  imports: [
+    CommonModule,
+    RouterModule,
+    SpriteComponent,
+    ArchiveSVG,
+    EditSVG,
+    BarChartSVG,
+    PlusSVG,
+    LoadingComponent,
+  ],
 })
 export class DraftPreviewComponent {
   teams: (Draft & { menu: 'main' | 'archive' | 'edit' | 'delete' })[] | null =

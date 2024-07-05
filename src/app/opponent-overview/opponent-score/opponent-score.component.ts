@@ -17,6 +17,8 @@ import { PokemonId, getPidByName } from '../../pokemon';
 import { PokemonFormComponent } from '../../pokemon-form/pokemon-form.component';
 import { ReplayService } from '../../api/replay.service';
 import { ReplayData } from '../../tools/replay_analyzer/replay.interface';
+import { PlusSVG } from '../../../assets/icons/plus.component';
+import { TrashSVG } from '../../../assets/icons/trash.component';
 
 @Component({
   selector: 'opponent-form',
@@ -28,6 +30,8 @@ import { ReplayData } from '../../tools/replay_analyzer/replay.interface';
     SpriteComponent,
     PokemonFormComponent,
     ReactiveFormsModule,
+    PlusSVG,
+    TrashSVG,
     LoadingComponent,
   ],
 })
@@ -240,7 +244,6 @@ export class OpponentScoreComponent implements OnInit {
       this.selectedMatchForm.patchValue({ analyzed: true });
       this.replayService.analyzeReplay(replayURI).subscribe((data) => {
         let replayData: ReplayData = data;
-        console.log(data);
         let aReplayTeam = -1;
         for (let mon of replayData.stats[0].team) {
           let pid = getPidByName(mon.name);
@@ -253,11 +256,9 @@ export class OpponentScoreComponent implements OnInit {
             );
             if (aFind && !bFind) {
               aReplayTeam = 0;
-              console.log('0');
               break;
             } else if (bFind && !aFind) {
               aReplayTeam = 1;
-              console.log('1');
               break;
             }
           }
