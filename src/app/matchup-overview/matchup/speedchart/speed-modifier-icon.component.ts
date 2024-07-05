@@ -6,7 +6,7 @@ import { Component, Input } from '@angular/core';
   standalone: true,
   template: `<img
     *ngIf="modifiers.hasOwnProperty(modifier)"
-    class="h-full border rounded-full bg-slate-200 border-slate-700"
+    class="h-full border rounded-full bg-menu-200 border-menu-700"
     src="{{ modifiers[modifier].path }}"
     title="{{ modifiers[modifier].title }}"
     alt="{{ modifiers[modifier].alt }}"

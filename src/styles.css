@@ -9,24 +9,23 @@
 }
 
 .sprite-border {
-  -webkit-filter: drop-shadow(1px 0px 0 theme("colors.slate.500"))
-    drop-shadow(-1px 0px 0 theme("colors.slate.500"))
-    drop-shadow(0px -1px 0 theme("colors.slate.500"))
-    drop-shadow(0px 1px 0 theme("colors.slate.500"));
-  filter: drop-shadow(1px 0px 0 theme("colors.slate.500"))
-    drop-shadow(-1px 0px 0 theme("colors.slate.500"))
-    drop-shadow(0px -1px 0 theme("colors.slate.500"))
-    drop-shadow(0px 1px 0 theme("colors.slate.500"));
+  -webkit-filter: drop-shadow(1px 0px 0 theme("colors.spriteBorder"))
+    drop-shadow(-1px 0px 0 theme("colors.spriteBorder"))
+    drop-shadow(0px -1px 0 theme("colors.spriteBorder"))
+    drop-shadow(0px 1px 0 theme("colors.spriteBorder"));
+  filter: drop-shadow(1px 0px 0 theme("colors.spriteBorder"))
+    drop-shadow(-1px 0px 0 theme("colors.spriteBorder"))
+    drop-shadow(0px -1px 0 theme("colors.spriteBorder"))
+    drop-shadow(0px 1px 0 theme("colors.spriteBorder"));
   z-index: 0;
 }
 
 @font-face {
-  font-family: 'Nasalization RG';
-  src: url('./assets/fonts/nasalization-rg.otf') format('truetype');
+  font-family: "Nasalization RG";
+  src: url("./assets/fonts/nasalization-rg.otf") format("truetype");
   font-weight: normal;
   font-style: normal;
 }
-
 
 @layer utilities {
   /*tera scrollbar*/
@@ -48,13 +47,12 @@
   .scrollbar-hidden::-webkit-scrollbar {
     display: none;
   }
-  /* Hide scrollbar for IE, Edge and Firefox */
+
   .scrollbar-hidden {
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
   }
 
-  /*scrollbar*/
   ::-webkit-scrollbar {
     width: 12px;
     height: 12px;

@@ -317,35 +317,35 @@ export class OpponentScoreComponent implements OnInit {
 
   gameClass(i: number) {
     return this.selectedMatch == i
-      ? 'bg-slate-100'
-      : 'bg-slate-250 hover:bg-slate-200';
+      ? 'bg-menu-100'
+      : 'bg-menu-250 hover:bg-menu-200';
   }
 
   analyzeClass() {
     return this.selectedMatchForm.get('analyzed')?.value
       ? 'shadow-none opacity-50'
-      : 'hover:bg-slate-250 shadow';
+      : 'hover:bg-menu-250 shadow';
   }
 
   broughtCaution() {
     return this.statCount(this.aTeamArray, ['brought']) ===
       this.statCount(this.bTeamArray, ['brought'])
       ? ''
-      : 'px-2 bg-yellow-200 rounded-full';
+      : 'px-2 bg-caution rounded-full';
   }
 
   aKillCaution() {
     return this.statCount(this.aTeamArray, ['kills', 'indirect']) ===
       this.statCount(this.bTeamArray, ['fainted'])
       ? ''
-      : 'px-2 bg-yellow-200 rounded-full';
+      : 'px-2 bg-caution rounded-full';
   }
 
   bKillCaution() {
     return this.statCount(this.bTeamArray, ['kills', 'indirect']) ===
       this.statCount(this.aTeamArray, ['fainted'])
       ? ''
-      : 'px-2 bg-yellow-200 rounded-full';
+      : 'px-2 bg-caution rounded-full';
   }
 
   getWins(player: 'a' | 'b') {

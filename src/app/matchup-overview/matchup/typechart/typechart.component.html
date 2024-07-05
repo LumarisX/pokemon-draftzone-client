@@ -1,6 +1,6 @@
 <div class="w-full">
-  <div class="flex w-full px-1 bg-slate-400 rounded-t-xl">
-    <div class="flex w-full pb-1 border-b border-slate-300">
+  <div class="flex w-full px-1 bg-menu-400 rounded-t-xl">
+    <div class="flex w-full pb-1 border-b border-menu-300">
       <h1 class="w-full text-xl font-bold text-center">Defensive Type Chart</h1>
       <button
         (click)="swapTeams()"
@@ -11,16 +11,16 @@
       </button>
     </div>
   </div>
-  <div class="w-full overflow-x-auto border-4 border-slate-400">
-    <table class="table-fixed bg-slate-100">
+  <div class="w-full overflow-x-auto border-4 border-menu-400">
+    <table class="table-fixed bg-menu-100">
       <thead class="">
         <tr class="">
           <th
-            class="border-l border-r-4 border-slate-400"
+            class="border-l border-r-4 border-menu-400"
             [ngClass]="teamColor()"
           ></th>
           <th
-            class="border-b-2 bg-slate-300 border-slate-400"
+            class="border-b-2 bg-menu-300 border-menu-400"
             *ngFor="let type of types"
           >
             <img
@@ -35,7 +35,7 @@
       <tbody class="">
         <tr *ngFor="let pokemon of typecharts[selectedTeam].team" class="">
           <th
-            class="w-12 border-l border-r-4 border-slate-400"
+            class="w-12 border-l border-r-4 border-menu-400"
             [ngClass]="clickColor()"
             (click)="toggleVisible(pokemon)"
           >
@@ -53,14 +53,14 @@
           </td>
         </tr>
       </tbody>
-      <thead class="border-b-4 border-slate-400">
+      <thead class="border-b-4 border-menu-400">
         <tr class="">
           <th
-            class="border-l border-r-4 border-slate-400"
+            class="border-l border-r-4 border-menu-400"
             [ngClass]="teamColor()"
           ></th>
           <th
-            class="border-t-2 bg-slate-300 border-slate-400"
+            class="border-t-2 bg-menu-300 border-menu-400"
             *ngFor="let type of types"
           >
             <img
@@ -72,9 +72,11 @@
           </th>
         </tr>
       </thead>
-      <tfoot id="typeSum" class="bg-slate-300">
+      <tfoot id="typeSum" class="bg-menu-300">
         <tr>
-          <th class="text-xs border border-r-2 bg-rose-400 border-slate-400">
+          <th
+            class="text-xs border border-r-2 bg-scale-negative-3 border-menu-400"
+          >
             Weaks
           </th>
           <td
@@ -86,7 +88,9 @@
           </td>
         </tr>
         <tr>
-          <th class="text-xs border border-r-2 bg-emerald-400 border-slate-400">
+          <th
+            class="text-xs border border-r-2 bg-scale-positive-3 border-menu-400"
+          >
             Resists
           </th>
           <td
@@ -99,7 +103,7 @@
         </tr>
         <tr>
           <th
-            class="text-xs bg-gradient-to-r from-rose-400 from-50% to-emerald-400 to-50% border border-slate-400 border-r-2"
+            class="text-xs bg-gradient-to-r from-scale-negative-3 from-50% to-scale-positive-3 to-50% border border-menu-400 border-r-2"
           >
             Diff
           </th>
@@ -113,7 +117,7 @@
         </tr>
         <tr>
           <th
-            class="text-xs border border-r-2 bg-gradient-to-r from-rose-400 via-slate-200 to-emerald-400 border-slate-400"
+            class="text-xs border border-r-2 bg-gradient-to-r from-scale-negative-3 via-menu-200 to-scale-positive-3 border-menu-400"
           >
             Log
           </th>
@@ -128,5 +132,5 @@
       </tfoot>
     </table>
   </div>
-  <div class="w-full h-3 rounded-b-full bg-slate-400"></div>
+  <div class="w-full h-3 rounded-b-full bg-menu-400"></div>
 </div>

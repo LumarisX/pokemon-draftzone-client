@@ -1,5 +1,5 @@
-<div class="flex w-full px-1 bg-slate-400 rounded-t-xl">
-  <div class="flex w-full pb-1 border-b border-slate-300">
+<div class="flex w-full px-1 bg-menu-400 rounded-t-xl">
+  <div class="flex w-full pb-1 border-b border-menu-300">
     <div class="flex mx-1 mt-2 space-x-1 w-fit">
       <p class="font-bold">Lvl:</p>
       <p class="font-semibold">{{ level }}</p>
@@ -8,7 +8,7 @@
     <div class="relative w-8 mx-1 mt-2 ml-auto">
       <div
         (click)="showFilter = !showFilter"
-        class="px-1 rounded-md cursor-pointer bg-slate-300 hover:bg-slate-200"
+        class="px-1 rounded-md cursor-pointer bg-menu-300 hover:bg-menu-200"
       >
         <img
           class="w-full"
@@ -30,7 +30,7 @@
         *ngIf="showFilter"
       >
         <div
-          class="font-semibold text-center rounded hover:bg-slate-100"
+          class="font-semibold text-center rounded hover:bg-menu-100"
           (click)="resetModifiers()"
         >
           Reset
@@ -41,7 +41,7 @@
         >
           <input
             type="checkbox"
-            class="accent-cyan-400"
+            class="accent-aTeam-400"
             id="{{ modifier }}"
             name="{{ modifier }}"
             value="{{ modifier }}"
@@ -49,7 +49,7 @@
           />
           <input
             type="checkbox"
-            class="accent-red-400"
+            class="accent-bTeam-400"
             id="{{ modifier }}"
             name="{{ modifier }}"
             value="{{ modifier }}"
@@ -65,9 +65,9 @@
     </div>
   </div>
 </div>
-<div class="w-full border-4 border-slate-400 bg-slate-400">
-  <div class="bg-slate-200">
-    <div class="flex space-x-2 border-b-2 border-slate-400">
+<div class="w-full border-4 border-menu-400 bg-menu-400">
+  <div class="bg-menu-200">
+    <div class="flex space-x-2 border-b-2 border-menu-400">
       <div class="w-20 font-bold text-center">Base Speed</div>
       <div class="flex items-center justify-end flex-grow ml-auto">
         <div class="flex-grow mr-4 font-bold text-center">Modifiers</div>
@@ -77,10 +77,10 @@
     </div>
   </div>
   <div class="flex">
-    <div *ngIf="speeds" class="border-r-2 border-slate-400">
+    <div *ngIf="speeds" class="border-r-2 border-menu-400">
       <div
         *ngFor="let s of speeds"
-        class="flex w-20 px-2 border-b border-slate-400"
+        class="flex w-20 px-2 border-b border-menu-400"
         [ngClass]="buttonColor(s.team)"
         (click)="toggleView(s)"
       >
@@ -105,7 +105,7 @@
         <div
           *ngIf="filtered(tier)"
           @growIn
-          class="flex space-x-3 border-b snap-start border-slate-400"
+          class="flex space-x-3 border-b snap-start border-menu-400"
           [ngClass]="teamColor(tier.team)"
         >
           <sprite
@@ -131,4 +131,4 @@
     </div>
   </div>
 </div>
-<div class="w-full h-3 rounded-b-full bg-slate-400"></div>
+<div class="w-full h-3 rounded-b-full bg-menu-400"></div>

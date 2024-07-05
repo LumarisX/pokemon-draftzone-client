@@ -13,7 +13,7 @@
       <input
         formControlName="name"
         spellcheck="false"
-        class="w-full px-4 py-1 mx-1 rounded-full bg-slate-100text-medium"
+        class="w-full px-4 py-1 mx-1 rounded-full bg-menu-100 text-medium"
         (keyup.enter)="this.addPokemonEvent.emit()"
       />
       <filter
@@ -71,7 +71,7 @@
     </div>
     <div class="flex items-center justify-center col-span-2 sm:col-span-1">
       <div
-        class="w-1/2 p-1 border-2 rounded-full bg-slate-100 border-slate-400 hover:bg-slate-300"
+        class="w-1/2 p-1 border-2 rounded-full bg-menu-100 border-menu-400 hover:bg-menu-300"
         (click)="deletePokemonEvent.emit(formIndex)"
       >
         <img src="../../../assets/icons/trash.svg" title="Delete" />

@@ -42,10 +42,10 @@ export class ReplayComponent {
 
   playerClass(index: number) {
     if (index === 1) {
-      return 'bg-cyan-200';
+      return 'bg-aTeam-200';
     }
     if (index === 2) {
-      return 'bg-red-200';
+      return 'bg-bTeam-200';
     }
 
     return '';

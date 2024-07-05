@@ -355,14 +355,14 @@ export class PlannerComponent implements OnInit {
 
   tabColor(tab: number) {
     return tab == this.tabSelected
-      ? 'border-slate-400 hover:bg-slate-200 bg-slate-100'
-      : 'border-slate-300 hover:bg-slate-100 bg-white';
+      ? 'border-menu-400 bg-menu-200'
+      : 'border-menu-300 hover:bg-menu-200 bg-menu-100';
   }
 
   minMaxStyle(i: number) {
     return i < this.getDraftFormGroup().get('min')?.value
-      ? 'border-slate-500'
-      : 'border-slate-300 text-slate-500';
+      ? 'border-menu-500'
+      : 'border-menu-300 text-menu-500';
   }
 
   populateTeamFromLocalStorage(formData: any): void {
@@ -384,7 +384,7 @@ export class PlannerComponent implements OnInit {
 
   selectedDraftsStyle(index: number) {
     return index == this.selectedDraft
-      ? 'bg-slate-100 '
-      : 'bg-slate-250 hover:bg-slate-150';
+      ? 'bg-menu-100 '
+      : 'bg-menu-250 hover:bg-menu-150';
   }
 }

@@ -1,12 +1,12 @@
 <div
   (click)="show = !show"
-  class="sticky top-0 left-0 z-10 flex w-full text-lg font-bold border-t border-b sm:min-w-96 bg-slate-300 border-slate-400"
+  class="sticky top-0 left-0 z-10 flex w-full text-lg font-bold border-t border-b sm:min-w-96 bg-menu-300 border-menu-400"
 >
   <div class="flex items-center justify-center flex-grow text-center">
     {{ category.categoryName }}
   </div>
   <div
-    class="items-center justify-end w-4 h-4 m-2 ml-auto border rounded cursor-pointer border-slate-500 bg-slate-400 hover:bg-slate-200"
+    class="items-center justify-end w-4 h-4 m-2 ml-auto border rounded cursor-pointer border-menu-500 bg-menu-400 hover:bg-menu-200"
   >
     <img
       *ngIf="show"
@@ -25,10 +25,10 @@
 
 <div *ngIf="show" @growIn>
   <div
-    class="z-10 flex border-y border-slate-400 bg-slate-200"
+    class="z-10 flex border-y border-menu-400 bg-menu-200"
     *ngFor="let move of category.moves"
   >
-    <div class="flex items-center w-1/3 p-1 border-r border-slate-400">
+    <div class="flex items-center w-1/3 p-1 border-r border-menu-400">
       <div
         class="flex justify-center w-full py-1 font-semibold text-center border-2 rounded"
         [ngClass]="typeBorder(move.type)"

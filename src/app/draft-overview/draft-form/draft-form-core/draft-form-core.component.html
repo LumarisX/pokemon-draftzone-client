@@ -1,7 +1,7 @@
 <form
   [formGroup]="draftForm"
   (ngSubmit)="onSubmit()"
-  class="p-2 m-2 space-y-3 shadow-md team bg-cyan-300 shadow-cyan-600 rounded-xl"
+  class="p-2 m-2 space-y-3 shadow-md team bg-aTeam-300 shadow-aTeam-600 rounded-xl"
 >
   <div class="w-full">
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-x-4">
@@ -11,7 +11,7 @@
           formControlName="leagueName"
           spellcheck="false"
           placeholder="Pokemon Draft League"
-          class="w-full px-4 py-2 text-base text-center rounded-full shadow-md bg-cyan-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:bg-cyan-100"
+          class="w-full px-4 py-2 text-base text-center rounded-full shadow-md bg-aTeam-200 focus:outline-none focus:ring-2 focus:ring-aTeam-500 focus:bg-aTeam-100"
         />
       </div>
       <div>
@@ -20,7 +20,7 @@
           formControlName="teamName"
           spellcheck="false"
           placeholder="Deimos Deoxys"
-          class="w-full px-4 py-2 text-base text-center rounded-full shadow-md bg-cyan-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:bg-cyan-100"
+          class="w-full px-4 py-2 text-base text-center rounded-full shadow-md bg-aTeam-200 focus:outline-none focus:ring-2 focus:ring-aTeam-500 focus:bg-aTeam-100"
         />
       </div>
       <div>
@@ -28,7 +28,7 @@
         <select
           formControlName="format"
           spellcheck="false"
-          class="w-full px-4 py-2 text-base text-center rounded-full shadow-md bg-cyan-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:bg-cyan-100"
+          class="w-full px-4 py-2 text-base text-center rounded-full shadow-md bg-aTeam-200 focus:outline-none focus:ring-2 focus:ring-aTeam-500 focus:bg-aTeam-100"
         >
           <option value="" disabled selected>Select Format</option>
           <option *ngFor="let format of formats" value="{{ format }}">
@@ -40,7 +40,7 @@
         <label class="block mb-1 font-bold">Ruleset</label>
         <select
           formControlName="ruleset"
-          class="w-full px-4 py-2 text-base text-center rounded-full shadow-md bg-cyan-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:bg-cyan-100"
+          class="w-full px-4 py-2 text-base text-center rounded-full shadow-md bg-aTeam-200 focus:outline-none focus:ring-2 focus:ring-aTeam-500 focus:bg-aTeam-100"
         >
           <option value="" disabled selected>Select Ruleset</option>
           <option *ngFor="let ruleset of rulesets" value="{{ ruleset }}">
@@ -50,12 +50,12 @@
       </div>
     </div>
   </div>
-  <div class="p-2 border-2 border-cyan-200 rounded-xl">
+  <div class="p-2 border-2 border-aTeam-200 rounded-xl">
     <ng-container *ngIf="!importing; else importMenu">
       <button
         type="button"
         (click)="importing = true"
-        class="flex items-center justify-center w-32 h-6 px-1 my-3 font-bold rounded-full shadow bg-slate-200 hover:bg-slate-100 shadow-slate-600"
+        class="flex items-center justify-center w-32 h-6 px-1 my-3 font-bold rounded-full shadow bg-menu-200 hover:bg-menu-100 shadow-menu-600"
       >
         Import
         <img class="h-full" src="../../../../assets/icons/import.svg" />
@@ -75,7 +75,7 @@
         <button
           type="button"
           (click)="addNewPokemon()"
-          class="w-32 px-1 my-3 font-bold rounded-full shadow bg-slate-200 hover:bg-slate-100 shadow-slate-600"
+          class="w-32 px-1 my-3 font-bold rounded-full shadow bg-menu-200 hover:bg-menu-100 shadow-menu-600"
         >
           Add Pokemon
         </button>
@@ -85,7 +85,7 @@
       <button
         type="button"
         (click)="importing = false"
-        class="flex items-center justify-center w-32 h-6 px-1 my-3 font-bold rounded-full shadow bg-slate-200 hover:bg-slate-100 shadow-slate-600"
+        class="flex items-center justify-center w-32 h-6 px-1 my-3 font-bold rounded-full shadow bg-menu-200 hover:bg-menu-100 shadow-menu-600"
       >
         Cancel
       </button>
@@ -93,7 +93,7 @@
         <button
           type="button"
           (click)="importPokemon(textAreaInfo.value)"
-          class="w-32 px-1 my-3 font-bold rounded-full shadow bg-slate-200 hover:bg-slate-100 shadow-slate-600"
+          class="w-32 px-1 my-3 font-bold rounded-full shadow bg-menu-200 hover:bg-menu-100 shadow-menu-600"
         >
           Import
         </button>
@@ -111,7 +111,7 @@
   <div class="flex justify-end w-full" *ngIf="!importing">
     <button
       type="submit"
-      class="w-24 p-1 mx-4 text-xl font-bold rounded-full shadow bg-slate-200 hover:bg-slate-100 shadow-slate-600"
+      class="w-24 p-1 mx-4 text-xl font-bold rounded-full shadow bg-menu-200 hover:bg-menu-100 shadow-menu-600"
     >
       Submit
     </button>

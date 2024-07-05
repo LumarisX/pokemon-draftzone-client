@@ -2,10 +2,10 @@
   <button type="submit" style="display: none"></button>
   <div formArrayName="drafts" class="flex flex-col h-full">
     <div
-      class="flex items-center p-1 space-x-1 overflow-x-auto border-b-2 overflow-y-clip h-fit bg-slate-200 border-slate-300"
+      class="flex items-center p-1 space-x-1 overflow-x-auto border-b-2 overflow-y-clip h-fit bg-menu-200 border-menu-300"
     >
       <div
-        class="flex items-center font-semibold w-20 px-1 py-0.5 border bg-slate-100 hover:bg-slate-50 hover:cursor-pointer rounded border-slate-500"
+        class="flex items-center font-semibold w-20 px-1 py-0.5 border bg-menu-100 hover:bg-menu-50 hover:cursor-pointer rounded border-menu-500"
         (click)="settings = !settings"
       >
         <img src="../../assets/icons/gear.svg" class="w-5" />
@@ -15,7 +15,7 @@
       <div class="flex w-full p-0.5 space-x-2">
         <div
           [ngClass]="selectedDraftsStyle(j)"
-          class="flex overflow-x-auto border rounded border-slate-500 hover:cursor-pointer"
+          class="flex overflow-x-auto border rounded border-menu-500 hover:cursor-pointer"
           *ngFor="let draftCtrl of draftArray.controls; let j = index"
           [formGroupName]="j"
           (click)="switchDrafts(j)"
@@ -32,7 +32,7 @@
         </div>
         <button *ngIf="draftSize < 5" (click)="addDraft()">
           <img
-            class="h-8 p-1 border rounded border-slate-500 bg-slate-100 hover:bg-slate-50 hover:cursor-pointer"
+            class="h-8 p-1 border rounded border-menu-500 bg-menu-100 hover:bg-menu-50 hover:cursor-pointer"
             src="../../assets/icons/plus.svg"
           />
         </button>
@@ -45,13 +45,13 @@
       <div
         *ngIf="settings"
         @growIn
-        class="flex flex-wrap items-center px-2 pb-1 space-x-4 space-y-1 border-b-2 border-slate-300 rounded-b-xl bg-slate-200"
+        class="flex flex-wrap items-center px-2 pb-1 space-x-4 space-y-1 border-b-2 border-menu-300 rounded-b-xl bg-menu-200"
       >
         <div class="space-x-1">
           <label for="format" class="font-bold">Format</label>
           <select
             formControlName="format"
-            class="p-0.5 font-semibold rounded"
+            class="p-0.5 font-semibold rounded bg-menu-100"
             id="format"
           >
             <option value="" disabled selected>Select Format</option>
@@ -65,7 +65,7 @@
           <label for="ruleset" class="font-bold">Ruleset</label>
           <select
             formControlName="ruleset"
-            class="p-0.5 font-semibold rounded"
+            class="p-0.5 font-semibold rounded bg-menu-100"
             id="ruleset"
           >
             <option value="" disabled selected>Select Ruleset</option>
@@ -79,7 +79,7 @@
           <label for="min" class="font-bold">Min</label>
           <input
             type="number"
-            class="w-12 p-0.5 font-semibold text-center rounded"
+            class="w-12 p-0.5 font-semibold text-center rounded bg-menu-100"
             formControlName="min"
             id="min"
             min="0"
@@ -91,7 +91,7 @@
           <label for="max" class="font-bold">Max</label>
           <input
             type="number"
-            class="w-12 p-0.5 font-semibold text-center rounded"
+            class="w-12 p-0.5 font-semibold text-center rounded bg-menu-100"
             formControlName="max"
             id="max"
             min="0"
@@ -103,7 +103,7 @@
           <label for="tier" class="font-bold">Tier</label>
           <select
             formControlName="system"
-            class="w-20 p-0.5 font-semibold rounded"
+            class="w-20 p-0.5 font-semibold rounded bg-menu-100"
           >
             <option value="" disabled selected>Select Value Type</option>
             <option value="points">Points</option>
@@ -115,13 +115,13 @@
           <label class="font-bold" for="totalPoints">Total Points</label>
           <input
             type="number"
-            class="w-16 font-semibold p-0.5 rounded"
+            class="w-16 font-semibold p-0.5 rounded bg-menu-100"
             formControlName="totalPoints"
             id="totalPoints"
           />
         </div>
         <button
-          class="p-0.5 border-2 text-sm rounded hover:bg-slate-300 bg-slate-100 border-slate-400"
+          class="p-0.5 border-2 text-sm rounded hover:bg-menu-300 bg-menu-100 border-menu-400"
           routerLink="/draft/new"
           [queryParams]="{
             team: team,
@@ -132,11 +132,11 @@
           Save to New League
         </button>
       </div>
-      <div class="flex flex-grow min-h-0 divide-x-4 divide-slate-200">
-        <div class="flex-col hidden divide-y-2 w-96 divide-slate-200 md:flex">
+      <div class="flex flex-grow min-h-0 divide-x-4 divide-menu-200">
+        <div class="flex-col hidden divide-y-2 w-96 divide-menu-200 md:flex">
           <div class="flex-grow min-h-0 p-1 overflow-y-auto">
             <div
-              class="sticky flex w-full space-x-4 font-semibold border-b-2 border-slate-300"
+              class="sticky flex w-full space-x-4 font-semibold border-b-2 border-menu-300"
             >
               <div class="w-1/8"></div>
               <div class="w-1/2">Name</div>
@@ -161,7 +161,7 @@
                   <input
                     type="text"
                     spellcheck="false"
-                    class="w-full p-1 border rounded-lg"
+                    class="w-full p-1 border rounded-lg bg-menu-100"
                     [ngClass]="minMaxStyle(i)"
                     formControlName="name"
                   />
@@ -175,7 +175,7 @@
                     type="text"
                     spellcheck="false"
                     [ngClass]="minMaxStyle(i)"
-                    class="w-full p-1 font-semibold text-center border rounded-lg"
+                    class="w-full p-1 font-semibold text-center border rounded-lg bg-menu-100"
                     formControlName="tier"
                   />
                 </div>
@@ -183,7 +183,7 @@
                   <input
                     type="number"
                     placeholder="0"
-                    class="w-full p-1 text-center border rounded-lg"
+                    class="w-full p-1 text-center border rounded-lg bg-menu-100"
                     [ngClass]="minMaxStyle(i)"
                     formControlName="value"
                   />
@@ -206,7 +206,7 @@
             </div>
           </div>
         </div>
-        <div class="flex flex-col flex-grow h-full divide-y-2 divide-slate-200">
+        <div class="flex flex-col flex-grow h-full divide-y-2 divide-menu-200">
           <div class="flex w-full p-1 space-x-2">
             <div
               class="block px-2 py-1 border-2 rounded-lg cursor-pointer md:hidden"
@@ -265,7 +265,7 @@
               *ngIf="tabSelected == 4"
             >
               <div
-                class="sticky flex w-full space-x-3 font-semibold border-b-2 border-slate-300"
+                class="sticky flex w-full space-x-3 font-semibold border-b-2 border-menu-300"
               >
                 <div class="w-1/8"></div>
                 <div class="w-1/2">Name</div>

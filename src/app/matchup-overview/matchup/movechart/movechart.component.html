@@ -1,6 +1,6 @@
 <div class="flex flex-col w-full h-full">
-  <div class="flex w-full px-1 bg-slate-400 rounded-t-xl">
-    <div class="flex w-full pb-1 border-b border-slate-300">
+  <div class="flex w-full px-1 bg-menu-400 rounded-t-xl">
+    <div class="flex w-full pb-1 border-b border-menu-300">
       <h1 class="w-full text-xl font-bold text-center">Learned Moves</h1>
       <button
         (click)="swapTeams()"
@@ -11,14 +11,14 @@
       </button>
     </div>
   </div>
-  <div class="w-full overflow-y-auto border-4 border-slate-400 bg-slate-400">
+  <div class="w-full overflow-y-auto border-4 border-menu-400 bg-menu-400">
     <move-category
       *ngFor="let category of this.teams[selectedTeam]"
       [category]="category"
     >
     </move-category>
   </div>
-  <div class="w-full h-3 rounded-b-full bg-slate-400"></div>
+  <div class="w-full h-3 rounded-b-full bg-menu-400"></div>
 </div>
 <div class="border-bug" style="display: none"></div>
 <div class="border-dark" style="display: none"></div>

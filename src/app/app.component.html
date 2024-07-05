@@ -1,27 +1,30 @@
-<div class="flex flex-col justify-between h-dvh">
-  <header class="z-10 flex w-full p-2 border-b-2 bg-slate-300 border-slate-400">
+<div
+  class="flex flex-col justify-between h-dvh text-textColor-main bg-page"
+  [ngClass]="checkTheme()"
+>
+  <header class="z-10 flex w-full p-2 border-b-2 bg-menu-300 border-menu-400">
     <div class="relative flex">
       <button
         (click)="menuDropdown = !menuDropdown"
         id="dropdownButton"
-        class="block w-8 px-1 py-1 mr-2 text-gray-800 bg-gray-200 rounded-md sm:hidden focus:outline-none"
+        class="block w-8 px-1 py-1 mr-2 rounded-md text-menu-800 bg-menu-200 sm:hidden focus:outline-none"
       >
         <img class="" src="../assets/icons/menu.svg" />
       </button>
       <div
         *ngIf="menuDropdown"
         (click)="menuDropdown = false"
-        class="absolute left-0 flex-col block p-2 bg-white border border-gray-200 divide-y rounded-md shadow-md sm:flex top-full"
+        class="absolute left-0 flex-col block p-2 bg-white border divide-y rounded-md shadow-md border-menu-200 sm:flex top-full"
       >
         <div
           routerLink="/draft"
-          class="flex items-center h-full px-3 font-nasa hover:cursor-pointer hover:bg-slate-200"
+          class="flex items-center h-full px-3 font-nasa hover:cursor-pointer hover:bg-menu-200"
         >
           Drafts
         </div>
         <div
           routerLink="/planner"
-          class="flex items-center h-full px-3 font-nasa hover:cursor-pointer hover:bg-slate-200"
+          class="flex items-center h-full px-3 font-nasa hover:cursor-pointer hover:bg-menu-200"
         >
           Planner
         </div>
@@ -30,14 +33,14 @@
         </div>
         <div
           routerLink="/tools"
-          class="flex items-center h-full px-2 rounded hover:cursor-pointer hover:bg-slate-200"
+          class="flex items-center h-full px-2 rounded hover:cursor-pointer hover:bg-menu-200"
         >
           Other Tools
         </div>
       </div>
       <div
         routerLink="/"
-        class="flex items-center justify-center w-20 rounded hover:cursor-pointer hover:bg-slate-200"
+        class="flex items-center justify-center w-20 rounded hover:cursor-pointer hover:bg-menu-200"
       >
         <img
           src="../assets/logo.png"
@@ -48,24 +51,24 @@
       <div class="hidden px-2 space-x-2 sm:flex font-nasa">
         <div
           routerLink="/draft"
-          class="flex items-center h-full px-2 rounded hover:cursor-pointer hover:bg-slate-200"
+          class="flex items-center h-full px-2 rounded hover:cursor-pointer hover:bg-menu-200"
         >
           Drafts
         </div>
         <div
           routerLink="/planner"
-          class="flex items-center h-full px-2 rounded hover:cursor-pointer hover:bg-slate-200"
+          class="flex items-center h-full px-2 rounded hover:cursor-pointer hover:bg-menu-200"
         >
           Planner
         </div>
         <div
-          class="flex items-center h-full px-2 rounded opacity-50 hover:cursor-pointer hover:bg-slate-200"
+          class="flex items-center h-full px-2 rounded opacity-50 hover:cursor-pointer hover:bg-menu-200"
         >
           Statistics
         </div>
         <div
           routerLink="/tools"
-          class="flex items-center h-full px-2 rounded hover:cursor-pointer hover:bg-slate-200"
+          class="flex items-center h-full px-2 rounded hover:cursor-pointer hover:bg-menu-200"
         >
           Other Tools
         </div>
@@ -76,7 +79,7 @@
         <ng-container *ngIf="auth.isAuthenticated() | async; else loggedOut">
           <div
             *ngIf="auth.user() | async as user"
-            class="flex h-8 px-2 py-1 rounded-lg hover:bg-slate-200 hover:cursor-pointer"
+            class="flex h-8 px-2 py-1 rounded-lg hover:bg-menu-200 hover:cursor-pointer"
             (click)="userDropdown = !userDropdown"
           >
             <div class="flex items-center h-full space-x-2">
@@ -86,7 +89,7 @@
           </div>
           <div
             *ngIf="userDropdown"
-            class="px-2 py-1 rounded-lg hover:bg-slate-200 hover:cursor-pointer"
+            class="px-2 py-1 rounded-lg hover:bg-menu-200 hover:cursor-pointer"
           >
             <button (click)="auth.logout()">Log out</button>
           </div>
@@ -94,7 +97,7 @@
 
         <ng-template #loggedOut>
           <button
-            class="px-2 py-1 rounded-lg hover:bg-slate-200 hover:cursor-pointer"
+            class="px-2 py-1 rounded-lg hover:bg-menu-200 hover:cursor-pointer"
             (click)="auth.login()"
           >
             Log in
@@ -106,7 +109,7 @@
   <main class="w-full h-full mb-auto overflow-y-auto">
     <router-outlet></router-outlet>
   </main>
-  <footer class="z-10 flex w-full border-t-2 bg-slate-300 border-slate-400">
+  <footer class="z-10 flex w-full border-t-2 bg-menu-300 border-menu-400">
     <div class="flex w-1/2 mx-5 my-1 space-x-3">
       <a href="https://play.pokemonshowdown.com" target="_blank"
         ><img class="h-5" src="../assets/icons/media/showdown.png"

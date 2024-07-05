@@ -1,9 +1,11 @@
-<div class="min-h-full bg-gradient-to-r from-cyan-100 via-slate-100 to-red-100">
+<div
+  class="min-h-full bg-gradient-to-r from-aTeam-100 via-menu-100 to-bTeam-100"
+>
   <div class="flex px-2 pt-2">
     <div class="w-fit">
       <button
         routerLink="/draft/{{ leagueId }}"
-        class="px-3 py-2 text-sm text-white rounded-md bg-slate-500 hover:bg-slate-600 focus:outline-none focus:bg-slate-600"
+        class="px-3 py-2 text-sm text-white rounded-md bg-menu-500 hover:bg-menu-600 focus:outline-none focus:bg-menu-600"
       >
         Back
       </button>
@@ -12,30 +14,30 @@
     <div class="flex justify-center flex-grow">
       <div *ngIf="matchupData" class="flex flex-wrap justify-between gap-x-8">
         <div class="w-full text-center sm:w-auto">
-          <p class="text-sm font-semibold text-gray-500">League Name</p>
+          <p class="text-sm font-semibold text-menu-500">League Name</p>
           <p class="text-xl font-bold">{{ matchupData.leagueName }}</p>
         </div>
         <div class="w-full text-center sm:w-auto">
-          <p class="text-sm font-semibold text-gray-500">Stage</p>
+          <p class="text-sm font-semibold text-menu-500">Stage</p>
           <p class="text-xl font-bold">{{ matchupData.stage }}</p>
         </div>
         <div class="w-full text-center sm:w-auto">
-          <p class="text-sm font-semibold text-gray-500">Ruleset</p>
+          <p class="text-sm font-semibold text-menu-500">Ruleset</p>
           <p class="text-xl font-bold">{{ matchupData.ruleset }}</p>
         </div>
         <div class="w-full text-center sm:w-auto">
-          <p class="text-sm font-semibold text-gray-500">Format</p>
+          <p class="text-sm font-semibold text-menu-500">Format</p>
           <p class="text-xl font-bold">{{ matchupData.format }}</p>
         </div>
         <div *ngIf="timeString" class="w-full text-center sm:w-auto">
-          <p class="text-sm font-semibold text-gray-500">Game Time</p>
+          <p class="text-sm font-semibold text-menu-500">Game Time</p>
           <p class="text-xl font-bold">{{ timeString }}</p>
         </div>
       </div>
     </div>
     <div class="flex items-start justify-end w-fit">
       <button
-        class="px-3 py-2 text-sm text-white rounded-md bg-slate-500 hover:bg-slate-600 focus:outline-none focus:bg-slate-600"
+        class="px-3 py-2 text-sm text-white rounded-md bg-menu-500 hover:bg-menu-600 focus:outline-none focus:bg-menu-600"
         (click)="shared = true"
       >
         Share
@@ -44,7 +46,7 @@
   </div>
   <div
     *ngIf="shared"
-    class="fixed inset-0 z-30 flex flex-col items-center justify-center bg-gray-800 bg-opacity-50"
+    class="fixed inset-0 z-30 flex flex-col items-center justify-center bg-menu-800 bg-opacity-50"
   >
     <div class="w-5/6 bg-white rounded-lg shadow-lg md:w-2/3 lg:w-1/2 xl:w-1/3">
       <div class="flex justify-end w-full">
@@ -59,7 +61,7 @@
         <h2 class="text-3xl font-bold text-center">Share your matchup</h2>
         <div class="flex items-center max-w-full mt-4">
           <div
-            class="flex items-center w-full p-1 overflow-x-auto border rounded-xl border-slate-200"
+            class="flex items-center w-full p-1 overflow-x-auto border rounded-xl border-menu-200"
           >
             <div class="w-auto overflow-x-auto">
               {{ shareUrl }}
@@ -75,23 +77,23 @@
         <div class="flex-grow"></div>
         <div
           *ngIf="matchupData"
-          class="p-2 my-4 border border-slate-200 rounded-xl"
+          class="p-2 my-4 border border-menu-200 rounded-xl"
         >
           <div class="flex w-full mb-2">
             <div class="w-1/4 text-center">
-              <p class="text-sm font-semibold text-gray-500">League Name</p>
+              <p class="text-sm font-semibold text-menu-500">League Name</p>
               <p class="font-bold">{{ matchupData.leagueName }}</p>
             </div>
             <div class="w-1/4 text-center">
-              <p class="text-sm font-semibold text-gray-500">Stage</p>
+              <p class="text-sm font-semibold text-menu-500">Stage</p>
               <p class="font-bold">{{ matchupData.stage }}</p>
             </div>
             <div class="w-1/4 text-center">
-              <p class="text-sm font-semibold text-gray-500">Ruleset</p>
+              <p class="text-sm font-semibold text-menu-500">Ruleset</p>
               <p class="font-bold">{{ matchupData.ruleset }}</p>
             </div>
             <div class="w-1/4 text-center">
-              <p class="text-sm font-semibold text-gray-500">Format</p>
+              <p class="text-sm font-semibold text-menu-500">Format</p>
               <p class="font-bold">{{ matchupData.format }}</p>
             </div>
           </div>
@@ -117,7 +119,7 @@
                 />
                 <div class="absolute flex justify-center w-full -bottom-1">
                   <div
-                    class="w-1/2 font-semibold text-center border rounded-full text-2xs sm:text-xs bg-slate-100 border-slate-200"
+                    class="w-1/2 font-semibold text-center border rounded-full text-2xs sm:text-xs bg-menu-100 border-menu-200"
                   >
                     {{ pokemon.baseStats.spe }}
                   </div>
@@ -137,7 +139,7 @@
                 />
                 <div class="absolute flex justify-center w-full -bottom-1">
                   <div
-                    class="w-1/2 font-semibold text-center border rounded-full text-2xs sm:text-xs bg-slate-100 border-slate-200"
+                    class="w-1/2 font-semibold text-center border rounded-full text-2xs sm:text-xs bg-menu-100 border-menu-200"
                   >
                     {{ pokemon.baseStats.spe }}
                   </div>

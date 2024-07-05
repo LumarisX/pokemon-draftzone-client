@@ -6,9 +6,16 @@ import { AuthService } from './auth/auth0.service';
   templateUrl: './app.component.html',
 })
 export class AppComponent {
-
-  userDropdown = false
-  menuDropdown = false
+  userDropdown = false;
+  menuDropdown = false;
 
   constructor(public auth: AuthService) {}
+
+  checkTheme() {
+    let theme = localStorage.getItem('theme');
+    if (theme === 'shiny') {
+      return 'shiny';
+    }
+    return '';
+  }
 }

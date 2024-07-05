@@ -137,8 +137,8 @@ export class SpeedchartComponent implements OnInit {
 
   teamColor(team: number) {
     let classes = [];
-    if (team == 0) classes.push('bg-cyan-400');
-    else classes.push('bg-red-400');
+    if (team == 0) classes.push('bg-aTeam-400');
+    else classes.push('bg-bTeam-400');
     return classes;
   }
 
@@ -193,9 +193,9 @@ export class SpeedchartComponent implements OnInit {
   buttonColor(team: number) {
     let classes = [];
     if (team == 0) {
-      classes.push('bg-cyan-400 hover:bg-cyan-300');
+      classes.push('bg-aTeam-400 hover:bg-aTeam-300');
     } else {
-      classes.push('bg-red-400 hover:bg-red-300');
+      classes.push('bg-bTeam-400 hover:bg-bTeam-300');
     }
     return classes;
   }

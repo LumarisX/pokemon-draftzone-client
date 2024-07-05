@@ -1,10 +1,10 @@
 <div class="flex min-h-full space-x-2">
   <div
     *ngIf="draft"
-    class="hidden w-1/6 p-1 border-2 max-w-28 sm:block bg-cyan-100 border-cyan-200 rounded-xl"
+    class="hidden w-1/6 p-1 border-2 max-w-28 sm:block bg-aTeam-100 border-aTeam-200 rounded-xl"
   >
     <div
-      class="h-auto p-1 m-1 shadow-md sm:p-2 sm:m-2 bg-cyan-300 rounded-xl shadow-cyan-600"
+      class="h-auto p-1 m-1 shadow-md sm:p-2 sm:m-2 bg-aTeam-300 rounded-xl shadow-aTeam-600"
     >
       <sprite
         class="flex justify-center"
@@ -16,11 +16,13 @@
     </div>
   </div>
 
-  <div class="w-full p-1 bg-red-100 border-2 border-red-200 rounded-xl lg:p-2">
+  <div
+    class="w-full p-1 bg-bTeam-100 border-2 border-bTeam-200 rounded-xl lg:p-2"
+  >
     <div>
       <button
         [routerLink]="'new'"
-        class="p-2 m-3 bg-red-300 rounded-lg shadow-md hover:shadow shadow-red-600"
+        class="p-2 m-3 bg-bTeam-300 rounded-lg shadow-md hover:shadow shadow-bTeam-600"
         title="Add Matchup"
       >
         <img src="../../../assets/icons/plus.svg" class="w-6" />
@@ -33,22 +35,22 @@
       >
         <div
           *ngFor="let matchup of matchups; let i = index"
-          class="flex flex-col m-2 bg-red-200 shadow-md shadow-red-600 rounded-xl"
+          class="flex flex-col m-2 bg-bTeam-200 shadow-md shadow-bTeam-600 rounded-xl"
         >
-          <div class="flex-grow p-2 bg-red-300 shadow-md rounded-xl">
+          <div class="flex-grow p-2 bg-bTeam-300 shadow-md rounded-xl">
             <div class="flex items-center w-full space-x-2 h-fit">
               <div
-                class="w-1/2 h-auto p-1 overflow-hidden font-semibold text-center whitespace-normal bg-red-200 rounded-full shadow-inner overflow-ellipsis text-medium shadow-red-600"
+                class="w-1/2 h-auto p-1 overflow-hidden font-semibold text-center whitespace-normal bg-bTeam-200 rounded-full shadow-inner overflow-ellipsis text-medium shadow-bTeam-600"
               >
                 {{ matchup.bTeam.teamName }}
               </div>
               <div
-                class="flex items-center justify-center w-1/6 p-1 overflow-hidden text-xs font-semibold whitespace-normal bg-red-200 rounded-full shadow-inner h-fit overflow-ellipsis shadow-red-600"
+                class="flex items-center justify-center w-1/6 p-1 overflow-hidden text-xs font-semibold whitespace-normal bg-bTeam-200 rounded-full shadow-inner h-fit overflow-ellipsis shadow-bTeam-600"
               >
                 {{ score(matchup) }}
               </div>
               <div
-                class="flex items-center justify-center w-1/3 p-1 overflow-hidden text-xs font-semibold text-center whitespace-normal bg-red-200 rounded-full shadow-inner h-fit overflow-ellipsis shadow-red-600"
+                class="flex items-center justify-center w-1/3 p-1 overflow-hidden text-xs font-semibold text-center whitespace-normal bg-bTeam-200 rounded-full shadow-inner h-fit overflow-ellipsis shadow-bTeam-600"
               >
                 {{ matchup.stage }}
               </div>
@@ -65,7 +67,7 @@
             *ngIf="!matchup.deleteConfirm"
           >
             <a
-              class="flex-grow p-1 font-semibold text-center bg-red-300 shadow h-fit hover:shadow shadow-red-600 rounded-xl"
+              class="flex-grow p-1 font-semibold text-center bg-bTeam-300 shadow h-fit hover:shadow shadow-bTeam-600 rounded-xl"
               [routerLink]="'matchup/'"
               [queryParams]="{ id: matchup._id }"
               >View Matchup</a
@@ -74,7 +76,7 @@
               class="grid items-center justify-center grid-cols-4 gap-2 px-2"
             >
               <img
-                class="w-8 h-8 p-1 bg-red-300 shadow hover:shadow rounded-xl hover:cursor-pointer shadow-red-600"
+                class="w-8 h-8 p-1 bg-bTeam-300 shadow hover:shadow rounded-xl hover:cursor-pointer shadow-bTeam-600"
                 [routerLink]="'score'"
                 [queryParams]="{ matchup: matchup._id | json }"
                 title="Score"
@@ -82,7 +84,7 @@
                 alt="Score"
               />
               <img
-                class="w-8 h-8 p-1 bg-red-300 shadow hover:shadow rounded-xl hover:cursor-pointer shadow-red-600"
+                class="w-8 h-8 p-1 bg-bTeam-300 shadow hover:shadow rounded-xl hover:cursor-pointer shadow-bTeam-600"
                 [routerLink]="'schedule'"
                 [queryParams]="{ matchup: matchup._id | json }"
                 src="../../../assets/icons/clock.svg"
@@ -90,7 +92,7 @@
                 alt="Schedule"
               />
               <img
-                class="w-8 h-8 p-1 bg-red-300 shadow hover:shadow rounded-xl hover:cursor-pointer shadow-red-600"
+                class="w-8 h-8 p-1 bg-bTeam-300 shadow hover:shadow rounded-xl hover:cursor-pointer shadow-bTeam-600"
                 [routerLink]="'edit'"
                 [queryParams]="{ matchup: matchup._id | json }"
                 src="../../../assets/icons/edit.svg"
@@ -98,7 +100,7 @@
                 alt="Edit"
               />
               <img
-                class="w-8 h-8 p-1 bg-red-300 shadow hover:shadow rounded-xl hover:cursor-pointer shadow-red-600"
+                class="w-8 h-8 p-1 bg-bTeam-300 shadow hover:shadow rounded-xl hover:cursor-pointer shadow-bTeam-600"
                 src="../../../assets/icons/trash.svg"
                 (click)="matchup.deleteConfirm = true"
                 title="Delete"
@@ -108,18 +110,18 @@
           </div>
           <div class="flex" *ngIf="matchup.deleteConfirm">
             <div
-              class="w-2/3 m-2 text-center bg-red-300 shadow shadow-red-600 rounded-xl"
+              class="w-2/3 m-2 text-center bg-bTeam-300 shadow shadow-bTeam-600 rounded-xl"
             >
               Are you sure you want to delete?
             </div>
             <div
-              class="flex items-center justify-center w-1/6 m-2 bg-red-300 shadow cursor-pointer hover:shadow shadow-red-600 rounded-xl"
+              class="flex items-center justify-center w-1/6 m-2 bg-bTeam-300 shadow cursor-pointer hover:shadow shadow-bTeam-600 rounded-xl"
               (click)="deleteMatchup(matchup._id)"
             >
               Yes
             </div>
             <div
-              class="flex items-center justify-center w-1/6 m-2 bg-red-300 shadow cursor-pointer hover:shadow shadow-red-600 rounded-xl"
+              class="flex items-center justify-center w-1/6 m-2 bg-bTeam-300 shadow cursor-pointer hover:shadow shadow-bTeam-600 rounded-xl"
               (click)="matchup.deleteConfirm = false"
             >
               No

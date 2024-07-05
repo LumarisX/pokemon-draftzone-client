@@ -80,18 +80,18 @@ export class SummaryComponent {
     if (statValue === undefined) {
       return;
     }
-    if (statValue > this.baseValue + 67) return 'bg-emerald-600';
-    if (statValue > this.baseValue + 52) return 'bg-emerald-500';
-    if (statValue > this.baseValue + 37) return 'bg-emerald-400';
-    if (statValue > this.baseValue + 22) return 'bg-emerald-300';
-    if (statValue > this.baseValue + 7) return 'bg-emerald-200';
+    if (statValue > this.baseValue + 67) return 'bg-scale-positive-5';
+    if (statValue > this.baseValue + 52) return 'bg-scale-positive-4';
+    if (statValue > this.baseValue + 37) return 'bg-scale-positive-3';
+    if (statValue > this.baseValue + 22) return 'bg-scale-positive-2';
+    if (statValue > this.baseValue + 7) return 'bg-scale-positive-1';
     if (statValue < this.baseValue + 8 && statValue > this.baseValue - 8)
-      return 'bg-slate-200';
-    if (statValue < this.baseValue - 67) return 'bg-rose-600';
-    if (statValue < this.baseValue - 52) return 'bg-rose-500';
-    if (statValue < this.baseValue - 37) return 'bg-rose-400';
-    if (statValue < this.baseValue - 22) return 'bg-rose-300';
-    if (statValue < this.baseValue - 7) return 'bg-rose-200';
+      return 'bg-menu-200';
+    if (statValue < this.baseValue - 67) return 'bg-scale-negative-5';
+    if (statValue < this.baseValue - 52) return 'bg-scale-negative-4';
+    if (statValue < this.baseValue - 37) return 'bg-scale-negative-3';
+    if (statValue < this.baseValue - 22) return 'bg-scale-negative-2';
+    if (statValue < this.baseValue - 7) return 'bg-scale-negative-1';
     return;
   }
 }

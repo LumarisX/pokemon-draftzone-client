@@ -63,11 +63,11 @@ export class CoverageComponent implements OnInit {
 
   seColor(max: number) {
     if (max > 1) {
-      return 'bg-emerald-300 border border-emerald-400';
+      return 'bg-scale-positive-2 border border-scale-positive-3';
     } else if (max == 1) {
-      return 'bg-slate-300 border border-slate-400';
+      return 'bg-menu-300 border border-menu-400';
     } else {
-      return 'bg-rose-300 border border-rose-400';
+      return 'bg-scale-negative-2 border border-scale-negative-3';
     }
   }
 }
