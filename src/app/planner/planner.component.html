@@ -26,10 +26,12 @@
           />
           <trash-svg class="w-4 m-1" (click)="deletePlan(j)"></trash-svg>
         </div>
-        <button *ngIf="draftSize < 5" (click)="addDraft()">
-          <plus-svg
+        <button *ngIf="draftSize < 5" (click)="addDraft()" c>
+          <div
             class="h-8 p-1 border rounded border-menu-500 bg-menu-100 hover:bg-menu-50 hover:cursor-pointer"
-          ></plus-svg>
+          >
+            <plus-svg></plus-svg>
+          </div>
         </button>
       </div>
     </div>

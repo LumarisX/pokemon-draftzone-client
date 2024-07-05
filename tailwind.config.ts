@@ -64,11 +64,6 @@ export default {
           900: '#776E00',
           950: '665E00',
         },
-        deoxys: {
-          red: '#F15B42',
-          cyan: '#0FB6CD',
-          purple: '#9B65AA',
-        },
         bug: '#b0c435',
         dark: '#6d5b50',
         dragon: '#7a6fb2',
@@ -126,6 +121,11 @@ export default {
             },
           },
           caution: colors.yellow[200],
+          deoxys: {
+            accent: '#F15B42',
+            main: '#0FB6CD',
+            core: '#9B65AA',
+          },
         },
         dark: {
           page: colors.slate[900],
@@ -184,6 +184,11 @@ export default {
             },
           },
           caution: colors.yellow[600],
+          deoxys: {
+            accent: '#F15B42',
+            main: '#0FB6CD',
+            core: '#9B65AA',
+          },
         },
         shiny: {
           page: colors.white,
@@ -235,6 +240,11 @@ export default {
             },
           },
           caution: colors.green[200],
+          deoxys: {
+            main: colors.teal[400],
+            accent: '#E9CA32',
+            core: '#9B65AA',
+          },
         },
         darkshiny: {
           page: colors.slate[900],
@@ -293,6 +303,11 @@ export default {
             },
           },
           caution: colors.green[600],
+          deoxys: {
+            main: colors.teal[400],
+            accent: '#E9CA32',
+            core: '#9B65AA',
+          },
         },
       },
       {

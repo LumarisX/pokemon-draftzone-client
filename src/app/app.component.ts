@@ -14,6 +14,6 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     let shiny = Math.floor(Math.random() * 100);
-    this.theme = true || shiny === 0 ? 'shiny dark:darkshiny' : '';
+    this.theme = shiny === 0 ? 'shiny dark:darkshiny' : '';
   }
 }
