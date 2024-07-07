@@ -12,8 +12,8 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
-import { CloseSVG } from '../../../../assets/icons/close.component';
-import { FilterSVG } from '../../../../assets/icons/filter.component';
+import { CloseSVG } from '../../../images/svg-components/close.component';
+import { FilterSVG } from '../../../images/svg-components/filter.component';
 
 @Component({
   selector: 'speedchart',

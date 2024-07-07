@@ -11,7 +11,7 @@ import { FilterComponent } from '../filter/filter.component';
 import { Pokemon } from '../interfaces/draft';
 import { SpriteComponent } from '../images/sprite.component';
 import { getPidByName } from '../pokemon';
-import { TrashSVG } from '../../assets/icons/trash.component';
+import { TrashSVG } from '../images/svg-components/trash.component';
 
 @Component({
   selector: 'pokemon-form',

@@ -3,7 +3,7 @@ import { Component, Input } from '@angular/core';
 import { SpriteComponent } from '../../../images/sprite.component';
 import { TeraComponent } from '../../../images/tera.component';
 import { Summary } from '../../matchup-interface';
-import { ZSVG } from '../../../../assets/icons/z.component';
+import { ZSVG } from '../../../images/svg-components/z.component';
 
 @Component({
   selector: 'overview',

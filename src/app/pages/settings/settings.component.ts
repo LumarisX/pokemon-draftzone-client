@@ -2,9 +2,11 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'loading',
+  selector: 'settings',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: 'loading.component.html',
+  templateUrl: './settings.component.html',
 })
-export class LoadingComponent {}
+export class SettingsComponent {
+  constructor() {}
+}

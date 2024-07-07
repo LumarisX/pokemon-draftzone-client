@@ -5,10 +5,10 @@ import { DraftService } from '../../api/draft.service';
 import { Draft } from '../../interfaces/draft';
 import { LoadingComponent } from '../../loading/loading.component';
 import { SpriteComponent } from '../../images/sprite.component';
-import { ArchiveSVG } from '../../../assets/icons/archive.component';
-import { EditSVG } from '../../../assets/icons/edit.component';
-import { BarChartSVG } from '../../../assets/icons/barchart.component';
-import { PlusSVG } from '../../../assets/icons/plus.component';
+import { ArchiveSVG } from '../../images/svg-components/archive.component';
+import { EditSVG } from '../../images/svg-components/edit.component';
+import { BarChartSVG } from '../../images/svg-components/barchart.component';
+import { PlusSVG } from '../../images/svg-components/plus.component';
 
 @Component({
   selector: 'draft-preview',

@@ -6,11 +6,11 @@ import { Draft } from '../../interfaces/draft';
 import { Matchup } from '../../interfaces/matchup';
 import { LoadingComponent } from '../../loading/loading.component';
 import { SpriteComponent } from '../../images/sprite.component';
-import { ClockSVG } from '../../../assets/icons/clock.component';
-import { TrashSVG } from '../../../assets/icons/trash.component';
-import { PlusSVG } from '../../../assets/icons/plus.component';
-import { EditSVG } from '../../../assets/icons/edit.component';
-import { ScoreSVG } from '../../../assets/icons/score.component';
+import { ClockSVG } from '../../images/svg-components/clock.component';
+import { TrashSVG } from '../../images/svg-components/trash.component';
+import { PlusSVG } from '../../images/svg-components/plus.component';
+import { EditSVG } from '../../images/svg-components/edit.component';
+import { ScoreSVG } from '../../images/svg-components/score.component';
 
 @Component({
   selector: 'opponent-preview',

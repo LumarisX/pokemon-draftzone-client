@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { SpriteComponent } from '../../../images/sprite.component';
 import { Summary } from '../../matchup-interface';
 import { TeraComponent } from '../../../images/tera.component';
-import { ZSVG } from '../../../../assets/icons/z.component';
+import { ZSVG } from '../../../images/svg-components/z.component';
 
 @Component({
   selector: 'summary',

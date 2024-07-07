@@ -9,8 +9,8 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
-import { PlusSVG } from '../../../../../assets/icons/plus.component';
-import { MinusSVG } from '../../../../../assets/icons/minus.component';
+import { PlusSVG } from '../../../../images/svg-components/plus.component';
+import { MinusSVG } from '../../../../images/svg-components/minus.component';
 
 @Component({
   selector: 'move-category',

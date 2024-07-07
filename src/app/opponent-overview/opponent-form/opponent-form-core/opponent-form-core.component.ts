@@ -11,7 +11,7 @@ import { Pokemon } from '../../../interfaces/draft';
 import { PokemonId, getPidByName } from '../../../pokemon';
 import { PokemonFormComponent } from '../../../pokemon-form/pokemon-form.component';
 import { SpriteComponent } from '../../../images/sprite.component';
-import { ImportSVG } from '../../../../assets/icons/import.component';
+import { ImportSVG } from '../../../images/svg-components/import.component';
 
 @Component({
   selector: 'opponent-form-core',

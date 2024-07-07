@@ -17,8 +17,8 @@ import { PokemonId, getPidByName } from '../../pokemon';
 import { PokemonFormComponent } from '../../pokemon-form/pokemon-form.component';
 import { ReplayService } from '../../api/replay.service';
 import { ReplayData } from '../../tools/replay_analyzer/replay.interface';
-import { PlusSVG } from '../../../assets/icons/plus.component';
-import { TrashSVG } from '../../../assets/icons/trash.component';
+import { PlusSVG } from '../../images/svg-components/plus.component';
+import { TrashSVG } from '../../images/svg-components/trash.component';
 
 @Component({
   selector: 'opponent-form',

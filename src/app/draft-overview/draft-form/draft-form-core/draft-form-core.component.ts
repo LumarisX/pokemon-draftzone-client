@@ -12,7 +12,7 @@ import { SpriteComponent } from '../../../images/sprite.component';
 import { Pokemon } from '../../../interfaces/draft';
 import { getPidByName } from '../../../pokemon';
 import { PokemonFormComponent } from '../../../pokemon-form/pokemon-form.component';
-import { ImportSVG } from '../../../../assets/icons/import.component';
+import { ImportSVG } from '../../../images/svg-components/import.component';
 
 @Component({
   selector: 'draft-form-core',

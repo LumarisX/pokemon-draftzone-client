@@ -9,9 +9,9 @@ import { MatchupComponent } from './matchup/matchup.component';
 import { SpriteComponent } from '../images/sprite.component';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
-import { TeraSVG } from '../../assets/icons/tera.component';
-import { CopySVG } from '../../assets/icons/copy.component';
-import { CloseSVG } from '../../assets/icons/close.component';
+import { TeraSVG } from '../images/svg-components/tera.component';
+import { CopySVG } from '../images/svg-components/copy.component';
+import { CloseSVG } from '../images/svg-components/close.component';
 
 dayjs.extend(duration);
 

@@ -33,9 +33,9 @@ import { FinderComponent } from './finder/finder.component';
 import { MoveComponent } from './moves/moves.component';
 import { SummaryComponent } from './summary/summary.component';
 import { TypechartComponent } from './typechart/typechart.component';
-import { PlusSVG } from '../../assets/icons/plus.component';
-import { TrashSVG } from '../../assets/icons/trash.component';
-import { GearSVG } from '../../assets/icons/gear.component';
+import { PlusSVG } from '../images/svg-components/plus.component';
+import { TrashSVG } from '../images/svg-components/trash.component';
+import { GearSVG } from '../images/svg-components/gear.component';
 
 type Planner = {
   summary: Summary;
