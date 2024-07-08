@@ -26,7 +26,6 @@ export class AppComponent implements OnInit {
   }
 
   getTheme() {
-    console.log(this.settingsService.settingsData.theme);
     switch (this.settingsService.settingsData.theme) {
       case 'shiny':
         return 'shiny dark:darkshiny';

@@ -6,7 +6,9 @@
       class="flex flex-col order-1 h-full p-1 rounded-lg md:order-1 bg-aTeam-200"
     >
       <div class="w-full">
-        <label class="text-sm font-medium text-menu-700">Local Time Zone</label>
+        <label class="text-sm font-medium text-symbolColor-main"
+          >Local Time Zone</label
+        >
         <input
           type="text"
           readonly
@@ -16,7 +18,9 @@
       </div>
       <div class="flex-grow"></div>
       <div class="w-full">
-        <label class="text-sm font-medium text-menu-700">Local Date</label>
+        <label class="text-sm font-medium text-symbolColor-main"
+          >Local Date</label
+        >
         <input
           type="date"
           [(ngModel)]="selectedDate"
@@ -25,7 +29,9 @@
         />
       </div>
       <div class="w-full">
-        <label class="text-sm font-medium text-menu-700">Local Time</label>
+        <label class="text-sm font-medium text-symbolColor-main"
+          >Local Time</label
+        >
         <input
           type="time"
           [(ngModel)]="selectedTime"
@@ -37,7 +43,9 @@
     </div>
     <div class="order-3 p-1 md:order-2">
       <div class="w-full">
-        <label class="text-sm font-medium text-menu-700">Time Difference</label>
+        <label class="text-sm font-medium text-symbolColor-main"
+          >Time Difference</label
+        >
         <input
           type="text"
           [value]="timeDifference"
@@ -48,7 +56,7 @@
     </div>
     <div class="order-2 p-1 rounded-lg bg-bTeam-200 md:order-3">
       <div class="w-full">
-        <label class="text-sm font-medium text-menu-700"
+        <label class="text-sm font-medium text-symbolColor-main"
           >Opponent Time Zone</label
         >
         <div class="mt-1">
@@ -74,7 +82,9 @@
         </div>
       </div>
       <div class="w-full">
-        <label class="text-sm font-medium text-menu-700">Converted Date</label>
+        <label class="text-sm font-medium text-symbolColor-main"
+          >Converted Date</label
+        >
         <input
           type="date"
           [(ngModel)]="convertedDate"
@@ -83,7 +93,9 @@
         />
       </div>
       <div class="w-full">
-        <label class="text-sm font-medium text-menu-700">Converted Time</label>
+        <label class="text-sm font-medium text-symbolColor-main"
+          >Converted Time</label
+        >
         <input
           type="time"
           [(ngModel)]="convertedTime"

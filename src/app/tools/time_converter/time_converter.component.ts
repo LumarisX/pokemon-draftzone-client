@@ -19,8 +19,6 @@ dayjs.extend(duration);
   imports: [CommonModule, RouterModule, FormsModule],
 })
 export class TimeConverterComponent implements OnInit {
-  teamId: string = '';
-  matchupId: string = '';
   selectedDate: string = '';
   selectedTime: string = '';
   opponentTimeZone: string = '';
@@ -42,35 +40,15 @@ export class TimeConverterComponent implements OnInit {
     emailTime: 1,
   };
 
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private draftService: DraftService
-  ) {}
+  constructor(private route: ActivatedRoute, private router: Router) {}
 
   ngOnInit() {
-    this.teamId = this.route.parent!.snapshot.paramMap.get('teamid') || '';
-    this.route.queryParams.subscribe((params) => {
-      if ('matchup' in params) {
-        this.matchupId = JSON.parse(params['matchup']);
-        this.draftService
-          .getGameTime(this.matchupId, this.teamId)
-          .subscribe((data) => {
-            this.timeData = {
-              dateTime: dayjs(data.gameTime),
-              email: data.reminder >= 0,
-              emailTime: 2,
-            };
-            const currentDateString =
-              this.timeData.dateTime.format('YYYY-MM-DD');
-            const currentTimeString = this.timeData.dateTime.format('HH:mm');
-            this.selectedDate = currentDateString;
-            this.selectedTime = currentTimeString;
-            this.opponentTimeZone = this.localTimeZone;
-            this.updateTimes();
-          });
-      }
-    });
+    const currentDateString = this.timeData.dateTime.format('YYYY-MM-DD');
+    const currentTimeString = this.timeData.dateTime.format('HH:mm');
+    this.selectedDate = currentDateString;
+    this.selectedTime = currentTimeString;
+    this.opponentTimeZone = this.localTimeZone;
+    this.updateTimes();
   }
 
   updateTimes(source: 'local' | 'converted' = 'local') {
@@ -79,6 +57,8 @@ export class TimeConverterComponent implements OnInit {
         `${this.selectedDate}T${this.selectedTime}`,
         this.localTimeZone
       );
+      console.log(this.localTimeZone, this.opponentTimeZone);
+
       const convertedDateTime = this.timeData.dateTime
         .clone()
         .tz(this.opponentTimeZone);
@@ -120,19 +100,5 @@ export class TimeConverterComponent implements OnInit {
         tz.offset.toLowerCase().includes(query) ||
         tz.name.toLowerCase().includes(query)
     );
-  }
-
-  submit() {
-    this.draftService
-      .scheduleMatchup(this.matchupId, this.teamId, this.timeData)
-      .subscribe({
-        next: (response) => {
-          console.log('Success!', response);
-          this.router.navigate([`/draft/${this.teamId}`]);
-        },
-        error: (error) => {
-          console.error('Error!', error);
-        },
-      });
   }
 }

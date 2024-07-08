@@ -176,7 +176,7 @@ export default {
           symbolColor: {
             main: colors.gray[200],
             sub: colors.gray[400],
-            inverted: colors.black,
+            inverted: colors.gray[200],
           },
           spriteBorder: colors.slate[400],
           scale: {
@@ -305,7 +305,7 @@ export default {
           symbolColor: {
             main: colors.gray[200],
             sub: colors.gray[400],
-            inverted: colors.black,
+            inverted: colors.gray[200],
           },
           spriteBorder: colors.slate[400],
           scale: {
@@ -432,7 +432,7 @@ export default {
           symbolColor: {
             main: colors.gray[200],
             sub: colors.gray[400],
-            inverted: colors.black,
+            inverted: colors.gray[200],
           },
           spriteBorder: colors.slate[400],
           scale: {
