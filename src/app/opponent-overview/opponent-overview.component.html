@@ -3,15 +3,15 @@
     <div class="flex items-center justify-between mx-4">
       <button
         routerLink="/draft"
-        class="px-3 py-2 text-sm text-white rounded-md bg-menu-500 hover:bg-menu-600 focus:outline-none focus:bg-menu-600"
+        class="px-3 py-2 text-sm text-symbolColor-inverted rounded-md bg-menu-500 hover:bg-menu-600 focus:outline-none focus:bg-menu-600"
       >
         Back
       </button>
       <div *ngIf="draft" class="text-right">
-        <h1 class="text-3xl font-bold text-menu-800">
+        <h1 class="text-3xl font-bold text-symbolColor-main">
           {{ draft.leagueName }}
         </h1>
-        <h2 class="text-2xl font-bold text-menu-600">
+        <h2 class="text-2xl font-bold text-symbolColor-sub">
           {{ draft.score.wins }} - {{ draft.score.loses }} |
           {{ draft.score.diff }}
         </h2>
