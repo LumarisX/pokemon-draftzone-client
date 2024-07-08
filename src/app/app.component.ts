@@ -19,16 +19,19 @@ export class AppComponent implements OnInit {
     if (!localStorage.getItem('shinyunlocked')) {
       let shiny = Math.floor(Math.random() * 100);
       if (shiny === 0) {
-        this.settingsService.settingsData.theme = 'shiny dark:darkshiny';
+        this.settingsService.settingsData.theme = 'shiny';
         localStorage.setItem('shinyunlocked', 'true');
       }
     }
   }
 
   getTheme() {
+    console.log(this.settingsService.settingsData.theme);
     switch (this.settingsService.settingsData.theme) {
       case 'shiny':
         return 'shiny dark:darkshiny';
+      case 'graymode':
+        return ' graycolorblind dark:darkcolorblind';
       default:
         return 'classic dark:darkclassic';
     }

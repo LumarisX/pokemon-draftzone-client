@@ -65,7 +65,7 @@ export class CoverageComponent implements OnInit {
     if (max > 1) {
       return 'bg-scale-positive-2 border border-scale-positive-3';
     } else if (max == 1) {
-      return 'bg-menu-300 border border-menu-400';
+      return 'bg-scale-neutral border border-menu-400';
     } else {
       return 'bg-scale-negative-2 border border-scale-negative-3';
     }

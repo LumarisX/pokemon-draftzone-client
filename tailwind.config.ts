@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 
-import colors, { yellow } from 'tailwindcss/colors';
+import colors, { neutral, yellow } from 'tailwindcss/colors';
 import { createThemes } from 'tw-colors';
 
 export default {
@@ -110,6 +110,7 @@ export default {
           symbolColor: {
             main: colors.black,
             sub: colors.gray[800],
+            inverted: colors.white,
           },
           spriteBorder: colors.slate[500],
           scale: {
@@ -131,6 +132,7 @@ export default {
               6: colors.rose[700],
               7: colors.rose[800],
             },
+            neutral: colors.slate[300],
           },
           caution: colors.yellow[200],
           deoxys: {
@@ -140,7 +142,7 @@ export default {
           },
         },
         darkclassic: {
-          page: colors.slate[900],
+          page: colors.slate[950],
           aTeam: {
             100: '#07A4C3',
             200: colors.cyan[600],
@@ -174,6 +176,7 @@ export default {
           symbolColor: {
             main: colors.gray[200],
             sub: colors.gray[300],
+            inverted: colors.black,
           },
           spriteBorder: colors.slate[400],
           scale: {
@@ -195,12 +198,144 @@ export default {
               6: colors.rose[400],
               7: colors.rose[300],
             },
+            neutral: colors.slate[700],
           },
           caution: colors.yellow[600],
           deoxys: {
             accent: '#F15B42',
             main: '#0FB6CD',
             core: '#9B65AA',
+          },
+        },
+        graycolorblind: {
+          page: colors.white,
+          aTeam: {
+            100: colors.gray[50],
+            200: colors.gray[100],
+            300: colors.gray[200],
+            400: colors.gray[300],
+            500: colors.gray[400],
+            600: colors.gray[500],
+            700: colors.gray[600],
+            800: colors.gray[700],
+            900: colors.gray[800],
+          },
+          bTeam: {
+            100: colors.gray[50],
+            200: colors.gray[100],
+            300: colors.gray[200],
+            400: colors.gray[300],
+            500: colors.gray[400],
+            600: colors.gray[500],
+            700: colors.gray[600],
+            800: colors.gray[700],
+            900: colors.gray[800],
+          },
+          menu: colors.slate,
+          symbolColor: {
+            main: colors.black,
+            sub: colors.gray[800],
+            inverted: colors.white,
+          },
+          spriteBorder: colors.slate[500],
+          scale: {
+            positive: {
+              1: colors.zinc[500],
+              2: '#62626B',
+              3: colors.zinc[600],
+              4: '#494951',
+              5: colors.zinc[700],
+              6: '#333338',
+              7: colors.zinc[800],
+              text: colors.white,
+            },
+            negative: {
+              1: colors.zinc[400],
+              2: '#BBBBC1',
+              3: colors.zinc[300],
+              4: '#DCDCE0',
+              5: colors.zinc[200],
+              6: '#ECECEE',
+              7: colors.zinc[100],
+              text: colors.black,
+            },
+            neutral: '#898992',
+          },
+          caution: colors.yellow[200],
+          deoxys: {
+            accent: '#858585',
+            main: '#868686',
+            core: '#7C7C7C',
+          },
+        },
+        darkcolorblind: {
+          page: colors.slate[900],
+          aTeam: {
+            100: colors.gray[800],
+            200: colors.gray[700],
+            300: colors.gray[600],
+            400: colors.gray[500],
+            500: colors.gray[400],
+            600: colors.gray[300],
+            700: colors.gray[200],
+            800: colors.gray[100],
+            900: colors.gray[50],
+          },
+          bTeam: {
+            100: colors.gray[800],
+            200: colors.gray[700],
+            300: colors.gray[600],
+            400: colors.gray[500],
+            500: colors.gray[400],
+            600: colors.gray[300],
+            700: colors.gray[200],
+            800: colors.gray[100],
+            900: colors.gray[50],
+          },
+          menu: {
+            100: colors.slate[900],
+            200: colors.slate[800],
+            300: colors.slate[700],
+            400: colors.slate[600],
+            500: colors.slate[500],
+            600: colors.slate[400],
+            700: colors.slate[300],
+            800: colors.slate[200],
+          },
+          symbolColor: {
+            main: colors.gray[200],
+            sub: colors.gray[300],
+            inverted: colors.black,
+          },
+          spriteBorder: colors.slate[400],
+          scale: {
+            positive: {
+              1: colors.zinc[400],
+              2: '#BBBBC1',
+              3: colors.zinc[300],
+              4: '#DCDCE0',
+              5: colors.zinc[200],
+              6: '#ECECEE',
+              7: colors.zinc[100],
+              text: colors.black,
+            },
+            negative: {
+              1: colors.zinc[500],
+              2: '#62626B',
+              3: colors.zinc[600],
+              4: '#494951',
+              5: colors.zinc[700],
+              6: '#333338',
+              7: colors.zinc[800],
+              text: colors.white,
+            },
+            neutral: '#898992',
+          },
+          caution: colors.yellow[600],
+          deoxys: {
+            accent: '#858585',
+            main: '#868686',
+            core: '#7C7C7C',
           },
         },
         shiny: {
@@ -231,6 +366,7 @@ export default {
           symbolColor: {
             main: colors.black,
             sub: colors.gray[800],
+            inverted: colors.white,
           },
           spriteBorder: colors.slate[500],
           scale: {
@@ -252,6 +388,7 @@ export default {
               6: colors.rose[700],
               7: colors.rose[800],
             },
+            neutral: colors.slate[300],
           },
           caution: colors.green[200],
           deoxys: {
@@ -295,6 +432,7 @@ export default {
           symbolColor: {
             main: colors.gray[200],
             sub: colors.gray[300],
+            inverted: colors.white,
           },
           spriteBorder: colors.slate[400],
           scale: {
@@ -316,6 +454,7 @@ export default {
               6: colors.rose[400],
               7: colors.rose[300],
             },
+            neutral: colors.slate[700],
           },
           caution: colors.green[600],
           deoxys: {
@@ -327,8 +466,8 @@ export default {
       },
       {
         defaultTheme: {
-          light: 'light',
-          dark: 'dark',
+          light: 'classic',
+          dark: 'darkclassic',
         },
       }
     ),

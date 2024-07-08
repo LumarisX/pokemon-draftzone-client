@@ -58,43 +58,67 @@ export class TypechartComponent implements OnChanges {
 
   typeColor(weak: number, disbaled: Boolean): string {
     if (disbaled) return 'text-transparent border-menu-200';
-    if (weak > 4) return 'bg-scale-negative-5 border-scale-negative-6';
-    if (weak > 2) return 'bg-scale-negative-4  border-scale-negative-5';
-    if (weak > 1) return 'bg-scale-negative-3  border-scale-negative-4';
-    if (weak < 0.25) return 'bg-scale-positive-5  border-scale-positive-6';
-    if (weak < 0.5) return 'bg-scale-positive-4  border-scale-positive-5';
-    if (weak < 1) return 'bg-scale-positive-3  border-scale-positive-4';
+    if (weak > 4)
+      return 'bg-scale-negative-5 border-scale-negative-6 text-scale-negative-text';
+    if (weak > 2)
+      return 'bg-scale-negative-4  border-scale-negative-5 text-scale-negative-text';
+    if (weak > 1)
+      return 'bg-scale-negative-3  border-scale-negative-4 text-scale-negative-text';
+    if (weak < 0.25)
+      return 'bg-scale-positive-5  border-scale-positive-6 text-scale-positive-text';
+    if (weak < 0.5)
+      return 'bg-scale-positive-4  border-scale-positive-5 text-scale-positive-text';
+    if (weak < 1)
+      return 'bg-scale-positive-3  border-scale-positive-4 text-scale-positive-text';
     return 'text-transparent border-menu-200';
   }
 
   weakColor(weak: number): string {
-    if (weak > 5) return 'bg-scale-negative-5 border-scale-negative-6';
-    if (weak > 4) return 'bg-scale-negative-4 border-scale-negative-5';
-    if (weak > 3) return 'bg-scale-negative-3 border-scale-negative-4';
-    if (weak < 1) return 'bg-scale-positive-5 border-scale-positive-6';
-    if (weak < 2) return 'bg-scale-positive-4 border-scale-positive-5';
-    if (weak < 3) return 'bg-scale-positive-3 border-scale-positive-4';
-    return 'border-menu-400';
+    if (weak > 5)
+      return 'bg-scale-negative-5 border-scale-negative-6 text-scale-negative-text';
+    if (weak > 4)
+      return 'bg-scale-negative-4 border-scale-negative-5 text-scale-negative-text';
+    if (weak > 3)
+      return 'bg-scale-negative-3 border-scale-negative-4 text-scale-negative-text';
+    if (weak < 1)
+      return 'bg-scale-positive-5 border-scale-positive-6 text-scale-positive-text';
+    if (weak < 2)
+      return 'bg-scale-positive-4 border-scale-positive-5 text-scale-positive-text';
+    if (weak < 3)
+      return 'bg-scale-positive-3 border-scale-positive-4 text-scale-positive-text';
+    return 'bg-scale-neutral border-menu-400';
   }
 
   resistColor(weak: number): string {
-    if (weak > 4) return 'bg-scale-positive-5 border-scale-positive-6';
-    if (weak > 3) return 'bg-scale-positive-4 border-scale-positive-5';
-    if (weak > 2) return 'bg-scale-positive-3 border-scale-positive-4';
-    if (weak < 1) return 'bg-scale-negative-4 border-scale-negative-5';
-    if (weak < 2) return 'bg-scale-negative-3 border-scale-negative-4';
-    return 'border-menu-400';
+    if (weak > 4)
+      return 'bg-scale-positive-5 border-scale-positive-6 text-scale-positive-text';
+    if (weak > 3)
+      return 'bg-scale-positive-4 border-scale-positive-5 text-scale-positive-text';
+    if (weak > 2)
+      return 'bg-scale-positive-3 border-scale-positive-4 text-scale-positive-text';
+    if (weak < 1)
+      return 'bg-scale-negative-4 border-scale-negative-5 text-scale-negative-text';
+    if (weak < 2)
+      return 'bg-scale-negative-3 border-scale-negative-4 text-scale-negative-text';
+    return 'bg-scale-neutral border-menu-400';
   }
 
   diffColor(weak: number): string {
-    if (weak > 3) return 'bg-scale-positive-6 border-scale-positive-7';
-    if (weak > 2) return 'bg-scale-positive-5 border-scale-positive-6';
-    if (weak > 1) return 'bg-scale-positive-4 border-scale-positive-5';
-    if (weak > 0) return 'bg-scale-positive-3 border-scale-positive-4';
-    if (weak < -2) return 'bg-scale-negative-5 border-scale-negative-6';
-    if (weak < -1) return 'bg-scale-negative-4 border-scale-negative-5';
-    if (weak < 0) return 'bg-scale-negative-3 border-scale-negative-4';
-    return 'border-menu-400';
+    if (weak > 3)
+      return 'bg-scale-positive-6 border-scale-positive-7 text-scale-positive-text';
+    if (weak > 2)
+      return 'bg-scale-positive-5 border-scale-positive-6 text-scale-positive-text';
+    if (weak > 1)
+      return 'bg-scale-positive-4 border-scale-positive-5 text-scale-positive-text';
+    if (weak > 0)
+      return 'bg-scale-positive-3 border-scale-positive-4 text-scale-positive-text';
+    if (weak < -2)
+      return 'bg-scale-negative-5 border-scale-negative-6 text-scale-negative-text';
+    if (weak < -1)
+      return 'bg-scale-negative-4 border-scale-negative-5 text-scale-negative-text';
+    if (weak < 0)
+      return 'bg-scale-negative-3 border-scale-negative-4 text-scale-negative-text';
+    return 'bg-scale-neutral border-menu-400';
   }
 
   teamColor(inverted: boolean = false) {

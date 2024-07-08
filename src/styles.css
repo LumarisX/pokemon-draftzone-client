@@ -59,18 +59,30 @@
   }
 
   ::-webkit-scrollbar-track {
-    background: hsl(var(--twc-menu-100) / var(--twc-menu-100-opacity, var(--tw-bg-opacity)));
+    background: hsl(
+      var(--twc-menu-100) / var(--twc-menu-100-opacity, var(--tw-bg-opacity))
+    );
     border-radius: 100vh;
   }
 
   ::-webkit-scrollbar-thumb {
-    background: hsl(var(--twc-menu-300) / var(--twc-menu-300-opacity, var(--tw-bg-opacity)));
+    background: hsl(
+      var(--twc-menu-300) / var(--twc-menu-300-opacity, var(--tw-bg-opacity))
+    );
     border-radius: 100vh;
-    border: 2px solid hsl(var(--twc-menu-100) / var(--twc-menu-100-opacity, var(--tw-bg-opacity)));
+    border: 2px solid
+      hsl(
+        var(--twc-menu-100) / var(--twc-menu-100-opacity, var(--tw-bg-opacity))
+      );
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: hsl(var(--twc-menu-400) / var(--twc-menu-400-opacity, var(--tw-bg-opacity)));
-    border: 1px solid hsl(var(--twc-menu-100) / var(--twc-menu-100-opacity, var(--tw-bg-opacity)));
+    background: hsl(
+      var(--twc-menu-400) / var(--twc-menu-400-opacity, var(--tw-bg-opacity))
+    );
+    border: 1px solid
+      hsl(
+        var(--twc-menu-100) / var(--twc-menu-100-opacity, var(--tw-bg-opacity))
+      );
   }
 }
