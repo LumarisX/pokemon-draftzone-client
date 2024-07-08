@@ -62,8 +62,8 @@ export class OpponentSchedule implements OnInit {
               emailTime: 2,
             };
             const currentDateString =
-              this.timeData.dateTime.format('YYYY-MM-DD'); // Extract date in YYYY-MM-DD format
-            const currentTimeString = this.timeData.dateTime.format('HH:mm'); // Extract time in HH:mm format
+              this.timeData.dateTime.format('YYYY-MM-DD');
+            const currentTimeString = this.timeData.dateTime.format('HH:mm');
             this.selectedDate = currentDateString;
             this.selectedTime = currentTimeString;
             this.opponentTimeZone = this.localTimeZone;

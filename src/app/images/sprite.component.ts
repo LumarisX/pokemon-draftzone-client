@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { Pokemon } from '../interfaces/draft';
 import { getSpriteName } from '../pokemon';
+import { SettingsService } from '../pages/settings/settings.service';
 
 @Component({
   selector: 'sprite',
@@ -19,6 +20,7 @@ import { getSpriteName } from '../pokemon';
   `,
 })
 export class SpriteComponent {
+  constructor(private settingService: SettingsService) {}
   @Input()
   set pokemon(value: Pokemon) {
     this.updateData(value);
@@ -28,8 +30,6 @@ export class SpriteComponent {
   get pokemon() {
     return this._pokemon;
   }
-
-  source: 'home' | 'serebii' | 'icon' | 'bw' | 'sv' | 'ani' | '?' = 'home';
   _pokemon!: Pokemon;
   path = '../../../../assets/icons/unknown.svg';
   _classes: string[] = [];
@@ -45,13 +45,7 @@ export class SpriteComponent {
   @Input() disabled? = false;
 
   updateData(pokemon: Pokemon) {
-    switch (this.source) {
-      case 'home':
-        this.path = `https://img.pokemondb.net/sprites/home/${
-          pokemon.shiny ? 'shiny' : 'normal'
-        }/${getSpriteName(pokemon.pid, 'pd')}.png`;
-        this.classes.push('sprite-border');
-        break;
+    switch (this.settingService.settingsData.spriteSet) {
       case 'bw':
         this.path = `https://play.pokemonshowdown.com/sprites/gen5${
           pokemon.shiny ? '-shiny' : ''
@@ -80,6 +74,10 @@ export class SpriteComponent {
         this.classes.push('sprite-border');
         break;
       default:
+        this.path = `https://img.pokemondb.net/sprites/home/${
+          pokemon.shiny ? 'shiny' : 'normal'
+        }/${getSpriteName(pokemon.pid, 'pd')}.png`;
+        this.classes.push('sprite-border');
         break;
     }
   }

@@ -3,6 +3,9 @@ import { Injectable } from '@angular/core';
 export type Settings = {
   theme?: string;
   ldMode?: string;
+  time?: string;
+  date?: string;
+  spriteSet?: string;
 };
 
 @Injectable({

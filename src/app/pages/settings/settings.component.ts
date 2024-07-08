@@ -27,6 +27,7 @@ export class SettingsComponent implements OnInit {
     let form = this.fb.group({
       theme: this.settingsService.settingsData.theme || 'classic',
       ldMode: this.settingsService.settingsData.ldMode || 'device',
+      spriteSet: this.settingsService.settingsData.spriteSet || 'home',
     });
     form.valueChanges.subscribe((value: any) => {
       this.settingsService.settingsData = value;
