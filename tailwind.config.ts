@@ -5,6 +5,7 @@ import { createThemes } from 'tw-colors';
 
 export default {
   content: ['./src/**/*.{html,ts,tsx,jsx}'],
+  darkMode: 'selector',
   theme: {
     fontFamily: {
       nasa: ['Nasalization RG', 'sans-serif'],
@@ -81,7 +82,7 @@ export default {
   plugins: [
     createThemes(
       {
-        light: {
+        classic: {
           page: colors.white,
           aTeam: colors.cyan,
           bTeam: {
@@ -138,7 +139,7 @@ export default {
             core: '#9B65AA',
           },
         },
-        dark: {
+        darkclassic: {
           page: colors.slate[900],
           aTeam: {
             100: '#07A4C3',

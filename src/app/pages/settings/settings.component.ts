@@ -1,36 +1,43 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Settings, SettingsService } from './settings.service';
-import { FormsModule } from '@angular/forms';
-
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 @Component({
   selector: 'settings',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './settings.component.html',
 })
 export class SettingsComponent implements OnInit {
-  constructor(private settingsService: SettingsService) {}
+  constructor(
+    private settingsService: SettingsService,
+    private fb: FormBuilder
+  ) {}
 
   settingsData!: Settings;
 
   themes: { id: string; name: string }[] = [
-    { id: 'device', name: 'Device' },
-    { id: 'light', name: 'Light' },
-    { id: 'dark', name: 'Dark' },
-  ];
-  colorblind: { id: string; name: string }[] = [
-    { id: 'none', name: 'None' },
-    { id: 'grayscale', name: 'Grayscale' },
+    { id: 'classic', name: 'Classic' },
+    { id: 'graymode', name: 'Grayscale' },
   ];
 
+  settingsForm!: FormGroup;
+
   ngOnInit(): void {
-    this.settingsData = this.settingsService.settingsData;
+    let form = this.fb.group({
+      theme: this.settingsService.settingsData.theme || 'classic',
+      ldMode: this.settingsService.settingsData.ldMode || 'device',
+    });
+    form.valueChanges.subscribe((value: any) => {
+      this.settingsService.settingsData = value;
+      localStorage.setItem('user-settings', JSON.stringify(value));
+    });
+    form.get('ldMode')?.valueChanges.subscribe((value: string | null) => {
+      if (value) this.settingsService.updateLDMode(value);
+    });
+    this.settingsForm = form;
     if (localStorage.getItem('shinyunlocked')) {
-      this.themes.push(
-        { id: 'shiny', name: 'Shiny' },
-        { id: 'darkshiny', name: 'Dark Shiny' }
-      );
+      this.themes.push({ id: 'shiny', name: 'Shiny' });
     }
   }
 }

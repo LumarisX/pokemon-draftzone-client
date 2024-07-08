@@ -26,6 +26,11 @@ export class AppComponent implements OnInit {
   }
 
   getTheme() {
-    return this.settingsService.settingsData.theme;
+    switch (this.settingsService.settingsData.theme) {
+      case 'shiny':
+        return 'shiny dark:darkshiny';
+      default:
+        return 'classic dark:darkclassic';
+    }
   }
 }
