@@ -9,7 +9,6 @@ import { SettingsService } from './pages/settings/settings.service';
 export class AppComponent implements OnInit {
   userDropdown = false;
   menuDropdown = false;
-  theme: string = '';
 
   constructor(
     public auth: AuthService,
@@ -17,14 +16,16 @@ export class AppComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    let shiny = Math.floor(Math.random() * 100);
-    if (shiny === 0) {
-      this.theme = 'shiny dark:darkshiny';
-    } else {
-      let settingsTheme = this.settingsService.settingsData.theme;
-      if (settingsTheme && ['light', 'dark'].includes(settingsTheme)) {
-        this.theme = settingsTheme;
+    if (!localStorage.getItem('shinyunlocked')) {
+      let shiny = Math.floor(Math.random() * 100);
+      if (shiny === 0) {
+        this.settingsService.settingsData.theme = 'shiny dark:darkshiny';
+        localStorage.setItem('shinyunlocked', 'true');
       }
     }
+  }
+
+  getTheme() {
+    return this.settingsService.settingsData.theme;
   }
 }

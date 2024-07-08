@@ -108,6 +108,7 @@ export default {
           menu: colors.slate,
           symbolColor: {
             main: colors.black,
+            sub: colors.gray[800],
           },
           spriteBorder: colors.slate[500],
           scale: {
@@ -171,6 +172,7 @@ export default {
           },
           symbolColor: {
             main: colors.gray[200],
+            sub: colors.gray[300],
           },
           spriteBorder: colors.slate[400],
           scale: {
@@ -227,6 +229,7 @@ export default {
           menu: colors.slate,
           symbolColor: {
             main: colors.black,
+            sub: colors.gray[800],
           },
           spriteBorder: colors.slate[500],
           scale: {
@@ -290,6 +293,7 @@ export default {
           },
           symbolColor: {
             main: colors.gray[200],
+            sub: colors.gray[300],
           },
           spriteBorder: colors.slate[400],
           scale: {

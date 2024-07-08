@@ -1,0 +1,14 @@
+
+
+  .animate-fill {
+    animation: fill-animation 2s infinite;
+  }
+  
+  @keyframes fill-animation {
+    0%, 100% {
+      fill: #ffd966;
+    }
+    50% {
+      fill: #f87171;
+    }
+  }

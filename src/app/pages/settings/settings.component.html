@@ -1,138 +1,23 @@
-<div class="px-8 py-8 mx-auto space-y-4 lg:px-32">
-  <h2 class="text-2xl font-semibold">About Pokemon DraftZone</h2>
-  <p class="">
-    Welcome to Pokemon DraftZone, your ultimate resource for Pokemon draft
-    leagues! Our goal is to provide you with clear and informative data about
-    your draft and your opponents, empowering you to strategize and excel in
-    your matches.
-  </p>
+<div class="flex w-full justify-center h-full p-8">
   <div
-    class="grid items-center grid-cols-1 gap-6 md:grid-cols-2 justify-items-center"
+    class="border-2 border-menu-300 rounded-lg w-full h-full max-w-128 flex flex-col items-center"
   >
-    <div class="order-1">
-      <h3 class="mb-2 text-xl font-semibold">Drafts</h3>
-      <p class="mb-2">
-        View and manage your drafts effortlessly with Draftzone. Whether you're
-        in the midst of a current draft or revisiting archived ones, our
-        platform provides a user-friendly interface to keep track of your teams
-        and progress.
-      </p>
-      <ul class="pl-8 list-disc">
-        <li>
-          <strong>Current and Archived Drafts:</strong> Access your current
-          draft as well as archived drafts with ease. Whether you're preparing
-          for an upcoming match or analyzing past performances, Draftzone
-          ensures all your draft data is readily available and organized.
-        </li>
-        <li>
-          <strong>Team Statistics:</strong> Identify standout performers and
-          areas for improvement within your draft lineup using the tracked
-          statistics. Track MVPs who consistently deliver strong performances
-          and pinpoint underperforming team members who may require adjustments.
-        </li>
-        <li>
-          <strong>Support for Multiple Generations and Formats:</strong> From
-          classic battles to the latest VGC format, Draftzone accommodates a
-          variety of preferences. With support for multiple generations,
-          including National Dex formats, players can enjoy drafting teams
-          tailored to their preferred playstyle, whether it's Singles or
-          Doubles.
-        </li>
-      </ul>
+    <h1 class="font-bold text-3xl py-4">Settings</h1>
+    <div class="space-y-1">
+      <label class="block mb-1 font-bold">Theme</label>
+      <select class="bg-menu-100" [(ngModel)]="settingsData.theme">
+        <option *ngFor="let theme of themes" value="{{ theme.id }}">
+          {{ theme.name }}
+        </option>
+      </select>
+
+      <label class="block mb-1 font-bold">Colorblind Mode</label>
+      <select class="bg-menu-100" [(ngModel)]="settingsData.colorblind">
+        <option *ngFor="let colors of colorblind" value="{{ colors.id }}">
+          {{ colors.name }}
+        </option>
+      </select>
     </div>
-    <img
-      src="../../../assets/screenshots/about/draftoverview.png"
-      class="order-2 object-cover max-w-full border rounded-lg shadow max-h-80 border-menu-400"
-    />
-    <div class="order-3 md:order-4">
-      <h3 class="mb-2 text-xl font-semibold">Track Opponents</h3>
-      <p class="mb-2">
-        Stay informed about your opponents' draft selections week by week. From
-        monitoring draft selections to recording match results, Draftzone helps
-        you strategize effectively for upcoming matchups.
-      </p>
-      <ul class="pl-8 list-disc">
-        <li>
-          <strong>Match Overview:</strong> Quickly assess the status of upcoming
-          matches and review past matchups at a glance. Easily navigate through
-          scheduled games and view detailed summaries of matches that have
-          already taken place, including scores, teams, and outcomes.
-        </li>
-        <li>
-          <strong>Score and Match Results Recording:</strong> Record scores,
-          kills, deaths, and pastes to track your performance in the league
-          accurately.
-        </li>
-        <li>
-          <strong>Scheduled Playing Time (Beta): </strong> Set designated match
-          times, convert times across timezones, and receive reminders to ensure
-          timely and organized gameplay. Never miss a match again with
-          DraftZone's convenient scheduling tools.
-        </li>
-      </ul>
-    </div>
-    <img
-      src="../../../assets/screenshots/about/oppoverview.png"
-      class="order-4 object-cover max-w-full border rounded-lg shadow max-h-80 border-menu-400 md:order-3"
-    />
-    <div class="order-5">
-      <h3 class="mb-2 text-xl font-semibold">Prepare for Matches</h3>
-      <p class="mb-2">
-        In the draft preparation page, we provide you with an array of tools and
-        insights to help you strategize effectively for your upcoming matches.
-      </p>
-      <ul class="pl-8 list-disc">
-        <li>
-          <strong>Overview:</strong> Get a quick snapshot of your team's
-          composition compared to your opponent's. Understand the overall
-          balance of power and identify potential areas for improvement or
-          exploitation.
-        </li>
-        <li>
-          <strong>Summary:</strong> Dive deeper into the specifics with detailed
-          analyses of base stats, typing, and abilities of each Pokemon on both
-          teams. Discover the greatest strengths and weaknesses of each lineup
-          to refine your strategy.
-        </li>
-        <li>
-          <strong>Speed Chart:</strong> Explore how different factors such as
-          natures, held items like Choice Scarf, or effects like Tailwind
-          influence Pokemon's speed. Adjust your final speed stats accordingly
-          to gain a crucial advantage in battle.
-        </li>
-        <li>
-          <strong>Defensive Type Chart:</strong> Understand teams' defensive
-          capabilities and identify potential vulnerabilities to exploit. Toggle
-          Pokemon on and off to assess changes in type coverage dynamically.
-        </li>
-        <li>
-          <strong>Learned Moves:</strong> Quickly identify important moves the
-          teams has access to, such as setup moves, hazard control, or
-          status-inducing moves. This information enables you to anticipate
-          threats and plan your counter-strategies accordingly.
-        </li>
-        <li>
-          <strong>Move Coverage:</strong> Highlight which moves each Pokemon can
-          use and identify any gaps in offensive coverage. Determine there are
-          Pokemon that the selected moves can't deal hit effectively.
-        </li>
-        <li>
-          <strong>Share Your Matchup:</strong> Use the share link feature to
-          invite teammates, coaches, or fellow players to review your matchup,
-          even if they don't have a DraftZone account. Say goodbye to awkwardly
-          screenshotting and start collaborating seamlessly.
-        </li>
-      </ul>
-    </div>
-    <div class="flex flex-col items-center order-6 space-y-2">
-      <img
-        src="../../../assets/screenshots/about/matchup1.png"
-        class="object-cover max-w-full border rounded-lg shadow max-h-80 border-menu-400"
-      />
-      <img
-        src="../../../assets/screenshots/about/matchup2.png"
-        class="object-cover max-w-full border rounded-lg shadow max-h-80 border-menu-400"
-      />
-    </div>
+    <!-- {{ settingsData | json }} -->
   </div>
 </div>
