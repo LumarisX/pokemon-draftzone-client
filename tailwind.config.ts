@@ -109,7 +109,8 @@ export default {
           menu: colors.slate,
           symbolColor: {
             main: colors.black,
-            sub: colors.gray[800],
+            sub: colors.neutral[800],
+            disabled: colors.neutral[500],
             inverted: colors.white,
           },
           spriteBorder: colors.slate[500],
@@ -174,9 +175,10 @@ export default {
             800: colors.slate[500],
           },
           symbolColor: {
-            main: colors.gray[200],
-            sub: colors.gray[400],
-            inverted: colors.gray[200],
+            main: colors.neutral[100],
+            sub: colors.neutral[300],
+            disabled: colors.neutral[400],
+            inverted: colors.neutral[200],
           },
           spriteBorder: colors.slate[400],
           scale: {
@@ -234,7 +236,8 @@ export default {
           menu: colors.slate,
           symbolColor: {
             main: colors.black,
-            sub: colors.gray[800],
+            sub: colors.neutral[800],
+            disabled: colors.neutral[500],
             inverted: colors.white,
           },
           spriteBorder: colors.slate[500],
@@ -303,9 +306,10 @@ export default {
             800: colors.slate[500],
           },
           symbolColor: {
-            main: colors.gray[200],
-            sub: colors.gray[400],
-            inverted: colors.gray[200],
+            main: colors.neutral[100],
+            sub: colors.neutral[300],
+            disabled: colors.neutral[400],
+            inverted: colors.neutral[200],
           },
           spriteBorder: colors.slate[400],
           scale: {
@@ -365,7 +369,8 @@ export default {
           menu: colors.slate,
           symbolColor: {
             main: colors.black,
-            sub: colors.gray[800],
+            sub: colors.neutral[800],
+            disabled: colors.neutral[500],
             inverted: colors.white,
           },
           spriteBorder: colors.slate[500],
@@ -430,9 +435,10 @@ export default {
             800: colors.slate[500],
           },
           symbolColor: {
-            main: colors.gray[200],
-            sub: colors.gray[400],
-            inverted: colors.gray[200],
+            main: colors.neutral[100],
+            sub: colors.neutral[300],
+            disabled: colors.neutral[400],
+            inverted: colors.neutral[200],
           },
           spriteBorder: colors.slate[400],
           scale: {

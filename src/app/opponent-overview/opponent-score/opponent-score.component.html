@@ -142,10 +142,11 @@
                   </div>
                 </div>
                 <div
-                  class="flex justify-center border rounded-full h-fit bg-aTeam-200 border-aTeam-400 w-28 hover:cursor-pointer hover:bg-aTeam-100"
+                  class="text-center font-semibold shadow-aTeam-600 border rounded-full h-fit bg-aTeam-200 border-aTeam-400 w-28 hover:cursor-pointer hover:bg-aTeam-100"
                   (click)="changeWinner('a')"
+                  [ngClass]="winnerClass('a')"
                 >
-                  <div [ngClass]="winnerClass('a')">Winner</div>
+                  Winner
                 </div>
               </div>
               <div
@@ -230,10 +231,11 @@
             <div class="p-2 border-2 border-bTeam-200 rounded-xl">
               <div class="flex w-full pb-1">
                 <div
-                  class="flex justify-center border rounded-full bg-bTeam-200 border-bTeam-400 h-fit w-28 hover:cursor-pointer hover:bg-bTeam-100"
+                  class="text-center font-semibold shadow-bTeam-600 border rounded-full bg-bTeam-200 border-bTeam-400 h-fit w-28 hover:cursor-pointer hover:bg-bTeam-100"
                   (click)="changeWinner('b')"
+                  [ngClass]="winnerClass('b')"
                 >
-                  <div [ngClass]="winnerClass('b')">Winner</div>
+                  Winner
                 </div>
                 <div
                   class="grid w-full grid-cols-1 text-sm md:grid-cols-3 gap-x-4 sm:text-base"

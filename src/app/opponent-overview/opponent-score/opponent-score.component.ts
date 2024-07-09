@@ -312,8 +312,8 @@ export class OpponentScoreComponent implements OnInit {
 
   winnerClass(player: 'a' | 'b') {
     return this.selectedMatchForm.get('winner')?.value == player
-      ? ''
-      : 'opacity-30';
+      ? `shadow `
+      : `shadow-inner text-symbolColor-disabled`;
   }
 
   gameClass(i: number) {
