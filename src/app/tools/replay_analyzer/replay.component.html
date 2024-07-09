@@ -1,5 +1,6 @@
-<div class="flex flex-col items-center w-full">
-  <div class="p-2 m-2 border-2 w-fit bg-menu-100 rounded-xl border-menu-400">
+<h1 class="w-full text-2xl p-3 text-center font-nasa">Replay Analyzer</h1>
+<div class="flex flex-col items-center w-full space-y-3">
+  <div class="p-2 border-2 w-fit bg-menu-100 rounded-xl border-menu-400">
     Replay
     <input
       [(ngModel)]="replayURI"
@@ -7,8 +8,15 @@
       class="p-1 bg-menu-100 border-2 border-menu-300 rounded-lg mx-2 w-96"
     />
     <button
+      *ngIf="!analyzed"
       (click)="analyze()"
       class="px-2 py-1 border-2 shadow bg-menu-200 rounded-xl border-menu-400"
+    >
+      Analyze
+    </button>
+    <button
+      *ngIf="analyzed"
+      class="opacity-50 px-2 py-1 border-2 shadow bg-menu-200 rounded-xl border-menu-400"
     >
       Analyze
     </button>
@@ -25,36 +33,118 @@
   <div
     class="flex flex-col items-center p-2 border-2 w-fit bg-menu-100 rounded-xl border-menu-400"
   >
-    <div>
-      {{
-        replayData.gametype.charAt(0).toUpperCase() +
-          replayData.gametype.slice(1)
-      }}
-      | Gen {{ replayData.genNum }} | {{ replayData.turns }} turns | Game time:
-      {{ toMinutes(replayData.gameTime) }} minutes
-      {{ remainingSeconds(replayData.gameTime) }} seconds
+    <div class="flex space-x-4 p-1 text-lg">
+      <div>
+        <label class="font-semibold text-symbolColor-sub" for="format">
+          Format:
+        </label>
+        <span id="format">{{
+          replayData.gametype.charAt(0).toUpperCase() +
+            replayData.gametype.slice(1)
+        }}</span>
+      </div>
+      <div>
+        <label class="font-semibold text-symbolColor-sub" for="gen">
+          Generation:
+        </label>
+        <span id="gen"> {{ replayData.genNum }} </span>
+      </div>
+      <div>
+        <label class="font-semibold text-symbolColor-sub" for="turns">
+          Turns:
+        </label>
+        <span id="turns"> {{ replayData.turns }} </span>
+      </div>
+      <div>
+        <label class="font-semibold text-symbolColor-sub" for="gameTime">
+          Game Time:
+        </label>
+        <span id="gameTime"
+          >{{ toMinutes(replayData.gameTime) }} minutes
+          {{ remainingSeconds(replayData.gameTime) }} seconds</span
+        >
+      </div>
     </div>
-    <br />
     <div class="space-y-4 w-fit">
       <div
         *ngFor="let player of replayData.stats; let playerNum = index"
         [ngClass]="playerClass(playerNum + 1)"
         class="p-1 border rounded border-menu-400"
       >
-        {{ player.username }}
-        <div *ngFor="let mon of player.team">
-          {{ monString(mon) }}
+        <div class="flex space-x-2 items-end">
+          <div class="text-xl font-bold">{{ player.username }}</div>
+          <div>
+            <span class="font-semibold">Kills:</span> {{ player.totalKills }}
+          </div>
+          <div>
+            <span class="font-semibold">Deaths:</span> {{ player.totalDeaths }}
+          </div>
+          <div *ngIf="player.win" class="font-semibold">Winner</div>
+        </div>
+
+        <div>
+          <div class="flex space-x-2">
+            <div>
+              <span class="font-semibold"> Total Accuracy: </span>
+              {{ player.accuracy.actual | percent }} ({{
+                player.accuracy.hits
+              }}/{{ player.accuracy.total }})
+            </div>
+            <div>
+              <span class="font-semibold"> Expected Accuracy: </span>
+              {{ player.accuracy.expected | percent }}
+            </div>
+          </div>
+          <div class="flex flex-wrap">
+            <div *ngFor="let mon of player.team" class="p-1">
+              <div class="w-20">
+                <sprite
+                  [pokemon]="{ pid: getPID(mon.name), name: mon.name }"
+                  [disabled]="mon.fainted"
+                ></sprite>
+              </div>
+              <div *ngIf="!mon.kills[1]">
+                <span class="font-semibold"> Kills: </span> {{ mon.kills[0] }}
+              </div>
+              <div *ngIf="mon.kills[1]">
+                <span class="font-semibold"> Kills: </span>
+                <div>
+                  <span> Direct: </span>
+                  {{ mon.kills[0] }}
+                </div>
+                <div>
+                  <span> Indirect: </span>
+                  {{ mon.kills[1] }}
+                </div>
+              </div>
+              <div>
+                <span class="font-semibold"> Damage Dealt: </span>
+                {{ mon.damageDealt }}%
+              </div>
+              <div>
+                <span class="font-semibold"> Damage Taken: </span>
+                {{ mon.damageTaken }}%
+              </div>
+              <div>
+                <span class="font-semibold"> HP Restored: </span>
+                {{ mon.hpRestored }}%
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <br />
-    </div>
-    <div class="border w-fit border-menu-400">
-      <div
-        *ngFor="let event of replayData.events"
-        class="p-1"
-        [ngClass]="playerClass(event.player)"
-      >
-        Turn {{ event.turn }}: {{ event.message }}
+      <div class="w-full">
+        <h2 class="text-xl font-bold">Events</h2>
+        <div class="border-2 border-menu-400 rounded w-full">
+          <div
+            *ngFor="let event of replayData.events"
+            class="py-1 px-2 border-b border-menu-400 w-full"
+            [ngClass]="playerClass(event.player)"
+          >
+            <span class="font-semibold"> Turn {{ event.turn }}:</span>
+            {{ event.message }}
+          </div>
+        </div>
       </div>
     </div>
   </div>

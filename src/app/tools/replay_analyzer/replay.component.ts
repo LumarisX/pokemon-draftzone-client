@@ -2,21 +2,35 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { ReplayData, ReplayMon } from './replay.interface';
 import { ReplayService } from '../../api/replay.service';
+import { SpriteComponent } from '../../images/sprite.component';
+import { getPidByName } from '../../pokemon';
+import { ReplayData, ReplayMon } from './replay.interface';
 
 @Component({
   selector: 'replay-analyzer',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './replay.component.html',
+  imports: [CommonModule, RouterModule, FormsModule, SpriteComponent],
 })
 export class ReplayComponent {
-  replayURI: string = '';
+  private _replayURI: string =
+    'https://replay.pokemonshowdown.com/gen9nationaldexubers-2156145657';
   replayData: ReplayData | undefined;
+  analyzed: boolean = true;
+  get replayURI() {
+    return this._replayURI;
+  }
+
+  set replayURI(value) {
+    this.analyzed = false;
+    this._replayURI = value;
+  }
+
   constructor(private replayService: ReplayService) {}
 
   analyze() {
+    this.analyzed = true;
     this.replayService
       .analyzeReplay(this.replayURI)
       .subscribe((data) => (this.replayData = data));
@@ -49,5 +63,9 @@ export class ReplayComponent {
     }
 
     return '';
+  }
+
+  getPID(name: string): string {
+    return getPidByName(name) || '';
   }
 }
