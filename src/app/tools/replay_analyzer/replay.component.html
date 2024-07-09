@@ -1,6 +1,11 @@
 <div class="flex flex-col items-center w-full">
   <div class="p-2 m-2 border-2 w-fit bg-menu-100 rounded-xl border-menu-400">
-    Replay <input [(ngModel)]="replayURI" type="text" class="p-1 mx-2 w-96" />
+    Replay
+    <input
+      [(ngModel)]="replayURI"
+      type="text"
+      class="p-1 bg-menu-100 border-2 border-menu-300 rounded-lg mx-2 w-96"
+    />
     <button
       (click)="analyze()"
       class="px-2 py-1 border-2 shadow bg-menu-200 rounded-xl border-menu-400"
