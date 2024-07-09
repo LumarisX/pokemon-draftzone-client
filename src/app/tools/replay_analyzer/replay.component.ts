@@ -14,8 +14,7 @@ import { ReplayData, ReplayMon } from './replay.interface';
   imports: [CommonModule, RouterModule, FormsModule, SpriteComponent],
 })
 export class ReplayComponent {
-  private _replayURI: string =
-    'https://replay.pokemonshowdown.com/gen9nationaldexubers-2156145657';
+  private _replayURI: string = '';
   replayData: ReplayData | undefined;
   analyzed: boolean = true;
   get replayURI() {
