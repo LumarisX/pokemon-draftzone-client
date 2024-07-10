@@ -9,9 +9,13 @@ export type ReplayData = {
 
 export type ReplayPlayer = {
   username: undefined | string;
-  totalKills: number;
-  totalDeaths: number;
-  turnChart: { turn: number; damage: number }[];
+  total: {
+    kills: number;
+    deaths: number;
+    damageDealt: number;
+    damageTaken: number;
+  };
+  turnChart: { turn: number; damage: number; remaining: number }[];
   team: ReplayMon[];
   win: boolean;
   accuracy: {
@@ -26,8 +30,8 @@ export type ReplayPlayer = {
 export type ReplayMon = {
   name: string;
   kills: [number, number];
-  damageDealt: number;
-  damageTaken: number;
+  damageDealt: [number, number];
+  damageTaken: [number, number];
   hpRestored: number;
   fainted: boolean;
   brought: boolean;

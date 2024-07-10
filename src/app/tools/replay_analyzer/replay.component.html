@@ -1,11 +1,13 @@
 <h1 class="w-full text-2xl p-3 text-center font-nasa">Replay Analyzer</h1>
 <div class="flex flex-col items-center w-full space-y-3">
-  <div class="p-2 border-2 w-fit bg-menu-100 rounded-xl border-menu-400">
-    Replay
+  <div
+    class="p-2 border-2 flex items-center w-128 max-w-full bg-menu-100 rounded-xl border-menu-400"
+  >
+    <div>Replay</div>
     <input
       [(ngModel)]="replayURI"
       type="text"
-      class="p-1 bg-menu-100 border-2 border-menu-300 rounded-lg mx-2 w-96"
+      class="p-1 bg-menu-100 border-2 flex-grow border-menu-300 rounded-lg mx-2"
     />
     <button
       *ngIf="!analyzed"
@@ -31,7 +33,7 @@
 </div>
 <div *ngIf="replayData" class="flex justify-center w-full p-2">
   <div
-    class="flex flex-col items-center p-2 border-2 w-fit bg-menu-100 rounded-xl border-menu-400"
+    class="flex flex-col items-center p-2 border-2 max-w-full w-fit bg-menu-100 rounded-xl border-menu-400"
   >
     <div class="flex space-x-4 p-1 text-lg">
       <div>
@@ -65,36 +67,41 @@
         >
       </div>
     </div>
-    <div class="space-y-4 w-fit">
+    <div class="space-y-4 w-fit max-w-full">
       <div
         *ngFor="let player of replayData.stats; let playerNum = index"
         [ngClass]="playerClass(playerNum + 1)"
         class="p-1 border rounded border-menu-400"
       >
-        <div class="flex space-x-2 items-end">
+        <div class="flex space-x-2 items-end flex-wrap pb-2">
           <div class="text-xl font-bold">{{ player.username }}</div>
           <div>
-            <span class="font-semibold">Kills:</span> {{ player.totalKills }}
+            <span class="font-semibold">Kills:</span> {{ player.total.kills }}
           </div>
           <div>
-            <span class="font-semibold">Deaths:</span> {{ player.totalDeaths }}
+            <span class="font-semibold">Deaths:</span> {{ player.total.deaths }}
           </div>
-          <div *ngIf="player.win" class="font-semibold">Winner</div>
+          <div>
+            <span class="font-semibold">Damage Dealt:</span>
+            {{ player.total.damageDealt }}%
+          </div>
+          <div>
+            <span class="font-semibold">Damage Taken:</span>
+            {{ player.total.damageTaken }}%
+          </div>
+          <div>
+            <span class="font-semibold"> Total Accuracy: </span>
+            {{ player.accuracy.actual | percent }} ({{
+              player.accuracy.hits
+            }}/{{ player.accuracy.total }})
+          </div>
+          <div>
+            <span class="font-semibold"> Expected Accuracy: </span>
+            {{ player.accuracy.expected | percent }}
+          </div>
+          <div *ngIf="player.win" class="font-bold">Winner</div>
         </div>
-
         <div>
-          <div class="flex space-x-2">
-            <div>
-              <span class="font-semibold"> Total Accuracy: </span>
-              {{ player.accuracy.actual | percent }} ({{
-                player.accuracy.hits
-              }}/{{ player.accuracy.total }})
-            </div>
-            <div>
-              <span class="font-semibold"> Expected Accuracy: </span>
-              {{ player.accuracy.expected | percent }}
-            </div>
-          </div>
           <div class="flex flex-wrap">
             <div *ngFor="let mon of player.team" class="p-1">
               <div class="w-20">
@@ -117,14 +124,37 @@
                   {{ mon.kills[1] }}
                 </div>
               </div>
-              <div>
+              <div *ngIf="!mon.damageDealt[1]">
                 <span class="font-semibold"> Damage Dealt: </span>
-                {{ mon.damageDealt }}%
+                {{ mon.damageDealt[0] }}%
               </div>
-              <div>
+              <div *ngIf="mon.damageDealt[1]">
+                <span class="font-semibold"> Damage Dealt: </span>
+                <div>
+                  <span> Direct: </span>
+                  {{ mon.damageDealt[0] }}%
+                </div>
+                <div>
+                  <span> Indirect: </span>
+                  {{ mon.damageDealt[1] }}%
+                </div>
+              </div>
+              <div *ngIf="!mon.damageTaken[1]">
                 <span class="font-semibold"> Damage Taken: </span>
-                {{ mon.damageTaken }}%
+                {{ mon.damageTaken[0] }}%
               </div>
+              <div *ngIf="mon.damageTaken[1]">
+                <span class="font-semibold"> Damage Taken: </span>
+                <div>
+                  <span> Direct: </span>
+                  {{ mon.damageTaken[0] }}%
+                </div>
+                <div>
+                  <span> Indirect: </span>
+                  {{ mon.damageTaken[1] }}%
+                </div>
+              </div>
+
               <div>
                 <span class="font-semibold"> HP Restored: </span>
                 {{ mon.hpRestored }}%
@@ -132,11 +162,6 @@
             </div>
           </div>
         </div>
-      </div>
-      <br />
-      <span class="p-1 font-semibold">Team HP</span>
-      <div class="w-full">
-        <damage-chart [data]="replayData.stats"></damage-chart>
       </div>
       <div class="w-full">
         <h2 class="text-xl font-bold fill-">Events</h2>
@@ -150,6 +175,12 @@
             {{ event.message }}
           </div>
         </div>
+      </div>
+      <div class="w-full flex justify-center">
+        <replay-chart
+          class="w-full bg-slate-200 rounded-lg border-2 border-slate-400 max-w-160"
+          [data]="replayData.stats"
+        ></replay-chart>
       </div>
     </div>
   </div>

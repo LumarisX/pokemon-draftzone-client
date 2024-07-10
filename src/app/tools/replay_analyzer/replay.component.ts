@@ -6,7 +6,7 @@ import { ReplayService } from '../../api/replay.service';
 import { SpriteComponent } from '../../images/sprite.component';
 import { getPidByName } from '../../pokemon';
 import { ReplayData, ReplayMon } from './replay.interface';
-import { DamageChartComponent } from './damage-chart/damage-chart.component';
+import { ReplayChartComponent } from './replay-chart/replay-chart.component';
 
 @Component({
   selector: 'replay-analyzer',
@@ -17,14 +17,13 @@ import { DamageChartComponent } from './damage-chart/damage-chart.component';
     RouterModule,
     FormsModule,
     SpriteComponent,
-    DamageChartComponent,
+    ReplayChartComponent,
   ],
 })
 export class ReplayComponent {
-  private _replayURI: string =
-    'https://replay.pokemonshowdown.com/gen9nationaldexubers-2156145657';
+  private _replayURI: string = '';
   replayData: ReplayData | undefined;
-  analyzed: boolean = false;
+  analyzed: boolean = true;
   get replayURI() {
     return this._replayURI;
   }
