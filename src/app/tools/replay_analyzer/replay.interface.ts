@@ -3,22 +3,24 @@ export type ReplayData = {
   genNum: number;
   turns: number;
   gameTime: number;
-  stats: {
-    username: undefined | string;
-    totalKills: number;
-    totalDeaths: number;
-    turnChart: { turn: number; damage: number }[];
-    team: ReplayMon[];
-    win: boolean;
-    accuracy: {
-      total: number;
-      hits: number;
-      expected: number;
-      actual: number;
-      luck: number;
-    };
-  }[];
+  stats: ReplayPlayer[];
   events: { player: number; turn: number; message: string }[];
+};
+
+export type ReplayPlayer = {
+  username: undefined | string;
+  totalKills: number;
+  totalDeaths: number;
+  turnChart: { turn: number; damage: number }[];
+  team: ReplayMon[];
+  win: boolean;
+  accuracy: {
+    total: number;
+    hits: number;
+    expected: number;
+    actual: number;
+    luck: number;
+  };
 };
 
 export type ReplayMon = {

@@ -133,8 +133,13 @@
           </div>
         </div>
       </div>
+      <br />
+      <span class="p-1 font-semibold">Team HP</span>
       <div class="w-full">
-        <h2 class="text-xl font-bold">Events</h2>
+        <damage-chart [data]="replayData.stats"></damage-chart>
+      </div>
+      <div class="w-full">
+        <h2 class="text-xl font-bold fill-">Events</h2>
         <div class="border-2 border-menu-400 rounded w-full">
           <div
             *ngFor="let event of replayData.events"
