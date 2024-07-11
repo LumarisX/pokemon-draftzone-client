@@ -7,7 +7,7 @@
     >
       Cancel
     </button>
-    <div class="flex-grow"></div>
+    <h1 class="flex-grow font-bold text-2xl text-center">Score</h1>
     <button
       type="submit"
       class="p-2 font-medium text-symbolColor-inverted rounded-md shadow-sm bg-menu-500 hover:bg-menu-700 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-menu-500"
@@ -117,36 +117,39 @@
             formGroupName="aTeam"
             class="p-2 m-2 space-y-3 shadow-md bg-aTeam-300 team shadow-aTeam-600 rounded-xl"
           >
+            <div class="w-full flex items-center">
+              <h2 class="px-2 font-semibold text-xl flex-grow">
+                {{ matchup.aTeam.teamName }}
+              </h2>
+              <div
+                class="text-center font-semibold shadow-aTeam-600 border rounded-full h-fit bg-aTeam-200 border-aTeam-400 w-28 hover:cursor-pointer hover:bg-aTeam-100"
+                (click)="changeWinner('a')"
+                [ngClass]="winnerClass('a')"
+              >
+                Winner
+              </div>
+            </div>
             <div class="p-2 border-2 border-aTeam-200 rounded-xl">
-              <div class="flex pb-1">
-                <div
-                  class="grid w-full grid-cols-1 text-sm md:grid-cols-3 gap-x-4 sm:text-symbolColor-main"
-                >
-                  <div class="flex justify-center space-x-2">
-                    <div class="font-semibold">Brought:</div>
-                    <div [ngClass]="broughtCaution()">
-                      {{ statCount(aTeamArray, ["brought"]) }}
-                    </div>
-                  </div>
-                  <div class="flex justify-center space-x-2">
-                    <div class="font-semibold">Kills:</div>
-                    <div [ngClass]="aKillCaution()">
-                      {{ statCount(aTeamArray, ["kills", "indirect"]) }}
-                    </div>
-                  </div>
-                  <div class="flex justify-center space-x-2">
-                    <div class="font-semibold">Deaths:</div>
-                    <div [ngClass]="bKillCaution()">
-                      {{ statCount(aTeamArray, ["fainted"]) }}
-                    </div>
+              <div
+                class="grid pb-1 w-full grid-cols-1 text-sm md:grid-cols-3 gap-x-4 sm:text-symbolColor-main"
+              >
+                <div class="flex justify-center space-x-2">
+                  <div class="font-semibold">Brought:</div>
+                  <div [ngClass]="broughtCaution()">
+                    {{ statCount(aTeamArray, ["brought"]) }}
                   </div>
                 </div>
-                <div
-                  class="text-center font-semibold shadow-aTeam-600 border rounded-full h-fit bg-aTeam-200 border-aTeam-400 w-28 hover:cursor-pointer hover:bg-aTeam-100"
-                  (click)="changeWinner('a')"
-                  [ngClass]="winnerClass('a')"
-                >
-                  Winner
+                <div class="flex justify-center space-x-2">
+                  <div class="font-semibold">Kills:</div>
+                  <div [ngClass]="aKillCaution()">
+                    {{ statCount(aTeamArray, ["kills", "indirect"]) }}
+                  </div>
+                </div>
+                <div class="flex justify-center space-x-2">
+                  <div class="font-semibold">Deaths:</div>
+                  <div [ngClass]="bKillCaution()">
+                    {{ statCount(aTeamArray, ["fainted"]) }}
+                  </div>
                 </div>
               </div>
               <div
@@ -228,35 +231,38 @@
             formGroupName="bTeam"
             class="p-2 m-2 space-y-3 shadow-md bg-bTeam-300 team shadow-bTeam-600 rounded-xl"
           >
+            <div class="w-full flex items-center">
+              <div
+                class="text-center font-semibold shadow-bTeam-600 border rounded-full bg-bTeam-200 border-bTeam-400 h-fit w-28 hover:cursor-pointer hover:bg-bTeam-100"
+                (click)="changeWinner('b')"
+                [ngClass]="winnerClass('b')"
+              >
+                Winner
+              </div>
+              <h2 class="px-2 font-semibold flex-grow text-end text-xl">
+                {{ matchup.bTeam.teamName }}
+              </h2>
+            </div>
             <div class="p-2 border-2 border-bTeam-200 rounded-xl">
-              <div class="flex w-full pb-1">
-                <div
-                  class="text-center font-semibold shadow-bTeam-600 border rounded-full bg-bTeam-200 border-bTeam-400 h-fit w-28 hover:cursor-pointer hover:bg-bTeam-100"
-                  (click)="changeWinner('b')"
-                  [ngClass]="winnerClass('b')"
-                >
-                  Winner
+              <div
+                class="grid pb-1 w-full grid-cols-1 text-sm md:grid-cols-3 gap-x-4 sm:text-symbolColor-main"
+              >
+                <div class="flex justify-center space-x-2">
+                  <div class="font-semibold">Brought:</div>
+                  <div [ngClass]="broughtCaution()">
+                    {{ statCount(bTeamArray, ["brought"]) }}
+                  </div>
                 </div>
-                <div
-                  class="grid w-full grid-cols-1 text-sm md:grid-cols-3 gap-x-4 sm:text-symbolColor-main"
-                >
-                  <div class="flex justify-center space-x-2">
-                    <div class="font-semibold">Brought:</div>
-                    <div [ngClass]="broughtCaution()">
-                      {{ statCount(bTeamArray, ["brought"]) }}
-                    </div>
+                <div class="flex justify-center space-x-2">
+                  <div class="font-semibold">Kills:</div>
+                  <div [ngClass]="bKillCaution()">
+                    {{ statCount(bTeamArray, ["kills", "indirect"]) }}
                   </div>
-                  <div class="flex justify-center space-x-2">
-                    <div class="font-semibold">Kills:</div>
-                    <div [ngClass]="bKillCaution()">
-                      {{ statCount(bTeamArray, ["kills", "indirect"]) }}
-                    </div>
-                  </div>
-                  <div class="flex justify-center space-x-2">
-                    <div class="font-semibold">Deaths:</div>
-                    <div [ngClass]="aKillCaution()">
-                      {{ statCount(bTeamArray, ["fainted"]) }}
-                    </div>
+                </div>
+                <div class="flex justify-center space-x-2">
+                  <div class="font-semibold">Deaths:</div>
+                  <div [ngClass]="aKillCaution()">
+                    {{ statCount(bTeamArray, ["fainted"]) }}
                   </div>
                 </div>
               </div>
