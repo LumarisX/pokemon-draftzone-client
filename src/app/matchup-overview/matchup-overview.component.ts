@@ -12,6 +12,7 @@ import duration from 'dayjs/plugin/duration';
 import { TeraSVG } from '../images/svg-components/tera.component';
 import { CopySVG } from '../images/svg-components/copy.component';
 import { CloseSVG } from '../images/svg-components/close.component';
+import { CheckSVG } from '../images/svg-components/score.component copy';
 
 dayjs.extend(duration);
 
@@ -27,6 +28,7 @@ dayjs.extend(duration);
     TeraSVG,
     CopySVG,
     CloseSVG,
+    CheckSVG,
     SpriteComponent,
   ],
 })
@@ -37,6 +39,7 @@ export class MatchupOverviewComponent implements OnInit {
   shareUrl = '';
   leagueId = '';
   timeString: string | null = null;
+  copied = false;
 
   @ViewChild('inputFieldRef') inputFieldRef!: ElementRef;
 
@@ -115,6 +118,10 @@ export class MatchupOverviewComponent implements OnInit {
       .writeText(this.shareUrl)
       .then(() => {
         console.log('URL copied to clipboard: ' + this.shareUrl);
+        this.copied = true;
+        setTimeout(() => {
+          this.copied = false;
+        }, 1000);
       })
       .catch((error) => {
         console.error('Failed to copy URL to clipboard: ', error);

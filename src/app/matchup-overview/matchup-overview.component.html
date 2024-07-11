@@ -68,10 +68,16 @@
               {{ shareUrl }}
             </div>
             <copy-svg
+              *ngIf="!copied"
               class="w-8 h-8 p-1 m-1 hover:p-0 hover:cursor-pointer"
               (click)="copyToClipboard()"
               alt="Copy"
             ></copy-svg>
+            <check-svg
+              *ngIf="copied"
+              class="w-8 h-8 p-1 m-1 hover:cursor-pointer"
+              alt="Copied"
+            ></check-svg>
           </div>
         </div>
         <div class="flex-grow"></div>
