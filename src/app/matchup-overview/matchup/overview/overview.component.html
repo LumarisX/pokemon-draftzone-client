@@ -18,7 +18,7 @@
         </tr>
         <tr
           *ngFor="let pokemon of teams[0].team"
-          class="h-12 border-b bg-aTeam-400 border-menu-400"
+          class="h-12 border-b bg-aTeam-300 border-menu-400"
         >
           <td class="w-fit">
             <div *ngIf="pokemon.capt" class="w-6 -mr-2">
@@ -53,7 +53,7 @@
         </tr>
         <tr
           *ngFor="let pokemon of teams[1].team"
-          class="h-12 border-b bg-bTeam-400 border-menu-400"
+          class="h-12 border-b bg-bTeam-300 border-menu-400"
         >
           <td class="w-12 text-center">{{ pokemon.baseStats.spe }}</td>
           <td class="w-32 text-xs text-end">

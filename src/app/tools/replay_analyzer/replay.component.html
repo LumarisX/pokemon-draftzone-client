@@ -106,7 +106,10 @@
             <div *ngFor="let mon of player.team" class="p-1">
               <div class="w-20">
                 <sprite
-                  [pokemon]="{ pid: getPID(mon.name), name: mon.name }"
+                  [pokemon]="{
+                    pid: mon.formes[mon.formes.length - 1].id,
+                    name: mon.formes[mon.formes.length - 1].detail.split(',')[0]
+                  }"
                   [disabled]="mon.fainted"
                 ></sprite>
               </div>

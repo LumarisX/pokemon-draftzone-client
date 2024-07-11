@@ -246,29 +246,33 @@ export class OpponentScoreComponent implements OnInit {
         let replayData: ReplayData = data;
         let aReplayTeam = -1;
         for (let mon of replayData.stats[0].team) {
-          let pid = getPidByName(mon.name);
-          if (pid) {
-            let aFind = this.matchup.aTeam.team.find((muMon) =>
-              muMon.pid.startsWith(pid!)
-            );
-            let bFind = this.matchup.bTeam.team.find((muMon) =>
-              muMon.pid.startsWith(pid!)
-            );
-            if (aFind && !bFind) {
-              aReplayTeam = 0;
-              break;
-            } else if (bFind && !aFind) {
-              aReplayTeam = 1;
-              break;
+          let anyFound = mon.formes.some((forme) => {
+            if (forme.id) {
+              let aFind = this.matchup.aTeam.team.find((muMon) =>
+                muMon.pid.startsWith(forme.id!)
+              );
+              let bFind = this.matchup.bTeam.team.find((muMon) =>
+                muMon.pid.startsWith(forme.id!)
+              );
+              if (aFind && !bFind) {
+                aReplayTeam = 0;
+                return true;
+              } else if (bFind && !aFind) {
+                aReplayTeam = 1;
+                return true;
+              }
             }
-          }
+            return false;
+          });
+          if (anyFound) break;
         }
         if (aReplayTeam >= 0 && aReplayTeam < replayData.stats.length) {
           replayData.stats[aReplayTeam].team.forEach((mon) => {
             if (mon.brought) {
               let replayCtrl = this.aTeamArray.controls.find((ctrl) => {
-                let pid = getPidByName(mon.name);
-                return pid && ctrl.value.pokemon.pid.startsWith(pid);
+                return mon.formes.some((forme) =>
+                  ctrl.value.pokemon.pid.startsWith(forme.id)
+                );
               });
               replayCtrl?.patchValue({
                 brought: +mon.brought,
@@ -281,8 +285,9 @@ export class OpponentScoreComponent implements OnInit {
           replayData.stats[(aReplayTeam + 1) % 2].team.forEach((mon) => {
             if (mon.brought) {
               let replayCtrl = this.bTeamArray.controls.find((ctrl) => {
-                let pid = getPidByName(mon.name);
-                return pid && ctrl.value.pokemon.pid.startsWith(pid);
+                return mon.formes.some((forme) =>
+                  ctrl.value.pokemon.pid.startsWith(forme.id)
+                );
               });
               replayCtrl?.patchValue({
                 brought: +mon.brought,

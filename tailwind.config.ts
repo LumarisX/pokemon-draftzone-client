@@ -110,7 +110,7 @@ export default {
           menu: colors.slate,
           symbolColor: {
             main: colors.black,
-            sub: colors.neutral[800],
+            sub: colors.neutral[700],
             disabled: colors.neutral[500],
             inverted: colors.white,
           },
@@ -176,9 +176,9 @@ export default {
             800: colors.slate[500],
           },
           symbolColor: {
-            main: colors.neutral[100],
-            sub: colors.neutral[300],
-            disabled: colors.neutral[400],
+            main: colors.neutral[200],
+            sub: colors.neutral[400],
+            disabled: colors.neutral[600],
             inverted: colors.neutral[200],
           },
           spriteBorder: colors.slate[400],

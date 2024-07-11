@@ -122,14 +122,14 @@ export class TypechartComponent implements OnChanges {
   }
 
   teamColor(inverted: boolean = false) {
-    if (this.selectedTeam > 0 == inverted) return 'bg-aTeam-400';
-    return 'bg-bTeam-400';
+    if (this.selectedTeam > 0 == inverted) return 'bg-aTeam-300';
+    return 'bg-bTeam-300';
   }
 
   clickColor(inverted: boolean = false) {
     if (this.selectedTeam > 0 == inverted)
-      return 'bg-aTeam-400 hover:bg-aTeam-300 cursor-pointer';
-    return 'bg-bTeam-400 hover:bg-bTeam-300 cursor-pointer';
+      return 'bg-aTeam-300 hover:bg-aTeam-300 cursor-pointer';
+    return 'bg-bTeam-300 hover:bg-bTeam-300 cursor-pointer';
   }
 
   toggleVisible(

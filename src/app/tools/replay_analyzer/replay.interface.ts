@@ -1,3 +1,5 @@
+import { PokemonId } from '../../pokemon';
+
 export type ReplayData = {
   gametype: string;
   genNum: number;
@@ -28,7 +30,7 @@ export type ReplayPlayer = {
 };
 
 export type ReplayMon = {
-  name: string;
+  formes: { detail: string; id: PokemonId }[];
   kills: [number, number];
   damageDealt: [number, number];
   damageTaken: [number, number];

@@ -50,16 +50,6 @@ export class ReplayComponent {
     return Math.floor(seconds / 60);
   }
 
-  monString(mon: ReplayMon) {
-    let teamString = `${mon.name}: `;
-    teamString +=
-      mon.kills[1] > 0
-        ? `${mon.kills[0]} Direct Kills, ${mon.kills[1]} Indirect Kills`
-        : `${mon.kills[0]} Kills`;
-    teamString += mon.fainted ? `, Fainted` : '';
-    return teamString;
-  }
-
   playerClass(index: number) {
     if (index === 1) {
       return 'bg-aTeam-200';
@@ -69,9 +59,5 @@ export class ReplayComponent {
     }
 
     return '';
-  }
-
-  getPID(name: string): string {
-    return getPidByName(name) || '';
   }
 }
