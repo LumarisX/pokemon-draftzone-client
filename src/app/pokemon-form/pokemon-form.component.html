@@ -84,8 +84,16 @@
     <div
       *ngIf="pokemonForm.get('capt.teraCheck')?.value"
       formGroupName="tera"
-      class="grid grid-cols-7 sm:grid-cols-12"
+      class="grid grid-cols-7 sm:grid-cols-10"
     >
+      <div class="flex justify-center p-1">
+        <button
+          class="bg-menu-100 text-sm px-2 w-fit border-2 rounded-lg border-menu-300 text-center hover:bg-menu-200"
+          (click)="allTera()"
+        >
+          All
+        </button>
+      </div>
       <div
         *ngFor="let type of teraTypes"
         class="flex flex-col items-center space-y-1"

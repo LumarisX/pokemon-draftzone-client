@@ -4,7 +4,6 @@ export type Archive = {
   _id: string;
   leagueName: string;
   teamName: string;
-  leagueId: string;
   format: number;
   ruleset: number;
   score: {
@@ -13,15 +12,5 @@ export type Archive = {
     diff: string;
   };
   owner: string;
-  team: Pokemon[];
-};
-
-export type Pokemon = {
-  pid: PokemonId | '';
-  shiny?: boolean;
-  name: string;
-  capt?: {
-    tera?: string[];
-    z?: boolean;
-  };
+  team: PokemonId[];
 };

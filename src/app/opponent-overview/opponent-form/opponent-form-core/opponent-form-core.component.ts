@@ -7,11 +7,11 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { Pokemon } from '../../../interfaces/draft';
-import { PokemonId, getPidByName } from '../../../pokemon';
-import { PokemonFormComponent } from '../../../pokemon-form/pokemon-form.component';
 import { SpriteComponent } from '../../../images/sprite.component';
 import { ImportSVG } from '../../../images/svg-components/import.component';
+import { Pokemon } from '../../../interfaces/draft';
+import { getPidByName } from '../../../pokemon';
+import { PokemonFormComponent } from '../../../pokemon-form/pokemon-form.component';
 
 @Component({
   selector: 'opponent-form-core',

@@ -35,13 +35,18 @@
   }
 
   .scrollbar-tera::-webkit-scrollbar-track {
-    border-radius: 100vh;
-    background: #f1f5f9;
+    display:none
   }
 
   .scrollbar-tera::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
+    background: hsl(
+      var(--twc-menu-400) / var(--twc-menu-400-opacity, var(--tw-bg-opacity))
+    );
     border-radius: 100vh;
+    border: 2px solid
+      hsl(
+        var(--twc-menu-400) / var(--twc-menu-400-opacity, var(--tw-bg-opacity))
+      );
   }
 
   .scrollbar-hidden::-webkit-scrollbar {

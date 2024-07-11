@@ -129,4 +129,10 @@ export class PokemonFormComponent implements OnInit {
   resultSelected($event: Pokemon) {
     this.pokemonForm.patchValue({ name: $event.name, pid: $event.pid });
   }
+
+  allTera() {
+    Object.values(
+      (this.pokemonForm.get('capt.tera') as FormGroup).controls
+    ).forEach((control) => control.setValue(true));
+  }
 }
