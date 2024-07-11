@@ -1,84 +1,99 @@
-<button
-  routerLink="/draft"
-  class="px-3 py-2 my-2 text-sm text-symbolColor-inverted rounded-md bg-menu-500 hover:bg-menu-600 focus:outline-none focus:bg-menu-600"
->
-  Back
-</button>
-<loading *ngIf="teamStats.length < 1"></loading>
-<div
-  class="p-2 border rounded-lg bg-menu-200 border-menu-300 w-full"
-  *ngIf="teamStats.length > 0"
->
-  <div class="p-1 mx-2 text-xl font-bold text-center border-b border-menu-100">
-    Kill Leaderboard
+<div class="p-2 m-2 border-2 bg-aTeam-100 rounded-xl border-aTeam-200">
+  <button
+    routerLink="/draft"
+    class="px-3 py-2 my-2 text-sm text-symbolColor-inverted rounded-md bg-menu-500 hover:bg-menu-600 focus:outline-none focus:bg-menu-600"
+  >
+    Back
+  </button>
+  <loading *ngIf="teamStats.length < 1"></loading>
+  <div
+    class="p-2 border rounded-lg bg-menu-200 border-menu-300 w-full"
+    *ngIf="teamStats.length > 0"
+  >
+    <div
+      class="p-1 mx-2 text-xl font-bold text-center border-b border-menu-100"
+    >
+      Kill Leaderboard
+    </div>
+    <div class="w-full max-w-128 overflow-x-auto">
+      <table class="table-auto">
+        <thead>
+          <tr>
+            <th></th>
+            <th
+              class="px-2 text-sm cursor-pointer"
+              (click)="sortByStat('name')"
+            >
+              <div *ngIf="sortBy != 'name'">Name</div>
+              <div *ngIf="sortBy == 'name' && !reversed">Name ↧</div>
+              <div *ngIf="sortBy == 'name' && reversed">Name ↥</div>
+            </th>
+            <th
+              class="px-2 text-sm cursor-pointer"
+              (click)="sortByStat('brought')"
+            >
+              <div *ngIf="sortBy != 'brought'">Games Brought</div>
+              <div *ngIf="sortBy == 'brought' && !reversed">
+                Games Brought ↥
+              </div>
+              <div *ngIf="sortBy == 'brought' && reversed">Games Brought ↧</div>
+            </th>
+            <th
+              class="px-2 text-sm cursor-pointer"
+              (click)="sortByStat('kills')"
+            >
+              <div *ngIf="sortBy != 'kills'">Direct Kills</div>
+              <div *ngIf="sortBy == 'kills' && !reversed">Direct Kills ↥</div>
+              <div *ngIf="sortBy == 'kills' && reversed">Direct Kills ↧</div>
+            </th>
+            <th
+              class="px-2 text-sm cursor-pointer"
+              (click)="sortByStat('indirect')"
+            >
+              <div *ngIf="sortBy != 'indirect'">Indirect Kills</div>
+              <div *ngIf="sortBy == 'indirect' && !reversed">
+                Indirect Kills ↥
+              </div>
+              <div *ngIf="sortBy == 'indirect' && reversed">
+                Indirect Kills ↧
+              </div>
+            </th>
+            <th
+              class="px-2 text-sm cursor-pointer"
+              (click)="sortByStat('deaths')"
+            >
+              <div *ngIf="sortBy != 'deaths'">Deaths</div>
+              <div *ngIf="sortBy == 'deaths' && !reversed">Deaths ↥</div>
+              <div *ngIf="sortBy == 'deaths' && reversed">Deaths ↧</div>
+            </th>
+            <th class="px-2 text-sm cursor-pointer" (click)="sortByStat('kdr')">
+              <div *ngIf="sortBy != 'kdr'">KDR</div>
+              <div *ngIf="sortBy == 'kdr' && !reversed">KDR ↥</div>
+              <div *ngIf="sortBy == 'kdr' && reversed">KDR ↧</div>
+            </th>
+            <th class="px-2 text-sm cursor-pointer" (click)="sortByStat('kpg')">
+              <div *ngIf="sortBy != 'kpg'">Kills per Game</div>
+              <div *ngIf="sortBy == 'kpg' && !reversed">Kills per Game ↥</div>
+              <div *ngIf="sortBy == 'kpg' && reversed">Kills per Game ↧</div>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="bg-menu-100" *ngFor="let stats of teamStats">
+            <td class="border">
+              <sprite [pokemon]="stats.pokemon"></sprite>
+            </td>
+            <td class="border">{{ stats.pokemon.name }}</td>
+            <td class="border">{{ stats.brought }}</td>
+            <td class="border">{{ stats.kills }}</td>
+            <td class="border">{{ stats.indirect }}</td>
+            <td class="border">{{ stats.deaths }}</td>
+            <td class="border">{{ stats.kdr }}</td>
+            <td class="border">{{ stats.kpg | number : "1.0-2" }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
-  <div class="w-full max-w-128 overflow-x-auto">
-    <table class="table-auto">
-      <thead>
-        <tr>
-          <th></th>
-          <th class="px-2 text-sm cursor-pointer" (click)="sortByStat('name')">
-            <div *ngIf="sortBy != 'name'">Name</div>
-            <div *ngIf="sortBy == 'name' && !reversed">Name ↧</div>
-            <div *ngIf="sortBy == 'name' && reversed">Name ↥</div>
-          </th>
-          <th
-            class="px-2 text-sm cursor-pointer"
-            (click)="sortByStat('brought')"
-          >
-            <div *ngIf="sortBy != 'brought'">Games Brought</div>
-            <div *ngIf="sortBy == 'brought' && !reversed">Games Brought ↥</div>
-            <div *ngIf="sortBy == 'brought' && reversed">Games Brought ↧</div>
-          </th>
-          <th class="px-2 text-sm cursor-pointer" (click)="sortByStat('kills')">
-            <div *ngIf="sortBy != 'kills'">Direct Kills</div>
-            <div *ngIf="sortBy == 'kills' && !reversed">Direct Kills ↥</div>
-            <div *ngIf="sortBy == 'kills' && reversed">Direct Kills ↧</div>
-          </th>
-          <th
-            class="px-2 text-sm cursor-pointer"
-            (click)="sortByStat('indirect')"
-          >
-            <div *ngIf="sortBy != 'indirect'">Indirect Kills</div>
-            <div *ngIf="sortBy == 'indirect' && !reversed">
-              Indirect Kills ↥
-            </div>
-            <div *ngIf="sortBy == 'indirect' && reversed">Indirect Kills ↧</div>
-          </th>
-          <th
-            class="px-2 text-sm cursor-pointer"
-            (click)="sortByStat('deaths')"
-          >
-            <div *ngIf="sortBy != 'deaths'">Deaths</div>
-            <div *ngIf="sortBy == 'deaths' && !reversed">Deaths ↥</div>
-            <div *ngIf="sortBy == 'deaths' && reversed">Deaths ↧</div>
-          </th>
-          <th class="px-2 text-sm cursor-pointer" (click)="sortByStat('kdr')">
-            <div *ngIf="sortBy != 'kdr'">KDR</div>
-            <div *ngIf="sortBy == 'kdr' && !reversed">KDR ↥</div>
-            <div *ngIf="sortBy == 'kdr' && reversed">KDR ↧</div>
-          </th>
-          <th class="px-2 text-sm cursor-pointer" (click)="sortByStat('kpg')">
-            <div *ngIf="sortBy != 'kpg'">Kills per Game</div>
-            <div *ngIf="sortBy == 'kpg' && !reversed">Kills per Game ↥</div>
-            <div *ngIf="sortBy == 'kpg' && reversed">Kills per Game ↧</div>
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr class="bg-menu-100" *ngFor="let stats of teamStats">
-          <td class="border">
-            <sprite [pokemon]="stats.pokemon"></sprite>
-          </td>
-          <td class="border">{{ stats.pokemon.name }}</td>
-          <td class="border">{{ stats.brought }}</td>
-          <td class="border">{{ stats.kills }}</td>
-          <td class="border">{{ stats.indirect }}</td>
-          <td class="border">{{ stats.deaths }}</td>
-          <td class="border">{{ stats.kdr }}</td>
-          <td class="border">{{ stats.kpg | number : "1.0-2" }}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  <div class="p-2 m-2 border-2 bg-aTeam-100 rounded-xl border-aTeam-200"></div>
 </div>

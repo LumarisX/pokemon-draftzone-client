@@ -2,13 +2,14 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { DraftService } from '../../api/draft.service';
-import { Draft } from '../../interfaces/draft';
-import { LoadingComponent } from '../../loading/loading.component';
 import { SpriteComponent } from '../../images/sprite.component';
 import { ArchiveSVG } from '../../images/svg-components/archive.component';
-import { EditSVG } from '../../images/svg-components/edit.component';
 import { BarChartSVG } from '../../images/svg-components/barchart.component';
+import { EditSVG } from '../../images/svg-components/edit.component';
 import { PlusSVG } from '../../images/svg-components/plus.component';
+import { TrashSVG } from '../../images/svg-components/trash.component';
+import { Draft } from '../../interfaces/draft';
+import { LoadingComponent } from '../../loading/loading.component';
 
 @Component({
   selector: 'draft-preview',
@@ -22,12 +23,12 @@ import { PlusSVG } from '../../images/svg-components/plus.component';
     EditSVG,
     BarChartSVG,
     PlusSVG,
+    TrashSVG,
     LoadingComponent,
   ],
 })
 export class DraftPreviewComponent {
-  teams: (Draft & { menu: 'main' | 'archive' | 'edit' | 'delete' })[] | null =
-    null;
+  drafts!: (Draft & { menu: 'main' | 'archive' | 'edit' | 'delete' })[];
 
   constructor(private draftService: DraftService) {}
 
@@ -36,12 +37,9 @@ export class DraftPreviewComponent {
   }
 
   reload() {
-    this.teams = null;
     this.draftService.getDraftsList().subscribe((data) => {
-      this.teams = <
-        (Draft & { menu: 'main' | 'archive' | 'edit' | 'delete' })[]
-      >data;
-      for (let team of this.teams) {
+      this.drafts = data;
+      for (let team of this.drafts) {
         team.menu = 'main';
       }
     });

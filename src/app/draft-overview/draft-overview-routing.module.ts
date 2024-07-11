@@ -6,6 +6,7 @@ import { DraftStatsComponent } from './draft-stats/draft-stats.component';
 import { DraftFormEditComponent } from './draft-form/draft-form-edit/draft-form-edit.component';
 import { DraftFormNewComponent } from './draft-form/draft-form-new/draft-form-new.component';
 import { DraftPreviewComponent } from './draft-preview/draft-preview.component';
+import { DraftArchiveComponent } from './draft-archives/draft-archives.component';
 const routes: Routes = [
   {
     path: 'draft',
@@ -24,6 +25,11 @@ const routes: Routes = [
       {
         path: 'edit',
         component: DraftFormEditComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'archives',
+        component: DraftArchiveComponent,
         canActivate: [AuthGuard],
       },
       {

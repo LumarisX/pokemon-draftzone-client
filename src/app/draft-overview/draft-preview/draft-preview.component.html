@@ -1,136 +1,137 @@
-<div class="flex items-center px-6 py-1">
-  <p class="text-3xl font-bold">Drafts</p>
-</div>
-<loading *ngIf="!teams"></loading>
-<div
-  *ngIf="teams"
-  id="teams"
-  class="grid h-auto grid-flow-row grid-cols-1 gap-4 p-2 overflow-auto md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4"
->
-  <div *ngFor="let team of teams">
-    <div
-      class="flex flex-col h-full shadow-md bg-aTeam-200 shadow-aTeam-600 rounded-xl"
-    >
-      <div class="flex-grow p-2 shadow-md bg-aTeam-300 rounded-xl">
-        <div class="flex items-center w-full space-x-2 h-fit">
-          <div
-            class="flex items-center justify-center w-3/5 h-auto p-1 overflow-hidden font-semibold text-center whitespace-normal rounded-full shadow-inner text-medium bg-aTeam-200 shadow-aTeam-600 overflow-ellipsis"
+<div class="p-2 m-2 border-2 bg-aTeam-100 rounded-xl border-aTeam-200">
+  <div class="flex items-center px-6 py-1">
+    <p class="text-3xl font-bold">Drafts</p>
+  </div>
+  <loading *ngIf="!drafts"></loading>
+  <div
+    *ngIf="drafts"
+    id="drafts"
+    class="grid h-auto grid-flow-row grid-cols-1 gap-4 p-2 overflow-auto md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4"
+  >
+    <div *ngFor="let draft of drafts">
+      <div
+        class="flex flex-col h-full shadow-md bg-aTeam-200 shadow-aTeam-600 rounded-xl"
+      >
+        <div class="flex-grow p-2 shadow-md bg-aTeam-300 rounded-xl">
+          <div class="flex items-center w-full space-x-2 h-fit">
+            <div
+              class="flex items-center justify-center w-3/5 h-auto p-1 overflow-hidden font-semibold text-center whitespace-normal rounded-full shadow-inner text-medium bg-aTeam-200 shadow-aTeam-600 overflow-ellipsis"
+            >
+              {{ draft.leagueName }}
+            </div>
+            <div
+              class="flex items-center justify-center w-1/5 p-1 overflow-hidden text-xs font-semibold text-center whitespace-normal rounded-full shadow-inner h-fit bg-aTeam-200 shadow-aTeam-600 overflow-ellipsis"
+            >
+              {{ draft.ruleset }}
+            </div>
+            <div
+              class="flex items-center justify-center w-1/5 p-1 overflow-hidden text-xs font-semibold text-center whitespace-normal rounded-full shadow-inner h-fit bg-aTeam-200 shadow-aTeam-600 overflow-ellipsis"
+            >
+              {{ draft.format }}
+            </div>
+          </div>
+          <div class="grid grid-cols-6 px-4 pt-2 sprites">
+            <sprite
+              *ngFor="let pokemon of draft.team"
+              [pokemon]="pokemon"
+            ></sprite>
+          </div>
+        </div>
+        <div class="flex p-2" *ngIf="draft.menu == 'main'">
+          <a
+            class="flex-grow p-1 font-semibold text-center shadow h-fit bg-aTeam-300 hover:shadow shadow-aTeam-600 rounded-xl"
+            [routerLink]="'/draft/' + draft.leagueId"
+            >Matches</a
           >
-            {{ team.leagueName }}
+          <div class="grid items-center justify-center grid-cols-3 gap-2 px-2">
+            <barchart-svg
+              class="w-8 h-8 p-1 shadow rounded-xl hover:cursor-pointer hover:shadow bg-aTeam-300 shadow-aTeam-600"
+              [routerLink]="draft.leagueId + '/stats'"
+              title="Stats"
+              alt="Stats"
+            ></barchart-svg>
+            <edit-svg
+              class="w-8 h-8 p-1 shadow rounded-xl hover:cursor-pointer hover:shadow bg-aTeam-300 shadow-aTeam-600"
+              (click)="draft.menu = 'edit'"
+              title="Edit"
+              alt="Edit"
+            ></edit-svg>
+            <archive-svg
+              class="w-8 h-8 p-1 shadow rounded-xl opacity-50 bg-aTeam-300 shadow-aTeam-600"
+              alt="Archive"
+              title="Archive"
+            >
+            </archive-svg>
+          </div>
+        </div>
+        <div class="flex" *ngIf="draft.menu == 'archive'">
+          <div
+            class="w-2/3 m-2 text-center shadow bg-aTeam-300 shadow-aTeam-600 rounded-xl"
+          >
+            Are you sure you want to archive?
           </div>
           <div
-            class="flex items-center justify-center w-1/5 p-1 overflow-hidden text-xs font-semibold text-center whitespace-normal rounded-full shadow-inner h-fit bg-aTeam-200 shadow-aTeam-600 overflow-ellipsis"
+            class="flex items-center justify-center w-1/6 m-2 shadow cursor-pointer bg-aTeam-300 hover:shadow shadow-aTeam-600 rounded-xl"
+            (click)="archive(draft.leagueId)"
           >
-            {{ team.ruleset }}
+            Yes
           </div>
           <div
-            class="flex items-center justify-center w-1/5 p-1 overflow-hidden text-xs font-semibold text-center whitespace-normal rounded-full shadow-inner h-fit bg-aTeam-200 shadow-aTeam-600 overflow-ellipsis"
+            class="flex items-center justify-center w-1/6 m-2 shadow cursor-pointer bg-aTeam-300 hover:shadow shadow-aTeam-600 rounded-xl"
+            (click)="draft.menu = 'main'"
           >
-            {{ team.format }}
+            No
           </div>
         </div>
-        <div class="grid grid-cols-6 px-4 pt-2 sprites">
-          <sprite
-            *ngFor="let pokemon of team.team"
-            [pokemon]="pokemon"
-          ></sprite>
-        </div>
-      </div>
-      <div class="flex p-2" *ngIf="team.menu == 'main'">
-        <a
-          class="flex-grow p-1 font-semibold text-center shadow h-fit bg-aTeam-300 hover:shadow shadow-aTeam-600 rounded-xl"
-          [routerLink]="'/draft/' + team.leagueId"
-          >Matches</a
-        >
-        <div class="grid items-center justify-center grid-cols-3 gap-2 px-2">
-          <barchart-svg
-            class="w-8 h-8 p-1 shadow rounded-xl hover:cursor-pointer hover:shadow bg-aTeam-300 shadow-aTeam-600"
-            [routerLink]="team.leagueId + '/stats'"
-            title="Stats"
-            alt="Stats"
-          ></barchart-svg>
-          <edit-svg
-            class="w-8 h-8 p-1 shadow rounded-xl hover:cursor-pointer hover:shadow bg-aTeam-300 shadow-aTeam-600"
-            (click)="team.menu = 'edit'"
-            title="Edit"
-            alt="Edit"
-          ></edit-svg>
-          <archive-svg
-            class="w-8 h-8 p-1 shadow rounded-xl hover:cursor-pointer hover:shadow bg-aTeam-300 shadow-aTeam-600"
-            alt="Archive"
-            title="Archive"
-            (click)="team.menu = 'archive'"
+        <div class="flex" *ngIf="draft.menu == 'edit'">
+          <a
+            class="w-1/6 m-2 text-center shadow cursor-pointer bg-aTeam-300 hover:shadow shadow-aTeam-600 rounded-xl"
+            (click)="draft.menu = 'main'"
+            >Back</a
           >
-          </archive-svg>
+          <a
+            class="w-1/3 m-2 text-center shadow bg-aTeam-300 shadow-aTeam-600 rounded-xl text-aTeam-500"
+            >Trade</a
+          >
+          <a
+            class="w-1/3 m-2 text-center shadow bg-aTeam-300 hover:shadow shadow-aTeam-600 rounded-xl"
+            [routerLink]="'edit'"
+            [queryParams]="{ draft: draft.leagueId | json }"
+            >Edit Team
+          </a>
+          <a
+            class="w-1/6 m-2 text-center shadow cursor-pointer bg-aTeam-300 hover:shadow shadow-aTeam-600 rounded-xl"
+            (click)="draft.menu = 'delete'"
+            >Delete
+          </a>
         </div>
-      </div>
-      <div class="flex" *ngIf="team.menu == 'archive'">
-        <div
-          class="w-2/3 m-2 text-center shadow bg-aTeam-300 shadow-aTeam-600 rounded-xl"
-        >
-          Are you sure you want to archive?
-        </div>
-        <div
-          class="flex items-center justify-center w-1/6 m-2 shadow cursor-pointer bg-aTeam-300 hover:shadow shadow-aTeam-600 rounded-xl"
-          (click)="archive(team.leagueId)"
-        >
-          Yes
-        </div>
-        <div
-          class="flex items-center justify-center w-1/6 m-2 shadow cursor-pointer bg-aTeam-300 hover:shadow shadow-aTeam-600 rounded-xl"
-          (click)="team.menu = 'main'"
-        >
-          No
-        </div>
-      </div>
-      <div class="flex" *ngIf="team.menu == 'edit'">
-        <a
-          class="w-1/6 m-2 text-center shadow cursor-pointer bg-aTeam-300 hover:shadow shadow-aTeam-600 rounded-xl"
-          (click)="team.menu = 'main'"
-          >Back</a
-        >
-        <a
-          class="w-1/3 m-2 text-center shadow bg-aTeam-300 shadow-aTeam-600 rounded-xl text-aTeam-500"
-          >Trade</a
-        >
-        <a
-          class="w-1/3 m-2 text-center shadow bg-aTeam-300 hover:shadow shadow-aTeam-600 rounded-xl"
-          [routerLink]="'edit'"
-          [queryParams]="{ draft: team.leagueId | json }"
-          >Edit Team
-        </a>
-        <a
-          class="w-1/6 m-2 text-center shadow cursor-pointer bg-aTeam-300 hover:shadow shadow-aTeam-600 rounded-xl"
-          (click)="team.menu = 'delete'"
-          >Delete
-        </a>
-      </div>
-      <div class="flex" *ngIf="team.menu == 'delete'">
-        <div
-          class="w-2/3 m-2 text-center shadow bg-aTeam-300 shadow-aTeam-600 rounded-xl"
-        >
-          Are you sure you want to delete?
-        </div>
-        <div
-          class="flex items-center justify-center w-1/6 m-2 shadow cursor-pointer bg-aTeam-300 hover:shadow shadow-aTeam-600 rounded-xl"
-          (click)="delete(team.leagueId)"
-        >
-          Yes
-        </div>
-        <div
-          class="flex items-center justify-center w-1/6 m-2 shadow cursor-pointer bg-aTeam-300 hover:shadow shadow-aTeam-600 rounded-xl"
-          (click)="team.menu = 'main'"
-        >
-          No
+        <div class="flex" *ngIf="draft.menu == 'delete'">
+          <div
+            class="w-2/3 m-2 text-center shadow bg-aTeam-300 shadow-aTeam-600 rounded-xl"
+          >
+            Are you sure you want to delete?
+          </div>
+          <div
+            class="flex items-center justify-center w-1/6 m-2 shadow cursor-pointer bg-aTeam-300 hover:shadow shadow-aTeam-600 rounded-xl"
+            (click)="delete(draft.leagueId)"
+          >
+            Yes
+          </div>
+          <div
+            class="flex items-center justify-center w-1/6 m-2 shadow cursor-pointer bg-aTeam-300 hover:shadow shadow-aTeam-600 rounded-xl"
+            (click)="draft.menu = 'main'"
+          >
+            No
+          </div>
         </div>
       </div>
     </div>
   </div>
+  <button
+    [routerLink]="'/draft/new'"
+    class="flex items-center p-1 m-3 rounded-lg shadow-md bg-aTeam-300 hover:shadow shadow-aTeam-600"
+    title="Add League"
+  >
+    <plus-svg class="w-6"></plus-svg>
+  </button>
 </div>
-<button
-  [routerLink]="'/draft/new'"
-  class="flex items-center p-1 m-3 rounded-lg shadow-md bg-aTeam-300 hover:shadow shadow-aTeam-600"
-  title="Add League"
->
-  <plus-svg class="w-6"></plus-svg>
-</button>
