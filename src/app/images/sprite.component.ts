@@ -9,14 +9,17 @@ import { SettingsService } from '../pages/settings/settings.service';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <img
-      class="h-full w-full -z-100 object-contain"
-      *ngIf="pokemon.pid"
-      [ngClass]="this.classes"
-      title="{{ pokemon.name }}"
-      src="{{ path }}"
-      onerror="this.src='../../../../assets/icons/unknown.svg'"
-    />
+    <div class="h-full w-full flex justify-center items-end">
+      <img
+        class="max-h-full max-w-full -z-100 object-contain aspect-square	"
+        *ngIf="pokemon.pid"
+        [ngClass]="this.classes"
+        title="{{ pokemon.name }}"
+        src="{{ path }}"
+        onerror="this.src='../../../../assets/icons/unknown.svg'"
+        (error)="fallback()"
+      />
+    </div>
   `,
 })
 export class SpriteComponent {
@@ -51,11 +54,10 @@ export class SpriteComponent {
           pokemon.shiny ? '-shiny' : ''
         }/${getSpriteName(pokemon.pid, 'ps')}.png`;
         break;
-      case 'icon':
-        this.path = `https://img.pokemondb.net/sprites/scarlet-violet/icon/${getSpriteName(
-          pokemon.pid,
-          'pd'
-        )}.png`;
+      case 'afd':
+        this.path = `https://play.pokemonshowdown.com/sprites/afd${
+          pokemon.shiny ? '-shiny' : ''
+        }/${getSpriteName(pokemon.pid, 'ps')}.png`;
         break;
       case 'sv':
         this.path = `https://play.pokemonshowdown.com/sprites/dex${
@@ -79,6 +81,22 @@ export class SpriteComponent {
         }/${getSpriteName(pokemon.pid, 'pd')}.png`;
         this.classes.push('sprite-border');
         break;
+    }
+  }
+
+  fallback() {
+    if (this.pokemon) {
+      switch (this.settingService.settingsData.spriteSet) {
+        case 'sv':
+        case 'ani':
+          this.path = `https://play.pokemonshowdown.com/sprites/gen5${
+            this.pokemon.shiny ? '-shiny' : ''
+          }/${getSpriteName(this.pokemon.pid, 'ps')}.png`;
+          break;
+        default:
+          this.path = '../../../../assets/icons/unknown.svg';
+          break;
+      }
     }
   }
 }
