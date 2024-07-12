@@ -128,8 +128,8 @@ export class TypechartComponent implements OnChanges {
 
   clickColor(inverted: boolean = false) {
     if (this.selectedTeam > 0 == inverted)
-      return 'bg-aTeam-300 hover:bg-aTeam-300 cursor-pointer';
-    return 'bg-bTeam-300 hover:bg-bTeam-300 cursor-pointer';
+      return 'bg-aTeam-300 hover:bg-aTeam-200 cursor-pointer';
+    return 'bg-bTeam-300 hover:bg-bTeam-200 cursor-pointer';
   }
 
   toggleVisible(

@@ -20,12 +20,25 @@ export type ReplayPlayer = {
   turnChart: { turn: number; damage: number; remaining: number }[];
   team: ReplayMon[];
   win: boolean;
-  accuracy: {
-    total: number;
-    hits: number;
-    expected: number;
-    actual: number;
-    luck: number;
+  luck: {
+    moves: {
+      total: number;
+      hits: number;
+      expected: number;
+      actual: number;
+    };
+    crits: {
+      total: number;
+      hits: number;
+      expected: number;
+      actual: number;
+    };
+    status: {
+      total: number;
+      full: number;
+      expected: number;
+      actual: number;
+    };
   };
 };
 

@@ -4,9 +4,9 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { ReplayService } from '../../api/replay.service';
 import { SpriteComponent } from '../../images/sprite.component';
-import { getPidByName } from '../../pokemon';
-import { ReplayData, ReplayMon } from './replay.interface';
+import { LoadingComponent } from '../../loading/loading.component';
 import { ReplayChartComponent } from './replay-chart/replay-chart.component';
+import { ReplayData } from './replay.interface';
 
 @Component({
   selector: 'replay-analyzer',
@@ -18,6 +18,7 @@ import { ReplayChartComponent } from './replay-chart/replay-chart.component';
     FormsModule,
     SpriteComponent,
     ReplayChartComponent,
+    LoadingComponent,
   ],
 })
 export class ReplayComponent {
