@@ -3,13 +3,14 @@ import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { DraftService } from '../../api/draft.service';
 import { SpriteComponent } from '../../images/sprite.component';
-import { ArchiveSVG } from '../../images/svg-components/archive.component';
 import { BarChartSVG } from '../../images/svg-components/barchart.component';
 import { EditSVG } from '../../images/svg-components/edit.component';
 import { PlusSVG } from '../../images/svg-components/plus.component';
 import { TrashSVG } from '../../images/svg-components/trash.component';
 import { Draft } from '../../interfaces/draft';
 import { LoadingComponent } from '../../loading/loading.component';
+import { ArchiveAddSVG } from '../../images/svg-components/archiveAdd.component';
+import { ArchiveSVG } from '../../images/svg-components/archive.component';
 
 @Component({
   selector: 'draft-preview',
@@ -19,12 +20,13 @@ import { LoadingComponent } from '../../loading/loading.component';
     CommonModule,
     RouterModule,
     SpriteComponent,
-    ArchiveSVG,
+    ArchiveAddSVG,
     EditSVG,
     BarChartSVG,
     PlusSVG,
     TrashSVG,
     LoadingComponent,
+    ArchiveSVG,
   ],
 })
 export class DraftPreviewComponent {

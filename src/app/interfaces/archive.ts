@@ -3,6 +3,7 @@ import { PokemonId } from '../pokemon';
 export type Archive = {
   _id: string;
   leagueName: string;
+
   teamName: string;
   format: number;
   ruleset: number;
@@ -12,5 +13,5 @@ export type Archive = {
     diff: string;
   };
   owner: string;
-  team: PokemonId[];
+  team: { pid: PokemonId; name: string }[];
 };

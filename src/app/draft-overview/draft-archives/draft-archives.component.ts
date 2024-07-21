@@ -5,6 +5,7 @@ import { ArchiveService } from '../../api/archive.service';
 import { SpriteComponent } from '../../images/sprite.component';
 import { BarChartSVG } from '../../images/svg-components/barchart.component';
 import { TrashSVG } from '../../images/svg-components/trash.component';
+import { Archive } from '../../interfaces/archive';
 import { LoadingComponent } from '../../loading/loading.component';
 
 @Component({
@@ -21,7 +22,7 @@ import { LoadingComponent } from '../../loading/loading.component';
   ],
 })
 export class DraftArchiveComponent {
-  archives: any;
+  archives!: (Archive & { menu: 'main' | 'archive' | 'edit' | 'delete' })[];
 
   constructor(private archiveService: ArchiveService) {}
 
@@ -39,8 +40,8 @@ export class DraftArchiveComponent {
     });
   }
 
-  delete(teamId: string) {
-    this.archiveService.deleteDraft(teamId).subscribe((data) => {
+  delete(id: string) {
+    this.archiveService.deleteDraft(id).subscribe((data) => {
       this.reload();
     });
   }
