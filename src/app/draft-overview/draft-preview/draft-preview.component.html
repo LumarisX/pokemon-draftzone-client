@@ -57,9 +57,10 @@
               alt="Edit"
             ></edit-svg>
             <archive-svg
-              class="w-8 h-8 p-1 shadow rounded-xl opacity-50 bg-aTeam-300 shadow-aTeam-600"
+              class="w-8 h-8 p-1 shadow rounded-xl bg-aTeam-300 hover:cursor-pointer hover:shadow shadow-aTeam-600"
               alt="Archive"
               title="Archive"
+              (click)="draft.menu = 'archive'"
             >
             </archive-svg>
           </div>
@@ -68,7 +69,7 @@
           <div
             class="w-2/3 m-2 text-center shadow bg-aTeam-300 shadow-aTeam-600 rounded-xl"
           >
-            Are you sure you want to archive?
+            Are you sure you want to archive? This can not be undone.
           </div>
           <div
             class="flex items-center justify-center w-1/6 m-2 shadow cursor-pointer bg-aTeam-300 hover:shadow shadow-aTeam-600 rounded-xl"
@@ -109,7 +110,7 @@
           <div
             class="w-2/3 m-2 text-center shadow bg-aTeam-300 shadow-aTeam-600 rounded-xl"
           >
-            Are you sure you want to delete?
+            Are you sure you want to delete? This can not be undone.
           </div>
           <div
             class="flex items-center justify-center w-1/6 m-2 shadow cursor-pointer bg-aTeam-300 hover:shadow shadow-aTeam-600 rounded-xl"
