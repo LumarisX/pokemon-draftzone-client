@@ -2,10 +2,12 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Settings, SettingsService } from './settings.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { SpriteComponent } from '../../images/sprite.component';
+import { Pokemon } from '../../interfaces/draft';
 @Component({
   selector: 'settings',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, SpriteComponent],
   templateUrl: './settings.component.html',
 })
 export class SettingsComponent implements OnInit {
@@ -15,6 +17,7 @@ export class SettingsComponent implements OnInit {
   ) {}
 
   settingsData!: Settings;
+  example: Pokemon = { pid: 'deoxysattack', name: 'Deoxys-Attack' };
 
   themes: { id: string; name: string }[] = [
     { id: 'classic', name: 'Classic' },
@@ -32,6 +35,7 @@ export class SettingsComponent implements OnInit {
     form.valueChanges.subscribe((value: any) => {
       this.settingsService.settingsData = value;
       localStorage.setItem('user-settings', JSON.stringify(value));
+      this.example = { pid: 'deoxysattack', name: 'Deoxys-Attack' };
     });
     form.get('ldMode')?.valueChanges.subscribe((value: string | null) => {
       if (value) this.settingsService.updateLDMode(value);
