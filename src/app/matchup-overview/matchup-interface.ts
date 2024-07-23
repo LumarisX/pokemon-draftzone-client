@@ -1,5 +1,5 @@
 import { Pokemon } from '../interfaces/draft';
-import { BattlePokedex } from '../pokedex';
+import { Pokedex } from '../pokedex';
 
 export type Speedtier = {
   pokemon: Pokemon;

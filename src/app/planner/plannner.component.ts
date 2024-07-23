@@ -27,7 +27,7 @@ import {
   Summary,
   TypeChart,
 } from '../matchup-overview/matchup-interface';
-import { BattlePokedex } from '../pokedex';
+import { Pokedex } from '../pokedex';
 import { PokemonId, getPidByName } from '../pokemon';
 import { FinderComponent } from './finder/finder.component';
 import { MoveComponent } from './moves/moves.component';
@@ -192,7 +192,7 @@ export class PlannerComponent implements OnInit {
     this.team = [];
     for (let pokemon of this.teamFormArray.controls) {
       let pid = pokemon.get('pid')?.value;
-      if (pid in BattlePokedex) {
+      if (pid in Pokedex) {
         this.team.push(pid);
       }
     }

@@ -1,18 +1,21 @@
-import { BattlePokedex } from './pokedex';
+import { Pokedex } from './pokedex';
 
-export type PokemonId = keyof typeof BattlePokedex & string;
+export type PokemonId = keyof typeof Pokedex & string;
 
 export function getSpriteName(
   pokemonId: PokemonId,
-  source: 'ps' | 'serebii' | 'pd'
+  source: 'ps' | 'serebii' | 'pd' | 'pmd'
 ): string {
-  return BattlePokedex[pokemonId] ? BattlePokedex[pokemonId][source] : '';
+  if (Pokedex[pokemonId]) {
+    return Pokedex[pokemonId][source];
+  }
+  return '';
 }
 
 export function getPidByName(name: string): PokemonId | null {
   name = name.toLowerCase();
-  for (const key in BattlePokedex) {
-    const pokemonNames = BattlePokedex[key].name;
+  for (const key in Pokedex) {
+    const pokemonNames = Pokedex[key].name;
     if (
       pokemonNames.some((pokemonName) => pokemonName.toLowerCase() === name)
     ) {

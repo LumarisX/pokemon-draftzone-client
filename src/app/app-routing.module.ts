@@ -4,6 +4,7 @@ import { HomeComponent } from './pages/homepage/homepage.component';
 import { PlannerComponent } from './planner/plannner.component';
 import { AboutComponent } from './pages/about/about.component';
 import { SettingsComponent } from './pages/settings/settings.component';
+import { TestComponent } from './pages/test/test.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -13,7 +14,6 @@ const routes: Routes = [
   { path: 'draft', redirectTo: 'draft' },
   { path: 'error', redirectTo: 'error' },
   { path: 'matchup', redirectTo: 'draft' },
-  { path: 'test', redirectTo: 'test' },
   { path: 'replay', redirectTo: 'replay' },
   { path: '**', component: HomeComponent },
 ];

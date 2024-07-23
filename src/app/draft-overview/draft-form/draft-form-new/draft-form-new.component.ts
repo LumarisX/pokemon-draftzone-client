@@ -13,7 +13,7 @@ import { DraftService } from '../../../api/draft.service';
 import { PokemonFormComponent } from '../../../pokemon-form/pokemon-form.component';
 import { SpriteComponent } from '../../../images/sprite.component';
 import { DraftFormCoreComponent } from '../draft-form-core/draft-form-core.component';
-import { BattlePokedex } from '../../../pokedex';
+import { Pokedex } from '../../../pokedex';
 
 @Component({
   selector: 'draft-form-new',
@@ -49,7 +49,7 @@ export class DraftFormNewComponent implements OnInit {
           teamArray.push(
             PokemonFormComponent.addPokemonForm({
               pid: pid,
-              name: BattlePokedex[pid].name[0],
+              name: Pokedex[pid].name[0],
             })
           );
         }
