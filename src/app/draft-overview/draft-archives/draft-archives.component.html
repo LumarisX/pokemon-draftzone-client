@@ -1,6 +1,12 @@
 <div class="p-2 m-2 border-2 bg-aTeam-100 rounded-xl border-aTeam-200">
   <div class="flex items-center px-6 py-1">
-    <p class="text-3xl font-bold">Archived Drafts</p>
+    <button
+      routerLink="/draft"
+      class="px-3 py-2 my-2 text-sm text-symbolColor-inverted rounded-md bg-menu-500 hover:bg-menu-600 focus:outline-none focus:bg-menu-600"
+    >
+      Back
+    </button>
+    <p class="px-6 text-3xl font-bold">Archived Drafts</p>
   </div>
   <loading *ngIf="!archives"></loading>
   <div
@@ -33,7 +39,7 @@
           <div class="grid grid-cols-6 px-4 pt-2 sprites">
             <sprite
               *ngFor="let pokemon of archive.team"
-              [pokemon]="{ pid: pokemon, name: pokemon }"
+              [pokemon]="{ pid: pokemon.pid, name: pokemon.name }"
             ></sprite>
           </div>
         </div>
@@ -58,11 +64,11 @@
           <div
             class="w-2/3 m-2 text-center shadow bg-aTeam-300 shadow-aTeam-600 rounded-xl"
           >
-            Are you sure you want to delete?
+            Are you sure you want to delete? This can not be undone.
           </div>
           <div
             class="flex items-center justify-center w-1/6 m-2 shadow cursor-pointer bg-aTeam-300 hover:shadow shadow-aTeam-600 rounded-xl"
-            (click)="delete(archive.leagueId)"
+            (click)="delete(archive._id)"
           >
             Yes
           </div>
