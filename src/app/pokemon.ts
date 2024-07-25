@@ -1,15 +1,15 @@
-import { Pokedex } from './pokedex';
+import { Pokedex, SpriteProperties } from './pokedex';
 
 export type PokemonId = keyof typeof Pokedex & string;
 
-export function getSpriteName(
+export function getSpriteProperties(
   pokemonId: PokemonId,
   source: 'ps' | 'serebii' | 'pd' | 'pmd'
-): string {
+): SpriteProperties | undefined {
   if (Pokedex[pokemonId]) {
     return Pokedex[pokemonId][source];
   }
-  return '';
+  return undefined;
 }
 
 export function getPidByName(name: string): PokemonId | null {
