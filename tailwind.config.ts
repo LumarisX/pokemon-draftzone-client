@@ -24,6 +24,7 @@ export default {
           150: '#EAEFF5',
           250: '#D7DFE9',
           350: '#B0BCCC',
+          650: '#3D4B5F',
         },
         cyan: {
           150: '#BAF7FD',
@@ -84,6 +85,24 @@ export default {
     createThemes(
       {
         classic: {
+          logo: {
+            top: '#0fb6cd',
+            bottom: '#f15b42',
+            background: colors.white,
+            core: {
+              1: '#FFF',
+              2: '#9c65aa',
+            },
+            ring: {
+              1: '#fff',
+              2: '#fbd8d2',
+              3: '#f7ab9f',
+              4: '#f48876',
+              5: '#f26f59',
+              6: '#f16048',
+              7: '#f15b42',
+            },
+          },
           page: colors.white,
           aTeam: colors.cyan,
           bTeam: {
@@ -137,13 +156,26 @@ export default {
             neutral: colors.slate[300],
           },
           caution: colors.yellow[200],
-          deoxys: {
-            accent: '#F15B42',
-            main: '#0FB6CD',
-            core: '#9B65AA',
-          },
         },
         darkclassic: {
+          logo: {
+            top: '#0fb6cd',
+            bottom: '#f15b42',
+            background: '#3D4B5F',
+            core: {
+              1: '#FFF',
+              2: '#71497C',
+            },
+            ring: {
+              1: '#000',
+              2: '#33130E',
+              3: '#66271C',
+              4: '#993A2A',
+              5: '#B64532',
+              6: '#D4503A',
+              7: '#f15b42',
+            },
+          },
           page: colors.slate[900],
           aTeam: {
             100: '#07A4C3',
@@ -181,7 +213,7 @@ export default {
             disabled: colors.neutral[600],
             inverted: colors.neutral[200],
           },
-          spriteBorder: colors.slate[400],
+          spriteBorder: colors.slate[500],
           scale: {
             positive: {
               1: colors.emerald[900],
@@ -204,13 +236,13 @@ export default {
             neutral: colors.slate[700],
           },
           caution: colors.yellow[600],
-          deoxys: {
-            accent: '#F15B42',
-            main: '#0FB6CD',
-            core: '#9B65AA',
-          },
         },
         graycolorblind: {
+          logo: {
+            top: '#0fb6cd',
+            bottom: '#f15b42',
+            background: colors.slate[100],
+          },
           page: colors.white,
           aTeam: {
             100: colors.gray[50],
@@ -266,13 +298,13 @@ export default {
             neutral: '#898992',
           },
           caution: colors.yellow[200],
-          deoxys: {
-            accent: '#858585',
-            main: '#868686',
-            core: '#7C7C7C',
-          },
         },
         darkcolorblind: {
+          logo: {
+            top: '#0fb6cd',
+            bottom: '#f15b42',
+            background: colors.slate[600],
+          },
           page: colors.slate[900],
           aTeam: {
             100: colors.gray[800],
@@ -337,13 +369,26 @@ export default {
             neutral: '#898992',
           },
           caution: colors.yellow[600],
-          deoxys: {
-            accent: '#858585',
-            main: '#868686',
-            core: '#7C7C7C',
-          },
         },
         shiny: {
+          logo: {
+            top: colors.teal[400],
+            bottom: '#E9CA32',
+            background: colors.white,
+            core: {
+              1: '#FFF',
+              2: '#9c65aa',
+            },
+            ring: {
+              1: '#fff',
+              2: '#FBF5D9',
+              3: '#F7EBB3',
+              4: '#F3E18D',
+              5: '#EFD767',
+              6: '#EACE41',
+              7: '#E6C41B',
+            },
+          },
           page: colors.white,
           aTeam: colors.teal,
           bTeam: {
@@ -397,13 +442,26 @@ export default {
             neutral: colors.slate[300],
           },
           caution: colors.green[200],
-          deoxys: {
-            main: colors.teal[400],
-            accent: '#E9CA32',
-            core: '#9B65AA',
-          },
         },
         darkshiny: {
+          logo: {
+            top: '#11A697',
+            bottom: '#D2B004',
+            background: '#3D4B5F',
+            core: {
+              1: '#FFF',
+              2: '#71497C',
+            },
+            ring: {
+              1: '#000',
+              2: '#292301',
+              3: '#514501',
+              4: '#7A6802',
+              5: '#978003',
+              6: '#B59803',
+              7: '#D2B004',
+            },
+          },
           page: colors.slate[900],
           aTeam: {
             100: '#11A697',
@@ -441,7 +499,7 @@ export default {
             disabled: colors.neutral[400],
             inverted: colors.neutral[200],
           },
-          spriteBorder: colors.slate[400],
+          spriteBorder: colors.slate[500],
           scale: {
             positive: {
               1: colors.emerald[900],
@@ -464,11 +522,6 @@ export default {
             neutral: colors.slate[700],
           },
           caution: colors.green[600],
-          deoxys: {
-            main: colors.teal[400],
-            accent: '#E9CA32',
-            core: '#9B65AA',
-          },
         },
       },
       {

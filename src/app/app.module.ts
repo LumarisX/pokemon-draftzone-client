@@ -10,6 +10,7 @@ import { ErrorModule } from './error/error.module';
 import { MatchupOverviewModule } from './matchup-overview/matchup-overview.module';
 import { OpponentOverviewModule } from './opponent-overview/opponent-overview.module';
 import { ToolsModule } from './tools/tools.module';
+import { LogoSVG } from './images/svg-components/logo.component';
 
 @NgModule({
   imports: [
@@ -34,7 +35,6 @@ import { ToolsModule } from './tools/tools.module';
             tokenOptions: {
               authorizationParams: {
                 audience: 'https://dev-wspjxi5f6mjqsjea.us.auth0.com/api/v2/',
-
                 scope: 'read:current_user',
               },
             },
@@ -46,6 +46,7 @@ import { ToolsModule } from './tools/tools.module';
     MatchupOverviewModule,
     RouterModule,
     AppRoutingModule,
+    LogoSVG,
   ],
   declarations: [AppComponent],
   bootstrap: [AppComponent],
