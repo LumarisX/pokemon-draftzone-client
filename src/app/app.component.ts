@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { AuthService } from './auth/auth0.service';
 import { SettingsService } from './pages/settings/settings.service';
 
@@ -9,6 +9,7 @@ import { SettingsService } from './pages/settings/settings.service';
 export class AppComponent implements OnInit {
   userDropdown = false;
   menuDropdown = false;
+  innerClick: undefined | 'user' | 'menu';
 
   constructor(
     public auth: AuthService,
@@ -23,6 +24,20 @@ export class AppComponent implements OnInit {
         localStorage.setItem('shinyunlocked', 'true');
       }
     }
+  }
+
+  outer() {
+    if (this.menuDropdown && this.innerClick !== 'menu') {
+      this.menuDropdown = false;
+    }
+
+    if (this.userDropdown && this.innerClick !== 'user') {
+      this.userDropdown = false;
+    }
+    this.innerClick = undefined;
+  }
+  inner(menu: 'user' | 'menu') {
+    this.innerClick = menu;
   }
 
   getTheme() {

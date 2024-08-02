@@ -1,9 +1,10 @@
 <div
   class="flex flex-col justify-between h-dvh text-symbolColor-main bg-page"
   [ngClass]="getTheme()"
+  (click)="outer()"
 >
   <header class="z-10 flex w-full p-2 border-b-2 bg-menu-300 border-menu-400">
-    <div class="relative flex">
+    <div class="relative flex" (click)="inner('menu')">
       <button
         (click)="menuDropdown = !menuDropdown"
         id="dropdownButton"
@@ -86,7 +87,7 @@
         </div>
       </div>
     </div>
-    <div class="flex justify-end flex-grow h-full">
+    <div class="flex justify-end flex-grow h-full" (click)="inner('user')">
       <div class="flex flex-col items-center justify-center h-full">
         <ng-container *ngIf="auth.isAuthenticated() | async; else loggedOut">
           <div
@@ -106,13 +107,15 @@
             >
               <div
                 class="px-2 py-1 rounded-lg hover:bg-menu-200 hover:cursor-pointer"
+                routerLink="/settings"
               >
-                <button routerLink="/settings">Settings</button>
+                Settings
               </div>
               <div
                 class="px-2 py-1 rounded-lg hover:bg-menu-200 hover:cursor-pointer"
+                (click)="auth.logout()"
               >
-                <button (click)="auth.logout()">Log out</button>
+                Log out
               </div>
             </div>
           </div>
