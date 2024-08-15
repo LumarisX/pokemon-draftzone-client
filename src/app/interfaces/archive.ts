@@ -13,5 +13,5 @@ export type Archive = {
     diff: string;
   };
   owner: string;
-  team: { pid: PokemonId; name: string }[];
+  team: { id: PokemonId; name: string }[];
 };

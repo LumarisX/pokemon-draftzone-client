@@ -45,11 +45,11 @@ export class DraftFormNewComponent implements OnInit {
     let teamArray: AbstractControl[] = [];
     this.route.queryParams.subscribe((params) => {
       if ('team' in params) {
-        for (let pid of params['team']) {
+        for (let id of params['team']) {
           teamArray.push(
             PokemonFormComponent.addPokemonForm({
-              pid: pid,
-              name: Pokedex[pid].name[0],
+              id: id,
+              name: Pokedex[id].name[0],
             })
           );
         }

@@ -131,10 +131,10 @@ export class OpponentScoreComponent implements OnInit {
     let teamGroup = team.map((pokemon: Pokemon) => {
       let monGroup = this.fb.group({
         pokemon: pokemon,
-        kills: [stats[<PokemonId>pokemon.pid]?.kills],
-        fainted: [stats[<PokemonId>pokemon.pid]?.deaths],
-        indirect: [stats[<PokemonId>pokemon.pid]?.indirect],
-        brought: [stats[<PokemonId>pokemon.pid]?.brought],
+        kills: [stats[<PokemonId>pokemon.id]?.kills],
+        fainted: [stats[<PokemonId>pokemon.id]?.deaths],
+        indirect: [stats[<PokemonId>pokemon.id]?.indirect],
+        brought: [stats[<PokemonId>pokemon.id]?.brought],
       });
       monGroup.get('fainted')?.valueChanges.subscribe((fainted) => {
         if (monGroup.get('fainted')?.value) {
@@ -249,10 +249,10 @@ export class OpponentScoreComponent implements OnInit {
           let anyFound = mon.formes.some((forme) => {
             if (forme.id) {
               let aFind = this.matchup.aTeam.team.find((muMon) =>
-                muMon.pid.startsWith(forme.id!)
+                muMon.id.startsWith(forme.id!)
               );
               let bFind = this.matchup.bTeam.team.find((muMon) =>
-                muMon.pid.startsWith(forme.id!)
+                muMon.id.startsWith(forme.id!)
               );
               if (aFind && !bFind) {
                 aReplayTeam = 0;
@@ -271,7 +271,7 @@ export class OpponentScoreComponent implements OnInit {
             if (mon.brought) {
               let replayCtrl = this.aTeamArray.controls.find((ctrl) => {
                 return mon.formes.some((forme) =>
-                  ctrl.value.pokemon.pid.startsWith(forme.id)
+                  ctrl.value.pokemon.id.startsWith(forme.id)
                 );
               });
               replayCtrl?.patchValue({
@@ -286,7 +286,7 @@ export class OpponentScoreComponent implements OnInit {
             if (mon.brought) {
               let replayCtrl = this.bTeamArray.controls.find((ctrl) => {
                 return mon.formes.some((forme) =>
-                  ctrl.value.pokemon.pid.startsWith(forme.id)
+                  ctrl.value.pokemon.id.startsWith(forme.id)
                 );
               });
               replayCtrl?.patchValue({

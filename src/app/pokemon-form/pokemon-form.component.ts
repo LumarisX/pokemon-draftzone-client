@@ -33,7 +33,7 @@ export class PokemonFormComponent implements OnInit {
   @Output() deletePokemonEvent = new EventEmitter<number>();
   @Output() addPokemonEvent = new EventEmitter<Pokemon>();
 
-  pokemon: Pokemon = { name: '', pid: '' };
+  pokemon: Pokemon = { name: '', id: '' };
 
   teraTypes = [
     'Normal',
@@ -87,7 +87,7 @@ export class PokemonFormComponent implements OnInit {
 
   static addPokemonForm(
     pokemonData: Pokemon = {
-      pid: '',
+      id: '',
       shiny: false,
       name: '',
     }
@@ -102,7 +102,7 @@ export class PokemonFormComponent implements OnInit {
 
     let group = new FormGroup({
       name: new FormControl(pokemonData.name),
-      pid: new FormControl(pokemonData.pid),
+      id: new FormControl(pokemonData.id),
       shiny: new FormControl(pokemonData.shiny),
       captCheck: new FormControl('capt' in pokemonData),
       capt: new FormGroup({
@@ -116,9 +116,9 @@ export class PokemonFormComponent implements OnInit {
 
     group.get('name')?.valueChanges.subscribe((name) => {
       if (name !== null) {
-        let pid = getPidByName(name);
-        if (group.get('pid')?.value != pid) {
-          group.patchValue({ pid: pid });
+        let id = getPidByName(name);
+        if (group.get('id')?.value != id) {
+          group.patchValue({ id: id });
         }
       }
     });
@@ -127,7 +127,7 @@ export class PokemonFormComponent implements OnInit {
   }
 
   resultSelected($event: Pokemon) {
-    this.pokemonForm.patchValue({ name: $event.name, pid: $event.pid });
+    this.pokemonForm.patchValue({ name: $event.name, id: $event.id });
   }
 
   allTera() {

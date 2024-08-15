@@ -17,7 +17,7 @@ export type Draft = {
 };
 
 export type Pokemon = {
-  pid: PokemonId | '';
+  id: PokemonId | '';
   shiny?: boolean;
   name: string;
   capt?: {

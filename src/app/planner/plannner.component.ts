@@ -113,7 +113,7 @@ export class PlannerComponent implements OnInit {
               totalPoints: number;
               team: {
                 name: string;
-                pid: string;
+                id: string;
                 value: string;
                 tier: string;
                 capt: boolean;
@@ -160,7 +160,7 @@ export class PlannerComponent implements OnInit {
   get tieredCount() {
     let total: number = 0;
     for (let control of this.teamFormArray?.controls) {
-      let value = control.get('pid')?.value;
+      let value = control.get('id')?.value;
       if (value != null && value != '') {
         total++;
       }
@@ -191,9 +191,9 @@ export class PlannerComponent implements OnInit {
   updateDetails() {
     this.team = [];
     for (let pokemon of this.teamFormArray.controls) {
-      let pid = pokemon.get('pid')?.value;
-      if (pid in Pokedex) {
-        this.team.push(pid);
+      let id = pokemon.get('id')?.value;
+      if (id in Pokedex) {
+        this.team.push(id);
       }
     }
     if (this.team.length == 0) {
@@ -219,7 +219,7 @@ export class PlannerComponent implements OnInit {
   }
 
   resultSelected(formGroup: AbstractControl, $event: Pokemon) {
-    formGroup.patchValue({ name: $event.name, pid: $event.pid });
+    formGroup.patchValue({ name: $event.name, id: $event.id });
   }
 
   maxValidator(max: number) {
@@ -260,7 +260,7 @@ export class PlannerComponent implements OnInit {
       totalPoints: number;
       team: {
         name: string;
-        pid: string;
+        id: string;
         value: string;
         tier: string;
         capt: boolean;
@@ -318,14 +318,14 @@ export class PlannerComponent implements OnInit {
   createTeamFormGroup(
     data: {
       name: string;
-      pid: string;
+      id: string;
       value: string | null;
       tier: string;
       capt: boolean;
-    } = { pid: '', name: '', capt: false, tier: '', value: null }
+    } = { id: '', name: '', capt: false, tier: '', value: null }
   ): FormGroup {
     const teamFormGroup = this.fb.group({
-      pid: [data.pid, Validators.required],
+      id: [data.id, Validators.required],
       name: [data.name, Validators.required],
       capt: [data.capt, Validators.required],
       tier: [data.tier],
@@ -333,14 +333,14 @@ export class PlannerComponent implements OnInit {
     });
     teamFormGroup.get('name')?.valueChanges.subscribe((name) => {
       if (name !== null) {
-        let pid = getPidByName(name);
-        if (teamFormGroup.get('pid')?.value != pid) {
-          teamFormGroup.patchValue({ pid: pid });
+        let id = getPidByName(name);
+        if (teamFormGroup.get('id')?.value != id) {
+          teamFormGroup.patchValue({ id: id });
         }
       }
     });
 
-    teamFormGroup.get('pid')?.valueChanges.subscribe((pid) => {
+    teamFormGroup.get('id')?.valueChanges.subscribe((id) => {
       this.updateDetails();
     });
 

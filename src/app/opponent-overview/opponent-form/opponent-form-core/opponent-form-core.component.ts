@@ -44,7 +44,7 @@ export class OpponentFormCoreComponent implements OnInit {
     this.opponentForm.setValidators(this.validateDraftForm);
   }
 
-  addNewPokemon(index: number, pokemonData: Pokemon = { pid: '', name: '' }) {
+  addNewPokemon(index: number, pokemonData: Pokemon = { id: '', name: '' }) {
     this.teamArray?.insert(
       index,
       PokemonFormComponent.addPokemonForm(pokemonData)
@@ -79,7 +79,7 @@ export class OpponentFormCoreComponent implements OnInit {
       .map((string) => string.trim())
       .forEach((name) => {
         this.addNewPokemon(this.teamArray.length, {
-          pid: getPidByName(name) ?? '',
+          id: getPidByName(name) ?? '',
           name: name,
         });
       });

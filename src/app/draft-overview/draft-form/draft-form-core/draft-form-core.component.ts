@@ -52,7 +52,7 @@ export class DraftFormCoreComponent implements OnInit {
 
   addNewPokemon(
     index: number = this.teamArray.length,
-    pokemonData: Pokemon = { pid: '', name: '' }
+    pokemonData: Pokemon = { id: '', name: '' }
   ) {
     this.teamArray?.insert(
       index + 1,
@@ -88,7 +88,7 @@ export class DraftFormCoreComponent implements OnInit {
       .map((string) => string.trim())
       .forEach((name) => {
         this.addNewPokemon(this.teamArray.length, {
-          pid: getPidByName(name) ?? '',
+          id: getPidByName(name) ?? '',
           name: name,
         });
       });

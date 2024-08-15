@@ -9,7 +9,7 @@ export class FilterService {
 
   constructor() {
     for (const key in Pokedex) {
-      this.nameList.push({ name: Pokedex[key].name[0], pid: key });
+      this.nameList.push({ name: Pokedex[key].name[0], id: key });
     }
     this.nameList.sort((a, b) => a.name.localeCompare(b.name));
   }

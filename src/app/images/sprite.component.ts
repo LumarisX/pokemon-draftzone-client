@@ -13,7 +13,7 @@ import { SpriteProperties } from '../pokedex';
     <div class="h-full w-full flex justify-center items-end ">
       <img
         class="h-full w-full -z-100 object-contain aspect-square	"
-        *ngIf="pokemon.pid"
+        *ngIf="pokemon.id"
         [ngClass]="this.classes"
         title="{{ pokemon.name }}"
         src="{{ path }}"
@@ -56,7 +56,7 @@ export class SpriteComponent {
     this.flip = false;
     switch (this.settingService.settingsData.spriteSet) {
       case 'bw':
-        props = getSpriteProperties(pokemon.pid, 'ps');
+        props = getSpriteProperties(pokemon.id, 'ps');
         if (!props) {
           this.path = '../../../../assets/icons/unknown.svg';
           break;
@@ -66,7 +66,7 @@ export class SpriteComponent {
         }/${props.id}.png`;
         break;
       case 'afd':
-        props = getSpriteProperties(pokemon.pid, 'ps');
+        props = getSpriteProperties(pokemon.id, 'ps');
         if (!props) {
           this.path = '../../../../assets/icons/unknown.svg';
           break;
@@ -76,7 +76,7 @@ export class SpriteComponent {
         }/${props.id}.png`;
         break;
       case 'sv':
-        props = getSpriteProperties(pokemon.pid, 'ps');
+        props = getSpriteProperties(pokemon.id, 'ps');
         if (!props) {
           this.path = '../../../../assets/icons/unknown.svg';
           break;
@@ -86,7 +86,7 @@ export class SpriteComponent {
         }/${props.id}.png`;
         break;
       case 'ani':
-        props = getSpriteProperties(pokemon.pid, 'ps');
+        props = getSpriteProperties(pokemon.id, 'ps');
         if (!props) {
           this.path = '../../../../assets/icons/unknown.svg';
           break;
@@ -96,7 +96,7 @@ export class SpriteComponent {
         }/${props.id}.gif`;
         break;
       case 'serebii':
-        props = getSpriteProperties(pokemon.pid, 'serebii');
+        props = getSpriteProperties(pokemon.id, 'serebii');
         if (!props) {
           this.path = '../../../../assets/icons/unknown.svg';
           break;
@@ -107,7 +107,7 @@ export class SpriteComponent {
         this.classes = ['sprite-border'];
         break;
       case 'pmd':
-        props = getSpriteProperties(pokemon.pid, 'pmd');
+        props = getSpriteProperties(pokemon.id, 'pmd');
         if (!props) {
           this.path = '../../../../assets/icons/unknown.svg';
           break;
@@ -128,7 +128,7 @@ export class SpriteComponent {
         this.classes = ['rounded-xl', 'border', 'border-symbolColor-sub'];
         break;
       default:
-        props = getSpriteProperties(pokemon.pid, 'pd');
+        props = getSpriteProperties(pokemon.id, 'pd');
         if (!props) {
           this.path = '../../../../assets/icons/unknown.svg';
           break;
@@ -150,7 +150,7 @@ export class SpriteComponent {
       switch (this.settingService.settingsData.spriteSet) {
         case 'sv':
         case 'ani':
-          props = getSpriteProperties(this.pokemon.pid, 'ps');
+          props = getSpriteProperties(this.pokemon.id, 'ps');
           if (props) {
             this.path = `https://play.pokemonshowdown.com/sprites/gen5${
               this.pokemon.shiny ? '-shiny' : ''
@@ -160,7 +160,7 @@ export class SpriteComponent {
           this.path = '../../../../assets/icons/unknown.svg';
           break;
         case 'pmd':
-          props = getSpriteProperties(this.pokemon.pid, 'pmd');
+          props = getSpriteProperties(this.pokemon.id, 'pmd');
           if (props) {
             let base = props.id.split('/');
             base.pop();

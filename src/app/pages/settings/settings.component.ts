@@ -17,7 +17,7 @@ export class SettingsComponent implements OnInit {
   ) {}
 
   settingsData!: Settings;
-  example: Pokemon = { pid: 'deoxysattack', name: 'Deoxys-Attack' };
+  example: Pokemon = { id: 'deoxysattack', name: 'Deoxys-Attack' };
 
   themes: { id: string; name: string }[] = [
     { id: 'classic', name: 'Classic' },
@@ -35,7 +35,7 @@ export class SettingsComponent implements OnInit {
     form.valueChanges.subscribe((value: any) => {
       this.settingsService.settingsData = value;
       localStorage.setItem('user-settings', JSON.stringify(value));
-      this.example = { pid: 'deoxysattack', name: 'Deoxys-Attack' };
+      this.example = { id: 'deoxysattack', name: 'Deoxys-Attack' };
     });
     form.get('ldMode')?.valueChanges.subscribe((value: string | null) => {
       if (value) this.settingsService.updateLDMode(value);

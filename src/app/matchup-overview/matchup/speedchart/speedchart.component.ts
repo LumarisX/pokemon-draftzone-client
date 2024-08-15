@@ -161,10 +161,10 @@ export class SpeedchartComponent implements OnInit {
     };
     team: number;
   }) {
-    if (this.enabledMons[s.team] == s.pokemon.pid) {
+    if (this.enabledMons[s.team] == s.pokemon.id) {
       this.enabledMons[s.team] = null;
     } else {
-      this.enabledMons[s.team] = s.pokemon.pid;
+      this.enabledMons[s.team] = s.pokemon.id;
     }
   }
 
@@ -184,10 +184,7 @@ export class SpeedchartComponent implements OnInit {
     };
     team: number;
   }) {
-    if (
-      this.enabledMons[s.team] &&
-      s.pokemon.pid !== this.enabledMons[s.team]
-    ) {
+    if (this.enabledMons[s.team] && s.pokemon.id !== this.enabledMons[s.team]) {
       return ['opacity-50'];
     }
     return [];
@@ -212,7 +209,7 @@ export class SpeedchartComponent implements OnInit {
   filtered(tier: Speedtier) {
     if (
       this.enabledMons[tier.team] &&
-      tier.pokemon.pid !== this.enabledMons[tier.team]
+      tier.pokemon.id !== this.enabledMons[tier.team]
     ) {
       return false;
     }
