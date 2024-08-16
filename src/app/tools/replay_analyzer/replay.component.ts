@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ReplayService } from '../../api/replay.service';
 import { SpriteComponent } from '../../images/sprite.component';
 import { LoadingComponent } from '../../loading/loading.component';
@@ -21,7 +21,7 @@ import { ReplayData } from './replay.interface';
     LoadingComponent,
   ],
 })
-export class ReplayComponent {
+export class ReplayComponent implements OnInit {
   private _replayURI: string = '';
   replayData: ReplayData | undefined;
   analyzed: boolean = true;
@@ -34,7 +34,20 @@ export class ReplayComponent {
     this._replayURI = value;
   }
 
-  constructor(private replayService: ReplayService) {}
+  constructor(
+    private replayService: ReplayService,
+    private route: ActivatedRoute
+  ) {}
+
+  ngOnInit(): void {
+    this.route.queryParams.subscribe((params) => {
+      if ('replay' in params) {
+        this.replayURI = decodeURIComponent(params['replay']);
+        this.analyze();
+        this.analyzed = true;
+      }
+    });
+  }
 
   analyze() {
     this.analyzed = true;
