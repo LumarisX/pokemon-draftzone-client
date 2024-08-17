@@ -46,8 +46,9 @@
               </div>
               <div
                 class="flex items-center justify-center w-1/6 p-1 overflow-hidden text-xs font-semibold whitespace-normal rounded-full shadow-inner bg-bTeam-200 h-fit overflow-ellipsis shadow-bTeam-600"
+                [ngClass]="scoreColor(matchup)"
               >
-                {{ score(matchup) }}
+                {{ scoreString(matchup) }}
               </div>
               <div
                 class="flex items-center justify-center w-1/3 p-1 overflow-hidden text-xs font-semibold text-center whitespace-normal rounded-full shadow-inner bg-bTeam-200 h-fit overflow-ellipsis shadow-bTeam-600"
