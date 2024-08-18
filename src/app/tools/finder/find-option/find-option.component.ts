@@ -25,6 +25,17 @@ export class FindOptionComponent implements OnInit {
     query: '',
   };
 
+  _queryValue: number | string | undefined | boolean;
+
+  set queryValue(value: number | string | undefined | boolean) {
+    this._queryValue = value;
+    this.onQueryChange();
+  }
+
+  get queryValue() {
+    return this._queryValue;
+  }
+
   ngOnInit(): void {
     this.selectedOption = this.options[0]; // Default to the first option
     this.selectedOperation = this.selectedOption.operations[0]; // Default to the first operation, if any
@@ -62,7 +73,6 @@ export class FindOptionComponent implements OnInit {
   }
 
   selectedOperation: string | undefined;
-  queryValue: any;
   typeOptions = [
     'Normal',
     'Fighting',
@@ -210,7 +220,7 @@ export class FindOptionComponent implements OnInit {
     {
       name: 'NFE',
       value: 'nfe',
-      operations: [],
+      operations: ['='],
       query: 'boolean',
     },
     {
@@ -252,28 +262,27 @@ export class FindOptionComponent implements OnInit {
   ];
 
   onQueryChange() {
-    console.log('query');
-    if (this.selectedOption.value) {
+    if (this.selectedOption.value !== undefined) {
       let queryString = `${this.selectedOption.value}`;
       if (this.selectedOperation) {
         queryString += ` ${this.selectedOperation}`;
-        if (this.queryValue) {
-          queryString += ` ${this.queryValue}`;
+        if (this.queryValue !== undefined) {
+          queryString += ` '${this.queryValue}'`;
+        } else {
+          queryString += ` ''`;
         }
       }
+
       this.queryChange.emit(queryString);
     }
   }
 
   onOptionChange() {
-    console.log('option');
     this.selectedOperation = this.selectedOption.operations[0];
-    this.queryValue = '';
-    this.onQueryChange();
+    this.queryValue = undefined;
   }
 
   onOperationChange() {
-    console.log('operation');
     this.onQueryChange();
   }
 }

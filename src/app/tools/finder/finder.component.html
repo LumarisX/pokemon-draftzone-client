@@ -7,6 +7,7 @@
   <button (click)="find()">Find</button>
 </div>
 
+<div>Species Found: {{ results.length }}</div>
 <div *ngFor="let pokemon of results" class="flex items-center">
   <div class="w-12">
     <sprite [pokemon]="{ id: pokemon.id, name: pokemon.name }"></sprite>

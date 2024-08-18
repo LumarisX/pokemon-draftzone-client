@@ -10,7 +10,7 @@
   </select>
 
   <select
-    *ngIf="selectedOption && selectedOption.operations.length > 0"
+    *ngIf="selectedOption && selectedOption.operations.length > 1"
     [(ngModel)]="selectedOperation"
     (ngModelChange)="onOperationChange()"
     class="border"
@@ -27,9 +27,8 @@
     <ng-container [ngSwitch]="selectedOption.query">
       <input
         *ngSwitchCase="'string'"
-        class="w-20"
+        class="w-36"
         [(ngModel)]="queryValue"
-        (ngModelChange)="onQueryChange()"
         type="text"
         placeholder="Enter text"
       />
@@ -37,36 +36,23 @@
         *ngSwitchCase="'number'"
         class="w-20"
         [(ngModel)]="queryValue"
-        (ngModelChange)="onQueryChange()"
         type="number"
         placeholder="Enter number"
       />
 
-      <select
-        *ngSwitchCase="'type'"
-        (ngModelChange)="onQueryChange()"
-        [(ngModel)]="queryValue"
-      >
+      <select *ngSwitchCase="'type'" [(ngModel)]="queryValue">
         <option *ngFor="let type of typeOptions" [ngValue]="type">
           {{ type }}
         </option>
       </select>
 
-      <select
-        *ngSwitchCase="'eggs'"
-        (ngModelChange)="onQueryChange()"
-        [(ngModel)]="queryValue"
-      >
+      <select *ngSwitchCase="'eggs'" [(ngModel)]="queryValue">
         <option *ngFor="let egg of eggGroups" [ngValue]="egg">
           {{ egg }}
         </option>
       </select>
 
-      <select
-        *ngSwitchCase="'tier'"
-        (ngModelChange)="onQueryChange()"
-        [(ngModel)]="queryValue"
-      >
+      <select *ngSwitchCase="'tier'" [(ngModel)]="queryValue">
         <option *ngFor="let tier of tiers" [ngValue]="tier">
           {{ tier }}
         </option>
@@ -74,7 +60,6 @@
 
       <input
         *ngSwitchCase="'boolean'"
-        (ngModelChange)="onQueryChange()"
         [(ngModel)]="queryValue"
         type="checkbox"
       />
@@ -83,9 +68,9 @@
 </div>
 
 <!-- Debugging -->
-option
+<!-- option
 {{ selectedOption | json }}
 operation
 {{ selectedOperation | json }}
 value
-{{ queryValue | json }}
+{{ queryValue | json }} -->
