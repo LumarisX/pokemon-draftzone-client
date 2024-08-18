@@ -33,7 +33,7 @@
       </div>
       <div class="p-1">
         <label class="block mb-1 font-bold">Sprite Set</label>
-        <div class="flex space-x-4 items-center">
+        <div class="sm:flex sm:space-x-2 items-center">
           <select
             class="bg-menu-200 h-fit border border-menu-200 rounded p-1"
             formControlName="spriteSet"
@@ -46,7 +46,7 @@
             <option value="afd">Pokemon Showdown - AFD</option>
             <option value="pmd">PMD Sprite Project</option>
           </select>
-          <sprite [pokemon]="example" class="h-20"></sprite>
+          <div class="w-20 p-2"><sprite [pokemon]="example"></sprite></div>
         </div>
       </div>
     </div>

@@ -19,7 +19,7 @@ export class PlannerService {
     if (cachedData) {
       return of(cachedData.data);
     } else {
-      return this.apiService.getUnauth('planner?team=' + team).pipe(
+      return this.apiService.getUnauth(`planner?team=${team}`).pipe(
         map((data: any) => {
           this.cache[this.currentIndex] = { key: cacheKey, data: data };
           this.currentIndex = (this.currentIndex + 1) % this.cacheSize;

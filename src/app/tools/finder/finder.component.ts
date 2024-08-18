@@ -1,11 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { DataService } from '../../api/data.service';
 import { Pokemon } from '../../interfaces/draft';
-import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
 import { SpriteComponent } from '../../images/sprite.component';
 import { FindOptionComponent } from './find-option/find-option.component';
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'finder',
@@ -20,19 +20,42 @@ import { FindOptionComponent } from './find-option/find-option.component';
     FindOptionComponent,
   ],
 })
-export class FinderComponent {
+export class FinderComponent implements OnInit {
   results: Pokemon[] = [];
-  query: string = '';
+  queries: string[] = []; // Store query strings from each FindOptionComponent
+  finalQuery: string = '';
 
-  constructor(private dataApi: DataService) {}
+  constructor(
+    private route: ActivatedRoute,
+    private dataApi: DataService,
+    private router: Router
+  ) {}
 
-  updateQuery(newQueryPart: string) {
-    this.query = newQueryPart;
+  ngOnInit() {
+    this.addFindOption(); // Add the first FindOptionComponent on initialization
+  }
+
+  addFindOption() {
+    this.queries.push(''); // Initialize an empty query for the new FindOptionComponent
+  }
+
+  removeFindOption(index: number) {
+    this.queries.splice(index, 1);
+    this.updateFinalQuery();
+  }
+
+  onQueryChange(index: number, queryString: string) {
+    this.queries[index] = queryString; // Update the query at the specified index
+    this.updateFinalQuery(); // Update the final query
+  }
+
+  updateFinalQuery() {
+    this.finalQuery = this.queries.filter(Boolean).join(' && '); // Combine queries with '&&'
   }
 
   find() {
     this.dataApi
-      .advancesearch([this.query], 'Gen9 NatDex')
+      .advancesearch([this.finalQuery], 'Gen9 NatDex')
       .subscribe((data) => (this.results = data));
   }
 }

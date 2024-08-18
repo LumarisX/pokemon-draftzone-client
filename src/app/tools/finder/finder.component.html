@@ -1,16 +1,21 @@
 <div class="p-2">
-  <find-option (queryChange)="updateQuery($event)"></find-option>
+  <ng-container *ngFor="let query of queries; let i = index">
+    <div class="flex items-center space-x-2 mb-2">
+      <find-option (queryChange)="onQueryChange(i, $event)"></find-option>
+      <button (click)="removeFindOption(i)" class="border px-2 py-1">-</button>
+    </div>
+  </ng-container>
+
+  <button (click)="addFindOption()" class="border px-4 py-2">+</button>
 </div>
 
 <div>
-  <input type="text" class="border w-96" [(ngModel)]="query" />
+  <input type="text" class="border w-96" [(ngModel)]="finalQuery" readonly />
   <button (click)="find()">Find</button>
 </div>
 
-<div>Species Found: {{ results.length }}</div>
-<div *ngFor="let pokemon of results" class="flex items-center">
-  <div class="w-12">
-    <sprite [pokemon]="{ id: pokemon.id, name: pokemon.name }"></sprite>
-  </div>
-  <div>{{ pokemon.name }}</div>
+<div *ngFor="let pokemon of results" class="w-12">
+  <sprite [pokemon]="{ id: pokemon.id, name: pokemon.name }"></sprite>
 </div>
+
+{{ queries | json }}
