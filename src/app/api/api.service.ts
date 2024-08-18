@@ -25,22 +25,17 @@ export class ApiService {
     );
   }
 
-  getDataWithParams(path: string, params: HttpParams): Observable<any> {
+  getUnauth(
+    path: string,
+    params: { [key: string]: string } = {}
+  ): Observable<any> {
     let httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
       }),
       params: params,
     };
-    return this.http.get(`${this.serverUrl}/${path}`, httpOptions);
-  }
 
-  getUnauth(path: string): Observable<any> {
-    let httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-      }),
-    };
     return this.http.get(`${this.serverUrl}/${path}`, httpOptions);
   }
 

@@ -100,9 +100,4 @@ export class OpponentTeamPreviewComponent implements OnInit {
     if (matchup.score[0] < matchup.score[1]) return 'bg-scale-negative-2';
     return '';
   }
-
-  scoreOpacity(matchup: Matchup) {
-    if (!matchup.score) return '';
-    return 'bg-opacity-50';
-  }
 }

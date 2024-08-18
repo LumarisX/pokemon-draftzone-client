@@ -1,0 +1,15 @@
+<div class="p-2">
+  <find-option (queryChange)="updateQuery($event)"></find-option>
+</div>
+
+<div>
+  <input type="text" class="border w-96" [(ngModel)]="query" />
+  <button (click)="find()">Find</button>
+</div>
+
+<div *ngFor="let pokemon of results" class="flex items-center">
+  <div class="w-12">
+    <sprite [pokemon]="{ id: pokemon.id, name: pokemon.name }"></sprite>
+  </div>
+  <div>{{ pokemon.name }}</div>
+</div>
