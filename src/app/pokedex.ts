@@ -1938,7 +1938,7 @@ export const Pokedex: {
     ps: { id: 'wooper-paldea' },
     serebii: { id: '194-p' },
     pd: { id: 'wooper-paldean', flip: true },
-    pmd: { id: '0194/0001' },
+    pmd: { id: '0194/0002' },
   },
   quagsire: {
     name: ['Quagsire'],
