@@ -27,10 +27,16 @@ import { MinusSVG } from '../../../../images/svg-components/minus.component';
 })
 export class MoveCategoryComponent {
   @Input() category!: MoveCategory;
+  @Input() cols?: number = 1;
+
   show: boolean = true;
   constructor() {}
 
   typeBorder(type: string) {
     return ['border-' + type.toLowerCase()];
+  }
+
+  getCols() {
+    return `grid-cols-${this.cols}`;
   }
 }
