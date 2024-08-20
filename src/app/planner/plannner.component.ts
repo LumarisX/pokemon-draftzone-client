@@ -81,7 +81,7 @@ export class PlannerComponent implements OnInit {
     teamName: '',
     stats: { mean: {}, median: {}, max: {} },
   };
-  tabSelected = 0;
+  tabSelected = 1;
   selectedDraft = 0;
   formats = [];
   rulesets = [];

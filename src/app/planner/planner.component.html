@@ -42,7 +42,7 @@
       <div
         *ngIf="settings"
         @growIn
-        class="flex flex-wrap items-center px-2 pb-1 space-x-4 space-y-1 border-b-2 border-menu-300 rounded-b-xl bg-menu-200"
+        class="flex flex-wrap text-sm md:text-base items-center px-2 pb-1 space-x-4 space-y-1 border-b-2 border-menu-300 rounded-b-xl bg-menu-200"
       >
         <div class="space-x-1">
           <label for="format" class="font-bold">Format</label>
@@ -137,7 +137,7 @@
             >
               <div class="w-1/6 h-full"></div>
               <div class="w-5/12">Name</div>
-              <div class="w-1/6 text-center text-xs">Value</div>
+              <div class="w-1/6 text-center">Value</div>
               <div class="w-1/8 text-center text-xs">Captain</div>
               <div class="w-1/8 text-center text-xs">Drafted</div>
             </div>
@@ -217,7 +217,9 @@
             </div>
           </div>
         </div>
-        <div class="flex flex-col flex-grow h-full divide-y-2 divide-menu-200">
+        <div
+          class="flex flex-col flex-grow h-full max-w-full divide-y-2 divide-menu-200"
+        >
           <div class="flex w-full p-1 space-x-2">
             <div
               class="block px-2 py-1 border-2 rounded-lg cursor-pointer md:hidden"
@@ -241,7 +243,7 @@
               Typechart
             </div>
             <div
-              class="px-2 py-1 border-2 rounded-lg cursor-pointer"
+              class="px-2 py-1 border-2 max-w-full rounded-lg cursor-pointer"
               [ngClass]="tabColor(2)"
               (click)="tabSelected = 2"
             >
@@ -262,7 +264,7 @@
               [summary]="summary"
             ></summary>
             <typechart
-              class="h-full"
+              class="h-full max-w-full"
               *ngIf="tabSelected == 1 && typechart"
               [typechart]="typechart"
             ></typechart>
