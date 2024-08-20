@@ -9,6 +9,7 @@ export default {
   theme: {
     fontFamily: {
       nasa: ['Nasalization RG', 'sans-serif'],
+      nunito: ['Nunito', 'sans-serif'],
     },
     extend: {
       spacing: {

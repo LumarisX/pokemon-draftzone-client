@@ -133,18 +133,19 @@
         <div class="flex-col hidden divide-y-2 w-96 divide-menu-200 md:flex">
           <div class="flex-grow min-h-0 p-1 overflow-y-auto">
             <div
-              class="sticky flex w-full space-x-4 font-semibold border-b-2 border-menu-300"
+              class="sticky flex w-full items-center font-semibold border-b-2 border-menu-300"
             >
-              <div class="w-1/8"></div>
+              <div class="w-1/8 h-full"></div>
               <div class="w-1/2">Name</div>
-              <div class="w-1/4">Value</div>
-              <div class="w-1/8">Capt</div>
+              <div class="w-1/8 text-center text-xs">Value</div>
+              <div class="w-1/8 text-center text-xs">Captain</div>
+              <div class="w-1/8 text-center text-xs">Drafted</div>
             </div>
             <div formArrayName="team" class="grid w-full grid-cols-1">
               <div
                 *ngFor="let teamCtrl of teamFormArray.controls; let i = index"
                 [formGroupName]="i"
-                class="flex items-center space-x-3 space-y-2"
+                class="flex items-center space-y-1"
               >
                 <div class="w-1/8 h-fit">
                   <sprite
@@ -154,11 +155,11 @@
                     }"
                   ></sprite>
                 </div>
-                <div class="w-1/2">
+                <div class="w-1/2 h-full p-2">
                   <input
                     type="text"
                     spellcheck="false"
-                    class="w-full p-1 border rounded-lg bg-menu-100"
+                    class="w-full h-full text-sm px-1 text-ellipsis border rounded-lg bg-menu-100"
                     [ngClass]="minMaxStyle(i)"
                     formControlName="name"
                   />
@@ -167,7 +168,7 @@
                     (querySelected)="resultSelected(teamCtrl, $event)"
                   ></filter>
                 </div>
-                <div class="w-1/4" *ngIf="!isPoints">
+                <div class="w-1/8 p-1" *ngIf="!isPoints">
                   <input
                     type="text"
                     spellcheck="false"
@@ -176,7 +177,7 @@
                     formControlName="tier"
                   />
                 </div>
-                <div class="w-1/4" *ngIf="isPoints">
+                <div class="w-1/8 p-1" *ngIf="isPoints">
                   <input
                     type="number"
                     placeholder="0"
@@ -190,6 +191,13 @@
                     type="checkbox"
                     class="w-full"
                     formControlName="capt"
+                  />
+                </div>
+                <div class="w-1/8">
+                  <input
+                    type="checkbox"
+                    class="w-full"
+                    formControlName="drafted"
                   />
                 </div>
               </div>
