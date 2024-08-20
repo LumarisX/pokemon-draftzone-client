@@ -74,7 +74,7 @@
             <div
               *ngFor="let weakness of weaknesses"
               class="text-center border h-full w-10"
-              [ngClass]="diffColor(weakness)"
+              [ngClass]="weakColor(weakness)"
             >
               {{ weakness | number : "1.0-0" }}
             </div>
@@ -90,7 +90,7 @@
             <div
               *ngFor="let resistance of resistances"
               class="text-center border h-full w-10"
-              [ngClass]="diffColor(resistance)"
+              [ngClass]="resistColor(resistance)"
             >
               {{ resistance | number : "1.0-0" }}
             </div>
