@@ -31,7 +31,9 @@ import { ScoreSVG } from '../../images/svg-components/score.component';
 export class OpponentTeamPreviewComponent implements OnInit {
   index = 0;
   draft: Draft | null = null;
-  matchups: (Matchup & { deleteConfirm: boolean })[] | null = null;
+  matchups:
+    | (Matchup & { deleteConfirm: boolean; score: [number, number] | null })[]
+    | null = null;
   teamId: string = '';
 
   constructor(
@@ -48,10 +50,14 @@ export class OpponentTeamPreviewComponent implements OnInit {
     this.draft = null;
     this.matchups = null;
     this.draftService.getDraft(this.teamId).subscribe((data) => {
+      console.log('draft gotten');
       this.draft = <Draft>data;
     });
     this.draftService.getMatchupList(this.teamId).subscribe((data) => {
       this.matchups = <(Matchup & { deleteConfirm: boolean })[]>data;
+      this.matchups.forEach((matchup) => {
+        matchup.score = this.score(matchup);
+      });
     });
   }
 
@@ -65,7 +71,7 @@ export class OpponentTeamPreviewComponent implements OnInit {
     );
   }
 
-  score(matchup: Matchup): string {
+  score(matchup: Matchup): [number, number] | null {
     if (matchup.matches.length > 1) {
       let aScore = 0;
       let bScore = 0;
@@ -76,11 +82,23 @@ export class OpponentTeamPreviewComponent implements OnInit {
           bScore++;
         }
       });
-      return `${aScore} - ${bScore}`;
+      return [aScore, bScore];
     } else if (matchup.matches.length > 0) {
-      return `${matchup.matches[0].aTeam.score} - ${matchup.matches[0].bTeam.score}`;
+      return [matchup.matches[0].aTeam.score, matchup.matches[0].bTeam.score];
     } else {
-      return 'Unscored';
+      return null;
     }
+  }
+
+  scoreString(matchup: Matchup) {
+    if (matchup.score) return `${matchup.score[0]} - ${matchup.score[1]}`;
+    return `Unscored`;
+  }
+
+  scoreColor(matchup: Matchup) {
+    if (!matchup.score) return '';
+    if (matchup.score[0] > matchup.score[1]) return 'bg-scale-positive-2';
+    if (matchup.score[0] < matchup.score[1]) return 'bg-scale-negative-2';
+    return '';
   }
 }

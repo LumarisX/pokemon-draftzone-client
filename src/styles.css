@@ -58,6 +58,11 @@
   );
 }
 
+.grid-cols-18 {
+  display: grid;
+  grid-template-columns: repeat(18, minmax(0, 1fr));
+}
+
 .grid-cols-19 {
   display: grid;
   grid-template-columns: repeat(19, minmax(0, 1fr));
@@ -74,6 +79,8 @@
     drop-shadow(0px 1px 0 theme("colors.spriteBorder"));
   z-index: 0;
 }
+
+
 
 @font-face {
   font-family: "Nasalization RG";

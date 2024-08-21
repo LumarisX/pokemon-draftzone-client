@@ -1,14 +1,8 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  Input,
-  OnChanges,
-  OnInit,
-  SimpleChanges,
-} from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { SpriteComponent } from '../../../images/sprite.component';
-import { TypeChart, Types } from '../../matchup-interface';
 import { Pokemon } from '../../../interfaces/draft';
+import { TypeChart, Types } from '../../matchup-interface';
 
 @Component({
   selector: 'typechart',
@@ -18,6 +12,7 @@ import { Pokemon } from '../../../interfaces/draft';
 })
 export class TypechartComponent implements OnChanges {
   @Input() typecharts!: TypeChart[];
+  sortedType?: keyof Types;
   selectedTeam: number = 1;
   types: (keyof Types)[] = [
     'Normal',
@@ -54,6 +49,17 @@ export class TypechartComponent implements OnChanges {
   swapTeams() {
     this.selectedTeam = (this.selectedTeam + 1) % this.typecharts.length;
     this.summerize();
+  }
+
+  sortByType(type: keyof Types) {
+    if (type != this.sortedType) {
+      this.typecharts.forEach((typechart) =>
+        typechart.team.sort((x, y) => x.weak[type] - y.weak[type])
+      );
+      this.sortedType = type;
+    } else {
+      this.typecharts.forEach((typechart) => typechart.team.reverse());
+    }
   }
 
   typeColor(weak: number, disbaled: Boolean): string {
@@ -140,6 +146,11 @@ export class TypechartComponent implements OnChanges {
   ) {
     pokemon.disabled = !pokemon.disabled;
     this.summerize();
+  }
+
+  sortedTypeColor(type: keyof Types) {
+    if (type === this.sortedType) return 'bg-menu-800';
+    else return 'bg-menu-300';
   }
 
   summerize() {

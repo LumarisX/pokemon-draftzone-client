@@ -110,7 +110,7 @@ export class PokemonFormComponent implements OnInit {
           'capt' in pokemonData && 'tera' in pokemonData.capt!
         ),
         tera: teraFormGroup,
-        z: new FormControl(''),
+        z: new FormControl(pokemonData.capt?.z || false),
       }),
     });
 

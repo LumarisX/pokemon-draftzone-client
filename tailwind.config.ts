@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 
-import colors, { neutral, yellow } from 'tailwindcss/colors';
+import colors from 'tailwindcss/colors';
 import { createThemes } from 'tw-colors';
 
 export default {
@@ -9,6 +9,7 @@ export default {
   theme: {
     fontFamily: {
       nasa: ['Nasalization RG', 'sans-serif'],
+      nunito: ['Nunito', 'sans-serif'],
     },
     extend: {
       spacing: {

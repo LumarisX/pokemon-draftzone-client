@@ -15,13 +15,17 @@
     <table class="table-fixed bg-menu-100">
       <thead class="">
         <tr class="">
-          <th
-            class="border-l border-r-4 border-menu-400"
+          <td
+            class="border-l pr-1 border-r-4 border-menu-400 text-center"
             [ngClass]="teamColor()"
-          ></th>
+          >
+            On/Off
+          </td>
           <th
-            class="border-b-2 bg-menu-300 border-menu-400"
+            class="border-b-2 border-menu-400"
             *ngFor="let type of types"
+            (click)="sortByType(type)"
+            [ngClass]="sortedTypeColor(type)"
           >
             <img
               class=""
@@ -60,8 +64,10 @@
             [ngClass]="teamColor()"
           ></th>
           <th
-            class="border-t-2 bg-menu-300 border-menu-400"
+            class="border-t-2 border-menu-400"
             *ngFor="let type of types"
+            (click)="sortByType(type)"
+            [ngClass]="sortedTypeColor(type)"
           >
             <img
               class="min-w-6"

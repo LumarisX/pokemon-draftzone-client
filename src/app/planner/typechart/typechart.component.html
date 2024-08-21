@@ -1,28 +1,29 @@
 <div
-  class="flex flex-col max-h-full border-4 w-fit border-menu-400 bg-menu-100"
+  class="flex flex-col max-h-full border-4 max-w-full border-menu-400 bg-menu-100"
 >
-  <table class="table-fixed">
-    <thead>
-      <tr class="">
-        <th class="w-12 border-r-4 border-r-menu-400"></th>
-        <th
-          class="w-8 border-b-2 bg-menu-300 border-menu-400"
-          *ngFor="let type of types"
-        >
-          <img
-            class=""
-            src="../../../assets/icons/types/{{ type }}.png"
-            onerror="this.src='../../../assets/icons/types/Unknown.png'"
-            alt="{{ type }}"
-          />
-        </th>
-      </tr>
-    </thead>
-  </table>
-  <div class="overflow-y-auto scrollbar-hidden">
+  <div class="overflow-x-auto">
     <table class="table-fixed">
-      <tbody class="">
-        <tr *ngFor="let pokemon of typechart.team" class="">
+      <thead>
+        <tr>
+          <th class="w-12 border-r-4 border-r-menu-400"></th>
+          <th class="flex space-x-0.5 bg-menu-300 border-b-2 border-menu-400">
+            <div
+              class="w-10 flex space-x-1 items-center justify-center"
+              *ngFor="let type of types"
+            >
+              <img
+                class=""
+                src="../../../assets/icons/types/{{ type }}.png"
+                onerror="this.src='../../../assets/icons/types/Unknown.png'"
+                alt="{{ type }}"
+              />
+            </div>
+          </th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let pokemon of typechart.team">
           <th
             class="w-12 border-r-4 cursor-pointer border-r-menu-400 hover:bg-menu-100"
             (click)="toggleVisible(pokemon)"
@@ -32,91 +33,102 @@
               [class.opacity-60]="pokemon.disabled"
             ></sprite>
           </th>
-          <td
-            *ngFor="let type of types"
-            class="w-8 text-center border"
-            [ngClass]="typeColor(pokemon.weak[type], pokemon.disabled!)"
-          >
-            {{ pokemon.weak[type] }}
+          <td class="flex h-12 space-x-0.5">
+            <div
+              *ngFor="let type of types"
+              class="w-10 h-full border flex items-center justify-center"
+              [ngClass]="typeColor(pokemon.weak[type], pokemon.disabled!)"
+            >
+              <span> {{ pokemon.weak[type] }}</span>
+            </div>
           </td>
         </tr>
       </tbody>
+
+      <thead class="border-b-4 border-menu-400">
+        <tr>
+          <th class="w-12 border-r-4 border-r-menu-400"></th>
+          <th class="flex space-x-0.5 border-b-2 bg-menu-300 border-menu-400">
+            <div
+              class="w-10 flex items-center justify-center"
+              *ngFor="let type of types"
+            >
+              <img
+                class=""
+                src="../../../assets/icons/types/{{ type }}.png"
+                onerror="this.src='../../../assets/icons/types/Unknown.png'"
+                alt="{{ type }}"
+              />
+            </div>
+          </th>
+        </tr>
+      </thead>
+      <tfoot class="bg-menu-300">
+        <tr>
+          <th
+            class="text-xs border border-r-2 bg-scale-negative-3 border-menu-400"
+          >
+            Weaks
+          </th>
+          <td class="flex space-x-0.5">
+            <div
+              *ngFor="let weakness of weaknesses"
+              class="text-center border h-full w-10"
+              [ngClass]="weakColor(weakness)"
+            >
+              {{ weakness | number : "1.0-0" }}
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <th
+            class="text-xs border border-r-2 bg-scale-positive-3 border-menu-400"
+          >
+            Resists
+          </th>
+          <td class="flex space-x-0.5">
+            <div
+              *ngFor="let resistance of resistances"
+              class="text-center border h-full w-10"
+              [ngClass]="resistColor(resistance)"
+            >
+              {{ resistance | number : "1.0-0" }}
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <th
+            class="text-xs bg-gradient-to-r from-scale-negative-3 from-50% to-scale-positive-3 to-50% border border-menu-400 border-r-2"
+          >
+            Diff
+          </th>
+          <td class="flex space-x-0.5">
+            <div
+              *ngFor="let diff of difference"
+              class="text-center border h-full w-10"
+              [ngClass]="diffColor(diff)"
+            >
+              {{ diff | number : "1.0-0" }}
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <th
+            class="text-xs border border-r-2 bg-gradient-to-r from-scale-negative-3 via-menu-200 to-scale-positive-3 border-menu-400"
+          >
+            Log
+          </th>
+          <td class="flex space-x-0.5">
+            <div
+              *ngFor="let diff of differential"
+              class="text-center border h-full w-10"
+              [ngClass]="diffColor(diff)"
+            >
+              {{ diff | number : "1.0-0" }}
+            </div>
+          </td>
+        </tr>
+      </tfoot>
     </table>
   </div>
-  <table class="table-fixed">
-    <thead class="border-b-4 border-menu-400">
-      <tr class="">
-        <th class="w-12 border-l border-r-4 border-r-menu-400"></th>
-        <th
-          class="w-8 border-t-2 bg-menu-300 border-menu-400"
-          *ngFor="let type of types"
-        >
-          <img
-            class="w-full"
-            src="../../../assets/icons/types/{{ type }}.png"
-            onerror="this.src='../../../assets/icons/types/Unknown.png'"
-            alt="{{ type }}"
-          />
-        </th>
-      </tr>
-    </thead>
-    <tfoot id="typeSum" class="bg-menu-300">
-      <tr>
-        <th
-          class="text-xs border border-r-2 bg-scale-negative-3 border-menu-400"
-        >
-          Weaks
-        </th>
-        <td
-          *ngFor="let weakness of weaknesses"
-          class="text-center border"
-          [ngClass]="weakColor(weakness)"
-        >
-          {{ weakness }}
-        </td>
-      </tr>
-      <tr>
-        <th
-          class="text-xs border border-r-2 bg-scale-positive-3 border-menu-400"
-        >
-          Resists
-        </th>
-        <td
-          *ngFor="let resistance of resistances"
-          class="text-center border"
-          [ngClass]="resistColor(resistance)"
-        >
-          {{ resistance }}
-        </td>
-      </tr>
-      <tr>
-        <th
-          class="text-xs bg-gradient-to-r from-scale-negative-3 from-50% to-scale-positive-3 to-50% border border-menu-400 border-r-2"
-        >
-          Diff
-        </th>
-        <td
-          *ngFor="let diff of difference"
-          class="text-center border"
-          [ngClass]="diffColor(diff)"
-        >
-          {{ diff }}
-        </td>
-      </tr>
-      <tr>
-        <th
-          class="text-xs border border-r-2 bg-gradient-to-r from-scale-negative-3 via-menu-200 to-scale-positive-3 border-menu-400"
-        >
-          Log
-        </th>
-        <td
-          *ngFor="let diff of differential"
-          class="text-center border"
-          [ngClass]="diffColor(diff)"
-        >
-          {{ diff | number : "1.0-0" }}
-        </td>
-      </tr>
-    </tfoot>
-  </table>
 </div>

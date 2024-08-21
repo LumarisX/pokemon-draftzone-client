@@ -6,6 +6,7 @@ export type Matchup = {
   bTeam: Side;
   stage: string;
   matches: Match[];
+  score: [number, number] | null;
 };
 export type Match = {
   aTeam: {

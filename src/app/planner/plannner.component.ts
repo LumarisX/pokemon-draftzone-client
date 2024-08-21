@@ -117,6 +117,7 @@ export class PlannerComponent implements OnInit {
                 value: string;
                 tier: string;
                 capt: boolean;
+                drafted: boolean;
               }[];
             }) => this.createDraftFormGroup(value)
           )
@@ -264,6 +265,7 @@ export class PlannerComponent implements OnInit {
         value: string;
         tier: string;
         capt: boolean;
+        drafted: boolean;
       }[];
     } = {
       format: '',
@@ -322,7 +324,8 @@ export class PlannerComponent implements OnInit {
       value: string | null;
       tier: string;
       capt: boolean;
-    } = { id: '', name: '', capt: false, tier: '', value: null }
+      drafted: boolean;
+    } = { id: '', name: '', capt: false, tier: '', value: null, drafted: false }
   ): FormGroup {
     const teamFormGroup = this.fb.group({
       id: [data.id, Validators.required],
@@ -330,6 +333,7 @@ export class PlannerComponent implements OnInit {
       capt: [data.capt, Validators.required],
       tier: [data.tier],
       value: [data.value],
+      drafted: [data.drafted],
     });
     teamFormGroup.get('name')?.valueChanges.subscribe((name) => {
       if (name !== null) {

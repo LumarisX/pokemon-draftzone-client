@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { ReplayComponent } from './replay_analyzer/replay.component';
 import { ToolsComponent } from './tools.component';
 import { TimeConverterComponent } from './time_converter/time_converter.component';
+import { FinderComponent } from './finder/finder.component';
 const routes: Routes = [
   {
     path: 'tools',
@@ -15,6 +16,10 @@ const routes: Routes = [
   {
     path: 'tools/time-converter',
     component: TimeConverterComponent,
+  },
+  {
+    path: 'tools/finder',
+    component: FinderComponent,
   },
 ];
 
