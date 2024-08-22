@@ -5,6 +5,7 @@ import { RouterModule } from '@angular/router';
 import { SpriteComponent } from '../images/sprite.component';
 import { ErrorService } from './error.service';
 import { CloseSVG } from '../images/svg-components/close.component';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'error',
@@ -19,17 +20,17 @@ import { CloseSVG } from '../images/svg-components/close.component';
   templateUrl: './error.component.html',
 })
 export class ErrorComponent implements OnInit {
-  errorMessage?: string;
+  error?: HttpErrorResponse;
 
   constructor(private errorService: ErrorService) {}
 
   ngOnInit(): void {
-    this.errorService.getErrorObservable().subscribe((error: string) => {
-      this.errorMessage = error;
+    this.errorService.getErrorObservable().subscribe((error) => {
+      this.error = error;
     });
   }
 
   clearError() {
-    this.errorMessage = undefined;
+    this.error = undefined;
   }
 }

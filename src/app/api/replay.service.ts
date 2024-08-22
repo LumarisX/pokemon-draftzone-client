@@ -8,8 +8,9 @@ export class ReplayService {
   constructor(private apiService: ApiService) {}
 
   analyzeReplay(replayURI: string) {
-    return this.apiService.getUnauth(
-      `replay/analyze/${encodeURIComponent(replayURI.trim())}`
+    return this.apiService.get(
+      `replay/analyze/${encodeURIComponent(replayURI.trim())}`,
+      false
     );
   }
 }

@@ -8,19 +8,19 @@ export class ArchiveService {
   constructor(private apiService: ApiService) {}
 
   getDraftsList() {
-    return this.apiService.get('archive/teams');
+    return this.apiService.get('archive/teams', true);
   }
 
   getDraft(teamName: string) {
-    return this.apiService.get(`archive/${teamName}`);
+    return this.apiService.get(`archive/${teamName}`, true);
   }
 
   getMatchup(matchupId: string, teamId: string) {
-    return this.apiService.get(`archive/${teamId}/${matchupId}`);
+    return this.apiService.get(`archive/${teamId}/${matchupId}`, true);
   }
 
   getStats(teamName: string) {
-    return this.apiService.get(`archive/${teamName}/stats`);
+    return this.apiService.get(`archive/${teamName}/stats`, true);
   }
 
   newDraft(draftData: Object) {
@@ -32,7 +32,7 @@ export class ArchiveService {
   }
 
   getMatchupList(teamName: string) {
-    return this.apiService.get(`archive/${teamName}/matchups`);
+    return this.apiService.get(`archive/${teamName}/matchups`, true);
   }
 
   newMatchup(teamName: string, matchupData: Object) {
@@ -62,7 +62,7 @@ export class ArchiveService {
     );
   }
   getGameTime(matchupId: string, teamId: string) {
-    return this.apiService.get(`archive/${teamId}/${matchupId}/schedule`);
+    return this.apiService.get(`archive/${teamId}/${matchupId}/schedule`, true);
   }
   scheduleMatchup(matchupId: string, teamId: string, timeData: Object) {
     return this.apiService.patch(

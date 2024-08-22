@@ -6,14 +6,14 @@ import { Subject } from 'rxjs';
   providedIn: 'root',
 })
 export class ErrorService {
-  private errorSubject = new Subject<string>();
+  private errorSubject = new Subject<HttpErrorResponse>();
 
   getErrorObservable() {
     return this.errorSubject.asObservable();
   }
 
   reportError(error: HttpErrorResponse) {
-    console.log('THis was an error', error);
-    this.errorSubject.next(error.message);
+    console.log('This was an error', error);
+    this.errorSubject.next(error);
   }
 }

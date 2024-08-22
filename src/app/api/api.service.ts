@@ -20,40 +20,39 @@ export class ApiService {
     private errorService: ErrorService
   ) {}
 
-  get(path: string): Observable<any> {
+  get(
+    path: string,
+    authenticated: boolean,
+    params: { [key: string]: string } = {}
+  ): Observable<any> {
     return this.auth.getAccessToken().pipe(
       switchMap((token: string) => {
-        let httpOptions = {
-          headers: new HttpHeaders({
+        let headers;
+        if (authenticated) {
+          headers = new HttpHeaders({
             'Content-Type': 'application/json',
             authorization: `Bearer ${token}`,
-          }),
-        };
-        return this.http.get(`${this.serverUrl}/${path}`, httpOptions).pipe(
-          catchError((error: HttpErrorResponse) => {
-            this.errorService.reportError(error);
-            return throwError(() => new Error(error.message));
+          });
+        } else {
+          headers = new HttpHeaders({
+            'Content-Type': 'application/json',
+          });
+        }
+        return this.http
+          .get(`${this.serverUrl}/${path}`, {
+            headers,
+            params,
           })
-        );
+          .pipe(
+            catchError((error: HttpErrorResponse) => {
+              this.errorService.reportError(error);
+              return throwError(() => error);
+            })
+          );
       })
     );
   }
 
-  getUnauth(
-    path: string,
-    params: { [key: string]: string } = {}
-  ): Observable<any> {
-    let httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-      }),
-      params: params,
-    };
-
-    return this.http.get(`${this.serverUrl}/${path}`, httpOptions);
-  }
-
-  // Method to make a POST request with authorization header
   post(path: string, data: any): Observable<any> {
     return this.auth.getAccessToken().pipe(
       switchMap((token: string) => {
@@ -63,12 +62,18 @@ export class ApiService {
             authorization: `Bearer ${token}`,
           }),
         };
-        return this.http.post(`${this.serverUrl}/${path}`, data, httpOptions);
+        return this.http
+          .post(`${this.serverUrl}/${path}`, data, httpOptions)
+          .pipe(
+            catchError((error: HttpErrorResponse) => {
+              this.errorService.reportError(error);
+              return throwError(() => error);
+            })
+          );
       })
     );
   }
 
-  // Method to make a PATCH request with authorization header
   patch(path: string, data: any): Observable<any> {
     return this.auth.getAccessToken().pipe(
       switchMap((token: string) => {
@@ -78,12 +83,18 @@ export class ApiService {
             authorization: `Bearer ${token}`,
           }),
         };
-        return this.http.patch(`${this.serverUrl}/${path}`, data, httpOptions);
+        return this.http
+          .patch(`${this.serverUrl}/${path}`, data, httpOptions)
+          .pipe(
+            catchError((error: HttpErrorResponse) => {
+              this.errorService.reportError(error);
+              return throwError(() => error);
+            })
+          );
       })
     );
   }
 
-  // Method to make a DELETE request
   delete(path: string): Observable<any> {
     return this.auth.getAccessToken().pipe(
       switchMap((token: string) => {
@@ -93,7 +104,12 @@ export class ApiService {
             authorization: `Bearer ${token}`,
           }),
         };
-        return this.http.delete(`${this.serverUrl}/${path}`, httpOptions);
+        return this.http.delete(`${this.serverUrl}/${path}`, httpOptions).pipe(
+          catchError((error: HttpErrorResponse) => {
+            this.errorService.reportError(error);
+            return throwError(() => error);
+          })
+        );
       })
     );
   }

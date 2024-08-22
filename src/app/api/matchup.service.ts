@@ -8,30 +8,30 @@ export class MatchupService {
   constructor(private apiService: ApiService) {}
 
   getMatchup(matchupId: string) {
-    return this.apiService.get(`matchup/${matchupId}`);
+    return this.apiService.get(`matchup/${matchupId}`, true);
   }
 
   getSharedMatchup(matchupId: string) {
-    return this.apiService.getUnauth(`matchup/${matchupId}`);
+    return this.apiService.get(`matchup/${matchupId}`, false);
   }
 
   getSpeedchart(matchupId: string) {
-    return this.apiService.get(`matchup/${matchupId}/speedchart`);
+    return this.apiService.get(`matchup/${matchupId}/speedchart`, true);
   }
 
   getsummary(matchupId: string) {
-    return this.apiService.get(`matchup/${matchupId}/summary`);
+    return this.apiService.get(`matchup/${matchupId}/summary`, true);
   }
 
   getTypechart(matchupId: string) {
-    return this.apiService.get(`matchup/${matchupId}/typechart`);
+    return this.apiService.get(`matchup/${matchupId}/typechart`, true);
   }
 
   getMovechart(matchupId: string) {
-    return this.apiService.get(`matchup/${matchupId}/movechart`);
+    return this.apiService.get(`matchup/${matchupId}/movechart`, true);
   }
 
   getCoveragechart(matchupId: string) {
-    return this.apiService.get(`matchup/${matchupId}/coveragechart`);
+    return this.apiService.get(`matchup/${matchupId}/coveragechart`, true);
   }
 }

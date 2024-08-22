@@ -8,19 +8,19 @@ export class DraftService {
   constructor(private apiService: ApiService) {}
 
   getDraftsList() {
-    return this.apiService.get('draft/teams');
+    return this.apiService.get('draft/teams', true);
   }
 
   getDraft(teamName: string) {
-    return this.apiService.get(`draft/${teamName}`);
+    return this.apiService.get(`draft/${teamName}`, true);
   }
 
   getMatchup(matchupId: string, teamId: string) {
-    return this.apiService.get(`draft/${teamId}/${matchupId}`);
+    return this.apiService.get(`draft/${teamId}/${matchupId}`, true);
   }
 
   getStats(teamName: string) {
-    return this.apiService.get(`draft/${teamName}/stats`);
+    return this.apiService.get(`draft/${teamName}/stats`, true);
   }
 
   newDraft(draftData: Object) {
@@ -32,7 +32,7 @@ export class DraftService {
   }
 
   getMatchupList(teamName: string) {
-    return this.apiService.get(`draft/${teamName}/matchups`);
+    return this.apiService.get(`draft/${teamName}/matchups`, true);
   }
 
   newMatchup(teamName: string, matchupData: Object) {
@@ -62,7 +62,7 @@ export class DraftService {
     );
   }
   getGameTime(matchupId: string, teamId: string) {
-    return this.apiService.get(`draft/${teamId}/${matchupId}/schedule`);
+    return this.apiService.get(`draft/${teamId}/${matchupId}/schedule`, true);
   }
   scheduleMatchup(matchupId: string, teamId: string, timeData: Object) {
     return this.apiService.patch(
