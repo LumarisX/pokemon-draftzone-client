@@ -50,7 +50,6 @@ export class OpponentTeamPreviewComponent implements OnInit {
     this.draft = null;
     this.matchups = null;
     this.draftService.getDraft(this.teamId).subscribe((data) => {
-      console.log('draft gotten');
       this.draft = <Draft>data;
     });
     this.draftService.getMatchupList(this.teamId).subscribe((data) => {

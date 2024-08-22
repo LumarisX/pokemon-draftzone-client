@@ -2,6 +2,7 @@ import { Pokemon } from './draft';
 
 export type Matchup = {
   _id: string;
+  name: string;
   aTeam: Side;
   bTeam: Side;
   stage: string;

@@ -56,8 +56,10 @@ export class OpponentFormEditComponent implements OnInit {
           .getMatchup(this.matchupId, this.teamId)
           .subscribe((data) => {
             let matchup = <Matchup>data;
+            console.log(data);
             let pokemonForms: FormGroup[] = [];
             for (let pokemon of matchup.bTeam.team) {
+              console.log(pokemon);
               pokemonForms.push(PokemonFormComponent.addPokemonForm(pokemon));
             }
             this.opponentForm = new FormGroup({

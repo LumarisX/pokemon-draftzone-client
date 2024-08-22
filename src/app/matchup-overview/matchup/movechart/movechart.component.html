@@ -11,7 +11,9 @@
       </button>
     </div>
   </div>
-  <div class="w-full overflow-y-auto border-4 border-menu-400 bg-menu-400">
+  <div
+    class="w-full overflow-y-auto flex-grow border-4 border-menu-400 max-h-128 bg-menu-400"
+  >
     <move-category
       *ngFor="let category of this.teams[selectedTeam]"
       [category]="category"
@@ -20,6 +22,7 @@
   </div>
   <div class="w-full h-3 rounded-b-full bg-menu-400"></div>
 </div>
+
 <div class="border-bug" style="display: none"></div>
 <div class="border-dark" style="display: none"></div>
 <div class="border-dragon" style="display: none"></div>

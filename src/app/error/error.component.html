@@ -1,4 +1,4 @@
-<div *ngIf="error" class="absolute top-24 w-full flex justify-center">
+<div *ngIf="error" class="fixed top-24 w-full flex justify-center">
   <div
     class="w-96 bg-opacity-90 shadow-xl min-h-16 bg-red-300 rounded-xl border-2 border-red-400"
   >
@@ -19,6 +19,7 @@
     </div>
     <div class="px-2 pb-2 space-y-1">
       <p>{{ error.statusText }}</p>
+      <p>{{ error.message }}</p>
     </div>
   </div>
 </div>
