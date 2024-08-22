@@ -1,11 +1,19 @@
+import {
+  animate,
+  animation,
+  keyframes,
+  style,
+  transition,
+  trigger,
+} from '@angular/animations';
 import { CommonModule } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { SpriteComponent } from '../images/sprite.component';
-import { ErrorService } from './error.service';
 import { CloseSVG } from '../images/svg-components/close.component';
-import { HttpErrorResponse } from '@angular/common/http';
+import { ErrorService } from './error.service';
 
 @Component({
   selector: 'error',
@@ -16,6 +24,54 @@ import { HttpErrorResponse } from '@angular/common/http';
     SpriteComponent,
     CloseSVG,
     ReactiveFormsModule,
+  ],
+  animations: [
+    trigger('fadeInOut', [
+      transition(':enter', [
+        animation([
+          animate(
+            '600ms 0ms',
+            keyframes([
+              style({
+                visibility: 'visible',
+                opacity: 0,
+                transform: 'translate3d(0, -50px, 0)',
+                easing: 'ease',
+                offset: 0,
+              }),
+              style({
+                opacity: 1,
+                transform: 'translate3d(0, 0, 0)',
+                easing: 'ease',
+                offset: 1,
+              }),
+            ])
+          ),
+        ]),
+      ]),
+      transition(':leave', [
+        animation([
+          animate(
+            '600ms 0ms',
+            keyframes([
+              style({
+                opacity: 1,
+                transform: 'translate3d(0, 0, 0)',
+                easing: 'ease',
+                offset: 0,
+              }),
+              style({
+                visibility: 'visible',
+                opacity: 0,
+                transform: 'translate3d(0, 50px, 0)',
+                easing: 'ease',
+                offset: 1,
+              }),
+            ])
+          ),
+        ]),
+      ]),
+    ]),
   ],
   templateUrl: './error.component.html',
 })
