@@ -1,5 +1,17 @@
-<div class="flex justify-center items-center h-full w-full">
-
-  <h1>Something broke :'(</h1>
-
+<div *ngIf="errorMessage" class="absolute top-8 w-full flex justify-center">
+  <div
+    class="w-96 bg-opacity-90 shadow-xl min-h-16 bg-red-300 rounded-xl border-2 border-red-400"
+  >
+    <div class="w-full flex">
+      <div class="px-2 font-semibold">Error:</div>
+      <div class="flex-grow"></div>
+      <div
+        class="w-6 h-6 pt-1 pr-1 hover:cursor-pointer"
+        (click)="clearError()"
+      >
+        <close-svg></close-svg>
+      </div>
+    </div>
+    <p class="px-2 pb-2">{{ errorMessage }}</p>
+  </div>
 </div>
