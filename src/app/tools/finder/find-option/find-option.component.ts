@@ -1,4 +1,3 @@
-import { query } from '@angular/animations';
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -166,26 +165,32 @@ export class FindOptionComponent implements OnInit {
       query: 'number',
     },
     {
-      name: 'ATK',
+      name: 'Attack',
       value: 'atk',
       operations: ['=', '≠', '>=', '>', '<', '<='],
       query: 'number',
     },
     {
-      name: 'DEF',
+      name: 'Defense',
       value: 'def',
       operations: ['=', '≠', '>=', '>', '<', '<='],
       query: 'number',
     },
     {
-      name: 'SPA',
+      name: 'Special Attack',
       value: 'def',
       operations: ['=', '≠', '>=', '>', '<', '<='],
       query: 'number',
     },
     {
-      name: 'SPD',
+      name: 'Special Defense',
       value: 'spd',
+      operations: ['=', '≠', '>=', '>', '<', '<='],
+      query: 'number',
+    },
+    {
+      name: 'Speed',
+      value: 'spe',
       operations: ['=', '≠', '>=', '>', '<', '<='],
       query: 'number',
     },
@@ -220,7 +225,7 @@ export class FindOptionComponent implements OnInit {
       query: 'string',
     },
     {
-      name: 'NFE',
+      name: 'Not Fully Evolved',
       value: 'nfe',
       operations: ['='],
       query: 'boolean',
@@ -250,7 +255,7 @@ export class FindOptionComponent implements OnInit {
       query: 'eggs',
     },
     {
-      name: 'Weight',
+      name: 'Weight (kg)',
       value: 'weight',
       operations: ['=', '≠', '>=', '>', '<', '<='],
       query: 'number',
@@ -273,6 +278,11 @@ export class FindOptionComponent implements OnInit {
 
   onOptionChange() {
     this.selectedOperation = this.selectedOption.operations[0];
+    if (this.selectedOption.query == 'boolean') {
+      this.queryValue = false;
+    } else {
+      this.queryValue = undefined;
+    }
   }
 
   onOperationChange() {
