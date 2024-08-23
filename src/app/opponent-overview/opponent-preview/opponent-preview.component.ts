@@ -30,10 +30,9 @@ import { ScoreSVG } from '../../images/svg-components/score.component';
 })
 export class OpponentTeamPreviewComponent implements OnInit {
   index = 0;
-  draft: Draft | null = null;
-  matchups:
-    | (Matchup & { deleteConfirm: boolean; score: [number, number] | null })[]
-    | null = null;
+  draft?: Draft;
+  matchups?:
+    | (Matchup & { deleteConfirm: boolean; score: [number, number] | null })[];
   teamId: string = '';
 
   constructor(
@@ -47,8 +46,8 @@ export class OpponentTeamPreviewComponent implements OnInit {
   }
 
   reload() {
-    this.draft = null;
-    this.matchups = null;
+    this.draft = undefined;
+    this.matchups = undefined;
     this.draftService.getDraft(this.teamId).subscribe((data) => {
       this.draft = <Draft>data;
     });

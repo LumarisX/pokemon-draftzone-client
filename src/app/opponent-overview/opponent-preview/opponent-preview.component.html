@@ -15,7 +15,6 @@
       </sprite>
     </div>
   </div>
-
   <div
     class="w-full p-1 border-2 bg-bTeam-100 border-bTeam-200 rounded-xl lg:p-2"
   >
@@ -28,6 +27,11 @@
         <div class="w-6 h-6"><plus-svg></plus-svg></div>
       </button>
       <loading *ngIf="!matchups"></loading>
+      <div *ngIf="matchups !== undefined && matchups.length === 0">
+        <div class="flex w-full justify-center opacity-60 text-lg">
+          Click the [+] to add your first opponent!
+        </div>
+      </div>
       <div
         *ngIf="matchups"
         id="teams"
