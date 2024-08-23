@@ -1,21 +1,31 @@
 <div class="p-2">
-  <ng-container *ngFor="let query of queries; let i = index">
-    <div class="flex items-center space-x-2 mb-2">
-      <find-option (queryChange)="onQueryChange(i, $event)"></find-option>
-      <button (click)="removeFindOption(i)" class="border px-2 py-1">-</button>
-    </div>
-  </ng-container>
+  <div>Advanced Mode <input type="checkbox" [(ngModel)]="advancedMode" /></div>
 
-  <button (click)="addFindOption()" class="border px-4 py-2">+</button>
+  <div *ngIf="!advancedMode">
+    <ng-container *ngFor="let query of queries; let i = index">
+      <div class="flex items-center space-x-2 mb-2">
+        <find-option (queryChange)="onQueryChange(i, $event)"></find-option>
+        <button (click)="removeFindOption(i)" class="border px-2 py-1">
+          -
+        </button>
+      </div>
+    </ng-container>
+
+    <button (click)="addFindOption()" class="border px-4 py-2">+</button>
+  </div>
+
+  <div *ngIf="advancedMode">
+    <input type="text" class="border w-96" [(ngModel)]="finalQuery" />
+  </div>
+
+  <div class="p-2">
+    <button class="p-1 border rounded border-slate-400" (click)="find()">
+      Find
+    </button>
+  </div>
 </div>
-
-<div>
-  <input type="text" class="border w-96" [(ngModel)]="finalQuery" />
-  <button (click)="find()">Find</button>
+<div class="flex flex-wrap">
+  <div *ngFor="let pokemon of results" class="w-12">
+    <sprite [pokemon]="{ id: pokemon.id, name: pokemon.name }"></sprite>
+  </div>
 </div>
-
-<div *ngFor="let pokemon of results" class="w-12">
-  <sprite [pokemon]="{ id: pokemon.id, name: pokemon.name }"></sprite>
-</div>
-
-{{ queries | json }}

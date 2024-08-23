@@ -1,3 +1,4 @@
+import { query } from '@angular/animations';
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -17,7 +18,11 @@ type Option = {
   imports: [CommonModule, RouterModule, FormsModule, ReactiveFormsModule],
 })
 export class FindOptionComponent implements OnInit {
-  @Output() queryChange = new EventEmitter<string>();
+  @Output() queryChange = new EventEmitter<{
+    option: string;
+    operation: string | undefined;
+    value: string | number | boolean | undefined;
+  }>();
   selectedOption: Option = {
     name: 'Select',
     value: '',
@@ -42,9 +47,6 @@ export class FindOptionComponent implements OnInit {
 
     // Set default queryValue based on the selectedOption.query type
     this.setDefaultQueryValue();
-
-    // Emit the initial query
-    this.onQueryChange();
   }
 
   setDefaultQueryValue() {
@@ -262,24 +264,15 @@ export class FindOptionComponent implements OnInit {
   ];
 
   onQueryChange() {
-    if (this.selectedOption.value !== undefined) {
-      let queryString = `${this.selectedOption.value}`;
-      if (this.selectedOperation) {
-        queryString += ` ${this.selectedOperation}`;
-        if (this.queryValue !== undefined) {
-          queryString += ` '${this.queryValue}'`;
-        } else {
-          queryString += ` ''`;
-        }
-      }
-
-      this.queryChange.emit(queryString);
-    }
+    this.queryChange.emit({
+      option: this.selectedOption.value,
+      operation: this.selectedOperation,
+      value: this.queryValue,
+    });
   }
 
   onOptionChange() {
     this.selectedOperation = this.selectedOption.operations[0];
-    this.queryValue = undefined;
   }
 
   onOperationChange() {

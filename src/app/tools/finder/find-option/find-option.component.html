@@ -10,7 +10,9 @@
   </select>
 
   <select
-    *ngIf="selectedOption && selectedOption.operations.length > 1"
+    *ngIf="
+      selectedOption.operations.length > 0 && selectedOption.query !== 'boolean'
+    "
     [(ngModel)]="selectedOperation"
     (ngModelChange)="onOperationChange()"
     class="border"
@@ -23,7 +25,7 @@
     </option>
   </select>
 
-  <div *ngIf="selectedOption.value != ''" class="border w-fit">
+  <div class="border w-fit" *ngIf="selectedOption.query !== ''">
     <ng-container [ngSwitch]="selectedOption.query">
       <input
         *ngSwitchCase="'string'"

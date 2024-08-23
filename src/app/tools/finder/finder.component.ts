@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { DataService } from '../../api/data.service';
-import { Pokemon } from '../../interfaces/draft';
-import { SpriteComponent } from '../../images/sprite.component';
-import { FindOptionComponent } from './find-option/find-option.component';
 import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+import { DataService } from '../../api/data.service';
+import { SpriteComponent } from '../../images/sprite.component';
+import { Pokemon } from '../../interfaces/draft';
+import { FindOptionComponent } from './find-option/find-option.component';
 
 @Component({
   selector: 'finder',
@@ -22,21 +22,27 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 })
 export class FinderComponent implements OnInit {
   results: Pokemon[] = [];
-  queries: string[] = []; // Store query strings from each FindOptionComponent
+  queries: {
+    option: string;
+    operation: string | undefined;
+    value: string | number | boolean | undefined;
+  }[] = [];
   finalQuery: string = '';
 
-  constructor(
-    private route: ActivatedRoute,
-    private dataApi: DataService,
-    private router: Router
-  ) {}
+  advancedMode: boolean = false;
+
+  constructor(private dataApi: DataService) {}
 
   ngOnInit() {
-    this.addFindOption(); // Add the first FindOptionComponent on initialization
+    this.addFindOption();
   }
 
   addFindOption() {
-    this.queries.push(''); // Initialize an empty query for the new FindOptionComponent
+    this.queries.push({
+      option: 'select',
+      operation: undefined,
+      value: undefined,
+    });
   }
 
   removeFindOption(index: number) {
@@ -44,13 +50,25 @@ export class FinderComponent implements OnInit {
     this.updateFinalQuery();
   }
 
-  onQueryChange(index: number, queryString: string) {
-    this.queries[index] = queryString; // Update the query at the specified index
-    this.updateFinalQuery(); // Update the final query
+  onQueryChange(
+    index: number,
+    event: {
+      option: string;
+      operation: string | undefined;
+      value: string | number | boolean | undefined;
+    }
+  ) {
+    this.queries[index].option = event.option;
+    this.queries[index].operation = event.operation;
+    this.queries[index].value = event.value;
+    this.updateFinalQuery();
   }
 
   updateFinalQuery() {
-    this.finalQuery = this.queries.filter(Boolean).join(' && '); // Combine queries with '&&'
+    this.finalQuery = this.queries
+      .filter((query) => query.value !== undefined && query.value !== '')
+      .flatMap((query) => `${query.option} ${query.operation} ${query.value}`)
+      .join(' && ');
   }
 
   find() {
