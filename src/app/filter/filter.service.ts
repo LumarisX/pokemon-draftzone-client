@@ -1,6 +1,6 @@
 import { Injectable, OnInit } from '@angular/core';
 import { Pokemon } from '../interfaces/draft';
-import { Pokedex } from '../pokedex';
+import { Namedex } from '../../assets/data/namedex';
 @Injectable({
   providedIn: 'root',
 })
@@ -8,8 +8,8 @@ export class FilterService {
   private nameList: Pokemon[] = [];
 
   constructor() {
-    for (const key in Pokedex) {
-      this.nameList.push({ name: Pokedex[key].name[0], id: key });
+    for (const key in Namedex) {
+      this.nameList.push({ name: Namedex[key].name[0], id: key });
     }
     this.nameList.sort((a, b) => a.name.localeCompare(b.name));
   }

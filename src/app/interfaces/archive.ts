@@ -1,4 +1,4 @@
-import { PokemonId } from '../pokemon';
+import { PokemonId } from '../../assets/data/namedex';
 
 export type Archive = {
   _id: string;

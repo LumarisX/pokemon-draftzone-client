@@ -10,8 +10,8 @@ import { RouterModule } from '@angular/router';
 import { SpriteComponent } from '../../../images/sprite.component';
 import { ImportSVG } from '../../../images/svg-components/import.component';
 import { Pokemon } from '../../../interfaces/draft';
-import { getPidByName } from '../../../pokemon';
 import { PokemonFormComponent } from '../../../pokemon-form/pokemon-form.component';
+import { getPidByName } from '../../../../assets/data/namedex';
 
 @Component({
   selector: 'opponent-form-core',

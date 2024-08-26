@@ -1,0 +1,191 @@
+Teambuilder
+<div *ngFor="let pokemon of team">
+  <div class="w-8">
+    <sprite [pokemon]="{ id: pokemon.id, name: pokemon.id }"></sprite>
+  </div>
+  <div class="space-x-1">
+    <label for="name">Name</label>
+    <input [(ngModel)]="pokemon.id" id="name" class="border p-1" />
+  </div>
+  <div class="space-x-1">
+    <label for="name">Ability</label>
+    <input [(ngModel)]="pokemon.ability" id="name" class="border p-1" />
+  </div>
+  <div class="space-x-1">
+    <label for="name">Item</label>
+    <input [(ngModel)]="pokemon.item" id="name" class="border p-1" />
+  </div>
+  <div class="space-x-1">
+    <label for="tera">Tera Type</label>
+    <input [(ngModel)]="pokemon.tera" id="tera" class="border p-1" />
+  </div>
+  <div class="space-x-1">
+    <label for="level">Level</label>
+    <input
+      [(ngModel)]="pokemon.level"
+      type="number"
+      min="1"
+      max="100"
+      id="level"
+      class="border p-1"
+    />
+  </div>
+  <div>
+    <div *ngFor="let move of pokemon.moves; let i = index">
+      <label [for]="'move' + i">Move {{ i + 1 }}</label>
+      <input
+        [(ngModel)]="pokemon.moves[1]"
+        [id]="'move' + i"
+        class="border p-1"
+      />
+    </div>
+  </div>
+  <div class="space-x-1">
+    <label for="Nature">Nature</label>
+    <select [(ngModel)]="pokemon.nature" id="name">
+      <option value="Serious">Serious</option>
+      <option value="Brave">Brave</option>
+      <option value="Serious">Serious</option>
+      <option value="Serious">Serious</option>
+      <option value="Serious">Serious</option>
+      <option value="Serious">Serious</option>
+      <option value="Serious">Serious</option>
+      <option value="Serious">Serious</option>
+    </select>
+  </div>
+  <div>
+    <label for="hp">HP</label>
+    <div id="hp">
+      <label for="hpevs">EVs</label>
+      <input
+        [(ngModel)]="pokemon.evs.hp"
+        id="hpevs"
+        min="0"
+        max="252"
+        step="4"
+        type="number"
+        class="border p-1"
+      />
+      <label for="hpivs">IVs</label>
+      <input
+        [(ngModel)]="pokemon.ivs.hp"
+        id="hpivs"
+        min="0"
+        max="31"
+        type="number"
+        class="border p-1"
+      />
+    </div>
+    <label for="atk">ATK</label>
+    <div id="atk">
+      <label for="atkevs">EVs</label>
+      <input
+        [(ngModel)]="pokemon.evs.atk"
+        id="atkevs"
+        min="0"
+        max="252"
+        step="4"
+        type="number"
+        class="border p-1"
+      />
+      <label for="atkivs">IVs</label>
+      <input
+        [(ngModel)]="pokemon.ivs.atk"
+        id="atkivs"
+        min="0"
+        max="31"
+        type="number"
+        class="border p-1"
+      />
+    </div>
+    <label for="def">DEF</label>
+    <div id="def">
+      <label for="defevs">EVs</label>
+      <input
+        [(ngModel)]="pokemon.evs.def"
+        id="defevs"
+        min="0"
+        max="252"
+        step="4"
+        type="number"
+        class="border p-1"
+      />
+      <label for="defivs">IVs</label>
+      <input
+        [(ngModel)]="pokemon.ivs.def"
+        id="defivs"
+        min="0"
+        max="31"
+        type="number"
+        class="border p-1"
+      />
+    </div>
+    <label for="spa">SPA</label>
+    <div id="spa">
+      <label for="spaevs">EVs</label>
+      <input
+        [(ngModel)]="pokemon.evs.spa"
+        id="spaevs"
+        min="0"
+        max="252"
+        step="4"
+        type="number"
+        class="border p-1"
+      />
+      <label for="spaivs">IVs</label>
+      <input
+        [(ngModel)]="pokemon.ivs.spa"
+        id="spaivs"
+        min="0"
+        max="31"
+        type="number"
+        class="border p-1"
+      />
+    </div>
+    <label for="spd">SPD</label>
+    <div id="spd">
+      <label for="spdevs">EVs</label>
+      <input
+        [(ngModel)]="pokemon.evs.spd"
+        id="spdevs"
+        min="0"
+        max="252"
+        step="4"
+        type="number"
+        class="border p-1"
+      />
+      <label for="spdivs">IVs</label>
+      <input
+        [(ngModel)]="pokemon.ivs.spd"
+        id="spdivs"
+        min="0"
+        max="31"
+        type="number"
+        class="border p-1"
+      />
+    </div>
+    <label for="spe">SPE</label>
+    <div id="spe">
+      <label for="speevs">EVs</label>
+      <input
+        [(ngModel)]="pokemon.evs.spe"
+        id="speevs"
+        min="0"
+        max="252"
+        step="4"
+        type="number"
+        class="border p-1"
+      />
+      <label for="speivs">IVs</label>
+      <input
+        [(ngModel)]="pokemon.ivs.spe"
+        id="speivs"
+        min="0"
+        max="31"
+        type="number"
+        class="border p-1"
+      />
+    </div>
+  </div>
+  {{ pokemon.toExport() | json }}
+</div>

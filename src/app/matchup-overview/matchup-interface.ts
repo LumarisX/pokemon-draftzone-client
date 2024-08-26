@@ -1,5 +1,5 @@
 import { Pokemon } from '../interfaces/draft';
-import { Pokedex } from '../pokedex';
+import { Namedex } from '../../assets/data/namedex';
 
 export type Speedtier = {
   pokemon: Pokemon;

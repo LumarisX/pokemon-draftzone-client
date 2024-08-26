@@ -10,9 +10,9 @@ import { RouterModule } from '@angular/router';
 import { DataService } from '../../../api/data.service';
 import { SpriteComponent } from '../../../images/sprite.component';
 import { Pokemon } from '../../../interfaces/draft';
-import { getPidByName } from '../../../pokemon';
 import { PokemonFormComponent } from '../../../pokemon-form/pokemon-form.component';
 import { ImportSVG } from '../../../images/svg-components/import.component';
+import { getPidByName } from '../../../../assets/data/namedex';
 
 @Component({
   selector: 'draft-form-core',

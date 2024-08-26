@@ -27,8 +27,7 @@ import {
   Summary,
   TypeChart,
 } from '../matchup-overview/matchup-interface';
-import { Pokedex } from '../pokedex';
-import { PokemonId, getPidByName } from '../pokemon';
+import { getPidByName, Namedex, PokemonId } from '../../assets/data/namedex';
 import { FinderComponent } from './finder/finder.component';
 import { MoveComponent } from './moves/moves.component';
 import { SummaryComponent } from './summary/summary.component';
@@ -193,7 +192,7 @@ export class PlannerComponent implements OnInit {
     this.team = [];
     for (let pokemon of this.teamFormArray.controls) {
       let id = pokemon.get('id')?.value;
-      if (id in Pokedex) {
+      if (id in Namedex) {
         this.team.push(id);
       }
     }

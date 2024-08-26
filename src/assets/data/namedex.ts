@@ -1,5 +1,31 @@
 export type SpriteProperties = { id: string; flip?: true };
-export const Pokedex: {
+
+export type PokemonId = keyof typeof Namedex & string;
+
+export function getSpriteProperties(
+  pokemonId: PokemonId,
+  source: 'ps' | 'serebii' | 'pd' | 'pmd'
+): SpriteProperties | undefined {
+  if (Namedex[pokemonId]) {
+    return Namedex[pokemonId][source];
+  }
+  return undefined;
+}
+
+export function getPidByName(name: string): PokemonId | null {
+  name = name.toLowerCase();
+  for (const key in Namedex) {
+    const pokemonNames = Namedex[key].name;
+    if (
+      pokemonNames.some((pokemonName) => pokemonName.toLowerCase() === name)
+    ) {
+      return key;
+    }
+  }
+  return null;
+}
+
+export const Namedex: {
   [key: string]: {
     name: string[];
     ps: SpriteProperties;

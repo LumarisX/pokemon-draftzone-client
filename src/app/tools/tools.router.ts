@@ -4,6 +4,7 @@ import { ReplayComponent } from './replay_analyzer/replay.component';
 import { ToolsComponent } from './tools.component';
 import { TimeConverterComponent } from './time_converter/time_converter.component';
 import { FinderComponent } from './finder/finder.component';
+import { TeamBuilderComponent } from './teambuilder/teambuilder.component';
 const routes: Routes = [
   {
     path: 'tools',
@@ -20,6 +21,10 @@ const routes: Routes = [
   {
     path: 'tools/finder',
     component: FinderComponent,
+  },
+  {
+    path: 'tools/teambuilder',
+    component: TeamBuilderComponent,
   },
 ];
 
