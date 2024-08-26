@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
@@ -10,46 +10,24 @@ type Option = {
   query: '' | 'string' | 'boolean' | 'type' | 'number' | 'tier' | 'eggs';
 };
 
+type Conditional = {
+  option: string;
+  operation: string | undefined;
+  value: string | number | boolean | undefined;
+};
+
 @Component({
   selector: 'find-option',
   standalone: true,
   templateUrl: './find-option.component.html',
   imports: [CommonModule, RouterModule, FormsModule, ReactiveFormsModule],
 })
-export class FindOptionComponent implements OnInit {
-  @Output() queryChange = new EventEmitter<{
-    option: string;
-    operation: string | undefined;
-    value: string | number | boolean | undefined;
-  }>();
-  selectedOption: Option = {
-    name: 'Select',
-    value: '',
-    operations: [],
-    query: '',
-  };
+export class FindOptionComponent {
+  @Output() queryChange = new EventEmitter<Conditional>();
 
-  _queryValue: number | string | undefined | boolean;
-
-  set queryValue(value: number | string | undefined | boolean) {
-    this._queryValue = value;
-    this.onQueryChange();
-  }
-
-  get queryValue() {
-    return this._queryValue;
-  }
-
-  ngOnInit(): void {
-    this.selectedOption = this.options[0]; // Default to the first option
-    this.selectedOperation = this.selectedOption.operations[0]; // Default to the first operation, if any
-
-    // Set default queryValue based on the selectedOption.query type
-    this.setDefaultQueryValue();
-  }
-
-  setDefaultQueryValue() {
-    switch (this.selectedOption.query) {
+  set selectedOption(option: Option) {
+    this.condition.operation = option.operations[0];
+    switch (option.query) {
       case 'string':
         this.queryValue = '';
         break;
@@ -60,7 +38,7 @@ export class FindOptionComponent implements OnInit {
         this.queryValue = this.typeOptions[0];
         break;
       case 'tier':
-        this.queryValue = this.tiers[0];
+        this.queryValue = 'OU';
         break;
       case 'eggs':
         this.queryValue = this.eggGroups[0];
@@ -69,11 +47,30 @@ export class FindOptionComponent implements OnInit {
         this.queryValue = false;
         break;
       default:
-        this.queryValue = undefined;
+        this.queryValue = '';
     }
+    this.condition.option = option.value;
   }
 
-  selectedOperation: string | undefined;
+  get selectedOption() {
+    return (
+      this.options.find((option) => option.value == this.condition.option) ||
+      this.options[0]
+    );
+  }
+
+  @Input()
+  condition!: Conditional;
+
+  set queryValue(value: number | string | undefined | boolean) {
+    this.condition.value = value;
+    this.queryChange.emit(this.condition);
+  }
+
+  get queryValue() {
+    return this.condition.value;
+  }
+
   typeOptions = [
     'Normal',
     'Fighting',
@@ -268,24 +265,7 @@ export class FindOptionComponent implements OnInit {
     },
   ];
 
-  onQueryChange() {
-    this.queryChange.emit({
-      option: this.selectedOption.value,
-      operation: this.selectedOperation,
-      value: this.queryValue,
-    });
-  }
-
-  onOptionChange() {
-    this.selectedOperation = this.selectedOption.operations[0];
-    if (this.selectedOption.query == 'boolean') {
-      this.queryValue = false;
-    } else {
-      this.queryValue = undefined;
-    }
-  }
-
   onOperationChange() {
-    this.onQueryChange();
+    this.queryChange.emit(this.condition);
   }
 }

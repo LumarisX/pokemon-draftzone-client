@@ -2,18 +2,29 @@
   <div>Advanced Mode <input type="checkbox" [(ngModel)]="advancedMode" /></div>
 
   <div *ngIf="!advancedMode">
-    <ng-container *ngFor="let query of queries; let i = index">
-      <div class="flex items-center space-x-2 mb-2">
-        <find-option (queryChange)="onQueryChange(i, $event)"></find-option>
-        <button (click)="removeFindOption(i)" class="border px-2 py-1">
+    <div *ngFor="let group of queryGroups" class="border-2">
+      <select [(ngModel)]="group.conjunction">
+        <option value=" && ">All</option>
+        <option value=" || ">Any</option>
+      </select>
+      <div
+        *ngFor="let query of group.queries; let i = index"
+        class="flex items-center space-x-2 mb-2"
+      >
+        <find-option
+          [condition]="query"
+          (queryChange)="onQueryChange(query, $event)"
+        ></find-option>
+        <button (click)="removeQueryBuilder(group, i)" class="border px-2 py-1">
           -
         </button>
       </div>
-    </ng-container>
-
-    <button (click)="addFindOption()" class="border px-4 py-2">+</button>
+      <button (click)="addQueryBuilder(group)" class="border px-4 py-2">
+        +
+      </button>
+    </div>
+    <button (click)="addQueryGroup()" class="border px-4 py-2">+</button>
   </div>
-
   <div *ngIf="advancedMode">
     <input type="text" class="border w-96" [(ngModel)]="finalQuery" />
   </div>

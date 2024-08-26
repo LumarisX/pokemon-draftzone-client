@@ -18,8 +18,12 @@
       </div>
     </div>
     <!-- fix overflow text -->
-    <div class="px-2 pb-2 space-y-1 overflow-ellipsis whitespace-pre-wrap">
-      {{ error.statusText }}
+    <div class="px-2 pb-2 whitespace-normal">
+      <div>
+        {{ error.statusText }}
+      </div>
+      <div>Code: {{ error.error.code }}</div>
+      <div>URI: {{ error.url }}</div>
     </div>
   </div>
 </div>

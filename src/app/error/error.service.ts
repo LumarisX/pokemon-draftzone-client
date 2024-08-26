@@ -13,7 +13,6 @@ export class ErrorService {
   }
 
   reportError(error: HttpErrorResponse) {
-    console.log('This was an error', error);
     this.errorSubject.next(error);
   }
 }

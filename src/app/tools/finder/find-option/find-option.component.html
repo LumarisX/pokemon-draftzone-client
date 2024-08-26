@@ -1,9 +1,5 @@
 <div class="flex space-x-1">
-  <select
-    [(ngModel)]="selectedOption"
-    (ngModelChange)="onOptionChange()"
-    class="border"
-  >
+  <select [(ngModel)]="selectedOption" class="border">
     <option *ngFor="let option of options" [ngValue]="option">
       {{ option.name }}
     </option>
@@ -13,7 +9,7 @@
     *ngIf="
       selectedOption.operations.length > 0 && selectedOption.query !== 'boolean'
     "
-    [(ngModel)]="selectedOperation"
+    [(ngModel)]="condition.operation"
     (ngModelChange)="onOperationChange()"
     class="border"
   >
