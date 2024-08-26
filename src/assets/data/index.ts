@@ -1,6 +1,6 @@
 type Stat = 'hp' | 'atk' | 'def' | 'spa' | 'spd' | 'spe';
 
-export const natures: {
+export const NATURES: {
   [key: string]: {
     name: string;
     drop: Stat;
@@ -133,3 +133,60 @@ export const natures: {
     boost: 'spe',
   },
 };
+
+export type Type =
+  | 'Bug'
+  | 'Dark'
+  | 'Dragon'
+  | 'Electric'
+  | 'Fairy'
+  | 'Fighting'
+  | 'Fire'
+  | 'Flying'
+  | 'Ghost'
+  | 'Grass'
+  | 'Ground'
+  | 'Ice'
+  | 'Normal'
+  | 'Poison'
+  | 'Psychic'
+  | 'Rock'
+  | 'Steel'
+  | 'Water';
+
+export const TYPES: Type[] = [
+  'Bug',
+  'Dark',
+  'Dragon',
+  'Electric',
+  'Fairy',
+  'Fighting',
+  'Fire',
+  'Flying',
+  'Ghost',
+  'Grass',
+  'Ground',
+  'Ice',
+  'Normal',
+  'Poison',
+  'Psychic',
+  'Rock',
+  'Steel',
+  'Water',
+];
+
+export type TeraType = Type | 'Stellar';
+
+export type ExtendedType =
+  | Type
+  | 'brn'
+  | 'par'
+  | 'prankster'
+  | 'tox'
+  | 'psn'
+  | 'frz'
+  | 'slp'
+  | 'powder'
+  | 'sandstorm'
+  | 'hail'
+  | 'trapped';

@@ -1,11 +1,22 @@
 Teambuilder
 <div *ngFor="let pokemon of team">
   <div class="w-8">
-    <sprite [pokemon]="{ id: pokemon.id, name: pokemon.id }"></sprite>
+    <sprite [pokemon]="{ id: pokemon.id, name: pokemon.name }"></sprite>
   </div>
   <div class="space-x-1">
     <label for="name">Name</label>
-    <input [(ngModel)]="pokemon.id" id="name" class="border p-1" />
+    <div id="name">
+      <input
+        required
+        #name="ngModel"
+        [(ngModel)]="pokemon.name"
+        class="border p-1"
+      />
+      <filter
+        [query]="pokemon.name"
+        (querySelected)="nameSelected(pokemon, $event)"
+      ></filter>
+    </div>
   </div>
   <div class="space-x-1">
     <label for="name">Ability</label>
@@ -42,15 +53,10 @@ Teambuilder
   </div>
   <div class="space-x-1">
     <label for="Nature">Nature</label>
-    <select [(ngModel)]="pokemon.nature" id="name">
-      <option value="Serious">Serious</option>
-      <option value="Brave">Brave</option>
-      <option value="Serious">Serious</option>
-      <option value="Serious">Serious</option>
-      <option value="Serious">Serious</option>
-      <option value="Serious">Serious</option>
-      <option value="Serious">Serious</option>
-      <option value="Serious">Serious</option>
+    <select [(ngModel)]="pokemon.nature" class="border p-1" id="name">
+      <option *ngFor="let nature of natures" [value]="nature.name">
+        {{ nature.name }} +{{ nature.boost }}/-{{ nature.drop }}
+      </option>
     </select>
   </div>
   <div>

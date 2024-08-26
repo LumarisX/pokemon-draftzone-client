@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { TYPES } from '../../../../assets/data';
 
 type Option = {
   name: string;
@@ -71,26 +72,7 @@ export class FindOptionComponent {
     return this.condition.value;
   }
 
-  typeOptions = [
-    'Normal',
-    'Fighting',
-    'Flying',
-    'Poison',
-    'Ground',
-    'Rock',
-    'Bug',
-    'Ghost',
-    'Steel',
-    'Fire',
-    'Water',
-    'Grass',
-    'Electric',
-    'Psychic',
-    'Ice',
-    'Dragon',
-    'Dark',
-    'Fairy',
-  ];
+  typeOptions = TYPES;
   tiers = [
     'AG',
     'UBER',

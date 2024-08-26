@@ -3,6 +3,7 @@ import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { SpriteComponent } from '../../../images/sprite.component';
 import { Pokemon } from '../../../interfaces/draft';
 import { TypeChart, Types } from '../../matchup-interface';
+import { TYPES } from '../../../../assets/data';
 
 @Component({
   selector: 'typechart',
@@ -14,27 +15,7 @@ export class TypechartComponent implements OnChanges {
   @Input() typecharts!: TypeChart[];
   sortedType?: keyof Types;
   selectedTeam: number = 1;
-  types: (keyof Types)[] = [
-    'Normal',
-    'Grass',
-    'Water',
-    'Fire',
-    'Electric',
-    'Ground',
-    'Rock',
-    'Flying',
-    'Ice',
-    'Fighting',
-    'Poison',
-    'Bug',
-    'Psychic',
-    'Dark',
-    'Ghost',
-    'Dragon',
-    'Steel',
-    'Fairy',
-  ];
-
+  types = TYPES;
   weaknesses: number[] = [];
   resistances: number[] = [];
   difference: number[] = [];

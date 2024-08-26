@@ -1,5 +1,5 @@
+import { ExtendedType } from '../../assets/data';
 import { Pokemon } from '../interfaces/draft';
-import { Namedex } from '../../assets/data/namedex';
 
 export type Speedtier = {
   pokemon: Pokemon;
@@ -65,35 +65,7 @@ export type TypeChart = {
 };
 
 export type Types = {
-  Bug: number;
-  Dark: number;
-  Dragon: number;
-  Electric: number;
-  Fairy: number;
-  Fighting: number;
-  Fire: number;
-  Flying: number;
-  Ghost: number;
-  Grass: number;
-  Ground: number;
-  Ice: number;
-  Normal: number;
-  Poison: number;
-  Psychic: number;
-  Rock: number;
-  Steel: number;
-  Water: number;
-  brn: number;
-  par: number;
-  prankster: number;
-  tox: number;
-  psn: number;
-  frz: number;
-  slp: number;
-  powder: number;
-  sandstorm: number;
-  hail: number;
-  trapped: number;
+  [key in ExtendedType]: number;
 };
 
 export type MoveChart = MoveCategory[];

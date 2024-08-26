@@ -12,6 +12,7 @@ import { Pokemon } from '../interfaces/draft';
 import { SpriteComponent } from '../images/sprite.component';
 import { TrashSVG } from '../images/svg-components/trash.component';
 import { getPidByName } from '../../assets/data/namedex';
+import { TeraType, TYPES } from '../../assets/data';
 
 @Component({
   selector: 'pokemon-form',
@@ -35,49 +36,9 @@ export class PokemonFormComponent implements OnInit {
 
   pokemon: Pokemon = { name: '', id: '' };
 
-  teraTypes = [
-    'Normal',
-    'Grass',
-    'Water',
-    'Fire',
-    'Electric',
-    'Ground',
-    'Rock',
-    'Flying',
-    'Ice',
-    'Fighting',
-    'Poison',
-    'Bug',
-    'Psychic',
-    'Dark',
-    'Ghost',
-    'Dragon',
-    'Steel',
-    'Fairy',
-    'Stellar',
-  ];
+  teraTypes = PokemonFormComponent.teraTypes;
 
-  static teraTypes = [
-    'Normal',
-    'Grass',
-    'Water',
-    'Fire',
-    'Electric',
-    'Ground',
-    'Rock',
-    'Flying',
-    'Ice',
-    'Fighting',
-    'Poison',
-    'Bug',
-    'Psychic',
-    'Dark',
-    'Ghost',
-    'Dragon',
-    'Steel',
-    'Fairy',
-    'Stellar',
-  ];
+  static teraTypes: TeraType[] = [...TYPES, 'Stellar'];
 
   constructor() {}
 

@@ -3,10 +3,16 @@
     class="w-96 bg-opacity-90 shadow-xl min-h-16 bg-red-300 rounded-xl border-2 border-red-400"
   >
     <div class="w-full flex">
-      <div *ngIf="error.status !== undefined" class="px-2 font-semibold">
+      <div
+        *ngIf="error.status !== undefined && error.status != 0"
+        class="px-2 font-semibold"
+      >
         Error {{ error.status }}:
       </div>
-      <div *ngIf="error.status === undefined" class="px-2 font-semibold">
+      <div
+        *ngIf="error.status === undefined || error.status === 0"
+        class="px-2 font-semibold"
+      >
         Error:
       </div>
       <div class="flex-grow"></div>
@@ -19,11 +25,21 @@
     </div>
     <!-- fix overflow text -->
     <div class="px-2 pb-2 whitespace-normal">
-      <div>
-        {{ error.statusText }}
-      </div>
-      <div>Code: {{ error.error.code }}</div>
-      <div>URI: {{ error.url }}</div>
+      <ng-container [ngSwitch]="error.status">
+        <ng-container *ngSwitchDefault
+          ><div>
+            {{ error.statusText }}
+          </div>
+          <div *ngIf="error.error.code">Code: {{ error.error.code }}</div>
+          <div>URI: {{ error.url }}</div>
+        </ng-container>
+        <ng-container *ngSwitchCase="0"
+          ><div>
+            The server is unresponsive. Please try again later and follow our
+            Discord server for outage updates.
+          </div>
+        </ng-container>
+      </ng-container>
     </div>
   </div>
 </div>

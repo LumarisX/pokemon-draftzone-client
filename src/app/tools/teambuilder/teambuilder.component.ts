@@ -4,6 +4,9 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { SpriteComponent } from '../../images/sprite.component';
 import { OpponentScoreComponent } from '../../opponent-overview/opponent-score/opponent-score.component';
+import { NATURES } from '../../../assets/data';
+import { FilterComponent } from '../../filter/filter.component';
+import { Pokemon } from '../../interfaces/draft';
 
 class PokemonBuilder {
   ivs: {
@@ -42,6 +45,7 @@ class PokemonBuilder {
   hiddenpower: string = 'Dark';
   gmax: boolean = false;
   shiny: boolean = false;
+  name: string = '';
   nature: string = '';
   moves: [string, string, string, string] = ['', '', '', ''];
   ability: string = '';
@@ -115,12 +119,20 @@ class PokemonBuilder {
     FormsModule,
     SpriteComponent,
     OpponentScoreComponent,
+    FilterComponent,
   ],
 })
 export class TeamBuilderComponent implements OnInit {
   team: PokemonBuilder[] = [];
+  natures = Object.values(NATURES);
 
   ngOnInit(): void {
     this.team.push(new PokemonBuilder());
+  }
+
+  nameSelected(pokemon: PokemonBuilder, event: Pokemon) {
+    pokemon.id = event.id;
+    pokemon.name = event.name;
+    pokemon.shiny = event.shiny || false;
   }
 }
