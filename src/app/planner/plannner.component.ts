@@ -97,7 +97,11 @@ export class PlannerComponent implements OnInit {
   ngOnInit(): void {
     // Populate form data from localStorage if available
     const storedPlannerData = localStorage.getItem('plannerData');
-    if (storedPlannerData) {
+    if (!storedPlannerData || storedPlannerData === '[]') {
+      this.plannerForm = this.fb.group({
+        drafts: this.fb.array([this.createDraftFormGroup()]),
+      });
+    } else {
       let data = JSON.parse(storedPlannerData);
       this.plannerForm = this.fb.group({
         drafts: this.fb.array(
@@ -121,10 +125,6 @@ export class PlannerComponent implements OnInit {
             }) => this.createDraftFormGroup(value)
           )
         ),
-      });
-    } else {
-      this.plannerForm = this.fb.group({
-        drafts: this.fb.array([this.createDraftFormGroup()]),
       });
     }
 
