@@ -3,11 +3,11 @@ import { AfterViewInit, Component } from '@angular/core';
 import { Meta } from '@angular/platform-browser';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { MatchupService } from '../api/matchup.service';
-import { LoadingComponent } from '../loading/loading.component';
 import { MatchupData, Summary } from './matchup-interface';
 import { MatchupComponent } from './matchup/matchup.component';
 import duration from 'dayjs/plugin/duration';
 import dayjs from 'dayjs';
+import { LoadingComponent } from '../images/loading/loading.component';
 
 dayjs.extend(duration);
 

@@ -6,7 +6,7 @@ import { SpriteComponent } from '../../images/sprite.component';
 import { BarChartSVG } from '../../images/svg-components/barchart.component';
 import { TrashSVG } from '../../images/svg-components/trash.component';
 import { Archive } from '../../interfaces/archive';
-import { LoadingComponent } from '../../loading/loading.component';
+import { LoadingComponent } from '../../images/loading/loading.component';
 
 @Component({
   selector: 'draft-archives',

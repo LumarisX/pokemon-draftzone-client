@@ -71,6 +71,7 @@ export class DraftFormEditComponent implements OnInit {
   }
 
   editDraft(formData: Object) {
+    console.log(formData);
     this.draftService.editDraft(this.teamId, formData).subscribe(
       (response) => {
         console.log('Success!', response);

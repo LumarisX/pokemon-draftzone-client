@@ -4,9 +4,9 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ReplayService } from '../../api/replay.service';
 import { SpriteComponent } from '../../images/sprite.component';
-import { LoadingComponent } from '../../loading/loading.component';
 import { ReplayChartComponent } from './replay-chart/replay-chart.component';
 import { ReplayData } from './replay.interface';
+import { LoadingComponent } from '../../images/loading/loading.component';
 
 @Component({
   selector: 'replay-analyzer',

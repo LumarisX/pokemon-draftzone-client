@@ -3,7 +3,6 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Meta } from '@angular/platform-browser';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { MatchupService } from '../api/matchup.service';
-import { LoadingComponent } from '../loading/loading.component';
 import { MatchupData, Summary } from './matchup-interface';
 import { MatchupComponent } from './matchup/matchup.component';
 import { SpriteComponent } from '../images/sprite.component';
@@ -13,6 +12,7 @@ import { TeraSVG } from '../images/svg-components/tera.component';
 import { CopySVG } from '../images/svg-components/copy.component';
 import { CloseSVG } from '../images/svg-components/close.component';
 import { CheckSVG } from '../images/svg-components/score.component copy';
+import { LoadingComponent } from '../images/loading/loading.component';
 
 dayjs.extend(duration);
 

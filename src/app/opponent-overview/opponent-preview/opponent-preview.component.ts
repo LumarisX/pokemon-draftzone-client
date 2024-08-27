@@ -4,13 +4,13 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { DraftService } from '../../api/draft.service';
 import { Draft } from '../../interfaces/draft';
 import { Matchup } from '../../interfaces/matchup';
-import { LoadingComponent } from '../../loading/loading.component';
 import { SpriteComponent } from '../../images/sprite.component';
 import { ClockSVG } from '../../images/svg-components/clock.component';
 import { TrashSVG } from '../../images/svg-components/trash.component';
 import { PlusSVG } from '../../images/svg-components/plus.component';
 import { EditSVG } from '../../images/svg-components/edit.component';
 import { ScoreSVG } from '../../images/svg-components/score.component';
+import { LoadingComponent } from '../../images/loading/loading.component';
 
 @Component({
   selector: 'opponent-preview',

@@ -12,13 +12,13 @@ import { DraftService } from '../../api/draft.service';
 import { SpriteComponent } from '../../images/sprite.component';
 import { Pokemon } from '../../interfaces/draft';
 import { Matchup } from '../../interfaces/matchup';
-import { LoadingComponent } from '../../loading/loading.component';
 import { PokemonFormComponent } from '../../pokemon-form/pokemon-form.component';
 import { ReplayService } from '../../api/replay.service';
 import { ReplayData } from '../../tools/replay_analyzer/replay.interface';
 import { PlusSVG } from '../../images/svg-components/plus.component';
 import { TrashSVG } from '../../images/svg-components/trash.component';
 import { PokemonId } from '../../../assets/data/namedex';
+import { LoadingComponent } from '../../images/loading/loading.component';
 
 @Component({
   selector: 'opponent-form',
