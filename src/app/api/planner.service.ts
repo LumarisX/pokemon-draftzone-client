@@ -13,19 +13,29 @@ export class PlannerService {
 
   constructor(private apiService: ApiService) {}
 
-  getPlannerDetails(team: PokemonId[]): Observable<any> {
+  getPlannerDetails(
+    team: PokemonId[],
+    format: string,
+    ruleset: string
+  ): Observable<any> {
     const cacheKey = JSON.stringify(team);
     const cachedData = this.cache.find((item) => item && item.key === cacheKey);
     if (cachedData) {
       return of(cachedData.data);
     } else {
-      return this.apiService.get(`planner?team=${team}`, false).pipe(
-        map((data: any) => {
-          this.cache[this.currentIndex] = { key: cacheKey, data: data };
-          this.currentIndex = (this.currentIndex + 1) % this.cacheSize;
-          return data;
+      return this.apiService
+        .get(`planner`, false, {
+          team: team.join(','),
+          format: format,
+          ruleset: ruleset,
         })
-      );
+        .pipe(
+          map((data: any) => {
+            this.cache[this.currentIndex] = { key: cacheKey, data: data };
+            this.currentIndex = (this.currentIndex + 1) % this.cacheSize;
+            return data;
+          })
+        );
     }
   }
 }

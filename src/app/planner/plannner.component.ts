@@ -209,12 +209,18 @@ export class PlannerComponent implements OnInit {
       };
       this.movechart = [];
     } else {
-      this.plannerService.getPlannerDetails(this.team).subscribe((data) => {
-        let planner = <Planner>data;
-        this.typechart = planner.typechart;
-        this.summary = planner.summary;
-        this.movechart = planner.movechart;
-      });
+      this.plannerService
+        .getPlannerDetails(
+          this.team,
+          this.getDraftFormGroup().get('format')?.value,
+          this.getDraftFormGroup().get('ruleset')?.value
+        )
+        .subscribe((data) => {
+          let planner = <Planner>data;
+          this.typechart = planner.typechart;
+          this.summary = planner.summary;
+          this.movechart = planner.movechart;
+        });
     }
   }
 
