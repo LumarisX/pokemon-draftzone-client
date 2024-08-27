@@ -18,7 +18,7 @@ export class PlannerService {
     format: string,
     ruleset: string
   ): Observable<any> {
-    const cacheKey = JSON.stringify(team);
+    const cacheKey = JSON.stringify([ruleset, team]);
     const cachedData = this.cache.find((item) => item && item.key === cacheKey);
     if (cachedData) {
       return of(cachedData.data);

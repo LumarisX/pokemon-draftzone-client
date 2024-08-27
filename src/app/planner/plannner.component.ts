@@ -317,6 +317,10 @@ export class PlannerComponent implements OnInit {
       if (value) this.adjustTeamArray(group.get('team') as FormArray, value);
     });
 
+    group.get('ruleset')?.valueChanges.subscribe(() => {
+      this.updateDetails();
+    });
+
     this.adjustTeamArray(group.get('team') as FormArray, data.max);
     this.draftSize++;
     return group;
