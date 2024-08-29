@@ -2,8 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { SpriteComponent } from '../../../images/sprite.component';
 import { Pokemon } from '../../../interfaces/draft';
-import { TypeChart, Types } from '../../matchup-interface';
-import { TYPES } from '../../../../assets/data';
+import { TypeChart } from '../../matchup-interface';
+import { ExtendedType, TYPES } from '../../../../assets/data';
 
 @Component({
   selector: 'typechart',
@@ -13,7 +13,7 @@ import { TYPES } from '../../../../assets/data';
 })
 export class TypechartComponent implements OnChanges {
   @Input() typecharts!: TypeChart[];
-  sortedType?: keyof Types;
+  sortedType?: ExtendedType;
   selectedTeam: number = 1;
   types = TYPES;
   weaknesses: number[] = [];
@@ -32,7 +32,7 @@ export class TypechartComponent implements OnChanges {
     this.summerize();
   }
 
-  sortByType(type: keyof Types) {
+  sortByType(type: ExtendedType) {
     if (type != this.sortedType) {
       this.typecharts.forEach((typechart) =>
         typechart.team.sort((x, y) => x.weak[type] - y.weak[type])
@@ -121,7 +121,9 @@ export class TypechartComponent implements OnChanges {
 
   toggleVisible(
     pokemon: Pokemon & {
-      weak: Types;
+      weak: {
+        [key in ExtendedType]: number;
+      };
       disabled?: Boolean;
     }
   ) {
@@ -129,7 +131,7 @@ export class TypechartComponent implements OnChanges {
     this.summerize();
   }
 
-  sortedTypeColor(type: keyof Types) {
+  sortedTypeColor(type: ExtendedType) {
     if (type === this.sortedType) return 'bg-menu-800';
     else return 'bg-menu-300';
   }

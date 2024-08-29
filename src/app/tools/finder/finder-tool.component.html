@@ -1,0 +1,34 @@
+<div class="p-4 space-y-2 flex flex-col">
+  <div class="bg-menu-100 flex p-2 space-x-4 rounded shadow">
+    <div class="space-x-1">
+      <label for="format" class="font-bold">Format</label>
+      <select
+        class="p-0.5 font-semibold rounded bg-menu-100"
+        [(ngModel)]="selectedFormat"
+        id="format"
+      >
+        <option *ngFor="let format of formats" value="{{ format }}">
+          {{ format }}
+        </option>
+      </select>
+    </div>
+
+    <div class="space-x-1">
+      <label for="ruleset" class="font-bold">Ruleset</label>
+      <select
+        class="p-0.5 font-semibold rounded bg-menu-100"
+        [(ngModel)]="selectedRuleset"
+        id="ruleset"
+      >
+        <option *ngFor="let ruleset of rulesets" value="{{ ruleset }}">
+          {{ ruleset }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <finder-core
+    [formatId]="selectedFormat"
+    [rulesetId]="selectedRuleset"
+  ></finder-core>
+</div>

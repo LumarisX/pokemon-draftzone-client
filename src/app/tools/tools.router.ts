@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { FinderToolComponent } from './finder/finder-tool.component';
 import { ReplayComponent } from './replay_analyzer/replay.component';
-import { ToolsComponent } from './tools.component';
-import { TimeConverterComponent } from './time_converter/time_converter.component';
-import { FinderComponent } from './finder/finder.component';
 import { TeamBuilderComponent } from './teambuilder/teambuilder.component';
+import { TimeConverterComponent } from './time_converter/time_converter.component';
+import { ToolsComponent } from './tools.component';
 const routes: Routes = [
   {
     path: 'tools',
@@ -19,8 +19,8 @@ const routes: Routes = [
     component: TimeConverterComponent,
   },
   {
-    path: 'tools/finder',
-    component: FinderComponent,
+    path: 'tools/pokemon-search',
+    component: FinderToolComponent,
   },
   {
     path: 'tools/teambuilder',

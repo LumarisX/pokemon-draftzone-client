@@ -16,7 +16,7 @@ export class DataService {
     return this.apiService.get('data/rulesets', false);
   }
 
-  advancesearch(query: string[], ruleset?: string) {
+  advancesearch(query: string[], ruleset?: string, format?: string) {
     let encodedQuery = encodeURIComponent(query.join(''));
     let params: { [key: string]: string } = { query: encodedQuery };
     if (ruleset) params['ruleset'] = ruleset;

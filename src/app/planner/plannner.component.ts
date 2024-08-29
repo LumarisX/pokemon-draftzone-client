@@ -28,13 +28,14 @@ import {
   TypeChart,
 } from '../matchup-overview/matchup-interface';
 import { getPidByName, Namedex, PokemonId } from '../../assets/data/namedex';
-import { FinderComponent } from './finder/finder.component';
+import { FinderPlannerComponent } from './finder/finder.component';
 import { MoveComponent } from './moves/moves.component';
 import { SummaryComponent } from './summary/summary.component';
 import { TypechartComponent } from './typechart/typechart.component';
 import { PlusSVG } from '../images/svg-components/plus.component';
 import { TrashSVG } from '../images/svg-components/trash.component';
 import { GearSVG } from '../images/svg-components/gear.component';
+import { FinderCoreComponent } from '../tools/finder/finder-core.component';
 
 type Planner = {
   summary: Summary;
@@ -53,13 +54,14 @@ type Planner = {
     TypechartComponent,
     SummaryComponent,
     MoveComponent,
-    FinderComponent,
+    FinderPlannerComponent,
     ReactiveFormsModule,
     FormsModule,
     PlusSVG,
     TrashSVG,
     GearSVG,
     SpriteComponent,
+    FinderCoreComponent,
   ],
   animations: [
     trigger('growIn', [
@@ -82,8 +84,8 @@ export class PlannerComponent implements OnInit {
   };
   tabSelected = 0;
   selectedDraft = 0;
-  formats = [];
-  rulesets = [];
+  formats: string[] = [];
+  rulesets: string[] = [];
   movechart: MoveChart = [];
   draftSize = 0;
   settings = true;
@@ -137,11 +139,11 @@ export class PlannerComponent implements OnInit {
 
     // Initialize formats and rulesets
     this.dataService.getFormats().subscribe((formats) => {
-      this.formats = <any>formats;
+      this.formats = formats;
     });
 
     this.dataService.getRulesets().subscribe((rulesets) => {
-      this.rulesets = <any>rulesets;
+      this.rulesets = rulesets;
     });
   }
 

@@ -1,4 +1,4 @@
-import { ExtendedType } from '../../assets/data';
+import { ExtendedType, StatsTable, Type } from '../../assets/data';
 import { Pokemon } from '../interfaces/draft';
 
 export type Speedtier = {
@@ -19,14 +19,7 @@ export type Summary = {
   team: (Pokemon & {
     abilities: string[];
     types: string[];
-    baseStats: {
-      hp: number;
-      atk: number;
-      def: number;
-      spa: number;
-      spd: number;
-      spe: number;
-    };
+    baseStats: StatsTable;
   })[];
   teamName: String;
   stats: {
@@ -59,13 +52,11 @@ export type Summary = {
 
 export type TypeChart = {
   team: (Pokemon & {
-    weak: Types;
+    weak: {
+      [key in ExtendedType]: number;
+    };
     disabled?: Boolean;
   })[];
-};
-
-export type Types = {
-  [key in ExtendedType]: number;
 };
 
 export type MoveChart = MoveCategory[];
@@ -81,7 +72,7 @@ export type CoverageChart = Pokemon & {
       {
         name: string;
         stab: boolean;
-        type: keyof Types;
+        type: Type;
         recommended?: boolean;
       }
     ];
@@ -89,7 +80,7 @@ export type CoverageChart = Pokemon & {
       {
         name: string;
         stab: boolean;
-        type: keyof Types;
+        type: Type;
         recommended?: boolean;
       }
     ];

@@ -354,7 +354,14 @@
                 </div>
               </div>
             </div>
-            <finder class="h-full" *ngIf="tabSelected == 3"></finder>
+            <finder-core
+              class="h-full min-w-full overflow-y-auto"
+              *ngIf="tabSelected == 3"
+              [rulesetId]="
+                getDraftFormGroup().get('ruleset')?.value || 'Gen9 Draft'
+              "
+              [formatId]="getDraftFormGroup().get('format')?.value || 'Singles'"
+            ></finder-core>
           </div>
         </div>
       </div>

@@ -1,5 +1,8 @@
-<div class="flex space-x-1">
-  <select [(ngModel)]="selectedOption" class="border">
+<div class="flex space-x-2 items-center border border-gray-300 p-2 rounded">
+  <select
+    [(ngModel)]="selectedOption"
+    class="form-select border-gray-300 rounded"
+  >
     <option *ngFor="let option of options" [ngValue]="option">
       {{ option.name }}
     </option>
@@ -11,7 +14,7 @@
     "
     [(ngModel)]="condition.operation"
     (ngModelChange)="onOperationChange()"
-    class="border"
+    class="form-select border-gray-300 rounded"
   >
     <option
       *ngFor="let operation of selectedOption.operations"
@@ -21,54 +24,55 @@
     </option>
   </select>
 
-  <div class="border w-fit" *ngIf="selectedOption.query !== ''">
+  <div *ngIf="selectedOption.query !== ''" class="flex items-center space-x-2">
     <ng-container [ngSwitch]="selectedOption.query">
       <input
         *ngSwitchCase="'string'"
-        class="w-36"
+        class="form-input border-gray-300 rounded w-36"
         [(ngModel)]="queryValue"
         type="text"
         placeholder="Enter text"
       />
       <input
         *ngSwitchCase="'number'"
-        class="w-20"
+        class="form-input border-gray-300 rounded w-20"
         [(ngModel)]="queryValue"
         type="number"
         placeholder="Enter number"
       />
-
-      <select *ngSwitchCase="'type'" [(ngModel)]="queryValue">
+      <select
+        *ngSwitchCase="'type'"
+        class="form-select border-gray-300 rounded"
+        [(ngModel)]="queryValue"
+      >
         <option *ngFor="let type of typeOptions" [ngValue]="type">
           {{ type }}
         </option>
       </select>
-
-      <select *ngSwitchCase="'eggs'" [(ngModel)]="queryValue">
+      <select
+        *ngSwitchCase="'eggs'"
+        class="form-select border-gray-300 rounded"
+        [(ngModel)]="queryValue"
+      >
         <option *ngFor="let egg of eggGroups" [ngValue]="egg">
           {{ egg }}
         </option>
       </select>
-
-      <select *ngSwitchCase="'tier'" [(ngModel)]="queryValue">
+      <select
+        *ngSwitchCase="'tier'"
+        class="form-select border-gray-300 rounded"
+        [(ngModel)]="queryValue"
+      >
         <option *ngFor="let tier of tiers" [ngValue]="tier">
           {{ tier }}
         </option>
       </select>
-
       <input
         *ngSwitchCase="'boolean'"
+        class="form-checkbox rounded"
         [(ngModel)]="queryValue"
         type="checkbox"
       />
     </ng-container>
   </div>
 </div>
-
-<!-- Debugging -->
-<!-- option
-{{ selectedOption | json }}
-operation
-{{ selectedOperation | json }}
-value
-{{ queryValue | json }} -->

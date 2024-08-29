@@ -51,6 +51,7 @@ export class FindOptionComponent {
         this.queryValue = '';
     }
     this.condition.option = option.value;
+    this.queryChange.emit(this.condition);
   }
 
   get selectedOption() {

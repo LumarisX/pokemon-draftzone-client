@@ -2,8 +2,9 @@ import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { SpriteComponent } from '../../../../images/sprite.component';
 import { Pokemon } from '../../../../interfaces/draft';
-import { CoverageChart, TypeChart, Types } from '../../../matchup-interface';
+import { CoverageChart, TypeChart } from '../../../matchup-interface';
 import { EffectivenessChartComponent } from './effectiveness-chart/effectiveness-chart.component';
+import { ExtendedType } from '../../../../../assets/data';
 
 @Component({
   selector: 'coverage',
@@ -16,7 +17,9 @@ export class CoverageComponent implements OnInit {
   @Input() typechart!: TypeChart;
   coverage: {
     pokemon: Pokemon & {
-      weak: Types;
+      weak: {
+        [key in ExtendedType]: number;
+      };
       disabled?: Boolean | undefined;
     };
     max: number;

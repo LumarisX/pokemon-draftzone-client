@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { Pokemon } from '../../interfaces/draft';
-import { TypeChart, Types } from '../../matchup-overview/matchup-interface';
+import { ExtendedType, TYPES } from '../../../assets/data';
 import { SpriteComponent } from '../../images/sprite.component';
-import { Type, TYPES } from '../../../assets/data';
+import { Pokemon } from '../../interfaces/draft';
+import { TypeChart } from '../../matchup-overview/matchup-interface';
 
 @Component({
   selector: 'typechart',
@@ -18,6 +18,7 @@ export class TypechartComponent implements OnChanges {
   resistances: number[] = [];
   difference: number[] = [];
   differential: number[] = [];
+  count: number[] = [];
 
   constructor() {}
 
@@ -68,7 +69,7 @@ export class TypechartComponent implements OnChanges {
 
   toggleVisible(
     pokemon: Pokemon & {
-      weak: Types;
+      weak: { [key in ExtendedType]: number };
       disabled?: Boolean;
     }
   ) {
@@ -81,9 +82,11 @@ export class TypechartComponent implements OnChanges {
     this.resistances = new Array(this.types.length).fill(0);
     this.difference = new Array(this.types.length).fill(0);
     this.differential = new Array(this.types.length).fill(0);
+    this.count = new Array(this.types.length).fill(0);
     for (let pokemon of this.typechart.team) {
       if (!pokemon.disabled) {
         for (let t in this.types) {
+          // if (pokemon.types.includes(this.types[t])) this.count[t]++;
           if (pokemon.weak[this.types[t]] > 1) {
             this.weaknesses[t]++;
             this.difference[t]--;
