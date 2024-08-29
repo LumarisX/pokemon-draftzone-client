@@ -119,6 +119,12 @@
         </div>
         <button
           class="p-0.5 border-2 text-sm rounded hover:bg-menu-300 bg-menu-100 border-menu-400"
+          (click)="copyToNew()"
+        >
+          Copy to New Plan
+        </button>
+        <button
+          class="p-0.5 border-2 text-sm rounded hover:bg-menu-300 bg-menu-100 border-menu-400"
           routerLink="/draft/new"
           [queryParams]="{
             team: team,

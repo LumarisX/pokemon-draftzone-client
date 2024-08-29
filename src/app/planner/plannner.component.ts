@@ -408,4 +408,36 @@ export class PlannerComponent implements OnInit {
       ? 'bg-menu-100 '
       : 'bg-menu-250 hover:bg-menu-150';
   }
+
+  copyToNew() {
+    let draft = this.getDraftFormGroup();
+    let draftCopy = this.fb.group({
+      format: [draft.get('format')?.value, Validators.required],
+      ruleset: [draft.get('ruleset')?.value, Validators.required],
+      draftName: [draft.get('draftName')?.value + ' (Copy)'],
+      min: [draft.get('min')?.value, [Validators.required, Validators.min(0)]],
+      max: [
+        draft.get('max')?.value,
+        [Validators.required, Validators.min(0), Validators.max(18)],
+      ],
+      system: [draft.get('system')?.value, Validators.required],
+      totalPoints: [draft.get('totalPoints')?.value],
+      team: this.fb.array(
+        (draft.get('team') as FormArray).controls.map((control) =>
+          this.fb.group({
+            id: [control.get('id')?.value, Validators.required],
+            name: [control.get('name')?.value, Validators.required],
+            capt: [control.get('capt')?.value, Validators.required],
+            tier: [control.get('tier')?.value],
+            value: [control.get('value')?.value],
+            drafted: [control.get('drafted')?.value],
+          })
+        )
+      ),
+    });
+
+    this.draftArray.push(draftCopy);
+    this.selectedDraft = this.draftSize;
+    this.updateDetails();
+  }
 }
