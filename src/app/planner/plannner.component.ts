@@ -28,7 +28,6 @@ import {
   TypeChart,
 } from '../matchup-overview/matchup-interface';
 import { getPidByName, Namedex, PokemonId } from '../../assets/data/namedex';
-import { FinderPlannerComponent } from './finder/finder.component';
 import { MoveComponent } from './moves/moves.component';
 import { SummaryComponent } from './summary/summary.component';
 import { TypechartComponent } from './typechart/typechart.component';
@@ -54,7 +53,6 @@ type Planner = {
     TypechartComponent,
     SummaryComponent,
     MoveComponent,
-    FinderPlannerComponent,
     ReactiveFormsModule,
     FormsModule,
     PlusSVG,

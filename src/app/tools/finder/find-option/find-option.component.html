@@ -1,7 +1,7 @@
-<div class="flex space-x-2 items-center border border-gray-300 p-2 rounded">
+<div class="flex space-x-2 items-center border border-menu-300 p-2 rounded">
   <select
     [(ngModel)]="selectedOption"
-    class="form-select border-gray-300 rounded"
+    class="border-menu-100 rounded border bg-page"
   >
     <option *ngFor="let option of options" [ngValue]="option">
       {{ option.name }}
@@ -14,7 +14,7 @@
     "
     [(ngModel)]="condition.operation"
     (ngModelChange)="onOperationChange()"
-    class="form-select border-gray-300 rounded"
+    class="border-menu-100 rounded border bg-page"
   >
     <option
       *ngFor="let operation of selectedOption.operations"
@@ -28,21 +28,21 @@
     <ng-container [ngSwitch]="selectedOption.query">
       <input
         *ngSwitchCase="'string'"
-        class="form-input border-gray-300 rounded w-36"
+        class="border-menu-100 rounded border bg-page"
         [(ngModel)]="queryValue"
         type="text"
         placeholder="Enter text"
       />
       <input
         *ngSwitchCase="'number'"
-        class="form-input border-gray-300 rounded w-20"
+        class="border-menu-100 rounded border bg-page"
         [(ngModel)]="queryValue"
         type="number"
         placeholder="Enter number"
       />
       <select
         *ngSwitchCase="'type'"
-        class="form-select border-gray-300 rounded"
+        class="border-menu-100 rounded border bg-page"
         [(ngModel)]="queryValue"
       >
         <option *ngFor="let type of typeOptions" [ngValue]="type">
@@ -51,7 +51,7 @@
       </select>
       <select
         *ngSwitchCase="'eggs'"
-        class="form-select border-gray-300 rounded"
+        class="border-menu-100 rounded border bg-page"
         [(ngModel)]="queryValue"
       >
         <option *ngFor="let egg of eggGroups" [ngValue]="egg">
@@ -60,7 +60,7 @@
       </select>
       <select
         *ngSwitchCase="'tier'"
-        class="form-select border-gray-300 rounded"
+        class="border-menu-100 rounded border bg-page"
         [(ngModel)]="queryValue"
       >
         <option *ngFor="let tier of tiers" [ngValue]="tier">
@@ -69,7 +69,7 @@
       </select>
       <input
         *ngSwitchCase="'boolean'"
-        class="form-checkbox rounded"
+        class="border-menu-100 rounded border bg-page"
         [(ngModel)]="queryValue"
         type="checkbox"
       />

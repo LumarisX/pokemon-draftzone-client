@@ -1,5 +1,5 @@
 <div class="space-y-3">
-  <div class="p-4 bg-gray-100 rounded-lg shadow-md">
+  <div class="p-4 bg-menu-100 rounded-lg shadow-md">
     <div class="max-w-192 space-y-4">
       <div class="flex items-center space-x-2">
         <label for="advancedMode" class="font-semibold">Advanced Mode</label>
@@ -14,13 +14,13 @@
       <div *ngIf="!advancedMode" class="space-y-4">
         <div>
           <div
-            class="p-4 border-2 border-gray-300 rounded-lg bg-white space-y-2"
+            class="p-4 border-2 border-menu-300 rounded-lg bg-page space-y-2"
           >
             <div class="flex items-center justify-between">
               <select
                 id="conjunction"
                 [(ngModel)]="queryGroups[0].conjunction"
-                class="rounded border"
+                class="rounded border border-menu-300 bg-menu-100"
               >
                 <option value=" && ">All</option>
                 <option value=" || ">Any</option>
@@ -55,13 +55,13 @@
           >
             <p class="p-2 font-semibold">AND</p>
             <div
-              class="p-4 border-2 border-gray-300 rounded-lg bg-white space-y-2"
+              class="p-4 border-2 border-menu-300 rounded-lg bg-page space-y-2"
             >
               <div class="flex items-center justify-between">
                 <select
                   id="conjunction"
                   [(ngModel)]="group.conjunction"
-                  class="form-select rounded border"
+                  class="form-select rounded border border-menu-300 bg-menu-100"
                 >
                   <option value=" && ">All</option>
                   <option value=" || ">Any</option>
@@ -108,7 +108,7 @@
           </button>
           <div class="flex flex-grow"></div>
           <button
-            class="border border-slate-400 bg-slate-100 text-slate-500 hover:bg-slate-200 px-4 py-2 rounded"
+            class="border border-menu-400 bg-menu-100 hover:bg-menu-200 px-4 py-2 rounded"
             (click)="find()"
           >
             Find
@@ -119,14 +119,14 @@
       <div *ngIf="advancedMode" class="space-y-4">
         <div>
           <textarea
-            class="text-wrap p-1 w-full border-2 border-gray-300 rounded-lg"
+            class="text-wrap p-1 w-full border-2 border-menu-300 rounded-lg"
             placeholder="Enter advanced query"
             [(ngModel)]="finalQuery"
           >
           </textarea>
         </div>
         <button
-          class="border border-slate-400 bg-slate-100 text-slate-500 hover:bg-slate-200 px-4 py-2 rounded"
+          class="border border-menu-400 bg-menu-100 hover:bg-menu-200 px-4 py-2 rounded"
           (click)="find()"
         >
           Find
@@ -135,13 +135,13 @@
     </div>
   </div>
 
-  <div class="px-4 text-right font-semibold text-gray-600">
+  <div class="px-4 text-right font-semibold text-menu-600">
     Total Results: {{ results.length }}
   </div>
 
   <div class="overflow-x-auto">
-    <table class="min-w-full bg-white border border-gray-200 rounded-lg">
-      <thead class="bg-gray-50 border-b border-gray-200">
+    <table class="min-w-full bg-page border border-menu-200 rounded-lg">
+      <thead class="bg-menu-100 border-b border-menu-200">
         <tr>
           <th></th>
           <th
@@ -242,7 +242,7 @@
       <tbody>
         <tr
           *ngFor="let pokemon of results"
-          class="border-b border-gray-200 hover:bg-gray-50"
+          class="border-b border-menu-200 hover:bg-menu-100"
         >
           <td class="p-2 flex justify-center">
             <div class="max-w-20 min-w-10">
