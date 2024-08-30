@@ -82,7 +82,10 @@
   </div>
   <div formGroupName="capt" class="w-full px-8 col-span-full">
     <div
-      *ngIf="pokemonForm.get('capt.teraCheck')?.value"
+      *ngIf="
+        pokemonForm.get('capt.teraCheck')?.value &&
+        pokemonForm.get('captCheck')?.value
+      "
       formGroupName="tera"
       class="grid grid-cols-7 sm:grid-cols-10"
     >

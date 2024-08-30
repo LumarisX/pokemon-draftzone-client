@@ -68,7 +68,7 @@ export class PokemonFormComponent implements OnInit {
       captCheck: new FormControl('capt' in pokemonData),
       capt: new FormGroup({
         teraCheck: new FormControl(
-          'capt' in pokemonData && 'tera' in pokemonData.capt!
+          !('capt' in pokemonData) || 'tera' in pokemonData.capt!
         ),
         tera: teraFormGroup,
         z: new FormControl(pokemonData.capt?.z || false),
