@@ -18,6 +18,7 @@ import {
         *ngIf="pokemon.id"
         [ngClass]="this.classes"
         title="{{ pokemon.name }}"
+        loading="lazy"
         src="{{ path }}"
         onerror="this.src='../../../../assets/icons/unknown.svg'"
         (error)="fallback()"
