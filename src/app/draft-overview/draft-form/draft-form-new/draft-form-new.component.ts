@@ -13,7 +13,7 @@ import { DraftService } from '../../../api/draft.service';
 import { PokemonFormComponent } from '../../../pokemon-form/pokemon-form.component';
 import { SpriteComponent } from '../../../images/sprite.component';
 import { DraftFormCoreComponent } from '../draft-form-core/draft-form-core.component';
-import { Namedex } from '../../../../assets/data/namedex';
+import { Namedex } from '../../../data/namedex';
 
 @Component({
   selector: 'draft-form-new',

@@ -1,4 +1,4 @@
-import { ExtendedType, StatsTable, Type } from '../../assets/data';
+import { ExtendedType, StatsTable, Type } from '../data';
 import { Pokemon } from '../interfaces/draft';
 
 export type Speedtier = {

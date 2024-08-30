@@ -1,4 +1,4 @@
-import { PokemonId } from '../../../assets/data/namedex';
+import { PokemonId } from '../../data/namedex';
 
 export type ReplayData = {
   gametype: string;

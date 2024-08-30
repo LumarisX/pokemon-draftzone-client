@@ -17,7 +17,7 @@ import { ReplayService } from '../../api/replay.service';
 import { ReplayData } from '../../tools/replay_analyzer/replay.interface';
 import { PlusSVG } from '../../images/svg-components/plus.component';
 import { TrashSVG } from '../../images/svg-components/trash.component';
-import { PokemonId } from '../../../assets/data/namedex';
+import { PokemonId } from '../../data/namedex';
 import { LoadingComponent } from '../../images/loading/loading.component';
 
 @Component({

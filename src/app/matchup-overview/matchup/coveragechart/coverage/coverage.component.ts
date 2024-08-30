@@ -4,7 +4,7 @@ import { SpriteComponent } from '../../../../images/sprite.component';
 import { Pokemon } from '../../../../interfaces/draft';
 import { CoverageChart, TypeChart } from '../../../matchup-interface';
 import { EffectivenessChartComponent } from './effectiveness-chart/effectiveness-chart.component';
-import { ExtendedType } from '../../../../../assets/data';
+import { ExtendedType } from '../../../../data';
 
 @Component({
   selector: 'coverage',

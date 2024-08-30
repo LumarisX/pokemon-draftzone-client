@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { SpriteComponent } from '../../images/sprite.component';
 import { OpponentScoreComponent } from '../../opponent-overview/opponent-score/opponent-score.component';
-import { NATURES } from '../../../assets/data';
+import { NATURES } from '../../data';
 import { FilterComponent } from '../../filter/filter.component';
 import { Pokemon } from '../../interfaces/draft';
 

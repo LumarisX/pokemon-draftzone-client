@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { PokemonId } from '../../assets/data/namedex';
+import { PokemonId } from '../data/namedex';
 import { ApiService } from './api.service';
 import { Observable, map, of } from 'rxjs';
 

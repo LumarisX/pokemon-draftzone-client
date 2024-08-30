@@ -27,7 +27,7 @@ import {
   Summary,
   TypeChart,
 } from '../matchup-overview/matchup-interface';
-import { getPidByName, Namedex, PokemonId } from '../../assets/data/namedex';
+import { getPidByName, Namedex, PokemonId } from '../data/namedex';
 import { MoveComponent } from './moves/moves.component';
 import { SummaryComponent } from './summary/summary.component';
 import { TypechartComponent } from './typechart/typechart.component';
@@ -35,7 +35,7 @@ import { PlusSVG } from '../images/svg-components/plus.component';
 import { TrashSVG } from '../images/svg-components/trash.component';
 import { GearSVG } from '../images/svg-components/gear.component';
 import { FinderCoreComponent } from '../tools/finder/finder-core.component';
-import { Type } from '../../assets/data';
+import { Type } from '../data';
 
 type Planner = {
   summary: Summary;

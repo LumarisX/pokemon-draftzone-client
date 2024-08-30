@@ -3,7 +3,7 @@ import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { SpriteComponent } from '../../../images/sprite.component';
 import { Pokemon } from '../../../interfaces/draft';
 import { TypeChart } from '../../matchup-interface';
-import { ExtendedType, TYPES } from '../../../../assets/data';
+import { ExtendedType, TYPES } from '../../../data';
 
 @Component({
   selector: 'typechart',

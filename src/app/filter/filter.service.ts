@@ -1,6 +1,6 @@
 import { Injectable, OnInit } from '@angular/core';
 import { Pokemon } from '../interfaces/draft';
-import { Namedex } from '../../assets/data/namedex';
+import { Namedex } from '../data/namedex';
 @Injectable({
   providedIn: 'root',
 })

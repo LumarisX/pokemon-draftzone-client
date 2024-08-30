@@ -2,10 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { Pokemon } from '../interfaces/draft';
 import { SettingsService } from '../pages/settings/settings.service';
-import {
-  getSpriteProperties,
-  SpriteProperties,
-} from '../../assets/data/namedex';
+import { getSpriteProperties, SpriteProperties } from '../data/namedex';
 
 @Component({
   selector: 'sprite',

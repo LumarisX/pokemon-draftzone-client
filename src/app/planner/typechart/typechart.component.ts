@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { ExtendedType, Type, TYPES } from '../../../assets/data';
+import { ExtendedType, Type, TYPES } from '../../data';
 import { SpriteComponent } from '../../images/sprite.component';
 import { Pokemon } from '../../interfaces/draft';
 import { TypeChart } from '../../matchup-overview/matchup-interface';

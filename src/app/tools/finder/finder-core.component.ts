@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { StatsTable, Type } from '../../../assets/data';
+import { StatsTable, Type } from '../../data';
 import { DataService } from '../../api/data.service';
 import { SpriteComponent } from '../../images/sprite.component';
 import { MinusSVG } from '../../images/svg-components/minus.component';
