@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { ExtendedType, TYPES } from '../../../assets/data';
+import { ExtendedType, Type, TYPES } from '../../../assets/data';
 import { SpriteComponent } from '../../images/sprite.component';
 import { Pokemon } from '../../interfaces/draft';
 import { TypeChart } from '../../matchup-overview/matchup-interface';
@@ -13,6 +13,10 @@ import { TypeChart } from '../../matchup-overview/matchup-interface';
 })
 export class TypechartComponent implements OnChanges {
   @Input() typechart!: TypeChart;
+  @Input() recommended!: {
+    pokemon: Pokemon[];
+    types: Type[][];
+  };
   types = TYPES;
   weaknesses: number[] = [];
   resistances: number[] = [];

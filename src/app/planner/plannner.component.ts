@@ -35,11 +35,16 @@ import { PlusSVG } from '../images/svg-components/plus.component';
 import { TrashSVG } from '../images/svg-components/trash.component';
 import { GearSVG } from '../images/svg-components/gear.component';
 import { FinderCoreComponent } from '../tools/finder/finder-core.component';
+import { Type } from '../../assets/data';
 
 type Planner = {
   summary: Summary;
   typechart: TypeChart;
   movechart: MoveChart;
+  recommended: {
+    pokemon: Pokemon[];
+    types: Type[][];
+  };
 };
 
 @Component({
@@ -73,6 +78,13 @@ export class PlannerComponent implements OnInit {
   plannerForm!: FormGroup;
   typechart: TypeChart = {
     team: [],
+  };
+  recommended: {
+    pokemon: Pokemon[];
+    types: Type[][];
+  } = {
+    pokemon: [],
+    types: [],
   };
   team: PokemonId[] = [];
   summary: Summary = {
@@ -220,6 +232,7 @@ export class PlannerComponent implements OnInit {
           this.typechart = planner.typechart;
           this.summary = planner.summary;
           this.movechart = planner.movechart;
+          this.recommended = planner.recommended;
         });
     }
   }

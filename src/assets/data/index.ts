@@ -134,27 +134,7 @@ export const NATURES: {
   },
 };
 
-export type Type =
-  | 'Bug'
-  | 'Dark'
-  | 'Dragon'
-  | 'Electric'
-  | 'Fairy'
-  | 'Fighting'
-  | 'Fire'
-  | 'Flying'
-  | 'Ghost'
-  | 'Grass'
-  | 'Ground'
-  | 'Ice'
-  | 'Normal'
-  | 'Poison'
-  | 'Psychic'
-  | 'Rock'
-  | 'Steel'
-  | 'Water';
-
-export const TYPES: Type[] = [
+export const TYPES = [
   'Normal',
   'Grass',
   'Water',
@@ -173,23 +153,27 @@ export const TYPES: Type[] = [
   'Dragon',
   'Steel',
   'Fairy',
-];
+] as const;
+
+export const TYPECONDITIONS = [
+  'brn',
+  'par',
+  'prankster',
+  'tox',
+  'psn',
+  'frz',
+  'slp',
+  'powder',
+  'sandstorm',
+  'hail',
+  'trapped',
+] as const;
+
+export type Type = (typeof TYPES)[number];
 
 export type TeraType = Type | 'Stellar';
 
-export type ExtendedType =
-  | Type
-  | 'brn'
-  | 'par'
-  | 'prankster'
-  | 'tox'
-  | 'psn'
-  | 'frz'
-  | 'slp'
-  | 'powder'
-  | 'sandstorm'
-  | 'hail'
-  | 'trapped';
+export type ExtendedType = Type | (typeof TYPECONDITIONS)[number];
 
 export type StatsTable = {
   hp: number;
