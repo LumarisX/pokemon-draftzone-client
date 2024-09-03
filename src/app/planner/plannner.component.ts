@@ -220,6 +220,7 @@ export class PlannerComponent implements OnInit {
         },
       };
       this.movechart = [];
+      this.recommended = { pokemon: [], types: [] };
     } else {
       this.plannerService
         .getPlannerDetails(

@@ -118,7 +118,7 @@ export class FinderCoreComponent implements OnInit {
           `(${group.queries
             .filter((query) => query.value !== undefined && query.value !== '')
             .flatMap(
-              (query) => `${query.option} ${query.operation} ${query.value}`
+              (query) => `${query.option} ${query.operation} "${query.value}"`
             )
             .join(group.conjunction)})`
       )
