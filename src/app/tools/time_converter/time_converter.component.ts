@@ -42,8 +42,8 @@ export class TimeConverterComponent implements OnInit {
     email: false,
     emailTime: 1,
   };
-  get hammerTime() {
-    return `<t:${this.timeData.dateTime.format('X')}:f>`;
+  get epochTime() {
+    return this.timeData.dateTime.format('X');
   }
   copied: boolean = false;
   constructor() {}
@@ -106,10 +106,10 @@ export class TimeConverterComponent implements OnInit {
     );
   }
 
-  copyHammerTime() {
+  copyTimestamp() {
     if (this.copied) return;
     navigator.clipboard
-      .writeText(this.hammerTime)
+      .writeText(`<t:${this.epochTime}:f>`)
       .then(() => {
         this.copied = true;
         setTimeout(() => {

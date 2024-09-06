@@ -44,13 +44,13 @@
         />
         <br />
         <label class="text-smfont-medium text-symbolColor-main"
-          >HammerTime</label
+          >Discord Timestamp</label
         >
         <div
           class="w-full h-8 flex items-center p-1 mt-1 border rounded-md shadow-sm bg-menu-100 border-menu-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-          (click)="copyHammerTime()"
+          (click)="copyTimestamp()"
         >
-          <div class="p-1">{{ hammerTime }}</div>
+          <div class="p-1">&lt;t:{{ epochTime }}:f&gt;</div>
           <div class="flex-grow"></div>
           <copy-svg
             *ngIf="!copied"
