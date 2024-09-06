@@ -1,22 +1,25 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { DraftService } from '../../api/draft.service';
+import { RouterModule } from '@angular/router';
 import dayjs, { Dayjs } from 'dayjs';
-import utc from 'dayjs/plugin/utc';
-import timezone from 'dayjs/plugin/timezone';
+import advancedFormat from 'dayjs/plugin/advancedFormat';
 import duration from 'dayjs/plugin/duration';
+import timezone from 'dayjs/plugin/timezone';
+import utc from 'dayjs/plugin/utc';
+import { CopySVG } from '../../images/svg-components/copy.component';
+import { CheckSVG } from '../../images/svg-components/score.component copy';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.extend(duration);
+dayjs.extend(advancedFormat);
 
 @Component({
   selector: 'time-converter',
   standalone: true,
   templateUrl: './time_converter.component.html',
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule, CopySVG, CheckSVG],
 })
 export class TimeConverterComponent implements OnInit {
   selectedDate: string = '';
@@ -39,8 +42,11 @@ export class TimeConverterComponent implements OnInit {
     email: false,
     emailTime: 1,
   };
-
-  constructor(private route: ActivatedRoute, private router: Router) {}
+  get hammerTime() {
+    return `<t:${this.timeData.dateTime.format('X')}:f>`;
+  }
+  copied: boolean = false;
+  constructor() {}
 
   ngOnInit() {
     const currentDateString = this.timeData.dateTime.format('YYYY-MM-DD');
@@ -57,8 +63,6 @@ export class TimeConverterComponent implements OnInit {
         `${this.selectedDate}T${this.selectedTime}`,
         this.localTimeZone
       );
-      console.log(this.localTimeZone, this.opponentTimeZone);
-
       const convertedDateTime = this.timeData.dateTime
         .clone()
         .tz(this.opponentTimeZone);
@@ -100,5 +104,20 @@ export class TimeConverterComponent implements OnInit {
         tz.offset.toLowerCase().includes(query) ||
         tz.name.toLowerCase().includes(query)
     );
+  }
+
+  copyHammerTime() {
+    if (this.copied) return;
+    navigator.clipboard
+      .writeText(this.hammerTime)
+      .then(() => {
+        this.copied = true;
+        setTimeout(() => {
+          this.copied = false;
+        }, 1000);
+      })
+      .catch((error) => {
+        console.error('Failed to copy URL to clipboard: ', error);
+      });
   }
 }

@@ -53,6 +53,25 @@
           class="w-full p-2 mt-1 border rounded-md shadow-sm bg-menu-100 border-menu-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
         />
       </div>
+      <br />
+      <label class="text-smfont-medium text-symbolColor-main">HammerTime</label>
+      <div
+        class="w-full h-8 flex items-center p-1 mt-1 border rounded-md shadow-sm bg-menu-100 border-menu-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+        (click)="copyHammerTime()"
+      >
+        <div class="p-1">{{ hammerTime }}</div>
+        <div class="flex-grow"></div>
+        <copy-svg
+          *ngIf="!copied"
+          class="h-full aspect-square"
+          alt="Copy"
+        ></copy-svg>
+        <check-svg
+          *ngIf="copied"
+          class="h-full aspect-square"
+          alt="Copied"
+        ></check-svg>
+      </div>
     </div>
     <div class="order-2 p-1 rounded-lg bg-bTeam-200 md:order-3">
       <div class="w-full">

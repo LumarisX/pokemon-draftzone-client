@@ -7,16 +7,20 @@ import dayjs, { Dayjs } from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import duration from 'dayjs/plugin/duration';
+import advancedFormat from 'dayjs/plugin/advancedFormat';
+import { CopySVG } from '../../images/svg-components/copy.component';
+import { CheckSVG } from '../../images/svg-components/score.component copy';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.extend(duration);
+dayjs.extend(advancedFormat);
 
 @Component({
   selector: 'opponent-schedule',
   standalone: true,
   templateUrl: './opponent-schedule.component.html',
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule, CopySVG, CheckSVG],
 })
 export class OpponentSchedule implements OnInit {
   teamId: string = '';
@@ -41,7 +45,10 @@ export class OpponentSchedule implements OnInit {
     email: false,
     emailTime: 1,
   };
-
+  get hammerTime() {
+    return `<t:${this.timeData.dateTime.format('X')}:f>`;
+  }
+  copied: boolean = false;
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -120,6 +127,21 @@ export class OpponentSchedule implements OnInit {
         tz.offset.toLowerCase().includes(query) ||
         tz.name.toLowerCase().includes(query)
     );
+  }
+
+  copyHammerTime() {
+    if (this.copied) return;
+    navigator.clipboard
+      .writeText(this.hammerTime)
+      .then(() => {
+        this.copied = true;
+        setTimeout(() => {
+          this.copied = false;
+        }, 1000);
+      })
+      .catch((error) => {
+        console.error('Failed to copy URL to clipboard: ', error);
+      });
   }
 
   submit() {
