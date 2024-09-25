@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
-import { rule } from 'postcss';
 
 @Injectable({
   providedIn: 'root',

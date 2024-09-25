@@ -12,7 +12,9 @@ import { ErrorService } from '../error/error.service';
   providedIn: 'root',
 })
 export class ApiService {
-  private serverUrl = environment.apiUrl;
+  private serverUrl = `${environment.tls ? 'https' : 'http'}://${
+    environment.apiUrl
+  }`;
 
   constructor(
     private http: HttpClient,

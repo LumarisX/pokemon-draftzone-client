@@ -1,4 +1,7 @@
-export const environment = {
+import { Environment } from '.';
+
+export const environment: Environment = {
   production: true,
-  apiUrl: 'https://api.pokemondraftzone.com',
+  apiUrl: 'api.pokemondraftzone.com',
+  tls: true,
 };

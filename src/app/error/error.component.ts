@@ -7,12 +7,12 @@ import {
   trigger,
 } from '@angular/animations';
 import { CommonModule } from '@angular/common';
-import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { SpriteComponent } from '../images/sprite.component';
 import { CloseSVG } from '../images/svg-components/close.component';
+import type { ClientError } from './error.service';
 import { ErrorService } from './error.service';
 
 @Component({
@@ -76,7 +76,7 @@ import { ErrorService } from './error.service';
   templateUrl: './error.component.html',
 })
 export class ErrorComponent implements OnInit {
-  error?: HttpErrorResponse;
+  error?: ClientError;
 
   constructor(private errorService: ErrorService) {}
 

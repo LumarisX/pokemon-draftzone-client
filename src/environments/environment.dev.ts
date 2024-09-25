@@ -1,4 +1,7 @@
-export const environment = {
+import { Environment } from '.';
+
+export const environment: Environment = {
   production: false,
-  apiUrl: 'http://localhost:3860',
+  apiUrl: 'localhost:3860',
+  tls: false,
 };

@@ -30,7 +30,7 @@
           ><div>
             {{ error.statusText }}
           </div>
-          <div *ngIf="error.error.code">Code: {{ error.error.code }}</div>
+          <div *ngIf="error.error?.code">Code: {{ error.error!.code }}</div>
           <div>URI: {{ error.url }}</div>
         </ng-container>
         <ng-container *ngSwitchCase="0"
