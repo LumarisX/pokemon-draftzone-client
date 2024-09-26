@@ -1,0 +1,62 @@
+<div class="p-4">
+  <!-- Filter by Format -->
+  <div class="mb-4">
+    <label class="block mb-2 text-sm font-bold">Filter by Format:</label>
+    <select
+      [(ngModel)]="selectedFormat"
+      (change)="filterLeagues()"
+      class="p-2 border rounded"
+    >
+      <option value="">All Formats</option>
+      <option *ngFor="let format of formats" [value]="format">
+        {{ format }}
+      </option>
+    </select>
+  </div>
+
+  <!-- Sort Options -->
+  <div class="mb-4">
+    <label class="block mb-2 text-sm font-bold">Sort by:</label>
+    <select
+      [(ngModel)]="sortOption"
+      (change)="sortLeagues()"
+      class="p-2 border rounded"
+    >
+      <option value="createdAt">Created Date</option>
+      <option value="closesAt">Close Date</option>
+      <option value="seasonStart">Season Start Date</option>
+    </select>
+  </div>
+
+  <!-- League Ads List -->
+  <div
+    *ngFor="let league of filteredLeagues"
+    class="p-4 mb-4 bg-white rounded-lg shadow-md"
+  >
+    <h2 class="text-xl font-bold">{{ league.leagueName }}</h2>
+    <p class="text-sm text-gray-600">{{ league.organizer }}</p>
+    <p>{{ league.description }}</p>
+
+    <div class="mt-2">
+      <p><strong>Platform:</strong> {{ league.hostPlatform }}</p>
+      <p><strong>Status:</strong> {{ league.recruitmentStatus }}</p>
+      <p><strong>Divisions:</strong></p>
+      <ul>
+        <li *ngFor="let division of league.divisions">
+          <strong>{{ division.divisionName }}</strong> - {{ division.format }}
+        </li>
+      </ul>
+    </div>
+
+    <div class="mt-2">
+      <p>
+        <strong>Signup Link:</strong>
+        <a href="{{ league.signupLink }}" class="text-blue-500">{{
+          league.signupLink
+        }}</a>
+      </p>
+      <p><strong>Closes At:</strong> {{ league.closesAt | date }}</p>
+      <p><strong>Season Start:</strong> {{ league.seasonStart | date }}</p>
+    </div>
+  </div>
+</div>

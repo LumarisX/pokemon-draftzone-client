@@ -187,11 +187,16 @@ Teambuilder
         [(ngModel)]="pokemon.ivs.spe"
         id="speivs"
         min="0"
-        max="31"
+        max="31"  
         type="number"
         class="border p-1"
       />
     </div>
   </div>
   {{ pokemon.toExport() | json }}
+</div>
+
+<div>
+  <input [(ngModel)]="message" placeholder="Type a message" />
+  <button (click)="sendMessage()">Send Message</button>
 </div>

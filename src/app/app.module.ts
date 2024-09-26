@@ -4,14 +4,13 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { AuthModule } from '@auth0/auth0-angular';
 import { AppComponent } from './app.component';
+import { BodyModule } from './body/body.module';
 import { DraftOverviewModule } from './draft-overview/draft-overview.module';
 import { LogoSVG } from './images/svg-components/logo.component';
+import { LeagueAdModule } from './league-ads/league-ads.module';
 import { MatchupOverviewModule } from './matchup-overview/matchup-overview.module';
 import { OpponentOverviewModule } from './opponent-overview/opponent-overview.module';
 import { ToolsModule } from './tools/tools.module';
-import { BodyRoutingModule } from './body/body-routing.module';
-import { BodyModule } from './body/body.module';
-import { BodyComponent } from './body/body.component';
 
 @NgModule({
   imports: [
@@ -43,6 +42,7 @@ import { BodyComponent } from './body/body.component';
       },
     }),
     OpponentOverviewModule,
+    LeagueAdModule,
     MatchupOverviewModule,
     RouterModule,
     BodyModule,

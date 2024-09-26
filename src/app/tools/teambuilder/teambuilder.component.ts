@@ -7,6 +7,7 @@ import { OpponentScoreComponent } from '../../opponent-overview/opponent-score/o
 import { NATURES } from '../../data';
 import { FilterComponent } from '../../filter/filter.component';
 import { Pokemon } from '../../interfaces/draft';
+import { WebSocketService } from '../../api/ws.service';
 
 class PokemonBuilder {
   ivs: {
@@ -126,9 +127,15 @@ export class TeamBuilderComponent implements OnInit {
   team: PokemonBuilder[] = [];
   natures = Object.values(NATURES);
 
+  message: string = '';
+
+  constructor() {}
+
   ngOnInit(): void {
     this.team.push(new PokemonBuilder());
   }
+
+  sendMessage() {}
 
   nameSelected(pokemon: PokemonBuilder, event: Pokemon) {
     pokemon.id = event.id;
