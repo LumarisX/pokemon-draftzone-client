@@ -8,24 +8,16 @@ export class WebSocketService {
   private serverUrl = `ws://${environment.apiUrl}`;
   constructor(private errorService: ErrorService) {}
 
-  connect(
+  getSocket(
     urlpath: string,
     onmessage: ((ev: MessageEvent) => any) | null = null
   ) {
     const socket = new WebSocket(this.serverUrl + '/' + urlpath);
-
-    socket.onmessage = onmessage;
-
-    socket.onerror = () => {
-      this.errorService.reportError({
-        message: 'Websocket experienced an error',
-      });
-      socket.close();
-    };
-
     // socket.onclose = () => {
     //     this.reconnect()
     // }
+
+    return socket;
   }
 
   private reconnect() {
@@ -36,7 +28,7 @@ export class WebSocketService {
       retries++;
       setTimeout(() => {
         console.log(`Reconnection attempt: #${retries}`);
-        this.connect('Reconnected?');
+        this.getSocket('Reconnected?');
       }, reconnectInterval);
     } else {
       console.log('Maximum reconnection amount reached');
