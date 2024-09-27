@@ -30,28 +30,11 @@
         class="absolute left-0 flex-col block p-2 font-nasa bg-menu-100 border divide-y rounded-md shadow-md border-menu-200 sm:flex top-full"
       >
         <div
-          routerLink="/draft"
+          *ngFor="let tab of TABS"
+          [routerLink]="tab.route"
           class="flex items-center h-full px-3 hover:cursor-pointer hover:bg-menu-200"
         >
-          Drafts
-        </div>
-        <div
-          routerLink="/planner"
-          class="flex items-center h-full px-3 hover:cursor-pointer hover:bg-menu-200"
-        >
-          Planner
-        </div>
-        <div
-          routerLink="/tools/replay-analyzer"
-          class="flex items-center h-full px-3 hover:cursor-pointer hover:bg-menu-200"
-        >
-          Replay Analyzer
-        </div>
-        <div
-          routerLink="/tools"
-          class="flex items-center h-full px-3 hover:cursor-pointer hover:bg-menu-200"
-        >
-          Other Tools
+          {{ tab.title }}
         </div>
       </div>
       <div
@@ -62,28 +45,11 @@
       </div>
       <div class="hidden px-2 space-x-2 sm:flex font-nasa">
         <div
-          routerLink="/draft"
+          *ngFor="let tab of TABS"
+          [routerLink]="tab.route"
           class="flex items-center h-full px-2 rounded hover:cursor-pointer hover:bg-menu-200"
         >
-          Drafts
-        </div>
-        <div
-          routerLink="/planner"
-          class="flex items-center h-full px-2 rounded hover:cursor-pointer hover:bg-menu-200"
-        >
-          Planner
-        </div>
-        <div
-          routerLink="/tools/replay-analyzer"
-          class="flex items-center h-full px-2 rounded hover:cursor-pointer hover:bg-menu-200"
-        >
-          Replay Analyzer
-        </div>
-        <div
-          routerLink="/tools"
-          class="flex items-center h-full px-2 rounded hover:cursor-pointer hover:bg-menu-200"
-        >
-          Other Tools
+          {{ tab.title }}
         </div>
       </div>
     </div>

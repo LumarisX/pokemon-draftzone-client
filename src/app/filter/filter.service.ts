@@ -1,6 +1,6 @@
-import { Injectable, OnInit } from '@angular/core';
-import { Pokemon } from '../interfaces/draft';
+import { Injectable } from '@angular/core';
 import { Namedex } from '../data/namedex';
+import { Pokemon } from '../interfaces/draft';
 @Injectable({
   providedIn: 'root',
 })
@@ -15,15 +15,9 @@ export class FilterService {
   }
 
   getResults(query: string) {
-    if (query != '') {
-      const lowerCaseQuery = query.toLowerCase();
-      return this.nameList.filter((mon) =>
-        mon.name.toLowerCase().startsWith(lowerCaseQuery)
-      );
-    } else {
-      return [];
-    }
+    if (query === '') return [];
+    return this.nameList.filter((mon) =>
+      mon.name.toLowerCase().startsWith(query.toLowerCase())
+    );
   }
-
-  sendQuery() {}
 }

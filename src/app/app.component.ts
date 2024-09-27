@@ -10,6 +10,31 @@ export class AppComponent implements OnInit {
   userDropdown = false;
   menuDropdown = false;
   innerClick: undefined | 'user' | 'menu';
+  TABS: {
+    title: string;
+    route: string;
+  }[] = [
+    {
+      title: 'Drafts',
+      route: '/drafts',
+    },
+    {
+      title: 'Planner',
+      route: '/planner',
+    },
+    {
+      title: 'Replay Analyzer',
+      route: '/tools/replay-analyzer',
+    },
+    {
+      title: 'Find A League',
+      route: '/leagues',
+    },
+    {
+      title: 'Other Tools',
+      route: '/tools',
+    },
+  ];
 
   constructor(
     public auth: AuthService,

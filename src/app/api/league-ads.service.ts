@@ -34,9 +34,9 @@ export interface LeagueAd {
   serverLink?: string;
   divisions: Division[];
   signupLink: string;
-  closesAt: Date;
-  seasonStart: Date;
-  seasonEnd: Date;
-  createdAt: Date;
-  updatedAt: Date;
+  closesAt: string;
+  seasonStart: string;
+  seasonEnd: string;
+  createdAt: string;
+  updatedAt: string;
 }
