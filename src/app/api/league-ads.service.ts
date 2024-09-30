@@ -20,7 +20,7 @@ interface Division {
     from: number;
     to: number;
   };
-  cashValue: number;
+  prizeValue?: number;
   platform: 'Pokémon Showdown' | 'Scarlet/Violet';
   format: string;
   description?: string;
@@ -31,13 +31,12 @@ export interface LeagueAd {
   organizer: string;
   description: string;
   recruitmentStatus: 'Open' | 'Closed' | 'Full' | 'Canceled';
-  hostPlatform: 'Discord' | 'Battlefy';
-  serverLink?: string;
+  hostLink?: string;
   divisions: Division[];
   signupLink: string;
   closesAt: string;
-  seasonStart: string;
-  seasonEnd: string;
+  seasonStart?: string;
+  seasonEnd?: string;
   createdAt: string;
   updatedAt: string;
 }

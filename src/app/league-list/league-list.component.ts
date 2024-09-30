@@ -3,19 +3,32 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { LeagueAd, LeagueAdsService } from '../api/league-ads.service';
 import { LeagueAdComponent } from './league-ad/league-ad.component';
+import { FilterSVG } from '../images/svg-components/filter.component';
+import { PlusSVG } from '../images/svg-components/plus.component';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-league-ad-list',
   templateUrl: './league-list.component.html',
   standalone: true,
-  imports: [CommonModule, FormsModule, LeagueAdComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    LeagueAdComponent,
+    FilterSVG,
+    PlusSVG,
+    RouterModule,
+  ],
 })
 export class LeagueAdListComponent implements OnInit {
   leagues: LeagueAd[] = [];
   filteredLeagues: LeagueAd[] = [];
   formats = ['Singles', 'VGC'];
   selectedFormat = '';
-  sortOption: 'createdAt' | 'seasonStart' | 'closesAt' = 'createdAt';
+  sortOption:
+    | 'createdAt'
+    // | 'seasonStart'
+    | 'closesAt' = 'createdAt';
 
   constructor(private leagueService: LeagueAdsService) {}
 

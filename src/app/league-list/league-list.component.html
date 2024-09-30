@@ -1,12 +1,12 @@
 <div class="p-6 bg-gray-50 min-h-screen">
   <div class="flex justify-between items-center mb-6">
-    <h1 class="text-2xl font-bold text-gray-700">Open Leagues</h1>
+    <h1 class="text-2xl font-bold text-gray-700 font-nasa">Open Leagues</h1>
     <!-- Filters and Sorting -->
-    <div class="flex space-x-4">
+    <div class="flex space-x-4 items-center">
       <!-- Filter by Format -->
       <div>
         <label class="block text-sm font-bold text-gray-600 mb-1"
-          >Filter by Format:</label
+          >Filter by:</label
         >
         <select
           [(ngModel)]="selectedFormat"
@@ -31,9 +31,13 @@
         >
           <option value="createdAt">Created Date</option>
           <option value="closesAt">Close Date</option>
-          <option value="seasonStart">Season Start Date</option>
+          <!-- <option value="seasonStart">Season Start Date</option> -->
         </select>
       </div>
+      <div class="h-6 w-6 bg-indigo-400" routerLink="new">
+        <plus-svg></plus-svg>
+      </div>
+      <div>My Leagues</div>
     </div>
   </div>
 

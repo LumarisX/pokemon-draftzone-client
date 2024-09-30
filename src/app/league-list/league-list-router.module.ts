@@ -8,7 +8,7 @@ const routes: Routes = [
     component: LeagueAdListComponent,
     children: [
       {
-        path: 'new-ad',
+        path: 'new',
         component: LeagueFormComponent,
       },
     ],
