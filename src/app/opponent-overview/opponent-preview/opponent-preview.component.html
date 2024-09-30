@@ -20,7 +20,7 @@
   >
     <div>
       <button
-        [routerLink]="'new'"
+        routerLink="new"
         class="p-2 m-3 rounded-lg shadow-md bg-bTeam-300 hover:shadow shadow-bTeam-600"
         title="Add Matchup"
       >
@@ -73,7 +73,7 @@
           >
             <a
               class="flex-grow p-1 font-semibold text-center shadow bg-bTeam-300 h-fit hover:shadow shadow-bTeam-600 rounded-xl"
-              [routerLink]="'matchup/'"
+              routerLink="matchup/"
               [queryParams]="{ id: matchup._id }"
               >View Matchup</a
             >
@@ -82,21 +82,21 @@
             >
               <score-svg
                 class="w-8 h-8 p-1 shadow bg-bTeam-300 hover:shadow rounded-xl hover:cursor-pointer shadow-bTeam-600"
-                [routerLink]="'score'"
+                routerLink="score"
                 [queryParams]="{ matchup: matchup._id | json }"
                 title="Score"
                 alt="Score"
               ></score-svg>
               <clock-svg
                 class="w-8 h-8 p-1 shadow bg-bTeam-300 hover:shadow rounded-xl hover:cursor-pointer shadow-bTeam-600"
-                [routerLink]="'schedule'"
+                routerLink="schedule"
                 [queryParams]="{ matchup: matchup._id | json }"
                 title="Schedule"
                 alt="Schedule"
               ></clock-svg>
               <edit-svg
                 class="w-8 h-8 p-1 shadow bg-bTeam-300 hover:shadow rounded-xl hover:cursor-pointer shadow-bTeam-600"
-                [routerLink]="'edit'"
+                routerLink="edit"
                 [queryParams]="{ matchup: matchup._id | json }"
                 title="Edit"
                 alt="Edit"
