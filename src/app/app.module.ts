@@ -7,7 +7,7 @@ import { AppComponent } from './app.component';
 import { BodyModule } from './body/body.module';
 import { DraftOverviewModule } from './draft-overview/draft-overview.module';
 import { LogoSVG } from './images/svg-components/logo.component';
-import { LeagueAdModule } from './league-ads/league-ads.module';
+import { LeagueAdModule } from './league-list/league-list.module';
 import { MatchupOverviewModule } from './matchup-overview/matchup-overview.module';
 import { OpponentOverviewModule } from './opponent-overview/opponent-overview.module';
 import { ToolsModule } from './tools/tools.module';

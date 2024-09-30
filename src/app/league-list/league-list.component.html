@@ -1,0 +1,47 @@
+<div class="p-6 bg-gray-50 min-h-screen">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold text-gray-700">Open Leagues</h1>
+    <!-- Filters and Sorting -->
+    <div class="flex space-x-4">
+      <!-- Filter by Format -->
+      <div>
+        <label class="block text-sm font-bold text-gray-600 mb-1"
+          >Filter by Format:</label
+        >
+        <select
+          [(ngModel)]="selectedFormat"
+          (change)="filterLeagues()"
+          class="p-2 border rounded-md focus:ring focus:ring-blue-300"
+        >
+          <option value="">All Formats</option>
+          <option *ngFor="let format of formats" [value]="format">
+            {{ format }}
+          </option>
+        </select>
+      </div>
+      <!-- Sort Options -->
+      <div>
+        <label class="block text-sm font-bold text-gray-600 mb-1"
+          >Sort by:</label
+        >
+        <select
+          [(ngModel)]="sortOption"
+          (change)="sortLeagues()"
+          class="p-2 border rounded-md focus:ring focus:ring-blue-300"
+        >
+          <option value="createdAt">Created Date</option>
+          <option value="closesAt">Close Date</option>
+          <option value="seasonStart">Season Start Date</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- League Ads List -->
+  <div
+    *ngFor="let league of filteredLeagues"
+    class="bg-white p-5 mb-6 rounded-lg shadow-md border border-gray-200"
+  >
+    <league-ad [league]="league"></league-ad>
+  </div>
+</div>

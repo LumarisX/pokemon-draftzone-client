@@ -1,14 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-import { LeagueAd, LeagueAdsService } from '../api/league-ads.service';
 import { CommonModule } from '@angular/common';
-import { BALLHEX, BallSVG } from '../images/svg-components/ball.component';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { LeagueAd, LeagueAdsService } from '../api/league-ads.service';
+import { LeagueAdComponent } from './league-ad/league-ad.component';
 
 @Component({
   selector: 'app-league-ad-list',
   templateUrl: './league-list.component.html',
   standalone: true,
-  imports: [CommonModule, BallSVG, FormsModule],
+  imports: [CommonModule, FormsModule, LeagueAdComponent],
 })
 export class LeagueAdListComponent implements OnInit {
   leagues: LeagueAd[] = [];
@@ -16,8 +16,6 @@ export class LeagueAdListComponent implements OnInit {
   formats = ['Singles', 'VGC'];
   selectedFormat = '';
   sortOption: 'createdAt' | 'seasonStart' | 'closesAt' = 'createdAt';
-
-  SKILLBALLS: (keyof typeof BALLHEX)[] = ['poke', 'great', 'ultra', 'master'];
 
   constructor(private leagueService: LeagueAdsService) {}
 
@@ -40,25 +38,6 @@ export class LeagueAdListComponent implements OnInit {
   sortLeagues() {
     this.filteredLeagues = this.filteredLeagues.sort((a, b) =>
       a[this.sortOption] > b[this.sortOption] ? 1 : -1
-    );
-  }
-
-  getWeeks(league: LeagueAd) {
-    return Math.round(
-      Math.abs(
-        new Date(league.seasonEnd).getTime() -
-          new Date(league.seasonStart).getTime()
-      ) / 604800000
-    );
-  }
-
-  getMinSkill(league: LeagueAd): number {
-    return league.divisions.reduce(
-      (prev, division) =>
-        division.skillLevelRange.to < prev
-          ? division.skillLevelRange.from
-          : prev,
-      3
     );
   }
 }

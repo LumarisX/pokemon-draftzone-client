@@ -1,0 +1,71 @@
+<h2 class="text-xl font-semibold text-gray-800 mb-2">
+  {{ league.leagueName }}
+</h2>
+
+<div class="flex items-center space-x-2 mb-2">
+  <div class="h-6 w-6">
+    <ball-svg [style]="SKILLBALLS[getMinSkill(league)]"></ball-svg>
+  </div>
+  <span class="text-sm text-gray-600">{{ league.description }}</span>
+</div>
+
+<div class="mt-4">
+  <p><strong>Platform:</strong> {{ league.hostPlatform }}</p>
+
+  <p class="mt-2"><strong>Divisions:</strong></p>
+  <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+    <div
+      *ngFor="let division of league.divisions"
+      class="bg-gray-100 p-3 rounded-md"
+    >
+      <div class="font-semibold">{{ division.divisionName }}</div>
+      <div>{{ division.format }}</div>
+      <div>{{ division.ruleset }}</div>
+      <div class="flex items-center space-x-2 mt-1">
+        <div class="h-6 w-6">
+          <ball-svg
+            [style]="SKILLBALLS[division.skillLevelRange.from]"
+          ></ball-svg>
+        </div>
+        <div class="h-6 w-6">
+          <ball-svg
+            [style]="SKILLBALLS[division.skillLevelRange.to]"
+          ></ball-svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="mt-4 flex flex-wrap justify-between items-center space-y-2 sm:space-y-0"
+>
+  <div class="flex-1 justify-center flex flex-wrap space-x-2">
+    <strong>Signup Link:</strong>
+    <a
+      href="{{ league.signupLink }}"
+      class="text-blue-500 text-center underline block overflow-hidden whitespace-nowrap text-ellipsis sm:overflow-visible"
+      style="max-width: 250px"
+      >{{ league.signupLink }}</a
+    >
+  </div>
+  <div class="flex-1 justify-center flex flex-wrap space-x-2">
+    <strong>Closes At:</strong>
+    <div
+      class="text-center block overflow-hidden whitespace-nowrap text-ellipsis sm:overflow-visible"
+    >
+      {{ league.closesAt | date }}
+    </div>
+  </div>
+  <div class="flex-1 justify-center flex flex-wrap space-x-2">
+    <strong>Season:</strong>
+    <div
+      class="text-center block overflow-hidden whitespace-nowrap text-ellipsis sm:overflow-visible"
+    >
+      {{ league.seasonStart | date }}
+      <ng-container *ngIf="league.seasonEnd">
+        - {{ league.seasonEnd | date }} ({{ getWeeks(league) }} weeks)
+      </ng-container>
+    </div>
+  </div>
+</div>

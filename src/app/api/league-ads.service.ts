@@ -15,13 +15,14 @@ export class LeagueAdsService {
 
 interface Division {
   divisionName: string;
+  ruleset: string;
   skillLevelRange: {
     from: number;
     to: number;
   };
   cashValue: number;
   platform: 'Pokémon Showdown' | 'Scarlet/Violet';
-  format: 'Singles' | 'VGC' | 'Other';
+  format: string;
   description?: string;
 }
 
