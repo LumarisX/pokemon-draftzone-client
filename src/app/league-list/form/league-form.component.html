@@ -8,86 +8,42 @@
     <!-- League Name -->
     <div class="space-y-2">
       <label for="leagueName" class="block text-sm font-medium text-menu-700"
-        >League Name</label
+        >League Name<span class="text-red-500">*</span></label
       >
       <input
         id="leagueName"
+        maxlength="100"
         formControlName="leagueName"
         class="block w-full px-4 py-2 border rounded-md sm:text-sm"
         placeholder="Enter League Name"
       />
     </div>
 
-    <!-- Organizer -->
-    <div class="space-y-2">
-      <label for="organizer" class="block text-sm font-medium text-menu-700"
-        >Organizer</label
-      >
-      <input
-        id="organizer"
-        formControlName="organizer"
-        class="block w-full px-4 py-2 border rounded-md sm:text-sm"
-        placeholder="Enter Organizer Name"
-      />
-    </div>
-
     <!-- Description -->
     <div class="space-y-2">
       <label for="description" class="block text-sm font-medium text-menu-700"
-        >Description</label
+        >Description<span class="text-red-500">*</span></label
       >
       <textarea
         id="description"
         formControlName="description"
+        maxlength="500"
         class="block w-full px-4 py-2 border rounded-md sm:text-sm"
         placeholder="Enter League Description"
       ></textarea>
     </div>
 
-    <!-- Recruitment Status -->
-    <!-- <div class="space-y-2">
-      <label
-        for="recruitmentStatus"
-        class="block text-sm font-medium text-menu-700"
-        >Recruitment Status</label
-      >
-      <select
-        id="recruitmentStatus"
-        formControlName="recruitmentStatus"
-        class="block w-full px-4 py-2 border rounded-md  sm:text-sm"
-      >
-        <option value="Open">Open</option>
-        <option value="Closed">Closed</option>
-        <option value="Full">Full</option>
-        <option value="Canceled">Canceled</option>
-      </select>
-    </div> -->
-
-    <!-- Host Platform -->
+    <!-- Host Link -->
     <div class="space-y-2">
-      <label for="hostPlatform" class="block text-sm font-medium text-menu-700"
-        >Host Platform</label
-      >
-      <select
-        id="hostPlatform"
-        formControlName="hostPlatform"
-        class="block w-full px-4 py-2 border rounded-md sm:text-sm"
-      >
-        <option value="Discord">Discord</option>
-        <option value="Battlefy">Battlefy</option>
-      </select>
-    </div>
-
-    <!-- Server Link -->
-    <div class="space-y-2">
-      <label for="serverLink" class="block text-sm font-medium text-menu-700"
-        >Server Link (Optional)</label
+      <label for="hostLink" class="block text-sm font-medium text-menu-700"
+        >Host Link (Discord, Battlefy, etc.)</label
       >
       <input
-        id="serverLink"
-        formControlName="serverLink"
+        id="hostLink"
+        formControlName="hostLink"
+        maxlength="100"
         class="block w-full px-4 py-2 border rounded-md sm:text-sm"
-        placeholder="Enter Server Link"
+        placeholder="Enter Host Link"
       />
     </div>
 
@@ -106,10 +62,11 @@
           <label
             for="divisionName-{{ i }}"
             class="block text-sm font-medium text-menu-700"
-            >Division Name</label
+            >Division Name<span class="text-red-500">*</span></label
           >
           <input
             id="divisionName-{{ i }}"
+            maxlength="50"
             formControlName="divisionName"
             class="block w-full px-4 py-2 border rounded-md sm:text-sm"
             placeholder="Enter Division Name"
@@ -118,43 +75,58 @@
 
         <div formGroupName="skillLevelRange" class="space-y-2">
           <label class="block text-sm font-medium text-menu-700"
-            >Skill Level Range (0-3)</label
+            >Skill Level Range</label
           >
           <div class="flex space-x-2">
-            <input
-              formControlName="from"
-              type="number"
-              min="0"
-              max="3"
-              class="w-full px-4 py-2 border rounded-md sm:text-sm"
-              placeholder="From"
-            />
-            <input
-              formControlName="to"
-              type="number"
-              min="0"
-              max="3"
-              class="w-full px-4 py-2 border rounded-md sm:text-sm"
-              placeholder="To"
-            />
+            <div class="w-1/2">
+              <label for="from-{{ i }}" class="text-sm"
+                >From<span class="text-red-500">*</span></label
+              ><select
+                formControlName="from"
+                class="w-full px-4 py-2 border rounded-md sm:text-sm"
+                id="from-{{ i }}"
+              >
+                <option class="bg-red-400" value="0">Novice</option>
+                <option value="1">Intermediate</option>
+                <option value="2">Advanced</option>
+                <option value="3">Expert</option>
+              </select>
+            </div>
+
+            <div class="w-1/2">
+              <label for="to-{{ i }}" class="text-sm"
+                >To<span class="text-red-500">*</span></label
+              ><select
+                formControlName="to"
+                class="w-full px-4 py-2 border rounded-md sm:text-sm"
+                id="to-{{ i }}"
+              >
+                <option class="bg-red-400" value="0">Novice</option>
+                <option value="1">Intermediate</option>
+                <option value="2">Advanced</option>
+                <option value="3">Expert</option>
+              </select>
+            </div>
           </div>
         </div>
 
         <div class="space-y-2">
           <label
-            for="cashValue-{{ i }}"
+            for="prizeValue-{{ i }}"
             class="block text-sm font-medium text-menu-700"
-            >Cash Value (0-3)</label
-          >
-          <input
-            id="cashValue-{{ i }}"
-            formControlName="cashValue"
-            type="number"
-            min="0"
-            max="3"
+            >Prize Value
+          </label>
+          <select
+            id="prizeValue-{{ i }}"
+            formControlName="prizeValue"
             class="block w-full px-4 py-2 border rounded-md sm:text-sm"
-            placeholder="Cash Value"
-          />
+          >
+            <option value="0">None</option>
+            <option value="1">$1 - $25</option>
+            <option value="2">$25 - $75</option>
+            <option value="3">$75 - $150</option>
+            <option value="4">$150+</option>
+          </select>
         </div>
 
         <div class="space-y-2">
@@ -170,6 +142,7 @@
           >
             <option value="Pokémon Showdown">Pokémon Showdown</option>
             <option value="Scarlet/Violet">Scarlet/Violet</option>
+            <option value="Other">Other</option>
           </select>
         </div>
 
@@ -189,16 +162,32 @@
             <option value="Other">Other</option>
           </select>
         </div>
-
+        <div class="space-y-2">
+          <label
+            for="ruleset-{{ i }}"
+            class="block text-sm font-medium text-menu-700"
+            >Ruleset</label
+          >
+          <select
+            id="ruleset-{{ i }}"
+            formControlName="ruleset"
+            class="block w-full px-4 py-2 border rounded-md sm:text-sm"
+          >
+            <option value="Singles">Singles</option>
+            <option value="VGC">VGC</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
         <div class="space-y-2">
           <label
             for="description-{{ i }}"
             class="block text-sm font-medium text-menu-700"
-            >Division Description (Optional)</label
+            >Division Description</label
           >
           <textarea
             id="description-{{ i }}"
             formControlName="description"
+            maxlength="30 0"
             class="block w-full px-4 py-2 border rounded-md sm:text-sm"
             placeholder="Enter Division Description"
           ></textarea>
@@ -206,6 +195,7 @@
 
         <button
           type="button"
+          *ngIf="divisions.controls.length > 1"
           (click)="removeDivision(i)"
           class="text-red-600 hover:text-red-800 font-semibold"
         >
@@ -225,11 +215,12 @@
     <!-- Signup Link -->
     <div class="space-y-2">
       <label for="signupLink" class="block text-sm font-medium text-menu-700"
-        >Signup Link</label
+        >Signup Link<span class="text-red-500">*</span></label
       >
       <input
         id="signupLink"
         formControlName="signupLink"
+        maxlength="100"
         class="block w-full px-4 py-2 border rounded-md sm:text-sm"
         placeholder="Enter Signup Link"
       />
@@ -238,7 +229,7 @@
     <!-- Closes At -->
     <div class="space-y-2">
       <label for="closesAt" class="block text-sm font-medium text-menu-700"
-        >Closes At</label
+        >Closes At<span class="text-red-500">*</span></label
       >
       <input
         id="closesAt"
@@ -247,7 +238,6 @@
         class="block w-full px-4 py-2 border rounded-md sm:text-sm"
       />
     </div>
-
     <!-- Season Start -->
     <div class="space-y-2">
       <label for="seasonStart" class="block text-sm font-medium text-menu-700"

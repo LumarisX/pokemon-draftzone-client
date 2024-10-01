@@ -14,6 +14,9 @@ import {
   templateUrl: './league-form.component.html',
   standalone: true,
   imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  styles: `textarea {
+    resize: none
+  }`,
 })
 export class LeagueFormComponent implements OnInit {
   leagueForm!: FormGroup;
@@ -23,16 +26,18 @@ export class LeagueFormComponent implements OnInit {
   ngOnInit(): void {
     this.leagueForm = this.fb.group({
       leagueName: ['', Validators.required],
-      organizer: ['', Validators.required],
       description: ['', Validators.required],
       recruitmentStatus: ['Open', Validators.required],
       hostPlatform: ['Discord', Validators.required],
       serverLink: [''],
       divisions: this.fb.array([this.createDivision()]), // Start with one division
       signupLink: ['', Validators.required],
-      closesAt: ['', Validators.required],
-      seasonStart: ['', Validators.required],
-      seasonEnd: ['', Validators.required],
+      closesAt: [
+        new Date(Date.now() + 604800000).toISOString().substring(0, 10),
+        Validators.required,
+      ],
+      seasonStart: [],
+      seasonEnd: [],
     });
   }
 
@@ -40,12 +45,13 @@ export class LeagueFormComponent implements OnInit {
     return this.fb.group({
       divisionName: ['', Validators.required],
       skillLevelRange: this.fb.group({
-        from: [0, [Validators.min(0), Validators.max(3)]],
-        to: [3, [Validators.min(0), Validators.max(3)]],
+        from: [0, Validators.required],
+        to: [3, Validators.required],
       }),
-      cashValue: [0, [Validators.min(0), Validators.max(3)]],
+      prizeValue: [0, Validators.required],
       platform: ['Pokémon Showdown', Validators.required],
       format: ['Singles', Validators.required],
+      ruleset: ['Singles', Validators.required],
       description: [''],
     });
   }

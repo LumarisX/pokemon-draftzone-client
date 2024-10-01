@@ -6,12 +6,10 @@ const routes: Routes = [
   {
     path: 'leagues',
     component: LeagueAdListComponent,
-    children: [
-      {
-        path: 'new',
-        component: LeagueFormComponent,
-      },
-    ],
+  },
+  {
+    path: 'leagues/new',
+    component: LeagueFormComponent,
   },
 ];
 

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -7,11 +8,16 @@ import { ApiService } from './api.service';
 export class DataService {
   constructor(private apiService: ApiService) {}
 
-  getFormats() {
+  cache: {
+    formats?: string[];
+    rulesets?: string[];
+  } = {};
+
+  getFormats(): Observable<string[]> {
     return this.apiService.get('data/formats', false);
   }
 
-  getRulesets() {
+  getRulesets(): Observable<string[]> {
     return this.apiService.get('data/rulesets', false);
   }
 
