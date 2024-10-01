@@ -11,6 +11,10 @@ export class LeagueAdsService {
   getLeagueAds(): Observable<LeagueAd[]> {
     return this.apiService.get(`leagues`, false);
   }
+
+  newAd(data: Object) {
+    return this.apiService.post(`leagues`, data);
+  }
 }
 
 interface Division {

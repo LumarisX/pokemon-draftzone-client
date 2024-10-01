@@ -1,10 +1,9 @@
-import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 
 @Component({
   selector: 'trash-svg',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   template: `<svg
     xmlns="http://www.w3.org/2000/svg"
     class="stroke-symbolColor-main"

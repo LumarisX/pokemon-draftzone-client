@@ -55,7 +55,7 @@ export class ApiService {
     );
   }
 
-  post(path: string, data: any): Observable<any> {
+  post(path: string, data: Object): Observable<any> {
     return this.auth.getAccessToken().pipe(
       switchMap((token: string) => {
         let httpOptions = {

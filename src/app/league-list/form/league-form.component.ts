@@ -8,6 +8,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { LeagueAdsService } from '../../api/league-ads.service';
 
 @Component({
   selector: 'app-league-form',
@@ -21,16 +22,18 @@ import {
 export class LeagueFormComponent implements OnInit {
   leagueForm!: FormGroup;
 
-  constructor(private fb: FormBuilder) {}
+  constructor(
+    private fb: FormBuilder,
+    private leagueService: LeagueAdsService
+  ) {}
 
   ngOnInit(): void {
     this.leagueForm = this.fb.group({
       leagueName: ['', Validators.required],
       description: ['', Validators.required],
-      recruitmentStatus: ['Open', Validators.required],
-      hostPlatform: ['Discord', Validators.required],
+      hostLink: ['', Validators.required],
       serverLink: [''],
-      divisions: this.fb.array([this.createDivision()]), // Start with one division
+      divisions: this.fb.array([this.createDivision()]),
       signupLink: ['', Validators.required],
       closesAt: [
         new Date(Date.now() + 604800000).toISOString().substring(0, 10),
@@ -45,10 +48,10 @@ export class LeagueFormComponent implements OnInit {
     return this.fb.group({
       divisionName: ['', Validators.required],
       skillLevelRange: this.fb.group({
-        from: [0, Validators.required],
-        to: [3, Validators.required],
+        from: ['0', Validators.required],
+        to: ['3', Validators.required],
       }),
-      prizeValue: [0, Validators.required],
+      prizeValue: ['0', Validators.required],
       platform: ['Pokémon Showdown', Validators.required],
       format: ['Singles', Validators.required],
       ruleset: ['Singles', Validators.required],
@@ -69,10 +72,48 @@ export class LeagueFormComponent implements OnInit {
   }
 
   onSubmit() {
-    if (this.leagueForm.valid) {
-      // Handle form submission logic here, typically sending the form data to the server
-      console.log(this.leagueForm.value);
-      // Example: this.leagueService.createLeague(this.leagueForm.value).subscribe();
-    }
+    // if (this.leagueForm.valid) {
+    this.leagueService.newAd(this.leagueForm.value).subscribe();
+    // }
+  }
+
+  test() {
+    const testData = {
+      leagueName: 'Test League',
+      description: 'This is my test league!',
+      hostLink: 'discord.gg/pokemondraftzone',
+      serverLink: '',
+      divisions: [
+        {
+          divisionName: 'Super division',
+          skillLevelRange: {
+            from: '0',
+            to: '1',
+          },
+          prizeValue: '0',
+          platform: 'Pokémon Showdown',
+          format: 'Singles',
+          ruleset: 'Gen9 NatDex',
+          description: 'Beginners Paradise',
+        },
+        {
+          divisionName: 'Super Duper Division',
+          skillLevelRange: {
+            from: '2',
+            to: '3',
+          },
+          prizeValue: '2',
+          platform: 'Pokémon Showdown',
+          format: 'Singles',
+          ruleset: 'Gen9 NatDex',
+          description: 'Experts only!',
+        },
+      ],
+      signupLink: 'form.google',
+      closesAt: '2024-10-08',
+      seasonStart: null,
+      seasonEnd: null,
+    };
+    this.leagueService.newAd(testData).subscribe();
   }
 }

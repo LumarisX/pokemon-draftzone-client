@@ -1,8 +1,13 @@
 <div (click)="toggleCollapsed()">
   <div *ngIf="!collapsed">
-    <h2 class="text-xl font-semibold text-gray-800 mb-2">
-      {{ league.leagueName }}
-    </h2>
+    <div class="flex justify-between items-center mb-2">
+      <h2 class="text-xl font-semibold text-gray-800">
+        {{ league.leagueName }}
+      </h2>
+      <div class="h-6 w-6">
+        <compact-up-svg></compact-up-svg>
+      </div>
+    </div>
 
     <span class="text-sm text-gray-600">{{ league.description }}</span>
 
@@ -59,7 +64,7 @@
               <div id="skillrange" class="flex items-center space-x-0.5 mt-1">
                 <div class="h-6 w-6">
                   <ball-svg
-                    [style]="SKILLBALLS[division.skillLevelRange.from]"
+                    [ballType]="SKILLBALLS[division.skillLevelRange.from]"
                   ></ball-svg>
                 </div>
                 <ng-container
@@ -71,7 +76,7 @@
                   <div>&rarr;</div>
                   <div class="h-6 w-6">
                     <ball-svg
-                      [style]="SKILLBALLS[division.skillLevelRange.to]"
+                      [ballType]="SKILLBALLS[division.skillLevelRange.to]"
                     ></ball-svg>
                   </div>
                 </ng-container>
@@ -123,17 +128,23 @@
         </h2>
         <div class="flex items-center space-x-1">
           <div class="h-6 w-6">
-            <ball-svg [style]="SKILLBALLS[tags.skill]"></ball-svg>
+            <ball-svg [ballType]="SKILLBALLS[tags.skill]"></ball-svg>
           </div>
           <div *ngIf="tags.prize" class="h-6 w-6">
             <coin-svg></coin-svg>
           </div>
           <div *ngIf="tags.singles" class="font-extrabold text-xl">1v1</div>
           <div *ngIf="tags.doubles" class="font-extrabold text-xl">2v2</div>
+          <div *ngIf="tags.ps" class="h-6 w-6">
+            <mouse-svg></mouse-svg>
+          </div>
           <div *ngIf="tags.wifi" class="h-6 w-6">
-            <coin-svg></coin-svg>
+            <wifi-svg></wifi-svg>
           </div>
         </div>
+      </div>
+      <div class="h-6 w-6">
+        <compact-down-svg></compact-down-svg>
       </div>
     </div>
 
