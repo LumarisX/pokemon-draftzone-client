@@ -80,6 +80,7 @@ type Theme = {
     neutral: string;
   };
   caution: string;
+  required: string;
 };
 
 const ClassicTheme: Theme = {
@@ -156,6 +157,7 @@ const ClassicTheme: Theme = {
     neutral: colors.slate[300],
   },
   caution: colors.yellow[200],
+  required: colors.red[500],
 };
 
 const ClassicDark: Theme = {
@@ -239,6 +241,7 @@ const ClassicDark: Theme = {
     neutral: colors.slate[700],
   },
   caution: colors.yellow[600],
+  required: colors.red[500],
 };
 
 const Grayscale: Theme = {
@@ -315,6 +318,7 @@ const Grayscale: Theme = {
     neutral: '#898992',
   },
   caution: colors.yellow[200],
+  required: colors.red[500],
 };
 
 const Blackscale: Theme = {
@@ -400,6 +404,7 @@ const Blackscale: Theme = {
     neutral: '#898992',
   },
   caution: colors.yellow[600],
+  required: colors.red[500],
 };
 
 const Shiny: Theme = {
@@ -476,6 +481,7 @@ const Shiny: Theme = {
     neutral: colors.slate[300],
   },
   caution: colors.green[200],
+  required: colors.red[500],
 };
 
 const ShinyDark: Theme = {
@@ -559,6 +565,7 @@ const ShinyDark: Theme = {
     neutral: colors.slate[700],
   },
   caution: colors.green[600],
+  required: colors.red[500],
 };
 
 export default {

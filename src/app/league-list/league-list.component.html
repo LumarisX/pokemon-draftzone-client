@@ -66,6 +66,9 @@
       <label class="block text-sm font-bold text-gray-600 mb-1">Ruleset</label>
       <select [(ngModel)]="filter.ruleset" class="w-full p-2 border rounded-md">
         <option value="">Any</option>
+        <option *ngFor="let ruleset of rulesets" [value]="ruleset">
+          {{ ruleset }}
+        </option>
       </select>
     </div>
 

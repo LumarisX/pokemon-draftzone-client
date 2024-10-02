@@ -6,45 +6,46 @@
     (ngSubmit)="onSubmit()"
     class="space-y-6 max-w-3xl mx-auto p-6 bg-menu-100 rounded-lg shadow-lg"
   >
-    <div class="space-y-1 font-nasa text-xl">New League Form</div>
+    <div class="text-xl font-nasa">New League Form</div>
+
     <!-- League Name -->
-    <div class="space-y-2">
-      <label for="leagueName" class="block text-sm font-medium text-menu-700"
-        >League Name<span class="text-red-500">*</span></label
+    <div>
+      <label for="leagueName" class="text-sm font-medium text-menu-700"
+        >League Name<span class="text-required">*</span></label
       >
       <input
         id="leagueName"
         maxlength="100"
         formControlName="leagueName"
-        class="block w-full px-4 py-2 border rounded-md sm:text-sm"
+        class="w-full p-2 border rounded-md sm:text-sm"
         placeholder="Enter League Name"
       />
     </div>
 
     <!-- Description -->
-    <div class="space-y-2">
-      <label for="description" class="block text-sm font-medium text-menu-700"
-        >Description<span class="text-red-500">*</span></label
+    <div>
+      <label for="description" class="text-sm font-medium text-menu-700"
+        >Description<span class="text-required">*</span></label
       >
       <textarea
         id="description"
         formControlName="description"
         maxlength="500"
-        class="block w-full px-4 py-2 border rounded-md sm:text-sm"
+        class="w-full p-2 border rounded-md sm:text-sm"
         placeholder="Enter League Description"
       ></textarea>
     </div>
 
     <!-- Host Link -->
-    <div class="space-y-2">
-      <label for="hostLink" class="block text-sm font-medium text-menu-700"
+    <div>
+      <label for="hostLink" class="text-sm font-medium text-menu-700"
         >Host Link (Discord, Battlefy, etc.)</label
       >
       <input
         id="hostLink"
         formControlName="hostLink"
         maxlength="100"
-        class="block w-full px-4 py-2 border rounded-md sm:text-sm"
+        class="w-full p-2 border rounded-md sm:text-sm"
         placeholder="Enter Host Link"
       />
     </div>
@@ -54,41 +55,43 @@
       <div
         *ngFor="let division of divisions.controls; let i = index"
         [formGroupName]="i"
-        class="space-y-4 bg-white p-4 rounded-md border"
+        class="space-y-4 p-4 rounded-md border bg-white"
       >
         <h3 class="text-lg font-semibold text-menu-900">
           Division {{ i + 1 }}
         </h3>
 
-        <div class="space-y-2">
+        <div>
           <label
             for="divisionName-{{ i }}"
-            class="block text-sm font-medium text-menu-700"
-            >Division Name<span class="text-red-500">*</span></label
+            class="text-sm font-medium text-menu-700"
+            >Division Name<span class="text-required">*</span></label
           >
           <input
             id="divisionName-{{ i }}"
             maxlength="50"
             formControlName="divisionName"
-            class="block w-full px-4 py-2 border rounded-md sm:text-sm"
+            class="w-full p-2 border rounded-md sm:text-sm"
             placeholder="Enter Division Name"
           />
         </div>
 
-        <div formGroupName="skillLevelRange" class="space-y-2">
-          <label class="block text-sm font-medium text-menu-700"
+        <!-- Skill Level Range -->
+        <div formGroupName="skillLevelRange">
+          <label class="text-sm font-medium text-menu-700"
             >Skill Level Range</label
           >
           <div class="flex space-x-2">
             <div class="w-1/2">
               <label for="from-{{ i }}" class="text-sm"
-                >From<span class="text-red-500">*</span></label
-              ><select
+                >From<span class="text-required">*</span></label
+              >
+              <select
                 formControlName="from"
-                class="w-full px-4 py-2 border rounded-md sm:text-sm"
+                class="w-full p-2 border rounded-md sm:text-sm"
                 id="from-{{ i }}"
               >
-                <option class="bg-red-400" value="0">Novice</option>
+                <option value="0">Amateur</option>
                 <option value="1">Intermediate</option>
                 <option value="2">Advanced</option>
                 <option value="3">Expert</option>
@@ -97,13 +100,14 @@
 
             <div class="w-1/2">
               <label for="to-{{ i }}" class="text-sm"
-                >To<span class="text-red-500">*</span></label
-              ><select
+                >To<span class="text-required">*</span></label
+              >
+              <select
                 formControlName="to"
-                class="w-full px-4 py-2 border rounded-md sm:text-sm"
+                class="w-full p-2 border rounded-md sm:text-sm"
                 id="to-{{ i }}"
               >
-                <option class="bg-red-400" value="0">Novice</option>
+                <option value="0">Amateur</option>
                 <option value="1">Intermediate</option>
                 <option value="2">Advanced</option>
                 <option value="3">Expert</option>
@@ -112,85 +116,101 @@
           </div>
         </div>
 
-        <div class="space-y-2">
-          <label
-            for="prizeValue-{{ i }}"
-            class="block text-sm font-medium text-menu-700"
-            >Prize Value
-          </label>
-          <select
-            id="prizeValue-{{ i }}"
-            formControlName="prizeValue"
-            class="block w-full px-4 py-2 border rounded-md sm:text-sm"
-          >
-            <option value="0">None</option>
-            <option value="1">$1 - $25</option>
-            <option value="2">$25 - $75</option>
-            <option value="3">$75 - $150</option>
-            <option value="4">$150+</option>
-          </select>
+        <!-- Prize Value, Platform, Format, and Ruleset Section -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Platform -->
+          <div>
+            <label
+              for="platform-{{ i }}"
+              class="text-sm font-medium text-menu-700"
+            >
+              Platform<span class="text-required">*</span>
+            </label>
+            <select
+              id="platform-{{ i }}"
+              formControlName="platform"
+              class="w-full p-2 border rounded-md sm:text-sm"
+            >
+              <option value="Pokémon Showdown">Pokémon Showdown</option>
+              <option value="Scarlet/Violet">Scarlet/Violet</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <!-- Prize Value -->
+          <div>
+            <label
+              for="prizeValue-{{ i }}"
+              class="text-sm font-medium text-menu-700"
+            >
+              Prize Value<span class="text-required">*</span>
+            </label>
+            <select
+              id="prizeValue-{{ i }}"
+              formControlName="prizeValue"
+              class="w-full p-2 border rounded-md sm:text-sm"
+            >
+              <option value="0">None</option>
+              <option value="1">$1 - $25</option>
+              <option value="2">$25 - $75</option>
+              <option value="3">$75 - $150</option>
+              <option value="4">$150+</option>
+            </select>
+          </div>
+
+          <!-- Format -->
+          <div>
+            <label
+              for="format-{{ i }}"
+              class="text-sm font-medium text-menu-700"
+            >
+              Format<span class="text-required">*</span>
+            </label>
+            <select
+              id="format-{{ i }}"
+              formControlName="format"
+              class="w-full p-2 border rounded-md sm:text-sm"
+            >
+              <option *ngFor="let format of formats" [value]="format">
+                {{ format }}
+              </option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <!-- Ruleset -->
+          <div>
+            <label
+              for="ruleset-{{ i }}"
+              class="text-sm font-medium text-menu-700"
+            >
+              Ruleset<span class="text-required">*</span>
+            </label>
+            <select
+              id="ruleset-{{ i }}"
+              formControlName="ruleset"
+              class="w-full p-2 border rounded-md sm:text-sm"
+            >
+              <option *ngFor="let ruleset of rulesets" [value]="ruleset">
+                {{ ruleset }}
+              </option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
         </div>
 
-        <div class="space-y-2">
-          <label
-            for="platform-{{ i }}"
-            class="block text-sm font-medium text-menu-700"
-            >Platform</label
-          >
-          <select
-            id="platform-{{ i }}"
-            formControlName="platform"
-            class="block w-full px-4 py-2 border rounded-md sm:text-sm"
-          >
-            <option value="Pokémon Showdown">Pokémon Showdown</option>
-            <option value="Scarlet/Violet">Scarlet/Violet</option>
-            <option value="Other">Other</option>
-          </select>
-        </div>
-
-        <div class="space-y-2">
-          <label
-            for="format-{{ i }}"
-            class="block text-sm font-medium text-menu-700"
-            >Format</label
-          >
-          <select
-            id="format-{{ i }}"
-            formControlName="format"
-            class="block w-full px-4 py-2 border rounded-md sm:text-sm"
-          >
-            <option value="Singles">Singles</option>
-            <option value="VGC">VGC</option>
-            <option value="Other">Other</option>
-          </select>
-        </div>
-        <div class="space-y-2">
-          <label
-            for="ruleset-{{ i }}"
-            class="block text-sm font-medium text-menu-700"
-            >Ruleset</label
-          >
-          <select
-            id="ruleset-{{ i }}"
-            formControlName="ruleset"
-            class="block w-full px-4 py-2 border rounded-md sm:text-sm"
-          >
-            <option value="Singles">Singles</option>
-            <option value="VGC">VGC</option>
-            <option value="Other">Other</option>
-          </select>
-        </div>
-        <div class="space-y-2">
+        <!-- Description -->
+        <div>
           <label
             for="description-{{ i }}"
-            class="block text-sm font-medium text-menu-700"
+            class="text-sm font-medium text-menu-700"
             >Division Description</label
           >
           <textarea
             id="description-{{ i }}"
             formControlName="description"
-            maxlength="30 0"
-            class="block w-full px-4 py-2 border rounded-md sm:text-sm"
+            maxlength="300"
+            class="w-full p-2 border rounded-md sm:text-sm"
             placeholder="Enter Division Description"
           ></textarea>
         </div>
@@ -209,71 +229,79 @@
     <button
       type="button"
       (click)="addDivision()"
-      class="mt-4 bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700"
+      class="mt-4 bg-bTeam-400 text-symbolColor-inverted p-2 rounded-md hover:bg-bTeam-500"
     >
       Add Division
     </button>
 
     <!-- Signup Link -->
-    <div class="space-y-2">
-      <label for="signupLink" class="block text-sm font-medium text-menu-700"
-        >Signup Link<span class="text-red-500">*</span></label
-      >
+    <div>
+      <label for="signupLink" class="text-sm font-medium text-menu-700">
+        Signup Link<span class="text-required">*</span>
+      </label>
       <input
         id="signupLink"
         formControlName="signupLink"
         maxlength="100"
-        class="block w-full px-4 py-2 border rounded-md sm:text-sm"
+        class="w-full p-2 border rounded-md sm:text-sm"
         placeholder="Enter Signup Link"
       />
     </div>
 
     <!-- Closes At -->
-    <div class="space-y-2">
-      <label for="closesAt" class="block text-sm font-medium text-menu-700"
-        >Closes At<span class="text-red-500">*</span></label
-      >
+    <div>
+      <label for="closesAt" class="text-sm font-medium text-menu-700">
+        Closes At<span class="text-required">*</span>
+      </label>
       <input
         id="closesAt"
         formControlName="closesAt"
         type="date"
-        class="block w-full px-4 py-2 border rounded-md sm:text-sm"
-      />
-    </div>
-    <!-- Season Start -->
-    <div class="space-y-2">
-      <label for="seasonStart" class="block text-sm font-medium text-menu-700"
-        >Season Start</label
-      >
-      <input
-        id="seasonStart"
-        formControlName="seasonStart"
-        type="date"
-        class="block w-full px-4 py-2 border rounded-md sm:text-sm"
+        class="w-full p-2 border rounded-md sm:text-sm"
       />
     </div>
 
-    <!-- Season End -->
-    <div class="space-y-2">
-      <label for="seasonEnd" class="block text-sm font-medium text-menu-700"
-        >Season End</label
-      >
-      <input
-        id="seasonEnd"
-        formControlName="seasonEnd"
-        type="date"
-        class="block w-full px-4 py-2 border rounded-md sm:text-sm"
-      />
+    <!-- Season Section -->
+    <div>
+      <h2 class="text-lg font-semibold text-menu-700">Season</h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Season Start -->
+        <div>
+          <label for="seasonStart" class="text-sm font-medium text-menu-700"
+            >Start</label
+          >
+          <input
+            id="seasonStart"
+            formControlName="seasonStart"
+            type="date"
+            class="w-full p-2 border rounded-md sm:text-sm"
+          />
+        </div>
+
+        <!-- Season End -->
+        <div>
+          <label for="seasonEnd" class="text-sm font-medium text-menu-700"
+            >End</label
+          >
+          <input
+            id="seasonEnd"
+            formControlName="seasonEnd"
+            type="date"
+            class="w-full p-2 border rounded-md sm:text-sm"
+          />
+        </div>
+      </div>
     </div>
 
     <!-- Submit Button -->
-    <button
-      type="submit"
-      [disabled]="leagueForm.invalid"
-      class="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
-    >
-      Submit
-    </button>
+    <div class="pt-4">
+      <button
+        type="submit"
+        class="bg-aTeam-400 text-symbolColor-inverted p-2 rounded-md hover:bg-aTeam-500 w-full"
+      >
+        Submit
+      </button>
+    </div>
   </form>
 </div>
-<!-- {{ leagueForm.value | json }} -->

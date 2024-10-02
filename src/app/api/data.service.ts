@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -14,11 +15,28 @@ export class DataService {
   } = {};
 
   getFormats(): Observable<string[]> {
-    return this.apiService.get('data/formats', false);
+    console.log(this.cache.formats);
+    if (this.cache.formats) {
+      return of(this.cache.formats);
+    } else {
+      return this.apiService.get('data/formats', false).pipe(
+        tap((formats: string[]) => {
+          this.cache.formats = formats;
+        })
+      );
+    }
   }
 
   getRulesets(): Observable<string[]> {
-    return this.apiService.get('data/rulesets', false);
+    if (this.cache.rulesets) {
+      return of(this.cache.rulesets);
+    } else {
+      return this.apiService.get('data/rulesets', false).pipe(
+        tap((rulesets: string[]) => {
+          this.cache.rulesets = rulesets;
+        })
+      );
+    }
   }
 
   advancesearch(query: string[], ruleset?: string, format?: string) {

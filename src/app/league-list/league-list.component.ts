@@ -6,6 +6,7 @@ import { LeagueAd, LeagueAdsService } from '../api/league-ads.service';
 import { FilterSVG } from '../images/svg-components/filter.component';
 import { PlusSVG } from '../images/svg-components/plus.component';
 import { LeagueAdComponent } from './league-ad/league-ad.component';
+import { DataService } from '../api/data.service';
 
 @Component({
   selector: 'app-league-ad-list',
@@ -23,7 +24,8 @@ import { LeagueAdComponent } from './league-ad/league-ad.component';
 export class LeagueAdListComponent implements OnInit {
   leagues: LeagueAd[] = [];
   filteredLeagues: LeagueAd[] = [];
-  formats = ['Singles', 'VGC'];
+  formats: string[] = [];
+  rulesets: string[] = [];
   sortOption:
     | 'createdAt'
     // | 'seasonStart'
@@ -36,12 +38,21 @@ export class LeagueAdListComponent implements OnInit {
     skillLevel: '',
   };
 
-  constructor(private leagueService: LeagueAdsService) {}
+  constructor(
+    private leagueService: LeagueAdsService,
+    private dataService: DataService
+  ) {}
 
   ngOnInit() {
     this.leagueService.getLeagueAds().subscribe((data) => {
       this.leagues = data;
       this.filteredLeagues = [...this.leagues];
+    });
+    this.dataService.getFormats().subscribe((formats) => {
+      this.formats = formats;
+    });
+    this.dataService.getRulesets().subscribe((rulesets) => {
+      this.rulesets = rulesets;
     });
   }
 

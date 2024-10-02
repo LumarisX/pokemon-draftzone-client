@@ -9,6 +9,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { LeagueAdsService } from '../../api/league-ads.service';
+import { DataService } from '../../api/data.service';
 
 @Component({
   selector: 'app-league-form',
@@ -21,10 +22,13 @@ import { LeagueAdsService } from '../../api/league-ads.service';
 })
 export class LeagueFormComponent implements OnInit {
   leagueForm!: FormGroup;
+  formats: string[] = [];
+  rulesets: string[] = [];
 
   constructor(
     private fb: FormBuilder,
-    private leagueService: LeagueAdsService
+    private leagueService: LeagueAdsService,
+    private dataService: DataService
   ) {}
 
   ngOnInit(): void {
@@ -42,6 +46,12 @@ export class LeagueFormComponent implements OnInit {
       seasonStart: [],
       seasonEnd: [],
     });
+    this.dataService.getFormats().subscribe((formats) => {
+      this.formats = formats;
+    });
+    this.dataService.getRulesets().subscribe((rulesets) => {
+      this.rulesets = rulesets;
+    });
   }
 
   createDivision(): FormGroup {
@@ -54,7 +64,7 @@ export class LeagueFormComponent implements OnInit {
       prizeValue: ['0', Validators.required],
       platform: ['Pokémon Showdown', Validators.required],
       format: ['Singles', Validators.required],
-      ruleset: ['Singles', Validators.required],
+      ruleset: ['Gen9 NatDex', Validators.required],
       description: [''],
     });
   }
