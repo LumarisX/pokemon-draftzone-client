@@ -20,10 +20,7 @@ export class LeagueAdsService {
 interface Division {
   divisionName: string;
   ruleset: string;
-  skillLevelRange: {
-    from: number;
-    to: number;
-  };
+  skillLevels: number[];
   prizeValue?: number;
   platform: 'Pokémon Showdown' | 'Scarlet/Violet';
   format: string;
@@ -43,4 +40,5 @@ export interface LeagueAd {
   seasonEnd?: string;
   createdAt: string;
   updatedAt: string;
+  tags: string[];
 }

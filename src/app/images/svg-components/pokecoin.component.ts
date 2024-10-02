@@ -5,14 +5,19 @@ import { Component } from '@angular/core';
   standalone: true,
   imports: [],
   template: `<svg
+    class="stroke-symbolColor-main"
+    viewBox="0 0 24 24"
+    fill="#000"
     xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 72.5 100"
-    class="w-full h-full"
   >
     <path
       style="fill-rule:evenodd"
-      d="M5 61H0v10h5v6H0v10h5v13h10V87h38V77H15v-6h38V61H15v-6h30c15.188 0 27.5-12.312 27.5-27.5S60.188 0 45 0H5c-.506 24.995 0 47.667 0 61m10-16h30c9.665 0 17.5-7.835 17.5-17.5S54.665 10 45 10H15z"
+      d="M6 14.2H5v2h1v1.2H5v2h1V22h2v-2.6h7.6v-2H8v-1.2h7.6v-2H8V13h6a5.5 5.5 0 1 0 0-11H6c-.1 5 0 9.5 0 12.2M8 11h6a3.5 3.5 0 1 0 0-7H8z"
+      stroke="#fff"
+      stroke-width=".2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
     />
-  </svg>`,
+  </svg> `,
 })
 export class CoinSVG {}
