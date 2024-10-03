@@ -24,7 +24,9 @@
         class="p-2 m-3 rounded-lg shadow-md bg-bTeam-300 hover:shadow shadow-bTeam-600"
         title="Add Matchup"
       >
-        <div class="w-6 h-6"><plus-svg></plus-svg></div>
+        <div class="w-6 h-6">
+          <plus-svg class="stroke-symbolColor-main"></plus-svg>
+        </div>
       </button>
       <loading *ngIf="!matchups"></loading>
       <div *ngIf="matchups !== undefined && matchups.length === 0">

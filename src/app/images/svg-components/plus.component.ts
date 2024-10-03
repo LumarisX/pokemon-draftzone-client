@@ -5,7 +5,6 @@ import { Component } from '@angular/core';
   standalone: true,
   template: `<svg
     xmlns="http://www.w3.org/2000/svg"
-    class="w-full h-full"
     fill="none"
     viewBox="0 0 24 24"
   >
