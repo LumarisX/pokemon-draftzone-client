@@ -15,6 +15,7 @@ import { ToolsModule } from './tools/tools.module';
 @NgModule({
   imports: [
     BrowserAnimationsModule,
+    BodyModule,
     DraftOverviewModule,
     HttpClientModule,
     ToolsModule,
@@ -41,11 +42,11 @@ import { ToolsModule } from './tools/tools.module';
         ],
       },
     }),
+
     OpponentOverviewModule,
     LeagueAdModule,
     MatchupOverviewModule,
     RouterModule,
-    BodyModule,
     LogoSVG,
   ],
   declarations: [AppComponent],

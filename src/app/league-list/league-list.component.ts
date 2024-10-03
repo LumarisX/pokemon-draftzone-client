@@ -25,20 +25,34 @@ import { SortDownSVG } from '../images/svg-components/sort.component';
 })
 export class LeagueAdListComponent implements OnInit {
   leagues: LeagueAd[] = [];
-  filteredLeagues: LeagueAd[] = [];
+  filteredLeagues!: LeagueAd[];
   formats: string[] = [];
   rulesets: string[] = [];
-  sortOption:
+  private _sortOption:
     | 'createdAt'
     // | 'seasonStart'
     | 'closesAt' = 'createdAt';
-  isFilterBoxOpen: boolean = false;
-  filter = {
+  menu: null | 'filter' | 'sort' = null;
+  filter: {
+    format: string;
+    ruleset: string;
+    platform: string;
+    skillLevel: string;
+  } = {
     format: '',
     ruleset: '',
     platform: '',
-    skillLevel: '',
+    skillLevel: 'any',
   };
+
+  get sortOption() {
+    return this._sortOption;
+  }
+
+  set sortOption(value) {
+    this._sortOption = value;
+    this.sortLeagues();
+  }
 
   constructor(
     private leagueService: LeagueAdsService,
@@ -49,6 +63,7 @@ export class LeagueAdListComponent implements OnInit {
     this.leagueService.getLeagueAds().subscribe((data) => {
       this.leagues = data;
       this.filteredLeagues = [...this.leagues];
+      this.sortLeagues();
     });
     this.dataService.getFormats().subscribe((formats) => {
       this.formats = formats;
@@ -59,11 +74,37 @@ export class LeagueAdListComponent implements OnInit {
   }
 
   filterLeagues() {
-    // this.filteredLeagues = this.leagues.filter((league) =>
-    //   this.selectedFormat
-    //     ? league.divisions.some((d) => d.format === this.selectedFormat)
-    //     : true
-    // );
+    this.filteredLeagues = this.leagues.filter((league) => {
+      if (
+        this.filter.format !== '' &&
+        !league.divisions.some(
+          (division) => division.format === this.filter.format
+        )
+      )
+        return false;
+      if (
+        this.filter.ruleset !== '' &&
+        !league.divisions.some(
+          (division) => division.ruleset === this.filter.ruleset
+        )
+      )
+        return false;
+      if (
+        this.filter.platform !== '' &&
+        !league.divisions.some(
+          (division) => division.platform === this.filter.platform
+        )
+      )
+        return false;
+      if (
+        this.filter.skillLevel !== 'any' &&
+        !league.divisions.some((division) =>
+          division.skillLevels.includes(+this.filter.skillLevel)
+        )
+      )
+        return false;
+      return true;
+    });
     this.sortLeagues();
   }
 
@@ -73,25 +114,22 @@ export class LeagueAdListComponent implements OnInit {
     );
   }
 
-  // Function to toggle the filter box visibility
-  toggleFilterBox(): void {
-    this.isFilterBoxOpen = !this.isFilterBoxOpen;
+  toggleMenu(menu: 'filter' | 'sort'): void {
+    if (this.menu === menu) this.menu = null;
+    else this.menu = menu;
   }
 
-  // Optionally, you can add these methods to handle filter logic
   applyFilters(): void {
-    // Logic to apply the filters
-    console.log('Filters applied');
-    this.toggleFilterBox(); // Close the filter box after applying filters
+    this.filterLeagues();
+    this.menu = null;
   }
 
   clearFilters(): void {
-    // Logic to clear the filters
     this.filter.format = '';
     this.filter.ruleset = '';
     this.filter.platform = '';
-    this.filter.skillLevel = '';
-    console.log('Filters cleared');
-    this.toggleFilterBox(); // Close the filter box after clearing filters
+    this.filter.skillLevel = 'any';
+    this.applyFilters();
+    this.menu = null;
   }
 }

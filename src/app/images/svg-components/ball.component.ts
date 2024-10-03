@@ -28,7 +28,7 @@ export const BALLHEX = {
       d="M21.9012 11C21.3995 5.94668 17.136 2 11.9506 2C6.76528 2 2.50172 5.94668 2 11H7.05064C7.51391 8.71776 9.53167 7 11.9506 7C14.3696 7 16.3873 8.71776 16.8506 11H21.9012Z"
       [attr.fill]="BALLHEX[ballType]"
     />
-    <circle cx="12" cy="12" r="3.5" />
+    <circle cx="12" cy="12" r="3.2" />
   </svg> `,
 })
 export class BallSVG {
