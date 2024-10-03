@@ -1,7 +1,5 @@
 <div
-  class="p-5 mb-6 rounded-lg shadow-md border bg-{{ team }}-200 border-{{
-    team
-  }}-300 shadow-{{ team }}-500"
+  class="p-5 mb-6 rounded-lg shadow-md bg-{{ team }}-200 shadow-{{ team }}-500"
 >
   <div (click)="toggleCollapsed()">
     <div *ngIf="!collapsed">
@@ -22,7 +20,7 @@
           <a
             id="hostlink"
             href="{{ league.hostLink }}"
-            class="text-blue-500 text-center underline block overflow-hidden whitespace-nowrap text-ellipsis sm:overflow-visible"
+            class="text-center underline block overflow-hidden whitespace-nowrap text-ellipsis sm:overflow-visible"
             style="max-width: 250px"
             >{{ league.hostLink }}</a
           >
@@ -31,7 +29,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           <div
             *ngFor="let division of league.divisions"
-            class="bg-{{ team }}-100 p-3 rounded-md"
+            class="bg-{{ team }}-100 p-3 rounded-md shadow"
           >
             <div class="font-semibold">{{ division.divisionName }}</div>
             <span *ngIf="division.description" class="text-sm">{{
@@ -89,7 +87,7 @@
           <strong>Signup Link:</strong>
           <a
             href="{{ league.signupLink }}"
-            class="text-blue-500 text-center underline block overflow-hidden whitespace-nowrap text-ellipsis sm:overflow-visible"
+            class="text-center underline block overflow-hidden whitespace-nowrap text-ellipsis sm:overflow-visible"
             style="max-width: 250px"
             >{{ league.signupLink }}</a
           >

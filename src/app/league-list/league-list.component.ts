@@ -7,6 +7,7 @@ import { FilterSVG } from '../images/svg-components/filter.component';
 import { PlusSVG } from '../images/svg-components/plus.component';
 import { LeagueAdComponent } from './league-ad/league-ad.component';
 import { DataService } from '../api/data.service';
+import { SortDownSVG } from '../images/svg-components/sort.component';
 
 @Component({
   selector: 'app-league-ad-list',
@@ -19,6 +20,7 @@ import { DataService } from '../api/data.service';
     FilterSVG,
     PlusSVG,
     RouterModule,
+    SortDownSVG,
   ],
 })
 export class LeagueAdListComponent implements OnInit {

@@ -4,7 +4,7 @@
   <form
     [formGroup]="leagueForm"
     (ngSubmit)="onSubmit()"
-    class="space-y-6 max-w-3xl mx-auto p-6 bg-menu-100 rounded-lg shadow-lg"
+    class="space-y-6 max-w-3xl mx-auto p-6 bg-menu-100 border border-menu-200 rounded-lg shadow-lg"
   >
     <div class="text-xl font-nasa">New League Form</div>
 
@@ -17,7 +17,7 @@
         id="leagueName"
         maxlength="100"
         formControlName="leagueName"
-        class="w-full p-2 border rounded-md sm:text-sm"
+        class="w-full p-2 bg-page border rounded-md sm:text-sm"
         placeholder="Enter League Name"
       />
     </div>
@@ -31,7 +31,7 @@
         id="description"
         formControlName="description"
         maxlength="500"
-        class="w-full p-2 border rounded-md sm:text-sm"
+        class="w-full p-2 bg-page border rounded-md sm:text-sm"
         placeholder="Enter League Description"
       ></textarea>
     </div>
@@ -45,7 +45,7 @@
         id="hostLink"
         formControlName="hostLink"
         maxlength="100"
-        class="w-full p-2 border rounded-md sm:text-sm"
+        class="w-full p-2 bg-page border rounded-md sm:text-sm"
         placeholder="Enter Host Link"
       />
     </div>
@@ -55,9 +55,9 @@
       <div
         *ngFor="let division of divisions.controls; let i = index"
         [formGroupName]="i"
-        class="space-y-4 p-4 rounded-md border bg-white"
+        class="space-y-4 p-4 rounded-md border bg-page"
       >
-        <h3 class="text-lg font-semibold text-menu-900">
+        <h3 class="text-lg font-semibold text-menu-800">
           Division {{ i + 1 }}
         </h3>
 
@@ -71,7 +71,7 @@
             id="divisionName-{{ i }}"
             maxlength="50"
             formControlName="divisionName"
-            class="w-full p-2 border rounded-md sm:text-sm"
+            class="w-full bg-page p-2 border rounded-md sm:text-sm"
             placeholder="Enter Division Name"
           />
         </div>
@@ -88,7 +88,7 @@
               >
               <select
                 formControlName="from"
-                class="w-full p-2 border rounded-md sm:text-sm"
+                class="w-full p-2 bg-page border rounded-md sm:text-sm"
                 id="from-{{ i }}"
               >
                 <option value="0">Amateur</option>
@@ -104,7 +104,7 @@
               >
               <select
                 formControlName="to"
-                class="w-full p-2 border rounded-md sm:text-sm"
+                class="w-full p-2 bg-page border rounded-md sm:text-sm"
                 id="to-{{ i }}"
               >
                 <option value="0">Amateur</option>
@@ -129,7 +129,7 @@
             <select
               id="platform-{{ i }}"
               formControlName="platform"
-              class="w-full p-2 border rounded-md sm:text-sm"
+              class="w-full bg-page p-2 border rounded-md sm:text-sm"
             >
               <option value="Pokémon Showdown">Pokémon Showdown</option>
               <option value="Scarlet/Violet">Scarlet/Violet</option>
@@ -148,7 +148,7 @@
             <select
               id="prizeValue-{{ i }}"
               formControlName="prizeValue"
-              class="w-full p-2 border rounded-md sm:text-sm"
+              class="w-full p-2 bg-page border rounded-md sm:text-sm"
             >
               <option value="0">None</option>
               <option value="1">$1 - $25</option>
@@ -169,7 +169,7 @@
             <select
               id="format-{{ i }}"
               formControlName="format"
-              class="w-full p-2 border rounded-md sm:text-sm"
+              class="w-full p-2 bg-page border rounded-md sm:text-sm"
             >
               <option *ngFor="let format of formats" [value]="format">
                 {{ format }}
@@ -189,7 +189,7 @@
             <select
               id="ruleset-{{ i }}"
               formControlName="ruleset"
-              class="w-full p-2 border rounded-md sm:text-sm"
+              class="w-full p-2 bg-page border rounded-md sm:text-sm"
             >
               <option *ngFor="let ruleset of rulesets" [value]="ruleset">
                 {{ ruleset }}
@@ -210,7 +210,7 @@
             id="description-{{ i }}"
             formControlName="description"
             maxlength="300"
-            class="w-full p-2 border rounded-md sm:text-sm"
+            class="w-full p-2 bg-page border rounded-md sm:text-sm"
             placeholder="Enter Division Description"
           ></textarea>
         </div>
@@ -243,7 +243,7 @@
         id="signupLink"
         formControlName="signupLink"
         maxlength="100"
-        class="w-full p-2 border rounded-md sm:text-sm"
+        class="w-full p-2 bg-page border rounded-md sm:text-sm"
         placeholder="Enter Signup Link"
       />
     </div>
@@ -257,7 +257,7 @@
         id="closesAt"
         formControlName="closesAt"
         type="date"
-        class="w-full p-2 border rounded-md sm:text-sm"
+        class="w-full bg-page p-2 border rounded-md sm:text-sm"
       />
     </div>
 
@@ -275,7 +275,7 @@
             id="seasonStart"
             formControlName="seasonStart"
             type="date"
-            class="w-full p-2 border rounded-md sm:text-sm"
+            class="w-full bg-page p-2 border rounded-md sm:text-sm"
           />
         </div>
 
@@ -288,7 +288,7 @@
             id="seasonEnd"
             formControlName="seasonEnd"
             type="date"
-            class="w-full p-2 border rounded-md sm:text-sm"
+            class="w-full bg-page p-2 border rounded-md sm:text-sm"
           />
         </div>
       </div>

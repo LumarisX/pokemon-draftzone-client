@@ -1,45 +1,37 @@
-<div class="p-6 bg-gray-50 min-h-screen">
+<div class="p-6 bg-page min-h-screen">
   <div class="flex justify-between items-center mb-6">
-    <h1 class="text-2xl font-bold text-gray-700 font-nasa">Open Leagues</h1>
+    <h1 class="text-2xl font-bold font-nasa">Open Leagues</h1>
 
     <div class="flex space-x-4 items-center">
       <!-- Add New League Button -->
       <button
         routerLink="new"
-        class="h-10 w-10 bg-indigo-500 text-white rounded-full flex justify-center items-center shadow hover:bg-indigo-600"
+        class="h-10 w-10 bg-menu-500 stroke-symbolColor-inverted rounded-md flex justify-center items-center shadow hover:bg-menu-600"
       >
         <plus-svg class="h-5 w-5"></plus-svg>
       </button>
 
       <!-- My Leagues Button -->
       <button
-        class="px-4 py-2 bg-gray-500 text-white rounded-md shadow hover:bg-gray-600"
-        routerLink="/my-leagues"
+        class="px-4 py-2 bg-menu-500 text-symbolColor-inverted rounded-md shadow hover:bg-menu-600"
       >
         My Leagues
       </button>
     </div>
   </div>
-  <div class="flex justify-between items-center mb-2">
+  <div class="flex justify-between items-center text-sm font-semibold mb-2">
     <div>Results: 3</div>
     <div class="flex space-x-4 items-center">
       <!-- Filter Button -->
-      <button
-        (click)="toggleFilterBox()"
-        class="px-4 py-2 bg-blue-500 text-white rounded-md shadow hover:bg-blue-600"
-      >
-        Filter
-      </button>
 
+      <div (click)="toggleFilterBox()" class="h-6 aspect-square">
+        <filter-svg></filter-svg>
+      </div>
       <!-- Sort Options -->
-      <select
-        [(ngModel)]="sortOption"
-        (change)="sortLeagues()"
-        class="p-2 border rounded-md focus:ring focus:ring-blue-300"
-      >
-        <option value="createdAt">Created Date</option>
-        <option value="closesAt">Close Date</option>
-      </select>
+
+      <div (click)="toggleFilterBox()" class="h-6 aspect-square">
+        <sort-down-svg></sort-down-svg>
+      </div>
     </div>
   </div>
 
@@ -51,7 +43,7 @@
     <h3 class="text-lg font-semibold mb-4">Filter Options</h3>
 
     <div class="mb-4">
-      <label class="block text-sm font-bold text-gray-600 mb-1">Format</label>
+      <label class="block text-sm font-bold text-menu-600 mb-1">Format</label>
       <select [(ngModel)]="filter.format" class="w-full p-2 border rounded-md">
         <option value="">Any</option>
         <option *ngFor="let format of formats" [value]="format">
@@ -61,7 +53,7 @@
     </div>
 
     <div class="mb-4">
-      <label class="block text-sm font-bold text-gray-600 mb-1">Ruleset</label>
+      <label class="block text-sm font-bold text-menu-600 mb-1">Ruleset</label>
       <select [(ngModel)]="filter.ruleset" class="w-full p-2 border rounded-md">
         <option value="">Any</option>
         <option *ngFor="let ruleset of rulesets" [value]="ruleset">
@@ -71,7 +63,7 @@
     </div>
 
     <div class="mb-4">
-      <label class="block text-sm font-bold text-gray-600 mb-1">Platform</label>
+      <label class="block text-sm font-bold text-menu-600 mb-1">Platform</label>
       <select
         [(ngModel)]="filter.platform"
         class="w-full p-2 border rounded-md"
@@ -81,7 +73,7 @@
     </div>
 
     <div class="mb-4">
-      <label class="block text-sm font-bold text-gray-600 mb-1"
+      <label class="block text-sm font-bold text-menu-600 mb-1"
         >Skill Level</label
       >
       <select
