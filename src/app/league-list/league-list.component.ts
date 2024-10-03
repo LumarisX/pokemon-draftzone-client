@@ -52,6 +52,7 @@ export class LeagueAdListComponent implements OnInit {
   set sortOption(value) {
     this._sortOption = value;
     this.sortLeagues();
+    this.menu = null;
   }
 
   constructor(

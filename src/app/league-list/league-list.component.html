@@ -8,15 +8,15 @@
         routerLink="new"
         class="h-10 w-10 bg-menu-500 stroke-symbolColor-inverted rounded-md flex justify-center items-center shadow hover:bg-menu-600"
       >
-        <plus-svg class="h-5 w-5 stroke-symbolColor-main"></plus-svg>
+        <plus-svg class="h-5 w-5"></plus-svg>
       </button>
 
       <!-- My Leagues Button -->
-      <button
-        class="px-4 py-2 bg-menu-500 text-symbolColor-disabled rounded-md shadow"
+      <!-- <button
+        class="px-4 py-2 bg-menu-500 text-symbolColor-inverted rounded-md shadow"
       >
         My Leagues
-      </button>
+      </button> -->
     </div>
   </div>
   <div class="flex justify-between items-center text-sm font-semibold mb-2">
@@ -28,8 +28,88 @@
     <div class="flex space-x-4 items-center">
       <!-- Filter Button -->
 
-      <div (click)="toggleMenu('filter')" class="h-6 aspect-square">
+      <div (click)="toggleMenu('filter')" class="relative h-6 aspect-square">
         <filter-svg></filter-svg>
+        <!-- Filter Box (initially hidden) -->
+        <div
+          *ngIf="menu === 'filter'"
+          class="absolute top-7 border right-0 bg-page p-4 shadow-lg rounded-lg w-72"
+        >
+          <h3 class="text-lg font-semibold mb-4">Filter Options</h3>
+
+          <div class="mb-4">
+            <label class="block text-sm font-bold text-menu-600 mb-1"
+              >Format</label
+            >
+            <select
+              [(ngModel)]="filter.format"
+              class="w-full bg-page p-2 border rounded-md"
+            >
+              <option value="">Any</option>
+              <option *ngFor="let format of formats" [value]="format">
+                {{ format }}
+              </option>
+            </select>
+          </div>
+
+          <div class="mb-4">
+            <label class="block text-sm font-bold text-menu-600 mb-1"
+              >Ruleset</label
+            >
+            <select
+              [(ngModel)]="filter.ruleset"
+              class="w-full bg-page p-2 border rounded-md"
+            >
+              <option value="">Any</option>
+              <option *ngFor="let ruleset of rulesets" [value]="ruleset">
+                {{ ruleset }}
+              </option>
+            </select>
+          </div>
+
+          <div class="mb-4">
+            <label class="block text-sm font-bold text-menu-600 mb-1"
+              >Platform</label
+            >
+            <select
+              [(ngModel)]="filter.platform"
+              class="w-full bg-page p-2 border rounded-md"
+            >
+              <option value="">Any</option>
+            </select>
+          </div>
+
+          <div class="mb-4">
+            <label class="block text-sm font-bold text-menu-600 mb-1"
+              >Skill Level</label
+            >
+            <select
+              [(ngModel)]="filter.skillLevel"
+              class="w-full p-2 bg-page border rounded-md"
+            >
+              <option value="any">Any</option>
+              <option value="0">Amateur</option>
+              <option value="1">Intermediate</option>
+              <option value="2">Advanced</option>
+              <option value="3">Expert</option>
+            </select>
+          </div>
+
+          <div class="flex justify-end space-x-2">
+            <button
+              (click)="applyFilters()"
+              class="px-4 py-2 bg-green-500 text-white rounded-md shadow hover:bg-green-600"
+            >
+              Apply
+            </button>
+            <button
+              (click)="clearFilters()"
+              class="px-4 py-2 bg-red-500 text-white rounded-md shadow hover:bg-red-600"
+            >
+              Clear
+            </button>
+          </div>
+        </div>
       </div>
       <!-- Sort Options -->
 
@@ -38,7 +118,7 @@
         <!-- Sort Box (initially hidden) -->
         <div
           *ngIf="menu === 'sort'"
-          class="absolute top-6 right-0 bg-page p-2 shadow-lg rounded-lg w-72"
+          class="absolute top-7 border right-0 bg-page p-2 shadow-lg rounded-lg w-72"
         >
           <div class="">
             <label class="block text-sm font-bold mb-1">Sort</label>
@@ -52,81 +132,6 @@
           </div>
         </div>
       </div>
-    </div>
-  </div>
-
-  <!-- Filter Box (initially hidden) -->
-  <div
-    *ngIf="menu === 'filter'"
-    class="absolute top-20 right-6 bg-page p-4 shadow-lg rounded-lg w-72"
-  >
-    <h3 class="text-lg font-semibold mb-4">Filter Options</h3>
-
-    <div class="mb-4">
-      <label class="block text-sm font-bold text-menu-600 mb-1">Format</label>
-      <select
-        [(ngModel)]="filter.format"
-        class="w-full bg-page p-2 border rounded-md"
-      >
-        <option value="">Any</option>
-        <option *ngFor="let format of formats" [value]="format">
-          {{ format }}
-        </option>
-      </select>
-    </div>
-
-    <div class="mb-4">
-      <label class="block text-sm font-bold text-menu-600 mb-1">Ruleset</label>
-      <select
-        [(ngModel)]="filter.ruleset"
-        class="w-full bg-page p-2 border rounded-md"
-      >
-        <option value="">Any</option>
-        <option *ngFor="let ruleset of rulesets" [value]="ruleset">
-          {{ ruleset }}
-        </option>
-      </select>
-    </div>
-
-    <div class="mb-4">
-      <label class="block text-sm font-bold text-menu-600 mb-1">Platform</label>
-      <select
-        [(ngModel)]="filter.platform"
-        class="w-full bg-page p-2 border rounded-md"
-      >
-        <option value="">Any</option>
-      </select>
-    </div>
-
-    <div class="mb-4">
-      <label class="block text-sm font-bold text-menu-600 mb-1"
-        >Skill Level</label
-      >
-      <select
-        [(ngModel)]="filter.skillLevel"
-        class="w-full p-2 bg-page border rounded-md"
-      >
-        <option value="any">Any</option>
-        <option value="0">Amateur</option>
-        <option value="1">Intermediate</option>
-        <option value="2">Advanced</option>
-        <option value="3">Expert</option>
-      </select>
-    </div>
-
-    <div class="flex justify-end space-x-2">
-      <button
-        (click)="applyFilters()"
-        class="px-4 py-2 bg-green-500 text-white rounded-md shadow hover:bg-green-600"
-      >
-        Apply
-      </button>
-      <button
-        (click)="clearFilters()"
-        class="px-4 py-2 bg-red-500 text-white rounded-md shadow hover:bg-red-600"
-      >
-        Clear
-      </button>
     </div>
   </div>
 
