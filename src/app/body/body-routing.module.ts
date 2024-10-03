@@ -10,9 +10,6 @@ const routes: Routes = [
   { path: 'planner', component: PlannerComponent },
   { path: 'settings', component: SettingsComponent },
   { path: 'about', component: AboutComponent },
-  { path: 'error', redirectTo: 'error' },
-  { path: 'matchup', redirectTo: 'draft' },
-  { path: 'leagues', redirectTo: 'leagues' },
   { path: '**', component: HomeComponent },
 ];
 

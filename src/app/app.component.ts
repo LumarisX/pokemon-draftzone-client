@@ -28,7 +28,7 @@ export class AppComponent implements OnInit {
     },
     {
       title: 'Find A League',
-      route: '/leagues',
+      route: '/league-list',
     },
     {
       title: 'Other Tools',

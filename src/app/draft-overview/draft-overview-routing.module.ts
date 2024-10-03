@@ -9,7 +9,7 @@ import { DraftPreviewComponent } from './draft-preview/draft-preview.component';
 import { DraftArchiveComponent } from './draft-archives/draft-archives.component';
 const routes: Routes = [
   {
-    path: 'draft',
+    path: 'drafts',
     component: DraftOverviewComponent,
     children: [
       {

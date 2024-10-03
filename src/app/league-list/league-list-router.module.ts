@@ -4,11 +4,11 @@ import { LeagueFormComponent } from './form/league-form.component';
 import { LeagueAdListComponent } from './league-list.component';
 const routes: Routes = [
   {
-    path: 'leagues',
+    path: 'league-list',
     component: LeagueAdListComponent,
   },
   {
-    path: 'leagues/new',
+    path: 'league-list/new',
     component: LeagueFormComponent,
   },
 ];

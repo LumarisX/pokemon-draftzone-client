@@ -5,17 +5,12 @@ import { RouterModule } from '@angular/router';
 import { AuthModule } from '@auth0/auth0-angular';
 import { AppComponent } from './app.component';
 import { BodyModule } from './body/body.module';
-import { DraftOverviewModule } from './draft-overview/draft-overview.module';
 import { LogoSVG } from './images/svg-components/logo.component';
-import { MatchupOverviewModule } from './matchup-overview/matchup-overview.module';
-import { OpponentOverviewModule } from './opponent-overview/opponent-overview.module';
-import { ToolsModule } from './tools/tools.module';
 
 @NgModule({
   imports: [
     BrowserAnimationsModule,
     HttpClientModule,
-    ToolsModule,
     AuthModule.forRoot({
       domain: 'dev-wspjxi5f6mjqsjea.us.auth0.com',
       clientId: 'nAyvHSOL1PbsFZfodzgIjRgYBUA1M1DH',
@@ -39,9 +34,6 @@ import { ToolsModule } from './tools/tools.module';
         ],
       },
     }),
-    DraftOverviewModule,
-    OpponentOverviewModule,
-    MatchupOverviewModule,
     RouterModule,
     LogoSVG,
     BodyModule,
