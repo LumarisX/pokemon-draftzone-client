@@ -3,7 +3,6 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'compact-up-svg',
   standalone: true,
-  imports: [],
   template: ` <svg
     viewBox="0 0 24 24"
     fill="none"
@@ -18,6 +17,4 @@ import { Component } from '@angular/core';
     />
   </svg>`,
 })
-export class CompactUpSVG {
-  constructor() {}
-}
+export class CompactUpSVG {}

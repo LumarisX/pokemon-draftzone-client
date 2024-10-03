@@ -3,7 +3,6 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'mouse-svg',
   standalone: true,
-  imports: [],
   template: `<svg
     class="w-full h-full stroke-symbolColor-main"
     viewBox="0 0 24 24"
@@ -18,6 +17,4 @@ import { Component } from '@angular/core';
     />
   </svg>`,
 })
-export class MouseSVG {
-  constructor() {}
-}
+export class MouseSVG {}

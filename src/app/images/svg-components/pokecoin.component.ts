@@ -3,7 +3,6 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'coin-svg',
   standalone: true,
-  imports: [],
   template: `<svg
     class="stroke-symbolColor-main fill-symbolColor-main"
     viewBox="0 0 24 24"

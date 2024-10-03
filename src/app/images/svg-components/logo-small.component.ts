@@ -1,10 +1,8 @@
-import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 
 @Component({
   selector: 'logo-small-svg',
   standalone: true,
-  imports: [CommonModule],
   template: `<svg
     id="a"
     xmlns="http://www.w3.org/2000/svg"
@@ -79,6 +77,4 @@ import { Component } from '@angular/core';
     />
   </svg>`,
 })
-export class LogoSmallSVG {
-  constructor() {}
-}
+export class LogoSmallSVG {}

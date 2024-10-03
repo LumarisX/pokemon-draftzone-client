@@ -3,7 +3,6 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'filter-svg',
   standalone: true,
-  imports: [],
   template: `<svg
     xmlns="http://www.w3.org/2000/svg"
     class="stroke-symbolColor-main"
@@ -18,6 +17,4 @@ import { Component } from '@angular/core';
     />
   </svg>`,
 })
-export class FilterSVG {
-  constructor() {}
-}
+export class FilterSVG {}

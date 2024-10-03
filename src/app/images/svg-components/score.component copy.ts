@@ -1,10 +1,8 @@
-import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 
 @Component({
   selector: 'check-svg',
   standalone: true,
-  imports: [CommonModule],
   template: ` <svg
     class="w-full h-full stroke-symbolColor-main"
     viewBox="0 0 24 24"
@@ -19,6 +17,4 @@ import { Component } from '@angular/core';
     />
   </svg>`,
 })
-export class CheckSVG {
-  constructor() {}
-}
+export class CheckSVG {}

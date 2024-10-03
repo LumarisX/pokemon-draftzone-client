@@ -1,10 +1,8 @@
-import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 
 @Component({
   selector: 'barchart-svg',
   standalone: true,
-  imports: [CommonModule],
   template: `<svg
     xmlns="http://www.w3.org/2000/svg"
     class="w-full h-full stroke-symbolColor-main"
@@ -19,6 +17,4 @@ import { Component } from '@angular/core';
     />
   </svg>`,
 })
-export class BarChartSVG {
-  constructor() {}
-}
+export class BarChartSVG {}

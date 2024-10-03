@@ -1,10 +1,8 @@
-import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 
 @Component({
   selector: 'z-svg',
   standalone: true,
-  imports: [CommonModule],
   template: `<svg
     viewBox="0 0 542 239"
     class="stroke-symbolColor-main"
@@ -16,6 +14,4 @@ import { Component } from '@angular/core';
     />
   </svg>`,
 })
-export class ZSVG {
-  constructor() {}
-}
+export class ZSVG {}

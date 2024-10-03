@@ -1,15 +1,14 @@
-import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 
 @Component({
   selector: 'archive-svg',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   template: `<svg
     class="w-full h-full stroke-symbolColor-main"
     xmlns="http://www.w3.org/2000/svg"
-    fill="none"
     viewBox="0 0 24 24"
+    fill="none"
   >
     <path
       stroke-linecap="round"
@@ -19,6 +18,4 @@ import { Component } from '@angular/core';
     />
   </svg>`,
 })
-export class ArchiveSVG {
-  constructor() {}
-}
+export class ArchiveSVG {}
