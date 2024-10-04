@@ -3,20 +3,13 @@
     <h1 class="text-2xl font-bold font-nasa">Open Leagues</h1>
 
     <div class="flex space-x-4 items-center">
-      <!-- Add New League Button -->
-      <button
-        routerLink="new"
-        class="h-10 w-10 bg-menu-500 stroke-symbolColor-inverted rounded-md flex justify-center items-center shadow hover:bg-menu-600"
-      >
-        <plus-svg class="h-5 w-5"></plus-svg>
-      </button>
-
       <!-- My Leagues Button -->
-      <!-- <button
-        class="px-4 py-2 bg-menu-500 text-symbolColor-inverted rounded-md shadow"
+      <button
+        class="px-4 py-2 bg-menu-500 text-symbolColor-inverted rounded-md shadow hover:bg-menu-600"
+        routerLink="manage"
       >
         My Leagues
-      </button> -->
+      </button>
     </div>
   </div>
   <div class="flex justify-between items-center text-sm font-semibold mb-2">
@@ -76,6 +69,8 @@
               class="w-full bg-page p-2 border rounded-md"
             >
               <option value="">Any</option>
+              <option value="Pokémon Showdown">Pokémon Showdown</option>
+              <option value="Scarlet/Violet">Scarlet/Violet</option>
             </select>
           </div>
 

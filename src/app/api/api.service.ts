@@ -27,32 +27,40 @@ export class ApiService {
     authenticated: boolean,
     params: { [key: string]: string } = {}
   ): Observable<any> {
-    return this.auth.getAccessToken().pipe(
-      switchMap((token: string) => {
-        let headers;
-        if (authenticated) {
-          headers = new HttpHeaders({
-            'Content-Type': 'application/json',
-            authorization: `Bearer ${token}`,
-          });
-        } else {
-          headers = new HttpHeaders({
-            'Content-Type': 'application/json',
-          });
-        }
-        return this.http
-          .get(`${this.serverUrl}/${path}`, {
-            headers,
-            params,
-          })
-          .pipe(
-            catchError((error: HttpErrorResponse) => {
-              this.errorService.reportError(error);
-              return throwError(() => error);
+    let headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
+
+    if (authenticated) {
+      return this.auth.getAccessToken().pipe(
+        switchMap((token: string) => {
+          headers = headers.set('authorization', `Bearer ${token}`);
+          return this.http
+            .get(`${this.serverUrl}/${path}`, {
+              headers,
+              params,
             })
-          );
-      })
-    );
+            .pipe(
+              catchError((error: HttpErrorResponse) => {
+                this.errorService.reportError(error);
+                return throwError(() => error);
+              })
+            );
+        })
+      );
+    } else {
+      return this.http
+        .get(`${this.serverUrl}/${path}`, {
+          headers,
+          params,
+        })
+        .pipe(
+          catchError((error: HttpErrorResponse) => {
+            this.errorService.reportError(error);
+            return throwError(() => error);
+          })
+        );
+    }
   }
 
   post(path: string, data: Object): Observable<any> {

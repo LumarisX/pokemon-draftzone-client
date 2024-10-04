@@ -1,0 +1,181 @@
+<div class="p-6 bg-page space-y-8">
+  <!-- Header Section -->
+  <h1 class="text-2xl font-bold font-nasa">My Leagues</h1>
+
+  <!-- Status Filter Tabs -->
+  <div class="flex justify-between items-center">
+    <div class="flex space-x-4 text-sm font-semibold">
+      <button
+        (click)="filterLeagues('All')"
+        class="px-4 py-2 bg-gray-200 rounded-md hover:bg-gray-300"
+      >
+        All Leagues
+      </button>
+      <button
+        (click)="filterLeagues('Pending')"
+        class="px-4 py-2 bg-yellow-300 rounded-md hover:bg-yellow-400"
+      >
+        Pending
+      </button>
+      <button
+        (click)="filterLeagues('Approved')"
+        class="px-4 py-2 bg-green-300 rounded-md hover:bg-green-400"
+      >
+        Approved
+      </button>
+      <button
+        (click)="filterLeagues('Denied')"
+        class="px-4 py-2 bg-red-300 rounded-md hover:bg-red-400"
+      >
+        Denied
+      </button>
+    </div>
+    <button
+      routerLink="new"
+      class="h-10 w-10 bg-menu-500 stroke-symbolColor-inverted rounded-md flex justify-center items-center shadow hover:bg-menu-600"
+    >
+      <plus-svg class="h-5 w-5"></plus-svg>
+    </button>
+  </div>
+
+  <!-- League List -->
+  <div class="grid gap-6">
+    <div
+      *ngFor="let league of filteredLeagues; let i = index"
+      class="p-5 rounded-lg shadow-md"
+      [ngClass]="{
+        'bg-aTeam-200 shadow-aTeam-500':i%2 === 0,
+        'bg-bTeam-200 shadow-bTeam-500':i%2 === 1,
+      }"
+    >
+      <div class="flex justify-between items-center mb-2">
+        <h2 class="text-xl font-semibold">
+          {{ league.leagueName }}
+        </h2>
+        <div class="flex space-x-2">
+          <div
+            [ngClass]="{
+              'bg-yellow-300': league.status === 'Pending',
+              'bg-green-300': league.status === 'Approved',
+              'bg-red-300': league.status === 'Denied'
+            }"
+            class="text-center flex items-center px-3 py-1 rounded-full text-xs w-max"
+          >
+            {{ league.status | titlecase }}
+          </div>
+          <button
+            class="h-8 w-8 p-1 hover:p-0.5"
+            (click)="deleteLeague(league._id)"
+          >
+            <trash-svg></trash-svg>
+          </button>
+        </div>
+      </div>
+
+      <span class="text-sm">{{ league.description }}</span>
+
+      <div class="mt-2">
+        <div class="space-x-1 flex">
+          <label for="hostlink" class="font-semibold">Host Link:</label>
+          <a
+            id="hostlink"
+            href="{{ league.hostLink }}"
+            class="text-center underline block overflow-hidden whitespace-nowrap text-ellipsis sm:overflow-visible"
+            style="max-width: 250px"
+            >{{ league.hostLink }}</a
+          >
+        </div>
+        <p class="mt-2"><strong>Divisions:</strong></p>
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+          <div
+            *ngFor="let division of league.divisions"
+            class="p-3 rounded-md shadow"
+            [ngClass]="{
+              'bg-aTeam-100 shadow-aTeam-500':i%2 === 0,
+              'bg-bTeam-100 shadow-bTeam-500':i%2 === 1,
+            }"
+          >
+            <div class="font-semibold">{{ division.divisionName }}</div>
+            <span *ngIf="division.description" class="text-sm">{{
+              division.description
+            }}</span>
+            <div class="text-sm px-2">
+              <div class="space-x-1">
+                <label for="format" class="font-semibold">Format:</label>
+                <span id="format">{{ division.format }}</span>
+              </div>
+              <div class="space-x-1">
+                <label for="ruleset" class="font-semibold">Ruleset:</label>
+                <span id="ruleset">{{ division.ruleset }}</span>
+              </div>
+              <div class="space-x-1">
+                <label for="platform" class="font-semibold">Platform:</label>
+                <span id="platform">{{ division.platform }}</span>
+              </div>
+              <div
+                class="space-x-1 flex items-center"
+                *ngIf="division.prizeValue && division.prizeValue > 0"
+              >
+                <label for="prize" class="font-semibold">Prize Value:</label>
+                <div id="prize" class="flex items-center">
+                  <div
+                    *ngFor="let i of [].constructor(division.prizeValue)"
+                    class="h-4 w-4"
+                  >
+                    <coin-svg></coin-svg>
+                  </div>
+                </div>
+              </div>
+              <div class="space-x-1 flex items-center">
+                <label for="skillrange" class="font-semibold"
+                  >Skill Range:</label
+                >
+                <div id="skillrange" class="flex items-center space-x-0.5 mt-1">
+                  <div
+                    *ngFor="let skill of division.skillLevels"
+                    class="h-6 w-6"
+                  >
+                    <ball-svg [ballType]="SKILLBALLS[skill]"></ball-svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="mt-4 flex flex-wrap justify-between items-center space-y-2 sm:space-y-0"
+      >
+        <div class="flex-1 justify-center flex flex-wrap space-x-2">
+          <strong>Signup Link:</strong>
+          <a
+            href="{{ league.signupLink }}"
+            class="text-center underline block overflow-hidden whitespace-nowrap text-ellipsis sm:overflow-visible"
+            style="max-width: 250px"
+            >{{ league.signupLink }}</a
+          >
+        </div>
+        <div class="flex-1 justify-center flex flex-wrap space-x-2">
+          <strong>Closes At:</strong>
+          <div
+            class="text-center block overflow-hidden whitespace-nowrap text-ellipsis sm:overflow-visible"
+          >
+            {{ league.closesAt | date }}
+          </div>
+        </div>
+        <div class="flex-1 justify-center flex flex-wrap space-x-2">
+          <strong>Season:</strong>
+          <div
+            class="text-center block overflow-hidden whitespace-nowrap text-ellipsis sm:overflow-visible"
+          >
+            {{ league.seasonStart | date }}
+            <ng-container *ngIf="league.seasonEnd">
+              - {{ league.seasonEnd | date }}
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

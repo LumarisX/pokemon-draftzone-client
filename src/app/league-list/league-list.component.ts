@@ -2,12 +2,11 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { DataService } from '../api/data.service';
 import { LeagueAd, LeagueAdsService } from '../api/league-ads.service';
 import { FilterSVG } from '../images/svg-components/filter.component';
-import { PlusSVG } from '../images/svg-components/plus.component';
-import { LeagueAdComponent } from './league-ad/league-ad.component';
-import { DataService } from '../api/data.service';
 import { SortDownSVG } from '../images/svg-components/sort.component';
+import { LeagueAdComponent } from './league-ad/league-ad.component';
 
 @Component({
   selector: 'app-league-ad-list',
@@ -18,7 +17,6 @@ import { SortDownSVG } from '../images/svg-components/sort.component';
     FormsModule,
     LeagueAdComponent,
     FilterSVG,
-    PlusSVG,
     RouterModule,
     SortDownSVG,
   ],

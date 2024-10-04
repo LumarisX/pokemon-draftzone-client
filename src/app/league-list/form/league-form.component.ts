@@ -10,6 +10,7 @@ import {
 } from '@angular/forms';
 import { LeagueAdsService } from '../../api/league-ads.service';
 import { DataService } from '../../api/data.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-league-form',
@@ -28,7 +29,8 @@ export class LeagueFormComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private leagueService: LeagueAdsService,
-    private dataService: DataService
+    private dataService: DataService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -82,41 +84,10 @@ export class LeagueFormComponent implements OnInit {
   }
 
   onSubmit() {
-    // if (this.leagueForm.valid) {
-    this.leagueService.newAd(this.leagueForm.value).subscribe();
-    // }
-  }
-
-  test() {
-    const testData = {
-      leagueName: 'Test League',
-      description: 'This is my test league!',
-      hostLink: 'discord.gg/pokemondraftzone',
-      divisions: [
-        {
-          divisionName: 'Super division',
-          skillLevelRange: { from: '0', to: '1' },
-          prizeValue: '1',
-          platform: 'Pokémon Showdown',
-          format: 'Singles',
-          ruleset: 'Gen9 NatDex',
-          description: 'Beginners Paradise',
-        },
-        {
-          divisionName: 'Super Duper Division',
-          skillLevelRange: { from: '2', to: '3' },
-          prizeValue: '3',
-          platform: 'Scarlet/Violet',
-          format: 'VGC',
-          ruleset: 'Paldea Dex',
-          description: 'Experts only!',
-        },
-      ],
-      signupLink: 'form.google',
-      closesAt: '2024-10-11',
-      seasonStart: '2024-10-20',
-      seasonEnd: '',
-    };
-    this.leagueService.newAd(testData).subscribe();
+    if (this.leagueForm.valid) {
+      this.leagueService.newAd(this.leagueForm.value).subscribe(() => {
+        this.router.navigate(['/league-list/manage']);
+      });
+    }
   }
 }
