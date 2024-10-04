@@ -27,7 +27,6 @@ export class LeagueAdComponent implements OnInit {
   league!: LeagueAd;
   collapsed: boolean = true;
   weeks?: number;
-  team: string = '';
   @Input()
   index: number = 0;
 
@@ -42,10 +41,15 @@ export class LeagueAdComponent implements OnInit {
             new Date(this.league.seasonStart).getTime()
         ) / 604800000
       );
-    this.team = this.index % 2 ? 'bTeam' : 'aTeam';
   }
 
   toggleCollapsed() {
     this.collapsed = !this.collapsed;
+  }
+
+  getTeamColor(bg: string, shadow: string) {
+    return this.index % 2
+      ? `bg-bTeam-${bg} shadow-bTeam-${shadow}`
+      : `bg-aTeam-${bg} shadow-aTeam-${shadow}`;
   }
 }

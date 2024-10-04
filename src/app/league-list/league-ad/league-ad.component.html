@@ -1,4 +1,4 @@
-<div class="p-5 rounded-lg shadow-md bg-{{ team }}-200 shadow-{{ team }}-500">
+<div class="p-5 rounded-lg shadow-md" [ngClass]="getTeamColor('200', '500')">
   <div (click)="toggleCollapsed()">
     <div class="flex justify-between items-center mb-2">
       <h2 class="text-xl font-semibold">
@@ -27,7 +27,8 @@
       <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         <div
           *ngFor="let division of league.divisions"
-          class="bg-{{ team }}-100 p-3 rounded-md shadow"
+          class="p-3 rounded-md shadow"
+          [ngClass]="getTeamColor('100', '500')"
         >
           <div class="font-semibold">{{ division.divisionName }}</div>
           <span *ngIf="division.description" class="text-sm">{{

@@ -28,8 +28,8 @@
     <div class="flex space-x-4 items-center">
       <!-- Filter Button -->
 
-      <div (click)="toggleMenu('filter')" class="relative h-6 aspect-square">
-        <filter-svg></filter-svg>
+      <div class="relative h-6 aspect-square">
+        <filter-svg (click)="toggleMenu('filter')"></filter-svg>
         <!-- Filter Box (initially hidden) -->
         <div
           *ngIf="menu === 'filter'"

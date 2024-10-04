@@ -92,15 +92,11 @@ export class LeagueFormComponent implements OnInit {
       leagueName: 'Test League',
       description: 'This is my test league!',
       hostLink: 'discord.gg/pokemondraftzone',
-      serverLink: '',
       divisions: [
         {
           divisionName: 'Super division',
-          skillLevelRange: {
-            from: '0',
-            to: '1',
-          },
-          prizeValue: '0',
+          skillLevelRange: { from: '0', to: '1' },
+          prizeValue: '1',
           platform: 'Pokémon Showdown',
           format: 'Singles',
           ruleset: 'Gen9 NatDex',
@@ -108,21 +104,18 @@ export class LeagueFormComponent implements OnInit {
         },
         {
           divisionName: 'Super Duper Division',
-          skillLevelRange: {
-            from: '2',
-            to: '3',
-          },
-          prizeValue: '2',
-          platform: 'Pokémon Showdown',
-          format: 'Singles',
-          ruleset: 'Gen9 NatDex',
+          skillLevelRange: { from: '2', to: '3' },
+          prizeValue: '3',
+          platform: 'Scarlet/Violet',
+          format: 'VGC',
+          ruleset: 'Paldea Dex',
           description: 'Experts only!',
         },
       ],
       signupLink: 'form.google',
-      closesAt: '2024-10-08',
-      seasonStart: null,
-      seasonEnd: null,
+      closesAt: '2024-10-11',
+      seasonStart: '2024-10-20',
+      seasonEnd: '',
     };
     this.leagueService.newAd(testData).subscribe();
   }
