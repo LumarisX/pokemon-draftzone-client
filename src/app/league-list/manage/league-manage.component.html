@@ -79,11 +79,16 @@
           <label for="hostlink" class="font-semibold">Host Link:</label>
           <a
             id="hostlink"
-            href="{{ league.hostLink }}"
+            [href]="
+              league.hostLink?.startsWith('http')
+                ? league.hostLink
+                : 'https://' + league.hostLink
+            "
             class="text-center underline block overflow-hidden whitespace-nowrap text-ellipsis sm:overflow-visible"
             style="max-width: 250px"
-            >{{ league.hostLink }}</a
           >
+            {{ league.hostLink }}
+          </a>
         </div>
         <p class="mt-2"><strong>Divisions:</strong></p>
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
@@ -150,10 +155,16 @@
         <div class="flex-1 justify-center flex flex-wrap space-x-2">
           <strong>Signup Link:</strong>
           <a
-            href="{{ league.signupLink }}"
+            id="hostlink"
+            [href]="
+              league.signupLink.startsWith('http')
+                ? league.signupLink
+                : 'https://' + league.signupLink
+            "
             class="text-center underline block overflow-hidden whitespace-nowrap text-ellipsis sm:overflow-visible"
             style="max-width: 250px"
-            >{{ league.signupLink }}</a
+          >
+            {{ league.signupLink }}</a
           >
         </div>
         <div class="flex-1 justify-center flex flex-wrap space-x-2">
