@@ -56,7 +56,7 @@ export class OpponentFormNewComponent implements OnInit {
     this.draftService.newMatchup(this.teamId, formData).subscribe(
       (response) => {
         console.log('Success!', response);
-        this.router.navigate([`/draft/${this.teamId}`]);
+        this.router.navigate([`/drafts/${this.teamId}`]);
       },
       (error) => console.error('Error!', error)
     );

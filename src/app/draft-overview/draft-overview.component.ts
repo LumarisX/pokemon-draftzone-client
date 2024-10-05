@@ -17,7 +17,7 @@ import { DraftPreviewComponent } from './draft-preview/draft-preview.component';
     SpriteComponent,
     ReactiveFormsModule,
   ],
-  templateUrl: './draft-overview.component.html',
+  template: `<router-outlet></router-outlet> `,
 })
 export class DraftOverviewComponent {
   constructor() {}

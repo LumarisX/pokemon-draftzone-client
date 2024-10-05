@@ -10,7 +10,7 @@ import { OpponentSchedule } from './opponent-schedule/opponent-schedule.componen
 
 const routes: Routes = [
   {
-    path: 'draft/:teamid',
+    path: 'drafts/:teamid',
     component: OpponentOverviewComponent,
     children: [
       {
