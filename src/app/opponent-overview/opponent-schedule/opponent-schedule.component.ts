@@ -150,7 +150,7 @@ export class OpponentSchedule implements OnInit {
       .subscribe({
         next: (response) => {
           console.log('Success!', response);
-          this.router.navigate([`/draft/${this.teamId}`]);
+          this.router.navigate([`/drafts/${this.teamId}`]);
         },
         error: (error) => {
           console.error('Error!', error);

@@ -7,12 +7,12 @@ import { AuthGuard } from '@auth0/auth0-angular';
 
 const routes: Routes = [
   {
-    path: 'draft/matchup/:matchid',
+    path: 'drafts/matchup/:matchid',
     component: MatchupComponent,
     canActivate: [AuthGuard],
   },
   {
-    path: 'draft/:teamid/matchup',
+    path: 'drafts/:teamid/matchup',
     component: MatchupOverviewComponent,
     canActivate: [AuthGuard],
   },
