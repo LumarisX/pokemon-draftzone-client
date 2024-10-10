@@ -1,37 +1,59 @@
 import { Injectable } from '@angular/core';
+import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
+import { Observable, Subject } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { ErrorService } from '../error/error.service';
+
 @Injectable({
   providedIn: 'root',
 })
 export class WebSocketService {
+  private socket$?: WebSocketSubject<any>;
+  private pendingRequests = new Map<number, Subject<any>>();
   private serverUrl = `ws://${environment.apiUrl}`;
-  constructor(private errorService: ErrorService) {}
+  constructor() {}
 
-  getSocket(
-    urlpath: string,
-    onmessage: ((ev: MessageEvent) => any) | null = null
-  ) {
-    const socket = new WebSocket(this.serverUrl + '/' + urlpath);
-    // socket.onclose = () => {
-    //     this.reconnect()
-    // }
+  // Connect to the WebSocket
+  connect(urlPath: string): Observable<any> {
+    if (!this.socket$ || this.socket$.closed) {
+      this.socket$ = webSocket(this.serverUrl + '/' + urlPath);
 
-    return socket;
+      // Listen to incoming messages
+      this.socket$.subscribe({
+        next: (message) => this.handleMessage(message),
+        error: (error) => console.error('WebSocket Error:', error),
+      });
+    }
+    return this.socket$;
   }
 
-  private reconnect() {
-    let retries = 0;
-    const maxRetries = 3;
-    const reconnectInterval = 5000;
-    if (retries < maxRetries) {
-      retries++;
-      setTimeout(() => {
-        console.log(`Reconnection attempt: #${retries}`);
-        this.getSocket('Reconnected?');
-      }, reconnectInterval);
+  // Send a message with a unique id
+  sendMessage(request: any): Observable<any> {
+    const id = request.id;
+    const responseSubject = new Subject<any>();
+
+    this.pendingRequests.set(id, responseSubject);
+    this.socket$?.next(request);
+
+    return responseSubject.asObservable(); // Return as observable to the caller
+  }
+
+  // Handle incoming responses by matching id
+  private handleMessage(message: any) {
+    const id = message.id;
+    const subject = this.pendingRequests.get(id);
+
+    if (subject) {
+      subject.next(message.result); // Resolve the request with the result
+      this.pendingRequests.delete(id);
     } else {
-      console.log('Maximum reconnection amount reached');
+      console.error('No matching request for id:', id);
+    }
+  }
+
+  // Close the WebSocket connection
+  close() {
+    if (this.socket$) {
+      this.socket$.complete();
     }
   }
 }

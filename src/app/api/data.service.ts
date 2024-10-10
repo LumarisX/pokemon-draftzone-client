@@ -15,7 +15,6 @@ export class DataService {
   } = {};
 
   getFormats(): Observable<string[]> {
-    console.log(this.cache.formats);
     if (this.cache.formats) {
       return of(this.cache.formats);
     } else {

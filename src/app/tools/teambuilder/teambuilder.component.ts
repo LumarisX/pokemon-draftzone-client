@@ -8,107 +8,8 @@ import { NATURES } from '../../data';
 import { FilterComponent } from '../../filter/filter.component';
 import { Pokemon } from '../../interfaces/draft';
 import { WebSocketService } from '../../api/ws.service';
-
-class PokemonBuilder {
-  ivs: {
-    hp: number;
-    atk: number;
-    def: number;
-    spa: number;
-    spd: number;
-    spe: number;
-  } = {
-    hp: 31,
-    atk: 31,
-    def: 31,
-    spa: 31,
-    spd: 31,
-    spe: 31,
-  };
-  evs: {
-    hp: number;
-    atk: number;
-    def: number;
-    spa: number;
-    spd: number;
-    spe: number;
-  } = {
-    hp: 0,
-    atk: 0,
-    def: 0,
-    spa: 0,
-    spd: 0,
-    spe: 0,
-  };
-  gender: '' = '';
-  level: number = 100;
-  happiness = 255;
-  hiddenpower: string = 'Dark';
-  gmax: boolean = false;
-  shiny: boolean = false;
-  name: string = '';
-  nature: string = '';
-  moves: [string, string, string, string] = ['', '', '', ''];
-  ability: string = '';
-  item: string = '';
-  tera: string = '';
-  nickname: string = '';
-  id: string = '';
-  constructor() {}
-
-  toPacked() {
-    return [
-      this.nickname,
-      this.id,
-      this.item,
-      this.ability,
-      this.moves.join(','),
-      this.nature,
-      Object.values(this.evs).join(','),
-      this.gender,
-      Object.values(this.ivs).join(','),
-      this.shiny ? 'S' : '',
-      this.level,
-      [
-        this.happiness,
-        '',
-        this.hiddenpower,
-        this.gmax ? 'G' : '',
-        '',
-        this.tera,
-      ].join(','),
-    ].join('|');
-  }
-
-  toExport() {
-    let string: string;
-    if (this.nickname) {
-      string = `${this.nickname} (${this.id})`;
-    } else {
-      string = `${this.id}`;
-    }
-    if (this.gender != '') string += ` (${this.gender})`;
-    if (this.item != '') string += ` @ ${this.item}`;
-    string += '\n';
-    if (this.ability) string += `Ability: ${this.ability}\n`;
-    if (this.level < 100 && this.level > 0) string += `Level: ${this.level}\n`;
-    if (this.tera != '') string += `Tera Type: ${this.tera}\n`;
-    let evs = Object.entries(this.evs)
-      .filter((stat) => stat[1] <= 252 && stat[1] > 0)
-      .map((stat) => `${stat[1]} ${stat[0]}`);
-    if (evs.length > 0) string += `EVs: ${evs.join(' / ')}\n`;
-    if (this.nature != '') string += `${this.nature} Nature\n`;
-    let ivs = Object.entries(this.ivs)
-      .filter((stat) => stat[1] < 31 && stat[1] >= 0)
-      .map((stat) => `${stat[1]} ${stat[0]}`);
-    if (ivs.length > 0) string += `IVs: ${ivs.join(' / ')}\n`;
-    let moves = this.moves.filter((move) => move != '');
-    moves.forEach((move) => {
-      string += `- ${move}\n`;
-    });
-    return string;
-  }
-}
+import { DataService } from '../../api/data.service';
+import { PokemonBuilder } from './pokemon-builder.model';
 
 @Component({
   selector: 'teambuilder-analyzer',
@@ -126,16 +27,59 @@ class PokemonBuilder {
 export class TeamBuilderComponent implements OnInit {
   team: PokemonBuilder[] = [];
   natures = Object.values(NATURES);
-
   message: string = '';
+  formats: string[] = [];
+  rulesets: string[] = [];
+  selectedFormat: string = 'Singles';
+  selectedRuleset: string = 'Gen9 NatDex';
+  private jsonRpcId = 1;
 
-  constructor() {}
+  constructor(
+    private webSocket: WebSocketService,
+    private dataService: DataService
+  ) {}
 
   ngOnInit(): void {
-    this.team.push(new PokemonBuilder());
+    this.dataService.getFormats().subscribe((formats) => {
+      this.formats = formats;
+    });
+
+    this.dataService.getRulesets().subscribe((rulesets) => {
+      this.rulesets = rulesets;
+    });
+
+    // Connect WebSocket
+    this.webSocket.connect('teambuilder');
   }
 
-  sendMessage() {}
+  // Send a JSON-RPC request
+  sendJsonRpcRequest(method: string, params: any) {
+    console.log(method, params);
+    const request = {
+      jsonrpc: '2.0',
+      method,
+      params,
+      id: this.jsonRpcId++,
+    };
+
+    // Send the request and wait for the response with the same id
+    this.webSocket.sendMessage(request).subscribe((response) => {
+      console.log('Received response:', response);
+
+      if (method === 'add') {
+        this.team = response.team; // Assuming response has a team attribute
+      }
+    });
+  }
+
+  sendMessage() {
+    // Example of sending a JSON-RPC request using the 'add' action
+    this.sendJsonRpcRequest('add', {
+      ruleset: this.selectedRuleset,
+      format: this.selectedFormat,
+      id: this.message,
+    });
+  }
 
   nameSelected(pokemon: PokemonBuilder, event: Pokemon) {
     pokemon.id = event.id;

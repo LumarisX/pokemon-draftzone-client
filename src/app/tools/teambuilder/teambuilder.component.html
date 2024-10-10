@@ -1,4 +1,9 @@
 Teambuilder
+
+<div>
+  <input [(ngModel)]="message" placeholder="Type a message" />
+  <button (click)="sendMessage()">Send Message</button>
+</div>
 <div *ngFor="let pokemon of team">
   <div class="w-8">
     <sprite [pokemon]="{ id: pokemon.id, name: pokemon.name }"></sprite>
@@ -28,7 +33,7 @@ Teambuilder
   </div>
   <div class="space-x-1">
     <label for="tera">Tera Type</label>
-    <input [(ngModel)]="pokemon.tera" id="tera" class="border p-1" />
+    <input [(ngModel)]="pokemon.teraType" id="tera" class="border p-1" />
   </div>
   <div class="space-x-1">
     <label for="level">Level</label>
@@ -54,6 +59,7 @@ Teambuilder
   <div class="space-x-1">
     <label for="Nature">Nature</label>
     <select [(ngModel)]="pokemon.nature" class="border p-1" id="name">
+      <option value="Serious">Serious</option>
       <option *ngFor="let nature of natures" [value]="nature.name">
         {{ nature.name }} +{{ nature.boost }}/-{{ nature.drop }}
       </option>
@@ -187,16 +193,11 @@ Teambuilder
         [(ngModel)]="pokemon.ivs.spe"
         id="speivs"
         min="0"
-        max="31"  
+        max="31"
         type="number"
         class="border p-1"
       />
     </div>
   </div>
   {{ pokemon.toExport() | json }}
-</div>
-
-<div>
-  <input [(ngModel)]="message" placeholder="Type a message" />
-  <button (click)="sendMessage()">Send Message</button>
 </div>
