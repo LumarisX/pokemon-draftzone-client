@@ -47,12 +47,9 @@ export class TeamBuilderComponent implements OnInit {
     this.dataService.getRulesets().subscribe((rulesets) => {
       this.rulesets = rulesets;
     });
-
-    // Connect WebSocket
     this.webSocket.connect('teambuilder');
   }
 
-  // Send a JSON-RPC request
   sendJsonRpcRequest(method: string, params: any) {
     console.log(method, params);
     const request = {
@@ -61,23 +58,28 @@ export class TeamBuilderComponent implements OnInit {
       params,
       id: this.jsonRpcId++,
     };
-
-    // Send the request and wait for the response with the same id
     this.webSocket.sendMessage(request).subscribe((response) => {
       console.log('Received response:', response);
-
       if (method === 'add') {
-        this.team = response.team; // Assuming response has a team attribute
+        this.team = response.team;
+      } else if (method === 'update') {
+        this.team[response.index] = response.pokemon;
       }
     });
   }
 
-  sendMessage() {
-    // Example of sending a JSON-RPC request using the 'add' action
+  addPokemon() {
     this.sendJsonRpcRequest('add', {
-      ruleset: this.selectedRuleset,
-      format: this.selectedFormat,
+      rulesetID: this.selectedRuleset,
+      formatID: this.selectedFormat,
       id: this.message,
+    });
+  }
+
+  updateData(index: number) {
+    this.sendJsonRpcRequest('update', {
+      index: index,
+      data: this.team[index],
     });
   }
 

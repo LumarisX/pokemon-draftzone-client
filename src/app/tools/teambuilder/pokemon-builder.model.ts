@@ -29,6 +29,14 @@ export class PokemonBuilder {
     spd: 0,
     spe: 0,
   };
+  stats = {
+    hp: 0,
+    atk: 0,
+    def: 0,
+    spa: 0,
+    spd: 0,
+    spe: 0,
+  };
   gender: '' = '';
   level: number = 100;
   happiness = 255;
