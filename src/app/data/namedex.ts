@@ -942,14 +942,14 @@ export const Namedex: {
     ps: { id: 'slowbro-mega' },
     serebii: { id: '080-m' },
     pd: { id: 'slowbro-mega' },
-    pmd: { id: '0080/0001' },
+    pmd: { id: '0080/0002' },
   },
   slowbrogalar: {
     name: ['Slowbro-Galar', 'Galarian Slowbro', 'Slowbro-G'],
     ps: { id: 'slowbro-galar' },
     serebii: { id: '080-g' },
     pd: { id: 'slowbro-galarian', flip: true },
-    pmd: { id: '0080/0002' },
+    pmd: { id: '0080/0001' },
   },
   magnemite: {
     name: ['Magnemite'],
