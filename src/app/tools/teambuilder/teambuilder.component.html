@@ -25,12 +25,16 @@ Teambuilder
     </div>
   </div>
   <div class="space-x-1">
-    <label for="name">Ability</label>
-    <input [(ngModel)]="pokemon.ability" id="name" class="border p-1" />
+    <label for="ability">Ability</label>
+    <select [(ngModel)]="pokemon.ability" id="ability" class="border p-1">
+      <option *ngFor="let ability of pokemon.abilities" [value]="ability">
+        {{ ability }}
+      </option>
+    </select>
   </div>
   <div class="space-x-1">
-    <label for="name">Item</label>
-    <input [(ngModel)]="pokemon.item" id="name" class="border p-1" />
+    <label for="item">Item</label>
+    <input [(ngModel)]="pokemon.item" id="item" class="border p-1" />
   </div>
   <div class="space-x-1">
     <label for="tera">Tera Type</label>
@@ -48,16 +52,6 @@ Teambuilder
       class="border p-1"
     />
   </div>
-  <div>
-    <div *ngFor="let move of pokemon.moves; let i = index">
-      <label [for]="'move' + i">Move {{ i + 1 }}</label>
-      <input
-        [(ngModel)]="pokemon.moves[1]"
-        [id]="'move' + i"
-        class="border p-1"
-      />
-    </div>
-  </div>
   <div class="space-x-1">
     <label for="Nature">Nature</label>
     <select
@@ -68,6 +62,42 @@ Teambuilder
     >
       <option *ngFor="let nature of natures" [value]="nature.name">
         {{ nature.name }} +{{ nature.boost }}/-{{ nature.drop }}
+      </option>
+    </select>
+  </div>
+  <div class="space-x-1">
+    <label for="move1">Move 1</label>
+    <select [(ngModel)]="pokemon.moves[0]" id="name" class="border p-1">
+      <option [value]="null">None</option>
+      <option *ngFor="let move of pokemon.learnset" [value]="move.id">
+        {{ move.name }}
+      </option>
+    </select>
+  </div>
+  <div class="space-x-1">
+    <label for="move2">Move 2</label>
+    <select [(ngModel)]="pokemon.moves[1]" id="move2" class="border p-1">
+      <option [value]="null">None</option>
+      <option *ngFor="let move of pokemon.learnset" [value]="move.id">
+        {{ move.name }}
+      </option>
+    </select>
+  </div>
+  <div class="space-x-1">
+    <label for="move3">Move 3</label>
+    <select [(ngModel)]="pokemon.moves[2]" id="move3" class="border p-1">
+      <option [value]="null">None</option>
+      <option *ngFor="let move of pokemon.learnset" [value]="move.id">
+        {{ move.name }}
+      </option>
+    </select>
+  </div>
+  <div class="space-x-1">
+    <label for="move4">Move 4</label>
+    <select [(ngModel)]="pokemon.moves[3]" id="move4" class="border p-1">
+      <option [value]="null">None</option>
+      <option *ngFor="let move of pokemon.learnset" [value]="move.id">
+        {{ move.name }}
       </option>
     </select>
   </div>
