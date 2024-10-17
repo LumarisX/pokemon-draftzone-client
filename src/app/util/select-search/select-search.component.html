@@ -1,0 +1,44 @@
+<div
+  class="relative w-full max-w-xs filter-container"
+  (click)="$event.stopPropagation()"
+>
+  <!-- Value Box -->
+  <div
+    class="p-2 bg-white border rounded cursor-pointer transition-colors"
+    [ngClass]="{
+      'border-gray-300': !isOpen,
+      'border-blue-500': isOpen
+    }"
+    (click)="openDropdown()"
+  >
+    <span class="text-gray-500">{{
+      selectedItem.name || "Select an item"
+    }}</span>
+  </div>
+
+  <div
+    *ngIf="isOpen"
+    class="absolute z-100 w-full p-2 mt-0.5 bg-white border border-gray-300 rounded shadow-lg space-y-1"
+  >
+    <div class="border-b border-gray-300">
+      <input
+        type="text"
+        placeholder="Search"
+        [(ngModel)]="query"
+        (keyup)="filter()"
+        class="w-full p-2 outline-none"
+      />
+    </div>
+
+    <!-- Scrollable list -->
+    <div class="max-h-60 overflow-y-auto">
+      <div
+        class="p-0.5 cursor-pointer hover:bg-gray-200"
+        (click)="selectItem(item)"
+        *ngFor="let item of filteredItems"
+      >
+        {{ item.name }}
+      </div>
+    </div>
+  </div>
+</div>
