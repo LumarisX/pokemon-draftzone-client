@@ -8,23 +8,42 @@ import {
   HostListener,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { CompactSVG } from '../../images/svg-components/compact.component';
+
+type Item = { name: string; id?: string };
 
 @Component({
   selector: 'select-search',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, CompactSVG],
   templateUrl: 'select-search.component.html',
 })
 export class SelectSearchComponent implements OnInit {
-  @Input() items: { name: string; id?: string }[] = [];
-  @Output() selectedItemChange = new EventEmitter<{
-    name: string;
-    id?: string;
-  }>();
+  private _items: Item[] = [];
+  @Input()
+  set items(value: (string | Item)[]) {
+    this._items = value.map((item) =>
+      typeof item === 'string' ? { name: item } : item
+    );
+  }
+  get items(): Item[] {
+    return this._items;
+  }
 
-  selectedItem: { name: string; id?: string } = { name: '' };
+  @Input() placeholder: string = 'Select an item';
+
+  @Output() itemSelected = new EventEmitter<string>();
+
+  private _selectedItem = { name: '' };
+  @Input()
+  set selectedItem(value: string | Item) {
+    this._selectedItem = typeof value === 'string' ? { name: value } : value;
+  }
+  get selectedItem(): Item {
+    return this._selectedItem;
+  }
   query: string = '';
-  filteredItems: { name: string; id?: string }[] = [];
+  filteredItems: Item[] = [];
   isOpen: boolean = false;
 
   static openFilter: SelectSearchComponent | null = null;
@@ -33,19 +52,34 @@ export class SelectSearchComponent implements OnInit {
     this.filter();
   }
 
+  toggleDropdown() {
+    if (this.isOpen) {
+      this.closeDropdown();
+    } else {
+      this.openDropdown();
+    }
+  }
+
   openDropdown() {
     if (SelectSearchComponent.openFilter) {
-      SelectSearchComponent.openFilter.isOpen = false;
+      SelectSearchComponent.openFilter.closeDropdown();
     }
     this.isOpen = true;
     SelectSearchComponent.openFilter = this;
   }
 
+  closeDropdown() {
+    if (SelectSearchComponent.openFilter === this) {
+      SelectSearchComponent.openFilter = null;
+    }
+    this.isOpen = false;
+  }
+
   selectItem(value: { name: string; id?: string }) {
     this.selectedItem = value;
     this.query = '';
-    this.isOpen = false;
-    this.selectedItemChange.emit(value);
+    this.closeDropdown();
+    this.itemSelected.emit(value.id ?? value.name);
   }
 
   filter() {

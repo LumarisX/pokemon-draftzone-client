@@ -25,6 +25,21 @@ export function getPidByName(name: string): PokemonId | null {
   return null;
 }
 
+let $nameList: { name: string; id: string }[] | undefined;
+export function nameList(): { name: string; id: string }[] {
+  if ($nameList) return $nameList;
+  return ($nameList = Object.entries(Namedex)
+    .map((e) => ({
+      name: e[1].name[0],
+      id: e[0],
+    }))
+    .sort((x, y) => {
+      if (x.id < y.id) return -1;
+      if (x.id > y.id) return 1;
+      return 0;
+    }));
+}
+
 export const Namedex: {
   [key: string]: {
     name: string[];
@@ -56,7 +71,7 @@ export const Namedex: {
     pmd: { id: '0003' },
   },
   venusaurmega: {
-    name: ['Venusaur-Mega', 'Mega Venusaur'],
+    name: ['Mega Venusaur', 'Venusaur-Mega'],
     ps: { id: 'venusaur-mega' },
     serebii: { id: '003-m' },
     pd: { id: 'venusaur-mega' },
@@ -91,14 +106,14 @@ export const Namedex: {
     pmd: { id: '0006' },
   },
   charizardmegax: {
-    name: ['Charizard-Mega-X', 'Mega Charizard X'],
+    name: ['Mega Charizard X', 'Charizard-Mega-X'],
     ps: { id: 'charizard-megax' },
     serebii: { id: '006-mx' },
     pd: { id: 'charizard-mega-x', flip: true },
     pmd: { id: '0006/0001' },
   },
   charizardmegay: {
-    name: ['Charizard-Mega-Y', 'Mega Charizard Y'],
+    name: ['Mega Charizard Y', 'Charizard-Mega-Y'],
     ps: { id: 'charizard-megay' },
     serebii: { id: '006-my' },
     pd: { id: 'charizard-mega-y' },
@@ -133,7 +148,7 @@ export const Namedex: {
     pmd: { id: '0009' },
   },
   blastoisemega: {
-    name: ['Blastoise-Mega', 'Mega Blastoise'],
+    name: ['Mega Blastoise', 'Blastoise-Mega'],
     ps: { id: 'blastoise-mega' },
     serebii: { id: '009-m' },
     pd: { id: 'blastoise-mega' },
@@ -196,7 +211,7 @@ export const Namedex: {
     pmd: { id: '0015' },
   },
   beedrillmega: {
-    name: ['Beedrill-Mega', 'Mega Beedrill'],
+    name: ['Mega Beedrill', 'Beedrill-Mega'],
     ps: { id: 'beedrill-mega' },
     serebii: { id: '015-m' },
     pd: { id: 'beedrill-mega' },
@@ -224,7 +239,7 @@ export const Namedex: {
     pmd: { id: '0018' },
   },
   pidgeotmega: {
-    name: ['Pidgeot-Mega', 'Mega Pidgeot'],
+    name: ['Mega Pidgeot', 'Pidgeot-Mega'],
     ps: { id: 'pidgeot-mega' },
     serebii: { id: '018-m' },
     pd: { id: 'pidgeot-mega' },
@@ -238,7 +253,7 @@ export const Namedex: {
     pmd: { id: '0019' },
   },
   rattataalola: {
-    name: ['Rattata-Alola', 'Alolan Rattata', 'Rattata-A'],
+    name: ['Alolan Rattata', 'Rattata-Alola', 'Rattata-A'],
     ps: { id: 'rattata-alola' },
     serebii: { id: '019-a' },
     pd: { id: 'rattata-alolan' },
@@ -252,7 +267,7 @@ export const Namedex: {
     pmd: { id: '0020' },
   },
   raticatealola: {
-    name: ['Raticate-Alola', 'Alolan Raticate', 'Raticate-A'],
+    name: ['Alolan Raticate', 'Raticate-Alola', 'Raticate-A'],
     ps: { id: 'raticate-alola' },
     serebii: { id: '020-a' },
     pd: { id: 'raticate-alolan' },
@@ -371,7 +386,7 @@ export const Namedex: {
     pmd: { id: '0025/0012' },
   },
   pikachualola: {
-    name: ['Pikachu-Alola', 'Alolan Pikachu', 'Pikachu-A'],
+    name: ['Alolan Pikachu', 'Pikachu-Alola', 'Pikachu-A'],
     ps: { id: 'pikachu-alola' },
     serebii: { id: '025-a' },
     pd: { id: 'pikachu-alola-cap' },
@@ -413,7 +428,7 @@ export const Namedex: {
     pmd: { id: '0026' },
   },
   raichualola: {
-    name: ['Raichu-Alola', 'Alolan Raichu', 'Raichu-A'],
+    name: ['Alolan Raichu', 'Raichu-Alola', 'Raichu-A'],
     ps: { id: 'raichu-alola' },
     serebii: { id: '026-a' },
     pd: { id: 'raichu-alolan' },
@@ -427,7 +442,7 @@ export const Namedex: {
     pmd: { id: '0027' },
   },
   sandshrewalola: {
-    name: ['Sandshrew-Alola', 'Alolan Sandshrew', 'Sandshrew-A'],
+    name: ['Alolan Sandshrew', 'Sandshrew-Alola', 'Sandshrew-A'],
     ps: { id: 'sandshrew-alola' },
     serebii: { id: '027-a' },
     pd: { id: 'sandshrew-alolan', flip: true },
@@ -441,14 +456,14 @@ export const Namedex: {
     pmd: { id: '0028' },
   },
   sandslashalola: {
-    name: ['Sandslash-Alola', 'Alolan Sandslash', 'Sandslash-A'],
+    name: ['Alolan Sandslash', 'Sandslash-Alola', 'Sandslash-A'],
     ps: { id: 'sandslash-alola' },
     serebii: { id: '028-a' },
     pd: { id: 'sandslash-alolan', flip: true },
     pmd: { id: '0028/0001' },
   },
   nidoranf: {
-    name: ['Nidoran-F', 'Nidoran-Female'],
+    name: ['Nidoran-Female', 'Nidoran-F'],
     ps: { id: 'nidoranf' },
     serebii: { id: '029' },
     pd: { id: 'nidoran-f' },
@@ -511,7 +526,7 @@ export const Namedex: {
     pmd: { id: '0037' },
   },
   vulpixalola: {
-    name: ['Vulpix-Alola', 'Alolan Vulpix', 'Vulpix-A'],
+    name: ['Alolan Vulpix', 'Vulpix-Alola', 'Vulpix-A'],
     ps: { id: 'vulpix-alola' },
     serebii: { id: '037-a' },
     pd: { id: 'vulpix-alolan' },
@@ -525,7 +540,7 @@ export const Namedex: {
     pmd: { id: '0038' },
   },
   ninetalesalola: {
-    name: ['Ninetales-Alola', 'Alolan Ninetales', 'Ninetales-A'],
+    name: ['Alolan Ninetales', 'Ninetales-Alola', 'Ninetales-A'],
     ps: { id: 'ninetales-alola' },
     serebii: { id: '038-a' },
     pd: { id: 'ninetales-alolan' },
@@ -616,7 +631,7 @@ export const Namedex: {
     pmd: { id: '0050' },
   },
   diglettalola: {
-    name: ['Diglett-Alola', 'Alolan Diglett', 'Diglett-A'],
+    name: ['Alolan Diglett', 'Diglett-Alola', 'Diglett-A'],
     ps: { id: 'diglett-alola' },
     serebii: { id: '050-a' },
     pd: { id: 'diglett-alolan' },
@@ -630,7 +645,7 @@ export const Namedex: {
     pmd: { id: '0051' },
   },
   dugtrioalola: {
-    name: ['Dugtrio-Alola', 'Alolan Dugtrio', 'Dugtrio-A'],
+    name: ['Alolan Dugtrio', 'Dugtrio-Alola', 'Dugtrio-A'],
     ps: { id: 'dugtrio-alola' },
     serebii: { id: '051-a' },
     pd: { id: 'dugtrio-alolan' },
@@ -644,14 +659,14 @@ export const Namedex: {
     pmd: { id: '0052' },
   },
   meowthalola: {
-    name: ['Meowth-Alola', 'Alolan Meowth', 'Meowth-A'],
+    name: ['Alolan Meowth', 'Meowth-Alola', 'Meowth-A'],
     ps: { id: 'meowth-alola' },
     serebii: { id: '052-a' },
     pd: { id: 'meowth-alolan' },
     pmd: { id: '0052/0001' },
   },
   meowthgalar: {
-    name: ['Meowth-Galar', 'Galarian Meowth', 'Meowth-G'],
+    name: ['Galarian Meowth', 'Meowth-Galar', 'Meowth-G'],
     ps: { id: 'meowth-galar' },
     serebii: { id: '052-g' },
     pd: { id: 'meowth-galarian' },
@@ -672,7 +687,7 @@ export const Namedex: {
     pmd: { id: '0053' },
   },
   persianalola: {
-    name: ['Persian-Alola', 'Alolan Persian', 'Persian-A'],
+    name: ['Alolan Persian', 'Persian-Alola', 'Persian-A'],
     ps: { id: 'persian-alola' },
     serebii: { id: '053-a' },
     pd: { id: 'persian-alolan' },
@@ -714,7 +729,7 @@ export const Namedex: {
     pmd: { id: '0058' },
   },
   growlithehisui: {
-    name: ['Growlithe-Hisui', 'Hisuian Growlithe', 'Growlithe-H'],
+    name: ['Hisuian Growlithe', 'Growlithe-Hisui', 'Growlithe-H'],
     ps: { id: 'growlithe-hisui' },
     serebii: { id: '058-h' },
     pd: { id: 'growlithe-hisuian' },
@@ -728,7 +743,7 @@ export const Namedex: {
     pmd: { id: '0059' },
   },
   arcaninehisui: {
-    name: ['Arcanine-Hisui', 'Hisuian Arcanine', 'Arcanine-H'],
+    name: ['Hisuian Arcanine', 'Arcanine-Hisui', 'Arcanine-H'],
     ps: { id: 'arcanine-hisui' },
     serebii: { id: '059-h' },
     pd: { id: 'arcanine-hisuian' },
@@ -777,7 +792,7 @@ export const Namedex: {
     pmd: { id: '0065' },
   },
   alakazammega: {
-    name: ['Alakazam-Mega', 'Mega Alakazam'],
+    name: ['Mega Alakazam', 'Alakazam-Mega'],
     ps: { id: 'alakazam-mega' },
     serebii: { id: '065-m' },
     pd: { id: 'alakazam-mega' },
@@ -854,7 +869,7 @@ export const Namedex: {
     pmd: { id: '0074' },
   },
   geodudealola: {
-    name: ['Geodude-Alola', 'Alolan Geodude', 'Geodude-A'],
+    name: ['Alolan Geodude', 'Geodude-Alola', 'Geodude-A'],
     ps: { id: 'geodude-alola' },
     serebii: { id: '074-a' },
     pd: { id: 'geodude-alolan' },
@@ -868,7 +883,7 @@ export const Namedex: {
     pmd: { id: '0075' },
   },
   graveleralola: {
-    name: ['Graveler-Alola', 'Alolan Graveler', 'Graveler-A'],
+    name: ['Alolan Graveler', 'Graveler-Alola', 'Graveler-A'],
     ps: { id: 'graveler-alola' },
     serebii: { id: '075-a' },
     pd: { id: 'graveler-alolan' },
@@ -882,7 +897,7 @@ export const Namedex: {
     pmd: { id: '0076' },
   },
   golemalola: {
-    name: ['Golem-Alola', 'Alolan Golem', 'Golem-A'],
+    name: ['Alolan Golem', 'Golem-Alola', 'Golem-A'],
     ps: { id: 'golem-alola' },
     serebii: { id: '076-a' },
     pd: { id: 'golem-alolan' },
@@ -896,7 +911,7 @@ export const Namedex: {
     pmd: { id: '0077' },
   },
   ponytagalar: {
-    name: ['Ponyta-Galar', 'Galarian Ponyta', 'Ponyta-G'],
+    name: ['Galarian Ponyta', 'Ponyta-Galar', 'Ponyta-G'],
     ps: { id: 'ponyta-galar' },
     serebii: { id: '077-g' },
     pd: { id: 'ponyta-galarian' },
@@ -910,7 +925,7 @@ export const Namedex: {
     pmd: { id: '0078' },
   },
   rapidashgalar: {
-    name: ['Rapidash-Galar', 'Galarian Rapidash', 'Rapidash-G'],
+    name: ['Galarian Rapidash', 'Rapidash-Galar', 'Rapidash-G'],
     ps: { id: 'rapidash-galar' },
     serebii: { id: '078-g' },
     pd: { id: 'rapidash-galarian', flip: true },
@@ -924,7 +939,7 @@ export const Namedex: {
     pmd: { id: '0079' },
   },
   slowpokegalar: {
-    name: ['Slowpoke-Galar', 'Galarian Slowpoke', 'Slowpoke-G'],
+    name: ['Galarian Slowpoke', 'Slowpoke-Galar', 'Slowpoke-G'],
     ps: { id: 'slowpoke-galar' },
     serebii: { id: '079-g' },
     pd: { id: 'slowpoke-galarian' },
@@ -938,14 +953,14 @@ export const Namedex: {
     pmd: { id: '0080' },
   },
   slowbromega: {
-    name: ['Slowbro-Mega', 'Mega Slowbro'],
+    name: ['Mega Slowbro', 'Slowbro-Mega'],
     ps: { id: 'slowbro-mega' },
     serebii: { id: '080-m' },
     pd: { id: 'slowbro-mega' },
     pmd: { id: '0080/0002' },
   },
   slowbrogalar: {
-    name: ['Slowbro-Galar', 'Galarian Slowbro', 'Slowbro-G'],
+    name: ['Galarian Slowbro', 'Slowbro-Galar', 'Slowbro-G'],
     ps: { id: 'slowbro-galar' },
     serebii: { id: '080-g' },
     pd: { id: 'slowbro-galarian', flip: true },
@@ -973,7 +988,7 @@ export const Namedex: {
     pmd: { id: '0083' },
   },
   farfetchdgalar: {
-    name: ['Farfetch’d-Galar', 'Galarian Farfetch’d', 'Farfetch’d-G'],
+    name: ['Galarian Farfetch’d', 'Farfetch’d-Galar', 'Farfetch’d-G'],
     ps: { id: 'farfetchd-galar' },
     serebii: { id: '083-g' },
     pd: { id: 'farfetchd-galarian' },
@@ -1015,7 +1030,7 @@ export const Namedex: {
     pmd: { id: '0088' },
   },
   grimeralola: {
-    name: ['Grimer-Alola', 'Alolan Grimer', 'Grimer-A'],
+    name: ['Alolan Grimer', 'Grimer-Alola', 'Grimer-A'],
     ps: { id: 'grimer-alola' },
     serebii: { id: '088-a' },
     pd: { id: 'grimer-alolan' },
@@ -1029,7 +1044,7 @@ export const Namedex: {
     pmd: { id: '0089' },
   },
   mukalola: {
-    name: ['Muk-Alola', 'Alolan Muk', 'Muk-A'],
+    name: ['Alolan Muk', 'Muk-Alola', 'Muk-A'],
     ps: { id: 'muk-alola' },
     serebii: { id: '089-a' },
     pd: { id: 'muk-alolan' },
@@ -1071,7 +1086,7 @@ export const Namedex: {
     pmd: { id: '0094' },
   },
   gengarmega: {
-    name: ['Gengar-Mega', 'Mega Gengar'],
+    name: ['Mega Gengar', 'Gengar-Mega'],
     ps: { id: 'gengar-mega' },
     serebii: { id: '094-m' },
     pd: { id: 'gengar-mega' },
@@ -1134,7 +1149,7 @@ export const Namedex: {
     pmd: { id: '0100' },
   },
   voltorbhisui: {
-    name: ['Voltorb-Hisui', 'Hisuian Voltorb', 'Voltorb-H'],
+    name: ['Hisuian Voltorb', 'Voltorb-Hisui', 'Voltorb-H'],
     ps: { id: 'voltorb-hisui' },
     serebii: { id: '100-h' },
     pd: { id: 'voltorb-hisuian', flip: true },
@@ -1148,7 +1163,7 @@ export const Namedex: {
     pmd: { id: '0101' },
   },
   electrodehisui: {
-    name: ['Electrode-Hisui', 'Hisuian Electrode', 'Electrode-H'],
+    name: ['Hisuian Electrode', 'Electrode-Hisui', 'Electrode-H'],
     ps: { id: 'electrode-hisui' },
     serebii: { id: '101-h' },
     pd: { id: 'electrode-hisuian', flip: true },
@@ -1169,7 +1184,7 @@ export const Namedex: {
     pmd: { id: '0103' },
   },
   exeggutoralola: {
-    name: ['Exeggutor-Alola', 'Alolan Exeggutor', 'Exeggutor-A'],
+    name: ['Alolan Exeggutor', 'Exeggutor-Alola', 'Exeggutor-A'],
     ps: { id: 'exeggutor-alola' },
     serebii: { id: '103-a' },
     pd: { id: 'exeggutor-alolan' },
@@ -1190,7 +1205,7 @@ export const Namedex: {
     pmd: { id: '0105' },
   },
   marowakalola: {
-    name: ['Marowak-Alola', 'Alolan Marowak', 'Marowak-A'],
+    name: ['Alolan Marowak', 'Marowak-Alola', 'Marowak-A'],
     ps: { id: 'marowak-alola' },
     serebii: { id: '105-a' },
     pd: { id: 'marowak-alolan' },
@@ -1232,7 +1247,7 @@ export const Namedex: {
     pmd: { id: '0110' },
   },
   weezinggalar: {
-    name: ['Weezing-Galar', 'Galarian Weezing', 'Weezing-G'],
+    name: ['Galarian Weezing', 'Weezing-Galar', 'Weezing-G'],
     ps: { id: 'weezing-galar' },
     serebii: { id: '110-g' },
     pd: { id: 'weezing-galarian' },
@@ -1274,7 +1289,7 @@ export const Namedex: {
     pmd: { id: '0115' },
   },
   kangaskhanmega: {
-    name: ['Kangaskhan-Mega', 'Mega Kangaskhan'],
+    name: ['Mega Kangaskhan', 'Kangaskhan-Mega'],
     ps: { id: 'kangaskhan-mega' },
     serebii: { id: '115-m' },
     pd: { id: 'kangaskhan-mega', flip: true },
@@ -1330,7 +1345,7 @@ export const Namedex: {
     pmd: { id: '0122' },
   },
   mrmimegalar: {
-    name: ['Mr. Mime-Galar', 'Galarian Mr. Mime', 'Mr. Mime-G'],
+    name: ['Galarian Mr. Mime', 'Mr. Mime-Galar', 'Mr. Mime-G'],
     ps: { id: 'mrmime-galar' },
     serebii: { id: '122-g' },
     pd: { id: 'mr-mime-galarian' },
@@ -1372,7 +1387,7 @@ export const Namedex: {
     pmd: { id: '0127' },
   },
   pinsirmega: {
-    name: ['Pinsir-Mega', 'Mega Pinsir'],
+    name: ['Mega Pinsir', 'Pinsir-Mega'],
     ps: { id: 'pinsir-mega' },
     serebii: { id: '127-m' },
     pd: { id: 'pinsir-mega' },
@@ -1386,21 +1401,21 @@ export const Namedex: {
     pmd: { id: '0128' },
   },
   taurospaldeacombat: {
-    name: ['Tauros-Paldea-Combat', 'Paldean Tauros Combat', 'Tauros-P'],
+    name: ['Paldean Tauros Combat', 'Tauros-Paldea-Combat', 'Tauros-P'],
     ps: { id: 'tauros-paldeacombat' },
     serebii: { id: '128-p' },
     pd: { id: 'tauros-paldean-combat' },
     pmd: { id: '0128/0001' },
   },
   taurospaldeablaze: {
-    name: ['Tauros-Paldea-Blaze', 'Paldean Tauros Blaze', 'Tauros-P'],
+    name: ['Paldean Tauros Blaze', 'Tauros-Paldea-Blaze', 'Tauros-P'],
     ps: { id: 'tauros-paldeablaze' },
     serebii: { id: '128-b' },
     pd: { id: 'tauros-paldean-blaze', flip: true },
     pmd: { id: '0128/0002' },
   },
   taurospaldeaaqua: {
-    name: ['Tauros-Paldea-Aqua', 'Paldean Tauros Aqua', 'Tauros-P'],
+    name: ['Paldean Tauros Aqua', 'Tauros-Paldea-Aqua', 'Tauros-P'],
     ps: { id: 'tauros-paldeaaqua' },
     serebii: { id: '128-a' },
     pd: { id: 'tauros-paldean-aqua' },
@@ -1421,7 +1436,7 @@ export const Namedex: {
     pmd: { id: '0130' },
   },
   gyaradosmega: {
-    name: ['Gyarados-Mega', 'Mega Gyarados'],
+    name: ['Mega Gyarados', 'Gyarados-Mega'],
     ps: { id: 'gyarados-mega' },
     serebii: { id: '130-m' },
     pd: { id: 'gyarados-mega' },
@@ -1533,7 +1548,7 @@ export const Namedex: {
     pmd: { id: '0142' },
   },
   aerodactylmega: {
-    name: ['Aerodactyl-Mega', 'Mega Aerodactyl'],
+    name: ['Mega Aerodactyl', 'Aerodactyl-Mega'],
     ps: { id: 'aerodactyl-mega' },
     serebii: { id: '142-m' },
     pd: { id: 'aerodactyl-mega' },
@@ -1561,7 +1576,7 @@ export const Namedex: {
     pmd: { id: '0144' },
   },
   articunogalar: {
-    name: ['Articuno-Galar', 'Galarian Articuno', 'Articuno-G'],
+    name: ['Galarian Articuno', 'Articuno-Galar', 'Articuno-G'],
     ps: { id: 'articuno-galar' },
     serebii: { id: '144-g' },
     pd: { id: 'articuno-galarian' },
@@ -1575,7 +1590,7 @@ export const Namedex: {
     pmd: { id: '0145' },
   },
   zapdosgalar: {
-    name: ['Zapdos-Galar', 'Galarian Zapdos', 'Zapdos-G'],
+    name: ['Galarian Zapdos', 'Zapdos-Galar', 'Zapdos-G'],
     ps: { id: 'zapdos-galar' },
     serebii: { id: '145-g' },
     pd: { id: 'zapdos-galarian', flip: true },
@@ -1589,7 +1604,7 @@ export const Namedex: {
     pmd: { id: '0146' },
   },
   moltresgalar: {
-    name: ['Moltres-Galar', 'Galarian Moltres', 'Moltres-G'],
+    name: ['Galarian Moltres', 'Moltres-Galar', 'Moltres-G'],
     ps: { id: 'moltres-galar' },
     serebii: { id: '146-g' },
     pd: { id: 'moltres-galarian' },
@@ -1624,14 +1639,14 @@ export const Namedex: {
     pmd: { id: '0150' },
   },
   mewtwomegax: {
-    name: ['Mewtwo-Mega-X', 'Mega Mewtwo X'],
+    name: ['Mega Mewtwo X', 'Mewtwo-Mega-X'],
     ps: { id: 'mewtwo-megax' },
     serebii: { id: '150-mx' },
     pd: { id: 'mewtwo-mega-x', flip: true },
     pmd: { id: '0150/0001' },
   },
   mewtwomegay: {
-    name: ['Mewtwo-Mega-Y', 'Mega Mewtwo Y'],
+    name: ['Mega Mewtwo Y', 'Mewtwo-Mega-Y'],
     ps: { id: 'mewtwo-megay' },
     serebii: { id: '150-my' },
     pd: { id: 'mewtwo-mega-y' },
@@ -1687,7 +1702,7 @@ export const Namedex: {
     pmd: { id: '0157' },
   },
   typhlosionhisui: {
-    name: ['Typhlosion-Hisui', 'Hisuian Typhlosion', 'Typhlosion-H'],
+    name: ['Hisuian Typhlosion', 'Typhlosion-Hisui', 'Typhlosion-H'],
     ps: { id: 'typhlosion-hisui' },
     serebii: { id: '157-h' },
     pd: { id: 'typhlosion-hisuian', flip: true },
@@ -1862,7 +1877,7 @@ export const Namedex: {
     pmd: { id: '0181' },
   },
   ampharosmega: {
-    name: ['Ampharos-Mega', 'Mega Ampharos'],
+    name: ['Mega Ampharos', 'Ampharos-Mega'],
     ps: { id: 'ampharos-mega' },
     serebii: { id: '181-m' },
     pd: { id: 'ampharos-mega' },
@@ -1960,7 +1975,7 @@ export const Namedex: {
     pmd: { id: '0194' },
   },
   wooperpaldea: {
-    name: ['Wooper-Paldea', 'Paldean Wooper', 'Wooper-P'],
+    name: ['Paldean Wooper', 'Wooper-Paldea', 'Wooper-P'],
     ps: { id: 'wooper-paldea' },
     serebii: { id: '194-p' },
     pd: { id: 'wooper-paldean', flip: true },
@@ -2002,7 +2017,7 @@ export const Namedex: {
     pmd: { id: '0199' },
   },
   slowkinggalar: {
-    name: ['Slowking-Galar', 'Galarian Slowking', 'Slowking-G'],
+    name: ['Galarian Slowking', 'Slowking-Galar', 'Slowking-G'],
     ps: { id: 'slowking-galar' },
     serebii: { id: '199-g' },
     pd: { id: 'slowking-galarian' },
@@ -2072,7 +2087,7 @@ export const Namedex: {
     pmd: { id: '0208' },
   },
   steelixmega: {
-    name: ['Steelix-Mega', 'Mega Steelix'],
+    name: ['Mega Steelix', 'Steelix-Mega'],
     ps: { id: 'steelix-mega' },
     serebii: { id: '208-m' },
     pd: { id: 'steelix-mega' },
@@ -2100,7 +2115,7 @@ export const Namedex: {
     pmd: { id: '0211' },
   },
   qwilfishhisui: {
-    name: ['Qwilfish-Hisui', 'Hisuian Qwilfish', 'Qwilfish-H'],
+    name: ['Hisuian Qwilfish', 'Qwilfish-Hisui', 'Qwilfish-H'],
     ps: { id: 'qwilfish-hisui' },
     serebii: { id: '211-h' },
     pd: { id: 'qwilfish-hisuian' },
@@ -2114,7 +2129,7 @@ export const Namedex: {
     pmd: { id: '0212' },
   },
   scizormega: {
-    name: ['Scizor-Mega', 'Mega Scizor'],
+    name: ['Mega Scizor', 'Scizor-Mega'],
     ps: { id: 'scizor-mega' },
     serebii: { id: '212-m' },
     pd: { id: 'scizor-mega' },
@@ -2135,7 +2150,7 @@ export const Namedex: {
     pmd: { id: '0214' },
   },
   heracrossmega: {
-    name: ['Heracross-Mega', 'Mega Heracross'],
+    name: ['Mega Heracross', 'Heracross-Mega'],
     ps: { id: 'heracross-mega' },
     serebii: { id: '214-m' },
     pd: { id: 'heracross-mega' },
@@ -2149,7 +2164,7 @@ export const Namedex: {
     pmd: { id: '0215' },
   },
   sneaselhisui: {
-    name: ['Sneasel-Hisui', 'Hisuian Sneasel', 'Sneasel-H'],
+    name: ['Hisuian Sneasel', 'Sneasel-Hisui', 'Sneasel-H'],
     ps: { id: 'sneasel-hisui' },
     serebii: { id: '215-h' },
     pd: { id: 'sneasel-hisuian', flip: true },
@@ -2205,7 +2220,7 @@ export const Namedex: {
     pmd: { id: '0222' },
   },
   corsolagalar: {
-    name: ['Corsola-Galar', 'Galarian Corsola', 'Corsola-G'],
+    name: ['Galarian Corsola', 'Corsola-Galar', 'Corsola-G'],
     ps: { id: 'corsola-galar' },
     serebii: { id: '222-g' },
     pd: { id: 'corsola-galarian', flip: true },
@@ -2261,7 +2276,7 @@ export const Namedex: {
     pmd: { id: '0229' },
   },
   houndoommega: {
-    name: ['Houndoom-Mega', 'Mega Houndoom'],
+    name: ['Mega Houndoom', 'Houndoom-Mega'],
     ps: { id: 'houndoom-mega' },
     serebii: { id: '229-m' },
     pd: { id: 'houndoom-mega' },
@@ -2401,7 +2416,7 @@ export const Namedex: {
     pmd: { id: '0248' },
   },
   tyranitarmega: {
-    name: ['Tyranitar-Mega', 'Mega Tyranitar'],
+    name: ['Mega Tyranitar', 'Tyranitar-Mega'],
     ps: { id: 'tyranitar-mega' },
     serebii: { id: '248-m' },
     pd: { id: 'tyranitar-mega' },
@@ -2450,7 +2465,7 @@ export const Namedex: {
     pmd: { id: '0254' },
   },
   sceptilemega: {
-    name: ['Sceptile-Mega', 'Mega Sceptile'],
+    name: ['Mega Sceptile', 'Sceptile-Mega'],
     ps: { id: 'sceptile-mega' },
     serebii: { id: '254-m' },
     pd: { id: 'sceptile-mega' },
@@ -2478,7 +2493,7 @@ export const Namedex: {
     pmd: { id: '0257' },
   },
   blazikenmega: {
-    name: ['Blaziken-Mega', 'Mega Blaziken'],
+    name: ['Mega Blaziken', 'Blaziken-Mega'],
     ps: { id: 'blaziken-mega' },
     serebii: { id: '257-m' },
     pd: { id: 'blaziken-mega' },
@@ -2506,7 +2521,7 @@ export const Namedex: {
     pmd: { id: '0260' },
   },
   swampertmega: {
-    name: ['Swampert-Mega', 'Mega Swampert'],
+    name: ['Mega Swampert', 'Swampert-Mega'],
     ps: { id: 'swampert-mega' },
     serebii: { id: '260-m' },
     pd: { id: 'swampert-mega' },
@@ -2534,7 +2549,7 @@ export const Namedex: {
     pmd: { id: '0263' },
   },
   zigzagoongalar: {
-    name: ['Zigzagoon-Galar', 'Galarian Zigzagoon', 'Zigzagoon-G'],
+    name: ['Galarian Zigzagoon', 'Zigzagoon-Galar', 'Zigzagoon-G'],
     ps: { id: 'zigzagoon-galar' },
     serebii: { id: '263-g' },
     pd: { id: 'zigzagoon-galarian' },
@@ -2548,7 +2563,7 @@ export const Namedex: {
     pmd: { id: '0264' },
   },
   linoonegalar: {
-    name: ['Linoone-Galar', 'Galarian Linoone', 'Linoone-G'],
+    name: ['Galarian Linoone', 'Linoone-Galar', 'Linoone-G'],
     ps: { id: 'linoone-galar' },
     serebii: { id: '264-g' },
     pd: { id: 'linoone-galarian', flip: true },
@@ -2681,7 +2696,7 @@ export const Namedex: {
     pmd: { id: '0282' },
   },
   gardevoirmega: {
-    name: ['Gardevoir-Mega', 'Mega Gardevoir'],
+    name: ['Mega Gardevoir', 'Gardevoir-Mega'],
     ps: { id: 'gardevoir-mega' },
     serebii: { id: '282-m' },
     pd: { id: 'gardevoir-mega' },
@@ -2828,7 +2843,7 @@ export const Namedex: {
     pmd: { id: '0302' },
   },
   sableyemega: {
-    name: ['Sableye-Mega', 'Mega Sableye'],
+    name: ['Mega Sableye', 'Sableye-Mega'],
     ps: { id: 'sableye-mega' },
     serebii: { id: '302-m' },
     pd: { id: 'sableye-mega' },
@@ -2842,7 +2857,7 @@ export const Namedex: {
     pmd: { id: '0303' },
   },
   mawilemega: {
-    name: ['Mawile-Mega', 'Mega Mawile'],
+    name: ['Mega Mawile', 'Mawile-Mega'],
     ps: { id: 'mawile-mega' },
     serebii: { id: '303-m' },
     pd: { id: 'mawile-mega' },
@@ -2870,7 +2885,7 @@ export const Namedex: {
     pmd: { id: '0306' },
   },
   aggronmega: {
-    name: ['Aggron-Mega', 'Mega Aggron'],
+    name: ['Mega Aggron', 'Aggron-Mega'],
     ps: { id: 'aggron-mega' },
     serebii: { id: '306-m' },
     pd: { id: 'aggron-mega' },
@@ -2891,7 +2906,7 @@ export const Namedex: {
     pmd: { id: '0308' },
   },
   medichammega: {
-    name: ['Medicham-Mega', 'Mega Medicham'],
+    name: ['Mega Medicham', 'Medicham-Mega'],
     ps: { id: 'medicham-mega' },
     serebii: { id: '308-m' },
     pd: { id: 'medicham-mega' },
@@ -2912,7 +2927,7 @@ export const Namedex: {
     pmd: { id: '0310' },
   },
   manectricmega: {
-    name: ['Manectric-Mega', 'Mega Manectric'],
+    name: ['Mega Manectric', 'Manectric-Mega'],
     ps: { id: 'manectric-mega' },
     serebii: { id: '310-m' },
     pd: { id: 'manectric-mega' },
@@ -2982,7 +2997,7 @@ export const Namedex: {
     pmd: { id: '0319' },
   },
   sharpedomega: {
-    name: ['Sharpedo-Mega', 'Mega Sharpedo'],
+    name: ['Mega Sharpedo', 'Sharpedo-Mega'],
     ps: { id: 'sharpedo-mega' },
     serebii: { id: '319-m' },
     pd: { id: 'sharpedo-mega' },
@@ -3017,7 +3032,7 @@ export const Namedex: {
     pmd: { id: '0323' },
   },
   cameruptmega: {
-    name: ['Camerupt-Mega', 'Mega Camerupt'],
+    name: ['Mega Camerupt', 'Camerupt-Mega'],
     ps: { id: 'camerupt-mega' },
     serebii: { id: '323-m' },
     pd: { id: 'camerupt-mega' },
@@ -3101,7 +3116,7 @@ export const Namedex: {
     pmd: { id: '0334' },
   },
   altariamega: {
-    name: ['Altaria-Mega', 'Mega Altaria'],
+    name: ['Mega Altaria', 'Altaria-Mega'],
     ps: { id: 'altaria-mega' },
     serebii: { id: '334-m' },
     pd: { id: 'altaria-mega' },
@@ -3269,7 +3284,7 @@ export const Namedex: {
     pmd: { id: '0354' },
   },
   banettemega: {
-    name: ['Banette-Mega', 'Mega Banette'],
+    name: ['Mega Banette', 'Banette-Mega'],
     ps: { id: 'banette-mega' },
     serebii: { id: '354-m' },
     pd: { id: 'banette-mega' },
@@ -3311,7 +3326,7 @@ export const Namedex: {
     pmd: { id: '0359' },
   },
   absolmega: {
-    name: ['Absol-Mega', 'Mega Absol'],
+    name: ['Mega Absol', 'Absol-Mega'],
     ps: { id: 'absol-mega' },
     serebii: { id: '359-m' },
     pd: { id: 'absol-mega' },
@@ -3339,7 +3354,7 @@ export const Namedex: {
     pmd: { id: '0362' },
   },
   glaliemega: {
-    name: ['Glalie-Mega', 'Mega Glalie'],
+    name: ['Mega Glalie', 'Glalie-Mega'],
     ps: { id: 'glalie-mega' },
     serebii: { id: '362-m' },
     pd: { id: 'glalie-mega', flip: true },
@@ -3423,7 +3438,7 @@ export const Namedex: {
     pmd: { id: '0373' },
   },
   salamencemega: {
-    name: ['Salamence-Mega', 'Mega Salamence'],
+    name: ['Mega Salamence', 'Salamence-Mega'],
     ps: { id: 'salamence-mega' },
     serebii: { id: '373-m' },
     pd: { id: 'salamence-mega' },
@@ -3451,7 +3466,7 @@ export const Namedex: {
     pmd: { id: '0376' },
   },
   metagrossmega: {
-    name: ['Metagross-Mega', 'Mega Metagross'],
+    name: ['Mega Metagross', 'Metagross-Mega'],
     ps: { id: 'metagross-mega' },
     serebii: { id: '376-m' },
     pd: { id: 'metagross-mega' },
@@ -3486,7 +3501,7 @@ export const Namedex: {
     pmd: { id: '0380' },
   },
   latiasmega: {
-    name: ['Latias-Mega', 'Mega Latias'],
+    name: ['Mega Latias', 'Latias-Mega'],
     ps: { id: 'latias-mega' },
     serebii: { id: '380-m' },
     pd: { id: 'latias-mega', flip: true },
@@ -3500,7 +3515,7 @@ export const Namedex: {
     pmd: { id: '0381' },
   },
   latiosmega: {
-    name: ['Latios-Mega', 'Mega Latios'],
+    name: ['Mega Latios', 'Latios-Mega'],
     ps: { id: 'latios-mega' },
     serebii: { id: '381-m' },
     pd: { id: 'latios-mega' },
@@ -3514,7 +3529,7 @@ export const Namedex: {
     pmd: { id: '0382' },
   },
   kyogreprimal: {
-    name: ['Kyogre-Primal', 'Primal Kyogre'],
+    name: ['Primal Kyogre', 'Kyogre-Primal'],
     ps: { id: 'kyogre-primal' },
     serebii: { id: '382-p' },
     pd: { id: 'kyogre-primal' },
@@ -3528,7 +3543,7 @@ export const Namedex: {
     pmd: { id: '0383' },
   },
   groudonprimal: {
-    name: ['Groudon-Primal', 'Primal Groudon'],
+    name: ['Primal Groudon', 'Groudon-Primal'],
     ps: { id: 'groudon-primal' },
     serebii: { id: '383-p' },
     pd: { id: 'groudon-primal', flip: true },
@@ -3542,7 +3557,7 @@ export const Namedex: {
     pmd: { id: '0384' },
   },
   rayquazamega: {
-    name: ['Rayquaza-Mega', 'Mega Rayquaza'],
+    name: ['Mega Rayquaza', 'Rayquaza-Mega'],
     ps: { id: 'rayquaza-mega' },
     serebii: { id: '384-m' },
     pd: { id: 'rayquaza-mega' },
@@ -3899,7 +3914,7 @@ export const Namedex: {
     pmd: { id: '0428' },
   },
   lopunnymega: {
-    name: ['Lopunny-Mega', 'Mega Lopunny'],
+    name: ['Mega Lopunny', 'Lopunny-Mega'],
     ps: { id: 'lopunny-mega' },
     serebii: { id: '428-m' },
     pd: { id: 'lopunny-mega' },
@@ -4025,7 +4040,7 @@ export const Namedex: {
     pmd: { id: '0445' },
   },
   garchompmega: {
-    name: ['Garchomp-Mega', 'Mega Garchomp'],
+    name: ['Mega Garchomp', 'Garchomp-Mega'],
     ps: { id: 'garchomp-mega' },
     serebii: { id: '445-m' },
     pd: { id: 'garchomp-mega' },
@@ -4053,7 +4068,7 @@ export const Namedex: {
     pmd: { id: '0448' },
   },
   lucariomega: {
-    name: ['Lucario-Mega', 'Mega Lucario'],
+    name: ['Mega Lucario', 'Lucario-Mega'],
     ps: { id: 'lucario-mega' },
     serebii: { id: '448-m' },
     pd: { id: 'lucario-mega', flip: true },
@@ -4144,7 +4159,7 @@ export const Namedex: {
     pmd: { id: '0460' },
   },
   abomasnowmega: {
-    name: ['Abomasnow-Mega', 'Mega Abomasnow'],
+    name: ['Mega Abomasnow', 'Abomasnow-Mega'],
     ps: { id: 'abomasnow-mega' },
     serebii: { id: '460-m' },
     pd: { id: 'abomasnow-mega' },
@@ -4256,7 +4271,7 @@ export const Namedex: {
     pmd: { id: '0475' },
   },
   gallademega: {
-    name: ['Gallade-Mega', 'Mega Gallade'],
+    name: ['Mega Gallade', 'Gallade-Mega'],
     ps: { id: 'gallade-mega' },
     serebii: { id: '475-m' },
     pd: { id: 'gallade-mega' },
@@ -4641,7 +4656,7 @@ export const Namedex: {
     pmd: { id: '0503' },
   },
   samurotthisui: {
-    name: ['Samurott-Hisui', 'Hisuian Samurott', 'Samurott-H'],
+    name: ['Hisuian Samurott', 'Samurott-Hisui', 'Samurott-H'],
     ps: { id: 'samurott-hisui' },
     serebii: { id: '503-h' },
     pd: { id: 'samurott-hisuian' },
@@ -4844,7 +4859,7 @@ export const Namedex: {
     pmd: { id: '0531' },
   },
   audinomega: {
-    name: ['Audino-Mega', 'Mega Audino'],
+    name: ['Mega Audino', 'Audino-Mega'],
     ps: { id: 'audino-mega' },
     serebii: { id: '531-m' },
     pd: { id: 'audino-mega' },
@@ -4977,7 +4992,7 @@ export const Namedex: {
     pmd: { id: '0549' },
   },
   lilliganthisui: {
-    name: ['Lilligant-Hisui', 'Hisuian Lilligant', 'Lilligant-H'],
+    name: ['Hisuian Lilligant', 'Lilligant-Hisui', 'Lilligant-H'],
     ps: { id: 'lilligant-hisui' },
     serebii: { id: '549-h' },
     pd: { id: 'lilligant-hisuian' },
@@ -5033,7 +5048,7 @@ export const Namedex: {
     pmd: { id: '0554' },
   },
   darumakagalar: {
-    name: ['Darumaka-Galar', 'Galarian Darumaka', 'Darumaka-G'],
+    name: ['Galarian Darumaka', 'Darumaka-Galar', 'Darumaka-G'],
     ps: { id: 'darumaka-galar' },
     serebii: { id: '554-g' },
     pd: { id: 'darumaka-galarian' },
@@ -5054,14 +5069,14 @@ export const Namedex: {
     pmd: { id: '0555/0001' },
   },
   darmanitangalar: {
-    name: ['Darmanitan-Galar', 'Galarian Darmanitan', 'Darmanitan-G'],
+    name: ['Galarian Darmanitan', 'Darmanitan-Galar', 'Darmanitan-G'],
     ps: { id: 'darmanitan-galar' },
     serebii: { id: '555-g' },
     pd: { id: 'darmanitan-galarian-standard', flip: true },
     pmd: { id: '0555/0002' },
   },
   darmanitangalarzen: {
-    name: ['Darmanitan-Galar-Zen', 'Darmanitan-G'],
+    name: ['Darmanitan-G', 'Darmanitan-Galar-Zen'],
     ps: { id: 'darmanitan-galarzen' },
     serebii: { id: '555-gz' },
     pd: { id: 'darmanitan-galarian-zen' },
@@ -5117,7 +5132,7 @@ export const Namedex: {
     pmd: { id: '0562' },
   },
   yamaskgalar: {
-    name: ['Yamask-Galar', 'Galarian Yamask', 'Yamask-G'],
+    name: ['Galarian Yamask', 'Yamask-Galar', 'Yamask-G'],
     ps: { id: 'yamask-galar' },
     serebii: { id: '562-g' },
     pd: { id: 'yamask-galarian' },
@@ -5187,7 +5202,7 @@ export const Namedex: {
     pmd: { id: '0570' },
   },
   zoruahisui: {
-    name: ['Zorua-Hisui', 'Hisuian Zorua', 'Zorua-H'],
+    name: ['Hisuian Zorua', 'Zorua-Hisui', 'Zorua-H'],
     ps: { id: 'zorua-hisui' },
     serebii: { id: '570-h' },
     pd: { id: 'zorua-hisuian' },
@@ -5201,7 +5216,7 @@ export const Namedex: {
     pmd: { id: '0571' },
   },
   zoroarkhisui: {
-    name: ['Zoroark-Hisui', 'Hisuian Zoroark', 'Zoroark-H'],
+    name: ['Hisuian Zoroark', 'Zoroark-Hisui', 'Zoroark-H'],
     ps: { id: 'zoroark-hisui' },
     serebii: { id: '571-h' },
     pd: { id: 'zoroark-hisuian' },
@@ -5537,7 +5552,7 @@ export const Namedex: {
     pmd: { id: '0618' },
   },
   stunfiskgalar: {
-    name: ['Stunfisk-Galar', 'Galarian Stunfisk', 'Stunfisk-G'],
+    name: ['Galarian Stunfisk', 'Stunfisk-Galar', 'Stunfisk-G'],
     ps: { id: 'stunfisk-galar' },
     serebii: { id: '618-g' },
     pd: { id: 'stunfisk-galarian' },
@@ -5614,7 +5629,7 @@ export const Namedex: {
     pmd: { id: '0628' },
   },
   braviaryhisui: {
-    name: ['Braviary-Hisui', 'Hisuian Braviary', 'Braviary-H'],
+    name: ['Hisuian Braviary', 'Braviary-Hisui', 'Braviary-H'],
     ps: { id: 'braviary-hisui' },
     serebii: { id: '628-h' },
     pd: { id: 'braviary-hisuian' },
@@ -5705,28 +5720,28 @@ export const Namedex: {
     pmd: { id: '0640' },
   },
   tornadus: {
-    name: ['Tornadus', 'Tornadus-Incarnate', 'Tornadus-I'],
+    name: ['Tornadus-Incarnate', 'Tornadus', 'Tornadus-I'],
     ps: { id: 'tornadus' },
     serebii: { id: '641' },
     pd: { id: 'tornadus' },
     pmd: { id: '0641' },
   },
   tornadustherian: {
-    name: ['Tornadus-Therian', 'Tornadus-T'],
+    name: ['Tornadus-T', 'Tornadus-Therian'],
     ps: { id: 'tornadus-therian' },
     serebii: { id: '641-t' },
     pd: { id: 'tornadus-therian' },
     pmd: { id: '0641/0001' },
   },
   thundurus: {
-    name: ['Thundurus', 'Thundurus-Incarnate', 'Thundurus-I'],
+    name: ['Thundurus-Incarnate', 'Thundurus', 'Thundurus-I'],
     ps: { id: 'thundurus' },
     serebii: { id: '642' },
     pd: { id: 'thundurus', flip: true },
     pmd: { id: '0642' },
   },
   thundurustherian: {
-    name: ['Thundurus-Therian', 'Thundurus-T'],
+    name: ['Thundurus-T', 'Thundurus-Therian'],
     ps: { id: 'thundurus-therian' },
     serebii: { id: '642-t' },
     pd: { id: 'thundurus-therian', flip: true },
@@ -5747,14 +5762,14 @@ export const Namedex: {
     pmd: { id: '0644' },
   },
   landorus: {
-    name: ['Landorus', 'Landorus-Incarnate', 'Landorus-I'],
+    name: ['Landorus-Incarnate', 'Landorus', 'Landorus-I'],
     ps: { id: 'landorus' },
     serebii: { id: '645' },
     pd: { id: 'landorus' },
     pmd: { id: '0645' },
   },
   landorustherian: {
-    name: ['Landorus-Therian', 'Landorus-T'],
+    name: ['Landorus-T', 'Landorus-Therian'],
     ps: { id: 'landorus-therian' },
     serebii: { id: '645-t' },
     pd: { id: 'landorus-therian' },
@@ -6083,7 +6098,7 @@ export const Namedex: {
     pmd: { id: '0678' },
   },
   meowsticf: {
-    name: ['Meowstic-F', 'Meowstic-Female'],
+    name: ['Meowstic-Female', 'Meowstic-F'],
     ps: { id: 'meowstic-f' },
     serebii: { id: '678-f' },
     pd: { id: 'meowstic-female' },
@@ -6286,7 +6301,7 @@ export const Namedex: {
     pmd: { id: '0705' },
   },
   sliggoohisui: {
-    name: ['Sliggoo-Hisui', 'Hisuian Sliggoo', 'Sliggoo-H'],
+    name: ['Hisuian Sliggoo', 'Sliggoo-Hisui', 'Sliggoo-H'],
     ps: { id: 'sliggoo-hisui' },
     serebii: { id: '705-h' },
     pd: { id: 'sliggoo-hisuian' },
@@ -6300,7 +6315,7 @@ export const Namedex: {
     pmd: { id: '0706' },
   },
   goodrahisui: {
-    name: ['Goodra-Hisui', 'Hisuian Goodra', 'Goodra-H'],
+    name: ['Hisuian Goodra', 'Goodra-Hisui', 'Goodra-H'],
     ps: { id: 'goodra-hisui' },
     serebii: { id: '706-h' },
     pd: { id: 'goodra-hisuian' },
@@ -6398,7 +6413,7 @@ export const Namedex: {
     pmd: { id: '0713' },
   },
   avalugghisui: {
-    name: ['Avalugg-Hisui', 'Hisuian Avalugg', 'Avalugg-H'],
+    name: ['Hisuian Avalugg', 'Avalugg-Hisui', 'Avalugg-H'],
     ps: { id: 'avalugg-hisui' },
     serebii: { id: '713-h' },
     pd: { id: 'avalugg-hisuian' },
@@ -6468,7 +6483,7 @@ export const Namedex: {
     pmd: { id: '0719' },
   },
   dianciemega: {
-    name: ['Diancie-Mega', 'Mega Diancie'],
+    name: ['Mega Diancie', 'Diancie-Mega'],
     ps: { id: 'diancie-mega' },
     serebii: { id: '719-m' },
     pd: { id: 'diancie-mega' },
@@ -6517,7 +6532,7 @@ export const Namedex: {
     pmd: { id: '0724' },
   },
   decidueyehisui: {
-    name: ['Decidueye-Hisui', 'Hisuian Decidueye', 'Decidueye-H'],
+    name: ['Hisuian Decidueye', 'Decidueye-Hisui', 'Decidueye-H'],
     ps: { id: 'decidueye-hisui' },
     serebii: { id: '724-h' },
     pd: { id: 'decidueye-hisuian' },
@@ -7924,7 +7939,7 @@ export const Namedex: {
     pmd: { id: '0876' },
   },
   indeedeef: {
-    name: ['Indeedee-F', 'Indeedee-Female'],
+    name: ['Indeedee-Female', 'Indeedee-F'],
     ps: { id: 'indeedee-f' },
     serebii: { id: '876-f' },
     pd: { id: 'indeedee-female' },
@@ -8204,7 +8219,7 @@ export const Namedex: {
     pmd: { id: '0902' },
   },
   basculegionf: {
-    name: ['Basculegion-F', 'Basculegion-Female'],
+    name: ['Basculegion-Female', 'Basculegion-F'],
     ps: { id: 'basculegion-f' },
     serebii: { id: '902-f' },
     pd: { id: 'basculegion-female' },
@@ -8225,14 +8240,14 @@ export const Namedex: {
     pmd: { id: '0904' },
   },
   enamorus: {
-    name: ['Enamorus', 'Enamorus-Incarnate', 'Enamorus-I'],
+    name: ['Enamorus-Incarnate', 'Enamorus', 'Enamorus-I'],
     ps: { id: 'enamorus' },
     serebii: { id: '905' },
     pd: { id: 'enamorus', flip: true },
     pmd: { id: '0905' },
   },
   enamorustherian: {
-    name: ['Enamorus-Therian', 'Enamorus-T'],
+    name: ['Enamorus-T', 'Enamorus-Therian'],
     ps: { id: 'enamorus-therian' },
     serebii: { id: '905-t' },
     pd: { id: 'enamorus-therian' },
@@ -8316,7 +8331,7 @@ export const Namedex: {
     pmd: { id: '0916' },
   },
   oinkolognef: {
-    name: ['Oinkologne-F', 'Oinkologne-Female'],
+    name: ['Oinkologne-Female', 'Oinkologne-F'],
     ps: { id: 'oinkologne-f' },
     serebii: { id: '916-f' },
     pd: { id: 'oinkologne-female' },
@@ -9436,7 +9451,7 @@ export const Namedex: {
   //   pmd: { id: '' },
   // },
   // crucibellemega: {
-  //   name: ['Crucibelle-Mega', 'Mega Crucibelle'],
+  //   name: ['Mega Crucibelle', 'Crucibelle-Mega'],
   //   ps: { id: 'crucibelle-mega' },
   //   serebii: { id: '-39-m' },
   //   pd: { id: 'crucibelle-mega' },

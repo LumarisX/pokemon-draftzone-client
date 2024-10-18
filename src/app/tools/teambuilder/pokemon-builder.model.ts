@@ -47,7 +47,7 @@ export class PokemonBuilder {
   nature: string = '';
   moves: [string, string, string, string] = ['', '', '', ''];
   ability: string = '';
-  abilities: string[] = [];
+  abilities: { name: string; id: string }[] = [];
   learnset: { name: string; id: string }[] = [];
   item: string = '';
   teraType: string = '';

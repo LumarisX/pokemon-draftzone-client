@@ -2,13 +2,15 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { SpriteComponent } from '../../images/sprite.component';
-import { OpponentScoreComponent } from '../../opponent-overview/opponent-score/opponent-score.component';
-import { NATURES } from '../../data';
-import { FilterComponent } from '../../filter/filter.component';
-import { Pokemon } from '../../interfaces/draft';
-import { WebSocketService } from '../../api/ws.service';
 import { DataService } from '../../api/data.service';
+import { WebSocketService } from '../../api/ws.service';
+import { NATURES } from '../../data';
+import { Namedex, nameList } from '../../data/namedex';
+import { FilterComponent } from '../../filter/filter.component';
+import { SpriteComponent } from '../../images/sprite.component';
+import { Pokemon } from '../../interfaces/draft';
+import { OpponentScoreComponent } from '../../opponent-overview/opponent-score/opponent-score.component';
+import { SelectSearchComponent } from '../../util/select-search/select-search.component';
 import { PokemonBuilder } from './pokemon-builder.model';
 
 @Component({
@@ -22,6 +24,7 @@ import { PokemonBuilder } from './pokemon-builder.model';
     SpriteComponent,
     OpponentScoreComponent,
     FilterComponent,
+    SelectSearchComponent,
   ],
 })
 export class TeamBuilderComponent implements OnInit {
@@ -32,6 +35,8 @@ export class TeamBuilderComponent implements OnInit {
   rulesets: string[] = [];
   selectedFormat: string = 'Singles';
   selectedRuleset: string = 'Gen9 NatDex';
+
+  names: { name: string; id: string }[] = nameList();
   private jsonRpcId = 1;
 
   constructor(

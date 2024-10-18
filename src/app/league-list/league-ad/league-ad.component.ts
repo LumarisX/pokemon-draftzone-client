@@ -2,8 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { LeagueAd } from '../../api/league-ads.service';
 import { BALLHEX, BallSVG } from '../../images/svg-components/ball.component';
-import { CompactDownSVG } from '../../images/svg-components/compact-down.component';
-import { CompactUpSVG } from '../../images/svg-components/compact-up.component';
+import { CompactSVG } from '../../images/svg-components/compact.component';
 import { MouseSVG } from '../../images/svg-components/mouse.component';
 import { CoinSVG } from '../../images/svg-components/pokecoin.component';
 import { GamepadSVG } from '../../images/svg-components/gamepad.component';
@@ -12,15 +11,7 @@ import { GamepadSVG } from '../../images/svg-components/gamepad.component';
   selector: 'league-ad',
   templateUrl: './league-ad.component.html',
   standalone: true,
-  imports: [
-    CommonModule,
-    BallSVG,
-    CoinSVG,
-    GamepadSVG,
-    CompactDownSVG,
-    CompactUpSVG,
-    MouseSVG,
-  ],
+  imports: [CommonModule, BallSVG, CoinSVG, GamepadSVG, CompactSVG, MouseSVG],
 })
 export class LeagueAdComponent implements OnInit {
   @Input()

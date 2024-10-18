@@ -4,21 +4,26 @@
 >
   <!-- Value Box -->
   <div
-    class="p-2 bg-white border rounded cursor-pointer transition-colors"
+    class="p-2 bg-white flex justify-between border rounded cursor-pointer transition-colors"
     [ngClass]="{
       'border-gray-300': !isOpen,
       'border-blue-500': isOpen
     }"
-    (click)="openDropdown()"
+    (click)="toggleDropdown()"
   >
-    <span class="text-gray-500">{{
-      selectedItem.name || "Select an item"
-    }}</span>
+    <span *ngIf="selectedItem.name">{{ selectedItem.name }}</span>
+    <span *ngIf="!selectedItem.name" class="text-gray-500">
+      {{ placeholder }}
+    </span>
+    <div class="h-6 aspect-square">
+      <compact-svg [up]="isOpen"></compact-svg>
+    </div>
   </div>
 
+  <!-- Dropdown list for larger screens -->
   <div
     *ngIf="isOpen"
-    class="absolute z-100 w-full p-2 mt-0.5 bg-white border border-gray-300 rounded shadow-lg space-y-1"
+    class="absolute z-[100] w-full p-2 mt-0.5 bg-white border border-gray-300 rounded shadow-lg space-y-1 sm:max-h-60 sm:overflow-y-auto sm:block hidden"
   >
     <div class="border-b border-gray-300">
       <input
@@ -31,9 +36,43 @@
     </div>
 
     <!-- Scrollable list -->
-    <div class="max-h-60 overflow-y-auto">
+    <div>
       <div
         class="p-0.5 cursor-pointer hover:bg-gray-200"
+        (click)="selectItem(item)"
+        *ngFor="let item of filteredItems"
+      >
+        {{ item.name }}
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile full-screen dropdown -->
+  <div
+    *ngIf="isOpen"
+    class="fixed inset-0 z-50 bg-white sm:hidden flex flex-col"
+  >
+    <!-- Close button for mobile -->
+    <div class="flex justify-between items-center p-4 border-b border-gray-300">
+      <span class="text-lg font-medium">{{ placeholder }}</span>
+      <button class="text-blue-500" (click)="closeDropdown()">Close</button>
+    </div>
+
+    <!-- Search input (fixed at the top) -->
+    <div class="p-4 border-b border-gray-300">
+      <input
+        type="text"
+        placeholder="Search"
+        [(ngModel)]="query"
+        (keyup)="filter()"
+        class="w-full p-2 outline-none"
+      />
+    </div>
+
+    <!-- Scrollable list (taking the remaining space) -->
+    <div class="flex-1 overflow-y-auto p-4">
+      <div
+        class="p-2 cursor-pointer hover:bg-gray-200"
         (click)="selectItem(item)"
         *ngFor="let item of filteredItems"
       >

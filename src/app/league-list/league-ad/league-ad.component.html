@@ -5,8 +5,7 @@
         {{ league.leagueName }}
       </h2>
       <div class="h-6 w-6">
-        <compact-up-svg *ngIf="collapsed"></compact-up-svg>
-        <compact-down-svg *ngIf="!collapsed"></compact-down-svg>
+        <compact-svg [up]="collapsed"></compact-svg>
       </div>
     </div>
 

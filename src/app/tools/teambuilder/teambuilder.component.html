@@ -1,7 +1,12 @@
 Teambuilder
 
-<div>
-  <input [(ngModel)]="message" placeholder="Type a message" />
+<div class="flex p-2">
+  <select-search
+    [items]="names"
+    [placeholder]="'Select a pokemon'"
+    class="w-72"
+    (itemSelected)="message = $event"
+  ></select-search>
   <button (click)="addPokemon()">Add Pokemon</button>
 </div>
 
@@ -31,6 +36,11 @@ Teambuilder
         {{ ability }}
       </option>
     </select>
+    <select-search
+      [items]="pokemon.abilities"
+      [placeholder]="'Select an ability'"
+      (itemSelected)="pokemon.ability = $event; updateData(p)"
+    ></select-search>
   </div>
   <div class="space-x-1">
     <label for="item">Item</label>
@@ -53,53 +63,49 @@ Teambuilder
     />
   </div>
   <div class="space-x-1">
-    <label for="Nature">Nature</label>
-    <select
-      [(ngModel)]="pokemon.nature"
-      class="border p-1"
-      (change)="updateData(p)"
-      id="name"
-    >
-      <option *ngFor="let nature of natures" [value]="nature.name">
-        {{ nature.name }} +{{ nature.boost }}/-{{ nature.drop }}
-      </option>
-    </select>
+    <label for="nature">Nature</label>
+    <select-search
+      id="nature"
+      [items]="natures"
+      [selectedItem]="pokemon.nature"
+      (itemSelected)="pokemon.nature = $event"
+    ></select-search>
   </div>
   <div class="space-x-1">
     <label for="move1">Move 1</label>
-    <select [(ngModel)]="pokemon.moves[0]" id="name" class="border p-1">
-      <option [value]="null">None</option>
-      <option *ngFor="let move of pokemon.learnset" [value]="move.id">
-        {{ move.name }}
-      </option>
-    </select>
+    <select-search
+      id="move1"
+      [items]="pokemon.learnset"
+      [placeholder]="'Select a move'"
+      (itemSelected)="pokemon.moves[0] = $event"
+    ></select-search>
   </div>
   <div class="space-x-1">
     <label for="move2">Move 2</label>
-    <select [(ngModel)]="pokemon.moves[1]" id="move2" class="border p-1">
-      <option [value]="null">None</option>
-      <option *ngFor="let move of pokemon.learnset" [value]="move.id">
-        {{ move.name }}
-      </option>
-    </select>
+    <select-search
+      id="move2"
+      [items]="pokemon.learnset"
+      [placeholder]="'Select a move'"
+      (itemSelected)="pokemon.moves[1] = $event"
+    ></select-search>
   </div>
   <div class="space-x-1">
     <label for="move3">Move 3</label>
-    <select [(ngModel)]="pokemon.moves[2]" id="move3" class="border p-1">
-      <option [value]="null">None</option>
-      <option *ngFor="let move of pokemon.learnset" [value]="move.id">
-        {{ move.name }}
-      </option>
-    </select>
+    <select-search
+      id="move3"
+      [items]="pokemon.learnset"
+      [placeholder]="'Select a move'"
+      (itemSelected)="pokemon.moves[2] = $event"
+    ></select-search>
   </div>
   <div class="space-x-1">
     <label for="move4">Move 4</label>
-    <select [(ngModel)]="pokemon.moves[3]" id="move4" class="border p-1">
-      <option [value]="null">None</option>
-      <option *ngFor="let move of pokemon.learnset" [value]="move.id">
-        {{ move.name }}
-      </option>
-    </select>
+    <select-search
+      id="move4"
+      [items]="pokemon.learnset"
+      [placeholder]="'Select a move'"
+      (itemSelected)="pokemon.moves[3] = $event"
+    ></select-search>
   </div>
   <div>
     <label for="hp">HP</label>
