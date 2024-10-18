@@ -1,11 +1,12 @@
+import { ScrollingModule } from '@angular/cdk/scrolling';
 import { CommonModule } from '@angular/common';
 import {
   Component,
+  EventEmitter,
+  HostListener,
   Input,
   OnInit,
   Output,
-  EventEmitter,
-  HostListener,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CompactSVG } from '../../images/svg-components/compact.component';
@@ -15,7 +16,7 @@ type Item = { name: string; id?: string };
 @Component({
   selector: 'select-search',
   standalone: true,
-  imports: [CommonModule, FormsModule, CompactSVG],
+  imports: [CommonModule, FormsModule, CompactSVG, ScrollingModule],
   templateUrl: 'select-search.component.html',
 })
 export class SelectSearchComponent implements OnInit {
@@ -30,6 +31,7 @@ export class SelectSearchComponent implements OnInit {
     return this._items;
   }
 
+  itemSize: number = 28;
   @Input() placeholder: string = 'Select an item';
 
   @Output() itemSelected = new EventEmitter<string>();

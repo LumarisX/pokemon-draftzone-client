@@ -23,9 +23,9 @@
   <!-- Dropdown list for larger screens -->
   <div
     *ngIf="isOpen"
-    class="absolute z-[100] w-full p-2 mt-0.5 bg-white border border-gray-300 rounded shadow-lg space-y-1 sm:max-h-60 sm:overflow-y-auto sm:block hidden"
+    class="absolute z-[100] w-full mt-0.5 bg-white border border-gray-300 rounded shadow-lg space-y-1 sm:block hidden"
   >
-    <div class="border-b border-gray-300">
+    <div class="border-b mx-2 border-gray-300">
       <input
         type="text"
         placeholder="Search"
@@ -36,14 +36,16 @@
     </div>
 
     <!-- Scrollable list -->
-    <div>
-      <div
-        class="p-0.5 cursor-pointer hover:bg-gray-200"
-        (click)="selectItem(item)"
-        *ngFor="let item of filteredItems"
-      >
-        {{ item.name }}
-      </div>
+    <div class="p-0.5">
+      <cdk-virtual-scroll-viewport class="h-64" itemSize="{{ itemSize }}">
+        <div
+          *cdkVirtualFor="let item of filteredItems"
+          class="mx-2 py-0.5 px-1 cursor-pointer hover:bg-gray-200"
+          (click)="selectItem(item)"
+        >
+          {{ item.name }}
+        </div>
+      </cdk-virtual-scroll-viewport>
     </div>
   </div>
 
@@ -70,14 +72,19 @@
     </div>
 
     <!-- Scrollable list (taking the remaining space) -->
-    <div class="flex-1 overflow-y-auto p-4">
-      <div
-        class="p-2 cursor-pointer hover:bg-gray-200"
-        (click)="selectItem(item)"
-        *ngFor="let item of filteredItems"
+    <div class="flex-1 overflow-y-auto p-1">
+      <cdk-virtual-scroll-viewport
+        itemSize="{{ itemSize }}"
+        class="h-full overflow-y-auto"
       >
-        {{ item.name }}
-      </div>
+        <div
+          *cdkVirtualFor="let item of filteredItems"
+          class="mx-2 py-0.5 px-1 cursor-pointer hover:bg-gray-200"
+          (click)="selectItem(item)"
+        >
+          {{ item.name }}
+        </div>
+      </cdk-virtual-scroll-viewport>
     </div>
   </div>
 </div>
