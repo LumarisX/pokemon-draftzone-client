@@ -8,7 +8,9 @@ import { Component, Input } from '@angular/core';
   template: ` <svg
       viewBox="0 0 24 24"
       fill="none"
-      class="w-full h-full stroke-symbolColor-main"
+      [style.width.em]="iconSize"
+      [style.height.em]="iconSize"
+      class=" stroke-symbolColor-main"
       xmlns="http://www.w3.org/2000/svg"
       *ngIf="up"
     >
@@ -22,7 +24,9 @@ import { Component, Input } from '@angular/core';
     <svg
       viewBox="0 0 24 24"
       fill="none"
-      class="w-full h-full stroke-symbolColor-main"
+      [style.width.em]="iconSize"
+      [style.height.em]="iconSize"
+      class="stroke-symbolColor-main"
       xmlns="http://www.w3.org/2000/svg"
       *ngIf="!up"
     >
@@ -37,4 +41,7 @@ import { Component, Input } from '@angular/core';
 export class CompactSVG {
   @Input()
   up: boolean = true;
+
+  @Input()
+  iconSize: number = 1; // default is 1em, you can adjust based on text size
 }

@@ -1,16 +1,19 @@
+import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { CommonModule } from '@angular/common';
 import {
+  AfterViewInit,
   Component,
   EventEmitter,
   HostListener,
   Input,
   Output,
+  ViewChild,
 } from '@angular/core';
 
 @Component({
   selector: 'select-base',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, CdkVirtualScrollViewport],
   template: '',
 })
 export class SelectBaseComponent<T> {

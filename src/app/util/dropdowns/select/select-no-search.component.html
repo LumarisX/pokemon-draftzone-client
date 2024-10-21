@@ -4,26 +4,24 @@
 >
   <!-- Value Box -->
   <div
-    class="p-2 bg-white flex justify-between border rounded cursor-pointer transition-colors"
+    class="p-2 bg-page flex justify-between items-center border rounded cursor-pointer transition-colors"
     [ngClass]="{
-      'border-gray-300': !isOpen,
-      'border-blue-500': isOpen
+      'border-menu-300': !isOpen,
+      'border-menu-500': isOpen
     }"
     (click)="toggleDropdown()"
   >
     <span *ngIf="selectedItem">{{ selectedItem.name }}</span>
-    <span *ngIf="!selectedItem" class="text-gray-500">
+    <span *ngIf="!selectedItem" class="text-menu-600">
       {{ placeholder }}
     </span>
-    <div class="h-6 aspect-square">
-      <compact-svg [up]="isOpen"></compact-svg>
-    </div>
+    <compact-svg [up]="isOpen"></compact-svg>
   </div>
 
   <!-- Dropdown list for larger screens -->
   <div
     *ngIf="isOpen"
-    class="absolute z-[100] w-full mt-0.5 bg-white border border-gray-300 rounded shadow-lg space-y-1 sm:block hidden"
+    class="absolute z-[100] w-full mt-0.5 bg-page border border-menu-300 rounded shadow-lg space-y-1 sm:block hidden"
   >
     <!-- Scrollable list -->
     <div class="p-0.5">
@@ -34,7 +32,10 @@
       >
         <div
           *cdkVirtualFor="let item of items"
-          class="mx-2 rounded py-0.5 px-1 cursor-pointer hover:bg-gray-200"
+          class="mx-2 rounded py-0.5 px-1 cursor-pointer hover:bg-menu-200"
+          [ngClass]="{
+            'bg-menu-200': selectedItem && selectedItem.value === item.value
+          }"
           (click)="selectItem(item)"
         >
           {{ item.name }}
@@ -46,12 +47,12 @@
   <!-- Mobile full-screen dropdown -->
   <div
     *ngIf="isOpen"
-    class="fixed inset-0 z-50 bg-white sm:hidden flex flex-col"
+    class="fixed inset-0 z-50 bg-page sm:hidden flex flex-col"
   >
     <!-- Close button for mobile -->
-    <div class="flex justify-between items-center p-4 border-b border-gray-300">
+    <div class="flex justify-between items-center p-4 border-b border-menu-300">
       <span class="text-lg font-medium">{{ placeholder }}</span>
-      <button class="text-blue-500" (click)="closeDropdown()">Close</button>
+      <button class="text-menu-500" (click)="closeDropdown()">Close</button>
     </div>
 
     <!-- Scrollable list (taking the remaining space) -->
@@ -62,7 +63,10 @@
       >
         <div
           *cdkVirtualFor="let item of items"
-          class="mx-2 py-0.5 px-1 cursor-pointer hover:bg-gray-200"
+          class="mx-2 py-0.5 px-1 cursor-pointer hover:bg-menu-200"
+          [ngClass]="{
+            'bg-menu-200': selectedItem && selectedItem.value === item.value
+          }"
           (click)="selectItem(item)"
         >
           {{ item.name }}
