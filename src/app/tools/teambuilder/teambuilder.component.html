@@ -10,6 +10,11 @@ Teambuilder
   <button (click)="addPokemon()">Add Pokemon</button>
 </div>
 
+<div class="space-x-1">
+  <label for="nature">Nature</label>
+  <select-no-search id="nature" [items]="natures"></select-no-search>
+</div>
+
 <div *ngFor="let pokemon of team; let p = index">
   <div class="w-8">
     <sprite [pokemon]="{ id: pokemon.id, name: pokemon.name }"></sprite>
@@ -38,7 +43,6 @@ Teambuilder
     </select>
     <select-search
       [items]="toValues(pokemon.abilities)"
-      [showSearch]="false"
       [placeholder]="'Select an ability'"
       (itemSelected)="pokemon.ability = $event; updateData(p)"
     ></select-search>

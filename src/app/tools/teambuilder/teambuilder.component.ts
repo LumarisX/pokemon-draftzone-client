@@ -12,6 +12,7 @@ import { Pokemon } from '../../interfaces/draft';
 import { OpponentScoreComponent } from '../../opponent-overview/opponent-score/opponent-score.component';
 import { SelectSearchComponent } from '../../util/dropdowns/select/select-search.component';
 import { PokemonBuilder } from './pokemon-builder.model';
+import { SelectNoSearchComponent } from '../../util/dropdowns/select/select-no-search.component';
 
 @Component({
   selector: 'teambuilder-analyzer',
@@ -25,6 +26,7 @@ import { PokemonBuilder } from './pokemon-builder.model';
     OpponentScoreComponent,
     FilterComponent,
     SelectSearchComponent,
+    SelectNoSearchComponent,
   ],
 })
 export class TeamBuilderComponent implements OnInit {

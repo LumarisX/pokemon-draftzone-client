@@ -25,25 +25,15 @@
     *ngIf="isOpen"
     class="absolute z-[100] w-full mt-0.5 bg-white border border-gray-300 rounded shadow-lg space-y-1 sm:block hidden"
   >
-    <div class="border-b mx-2 border-gray-300">
-      <input
-        type="text"
-        placeholder="Search"
-        [(ngModel)]="query"
-        (keyup)="filter()"
-        class="w-full p-2 outline-none"
-      />
-    </div>
-
     <!-- Scrollable list -->
     <div class="p-0.5">
       <cdk-virtual-scroll-viewport
         class=""
         itemSize="{{ itemSize }}"
-        [style.height]="calculateDynamicHeight(filteredItems.length, itemSize)"
+        [style.height]="calculateDynamicHeight(items.length, itemSize)"
       >
         <div
-          *cdkVirtualFor="let item of filteredItems"
+          *cdkVirtualFor="let item of items"
           class="mx-2 rounded py-0.5 px-1 cursor-pointer hover:bg-gray-200"
           (click)="selectItem(item)"
         >
@@ -64,17 +54,6 @@
       <button class="text-blue-500" (click)="closeDropdown()">Close</button>
     </div>
 
-    <!-- Search input (fixed at the top) -->
-    <div class="p-4 border-b border-gray-300">
-      <input
-        type="text"
-        placeholder="Search"
-        [(ngModel)]="query"
-        (keyup)="filter()"
-        class="w-full p-2 outline-none"
-      />
-    </div>
-
     <!-- Scrollable list (taking the remaining space) -->
     <div class="flex-1 overflow-y-auto p-1">
       <cdk-virtual-scroll-viewport
@@ -82,7 +61,7 @@
         class="h-full overflow-y-auto"
       >
         <div
-          *cdkVirtualFor="let item of filteredItems"
+          *cdkVirtualFor="let item of items"
           class="mx-2 py-0.5 px-1 cursor-pointer hover:bg-gray-200"
           (click)="selectItem(item)"
         >
