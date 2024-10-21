@@ -25,17 +25,17 @@ export function getPidByName(name: string): PokemonId | null {
   return null;
 }
 
-let $nameList: { name: string; id: string }[] | undefined;
-export function nameList(): { name: string; id: string }[] {
+let $nameList: { name: string; value: string }[] | undefined;
+export function nameList(): { name: string; value: string }[] {
   if ($nameList) return $nameList;
   return ($nameList = Object.entries(Namedex)
     .map((e) => ({
       name: e[1].name[0],
-      id: e[0],
+      value: e[0],
     }))
     .sort((x, y) => {
-      if (x.id < y.id) return -1;
-      if (x.id > y.id) return 1;
+      if (x.value < y.value) return -1;
+      if (x.value > y.value) return 1;
       return 0;
     }));
 }

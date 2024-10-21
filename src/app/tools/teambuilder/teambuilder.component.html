@@ -37,7 +37,8 @@ Teambuilder
       </option>
     </select>
     <select-search
-      [items]="pokemon.abilities"
+      [items]="toValues(pokemon.abilities)"
+      [showSearch]="false"
       [placeholder]="'Select an ability'"
       (itemSelected)="pokemon.ability = $event; updateData(p)"
     ></select-search>
@@ -75,7 +76,7 @@ Teambuilder
     <label for="move1">Move 1</label>
     <select-search
       id="move1"
-      [items]="pokemon.learnset"
+      [items]="toValues(pokemon.learnset)"
       [placeholder]="'Select a move'"
       (itemSelected)="pokemon.moves[0] = $event"
     ></select-search>
@@ -84,7 +85,7 @@ Teambuilder
     <label for="move2">Move 2</label>
     <select-search
       id="move2"
-      [items]="pokemon.learnset"
+      [items]="toValues(pokemon.learnset)"
       [placeholder]="'Select a move'"
       (itemSelected)="pokemon.moves[1] = $event"
     ></select-search>
@@ -93,7 +94,7 @@ Teambuilder
     <label for="move3">Move 3</label>
     <select-search
       id="move3"
-      [items]="pokemon.learnset"
+      [items]="toValues(pokemon.learnset)"
       [placeholder]="'Select a move'"
       (itemSelected)="pokemon.moves[2] = $event"
     ></select-search>
@@ -102,7 +103,7 @@ Teambuilder
     <label for="move4">Move 4</label>
     <select-search
       id="move4"
-      [items]="pokemon.learnset"
+      [items]="toValues(pokemon.learnset)"
       [placeholder]="'Select a move'"
       (itemSelected)="pokemon.moves[3] = $event"
     ></select-search>

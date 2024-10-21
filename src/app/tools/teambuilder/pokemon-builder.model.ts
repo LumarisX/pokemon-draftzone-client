@@ -45,7 +45,12 @@ export class PokemonBuilder {
   shiny: boolean = false;
   name: string = '';
   nature: string = '';
-  moves: [string, string, string, string] = ['', '', '', ''];
+  moves: [string | null, string | null, string | null, string | null] = [
+    null,
+    null,
+    null,
+    null,
+  ];
   ability: string = '';
   abilities: { name: string; id: string }[] = [];
   learnset: { name: string; id: string }[] = [];

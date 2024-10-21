@@ -10,7 +10,7 @@ import { FilterComponent } from '../../filter/filter.component';
 import { SpriteComponent } from '../../images/sprite.component';
 import { Pokemon } from '../../interfaces/draft';
 import { OpponentScoreComponent } from '../../opponent-overview/opponent-score/opponent-score.component';
-import { SelectSearchComponent } from '../../util/select-search/select-search.component';
+import { SelectSearchComponent } from '../../util/dropdowns/select/select-search.component';
 import { PokemonBuilder } from './pokemon-builder.model';
 
 @Component({
@@ -29,14 +29,22 @@ import { PokemonBuilder } from './pokemon-builder.model';
 })
 export class TeamBuilderComponent implements OnInit {
   team: PokemonBuilder[] = [];
-  natures = Object.values(NATURES);
+  natures = Object.entries(NATURES).map((nature) => ({
+    name:
+      nature[1].boost === nature[1].drop
+        ? nature[1].name
+        : `${
+            nature[1].name
+          } +${nature[1].boost.toUpperCase()}/-${nature[1].drop.toUpperCase()}`,
+    value: nature[0],
+  }));
   message: string = '';
   formats: string[] = [];
   rulesets: string[] = [];
   selectedFormat: string = 'Singles';
   selectedRuleset: string = 'Gen9 NatDex';
 
-  names: { name: string; id: string }[] = nameList();
+  names: { name: string; value: string }[] = nameList();
   private jsonRpcId = 1;
 
   constructor(
@@ -92,5 +100,9 @@ export class TeamBuilderComponent implements OnInit {
     pokemon.id = event.id;
     pokemon.name = event.name;
     pokemon.shiny = event.shiny || false;
+  }
+
+  toValues(object: { name: string; id: string }[]) {
+    return object.map((e) => ({ name: e.name, value: e.id }));
   }
 }

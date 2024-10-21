@@ -11,8 +11,8 @@
     }"
     (click)="toggleDropdown()"
   >
-    <span *ngIf="selectedItem.name">{{ selectedItem.name }}</span>
-    <span *ngIf="!selectedItem.name" class="text-gray-500">
+    <span *ngIf="selectedItem">{{ selectedItem.name }}</span>
+    <span *ngIf="!selectedItem" class="text-gray-500">
       {{ placeholder }}
     </span>
     <div class="h-6 aspect-square">
@@ -25,7 +25,7 @@
     *ngIf="isOpen"
     class="absolute z-[100] w-full mt-0.5 bg-white border border-gray-300 rounded shadow-lg space-y-1 sm:block hidden"
   >
-    <div class="border-b mx-2 border-gray-300">
+    <div *ngIf="showSearch" class="border-b mx-2 border-gray-300">
       <input
         type="text"
         placeholder="Search"
@@ -37,10 +37,14 @@
 
     <!-- Scrollable list -->
     <div class="p-0.5">
-      <cdk-virtual-scroll-viewport class="h-64" itemSize="{{ itemSize }}">
+      <cdk-virtual-scroll-viewport
+        class=""
+        itemSize="{{ itemSize }}"
+        [style.height]="calculateDynamicHeight(filteredItems.length, itemSize)"
+      >
         <div
           *cdkVirtualFor="let item of filteredItems"
-          class="mx-2 py-0.5 px-1 cursor-pointer hover:bg-gray-200"
+          class="mx-2 rounded py-0.5 px-1 cursor-pointer hover:bg-gray-200"
           (click)="selectItem(item)"
         >
           {{ item.name }}
