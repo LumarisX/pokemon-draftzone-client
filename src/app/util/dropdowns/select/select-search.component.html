@@ -17,7 +17,7 @@
   <!-- Dropdown list for larger screens -->
   <div
     *ngIf="isOpen"
-    class="absolute z-[100] w-full mt-0.5 bg-page border border-menu-300 rounded shadow-lg space-y-1 sm:block hidden"
+    class="absolute z-[100] w-full bg-page border border-menu-300 rounded shadow-lg sm:block hidden"
   >
     <div class="border-b mx-2 border-menu-300">
       <input
@@ -26,9 +26,16 @@
         placeholder="Search"
         spellcheck="false"
         [(ngModel)]="query"
-        (keyup)="filter()"
+        (keyup)="keypress($event.key)"
         class="w-full bg-page p-2 outline-none"
       />
+    </div>
+
+    <!-- Clear button -->
+    <div class="flex justify-end px-2 pt-0.5">
+      <button class="text-menu-500 text-xs" (click)="clearSelection()">
+        Clear
+      </button>
     </div>
 
     <!-- Scrollable list -->
@@ -65,15 +72,20 @@
     </div>
 
     <!-- Search input (fixed at the top) -->
-    <div class="p-4 border-b border-menu-300">
+    <div class="px-4 py-2 border-b text-lg border-menu-300">
       <input
         type="text"
         #searchbar
         placeholder="Search"
         [(ngModel)]="query"
-        (keyup)="filter()"
+        (keyup)="keypress($event.key)"
         class="w-full p-2 outline-none"
       />
+    </div>
+
+    <!-- Clear button -->
+    <div class="flex px-2 pt-1 justify-end">
+      <button class="text-menu-500" (click)="clearSelection()">Clear</button>
     </div>
 
     <!-- Scrollable list (taking the remaining space) -->
@@ -84,7 +96,7 @@
       >
         <div
           *cdkVirtualFor="let item of filteredItems"
-          class="mx-2 rounded py-0.5 px-1 cursor-pointer hover:bg-menu-200"
+          class="mx-2 rounded text-lg py-0.5 px-1 cursor-pointer hover:bg-menu-200"
           [ngClass]="{
             'bg-menu-200': selectedItem && selectedItem.value === item.value
           }"

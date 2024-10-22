@@ -36,9 +36,14 @@ export class SelectSearchComponent<T>
   }
 
   filter() {
-    this.filteredItems = this.items.filter((i) =>
-      i.name.toLowerCase().includes(this.query.toLowerCase())
-    );
+    const queryLower = this.query.toLowerCase();
+    this.filteredItems = this.items
+      .filter((i) => i.name.toLowerCase().includes(queryLower))
+      .sort((a, b) => {
+        const aStartsWith = a.name.toLowerCase().startsWith(queryLower);
+        const bStartsWith = b.name.toLowerCase().startsWith(queryLower);
+        return aStartsWith === bStartsWith ? 0 : aStartsWith ? -1 : 1;
+      });
   }
 
   @ViewChild('searchbar') searchbar!: ElementRef<HTMLInputElement>;
@@ -48,5 +53,36 @@ export class SelectSearchComponent<T>
     setTimeout(() => {
       this.searchbar.nativeElement.focus();
     }, 0);
+  }
+
+  override selectItem(
+    item: { name: string; value: T; icon?: string } | null
+  ): void {
+    super.selectItem(item);
+    this.clearQuery();
+  }
+
+  keypress(key: string) {
+    if (key === 'Enter') {
+      this.selectFirst();
+    } else {
+      this.filter();
+    }
+  }
+
+  selectFirst() {
+    this.selectItem(this.filteredItems[0]);
+  }
+
+  clearQuery() {
+    this.query = '';
+    this.filteredItems = this.items;
+  }
+
+  override clearSelection(): void {
+    super.clearSelection();
+    this.selectItem(null);
+    this.clearQuery();
+    this.closeDropdown();
   }
 }

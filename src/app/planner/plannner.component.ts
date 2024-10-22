@@ -242,8 +242,12 @@ export class PlannerComponent implements OnInit {
     }
   }
 
-  resultSelected(formGroup: AbstractControl, $event: Pokemon) {
-    formGroup.patchValue({ name: $event.name, id: $event.id });
+  resultSelected(formGroup: AbstractControl, result: Pokemon | null) {
+    if (result) {
+      formGroup.patchValue({ name: result.name, id: result.id });
+    } else {
+      formGroup.patchValue({ name: null, id: null });
+    }
   }
 
   maxValidator(max: number) {

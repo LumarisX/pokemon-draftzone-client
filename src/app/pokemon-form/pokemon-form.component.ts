@@ -90,8 +90,12 @@ export class PokemonFormComponent implements OnInit {
     return group;
   }
 
-  resultSelected($event: Pokemon) {
-    this.pokemonForm.patchValue({ name: $event.name, id: $event.id });
+  resultSelected(result: Pokemon | null) {
+    if (result) {
+      this.pokemonForm.patchValue({ name: result.name, id: result.id });
+    } else {
+      this.pokemonForm.patchValue({ name: null, id: null });
+    }
   }
 
   allTera() {

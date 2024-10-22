@@ -20,7 +20,7 @@ Teambuilder
       [items]="toValues(pokemon.abilities)"
       [placeholder]="'Select an ability'"
       [selectedItem]="pokemon.ability"
-      (itemSelected)="pokemon.ability = $event"
+      (itemSelected)="pokemon.ability = $event || ''"
     ></select-no-search>
   </div>
   <div class="space-x-1">
@@ -49,7 +49,7 @@ Teambuilder
       id="nature"
       [items]="natures"
       [selectedItem]="pokemon.nature"
-      (itemSelected)="pokemon.nature = $event"
+      (itemSelected)="pokemon.nature = $event ? $event : pokemon.nature"
     ></select-search>
   </div>
   <div class="space-x-1">

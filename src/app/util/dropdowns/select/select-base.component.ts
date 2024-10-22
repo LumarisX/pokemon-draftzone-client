@@ -33,7 +33,7 @@ export class SelectBaseComponent<T> implements ControlValueAccessor {
   @Input() itemSize: number = 28;
   @Input() placeholder: string = 'Select an item';
 
-  @Output() itemSelected = new EventEmitter<T>();
+  @Output() itemSelected = new EventEmitter<T | null>();
 
   private _selectedItem: { name: string; value: T; icon?: string } | null =
     null;
@@ -71,11 +71,16 @@ export class SelectBaseComponent<T> implements ControlValueAccessor {
     SelectBaseComponent.openFilter = null;
   }
 
-  selectItem(item: { name: string; value: T; icon?: string }) {
+  selectItem(item: { name: string; value: T; icon?: string } | null) {
     this.selectedItem = item;
     this.closeDropdown();
-    this.onChange(item.value);
-    this.itemSelected.emit(item.value);
+    if (item) {
+      this.onChange(item.value);
+      this.itemSelected.emit(item.value);
+    } else {
+      this.onChange(null);
+      this.itemSelected.emit(null);
+    }
   }
 
   @HostListener('document:click', ['$event'])
@@ -89,7 +94,7 @@ export class SelectBaseComponent<T> implements ControlValueAccessor {
     return `${Math.min(itemCount * itemSize, 256)}px`;
   }
 
-  private onChange: (value: T) => void = () => {};
+  private onChange: (value: T | null) => void = () => {};
   private onTouched: () => void = () => {};
 
   writeValue(value: T): void {
@@ -105,11 +110,15 @@ export class SelectBaseComponent<T> implements ControlValueAccessor {
       }) || null;
   }
 
-  registerOnChange(fn: (value: T) => void): void {
+  registerOnChange(fn: (value: T | null) => void): void {
     this.onChange = fn;
   }
 
   registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
+  }
+
+  clearSelection() {
+    this.selectedItem = null;
   }
 }
