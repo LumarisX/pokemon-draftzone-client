@@ -42,13 +42,14 @@
       >
         <div
           *cdkVirtualFor="let item of filteredItems"
-          class="mx-2 rounded py-0.5 px-1 cursor-pointer hover:bg-menu-200"
+          class="mx-2 rounded py-0.5 flex justify-between px-1 cursor-pointer hover:bg-menu-200"
           [ngClass]="{
             'bg-menu-200': selectedItem && selectedItem.value === item.value
           }"
           (click)="selectItem(item)"
         >
-          {{ item.name }}
+          <span>{{ item.name }}</span>
+          <img class="aspect-auto" [src]="item.icon" />
         </div>
       </cdk-virtual-scroll-viewport>
     </div>
@@ -84,7 +85,7 @@
       >
         <div
           *cdkVirtualFor="let item of filteredItems"
-          class="mx-2 py-0.5 px-1 cursor-pointer hover:bg-menu-200"
+          class="mx-2 rounded py-0.5 px-1 cursor-pointer hover:bg-menu-200"
           [ngClass]="{
             'bg-menu-200': selectedItem && selectedItem.value === item.value
           }"

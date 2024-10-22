@@ -76,7 +76,9 @@ export class TeamBuilderComponent implements OnInit {
     this.webSocket.sendMessage(request).subscribe((response) => {
       console.log('Received response:', response);
       if (method === 'add') {
-        this.team = response.team;
+        this.team = response.team.map(
+          (e: Partial<PokemonBuilder> | undefined) => new PokemonBuilder(e)
+        );
       } else if (method === 'update') {
         this.team[response.index] = response.pokemon;
       }

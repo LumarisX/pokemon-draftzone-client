@@ -9,12 +9,6 @@ Teambuilder
   ></select-search>
   <button (click)="addPokemon()">Add Pokemon</button>
 </div>
-
-<div class="space-x-1">
-  <label for="nature">Nature</label>
-  <select-no-search id="nature" [items]="natures"></select-no-search>
-</div>
-
 <div *ngFor="let pokemon of team; let p = index">
   <div class="w-8">
     <sprite [pokemon]="{ id: pokemon.id, name: pokemon.name }"></sprite>
@@ -36,16 +30,12 @@ Teambuilder
   </div>
   <div class="space-x-1">
     <label for="ability">Ability</label>
-    <select [(ngModel)]="pokemon.ability" id="ability" class="border p-1">
-      <option *ngFor="let ability of pokemon.abilities" [value]="ability">
-        {{ ability }}
-      </option>
-    </select>
-    <select-search
+    <select-no-search
       [items]="toValues(pokemon.abilities)"
       [placeholder]="'Select an ability'"
-      (itemSelected)="pokemon.ability = $event; updateData(p)"
-    ></select-search>
+      [selectedItem]="pokemon.ability"
+      (itemSelected)="pokemon.ability = $event"
+    ></select-no-search>
   </div>
   <div class="space-x-1">
     <label for="item">Item</label>
@@ -80,7 +70,7 @@ Teambuilder
     <label for="move1">Move 1</label>
     <select-search
       id="move1"
-      [items]="toValues(pokemon.learnset)"
+      [items]="pokemon.getLearnset()"
       [placeholder]="'Select a move'"
       (itemSelected)="pokemon.moves[0] = $event"
     ></select-search>
@@ -89,7 +79,7 @@ Teambuilder
     <label for="move2">Move 2</label>
     <select-search
       id="move2"
-      [items]="toValues(pokemon.learnset)"
+      [items]="pokemon.getLearnset()"
       [placeholder]="'Select a move'"
       (itemSelected)="pokemon.moves[1] = $event"
     ></select-search>
@@ -98,7 +88,7 @@ Teambuilder
     <label for="move3">Move 3</label>
     <select-search
       id="move3"
-      [items]="toValues(pokemon.learnset)"
+      [items]="pokemon.getLearnset()"
       [placeholder]="'Select a move'"
       (itemSelected)="pokemon.moves[2] = $event"
     ></select-search>
@@ -107,7 +97,7 @@ Teambuilder
     <label for="move4">Move 4</label>
     <select-search
       id="move4"
-      [items]="toValues(pokemon.learnset)"
+      [items]="pokemon.getLearnset()"
       [placeholder]="'Select a move'"
       (itemSelected)="pokemon.moves[3] = $event"
     ></select-search>

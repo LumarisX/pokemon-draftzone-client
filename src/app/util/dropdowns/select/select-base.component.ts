@@ -1,13 +1,11 @@
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { CommonModule } from '@angular/common';
 import {
-  AfterViewInit,
   Component,
   EventEmitter,
   HostListener,
   Input,
   Output,
-  ViewChild,
 } from '@angular/core';
 
 @Component({
@@ -17,10 +15,10 @@ import {
   template: '',
 })
 export class SelectBaseComponent<T> {
-  private _items: { name: string; value: T }[] = [];
+  private _items: { name: string; value: T; icon?: string }[] = [];
 
   @Input()
-  set items(value: (string | { name: string; value: T })[]) {
+  set items(value: (string | { name: string; value: T; icon?: string })[]) {
     this._items = value.map((item) =>
       typeof item === 'object' && 'name' in item
         ? item
@@ -28,7 +26,7 @@ export class SelectBaseComponent<T> {
     );
   }
 
-  get items(): { name: string; value: T }[] {
+  get items(): { name: string; value: T; icon?: string }[] {
     return this._items;
   }
 
@@ -37,9 +35,11 @@ export class SelectBaseComponent<T> {
 
   @Output() itemSelected = new EventEmitter<T>();
 
-  private _selectedItem: { name: string; value: T } | null = null;
+  private _selectedItem: { name: string; value: T; icon?: string } | null =
+    null;
   @Input()
-  set selectedItem(item: T | { name: string; value: T }) {
+  set selectedItem(item: T | { name: string; value: T; icon?: string }) {
+    console.log(this.selectedItem, item);
     this._selectedItem =
       item === null
         ? null
@@ -48,7 +48,7 @@ export class SelectBaseComponent<T> {
         : { name: String(item), value: item as T };
   }
 
-  get selectedItem(): { name: string; value: T } | null {
+  get selectedItem(): { name: string; value: T; icon?: string } | null {
     return this._selectedItem;
   }
 
@@ -71,7 +71,7 @@ export class SelectBaseComponent<T> {
     SelectBaseComponent.openFilter = null;
   }
 
-  selectItem(item: { name: string; value: T }) {
+  selectItem(item: { name: string; value: T; icon?: string }) {
     this.selectedItem = item;
     this.closeDropdown();
     this.itemSelected.emit(item.value);

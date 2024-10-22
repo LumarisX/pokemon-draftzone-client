@@ -53,12 +53,22 @@ export class PokemonBuilder {
   ];
   ability: string = '';
   abilities: { name: string; id: string }[] = [];
-  learnset: { name: string; id: string }[] = [];
+  learnset: { name: string; id: string; type: string }[] = [];
   item: string = '';
   teraType: string = '';
   nickname: string = '';
   id: string = '';
-  constructor() {}
+  constructor(options: Partial<PokemonBuilder> = {}) {
+    Object.assign(this, options);
+  }
+
+  getLearnset() {
+    return this.learnset.map((move) => ({
+      name: move.name,
+      value: move.id,
+      icon: `../../../../assets/icons/types/${move.type}.png`,
+    }));
+  }
 
   toPacked() {
     return [
