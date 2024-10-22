@@ -15,21 +15,6 @@ Teambuilder
     <sprite [pokemon]="{ id: pokemon.id, name: pokemon.name }"></sprite>
   </div>
   <div class="space-x-1">
-    <label for="name">Name</label>
-    <div id="name">
-      <input
-        required
-        #name="ngModel"
-        [(ngModel)]="pokemon.name"
-        class="border p-1"
-      />
-      <filter
-        [query]="pokemon.name"
-        (querySelected)="nameSelected(pokemon, $event)"
-      ></filter>
-    </div>
-  </div>
-  <div class="space-x-1">
     <label for="ability">Ability</label>
     <select-no-search
       [items]="toValues(pokemon.abilities)"

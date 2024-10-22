@@ -27,7 +27,7 @@ import {
   Summary,
   TypeChart,
 } from '../matchup-overview/matchup-interface';
-import { getPidByName, Namedex, PokemonId } from '../data/namedex';
+import { getPidByName, Namedex, nameList, PokemonId } from '../data/namedex';
 import { MoveComponent } from './moves/moves.component';
 import { SummaryComponent } from './summary/summary.component';
 import { TypechartComponent } from './typechart/typechart.component';
@@ -36,6 +36,7 @@ import { TrashSVG } from '../images/svg-components/trash.component';
 import { GearSVG } from '../images/svg-components/gear.component';
 import { FinderCoreComponent } from '../tools/finder/finder-core.component';
 import { Type } from '../data';
+import { SelectSearchComponent } from '../util/dropdowns/select/select-search.component';
 
 type Planner = {
   summary: Summary;
@@ -65,6 +66,7 @@ type Planner = {
     GearSVG,
     SpriteComponent,
     FinderCoreComponent,
+    SelectSearchComponent,
   ],
   animations: [
     trigger('growIn', [
@@ -99,6 +101,8 @@ export class PlannerComponent implements OnInit {
   movechart: MoveChart = [];
   draftSize = 0;
   settings = true;
+
+  names = nameList();
 
   constructor(
     private fb: FormBuilder,

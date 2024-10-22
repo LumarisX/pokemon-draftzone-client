@@ -162,17 +162,16 @@
                   ></sprite>
                 </div>
                 <div class="w-5/12 h-full flex flex-col justify-center p-2">
-                  <input
-                    type="text"
-                    spellcheck="false"
-                    class="w-full text-sm px-1 py-1 text-ellipsis border rounded-lg bg-menu-100"
+                  <div
+                    class="w-full text-sm text-ellipsis border rounded-lg bg-menu-100"
                     [ngClass]="minMaxStyle(i)"
-                    formControlName="name"
-                  />
-                  <filter
-                    [query]="teamCtrl.get('name')?.value"
-                    (querySelected)="resultSelected(teamCtrl, $event)"
-                  ></filter>
+                  >
+                    <select-search
+                      (itemSelected)="resultSelected(teamCtrl, $event)"
+                      [items]="names"
+                      placeholder="Select Pokemon"
+                    ></select-search>
+                  </div>
                 </div>
                 <div
                   class="w-1/6 h-full flex flex-col justify-center p-1"
@@ -308,17 +307,16 @@
                     ></sprite>
                   </div>
                   <div class="w-5/12 h-full flex flex-col justify-center p-2">
-                    <input
-                      type="text"
-                      spellcheck="false"
-                      class="w-full text-sm px-1 py-1 text-ellipsis border rounded-lg bg-menu-100"
+                    <div
+                      class="w-full text-sm text-ellipsis border rounded-lg bg-menu-100"
                       [ngClass]="minMaxStyle(i)"
-                      formControlName="name"
-                    />
-                    <filter
-                      [query]="teamCtrl.get('name')?.value"
-                      (querySelected)="resultSelected(teamCtrl, $event)"
-                    ></filter>
+                    >
+                      <select-search
+                        (itemSelected)="resultSelected(teamCtrl, $event)"
+                        [items]="names"
+                        placeholder="Select Pokemon"
+                      ></select-search>
+                    </div>
                   </div>
                   <div
                     class="w-1/6 h-full flex flex-col justify-center p-1"
