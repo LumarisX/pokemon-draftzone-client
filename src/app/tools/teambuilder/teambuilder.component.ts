@@ -40,13 +40,13 @@ export class TeamBuilderComponent implements OnInit {
           } +${nature[1].boost.toUpperCase()}/-${nature[1].drop.toUpperCase()}`,
     value: nature[0],
   }));
-  message: string = '';
+  pokemon: Pokemon = { name: 'Deoxys', id: 'deoxys' };
   formats: string[] = [];
   rulesets: string[] = [];
   selectedFormat: string = 'Singles';
   selectedRuleset: string = 'Gen9 NatDex';
 
-  names: { name: string; value: string }[] = nameList();
+  names: { name: string; value: Pokemon }[] = nameList();
   private jsonRpcId = 1;
 
   constructor(
@@ -89,7 +89,7 @@ export class TeamBuilderComponent implements OnInit {
     this.sendJsonRpcRequest('add', {
       rulesetID: this.selectedRuleset,
       formatID: this.selectedFormat,
-      id: this.message,
+      id: this.pokemon,
     });
   }
 

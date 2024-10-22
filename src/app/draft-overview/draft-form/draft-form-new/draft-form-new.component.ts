@@ -78,8 +78,8 @@ export class DraftFormNewComponent implements OnInit {
     this.draftService.newDraft(formData).subscribe(
       (response) => {
         console.log('Success!', response);
-        // Redirect to '/draft' route
-        this.router.navigate(['/draft']);
+        // Redirect to '/drafts' route
+        this.router.navigate(['/drafts']);
       },
       (error) => console.error('Error!', error)
     );

@@ -1,3 +1,5 @@
+import { Pokemon } from '../interfaces/draft';
+
 export type SpriteProperties = { id: string; flip?: true };
 
 export type PokemonId = keyof typeof Namedex & string;
@@ -25,17 +27,20 @@ export function getPidByName(name: string): PokemonId | null {
   return null;
 }
 
-let $nameList: { name: string; value: string }[] | undefined;
-export function nameList(): { name: string; value: string }[] {
+let $nameList: { name: string; value: Pokemon }[] | undefined;
+export function nameList(): { name: string; value: Pokemon }[] {
   if ($nameList) return $nameList;
   return ($nameList = Object.entries(Namedex)
     .map((e) => ({
       name: e[1].name[0],
-      value: e[0],
+      value: {
+        name: e[1].name[0],
+        id: e[0],
+      },
     }))
     .sort((x, y) => {
-      if (x.value < y.value) return -1;
-      if (x.value > y.value) return 1;
+      if (x.value.id < y.value.id) return -1;
+      if (x.value.id > y.value.id) return 1;
       return 0;
     }));
 }

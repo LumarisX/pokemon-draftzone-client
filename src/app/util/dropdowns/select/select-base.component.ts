@@ -7,14 +7,14 @@ import {
   Input,
   Output,
 } from '@angular/core';
+import { ControlValueAccessor } from '@angular/forms';
 
 @Component({
-  selector: 'select-base',
   standalone: true,
   imports: [CommonModule, CdkVirtualScrollViewport],
   template: '',
 })
-export class SelectBaseComponent<T> {
+export class SelectBaseComponent<T> implements ControlValueAccessor {
   private _items: { name: string; value: T; icon?: string }[] = [];
 
   @Input()
@@ -38,8 +38,7 @@ export class SelectBaseComponent<T> {
   private _selectedItem: { name: string; value: T; icon?: string } | null =
     null;
   @Input()
-  set selectedItem(item: T | { name: string; value: T; icon?: string }) {
-    console.log(this.selectedItem, item);
+  set selectedItem(item: T | { name: string; value: T; icon?: string } | null) {
     this._selectedItem =
       item === null
         ? null
@@ -63,6 +62,7 @@ export class SelectBaseComponent<T> {
   openDropdown() {
     SelectBaseComponent.openFilter?.closeDropdown();
     this.isOpen = true;
+    this.onTouched();
     SelectBaseComponent.openFilter = this;
   }
 
@@ -74,6 +74,7 @@ export class SelectBaseComponent<T> {
   selectItem(item: { name: string; value: T; icon?: string }) {
     this.selectedItem = item;
     this.closeDropdown();
+    this.onChange(item.value);
     this.itemSelected.emit(item.value);
   }
 
@@ -86,5 +87,29 @@ export class SelectBaseComponent<T> {
 
   calculateDynamicHeight(itemCount: number, itemSize: number): string {
     return `${Math.min(itemCount * itemSize, 256)}px`;
+  }
+
+  private onChange: (value: T) => void = () => {};
+  private onTouched: () => void = () => {};
+
+  writeValue(value: T): void {
+    this.selectedItem =
+      this.items.find((item) => {
+        if (typeof item.value === 'object') {
+          return (
+            JSON.stringify(item.value).toLowerCase() ===
+            JSON.stringify(value).toLowerCase()
+          );
+        }
+        return item.value === value;
+      }) || null;
+  }
+
+  registerOnChange(fn: (value: T) => void): void {
+    this.onChange = fn;
+  }
+
+  registerOnTouched(fn: () => void): void {
+    this.onTouched = fn;
   }
 }

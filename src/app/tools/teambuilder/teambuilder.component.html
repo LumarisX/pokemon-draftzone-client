@@ -1,11 +1,12 @@
 Teambuilder
+{{ pokemon | json }}
 
 <div class="flex p-2">
   <select-search
     [items]="names"
     [placeholder]="'Select a pokemon'"
     class="w-72"
-    (itemSelected)="message = $event"
+    [(ngModel)]="pokemon"
   ></select-search>
   <button (click)="addPokemon()">Add Pokemon</button>
 </div>

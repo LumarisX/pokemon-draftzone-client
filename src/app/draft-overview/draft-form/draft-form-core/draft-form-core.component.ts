@@ -13,6 +13,7 @@ import { Pokemon } from '../../../interfaces/draft';
 import { PokemonFormComponent } from '../../../pokemon-form/pokemon-form.component';
 import { ImportSVG } from '../../../images/svg-components/import.component';
 import { getPidByName } from '../../../data/namedex';
+import { SelectNoSearchComponent } from '../../../util/dropdowns/select/select-no-search.component';
 
 @Component({
   selector: 'draft-form-core',
@@ -24,12 +25,13 @@ import { getPidByName } from '../../../data/namedex';
     PokemonFormComponent,
     ImportSVG,
     ReactiveFormsModule,
+    SelectNoSearchComponent,
   ],
   templateUrl: './draft-form-core.component.html',
 })
 export class DraftFormCoreComponent implements OnInit {
-  formats = [];
-  rulesets = [];
+  formats: string[] = [];
+  rulesets: string[] = [];
   @Input() draftForm!: FormGroup;
   @Output() formSubmitted = new EventEmitter<FormGroup>();
   importing = false;
@@ -41,11 +43,11 @@ export class DraftFormCoreComponent implements OnInit {
 
   ngOnInit(): void {
     this.dataService.getFormats().subscribe((formats) => {
-      this.formats = <any>formats;
+      this.formats = formats;
     });
 
     this.dataService.getRulesets().subscribe((rulesets) => {
-      this.rulesets = <any>rulesets;
+      this.rulesets = rulesets;
     });
     this.draftForm.setValidators(this.validateDraftForm);
   }

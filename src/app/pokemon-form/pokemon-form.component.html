@@ -10,17 +10,12 @@
     ></sprite>
     <div class="relative col-span-6 sm:col-span-4">
       <label class="p-1 font-semibold">Name</label>
-      <div class="w-full px-4 py-1 mx-1 rounded-full bg-menu-100 text-medium">
-        <input
-          formControlName="name"
-          spellcheck="false"
-          class="w-full px-1 rounded-full bg-menu-100 focus:outline-none"
-          (keyup.enter)="this.addPokemonEvent.emit()"
-        />
-        <filter
-          [query]="pokemonForm.value.name"
-          (querySelected)="resultSelected($event)"
-        ></filter>
+      <div class="w-full rounded-lg bg-menu-100 text-medium">
+        <select-search
+          [placeholder]="'Select a Pokemon'"
+          [items]="names"
+          (itemSelected)="resultSelected($event)"
+        ></select-search>
       </div>
       <div
         *ngIf="

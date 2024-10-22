@@ -11,8 +11,9 @@ import { FilterComponent } from '../filter/filter.component';
 import { Pokemon } from '../interfaces/draft';
 import { SpriteComponent } from '../images/sprite.component';
 import { TrashSVG } from '../images/svg-components/trash.component';
-import { getPidByName } from '../data/namedex';
+import { getPidByName, nameList } from '../data/namedex';
 import { TeraType, TYPES } from '../data';
+import { SelectSearchComponent } from '../util/dropdowns/select/select-search.component';
 
 @Component({
   selector: 'pokemon-form',
@@ -26,6 +27,7 @@ import { TeraType, TYPES } from '../data';
     ReactiveFormsModule,
     TrashSVG,
     FilterComponent,
+    SelectSearchComponent,
   ],
 })
 export class PokemonFormComponent implements OnInit {
@@ -35,6 +37,7 @@ export class PokemonFormComponent implements OnInit {
   @Output() addPokemonEvent = new EventEmitter<Pokemon>();
 
   pokemon: Pokemon = { name: '', id: '' };
+  names = nameList();
 
   teraTypes = PokemonFormComponent.teraTypes;
 

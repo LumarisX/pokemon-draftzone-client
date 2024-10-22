@@ -75,8 +75,8 @@ export class DraftFormEditComponent implements OnInit {
     this.draftService.editDraft(this.teamId, formData).subscribe(
       (response) => {
         console.log('Success!', response);
-        // Redirect to '/draft' route
-        this.router.navigate(['/draft']);
+        // Redirect to '/drafts' route
+        this.router.navigate(['/drafts']);
       },
       (error) => console.error('Error!', error)
     );

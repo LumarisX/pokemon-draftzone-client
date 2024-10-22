@@ -4,11 +4,7 @@
 >
   <!-- Value Box -->
   <div
-    class="p-2 bg-page flex justify-between items-center border rounded cursor-pointer transition-colors"
-    [ngClass]="{
-      'border-menu-300': !isOpen,
-      'border-menu-500': isOpen
-    }"
+    class="p-2 bg-inherit flex justify-between items-center rounded cursor-pointer transition-colors"
     (click)="toggleDropdown()"
   >
     <span *ngIf="selectedItem">{{ selectedItem.name }}</span>
@@ -25,8 +21,10 @@
   >
     <div class="border-b mx-2 border-menu-300">
       <input
+        #searchbar
         type="text"
         placeholder="Search"
+        spellcheck="false"
         [(ngModel)]="query"
         (keyup)="filter()"
         class="w-full bg-page p-2 outline-none"
@@ -70,6 +68,7 @@
     <div class="p-4 border-b border-menu-300">
       <input
         type="text"
+        #searchbar
         placeholder="Search"
         [(ngModel)]="query"
         (keyup)="filter()"

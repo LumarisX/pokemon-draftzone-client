@@ -1,7 +1,7 @@
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { CompactSVG } from '../../../images/svg-components/compact.component';
 import { SelectBaseComponent } from './select-base.component';
 
@@ -14,6 +14,13 @@ import { SelectBaseComponent } from './select-base.component';
     CompactSVG,
     SelectBaseComponent,
     ScrollingModule,
+  ],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: SelectSearchComponent,
+      multi: true,
+    },
   ],
   templateUrl: 'select-search.component.html',
 })
@@ -32,5 +39,14 @@ export class SelectSearchComponent<T>
     this.filteredItems = this.items.filter((i) =>
       i.name.toLowerCase().includes(this.query.toLowerCase())
     );
+  }
+
+  @ViewChild('searchbar') searchbar!: ElementRef<HTMLInputElement>;
+
+  override openDropdown(): void {
+    super.openDropdown();
+    setTimeout(() => {
+      this.searchbar.nativeElement.focus();
+    }, 0);
   }
 }

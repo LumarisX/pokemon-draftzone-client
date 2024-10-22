@@ -4,11 +4,7 @@
 >
   <!-- Value Box -->
   <div
-    class="p-2 bg-page flex justify-between items-center border rounded cursor-pointer transition-colors"
-    [ngClass]="{
-      'border-menu-300': !isOpen,
-      'border-menu-500': isOpen
-    }"
+    class="p-2 bg-inherit flex justify-between items-center rounded cursor-pointer transition-colors"
     (click)="toggleDropdown()"
   >
     <span *ngIf="selectedItem">{{ selectedItem.name }}</span>
@@ -24,7 +20,7 @@
     class="absolute z-[100] w-full mt-0.5 bg-page border border-menu-300 rounded shadow-lg space-y-1 sm:block hidden"
   >
     <!-- Scrollable list -->
-    <div class="p-0.5">
+    <div class="px-0.5 py-1">
       <cdk-virtual-scroll-viewport
         class=""
         itemSize="{{ itemSize }}"
@@ -32,7 +28,7 @@
       >
         <div
           *cdkVirtualFor="let item of items"
-          class="mx-2 rounded py-0.5 flex justify-between px-1 cursor-pointer hover:bg-menu-200"
+          class="mx-1 rounded py-0.5 flex justify-between px-1 cursor-pointer hover:bg-menu-200"
           [ngClass]="{
             'bg-menu-200': selectedItem && selectedItem.value === item.value
           }"
