@@ -40,7 +40,7 @@ export class TeamBuilderComponent implements OnInit {
           } +${nature[1].boost.toUpperCase()}/-${nature[1].drop.toUpperCase()}`,
     value: nature[0],
   }));
-  pokemon: Pokemon = { name: 'Deoxys', id: 'deoxys' };
+  pokemon: Pokemon = { name: 'Clefable', id: 'clefable' };
   formats: string[] = [];
   rulesets: string[] = [];
   selectedFormat: string = 'Singles';
@@ -80,7 +80,7 @@ export class TeamBuilderComponent implements OnInit {
           (e: Partial<PokemonBuilder> | undefined) => new PokemonBuilder(e)
         );
       } else if (method === 'update') {
-        this.team[response.index] = response.pokemon;
+        Object.assign(this.team[response.index], response.pokemon);
       }
     });
   }
@@ -89,14 +89,15 @@ export class TeamBuilderComponent implements OnInit {
     this.sendJsonRpcRequest('add', {
       rulesetID: this.selectedRuleset,
       formatID: this.selectedFormat,
-      id: this.pokemon,
+      id: this.pokemon.id,
     });
   }
 
-  updateData(index: number) {
+  updateData(index: number, data: Partial<PokemonBuilder> = {}) {
+    console.log('update', data);
     this.sendJsonRpcRequest('update', {
-      index: index,
-      data: this.team[index],
+      index,
+      data,
     });
   }
 

@@ -103,4 +103,11 @@ export class PokemonFormComponent implements OnInit {
       (this.pokemonForm.get('capt.tera') as FormGroup).controls
     ).forEach((control) => control.setValue(true));
   }
+
+  toggleTeraType(type: string) {
+    const control = this.pokemonForm.get(`capt.tera.${type}`);
+    if (control) {
+      control.setValue(!control.value);
+    }
+  }
 }

@@ -82,7 +82,7 @@
         pokemonForm.get('captCheck')?.value
       "
       formGroupName="tera"
-      class="grid grid-cols-7 sm:grid-cols-10"
+      class="flex justify-between"
     >
       <div class="flex justify-center p-1">
         <button
@@ -94,19 +94,22 @@
       </div>
       <div
         *ngFor="let type of teraTypes"
-        class="flex flex-col items-center space-y-1"
+        class="flex justify-center items-center space-x-1"
       >
-        <img
-          class=""
-          src="../../../assets/icons/types/{{ type }}.png"
-          onerror="this.src='../../../assets/icons/types/Unknown.png'"
-          alt="{{ type }}"
-        />
-        <input
-          type="checkbox"
-          formControlName="{{ type }}"
-          class="mx-auto rounded-full text-medium"
-        />
+        <div
+          class="relative flex items-center justify-center cursor-pointer"
+          (click)="toggleTeraType(type)"
+          [ngClass]="{
+            'opacity-40': !pokemonForm.get('capt.tera.' + type)?.value,
+          }"
+        >
+          <img
+            class="h-6 aspect-square sprite-border p-0.5 rounded-full"
+            src="../../../assets/icons/tera_types/Tera{{ type }}.png"
+            onerror="this.src='../../../assets/icons/types/Unknown.png'"
+            alt="{{ type }}"
+          />
+        </div>
       </div>
     </div>
   </div>

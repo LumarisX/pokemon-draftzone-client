@@ -1,6 +1,4 @@
 Teambuilder
-{{ pokemon | json }}
-
 <div class="flex p-2">
   <select-search
     [items]="names"
@@ -20,7 +18,7 @@ Teambuilder
       [items]="toValues(pokemon.abilities)"
       [placeholder]="'Select an ability'"
       [selectedItem]="pokemon.ability"
-      (itemSelected)="pokemon.ability = $event || ''"
+      (itemSelected)="updateData(p, { ability: $event ?? undefined })"
     ></select-no-search>
   </div>
   <div class="space-x-1">
@@ -35,7 +33,7 @@ Teambuilder
     <label for="level">Level</label>
     <input
       [(ngModel)]="pokemon.level"
-      (change)="updateData(p)"
+      (change)="updateData(p, { level: pokemon.level })"
       type="number"
       min="1"
       max="100"
@@ -45,49 +43,48 @@ Teambuilder
   </div>
   <div class="space-x-1">
     <label for="nature">Nature</label>
-    <select-search
-      id="nature"
-      [items]="natures"
-      [selectedItem]="pokemon.nature"
-      (itemSelected)="pokemon.nature = $event ? $event : pokemon.nature"
-    ></select-search>
+    <div id="nature" class="border max-w-96 w-full rounded">
+      <select-search
+        [items]="natures"
+        [selectedItem]="pokemon.nature"
+        (itemSelected)="pokemon.nature = $event ? $event : pokemon.nature"
+      ></select-search>
+    </div>
   </div>
-  <div class="space-x-1">
-    <label for="move1">Move 1</label>
-    <select-search
-      id="move1"
-      [items]="pokemon.getLearnset()"
-      [placeholder]="'Select a move'"
-      (itemSelected)="pokemon.moves[0] = $event"
-    ></select-search>
+  <div>
+    <label for="moves">Moves</label>
+    <div id="moves" class="flex flex-col space-y-1">
+      <div id="move1" class="border max-w-96 w-full rounded">
+        <select-search
+          [items]="pokemon.getLearnset()"
+          [placeholder]="'Select a move'"
+          (itemSelected)="pokemon.moves[0] = $event"
+        ></select-search>
+      </div>
+      <div id="move2" class="border max-w-96 w-full rounded">
+        <select-search
+          [items]="pokemon.getLearnset()"
+          [placeholder]="'Select a move'"
+          (itemSelected)="pokemon.moves[1] = $event"
+        ></select-search>
+      </div>
+      <div id="move3" class="border max-w-96 w-full rounded">
+        <select-search
+          [items]="pokemon.getLearnset()"
+          [placeholder]="'Select a move'"
+          (itemSelected)="pokemon.moves[2] = $event"
+        ></select-search>
+      </div>
+      <div id="move4" class="border max-w-96 w-full rounded">
+        <select-search
+          [items]="pokemon.getLearnset()"
+          [placeholder]="'Select a move'"
+          (itemSelected)="pokemon.moves[3] = $event"
+        ></select-search>
+      </div>
+    </div>
   </div>
-  <div class="space-x-1">
-    <label for="move2">Move 2</label>
-    <select-search
-      id="move2"
-      [items]="pokemon.getLearnset()"
-      [placeholder]="'Select a move'"
-      (itemSelected)="pokemon.moves[1] = $event"
-    ></select-search>
-  </div>
-  <div class="space-x-1">
-    <label for="move3">Move 3</label>
-    <select-search
-      id="move3"
-      [items]="pokemon.getLearnset()"
-      [placeholder]="'Select a move'"
-      (itemSelected)="pokemon.moves[2] = $event"
-    ></select-search>
-  </div>
-  <div class="space-x-1">
-    <label for="move4">Move 4</label>
-    <select-search
-      id="move4"
-      [items]="pokemon.getLearnset()"
-      [placeholder]="'Select a move'"
-      (itemSelected)="pokemon.moves[3] = $event"
-    ></select-search>
-  </div>
+
   <div>
     <label for="hp">HP</label>
     <div id="hp" class="flex items-center">
