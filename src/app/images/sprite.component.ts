@@ -11,7 +11,7 @@ import { getSpriteProperties, SpriteProperties } from '../data/namedex';
   template: `
     <div class="h-full w-full flex justify-center items-end ">
       <img
-        class="h-full w-full -z-100 object-contain aspect-square	"
+        class="h-full w-full -z-100 object-contain aspect-square"
         *ngIf="pokemon.id"
         [ngClass]="this.classes"
         title="{{ pokemon.name }}"

@@ -116,7 +116,7 @@ export class PokemonBuilder {
       .filter((stat) => stat[1] < 31 && stat[1] >= 0)
       .map((stat) => `${stat[1]} ${stat[0]}`);
     if (ivs.length > 0) string += `IVs: ${ivs.join(' / ')}\n`;
-    let moves = this.moves.filter((move) => move != '');
+    let moves = this.moves.filter((move) => move);
     moves.forEach((move) => {
       string += `- ${move}\n`;
     });

@@ -1,4 +1,4 @@
-type Stat = 'hp' | 'atk' | 'def' | 'spa' | 'spd' | 'spe';
+export type Stat = 'hp' | 'atk' | 'def' | 'spa' | 'spd' | 'spe';
 
 export const NATURES: {
   [key: string]: {

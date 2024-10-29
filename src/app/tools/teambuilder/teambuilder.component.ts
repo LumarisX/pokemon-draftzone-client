@@ -4,15 +4,14 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { DataService } from '../../api/data.service';
 import { WebSocketService } from '../../api/ws.service';
-import { NATURES } from '../../data';
-import { Namedex, nameList } from '../../data/namedex';
+import { NATURES, Stat } from '../../data';
+import { nameList } from '../../data/namedex';
 import { FilterComponent } from '../../filter/filter.component';
 import { SpriteComponent } from '../../images/sprite.component';
 import { Pokemon } from '../../interfaces/draft';
-import { OpponentScoreComponent } from '../../opponent-overview/opponent-score/opponent-score.component';
+import { SelectNoSearchComponent } from '../../util/dropdowns/select/select-no-search.component';
 import { SelectSearchComponent } from '../../util/dropdowns/select/select-search.component';
 import { PokemonBuilder } from './pokemon-builder.model';
-import { SelectNoSearchComponent } from '../../util/dropdowns/select/select-no-search.component';
 
 @Component({
   selector: 'teambuilder-analyzer',
@@ -23,7 +22,6 @@ import { SelectNoSearchComponent } from '../../util/dropdowns/select/select-no-s
     RouterModule,
     FormsModule,
     SpriteComponent,
-    OpponentScoreComponent,
     FilterComponent,
     SelectSearchComponent,
     SelectNoSearchComponent,
@@ -48,6 +46,19 @@ export class TeamBuilderComponent implements OnInit {
 
   names: { name: string; value: Pokemon }[] = nameList();
   private jsonRpcId = 1;
+
+  // Tabs setup
+  tabs = ['General', 'Moves', 'Stats', 'Export'];
+  activeTab = 'General';
+
+  stats: { label: string; key: Stat }[] = [
+    { label: 'HP', key: 'hp' },
+    { label: 'ATK', key: 'atk' },
+    { label: 'DEF', key: 'def' },
+    { label: 'SPA', key: 'spa' },
+    { label: 'SPD', key: 'spd' },
+    { label: 'SPE', key: 'spe' },
+  ];
 
   constructor(
     private webSocket: WebSocketService,
@@ -101,13 +112,13 @@ export class TeamBuilderComponent implements OnInit {
     });
   }
 
-  nameSelected(pokemon: PokemonBuilder, event: Pokemon) {
-    pokemon.id = event.id;
-    pokemon.name = event.name;
-    pokemon.shiny = event.shiny || false;
-  }
-
   toValues(object: { name: string; id: string }[]) {
     return object.map((e) => ({ name: e.name, value: e.id }));
+  }
+
+  getTabClass(tab: string) {
+    return this.activeTab === tab
+      ? 'border-b-2 border-blue-500 font-semibold'
+      : 'text-gray-500';
   }
 }
