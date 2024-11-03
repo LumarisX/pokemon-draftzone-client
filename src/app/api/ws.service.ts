@@ -10,6 +10,8 @@ export class WebSocketService {
   private socket$?: WebSocketSubject<any>;
   private pendingRequests = new Map<number, Subject<any>>();
   private serverUrl = `ws://${environment.apiUrl}`;
+  private jsonRpcId = 1;
+
   constructor() {}
 
   connect(urlPath: string): Observable<any> {
@@ -31,6 +33,24 @@ export class WebSocketService {
     this.socket$?.next(request);
 
     return responseSubject.asObservable();
+  }
+
+  sendJsonRpcRequest(
+    method: string,
+    params: any,
+    responseFn: (response: any) => any
+  ) {
+    console.log(method, params);
+    const request = {
+      jsonrpc: '2.0',
+      method,
+      params,
+      id: this.jsonRpcId++,
+    };
+    this.sendMessage(request).subscribe((response) => {
+      console.log('Received response:', response);
+      return responseFn(response);
+    });
   }
 
   private handleMessage(message: any) {

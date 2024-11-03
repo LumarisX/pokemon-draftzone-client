@@ -1,0 +1,128 @@
+<div class="flex flex-col p-4 space-y-4">
+  <div class="flex items-center space-x-2">
+    <select-search
+      [items]="pokemonList"
+      [placeholder]="'Select a Pokémon'"
+      class="w-72"
+      [(ngModel)]="pokemon"
+    ></select-search>
+    <button (click)="addPokemon()" class="btn btn-primary">Add Pokémon</button>
+  </div>
+
+  <div
+    *ngFor="let pokemon of team; let p = index"
+    class="border p-4 rounded-lg space-y-2"
+  >
+    <div class="flex space-x-4 items-center">
+      <sprite class="h-8" [pokemon]="pokemon"></sprite>
+      <div class="text-lg font-bold">{{ pokemon.name }}</div>
+    </div>
+
+    <div class="flex space-x-4 border-b pb-2">
+      <button
+        *ngFor="let tab of tabs"
+        (click)="activeTab = tab"
+        [class]="getTabClass(tab)"
+      >
+        {{ tab }}
+      </button>
+    </div>
+
+    <div *ngIf="activeTab === 'General'" class="space-y-2">
+      <!-- Ability -->
+      <div class="flex items-center space-x-2">
+        <label class="w-20">Ability</label>
+        <select-no-search
+          [items]="toValues(pokemon.abilities)"
+          [placeholder]="'Select an ability'"
+          [selectedItem]="pokemon.ability"
+          (itemSelected)="updateData(p, { ability: $event ?? undefined })"
+          class="flex-1"
+        ></select-no-search>
+      </div>
+
+      <!-- Item -->
+      <div class="flex items-center space-x-2">
+        <label class="w-20">Item</label>
+        <input [(ngModel)]="pokemon.item" class="border p-1 flex-1" />
+      </div>
+
+      <!-- Tera Type -->
+      <div class="flex items-center space-x-2">
+        <label class="w-20">Tera Type</label>
+        <input [(ngModel)]="pokemon.teraType" class="border p-1 flex-1" />
+      </div>
+
+      <!-- Level -->
+      <div class="flex items-center space-x-2">
+        <label class="w-20">Level</label>
+        <input
+          [(ngModel)]="pokemon.level"
+          (change)="updateData(p, { level: pokemon.level })"
+          type="number"
+          min="1"
+          max="100"
+          class="border p-1 w-20"
+        />
+      </div>
+
+      <!-- Nature -->
+      <div class="flex items-center space-x-2">
+        <label class="w-20">Nature</label>
+        <select-search
+          [items]="natures"
+          [selectedItem]="pokemon.nature"
+          (itemSelected)="pokemon.nature = $event ? $event : pokemon.nature"
+          class="flex-1"
+        ></select-search>
+      </div>
+    </div>
+
+    <div *ngIf="activeTab === 'Moves'" class="space-y-2">
+      <!-- Moves -->
+      <div *ngFor="let i of [0, 1, 2, 3]" class="flex items-center space-x-2">
+        <label class="w-20">Move {{ i + 1 }}</label>
+        <select-search
+          [items]="pokemon.getLearnset()"
+          [placeholder]="'Select a move'"
+          (itemSelected)="pokemon.moves[i] = $event"
+          class="flex-1"
+        ></select-search>
+      </div>
+    </div>
+
+    <div *ngIf="activeTab === 'Stats'" class="space-y-2">
+      <!-- Stats -->
+      <div *ngFor="let stat of stats" class="flex items-center space-x-2">
+        <label class="w-20">{{ stat.label }}</label>
+        <div class="flex items-center space-x-2 flex-1">
+          <label>EVs</label>
+          <input
+            [(ngModel)]="pokemon.evs[stat.key]"
+            (change)="updateData(p)"
+            min="0"
+            max="252"
+            step="4"
+            type="number"
+            class="border p-1 w-16"
+          />
+          <label>IVs</label>
+          <input
+            [(ngModel)]="pokemon.ivs[stat.key]"
+            (change)="updateData(p)"
+            min="0"
+            max="31"
+            type="number"
+            class="border p-1 w-16"
+          />
+          <div class="text-gray-700">{{ pokemon.stats[stat.key] }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="activeTab === 'Export'" class="space-y-2">
+      <!-- Export -->
+      <div class="whitespace-pre-wrap">{{ pokemon.toExport() }}</div>
+    </div>
+  </div>
+</div>
