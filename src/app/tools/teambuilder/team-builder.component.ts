@@ -28,7 +28,14 @@ import { PokemonBuilder } from './pokemon-builder/pokemon-builder.model';
   ],
 })
 export class TeamBuilderComponent implements OnInit {
-  team: PokemonBuilder[] = [];
+  team: [
+    PokemonBuilder | null,
+    PokemonBuilder | null,
+    PokemonBuilder | null,
+    PokemonBuilder | null,
+    PokemonBuilder | null,
+    PokemonBuilder | null
+  ] = [null, null, null, null, null, null];
   natures = Object.entries(NATURES).map((nature) => ({
     name:
       nature[1].boost === nature[1].drop
@@ -75,18 +82,30 @@ export class TeamBuilderComponent implements OnInit {
     this.webSocket.connect('teambuilder');
   }
 
-  addPokemon() {
+  addPokemon(data: Pokemon | null, index: number) {
+    if (!data) {
+      this.team[index] = null;
+      return;
+    }
     this.webSocket.sendJsonRpcRequest(
       'add',
       {
         rulesetID: this.selectedRuleset,
         formatID: this.selectedFormat,
-        id: this.pokemon.id,
+        id: data.id,
       },
-      (response) => {
-        this.team = response.team.map(
-          (e: Partial<PokemonBuilder> | undefined) => new PokemonBuilder(e)
-        );
+      (response: Record<number, Partial<PokemonBuilder>>) => {
+        Object.entries(response).forEach(([i, e]) => {
+          if (+i < this.team.length) {
+            this.team[+i] = new PokemonBuilder(e);
+          } else {
+            this.team.push(new PokemonBuilder(e));
+          }
+        });
+
+        // this.team = response.team.map(
+        //   (e: Partial<PokemonBuilder> | undefined) => new PokemonBuilder(e)
+        // );
       }
     );
   }
@@ -100,7 +119,11 @@ export class TeamBuilderComponent implements OnInit {
         data,
       },
       (response) => {
-        Object.assign(this.team[response.index], response.pokemon);
+        if (this.team[response.index]) {
+          Object.assign(this.team[response.index]!, response.pokemon);
+        } else {
+          this.team[response.index] = response.pokemon;
+        }
       }
     );
   }
