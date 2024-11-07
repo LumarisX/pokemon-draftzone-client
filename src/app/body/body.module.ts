@@ -6,12 +6,14 @@ import { OpponentOverviewModule } from '../opponent-overview/opponent-overview.m
 import { ToolsModule } from '../tools/tools.module';
 import { BodyRoutingModule } from './body-routing.module';
 import { BodyComponent } from './body.component';
+import { BattleZoneModule } from '../battle-zone/battle-zone.module';
 
 @NgModule({
   imports: [
     BodyComponent,
     ToolsModule,
     DraftOverviewModule,
+    BattleZoneModule,
     MatchupOverviewModule,
     OpponentOverviewModule,
     LeagueAdModule,
