@@ -14,6 +14,7 @@
         <select-search
           [placeholder]="'Select a Pokemon'"
           [items]="names"
+          [startItem]="{ id: pokemonForm.value.id }"
           (itemSelected)="resultSelected($event)"
         ></select-search>
       </div>

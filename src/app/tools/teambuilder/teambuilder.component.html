@@ -17,7 +17,7 @@ Teambuilder
     <select-no-search
       [items]="toValues(pokemon.abilities)"
       [placeholder]="'Select an ability'"
-      [selectedItem]="pokemon.ability"
+      [startItem]="pokemon.ability"
       (itemSelected)="updateData(p, { ability: $event ?? undefined })"
     ></select-no-search>
   </div>
@@ -46,7 +46,7 @@ Teambuilder
     <div id="nature" class="border max-w-96 w-full rounded">
       <select-search
         [items]="natures"
-        [selectedItem]="pokemon.nature"
+        [startItem]="pokemon.nature"
         (itemSelected)="pokemon.nature = $event ? $event : pokemon.nature"
       ></select-search>
     </div>
