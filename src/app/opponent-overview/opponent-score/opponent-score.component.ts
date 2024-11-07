@@ -19,6 +19,7 @@ import { PlusSVG } from '../../images/svg-components/plus.component';
 import { TrashSVG } from '../../images/svg-components/trash.component';
 import { PokemonId } from '../../data/namedex';
 import { LoadingComponent } from '../../images/loading/loading.component';
+import { DraftOverviewPath } from '../../draft-overview/draft-overview-routing.module';
 
 @Component({
   selector: 'opponent-form',
@@ -43,7 +44,7 @@ export class OpponentScoreComponent implements OnInit {
   scoreForm!: FormGroup;
   matchSize = 1;
   selectedMatch = 0;
-
+  readonly draftPath = DraftOverviewPath;
   constructor(
     private fb: FormBuilder,
     private draftService: DraftService,
@@ -196,7 +197,7 @@ export class OpponentScoreComponent implements OnInit {
       .subscribe({
         next: (response) => {
           console.log('Success!', response);
-          this.router.navigate([`/drafts/${this.teamId}`]);
+          this.router.navigate([`['/', draftPath]/${this.teamId}`]);
         },
         error: (error) => {
           console.error('Error!', error);

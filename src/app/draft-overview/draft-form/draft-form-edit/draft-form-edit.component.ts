@@ -13,6 +13,7 @@ import { Draft } from '../../../interfaces/draft';
 import { PokemonFormComponent } from '../../../pokemon-form/pokemon-form.component';
 import { SpriteComponent } from '../../../images/sprite.component';
 import { DraftFormCoreComponent } from '../draft-form-core/draft-form-core.component';
+import { DraftOverviewPath } from '../../draft-overview-routing.module';
 
 @Component({
   selector: 'draft-form-edit',
@@ -29,6 +30,7 @@ import { DraftFormCoreComponent } from '../draft-form-core/draft-form-core.compo
 })
 export class DraftFormEditComponent implements OnInit {
   teamId: string = '';
+  cancelPath: string = DraftOverviewPath;
 
   constructor(
     private route: ActivatedRoute,
@@ -75,8 +77,8 @@ export class DraftFormEditComponent implements OnInit {
     this.draftService.editDraft(this.teamId, formData).subscribe(
       (response) => {
         console.log('Success!', response);
-        // Redirect to '/drafts' route
-        this.router.navigate(['/drafts']);
+        // Redirect to Draft Overview component
+        this.router.navigate(['/', DraftOverviewPath]);
       },
       (error) => console.error('Error!', error)
     );

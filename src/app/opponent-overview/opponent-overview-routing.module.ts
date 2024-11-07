@@ -7,10 +7,11 @@ import { OpponentFormNewComponent } from './opponent-form/opponent-form-new/oppo
 import { OpponentFormEditComponent } from './opponent-form/opponent-form-edit/opponent-form-edit.component';
 import { OpponentScoreComponent } from './opponent-score/opponent-score.component';
 import { OpponentSchedule } from './opponent-schedule/opponent-schedule.component';
+import { DraftOverviewPath } from '../draft-overview/draft-overview-routing.module';
 
 const routes: Routes = [
   {
-    path: 'drafts/:teamid',
+    path: DraftOverviewPath + '/:teamid',
     component: OpponentOverviewComponent,
     children: [
       {

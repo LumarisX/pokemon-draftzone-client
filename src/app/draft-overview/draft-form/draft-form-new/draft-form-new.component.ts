@@ -14,6 +14,7 @@ import { PokemonFormComponent } from '../../../pokemon-form/pokemon-form.compone
 import { SpriteComponent } from '../../../images/sprite.component';
 import { DraftFormCoreComponent } from '../draft-form-core/draft-form-core.component';
 import { Namedex } from '../../../data/namedex';
+import { DraftOverviewPath } from '../../draft-overview-routing.module';
 
 @Component({
   selector: 'draft-form-new',
@@ -78,8 +79,8 @@ export class DraftFormNewComponent implements OnInit {
     this.draftService.newDraft(formData).subscribe(
       (response) => {
         console.log('Success!', response);
-        // Redirect to '/drafts' route
-        this.router.navigate(['/drafts']);
+        // Redirect to Draft Overview component
+        this.router.navigate(['/', DraftOverviewPath]);
       },
       (error) => console.error('Error!', error)
     );

@@ -13,6 +13,7 @@ import { Matchup } from '../../../interfaces/matchup';
 import { PokemonFormComponent } from '../../../pokemon-form/pokemon-form.component';
 import { SpriteComponent } from '../../../images/sprite.component';
 import { OpponentFormCoreComponent } from '../opponent-form-core/opponent-form-core.component';
+import { DraftOverviewPath } from '../../../draft-overview/draft-overview-routing.module';
 
 @Component({
   selector: 'opponent-form-edit',
@@ -30,6 +31,7 @@ import { OpponentFormCoreComponent } from '../opponent-form-core/opponent-form-c
 export class OpponentFormEditComponent implements OnInit {
   teamId: string = '';
   matchupId: string = '';
+  readonly draftPath = DraftOverviewPath;
 
   constructor(
     private route: ActivatedRoute,
@@ -80,7 +82,7 @@ export class OpponentFormEditComponent implements OnInit {
       .subscribe(
         (response) => {
           console.log('Success!', response);
-          this.router.navigate([`/drafts/${this.teamId}`]);
+          this.router.navigate([`['/', draftPath]/${this.teamId}`]);
         },
         (error) => console.error('Error!', error)
       );

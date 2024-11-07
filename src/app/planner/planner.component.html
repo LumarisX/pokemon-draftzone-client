@@ -125,7 +125,7 @@
         </button>
         <button
           class="p-0.5 border-2 text-sm rounded hover:bg-menu-300 bg-menu-100 border-menu-400"
-          routerLink="/drafts/new"
+          routerLink="['/', draftPath]/new"
           [queryParams]="{
             team: team,
             format: plannerForm.get('format')?.value,

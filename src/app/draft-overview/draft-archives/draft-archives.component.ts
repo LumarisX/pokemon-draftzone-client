@@ -7,6 +7,7 @@ import { BarChartSVG } from '../../images/svg-components/barchart.component';
 import { TrashSVG } from '../../images/svg-components/trash.component';
 import { Archive } from '../../interfaces/archive';
 import { LoadingComponent } from '../../images/loading/loading.component';
+import { DraftOverviewPath } from '../draft-overview-routing.module';
 
 @Component({
   selector: 'draft-archives',
@@ -23,6 +24,7 @@ import { LoadingComponent } from '../../images/loading/loading.component';
 })
 export class DraftArchiveComponent {
   archives!: (Archive & { menu: 'main' | 'archive' | 'edit' | 'delete' })[];
+  backPath: string = DraftOverviewPath;
 
   constructor(private archiveService: ArchiveService) {}
 

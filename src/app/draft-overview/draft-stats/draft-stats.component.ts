@@ -5,6 +5,7 @@ import { Stats } from './draft-stats.interface';
 import { CommonModule } from '@angular/common';
 import { SpriteComponent } from '../../images/sprite.component';
 import { LoadingComponent } from '../../images/loading/loading.component';
+import { DraftOverviewPath } from '../draft-overview-routing.module';
 
 @Component({
   selector: 'draft-stats',
@@ -17,7 +18,7 @@ export class DraftStatsComponent implements OnInit {
     private draftService: DraftService,
     private route: ActivatedRoute
   ) {}
-
+  readonly draftPath = DraftOverviewPath;
   teamId: string = '';
   teamStats!: Stats[];
   sortBy:

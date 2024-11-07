@@ -8,9 +8,11 @@ import { DraftFormEditComponent } from './draft-form/draft-form-edit/draft-form-
 import { DraftArchiveComponent } from './draft-archives/draft-archives.component';
 import { DraftStatsComponent } from './draft-stats/draft-stats.component';
 
+export const DraftOverviewPath: string = 'drafts';
+
 const routes: Routes = [
   {
-    path: 'drafts',
+    path: DraftOverviewPath,
     component: DraftOverviewComponent,
     children: [
       {

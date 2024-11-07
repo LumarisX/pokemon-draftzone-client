@@ -10,6 +10,7 @@ import duration from 'dayjs/plugin/duration';
 import advancedFormat from 'dayjs/plugin/advancedFormat';
 import { CopySVG } from '../../images/svg-components/copy.component';
 import { CheckSVG } from '../../images/svg-components/score.component copy';
+import { DraftOverviewPath } from '../../draft-overview/draft-overview-routing.module';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -49,6 +50,7 @@ export class OpponentSchedule implements OnInit {
     return this.timeData.dateTime.format('X');
   }
   copied: boolean = false;
+  readonly draftPath = DraftOverviewPath;
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -150,7 +152,7 @@ export class OpponentSchedule implements OnInit {
       .subscribe({
         next: (response) => {
           console.log('Success!', response);
-          this.router.navigate([`/drafts/${this.teamId}`]);
+          this.router.navigate([`['/', draftPath]/${this.teamId}`]);
         },
         error: (error) => {
           console.error('Error!', error);

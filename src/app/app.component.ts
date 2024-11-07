@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from './auth/auth0.service';
 import { SettingsService } from './pages/settings/settings.service';
+import { DraftOverviewPath } from './draft-overview/draft-overview-routing.module';
 
 @Component({
   selector: 'app-root',
@@ -16,7 +17,7 @@ export class AppComponent implements OnInit {
   }[] = [
     {
       title: 'Drafts',
-      route: '/drafts',
+      route: DraftOverviewPath,
     },
     {
       title: 'Planner',
