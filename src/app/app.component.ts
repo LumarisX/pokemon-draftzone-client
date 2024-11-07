@@ -16,7 +16,7 @@ export class AppComponent implements OnInit {
     route: string;
   }[] = [
     {
-      title: 'Drafts',
+      title: 'My Drafts',
       route: DraftOverviewPath,
     },
     {
