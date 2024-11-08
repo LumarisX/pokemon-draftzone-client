@@ -6,7 +6,7 @@ export const BattleZonePath: string = 'battle-zone';
 
 const routes: Routes = [
   {
-    path: BattleZonePath,
+    path: BattleZonePath + '/pdbl',
     component: BattleZoneComponent,
   },
 ];
