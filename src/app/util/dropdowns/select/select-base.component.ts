@@ -8,6 +8,7 @@ import {
   Output,
 } from '@angular/core';
 import { ControlValueAccessor } from '@angular/forms';
+import { isPartialMatch } from '../..';
 
 @Component({
   standalone: true,
@@ -38,6 +39,13 @@ export class SelectBaseComponent<T> implements ControlValueAccessor {
   private _selectedItem: { name: string; value: T; icon?: string } | null =
     null;
   @Input()
+  set startItem(item: Partial<T> | null) {
+    if (item) {
+      this._selectedItem =
+        this.items.find((e) => isPartialMatch(e.value, item)) ?? null;
+    }
+  }
+
   set selectedItem(item: T | { name: string; value: T; icon?: string } | null) {
     this._selectedItem =
       item === null

@@ -60,7 +60,6 @@ export class OpponentFormEditComponent implements OnInit {
             let matchup = <Matchup>data;
             let pokemonForms: FormGroup[] = [];
             for (let pokemon of matchup.bTeam.team) {
-              console.log(pokemon);
               pokemonForms.push(PokemonFormComponent.addPokemonForm(pokemon));
             }
             this.opponentForm = new FormGroup({
