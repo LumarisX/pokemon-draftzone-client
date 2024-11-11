@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
+import { Pokemon } from '../interfaces/draft';
 
 @Injectable({
   providedIn: 'root',
@@ -36,6 +37,19 @@ export class DataService {
         })
       );
     }
+  }
+
+  getPokemonList(ruleset: string): Observable<{
+    species: Pokemon[];
+    ruleset: string;
+  }> {
+    return this.apiService
+      .get('data/listpokemon', false, { ruleset: ruleset })
+      .pipe(
+        tap((response) => {
+          // this.cache.rulesets = rulesets;
+        })
+      );
   }
 
   advancesearch(query: string[], ruleset?: string, format?: string) {

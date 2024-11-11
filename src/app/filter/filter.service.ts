@@ -9,7 +9,7 @@ export class FilterService {
 
   constructor() {
     for (const key in Namedex) {
-      this.nameList.push({ name: Namedex[key].name[0], id: key });
+      this.nameList.push({ name: Namedex[key].names[0], id: key });
     }
     this.nameList.sort((a, b) => a.name.localeCompare(b.name));
   }

@@ -50,7 +50,7 @@ export class DraftFormNewComponent implements OnInit {
           teamArray.push(
             PokemonFormComponent.addPokemonForm({
               id: id,
-              name: Namedex[id].name[0],
+              name: Namedex[id].names[0],
             })
           );
         }

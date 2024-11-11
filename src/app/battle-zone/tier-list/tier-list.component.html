@@ -1,0 +1,7 @@
+<div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
+  @for (pokemon of list; track pokemon) {
+  <div draggable="true" cdkDrag class="example-box">
+    <div class="h-8"><sprite [pokemon]="pokemon"></sprite></div>
+  </div>
+  }
+</div>
