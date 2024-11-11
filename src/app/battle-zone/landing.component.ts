@@ -2,11 +2,11 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'battle-zone',
+  selector: 'bz-landing',
   standalone: true,
-  templateUrl: './battle-zone.component.html',
+  templateUrl: './landing.component.html',
   imports: [CommonModule],
 })
-export class BattleZoneComponent {
+export class BZLandingComponent {
   constructor() {}
 }

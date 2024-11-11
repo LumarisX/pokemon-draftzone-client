@@ -1,13 +1,13 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { BattleZoneComponent } from './battle-zone.component';
+import { BZLandingComponent } from './landing.component';
 
 export const BattleZonePath: string = 'battle-zone';
 
 const routes: Routes = [
   {
     path: BattleZonePath + '/pdbl',
-    component: BattleZoneComponent,
+    component: BZLandingComponent,
   },
 ];
 
