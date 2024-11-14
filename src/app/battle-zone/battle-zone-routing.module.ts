@@ -3,20 +3,25 @@ import { RouterModule, Routes } from '@angular/router';
 import { BZLandingComponent } from './landing.component';
 import { BZTierListComponent } from './tier-list/tier-list.component';
 import { BZSignUpComponent } from './sign-up/sign-up.component';
+import { BZRulesComponent } from './rules/rules.component';
 
 export const BattleZonePath: string = 'battle-zone';
 
 const routes: Routes = [
   {
-    path: BattleZonePath + '/pdbl',
+    path: 'pdbl',
     component: BZLandingComponent,
   },
   {
-    path: BattleZonePath + '/pdbl/sign-up',
+    path: 'pdbl/sign-up',
     component: BZSignUpComponent,
   },
   {
-    path: BattleZonePath + '/pdbl/tier-list',
+    path: 'pdbl/rules',
+    component: BZRulesComponent,
+  },
+  {
+    path: 'pdbl/tier-list',
     component: BZTierListComponent,
   },
 ];

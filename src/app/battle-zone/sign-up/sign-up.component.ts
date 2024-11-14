@@ -1,16 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import {
-  FormArray,
   FormBuilder,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { LeagueAdsService } from '../../api/league-ads.service';
-import { DataService } from '../../api/data.service';
 import { Router } from '@angular/router';
+import { LeagueAdsService } from '../../api/league-ads.service';
 
 @Component({
   selector: 'bz-sign-up',
@@ -29,7 +27,6 @@ export class BZSignUpComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private leagueService: LeagueAdsService,
-    private dataService: DataService,
     private router: Router
   ) {}
 
@@ -42,11 +39,5 @@ export class BZSignUpComponent implements OnInit {
     });
   }
 
-  onSubmit() {
-    if (this.signupForm.valid) {
-      this.leagueService.newAd(this.signupForm.value).subscribe(() => {
-        this.router.navigate(['/league-list/manage']);
-      });
-    }
-  }
+  onSubmit() {}
 }
