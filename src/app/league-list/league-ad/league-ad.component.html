@@ -105,17 +105,18 @@
           {{ league.closesAt | date }}
         </div>
       </div>
+      @if (league.seasonStart || league.seasonEnd) {
       <div class="flex-1 justify-center flex flex-wrap space-x-2">
         <strong>Season:</strong>
         <div
           class="text-center block overflow-hidden whitespace-nowrap text-ellipsis sm:overflow-visible"
         >
           {{ league.seasonStart | date }}
-          <ng-container *ngIf="league.seasonEnd">
-            - {{ league.seasonEnd | date }} ({{ weeks }} weeks)
-          </ng-container>
+          @if (league.seasonEnd) { - {{ league.seasonEnd | date }} ({{ weeks }}
+          weeks) }
         </div>
       </div>
+      }
     </div>
     <div class="flex items-center space-x-1 mt-1 flex-wrap" *ngIf="collapsed">
       <div class="h-6 aspect-square" *ngIf="league.tags.includes('poke')">
