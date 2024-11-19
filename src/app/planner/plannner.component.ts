@@ -38,6 +38,7 @@ import { MoveComponent } from './moves/moves.component';
 import { SummaryComponent } from './summary/summary.component';
 import { TypechartComponent } from './typechart/typechart.component';
 import { CopySVG } from '../images/svg-components/copy.component';
+import { DraftOverviewPath } from '../draft-overview/draft-overview-routing.module';
 
 type Planner = {
   summary: Summary;
@@ -103,7 +104,7 @@ export class PlannerComponent implements OnInit {
   movechart: MoveChart = [];
   draftSize = 0;
   settings = true;
-
+  draftPath = DraftOverviewPath;
   names = nameList();
 
   constructor(
