@@ -1,3 +1,9 @@
+<div
+  class="px-4 py-2 w-fit md:my-4 mx-4 my-2 rounded-lg bg-menu-200 hover:bg-menu-300 hover:cursor-pointer border border-menu-300 hover:border-menu-400"
+  routerLink="/battle-zone/pdbl"
+>
+  Back
+</div>
 <div class="p-4">
   <form
     [formGroup]="signupForm"
@@ -56,8 +62,12 @@
     <!-- Confirm -->
     <div class="text-sm font-medium space-y-2">
       <span
-        >By signing up you are commiting to scheduling and playing weekly games
-        on Showdown to the best of your ability during an 8 week season.</span
+        >Do you accept the
+        <span
+          class="text-blue-600 hover:text-blue-700 hover:cursor-pointer"
+          routerLink="/battle-zone/pdbl/rules"
+          >league rules</span
+        >?</span
       >
       <div class="flex items-center space-x-2">
         <label for="confirm" class="text-sm font-medium text-menu-700">

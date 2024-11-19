@@ -26,8 +26,8 @@
             16-1, etc.).
           </li>
           <li>
-            Each coach must draft between 10 and 12 Pokémon with a 120-point
-            budget.
+            Each coach must draft between 10 and 12 Pokémon with a
+            {{ points }}-point budget.
           </li>
           <li>
             A coach can end the draft after 10 picks without spending the full
@@ -55,7 +55,10 @@
       <section class="mb-10">
         <h2 class="text-2xl font-semibold font-nasa mb-4">Terastalisation</h2>
         <ul class="list-disc list-inside space-y-2">
-          <li>Each team has 20 Tera Shards to allocate to Tera Captains.</li>
+          <li>
+            Each team has {{ teraPoints }} Tera Points to allocate to Tera
+            Captains.
+          </li>
           <li>
             Tera Captaincy costs the same number of Tera Shards as the drafted
             point value of the Pokémon.
@@ -65,15 +68,13 @@
             original type and two additional types, including Stellar.
           </li>
           <li>
-            Teams may have up to 3 Tera Captains within the 20-point limit.
+            Teams may have up to 3 Tera Captains within the
+            {{ teraPoints }}-point limit.
           </li>
           <li>
             Only Pokémon with a value of 12 points or less can be Tera Captains.
           </li>
-          <li>
-            The following Pokémon cannot be Tera Captains: Shedinja, Regieleki,
-            Terapagos, Espathra, Cloyster, Polteageist.
-          </li>
+          <li>The following Pokémon cannot be Tera Captains:</li>
         </ul>
       </section>
 
@@ -101,26 +102,28 @@
         </h2>
         <ul class="list-disc list-inside space-y-2">
           <li>
-            Teams have up to 5 Free Agency transactions through the end of Week
-            6.
+            Teams have up to {{ transactions }} Free Agency transactions through
+            the end of Week 7.
           </li>
           <li>
             A trade transaction is used for every pokemon you recieve from the
             draft pool.
           </li>
           <li>
-            Teams have up to 5 inter-team trades through the end of Week 6.
+            Teams have up to {{ transactions }} inter-team trades through the
+            end of Week 7.
           </li>
           <li>
             A 24-hour grace period allows for unlimited Free Agency and trades
             before selecting Tera Captains.
           </li>
           <li>
-            Reassigning Tera Captaincy within the team does consume a
+            Reassigning a Tera Captain within the team will consume a
             transaction.
           </li>
           <li>
-            Tera types may only be changed once per season, using one of the 7
+            Tera types may only be changed once per season, using one of the
+            {{ transactions }}
             transactions.
           </li>
           <li>Transactions take effect the following week.</li>
@@ -219,9 +222,9 @@
             Banned items: Bright Powder, Lax Incense, King's Rock, Focus Band,
             Razor Fang, Quick Claw.
           </li>
-          <li>
+          <li class="">
             Banned moves: Hidden Power, Shed Tail, Last Respects, Revival
-            Blessing, Z Moves.
+            Blessing, Z Moves<z-svg class="w-6 inline-block" />.
           </li>
           <li>
             Games ending on a timer will be counted as a loss for the team that
