@@ -11,19 +11,28 @@
         <gear-svg class="w-5"></gear-svg>
         <compact-svg [up]="settings"></compact-svg>
       </div>
-      <div class="flex w-full p-0.5 space-x-2 overflow-x-auto scrollbar-hidden">
+      <div class="flex w-full p-0.5 space-x-1 overflow-x-auto scrollbar-hidden">
         <div
           [ngClass]="selectedDraftsStyle(j)"
-          class="flex border rounded border-menu-500 hover:cursor-pointer"
+          class="flex border items-center rounded border-menu-500 hover:cursor-pointer"
           *ngFor="let draftCtrl of draftArray.controls; let j = index"
           [formGroupName]="j"
           (click)="switchDrafts(j)"
         >
           <input
-            class="w-32 px-2 py-0.5 text-sm rounded bg-inherit text-ellipsis"
+            class="w-28 px-2 py-0.5 font-nasa text-sm rounded bg-inherit text-ellipsis"
             formControlName="draftName"
           />
-          <trash-svg class="w-4 m-1" (click)="deletePlan(j)"></trash-svg>
+          <copy-svg
+            class="w-4 m-1 hover:m-0.5 hover:w-5"
+            (click)="copyToNew(j)"
+          ></copy-svg>
+          @if (draftArray.controls.length>1) {
+          <trash-svg
+            class="w-4 m-1 hover:m-0.5 hover:w-5"
+            (click)="deletePlan(j)"
+          ></trash-svg>
+          }
         </div>
         <button *ngIf="draftSize < 5" (click)="addDraft()" c>
           <div
@@ -117,13 +126,7 @@
           />
         </div>
         <button
-          class="p-0.5 border-2 text-sm rounded hover:bg-menu-300 bg-menu-100 border-menu-400"
-          (click)="copyToNew()"
-        >
-          Copy to New Plan
-        </button>
-        <button
-          class="p-0.5 border-2 text-sm rounded hover:bg-menu-300 bg-menu-100 border-menu-400"
+          class="p-0.5 border-2 text-sm font-semibold rounded hover:bg-menu-300 bg-menu-100 border-menu-400"
           routerLink="['/', draftPath]/new"
           [queryParams]="{
             team: team,
@@ -225,7 +228,7 @@
         <div
           class="flex flex-col flex-grow h-full max-w-full divide-y-2 divide-menu-200"
         >
-          <div class="flex w-full p-1 space-x-2">
+          <div class="flex w-full p-1 min-h-fit space-x-2 overflow-x-auto">
             <div
               class="block px-2 py-1 border-2 rounded-lg cursor-pointer md:hidden"
               [ngClass]="tabColor(4)"
@@ -262,7 +265,7 @@
               Find
             </div>
           </div>
-          <div class="flex flex-grow w-full min-h-0 p-1">
+          <div class="flex flex-grow w-full min-h-0 p-1 overflow-x-auto">
             <summary
               class="h-full list-none"
               *ngIf="tabSelected == 0 && summary"

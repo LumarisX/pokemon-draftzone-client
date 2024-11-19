@@ -37,6 +37,7 @@ import { SelectSearchComponent } from '../util/dropdowns/select/select-search.co
 import { MoveComponent } from './moves/moves.component';
 import { SummaryComponent } from './summary/summary.component';
 import { TypechartComponent } from './typechart/typechart.component';
+import { CopySVG } from '../images/svg-components/copy.component';
 
 type Planner = {
   summary: Summary;
@@ -67,6 +68,7 @@ type Planner = {
     FinderCoreComponent,
     SelectSearchComponent,
     CompactSVG,
+    CopySVG,
   ],
   animations: [
     trigger('growIn', [
@@ -429,8 +431,8 @@ export class PlannerComponent implements OnInit {
       : 'bg-menu-250 hover:bg-menu-150';
   }
 
-  copyToNew() {
-    let draft = this.getDraftFormGroup();
+  copyToNew(index: number) {
+    let draft = this.draftArray.at(index);
     let draftCopy = this.fb.group({
       format: [draft.get('format')?.value, Validators.required],
       ruleset: [draft.get('ruleset')?.value, Validators.required],
