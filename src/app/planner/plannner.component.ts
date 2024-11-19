@@ -19,24 +19,24 @@ import {
 import { RouterModule } from '@angular/router';
 import { DataService } from '../api/data.service';
 import { PlannerService } from '../api/planner.service';
-import { FilterComponent } from '../filter/filter.component';
+import { Type } from '../data';
+import { getPidByName, Namedex, nameList, PokemonId } from '../data/namedex';
 import { SpriteComponent } from '../images/sprite.component';
+import { CompactSVG } from '../images/svg-components/compact.component';
+import { GearSVG } from '../images/svg-components/gear.component';
+import { PlusSVG } from '../images/svg-components/plus.component';
+import { TrashSVG } from '../images/svg-components/trash.component';
 import { Pokemon } from '../interfaces/draft';
 import {
   MoveChart,
   Summary,
   TypeChart,
 } from '../matchup-overview/matchup-interface';
-import { getPidByName, Namedex, nameList, PokemonId } from '../data/namedex';
+import { FinderCoreComponent } from '../tools/finder/finder-core.component';
+import { SelectSearchComponent } from '../util/dropdowns/select/select-search.component';
 import { MoveComponent } from './moves/moves.component';
 import { SummaryComponent } from './summary/summary.component';
 import { TypechartComponent } from './typechart/typechart.component';
-import { PlusSVG } from '../images/svg-components/plus.component';
-import { TrashSVG } from '../images/svg-components/trash.component';
-import { GearSVG } from '../images/svg-components/gear.component';
-import { FinderCoreComponent } from '../tools/finder/finder-core.component';
-import { Type } from '../data';
-import { SelectSearchComponent } from '../util/dropdowns/select/select-search.component';
 
 type Planner = {
   summary: Summary;
@@ -55,7 +55,6 @@ type Planner = {
   imports: [
     CommonModule,
     RouterModule,
-    FilterComponent,
     TypechartComponent,
     SummaryComponent,
     MoveComponent,
@@ -67,6 +66,7 @@ type Planner = {
     SpriteComponent,
     FinderCoreComponent,
     SelectSearchComponent,
+    CompactSVG,
   ],
   animations: [
     trigger('growIn', [
@@ -295,8 +295,8 @@ export class PlannerComponent implements OnInit {
         drafted: boolean;
       }[];
     } = {
-      format: '',
-      ruleset: '',
+      format: 'Singles',
+      ruleset: 'Gen9 NatDex',
       draftName: 'Draft ' + (this.draftSize + 1),
       min: 10,
       max: 12,

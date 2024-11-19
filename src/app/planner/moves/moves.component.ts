@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { SpriteComponent } from '../../images/sprite.component';
 import { MoveChart } from '../../matchup-overview/matchup-interface';
 import { MoveCategoryComponent } from '../../matchup-overview/matchup/movechart/move-category/move-category.component';
 
@@ -9,7 +8,7 @@ import { MoveCategoryComponent } from '../../matchup-overview/matchup/movechart/
   selector: 'moves',
   standalone: true,
   templateUrl: './moves.component.html',
-  imports: [CommonModule, FormsModule, SpriteComponent, MoveCategoryComponent],
+  imports: [CommonModule, FormsModule, MoveCategoryComponent],
 })
 export class MoveComponent {
   @Input() movechart!: MoveChart;

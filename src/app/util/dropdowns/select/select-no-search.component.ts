@@ -8,7 +8,7 @@ import { NG_VALUE_ACCESSOR } from '@angular/forms';
 @Component({
   selector: 'select-no-search',
   standalone: true,
-  imports: [CommonModule, SelectBaseComponent, CompactSVG, ScrollingModule],
+  imports: [CommonModule, CompactSVG, ScrollingModule],
   templateUrl: 'select-no-search.component.html',
   providers: [
     {

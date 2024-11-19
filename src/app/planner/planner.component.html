@@ -5,12 +5,11 @@
       class="flex items-center p-1 space-x-1 border-b-2 overflow-y-clip h-fit bg-menu-200 border-menu-300"
     >
       <div
-        class="flex items-center font-semibold w-20 px-1 py-0.5 border bg-menu-100 hover:bg-menu-50 hover:cursor-pointer rounded border-menu-500"
+        class="flex items-center font-semibold w-fit px-1 py-0.5 border bg-menu-100 hover:bg-menu-50 hover:cursor-pointer rounded border-menu-500"
         (click)="settings = !settings"
       >
         <gear-svg class="w-5"></gear-svg>
-        <div *ngIf="!settings" class="px-1">Show</div>
-        <div *ngIf="settings" class="px-1">Hide</div>
+        <compact-svg [up]="settings"></compact-svg>
       </div>
       <div class="flex w-full p-0.5 space-x-2 overflow-x-auto scrollbar-hidden">
         <div
@@ -169,6 +168,7 @@
                     <select-search
                       (itemSelected)="resultSelected(teamCtrl, $event)"
                       [items]="names"
+                      [startItem]="teamCtrl.value"
                       placeholder="Select Pokemon"
                     ></select-search>
                   </div>
@@ -314,6 +314,7 @@
                       <select-search
                         (itemSelected)="resultSelected(teamCtrl, $event)"
                         [items]="names"
+                        [startItem]="teamCtrl.value"
                         placeholder="Select Pokemon"
                       ></select-search>
                     </div>

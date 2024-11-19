@@ -8,13 +8,7 @@ import { SelectBaseComponent } from './select-base.component';
 @Component({
   selector: 'select-search',
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    CompactSVG,
-    SelectBaseComponent,
-    ScrollingModule,
-  ],
+  imports: [CommonModule, FormsModule, CompactSVG, ScrollingModule],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,

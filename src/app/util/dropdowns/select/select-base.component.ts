@@ -1,4 +1,3 @@
-import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { CommonModule } from '@angular/common';
 import {
   Component,
@@ -12,7 +11,7 @@ import { isPartialMatch } from '../..';
 
 @Component({
   standalone: true,
-  imports: [CommonModule, CdkVirtualScrollViewport],
+  imports: [CommonModule],
   template: '',
 })
 export class SelectBaseComponent<T> implements ControlValueAccessor {
