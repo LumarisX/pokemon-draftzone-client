@@ -55,6 +55,7 @@ export type TypeChart = {
     weak: {
       [key in ExtendedType]: number;
     };
+    types: string[];
     disabled?: Boolean;
   })[];
 };

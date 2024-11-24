@@ -18,11 +18,11 @@ export class TypechartComponent implements OnChanges {
     types: Type[][];
   };
   types = TYPES;
+  counts: number[] = [];
   weaknesses: number[] = [];
   resistances: number[] = [];
   difference: number[] = [];
   differential: number[] = [];
-  count: number[] = [];
 
   constructor() {}
 
@@ -60,6 +60,14 @@ export class TypechartComponent implements OnChanges {
     return 'border-menu-400';
   }
 
+  countColor(count: number): string {
+    if (count > 3) return 'bg-scale-negative-5 border-scale-negative-6';
+    if (count > 2) return 'bg-scale-negative-4  border-scale-negative-5';
+    if (count > 1) return 'border-menu-400';
+    if (count > 0) return 'bg-scale-positive-4 border-scale-positive-5';
+    return 'border-menu-400';
+  }
+
   diffColor(weak: number): string {
     if (weak > 3) return 'bg-scale-positive-6 border-scale-positive-7';
     if (weak > 2) return 'bg-scale-positive-5 border-scale-positive-6';
@@ -86,11 +94,11 @@ export class TypechartComponent implements OnChanges {
     this.resistances = new Array(this.types.length).fill(0);
     this.difference = new Array(this.types.length).fill(0);
     this.differential = new Array(this.types.length).fill(0);
-    this.count = new Array(this.types.length).fill(0);
+    this.counts = new Array(this.types.length).fill(0);
     for (let pokemon of this.typechart.team) {
       if (!pokemon.disabled) {
         for (let t in this.types) {
-          // if (pokemon.types.includes(this.types[t])) this.count[t]++;
+          if (pokemon.types.includes(this.types[t])) this.counts[t]++;
           if (pokemon.weak[this.types[t]] > 1) {
             this.weaknesses[t]++;
             this.difference[t]--;

@@ -71,6 +71,20 @@
           </thead>
           <tfoot class="bg-menu-300">
             <tr>
+              <th class="text-xs border border-r-2 bg-menu-300 border-menu-400">
+                Count
+              </th>
+              <td class="flex space-x-0.5">
+                <div
+                  *ngFor="let count of counts"
+                  class="text-center border h-full w-10"
+                  [ngClass]="countColor(count)"
+                >
+                  {{ count | number : "1.0-0" }}
+                </div>
+              </td>
+            </tr>
+            <tr>
               <th
                 class="text-xs border border-r-2 bg-scale-negative-3 border-menu-400"
               >
