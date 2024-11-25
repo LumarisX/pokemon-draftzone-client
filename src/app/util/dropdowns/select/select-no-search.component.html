@@ -1,5 +1,5 @@
 <div
-  class="relative w-full max-w-xs filter-container"
+  [ngClass]="['relative w-full max-w-xs filter-container', customClass]"
   (click)="$event.stopPropagation()"
 >
   <!-- Value Box -->

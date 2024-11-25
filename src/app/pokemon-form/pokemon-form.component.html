@@ -8,9 +8,9 @@
         shiny: pokemonForm.value.shiny
       }"
     ></sprite>
-    <div class="relative col-span-6 sm:col-span-4">
+    <div class="col-span-6 sm:col-span-4">
       <label class="p-1 font-semibold">Name</label>
-      <div class="w-full rounded-lg bg-menu-100 text-medium">
+      <div class="w-full rounded-lg bg-aTeam-100 text-medium">
         <select-search
           [placeholder]="'Select a Pokemon'"
           [items]="names"
@@ -18,13 +18,8 @@
           (itemSelected)="resultSelected($event)"
         ></select-search>
       </div>
-      <div
-        *ngIf="
-          pokemonForm.get('name')?.touched && pokemonForm.get('name')?.invalid
-        "
-      >
-        Invalid name
-      </div>
+      @if (pokemonForm.get('name')?.touched &&
+      pokemonForm.get('name')?.invalid){ Invalid name }
     </div>
     <div class="col-span-3 sm:col-span-1">
       <label class="flex items-center justify-center p-1 font-semibold"

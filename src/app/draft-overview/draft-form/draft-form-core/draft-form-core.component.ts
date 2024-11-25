@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import {
   AbstractControl,
   FormArray,
@@ -12,8 +19,9 @@ import { SpriteComponent } from '../../../images/sprite.component';
 import { Pokemon } from '../../../interfaces/draft';
 import { PokemonFormComponent } from '../../../pokemon-form/pokemon-form.component';
 import { ImportSVG } from '../../../images/svg-components/import.component';
-import { getPidByName } from '../../../data/namedex';
+import { getPidByName, nameList } from '../../../data/namedex';
 import { SelectNoSearchComponent } from '../../../util/dropdowns/select/select-no-search.component';
+import { SelectSearchComponent } from '../../../util/dropdowns/select/select-search.component';
 
 @Component({
   selector: 'draft-form-core',
@@ -26,6 +34,7 @@ import { SelectNoSearchComponent } from '../../../util/dropdowns/select/select-n
     ImportSVG,
     ReactiveFormsModule,
     SelectNoSearchComponent,
+    SelectSearchComponent,
   ],
   templateUrl: './draft-form-core.component.html',
 })
@@ -36,6 +45,7 @@ export class DraftFormCoreComponent implements OnInit {
   @Output() formSubmitted = new EventEmitter<FormGroup>();
   importing = false;
   constructor(private dataService: DataService) {}
+  names = nameList();
 
   get teamArray(): FormArray {
     return this.draftForm?.get('team') as FormArray;
@@ -52,6 +62,9 @@ export class DraftFormCoreComponent implements OnInit {
     this.draftForm.setValidators(this.validateDraftForm);
   }
 
+  @ViewChild(SelectSearchComponent)
+  selectSearch!: SelectSearchComponent<Pokemon>;
+
   addNewPokemon(
     index: number = this.teamArray.length,
     pokemonData: Pokemon = { id: '', name: '' }
@@ -60,6 +73,7 @@ export class DraftFormCoreComponent implements OnInit {
       index + 1,
       PokemonFormComponent.addPokemonForm(pokemonData)
     );
+    this.selectSearch.clearSelection();
   }
 
   deletePokemon(index: number) {

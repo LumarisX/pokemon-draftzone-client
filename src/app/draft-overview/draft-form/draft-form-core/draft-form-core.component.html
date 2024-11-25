@@ -51,33 +51,38 @@
   </div>
   <div class="p-2 border-2 border-aTeam-200 rounded-xl">
     <ng-container *ngIf="!importing; else importMenu">
-      <button
-        type="button"
-        (click)="importing = true"
-        class="flex items-center justify-center w-32 h-6 px-1 my-3 font-bold rounded-full shadow bg-menu-200 hover:bg-menu-100 shadow-menu-600"
-      >
-        Import
-        <import-svg class="h-full"></import-svg>
-      </button>
-      <div class="grid gap-x-4 md:grid-cols-1 lg:grid-cols-2">
-        <pokemon-form
-          *ngFor="let pokemonForm of teamArray.controls; let i = index"
-          [pokemonForm]="$any(pokemonForm)"
-          class="w-full"
-          [formIndex]="i"
-          (deletePokemonEvent)="deletePokemon($event)"
-          (addPokemonEvent)="addNewPokemon(i, $event)"
-        ></pokemon-form>
-      </div>
-
-      <div class="flex justify-center w-full">
+      <div class="flex w-full items-center justify-between">
+        <div class="px-4 w-full max-w-160">
+          <select-search
+            [placeholder]="'Add a Pokemon'"
+            [customClass]="
+              'rounded-lg bg-aTeam-200 shadow-md shadow-aTeam-400 der border-aTeam-300'
+            "
+            (itemSelected)="
+              $event ? addNewPokemon(teamArray.controls.length, $event) : ''
+            "
+            [items]="names"
+          ></select-search>
+        </div>
         <button
           type="button"
-          (click)="addNewPokemon()"
-          class="w-32 px-1 my-3 font-bold rounded-full shadow bg-menu-200 hover:bg-menu-100 shadow-menu-600"
+          (click)="importing = true"
+          class="flex items-center justify-center w-32 h-6 px-1 my-3 font-bold rounded-full shadow bg-menu-200 hover:bg-menu-100 shadow-menu-600"
         >
-          Add Pokemon
+          Import
+          <import-svg class="h-full"></import-svg>
         </button>
+      </div>
+      <div class="grid min-h-48 gap-x-4 md:grid-cols-1 lg:grid-cols-2">
+        @for (pokemonForm of teamArray.controls; track $index) {
+        <pokemon-form
+          [pokemonForm]="$any(pokemonForm)"
+          class="w-full"
+          [formIndex]="$index"
+          (deletePokemonEvent)="deletePokemon($event)"
+          (addPokemonEvent)="addNewPokemon($index, $event)"
+        ></pokemon-form>
+        }
       </div>
     </ng-container>
     <ng-template #importMenu>

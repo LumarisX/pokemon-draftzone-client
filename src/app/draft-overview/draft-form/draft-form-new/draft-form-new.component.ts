@@ -54,10 +54,6 @@ export class DraftFormNewComponent implements OnInit {
             })
           );
         }
-      } else {
-        for (let i = 0; i < 10; i++) {
-          teamArray.push(PokemonFormComponent.addPokemonForm());
-        }
       }
       this.draftForm = new FormGroup({
         leagueName: new FormControl('', Validators.required),
