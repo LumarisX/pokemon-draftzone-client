@@ -1,6 +1,22 @@
 <div class="h-full overflow-y-auto">
+  <div class="flex justify-between px-4">
+    <div class="space-x-2 flex items-center">
+      <label for="unlearned">Show Unlearned</label>
+      <input #unlearned [(ngModel)]="showUnlearned" type="checkbox" />
+    </div>
+    <!-- <div class="space-x-2 flex items-center">
+      <label for="unlearned">Collapse</label>
+      <div
+        class="items-center justify-end w-4 h-4 m-2 ml-auto border rounded cursor-pointer border-menu-500 bg-menu-400 hover:bg-menu-200"
+      >
+        <minus-svg class="h-full" title="Hide"></minus-svg>
+      </div>
+    </div> -->
+  </div>
+
   <div class="border-4 border-menu-400 bg-menu-400 h-fit">
     <move-category
+      [unlearned]="showUnlearned"
       *ngFor="let category of this.movechart"
       [category]="category"
       [cols]="2"

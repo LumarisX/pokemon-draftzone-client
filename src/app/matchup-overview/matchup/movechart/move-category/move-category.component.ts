@@ -28,7 +28,7 @@ import { MinusSVG } from '../../../../images/svg-components/minus.component';
 export class MoveCategoryComponent {
   @Input() category!: MoveCategory;
   @Input() cols?: number = 1;
-
+  @Input() unlearned: boolean = false;
   show: boolean = true;
   constructor() {}
 
