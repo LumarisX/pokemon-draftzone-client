@@ -35,7 +35,7 @@ export class PokemonFormComponent implements OnInit {
   @Input() formIndex!: number;
   @Output() deletePokemonEvent = new EventEmitter<number>();
   @Output() addPokemonEvent = new EventEmitter<Pokemon>();
-
+  @Input() bg: string = 'page';
   pokemon: Pokemon = { name: '', id: '' };
   names = nameList();
 

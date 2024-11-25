@@ -35,6 +35,7 @@ export class DraftFormNewComponent implements OnInit {
   formats = [];
   rulesets = [];
   draftForm!: FormGroup;
+  draftPath = DraftOverviewPath;
 
   constructor(
     private router: Router,

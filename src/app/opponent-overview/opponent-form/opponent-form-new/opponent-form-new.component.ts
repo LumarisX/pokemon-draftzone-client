@@ -41,10 +41,7 @@ export class OpponentFormNewComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    let teamArray = [];
-    for (let i = 0; i < 10; i++) {
-      teamArray.push(PokemonFormComponent.addPokemonForm());
-    }
+    let teamArray: FormGroup[] = [];
     this.opponentForm = new FormGroup({
       teamName: new FormControl('', Validators.required),
       stage: new FormControl('', Validators.required),

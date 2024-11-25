@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import {
   AbstractControl,
   FormArray,
@@ -11,7 +18,8 @@ import { SpriteComponent } from '../../../images/sprite.component';
 import { ImportSVG } from '../../../images/svg-components/import.component';
 import { Pokemon } from '../../../interfaces/draft';
 import { PokemonFormComponent } from '../../../pokemon-form/pokemon-form.component';
-import { getPidByName } from '../../../data/namedex';
+import { getPidByName, nameList } from '../../../data/namedex';
+import { SelectSearchComponent } from '../../../util/dropdowns/select/select-search.component';
 
 @Component({
   selector: 'opponent-form-core',
@@ -23,6 +31,7 @@ import { getPidByName } from '../../../data/namedex';
     PokemonFormComponent,
     ImportSVG,
     ReactiveFormsModule,
+    SelectSearchComponent,
   ],
   templateUrl: './opponent-form-core.component.html',
 })
@@ -30,6 +39,7 @@ export class OpponentFormCoreComponent implements OnInit {
   @Input() opponentForm!: FormGroup;
   @Output() formSubmitted = new EventEmitter<FormGroup>();
   importing = false;
+  names = nameList();
   constructor() {}
 
   get teamArray(): FormArray {
@@ -44,11 +54,15 @@ export class OpponentFormCoreComponent implements OnInit {
     this.opponentForm.setValidators(this.validateDraftForm);
   }
 
+  @ViewChild(SelectSearchComponent)
+  selectSearch!: SelectSearchComponent<Pokemon>;
+
   addNewPokemon(index: number, pokemonData: Pokemon = { id: '', name: '' }) {
     this.teamArray?.insert(
       index,
       PokemonFormComponent.addPokemonForm(pokemonData)
     );
+    this.selectSearch.clearSelection();
   }
 
   deletePokemon(index: number) {

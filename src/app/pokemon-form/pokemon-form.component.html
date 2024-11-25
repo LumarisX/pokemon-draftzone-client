@@ -10,14 +10,13 @@
     ></sprite>
     <div class="col-span-6 sm:col-span-4">
       <label class="p-1 font-semibold">Name</label>
-      <div class="w-full rounded-lg bg-aTeam-100 text-medium">
-        <select-search
-          [placeholder]="'Select a Pokemon'"
-          [items]="names"
-          [startItem]="{ id: pokemonForm.value.id }"
-          (itemSelected)="resultSelected($event)"
-        ></select-search>
-      </div>
+      <select-search
+        [placeholder]="'Select a Pokemon'"
+        [items]="names"
+        class="w-full rounded-lg text-medium bg-{{ bg }}"
+        [startItem]="{ id: pokemonForm.value.id }"
+        (itemSelected)="resultSelected($event)"
+      ></select-search>
       @if (pokemonForm.get('name')?.touched &&
       pokemonForm.get('name')?.invalid){ Invalid name }
     </div>

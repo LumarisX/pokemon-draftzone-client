@@ -32,7 +32,7 @@ export class SelectBaseComponent<T> implements ControlValueAccessor {
 
   @Input() itemSize: number = 28;
   @Input() placeholder: string = 'Select an item';
-  @Input() customClass: string = '';
+  @Input() class: string = '';
   @Output() itemSelected = new EventEmitter<T | null>();
 
   private _selectedItem: { name: string; value: T; icon?: string } | null =
