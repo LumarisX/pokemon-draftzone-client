@@ -89,16 +89,18 @@ export type CoverageChart = Pokemon & {
 };
 
 export type MatchupData = {
-  format: string;
-  ruleset: string;
-  level: number;
-  leagueName: string;
-  stage: string;
-  gameTime: string;
   speedchart: SpeedChart;
   summary: Summary[];
   overview: Summary[];
   typechart: TypeChart[];
   movechart: MoveChart[];
   coveragechart: CoverageChart[][];
+  details: {
+    leagueName: string;
+    stage: string;
+    gameTime: string;
+    format: string;
+    ruleset: string;
+    level: number;
+  };
 };

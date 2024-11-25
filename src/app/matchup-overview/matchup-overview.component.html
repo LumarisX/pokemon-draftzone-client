@@ -15,19 +15,19 @@
       <div *ngIf="matchupData" class="flex flex-wrap justify-between gap-x-8">
         <div class="w-full text-center sm:w-auto">
           <p class="text-sm font-semibold text-symbolColor-sub">League Name</p>
-          <p class="text-xl font-bold">{{ matchupData.leagueName }}</p>
+          <p class="text-xl font-bold">{{ matchupData.details.leagueName }}</p>
         </div>
         <div class="w-full text-center sm:w-auto">
           <p class="text-sm font-semibold text-symbolColor-sub">Stage</p>
-          <p class="text-xl font-bold">{{ matchupData.stage }}</p>
+          <p class="text-xl font-bold">{{ matchupData.details.stage }}</p>
         </div>
         <div class="w-full text-center sm:w-auto">
           <p class="text-sm font-semibold text-symbolColor-sub">Ruleset</p>
-          <p class="text-xl font-bold">{{ matchupData.ruleset }}</p>
+          <p class="text-xl font-bold">{{ matchupData.details.ruleset }}</p>
         </div>
         <div class="w-full text-center sm:w-auto">
           <p class="text-sm font-semibold text-symbolColor-sub">Format</p>
-          <p class="text-xl font-bold">{{ matchupData.format }}</p>
+          <p class="text-xl font-bold">{{ matchupData.details.format }}</p>
         </div>
         <div *ngIf="timeString" class="w-full text-center sm:w-auto">
           <p class="text-sm font-semibold text-symbolColor-sub">Game Time</p>
@@ -88,19 +88,19 @@
           <div class="flex w-full mb-2">
             <div class="w-1/4 text-center">
               <p class="text-sm font-semibold text-menu-500">League Name</p>
-              <p class="font-bold">{{ matchupData.leagueName }}</p>
+              <p class="font-bold">{{ matchupData.details.leagueName }}</p>
             </div>
             <div class="w-1/4 text-center">
               <p class="text-sm font-semibold text-menu-500">Stage</p>
-              <p class="font-bold">{{ matchupData.stage }}</p>
+              <p class="font-bold">{{ matchupData.details.stage }}</p>
             </div>
             <div class="w-1/4 text-center">
               <p class="text-sm font-semibold text-menu-500">Ruleset</p>
-              <p class="font-bold">{{ matchupData.ruleset }}</p>
+              <p class="font-bold">{{ matchupData.details.ruleset }}</p>
             </div>
             <div class="w-1/4 text-center">
               <p class="text-sm font-semibold text-menu-500">Format</p>
-              <p class="font-bold">{{ matchupData.format }}</p>
+              <p class="font-bold">{{ matchupData.details.format }}</p>
             </div>
           </div>
           <div class="flex w-full">

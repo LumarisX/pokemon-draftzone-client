@@ -77,7 +77,7 @@ export class MatchupOverviewComponent implements OnInit {
           JSON.parse(JSON.stringify(this.matchupData.summary))
         );
         if ('gameTime' in this.matchupData) {
-          let gameTime = dayjs(this.matchupData.gameTime);
+          let gameTime = dayjs(this.matchupData.details.gameTime);
           if (gameTime.isValid()) {
             const currentTime = dayjs();
             if (!gameTime.isBefore(currentTime)) {
@@ -94,7 +94,7 @@ export class MatchupOverviewComponent implements OnInit {
         if (this.matchupData) {
           this.meta.updateTag({
             name: 'og:title',
-            content: `${this.matchupData.leagueName} ${this.matchupData.stage} | ${this.matchupData.overview[0].teamName} vs ${this.matchupData.overview[1].teamName}`,
+            content: `${this.matchupData.details.leagueName} ${this.matchupData.details.stage} | ${this.matchupData.overview[0].teamName} vs ${this.matchupData.overview[1].teamName}`,
           });
           this.meta.updateTag({
             name: 'og:description',
