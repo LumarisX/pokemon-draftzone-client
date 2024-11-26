@@ -5,6 +5,7 @@ import { ReplayComponent } from './replay_analyzer/replay.component';
 import { TeamBuilderComponent } from './teambuilder/teambuilder.component';
 import { TimeConverterComponent } from './time_converter/time_converter.component';
 import { ToolsComponent } from './tools.component';
+import { QuickMatchupFormComponent } from './quick-matchup/quick-matchup-form.component';
 const routes: Routes = [
   {
     path: 'tools',
@@ -25,6 +26,10 @@ const routes: Routes = [
   {
     path: 'tools/teambuilder',
     component: TeamBuilderComponent,
+  },
+  {
+    path: 'tools/quick-matchup',
+    component: QuickMatchupFormComponent,
   },
 ];
 
