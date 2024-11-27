@@ -14,6 +14,9 @@ import { SpriteComponent } from '../images/sprite.component';
 import { TrashSVG } from '../images/svg-components/trash.component';
 import { Pokemon } from '../interfaces/draft';
 import { SelectSearchComponent } from '../util/dropdowns/select/select-search.component';
+import { BadgeSVG } from '../images/svg-components/badge.component';
+import { ShinySVG } from '../images/svg-components/shiny.component';
+import { CircleSVG } from '../images/svg-components/circle.component';
 
 @Component({
   selector: 'pokemon-form',
@@ -27,6 +30,9 @@ import { SelectSearchComponent } from '../util/dropdowns/select/select-search.co
     ReactiveFormsModule,
     TrashSVG,
     SelectSearchComponent,
+    ShinySVG,
+    BadgeSVG,
+    CircleSVG,
   ],
 })
 export class PokemonFormComponent implements OnInit {
@@ -34,7 +40,8 @@ export class PokemonFormComponent implements OnInit {
   @Input() formIndex!: number;
   @Output() deletePokemonEvent = new EventEmitter<number>();
   @Output() addPokemonEvent = new EventEmitter<Pokemon>();
-  @Input() bg: string = 'page';
+  @Input() color: string = 'page';
+  @Input() colorValue: number | undefined;
 
   pokemon: Pokemon = { name: '', id: '' };
   names = nameList();
@@ -106,6 +113,13 @@ export class PokemonFormComponent implements OnInit {
 
   toggleTeraType(type: string) {
     const control = this.pokemonForm.get(`capt.tera.${type}`);
+    if (control) {
+      control.setValue(!control.value);
+    }
+  }
+
+  toggleControl(controlName: string) {
+    const control = this.pokemonForm.get(controlName);
     if (control) {
       control.setValue(!control.value);
     }

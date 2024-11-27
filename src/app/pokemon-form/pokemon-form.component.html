@@ -13,36 +13,45 @@
       <select-search
         [placeholder]="'Select a Pokemon'"
         [items]="names"
-        class="w-full rounded-lg text-medium bg-{{ bg }}"
+        class="w-full rounded-lg text-medium"
+        [ngClass]="['bg-' + color + (colorValue ? '-' + colorValue : '')]"
         [startItem]="{ id: pokemonForm.value.id }"
         (itemSelected)="resultSelected($event)"
       ></select-search>
       @if (pokemonForm.get('name')?.touched &&
       pokemonForm.get('name')?.invalid){ Invalid name }
     </div>
-    <div class="col-span-3 sm:col-span-1">
-      <label class="flex items-center justify-center p-1 font-semibold"
-        >Shiny
-        <input
-          type="checkbox"
-          formControlName="shiny"
-          class="p-1 mx-1 text-center rounded-full text-medium"
-        />
-      </label>
-    </div>
-    <div class="col-span-3 sm:col-span-1">
-      <label class="flex items-center justify-center p-1 font-semibold"
-        >Captain
-        <input
-          type="checkbox"
-          formControlName="captCheck"
-          class="mx-1 text-medium"
-      /></label>
+    <div class="col-span-3 sm:col-span-1 flex justify-center">
       <div
-        *ngIf="pokemonForm.get('captCheck')?.value"
-        formGroupName="capt"
-        class="flex items-center justify-center"
+        (click)="toggleControl('shiny')"
+        class="w-full hover:cursor-pointer h-full max-w-9 aspect-square p-0.5 border-2 rounded-full"
+        [ngClass]="[
+          'bg-' + color + (colorValue ? '-' + colorValue : ''),
+          'hover:bg-' + color + (colorValue ? '-' + (colorValue + 100) : ''),
+          'border-' + color + (colorValue ? '-' + (colorValue + 300) : '')
+        ]"
       >
+        @if (pokemonForm.get('shiny')?.value) {
+        <shiny-svg></shiny-svg>
+        } @else {
+        <circle-svg></circle-svg>
+        }
+      </div>
+    </div>
+    <div class="col-span-3 sm:col-span-1 flex flex-col items-center">
+      <div
+        (click)="toggleControl('captCheck')"
+        class="w-full hover:cursor-pointer h-full max-w-9 aspect-square p-0.5 border-2 rounded-full"
+        [ngClass]="[
+          'bg-' + color + (colorValue ? '-' + colorValue : ''),
+          'hover:bg-' + color + (colorValue ? '-' + (colorValue + 100) : ''),
+          'border-' + color + (colorValue ? '-' + (colorValue + 300) : '')
+        ]"
+      >
+        <badge-svg [selected]="pokemonForm.get('captCheck')?.value"></badge-svg>
+      </div>
+      @if(pokemonForm.get('captCheck')?.value){
+      <div formGroupName="capt" class="flex items-center justify-center">
         <label class="p-1">
           Z:
           <input
@@ -60,25 +69,27 @@
           />
         </label>
       </div>
+      }
     </div>
     <div class="flex items-center justify-center col-span-2 sm:col-span-1">
       <div
-        class="w-1/2 p-1 border-2 rounded-full bg-menu-100 border-menu-400 hover:bg-menu-300"
+        class="w-full hover:cursor-pointer h-full max-w-9 aspect-square p-0.5 border-2 rounded-full"
+        [ngClass]="[
+          'bg-' + color + (colorValue ? '-' + colorValue : ''),
+          'hover:bg-' + color + (colorValue ? '-' + (colorValue + 100) : ''),
+          'border-' + color + (colorValue ? '-' + (colorValue + 300) : '')
+        ]"
         (click)="deletePokemonEvent.emit(formIndex)"
+        title="Delete"
       >
-        <trash-svg title="Delete"></trash-svg>
+        <trash-svg></trash-svg>
       </div>
     </div>
   </div>
   <div formGroupName="capt" class="w-full px-8 col-span-full">
-    <div
-      *ngIf="
-        pokemonForm.get('capt.teraCheck')?.value &&
-        pokemonForm.get('captCheck')?.value
-      "
-      formGroupName="tera"
-      class="flex justify-between"
-    >
+    @if (pokemonForm.get('capt.teraCheck')?.value &&
+    pokemonForm.get('captCheck')?.value) {
+    <div formGroupName="tera" class="flex justify-between">
       <div class="flex justify-center p-1">
         <button
           class="bg-menu-100 text-sm px-2 w-fit border-2 rounded-lg border-menu-300 text-center hover:bg-menu-200"
@@ -87,10 +98,9 @@
           All
         </button>
       </div>
-      <div
-        *ngFor="let type of teraTypes"
-        class="flex justify-center items-center space-x-1"
-      >
+
+      @for (type of teraTypes; track $index) {
+      <div class="flex justify-center items-center space-x-1">
         <div
           class="relative flex items-center justify-center cursor-pointer"
           (click)="toggleTeraType(type)"
@@ -106,7 +116,9 @@
           />
         </div>
       </div>
+      }
     </div>
+    }
   </div>
   <!-- {{ pokemonForm.value | json }} -->
 </form>

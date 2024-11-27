@@ -26,7 +26,8 @@
       @for (pokemonForm of teamArray.controls; track $index) {
       <pokemon-form
         [pokemonForm]="$any(pokemonForm)"
-        [bg]="color + '-100'"
+        [color]="color"
+        [colorValue]="100"
         class="w-full"
         [formIndex]="$index"
         (deletePokemonEvent)="deletePokemon($event)"
@@ -62,6 +63,6 @@
     </div>
   </ng-template>
 </div>
-@for (control of teamArray.controls; track $index) {
+<!-- @for (control of teamArray.controls; track $index) {
 {{ control.value | json }}
-}
+} -->

@@ -3,12 +3,13 @@ import { CommonModule } from '@angular/common';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { CompactSVG } from '../../../images/svg-components/compact.component';
+import { XMarkSVG } from '../../../images/svg-components/xmark.component';
 import { SelectBaseComponent } from './select-base.component';
 
 @Component({
   selector: 'select-search',
   standalone: true,
-  imports: [CommonModule, FormsModule, CompactSVG, ScrollingModule],
+  imports: [CommonModule, FormsModule, CompactSVG, ScrollingModule, XMarkSVG],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,

@@ -20,23 +20,25 @@
     class="absolute z-[100] w-full bg-page border border-menu-300 rounded shadow-lg sm:block hidden"
   >
     <div class="border-b mx-2 border-menu-300">
-      <input
-        #searchbar
-        type="text"
-        placeholder="Search"
-        spellcheck="false"
-        [(ngModel)]="query"
-        (keyup)="keypress($event.key)"
-        class="w-full bg-page p-2 outline-none"
-      />
+      <div class="flex items-center">
+        <input
+          #searchbar
+          type="text"
+          placeholder="Search"
+          spellcheck="false"
+          [(ngModel)]="query"
+          (keyup)="keypress($event.key)"
+          class="flex-grow bg-page p-2 outline-none"
+        />
+        <xmark-svg [iconSize]="1.2" (click)="clearSelection()"></xmark-svg>
+      </div>
     </div>
-
     <!-- Clear button -->
-    <div class="flex justify-end px-2 pt-0.5">
+    <!-- <div class="flex justify-end px-2 pt-0.5">
       <button class="text-menu-500 text-xs" (click)="clearSelection()">
         Clear
       </button>
-    </div>
+    </div> -->
     <!-- Scrollable list -->
     <div class="p-0.5">
       <cdk-virtual-scroll-viewport
