@@ -24,7 +24,7 @@ export class ArchiveService {
   }
 
   newDraft(draftData: Object) {
-    return this.apiService.post(`archive/teams`, draftData);
+    return this.apiService.post(`archive/teams`, true, draftData);
   }
 
   editDraft(draftId: string, draftData: Object) {
@@ -36,7 +36,11 @@ export class ArchiveService {
   }
 
   newMatchup(teamName: string, matchupData: Object) {
-    return this.apiService.post(`archive/${teamName}/matchups`, matchupData);
+    return this.apiService.post(
+      `archive/${teamName}/matchups`,
+      true,
+      matchupData
+    );
   }
 
   editMatchup(matchupId: string, teamId: string, matchupData: Object) {

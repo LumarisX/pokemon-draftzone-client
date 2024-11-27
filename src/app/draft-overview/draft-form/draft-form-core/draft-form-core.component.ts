@@ -15,11 +15,10 @@ import {
 } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { DataService } from '../../../api/data.service';
-import { SpriteComponent } from '../../../images/sprite.component';
+import { getPidByName, nameList } from '../../../data/namedex';
+import { ImportSVG } from '../../../images/svg-components/import.component';
 import { Pokemon } from '../../../interfaces/draft';
 import { PokemonFormComponent } from '../../../pokemon-form/pokemon-form.component';
-import { ImportSVG } from '../../../images/svg-components/import.component';
-import { getPidByName, nameList } from '../../../data/namedex';
 import { SelectNoSearchComponent } from '../../../util/dropdowns/select/select-no-search.component';
 import { SelectSearchComponent } from '../../../util/dropdowns/select/select-search.component';
 
@@ -29,7 +28,6 @@ import { SelectSearchComponent } from '../../../util/dropdowns/select/select-sea
   imports: [
     CommonModule,
     RouterModule,
-    SpriteComponent,
     PokemonFormComponent,
     ImportSVG,
     ReactiveFormsModule,

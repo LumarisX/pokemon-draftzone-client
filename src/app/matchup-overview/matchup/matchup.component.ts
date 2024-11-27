@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { SpriteComponent } from '../../images/sprite.component';
 import { MatchupData } from '../matchup-interface';
 import { CoveragechartComponent } from './coveragechart/coveragechart.component';
 import { MovechartComponent } from './movechart/movechart.component';
@@ -18,7 +17,6 @@ import { TypechartComponent } from './typechart/typechart.component';
     CommonModule,
     RouterModule,
     SummaryComponent,
-    SpriteComponent,
     TypechartComponent,
     MovechartComponent,
     SpeedchartComponent,

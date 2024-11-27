@@ -63,25 +63,41 @@ export class ApiService {
     }
   }
 
-  post(path: string, data: Object): Observable<any> {
-    return this.auth.getAccessToken().pipe(
-      switchMap((token: string) => {
-        let httpOptions = {
-          headers: new HttpHeaders({
-            'Content-Type': 'application/json',
-            authorization: `Bearer ${token}`,
-          }),
-        };
-        return this.http
-          .post(`${this.serverUrl}/${path}`, data, httpOptions)
-          .pipe(
-            catchError((error: HttpErrorResponse) => {
-              this.errorService.reportError(error);
-              return throwError(() => error);
-            })
-          );
-      })
-    );
+  post(path: string, authenticated: boolean, data: Object): Observable<any> {
+    if (authenticated) {
+      return this.auth.getAccessToken().pipe(
+        switchMap((token: string) => {
+          let httpOptions = {
+            headers: new HttpHeaders({
+              'Content-Type': 'application/json',
+              authorization: `Bearer ${token}`,
+            }),
+          };
+          return this.http
+            .post(`${this.serverUrl}/${path}`, data, httpOptions)
+            .pipe(
+              catchError((error: HttpErrorResponse) => {
+                this.errorService.reportError(error);
+                return throwError(() => error);
+              })
+            );
+        })
+      );
+    } else {
+      let httpOptions = {
+        headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+        }),
+      };
+      return this.http
+        .post(`${this.serverUrl}/${path}`, data, httpOptions)
+        .pipe(
+          catchError((error: HttpErrorResponse) => {
+            this.errorService.reportError(error);
+            return throwError(() => error);
+          })
+        );
+    }
   }
 
   patch(path: string, data: any): Observable<any> {

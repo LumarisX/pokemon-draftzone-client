@@ -13,7 +13,7 @@ export class LeagueAdsService {
   }
 
   newAd(data: Object) {
-    return this.apiService.post(`leagues/manage`, data);
+    return this.apiService.post(`leagues/manage`, true, data);
   }
 
   getMyAds(): Observable<LeagueAd[]> {

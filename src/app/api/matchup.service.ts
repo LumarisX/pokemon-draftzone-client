@@ -11,6 +11,10 @@ export class MatchupService {
     return this.apiService.get(`matchup/${matchupId}`, true);
   }
 
+  getQuickMatchup(matchupData: object) {
+    return this.apiService.post(`matchup/quick`, false, matchupData);
+  }
+
   getSharedMatchup(matchupId: string) {
     return this.apiService.get(`matchup/${matchupId}`, false);
   }

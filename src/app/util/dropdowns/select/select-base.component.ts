@@ -114,7 +114,7 @@ export class SelectBaseComponent<T> implements ControlValueAccessor {
           );
         }
         return item.value === value;
-      }) || null;
+      }) ?? value;
   }
 
   registerOnChange(fn: (value: T | null) => void): void {

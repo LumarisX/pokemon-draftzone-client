@@ -7,9 +7,11 @@ import {
   Validators,
 } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { DataService } from '../../api/data.service';
-import { SelectNoSearchComponent } from '../../util/dropdowns/select/select-no-search.component';
-import { TeamFormComponent } from './team-form.component';
+import { DataService } from '../../../api/data.service';
+import { MatchupService } from '../../../api/matchup.service';
+import { SelectNoSearchComponent } from '../../../util/dropdowns/select/select-no-search.component';
+import { TeamFormComponent } from '../team-form.component';
+import { TeraType } from '../../../data';
 
 @Component({
   selector: 'quick-matchup-form',
@@ -27,19 +29,37 @@ export class QuickMatchupFormComponent {
   formats: string[] = [];
   rulesets: string[] = [];
   @Input() draftForm!: FormGroup;
-  @Output() formSubmitted = new EventEmitter<FormGroup>();
-  constructor(private dataService: DataService, private fb: FormBuilder) {}
+  @Output() formSubmitted = new EventEmitter<{
+    format: string;
+    ruleset: string;
+    team1: {
+      id: string;
+      name: string;
+      shiny: boolean;
+      capt: { z: boolean; tera: { [key in TeraType]: boolean } };
+    }[];
+    team2: {
+      id: string;
+      name: string;
+      shiny: boolean;
+      capt: { z: boolean; tera: { [key in TeraType]: boolean } };
+    }[];
+  }>();
+  constructor(
+    private dataService: DataService,
+    private fb: FormBuilder,
+    private matchupService: MatchupService
+  ) {}
 
   ngOnInit(): void {
     this.draftForm = this.fb.group({
       format: ['Singles', Validators.required],
-      ruleset: ['Gen9 Natdex', Validators.required],
+      ruleset: ['Gen9 NatDex', Validators.required],
       team1: [],
       team2: [],
     });
     this.dataService.getFormats().subscribe((formats) => {
       this.formats = formats;
-      //set defaults
     });
     this.dataService.getRulesets().subscribe((rulesets) => {
       this.rulesets = rulesets;
