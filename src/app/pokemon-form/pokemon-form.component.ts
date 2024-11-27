@@ -5,14 +5,14 @@ import {
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
+  Validators,
 } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { FilterComponent } from '../filter/filter.component';
-import { Pokemon } from '../interfaces/draft';
+import { TeraType, TYPES } from '../data';
+import { getPidByName, nameList } from '../data/namedex';
 import { SpriteComponent } from '../images/sprite.component';
 import { TrashSVG } from '../images/svg-components/trash.component';
-import { getPidByName, nameList } from '../data/namedex';
-import { TeraType, TYPES } from '../data';
+import { Pokemon } from '../interfaces/draft';
 import { SelectSearchComponent } from '../util/dropdowns/select/select-search.component';
 
 @Component({
@@ -26,7 +26,6 @@ import { SelectSearchComponent } from '../util/dropdowns/select/select-search.co
     SpriteComponent,
     ReactiveFormsModule,
     TrashSVG,
-    FilterComponent,
     SelectSearchComponent,
   ],
 })
@@ -36,6 +35,7 @@ export class PokemonFormComponent implements OnInit {
   @Output() deletePokemonEvent = new EventEmitter<number>();
   @Output() addPokemonEvent = new EventEmitter<Pokemon>();
   @Input() bg: string = 'page';
+
   pokemon: Pokemon = { name: '', id: '' };
   names = nameList();
 
@@ -60,28 +60,28 @@ export class PokemonFormComponent implements OnInit {
     this.teraTypes.forEach((option) => {
       teraFormGroup.addControl(
         option,
-        new FormControl(pokemonData.capt?.tera?.includes(option))
+        new FormControl(!!pokemonData.capt?.tera?.includes(option))
       );
     });
 
-    let group = new FormGroup({
-      name: new FormControl(pokemonData.name),
-      id: new FormControl(pokemonData.id),
+    const group = new FormGroup({
+      name: new FormControl(pokemonData.name, Validators.required),
+      id: new FormControl(pokemonData.id, Validators.required),
       shiny: new FormControl(pokemonData.shiny),
-      captCheck: new FormControl('capt' in pokemonData),
+      captCheck: new FormControl(!!('capt' in pokemonData)),
       capt: new FormGroup({
         teraCheck: new FormControl(
-          !('capt' in pokemonData) || 'tera' in pokemonData.capt!
+          !!(!('capt' in pokemonData) || 'tera' in pokemonData.capt!)
         ),
         tera: teraFormGroup,
-        z: new FormControl(pokemonData.capt?.z || false),
+        z: new FormControl(!!pokemonData.capt?.z),
       }),
     });
 
     group.get('name')?.valueChanges.subscribe((name) => {
-      if (name !== null) {
-        let id = getPidByName(name);
-        if (group.get('id')?.value != id) {
+      if (name) {
+        const id = getPidByName(name);
+        if (group.get('id')?.value !== id) {
           group.patchValue({ id: id });
         }
       }

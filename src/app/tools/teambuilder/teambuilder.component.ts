@@ -5,14 +5,12 @@ import { RouterModule } from '@angular/router';
 import { DataService } from '../../api/data.service';
 import { WebSocketService } from '../../api/ws.service';
 import { NATURES } from '../../data';
-import { Namedex, nameList } from '../../data/namedex';
-import { FilterComponent } from '../../filter/filter.component';
+import { nameList } from '../../data/namedex';
 import { SpriteComponent } from '../../images/sprite.component';
 import { Pokemon } from '../../interfaces/draft';
-import { OpponentScoreComponent } from '../../opponent-overview/opponent-score/opponent-score.component';
+import { SelectNoSearchComponent } from '../../util/dropdowns/select/select-no-search.component';
 import { SelectSearchComponent } from '../../util/dropdowns/select/select-search.component';
 import { PokemonBuilder } from './pokemon-builder.model';
-import { SelectNoSearchComponent } from '../../util/dropdowns/select/select-no-search.component';
 
 @Component({
   selector: 'teambuilder-analyzer',
@@ -23,8 +21,6 @@ import { SelectNoSearchComponent } from '../../util/dropdowns/select/select-no-s
     RouterModule,
     FormsModule,
     SpriteComponent,
-    OpponentScoreComponent,
-    FilterComponent,
     SelectSearchComponent,
     SelectNoSearchComponent,
   ],
