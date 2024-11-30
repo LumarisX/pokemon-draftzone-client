@@ -55,7 +55,11 @@
     <div class="flex-grow min-h-full space-y-1">
       <label class="font-bold" for="team">Team</label>
       <div id="team" class="shadow-md rounded-xl">
-        <team-form formControlName="team" color="aTeam"></team-form>
+        <team-form
+          formControlName="team"
+          [maxCols]="2"
+          color="aTeam"
+        ></team-form>
       </div>
     </div>
   </div>

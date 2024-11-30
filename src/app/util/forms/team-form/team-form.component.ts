@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, forwardRef, Input, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  forwardRef,
+  input,
+  Input,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import {
   AbstractControl,
   ControlValueAccessor,
@@ -42,6 +49,8 @@ import { PokemonFormComponent } from '../pokemon-form/pokemon-form.component';
 })
 export class TeamFormComponent implements ControlValueAccessor, OnInit {
   @Input() color: string = 'menu';
+  @Input() maxCols: number = 1;
+
   importing: boolean = false;
   constructor() {}
   names = nameList();

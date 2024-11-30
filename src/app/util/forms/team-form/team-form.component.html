@@ -17,7 +17,12 @@
         Import
       </button>
     </div>
-    <div class="grid gap-4 p-1 min-h-48 md:grid-cols-1 xl:grid-cols-2">
+    <div
+      class="grid grid-cols-1 gap-4 p-1 min-h-48"
+      [ngClass]="{
+        'xl:grid-cols-2': maxCols === 2,
+      }"
+    >
       @for (pokemonForm of teamArray.controls; track $index) {
         <pokemon-form
           [pokemonForm]="$any(pokemonForm)"

@@ -13,9 +13,13 @@
         <p class="text-3xl font-nasa">New League</p>
       </div>
     </div>
-    <draft-form-core
-      [draftForm]="draftForm"
-      (formSubmitted)="newDraft($event)"
-    ></draft-form-core>
+    @if (draftForm) {
+      <draft-form-core
+        [draftForm]="draftForm"
+        (formSubmitted)="newDraft($event)"
+      ></draft-form-core>
+    } @else {
+      <loading></loading>
+    }
   </div>
 </div>

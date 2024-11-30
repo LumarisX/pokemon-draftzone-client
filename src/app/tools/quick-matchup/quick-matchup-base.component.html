@@ -1,54 +1,54 @@
 <div class="flex flex-col items-center">
-  @if(editing) {
-  <div class="flex items-center justify-between p-4">
-    <div class="text-5xl font-nasa text-center flex-grow">Quick Matchup</div>
-  </div>
-  <div class="w-1/2">
-    <quick-matchup-form
-      (formSubmitted)="getMatchupData($event)"
-    ></quick-matchup-form>
-  </div>
-
-  } @else {
-
-  <div
-    class="min-h-full bg-gradient-to-r from-aTeam-100 via-menu-100 to-bTeam-100"
-  >
+  @if (editing) {
     <div class="flex items-center justify-between p-4">
-      @if(!editing){
-      <div class="w-1/8">
-        <button
-          (click)="editing = true"
-          class="px-3 m-2 py-2 text-sm text-symbolColor-inverted rounded-md bg-menu-500 hover:bg-menu-600 focus:outline-none focus:bg-menu-600"
-        >
-          Edit Matchup
-        </button>
+      <div class="flex-grow text-5xl text-center font-nasa">Quick Matchup</div>
+    </div>
+    <div class="w-full max-w-400">
+      <quick-matchup-form
+        (formSubmitted)="getMatchupData($event)"
+      ></quick-matchup-form>
+    </div>
+  } @else {
+    <div
+      class="min-h-full bg-gradient-to-r from-aTeam-100 via-menu-100 to-bTeam-100"
+    >
+      <div class="flex items-center justify-between p-4">
+        @if (!editing) {
+          <div class="w-1/8">
+            <button
+              (click)="editing = true"
+              class="px-3 py-2 m-2 text-sm rounded-md text-symbolColor-inverted bg-menu-500 hover:bg-menu-600 focus:outline-none focus:bg-menu-600"
+            >
+              Edit Matchup
+            </button>
+          </div>
+        }
+
+        <div class="flex-grow text-5xl text-center font-nasa">
+          Quick Matchup
+        </div>
+
+        @if (!editing) {
+          <div class="w-1/8"></div>
+        }
       </div>
-      }
-
-      <div class="text-5xl font-nasa text-center flex-grow">Quick Matchup</div>
-
-      @if(!editing){
-      <div class="w-1/8"></div>
+      <div class="flex justify-center w-full pt-2">
+        <div *ngIf="matchupData" class="flex flex-wrap justify-between gap-x-8">
+          <div class="w-full text-center sm:w-auto">
+            <p class="text-sm font-semibold text-menu-500">Ruleset</p>
+            <p class="text-xl font-bold">{{ matchupData.details.ruleset }}</p>
+          </div>
+          <div class="w-full text-center sm:w-auto">
+            <p class="text-sm font-semibold text-menu-500">Format</p>
+            <p class="text-xl font-bold">{{ matchupData.details.format }}</p>
+          </div>
+        </div>
+      </div>
+      @if (matchupData) {
+        <matchup [matchupData]="matchupData"></matchup>
+      } @else {
+        <loading></loading>
       }
     </div>
-    <div class="flex justify-center w-full pt-2">
-      <div *ngIf="matchupData" class="flex flex-wrap justify-between gap-x-8">
-        <div class="w-full text-center sm:w-auto">
-          <p class="text-sm font-semibold text-menu-500">Ruleset</p>
-          <p class="text-xl font-bold">{{ matchupData.details.ruleset }}</p>
-        </div>
-        <div class="w-full text-center sm:w-auto">
-          <p class="text-sm font-semibold text-menu-500">Format</p>
-          <p class="text-xl font-bold">{{ matchupData.details.format }}</p>
-        </div>
-      </div>
-    </div>
-    @if(matchupData) {
-    <matchup [matchupData]="matchupData"></matchup>
-    } @else {
-    <loading></loading>
-    }
-  </div>
   }
 </div>
