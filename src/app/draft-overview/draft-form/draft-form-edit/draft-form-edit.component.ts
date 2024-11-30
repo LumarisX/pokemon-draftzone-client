@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import {
   FormArray,
+  FormBuilder,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
@@ -32,15 +33,16 @@ export class DraftFormEditComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private draftService: DraftService
+    private draftService: DraftService,
+    private fb: FormBuilder,
   ) {}
 
-  draftForm: FormGroup = new FormGroup({
-    leagueName: new FormControl('', Validators.required),
-    teamName: new FormControl('', Validators.required),
-    format: new FormControl('', Validators.required),
-    ruleset: new FormControl('', Validators.required),
-    team: new FormArray([PokemonFormComponent.addPokemonForm()]),
+  draftForm: FormGroup = this.fb.group({
+    leagueName: ['', Validators.required],
+    teamName: ['', Validators.required],
+    format: ['', Validators.required],
+    ruleset: ['', Validators.required],
+    team: [],
   });
 
   get teamArray(): FormArray {
@@ -53,16 +55,12 @@ export class DraftFormEditComponent implements OnInit {
         this.teamId = JSON.parse(params['draft']);
         this.draftService.getDraft(this.teamId).subscribe((data) => {
           let draft = <Draft>data;
-          let pokemonForms: FormGroup[] = [];
-          for (let pokemon of draft.team) {
-            pokemonForms.push(PokemonFormComponent.addPokemonForm(pokemon));
-          }
-          this.draftForm = new FormGroup({
-            leagueName: new FormControl(draft.leagueName, Validators.required),
-            teamName: new FormControl(draft.teamName, Validators.required),
-            format: new FormControl(draft.format, Validators.required),
-            ruleset: new FormControl(draft.ruleset, Validators.required),
-            team: new FormArray(pokemonForms),
+          this.draftForm = this.fb.group({
+            leagueName: [draft.leagueName, Validators.required],
+            teamName: [draft.teamName, Validators.required],
+            format: [draft.format, Validators.required],
+            ruleset: [draft.ruleset, Validators.required],
+            team: [draft.team, Validators.required],
           });
         });
       }
@@ -74,10 +72,9 @@ export class DraftFormEditComponent implements OnInit {
     this.draftService.editDraft(this.teamId, formData).subscribe(
       (response) => {
         console.log('Success!', response);
-        // Redirect to Draft Overview component
         this.router.navigate(['/', DraftOverviewPath]);
       },
-      (error) => console.error('Error!', error)
+      (error) => console.error('Error!', error),
     );
   }
 }

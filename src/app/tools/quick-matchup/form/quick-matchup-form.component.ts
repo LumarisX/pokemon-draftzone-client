@@ -8,10 +8,9 @@ import {
 } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { DataService } from '../../../api/data.service';
-import { MatchupService } from '../../../api/matchup.service';
+import { TeraType } from '../../../data';
 import { SelectNoSearchComponent } from '../../../util/dropdowns/select/select-no-search.component';
 import { TeamFormComponent } from '../../../util/forms/team-form/team-form.component';
-import { TeraType } from '../../../data';
 
 @Component({
   selector: 'quick-matchup-form',
@@ -45,11 +44,7 @@ export class QuickMatchupFormComponent {
       capt: { z: boolean; tera: { [key in TeraType]: boolean } };
     }[];
   }>();
-  constructor(
-    private dataService: DataService,
-    private fb: FormBuilder,
-    private matchupService: MatchupService
-  ) {}
+  constructor(private dataService: DataService, private fb: FormBuilder) {}
 
   ngOnInit(): void {
     this.draftForm = this.fb.group({

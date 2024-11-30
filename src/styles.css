@@ -58,16 +58,6 @@
   );
 }
 
-.grid-cols-18 {
-  display: grid;
-  grid-template-columns: repeat(18, minmax(0, 1fr));
-}
-
-.grid-cols-19 {
-  display: grid;
-  grid-template-columns: repeat(19, minmax(0, 1fr));
-}
-
 .sprite-border {
   -webkit-filter: drop-shadow(1px 0px 0 theme("colors.spriteBorder"))
     drop-shadow(-1px 0px 0 theme("colors.spriteBorder"))

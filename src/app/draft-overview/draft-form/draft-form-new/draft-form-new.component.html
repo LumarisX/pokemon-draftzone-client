@@ -1,17 +1,21 @@
-<div class="p-2 m-2 border-2 bg-aTeam-100 rounded-xl border-aTeam-200">
-  <div class="flex items-center space-x-4">
-    <button
-      [routerLink]="['/', draftPath]"
-      class="p-2 m-3 rounded-lg shadow-md bg-aTeam-300 hover:shadow shadow-aTeam-600"
-    >
-      Cancel
-    </button>
-    <div>
-      <p class="text-3xl font-bold">New League</p>
+<div class="flex justify-center w-full p-4">
+  <div
+    class="w-full m-2 border-2 max-w-400 bg-aTeam-100 rounded-xl border-aTeam-200"
+  >
+    <div class="flex items-center space-x-4">
+      <button
+        [routerLink]="['/', draftPath]"
+        class="p-2 m-3 rounded-lg shadow-md bg-aTeam-300 hover:shadow shadow-aTeam-600"
+      >
+        Cancel
+      </button>
+      <div>
+        <p class="text-3xl font-nasa">New League</p>
+      </div>
     </div>
+    <draft-form-core
+      [draftForm]="draftForm"
+      (formSubmitted)="newDraft($event)"
+    ></draft-form-core>
   </div>
-  <draft-form-core
-    [draftForm]="draftForm"
-    (formSubmitted)="newDraft($event)"
-  ></draft-form-core>
 </div>

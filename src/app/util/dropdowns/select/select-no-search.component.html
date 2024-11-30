@@ -1,5 +1,5 @@
 <div
-  [ngClass]="['relative w-full max-w-xs filter-container', class]"
+  [ngClass]="['relative w-full filter-container', class]"
   (click)="$event.stopPropagation()"
 >
   <!-- Value Box -->
@@ -52,7 +52,7 @@
       <button class="text-menu-500" (click)="closeDropdown()">Close</button>
     </div>
 
-    <!-- Scrollable list (taking the remaining space) -->
+    <!-- Scrollable list -->
     <div class="flex-1 overflow-y-auto p-1">
       <cdk-virtual-scroll-viewport
         itemSize="{{ itemSize }}"

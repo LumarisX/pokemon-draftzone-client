@@ -16,11 +16,11 @@ import {
 import { RouterModule } from '@angular/router';
 import { DataService } from '../../../api/data.service';
 import { getPidByName, nameList } from '../../../data/namedex';
-import { ImportSVG } from '../../../images/svg-components/import.component';
 import { Pokemon } from '../../../interfaces/draft';
 import { SelectNoSearchComponent } from '../../../util/dropdowns/select/select-no-search.component';
 import { SelectSearchComponent } from '../../../util/dropdowns/select/select-search.component';
 import { PokemonFormComponent } from '../../../util/forms/pokemon-form/pokemon-form.component';
+import { TeamFormComponent } from '../../../util/forms/team-form/team-form.component';
 
 @Component({
   selector: 'draft-form-core',
@@ -28,11 +28,9 @@ import { PokemonFormComponent } from '../../../util/forms/pokemon-form/pokemon-f
   imports: [
     CommonModule,
     RouterModule,
-    PokemonFormComponent,
-    ImportSVG,
     ReactiveFormsModule,
     SelectNoSearchComponent,
-    SelectSearchComponent,
+    TeamFormComponent,
   ],
   templateUrl: './draft-form-core.component.html',
 })
@@ -52,10 +50,11 @@ export class DraftFormCoreComponent implements OnInit {
   ngOnInit(): void {
     this.dataService.getFormats().subscribe((formats) => {
       this.formats = formats;
+      this.draftForm.get('format')?.setValue(formats[0]);
     });
-
     this.dataService.getRulesets().subscribe((rulesets) => {
       this.rulesets = rulesets;
+      this.draftForm.get('ruleset')?.setValue(rulesets[0]);
     });
     this.draftForm.setValidators(this.validateDraftForm);
   }
@@ -65,11 +64,11 @@ export class DraftFormCoreComponent implements OnInit {
 
   addNewPokemon(
     index: number = this.teamArray.length,
-    pokemonData: Pokemon = { id: '', name: '' }
+    pokemonData: Pokemon = { id: '', name: '' },
   ) {
     this.teamArray?.insert(
       index + 1,
-      PokemonFormComponent.addPokemonForm(pokemonData)
+      PokemonFormComponent.addPokemonForm(pokemonData),
     );
     this.selectSearch.clearSelection();
   }

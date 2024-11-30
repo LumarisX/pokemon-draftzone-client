@@ -12,7 +12,6 @@ import {
 } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { getPidByName, nameList } from '../../../data/namedex';
-import { ImportSVG } from '../../../images/svg-components/import.component';
 import { Pokemon } from '../../../interfaces/draft';
 import { SelectSearchComponent } from '../../dropdowns/select/select-search.component';
 import { PokemonFormComponent } from '../pokemon-form/pokemon-form.component';
@@ -24,7 +23,6 @@ import { PokemonFormComponent } from '../pokemon-form/pokemon-form.component';
     CommonModule,
     RouterModule,
     PokemonFormComponent,
-    ImportSVG,
     ReactiveFormsModule,
     SelectSearchComponent,
   ],
@@ -52,7 +50,7 @@ export class TeamFormComponent implements ControlValueAccessor, OnInit {
 
   set teamArray(pokemons: Pokemon[]) {
     this._teamArray = new FormArray(
-      pokemons.map((pokemon) => PokemonFormComponent.addPokemonForm(pokemon))
+      pokemons.map((pokemon) => PokemonFormComponent.addPokemonForm(pokemon)),
     );
   }
 
@@ -107,7 +105,7 @@ export class TeamFormComponent implements ControlValueAccessor, OnInit {
     if (value) {
       this.teamArray.clear();
       value.forEach((pokemon) =>
-        this.teamArray.push(PokemonFormComponent.addPokemonForm(pokemon))
+        this.teamArray.push(PokemonFormComponent.addPokemonForm(pokemon)),
       );
     }
   }
@@ -123,7 +121,7 @@ export class TeamFormComponent implements ControlValueAccessor, OnInit {
   setDisabledState(isDisabled: boolean): void {
     this.isDisabled = isDisabled;
     this.teamArray?.controls.forEach((control) =>
-      isDisabled ? control.disable() : control.enable()
+      isDisabled ? control.disable() : control.enable(),
     );
   }
 }

@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  input,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -9,12 +16,12 @@ import {
 } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { TeraType, TYPES } from '../../../data';
-import { nameList, getPidByName } from '../../../data/namedex';
+import { getPidByName, nameList } from '../../../data/namedex';
 import { SpriteComponent } from '../../../images/sprite.component';
 import { BadgeSVG } from '../../../images/svg-components/badge.component';
 import { CircleSVG } from '../../../images/svg-components/circle.component';
 import { ShinySVG } from '../../../images/svg-components/shiny.component';
-import { TrashSVG } from '../../../images/svg-components/trash.component';
+import { XMarkSVG } from '../../../images/svg-components/xmark.component';
 import { Pokemon } from '../../../interfaces/draft';
 import { SelectSearchComponent } from '../../dropdowns/select/select-search.component';
 
@@ -28,11 +35,11 @@ import { SelectSearchComponent } from '../../dropdowns/select/select-search.comp
     FormsModule,
     SpriteComponent,
     ReactiveFormsModule,
-    TrashSVG,
     SelectSearchComponent,
     ShinySVG,
     BadgeSVG,
     CircleSVG,
+    XMarkSVG,
   ],
 })
 export class PokemonFormComponent implements OnInit {
@@ -43,8 +50,22 @@ export class PokemonFormComponent implements OnInit {
   @Input() color: string = 'page';
   @Input() colorValue: number | undefined;
 
+  @Input() class: string = '';
+
   pokemon: Pokemon = { name: '', id: '' };
   names = nameList();
+
+  set allTeras(value: boolean) {
+    Object.values(
+      (this.pokemonForm.get('capt.tera') as FormGroup).controls,
+    ).forEach((control) => control.setValue(value));
+  }
+
+  get allTeras() {
+    return !Object.values(
+      (this.pokemonForm.get('capt.tera') as FormGroup).controls,
+    ).find((control) => control.value === false);
+  }
 
   teraTypes = PokemonFormComponent.teraTypes;
 
@@ -61,13 +82,13 @@ export class PokemonFormComponent implements OnInit {
       id: '',
       shiny: false,
       name: '',
-    }
+    },
   ): FormGroup {
     const teraFormGroup = new FormGroup({});
     this.teraTypes.forEach((option) => {
       teraFormGroup.addControl(
         option,
-        new FormControl(!!pokemonData.capt?.tera?.includes(option))
+        new FormControl(!!pokemonData.capt?.tera?.includes(option)),
       );
     });
 
@@ -78,7 +99,7 @@ export class PokemonFormComponent implements OnInit {
       captCheck: new FormControl(!!('capt' in pokemonData)),
       capt: new FormGroup({
         teraCheck: new FormControl(
-          !!(!('capt' in pokemonData) || 'tera' in pokemonData.capt!)
+          !!(!('capt' in pokemonData) || 'tera' in pokemonData.capt!),
         ),
         tera: teraFormGroup,
         z: new FormControl(!!pokemonData.capt?.z),
@@ -105,17 +126,9 @@ export class PokemonFormComponent implements OnInit {
     }
   }
 
-  allTera() {
-    Object.values(
-      (this.pokemonForm.get('capt.tera') as FormGroup).controls
-    ).forEach((control) => control.setValue(true));
-  }
-
   toggleTeraType(type: string) {
     const control = this.pokemonForm.get(`capt.tera.${type}`);
-    if (control) {
-      control.setValue(!control.value);
-    }
+    control?.setValue(!control.value);
   }
 
   toggleControl(controlName: string) {

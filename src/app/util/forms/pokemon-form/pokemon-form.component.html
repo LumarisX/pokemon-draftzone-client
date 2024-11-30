@@ -1,124 +1,130 @@
-<form [formGroup]="pokemonForm" autocomplete="off">
-  <div class="grid items-center w-full grid-cols-8">
-    <sprite
-      class="col-span-2 sm:col-span-1"
-      [pokemon]="{
-        id: pokemonForm.value.id,
-        name: pokemonForm.value.name,
-        shiny: pokemonForm.value.shiny
-      }"
-    ></sprite>
-    <div class="col-span-6 sm:col-span-4">
-      <label class="p-1 font-semibold">Name</label>
-      <select-search
-        [placeholder]="'Select a Pokemon'"
-        [items]="names"
-        class="w-full rounded-lg text-medium"
-        [ngClass]="['bg-' + color + (colorValue ? '-' + colorValue : '')]"
-        [startItem]="{ id: pokemonForm.value.id }"
-        (itemSelected)="resultSelected($event)"
-      ></select-search>
-      @if (pokemonForm.get('name')?.touched &&
-      pokemonForm.get('name')?.invalid){ Invalid name }
-    </div>
-    <div class="col-span-3 sm:col-span-1 flex justify-center">
-      <div
-        (click)="toggleControl('shiny')"
-        class="w-full hover:cursor-pointer h-full max-w-9 aspect-square p-0.5 border-2 rounded-full"
-        [ngClass]="[
-          'bg-' + color + (colorValue ? '-' + colorValue : ''),
-          'hover:bg-' + color + (colorValue ? '-' + (colorValue + 100) : ''),
-          'border-' + color + (colorValue ? '-' + (colorValue + 300) : '')
-        ]"
-      >
-        @if (pokemonForm.get('shiny')?.value) {
-        <shiny-svg></shiny-svg>
+<form [formGroup]="pokemonForm" class="{{ class }}" autocomplete="off">
+  <div class="flex items-center w-full">
+    <div
+      class="relative h-32 col-span-2 sm:col-span-1 aspect-square"
+      (click)="toggleControl('shiny')"
+    >
+      <sprite
+        [pokemon]="{
+          id: pokemonForm.value.id,
+          name: pokemonForm.value.name,
+          shiny: pokemonForm.value.shiny,
+        }"
+      ></sprite>
+      <div class="absolute top-0 right-0 w-6 h-6 hover:cursor-pointer">
+        @if (pokemonForm.get("shiny")?.value) {
+          <shiny-svg></shiny-svg>
         } @else {
-        <circle-svg></circle-svg>
+          <circle-svg></circle-svg>
         }
       </div>
     </div>
-    <div class="col-span-3 sm:col-span-1 flex flex-col items-center">
-      <div
-        (click)="toggleControl('captCheck')"
-        class="w-full hover:cursor-pointer h-full max-w-9 aspect-square p-0.5 border-2 rounded-full"
-        [ngClass]="[
-          'bg-' + color + (colorValue ? '-' + colorValue : ''),
-          'hover:bg-' + color + (colorValue ? '-' + (colorValue + 100) : ''),
-          'border-' + color + (colorValue ? '-' + (colorValue + 300) : '')
-        ]"
-      >
-        <badge-svg [selected]="pokemonForm.get('captCheck')?.value"></badge-svg>
+
+    <div class="flex-grow p-1">
+      <div class="">
+        <label class="text-lg font-semibold">Pokemon</label>
+        <select-search
+          [placeholder]="'Select a Pokemon'"
+          [items]="names"
+          class="w-full rounded-lg text-medium border-2 {{
+            'border-' + color + (colorValue ? '-' + colorValue : '')
+          }}"
+          [startItem]="{ id: pokemonForm.value.id }"
+          (itemSelected)="resultSelected($event)"
+        ></select-search>
+        @if (
+          pokemonForm.get("name")?.touched && pokemonForm.get("name")?.invalid
+        ) {
+          Invalid name
+        }
       </div>
-      @if(pokemonForm.get('captCheck')?.value){
-      <div formGroupName="capt" class="flex items-center justify-center">
-        <label class="p-1">
-          Z:
-          <input
-            type="checkbox"
-            formControlName="z"
-            class="p-1 mx-1 text-center rounded-full text-medium"
-          />
-        </label>
-        <label class="p-1"
-          >Tera
-          <input
-            type="checkbox"
-            formControlName="teraCheck"
-            class="mx-1 text-medium"
-          />
-        </label>
+      <div (click)="toggleControl('captCheck')">
+        <div class="flex items-center space-x-1 h-fit">
+          <span class="font-semibold">Captain</span>
+          <badge-svg
+            class="hover:cursor-pointer"
+            [selected]="pokemonForm.get('captCheck')?.value"
+            [iconSize]="1.3"
+          ></badge-svg>
+        </div>
       </div>
-      }
     </div>
-    <div class="flex items-center justify-center col-span-2 sm:col-span-1">
+    <div class="flex flex-col p-2">
       <div
-        class="w-full hover:cursor-pointer h-full max-w-9 aspect-square p-0.5 border-2 rounded-full"
-        [ngClass]="[
-          'bg-' + color + (colorValue ? '-' + colorValue : ''),
-          'hover:bg-' + color + (colorValue ? '-' + (colorValue + 100) : ''),
-          'border-' + color + (colorValue ? '-' + (colorValue + 300) : '')
-        ]"
+        class="w-fit aspect-square hover:cursor-pointer"
         (click)="deletePokemonEvent.emit(formIndex)"
         title="Delete"
       >
-        <trash-svg></trash-svg>
+        <xmark-svg [iconSize]="2"></xmark-svg>
       </div>
     </div>
   </div>
-  <div formGroupName="capt" class="w-full px-8 col-span-full">
-    @if (pokemonForm.get('capt.teraCheck')?.value &&
-    pokemonForm.get('captCheck')?.value) {
-    <div formGroupName="tera" class="flex justify-between">
-      <div class="flex justify-center p-1">
-        <button
-          class="bg-menu-100 text-sm px-2 w-fit border-2 rounded-lg border-menu-300 text-center hover:bg-menu-200"
-          (click)="allTera()"
-        >
-          All
-        </button>
+
+  @if (pokemonForm.get("captCheck")?.value) {
+    <div formGroupName="capt" class="flex flex-wrap w-full gap-2">
+      <div class="flex items-center gap-2 p-1">
+        <label for="z" class="font-semibold">Z:</label>
+        <input
+          id="z"
+          type="checkbox"
+          formControlName="z"
+          class="p-1 text-center rounded-full text-medium"
+        />
+      </div>
+      <div class="flex items-center gap-2 p-1">
+        <label for="teraCheck">Tera:</label>
+        <input
+          id="teraCheck"
+          type="checkbox"
+          formControlName="teraCheck"
+          class="text-medium"
+        />
       </div>
 
-      @for (type of teraTypes; track $index) {
-      <div class="flex justify-center items-center space-x-1">
-        <div
-          class="relative flex items-center justify-center cursor-pointer"
-          (click)="toggleTeraType(type)"
-          [ngClass]="{
-            'opacity-40': !pokemonForm.get('capt.tera.' + type)?.value,
-          }"
-        >
-          <img
-            class="h-6 aspect-square sprite-border p-0.5 rounded-full"
-            src="../../../assets/icons/tera_types/Tera{{ type }}.png"
-            onerror="this.src='../../../assets/icons/types/Unknown.png'"
-            alt="{{ type }}"
-          />
+      <!-- Tera Options -->
+      @if (
+        pokemonForm.get("capt.teraCheck")?.value &&
+        pokemonForm.get("captCheck")?.value
+      ) {
+        <div class="w-full px-8">
+          <div formGroupName="tera" class="grid gap-0.5 grid-cols-10">
+            <div class="flex justify-center p-1">
+              <button
+                class="px-2 text-sm text-center border-2 rounded-lg bg-menu-100 w-fit border-menu-300 hover:bg-menu-200"
+                (click)="allTeras = !allTeras"
+              >
+                @if (allTeras) {
+                  None
+                } @else {
+                  All
+                }
+              </button>
+            </div>
+
+            @for (type of teraTypes; track $index) {
+              <div class="flex items-center justify-center space-x-1">
+                <div
+                  class="relative flex items-center justify-center cursor-pointer"
+                  (click)="toggleTeraType(type)"
+                  [ngClass]="{
+                    'opacity-40': !pokemonForm.get('capt.tera.' + type)?.value,
+                  }"
+                >
+                  <img
+                    class="h-6 aspect-square sprite-border p-0.5 rounded-full"
+                    src="../../../assets/icons/tera_types/Tera{{ type }}.png"
+                    onerror="this.src='../../../assets/icons/types/Unknown.png'"
+                    [alt]="type"
+                    [title]="type"
+                  />
+                </div>
+              </div>
+            }
+          </div>
         </div>
-      </div>
       }
     </div>
-    }
-  </div>
+  }
+
   <!-- {{ pokemonForm.value | json }} -->
 </form>

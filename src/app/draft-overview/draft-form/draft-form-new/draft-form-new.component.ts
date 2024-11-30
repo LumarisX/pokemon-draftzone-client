@@ -2,8 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import {
   AbstractControl,
-  FormArray,
-  FormControl,
+  FormBuilder,
   FormGroup,
   ReactiveFormsModule,
   Validators,
@@ -11,9 +10,9 @@ import {
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { DraftService } from '../../../api/draft.service';
 import { Namedex } from '../../../data/namedex';
+import { PokemonFormComponent } from '../../../util/forms/pokemon-form/pokemon-form.component';
 import { DraftOverviewPath } from '../../draft-overview-routing.module';
 import { DraftFormCoreComponent } from '../draft-form-core/draft-form-core.component';
-import { PokemonFormComponent } from '../../../util/forms/pokemon-form/pokemon-form.component';
 
 @Component({
   selector: 'draft-form-new',
@@ -37,7 +36,8 @@ export class DraftFormNewComponent implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private draftService: DraftService
+    private draftService: DraftService,
+    private fb: FormBuilder
   ) {}
 
   ngOnInit(): void {
@@ -53,18 +53,18 @@ export class DraftFormNewComponent implements OnInit {
           );
         }
       }
-      this.draftForm = new FormGroup({
-        leagueName: new FormControl('', Validators.required),
-        teamName: new FormControl('', Validators.required),
-        format: new FormControl(
+      this.draftForm = this.fb.group({
+        leagueName: ['', Validators.required],
+        teamName: ['', Validators.required],
+        format: [
           'format' in params ? params['format'] : '',
-          Validators.required
-        ),
-        ruleset: new FormControl(
+          Validators.required,
+        ],
+        ruleset: [
           'ruleset' in params ? params['ruleset'] : '',
-          Validators.required
-        ),
-        team: new FormArray(teamArray),
+          Validators.required,
+        ],
+        team: [],
       });
     });
   }

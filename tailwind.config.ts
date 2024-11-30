@@ -578,9 +578,11 @@ export default {
     },
     extend: {
       spacing: {
+        112: '28rem',
         128: '32rem',
         160: '40rem',
         192: '48rem',
+        400: '100rem',
       },
       width: {
         '1/8': '12.5%',
@@ -644,6 +646,11 @@ export default {
       },
       fontSize: {
         '2xs': '.5rem',
+      },
+      gridTemplateColumns: {
+        '18': 'repeat(18, minmax(0, 1fr))',
+        '19': 'repeat(19, minmax(0, 1fr))',
+        '20': 'repeat(20, minmax(0, 1fr))',
       },
     },
   },
