@@ -13,6 +13,7 @@ import { Namedex } from '../../../data/namedex';
 import { PokemonFormComponent } from '../../../util/forms/pokemon-form/pokemon-form.component';
 import { DraftOverviewPath } from '../../draft-overview-routing.module';
 import { DraftFormCoreComponent } from '../draft-form-core/draft-form-core.component';
+import { LoadingComponent } from '../../../images/loading/loading.component';
 
 @Component({
   selector: 'draft-form-new',
@@ -22,6 +23,7 @@ import { DraftFormCoreComponent } from '../draft-form-core/draft-form-core.compo
     RouterModule,
     DraftFormCoreComponent,
     ReactiveFormsModule,
+    LoadingComponent,
   ],
   templateUrl: './draft-form-new.component.html',
 })
@@ -30,14 +32,14 @@ export class DraftFormNewComponent implements OnInit {
   title: string = 'New League';
   formats = [];
   rulesets = [];
-  draftForm!: FormGroup;
+  draftForm?: FormGroup;
   draftPath = DraftOverviewPath;
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private draftService: DraftService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
   ) {}
 
   ngOnInit(): void {
@@ -49,7 +51,7 @@ export class DraftFormNewComponent implements OnInit {
             PokemonFormComponent.addPokemonForm({
               id: id,
               name: Namedex[id].name[0],
-            })
+            }),
           );
         }
       }
@@ -76,7 +78,7 @@ export class DraftFormNewComponent implements OnInit {
         // Redirect to Draft Overview component
         this.router.navigate(['/', DraftOverviewPath]);
       },
-      (error) => console.error('Error!', error)
+      (error) => console.error('Error!', error),
     );
   }
 }

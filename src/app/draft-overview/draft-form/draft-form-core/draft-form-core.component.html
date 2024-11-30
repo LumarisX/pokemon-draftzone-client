@@ -60,12 +60,14 @@
     </div>
   </div>
 
-  <div class="flex justify-end w-full" *ngIf="!importing">
-    <button
-      type="submit"
-      class="w-24 p-1 mx-4 text-xl font-bold shadow rounded-xl bg-menu-200 hover:bg-menu-100 shadow-menu-600"
-    >
-      Submit
-    </button>
-  </div>
+  @if (!importing) {
+    <div class="flex justify-end w-full">
+      <button
+        type="submit"
+        class="w-24 p-1 mx-4 text-xl font-bold shadow rounded-xl bg-menu-200 hover:bg-menu-100 shadow-menu-600"
+      >
+        Submit
+      </button>
+    </div>
+  }
 </form>

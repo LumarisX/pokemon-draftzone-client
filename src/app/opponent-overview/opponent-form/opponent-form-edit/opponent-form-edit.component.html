@@ -1,15 +1,25 @@
-<div class="flex items-center space-x-4">
-  <button
-    [routerLink]="['/', draftPath, teamId]"
-    class="p-2 m-3 bg-bTeam-300 rounded-lg shadow-md hover:shadow shadow-bTeam-600"
+<div class="flex justify-center w-full p-4">
+  <div
+    class="w-full m-2 border-2 max-w-400 bg-bTeam-100 rounded-xl border-bTeam-200"
   >
-    Cancel
-  </button>
-  <div>
-    <p class="text-3xl font-bold">Edit Opponent</p>
+    <div class="flex items-center space-x-4">
+      <button
+        [routerLink]="['/', draftPath, teamId]"
+        class="p-2 m-3 rounded-lg shadow-md bg-bTeam-300 hover:shadow shadow-bTeam-600"
+      >
+        Cancel
+      </button>
+      <div>
+        <p class="text-3xl font-bold">Edit Opponent</p>
+      </div>
+    </div>
+    @if (opponentForm) {
+      <opponent-form-core
+        [opponentForm]="opponentForm"
+        (formSubmitted)="editMatchup($event)"
+      ></opponent-form-core>
+    } @else {
+      <loading></loading>
+    }
   </div>
 </div>
-<opponent-form-core
-  [opponentForm]="opponentForm"
-  (formSubmitted)="editMatchup($event)"
-></opponent-form-core>

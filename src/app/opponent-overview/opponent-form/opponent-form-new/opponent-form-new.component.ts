@@ -11,6 +11,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { DraftService } from '../../../api/draft.service';
 import { DraftOverviewPath } from '../../../draft-overview/draft-overview-routing.module';
 import { OpponentFormCoreComponent } from '../opponent-form-core/opponent-form-core.component';
+import { LoadingComponent } from '../../../images/loading/loading.component';
 
 @Component({
   selector: 'opponent-form-new',
@@ -20,6 +21,7 @@ import { OpponentFormCoreComponent } from '../opponent-form-core/opponent-form-c
     RouterModule,
     OpponentFormCoreComponent,
     ReactiveFormsModule,
+    LoadingComponent,
   ],
   templateUrl: './opponent-form-new.component.html',
 })
@@ -28,12 +30,12 @@ export class OpponentFormNewComponent implements OnInit {
   title: string = 'New League';
   formats = [];
   rulesets = [];
-  opponentForm!: FormGroup;
+  opponentForm?: FormGroup;
   readonly draftPath = DraftOverviewPath;
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private draftService: DraftService
+    private draftService: DraftService,
   ) {}
 
   ngOnInit() {
@@ -52,7 +54,7 @@ export class OpponentFormNewComponent implements OnInit {
         console.log('Success!', response);
         this.router.navigate([`['/', draftPath]/${this.teamId}`]);
       },
-      (error) => console.error('Error!', error)
+      (error) => console.error('Error!', error),
     );
   }
 }

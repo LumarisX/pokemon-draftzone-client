@@ -15,22 +15,15 @@ import {
 } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { getPidByName, nameList } from '../../../data/namedex';
-import { ImportSVG } from '../../../images/svg-components/import.component';
 import { Pokemon } from '../../../interfaces/draft';
 import { SelectSearchComponent } from '../../../util/dropdowns/select/select-search.component';
 import { PokemonFormComponent } from '../../../util/forms/pokemon-form/pokemon-form.component';
+import { TeamFormComponent } from '../../../util/forms/team-form/team-form.component';
 
 @Component({
   selector: 'opponent-form-core',
   standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule,
-    ImportSVG,
-    ReactiveFormsModule,
-    SelectSearchComponent,
-    PokemonFormComponent,
-  ],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, TeamFormComponent],
   templateUrl: './opponent-form-core.component.html',
 })
 export class OpponentFormCoreComponent implements OnInit {
@@ -58,7 +51,7 @@ export class OpponentFormCoreComponent implements OnInit {
   addNewPokemon(index: number, pokemonData: Pokemon = { id: '', name: '' }) {
     this.teamArray?.insert(
       index,
-      PokemonFormComponent.addPokemonForm(pokemonData)
+      PokemonFormComponent.addPokemonForm(pokemonData),
     );
     this.selectSearch.clearSelection();
   }

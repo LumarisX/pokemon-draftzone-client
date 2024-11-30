@@ -14,6 +14,7 @@ import { Draft } from '../../../interfaces/draft';
 import { DraftOverviewPath } from '../../draft-overview-routing.module';
 import { DraftFormCoreComponent } from '../draft-form-core/draft-form-core.component';
 import { PokemonFormComponent } from '../../../util/forms/pokemon-form/pokemon-form.component';
+import { LoadingComponent } from '../../../images/loading/loading.component';
 
 @Component({
   selector: 'draft-form-edit',
@@ -23,6 +24,7 @@ import { PokemonFormComponent } from '../../../util/forms/pokemon-form/pokemon-f
     RouterModule,
     DraftFormCoreComponent,
     ReactiveFormsModule,
+    LoadingComponent,
   ],
   templateUrl: './draft-form-edit.component.html',
 })
@@ -37,13 +39,7 @@ export class DraftFormEditComponent implements OnInit {
     private fb: FormBuilder,
   ) {}
 
-  draftForm: FormGroup = this.fb.group({
-    leagueName: ['', Validators.required],
-    teamName: ['', Validators.required],
-    format: ['', Validators.required],
-    ruleset: ['', Validators.required],
-    team: [],
-  });
+  draftForm?: FormGroup;
 
   get teamArray(): FormArray {
     return this.draftForm?.get('team') as FormArray;

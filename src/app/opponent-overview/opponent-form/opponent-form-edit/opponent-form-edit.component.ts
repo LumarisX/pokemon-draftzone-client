@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import {
   FormArray,
+  FormBuilder,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
@@ -13,6 +14,7 @@ import { DraftOverviewPath } from '../../../draft-overview/draft-overview-routin
 import { Matchup } from '../../../interfaces/matchup';
 import { PokemonFormComponent } from '../../../util/forms/pokemon-form/pokemon-form.component';
 import { OpponentFormCoreComponent } from '../opponent-form-core/opponent-form-core.component';
+import { LoadingComponent } from '../../../images/loading/loading.component';
 
 @Component({
   selector: 'opponent-form-edit',
@@ -22,6 +24,7 @@ import { OpponentFormCoreComponent } from '../opponent-form-core/opponent-form-c
     RouterModule,
     OpponentFormCoreComponent,
     ReactiveFormsModule,
+    LoadingComponent,
   ],
   templateUrl: './opponent-form-edit.component.html',
 })
@@ -33,15 +36,11 @@ export class OpponentFormEditComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private draftService: DraftService
+    private draftService: DraftService,
+    private fb: FormBuilder,
   ) {}
 
-  opponentForm: FormGroup = new FormGroup({
-    stage: new FormControl('', Validators.required),
-    teamName: new FormControl('', Validators.required),
-    team: new FormArray([PokemonFormComponent.addPokemonForm()]),
-  });
-
+  opponentForm?: FormGroup;
   get teamArray(): FormArray {
     return this.opponentForm?.get('team') as FormArray;
   }
@@ -55,17 +54,10 @@ export class OpponentFormEditComponent implements OnInit {
           .getMatchup(this.matchupId, this.teamId)
           .subscribe((data) => {
             let matchup = <Matchup>data;
-            let pokemonForms: FormGroup[] = [];
-            for (let pokemon of matchup.bTeam.team) {
-              pokemonForms.push(PokemonFormComponent.addPokemonForm(pokemon));
-            }
-            this.opponentForm = new FormGroup({
-              teamName: new FormControl(
-                matchup.bTeam.teamName,
-                Validators.required
-              ),
-              stage: new FormControl(matchup.stage, Validators.required),
-              team: new FormArray(pokemonForms),
+            this.opponentForm = this.fb.group({
+              teamName: [matchup.bTeam.teamName, Validators.required],
+              stage: [matchup.stage, Validators.required],
+              team: [matchup.bTeam.team, Validators.required],
             });
           });
       }
@@ -80,7 +72,7 @@ export class OpponentFormEditComponent implements OnInit {
           console.log('Success!', response);
           this.router.navigate([`['/', draftPath]/${this.teamId}`]);
         },
-        (error) => console.error('Error!', error)
+        (error) => console.error('Error!', error),
       );
   }
 }
