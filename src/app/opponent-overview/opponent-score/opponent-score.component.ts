@@ -9,17 +9,16 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { DraftService } from '../../api/draft.service';
-import { SpriteComponent } from '../../images/sprite.component';
-import { Pokemon } from '../../interfaces/draft';
-import { Matchup } from '../../interfaces/matchup';
-import { PokemonFormComponent } from '../../pokemon-form/pokemon-form.component';
 import { ReplayService } from '../../api/replay.service';
-import { ReplayData } from '../../tools/replay_analyzer/replay.interface';
+import { PokemonId } from '../../data/namedex';
+import { DraftOverviewPath } from '../../draft-overview/draft-overview-routing.module';
+import { LoadingComponent } from '../../images/loading/loading.component';
+import { SpriteComponent } from '../../images/sprite.component';
 import { PlusSVG } from '../../images/svg-components/plus.component';
 import { TrashSVG } from '../../images/svg-components/trash.component';
-import { PokemonId } from '../../data/namedex';
-import { LoadingComponent } from '../../images/loading/loading.component';
-import { DraftOverviewPath } from '../../draft-overview/draft-overview-routing.module';
+import { Pokemon } from '../../interfaces/draft';
+import { Matchup } from '../../interfaces/matchup';
+import { ReplayData } from '../../tools/replay_analyzer/replay.interface';
 
 @Component({
   selector: 'opponent-form',
@@ -29,7 +28,6 @@ import { DraftOverviewPath } from '../../draft-overview/draft-overview-routing.m
     CommonModule,
     RouterModule,
     SpriteComponent,
-    PokemonFormComponent,
     ReactiveFormsModule,
     PlusSVG,
     TrashSVG,

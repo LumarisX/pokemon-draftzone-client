@@ -8,15 +8,15 @@ import {
   Validators,
 } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { TeraType, TYPES } from '../data';
-import { getPidByName, nameList } from '../data/namedex';
-import { SpriteComponent } from '../images/sprite.component';
-import { TrashSVG } from '../images/svg-components/trash.component';
-import { Pokemon } from '../interfaces/draft';
-import { SelectSearchComponent } from '../util/dropdowns/select/select-search.component';
-import { BadgeSVG } from '../images/svg-components/badge.component';
-import { ShinySVG } from '../images/svg-components/shiny.component';
-import { CircleSVG } from '../images/svg-components/circle.component';
+import { TeraType, TYPES } from '../../../data';
+import { nameList, getPidByName } from '../../../data/namedex';
+import { SpriteComponent } from '../../../images/sprite.component';
+import { BadgeSVG } from '../../../images/svg-components/badge.component';
+import { CircleSVG } from '../../../images/svg-components/circle.component';
+import { ShinySVG } from '../../../images/svg-components/shiny.component';
+import { TrashSVG } from '../../../images/svg-components/trash.component';
+import { Pokemon } from '../../../interfaces/draft';
+import { SelectSearchComponent } from '../../dropdowns/select/select-search.component';
 
 @Component({
   selector: 'pokemon-form',

@@ -14,12 +14,11 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { SpriteComponent } from '../../../images/sprite.component';
+import { getPidByName, nameList } from '../../../data/namedex';
 import { ImportSVG } from '../../../images/svg-components/import.component';
 import { Pokemon } from '../../../interfaces/draft';
-import { PokemonFormComponent } from '../../../pokemon-form/pokemon-form.component';
-import { getPidByName, nameList } from '../../../data/namedex';
 import { SelectSearchComponent } from '../../../util/dropdowns/select/select-search.component';
+import { PokemonFormComponent } from '../../../util/forms/pokemon-form/pokemon-form.component';
 
 @Component({
   selector: 'opponent-form-core',
@@ -27,11 +26,10 @@ import { SelectSearchComponent } from '../../../util/dropdowns/select/select-sea
   imports: [
     CommonModule,
     RouterModule,
-    SpriteComponent,
-    PokemonFormComponent,
     ImportSVG,
     ReactiveFormsModule,
     SelectSearchComponent,
+    PokemonFormComponent,
   ],
   templateUrl: './opponent-form-core.component.html',
 })

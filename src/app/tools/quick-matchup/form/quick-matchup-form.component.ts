@@ -10,7 +10,7 @@ import { RouterModule } from '@angular/router';
 import { DataService } from '../../../api/data.service';
 import { MatchupService } from '../../../api/matchup.service';
 import { SelectNoSearchComponent } from '../../../util/dropdowns/select/select-no-search.component';
-import { TeamFormComponent } from '../team-form.component';
+import { TeamFormComponent } from '../../../util/forms/team-form/team-form.component';
 import { TeraType } from '../../../data';
 
 @Component({

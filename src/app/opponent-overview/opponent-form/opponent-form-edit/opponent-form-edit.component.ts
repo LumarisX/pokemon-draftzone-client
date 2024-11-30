@@ -9,11 +9,10 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { DraftService } from '../../../api/draft.service';
-import { Matchup } from '../../../interfaces/matchup';
-import { PokemonFormComponent } from '../../../pokemon-form/pokemon-form.component';
-import { SpriteComponent } from '../../../images/sprite.component';
-import { OpponentFormCoreComponent } from '../opponent-form-core/opponent-form-core.component';
 import { DraftOverviewPath } from '../../../draft-overview/draft-overview-routing.module';
+import { Matchup } from '../../../interfaces/matchup';
+import { PokemonFormComponent } from '../../../util/forms/pokemon-form/pokemon-form.component';
+import { OpponentFormCoreComponent } from '../opponent-form-core/opponent-form-core.component';
 
 @Component({
   selector: 'opponent-form-edit',
@@ -22,8 +21,6 @@ import { DraftOverviewPath } from '../../../draft-overview/draft-overview-routin
     CommonModule,
     RouterModule,
     OpponentFormCoreComponent,
-    SpriteComponent,
-    PokemonFormComponent,
     ReactiveFormsModule,
   ],
   templateUrl: './opponent-form-edit.component.html',

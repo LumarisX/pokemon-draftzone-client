@@ -18,9 +18,9 @@ import { DataService } from '../../../api/data.service';
 import { getPidByName, nameList } from '../../../data/namedex';
 import { ImportSVG } from '../../../images/svg-components/import.component';
 import { Pokemon } from '../../../interfaces/draft';
-import { PokemonFormComponent } from '../../../pokemon-form/pokemon-form.component';
 import { SelectNoSearchComponent } from '../../../util/dropdowns/select/select-no-search.component';
 import { SelectSearchComponent } from '../../../util/dropdowns/select/select-search.component';
+import { PokemonFormComponent } from '../../../util/forms/pokemon-form/pokemon-form.component';
 
 @Component({
   selector: 'draft-form-core',

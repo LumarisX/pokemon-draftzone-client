@@ -11,11 +11,11 @@ import {
   ValidationErrors,
 } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { getPidByName, nameList } from '../../data/namedex';
-import { ImportSVG } from '../../images/svg-components/import.component';
-import { Pokemon } from '../../interfaces/draft';
-import { PokemonFormComponent } from '../../pokemon-form/pokemon-form.component';
-import { SelectSearchComponent } from '../../util/dropdowns/select/select-search.component';
+import { getPidByName, nameList } from '../../../data/namedex';
+import { ImportSVG } from '../../../images/svg-components/import.component';
+import { Pokemon } from '../../../interfaces/draft';
+import { SelectSearchComponent } from '../../dropdowns/select/select-search.component';
+import { PokemonFormComponent } from '../pokemon-form/pokemon-form.component';
 
 @Component({
   selector: 'team-form',

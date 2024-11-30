@@ -10,9 +10,9 @@ import {
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { DraftService } from '../../../api/draft.service';
 import { Draft } from '../../../interfaces/draft';
-import { PokemonFormComponent } from '../../../pokemon-form/pokemon-form.component';
 import { DraftOverviewPath } from '../../draft-overview-routing.module';
 import { DraftFormCoreComponent } from '../draft-form-core/draft-form-core.component';
+import { PokemonFormComponent } from '../../../util/forms/pokemon-form/pokemon-form.component';
 
 @Component({
   selector: 'draft-form-edit',

@@ -9,10 +9,8 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { DraftService } from '../../../api/draft.service';
-import { PokemonFormComponent } from '../../../pokemon-form/pokemon-form.component';
-import { SpriteComponent } from '../../../images/sprite.component';
-import { OpponentFormCoreComponent } from '../opponent-form-core/opponent-form-core.component';
 import { DraftOverviewPath } from '../../../draft-overview/draft-overview-routing.module';
+import { OpponentFormCoreComponent } from '../opponent-form-core/opponent-form-core.component';
 
 @Component({
   selector: 'opponent-form-new',
@@ -20,9 +18,7 @@ import { DraftOverviewPath } from '../../../draft-overview/draft-overview-routin
   imports: [
     CommonModule,
     RouterModule,
-    SpriteComponent,
     OpponentFormCoreComponent,
-    PokemonFormComponent,
     ReactiveFormsModule,
   ],
   templateUrl: './opponent-form-new.component.html',
