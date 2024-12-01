@@ -1,8 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import {
-  FormArray,
-  FormControl,
+  FormBuilder,
   FormGroup,
   ReactiveFormsModule,
   Validators,
@@ -10,8 +9,8 @@ import {
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { DraftService } from '../../../api/draft.service';
 import { DraftOverviewPath } from '../../../draft-overview/draft-overview-routing.module';
-import { OpponentFormCoreComponent } from '../opponent-form-core/opponent-form-core.component';
 import { LoadingComponent } from '../../../images/loading/loading.component';
+import { OpponentFormCoreComponent } from '../opponent-form-core/opponent-form-core.component';
 
 @Component({
   selector: 'opponent-form-new',
@@ -36,14 +35,15 @@ export class OpponentFormNewComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private draftService: DraftService,
+    private fb: FormBuilder,
   ) {}
 
   ngOnInit() {
     let teamArray: FormGroup[] = [];
-    this.opponentForm = new FormGroup({
-      teamName: new FormControl('', Validators.required),
-      stage: new FormControl('', Validators.required),
-      team: new FormArray(teamArray),
+    this.opponentForm = this.fb.group({
+      teamName: ['', Validators.required],
+      stage: ['', Validators.required],
+      team: [, Validators.required],
     });
     this.teamId = <string>this.route.parent!.snapshot.paramMap.get('teamid');
   }
@@ -52,7 +52,7 @@ export class OpponentFormNewComponent implements OnInit {
     this.draftService.newMatchup(this.teamId, formData).subscribe(
       (response) => {
         console.log('Success!', response);
-        this.router.navigate([`['/', draftPath]/${this.teamId}`]);
+        this.router.navigate(['/', this.draftPath, this.teamId]);
       },
       (error) => console.error('Error!', error),
     );

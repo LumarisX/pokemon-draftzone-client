@@ -14,6 +14,7 @@ import { PokemonFormComponent } from '../../../util/forms/pokemon-form/pokemon-f
 import { DraftOverviewPath } from '../../draft-overview-routing.module';
 import { DraftFormCoreComponent } from '../draft-form-core/draft-form-core.component';
 import { LoadingComponent } from '../../../images/loading/loading.component';
+import { Pokemon } from '../../../interfaces/draft';
 
 @Component({
   selector: 'draft-form-new',
@@ -43,18 +44,15 @@ export class DraftFormNewComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    let teamArray: AbstractControl[] = [];
+    let team: Pokemon[] = [];
     this.route.queryParams.subscribe((params) => {
       if ('team' in params) {
-        for (let id of params['team']) {
-          teamArray.push(
-            PokemonFormComponent.addPokemonForm({
-              id: id,
-              name: Namedex[id].name[0],
-            }),
-          );
-        }
+        team = (params['team'] as string[]).map((id) => ({
+          id: id,
+          name: Namedex[id].name[0],
+        }));
       }
+      console.log(team);
       this.draftForm = this.fb.group({
         leagueName: ['', Validators.required],
         teamName: ['', Validators.required],
@@ -66,7 +64,7 @@ export class DraftFormNewComponent implements OnInit {
           'ruleset' in params ? params['ruleset'] : '',
           Validators.required,
         ],
-        team: [],
+        team: [team, Validators.required],
       });
     });
   }

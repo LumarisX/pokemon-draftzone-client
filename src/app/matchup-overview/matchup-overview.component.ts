@@ -13,6 +13,7 @@ import { CopySVG } from '../images/svg-components/copy.component';
 import { CloseSVG } from '../images/svg-components/close.component';
 import { CheckSVG } from '../images/svg-components/score.component copy';
 import { LoadingComponent } from '../images/loading/loading.component';
+import { DraftOverviewPath } from '../draft-overview/draft-overview-routing.module';
 
 dayjs.extend(duration);
 
@@ -40,13 +41,14 @@ export class MatchupOverviewComponent implements OnInit {
   leagueId = '';
   timeString: string | null = null;
   copied = false;
+  draftPath = DraftOverviewPath;
 
   @ViewChild('inputFieldRef') inputFieldRef!: ElementRef;
 
   constructor(
     private route: ActivatedRoute,
     private matchupService: MatchupService,
-    private meta: Meta
+    private meta: Meta,
   ) {}
 
   ngOnInit(): void {

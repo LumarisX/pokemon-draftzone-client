@@ -1,12 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output,
-  ViewChild,
-} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
   AbstractControl,
   FormArray,
@@ -16,10 +9,7 @@ import {
 import { RouterModule } from '@angular/router';
 import { DataService } from '../../../api/data.service';
 import { getPidByName, nameList } from '../../../data/namedex';
-import { Pokemon } from '../../../interfaces/draft';
 import { SelectNoSearchComponent } from '../../../util/dropdowns/select/select-no-search.component';
-import { SelectSearchComponent } from '../../../util/dropdowns/select/select-search.component';
-import { PokemonFormComponent } from '../../../util/forms/pokemon-form/pokemon-form.component';
 import { TeamFormComponent } from '../../../util/forms/team-form/team-form.component';
 
 @Component({
@@ -43,10 +33,6 @@ export class DraftFormCoreComponent implements OnInit {
   constructor(private dataService: DataService) {}
   names = nameList();
 
-  get teamArray(): FormArray {
-    return this.draftForm?.get('team') as FormArray;
-  }
-
   ngOnInit(): void {
     this.dataService.getFormats().subscribe((formats) => {
       this.formats = formats;
@@ -57,24 +43,6 @@ export class DraftFormCoreComponent implements OnInit {
       this.draftForm.get('ruleset')?.setValue(rulesets[0]);
     });
     this.draftForm.setValidators(this.validateDraftForm);
-  }
-
-  @ViewChild(SelectSearchComponent)
-  selectSearch!: SelectSearchComponent<Pokemon>;
-
-  addNewPokemon(
-    index: number = this.teamArray.length,
-    pokemonData: Pokemon = { id: '', name: '' },
-  ) {
-    this.teamArray?.insert(
-      index + 1,
-      PokemonFormComponent.addPokemonForm(pokemonData),
-    );
-    this.selectSearch.clearSelection();
-  }
-
-  deletePokemon(index: number) {
-    this.teamArray?.removeAt(index);
   }
 
   validateDraftForm(control: AbstractControl) {
@@ -95,16 +63,15 @@ export class DraftFormCoreComponent implements OnInit {
   }
 
   importPokemon(data: string) {
-    this.teamArray.clear();
-    data
-      .split(/\n|,/)
-      .map((string) => string.trim())
-      .forEach((name) => {
-        this.addNewPokemon(this.teamArray.length, {
+    this.draftForm.get('team')?.setValue(
+      data
+        .split(/\n|,/)
+        .map((string) => string.trim())
+        .map((name) => ({
           id: getPidByName(name) ?? '',
           name: name,
-        });
-      });
+        })),
+    );
     this.importing = false;
   }
 }

@@ -1,20 +1,17 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import {
-  FormArray,
   FormBuilder,
-  FormControl,
   FormGroup,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { DraftService } from '../../../api/draft.service';
+import { LoadingComponent } from '../../../images/loading/loading.component';
 import { Draft } from '../../../interfaces/draft';
 import { DraftOverviewPath } from '../../draft-overview-routing.module';
 import { DraftFormCoreComponent } from '../draft-form-core/draft-form-core.component';
-import { PokemonFormComponent } from '../../../util/forms/pokemon-form/pokemon-form.component';
-import { LoadingComponent } from '../../../images/loading/loading.component';
 
 @Component({
   selector: 'draft-form-edit',
@@ -40,10 +37,6 @@ export class DraftFormEditComponent implements OnInit {
   ) {}
 
   draftForm?: FormGroup;
-
-  get teamArray(): FormArray {
-    return this.draftForm?.get('team') as FormArray;
-  }
 
   ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {

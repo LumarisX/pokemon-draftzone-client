@@ -9,7 +9,7 @@ import { Component, Input } from '@angular/core';
     <svg
       viewBox="0 0 24 24"
       fill="none"
-      class="stroke-symbolColor-sub"
+      class="stroke-symbolColor-main"
       [style.width.em]="iconSize"
       [style.height.em]="iconSize"
       xmlns="http://www.w3.org/2000/svg"

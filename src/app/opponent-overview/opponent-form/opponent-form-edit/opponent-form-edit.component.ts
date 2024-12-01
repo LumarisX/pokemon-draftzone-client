@@ -3,7 +3,6 @@ import { Component, OnInit } from '@angular/core';
 import {
   FormArray,
   FormBuilder,
-  FormControl,
   FormGroup,
   ReactiveFormsModule,
   Validators,
@@ -11,10 +10,9 @@ import {
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { DraftService } from '../../../api/draft.service';
 import { DraftOverviewPath } from '../../../draft-overview/draft-overview-routing.module';
-import { Matchup } from '../../../interfaces/matchup';
-import { PokemonFormComponent } from '../../../util/forms/pokemon-form/pokemon-form.component';
-import { OpponentFormCoreComponent } from '../opponent-form-core/opponent-form-core.component';
 import { LoadingComponent } from '../../../images/loading/loading.component';
+import { Matchup } from '../../../interfaces/matchup';
+import { OpponentFormCoreComponent } from '../opponent-form-core/opponent-form-core.component';
 
 @Component({
   selector: 'opponent-form-edit',
@@ -70,7 +68,7 @@ export class OpponentFormEditComponent implements OnInit {
       .subscribe(
         (response) => {
           console.log('Success!', response);
-          this.router.navigate([`['/', draftPath]/${this.teamId}`]);
+          this.router.navigate(['/', this.draftPath, this.teamId]);
         },
         (error) => console.error('Error!', error),
       );

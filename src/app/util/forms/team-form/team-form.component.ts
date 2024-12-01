@@ -72,12 +72,12 @@ export class TeamFormComponent implements ControlValueAccessor, OnInit {
   }
 
   @ViewChild(SelectSearchComponent)
-  selectSearch!: SelectSearchComponent<Pokemon>;
+  selectSearch?: SelectSearchComponent<Pokemon>;
 
   addNewPokemon(pokemonData: Pokemon | null | undefined) {
     if (!pokemonData) return;
     this.teamArray.push(PokemonFormComponent.addPokemonForm(pokemonData));
-    this.selectSearch.clearSelection();
+    this.selectSearch?.clearSelection();
   }
 
   deletePokemon(index: number): void {

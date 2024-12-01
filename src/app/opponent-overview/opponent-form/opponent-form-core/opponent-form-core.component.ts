@@ -1,12 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output,
-  ViewChild,
-} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
   AbstractControl,
   FormArray,
@@ -15,9 +8,6 @@ import {
 } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { getPidByName, nameList } from '../../../data/namedex';
-import { Pokemon } from '../../../interfaces/draft';
-import { SelectSearchComponent } from '../../../util/dropdowns/select/select-search.component';
-import { PokemonFormComponent } from '../../../util/forms/pokemon-form/pokemon-form.component';
 import { TeamFormComponent } from '../../../util/forms/team-form/team-form.component';
 
 @Component({
@@ -33,33 +23,11 @@ export class OpponentFormCoreComponent implements OnInit {
   names = nameList();
   constructor() {}
 
-  get teamArray(): FormArray {
-    return this.opponentForm?.get('team') as FormArray;
-  }
-
-  set teamArray(array: FormArray) {
-    this.opponentForm?.get('team')?.setValue(array);
-  }
+  teamControl?: AbstractControl;
 
   ngOnInit(): void {
     this.opponentForm.setValidators(this.validateDraftForm);
   }
-
-  @ViewChild(SelectSearchComponent)
-  selectSearch!: SelectSearchComponent<Pokemon>;
-
-  addNewPokemon(index: number, pokemonData: Pokemon = { id: '', name: '' }) {
-    this.teamArray?.insert(
-      index,
-      PokemonFormComponent.addPokemonForm(pokemonData),
-    );
-    this.selectSearch.clearSelection();
-  }
-
-  deletePokemon(index: number) {
-    this.teamArray?.removeAt(index);
-  }
-
   validateDraftForm(control: AbstractControl) {
     const formGroup = control as FormGroup;
     const teamArray = formGroup.get('team') as FormArray;
@@ -78,16 +46,15 @@ export class OpponentFormCoreComponent implements OnInit {
   }
 
   importPokemon(data: string) {
-    this.teamArray.clear();
-    data
-      .split(/\n|,/)
-      .map((string) => string.trim())
-      .forEach((name) => {
-        this.addNewPokemon(this.teamArray.length, {
+    this.opponentForm.get('team')?.setValue(
+      data
+        .split(/\n|,/)
+        .map((string) => string.trim())
+        .map((name) => ({
           id: getPidByName(name) ?? '',
           name: name,
-        });
-      });
+        })),
+    );
     this.importing = false;
   }
 }
