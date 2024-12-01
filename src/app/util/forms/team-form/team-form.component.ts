@@ -50,6 +50,7 @@ import { PokemonFormComponent } from '../pokemon-form/pokemon-form.component';
 export class TeamFormComponent implements ControlValueAccessor, OnInit {
   @Input() color: string = 'menu';
   @Input() maxCols: number = 1;
+  @Input() extraClass: string = '';
 
   importing: boolean = false;
   constructor() {}
