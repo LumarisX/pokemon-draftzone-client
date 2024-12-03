@@ -1,4 +1,5 @@
 import { ExtendedType, StatsTable, Type } from '../data';
+import { PokemonId } from '../data/namedex';
 import { Pokemon } from '../interfaces/draft';
 
 export type Speedtier = {
@@ -62,6 +63,30 @@ export type TypeChart = {
 
 export type MoveChart = MoveCategory[];
 
+type CoverageMove = {
+  id: string;
+  name: string;
+  ePower: number;
+  cPower: number;
+  type: Type;
+  category: 'Physical' | 'Special';
+  stab?: true;
+};
+
+export type Coverage = {
+  team: {
+    id: PokemonId;
+    coverage: {
+      physical: CoverageMove[];
+      special: CoverageMove[];
+    };
+  }[];
+  max: {
+    physical: { [key: string]: CoverageMove | undefined };
+    special: { [key: string]: CoverageMove | undefined };
+  };
+};
+
 export type MoveCategory = {
   categoryName: string;
   moves: { name: string; type: string; pokemon: Pokemon[] }[];
@@ -75,7 +100,7 @@ export type CoverageChart = Pokemon & {
         stab: boolean;
         type: Type;
         recommended?: boolean;
-      }
+      },
     ];
     special: [
       {
@@ -83,7 +108,7 @@ export type CoverageChart = Pokemon & {
         stab: boolean;
         type: Type;
         recommended?: boolean;
-      }
+      },
     ];
   };
 };

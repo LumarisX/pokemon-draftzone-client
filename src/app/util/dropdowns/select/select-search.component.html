@@ -4,7 +4,7 @@
 >
   <!-- Value Box -->
   <div
-    class="p-2 bg-inherit flex justify-between items-center rounded cursor-pointer transition-colors"
+    class="flex items-center justify-between p-2 transition-colors rounded cursor-pointer bg-inherit"
     (click)="toggleDropdown()"
   >
     <span *ngIf="selectedItem">{{ selectedItem.name }}</span>
@@ -19,8 +19,8 @@
     *ngIf="isOpen"
     class="absolute z-[100] w-full bg-page border border-menu-300 rounded shadow-lg sm:block hidden"
   >
-    <div class="border-b mx-2 border-menu-300">
-      <div class="flex items-center">
+    <div class="mx-2 overflow-hidden border-b border-menu-300">
+      <div class="flex items-center w-full max-w-full">
         <input
           #searchbar
           type="text"
@@ -28,18 +28,13 @@
           spellcheck="false"
           [(ngModel)]="query"
           (keyup)="keypress($event.key)"
-          class="flex-grow bg-page p-2 outline-none"
+          class="flex-grow min-w-0 p-2 outline-none bg-page"
         />
         <xmark-svg [iconSize]="1.2" (click)="clearSelection()"></xmark-svg>
       </div>
     </div>
+
     <!-- Clear button -->
-    <!-- <div class="flex justify-end px-2 pt-0.5">
-      <button class="text-menu-500 text-xs" (click)="clearSelection()">
-        Clear
-      </button>
-    </div> -->
-    <!-- Scrollable list -->
     <div class="p-0.5">
       <cdk-virtual-scroll-viewport
         class=""
@@ -50,7 +45,7 @@
           *cdkVirtualFor="let item of filteredItems"
           class="mx-2 rounded py-0.5 flex justify-between items-center px-1 cursor-pointer hover:bg-menu-200"
           [ngClass]="{
-            'bg-menu-200': selectedItem && selectedItem.value === item.value
+            'bg-menu-200': selectedItem && selectedItem.value === item.value,
           }"
           (click)="selectItem(item)"
         >
@@ -66,16 +61,16 @@
   <!-- Mobile full-screen dropdown -->
   <div
     *ngIf="isOpen"
-    class="fixed inset-0 z-50 bg-page sm:hidden flex flex-col"
+    class="fixed inset-0 z-50 flex flex-col bg-page sm:hidden"
   >
     <!-- Close button for mobile -->
-    <div class="flex justify-between items-center p-4 border-b border-menu-300">
+    <div class="flex items-center justify-between p-4 border-b border-menu-300">
       <span class="text-lg font-medium">{{ placeholder }}</span>
       <button class="text-menu-500" (click)="closeDropdown()">Close</button>
     </div>
 
     <!-- Search input (fixed at the top) -->
-    <div class="px-4 py-2 border-b text-lg border-menu-300">
+    <div class="px-4 py-2 text-lg border-b border-menu-300">
       <input
         type="text"
         #searchbar
@@ -87,12 +82,12 @@
     </div>
 
     <!-- Clear button -->
-    <div class="flex px-2 pt-1 justify-end">
+    <div class="flex justify-end px-2 pt-1">
       <button class="text-menu-500" (click)="clearSelection()">Clear</button>
     </div>
 
     <!-- Scrollable list (taking the remaining space) -->
-    <div class="flex-1 overflow-y-auto p-1">
+    <div class="flex-1 p-1 overflow-y-auto">
       <cdk-virtual-scroll-viewport
         itemSize="{{ itemSize }}"
         class="h-full overflow-y-auto"
@@ -101,7 +96,7 @@
           *cdkVirtualFor="let item of filteredItems"
           class="mx-2 rounded text-lg py-0.5 px-1 cursor-pointer hover:bg-menu-200"
           [ngClass]="{
-            'bg-menu-200': selectedItem && selectedItem.value === item.value
+            'bg-menu-200': selectedItem && selectedItem.value === item.value,
           }"
           (click)="selectItem(item)"
         >

@@ -6,7 +6,7 @@ export type PokemonId = keyof typeof Namedex & string;
 
 export function getSpriteProperties(
   pokemonId: PokemonId,
-  source: 'ps' | 'serebii' | 'pd' | 'pmd'
+  source: 'ps' | 'serebii' | 'pd' | 'pmd',
 ): SpriteProperties | undefined {
   if (Namedex[pokemonId]) {
     return Namedex[pokemonId][source];
@@ -25,6 +25,10 @@ export function getPidByName(name: string): PokemonId | null {
     }
   }
   return null;
+}
+
+export function getNameByPid(id: PokemonId): string {
+  return Namedex[id].name[0];
 }
 
 let $nameList: { name: string; value: Pokemon }[] | undefined;

@@ -2,7 +2,12 @@ import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { Pokemon } from '../interfaces/draft';
 import { SettingsService } from '../pages/settings/settings.service';
-import { getSpriteProperties, SpriteProperties } from '../data/namedex';
+import {
+  getNameByPid,
+  getPidByName,
+  getSpriteProperties,
+  SpriteProperties,
+} from '../data/namedex';
 
 @Component({
   selector: 'sprite',
@@ -26,14 +31,16 @@ import { getSpriteProperties, SpriteProperties } from '../data/namedex';
 export class SpriteComponent {
   constructor(private settingService: SettingsService) {}
   @Input()
-  set pokemon(value: Pokemon) {
+  set pokemon(value: Pokemon | string) {
+    if (typeof value === 'string')
+      value = { id: value, name: getNameByPid(value) };
     this.updateData(value);
     this._pokemon = value;
   }
   flip = false;
   @Input() flipped? = false;
   @Input() disabled? = false;
-  get pokemon() {
+  get pokemon(): Pokemon {
     return this._pokemon;
   }
   _pokemon!: Pokemon;
@@ -119,7 +126,7 @@ export class SpriteComponent {
           }
           splitBase.splice(2, 1, '0001');
           this.path = `https://raw.githubusercontent.com/PMDCollab/SpriteCollab/master/portrait/${splitBase.join(
-            '/'
+            '/',
           )}/Normal.png`;
         } else {
           this.path = `https://raw.githubusercontent.com/PMDCollab/SpriteCollab/master/portrait/${props.id}/Normal.png`;
@@ -166,7 +173,7 @@ export class SpriteComponent {
             base.pop();
             if (base.length !== 0) {
               this.path = `https://raw.githubusercontent.com/PMDCollab/SpriteCollab/master/portrait/${base.join(
-                '/'
+                '/',
               )}/Normal.png`;
             }
           }

@@ -18,7 +18,7 @@
       <div class="flex w-full p-0.5 space-x-1 overflow-x-auto scrollbar-hidden">
         <div
           [ngClass]="selectedDraftsStyle(j)"
-          class="flex border items-center rounded border-menu-500 hover:cursor-pointer"
+          class="flex items-center border rounded border-menu-500 hover:cursor-pointer"
           *ngFor="let draftCtrl of draftArray.controls; let j = index"
           [formGroupName]="j"
           (click)="switchDrafts(j)"
@@ -31,16 +31,16 @@
             class="w-4 m-1 hover:m-0.5 hover:w-5"
             (click)="copyToNew(j)"
           ></copy-svg>
-          @if (draftArray.controls.length>1) {
-          <trash-svg
-            class="w-4 m-1 hover:m-0.5 hover:w-5"
-            (click)="deletePlan(j)"
-          ></trash-svg>
+          @if (draftArray.controls.length > 1) {
+            <trash-svg
+              class="w-4 m-1 hover:m-0.5 hover:w-5"
+              (click)="deletePlan(j)"
+            ></trash-svg>
           }
         </div>
         <button *ngIf="draftSize < 5" (click)="addDraft()" c>
           <div
-            class="h-8 aspect-square p-1 border rounded border-menu-500 bg-menu-100 hover:bg-menu-50 hover:cursor-pointer"
+            class="h-8 p-1 border rounded aspect-square border-menu-500 bg-menu-100 hover:bg-menu-50 hover:cursor-pointer"
           >
             <plus-svg class="stroke-symbolColor-main"></plus-svg>
           </div>
@@ -54,7 +54,7 @@
       <div
         *ngIf="settings"
         @growIn
-        class="flex flex-wrap text-sm md:text-base items-center px-2 pb-1 space-x-4 space-y-1 border-b-2 border-menu-300 rounded-b-xl bg-menu-200"
+        class="flex flex-wrap items-center px-2 pb-1 space-x-4 space-y-1 text-sm border-b-2 md:text-base border-menu-300 rounded-b-xl bg-menu-200"
       >
         <div class="space-x-1">
           <label for="format" class="font-bold">Format</label>
@@ -135,23 +135,25 @@
           [queryParams]="{
             team: team,
             format: plannerForm.get('format')?.value,
-            ruleset: plannerForm.get('ruleset')?.value
+            ruleset: plannerForm.get('ruleset')?.value,
           }"
         >
           Save to New League
         </button>
       </div>
       <div class="flex flex-grow min-h-0 divide-x-4 divide-menu-200">
-        <div class="flex-col hidden divide-y-2 w-96 divide-menu-200 md:flex">
+        <div
+          class="flex-col flex-shrink-0 hidden divide-y-2 w-96 divide-menu-200 md:flex"
+        >
           <div class="flex-grow min-h-0 p-1 overflow-y-auto">
             <div
-              class="sticky flex w-full items-center font-semibold border-b-2 border-menu-300"
+              class="sticky flex items-center w-full font-semibold border-b-2 border-menu-300"
             >
               <div class="w-1/6 h-full"></div>
               <div class="w-5/12">Name</div>
               <div class="w-1/6 text-center">Value</div>
-              <div class="w-1/8 text-center text-xs">Captain</div>
-              <div class="w-1/8 text-center text-xs">Drafted</div>
+              <div class="text-xs text-center w-1/8">Captain</div>
+              <div class="text-xs text-center w-1/8">Drafted</div>
             </div>
             <div formArrayName="team" class="grid w-full grid-cols-1">
               <div
@@ -163,13 +165,13 @@
                   <sprite
                     [pokemon]="{
                       id: teamCtrl.get('id')?.value,
-                      name: teamCtrl.get('name')?.value
+                      name: teamCtrl.get('name')?.value,
                     }"
                   ></sprite>
                 </div>
-                <div class="w-5/12 h-full flex flex-col justify-center p-2">
+                <div class="flex flex-col justify-center w-5/12 h-full p-2">
                   <div
-                    class="w-full text-sm text-ellipsis border rounded-lg bg-menu-100"
+                    class="w-full text-sm border rounded-lg text-ellipsis bg-menu-100"
                     [ngClass]="minMaxStyle(i)"
                   >
                     <select-search
@@ -181,7 +183,7 @@
                   </div>
                 </div>
                 <div
-                  class="w-1/6 h-full flex flex-col justify-center p-1"
+                  class="flex flex-col justify-center w-1/6 h-full p-1"
                   *ngIf="!isPoints"
                 >
                   <input
@@ -193,7 +195,7 @@
                   />
                 </div>
                 <div
-                  class="w-1/6 h-full flex flex-col justify-center p-1"
+                  class="flex flex-col justify-center w-1/6 h-full p-1"
                   *ngIf="isPoints"
                 >
                   <input
@@ -225,18 +227,20 @@
             <div>Points Remaining: {{ remainingPoints }}</div>
             <div>
               Average Remaining Cost:
-              {{ remainingPoints / remainingPokemon | number : "1.0-2" }}
+              {{ remainingPoints / remainingPokemon | number: "1.0-2" }}
             </div>
           </div>
         </div>
         <div
           class="flex flex-col flex-grow h-full max-w-full divide-y-2 divide-menu-200"
         >
-          <div class="flex w-full p-1 min-h-fit space-x-2 overflow-x-auto">
+          <div
+            class="flex flex-shrink-0 w-full p-1 space-x-2 overflow-x-auto min-h-fit"
+          >
             <div
               class="block px-2 py-1 border-2 rounded-lg cursor-pointer md:hidden"
-              [ngClass]="tabColor(4)"
-              (click)="tabSelected = 4"
+              [ngClass]="tabColor(-1)"
+              (click)="tabSelected = -1"
             >
               Team
             </div>
@@ -255,16 +259,23 @@
               Typechart
             </div>
             <div
-              class="px-2 py-1 border-2 max-w-full rounded-lg cursor-pointer"
+              class="max-w-full px-2 py-1 border-2 rounded-lg cursor-pointer"
               [ngClass]="tabColor(2)"
               (click)="tabSelected = 2"
             >
               Moves
             </div>
             <div
-              class="px-2 py-1 border-2 rounded-lg cursor-pointer"
+              class="max-w-full px-2 py-1 border-2 rounded-lg cursor-pointer"
               [ngClass]="tabColor(3)"
               (click)="tabSelected = 3"
+            >
+              Coverage
+            </div>
+            <div
+              class="px-2 py-1 border-2 rounded-lg cursor-pointer"
+              [ngClass]="tabColor(4)"
+              (click)="tabSelected = 4"
             >
               Find
             </div>
@@ -282,22 +293,27 @@
               [recommended]="recommended"
             ></typechart>
             <moves
-              class="overflow-y-auto w-full"
+              class="w-full overflow-y-auto"
               *ngIf="tabSelected == 2 && movechart.length"
               [movechart]="movechart"
             ></moves>
+            <planner-coverage
+              class="w-full overflow-y-auto"
+              *ngIf="tabSelected == 3 && movechart.length"
+              [coverage]="coverage"
+            ></planner-coverage>
             <div
               class="flex-grow block min-h-0 p-1 overflow-y-auto md:hidden"
-              *ngIf="tabSelected == 4"
+              *ngIf="tabSelected == -1"
             >
               <div
                 class="sticky flex w-full space-x-3 font-semibold border-b-2 border-menu-300"
               >
                 <div class="w-1/6 h-full"></div>
                 <div class="w-5/12">Name</div>
-                <div class="w-1/6 text-center text-xs">Value</div>
-                <div class="w-1/8 text-center text-xs">Captain</div>
-                <div class="w-1/8 text-center text-xs">Drafted</div>
+                <div class="w-1/6 text-xs text-center">Value</div>
+                <div class="text-xs text-center w-1/8">Captain</div>
+                <div class="text-xs text-center w-1/8">Drafted</div>
               </div>
               <div formArrayName="team" class="grid w-full grid-cols-1">
                 <div
@@ -309,13 +325,13 @@
                     <sprite
                       [pokemon]="{
                         id: teamCtrl.get('id')?.value,
-                        name: teamCtrl.get('name')?.value
+                        name: teamCtrl.get('name')?.value,
                       }"
                     ></sprite>
                   </div>
-                  <div class="w-5/12 h-full flex flex-col justify-center p-2">
+                  <div class="flex flex-col justify-center w-5/12 h-full p-2">
                     <div
-                      class="w-full text-sm text-ellipsis border rounded-lg bg-menu-100"
+                      class="w-full text-sm border rounded-lg text-ellipsis bg-menu-100"
                       [ngClass]="minMaxStyle(i)"
                     >
                       <select-search
@@ -327,7 +343,7 @@
                     </div>
                   </div>
                   <div
-                    class="w-1/6 h-full flex flex-col justify-center p-1"
+                    class="flex flex-col justify-center w-1/6 h-full p-1"
                     *ngIf="!isPoints"
                   >
                     <input
@@ -339,7 +355,7 @@
                     />
                   </div>
                   <div
-                    class="w-1/6 h-full flex flex-col justify-center p-1"
+                    class="flex flex-col justify-center w-1/6 h-full p-1"
                     *ngIf="isPoints"
                   >
                     <input
@@ -369,7 +385,7 @@
             </div>
             <finder-core
               class="h-full min-w-full overflow-y-auto"
-              *ngIf="tabSelected == 3"
+              *ngIf="tabSelected == 4"
               [rulesetId]="
                 getDraftFormGroup().get('ruleset')?.value || 'Gen9 NatDex'
               "

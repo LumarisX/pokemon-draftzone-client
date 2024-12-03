@@ -28,6 +28,7 @@ import { PlusSVG } from '../images/svg-components/plus.component';
 import { TrashSVG } from '../images/svg-components/trash.component';
 import { Pokemon } from '../interfaces/draft';
 import {
+  Coverage,
   MoveChart,
   Summary,
   TypeChart,
@@ -39,11 +40,13 @@ import { SummaryComponent } from './summary/summary.component';
 import { TypechartComponent } from './typechart/typechart.component';
 import { CopySVG } from '../images/svg-components/copy.component';
 import { DraftOverviewPath } from '../draft-overview/draft-overview-routing.module';
+import { PlannerCoverageComponent } from './coverage/coverage.component';
 
 type Planner = {
   summary: Summary;
   typechart: TypeChart;
   movechart: MoveChart;
+  coverage: Coverage;
   recommended: {
     pokemon: Pokemon[];
     types: Type[][];
@@ -70,6 +73,7 @@ type Planner = {
     SelectSearchComponent,
     CompactSVG,
     CopySVG,
+    PlannerCoverageComponent,
   ],
   animations: [
     trigger('growIn', [
@@ -97,6 +101,7 @@ export class PlannerComponent implements OnInit {
     teamName: '',
     stats: { mean: {}, median: {}, max: {} },
   };
+  coverage!: Coverage;
   tabSelected = 0;
   selectedDraft = 0;
   formats: string[] = [];
@@ -110,7 +115,7 @@ export class PlannerComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private plannerService: PlannerService,
-    private dataService: DataService
+    private dataService: DataService,
   ) {}
 
   ngOnInit(): void {
@@ -141,8 +146,8 @@ export class PlannerComponent implements OnInit {
                 capt: boolean;
                 drafted: boolean;
               }[];
-            }) => this.createDraftFormGroup(value)
-          )
+            }) => this.createDraftFormGroup(value),
+          ),
         ),
       });
     }
@@ -233,7 +238,7 @@ export class PlannerComponent implements OnInit {
         .getPlannerDetails(
           this.team,
           this.getDraftFormGroup().get('format')?.value,
-          this.getDraftFormGroup().get('ruleset')?.value
+          this.getDraftFormGroup().get('ruleset')?.value,
         )
         .subscribe((data) => {
           let planner = <Planner>data;
@@ -241,6 +246,7 @@ export class PlannerComponent implements OnInit {
           this.summary = planner.summary;
           this.movechart = planner.movechart;
           this.recommended = planner.recommended;
+          this.coverage = planner.coverage;
         });
     }
   }
@@ -306,10 +312,10 @@ export class PlannerComponent implements OnInit {
       system: 'points',
       totalPoints: 100,
       team: [],
-    }
+    },
   ): FormGroup {
     let teamArray = this.fb.array(
-      data.team.map((mon) => this.createTeamFormGroup(mon))
+      data.team.map((mon) => this.createTeamFormGroup(mon)),
     );
     let group = this.fb.group({
       format: [data.format, Validators.required],
@@ -359,7 +365,14 @@ export class PlannerComponent implements OnInit {
       tier: string;
       capt: boolean;
       drafted: boolean;
-    } = { id: '', name: '', capt: false, tier: '', value: null, drafted: false }
+    } = {
+      id: '',
+      name: '',
+      capt: false,
+      tier: '',
+      value: null,
+      drafted: false,
+    },
   ): FormGroup {
     const teamFormGroup = this.fb.group({
       id: [data.id, Validators.required],
@@ -393,7 +406,7 @@ export class PlannerComponent implements OnInit {
 
   getDraftFormGroup(): FormGroup {
     return (this.plannerForm.get('drafts') as FormArray).at(
-      this.selectedDraft
+      this.selectedDraft,
     ) as FormGroup;
   }
 
@@ -454,8 +467,8 @@ export class PlannerComponent implements OnInit {
             tier: [control.get('tier')?.value],
             value: [control.get('value')?.value],
             drafted: [control.get('drafted')?.value],
-          })
-        )
+          }),
+        ),
       ),
     });
 
