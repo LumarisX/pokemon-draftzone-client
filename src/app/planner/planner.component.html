@@ -6,7 +6,7 @@
   <button type="submit" style="display: none"></button>
   <div formArrayName="drafts" class="flex flex-col h-full">
     <div
-      class="flex items-center p-1 space-x-1 border-b-2 overflow-y-clip h-fit bg-menu-200 border-menu-300"
+      class="flex flex-shrink-0 items-center p-1 space-x-1 border-b-2 overflow-y-clip h-fit bg-menu-200 border-menu-300"
     >
       <div
         class="flex items-center font-semibold w-fit px-1 py-0.5 border bg-menu-100 hover:bg-menu-50 hover:cursor-pointer rounded border-menu-500"
@@ -38,7 +38,7 @@
             ></trash-svg>
           }
         </div>
-        <button *ngIf="draftSize < 5" (click)="addDraft()" c>
+        <button *ngIf="draftSize < 5" (click)="addDraft()">
           <div
             class="h-8 p-1 border rounded aspect-square border-menu-500 bg-menu-100 hover:bg-menu-50 hover:cursor-pointer"
           >

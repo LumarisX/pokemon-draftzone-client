@@ -62,6 +62,14 @@
           <div *ngIf="sortBy == 'spe' && !reversed">SPE ↥</div>
           <div *ngIf="sortBy == 'spe' && reversed">SPE ↧</div>
         </th>
+        <th
+          (click)="sortByStat('bst')"
+          class="w-12 cursor-pointer hover:text-menu-200"
+        >
+          <div *ngIf="sortBy != 'bst'">BST</div>
+          <div *ngIf="sortBy == 'bst' && !reversed">BST ↥</div>
+          <div *ngIf="sortBy == 'bst' && reversed">BST ↧</div>
+        </th>
       </tr>
     </thead>
   </table>
@@ -145,6 +153,9 @@
           >
             {{ pokemon.baseStats.spe }}
           </td>
+          <td class="w-12 text-center" [ngClass]="bstColor(pokemon.bst)">
+            {{ pokemon.bst }}
+          </td>
         </tr>
       </tbody>
     </table>
@@ -192,6 +203,12 @@
         >
           {{ summary.stats.mean.spe }}
         </td>
+        <td
+          class="w-12 text-center"
+          [ngClass]="bstColor(summary.stats.mean.bst)"
+        >
+          {{ summary.stats.mean.bst }}
+        </td>
       </tr>
       <tr class="bg-menu-300">
         <td></td>
@@ -226,6 +243,9 @@
         <td class="text-center" [ngClass]="statColor(summary.stats.median.spe)">
           {{ summary.stats.median.spe }}
         </td>
+        <td class="text-center" [ngClass]="bstColor(summary.stats.median.bst)">
+          {{ summary.stats.median.bst }}
+        </td>
       </tr>
       <tr class="bg-menu-300">
         <td></td>
@@ -249,6 +269,9 @@
         </td>
         <td class="text-center" [ngClass]="statColor(summary.stats.max.spe)">
           {{ summary.stats.max.spe }}
+        </td>
+        <td class="text-center" [ngClass]="bstColor(summary.stats.max.bst)">
+          {{ summary.stats.max.bst }}
         </td>
       </tr>
     </tfoot>

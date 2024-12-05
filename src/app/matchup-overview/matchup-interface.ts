@@ -20,6 +20,7 @@ export type Summary = {
   team: (Pokemon & {
     abilities: string[];
     types: string[];
+    bst: number;
     baseStats: StatsTable;
   })[];
   teamName: String;
@@ -31,6 +32,7 @@ export type Summary = {
       spa?: number;
       spd?: number;
       spe?: number;
+      bst?: number;
     };
     median: {
       hp?: number;
@@ -39,6 +41,7 @@ export type Summary = {
       spa?: number;
       spd?: number;
       spe?: number;
+      bst?: number;
     };
     max: {
       hp?: number;
@@ -47,6 +50,7 @@ export type Summary = {
       spa?: number;
       spd?: number;
       spe?: number;
+      bst?: number;
     };
   };
 };
