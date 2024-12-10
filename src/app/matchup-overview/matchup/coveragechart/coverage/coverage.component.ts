@@ -31,14 +31,14 @@ export class CoverageComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-    this.updateCoverage();
+    this.resetRecommended();
   }
 
   updateCoverage() {
     const selectedMoves = [
       ...this.pokemon.coverage.physical
         .concat(this.pokemon.coverage.special)
-        .filter((move) => move.recommended),
+        .filter((move) => move.selected),
     ];
 
     this.coverage = this.typechart.team
@@ -72,5 +72,15 @@ export class CoverageComponent implements OnInit {
     } else {
       return 'bg-scale-negative-2 border border-scale-negative-3';
     }
+  }
+
+  resetRecommended() {
+    this.pokemon.coverage.physical.forEach((move) => {
+      move.selected = move.recommended;
+    });
+    this.pokemon.coverage.special.forEach((move) => {
+      move.selected = move.recommended;
+    });
+    this.updateCoverage();
   }
 }

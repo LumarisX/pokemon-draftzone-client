@@ -16,10 +16,9 @@ export class MovechartComponent {
 
   selectedTeam: number = 1;
   get toggleAll(): boolean {
-    return this.teams[this.selectedTeam].some((category) => {
-      console.log(category.categoryName, category.show);
-      return category.show ?? true;
-    });
+    return this.teams[this.selectedTeam].some(
+      (category) => category.show ?? true,
+    );
   }
 
   constructor() {}

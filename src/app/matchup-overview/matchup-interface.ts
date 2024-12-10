@@ -105,6 +105,7 @@ export type CoverageChart = Pokemon & {
         stab: boolean;
         type: Type;
         recommended?: boolean;
+        selected?: boolean;
       },
     ];
     special: [
@@ -113,6 +114,7 @@ export type CoverageChart = Pokemon & {
         stab: boolean;
         type: Type;
         recommended?: boolean;
+        selected?: boolean;
       },
     ];
   };

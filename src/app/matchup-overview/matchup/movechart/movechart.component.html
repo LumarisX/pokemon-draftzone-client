@@ -1,9 +1,9 @@
 <div class="flex flex-col w-full h-full">
   <div class="flex w-full px-1 bg-menu-400 rounded-t-xl">
-    <div class="flex w-full p-1 border-b border-menu-300 items-center">
+    <div class="flex w-full px-1 py-0.5 border-b border-menu-300 items-center">
       <button
         (click)="toggleCollapse()"
-        class="items-center justify-end w-5 h-5 m-2 ml-auto border rounded cursor-pointer border-menu-500 bg-menu-300 hover:bg-menu-200"
+        class="w-5 h-5 m-2 rounded cursor-pointer bg-menu-300 hover:bg-menu-200 shadow-md"
       >
         @if (toggleAll) {
           <minus-svg class="h-full" title="Hide"></minus-svg>
@@ -17,7 +17,7 @@
       <h1 class="flex-grow text-xl font-bold text-center">Learned Moves</h1>
       <button
         (click)="swapTeams()"
-        class="px-3 mx-1 mt-2 ml-auto text-sm rounded-md shadow-md"
+        class="px-3 ml-auto text-sm rounded-md shadow-md"
         [ngClass]="clickColor(true)"
       >
         ⇄

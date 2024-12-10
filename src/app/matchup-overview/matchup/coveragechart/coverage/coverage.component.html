@@ -16,8 +16,8 @@
           <div class="grid grid-cols-5 gap-1">
             <img
               *ngFor="let move of pokemon.coverage.physical"
-              [ngClass]="{ 'opacity-40': !move.recommended }"
-              (click)="move.recommended = !move.recommended; updateCoverage()"
+              [ngClass]="{ 'opacity-40': !move.selected }"
+              (click)="move.selected = !move.selected; updateCoverage()"
               src="../../../../assets/icons/types/{{ move.type }}.png"
               onerror="this.src='../../../../assets/icons/types/Unknown.png'"
               title="{{ move.name }}"
@@ -35,8 +35,8 @@
           <div class="grid grid-cols-5 gap-1">
             <img
               *ngFor="let move of pokemon.coverage.special"
-              [ngClass]="{ 'opacity-40': !move.recommended }"
-              (click)="move.recommended = !move.recommended; updateCoverage()"
+              [ngClass]="{ 'opacity-40': !move.selected }"
+              (click)="move.selected = !move.selected; updateCoverage()"
               src="../../../../assets/icons/types/{{ move.type }}.png"
               onerror="this.src='../../../../assets/icons/types/Unknown.png'"
               title="{{ move.name }}"
