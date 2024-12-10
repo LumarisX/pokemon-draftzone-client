@@ -36,11 +36,9 @@ export class DraftFormCoreComponent implements OnInit {
   ngOnInit(): void {
     this.dataService.getFormats().subscribe((formats) => {
       this.formats = formats;
-      this.draftForm.get('format')?.setValue(formats[0]);
     });
     this.dataService.getRulesets().subscribe((rulesets) => {
       this.rulesets = rulesets;
-      this.draftForm.get('ruleset')?.setValue(rulesets[0]);
     });
     this.draftForm.setValidators(this.validateDraftForm);
   }

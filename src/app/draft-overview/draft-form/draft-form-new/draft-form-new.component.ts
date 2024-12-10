@@ -52,16 +52,15 @@ export class DraftFormNewComponent implements OnInit {
           name: Namedex[id].name[0],
         }));
       }
-      console.log(team);
       this.draftForm = this.fb.group({
         leagueName: ['', Validators.required],
         teamName: ['', Validators.required],
         format: [
-          'format' in params ? params['format'] : '',
+          'format' in params ? params['format'] : 'Singles',
           Validators.required,
         ],
         ruleset: [
-          'ruleset' in params ? params['ruleset'] : '',
+          'ruleset' in params ? params['ruleset'] : 'Gen9 NatDex',
           Validators.required,
         ],
         team: [team, Validators.required],
@@ -70,13 +69,12 @@ export class DraftFormNewComponent implements OnInit {
   }
 
   newDraft(formData: Object) {
-    this.draftService.newDraft(formData).subscribe(
-      (response) => {
+    this.draftService.newDraft(formData).subscribe({
+      next: (response) => {
         console.log('Success!', response);
-        // Redirect to Draft Overview component
         this.router.navigate(['/', DraftOverviewPath]);
       },
-      (error) => console.error('Error!', error),
-    );
+      error: (error) => console.error('Error!', error),
+    });
   }
 }

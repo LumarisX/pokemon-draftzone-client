@@ -134,8 +134,8 @@
           [routerLink]="['/', draftPath, 'new']"
           [queryParams]="{
             team: team,
-            format: plannerForm.get('format')?.value,
-            ruleset: plannerForm.get('ruleset')?.value,
+            format: getDraftFormGroup().get('format')?.value,
+            ruleset: getDraftFormGroup().get('ruleset')?.value,
           }"
         >
           Save to New League
