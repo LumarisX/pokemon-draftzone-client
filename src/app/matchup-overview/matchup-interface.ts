@@ -93,6 +93,7 @@ export type Coverage = {
 
 export type MoveCategory = {
   categoryName: string;
+  show?: boolean;
   moves: { name: string; type: string; pokemon: Pokemon[] }[];
 };
 

@@ -1,7 +1,20 @@
 <div class="flex flex-col w-full h-full">
   <div class="flex w-full px-1 bg-menu-400 rounded-t-xl">
-    <div class="flex w-full pb-1 border-b border-menu-300">
-      <h1 class="w-full text-xl font-bold text-center">Learned Moves</h1>
+    <div class="flex w-full p-1 border-b border-menu-300 items-center">
+      <button
+        (click)="toggleCollapse()"
+        class="items-center justify-end w-5 h-5 m-2 ml-auto border rounded cursor-pointer border-menu-500 bg-menu-300 hover:bg-menu-200"
+      >
+        @if (toggleAll) {
+          <minus-svg class="h-full" title="Hide"></minus-svg>
+        } @else {
+          <plus-svg
+            class="h-full stroke-symbolColor-main"
+            title="Expand"
+          ></plus-svg>
+        }
+      </button>
+      <h1 class="flex-grow text-xl font-bold text-center">Learned Moves</h1>
       <button
         (click)="swapTeams()"
         class="px-3 mx-1 mt-2 ml-auto text-sm rounded-md shadow-md"
@@ -14,11 +27,14 @@
   <div
     class="w-full overflow-y-auto flex-grow border-4 border-menu-400 max-h-128 bg-menu-400"
   >
-    <move-category
-      *ngFor="let category of this.teams[selectedTeam]"
-      [category]="category"
-    >
-    </move-category>
+    @for (category of teams[selectedTeam]; track $index) {
+      <move-category
+        [category]="category"
+        [show]="category.show ?? true"
+        (showUpdate)="category.show = $event"
+      >
+      </move-category>
+    }
   </div>
   <div class="w-full h-3 rounded-b-full bg-menu-400"></div>
 </div>

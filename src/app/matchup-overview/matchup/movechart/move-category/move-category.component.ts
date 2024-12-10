@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { SpriteComponent } from '../../../../images/sprite.component';
 import { MoveCategory } from '../../../matchup-interface';
 import {
@@ -29,7 +29,8 @@ export class MoveCategoryComponent {
   @Input() category!: MoveCategory;
   @Input() cols?: number = 1;
   @Input() unlearned: boolean = false;
-  show: boolean = true;
+  @Input() show: boolean = true;
+  @Output() showUpdate = new EventEmitter<boolean>();
   constructor() {}
 
   typeBorder(type: string) {
@@ -38,5 +39,10 @@ export class MoveCategoryComponent {
 
   getCols() {
     return `grid-cols-${this.cols}`;
+  }
+
+  toggleShow() {
+    this.show = !this.show;
+    this.showUpdate.emit(this.show);
   }
 }
