@@ -30,5 +30,7 @@
   <finder-core
     [formatId]="selectedFormat"
     [rulesetId]="selectedRuleset"
+    [startQuery]="queryParamValue"
+    (UpdatedQuery)="updateURLQuery($event)"
   ></finder-core>
 </div>

@@ -1,14 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { StatsTable, Type } from '../../data';
 import { DataService } from '../../api/data.service';
+import { StatsTable, Type } from '../../data';
 import { SpriteComponent } from '../../images/sprite.component';
-import { MinusSVG } from '../../images/svg-components/minus.component';
 import { FindOptionComponent } from './find-option/find-option.component';
-import { rule } from 'postcss';
-import { format } from 'd3';
 
 type QueryGroup = {
   queries: QueryBuilder[];
@@ -32,15 +29,21 @@ type QueryBuilder = {
     ReactiveFormsModule,
     SpriteComponent,
     FindOptionComponent,
-    MinusSVG,
   ],
 })
 export class FinderCoreComponent implements OnInit {
   @Input()
   rulesetId?: string;
-
   @Input()
   formatId?: string;
+  @Input()
+  set startQuery(value: string | null) {
+    if (!value) return;
+    this.finalQuery = value;
+    this.find();
+  }
+
+  @Output() UpdatedQuery = new EventEmitter<string>();
 
   results: {
     id: string;
@@ -103,7 +106,7 @@ export class FinderCoreComponent implements OnInit {
       option: string;
       operation: string | undefined;
       value: string | number | boolean | undefined;
-    }
+    },
   ) {
     query.option = event.option;
     query.operation = event.operation;
@@ -118,15 +121,16 @@ export class FinderCoreComponent implements OnInit {
           `(${group.queries
             .filter((query) => query.value !== undefined && query.value !== '')
             .flatMap(
-              (query) => `${query.option} ${query.operation} "${query.value}"`
+              (query) => `${query.option} ${query.operation} "${query.value}"`,
             )
-            .join(group.conjunction)})`
+            .join(group.conjunction)})`,
       )
       .join(' && ');
   }
 
   find() {
     if (this.lastFind != this.finalQuery + this.rulesetId + this.formatId) {
+      this.UpdatedQuery.emit(this.finalQuery);
       this.dataApi
         .advancesearch([this.finalQuery], this.rulesetId, this.formatId)
         .subscribe((data) => (this.results = data));

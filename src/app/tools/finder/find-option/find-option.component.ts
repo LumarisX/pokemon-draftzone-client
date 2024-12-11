@@ -8,7 +8,15 @@ type Option = {
   name: string;
   value: string;
   operations: ('=' | '≠' | '>=' | '>' | '<' | '<=' | '∈' | '∉')[];
-  query: '' | 'string' | 'boolean' | 'type' | 'number' | 'tier' | 'eggs';
+  query:
+    | ''
+    | 'string'
+    | 'boolean'
+    | 'type'
+    | 'number'
+    | 'tier'
+    | 'eggs'
+    | 'evolves';
 };
 
 type Conditional = {
@@ -43,6 +51,9 @@ export class FindOptionComponent {
         break;
       case 'eggs':
         this.queryValue = this.eggGroups[0];
+        break;
+      case 'evolves':
+        this.queryValue = this.evolveOptions[0];
         break;
       case 'boolean':
         this.queryValue = false;
@@ -107,6 +118,9 @@ export class FindOptionComponent {
     'Dragon',
     'Undiscovered',
   ];
+
+  evolveOptions = ['Fully Evolved', 'Unevolved'];
+
   options: Option[] = [
     {
       name: 'Select',
@@ -205,10 +219,10 @@ export class FindOptionComponent {
       query: 'string',
     },
     {
-      name: 'Not Fully Evolved',
-      value: 'nfe',
-      operations: ['='],
-      query: 'boolean',
+      name: 'Evolved',
+      value: 'evolved',
+      operations: ['=', '≠'],
+      query: 'evolves',
     },
     {
       name: 'Tier',

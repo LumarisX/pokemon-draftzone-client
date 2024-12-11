@@ -3,76 +3,101 @@
     [(ngModel)]="selectedOption"
     class="border-menu-100 rounded border bg-page"
   >
-    <option *ngFor="let option of options" [ngValue]="option">
-      {{ option.name }}
-    </option>
+    @for (option of options; track $index) {
+      <option [ngValue]="option">
+        {{ option.name }}
+      </option>
+    }
   </select>
 
-  <select
-    *ngIf="
-      selectedOption.operations.length > 0 && selectedOption.query !== 'boolean'
-    "
-    [(ngModel)]="condition.operation"
-    (ngModelChange)="onOperationChange()"
-    class="border-menu-100 rounded border bg-page"
-  >
-    <option
-      *ngFor="let operation of selectedOption.operations"
-      [ngValue]="operation"
+  @if (
+    selectedOption.operations.length > 0 && selectedOption.query !== "boolean"
+  ) {
+    <select
+      [(ngModel)]="condition.operation"
+      (ngModelChange)="onOperationChange()"
+      class="border-menu-100 rounded border bg-page"
     >
-      {{ operation }}
-    </option>
-  </select>
-
-  <div *ngIf="selectedOption.query !== ''" class="flex items-center space-x-2">
-    <ng-container [ngSwitch]="selectedOption.query">
-      <input
-        *ngSwitchCase="'string'"
-        class="border-menu-100 rounded border bg-page"
-        [(ngModel)]="queryValue"
-        type="text"
-        placeholder="Enter text"
-      />
-      <input
-        *ngSwitchCase="'number'"
-        class="border-menu-100 rounded border bg-page"
-        [(ngModel)]="queryValue"
-        type="number"
-        placeholder="Enter number"
-      />
-      <select
-        *ngSwitchCase="'type'"
-        class="border-menu-100 rounded border bg-page"
-        [(ngModel)]="queryValue"
-      >
-        <option *ngFor="let type of typeOptions" [ngValue]="type">
-          {{ type }}
+      @for (operation of selectedOption.operations; track $index) {
+        <option [ngValue]="operation">
+          {{ operation }}
         </option>
-      </select>
-      <select
-        *ngSwitchCase="'eggs'"
-        class="border-menu-100 rounded border bg-page"
-        [(ngModel)]="queryValue"
-      >
-        <option *ngFor="let egg of eggGroups" [ngValue]="egg">
-          {{ egg }}
-        </option>
-      </select>
-      <select
-        *ngSwitchCase="'tier'"
-        class="border-menu-100 rounded border bg-page"
-        [(ngModel)]="queryValue"
-      >
-        <option *ngFor="let tier of tiers" [ngValue]="tier">
-          {{ tier }}
-        </option>
-      </select>
-      <input
-        *ngSwitchCase="'boolean'"
-        class="border-menu-100 rounded border bg-page"
-        [(ngModel)]="queryValue"
-        type="checkbox"
-      />
-    </ng-container>
-  </div>
+      }
+    </select>
+  }
+  @if (selectedOption.query !== "") {
+    <div class="flex items-center space-x-2">
+      @switch (selectedOption.query) {
+        @case ("string") {
+          <input
+            class="border-menu-100 rounded border bg-page"
+            [(ngModel)]="queryValue"
+            type="text"
+            placeholder="Enter text"
+          />
+        }
+        @case ("number") {
+          <input
+            class="border-menu-100 rounded border bg-page"
+            [(ngModel)]="queryValue"
+            type="number"
+            placeholder="Enter number"
+          />
+        }
+        @case ("type") {
+          <select
+            class="border-menu-100 rounded border bg-page"
+            [(ngModel)]="queryValue"
+          >
+            @for (type of typeOptions; track $index) {
+              <option [ngValue]="type">
+                {{ type }}
+              </option>
+            }
+          </select>
+        }
+        @case ("eggs") {
+          <select
+            class="border-menu-100 rounded border bg-page"
+            [(ngModel)]="queryValue"
+          >
+            @for (group of eggGroups; track $index) {
+              <option [ngValue]="group">
+                {{ group }}
+              </option>
+            }
+          </select>
+        }
+        @case ("tier") {
+          <select
+            class="border-menu-100 rounded border bg-page"
+            [(ngModel)]="queryValue"
+          >
+            @for (tier of tiers; track $index) {
+              <option [ngValue]="tier">
+                {{ tier }}
+              </option>
+            }
+          </select>
+        }
+        @case ("evolves") {
+          <select
+            class="border-menu-100 rounded border bg-page"
+            [(ngModel)]="queryValue"
+          >
+            <option *ngFor="let option of evolveOptions" [ngValue]="option">
+              {{ option }}
+            </option>
+          </select>
+        }
+        @case ("boolean") {
+          <input
+            class="border-menu-100 rounded border bg-page"
+            [(ngModel)]="queryValue"
+            type="checkbox"
+          />
+        }
+      }
+    </div>
+  }
 </div>

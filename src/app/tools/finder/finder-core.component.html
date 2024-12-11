@@ -11,71 +11,24 @@
         />
       </div>
 
-      <div *ngIf="!advancedMode" class="space-y-4">
-        <div>
-          <div
-            class="p-4 border-2 border-menu-300 rounded-lg bg-page space-y-2"
-          >
-            <div class="flex items-center justify-between">
-              <select
-                id="conjunction"
-                [(ngModel)]="queryGroups[0].conjunction"
-                class="rounded border border-menu-300 bg-menu-100"
-              >
-                <option value=" && ">All</option>
-                <option value=" || ">Any</option>
-              </select>
-            </div>
-
-            <div
-              *ngFor="let query of queryGroups[0].queries; let i = index"
-              class="flex items-center space-x-2"
-            >
-              <find-option
-                [condition]="query"
-                (queryChange)="onQueryChange(query, $event)"
-              ></find-option>
-              <button
-                (click)="removeQueryBuilder(queryGroups[0], i)"
-                class="border border-red-400 bg-red-100 text-red-500 hover:bg-red-200 px-2 py-1 rounded"
-              >
-                -
-              </button>
-            </div>
-
-            <button
-              (click)="addQueryBuilder(queryGroups[0])"
-              class="border border-blue-400 bg-blue-100 text-blue-500 hover:bg-blue-200 px-4 py-2 rounded"
-            >
-              Add Condition
-            </button>
-          </div>
-          <div
-            *ngFor="let group of queryGroups.slice(1); let groupIndex = index"
-          >
-            <p class="p-2 font-semibold">AND</p>
+      @if (!advancedMode) {
+        <div class="space-y-4">
+          <div>
             <div
               class="p-4 border-2 border-menu-300 rounded-lg bg-page space-y-2"
             >
               <div class="flex items-center justify-between">
                 <select
                   id="conjunction"
-                  [(ngModel)]="group.conjunction"
-                  class="form-select rounded border border-menu-300 bg-menu-100"
+                  [(ngModel)]="queryGroups[0].conjunction"
+                  class="rounded border border-menu-300 bg-menu-100"
                 >
                   <option value=" && ">All</option>
                   <option value=" || ">Any</option>
                 </select>
-                <button
-                  (click)="removeQueryGroup(groupIndex + 1)"
-                  class="border border-red-400 bg-red-100 text-red-500 hover:bg-red-200 px-2 py-1 rounded"
-                >
-                  Remove
-                </button>
               </div>
-
               <div
-                *ngFor="let query of group.queries; let i = index"
+                *ngFor="let query of queryGroups[0].queries; let i = index"
                 class="flex items-center space-x-2"
               >
                 <find-option
@@ -83,7 +36,7 @@
                   (queryChange)="onQueryChange(query, $event)"
                 ></find-option>
                 <button
-                  (click)="removeQueryBuilder(group, i)"
+                  (click)="removeQueryBuilder(queryGroups[0], i)"
                   class="border border-red-400 bg-red-100 text-red-500 hover:bg-red-200 px-2 py-1 rounded"
                 >
                   -
@@ -91,22 +44,86 @@
               </div>
 
               <button
-                (click)="addQueryBuilder(group)"
+                (click)="addQueryBuilder(queryGroups[0])"
                 class="border border-blue-400 bg-blue-100 text-blue-500 hover:bg-blue-200 px-4 py-2 rounded"
               >
                 Add Condition
               </button>
             </div>
+            @for (group of queryGroups.slice(1); track $index) {
+              <div>
+                <p class="p-2 font-semibold">AND</p>
+                <div
+                  class="p-4 border-2 border-menu-300 rounded-lg bg-page space-y-2"
+                >
+                  <div class="flex items-center justify-between">
+                    <select
+                      id="conjunction"
+                      [(ngModel)]="group.conjunction"
+                      class="form-select rounded border border-menu-300 bg-menu-100"
+                    >
+                      <option value=" && ">All</option>
+                      <option value=" || ">Any</option>
+                    </select>
+                    <button
+                      (click)="removeQueryGroup($index + 1)"
+                      class="border border-red-400 bg-red-100 text-red-500 hover:bg-red-200 px-2 py-1 rounded"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                  @for (query of group.queries; track $index) {
+                    <div class="flex items-center space-x-2">
+                      <find-option
+                        [condition]="query"
+                        (queryChange)="onQueryChange(query, $event)"
+                      ></find-option>
+                      <button
+                        (click)="removeQueryBuilder(group, $index)"
+                        class="border border-red-400 bg-red-100 text-red-500 hover:bg-red-200 px-2 py-1 rounded"
+                      >
+                        -
+                      </button>
+                    </div>
+                  }
+                  <button
+                    (click)="addQueryBuilder(group)"
+                    class="border border-blue-400 bg-blue-100 text-blue-500 hover:bg-blue-200 px-4 py-2 rounded"
+                  >
+                    Add Condition
+                  </button>
+                </div>
+              </div>
+            }
+          </div>
+          <div class="flex w-full">
+            <button
+              (click)="addQueryGroup()"
+              class="border border-green-400 bg-green-100 text-green-500 hover:bg-green-200 px-4 py-2 rounded"
+            >
+              Add Group
+            </button>
+            <div class="flex flex-grow"></div>
+            <button
+              class="border border-menu-400 bg-menu-100 hover:bg-menu-200 px-4 py-2 rounded"
+              (click)="find()"
+            >
+              Find
+            </button>
           </div>
         </div>
-        <div class="flex w-full">
-          <button
-            (click)="addQueryGroup()"
-            class="border border-green-400 bg-green-100 text-green-500 hover:bg-green-200 px-4 py-2 rounded"
-          >
-            Add Group
-          </button>
-          <div class="flex flex-grow"></div>
+      }
+
+      @if (advancedMode) {
+        <div class="space-y-4">
+          <div>
+            <textarea
+              class="text-wrap p-1 w-full border-2 border-menu-300 rounded-lg"
+              placeholder="Enter advanced query"
+              [(ngModel)]="finalQuery"
+            >
+            </textarea>
+          </div>
           <button
             class="border border-menu-400 bg-menu-100 hover:bg-menu-200 px-4 py-2 rounded"
             (click)="find()"
@@ -114,24 +131,7 @@
             Find
           </button>
         </div>
-      </div>
-
-      <div *ngIf="advancedMode" class="space-y-4">
-        <div>
-          <textarea
-            class="text-wrap p-1 w-full border-2 border-menu-300 rounded-lg"
-            placeholder="Enter advanced query"
-            [(ngModel)]="finalQuery"
-          >
-          </textarea>
-        </div>
-        <button
-          class="border border-menu-400 bg-menu-100 hover:bg-menu-200 px-4 py-2 rounded"
-          (click)="find()"
-        >
-          Find
-        </button>
-      </div>
+      }
     </div>
   </div>
 
