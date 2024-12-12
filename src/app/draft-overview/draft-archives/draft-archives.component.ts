@@ -2,11 +2,10 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { ArchiveService } from '../../api/archive.service';
+import { LoadingComponent } from '../../images/loading/loading.component';
 import { SpriteComponent } from '../../images/sprite.component';
-import { BarChartSVG } from '../../images/svg-components/barchart.component';
 import { TrashSVG } from '../../images/svg-components/trash.component';
 import { Archive } from '../../interfaces/archive';
-import { LoadingComponent } from '../../images/loading/loading.component';
 import { DraftOverviewPath } from '../draft-overview-routing.module';
 
 @Component({
@@ -17,7 +16,6 @@ import { DraftOverviewPath } from '../draft-overview-routing.module';
     CommonModule,
     RouterModule,
     SpriteComponent,
-    BarChartSVG,
     TrashSVG,
     LoadingComponent,
   ],
