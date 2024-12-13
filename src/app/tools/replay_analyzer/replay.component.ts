@@ -6,7 +6,6 @@ import { ReplayService } from '../../api/replay.service';
 import { SpriteComponent } from '../../images/sprite.component';
 import { ReplayChartComponent } from './replay-chart/replay-chart.component';
 import { ReplayData } from './replay.interface';
-import { LoadingComponent } from '../../images/loading/loading.component';
 
 @Component({
   selector: 'replay-analyzer',
@@ -18,7 +17,6 @@ import { LoadingComponent } from '../../images/loading/loading.component';
     FormsModule,
     SpriteComponent,
     ReplayChartComponent,
-    LoadingComponent,
   ],
 })
 export class ReplayComponent implements OnInit {
@@ -36,7 +34,7 @@ export class ReplayComponent implements OnInit {
 
   constructor(
     private replayService: ReplayService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
   ) {}
 
   ngOnInit(): void {

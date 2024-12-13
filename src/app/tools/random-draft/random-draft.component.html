@@ -1,0 +1,53 @@
+<div class="w-full items-center flex flex-col p-4 space-y-4">
+  <div
+    class="px-2 py-1 space-x-1 font-nasa border rounded-sm hover:cursor-pointer hover:bg-menu-250 bg-menu-300 border-menu-400 w-fit"
+  >
+    <span>Count:</span>
+    <input
+      class="bg-inherit text-end w-12"
+      [(ngModel)]="count"
+      type="number"
+      min="1"
+      max="20"
+    />
+  </div>
+  <div
+    class="px-2 py-1 border rounded-full hover:cursor-pointer hover:bg-menu-200 bg-menu-300 border-menu-400 w-fit"
+    (click)="getRandom()"
+  >
+    <h2 class="w-32 text-center font-nasa">Random Draft</h2>
+  </div>
+
+  @if (team.length > 0) {
+    <div class="w-full max-w-md grid grid-cols-4">
+      @for (pokemon of team; track $index) {
+        <sprite [pokemon]="pokemon"></sprite>
+      }
+    </div>
+
+    <div class="space-x-2">
+      <button
+        class="p-0.5 border-2 text-sm font-semibold rounded-sm hover:bg-menu-200 bg-menu-300 border-menu-400"
+        [routerLink]="['/', draftPath, 'new']"
+        [queryParams]="{
+          team: teamIds(),
+          format: format,
+          ruleset: ruleset,
+        }"
+      >
+        Save to New League
+      </button>
+      <button
+        class="p-0.5 border-2 text-sm font-semibold rounded-sm hover:bg-menu-200 bg-menu-300 border-menu-400"
+        [routerLink]="['/', 'tools', 'quick-matchup']"
+        [queryParams]="{
+          team: teamIds(),
+          format: format,
+          ruleset: ruleset,
+        }"
+      >
+        Save to Quick Match
+      </button>
+    </div>
+  }
+</div>

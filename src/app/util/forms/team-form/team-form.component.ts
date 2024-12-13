@@ -88,6 +88,10 @@ export class TeamFormComponent implements ControlValueAccessor {
     this.importing = false;
   }
 
+  importText() {
+    return this.teamArray.value.map((pokemon) => pokemon.name).join('\n');
+  }
+
   validate(control: AbstractControl): ValidationErrors | null {
     if (this.teamArray.valid) {
       return null;

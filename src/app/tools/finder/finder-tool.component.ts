@@ -1,10 +1,9 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { FinderCoreComponent } from './finder-core.component';
 import { DataService } from '../../api/data.service';
-import { Location } from '@angular/common';
 
 @Component({
   selector: 'finder-tool',

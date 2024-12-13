@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { ApiService } from './api.service';
 import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
+import { ApiService } from './api.service';
+import { Pokemon } from '../interfaces/draft';
 
 @Injectable({
   providedIn: 'root',
@@ -21,7 +22,7 @@ export class DataService {
       return this.apiService.get('data/formats', false).pipe(
         tap((formats: string[]) => {
           this.cache.formats = formats;
-        })
+        }),
       );
     }
   }
@@ -33,9 +34,21 @@ export class DataService {
       return this.apiService.get('data/rulesets', false).pipe(
         tap((rulesets: string[]) => {
           this.cache.rulesets = rulesets;
-        })
+        }),
       );
     }
+  }
+
+  getRandom(
+    count: number,
+    ruleset: string,
+    format: string,
+  ): Observable<Pokemon[]> {
+    return this.apiService.get('data/random', false, {
+      count: count.toFixed(0),
+      ruleset,
+      format,
+    });
   }
 
   advancesearch(query: string[], ruleset?: string, format?: string) {

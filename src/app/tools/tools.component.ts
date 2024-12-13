@@ -1,14 +1,36 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'tools',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './tools.component.html',
 })
 export class ToolsComponent {
+  tools: { title: string; link: string }[] = [
+    {
+      title: 'Replay Analyzer',
+      link: 'replay-analyzer',
+    },
+    {
+      title: 'Time Converter',
+      link: 'time-converter',
+    },
+    {
+      title: 'Pokemon Search',
+      link: 'pokemon-search',
+    },
+    {
+      title: 'Quick Matchup',
+      link: 'quick-matchup',
+    },
+    {
+      title: 'Random Draft',
+      link: 'random-draft',
+    },
+  ];
+
   constructor() {}
 }

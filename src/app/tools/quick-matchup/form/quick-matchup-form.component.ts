@@ -29,7 +29,7 @@ export class QuickMatchupFormComponent {
   formats: string[] = [];
   rulesets: string[] = [];
   draftForm!: FormGroup;
-  @Input() formData?: {
+  @Input() formData!: {
     format: string;
     ruleset: string;
     team1: Pokemon[];
@@ -48,10 +48,10 @@ export class QuickMatchupFormComponent {
 
   ngOnInit(): void {
     this.draftForm = this.fb.group({
-      format: [this.formData?.format ?? 'Singles', Validators.required],
-      ruleset: [this.formData?.ruleset ?? 'Gen9 NatDex', Validators.required],
-      team1: [this.formData?.team1 ?? []],
-      team2: [this.formData?.team2 ?? []],
+      format: [this.formData.format, Validators.required],
+      ruleset: [this.formData.ruleset, Validators.required],
+      team1: [this.formData.team1],
+      team2: [this.formData.team2],
     });
     this.dataService.getFormats().subscribe((formats) => {
       this.formats = formats;
@@ -88,7 +88,6 @@ export class QuickMatchupFormComponent {
           };
         }[];
       } = this.draftForm.value;
-      console.log(formData);
       this.formSubmitted.emit({
         format: formData.format,
         ruleset: formData.ruleset,
