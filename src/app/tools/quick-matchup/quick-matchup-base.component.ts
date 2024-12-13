@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatchupService } from '../../api/matchup.service';
-import { TeraType } from '../../data';
 import { LoadingComponent } from '../../images/loading/loading.component';
+import { Pokemon } from '../../interfaces/draft';
 import { MatchupData, Summary } from '../../matchup-overview/matchup-interface';
 import { MatchupComponent } from '../../matchup-overview/matchup/matchup.component';
 import { QuickMatchupFormComponent } from './form/quick-matchup-form.component';
@@ -21,66 +21,39 @@ import { QuickMatchupFormComponent } from './form/quick-matchup-form.component';
 export class QuickMatchupBaseComponent {
   matchupData?: MatchupData;
   editing: boolean = true;
+  formData?: {
+    format: string;
+    ruleset: string;
+    team1: Pokemon[];
+    team2: Pokemon[];
+  };
 
   constructor(private matchupService: MatchupService) {}
 
   getMatchupData(formData: {
     format: string;
     ruleset: string;
-    team1: {
-      id: string;
-      name: string;
-      shiny: boolean;
-      capt: { z: boolean; tera: { [key in TeraType]: boolean } };
-    }[];
-    team2: {
-      id: string;
-      name: string;
-      shiny: boolean;
-      capt: { z: boolean; tera: { [key in TeraType]: boolean } };
-    }[];
+    team1: Pokemon[];
+    team2: Pokemon[];
   }) {
     this.editing = false;
-    this.matchupService
-      .getQuickMatchup({
-        format: formData.format,
-        ruleset: formData.ruleset,
-        team1: formData.team1.map((data) => {
-          let tera: string[] | null = Object.entries(data.capt.tera)
-            .filter((e) => e[1])
-            .map((e) => e[0]);
-          if (tera.length < 1) tera = null;
-          return {
-            id: data.id,
-            name: data.name,
-            shiny: data.shiny,
-            capt: {
-              z: data.capt.z,
-              tera: tera,
-            },
-          };
-        }),
-        team2: formData.team2.map((data) => {
-          let tera: string[] | null = Object.entries(data.capt.tera)
-            .filter((e) => e[1])
-            .map((e) => e[0]);
-          if (tera.length < 1) tera = null;
-          return {
-            id: data.id,
-            name: data.name,
-            shiny: data.shiny,
-            capt: {
-              z: data.capt.z,
-              tera: tera,
-            },
-          };
-        }),
-      })
-      .subscribe((data) => {
-        this.matchupData = data;
-        this.matchupData!.overview = JSON.parse(
-          JSON.stringify(this.matchupData!.summary)
-        ) as Summary[];
-      });
+    this.formData = formData;
+    this.matchupService.getQuickMatchup(formData).subscribe((data) => {
+      this.matchupData = <MatchupData>data;
+      for (let summary of this.matchupData.summary) {
+        summary.team.sort((x, y) => {
+          if (x['baseStats']['spe'] < y['baseStats']['spe']) {
+            return 1;
+          }
+          if (x['baseStats']['spe'] > y['baseStats']['spe']) {
+            return -1;
+          }
+          return 0;
+        });
+      }
+      this.matchupData!.overview = JSON.parse(
+        JSON.stringify(this.matchupData!.summary),
+      ) as Summary[];
+    });
   }
 }

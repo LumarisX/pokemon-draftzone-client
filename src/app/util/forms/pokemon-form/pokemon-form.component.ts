@@ -1,12 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  EventEmitter,
-  input,
-  Input,
-  OnInit,
-  Output,
-} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -96,10 +89,13 @@ export class PokemonFormComponent implements OnInit {
       name: new FormControl(pokemonData.name, Validators.required),
       id: new FormControl(pokemonData.id, Validators.required),
       shiny: new FormControl(pokemonData.shiny),
-      captCheck: new FormControl(!!('capt' in pokemonData)),
+      captCheck: new FormControl(!!('capt' in pokemonData && pokemonData.capt)),
       capt: new FormGroup({
         teraCheck: new FormControl(
-          !!(!('capt' in pokemonData) || 'tera' in pokemonData.capt!),
+          !!(
+            !('capt' in pokemonData && pokemonData.capt) ||
+            'tera' in pokemonData.capt!
+          ),
         ),
         tera: teraFormGroup,
         z: new FormControl(!!pokemonData.capt?.z),

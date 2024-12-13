@@ -9,6 +9,7 @@
   <div class="flex justify-center w-full">
     <div class="w-full max-w-400">
       <quick-matchup-form
+        [formData]="formData"
         (formSubmitted)="getMatchupData($event)"
       ></quick-matchup-form>
     </div>

@@ -48,7 +48,7 @@ export class OpponentScoreComponent implements OnInit {
     private draftService: DraftService,
     private replayService: ReplayService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -87,11 +87,11 @@ export class OpponentScoreComponent implements OnInit {
         let matchGroup = this.fb.group({
           aTeam: this.sideForm(
             this.matchup.aTeam.team,
-            this.matchup.matches[i].aTeam
+            this.matchup.matches[i].aTeam,
           ),
           bTeam: this.sideForm(
             this.matchup.bTeam.team,
-            this.matchup.matches[i].bTeam
+            this.matchup.matches[i].bTeam,
           ),
           replay: this.matchup.matches[i].replay,
           winner: this.matchup.matches[i].winner || '',
@@ -124,7 +124,7 @@ export class OpponentScoreComponent implements OnInit {
     team: Pokemon[],
     side: {
       stats: [string, any][];
-    } = { stats: [] }
+    } = { stats: [] },
   ): FormGroup {
     let stats = Object.fromEntries(side.stats);
     let teamGroup = team.map((pokemon: Pokemon) => {
@@ -168,13 +168,13 @@ export class OpponentScoreComponent implements OnInit {
 
   get aTeamArray(): FormArray {
     return this.matchesFormArray.controls[this.selectedMatch].get(
-      'aTeam.team'
+      'aTeam.team',
     ) as FormArray;
   }
 
   get bTeamArray(): FormArray {
     return this.matchesFormArray.controls[this.selectedMatch].get(
-      'bTeam.team'
+      'bTeam.team',
     ) as FormArray;
   }
 
@@ -195,7 +195,7 @@ export class OpponentScoreComponent implements OnInit {
       .subscribe({
         next: (response) => {
           console.log('Success!', response);
-          this.router.navigate([`['/', draftPath]/${this.teamId}`]);
+          this.router.navigate(['/', this.draftPath, this.teamId]);
         },
         error: (error) => {
           console.error('Error!', error);
@@ -248,10 +248,10 @@ export class OpponentScoreComponent implements OnInit {
           let anyFound = mon.formes.some((forme) => {
             if (forme.id) {
               let aFind = this.matchup.aTeam.team.find((muMon) =>
-                muMon.id.startsWith(forme.id!)
+                muMon.id.startsWith(forme.id!),
               );
               let bFind = this.matchup.bTeam.team.find((muMon) =>
-                muMon.id.startsWith(forme.id!)
+                muMon.id.startsWith(forme.id!),
               );
               if (aFind && !bFind) {
                 aReplayTeam = 0;
@@ -270,7 +270,7 @@ export class OpponentScoreComponent implements OnInit {
             if (mon.brought) {
               let replayCtrl = this.aTeamArray.controls.find((ctrl) => {
                 return mon.formes.some((forme) =>
-                  ctrl.value.pokemon.id.startsWith(forme.id)
+                  ctrl.value.pokemon.id.startsWith(forme.id),
                 );
               });
               replayCtrl?.patchValue({
@@ -285,7 +285,7 @@ export class OpponentScoreComponent implements OnInit {
             if (mon.brought) {
               let replayCtrl = this.bTeamArray.controls.find((ctrl) => {
                 return mon.formes.some((forme) =>
-                  ctrl.value.pokemon.id.startsWith(forme.id)
+                  ctrl.value.pokemon.id.startsWith(forme.id),
                 );
               });
               replayCtrl?.patchValue({

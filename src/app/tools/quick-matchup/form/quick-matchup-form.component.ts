@@ -11,6 +11,7 @@ import { DataService } from '../../../api/data.service';
 import { TeraType } from '../../../data';
 import { SelectNoSearchComponent } from '../../../util/dropdowns/select/select-no-search.component';
 import { TeamFormComponent } from '../../../util/forms/team-form/team-form.component';
+import { Pokemon } from '../../../interfaces/draft';
 
 @Component({
   selector: 'quick-matchup-form',
@@ -27,31 +28,30 @@ import { TeamFormComponent } from '../../../util/forms/team-form/team-form.compo
 export class QuickMatchupFormComponent {
   formats: string[] = [];
   rulesets: string[] = [];
-  @Input() draftForm!: FormGroup;
+  draftForm!: FormGroup;
+  @Input() formData?: {
+    format: string;
+    ruleset: string;
+    team1: Pokemon[];
+    team2: Pokemon[];
+  };
   @Output() formSubmitted = new EventEmitter<{
     format: string;
     ruleset: string;
-    team1: {
-      id: string;
-      name: string;
-      shiny: boolean;
-      capt: { z: boolean; tera: { [key in TeraType]: boolean } };
-    }[];
-    team2: {
-      id: string;
-      name: string;
-      shiny: boolean;
-      capt: { z: boolean; tera: { [key in TeraType]: boolean } };
-    }[];
+    team1: Pokemon[];
+    team2: Pokemon[];
   }>();
-  constructor(private dataService: DataService, private fb: FormBuilder) {}
+  constructor(
+    private dataService: DataService,
+    private fb: FormBuilder,
+  ) {}
 
   ngOnInit(): void {
     this.draftForm = this.fb.group({
-      format: ['Singles', Validators.required],
-      ruleset: ['Gen9 NatDex', Validators.required],
-      team1: [],
-      team2: [],
+      format: [this.formData?.format ?? 'Singles', Validators.required],
+      ruleset: [this.formData?.ruleset ?? 'Gen9 NatDex', Validators.required],
+      team1: [this.formData?.team1 ?? []],
+      team2: [this.formData?.team2 ?? []],
     });
     this.dataService.getFormats().subscribe((formats) => {
       this.formats = formats;
@@ -62,7 +62,71 @@ export class QuickMatchupFormComponent {
   }
   onSubmit() {
     if (this.draftForm.valid) {
-      this.formSubmitted.emit(this.draftForm.value);
+      let formData: {
+        format: string;
+        ruleset: string;
+        team1: {
+          id: string;
+          name: string;
+          shiny: boolean;
+          captCheck: boolean | null;
+          capt: {
+            z: boolean;
+            teraCheck: boolean | null;
+            tera: { [key in TeraType]: boolean };
+          };
+        }[];
+        team2: {
+          id: string;
+          name: string;
+          shiny: boolean;
+          captCheck: boolean | null;
+          capt: {
+            z: boolean;
+            teraCheck: boolean | null;
+            tera: { [key in TeraType]: boolean };
+          };
+        }[];
+      } = this.draftForm.value;
+      console.log(formData);
+      this.formSubmitted.emit({
+        format: formData.format,
+        ruleset: formData.ruleset,
+        team1: formData.team1.map((pokemonData) => {
+          const tera = Object.entries(pokemonData.capt?.tera || [])
+            .filter((e) => e[1])
+            .map((e) => e[0]);
+          const capt = pokemonData.captCheck
+            ? {
+                z: pokemonData.capt?.z,
+                tera: pokemonData.capt.teraCheck ? tera : undefined,
+              }
+            : undefined;
+          return {
+            id: pokemonData.id,
+            name: pokemonData.name,
+            shiny: pokemonData.shiny,
+            capt: capt,
+          };
+        }),
+        team2: formData.team2.map((pokemonData) => {
+          const tera = Object.entries(pokemonData.capt?.tera || [])
+            .filter((e) => e[1])
+            .map((e) => e[0]);
+          const capt = pokemonData.captCheck
+            ? {
+                z: pokemonData.capt?.z,
+                tera: pokemonData.capt.teraCheck ? tera : undefined,
+              }
+            : undefined;
+          return {
+            id: pokemonData.id,
+            name: pokemonData.name,
+            shiny: pokemonData.shiny,
+            capt: capt,
+          };
+        }),
+      });
     } else {
       console.log('Form is invalid.');
     }

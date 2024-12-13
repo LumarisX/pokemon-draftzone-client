@@ -1,12 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  forwardRef,
-  input,
-  Input,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { Component, forwardRef, Input, ViewChild } from '@angular/core';
 import {
   AbstractControl,
   ControlValueAccessor,
@@ -47,7 +40,7 @@ import { PokemonFormComponent } from '../pokemon-form/pokemon-form.component';
     },
   ],
 })
-export class TeamFormComponent implements ControlValueAccessor, OnInit {
+export class TeamFormComponent implements ControlValueAccessor {
   @Input() color: string = 'menu';
   @Input() maxCols: number = 1;
   @Input() extraClass: string = '';
@@ -56,7 +49,7 @@ export class TeamFormComponent implements ControlValueAccessor, OnInit {
   constructor() {}
   names = nameList();
 
-  _teamArray!: FormArray<FormGroup>;
+  _teamArray: FormArray<FormGroup> = new FormArray([] as FormGroup[]);
 
   set teamArray(pokemons: Pokemon[]) {
     this._teamArray = new FormArray(
@@ -66,10 +59,6 @@ export class TeamFormComponent implements ControlValueAccessor, OnInit {
 
   get teamArray(): FormArray<FormGroup> {
     return this._teamArray;
-  }
-
-  ngOnInit(): void {
-    this.teamArray = [];
   }
 
   @ViewChild(SelectSearchComponent)
@@ -114,9 +103,9 @@ export class TeamFormComponent implements ControlValueAccessor, OnInit {
   writeValue(value: Pokemon[] | null): void {
     if (value) {
       this.teamArray.clear();
-      value.forEach((pokemon) =>
-        this.teamArray.push(PokemonFormComponent.addPokemonForm(pokemon)),
-      );
+      value.forEach((pokemon) => {
+        this.teamArray.push(PokemonFormComponent.addPokemonForm(pokemon));
+      });
     }
   }
 
