@@ -1,6 +1,6 @@
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { CompactSVG } from '../../../images/svg-components/compact.component';
 import { XMarkSVG } from '../../../images/svg-components/xmark.component';
@@ -25,6 +25,8 @@ export class SelectSearchComponent<T>
 {
   query: string = '';
   filteredItems: { name: string; value: T }[] = [];
+  @Input()
+  headers: { name: string; value: string; type: 'text' | 'imgPath' }[] = [];
 
   ngOnInit(): void {
     this.filter();
@@ -51,7 +53,7 @@ export class SelectSearchComponent<T>
   }
 
   override selectItem(
-    item: { name: string; value: T; icon?: string } | null
+    item: { name: string; value: T; icons?: string[] } | null,
   ): void {
     super.selectItem(item);
     this.clearQuery();

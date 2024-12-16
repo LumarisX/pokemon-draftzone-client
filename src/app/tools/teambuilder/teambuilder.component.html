@@ -4,237 +4,201 @@ Teambuilder
     [items]="names"
     [placeholder]="'Select a pokemon'"
     class="w-72"
-    [(ngModel)]="pokemon"
+    (itemSelected)="addPokemon($event)"
   ></select-search>
-  <button (click)="addPokemon()">Add Pokemon</button>
 </div>
-<div *ngFor="let pokemon of team; let p = index">
-  <div class="w-8">
-    <sprite [pokemon]="{ id: pokemon.id, name: pokemon.name }"></sprite>
-  </div>
-  <div class="space-x-1">
-    <label for="ability">Ability</label>
-    <select-no-search
-      [items]="toValues(pokemon.abilities)"
-      [placeholder]="'Select an ability'"
-      [startItem]="pokemon.ability"
-      (itemSelected)="updateData(p, { ability: $event ?? undefined })"
-    ></select-no-search>
-  </div>
-  <div class="space-x-1">
-    <label for="item">Item</label>
-    <input [(ngModel)]="pokemon.item" id="item" class="border p-1" />
-  </div>
-  <div class="space-x-1">
-    <label for="tera">Tera Type</label>
-    <input [(ngModel)]="pokemon.teraType" id="tera" class="border p-1" />
-  </div>
-  <div class="space-x-1">
-    <label for="level">Level</label>
-    <input
-      [(ngModel)]="pokemon.level"
-      (change)="updateData(p, { level: pokemon.level })"
-      type="number"
-      min="1"
-      max="100"
-      id="level"
-      class="border p-1"
-    />
-  </div>
-  <div class="space-x-1">
-    <label for="nature">Nature</label>
-    <div id="nature" class="border max-w-96 w-full rounded">
-      <select-search
-        [items]="natures"
-        [startItem]="pokemon.nature"
-        (itemSelected)="pokemon.nature = $event ? $event : pokemon.nature"
-      ></select-search>
-    </div>
-  </div>
+@for (pokemon of team; track $index) {
   <div>
-    <label for="moves">Moves</label>
-    <div id="moves" class="flex flex-col space-y-1">
-      <div id="move1" class="border max-w-96 w-full rounded">
+    <div class="w-8">
+      <sprite [pokemon]="{ id: pokemon.id, name: pokemon.name }"></sprite>
+    </div>
+    <div class="space-x-1">
+      <label for="ability">Ability</label>
+      <select-no-search
+        [items]="pokemon.abilities"
+        [placeholder]="'Select an ability'"
+        [startItem]="pokemon.ability"
+      ></select-no-search>
+    </div>
+    <div class="space-x-1">
+      <label for="item">Item</label>
+      <input [(ngModel)]="pokemon.item" id="item" class="border p-1" />
+    </div>
+    <div class="space-x-1">
+      <label for="tera">Tera Type</label>
+      <input [(ngModel)]="pokemon.teraType" id="tera" class="border p-1" />
+    </div>
+    <div class="space-x-1">
+      <label for="level">Level</label>
+      <input
+        [(ngModel)]="pokemon.level"
+        type="number"
+        min="1"
+        max="100"
+        id="level"
+        class="border p-1"
+      />
+    </div>
+    <div class="space-x-1">
+      <label for="nature">Nature</label>
+      <div id="nature" class="border max-w-96 w-full rounded">
         <select-search
-          [items]="pokemon.getLearnset()"
-          [placeholder]="'Select a move'"
-          (itemSelected)="pokemon.moves[0] = $event"
-        ></select-search>
-      </div>
-      <div id="move2" class="border max-w-96 w-full rounded">
-        <select-search
-          [items]="pokemon.getLearnset()"
-          [placeholder]="'Select a move'"
-          (itemSelected)="pokemon.moves[1] = $event"
-        ></select-search>
-      </div>
-      <div id="move3" class="border max-w-96 w-full rounded">
-        <select-search
-          [items]="pokemon.getLearnset()"
-          [placeholder]="'Select a move'"
-          (itemSelected)="pokemon.moves[2] = $event"
-        ></select-search>
-      </div>
-      <div id="move4" class="border max-w-96 w-full rounded">
-        <select-search
-          [items]="pokemon.getLearnset()"
-          [placeholder]="'Select a move'"
-          (itemSelected)="pokemon.moves[3] = $event"
+          [items]="natures"
+          placeholder="Select a nature"
+          [startItem]="pokemon.nature"
+          (itemSelected)="pokemon.nature = $event ? $event : pokemon.nature"
         ></select-search>
       </div>
     </div>
-  </div>
+    <div>
+      <label for="moves">Moves</label>
+      <div id="moves" class="flex flex-col space-y-1">
+        <div id="move1" class="border max-w-md w-full rounded">
+          <select-search
+            [items]="pokemon.getLearnset()"
+            [placeholder]="'Select a move'"
+            [headers]="[
+              {
+                name: 'Power',
+                value: 'basePower',
+                type: 'text',
+              },
+              {
+                name: 'Accuracy',
+                value: 'accuracy',
+                type: 'text',
+              },
+              {
+                name: 'Type',
+                value: 'typePath',
+                type: 'imgPath',
+              },
+              {
+                name: 'Category',
+                value: 'categoryPath',
+                type: 'imgPath',
+              },
+            ]"
+            (itemSelected)="pokemon.moves[0] = $event"
+          >
+          </select-search>
+        </div>
+        <div id="move2" class="border max-w-md w-full rounded">
+          <select-search
+            [items]="pokemon.getLearnset()"
+            [placeholder]="'Select a move'"
+            [headers]="[
+              {
+                name: 'Power',
+                value: 'basePower',
+                type: 'text',
+              },
+              {
+                name: 'Accuracy',
+                value: 'accuracy',
+                type: 'text',
+              },
+              {
+                name: 'Type',
+                value: 'typePath',
+                type: 'imgPath',
+              },
+              {
+                name: 'Category',
+                value: 'categoryPath',
+                type: 'imgPath',
+              },
+            ]"
+            (itemSelected)="pokemon.moves[1] = $event"
+          ></select-search>
+        </div>
+        <div id="move3" class="border max-w-md w-full rounded">
+          <select-search
+            [items]="pokemon.getLearnset()"
+            [placeholder]="'Select a move'"
+            [headers]="[
+              {
+                name: 'Power',
+                value: 'basePower',
+                type: 'text',
+              },
+              {
+                name: 'Accuracy',
+                value: 'accuracy',
+                type: 'text',
+              },
+              {
+                name: 'Type',
+                value: 'typePath',
+                type: 'imgPath',
+              },
+              {
+                name: 'Category',
+                value: 'categoryPath',
+                type: 'imgPath',
+              },
+            ]"
+            (itemSelected)="pokemon.moves[2] = $event"
+          ></select-search>
+        </div>
+        <div id="move4" class="border max-w-md w-full rounded">
+          <select-search
+            [items]="pokemon.getLearnset()"
+            [placeholder]="'Select a move'"
+            [headers]="[
+              {
+                name: 'Power',
+                value: 'basePower',
+                type: 'text',
+              },
+              {
+                name: 'Accuracy',
+                value: 'accuracy',
+                type: 'text',
+              },
+              {
+                name: 'Type',
+                value: 'typePath',
+                type: 'imgPath',
+              },
+              {
+                name: 'Category',
+                value: 'categoryPath',
+                type: 'imgPath',
+              },
+            ]"
+            (itemSelected)="pokemon.moves[3] = $event"
+          ></select-search>
+        </div>
+      </div>
+    </div>
 
-  <div>
-    <label for="hp">HP</label>
-    <div id="hp" class="flex items-center">
-      <label for="hpevs">EVs</label>
-      <input
-        [(ngModel)]="pokemon.evs.hp"
-        (change)="updateData(p)"
-        id="hpevs"
-        min="0"
-        max="252"
-        step="4"
-        type="number"
-        class="border p-1"
-      />
-      <label for="hpivs">IVs</label>
-      <input
-        [(ngModel)]="pokemon.ivs.hp"
-        (change)="updateData(p)"
-        id="hpivs"
-        min="0"
-        max="31"
-        type="number"
-        class="border p-1"
-      />
-      <div>{{ pokemon.stats.hp }}</div>
-    </div>
-    <label for="atk">ATK</label>
-    <div id="atk" class="flex items-center">
-      <label for="atkevs">EVs</label>
-      <input
-        [(ngModel)]="pokemon.evs.atk"
-        (change)="updateData(p)"
-        id="atkevs"
-        min="0"
-        max="252"
-        step="4"
-        type="number"
-        class="border p-1"
-      />
-      <label for="atkivs">IVs</label>
-      <input
-        [(ngModel)]="pokemon.ivs.atk"
-        (change)="updateData(p)"
-        id="atkivs"
-        min="0"
-        max="31"
-        type="number"
-        class="border p-1"
-      />
-      <div>{{ pokemon.stats.atk }}</div>
-    </div>
-    <label for="def">DEF</label>
-    <div id="def" class="flex items-center">
-      <label for="defevs">EVs</label>
-      <input
-        [(ngModel)]="pokemon.evs.def"
-        (change)="updateData(p)"
-        id="defevs"
-        min="0"
-        max="252"
-        step="4"
-        type="number"
-        class="border p-1"
-      />
-      <label for="defivs">IVs</label>
-      <input
-        [(ngModel)]="pokemon.ivs.def"
-        (change)="updateData(p)"
-        id="defivs"
-        min="0"
-        max="31"
-        type="number"
-        class="border p-1"
-      />
-      <div>{{ pokemon.stats.def }}</div>
-    </div>
-    <label for="spa">SPA</label>
-    <div id="spa" class="flex items-center">
-      <label for="spaevs">EVs</label>
-      <input
-        [(ngModel)]="pokemon.evs.spa"
-        (change)="updateData(p)"
-        id="spaevs"
-        min="0"
-        max="252"
-        step="4"
-        type="number"
-        class="border p-1"
-      />
-      <label for="spaivs">IVs</label>
-      <input
-        [(ngModel)]="pokemon.ivs.spa"
-        (change)="updateData(p)"
-        id="spaivs"
-        min="0"
-        max="31"
-        type="number"
-        class="border p-1"
-      />
-      <div>{{ pokemon.stats.spa }}</div>
-    </div>
-    <label for="spd">SPD</label>
-    <div id="spd" class="flex items-center">
-      <label for="spdevs">EVs</label>
-      <input
-        [(ngModel)]="pokemon.evs.spd"
-        (change)="updateData(p)"
-        id="spdevs"
-        min="0"
-        max="252"
-        step="4"
-        type="number"
-        class="border p-1"
-      />
-      <label for="spdivs">IVs</label>
-      <input
-        [(ngModel)]="pokemon.ivs.spd"
-        (change)="updateData(p)"
-        id="spdivs"
-        min="0"
-        max="31"
-        type="number"
-        class="border p-1"
-      />
-      <div>{{ pokemon.stats.spd }}</div>
-    </div>
-    <label for="spe">SPE</label>
-    <div id="spe" class="flex items-center">
-      <label for="speevs">EVs</label>
-      <input
-        [(ngModel)]="pokemon.evs.spe"
-        (change)="updateData(p)"
-        id="speevs"
-        min="0"
-        max="252"
-        step="4"
-        type="number"
-        class="border p-1"
-      />
-      <label for="speivs">IVs</label>
-      <input
-        [(ngModel)]="pokemon.ivs.spe"
-        (change)="updateData(p)"
-        id="speivs"
-        min="0"
-        max="31"
-        type="number"
-        class="border p-1"
-      />
-      <div>{{ pokemon.stats.spe }}</div>
+    <div>
+      @for (stat of stats; track $index) {
+        <label [for]="stat">{{ stat | uppercase }}</label>
+        <div [id]="stat" class="flex items-center">
+          <label [for]="stat + 'evs'">EVs</label>
+          <input
+            [(ngModel)]="pokemon.evs[stat]"
+            [id]="stat + 'evs'"
+            min="0"
+            max="252"
+            step="4"
+            type="number"
+            class="border p-1"
+          />
+          <label [for]="stat + 'ivs'">IVs</label>
+          <input
+            [(ngModel)]="pokemon.ivs[stat]"
+            [id]="stat + 'ivs'"
+            min="0"
+            max="31"
+            type="number"
+            class="border p-1"
+          />
+          <div>{{ pokemon.calcStat(stat) }}</div>
+        </div>
+      }
     </div>
   </div>
-</div>
+}

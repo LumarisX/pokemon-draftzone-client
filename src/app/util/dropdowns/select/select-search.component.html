@@ -7,102 +7,167 @@
     class="flex items-center justify-between p-2 transition-colors rounded cursor-pointer bg-inherit"
     (click)="toggleDropdown()"
   >
-    <span *ngIf="selectedItem">{{ selectedItem.name }}</span>
-    <span *ngIf="!selectedItem" class="text-menu-600">
-      {{ placeholder }}
-    </span>
+    @if (selectedItem) {
+      <span>{{ selectedItem.name }}</span>
+    } @else {
+      <span class="text-menu-600">
+        {{ placeholder }}
+      </span>
+    }
     <compact-svg [up]="isOpen"></compact-svg>
   </div>
 
   <!-- Dropdown list for larger screens -->
-  <div
-    *ngIf="isOpen"
-    class="absolute z-[100] w-full bg-page border border-menu-300 rounded shadow-lg sm:block hidden"
-  >
-    <div class="mx-2 overflow-hidden border-b border-menu-300">
-      <div class="flex items-center w-full max-w-full">
-        <input
-          #searchbar
-          type="text"
-          placeholder="Search"
-          spellcheck="false"
-          [(ngModel)]="query"
-          (keyup)="keypress($event.key)"
-          class="flex-grow min-w-0 p-2 outline-none bg-page"
-        />
-        <xmark-svg [iconSize]="1.2" (click)="clearSelection()"></xmark-svg>
+  @if (isOpen) {
+    <div
+      class="absolute z-[100] w-full bg-page border border-menu-300 rounded shadow-lg sm:block hidden"
+    >
+      <div class="mx-2 overflow-hidden border-b border-menu-300">
+        <div class="flex items-center w-full max-w-full">
+          <input
+            #searchbar
+            type="text"
+            placeholder="Search"
+            spellcheck="false"
+            [(ngModel)]="query"
+            (keyup)="keypress($event.key)"
+            class="flex-grow min-w-0 p-2 outline-none bg-page"
+          />
+          <xmark-svg
+            class="hover:cursor-pointer"
+            [iconSize]="1.2"
+            (click)="clearSelection()"
+          ></xmark-svg>
+        </div>
       </div>
-    </div>
 
-    <!-- Clear button -->
-    <div class="p-0.5">
-      <cdk-virtual-scroll-viewport
-        class=""
-        itemSize="{{ itemSize }}"
-        [style.height]="calculateDynamicHeight(filteredItems.length, itemSize)"
-      >
+      <div class="p-0.5">
         <div
-          *cdkVirtualFor="let item of filteredItems"
-          class="mx-2 rounded py-0.5 flex justify-between items-center px-1 cursor-pointer hover:bg-menu-200"
-          [ngClass]="{
-            'bg-menu-200': selectedItem && selectedItem.value === item.value,
-          }"
-          (click)="selectItem(item)"
+          class="rounded py-0.5 flex justify-between items-center pl-3 pr-6 cursor-pointer text-menu-600 text-2xs"
         >
-          <span>{{ item.name }}</span>
-          <div *ngIf="item.icon">
-            <img [src]="item.icon" />
+          Name
+          <div class="space-x-1 flex">
+            @for (header of headers; track $index) {
+              <div class="w-8 text-ellipsis overflow-hidden">
+                {{ header.name }}
+              </div>
+            }
           </div>
         </div>
-      </cdk-virtual-scroll-viewport>
+        <cdk-virtual-scroll-viewport
+          class=""
+          itemSize="{{ itemSize }}"
+          [style.height]="
+            calculateDynamicHeight(filteredItems.length, itemSize)
+          "
+        >
+          <div
+            *cdkVirtualFor="let item of filteredItems"
+            class="mx-2 rounded flex justify-between items-center px-1 cursor-pointer hover:bg-menu-200"
+            [ngClass]="{
+              'bg-menu-200': selectedItem && selectedItem.value === item.value,
+            }"
+            (click)="selectItem(item)"
+          >
+            <span>{{ item.name }}</span>
+            <div class="space-x-1 h-7 flex">
+              @for (header of headers; track $index) {
+                @switch (header.type) {
+                  @case ("text") {
+                    <div class="w-8 flex justify-center items-center h-7">
+                      {{ item[header.value] }}
+                    </div>
+                  }
+                  @case ("imgPath") {
+                    <div class="w-8 flex justify-center items-center h-7">
+                      <img [src]="item[header.value]" />
+                    </div>
+                  }
+                }
+              }
+            </div>
+          </div>
+        </cdk-virtual-scroll-viewport>
+      </div>
     </div>
-  </div>
+  }
 
   <!-- Mobile full-screen dropdown -->
-  <div
-    *ngIf="isOpen"
-    class="fixed inset-0 z-50 flex flex-col bg-page sm:hidden"
-  >
-    <!-- Close button for mobile -->
-    <div class="flex items-center justify-between p-4 border-b border-menu-300">
-      <span class="text-lg font-medium">{{ placeholder }}</span>
-      <button class="text-menu-500" (click)="closeDropdown()">Close</button>
-    </div>
-
-    <!-- Search input (fixed at the top) -->
-    <div class="px-4 py-2 text-lg border-b border-menu-300">
-      <input
-        type="text"
-        #searchbar
-        placeholder="Search"
-        [(ngModel)]="query"
-        (keyup)="keypress($event.key)"
-        class="w-full p-2 outline-none"
-      />
-    </div>
-
-    <!-- Clear button -->
-    <div class="flex justify-end px-2 pt-1">
-      <button class="text-menu-500" (click)="clearSelection()">Clear</button>
-    </div>
-
-    <!-- Scrollable list (taking the remaining space) -->
-    <div class="flex-1 p-1 overflow-y-auto">
-      <cdk-virtual-scroll-viewport
-        itemSize="{{ itemSize }}"
-        class="h-full overflow-y-auto"
+  @if (isOpen) {
+    <div class="fixed inset-0 z-50 flex flex-col bg-page sm:hidden">
+      <!-- Close button for mobile -->
+      <div
+        class="flex items-center justify-between p-4 border-b border-menu-300"
       >
-        <div
-          *cdkVirtualFor="let item of filteredItems"
-          class="mx-2 rounded text-lg py-0.5 px-1 cursor-pointer hover:bg-menu-200"
-          [ngClass]="{
-            'bg-menu-200': selectedItem && selectedItem.value === item.value,
-          }"
-          (click)="selectItem(item)"
-        >
-          {{ item.name }}
+        <span class="text-lg font-medium">{{ placeholder }}</span>
+        <button class="text-menu-500" (click)="closeDropdown()">Close</button>
+      </div>
+
+      <!-- Search input (fixed at the top) -->
+      <div class="px-4 py-2 text-lg border-b border-menu-300">
+        <div class="flex items-center w-full max-w-full">
+          <input
+            type="text"
+            #searchbar
+            placeholder="Search"
+            [(ngModel)]="query"
+            (keyup)="keypress($event.key)"
+            class="flex-grow min-w-0 p-2 outline-none bg-page"
+          />
+          <xmark-svg
+            class="hover:cursor-pointer"
+            [iconSize]="1.2"
+            (click)="clearSelection()"
+          ></xmark-svg>
         </div>
-      </cdk-virtual-scroll-viewport>
+      </div>
+
+      <!-- Scrollable list (taking the remaining space) -->
+      <div class="flex-1 p-1">
+        <div
+          class="rounded py-0.5 flex justify-between items-center pl-3 pr-6 cursor-pointer text-menu-600 text-2xs"
+        >
+          Name
+          <div class="space-x-1 flex">
+            @for (header of headers; track $index) {
+              <div class="w-10 text-ellipsis overflow-hidden">
+                {{ header.name }}
+              </div>
+            }
+          </div>
+        </div>
+        <cdk-virtual-scroll-viewport
+          itemSize="{{ itemSize }}"
+          class="h-full overflow-y-auto"
+        >
+          <div
+            *cdkVirtualFor="let item of filteredItems"
+            class="mx-2 rounded flex justify-between items-center text-lg py-0.5 px-1 cursor-pointer hover:bg-menu-200"
+            [ngClass]="{
+              'bg-menu-200': selectedItem && selectedItem.value === item.value,
+            }"
+            (click)="selectItem(item)"
+          >
+            <span>{{ item.name }}</span>
+            <div class="space-x-1 h-7 flex">
+              @for (header of headers; track $index) {
+                @switch (header.type) {
+                  @case ("text") {
+                    <div class="w-10 flex justify-center items-center h-7">
+                      {{ item[header.value] }}
+                    </div>
+                  }
+                  @case ("imgPath") {
+                    <div class="w-10 flex justify-center items-center h-7">
+                      <img [src]="item[header.value]" />
+                    </div>
+                  }
+                }
+              }
+            </div>
+          </div>
+        </cdk-virtual-scroll-viewport>
+      </div>
     </div>
-  </div>
+  }
 </div>

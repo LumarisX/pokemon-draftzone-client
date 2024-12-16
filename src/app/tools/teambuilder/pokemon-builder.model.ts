@@ -1,12 +1,52 @@
-export class PokemonBuilder {
-  ivs: {
-    hp: number;
-    atk: number;
-    def: number;
-    spa: number;
-    spd: number;
-    spe: number;
-  } = {
+import { StatsTable, TeraType, Type } from '../../data';
+import { Pokemon } from '../../interfaces/draft';
+
+export type TeambuilderPokemon = Pokemon & {
+  abilities: string[];
+  types: [Type] | [Type, Type];
+  baseStats: StatsTable;
+  learnset: {
+    name: string;
+    type: Type;
+    category: string;
+    effectivePower: number;
+    basePower: number;
+    accuracy: number | true;
+  }[];
+  requiredItem?: string;
+  requiredAbility?: string;
+  requiredItems?: string[];
+  requiredMove?: string;
+  forceTeraType?: TeraType;
+};
+
+export class PokemonBuilder implements TeambuilderPokemon {
+  newStats = {
+    hp: {
+      _ev: 0,
+      set ev(value) {
+        this._ev = value;
+      },
+      get ev() {
+        return this._ev;
+      },
+      _iv: 31,
+      set iv(value) {
+        this._iv = value;
+      },
+      get iv() {
+        return this._iv;
+      },
+      _stat: 31,
+      set stat(value) {
+        this._stat = value;
+      },
+      get stat() {
+        return this._stat;
+      },
+    },
+  };
+  ivs: StatsTable = {
     hp: 31,
     atk: 31,
     def: 31,
@@ -14,22 +54,7 @@ export class PokemonBuilder {
     spd: 31,
     spe: 31,
   };
-  evs: {
-    hp: number;
-    atk: number;
-    def: number;
-    spa: number;
-    spd: number;
-    spe: number;
-  } = {
-    hp: 0,
-    atk: 0,
-    def: 0,
-    spa: 0,
-    spd: 0,
-    spe: 0,
-  };
-  stats = {
+  evs: StatsTable = {
     hp: 0,
     atk: 0,
     def: 0,
@@ -52,13 +77,35 @@ export class PokemonBuilder {
     null,
   ];
   ability: string = '';
-  abilities: { name: string; id: string }[] = [];
-  learnset: { name: string; id: string; type: string }[] = [];
   item: string = '';
   teraType: string = '';
   nickname: string = '';
   id: string = '';
-  constructor(options: Partial<PokemonBuilder> = {}) {
+  capt?: { tera?: string[]; z?: boolean } | undefined;
+  abilities!: string[];
+  types!: [Type] | [Type, Type];
+  baseStats!: StatsTable;
+  learnset!: {
+    id: string;
+    name: string;
+    type: Type;
+    category: string;
+    effectivePower: number;
+    basePower: number;
+    accuracy: number | true;
+  }[];
+  requiredItem?: string;
+  requiredAbility?: string;
+  requiredItems?: string[];
+  requiredMove?: string;
+  forceTeraType?: TeraType;
+
+  constructor(
+    pokemon: TeambuilderPokemon,
+    options: Partial<PokemonBuilder> = {},
+  ) {
+    this.ability = pokemon.abilities[0];
+    Object.assign(this, pokemon);
     Object.assign(this, options);
   }
 
@@ -66,8 +113,23 @@ export class PokemonBuilder {
     return this.learnset.map((move) => ({
       name: move.name,
       value: move.id,
-      icon: `../../../../assets/icons/types/${move.type}.png`,
+      basePower: move.basePower || '-',
+      accuracy: move.accuracy === true ? '-' : move.accuracy,
+      typePath: `../../../../assets/icons/types/${move.type}.png`,
+      categoryPath: `../../../../assets/icons/moves/move-${move.category.toLowerCase()}.png`,
     }));
+  }
+
+  calcStat(stat: keyof StatsTable) {
+    const core = Math.floor(
+      ((2 * this.baseStats[stat] +
+        this.ivs[stat] +
+        Math.floor(this.evs[stat] / 4)) *
+        this.level) /
+        100,
+    );
+    if (stat === 'hp') return core + this.level + 10;
+    else return Math.floor((core + 5) * 1);
   }
 
   toPacked() {
