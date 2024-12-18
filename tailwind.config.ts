@@ -1,249 +1,6 @@
-/** @type {import('tailwindcss').Config} */
-
 import colors from 'tailwindcss/colors';
 import { createThemes } from 'tw-colors';
-
-//get rid of ? in time
-type ColorScale = {
-  50?: string;
-  100: string;
-  150?: string;
-  200: string;
-  250?: string;
-  300: string;
-  350?: string;
-  400: string;
-  450?: string;
-  500: string;
-  550?: string;
-  600: string;
-  650?: string;
-  700: string;
-  750?: string;
-  800: string;
-  850?: string;
-  900?: string;
-  950?: string;
-};
-
-type Theme = {
-  logo: {
-    top: string;
-    bottom: string;
-    background: string;
-    core: {
-      1: string;
-      2: string;
-    };
-    ring: {
-      1: string;
-      2: string;
-      3: string;
-      4: string;
-      5: string;
-      6: string;
-      7: string;
-    };
-  };
-  page: string;
-  aTeam: ColorScale;
-  bTeam: ColorScale;
-  menu: ColorScale;
-  symbolColor: {
-    main: string;
-    sub: string;
-    disabled: string;
-    inverted: string;
-  };
-  spriteBorder: string;
-  scale: {
-    positive: {
-      1: string;
-      2: string;
-      3: string;
-      4: string;
-      5: string;
-      6: string;
-      7: string;
-      text: string;
-    };
-    negative: {
-      1: string;
-      2: string;
-      3: string;
-      4: string;
-      5: string;
-      6: string;
-      7: string;
-      text: string;
-    };
-    neutral: string;
-  };
-  caution: string;
-  required: string;
-};
-
-const ClassicTheme: Theme = {
-  logo: {
-    top: '#0fb6cd',
-    bottom: '#f15b42',
-    background: colors.white,
-    core: {
-      1: '#FFF',
-      2: '#9c65aa',
-    },
-    ring: {
-      1: '#fff',
-      2: '#fbd8d2',
-      3: '#f7ab9f',
-      4: '#f48876',
-      5: '#f26f59',
-      6: '#f16048',
-      7: '#f15b42',
-    },
-  },
-  page: colors.white,
-  aTeam: colors.cyan,
-  bTeam: {
-    50: '#FCE1D1',
-    100: '#FAD1B9',
-    150: '#F8C2A2',
-    200: '#F6B38B',
-    250: '#F5A474',
-    300: '#F3955D',
-    350: '#F18646',
-    400: '#EF762E',
-    450: '#EE6717',
-    500: '#EC5800',
-    550: '#D75000',
-    600: '#C14800',
-    650: '#AC4000',
-    700: '#963800',
-    750: '#813000',
-    800: '#6B2800',
-    850: '#562000',
-    900: '#401800',
-    950: '#2B1000',
-  },
-  menu: colors.slate,
-  symbolColor: {
-    main: colors.black,
-    sub: colors.neutral[700],
-    disabled: colors.neutral[500],
-    inverted: colors.white,
-  },
-  spriteBorder: colors.slate[500],
-  scale: {
-    positive: {
-      1: colors.emerald[200],
-      2: colors.emerald[300],
-      3: colors.emerald[400],
-      4: colors.emerald[500],
-      5: colors.emerald[600],
-      6: colors.emerald[700],
-      7: colors.emerald[800],
-      text: colors.black,
-    },
-    negative: {
-      1: colors.rose[200],
-      2: colors.rose[300],
-      3: colors.rose[400],
-      4: colors.rose[500],
-      5: colors.rose[600],
-      6: colors.rose[700],
-      7: colors.rose[800],
-      text: colors.black,
-    },
-    neutral: colors.slate[300],
-  },
-  caution: colors.yellow[200],
-  required: colors.red[500],
-};
-
-const ClassicDark: Theme = {
-  logo: {
-    top: '#0fb6cd',
-    bottom: '#f15b42',
-    background: '#3D4B5F',
-    core: {
-      1: '#FFF',
-      2: '#71497C',
-    },
-    ring: {
-      1: '#000',
-      2: '#33130E',
-      3: '#66271C',
-      4: '#993A2A',
-      5: '#B64532',
-      6: '#D4503A',
-      7: '#f15b42',
-    },
-  },
-  page: colors.slate[900],
-  aTeam: {
-    100: '#07A4C3',
-    200: colors.cyan[600],
-    300: '#0B83A1',
-    400: colors.cyan[700],
-    500: '#126983',
-    600: colors.cyan[800],
-    700: '#16566C',
-    800: colors.cyan[900],
-  },
-  bTeam: {
-    100: '#CB4C00',
-    200: '#BA4500',
-    300: '#A93F00',
-    400: '#993900',
-    500: '#883300',
-    600: '#772C00',
-    700: '#672600',
-    800: '#562000',
-  },
-  menu: {
-    100: '#172033',
-    200: colors.slate[800],
-    300: '#293548',
-    400: colors.slate[700],
-    500: '#3D4B5F',
-    600: colors.slate[600],
-    700: '#56657A',
-    800: colors.slate[500],
-  },
-  symbolColor: {
-    main: colors.neutral[200],
-    sub: colors.neutral[400],
-    disabled: colors.neutral[600],
-    inverted: colors.neutral[200],
-  },
-  spriteBorder: colors.slate[500],
-  scale: {
-    positive: {
-      1: colors.emerald[900],
-      2: colors.emerald[800],
-      3: colors.emerald[700],
-      4: colors.emerald[600],
-      5: colors.emerald[500],
-      6: colors.emerald[400],
-      7: colors.emerald[300],
-      text: colors.black,
-    },
-    negative: {
-      1: colors.rose[900],
-      2: colors.rose[800],
-      3: colors.rose[700],
-      4: colors.rose[600],
-      5: colors.rose[500],
-      6: colors.rose[400],
-      7: colors.rose[300],
-      text: colors.black,
-    },
-    neutral: colors.slate[700],
-  },
-  caution: colors.yellow[600],
-  required: colors.red[500],
-};
-
+import { Theme, ThemeBuilder } from './tailwind.utils';
 const Grayscale: Theme = {
   logo: {
     top: '#0fb6cd',
@@ -265,28 +22,71 @@ const Grayscale: Theme = {
   },
   page: colors.white,
   aTeam: {
-    100: colors.gray[50],
-    200: colors.gray[100],
-    300: colors.gray[200],
-    400: colors.gray[300],
-    500: colors.gray[400],
-    600: colors.gray[500],
-    700: colors.gray[600],
-    800: colors.gray[700],
-    900: colors.gray[800],
+    0: '#FFFFFF',
+    50: '#F1F2F3',
+    100: '#E3E5E8',
+    150: '#D5D8DC',
+    200: '#C7CAD1',
+    250: '#BABDC5',
+    300: '#ACB0B9',
+    350: '#9EA3AE',
+    400: '#9096A2',
+    450: '#828997',
+    500: '#747C8B',
+    550: '#686F7D',
+    600: '#5D636F',
+    650: '#515761',
+    700: '#464A53',
+    750: '#3A3E45',
+    800: '#2E3138',
+    850: '#23252A',
+    900: '#17191C',
+    950: '#0C0C0E',
   },
   bTeam: {
-    100: colors.gray[50],
-    200: colors.gray[100],
-    300: colors.gray[200],
-    400: colors.gray[300],
-    500: colors.gray[400],
-    600: colors.gray[500],
-    700: colors.gray[600],
-    800: colors.gray[700],
-    900: colors.gray[800],
+    0: '#FFFFFF',
+    50: '#F1F2F3',
+    100: '#E3E5E8',
+    150: '#D5D8DC',
+    200: '#C7CAD1',
+    250: '#BABDC5',
+    300: '#ACB0B9',
+    350: '#9EA3AE',
+    400: '#9096A2',
+    450: '#828997',
+    500: '#747C8B',
+    550: '#686F7D',
+    600: '#5D636F',
+    650: '#515761',
+    700: '#464A53',
+    750: '#3A3E45',
+    800: '#2E3138',
+    850: '#23252A',
+    900: '#17191C',
+    950: '#0C0C0E',
   },
-  menu: colors.slate,
+  menu: {
+    0: '#FFFFFF',
+    50: '#F0F2F4',
+    100: '#E1E5EA',
+    150: '#D3D8DF',
+    200: '#C4CBD4',
+    250: '#B5BDCA',
+    300: '#A6B0BF',
+    350: '#97A3B4',
+    400: '#8896AA',
+    450: '#7A899F',
+    500: '#6B7C94',
+    550: '#606F85',
+    600: '#556377',
+    650: '#4B5768',
+    700: '#404A59',
+    750: '#353E4A',
+    800: '#2B323B',
+    850: '#20252C',
+    900: '#15191E',
+    950: '#0B0C0F',
+  },
   symbolColor: {
     main: colors.black,
     sub: colors.neutral[800],
@@ -342,36 +142,70 @@ const Blackscale: Theme = {
   },
   page: colors.slate[900],
   aTeam: {
-    100: colors.gray[800],
-    200: colors.gray[700],
-    300: colors.gray[600],
-    400: colors.gray[500],
-    500: colors.gray[400],
-    600: colors.gray[300],
-    700: colors.gray[200],
-    800: colors.gray[100],
-    900: colors.gray[50],
+    0: '#747C8B',
+    50: '#6E7684',
+    100: '#686F7D',
+    150: '#636976',
+    200: '#5D636F',
+    250: '#575D68',
+    300: '#515761',
+    350: '#4B505A',
+    400: '#464A53',
+    450: '#40444C',
+    500: '#3A3E45',
+    550: '#34383F',
+    600: '#2E3138',
+    650: '#292B31',
+    700: '#23252A',
+    750: '#1D1F23',
+    800: '#17191C',
+    850: '#111315',
+    900: '#0C0C0E',
+    950: '#060607',
   },
   bTeam: {
-    100: colors.gray[800],
-    200: colors.gray[700],
-    300: colors.gray[600],
-    400: colors.gray[500],
-    500: colors.gray[400],
-    600: colors.gray[300],
-    700: colors.gray[200],
-    800: colors.gray[100],
-    900: colors.gray[50],
+    0: '#747C8B',
+    50: '#6E7684',
+    100: '#686F7D',
+    150: '#636976',
+    200: '#5D636F',
+    250: '#575D68',
+    300: '#515761',
+    350: '#4B505A',
+    400: '#464A53',
+    450: '#40444C',
+    500: '#3A3E45',
+    550: '#34383F',
+    600: '#2E3138',
+    650: '#292B31',
+    700: '#23252A',
+    750: '#1D1F23',
+    800: '#17191C',
+    850: '#111315',
+    900: '#0C0C0E',
+    950: '#060607',
   },
   menu: {
-    100: '#172033',
-    200: colors.slate[800],
-    300: '#293548',
-    400: colors.slate[700],
-    500: '#3D4B5F',
-    600: colors.slate[600],
-    700: '#56657A',
-    800: colors.slate[500],
+    0: '#6A7C95',
+    50: '#65768D',
+    100: '#606F85',
+    150: '#5B697E',
+    200: '#556377',
+    250: '#505D6F',
+    300: '#4B5768',
+    350: '#455060',
+    400: '#404A59',
+    450: '#3B4452',
+    500: '#353E4A',
+    550: '#303843',
+    600: '#2B323B',
+    650: '#252B34',
+    700: '#20252C',
+    750: '#1B1F25',
+    800: '#15191E',
+    850: '#101316',
+    900: '#0B0C0F',
+    950: '#050607',
   },
   symbolColor: {
     main: colors.neutral[100],
@@ -407,166 +241,9 @@ const Blackscale: Theme = {
   required: colors.red[500],
 };
 
-const Shiny: Theme = {
-  logo: {
-    top: colors.teal[400],
-    bottom: '#E9CA32',
-    background: colors.white,
-    core: {
-      1: '#FFF',
-      2: '#9c65aa',
-    },
-    ring: {
-      1: '#fff',
-      2: '#FBF5D9',
-      3: '#F7EBB3',
-      4: '#F3E18D',
-      5: '#EFD767',
-      6: '#EACE41',
-      7: '#E6C41B',
-    },
-  },
-  page: colors.white,
-  aTeam: colors.teal,
-  bTeam: {
-    50: '#FAF3D1',
-    100: '#F8EDBB',
-    150: '#F5E7A4',
-    200: '#F3E18D',
-    250: '#F0DC76',
-    300: '#EED65F',
-    350: '#EBD048',
-    400: '#E9CA32',
-    450: '#E6C41B',
-    500: '#E4BE04',
-    550: '#D2B004',
-    600: '#C1A103',
-    650: '#AF9303',
-    700: '#9D8502',
-    750: '#8C7702',
-    800: '#7A6802',
-    850: '#685A01',
-    900: '#564C01',
-    950: '#453D00',
-  },
-  menu: colors.slate,
-  symbolColor: {
-    main: colors.black,
-    sub: colors.neutral[800],
-    disabled: colors.neutral[500],
-    inverted: colors.white,
-  },
-  spriteBorder: colors.slate[500],
-  scale: {
-    positive: {
-      1: colors.emerald[200],
-      2: colors.emerald[300],
-      3: colors.emerald[400],
-      4: colors.emerald[500],
-      5: colors.emerald[600],
-      6: colors.emerald[700],
-      7: colors.emerald[800],
-      text: colors.black,
-    },
-    negative: {
-      1: colors.rose[200],
-      2: colors.rose[300],
-      3: colors.rose[400],
-      4: colors.rose[500],
-      5: colors.rose[600],
-      6: colors.rose[700],
-      7: colors.rose[800],
-      text: colors.black,
-    },
-    neutral: colors.slate[300],
-  },
-  caution: colors.green[200],
-  required: colors.red[500],
-};
-
-const ShinyDark: Theme = {
-  logo: {
-    top: '#11A697',
-    bottom: '#D2B004',
-    background: '#3D4B5F',
-    core: {
-      1: '#FFF',
-      2: '#71497C',
-    },
-    ring: {
-      1: '#000',
-      2: '#292301',
-      3: '#514501',
-      4: '#7A6802',
-      5: '#978003',
-      6: '#B59803',
-      7: '#D2B004',
-    },
-  },
-  page: colors.slate[900],
-  aTeam: {
-    100: '#11A697',
-    200: colors.teal[600],
-    300: '#0E857B',
-    400: colors.teal[700],
-    500: '#106A64',
-    600: colors.teal[800],
-    700: '#125652',
-    800: colors.teal[900],
-  },
-  bTeam: {
-    100: '#D2B004',
-    200: '#C1A103',
-    300: '#AF9303',
-    400: '#9D8502',
-    500: '#8C7702',
-    600: '#7A6802',
-    700: '#685A01',
-    800: '#564C01',
-  },
-  menu: {
-    100: '#172033',
-    200: colors.slate[800],
-    300: '#293548',
-    400: colors.slate[700],
-    500: '#3D4B5F',
-    600: colors.slate[600],
-    700: '#56657A',
-    800: colors.slate[500],
-  },
-  symbolColor: {
-    main: colors.neutral[100],
-    sub: colors.neutral[300],
-    disabled: colors.neutral[400],
-    inverted: colors.neutral[200],
-  },
-  spriteBorder: colors.slate[500],
-  scale: {
-    positive: {
-      1: colors.emerald[900],
-      2: colors.emerald[800],
-      3: colors.emerald[700],
-      4: colors.emerald[600],
-      5: colors.emerald[500],
-      6: colors.emerald[400],
-      7: colors.emerald[300],
-      text: colors.black,
-    },
-    negative: {
-      1: colors.rose[900],
-      2: colors.rose[800],
-      3: colors.rose[700],
-      4: colors.rose[600],
-      5: colors.rose[500],
-      6: colors.rose[400],
-      7: colors.rose[300],
-      text: colors.black,
-    },
-    neutral: colors.slate[700],
-  },
-  caution: colors.green[600],
-  required: colors.red[500],
-};
+const Classic = new ThemeBuilder(0x0fb6cd, 0xe9925c);
+const Shiny = new ThemeBuilder(0x77eebb, 0xffff55);
+const Christmas = new ThemeBuilder(0x165b33, 0xbb2528);
 
 export default {
   content: ['./src/**/*.{html,ts,tsx,jsx}'],
@@ -657,19 +334,21 @@ export default {
   plugins: [
     createThemes(
       {
-        classic: ClassicTheme,
-        darkclassic: ClassicDark,
+        classic: Classic.toLight(),
+        darkclassic: Classic.toDark(),
+        shiny: Shiny.toLight(),
+        darkshiny: Shiny.toDark(),
         graycolorblind: Grayscale,
         darkcolorblind: Blackscale,
-        shiny: Shiny,
-        darkshiny: ShinyDark,
+        christmas: Christmas.toLight(),
+        darkchristmas: Christmas.toDark(),
       },
       {
         defaultTheme: {
           light: 'classic',
           dark: 'darkclassic',
         },
-      }
+      },
     ),
   ],
 };

@@ -13,7 +13,7 @@ import { Pokemon } from '../../interfaces/draft';
 export class SettingsComponent implements OnInit {
   constructor(
     private settingsService: SettingsService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
   ) {}
 
   settingsData!: Settings;
@@ -21,6 +21,7 @@ export class SettingsComponent implements OnInit {
 
   themes: { id: string; name: string }[] = [
     { id: 'classic', name: 'Classic' },
+    { id: 'christmas', name: 'Christmas' },
     { id: 'graymode', name: 'Grayscale' },
   ];
 

@@ -39,7 +39,7 @@ export class AppComponent implements OnInit {
 
   constructor(
     public auth: AuthService,
-    private settingsService: SettingsService
+    private settingsService: SettingsService,
   ) {}
 
   ngOnInit(): void {
@@ -71,7 +71,9 @@ export class AppComponent implements OnInit {
       case 'shiny':
         return 'shiny dark:darkshiny';
       case 'graymode':
-        return ' graycolorblind dark:darkcolorblind';
+        return 'graycolorblind dark:darkcolorblind';
+      case 'christmas':
+        return 'christmas dark:darkchristmas';
       default:
         return 'classic dark:darkclassic';
     }
