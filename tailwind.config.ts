@@ -243,7 +243,7 @@ const Blackscale: Theme = {
 
 const Classic = new ThemeBuilder(0x0fb6cd, 0xe9925c);
 const Shiny = new ThemeBuilder(0x77eebb, 0xffff55);
-const Christmas = new ThemeBuilder(0x165b33, 0xbb2528);
+const Christmas = new ThemeBuilder(0xbb2528, 0x165b33);
 
 export default {
   content: ['./src/**/*.{html,ts,tsx,jsx}'],
