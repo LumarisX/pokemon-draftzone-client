@@ -43,19 +43,18 @@
 
       <div class="p-0.5">
         <div
-          class="rounded py-0.5 flex justify-between items-center pl-3 pr-6 cursor-pointer text-menu-600 text-2xs"
+          class="rounded py-0.5 flex justify-between items-center pl-3 pr-5 cursor-pointer text-menu-600 text-2xs"
         >
           Name
           <div class="space-x-1 flex">
             @for (header of headers; track $index) {
               <div class="w-8 text-ellipsis overflow-hidden">
-                {{ header.name }}
+                {{ header.title }}
               </div>
             }
           </div>
         </div>
         <cdk-virtual-scroll-viewport
-          class=""
           itemSize="{{ itemSize }}"
           [style.height]="
             calculateDynamicHeight(filteredItems.length, itemSize)
@@ -63,7 +62,7 @@
         >
           <div
             *cdkVirtualFor="let item of filteredItems"
-            class="mx-2 rounded flex justify-between items-center px-1 cursor-pointer hover:bg-menu-200"
+            class="ml-2 mr-1 rounded flex justify-between items-center px-1 cursor-pointer hover:bg-menu-200"
             [ngClass]="{
               'bg-menu-200': selectedItem && selectedItem.value === item.value,
             }"
@@ -75,12 +74,12 @@
                 @switch (header.type) {
                   @case ("text") {
                     <div class="w-8 flex justify-center items-center h-7">
-                      {{ item[header.value] }}
+                      {{ item[header.key] }}
                     </div>
                   }
                   @case ("imgPath") {
                     <div class="w-8 flex justify-center items-center h-7">
-                      <img [src]="item[header.value]" />
+                      <img [src]="item[header.key]" />
                     </div>
                   }
                 }
@@ -131,7 +130,7 @@
           <div class="space-x-1 flex">
             @for (header of headers; track $index) {
               <div class="w-10 text-ellipsis overflow-hidden">
-                {{ header.name }}
+                {{ header.title }}
               </div>
             }
           </div>
@@ -154,12 +153,12 @@
                 @switch (header.type) {
                   @case ("text") {
                     <div class="w-10 flex justify-center items-center h-7">
-                      {{ item[header.value] }}
+                      {{ item[header.key] }}
                     </div>
                   }
                   @case ("imgPath") {
                     <div class="w-10 flex justify-center items-center h-7">
-                      <img [src]="item[header.value]" />
+                      <img [src]="item[header.key]" />
                     </div>
                   }
                 }

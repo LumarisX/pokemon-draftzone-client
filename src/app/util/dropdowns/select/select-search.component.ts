@@ -26,7 +26,7 @@ export class SelectSearchComponent<T>
   query: string = '';
   filteredItems: { name: string; value: T }[] = [];
   @Input()
-  headers: { name: string; value: string; type: 'text' | 'imgPath' }[] = [];
+  headers: { title: string; key: string; type: 'text' | 'imgPath' }[] = [];
 
   ngOnInit(): void {
     this.filter();
