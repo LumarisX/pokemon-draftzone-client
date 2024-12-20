@@ -10,7 +10,6 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { SpriteComponent } from '../images/sprite.component';
 import { CloseSVG } from '../images/svg-components/close.component';
 import type { ClientError } from './error.service';
 import { ErrorService } from './error.service';
@@ -18,13 +17,7 @@ import { ErrorService } from './error.service';
 @Component({
   selector: 'error',
   standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule,
-    SpriteComponent,
-    CloseSVG,
-    ReactiveFormsModule,
-  ],
+  imports: [CommonModule, RouterModule, CloseSVG, ReactiveFormsModule],
   animations: [
     trigger('fadeInOut', [
       transition(':enter', [
@@ -45,7 +38,7 @@ import { ErrorService } from './error.service';
                 easing: 'ease',
                 offset: 1,
               }),
-            ])
+            ]),
           ),
         ]),
       ]),
@@ -67,7 +60,7 @@ import { ErrorService } from './error.service';
                 easing: 'ease',
                 offset: 1,
               }),
-            ])
+            ]),
           ),
         ]),
       ]),
