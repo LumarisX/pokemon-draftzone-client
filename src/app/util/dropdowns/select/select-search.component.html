@@ -72,7 +72,7 @@
             <div class="space-x-1 h-7 flex">
               @for (header of headers; track $index) {
                 @switch (header.type) {
-                  @case ("text") {
+                  <!-- @case ("text") {
                     <div class="w-8 flex justify-center items-center h-7">
                       {{ item[header.key] }}
                     </div>
@@ -81,7 +81,7 @@
                     <div class="w-8 flex justify-center items-center h-7">
                       <img [src]="item[header.key]" />
                     </div>
-                  }
+                  } -->
                 }
               }
             </div>
@@ -151,7 +151,7 @@
             <div class="space-x-1 h-7 flex">
               @for (header of headers; track $index) {
                 @switch (header.type) {
-                  @case ("text") {
+                  <!-- @case ("text") {
                     <div class="w-10 flex justify-center items-center h-7">
                       {{ item[header.key] }}
                     </div>
@@ -160,7 +160,7 @@
                     <div class="w-10 flex justify-center items-center h-7">
                       <img [src]="item[header.key]" />
                     </div>
-                  }
+                  } -->
                 }
               }
             </div>

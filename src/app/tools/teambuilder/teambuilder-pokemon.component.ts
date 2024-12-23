@@ -7,6 +7,7 @@ import { SelectNoSearchComponent } from '../../util/dropdowns/select/select-no-s
 import { SelectSearchComponent } from '../../util/dropdowns/select/select-search.component';
 import { PokemonBuilder } from './pokemon-builder.model';
 import { NATURES, StatsTable } from '../../data';
+import { MatTabsModule } from '@angular/material/tabs';
 
 @Component({
   selector: 'teambuilder-pokemon',
@@ -19,6 +20,7 @@ import { NATURES, StatsTable } from '../../data';
     SpriteComponent,
     SelectSearchComponent,
     SelectNoSearchComponent,
+    MatTabsModule,
   ],
 })
 export class TeamBuilderPokemonComponent {

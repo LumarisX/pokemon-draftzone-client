@@ -22,11 +22,11 @@ export class SelectBaseComponent<T> implements ControlValueAccessor {
     this._items = value.map((item) =>
       typeof item === 'object' && 'name' in item
         ? item
-        : { name: String(item), value: item as T }
+        : { name: String(item), value: item as T },
     );
   }
 
-  get items(): { name: string; value: T; icon?: string }[] {
+  get items(): { name: string; value: T }[] {
     return this._items;
   }
 
@@ -50,8 +50,8 @@ export class SelectBaseComponent<T> implements ControlValueAccessor {
       item === null
         ? null
         : typeof item === 'object' && 'name' in item && 'value' in item
-        ? item
-        : { name: String(item), value: item as T };
+          ? item
+          : { name: String(item), value: item as T };
   }
 
   get selectedItem(): { name: string; value: T; icon?: string } | null {
