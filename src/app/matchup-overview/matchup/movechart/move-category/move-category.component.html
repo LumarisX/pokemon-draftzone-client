@@ -33,11 +33,11 @@
             </p>
           </div>
           <div class="flex flex-row flex-wrap items-center w-2/3 p-1">
-            <sprite
-              class="h-8"
-              *ngFor="let pokemon of move.pokemon"
-              [pokemon]="pokemon"
-            ></sprite>
+            @for (pokemon of move.pokemon; track $index) {
+              <div class="h-8 w-8">
+                <sprite [pokemon]="pokemon"></sprite>
+              </div>
+            }
           </div>
         </div>
       }

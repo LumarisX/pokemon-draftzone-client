@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Coverage } from '../../matchup-overview/matchup-interface';
-import { SpriteComponent } from '../../images/sprite.component';
+import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { TYPES } from '../../data';
 
 @Component({

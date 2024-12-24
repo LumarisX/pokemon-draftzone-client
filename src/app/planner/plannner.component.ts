@@ -21,7 +21,7 @@ import { DataService } from '../api/data.service';
 import { PlannerService } from '../api/planner.service';
 import { Type } from '../data';
 import { getPidByName, Namedex, nameList, PokemonId } from '../data/namedex';
-import { SpriteComponent } from '../images/sprite.component';
+import { SpriteComponent } from '../images/sprite/sprite.component';
 import { CompactSVG } from '../images/svg-components/compact.component';
 import { GearSVG } from '../images/svg-components/gear.component';
 import { PlusSVG } from '../images/svg-components/plus.component';

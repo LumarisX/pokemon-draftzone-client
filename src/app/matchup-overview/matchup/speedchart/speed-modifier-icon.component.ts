@@ -4,13 +4,24 @@ import { Component, Input } from '@angular/core';
 @Component({
   selector: 'speed-modifier-icon',
   standalone: true,
-  template: `<img
-    *ngIf="modifiers.hasOwnProperty(modifier)"
-    class="h-full border rounded-full bg-slate-200 border-slate-700"
-    src="{{ modifiers[modifier].path }}"
-    title="{{ modifiers[modifier].title }}"
-    alt="{{ modifiers[modifier].alt }}"
-  />`,
+  styles: `
+    img {
+      aspect-ratio: 1 / 1;
+      border: 1px solid #334155;
+      border-radius: 50%;
+      background-color: #e2e8f0;
+      object-fit: contain;
+      height: 100%;
+      width: auto;
+    }
+  `,
+  template: ` @if (modifiers.hasOwnProperty(modifier)) {
+    <img
+      src="{{ modifiers[modifier].path }}"
+      title="{{ modifiers[modifier].title }}"
+      alt="{{ modifiers[modifier].alt }}"
+    />
+  }`,
   imports: [CommonModule],
 })
 export class SpeedModifierIconComponent {

@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { ExtendedType, Type, TYPES } from '../../data';
-import { SpriteComponent } from '../../images/sprite.component';
+import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { Pokemon } from '../../interfaces/draft';
 import { TypeChart } from '../../matchup-overview/matchup-interface';
 
@@ -83,7 +83,7 @@ export class TypechartComponent implements OnChanges {
     pokemon: Pokemon & {
       weak: { [key in ExtendedType]: number };
       disabled?: Boolean;
-    }
+    },
   ) {
     pokemon.disabled = !pokemon.disabled;
     this.summerize();

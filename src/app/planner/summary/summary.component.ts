@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { SpriteComponent } from '../../images/sprite.component';
+import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { Summary } from '../../matchup-overview/matchup-interface';
 
 @Component({

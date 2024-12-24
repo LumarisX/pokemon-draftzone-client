@@ -1,0 +1,19 @@
+@use "@angular/material" as mat;
+
+html {
+  @include mat.theme(
+    (
+      color: mat.$violet-palette,
+      typography: Roboto,
+      density: 0,
+    )
+  );
+}
+
+.example-bright-container {
+  @include mat.theme(
+    (
+      color: mat.$cyan-palette,
+    )
+  );
+}

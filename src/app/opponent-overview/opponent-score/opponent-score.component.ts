@@ -13,7 +13,7 @@ import { ReplayService } from '../../api/replay.service';
 import { PokemonId } from '../../data/namedex';
 import { DraftOverviewPath } from '../../draft-overview/draft-overview-routing.module';
 import { LoadingComponent } from '../../images/loading/loading.component';
-import { SpriteComponent } from '../../images/sprite.component';
+import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { PlusSVG } from '../../images/svg-components/plus.component';
 import { TrashSVG } from '../../images/svg-components/trash.component';
 import { Pokemon } from '../../interfaces/draft';

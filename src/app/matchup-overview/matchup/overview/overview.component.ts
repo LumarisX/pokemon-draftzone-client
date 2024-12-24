@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { SpriteComponent } from '../../../images/sprite.component';
+import { SpriteComponent } from '../../../images/sprite/sprite.component';
 import { ZSVG } from '../../../images/svg-components/z.component';
 import { TeraComponent } from '../../../images/tera.component';
 import { Summary } from '../../matchup-interface';

@@ -4,7 +4,7 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { DraftService } from '../../api/draft.service';
 import { Draft } from '../../interfaces/draft';
 import { Matchup } from '../../interfaces/matchup';
-import { SpriteComponent } from '../../images/sprite.component';
+import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { ClockSVG } from '../../images/svg-components/clock.component';
 import { TrashSVG } from '../../images/svg-components/trash.component';
 import { PlusSVG } from '../../images/svg-components/plus.component';
@@ -31,13 +31,15 @@ import { LoadingComponent } from '../../images/loading/loading.component';
 export class OpponentTeamPreviewComponent implements OnInit {
   index = 0;
   draft?: Draft;
-  matchups?:
-    | (Matchup & { deleteConfirm: boolean; score: [number, number] | null })[];
+  matchups?: (Matchup & {
+    deleteConfirm: boolean;
+    score: [number, number] | null;
+  })[];
   teamId: string = '';
 
   constructor(
     private draftService: DraftService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
   ) {}
 
   ngOnInit(): void {
@@ -65,7 +67,7 @@ export class OpponentTeamPreviewComponent implements OnInit {
         this.reload();
         console.log('Success!', response);
       },
-      (error) => console.error('Error!', error)
+      (error) => console.error('Error!', error),
     );
   }
 

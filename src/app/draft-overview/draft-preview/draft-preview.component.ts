@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { DraftService } from '../../api/draft.service';
 import { LoadingComponent } from '../../images/loading/loading.component';
-import { SpriteComponent } from '../../images/sprite.component';
+import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { ArchiveSVG } from '../../images/svg-components/archive.component';
 import { ArchiveAddSVG } from '../../images/svg-components/archiveAdd.component';
 import { BarChartSVG } from '../../images/svg-components/barchart.component';

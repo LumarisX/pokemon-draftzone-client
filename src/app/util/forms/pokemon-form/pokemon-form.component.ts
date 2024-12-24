@@ -10,7 +10,7 @@ import {
 import { RouterModule } from '@angular/router';
 import { TeraType, TYPES } from '../../../data';
 import { getPidByName, nameList } from '../../../data/namedex';
-import { SpriteComponent } from '../../../images/sprite.component';
+import { SpriteComponent } from '../../../images/sprite/sprite.component';
 import { BadgeSVG } from '../../../images/svg-components/badge.component';
 import { CircleSVG } from '../../../images/svg-components/circle.component';
 import { ShinySVG } from '../../../images/svg-components/shiny.component';

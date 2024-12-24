@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
-import { SpriteComponent } from '../../../../images/sprite.component';
+import { SpriteComponent } from '../../../../images/sprite/sprite.component';
 import { Pokemon } from '../../../../interfaces/draft';
 import { CoverageChart, TypeChart } from '../../../matchup-interface';
 import { EffectivenessChartComponent } from './effectiveness-chart/effectiveness-chart.component';

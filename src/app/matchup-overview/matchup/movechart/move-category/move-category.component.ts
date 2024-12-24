@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { SpriteComponent } from '../../../../images/sprite.component';
+import { SpriteComponent } from '../../../../images/sprite/sprite.component';
 import { MoveCategory } from '../../../matchup-interface';
 import {
   animate,

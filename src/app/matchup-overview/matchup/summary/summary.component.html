@@ -1,7 +1,7 @@
 <div class="w-full">
   <div class="flex w-full px-1 bg-menu-400 rounded-t-xl">
     <div class="flex w-full pb-1 border-b border-menu-300">
-      <h1 class="w-full text-xl font-bold text-center">Team Overview</h1>
+      <div class="w-full text-xl font-bold text-center">Team Overview</div>
       <button
         (click)="swapTeams()"
         class="px-3 mx-1 mt-2 ml-auto text-sm rounded-md shadow-md"
@@ -15,19 +15,25 @@
   <div class="w-full overflow-x-auto border-4 border-menu-400">
     <table
       id="myOverview"
-      class="w-full rounded-md table-auto"
+      class="rounded-md table-fixed w-min"
       [ngClass]="teamColor()"
     >
       <tr class="bg-menu-400">
-        <th class=""></th>
+        <th class="w-6"></th>
         <th class="w-12 min-w-8"></th>
         <th
           (click)="sortByName()"
           class="w-24 cursor-pointer hover:text-menu-200"
         >
-          <div *ngIf="sortBy != 'name'">Name</div>
-          <div *ngIf="sortBy == 'name' && !reversed">Name ↥</div>
-          <div *ngIf="sortBy == 'name' && reversed">Name ↧</div>
+          @if (sortBy == "name") {
+            @if (reversed) {
+              <div>Name ↧</div>
+            } @else {
+              <div>Name ↥</div>
+            }
+          } @else {
+            <div>Name</div>
+          }
         </th>
         <th class="w-16 text-left">Types</th>
         <th class="w-20">Abilities</th>
@@ -35,101 +41,145 @@
           (click)="sortByStat('hp')"
           class="w-12 cursor-pointer hover:text-menu-200"
         >
-          <div *ngIf="sortBy != 'hp'">HP</div>
-          <div *ngIf="sortBy == 'hp' && !reversed">HP ↥</div>
-          <div *ngIf="sortBy == 'hp' && reversed">HP ↧</div>
+          @if (sortBy == "hp") {
+            @if (reversed) {
+              <div>HP ↧</div>
+            } @else {
+              <div>HP ↥</div>
+            }
+          } @else {
+            <div>HP</div>
+          }
         </th>
         <th
           (click)="sortByStat('atk')"
           class="w-12 cursor-pointer hover:text-menu-200"
         >
-          <div *ngIf="sortBy != 'atk'">ATK</div>
-          <div *ngIf="sortBy == 'atk' && !reversed">ATK ↥</div>
-          <div *ngIf="sortBy == 'atk' && reversed">ATK ↧</div>
+          @if (sortBy == "atk") {
+            @if (reversed) {
+              <div>ATK ↧</div>
+            } @else {
+              <div>ATK ↥</div>
+            }
+          } @else {
+            <div>ATK</div>
+          }
         </th>
         <th
           (click)="sortByStat('def')"
           class="w-12 cursor-pointer hover:text-menu-200"
         >
-          <div *ngIf="sortBy != 'def'">DEF</div>
-          <div *ngIf="sortBy == 'def' && !reversed">DEF ↥</div>
-          <div *ngIf="sortBy == 'def' && reversed">DEF ↧</div>
+          @if (sortBy == "def") {
+            @if (reversed) {
+              <div>DEF ↧</div>
+            } @else {
+              <div>DEF ↥</div>
+            }
+          } @else {
+            <div>DEF</div>
+          }
         </th>
         <th
           (click)="sortByStat('spa')"
           class="w-12 cursor-pointer hover:text-menu-200"
         >
-          <div *ngIf="sortBy != 'spa'">SPA</div>
-          <div *ngIf="sortBy == 'spa' && !reversed">SPA ↥</div>
-          <div *ngIf="sortBy == 'spa' && reversed">SPA ↧</div>
+          @if (sortBy == "spa") {
+            @if (reversed) {
+              <div>SPA ↧</div>
+            } @else {
+              <div>SPA ↥</div>
+            }
+          } @else {
+            <div>SPA</div>
+          }
         </th>
         <th
           (click)="sortByStat('spd')"
           class="w-12 cursor-pointer hover:text-menu-200"
         >
-          <div *ngIf="sortBy != 'spd'">SPD</div>
-          <div *ngIf="sortBy == 'spd' && !reversed">SPD ↥</div>
-          <div *ngIf="sortBy == 'spd' && reversed">SPD ↧</div>
+          @if (sortBy == "spd") {
+            @if (reversed) {
+              <div>SPD ↧</div>
+            } @else {
+              <div>SPD ↥</div>
+            }
+          } @else {
+            <div>SPD</div>
+          }
         </th>
         <th
           (click)="sortByStat('spe')"
           class="w-12 cursor-pointer hover:text-menu-200"
         >
-          <div *ngIf="sortBy != 'spe'">SPE</div>
-          <div *ngIf="sortBy == 'spe' && !reversed">SPE ↥</div>
-          <div *ngIf="sortBy == 'spe' && reversed">SPE ↧</div>
+          @if (sortBy == "spe") {
+            @if (reversed) {
+              <div>SPE ↧</div>
+            } @else {
+              <div>SPE ↥</div>
+            }
+          } @else {
+            <div>SPE</div>
+          }
         </th>
       </tr>
-      <tr
-        *ngFor="let pokemon of teams[selectedTeam].team"
-        class="h-12 border-b border-menu-400"
-      >
-        <td>
-          <div *ngIf="pokemon.capt" class="w-6">
-            <tera *ngIf="pokemon.capt.tera" [pokemon]="pokemon"></tera>
-            <z-svg *ngIf="pokemon.capt.z"></z-svg>
-          </div>
-        </td>
-        <td>
-          <sprite [pokemon]="pokemon"></sprite>
-        </td>
-        <td class="text-sm">{{ pokemon.name }}</td>
-        <td>
-          <img
-            *ngFor="let type of pokemon.types"
-            src="../../../assets/icons/types/{{ type }}.png"
-            onerror="this.src='../../../assets/icons/types/Unknown.png'"
-            alt="{{ type }}"
-          />
-        </td>
+      @for (pokemon of teams[selectedTeam].team; track $index) {
+        <tr class="h-12 border-b border-menu-400">
+          <td>
+            @if (pokemon.capt) {
+              <div class="w-6">
+                @if (pokemon.capt.tera) {
+                  <tera [pokemon]="pokemon"></tera>
+                }
+                @if (pokemon.capt.z) {
+                  <z-svg></z-svg>
+                }
+              </div>
+            }
+          </td>
+          <td>
+            <sprite [pokemon]="pokemon"></sprite>
+          </td>
+          <td class="text-sm">{{ pokemon.name }}</td>
+          <td>
+            @for (type of pokemon.types; track $index) {
+              <img
+                src="../../../assets/icons/types/{{ type }}.png"
+                onerror="this.src='../../../assets/icons/types/Unknown.png'"
+                alt="{{ type }}"
+              />
+            }
+          </td>
 
-        <td>
-          <div *ngFor="let ability of pokemon.abilities" class="text-center">
-            {{ ability }}
-          </div>
-        </td>
-        <td
-          class="text-center border-l-2 border-menu-400"
-          [ngClass]="statColor(pokemon.baseStats.hp)"
-        >
-          {{ pokemon.baseStats.hp }}
-        </td>
-        <td class="text-center" [ngClass]="statColor(pokemon.baseStats.atk)">
-          {{ pokemon.baseStats.atk }}
-        </td>
-        <td class="text-center" [ngClass]="statColor(pokemon.baseStats.def)">
-          {{ pokemon.baseStats.def }}
-        </td>
-        <td class="text-center" [ngClass]="statColor(pokemon.baseStats.spa)">
-          {{ pokemon.baseStats.spa }}
-        </td>
-        <td class="text-center" [ngClass]="statColor(pokemon.baseStats.spd)">
-          {{ pokemon.baseStats.spd }}
-        </td>
-        <td class="text-center" [ngClass]="statColor(pokemon.baseStats.spe)">
-          {{ pokemon.baseStats.spe }}
-        </td>
-      </tr>
+          <td>
+            @for (ability of pokemon.abilities; track $index) {
+              <div class="text-center">
+                {{ ability }}
+              </div>
+            }
+          </td>
+          <td
+            class="text-center border-l-2 border-menu-400"
+            [ngClass]="statColor(pokemon.baseStats.hp)"
+          >
+            {{ pokemon.baseStats.hp }}
+          </td>
+          <td class="text-center" [ngClass]="statColor(pokemon.baseStats.atk)">
+            {{ pokemon.baseStats.atk }}
+          </td>
+          <td class="text-center" [ngClass]="statColor(pokemon.baseStats.def)">
+            {{ pokemon.baseStats.def }}
+          </td>
+          <td class="text-center" [ngClass]="statColor(pokemon.baseStats.spa)">
+            {{ pokemon.baseStats.spa }}
+          </td>
+          <td class="text-center" [ngClass]="statColor(pokemon.baseStats.spd)">
+            {{ pokemon.baseStats.spd }}
+          </td>
+          <td class="text-center" [ngClass]="statColor(pokemon.baseStats.spe)">
+            {{ pokemon.baseStats.spe }}
+          </td>
+        </tr>
+      }
       <tr class="border-t-2 bg-menu-300 border-menu-400">
         <td></td>
         <td></td>

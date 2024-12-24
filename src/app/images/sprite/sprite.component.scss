@@ -1,0 +1,27 @@
+img {
+  height: auto;
+  width: 100%;
+  object-fit: contain;
+  z-index: -100;
+  aspect-ratio: 1 / 1;
+}
+
+.flip {
+  transform: scaleX(-1);
+}
+
+.sprite-border {
+  -webkit-filter: drop-shadow(1px 0px 0 theme("colors.spriteBorder"))
+    drop-shadow(-1px 0px 0 theme("colors.spriteBorder"))
+    drop-shadow(0px -1px 0 theme("colors.spriteBorder"))
+    drop-shadow(0px 1px 0 theme("colors.spriteBorder"));
+  filter: drop-shadow(1px 0px 0 theme("colors.spriteBorder"))
+    drop-shadow(-1px 0px 0 theme("colors.spriteBorder"))
+    drop-shadow(0px -1px 0 theme("colors.spriteBorder"))
+    drop-shadow(0px 1px 0 theme("colors.spriteBorder"));
+  z-index: 0;
+}
+
+.disabled {
+  opacity: 40;
+}

@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { SpriteComponent } from '../../images/sprite.component';
+import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { SelectNoSearchComponent } from '../../util/dropdowns/select/select-no-search.component';
 import { SelectSearchComponent } from '../../util/dropdowns/select/select-search.component';
 import { PokemonBuilder } from './pokemon-builder.model';

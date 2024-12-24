@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { ArchiveService } from '../../api/archive.service';
 import { LoadingComponent } from '../../images/loading/loading.component';
-import { SpriteComponent } from '../../images/sprite.component';
+import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { TrashSVG } from '../../images/svg-components/trash.component';
 import { Archive } from '../../interfaces/archive';
 import { DraftOverviewPath } from '../draft-overview-routing.module';

@@ -1,23 +1,21 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { Pokemon } from '../interfaces/draft';
-import { SettingsService } from '../pages/settings/settings.service';
 import {
   getNameByPid,
-  getPidByName,
   getSpriteProperties,
   SpriteProperties,
-} from '../data/namedex';
+} from '../../data/namedex';
+import { Pokemon } from '../../interfaces/draft';
+import { SettingsService } from '../../pages/settings/settings.service';
 
 @Component({
   selector: 'sprite',
   standalone: true,
   imports: [CommonModule],
+  styleUrl: './sprite.component.scss',
   template: `
-    <div class="h-full w-full flex justify-center items-end ">
+    @if (pokemon.id) {
       <img
-        class="h-full w-full -z-100 object-contain aspect-square	"
-        *ngIf="pokemon.id"
         [ngClass]="this.classes"
         title="{{ pokemon.name }}"
         loading="lazy"
@@ -25,7 +23,7 @@ import {
         onerror="this.src='../../../../assets/icons/unknown.svg'"
         (error)="fallback()"
       />
-    </div>
+    }
   `,
 })
 export class SpriteComponent {
@@ -49,11 +47,12 @@ export class SpriteComponent {
   set classes(value: string[]) {
     this._classes = value;
   }
+
   get classes() {
     let classes = [...this._classes];
     if ((!this.flipped && this.flip) || (this.flipped && !this.flip))
-      classes.push('-scale-x-100');
-    if (this.disabled) classes.push('opacity-40');
+      classes.push('flip');
+    if (this.disabled) classes.push('disabled');
     return classes;
   }
 

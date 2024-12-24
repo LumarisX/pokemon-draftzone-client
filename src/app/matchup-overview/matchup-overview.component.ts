@@ -5,7 +5,7 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { MatchupService } from '../api/matchup.service';
 import { MatchupData, Summary } from './matchup-interface';
 import { MatchupComponent } from './matchup/matchup.component';
-import { SpriteComponent } from '../images/sprite.component';
+import { SpriteComponent } from '../images/sprite/sprite.component';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 import { TeraSVG } from '../images/svg-components/tera.component';

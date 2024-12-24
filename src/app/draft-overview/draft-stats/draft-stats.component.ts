@@ -3,7 +3,7 @@ import { DraftService } from '../../api/draft.service';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { Stats } from './draft-stats.interface';
 import { CommonModule } from '@angular/common';
-import { SpriteComponent } from '../../images/sprite.component';
+import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { LoadingComponent } from '../../images/loading/loading.component';
 import { DraftOverviewPath } from '../draft-overview-routing.module';
 
@@ -16,7 +16,7 @@ import { DraftOverviewPath } from '../draft-overview-routing.module';
 export class DraftStatsComponent implements OnInit {
   constructor(
     private draftService: DraftService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
   ) {}
   readonly draftPath = DraftOverviewPath;
   teamId: string = '';
@@ -47,7 +47,7 @@ export class DraftStatsComponent implements OnInit {
       | 'brought'
       | 'indirect'
       | 'kdr'
-      | 'kpg'
+      | 'kpg',
   ) {
     if (sortStat != this.sortBy) {
       this.sortBy = sortStat;

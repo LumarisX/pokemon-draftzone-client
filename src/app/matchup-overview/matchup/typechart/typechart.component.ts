@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { SpriteComponent } from '../../../images/sprite.component';
+import { SpriteComponent } from '../../../images/sprite/sprite.component';
 import { Pokemon } from '../../../interfaces/draft';
 import { TypeChart } from '../../matchup-interface';
 import { ExtendedType, TYPES } from '../../../data';
@@ -35,7 +35,7 @@ export class TypechartComponent implements OnChanges {
   sortByType(type: ExtendedType) {
     if (type != this.sortedType) {
       this.typecharts.forEach((typechart) =>
-        typechart.team.sort((x, y) => x.weak[type] - y.weak[type])
+        typechart.team.sort((x, y) => x.weak[type] - y.weak[type]),
       );
       this.sortedType = type;
     } else {
@@ -125,7 +125,7 @@ export class TypechartComponent implements OnChanges {
         [key in ExtendedType]: number;
       };
       disabled?: Boolean;
-    }
+    },
   ) {
     pokemon.disabled = !pokemon.disabled;
     this.summerize();
