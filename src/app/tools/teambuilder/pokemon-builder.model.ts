@@ -94,6 +94,14 @@ export class PokemonBuilder implements TeambuilderPokemon {
     basePower: number;
     accuracy: number | true;
   }[];
+  moveList: {
+    name: string;
+    value: string;
+    basePower: string | number;
+    accuracy: string | number;
+    typePath: string;
+    categoryPath: string;
+  }[];
   requiredItem?: string;
   requiredAbility?: string;
   requiredItems?: string[];
@@ -107,10 +115,7 @@ export class PokemonBuilder implements TeambuilderPokemon {
     this.ability = pokemon.abilities[0];
     Object.assign(this, pokemon);
     Object.assign(this, options);
-  }
-
-  getLearnset() {
-    return this.learnset.map((move) => ({
+    this.moveList = this.learnset.map((move) => ({
       name: move.name,
       value: move.id,
       basePower: move.basePower || '-',

@@ -64,20 +64,6 @@ export class QuickMatchupBaseComponent implements OnInit {
     this.formData = formData;
     this.matchupService.getQuickMatchup(formData).subscribe((data) => {
       this.matchupData = <MatchupData>data;
-      for (let summary of this.matchupData.summary) {
-        summary.team.sort((x, y) => {
-          if (x['baseStats']['spe'] < y['baseStats']['spe']) {
-            return 1;
-          }
-          if (x['baseStats']['spe'] > y['baseStats']['spe']) {
-            return -1;
-          }
-          return 0;
-        });
-      }
-      this.matchupData!.overview = JSON.parse(
-        JSON.stringify(this.matchupData!.summary),
-      ) as Summary[];
     });
   }
 }

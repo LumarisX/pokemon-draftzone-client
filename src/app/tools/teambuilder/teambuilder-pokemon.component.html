@@ -59,7 +59,7 @@
       <div>
         <label for="moves">Moves</label>
         <div id="moves" class="flex flex-col space-y-1">
-          <div id="move1" class="border max-w-md w-full rounded">
+          <!-- <div id="move1" class="border max-w-md w-full rounded">
             <select-search
               [items]="pokemon.getLearnset()"
               [placeholder]="'Select a move'"
@@ -175,9 +175,32 @@
               ]"
               (itemSelected)="pokemon.moves[3] = $event"
             ></select-search>
-          </div>
+          </div> -->
         </div>
       </div>
+      <mat-form-field class="example-full-width">
+        <mat-label>Move</mat-label>
+        <input
+          type="text"
+          placeholder="Pick one"
+          aria-label="Moves"
+          matInput
+          [matAutocomplete]="auto"
+        />
+        <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+          <mat-option
+            *ngFor="let move of pokemon.moveList"
+            [value]="move.value"
+          >
+            <div class="flex justify-between w-full">
+              <div>{{ move.name }}</div>
+              <div>{{ move.accuracy }}</div>
+              <div><img [src]="move.typePath" /></div>
+              <div><img [src]="move.categoryPath" /></div>
+            </div>
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
     </mat-tab>
     <mat-tab label="Stats">
       <div>

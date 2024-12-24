@@ -123,7 +123,6 @@ export type CoverageChart = Pokemon & {
 export type MatchupData = {
   speedchart: SpeedChart;
   summary: Summary[];
-  overview: Summary[];
   typechart: TypeChart[];
   movechart: MoveChart[];
   coveragechart: CoverageChart[][];

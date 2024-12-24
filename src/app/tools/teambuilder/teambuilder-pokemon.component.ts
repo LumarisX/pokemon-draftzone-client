@@ -8,6 +8,9 @@ import { SelectSearchComponent } from '../../util/dropdowns/select/select-search
 import { PokemonBuilder } from './pokemon-builder.model';
 import { NATURES, StatsTable } from '../../data';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'teambuilder-pokemon',
@@ -21,6 +24,9 @@ import { MatTabsModule } from '@angular/material/tabs';
     SelectSearchComponent,
     SelectNoSearchComponent,
     MatTabsModule,
+    MatAutocompleteModule,
+    MatInputModule,
+    MatFormFieldModule,
   ],
 })
 export class TeamBuilderPokemonComponent {

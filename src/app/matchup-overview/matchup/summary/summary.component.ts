@@ -6,6 +6,8 @@ import { Summary } from '../../matchup-interface';
 import { TeraComponent } from '../../../images/tera.component';
 import { ZSVG } from '../../../images/svg-components/z.component';
 import { Sort, MatSortModule } from '@angular/material/sort';
+import { Pokemon } from '../../../interfaces/draft';
+import { StatsTable } from '../../../data';
 
 @Component({
   selector: 'summary',
@@ -21,62 +23,43 @@ import { Sort, MatSortModule } from '@angular/material/sort';
   ],
 })
 export class SummaryComponent {
-  _teams: Summary[] = [];
-  sortBy: 'name' | 'hp' | 'atk' | 'def' | 'spa' | 'spd' | 'spe' | null = null;
+  _summaries: Summary[] = [];
+
   @Input()
-  set teams(summaries: Summary[]) {
-    for (let summary of summaries) {
-      summary.team.sort((x, y) => {
-        if (x['baseStats']['spe'] < y['baseStats']['spe']) {
-          return 1;
-        }
-        if (x['baseStats']['spe'] > y['baseStats']['spe']) {
-          return -1;
-        }
-        return 0;
-      });
-    }
-    this.sortBy = 'spe';
-    this._teams = summaries;
+  set summaries(value: Summary[]) {
+    this._summaries = value;
+    this.teams = (
+      JSON.parse(JSON.stringify(this.summaries.slice())) as Summary[]
+    ).map((summary) =>
+      summary.team.sort((a, b) =>
+        compare(a.baseStats.spe, b.baseStats.spe, false),
+      ),
+    );
   }
-  get teams(): Summary[] {
-    return this._teams;
+
+  get summaries() {
+    return this._summaries;
   }
+
+  teams: (Pokemon & {
+    abilities: string[];
+    types: string[];
+    bst: number;
+    baseStats: StatsTable;
+  })[][] = [];
+
   selectedTeam: number = 1;
   reversed: boolean = false;
   baseValue: number = 80;
 
   constructor() {}
 
-  sortByStat(sortStat: 'hp' | 'atk' | 'def' | 'spa' | 'spd' | 'spe') {
-    if (sortStat != this.sortBy) {
-      this.sortBy = sortStat;
-      this.reversed = false;
-      for (let team of this.teams) {
-        team.team.sort((x, y) => {
-          if (x['baseStats'][sortStat] < y['baseStats'][sortStat]) {
-            return 1;
-          }
-          if (x['baseStats'][sortStat] > y['baseStats'][sortStat]) {
-            return -1;
-          }
-          return 0;
-        });
-      }
-    } else {
-      for (let team of this.teams) {
-        team.team.reverse();
-      }
-      this.reversed = !this.reversed;
-    }
-  }
-
-  sortByName() {}
-
   sortData(sort: Sort) {
-    if (!sort.active || sort.direction === '') return;
+    if (!sort.active || sort.direction === '') {
+      return 0;
+    }
     for (let team of this.teams) {
-      team.team.sort((a, b) => {
+      team.sort((a, b) => {
         const isAsc = sort.direction === 'asc';
         switch (sort.active) {
           case 'name':
@@ -97,6 +80,7 @@ export class SummaryComponent {
         }
       });
     }
+    return 0;
   }
 
   swapTeams() {

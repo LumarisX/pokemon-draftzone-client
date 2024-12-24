@@ -25,7 +25,7 @@ export class MatchupSharedComponent implements AfterViewInit {
   constructor(
     private route: ActivatedRoute,
     private matchupService: MatchupService,
-    private meta: Meta
+    private meta: Meta,
   ) {}
 
   ngAfterViewInit(): void {
@@ -33,10 +33,6 @@ export class MatchupSharedComponent implements AfterViewInit {
       name: 'og:url',
       content:
         'https://pokemondraftzone.com/' + this.route.snapshot.url.join('/'),
-    });
-    this.meta.updateTag({
-      name: 'og:image',
-      content: 'https://pokemondraftzone.com/13luken.ico',
     });
     this.route.params.subscribe((params) => {
       if ('id' in params) {
@@ -55,7 +51,7 @@ export class MatchupSharedComponent implements AfterViewInit {
             return 0;
           });
         }
-        this.matchupData.overview = <Summary[]>(
+        this.matchupData.summary = <Summary[]>(
           JSON.parse(JSON.stringify(this.matchupData.summary))
         );
         if ('gameTime' in this.matchupData) {
@@ -76,11 +72,11 @@ export class MatchupSharedComponent implements AfterViewInit {
         if (this.matchupData) {
           this.meta.updateTag({
             name: 'og:title',
-            content: `${this.matchupData.details.leagueName} ${this.matchupData.details.stage} | ${this.matchupData.overview[0].teamName} vs ${this.matchupData.overview[1].teamName}`,
+            content: `${this.matchupData.details.leagueName} ${this.matchupData.details.stage} | ${this.matchupData.summary[0].teamName} vs ${this.matchupData.summary[1].teamName}`,
           });
           this.meta.updateTag({
             name: 'og:description',
-            content: `View the matchup between ${this.matchupData.overview[0].teamName} and ${this.matchupData.overview[1].teamName}.`,
+            content: `View the matchup between ${this.matchupData.summary[0].teamName} and ${this.matchupData.summary[1].teamName}.`,
           });
         }
       });

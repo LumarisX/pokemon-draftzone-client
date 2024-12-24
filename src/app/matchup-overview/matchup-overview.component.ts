@@ -64,20 +64,6 @@ export class MatchupOverviewComponent implements OnInit {
       }
       this.matchupService.getMatchup(this.matchupId).subscribe((data) => {
         this.matchupData = <MatchupData>data;
-        for (let summary of this.matchupData.summary) {
-          summary.team.sort((x, y) => {
-            if (x['baseStats']['spe'] < y['baseStats']['spe']) {
-              return 1;
-            }
-            if (x['baseStats']['spe'] > y['baseStats']['spe']) {
-              return -1;
-            }
-            return 0;
-          });
-        }
-        this.matchupData.overview = <Summary[]>(
-          JSON.parse(JSON.stringify(this.matchupData.summary))
-        );
         if ('gameTime' in this.matchupData) {
           let gameTime = dayjs(this.matchupData.details.gameTime);
           if (gameTime.isValid()) {
@@ -96,11 +82,11 @@ export class MatchupOverviewComponent implements OnInit {
         if (this.matchupData) {
           this.meta.updateTag({
             name: 'og:title',
-            content: `${this.matchupData.details.leagueName} ${this.matchupData.details.stage} | ${this.matchupData.overview[0].teamName} vs ${this.matchupData.overview[1].teamName}`,
+            content: `${this.matchupData.details.leagueName} ${this.matchupData.details.stage} | ${this.matchupData.summary[0].teamName} vs ${this.matchupData.summary[1].teamName}`,
           });
           this.meta.updateTag({
             name: 'og:description',
-            content: `View the matchup between ${this.matchupData.overview[0].teamName} and ${this.matchupData.overview[1].teamName}.`,
+            content: `View the matchup between ${this.matchupData.summary[0].teamName} and ${this.matchupData.summary[1].teamName}.`,
           });
           this.meta.updateTag({
             name: 'og:image',
