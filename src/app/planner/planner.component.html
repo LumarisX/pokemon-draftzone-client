@@ -51,96 +51,101 @@
       [formGroup]="getDraftFormGroup()"
       class="flex flex-col flex-grow overflow-auto"
     >
-      <div
-        *ngIf="settings"
-        @growIn
-        class="flex flex-wrap items-center px-2 pb-1 space-x-4 space-y-1 text-sm border-b-2 md:text-base border-menu-300 rounded-b-xl bg-menu-200"
-      >
-        <div class="space-x-1">
-          <label for="format" class="font-bold">Format</label>
-          <select
-            formControlName="format"
-            class="p-0.5 font-semibold rounded bg-menu-100"
-            id="format"
-          >
-            <option value="" disabled selected>Select Format</option>
-            <option *ngFor="let format of formats" value="{{ format }}">
-              {{ format }}
-            </option>
-          </select>
-        </div>
-
-        <div class="space-x-1">
-          <label for="ruleset" class="font-bold">Ruleset</label>
-          <select
-            formControlName="ruleset"
-            class="p-0.5 font-semibold rounded bg-menu-100"
-            id="ruleset"
-          >
-            <option value="" disabled selected>Select Ruleset</option>
-            <option *ngFor="let ruleset of rulesets" value="{{ ruleset }}">
-              {{ ruleset }}
-            </option>
-          </select>
-        </div>
-
-        <div class="space-x-1">
-          <label for="min" class="font-bold">Min</label>
-          <input
-            type="number"
-            class="w-12 p-0.5 font-semibold text-center rounded bg-menu-100"
-            formControlName="min"
-            id="min"
-            min="0"
-            max="18"
-          />
-        </div>
-
-        <div class="space-x-1">
-          <label for="max" class="font-bold">Max</label>
-          <input
-            type="number"
-            class="w-12 p-0.5 font-semibold text-center rounded bg-menu-100"
-            formControlName="max"
-            id="max"
-            min="0"
-            max="18"
-          />
-        </div>
-
-        <div class="space-x-1">
-          <label for="tier" class="font-bold">Tier</label>
-          <select
-            formControlName="system"
-            class="w-20 p-0.5 font-semibold rounded bg-menu-100"
-          >
-            <option value="" disabled selected>Select Value Type</option>
-            <option value="points">Points</option>
-            <option value="tiers">Tiers</option>
-          </select>
-        </div>
-
-        <div *ngIf="isPoints">
-          <label class="font-bold" for="totalPoints">Total Points</label>
-          <input
-            type="number"
-            class="w-16 font-semibold p-0.5 rounded bg-menu-100"
-            formControlName="totalPoints"
-            id="totalPoints"
-          />
-        </div>
-        <button
-          class="p-0.5 border-2 text-sm font-semibold rounded hover:bg-menu-300 bg-menu-100 border-menu-400"
-          [routerLink]="['/', draftPath, 'new']"
-          [queryParams]="{
-            team: team,
-            format: getDraftFormGroup().get('format')?.value,
-            ruleset: getDraftFormGroup().get('ruleset')?.value,
-          }"
+      @if (settings) {
+        <div
+          @growIn
+          class="flex flex-wrap items-center px-2 pb-1 space-x-4 space-y-1 text-sm border-b-2 md:text-base border-menu-300 rounded-b-xl bg-menu-200"
         >
-          Save to New League
-        </button>
-      </div>
+          <div class="space-x-1">
+            <label for="format" class="font-bold">Format</label>
+            <select
+              formControlName="format"
+              class="p-0.5 font-semibold rounded bg-menu-100"
+              id="format"
+            >
+              <option value="" disabled selected>Select Format</option>
+              @for (format of formats; track $index) {
+                <option value="{{ format }}">
+                  {{ format }}
+                </option>
+              }
+            </select>
+          </div>
+
+          <div class="space-x-1">
+            <label for="ruleset" class="font-bold">Ruleset</label>
+            <select
+              formControlName="ruleset"
+              class="p-0.5 font-semibold rounded bg-menu-100"
+              id="ruleset"
+            >
+              <option value="" disabled selected>Select Ruleset</option>
+              @for (ruleset of rulesets; track $index) {
+                <option value="{{ ruleset }}">
+                  {{ ruleset }}
+                </option>
+              }
+            </select>
+          </div>
+
+          <div class="space-x-1">
+            <label for="min" class="font-bold">Min</label>
+            <input
+              type="number"
+              class="w-12 p-0.5 font-semibold text-center rounded bg-menu-100"
+              formControlName="min"
+              id="min"
+              min="0"
+              max="18"
+            />
+          </div>
+
+          <div class="space-x-1">
+            <label for="max" class="font-bold">Max</label>
+            <input
+              type="number"
+              class="w-12 p-0.5 font-semibold text-center rounded bg-menu-100"
+              formControlName="max"
+              id="max"
+              min="0"
+              max="18"
+            />
+          </div>
+
+          <div class="space-x-1">
+            <label for="tier" class="font-bold">Tier</label>
+            <select
+              formControlName="system"
+              class="w-20 p-0.5 font-semibold rounded bg-menu-100"
+            >
+              <option value="" disabled selected>Select Value Type</option>
+              <option value="points">Points</option>
+              <option value="tiers">Tiers</option>
+            </select>
+          </div>
+
+          <div *ngIf="isPoints">
+            <label class="font-bold" for="totalPoints">Total Points</label>
+            <input
+              type="number"
+              class="w-16 font-semibold p-0.5 rounded bg-menu-100"
+              formControlName="totalPoints"
+              id="totalPoints"
+            />
+          </div>
+          <button
+            class="p-0.5 border-2 text-sm font-semibold rounded hover:bg-menu-300 bg-menu-100 border-menu-400"
+            [routerLink]="['/', draftPath, 'new']"
+            [queryParams]="{
+              team: team,
+              format: getDraftFormGroup().get('format')?.value,
+              ruleset: getDraftFormGroup().get('ruleset')?.value,
+            }"
+          >
+            Save to New League
+          </button>
+        </div>
+      }
       <div class="flex flex-grow min-h-0 divide-x-4 divide-menu-200">
         <div
           class="flex-col flex-shrink-0 hidden divide-y-2 w-96 divide-menu-200 md:flex"
@@ -156,169 +161,9 @@
               <div class="text-xs text-center w-1/8">Drafted</div>
             </div>
             <div formArrayName="team" class="grid w-full grid-cols-1">
-              <div
-                *ngFor="let teamCtrl of teamFormArray.controls; let i = index"
-                [formGroupName]="i"
-                class="flex items-center space-y-1"
-              >
-                <div class="w-1/6 h-fit">
-                  <sprite
-                    [pokemon]="{
-                      id: teamCtrl.get('id')?.value,
-                      name: teamCtrl.get('name')?.value,
-                    }"
-                  ></sprite>
-                </div>
-                <div class="flex flex-col justify-center w-5/12 h-full p-2">
-                  <div
-                    class="w-full text-sm border rounded-lg text-ellipsis bg-menu-100"
-                    [ngClass]="minMaxStyle(i)"
-                  >
-                    <select-search
-                      (itemSelected)="resultSelected(teamCtrl, $event)"
-                      [items]="names"
-                      [startItem]="teamCtrl.value"
-                      placeholder="Select Pokemon"
-                    ></select-search>
-                  </div>
-                </div>
+              @for (teamCtrl of teamFormArray.controls; track $index) {
                 <div
-                  class="flex flex-col justify-center w-1/6 h-full p-1"
-                  *ngIf="!isPoints"
-                >
-                  <input
-                    type="text"
-                    spellcheck="false"
-                    [ngClass]="minMaxStyle(i)"
-                    class="w-full px-1 py-1 font-semibold text-center border rounded-lg bg-menu-100"
-                    formControlName="tier"
-                  />
-                </div>
-                <div
-                  class="flex flex-col justify-center w-1/6 h-full p-1"
-                  *ngIf="isPoints"
-                >
-                  <input
-                    type="number"
-                    placeholder="0"
-                    class="w-full px-1 py-1 text-center border rounded-lg bg-menu-100"
-                    [ngClass]="minMaxStyle(i)"
-                    formControlName="value"
-                  />
-                </div>
-                <div class="w-1/8">
-                  <input
-                    type="checkbox"
-                    class="w-full"
-                    formControlName="capt"
-                  />
-                </div>
-                <div class="w-1/8">
-                  <input
-                    type="checkbox"
-                    class="w-full"
-                    formControlName="drafted"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="p-1" *ngIf="isPoints">
-            <div>Points Remaining: {{ remainingPoints }}</div>
-            <div>
-              Average Remaining Cost:
-              {{ remainingPoints / remainingPokemon | number: "1.0-2" }}
-            </div>
-          </div>
-        </div>
-        <div
-          class="flex flex-col flex-grow h-full max-w-full divide-y-2 divide-menu-200"
-        >
-          <div
-            class="flex flex-shrink-0 w-full p-1 space-x-2 overflow-x-auto min-h-fit"
-          >
-            <div
-              class="block px-2 py-1 border-2 rounded-lg cursor-pointer md:hidden"
-              [ngClass]="tabColor(-1)"
-              (click)="tabSelected = -1"
-            >
-              Team
-            </div>
-            <div
-              class="px-2 py-1 border-2 rounded-lg cursor-pointer"
-              [ngClass]="tabColor(0)"
-              (click)="tabSelected = 0"
-            >
-              Summary
-            </div>
-            <div
-              class="px-2 py-1 border-2 rounded-lg cursor-pointer"
-              [ngClass]="tabColor(1)"
-              (click)="tabSelected = 1"
-            >
-              Typechart
-            </div>
-            <div
-              class="max-w-full px-2 py-1 border-2 rounded-lg cursor-pointer"
-              [ngClass]="tabColor(2)"
-              (click)="tabSelected = 2"
-            >
-              Moves
-            </div>
-            <div
-              class="max-w-full px-2 py-1 border-2 rounded-lg cursor-pointer"
-              [ngClass]="tabColor(3)"
-              (click)="tabSelected = 3"
-            >
-              Coverage
-            </div>
-            <div
-              class="px-2 py-1 border-2 rounded-lg cursor-pointer"
-              [ngClass]="tabColor(4)"
-              (click)="tabSelected = 4"
-            >
-              Find
-            </div>
-          </div>
-          <div class="flex flex-grow w-full min-h-0 p-1 overflow-x-auto">
-            <summary
-              class="h-full list-none"
-              *ngIf="tabSelected == 0 && summary"
-              [summary]="summary"
-            ></summary>
-            <typechart
-              class="h-full max-w-full"
-              *ngIf="tabSelected == 1 && typechart"
-              [typechart]="typechart"
-              [recommended]="recommended"
-            ></typechart>
-            <moves
-              class="w-full overflow-y-auto"
-              *ngIf="tabSelected == 2 && movechart.length"
-              [movechart]="movechart"
-            ></moves>
-            <planner-coverage
-              class="w-full overflow-y-auto"
-              *ngIf="tabSelected == 3 && movechart.length"
-              [coverage]="coverage"
-            ></planner-coverage>
-            <div
-              class="flex-grow block min-h-0 p-1 overflow-y-auto md:hidden"
-              *ngIf="tabSelected == -1"
-            >
-              <div
-                class="sticky flex w-full space-x-3 font-semibold border-b-2 border-menu-300"
-              >
-                <div class="w-1/6 h-full"></div>
-                <div class="w-5/12">Name</div>
-                <div class="w-1/6 text-xs text-center">Value</div>
-                <div class="text-xs text-center w-1/8">Captain</div>
-                <div class="text-xs text-center w-1/8">Drafted</div>
-              </div>
-              <div formArrayName="team" class="grid w-full grid-cols-1">
-                <div
-                  *ngFor="let teamCtrl of teamFormArray.controls; let i = index"
-                  [formGroupName]="i"
+                  [formGroupName]="$index"
                   class="flex items-center space-y-1"
                 >
                   <div class="w-1/6 h-fit">
@@ -332,7 +177,7 @@
                   <div class="flex flex-col justify-center w-5/12 h-full p-2">
                     <div
                       class="w-full text-sm border rounded-lg text-ellipsis bg-menu-100"
-                      [ngClass]="minMaxStyle(i)"
+                      [ngClass]="minMaxStyle($index)"
                     >
                       <select-search
                         (itemSelected)="resultSelected(teamCtrl, $event)"
@@ -349,7 +194,7 @@
                     <input
                       type="text"
                       spellcheck="false"
-                      [ngClass]="minMaxStyle(i)"
+                      [ngClass]="minMaxStyle($index)"
                       class="w-full px-1 py-1 font-semibold text-center border rounded-lg bg-menu-100"
                       formControlName="tier"
                     />
@@ -362,7 +207,7 @@
                       type="number"
                       placeholder="0"
                       class="w-full px-1 py-1 text-center border rounded-lg bg-menu-100"
-                      [ngClass]="minMaxStyle(i)"
+                      [ngClass]="minMaxStyle($index)"
                       formControlName="value"
                     />
                   </div>
@@ -381,18 +226,147 @@
                     />
                   </div>
                 </div>
+              }
+            </div>
+          </div>
+          @if (isPoints) {
+            <div class="p-1">
+              <div>Points Remaining: {{ remainingPoints }}</div>
+              <div>
+                Average Remaining Cost:
+                {{ remainingPoints / remainingPokemon | number: "1.0-2" }}
               </div>
             </div>
+          }
+        </div>
+        <mat-tab-group
+          mat-stretch-tabs="false"
+          class="w-full h-full overflow-auto"
+          mat-align-tabs="start"
+        >
+          @if (!isMediumScreen) {
+            <mat-tab label="Team" class="hide-on-big">
+              <div class="flex-grow block min-h-0 p-1 overflow-y-auto">
+                <div
+                  class="sticky flex w-full space-x-3 font-semibold border-b-2 border-menu-300"
+                >
+                  <div class="w-1/6 h-full"></div>
+                  <div class="w-5/12">Name</div>
+                  <div class="w-1/6 text-xs text-center">Value</div>
+                  <div class="text-xs text-center w-1/8">Captain</div>
+                  <div class="text-xs text-center w-1/8">Drafted</div>
+                </div>
+                <div formArrayName="team" class="grid w-full grid-cols-1">
+                  <div
+                    *ngFor="
+                      let teamCtrl of teamFormArray.controls;
+                      let i = index
+                    "
+                    [formGroupName]="i"
+                    class="flex items-center space-y-1"
+                  >
+                    <div class="w-1/6 h-fit">
+                      <sprite
+                        [pokemon]="{
+                          id: teamCtrl.get('id')?.value,
+                          name: teamCtrl.get('name')?.value,
+                        }"
+                      ></sprite>
+                    </div>
+                    <div class="flex flex-col justify-center w-5/12 h-full p-2">
+                      <div
+                        class="w-full text-sm border rounded-lg text-ellipsis bg-menu-100"
+                        [ngClass]="minMaxStyle(i)"
+                      >
+                        <select-search
+                          (itemSelected)="resultSelected(teamCtrl, $event)"
+                          [items]="names"
+                          [startItem]="teamCtrl.value"
+                          placeholder="Select Pokemon"
+                        ></select-search>
+                      </div>
+                    </div>
+                    <div
+                      class="flex flex-col justify-center w-1/6 h-full p-1"
+                      *ngIf="!isPoints"
+                    >
+                      <input
+                        type="text"
+                        spellcheck="false"
+                        [ngClass]="minMaxStyle(i)"
+                        class="w-full px-1 py-1 font-semibold text-center border rounded-lg bg-menu-100"
+                        formControlName="tier"
+                      />
+                    </div>
+                    <div
+                      class="flex flex-col justify-center w-1/6 h-full p-1"
+                      *ngIf="isPoints"
+                    >
+                      <input
+                        type="number"
+                        placeholder="0"
+                        class="w-full px-1 py-1 text-center border rounded-lg bg-menu-100"
+                        [ngClass]="minMaxStyle(i)"
+                        formControlName="value"
+                      />
+                    </div>
+                    <div class="w-1/8">
+                      <input
+                        type="checkbox"
+                        class="w-full"
+                        formControlName="capt"
+                      />
+                    </div>
+                    <div class="w-1/8">
+                      <input
+                        type="checkbox"
+                        class="w-full"
+                        formControlName="drafted"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </mat-tab>
+          }
+          <mat-tab label="Summary">
+            <summary
+              class="h-full list-none"
+              *ngIf="summary"
+              [summary]="summary"
+            ></summary
+          ></mat-tab>
+          <mat-tab label="Typechart">
+            <typechart
+              class="h-full max-w-full"
+              *ngIf="typechart"
+              [typechart]="typechart"
+              [recommended]="recommended"
+            ></typechart
+          ></mat-tab>
+          <mat-tab label="Moves">
+            <moves
+              class="w-full overflow-y-auto"
+              *ngIf="movechart.length"
+              [movechart]="movechart"
+            ></moves> </mat-tab
+          ><mat-tab label="Coverage">
+            <planner-coverage
+              class="w-full overflow-y-auto"
+              *ngIf="movechart.length"
+              [coverage]="coverage"
+            ></planner-coverage
+          ></mat-tab>
+          <mat-tab label="Find">
             <finder-core
               class="h-full min-w-full overflow-y-auto"
-              *ngIf="tabSelected == 4"
               [rulesetId]="
                 getDraftFormGroup().get('ruleset')?.value || 'Gen9 NatDex'
               "
               [formatId]="getDraftFormGroup().get('format')?.value || 'Singles'"
             ></finder-core>
-          </div>
-        </div>
+          </mat-tab>
+        </mat-tab-group>
       </div>
     </div>
   </div>

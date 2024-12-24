@@ -1,19 +1,30 @@
 @use "@angular/material" as mat;
 
-html {
-  @include mat.theme(
-    (
-      color: mat.$violet-palette,
-      typography: Roboto,
-      density: 0,
-    )
-  );
-}
+// Define palettes
+$primary-palette: mat.m2-define-palette(mat.$m2-indigo-palette, 500);
+$accent-palette: mat.m2-define-palette(mat.$m2-pink-palette, A200);
+$warn-palette: mat.m2-define-palette(mat.$m2-red-palette);
 
-.example-bright-container {
-  @include mat.theme(
-    (
-      color: mat.$cyan-palette,
-    )
-  );
-}
+// Define light and dark themes
+$light-theme: mat.m2-define-light-theme(
+  (
+    color: (
+      primary: $primary-palette,
+      accent: $accent-palette,
+      warn: $warn-palette,
+    ),
+  )
+);
+
+$dark-theme: mat.m2-define-dark-theme(
+  (
+    color: (
+      primary: $primary-palette,
+      accent: $accent-palette,
+      warn: $warn-palette,
+    ),
+  )
+);
+
+// Include the themes
+@include mat.all-component-themes($light-theme);

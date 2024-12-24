@@ -6,7 +6,7 @@ import {
   trigger,
 } from '@angular/animations';
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import {
   AbstractControl,
   FormArray,
@@ -41,6 +41,7 @@ import { TypechartComponent } from './typechart/typechart.component';
 import { CopySVG } from '../images/svg-components/copy.component';
 import { DraftOverviewPath } from '../draft-overview/draft-overview-routing.module';
 import { PlannerCoverageComponent } from './coverage/coverage.component';
+import { MatTabsModule } from '@angular/material/tabs';
 
 type Planner = {
   summary: Summary;
@@ -57,6 +58,7 @@ type Planner = {
   selector: 'planner',
   standalone: true,
   templateUrl: './planner.component.html',
+  styleUrl: './planner.component.scss',
   imports: [
     CommonModule,
     RouterModule,
@@ -69,6 +71,7 @@ type Planner = {
     TrashSVG,
     GearSVG,
     SpriteComponent,
+    MatTabsModule,
     FinderCoreComponent,
     SelectSearchComponent,
     CompactSVG,
@@ -102,7 +105,6 @@ export class PlannerComponent implements OnInit {
     stats: { mean: {}, median: {}, max: {} },
   };
   coverage!: Coverage;
-  tabSelected = 0;
   selectedDraft = 0;
   formats: string[] = [];
   rulesets: string[] = [];
@@ -111,6 +113,7 @@ export class PlannerComponent implements OnInit {
   settings = true;
   draftPath = DraftOverviewPath;
   names = nameList();
+  isMediumScreen = false;
 
   constructor(
     private fb: FormBuilder,
@@ -150,6 +153,7 @@ export class PlannerComponent implements OnInit {
           ),
         ),
       });
+      this.isMediumScreen = window.innerWidth >= 768;
     }
 
     this.updateDetails();
@@ -410,12 +414,6 @@ export class PlannerComponent implements OnInit {
     ) as FormGroup;
   }
 
-  tabColor(tab: number) {
-    return tab == this.tabSelected
-      ? 'border-menu-400 bg-menu-200'
-      : 'border-menu-300 hover:bg-menu-200 bg-menu-100';
-  }
-
   minMaxStyle(i: number) {
     return i < this.getDraftFormGroup().get('min')?.value
       ? 'border-menu-500'
@@ -475,5 +473,10 @@ export class PlannerComponent implements OnInit {
     this.draftArray.push(draftCopy);
     this.selectedDraft = this.draftSize;
     this.updateDetails();
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: Event) {
+    this.isMediumScreen = window.innerWidth >= 768;
   }
 }
