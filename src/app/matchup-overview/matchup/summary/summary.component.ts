@@ -5,12 +5,20 @@ import { SpriteComponent } from '../../../images/sprite/sprite.component';
 import { Summary } from '../../matchup-interface';
 import { TeraComponent } from '../../../images/tera.component';
 import { ZSVG } from '../../../images/svg-components/z.component';
+import { Sort, MatSortModule } from '@angular/material/sort';
 
 @Component({
   selector: 'summary',
   standalone: true,
   templateUrl: './summary.component.html',
-  imports: [CommonModule, FormsModule, SpriteComponent, ZSVG, TeraComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    SpriteComponent,
+    ZSVG,
+    MatSortModule,
+    TeraComponent,
+  ],
 })
 export class SummaryComponent {
   _teams: Summary[] = [];
@@ -63,26 +71,31 @@ export class SummaryComponent {
     }
   }
 
-  sortByName() {
-    if ('name' != this.sortBy) {
-      this.sortBy = 'name';
-      this.reversed = true;
-      for (let team of this.teams) {
-        team.team.sort((x, y) => {
-          if (x['name'] > y['name']) {
-            return 1;
-          }
-          if (x['name'] < y['name']) {
-            return -1;
-          }
-          return 0;
-        });
-      }
-    } else {
-      for (let team of this.teams) {
-        team.team.reverse();
-      }
-      this.reversed = !this.reversed;
+  sortByName() {}
+
+  sortData(sort: Sort) {
+    if (!sort.active || sort.direction === '') return;
+    for (let team of this.teams) {
+      team.team.sort((a, b) => {
+        const isAsc = sort.direction === 'asc';
+        switch (sort.active) {
+          case 'name':
+            return compare(a.name, b.name, isAsc);
+          case 'hp':
+          case 'atk':
+          case 'def':
+          case 'spa':
+          case 'spd':
+          case 'spe':
+            return compare(
+              a.baseStats[sort.active],
+              b.baseStats[sort.active],
+              isAsc,
+            );
+          default:
+            return 0;
+        }
+      });
     }
   }
 
@@ -129,4 +142,8 @@ export class SummaryComponent {
       return 'bg-scale-negative-1 text-scale-negative-text';
     return;
   }
+}
+
+function compare(a: number | string, b: number | string, isAsc: boolean) {
+  return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
 }

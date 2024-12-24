@@ -14,6 +14,8 @@
 
   <div class="w-full overflow-x-auto border-4 border-menu-400">
     <table
+      matSort
+      (matSortChange)="sortData($event)"
       id="myOverview"
       class="rounded-md table-fixed w-min"
       [ngClass]="teamColor()"
@@ -24,102 +26,47 @@
         <th
           (click)="sortByName()"
           class="w-24 cursor-pointer hover:text-menu-200"
+          mat-sort-header="name"
         >
-          @if (sortBy == "name") {
-            @if (reversed) {
-              <div>Name ↧</div>
-            } @else {
-              <div>Name ↥</div>
-            }
-          } @else {
-            <div>Name</div>
-          }
+          Name
         </th>
         <th class="w-16 text-left">Types</th>
         <th class="w-20">Abilities</th>
         <th
-          (click)="sortByStat('hp')"
+          mat-sort-header="hp"
           class="w-12 cursor-pointer hover:text-menu-200"
         >
-          @if (sortBy == "hp") {
-            @if (reversed) {
-              <div>HP ↧</div>
-            } @else {
-              <div>HP ↥</div>
-            }
-          } @else {
-            <div>HP</div>
-          }
+          HP
         </th>
         <th
-          (click)="sortByStat('atk')"
           class="w-12 cursor-pointer hover:text-menu-200"
+          mat-sort-header="atk"
         >
-          @if (sortBy == "atk") {
-            @if (reversed) {
-              <div>ATK ↧</div>
-            } @else {
-              <div>ATK ↥</div>
-            }
-          } @else {
-            <div>ATK</div>
-          }
+          ATK
         </th>
         <th
-          (click)="sortByStat('def')"
           class="w-12 cursor-pointer hover:text-menu-200"
+          mat-sort-header="def"
         >
-          @if (sortBy == "def") {
-            @if (reversed) {
-              <div>DEF ↧</div>
-            } @else {
-              <div>DEF ↥</div>
-            }
-          } @else {
-            <div>DEF</div>
-          }
+          DEF
         </th>
         <th
-          (click)="sortByStat('spa')"
           class="w-12 cursor-pointer hover:text-menu-200"
+          mat-sort-header="spa"
         >
-          @if (sortBy == "spa") {
-            @if (reversed) {
-              <div>SPA ↧</div>
-            } @else {
-              <div>SPA ↥</div>
-            }
-          } @else {
-            <div>SPA</div>
-          }
+          SPA
         </th>
         <th
-          (click)="sortByStat('spd')"
           class="w-12 cursor-pointer hover:text-menu-200"
+          mat-sort-header="spd"
         >
-          @if (sortBy == "spd") {
-            @if (reversed) {
-              <div>SPD ↧</div>
-            } @else {
-              <div>SPD ↥</div>
-            }
-          } @else {
-            <div>SPD</div>
-          }
+          SPD
         </th>
         <th
-          (click)="sortByStat('spe')"
           class="w-12 cursor-pointer hover:text-menu-200"
+          mat-sort-header="spe"
         >
-          @if (sortBy == "spe") {
-            @if (reversed) {
-              <div>SPE ↧</div>
-            } @else {
-              <div>SPE ↥</div>
-            }
-          } @else {
-            <div>SPE</div>
-          }
+          SPE
         </th>
       </tr>
       @for (pokemon of teams[selectedTeam].team; track $index) {
