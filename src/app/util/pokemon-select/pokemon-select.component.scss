@@ -1,0 +1,16 @@
+.pokemon-option {
+  display: flex;
+  align-items: center;
+  width: auto;
+  gap: 0.5rem;
+
+  sprite {
+    object-fit: contain;
+    height: 1.5em;
+    width: auto;
+  }
+  span {
+    font-size: 1em;
+    line-height: 1;
+  }
+}
