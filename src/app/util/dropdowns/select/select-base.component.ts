@@ -1,32 +1,25 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  EventEmitter,
-  HostListener,
-  Input,
-  Output,
-} from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ControlValueAccessor } from '@angular/forms';
-import { isPartialMatch } from '../..';
 
 @Component({
   standalone: true,
   imports: [CommonModule],
   template: '',
 })
-export class SelectBaseComponent<T> implements ControlValueAccessor {
-  private _items: { name: string; value: T; icon?: string }[] = [];
+export class SelectBaseComponent<T extends { name: string }>
+  implements ControlValueAccessor
+{
+  private _items: T[] = [];
 
   @Input()
-  set items(value: (string | { name: string; value: T; icon?: string })[]) {
+  set items(value: (string | T)[]) {
     this._items = value.map((item) =>
-      typeof item === 'object' && 'name' in item
-        ? item
-        : { name: String(item), value: item as T },
+      typeof item === 'string' ? ({ name: String(item) } as T) : item,
     );
   }
 
-  get items(): { name: string; value: T }[] {
+  get items(): T[] {
     return this._items;
   }
 
@@ -35,26 +28,23 @@ export class SelectBaseComponent<T> implements ControlValueAccessor {
   @Input() class: string = '';
   @Output() itemSelected = new EventEmitter<T | null>();
 
-  private _selectedItem: { name: string; value: T; icon?: string } | null =
-    null;
+  private _selectedItem: T | null = null;
   @Input()
-  set startItem(item: Partial<T> | null) {
+  set startItem(item: string | T | null) {
     if (item) {
       this._selectedItem =
-        this.items.find((e) => isPartialMatch(e.value, item)) ?? null;
+        this.items.find((e) => {
+          if (typeof item === 'string') return e.name === item;
+          else return e.name === item.name;
+        }) ?? null;
     }
   }
 
-  set selectedItem(item: T | { name: string; value: T; icon?: string } | null) {
-    this._selectedItem =
-      item === null
-        ? null
-        : typeof item === 'object' && 'name' in item && 'value' in item
-          ? item
-          : { name: String(item), value: item as T };
+  set selectedItem(item: T | null) {
+    this._selectedItem = item;
   }
 
-  get selectedItem(): { name: string; value: T; icon?: string } | null {
+  get selectedItem(): T | null {
     return this._selectedItem;
   }
 
@@ -78,24 +68,24 @@ export class SelectBaseComponent<T> implements ControlValueAccessor {
     SelectBaseComponent.openFilter = null;
   }
 
-  selectItem(item: { name: string; value: T; icon?: string } | null) {
+  selectItem(item: T | null) {
     this.selectedItem = item;
     this.closeDropdown();
     if (item) {
-      this.onChange(item.value);
-      this.itemSelected.emit(item.value);
+      this.onChange(item);
+      this.itemSelected.emit(item);
     } else {
       this.onChange(null);
       this.itemSelected.emit(null);
     }
   }
 
-  @HostListener('document:click', ['$event'])
-  clickOutside(event: MouseEvent) {
-    if (!(event.target as HTMLElement).closest('.filter-container')) {
-      this.isOpen = false;
-    }
-  }
+  // @HostListener('document:click', ['$event'])
+  // clickOutside(event: MouseEvent) {
+  //   if (!(event.target as HTMLElement).closest('.filter-container')) {
+  //     this.isOpen = false;
+  //   }
+  // }
 
   calculateDynamicHeight(itemCount: number, itemSize: number): string {
     return `${Math.min(itemCount * itemSize, 256)}px`;
@@ -107,13 +97,7 @@ export class SelectBaseComponent<T> implements ControlValueAccessor {
   writeValue(value: T): void {
     this.selectedItem =
       this.items.find((item) => {
-        if (typeof item.value === 'object') {
-          return (
-            JSON.stringify(item.value).toLowerCase() ===
-            JSON.stringify(value).toLowerCase()
-          );
-        }
-        return item.value === value;
+        return item.name === value.name;
       }) ?? value;
   }
 

@@ -1,0 +1,35 @@
+<div class="p-2 flex w-full h-full space-x-2">
+  <div class="w-192 h-full border-2 p-2 rounded-lg">
+    <teambuilder-pokemon [showBoosts]="true"></teambuilder-pokemon>
+  </div>
+  <div class="overflow-y-auto h-full border-2 p-1 rounded-lg">
+    <table
+      class="table-fix"
+      matSort
+      matSort
+      matSortActive="num"
+      matSortDirection="desc"
+      matSortDisableClear
+      (matSortChange)="sortData($event)"
+    >
+      <tr>
+        <th mat-sort-header="num">#</th>
+        <th></th>
+        <th mat-sort-header="name">Name</th>
+      </tr>
+      @for (opp of patList; track $index) {
+        <tr
+          (click)="selectedOpponent = opp.pokemon"
+          [ngClass]="{
+            'border-2 px-1 border-menu-300 rounded':
+              selectedOpponent?.name === opp.pokemon.name,
+          }"
+        >
+          <td>{{ opp.rank }}</td>
+          <td class="w-12"><sprite [pokemon]="opp.pokemon"></sprite></td>
+          <td>{{ opp.pokemon.name }}</td>
+        </tr>
+      }
+    </table>
+  </div>
+</div>

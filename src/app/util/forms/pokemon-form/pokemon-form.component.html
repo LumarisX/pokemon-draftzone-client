@@ -29,7 +29,7 @@
           class="w-full rounded-lg text-medium border-2 {{
             'border-' + color + (colorValue ? '-' + colorValue : '')
           }}"
-          [startItem]="{ id: pokemonForm.value.id }"
+          [startItem]="pokemonForm.value"
           (itemSelected)="resultSelected($event)"
         ></select-search>
         @if (

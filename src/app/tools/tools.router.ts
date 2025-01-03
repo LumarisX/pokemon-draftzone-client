@@ -7,6 +7,7 @@ import { ReplayComponent } from './replay_analyzer/replay.component';
 import { TeamBuilderComponent } from './teambuilder/teambuilder.component';
 import { TimeConverterComponent } from './time_converter/time_converter.component';
 import { ToolsComponent } from './tools.component';
+import { SetAnalyzerComponent } from './set-analyzer/set-analyzer.component';
 const routes: Routes = [
   {
     path: 'tools',
@@ -23,6 +24,10 @@ const routes: Routes = [
   {
     path: 'tools/pokemon-search',
     component: FinderToolComponent,
+  },
+  {
+    path: 'tools/set-analyzer',
+    component: SetAnalyzerComponent,
   },
   {
     path: 'tools/teambuilder',

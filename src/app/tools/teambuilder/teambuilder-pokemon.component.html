@@ -1,235 +1,290 @@
-<div class="w-8">
-  <sprite [pokemon]="{ id: pokemon.id, name: pokemon.name }"></sprite>
-</div>
-<div class="max-w-lg">
-  <mat-tab-group>
-    <mat-tab label="Info">
-      <div class="space-x-1">
-        <label for="ability">Ability</label>
-        <select-no-search
-          [items]="pokemon.abilities"
-          [placeholder]="'Sel ect an ability'"
-          [startItem]="pokemon.ability"
-        ></select-no-search>
-      </div>
-      <div class="space-x-1">
-        <label for="item">Item</label>
-        <input [(ngModel)]="pokemon.item" id="item" class="border p-1" />
-      </div>
-      <div class="space-x-1">
-        <label for="tera">Tera Type</label>
-        <input [(ngModel)]="pokemon.teraType" id="tera" class="border p-1" />
-      </div>
-      <div class="space-x-1">
-        <label for="level">Level</label>
-        <input
-          [(ngModel)]="pokemon.level"
-          type="number"
-          min="1"
-          max="100"
-          id="level"
-          class="border p-1"
-        />
-      </div>
-      <div class="space-x-1">
-        <label for="nature">Nature</label>
-        <div id="nature" class="border max-w-96 w-full rounded">
-          <select-search
-            [items]="natures"
-            placeholder="Select a nature"
-            [startItem]="pokemon.nature"
-            [headers]="[
-              {
-                title: 'Boost',
-                key: 'boost',
-                type: 'text',
-              },
-              {
-                title: 'Drop',
-                key: 'drop',
-                type: 'text',
-              },
-            ]"
-            (itemSelected)="pokemon.nature = $event ? $event : pokemon.nature"
-          ></select-search>
-        </div>
-      </div>
-    </mat-tab>
-    <mat-tab label="Moves">
-      <div>
-        <label for="moves">Moves</label>
-        <div id="moves" class="flex flex-col space-y-1">
-          <!-- <div id="move1" class="border max-w-md w-full rounded">
-            <select-search
-              [items]="pokemon.getLearnset()"
-              [placeholder]="'Select a move'"
-              [headers]="[
-                {
-                  title: 'Power',
-                  key: 'basePower',
-                  type: 'text',
-                },
-                {
-                  title: 'Accuracy',
-                  key: 'accuracy',
-                  type: 'text',
-                },
-                {
-                  title: 'Type',
-                  key: 'typePath',
-                  type: 'imgPath',
-                },
-                {
-                  title: 'Category',
-                  key: 'categoryPath',
-                  type: 'imgPath',
-                },
-              ]"
-              (itemSelected)="pokemon.moves[0] = $event"
+<div class="h-full flex flex-col">
+  <div class="flex flex-grow-0">
+    <pokemon-select (pokemonSelected)="pokemon = $event"></pokemon-select>
+  </div>
+  @if (pokemon) {
+    <div class="w-full flex-grow">
+      <mat-tab-group>
+        <mat-tab label="Info">
+          <mat-form-field>
+            <mat-label>Ability</mat-label>
+            <mat-select [(ngModel)]="pokemon.set.ability" name="ability">
+              @for (ability of pokemon.abilities; track ability) {
+                <mat-option [value]="ability">{{ ability }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Item</mat-label>
+            <mat-select [(ngModel)]="pokemon.set.item" name="item">
+              @for (item of pokemon.items; track item) {
+                <mat-option [value]="item">
+                  {{ item.name }}
+                </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Tera Type</mat-label>
+            <mat-select [(ngModel)]="pokemon.set.teraType" name="teratype">
+              <mat-select-trigger>
+                <div class="tera-option">
+                  <img
+                    [src]="
+                      '../../../assets/icons/tera_types/Tera' +
+                      pokemon.set.teraType +
+                      '.png'
+                    "
+                  />
+                  {{ pokemon.set.teraType }}
+                </div></mat-select-trigger
+              >
+              @for (type of teraTypes; track type) {
+                <mat-option [value]="type">
+                  <div class="tera-option">
+                    <img
+                      [src]="
+                        '../../../assets/icons/tera_types/Tera' + type + '.png'
+                      "
+                    />{{ type }}
+                  </div>
+                </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Level</mat-label>
+            <input
+              matInput
+              type="number"
+              min="1"
+              max="100"
+              [(ngModel)]="pokemon.set.level"
+            />
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Nature</mat-label>
+            <mat-select [(ngModel)]="pokemon.set.nature" name="ability">
+              @for (nature of natures; track nature) {
+                <mat-option [value]="nature.name">
+                  {{ nature.name }}
+                </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </mat-tab>
+        <mat-tab label="Moves">
+          <div>
+            <label for="moves">Moves</label>
+            <!-- <div id="moves" class="flex flex-col space-y-1">
+              <div id="move1" class="border max-w-md w-full rounded">
+                <select-search
+                  [items]="pokemon.moveList"
+                  [placeholder]="'Select a move'"
+                  [headers]="[
+                    {
+                      title: 'Power',
+                      key: 'basePower',
+                      type: 'text',
+                    },
+                    {
+                      title: 'Accuracy',
+                      key: 'accuracy',
+                      type: 'text',
+                    },
+                    {
+                      title: 'Type',
+                      key: 'typePath',
+                      type: 'imgPath',
+                    },
+                    {
+                      title: 'Category',
+                      key: 'categoryPath',
+                      type: 'imgPath',
+                    },
+                  ]"
+                  (itemSelected)="pokemon.set.moves[0] = $event?.name ?? null"
+                >
+                </select-search>
+              </div>
+              <div id="move2" class="border max-w-md w-full rounded">
+                <select-search
+                  [items]="pokemon.moveList"
+                  [placeholder]="'Select a move'"
+                  [headers]="[
+                    {
+                      title: 'Power',
+                      key: 'basePower',
+                      type: 'text',
+                    },
+                    {
+                      title: 'Accuracy',
+                      key: 'accuracy',
+                      type: 'text',
+                    },
+                    {
+                      title: 'Type',
+                      key: 'typePath',
+                      type: 'imgPath',
+                    },
+                    {
+                      title: 'Category',
+                      key: 'categoryPath',
+                      type: 'imgPath',
+                    },
+                  ]"
+                  (itemSelected)="pokemon.set.moves[1] = $event?.name ?? null"
+                ></select-search>
+              </div>
+              <div id="move3" class="border max-w-md w-full rounded">
+                <select-search
+                  [items]="pokemon.moveList"
+                  [placeholder]="'Select a move'"
+                  [headers]="[
+                    {
+                      title: 'Power',
+                      key: 'basePower',
+                      type: 'text',
+                    },
+                    {
+                      title: 'Accuracy',
+                      key: 'accuracy',
+                      type: 'text',
+                    },
+                    {
+                      title: 'Type',
+                      key: 'typePath',
+                      type: 'imgPath',
+                    },
+                    {
+                      title: 'Category',
+                      key: 'categoryPath',
+                      type: 'imgPath',
+                    },
+                  ]"
+                  (itemSelected)="pokemon.set.moves[2] = $event?.name ?? null"
+                ></select-search>
+              </div>
+              <div id="move4" class="border max-w-md w-full rounded">
+                <select-search
+                  [items]="pokemon.moveList"
+                  [placeholder]="'Select a move'"
+                  [headers]="[
+                    {
+                      title: 'Power',
+                      key: 'basePower',
+                      type: 'text',
+                    },
+                    {
+                      title: 'Accuracy',
+                      key: 'accuracy',
+                      type: 'text',
+                    },
+                    {
+                      title: 'Type',
+                      key: 'typePath',
+                      type: 'imgPath',
+                    },
+                    {
+                      title: 'Category',
+                      key: 'categoryPath',
+                      type: 'imgPath',
+                    },
+                  ]"
+                  (itemSelected)="pokemon.set.moves[3] = $event?.name ?? null"
+                ></select-search>
+              </div>
+            </div> -->
+          </div>
+          <mat-form-field class="example-full-width">
+            <mat-label>Move</mat-label>
+            <input
+              type="text"
+              placeholder="Pick one"
+              aria-label="Moves"
+              matInput
+              [matAutocomplete]="auto"
+            />
+            <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+              <mat-option
+                *ngFor="let move of pokemon.moveList"
+                [value]="move.value"
+              >
+                <div class="flex justify-between w-full">
+                  <div>{{ move.name }}</div>
+                  <div>{{ move.accuracy }}</div>
+                  <div><img [src]="move.typePath" /></div>
+                  <div><img [src]="move.categoryPath" /></div>
+                </div>
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+        </mat-tab>
+        <mat-tab label="Stats">
+          <div>
+            @for (stat of stats; track $index) {
+              <label [for]="stat.id">{{ stat.full }}</label>
+              <div [id]="stat.id" class="flex items-center">
+                <label [for]="stat + 'evs'">EVs</label>
+                <input
+                  [(ngModel)]="pokemon.set.evs[stat.id]"
+                  [id]="stat.id + 'evs'"
+                  min="0"
+                  max="252"
+                  step="4"
+                  type="number"
+                  class="border p-1"
+                />
+                <label [for]="stat.id + 'ivs'">IVs</label>
+                <input
+                  [(ngModel)]="pokemon.set.ivs[stat.id]"
+                  [id]="stat.id + 'ivs'"
+                  min="0"
+                  max="31"
+                  type="number"
+                  class="border p-1"
+                />
+                <div>{{ pokemon.set[stat.id] }}</div>
+                @if (showBoosts && pokemon.set.boosts[stat.id] !== undefined) {
+                  <label [for]="stat.id + 'stage'">Stage</label>
+                  <input
+                    [(ngModel)]="pokemon.set.boosts[stat.id]"
+                    [id]="stat.id + 'stage'"
+                    min="-6"
+                    max="6"
+                    type="number"
+                    class="border p-1"
+                  />
+                  <div>{{ pokemon.set[stat.id] }}</div>
+                }
+              </div>
+            }
+          </div>
+        </mat-tab>
+        <mat-tab label="Import/Export">
+          <div class="p-2 space-y-2">
+            <button
+              mat-raised-button
+              class="rounded-full"
+              (click)="import(pokemondata.value)"
             >
-            </select-search>
+              Import
+            </button>
+
+            <mat-form-field class="w-full">
+              <mat-label>Showdown Data</mat-label>
+              <textarea
+                class="w-full"
+                matInput
+                #pokemondata
+                spellcheck="false"
+                [value]="pokemon.set.export()"
+              >
+              </textarea>
+            </mat-form-field>
           </div>
-          <div id="move2" class="border max-w-md w-full rounded">
-            <select-search
-              [items]="pokemon.getLearnset()"
-              [placeholder]="'Select a move'"
-              [headers]="[
-                {
-                  title: 'Power',
-                  key: 'basePower',
-                  type: 'text',
-                },
-                {
-                  title: 'Accuracy',
-                  key: 'accuracy',
-                  type: 'text',
-                },
-                {
-                  title: 'Type',
-                  key: 'typePath',
-                  type: 'imgPath',
-                },
-                {
-                  title: 'Category',
-                  key: 'categoryPath',
-                  type: 'imgPath',
-                },
-              ]"
-              (itemSelected)="pokemon.moves[1] = $event"
-            ></select-search>
-          </div>
-          <div id="move3" class="border max-w-md w-full rounded">
-            <select-search
-              [items]="pokemon.getLearnset()"
-              [placeholder]="'Select a move'"
-              [headers]="[
-                {
-                  title: 'Power',
-                  key: 'basePower',
-                  type: 'text',
-                },
-                {
-                  title: 'Accuracy',
-                  key: 'accuracy',
-                  type: 'text',
-                },
-                {
-                  title: 'Type',
-                  key: 'typePath',
-                  type: 'imgPath',
-                },
-                {
-                  title: 'Category',
-                  key: 'categoryPath',
-                  type: 'imgPath',
-                },
-              ]"
-              (itemSelected)="pokemon.moves[2] = $event"
-            ></select-search>
-          </div>
-          <div id="move4" class="border max-w-md w-full rounded">
-            <select-search
-              [items]="pokemon.getLearnset()"
-              [placeholder]="'Select a move'"
-              [headers]="[
-                {
-                  title: 'Power',
-                  key: 'basePower',
-                  type: 'text',
-                },
-                {
-                  title: 'Accuracy',
-                  key: 'accuracy',
-                  type: 'text',
-                },
-                {
-                  title: 'Type',
-                  key: 'typePath',
-                  type: 'imgPath',
-                },
-                {
-                  title: 'Category',
-                  key: 'categoryPath',
-                  type: 'imgPath',
-                },
-              ]"
-              (itemSelected)="pokemon.moves[3] = $event"
-            ></select-search>
-          </div> -->
-        </div>
-      </div>
-      <mat-form-field class="example-full-width">
-        <mat-label>Move</mat-label>
-        <input
-          type="text"
-          placeholder="Pick one"
-          aria-label="Moves"
-          matInput
-          [matAutocomplete]="auto"
-        />
-        <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-          <mat-option
-            *ngFor="let move of pokemon.moveList"
-            [value]="move.value"
-          >
-            <div class="flex justify-between w-full">
-              <div>{{ move.name }}</div>
-              <div>{{ move.accuracy }}</div>
-              <div><img [src]="move.typePath" /></div>
-              <div><img [src]="move.categoryPath" /></div>
-            </div>
-          </mat-option>
-        </mat-autocomplete>
-      </mat-form-field>
-    </mat-tab>
-    <mat-tab label="Stats">
-      <div>
-        @for (stat of stats; track $index) {
-          <label [for]="stat">{{ stat | uppercase }}</label>
-          <div [id]="stat" class="flex items-center">
-            <label [for]="stat + 'evs'">EVs</label>
-            <input
-              [(ngModel)]="pokemon.evs[stat]"
-              [id]="stat + 'evs'"
-              min="0"
-              max="252"
-              step="4"
-              type="number"
-              class="border p-1"
-            />
-            <label [for]="stat + 'ivs'">IVs</label>
-            <input
-              [(ngModel)]="pokemon.ivs[stat]"
-              [id]="stat + 'ivs'"
-              min="0"
-              max="31"
-              type="number"
-              class="border p-1"
-            />
-            <div>{{ pokemon.calcStat(stat) }}</div>
-          </div>
-        }
-      </div>
-    </mat-tab>
-  </mat-tab-group>
+        </mat-tab>
+      </mat-tab-group>
+    </div>
+  }
 </div>

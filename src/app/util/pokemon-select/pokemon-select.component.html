@@ -1,5 +1,10 @@
 <form>
   <mat-form-field>
+    @if (selectedForm.value && typeof selectedForm.value !== "string") {
+      <div matPrefix class="selected-sprite">
+        <sprite [flipped]="true" [pokemon]="selectedForm.value"></sprite>
+      </div>
+    }
     <mat-label>Pokemon</mat-label>
     <input
       type="text"
@@ -9,10 +14,9 @@
       matInput
       [formControl]="selectedForm"
       [matAutocomplete]="auto"
-      [(ngModel)]="selected"
       [disabled]="isDisabled"
     />
-    @if (selected) {
+    @if (selectedForm.value) {
       <button
         type="button"
         matSuffix

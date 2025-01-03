@@ -6,11 +6,18 @@
 
   sprite {
     object-fit: contain;
-    height: 1.5em;
+    height: 2em;
     width: auto;
   }
+
   span {
     font-size: 1em;
     line-height: 1;
   }
+}
+
+.selected-sprite {
+  object-fit: contain;
+  height: 2.5em;
+  width: auto;
 }

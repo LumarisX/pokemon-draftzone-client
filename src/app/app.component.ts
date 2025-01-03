@@ -1,7 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
+import { MatIconRegistry } from '@angular/material/icon';
+import { DomSanitizer } from '@angular/platform-browser';
 import { AuthService } from './auth/auth0.service';
-import { SettingsService } from './pages/settings/settings.service';
 import { DraftOverviewPath } from './draft-overview/draft-overview-routing.module';
+import { svgIcons } from './images/icons';
+import { SettingsService } from './pages/settings/settings.service';
 
 @Component({
   selector: 'app-root',
@@ -41,7 +44,16 @@ export class AppComponent implements OnInit {
   constructor(
     public auth: AuthService,
     private settingsService: SettingsService,
-  ) {}
+  ) {
+    const iconRegistry = inject(MatIconRegistry);
+    const sanitizer = inject(DomSanitizer);
+    Object.entries(svgIcons).forEach(([name, data]) => {
+      iconRegistry.addSvgIconLiteral(
+        name,
+        sanitizer.bypassSecurityTrustHtml(data),
+      );
+    });
+  }
 
   ngOnInit(): void {
     if (!localStorage.getItem('shinyunlocked')) {

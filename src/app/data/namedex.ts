@@ -31,20 +31,17 @@ export function getNameByPid(id: PokemonId): string {
   return Namedex[id].name[0];
 }
 
-let $nameList: { name: string; value: Pokemon }[] | undefined;
-export function nameList(): { name: string; value: Pokemon }[] {
+let $nameList: Pokemon[] | undefined;
+export function nameList(): Pokemon[] {
   if ($nameList) return $nameList;
   return ($nameList = Object.entries(Namedex)
     .map((e) => ({
       name: e[1].name[0],
-      value: {
-        name: e[1].name[0],
-        id: e[0],
-      },
+      id: e[0],
     }))
     .sort((x, y) => {
-      if (x.value.id < y.value.id) return -1;
-      if (x.value.id > y.value.id) return 1;
+      if (x.id < y.id) return -1;
+      if (x.id > y.id) return 1;
       return 0;
     }));
 }

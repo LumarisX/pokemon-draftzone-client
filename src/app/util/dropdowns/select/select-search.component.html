@@ -64,7 +64,7 @@
             *cdkVirtualFor="let item of filteredItems"
             class="ml-2 mr-1 rounded flex justify-between items-center px-1 cursor-pointer hover:bg-menu-200"
             [ngClass]="{
-              'bg-menu-200': selectedItem && selectedItem.value === item.value,
+              'bg-menu-200': selectedItem && selectedItem.name === item.name,
             }"
             (click)="selectItem(item)"
           >
@@ -143,7 +143,7 @@
             *cdkVirtualFor="let item of filteredItems"
             class="mx-2 rounded flex justify-between items-center text-lg py-0.5 px-1 cursor-pointer hover:bg-menu-200"
             [ngClass]="{
-              'bg-menu-200': selectedItem && selectedItem.value === item.value,
+              'bg-menu-200': selectedItem && selectedItem.name === item.name,
             }"
             (click)="selectItem(item)"
           >

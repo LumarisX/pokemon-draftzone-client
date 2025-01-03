@@ -1,11 +1,23 @@
-import { StatsTable, TeraType, Type } from '../../data';
+import { Nature, Stat, StatsTable, TeraType, Type } from '../../data';
 import { Pokemon } from '../../interfaces/draft';
 
-export type TeambuilderPokemon = Pokemon & {
-  abilities: string[];
+type Item = {
+  value: string;
+  pngId: string;
+  name: string;
+  desc: string;
+  tags: string[];
+};
+
+type PokemonData = Pokemon & {
   types: [Type] | [Type, Type];
   baseStats: StatsTable;
+};
+
+export type TeambuilderPokemon = {
+  abilities: string[];
   learnset: {
+    id: string;
     name: string;
     type: Type;
     category: string;
@@ -13,39 +25,20 @@ export type TeambuilderPokemon = Pokemon & {
     basePower: number;
     accuracy: number | true;
   }[];
-  requiredItem?: string;
-  requiredAbility?: string;
-  requiredItems?: string[];
-  requiredMove?: string;
-  forceTeraType?: TeraType;
+  data: PokemonData;
+  items: Item[];
 };
 
-export class PokemonBuilder implements TeambuilderPokemon {
-  newStats = {
-    hp: {
-      _ev: 0,
-      set ev(value) {
-        this._ev = value;
-      },
-      get ev() {
-        return this._ev;
-      },
-      _iv: 31,
-      set iv(value) {
-        this._iv = value;
-      },
-      get iv() {
-        return this._iv;
-      },
-      _stat: 31,
-      set stat(value) {
-        this._stat = value;
-      },
-      get stat() {
-        return this._stat;
-      },
-    },
-  };
+export class PokemonSet implements PokemonData {
+  id!: string;
+  name!: string;
+  level: number;
+  baseStats!: StatsTable;
+  types!: [Type] | [Type, Type];
+  nature: Nature | null = null;
+  nickname: string = '';
+  item: Item | null = null;
+  teraType: TeraType;
   ivs: StatsTable = {
     hp: 31,
     atk: 31,
@@ -62,14 +55,20 @@ export class PokemonBuilder implements TeambuilderPokemon {
     spd: 0,
     spe: 0,
   };
-  gender: '' = '';
-  level: number = 100;
-  happiness = 255;
-  hiddenpower: string = 'Dark';
+  boosts: Partial<StatsTable> = {
+    atk: 0,
+    def: 0,
+    spa: 0,
+    spd: 0,
+    spe: 0,
+  };
+  gender: '' | 'M' | 'F' = '';
+  happiness: number = 255;
+  hiddenpower: Type = 'Dark';
   gmax: boolean = false;
   shiny: boolean = false;
-  name: string = '';
-  nature: string = '';
+  dynamaxLevel: number = 255;
+  gigantamax: boolean = false;
   moves: [string | null, string | null, string | null, string | null] = [
     null,
     null,
@@ -77,14 +76,100 @@ export class PokemonBuilder implements TeambuilderPokemon {
     null,
   ];
   ability: string = '';
-  item: string = '';
-  teraType: string = '';
-  nickname: string = '';
-  id: string = '';
-  capt?: { tera?: string[]; z?: boolean } | undefined;
+
+  constructor(data: PokemonData & Partial<PokemonSet>) {
+    Object.assign(this, data);
+    this.level = data.level && data.level > 0 ? data.level : 100;
+    this.teraType = this.types[0];
+  }
+
+  get hp() {
+    return (
+      Math.floor(
+        ((2 * this.baseStats.hp + this.ivs.hp + Math.floor(this.evs.hp / 4)) *
+          this.level) /
+          100,
+      ) +
+      this.level +
+      10
+    );
+  }
+  get atk() {
+    return this.calcStat('atk');
+  }
+  get def() {
+    return this.calcStat('def');
+  }
+  get spa() {
+    return this.calcStat('spa');
+  }
+  get spd() {
+    return this.calcStat('spd');
+  }
+  get spe() {
+    return this.calcStat('spe');
+  }
+
+  private calcStat(stat: 'atk' | 'spa' | 'def' | 'spd' | 'spe') {
+    return Math.floor(
+      (Math.floor(
+        ((2 * this.baseStats[stat] +
+          this.ivs[stat] +
+          Math.floor(this.evs[stat] / 4)) *
+          this.level) /
+          100,
+      ) +
+        5) *
+        1 +
+        (this.nature?.boost === stat ? 0.1 : 0) -
+        (this.nature?.drop === stat ? 0.1 : 0),
+    );
+  }
+
+  export() {
+    let text = '';
+    if (this.nickname != '' && this.nickname !== this.name)
+      text += `${this.nickname} (${this.name})`;
+    else text += `${this.name}`;
+    if (this.gender === 'M') text += ` (M)`;
+    if (this.gender === 'F') text += ` (F)`;
+    if (this.item) text += ` @ ${this.item.name}`;
+    text += `  \n`;
+    if (this.ability) text += `Ability: ${this.ability}  \n`;
+    for (let move of this.moves) {
+      if (move && move.substring(0, 13) === 'Hidden Power ') {
+        const hpType = move.slice(13);
+        move = move.slice(0, 13);
+        move = `${move}[${hpType}]`;
+      }
+      if (move) text += `- ${move}  \n`;
+    }
+    const evString = Object.entries(this.evs)
+      .filter((stat) => stat[1] > 0)
+      .map((stat) => `${stat[1]} ${stat[0].toUpperCase()}`)
+      .join(` / `);
+    if (evString != '') text += `EVs: ${evString} \n`;
+    if (this.nature) text += `${this.nature.name} Nature  \n`;
+    const ivString = Object.entries(this.ivs)
+      .filter((stat) => stat[1] < 31)
+      .map((stat) => `${stat[1]} ${stat[0].toUpperCase()}`)
+      .join(` / `);
+    if (ivString != '') text += `IVs: ${ivString} \n`;
+    if (this.level !== 100) text += `Level: ${this.level}  \n`;
+    if (this.shiny) text += `Shiny: Yes  \n`;
+    if (this.happiness !== 255) text += `Happiness: ${this.happiness}  \n`;
+    if (this.dynamaxLevel !== 255)
+      text += `Dynamax Level: ${this.dynamaxLevel}  \n`;
+    if (this.gigantamax) text += `Gigantamax: Yes  \n`;
+    text += `\n`;
+    return text;
+  }
+}
+
+export class PokemonBuilder {
+  items: Item[] = [];
   abilities!: string[];
-  types!: [Type] | [Type, Type];
-  baseStats!: StatsTable;
+  set: PokemonSet;
   learnset!: {
     id: string;
     name: string;
@@ -102,19 +187,15 @@ export class PokemonBuilder implements TeambuilderPokemon {
     typePath: string;
     categoryPath: string;
   }[];
-  requiredItem?: string;
-  requiredAbility?: string;
-  requiredItems?: string[];
-  requiredMove?: string;
-  forceTeraType?: TeraType;
 
-  constructor(
-    pokemon: TeambuilderPokemon,
-    options: Partial<PokemonBuilder> = {},
-  ) {
-    this.ability = pokemon.abilities[0];
-    Object.assign(this, pokemon);
-    Object.assign(this, options);
+  constructor(pokemon: TeambuilderPokemon) {
+    this.abilities = pokemon.abilities;
+    this.set = new PokemonSet({
+      ...pokemon.data,
+      ability: this.abilities[0],
+    });
+    this.learnset = pokemon.learnset;
+    this.items = pokemon.items;
     this.moveList = this.learnset.map((move) => ({
       name: move.name,
       value: move.id,
@@ -125,68 +206,27 @@ export class PokemonBuilder implements TeambuilderPokemon {
     }));
   }
 
-  calcStat(stat: keyof StatsTable) {
-    const core = Math.floor(
-      ((2 * this.baseStats[stat] +
-        this.ivs[stat] +
-        Math.floor(this.evs[stat] / 4)) *
-        this.level) /
-        100,
-    );
-    if (stat === 'hp') return core + this.level + 10;
-    else return Math.floor((core + 5) * 1);
-  }
-
-  toPacked() {
-    return [
-      this.nickname,
-      this.id,
-      this.item,
-      this.ability,
-      this.moves.join(','),
-      this.nature,
-      Object.values(this.evs).join(','),
-      this.gender,
-      Object.values(this.ivs).join(','),
-      this.shiny ? 'S' : '',
-      this.level,
-      [
-        this.happiness,
-        '',
-        this.hiddenpower,
-        this.gmax ? 'G' : '',
-        '',
-        this.teraType,
-      ].join(','),
-    ].join('|');
-  }
-
-  toExport() {
-    let string: string;
-    if (this.nickname) {
-      string = `${this.nickname} (${this.id})`;
-    } else {
-      string = `${this.id}`;
-    }
-    if (this.gender != '') string += ` (${this.gender})`;
-    if (this.item != '') string += ` @ ${this.item}`;
-    string += '\n';
-    if (this.ability) string += `Ability: ${this.ability}\n`;
-    if (this.level < 100 && this.level > 0) string += `Level: ${this.level}\n`;
-    if (this.teraType != '') string += `Tera Type: ${this.teraType}\n`;
-    let evs = Object.entries(this.evs)
-      .filter((stat) => stat[1] <= 252 && stat[1] > 0)
-      .map((stat) => `${stat[1]} ${stat[0]}`);
-    if (evs.length > 0) string += `EVs: ${evs.join(' / ')}\n`;
-    if (this.nature != '') string += `${this.nature} Nature\n`;
-    let ivs = Object.entries(this.ivs)
-      .filter((stat) => stat[1] < 31 && stat[1] >= 0)
-      .map((stat) => `${stat[1]} ${stat[0]}`);
-    if (ivs.length > 0) string += `IVs: ${ivs.join(' / ')}\n`;
-    let moves = this.moves.filter((move) => move != '');
-    moves.forEach((move) => {
-      string += `- ${move}\n`;
-    });
-    return string;
-  }
+  // toPacked() {
+  //   return [
+  //     this.nickname,
+  //     this.id,
+  //     this.item,
+  //     this.ability,
+  //     this.moves.join(','),
+  //     this.nature,
+  //     Object.values(this.evs).join(','),
+  //     this.gender,
+  //     Object.values(this.ivs).join(','),
+  //     this.shiny ? 'S' : '',
+  //     this.level,
+  //     [
+  //       this.happiness,
+  //       '',
+  //       this.hiddenpower,
+  //       this.gmax ? 'G' : '',
+  //       '',
+  //       this.teraType,
+  //     ].join(','),
+  //   ].join('|');
+  // }
 }

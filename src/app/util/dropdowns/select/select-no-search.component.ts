@@ -18,4 +18,6 @@ import { NG_VALUE_ACCESSOR } from '@angular/forms';
     },
   ],
 })
-export class SelectNoSearchComponent<T> extends SelectBaseComponent<T> {}
+export class SelectNoSearchComponent<
+  T extends { name: string },
+> extends SelectBaseComponent<T> {}

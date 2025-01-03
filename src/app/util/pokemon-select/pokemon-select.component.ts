@@ -1,7 +1,13 @@
 import { OverlayModule } from '@angular/cdk/overlay';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { CommonModule } from '@angular/common';
-import { Component, forwardRef, OnInit } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  forwardRef,
+  OnInit,
+  Output,
+} from '@angular/core';
 import {
   FormControl,
   FormsModule,
@@ -14,10 +20,15 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { Observable } from 'rxjs/internal/Observable';
-import { map, startWith } from 'rxjs/operators';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  map,
+  startWith,
+} from 'rxjs/operators';
 import { nameList } from '../../data/namedex';
-import { Pokemon } from '../../interfaces/draft';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
+import { Pokemon } from '../../interfaces/draft';
 
 @Component({
   selector: 'pokemon-select',
@@ -47,13 +58,16 @@ import { SpriteComponent } from '../../images/sprite/sprite.component';
   ],
 })
 export class PokemonSelectComponent implements OnInit {
-  selectedForm = new FormControl();
+  selectedForm = new FormControl<Pokemon | null>(null);
   names: Pokemon[] = nameList();
   filteredOptions!: Observable<Pokemon[]>;
-  selected: Pokemon | null = null;
+
+  @Output() pokemonSelected = new EventEmitter<Pokemon | null>();
 
   ngOnInit() {
     this.filteredOptions = this.selectedForm.valueChanges.pipe(
+      debounceTime(150),
+      distinctUntilChanged(),
       startWith(''),
       map((value) => this._filter(value)),
     );
@@ -62,7 +76,6 @@ export class PokemonSelectComponent implements OnInit {
   private _filter(value: string | Pokemon | null): Pokemon[] {
     if (!value) return this.names;
     if (typeof value !== 'string') value = value.name;
-    console.log(value);
     const filterValue = value.toLowerCase();
     const filteredNames = this.names
       .filter((option) => option.name.toLowerCase().includes(filterValue))
@@ -76,7 +89,7 @@ export class PokemonSelectComponent implements OnInit {
   }
 
   clearSelection($event: Event | undefined = undefined) {
-    this.selected = null;
+    this.selectedForm.setValue(null);
     this.selectOption(null);
     $event?.stopPropagation();
   }
@@ -91,7 +104,7 @@ export class PokemonSelectComponent implements OnInit {
   private onTouched: () => void = () => {};
 
   writeValue(value: Pokemon | null): void {
-    this.selected = value;
+    this.selectedForm.setValue(value);
     this.onChange(value);
   }
 
@@ -108,8 +121,8 @@ export class PokemonSelectComponent implements OnInit {
   }
 
   selectOption(option: Pokemon | null): void {
-    console.log('here');
     this.onChange(option);
+    this.pokemonSelected.emit(option);
     this.onTouched();
   }
 }

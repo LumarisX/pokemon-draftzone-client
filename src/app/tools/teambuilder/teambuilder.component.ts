@@ -5,22 +5,13 @@ import { RouterModule } from '@angular/router';
 import { DataService } from '../../api/data.service';
 import { TeambuilderService } from '../../api/teambuilder.service';
 import { nameList } from '../../data/namedex';
-import { Pokemon } from '../../interfaces/draft';
-import { SelectSearchComponent } from '../../util/dropdowns/select/select-search.component';
-import { PokemonBuilder, TeambuilderPokemon } from './pokemon-builder.model';
-import { TeamBuilderPokemonComponent } from './teambuilder-pokemon.component';
+import { PokemonBuilder } from './pokemon-builder.model';
 
 @Component({
   selector: 'teambuilder-analyzer',
   standalone: true,
   templateUrl: './teambuilder.component.html',
-  imports: [
-    CommonModule,
-    RouterModule,
-    FormsModule,
-    SelectSearchComponent,
-    TeamBuilderPokemonComponent,
-  ],
+  imports: [CommonModule, RouterModule, FormsModule],
 })
 export class TeamBuilderComponent implements OnInit {
   team: PokemonBuilder[] = [];
@@ -29,7 +20,7 @@ export class TeamBuilderComponent implements OnInit {
   selectedFormat: string = 'Singles';
   selectedRuleset: string = 'Gen9 NatDex';
 
-  names: { name: string; value: Pokemon }[] = nameList();
+  names = nameList();
 
   constructor(
     private dataService: DataService,
@@ -44,15 +35,15 @@ export class TeamBuilderComponent implements OnInit {
     this.dataService.getRulesets().subscribe((rulesets) => {
       this.rulesets = rulesets;
     });
-    this.addPokemon({ name: 'Deoxys', id: 'deoxys' });
+    // this.addPokemon({ name: 'Deoxys', id: 'deoxys' });
   }
 
-  addPokemon(pokemon: Pokemon | null) {
-    if (pokemon)
-      this.teambuilderService
-        .getPokemonData(pokemon.id, 'Gen9 NatDex')
-        .subscribe((data: TeambuilderPokemon) => {
-          this.team.push(new PokemonBuilder(data));
-        });
-  }
+  // addPokemon(pokemon: Pokemon | null) {
+  //   if (pokemon)
+  //     this.teambuilderService
+  //       .getPokemonData(pokemon.id, 'Gen9 NatDex')
+  //       .subscribe((data: TeambuilderPokemon) => {
+  //         this.team.push(new PokemonBuilder(data));
+  //       });
+  // }
 }

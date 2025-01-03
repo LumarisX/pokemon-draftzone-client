@@ -1,3 +1,9 @@
+import {
+  Overlay,
+  OverlayModule,
+  OverlayOutsideClickDispatcher,
+  OverlayRef,
+} from '@angular/cdk/overlay';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
@@ -9,7 +15,14 @@ import { SelectBaseComponent } from './select-base.component';
 @Component({
   selector: 'select-search',
   standalone: true,
-  imports: [CommonModule, FormsModule, CompactSVG, ScrollingModule, XMarkSVG],
+  imports: [
+    CommonModule,
+    OverlayModule,
+    FormsModule,
+    CompactSVG,
+    ScrollingModule,
+    XMarkSVG,
+  ],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -19,17 +32,35 @@ import { SelectBaseComponent } from './select-base.component';
   ],
   templateUrl: 'select-search.component.html',
 })
-export class SelectSearchComponent<T>
+export class SelectSearchComponent<T extends { name: string }>
   extends SelectBaseComponent<T>
   implements OnInit
 {
+  private overlayRef: OverlayRef | null = null;
+
   query: string = '';
-  filteredItems: { name: string; value: T }[] = [];
+  filteredItems: T[] = [];
   @Input()
   headers: { title: string; key: string; type: 'text' | 'imgPath' }[] = [];
 
   ngOnInit(): void {
     this.filter();
+    // Create an OverlayRef
+    this.overlayRef = this.overlay.create({
+      hasBackdrop: true,
+    });
+
+    // Add OverlayRef to the dispatcher
+    if (this.overlayRef) {
+      this.outsideClickDispatcher.add(this.overlayRef);
+    }
+  }
+
+  constructor(
+    private outsideClickDispatcher: OverlayOutsideClickDispatcher,
+    private overlay: Overlay,
+  ) {
+    super();
   }
 
   filter() {
@@ -52,9 +83,7 @@ export class SelectSearchComponent<T>
     }, 0);
   }
 
-  override selectItem(
-    item: { name: string; value: T; icons?: string[] } | null,
-  ): void {
+  override selectItem(item: T | null): void {
     super.selectItem(item);
     this.clearQuery();
   }

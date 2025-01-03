@@ -5,7 +5,7 @@
         <select-search
           [placeholder]="'Add a Pokemon'"
           class="rounded-lg bg-{{ color }}-100 shadow-md shadow-{{ color }}-400"
-          (itemSelected)="addNewPokemon($event)"
+          (itemSelected)="addNewPokemon($event ?? null)"
           [items]="names"
         ></select-search>
       </div>
