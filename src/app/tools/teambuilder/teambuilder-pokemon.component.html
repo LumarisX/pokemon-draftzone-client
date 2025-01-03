@@ -30,6 +30,7 @@
               <mat-select-trigger>
                 <div class="tera-option">
                   <img
+                    class="sprite-border"
                     [src]="
                       '../../../assets/icons/tera_types/Tera' +
                       pokemon.set.teraType +
@@ -37,8 +38,8 @@
                     "
                   />
                   {{ pokemon.set.teraType }}
-                </div></mat-select-trigger
-              >
+                </div>
+              </mat-select-trigger>
               @for (type of teraTypes; track type) {
                 <mat-option [value]="type">
                   <div class="tera-option">
@@ -200,23 +201,88 @@
             <mat-label>Move</mat-label>
             <input
               type="text"
-              placeholder="Pick one"
-              aria-label="Moves"
+              aria-label="Move 1"
+              spellcheck="false"
               matInput
+              [(ngModel)]="pokemon.set.moves[0]"
               [matAutocomplete]="auto"
             />
-            <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-              <mat-option
-                *ngFor="let move of pokemon.moveList"
-                [value]="move.value"
-              >
-                <div class="flex justify-between w-full">
-                  <div>{{ move.name }}</div>
-                  <div>{{ move.accuracy }}</div>
-                  <div><img [src]="move.typePath" /></div>
-                  <div><img [src]="move.categoryPath" /></div>
-                </div>
-              </mat-option>
+            <mat-autocomplete
+              [displayWith]="displayName"
+              autoActiveFirstOption
+              #auto="matAutocomplete"
+            >
+              @for (move of pokemon.moveList; track move) {
+                <mat-option [value]="move">
+                  {{ move.name }}
+                </mat-option>
+              }
+            </mat-autocomplete>
+          </mat-form-field>
+          <mat-form-field class="example-full-width">
+            <mat-label>Move</mat-label>
+            <input
+              type="text"
+              aria-label="Move 2"
+              spellcheck="false"
+              matInput
+              [(ngModel)]="pokemon.set.moves[1]"
+              [matAutocomplete]="auto"
+            />
+            <mat-autocomplete
+              [displayWith]="displayName"
+              autoActiveFirstOption
+              #auto="matAutocomplete"
+            >
+              @for (move of pokemon.moveList; track move) {
+                <mat-option [value]="move">
+                  {{ move.name }}
+                </mat-option>
+              }
+            </mat-autocomplete>
+          </mat-form-field>
+          <mat-form-field class="example-full-width">
+            <mat-label>Move</mat-label>
+            <input
+              type="text"
+              aria-label="Move 3"
+              spellcheck="false"
+              matInput
+              [(ngModel)]="pokemon.set.moves[2]"
+              [matAutocomplete]="auto"
+            />
+            <mat-autocomplete
+              [displayWith]="displayName"
+              autoActiveFirstOption
+              #auto="matAutocomplete"
+            >
+              @for (move of pokemon.moveList; track move) {
+                <mat-option [value]="move">
+                  {{ move.name }}
+                </mat-option>
+              }
+            </mat-autocomplete>
+          </mat-form-field>
+          <mat-form-field class="example-full-width">
+            <mat-label>Move</mat-label>
+            <input
+              type="text"
+              aria-label="Move 4"
+              spellcheck="false"
+              matInput
+              [(ngModel)]="pokemon.set.moves[3]"
+              [matAutocomplete]="auto"
+            />
+            <mat-autocomplete
+              [displayWith]="displayName"
+              autoActiveFirstOption
+              #auto="matAutocomplete"
+            >
+              @for (move of pokemon.moveList; track move) {
+                <mat-option [value]="move">
+                  {{ move.name }}
+                </mat-option>
+              }
             </mat-autocomplete>
           </mat-form-field>
         </mat-tab>
@@ -283,6 +349,7 @@
               </textarea>
             </mat-form-field>
           </div>
+          {{ pokemon.set.toJson() | json }}
         </mat-tab>
       </mat-tab-group>
     </div>

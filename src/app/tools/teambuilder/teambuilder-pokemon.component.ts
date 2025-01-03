@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
@@ -12,7 +12,6 @@ import { TeambuilderService } from '../../api/teambuilder.service';
 import { NATURES, STATS, TERATYPES } from '../../data';
 import { nameList } from '../../data/namedex';
 import { Pokemon } from '../../interfaces/draft';
-import { SelectSearchComponent } from '../../util/dropdowns/select/select-search.component';
 import { PokemonSelectComponent } from '../../util/pokemon-select/pokemon-select.component';
 import { PokemonBuilder, TeambuilderPokemon } from './pokemon-builder.model';
 
@@ -25,7 +24,6 @@ import { PokemonBuilder, TeambuilderPokemon } from './pokemon-builder.model';
     CommonModule,
     RouterModule,
     FormsModule,
-    SelectSearchComponent,
     MatTabsModule,
     MatAutocompleteModule,
     MatInputModule,
@@ -42,17 +40,22 @@ export class TeamBuilderPokemonComponent {
   @Input() set pokemon(value: Pokemon | null) {
     if (value === null) {
       this._pokemon = null;
+      this.builderSet.emit(null);
       return;
     }
     this.teambuilderService
       .getPokemonData(value.id, 'Gen9 NatDex')
       .subscribe((data: TeambuilderPokemon) => {
         this._pokemon = new PokemonBuilder(data);
+        this.builderSet.emit(this._pokemon);
       });
   }
   get pokemon(): PokemonBuilder | null {
     return this._pokemon;
   }
+
+  @Output()
+  builderSet: EventEmitter<PokemonBuilder | null> = new EventEmitter();
 
   names = nameList();
   teraTypes = TERATYPES;
@@ -67,5 +70,8 @@ export class TeamBuilderPokemonComponent {
     console.log(data);
   }
 
-  setPokemon() {}
+  displayName(value: any) {
+    console.log(value);
+    return value?.name ?? '';
+  }
 }

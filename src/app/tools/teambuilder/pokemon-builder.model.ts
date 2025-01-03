@@ -2,7 +2,7 @@ import { Nature, Stat, StatsTable, TeraType, Type } from '../../data';
 import { Pokemon } from '../../interfaces/draft';
 
 type Item = {
-  value: string;
+  id: string;
   pngId: string;
   name: string;
   desc: string;
@@ -69,12 +69,8 @@ export class PokemonSet implements PokemonData {
   shiny: boolean = false;
   dynamaxLevel: number = 255;
   gigantamax: boolean = false;
-  moves: [string | null, string | null, string | null, string | null] = [
-    null,
-    null,
-    null,
-    null,
-  ];
+  moves: [MoveData | null, MoveData | null, MoveData | null, MoveData | null] =
+    [null, null, null, null];
   ability: string = '';
 
   constructor(data: PokemonData & Partial<PokemonSet>) {
@@ -126,6 +122,38 @@ export class PokemonSet implements PokemonData {
     );
   }
 
+  toJson() {
+    return {
+      id: this.id,
+      ivs: Object.fromEntries(
+        Object.entries(this.ivs).filter((iv) => iv[1] < 31 && iv[1] >= 0),
+      ),
+
+      evs: Object.fromEntries(
+        Object.entries(this.evs).filter((ev) => ev[1] <= 255 && ev[1] > 0),
+      ),
+      item: this.item ? this.item.id : undefined,
+      level: this.level > 0 && this.level < 100 ? this.level : 100,
+      nature:
+        !this.nature || this.nature.boost === this.nature.drop
+          ? undefined
+          : this.nature.name,
+      teraType: this.teraType,
+      gigantamax: this.gigantamax || undefined,
+      happiness:
+        this.happiness < 255 && this.happiness >= 0
+          ? this.happiness
+          : undefined,
+      dynamaxLevel:
+        this.dynamaxLevel < 255 && this.dynamaxLevel >= 0
+          ? this.dynamaxLevel
+          : undefined,
+      moves: this.moves.filter((move) => move !== null).map((move) => move.id),
+      ability: this.ability,
+      gender: this.gender === '' ? undefined : this.gender,
+    };
+  }
+
   export() {
     let text = '';
     if (this.nickname != '' && this.nickname !== this.name)
@@ -137,12 +165,14 @@ export class PokemonSet implements PokemonData {
     text += `  \n`;
     if (this.ability) text += `Ability: ${this.ability}  \n`;
     for (let move of this.moves) {
-      if (move && move.substring(0, 13) === 'Hidden Power ') {
-        const hpType = move.slice(13);
-        move = move.slice(0, 13);
-        move = `${move}[${hpType}]`;
+      let moveName = move?.name;
+      if (moveName && moveName.substring(0, 13) === 'Hidden Power ') {
+        const hpType = moveName.slice(13);
+        moveName = moveName.slice(0, 13);
+        moveName = `${moveName}[${hpType}]`;
       }
-      if (move) text += `- ${move}  \n`;
+
+      if (move) text += `- ${moveName}  \n`;
     }
     const evString = Object.entries(this.evs)
       .filter((stat) => stat[1] > 0)
@@ -165,23 +195,24 @@ export class PokemonSet implements PokemonData {
     return text;
   }
 }
+export type MoveData = {
+  id: string;
+  name: string;
+  type: Type;
+  category: string;
+  effectivePower: number;
+  basePower: number;
+  accuracy: number | true;
+};
 
 export class PokemonBuilder {
   items: Item[] = [];
   abilities!: string[];
   set: PokemonSet;
-  learnset!: {
-    id: string;
-    name: string;
-    type: Type;
-    category: string;
-    effectivePower: number;
-    basePower: number;
-    accuracy: number | true;
-  }[];
+  learnset!: MoveData[];
   moveList: {
     name: string;
-    value: string;
+    id: string;
     basePower: string | number;
     accuracy: string | number;
     typePath: string;
@@ -198,7 +229,7 @@ export class PokemonBuilder {
     this.items = pokemon.items;
     this.moveList = this.learnset.map((move) => ({
       name: move.name,
-      value: move.id,
+      id: move.id,
       basePower: move.basePower || '-',
       accuracy: move.accuracy === true ? '-' : move.accuracy,
       typePath: `../../../../assets/icons/types/${move.type}.png`,

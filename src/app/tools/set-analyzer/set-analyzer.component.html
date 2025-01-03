@@ -1,6 +1,9 @@
 <div class="p-2 flex w-full h-full space-x-2">
   <div class="w-192 h-full border-2 p-2 rounded-lg">
-    <teambuilder-pokemon [showBoosts]="true"></teambuilder-pokemon>
+    <teambuilder-pokemon
+      (builderSet)="pokemonSet = $event"
+      [showBoosts]="true"
+    ></teambuilder-pokemon>
   </div>
   <div class="overflow-y-auto h-full border-2 p-1 rounded-lg">
     <table
@@ -32,4 +35,7 @@
       }
     </table>
   </div>
+  <button mat-raised-button class="rounded-full" (click)="calcMatchup()">
+    Calculate
+  </button>
 </div>

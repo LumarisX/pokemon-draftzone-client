@@ -20,4 +20,8 @@ export class TeambuilderService {
   getPatsList(): Observable<Pokemon[]> {
     return this.apiService.get('teambuilder/pats-list', false);
   }
+
+  getPatsMatchup(data: { set: string; opp: string }): Observable<Object> {
+    return this.apiService.get('teambuilder/pats-matchup', false, data);
+  }
 }

@@ -8,6 +8,8 @@ import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { Pokemon } from '../../interfaces/draft';
 import { compare } from '../../util';
 import { TeamBuilderPokemonComponent } from '../teambuilder/teambuilder-pokemon.component';
+import { PokemonBuilder } from '../teambuilder/pokemon-builder.model';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'teambuilder-analyzer',
@@ -19,12 +21,14 @@ import { TeamBuilderPokemonComponent } from '../teambuilder/teambuilder-pokemon.
     FormsModule,
     TeamBuilderPokemonComponent,
     SpriteComponent,
+    MatButtonModule,
     MatSortModule,
   ],
 })
 export class SetAnalyzerComponent implements OnInit {
   patList: { rank: number; pokemon: Pokemon }[] = [];
   selectedOpponent: Pokemon | undefined;
+  pokemonSet: PokemonBuilder | null = null;
 
   constructor(private teambuilderService: TeambuilderService) {}
 
@@ -52,5 +56,20 @@ export class SetAnalyzerComponent implements OnInit {
       return 0;
     });
     return 0;
+  }
+
+  calcMatchup() {
+    if (this.selectedOpponent && this.pokemonSet?.set.toJson()) {
+      this.teambuilderService
+        .getPatsMatchup({
+          set: encodeURIComponent(
+            JSON.stringify(this.pokemonSet?.set.toJson()),
+          ),
+          opp: this.selectedOpponent.name,
+        })
+        .subscribe((data) => {
+          console.log(data);
+        });
+    }
   }
 }
