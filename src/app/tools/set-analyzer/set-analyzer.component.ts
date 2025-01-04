@@ -26,7 +26,7 @@ import { MatButtonModule } from '@angular/material/button';
   ],
 })
 export class SetAnalyzerComponent implements OnInit {
-  patList: { rank: number; pokemon: Pokemon }[] = [];
+  patList: { rank: number; pokemon: Pokemon; percent: number }[] = [];
   selectedOpponent: Pokemon | undefined;
   pokemonSet: PokemonBuilder | null = null;
 
@@ -36,8 +36,10 @@ export class SetAnalyzerComponent implements OnInit {
     this.teambuilderService.getPatsList().subscribe((data) => {
       this.patList = data.map((pokemon, index) => ({
         rank: index + 1,
-        pokemon: pokemon,
+        pokemon: { name: pokemon.name, id: pokemon.id },
+        percent: pokemon.percent,
       }));
+      this.selectedOpponent = this.patList[0].pokemon;
     });
   }
 
@@ -60,12 +62,23 @@ export class SetAnalyzerComponent implements OnInit {
 
   calcMatchup() {
     if (this.selectedOpponent && this.pokemonSet?.set.toJson()) {
+      console.log({
+        set: btoa(JSON.stringify(this.pokemonSet?.set.toJson())),
+        opp: this.selectedOpponent.name,
+      });
       this.teambuilderService
         .getPatsMatchup({
-          set: encodeURIComponent(
-            JSON.stringify(this.pokemonSet?.set.toJson()),
-          ),
+          set: btoa(JSON.stringify(this.pokemonSet?.set.toJson())),
           opp: this.selectedOpponent.name,
+        })
+        .subscribe((data) => {
+          console.log(data);
+        });
+    } else {
+      this.teambuilderService
+        .getPatsMatchup({
+          set: 'eyJuYW1lIjoiUHJpbWFyaW5hIiwiaXZzIjp7fSwiZXZzIjp7ImhwIjoyNTIsInNwYSI6MjUyfSwiaXRlbSI6IlRocm9hdCBTcHJheSIsImxldmVsIjo1MCwidGVyYVR5cGUiOiJXYXRlciIsIm1vdmVzIjpbIk1vb25ibGFzdCIsIkh5cGVyIFZvaWNlIiwiSWN5IFdpbmQiXSwiYWJpbGl0eSI6IkxpcXVpZCBWb2ljZSJ9',
+          opp: 'Archaludon',
         })
         .subscribe((data) => {
           console.log(data);

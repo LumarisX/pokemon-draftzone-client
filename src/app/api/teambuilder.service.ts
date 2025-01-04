@@ -17,7 +17,7 @@ export class TeambuilderService {
     });
   }
 
-  getPatsList(): Observable<Pokemon[]> {
+  getPatsList(): Observable<(Pokemon & { percent: number })[]> {
     return this.apiService.get('teambuilder/pats-list', false);
   }
 

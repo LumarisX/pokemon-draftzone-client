@@ -19,6 +19,7 @@
         <th mat-sort-header="num">#</th>
         <th></th>
         <th mat-sort-header="name">Name</th>
+        <th mat-sort-header="num">Usage</th>
       </tr>
       @for (opp of patList; track $index) {
         <tr
@@ -31,6 +32,7 @@
           <td>{{ opp.rank }}</td>
           <td class="w-12"><sprite [pokemon]="opp.pokemon"></sprite></td>
           <td>{{ opp.pokemon.name }}</td>
+          <td>{{ opp.percent || "<1" }}%</td>
         </tr>
       }
     </table>

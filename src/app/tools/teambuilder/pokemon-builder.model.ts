@@ -124,15 +124,14 @@ export class PokemonSet implements PokemonData {
 
   toJson() {
     return {
-      id: this.id,
+      name: this.name,
       ivs: Object.fromEntries(
         Object.entries(this.ivs).filter((iv) => iv[1] < 31 && iv[1] >= 0),
       ),
-
       evs: Object.fromEntries(
         Object.entries(this.evs).filter((ev) => ev[1] <= 255 && ev[1] > 0),
       ),
-      item: this.item ? this.item.id : undefined,
+      item: this.item ? this.item.name : undefined,
       level: this.level > 0 && this.level < 100 ? this.level : 100,
       nature:
         !this.nature || this.nature.boost === this.nature.drop
@@ -148,7 +147,9 @@ export class PokemonSet implements PokemonData {
         this.dynamaxLevel < 255 && this.dynamaxLevel >= 0
           ? this.dynamaxLevel
           : undefined,
-      moves: this.moves.filter((move) => move !== null).map((move) => move.id),
+      moves: this.moves
+        .filter((move) => move !== null)
+        .map((move) => move.name),
       ability: this.ability,
       gender: this.gender === '' ? undefined : this.gender,
     };
