@@ -1,5 +1,7 @@
 <div class="p-2 flex w-full h-full space-x-2">
-  <div class="w-192 h-full border-2 p-2 rounded-lg">
+  <div
+    class="sm:w-80 md:w-96 lg:w-128 xl:w-160 2xl:w-192 h-full border-2 p-2 rounded-lg"
+  >
     <teambuilder-pokemon
       (builderSet)="pokemonSet = $event"
       [showBoosts]="true"
@@ -19,7 +21,7 @@
         <th mat-sort-header="num">#</th>
         <th></th>
         <th mat-sort-header="name">Name</th>
-        <th mat-sort-header="num">Usage</th>
+        <th mat-sort-header="usage">Usage</th>
       </tr>
       @for (opp of patList; track $index) {
         <tr
@@ -30,14 +32,67 @@
           }"
         >
           <td>{{ opp.rank }}</td>
-          <td class="w-12"><sprite [pokemon]="opp.pokemon"></sprite></td>
+          <td class="w-12 min-w-12">
+            <sprite [pokemon]="opp.pokemon"></sprite>
+          </td>
           <td>{{ opp.pokemon.name }}</td>
           <td>{{ opp.percent || "<1" }}%</td>
         </tr>
       }
     </table>
   </div>
-  <button mat-raised-button class="rounded-full" (click)="calcMatchup()">
-    Calculate
-  </button>
+  <div class="space-y-2">
+    <div class="flex space-x-2">
+      <button mat-raised-button class="rounded-full" (click)="calcMatchup()">
+        Calculate
+      </button>
+      @if (link) {
+        <a mat-raised-button class="rounded-full" [href]="link"> Pikalytics </a>
+      }
+    </div>
+
+    @if (results) {
+      <div class="space-y-4">
+        @for (result of results; track result) {
+          <div class="space-y-2 border-2 p-2 rounded-lg">
+            <div class="flex items-center">
+              <div class="w-12 min-w-12">
+                <sprite [flipped]="true" [name]="result.attacker"></sprite>
+              </div>
+              <mat-icon svgIcon="right-arrow"></mat-icon>
+              <div class="w-12 min-w-12">
+                <sprite [name]="result.defender"></sprite>
+              </div>
+            </div>
+            @for (calc of result.calcs; track calc) {
+              <div>
+                <div class="flex items-center space-x-2">
+                  <div>{{ calc.move.name }}</div>
+                  <div>
+                    <img
+                      [src]="
+                        '../../../assets/icons/types/' + calc.move.type + '.png'
+                      "
+                    />
+                  </div>
+                </div>
+                <div>
+                  @if (calc.n) {
+                    @if (calc.chance === "100.0") {
+                      {{ calc.n === 1 ? "0" : calc.n }}HKO
+                    } @else {
+                      {{ calc.chance }}% chance to
+                      {{ calc.n === 1 ? "0" : calc.n }}HKO
+                    }
+                  } @else {
+                    Never kills
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    }
+  </div>
 </div>

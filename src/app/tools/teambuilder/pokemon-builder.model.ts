@@ -1,4 +1,4 @@
-import { Nature, Stat, StatsTable, TeraType, Type } from '../../data';
+import { Nature, StatsTable, TeraType, Type } from '../../data';
 import { Pokemon } from '../../interfaces/draft';
 
 type Item = {
@@ -38,7 +38,7 @@ export class PokemonSet implements PokemonData {
   nature: Nature | null = null;
   nickname: string = '';
   item: Item | null = null;
-  teraType: TeraType;
+  teraType: TeraType | null = null;
   ivs: StatsTable = {
     hp: 31,
     atk: 31,
@@ -75,8 +75,7 @@ export class PokemonSet implements PokemonData {
 
   constructor(data: PokemonData & Partial<PokemonSet>) {
     Object.assign(this, data);
-    this.level = data.level && data.level > 0 ? data.level : 100;
-    this.teraType = this.types[0];
+    this.level = data.level && data.level > 0 ? data.level : 50;
   }
 
   get hp() {
@@ -116,9 +115,9 @@ export class PokemonSet implements PokemonData {
           100,
       ) +
         5) *
-        1 +
-        (this.nature?.boost === stat ? 0.1 : 0) -
-        (this.nature?.drop === stat ? 0.1 : 0),
+        (1 +
+          (this.nature?.boost === stat ? 0.1 : 0) -
+          (this.nature?.drop === stat ? 0.1 : 0)),
     );
   }
 
@@ -137,7 +136,7 @@ export class PokemonSet implements PokemonData {
         !this.nature || this.nature.boost === this.nature.drop
           ? undefined
           : this.nature.name,
-      teraType: this.teraType,
+      teraType: this.teraType || undefined,
       gigantamax: this.gigantamax || undefined,
       happiness:
         this.happiness < 255 && this.happiness >= 0

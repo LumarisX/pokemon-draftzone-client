@@ -71,7 +71,6 @@ export class TeamBuilderPokemonComponent {
   }
 
   displayName(value: any) {
-    console.log(value);
     return value?.name ?? '';
   }
 }

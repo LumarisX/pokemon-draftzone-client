@@ -37,4 +37,7 @@ export const svgIcons: { [key: string]: string } = {
         stroke-linejoin="round"
       />
     </svg>`,
+  'right-arrow': `<svg viewBox="0 0 24 24" class="stroke-symbolColor-main" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M4 12h16m0 0-4-4m4 4-4 4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>`,
 };

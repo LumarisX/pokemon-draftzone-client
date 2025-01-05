@@ -3,7 +3,7 @@
     <pokemon-select (pokemonSelected)="pokemon = $event"></pokemon-select>
   </div>
   @if (pokemon) {
-    <div class="w-full flex-grow">
+    <div class="w-full flex-grow overflow-auto">
       <mat-tab-group>
         <mat-tab label="Info">
           <mat-form-field>
@@ -40,6 +40,9 @@
                   {{ pokemon.set.teraType }}
                 </div>
               </mat-select-trigger>
+              <mat-option [value]="null">
+                <div class="tera-option">None</div>
+              </mat-option>
               @for (type of teraTypes; track type) {
                 <mat-option [value]="type">
                   <div class="tera-option">
@@ -62,16 +65,6 @@
               max="100"
               [(ngModel)]="pokemon.set.level"
             />
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label>Nature</mat-label>
-            <mat-select [(ngModel)]="pokemon.set.nature" name="ability">
-              @for (nature of natures; track nature) {
-                <mat-option [value]="nature.name">
-                  {{ nature.name }}
-                </mat-option>
-              }
-            </mat-select>
           </mat-form-field>
         </mat-tab>
         <mat-tab label="Moves">
@@ -287,42 +280,54 @@
           </mat-form-field>
         </mat-tab>
         <mat-tab label="Stats">
+          <mat-form-field>
+            <mat-label>Nature</mat-label>
+            <mat-select [(ngModel)]="pokemon.set.nature" name="ability">
+              @for (nature of natures; track nature) {
+                <mat-option [value]="nature">
+                  {{ nature.name }}
+                </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
           <div>
             @for (stat of stats; track $index) {
               <label [for]="stat.id">{{ stat.full }}</label>
               <div [id]="stat.id" class="flex items-center">
-                <label [for]="stat + 'evs'">EVs</label>
-                <input
-                  [(ngModel)]="pokemon.set.evs[stat.id]"
-                  [id]="stat.id + 'evs'"
-                  min="0"
-                  max="252"
-                  step="4"
-                  type="number"
-                  class="border p-1"
-                />
-                <label [for]="stat.id + 'ivs'">IVs</label>
-                <input
-                  [(ngModel)]="pokemon.set.ivs[stat.id]"
-                  [id]="stat.id + 'ivs'"
-                  min="0"
-                  max="31"
-                  type="number"
-                  class="border p-1"
-                />
-                <div>{{ pokemon.set[stat.id] }}</div>
-                @if (showBoosts && pokemon.set.boosts[stat.id] !== undefined) {
-                  <label [for]="stat.id + 'stage'">Stage</label>
+                <mat-form-field>
+                  <mat-label>EVs</mat-label>
                   <input
-                    [(ngModel)]="pokemon.set.boosts[stat.id]"
-                    [id]="stat.id + 'stage'"
-                    min="-6"
-                    max="6"
+                    matInput
                     type="number"
-                    class="border p-1"
+                    min="0"
+                    max="252"
+                    step="4"
+                    [(ngModel)]="pokemon.set.evs[stat.id]"
                   />
-                  <div>{{ pokemon.set[stat.id] }}</div>
+                </mat-form-field>
+                <mat-form-field>
+                  <mat-label>IVs</mat-label>
+                  <input
+                    matInput
+                    type="number"
+                    min="0"
+                    max="31"
+                    [(ngModel)]="pokemon.set.ivs[stat.id]"
+                  />
+                </mat-form-field>
+                @if (showBoosts && pokemon.set.boosts[stat.id] !== undefined) {
+                  <mat-form-field>
+                    <mat-label>Stage</mat-label>
+                    <input
+                      matInput
+                      type="number"
+                      min="-6"
+                      max="6"
+                      [(ngModel)]="pokemon.set.boosts[stat.id]"
+                    />
+                  </mat-form-field>
                 }
+                <div>{{ pokemon.set[stat.id] }}</div>
               </div>
             }
           </div>

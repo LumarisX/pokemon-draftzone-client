@@ -3,13 +3,17 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatSortModule, Sort } from '@angular/material/sort';
 import { RouterModule } from '@angular/router';
-import { TeambuilderService } from '../../api/teambuilder.service';
+import {
+  setCalcs as SetCalcs,
+  TeambuilderService,
+} from '../../api/teambuilder.service';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { Pokemon } from '../../interfaces/draft';
 import { compare } from '../../util';
 import { TeamBuilderPokemonComponent } from '../teambuilder/teambuilder-pokemon.component';
 import { PokemonBuilder } from '../teambuilder/pokemon-builder.model';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'teambuilder-analyzer',
@@ -21,6 +25,7 @@ import { MatButtonModule } from '@angular/material/button';
     FormsModule,
     TeamBuilderPokemonComponent,
     SpriteComponent,
+    MatIcon,
     MatButtonModule,
     MatSortModule,
   ],
@@ -28,7 +33,9 @@ import { MatButtonModule } from '@angular/material/button';
 export class SetAnalyzerComponent implements OnInit {
   patList: { rank: number; pokemon: Pokemon; percent: number }[] = [];
   selectedOpponent: Pokemon | undefined;
+  link: string | undefined;
   pokemonSet: PokemonBuilder | null = null;
+  results: [SetCalcs, SetCalcs] | undefined;
 
   constructor(private teambuilderService: TeambuilderService) {}
 
@@ -62,26 +69,14 @@ export class SetAnalyzerComponent implements OnInit {
 
   calcMatchup() {
     if (this.selectedOpponent && this.pokemonSet?.set.toJson()) {
-      console.log({
-        set: btoa(JSON.stringify(this.pokemonSet?.set.toJson())),
-        opp: this.selectedOpponent.name,
-      });
       this.teambuilderService
         .getPatsMatchup({
           set: btoa(JSON.stringify(this.pokemonSet?.set.toJson())),
           opp: this.selectedOpponent.name,
         })
         .subscribe((data) => {
-          console.log(data);
-        });
-    } else {
-      this.teambuilderService
-        .getPatsMatchup({
-          set: 'eyJuYW1lIjoiUHJpbWFyaW5hIiwiaXZzIjp7fSwiZXZzIjp7ImhwIjoyNTIsInNwYSI6MjUyfSwiaXRlbSI6IlRocm9hdCBTcHJheSIsImxldmVsIjo1MCwidGVyYVR5cGUiOiJXYXRlciIsIm1vdmVzIjpbIk1vb25ibGFzdCIsIkh5cGVyIFZvaWNlIiwiSWN5IFdpbmQiXSwiYWJpbGl0eSI6IkxpcXVpZCBWb2ljZSJ9',
-          opp: 'Archaludon',
-        })
-        .subscribe((data) => {
-          console.log(data);
+          this.results = data?.results;
+          this.link = data?.link;
         });
     }
   }

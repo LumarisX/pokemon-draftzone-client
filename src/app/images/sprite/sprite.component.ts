@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import {
   getNameByPid,
+  getPidByName,
   getSpriteProperties,
   SpriteProperties,
 } from '../../data/namedex';
@@ -29,11 +30,32 @@ import { SettingsService } from '../../pages/settings/settings.service';
 export class SpriteComponent {
   constructor(private settingService: SettingsService) {}
   @Input()
-  set pokemon(value: Pokemon | string) {
-    if (typeof value === 'string')
-      value = { id: value, name: getNameByPid(value) };
+  set pokemon(value: Pokemon) {
     this.updateData(value);
     this._pokemon = value;
+  }
+
+  @Input()
+  set name(value: string) {
+    let id = getPidByName(value);
+    if (!id) return;
+    this._pokemon = { id, name: value };
+    this.updateData(this._pokemon);
+  }
+
+  get name() {
+    return this._pokemon.name;
+  }
+
+  @Input()
+  set pid(value: string) {
+    let name = getNameByPid(value);
+    this._pokemon = { id: value, name };
+    this.updateData(this._pokemon);
+  }
+
+  get pid() {
+    return this._pokemon.id;
   }
   flip = false;
   @Input() flipped? = false;
