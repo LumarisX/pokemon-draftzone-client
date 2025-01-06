@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 export type Settings = {
   theme?: string;
-  ldMode?: string;
+  ldMode?: 'light' | 'dark';
   time?: string;
   date?: string;
   spriteSet?: string;
@@ -16,7 +16,7 @@ export class SettingsService {
 
   constructor() {
     let parsedData: Settings = JSON.parse(
-      localStorage.getItem('user-settings') || '{}'
+      localStorage.getItem('user-settings') || '{}',
     );
     this.settingsData = parsedData;
     this.updateLDMode(this.settingsData.ldMode);
@@ -33,9 +33,8 @@ export class SettingsService {
       }
     } else {
       let devicePref = window.matchMedia(
-        '(prefers-color-scheme: dark)'
+        '(prefers-color-scheme: dark)',
       ).matches;
-      console.log();
       if (!devicePref) {
         document.documentElement.classList.add('light');
         document.documentElement.classList.remove('dark');

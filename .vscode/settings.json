@@ -1,0 +1,15 @@
+{
+    "angular-schematics.schematicsDefaultOptions": {
+        "angular-*": {
+            "style": "scss",
+            "skipStyle": true,
+            "externalTemplate": true
+        },
+        "angular-component": {
+            "ngOnInit": false
+        },
+        "angular-page": {
+            "skipNgOnInit": true
+        }
+    }
+}

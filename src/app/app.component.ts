@@ -80,15 +80,22 @@ export class AppComponent implements OnInit {
   }
 
   getTheme() {
+    const classes: string[] = [];
+    if (this.settingsService.settingsData.ldMode === 'dark')
+      classes.push('dark-mode');
     switch (this.settingsService.settingsData.theme) {
       case 'shiny':
-        return 'shiny dark:darkshiny';
+        classes.push('shiny dark:darkshiny');
+        break;
       case 'graymode':
-        return 'graycolorblind dark:darkcolorblind';
+        classes.push('graycolorblind dark:darkcolorblind');
+        break;
       case 'christmas':
-        return 'christmas dark:darkchristmas';
+        classes.push('christmas dark:darkchristmas');
+        break;
       default:
-        return 'classic dark:darkclassic';
+        classes.push('classic dark:darkclassic');
     }
+    return classes;
   }
 }
