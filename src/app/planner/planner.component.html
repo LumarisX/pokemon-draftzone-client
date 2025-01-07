@@ -16,35 +16,38 @@
         <compact-svg [up]="settings"></compact-svg>
       </div>
       <div class="flex w-full p-0.5 space-x-1 overflow-x-auto scrollbar-hidden">
-        <div
-          [ngClass]="selectedDraftsStyle(j)"
-          class="flex items-center border rounded border-menu-500 hover:cursor-pointer"
-          *ngFor="let draftCtrl of draftArray.controls; let j = index"
-          [formGroupName]="j"
-          (click)="switchDrafts(j)"
-        >
-          <input
-            class="w-28 px-2 py-0.5 font-nasa text-sm rounded bg-inherit text-ellipsis"
-            formControlName="draftName"
-          />
-          <copy-svg
-            class="w-4 m-1 hover:m-0.5 hover:w-5"
-            (click)="copyToNew(j)"
-          ></copy-svg>
-          @if (draftArray.controls.length > 1) {
-            <trash-svg
-              class="w-4 m-1 hover:m-0.5 hover:w-5"
-              (click)="deletePlan(j)"
-            ></trash-svg>
-          }
-        </div>
-        <button *ngIf="draftSize < 5" (click)="addDraft()">
+        @for (draftCtrl of draftArray.controls; track $index) {
           <div
-            class="h-8 p-1 border rounded aspect-square border-menu-500 bg-menu-100 hover:bg-menu-50 hover:cursor-pointer"
+            [ngClass]="selectedDraftsStyle($index)"
+            class="flex items-center border rounded border-menu-500 hover:cursor-pointer"
+            [formGroupName]="$index"
+            (click)="switchDrafts($index)"
           >
-            <plus-svg class="stroke-symbolColor-main"></plus-svg>
+            <input
+              class="w-28 px-2 py-0.5 font-nasa text-sm rounded bg-inherit text-ellipsis"
+              formControlName="draftName"
+            />
+            <copy-svg
+              class="w-4 m-1 hover:m-0.5 hover:w-5"
+              (click)="copyToNew($index)"
+            ></copy-svg>
+            @if (draftArray.controls.length > 1) {
+              <trash-svg
+                class="w-4 m-1 hover:m-0.5 hover:w-5"
+                (click)="deletePlan($index)"
+              ></trash-svg>
+            }
           </div>
-        </button>
+        }
+        @if (draftSize < 5) {
+          <button (click)="addDraft()">
+            <div
+              class="h-8 p-1 border rounded aspect-square border-menu-500 bg-menu-100 hover:bg-menu-50 hover:cursor-pointer"
+            >
+              <plus-svg class="stroke-symbolColor-main"></plus-svg>
+            </div>
+          </button>
+        }
       </div>
     </div>
     <div
@@ -123,16 +126,17 @@
               <option value="tiers">Tiers</option>
             </select>
           </div>
-
-          <div *ngIf="isPoints">
-            <label class="font-bold" for="totalPoints">Total Points</label>
-            <input
-              type="number"
-              class="w-16 font-semibold p-0.5 rounded bg-menu-100"
-              formControlName="totalPoints"
-              id="totalPoints"
-            />
-          </div>
+          @if (isPoints) {
+            <div>
+              <label class="font-bold" for="totalPoints">Total Points</label>
+              <input
+                type="number"
+                class="w-16 font-semibold p-0.5 rounded bg-menu-100"
+                formControlName="totalPoints"
+                id="totalPoints"
+              />
+            </div>
+          }
           <button
             class="p-0.5 border-2 text-sm font-semibold rounded hover:bg-menu-300 bg-menu-100 border-menu-400"
             [routerLink]="['/', draftPath, 'new']"
@@ -187,30 +191,28 @@
                       ></select-search>
                     </div>
                   </div>
-                  <div
-                    class="flex flex-col justify-center w-1/6 h-full p-1"
-                    *ngIf="!isPoints"
-                  >
-                    <input
-                      type="text"
-                      spellcheck="false"
-                      [ngClass]="minMaxStyle($index)"
-                      class="w-full px-1 py-1 font-semibold text-center border rounded-lg bg-menu-100"
-                      formControlName="tier"
-                    />
-                  </div>
-                  <div
-                    class="flex flex-col justify-center w-1/6 h-full p-1"
-                    *ngIf="isPoints"
-                  >
-                    <input
-                      type="number"
-                      placeholder="0"
-                      class="w-full px-1 py-1 text-center border rounded-lg bg-menu-100"
-                      [ngClass]="minMaxStyle($index)"
-                      formControlName="value"
-                    />
-                  </div>
+                  @if (isPoints) {
+                    <div class="flex flex-col justify-center w-1/6 h-full p-1">
+                      <input
+                        type="number"
+                        placeholder="0"
+                        class="w-full px-1 py-1 text-center border rounded-lg bg-menu-100"
+                        [ngClass]="minMaxStyle($index)"
+                        formControlName="value"
+                      />
+                    </div>
+                  } @else {
+                    <div class="flex flex-col justify-center w-1/6 h-full p-1">
+                      <input
+                        type="text"
+                        spellcheck="false"
+                        [ngClass]="minMaxStyle($index)"
+                        class="w-full px-1 py-1 font-semibold text-center border rounded-lg bg-menu-100"
+                        formControlName="tier"
+                      />
+                    </div>
+                  }
+
                   <div class="w-1/8">
                     <input
                       type="checkbox"
@@ -257,106 +259,110 @@
                   <div class="text-xs text-center w-1/8">Drafted</div>
                 </div>
                 <div formArrayName="team" class="grid w-full grid-cols-1">
-                  <div
-                    *ngFor="
-                      let teamCtrl of teamFormArray.controls;
-                      let i = index
-                    "
-                    [formGroupName]="i"
-                    class="flex items-center space-y-1"
-                  >
-                    <div class="w-1/6 h-fit">
-                      <sprite
-                        [pokemon]="{
-                          id: teamCtrl.get('id')?.value,
-                          name: teamCtrl.get('name')?.value,
-                        }"
-                      ></sprite>
-                    </div>
-                    <div class="flex flex-col justify-center w-5/12 h-full p-2">
+                  @for (teamCtrl of teamFormArray.controls; track $index) {
+                    <div
+                      [formGroupName]="$index"
+                      class="flex items-center space-y-1"
+                    >
+                      <div class="w-1/6 h-fit">
+                        <sprite
+                          [pokemon]="{
+                            id: teamCtrl.get('id')?.value,
+                            name: teamCtrl.get('name')?.value,
+                          }"
+                        ></sprite>
+                      </div>
                       <div
-                        class="w-full text-sm border rounded-lg text-ellipsis bg-menu-100"
-                        [ngClass]="minMaxStyle(i)"
+                        class="flex flex-col justify-center w-5/12 h-full p-2"
                       >
-                        <select-search
-                          (itemSelected)="resultSelected(teamCtrl, $event)"
-                          [items]="names"
-                          [startItem]="teamCtrl.value"
-                          placeholder="Select Pokemon"
-                        ></select-search>
+                        <div
+                          class="w-full text-sm border rounded-lg text-ellipsis bg-menu-100"
+                          [ngClass]="minMaxStyle($index)"
+                        >
+                          <select-search
+                            (itemSelected)="resultSelected(teamCtrl, $event)"
+                            [items]="names"
+                            [startItem]="teamCtrl.value"
+                            placeholder="Select Pokemon"
+                          ></select-search>
+                        </div>
+                      </div>
+
+                      @if (isPoints) {
+                        <div
+                          class="flex flex-col justify-center w-1/6 h-full p-1"
+                        >
+                          <input
+                            type="number"
+                            placeholder="0"
+                            class="w-full px-1 py-1 text-center border rounded-lg bg-menu-100"
+                            [ngClass]="minMaxStyle($index)"
+                            formControlName="value"
+                          />
+                        </div>
+                      } @else {
+                        <div
+                          class="flex flex-col justify-center w-1/6 h-full p-1"
+                        >
+                          <input
+                            type="text"
+                            spellcheck="false"
+                            [ngClass]="minMaxStyle($index)"
+                            class="w-full px-1 py-1 font-semibold text-center border rounded-lg bg-menu-100"
+                            formControlName="tier"
+                          />
+                        </div>
+                      }
+                      <div class="w-1/8">
+                        <input
+                          type="checkbox"
+                          class="w-full"
+                          formControlName="capt"
+                        />
+                      </div>
+                      <div class="w-1/8">
+                        <input
+                          type="checkbox"
+                          class="w-full"
+                          formControlName="drafted"
+                        />
                       </div>
                     </div>
-                    <div
-                      class="flex flex-col justify-center w-1/6 h-full p-1"
-                      *ngIf="!isPoints"
-                    >
-                      <input
-                        type="text"
-                        spellcheck="false"
-                        [ngClass]="minMaxStyle(i)"
-                        class="w-full px-1 py-1 font-semibold text-center border rounded-lg bg-menu-100"
-                        formControlName="tier"
-                      />
-                    </div>
-                    <div
-                      class="flex flex-col justify-center w-1/6 h-full p-1"
-                      *ngIf="isPoints"
-                    >
-                      <input
-                        type="number"
-                        placeholder="0"
-                        class="w-full px-1 py-1 text-center border rounded-lg bg-menu-100"
-                        [ngClass]="minMaxStyle(i)"
-                        formControlName="value"
-                      />
-                    </div>
-                    <div class="w-1/8">
-                      <input
-                        type="checkbox"
-                        class="w-full"
-                        formControlName="capt"
-                      />
-                    </div>
-                    <div class="w-1/8">
-                      <input
-                        type="checkbox"
-                        class="w-full"
-                        formControlName="drafted"
-                      />
-                    </div>
-                  </div>
+                  }
                 </div>
               </div>
             </mat-tab>
           }
-          <mat-tab label="Summary">
-            <summary
-              class="h-full list-none"
-              *ngIf="summary"
-              [summary]="summary"
-            ></summary
-          ></mat-tab>
-          <mat-tab label="Typechart">
-            <typechart
-              class="h-full max-w-full"
-              *ngIf="typechart"
-              [typechart]="typechart"
-              [recommended]="recommended"
-            ></typechart
-          ></mat-tab>
-          <mat-tab label="Moves">
-            <moves
-              class="w-full overflow-y-auto"
-              *ngIf="movechart.length"
-              [movechart]="movechart"
-            ></moves> </mat-tab
-          ><mat-tab label="Coverage">
-            <planner-coverage
-              class="w-full overflow-y-auto"
-              *ngIf="movechart.length"
-              [coverage]="coverage"
-            ></planner-coverage
-          ></mat-tab>
+          @if (summary) {
+            <mat-tab label="Summary">
+              <summary class="h-full list-none" [summary]="summary"></summary>
+            </mat-tab>
+          }
+          @if (typechart && recommended) {
+            <mat-tab label="Typechart">
+              <typechart
+                class="h-full max-w-full"
+                [typechart]="typechart"
+                [recommended]="recommended"
+              ></typechart
+            ></mat-tab>
+          }
+          @if (movechart.length) {
+            <mat-tab label="Moves">
+              <moves
+                class="w-full overflow-y-auto"
+                [movechart]="movechart"
+              ></moves>
+            </mat-tab>
+          }
+          @if (coverage) {
+            <mat-tab label="Coverage">
+              <planner-coverage
+                class="w-full overflow-y-auto"
+                [coverage]="coverage"
+              ></planner-coverage>
+            </mat-tab>
+          }
           <mat-tab label="Find">
             <finder-core
               class="h-full min-w-full overflow-y-auto"

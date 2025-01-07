@@ -25,7 +25,6 @@
               </th>
             </tr>
           </thead>
-
           <tbody>
             <tr *ngFor="let pokemon of typechart.team">
               <th
@@ -48,7 +47,6 @@
               </td>
             </tr>
           </tbody>
-
           <thead class="border-b-4 border-menu-400">
             <tr>
               <th class="w-12 border-r-4 border-r-menu-400"></th>
@@ -80,7 +78,7 @@
                   class="text-center border h-full w-10"
                   [ngClass]="countColor(count)"
                 >
-                  {{ count | number : "1.0-0" }}
+                  {{ count | number: "1.0-0" }}
                 </div>
               </td>
             </tr>
@@ -96,7 +94,7 @@
                   class="text-center border h-full w-10"
                   [ngClass]="weakColor(weakness)"
                 >
-                  {{ weakness | number : "1.0-0" }}
+                  {{ weakness | number: "1.0-0" }}
                 </div>
               </td>
             </tr>
@@ -112,7 +110,7 @@
                   class="text-center border h-full w-10"
                   [ngClass]="resistColor(resistance)"
                 >
-                  {{ resistance | number : "1.0-0" }}
+                  {{ resistance | number: "1.0-0" }}
                 </div>
               </td>
             </tr>
@@ -128,7 +126,7 @@
                   class="text-center border h-full w-10"
                   [ngClass]="diffColor(diff)"
                 >
-                  {{ diff | number : "1.0-0" }}
+                  {{ diff | number: "1.0-0" }}
                 </div>
               </td>
             </tr>
@@ -144,7 +142,7 @@
                   class="text-center border w-10"
                   [ngClass]="diffColor(diff)"
                 >
-                  {{ diff | number : "1.0-0" }}
+                  {{ diff | number: "1.0-0" }}
                 </div>
               </td>
             </tr>
