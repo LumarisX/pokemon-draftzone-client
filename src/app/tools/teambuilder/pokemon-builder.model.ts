@@ -1,4 +1,13 @@
-import { Nature, StatsTable, TeraType, Type } from '../../data';
+import {
+  Nature,
+  NATURES,
+  STATS,
+  StatsTable,
+  TeraType,
+  Type,
+  TYPES,
+} from '../../data';
+import { getPidByName } from '../../data/namedex';
 import { Pokemon } from '../../interfaces/draft';
 
 type Item = {
@@ -37,7 +46,7 @@ export class PokemonSet implements PokemonData {
   types!: [Type] | [Type, Type];
   nature: Nature | null = null;
   nickname: string = '';
-  item: Item | null = null;
+  item: string | null = null;
   teraType: TeraType | null = null;
   ivs: StatsTable = {
     hp: 31,
@@ -69,8 +78,7 @@ export class PokemonSet implements PokemonData {
   shiny: boolean = false;
   dynamaxLevel: number = 255;
   gigantamax: boolean = false;
-  moves: [MoveData | null, MoveData | null, MoveData | null, MoveData | null] =
-    [null, null, null, null];
+  moves: (MoveData | null)[] = [null, null, null, null];
   ability: string = '';
 
   constructor(data: PokemonData & Partial<PokemonSet>) {
@@ -130,7 +138,7 @@ export class PokemonSet implements PokemonData {
       evs: Object.fromEntries(
         Object.entries(this.evs).filter((ev) => ev[1] <= 255 && ev[1] > 0),
       ),
-      item: this.item ? this.item.name : undefined,
+      item: this.item ?? undefined,
       level: this.level > 0 && this.level < 100 ? this.level : 100,
       nature:
         !this.nature || this.nature.boost === this.nature.drop
@@ -161,7 +169,7 @@ export class PokemonSet implements PokemonData {
     else text += `${this.name}`;
     if (this.gender === 'M') text += ` (M)`;
     if (this.gender === 'F') text += ` (F)`;
-    if (this.item) text += ` @ ${this.item.name}`;
+    if (this.item) text += ` @ ${this.item}`;
     text += `  \n`;
     if (this.ability) text += `Ability: ${this.ability}  \n`;
     for (let move of this.moves) {
@@ -193,6 +201,116 @@ export class PokemonSet implements PokemonData {
     if (this.gigantamax) text += `Gigantamax: Yes  \n`;
     text += `\n`;
     return text;
+  }
+
+  static import(buffer: string) {
+    const split = buffer.split('\n').map((line) => line.trim());
+    let firstLine: string | undefined = split[0];
+    const setOptions: Pokemon & Partial<PokemonSet> = { name: '', id: '' };
+    if (!firstLine) throw new Error('Invalid import string');
+    [firstLine, setOptions.item] = firstLine.split(' @ ');
+    if (firstLine.endsWith(' (M)')) {
+      setOptions.gender = 'M';
+      firstLine = firstLine.slice(0, -4);
+    }
+    if (firstLine.endsWith(' (F)')) {
+      setOptions.gender = 'F';
+      firstLine = firstLine.slice(0, -4);
+    }
+    let parenIndex = firstLine.lastIndexOf(' (');
+    if (firstLine.charAt(firstLine.length - 1) === ')' && parenIndex !== -1) {
+      setOptions.name = firstLine.slice(0, parenIndex);
+    }
+    setOptions.id = getPidByName(setOptions.name) ?? '';
+    const lines = split.slice(1);
+    lines.forEach((line) => {
+      if (line.startsWith('Trait: ')) {
+        line = line.slice(7);
+        setOptions.ability = line;
+      } else if (line.startsWith('Ability: ')) {
+        line = line.slice(9);
+        setOptions.ability = line;
+      } else if (line === 'Shiny: Yes') {
+        setOptions.shiny = true;
+      } else if (line.startsWith('Level: ')) {
+        line = line.slice(7);
+        setOptions.level = +line;
+      } else if (line.startsWith('Happiness: ')) {
+        line = line.slice(11);
+        setOptions.happiness = +line;
+      } else if (line.startsWith('Hidden Power: ')) {
+        line = line.slice(14);
+        if (TYPES.includes(line as Type)) setOptions.hiddenpower = line as Type;
+      } else if (line.startsWith('Dynamax Level: ')) {
+        line = line.slice(15);
+        setOptions.dynamaxLevel = +line;
+      } else if (line === 'Gigantamax: Yes') {
+        setOptions.gigantamax = true;
+      } else if (line.startsWith('EVs: ')) {
+        line = line.slice(5);
+        let evLines = line.split('/');
+        setOptions.evs = { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 };
+        for (let evLine of evLines) {
+          evLine = evLine.trim();
+          let spaceIndex = evLine.indexOf(' ');
+          if (spaceIndex === -1) continue;
+          let statid = STATS.find(
+            (stat) => stat.id === evLine.slice(spaceIndex + 1).toLowerCase(),
+          )?.id;
+          if (!statid) continue;
+          let statval = parseInt(evLine.slice(0, spaceIndex), 10);
+          setOptions.evs[statid] = statval;
+        }
+      } else if (line.startsWith('IVs: ')) {
+        line = line.slice(5);
+        let ivLines = line.split(' / ');
+        setOptions.ivs = {
+          hp: 31,
+          atk: 31,
+          def: 31,
+          spa: 31,
+          spd: 31,
+          spe: 31,
+        };
+        for (let ivLine of ivLines) {
+          ivLine = ivLine.trim();
+          let spaceIndex = ivLine.indexOf(' ');
+          if (spaceIndex === -1) continue;
+          let statid = STATS.find(
+            (stat) => stat.id === ivLine.slice(spaceIndex + 1).toLowerCase(),
+          )?.id;
+          if (!statid) continue;
+          let statval = parseInt(ivLine.slice(0, spaceIndex), 10);
+          if (isNaN(statval)) statval = 31;
+          setOptions.ivs[statid] = statval;
+        }
+      } else if (line.match(/^[A-Za-z]+ (N|n)ature/)) {
+        let natureIndex = line.indexOf(' Nature');
+        if (natureIndex === -1) natureIndex = line.indexOf(' nature');
+        if (natureIndex === -1) return;
+        line = line.slice(0, natureIndex);
+        if (line !== 'undefined')
+          setOptions.nature = NATURES.find((nature) => nature.name === line);
+      } else if (line.charAt(0) === '-' || line.charAt(0) === '~') {
+        line = line.slice(line.charAt(1) === ' ' ? 2 : 1);
+        // if (line.startsWith('Hidden Power [')) {
+        //   const hpType = line.slice(14, -1) as Type;
+        //   line = 'Hidden Power ' + hpType;
+        //   if (!setOptions.ivs && Dex.types.isName(hpType)) {
+        //     set.ivs = { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 };
+        //     const hpIVs = Dex.types.get(hpType).HPivs || {};
+        //     for (let stat in hpIVs) {
+        //       set.ivs[stat as StatName] = hpIVs[stat as StatName]!;
+        //     }
+        //   }
+        // }
+        if (line === 'Frustration' && setOptions.happiness === undefined) {
+          setOptions.happiness = 0;
+        }
+        // if (!setOptions.moves) setOptions.moves = [];
+        // setOptions.moves.push(line);
+      }
+    });
   }
 }
 export type MoveData = {
@@ -236,6 +354,7 @@ export class PokemonBuilder {
       categoryPath: `../../../../assets/icons/moves/move-${move.category.toLowerCase()}.png`,
     }));
   }
+
 
   // toPacked() {
   //   return [

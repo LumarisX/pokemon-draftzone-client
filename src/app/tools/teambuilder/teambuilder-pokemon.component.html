@@ -18,7 +18,7 @@
             <mat-label>Item</mat-label>
             <mat-select [(ngModel)]="pokemon.set.item" name="item">
               @for (item of pokemon.items; track item) {
-                <mat-option [value]="item">
+                <mat-option [value]="item.name">
                   {{ item.name }}
                 </mat-option>
               }
