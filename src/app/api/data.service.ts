@@ -51,6 +51,19 @@ export class DataService {
     });
   }
 
+  getPokemonList(ruleset: string): Observable<{
+    species: Pokemon[];
+    ruleset: string;
+  }> {
+    return this.apiService
+      .get('data/listpokemon', false, { ruleset: ruleset })
+      .pipe(
+        tap((response) => {
+          // this.cache.rulesets = rulesets;
+        }),
+      );
+  }
+
   advancesearch(query: string[], ruleset?: string, format?: string) {
     let encodedQuery = encodeURIComponent(query.join(''));
     let params: { [key: string]: string } = { query: encodedQuery };
