@@ -1,0 +1,90 @@
+<div
+  class="px-4 py-2 w-fit md:my-4 mx-4 my-2 rounded-lg bg-menu-200 hover:bg-menu-300 hover:cursor-pointer border border-menu-300 hover:border-menu-400"
+  routerLink="/battle-zone/pdbl"
+>
+  Back
+</div>
+<div class="p-4">
+  <form
+    [formGroup]="signupForm"
+    (ngSubmit)="onSubmit()"
+    class="space-y-6 max-w-3xl mx-auto p-6 bg-menu-100 border border-menu-200 rounded-lg shadow-lg"
+  >
+    <div class="flex justify-between h-16">
+      <div class="text-xl font-nasa flex items-center">
+        Pokemon DraftZone Battle League (PDBL)
+      </div>
+      <img src="../../../assets/images/pdbl.png" />
+    </div>
+
+    <!-- Discord Name -->
+    <div>
+      <label for="discordName" class="text-sm font-medium text-menu-700"
+        >Discord Name<span class="text-required">*</span></label
+      >
+      <input
+        id="discordName"
+        maxlength="100"
+        formControlName="discordName"
+        class="w-full p-2 bg-page border rounded-md sm:text-sm"
+        placeholder="Enter Discord Name"
+      />
+    </div>
+
+    <!-- Timezone -->
+    <div>
+      <label for="timezone" class="text-sm font-medium text-menu-700"
+        >Timezone<span class="text-required">*</span></label
+      >
+      <input
+        id="timezone"
+        maxlength="100"
+        formControlName="timezone"
+        class="w-full p-2 bg-page border rounded-md sm:text-sm"
+        placeholder="Enter Timezone"
+      />
+    </div>
+
+    <!-- Experience -->
+    <div>
+      <label for="experience" class="text-sm font-medium text-menu-700"
+        >Experience</label
+      >
+      <input
+        id="experience"
+        formControlName="experience"
+        maxlength="100"
+        class="w-full p-2 bg-page border rounded-md sm:text-sm"
+        placeholder="How much experience do you have in draft?"
+      />
+    </div>
+
+    <!-- Confirm -->
+    <div class="text-sm font-medium space-y-2">
+      <span
+        >Do you accept the
+        <span
+          class="text-blue-600 hover:text-blue-700 hover:cursor-pointer"
+          routerLink="/battle-zone/pdbl/rules"
+          >league rules</span
+        >?</span
+      >
+      <div class="flex items-center space-x-2">
+        <label for="confirm" class="text-sm font-medium text-menu-700">
+          Accept<span class="text-required">*</span>
+        </label>
+        <input id="confirm" type="checkbox" formControlName="confirm" />
+      </div>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="pt-4">
+      <button
+        type="submit"
+        class="bg-aTeam-400 text-symbolColor-inverted p-2 rounded-md hover:bg-aTeam-500 w-full"
+      >
+        Submit
+      </button>
+    </div>
+  </form>
+</div>
