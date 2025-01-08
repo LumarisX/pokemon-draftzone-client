@@ -39,7 +39,7 @@ export class DraftService {
     return this.apiService.post(
       `draft/${teamName}/matchups`,
       true,
-      matchupData
+      matchupData,
     );
   }
 
@@ -62,7 +62,7 @@ export class DraftService {
   scoreMatchup(matchupId: string, teamId: string, scoreData: Object) {
     return this.apiService.patch(
       `draft/${teamId}/${matchupId}/score`,
-      scoreData
+      scoreData,
     );
   }
   getGameTime(matchupId: string, teamId: string) {
@@ -71,7 +71,7 @@ export class DraftService {
   scheduleMatchup(matchupId: string, teamId: string, timeData: Object) {
     return this.apiService.patch(
       `draft/${teamId}/${matchupId}/schedule`,
-      timeData
+      timeData,
     );
   }
 }

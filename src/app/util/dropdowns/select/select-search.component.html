@@ -8,7 +8,13 @@
     (click)="toggleDropdown()"
   >
     @if (selectedItem) {
-      <span>{{ selectedItem.name }}</span>
+      <span>
+        @if (selectedItem.name) {
+          {{ selectedItem.name }}
+        } @else {
+          {{ selectedItem }}
+        }
+      </span>
     } @else {
       <span class="text-menu-600">
         {{ placeholder }}
@@ -64,11 +70,21 @@
             *cdkVirtualFor="let item of filteredItems"
             class="ml-2 mr-1 rounded flex justify-between items-center px-1 cursor-pointer hover:bg-menu-200"
             [ngClass]="{
-              'bg-menu-200': selectedItem && selectedItem.name === item.name,
+              'bg-menu-200':
+                (selectedItem &&
+                  selectedItem.name &&
+                  selectedItem.name === item.name) ||
+                selectedItem === item,
             }"
             (click)="selectItem(item)"
           >
-            <span>{{ item.name }}</span>
+            <span>
+              @if (item.name) {
+                {{ item.name }}
+              } @else {
+                {{ item }}
+              }
+            </span>
             <div class="space-x-1 h-7 flex">
               @for (header of headers; track $index) {
                 @switch (header.type) {
@@ -143,11 +159,21 @@
             *cdkVirtualFor="let item of filteredItems"
             class="mx-2 rounded flex justify-between items-center text-lg py-0.5 px-1 cursor-pointer hover:bg-menu-200"
             [ngClass]="{
-              'bg-menu-200': selectedItem && selectedItem.name === item.name,
+              'bg-menu-200':
+                (selectedItem &&
+                  selectedItem.name &&
+                  selectedItem.name === item.name) ||
+                selectedItem === item,
             }"
             (click)="selectItem(item)"
           >
-            <span>{{ item.name }}</span>
+            <span>
+              @if (item.name) {
+                {{ item.name }}
+              } @else {
+                {{ item }}
+              }
+            </span>
             <div class="space-x-1 h-7 flex">
               @for (header of headers; track $index) {
                 @switch (header.type) {

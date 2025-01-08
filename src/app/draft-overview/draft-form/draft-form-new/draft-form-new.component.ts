@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import {
-  AbstractControl,
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
@@ -10,11 +9,10 @@ import {
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { DraftService } from '../../../api/draft.service';
 import { Namedex } from '../../../data/namedex';
-import { PokemonFormComponent } from '../../../util/forms/pokemon-form/pokemon-form.component';
-import { DraftOverviewPath } from '../../draft-overview-routing.module';
-import { DraftFormCoreComponent } from '../draft-form-core/draft-form-core.component';
 import { LoadingComponent } from '../../../images/loading/loading.component';
 import { Pokemon } from '../../../interfaces/draft';
+import { DraftOverviewPath } from '../../draft-overview-routing.module';
+import { DraftFormCoreComponent } from '../draft-form-core/draft-form-core.component';
 
 @Component({
   selector: 'draft-form-new',

@@ -7,16 +7,14 @@ import { ControlValueAccessor } from '@angular/forms';
   imports: [CommonModule],
   template: '',
 })
-export class SelectBaseComponent<T extends { name: string }>
+export class SelectBaseComponent<T extends string | { name: string }>
   implements ControlValueAccessor
 {
   private _items: T[] = [];
 
   @Input()
-  set items(value: (string | T)[]) {
-    this._items = value.map((item) =>
-      typeof item === 'string' ? ({ name: String(item) } as T) : item,
-    );
+  set items(value: T[]) {
+    this._items = value;
   }
 
   get items(): T[] {
@@ -30,12 +28,11 @@ export class SelectBaseComponent<T extends { name: string }>
 
   private _selectedItem: T | null = null;
   @Input()
-  set startItem(item: string | T | null) {
+  set startItem(item: T | null) {
     if (item) {
       this._selectedItem =
         this.items.find((e) => {
-          if (typeof item === 'string') return e.name === item;
-          else return e.name === item.name;
+          return e === item;
         }) ?? null;
     }
   }
@@ -97,7 +94,7 @@ export class SelectBaseComponent<T extends { name: string }>
   writeValue(value: T): void {
     this.selectedItem =
       this.items.find((item) => {
-        return item.name === value.name;
+        return item === value;
       }) ?? value;
   }
 
