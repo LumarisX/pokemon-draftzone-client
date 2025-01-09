@@ -77,7 +77,7 @@ export class BZTierListComponent implements OnInit {
   ngOnInit(): void {
     this.dataService.getPokemonList('Gen8 NatDex').subscribe((response) => {
       console.log('Recieved', response);
-      this.list = response.species;
+      this.list = response;
     });
   }
 

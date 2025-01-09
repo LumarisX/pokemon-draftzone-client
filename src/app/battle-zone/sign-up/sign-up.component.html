@@ -14,7 +14,7 @@
       <div class="text-xl font-nasa flex items-center">
         Pokemon DraftZone Battle League (PDBL)
       </div>
-      <img src="../../../assets/images/pdbl.png" />
+      <img src="../../../assets/images/battle-zone/pdbl.png" />
     </div>
 
     <!-- Discord Name -->
@@ -29,6 +29,17 @@
         class="w-full p-2 bg-page border rounded-md sm:text-sm"
         placeholder="Enter Discord Name"
       />
+      <mat-form-field>
+        <mat-label>Discord Name</mat-label>
+        <input
+          matInput
+          placeholder="Enter Discord Name"
+          formControlName="discordName"
+        />
+        @if (signupForm.get("discordName")?.hasError("required")) {
+          <mat-error>Required</mat-error>
+        }
+      </mat-form-field>
     </div>
 
     <!-- Timezone -->
@@ -88,3 +99,4 @@
     </div>
   </form>
 </div>
+{{ signupForm.value | json }}

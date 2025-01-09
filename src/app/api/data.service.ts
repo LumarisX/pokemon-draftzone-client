@@ -51,17 +51,8 @@ export class DataService {
     });
   }
 
-  getPokemonList(ruleset: string): Observable<{
-    species: Pokemon[];
-    ruleset: string;
-  }> {
-    return this.apiService
-      .get('data/listpokemon', false, { ruleset: ruleset })
-      .pipe(
-        tap((response) => {
-          // this.cache.rulesets = rulesets;
-        }),
-      );
+  getPokemonList(ruleset: string): Observable<Pokemon[]> {
+    return this.apiService.get('data/listpokemon', false, { ruleset: ruleset });
   }
 
   advancesearch(query: string[], ruleset?: string, format?: string) {

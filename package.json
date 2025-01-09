@@ -5,7 +5,10 @@
     "local-dev": "ng serve --configuration=development",
     "prod": "ng serve --configuration=production",
     "api-dev": "ng serve --configuration=api-dev",
-    "build": "ng build"
+    "build": "ng build",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:ci": "test --runInBand"
   },
   "private": true,
   "dependencies": {
@@ -37,7 +40,10 @@
     "@types/auth0-lock": "^11.27.9",
     "@types/d3": "^7.4.3",
     "@types/jasmine": "~5.1.0",
+    "@types/jest": "^29.5.14",
     "jasmine-core": "~5.1.0",
+    "jest": "^29.7.0",
+    "jest-preset-angular": "^14.4.2",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
     "karma-coverage": "~2.2.0",

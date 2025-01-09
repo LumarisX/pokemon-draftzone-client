@@ -7,28 +7,40 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
-import { LeagueAdsService } from '../../api/league-ads.service';
+import {
+  MatError,
+  MatFormField,
+  MatInput,
+  MatLabel,
+} from '@angular/material/input';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'bz-sign-up',
   templateUrl: './sign-up.component.html',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule],
-  styles: `textarea {
-    resize: none
-  }`,
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    MatError,
+    ReactiveFormsModule,
+    RouterModule,
+  ],
+  styles: `
+    textarea {
+      resize: none;
+    }
+  `,
 })
 export class BZSignUpComponent implements OnInit {
   signupForm!: FormGroup;
   formats: string[] = [];
   rulesets: string[] = [];
 
-  constructor(
-    private fb: FormBuilder,
-    private leagueService: LeagueAdsService,
-    private router: Router
-  ) {}
+  constructor(private fb: FormBuilder) {}
 
   ngOnInit(): void {
     this.signupForm = this.fb.group({
