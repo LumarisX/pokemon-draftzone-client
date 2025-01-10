@@ -4,14 +4,43 @@ import { tap } from 'rxjs/operators';
 import { ApiService } from './api.service';
 import { Pokemon } from '../interfaces/draft';
 
-export type Supporter = {
-  username: string;
-  startDate: Date;
-  tier: string;
-  enabled: boolean;
-  extraMonths?: number;
-  endDate?: Date;
-  email?: string;
+export type SupporterData = {
+  top: {
+    all: {
+      name: string;
+      amount: number;
+    }[];
+    thirty: {
+      name: string;
+      amount: number;
+    }[];
+  };
+  tiers: {
+    poke: {
+      name: string;
+      months: number;
+    }[];
+    premier: {
+      name: string;
+      months: number;
+    }[];
+    great: {
+      name: string;
+      months: number;
+    }[];
+    ultra: {
+      name: string;
+      months: number;
+    }[];
+    luxury: {
+      name: string;
+      months: number;
+    }[];
+    master: {
+      name: string;
+      months: number;
+    }[];
+  };
 };
 
 @Injectable({
@@ -49,7 +78,7 @@ export class DataService {
     }
   }
 
-  getSupporters(): Observable<Supporter[]> {
+  getSupporters(): Observable<SupporterData> {
     return this.apiService.get('supporters/', false);
   }
 

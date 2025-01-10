@@ -9,6 +9,10 @@ const routes: Routes = [
     component: SupportersComponent,
   },
   {
+    path: 'donate',
+    component: SupportersComponent,
+  },
+  {
     path: 'about',
     component: AboutComponent,
   },
