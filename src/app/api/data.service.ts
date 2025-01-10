@@ -4,6 +4,16 @@ import { tap } from 'rxjs/operators';
 import { ApiService } from './api.service';
 import { Pokemon } from '../interfaces/draft';
 
+export type Supporter = {
+  username: string;
+  startDate: Date;
+  tier: string;
+  enabled: boolean;
+  extraMonths?: number;
+  endDate?: Date;
+  email?: string;
+};
+
 @Injectable({
   providedIn: 'root',
 })
@@ -37,6 +47,10 @@ export class DataService {
         }),
       );
     }
+  }
+
+  getSupporters(): Observable<Supporter[]> {
+    return this.apiService.get('supporters/', false);
   }
 
   getRandom(

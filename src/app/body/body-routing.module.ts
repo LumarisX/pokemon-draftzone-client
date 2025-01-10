@@ -1,16 +1,19 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AboutComponent } from '../pages/about/about.component';
+import { BattleZonePath } from '../battle-zone/battle-zone-routing.module';
 import { HomeComponent } from '../pages/homepage/homepage.component';
 import { SettingsComponent } from '../pages/settings/settings.component';
 import { PlannerComponent } from '../planner/plannner.component';
-import { BattleZonePath } from '../battle-zone/battle-zone-routing.module';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'planner', component: PlannerComponent },
   { path: 'settings', component: SettingsComponent },
-  { path: 'about', component: AboutComponent },
+  {
+    path: '',
+    loadChildren: () =>
+      import('../pages/page.module').then((m) => m.PageModule),
+  },
   {
     path: BattleZonePath,
     loadChildren: () =>
