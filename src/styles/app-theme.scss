@@ -152,7 +152,7 @@ $christmas-dark: (
 
 :root[theme-name="christmas"][light-mode="dark"] {
   @include apply-theme($christmas-dark);
-  @include mat.theme(
+  $christmas: mat.define-theme(
     (
       color: (
         primary: christmas.$primary-palette,
@@ -161,6 +161,8 @@ $christmas-dark: (
       ),
     )
   );
+
+  @include mat.theme($christmas);
 }
 
 .test-a-team {
@@ -169,3 +171,9 @@ $christmas-dark: (
 .test-b-team {
   background-color: var(--b-team);
 }
+
+// @include mat.autocomplete-overrides(
+//   (
+//     background-color: var(--mat-sys-secondary),
+//   )
+// );
