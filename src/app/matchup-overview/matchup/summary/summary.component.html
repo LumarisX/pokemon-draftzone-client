@@ -20,7 +20,6 @@
         matSortDirection="desc"
         matSortDisableClear
         (matSortChange)="sortData($event)"
-        id="myOverview"
         class="rounded-md table-fixed w-min"
         [ngClass]="teamColor()"
       >
@@ -38,36 +37,42 @@
           <th
             mat-sort-header="hp"
             class="w-12 cursor-pointer hover:text-menu-200"
+            start="desc"
           >
             HP
           </th>
           <th
             class="w-12 cursor-pointer hover:text-menu-200"
             mat-sort-header="atk"
+            start="desc"
           >
             ATK
           </th>
           <th
             class="w-12 cursor-pointer hover:text-menu-200"
             mat-sort-header="def"
+            start="desc"
           >
             DEF
           </th>
           <th
             class="w-12 cursor-pointer hover:text-menu-200"
             mat-sort-header="spa"
+            start="desc"
           >
             SPA
           </th>
           <th
             class="w-12 cursor-pointer hover:text-menu-200"
             mat-sort-header="spd"
+            start="desc"
           >
             SPD
           </th>
           <th
             class="w-12 cursor-pointer hover:text-menu-200"
             mat-sort-header="spe"
+            start="desc"
           >
             SPE
           </th>

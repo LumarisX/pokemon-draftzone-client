@@ -7,31 +7,45 @@
         </div>
       </div>
       <table
-        id="myOverview"
+        matSort
+        (matSortChange)="sortData($event)"
         class="w-full border-4 rounded-md table-auto border-menu-400"
       >
         <tr class="bg-menu-400">
           <th></th>
           <th></th>
-          <th class="text-left">Name</th>
-          <th>SPE</th>
+          <th class="cursor-pointer hover:text-menu-200" mat-sort-header="name">
+            Name
+          </th>
+          <th
+            class="cursor-pointer hover:text-menu-200"
+            mat-sort-header="spe"
+            start="desc"
+          >
+            SPE
+          </th>
         </tr>
-        <tr
-          *ngFor="let pokemon of teams[0].team"
-          class="h-12 border-b bg-aTeam-300 border-menu-400"
-        >
-          <td class="w-fit">
-            <div *ngIf="pokemon.capt" class="w-6 -mr-2">
-              <tera *ngIf="pokemon.capt.tera" [pokemon]="pokemon"></tera>
-              <z-svg *ngIf="pokemon.capt.z"></z-svg>
-            </div>
-          </td>
-          <td class="w-20">
-            <sprite [pokemon]="pokemon" [flipped]="true"></sprite>
-          </td>
-          <td class="w-32 text">{{ pokemon.name }}</td>
-          <td class="w-12 text-center">{{ pokemon.baseStats.spe }}</td>
-        </tr>
+        @for (pokemon of teams[0].team; track pokemon) {
+          <tr class="h-12 border-b bg-aTeam-300 border-menu-400">
+            <td class="w-fit">
+              @if (pokemon.capt) {
+                <div class="w-6 -mr-2">
+                  @if (pokemon.capt.tera) {
+                    <tera [pokemon]="pokemon"></tera>
+                  }
+                  @if (pokemon.capt.z) {
+                    <z-svg></z-svg>
+                  }
+                </div>
+              }
+            </td>
+            <td class="w-20">
+              <sprite [pokemon]="pokemon" [flipped]="true"></sprite>
+            </td>
+            <td class="w-32 text">{{ pokemon.name }}</td>
+            <td class="w-12 text-center">{{ pokemon.baseStats.spe }}</td>
+          </tr>
+        }
       </table>
       <div class="w-full h-3 rounded-b-full bg-menu-400"></div>
     </div>
@@ -42,33 +56,52 @@
         </div>
       </div>
       <table
-        id="oppOverview"
+        matSort
+        (matSortChange)="sortData($event)"
         class="w-full border-4 table-auto border-menu-400"
       >
         <tr class="bg-menu-400">
-          <th>SPE</th>
-          <th class="text-right">Name</th>
+          <th
+            class="cursor-pointer hover:text-menu-200"
+            mat-sort-header="spe"
+            start="desc"
+            arrowPosition="before"
+          >
+            SPE
+          </th>
+          <th
+            class="cursor-pointer hover:text-menu-200"
+            mat-sort-header="name"
+            arrowPosition="before"
+          >
+            Name
+          </th>
           <th></th>
           <th></th>
         </tr>
-        <tr
-          *ngFor="let pokemon of teams[1].team"
-          class="h-12 border-b bg-bTeam-300 border-menu-400"
-        >
-          <td class="w-12 text-center">{{ pokemon.baseStats.spe }}</td>
-          <td class="w-32 text-xs text-end">
-            {{ pokemon.name }}
-          </td>
-          <td class="w-20">
-            <sprite [pokemon]="pokemon"></sprite>
-          </td>
-          <td class="w-fit">
-            <div *ngIf="pokemon.capt" class="w-6 -ml-2">
-              <tera *ngIf="pokemon.capt.tera" [pokemon]="pokemon"></tera>
-              <z-svg *ngIf="pokemon.capt.z"></z-svg>
-            </div>
-          </td>
-        </tr>
+        @for (pokemon of teams[1].team; track pokemon) {
+          <tr class="h-12 border-b bg-bTeam-300 border-menu-400">
+            <td class="w-12 text-center">{{ pokemon.baseStats.spe }}</td>
+            <td class="w-32 text-xs text-end">
+              {{ pokemon.name }}
+            </td>
+            <td class="w-20">
+              <sprite [pokemon]="pokemon"></sprite>
+            </td>
+            <td class="w-fit">
+              @if (pokemon.capt) {
+                <div class="w-6 -ml-2">
+                  @if (pokemon.capt.tera) {
+                    <tera [pokemon]="pokemon"></tera>
+                  }
+                  @if (pokemon.capt.z) {
+                    <z-svg></z-svg>
+                  }
+                </div>
+              }
+            </td>
+          </tr>
+        }
       </table>
       <div class="w-full h-3 rounded-b-full bg-menu-400"></div>
     </div>
