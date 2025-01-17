@@ -85,11 +85,11 @@
             </div>
             <div>
               <span class="font-semibold">Damage Dealt:</span>
-              {{ player.total.damageDealt | number : "1.0-0" }}%
+              {{ player.total.damageDealt | number: "1.0-0" }}%
             </div>
             <div>
               <span class="font-semibold">Damage Taken:</span>
-              {{ player.total.damageTaken | number : "1.0-0" }}%
+              {{ player.total.damageTaken | number: "1.0-0" }}%
             </div>
             <div>
               <span class="font-semibold"> Total Accuracy: </span>
@@ -130,12 +130,9 @@
               <div *ngFor="let mon of player.team" class="p-1">
                 <div class="w-20">
                   <sprite
-                    [pokemon]="{
-                      id: mon.formes[mon.formes.length - 1].id,
-                      name: mon.formes[mon.formes.length - 1].detail.split(
-                        ','
-                      )[0]
-                    }"
+                    [name]="
+                      mon.formes[mon.formes.length - 1].detail.split(',')[0]
+                    "
                     [disabled]="mon.fainted"
                   ></sprite>
                 </div>
@@ -155,37 +152,37 @@
                 </div>
                 <div *ngIf="!mon.damageDealt[1]">
                   <span class="font-semibold"> Damage Dealt: </span>
-                  {{ mon.damageDealt[0] | number : "1.0-0" }}%
+                  {{ mon.damageDealt[0] | number: "1.0-0" }}%
                 </div>
                 <div *ngIf="mon.damageDealt[1]">
                   <span class="font-semibold"> Damage Dealt: </span>
                   <div>
                     <span> Direct: </span>
-                    {{ mon.damageDealt[0] | number : "1.0-0" }}%
+                    {{ mon.damageDealt[0] | number: "1.0-0" }}%
                   </div>
                   <div>
                     <span> Indirect: </span>
-                    {{ mon.damageDealt[1] | number : "1.0-0" }}%
+                    {{ mon.damageDealt[1] | number: "1.0-0" }}%
                   </div>
                 </div>
                 <div *ngIf="!mon.damageTaken[1]">
                   <span class="font-semibold"> Damage Taken: </span>
-                  {{ mon.damageTaken[0] | number : "1.0-0" }}%
+                  {{ mon.damageTaken[0] | number: "1.0-0" }}%
                 </div>
                 <div *ngIf="mon.damageTaken[1]">
                   <span class="font-semibold"> Damage Taken: </span>
                   <div>
                     <span> Direct: </span>
-                    {{ mon.damageTaken[0] | number : "1.0-0" }}%
+                    {{ mon.damageTaken[0] | number: "1.0-0" }}%
                   </div>
                   <div>
                     <span> Indirect: </span>
-                    {{ mon.damageTaken[1] | number : "1.0-0" }}%
+                    {{ mon.damageTaken[1] | number: "1.0-0" }}%
                   </div>
                 </div>
                 <div>
                   <span class="font-semibold"> HP Restored: </span>
-                  {{ mon.hpRestored | number : "1.0-0" }}%
+                  {{ mon.hpRestored | number: "1.0-0" }}%
                 </div>
               </div>
             </div>

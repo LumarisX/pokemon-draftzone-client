@@ -6048,7 +6048,13 @@ export const Namedex: {
     pmd: { id: '0670/0005' },
   },
   florges: {
-    name: ['Florges'],
+    name: [
+      'Florges',
+      'Florges-Blue',
+      'Florges-White',
+      'Florges-Yellow',
+      'Florges-Red',
+    ],
     ps: { id: 'florges' },
     serebii: { id: '671' },
     pd: { id: 'florges' },
