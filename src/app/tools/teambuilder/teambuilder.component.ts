@@ -6,12 +6,18 @@ import { DataService } from '../../api/data.service';
 import { TeambuilderService } from '../../api/teambuilder.service';
 import { nameList } from '../../data/namedex';
 import { PokemonBuilder } from './pokemon-builder.model';
+import { TeamBuilderPokemonComponent } from './teambuilder-pokemon.component';
 
 @Component({
   selector: 'teambuilder-analyzer',
   standalone: true,
   templateUrl: './teambuilder.component.html',
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [
+    CommonModule,
+    RouterModule,
+    FormsModule,
+    TeamBuilderPokemonComponent,
+  ],
 })
 export class TeamBuilderComponent implements OnInit {
   team: PokemonBuilder[] = [];

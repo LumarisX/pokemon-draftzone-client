@@ -3,15 +3,17 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
+  FormsModule,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { DataService } from '../../../api/data.service';
 import { TeraType } from '../../../data';
-import { SelectNoSearchComponent } from '../../../util/dropdowns/select/select-no-search.component';
-import { TeamFormComponent } from '../../../util/forms/team-form/team-form.component';
 import { Pokemon } from '../../../interfaces/draft';
+import { FormatSelectComponent } from '../../../util/format-select/format.component';
+import { TeamFormComponent } from '../../../util/forms/team-form/team-form.component';
+import { RulesetSelectComponent } from '../../../util/ruleset-select/ruleset.component';
 
 @Component({
   selector: 'quick-matchup-form',
@@ -19,15 +21,18 @@ import { Pokemon } from '../../../interfaces/draft';
   imports: [
     CommonModule,
     RouterModule,
+    FormsModule,
     ReactiveFormsModule,
-    SelectNoSearchComponent,
     TeamFormComponent,
+    FormatSelectComponent,
+    RulesetSelectComponent,
   ],
   templateUrl: './quick-matchup-form.component.html',
 })
 export class QuickMatchupFormComponent {
   formats: string[] = [];
   rulesets: string[] = [];
+  formatTest: string = '';
   draftForm!: FormGroup;
   @Input() formData!: {
     format: string;
@@ -129,5 +134,9 @@ export class QuickMatchupFormComponent {
     } else {
       console.log('Form is invalid.');
     }
+  }
+
+  test(value: string | undefined) {
+    console.log(value ?? 'undef');
   }
 }

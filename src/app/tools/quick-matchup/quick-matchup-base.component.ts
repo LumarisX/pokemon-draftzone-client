@@ -1,13 +1,13 @@
 import { CommonModule, Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { MatchupService } from '../../api/matchup.service';
+import { getNameByPid } from '../../data/namedex';
 import { LoadingComponent } from '../../images/loading/loading.component';
 import { Pokemon } from '../../interfaces/draft';
-import { MatchupData, Summary } from '../../matchup-overview/matchup-interface';
+import { MatchupData } from '../../matchup-overview/matchup-interface';
 import { MatchupComponent } from '../../matchup-overview/matchup/matchup.component';
 import { QuickMatchupFormComponent } from './form/quick-matchup-form.component';
-import { ActivatedRoute } from '@angular/router';
-import { getNameByPid, getPidByName } from '../../data/namedex';
 
 @Component({
   selector: 'quick-matchup-base',

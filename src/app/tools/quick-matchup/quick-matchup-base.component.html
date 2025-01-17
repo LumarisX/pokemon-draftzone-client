@@ -41,21 +41,23 @@
       }
     </div>
     <div class="flex justify-center w-full">
-      <div *ngIf="matchupData" class="flex flex-wrap justify-between gap-x-8">
-        <div class="w-full text-center sm:w-auto">
-          <p class="text-sm font-semibold text-menu-500">Ruleset</p>
-          <p class="text-xl font-bold">{{ matchupData.details.ruleset }}</p>
+      @if (matchupData) {
+        <div class="flex flex-wrap justify-between gap-x-8">
+          <div class="w-full text-center sm:w-auto">
+            <p class="text-sm font-semibold text-menu-500">Ruleset</p>
+            <p class="text-xl font-bold">{{ matchupData.details.ruleset }}</p>
+          </div>
+          <div class="w-full text-center sm:w-auto">
+            <p class="text-sm font-semibold text-menu-500">Format</p>
+            <p class="text-xl font-bold">{{ matchupData.details.format }}</p>
+          </div>
         </div>
-        <div class="w-full text-center sm:w-auto">
-          <p class="text-sm font-semibold text-menu-500">Format</p>
-          <p class="text-xl font-bold">{{ matchupData.details.format }}</p>
-        </div>
-      </div>
+      }
     </div>
     @if (matchupData) {
       <matchup [matchupData]="matchupData"></matchup>
     } @else {
-      <loading></loading>
+      <loading />>
     }
   </div>
 }
