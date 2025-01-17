@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 export type Settings = {
   theme?: string;
-  ldMode?: 'light' | 'dark';
+  ldMode: 'light' | 'dark' | 'device';
   time?: string;
   date?: string;
   spriteSet?: string;
@@ -22,26 +22,16 @@ export class SettingsService {
     this.updateLDMode(this.settingsData.ldMode);
   }
 
-  updateLDMode(value: string | undefined) {
-    if (value === 'light' || value === 'dark') {
-      if (value === 'light') {
-        document.documentElement.classList.add('light');
-        document.documentElement.classList.remove('dark');
-      } else {
-        document.documentElement.classList.add('dark');
-        document.documentElement.classList.remove('light');
-      }
-    } else {
-      let devicePref = window.matchMedia(
-        '(prefers-color-scheme: dark)',
-      ).matches;
-      if (!devicePref) {
-        document.documentElement.classList.add('light');
-        document.documentElement.classList.remove('dark');
-      } else {
-        document.documentElement.classList.add('dark');
-        document.documentElement.classList.remove('light');
-      }
-    }
+  updateLDMode(value: string) {
+    const isDark =
+      (value === 'device' &&
+        window.matchMedia('(prefers-color-scheme: dark)').matches) ||
+      value === 'dark';
+    document.documentElement.classList.toggle('dark', isDark);
+    document.documentElement.classList.toggle('light', !isDark);
+    document.documentElement.setAttribute(
+      'light-mode',
+      isDark ? 'dark' : 'light',
+    );
   }
 }

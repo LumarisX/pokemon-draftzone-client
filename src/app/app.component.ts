@@ -96,6 +96,11 @@ export class AppComponent implements OnInit {
       default:
         classes.push('classic dark:darkclassic');
     }
+    document.documentElement.setAttribute(
+      'theme-name',
+      this.settingsService.settingsData.theme ?? '',
+    );
+
     return classes;
   }
 }

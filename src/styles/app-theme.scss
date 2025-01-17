@@ -1,19 +1,171 @@
 @use "@angular/material" as mat;
+@use "sass:map";
+@use "./themes/classic.theme" as classic;
+@use "./themes/shiny.theme" as shiny;
+@use "./themes/christmas.theme" as christmas;
 
-html {
-  color-scheme: light;
+// Default Theme
+$default: (
+  aTeam: #9ed0ff,
+  bTeam: #eec74f,
+  menu: (
+    50: #f0f2f4,
+    100: #e1e5ea,
+    500: #6b7c94,
+  ),
+  page: #ffffff,
+);
+
+$default-dark: (
+  aTeam: #0b83a1,
+  bTeam: #c6af81,
+  menu: (
+    50: #6a7c95,
+    100: #607085,
+    500: #353e4a,
+  ),
+  page: #15191e,
+);
+
+// Shiny Theme
+$shiny: (
+  aTeam: #45def4,
+  bTeam: #ff6ddc,
+  menu: (
+    50: #eaeff5,
+    100: #d7dfe9,
+    500: #b0bccc,
+  ),
+  page: #ffffff,
+);
+
+$shiny-dark: (
+  aTeam: #0b83a1,
+  bTeam: #7a6fb2,
+  menu: (
+    50: #465160,
+    100: #404a59,
+    500: #2b323b,
+  ),
+  page: #20252c,
+);
+
+// Christmas Theme
+$christmas: (
+  aTeam: #d32f2f,
+  bTeam: #388e3c,
+  menu: (
+    50: #fffde6,
+    100: #fffbcc,
+    500: #ffee33,
+  ),
+  page: #ffffff,
+);
+
+$christmas-dark: (
+  aTeam: #8b0000,
+  bTeam: #006400,
+  menu: (
+    50: #3b4451,
+    100: #353e4a,
+    500: #2b323b,
+  ),
+  page: #101316,
+);
+
+@mixin apply-theme($theme) {
+  --a-team: #{map.get($theme, aTeam)};
+  --b-team: #{map.get($theme, bTeam)};
+
+  $menu: map.get($theme, menu);
+  --menu-50: #{map.get($menu, 50)};
+  --menu-100: #{map.get($menu, 100)};
+  --menu-500: #{map.get($menu, 500)};
+
+  --page: map.get($theme, page);
+}
+
+:root {
+  @include apply-theme($default);
   @include mat.theme(
     (
-      color: mat.$orange-palette,
+      color: (
+        primary: classic.$primary-palette,
+        tertiary: classic.$tertiary-palette,
+        theme-type: light,
+      ),
     )
   );
 }
 
-.dark-mode {
-  color-scheme: dark;
+:root[light-mode="dark"] {
+  @include apply-theme($default-dark);
   @include mat.theme(
     (
-      color: mat.$rose-palette,
+      color: (
+        primary: classic.$primary-palette,
+        tertiary: classic.$tertiary-palette,
+        theme-type: dark,
+      ),
     )
   );
+}
+
+:root[theme-name="shiny"] {
+  @include apply-theme($shiny);
+  @include mat.theme(
+    (
+      color: (
+        primary: shiny.$primary-palette,
+        tertiary: shiny.$tertiary-palette,
+        theme-type: light,
+      ),
+    )
+  );
+}
+
+:root[theme-name="shiny"][light-mode="dark"] {
+  @include apply-theme($shiny-dark);
+  @include mat.theme(
+    (
+      color: (
+        primary: shiny.$primary-palette,
+        tertiary: shiny.$tertiary-palette,
+        theme-type: dark,
+      ),
+    )
+  );
+}
+
+:root[theme-name="christmas"] {
+  @include apply-theme($christmas);
+  @include mat.theme(
+    (
+      color: (
+        primary: christmas.$primary-palette,
+        tertiary: christmas.$tertiary-palette,
+        theme-type: light,
+      ),
+    )
+  );
+}
+
+:root[theme-name="christmas"][light-mode="dark"] {
+  @include apply-theme($christmas-dark);
+  @include mat.theme(
+    (
+      color: (
+        primary: christmas.$primary-palette,
+        tertiary: christmas.$tertiary-palette,
+        theme-type: dark,
+      ),
+    )
+  );
+}
+
+.test-a-team {
+  background-color: var(--a-team);
+}
+.test-b-team {
+  background-color: var(--b-team);
 }
