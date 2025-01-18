@@ -5940,7 +5940,7 @@ export const Namedex: {
     ps: { id: 'greninja-ash' },
     serebii: { id: '658-a' },
     pd: { id: 'greninja-ash' },
-    pmd: { id: '0658/0002' },
+    pmd: { id: '0658/0001' },
   },
   bunnelby: {
     name: ['Bunnelby'],
