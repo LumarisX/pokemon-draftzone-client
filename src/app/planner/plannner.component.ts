@@ -202,11 +202,19 @@ export class PlannerComponent implements OnInit {
   }
 
   get teamFormArray(): FormArray {
-    return this.getDraftFormGroup().get('team') as FormArray;
+    let array = this.getDraftFormGroup().get('team') as FormArray | null;
+    if (!(array instanceof FormArray) || array.length < 1) {
+      array = this.fb.array([this.createDraftFormGroup()]);
+    }
+    return array;
   }
 
   get draftArray(): FormArray {
-    return this.plannerForm.get('drafts') as FormArray;
+    let array = this.plannerForm.get('drafts') as FormArray | null;
+    if (!(array instanceof FormArray) || array.length < 1) {
+      array = this.fb.array([this.createDraftFormGroup()]);
+    }
+    return array;
   }
 
   deletePlan(index: number) {
