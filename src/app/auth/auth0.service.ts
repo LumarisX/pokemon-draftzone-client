@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
-import { AuthService as Auth0Service } from '@auth0/auth0-angular';
+import { AuthService as Auth0Service, User } from '@auth0/auth0-angular';
 import { catchError, Observable, of, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  constructor(private auth0: Auth0Service, private router: Router) {}
+  constructor(private auth0: Auth0Service) {}
 
   setAccessToken() {
     this.auth0
@@ -31,7 +30,7 @@ export class AuthService {
             console.error('Failed to get access token:', error);
           }
           return of(null);
-        })
+        }),
       )
       .subscribe();
   }
@@ -52,7 +51,7 @@ export class AuthService {
           console.error('Failed to get access token:', error);
         }
         return of(''); // Return an empty string observable to handle the error
-      })
+      }),
     );
   }
 
@@ -72,7 +71,7 @@ export class AuthService {
         catchError((error) => {
           console.error('Login failed:', error);
           return of(null);
-        })
+        }),
       )
       .subscribe();
   }
@@ -85,7 +84,7 @@ export class AuthService {
       .pipe(
         tap(() => {
           this.removeAccessToken();
-        })
+        }),
       )
       .subscribe();
   }
@@ -95,6 +94,8 @@ export class AuthService {
   }
 
   user() {
-    return this.auth0.user$;
+    return this.auth0.user$ as Observable<
+      (User & { username: string }) | null | undefined
+    >;
   }
 }

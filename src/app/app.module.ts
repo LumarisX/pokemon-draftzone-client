@@ -23,6 +23,7 @@ import { LogoSVG } from './images/svg-components/logo.component';
       authorizationParams: {
         redirect_uri: window.location.origin,
         audience: 'https://dev-wspjxi5f6mjqsjea.us.auth0.com/api/v2/',
+        scope: 'openid profile email read:username',
       },
       httpInterceptor: {
         allowedList: [
@@ -31,7 +32,7 @@ import { LogoSVG } from './images/svg-components/logo.component';
             tokenOptions: {
               authorizationParams: {
                 audience: 'https://dev-wspjxi5f6mjqsjea.us.auth0.com/api/v2/',
-                scope: 'read:current_user',
+                scope: 'openid profile email read:username',
               },
             },
           },

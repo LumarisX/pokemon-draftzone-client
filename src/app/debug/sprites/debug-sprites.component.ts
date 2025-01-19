@@ -5,12 +5,12 @@ import { nameList } from '../../data/namedex';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
 
 @Component({
-  selector: 'test-sprites',
+  selector: 'debug-sprites',
   standalone: true,
-  templateUrl: './test-sprites.component.html',
+  templateUrl: './debug-sprites.component.html',
   imports: [CommonModule, SpriteComponent, RouterModule],
 })
-export class TestSpritesComponent {
+export class DebugSpritesComponent {
   names = nameList();
   constructor() {}
 }
