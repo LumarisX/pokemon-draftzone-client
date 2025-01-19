@@ -130,9 +130,7 @@
               <div *ngFor="let mon of player.team" class="p-1">
                 <div class="w-20">
                   <sprite
-                    [name]="
-                      mon.formes[mon.formes.length - 1].detail.split(',')[0]
-                    "
+                    [pid]="mon.formes[0].id"
                     [disabled]="mon.fainted"
                   ></sprite>
                 </div>

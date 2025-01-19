@@ -142,7 +142,7 @@ export class DebugComponent implements OnInit {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'debugging-info.txt';
+    a.download = 'draftzone-debugging.txt';
     a.click();
     URL.revokeObjectURL(url);
   }
