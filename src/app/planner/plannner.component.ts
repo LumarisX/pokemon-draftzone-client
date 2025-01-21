@@ -11,6 +11,7 @@ import {
   AbstractControl,
   FormArray,
   FormBuilder,
+  FormControl,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
@@ -42,6 +43,7 @@ import { CopySVG } from '../images/svg-components/copy.component';
 import { DraftOverviewPath } from '../draft-overview/draft-overview-routing.module';
 import { PlannerCoverageComponent } from './coverage/coverage.component';
 import { MatTabsModule } from '@angular/material/tabs';
+import { LoadingComponent } from '../images/loading/loading.component';
 
 type Planner = {
   summary: Summary;
@@ -77,6 +79,7 @@ type Planner = {
     CompactSVG,
     CopySVG,
     PlannerCoverageComponent,
+    LoadingComponent,
   ],
   animations: [
     trigger('growIn', [
@@ -298,52 +301,28 @@ export class PlannerComponent implements OnInit {
     }
   }
 
-  createDraftFormGroup(
-    data: {
-      format: string;
-      ruleset: string;
-      draftName: string;
-      min: number;
-      max: number;
-      system: string;
-      totalPoints: number;
-      team: {
-        name: string;
-        id: string;
-        value: string;
-        tier: string;
-        capt: boolean;
-        drafted: boolean;
-      }[];
-    } = {
-      format: 'Singles',
-      ruleset: 'Gen9 NatDex',
-      draftName: 'Draft ' + (this.draftSize + 1),
-      min: 10,
-      max: 12,
-      system: 'points',
-      totalPoints: 100,
-      team: [],
-    },
-  ): FormGroup {
-    let teamArray = this.fb.array(
-      data.team.map((mon) => this.createTeamFormGroup(mon)),
+  createDraftFormGroup(data?: {
+    format: string;
+    ruleset: string;
+    draftName: string;
+    min: number;
+    max: number;
+    system: string;
+    totalPoints: number;
+    team: {
+      name: string;
+      id: string;
+      value: string;
+      tier: string;
+      capt: boolean;
+      drafted: boolean;
+    }[];
+  }): FormGroup {
+    const group = new DraftFormGroup(
+      data ?? { draftName: 'Draft ' + (this.draftSize + 1) },
     );
-    let group = this.fb.group({
-      format: [data.format, Validators.required],
-      ruleset: [data.ruleset, Validators.required],
-      draftName: [data.draftName],
-      min: [data.min, [Validators.required, Validators.min(0)]],
-      max: [
-        data.max,
-        [Validators.required, Validators.min(0), Validators.max(18)],
-      ],
-      system: [data.system, Validators.required],
-      totalPoints: [data.totalPoints],
-      team: teamArray,
-    });
-
-    group.get('max')?.valueChanges.subscribe((value: number | null) => {
+    const maxFormControl = group.get('max');
+    maxFormControl?.valueChanges.subscribe((value: number | null) => {
       if (value) {
         group
           .get('min')
@@ -355,45 +334,25 @@ export class PlannerComponent implements OnInit {
         group.get('min')?.updateValueAndValidity();
       }
     });
-
-    group.get('max')?.valueChanges.subscribe((value: number | null) => {
-      if (value) this.adjustTeamArray(group.get('team') as FormArray, value);
+    maxFormControl?.valueChanges.subscribe((value: number | null) => {
+      if (value) this.adjustTeamArray(group.teamArray, value);
     });
-
     group.get('ruleset')?.valueChanges.subscribe(() => {
       this.updateDetails();
     });
-
-    this.adjustTeamArray(group.get('team') as FormArray, data.max);
     this.draftSize++;
     return group;
   }
 
-  createTeamFormGroup(
-    data: {
-      name: string;
-      id: string;
-      value: string | null;
-      tier: string;
-      capt: boolean;
-      drafted: boolean;
-    } = {
-      id: '',
-      name: '',
-      capt: false,
-      tier: '',
-      value: null,
-      drafted: false,
-    },
-  ): FormGroup {
-    const teamFormGroup = this.fb.group({
-      id: [data.id, Validators.required],
-      name: [data.name, Validators.required],
-      capt: [data.capt, Validators.required],
-      tier: [data.tier],
-      value: [data.value],
-      drafted: [data.drafted],
-    });
+  createTeamFormGroup(data?: {
+    name: string;
+    id: string;
+    value: string | null;
+    tier: string;
+    capt: boolean;
+    drafted: boolean;
+  }): TeamFormGroup {
+    const teamFormGroup = new TeamFormGroup(data);
     teamFormGroup.get('name')?.valueChanges.subscribe((name) => {
       if (name !== null) {
         let id = getPidByName(name);
@@ -402,11 +361,9 @@ export class PlannerComponent implements OnInit {
         }
       }
     });
-
     teamFormGroup.get('id')?.valueChanges.subscribe((id) => {
       this.updateDetails();
     });
-
     return teamFormGroup;
   }
 
@@ -417,9 +374,7 @@ export class PlannerComponent implements OnInit {
   }
 
   getDraftFormGroup(): FormGroup {
-    return (this.plannerForm.get('drafts') as FormArray).at(
-      this.selectedDraft,
-    ) as FormGroup;
+    return this.draftArray.at(this.selectedDraft) as FormGroup;
   }
 
   minMaxStyle(i: number) {
@@ -428,27 +383,9 @@ export class PlannerComponent implements OnInit {
       : 'border-menu-300 text-menu-500';
   }
 
-  populateTeamFromLocalStorage(formData: any): void {
-    for (let i of formData.drafts) {
-      const teamArray = formData.drafts[i]?.team || [];
-      const teamFormArray = teamArray.get('team') as FormArray;
-      teamArray.forEach((teamMember: any) => {
-        const teamFormGroup = this.createTeamFormGroup();
-        teamFormGroup.patchValue(teamMember);
-        teamFormArray.push(teamFormGroup);
-      });
-    }
-  }
-
   switchDrafts(index: number) {
     this.selectedDraft = index;
     this.updateDetails();
-  }
-
-  selectedDraftsStyle(index: number) {
-    return index == this.selectedDraft
-      ? 'bg-menu-100 '
-      : 'bg-menu-250 hover:bg-menu-150';
   }
 
   copyToNew(index: number) {
@@ -486,5 +423,80 @@ export class PlannerComponent implements OnInit {
   @HostListener('window:resize', ['$event'])
   onResize(event: Event) {
     this.isMediumScreen = window.innerWidth >= 768;
+  }
+}
+
+class TeamFormGroup extends FormGroup<{
+  name: FormControl<string | null>;
+  id: FormControl<string | null>;
+  capt: FormControl<boolean | null>;
+  tier: FormControl<string | null>;
+  value: FormControl<string | null>;
+  drafted: FormControl<boolean | null>;
+}> {
+  constructor(data?: {
+    name?: string;
+    id?: string;
+    value?: string | null;
+    tier?: string;
+    capt: boolean;
+    drafted?: boolean;
+  }) {
+    super({
+      id: new FormControl(data?.id ?? '', Validators.required),
+      name: new FormControl(data?.name ?? '', Validators.required),
+      capt: new FormControl(data?.capt ?? false, Validators.required),
+      tier: new FormControl(data?.tier ?? ''),
+      value: new FormControl(data?.value ?? null),
+      drafted: new FormControl(data?.drafted ?? false),
+    });
+  }
+}
+
+class DraftFormGroup extends FormGroup {
+  teamArray: FormArray<TeamFormGroup>;
+  constructor(data: {
+    format?: string;
+    ruleset?: string;
+    draftName: string;
+    min?: number;
+    max?: number;
+    system?: string;
+    totalPoints?: number;
+    team?: {
+      name: string;
+      id: string;
+      value: string;
+      tier: string;
+      capt: boolean;
+      drafted: boolean;
+    }[];
+  }) {
+    const max = data?.max ?? 12;
+    const teamArray: FormArray<TeamFormGroup> = new FormArray(
+      data?.team?.map((mon) => new TeamFormGroup(mon)) ??
+        new Array(max).map(() => new TeamFormGroup()),
+    );
+    super({
+      format: new FormControl(data?.format ?? 'Singles', Validators.required),
+      ruleset: new FormControl(
+        data?.ruleset ?? 'Gen9 NatDex',
+        Validators.required,
+      ),
+      draftName: new FormControl(data?.draftName),
+      min: new FormControl(data?.min ?? 10, [
+        Validators.required,
+        Validators.min(0),
+      ]),
+      max: new FormControl(max, [
+        Validators.required,
+        Validators.min(0),
+        Validators.max(18),
+      ]),
+      system: new FormControl(data?.system ?? 'points', Validators.required),
+      totalPoints: new FormControl(data?.totalPoints ?? 100),
+      team: teamArray,
+    });
+    this.teamArray = teamArray;
   }
 }
