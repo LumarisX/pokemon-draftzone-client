@@ -17,13 +17,17 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { MatTabsModule } from '@angular/material/tabs';
 import { RouterModule } from '@angular/router';
 import { DataService } from '../api/data.service';
 import { PlannerService } from '../api/planner.service';
 import { Type } from '../data';
 import { getPidByName, Namedex, nameList, PokemonId } from '../data/namedex';
+import { DraftOverviewPath } from '../draft-overview/draft-overview-routing.module';
+import { LoadingComponent } from '../images/loading/loading.component';
 import { SpriteComponent } from '../images/sprite/sprite.component';
 import { CompactSVG } from '../images/svg-components/compact.component';
+import { CopySVG } from '../images/svg-components/copy.component';
 import { GearSVG } from '../images/svg-components/gear.component';
 import { PlusSVG } from '../images/svg-components/plus.component';
 import { TrashSVG } from '../images/svg-components/trash.component';
@@ -36,14 +40,10 @@ import {
 } from '../matchup-overview/matchup-interface';
 import { FinderCoreComponent } from '../tools/finder/finder-core.component';
 import { SelectSearchComponent } from '../util/dropdowns/select/select-search.component';
+import { PlannerCoverageComponent } from './coverage/coverage.component';
 import { MoveComponent } from './moves/moves.component';
 import { SummaryComponent } from './summary/summary.component';
 import { TypechartComponent } from './typechart/typechart.component';
-import { CopySVG } from '../images/svg-components/copy.component';
-import { DraftOverviewPath } from '../draft-overview/draft-overview-routing.module';
-import { PlannerCoverageComponent } from './coverage/coverage.component';
-import { MatTabsModule } from '@angular/material/tabs';
-import { LoadingComponent } from '../images/loading/loading.component';
 
 type Planner = {
   summary: Summary;
@@ -318,9 +318,22 @@ export class PlannerComponent implements OnInit {
       drafted: boolean;
     }[];
   }): FormGroup {
-    const group = new DraftFormGroup(
-      data ?? { draftName: 'Draft ' + (this.draftSize + 1) },
+    const teamArray: FormArray<TeamFormGroup> = new FormArray(
+      data?.team?.map((mon) => this.createTeamFormGroup(mon)) ??
+        Array.from({ length: data?.max ?? 12 }, () =>
+          this.createTeamFormGroup(),
+        ),
     );
+    const group = new DraftFormGroup({
+      format: data?.format,
+      ruleset: data?.ruleset,
+      draftName: 'Draft ' + (this.draftSize + 1),
+      min: data?.min,
+      max: data?.max,
+      system: data?.system,
+      totalPoints: data?.totalPoints,
+      team: teamArray,
+    });
     const maxFormControl = group.get('max');
     maxFormControl?.valueChanges.subscribe((value: number | null) => {
       if (value) {
@@ -357,7 +370,7 @@ export class PlannerComponent implements OnInit {
       if (name !== null) {
         let id = getPidByName(name);
         if (teamFormGroup.get('id')?.value != id) {
-          teamFormGroup.patchValue({ id: id });
+          teamFormGroup.get('id')?.setValue(id, { emitEvent: false });
         }
       }
     });
@@ -463,20 +476,10 @@ class DraftFormGroup extends FormGroup {
     max?: number;
     system?: string;
     totalPoints?: number;
-    team?: {
-      name: string;
-      id: string;
-      value: string;
-      tier: string;
-      capt: boolean;
-      drafted: boolean;
-    }[];
+    team: FormArray<TeamFormGroup>;
   }) {
     const max = data?.max ?? 12;
-    const teamArray: FormArray<TeamFormGroup> = new FormArray(
-      data?.team?.map((mon) => new TeamFormGroup(mon)) ??
-        new Array(max).map(() => new TeamFormGroup()),
-    );
+
     super({
       format: new FormControl(data?.format ?? 'Singles', Validators.required),
       ruleset: new FormControl(
@@ -495,8 +498,8 @@ class DraftFormGroup extends FormGroup {
       ]),
       system: new FormControl(data?.system ?? 'points', Validators.required),
       totalPoints: new FormControl(data?.totalPoints ?? 100),
-      team: teamArray,
+      team: data.team,
     });
-    this.teamArray = teamArray;
+    this.teamArray = data.team;
   }
 }
