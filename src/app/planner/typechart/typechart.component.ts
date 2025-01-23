@@ -3,19 +3,27 @@ import { Component, Input, OnChanges } from '@angular/core';
 import { ExtendedType, Type, TYPES } from '../../data';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { Pokemon } from '../../interfaces/draft';
-import { TypeChart } from '../../matchup-overview/matchup-interface';
+import { TypeChart } from '../../drafts/matchup-overview/matchup-interface';
+import { CheckSVG } from '../../images/svg-components/score.component copy';
+import { CircleSVG } from '../../images/svg-components/circle.component';
 
 @Component({
   selector: 'typechart',
   standalone: true,
   templateUrl: './typechart.component.html',
-  imports: [CommonModule, SpriteComponent],
+  imports: [CommonModule, SpriteComponent, CheckSVG, CircleSVG],
 })
 export class TypechartComponent implements OnChanges {
   @Input() typechart!: TypeChart;
-  @Input() recommended!: {
-    pokemon: Pokemon[];
-    types: Type[][];
+  @Input() recommended?: {
+    all: {
+      pokemon: Pokemon[];
+      types: Type[][];
+    };
+    unique: {
+      pokemon: Pokemon[];
+      types: Type[][];
+    };
   };
   types = TYPES;
   counts: number[] = [];
@@ -23,6 +31,7 @@ export class TypechartComponent implements OnChanges {
   resistances: number[] = [];
   difference: number[] = [];
   differential: number[] = [];
+  uniqueSelected: boolean = true;
 
   constructor() {}
 

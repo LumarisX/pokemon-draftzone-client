@@ -11,41 +11,45 @@
               <th
                 class="flex space-x-0.5 bg-menu-300 border-b-2 border-menu-400"
               >
-                <div
-                  class="w-10 flex space-x-1 items-center justify-center"
-                  *ngFor="let type of types"
-                >
-                  <img
-                    class=""
-                    src="../../../assets/icons/types/{{ type }}.png"
-                    onerror="this.src='../../../assets/icons/types/Unknown.png'"
-                    alt="{{ type }}"
-                  />
-                </div>
+                @for (type of types; track type) {
+                  <div class="w-10 flex space-x-1 items-center justify-center">
+                    <img
+                      class=""
+                      src="../../../assets/icons/types/{{ type }}.png"
+                      onerror="this.src='../../../assets/icons/types/Unknown.png'"
+                      alt="{{ type }}"
+                    />
+                  </div>
+                }
               </th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let pokemon of typechart.team">
-              <th
-                class="w-12 border-r-4 cursor-pointer border-r-menu-400 hover:bg-menu-100"
-                (click)="toggleVisible(pokemon)"
-              >
-                <sprite
-                  [pokemon]="pokemon"
-                  [class.opacity-60]="pokemon.disabled"
-                ></sprite>
-              </th>
-              <td class="flex h-12 space-x-0.5">
-                <div
-                  *ngFor="let type of types"
-                  class="w-10 h-full border flex items-center justify-center"
-                  [ngClass]="typeColor(pokemon.weak[type], pokemon.disabled!)"
+            @for (pokemon of typechart.team; track pokemon) {
+              <tr>
+                <th
+                  class="w-12 border-r-4 cursor-pointer border-r-menu-400 hover:bg-menu-100"
+                  (click)="toggleVisible(pokemon)"
                 >
-                  <span> {{ pokemon.weak[type] }}</span>
-                </div>
-              </td>
-            </tr>
+                  <sprite
+                    [pokemon]="pokemon"
+                    [class.opacity-60]="pokemon.disabled"
+                  ></sprite>
+                </th>
+                <td class="flex h-12 space-x-0.5">
+                  @for (type of types; track type) {
+                    <div
+                      class="w-10 h-full border flex items-center justify-center"
+                      [ngClass]="
+                        typeColor(pokemon.weak[type], pokemon.disabled!)
+                      "
+                    >
+                      <span> {{ pokemon.weak[type] }}</span>
+                    </div>
+                  }
+                </td>
+              </tr>
+            }
           </tbody>
           <thead class="border-b-4 border-menu-400">
             <tr>
@@ -53,17 +57,16 @@
               <th
                 class="flex space-x-0.5 border-b-2 bg-menu-300 border-menu-400"
               >
-                <div
-                  class="w-10 flex items-center justify-center"
-                  *ngFor="let type of types"
-                >
-                  <img
-                    class=""
-                    src="../../../assets/icons/types/{{ type }}.png"
-                    onerror="this.src='../../../assets/icons/types/Unknown.png'"
-                    alt="{{ type }}"
-                  />
-                </div>
+                @for (type of types; track type) {
+                  <div class="w-10 flex items-center justify-center">
+                    <img
+                      class=""
+                      src="../../../assets/icons/types/{{ type }}.png"
+                      onerror="this.src='../../../assets/icons/types/Unknown.png'"
+                      alt="{{ type }}"
+                    />
+                  </div>
+                }
               </th>
             </tr>
           </thead>
@@ -73,13 +76,14 @@
                 Count
               </th>
               <td class="flex space-x-0.5">
-                <div
-                  *ngFor="let count of counts"
-                  class="text-center border h-full w-10"
-                  [ngClass]="countColor(count)"
-                >
-                  {{ count | number: "1.0-0" }}
-                </div>
+                @for (count of counts; track count) {
+                  <div
+                    class="text-center border h-full w-10"
+                    [ngClass]="countColor(count)"
+                  >
+                    {{ count | number: "1.0-0" }}
+                  </div>
+                }
               </td>
             </tr>
             <tr>
@@ -89,13 +93,14 @@
                 Weaks
               </th>
               <td class="flex space-x-0.5">
-                <div
-                  *ngFor="let weakness of weaknesses"
-                  class="text-center border h-full w-10"
-                  [ngClass]="weakColor(weakness)"
-                >
-                  {{ weakness | number: "1.0-0" }}
-                </div>
+                @for (weakness of weaknesses; track weakness) {
+                  <div
+                    class="text-center border h-full w-10"
+                    [ngClass]="weakColor(weakness)"
+                  >
+                    {{ weakness | number: "1.0-0" }}
+                  </div>
+                }
               </td>
             </tr>
             <tr>
@@ -105,13 +110,14 @@
                 Resists
               </th>
               <td class="flex space-x-0.5">
-                <div
-                  *ngFor="let resistance of resistances"
-                  class="text-center border h-full w-10"
-                  [ngClass]="resistColor(resistance)"
-                >
-                  {{ resistance | number: "1.0-0" }}
-                </div>
+                @for (resistance of resistances; track resistance) {
+                  <div
+                    class="text-center border h-full w-10"
+                    [ngClass]="resistColor(resistance)"
+                  >
+                    {{ resistance | number: "1.0-0" }}
+                  </div>
+                }
               </td>
             </tr>
             <tr>
@@ -121,13 +127,14 @@
                 Diff
               </th>
               <td class="flex space-x-0.5">
-                <div
-                  *ngFor="let diff of difference"
-                  class="text-center border h-full w-10"
-                  [ngClass]="diffColor(diff)"
-                >
-                  {{ diff | number: "1.0-0" }}
-                </div>
+                @for (diff of difference; track diff) {
+                  <div
+                    class="text-center border h-full w-10"
+                    [ngClass]="diffColor(diff)"
+                  >
+                    {{ diff | number: "1.0-0" }}
+                  </div>
+                }
               </td>
             </tr>
             <tr>
@@ -137,13 +144,14 @@
                 Log
               </th>
               <td class="flex space-x-0.5">
-                <div
-                  *ngFor="let diff of differential"
-                  class="text-center border w-10"
-                  [ngClass]="diffColor(diff)"
-                >
-                  {{ diff | number: "1.0-0" }}
-                </div>
+                @for (diff of differential; track diff) {
+                  <div
+                    class="text-center border w-10"
+                    [ngClass]="diffColor(diff)"
+                  >
+                    {{ diff | number: "1.0-0" }}
+                  </div>
+                }
               </td>
             </tr>
           </tfoot>
@@ -151,53 +159,85 @@
       </div>
     </div>
   </div>
-  <div class="p-1">
-    <div
-      class="flex flex-col items-center border-4 border-menu-400 bg-menu-100"
-    >
-      <h3
-        class="font-semibold text-lg border-b-2 border-menu-400 bg-menu-200 w-full text-center"
+  @if (recommended) {
+    <div class="p-1">
+      <div
+        class="flex flex-col items-center border-4 border-menu-400 bg-menu-100"
       >
-        Recommended
-      </h3>
-      <div class="flex space-x-4 max-h-96 overflow-y-auto">
-        <div class="p-2">
-          <table>
-            <tr>
-              <td></td>
-              <td>Pokemon</td>
-            </tr>
-            <tr *ngFor="let pokemon of recommended.pokemon; let i = index">
-              <td>{{ i + 1 }}</td>
-              <td class="w-8 text-center text-xs py-2">
-                <sprite [pokemon]="pokemon"></sprite>
-                {{ pokemon.name }}
-              </td>
-            </tr>
-          </table>
+        <div
+          class="font-semibold text-lg border-b-2 border-menu-400 bg-menu-200 w-full text-center"
+          (click)="uniqueSelected = !uniqueSelected"
+        >
+          <h3>Recommended</h3>
+          <div
+            class="flex space-x-1 justify-center shadow-inner items-center text-sm border bg-menu-100 hover:cursor-pointer hover:bg-menu-150 border-menu-250"
+          >
+            <div>Unique Typing</div>
+            <div class="h-4">
+              @if (uniqueSelected) {
+                <check-svg></check-svg>
+              } @else {
+                <circle-svg></circle-svg>
+              }
+            </div>
+          </div>
         </div>
-        <div class="p-2">
-          <table>
-            <tr>
-              <td></td>
-              <td>Types</td>
-            </tr>
-            <tr *ngFor="let tier of recommended.types; let i = index">
-              <td>{{ i + 1 }}</td>
-              <td class="flex flex-col items-center py-2">
-                <div *ngFor="let type of tier">
-                  <img
-                    class=""
-                    src="../../../assets/icons/types/{{ type }}.png"
-                    onerror="this.src='../../../assets/icons/types/Unknown.png'"
-                    alt="{{ type }}"
-                  />
-                </div>
-              </td>
-            </tr>
-          </table>
+
+        <div class="flex space-x-4 max-h-96 overflow-y-auto">
+          <div class="p-2">
+            <table>
+              <tr>
+                <td></td>
+                <td>Pokemon</td>
+              </tr>
+              @for (
+                pokemon of uniqueSelected
+                  ? recommended.unique.pokemon
+                  : recommended.all.pokemon;
+                track $index
+              ) {
+                <tr>
+                  <td>{{ $index + 1 }}</td>
+                  <td class="w-8 text-center text-xs py-2">
+                    <sprite [pokemon]="pokemon"></sprite>
+                    {{ pokemon.name }}
+                  </td>
+                </tr>
+              }
+            </table>
+          </div>
+          <div class="p-2">
+            <table>
+              <tr>
+                <td></td>
+                <td>Types</td>
+              </tr>
+              @for (
+                tier of uniqueSelected
+                  ? recommended.unique.types
+                  : recommended.all.types;
+                track $index
+              ) {
+                <tr>
+                  <td>{{ $index + 1 }}</td>
+                  <td class="flex flex-col items-center py-2">
+                    @for (type of tier; track type) {
+                      <div>
+                        <img
+                          class=""
+                          src="../../../assets/icons/types/{{ type }}.png"
+                          onerror="this.src='../../../assets/icons/types/Unknown.png'"
+                          alt="{{ type }}"
+                        />
+                      </div>
+                    }
+                  </td>
+                </tr>
+              }
+            </table>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  }
 </div>

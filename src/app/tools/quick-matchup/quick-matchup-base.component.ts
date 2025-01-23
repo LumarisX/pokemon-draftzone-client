@@ -5,8 +5,8 @@ import { MatchupService } from '../../api/matchup.service';
 import { getNameByPid } from '../../data/namedex';
 import { LoadingComponent } from '../../images/loading/loading.component';
 import { Pokemon } from '../../interfaces/draft';
-import { MatchupData } from '../../matchup-overview/matchup-interface';
-import { MatchupComponent } from '../../matchup-overview/matchup/matchup.component';
+import { MatchupData } from '../../drafts/matchup-overview/matchup-interface';
+import { MatchupComponent } from '../../drafts/matchup-overview/matchup/matchup.component';
 import { QuickMatchupFormComponent } from './form/quick-matchup-form.component';
 
 @Component({

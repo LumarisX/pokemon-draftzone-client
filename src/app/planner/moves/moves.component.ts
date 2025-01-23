@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MoveChart } from '../../matchup-overview/matchup-interface';
-import { MoveCategoryComponent } from '../../matchup-overview/matchup/movechart/move-category/move-category.component';
+import { MoveChart } from '../../drafts/matchup-overview/matchup-interface';
+import { MoveCategoryComponent } from '../../drafts/matchup-overview/matchup/movechart/move-category/move-category.component';
 
 @Component({
   selector: 'moves',

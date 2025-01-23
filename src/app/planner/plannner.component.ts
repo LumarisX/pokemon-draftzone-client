@@ -23,7 +23,7 @@ import { DataService } from '../api/data.service';
 import { PlannerService } from '../api/planner.service';
 import { Type } from '../data';
 import { getPidByName, Namedex, nameList, PokemonId } from '../data/namedex';
-import { DraftOverviewPath } from '../draft-overview/draft-overview-routing.module';
+import { DraftOverviewPath } from '../drafts/draft-overview/draft-overview-routing.module';
 import { LoadingComponent } from '../images/loading/loading.component';
 import { SpriteComponent } from '../images/sprite/sprite.component';
 import { CompactSVG } from '../images/svg-components/compact.component';
@@ -37,7 +37,7 @@ import {
   MoveChart,
   Summary,
   TypeChart,
-} from '../matchup-overview/matchup-interface';
+} from '../drafts/matchup-overview/matchup-interface';
 import { FinderCoreComponent } from '../tools/finder/finder-core.component';
 import { SelectSearchComponent } from '../util/dropdowns/select/select-search.component';
 import { PlannerCoverageComponent } from './coverage/coverage.component';
@@ -51,8 +51,14 @@ type Planner = {
   movechart: MoveChart;
   coverage: Coverage;
   recommended: {
-    pokemon: Pokemon[];
-    types: Type[][];
+    all: {
+      pokemon: Pokemon[];
+      types: Type[][];
+    };
+    unique: {
+      pokemon: Pokemon[];
+      types: Type[][];
+    };
   };
 };
 
@@ -94,12 +100,15 @@ export class PlannerComponent implements OnInit {
   typechart: TypeChart = {
     team: [],
   };
-  recommended: {
-    pokemon: Pokemon[];
-    types: Type[][];
-  } = {
-    pokemon: [],
-    types: [],
+  recommended?: {
+    all: {
+      pokemon: Pokemon[];
+      types: Type[][];
+    };
+    unique: {
+      pokemon: Pokemon[];
+      types: Type[][];
+    };
   };
   team: PokemonId[] = [];
   summary: Summary = {
@@ -247,7 +256,7 @@ export class PlannerComponent implements OnInit {
         },
       };
       this.movechart = [];
-      this.recommended = { pokemon: [], types: [] };
+      this.recommended = undefined;
     } else {
       this.plannerService
         .getPlannerDetails(

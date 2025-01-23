@@ -2,7 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { AuthService } from './auth/auth0.service';
-import { DraftOverviewPath } from './draft-overview/draft-overview-routing.module';
+import { DraftOverviewPath } from './drafts/draft-overview/draft-overview-routing.module';
 import { svgIcons } from './images/icons';
 import { SettingsService } from './pages/settings/settings.service';
 
