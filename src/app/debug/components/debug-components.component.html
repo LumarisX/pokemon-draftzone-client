@@ -1,11 +1,31 @@
 <ng-template #components>
-  <div class="flex gap-2">
+  <div class="flex flex-wrap gap-2">
     <mat-form-field>
-      <mat-label>Input</mat-label>
+      <mat-label>Text Input</mat-label>
       <input matInput />
+      <mat-error>Text is <strong>required</strong></mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Number Input</mat-label>
+      <input matInput type="number" [selectionStart]="0" />
     </mat-form-field>
     <pokemon-select></pokemon-select>
+    <mat-form-field>
+      <mat-label>Select</mat-label>
+      <mat-select>
+        <mat-option>Clear</mat-option>
+        <mat-option value="valid">Valid option</mat-option>
+        <mat-option value="invalid">Invalid option</mat-option>
+      </mat-select>
+    </mat-form-field>
 
+    <mat-form-field>
+      <mat-label>Native Select</mat-label>
+      <select matNativeControl>
+        <option value="valid" selected>Valid option</option>
+        <option value="invalid">Invalid option</option>
+      </select>
+    </mat-form-field>
     <span class="material-symbols-outlined ms-size-20"> delete </span>
     <span class="material-symbols-outlined ms-size-24"> delete </span>
     <span class="material-symbols-outlined ms-size-32"> delete </span>
@@ -385,6 +405,17 @@
           <div class="text-white">100</div>
         </div>
       </div>
+    </div>
+  </div>
+  <div>
+    <div>Levels</div>
+    <div class="flex space-x-4">
+      <div class="color p-1 rounded level-0">Level 0</div>
+      <div class="color p-1 rounded level-1">Level 1</div>
+      <div class="color p-1 rounded level-2">Level 2</div>
+      <div class="color p-1 rounded level-3">Level 3</div>
+      <div class="color p-1 rounded level-4">Level 4</div>
+      <div class="color p-1 rounded level-5">Level 5</div>
     </div>
   </div>
 </ng-template>

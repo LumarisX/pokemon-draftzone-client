@@ -174,3 +174,11 @@ span.ms-size-48 {
   line-height: 24px;
   align-items: center;
 }
+
+$levels: 0, 1, 2, 3, 4, 5;
+
+@each $level in $levels {
+  .level-#{$level} {
+    box-shadow: var(--mat-sys-level#{$level});
+  }
+}
