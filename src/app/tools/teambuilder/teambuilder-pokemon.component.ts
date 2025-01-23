@@ -13,11 +13,7 @@ import { NATURES, STATS, TERATYPES } from '../../data';
 import { nameList } from '../../data/namedex';
 import { Pokemon } from '../../interfaces/draft';
 import { PokemonSelectComponent } from '../../util/pokemon-select/pokemon-select.component';
-import {
-  PokemonBuilder,
-  PokemonSet,
-  TeambuilderPokemon,
-} from './pokemon-builder.model';
+import { PokemonBuilder, TeambuilderPokemon } from './pokemon-builder.model';
 
 @Component({
   selector: 'teambuilder-pokemon',

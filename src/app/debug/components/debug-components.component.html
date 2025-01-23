@@ -1,0 +1,401 @@
+<ng-template #components>
+  <div class="flex gap-2">
+    <mat-form-field>
+      <mat-label>Input</mat-label>
+      <input matInput />
+    </mat-form-field>
+    <pokemon-select></pokemon-select>
+
+    <span class="material-symbols-outlined ms-size-20"> delete </span>
+    <span class="material-symbols-outlined ms-size-24"> delete </span>
+    <span class="material-symbols-outlined ms-size-32"> delete </span>
+    <span class="material-symbols-outlined ms-size-40"> delete </span>
+    <span class="material-symbols-outlined ms-size-48"> delete </span>
+  </div>
+  <div>
+    <div class="text-lg">Buttons</div>
+    <section>
+      <div class="example-label">Basic</div>
+      <div class="example-button-row">
+        <button mat-button>Basic</button>
+        <button mat-button disabled>Disabled</button>
+        <a mat-button href="https://www.google.com/" target="_blank">Link</a>
+      </div>
+    </section>
+    <mat-divider></mat-divider>
+    <section>
+      <div class="example-label">Raised</div>
+      <div class="example-button-row">
+        <button mat-raised-button>Basic</button>
+        <button mat-raised-button disabled>Disabled</button>
+        <a mat-raised-button href="https://www.google.com/" target="_blank"
+          >Link</a
+        >
+      </div>
+    </section>
+    <mat-divider></mat-divider>
+    <section>
+      <div class="example-label">Stroked</div>
+      <div class="example-button-row">
+        <button mat-stroked-button>Basic</button>
+        <button mat-stroked-button disabled>Disabled</button>
+        <a mat-stroked-button href="https://www.google.com/" target="_blank"
+          >Link</a
+        >
+      </div>
+    </section>
+    <mat-divider></mat-divider>
+    <section>
+      <div class="example-label">Flat</div>
+      <div class="example-button-row">
+        <button mat-flat-button>Basic</button>
+        <button mat-flat-button disabled>Disabled</button>
+        <a mat-flat-button href="https://www.google.com/" target="_blank"
+          >Link</a
+        >
+      </div>
+    </section>
+    <mat-divider></mat-divider>
+    <section>
+      <div class="example-label">Icon</div>
+      <div class="example-button-row">
+        <div class="example-flex-container">
+          <button
+            mat-icon-button
+            aria-label="Example icon button with a vertical three dot icon"
+          >
+            <span class="material-symbols-outlined"> close </span>
+          </button>
+          <button
+            mat-icon-button
+            disabled
+            aria-label="Example icon button with a open in new tab icon"
+          >
+            <span class="material-symbols-outlined"> close </span>
+          </button>
+        </div>
+      </div>
+    </section>
+    <mat-divider></mat-divider>
+    <section>
+      <div class="example-label">FAB</div>
+      <div class="example-button-row">
+        <div class="example-flex-container">
+          <div class="example-button-container">
+            <button mat-fab aria-label="Example icon button with a delete icon">
+              <span class="material-symbols-outlined"> close </span>
+            </button>
+          </div>
+          <div class="example-button-container">
+            <button
+              mat-fab
+              disabled
+              aria-label="Example icon button with a heart icon"
+            >
+              <span class="material-symbols-outlined"> close </span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+    <mat-divider></mat-divider>
+    <section>
+      <div class="example-label">Mini FAB</div>
+      <div class="example-button-row">
+        <div class="example-flex-container">
+          <div class="example-button-container">
+            <button
+              mat-mini-fab
+              aria-label="Example icon button with a menu icon"
+            >
+              <span class="material-symbols-outlined"> close </span>
+            </button>
+          </div>
+          <div class="example-button-container">
+            <button
+              mat-mini-fab
+              disabled
+              aria-label="Example icon button with a home icon"
+            >
+              <span class="material-symbols-outlined"> close </span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section>
+      <div class="example-label">Extended Fab</div>
+      <div class="example-button-row">
+        <div class="example-flex-container">
+          <div class="example-button-container">
+            <button mat-fab extended>
+              <span class="material-symbols-outlined"> close </span>
+              Basic
+            </button>
+          </div>
+          <div class="example-button-container">
+            <button mat-fab extended disabled>
+              <span class="material-symbols-outlined"> close </span>
+              Disabled
+            </button>
+          </div>
+          <div class="example-button-container">
+            <a mat-fab extended routerLink=".">
+              <span class="material-symbols-outlined"> close </span>
+              Link
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+  <div class="space-y-1">
+    <div class="text-lg">Colors</div>
+    <div class="space-y-1">
+      <div class="flex space-x-1">
+        <div class="primary color-sample">Primary</div>
+        <div class="secondary color-sample">Secondary</div>
+        <div class="tertiary color-sample">Tertiary</div>
+        <div class="error color-sample">Error</div>
+      </div>
+      <div class="flex space-x-1">
+        <div class="primary-container color-sample">Primary Container</div>
+        <div class="secondary-container color-sample">Secondary Container</div>
+        <div class="tertiary-container color-sample">Tertiary Container</div>
+        <div class="error-container color-sample">Error Container</div>
+      </div>
+      <div class="flex space-x-1">
+        <div class="primary-fixed color-sample">Primary Fixed</div>
+        <div class="secondary-fixed color-sample">Secondary Fixed</div>
+        <div class="tertiary-fixed color-sample">Tertiary Fixed</div>
+      </div>
+      <div class="flex space-x-1">
+        <div class="primary-fixed-dim color-sample">Primary Fixed Dim</div>
+        <div class="secondary-fixed-dim color-sample">Secondary Fixed Dim</div>
+        <div class="tertiary-fixed-dim color-sample">Tertiary Fixed Dim</div>
+      </div>
+      <div class="flex space-x-1">
+        <div class="surface-low color-sample">Surface Low</div>
+        <div class="surface color-sample">Surface</div>
+        <div class="surface-bright color-sample">Surface Bright</div>
+        <div class="surface-variant color-sample">Surface Variant</div>
+      </div>
+      <div class="flex space-x-1">
+        <div class="surface-container-lowest color-sample">
+          Surface Container Low
+        </div>
+        <div class="surface-container-low color-sample">
+          Surface Container Low
+        </div>
+        <div class="surface-container color-sample">Surface Container</div>
+        <div class="surface-container-high color-sample">
+          Surface Container High
+        </div>
+        <div class="surface-container-highest color-sample">
+          Surface Container Highest
+        </div>
+      </div>
+      <div class="flex space-x-1">
+        <div class="outline-color color-sample">Outline</div>
+        <div class="outline-variant color-sample">Outline Variant</div>
+      </div>
+      <div class="flex space-x-1">
+        <div class="primary-0 color-sample-small">
+          <div class="text-black">0</div>
+          <div class="text-white">0</div>
+        </div>
+        <div class="primary-10 color-sample-small">
+          <div class="text-black">10</div>
+          <div class="text-white">10</div>
+        </div>
+        <div class="primary-20 color-sample-small">
+          <div class="text-black">20</div>
+          <div class="text-white">20</div>
+        </div>
+        <div class="primary-25 color-sample-small">
+          <div class="text-black">25</div>
+          <div class="text-white">25</div>
+        </div>
+        <div class="primary-30 color-sample-small">
+          <div class="text-black">30</div>
+          <div class="text-white">30</div>
+        </div>
+        <div class="primary-40 color-sample-small">
+          <div class="text-black">40</div>
+          <div class="text-white">40</div>
+        </div>
+        <div class="primary-50 color-sample-small">
+          <div class="text-black">50</div>
+          <div class="text-white">50</div>
+        </div>
+        <div class="primary-60 color-sample-small">
+          <div class="text-black">60</div>
+          <div class="text-white">60</div>
+        </div>
+        <div class="primary-70 color-sample-small">
+          <div class="text-black">70</div>
+          <div class="text-white">70</div>
+        </div>
+        <div class="primary-80 color-sample-small">
+          <div class="text-black">80</div>
+          <div class="text-white">80</div>
+        </div>
+        <div class="primary-90 color-sample-small">
+          <div class="text-black">90</div>
+          <div class="text-white">90</div>
+        </div>
+        <div class="primary-95 color-sample-small">
+          <div class="text-black">95</div>
+          <div class="text-white">95</div>
+        </div>
+        <div class="primary-98 color-sample-small">
+          <div class="text-black">98</div>
+          <div class="text-white">98</div>
+        </div>
+        <div class="primary-99 color-sample-small">
+          <div class="text-black">99</div>
+          <div class="text-white">99</div>
+        </div>
+        <div class="primary-100 color-sample-small">
+          <div class="text-black">100</div>
+          <div class="text-white">100</div>
+        </div>
+      </div>
+      <div class="flex space-x-1">
+        <div class="secondary-0 color-sample-small">
+          <div class="text-black">0</div>
+          <div class="text-white">0</div>
+        </div>
+        <div class="secondary-10 color-sample-small">
+          <div class="text-black">10</div>
+          <div class="text-white">10</div>
+        </div>
+        <div class="secondary-20 color-sample-small">
+          <div class="text-black">20</div>
+          <div class="text-white">20</div>
+        </div>
+        <div class="secondary-25 color-sample-small">
+          <div class="text-black">25</div>
+          <div class="text-white">25</div>
+        </div>
+        <div class="secondary-30 color-sample-small">
+          <div class="text-black">30</div>
+          <div class="text-white">30</div>
+        </div>
+        <div class="secondary-40 color-sample-small">
+          <div class="text-black">40</div>
+          <div class="text-white">40</div>
+        </div>
+        <div class="secondary-50 color-sample-small">
+          <div class="text-black">50</div>
+          <div class="text-white">50</div>
+        </div>
+        <div class="secondary-60 color-sample-small">
+          <div class="text-black">60</div>
+          <div class="text-white">60</div>
+        </div>
+        <div class="secondary-70 color-sample-small">
+          <div class="text-black">70</div>
+          <div class="text-white">70</div>
+        </div>
+        <div class="secondary-80 color-sample-small">
+          <div class="text-black">80</div>
+          <div class="text-white">80</div>
+        </div>
+        <div class="secondary-90 color-sample-small">
+          <div class="text-black">90</div>
+          <div class="text-white">90</div>
+        </div>
+        <div class="secondary-95 color-sample-small">
+          <div class="text-black">95</div>
+          <div class="text-white">95</div>
+        </div>
+        <div class="secondary-98 color-sample-small">
+          <div class="text-black">98</div>
+          <div class="text-white">98</div>
+        </div>
+        <div class="secondary-99 color-sample-small">
+          <div class="text-black">99</div>
+          <div class="text-white">99</div>
+        </div>
+        <div class="secondary-100 color-sample-small">
+          <div class="text-black">100</div>
+          <div class="text-white">100</div>
+        </div>
+      </div>
+      <div class="flex space-x-1">
+        <div class="tertiary-0 color-sample-small">
+          <div class="text-black">0</div>
+          <div class="text-white">0</div>
+        </div>
+        <div class="tertiary-10 color-sample-small">
+          <div class="text-black">10</div>
+          <div class="text-white">10</div>
+        </div>
+        <div class="tertiary-20 color-sample-small">
+          <div class="text-black">20</div>
+          <div class="text-white">20</div>
+        </div>
+        <div class="tertiary-25 color-sample-small">
+          <div class="text-black">25</div>
+          <div class="text-white">25</div>
+        </div>
+        <div class="tertiary-30 color-sample-small">
+          <div class="text-black">30</div>
+          <div class="text-white">30</div>
+        </div>
+        <div class="tertiary-40 color-sample-small">
+          <div class="text-black">40</div>
+          <div class="text-white">40</div>
+        </div>
+        <div class="tertiary-50 color-sample-small">
+          <div class="text-black">50</div>
+          <div class="text-white">50</div>
+        </div>
+        <div class="tertiary-60 color-sample-small">
+          <div class="text-black">60</div>
+          <div class="text-white">60</div>
+        </div>
+        <div class="tertiary-70 color-sample-small">
+          <div class="text-black">70</div>
+          <div class="text-white">70</div>
+        </div>
+        <div class="tertiary-80 color-sample-small">
+          <div class="text-black">80</div>
+          <div class="text-white">80</div>
+        </div>
+        <div class="tertiary-90 color-sample-small">
+          <div class="text-black">90</div>
+          <div class="text-white">90</div>
+        </div>
+        <div class="tertiary-95 color-sample-small">
+          <div class="text-black">95</div>
+          <div class="text-white">95</div>
+        </div>
+        <div class="tertiary-98 color-sample-small">
+          <div class="text-black">98</div>
+          <div class="text-white">98</div>
+        </div>
+        <div class="tertiary-99 color-sample-small">
+          <div class="text-black">99</div>
+          <div class="text-white">99</div>
+        </div>
+        <div class="tertiary-100 color-sample-small">
+          <div class="text-black">100</div>
+          <div class="text-white">100</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<div class="flex flex-wrap h-full">
+  <div class="md:w-1/2 w-full p-2 overflow-y-auto">
+    <div class="text-xl font-bold">Base</div>
+    <ng-container *ngTemplateOutlet="components"></ng-container>
+  </div>
+  <div class="md:w-1/2 w-full p-2 overflow-y-auto alternate">
+    <div class="text-xl font-bold">Alternate</div>
+    <ng-container *ngTemplateOutlet="components"></ng-container>
+  </div>
+</div>

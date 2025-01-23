@@ -4,18 +4,6 @@
 @use "./themes/shiny.theme" as shiny;
 @use "./themes/christmas.theme" as christmas;
 
-@mixin apply-theme($theme) {
-  --a-team: #{map.get($theme, aTeam)};
-  --b-team: #{map.get($theme, bTeam)};
-
-  $menu: map.get($theme, menu);
-  --menu-50: #{map.get($menu, 50)};
-  --menu-100: #{map.get($menu, 100)};
-  --menu-500: #{map.get($menu, 500)};
-
-  --page: map.get($theme, page);
-}
-
 :root {
   @include mat.theme(
     (
@@ -26,6 +14,48 @@
       ),
     )
   );
+
+  @each $key, $value in map.get(classic.$palettes, primary) {
+    .primary-#{$key} {
+      background-color: $value;
+    }
+  }
+  @each $key, $value in map.get(classic.$palettes, secondary) {
+    .secondary-#{$key} {
+      background-color: $value;
+    }
+  }
+  @each $key, $value in map.get(classic.$palettes, primary-alt) {
+    .tertiary-#{$key} {
+      background-color: $value;
+    }
+  }
+  .alternate {
+    @include mat.theme(
+      (
+        color: (
+          primary: classic.$primary-palette-alt,
+          tertiary: classic.$tertiary-palette-alt,
+          theme-type: light,
+        ),
+      )
+    );
+    @each $key, $value in map.get(classic.$palettes, primary-alt) {
+      .primary-#{$key} {
+        background-color: $value;
+      }
+    }
+    @each $key, $value in map.get(classic.$palettes, secondary-alt) {
+      .secondary-#{$key} {
+        background-color: $value;
+      }
+    }
+    @each $key, $value in map.get(classic.$palettes, primary) {
+      .tertiary-#{$key} {
+        background-color: $value;
+      }
+    }
+  }
 }
 
 :root[light-mode="dark"] {
@@ -38,6 +68,18 @@
       ),
     )
   );
+
+  .alternate {
+    @include mat.theme(
+      (
+        color: (
+          primary: classic.$primary-palette_alt,
+          tertiary: classic.$tertiary-palette_alt,
+          theme-type: dark,
+        ),
+      )
+    );
+  }
 }
 
 :root[theme-name="shiny"] {
@@ -50,6 +92,48 @@
       ),
     )
   );
+
+  @each $key, $value in map.get(shiny.$palettes, primary) {
+    .primary-#{$key} {
+      background-color: $value;
+    }
+  }
+  @each $key, $value in map.get(shiny.$palettes, secondary) {
+    .secondary-#{$key} {
+      background-color: $value;
+    }
+  }
+  @each $key, $value in map.get(shiny.$palettes, primary-alt) {
+    .tertiary-#{$key} {
+      background-color: $value;
+    }
+  }
+  .alternate {
+    @include mat.theme(
+      (
+        color: (
+          primary: shiny.$primary-palette-alt,
+          tertiary: shiny.$tertiary-palette-alt,
+          theme-type: light,
+        ),
+      )
+    );
+    @each $key, $value in map.get(shiny.$palettes, primary-alt) {
+      .primary-#{$key} {
+        background-color: $value;
+      }
+    }
+    @each $key, $value in map.get(shiny.$palettes, secondary-alt) {
+      .secondary-#{$key} {
+        background-color: $value;
+      }
+    }
+    @each $key, $value in map.get(shiny.$palettes, primary) {
+      .tertiary-#{$key} {
+        background-color: $value;
+      }
+    }
+  }
 }
 
 :root[theme-name="shiny"][light-mode="dark"] {
@@ -62,6 +146,18 @@
       ),
     )
   );
+
+  .alternate {
+    @include mat.theme(
+      (
+        color: (
+          primary: shiny.$primary-palette_alt,
+          tertiary: shiny.$tertiary-palette_alt,
+          theme-type: dark,
+        ),
+      )
+    );
+  }
 }
 
 :root[theme-name="christmas"] {
@@ -89,3 +185,15 @@
 
   @include mat.theme($christmas);
 }
+
+// .christmas {
+//   @include mat.theme(
+//     (
+//       color: (
+//         primary: christmas.$primary-palette,
+//         tertiary: christmas.$tertiary-palette,
+//         theme-type: light,
+//       ),
+//     )
+//   );
+// }

@@ -4,6 +4,9 @@ img {
   object-fit: contain;
   z-index: -100;
   aspect-ratio: 1 / 1;
+  max-width: 100%;
+  max-height: 100%;
+  display: block;
 }
 
 .flip {
@@ -23,5 +26,5 @@ img {
 }
 
 .disabled {
-  opacity: 40;
+  opacity: 0.4;
 }

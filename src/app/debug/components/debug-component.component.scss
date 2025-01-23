@@ -1,0 +1,176 @@
+@use "@angular/material" as mat;
+
+.material-symbols-outlined {
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+}
+
+section {
+  display: table;
+}
+
+.example-label {
+  display: table-cell;
+  font-size: 14px;
+  margin-left: 8px;
+  min-width: 120px;
+}
+
+.example-button-row {
+  display: table-cell;
+  max-width: 600px;
+}
+
+.example-button-row .mat-mdc-button-base {
+  margin: 8px 8px 8px 0;
+}
+
+.example-flex-container {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.example-button-container {
+  display: flex;
+  justify-content: center;
+  width: 140px;
+}
+
+span.ms-size-20 {
+  font-size: 20px;
+  font-variation-settings: "OPSZ" 20;
+}
+span.ms-size-24 {
+  font-size: 24px;
+  font-variation-settings: "OPSZ" 24;
+}
+span.ms-size-32 {
+  font-size: 32px;
+  font-variation-settings: "OPSZ" 32;
+}
+span.ms-size-40 {
+  font-size: 40px;
+  font-variation-settings: "OPSZ" 40;
+}
+span.ms-size-48 {
+  font-size: 48px;
+  font-variation-settings: "OPSZ" 48;
+}
+
+.color-sample {
+  width: 128px;
+  height: 48px;
+  text-align: center;
+  align-items: center;
+
+  &.primary {
+    background-color: var(--mat-sys-primary);
+    color: var(--mat-sys-on-primary);
+  }
+  &.secondary {
+    background-color: var(--mat-sys-secondary);
+    color: var(--mat-sys-on-secondary);
+  }
+  &.tertiary {
+    background-color: var(--mat-sys-tertiary);
+    color: var(--mat-sys-on-tertiary);
+  }
+  &.error {
+    background-color: var(--mat-sys-error);
+    color: var(--mat-sys-on-error);
+  }
+  &.primary-container {
+    background-color: var(--mat-sys-primary-container);
+    color: var(--mat-sys-on-primary-container);
+  }
+  &.secondary-container {
+    background-color: var(--mat-sys-secondary-container);
+    color: var(--mat-sys-on-secondary-container);
+  }
+  &.tertiary-container {
+    background-color: var(--mat-sys-tertiary-container);
+    color: var(--mat-sys-on-tertiary-container);
+  }
+  &.error-container {
+    background-color: var(--mat-sys-error-container);
+    color: var(--mat-sys-on-error-container);
+  }
+  &.primary-fixed {
+    background-color: var(--mat-sys-primary-fixed);
+    color: var(--mat-sys-on-primary-fixed);
+  }
+  &.secondary-fixed {
+    background-color: var(--mat-sys-secondary-fixed);
+    color: var(--mat-sys-on-secondary-fixed);
+  }
+  &.tertiary-fixed {
+    background-color: var(--mat-sys-tertiary-fixed);
+    color: var(--mat-sys-on-tertiary-fixed);
+  }
+  &.primary-fixed-dim {
+    background-color: var(--mat-sys-primary-fixed-dim);
+    color: var(--mat-sys-on-primary-fixed-variant);
+  }
+  &.secondary-fixed-dim {
+    background-color: var(--mat-sys-secondary-fixed-dim);
+    color: var(--mat-sys-on-secondary-fixed-variant);
+  }
+  &.tertiary-fixed-dim {
+    background-color: var(--mat-sys-tertiary-fixed-dim);
+    color: var(--mat-sys-on-tertiary-fixed-variant);
+  }
+  &.surface-dim {
+    background-color: var(--mat-sys-surface-dim);
+    color: var(--mat-sys-on-surface);
+  }
+  &.surface {
+    background-color: var(--mat-sys-surface);
+    color: var(--mat-sys-on-surface);
+  }
+  &.surface-bright {
+    background-color: var(--mat-sys-surface-bright);
+    color: var(--mat-sys-on-surface);
+  }
+  &.surface-container-lowest {
+    background-color: var(--mat-sys-surface-container-lowest);
+    color: var(--mat-sys-on-surface);
+  }
+  &.surface-container-low {
+    background-color: var(--mat-sys-surface-container-low);
+    color: var(--mat-sys-on-surface);
+  }
+  &.surface-container {
+    background-color: var(--mat-sys-surface-container);
+    color: var(--mat-sys-on-surface);
+  }
+  &.surface-container-high {
+    background-color: var(--mat-sys-surface-container-high);
+    color: var(--mat-sys-on-surface);
+  }
+  &.surface-container-highest {
+    background-color: var(--mat-sys-surface-container-highest);
+    color: var(--mat-sys-on-surface);
+  }
+  &.outline-color {
+    background-color: var(--mat-sys-outline);
+  }
+  &.outline-variant {
+    background-color: var(--mat-sys-outline-variant);
+  }
+  &.surface-variant {
+    background-color: var(--mat-sys-surface-variant);
+    color: var(--mat-sys-on-surface-variant);
+  }
+}
+
+.color-sample-small {
+  width: 48px;
+  height: 48px;
+  text-align: center;
+  line-height: 24px;
+  align-items: center;
+}
