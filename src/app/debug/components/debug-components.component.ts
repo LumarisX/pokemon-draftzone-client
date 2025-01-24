@@ -14,6 +14,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { PokemonSelectComponent } from '../../util/pokemon-select/pokemon-select.component';
+import { IconComponent } from '../../util/icon/icon.component';
+import { TooltipComponent } from '../../util/tooltip/tooltip.component';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(
@@ -43,6 +45,8 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
     MatButtonModule,
     PokemonSelectComponent,
     ReactiveFormsModule,
+    IconComponent,
+    TooltipComponent,
   ],
 })
 export class DebugComponentsComponent {

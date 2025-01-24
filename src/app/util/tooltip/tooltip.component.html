@@ -1,0 +1,15 @@
+<div #tooltipContainer class="tooltip-container">
+  <ng-content></ng-content>
+</div>
+
+<div
+  class="tooltip"
+  *ngIf="showTooltip"
+  [ngClass]="{ 'fade-out': !isHovered, visible: isHovered }"
+  [ngStyle]="{
+    top: tooltipPosition.top + 'px',
+    left: tooltipPosition.left + 'px',
+  }"
+>
+  <ng-container *ngTemplateOutlet="tooltipContent"></ng-container>
+</div>

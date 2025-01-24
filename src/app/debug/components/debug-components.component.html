@@ -7,7 +7,7 @@
     </mat-form-field>
     <mat-form-field>
       <mat-label>Number Input</mat-label>
-      <input matInput type="number" [selectionStart]="0" />
+      <input matInput type="number" />
     </mat-form-field>
     <pokemon-select></pokemon-select>
     <mat-form-field>
@@ -418,6 +418,17 @@
       <div class="color p-1 rounded level-5">Level 5</div>
     </div>
   </div>
+
+  <app-tooltip>
+    <ng-template #tooltipInfo>
+      <div class="tooltip-content">
+        <icon>schedule</icon>
+        <p>Information about the button</p>
+      </div>
+    </ng-template>
+
+    <button>Hover to learn more!</button>
+  </app-tooltip>
 </ng-template>
 
 <div class="flex flex-wrap h-full">
