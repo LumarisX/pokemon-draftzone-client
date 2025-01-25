@@ -25,7 +25,7 @@
             </tr>
           </thead>
           <tbody>
-            @for (pokemon of typechart.team; track pokemon) {
+            @for (pokemon of typechart.team; track $index) {
               <tr>
                 <th
                   class="w-12 border-r-4 cursor-pointer border-r-menu-400 hover:bg-menu-100"
@@ -37,7 +37,7 @@
                   ></sprite>
                 </th>
                 <td class="flex h-12 space-x-0.5">
-                  @for (type of types; track type) {
+                  @for (type of types; track $index) {
                     <div
                       class="w-10 h-full border flex items-center justify-center"
                       [ngClass]="
@@ -57,7 +57,7 @@
               <th
                 class="flex space-x-0.5 border-b-2 bg-menu-300 border-menu-400"
               >
-                @for (type of types; track type) {
+                @for (type of types; track $index) {
                   <div class="w-10 flex items-center justify-center">
                     <img
                       class=""
@@ -76,7 +76,7 @@
                 Count
               </th>
               <td class="flex space-x-0.5">
-                @for (count of counts; track count) {
+                @for (count of counts; track $index) {
                   <div
                     class="text-center border h-full w-10"
                     [ngClass]="countColor(count)"
@@ -93,7 +93,7 @@
                 Weaks
               </th>
               <td class="flex space-x-0.5">
-                @for (weakness of weaknesses; track weakness) {
+                @for (weakness of weaknesses; track $index) {
                   <div
                     class="text-center border h-full w-10"
                     [ngClass]="weakColor(weakness)"
@@ -110,7 +110,7 @@
                 Resists
               </th>
               <td class="flex space-x-0.5">
-                @for (resistance of resistances; track resistance) {
+                @for (resistance of resistances; track $index) {
                   <div
                     class="text-center border h-full w-10"
                     [ngClass]="resistColor(resistance)"
@@ -127,7 +127,7 @@
                 Diff
               </th>
               <td class="flex space-x-0.5">
-                @for (diff of difference; track diff) {
+                @for (diff of difference; track $index) {
                   <div
                     class="text-center border h-full w-10"
                     [ngClass]="diffColor(diff)"
@@ -144,7 +144,7 @@
                 Log
               </th>
               <td class="flex space-x-0.5">
-                @for (diff of differential; track diff) {
+                @for (diff of differential; track $index) {
                   <div
                     class="text-center border w-10"
                     [ngClass]="diffColor(diff)"

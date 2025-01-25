@@ -5,10 +5,10 @@
 
 .tooltip {
   position: fixed;
-  background: var(--mat-sys-surface-container);
-  color: var(--mat-sys-on-surface-container);
+  background: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
   padding: 8px;
-  border-radius: 4px;
+  border-radius: 8px;
   font-size: 14px;
   white-space: nowrap;
   z-index: 10;

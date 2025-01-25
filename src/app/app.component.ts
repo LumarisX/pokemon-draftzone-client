@@ -44,14 +44,15 @@ export class AppComponent implements OnInit {
   constructor(
     public auth: AuthService,
     private settingsService: SettingsService,
+    private matIconRegistry: MatIconRegistry,
+    private domSanitizer: DomSanitizer,
   ) {
-    const iconRegistry = inject(MatIconRegistry);
-    const sanitizer = inject(DomSanitizer);
     Object.entries(svgIcons).forEach(([name, data]) => {
-      iconRegistry.addSvgIconLiteral(
+      matIconRegistry.addSvgIconLiteral(
         name,
-        sanitizer.bypassSecurityTrustHtml(data),
+        domSanitizer.bypassSecurityTrustHtml(data),
       );
+      matIconRegistry.setDefaultFontSetClass('material-symbols-outlined');
     });
   }
 

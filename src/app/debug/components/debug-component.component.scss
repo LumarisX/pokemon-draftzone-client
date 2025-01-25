@@ -12,53 +12,47 @@ section {
   display: table;
 }
 
-.example-label {
+mat-divider {
+  margin: 8px;
+}
+
+.debug-label {
   display: table-cell;
   font-size: 14px;
   margin-left: 8px;
   min-width: 120px;
 }
 
-.example-button-row {
+.debug-row {
   display: table-cell;
   max-width: 600px;
 }
 
-.example-button-row .mat-mdc-button-base {
+.debug-row .mat-mdc-button-base {
   margin: 8px 8px 8px 0;
 }
 
-.example-flex-container {
+.debug-flex-container {
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
 }
 
-.example-button-container {
+.debug-button-container {
   display: flex;
   justify-content: center;
   width: 140px;
 }
 
-span.ms-size-20 {
-  font-size: 20px;
-  font-variation-settings: "OPSZ" 20;
-}
-span.ms-size-24 {
-  font-size: 24px;
-  font-variation-settings: "OPSZ" 24;
-}
-span.ms-size-32 {
-  font-size: 32px;
-  font-variation-settings: "OPSZ" 32;
-}
-span.ms-size-40 {
-  font-size: 40px;
-  font-variation-settings: "OPSZ" 40;
-}
-span.ms-size-48 {
-  font-size: 48px;
-  font-variation-settings: "OPSZ" 48;
+$icon-sizes: 20, 24, 32, 40, 48;
+
+@each $icon-size in $icon-sizes {
+  .ms-size-#{$icon-size} {
+    font-size: #{$icon-size}px;
+    font-variation-settings: "OPSZ" #{$icon-size};
+    height: #{$icon-size}px;
+    width: #{$icon-size}px;
+  }
 }
 
 .color-sample {
@@ -175,10 +169,28 @@ span.ms-size-48 {
   align-items: center;
 }
 
+.debug-title {
+  font-size: large;
+  font-weight: bold;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
 $levels: 0, 1, 2, 3, 4, 5;
 
 @each $level in $levels {
   .level-#{$level} {
+    width: 100px;
+    margin-left: -20px;
     box-shadow: var(--mat-sys-level#{$level});
+    background-color: var(--mat-sys-primary-container);
+    color: var(--mat-sys-on-primary-container);
   }
+}
+
+.example-custom-placeholder {
+  background: #ccc;
+  border: dotted 3px #999;
+  min-height: 60px;
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }

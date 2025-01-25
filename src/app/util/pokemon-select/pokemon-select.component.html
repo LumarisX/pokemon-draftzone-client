@@ -1,5 +1,6 @@
-<form>
-  <mat-form-field>
+<form class="form-container">
+  <!-- Small Form -->
+  <mat-form-field class="w-full">
     @if (selectedForm.value && typeof selectedForm.value !== "string") {
       <div matPrefix class="selected-sprite">
         <sprite [flipped]="true" [pokemon]="selectedForm.value"></sprite>
@@ -30,11 +31,12 @@
     <mat-autocomplete
       autoActiveFirstOption
       #auto="matAutocomplete"
+      class="autocomplete"
       [displayWith]="displayName"
       (optionSelected)="selectOption($event.option.value)"
     >
       @for (option of filteredOptions | async; track $index) {
-        <mat-option [value]="option">
+        <mat-option [value]="option" class="autocomplete-option">
           <div class="pokemon-option">
             <sprite [flipped]="true" [pokemon]="option"></sprite>
             {{ option.name }}
