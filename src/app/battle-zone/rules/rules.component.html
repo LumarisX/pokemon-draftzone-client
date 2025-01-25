@@ -1,245 +1,353 @@
-<div class="flex w-full md:flex-row flex-col">
-  <div class="xl:w-1/3 lg:w-1/4">
+<div class="flex w-full md:flex-row flex-col justify-center rule-wrapper">
+  <!-- <div class="xl:w-1/3 lg:w-1/4">
     <div
       class="px-4 py-2 w-fit md:my-4 mx-4 my-1 rounded-lg bg-menu-200 hover:bg-menu-300 hover:cursor-pointer border border-menu-300 hover:border-menu-400"
       routerLink="/battle-zone/pdbl"
     >
       Back
     </div>
-  </div>
-  <div class="flex justify-center lg:w-1/2 2xl:w-1/3 px-4">
+  </div> -->
+  <div class="flex justify-center w-full max-w-192 px-4">
     <div class="">
       <h1 class="text-3xl font-bold text-center font-nasa md:mt-6 mb-6">
         League Rules
       </h1>
-
-      <div class="my-4 mx-2 bg-yellow-500 text-sm rounded-full px-3 py-1">
-        The Rules are not finalized, once finalized an announcement will be made
-        in the DraftZone discord server.
-      </div>
-
-      <section class="mb-10">
-        <h2 class="text-2xl font-semibold font-nasa mb-4">Draft</h2>
-        <ul class="list-disc list-inside space-y-2">
-          <li>
-            The draft order is randomized and follows a snake format (1-16,
-            16-1, etc.).
-          </li>
-          <li>
-            Each coach must draft between 10 and 12 Pokémon with a
-            {{ points }}-point budget.
-          </li>
-          <li>
-            A coach can end the draft after 10 picks without spending the full
-            budget.
-          </li>
-          <li>
-            Tera Captains are chosen after a 24-hour grace period following the
-            draft.
-          </li>
-          <li>
-            Drafting will start on TBD with a 8-hour timer per pick. The timer
-            will be lowered as necessary as the draft progresses with notice.
-          </li>
-          <li>
-            Coaches can leave picks with a tournament organizer or another
-            participant behind them in the order.
-          </li>
-          <li>
-            If a pick is skipped, the coach can make it later, but the timer for
-            future picks will be halved each time a skip occurs.
-          </li>
-        </ul>
-      </section>
-
-      <section class="mb-10">
-        <h2 class="text-2xl font-semibold font-nasa mb-4">Terastalisation</h2>
-        <ul class="list-disc list-inside space-y-2">
-          <li>
-            Each team has {{ teraPoints }} Tera Points to allocate to Tera
-            Captains.
-          </li>
-          <li>
-            Tera Captaincy costs the same number of Tera Shards as the drafted
-            point value of the Pokémon.
-          </li>
-          <li>
-            A Tera Captain can have three Tera Types: one matching their
-            original type and two additional types, including Stellar.
-          </li>
-          <li>
-            Teams may have up to 3 Tera Captains within the
-            {{ teraPoints }}-point limit.
-          </li>
-          <li>
-            Only Pokémon with a value of 12 points or less can be Tera Captains.
-          </li>
-          <li>The following Pokémon cannot be Tera Captains:</li>
-        </ul>
-      </section>
-
-      <section class="mb-10">
-        <h2 class="text-2xl font-semibold font-nasa mb-4">Megas</h2>
-        <ul class="list-disc list-inside space-y-2">
-          <li>
-            Megas and regular forms are drafted separately with corresponding
-            point values.
-          </li>
-          <li>
-            If a Mega form is drafted, its held item must be its Mega Stone,
-            although usage in battle is optional. Opponents will always know the
-            item.
-          </li>
-          <li>
-            If a regular form is drafted, it cannot Mega Evolve in battle.
-          </li>
-        </ul>
-      </section>
-
-      <section class="mb-10">
-        <h2 class="text-2xl font-semibold font-nasa mb-4">
-          Free Agency and Trades
-        </h2>
-        <ul class="list-disc list-inside space-y-2">
-          <li>
-            Teams have up to {{ transactions }} Free Agency transactions through
-            the end of Week 7.
-          </li>
-          <li>
-            A trade transaction is used for every pokemon you recieve from the
-            draft pool.
-          </li>
-          <li>
-            Teams have up to {{ transactions }} inter-team trades through the
-            end of Week 7.
-          </li>
-          <li>
-            A 24-hour grace period allows for unlimited Free Agency and trades
-            before selecting Tera Captains.
-          </li>
-          <li>
-            Reassigning a Tera Captain within the team will consume a
-            transaction.
-          </li>
-          <li>
-            Tera types may only be changed once per season, using one of the
-            {{ transactions }}
-            transactions.
-          </li>
-          <li>Transactions take effect the following week.</li>
-        </ul>
-      </section>
-
-      <section class="mb-10">
-        <h2 class="text-2xl font-semibold font-nasa mb-4">
-          Discord and Scheduling
-        </h2>
-        <ul class="list-disc list-inside space-y-2">
-          <li>
-            All coaches must be in the DraftZone server for the duration of the
-            tournament.
-          </li>
-          <li>
-            All match scheduling must be made in the
-            <span class="bg-indigo-500 text-sm text-gray-200 font-bold px-0.5"
-              ># scheduling</span
-            >
-            channel in the DraftZone server.
-          </li>
-          <li>
-            If a game isn't played in the regular week, it must be scheduled for
-            the 2-day extension period.
-          </li>
-          <li>
-            Extensions or rescheduling may be allowed in cases of serious,
-            sudden issues and can be requested in
-            <span class="bg-indigo-500 text-sm text-gray-200 font-bold px-0.5"
-              ># extension-request</span
-            >.
-          </li>
-          <li>
-            Coaches with better communication may be awarded wins in case of
-            unplayed games.
-          </li>
-        </ul>
-      </section>
-
-      <section class="mb-10">
-        <h2 class="text-2xl font-semibold font-nasa mb-4">Battles</h2>
-        <ul class="list-disc list-inside space-y-2">
-          <li>
-            Each week, teams have a best-of-1 match in National Dex Draft
-            Singles format. Extensions allow up to two additional days.
-          </li>
-          <li>
-            Forfeits prior to the match count as a 2-0 outcome. Mid-match
-            forfeits are prohibited.
-          </li>
-          <li>All Pokémon will be Level 100.</li>
-          <li>No ghosting or coaching during battles.</li>
-          <li>
-            Sharing a player’s team or build with their opponent is prohibited
-            and will result in penalties, including voided games and bans.
-          </li>
-          <li>Each team must bring 6 Pokémon to every battle.</li>
-          <li>
-            All battles will be on Showdown, following Gen9 NatDex Draft rules.
-          </li>
-        </ul>
-      </section>
-
-      <section class="mb-10">
-        <h2 class="text-2xl font-semibold font-nasa mb-4">
-          League Table and Playoffs
-        </h2>
-        <ul class="list-disc list-inside space-y-2">
-          <li>
-            Each team will play 8 matches. The schedule determines opponents.
-          </li>
-          <li>
-            Standings are determined in the following order: game wins, game
-            differential, head-to-head, strength of schedule, coin flip.
-          </li>
-          <li>
-            Playoffs involve the top 8 teams, following a standard seeding
-            bracket.
-          </li>
-          <li>Playoff scheduling follows a 7+2-day cycle for 3 weeks total.</li>
-        </ul>
-      </section>
-
-      <section class="mb-10">
-        <h2 class="text-2xl font-semibold font-nasa mb-4">
-          Battle Clauses & Bans
-        </h2>
-        <ul class="list-disc list-inside space-y-2">
-          <li>
-            Smogon Clauses: Sleep Clause, Evasion Clause, OHKO Clause, and
-            Endless Battle Clause are in effect.
-          </li>
-          <li>Banned abilities: Moody, Sand Veil, Snow Cloak.</li>
-          <li>
-            Banned items: Bright Powder, Lax Incense, King's Rock, Focus Band,
-            Razor Fang, Quick Claw.
-          </li>
-          <li class="">
-            Banned moves: Hidden Power, Shed Tail, Last Respects, Revival
-            Blessing, Z Moves<z-svg class="w-6 inline-block" />.
-          </li>
-          <li>
-            Games ending on a timer will be counted as a loss for the team that
-            went to time.
-          </li>
-          <li>
-            Baton Pass cannot be used to pass stats or Substitute unless granted
-            by the opponent.
-          </li>
-          <li>
-            Species Clause: Teams cannot draft multiple Pokémon with the same
-            Pokédex number.
-          </li>
-        </ul>
-      </section>
+      <mat-accordion>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <span class="rule-title">Draft</span>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <ol class="rule-description">
+            <li>
+              The draft is randomised and in a snake format (1-16, 16-1 etc.)
+            </li>
+            <li>
+              Each coach must draft between 10 and 12 Pokemon with 120 points to
+              spend.
+            </li>
+            <li>
+              A coach does not need to spend their full budget and can end their
+              draft after 10 picks
+            </li>
+            <li>
+              Tera Captains will be decided after the 24 hour grace period
+              following the draft.
+            </li>
+            <li>
+              Drafting will begin on TBD with a 4 hour timer per pick between 8
+              am EST and 11PM EST. Timer Is halted between those hours, though
+              picks can still come in.
+            </li>
+            <li>
+              You may leave picks with a tournament organizer or someone who is
+              behind you in the draft order.
+            </li>
+            <li>
+              If a pick is skipped, the coach can make it later, but the timer
+              for future picks will be halved each time a skip occurs. Leave
+              picks with people so this doesn't happen to you.
+            </li>
+          </ol>
+        </mat-expansion-panel>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <span class="rule-title">Terastalisation</span>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <ol class="rule-description">
+            <li>Teams will have 25 Tera Shards to spend on Tera Captains.</li>
+            <li>
+              Captaining a Pokemon costs the same amount of Tera Shards as the
+              price you drafted it for in points.
+            </li>
+            <li>
+              The amount of tera types a Tera Captain will have access to
+              depends on its draft point tier:
+              <ul class="font-semibold">
+                <li>20-17 Point Pokemon → 0 Tera Types</li>
+                <li>16-13 Point Pokemon → 1 Tera Types</li>
+                <li>12-9 Point Pokemon → 2 Tera Types</li>
+                <li>8-5 Point Pokemon → 3 Tera Types</li>
+                <li>4-1 Point Pokemon → 4 Tera Types</li>
+              </ul>
+            </li>
+            <li>
+              The following Pokemon Are Not allowed to Terastalize:
+              <ul class="font-semibold">
+                <li>TBD</li>
+              </ul>
+            </li>
+          </ol>
+        </mat-expansion-panel>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <span class="rule-title">Z-Moves</span>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <ol class="rule-description">
+            <li>
+              Z Moves are Not Allowed. Necrozma Ultra go home, you're drunk.
+            </li>
+          </ol>
+        </mat-expansion-panel>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <span class="rule-title">Megas</span>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <ol class="rule-description">
+            <li>
+              Megas and regular form pokemon are drafted seperately with
+              coresponding point values.
+            </li>
+            <li>
+              If you draft a mega form, its held item MUST be it's mega stone.
+              You can choose when/if you would like to mega it in battle, but
+              your opponent will always know your item is the mega stone.
+            </li>
+            <li>
+              If you draft the regular pokemon - You cannot mega it it battle.
+            </li>
+          </ol>
+        </mat-expansion-panel>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <span class="rule-title">Free Agency and Trades</span>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <ol class="rule-description">
+            <li>
+              Teams will get 7 Transaction Points up until the end of Week 7.
+              Free Agency, Tera Switch, and Coach to Coach trades all count
+              towards this total.
+            </li>
+            <li>
+              Coaches will be able to make trades before the draft ends. These
+              trades do not count as transactions.
+            </li>
+            <li>
+              A point is used for every pokemon you recieve from the trade.
+            </li>
+            <li>
+              There will be a 24 hour grace period where each team will have
+              unlimited Free Agency. Coaches can also trade with other coaches
+              during this period. After the grace period has ended, coaches will
+              declair their Tera Captains and corresponding types.
+            </li>
+            <li>
+              If you drop a Tera Captain and want to Captain the Pokemon you
+              pick up, It will only count as 1 trade, not 2.
+            </li>
+            <li>
+              Changing Tera types on a pokemon may only be done once per season,
+              using one of the 7 transactions.
+            </li>
+            <li>Transactions take effect the following week.</li>
+          </ol>
+        </mat-expansion-panel>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <span class="rule-title">Discord and Scheduling</span>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <ol class="rule-description">
+            <li>
+              All coaches must be in the DraftZone server for the duration of
+              the tournament.
+            </li>
+            <li>
+              All match scheduling must be made in the #scheduling channel in
+              the DraftZone server.
+            </li>
+            <li>
+              Extensions or rescheduling may be allowed in cases of serious,
+              sudden issues and can be requested in #extension-request.
+            </li>
+            <li>
+              Coaches with better communication may be awarded wins in case of
+              unplayed games by TO discretion.
+            </li>
+          </ol>
+        </mat-expansion-panel>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <span class="rule-title">Battles</span>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <ol class="rule-description">
+            <li>
+              You will have 1 week to complete your (Gen9 NatDex Singles) best
+              of 1 match for that week (Look at league schedule after the draft
+              and plan ahead!)
+            </li>
+            <li>
+              Every week will have a two day extension period that overlaps with
+              the beginning of the next week. If the game is not played within
+              the regular 7 day week, it MUST be played during this 2 day
+              extension period.
+            </li>
+            <li>
+              Serious sudden reasons for not playing can warrant further
+              extensions or down the road rescheduling. If no date or time of
+              battle is known to TO's by the end of the regular week, or the
+              battle was not played at the time noted during the extension rule
+              4 will be referenced for the battle outcome.
+            </li>
+            <li>
+              Forfeits will count as a 2-0 win/loss if done prior to the match
+              beginning. Forfeiting during a match is strictly prohibited as it
+              is poor sportsmanship.
+            </li>
+            <li>
+              Battles will be played at Level 100, with all Pokemon being Level
+              100.
+            </li>
+            <li>
+              Ghosting or coaching during battles is prohibited with a failure
+              to comply being met with instant expulsion from the league
+            </li>
+            <li>You must bring 6 Pokemon to a battle.</li>
+            <li>
+              Battles will be played on showdown in the Gen9 NatDex Draft
+              format. Check for team legality prior to playing!
+            </li>
+            <li>
+              Sharing a player's team or build with their opponent is prohibited
+              and will result in penalties, including voided games and bans.
+            </li>
+            <li>
+              You can schedule and play your next weeks battle ahead of time,
+              but do not talk about it or post results till that week please.
+            </li>
+            <li>
+              If during a match, an illegal pokemon, move, tera type, or item is
+              found to be used that does not adhere to "Gen 9 National Dex"
+              rules or the draft board as defined by each players teams, the
+              opposing coach can dictate if they would like the automatic 2-0
+              victory at that point, or if they would like to continue playing
+              as normal with the error being dimissed and the outcome of the
+              game playing out as normal.
+            </li>
+          </ol>
+        </mat-expansion-panel>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <span class="rule-title">League Table and Playoffs</span>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <ol class="rule-description">
+            <li>
+              Teams will play 8 teams through the regular season. Check the
+              Schedule for who you play.
+            </li>
+            <li>
+              Standings are determined in the following order: Game wins, Game
+              differential, Head-to-head, Strength of schedule, Coin flip.
+            </li>
+            <li>
+              Playoffs will consist of the top 8 coaches, with the highest seeds
+              playing the lowest seeds first round.
+            </li>
+            <li>
+              Scheduling During playoffs will follow the same 7 (+2) day week
+              cycles for a total of 3 weeks.
+            </li>
+          </ol>
+        </mat-expansion-panel>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <span class="rule-title">Battle Clauses & Bans</span>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <ol class="rule-description">
+            <li>
+              The following Smogon clauses are in effect:
+              <ul>
+                <li>
+                  Sleep Clause (Multiple pokemon cannot be knowingly put to
+                  sleep)
+                </li>
+                <li>Evasion Clause</li>
+                <li>OHKO Clause</li>
+                <li>Endless Battle Clause</li>
+              </ul>
+            </li>
+            <li>
+              The following abilities are banned on all Pokémon:
+              <ul>
+                <li>Moody</li>
+                <li>Sand Veil</li>
+                <li>Snow Cloak</li>
+                <li>Arena Trap</li>
+                <li>Shadow Tag</li>
+                <li>Any illegal/unreleased abilities</li>
+              </ul>
+            </li>
+            <li>
+              The following items are banned on all Pokémon:
+              <ul>
+                <li>Bright Powder</li>
+                <li>Lax Incense</li>
+                <li>King's Rock</li>
+                <li>Focus Band</li>
+                <li>Razor Fang</li>
+                <li>Quick Claw</li>
+                <li>Any illegal/unreleased items</li>
+              </ul>
+            </li>
+            <li>
+              The following moves are banned on all Pokémon:
+              <ul>
+                <li>Hidden Powder</li>
+                <li>Last Respects</li>
+                <li>Shed Tail</li>
+                <li>Revival Blessing</li>
+                <li>Any illegal/unreleased moves</li>
+              </ul>
+            </li>
+            <li>
+              Battles that go to timer will be decided by who went to timer, the
+              losing coach will have their score lowered to 0 (eg. if the game
+              ends 2-2 then the result will be a 2-0).
+            </li>
+            <li>
+              Baton Pass cannot be used to pass stats or Substitute unless
+              granted by the opponent.
+            </li>
+            <li>
+              Species clause is active, so you may not draft multiple Pokemon
+              that share a Pokedex number or a species.
+            </li>
+          </ol>
+        </mat-expansion-panel>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <span class="rule-title">Complex Bans </span>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <ol class="rule-description">
+            <li>
+              The following complex bans are in effect:
+              <ul>
+                <li>
+                  Zygarde-10% & 50% may not have the ability Power Construct.
+                </li>
+              </ul>
+            </li>
+          </ol>
+        </mat-expansion-panel>
+      </mat-accordion>
     </div>
   </div>
 </div>

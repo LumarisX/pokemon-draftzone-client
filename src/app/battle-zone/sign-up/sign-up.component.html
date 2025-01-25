@@ -1,14 +1,14 @@
-<div
+<!-- <div
   class="px-4 py-2 w-fit md:my-4 mx-4 my-2 rounded-lg bg-menu-200 hover:bg-menu-300 hover:cursor-pointer border border-menu-300 hover:border-menu-400"
   routerLink="/battle-zone/pdbl"
 >
   Back
-</div>
+</div> -->
 <div class="p-4">
   <form
     [formGroup]="signupForm"
     (ngSubmit)="onSubmit()"
-    class="space-y-6 max-w-3xl mx-auto p-6 bg-menu-100 border border-menu-200 rounded-lg shadow-lg"
+    class="sign-up space-y-2"
   >
     <div class="flex justify-between h-16">
       <div class="text-xl font-nasa flex items-center">
@@ -18,85 +18,92 @@
     </div>
 
     <!-- Discord Name -->
-    <div>
-      <label for="discordName" class="text-sm font-medium text-menu-700"
-        >Discord Name<span class="text-required">*</span></label
-      >
+    <mat-form-field class="w-full">
+      <mat-label>Discord Name</mat-label>
       <input
-        id="discordName"
-        maxlength="100"
-        formControlName="discordName"
-        class="w-full p-2 bg-page border rounded-md sm:text-sm"
+        matInput
         placeholder="Enter Discord Name"
+        formControlName="discordName"
       />
-      <mat-form-field>
-        <mat-label>Discord Name</mat-label>
-        <input
-          matInput
-          placeholder="Enter Discord Name"
-          formControlName="discordName"
-        />
-        @if (signupForm.get("discordName")?.hasError("required")) {
+      @if (signupForm.get("discordName")?.hasError("required")) {
+        <mat-error>Required</mat-error>
+      }
+    </mat-form-field>
+
+    <!-- Timezone -->
+    <mat-form-field class="w-full">
+      <mat-label>Time Zone</mat-label>
+      <mat-select formControlName="timezone">
+        @for (tz of timezones; track $index) {
+          <mat-option [value]="tz">{{ tz }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Experience -->
+    <mat-form-field class="w-full">
+      <mat-label>Experience</mat-label>
+      <textarea
+        matInput
+        formControlName="experience"
+        maxlength="500"
+        placeholder="How much experience do you have in draft?"
+      >
+      </textarea>
+    </mat-form-field>
+
+    <!-- Have Dropped -->
+    <div>
+      <div>Have you dropped from a league before?</div>
+      <mat-radio-group formControlName="droppedBefore">
+        <mat-radio-button [value]="true"> Yes </mat-radio-button>
+        <mat-radio-button [value]="false"> No </mat-radio-button>
+      </mat-radio-group>
+    </div>
+    @if (signupForm.get("droppedBefore")?.value) {
+      <!-- Why -->
+      <mat-form-field class="w-full">
+        <mat-label>Why?</mat-label>
+        <textarea matInput formControlName="droppedWhy" maxlength="500">
+        </textarea>
+        @if (signupForm.get("droppedWhy")?.hasError("required")) {
           <mat-error>Required</mat-error>
         }
       </mat-form-field>
-    </div>
-
-    <!-- Timezone -->
-    <div>
-      <label for="timezone" class="text-sm font-medium text-menu-700"
-        >Timezone<span class="text-required">*</span></label
-      >
-      <input
-        id="timezone"
-        maxlength="100"
-        formControlName="timezone"
-        class="w-full p-2 bg-page border rounded-md sm:text-sm"
-        placeholder="Enter Timezone"
-      />
-    </div>
-
-    <!-- Experience -->
-    <div>
-      <label for="experience" class="text-sm font-medium text-menu-700"
-        >Experience</label
-      >
-      <input
-        id="experience"
-        formControlName="experience"
-        maxlength="100"
-        class="w-full p-2 bg-page border rounded-md sm:text-sm"
-        placeholder="How much experience do you have in draft?"
-      />
-    </div>
+    }
 
     <!-- Confirm -->
-    <div class="text-sm font-medium space-y-2">
-      <span
-        >Do you accept the
-        <span
+    <div class="text-sm font-medium">
+      <div>
+        Do you accept the
+        <a
+          target="_blank"
+          href="https://pokemondraftzone.com/battle-zone/pdbl/rules"
           class="text-blue-600 hover:text-blue-700 hover:cursor-pointer"
-          routerLink="/battle-zone/pdbl/rules"
-          >league rules</span
-        >?</span
-      >
-      <div class="flex items-center space-x-2">
-        <label for="confirm" class="text-sm font-medium text-menu-700">
-          Accept<span class="text-required">*</span>
-        </label>
-        <input id="confirm" type="checkbox" formControlName="confirm" />
+          >league rules</a
+        >
+        and agree to commit to playing for the next 8-11 weeks?
       </div>
+      <mat-checkbox formControlName="confirm"> Accept </mat-checkbox>
     </div>
 
-    <!-- Submit Button -->
-    <div class="pt-4">
-      <button
-        type="submit"
-        class="bg-aTeam-400 text-symbolColor-inverted p-2 rounded-md hover:bg-aTeam-500 w-full"
-      >
+    <div class="flex justify-between">
+      <button mat-raised-button type="submit" [disabled]="!signupForm.valid">
         Submit
       </button>
+
+      <div class="text-sm font-medium max-w-96">
+        Consider
+        <a
+          target="_blank"
+          href="https://pokemondraftzone.com/donate"
+          class="text-blue-600 hover:text-blue-700 hover:cursor-pointer"
+          >donating</a
+        >
+        to the winnings pot. <br />
+        (Leave a note that it's for the draft league.)
+      </div>
     </div>
   </form>
 </div>
-{{ signupForm.value | json }}
+<!-- {{ signupForm.value | json }} -->
