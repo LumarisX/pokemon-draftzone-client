@@ -1,0 +1,70 @@
+@use "@angular/material" as mat;
+
+.tier-group {
+  &:not(:first-child) {
+    border-width: 0px 0px 0px 2px;
+    border-color: var(--mat-sys-outline);
+  }
+}
+.tier-entry {
+  width: 10rem;
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+
+  padding: 0.25rem;
+  @apply space-x-2 text-sm;
+}
+
+.tier-container {
+  border-width: 2px;
+  border-color: var(--mat-sys-outline);
+}
+
+.tier-sprite {
+  height: 40px;
+  width: 40px;
+}
+
+.drafted {
+  .tier-sprite {
+    filter: grayscale(100%);
+    opacity: 70%;
+  }
+  text-decoration: line-through;
+}
+
+.menu {
+  box-shadow: var(--mat-sys-level2);
+}
+
+.tier-label {
+  background-color: var(--mat-sys-primary);
+  color: var(--mat-sys-on-primary);
+  text-align: center;
+  min-width: 4rem;
+  font-weight: bold;
+  border-width: 0px 0px 2px 0px;
+  @apply font-nasa;
+}
+
+.backbutton {
+  @include mat.button-overrides(
+    (
+      filled-horizontal-padding: 1rem,
+      filled-container-height: 2rem,
+      filled-label-text-size: 0.75rem,
+    )
+  );
+}
+
+.applybutton {
+  width: 100%;
+  text-align: center;
+  border-radius: inherit;
+  background-color: var(--mat-sys-primary);
+  color: var(--mat-sys-on-primary);
+  &:hover {
+    background-color: var(--mat-sys-secondary);
+  }
+}

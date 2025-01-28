@@ -14,6 +14,7 @@ import { nameList } from '../../data/namedex';
 import { Pokemon } from '../../interfaces/draft';
 import { PokemonSelectComponent } from '../../util/pokemon-select/pokemon-select.component';
 import { PokemonBuilder, TeambuilderPokemon } from './pokemon-builder.model';
+import { MatSliderModule } from '@angular/material/slider';
 
 @Component({
   selector: 'teambuilder-pokemon',
@@ -29,6 +30,7 @@ import { PokemonBuilder, TeambuilderPokemon } from './pokemon-builder.model';
     MatInputModule,
     MatSelectModule,
     MatButtonModule,
+    MatSliderModule,
     MatFormFieldModule,
     PokemonSelectComponent,
   ],

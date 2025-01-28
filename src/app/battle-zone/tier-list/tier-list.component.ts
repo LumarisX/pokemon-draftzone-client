@@ -1,87 +1,136 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { DataService } from '../../api/data.service';
-import { Pokemon } from '../../interfaces/draft';
-import {
-  CdkDragDrop,
-  CdkDropList,
-  CdkDrag,
-  moveItemInArray,
-} from '@angular/cdk/drag-drop';
+import { Component, effect, OnInit, signal } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatIconModule } from '@angular/material/icon';
+import { MatRadioModule } from '@angular/material/radio';
+import { RouterModule } from '@angular/router';
+import { TierPokemon } from '.';
+import { BattleZoneService } from '../../api/battle-zone.service';
+import { Type, TYPES } from '../../data';
+import { LoadingComponent } from '../../images/loading/loading.component';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
+import { filter } from 'd3';
 
 @Component({
   selector: 'bz-tier-list',
   standalone: true,
   templateUrl: './tier-list.component.html',
-  imports: [CommonModule, SpriteComponent, CdkDropList, CdkDrag],
-  styles: `
-    .example-list {
-      width: 500px;
-      max-width: 100%;
-      border: solid 1px #ccc;
-      min-height: 60px;
-      display: block;
-      background: white;
-      border-radius: 4px;
-      overflow: hidden;
-    }
-
-    .example-box {
-      padding: 20px 10px;
-      border-bottom: solid 1px #ccc;
-      color: rgba(0, 0, 0, 0.87);
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: space-between;
-      box-sizing: border-box;
-      cursor: move;
-      background: white;
-      font-size: 14px;
-    }
-
-    .cdk-drag-preview {
-      border: none;
-      box-sizing: border-box;
-      border-radius: 4px;
-      box-shadow:
-        0 5px 5px -3px rgba(0, 0, 0, 0.2),
-        0 8px 10px 1px rgba(0, 0, 0, 0.14),
-        0 3px 14px 2px rgba(0, 0, 0, 0.12);
-    }
-
-    .cdk-drag-placeholder {
-      opacity: 0;
-    }
-
-    .cdk-drag-animating {
-      transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
-    }
-
-    .example-box:last-child {
-      border: none;
-    }
-
-    .example-list.cdk-drop-list-dragging
-      .example-box:not(.cdk-drag-placeholder) {
-      transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
-    }
-  `,
+  imports: [
+    CommonModule,
+    MatIconModule,
+    MatRadioModule,
+    MatButtonModule,
+    RouterModule,
+    FormsModule,
+    MatCheckboxModule,
+    ReactiveFormsModule,
+    SpriteComponent,
+    LoadingComponent,
+  ],
+  styleUrl: './tier-list.component.scss',
 })
 export class BZTierListComponent implements OnInit {
-  list: Pokemon[] = [];
+  readonly SortOptions = [
+    'Name',
+    'BST',
+    'HP',
+    'ATK',
+    'DEF',
+    'SPA',
+    'SPD',
+    'SPE',
+  ] as const;
 
-  constructor(private dataService: DataService) {}
+  types = TYPES;
 
-  ngOnInit(): void {
-    this.dataService.getPokemonList('Gen8 NatDex').subscribe((response) => {
-      console.log('Recieved', response);
-      this.list = response;
+  selectedTypes: Type[] = [];
+  filteredTypes: Type[] = [...this.types];
+
+  tiers?: {
+    name: string;
+    pokemon: TierPokemon[];
+  }[];
+
+  updatedTime?: string;
+  sortBy = signal<(typeof this.SortOptions)[number]>('BST');
+  _menu: 'sort' | 'filter' | null = null;
+
+  set menu(value: 'sort' | 'filter' | null) {
+    if (value === 'filter') {
+      this.selectedTypes = [...this.filteredTypes];
+    }
+    this._menu = value;
+  }
+
+  get menu() {
+    return this._menu;
+  }
+
+  constructor(private battlezoneService: BattleZoneService) {
+    effect(() => {
+      this.sortTiers(this.sortBy());
+      this.menu = null;
     });
   }
 
-  drop(event: CdkDragDrop<string[]>) {
-    moveItemInArray(this.list, event.previousIndex, event.currentIndex);
+  ngOnInit(): void {
+    this.refreshTiers();
+  }
+
+  refreshTiers() {
+    this.tiers = undefined;
+    this.sortBy.set('BST');
+    this.battlezoneService.getTiers().subscribe((response) => {
+      this.updatedTime = new Date(Date.now()).toLocaleTimeString();
+      this.tiers = response;
+    });
+  }
+
+  sortTiers(value: (typeof this.SortOptions)[number]) {
+    const sortMap: Record<
+      (typeof this.SortOptions)[number],
+      (x: TierPokemon, y: TierPokemon) => number
+    > = {
+      BST: (x, y) => y.bst - x.bst,
+      HP: (x, y) => y.stats.hp - x.stats.hp,
+      ATK: (x, y) => y.stats.atk - x.stats.atk,
+      DEF: (x, y) => y.stats.def - x.stats.def,
+      SPA: (x, y) => y.stats.spa - x.stats.spa,
+      SPD: (x, y) => y.stats.spd - x.stats.spd,
+      SPE: (x, y) => y.stats.spe - x.stats.spe,
+      Name: (x, y) => x.id.localeCompare(y.id),
+    };
+    this.tiers = this.tiers?.map((tier) => ({
+      name: tier.name,
+      pokemon: tier.pokemon.sort(sortMap[value]),
+    }));
+  }
+
+  updateFilter(selected: boolean, index?: number) {
+    if (index === undefined) {
+      if (selected) {
+        this.selectedTypes = [...this.types];
+      } else {
+        this.selectedTypes = [];
+      }
+      return;
+    }
+    if (selected) {
+      this.selectedTypes.push(this.types[index]);
+    } else {
+      this.selectedTypes.filter((type) => type != type);
+    }
+  }
+
+  applyFilter() {
+    this.filteredTypes = [...this.selectedTypes];
+    this.menu = null;
+  }
+
+  typeInFilter(pokemon: TierPokemon): boolean {
+    if (this.filteredTypes.length === 0) return true;
+    return pokemon.types.some((type) => this.filteredTypes.includes(type));
   }
 }

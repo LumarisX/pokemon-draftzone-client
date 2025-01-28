@@ -1,9 +1,18 @@
-import { Namedex, PokemonId } from '../../data/namedex';
-type Tier = { cost: number; noTera?: boolean };
+import { StatsTable, Type } from '../../data';
 
-const SET_TIERS: { [key: PokemonId]: Tier } = {};
+export type TierSubPokemon = {
+  name: string;
+  id: string;
+  types: [Type] | [Type, Type];
+  stats: StatsTable;
+  bst: number;
+  banned?: {
+    moves: string[];
+    abilities: string[];
+  };
+};
 
-export const TIERS = Object.keys(Namedex).reduce((acc, key) => {
-  acc[key] = { cost: 0 };
-  return acc;
-}, {} as { [key: string]: Tier });
+export type TierPokemon = TierSubPokemon & {
+  subPokemon?: TierSubPokemon[];
+  drafted: boolean;
+};

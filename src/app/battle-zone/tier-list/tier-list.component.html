@@ -1,9 +1,127 @@
-<div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
-  @for (pokemon of list; track pokemon) {
-    <div draggable="true" cdkDrag class="example-box">
-      <div class="h-8 flex">
-        <sprite [pokemon]="pokemon"></sprite> {{ pokemon.name }}
+<div class="flex flex-col max-w-full h-full items-center">
+  <div class="h-full flex max-w-full flex-col p-2 space-y-2">
+    <div class="flex-grow-0 max-w-full flex justify-between">
+      <div class="flex items-center space-x-2">
+        <button
+          class="backbutton"
+          routerLink="/battle-zone/pdbl"
+          mat-flat-button
+        >
+          Back
+        </button>
+        <div class="md:text-2xl text-xl font-nasa">Tier List</div>
+        @if (tiers) {
+          <div>
+            <div class="relative inline-block">
+              <button
+                mat-icon-button
+                (click)="menu = menu === 'sort' ? null : 'sort'"
+              >
+                <mat-icon>sort</mat-icon>
+              </button>
+              @if (menu === "sort") {
+                <div
+                  class="absolute left-full top-0 ml-2 bg-page border rounded menu z-50"
+                >
+                  <mat-radio-group
+                    [(ngModel)]="sortBy"
+                    class="flex flex-col p-1 pr-2"
+                  >
+                    @for (option of SortOptions; track $index) {
+                      <mat-radio-button [value]="option">
+                        {{ option }}
+                      </mat-radio-button>
+                    }
+                  </mat-radio-group>
+                </div>
+              }
+            </div>
+            <div class="relative inline-block">
+              <button
+                mat-icon-button
+                (click)="menu = menu === 'filter' ? null : 'filter'"
+              >
+                <mat-icon>filter_list</mat-icon>
+              </button>
+              @if (menu === "filter") {
+                <div
+                  class="absolute left-full top-0 ml-2 bg-page border rounded-lg menu z-50"
+                >
+                  <button class="applybutton" (click)="applyFilter()">
+                    Apply
+                  </button>
+                  <div class="max-h-96 overflow-y-auto">
+                    <mat-checkbox
+                      [checked]="selectedTypes.length === types.length"
+                      [indeterminate]="
+                        selectedTypes.length > 0 &&
+                        selectedTypes.length < types.length
+                      "
+                      (change)="updateFilter($event.checked)"
+                    >
+                      All
+                    </mat-checkbox>
+                    <ul>
+                      @for (type of types; track $index; let i = $index) {
+                        <li>
+                          <mat-checkbox
+                            [checked]="selectedTypes.includes(type)"
+                            (change)="updateFilter($event.checked, i)"
+                          >
+                            {{ type }}
+                          </mat-checkbox>
+                        </li>
+                      }
+                    </ul>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+      <div class="flex items-center space-x-2">
+        <div class="hidden sm:block md:text-base text-xs">
+          Updated at {{ updatedTime }}
+        </div>
+        <button mat-icon-button (click)="refreshTiers()">
+          <mat-icon>refresh</mat-icon>
+        </button>
       </div>
     </div>
-  }
+    @if (tiers) {
+      <div
+        class="tier-container max-w-full max-h-full flex-grow overflow-y-auto rounded-lg w-fit"
+      >
+        <div class="h-fit w-full flex">
+          @for (tier of tiers; track $index) {
+            <div class="tier-group">
+              <div class="tier-label">
+                {{ tier.name }}
+              </div>
+              @for (pokemon of tier.pokemon; track $index) {
+                @if (typeInFilter(pokemon)) {
+                  <div
+                    class="tier-entry"
+                    [ngClass]="{
+                      drafted: pokemon.drafted,
+                    }"
+                  >
+                    <div class="tier-sprite">
+                      <sprite [pid]="pokemon.id"></sprite>
+                    </div>
+                    <div>
+                      {{ pokemon.name }}
+                    </div>
+                  </div>
+                }
+              }
+            </div>
+          }
+        </div>
+      </div>
+    } @else {
+      <loading></loading>
+    }
+  </div>
 </div>

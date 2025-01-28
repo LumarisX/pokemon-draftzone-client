@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { BZLandingComponent } from './landing.component';
+import { BZLandingComponent } from './landing/landing.component';
 import { BZTierListComponent } from './tier-list/tier-list.component';
 import { BZSignUpComponent } from './sign-up/sign-up.component';
 import { BZRulesComponent } from './rules/rules.component';

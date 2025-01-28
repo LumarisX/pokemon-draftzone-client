@@ -210,6 +210,6 @@ export type TeraType = (typeof TERATYPES)[number];
 
 export type ExtendedType = Type | (typeof TYPECONDITIONS)[number];
 
-export type StatsTable = {
-  [key in Stat]: number;
+export type StatsTable<T = number> = {
+  [key in Stat]: T;
 };

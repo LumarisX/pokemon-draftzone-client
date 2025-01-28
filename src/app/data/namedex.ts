@@ -28,7 +28,11 @@ export function getPidByName(name: string): PokemonId | null {
 }
 
 export function getNameByPid(id: PokemonId): string {
-  return Namedex[id].name[0];
+  if (Namedex[id]) {
+    return Namedex[id].name[0];
+  } else {
+    return '';
+  }
 }
 
 let $nameList: Pokemon[] | undefined;

@@ -1,12 +1,41 @@
+@use "@angular/material" as mat;
+
 textarea {
   resize: none;
 }
 
+$form-color: var(--mat-sys-surface-container);
 .sign-up {
   margin-left: auto;
   margin-right: auto;
-  max-width: 48rem; /* max-w-3xl */
-  padding: 1.5rem; /* p-6 */
-  border-radius: 0.5rem; /* rounded-lg */
+  max-width: 48rem;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
   box-shadow: var(--mat-sys-level2);
+}
+
+mat-expansion-panel {
+  border-width: 1px;
+  border-bottom: 1px solid black;
+  @include mat.expansion-overrides(
+    (
+      header-collapsed-state-height: 2.5rem,
+      header-expanded-state-height: 2.5rem,
+
+      container-background-color: $form-color,
+      container-shape: 0.25rem 0.25rem 0px 0px,
+    )
+  );
+}
+th {
+  padding: 0.25rem;
+  text-align: start;
+}
+
+mat-form-field {
+  @include mat.form-field-overrides(
+    (
+      filled-container-color: $form-color,
+    )
+  );
 }

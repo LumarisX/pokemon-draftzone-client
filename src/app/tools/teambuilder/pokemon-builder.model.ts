@@ -71,6 +71,7 @@ export class PokemonSet implements PokemonData {
     spd: 0,
     spe: 0,
   };
+  statRange: StatsTable<[number, number]>;
   gender: '' | 'M' | 'F' = '';
   happiness: number = 255;
   hiddenpower: Type = 'Dark';
@@ -84,17 +85,24 @@ export class PokemonSet implements PokemonData {
   constructor(data: PokemonData & Partial<PokemonSet>) {
     Object.assign(this, data);
     this.level = data.level && data.level > 0 ? data.level : 50;
+    this.statRange = {
+      hp: this.getStatRange('hp'),
+      atk: this.getStatRange('atk'),
+      def: this.getStatRange('def'),
+      spa: this.getStatRange('spa'),
+      spd: this.getStatRange('spd'),
+      spe: this.getStatRange('spe'),
+    };
   }
 
   get hp() {
-    return (
-      Math.floor(
-        ((2 * this.baseStats.hp + this.ivs.hp + Math.floor(this.evs.hp / 4)) *
-          this.level) /
-          100,
-      ) +
-      this.level +
-      10
+    return calcStat(
+      'hp',
+      this.baseStats.hp,
+      this.ivs.hp,
+      this.evs.hp,
+      this.level,
+      this.nature,
     );
   }
   get atk() {
@@ -114,19 +122,23 @@ export class PokemonSet implements PokemonData {
   }
 
   private calcStat(stat: 'atk' | 'spa' | 'def' | 'spd' | 'spe') {
-    return Math.floor(
-      (Math.floor(
-        ((2 * this.baseStats[stat] +
-          this.ivs[stat] +
-          Math.floor(this.evs[stat] / 4)) *
-          this.level) /
-          100,
-      ) +
-        5) *
-        (1 +
-          (this.nature?.boost === stat ? 0.1 : 0) -
-          (this.nature?.drop === stat ? 0.1 : 0)),
+    return calcStat(
+      stat,
+      this.baseStats[stat],
+      this.ivs[stat],
+      this.evs[stat],
+      this.level,
+      this.nature,
     );
+  }
+
+  private getStatRange(
+    stat: 'hp' | 'atk' | 'spa' | 'def' | 'spd' | 'spe',
+  ): [number, number] {
+    return [
+      calcStat(stat, this.baseStats[stat], 0, 0, this.level, this.nature),
+      calcStat(stat, this.baseStats[stat], 31, 252, this.level, this.nature),
+    ];
   }
 
   toJson() {
@@ -355,7 +367,6 @@ export class PokemonBuilder {
     }));
   }
 
-
   // toPacked() {
   //   return [
   //     this.nickname,
@@ -379,4 +390,29 @@ export class PokemonBuilder {
   //     ].join(','),
   //   ].join('|');
   // }
+}
+
+export function calcStat(
+  stat: 'hp' | 'atk' | 'spa' | 'def' | 'spd' | 'spe',
+  baseStat: number,
+  ivs: number,
+  evs: number,
+  level: number,
+  nature: Nature | null,
+) {
+  if (stat === 'hp') {
+    return (
+      Math.floor(((2 * baseStat + ivs + Math.floor(evs / 4)) * level) / 100) +
+      level +
+      10
+    );
+  } else {
+    return Math.floor(
+      (Math.floor(((2 * baseStat + ivs + Math.floor(evs / 4)) * level) / 100) +
+        5) *
+        (1 +
+          (nature?.boost === stat ? 0.1 : 0) -
+          (nature?.drop === stat ? 0.1 : 0)),
+    );
+  }
 }

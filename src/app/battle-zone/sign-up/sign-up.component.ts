@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import {
   AbstractControl,
@@ -17,6 +17,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { RouterModule } from '@angular/router';
+import { BattleZoneService } from '../../api/battle-zone.service';
+import { MatCardModule } from '@angular/material/card';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 @Component({
   selector: 'bz-sign-up',
@@ -29,23 +32,41 @@ import { RouterModule } from '@angular/router';
     MatSelectModule,
     MatInputModule,
     MatButtonModule,
+    MatExpansionModule,
+    MatCardModule,
     MatCheckboxModule,
     MatRadioModule,
     ReactiveFormsModule,
     RouterModule,
   ],
+  providers: [DatePipe],
   styleUrl: './sign-up.component.scss',
 })
 export class BZSignUpComponent implements OnInit {
   signupForm!: FormGroup;
-  formats: string[] = [];
-  rulesets: string[] = [];
-
+  added = false;
   timezones = Intl.supportedValuesOf('timeZone');
 
-  constructor(private fb: FormBuilder) {}
+  details?: {
+    format: string;
+    ruleset: string;
+    draft: [Date, Date];
+    season: [Date, Date];
+    prize: number;
+  };
+  constructor(
+    private fb: FormBuilder,
+    private battlezoneService: BattleZoneService,
+  ) {}
 
   ngOnInit(): void {
+    this.battlezoneService.getDetails().subscribe((response) => {
+      this.details = response;
+    });
+    this.resetForm();
+  }
+
+  resetForm() {
     this.signupForm = this.fb.group(
       {
         discordName: ['', Validators.required],
@@ -62,7 +83,20 @@ export class BZSignUpComponent implements OnInit {
     );
   }
 
-  onSubmit() {}
+  onSubmit() {
+    if (this.signupForm.valid) {
+      this.battlezoneService
+        .signUp(this.signupForm.value)
+        .subscribe((response) => {
+          if (response.status === 201) {
+            this.added = true;
+          }
+          console.log(response);
+        });
+    } else {
+      console.error('Sign Up form is not valid: ', this.signupForm.errors);
+    }
+  }
 }
 
 function droppedValidator(): ValidatorFn {

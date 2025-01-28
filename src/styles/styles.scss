@@ -146,3 +146,11 @@
     transform: translateX(-50%) translateY(-0.5rem);
   }
 }
+
+$levels: 0, 1, 2, 3, 4, 5;
+
+@each $level in $levels {
+  .mat-level-#{$level} {
+    box-shadow: var(--mat-sys-level#{$level});
+  }
+}

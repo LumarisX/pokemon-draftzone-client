@@ -7,6 +7,7 @@ export type ClientError = {
   statusText?: string;
   url?: string | null;
   error?: {
+    message: string;
     code: string;
   };
 };
