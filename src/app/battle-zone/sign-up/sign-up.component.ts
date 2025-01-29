@@ -113,6 +113,7 @@ function droppedValidator(): ValidatorFn {
       droppedWhy?.setErrors({ required: true });
       return { droppedWhyRequired: true };
     }
+    droppedWhy?.setErrors(null);
     return null;
   };
 }
