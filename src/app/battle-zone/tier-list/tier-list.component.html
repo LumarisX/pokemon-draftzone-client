@@ -10,7 +10,7 @@
           Back
         </button>
         <div class="md:text-2xl text-xl font-nasa">Tier List</div>
-        @if (tiers) {
+        @if (tierGroups) {
           <div>
             <div class="relative inline-block">
               <button
@@ -89,33 +89,50 @@
         </button>
       </div>
     </div>
-    @if (tiers) {
+    @if (tierGroups) {
       <div
         class="tier-container max-w-full max-h-full flex-grow overflow-y-auto rounded-lg w-fit"
       >
         <div class="h-fit w-full flex">
-          @for (tier of tiers; track $index) {
+          @for (group of tierGroups; track $index) {
             <div class="tier-group">
-              <div class="tier-label">
-                {{ tier.name }}
-              </div>
-              @for (pokemon of tier.pokemon; track $index) {
-                @if (typeInFilter(pokemon)) {
-                  <div
-                    class="tier-entry"
-                    [ngClass]="{
-                      drafted: pokemon.drafted,
-                    }"
-                  >
-                    <div class="tier-sprite">
-                      <sprite [pid]="pokemon.id"></sprite>
+              <div class="tier-group-label">{{ group.label }}</div>
+              <div class="tier-entry-container">
+                @for (tier of group.tiers; track $index) {
+                  <div class="tier">
+                    <div class="tier-label">
+                      {{ tier.name }}
                     </div>
-                    <div>
-                      {{ pokemon.name }}
-                    </div>
+                    @for (pokemon of tier.pokemon; track $index) {
+                      @if (typeInFilter(pokemon)) {
+                        <div
+                          class="tier-entry"
+                          [ngClass]="{
+                            drafted: pokemon.drafted,
+                          }"
+                        >
+                          <div class="tier-sprite">
+                            <sprite [pid]="pokemon.id"></sprite>
+                          </div>
+                          <div>
+                            {{ pokemon.name }}
+                          </div>
+                          @if (pokemon.banned) {
+                            <mat-icon
+                              class="restricted-icon"
+                              mat-raised-button
+                              #tooltip="matTooltip"
+                              [matTooltip]="makeBanString(pokemon.banned)"
+                            >
+                              warning
+                            </mat-icon>
+                          }
+                        </div>
+                      }
+                    }
                   </div>
                 }
-              }
+              </div>
             </div>
           }
         </div>

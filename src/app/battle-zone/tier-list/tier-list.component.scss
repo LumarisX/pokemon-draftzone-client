@@ -2,18 +2,54 @@
 
 .tier-group {
   &:not(:first-child) {
+    border-width: 0px 0px 0px 3px;
+    border-left-color: var(--mat-sys-outline);
+  }
+
+  display: flex;
+  flex-direction: column;
+}
+
+.tier {
+  &:not(:first-child) {
     border-width: 0px 0px 0px 2px;
     border-color: var(--mat-sys-outline);
   }
 }
+
+.tier-group-label {
+  background-color: var(--mat-sys-primary);
+  color: var(--mat-sys-on-primary);
+  text-align: center;
+  min-width: 4rem;
+  font-weight: bold;
+  border-color: inherit;
+
+  @apply font-nasa;
+}
+
+.tier-entry-container {
+  display: flex;
+  height: 100%;
+}
+
 .tier-entry {
   width: 10rem;
   display: flex;
   align-items: center;
   flex-grow: 1;
-
   padding: 0.25rem;
-  @apply space-x-2 text-sm;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  position: relative;
+  @apply space-x-2;
+}
+
+.restricted-icon {
+  right: 0px;
+  top: 0px;
+  transform: scale(0.75);
+  position: absolute;
 }
 
 .tier-container {
@@ -45,6 +81,7 @@
   min-width: 4rem;
   font-weight: bold;
   border-width: 0px 0px 2px 0px;
+  border-color: var(--mat-sys-outline);
   @apply font-nasa;
 }
 

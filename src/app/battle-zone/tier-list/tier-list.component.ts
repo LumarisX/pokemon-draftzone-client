@@ -11,7 +11,7 @@ import { BattleZoneService } from '../../api/battle-zone.service';
 import { Type, TYPES } from '../../data';
 import { LoadingComponent } from '../../images/loading/loading.component';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
-import { filter } from 'd3';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'bz-tier-list',
@@ -25,6 +25,7 @@ import { filter } from 'd3';
     RouterModule,
     FormsModule,
     MatCheckboxModule,
+    MatTooltipModule,
     ReactiveFormsModule,
     SpriteComponent,
     LoadingComponent,
@@ -48,9 +49,12 @@ export class BZTierListComponent implements OnInit {
   selectedTypes: Type[] = [];
   filteredTypes: Type[] = [...this.types];
 
-  tiers?: {
-    name: string;
-    pokemon: TierPokemon[];
+  tierGroups?: {
+    label?: string;
+    tiers: {
+      name: string;
+      pokemon: TierPokemon[];
+    }[];
   }[];
 
   updatedTime?: string;
@@ -80,11 +84,11 @@ export class BZTierListComponent implements OnInit {
   }
 
   refreshTiers() {
-    this.tiers = undefined;
+    this.tierGroups = undefined;
     this.sortBy.set('BST');
     this.battlezoneService.getTiers().subscribe((response) => {
       this.updatedTime = new Date(Date.now()).toLocaleTimeString();
-      this.tiers = response;
+      this.tierGroups = response;
     });
   }
 
@@ -102,9 +106,12 @@ export class BZTierListComponent implements OnInit {
       SPE: (x, y) => y.stats.spe - x.stats.spe,
       Name: (x, y) => x.id.localeCompare(y.id),
     };
-    this.tiers = this.tiers?.map((tier) => ({
-      name: tier.name,
-      pokemon: tier.pokemon.sort(sortMap[value]),
+    this.tierGroups = this.tierGroups?.map((group) => ({
+      teraCount: group.label,
+      tiers: group.tiers.map((tier) => ({
+        name: tier.name,
+        pokemon: tier.pokemon.sort(sortMap[value]),
+      })),
     }));
   }
 
@@ -132,5 +139,19 @@ export class BZTierListComponent implements OnInit {
   typeInFilter(pokemon: TierPokemon): boolean {
     if (this.filteredTypes.length === 0) return true;
     return pokemon.types.some((type) => this.filteredTypes.includes(type));
+  }
+
+  makeBanString(banned?: {
+    moves?: string[];
+    abilities?: string[];
+    tera?: true;
+  }): string {
+    if (!banned) return '';
+    const bans: string[] = [];
+    if (banned.tera) bans.push('Terastalization');
+    if (banned.abilities && banned.abilities.length > 0)
+      bans.push(...banned.abilities);
+    if (banned.moves && banned.moves.length > 0) bans.push(...banned.moves);
+    return 'Banned: ' + bans.join(', ');
   }
 }

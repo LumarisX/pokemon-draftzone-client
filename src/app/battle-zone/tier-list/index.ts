@@ -7,8 +7,9 @@ export type TierSubPokemon = {
   stats: StatsTable;
   bst: number;
   banned?: {
-    moves: string[];
-    abilities: string[];
+    moves?: string[];
+    abilities?: string[];
+    tera?: true;
   };
 };
 

@@ -15,8 +15,11 @@ export class BattleZoneService {
 
   getTiers(): Observable<
     {
-      name: string;
-      pokemon: TierPokemon[];
+      label?: string;
+      tiers: {
+        name: string;
+        pokemon: TierPokemon[];
+      }[];
     }[]
   > {
     return this.apiService.get(`battlezone/pdbl/tiers`, false);
