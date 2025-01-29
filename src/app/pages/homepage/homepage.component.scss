@@ -3,9 +3,7 @@
 .pdblbutton {
   @include mat.button-overrides(
     (
-      filled-horizontal-padding: 1rem,
-      filled-container-height: 2rem,
-      filled-label-text-size: 0.75rem,
+      filled-label-text-size: 0.875rem,
     )
   );
 }
