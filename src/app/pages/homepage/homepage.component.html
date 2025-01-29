@@ -22,9 +22,68 @@
     </div>
   </div>
   <div class="flex flex-col w-5/6 md:w-2/3 h-5/6 md:h-3/4">
+    <div
+      class="flex-grow space-y-2 w-full px-8 py-4 overflow-y-auto border shadow h-min-0 rounded-xl bg-menu-150 border-menu-300"
+    >
+      <h2 class="w-full text-center text-2xl font-bold">News and Updates</h2>
+      <mat-divider></mat-divider>
+      <div class="space-y-1">
+        <h2 class="w-full text-xl font-nasa text-center">
+          Pokémon DraftZone Battle League (PDBL)
+        </h2>
+        <div
+          class="grid grid-cols-1 gap-2 lg:grid-cols-2 items-center justify-items-center"
+        >
+          <div class="space-y-2 grid grid-cols-1 order-2 lg:order-1">
+            <div>
+              <div>
+                Our very own draft league is finally here and it's called the
+                Pokémon DraftZone Battle League!
+              </div>
+              <div>
+                <h2 class="font-bold">League Details</h2>
+                <ul class="pl-3">
+                  <li><strong>Format:</strong> Singles</li>
+                  <li><strong>Ruleset:</strong> Gen 9 National Dex</li>
+                  <li>
+                    <strong>Open to:</strong> Everyone - whether you're a
+                    seasoned veteran, an eager newcomer, or just here for the
+                    thrill!
+                  </li>
+                  <li>
+                    <strong>Prizes:</strong> A prize pool for the victors!
+                  </li>
+                </ul>
+              </div>
+              <div>
+                Look forward to intense battles and epic strategies from our
+                community of passionate coaches. The PDBL is where legends will
+                be made!
+              </div>
+              <div>
+                Sign ups close Febuary 12th and drafting starts shortly after.
+                See you there!
+              </div>
+            </div>
+          </div>
+          <div class="order-1 lg:order-2 space-y-4">
+            <img
+              class="max-w-60"
+              src="../../../assets/images/battle-zone/pdbl.png"
+            />
+            <div class="space-x-2 w-full flex justify-center">
+              <button class="pdblbutton" mat-flat-button>More Details</button>
+              <button class="pdblbutton" mat-flat-button>Sign Up</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <br />
+      <news-core></news-core>
+    </div>
     <div class="grid w-full grid-cols-1 py-2 gap-y-2 gap-x-4 md:grid-cols-4">
       <strong
-        class="flex items-center justify-center w-full p-1 overflow-y-auto text-center border shadow rounded-xl hover:bg-menu-200 hover:cursor-pointer border-menu-400 bg-menu-300"
+        class="flex items-center justify-center w-full p-1 overflow-y-auto text-center border shadow rounded-xl hover:bg-menu-150 hover:cursor-pointer border-menu-300 bg-menu-200"
         routerLink="/about"
       >
         About Pokemon DraftZone
@@ -32,31 +91,23 @@
       <a
         href="https://discord.gg/sQUEBW4UVx"
         target="_blank"
-        class="flex items-center justify-center w-full p-1 overflow-y-auto text-center border shadow rounded-xl hover:bg-menu-200 hover:cursor-pointer border-menu-400 bg-menu-300"
+        class="flex items-center justify-center w-full p-1 overflow-y-auto text-center border shadow rounded-xl hover:bg-menu-150 hover:cursor-pointer border-menu-300 bg-menu-200"
       >
         <strong> Join our community</strong>
       </a>
       <a
         href="https://github.com/LumarisX/pokemon-draftzone-client"
         target="_blank"
-        class="flex items-center justify-center w-full p-1 overflow-y-auto text-center border shadow rounded-xl hover:bg-menu-200 hover:cursor-pointer border-menu-400 bg-menu-300"
+        class="flex items-center justify-center w-full p-1 overflow-y-auto text-center border shadow rounded-xl hover:bg-menu-150 hover:cursor-pointer border-menu-300 bg-menu-200"
       >
         <strong>Contribute to the project</strong>
       </a>
       <strong
-        class="flex items-center justify-center w-full p-1 overflow-y-auto text-center border shadow rounded-xl hover:bg-menu-200 hover:cursor-pointer border-menu-400 bg-menu-300"
+        class="flex items-center justify-center w-full p-1 overflow-y-auto text-center border shadow rounded-xl hover:bg-menu-150 hover:cursor-pointer border-menu-300 bg-menu-200"
         routerLink="/supporters"
       >
         Project Supporters
       </strong>
-    </div>
-    <div
-      class="flex-grow w-full px-8 py-4 overflow-y-auto border shadow h-min-0 rounded-xl bg-menu-300 border-menu-400"
-    >
-      <h2 class="pb-2 w-full text-center text-2xl font-bold">
-        News and Updates
-      </h2>
-      <news-core></news-core>
     </div>
   </div>
 </div>

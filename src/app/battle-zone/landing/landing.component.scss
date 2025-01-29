@@ -11,8 +11,11 @@
   height: 8rem;
   border-radius: 2rem;
   box-shadow: var(--mat-sys-level2);
-
   &:hover {
     background-color: var(--mat-sys-surface-variant);
+  }
+
+  @media (max-width: 768px) {
+    width: 8rem;
   }
 }

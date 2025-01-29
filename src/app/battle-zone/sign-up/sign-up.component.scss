@@ -27,6 +27,15 @@ mat-expansion-panel {
     )
   );
 }
+
+mat-card {
+  @include mat.card-overrides(
+    (
+      outlined-container-color: $form-color,
+    )
+  );
+}
+
 th {
   padding: 0.25rem;
   text-align: start;

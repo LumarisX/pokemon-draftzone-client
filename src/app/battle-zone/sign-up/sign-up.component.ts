@@ -1,4 +1,4 @@
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import {
   AbstractControl,
@@ -11,15 +11,15 @@ import {
   Validators,
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { RouterModule } from '@angular/router';
 import { BattleZoneService } from '../../api/battle-zone.service';
-import { MatCardModule } from '@angular/material/card';
-import { MatExpansionModule } from '@angular/material/expansion';
 
 @Component({
   selector: 'bz-sign-up',
@@ -34,12 +34,11 @@ import { MatExpansionModule } from '@angular/material/expansion';
     MatButtonModule,
     MatExpansionModule,
     MatCardModule,
-    MatCheckboxModule,
     MatRadioModule,
+    MatCheckboxModule,
     ReactiveFormsModule,
     RouterModule,
   ],
-  providers: [DatePipe],
   styleUrl: './sign-up.component.scss',
 })
 export class BZSignUpComponent implements OnInit {
@@ -47,12 +46,16 @@ export class BZSignUpComponent implements OnInit {
   added = false;
   timezones = Intl.supportedValuesOf('timeZone');
 
-  details?: {
+  details: {
     format: string;
     ruleset: string;
     draft: [Date, Date];
     season: [Date, Date];
-    prize: number;
+  } = {
+    format: 'Singles',
+    ruleset: 'Gen9 NatDex',
+    draft: [new Date('2025-02-18T12:00:00'), new Date('2025-02-22T12:00:00')],
+    season: [new Date('2025-02-23T12:00:00'), new Date('2025-04-20T12:00:00')],
   };
   constructor(
     private fb: FormBuilder,
@@ -60,9 +63,8 @@ export class BZSignUpComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.battlezoneService.getDetails().subscribe((response) => {
-      this.details = response;
-    });
+    this.added = localStorage.getItem('pdbls1') !== null;
+
     this.resetForm();
   }
 
@@ -88,10 +90,11 @@ export class BZSignUpComponent implements OnInit {
       this.battlezoneService
         .signUp(this.signupForm.value)
         .subscribe((response) => {
-          if (response.status === 201) {
-            this.added = true;
-          }
-          console.log(response);
+          this.added = true;
+          localStorage.setItem(
+            'pdbls1',
+            this.signupForm.get('discordName')?.value ?? '',
+          );
         });
     } else {
       console.error('Sign Up form is not valid: ', this.signupForm.errors);
