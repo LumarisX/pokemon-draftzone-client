@@ -1,5 +1,9 @@
 <div class="flex-wrap flex">
-  <div class="p-1">
+  <div class="p-1 space-y-1">
+    <div class="flex space-x-1 w-fit rounded">
+      <span>Abilities:</span>
+      <input type="checkbox" [(ngModel)]="abilities" />
+    </div>
     <div
       class="flex flex-col max-h-full h-fit border-4 max-w-full border-menu-400 bg-menu-100"
     >
@@ -7,7 +11,7 @@
         <table class="table-fixed">
           <thead>
             <tr>
-              <th class="w-12 border-r-4 border-r-menu-400"></th>
+              <th class="w-12 border-r-4 text-xs border-r-menu-400">On/Off</th>
               <th
                 class="flex space-x-0.5 bg-menu-300 border-b-2 border-menu-400"
               >
@@ -41,10 +45,15 @@
                     <div
                       class="w-10 h-full border flex items-center justify-center"
                       [ngClass]="
-                        typeColor(pokemon.weak[type], pokemon.disabled!)
+                        typeColor(
+                          pokemon.weak[this.useAbilities()][type],
+                          pokemon.disabled!
+                        )
                       "
                     >
-                      <span> {{ pokemon.weak[type] }}</span>
+                      <span>
+                        {{ pokemon.weak[this.useAbilities()][type] }}</span
+                      >
                     </div>
                   }
                 </td>

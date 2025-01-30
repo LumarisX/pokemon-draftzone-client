@@ -2,13 +2,19 @@
   <div class="flex w-full px-1 bg-menu-400 rounded-t-xl">
     <div class="flex w-full pb-1 border-b border-menu-300">
       <h1 class="w-full text-xl font-bold text-center">Defensive Type Chart</h1>
-      <button
-        (click)="swapTeams()"
-        class="px-3 mx-1 mt-2 ml-auto text-sm rounded-md shadow-md"
-        [ngClass]="clickColor(true)"
-      >
-        ⇄
-      </button>
+      <div class="flex space-x-1 items-center p-1">
+        <div class="flex space-x-1 bg-menu-250 p-1 shadow-inner rounded">
+          <span>Abilities:</span>
+          <input type="checkbox" [(ngModel)]="abilities" />
+        </div>
+        <button
+          (click)="swapTeams()"
+          class="px-3 mx-1 mt-2 ml-auto text-sm rounded-md shadow-md"
+          [ngClass]="clickColor(true)"
+        >
+          ⇄
+        </button>
+      </div>
     </div>
   </div>
   <div class="w-full overflow-x-auto border-4 border-menu-400">
@@ -51,9 +57,14 @@
           <td
             *ngFor="let type of types"
             class="text-center border"
-            [ngClass]="typeColor(pokemon.weak[type], pokemon.disabled!)"
+            [ngClass]="
+              typeColor(
+                pokemon.weak[this.useAbilities()][type],
+                pokemon.disabled!
+              )
+            "
           >
-            {{ pokemon.weak[type] }}
+            {{ pokemon.weak[this.useAbilities()][type] }}
           </td>
         </tr>
       </tbody>
@@ -132,7 +143,7 @@
             class="text-center border"
             [ngClass]="diffColor(diff)"
           >
-            {{ diff | number : "1.0-0" }}
+            {{ diff | number: "1.0-0" }}
           </td>
         </tr>
       </tfoot>

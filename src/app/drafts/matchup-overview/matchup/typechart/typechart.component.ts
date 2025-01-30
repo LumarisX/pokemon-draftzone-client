@@ -4,12 +4,13 @@ import { SpriteComponent } from '../../../../images/sprite/sprite.component';
 import { Pokemon } from '../../../../interfaces/draft';
 import { TypeChart } from '../../matchup-interface';
 import { ExtendedType, TYPES } from '../../../../data';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'typechart',
   standalone: true,
   templateUrl: './typechart.component.html',
-  imports: [CommonModule, SpriteComponent],
+  imports: [CommonModule, SpriteComponent, FormsModule, ReactiveFormsModule],
 })
 export class TypechartComponent implements OnChanges {
   @Input() typecharts!: TypeChart[];
@@ -21,7 +22,15 @@ export class TypechartComponent implements OnChanges {
   difference: number[] = [];
   differential: number[] = [];
 
-  constructor() {}
+  _abilities: boolean = true;
+  set abilities(value: boolean) {
+    this._abilities = value;
+    this.summerize();
+  }
+
+  get abilities() {
+    return this._abilities;
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     this.summerize();
@@ -35,7 +44,11 @@ export class TypechartComponent implements OnChanges {
   sortByType(type: ExtendedType) {
     if (type != this.sortedType) {
       this.typecharts.forEach((typechart) =>
-        typechart.team.sort((x, y) => x.weak[type] - y.weak[type]),
+        typechart.team.sort(
+          (x, y) =>
+            x.weak[this.useAbilities()][type] -
+            y.weak[this.useAbilities()][type],
+        ),
       );
       this.sortedType = type;
     } else {
@@ -121,9 +134,14 @@ export class TypechartComponent implements OnChanges {
 
   toggleVisible(
     pokemon: Pokemon & {
-      weak: {
-        [key in ExtendedType]: number;
-      };
+      weak: [
+        {
+          [key in ExtendedType]: number;
+        },
+        {
+          [key in ExtendedType]: number;
+        },
+      ];
       disabled?: Boolean;
     },
   ) {
@@ -144,20 +162,26 @@ export class TypechartComponent implements OnChanges {
     for (let pokemon of this.typecharts[this.selectedTeam].team) {
       if (!pokemon.disabled) {
         for (let t in this.types) {
-          if (pokemon.weak[this.types[t]] > 1) {
+          if (pokemon.weak[this.useAbilities()][this.types[t]] > 1) {
             this.weaknesses[t]++;
             this.difference[t]--;
-          } else if (pokemon.weak[this.types[t]] < 1) {
+          } else if (pokemon.weak[this.useAbilities()][this.types[t]] < 1) {
             this.resistances[t]++;
             this.difference[t]++;
           }
-          if (pokemon.weak[this.types[t]] > 0) {
-            this.differential[t] -= Math.log2(pokemon.weak[this.types[t]]);
+          if (pokemon.weak[this.useAbilities()][this.types[t]] > 0) {
+            this.differential[t] -= Math.log2(
+              pokemon.weak[this.useAbilities()][this.types[t]],
+            );
           } else {
             this.differential[t] += 2;
           }
         }
       }
     }
+  }
+
+  useAbilities(): number {
+    return this.abilities ? 0 : 1;
   }
 }

@@ -6,12 +6,20 @@ import { Pokemon } from '../../interfaces/draft';
 import { TypeChart } from '../../drafts/matchup-overview/matchup-interface';
 import { CheckSVG } from '../../images/svg-components/score.component copy';
 import { CircleSVG } from '../../images/svg-components/circle.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'typechart',
   standalone: true,
   templateUrl: './typechart.component.html',
-  imports: [CommonModule, SpriteComponent, CheckSVG, CircleSVG],
+  imports: [
+    CommonModule,
+    SpriteComponent,
+    CheckSVG,
+    CircleSVG,
+    FormsModule,
+    ReactiveFormsModule,
+  ],
 })
 export class TypechartComponent implements OnChanges {
   @Input() typechart!: TypeChart;
@@ -32,7 +40,15 @@ export class TypechartComponent implements OnChanges {
   difference: number[] = [];
   differential: number[] = [];
   uniqueSelected: boolean = true;
+  _abilities: boolean = true;
+  set abilities(value: boolean) {
+    this._abilities = value;
+    this.summerize();
+  }
 
+  get abilities() {
+    return this._abilities;
+  }
   constructor() {}
 
   ngOnChanges(): void {
@@ -90,7 +106,10 @@ export class TypechartComponent implements OnChanges {
 
   toggleVisible(
     pokemon: Pokemon & {
-      weak: { [key in ExtendedType]: number };
+      weak: [
+        { [key in ExtendedType]: number },
+        { [key in ExtendedType]: number },
+      ];
       disabled?: Boolean;
     },
   ) {
@@ -108,20 +127,26 @@ export class TypechartComponent implements OnChanges {
       if (!pokemon.disabled) {
         for (let t in this.types) {
           if (pokemon.types.includes(this.types[t])) this.counts[t]++;
-          if (pokemon.weak[this.types[t]] > 1) {
+          if (pokemon.weak[this.useAbilities()][this.types[t]] > 1) {
             this.weaknesses[t]++;
             this.difference[t]--;
-          } else if (pokemon.weak[this.types[t]] < 1) {
+          } else if (pokemon.weak[this.useAbilities()][this.types[t]] < 1) {
             this.resistances[t]++;
             this.difference[t]++;
           }
-          if (pokemon.weak[this.types[t]] > 0) {
-            this.differential[t] -= Math.log2(pokemon.weak[this.types[t]]);
+          if (pokemon.weak[this.useAbilities()][this.types[t]] > 0) {
+            this.differential[t] -= Math.log2(
+              pokemon.weak[this.useAbilities()][this.types[t]],
+            );
           } else {
             this.differential[t] += 2;
           }
         }
       }
     }
+  }
+
+  useAbilities(): number {
+    return this.abilities ? 0 : 1;
   }
 }

@@ -17,9 +17,14 @@ export class CoverageComponent implements OnInit {
   @Input() typechart!: TypeChart;
   coverage: {
     pokemon: Pokemon & {
-      weak: {
-        [key in ExtendedType]: number;
-      };
+      weak: [
+        {
+          [key in ExtendedType]: number;
+        },
+        {
+          [key in ExtendedType]: number;
+        },
+      ];
       disabled?: Boolean | undefined;
     };
     max: number;
@@ -44,7 +49,9 @@ export class CoverageComponent implements OnInit {
     this.coverage = this.typechart.team
       .map((pokemon) => ({
         pokemon,
-        max: Math.max(...selectedMoves.map((move) => pokemon.weak[move.type])),
+        max: Math.max(
+          ...selectedMoves.map((move) => pokemon.weak[1][move.type]),
+        ),
       }))
       .sort((x, y) => y.max - x.max);
     this.se = 0;

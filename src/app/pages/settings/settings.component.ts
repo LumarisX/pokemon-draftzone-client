@@ -16,13 +16,50 @@ export class SettingsComponent implements OnInit {
     private fb: FormBuilder,
   ) {}
 
-  settingsData!: Settings;
   example: Pokemon = { id: 'deoxysattack', name: 'Deoxys-Attack' };
 
   themes: { id: string; name: string }[] = [
     { id: 'classic', name: 'Classic' },
     { id: 'christmas', name: 'Christmas' },
     { id: 'graymode', name: 'Grayscale' },
+  ];
+
+  spriteSets: { name: string; id: string; creditLink: string }[] = [
+    {
+      name: 'Pokemon Home',
+      id: 'home',
+      creditLink: 'https://home.pokemon.com/en-us/',
+    },
+    {
+      name: 'Serebii',
+      id: 'serebii',
+      creditLink: 'https://www.serebii.net/',
+    },
+    {
+      name: 'Pokemon Showdown - SV',
+      id: 'sv',
+      creditLink: 'https://github.com/smogon/sprites',
+    },
+    {
+      name: 'Pokemon Showdown - BW',
+      id: 'bw',
+      creditLink: 'https://github.com/smogon/sprites',
+    },
+    {
+      name: 'Pokemon Showdown - AFD',
+      id: 'afd',
+      creditLink: 'https://github.com/smogon/sprites',
+    },
+    {
+      name: 'Pokemon Showdown - Animated',
+      id: 'ani',
+      creditLink: 'https://github.com/smogon/sprites',
+    },
+    {
+      name: 'PMD Sprite Project',
+      id: 'pmd',
+      creditLink: 'https://sprites.pmdcollab.org/#/Contributors',
+    },
   ];
 
   settingsForm!: FormGroup;
@@ -45,5 +82,10 @@ export class SettingsComponent implements OnInit {
     if (localStorage.getItem('shinyunlocked')) {
       this.themes.push({ id: 'shiny', name: 'Shiny' });
     }
+  }
+
+  getCreditLink() {
+    const value: string | null = this.settingsForm.get('spriteSet')?.value;
+    return this.spriteSets.find((set) => set.id === value)?.creditLink ?? '';
   }
 }

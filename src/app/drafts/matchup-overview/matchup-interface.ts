@@ -58,9 +58,15 @@ export type Summary = {
 
 export type TypeChart = {
   team: (Pokemon & {
-    weak: {
-      [key in ExtendedType]: number;
-    };
+    weak: [
+      {
+        [key in ExtendedType]: number;
+      },
+      {
+        [key in ExtendedType]: number;
+      },
+    ];
+
     types: string[];
     disabled?: Boolean;
   })[];
