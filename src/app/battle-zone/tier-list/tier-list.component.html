@@ -96,15 +96,15 @@
         <div class="h-fit w-full flex">
           @for (group of tierGroups; track $index) {
             <div class="tier-group">
-              <div class="tier-group-label">{{ group.label }}</div>
+              @if (group.label !== undefined) {
+                <div class="tier-group-label">{{ group.label }}</div>
+              }
               <div class="tier-entry-container">
                 @for (tier of group.tiers; track $index) {
                   <div class="tier">
-                    @if (tier.name) {
-                      <div class="tier-label">
-                        {{ tier.name }}
-                      </div>
-                    }
+                    <div class="tier-label">
+                      {{ tier.name }}
+                    </div>
                     @for (pokemon of tier.pokemon; track $index) {
                       @if (typeInFilter(pokemon)) {
                         <div
