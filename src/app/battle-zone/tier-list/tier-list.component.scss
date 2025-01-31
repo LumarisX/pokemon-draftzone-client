@@ -83,6 +83,9 @@
   color: var(--mat-sys-on-primary);
   text-align: center;
   min-width: 4rem;
+  position: sticky;
+  top: 0px;
+  z-index: 2000;
   font-weight: bold;
   border-width: 0px 0px 2px 0px;
   border-color: var(--mat-sys-outline);
