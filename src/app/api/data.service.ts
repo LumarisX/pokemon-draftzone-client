@@ -54,6 +54,7 @@ export class DataService {
     rulesets?: string[];
   } = {};
 
+  //replace with fromat grouped eventually
   getFormats(): Observable<string[]> {
     if (this.cache.formats) {
       return of(this.cache.formats);
@@ -66,6 +67,13 @@ export class DataService {
     }
   }
 
+  getFormatsGrouped(): Observable<
+    [string, { name: string; id: string; desc?: string }[]][]
+  > {
+    return this.apiService.get('data/formatsgrouped', false);
+  }
+
+  //replace with ruleset grouped eventually
   getRulesets(): Observable<string[]> {
     if (this.cache.rulesets) {
       return of(this.cache.rulesets);
@@ -76,6 +84,12 @@ export class DataService {
         }),
       );
     }
+  }
+
+  getRulesetsGrouped(): Observable<
+    [string, { name: string; id: string; desc?: string }[]][]
+  > {
+    return this.apiService.get('data/rulesetsgrouped', false);
   }
 
   getSupporters(): Observable<SupporterData> {

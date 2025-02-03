@@ -1,18 +1,16 @@
 import { CommonModule } from '@angular/common';
-import { Component, forwardRef, input, OnInit } from '@angular/core';
+import { Component, forwardRef, Input, OnInit } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import {
-  MatFormField,
-  MatLabel,
-  MatOption,
-  MatSelect,
-} from '@angular/material/select';
+import { MatSelectModule } from '@angular/material/select';
 import { DataService } from '../../api/data.service';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'format-select',
-  imports: [CommonModule, MatFormField, MatLabel, MatOption, MatSelect],
+  imports: [CommonModule, MatSelectModule, MatIconModule, MatTooltipModule],
   templateUrl: './format.component.html',
+  styleUrl: './format.component.scss',
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -22,9 +20,12 @@ import { DataService } from '../../api/data.service';
   ],
 })
 export class FormatSelectComponent implements OnInit, ControlValueAccessor {
-  formats: string[] = [];
+  formats: [string, { name: string; id: string; desc?: string }[]][] = [];
 
   _selectedFormat?: string;
+
+  @Input()
+  classList?: string | string[] | null;
 
   set selectedFormat(value: string | undefined) {
     this._selectedFormat = value;
@@ -43,8 +44,9 @@ export class FormatSelectComponent implements OnInit, ControlValueAccessor {
   constructor(private dataService: DataService) {}
 
   ngOnInit() {
-    this.dataService.getFormats().subscribe((formats) => {
+    this.dataService.getFormatsGrouped().subscribe((formats) => {
       this.formats = formats;
+      this.selectedFormat = this.formats[0][1][0].id;
     });
   }
 
@@ -61,5 +63,15 @@ export class FormatSelectComponent implements OnInit, ControlValueAccessor {
 
   registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
+  }
+
+  triggerString() {
+    for (let group of this.formats) {
+      for (let format of group[1]) {
+        if (format.id === this.selectedFormat)
+          return `${group[0]} - ${format.name}`;
+      }
+    }
+    return this.selectedFormat;
   }
 }

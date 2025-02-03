@@ -1,18 +1,16 @@
 import { CommonModule } from '@angular/common';
-import { Component, forwardRef, OnInit } from '@angular/core';
+import { Component, forwardRef, Input, OnInit } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import {
-  MatFormField,
-  MatLabel,
-  MatOption,
-  MatSelect,
-} from '@angular/material/select';
+import { MatSelectModule } from '@angular/material/select';
 import { DataService } from '../../api/data.service';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'ruleset-select',
-  imports: [CommonModule, MatFormField, MatLabel, MatOption, MatSelect],
+  imports: [CommonModule, MatSelectModule, MatIconModule, MatTooltipModule],
   templateUrl: './ruleset.component.html',
+  styleUrl: './ruleset.component.scss',
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -22,9 +20,12 @@ import { DataService } from '../../api/data.service';
   ],
 })
 export class RulesetSelectComponent implements OnInit, ControlValueAccessor {
-  rulesets: string[] = [];
+  rulesets: [string, { name: string; id: string; desc?: string }[]][] = [];
 
   _selectedRuleset?: string;
+
+  @Input()
+  classList?: string | string[] | null;
 
   set selectedRuleset(value: string | undefined) {
     this._selectedRuleset = value;
@@ -43,8 +44,9 @@ export class RulesetSelectComponent implements OnInit, ControlValueAccessor {
   constructor(private dataService: DataService) {}
 
   ngOnInit() {
-    this.dataService.getRulesets().subscribe((rulesets) => {
+    this.dataService.getRulesetsGrouped().subscribe((rulesets) => {
       this.rulesets = rulesets;
+      this.selectedRuleset = rulesets[0][1][0].id;
     });
   }
 
@@ -61,5 +63,15 @@ export class RulesetSelectComponent implements OnInit, ControlValueAccessor {
 
   registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
+  }
+
+  triggerString() {
+    for (let group of this.rulesets) {
+      for (let ruleset of group[1]) {
+        if (ruleset.id === this.selectedRuleset)
+          return `${group[0]} - ${ruleset.name}`;
+      }
+    }
+    return this.selectedRuleset;
   }
 }

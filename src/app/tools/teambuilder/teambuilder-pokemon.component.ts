@@ -15,6 +15,8 @@ import { Pokemon } from '../../interfaces/draft';
 import { PokemonSelectComponent } from '../../util/pokemon-select/pokemon-select.component';
 import { PokemonBuilder, TeambuilderPokemon } from './pokemon-builder.model';
 import { MatSliderModule } from '@angular/material/slider';
+import { RulesetSelectComponent } from '../../util/ruleset-select/ruleset.component';
+import { FormatSelectComponent } from '../../util/format-select/format.component';
 
 @Component({
   selector: 'teambuilder-pokemon',
@@ -33,11 +35,16 @@ import { MatSliderModule } from '@angular/material/slider';
     MatSliderModule,
     MatFormFieldModule,
     PokemonSelectComponent,
+    RulesetSelectComponent,
+    FormatSelectComponent,
   ],
 })
 export class TeamBuilderPokemonComponent {
   private _pokemon: PokemonBuilder | null = null;
   selectedPokemon: Pokemon | null = null;
+  ruleset: string | null = null;
+  format: string | null = null;
+
   @Input() showBoosts: boolean = false;
   @Input() set pokemon(value: Pokemon | null) {
     if (value === null) {
