@@ -1,0 +1,23 @@
+@use "@angular/material" as mat;
+
+mat-toolbar {
+  @include mat.toolbar-overrides(
+    (
+      container-background-color: var(--mat-sys-primary),
+      container-text-color: var(--mat-sys-on-primary),
+    )
+  );
+  //   border-bottom: var(--mat-sys-secondary) solid 2px;;;
+}
+
+mat-icon {
+  @include mat.icon-overrides(
+    (
+      color: var(--mat-sys-on-primary),
+    )
+  );
+}
+
+.example-spacer {
+  flex: 1 1 auto;
+}

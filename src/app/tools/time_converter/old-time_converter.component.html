@@ -1,0 +1,130 @@
+<div
+  class="container flex flex-col items-center justify-center h-full p-4 mx-auto xl:w-2/3"
+>
+  <div class="grid order-2 grid-cols-1 gap-4 mb-4 md:grid-cols-3 md:order-1">
+    <div
+      class="flex flex-col order-1 h-full p-1 rounded-lg md:order-1 bg-aTeam-200"
+    >
+      <div class="w-full">
+        <label class="text-sm font-medium text-symbolColor-main"
+          >Local Time Zone</label
+        >
+        <input
+          type="text"
+          readonly
+          [value]="localTimeOffset + ' (' + localTimeZone + ')'"
+          class="w-full p-2 mt-1 border rounded-md shadow-sm bg-menu-100 border-menu-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+        />
+      </div>
+      <div class="flex-grow"></div>
+      <div class="w-full">
+        <label class="text-sm font-medium text-symbolColor-main"
+          >Local Date</label
+        >
+        <input
+          type="date"
+          [(ngModel)]="selectedDate"
+          (change)="updateTimes('local')"
+          class="w-full p-2 mt-1 border rounded-md shadow-sm bg-menu-100 border-menu-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+        />
+      </div>
+      <div class="w-full">
+        <label class="text-sm font-medium text-symbolColor-main"
+          >Local Time</label
+        >
+        <input
+          type="time"
+          [(ngModel)]="selectedTime"
+          (change)="updateTimes('local')"
+          step="300"
+          class="w-full p-2 mt-1 border rounded-md shadow-sm bg-menu-100 border-menu-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+        />
+      </div>
+    </div>
+    <div class="order-3 p-1 md:order-2">
+      <div class="w-full">
+        <label class="text-sm font-medium text-symbolColor-main"
+          >Time Difference</label
+        >
+        <input
+          type="text"
+          [value]="timeDifference"
+          readonly
+          class="w-full p-2 mt-1 border rounded-md shadow-sm bg-menu-100 border-menu-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+        />
+      </div>
+      <br />
+      <label class="text-smfont-medium text-symbolColor-main">
+        Discord Timestamp</label
+      >
+      <div
+        class="w-full h-8 flex items-center p-1 mt-1 border rounded-md shadow-sm bg-menu-100 border-menu-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+        (click)="copyTimestamp()"
+      >
+        <div class="p-1">&lt;t:{{ epochTime }}:f&gt;</div>
+        <div class="flex-grow"></div>
+        <copy-svg
+          *ngIf="!copied"
+          class="h-full aspect-square"
+          alt="Copy"
+        ></copy-svg>
+        <check-svg
+          *ngIf="copied"
+          class="h-full aspect-square"
+          alt="Copied"
+        ></check-svg>
+      </div>
+    </div>
+    <div class="order-2 p-1 rounded-lg bg-bTeam-200 md:order-3">
+      <div class="w-full">
+        <label class="text-sm font-medium text-symbolColor-main"
+          >Opponent Time Zone</label
+        >
+        <div class="mt-1">
+          <input
+            type="text"
+            placeholder="Search time zones..."
+            (input)="filterTimeZones($event)"
+            class="w-full p-2 border shadow-sm bg-menu-100 border-menu-300 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+          />
+          <select
+            [(ngModel)]="opponentTimeZone"
+            (change)="updateTimes('local')"
+            size="5"
+            class="w-full p-2 border shadow-sm bg-menu-100 border-menu-300 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+          >
+            <option *ngFor="let tz of filteredTimeZones" [value]="tz.name">
+              {{ tz.offset + " (" + tz.name + ")" }}
+            </option>
+            <option *ngIf="filteredTimeZones.length === 0" disabled>
+              No matches found
+            </option>
+          </select>
+        </div>
+      </div>
+      <div class="w-full">
+        <label class="text-sm font-medium text-symbolColor-main"
+          >Converted Date</label
+        >
+        <input
+          type="date"
+          [(ngModel)]="convertedDate"
+          (change)="updateTimes('converted')"
+          class="w-full p-2 mt-1 border rounded-md shadow-sm bg-menu-100 border-menu-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+        />
+      </div>
+      <div class="w-full">
+        <label class="text-sm font-medium text-symbolColor-main"
+          >Converted Time</label
+        >
+        <input
+          type="time"
+          [(ngModel)]="convertedTime"
+          (change)="updateTimes('converted')"
+          step="300"
+          class="w-full p-2 mt-1 border rounded-md shadow-sm bg-menu-100 border-menu-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+        />
+      </div>
+    </div>
+  </div>
+</div>

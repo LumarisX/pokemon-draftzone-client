@@ -1,12 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnChanges } from '@angular/core';
-import { ExtendedType, Type, TYPES } from '../../data';
-import { SpriteComponent } from '../../images/sprite/sprite.component';
-import { Pokemon } from '../../interfaces/draft';
-import { TypeChart } from '../../drafts/matchup-overview/matchup-interface';
-import { CheckSVG } from '../../images/svg-components/score.component copy';
-import { CircleSVG } from '../../images/svg-components/circle.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ExtendedType, Type, TYPES } from '../../data';
+import { TypeChart } from '../../drafts/matchup-overview/matchup-interface';
+import { SpriteComponent } from '../../images/sprite/sprite.component';
+import { CircleSVG } from '../../images/svg-components/circle.component';
+import { CheckSVG } from '../../images/svg-components/score.component copy';
+import { Pokemon } from '../../interfaces/draft';
 
 @Component({
   selector: 'typechart',

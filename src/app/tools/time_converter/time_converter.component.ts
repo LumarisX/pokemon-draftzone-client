@@ -1,123 +1,204 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { provideNativeDateAdapter } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSliderModule } from '@angular/material/slider';
+import { MatTimepickerModule } from '@angular/material/timepicker';
 import { RouterModule } from '@angular/router';
-import dayjs, { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
 import advancedFormat from 'dayjs/plugin/advancedFormat';
 import duration from 'dayjs/plugin/duration';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
-import { CopySVG } from '../../images/svg-components/copy.component';
-import { CheckSVG } from '../../images/svg-components/score.component copy';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.extend(duration);
 dayjs.extend(advancedFormat);
 
+type TimeZone = {
+  short?: string;
+  name: string;
+  utc: string;
+  offset: number;
+};
+
 @Component({
   selector: 'time-converter',
   standalone: true,
   templateUrl: './time_converter.component.html',
-  imports: [CommonModule, RouterModule, FormsModule, CopySVG, CheckSVG],
+  styleUrl: './time_converter.component.scss',
+  providers: [provideNativeDateAdapter()],
+
+  imports: [
+    CommonModule,
+    RouterModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatTimepickerModule,
+    MatDatepickerModule,
+    MatInputModule,
+    MatSelectModule,
+    MatAutocompleteModule,
+    MatFormFieldModule,
+    MatSliderModule,
+    MatIconModule,
+  ],
 })
 export class TimeConverterComponent implements OnInit {
-  selectedDate: string = '';
-  selectedTime: string = '';
-  opponentTimeZone: string = '';
-  localTimeZone: string = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  localTimeOffset: string = dayjs().tz(this.localTimeZone).format('UTCZ');
-  timeZones = Intl.supportedValuesOf('timeZone')
-    .sort((a, b) => dayjs().tz(a).utcOffset() - dayjs().tz(b).utcOffset())
-    .map((tz) => ({
-      offset: dayjs().tz(tz).format('UTCZ'),
-      name: tz,
-    }));
-  filteredTimeZones: { offset: string; name: string }[] = this.timeZones;
-  convertedTime: string = '';
-  convertedDate: string = '';
-  timeDifference: string = '';
-  timeData = {
-    dateTime: dayjs().utc(),
-    email: false,
-    emailTime: 1,
-  };
-  get epochTime() {
-    return this.timeData.dateTime.format('X');
-  }
-  copied: boolean = false;
-  constructor() {}
-
-  ngOnInit() {
-    const currentDateString = this.timeData.dateTime.format('YYYY-MM-DD');
-    const currentTimeString = this.timeData.dateTime.format('HH:mm');
-    this.selectedDate = currentDateString;
-    this.selectedTime = currentTimeString;
-    this.opponentTimeZone = this.localTimeZone;
-    this.updateTimes();
-  }
-
-  updateTimes(source: 'local' | 'converted' = 'local') {
-    if (source === 'local') {
-      this.timeData.dateTime = dayjs.tz(
-        `${this.selectedDate}T${this.selectedTime}`,
-        this.localTimeZone
-      );
-      const convertedDateTime = this.timeData.dateTime
-        .clone()
-        .tz(this.opponentTimeZone);
-      this.convertedTime = convertedDateTime.format('HH:mm');
-      this.convertedDate = convertedDateTime.format('YYYY-MM-DD');
-    } else if (source === 'converted') {
-      const convertedDateTime = dayjs.tz(
-        `${this.convertedDate}T${this.convertedTime}`,
-        this.opponentTimeZone
-      );
-      this.timeData.dateTime = convertedDateTime.clone().tz(this.localTimeZone);
-      this.selectedTime = this.timeData.dateTime.format('HH:mm');
-      this.selectedDate = this.timeData.dateTime.format('YYYY-MM-DD');
+  timeZones: TimeZone[] = Intl.supportedValuesOf('timeZone')
+    .map((tz) => {
+      const date = new Date();
+      const short = new Intl.DateTimeFormat('en-US', {
+        timeZone: tz,
+        timeZoneName: 'short',
+      })
+        .formatToParts(date)
+        .find((part) => part.type === 'timeZoneName')?.value;
+      const offset = dayjs().tz(tz).utcOffset();
+      return {
+        short: short,
+        name: tz,
+        offset: offset,
+        utc: dayjs().tz(tz).format('UTCZ'),
+      };
+    })
+    .sort((a, b) => a.offset - b.offset);
+  filteredTZ: TimeZone[] = [...this.timeZones];
+  timeZonesShort: TimeZone[] = this.timeZones.reduce((acc, tz) => {
+    if (!acc.find((t) => t.short === tz.short)) {
+      acc.push(tz);
     }
-    this.calculateTimeDifference(this.timeData.dateTime);
-  }
+    return acc;
+  }, [] as TimeZone[]);
+  filteredTZShort: TimeZone[] = [...this.timeZonesShort];
 
-  calculateTimeDifference(localDateTime: Dayjs) {
-    if (this.timeData.dateTime.isValid()) {
-      const currentTime = dayjs();
-      const duration = dayjs.duration(localDateTime.diff(currentTime));
-      const isPast = localDateTime.isBefore(currentTime);
-      const days = Math.floor(Math.abs(duration.asDays()));
-      const hours = Math.abs(duration.hours());
-      const timeDifferencePhrase = isPast ? 'ago' : 'from now';
-      this.timeDifference =
-        days > 0
-          ? `${days} days and ${hours} hours ${timeDifferencePhrase}`
-          : `${hours} hours ${timeDifferencePhrase}`;
-    } else {
-      this.timeDifference = 'Invalid date selected';
-    }
-  }
+  localTimeZone: TimeZone = (() => {
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const date = new Date();
+    const short = new Intl.DateTimeFormat('en-US', {
+      timeZone: tz,
+      timeZoneName: 'short',
+    })
+      .formatToParts(date)
+      .find((part) => part.type === 'timeZoneName')?.value;
+    const utc = dayjs().tz(tz).format('UTCZ');
+    const offset = dayjs().tz(tz).utcOffset();
+    return { short: short, name: tz, utc: utc, offset };
+  })();
+  opponentTZInput = new FormControl(this.localTimeZone);
+  opponentTimeZone: TimeZone = this.localTimeZone;
+  localDateTime: Date = dayjs().toDate();
+  opponentDateTime: Date = dayjs().toDate();
 
-  filterTimeZones(event: Event) {
-    const query = (event.target as HTMLInputElement).value.toLowerCase();
-    this.filteredTimeZones = this.timeZones.filter(
-      (tz) =>
-        tz.offset.toLowerCase().includes(query) ||
-        tz.name.toLowerCase().includes(query)
+  set localTime(value: number) {
+    const hours = Math.floor(value / 60);
+    const minutes = value % 60;
+    this.updateTime(
+      'local',
+      dayjs(this.localDateTime)
+        .set('minutes', minutes)
+        .set('hours', hours)
+        .toDate(),
     );
   }
 
-  copyTimestamp() {
-    if (this.copied) return;
-    navigator.clipboard
-      .writeText(`<t:${this.epochTime}:f>`)
-      .then(() => {
-        this.copied = true;
-        setTimeout(() => {
-          this.copied = false;
-        }, 1000);
-      })
-      .catch((error) => {
-        console.error('Failed to copy URL to clipboard: ', error);
-      });
+  get localTime() {
+    return this.localDateTime.getHours() * 60 + this.localDateTime.getMinutes();
+  }
+
+  set opponentTime(value: number) {
+    const hours = Math.floor(value / 60);
+    const minutes = value % 60;
+    this.updateTime(
+      'opponent',
+      dayjs(this.opponentDateTime)
+        .set('minutes', minutes)
+        .set('hours', hours)
+        .toDate(),
+    );
+  }
+
+  get opponentTime() {
+    return (
+      this.opponentDateTime.getHours() * 60 + this.opponentDateTime.getMinutes()
+    );
+  }
+
+  ngOnInit() {
+    this.opponentTZInput.valueChanges.subscribe((value) => {
+      if (typeof value === 'string') {
+        this._filter(value);
+      } else {
+        this.opponentTimeZone = value || this.localTimeZone;
+      }
+    });
+  }
+
+  sliderFn() {
+    return '';
+  }
+
+  shortFn(value: string | TimeZone): string {
+    if (typeof value === 'string') return value;
+    return value.short || value.utc;
+  }
+
+  private _filter(value: string | null) {
+    if (value === '' || value === null) {
+      this.filteredTZ = [...this.timeZones];
+      this.filteredTZShort = [...this.timeZonesShort];
+    } else {
+      const lower = value.trim().toLowerCase();
+      this.filteredTZ = this.timeZones.filter(
+        (tz) =>
+          tz.name
+            .toLowerCase()
+            .split(/\W+/)
+            .some((word) => word.startsWith(lower)) ||
+          tz.short?.toLowerCase().includes(lower),
+      );
+      this.filteredTZShort = this.timeZonesShort.filter((tz) =>
+        tz.short?.toLowerCase().includes(lower),
+      );
+    }
+  }
+
+  test(value: any) {
+    console.log(value);
+  }
+
+  updateTZ(zone: 'local' | 'opponent') {
+    this.updateTime(
+      zone,
+      zone === 'local' ? this.localDateTime : this.opponentDateTime,
+    );
+  }
+
+  updateTime(zone: 'local' | 'opponent', dateTime: Date | null | undefined) {
+    if (!dateTime) return;
+    if (zone === 'opponent') {
+      this.localDateTime = dayjs(dateTime)
+        .add(
+          this.localTimeZone.offset - this.opponentTimeZone.offset,
+          'minutes',
+        )
+        .toDate();
+      this.opponentDateTime = dateTime;
+    } else {
+      this.localDateTime = dateTime;
+      this.opponentDateTime = dayjs(dateTime)
+        .add(
+          this.opponentTimeZone.offset - this.localTimeZone.offset,
+          'minutes',
+        )
+        .toDate();
+    }
   }
 }

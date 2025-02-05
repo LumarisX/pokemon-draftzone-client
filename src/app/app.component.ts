@@ -10,6 +10,7 @@ import { SettingsService } from './pages/settings/settings.service';
   selector: 'app-root',
   standalone: false,
   templateUrl: './app.component.html',
+  styleUrl: './app.component.scss',
 })
 export class AppComponent implements OnInit {
   userDropdown = false;
