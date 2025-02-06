@@ -1,134 +1,204 @@
-<div class="p-2 flex gap-8 h-full items-center justify-center">
-  <div class="time-container">
-    <mat-form-field class="w-full">
-      <mat-label>Local Time Zone</mat-label>
-      <input
-        type="text"
-        [formControl]="opponentTZInput"
-        matInput
-        [matAutocomplete]="auto"
-      />
-      <mat-autocomplete
-        (optionSelected)="updateTZ('opponent')"
-        [displayWith]="shortFn"
-        #auto="matAutocomplete"
-      >
-        @if (filteredTZShort.length > 0) {
-          <mat-optgroup label="Abbreviated" class="mat-sticky">
-            @for (tz of filteredTZShort; track $index) {
-              <mat-option [value]="tz">{{
-                tz.short + " (" + tz.utc + ")"
-              }}</mat-option>
-            }
-          </mat-optgroup>
-        }
-        <mat-optgroup label="Locations">
-          @for (tz of filteredTZ; track $index) {
-            <mat-option [value]="tz">{{
-              tz.name + " (" + tz.short + ")"
-            }}</mat-option>
-          }
-        </mat-optgroup>
-      </mat-autocomplete>
-    </mat-form-field>
-    <mat-form-field class="w-full">
-      <mat-label>Local date</mat-label>
-      <input
-        matInput
-        [matDatepicker]="localDatepicker"
-        [value]="localDateTime"
-        (dateInput)="updateTime('local', $event.value)"
-      />
-      <mat-datepicker #localDatepicker />
-      <mat-datepicker-toggle [for]="localDatepicker" matSuffix />
-    </mat-form-field>
-    <mat-form-field class="w-full">
-      <mat-label>Local time</mat-label>
-      <input
-        matInput
-        [matTimepicker]="localTimepicker"
-        [value]="localDateTime"
-        (valueChange)="updateTime('local', $event)"
-      />
-      <mat-timepicker #localTimepicker />
-      <mat-timepicker-toggle [for]="localTimepicker" matSuffix />
-    </mat-form-field>
-    <mat-slider
-      min="0"
-      max="1439"
-      step="15"
-      showTickMarks
-      discrete
-      [displayWith]="sliderFn"
-    >
-      <input matSliderThumb [(ngModel)]="localTime" />
-    </mat-slider>
-  </div>
-  <div class="time-container">
-    <mat-form-field class="w-full">
-      <mat-label>Opponent Time Zone</mat-label>
-      <input
-        type="text"
-        [formControl]="opponentTZInput"
-        matInput
-        [matAutocomplete]="auto"
-      />
-      <mat-autocomplete
-        (optionSelected)="updateTZ('opponent')"
-        [displayWith]="shortFn"
-        #auto="matAutocomplete"
-      >
-        @if (filteredTZShort.length > 0) {
-          <mat-optgroup label="Abbreviated" class="mat-sticky">
-            @for (tz of filteredTZShort; track $index) {
-              <mat-option [value]="tz">{{
-                tz.short + " (" + tz.utc + ")"
-              }}</mat-option>
-            }
-          </mat-optgroup>
-        }
-        <mat-optgroup label="Locations">
-          @for (tz of filteredTZ; track $index) {
-            <mat-option [value]="tz">{{
-              tz.name + " (" + tz.short + ")"
-            }}</mat-option>
-          }
-        </mat-optgroup>
-      </mat-autocomplete>
-    </mat-form-field>
-    <mat-form-field class="w-full">
-      <mat-label>Opponent date</mat-label>
-      <input
-        matInput
-        [matDatepicker]="oppDatepicker"
-        [value]="opponentDateTime"
-        (dateInput)="updateTime('opponent', $event.value)"
-      />
-      <mat-datepicker #oppDatepicker />
-      <mat-datepicker-toggle [for]="oppDatepicker" matSuffix />
-    </mat-form-field>
-    <mat-form-field class="w-full">
-      <mat-label>Opponent time</mat-label>
-      <input
-        matInput
-        [matTimepicker]="oppTimepicker"
-        [value]="opponentDateTime"
-        (valueChange)="updateTime('opponent', $event)"
-      />
-      <mat-timepicker #oppTimepicker />
-      <mat-timepicker-toggle [for]="oppTimepicker" matSuffix />
-    </mat-form-field>
+<div class="p-2 min-h-full flex flex-col gap-4 items-center justify-center">
+  <div class="text-center font-nasa text-2xl"></div>
 
-    <mat-slider
-      min="0"
-      max="1439"
-      step="15"
-      showTickMarks
-      discrete
-      [displayWith]="sliderFn"
-    >
-      <mat-icon>sun</mat-icon>
-      <input matSliderThumb [(ngModel)]="opponentTime" />
-    </mat-slider>
+  <mat-card>
+    <mat-card-header class="text-center font-nasa text-lg">
+      <mat-card-title>Time Converter</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <p>
+        <span class="font-bold">Local Time: </span>
+        {{ formatDate(localDateTime) }}
+      </p>
+      <p>
+        <span class="font-bold">Opponent's Time: </span>
+        {{ formatDate(opponentDateTime) }}
+      </p>
+      <div
+        class="flex items-center mat-level-2 rounded-lg p-1 space-x-2 justify-center"
+      >
+        <div>
+          <img
+            class="h-4"
+            src="../../../assets/icons/media/discord-mark-blue.svg"
+          />
+        </div>
+        <div>
+          {{ discordTimestamp }}
+        </div>
+        @if (copied) {
+          <button matSuffix mat-icon-button>
+            <mat-icon>check</mat-icon>
+          </button>
+        } @else {
+          <button
+            matSuffix
+            mat-icon-button
+            [cdkCopyToClipboard]="discordTimestamp"
+            (click)="copy()"
+          >
+            <mat-icon>content_copy</mat-icon>
+          </button>
+        }
+      </div>
+    </mat-card-content>
+  </mat-card>
+  <div class="flex flex-col md:flex-row gap-8">
+    <div class="time-container">
+      <mat-form-field class="w-full">
+        <mat-label>Local Time Zone</mat-label>
+        <input
+          type="text"
+          [formControl]="localInput"
+          matInput
+          [matAutocomplete]="auto"
+        />
+        <mat-autocomplete
+          (optionSelected)="updateTZ('local')"
+          [displayWith]="shortFn"
+          #auto="matAutocomplete"
+        >
+          @if (filteredTZShort.length > 0) {
+            <mat-optgroup label="Abbreviated" class="mat-sticky">
+              @for (tz of filteredTZShort; track $index) {
+                <mat-option [value]="tz">{{
+                  tz.short + " (" + tz.utc + ")"
+                }}</mat-option>
+              }
+            </mat-optgroup>
+          }
+          <mat-optgroup label="Locations">
+            @for (tz of filteredTZ; track $index) {
+              <mat-option [value]="tz">{{
+                tz.name + " (" + tz.short + ")"
+              }}</mat-option>
+            }
+          </mat-optgroup>
+        </mat-autocomplete>
+      </mat-form-field>
+      <mat-form-field class="w-full">
+        <mat-label>Local date</mat-label>
+        <input
+          matInput
+          [matDatepicker]="localDatepicker"
+          [value]="localDateTime"
+          (dateInput)="updateTime('local', $event.value)"
+        />
+        <mat-datepicker #localDatepicker />
+        <mat-datepicker-toggle [for]="localDatepicker" matSuffix />
+      </mat-form-field>
+      <mat-form-field class="w-full">
+        <mat-label>Local time</mat-label>
+        <input
+          matInput
+          [matTimepicker]="localTimepicker"
+          [value]="localDateTime"
+          (valueChange)="updateTime('local', $event)"
+        />
+        <mat-timepicker #localTimepicker />
+        <mat-timepicker-toggle [for]="localTimepicker" matSuffix />
+      </mat-form-field>
+      <div class="w-full flex flex-col items-center">
+        <div class="slider-icons-bar">
+          <mat-icon class="slider-icon">nightlight</mat-icon>
+          <mat-icon class="slider-icon">wb_twilight</mat-icon>
+          <mat-icon class="slider-icon">sunny</mat-icon>
+          <mat-icon class="slider-icon">wb_twilight</mat-icon>
+          <mat-icon class="slider-icon">nightlight</mat-icon>
+        </div>
+        <mat-slider
+          min="0"
+          max="1439"
+          step="15"
+          showTickMarks
+          discrete
+          [displayWith]="sliderFn"
+        >
+          <input matSliderThumb [(ngModel)]="localTime" />
+        </mat-slider>
+      </div>
+    </div>
+    <div class="time-container">
+      <mat-form-field class="w-full">
+        <mat-label>Opponent Time Zone</mat-label>
+        <input
+          type="text"
+          [formControl]="opponentInput"
+          matInput
+          [matAutocomplete]="auto"
+        />
+        <mat-autocomplete
+          (optionSelected)="updateTZ('opponent')"
+          [displayWith]="shortFn"
+          #auto="matAutocomplete"
+        >
+          @if (filteredTZShort.length > 0) {
+            <mat-optgroup label="Abbreviated" class="mat-sticky">
+              @for (tz of filteredTZShort; track $index) {
+                <mat-option [value]="tz">{{
+                  tz.short + " (" + tz.utc + ")"
+                }}</mat-option>
+              }
+            </mat-optgroup>
+          }
+          <mat-optgroup label="Locations">
+            @for (tz of filteredTZ; track $index) {
+              <mat-option [value]="tz">{{
+                tz.name + " (" + tz.short + ")"
+              }}</mat-option>
+            }
+          </mat-optgroup>
+        </mat-autocomplete>
+      </mat-form-field>
+      <mat-form-field class="w-full">
+        <mat-label>Opponent date</mat-label>
+        <input
+          matInput
+          [matDatepicker]="oppDatepicker"
+          [value]="opponentDateTime"
+          (dateInput)="updateTime('opponent', $event.value)"
+        />
+        <mat-datepicker #oppDatepicker />
+        <mat-datepicker-toggle [for]="oppDatepicker" matSuffix />
+      </mat-form-field>
+      <mat-form-field class="w-full">
+        <mat-label>Opponent time</mat-label>
+        <input
+          matInput
+          [matTimepicker]="oppTimepicker"
+          [value]="opponentDateTime"
+          (valueChange)="updateTime('opponent', $event)"
+        />
+        <mat-timepicker #oppTimepicker />
+        <mat-timepicker-toggle [for]="oppTimepicker" matSuffix />
+      </mat-form-field>
+
+      <div class="w-full flex flex-col items-center">
+        <div class="slider-icons-bar">
+          <mat-icon class="slider-icon">nightlight</mat-icon>
+          <mat-icon class="slider-icon">wb_twilight</mat-icon>
+          <mat-icon class="slider-icon">sunny</mat-icon>
+          <mat-icon class="slider-icon">wb_twilight</mat-icon>
+          <mat-icon class="slider-icon">nightlight</mat-icon>
+        </div>
+        <mat-slider
+          min="0"
+          max="1439"
+          step="15"
+          showTickMarks
+          discrete
+          [displayWith]="sliderFn"
+        >
+          <input matSliderThumb [(ngModel)]="opponentTime" />
+        </mat-slider>
+      </div>
+    </div>
   </div>
 </div>
+<!-- 
+<div>
+  <div>{{ localTimeZone | json }}</div>
+  <div>{{ opponentTimeZone | json }}</div>
+  <div>{{ localDateTime }}</div>
+  <div>{{ opponentDateTime }}</div>
+</div> -->

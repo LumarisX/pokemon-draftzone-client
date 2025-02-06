@@ -9,17 +9,28 @@ $height: 32px;
 
 .time-container {
   padding: 1rem;
-  max-width: 50rem;
+  max-width: 40rem;
   box-shadow: var(--mat-sys-level3);
   border-radius: 0.5rem;
 }
 mat-slider {
-  width: 100%;
-
+  width: 90%;
   @include mat.slider-overrides(
     (
       value-indicator-width: 0,
       value-indicator-height: 0,
     )
   );
+}
+
+.slider-icons-bar {
+  width: 90%;
+
+  margin-bottom: -1rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.slider-icon {
+  font-size: large;
 }

@@ -1,7 +1,9 @@
+import { ClipboardModule } from '@angular/cdk/clipboard';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatCardModule } from '@angular/material/card';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -45,6 +47,8 @@ type TimeZone = {
     MatDatepickerModule,
     MatInputModule,
     MatSelectModule,
+    MatCardModule,
+    ClipboardModule,
     MatAutocompleteModule,
     MatFormFieldModule,
     MatSliderModule,
@@ -78,8 +82,7 @@ export class TimeConverterComponent implements OnInit {
     return acc;
   }, [] as TimeZone[]);
   filteredTZShort: TimeZone[] = [...this.timeZonesShort];
-
-  localTimeZone: TimeZone = (() => {
+  baseTimeZone: TimeZone = (() => {
     const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const date = new Date();
     const short = new Intl.DateTimeFormat('en-US', {
@@ -92,8 +95,10 @@ export class TimeConverterComponent implements OnInit {
     const offset = dayjs().tz(tz).utcOffset();
     return { short: short, name: tz, utc: utc, offset };
   })();
-  opponentTZInput = new FormControl(this.localTimeZone);
-  opponentTimeZone: TimeZone = this.localTimeZone;
+  localTimeZone: TimeZone = this.baseTimeZone;
+  localInput = new FormControl(this.baseTimeZone);
+  opponentInput = new FormControl(this.baseTimeZone);
+  opponentTimeZone: TimeZone = this.baseTimeZone;
   localDateTime: Date = dayjs().toDate();
   opponentDateTime: Date = dayjs().toDate();
 
@@ -132,17 +137,36 @@ export class TimeConverterComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.opponentTZInput.valueChanges.subscribe((value) => {
+    this.localInput.valueChanges.subscribe((value) => {
       if (typeof value === 'string') {
         this._filter(value);
       } else {
-        this.opponentTimeZone = value || this.localTimeZone;
+        this.localTimeZone = value || this.baseTimeZone;
+      }
+    });
+    this.opponentInput.valueChanges.subscribe((value) => {
+      if (typeof value === 'string') {
+        this._filter(value);
+      } else {
+        this.opponentTimeZone = value || this.baseTimeZone;
       }
     });
   }
 
   sliderFn() {
     return '';
+  }
+
+  get discordTimestamp() {
+    return `<t:${dayjs(this.localDateTime).format('X')}:f>`;
+  }
+
+  copied: boolean = false;
+  copy() {
+    this.copied = true;
+    setTimeout(() => {
+      this.copied = false;
+    }, 1500);
   }
 
   shortFn(value: string | TimeZone): string {
@@ -168,10 +192,6 @@ export class TimeConverterComponent implements OnInit {
         tz.short?.toLowerCase().includes(lower),
       );
     }
-  }
-
-  test(value: any) {
-    console.log(value);
   }
 
   updateTZ(zone: 'local' | 'opponent') {
@@ -200,5 +220,9 @@ export class TimeConverterComponent implements OnInit {
         )
         .toDate();
     }
+  }
+
+  formatDate(date: Date): string {
+    return dayjs(date).format('dddd, MMMM D, YYYY hh:mm A');
   }
 }
