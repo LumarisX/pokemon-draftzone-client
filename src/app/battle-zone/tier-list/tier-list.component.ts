@@ -1,17 +1,17 @@
 import { CommonModule } from '@angular/common';
 import { Component, effect, OnInit, signal } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { TierPokemon } from '.';
 import { BattleZoneService } from '../../api/battle-zone.service';
 import { Type, TYPES } from '../../data';
 import { LoadingComponent } from '../../images/loading/loading.component';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
-import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'bz-tier-list',
@@ -44,6 +44,8 @@ export class BZTierListComponent implements OnInit {
     'SPE',
   ] as const;
 
+  readonly Divisions = ['Attack', 'Defense'] as const;
+
   types = TYPES;
 
   selectedTypes: Type[] = [];
@@ -59,9 +61,11 @@ export class BZTierListComponent implements OnInit {
 
   updatedTime?: string;
   sortBy = signal<(typeof this.SortOptions)[number]>('BST');
-  _menu: 'sort' | 'filter' | null = null;
+  selectedDivision = new FormControl<string>(this.Divisions[0]);
 
-  set menu(value: 'sort' | 'filter' | null) {
+  _menu: 'sort' | 'filter' | 'division' | null = null;
+
+  set menu(value: 'sort' | 'filter' | 'division' | null) {
     if (value === 'filter') {
       this.selectedTypes = [...this.filteredTypes];
     }
@@ -75,6 +79,9 @@ export class BZTierListComponent implements OnInit {
   constructor(private battlezoneService: BattleZoneService) {
     effect(() => {
       this.sortTiers(this.sortBy());
+      this.menu = null;
+    });
+    this.selectedDivision.valueChanges.subscribe(() => {
       this.menu = null;
     });
   }

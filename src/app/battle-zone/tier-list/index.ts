@@ -15,5 +15,5 @@ export type TierSubPokemon = {
 
 export type TierPokemon = TierSubPokemon & {
   subPokemon?: TierSubPokemon[];
-  drafted: boolean;
+  drafted?: string[];
 };
