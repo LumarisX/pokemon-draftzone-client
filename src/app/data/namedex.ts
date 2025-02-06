@@ -6482,14 +6482,14 @@ export const Namedex: {
     ps: { id: 'zygarde-10' },
     serebii: { id: '718-10' },
     pd: { id: 'zygarde-10' },
-    pmd: { id: '0718/0002' },
+    pmd: { id: '0718/0001' },
   },
   zygardecomplete: {
     name: ['Zygarde-Complete'],
     ps: { id: 'zygarde-complete' },
     serebii: { id: '718-c' },
     pd: { id: 'zygarde-complete' },
-    pmd: { id: '0718/0001' },
+    pmd: { id: '0718/0002' },
   },
   diancie: {
     name: ['Diancie'],
