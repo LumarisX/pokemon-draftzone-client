@@ -1,0 +1,75 @@
+@if (draftFormGroup) {
+  <div class="p-2">
+    <div class="settings-container">
+      <mat-form-field>
+        <mat-label>Format</mat-label>
+        <mat-select [formControl]="draftFormGroup.controls.format">
+          @for (format of formats; track $index) {
+            <mat-option [value]="format">{{ format }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Ruleset</mat-label>
+        <mat-select [formControl]="draftFormGroup.controls.ruleset">
+          @for (ruleset of rulesets; track $index) {
+            <mat-option [value]="ruleset">{{ ruleset }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="settings-container">
+      <mat-form-field>
+        <mat-label>Minimum</mat-label>
+        <input
+          matInput
+          type="number"
+          [formControl]="draftFormGroup.controls.min"
+          min="0"
+          max="18"
+        />
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Maximum</mat-label>
+        <input
+          matInput
+          type="number"
+          [formControl]="draftFormGroup.controls.max"
+          min="0"
+          max="18"
+        />
+      </mat-form-field>
+    </div>
+    <div class="settings-container">
+      <mat-form-field>
+        <mat-label>Value Type</mat-label>
+        <mat-select [formControl]="draftFormGroup.controls.system">
+          <mat-option value="points">Points</mat-option>
+          <mat-option value="tiers">Tiers</mat-option>
+        </mat-select>
+      </mat-form-field>
+      @if (isPoints) {
+        <mat-form-field>
+          <mat-label>Total Points</mat-label>
+          <input
+            matInput
+            type="number"
+            [formControl]="draftFormGroup.controls.totalPoints"
+          />
+        </mat-form-field>
+      }
+    </div>
+
+    <button
+      mat-stroked-button
+      [routerLink]="['/', draftPath, 'new']"
+      [queryParams]="{
+        team: teamIds,
+        format: draftFormGroup.controls.format.value,
+        ruleset: draftFormGroup.controls.ruleset.value,
+      }"
+    >
+      Save to New League
+    </button>
+  </div>
+}

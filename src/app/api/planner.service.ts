@@ -2,13 +2,38 @@ import { Injectable } from '@angular/core';
 import { PokemonId } from '../data/namedex';
 import { ApiService } from './api.service';
 import { Observable, map, of } from 'rxjs';
+import {
+  Summary,
+  TypeChart,
+  MoveChart,
+  Coverage,
+} from '../drafts/matchup-overview/matchup-interface';
+import { Pokemon } from '../interfaces/draft';
+import { Type } from '../data';
+
+export type Planner = {
+  summary: Summary;
+  typechart: TypeChart;
+  movechart: MoveChart;
+  coverage: Coverage;
+  recommended: {
+    all: {
+      pokemon: Pokemon[];
+      types: Type[][];
+    };
+    unique: {
+      pokemon: Pokemon[];
+      types: Type[][];
+    };
+  };
+};
 
 @Injectable({
   providedIn: 'root',
 })
 export class PlannerService {
   private cacheSize: number = 10;
-  private cache: { key: string; data: string }[] = new Array(this.cacheSize);
+  private cache: { key: string; data: Planner }[] = new Array(this.cacheSize);
   private currentIndex: number = 0;
 
   constructor(private apiService: ApiService) {}
@@ -16,8 +41,8 @@ export class PlannerService {
   getPlannerDetails(
     team: PokemonId[],
     format: string,
-    ruleset: string
-  ): Observable<any> {
+    ruleset: string,
+  ): Observable<Planner> {
     const cacheKey = JSON.stringify([ruleset, team]);
     const cachedData = this.cache.find((item) => item && item.key === cacheKey);
     if (cachedData) {
@@ -30,11 +55,11 @@ export class PlannerService {
           ruleset: ruleset,
         })
         .pipe(
-          map((data: any) => {
+          map((data: Planner) => {
             this.cache[this.currentIndex] = { key: cacheKey, data: data };
             this.currentIndex = (this.currentIndex + 1) % this.cacheSize;
             return data;
-          })
+          }),
         );
     }
   }
