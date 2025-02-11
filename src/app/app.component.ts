@@ -6,7 +6,14 @@ import { DraftOverviewPath } from './drafts/draft-overview/draft-overview-routin
 import { svgIcons } from './images/icons';
 import { SettingsService } from './pages/settings/settings.service';
 import { LeagueAdsService } from './api/league-ads.service';
-import { BehaviorSubject, firstValueFrom } from 'rxjs';
+import {
+  BehaviorSubject,
+  combineLatest,
+  firstValueFrom,
+  map,
+  of,
+  retry,
+} from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -110,4 +117,8 @@ export class AppComponent implements OnInit {
 
     return classes;
   }
+
+  anyBadge$ = combineLatest(this.TABS.map((tab) => tab.badge ?? of(''))).pipe(
+    map((badges) => badges.some((value) => value !== '')),
+  );
 }

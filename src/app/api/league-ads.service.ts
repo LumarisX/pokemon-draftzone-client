@@ -9,7 +9,6 @@ const ROOTPATH = 'leagues';
 })
 export class LeagueAdsService {
   newCount = new BehaviorSubject<string>('');
-
   time: number;
 
   constructor(private apiService: ApiService) {

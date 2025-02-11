@@ -6,6 +6,9 @@
   <header class="z-10 flex w-full p-2 border-b-2 bg-menu-300 border-menu-400">
     <div class="relative flex" (click)="inner('menu')">
       <button
+        matBadge="1"
+        matBadgeSize="small"
+        [matBadgeHidden]="!(anyBadge$ | async)"
         (click)="menuDropdown = !menuDropdown"
         id="dropdownButton"
         class="block w-8 px-1 py-1 mr-2 rounded-md text-menu-800 bg-menu-200 sm:hidden focus:outline-none"
@@ -34,7 +37,12 @@
             [routerLink]="tab.route"
             class="flex items-center h-full px-3 hover:cursor-pointer hover:bg-menu-200"
           >
-            {{ tab.title }}
+            <span
+              [matBadge]="tab.badge | async"
+              matBadgeOverlap="false"
+              [matBadgeHidden]="!tab.badge || (tab.badge | async) === ''"
+              >{{ tab.title }}</span
+            >
           </div>
         }
       </div>
