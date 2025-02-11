@@ -29,13 +29,14 @@
         (click)="menuDropdown = false"
         class="absolute left-0 flex-col block p-2 font-nasa bg-menu-100 border divide-y rounded-md shadow-md border-menu-200 sm:flex top-full"
       >
-        <div
-          *ngFor="let tab of TABS"
-          [routerLink]="tab.route"
-          class="flex items-center h-full px-3 hover:cursor-pointer hover:bg-menu-200"
-        >
-          {{ tab.title }}
-        </div>
+        @for (tab of TABS; track $index) {
+          <div
+            [routerLink]="tab.route"
+            class="flex items-center h-full px-3 hover:cursor-pointer hover:bg-menu-200"
+          >
+            {{ tab.title }}
+          </div>
+        }
       </div>
       <div
         routerLink="/"
@@ -49,7 +50,13 @@
           [routerLink]="tab.route"
           class="flex items-center h-full px-2 rounded hover:cursor-pointer hover:bg-menu-200"
         >
-          {{ tab.title }}
+          <span
+            matBadge="20"
+            matBadgeOverlap="false"
+            matBadgeHidden="true"
+            matBadgeSize="small"
+            >{{ tab.title }}</span
+          >
         </div>
       </div>
     </div>

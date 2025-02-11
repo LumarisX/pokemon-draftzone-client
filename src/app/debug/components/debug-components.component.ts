@@ -2,7 +2,6 @@ import {
   CdkDrag,
   CdkDragDrop,
   CdkDragHandle,
-  CdkDragPlaceholder,
   CdkDropList,
   moveItemInArray,
 } from '@angular/cdk/drag-drop';
@@ -36,6 +35,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSliderModule } from '@angular/material/slider';
 import { PokemonSelectComponent } from '../../util/pokemon-select/pokemon-select.component';
 import { TooltipComponent } from '../../util/tooltip/tooltip.component';
+import { MatBadgeModule } from '@angular/material/badge';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(
@@ -74,6 +74,7 @@ export interface Task {
     MatSelectModule,
     MatButtonModule,
     MatListModule,
+    MatBadgeModule,
     MatCheckboxModule,
     MatMenuModule,
     MatRadioModule,

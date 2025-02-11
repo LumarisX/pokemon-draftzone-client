@@ -13,6 +13,7 @@ import { AuthModule } from '@auth0/auth0-angular';
 import { AppComponent } from './app.component';
 import { BodyModule } from './body/body.module';
 import { LogoSVG } from './images/svg-components/logo.component';
+import { MatBadgeModule } from '@angular/material/badge';
 
 @NgModule({
   declarations: [AppComponent],
@@ -44,6 +45,7 @@ import { LogoSVG } from './images/svg-components/logo.component';
       },
     }),
     MatToolbarModule,
+    MatBadgeModule,
     MatIconModule,
     MatMenuModule,
     MatButtonModule,

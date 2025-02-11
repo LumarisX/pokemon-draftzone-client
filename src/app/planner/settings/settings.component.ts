@@ -34,12 +34,13 @@ export class PlannerSettingsComponent implements OnInit {
   formats: string[] = [];
   rulesets: string[] = [];
 
+  constructor(private dataService: DataService) {}
+
   ngOnInit(): void {
-    const dataService = inject(DataService);
-    dataService.getFormats().subscribe((formats) => {
+    this.dataService.getFormats().subscribe((formats) => {
       this.formats = formats;
     });
-    dataService.getRulesets().subscribe((rulesets) => {
+    this.dataService.getRulesets().subscribe((rulesets) => {
       this.rulesets = rulesets;
     });
   }
