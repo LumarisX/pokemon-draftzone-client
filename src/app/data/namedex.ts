@@ -199,6 +199,13 @@ export const Namedex: {
     pd: { id: 'butterfree-gigantamax', flip: true },
     pmd: { id: '0012' },
   },
+  butterfreemega: {
+    name: ['Mega Butterfree', 'Butterfree-Mega'],
+    ps: { id: 'butterfree-gmax' },
+    serebii: { id: '012-gi' },
+    pd: { id: 'butterfree-gigantamax', flip: true },
+    pmd: { id: '0012' },
+  },
   weedle: {
     name: ['Weedle'],
     ps: { id: 'weedle' },
@@ -836,6 +843,13 @@ export const Namedex: {
     pd: { id: 'machamp-gigantamax' },
     pmd: { id: '0068' },
   },
+  machampmega: {
+    name: ['Mega Machamp', 'Machamp-Mega'],
+    ps: { id: 'machamp-gmax' },
+    serebii: { id: '068-gi' },
+    pd: { id: 'machamp-gigantamax' },
+    pmd: { id: '0068' },
+  },
   bellsprout: {
     name: ['Bellsprout'],
     ps: { id: 'bellsprout' },
@@ -1146,6 +1160,13 @@ export const Namedex: {
   },
   kinglergmax: {
     name: ['Kingler-Gmax'],
+    ps: { id: 'kingler-gmax' },
+    serebii: { id: '099-gi' },
+    pd: { id: 'kingler-gigantamax' },
+    pmd: { id: '0099' },
+  },
+  kinglermega: {
+    name: ['Mega Kingler', 'Kingler-Mega'],
     ps: { id: 'kingler-gmax' },
     serebii: { id: '099-gi' },
     pd: { id: 'kingler-gigantamax' },
@@ -1466,6 +1487,13 @@ export const Namedex: {
     pd: { id: 'lapras-gigantamax' },
     pmd: { id: '0131' },
   },
+  laprasmega: {
+    name: ['Mega Lapras', 'Lapras-Mega'],
+    ps: { id: 'lapras-gmax' },
+    serebii: { id: '131-gi' },
+    pd: { id: 'lapras-gigantamax' },
+    pmd: { id: '0131' },
+  },
   ditto: {
     name: ['Ditto'],
     ps: { id: 'ditto' },
@@ -1573,6 +1601,13 @@ export const Namedex: {
   },
   snorlaxgmax: {
     name: ['Snorlax-Gmax'],
+    ps: { id: 'snorlax-gmax' },
+    serebii: { id: '143-gi' },
+    pd: { id: 'snorlax-gigantamax' },
+    pmd: { id: '0143' },
+  },
+  snorlaxmega: {
+    name: ['Mega Snorlax', 'Snorlax-Mega'],
     ps: { id: 'snorlax-gmax' },
     serebii: { id: '143-gi' },
     pd: { id: 'snorlax-gigantamax' },
@@ -4385,6 +4420,13 @@ export const Namedex: {
     pd: { id: 'dialga-origin' },
     pmd: { id: '0483/0001' },
   },
+  dialgaprimal: {
+    name: ['Dialga-Primal'],
+    ps: { id: 'dialga' },
+    serebii: { id: '483' },
+    pd: { id: 'dialga' },
+    pmd: { id: '0483/0002' },
+  },
   palkia: {
     name: ['Palkia'],
     ps: { id: 'palkia' },
@@ -5199,6 +5241,13 @@ export const Namedex: {
   },
   garbodorgmax: {
     name: ['Garbodor-Gmax'],
+    ps: { id: 'garbodor-gmax' },
+    serebii: { id: '569-gi' },
+    pd: { id: 'garbodor-gigantamax' },
+    pmd: { id: '0569' },
+  },
+  garbodormega: {
+    name: ['Mega Garbodor', 'Garbodor-Mega'],
     ps: { id: 'garbodor-gmax' },
     serebii: { id: '569-gi' },
     pd: { id: 'garbodor-gigantamax' },
@@ -7513,6 +7562,13 @@ export const Namedex: {
     pd: { id: 'orbeetle-gigantamax' },
     pmd: { id: '0826' },
   },
+  orbeetlemega: {
+    name: ['Orbeetle-Gmax'],
+    ps: { id: 'orbeetle-gmax' },
+    serebii: { id: '826-gi' },
+    pd: { id: 'orbeetle-gigantamax' },
+    pmd: { id: '0826' },
+  },
   nickit: {
     name: ['Nickit'],
     ps: { id: 'nickit' },
@@ -7576,6 +7632,13 @@ export const Namedex: {
     pd: { id: 'drednaw-gigantamax' },
     pmd: { id: '0834' },
   },
+  drednawmega: {
+    name: ['Mega Drednaw', 'Drednaw-Mega'],
+    ps: { id: 'drednaw-gmax' },
+    serebii: { id: '834-gi' },
+    pd: { id: 'drednaw-gigantamax' },
+    pmd: { id: '0834' },
+  },
   yamper: {
     name: ['Yamper'],
     ps: { id: 'yamper' },
@@ -7618,6 +7681,13 @@ export const Namedex: {
     pd: { id: 'coalossal-gigantamax' },
     pmd: { id: '0839' },
   },
+  coalossalmega: {
+    name: ['Mega Coalossal', 'Coalossal-Mega'],
+    ps: { id: 'coalossal-gmax' },
+    serebii: { id: '839-gi' },
+    pd: { id: 'coalossal-gigantamax' },
+    pmd: { id: '0839' },
+  },
   applin: {
     name: ['Applin'],
     ps: { id: 'applin' },
@@ -7639,6 +7709,13 @@ export const Namedex: {
     pd: { id: 'flapple-gigantamax' },
     pmd: { id: '0841' },
   },
+  flapplemega: {
+    name: ['Mega Flapple', 'Flapple-Mega'],
+    ps: { id: 'flapple-gmax' },
+    serebii: { id: '841-gi' },
+    pd: { id: 'flapple-gigantamax' },
+    pmd: { id: '0841' },
+  },
   appletun: {
     name: ['Appletun'],
     ps: { id: 'appletun' },
@@ -7648,6 +7725,13 @@ export const Namedex: {
   },
   appletungmax: {
     name: ['Appletun-Gmax'],
+    ps: { id: 'appletun-gmax' },
+    serebii: { id: '842-gi' },
+    pd: { id: 'appletun-gigantamax' },
+    pmd: { id: '0842' },
+  },
+  appletunmega: {
+    name: ['Mega Appletun', 'Appletun-Mega'],
     ps: { id: 'appletun-gmax' },
     serebii: { id: '842-gi' },
     pd: { id: 'appletun-gigantamax' },
@@ -7669,6 +7753,13 @@ export const Namedex: {
   },
   sandacondagmax: {
     name: ['Sandaconda-Gmax'],
+    ps: { id: 'sandaconda-gmax' },
+    serebii: { id: '844-gi' },
+    pd: { id: 'sandaconda-gigantamax', flip: true },
+    pmd: { id: '0844' },
+  },
+  sandacondamega: {
+    name: ['Mega Sandaconda', 'Sandaconda-Mega'],
     ps: { id: 'sandaconda-gmax' },
     serebii: { id: '844-gi' },
     pd: { id: 'sandaconda-gigantamax', flip: true },
@@ -7723,8 +7814,22 @@ export const Namedex: {
     pd: { id: 'toxtricity-gigantamax' },
     pmd: { id: '0849' },
   },
+  toxtricitymega: {
+    name: ['Mega Toxtricity', 'Toxtricity-Mega'],
+    ps: { id: 'toxtricity-gmax' },
+    serebii: { id: '849-gi' },
+    pd: { id: 'toxtricity-gigantamax' },
+    pmd: { id: '0849' },
+  },
   toxtricitylowkeygmax: {
     name: ['Toxtricity-Low-Key-Gmax'],
+    ps: { id: 'toxtricity-gmax' },
+    serebii: { id: '849-gi' },
+    pd: { id: 'toxtricity-gigantamax' },
+    pmd: { id: '0849' },
+  },
+  toxtricitylowkeymega: {
+    name: ['Mega Toxtricity-Low-Key', 'Toxtricity-Low-Key-Mega'],
     ps: { id: 'toxtricity-gmax' },
     serebii: { id: '849-gi' },
     pd: { id: 'toxtricity-gigantamax' },
@@ -7746,6 +7851,13 @@ export const Namedex: {
   },
   centiskorchgmax: {
     name: ['Centiskorch-Gmax'],
+    ps: { id: 'centiskorch-gmax' },
+    serebii: { id: '851-gi' },
+    pd: { id: 'centiskorch-gigantamax' },
+    pmd: { id: '0851' },
+  },
+  centiskorchmega: {
+    name: ['Mega Centiskorch', 'Centiskorch-Mega'],
     ps: { id: 'centiskorch-gmax' },
     serebii: { id: '851-gi' },
     pd: { id: 'centiskorch-gigantamax' },
@@ -7898,6 +8010,13 @@ export const Namedex: {
     pd: { id: 'alcremie-gigantamax' },
     pmd: { id: '0869' },
   },
+  alcremiemega: {
+    name: ['Mega Alcremie', 'Alcremie-Mega'],
+    ps: { id: 'alcremie-gmax' },
+    serebii: { id: '869-gi' },
+    pd: { id: 'alcremie-gigantamax' },
+    pmd: { id: '0869' },
+  },
   falinks: {
     name: ['Falinks'],
     ps: { id: 'falinks' },
@@ -7996,6 +8115,13 @@ export const Namedex: {
     pd: { id: 'copperajah-gigantamax' },
     pmd: { id: '0879' },
   },
+  copperajahmega: {
+    name: ['Mega Copperajah', 'Copperajah-Mega'],
+    ps: { id: 'copperajah-gmax' },
+    serebii: { id: '879-gi' },
+    pd: { id: 'copperajah-gigantamax' },
+    pmd: { id: '0879' },
+  },
   dracozolt: {
     name: ['Dracozolt'],
     ps: { id: 'dracozolt' },
@@ -8033,6 +8159,13 @@ export const Namedex: {
   },
   duraludongmax: {
     name: ['Duraludon-Gmax'],
+    ps: { id: 'duraludon-gmax' },
+    serebii: { id: '884-gi' },
+    pd: { id: 'duraludon-gigantamax', flip: true },
+    pmd: { id: '0884' },
+  },
+  duraludonmega: {
+    name: ['Mega Duraludon', 'Duraludon-Mega'],
     ps: { id: 'duraludon-gmax' },
     serebii: { id: '884-gi' },
     pd: { id: 'duraludon-gigantamax', flip: true },
