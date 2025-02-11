@@ -7,6 +7,7 @@ import { LeagueAd, LeagueAdsService } from '../api/league-ads.service';
 import { FilterSVG } from '../images/svg-components/filter.component';
 import { SortDownSVG } from '../images/svg-components/sort.component';
 import { LeagueAdComponent } from './league-ad/league-ad.component';
+import { PlusSVG } from '../images/svg-components/plus.component';
 
 @Component({
   selector: 'app-league-ad-list',
@@ -19,6 +20,7 @@ import { LeagueAdComponent } from './league-ad/league-ad.component';
     FilterSVG,
     RouterModule,
     SortDownSVG,
+    PlusSVG,
   ],
 })
 export class LeagueAdListComponent implements OnInit {
@@ -55,7 +57,7 @@ export class LeagueAdListComponent implements OnInit {
 
   constructor(
     private leagueService: LeagueAdsService,
-    private dataService: DataService
+    private dataService: DataService,
   ) {}
 
   ngOnInit() {
@@ -77,28 +79,28 @@ export class LeagueAdListComponent implements OnInit {
       if (
         this.filter.format !== '' &&
         !league.divisions.some(
-          (division) => division.format === this.filter.format
+          (division) => division.format === this.filter.format,
         )
       )
         return false;
       if (
         this.filter.ruleset !== '' &&
         !league.divisions.some(
-          (division) => division.ruleset === this.filter.ruleset
+          (division) => division.ruleset === this.filter.ruleset,
         )
       )
         return false;
       if (
         this.filter.platform !== '' &&
         !league.divisions.some(
-          (division) => division.platform === this.filter.platform
+          (division) => division.platform === this.filter.platform,
         )
       )
         return false;
       if (
         this.filter.skillLevel !== 'any' &&
         !league.divisions.some((division) =>
-          division.skillLevels.includes(+this.filter.skillLevel)
+          division.skillLevels.includes(+this.filter.skillLevel),
         )
       )
         return false;
@@ -109,7 +111,7 @@ export class LeagueAdListComponent implements OnInit {
 
   sortLeagues() {
     this.filteredLeagues = this.filteredLeagues.sort((a, b) =>
-      a[this.sortOption] > b[this.sortOption] ? 1 : -1
+      a[this.sortOption] > b[this.sortOption] ? 1 : -1,
     );
   }
 

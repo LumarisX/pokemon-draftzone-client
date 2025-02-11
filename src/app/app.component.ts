@@ -5,6 +5,8 @@ import { AuthService } from './auth/auth0.service';
 import { DraftOverviewPath } from './drafts/draft-overview/draft-overview-routing.module';
 import { svgIcons } from './images/icons';
 import { SettingsService } from './pages/settings/settings.service';
+import { LeagueAdsService } from './api/league-ads.service';
+import { BehaviorSubject, firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -19,6 +21,7 @@ export class AppComponent implements OnInit {
   TABS: {
     title: string;
     route: string;
+    badge?: BehaviorSubject<string>;
   }[] = [
     {
       title: 'My Drafts',
@@ -35,6 +38,7 @@ export class AppComponent implements OnInit {
     {
       title: 'Find A League',
       route: '/league-list',
+      badge: this.leagueService.newCount,
     },
     {
       title: 'Other Tools',
@@ -45,6 +49,7 @@ export class AppComponent implements OnInit {
   constructor(
     public auth: AuthService,
     private settingsService: SettingsService,
+    private leagueService: LeagueAdsService,
     private matIconRegistry: MatIconRegistry,
     private domSanitizer: DomSanitizer,
   ) {

@@ -3,12 +3,17 @@
     <h1 class="text-2xl font-bold font-nasa">Open Leagues</h1>
 
     <div class="flex space-x-4 items-center">
-      <!-- My Leagues Button -->
+      <button
+        routerLink="manage/new"
+        class="h-10 w-10 bg-menu-500 stroke-symbolColor-inverted rounded-md flex justify-center items-center shadow hover:bg-menu-600"
+      >
+        <plus-svg class="h-5 w-5"></plus-svg>
+      </button>
       <button
         class="px-4 py-2 bg-menu-500 text-symbolColor-inverted rounded-md shadow hover:bg-menu-600"
         routerLink="manage"
       >
-        My Leagues
+        My League Ads
       </button>
     </div>
   </div>

@@ -51,10 +51,9 @@
           class="flex items-center h-full px-2 rounded hover:cursor-pointer hover:bg-menu-200"
         >
           <span
-            matBadge="20"
+            [matBadge]="tab.badge | async"
             matBadgeOverlap="false"
-            matBadgeHidden="true"
-            matBadgeSize="small"
+            [matBadgeHidden]="!tab.badge || (tab.badge | async) === ''"
             >{{ tab.title }}</span
           >
         </div>

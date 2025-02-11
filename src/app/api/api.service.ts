@@ -19,18 +19,18 @@ export class ApiService {
   constructor(
     private http: HttpClient,
     private auth: AuthService,
-    private errorService: ErrorService
+    private errorService: ErrorService,
   ) {}
 
   get(
-    path: string,
+    path: string | string[],
     authenticated: boolean,
-    params: { [key: string]: string } = {}
+    params: { [key: string]: string } = {},
   ): Observable<any> {
     let headers = new HttpHeaders({
       'Content-Type': 'application/json',
     });
-
+    if (Array.isArray(path)) path = path.join('/');
     if (authenticated) {
       return this.auth.getAccessToken().pipe(
         switchMap((token: string) => {
@@ -44,9 +44,9 @@ export class ApiService {
               catchError((error: HttpErrorResponse) => {
                 this.errorService.reportError(error);
                 return throwError(() => error);
-              })
+              }),
             );
-        })
+        }),
       );
     } else {
       return this.http
@@ -58,12 +58,17 @@ export class ApiService {
           catchError((error: HttpErrorResponse) => {
             this.errorService.reportError(error);
             return throwError(() => error);
-          })
+          }),
         );
     }
   }
 
-  post(path: string, authenticated: boolean, data: Object): Observable<any> {
+  post(
+    path: string | string[],
+    authenticated: boolean,
+    data: Object,
+  ): Observable<any> {
+    if (Array.isArray(path)) path = path.join('/');
     if (authenticated) {
       return this.auth.getAccessToken().pipe(
         switchMap((token: string) => {
@@ -79,9 +84,9 @@ export class ApiService {
               catchError((error: HttpErrorResponse) => {
                 this.errorService.reportError(error);
                 return throwError(() => error);
-              })
+              }),
             );
-        })
+        }),
       );
     } else {
       let httpOptions = {
@@ -95,12 +100,13 @@ export class ApiService {
           catchError((error: HttpErrorResponse) => {
             this.errorService.reportError(error);
             return throwError(() => error);
-          })
+          }),
         );
     }
   }
 
-  patch(path: string, data: any): Observable<any> {
+  patch(path: string | string[], data: any): Observable<any> {
+    if (Array.isArray(path)) path = path.join('/');
     return this.auth.getAccessToken().pipe(
       switchMap((token: string) => {
         let httpOptions = {
@@ -115,13 +121,14 @@ export class ApiService {
             catchError((error: HttpErrorResponse) => {
               this.errorService.reportError(error);
               return throwError(() => error);
-            })
+            }),
           );
-      })
+      }),
     );
   }
 
-  delete(path: string): Observable<any> {
+  delete(path: string | string[]): Observable<any> {
+    if (Array.isArray(path)) path = path.join('/');
     return this.auth.getAccessToken().pipe(
       switchMap((token: string) => {
         let httpOptions = {
@@ -134,9 +141,9 @@ export class ApiService {
           catchError((error: HttpErrorResponse) => {
             this.errorService.reportError(error);
             return throwError(() => error);
-          })
+          }),
         );
-      })
+      }),
     );
   }
 }
