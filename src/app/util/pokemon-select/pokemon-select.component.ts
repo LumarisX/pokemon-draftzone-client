@@ -7,6 +7,7 @@ import {
   forwardRef,
   OnInit,
   Output,
+  Input,
 } from '@angular/core';
 import {
   FormControl,
@@ -25,10 +26,12 @@ import {
   distinctUntilChanged,
   map,
   startWith,
+  switchMap,
 } from 'rxjs/operators';
-import { nameList } from '../../data/namedex';
+import { DataService } from '../../api/data.service';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { Pokemon } from '../../interfaces/draft';
+import { BehaviorSubject, combineLatest, of } from 'rxjs';
 
 @Component({
   selector: 'pokemon-select',
@@ -59,33 +62,50 @@ import { Pokemon } from '../../interfaces/draft';
 })
 export class PokemonSelectComponent implements OnInit {
   selectedForm = new FormControl<Pokemon | null>(null);
-  names: Pokemon[] = nameList();
+  names = new BehaviorSubject<Pokemon[]>([]);
   filteredOptions!: Observable<Pokemon[]>;
 
   @Output() pokemonSelected = new EventEmitter<Pokemon | null>();
 
+  constructor(private dataService: DataService) {}
+
+  private ruleset$ = new BehaviorSubject<string | null>(null);
+
+  @Input()
+  set ruleset(value: string | null) {
+    this.ruleset$.next(value);
+  }
+
   ngOnInit() {
-    this.filteredOptions = this.selectedForm.valueChanges.pipe(
-      debounceTime(150),
-      distinctUntilChanged(),
-      startWith(''),
-      map((value) => this._filter(value)),
-    );
+    this.ruleset$
+      .pipe(
+        switchMap((value) =>
+          value ? this.dataService.getPokemonList(value) : of([]),
+        ),
+      )
+      .subscribe(this.names);
+    this.filteredOptions = combineLatest([
+      this.names,
+      this.selectedForm.valueChanges.pipe(
+        startWith(null),
+        debounceTime(150),
+        distinctUntilChanged(),
+      ),
+    ]).pipe(map(([names, value]) => this._filter(value)));
   }
 
   private _filter(value: string | Pokemon | null): Pokemon[] {
-    if (!value) return this.names;
+    const names = this.names.value;
+    if (!value) return this.names.value;
     if (typeof value !== 'string') value = value.name;
     const filterValue = value.toLowerCase();
-    const filteredNames = this.names
+    return names
       .filter((option) => option.name.toLowerCase().includes(filterValue))
       .sort((a, b) => {
         const aStartsWith = a.name.toLowerCase().startsWith(filterValue);
         const bStartsWith = b.name.toLowerCase().startsWith(filterValue);
         return aStartsWith === bStartsWith ? 0 : aStartsWith ? -1 : 1;
       });
-
-    return filteredNames;
   }
 
   clearSelection($event: Event | undefined = undefined) {

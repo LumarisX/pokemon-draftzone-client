@@ -52,8 +52,9 @@ export class TeamBuilderPokemonComponent {
       this.builderSet.emit(null);
       return;
     }
+    if (!this.ruleset) return;
     this.teambuilderService
-      .getPokemonData(value.id, 'Gen9 NatDex')
+      .getPokemonData(value.id, this.ruleset)
       .subscribe((data: TeambuilderPokemon) => {
         this._pokemon = new PokemonBuilder(data);
         this.builderSet.emit(this._pokemon);

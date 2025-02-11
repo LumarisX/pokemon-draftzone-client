@@ -6,7 +6,10 @@
 
   <div class="teambuilder-wrapper level-2">
     <div class="flex flex-grow-0">
-      <pokemon-select (pokemonSelected)="pokemon = $event"></pokemon-select>
+      <pokemon-select
+        [ruleset]="ruleset"
+        (pokemonSelected)="pokemon = $event"
+      ></pokemon-select>
     </div>
     @if (pokemon) {
       <div class="w-full flex-grow h-full overflow-y-auto level-2">

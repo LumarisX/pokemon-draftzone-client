@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { ApiService } from './api.service';
 import { Pokemon } from '../interfaces/draft';
+import { ApiService } from './api.service';
 
 export type SupporterData = {
   top: {
@@ -52,7 +52,10 @@ export class DataService {
   cache: {
     formats?: string[];
     rulesets?: string[];
-  } = {};
+    pokemonList: { [key: string]: Pokemon[] };
+  } = {
+    pokemonList: {},
+  };
 
   //replace with fromat grouped eventually
   getFormats(): Observable<string[]> {
@@ -109,7 +112,17 @@ export class DataService {
   }
 
   getPokemonList(ruleset: string): Observable<Pokemon[]> {
-    return this.apiService.get('data/listpokemon', false, { ruleset: ruleset });
+    if (this.cache.pokemonList[ruleset]) {
+      return of(this.cache.pokemonList[ruleset]);
+    } else {
+      return this.apiService
+        .get('data/listpokemon', false, { ruleset: ruleset })
+        .pipe(
+          tap((list: Pokemon[]) => {
+            this.cache.pokemonList[ruleset] = list;
+          }),
+        );
+    }
   }
 
   advancesearch(query: string[], ruleset?: string, format?: string) {
