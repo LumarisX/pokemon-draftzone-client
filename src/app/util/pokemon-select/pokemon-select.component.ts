@@ -10,10 +10,12 @@ import {
   Input,
 } from '@angular/core';
 import {
+  AbstractControl,
   FormControl,
   FormsModule,
   NG_VALUE_ACCESSOR,
   ReactiveFormsModule,
+  ValidatorFn,
 } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
@@ -61,7 +63,17 @@ import { BehaviorSubject, combineLatest, of } from 'rxjs';
   ],
 })
 export class PokemonSelectComponent implements OnInit {
-  selectedForm = new FormControl<Pokemon | null>(null);
+  private isLegal: ValidatorFn = (
+    control: AbstractControl,
+  ): { [key: string]: any } | null => {
+    if (control.value === null || typeof control.value === 'string')
+      return null;
+    return this.names.value.some((pokemon) => pokemon.id === control.value.id)
+      ? null
+      : { illegal: { value: control.value } };
+  };
+
+  selectedForm = new FormControl<Pokemon | null>(null, [this.isLegal]);
   names = new BehaviorSubject<Pokemon[]>([]);
   filteredOptions!: Observable<Pokemon[]>;
 
@@ -83,7 +95,10 @@ export class PokemonSelectComponent implements OnInit {
           value ? this.dataService.getPokemonList(value) : of([]),
         ),
       )
-      .subscribe(this.names);
+      .subscribe((pokemonList) => {
+        this.names.next(pokemonList);
+        this.selectedForm.updateValueAndValidity();
+      });
     this.filteredOptions = combineLatest([
       this.names,
       this.selectedForm.valueChanges.pipe(

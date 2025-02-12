@@ -10,8 +10,6 @@
     <input
       type="text"
       spellcheck="false"
-      placeholder="Pick one"
-      aria-label="Pokemon"
       matInput
       [formControl]="selectedForm"
       [matAutocomplete]="auto"
@@ -21,7 +19,6 @@
         type="button"
         matSuffix
         mat-icon-button
-        aria-label="Clear"
         (click)="clearSelection($event)"
       >
         <mat-icon svgIcon="xmark"></mat-icon>
@@ -43,5 +40,8 @@
         </mat-option>
       }
     </mat-autocomplete>
+    @if (selectedForm.hasError("illegal")) {
+      <mat-error>Pokemon is <strong>illegal</strong></mat-error>
+    }
   </mat-form-field>
 </form>

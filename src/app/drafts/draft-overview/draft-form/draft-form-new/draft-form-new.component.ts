@@ -8,7 +8,7 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { DraftService } from '../../../../api/draft.service';
-import { Namedex } from '../../../../data/namedex';
+import { getNameByPid } from '../../../../data/namedex';
 import { LoadingComponent } from '../../../../images/loading/loading.component';
 import { Pokemon } from '../../../../interfaces/draft';
 import { DraftOverviewPath } from '../../draft-overview-routing.module';
@@ -47,7 +47,7 @@ export class DraftFormNewComponent implements OnInit {
       if ('team' in params) {
         team = (params['team'] as string[]).map((id) => ({
           id: id,
-          name: Namedex[id].name[0],
+          name: getNameByPid(id),
         }));
       }
       this.draftForm = this.fb.group({
