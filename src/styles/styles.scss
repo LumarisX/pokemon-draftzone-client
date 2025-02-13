@@ -154,3 +154,29 @@ $levels: 0, 1, 2, 3, 4, 5;
     box-shadow: var(--mat-sys-level#{$level});
   }
 }
+
+$screen-size-large: 1024px;
+$screen-size-medium: 768px;
+
+@media (max-width: $screen-size-medium) {
+  .full-screen-on-mobile {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 1000;
+    background-color: var(--mat-sys-surface-container);
+    overflow-y: auto;
+  }
+
+  .panel-full-screen-on-mobile {
+    .mat-mdc-autocomplete-panel {
+      max-height: calc(100vh - 12px - var(--overlay-top, 0px)) !important;
+    }
+  }
+}

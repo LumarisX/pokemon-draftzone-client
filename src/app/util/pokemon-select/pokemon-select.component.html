@@ -1,5 +1,9 @@
-<form class="form-container">
-  <!-- Small Form -->
+<form
+  class="form-container"
+  [ngClass]="{
+    'full-screen-on-mobile': pokemonautocomplete.isOpen,
+  }"
+>
   <mat-form-field class="w-full">
     @if (selectedForm.value && typeof selectedForm.value !== "string") {
       <div matPrefix class="selected-sprite">
@@ -27,8 +31,10 @@
     <mat-autocomplete
       autoActiveFirstOption
       #auto="matAutocomplete"
-      class="autocomplete"
+      class="autocomplete test"
       [displayWith]="displayName"
+      #pokemonautocomplete
+      (opened)="onAutocompleteOpened()"
       (optionSelected)="selectOption($event.option.value)"
     >
       @for (option of filteredOptions | async; track $index) {

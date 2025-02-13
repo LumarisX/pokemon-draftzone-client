@@ -5,9 +5,9 @@ import {
   Component,
   EventEmitter,
   forwardRef,
+  Input,
   OnInit,
   Output,
-  Input,
 } from '@angular/core';
 import {
   AbstractControl,
@@ -17,11 +17,15 @@ import {
   ReactiveFormsModule,
   ValidatorFn,
 } from '@angular/forms';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import {
+  MAT_AUTOCOMPLETE_DEFAULT_OPTIONS,
+  MatAutocompleteModule,
+} from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { BehaviorSubject, combineLatest, of } from 'rxjs';
 import { Observable } from 'rxjs/internal/Observable';
 import {
   debounceTime,
@@ -33,7 +37,6 @@ import {
 import { DataService } from '../../api/data.service';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { Pokemon } from '../../interfaces/draft';
-import { BehaviorSubject, combineLatest, of } from 'rxjs';
 
 @Component({
   selector: 'pokemon-select',
@@ -59,6 +62,10 @@ import { BehaviorSubject, combineLatest, of } from 'rxjs';
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => PokemonSelectComponent),
       multi: true,
+    },
+    {
+      provide: MAT_AUTOCOMPLETE_DEFAULT_OPTIONS,
+      useValue: { overlayPanelClass: 'panel-full-screen-on-mobile' },
     },
   ],
 })
@@ -159,5 +166,16 @@ export class PokemonSelectComponent implements OnInit {
     this.onChange(option);
     this.pokemonSelected.emit(option);
     this.onTouched();
+  }
+
+  onAutocompleteOpened() {
+    requestAnimationFrame(() => {
+      const overlay = document.querySelector(
+        '.mat-mdc-autocomplete-panel',
+      ) as HTMLElement;
+      if (!overlay) return;
+      const y = overlay.getBoundingClientRect().top;
+      document.documentElement.style.setProperty('--overlay-top', `${y}px`);
+    });
   }
 }

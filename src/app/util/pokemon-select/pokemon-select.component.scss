@@ -24,69 +24,13 @@
   width: auto;
 }
 
-/* Small form: default view */
-.small-form {
-  max-width: 600px;
-  width: 100%;
-  margin: 0 auto;
-}
-
-/* Large form: full-screen overlay */
-// .large-form {
-//   position: fixed;
-//   top: 0;
-//   left: 0;
-//   width: 100vw;
-//   height: 100vh;
-//   padding: 20px;
-//   display: flex;
-//   flex-direction: column;
-//   // justify-content: center;
-//   align-items: center;
-//   background-color: rgba(255, 255, 255, 0.95); /* Slight transparency */
-//   z-index: 1000;
-//   overflow-y: auto;
-
-//   /* Input styling for larger forms */
-//   .form-input {
-//     font-size: 1.2rem;
-//     width: 100%;
-//   }
-
-//   .autocomplete-container {
-//     max-height: 60vh;
-//     overflow-y: auto;
-//   }
-// }
-
-/* Large form: full-screen overlay */
 .form-container {
-  /* Input styling for larger forms */
   .form-input {
     font-size: 1.2rem;
     width: 100%;
   }
 }
 
-/* Utility class to hide the large form by default */
-.hidden {
-  display: none;
-}
-
-/* Show the large form on mobile (optional trigger via media query) */
-@media (max-width: 768px) {
-  .form-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    z-index: 1000;
-    background-color: var(--mat-sys-surface-container);
-    overflow-y: auto;
-  }
+.autocomplete {
+  max-height: 350px !important;
 }
