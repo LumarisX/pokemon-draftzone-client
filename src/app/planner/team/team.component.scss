@@ -1,0 +1,20 @@
+.points-container {
+  flex-grow: 0;
+  border-top: 2px var(--mat-sys-outline) solid;
+  padding: 0.25rem 0.5rem;
+  display: flex;
+  flex-direction: column;
+
+  th {
+    text-align: end;
+  }
+
+  td,
+  th {
+    padding: 0rem 0.5rem;
+  }
+}
+
+.category-bar {
+  z-index: 1100;
+}

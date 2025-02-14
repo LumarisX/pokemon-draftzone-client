@@ -34,10 +34,22 @@ export class PlannerTeamComponent {
   teamArray?: FormArray<TeamFormGroup>;
 
   @Input()
-  min?: number;
+  min: number = 0;
 
   @Input()
   isPoints: boolean = false;
+
+  @Input()
+  remainingPoints: number = 0;
+
+  get tieredCount() {
+    return this.teamArray?.value.filter((form) => form.id != '').length || 0;
+  }
+
+  get remainingPokemon() {
+    let mons = this.min - this.tieredCount;
+    return mons > 1 ? mons : 1;
+  }
 
   names = nameList();
 

@@ -1,27 +1,35 @@
-<mat-form-field class="w-full" [ngClass]="classList">
-  <mat-label>Ruleset</mat-label>
-  <mat-select
-    [value]="selectedRuleset"
-    panelClass="ruleset-panel"
-    (selectionChange)="onSelectionChange($event.value)"
-  >
-    <mat-select-trigger>{{ triggerString() }}</mat-select-trigger>
-    @for (group of rulesets; track $index) {
-      <mat-optgroup [label]="group[0]">
-        @for (ruleset of group[1]; track $index) {
-          <mat-option [value]="ruleset.id">
-            <span>{{ ruleset.name }}</span>
-            @if (ruleset.desc) {
-              <mat-icon
-                #tooltip="matTooltip"
-                [matTooltip]="ruleset.desc"
-                matTooltipPosition="above"
-                >info</mat-icon
-              >
-            }
-          </mat-option>
-        }
-      </mat-optgroup>
-    }
-  </mat-select>
-</mat-form-field>
+<div
+  class="form-container"
+  [ngClass]="{
+    'full-screen-on-mobile': rulesetSelect.panelOpen,
+  }"
+>
+  <mat-form-field class="w-full" [ngClass]="classList">
+    <mat-label>Ruleset</mat-label>
+    <mat-select
+      [value]="selectedRuleset"
+      #rulesetSelect
+      (selectionChange)="onSelectionChange($event.value)"
+      (opened)="onSelectOpen()"
+    >
+      <mat-select-trigger>{{ triggerString() }}</mat-select-trigger>
+      @for (group of rulesets; track $index) {
+        <mat-optgroup [label]="group[0]">
+          @for (ruleset of group[1]; track $index) {
+            <mat-option [value]="ruleset.id">
+              <span>{{ ruleset.name }}</span>
+              @if (ruleset.desc) {
+                <mat-icon
+                  #tooltip="matTooltip"
+                  [matTooltip]="ruleset.desc"
+                  matTooltipPosition="above"
+                  >info</mat-icon
+                >
+              }
+            </mat-option>
+          }
+        </mat-optgroup>
+      }
+    </mat-select>
+  </mat-form-field>
+</div>

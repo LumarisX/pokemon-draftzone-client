@@ -11,7 +11,6 @@
       #formatSelect
       (selectionChange)="onSelectionChange($event.value)"
       (opened)="onSelectOpen()"
-      name="formats"
     >
       <mat-select-trigger>{{ triggerString() }}</mat-select-trigger>
       @for (group of formats; track $index) {

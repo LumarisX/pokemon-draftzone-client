@@ -49,20 +49,25 @@
         </div>
       </div>
       <div
-        [formGroup]="getDraftFormGroup()"
+        [formGroup]="draftFormGroup"
         class="flex min-h-0 overflow-auto h-full divide-x-4 divide-menu-200"
       >
         @if (isLargeScreen) {
-          <mat-tab-group mat-stretch-tabs="false" class="w-1/3 flex-grow-0">
+          <mat-tab-group
+            mat-stretch-tabs="false"
+            class="w-1/3 h-full flex-grow-0"
+          >
             <mat-tab label="Team">
               <planner-team
-                [teamArray]="getDraftFormGroup().controls.team"
-                [min]="getDraftFormGroup().controls.min.value"
+                [teamArray]="draftFormGroup.controls.team"
+                [min]="draftFormGroup.controls.min.value"
+                [isPoints]="isPoints"
+                [remainingPoints]="remainingPoints"
               ></planner-team>
             </mat-tab>
             <mat-tab label="Settings">
               <planner-settings
-                [draftFormGroup]="getDraftFormGroup()"
+                [draftFormGroup]="draftFormGroup"
               ></planner-settings>
             </mat-tab>
           </mat-tab-group>
@@ -75,13 +80,15 @@
           @if (!isLargeScreen) {
             <mat-tab label="Team">
               <planner-team
-                [teamArray]="getDraftFormGroup().controls.team"
-                [min]="getDraftFormGroup().controls.min.value"
+                [teamArray]="draftFormGroup.controls.team"
+                [min]="draftFormGroup.controls.min.value"
+                [isPoints]="isPoints"
+                [remainingPoints]="remainingPoints"
               ></planner-team>
             </mat-tab>
             <mat-tab label="Settings">
               <planner-settings
-                [draftFormGroup]="getDraftFormGroup()"
+                [draftFormGroup]="draftFormGroup"
               ></planner-settings>
             </mat-tab>
           }
@@ -119,11 +126,9 @@
             <finder-core
               class="h-full min-w-full overflow-y-auto"
               [rulesetId]="
-                getDraftFormGroup().controls.ruleset.value || 'Gen9 NatDex'
+                draftFormGroup.controls.ruleset.value || 'Gen9 NatDex'
               "
-              [formatId]="
-                getDraftFormGroup().controls.format.value || 'Singles'
-              "
+              [formatId]="draftFormGroup.controls.format.value || 'Singles'"
             ></finder-core>
           </mat-tab>
         </mat-tab-group>

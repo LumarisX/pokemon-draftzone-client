@@ -1,7 +1,10 @@
 @if (error) {
-  <div @fadeInOut class="fixed top-24 w-full flex justify-center">
+  <div
+    @fadeInOut
+    class="fixed error-container top-24 w-full flex justify-center"
+  >
     <div
-      class="w-96 bg-opacity-90 shadow-xl min-h-16 bg-red-300 rounded-xl border-2 border-red-400"
+      class="w-96 bg-opacity-90 error-box shadow-xl min-h-16 bg-red-300 rounded-xl border-2 border-red-400"
     >
       <div class="w-full flex">
         @if (error.status !== undefined && error.status != 0) {

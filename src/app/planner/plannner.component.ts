@@ -10,9 +10,6 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
 import { PlannerService } from '../api/planner.service';
 import { Type } from '../data';
@@ -134,7 +131,7 @@ export class PlannerComponent implements OnInit {
   }
 
   get isPoints() {
-    return this.getDraftFormGroup().controls.system.value === 'points';
+    return this.draftFormGroup.controls.system.value === 'points';
   }
 
   get remainingPoints() {
@@ -142,24 +139,15 @@ export class PlannerComponent implements OnInit {
     for (let control of this.teamFormArray.controls) {
       total += control.controls.value.value;
     }
-    return this.getDraftFormGroup().controls.totalPoints.value - total;
-  }
-
-  get tieredCount() {
-    return this.teamFormArray.value.filter((form) => form.id != '').length;
+    return this.draftFormGroup.controls.totalPoints.value - total;
   }
 
   get draftSize() {
     return this.plannerForm?.controls.drafts.length ?? 0;
   }
 
-  get remainingPokemon() {
-    let mons = this.getDraftFormGroup().controls.min.value - this.tieredCount;
-    return mons > 1 ? mons : 1;
-  }
-
   get teamFormArray() {
-    return this.getDraftFormGroup().controls.team;
+    return this.draftFormGroup.controls.team;
   }
 
   get teamIds() {
@@ -202,8 +190,8 @@ export class PlannerComponent implements OnInit {
       this.plannerService
         .getPlannerDetails(
           team,
-          this.getDraftFormGroup().controls.format.value,
-          this.getDraftFormGroup().controls.ruleset.value,
+          this.draftFormGroup.controls.format.value,
+          this.draftFormGroup.controls.ruleset.value,
         )
         .subscribe((planner) => {
           this.typechart = planner.typechart;
@@ -331,12 +319,12 @@ export class PlannerComponent implements OnInit {
     this.updateDetails();
   }
 
-  getDraftFormGroup() {
+  get draftFormGroup() {
     return this.draftArray.at(this.selectedDraft);
   }
 
   minMaxStyle(i: number) {
-    return i < this.getDraftFormGroup().controls.min.value
+    return i < this.draftFormGroup.controls.min.value
       ? 'border-menu-500'
       : 'border-menu-300 text-menu-500';
   }

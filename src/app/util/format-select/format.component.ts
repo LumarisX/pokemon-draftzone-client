@@ -87,7 +87,6 @@ export class FormatSelectComponent implements OnInit, ControlValueAccessor {
       ) as HTMLElement;
       if (!overlay) return;
       const y = overlay.getBoundingClientRect().top;
-      console.log('open!', y);
       document.documentElement.style.setProperty('--overlay-top', `${y}px`);
     });
   }

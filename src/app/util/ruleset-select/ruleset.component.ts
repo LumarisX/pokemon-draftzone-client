@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, forwardRef, Input, OnInit } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { MatSelectModule } from '@angular/material/select';
+import { MAT_SELECT_CONFIG, MatSelectModule } from '@angular/material/select';
 import { DataService } from '../../api/data.service';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -16,6 +16,10 @@ import { MatTooltipModule } from '@angular/material/tooltip';
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => RulesetSelectComponent),
       multi: true,
+    },
+    {
+      provide: MAT_SELECT_CONFIG,
+      useValue: { overlayPanelClass: 'panel-full-screen-on-mobile' },
     },
   ],
 })
@@ -73,5 +77,16 @@ export class RulesetSelectComponent implements OnInit, ControlValueAccessor {
       }
     }
     return this.selectedRuleset;
+  }
+
+  onSelectOpen() {
+    requestAnimationFrame(() => {
+      const overlay = document.querySelector(
+        '.mat-mdc-select-panel',
+      ) as HTMLElement;
+      if (!overlay) return;
+      const y = overlay.getBoundingClientRect().top;
+      document.documentElement.style.setProperty('--overlay-top', `${y}px`);
+    });
   }
 }

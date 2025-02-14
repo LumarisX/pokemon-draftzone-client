@@ -67,6 +67,7 @@ import { ErrorService } from './error.service';
     ]),
   ],
   templateUrl: './error.component.html',
+  styleUrl: './error.component.scss',
 })
 export class ErrorComponent implements OnInit {
   error?: ClientError;
