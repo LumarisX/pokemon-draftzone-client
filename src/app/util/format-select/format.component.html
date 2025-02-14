@@ -1,27 +1,36 @@
-<mat-form-field class="w-full" [ngClass]="classList">
-  <mat-label>Format</mat-label>
-  <mat-select
-    [value]="selectedFormat"
-    (selectionChange)="onSelectionChange($event.value)"
-    name="formats"
-  >
-    <mat-select-trigger>{{ triggerString() }}</mat-select-trigger>
-    @for (group of formats; track $index) {
-      <mat-optgroup [label]="group[0]">
-        @for (format of group[1]; track format) {
-          <mat-option [value]="format.id">
-            <span>{{ format.name }}</span>
-            @if (format.desc) {
-              <mat-icon
-                #tooltip="matTooltip"
-                matTooltipPosition="above"
-                [matTooltip]="format.desc"
-                >info</mat-icon
-              >
-            }
-          </mat-option>
-        }
-      </mat-optgroup>
-    }
-  </mat-select>
-</mat-form-field>
+<div
+  class="form-container"
+  [ngClass]="{
+    'full-screen-on-mobile': formatSelect.panelOpen,
+  }"
+>
+  <mat-form-field class="w-full" [ngClass]="classList">
+    <mat-label>Format</mat-label>
+    <mat-select
+      [value]="selectedFormat"
+      #formatSelect
+      (selectionChange)="onSelectionChange($event.value)"
+      (opened)="onSelectOpen()"
+      name="formats"
+    >
+      <mat-select-trigger>{{ triggerString() }}</mat-select-trigger>
+      @for (group of formats; track $index) {
+        <mat-optgroup [label]="group[0]">
+          @for (format of group[1]; track format) {
+            <mat-option [value]="format.id">
+              <span>{{ format.name }}</span>
+              @if (format.desc) {
+                <mat-icon
+                  #tooltip="matTooltip"
+                  matTooltipPosition="above"
+                  [matTooltip]="format.desc"
+                  >info</mat-icon
+                >
+              }
+            </mat-option>
+          }
+        </mat-optgroup>
+      }
+    </mat-select>
+  </mat-form-field>
+</div>

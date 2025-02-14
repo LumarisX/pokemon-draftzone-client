@@ -175,7 +175,8 @@ $screen-size-medium: 768px;
   }
 
   .panel-full-screen-on-mobile {
-    .mat-mdc-autocomplete-panel {
+    .mat-mdc-autocomplete-panel,
+    .mat-mdc-select-panel {
       max-height: calc(100vh - 12px - var(--overlay-top, 0px)) !important;
     }
   }

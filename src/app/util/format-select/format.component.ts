@@ -1,21 +1,26 @@
 import { CommonModule } from '@angular/common';
 import { Component, forwardRef, Input, OnInit } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { MatSelectModule } from '@angular/material/select';
-import { DataService } from '../../api/data.service';
 import { MatIconModule } from '@angular/material/icon';
+import { MAT_SELECT_CONFIG, MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { DataService } from '../../api/data.service';
 
 @Component({
   selector: 'format-select',
   imports: [CommonModule, MatSelectModule, MatIconModule, MatTooltipModule],
   templateUrl: './format.component.html',
   styleUrl: './format.component.scss',
+
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => FormatSelectComponent),
       multi: true,
+    },
+    {
+      provide: MAT_SELECT_CONFIG,
+      useValue: { overlayPanelClass: 'panel-full-screen-on-mobile' },
     },
   ],
 })
@@ -73,5 +78,17 @@ export class FormatSelectComponent implements OnInit, ControlValueAccessor {
       }
     }
     return this.selectedFormat;
+  }
+
+  onSelectOpen() {
+    requestAnimationFrame(() => {
+      const overlay = document.querySelector(
+        '.mat-mdc-select-panel',
+      ) as HTMLElement;
+      if (!overlay) return;
+      const y = overlay.getBoundingClientRect().top;
+      console.log('open!', y);
+      document.documentElement.style.setProperty('--overlay-top', `${y}px`);
+    });
   }
 }
