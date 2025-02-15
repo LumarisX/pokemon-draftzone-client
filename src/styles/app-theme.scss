@@ -171,10 +171,22 @@
       ),
     )
   );
+
+  .alternate {
+    @include mat.theme(
+      (
+        color: (
+          primary: christmas.$primary-palette_alt,
+          tertiary: christmas.$tertiary-palette_alt,
+          theme-type: light,
+        ),
+      )
+    );
+  }
 }
 
 :root[theme-name="christmas"][light-mode="dark"] {
-  $christmas: mat.define-theme(
+  @include mat.theme(
     (
       color: (
         primary: christmas.$primary-palette,
@@ -184,7 +196,17 @@
     )
   );
 
-  @include mat.theme($christmas);
+  .alternate {
+    @include mat.theme(
+      (
+        color: (
+          primary: christmas.$primary-palette_alt,
+          tertiary: christmas.$tertiary-palette_alt,
+          theme-type: dark,
+        ),
+      )
+    );
+  }
 }
 
 // @include mat.autocomplete-overrides(
