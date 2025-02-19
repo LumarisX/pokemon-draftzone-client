@@ -18,6 +18,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { MatIconModule } from '@angular/material/icon';
 import { MatTab, MatTabsModule } from '@angular/material/tabs';
 import {
   BehaviorSubject,
@@ -35,9 +36,6 @@ import {
   TypeChart,
 } from '../drafts/matchup-overview/matchup-interface';
 import { LoadingComponent } from '../images/loading/loading.component';
-import { CopySVG } from '../images/svg-components/copy.component';
-import { PlusSVG } from '../images/svg-components/plus.component';
-import { TrashSVG } from '../images/svg-components/trash.component';
 import { Pokemon } from '../interfaces/draft';
 import { FinderCoreComponent } from '../tools/finder/finder-core.component';
 import { ensureNumber, ensureString } from '../util';
@@ -50,7 +48,7 @@ import { TypechartComponent } from './typechart/typechart.component';
 
 interface LSTeamData {
   id: string;
-  value: number;
+  value: number | null;
   tier: string;
   capt: boolean;
   drafted: boolean;
@@ -79,11 +77,9 @@ interface LSDraftData {
     MoveComponent,
     ReactiveFormsModule,
     FormsModule,
-    PlusSVG,
-    TrashSVG,
     MatTabsModule,
+    MatIconModule,
     FinderCoreComponent,
-    CopySVG,
     PlannerCoverageComponent,
     PlannerSettingsComponent,
     PlannerTeamComponent,
@@ -120,7 +116,7 @@ export class PlannerComponent implements OnInit, AfterViewInit {
   private isValidTeamData(team: any): team is LSTeamData {
     return (
       typeof team.id === 'string' &&
-      typeof team.value === 'number' &&
+      (typeof team.value === 'number' || team.value === null) &&
       typeof team.tier === 'string' &&
       typeof team.capt === 'boolean' &&
       typeof team.drafted === 'boolean'
@@ -173,6 +169,7 @@ export class PlannerComponent implements OnInit, AfterViewInit {
       }>[];
     }>[],
   ) {
+    console.log(draftArrayData);
     const lsData = draftArrayData.map((draft) => ({
       format: draft.format,
       ruleset: draft.ruleset,
@@ -194,6 +191,8 @@ export class PlannerComponent implements OnInit, AfterViewInit {
             pokemonData.id !== '' && this.isValidTeamData(pokemonData),
         ),
     }));
+    console.log(lsData);
+
     localStorage.setItem('plannerData', JSON.stringify(lsData));
   }
 
@@ -353,7 +352,7 @@ export class PlannerComponent implements OnInit, AfterViewInit {
       });
     merge(
       group.controls.ruleset.valueChanges.pipe(distinctUntilChanged()),
-      group.controls.team.valueChanges.pipe(debounceTime(200)),
+      group.controls.team.valueChanges,
     ).subscribe(() => this.updateDetails());
   }
 
@@ -393,7 +392,7 @@ export class TeamFormGroup extends FormGroup<{
   constructor(data?: {
     name?: string;
     id?: string;
-    value?: number;
+    value?: number | null;
     tier?: string;
     capt?: boolean;
     drafted?: boolean;

@@ -149,12 +149,6 @@ export class PokemonSelectComponent implements OnInit {
     return value?.name ?? '';
   }
 
-  onBlur() {
-    if (typeof this.selectedForm.value === 'string') {
-      this.selectedForm.setValue(null);
-    }
-  }
-
   private onChange: (value: Pokemon | null) => void = () => {};
   private onTouched: () => void = () => {};
 

@@ -5,52 +5,34 @@
     (keydown.enter)="$event.preventDefault()"
   >
     <div formArrayName="drafts" class="flex flex-col h-full">
-      <div
-        class="flex flex-shrink-0 items-center p-1 space-x-1 border-b-2 overflow-y-clip h-fit bg-menu-200 border-menu-300"
-      >
-        <div
-          class="flex w-full p-0.5 space-x-1 overflow-x-auto scrollbar-hidden"
-        >
+      <div class="tab-bar">
+        <div class="tab-wrapper scrollbar-hidden">
           @for (draftCtrl of draftArray.controls; track $index) {
             <div
               [ngClass]="{
-                'bg-menu-100': $index === selectedDraft.value,
-                'bg-menu-250 hover:bg-menu-150': $index !== selectedDraft.value,
+                alternate: $index !== selectedDraft.value,
               }"
-              class="flex items-center border rounded border-menu-500 hover:cursor-pointer"
+              class="draft-tab tab"
               [formGroupName]="$index"
               (click)="selectedDraft.next($index)"
             >
-              <input
-                class="w-28 px-2 py-0.5 font-nasa text-sm rounded bg-inherit text-ellipsis"
-                formControlName="draftName"
-              />
-              <copy-svg
-                class="w-4 m-1 hover:m-0.5 hover:w-5"
-                (click)="copyToNew($index)"
-              ></copy-svg>
+              <input formControlName="draftName" />
+              <mat-icon (click)="copyToNew($index)">content_copy</mat-icon>
               @if (draftArray.controls.length > 1) {
-                <trash-svg
-                  class="w-4 m-1 hover:m-0.5 hover:w-5"
-                  (click)="deletePlan($index)"
-                ></trash-svg>
+                <mat-icon (click)="deletePlan($index)">delete_forever</mat-icon>
               }
             </div>
           }
-          @if (draftSize < 5) {
-            <button (click)="addDraft()">
-              <div
-                class="h-8 p-1 border rounded aspect-square border-menu-500 bg-menu-100 hover:bg-menu-50 hover:cursor-pointer"
-              >
-                <plus-svg class="stroke-symbolColor-main"></plus-svg>
-              </div>
-            </button>
-          }
         </div>
+        @if (draftSize < 5) {
+          <button (click)="addDraft()" class="add-tab tab alternate">
+            <mat-icon>add</mat-icon>
+          </button>
+        }
       </div>
       <div
         [formGroup]="draftFormGroup"
-        class="flex min-h-0 overflow-auto h-full divide-x-4 divide-menu-200"
+        class="flex min-h-0 overflow-auto h-full divide-x-4 divide-menu-300"
       >
         @if (isLargeScreen) {
           <mat-tab-group

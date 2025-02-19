@@ -40,7 +40,7 @@ table {
   }
 }
 
-.team-item {
+.team-item:not(:last-child) {
   border-bottom: 1px var(--secondary-60) solid;
 }
 
@@ -48,11 +48,17 @@ table {
   width: 5rem;
   input {
     text-align: center;
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+      appearance: none;
+      margin: 0;
+    }
   }
 }
 
 .drag-icon {
   cursor: move;
+  color: var(--mat-sys-on-surface-variant);
 }
 
 .cdk-drag-preview {

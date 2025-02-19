@@ -5,3 +5,67 @@
     display: none;
   }
 }
+
+.draft-tab {
+  display: flex;
+  align-items: center;
+  input {
+    &:focus {
+      outline: none;
+    }
+    width: 7rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    padding: 0px 4px;
+    background: inherit;
+    text-overflow: ellipsis;
+    font-family:
+      Nasalization RG,
+      sans-serif;
+    border-bottom: 1px solid;
+  }
+
+  mat-icon {
+    font-size: 1.2em;
+    padding: 2px;
+    height: fit-content;
+    width: fit-content;
+    &:hover {
+      color: var(--mat-sys-primary);
+      border-radius: 99rem;
+    }
+  }
+}
+
+.tab-wrapper {
+  display: flex;
+  overflow-x: auto;
+  @apply space-x-1;
+}
+
+.tab-bar {
+  padding: 0.5rem 0.5rem 0;
+  max-width: 100%;
+  display: flex;
+  flex-shrink: 0;
+  overflow-y: clip;
+  height: fit-content;
+  border-width: 0 0 2px;
+  @apply space-x-1 border-menu-300;
+}
+
+.add-tab {
+  display: flex;
+  align-items: center;
+  &:hover {
+    color: var(--mat-sys-primary);
+  }
+}
+
+.tab {
+  background-color: var(--mat-sys-surface-variant);
+  color: var(--mat-sys-on-surface-variant);
+  border-radius: 0.5rem 0.5rem 0 0;
+  padding: 6px;
+  cursor: pointer;
+}
