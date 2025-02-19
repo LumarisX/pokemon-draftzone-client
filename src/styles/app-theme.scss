@@ -16,21 +16,29 @@
   );
 
   @each $key, $value in map.get(classic.$palettes, primary) {
+    & {
+      --primary-#{$key}: #{$value};
+    }
     .primary-#{$key} {
       background-color: $value;
     }
   }
   @each $key, $value in map.get(classic.$palettes, secondary) {
+    & {
+      --secondary-#{$key}: #{$value};
+    }
     .secondary-#{$key} {
       background-color: $value;
     }
   }
   @each $key, $value in map.get(classic.$palettes, primary-alt) {
+    & {
+      --tertiary-#{$key}: #{$value};
+    }
     .tertiary-#{$key} {
       background-color: $value;
     }
   }
-
   .alternate {
     @include mat.theme(
       (
@@ -41,17 +49,17 @@
         ),
       )
     );
-    @each $key, $value in map.get(classic.$palettes, primary-alt) {
+    @each $key, $value in map.get(classic.$palettes, primary) {
       .primary-#{$key} {
         background-color: $value;
       }
     }
-    @each $key, $value in map.get(classic.$palettes, secondary-alt) {
+    @each $key, $value in map.get(classic.$palettes, secondary) {
       .secondary-#{$key} {
         background-color: $value;
       }
     }
-    @each $key, $value in map.get(classic.$palettes, primary) {
+    @each $key, $value in map.get(classic.$palettes, primary-alt) {
       .tertiary-#{$key} {
         background-color: $value;
       }

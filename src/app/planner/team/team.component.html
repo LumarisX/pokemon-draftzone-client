@@ -1,81 +1,94 @@
-@if (teamArray) {
-  <div class="flex flex-col h-full">
-    <div class="flex-grow overflow-y-auto">
-      <div
-        class="flex top-0 bg-menu-150 z-1100 category-bar sticky items-center w-full font-semibold border-b-2 border-menu-300"
-      >
-        <div class="w-1/6"></div>
-        <div class="w-5/12">Name</div>
-        <div class="w-1/6 text-center">Value</div>
-        <div class="text-xs text-center w-1/8">Captain</div>
-        <div class="text-xs text-center w-1/8">Drafted</div>
-      </div>
-      <div class="grid w-full grid-cols-1">
-        @for (teamCtrl of teamArray.controls; track $index) {
-          <div class="flex items-center space-y-1">
-            <div class="w-1/6 max-w-24 h-fit">
-              <sprite
-                [pokemon]="{
-                  id: teamCtrl.controls.id.value,
-                  name: teamCtrl.controls.name.value,
-                }"
-              ></sprite>
-            </div>
-            <div class="flex flex-col justify-center w-5/12 h-full p-2">
-              <div
-                class="w-full text-sm border rounded-lg text-ellipsis bg-menu-100"
-                [ngClass]="minMaxStyle($index)"
-              >
-                <select-search
-                  (itemSelected)="resultSelected(teamCtrl, $event)"
-                  [items]="names"
-                  [startItem]="{
-                    id: teamCtrl.controls.id.value,
-                    name: teamCtrl.controls.name.value,
-                  }"
-                  placeholder="Select Pokemon"
-                ></select-search>
+@if (draftFormGroup && draftFormGroup.controls.team) {
+  <div class="flex flex-col max-w-full h-full">
+    <div class="table-container">
+      <table class="table-fixed">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Name</th>
+            <th>Value</th>
+            <th class="text-xs">Captain</th>
+            <th class="text-xs">Drafted</th>
+          </tr>
+        </thead>
+        <tbody
+          cdkDropList
+          (cdkDropListDropped)="drop($event)"
+          class="team-list"
+        >
+          @for (
+            teamCtrl of draftFormGroup.controls.team.controls;
+            track $index
+          ) {
+            <tr
+              cdkDrag
+              class="team-item"
+              [ngClass]="{
+                alternate: $index > min - 1,
+              }"
+            >
+              <div *cdkDragPreview>
+                @if (teamCtrl.controls.pokemon.value) {
+                  <sprite
+                    [flipped]="true"
+                    [pokemon]="teamCtrl.controls.pokemon.value"
+                  >
+                  </sprite>
+                }
               </div>
-            </div>
-            @if (isPoints) {
-              <div class="flex flex-col justify-center w-1/6 h-full p-1">
-                <input
-                  type="number"
-                  placeholder="0"
-                  class="w-full px-1 py-1 text-center border rounded-lg bg-menu-100"
-                  [ngClass]="minMaxStyle($index)"
-                  [formControl]="teamCtrl.controls.value"
-                />
-              </div>
-            } @else {
-              <div class="flex flex-col justify-center w-1/6 h-full p-1">
-                <input
-                  type="text"
-                  spellcheck="false"
-                  [ngClass]="minMaxStyle($index)"
-                  class="w-full px-1 py-1 font-semibold text-center border rounded-lg bg-menu-100"
-                  [formControl]="teamCtrl.controls.tier"
-                />
-              </div>
-            }
+              <td>
+                <mat-icon class="drag-icon" cdkDragHandle
+                  >drag_indicator</mat-icon
+                >
+              </td>
+              <td class="pokemon-input">
+                <pokemon-select
+                  [ruleset]="draftFormGroup.controls.ruleset.value"
+                  [formControl]="teamCtrl.controls.pokemon"
+                ></pokemon-select>
+                <!-- {{ teamCtrl.controls.pokemon.value | json }} -->
+              </td>
+              @if (isPoints) {
+                <td>
+                  <mat-form-field class="value-input">
+                    <mat-label>Points</mat-label>
+                    <input
+                      matInput
+                      type="number"
+                      placeholder="0"
+                      [formControl]="teamCtrl.controls.value"
+                    />
+                  </mat-form-field>
+                </td>
+              } @else {
+                <td>
+                  <mat-form-field class="value-input">
+                    <mat-label>Tier</mat-label>
 
-            <div class="w-1/8">
-              <input
-                type="checkbox"
-                class="w-full"
-                [formControl]="teamCtrl.controls.capt"
-              />
-            </div>
-            <div class="w-1/8">
-              <input
-                type="checkbox"
-                class="w-full"
-                [formControl]="teamCtrl.controls.drafted"
-              />
-            </div>
-          </div>
-        }
-      </div>
+                    <input
+                      matInput
+                      type="text"
+                      spellcheck="false"
+                      [ngClass]="minMaxStyle($index)"
+                      [formControl]="teamCtrl.controls.tier"
+                    />
+                  </mat-form-field>
+                </td>
+              }
+              <td class="w-1/8">
+                <mat-checkbox
+                  [formControl]="teamCtrl.controls.capt"
+                ></mat-checkbox>
+              </td>
+              <td class="w-1/8">
+                <mat-checkbox
+                  [formControl]="teamCtrl.controls.drafted"
+                ></mat-checkbox>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
     </div>
     @if (isPoints) {
       <div class="points-container">

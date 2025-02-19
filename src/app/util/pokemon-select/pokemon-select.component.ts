@@ -5,6 +5,7 @@ import {
   Component,
   EventEmitter,
   forwardRef,
+  input,
   Input,
   OnInit,
   Output,
@@ -40,8 +41,6 @@ import { Pokemon } from '../../interfaces/draft';
 
 @Component({
   selector: 'pokemon-select',
-
-  standalone: true,
   imports: [
     CommonModule,
     MatFormFieldModule,
@@ -75,13 +74,13 @@ export class PokemonSelectComponent implements OnInit {
   ): { [key: string]: any } | null => {
     if (control.value === null || typeof control.value === 'string')
       return null;
-    return this.names.value.some((pokemon) => pokemon.id === control.value.id)
+    return this.options.value.some((pokemon) => pokemon.id === control.value.id)
       ? null
       : { illegal: { value: control.value } };
   };
 
-  selectedForm = new FormControl<Pokemon | null>(null, [this.isLegal]);
-  names = new BehaviorSubject<Pokemon[]>([]);
+  selectedForm = new FormControl<Pokemon | string | null>(null, [this.isLegal]);
+  options = new BehaviorSubject<Pokemon[]>([]);
   filteredOptions!: Observable<Pokemon[]>;
 
   @Output() pokemonSelected = new EventEmitter<Pokemon | null>();
@@ -91,8 +90,16 @@ export class PokemonSelectComponent implements OnInit {
   private ruleset$ = new BehaviorSubject<string | null>(null);
 
   @Input()
+  class: string | string[] = '';
+
+  @Input()
   set ruleset(value: string | null) {
     this.ruleset$.next(value);
+  }
+
+  get setPokemon(): Pokemon | null {
+    const value = this.selectedForm.value;
+    return typeof value === 'string' || !value ? null : value;
   }
 
   ngOnInit() {
@@ -103,11 +110,11 @@ export class PokemonSelectComponent implements OnInit {
         ),
       )
       .subscribe((pokemonList) => {
-        this.names.next(pokemonList);
+        this.options.next(pokemonList);
         this.selectedForm.updateValueAndValidity();
       });
     this.filteredOptions = combineLatest([
-      this.names,
+      this.options,
       this.selectedForm.valueChanges.pipe(
         startWith(null),
         debounceTime(150),
@@ -117,8 +124,8 @@ export class PokemonSelectComponent implements OnInit {
   }
 
   private _filter(value: string | Pokemon | null): Pokemon[] {
-    const names = this.names.value;
-    if (!value) return this.names.value;
+    const names = this.options.value;
+    if (!value) return this.options.value;
     if (typeof value !== 'string') value = value.name;
     const filterValue = value.toLowerCase();
     return names
@@ -140,6 +147,12 @@ export class PokemonSelectComponent implements OnInit {
 
   displayName(value: any) {
     return value?.name ?? '';
+  }
+
+  onBlur() {
+    if (typeof this.selectedForm.value === 'string') {
+      this.selectedForm.setValue(null);
+    }
   }
 
   private onChange: (value: Pokemon | null) => void = () => {};

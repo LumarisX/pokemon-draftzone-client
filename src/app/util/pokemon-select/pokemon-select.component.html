@@ -1,13 +1,13 @@
 <form
-  class="form-container"
+  [class]="'form-container ' + class"
   [ngClass]="{
     'full-screen-on-mobile': pokemonautocomplete.isOpen,
   }"
 >
   <mat-form-field class="w-full">
-    @if (selectedForm.value && typeof selectedForm.value !== "string") {
+    @if (setPokemon) {
       <div matPrefix class="selected-sprite">
-        <sprite [flipped]="true" [pokemon]="selectedForm.value"></sprite>
+        <sprite [flipped]="true" [pokemon]="setPokemon"></sprite>
       </div>
     }
     <mat-label>Pokemon</mat-label>
@@ -17,6 +17,7 @@
       matInput
       [formControl]="selectedForm"
       [matAutocomplete]="auto"
+      (blur)="onBlur()"
     />
     @if (selectedForm.value) {
       <button

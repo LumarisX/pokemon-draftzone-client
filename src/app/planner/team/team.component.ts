@@ -1,18 +1,25 @@
+import {
+  CdkDrag,
+  CdkDragDrop,
+  CdkDragHandle,
+  CdkDragPreview,
+  CdkDropList,
+  moveItemInArray,
+} from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import {
   AbstractControl,
-  FormArray,
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { nameList } from '../../data/namedex';
-import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { Pokemon } from '../../interfaces/draft';
-import { SelectSearchComponent } from '../../util/dropdowns/select/select-search.component';
-import { TeamFormGroup } from '../plannner.component';
+import { PokemonSelectComponent } from '../../util/pokemon-select/pokemon-select.component';
+import { DraftFormGroup } from '../plannner.component';
+import { SpriteComponent } from '../../images/sprite/sprite.component';
 
 @Component({
   selector: 'planner-team',
@@ -21,37 +28,51 @@ import { TeamFormGroup } from '../plannner.component';
   templateUrl: './team.component.html',
   imports: [
     CommonModule,
-    MatFormFieldModule,
-    MatInputModule,
     FormsModule,
     ReactiveFormsModule,
+    MatInputModule,
+    MatIconModule,
+    MatCheckboxModule,
+    PokemonSelectComponent,
+    CdkDrag,
+    CdkDropList,
+    CdkDragHandle,
+    CdkDragPreview,
     SpriteComponent,
-    SelectSearchComponent,
   ],
 })
 export class PlannerTeamComponent {
   @Input()
-  teamArray?: FormArray<TeamFormGroup>;
+  draftFormGroup?: DraftFormGroup;
 
-  @Input()
-  min: number = 0;
-
-  @Input()
-  isPoints: boolean = false;
-
-  @Input()
-  remainingPoints: number = 0;
-
-  get tieredCount() {
-    return this.teamArray?.value.filter((form) => form.id != '').length || 0;
+  get min() {
+    return this.draftFormGroup?.controls.min.value ?? 0;
   }
 
   get remainingPokemon() {
-    let mons = this.min - this.tieredCount;
+    const tiered =
+      this.draftFormGroup?.controls.team?.value.filter(
+        (form) => form.pokemon?.id && form.pokemon.id != '',
+      ).length || 0;
+    const mons = this.min - tiered;
     return mons > 1 ? mons : 1;
   }
 
-  names = nameList();
+  get isPoints() {
+    return (
+      !this.draftFormGroup ||
+      this.draftFormGroup?.controls.system.value === 'points'
+    );
+  }
+
+  get remainingPoints(): number {
+    const teamControls = this.draftFormGroup?.controls.team.controls ?? [];
+    const totalUsed = teamControls.reduce(
+      (sum, control) => sum + (control.controls.value.value ?? 0),
+      0,
+    );
+    return this.draftFormGroup!.controls.totalPoints.value - totalUsed;
+  }
 
   minMaxStyle(i: number) {
     return this.min
@@ -67,5 +88,14 @@ export class PlannerTeamComponent {
     } else {
       formGroup.patchValue({ name: null, id: null });
     }
+  }
+
+  drop(event: CdkDragDrop<string[]>) {
+    if (this.draftFormGroup)
+      moveItemInArray(
+        this.draftFormGroup.controls.team.controls,
+        event.previousIndex,
+        event.currentIndex,
+      );
   }
 }

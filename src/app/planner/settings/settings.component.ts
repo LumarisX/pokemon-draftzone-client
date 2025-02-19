@@ -51,7 +51,7 @@ export class PlannerSettingsComponent implements OnInit {
 
   get teamIds() {
     return this.draftFormGroup?.controls.team.value
-      .map((pokemon) => pokemon.id)
+      .map((pokemon) => pokemon.pokemon?.id)
       .filter((id) => id != undefined)
       .filter((id) => id != '');
   }

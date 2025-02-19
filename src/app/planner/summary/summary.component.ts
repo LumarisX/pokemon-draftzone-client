@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { Summary } from '../../drafts/matchup-overview/matchup-interface';
+import { SpriteComponent } from '../../images/sprite/sprite.component';
 
 @Component({
   selector: 'summary',
@@ -36,8 +36,6 @@ export class SummaryComponent {
   reversed: boolean = false;
   baseValue: number = 80;
   baseBST: number = 500;
-
-  constructor() {}
 
   sortByStat(sortStat: 'hp' | 'atk' | 'def' | 'spa' | 'spd' | 'spe' | 'bst') {
     if (sortStat != this.sortBy) {

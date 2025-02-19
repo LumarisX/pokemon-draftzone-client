@@ -15,6 +15,65 @@
   }
 }
 
-.category-bar {
-  z-index: 1100;
+.table-container {
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+table {
+  table-layout: fixed;
+
+  thead tr {
+    top: 0px;
+    z-index: 1100;
+    background-color: var(--secondary-70);
+    color: var(--mat-sys-on-secondary);
+    border-bottom: 2px var(--secondary-50) solid;
+    position: sticky;
+  }
+  tbody {
+    td {
+      text-align: center;
+      padding: 0.25rem 0.5rem 0;
+      width: fit-content;
+    }
+  }
+}
+
+.team-item {
+  border-bottom: 1px var(--secondary-60) solid;
+}
+
+.value-input {
+  width: 5rem;
+  input {
+    text-align: center;
+  }
+}
+
+.drag-icon {
+  cursor: move;
+}
+
+.cdk-drag-preview {
+  box-sizing: border-box;
+  max-width: 6rem;
+  object-fit: contain;
+  border-radius: 4px;
+  box-shadow:
+    0 5px 5px -3px rgba(0, 0, 0, 0.2),
+    0 8px 10px 1px rgba(0, 0, 0, 0.14),
+    0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.team-list.cdk-drop-list-dragging .team-item:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.cdk-drag-placeholder {
+  opacity: 0;
 }

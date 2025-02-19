@@ -14,7 +14,7 @@ export function getSpriteProperties(
   return undefined;
 }
 
-export function getPidByName(name: string): PokemonId | null {
+export function getPidByName(name: string): PokemonId {
   name = name.toLowerCase();
   for (const key in Namedex) {
     const pokemonNames = Namedex[key].name;
@@ -24,7 +24,7 @@ export function getPidByName(name: string): PokemonId | null {
       return key;
     }
   }
-  return null;
+  return name;
 }
 
 export function getNameByPid(id: PokemonId): string {

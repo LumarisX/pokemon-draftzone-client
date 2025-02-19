@@ -14,12 +14,12 @@
           @for (draftCtrl of draftArray.controls; track $index) {
             <div
               [ngClass]="{
-                'bg-menu-100': $index === selectedDraft,
-                'bg-menu-250 hover:bg-menu-150': $index !== selectedDraft,
+                'bg-menu-100': $index === selectedDraft.value,
+                'bg-menu-250 hover:bg-menu-150': $index !== selectedDraft.value,
               }"
               class="flex items-center border rounded border-menu-500 hover:cursor-pointer"
               [formGroupName]="$index"
-              (click)="switchDrafts($index)"
+              (click)="selectedDraft.next($index)"
             >
               <input
                 class="w-28 px-2 py-0.5 font-nasa text-sm rounded bg-inherit text-ellipsis"
@@ -55,15 +55,10 @@
         @if (isLargeScreen) {
           <mat-tab-group
             mat-stretch-tabs="false"
-            class="w-1/3 h-full flex-grow-0"
+            class="w-fit h-full flex-grow-0"
           >
             <mat-tab label="Team">
-              <planner-team
-                [teamArray]="draftFormGroup.controls.team"
-                [min]="draftFormGroup.controls.min.value"
-                [isPoints]="isPoints"
-                [remainingPoints]="remainingPoints"
-              ></planner-team>
+              <planner-team [draftFormGroup]="draftFormGroup"></planner-team>
             </mat-tab>
             <mat-tab label="Settings">
               <planner-settings
@@ -74,17 +69,13 @@
         }
         <mat-tab-group
           mat-stretch-tabs="false"
+          [(selectedIndex)]="tabIndex"
           class="flex-grow h-full overflow-auto"
           mat-align-tabs="start"
         >
           @if (!isLargeScreen) {
             <mat-tab label="Team">
-              <planner-team
-                [teamArray]="draftFormGroup.controls.team"
-                [min]="draftFormGroup.controls.min.value"
-                [isPoints]="isPoints"
-                [remainingPoints]="remainingPoints"
-              ></planner-team>
+              <planner-team [draftFormGroup]="draftFormGroup"></planner-team>
             </mat-tab>
             <mat-tab label="Settings">
               <planner-settings
@@ -93,7 +84,7 @@
             </mat-tab>
           }
           @if (summary) {
-            <mat-tab label="Summary">
+            <mat-tab label="Summary" [tabIndex]="0">
               <summary class="h-full list-none" [summary]="summary"></summary>
             </mat-tab>
           }

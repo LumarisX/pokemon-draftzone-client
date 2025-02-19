@@ -24,3 +24,11 @@ export function compare(
 ) {
   return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
 }
+
+export function ensureString(value: any): string | undefined {
+  return typeof value === 'string' ? value : undefined;
+}
+
+export function ensureNumber(value: any): number | undefined {
+  return typeof value === 'number' ? value : undefined;
+}

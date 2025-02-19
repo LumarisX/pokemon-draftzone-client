@@ -1,5 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, HostListener, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  HostListener,
+  OnInit,
+  QueryList,
+  ViewChildren,
+} from '@angular/core';
 import {
   AbstractControl,
   FormArray,
@@ -10,10 +18,16 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { MatTabsModule } from '@angular/material/tabs';
+import { MatTab, MatTabsModule } from '@angular/material/tabs';
+import {
+  BehaviorSubject,
+  debounceTime,
+  distinctUntilChanged,
+  merge,
+} from 'rxjs';
 import { PlannerService } from '../api/planner.service';
 import { Type } from '../data';
-import { getNameByPid, getPidByName } from '../data/namedex';
+import { getNameByPid } from '../data/namedex';
 import {
   Coverage,
   MoveChart,
@@ -26,12 +40,32 @@ import { PlusSVG } from '../images/svg-components/plus.component';
 import { TrashSVG } from '../images/svg-components/trash.component';
 import { Pokemon } from '../interfaces/draft';
 import { FinderCoreComponent } from '../tools/finder/finder-core.component';
+import { ensureNumber, ensureString } from '../util';
 import { PlannerCoverageComponent } from './coverage/coverage.component';
 import { MoveComponent } from './moves/moves.component';
 import { PlannerSettingsComponent } from './settings/settings.component';
 import { SummaryComponent } from './summary/summary.component';
 import { PlannerTeamComponent } from './team/team.component';
 import { TypechartComponent } from './typechart/typechart.component';
+
+interface LSTeamData {
+  id: string;
+  value: number;
+  tier: string;
+  capt: boolean;
+  drafted: boolean;
+}
+
+interface LSDraftData {
+  format: string;
+  ruleset: string;
+  draftName: string;
+  min: number;
+  max: number;
+  system: string;
+  totalPoints: number;
+  team: LSTeamData[];
+}
 
 @Component({
   selector: 'planner',
@@ -56,7 +90,7 @@ import { TypechartComponent } from './typechart/typechart.component';
     LoadingComponent,
   ],
 })
-export class PlannerComponent implements OnInit {
+export class PlannerComponent implements OnInit, AfterViewInit {
   plannerForm!: FormGroup<{ drafts: FormArray<DraftFormGroup> }>;
   typechart: TypeChart = {
     team: [],
@@ -71,121 +105,168 @@ export class PlannerComponent implements OnInit {
       types: Type[][];
     };
   };
-  summary: Summary = {
-    team: [],
-    teamName: '',
-    stats: { mean: {}, median: {}, max: {} },
-  };
+  summary?: Summary;
   coverage?: Coverage;
-  selectedDraft = 0;
-
+  selectedDraft = new BehaviorSubject<number>(0);
   movechart: MoveChart = [];
   isLargeScreen = false;
 
   constructor(
     private fb: FormBuilder,
     private plannerService: PlannerService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
-  ngOnInit(): void {
-    // Populate form data from localStorage if available
+  private isValidTeamData(team: any): team is LSTeamData {
+    return (
+      typeof team.id === 'string' &&
+      typeof team.value === 'number' &&
+      typeof team.tier === 'string' &&
+      typeof team.capt === 'boolean' &&
+      typeof team.drafted === 'boolean'
+    );
+  }
+
+  private sanitizeDraftData(data: any): Partial<LSDraftData> {
+    return {
+      format: ensureString(data.format),
+      ruleset: ensureString(data.ruleset),
+      draftName: ensureString(data.draftName),
+      min: ensureNumber(data.min),
+      max: ensureNumber(data.max),
+      system: ensureString(data.system),
+      totalPoints: ensureNumber(data.totalPoints),
+      team: Array.isArray(data.team)
+        ? data.team.filter(this.isValidTeamData)
+        : [],
+    };
+  }
+
+  private getStoredPlannerData(): Partial<LSDraftData>[] {
     const storedPlannerData = localStorage.getItem('plannerData');
-    if (!storedPlannerData || storedPlannerData === '[]') {
-      this.plannerForm = this.fb.group({
-        drafts: this.fb.array<DraftFormGroup>([this.createDraftFormGroup()]),
-      });
-    } else {
-      let data = JSON.parse(storedPlannerData);
-      this.plannerForm = this.fb.group({
-        drafts: this.fb.array<DraftFormGroup>(
-          data.map(
-            (value: {
-              format: string;
-              ruleset: string;
-              draftName: string;
-              min: number;
-              max: number;
-              system: string;
-              totalPoints: number;
-              team: {
-                name: string;
-                id: string;
-                value: number;
-                tier: string;
-                capt: boolean;
-                drafted: boolean;
-              }[];
-            }) => this.createDraftFormGroup(value),
-          ),
-        ),
-      });
-      this.isLargeScreen = window.innerWidth >= 1024;
+    try {
+      const parsedData = JSON.parse(storedPlannerData!);
+      if (Array.isArray(parsedData) && parsedData.length > 0) {
+        return parsedData.map((data) => this.sanitizeDraftData(data));
+      }
+    } catch {
+      console.warn('Invalid plannerData format in localStorage');
     }
+    return [{}];
+  }
 
-    this.updateDetails();
+  private setStoredPlannerData(
+    draftArrayData: Partial<{
+      format: string;
+      ruleset: string;
+      draftName: string;
+      min: number;
+      max: number;
+      system: string;
+      totalPoints: number;
+      team: Partial<{
+        pokemon: Pokemon | null;
+        capt: boolean;
+        tier: string;
+        value: number | null;
+        drafted: boolean;
+      }>[];
+    }>[],
+  ) {
+    const lsData = draftArrayData.map((draft) => ({
+      format: draft.format,
+      ruleset: draft.ruleset,
+      draftName: draft.draftName,
+      min: draft.min,
+      max: draft.max,
+      system: draft.system,
+      totalPoints: draft.totalPoints,
+      team: draft.team
+        ?.map((pokemonData) => ({
+          id: pokemonData.pokemon?.id,
+          capt: pokemonData.capt,
+          tier: pokemonData.tier,
+          value: pokemonData.value,
+          drafted: pokemonData.drafted,
+        }))
+        .filter(
+          (pokemonData) =>
+            pokemonData.id !== '' && this.isValidTeamData(pokemonData),
+        ),
+    }));
+    localStorage.setItem('plannerData', JSON.stringify(lsData));
+  }
 
-    // Listen for form changes and save to localStorage
-    this.draftArray.valueChanges.subscribe((value) => {
-      localStorage.setItem('plannerData', JSON.stringify(value));
+  ngOnInit(): void {
+    const storedData = this.getStoredPlannerData();
+    this.plannerForm = this.fb.group({
+      drafts: new FormArray<DraftFormGroup>(
+        storedData.map((data) => this.createDraftFormGroup(data)),
+      ),
+    });
+    this.isLargeScreen = window.innerWidth >= 1024;
+
+    this.selectedDraft
+      .asObservable()
+      .subscribe((value) => this.updateDetails());
+
+    this.draftArray.valueChanges
+      .pipe(debounceTime(3000))
+      .subscribe((draftArrayData) => {
+        this.setStoredPlannerData(draftArrayData);
+      });
+  }
+
+  @ViewChildren(MatTab) tabs!: QueryList<MatTab>;
+  tabIndex: number | null = 0;
+
+  ngAfterViewInit() {
+    this.tabs.changes.subscribe(() => {
+      this.tabIndex = null;
+      this.cdr.detectChanges();
+      setTimeout(() => {
+        this.tabIndex = 0;
+      });
     });
   }
 
-  get isPoints() {
-    return this.draftFormGroup.controls.system.value === 'points';
-  }
-
-  get remainingPoints() {
-    let total: number = 0;
-    for (let control of this.teamFormArray.controls) {
-      total += control.controls.value.value;
-    }
-    return this.draftFormGroup.controls.totalPoints.value - total;
-  }
-
-  get draftSize() {
+  get draftSize(): number {
     return this.plannerForm?.controls.drafts.length ?? 0;
   }
 
-  get teamFormArray() {
+  get teamFormArray(): FormArray<TeamFormGroup> {
     return this.draftFormGroup.controls.team;
   }
 
-  get teamIds() {
-    return this.teamFormArray.value
-      .map((pokemon) => pokemon.id)
-      .filter((id) => id != undefined)
-      .filter((id) => id != '');
-  }
-
-  get draftArray() {
+  get draftArray(): FormArray<DraftFormGroup> {
     let array = this.plannerForm.controls.drafts;
     if (array.length < 1) {
-      array = this.fb.array([this.createDraftFormGroup()]);
+      array = new FormArray<DraftFormGroup>([this.createDraftFormGroup({})]);
     }
     return array;
   }
 
   deletePlan(index: number) {
     this.draftArray.removeAt(index);
-    this.selectedDraft = 0;
-    this.updateDetails();
+    this.selectedDraft.next(0);
   }
 
   updateDetails() {
-    const team = this.teamIds;
+    const team = this.teamFormArray.controls
+      .filter(
+        (group) =>
+          group.controls.pokemon.valid &&
+          group.controls.pokemon.value !== null &&
+          group.controls.pokemon.value.id !== '',
+      )
+      .map((group) => group.controls.pokemon.value!.id);
+
     if (team.length == 0) {
       this.typechart = { team: [] };
-      this.summary = {
-        team: [],
-        teamName: '',
-        stats: {
-          mean: {},
-          median: {},
-          max: {},
-        },
-      };
+      this.summary = undefined;
       this.movechart = [];
       this.recommended = undefined;
+      this.coverage = undefined;
     } else {
       this.plannerService
         .getPlannerDetails(
@@ -232,135 +313,68 @@ export class PlannerComponent implements OnInit {
       } else if (newSize < currentSize) {
         for (let i = currentSize; i > newSize; i--) {
           team.removeAt(i - 1);
-          this.updateDetails();
         }
       }
     }
   }
 
-  createDraftFormGroup(data?: {
-    format: string;
-    ruleset: string;
-    draftName: string;
-    min: number;
-    max: number;
-    system: string;
-    totalPoints: number;
-    team: {
-      name: string;
-      id: string;
-      value: number;
-      tier: string;
-      capt: boolean;
-      drafted: boolean;
-    }[];
-  }) {
-    const teamArray: FormArray<TeamFormGroup> = new FormArray(
-      data?.team?.map((mon) => this.createTeamFormGroup(mon)) ??
-        Array.from({ length: data?.max ?? 12 }, () =>
-          this.createTeamFormGroup(),
-        ),
-    );
+  createDraftFormGroup(data: Partial<LSDraftData>): DraftFormGroup {
     const group = new DraftFormGroup({
       format: data?.format,
       ruleset: data?.ruleset,
-      draftName: 'Draft ' + (this.draftSize + 1),
+      draftName: data?.draftName ?? 'Draft ' + (this.draftSize + 1),
       min: data?.min,
       max: data?.max,
       system: data?.system,
       totalPoints: data?.totalPoints,
-      team: teamArray,
+      team: new FormArray(
+        Array(data?.max ?? 12)
+          .fill(null)
+          .map((_, k) => this.createTeamFormGroup(data?.team?.[k])),
+      ),
     });
-    group.controls.max.valueChanges.subscribe((value: number | null) => {
-      if (value) {
-        group.controls.min.setValidators([
-          Validators.required,
-          Validators.min(0),
-          this.maxValidator(value),
-        ]);
-        group.controls.min.updateValueAndValidity();
-      }
-    });
-    group.controls.max.valueChanges.subscribe((value: number | null) => {
-      if (value) this.adjustTeamArray(group.controls.team, value);
-    });
-    group.controls.ruleset.valueChanges.subscribe(() => {
-      this.updateDetails();
-    });
+    this.setDraftFormGroupSubscriptions(group);
     return group;
   }
 
-  createTeamFormGroup(data?: {
-    name: string;
-    id: string;
-    value: number;
-    tier: string;
-    capt: boolean;
-    drafted: boolean;
-  }): TeamFormGroup {
-    const teamFormGroup = new TeamFormGroup(data);
-    teamFormGroup.controls.name.valueChanges.subscribe((name) => {
-      if (name !== null) {
-        const id = getPidByName(name) ?? '';
-        if (teamFormGroup.controls.id.value != id) {
-          teamFormGroup.controls.id.setValue(id, { emitEvent: false });
+  setDraftFormGroupSubscriptions(group: DraftFormGroup) {
+    group.controls.max.valueChanges
+      .pipe(debounceTime(500))
+      .subscribe((value: number | null) => {
+        if (value) {
+          group.controls.min.setValidators([
+            Validators.required,
+            Validators.min(0),
+            this.maxValidator(value),
+          ]);
+          group.controls.min.updateValueAndValidity();
+          this.adjustTeamArray(group.controls.team, value);
         }
-      }
-    });
-    teamFormGroup.controls.id.valueChanges.subscribe((id) => {
-      this.updateDetails();
-    });
-    return teamFormGroup;
+      });
+    merge(
+      group.controls.ruleset.valueChanges.pipe(distinctUntilChanged()),
+      group.controls.team.valueChanges.pipe(debounceTime(200)),
+    ).subscribe(() => this.updateDetails());
+  }
+
+  createTeamFormGroup(data?: LSTeamData): TeamFormGroup {
+    return new TeamFormGroup(data);
   }
 
   addDraft() {
-    this.draftArray.push(this.createDraftFormGroup());
-    this.selectedDraft = this.draftSize - 1;
-    this.updateDetails();
+    this.draftArray.push(this.createDraftFormGroup({}));
+    this.selectedDraft.next(this.draftSize - 1);
   }
 
   get draftFormGroup() {
-    return this.draftArray.at(this.selectedDraft);
-  }
-
-  minMaxStyle(i: number) {
-    return i < this.draftFormGroup.controls.min.value
-      ? 'border-menu-500'
-      : 'border-menu-300 text-menu-500';
-  }
-
-  switchDrafts(index: number) {
-    this.selectedDraft = index;
-    this.updateDetails();
+    return this.draftArray.at(this.selectedDraft.value);
   }
 
   copyToNew(index: number) {
-    let draft = this.draftArray.at(index);
-    const draftCopy = new DraftFormGroup({
-      format: draft.controls.format.value,
-      ruleset: draft.controls.ruleset.value,
-      draftName: draft.controls.draftName.value,
-      min: draft.controls.min.value,
-      max: draft.controls.max.value,
-      system: draft.controls.system.value,
-      totalPoints: draft.controls.totalPoints.value,
-      team: new FormArray(
-        draft.controls.team.controls.map(
-          (pokemon) =>
-            new TeamFormGroup({
-              id: pokemon.controls.id.value,
-              name: pokemon.controls.name.value,
-              capt: pokemon.controls.capt.value,
-              tier: pokemon.controls.tier.value,
-              value: pokemon.controls.value.value,
-              drafted: pokemon.controls.drafted.value,
-            }),
-        ),
-      ),
-    });
+    const draftCopy = this.draftArray.at(index).clone();
+    this.setDraftFormGroupSubscriptions(draftCopy);
     this.draftArray.push(draftCopy);
-    this.selectedDraft = this.draftSize - 1;
-    this.updateDetails();
+    this.selectedDraft.next(this.draftSize - 1);
   }
 
   @HostListener('window:resize', ['$event'])
@@ -370,12 +384,10 @@ export class PlannerComponent implements OnInit {
 }
 
 export class TeamFormGroup extends FormGroup<{
-  name: FormControl<string>;
-  id: FormControl<string>;
   pokemon: FormControl<Pokemon | null>;
   capt: FormControl<boolean>;
   tier: FormControl<string>;
-  value: FormControl<number>;
+  value: FormControl<number | null>;
   drafted: FormControl<boolean>;
 }> {
   constructor(data?: {
@@ -387,14 +399,6 @@ export class TeamFormGroup extends FormGroup<{
     drafted?: boolean;
   }) {
     super({
-      id: new FormControl(data?.id ?? '', {
-        nonNullable: true,
-        validators: [Validators.required],
-      }),
-      name: new FormControl(data?.name ?? '', {
-        nonNullable: true,
-        validators: [Validators.required],
-      }),
       capt: new FormControl(data?.capt ?? false, {
         nonNullable: true,
         validators: [Validators.required],
@@ -402,9 +406,7 @@ export class TeamFormGroup extends FormGroup<{
       tier: new FormControl(data?.tier ?? '', {
         nonNullable: true,
       }),
-      value: new FormControl(data?.value ?? 0, {
-        nonNullable: true,
-      }),
+      value: new FormControl(data?.value ?? null),
       drafted: new FormControl(data?.drafted ?? false, {
         nonNullable: true,
       }),
@@ -413,6 +415,16 @@ export class TeamFormGroup extends FormGroup<{
           ? { id: data.id, name: data.name ?? getNameByPid(data.id) }
           : null,
       ),
+    });
+  }
+
+  clone(): TeamFormGroup {
+    return new TeamFormGroup({
+      id: this.controls.pokemon?.value?.id,
+      capt: this.controls.capt.value,
+      tier: this.controls.tier.value,
+      value: this.controls.value.value ?? undefined,
+      drafted: this.controls.drafted.value,
     });
   }
 }
@@ -473,6 +485,21 @@ export class DraftFormGroup extends FormGroup<{
       system,
       totalPoints,
       team,
+    });
+  }
+
+  clone(): DraftFormGroup {
+    return new DraftFormGroup({
+      format: this.controls.format.value,
+      ruleset: this.controls.ruleset.value,
+      draftName: this.controls.draftName.value,
+      min: this.controls.min.value,
+      max: this.controls.max.value,
+      system: this.controls.system.value,
+      totalPoints: this.controls.totalPoints.value,
+      team: new FormArray(
+        this.controls.team.controls.map((pokemon) => pokemon.clone()),
+      ),
     });
   }
 }
