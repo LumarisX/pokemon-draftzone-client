@@ -59,11 +59,11 @@ export class ApiService {
         return throwError(() => error);
       }),
       finalize(() => {
-        this.pendingRequests.delete(path);
+        this.pendingRequests.delete(path + JSON.stringify(params));
       }),
       shareReplay(1),
     );
-    this.pendingRequests.set(path, request$);
+    this.pendingRequests.set(path + JSON.stringify(params), request$);
     return request$;
   }
 

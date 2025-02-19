@@ -43,6 +43,7 @@
               </td>
               <td class="pokemon-input">
                 <pokemon-select
+                  (pokemonSelected)="onSelect($index)"
                   [ruleset]="draftFormGroup.controls.ruleset.value"
                   [formControl]="teamCtrl.controls.pokemon"
                 ></pokemon-select>
@@ -69,7 +70,6 @@
                       matInput
                       type="text"
                       spellcheck="false"
-                      [ngClass]="minMaxStyle($index)"
                       [formControl]="teamCtrl.controls.tier"
                     />
                   </mat-form-field>

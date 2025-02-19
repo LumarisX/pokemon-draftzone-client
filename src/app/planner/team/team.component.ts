@@ -8,18 +8,13 @@ import {
 } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import {
-  AbstractControl,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { Pokemon } from '../../interfaces/draft';
-import { PokemonSelectComponent } from '../../util/pokemon-select/pokemon-select.component';
-import { DraftFormGroup } from '../plannner.component';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
+import { PokemonSelectComponent } from '../../util/pokemon-select/pokemon-select.component';
+import { DraftFormGroup, TeamFormGroup } from '../plannner.component';
 
 @Component({
   selector: 'planner-team',
@@ -74,19 +69,11 @@ export class PlannerTeamComponent {
     return this.draftFormGroup!.controls.totalPoints.value - totalUsed;
   }
 
-  minMaxStyle(i: number) {
-    return this.min
-      ? i < this.min
-        ? 'border-menu-500'
-        : 'border-menu-300 text-menu-500'
-      : '';
-  }
-
-  resultSelected(formGroup: AbstractControl, result: Pokemon | null) {
-    if (result) {
-      formGroup.patchValue({ name: result.name, id: result.id });
-    } else {
-      formGroup.patchValue({ name: null, id: null });
+  onSelect(index: number) {
+    const value =
+      this.draftFormGroup!.controls.team.controls[index].controls.pokemon.value;
+    if (value === null) {
+      this.draftFormGroup!.controls.team.controls[index] = new TeamFormGroup();
     }
   }
 

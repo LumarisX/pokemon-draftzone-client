@@ -169,7 +169,6 @@ export class PlannerComponent implements OnInit, AfterViewInit {
       }>[];
     }>[],
   ) {
-    console.log(draftArrayData);
     const lsData = draftArrayData.map((draft) => ({
       format: draft.format,
       ruleset: draft.ruleset,
@@ -191,8 +190,6 @@ export class PlannerComponent implements OnInit, AfterViewInit {
             pokemonData.id !== '' && this.isValidTeamData(pokemonData),
         ),
     }));
-    console.log(lsData);
-
     localStorage.setItem('plannerData', JSON.stringify(lsData));
   }
 
