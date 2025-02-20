@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
+import { Stats } from '../drafts/draft-overview/draft-stats/draft-stats.component';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -19,7 +21,7 @@ export class DraftService {
     return this.apiService.get(`draft/${teamId}/${matchupId}`, true);
   }
 
-  getStats(teamName: string) {
+  getStats(teamName: string): Observable<Stats[]> {
     return this.apiService.get(`draft/${teamName}/stats`, true);
   }
 
