@@ -134,7 +134,9 @@ export class BZTierListComponent implements OnInit {
     if (selected) {
       this.selectedTypes.push(this.types[index]);
     } else {
-      this.selectedTypes.filter((type) => type != type);
+      this.selectedTypes = this.selectedTypes.filter(
+        (type) => type !== this.types[index],
+      );
     }
   }
 

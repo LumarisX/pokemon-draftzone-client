@@ -103,13 +103,19 @@
   );
 }
 
-.applybutton {
+.apply-wrapper {
   width: 100%;
-  text-align: center;
+  padding: 3px;
   border-radius: inherit;
-  background-color: var(--mat-sys-primary);
-  color: var(--mat-sys-on-primary);
-  &:hover {
-    background-color: var(--mat-sys-secondary);
+
+  .applybutton {
+    width: 100%;
+    text-align: center;
+    border-radius: inherit;
+    background-color: var(--mat-sys-primary);
+    color: var(--mat-sys-on-primary);
+    &:hover {
+      background-color: var(--mat-sys-secondary);
+    }
   }
 }

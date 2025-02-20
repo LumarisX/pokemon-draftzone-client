@@ -47,9 +47,11 @@
                 <div
                   class="absolute left-full top-0 ml-2 bg-page border rounded-lg menu z-50"
                 >
-                  <button class="applybutton" (click)="applyFilter()">
-                    Apply
-                  </button>
+                  <div class="apply-wrapper">
+                    <button class="applybutton" (click)="applyFilter()">
+                      Apply
+                    </button>
+                  </div>
                   <div class="max-h-96 overflow-y-auto">
                     <mat-checkbox
                       [checked]="selectedTypes.length === types.length"
