@@ -84,6 +84,7 @@ export class PokemonSelectComponent implements OnInit {
   filteredOptions!: Observable<Pokemon[]>;
 
   @Output() pokemonSelected = new EventEmitter<Pokemon | null>();
+  @Output() selectionCleared = new EventEmitter();
 
   constructor(private dataService: DataService) {}
 
@@ -140,6 +141,7 @@ export class PokemonSelectComponent implements OnInit {
   clearSelection($event: Event | undefined = undefined) {
     this.selectedForm.setValue(null);
     this.selectOption(null);
+    this.selectionCleared.emit();
     $event?.stopPropagation();
   }
 

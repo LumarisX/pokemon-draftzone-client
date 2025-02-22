@@ -5,7 +5,7 @@ import { Summary } from '../../drafts/matchup-overview/matchup-interface';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
 
 @Component({
-  selector: 'summary',
+  selector: 'planner-summary',
   standalone: true,
   templateUrl: './summary.component.html',
   imports: [CommonModule, FormsModule, SpriteComponent],

@@ -69,12 +69,13 @@ export class PlannerTeamComponent {
     return this.draftFormGroup!.controls.totalPoints.value - totalUsed;
   }
 
-  onSelect(index: number) {
-    const value =
-      this.draftFormGroup!.controls.team.controls[index].controls.pokemon.value;
-    if (value === null) {
-      this.draftFormGroup!.controls.team.controls[index] = new TeamFormGroup();
-    }
+  onClear(index: number) {
+    const controls =
+      this.draftFormGroup!.controls.team.controls[index].controls;
+    controls.capt.setValue(false);
+    controls.drafted.setValue(false);
+    controls.tier.setValue('');
+    controls.value.setValue(null);
   }
 
   drop(event: CdkDragDrop<string[]>) {

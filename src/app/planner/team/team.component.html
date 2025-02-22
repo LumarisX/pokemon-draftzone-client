@@ -43,7 +43,7 @@
               </td>
               <td class="pokemon-input">
                 <pokemon-select
-                  (pokemonSelected)="onSelect($index)"
+                  (selectionCleared)="onClear($index)"
                   [ruleset]="draftFormGroup.controls.ruleset.value"
                   [formControl]="teamCtrl.controls.pokemon"
                 ></pokemon-select>
