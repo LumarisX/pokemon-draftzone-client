@@ -228,3 +228,11 @@
 //       filled-container-color: var(--mat-sys-primary-container),
 //     )
 //   );
+
+@include mat.tooltip-overrides(
+  (
+    container-color: var(--mat-sys-secondary),
+    supporting-text-color: var(--mat-sys-on-secondary),
+    supporting-text-size: small,
+  )
+);

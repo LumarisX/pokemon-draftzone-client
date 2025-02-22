@@ -40,7 +40,8 @@ export class ApiService {
       'Content-Type': 'application/json',
     });
     if (Array.isArray(path)) path = path.join('/');
-    if (this.pendingRequests.has(path)) return this.pendingRequests.get(path)!;
+    const key = path + JSON.stringify(params);
+    if (this.pendingRequests.has(key)) return this.pendingRequests.get(key)!;
     const request$ = (
       authenticated
         ? this.auth.getAccessToken().pipe(
@@ -59,11 +60,12 @@ export class ApiService {
         return throwError(() => error);
       }),
       finalize(() => {
-        this.pendingRequests.delete(path + JSON.stringify(params));
+        this.pendingRequests.delete(key);
       }),
       shareReplay(1),
     );
-    this.pendingRequests.set(path + JSON.stringify(params), request$);
+    this.pendingRequests.set(key, request$);
+    console.log(this.pendingRequests);
     return request$;
   }
 

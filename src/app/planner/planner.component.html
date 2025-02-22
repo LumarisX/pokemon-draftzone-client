@@ -75,19 +75,20 @@
           }
           @if (typechart && recommended) {
             <mat-tab label="Typechart">
-              <typechart
-                class="h-full max-w-full"
-                [typechart]="typechart"
-                [recommended]="recommended"
-              ></typechart
-            ></mat-tab>
+              <div class="typechart-container">
+                <typechart
+                  class="h-full max-w-full"
+                  [typechart]="typechart"
+                  [recommended]="recommended"
+                ></typechart>
+              </div>
+            </mat-tab>
           }
           @if (movechart.length) {
             <mat-tab label="Moves">
-              <moves
-                class="w-full overflow-y-auto"
-                [movechart]="movechart"
-              ></moves>
+              <div class="movechart-container">
+                <planner-moves [movechart]="movechart"></planner-moves>
+              </div>
             </mat-tab>
           }
           @if (coverage) {

@@ -101,7 +101,7 @@ export type Coverage = {
 export type MoveCategory = {
   categoryName: string;
   show?: boolean;
-  moves: { name: string; type: string; pokemon: Pokemon[] }[];
+  moves: { name: string; type: string; pokemon: Pokemon[]; desc: string }[];
 };
 
 export type CoverageChart = Pokemon & {
