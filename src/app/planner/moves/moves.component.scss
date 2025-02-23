@@ -2,6 +2,10 @@
 
 .options-container {
   padding: 0.5rem;
+  white-space: nowrap;
+  text-overflow: clip;
+  justify-content: space-between;
+  display: flex;
 }
 
 .main-container {
@@ -12,13 +16,11 @@
 .movechart {
   display: block;
   box-shadow: var(--mat-sys-level2);
-
-  width: 500px;
 }
 
 .category-container {
-  background-color: var(--mat-sys-primary-container);
-  color: var(--mat-sys-on-primary-container);
+  background-color: var(--mat-sys-secondary-container);
+  color: var(--mat-sys-on-secondary-container);
 }
 
 .category-header {
@@ -31,6 +33,11 @@
   border-bottom: 1px solid var(--mat-sys-outline);
   padding: 16px;
   text-align: left;
+  cursor: pointer;
+  &:hover {
+    background-color: var(--mat-sys-primary-container);
+    color: var(--mat-sys-on-primary-container);
+  }
 }
 
 .category-body {

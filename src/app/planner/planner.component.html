@@ -24,11 +24,12 @@
             </div>
           }
         </div>
-        @if (draftSize < 5) {
-          <button (click)="addDraft()" class="add-tab tab alternate">
-            <mat-icon>add</mat-icon>
-          </button>
-        }
+        <button
+          (click)="addDraft(this.createDraftFormGroup({}))"
+          class="add-tab tab alternate"
+        >
+          <mat-icon>add</mat-icon>
+        </button>
       </div>
       <div
         [formGroup]="draftFormGroup"

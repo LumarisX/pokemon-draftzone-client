@@ -56,6 +56,10 @@ table {
   }
 }
 
+.pokemon-input {
+  width: 12rem;
+}
+
 .drag-icon {
   cursor: move;
   color: var(--mat-sys-on-surface-variant);
@@ -82,4 +86,9 @@ table {
 
 .cdk-drag-placeholder {
   opacity: 0;
+}
+
+.sprite-wrapper {
+  width: 4rem;
+  height: 4rem;
 }

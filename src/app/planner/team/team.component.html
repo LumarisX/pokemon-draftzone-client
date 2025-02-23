@@ -5,6 +5,7 @@
         <thead>
           <tr>
             <th></th>
+            <th></th>
             <th>Name</th>
             <th>Value</th>
             <th class="text-xs">Captain</th>
@@ -41,12 +42,25 @@
                   >drag_indicator</mat-icon
                 >
               </td>
-              <td class="pokemon-input">
-                <pokemon-select
-                  (selectionCleared)="onClear($index)"
-                  [ruleset]="draftFormGroup.controls.ruleset.value"
-                  [formControl]="teamCtrl.controls.pokemon"
-                ></pokemon-select>
+              <td>
+                <div class="sprite-wrapper">
+                  @if (teamCtrl.controls.pokemon.value) {
+                    <sprite
+                      [flipped]="true"
+                      [pokemon]="teamCtrl.controls.pokemon.value"
+                    >
+                    </sprite>
+                  }
+                </div>
+              </td>
+              <td>
+                <div class="pokemon-input">
+                  <pokemon-select
+                    (selectionCleared)="onClear($index)"
+                    [ruleset]="draftFormGroup.controls.ruleset.value"
+                    [formControl]="teamCtrl.controls.pokemon"
+                  ></pokemon-select>
+                </div>
                 <!-- {{ teamCtrl.controls.pokemon.value | json }} -->
               </td>
               @if (isPoints) {

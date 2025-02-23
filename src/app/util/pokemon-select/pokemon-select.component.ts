@@ -91,6 +91,9 @@ export class PokemonSelectComponent implements OnInit {
   private ruleset$ = new BehaviorSubject<string | null>(null);
 
   @Input()
+  showSprite: string | null = null;
+
+  @Input()
   class: string | string[] = '';
 
   @Input()

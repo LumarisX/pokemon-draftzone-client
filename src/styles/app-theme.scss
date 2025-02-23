@@ -236,3 +236,20 @@
     supporting-text-size: small,
   )
 );
+
+.dialog-warn {
+  @include mat.dialog-overrides(
+    (
+      container-color: var(--mat-sys-error-container),
+      subhead-color: var(--mat-sys-error),
+      supporting-text-color: var(--mat-sys-on-error-container),
+    )
+  );
+
+  @include mat.button-overrides(
+    (
+      text-label-text-color: var(--mat-sys-error),
+      text-state-layer-color: var(--mat-sys-error),
+    )
+  );
+}

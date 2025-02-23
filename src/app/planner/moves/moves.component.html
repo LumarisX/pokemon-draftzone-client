@@ -3,9 +3,14 @@
     <mat-slide-toggle (change)="updateShownMoves($event.checked)"
       >Show Unlearned</mat-slide-toggle
     >
+    @if (anyOpened) {
+      <button mat-stroked-button (click)="closeAll()">Close All</button>
+    } @else {
+      <button mat-stroked-button (click)="openAll()">Open All</button>
+    }
   </div>
 
-  <cdk-accordion class="movechart">
+  <cdk-accordion #movechartAccordion multi class="movechart">
     @for (category of shownMoves.value; track $index) {
       <cdk-accordion-item
         #accordionItem="cdkAccordionItem"

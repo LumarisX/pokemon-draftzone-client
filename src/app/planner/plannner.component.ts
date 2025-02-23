@@ -45,6 +45,8 @@ import { PlannerSettingsComponent } from './settings/settings.component';
 import { SummaryComponent } from './summary/summary.component';
 import { PlannerTeamComponent } from './team/team.component';
 import { TypechartComponent } from './typechart/typechart.component';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { PlannerSizeWarn } from './warn.component';
 
 interface LSTeamData {
   id: string;
@@ -79,6 +81,7 @@ interface LSDraftData {
     FormsModule,
     MatTabsModule,
     MatIconModule,
+    MatDialogModule,
     FinderCoreComponent,
     PlannerCoverageComponent,
     PlannerSettingsComponent,
@@ -111,6 +114,7 @@ export class PlannerComponent implements OnInit, AfterViewInit {
     private fb: FormBuilder,
     private plannerService: PlannerService,
     private cdr: ChangeDetectorRef,
+    private dialog: MatDialog,
   ) {}
 
   private isValidTeamData(team: any): team is LSTeamData {
@@ -353,12 +357,28 @@ export class PlannerComponent implements OnInit, AfterViewInit {
     ).subscribe(() => this.updateDetails());
   }
 
+  openDialog(
+    enterAnimationDuration: string,
+    exitAnimationDuration: string,
+  ): void {
+    this.dialog.open(PlannerSizeWarn, {
+      width: '250px',
+      panelClass: 'dialog-warn',
+      enterAnimationDuration,
+      exitAnimationDuration,
+    });
+  }
+
   createTeamFormGroup(data?: LSTeamData): TeamFormGroup {
     return new TeamFormGroup(data);
   }
 
-  addDraft() {
-    this.draftArray.push(this.createDraftFormGroup({}));
+  addDraft(draft: DraftFormGroup) {
+    if (this.draftSize >= 9) {
+      this.openDialog('100ms', '100ms');
+      return;
+    }
+    this.draftArray.push(draft);
     this.selectedDraft.next(this.draftSize - 1);
   }
 
