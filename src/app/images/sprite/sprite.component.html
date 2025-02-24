@@ -1,0 +1,16 @@
+@if (pokemon.id) {
+  <img
+    [ngClass]="this.classes"
+    [ngStyle]="{
+      width: size,
+      height: size,
+      'min-width': size,
+      'min-height': size,
+    }"
+    title="{{ pokemon.name }}"
+    loading="lazy"
+    src="{{ path }}"
+    onerror="this.src='../../../../assets/icons/unknown.svg'"
+    (error)="fallback()"
+  />
+}

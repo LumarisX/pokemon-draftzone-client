@@ -40,7 +40,9 @@
       @for (option of filteredOptions | async; track $index) {
         <mat-option [value]="option" class="autocomplete-option">
           <div class="pokemon-option">
-            <sprite [flipped]="true" [pokemon]="option"></sprite>
+            <div class="sprite-wrapper">
+              <sprite [flipped]="true" [pokemon]="option"></sprite>
+            </div>
             {{ option.name }}
           </div>
         </mat-option>

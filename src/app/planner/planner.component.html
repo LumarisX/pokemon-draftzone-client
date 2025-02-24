@@ -68,10 +68,9 @@
           }
           @if (summary) {
             <mat-tab label="Summary" [tabIndex]="0">
-              <planner-summary
-                class="h-full list-none"
-                [summary]="summary"
-              ></planner-summary>
+              <div class="tab-container">
+                <planner-summary [summary]="summary"></planner-summary>
+              </div>
             </mat-tab>
           }
           @if (typechart && recommended) {

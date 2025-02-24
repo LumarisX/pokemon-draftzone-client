@@ -14,18 +14,7 @@ import { SettingsService } from '../../pages/settings/settings.service';
   standalone: true,
   imports: [CommonModule],
   styleUrl: './sprite.component.scss',
-  template: `
-    @if (pokemon.id) {
-      <img
-        [ngClass]="this.classes"
-        title="{{ pokemon.name }}"
-        loading="lazy"
-        src="{{ path }}"
-        onerror="this.src='../../../../assets/icons/unknown.svg'"
-        (error)="fallback()"
-      />
-    }
-  `,
+  templateUrl: './sprite.component.html',
 })
 export class SpriteComponent {
   constructor(private settingService: SettingsService) {}
@@ -47,6 +36,8 @@ export class SpriteComponent {
     return this._pokemon.name;
   }
 
+  @Input() size?: string;
+
   @Input()
   set pid(value: string) {
     let name = getNameByPid(value);
@@ -58,7 +49,7 @@ export class SpriteComponent {
     return this._pokemon.id;
   }
   flip = false;
-  @Input() flipped? = false;
+  @Input() flipped: string | true | null = null;
   @Input() disabled? = false;
   get pokemon(): Pokemon {
     return this._pokemon;
@@ -72,7 +63,10 @@ export class SpriteComponent {
 
   get classes() {
     let classes = [...this._classes];
-    if ((!this.flipped && this.flip) || (this.flipped && !this.flip))
+    if (
+      (this.flipped === null && this.flip) ||
+      (this.flipped !== null && !this.flip)
+    )
       classes.push('flip');
     if (this.disabled) classes.push('disabled');
     return classes;

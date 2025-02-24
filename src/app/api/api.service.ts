@@ -65,7 +65,6 @@ export class ApiService {
       shareReplay(1),
     );
     this.pendingRequests.set(key, request$);
-    console.log(this.pendingRequests);
     return request$;
   }
 

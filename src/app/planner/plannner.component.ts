@@ -42,7 +42,7 @@ import { ensureNumber, ensureString } from '../util';
 import { PlannerCoverageComponent } from './coverage/coverage.component';
 import { MoveComponent } from './moves/moves.component';
 import { PlannerSettingsComponent } from './settings/settings.component';
-import { SummaryComponent } from './summary/summary.component';
+import { PlannerSummaryComponent } from './summary/summary.component';
 import { PlannerTeamComponent } from './team/team.component';
 import { TypechartComponent } from './typechart/typechart.component';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -75,7 +75,7 @@ interface LSDraftData {
   imports: [
     CommonModule,
     TypechartComponent,
-    SummaryComponent,
+    PlannerSummaryComponent,
     MoveComponent,
     ReactiveFormsModule,
     FormsModule,

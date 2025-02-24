@@ -6,10 +6,9 @@
   width: auto;
   gap: 0.5rem;
 
-  sprite {
-    object-fit: contain;
-    height: 2em;
-    width: auto;
+  .sprite-wrapper {
+    height: 2rem;
+    width: 2rem;
   }
 
   span {

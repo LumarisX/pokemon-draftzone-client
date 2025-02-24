@@ -32,10 +32,11 @@
             @for (pokemon of typechart.team; track $index) {
               <tr>
                 <th
-                  class="w-12 border-r-4 cursor-pointer border-r-menu-400 hover:bg-menu-100"
+                  class="border-r-4 cursor-pointer border-r-menu-400 hover:bg-menu-100"
                   (click)="toggleVisible(pokemon)"
                 >
                   <sprite
+                    size="3rem"
                     [pokemon]="pokemon"
                     [class.opacity-60]="pokemon.disabled"
                   ></sprite>

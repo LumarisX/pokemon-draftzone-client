@@ -1,79 +1,130 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, Input, OnInit } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Summary } from '../../drafts/matchup-overview/matchup-interface';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
+import { BehaviorSubject, map } from 'rxjs';
+import { CdkTableModule } from '@angular/cdk/table';
+import { MatSortModule, Sort } from '@angular/material/sort';
+import { MatSliderModule } from '@angular/material/slider';
+import { Stat } from '../../data';
 
 @Component({
   selector: 'planner-summary',
   standalone: true,
   templateUrl: './summary.component.html',
-  imports: [CommonModule, FormsModule, SpriteComponent],
+  styleUrl: './summary.component.scss',
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    SpriteComponent,
+    CdkTableModule,
+    MatSortModule,
+    MatSliderModule,
+  ],
 })
-export class SummaryComponent {
-  _summary!: Summary;
-  sortBy: 'name' | 'hp' | 'atk' | 'def' | 'spa' | 'spd' | 'spe' | 'bst' | null =
-    null;
+export class PlannerSummaryComponent implements OnInit {
+  sortBy: 'name' | Stat | 'bst' | null = null;
+
+  private sortBySubject = new BehaviorSubject<{
+    value: 'name' | Stat | 'bst' | null;
+    reversed: boolean;
+  }>({
+    value: null,
+    reversed: false,
+  });
 
   @Input()
-  set summary(sum: Summary) {
-    sum.team.sort((x, y) => {
-      if (x['baseStats']['spe'] < y['baseStats']['spe']) {
-        return 1;
-      }
-      if (x['baseStats']['spe'] > y['baseStats']['spe']) {
-        return -1;
-      }
-      return 0;
-    });
-
+  set summary(value: Summary | undefined) {
+    if (!value) return;
+    value.team.sort((x, y) => y.baseStats.spe - x.baseStats.spe);
     this.sortBy = 'spe';
-    this._summary = sum;
+    this.summaryData.next(value);
   }
-  get summary(): Summary {
-    return this._summary;
+
+  get summary(): Summary | null {
+    return this.summaryData.value;
   }
+
   reversed: boolean = false;
   baseValue: number = 80;
   baseBST: number = 500;
 
-  sortByStat(sortStat: 'hp' | 'atk' | 'def' | 'spa' | 'spd' | 'spe' | 'bst') {
-    if (sortStat != this.sortBy) {
-      this.sortBy = sortStat;
-      this.reversed = false;
-      this.summary.team.sort((x, y) => {
-        if (sortStat === 'bst') {
-          if (x.bst < y.bst) return 1;
-          if (x.bst > y.bst) return -1;
-        } else {
-          if (x['baseStats'][sortStat] < y['baseStats'][sortStat]) return 1;
-          if (x['baseStats'][sortStat] > y['baseStats'][sortStat]) return -1;
-        }
-        return 0;
-      });
-    } else {
-      this.summary.team.reverse();
-      this.reversed = !this.reversed;
-    }
-  }
+  summaryData = new BehaviorSubject<Summary | null>(null);
 
-  sortByName() {
-    if ('name' != this.sortBy) {
-      this.sortBy = 'name';
-      this.reversed = true;
-      this.summary.team.sort((x, y) => {
-        if (x['name'] > y['name']) {
-          return 1;
+  displayedColumns: string[] = [
+    'sprite',
+    'name',
+    'abilities',
+    'hp',
+    'atk',
+    'def',
+    'spa',
+    'spd',
+    'spe',
+    'bst',
+  ];
+
+  ngOnInit(): void {}
+
+  sortedTeam$ = this.summaryData.asObservable().pipe(
+    map((summary) => {
+      if (!summary) return [];
+      const { value, reversed } = this.sortBySubject.value;
+
+      if (!value) return summary.team;
+
+      return [...summary.team].sort((a, b) => {
+        let comparison = 0;
+        if (value === 'name') {
+          comparison = a.name.localeCompare(b.name);
+        } else if (value === 'bst') {
+          comparison = a.bst - b.bst;
+        } else {
+          comparison = a.baseStats[value] - b.baseStats[value];
         }
-        if (x['name'] < y['name']) {
-          return -1;
-        }
-        return 0;
+        return reversed ? -comparison : comparison;
       });
-    } else {
-      this.summary.team.reverse();
-      this.reversed = !this.reversed;
-    }
+    }),
+  );
+
+  sort(sort: Sort) {
+    if (!this.summaryData.value) return;
+    const isAsc = sort.direction === 'asc';
+    const compare = (
+      a: number | string | null | undefined,
+      b: number | string | null | undefined,
+    ) => {
+      if (a == null) return 1;
+      if (b == null) return -1;
+      return typeof a === 'string' && typeof b === 'string'
+        ? a.localeCompare(b) * (isAsc ? 1 : -1)
+        : (a < b ? -1 : 1) * (isAsc ? 1 : -1);
+    };
+    const sortedTeam = [...this.summaryData.value.team].sort((a, b) => {
+      switch (sort.active) {
+        case 'name':
+          return compare(a.name, b.name);
+        case 'hp':
+          return compare(a.baseStats.hp, b.baseStats.hp);
+        case 'atk':
+          return compare(a.baseStats.atk, b.baseStats.atk);
+        case 'def':
+          return compare(a.baseStats.def, b.baseStats.def);
+        case 'spa':
+          return compare(a.baseStats.spa, b.baseStats.spa);
+        case 'spd':
+          return compare(a.baseStats.spd, b.baseStats.spd);
+        case 'spe':
+          return compare(a.baseStats.spe, b.baseStats.spe);
+        case 'bst':
+          return compare(a.bst, b.bst);
+        default:
+          return 0;
+      }
+    });
+    this.summaryData.next({ ...this.summaryData.value, team: sortedTeam });
   }
 
   statColor(statValue: number | undefined) {
