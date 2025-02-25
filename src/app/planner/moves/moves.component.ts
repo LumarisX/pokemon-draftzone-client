@@ -1,24 +1,14 @@
-import {
-  CdkAccordion,
-  CdkAccordionItem,
-  CdkAccordionModule,
-} from '@angular/cdk/accordion';
+import { CdkAccordionItem, CdkAccordionModule } from '@angular/cdk/accordion';
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  Input,
-  QueryList,
-  ViewChild,
-  ViewChildren,
-} from '@angular/core';
+import { Component, Input, QueryList, ViewChildren } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { BehaviorSubject } from 'rxjs';
 import { MoveChart } from '../../drafts/matchup-overview/matchup-interface';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
-import { BehaviorSubject } from 'rxjs';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'planner-moves',

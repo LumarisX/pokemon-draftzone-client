@@ -75,12 +75,11 @@
           }
           @if (typechart && recommended) {
             <mat-tab label="Typechart">
-              <div class="typechart-container">
-                <typechart
-                  class="h-full max-w-full"
+              <div class="tab-container">
+                <planner-typechart
                   [typechart]="typechart"
                   [recommended]="recommended"
-                ></typechart>
+                ></planner-typechart>
               </div>
             </mat-tab>
           }

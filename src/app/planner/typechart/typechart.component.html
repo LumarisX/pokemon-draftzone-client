@@ -1,253 +1,238 @@
-<div class="flex-wrap flex">
-  <div class="p-1 space-y-1">
-    <div class="flex space-x-1 w-fit rounded">
-      <span>Abilities:</span>
-      <input type="checkbox" [(ngModel)]="abilities" />
-    </div>
-    <div
-      class="flex flex-col max-h-full h-fit border-4 max-w-full border-menu-400 bg-menu-100"
-    >
-      <div class="overflow-x-auto">
-        <table class="table-fixed">
-          <thead>
-            <tr>
-              <th class="w-12 border-r-4 text-xs border-r-menu-400">On/Off</th>
+@if (typechart) {
+  <div class="content-container">
+    <div class="table-wrapper">
+      <div class="title-container">
+        <div class="table-label">Defensive Type Chart</div>
+        <div>
+          <mat-slide-toggle [(ngModel)]="abilities"></mat-slide-toggle>
+          Abilities
+        </div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            @for (type of types; track $index) {
               <th
-                class="flex space-x-0.5 bg-menu-300 border-b-2 border-menu-400"
+                class="action-cell"
+                (click)="setSort(type)"
+                (mouseenter)="columnHovered = type"
+                (mouseleave)="columnHovered = null"
+                [ngClass]="{
+                  'column-hovered': type === columnHovered,
+                }"
               >
-                @for (type of types; track type) {
-                  <div class="w-10 flex space-x-1 items-center justify-center">
-                    <img
-                      class=""
-                      src="../../../assets/icons/types/{{ type }}.png"
-                      onerror="this.src='../../../assets/icons/types/Unknown.png'"
-                      alt="{{ type }}"
-                    />
+                <div class="flex-wrapper">
+                  <div
+                    class="type-container"
+                    [ngClass]="{
+                      'sort-press': sortedBy.value === type,
+                    }"
+                    [style.backgroundColor]="typeColor(type)"
+                  >
+                    <div class="type-icon-wrapper">
+                      <img
+                        src="../../../assets/icons/types/gen9icon/{{
+                          type
+                        }}.png"
+                        onerror="this.src='../../../assets/icons/types/Unknown.png'"
+                        alt="{{ type }}"
+                      />
+                    </div>
+                    <span class="type-text">{{ type }}</span>
                   </div>
-                }
+                </div>
               </th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (pokemon of typechart.team; track $index) {
-              <tr>
-                <th
-                  class="border-r-4 cursor-pointer border-r-menu-400 hover:bg-menu-100"
-                  (click)="toggleVisible(pokemon)"
+            }
+          </tr>
+        </thead>
+        <tbody>
+          @for (pokemon of sortedTeam | async; track $index) {
+            <tr>
+              <td class="action-cell" (click)="toggleVisible(pokemon)">
+                <div class="flex-wrapper">
+                  <div class="sprite-wrapper">
+                    <sprite
+                      size="3rem"
+                      tooltipPosition="left"
+                      [disabled]="pokemon.disabled"
+                      flipped
+                      [pokemon]="pokemon"
+                    ></sprite>
+                  </div>
+                </div>
+              </td>
+              @for (type of types; track $index) {
+                <td
+                  class="type-cell"
+                  (mouseenter)="columnHovered = type"
+                  (mouseleave)="columnHovered = null"
+                  [ngClass]="{ 'column-hovered': type === columnHovered }"
                 >
-                  <sprite
-                    size="3rem"
-                    [pokemon]="pokemon"
-                    [class.opacity-60]="pokemon.disabled"
-                  ></sprite>
-                </th>
-                <td class="flex h-12 space-x-0.5">
-                  @for (type of types; track $index) {
+                  <div class="flex-wrapper">
                     <div
-                      class="w-10 h-full border flex items-center justify-center"
+                      class="type-wrapper"
                       [ngClass]="
-                        typeColor(
-                          pokemon.weak[this.useAbilities()][type],
+                        weaknessColor(
+                          pokemon.weak[this.abilityIndex][type],
                           pokemon.disabled!
                         )
                       "
                     >
-                      <span>
-                        {{ pokemon.weak[this.useAbilities()][type] }}</span
-                      >
+                      {{ pokemon.weak[this.abilityIndex][type] }}
                     </div>
-                  }
+                  </div>
                 </td>
-              </tr>
+              }
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <br />
+    <div class="table-wrapper">
+      <div class="title-container">
+        <div class="table-label">Team Typing Statistics</div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            @for (type of types; track $index) {
+              <th
+                (mouseenter)="columnHovered = type"
+                (mouseleave)="columnHovered = null"
+                [ngClass]="{ 'column-hovered': type === columnHovered }"
+              >
+                <div class="flex-wrapper">
+                  <div
+                    class="type-container-small"
+                    [style.backgroundColor]="typeColor(type)"
+                  >
+                    <span class="type-text">{{ type }}</span>
+                  </div>
+                </div>
+              </th>
             }
-          </tbody>
-          <thead class="border-b-4 border-menu-400">
-            <tr>
-              <th class="w-12 border-r-4 border-r-menu-400"></th>
-              <th
-                class="flex space-x-0.5 border-b-2 bg-menu-300 border-menu-400"
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>
+              <div class="stat-label bg-menu-300">Count</div>
+            </th>
+            @for (type of types; track $index) {
+              <td
+                class="stat-cell"
+                (mouseenter)="columnHovered = type"
+                (mouseleave)="columnHovered = null"
+                [ngClass]="{ 'column-hovered': type === columnHovered }"
               >
-                @for (type of types; track $index) {
-                  <div class="w-10 flex items-center justify-center">
-                    <img
-                      class=""
-                      src="../../../assets/icons/types/{{ type }}.png"
-                      onerror="this.src='../../../assets/icons/types/Unknown.png'"
-                      alt="{{ type }}"
-                    />
-                  </div>
-                }
-              </th>
-            </tr>
-          </thead>
-          <tfoot class="bg-menu-300">
-            <tr>
-              <th class="text-xs border border-r-2 bg-menu-300 border-menu-400">
-                Count
-              </th>
-              <td class="flex space-x-0.5">
-                @for (count of counts; track $index) {
+                <div class="flex-wrapper">
                   <div
-                    class="text-center border h-full w-10"
-                    [ngClass]="countColor(count)"
+                    class="stat-wrapper"
+                    [ngClass]="countColor(counts[$index])"
                   >
-                    {{ count | number: "1.0-0" }}
+                    {{ counts[$index] | number: "1.0-0" }}
                   </div>
-                }
+                </div>
               </td>
-            </tr>
-            <tr>
-              <th
-                class="text-xs border border-r-2 bg-scale-negative-3 border-menu-400"
+            }
+          </tr>
+          <tr>
+            <th><div class="stat-label bg-scale-negative-3">Weaks</div></th>
+            @for (type of types; track $index) {
+              <td
+                class="stat-cell"
+                (mouseenter)="columnHovered = type"
+                (mouseleave)="columnHovered = null"
+                [ngClass]="{ 'column-hovered': type === columnHovered }"
               >
-                Weaks
-              </th>
-              <td class="flex space-x-0.5">
-                @for (weakness of weaknesses; track $index) {
+                <div class="flex-wrapper">
                   <div
-                    class="text-center border h-full w-10"
-                    [ngClass]="weakColor(weakness)"
+                    class="stat-wrapper"
+                    [ngClass]="weakColor(weaknesses[$index])"
                   >
-                    {{ weakness | number: "1.0-0" }}
+                    {{ weaknesses[$index] | number: "1.0-0" }}
                   </div>
-                }
+                </div>
               </td>
-            </tr>
-            <tr>
-              <th
-                class="text-xs border border-r-2 bg-scale-positive-3 border-menu-400"
+            }
+          </tr>
+          <tr>
+            <th><div class="stat-label bg-scale-positive-3">Resists</div></th>
+            @for (type of types; track $index) {
+              <td
+                class="stat-cell"
+                (mouseenter)="columnHovered = type"
+                (mouseleave)="columnHovered = null"
+                [ngClass]="{ 'column-hovered': type === columnHovered }"
               >
-                Resists
-              </th>
-              <td class="flex space-x-0.5">
-                @for (resistance of resistances; track $index) {
+                <div class="flex-wrapper">
                   <div
-                    class="text-center border h-full w-10"
-                    [ngClass]="resistColor(resistance)"
+                    class="stat-wrapper"
+                    [ngClass]="resistColor(resistances[$index])"
                   >
-                    {{ resistance | number: "1.0-0" }}
+                    {{ resistances[$index] | number: "1.0-0" }}
                   </div>
-                }
+                </div>
               </td>
-            </tr>
-            <tr>
-              <th
-                class="text-xs bg-gradient-to-r from-scale-negative-3 from-50% to-scale-positive-3 to-50% border border-menu-400 border-r-2"
+            }
+          </tr>
+          <tr>
+            <th>
+              <div
+                class="stat-label bg-gradient-to-r from-scale-negative-3 from-50% to-scale-positive-3 to-50%"
               >
                 Diff
-              </th>
-              <td class="flex space-x-0.5">
-                @for (diff of difference; track $index) {
+              </div>
+            </th>
+            @for (type of types; track $index) {
+              <td
+                class="stat-cell"
+                (mouseenter)="columnHovered = type"
+                (mouseleave)="columnHovered = null"
+                [ngClass]="{ 'column-hovered': type === columnHovered }"
+              >
+                <div class="flex-wrapper">
                   <div
-                    class="text-center border h-full w-10"
-                    [ngClass]="diffColor(diff)"
+                    class="stat-wrapper"
+                    [ngClass]="diffColor(difference[$index])"
                   >
-                    {{ diff | number: "1.0-0" }}
+                    {{ difference[$index] | number: "1.0-0" }}
                   </div>
-                }
+                </div>
               </td>
-            </tr>
-            <tr>
-              <th
-                class="text-xs border border-r-2 bg-gradient-to-r from-scale-negative-3 via-menu-200 to-scale-positive-3 border-menu-400"
+            }
+          </tr>
+          <tr>
+            <th>
+              <div
+                class="stat-label bg-gradient-to-r from-scale-negative-3 via-menu-200 to-scale-positive-3"
               >
                 Log
-              </th>
-              <td class="flex space-x-0.5">
-                @for (diff of differential; track $index) {
+              </div>
+            </th>
+            @for (type of types; track $index) {
+              <td
+                class="stat-cell"
+                (mouseenter)="columnHovered = type"
+                (mouseleave)="columnHovered = null"
+                [ngClass]="{ 'column-hovered': type === columnHovered }"
+              >
+                <div class="flex-wrapper">
                   <div
-                    class="text-center border w-10"
-                    [ngClass]="diffColor(diff)"
+                    class="stat-wrapper"
+                    [ngClass]="diffColor(differential[$index])"
                   >
-                    {{ diff | number: "1.0-0" }}
+                    {{ differential[$index] | number: "1.0-0" }}
                   </div>
-                }
+                </div>
               </td>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
+            }
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
-  @if (recommended) {
-    <div class="p-1">
-      <div
-        class="flex flex-col items-center border-4 border-menu-400 bg-menu-100"
-      >
-        <div
-          class="font-semibold text-lg border-b-2 border-menu-400 bg-menu-200 w-full text-center"
-          (click)="uniqueSelected = !uniqueSelected"
-        >
-          <h3>Recommended</h3>
-          <div
-            class="flex space-x-1 justify-center shadow-inner items-center text-sm border bg-menu-100 hover:cursor-pointer hover:bg-menu-150 border-menu-250"
-          >
-            <div>Unique Typing</div>
-            <div class="h-4">
-              @if (uniqueSelected) {
-                <check-svg></check-svg>
-              } @else {
-                <circle-svg></circle-svg>
-              }
-            </div>
-          </div>
-        </div>
-
-        <div class="flex space-x-4 max-h-96 overflow-y-auto">
-          <div class="p-2">
-            <table>
-              <tr>
-                <td></td>
-                <td>Pokemon</td>
-              </tr>
-              @for (
-                pokemon of uniqueSelected
-                  ? recommended.unique.pokemon
-                  : recommended.all.pokemon;
-                track $index
-              ) {
-                <tr>
-                  <td>{{ $index + 1 }}</td>
-                  <td class="w-8 text-center text-xs py-2">
-                    <sprite [pokemon]="pokemon"></sprite>
-                    {{ pokemon.name }}
-                  </td>
-                </tr>
-              }
-            </table>
-          </div>
-          <div class="p-2">
-            <table>
-              <tr>
-                <td></td>
-                <td>Types</td>
-              </tr>
-              @for (
-                tier of uniqueSelected
-                  ? recommended.unique.types
-                  : recommended.all.types;
-                track $index
-              ) {
-                <tr>
-                  <td>{{ $index + 1 }}</td>
-                  <td class="flex flex-col items-center py-2">
-                    @for (type of tier; track type) {
-                      <div>
-                        <img
-                          class=""
-                          src="../../../assets/icons/types/{{ type }}.png"
-                          onerror="this.src='../../../assets/icons/types/Unknown.png'"
-                          alt="{{ type }}"
-                        />
-                      </div>
-                    }
-                  </td>
-                </tr>
-              }
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-  }
-</div>
+}

@@ -1,5 +1,7 @@
 @if (pokemon.id) {
   <img
+    [matTooltip]="tooltipPosition ? this.name : null"
+    [matTooltipPosition]="tooltipPosition ?? 'above'"
     [ngClass]="this.classes"
     [ngStyle]="{
       width: size,

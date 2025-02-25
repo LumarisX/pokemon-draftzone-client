@@ -68,7 +68,7 @@ export type TypeChart = {
     ];
 
     types: string[];
-    disabled?: Boolean;
+    disabled?: boolean;
   })[];
 };
 

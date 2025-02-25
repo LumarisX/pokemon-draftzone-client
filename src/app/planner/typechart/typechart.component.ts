@@ -1,28 +1,64 @@
+import { CdkTableModule } from '@angular/cdk/table';
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnChanges } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { BehaviorSubject, distinctUntilChanged, tap } from 'rxjs';
 import { ExtendedType, Type, TYPES } from '../../data';
 import { TypeChart } from '../../drafts/matchup-overview/matchup-interface';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
-import { CircleSVG } from '../../images/svg-components/circle.component';
-import { CheckSVG } from '../../images/svg-components/score.component copy';
 import { Pokemon } from '../../interfaces/draft';
+import { typeColor } from '../../util/styling';
 
 @Component({
-  selector: 'typechart',
+  selector: 'planner-typechart',
   standalone: true,
   templateUrl: './typechart.component.html',
+  styleUrl: './typechart.component.scss',
   imports: [
     CommonModule,
     SpriteComponent,
-    CheckSVG,
-    CircleSVG,
     FormsModule,
+    MatTooltipModule,
     ReactiveFormsModule,
+    CdkTableModule,
+    MatSlideToggleModule,
   ],
 })
-export class TypechartComponent implements OnChanges {
-  @Input() typechart!: TypeChart;
+export class PlannerTypechartComponent implements OnInit {
+  $typechart = new BehaviorSubject<TypeChart | null>(null);
+  $typechartObserable = this.$typechart
+    .pipe(distinctUntilChanged())
+    .subscribe((value) => {
+      this.summarize();
+    });
+
+  sortedTeam = new BehaviorSubject<
+    (Pokemon & {
+      weak: [
+        { [key in ExtendedType]: number },
+        { [key in ExtendedType]: number },
+      ];
+      types: string[];
+      disabled?: boolean;
+    })[]
+  >([]);
+
+  @Input()
+  set typechart(value: TypeChart | undefined | null) {
+    this.$typechart.next(value ?? null);
+    if (value) this.sortedTeam.next([...value.team]);
+  }
+
+  get typechart() {
+    return this.$typechart.value;
+  }
+
+  types = TYPES;
+
+  displayedColumns: string[] = ['label', ...this.types];
+
   @Input() recommended?: {
     all: {
       pokemon: Pokemon[];
@@ -33,120 +69,168 @@ export class TypechartComponent implements OnChanges {
       types: Type[][];
     };
   };
-  types = TYPES;
   counts: number[] = [];
   weaknesses: number[] = [];
   resistances: number[] = [];
   difference: number[] = [];
   differential: number[] = [];
   uniqueSelected: boolean = true;
-  _abilities: boolean = true;
+
   set abilities(value: boolean) {
-    this._abilities = value;
-    this.summerize();
+    this.abilityIndex = value ? 0 : 1;
+    this.summarize();
   }
 
+  abilityIndex: number = 0;
+  columnHovered: string | null = null;
   get abilities() {
-    return this._abilities;
-  }
-  constructor() {}
-
-  ngOnChanges(): void {
-    this.summerize();
+    return !!this.abilityIndex;
   }
 
-  typeColor(weak: number, disbaled: Boolean): string {
-    if (disbaled) return 'text-transparent border-menu-200';
-    if (weak > 4) return 'bg-scale-negative-5 border-scale-negative-6';
-    if (weak > 2) return 'bg-scale-negative-4  border-scale-negative-5';
-    if (weak > 1) return 'bg-scale-negative-3  border-scale-negative-4';
-    if (weak < 0.25) return 'bg-scale-positive-5  border-scale-positive-6';
-    if (weak < 0.5) return 'bg-scale-positive-4  border-scale-positive-5';
-    if (weak < 1) return 'bg-scale-positive-3  border-scale-positive-4';
-    return 'text-transparent border-menu-200';
+  ngOnInit(): void {
+    this.sortedBy
+      .pipe(
+        distinctUntilChanged(),
+        tap((value) => {
+          this.sort(value);
+          this.summarize();
+        }),
+      )
+      .subscribe();
   }
 
-  weakColor(weak: number): string {
-    if (weak > 5) return 'bg-scale-negative-5 border-scale-negative-6';
-    if (weak > 4) return 'bg-scale-negative-4  border-scale-negative-5';
-    if (weak > 3) return 'bg-scale-negative-3  border-scale-negative-4';
-    if (weak < 1) return 'bg-scale-positive-5  border-scale-positive-6';
-    if (weak < 2) return 'bg-scale-positive-4  border-scale-positive-5';
-    if (weak < 3) return 'bg-scale-positive-3 border-scale-positive-4';
-    return 'border-menu-400';
+  sortedBy = new BehaviorSubject<string | null>(null);
+
+  setSort(value: string | null) {
+    this.sortedBy.next(value === this.sortedBy.value ? null : value);
   }
 
-  resistColor(weak: number): string {
-    if (weak > 4) return 'bg-scale-positive-5 border-scale-positive-6';
-    if (weak > 3) return 'bg-scale-positive-4 border-scale-positive-5';
-    if (weak > 2) return 'bg-scale-positive-3 border-scale-positive-4';
-    if (weak < 1) return 'bg-scale-negative-4 border-scale-negative-5';
-    if (weak < 2) return 'bg-scale-negative-3 border-scale-negative-4';
-    return 'border-menu-400';
-  }
+  typeColor = typeColor;
 
-  countColor(count: number): string {
-    if (count > 3) return 'bg-scale-negative-5 border-scale-negative-6';
-    if (count > 2) return 'bg-scale-negative-4  border-scale-negative-5';
-    if (count > 1) return 'border-menu-400';
-    if (count > 0) return 'bg-scale-positive-4 border-scale-positive-5';
-    return 'border-menu-400';
-  }
+  compare = (
+    a: number | string | null | undefined,
+    b: number | string | null | undefined,
+  ) => {
+    if (a == null) return 1;
+    if (b == null) return -1;
+    return typeof a === 'string' && typeof b === 'string'
+      ? a.localeCompare(b)
+      : a < b
+        ? -1
+        : 1;
+  };
 
-  diffColor(weak: number): string {
-    if (weak > 3) return 'bg-scale-positive-6 border-scale-positive-7';
-    if (weak > 2) return 'bg-scale-positive-5 border-scale-positive-6';
-    if (weak > 1) return 'bg-scale-positive-4 border-scale-positive-5';
-    if (weak > 0) return 'bg-scale-positive-3 border-scale-positive-4';
-    if (weak < -2) return 'bg-scale-negative-5 border-scale-negative-6';
-    if (weak < -1) return 'bg-scale-negative-4 border-scale-negative-5';
-    if (weak < 0) return 'bg-scale-negative-3 border-scale-negative-4';
-    return 'border-menu-400';
+  sort(sortBy: string | null) {
+    if (!this.typechart) return;
+    if (!sortBy) {
+      this.sortedTeam.next([...this.typechart.team]);
+    }
+
+    this.sortedTeam.next(
+      [...this.sortedTeam.value].sort((a, b) => {
+        if (!sortBy) return 0;
+        if (sortBy in a.weak[this.abilityIndex]) {
+          return this.compare(
+            a.weak[this.abilityIndex][sortBy as Type],
+            b.weak[this.abilityIndex][sortBy as Type],
+          );
+        }
+        return 0;
+      }),
+    );
   }
 
   toggleVisible(
     pokemon: Pokemon & {
-      weak: [
-        { [key in ExtendedType]: number },
-        { [key in ExtendedType]: number },
-      ];
       disabled?: Boolean;
     },
   ) {
     pokemon.disabled = !pokemon.disabled;
-    this.summerize();
+    this.summarize();
   }
 
-  summerize() {
-    this.weaknesses = new Array(this.types.length).fill(0);
-    this.resistances = new Array(this.types.length).fill(0);
-    this.difference = new Array(this.types.length).fill(0);
-    this.differential = new Array(this.types.length).fill(0);
-    this.counts = new Array(this.types.length).fill(0);
-    for (let pokemon of this.typechart.team) {
+  summarize(): void {
+    const newValues = this.types.map(() => ({
+      weaknesses: 0,
+      resistances: 0,
+      difference: 0,
+      differential: 0,
+      counts: 0,
+    }));
+    this.sortedTeam.value.forEach((pokemon) => {
       if (!pokemon.disabled) {
-        for (let t in this.types) {
-          if (pokemon.types.includes(this.types[t])) this.counts[t]++;
-          if (pokemon.weak[this.useAbilities()][this.types[t]] > 1) {
-            this.weaknesses[t]++;
-            this.difference[t]--;
-          } else if (pokemon.weak[this.useAbilities()][this.types[t]] < 1) {
-            this.resistances[t]++;
-            this.difference[t]++;
+        this.types.forEach((type, index) => {
+          if (pokemon.types.includes(type)) newValues[index].counts++;
+          const weakValue = pokemon.weak[this.abilityIndex][type];
+          if (weakValue > 1) {
+            newValues[index].weaknesses++;
+            newValues[index].difference--;
+          } else if (weakValue < 1) {
+            newValues[index].resistances++;
+            newValues[index].difference++;
           }
-          if (pokemon.weak[this.useAbilities()][this.types[t]] > 0) {
-            this.differential[t] -= Math.log2(
-              pokemon.weak[this.useAbilities()][this.types[t]],
-            );
-          } else {
-            this.differential[t] += 2;
-          }
-        }
+          newValues[index].differential +=
+            weakValue > 0 ? -Math.log2(weakValue) : 2;
+        });
       }
-    }
+    });
+    this.weaknesses = newValues.map((v) => v.weaknesses);
+    this.resistances = newValues.map((v) => v.resistances);
+    this.difference = newValues.map((v) => v.difference);
+    this.differential = newValues.map((v) => v.differential);
+    this.counts = newValues.map((v) => v.counts);
   }
 
-  useAbilities(): number {
-    return this.abilities ? 0 : 1;
+  weaknessColor(weak: number, disabled: boolean): string[] {
+    if (disabled) {
+      return ['text-transparent'];
+    }
+    const classes: string[] = ['type-colored'];
+    if (weak > 4) classes.push('bg-scale-negative-5');
+    else if (weak > 2) classes.push('bg-scale-negative-4');
+    else if (weak > 1) classes.push('bg-scale-negative-3');
+    else if (weak < 0.25) classes.push('bg-scale-positive-5');
+    else if (weak < 0.5) classes.push('bg-scale-positive-4');
+    else if (weak < 1) classes.push('bg-scale-positive-3');
+    else return ['type-empty'];
+    return classes;
+  }
+
+  weakColor(weak: number): string {
+    if (weak > 5) return 'bg-scale-negative-5';
+    if (weak > 4) return 'bg-scale-negative-4';
+    if (weak > 3) return 'bg-scale-negative-3';
+    if (weak < 1) return 'bg-scale-positive-5';
+    if (weak < 2) return 'bg-scale-positive-4';
+    if (weak < 3) return 'bg-scale-positive-3';
+    return 'stat-neutral';
+  }
+
+  resistColor(weak: number): string {
+    if (weak > 4) return 'bg-scale-positive-5';
+    if (weak > 3) return 'bg-scale-positive-4';
+    if (weak > 2) return 'bg-scale-positive-3';
+    if (weak < 1) return 'bg-scale-negative-4';
+    if (weak < 2) return 'bg-scale-negative-3';
+    return 'stat-neutral';
+  }
+
+  countColor(count: number): string {
+    if (count > 3) return 'bg-scale-negative-5';
+    if (count > 2) return 'bg-scale-negative-4';
+    if (count > 1) return 'stat-neutral';
+    if (count > 0) return 'bg-scale-positive-4';
+    return 'stat-neutral';
+  }
+
+  diffColor(weak: number): string {
+    if (weak > 3) return 'bg-scale-positive-6';
+    if (weak > 2) return 'bg-scale-positive-5';
+    if (weak > 1) return 'bg-scale-positive-4';
+    if (weak > 0) return 'bg-scale-positive-3';
+    if (weak < -2) return 'bg-scale-negative-5';
+    if (weak < -1) return 'bg-scale-negative-4';
+    if (weak < 0) return 'bg-scale-negative-3';
+    return 'stat-neutral';
   }
 }

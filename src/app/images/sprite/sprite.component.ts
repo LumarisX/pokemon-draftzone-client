@@ -8,11 +8,12 @@ import {
 } from '../../data/namedex';
 import { Pokemon } from '../../interfaces/draft';
 import { SettingsService } from '../../pages/settings/settings.service';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'sprite',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, MatTooltipModule],
   styleUrl: './sprite.component.scss',
   templateUrl: './sprite.component.html',
 })
@@ -23,6 +24,16 @@ export class SpriteComponent {
     this.updateData(value);
     this._pokemon = value;
   }
+
+  @Input()
+  tooltipPosition:
+    | 'before'
+    | 'after'
+    | 'above'
+    | 'below'
+    | 'left'
+    | 'right'
+    | null = null;
 
   @Input()
   set name(value: string) {
