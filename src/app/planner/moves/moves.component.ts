@@ -9,6 +9,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { BehaviorSubject } from 'rxjs';
 import { MoveChart } from '../../drafts/matchup-overview/matchup-interface';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
+import { typeColor } from '../../util/styling';
 
 @Component({
   selector: 'planner-moves',
@@ -40,6 +41,7 @@ export class MoveComponent {
 
   readonly shownMoves = new BehaviorSubject<MoveChart>([]);
 
+  typeColor = typeColor;
   updateShownMoves(showAll: boolean) {
     this.shownMoves.next(
       showAll

@@ -16,10 +16,10 @@
               <th
                 class="action-cell"
                 (click)="setSort(type)"
-                (mouseenter)="columnHovered = type"
-                (mouseleave)="columnHovered = null"
+                (mouseenter)="columnHovered.next(type)"
+                (mouseleave)="columnHovered.next(null)"
                 [ngClass]="{
-                  'column-hovered': type === columnHovered,
+                  'column-hovered': type === columnHovered.value,
                 }"
               >
                 <div class="flex-wrapper">
@@ -65,9 +65,9 @@
               @for (type of types; track $index) {
                 <td
                   class="type-cell"
-                  (mouseenter)="columnHovered = type"
-                  (mouseleave)="columnHovered = null"
-                  [ngClass]="{ 'column-hovered': type === columnHovered }"
+                  (mouseenter)="columnHovered.next(type)"
+                  (mouseleave)="columnHovered.next(null)"
+                  [ngClass]="{ 'column-hovered': type === columnHovered.value }"
                 >
                   <div class="flex-wrapper">
                     <div
@@ -100,9 +100,9 @@
             <th></th>
             @for (type of types; track $index) {
               <th
-                (mouseenter)="columnHovered = type"
-                (mouseleave)="columnHovered = null"
-                [ngClass]="{ 'column-hovered': type === columnHovered }"
+                (mouseenter)="columnHovered.next(type)"
+                (mouseleave)="columnHovered.next(null)"
+                [ngClass]="{ 'column-hovered': type === columnHovered.value }"
               >
                 <div class="flex-wrapper">
                   <div
@@ -124,9 +124,9 @@
             @for (type of types; track $index) {
               <td
                 class="stat-cell"
-                (mouseenter)="columnHovered = type"
-                (mouseleave)="columnHovered = null"
-                [ngClass]="{ 'column-hovered': type === columnHovered }"
+                (mouseenter)="columnHovered.next(type)"
+                (mouseleave)="columnHovered.next(null)"
+                [ngClass]="{ 'column-hovered': type === columnHovered.value }"
               >
                 <div class="flex-wrapper">
                   <div
@@ -144,9 +144,9 @@
             @for (type of types; track $index) {
               <td
                 class="stat-cell"
-                (mouseenter)="columnHovered = type"
-                (mouseleave)="columnHovered = null"
-                [ngClass]="{ 'column-hovered': type === columnHovered }"
+                (mouseenter)="columnHovered.next(type)"
+                (mouseleave)="columnHovered.next(null)"
+                [ngClass]="{ 'column-hovered': type === columnHovered.value }"
               >
                 <div class="flex-wrapper">
                   <div
@@ -164,9 +164,9 @@
             @for (type of types; track $index) {
               <td
                 class="stat-cell"
-                (mouseenter)="columnHovered = type"
-                (mouseleave)="columnHovered = null"
-                [ngClass]="{ 'column-hovered': type === columnHovered }"
+                (mouseenter)="columnHovered.next(type)"
+                (mouseleave)="columnHovered.next(null)"
+                [ngClass]="{ 'column-hovered': type === columnHovered.value }"
               >
                 <div class="flex-wrapper">
                   <div
@@ -190,9 +190,9 @@
             @for (type of types; track $index) {
               <td
                 class="stat-cell"
-                (mouseenter)="columnHovered = type"
-                (mouseleave)="columnHovered = null"
-                [ngClass]="{ 'column-hovered': type === columnHovered }"
+                (mouseenter)="columnHovered.next(type)"
+                (mouseleave)="columnHovered.next(null)"
+                [ngClass]="{ 'column-hovered': type === columnHovered.value }"
               >
                 <div class="flex-wrapper">
                   <div
@@ -216,9 +216,9 @@
             @for (type of types; track $index) {
               <td
                 class="stat-cell"
-                (mouseenter)="columnHovered = type"
-                (mouseleave)="columnHovered = null"
-                [ngClass]="{ 'column-hovered': type === columnHovered }"
+                (mouseenter)="columnHovered.next(type)"
+                (mouseleave)="columnHovered.next(null)"
+                [ngClass]="{ 'column-hovered': type === columnHovered.value }"
               >
                 <div class="flex-wrapper">
                   <div

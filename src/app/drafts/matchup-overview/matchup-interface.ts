@@ -56,20 +56,22 @@ export type Summary = {
   };
 };
 
-export type TypeChart = {
-  team: (Pokemon & {
-    weak: [
-      {
-        [key in ExtendedType]: number;
-      },
-      {
-        [key in ExtendedType]: number;
-      },
-    ];
+export type TypeChartPokemon = Pokemon & {
+  weak: [
+    {
+      [key in ExtendedType]: number;
+    },
+    {
+      [key in ExtendedType]: number;
+    },
+  ];
 
-    types: string[];
-    disabled?: boolean;
-  })[];
+  types: string[];
+  disabled?: boolean;
+};
+
+export type TypeChart = {
+  team: TypeChartPokemon[];
 };
 
 export type MoveChart = MoveCategory[];

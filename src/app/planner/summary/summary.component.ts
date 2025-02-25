@@ -8,6 +8,7 @@ import { CdkTableModule } from '@angular/cdk/table';
 import { MatSortModule, Sort } from '@angular/material/sort';
 import { MatSliderModule } from '@angular/material/slider';
 import { Stat } from '../../data';
+import { typeColor } from '../../util/styling';
 
 @Component({
   selector: 'planner-summary',
@@ -49,7 +50,6 @@ export class PlannerSummaryComponent implements OnInit {
 
   reversed: boolean = false;
   baseValue: number = 80;
-  baseBST: number = 500;
 
   summaryData = new BehaviorSubject<Summary | null>(null);
 
@@ -88,6 +88,8 @@ export class PlannerSummaryComponent implements OnInit {
       });
     }),
   );
+
+  typeColor = typeColor;
 
   sort(sort: Sort) {
     if (!this.summaryData.value) return;
@@ -148,7 +150,7 @@ export class PlannerSummaryComponent implements OnInit {
 
   bstColor(bstValue: number | undefined): string | undefined {
     if (bstValue === undefined) return;
-    const diff = bstValue - this.baseBST;
+    const diff = bstValue - this.baseValue * 6;
     if (diff > 150) return 'bg-scale-positive-7';
     if (diff > 125) return 'bg-scale-positive-6';
     if (diff > 100) return 'bg-scale-positive-5';

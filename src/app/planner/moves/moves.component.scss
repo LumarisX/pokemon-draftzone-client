@@ -6,6 +6,10 @@
   text-overflow: clip;
   justify-content: space-between;
   display: flex;
+  width: 100%;
+  padding: 0 1rem 0.5rem;
+  color: var(--mat-sys-primary);
+  font-weight: 700;
 }
 
 .main-container {
@@ -63,9 +67,7 @@
 }
 
 .count {
-  font-size: small;
-  vertical-align: top;
-  opacity: 0.8;
+  color: var(--mat-sys-secondary);
 }
 
 .category-header:hover {
@@ -98,7 +100,7 @@
   border-width: 0 0 2px;
   padding: 0 0.25rem;
   cursor: help;
-
+  font-weight: 600;
   width: fit-content;
   text-align: center;
 }
@@ -109,4 +111,9 @@
   justify-content: space-evenly;
   flex-wrap: wrap;
   padding: 0.25rem;
+}
+
+.category-label {
+  font-weight: 600;
+  font-size: 1.1em;
 }

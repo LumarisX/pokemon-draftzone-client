@@ -46,6 +46,7 @@ table {
 
 .value-input {
   width: 5rem;
+
   input {
     text-align: center;
     &::-webkit-inner-spin-button,
@@ -53,6 +54,12 @@ table {
       appearance: none;
       margin: 0;
     }
+    &::-moz-number-spin-box,
+    &::-moz-number-spin-buttons {
+      display: none;
+    }
+    -moz-appearance: textfield;
+    appearance: textfield;
   }
 }
 

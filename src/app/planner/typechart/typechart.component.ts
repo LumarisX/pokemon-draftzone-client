@@ -4,9 +4,12 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { BehaviorSubject, distinctUntilChanged, tap } from 'rxjs';
+import { BehaviorSubject, debounceTime, distinctUntilChanged, tap } from 'rxjs';
 import { ExtendedType, Type, TYPES } from '../../data';
-import { TypeChart } from '../../drafts/matchup-overview/matchup-interface';
+import {
+  TypeChart,
+  TypeChartPokemon,
+} from '../../drafts/matchup-overview/matchup-interface';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { Pokemon } from '../../interfaces/draft';
 import { typeColor } from '../../util/styling';
@@ -31,19 +34,10 @@ export class PlannerTypechartComponent implements OnInit {
   $typechartObserable = this.$typechart
     .pipe(distinctUntilChanged())
     .subscribe((value) => {
-      this.summarize();
+      this.summarize(value?.team);
     });
 
-  sortedTeam = new BehaviorSubject<
-    (Pokemon & {
-      weak: [
-        { [key in ExtendedType]: number },
-        { [key in ExtendedType]: number },
-      ];
-      types: string[];
-      disabled?: boolean;
-    })[]
-  >([]);
+  sortedTeam = new BehaviorSubject<TypeChartPokemon[]>([]);
 
   @Input()
   set typechart(value: TypeChart | undefined | null) {
@@ -77,12 +71,12 @@ export class PlannerTypechartComponent implements OnInit {
   uniqueSelected: boolean = true;
 
   set abilities(value: boolean) {
-    this.abilityIndex = value ? 0 : 1;
+    this.abilityIndex = value ? 1 : 0;
     this.summarize();
   }
 
   abilityIndex: number = 0;
-  columnHovered: string | null = null;
+  columnHovered = new BehaviorSubject<string | null>(null);
   get abilities() {
     return !!this.abilityIndex;
   }
@@ -97,6 +91,10 @@ export class PlannerTypechartComponent implements OnInit {
         }),
       )
       .subscribe();
+
+    this.columnHovered
+      .pipe(debounceTime(50), distinctUntilChanged())
+      .subscribe((value) => this.columnHovered.next(value));
   }
 
   sortedBy = new BehaviorSubject<string | null>(null);
@@ -140,16 +138,12 @@ export class PlannerTypechartComponent implements OnInit {
     );
   }
 
-  toggleVisible(
-    pokemon: Pokemon & {
-      disabled?: Boolean;
-    },
-  ) {
+  toggleVisible(pokemon: TypeChartPokemon) {
     pokemon.disabled = !pokemon.disabled;
     this.summarize();
   }
 
-  summarize(): void {
+  summarize(team: TypeChartPokemon[] = this.sortedTeam.value): void {
     const newValues = this.types.map(() => ({
       weaknesses: 0,
       resistances: 0,
@@ -157,7 +151,7 @@ export class PlannerTypechartComponent implements OnInit {
       differential: 0,
       counts: 0,
     }));
-    this.sortedTeam.value.forEach((pokemon) => {
+    team.forEach((pokemon) => {
       if (!pokemon.disabled) {
         this.types.forEach((type, index) => {
           if (pokemon.types.includes(type)) newValues[index].counts++;

@@ -1,15 +1,18 @@
 <div class="main-container">
   <div class="options-container">
-    <mat-slide-toggle (change)="updateShownMoves($event.checked)"
-      >Show Unlearned</mat-slide-toggle
-    >
+    <div>
+      <mat-slide-toggle
+        (change)="updateShownMoves($event.checked)"
+      ></mat-slide-toggle
+      >Show Unlearned
+    </div>
+
     @if (anyOpened) {
       <button mat-stroked-button (click)="closeAll()">Close All</button>
     } @else {
       <button mat-stroked-button (click)="openAll()">Open All</button>
     }
   </div>
-
   <cdk-accordion #movechartAccordion multi class="movechart">
     @for (category of shownMoves.value; track $index) {
       <cdk-accordion-item
@@ -22,7 +25,7 @@
           (click)="accordionItem.toggle()"
           tabindex="0"
         >
-          <div>
+          <div class="category-label">
             {{ category.categoryName }}
             <span class="count">{{ category.moves.length }}</span>
           </div>
@@ -45,7 +48,7 @@
                 [matTooltip]="move.desc"
                 matTooltipPosition="above"
                 class="move-title"
-                [ngClass]="'border-' + move.type.toLowerCase()"
+                [style.border-color]="typeColor(move.type)"
               >
                 {{ move.name }}
               </div>

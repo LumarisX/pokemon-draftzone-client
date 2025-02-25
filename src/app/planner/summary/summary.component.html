@@ -38,16 +38,19 @@
         <ng-container cdkColumnDef="name">
           <th mat-sort-header="name" cdk-header-cell *cdkHeaderCellDef>Name</th>
           <td cdk-cell *cdkCellDef="let pokemon">
-            <div>
+            <div class="pokemon-label">
               {{ pokemon.name }}
             </div>
             <div class="type-container">
               @for (type of pokemon.types; track $index) {
-                <img
-                  src="../../../assets/icons/types/{{ type }}.png"
-                  onerror="this.src='../../../assets/icons/types/Unknown.png'"
-                  alt="{{ type }}"
-                />
+                <div
+                  class="type-label"
+                  [style.background-color]="typeColor(type)"
+                >
+                  <div class="type-text">
+                    {{ type }}
+                  </div>
+                </div>
               }
             </div>
           </td>
