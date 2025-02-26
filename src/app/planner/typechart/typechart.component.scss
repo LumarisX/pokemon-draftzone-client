@@ -137,10 +137,13 @@ thead {
   height: 100%;
   min-height: fit-content;
   align-items: center;
+  > :not([hidden]) ~ :not([hidden]) {
+    margin-top: 1rem;
+  }
 }
 
 .table-wrapper {
-  padding: 1rem;
+  padding: 0.75rem;
   min-width: fit-content;
   width: fit-content;
   height: fit-content;

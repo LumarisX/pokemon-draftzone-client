@@ -18,6 +18,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTab, MatTabsModule } from '@angular/material/tabs';
 import {
@@ -45,7 +46,6 @@ import { PlannerSettingsComponent } from './settings/settings.component';
 import { PlannerSummaryComponent } from './summary/summary.component';
 import { PlannerTeamComponent } from './team/team.component';
 import { PlannerTypechartComponent } from './typechart/typechart.component';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { PlannerSizeWarn } from './warn.component';
 
 interface LSTeamData {

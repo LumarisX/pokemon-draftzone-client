@@ -30,14 +30,9 @@ import { typeColor } from '../../util/styling';
   ],
 })
 export class PlannerTypechartComponent implements OnInit {
-  $typechart = new BehaviorSubject<TypeChart | null>(null);
-  $typechartObserable = this.$typechart
-    .pipe(distinctUntilChanged())
-    .subscribe((value) => {
-      this.summarize(value?.team);
-    });
-
   sortedTeam = new BehaviorSubject<TypeChartPokemon[]>([]);
+
+  $typechart = new BehaviorSubject<TypeChart | null>(null);
 
   @Input()
   set typechart(value: TypeChart | undefined | null) {
@@ -91,6 +86,10 @@ export class PlannerTypechartComponent implements OnInit {
         }),
       )
       .subscribe();
+
+    this.$typechart.pipe(distinctUntilChanged()).subscribe((value) => {
+      this.summarize(value?.team);
+    });
 
     this.columnHovered
       .pipe(debounceTime(50), distinctUntilChanged())

@@ -76,7 +76,7 @@ export type TypeChart = {
 
 export type MoveChart = MoveCategory[];
 
-type CoverageMove = {
+export type CoverageMove = {
   id: string;
   name: string;
   ePower: number;
@@ -86,14 +86,24 @@ type CoverageMove = {
   stab?: true;
 };
 
-export type Coverage = {
-  team: {
-    id: PokemonId;
-    coverage: {
-      physical: CoverageMove[];
-      special: CoverageMove[];
+export type CoveragePokemon = {
+  id: PokemonId;
+  coverage: {
+    physical: CoverageMove[];
+    special: CoverageMove[];
+  };
+  fullcoverage: {
+    physical: {
+      [key: string]: CoverageMove[];
     };
-  }[];
+    special: {
+      [key: string]: CoverageMove[];
+    };
+  };
+};
+
+export type Coverage = {
+  team: CoveragePokemon[];
   max: {
     physical: { [key: string]: CoverageMove | undefined };
     special: { [key: string]: CoverageMove | undefined };

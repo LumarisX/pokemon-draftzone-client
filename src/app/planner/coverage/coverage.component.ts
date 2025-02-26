@@ -1,21 +1,25 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Coverage } from '../../drafts/matchup-overview/matchup-interface';
-import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { TYPES } from '../../data';
+import { Coverage } from '../../drafts/matchup-overview/matchup-interface';
+import { CoverageChartComponent } from './coverage-chart/coverage-chart.component';
+import { SpriteComponent } from '../../images/sprite/sprite.component';
 
 @Component({
   selector: 'planner-coverage',
   standalone: true,
   templateUrl: './coverage.component.html',
-  imports: [CommonModule, FormsModule, SpriteComponent],
+  styleUrl: './coverage.component.scss',
+  imports: [CommonModule, FormsModule, CoverageChartComponent, SpriteComponent],
 })
-export class PlannerCoverageComponent {
-  @Input() coverage!: Coverage;
+export class PlannerCoverageComponent implements OnInit {
+  @Input() coverage?: Coverage;
   types = TYPES;
 
-  constructor() {}
+  ngOnInit(): void {
+    console.log('created');
+  }
 
   coverageColor(value: number | undefined): string | string[] {
     const MID = 7000;

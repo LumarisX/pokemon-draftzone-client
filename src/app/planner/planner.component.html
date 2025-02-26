@@ -58,54 +58,68 @@
         >
           @if (!isLargeScreen) {
             <mat-tab label="Team">
-              <planner-team [draftFormGroup]="draftFormGroup"></planner-team>
+              <ng-template matTabContent>
+                <planner-team [draftFormGroup]="draftFormGroup"></planner-team>
+              </ng-template>
             </mat-tab>
             <mat-tab label="Settings">
-              <planner-settings
-                [draftFormGroup]="draftFormGroup"
-              ></planner-settings>
+              <ng-template matTabContent>
+                <planner-settings
+                  [draftFormGroup]="draftFormGroup"
+                ></planner-settings>
+              </ng-template>
             </mat-tab>
           }
           @if (summary) {
             <mat-tab label="Summary" [tabIndex]="0">
-              <div class="tab-container">
-                <planner-summary [summary]="summary"></planner-summary>
-              </div>
+              <ng-template matTabContent>
+                <div class="tab-container">
+                  <planner-summary [summary]="summary"></planner-summary>
+                </div>
+              </ng-template>
             </mat-tab>
           }
           @if (typechart && recommended) {
             <mat-tab label="Typechart">
-              <div class="tab-container">
-                <planner-typechart
-                  [typechart]="typechart"
-                  [recommended]="recommended"
-                ></planner-typechart>
-              </div>
+              <ng-template matTabContent>
+                <div class="tab-container">
+                  <planner-typechart
+                    [typechart]="typechart"
+                    [recommended]="recommended"
+                  ></planner-typechart>
+                </div>
+              </ng-template>
             </mat-tab>
           }
           @if (movechart.length) {
             <mat-tab label="Moves">
-              <div class="movechart-container">
-                <planner-moves [movechart]="movechart"></planner-moves>
-              </div>
+              <ng-template matTabContent>
+                <div class="movechart-container">
+                  <planner-moves [movechart]="movechart"></planner-moves>
+                </div>
+              </ng-template>
             </mat-tab>
           }
           @if (coverage) {
             <mat-tab label="Coverage">
-              <planner-coverage
-                class="w-full overflow-y-auto"
-                [coverage]="coverage"
-              ></planner-coverage>
+              <ng-template matTabContent>
+                <planner-coverage
+                  class="w-full overflow-y-auto"
+                  [coverage]="coverage"
+                ></planner-coverage>
+              </ng-template>
             </mat-tab>
           }
           <mat-tab label="Find">
-            <finder-core
-              class="h-full min-w-full overflow-y-auto"
-              [rulesetId]="
-                draftFormGroup.controls.ruleset.value || 'Gen9 NatDex'
-              "
-              [formatId]="draftFormGroup.controls.format.value || 'Singles'"
-            ></finder-core>
+            <ng-template matTabContent>
+              <finder-core
+                class="h-full min-w-full overflow-y-auto"
+                [rulesetId]="
+                  draftFormGroup.controls.ruleset.value || 'Gen9 NatDex'
+                "
+                [formatId]="draftFormGroup.controls.format.value || 'Singles'"
+              ></finder-core>
+            </ng-template>
           </mat-tab>
         </mat-tab-group>
       </div>

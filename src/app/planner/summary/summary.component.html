@@ -57,22 +57,6 @@
           <td cdk-footer-cell *cdkFooterCellDef></td>
         </ng-container>
 
-        <ng-container cdkColumnDef="types">
-          <th cdk-header-cell *cdkHeaderCellDef>Types</th>
-          <td cdk-cell *cdkCellDef="let pokemon">
-            <div class="type-cell">
-              @for (type of pokemon.types; track $index) {
-                <img
-                  src="../../../assets/icons/types/{{ type }}.png"
-                  onerror="this.src='../../../assets/icons/types/Unknown.png'"
-                  alt="{{ type }}"
-                />
-              }
-            </div>
-          </td>
-          <td cdk-footer-cell *cdkFooterCellDef></td>
-        </ng-container>
-
         <ng-container cdkColumnDef="abilities">
           <th cdk-header-cell *cdkHeaderCellDef>Abilities</th>
           <td cdk-cell *cdkCellDef="let pokemon" class="ability-cell">
@@ -101,7 +85,7 @@
           <td
             cdk-cell
             *cdkCellDef="let pokemon"
-            class="left-rounded"
+            class="left-rounded stat-cell"
             [ngClass]="statColor(pokemon.baseStats.hp)"
           >
             {{ pokemon.baseStats.hp }}
@@ -131,6 +115,7 @@
           <td
             cdk-cell
             *cdkCellDef="let pokemon"
+            class="stat-cell"
             [ngClass]="statColor(pokemon.baseStats.atk)"
           >
             {{ pokemon.baseStats.atk }}
@@ -160,6 +145,7 @@
           <td
             cdk-cell
             *cdkCellDef="let pokemon"
+            class="stat-cell"
             [ngClass]="statColor(pokemon.baseStats.def)"
           >
             {{ pokemon.baseStats.def }}
@@ -188,6 +174,7 @@
           <td
             cdk-cell
             *cdkCellDef="let pokemon"
+            class="stat-cell"
             [ngClass]="statColor(pokemon.baseStats.spa)"
           >
             {{ pokemon.baseStats.spa }}
@@ -216,6 +203,7 @@
           <td
             cdk-cell
             *cdkCellDef="let pokemon"
+            class="stat-cell"
             [ngClass]="statColor(pokemon.baseStats.spd)"
           >
             {{ pokemon.baseStats.spd }}
@@ -244,6 +232,7 @@
           <td
             cdk-cell
             *cdkCellDef="let pokemon"
+            class="stat-cell"
             [ngClass]="statColor(pokemon.baseStats.spe)"
           >
             {{ pokemon.baseStats.spe }}
@@ -273,7 +262,7 @@
             cdk-cell
             *cdkCellDef="let pokemon"
             [ngClass]="bstColor(pokemon.bst)"
-            class="right-rounded"
+            class="right-rounded stat-cell"
           >
             {{ pokemon.bst }}
           </td>
