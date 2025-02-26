@@ -4,14 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { TYPES } from '../../data';
 import { Coverage } from '../../drafts/matchup-overview/matchup-interface';
 import { CoverageChartComponent } from './coverage-chart/coverage-chart.component';
-import { SpriteComponent } from '../../images/sprite/sprite.component';
 
 @Component({
   selector: 'planner-coverage',
   standalone: true,
   templateUrl: './coverage.component.html',
   styleUrl: './coverage.component.scss',
-  imports: [CommonModule, FormsModule, CoverageChartComponent, SpriteComponent],
+  imports: [CommonModule, FormsModule, CoverageChartComponent],
 })
 export class PlannerCoverageComponent implements OnInit {
   @Input() coverage?: Coverage;

@@ -2,9 +2,7 @@
 import { Component, ElementRef, Input, OnInit } from '@angular/core';
 import * as d3 from 'd3';
 import { CoveragePokemon } from '../../../drafts/matchup-overview/matchup-interface';
-import { SpriteComponent } from '../../../images/sprite/sprite.component';
 import { typeColor } from '../../../util/styling';
-import { HierarchyNode } from 'd3';
 
 interface ExtendedHierarchyNode
   extends d3.HierarchyNode<{
@@ -22,7 +20,7 @@ interface ExtendedHierarchyNode
   standalone: true,
   templateUrl: './coverage-chart.component.html',
   styleUrl: './coverage-chart.component.scss',
-  imports: [SpriteComponent],
+  imports: [],
 })
 export class CoverageChartComponent implements OnInit {
   @Input() data!: CoveragePokemon;
@@ -37,6 +35,8 @@ export class CoverageChartComponent implements OnInit {
   private createSunburst(): void {
     const hierarchyData = {
       name: 'root',
+      fill: 'var(--mat-sys-surface)',
+      icon: `https://img.pokemondb.net/sprites/home/normal/pelipper.png`,
       children: [
         {
           name: 'Physical',
@@ -44,11 +44,10 @@ export class CoverageChartComponent implements OnInit {
             ([type, moves]) => ({
               name: type,
               fill: typeColor(type),
+              icon: `../../../../assets/icons/types/gen9icon/${type}.png`,
               children: moves.map((move) => ({
                 name: move.name,
                 value: move.value,
-                fill: typeColor(type),
-                icon: `../../../../assets/icons/types/gen9icon/${type}.png`,
               })),
             }),
           ),
@@ -61,15 +60,14 @@ export class CoverageChartComponent implements OnInit {
             ([type, moves]) => ({
               name: type,
               fill: typeColor(type),
+              icon: `../../../../assets/icons/types/gen9icon/${type}.png`,
               children: moves.map((move) => ({
                 name: move.name,
                 value: move.value,
-                fill: typeColor(type),
-                icon: `../../../../assets/icons/types/gen9icon/${type}.png`,
               })),
             }),
           ),
-          icon: '../../../../assets/icons/moves/move-physical.png',
+          icon: '../../../../assets/icons/moves/move-special.png',
           fill: '#61ADF3',
         },
       ],
@@ -78,6 +76,7 @@ export class CoverageChartComponent implements OnInit {
     const width = 750;
     const height = width;
     const radius = width / 6;
+    const iconSize = width / 10;
 
     // Compute the layout.
     const hierarchy = d3
@@ -87,6 +86,7 @@ export class CoverageChartComponent implements OnInit {
     const root = d3
       .partition<typeof hierarchyData>()
       .size([2 * Math.PI, hierarchy.height + 1])(hierarchy);
+
     root.each((d: any) => (d.current = d));
     // Create the arc generator.
     const arc = d3
@@ -109,9 +109,10 @@ export class CoverageChartComponent implements OnInit {
     const path = svg
       .append('g')
       .selectAll('path')
-      .data(root.descendants().slice(1))
+      .data(root.descendants())
       .join('path')
-      .attr('fill', (d: any) => {
+      .attr('fill', (d) => {
+        while (d.depth > 2) d = d.parent;
         return d.data.fill;
       })
       .attr('fill-opacity', (d: any) => (arcVisible(d.current) ? 1 : 0))
@@ -137,18 +138,36 @@ export class CoverageChartComponent implements OnInit {
           .join('/')}\n${format(d.value!)}`,
     );
 
-    const label = svg
+    const labels = svg
       .append('g')
       .attr('pointer-events', 'none')
-      .attr('text-anchor', 'middle')
       .style('user-select', 'none')
-      .selectAll('text')
-      .data(root.descendants().slice(1))
-      .join('text')
-      .attr('dy', '0.35em')
-      .attr('fill-opacity', (d: any) => +labelVisible(d.current))
-      .attr('transform', (d: any) => labelTransform(d.current))
-      .text((d) => d.data.name);
+      .selectAll('g')
+      .data(root.descendants())
+      .join('g');
+
+    labels.each(function (d: any) {
+      const group = d3.select(this);
+      if (d.data.icon) {
+        group
+          .append('image')
+          .attr('xlink:href', d.data.icon)
+          .attr('width', iconSize)
+          .attr('height', iconSize)
+          .attr('opacity', +iconVisible(d.current))
+          .attr('transform', (d: any) => iconTransform(d.current));
+      } else {
+        group
+          .append('text')
+          .attr('dy', '0.35em')
+          .attr('text-anchor', 'middle')
+          .attr('fill-opacity', +labelVisible(d.current))
+          .attr('transform', (d: any) => labelTransform(d.current))
+          .attr('fill', '#fff')
+          .attr('font-weight', '600')
+          .text(d.data.name);
+      }
+    });
 
     const parent = svg
       .append('circle')
@@ -199,7 +218,17 @@ export class CoverageChartComponent implements OnInit {
 
         .attrTween('d', (d: any) => () => arc(d.current));
 
-      label
+      labels
+        .selectAll('image')
+        .filter(function (d: any) {
+          return +this.getAttribute('opacity') || iconVisible(d.target);
+        })
+        .transition(t)
+        .attr('opacity', (d: any) => +iconVisible(d.target))
+        .attrTween('transform', (d: any) => () => iconTransform(d.current));
+
+      labels
+        .selectAll('text')
         .filter(function (d: any) {
           return +this.getAttribute('fill-opacity') || labelVisible(d.target);
         })
@@ -209,17 +238,28 @@ export class CoverageChartComponent implements OnInit {
     }
 
     function arcVisible(d) {
-      return d.y1 <= 3 && d.y0 >= 1 && d.x1 > d.x0;
+      return d.y1 <= 3 && d.y0 >= 0 && d.x1 > d.x0;
     }
 
     function labelVisible(d) {
-      return d.y1 <= 3 && d.y0 >= 1 && (d.y1 - d.y0) * (d.x1 - d.x0) > 0.03;
+      return d.y1 <= 3 && d.y0 >= 0 && (d.y1 - d.y0) * (d.x1 - d.x0) > 0.03;
     }
 
     function labelTransform(d) {
       const x = (((d.x0 + d.x1) / 2) * 180) / Math.PI;
       const y = ((d.y0 + d.y1) / 2) * radius;
       return `rotate(${x - 90}) translate(${y},0) rotate(${x < 180 ? 0 : 180})`;
+    }
+
+    function iconVisible(d) {
+      return d.y1 <= 3 && d.y0 >= 0 && (d.y1 - d.y0) * (d.x1 - d.x0) > 0.3;
+    }
+
+    function iconTransform(d) {
+      if (d.y0 < 1) return `translate(-${iconSize / 2},-${iconSize / 2})`;
+      const x = (((d.x0 + d.x1) / 2) * 180) / Math.PI;
+      const y = ((d.y0 + d.y1) / 2) * radius;
+      return `rotate(${x - 90}) translate(${y},0) rotate(${90 - x}) translate(-${iconSize / 2},-${iconSize / 2})`;
     }
 
     return svg.node();
