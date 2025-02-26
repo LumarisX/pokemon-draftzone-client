@@ -86,6 +86,10 @@ export type CoverageMove = {
   stab?: true;
 };
 
+export type FullCoverageMove = CoverageMove & {
+  value: number;
+};
+
 export type CoveragePokemon = {
   id: PokemonId;
   coverage: {
@@ -94,10 +98,10 @@ export type CoveragePokemon = {
   };
   fullcoverage: {
     physical: {
-      [key: string]: CoverageMove[];
+      [key: string]: FullCoverageMove[];
     };
     special: {
-      [key: string]: CoverageMove[];
+      [key: string]: FullCoverageMove[];
     };
   };
 };

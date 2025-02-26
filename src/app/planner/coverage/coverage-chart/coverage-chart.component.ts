@@ -28,10 +28,6 @@ export class CoverageChartComponent implements OnInit {
   @Input() data!: CoveragePokemon;
   @Input() monCount!: number;
 
-  private width = 250;
-  private height = 250;
-  private radius = Math.min(this.width, this.height) / 2;
-
   constructor(private el: ElementRef) {}
 
   ngOnInit(): void {
@@ -50,7 +46,7 @@ export class CoverageChartComponent implements OnInit {
               fill: typeColor(type),
               children: moves.map((move) => ({
                 name: move.name,
-                value: move.ePower,
+                value: move.value,
                 fill: typeColor(type),
                 icon: `../../../../assets/icons/types/gen9icon/${type}.png`,
               })),
@@ -67,7 +63,7 @@ export class CoverageChartComponent implements OnInit {
               fill: typeColor(type),
               children: moves.map((move) => ({
                 name: move.name,
-                value: move.ePower,
+                value: move.value,
                 fill: typeColor(type),
                 icon: `../../../../assets/icons/types/gen9icon/${type}.png`,
               })),
@@ -79,7 +75,7 @@ export class CoverageChartComponent implements OnInit {
       ],
     };
 
-    const width = 928;
+    const width = 750;
     const height = width;
     const radius = width / 6;
 
