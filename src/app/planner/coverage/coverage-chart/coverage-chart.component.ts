@@ -8,6 +8,7 @@ type DataPoint = {
   name: string;
   fill?: string | null;
   icon?: string;
+  iconSize?: number;
   children?: DataPoint[];
 };
 
@@ -30,6 +31,7 @@ export class CoverageChartComponent implements OnInit {
   constructor(private el: ElementRef) {}
 
   ngOnInit(): void {
+    this.createTooltip();
     this.createSunburst();
   }
 
@@ -37,7 +39,8 @@ export class CoverageChartComponent implements OnInit {
     const hierarchyData: DataPoint = {
       name: this.data.id,
       fill: 'var(--mat-sys-surface)',
-      icon: `https://img.pokemondb.net/sprites/home/normal/pelipper.png`,
+      icon: `https://img.pokemondb.net/sprites/home/normal/${this.data.id}.png`,
+      iconSize: 240,
       children: [
         {
           name: 'Physical',
@@ -46,6 +49,7 @@ export class CoverageChartComponent implements OnInit {
               name: type,
               fill: typeColor(type),
               icon: `../../../../assets/icons/types/gen9icon/${type}.png`,
+              iconSize: 40,
               children: moves.map((move) => ({
                 name: move.name,
                 value: move.value,
@@ -53,6 +57,8 @@ export class CoverageChartComponent implements OnInit {
             }),
           ),
           icon: '../../../../assets/icons/moves/move-physical.png',
+          iconSize: 120,
+
           fill: '#EF6845',
         },
         {
@@ -62,6 +68,7 @@ export class CoverageChartComponent implements OnInit {
               name: type,
               fill: typeColor(type),
               icon: `../../../../assets/icons/types/gen9icon/${type}.png`,
+              iconSize: 40,
               children: moves.map((move) => ({
                 name: move.name,
                 value: move.value,
@@ -69,12 +76,14 @@ export class CoverageChartComponent implements OnInit {
             }),
           ),
           icon: '../../../../assets/icons/moves/move-special.png',
+          iconSize: 120,
+
           fill: '#61ADF3',
         },
       ],
     };
 
-    const width = 750;
+    const width = 800;
     const height = width;
     const radius = width / 6;
     const iconSize = width / 10;
@@ -86,9 +95,13 @@ export class CoverageChartComponent implements OnInit {
       .sort((a: any, b: any) => b.value - a.value);
     const root: ExtendedNode<DataPoint> = d3
       .partition<DataPoint>()
-      .size([2 * Math.PI, hierarchy.height + 1])(hierarchy);
-    root.each((d) => (d.current = d));
-
+      .size([2 * Math.PI, hierarchy.height + 1])(
+      hierarchy,
+    ) as ExtendedNode<DataPoint>;
+    root.each((d) => {
+      d.current = d;
+      d.target = d;
+    });
     // Create the arc generator.
     const arc = d3
       .arc<ExtendedNode<DataPoint>>()
@@ -108,7 +121,7 @@ export class CoverageChartComponent implements OnInit {
 
     // Append the arcs.
     const path: d3.Selection<
-      d3.BaseType | SVGPathElement,
+      SVGPathElement,
       ExtendedNode<DataPoint>,
       SVGGElement,
       unknown
@@ -127,13 +140,44 @@ export class CoverageChartComponent implements OnInit {
       .attr('pointer-events', (d: ExtendedNode<DataPoint>) =>
         arcVisible(d.current) ? 'auto' : 'none',
       )
-      .attr('d', (d: ExtendedNode<DataPoint>) => arc(d.current));
+      .attr('d', (d: ExtendedNode<DataPoint>) =>
+        arc(d.current),
+      ) as d3.Selection<
+      SVGPathElement,
+      ExtendedNode<DataPoint>,
+      SVGGElement,
+      unknown
+    >;
 
     // Make them clickable if they have children.
     path
       .filter((d) => !!d.children)
       .style('cursor', 'pointer')
-      .on('click', clicked);
+      .on('click', clicked)
+      .on('mouseover', function (event, d) {
+        // Increase transparency
+        d3.select(this).attr('fill-opacity', 0.7);
+
+        // Show tooltip
+        d3.select('.tooltip')
+          .style('opacity', 1)
+          .html(`<strong>${d.data.name}</strong>`) // Customize content
+          .style('left', `${event.pageX + 10}px`)
+          .style('top', `${event.pageY + 10}px`);
+      })
+      .on('mousemove', function (event) {
+        // Move tooltip with mouse
+        d3.select('.tooltip')
+          .style('left', `${event.pageX + 10}px`)
+          .style('top', `${event.pageY + 10}px`);
+      })
+      .on('mouseout', function () {
+        // Reset opacity
+        d3.select(this).attr('fill-opacity', 1);
+
+        // Hide tooltip
+        d3.select('.tooltip').style('opacity', 0);
+      });
 
     const format = d3.format(',d');
     path.append('title').text(
@@ -145,17 +189,27 @@ export class CoverageChartComponent implements OnInit {
           .join('/')}\n${format(d.value!)}`,
     );
 
-    const labels = svg
+    const labels: d3.Selection<
+      SVGGElement,
+      ExtendedNode<DataPoint>,
+      SVGGElement,
+      unknown
+    > = svg
       .append('g')
       .attr('pointer-events', 'none')
       .style('user-select', 'none')
       .selectAll('g')
       .data(root.descendants())
-      .join('g');
+      .join('g') as d3.Selection<
+      SVGGElement,
+      ExtendedNode<DataPoint>,
+      SVGGElement,
+      unknown
+    >;
 
     labels.each(function (d) {
       const group: d3.Selection<
-        d3.BaseType | SVGGElement,
+        SVGGElement,
         ExtendedNode<DataPoint>,
         null,
         undefined
@@ -191,7 +245,7 @@ export class CoverageChartComponent implements OnInit {
 
     // Handle zoom on click.
     function clicked(event: any, p: ExtendedNode<DataPoint>) {
-      parent.datum(p.parent || root);
+      const currentRoot = p.parent || root;
 
       root.each(
         (d) =>
@@ -216,12 +270,12 @@ export class CoverageChartComponent implements OnInit {
       // the next transition from the desired position.
       path
         .transition(t)
-        .tween('data', (d) => {
+        .tween('data', (d: ExtendedNode<DataPoint>) => {
           const i = d3.interpolate(d.current, d.target!);
           return (t) => (d.current = i(t));
         })
         .filter(function (d: any) {
-          return +this.getAttribute('fill-opacity') || arcVisible(d.target);
+          return !!this.getAttribute('fill-opacity') || arcVisible(d.target);
         })
         .attr('fill-opacity', (d) => (arcVisible(d.target) ? 1 : 0))
         .attr('pointer-events', (d) => (arcVisible(d.target) ? 'auto' : 'none'))
@@ -229,8 +283,8 @@ export class CoverageChartComponent implements OnInit {
 
       labels
         .selectAll('image')
-        .filter(function (d: any) {
-          return +this.getAttribute('opacity') || iconVisible(d.target);
+        .filter(function (this: d3.BaseType, d: ExtendedNode<DataPoint>) {
+          return !!this.getAttribute('opacity') || iconVisible(d.target);
         })
         .transition(t)
         .attr('opacity', (d: any) => +iconVisible(d.target))
@@ -244,6 +298,7 @@ export class CoverageChartComponent implements OnInit {
         .transition(t)
         .attr('fill-opacity', (d: any) => +labelVisible(d.target))
         .attrTween('transform', (d: any) => () => labelTransform(d.current));
+      svg.datum(currentRoot);
     }
 
     function arcVisible(d: ExtendedNode<DataPoint>) {
@@ -272,5 +327,20 @@ export class CoverageChartComponent implements OnInit {
     }
 
     // return svg.node();
+  }
+
+  private createTooltip(): void {
+    const tooltip = d3
+      .select(this.el.nativeElement)
+      .append('div')
+      .attr('class', 'tooltip')
+      .style('position', 'absolute')
+      .style('background', 'rgba(0, 0, 0, 0.75)')
+      .style('color', '#fff')
+      .style('padding', '5px 10px')
+      .style('border-radius', '5px')
+      .style('font-size', '12px')
+      .style('pointer-events', 'none')
+      .style('opacity', 0); // Initially hidden
   }
 }
