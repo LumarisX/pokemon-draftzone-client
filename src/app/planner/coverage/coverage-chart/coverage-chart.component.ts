@@ -4,15 +4,16 @@ import * as d3 from 'd3';
 import { CoveragePokemon } from '../../../drafts/matchup-overview/matchup-interface';
 import { typeColor } from '../../../util/styling';
 
-interface ExtendedHierarchyNode
-  extends d3.HierarchyNode<{
-    name: string;
-    children?: { name: string; value?: number }[];
-    value?: number;
-    fill?: string;
-  }> {
-  current: { x0: number; x1: number; y0: number; y1: number };
-  target?: { x0: number; x1: number; y0: number; y1: number };
+type DataPoint = {
+  name: string;
+  fill?: string | null;
+  icon?: string;
+  children?: DataPoint[];
+};
+
+interface ExtendedNode<T> extends d3.HierarchyRectangularNode<T> {
+  current: ExtendedNode<T>;
+  target: ExtendedNode<T>;
 }
 
 @Component({
@@ -33,8 +34,8 @@ export class CoverageChartComponent implements OnInit {
   }
 
   private createSunburst(): void {
-    const hierarchyData = {
-      name: 'root',
+    const hierarchyData: DataPoint = {
+      name: this.data.id,
       fill: 'var(--mat-sys-surface)',
       icon: `https://img.pokemondb.net/sprites/home/normal/pelipper.png`,
       children: [
@@ -83,20 +84,20 @@ export class CoverageChartComponent implements OnInit {
       .hierarchy(hierarchyData)
       .sum((d: any) => d.value)
       .sort((a: any, b: any) => b.value - a.value);
-    const root = d3
-      .partition<typeof hierarchyData>()
+    const root: ExtendedNode<DataPoint> = d3
+      .partition<DataPoint>()
       .size([2 * Math.PI, hierarchy.height + 1])(hierarchy);
+    root.each((d) => (d.current = d));
 
-    root.each((d: any) => (d.current = d));
     // Create the arc generator.
     const arc = d3
-      .arc()
-      .startAngle((d: any) => d.x0)
-      .endAngle((d: any) => d.x1)
-      .padAngle((d: any) => Math.min((d.x1 - d.x0) / 2, 0.005))
+      .arc<ExtendedNode<DataPoint>>()
+      .startAngle((d) => d.x0)
+      .endAngle((d) => d.x1)
+      .padAngle((d) => Math.min((d.x1 - d.x0) / 2, 0.005))
       .padRadius(radius * 1.5)
-      .innerRadius((d: any) => d.y0 * radius)
-      .outerRadius((d: any) => Math.max(d.y0 * radius, d.y1 * radius - 1));
+      .innerRadius((d) => d.y0 * radius)
+      .outerRadius((d) => Math.max(d.y0 * radius, d.y1 * radius - 1));
 
     // Create the SVG container.
 
@@ -106,25 +107,31 @@ export class CoverageChartComponent implements OnInit {
       .attr('viewBox', [-width / 2, -height / 2, width, width]);
 
     // Append the arcs.
-    const path = svg
+    const path: d3.Selection<
+      d3.BaseType | SVGPathElement,
+      ExtendedNode<DataPoint>,
+      SVGGElement,
+      unknown
+    > = svg
       .append('g')
       .selectAll('path')
       .data(root.descendants())
       .join('path')
       .attr('fill', (d) => {
-        while (d.depth > 2) d = d.parent;
-        return d.data.fill;
+        while (d.depth > 2) if (d.parent) d = d.parent;
+        return d.data.fill ?? '';
       })
-      .attr('fill-opacity', (d: any) => (arcVisible(d.current) ? 1 : 0))
-      .attr('pointer-events', (d: any) =>
+      .attr('fill-opacity', (d: ExtendedNode<DataPoint>) =>
+        arcVisible(d.current) ? 1 : 0,
+      )
+      .attr('pointer-events', (d: ExtendedNode<DataPoint>) =>
         arcVisible(d.current) ? 'auto' : 'none',
       )
-
-      .attr('d', (d: any) => arc(d.current));
+      .attr('d', (d: ExtendedNode<DataPoint>) => arc(d.current));
 
     // Make them clickable if they have children.
     path
-      .filter((d: any) => d.children)
+      .filter((d) => !!d.children)
       .style('cursor', 'pointer')
       .on('click', clicked);
 
@@ -146,8 +153,13 @@ export class CoverageChartComponent implements OnInit {
       .data(root.descendants())
       .join('g');
 
-    labels.each(function (d: any) {
-      const group = d3.select(this);
+    labels.each(function (d) {
+      const group: d3.Selection<
+        d3.BaseType | SVGGElement,
+        ExtendedNode<DataPoint>,
+        null,
+        undefined
+      > = d3.select(this);
       if (d.data.icon) {
         group
           .append('image')
@@ -155,7 +167,7 @@ export class CoverageChartComponent implements OnInit {
           .attr('width', iconSize)
           .attr('height', iconSize)
           .attr('opacity', +iconVisible(d.current))
-          .attr('transform', (d: any) => iconTransform(d.current));
+          .attr('transform', (d) => iconTransform(d.current));
       } else {
         group
           .append('text')
@@ -164,7 +176,7 @@ export class CoverageChartComponent implements OnInit {
           .attr('fill-opacity', +labelVisible(d.current))
           .attr('transform', (d: any) => labelTransform(d.current))
           .attr('fill', '#fff')
-          .attr('font-weight', '600')
+          .attr('font-weight', '700')
           .text(d.data.name);
       }
     });
@@ -178,11 +190,11 @@ export class CoverageChartComponent implements OnInit {
       .on('click', clicked);
 
     // Handle zoom on click.
-    function clicked(event: any, p: any) {
+    function clicked(event: any, p: ExtendedNode<DataPoint>) {
       parent.datum(p.parent || root);
 
       root.each(
-        (d: any) =>
+        (d) =>
           (d.target = {
             x0:
               Math.max(0, Math.min(1, (d.x0 - p.x0) / (p.x1 - p.x0))) *
@@ -204,19 +216,16 @@ export class CoverageChartComponent implements OnInit {
       // the next transition from the desired position.
       path
         .transition(t)
-        .tween('data', (d: any) => {
-          const i = d3.interpolate(d.current, d.target);
+        .tween('data', (d) => {
+          const i = d3.interpolate(d.current, d.target!);
           return (t) => (d.current = i(t));
         })
         .filter(function (d: any) {
           return +this.getAttribute('fill-opacity') || arcVisible(d.target);
         })
-        .attr('fill-opacity', (d: any) => (arcVisible(d.target) ? 1 : 0))
-        .attr('pointer-events', (d: any) =>
-          arcVisible(d.target) ? 'auto' : 'none',
-        )
-
-        .attrTween('d', (d: any) => () => arc(d.current));
+        .attr('fill-opacity', (d) => (arcVisible(d.target) ? 1 : 0))
+        .attr('pointer-events', (d) => (arcVisible(d.target) ? 'auto' : 'none'))
+        .attrTween('d', (d) => () => arc(d.current!) ?? '');
 
       labels
         .selectAll('image')
@@ -237,31 +246,31 @@ export class CoverageChartComponent implements OnInit {
         .attrTween('transform', (d: any) => () => labelTransform(d.current));
     }
 
-    function arcVisible(d) {
+    function arcVisible(d: ExtendedNode<DataPoint>) {
       return d.y1 <= 3 && d.y0 >= 0 && d.x1 > d.x0;
     }
 
-    function labelVisible(d) {
-      return d.y1 <= 3 && d.y0 >= 0 && (d.y1 - d.y0) * (d.x1 - d.x0) > 0.03;
+    function labelVisible(d: ExtendedNode<DataPoint>) {
+      return d.y1 <= 3 && d.y0 >= 0 && (d.y1 - d.y0) * (d.x1 - d.x0) > 0.05;
     }
 
-    function labelTransform(d) {
+    function labelTransform(d: ExtendedNode<DataPoint>) {
       const x = (((d.x0 + d.x1) / 2) * 180) / Math.PI;
       const y = ((d.y0 + d.y1) / 2) * radius;
       return `rotate(${x - 90}) translate(${y},0) rotate(${x < 180 ? 0 : 180})`;
     }
 
-    function iconVisible(d) {
-      return d.y1 <= 3 && d.y0 >= 0 && (d.y1 - d.y0) * (d.x1 - d.x0) > 0.3;
+    function iconVisible(d: ExtendedNode<DataPoint>) {
+      return d.y1 <= 3 && d.y0 >= 0 && (d.y1 - d.y0) * (d.x1 - d.x0) > 0;
     }
 
-    function iconTransform(d) {
+    function iconTransform(d: ExtendedNode<DataPoint>) {
       if (d.y0 < 1) return `translate(-${iconSize / 2},-${iconSize / 2})`;
       const x = (((d.x0 + d.x1) / 2) * 180) / Math.PI;
       const y = ((d.y0 + d.y1) / 2) * radius;
       return `rotate(${x - 90}) translate(${y},0) rotate(${90 - x}) translate(-${iconSize / 2},-${iconSize / 2})`;
     }
 
-    return svg.node();
+    // return svg.node();
   }
 }
