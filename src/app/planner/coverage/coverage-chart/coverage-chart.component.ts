@@ -1,5 +1,5 @@
 //@ts-nocheck
-import { Component, ElementRef, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
 import * as d3 from 'd3';
 import { getSpriteProperties } from '../../../data/namedex';
 import {
@@ -36,7 +36,7 @@ interface ExtendedNode<T> extends d3.HierarchyRectangularNode<T> {
   template: '<svg></svg>',
   imports: [],
 })
-export class CoverageChartComponent {
+export class CoverageChartComponent implements OnDestroy {
   @Input()
   set data(value: CoveragePokemon) {
     this.updateChart(value);
@@ -46,21 +46,32 @@ export class CoverageChartComponent {
 
   chartData!: CoveragePokemon;
 
-  updateChart(data: CoveragePokemon): void {
-    this.chartData = data;
-    this.createTooltip();
-    this.createSunburst(this.chartData);
+  ngOnDestroy(): void {
+    this.destroyChart();
   }
 
-  destroyChart;
+  updateChart(data: CoveragePokemon): void {
+    this.destroyChart();
+    this.chartData = data;
+    this.createTooltip();
+    this.createSunburst();
+  }
 
-  private createSunburst(data: CoveragePokemon): void {
+  destroyChart(): void {
+    if (this.svg) {
+      this.svg.selectAll('*').remove();
+    }
+    d3.select(this.el.nativeElement).select('.chart-tooltip').remove();
+    d3.select(this.el.nativeElement).select('svg').on('.zoom', null);
+  }
+
+  private createSunburst(): void {
     const hierarchyData: DataPoint = {
-      name: data.id,
+      name: this.chartData.id,
       children: [
         {
           name: 'Physical',
-          children: Object.entries(data.fullcoverage.physical).map(
+          children: Object.entries(this.chartData.fullcoverage.physical).map(
             ([type, moves]) => ({
               name: type,
               fill: typeColor(type),
@@ -79,7 +90,7 @@ export class CoverageChartComponent {
         },
         {
           name: 'Special',
-          children: Object.entries(data.fullcoverage.special).map(
+          children: Object.entries(this.chartData.fullcoverage.special).map(
             ([type, moves]) => ({
               name: type,
               fill: typeColor(type),
@@ -311,7 +322,7 @@ export class CoverageChartComponent {
       .datum(root)
       .attr(
         'xlink:href',
-        `https://img.pokemondb.net/sprites/home/normal/${getSpriteProperties(data.id, 'pd')!.id}.png`,
+        `https://img.pokemondb.net/sprites/home/normal/${getSpriteProperties(this.chartData.id, 'pd')!.id}.png`,
       )
       .attr('width', radius * 2)
       .attr('height', radius * 2)

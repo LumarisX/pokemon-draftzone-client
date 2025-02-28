@@ -77,12 +77,13 @@ th {
     justify-content: center;
     align-items: center;
     flex-grow: 1;
-    width: 2rem;
+    width: 1rem;
     overflow: hidden;
+
     img {
-      width: 2rem;
-      height: 2rem;
-      object-fit: cover;
+      height: 1rem;
+      width: 1rem;
+      object-fit: contain;
     }
   }
 }

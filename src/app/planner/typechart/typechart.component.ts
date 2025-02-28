@@ -1,11 +1,18 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { BehaviorSubject, debounceTime, distinctUntilChanged, tap } from 'rxjs';
-import { ExtendedType, Type, TYPES } from '../../data';
+import {
+  BehaviorSubject,
+  debounceTime,
+  distinctUntilChanged,
+  Subject,
+  takeUntil,
+  tap,
+} from 'rxjs';
+import { Type, TYPES } from '../../data';
 import {
   TypeChart,
   TypeChartPokemon,
@@ -29,9 +36,9 @@ import { typeColor } from '../../util/styling';
     MatSlideToggleModule,
   ],
 })
-export class PlannerTypechartComponent implements OnInit {
+export class PlannerTypechartComponent implements OnInit, OnDestroy {
   sortedTeam = new BehaviorSubject<TypeChartPokemon[]>([]);
-
+  private destroy$ = new Subject<void>();
   $typechart = new BehaviorSubject<TypeChart | null>(null);
 
   @Input()
@@ -84,16 +91,24 @@ export class PlannerTypechartComponent implements OnInit {
           this.sort(value);
           this.summarize();
         }),
+        takeUntil(this.destroy$),
       )
       .subscribe();
 
-    this.$typechart.pipe(distinctUntilChanged()).subscribe((value) => {
-      this.summarize(value?.team);
-    });
+    this.$typechart
+      .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
+      .subscribe((value) => {
+        this.summarize(value?.team);
+      });
 
     this.columnHovered
-      .pipe(debounceTime(50), distinctUntilChanged())
+      .pipe(debounceTime(50), distinctUntilChanged(), takeUntil(this.destroy$))
       .subscribe((value) => this.columnHovered.next(value));
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   sortedBy = new BehaviorSubject<string | null>(null);

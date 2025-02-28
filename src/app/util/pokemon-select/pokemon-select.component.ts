@@ -7,6 +7,7 @@ import {
   forwardRef,
   input,
   Input,
+  OnDestroy,
   OnInit,
   Output,
 } from '@angular/core';
@@ -26,7 +27,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { BehaviorSubject, combineLatest, of } from 'rxjs';
+import { BehaviorSubject, combineLatest, of, Subject } from 'rxjs';
 import { Observable } from 'rxjs/internal/Observable';
 import {
   debounceTime,
@@ -34,6 +35,7 @@ import {
   map,
   startWith,
   switchMap,
+  takeUntil,
 } from 'rxjs/operators';
 import { DataService } from '../../api/data.service';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
@@ -68,7 +70,9 @@ import { Pokemon } from '../../interfaces/draft';
     },
   ],
 })
-export class PokemonSelectComponent implements OnInit {
+export class PokemonSelectComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
+
   private isLegal: ValidatorFn = (
     control: AbstractControl,
   ): { [key: string]: any } | null => {
@@ -112,11 +116,13 @@ export class PokemonSelectComponent implements OnInit {
         switchMap((value) =>
           value ? this.dataService.getPokemonList(value) : of([]),
         ),
+        takeUntil(this.destroy$),
       )
       .subscribe((pokemonList) => {
         this.options.next(pokemonList);
         this.selectedForm.updateValueAndValidity();
       });
+
     this.filteredOptions = combineLatest([
       this.options,
       this.selectedForm.valueChanges.pipe(
@@ -124,7 +130,15 @@ export class PokemonSelectComponent implements OnInit {
         debounceTime(150),
         distinctUntilChanged(),
       ),
-    ]).pipe(map(([names, value]) => this._filter(value)));
+    ]).pipe(
+      map(([names, value]) => this._filter(value)),
+      takeUntil(this.destroy$),
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   private _filter(value: string | Pokemon | null): Pokemon[] {
