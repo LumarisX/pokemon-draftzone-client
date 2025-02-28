@@ -1,9 +1,9 @@
 @if (coverage) {
-  @for (pokemon of coverage.team; track $index) {
-    <div class="coverage-container">
+  <div class="coverage-container">
+    @for (pokemon of coverage.team; track $index) {
       <div class="chart-wrapper">
         <coverage-chart [data]="pokemon"></coverage-chart>
       </div>
-    </div>
-  }
+    }
+  </div>
 }

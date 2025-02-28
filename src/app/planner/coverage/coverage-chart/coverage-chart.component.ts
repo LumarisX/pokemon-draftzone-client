@@ -1,18 +1,12 @@
 //@ts-nocheck
-import {
-  Component,
-  ElementRef,
-  Input,
-  OnInit,
-  ViewEncapsulation,
-} from '@angular/core';
+import { Component, ElementRef, Input, OnInit } from '@angular/core';
 import * as d3 from 'd3';
+import { getSpriteProperties } from '../../../data/namedex';
 import {
   CoveragePokemon,
   FullCoverageMove,
 } from '../../../drafts/matchup-overview/matchup-interface';
 import { typeColor } from '../../../util/styling';
-import { getSpriteProperties } from '../../../data/namedex';
 
 type DataPoint = {
   name: string;
@@ -21,6 +15,7 @@ type DataPoint = {
   iconSize?: number;
   children?: DataPoint[];
   moveData?: FullCoverageMove;
+  value?: number;
 };
 
 interface PositionData {
@@ -38,31 +33,34 @@ interface ExtendedNode<T> extends d3.HierarchyRectangularNode<T> {
 @Component({
   selector: 'coverage-chart',
   standalone: true,
-  templateUrl: './coverage-chart.component.html',
-  styleUrl: './coverage-chart.component.scss',
+  template: '<svg></svg>',
   imports: [],
 })
-export class CoverageChartComponent implements OnInit {
-  @Input() data!: CoveragePokemon;
-  @Input() monCount!: number;
+export class CoverageChartComponent {
+  @Input()
+  set data(value: CoveragePokemon) {
+    this.updateChart(value);
+  }
 
   constructor(private el: ElementRef) {}
 
-  ngOnInit(): void {
+  chartData!: CoveragePokemon;
+
+  updateChart(data: CoveragePokemon): void {
+    this.chartData = data;
     this.createTooltip();
-    this.createSunburst();
+    this.createSunburst(this.chartData);
   }
 
-  private createSunburst(): void {
+  destroyChart;
+
+  private createSunburst(data: CoveragePokemon): void {
     const hierarchyData: DataPoint = {
-      name: this.data.id,
-      fill: 'var(--mat-sys-surface)',
-      icon: `https://img.pokemondb.net/sprites/home/normal/${this.data.id}.png`,
-      iconSize: 200,
+      name: data.id,
       children: [
         {
           name: 'Physical',
-          children: Object.entries(this.data.fullcoverage.physical).map(
+          children: Object.entries(data.fullcoverage.physical).map(
             ([type, moves]) => ({
               name: type,
               fill: typeColor(type),
@@ -81,7 +79,7 @@ export class CoverageChartComponent implements OnInit {
         },
         {
           name: 'Special',
-          children: Object.entries(this.data.fullcoverage.special).map(
+          children: Object.entries(data.fullcoverage.special).map(
             ([type, moves]) => ({
               name: type,
               fill: typeColor(type),
@@ -107,9 +105,7 @@ export class CoverageChartComponent implements OnInit {
     const radius = width / 6;
 
     // Compute the layout.
-    const hierarchy = d3
-      .hierarchy(hierarchyData)
-      .sum((d: DataPoint) => d.value);
+    const hierarchy = d3.hierarchy(hierarchyData).sum((d) => d.value ?? 0);
 
     const root: ExtendedNode<DataPoint> = d3
       .partition<DataPoint>()
@@ -264,16 +260,6 @@ export class CoverageChartComponent implements OnInit {
         d3.select('.chart-tooltip').style('opacity', 0);
       });
 
-    // const format = d3.format(',d');
-    // path.append('title').text(
-    //   (d) =>
-    //     `${d
-    //       .ancestors()
-    //       .map((d) => d.data.name)
-    //       .reverse()
-    //       .join('/')}\n${format(d.value!)}`,
-    // );
-
     const labels: d3.Selection<
       SVGGElement,
       ExtendedNode<DataPoint>,
@@ -299,14 +285,14 @@ export class CoverageChartComponent implements OnInit {
         null,
         undefined
       > = d3.select(this);
-      if (d.data.icon) {
+      if (d.data.icon && d.data.iconSize) {
         group
           .append('image')
           .attr('xlink:href', d.data.icon)
           .attr('width', d.data.iconSize * getIconScale(d.current))
           .attr('height', d.data.iconSize * getIconScale(d.current))
           .attr('opacity', +iconVisible(d.current))
-          .attr('transform', (d) => iconTransform(d.data.iconSize, d.current));
+          .attr('transform', (d) => iconTransform(d.data.iconSize!, d.current));
       } else {
         group
           .append('text')
@@ -325,7 +311,7 @@ export class CoverageChartComponent implements OnInit {
       .datum(root)
       .attr(
         'xlink:href',
-        `https://img.pokemondb.net/sprites/home/normal/${getSpriteProperties(this.data.id, 'pd').id}.png`,
+        `https://img.pokemondb.net/sprites/home/normal/${getSpriteProperties(data.id, 'pd')!.id}.png`,
       )
       .attr('width', radius * 2)
       .attr('height', radius * 2)
