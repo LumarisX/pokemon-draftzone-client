@@ -2,7 +2,10 @@ import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TYPES } from '../../data';
-import { Coverage } from '../../drafts/matchup-overview/matchup-interface';
+import {
+  Coverage,
+  CoveragePokemon,
+} from '../../drafts/matchup-overview/matchup-interface';
 import { CoverageChartComponent } from './coverage-chart/coverage-chart.component';
 
 @Component({
@@ -15,6 +18,8 @@ import { CoverageChartComponent } from './coverage-chart/coverage-chart.componen
 export class PlannerCoverageComponent implements OnInit {
   @Input() coverage?: Coverage;
   types = TYPES;
+
+  selected: CoveragePokemon | null = null;
 
   ngOnInit(): void {
     console.log('created');

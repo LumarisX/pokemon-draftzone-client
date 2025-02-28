@@ -1,9 +1,26 @@
-@if (coverage) {
-  <div class="coverage-container">
-    @for (pokemon of coverage.team; track $index) {
-      <div class="chart-wrapper">
-        <coverage-chart [data]="pokemon"></coverage-chart>
+<div class="coverage-main">
+  @if (coverage) {
+    <div class="pokemon-charts-container">
+      <div class="coverage-container">
+        @for (pokemon of coverage.team; track $index) {
+          <div
+            class="chart-wrapper"
+            [ngClass]="{ hidden: pokemon === selected }"
+          >
+            <coverage-chart
+              (click)="selected = pokemon; $event.stopPropagation()"
+              [data]="pokemon"
+            ></coverage-chart>
+          </div>
+        }
       </div>
-    }
-  </div>
-}
+      <div class="selected-container">
+        @if (selected) {
+          <div class="selected-wrapper">
+            <coverage-chart [data]="selected"></coverage-chart>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

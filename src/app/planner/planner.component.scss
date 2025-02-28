@@ -78,9 +78,17 @@
   justify-content: center;
 }
 
+.coverage-container {
+  height: fit-content;
+}
+
 .tab-container {
   padding: 1rem;
   width: 100%;
   height: 100%;
   overflow: auto;
+}
+
+mat-tab {
+  height: fit-content;
 }

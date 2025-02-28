@@ -9,6 +9,8 @@ import { RouterModule } from '@angular/router';
 import { DataService } from '../../api/data.service';
 import { DraftOverviewPath } from '../../drafts/draft-overview/draft-overview-routing.module';
 import { DraftFormGroup } from '../plannner.component';
+import { RulesetSelectComponent } from '../../util/ruleset-select/ruleset.component';
+import { FormatSelectComponent } from '../../util/format-select/format.component';
 
 @Component({
   selector: 'planner-settings',
@@ -24,6 +26,8 @@ import { DraftFormGroup } from '../plannner.component';
     FormsModule,
     ReactiveFormsModule,
     RouterModule,
+    RulesetSelectComponent,
+    FormatSelectComponent,
   ],
 })
 export class PlannerSettingsComponent implements OnInit {

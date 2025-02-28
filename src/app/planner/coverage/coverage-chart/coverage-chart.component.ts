@@ -45,6 +45,7 @@ export class CoverageChartComponent implements OnDestroy {
   constructor(private el: ElementRef) {}
 
   chartData!: CoveragePokemon;
+  svg;
 
   ngOnDestroy(): void {
     this.destroyChart();
@@ -71,8 +72,9 @@ export class CoverageChartComponent implements OnDestroy {
       children: [
         {
           name: 'Physical',
-          children: Object.entries(this.chartData.fullcoverage.physical).map(
-            ([type, moves]) => ({
+          children: Object.entries(this.chartData.fullcoverage.physical)
+            .sort((a, b) => a[0].localeCompare(b[0]))
+            .map(([type, moves]) => ({
               name: type,
               fill: typeColor(type),
               icon: `../../../../assets/icons/types/gen9icon/${type}.png`,
@@ -82,16 +84,16 @@ export class CoverageChartComponent implements OnDestroy {
                 value: move.value,
                 moveData: move,
               })),
-            }),
-          ),
+            })),
           icon: '../../../../assets/icons/moves/move-physical.png',
           iconSize: 150,
           fill: '#EF6845',
         },
         {
           name: 'Special',
-          children: Object.entries(this.chartData.fullcoverage.special).map(
-            ([type, moves]) => ({
+          children: Object.entries(this.chartData.fullcoverage.special)
+            .sort((a, b) => a[0].localeCompare(b[0]))
+            .map(([type, moves]) => ({
               name: type,
               fill: typeColor(type),
               icon: `../../../../assets/icons/types/gen9icon/${type}.png`,
@@ -101,8 +103,7 @@ export class CoverageChartComponent implements OnDestroy {
                 value: move.value,
                 moveData: move,
               })),
-            }),
-          ),
+            })),
           icon: '../../../../assets/icons/moves/move-special.png',
           iconSize: 150,
           fill: '#61ADF3',
@@ -149,6 +150,7 @@ export class CoverageChartComponent implements OnDestroy {
         height + margin.top + margin.bottom,
       ]);
 
+    this.svg = svg;
     const defs = svg.append('defs');
 
     const borderWidth = 0;

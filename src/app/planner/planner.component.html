@@ -103,10 +103,12 @@
           @if (coverage) {
             <mat-tab label="Coverage">
               <ng-template matTabContent>
-                <planner-coverage
-                  class="w-full overflow-y-auto"
-                  [coverage]="coverage"
-                ></planner-coverage>
+                <div class="coverage-container">
+                  <planner-coverage
+                    class="w-full overflow-y-auto"
+                    [coverage]="coverage"
+                  ></planner-coverage>
+                </div>
               </ng-template>
             </mat-tab>
           }
