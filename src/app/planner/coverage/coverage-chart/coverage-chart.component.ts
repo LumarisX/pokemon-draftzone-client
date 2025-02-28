@@ -1,8 +1,18 @@
 //@ts-nocheck
-import { Component, ElementRef, Input, OnInit } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  Input,
+  OnInit,
+  ViewEncapsulation,
+} from '@angular/core';
 import * as d3 from 'd3';
-import { CoveragePokemon } from '../../../drafts/matchup-overview/matchup-interface';
+import {
+  CoveragePokemon,
+  FullCoverageMove,
+} from '../../../drafts/matchup-overview/matchup-interface';
 import { typeColor } from '../../../util/styling';
+import { getSpriteProperties } from '../../../data/namedex';
 
 type DataPoint = {
   name: string;
@@ -10,11 +20,19 @@ type DataPoint = {
   icon?: string;
   iconSize?: number;
   children?: DataPoint[];
+  moveData?: FullCoverageMove;
 };
+
+interface PositionData {
+  x0: number;
+  x1: number;
+  y0: number;
+  y1: number;
+}
 
 interface ExtendedNode<T> extends d3.HierarchyRectangularNode<T> {
   current: ExtendedNode<T>;
-  target: ExtendedNode<T>;
+  target: PositionData;
 }
 
 @Component({
@@ -40,7 +58,7 @@ export class CoverageChartComponent implements OnInit {
       name: this.data.id,
       fill: 'var(--mat-sys-surface)',
       icon: `https://img.pokemondb.net/sprites/home/normal/${this.data.id}.png`,
-      iconSize: 240,
+      iconSize: 200,
       children: [
         {
           name: 'Physical',
@@ -49,16 +67,16 @@ export class CoverageChartComponent implements OnInit {
               name: type,
               fill: typeColor(type),
               icon: `../../../../assets/icons/types/gen9icon/${type}.png`,
-              iconSize: 40,
+              iconSize: 80,
               children: moves.map((move) => ({
                 name: move.name,
                 value: move.value,
+                moveData: move,
               })),
             }),
           ),
           icon: '../../../../assets/icons/moves/move-physical.png',
-          iconSize: 120,
-
+          iconSize: 150,
           fill: '#EF6845',
         },
         {
@@ -68,31 +86,31 @@ export class CoverageChartComponent implements OnInit {
               name: type,
               fill: typeColor(type),
               icon: `../../../../assets/icons/types/gen9icon/${type}.png`,
-              iconSize: 40,
+              iconSize: 80,
               children: moves.map((move) => ({
                 name: move.name,
                 value: move.value,
+                moveData: move,
               })),
             }),
           ),
           icon: '../../../../assets/icons/moves/move-special.png',
-          iconSize: 120,
-
+          iconSize: 150,
           fill: '#61ADF3',
         },
       ],
     };
 
+    const margin = { top: 50, bottom: 50, left: 50, right: 50 };
     const width = 800;
     const height = width;
     const radius = width / 6;
-    const iconSize = width / 10;
 
     // Compute the layout.
     const hierarchy = d3
       .hierarchy(hierarchyData)
-      .sum((d: any) => d.value)
-      .sort((a: any, b: any) => b.value - a.value);
+      .sum((d: DataPoint) => d.value);
+
     const root: ExtendedNode<DataPoint> = d3
       .partition<DataPoint>()
       .size([2 * Math.PI, hierarchy.height + 1])(
@@ -117,7 +135,48 @@ export class CoverageChartComponent implements OnInit {
     const svg = d3
       .select(this.el.nativeElement)
       .select('svg')
-      .attr('viewBox', [-width / 2, -height / 2, width, width]);
+      .attr('viewBox', [
+        -width / 2 - margin.left,
+        -height / 2 - margin.top,
+        width + margin.right + margin.left,
+        height + margin.top + margin.bottom,
+      ]);
+
+    const defs = svg.append('defs');
+
+    const borderWidth = 0;
+
+    const backgroundShadow = defs
+      .append('filter')
+      .attr('id', 'background-shadow')
+      .attr('x', '-50%')
+      .attr('y', '-50%')
+      .attr('width', '200%')
+      .attr('height', '200%');
+
+    backgroundShadow
+      .append('feDropShadow')
+      .attr('dx', '0')
+      .attr('dy', '2')
+      .attr('stdDeviation', '6')
+      .attr('flood-color', 'rgba(0,0,0,0.2');
+
+    backgroundShadow
+      .append('feDropShadow')
+      .attr('dx', '0')
+      .attr('dy', '8')
+      .attr('stdDeviation', '10')
+      .attr('flood-color', 'rgba(0,0,0,0.14');
+
+    const background = svg
+      .append('circle')
+      .datum(root)
+      .attr('r', (width + borderWidth) / 2)
+      .attr('fill', 'var(--mat-sys-surface)')
+      .attr('stroke', 'var(--mat-sys-outline)')
+      .attr('stroke-width', borderWidth)
+      .attr('filter', 'url(#background-shadow)')
+      .attr('pointer-events', 'all');
 
     // Append the arcs.
     const path: d3.Selection<
@@ -153,41 +212,67 @@ export class CoverageChartComponent implements OnInit {
     path
       .filter((d) => !!d.children)
       .style('cursor', 'pointer')
-      .on('click', clicked)
-      .on('mouseover', function (event, d) {
-        // Increase transparency
-        d3.select(this).attr('fill-opacity', 0.7);
+      .on('click', clicked);
 
-        // Show tooltip
-        d3.select('.tooltip')
-          .style('opacity', 1)
-          .html(`<strong>${d.data.name}</strong>`) // Customize content
-          .style('left', `${event.pageX + 10}px`)
-          .style('top', `${event.pageY + 10}px`);
+    path
+      .on('mouseover', function (event, d) {
+        d3.select(this).attr('fill-opacity', 0.7);
+        if (d.data.moveData) {
+          d3.select('.chart-tooltip')
+            .style('opacity', 1)
+            .html(
+              `
+                <div class="title-container">
+                  <div class="title-wrapper">
+                    <strong>${d.data.moveData.name}</strong>
+                  </div>
+                  <div class="icon-container">
+                    <div class="category-wrapper"><img src=../../../../assets/icons/moves/move-${d.data.moveData.category.toLowerCase()}.png /></div>
+                    <div class="type-wrapper"><img src=../../../../assets/icons/types/gen9words/${d.data.moveData.type}.png /></div>
+                  </div>
+                </div>
+                <div class="details-container">
+                  <div class="power-text"> 
+                    <strong>Power:</strong>
+                    <span>${d.data.moveData.basePower}</span>
+                  </div>
+                  <div class="acc-text">
+                    <strong>Accuracy:</strong>
+                    <span>${d.data.moveData.accuracy}</span>
+                  </div>
+                  <div class="pp-text"> 
+                    <strong>PP:</strong>
+                    <span>${d.data.moveData.pp}</span>
+                  </div>
+                </div>
+                <div class="desc-container">
+                  <strong>${d.data.moveData.desc}</strong>
+                </div>
+`,
+            )
+            .style('left', `${event.offsetX}px`)
+            .style('top', `${event.offsetY}px`);
+        }
       })
       .on('mousemove', function (event) {
-        // Move tooltip with mouse
-        d3.select('.tooltip')
-          .style('left', `${event.pageX + 10}px`)
-          .style('top', `${event.pageY + 10}px`);
+        d3.select('.chart-tooltip')
+          .style('left', `${event.offsetX}px`)
+          .style('top', `${event.offsetY}px`);
       })
       .on('mouseout', function () {
-        // Reset opacity
         d3.select(this).attr('fill-opacity', 1);
-
-        // Hide tooltip
-        d3.select('.tooltip').style('opacity', 0);
+        d3.select('.chart-tooltip').style('opacity', 0);
       });
 
-    const format = d3.format(',d');
-    path.append('title').text(
-      (d) =>
-        `${d
-          .ancestors()
-          .map((d) => d.data.name)
-          .reverse()
-          .join('/')}\n${format(d.value!)}`,
-    );
+    // const format = d3.format(',d');
+    // path.append('title').text(
+    //   (d) =>
+    //     `${d
+    //       .ancestors()
+    //       .map((d) => d.data.name)
+    //       .reverse()
+    //       .join('/')}\n${format(d.value!)}`,
+    // );
 
     const labels: d3.Selection<
       SVGGElement,
@@ -218,10 +303,10 @@ export class CoverageChartComponent implements OnInit {
         group
           .append('image')
           .attr('xlink:href', d.data.icon)
-          .attr('width', iconSize)
-          .attr('height', iconSize)
+          .attr('width', d.data.iconSize * getIconScale(d.current))
+          .attr('height', d.data.iconSize * getIconScale(d.current))
           .attr('opacity', +iconVisible(d.current))
-          .attr('transform', (d) => iconTransform(d.current));
+          .attr('transform', (d) => iconTransform(d.data.iconSize, d.current));
       } else {
         group
           .append('text')
@@ -236,17 +321,28 @@ export class CoverageChartComponent implements OnInit {
     });
 
     const parent = svg
-      .append('circle')
+      .append('image')
       .datum(root)
-      .attr('r', radius)
-      .attr('fill', 'none')
-      .attr('pointer-events', 'all')
-      .on('click', clicked);
+      .attr(
+        'xlink:href',
+        `https://img.pokemondb.net/sprites/home/normal/${getSpriteProperties(this.data.id, 'pd').id}.png`,
+      )
+      .attr('width', radius * 2)
+      .attr('height', radius * 2)
+      .attr('x', -radius)
+      .attr('y', -radius)
+      .attr('clip-path', `circle(${radius}px at center)`)
+      .style('cursor', 'pointer')
+      .on('click', clicked)
+      .on('mouseover', function (event, d) {
+        d3.select(this).attr('opacity', 0.7);
+      })
+      .on('mouseout', function () {
+        d3.select(this).attr('opacity', 1);
+      });
 
     // Handle zoom on click.
     function clicked(event: any, p: ExtendedNode<DataPoint>) {
-      const currentRoot = p.parent || root;
-
       root.each(
         (d) =>
           (d.target = {
@@ -287,8 +383,13 @@ export class CoverageChartComponent implements OnInit {
           return !!this.getAttribute('opacity') || iconVisible(d.target);
         })
         .transition(t)
+        .attr('width', (d: any) => d.data.iconSize * getIconScale(d.target))
+        .attr('height', (d: any) => d.data.iconSize * getIconScale(d.target))
         .attr('opacity', (d: any) => +iconVisible(d.target))
-        .attrTween('transform', (d: any) => () => iconTransform(d.current));
+        .attrTween(
+          'transform',
+          (d: any) => () => iconTransform(d.data.iconSize, d.current),
+        );
 
       labels
         .selectAll('text')
@@ -298,32 +399,39 @@ export class CoverageChartComponent implements OnInit {
         .transition(t)
         .attr('fill-opacity', (d: any) => +labelVisible(d.target))
         .attrTween('transform', (d: any) => () => labelTransform(d.current));
-      svg.datum(currentRoot);
     }
 
-    function arcVisible(d: ExtendedNode<DataPoint>) {
-      return d.y1 <= 3 && d.y0 >= 0 && d.x1 > d.x0;
+    function arcVisible(d: PositionData) {
+      return d.y1 <= 3 && d.y0 >= 1 && d.x1 > d.x0;
     }
 
-    function labelVisible(d: ExtendedNode<DataPoint>) {
-      return d.y1 <= 3 && d.y0 >= 0 && (d.y1 - d.y0) * (d.x1 - d.x0) > 0.05;
+    function labelVisible(d: PositionData) {
+      return d.y1 <= 3 && d.y0 >= 1 && (d.y1 - d.y0) * (d.x1 - d.x0) > 0.05;
     }
 
-    function labelTransform(d: ExtendedNode<DataPoint>) {
+    function labelTransform(d: PositionData) {
       const x = (((d.x0 + d.x1) / 2) * 180) / Math.PI;
       const y = ((d.y0 + d.y1) / 2) * radius;
       return `rotate(${x - 90}) translate(${y},0) rotate(${x < 180 ? 0 : 180})`;
     }
 
-    function iconVisible(d: ExtendedNode<DataPoint>) {
-      return d.y1 <= 3 && d.y0 >= 0 && (d.y1 - d.y0) * (d.x1 - d.x0) > 0;
+    function iconVisible(d: PositionData) {
+      return d.y1 <= 3 && d.y0 >= 1 && (d.y1 - d.y0) * (d.x1 - d.x0) > 0;
     }
 
-    function iconTransform(d: ExtendedNode<DataPoint>) {
-      if (d.y0 < 1) return `translate(-${iconSize / 2},-${iconSize / 2})`;
+    function iconTransform(iconSize: number, d: PositionData) {
+      if (d.y0 < 1)
+        return `translate(-${(iconSize * getIconScale(d)) / 2},-${(iconSize * getIconScale(d)) / 2})`;
       const x = (((d.x0 + d.x1) / 2) * 180) / Math.PI;
       const y = ((d.y0 + d.y1) / 2) * radius;
-      return `rotate(${x - 90}) translate(${y},0) rotate(${90 - x}) translate(-${iconSize / 2},-${iconSize / 2})`;
+      return `rotate(${x - 90}) translate(${y},0) rotate(${90 - x}) translate(-${(iconSize * getIconScale(d)) / 2},-${(iconSize * getIconScale(d)) / 2})`;
+    }
+
+    function getIconScale(d: PositionData): number {
+      if (d.y0 >= 0 && d.y0 < 1) return 1;
+      if (d.y0 >= 1 && d.y0 < 2) return 0.6;
+      if (d.y0 >= 2 && d.y0 < 3) return 0.4;
+      return 0;
     }
 
     // return svg.node();
@@ -333,14 +441,14 @@ export class CoverageChartComponent implements OnInit {
     const tooltip = d3
       .select(this.el.nativeElement)
       .append('div')
-      .attr('class', 'tooltip')
+      .attr('class', 'chart-tooltip')
       .style('position', 'absolute')
-      .style('background', 'rgba(0, 0, 0, 0.75)')
-      .style('color', '#fff')
+      .style('background', 'var(--mat-sys-secondary)')
+      .style('color', 'var(--mat-sys-on-secondary)')
       .style('padding', '5px 10px')
       .style('border-radius', '5px')
       .style('font-size', '12px')
       .style('pointer-events', 'none')
-      .style('opacity', 0); // Initially hidden
+      .style('opacity', 0);
   }
 }

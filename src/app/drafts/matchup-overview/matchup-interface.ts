@@ -86,7 +86,15 @@ export type CoverageMove = {
   stab?: true;
 };
 
-export type FullCoverageMove = CoverageMove & {
+export type FullCoverageMove = {
+  id: string;
+  name: string;
+  type: string;
+  category: string;
+  accuracy: string;
+  basePower: string;
+  desc: string;
+  pp: number;
   value: number;
 };
 

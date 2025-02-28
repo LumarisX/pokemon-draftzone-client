@@ -12,3 +12,20 @@
   transform: translate(-50%, -50%);
   pointer-events: none; // Prevent interaction blocking
 }
+
+.tooltip-title-container {
+  display: flex;
+  align-items: center;
+
+  .tooltip-type-wrapper {
+    width: 4rem;
+    height: 1.5;
+    object-fit: contain;
+  }
+
+  .tooltip-category-wrapper {
+    width: 1.5rem;
+    height: 1.5rem;
+    object-fit: contain;
+  }
+}
