@@ -1,23 +1,57 @@
 @use "@angular/material" as mat;
 
 mat-toolbar {
+  > :not(:first-child) {
+    padding-left: 0.5rem;
+  }
+
   @include mat.toolbar-overrides(
     (
-      container-background-color: var(--mat-sys-primary),
-      container-text-color: var(--mat-sys-on-primary),
+      container-background-color: var(--mat-sys-surface-container-highest),
+      container-text-color: var(--mat-sys-on-surface),
     )
   );
-  //   border-bottom: var(--mat-sys-secondary) solid 2px;;;
-}
+  @include mat.toolbar-density(-4);
 
-mat-icon {
-  @include mat.icon-overrides(
+  @include mat.button-density(-1);
+  @include mat.button-overrides(
     (
-      color: var(--mat-sys-on-primary),
+      outlined-horizontal-padding: 0.75rem,
     )
   );
 }
+header {
+  box-shadow: var(--mat-sys-level2);
+  z-index: 5000;
+}
 
-.example-spacer {
+.toolbar-spacer {
   flex: 1 1 auto;
+}
+
+.menu-tab {
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  font-family: "Nasalization RG", sans-serif;
+  &:hover {
+    background-color: var(--mat-sys-surface-container);
+  }
+}
+
+.user-info-container {
+  display: flex;
+  align-items: center;
+  .user-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 1rem;
+  }
+  .username-text {
+    padding-left: 0.5rem;
+    max-width: 4rem;
+    text-overflow: clip;
+    font-size: 0.9em;
+    line-height: 0.9em;
+    overflow: hidden;
+  }
 }

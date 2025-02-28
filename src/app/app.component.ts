@@ -47,11 +47,13 @@ export class AppComponent implements OnInit {
       route: '/league-list',
       badge: this.leagueService.newCount,
     },
-    {
-      title: 'Other Tools',
-      route: '/tools',
-    },
+    // {
+    //   title: 'Other Tools',
+    //   route: '/tools',
+    // },
   ];
+
+  draftPath = DraftOverviewPath;
 
   constructor(
     public auth: AuthService,
@@ -77,20 +79,6 @@ export class AppComponent implements OnInit {
         localStorage.setItem('shinyunlocked', 'true');
       }
     }
-  }
-
-  outer() {
-    if (this.menuDropdown && this.innerClick !== 'menu') {
-      this.menuDropdown = false;
-    }
-
-    if (this.userDropdown && this.innerClick !== 'user') {
-      this.userDropdown = false;
-    }
-    this.innerClick = undefined;
-  }
-  inner(menu: 'user' | 'menu') {
-    this.innerClick = menu;
   }
 
   getTheme() {

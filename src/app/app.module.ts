@@ -47,6 +47,7 @@ import { MatBadgeModule } from '@angular/material/badge';
     MatToolbarModule,
     MatBadgeModule,
     MatIconModule,
+    MatToolbarModule,
     MatMenuModule,
     MatButtonModule,
     RouterModule,
