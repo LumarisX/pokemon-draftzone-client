@@ -114,9 +114,7 @@ export class SpriteComponent {
           this.path = '../../../../assets/icons/unknown.svg';
           break;
         }
-        this.path = `https://play.pokemonshowdown.com/sprites/dex${
-          pokemon.shiny ? '-shiny' : ''
-        }/${props.id}.png`;
+        this.path = props.path(props.id, pokemon.shiny);
         break;
       case 'ani':
         props = getSpriteProperties(pokemon.id, 'ps');
@@ -134,9 +132,7 @@ export class SpriteComponent {
           this.path = '../../../../assets/icons/unknown.svg';
           break;
         }
-        this.path = `https://serebii.net/${
-          pokemon.shiny ? 'Shiny/SV' : 'scarletviolet/pokemon'
-        }/new/${props.id}.png`;
+        this.path = props.path(props.id, pokemon.shiny);
         this.classes = ['sprite-border'];
         break;
       case 'pmd':
@@ -145,18 +141,7 @@ export class SpriteComponent {
           this.path = '../../../../assets/icons/unknown.svg';
           break;
         }
-        if (pokemon.shiny) {
-          let splitBase = props.id.split('/');
-          if (!splitBase[1]) {
-            splitBase[1] = '0000';
-          }
-          splitBase.splice(2, 1, '0001');
-          this.path = `https://raw.githubusercontent.com/PMDCollab/SpriteCollab/master/portrait/${splitBase.join(
-            '/',
-          )}/Normal.png`;
-        } else {
-          this.path = `https://raw.githubusercontent.com/PMDCollab/SpriteCollab/master/portrait/${props.id}/Normal.png`;
-        }
+        this.path = props.path(props.id, pokemon.shiny);
         this.flip = true;
         this.classes = ['rounded-xl', 'border', 'border-symbolColor-sub'];
         break;
@@ -166,9 +151,7 @@ export class SpriteComponent {
           this.path = '../../../../assets/icons/unknown.svg';
           break;
         }
-        this.path = `https://img.pokemondb.net/sprites/home/${
-          pokemon.shiny ? 'shiny' : 'normal'
-        }/${props.id}.png`;
+        this.path = props.path(props.id, pokemon.shiny);
         this.classes = ['sprite-border'];
         break;
     }
