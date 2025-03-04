@@ -1,7 +1,6 @@
 .points-container {
   flex-grow: 0;
   border-top: 2px var(--mat-sys-outline) solid;
-  padding: 0.25rem 0.5rem;
   display: flex;
   flex-direction: column;
 
@@ -34,8 +33,11 @@ table {
   tbody {
     td {
       text-align: center;
-      padding: 0.25rem 0.5rem 0;
+      padding: 0.25rem 0 0 0.5rem;
       width: fit-content;
+      &:last-child {
+        padding-right: 0.5rem;
+      }
     }
   }
 }

@@ -5,7 +5,6 @@ import {
   Component,
   EventEmitter,
   forwardRef,
-  input,
   Input,
   OnDestroy,
   OnInit,

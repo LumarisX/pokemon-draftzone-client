@@ -1,28 +1,64 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TYPES } from '../../data';
 import {
   Coverage,
   CoveragePokemon,
 } from '../../drafts/matchup-overview/matchup-interface';
 import { CoverageChartComponent } from './coverage-chart/coverage-chart.component';
+import { CoverageTeamChartComponent } from './coverage-chart/coverage-team-chart.component';
+import {
+  BehaviorSubject,
+  debounceTime,
+  Observable,
+  Subject,
+  takeUntil,
+} from 'rxjs';
+import { MatSliderModule } from '@angular/material/slider';
 
 @Component({
   selector: 'planner-coverage',
   standalone: true,
   templateUrl: './coverage.component.html',
   styleUrl: './coverage.component.scss',
-  imports: [CommonModule, FormsModule, CoverageChartComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    CoverageChartComponent,
+    CoverageTeamChartComponent,
+    MatSliderModule,
+  ],
 })
-export class PlannerCoverageComponent implements OnInit {
-  @Input() coverage?: Coverage;
-  types = TYPES;
+export class PlannerCoverageComponent implements OnInit, OnDestroy {
+  destroy$ = new Subject<void>();
+  coverage$ = new BehaviorSubject<Coverage | null>(null);
+  @Input() set coverage(value: Coverage | null) {
+    this.coverage$.next(value);
+    this.selected = null;
+  }
 
+  get coverage() {
+    return this.coverage$.value;
+  }
+  types = TYPES;
   selected: CoveragePokemon | null = null;
 
+  sliderControl = new FormControl(60);
+  maxPower: number = 60;
+
   ngOnInit(): void {
-    console.log('created');
+    this.sliderControl.valueChanges
+      .pipe(debounceTime(300), takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value !== null) this.maxPower = value;
+      });
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   coverageColor(value: number | undefined): string | string[] {

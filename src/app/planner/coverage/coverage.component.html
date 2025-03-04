@@ -22,5 +22,14 @@
         }
       </div>
     </div>
+    <div>
+      <coverage-team-chart
+        [data]="coverage.team"
+        [maxPower]="maxPower"
+      ></coverage-team-chart>
+      <mat-slider min="20" max="120" step="10" showTickMarks discrete>
+        <input [formControl]="sliderControl" matSliderThumb />
+      </mat-slider>
+    </div>
   }
 </div>

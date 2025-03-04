@@ -114,12 +114,15 @@ export type CoveragePokemon = {
   };
 };
 
+export type CoverageMax = {
+  type: Type;
+  category: 'physical' | 'special';
+  value: number;
+}[];
+
 export type Coverage = {
   team: CoveragePokemon[];
-  max: {
-    physical: { [key: string]: CoverageMove | undefined };
-    special: { [key: string]: CoverageMove | undefined };
-  };
+  max: CoverageMax;
 };
 
 export type MoveCategory = {
