@@ -73,14 +73,14 @@ export class PlannerTypechartComponent implements OnInit, OnDestroy {
   uniqueSelected: boolean = true;
 
   set abilities(value: boolean) {
-    this.abilityIndex = value ? 1 : 0;
+    this.abilityIndex = value ? 0 : 1;
     this.summarize();
   }
 
   abilityIndex: number = 0;
   columnHovered = new BehaviorSubject<string | null>(null);
   get abilities() {
-    return !!this.abilityIndex;
+    return !this.abilityIndex;
   }
 
   ngOnInit(): void {
