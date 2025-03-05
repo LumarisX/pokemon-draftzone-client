@@ -1,13 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { TYPES } from '../../data';
+import { Type, TYPES } from '../../data';
 import {
   Coverage,
   CoveragePokemon,
 } from '../../drafts/matchup-overview/matchup-interface';
-import { CoverageChartComponent } from './coverage-chart/coverage-chart.component';
-import { CoverageTeamChartComponent } from './coverage-chart/coverage-team-chart.component';
+import { CoverageChartComponent } from './charts/coverage-chart.component';
+import { CoverageTeamChartComponent } from './charts/coverage-team-chart.component';
 import {
   BehaviorSubject,
   debounceTime,
@@ -16,6 +16,9 @@ import {
   takeUntil,
 } from 'rxjs';
 import { MatSliderModule } from '@angular/material/slider';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTabsModule } from '@angular/material/tabs';
+import { CoverageChartPreviewComponent } from './charts/coverage-chart-preview.component';
 
 @Component({
   selector: 'planner-coverage',
@@ -28,7 +31,10 @@ import { MatSliderModule } from '@angular/material/slider';
     ReactiveFormsModule,
     CoverageChartComponent,
     CoverageTeamChartComponent,
+    CoverageChartPreviewComponent,
     MatSliderModule,
+    MatTabsModule,
+    MatIconModule,
   ],
 })
 export class PlannerCoverageComponent implements OnInit, OnDestroy {
@@ -36,29 +42,101 @@ export class PlannerCoverageComponent implements OnInit, OnDestroy {
   coverage$ = new BehaviorSubject<Coverage | null>(null);
   @Input() set coverage(value: Coverage | null) {
     this.coverage$.next(value);
-    this.selected = null;
+    this.selected = value?.team[0] || null;
+    this.updateTeamData();
   }
 
   get coverage() {
     return this.coverage$.value;
   }
   types = TYPES;
-  selected: CoveragePokemon | null = null;
+  selected!: CoveragePokemon | null;
 
   sliderControl = new FormControl(60);
-  maxPower: number = 60;
+  category = new BehaviorSubject<string>('mixed');
+  category$ = this.category.asObservable();
+  teamData!: { color: string; teamData: { type: Type; value: number }[] };
 
   ngOnInit(): void {
+    this.updateTeamData();
     this.sliderControl.valueChanges
       .pipe(debounceTime(300), takeUntil(this.destroy$))
       .subscribe((value) => {
-        if (value !== null) this.maxPower = value;
+        if (value !== null && this.coverage) {
+          this.updateTeamData();
+        }
+      });
+
+    this.category$
+      .pipe(debounceTime(300), takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value !== null && this.coverage) {
+          this.updateTeamData();
+        }
       });
   }
 
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  updateTeamData() {
+    const category = this.category.value;
+    this.teamData = {
+      teamData:
+        category === 'physical' || category === 'special'
+          ? TYPES.map((type) => ({
+              type,
+              value: this.coverage!.team.reduce(
+                (sum, mon) =>
+                  sum +
+                  (mon.fullcoverage[category][type] &&
+                  mon.fullcoverage[category][type].some(
+                    (move) =>
+                      +move.basePower >= (this.sliderControl.value ?? 0),
+                  )
+                    ? 1
+                    : 0),
+                0,
+              ),
+            }))
+          : TYPES.map((type) => ({
+              type,
+              value: Math.max(
+                this.coverage!.team.reduce(
+                  (sum, mon) =>
+                    sum +
+                    (mon.fullcoverage.physical[type] &&
+                    mon.fullcoverage.physical[type].some(
+                      (move) =>
+                        +move.basePower >= (this.sliderControl.value ?? 0),
+                    )
+                      ? 1
+                      : 0),
+                  0,
+                ),
+                this.coverage!.team.reduce(
+                  (sum, mon) =>
+                    sum +
+                    (mon.fullcoverage.special[type] &&
+                    mon.fullcoverage.special[type].some(
+                      (move) =>
+                        +move.basePower >= (this.sliderControl.value ?? 0),
+                    )
+                      ? 1
+                      : 0),
+                  0,
+                ),
+              ),
+            })),
+      color:
+        category === 'physical'
+          ? '#EF6845'
+          : category === 'special'
+            ? '#61ADF3'
+            : '#eb47a4',
+    };
   }
 
   coverageColor(value: number | undefined): string | string[] {

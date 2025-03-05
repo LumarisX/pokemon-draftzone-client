@@ -1,5 +1,5 @@
 //@ts-nocheck
-import { Component, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnDestroy } from '@angular/core';
 import * as d3 from 'd3';
 import { getSpriteProperties } from '../../../data/namedex';
 import {
@@ -31,12 +31,12 @@ interface ExtendedNode<T> extends d3.HierarchyRectangularNode<T> {
 }
 
 @Component({
-  selector: 'coverage-chart',
+  selector: 'coverage-chart-preview',
   standalone: true,
   template: '<svg></svg>',
   imports: [],
 })
-export class CoverageChartComponent implements OnDestroy {
+export class CoverageChartPreviewComponent implements OnDestroy {
   @Input()
   set data(value: CoveragePokemon) {
     this.updateChart(value);
@@ -54,7 +54,6 @@ export class CoverageChartComponent implements OnDestroy {
   updateChart(data: CoveragePokemon): void {
     this.destroyChart();
     this.chartData = data;
-    this.createTooltip();
     this.createSunburst();
   }
 
@@ -85,7 +84,7 @@ export class CoverageChartComponent implements OnDestroy {
                 moveData: move,
               })),
             })),
-          icon: '../../../../assets/icons/moves/move-physical.png',
+          icon: '../../../../assets/icons/moves/sv/physical.png',
           iconSize: 150,
           fill: '#EF6845',
         },
@@ -104,7 +103,7 @@ export class CoverageChartComponent implements OnDestroy {
                 moveData: move,
               })),
             })),
-          icon: '../../../../assets/icons/moves/move-special.png',
+          icon: '../../../../assets/icons/moves/sv/special.png',
           iconSize: 150,
           fill: '#61ADF3',
         },
@@ -151,31 +150,8 @@ export class CoverageChartComponent implements OnDestroy {
       ]);
 
     this.svg = svg;
-    const defs = svg.append('defs');
 
     const borderWidth = 0;
-
-    const backgroundShadow = defs
-      .append('filter')
-      .attr('id', 'background-shadow')
-      .attr('x', '-50%')
-      .attr('y', '-50%')
-      .attr('width', '200%')
-      .attr('height', '200%');
-
-    backgroundShadow
-      .append('feDropShadow')
-      .attr('dx', '0')
-      .attr('dy', '2')
-      .attr('stdDeviation', '6')
-      .attr('flood-color', 'rgba(0,0,0,0.2');
-
-    backgroundShadow
-      .append('feDropShadow')
-      .attr('dx', '0')
-      .attr('dy', '8')
-      .attr('stdDeviation', '10')
-      .attr('flood-color', 'rgba(0,0,0,0.14');
 
     const background = svg
       .append('circle')
@@ -216,62 +192,6 @@ export class CoverageChartComponent implements OnDestroy {
       SVGGElement,
       unknown
     >;
-
-    // Make them clickable if they have children.
-    path
-      .filter((d) => !!d.children)
-      .style('cursor', 'pointer')
-      .on('click', clicked);
-
-    path
-      .on('mouseover', function (event, d) {
-        d3.select(this).attr('fill-opacity', 0.7);
-        if (d.data.moveData) {
-          d3.select('.chart-tooltip')
-            .style('opacity', 1)
-            .html(
-              `
-                <div class="title-container">
-                  <div class="title-wrapper">
-                    <strong>${d.data.moveData.name}</strong>
-                  </div>
-                  <div class="icon-container">
-                    <div class="category-wrapper"><img src=../../../../assets/icons/moves/move-${d.data.moveData.category.toLowerCase()}.png /></div>
-                    <div class="type-wrapper"><img src=../../../../assets/icons/types/gen9words/${d.data.moveData.type}.png /></div>
-                  </div>
-                </div>
-                <div class="details-container">
-                  <div class="power-text"> 
-                    <strong>Power:</strong>
-                    <span>${d.data.moveData.basePower}</span>
-                  </div>
-                  <div class="acc-text">
-                    <strong>Accuracy:</strong>
-                    <span>${d.data.moveData.accuracy}</span>
-                  </div>
-                  <div class="pp-text"> 
-                    <strong>PP:</strong>
-                    <span>${d.data.moveData.pp}</span>
-                  </div>
-                </div>
-                <div class="desc-container">
-                  <strong>${d.data.moveData.desc}</strong>
-                </div>
-`,
-            )
-            .style('left', `${event.offsetX}px`)
-            .style('top', `${event.offsetY}px`);
-        }
-      })
-      .on('mousemove', function (event) {
-        d3.select('.chart-tooltip')
-          .style('left', `${event.offsetX}px`)
-          .style('top', `${event.offsetY}px`);
-      })
-      .on('mouseout', function () {
-        d3.select(this).attr('fill-opacity', 1);
-        d3.select('.chart-tooltip').style('opacity', 0);
-      });
 
     const labels: d3.Selection<
       SVGGElement,
@@ -330,75 +250,7 @@ export class CoverageChartComponent implements OnDestroy {
       .attr('height', radius * 2)
       .attr('x', -radius)
       .attr('y', -radius)
-      .attr('clip-path', `circle(${radius}px at center)`)
-      .style('cursor', 'pointer')
-      .on('click', clicked)
-      .on('mouseover', function (event, d) {
-        d3.select(this).attr('opacity', 0.7);
-      })
-      .on('mouseout', function () {
-        d3.select(this).attr('opacity', 1);
-      });
-
-    // Handle zoom on click.
-    function clicked(event: any, p: ExtendedNode<DataPoint>) {
-      root.each(
-        (d) =>
-          (d.target = {
-            x0:
-              Math.max(0, Math.min(1, (d.x0 - p.x0) / (p.x1 - p.x0))) *
-              2 *
-              Math.PI,
-            x1:
-              Math.max(0, Math.min(1, (d.x1 - p.x0) / (p.x1 - p.x0))) *
-              2 *
-              Math.PI,
-            y0: Math.max(0, d.y0 - p.depth),
-            y1: Math.max(0, d.y1 - p.depth),
-          }),
-      );
-
-      const t = svg.transition().duration(event.altKey ? 7500 : 750);
-
-      // Transition the data on all arcs, even the ones that aren’t visible,
-      // so that if this transition is interrupted, entering arcs will start
-      // the next transition from the desired position.
-      path
-        .transition(t)
-        .tween('data', (d: ExtendedNode<DataPoint>) => {
-          const i = d3.interpolate(d.current, d.target!);
-          return (t) => (d.current = i(t));
-        })
-        .filter(function (d: any) {
-          return !!this.getAttribute('fill-opacity') || arcVisible(d.target);
-        })
-        .attr('fill-opacity', (d) => (arcVisible(d.target) ? 1 : 0))
-        .attr('pointer-events', (d) => (arcVisible(d.target) ? 'auto' : 'none'))
-        .attrTween('d', (d) => () => arc(d.current!) ?? '');
-
-      labels
-        .selectAll('image')
-        .filter(function (this: d3.BaseType, d: ExtendedNode<DataPoint>) {
-          return !!this.getAttribute('opacity') || iconVisible(d.target);
-        })
-        .transition(t)
-        .attr('width', (d: any) => d.data.iconSize * getIconScale(d.target))
-        .attr('height', (d: any) => d.data.iconSize * getIconScale(d.target))
-        .attr('opacity', (d: any) => +iconVisible(d.target))
-        .attrTween(
-          'transform',
-          (d: any) => () => iconTransform(d.data.iconSize, d.current),
-        );
-
-      labels
-        .selectAll('text')
-        .filter(function (d: any) {
-          return +this.getAttribute('fill-opacity') || labelVisible(d.target);
-        })
-        .transition(t)
-        .attr('fill-opacity', (d: any) => +labelVisible(d.target))
-        .attrTween('transform', (d: any) => () => labelTransform(d.current));
-    }
+      .attr('clip-path', `circle(${radius}px at center)`);
 
     function arcVisible(d: PositionData) {
       return d.y1 <= 3 && d.y0 >= 1 && d.x1 > d.x0;
@@ -434,20 +286,5 @@ export class CoverageChartComponent implements OnDestroy {
     }
 
     // return svg.node();
-  }
-
-  private createTooltip(): void {
-    const tooltip = d3
-      .select(this.el.nativeElement)
-      .append('div')
-      .attr('class', 'chart-tooltip')
-      .style('position', 'absolute')
-      .style('background', 'var(--mat-sys-secondary)')
-      .style('color', 'var(--mat-sys-on-secondary)')
-      .style('padding', '5px 10px')
-      .style('border-radius', '5px')
-      .style('font-size', '12px')
-      .style('pointer-events', 'none')
-      .style('opacity', 0);
   }
 }

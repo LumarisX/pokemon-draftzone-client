@@ -1,35 +1,99 @@
 <div class="coverage-main">
   @if (coverage) {
-    <div class="pokemon-charts-container">
-      <div class="coverage-container">
-        @for (pokemon of coverage.team; track $index) {
+    <div class="chart-tooltip"></div>
+    <div class="charts-container">
+      <div class="pokemon-charts-container outlined">
+        <div class="coverage-container">
+          <div class="pokemon-charts-title font-nasa">
+            Pokémon Move Coverage
+          </div>
+          <div class="coverage-charts-wrapper">
+            @for (pokemon of coverage.team; track $index) {
+              <div
+                class="chart-wrapper"
+                [ngClass]="{ hidden: pokemon === selected }"
+              >
+                <coverage-chart-preview
+                  (click)="$event.stopPropagation(); selected = pokemon"
+                  [data]="pokemon"
+                ></coverage-chart-preview>
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="selected-container">
+          @if (selected) {
+            <div class="selected-wrapper">
+              <coverage-chart [data]="selected"></coverage-chart>
+            </div>
+          }
+        </div>
+      </div>
+      <div class="team-chart-container outlined">
+        <div class="team-chart-title font-nasa">Team Coverage</div>
+        <div
+          class="team-options-container"
+          [attr.data-selected]="category.value"
+        >
           <div
-            class="chart-wrapper"
-            [ngClass]="{ hidden: pokemon === selected }"
+            class="team-option"
+            (click)="category.next('physical')"
+            [ngClass]="{
+              'team-selected': category.value === 'physical',
+            }"
           >
-            <coverage-chart
-              (click)="selected = pokemon; $event.stopPropagation()"
-              [data]="pokemon"
-            ></coverage-chart>
+            <img src="../../../assets/icons/moves/move-physical.png" />
+            Physical
           </div>
-        }
-      </div>
-      <div class="selected-container">
-        @if (selected) {
-          <div class="selected-wrapper">
-            <coverage-chart [data]="selected"></coverage-chart>
+          <div
+            class="team-option"
+            (click)="category.next('mixed')"
+            [ngClass]="{
+              'team-selected': category.value === 'mixed',
+            }"
+          >
+            <img src="../../../assets/icons/moves/move-physical.png" />
+            Mixed
+            <img src="../../../assets/icons/moves/move-special.png" />
           </div>
-        }
+          <div
+            class="team-option"
+            (click)="category.next('special')"
+            [ngClass]="{
+              'team-selected': category.value === 'special',
+            }"
+          >
+            Special
+            <img src="../../../assets/icons/moves/move-special.png" />
+          </div>
+        </div>
+        <coverage-team-chart [data]="teamData"></coverage-team-chart>
+        <div class="slider-container">
+          <span>Minimum Move BP</span>
+          <mat-slider min="20" max="120" step="10" showTickMarks discrete>
+            <input [formControl]="sliderControl" matSliderThumb />
+          </mat-slider>
+        </div>
       </div>
-    </div>
-    <div>
-      <coverage-team-chart
-        [data]="coverage.team"
-        [maxPower]="maxPower"
-      ></coverage-team-chart>
-      <mat-slider min="20" max="120" step="10" showTickMarks discrete>
-        <input [formControl]="sliderControl" matSliderThumb />
-      </mat-slider>
     </div>
   }
 </div>
+<svg xmlns="http://www.w3.org/2000/svg" width="0" height="0">
+  <defs>
+    <filter id="background-shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow
+        dx="0"
+        dy="2"
+        stdDeviation="6"
+        flood-color="rgba(0,0,0,0.2)"
+      />
+      <feDropShadow
+        dx="0"
+        dy="8"
+        stdDeviation="10"
+        flood-color="rgba(0,0,0,0.14)"
+      />
+    </filter>
+  </defs>
+</svg>

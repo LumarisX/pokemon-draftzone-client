@@ -3,25 +3,155 @@
   width: 8rem;
 }
 
-.coverage-container {
-  height: fit-content;
-  display: flex;
-  flex-wrap: wrap;
-  padding: 0.5rem;
-  justify-content: space-between;
-}
-
-.selected-wrapper {
-  height: 28rem;
-  width: 28rem;
-}
-
-.selected-container {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-}
-
 .coverage-main {
   display: flex;
+
+  justify-content: center;
+  padding: 1rem;
+
+  .outlined {
+    border-radius: 1rem;
+    background-color: var(--mat-sys-surface);
+    color: var(--mat-sys-primary);
+    box-shadow: var(--mat-sys-level3);
+    padding: 1rem;
+  }
+
+  .charts-container {
+    max-width: 90%;
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    > :not(:first-child) {
+      margin-top: 1rem;
+    }
+
+    .slider-container {
+      font-size: small;
+      mat-slider {
+        width: 12rem;
+      }
+    }
+
+    .pokemon-charts-container {
+      max-width: 100%;
+      @media (min-width: 768px) {
+        display: flex;
+      }
+
+      .coverage-container {
+        @media (min-width: 768px) {
+          border-right: 0.125rem solid var(--mat-sys-outline-variant);
+        }
+
+        .pokemon-charts-title {
+          font-size: large;
+          font-weight: 600;
+          padding: 0 1rem 0 0;
+        }
+        .coverage-charts-wrapper {
+          display: flex;
+          padding: 0.5rem;
+          max-height: fit-content;
+          overflow-x: auto;
+          @media (min-width: 768px) {
+            max-width: 50rem;
+            max-height: 25rem;
+            flex-wrap: wrap;
+          }
+          .chart-wrapper {
+            width: 8rem;
+            height: 8rem;
+            flex-shrink: 0;
+            &:hover {
+              opacity: 0.8;
+              cursor: pointer;
+            }
+          }
+        }
+      }
+
+      .selected-container {
+        display: flex;
+        justify-content: center;
+
+        .selected-wrapper {
+          height: 28rem;
+          width: 28rem;
+        }
+      }
+    }
+
+    .team-chart-container {
+      font-weight: 700;
+      max-width: fit-content;
+
+      .team-chart-title {
+        font-size: large;
+        width: 100%;
+        text-align: center;
+      }
+
+      .team-options-container {
+        display: flex;
+        position: relative;
+        border-bottom: 3px solid var(--mat-sys-outline-variant);
+        .team-option {
+          flex-grow: 1;
+          justify-content: center;
+          display: flex;
+          align-items: center;
+          padding: 0.5rem 1rem;
+          position: relative;
+          border-radius: 0.5rem 0.5rem 0 0;
+          margin: 0 0.25rem;
+          cursor: pointer;
+
+          img {
+            width: 2rem;
+            height: 2rem;
+          }
+        }
+
+        &::after {
+          content: "";
+          position: absolute;
+          bottom: -2px;
+          left: 0;
+          width: calc(100% / 3);
+          height: 2px;
+          background-color: var(--mat-sys-outline);
+          transition: transform 0.3s ease-in-out;
+        }
+      }
+
+      // Adjust border position dynamically based on the selected category
+      .team-options-container[data-selected="physical"]::after {
+        transform: translateX(0%);
+        // background-color: #ef6845;
+      }
+
+      .team-options-container[data-selected="mixed"]::after {
+        transform: translateX(100%);
+        // background-color: #eb47a4;
+      }
+
+      .team-options-container[data-selected="special"]::after {
+        transform: translateX(200%);
+        // background-color: #61adf3;
+      }
+    }
+  }
+}
+
+.chart-tooltip {
+  position: fixed;
+  background-color: var(--mat-sys-secondary);
+  color: var(--mat-sys-on-secondary);
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 12px;
+  pointer-events: none;
+  opacity: 0;
 }
