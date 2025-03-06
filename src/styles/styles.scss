@@ -206,6 +206,7 @@ $option-lineheight: 3rem;
       &.highlighted-option {
         background-color: var(--mat-sys-surface-container-highest);
         color: var(--mat-sys-on-surface-container-highest);
+        cursor: pointer;
       }
 
       .sprite-wrapper {

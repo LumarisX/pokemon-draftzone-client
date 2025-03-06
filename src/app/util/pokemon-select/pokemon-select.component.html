@@ -10,14 +10,14 @@
         <sprite [flipped]="true" [pokemon]="setPokemon"></sprite>
       </div>
     }
-    <mat-label>Pokemon</mat-label>
+    <mat-label>{{ label }}</mat-label>
     <input
       type="text"
       spellcheck="false"
       matInput
       (focus)="setOpen(true)"
       (input)="setOpen(true)"
-      (blur)="setOpen(false)"
+      (blur)="onBlur()"
       [formControl]="selectedForm"
     />
     @if (selectedForm.value) {

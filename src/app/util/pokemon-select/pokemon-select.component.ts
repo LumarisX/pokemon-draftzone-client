@@ -79,7 +79,6 @@ export class PokemonSelectComponent implements OnInit, OnDestroy {
   highlightedIndex!: number;
 
   selectedForm = new FormControl<string | null>(null, [this.isLegal]);
-  selectedPokemon: Pokemon | null = null;
   options = new BehaviorSubject<Pokemon[]>([]);
   filteredOptions = new BehaviorSubject<Pokemon[]>([]);
 
@@ -89,6 +88,9 @@ export class PokemonSelectComponent implements OnInit, OnDestroy {
   constructor(private dataService: DataService) {}
 
   private ruleset$ = new BehaviorSubject<string | null>(null);
+
+  @Input()
+  label: string = 'Pokémon';
 
   @Input()
   showSprite: string | null = null;
@@ -188,7 +190,6 @@ export class PokemonSelectComponent implements OnInit, OnDestroy {
   private onTouched: () => void = () => {};
 
   writeValue(value: Pokemon | null): void {
-    this.selectedPokemon = value;
     this.selectedForm.setValue(value?.name || null);
     this.onChange(value);
   }
@@ -206,7 +207,7 @@ export class PokemonSelectComponent implements OnInit, OnDestroy {
   }
 
   selectOption(option: Pokemon | null): void {
-    this.selectedPokemon = option;
+    clearTimeout(this.blurTimeout);
     this.selectedForm.setValue(option?.name || null);
     this.onChange(option);
     this.pokemonSelected.emit(option);
@@ -272,9 +273,9 @@ export class PokemonSelectComponent implements OnInit, OnDestroy {
   }
 
   setHighlightedIndex() {
-    this.highlightedIndex = this.selectedPokemon
+    this.highlightedIndex = this.selectedForm.value
       ? this.filteredOptions.value.findIndex(
-          (pokemon) => pokemon === this.selectedPokemon,
+          (pokemon) => pokemon.name === this.selectedForm.value,
         )
       : 0;
   }
@@ -287,5 +288,13 @@ export class PokemonSelectComponent implements OnInit, OnDestroy {
     }
 
     this.isOpen = value;
+  }
+
+  private blurTimeout: any; //timeout | undefined
+
+  onBlur() {
+    this.blurTimeout = setTimeout(() => {
+      this.setOpen(false);
+    }, 300);
   }
 }
