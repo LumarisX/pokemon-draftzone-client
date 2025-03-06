@@ -1055,7 +1055,7 @@ export const Namedex: {
     name: ['Magneton'],
     ps: { id: 'magneton', path: showdownOldPath },
     serebii: { id: '082', path: serebiiPath },
-    default: { id: 'magneton', path: homePath },
+    default: { id: 'magneton', path: homePath, flip: true },
     pmd: { id: '0082', path: pmdPath },
   },
   farfetchd: {

@@ -1,5 +1,8 @@
 import { OverlayModule } from '@angular/cdk/overlay';
-import { ScrollingModule } from '@angular/cdk/scrolling';
+import {
+  CdkVirtualScrollViewport,
+  ScrollingModule,
+} from '@angular/cdk/scrolling';
 import { CommonModule } from '@angular/common';
 import {
   Component,
@@ -9,6 +12,7 @@ import {
   OnDestroy,
   OnInit,
   Output,
+  ViewChild,
 } from '@angular/core';
 import {
   AbstractControl,
@@ -18,16 +22,11 @@ import {
   ReactiveFormsModule,
   ValidatorFn,
 } from '@angular/forms';
-import {
-  MAT_AUTOCOMPLETE_DEFAULT_OPTIONS,
-  MatAutocompleteModule,
-} from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { BehaviorSubject, combineLatest, of, Subject } from 'rxjs';
-import { Observable } from 'rxjs/internal/Observable';
+import { BehaviorSubject, combineLatest, fromEvent, of, Subject } from 'rxjs';
 import {
   debounceTime,
   distinctUntilChanged,
@@ -52,7 +51,6 @@ import { Pokemon } from '../../interfaces/draft';
     MatButtonModule,
     ScrollingModule,
     MatIconModule,
-    MatAutocompleteModule,
     SpriteComponent,
   ],
   templateUrl: './pokemon-select.component.html',
@@ -62,10 +60,6 @@ import { Pokemon } from '../../interfaces/draft';
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => PokemonSelectComponent),
       multi: true,
-    },
-    {
-      provide: MAT_AUTOCOMPLETE_DEFAULT_OPTIONS,
-      useValue: { overlayPanelClass: 'panel-full-screen-on-mobile' },
     },
   ],
 })
@@ -82,9 +76,12 @@ export class PokemonSelectComponent implements OnInit, OnDestroy {
       : { illegal: { value: control.value } };
   };
 
-  selectedForm = new FormControl<Pokemon | string | null>(null, [this.isLegal]);
+  highlightedIndex!: number;
+
+  selectedForm = new FormControl<string | null>(null, [this.isLegal]);
+  selectedPokemon: Pokemon | null = null;
   options = new BehaviorSubject<Pokemon[]>([]);
-  filteredOptions!: Observable<Pokemon[]>;
+  filteredOptions = new BehaviorSubject<Pokemon[]>([]);
 
   @Output() pokemonSelected = new EventEmitter<Pokemon | null>();
   @Output() selectionCleared = new EventEmitter();
@@ -122,17 +119,36 @@ export class PokemonSelectComponent implements OnInit, OnDestroy {
         this.selectedForm.updateValueAndValidity();
       });
 
-    this.filteredOptions = combineLatest([
+    combineLatest([
       this.options,
       this.selectedForm.valueChanges.pipe(
         startWith(null),
         debounceTime(150),
         distinctUntilChanged(),
       ),
-    ]).pipe(
-      map(([names, value]) => this._filter(value)),
-      takeUntil(this.destroy$),
-    );
+    ])
+      .pipe(
+        map(([names, value]) => this._filter(value)),
+        takeUntil(this.destroy$),
+      )
+      .subscribe((filteredList) => {
+        this.filteredOptions.next(filteredList);
+      });
+
+    fromEvent<KeyboardEvent>(document, 'keydown')
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((event) => this.handleKeydown(event));
+
+    this.selectedForm.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value) {
+          this.setHighlightedIndex();
+          this.scrollToHighlighted();
+        }
+      });
+
+    this.setHighlightedIndex();
   }
 
   ngOnDestroy(): void {
@@ -163,15 +179,17 @@ export class PokemonSelectComponent implements OnInit, OnDestroy {
 
   isDisabled = false;
 
-  displayName(value: any) {
-    return value?.name ?? '';
+  displayFn(pokemon: Pokemon | string | null): string {
+    if (typeof pokemon === 'string') return pokemon;
+    return pokemon ? pokemon.name : '';
   }
 
   private onChange: (value: Pokemon | null) => void = () => {};
   private onTouched: () => void = () => {};
 
   writeValue(value: Pokemon | null): void {
-    this.selectedForm.setValue(value);
+    this.selectedPokemon = value;
+    this.selectedForm.setValue(value?.name || null);
     this.onChange(value);
   }
 
@@ -188,19 +206,86 @@ export class PokemonSelectComponent implements OnInit, OnDestroy {
   }
 
   selectOption(option: Pokemon | null): void {
+    this.selectedPokemon = option;
+    this.selectedForm.setValue(option?.name || null);
     this.onChange(option);
     this.pokemonSelected.emit(option);
     this.onTouched();
+    this.isOpen = false;
   }
 
-  onAutocompleteOpened() {
-    requestAnimationFrame(() => {
-      const overlay = document.querySelector(
-        '.mat-mdc-autocomplete-panel',
-      ) as HTMLElement;
-      if (!overlay) return;
-      const y = overlay.getBoundingClientRect().top;
-      document.documentElement.style.setProperty('--overlay-top', `${y}px`);
-    });
+  trackByFn(index: number, item: Pokemon) {
+    return item.id;
+  }
+
+  @ViewChild('virtualScroll', { static: false })
+  virtualScroll!: CdkVirtualScrollViewport;
+
+  handleKeydown(event: KeyboardEvent) {
+    if (!this.isOpen) return;
+
+    const options = this.filteredOptions.value;
+    if (!options.length) return;
+
+    switch (event.key) {
+      case 'ArrowDown':
+        this.highlightedIndex = (this.highlightedIndex + 1) % options.length;
+        this.scrollToHighlighted();
+        event.preventDefault();
+        break;
+      case 'ArrowUp':
+        this.highlightedIndex =
+          (this.highlightedIndex - 1 + options.length) % options.length;
+        this.scrollToHighlighted();
+        event.preventDefault();
+        break;
+      case 'Enter':
+        if (this.highlightedIndex !== -1) {
+          this.selectOption(options[this.highlightedIndex]);
+        }
+        event.preventDefault();
+        break;
+    }
+  }
+
+  scrollToHighlighted() {
+    if (!this.virtualScroll || this.highlightedIndex === -1) return;
+
+    const viewport = this.virtualScroll;
+    const totalItems = this.filteredOptions.value.length;
+
+    const viewportOffset = viewport.measureScrollOffset();
+    const viewportSize = viewport.getViewportSize();
+    const itemSize = 48;
+
+    const startIndex = Math.floor(viewportOffset / itemSize);
+    const endIndex = Math.min(
+      startIndex + Math.floor(viewportSize / itemSize),
+      totalItems - 1,
+    );
+
+    if (this.highlightedIndex < startIndex) {
+      viewport.scrollToIndex(this.highlightedIndex, 'instant');
+    } else if (this.highlightedIndex >= endIndex) {
+      viewport.scrollToIndex(this.highlightedIndex - 4, 'instant');
+    }
+  }
+
+  setHighlightedIndex() {
+    this.highlightedIndex = this.selectedPokemon
+      ? this.filteredOptions.value.findIndex(
+          (pokemon) => pokemon === this.selectedPokemon,
+        )
+      : 0;
+  }
+
+  isOpen = false;
+
+  setOpen(value: boolean) {
+    if (this.isOpen !== value && this.isOpen) {
+      this.setHighlightedIndex();
+    }
+
+    this.isOpen = value;
   }
 }

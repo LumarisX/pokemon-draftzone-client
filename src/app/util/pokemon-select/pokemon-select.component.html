@@ -1,9 +1,9 @@
-<form [class]="'form-container ' + class">
-  <!-- <div
-    [ngClass]="{
-      'full-screen-on-mobile': pokemonautocomplete.isOpen,
-    }"
-  > -->
+<form
+  [class]="'form-container ' + class"
+  cdkOverlayOrigin
+  #trigger="cdkOverlayOrigin"
+  #pokemonForm
+>
   <mat-form-field class="w-full">
     @if (showSprite !== null && setPokemon) {
       <div matPrefix class="selected-sprite">
@@ -15,8 +15,10 @@
       type="text"
       spellcheck="false"
       matInput
+      (focus)="setOpen(true)"
+      (input)="setOpen(true)"
+      (blur)="setOpen(false)"
       [formControl]="selectedForm"
-      [matAutocomplete]="auto"
     />
     @if (selectedForm.value) {
       <button
@@ -28,29 +30,49 @@
         <mat-icon svgIcon="xmark"></mat-icon>
       </button>
     }
-    <mat-autocomplete
-      autoActiveFirstOption
-      #auto="matAutocomplete"
-      class="autocomplete test"
-      [displayWith]="displayName"
-      #pokemonautocomplete
-      (opened)="onAutocompleteOpened()"
-      (optionSelected)="selectOption($event.option.value)"
-    >
-      @for (option of filteredOptions | async; track $index) {
-        <mat-option [value]="option" class="autocomplete-option">
-          <div class="pokemon-option">
-            <div class="sprite-wrapper">
-              <sprite [flipped]="true" [pokemon]="option"></sprite>
-            </div>
-            {{ option.name }}
-          </div>
-        </mat-option>
-      }
-    </mat-autocomplete>
+
     @if (selectedForm.hasError("illegal")) {
       <mat-error>Pokemon is <strong>illegal</strong></mat-error>
     }
   </mat-form-field>
-  <!-- </div> -->
 </form>
+
+<ng-template
+  cdkConnectedOverlay
+  [cdkConnectedOverlayOrigin]="trigger"
+  [cdkConnectedOverlayHasBackdrop]="true"
+  [cdkConnectedOverlayOffsetY]="-24"
+  [cdkConnectedOverlayWidth]="pokemonForm.clientWidth"
+  cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
+  (backdropClick)="setOpen(false)"
+  [cdkConnectedOverlayOpen]="isOpen"
+  (detach)="setOpen(false)"
+>
+  <cdk-virtual-scroll-viewport
+    itemSize="48"
+    minBufferPx="240"
+    maxBufferPx="400"
+    class="pokemon-viewport"
+    #virtualScroll
+  >
+    <div
+      *cdkVirtualFor="
+        let option of filteredOptions;
+        let i = index;
+        trackBy: trackByFn
+      "
+      class="pokemon-item"
+      [ngClass]="{
+        'highlighted-option': highlightedIndex === i,
+      }"
+      (click)="selectOption(option)"
+    >
+      <div class="sprite-wrapper">
+        <sprite flipped [pokemon]="option"></sprite>
+      </div>
+      <div class="pokemon-text">
+        {{ option.name }}
+      </div>
+    </div>
+  </cdk-virtual-scroll-viewport>
+</ng-template>

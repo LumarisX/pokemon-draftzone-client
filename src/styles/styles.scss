@@ -181,3 +181,46 @@ $screen-size-medium: 768px;
     }
   }
 }
+
+$option-lineheight: 3rem;
+
+.pokemon-viewport {
+  height: 15rem;
+  width: 100%;
+  background-color: var(--mat-sys-surface-container-low);
+  color: var(--mat-sys-on-surface-container-low);
+  border-radius: 0 0 0.25rem 0.25rem;
+  box-shadow: var(--mat-sys-level2);
+
+  .cdk-virtual-scroll-content-wrapper {
+    width: 100%;
+    .pokemon-item {
+      height: $option-lineheight;
+      display: flex;
+      width: 100%;
+      max-width: 100%;
+
+      align-items: center;
+
+      &:hover,
+      &.highlighted-option {
+        background-color: var(--mat-sys-surface-container-highest);
+        color: var(--mat-sys-on-surface-container-highest);
+      }
+
+      .sprite-wrapper {
+        height: $option-lineheight;
+        width: $option-lineheight;
+        padding: 0.25rem;
+        flex-shrink: 0;
+      }
+
+      .pokemon-text {
+        padding-left: 0.125rem;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+    }
+  }
+}

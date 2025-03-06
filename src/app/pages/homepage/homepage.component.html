@@ -28,6 +28,37 @@
       <h2 class="w-full text-center text-2xl font-bold">News and Updates</h2>
       <mat-divider></mat-divider>
       <div class="space-y-1">
+        <h2 class="w-full text-large font-nasa">
+          Planner Redesign - March 5th 2025
+        </h2>
+        <div class="space-y-1">
+          <div class="space-y-2 grid grid-cols-1 order-2 lg:order-1">
+            <div>
+              <div>
+                The first of many redesigns coming to the site, the planner has
+                completely rebuilt from the ground up! Not only is it less
+                buggy, but its is also much cleaner and easier to see your
+                team's stats!
+              </div>
+            </div>
+          </div>
+          <div
+            class="w-full flex md:flex-row flex-col md:space-x-2 items-start"
+          >
+            <div class="w-full md:w-1/2">
+              <strong>Old</strong>
+              <img src="../../../assets/screenshots/about/planner.png" />
+            </div>
+            <div class="w-full md:w-1/2">
+              <strong>New</strong>
+              <img src="../../../assets/screenshots/about/planner2.png" />
+            </div>
+          </div>
+        </div>
+      </div>
+      <mat-divider></mat-divider>
+
+      <div class="space-y-1">
         <h2 class="w-full text-xl font-nasa text-center">
           Pokémon DraftZone Battle League (PDBL)
         </h2>
@@ -83,6 +114,7 @@
                 class="pdblbutton"
                 routerLink="/battle-zone/pdbl/sign-up"
                 mat-flat-button
+                disabled
               >
                 Sign Up
               </button>
