@@ -1,130 +1,132 @@
+import { CdkAccordionModule } from '@angular/cdk/accordion';
+import { ENTER, COMMA } from '@angular/cdk/keycodes';
 import { CommonModule } from '@angular/common';
-import { Component, forwardRef, Input, ViewChild } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import {
-  AbstractControl,
-  ControlValueAccessor,
+  FormControl,
+  ReactiveFormsModule,
+  FormsModule,
   FormArray,
   FormGroup,
-  NG_VALIDATORS,
-  NG_VALUE_ACCESSOR,
-  ReactiveFormsModule,
-  ValidationErrors,
+  FormBuilder,
 } from '@angular/forms';
-import { RouterModule } from '@angular/router';
-import { getPidByName, nameList } from '../../../data/namedex';
+import {
+  MatAutocompleteModule,
+  MatAutocompleteSelectedEvent,
+} from '@angular/material/autocomplete';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatChipsModule, MatChipInputEvent } from '@angular/material/chips';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatTabsModule } from '@angular/material/tabs';
+import { SpriteComponent } from '../../../images/sprite/sprite.component';
+import { TeraSVG } from '../../../images/svg-components/tera.component';
+import { ZSVG } from '../../../images/svg-components/z.component';
 import { Pokemon } from '../../../interfaces/draft';
-import { SelectSearchComponent } from '../../dropdowns/select/select-search.component';
-import { PokemonFormComponent } from '../pokemon-form/pokemon-form.component';
+
+type DraftPokemonFormGroup = {
+  pokemon: FormControl<Pokemon>;
+  shiny: FormControl<boolean | null>;
+  z: FormControl<boolean | null>;
+  dmax: FormControl<boolean | null>;
+  tera: FormControl<boolean | null>;
+  formes: FormControl<Pokemon[] | null>;
+  nickname: FormControl<string | null>;
+  moves: FormControl<string[] | null>;
+  abilities: FormControl<string[] | null>;
+};
 
 @Component({
-  selector: 'team-form',
+  selector: 'new-team-form',
   standalone: true,
   imports: [
     CommonModule,
-    RouterModule,
-    PokemonFormComponent,
     ReactiveFormsModule,
-    SelectSearchComponent,
+    FormsModule,
+    MatButtonModule,
+    MatInputModule,
+    MatChipsModule,
+    MatIconModule,
+    MatCheckboxModule,
+    MatTabsModule,
+    MatAutocompleteModule,
+    CdkAccordionModule,
+    SpriteComponent,
+    TeraSVG,
+    ZSVG,
   ],
   templateUrl: './team-form.component.html',
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => TeamFormComponent),
-      multi: true,
-    },
-    {
-      provide: NG_VALIDATORS,
-      useExisting: forwardRef(() => TeamFormComponent),
-      multi: true,
-    },
-  ],
+  styleUrl: './team-form.component.scss',
 })
-export class TeamFormComponent implements ControlValueAccessor {
-  @Input() color: string = 'menu';
-  @Input() maxCols: number = 1;
-  @Input() extraClass: string = '';
-
+export class NewTeamFormComponent implements OnInit {
   importing: boolean = false;
-  constructor() {}
-  names = nameList();
+  readonly separatorKeyCodes: number[] = [ENTER, COMMA];
+  teamArray!: FormArray<FormGroup<DraftPokemonFormGroup>>;
 
-  _teamArray: FormArray<FormGroup> = new FormArray([] as FormGroup[]);
+  constructor(private fb: FormBuilder) {}
 
-  set teamArray(pokemons: Pokemon[]) {
-    this._teamArray = new FormArray(
-      pokemons.map((pokemon) => PokemonFormComponent.addPokemonForm(pokemon)),
+  team: Pokemon[] = [
+    {
+      id: 'deoxysattack',
+      name: 'Deoxys-Attack',
+    },
+    {
+      id: 'clefable',
+      name: 'Clefable',
+    },
+    {
+      id: 'minior',
+      name: 'Minior',
+    },
+  ];
+
+  formeOptions: Pokemon[] = [
+    { id: 'miniormeteor', name: 'Minior-Meteor' },
+    { id: 'deoxysdefense', name: 'Deoxys-Defense' },
+    { id: 'deoxys', name: 'Deoxys' },
+    { id: 'deoxysspeed', name: 'Deoxys-Speed' },
+  ];
+
+  ngOnInit(): void {
+    this.teamArray = this.fb.array(
+      this.team.map(
+        (mon) =>
+          new FormGroup<DraftPokemonFormGroup>({
+            pokemon: new FormControl(mon, { nonNullable: true }),
+            shiny: new FormControl<boolean | null>(false),
+            z: new FormControl<boolean | null>(false),
+            dmax: new FormControl<boolean | null>(false),
+            tera: new FormControl<boolean | null>(false),
+            formes: new FormControl<Pokemon[] | null>([]),
+            nickname: new FormControl<string | null>(''),
+            moves: new FormControl<string[] | null>([]),
+            abilities: new FormControl<string[] | null>([]),
+          }),
+      ),
     );
   }
 
-  get teamArray(): FormArray<FormGroup> {
-    return this._teamArray;
+  readonly keywords = signal<string[]>([]);
+
+  removeKeyword(keyword: string) {
+    this.keywords.update((keywords) => {
+      const index = keywords.indexOf(keyword);
+      if (index < 0) return keywords;
+      keywords.splice(index, 1);
+      return [...keywords];
+    });
   }
 
-  @ViewChild(SelectSearchComponent)
-  selectSearch?: SelectSearchComponent<Pokemon>;
-
-  addNewPokemon(pokemonData: Pokemon | null | undefined) {
-    if (!pokemonData) return;
-    this.teamArray.push(PokemonFormComponent.addPokemonForm(pokemonData));
-    this.selectSearch?.clearSelection();
-  }
-
-  deletePokemon(index: number): void {
-    this.teamArray.removeAt(index);
-  }
-
-  importPokemon(data: string) {
-    this.teamArray.clear();
-    data
-      .split(/\n|,/)
-      .map((string) => string.trim())
-      .forEach((name) => {
-        this.addNewPokemon({
-          id: getPidByName(name) ?? '',
-          name: name,
-        });
-      });
-    this.importing = false;
-  }
-
-  importText() {
-    return this.teamArray.value.map((pokemon) => pokemon.name).join('\n');
-  }
-
-  validate(control: AbstractControl): ValidationErrors | null {
-    if (this.teamArray.valid) {
-      return null;
-    }
-    return {
-      invalidForm: { valid: false, message: 'Team fields are invalid' },
-    };
-  }
-
-  private onTouched: () => void = () => {};
-  isDisabled = false;
-
-  writeValue(value: Pokemon[] | null): void {
+  add(event: MatChipInputEvent) {
+    const value = event.value;
     if (value) {
-      this.teamArray.clear();
-      value.forEach((pokemon) => {
-        this.teamArray.push(PokemonFormComponent.addPokemonForm(pokemon));
-      });
+      this.keywords.update((keywords) => [...keywords, value]);
     }
+    event.chipInput.clear();
   }
 
-  registerOnChange(fn: (value: any) => void): void {
-    this.teamArray.valueChanges.subscribe(fn);
-  }
-
-  registerOnTouched(fn: () => void): void {
-    this.onTouched = fn;
-  }
-
-  setDisabledState(isDisabled: boolean): void {
-    this.isDisabled = isDisabled;
-    this.teamArray?.controls.forEach((control) =>
-      isDisabled ? control.disable() : control.enable(),
-    );
+  selected(event: MatAutocompleteSelectedEvent) {
+    this.keywords.update((keywords) => [...keywords, event.option.viewValue]);
   }
 }

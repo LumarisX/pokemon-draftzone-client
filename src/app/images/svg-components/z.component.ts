@@ -5,7 +5,6 @@ import { Component } from '@angular/core';
   standalone: true,
   template: `<svg
     viewBox="0 0 542 239"
-    class="stroke-symbolColor-main"
     version="1.0"
     xmlns="http://www.w3.org/2000/svg"
   >

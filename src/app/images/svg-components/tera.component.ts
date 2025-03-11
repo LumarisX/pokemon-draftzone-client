@@ -6,7 +6,6 @@ import { Component } from '@angular/core';
   template: `<svg
     xmlns="http://www.w3.org/2000/svg"
     class="w-full h-full stroke-symbolColor-main"
-    fill="none"
     viewBox="0 0 1200 1200"
   >
     <path

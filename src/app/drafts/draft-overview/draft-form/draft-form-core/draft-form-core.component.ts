@@ -1,16 +1,26 @@
+import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import {
+  ReactiveFormsModule,
+  FormGroup,
+  FormControl,
+  FormBuilder,
   AbstractControl,
   FormArray,
-  FormGroup,
-  ReactiveFormsModule,
 } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatStepperModule } from '@angular/material/stepper';
 import { RouterModule } from '@angular/router';
 import { DataService } from '../../../../api/data.service';
-import { getPidByName, nameList } from '../../../../data/namedex';
-import { SelectNoSearchComponent } from '../../../../util/dropdowns/select/select-no-search.component';
-import { TeamFormComponent } from '../../../../util/forms/team-form/team-form.component';
+import { getPidByName } from '../../../../data/namedex';
+import { Pokemon } from '../../../../interfaces/draft';
+import { FormatSelectComponent } from '../../../../util/format-select/format.component';
+import { NewTeamFormComponent } from '../../../../util/forms/team-form/team-form.component';
+import { RulesetSelectComponent } from '../../../../util/ruleset-select/ruleset.component';
 
 @Component({
   selector: 'draft-form-core',
@@ -19,19 +29,58 @@ import { TeamFormComponent } from '../../../../util/forms/team-form/team-form.co
     CommonModule,
     RouterModule,
     ReactiveFormsModule,
-    SelectNoSearchComponent,
-    TeamFormComponent,
+    MatInputModule,
+    MatButtonModule,
+    MatDividerModule,
+    MatStepperModule,
+    MatIconModule,
+    FormatSelectComponent,
+    NewTeamFormComponent,
+    RulesetSelectComponent,
+  ],
+  providers: [
+    {
+      provide: STEPPER_GLOBAL_OPTIONS,
+      useValue: {
+        displayDefaultIndicatorType: false,
+        useValue: { showError: true },
+      },
+    },
   ],
   templateUrl: './draft-form-core.component.html',
+  styleUrl: './draft-form-core.component.scss',
 })
 export class DraftFormCoreComponent implements OnInit {
   formats: string[] = [];
   rulesets: string[] = [];
-  @Input() draftForm!: FormGroup;
-  @Output() formSubmitted = new EventEmitter<FormGroup>();
+  @Input() draftForm!: FormGroup<{
+    details: FormGroup<{
+      leagueName: FormControl<string | null>;
+      teamName: FormControl<string | null>;
+      format: FormControl<string | null>;
+      ruleset: FormControl<string | null>;
+      doc: FormControl<string | null>;
+    }>;
+    team: FormControl<Pokemon[] | null>;
+  }>;
+  @Output() formSubmitted = new EventEmitter<
+    Partial<{
+      details: Partial<{
+        leagueName: string | null;
+        teamName: string | null;
+        format: string | null;
+        ruleset: string | null;
+        doc: string | null;
+      }>;
+      team: Pokemon[] | null;
+    }>
+  >();
   importing = false;
-  constructor(private dataService: DataService) {}
-  names = nameList();
+  constructor(
+    private dataService: DataService,
+    private fb: FormBuilder,
+  ) {}
+  detailsForm!: FormGroup;
 
   ngOnInit(): void {
     this.dataService.getFormats().subscribe((formats) => {
@@ -71,5 +120,13 @@ export class DraftFormCoreComponent implements OnInit {
         })),
     );
     this.importing = false;
+  }
+
+  openLink(url: string) {
+    let trimmed = url.trim();
+    if (trimmed && !/^https?:\/\//i.test(trimmed)) {
+      trimmed = 'https://' + trimmed;
+    }
+    window.open(trimmed, '_blank');
   }
 }

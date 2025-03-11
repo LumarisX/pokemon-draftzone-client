@@ -1,69 +1,151 @@
-<div class="w-full p-2 bg-{{ color }}-200 {{ extraClass }}">
-  @if (!importing) {
-    <div class="flex items-center justify-between w-full">
-      <div class="w-full max-w-sm px-4">
-        <select-search
-          [placeholder]="'Add a Pokemon'"
-          class="rounded-lg bg-{{ color }}-100 shadow-md shadow-{{ color }}-400"
-          (itemSelected)="addNewPokemon($event ?? null)"
-          [items]="names"
-        ></select-search>
-      </div>
-      <button
-        type="button"
-        (click)="importing = true"
-        class="flex items-center justify-center w-32 h-6 px-1 my-3 font-bold rounded-full shadow bg-menu-200 hover:bg-menu-100 shadow-menu-600"
-      >
-        Import
-      </button>
-    </div>
-    <div
-      class="grid grid-cols-1 gap-4 p-1 min-h-48"
-      [ngClass]="{
-        'xl:grid-cols-2': maxCols === 2,
-      }"
-    >
-      @for (pokemonForm of teamArray.controls; track $index) {
-        <pokemon-form
-          [pokemonForm]="$any(pokemonForm)"
-          [color]="color"
-          [colorValue]="300"
-          class="w-full p-1 rounded-xl shadow-md bg-{{ color }}-100"
-          [formIndex]="$index"
-          (deletePokemonEvent)="deletePokemon($event)"
-          (addPokemonEvent)="addNewPokemon($event)"
-        ></pokemon-form>
-      }
-    </div>
+<div class="main-container">
+  @if (importing) {
   } @else {
-    <button
-      type="button"
-      (click)="importing = false"
-      class="flex items-center justify-center w-32 h-6 px-1 my-3 font-bold rounded-full shadow bg-menu-200 hover:bg-menu-100 shadow-menu-600"
-    >
-      Cancel
-    </button>
-
-    <div class="flex justify-center w-full">
-      <textarea
-        #textAreaInfo
-        spellcheck="false"
-        class="w-2/3 p-2 bg-{{ color }}-100 rounded resize-none h-96 max-w-128"
-        placeholder="Deoxys&#10;Minior&#10;Clefable&#10;..."
-        >{{ importText() }}</textarea
-      >
+    <div class="add-bar">
+      <button mat-flat-button>Add pokemon</button>
+      <button mat-flat-button>Import</button>
     </div>
-    <div class="flex justify-center w-full">
-      <button
-        type="button"
-        (click)="importPokemon(textAreaInfo.value)"
-        class="w-32 px-1 my-3 font-bold rounded-full shadow bg-menu-200 hover:bg-menu-100 shadow-menu-600"
-      >
-        Import
-      </button>
+    <div class="team-container">
+      <cdk-accordion #movechartAccordion>
+        @for (pokemon of teamArray.controls; track pokemon) {
+          <cdk-accordion-item #accordionItem="cdkAccordionItem">
+            <button (click)="accordionItem.toggle()" class="item-header">
+              <div class="flex items-center">
+                <span>
+                  <mat-icon>drag_indicator</mat-icon>
+                </span>
+                <sprite
+                  size="2.5rem"
+                  flipped
+                  [pokemon]="{
+                    id: pokemon.controls.pokemon.value.id,
+                    name: pokemon.controls.pokemon.value.name,
+                    shiny: !!pokemon.controls.shiny.value,
+                  }"
+                ></sprite>
+                {{
+                  pokemon.controls.nickname.value ||
+                    pokemon.controls.pokemon.value.name
+                }}
+                <div class="tera-wrapper">
+                  <tera-svg></tera-svg>
+                </div>
+              </div>
+              <div>
+                <button mat-icon-button>
+                  <mat-icon>settings</mat-icon>
+                </button>
+                <button mat-icon-button>
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+            </button>
+            @if (accordionItem.expanded) {
+              <mat-tab-group mat-stretch-tabs="false">
+                <mat-tab>
+                  <ng-template mat-tab-label>
+                    <span>Cosmetics</span>
+                    <mat-icon>health_and_beauty</mat-icon>
+                  </ng-template>
+                  <div class="tab-container">
+                    <mat-checkbox [formControl]="pokemon.controls.shiny"
+                      >Shiny</mat-checkbox
+                    >
+                    <mat-form-field>
+                      <mat-label>Nickname</mat-label>
+                      <input
+                        matInput
+                        [formControl]="pokemon.controls.nickname"
+                      />
+                    </mat-form-field>
+                  </div>
+                </mat-tab>
+
+                <mat-tab>
+                  <ng-template mat-tab-label>
+                    <span>Captain</span>
+                    <mat-icon>sports</mat-icon>
+                  </ng-template>
+                  <div class="tab-container">
+                    <mat-checkbox [formControl]="pokemon.controls.dmax"
+                      >Dynamax Captain</mat-checkbox
+                    >
+                    <mat-checkbox [formControl]="pokemon.controls.z"
+                      >Z Captain</mat-checkbox
+                    >
+                    <mat-checkbox [formControl]="pokemon.controls.tera"
+                      >Tera Captain</mat-checkbox
+                    >
+                  </div>
+                </mat-tab>
+
+                <mat-tab>
+                  <ng-template mat-tab-label>
+                    <span>Advanced</span>
+                    <mat-icon>construction</mat-icon>
+                  </ng-template>
+                  <div class="tab-container">
+                    <mat-form-field>
+                      <mat-label>Formes</mat-label>
+                      <mat-chip-grid #formeChipGrid>
+                        @for (keyword of keywords(); track keyword) {
+                          <mat-chip-row (removed)="removeKeyword(keyword)">
+                            <sprite matChipAvatar [name]="keyword"></sprite>
+                            {{ keyword }}
+                            <button matChipRemove>
+                              <mat-icon>cancel</mat-icon>
+                            </button>
+                          </mat-chip-row>
+                        }
+                      </mat-chip-grid>
+                      <input
+                        placeholder="New formes..."
+                        [matChipInputFor]="formeChipGrid"
+                        (matChipInputTokenEnd)="add($event)"
+                        #formeInput
+                        [matAutocomplete]="formeAuto"
+                        [matChipInputSeparatorKeyCodes]="separatorKeyCodes"
+                      />
+                      <mat-autocomplete
+                        #formeAuto="matAutocomplete"
+                        (optionSelected)="
+                          selected($event); formeInput.value = ''
+                        "
+                      >
+                        @for (formeOption of formeOptions; track formeOption) {
+                          <mat-option [value]="formeOption.id">
+                            {{ formeOption.name }}</mat-option
+                          >
+                        }
+                      </mat-autocomplete>
+                    </mat-form-field>
+
+                    <mat-form-field>
+                      <mat-label>Additional Moves</mat-label>
+                      <mat-chip-grid #moveChipGrid></mat-chip-grid>
+                      <input
+                        placeholder="New move..."
+                        [matChipInputFor]="moveChipGrid"
+                      />
+                    </mat-form-field>
+                    <mat-form-field>
+                      <mat-label>New Abilities</mat-label>
+                      <mat-chip-grid #abilityChipGrid> </mat-chip-grid>
+                      <input
+                        placeholder="New ability..."
+                        [matChipInputFor]="abilityChipGrid"
+                      />
+                    </mat-form-field>
+                  </div>
+                </mat-tab>
+              </mat-tab-group>
+            }
+          </cdk-accordion-item>
+        }
+      </cdk-accordion>
     </div>
   }
 </div>
 <!-- @for (control of teamArray.controls; track $index) {
-{{ control.value | json }}
+  {{ control.value | json }}
 } -->

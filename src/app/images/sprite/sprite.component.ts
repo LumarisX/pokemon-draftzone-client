@@ -9,6 +9,7 @@ import {
 import { Pokemon } from '../../interfaces/draft';
 import { SettingsService } from '../../pages/settings/settings.service';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { BooleanInput } from '@angular/cdk/coercion';
 
 @Component({
   selector: 'sprite',
@@ -60,7 +61,7 @@ export class SpriteComponent {
     return this._pokemon.id;
   }
   flip = false;
-  @Input() flipped: string | true | null = null;
+  @Input() flipped: BooleanInput = null;
   @Input() disabled? = false;
   get pokemon(): Pokemon {
     return this._pokemon;
