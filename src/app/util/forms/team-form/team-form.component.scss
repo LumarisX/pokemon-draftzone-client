@@ -2,7 +2,6 @@
 
 cdk-accordion-item {
   display: block;
-  border-bottom: 0.5px solid var(--mat-sys-outline);
   padding: 2px 0;
   background-color: var(--mat-sys-surface-variant);
 
@@ -10,6 +9,17 @@ cdk-accordion-item {
     display: flex;
     justify-content: space-between;
     width: 100%;
+    height: fit-content;
+    align-items: center;
+    sprite {
+      margin: 2px 0;
+      width: 4rem;
+      height: 4rem;
+    }
+  }
+
+  .name-title {
+    font-size: 1.1em;
   }
 }
 
@@ -23,13 +33,30 @@ cdk-accordion {
 
 .tab-container {
   display: flex;
-  width: 100%;
-  flex-wrap: wrap;
-  padding: 0 0.5rem;
+  padding: 0.5rem 0.5rem 0;
   flex-direction: column;
 }
 
+.tera-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  max-width: 15rem;
+  img {
+    flex-grow: 0;
+    width: 2rem;
+    height: 2rem;
+  }
+}
+
+.captain-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
 .add-bar {
+  margin-top: 0.25rem;
+  margin-bottom: -1rem;
   display: flex;
   justify-content: space-between;
   @include mat.button-density(1);
@@ -39,8 +66,28 @@ mat-icon {
   color: var(--mat-sys-on-surface-variant);
 }
 
+.drag-icon {
+  padding: 0 0.25rem;
+  cursor: move;
+}
+
+.cdk-drag-preview {
+  height: 4rem;
+}
+
 mat-tab-group {
   background-color: var(--mat-sys-surface);
+
+  .tab-icon-wrapper {
+    margin-left: 0.25rem;
+    height: 1em;
+    width: 1em;
+    mat-icon {
+      height: 100%;
+      width: 100%;
+      font-size: 1em;
+    }
+  }
 }
 
 // .main-container {
@@ -52,7 +99,9 @@ mat-tab-group {
 //   );
 // }
 
-.tera-wrapper {
+.icon-container {
   height: 2rem;
+  display: flex;
+  align-items: center;
   fill: var(--mat-sys-on-surface-variant);
 }

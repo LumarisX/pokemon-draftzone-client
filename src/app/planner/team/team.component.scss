@@ -41,6 +41,9 @@ table {
     }
   }
 }
+.preview-sprite {
+  height: 4rem;
+}
 
 .team-item:not(:last-child) {
   border-bottom: 1px var(--secondary-60) solid;

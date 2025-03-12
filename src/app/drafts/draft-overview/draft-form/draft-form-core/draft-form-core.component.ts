@@ -19,7 +19,7 @@ import { DataService } from '../../../../api/data.service';
 import { getPidByName } from '../../../../data/namedex';
 import { Pokemon } from '../../../../interfaces/draft';
 import { FormatSelectComponent } from '../../../../util/format-select/format.component';
-import { NewTeamFormComponent } from '../../../../util/forms/team-form/team-form.component';
+import { TeamFormComponent } from '../../../../util/forms/team-form/team-form.component';
 import { RulesetSelectComponent } from '../../../../util/ruleset-select/ruleset.component';
 
 @Component({
@@ -35,7 +35,7 @@ import { RulesetSelectComponent } from '../../../../util/ruleset-select/ruleset.
     MatStepperModule,
     MatIconModule,
     FormatSelectComponent,
-    NewTeamFormComponent,
+    TeamFormComponent,
     RulesetSelectComponent,
   ],
   providers: [

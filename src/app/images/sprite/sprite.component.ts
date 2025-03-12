@@ -61,7 +61,7 @@ export class SpriteComponent {
     return this._pokemon.id;
   }
   flip = false;
-  @Input() flipped: BooleanInput = null;
+  @Input() flipped: string | true | null = null;
   @Input() disabled? = false;
   get pokemon(): Pokemon {
     return this._pokemon;

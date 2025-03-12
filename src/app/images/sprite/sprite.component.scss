@@ -14,15 +14,7 @@ img {
 }
 
 .sprite-border {
-  -webkit-filter: drop-shadow(0.5px 0px 0 theme("colors.spriteBorder"))
-    drop-shadow(-0.5px 0px 0 theme("colors.spriteBorder"))
-    drop-shadow(0px -0.5px 0 theme("colors.spriteBorder"))
-    drop-shadow(0px 0.5px 0 theme("colors.spriteBorder"));
-  filter: drop-shadow(0.5px 0px 0 theme("colors.spriteBorder"))
-    drop-shadow(-0.5px 0px 0 theme("colors.spriteBorder"))
-    drop-shadow(0px -0.5px 0 theme("colors.spriteBorder"))
-    drop-shadow(0px 0.5px 0 theme("colors.spriteBorder"));
-  z-index: 0;
+  filter: url(#borderFilter);
 }
 
 .disabled {

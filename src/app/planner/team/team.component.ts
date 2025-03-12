@@ -14,7 +14,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { PokemonSelectComponent } from '../../util/pokemon-select/pokemon-select.component';
-import { DraftFormGroup, TeamFormGroup } from '../plannner.component';
+import { DraftFormGroup } from '../plannner.component';
 
 @Component({
   selector: 'planner-team',

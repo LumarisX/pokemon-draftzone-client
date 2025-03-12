@@ -182,6 +182,11 @@ $screen-size-medium: 768px;
   }
 }
 
+//Fix between tailwind and angular materials
+.mdc-notched-outline__notch {
+  border-right: none;
+}
+
 $option-lineheight: 3rem;
 
 .pokemon-viewport {

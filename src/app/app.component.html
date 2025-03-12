@@ -237,3 +237,27 @@
     <app-body></app-body>
   </main>
 </div>
+<svg width="0" height="0">
+  <defs>
+    <filter id="borderFilter">
+      <feMorphology
+        operator="dilate"
+        radius=".5"
+        in="SourceAlpha"
+        result="border"
+      />
+      <feFlood flood-color="#64748b" result="borderColor" />
+      <!-- tailwind slate 500 -->
+      <feComposite
+        in="borderColor"
+        in2="border"
+        operator="in"
+        result="coloredBorder"
+      />
+      <feMerge>
+        <feMergeNode in="coloredBorder" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+</svg>

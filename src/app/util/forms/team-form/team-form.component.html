@@ -2,148 +2,219 @@
   @if (importing) {
   } @else {
     <div class="add-bar">
-      <button mat-flat-button>Add pokemon</button>
+      <pokemon-select
+        #pokemonInput
+        [ruleset]="ruleset"
+        (pokemonSelected)="addPokemon($event); pokemonInput.clearSelection()"
+        appearance="outline"
+        label="Add Pokemon"
+      ></pokemon-select>
       <button mat-flat-button>Import</button>
     </div>
-    <div class="team-container">
-      <cdk-accordion #movechartAccordion>
-        @for (pokemon of teamArray.controls; track pokemon) {
-          <cdk-accordion-item #accordionItem="cdkAccordionItem">
-            <button (click)="accordionItem.toggle()" class="item-header">
-              <div class="flex items-center">
-                <span>
-                  <mat-icon>drag_indicator</mat-icon>
-                </span>
-                <sprite
-                  size="2.5rem"
-                  flipped
-                  [pokemon]="{
-                    id: pokemon.controls.pokemon.value.id,
-                    name: pokemon.controls.pokemon.value.name,
-                    shiny: !!pokemon.controls.shiny.value,
-                  }"
-                ></sprite>
-                {{
-                  pokemon.controls.nickname.value ||
-                    pokemon.controls.pokemon.value.name
-                }}
-                <div class="tera-wrapper">
-                  <tera-svg></tera-svg>
+    @if (teamArray.length > 0) {
+      <div class="team-container">
+        <cdk-accordion
+          #movechartAccordion
+          cdkDropList
+          (cdkDropListDropped)="drop($event)"
+        >
+          @for (
+            monGroup of teamArray.controls;
+            track monGroup;
+            let index = $index
+          ) {
+            <cdk-accordion-item #accordionItem="cdkAccordionItem" cdkDrag>
+              <div *cdkDragPreview>
+                @if (monGroup.controls.pokemon.value) {
+                  <sprite
+                    [flipped]="true"
+                    [pokemon]="monGroup.controls.pokemon.value"
+                  >
+                  </sprite>
+                }
+              </div>
+              <button (click)="accordionItem.toggle()" class="item-header">
+                <div class="flex items-center space-x-1">
+                  <mat-icon class="drag-icon" cdkDragHandle
+                    >drag_indicator</mat-icon
+                  >
+                  <sprite
+                    class="preview-sprite"
+                    flipped
+                    [pokemon]="{
+                      id: monGroup.controls.pokemon.value.id,
+                      name: monGroup.controls.pokemon.value.name,
+                      shiny: !!monGroup.controls.shiny.value,
+                    }"
+                  ></sprite>
+                  <div class="name-title">
+                    {{
+                      monGroup.controls.nickname.value ||
+                        monGroup.controls.pokemon.value.name
+                    }}
+                  </div>
+
+                  <div class="icon-container">
+                    @if (monGroup.controls.tera.value) {
+                      <mat-icon svgIcon="tera"></mat-icon>
+                    }
+                    @if (monGroup.controls.z.value) {
+                      <mat-icon svgIcon="z"></mat-icon>
+                    }
+                    @if (monGroup.controls.dmax.value) {
+                      <mat-icon svgIcon="dmax"></mat-icon>
+                    }
+                  </div>
                 </div>
-              </div>
-              <div>
-                <button mat-icon-button>
-                  <mat-icon>settings</mat-icon>
-                </button>
-                <button mat-icon-button>
-                  <mat-icon>delete</mat-icon>
-                </button>
-              </div>
-            </button>
-            @if (accordionItem.expanded) {
-              <mat-tab-group mat-stretch-tabs="false">
-                <mat-tab>
-                  <ng-template mat-tab-label>
-                    <span>Cosmetics</span>
-                    <mat-icon>health_and_beauty</mat-icon>
-                  </ng-template>
-                  <div class="tab-container">
-                    <mat-checkbox [formControl]="pokemon.controls.shiny"
-                      >Shiny</mat-checkbox
-                    >
-                    <mat-form-field>
-                      <mat-label>Nickname</mat-label>
-                      <input
-                        matInput
-                        [formControl]="pokemon.controls.nickname"
-                      />
-                    </mat-form-field>
-                  </div>
-                </mat-tab>
-
-                <mat-tab>
-                  <ng-template mat-tab-label>
-                    <span>Captain</span>
-                    <mat-icon>sports</mat-icon>
-                  </ng-template>
-                  <div class="tab-container">
-                    <mat-checkbox [formControl]="pokemon.controls.dmax"
-                      >Dynamax Captain</mat-checkbox
-                    >
-                    <mat-checkbox [formControl]="pokemon.controls.z"
-                      >Z Captain</mat-checkbox
-                    >
-                    <mat-checkbox [formControl]="pokemon.controls.tera"
-                      >Tera Captain</mat-checkbox
-                    >
-                  </div>
-                </mat-tab>
-
-                <mat-tab>
-                  <ng-template mat-tab-label>
-                    <span>Advanced</span>
-                    <mat-icon>construction</mat-icon>
-                  </ng-template>
-                  <div class="tab-container">
-                    <mat-form-field>
-                      <mat-label>Formes</mat-label>
-                      <mat-chip-grid #formeChipGrid>
-                        @for (keyword of keywords(); track keyword) {
-                          <mat-chip-row (removed)="removeKeyword(keyword)">
-                            <sprite matChipAvatar [name]="keyword"></sprite>
-                            {{ keyword }}
-                            <button matChipRemove>
-                              <mat-icon>cancel</mat-icon>
-                            </button>
-                          </mat-chip-row>
-                        }
-                      </mat-chip-grid>
-                      <input
-                        placeholder="New formes..."
-                        [matChipInputFor]="formeChipGrid"
-                        (matChipInputTokenEnd)="add($event)"
-                        #formeInput
-                        [matAutocomplete]="formeAuto"
-                        [matChipInputSeparatorKeyCodes]="separatorKeyCodes"
-                      />
-                      <mat-autocomplete
-                        #formeAuto="matAutocomplete"
-                        (optionSelected)="
-                          selected($event); formeInput.value = ''
-                        "
+                <div>
+                  <button mat-icon-button>
+                    <mat-icon>settings</mat-icon>
+                  </button>
+                  <button
+                    mat-icon-button
+                    (click)="deletePokemon(index); $event.stopPropagation()"
+                  >
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </button>
+              @if (accordionItem.expanded) {
+                <mat-tab-group dynamicHeight mat-stretch-tabs="false">
+                  <mat-tab>
+                    <ng-template mat-tab-label>
+                      <span>Cosmetics</span>
+                      <div class="tab-icon-wrapper">
+                        <mat-icon svgIcon="shiny"></mat-icon>
+                      </div>
+                    </ng-template>
+                    <div class="tab-container">
+                      <mat-checkbox [formControl]="monGroup.controls.shiny"
+                        >Shiny</mat-checkbox
                       >
-                        @for (formeOption of formeOptions; track formeOption) {
-                          <mat-option [value]="formeOption.id">
-                            {{ formeOption.name }}</mat-option
-                          >
-                        }
-                      </mat-autocomplete>
-                    </mat-form-field>
+                      <mat-form-field>
+                        <mat-label>Nickname</mat-label>
+                        <input
+                          matInput
+                          [formControl]="monGroup.controls.nickname"
+                        />
+                      </mat-form-field>
+                    </div>
+                  </mat-tab>
 
-                    <mat-form-field>
-                      <mat-label>Additional Moves</mat-label>
-                      <mat-chip-grid #moveChipGrid></mat-chip-grid>
-                      <input
-                        placeholder="New move..."
-                        [matChipInputFor]="moveChipGrid"
-                      />
-                    </mat-form-field>
-                    <mat-form-field>
-                      <mat-label>New Abilities</mat-label>
-                      <mat-chip-grid #abilityChipGrid> </mat-chip-grid>
-                      <input
-                        placeholder="New ability..."
-                        [matChipInputFor]="abilityChipGrid"
-                      />
-                    </mat-form-field>
-                  </div>
-                </mat-tab>
-              </mat-tab-group>
-            }
-          </cdk-accordion-item>
-        }
-      </cdk-accordion>
-    </div>
+                  <mat-tab>
+                    <ng-template mat-tab-label>
+                      <span>Captain</span>
+                      <span class="tab-icon-wrapper">
+                        <mat-icon svgIcon="capt"></mat-icon>
+                      </span>
+                    </ng-template>
+                    <div class="captain-container">
+                      <div class="tab-container">
+                        <mat-checkbox [formControl]="monGroup.controls.dmax"
+                          >Dynamax Captain</mat-checkbox
+                        >
+                        <mat-checkbox [formControl]="monGroup.controls.z"
+                          >Z Captain</mat-checkbox
+                        >
+                        <mat-checkbox [formControl]="monGroup.controls.tera"
+                          >Tera Captain</mat-checkbox
+                        >
+                      </div>
+                      @if (monGroup.controls.tera.value) {
+                        <mat-divider vertical></mat-divider>
+                        <div class="tab-container tera-container">
+                          @for (type of teraTypes; track $index) {
+                            <!-- <img
+                            [src]="
+                              '../../../../assets/icons/tera_types/Tera' +
+                              type +
+                              '.png'
+                            "
+                          /> -->
+                            <img
+                              [src]="
+                                '../../../../assets/icons/types/gen9full/' +
+                                type +
+                                '.png'
+                              "
+                            />
+                          }
+                        </div>
+                      }
+                    </div>
+                  </mat-tab>
+
+                  <mat-tab>
+                    <ng-template mat-tab-label>
+                      <span>Advanced</span>
+                      <span class="tab-icon-wrapper">
+                        <mat-icon>construction</mat-icon>
+                      </span>
+                    </ng-template>
+                    <div class="tab-container">
+                      <mat-form-field>
+                        <mat-label>Formes</mat-label>
+                        <mat-chip-grid #formeChipGrid>
+                          @for (keyword of keywords(); track keyword) {
+                            <mat-chip-row (removed)="removeKeyword(keyword)">
+                              <sprite matChipAvatar [name]="keyword"></sprite>
+                              {{ keyword }}
+                              <button matChipRemove>
+                                <mat-icon>cancel</mat-icon>
+                              </button>
+                            </mat-chip-row>
+                          }
+                        </mat-chip-grid>
+                        <input
+                          placeholder="New formes..."
+                          [matChipInputFor]="formeChipGrid"
+                          (matChipInputTokenEnd)="add($event)"
+                          #formeInput
+                          [matAutocomplete]="formeAuto"
+                          [matChipInputSeparatorKeyCodes]="separatorKeyCodes"
+                        />
+                        <mat-autocomplete
+                          #formeAuto="matAutocomplete"
+                          (optionSelected)="
+                            selected($event); formeInput.value = ''
+                          "
+                        >
+                          @for (
+                            formeOption of formeOptions;
+                            track formeOption
+                          ) {
+                            <mat-option [value]="formeOption.id">
+                              {{ formeOption.name }}</mat-option
+                            >
+                          }
+                        </mat-autocomplete>
+                      </mat-form-field>
+
+                      <mat-form-field>
+                        <mat-label>Additional Moves</mat-label>
+                        <mat-chip-grid #moveChipGrid></mat-chip-grid>
+                        <input
+                          placeholder="New move..."
+                          [matChipInputFor]="moveChipGrid"
+                        />
+                      </mat-form-field>
+                      <mat-form-field>
+                        <mat-label>New Abilities</mat-label>
+                        <mat-chip-grid #abilityChipGrid> </mat-chip-grid>
+                        <input
+                          placeholder="New ability..."
+                          [matChipInputFor]="abilityChipGrid"
+                        />
+                      </mat-form-field>
+                    </div>
+                  </mat-tab>
+                </mat-tab-group>
+              }
+            </cdk-accordion-item>
+          }
+        </cdk-accordion>
+      </div>
+    }
   }
 </div>
 <!-- @for (control of teamArray.controls; track $index) {

@@ -22,10 +22,10 @@ const routes: Routes = [
         (m) => m.BattleZoneModule,
       ),
   },
-  {
-    path: 'test',
-    loadChildren: () => import('../test/test.module').then((m) => m.TestModule),
-  },
+  // {
+  //   path: 'test',
+  //   loadChildren: () => import('../test/test.module').then((m) => m.TestModule),
+  // },
   {
     path: DebugPath,
     loadChildren: () =>

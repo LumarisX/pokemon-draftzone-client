@@ -1,68 +1,76 @@
-<mat-stepper #stepper class="pokemon-form-container" orientation="vertical">
-  <mat-step
-    state="details"
-    [stepControl]="draftForm.controls.details"
-    errorMessage="Name is required."
-  >
-    <form [formGroup]="draftForm.controls.details">
-      <ng-template matStepLabel>Details</ng-template>
-      <ng-template matStepContent>
-        <div class="details-form-container">
-          <div class="league-container details-container">
-            <mat-form-field>
-              <mat-label>League Name</mat-label>
-              <input matInput formControlName="leagueName" spellcheck="false" />
-            </mat-form-field>
-            <mat-form-field>
-              <mat-label>Team Name</mat-label>
-              <input matInput formControlName="teamName" spellcheck="false" />
-            </mat-form-field>
-            <format-select formControlName="format"></format-select>
-            <ruleset-select formControlName="ruleset"></ruleset-select>
-            <mat-form-field class="md:col-span-2">
-              <mat-label>Document Link</mat-label>
-              <input
-                matInput
-                formControlName="doc"
-                #docInput
-                spellcheck="false"
-              />
+@if (draftForm) {
+  <mat-stepper #stepper class="pokemon-form-container" orientation="vertical">
+    <mat-step
+      state="details"
+      [stepControl]="draftForm.controls.details"
+      errorMessage="Name is required."
+    >
+      <form [formGroup]="draftForm.controls.details">
+        <ng-template matStepLabel>Details</ng-template>
+        <ng-template matStepContent>
+          <div class="details-form-container">
+            <div class="league-container details-container">
+              <mat-form-field>
+                <mat-label>League Name</mat-label>
+                <input
+                  matInput
+                  formControlName="leagueName"
+                  spellcheck="false"
+                />
+              </mat-form-field>
+              <mat-form-field>
+                <mat-label>Team Name</mat-label>
+                <input matInput formControlName="teamName" spellcheck="false" />
+              </mat-form-field>
+              <format-select formControlName="format"></format-select>
+              <ruleset-select formControlName="ruleset"></ruleset-select>
+              <mat-form-field class="md:col-span-2">
+                <mat-label>Document Link</mat-label>
+                <input
+                  matInput
+                  formControlName="doc"
+                  #docInput
+                  spellcheck="false"
+                />
 
-              <button
-                type="button"
-                mat-icon-button
-                matSuffix
-                [disabled]="!docInput.value"
-                (click)="openLink(docInput.value)"
-              >
-                <mat-icon>open_in_new</mat-icon>
-              </button>
-            </mat-form-field>
+                <button
+                  type="button"
+                  mat-icon-button
+                  matSuffix
+                  [disabled]="!docInput.value"
+                  (click)="openLink(docInput.value)"
+                >
+                  <mat-icon>open_in_new</mat-icon>
+                </button>
+              </mat-form-field>
+            </div>
           </div>
+          <div class="button-bar">
+            <button mat-flat-button matStepperNext>Next</button>
+          </div>
+        </ng-template>
+      </form>
+    </mat-step>
+    <mat-step state="team">
+      <ng-template matStepLabel>Team</ng-template>
+      <ng-template matStepContent>
+        <div class="team-container">
+          <team-form
+            [ruleset]="draftForm.controls.details.controls.ruleset.value"
+          ></team-form>
         </div>
         <div class="button-bar">
-          <button mat-flat-button matStepperNext>Next</button>
+          <button mat-flat-button matStepperPrevious>Back</button>
+          <button mat-flat-button>Submit</button>
         </div>
       </ng-template>
-    </form>
-  </mat-step>
-  <mat-step state="team">
-    <ng-template matStepLabel>Team</ng-template>
-    <ng-template matStepContent>
-      <div class="team-container">
-        <new-team-form id="team" color="aTeam"></new-team-form>
-      </div>
-      <div class="button-bar">
-        <button mat-flat-button matStepperPrevious>Back</button>
-        <button mat-flat-button>Submit</button>
-      </div>
-    </ng-template>
-  </mat-step>
+    </mat-step>
 
-  <ng-template matStepperIcon="details">
-    <mat-icon>info</mat-icon>
-  </ng-template>
-  <ng-template matStepperIcon="team">
-    <mat-icon>workspaces</mat-icon>
-  </ng-template>
-</mat-stepper>
+    <ng-template matStepperIcon="details">
+      <mat-icon>info</mat-icon>
+    </ng-template>
+    <ng-template matStepperIcon="team">
+      <mat-icon>workspaces</mat-icon>
+    </ng-template>
+  </mat-stepper>
+}

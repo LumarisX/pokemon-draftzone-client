@@ -1,14 +1,22 @@
 import { CdkAccordionModule } from '@angular/cdk/accordion';
-import { ENTER, COMMA } from '@angular/cdk/keycodes';
-import { CommonModule } from '@angular/common';
-import { Component, OnInit, signal } from '@angular/core';
 import {
-  FormControl,
-  ReactiveFormsModule,
-  FormsModule,
+  CdkDrag,
+  CdkDragDrop,
+  CdkDragHandle,
+  CdkDragPreview,
+  CdkDropList,
+  moveItemInArray,
+} from '@angular/cdk/drag-drop';
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
+import { CommonModule } from '@angular/common';
+import { Component, Input, OnInit, signal } from '@angular/core';
+import {
   FormArray,
-  FormGroup,
   FormBuilder,
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
 import {
   MatAutocompleteModule,
@@ -16,29 +24,19 @@ import {
 } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatChipsModule, MatChipInputEvent } from '@angular/material/chips';
+import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
+import { MatDividerModule } from '@angular/material/divider';
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatTabsModule } from '@angular/material/tabs';
+import { TERATYPES } from '../../../data';
 import { SpriteComponent } from '../../../images/sprite/sprite.component';
-import { TeraSVG } from '../../../images/svg-components/tera.component';
-import { ZSVG } from '../../../images/svg-components/z.component';
 import { Pokemon } from '../../../interfaces/draft';
-
-type DraftPokemonFormGroup = {
-  pokemon: FormControl<Pokemon>;
-  shiny: FormControl<boolean | null>;
-  z: FormControl<boolean | null>;
-  dmax: FormControl<boolean | null>;
-  tera: FormControl<boolean | null>;
-  formes: FormControl<Pokemon[] | null>;
-  nickname: FormControl<string | null>;
-  moves: FormControl<string[] | null>;
-  abilities: FormControl<string[] | null>;
-};
+import { PokemonSelectComponent } from '../../pokemon-select/pokemon-select.component';
 
 @Component({
-  selector: 'new-team-form',
+  selector: 'team-form',
   standalone: true,
   imports: [
     CommonModule,
@@ -50,19 +48,31 @@ type DraftPokemonFormGroup = {
     MatIconModule,
     MatCheckboxModule,
     MatTabsModule,
+    MatDividerModule,
     MatAutocompleteModule,
     CdkAccordionModule,
     SpriteComponent,
-    TeraSVG,
-    ZSVG,
+    CdkDrag,
+    CdkDropList,
+    CdkDragHandle,
+    CdkDragPreview,
+    PokemonSelectComponent,
   ],
   templateUrl: './team-form.component.html',
   styleUrl: './team-form.component.scss',
+  providers: [
+    {
+      provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
+      useValue: { appearance: 'outline' },
+    },
+  ],
 })
-export class NewTeamFormComponent implements OnInit {
+export class TeamFormComponent implements OnInit {
   importing: boolean = false;
   readonly separatorKeyCodes: number[] = [ENTER, COMMA];
-  teamArray!: FormArray<FormGroup<DraftPokemonFormGroup>>;
+  teamArray!: FormArray<PokemonFormGroup>;
+
+  @Input() ruleset!: string | null;
 
   constructor(private fb: FormBuilder) {}
 
@@ -90,23 +100,10 @@ export class NewTeamFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.teamArray = this.fb.array(
-      this.team.map(
-        (mon) =>
-          new FormGroup<DraftPokemonFormGroup>({
-            pokemon: new FormControl(mon, { nonNullable: true }),
-            shiny: new FormControl<boolean | null>(false),
-            z: new FormControl<boolean | null>(false),
-            dmax: new FormControl<boolean | null>(false),
-            tera: new FormControl<boolean | null>(false),
-            formes: new FormControl<Pokemon[] | null>([]),
-            nickname: new FormControl<string | null>(''),
-            moves: new FormControl<string[] | null>([]),
-            abilities: new FormControl<string[] | null>([]),
-          }),
-      ),
+      this.team.map((mon) => new PokemonFormGroup(mon)),
     );
   }
-
+  readonly teraTypes = TERATYPES;
   readonly keywords = signal<string[]>([]);
 
   removeKeyword(keyword: string) {
@@ -128,5 +125,54 @@ export class NewTeamFormComponent implements OnInit {
 
   selected(event: MatAutocompleteSelectedEvent) {
     this.keywords.update((keywords) => [...keywords, event.option.viewValue]);
+  }
+
+  deletePokemon(index: number) {
+    this.teamArray.removeAt(index);
+  }
+
+  drop(event: CdkDragDrop<string[]>) {
+    if (this.teamArray)
+      moveItemInArray(
+        this.teamArray.controls,
+        event.previousIndex,
+        event.currentIndex,
+      );
+  }
+
+  addPokemon(pokemon: Pokemon | null) {
+    if (
+      pokemon &&
+      this.teamArray.controls.every(
+        (pControl) => pControl.value.pokemon?.id !== pokemon.id,
+      )
+    )
+      this.teamArray.push(new PokemonFormGroup(pokemon));
+  }
+}
+
+class PokemonFormGroup extends FormGroup<{
+  pokemon: FormControl<Pokemon>;
+  shiny: FormControl<boolean | null>;
+  z: FormControl<boolean | null>;
+  dmax: FormControl<boolean | null>;
+  tera: FormControl<boolean | null>;
+  formes: FormControl<Pokemon[] | null>;
+  nickname: FormControl<string | null>;
+  moves: FormControl<string[] | null>;
+  abilities: FormControl<string[] | null>;
+}> {
+  constructor(pokemon: Pokemon) {
+    super({
+      pokemon: new FormControl(pokemon, { nonNullable: true }),
+      shiny: new FormControl<boolean | null>(false),
+      z: new FormControl<boolean | null>(false),
+      dmax: new FormControl<boolean | null>(false),
+      tera: new FormControl<boolean | null>(false),
+      formes: new FormControl<Pokemon[] | null>([]),
+      nickname: new FormControl<string | null>(''),
+      moves: new FormControl<string[] | null>([]),
+      abilities: new FormControl<string[] | null>([]),
+    });
   }
 }

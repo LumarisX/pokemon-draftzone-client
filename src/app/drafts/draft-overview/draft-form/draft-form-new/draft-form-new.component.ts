@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import {
   FormBuilder,
+  FormControl,
   FormGroup,
   ReactiveFormsModule,
   Validators,
@@ -31,7 +32,16 @@ export class DraftFormNewComponent implements OnInit {
   title: string = 'New League';
   formats = [];
   rulesets = [];
-  draftForm?: FormGroup;
+  draftForm?: FormGroup<{
+    details: FormGroup<{
+      leagueName: FormControl<string | null>;
+      teamName: FormControl<string | null>;
+      format: FormControl<string | null>;
+      ruleset: FormControl<string | null>;
+      doc: FormControl<string | null>;
+    }>;
+    team: FormControl<Pokemon[] | null>;
+  }>;
   draftPath = DraftOverviewPath;
 
   constructor(
@@ -51,16 +61,19 @@ export class DraftFormNewComponent implements OnInit {
         }));
       }
       this.draftForm = this.fb.group({
-        leagueName: ['', Validators.required],
-        teamName: ['', Validators.required],
-        format: [
-          'format' in params ? params['format'] : 'Singles',
-          Validators.required,
-        ],
-        ruleset: [
-          'ruleset' in params ? params['ruleset'] : 'Gen9 NatDex',
-          Validators.required,
-        ],
+        details: this.fb.group({
+          leagueName: ['', Validators.required],
+          teamName: ['', Validators.required],
+          format: [
+            'format' in params ? params['format'] : 'Singles',
+            Validators.required,
+          ],
+          ruleset: [
+            'ruleset' in params ? params['ruleset'] : 'Gen9 NatDex',
+            Validators.required,
+          ],
+          doc: [''],
+        }),
         team: [team, Validators.required],
       });
     });

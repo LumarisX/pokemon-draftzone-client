@@ -8,6 +8,7 @@ import {
   Component,
   EventEmitter,
   forwardRef,
+  input,
   Input,
   OnDestroy,
   OnInit,
@@ -92,6 +93,7 @@ export class PokemonSelectComponent implements OnInit, OnDestroy {
   @Input()
   label: string = 'Pokémon';
 
+  @Input() appearance: 'fill' | 'outline' = 'fill';
   @Input()
   showSprite: string | null = null;
 
