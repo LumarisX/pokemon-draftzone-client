@@ -122,6 +122,13 @@
                     </ng-template>
                     <div class="captain-container">
                       <div class="captain-subcontainer">
+                        <mat-checkbox [formControl]="monGroup.controls.dmax"
+                          >Dynamax Captain</mat-checkbox
+                        >
+                      </div>
+                      <mat-divider vertical></mat-divider>
+
+                      <div class="captain-subcontainer">
                         <div class="allnone-bar">
                           <button
                             (click)="addAllTeras(monGroup.controls.tera)"
@@ -170,7 +177,7 @@
                       <div class="captain-subcontainer">
                         <div class="allnone-bar">
                           <button
-                            (click)="addAllTeras(monGroup.controls.tera)"
+                            (click)="addAllTeras(monGroup.controls.z)"
                             matRipple
                             class="allnone"
                           >
@@ -178,7 +185,7 @@
                           </button>
                           <mat-icon svgIcon="z"></mat-icon>
                           <button
-                            (click)="monGroup.controls.tera.setValue(null)"
+                            (click)="monGroup.controls.z.setValue(null)"
                             matRipple
                             class="allnone"
                           >
@@ -191,13 +198,13 @@
                               class="type-wrapper"
                               [ngClass]="{
                                 'selected-type':
-                                  monGroup.controls.tera.value?.includes(type),
+                                  monGroup.controls.z.value?.includes(type),
                               }"
                               (click)="
                                 toggleType(
                                   monGroup.controls.z,
                                   type,
-                                  monGroup.controls.tera.value?.includes(type)
+                                  monGroup.controls.z.value?.includes(type)
                                 )
                               "
                             >
@@ -211,12 +218,6 @@
                             </div>
                           }
                         </div>
-                      </div>
-                      <mat-divider vertical></mat-divider>
-                      <div class="captain-subcontainer">
-                        <mat-checkbox [formControl]="monGroup.controls.dmax"
-                          >Dynamax Captain</mat-checkbox
-                        >
                       </div>
                     </div>
                   </mat-tab>
