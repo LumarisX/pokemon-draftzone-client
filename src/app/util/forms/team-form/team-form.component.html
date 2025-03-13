@@ -55,10 +55,16 @@
                   </div>
 
                   <div class="icon-container">
-                    @if (monGroup.controls.tera.value) {
+                    @if (
+                      monGroup.controls.tera.value &&
+                      monGroup.controls.show.controls.tera.value
+                    ) {
                       <mat-icon svgIcon="tera"></mat-icon>
                     }
-                    @if (monGroup.controls.z.value) {
+                    @if (
+                      monGroup.controls.z.value &&
+                      monGroup.controls.show.controls.z.value
+                    ) {
                       <mat-icon svgIcon="z"></mat-icon>
                     }
                     @if (monGroup.controls.dmax.value) {
@@ -100,15 +106,25 @@
                       </div>
                     </ng-template>
                     <div class="tab-container">
-                      <mat-checkbox [formControl]="monGroup.controls.shiny"
-                        >Shiny</mat-checkbox
+                      <mat-slide-toggle [formControl]="monGroup.controls.shiny"
+                        >Shiny</mat-slide-toggle
                       >
                       <mat-form-field>
                         <mat-label>Nickname</mat-label>
                         <input
+                          maxlength="18"
                           matInput
                           [formControl]="monGroup.controls.nickname"
                         />
+                        @if (
+                          monGroup.controls.nickname.value &&
+                          monGroup.controls.nickname.value.length > 13
+                        ) {
+                          <mat-hint align="end"
+                            >{{ monGroup.controls.nickname.value.length }} /
+                            18</mat-hint
+                          >
+                        }
                       </mat-form-field>
                     </div>
                   </mat-tab>
@@ -121,104 +137,106 @@
                       </span>
                     </ng-template>
                     <div class="captain-container">
-                      <div class="captain-subcontainer">
-                        <mat-checkbox [formControl]="monGroup.controls.dmax"
-                          >Dynamax Captain</mat-checkbox
+                      <div class="captain-subcontainer box-container">
+                        <mat-slide-toggle
+                          [formControl]="monGroup.controls.show.controls.tera"
+                          >Tera Captain</mat-slide-toggle
+                        >
+                        <mat-slide-toggle
+                          [formControl]="monGroup.controls.show.controls.z"
+                          >Z Captain</mat-slide-toggle
+                        >
+                        <mat-slide-toggle [formControl]="monGroup.controls.dmax"
+                          >Dynamax Captain</mat-slide-toggle
                         >
                       </div>
-                      <mat-divider vertical></mat-divider>
+                      @if (monGroup.controls.show.controls.tera.value) {
+                        <div class="captain-subcontainer">
+                          <div class="allnone-bar">
+                            <button
+                              (click)="addAllTeras(monGroup.controls.tera)"
+                              matRipple
+                              class="allnone"
+                            >
+                              All
 
-                      <div class="captain-subcontainer">
-                        <div class="allnone-bar">
-                          <button
-                            (click)="addAllTeras(monGroup.controls.tera)"
-                            matRipple
-                            class="allnone"
-                          >
-                            All
-                          </button>
-                          <mat-icon svgIcon="tera"></mat-icon>
-                          <button
-                            (click)="monGroup.controls.tera.setValue(null)"
-                            matRipple
-                            class="allnone"
-                          >
-                            None
-                          </button>
-                        </div>
-                        <div class="tera-container">
-                          @for (type of teraTypes; track type) {
-                            <div
-                              class="type-wrapper"
-                              [ngClass]="{
-                                'selected-type':
-                                  monGroup.controls.tera.value?.includes(type),
-                              }"
-                              (click)="
-                                toggleType(
-                                  monGroup.controls.tera,
-                                  type,
-                                  monGroup.controls.tera.value?.includes(type)
-                                )
-                              "
-                            >
-                              <img
-                                [src]="
-                                  '../../../../assets/icons/tera_types/Tera' +
-                                  type +
-                                  '.png'
+                              <mat-icon svgIcon="tera"></mat-icon>
+
+                              None
+                            </button>
+                          </div>
+                          <div class="icon-grid tera-container">
+                            @for (type of teraTypes; track type) {
+                              <div
+                                class="type-wrapper"
+                                [ngClass]="{
+                                  'selected-type':
+                                    monGroup.controls.tera.value?.includes(
+                                      type
+                                    ),
+                                }"
+                                (click)="
+                                  toggleType(
+                                    monGroup.controls.tera,
+                                    type,
+                                    monGroup.controls.tera.value?.includes(type)
+                                  )
                                 "
-                              />
-                            </div>
-                          }
+                              >
+                                <img
+                                  [src]="
+                                    '../../../../assets/icons/tera_types/Tera' +
+                                    type +
+                                    '.png'
+                                  "
+                                />
+                              </div>
+                            }
+                          </div>
                         </div>
-                      </div>
-                      <mat-divider vertical></mat-divider>
-                      <div class="captain-subcontainer">
-                        <div class="allnone-bar">
-                          <button
-                            (click)="addAllTeras(monGroup.controls.z)"
-                            matRipple
-                            class="allnone"
-                          >
-                            All
-                          </button>
-                          <mat-icon svgIcon="z"></mat-icon>
-                          <button
-                            (click)="monGroup.controls.z.setValue(null)"
-                            matRipple
-                            class="allnone"
-                          >
-                            None
-                          </button>
-                        </div>
-                        <div class="z-container">
-                          @for (type of zTypes; track type) {
+                      }
+                      @if (monGroup.controls.show.controls.z.value) {
+                        <div class="captain-subcontainer">
+                          <div class="allnone-bar">
                             <div
-                              class="type-wrapper"
-                              [ngClass]="{
-                                'selected-type':
-                                  monGroup.controls.z.value?.includes(type),
-                              }"
-                              (click)="
-                                toggleType(
-                                  monGroup.controls.z,
-                                  type,
-                                  monGroup.controls.z.value?.includes(type)
-                                )
-                              "
+                              (click)="addAllTeras(monGroup.controls.z)"
+                              class="allnone"
                             >
-                              <img
-                                [src]="
-                                  '../../../../assets/icons/z_types/' +
-                                  type +
-                                  '_Z_Crystal.png'
-                                "
-                              />
+                              <span> All </span>
+
+                              <mat-icon svgIcon="z"></mat-icon>
+
+                              <span>None</span>
                             </div>
-                          }
+                          </div>
+                          <div class="icon-grid z-container">
+                            @for (type of zTypes; track type) {
+                              <div
+                                class="type-wrapper"
+                                [ngClass]="{
+                                  'selected-type':
+                                    monGroup.controls.z.value?.includes(type),
+                                }"
+                                (click)="
+                                  toggleType(
+                                    monGroup.controls.z,
+                                    type,
+                                    monGroup.controls.z.value?.includes(type)
+                                  )
+                                "
+                              >
+                                <img
+                                  [src]="
+                                    '../../../../assets/icons/z_types/' +
+                                    type +
+                                    '_Z_Crystal.png'
+                                  "
+                                />
+                              </div>
+                            }
+                          </div>
                         </div>
-                      </div>
+                      }
                     </div>
                   </mat-tab>
 
@@ -233,20 +251,28 @@
                       <mat-form-field>
                         <mat-label>Formes</mat-label>
                         <mat-chip-grid #formeChipGrid>
-                          @for (keyword of keywords(); track keyword) {
-                            <mat-chip-row (removed)="removeKeyword(keyword)">
-                              <sprite matChipAvatar [name]="keyword"></sprite>
-                              {{ keyword }}
+                          @for (
+                            forme of monGroup.controls.formes.value ?? [];
+                            track forme
+                          ) {
+                            <mat-chip-row
+                              (removed)="
+                                removeForme(monGroup.controls.formes, forme)
+                              "
+                            >
+                              <sprite matChipAvatar [name]="forme"></sprite>
+                              {{ forme }}
                               <button matChipRemove>
                                 <mat-icon>cancel</mat-icon>
                               </button>
                             </mat-chip-row>
                           }
                         </mat-chip-grid>
+                        <!-- (matChipInputTokenEnd)="addForme( monGroup.controls.formes,$event)" -->
+
                         <input
                           placeholder="New formes..."
                           [matChipInputFor]="formeChipGrid"
-                          (matChipInputTokenEnd)="add($event)"
                           #formeInput
                           [matAutocomplete]="formeAuto"
                           [matChipInputSeparatorKeyCodes]="separatorKeyCodes"
@@ -254,7 +280,8 @@
                         <mat-autocomplete
                           #formeAuto="matAutocomplete"
                           (optionSelected)="
-                            selected($event); formeInput.value = ''
+                            selectedForme(monGroup.controls.formes, $event);
+                            formeInput.value = ''
                           "
                         >
                           @for (
@@ -262,8 +289,8 @@
                             track formeOption
                           ) {
                             <mat-option [value]="formeOption.id">
-                              {{ formeOption.name }}</mat-option
-                            >
+                              {{ formeOption.name }}
+                            </mat-option>
                           }
                         </mat-autocomplete>
                       </mat-form-field>
