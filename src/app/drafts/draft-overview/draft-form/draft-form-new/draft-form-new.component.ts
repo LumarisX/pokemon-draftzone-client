@@ -26,6 +26,7 @@ import { DraftFormCoreComponent } from '../draft-form-core/draft-form-core.compo
     LoadingComponent,
   ],
   templateUrl: './draft-form-new.component.html',
+  styleUrl: './draft-form-new.component.scss',
 })
 export class DraftFormNewComponent implements OnInit {
   teamId: string = '';

@@ -1,15 +1,13 @@
 <div class="flex justify-center w-full p-4">
-  <div class="w-full m-2 max-w-400 rounded-xl">
-    <div class="flex items-center space-x-4">
+  <div class="form-content">
+    <div class="page-title">
       <button
         [routerLink]="['/', draftPath]"
         class="p-2 m-3 rounded-lg shadow-md bg-aTeam-300 hover:shadow shadow-aTeam-600"
       >
         Cancel
       </button>
-      <div>
-        <p class="text-3xl font-nasa">New League</p>
-      </div>
+      <p class="text-3xl font-nasa">New League</p>
     </div>
     @if (draftForm) {
       <draft-form-core
