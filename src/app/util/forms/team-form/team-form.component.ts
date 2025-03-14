@@ -42,6 +42,7 @@ import { TERATYPES, TYPES } from '../../../data';
 import { SpriteComponent } from '../../../images/sprite/sprite.component';
 import { Pokemon } from '../../../interfaces/draft';
 import { PokemonSelectComponent } from '../../pokemon-select/pokemon-select.component';
+import { SlideToggleComponent } from '../../inputs/slide-toggle/slide-toggle.component';
 
 @Component({
   selector: 'team-form',
@@ -61,6 +62,7 @@ import { PokemonSelectComponent } from '../../pokemon-select/pokemon-select.comp
     MatRippleModule,
     CdkAccordionModule,
     SpriteComponent,
+    SlideToggleComponent,
     CdkDrag,
     CdkDropList,
     CdkDragHandle,
@@ -97,6 +99,8 @@ export class TeamFormComponent implements OnInit {
   readonly separatorKeyCodes: number[] = [ENTER, COMMA];
   teamArray!: FormArray<PokemonFormGroup>;
   @Input() ruleset!: string | null;
+
+  isToggled: boolean = false;
 
   constructor(private fb: FormBuilder) {}
 

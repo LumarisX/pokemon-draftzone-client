@@ -1,0 +1,25 @@
+<label
+  class="dz-slide-toggle"
+  [class.checked]="checked"
+  [class.disabled]="disabled"
+  (click)="toggle()"
+>
+  <span class="toggle-track">
+    <span class="toggle-thumb">
+      @if (checked) {
+        @if (onSVG) {
+          <mat-icon class="toggle-icon" [svgIcon]="onSVG"></mat-icon>
+        } @else {
+          <mat-icon class="toggle-icon">{{ onIcon }}</mat-icon>
+        }
+      } @else {
+        @if (offSVG) {
+          <mat-icon class="toggle-icon" [svgIcon]="offSVG"></mat-icon>
+        } @else {
+          <mat-icon class="toggle-icon">{{ offIcon }}</mat-icon>
+        }
+      }
+    </span>
+  </span>
+  <ng-content></ng-content>
+</label>

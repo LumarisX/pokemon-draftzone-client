@@ -1,0 +1,79 @@
+import { CommonModule } from '@angular/common';
+import {
+  Component,
+  ElementRef,
+  forwardRef,
+  HostBinding,
+  HostListener,
+  Input,
+  Renderer2,
+} from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { MatIconModule } from '@angular/material/icon';
+
+@Component({
+  selector: 'dz-slide-toggle',
+  standalone: true,
+  imports: [CommonModule, MatIconModule],
+  templateUrl: './slide-toggle.component.html',
+  styleUrls: ['./slide-toggle.component.scss'],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => SlideToggleComponent),
+      multi: true,
+    },
+  ],
+})
+export class SlideToggleComponent implements ControlValueAccessor {
+  @Input() disabled = false;
+  @Input() label?: string;
+  @Input() onIcon = 'check';
+  @Input() offIcon = 'remove';
+  @Input() onSVG?: string;
+  @Input() offSVG?: string;
+
+  @HostBinding('class.checked') checked = false;
+
+  private onChange = (value: boolean) => {};
+  private onTouched = () => {};
+
+  constructor(
+    private renderer: Renderer2,
+    private elRef: ElementRef,
+  ) {}
+
+  writeValue(value: boolean): void {
+    this.checked = value;
+    this.renderer.setAttribute(
+      this.elRef.nativeElement,
+      'aria-checked',
+      String(value),
+    );
+  }
+
+  registerOnChange(fn: (value: boolean) => void): void {
+    this.onChange = fn;
+  }
+
+  registerOnTouched(fn: () => void): void {
+    this.onTouched = fn;
+  }
+
+  setDisabledState(isDisabled: boolean): void {
+    this.disabled = isDisabled;
+  }
+
+  toggle(): void {
+    if (this.disabled) return;
+    this.checked = !this.checked;
+    this.onChange(this.checked);
+    this.onTouched();
+  }
+
+  @HostListener('keydown.space', ['$event'])
+  handleKeydown(event: KeyboardEvent): void {
+    event.preventDefault();
+    this.toggle();
+  }
+}

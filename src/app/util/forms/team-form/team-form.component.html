@@ -106,9 +106,14 @@
                       </div>
                     </ng-template>
                     <div class="tab-container">
-                      <mat-slide-toggle [formControl]="monGroup.controls.shiny"
-                        >Shiny</mat-slide-toggle
+                      <dz-slide-toggle
+                        [formControl]="monGroup.controls.dmax"
+                        onSVG="shiny"
+                        offSVG="shiny"
                       >
+                        Shiny
+                      </dz-slide-toggle>
+
                       <mat-form-field>
                         <mat-label>Nickname</mat-label>
                         <input
@@ -138,17 +143,27 @@
                     </ng-template>
                     <div class="captain-container">
                       <div class="captain-subcontainer box-container">
-                        <mat-slide-toggle
-                          [formControl]="monGroup.controls.show.controls.tera"
-                          >Tera Captain</mat-slide-toggle
+                        <dz-slide-toggle
+                          [formControl]="monGroup.controls.dmax"
+                          onSVG="tera"
+                          offSVG="tera"
                         >
-                        <mat-slide-toggle
-                          [formControl]="monGroup.controls.show.controls.z"
-                          >Z Captain</mat-slide-toggle
+                          Tera Captain
+                        </dz-slide-toggle>
+                        <dz-slide-toggle
+                          [formControl]="monGroup.controls.dmax"
+                          onSVG="z"
+                          offSVG="z"
                         >
-                        <mat-slide-toggle [formControl]="monGroup.controls.dmax"
-                          >Dynamax Captain</mat-slide-toggle
+                          Z Captain
+                        </dz-slide-toggle>
+                        <dz-slide-toggle
+                          [formControl]="monGroup.controls.dmax"
+                          onSVG="dmax"
+                          offSVG="dmax"
                         >
+                          Dynamax Captain
+                        </dz-slide-toggle>
                       </div>
                       @if (monGroup.controls.show.controls.tera.value) {
                         <div class="captain-subcontainer">
