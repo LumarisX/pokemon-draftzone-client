@@ -2,10 +2,12 @@ import { CommonModule } from '@angular/common';
 import {
   Component,
   ElementRef,
+  EventEmitter,
   forwardRef,
   HostBinding,
   HostListener,
   Input,
+  Output,
   Renderer2,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
@@ -33,7 +35,11 @@ export class SlideToggleComponent implements ControlValueAccessor {
   @Input() onSVG?: string;
   @Input() offSVG?: string;
 
-  @HostBinding('class.checked') checked = false;
+  @HostBinding('class.checked') checkedState = false;
+
+  @Output() checkedChange = new EventEmitter<boolean>();
+  @Output() checked = new EventEmitter<void>();
+  @Output() unchecked = new EventEmitter<void>();
 
   private onChange = (value: boolean) => {};
   private onTouched = () => {};
@@ -44,7 +50,7 @@ export class SlideToggleComponent implements ControlValueAccessor {
   ) {}
 
   writeValue(value: boolean): void {
-    this.checked = value;
+    this.checkedState = value;
     this.renderer.setAttribute(
       this.elRef.nativeElement,
       'aria-checked',
@@ -66,9 +72,15 @@ export class SlideToggleComponent implements ControlValueAccessor {
 
   toggle(): void {
     if (this.disabled) return;
-    this.checked = !this.checked;
-    this.onChange(this.checked);
+    this.checkedState = !this.checkedState;
+    this.onChange(this.checkedState);
     this.onTouched();
+    this.checkedChange.emit(this.checkedState);
+    if (this.checkedState) {
+      this.checked.emit();
+    } else {
+      this.unchecked.emit();
+    }
   }
 
   @HostListener('keydown.space', ['$event'])

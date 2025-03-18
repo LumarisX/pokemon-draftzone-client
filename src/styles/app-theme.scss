@@ -309,3 +309,23 @@
     white-space: normal;
   }
 }
+
+.flex-overlay {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+  border-radius: 1rem;
+  box-shadow: var(--mat-sys-level3);
+  padding: 0.25rem;
+  mat-icon {
+    color: var(--mat-sys-primary);
+  }
+  label {
+    display: flex;
+    align-items: center;
+    > :not(:first-child) {
+      padding-left: 0.25rem;
+    }
+  }
+}

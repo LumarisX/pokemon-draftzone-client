@@ -1,12 +1,12 @@
 <label
   class="dz-slide-toggle"
-  [class.checked]="checked"
+  [class.checked]="checkedState"
   [class.disabled]="disabled"
   (click)="toggle()"
 >
   <span class="toggle-track">
     <span class="toggle-thumb">
-      @if (checked) {
+      @if (checkedState) {
         @if (onSVG) {
           <mat-icon class="toggle-icon" [svgIcon]="onSVG"></mat-icon>
         } @else {

@@ -1,19 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
+import { BehaviorSubject, combineLatest, map, of } from 'rxjs';
+import { LeagueAdsService } from './api/league-ads.service';
 import { AuthService } from './auth/auth0.service';
 import { DraftOverviewPath } from './drafts/draft-overview/draft-overview-routing.module';
 import { svgIcons } from './images/icons';
 import { SettingsService } from './pages/settings/settings.service';
-import { LeagueAdsService } from './api/league-ads.service';
-import {
-  BehaviorSubject,
-  combineLatest,
-  firstValueFrom,
-  map,
-  of,
-  retry,
-} from 'rxjs';
 
 @Component({
   selector: 'app-root',

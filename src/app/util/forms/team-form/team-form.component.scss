@@ -31,25 +31,26 @@ cdk-accordion {
   display: block;
   border: 1px solid var(--mat-sys-outline);
   border-radius: 0.5rem;
-  margin: 0.5rem 0;
   overflow: hidden;
 }
 
-.tab-container {
+.cosmetic-container {
   display: flex;
-  padding: 0.5rem 0.5rem 0;
-  flex-direction: column;
+  align-items: center;
+  > :not(:first-child) {
+    margin-left: 0.5rem;
+  }
+  padding: 0.5rem;
 }
 
 .icon-grid {
   display: grid;
-  padding: 0.125rem;
   gap: 0.125rem;
   align-items: center;
   justify-items: start;
-  &.tera-container {
-    margin: 0.5rem 0 0.5rem 0.5rem;
+  margin: 0.25rem 0.5rem;
 
+  &.tera-container {
     // .type-wrapper:nth-child(13n + 6) {
     //   grid-column: span 2 / span 2;
     // }
@@ -62,6 +63,8 @@ cdk-accordion {
     // .type-wrapper:nth-child(13n + 6) {
     //   transform: translateX(50%);
     // }
+
+    padding: 0.1875rem 0;
 
     grid-template-columns: repeat(10, minmax(0, 1fr));
     .type-wrapper:nth-child(19n + 9) {
@@ -80,14 +83,12 @@ cdk-accordion {
     }
 
     .type-wrapper {
-      width: 2rem;
-      height: 2rem;
+      width: 1.5rem;
+      height: 1.5rem;
     }
   }
 
   &.z-container {
-    margin: 0.5rem 0.5rem;
-
     // .type-wrapper:nth-child(7n + 7) {
     //   grid-column: span 2 / span 2;
     // }
@@ -97,6 +98,8 @@ cdk-accordion {
     // .type-wrapper:nth-child(7n + 7) {
     //   transform: translateX(50%);
     // }
+
+    padding: 0.5rem 0;
 
     grid-template-columns: repeat(7, minmax(0, 1fr));
 
@@ -123,21 +126,18 @@ cdk-accordion {
     }
 
     .type-wrapper {
-      width: 3rem;
-      height: 1rem;
+      width: 2.5rem;
+      height: 0.75rem;
     }
   }
 }
 
 .captain-container {
   display: flex;
+  padding: 0.5rem;
   width: 100%;
   flex-wrap: wrap;
   align-items: center;
-
-  > :not(:first-child) {
-    margin-left: 1rem;
-  }
 
   .type-wrapper {
     align-items: center;
@@ -145,45 +145,64 @@ cdk-accordion {
     cursor: pointer;
 
     &.selected-type {
-      filter: drop-shadow(0px 3px 3px rgba(0, 0, 0, 0.5));
+      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.5))
+        drop-shadow(0px 1px 10px rgba(0, 0, 0, 0.2));
+      padding: 0.0875rem;
+      &:hover {
+        padding: 0;
+      }
     }
 
     &:not(.selected-type) {
-      opacity: 0.8;
-      padding: 0.125rem;
-      filter: grayscale(60%);
+      opacity: 0.6;
+      padding: 0.25rem;
+      &:hover {
+        padding: 0.125rem;
+      }
     }
   }
 
   .captain-subcontainer {
+    padding: 2px;
     &:not(:first-child) {
       border-left: 1px solid var(--mat-sys-outline-variant);
     }
     .allnone-bar {
-      padding: 0.25rem 0 0;
       display: flex;
       justify-content: center;
-      color: var(--mat-sys-on-surface-variant);
-      > :not(:first-child) {
-        margin-left: 0.25rem;
-      }
-      .allnone {
-        background-color: var(--mat-sys-primary);
+      .allnone-container {
         color: var(--mat-sys-on-primary);
-        width: 6rem;
-        height: 1.25rem;
-        font-size: 0.8em;
-        line-height: 0.8em;
+        font-weight: 600;
+        border: 2px solid var(--mat-sys-primary);
+        background-color: var(--mat-sys-primary);
+        height: 1.5rem;
         display: flex;
         align-items: center;
         justify-content: center;
         border-radius: 4rem;
-        &:hover {
-          opacity: 0.9;
+        overflow: hidden;
+        font-size: 0.8em;
+        line-height: 0.8em;
+
+        mat-icon {
+          margin: 0 0.125rem;
+          height: 1.25rem;
+          width: 1.25rem;
         }
-        cursor: pointer;
+
+        .allnone {
+          width: 3rem;
+          height: 100%;
+          background-color: var(--mat-sys-primary);
+          color: var(--mat-sys-on-primary);
+          border-radius: 4rem;
+          &:hover,
+          &:disabled {
+            background-color: var(--mat-sys-surface);
+            color: var(--mat-sys-on-surface-variant);
+          }
+        }
       }
-      color: var(--mat-sys-on-primary);
     }
 
     &.box-container {
@@ -195,7 +214,7 @@ cdk-accordion {
 
 .advanced-container {
   flex-direction: row;
-  padding: 0.25rem 0;
+  padding: 1rem 0.5rem;
   mat-form-field {
     width: 100%;
     padding: 0 0.25rem;
@@ -203,11 +222,19 @@ cdk-accordion {
 }
 
 .add-bar {
-  margin-top: 0.25rem;
-  margin-bottom: -1rem;
+  padding: 0.25rem 0;
+  align-items: center;
   display: flex;
-  justify-content: space-between;
   @include mat.button-density(1);
+  .add-spacer {
+    flex-grow: 1;
+  }
+  > :not(:first-child) {
+    margin-left: 0.5rem;
+  }
+  .capt-button {
+    color: var(--mat-sys-on-surface-variant);
+  }
 }
 
 .drag-icon {
@@ -274,4 +301,23 @@ mat-tab-group {
 
 dz-slide-toggle {
   padding: 0.125rem;
+}
+
+pokemon-select,
+mat-form-field {
+  margin-bottom: -1.5rem;
+}
+
+.import-container {
+  width: 100%;
+  padding: 0.5rem;
+  mat-form-field {
+    width: 100%;
+  }
+
+  // @include mat.form-field-overrides(
+  //   (
+  //     container-height: 10rem,
+  //   )
+  // );
 }
