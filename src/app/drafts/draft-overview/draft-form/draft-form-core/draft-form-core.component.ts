@@ -8,6 +8,7 @@ import {
   FormBuilder,
   AbstractControl,
   FormArray,
+  Validators,
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
@@ -19,8 +20,12 @@ import { DataService } from '../../../../api/data.service';
 import { getPidByName } from '../../../../data/namedex';
 import { Pokemon } from '../../../../interfaces/draft';
 import { FormatSelectComponent } from '../../../../util/format-select/format.component';
-import { TeamFormComponent } from '../../../../util/forms/team-form/team-form.component';
+import {
+  PokemonFormGroup,
+  TeamFormComponent,
+} from '../../../../util/forms/team-form/team-form.component';
 import { RulesetSelectComponent } from '../../../../util/ruleset-select/ruleset.component';
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 
 @Component({
   selector: 'draft-form-core',
@@ -46,6 +51,10 @@ import { RulesetSelectComponent } from '../../../../util/ruleset-select/ruleset.
         useValue: { showError: true },
       },
     },
+    {
+      provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
+      useValue: { appearance: 'outline' },
+    },
   ],
   templateUrl: './draft-form-core.component.html',
   styleUrl: './draft-form-core.component.scss',
@@ -53,7 +62,7 @@ import { RulesetSelectComponent } from '../../../../util/ruleset-select/ruleset.
 export class DraftFormCoreComponent implements OnInit {
   formats: string[] = [];
   rulesets: string[] = [];
-  @Input() draftForm!: FormGroup<{
+  draftForm!: FormGroup<{
     details: FormGroup<{
       leagueName: FormControl<string | null>;
       teamName: FormControl<string | null>;
@@ -61,8 +70,17 @@ export class DraftFormCoreComponent implements OnInit {
       ruleset: FormControl<string | null>;
       doc: FormControl<string | null>;
     }>;
-    team: FormControl<Pokemon[] | null>;
+    team: FormArray<PokemonFormGroup>;
   }>;
+
+  params?: {
+    format: string;
+    ruleset: string;
+    leagueName: string;
+    teamName: string;
+    doc?: string;
+  };
+
   @Output() formSubmitted = new EventEmitter<
     Partial<{
       details: Partial<{
@@ -89,6 +107,17 @@ export class DraftFormCoreComponent implements OnInit {
     this.dataService.getRulesets().subscribe((rulesets) => {
       this.rulesets = rulesets;
     });
+
+    this.draftForm = this.fb.group({
+      details: this.fb.group({
+        leagueName: [this.params?.leagueName ?? '', Validators.required],
+        teamName: [this.params?.teamName ?? '', Validators.required],
+        format: [this.params?.format ?? 'Singles', Validators.required],
+        ruleset: [this.params?.ruleset ?? 'Gen9 NatDex', Validators.required],
+        doc: [this.params?.doc ?? ''],
+      }),
+      team: this.fb.array([] as PokemonFormGroup[]),
+    });
     this.draftForm.setValidators(this.validateDraftForm);
   }
 
@@ -103,23 +132,19 @@ export class DraftFormCoreComponent implements OnInit {
 
   onSubmit() {
     if (this.draftForm.valid) {
-      this.formSubmitted.emit(this.draftForm.value);
+      // this.formSubmitted.emit(this.draftForm.value);
+      console.log('Form is valid.');
     } else {
+      console.log('draft', this.draftForm.valid, this.draftForm.errors);
+      console.log(
+        'team',
+        this.draftForm.controls.team.valid,
+        this.draftForm.controls.team.errors,
+      );
+      this.draftForm.controls.team;
+
       console.log('Form is invalid.');
     }
-  }
-
-  importPokemon(data: string) {
-    this.draftForm.get('team')?.setValue(
-      data
-        .split(/\n|,/)
-        .map((string) => string.trim())
-        .map((name) => ({
-          id: getPidByName(name) ?? '',
-          name: name,
-        })),
-    );
-    this.importing = false;
   }
 
   openLink(url: string) {

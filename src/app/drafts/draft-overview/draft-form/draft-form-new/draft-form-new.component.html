@@ -1,4 +1,4 @@
-<div class="flex justify-center w-full p-4">
+<div class="draft-new-container">
   <div class="form-content">
     <div class="page-title">
       <button
@@ -10,10 +10,7 @@
       <p class="text-3xl font-nasa">New League</p>
     </div>
     @if (draftForm) {
-      <draft-form-core
-        [draftForm]="draftForm"
-        (formSubmitted)="newDraft($event)"
-      ></draft-form-core>
+      <draft-form-core (formSubmitted)="newDraft($event)"></draft-form-core>
     } @else {
       <loading></loading>
     }

@@ -1,17 +1,17 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import {
-  FormBuilder,
+  FormArray,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
-  Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { DraftService } from '../../../../api/draft.service';
 import { getNameByPid } from '../../../../data/namedex';
 import { LoadingComponent } from '../../../../images/loading/loading.component';
 import { Pokemon } from '../../../../interfaces/draft';
+import { PokemonFormGroup } from '../../../../util/forms/team-form/team-form.component';
 import { DraftOverviewPath } from '../../draft-overview-routing.module';
 import { DraftFormCoreComponent } from '../draft-form-core/draft-form-core.component';
 
@@ -41,7 +41,7 @@ export class DraftFormNewComponent implements OnInit {
       ruleset: FormControl<string | null>;
       doc: FormControl<string | null>;
     }>;
-    team: FormControl<Pokemon[] | null>;
+    team: FormArray<PokemonFormGroup>;
   }>;
   draftPath = DraftOverviewPath;
 
@@ -49,34 +49,35 @@ export class DraftFormNewComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private draftService: DraftService,
-    private fb: FormBuilder,
   ) {}
 
+  team: Pokemon[] = [
+    {
+      id: 'deoxysattack',
+      name: 'Deoxys-Attack',
+    },
+    {
+      id: 'clefable',
+      name: 'Clefable',
+    },
+    {
+      id: 'minior',
+      name: 'Minior',
+    },
+    {
+      id: 'test',
+      name: 'Test',
+    },
+  ];
+
   ngOnInit(): void {
-    let team: Pokemon[] = [];
     this.route.queryParams.subscribe((params) => {
       if ('team' in params) {
-        team = (params['team'] as string[]).map((id) => ({
+        this.team = (params['team'] as string[]).map((id) => ({
           id: id,
           name: getNameByPid(id),
         }));
       }
-      this.draftForm = this.fb.group({
-        details: this.fb.group({
-          leagueName: ['', Validators.required],
-          teamName: ['', Validators.required],
-          format: [
-            'format' in params ? params['format'] : 'Singles',
-            Validators.required,
-          ],
-          ruleset: [
-            'ruleset' in params ? params['ruleset'] : 'Gen9 NatDex',
-            Validators.required,
-          ],
-          doc: [''],
-        }),
-        team: [team, Validators.required],
-      });
     });
   }
 

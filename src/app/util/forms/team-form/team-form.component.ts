@@ -14,7 +14,7 @@ import {
   CdkDropList,
   moveItemInArray,
 } from '@angular/cdk/drag-drop';
-import { COMMA, ENTER } from '@angular/cdk/keycodes';
+import { OverlayModule } from '@angular/cdk/overlay';
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit, signal } from '@angular/core';
 import {
@@ -25,12 +25,15 @@ import {
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
+  ValidationErrors,
+  ValidatorFn,
 } from '@angular/forms';
 import {
   MatAutocompleteModule,
   MatAutocompleteSelectedEvent,
 } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
 import { MatRippleModule } from '@angular/material/core';
 import { MatDividerModule } from '@angular/material/divider';
@@ -39,14 +42,15 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTabsModule } from '@angular/material/tabs';
+import { BehaviorSubject, filter, Subject, takeUntil } from 'rxjs';
+import { includeName } from '../../../../../utils/utils';
+import { DataService } from '../../../api/data.service';
 import { TERATYPES, TYPES } from '../../../data';
+import { getPidByName } from '../../../data/namedex';
 import { SpriteComponent } from '../../../images/sprite/sprite.component';
 import { Pokemon } from '../../../interfaces/draft';
-import { PokemonSelectComponent } from '../../pokemon-select/pokemon-select.component';
 import { SlideToggleComponent } from '../../inputs/slide-toggle/slide-toggle.component';
-import { filter, Subject, takeUntil } from 'rxjs';
-import { OverlayModule } from '@angular/cdk/overlay';
-import { MatCheckboxModule } from '@angular/material/checkbox';
+import { PokemonSelectComponent } from '../../pokemon-select/pokemon-select.component';
 
 @Component({
   selector: 'team-form',
@@ -62,7 +66,6 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     MatIconModule,
     MatSlideToggleModule,
     MatTabsModule,
-    MatDividerModule,
     MatCheckboxModule,
     MatAutocompleteModule,
     MatRippleModule,
@@ -101,30 +104,30 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
   ],
 })
 export class TeamFormComponent implements OnInit {
-  importing: boolean = true;
-  teamOption: boolean = false;
-  readonly separatorKeyCodes: number[] = [ENTER, COMMA];
+  ruleset$ = new BehaviorSubject<string | null>(null);
+  @Input() set ruleset(value: string | null) {
+    this.ruleset$.next(value);
+  }
+
+  @Input()
   teamArray!: FormArray<PokemonFormGroup>;
-  @Input() ruleset!: string | null;
 
-  constructor(private fb: FormBuilder) {}
+  get ruleset(): string | null {
+    return this.ruleset$.value;
+  }
 
-  checked: boolean = false;
-  team: Pokemon[] = [
-    {
-      id: 'deoxysattack',
-      name: 'Deoxys-Attack',
-    },
-    {
-      id: 'clefable',
-      name: 'Clefable',
-    },
-    {
-      id: 'minior',
-      name: 'Minior',
-    },
-  ];
+  readonly teraTypes = TERATYPES;
+  readonly zTypes = TYPES;
+  readonly keywords = signal<string[]>([]);
 
+  importing = false;
+  importInput = '';
+  teamOption = false;
+
+  checked = false;
+  destroy$ = new Subject<void>();
+
+  pokemonList$ = new BehaviorSubject<Pokemon[]>([]);
   formeFilter = new FormControl<string>('');
 
   formeOptions: Pokemon[] = [
@@ -134,18 +137,28 @@ export class TeamFormComponent implements OnInit {
     { id: 'deoxysspeed', name: 'Deoxys-Speed' },
   ];
 
-  filteredFormeOptions: Pokemon[] = [
-    { id: 'miniormeteor', name: 'Minior-Meteor' },
-    { id: 'deoxysdefense', name: 'Deoxys-Defense' },
-    { id: 'deoxys', name: 'Deoxys' },
-    { id: 'deoxysspeed', name: 'Deoxys-Speed' },
-  ];
+  filteredFormeOptions: Pokemon[] = [...this.formeOptions];
 
-  destroy$ = new Subject<void>();
+  constructor(
+    private fb: FormBuilder,
+    private dataService: DataService,
+  ) {}
+
   ngOnInit(): void {
-    this.teamArray = this.fb.array(
-      this.team.map((mon) => new PokemonFormGroup(mon)),
-    );
+    this.ruleset$
+      .asObservable()
+      .pipe(
+        filter((ruleset) => ruleset !== null),
+        takeUntil(this.destroy$),
+      )
+      .subscribe((ruleset) => {
+        this.dataService.getPokemonList(ruleset).subscribe((list) => {
+          this.pokemonList$.next(list);
+          this.teamArray.controls.forEach((group) => {
+            group.controls.pokemon.updateValueAndValidity();
+          });
+        });
+      });
 
     this.formeFilter.valueChanges
       .pipe(
@@ -161,9 +174,6 @@ export class TeamFormComponent implements OnInit {
     this.destroy$.next();
     this.destroy$.complete();
   }
-  readonly teraTypes = TERATYPES;
-  readonly zTypes = TYPES;
-  readonly keywords = signal<string[]>([]);
 
   removeChip(control: FormControl<any[] | null>, index: number) {
     if (!control.value) return;
@@ -197,16 +207,29 @@ export class TeamFormComponent implements OnInit {
   }
 
   drop(event: CdkDragDrop<string[]>) {
-    if (this.teamArray)
-      moveItemInArray(
-        this.teamArray.controls,
-        event.previousIndex,
-        event.currentIndex,
-      );
+    moveItemInArray(
+      this.teamArray.controls,
+      event.previousIndex,
+      event.currentIndex,
+    );
   }
 
-  importPokemon(event: MatChipInputEvent) {
-    event.chipInput.clear();
+  handlePokemonInput(event?: Event): void {
+    event?.preventDefault();
+    const pokemonNames = this.importInput
+      .split(/[\n,]+/)
+      .map((name) => name.trim())
+      .filter((name) => name.length > 0);
+    pokemonNames.forEach((name) => {
+      this.teamArray.push(
+        new PokemonFormGroup(
+          { name: name, id: getPidByName(name) },
+          this.pokemonList$,
+        ),
+      );
+    });
+
+    this.importInput = '';
   }
 
   addPokemon(pokemon: Pokemon | null) {
@@ -215,8 +238,9 @@ export class TeamFormComponent implements OnInit {
       this.teamArray.controls.every(
         (pControl) => pControl.value.pokemon?.id !== pokemon.id,
       )
-    )
-      this.teamArray.push(new PokemonFormGroup(pokemon));
+    ) {
+      this.teamArray.push(new PokemonFormGroup(pokemon, this.pokemonList$));
+    }
   }
 
   deletePokemon(index: number) {
@@ -246,12 +270,8 @@ export class TeamFormComponent implements OnInit {
       this.filteredFormeOptions = [...this.formeOptions];
       return;
     }
-    const lowerCaseSearch = searchText.toLowerCase().replace(/[-'.\s]/, '');
     this.filteredFormeOptions = this.formeOptions.filter((forme) =>
-      forme.name
-        .toLowerCase()
-        .replace(/[-'.\s]/, '')
-        .includes(lowerCaseSearch),
+      includeName(forme.name, searchText),
     );
   }
 
@@ -276,7 +296,6 @@ export class TeamFormComponent implements OnInit {
   checkPartial(controlName: string) {
     return this.teamArray.controls.some((control) => {
       let valid = this.validControl(control.get(controlName));
-      console.log(control.controls.pokemon.value, valid);
       return valid;
     });
   }
@@ -285,7 +304,6 @@ export class TeamFormComponent implements OnInit {
     return this.teamArray.controls.some((control) => {
       let valid =
         control.controls.tera.value && control.controls.tera.value.length > 0;
-      console.log(control.controls.pokemon.value, valid);
       return valid;
     });
   }
@@ -323,7 +341,7 @@ export class TeamFormComponent implements OnInit {
   }
 }
 
-class PokemonFormGroup extends FormGroup<{
+export class PokemonFormGroup extends FormGroup<{
   pokemon: FormControl<Pokemon>;
   shiny: FormControl<boolean | null>;
   z: FormControl<string[] | null>;
@@ -334,17 +352,34 @@ class PokemonFormGroup extends FormGroup<{
   moves: FormControl<string[] | null>;
   abilities: FormControl<string[] | null>;
 }> {
-  constructor(pokemon: Pokemon) {
+  constructor(pokemon: Pokemon, pokemonList: BehaviorSubject<Pokemon[]>) {
     super({
-      pokemon: new FormControl(pokemon, { nonNullable: true }),
+      pokemon: new FormControl<Pokemon>(pokemon, {
+        nonNullable: true,
+        validators: [pokemonValidator(pokemonList)],
+      }),
       shiny: new FormControl<boolean | null>(false),
-      z: new FormControl<string[] | null>(['Flying', 'Grass', 'Dark']),
+      z: new FormControl<string[] | null>(null),
       dmax: new FormControl<boolean | null>(false),
-      tera: new FormControl<string[] | null>(['Fire', 'Ground', 'Steel']),
+      tera: new FormControl<string[] | null>(null),
       formes: new FormControl<Pokemon[] | null>([]),
       nickname: new FormControl<string | null>(''),
       moves: new FormControl<string[] | null>([]),
       abilities: new FormControl<string[] | null>([]),
     });
+
+    this.controls.pokemon.updateValueAndValidity();
   }
+}
+
+function pokemonValidator(
+  pokemonList$: BehaviorSubject<Pokemon[]>,
+): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const pokemon = control.value;
+    if (!pokemon || !pokemon.id) return { invalidPokemon: true };
+    const pokemonList = pokemonList$.getValue();
+    const exists = pokemonList.some((p) => p.id === pokemon.id);
+    return exists ? null : { invalidPokemon: true };
+  };
 }

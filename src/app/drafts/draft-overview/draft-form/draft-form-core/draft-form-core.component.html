@@ -46,7 +46,8 @@
             </div>
           </div>
           <div class="button-bar">
-            <button mat-flat-button matStepperNext>Next</button>
+            <div class="button-spacer"></div>
+            <button type="button" mat-flat-button matStepperNext>Next</button>
           </div>
         </ng-template>
       </form>
@@ -57,11 +58,16 @@
         <div class="team-container">
           <team-form
             [ruleset]="draftForm.controls.details.controls.ruleset.value"
+            [teamArray]="draftForm.controls.team"
           ></team-form>
         </div>
+
         <div class="button-bar">
-          <button mat-flat-button matStepperPrevious>Back</button>
-          <button mat-flat-button>Submit</button>
+          <button type="button" mat-flat-button matStepperPrevious>Back</button>
+          <div class="button-spacer"></div>
+          <button type="submit" mat-flat-button (click)="onSubmit()">
+            Submit
+          </button>
         </div>
       </ng-template>
     </mat-step>

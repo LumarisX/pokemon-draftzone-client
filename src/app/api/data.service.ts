@@ -3,6 +3,7 @@ import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { Pokemon } from '../interfaces/draft';
 import { ApiService } from './api.service';
+import { rule } from 'postcss';
 
 export type SupporterData = {
   top: {
@@ -111,7 +112,8 @@ export class DataService {
     });
   }
 
-  getPokemonList(ruleset: string): Observable<Pokemon[]> {
+  getPokemonList(ruleset?: string | null): Observable<Pokemon[]> {
+    if (!ruleset) ruleset = 'Gen9 NatDex';
     if (this.cache.pokemonList[ruleset]) {
       return of(this.cache.pokemonList[ruleset]);
     } else {

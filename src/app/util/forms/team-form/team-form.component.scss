@@ -1,37 +1,48 @@
 @use "@angular/material" as mat;
 
-cdk-accordion-item {
-  display: block;
-  &:not(:last-child) {
-    border-bottom: 1px solid var(--mat-sys-outline-variant);
-  }
-  .item-header {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    height: fit-content;
-    align-items: center;
-    sprite {
-      margin: 2px 0;
-      width: 4rem;
-      height: 4rem;
-    }
-
-    mat-icon {
-      color: var(--mat-sys-on-surface-variant);
-    }
-  }
-
-  .name-title {
-    font-size: 1.1em;
-  }
-}
-
 cdk-accordion {
   display: block;
   border: 1px solid var(--mat-sys-outline);
   border-radius: 0.5rem;
   overflow: hidden;
+
+  cdk-accordion-item {
+    display: block;
+    overflow: hidden;
+
+    &:not(:last-child) {
+      border-bottom: 1px solid var(--mat-sys-outline-variant);
+    }
+
+    &:last-child {
+      border-radius: 0 0 0.5rem 0.5rem;
+    }
+
+    .item-header {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      height: fit-content;
+      align-items: center;
+      height: 4rem;
+      sprite {
+        margin: 2px 0;
+        width: 4rem;
+        height: 4rem;
+      }
+
+      mat-icon {
+        color: var(--mat-sys-on-surface-variant);
+        &.preview-warning {
+          color: var(--mat-sys-error);
+          margin: 2px 0;
+          width: 4rem;
+          height: 3rem;
+          font-size: 3rem;
+        }
+      }
+    }
+  }
 }
 
 .cosmetic-container {
@@ -310,14 +321,11 @@ mat-form-field {
 
 .import-container {
   width: 100%;
-  padding: 0.5rem;
   mat-form-field {
     width: 100%;
   }
 
-  // @include mat.form-field-overrides(
-  //   (
-  //     container-height: 10rem,
-  //   )
-  // );
+  textarea {
+    resize: none;
+  }
 }

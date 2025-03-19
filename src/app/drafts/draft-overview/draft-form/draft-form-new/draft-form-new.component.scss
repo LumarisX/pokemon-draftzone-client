@@ -1,10 +1,25 @@
-.page-title {
+.draft-new-container {
   display: flex;
-  align-items: center;
-}
-
-.form-content {
   width: 100%;
-  margin: 0.5rem;
-  max-width: 70rem;
+  height: 100%;
+
+  padding: 2rem;
+  justify-content: center;
+
+  .form-content {
+    width: 100%;
+    margin: 0.5rem;
+    max-width: 70rem;
+    display: flex;
+    flex-direction: column;
+
+    .page-title {
+      display: flex;
+      align-items: center;
+    }
+
+    draft-form-core {
+      flex-grow: 1;
+    }
+  }
 }

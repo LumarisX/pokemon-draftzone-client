@@ -14,10 +14,7 @@
       </div>
     </div>
     @if (draftForm) {
-      <draft-form-core
-        [draftForm]="draftForm"
-        (formSubmitted)="editDraft($event)"
-      ></draft-form-core>
+      <draft-form-core (formSubmitted)="editDraft($event)"></draft-form-core>
     } @else {
       <loading></loading>
     }
