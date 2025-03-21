@@ -21,7 +21,6 @@
           <div class="add-spacer"></div>
           <button mat-flat-button (click)="importing = false">Details</button>
         </div>
-
         <mat-form-field floatLabel="always">
           <mat-label>Pokemon</mat-label>
           <textarea
@@ -97,8 +96,8 @@
         <div class="add-spacer"></div>
         <button mat-flat-button (click)="importing = true">Import</button>
       </div>
-      @if (teamArray.value.length > 0) {
-        <div class="team-container">
+      <div class="team-container">
+        @if (teamArray.value.length > 0) {
           <cdk-accordion
             #movechartAccordion
             cdkDropList
@@ -402,64 +401,69 @@
                         </span>
                       </ng-template>
                       <div class="advanced-container">
-                        <mat-form-field>
-                          <mat-label>Formes</mat-label>
-                          <mat-chip-grid #formeChipGrid>
-                            @for (
-                              forme of monGroup.controls.formes.value ?? [];
-                              track $index
-                            ) {
-                              <mat-chip-row
-                                (removed)="
-                                  removeChip(monGroup.controls.formes, $index)
-                                "
-                              >
-                                <sprite
-                                  matChipAvatar
-                                  flipped
-                                  [pokemon]="forme"
-                                ></sprite>
-                                {{ forme.name }}
-                                <button matChipRemove>
-                                  <mat-icon>cancel</mat-icon>
-                                </button>
-                              </mat-chip-row>
-                            }
-                          </mat-chip-grid>
-
-                          <input
-                            placeholder="Search formes..."
-                            [matChipInputFor]="formeChipGrid"
-                            #formeInput
-                            [formControl]="formeFilter"
-                            [matAutocomplete]="formeAuto"
-                          />
-
-                          <mat-autocomplete
-                            #formeAuto="matAutocomplete"
-                            (optionSelected)="
-                              selectedForme(monGroup.controls.formes, $event)
-                            "
-                            [displayWith]="displayFn"
-                          >
-                            @for (
-                              formeOption of filteredFormeOptions;
-                              track formeOption
-                            ) {
-                              <mat-option [value]="formeOption">
-                                <div class="flex space-x-2 items-center">
+                        {{ monGroup.controls.pokemon.value | json }}
+                        @if (
+                          monGroup.controls.pokemon.value.formes &&
+                          monGroup.controls.pokemon.value.formes.length > 0
+                        ) {
+                          <mat-form-field>
+                            <mat-label>Formes</mat-label>
+                            <mat-chip-grid #formeChipGrid>
+                              @for (
+                                forme of monGroup.controls.pokemon.value.formes;
+                                track $index
+                              ) {
+                                <mat-chip-row
+                                  (removed)="
+                                    removeChip(monGroup.controls.formes, $index)
+                                  "
+                                >
                                   <sprite
-                                    size="2rem"
+                                    matChipAvatar
                                     flipped
-                                    [pokemon]="formeOption"
+                                    [pokemon]="forme"
                                   ></sprite>
-                                  <span> {{ formeOption.name }} </span>
-                                </div>
-                              </mat-option>
-                            }
-                          </mat-autocomplete>
-                        </mat-form-field>
+                                  {{ forme.name }}
+                                  <button matChipRemove>
+                                    <mat-icon>cancel</mat-icon>
+                                  </button>
+                                </mat-chip-row>
+                              }
+                            </mat-chip-grid>
 
+                            <input
+                              placeholder="Search formes..."
+                              [matChipInputFor]="formeChipGrid"
+                              #formeInput
+                              [formControl]="formeFilter"
+                              [matAutocomplete]="formeAuto"
+                            />
+
+                            <mat-autocomplete
+                              #formeAuto="matAutocomplete"
+                              (optionSelected)="
+                                selectedForme(monGroup.controls.formes, $event)
+                              "
+                              [displayWith]="displayFn"
+                            >
+                              @for (
+                                formeOption of filteredFormeOptions;
+                                track formeOption
+                              ) {
+                                <mat-option [value]="formeOption">
+                                  <div class="flex space-x-2 items-center">
+                                    <sprite
+                                      size="2rem"
+                                      flipped
+                                      [pokemon]="formeOption"
+                                    ></sprite>
+                                    <span> {{ formeOption.name }} </span>
+                                  </div>
+                                </mat-option>
+                              }
+                            </mat-autocomplete>
+                          </mat-form-field>
+                        }
                         <mat-form-field class="small-form">
                           <mat-label>Additional Moves</mat-label>
                           <mat-chip-grid #moveChipGrid>
@@ -525,8 +529,8 @@
               </cdk-accordion-item>
             }
           </cdk-accordion>
-        </div>
-      }
+        }
+      </div>
     }
   </div>
 }

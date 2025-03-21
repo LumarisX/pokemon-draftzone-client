@@ -24,4 +24,5 @@ export type Pokemon = {
     tera?: string[];
     z?: boolean;
   };
+  formes?: Pokemon[];
 };

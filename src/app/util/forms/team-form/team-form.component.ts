@@ -104,17 +104,16 @@ import { PokemonSelectComponent } from '../../pokemon-select/pokemon-select.comp
   ],
 })
 export class TeamFormComponent implements OnInit {
-  ruleset$ = new BehaviorSubject<string | null>(null);
+  ruleset$ = new BehaviorSubject<string>('');
   @Input() set ruleset(value: string | null) {
-    this.ruleset$.next(value);
+    if (value) this.ruleset$.next(value);
+  }
+  get ruleset(): string {
+    return this.ruleset$.value;
   }
 
   @Input()
   teamArray!: FormArray<PokemonFormGroup>;
-
-  get ruleset(): string | null {
-    return this.ruleset$.value;
-  }
 
   readonly teraTypes = TERATYPES;
   readonly zTypes = TYPES;
@@ -221,12 +220,12 @@ export class TeamFormComponent implements OnInit {
       .map((name) => name.trim())
       .filter((name) => name.length > 0);
     pokemonNames.forEach((name) => {
-      this.teamArray.push(
-        new PokemonFormGroup(
-          { name: name, id: getPidByName(name) },
-          this.pokemonList$,
-        ),
-      );
+      this.dataService
+        .getFormes(this.ruleset, name)
+        .subscribe((pokemonForme) => {
+          const pokemon = pokemonForme;
+          this.teamArray.push(new PokemonFormGroup(pokemon, this.pokemonList$));
+        });
     });
 
     this.importInput = '';
@@ -239,7 +238,11 @@ export class TeamFormComponent implements OnInit {
         (pControl) => pControl.value.pokemon?.id !== pokemon.id,
       )
     ) {
-      this.teamArray.push(new PokemonFormGroup(pokemon, this.pokemonList$));
+      this.dataService
+        .getFormes(this.ruleset, pokemon.id)
+        .subscribe((pokemon) => {
+          this.teamArray.push(new PokemonFormGroup(pokemon, this.pokemonList$));
+        });
     }
   }
 

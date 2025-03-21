@@ -3,7 +3,6 @@ import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { Pokemon } from '../interfaces/draft';
 import { ApiService } from './api.service';
-import { rule } from 'postcss';
 
 export type SupporterData = {
   top: {
@@ -54,8 +53,10 @@ export class DataService {
     formats?: string[];
     rulesets?: string[];
     pokemonList: { [key: string]: Pokemon[] };
+    formes: { [key: string]: Pokemon };
   } = {
     pokemonList: {},
+    formes: {},
   };
 
   //replace with fromat grouped eventually
@@ -132,5 +133,16 @@ export class DataService {
     let params: { [key: string]: string } = { query: encodedQuery };
     if (ruleset) params['ruleset'] = ruleset;
     return this.apiService.get('data/advancesearch', false, params);
+  }
+
+  getFormes(ruleset: string, id: string): Observable<Pokemon> {
+    if (this.cache.formes[id]) return of(this.cache.formes[id]);
+    else {
+      return this.apiService.get(`data/${ruleset}/${id}/formes`, false).pipe(
+        tap((list: Pokemon) => {
+          this.cache.formes[id] = list;
+        }),
+      );
+    }
   }
 }

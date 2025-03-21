@@ -9,10 +9,6 @@
       </button>
       <p class="text-3xl font-nasa">New League</p>
     </div>
-    @if (draftForm) {
-      <draft-form-core (formSubmitted)="newDraft($event)"></draft-form-core>
-    } @else {
-      <loading></loading>
-    }
+    <draft-form-core (formSubmitted)="newDraft($event)"></draft-form-core>
   </div>
 </div>

@@ -18,6 +18,7 @@
 
   .team-container {
     padding: 0.25rem 0;
+    height: 100%;
     .team-title {
       color: var(--mat-sys-primary);
       font-weight: 600;
@@ -37,10 +38,4 @@ ruleset-select,
 format-select,
 mat-form-field {
   margin-bottom: -1.5rem;
-}
-
-mat-stepper {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
 }
