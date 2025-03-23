@@ -1,15 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import {
-  FormArray,
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { DraftService } from '../../../../api/draft.service';
 import { getNameByPid } from '../../../../data/namedex';
-import { LoadingComponent } from '../../../../images/loading/loading.component';
 import { Pokemon } from '../../../../interfaces/draft';
 import { PokemonFormGroup } from '../../../../util/forms/team-form/team-form.component';
 import { DraftOverviewPath } from '../../draft-overview-routing.module';
@@ -21,12 +16,11 @@ import { DraftFormCoreComponent } from '../draft-form-core/draft-form-core.compo
   imports: [
     CommonModule,
     RouterModule,
+    MatButtonModule,
     DraftFormCoreComponent,
-    ReactiveFormsModule,
-    LoadingComponent,
   ],
   templateUrl: './draft-form-new.component.html',
-  styleUrl: './draft-form-new.component.scss',
+  styleUrl: '../draft-form.component.scss',
 })
 export class DraftFormNewComponent implements OnInit {
   teamId: string = '';

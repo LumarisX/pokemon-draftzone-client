@@ -53,7 +53,7 @@ export class DataService {
     formats?: string[];
     rulesets?: string[];
     pokemonList: { [key: string]: Pokemon[] };
-    formes: { [key: string]: Pokemon };
+    formes: { [key: string]: Pokemon[] };
   } = {
     pokemonList: {},
     formes: {},
@@ -135,11 +135,11 @@ export class DataService {
     return this.apiService.get('data/advancesearch', false, params);
   }
 
-  getFormes(ruleset: string, id: string): Observable<Pokemon> {
+  getFormes(ruleset: string, id: string): Observable<Pokemon[]> {
     if (this.cache.formes[id]) return of(this.cache.formes[id]);
     else {
       return this.apiService.get(`data/${ruleset}/${id}/formes`, false).pipe(
-        tap((list: Pokemon) => {
+        tap((list: Pokemon[]) => {
           this.cache.formes[id] = list;
         }),
       );

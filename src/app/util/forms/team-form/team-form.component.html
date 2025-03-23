@@ -112,7 +112,6 @@
                 #accordionItem="cdkAccordionItem"
                 [ngClass]="{ invalid: !monGroup.valid }"
                 cdkDrag
-                (closed)="resetFormeField()"
               >
                 <div *cdkDragPreview>
                   @if (monGroup.valid) {
@@ -191,7 +190,11 @@
                   "
                   class="accordion-content"
                 >
-                  <mat-tab-group dynamicHeight mat-stretch-tabs="false">
+                  <mat-tab-group
+                    dynamicHeight
+                    mat-stretch-tabs="false"
+                    (selectedTabChange)="onTabChange(monGroup, $event)"
+                  >
                     <mat-tab>
                       <ng-template mat-tab-label>
                         <span>Cosmetics</span>
@@ -226,7 +229,6 @@
                         </mat-form-field>
                       </div>
                     </mat-tab>
-
                     <mat-tab>
                       <ng-template mat-tab-label>
                         <span>Captain</span>
@@ -392,7 +394,6 @@
                         }
                       </div>
                     </mat-tab>
-
                     <mat-tab>
                       <ng-template mat-tab-label>
                         <span>Advanced</span>
@@ -401,16 +402,12 @@
                         </span>
                       </ng-template>
                       <div class="advanced-container">
-                        {{ monGroup.controls.pokemon.value | json }}
-                        @if (
-                          monGroup.controls.pokemon.value.formes &&
-                          monGroup.controls.pokemon.value.formes.length > 0
-                        ) {
+                        @if (monGroup.formeList) {
                           <mat-form-field>
                             <mat-label>Formes</mat-label>
                             <mat-chip-grid #formeChipGrid>
                               @for (
-                                forme of monGroup.controls.pokemon.value.formes;
+                                forme of monGroup.controls.formes.value;
                                 track $index
                               ) {
                                 <mat-chip-row
@@ -435,22 +432,29 @@
                               placeholder="Search formes..."
                               [matChipInputFor]="formeChipGrid"
                               #formeInput
-                              [formControl]="formeFilter"
                               [matAutocomplete]="formeAuto"
                             />
 
                             <mat-autocomplete
                               #formeAuto="matAutocomplete"
                               (optionSelected)="
-                                selectedForme(monGroup.controls.formes, $event)
+                                selectedChip(monGroup.controls.formes, $event)
                               "
                               [displayWith]="displayFn"
                             >
                               @for (
-                                formeOption of filteredFormeOptions;
+                                formeOption of monGroup.formeList;
                                 track formeOption
                               ) {
-                                <mat-option [value]="formeOption">
+                                <mat-option
+                                  [value]="formeOption"
+                                  [disabled]="
+                                    isSelected(
+                                      monGroup.controls.formes,
+                                      formeOption
+                                    )
+                                  "
+                                >
                                   <div class="flex space-x-2 items-center">
                                     <sprite
                                       size="2rem"

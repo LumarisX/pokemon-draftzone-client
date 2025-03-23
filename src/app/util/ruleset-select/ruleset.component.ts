@@ -50,7 +50,9 @@ export class RulesetSelectComponent implements OnInit, ControlValueAccessor {
   ngOnInit() {
     this.dataService.getRulesetsGrouped().subscribe((rulesets) => {
       this.rulesets = rulesets;
-      this.selectedRuleset = rulesets[0][1][0].id;
+      if (!this.selectedRuleset) {
+        this.selectedRuleset = rulesets[0][1][0].id;
+      }
     });
   }
 

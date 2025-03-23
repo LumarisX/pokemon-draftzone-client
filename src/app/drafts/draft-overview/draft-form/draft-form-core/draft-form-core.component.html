@@ -1,5 +1,10 @@
 @if (draftForm) {
-  <mat-stepper #stepper class="pokemon-form-container" orientation="vertical">
+  <mat-stepper
+    #stepper
+    class="pokemon-form-container"
+    linear
+    orientation="vertical"
+  >
     <mat-step
       state="details"
       [stepControl]="draftForm.controls.details"
@@ -57,6 +62,7 @@
       <ng-template matStepContent>
         <div class="team-container">
           <team-form
+            [pokemonList$]="pokemonList$"
             [ruleset]="draftForm.controls.details.controls.ruleset.value"
             [teamArray]="draftForm.controls.team"
           ></team-form>

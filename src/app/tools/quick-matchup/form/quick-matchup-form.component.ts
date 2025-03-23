@@ -102,7 +102,7 @@ export class QuickMatchupFormComponent {
             .map((e) => e[0]);
           const capt = pokemonData.captCheck
             ? {
-                z: pokemonData.capt?.z,
+                // z: pokemonData.capt?.z,
                 tera: pokemonData.capt.teraCheck ? tera : undefined,
               }
             : undefined;
@@ -119,7 +119,7 @@ export class QuickMatchupFormComponent {
             .map((e) => e[0]);
           const capt = pokemonData.captCheck
             ? {
-                z: pokemonData.capt?.z,
+                // z: pokemonData.capt?.z,
                 tera: pokemonData.capt.teraCheck ? tera : undefined,
               }
             : undefined;

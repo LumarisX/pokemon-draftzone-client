@@ -5,8 +5,9 @@ export type Draft = {
   leagueName: string;
   teamName: string;
   leagueId: string;
-  format: number;
-  ruleset: number;
+  format: string;
+  ruleset: string;
+  doc: string;
   score: {
     wins: number;
     loses: number;
@@ -18,11 +19,17 @@ export type Draft = {
 
 export type Pokemon = {
   id: PokemonId | '';
-  shiny?: boolean;
   name: string;
+  shiny?: boolean;
+  nickname?: string;
+  draftFormes?: Pokemon[];
+  modifiers?: {
+    moves?: string[];
+    abilities?: string[];
+  };
   capt?: {
     tera?: string[];
-    z?: boolean;
+    z?: string[];
+    dmax?: boolean;
   };
-  formes?: Pokemon[];
 };

@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { Stats } from '../drafts/draft-overview/draft-stats/draft-stats.component';
 import { Observable } from 'rxjs';
+import { Draft } from '../interfaces/draft';
+import { DraftFormData } from '../drafts/draft-overview/draft-form/draft-form-core/draft-form-core.component';
 
 @Injectable({
   providedIn: 'root',
@@ -13,7 +15,7 @@ export class DraftService {
     return this.apiService.get('draft/teams', true);
   }
 
-  getDraft(teamName: string) {
+  getDraft(teamName: string): Observable<Draft> {
     return this.apiService.get(`draft/${teamName}`, true);
   }
 
@@ -29,7 +31,7 @@ export class DraftService {
     return this.apiService.post(`draft/teams`, true, draftData);
   }
 
-  editDraft(draftId: string, draftData: Object) {
+  editDraft(draftId: string, draftData: DraftFormData) {
     return this.apiService.patch(`draft/${draftId}`, draftData);
   }
 

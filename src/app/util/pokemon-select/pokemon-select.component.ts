@@ -212,7 +212,7 @@ export class PokemonSelectComponent implements OnInit, OnDestroy {
     clearTimeout(this.blurTimeout);
     this.selectedForm.setValue(option?.name || null);
     this.onChange(option);
-    this.pokemonSelected.emit(option);
+    if (option) this.pokemonSelected.emit(option);
     this.onTouched();
     this.isOpen = false;
   }
