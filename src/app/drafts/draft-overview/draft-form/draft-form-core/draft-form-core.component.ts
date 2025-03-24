@@ -84,7 +84,6 @@ export class DraftFormCoreComponent implements OnInit, OnDestroy {
     this.dataService.getRulesets().subscribe((rulesets) => {
       this.rulesets = rulesets;
     });
-    console.log('params', this.params);
     this.draftForm = new DraftForm(this.params, this.pokemonList$);
 
     this.draftForm.controls.details.controls.ruleset.valueChanges

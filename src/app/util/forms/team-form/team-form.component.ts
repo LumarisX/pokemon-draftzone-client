@@ -314,10 +314,10 @@ export class PokemonFormGroup extends FormGroup<{
       formes: new FormControl<Pokemon[]>(pokemon.draftFormes ?? [], {
         nonNullable: true,
       }),
-      moves: new FormControl<string[]>([], {
+      moves: new FormControl<string[]>(pokemon.modifiers?.moves ?? [], {
         nonNullable: true,
       }),
-      abilities: new FormControl<string[]>([], {
+      abilities: new FormControl<string[]>(pokemon.modifiers?.abilities ?? [], {
         nonNullable: true,
       }),
     });

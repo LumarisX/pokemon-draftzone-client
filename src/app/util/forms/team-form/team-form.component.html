@@ -402,7 +402,7 @@
                         </span>
                       </ng-template>
                       <div class="advanced-container">
-                        @if (monGroup.formeList) {
+                        @if (monGroup.formeList && monGroup.formeList.length) {
                           <mat-form-field>
                             <mat-label>Formes</mat-label>
                             <mat-chip-grid #formeChipGrid>
