@@ -11,6 +11,7 @@ import { DraftService } from '../../../../api/draft.service';
 import { DraftOverviewPath } from '../../../draft-overview/draft-overview-routing.module';
 import { LoadingComponent } from '../../../../images/loading/loading.component';
 import { OpponentFormCoreComponent } from '../opponent-form-core/opponent-form-core.component';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'opponent-form-new',
@@ -20,8 +21,10 @@ import { OpponentFormCoreComponent } from '../opponent-form-core/opponent-form-c
     RouterModule,
     OpponentFormCoreComponent,
     ReactiveFormsModule,
+    MatButtonModule,
     LoadingComponent,
   ],
+  styleUrl: '../opponent-form.component.scss',
   templateUrl: './opponent-form-new.component.html',
 })
 export class OpponentFormNewComponent implements OnInit {
@@ -49,12 +52,12 @@ export class OpponentFormNewComponent implements OnInit {
   }
 
   newMatchup(formData: Object) {
-    this.draftService.newMatchup(this.teamId, formData).subscribe(
-      (response) => {
+    this.draftService.newMatchup(this.teamId, formData).subscribe({
+      next: (response) => {
         console.log('Success!', response);
         this.router.navigate(['/', this.draftPath, this.teamId]);
       },
-      (error) => console.error('Error!', error),
-    );
+      error: (error) => console.error('Error!', error),
+    });
   }
 }

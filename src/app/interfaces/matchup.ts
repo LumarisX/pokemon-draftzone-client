@@ -18,7 +18,7 @@ export type Match = {
         deaths?: number;
         indirect?: number;
         brought: number;
-      } & any
+      } & any,
     ];
     score: number;
   };
@@ -30,7 +30,7 @@ export type Match = {
         deaths?: number;
         indirect?: number;
         brought: number;
-      } & any
+      } & any,
     ];
     score: number;
   };

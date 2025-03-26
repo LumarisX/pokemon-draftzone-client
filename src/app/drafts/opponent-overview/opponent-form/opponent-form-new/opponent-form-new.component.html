@@ -1,11 +1,9 @@
 <div class="flex justify-center w-full p-4">
-  <div
-    class="w-full m-2 border-2 max-w-400 bg-bTeam-100 rounded-xl border-bTeam-200"
-  >
+  <div class="w-full m-2 max-w-400 rounded-xl">
     <div class="flex items-center space-x-4">
       <button
         [routerLink]="['/', draftPath, teamId]"
-        class="p-2 m-3 rounded-lg shadow-md bg-bTeam-300 hover:shadow shadow-bTeam-600"
+        class="p-2 m-3 rounded-lg"
       >
         Cancel
       </button>
@@ -15,7 +13,6 @@
     </div>
     @if (opponentForm) {
       <opponent-form-core
-        [opponentForm]="opponentForm"
         (formSubmitted)="newMatchup($event)"
       ></opponent-form-core>
     } @else {

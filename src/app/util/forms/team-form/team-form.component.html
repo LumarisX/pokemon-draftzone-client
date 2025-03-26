@@ -403,129 +403,136 @@
                       </ng-template>
                       <div class="advanced-container">
                         @if (monGroup.formeList && monGroup.formeList.length) {
+                          <div>
+                            <mat-form-field>
+                              <mat-label>Formes</mat-label>
+                              <mat-chip-grid #formeChipGrid>
+                                @for (
+                                  forme of monGroup.controls.formes.value;
+                                  track $index
+                                ) {
+                                  <mat-chip-row
+                                    (removed)="
+                                      removeChip(
+                                        monGroup.controls.formes,
+                                        $index
+                                      )
+                                    "
+                                  >
+                                    <sprite
+                                      matChipAvatar
+                                      flipped
+                                      [pokemon]="forme"
+                                    ></sprite>
+                                    {{ forme.name }}
+                                    <button matChipRemove>
+                                      <mat-icon>cancel</mat-icon>
+                                    </button>
+                                  </mat-chip-row>
+                                }
+                              </mat-chip-grid>
+
+                              <input
+                                placeholder="Search formes..."
+                                [matChipInputFor]="formeChipGrid"
+                                #formeInput
+                                [matAutocomplete]="formeAuto"
+                              />
+
+                              <mat-autocomplete
+                                #formeAuto="matAutocomplete"
+                                (optionSelected)="
+                                  selectedChip(monGroup.controls.formes, $event)
+                                "
+                                [displayWith]="displayFn"
+                              >
+                                @for (
+                                  formeOption of monGroup.formeList;
+                                  track formeOption
+                                ) {
+                                  <mat-option
+                                    [value]="formeOption"
+                                    [disabled]="
+                                      isSelected(
+                                        monGroup.controls.formes,
+                                        formeOption
+                                      )
+                                    "
+                                  >
+                                    <div class="flex space-x-2 items-center">
+                                      <sprite
+                                        size="2rem"
+                                        flipped
+                                        [pokemon]="formeOption"
+                                      ></sprite>
+                                      <span> {{ formeOption.name }} </span>
+                                    </div>
+                                  </mat-option>
+                                }
+                              </mat-autocomplete>
+                            </mat-form-field>
+                          </div>
+                        }
+                        <div class="modifier-container">
                           <mat-form-field>
-                            <mat-label>Formes</mat-label>
-                            <mat-chip-grid #formeChipGrid>
+                            <mat-label>Additional Moves</mat-label>
+                            <mat-chip-grid #moveChipGrid>
                               @for (
-                                forme of monGroup.controls.formes.value;
+                                move of monGroup.controls.moves.value;
                                 track $index
                               ) {
                                 <mat-chip-row
                                   (removed)="
-                                    removeChip(monGroup.controls.formes, $index)
+                                    removeChip(monGroup.controls.moves, $index)
                                   "
                                 >
-                                  <sprite
-                                    matChipAvatar
-                                    flipped
-                                    [pokemon]="forme"
-                                  ></sprite>
-                                  {{ forme.name }}
+                                  {{ move }}
                                   <button matChipRemove>
                                     <mat-icon>cancel</mat-icon>
                                   </button>
                                 </mat-chip-row>
                               }
                             </mat-chip-grid>
-
                             <input
-                              placeholder="Search formes..."
-                              [matChipInputFor]="formeChipGrid"
-                              #formeInput
-                              [matAutocomplete]="formeAuto"
-                            />
-
-                            <mat-autocomplete
-                              #formeAuto="matAutocomplete"
-                              (optionSelected)="
-                                selectedChip(monGroup.controls.formes, $event)
+                              placeholder="New move..."
+                              [matChipInputFor]="moveChipGrid"
+                              (matChipInputTokenEnd)="
+                                addChip(monGroup.controls.moves, $event)
                               "
-                              [displayWith]="displayFn"
-                            >
+                            />
+                          </mat-form-field>
+
+                          <mat-form-field>
+                            <mat-label>New Abilities</mat-label>
+                            <mat-chip-grid #abilityChipGrid>
                               @for (
-                                formeOption of monGroup.formeList;
-                                track formeOption
+                                move of monGroup.controls.abilities.value;
+                                track $index
                               ) {
-                                <mat-option
-                                  [value]="formeOption"
-                                  [disabled]="
-                                    isSelected(
-                                      monGroup.controls.formes,
-                                      formeOption
+                                <mat-chip-row
+                                  (removed)="
+                                    removeChip(
+                                      monGroup.controls.abilities,
+                                      $index
                                     )
                                   "
                                 >
-                                  <div class="flex space-x-2 items-center">
-                                    <sprite
-                                      size="2rem"
-                                      flipped
-                                      [pokemon]="formeOption"
-                                    ></sprite>
-                                    <span> {{ formeOption.name }} </span>
-                                  </div>
-                                </mat-option>
+                                  {{ move }}
+                                  <button matChipRemove>
+                                    <mat-icon>cancel</mat-icon>
+                                  </button>
+                                </mat-chip-row>
                               }
-                            </mat-autocomplete>
+                            </mat-chip-grid>
+                            <input
+                              placeholder="New ability..."
+                              [matChipInputFor]="abilityChipGrid"
+                              (matChipInputTokenEnd)="
+                                addChip(monGroup.controls.abilities, $event)
+                              "
+                            />
                           </mat-form-field>
-                        }
-                        <mat-form-field class="small-form">
-                          <mat-label>Additional Moves</mat-label>
-                          <mat-chip-grid #moveChipGrid>
-                            @for (
-                              move of monGroup.controls.moves.value;
-                              track $index
-                            ) {
-                              <mat-chip-row
-                                (removed)="
-                                  removeChip(monGroup.controls.moves, $index)
-                                "
-                              >
-                                {{ move }}
-                                <button matChipRemove>
-                                  <mat-icon>cancel</mat-icon>
-                                </button>
-                              </mat-chip-row>
-                            }
-                          </mat-chip-grid>
-                          <input
-                            placeholder="New move..."
-                            [matChipInputFor]="moveChipGrid"
-                            (matChipInputTokenEnd)="
-                              addChip(monGroup.controls.moves, $event)
-                            "
-                          />
-                        </mat-form-field>
-
-                        <mat-form-field class="small-form">
-                          <mat-label>New Abilities</mat-label>
-                          <mat-chip-grid #abilityChipGrid>
-                            @for (
-                              move of monGroup.controls.abilities.value;
-                              track $index
-                            ) {
-                              <mat-chip-row
-                                (removed)="
-                                  removeChip(
-                                    monGroup.controls.abilities,
-                                    $index
-                                  )
-                                "
-                              >
-                                {{ move }}
-                                <button matChipRemove>
-                                  <mat-icon>cancel</mat-icon>
-                                </button>
-                              </mat-chip-row>
-                            }
-                          </mat-chip-grid>
-                          <input
-                            placeholder="New ability..."
-                            [matChipInputFor]="abilityChipGrid"
-                            (matChipInputTokenEnd)="
-                              addChip(monGroup.controls.abilities, $event)
-                            "
-                          />
-                        </mat-form-field>
+                        </div>
                       </div>
                     </mat-tab>
                   </mat-tab-group>

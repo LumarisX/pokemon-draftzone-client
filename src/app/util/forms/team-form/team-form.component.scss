@@ -228,11 +228,18 @@
 }
 
 .advanced-container {
-  flex-direction: row;
   padding: 1rem 0.5rem;
   mat-form-field {
     width: 100%;
     padding: 0 0.25rem;
+  }
+  > :not(:first-child) {
+    margin-top: 0.5rem;
+  }
+
+  .modifier-container {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 

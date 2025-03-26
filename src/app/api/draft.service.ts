@@ -4,6 +4,8 @@ import { Stats } from '../drafts/draft-overview/draft-stats/draft-stats.componen
 import { Observable } from 'rxjs';
 import { Draft } from '../interfaces/draft';
 import { DraftFormData } from '../drafts/draft-overview/draft-form/draft-form-core/draft-form-core.component';
+import { Matchup } from '../interfaces/matchup';
+import { Opponent } from '../interfaces/opponent';
 
 @Injectable({
   providedIn: 'root',
@@ -19,7 +21,7 @@ export class DraftService {
     return this.apiService.get(`draft/${teamName}`, true);
   }
 
-  getMatchup(matchupId: string, teamId: string) {
+  getOpponent(matchupId: string, teamId: string): Observable<Opponent> {
     return this.apiService.get(`draft/${teamId}/${matchupId}`, true);
   }
 

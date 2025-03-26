@@ -54,15 +54,15 @@ export class OpponentScoreComponent implements OnInit {
   ngOnInit(): void {
     this.teamId = this.route.parent!.snapshot.paramMap.get('teamid') || '';
     this.route.queryParams.subscribe((params) => {
-      if ('matchup' in params) {
-        this.matchupId = JSON.parse(params['matchup']);
-        this.draftService
-          .getMatchup(this.matchupId, this.teamId)
-          .subscribe((data) => {
-            this.matchup = data as Matchup;
-            this.initForm();
-          });
-      }
+      // if ('matchup' in params) {
+      //   this.matchupId = JSON.parse(params['matchup']);
+      //   this.draftService
+      //     .getOpponent(this.matchupId, this.teamId)
+      //     .subscribe((data) => {
+      //       this.matchup = data;
+      //       this.initForm();
+      //     });
+      // }
     });
   }
 

@@ -68,8 +68,6 @@ import { RulesetSelectComponent } from '../../../../util/ruleset-select/ruleset.
 export class DraftFormCoreComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<void>();
   pokemonList$ = new BehaviorSubject<Pokemon[]>([]);
-  formats: string[] = [];
-  rulesets: string[] = [];
   draftForm!: DraftForm;
 
   @Input()
@@ -78,14 +76,7 @@ export class DraftFormCoreComponent implements OnInit, OnDestroy {
   constructor(private dataService: DataService) {}
 
   ngOnInit(): void {
-    this.dataService.getFormats().subscribe((formats) => {
-      this.formats = formats;
-    });
-    this.dataService.getRulesets().subscribe((rulesets) => {
-      this.rulesets = rulesets;
-    });
     this.draftForm = new DraftForm(this.params, this.pokemonList$);
-
     this.draftForm.controls.details.controls.ruleset.valueChanges
       .pipe(
         filter((ruleset) => ruleset !== null),
