@@ -33,11 +33,6 @@ export class OpponentFormEditComponent implements OnInit {
     private router: Router,
     private draftService: DraftService,
   ) {}
-
-  opponentForm?: FormGroup<{ team: FormArray }>;
-  get teamArray(): FormArray {
-    return this.opponentForm?.get('team') as FormArray;
-  }
   oppParams!: Opponent;
 
   ngOnInit(): void {
