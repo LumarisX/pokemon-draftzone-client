@@ -21,6 +21,10 @@ export class DraftService {
     return this.apiService.get(`draft/${teamName}`, true);
   }
 
+  getMatchup(matchupId: string, teamId: string): Observable<Matchup> {
+    return this.apiService.get(`draft/${teamId}/${matchupId}`, true);
+  }
+
   getOpponent(matchupId: string, teamId: string): Observable<Opponent> {
     return this.apiService.get(`draft/${teamId}/${matchupId}`, true);
   }
@@ -37,7 +41,7 @@ export class DraftService {
     return this.apiService.patch(`draft/${draftId}`, draftData);
   }
 
-  getMatchupList(teamName: string) {
+  getMatchupList(teamName: string): Observable<Opponent[]> {
     return this.apiService.get(`draft/${teamName}/matchups`, true);
   }
 

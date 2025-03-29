@@ -45,29 +45,12 @@ export class DraftFormNewComponent implements OnInit {
     private draftService: DraftService,
   ) {}
 
-  team: Pokemon[] = [
-    {
-      id: 'deoxysattack',
-      name: 'Deoxys-Attack',
-    },
-    {
-      id: 'clefable',
-      name: 'Clefable',
-    },
-    {
-      id: 'minior',
-      name: 'Minior',
-    },
-    {
-      id: 'test',
-      name: 'Test',
-    },
-  ];
+  params: { team?: Pokemon[] } = {};
 
   ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
       if ('team' in params) {
-        this.team = (params['team'] as string[]).map((id) => ({
+        this.params.team = (params['team'] as string[]).map((id) => ({
           id: id,
           name: getNameByPid(id),
         }));

@@ -48,7 +48,7 @@
               <div
                 class="w-1/2 h-auto p-1 overflow-hidden font-semibold text-center whitespace-normal rounded-full shadow-inner bg-bTeam-200 overflow-ellipsis text-medium shadow-bTeam-600"
               >
-                {{ matchup.bTeam.teamName }}
+                {{ matchup.teamName }}
               </div>
               <div
                 class="flex items-center justify-center w-1/6 p-1 overflow-hidden text-xs font-semibold whitespace-normal rounded-full shadow-inner bg-bTeam-200 h-fit overflow-ellipsis shadow-bTeam-600"
@@ -64,7 +64,7 @@
             </div>
             <div class="grid grid-cols-6 gap-1 px-4 pt-2 sprites">
               <sprite
-                *ngFor="let pokemon of matchup.bTeam.team"
+                *ngFor="let pokemon of matchup.team"
                 [pokemon]="pokemon"
               ></sprite>
             </div>

@@ -157,6 +157,7 @@ export class TeamFormComponent {
 
   handlePokemonInput(event?: Event): void {
     event?.preventDefault();
+    console.log('handle', event, this.pokemonList$.value);
     const pokemonNames = this.importInput
       .split(/[\n,]+/)
       .map((name) => name.trim())

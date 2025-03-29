@@ -1,44 +1,77 @@
-<form
-  [formGroup]="draftForm"
-  (ngSubmit)="onSubmit()"
-  (keydown.enter)="$event.preventDefault()"
-  class="p-2 m-2 shadow-md team bg-menu-300 shadow-menu-600 rounded-xl"
->
-  <div class="w-full">
-    <div class="grid grid-cols-2 gap-x-4">
-      <format-select formControlName="format"></format-select>
-      <ruleset-select formControlName="ruleset"></ruleset-select>
-    </div>
-  </div>
-
-  <div class="grid w-full grid-cols-1 gap-4 px-2 pb-2 lg:grid-cols-2">
-    <div>
-      <label for="team1form" class="font-nasa">Team 1</label>
-      <team-form
-        id="team1form"
-        extraClass="border-2 rounded-xl border-aTeam-300"
-        formControlName="team1"
-        color="aTeam"
-      ></team-form>
-    </div>
-    <div>
-      <label for="team2form" class="font-nasa">Team 2</label>
-      <team-form
-        id="team2form"
-        extraClass="border-2 rounded-xl border-bTeam-300"
-        formControlName="team2"
-        color="bTeam"
-      ></team-form>
-    </div>
-  </div>
-  <div class="flex justify-end w-full">
-    <button
-      type="submit"
-      class="px-3 py-1 mx-4 text-xl font-bold rounded-full shadow w-fit bg-menu-200 hover:bg-menu-100 shadow-menu-600"
+@if (draftForm) {
+  <mat-stepper #stepper class="pokemon-form-container" orientation="vertical">
+    <mat-step
+      state="details"
+      [stepControl]="draftForm.controls.details"
+      errorMessage="Name is required."
     >
-      View Matchup
-    </button>
-  </div>
-</form>
+      <form [formGroup]="draftForm.controls.details">
+        <ng-template matStepLabel>Details</ng-template>
+        <ng-template matStepContent>
+          <div class="details-form-container">
+            <div class="league-container details-container">
+              <format-select formControlName="format"></format-select>
+              <ruleset-select formControlName="ruleset"></ruleset-select>
+            </div>
+          </div>
+          <div class="button-bar">
+            <div class="button-spacer"></div>
+            <button type="button" mat-flat-button matStepperNext>Next</button>
+          </div>
+        </ng-template>
+      </form>
+    </mat-step>
+    <mat-step state="team">
+      <ng-template matStepLabel>Team 1</ng-template>
+      <ng-template matStepContent>
+        <div class="team-container">
+          <mat-form-field>
+            <mat-label>Team Name</mat-label>
+            <input matInput formControlName="teamName" spellcheck="false" />
+          </mat-form-field>
+          <team-form
+            [pokemonList$]="pokemonList$"
+            [ruleset]="draftForm.controls.details.controls.ruleset.value"
+            [teamArray]="draftForm.controls.team"
+          ></team-form>
+        </div>
 
-<!-- {{ draftForm.value | json }} -->
+        <div class="button-bar">
+          <button type="button" mat-flat-button matStepperPrevious>Back</button>
+          <div class="button-spacer"></div>
+          <button type="button" mat-flat-button matStepperNext>Next</button>
+        </div>
+      </ng-template>
+    </mat-step>
+    <mat-step state="team">
+      <ng-template matStepLabel>Team 2</ng-template>
+      <ng-template matStepContent>
+        <div class="team-container">
+          <mat-form-field>
+            <mat-label>Team Name</mat-label>
+            <input matInput formControlName="teamName" spellcheck="false" />
+          </mat-form-field>
+          <team-form
+            [pokemonList$]="pokemonList$"
+            [ruleset]="draftForm.controls.details.controls.ruleset.value"
+            [teamArray]="draftForm.controls.team"
+          ></team-form>
+        </div>
+
+        <div class="button-bar">
+          <button type="button" mat-flat-button matStepperPrevious>Back</button>
+          <div class="button-spacer"></div>
+          <button type="submit" mat-flat-button (click)="onSubmit()">
+            Submit
+          </button>
+        </div>
+      </ng-template>
+    </mat-step>
+    <ng-template matStepperIcon="details">
+      <mat-icon>info</mat-icon>
+    </ng-template>
+    <ng-template matStepperIcon="team">
+      <mat-icon>workspaces</mat-icon>
+    </ng-template>
+  </mat-stepper>
+}

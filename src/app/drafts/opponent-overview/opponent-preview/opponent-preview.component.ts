@@ -11,6 +11,7 @@ import { PlusSVG } from '../../../images/svg-components/plus.component';
 import { EditSVG } from '../../../images/svg-components/edit.component';
 import { ScoreSVG } from '../../../images/svg-components/score.component';
 import { LoadingComponent } from '../../../images/loading/loading.component';
+import { Opponent } from '../../../interfaces/opponent';
 
 @Component({
   selector: 'opponent-preview',
@@ -31,9 +32,9 @@ import { LoadingComponent } from '../../../images/loading/loading.component';
 export class OpponentTeamPreviewComponent implements OnInit {
   index = 0;
   draft?: Draft;
-  matchups?: (Matchup & {
-    deleteConfirm: boolean;
-    score: [number, number] | null;
+  matchups?: (Opponent & {
+    deleteConfirm?: boolean;
+    score?: [number, number] | null;
   })[];
   teamId: string = '';
 
@@ -43,7 +44,7 @@ export class OpponentTeamPreviewComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.teamId = <string>this.route.snapshot.paramMap.get('teamid');
+    this.teamId = this.route.snapshot.paramMap.get('teamid') ?? '';
     this.reload();
   }
 
@@ -51,13 +52,13 @@ export class OpponentTeamPreviewComponent implements OnInit {
     this.draft = undefined;
     this.matchups = undefined;
     this.draftService.getDraft(this.teamId).subscribe((data) => {
-      this.draft = <Draft>data;
+      this.draft = data;
     });
     this.draftService.getMatchupList(this.teamId).subscribe((data) => {
-      this.matchups = <(Matchup & { deleteConfirm: boolean })[]>data;
-      this.matchups.forEach((matchup) => {
-        matchup.score = this.score(matchup);
-      });
+      this.matchups = data;
+      // this.matchups.forEach((matchup) => {
+      //   matchup.score = this.score(matchup);
+      // });
     });
   }
 
@@ -71,7 +72,7 @@ export class OpponentTeamPreviewComponent implements OnInit {
     );
   }
 
-  score(matchup: Matchup): [number, number] | null {
+  score(matchup: Opponent): [number, number] | null {
     if (matchup.matches.length > 1) {
       let aScore = 0;
       let bScore = 0;
@@ -90,12 +91,12 @@ export class OpponentTeamPreviewComponent implements OnInit {
     }
   }
 
-  scoreString(matchup: Matchup) {
+  scoreString(matchup: Opponent) {
     if (matchup.score) return `${matchup.score[0]} - ${matchup.score[1]}`;
     return `Unscored`;
   }
 
-  scoreColor(matchup: Matchup) {
+  scoreColor(matchup: Opponent) {
     if (!matchup.score) return '';
     if (matchup.score[0] > matchup.score[1]) return 'bg-scale-positive-2';
     if (matchup.score[0] < matchup.score[1]) return 'bg-scale-negative-2';

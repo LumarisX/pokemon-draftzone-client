@@ -2,13 +2,22 @@ import { Pokemon } from './draft';
 
 export type Matchup = {
   _id: string;
-  name: string;
+  leagueName: string;
   aTeam: Side;
   bTeam: Side;
   stage: string;
   matches: Match[];
   score: [number, number] | null;
 };
+
+export type Side = {
+  _id?: string;
+  teamName: string;
+  team: Pokemon[];
+  coach?: string;
+  paste?: String;
+};
+
 export type Match = {
   aTeam: {
     stats: [
@@ -36,12 +45,4 @@ export type Match = {
   };
   replay?: String;
   winner?: null | 'a' | 'b';
-};
-
-export type Side = {
-  _id?: string;
-  teamName: string;
-  team: Pokemon[];
-  name?: string;
-  paste?: String;
 };

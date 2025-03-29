@@ -1,0 +1,41 @@
+.pokemon-form-container {
+  background-color: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+  border-radius: 1rem;
+  box-shadow: var(--mat-sys-level2);
+
+  .details-title {
+    padding: 0 0.5rem 0.5rem;
+    color: var(--mat-sys-on-surface-variant);
+    font-weight: 600;
+  }
+  .details-container {
+    padding: 0.5rem 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+  }
+
+  .team-container {
+    padding: 0.25rem 0;
+    height: 100%;
+    .team-title {
+      color: var(--mat-sys-primary);
+      font-weight: 600;
+      font-size: large;
+    }
+  }
+}
+
+.button-bar {
+  display: flex;
+  .button-spacer {
+    flex-grow: 1;
+  }
+}
+
+ruleset-select,
+format-select,
+mat-form-field {
+  margin-bottom: -1.5rem;
+}
