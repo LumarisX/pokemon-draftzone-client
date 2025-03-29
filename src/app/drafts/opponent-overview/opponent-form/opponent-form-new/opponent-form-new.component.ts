@@ -11,6 +11,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { DraftService } from '../../../../api/draft.service';
 import { DraftOverviewPath } from '../../../draft-overview/draft-overview-routing.module';
 import { OpponentFormCoreComponent } from '../opponent-form-core/opponent-form-core.component';
+import { LoadingComponent } from '../../../../images/loading/loading.component';
 
 @Component({
   selector: 'opponent-form-new',
@@ -21,12 +22,14 @@ import { OpponentFormCoreComponent } from '../opponent-form-core/opponent-form-c
     OpponentFormCoreComponent,
     ReactiveFormsModule,
     MatButtonModule,
+    LoadingComponent,
   ],
   styleUrl: '../opponent-form.component.scss',
   templateUrl: './opponent-form-new.component.html',
 })
 export class OpponentFormNewComponent implements OnInit {
   teamId: string = '';
+  stage?: string;
   readonly draftPath = DraftOverviewPath;
   constructor(
     private router: Router,
@@ -36,6 +39,11 @@ export class OpponentFormNewComponent implements OnInit {
 
   ngOnInit() {
     this.teamId = this.route.parent!.snapshot.paramMap.get('teamid') ?? '';
+    this.route.queryParams.subscribe((params) => {
+      if ('stage' in params) {
+        this.stage = params['stage'];
+      }
+    });
   }
 
   newMatchup(formData: Object) {

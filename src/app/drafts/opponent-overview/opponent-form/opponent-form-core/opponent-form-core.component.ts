@@ -1,13 +1,6 @@
 import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnDestroy,
-  OnInit,
-  Output,
-} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
   AbstractControl,
   FormArray,
@@ -23,7 +16,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatStepperModule } from '@angular/material/stepper';
 import { RouterModule } from '@angular/router';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { DataService } from '../../../../api/data.service';
 import { Pokemon } from '../../../../interfaces/draft';
 import { Opponent } from '../../../../interfaces/opponent';
@@ -62,8 +55,7 @@ import {
   templateUrl: './opponent-form-core.component.html',
   styleUrl: './opponent-form-core.component.scss',
 })
-export class OpponentFormCoreComponent implements OnInit, OnDestroy {
-  destroy$ = new Subject<void>();
+export class OpponentFormCoreComponent implements OnInit {
   pokemonList$ = new BehaviorSubject<Pokemon[]>([]);
   opponentForm!: OpponentForm;
 
@@ -76,21 +68,7 @@ export class OpponentFormCoreComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.opponentForm = new OpponentForm(this.params, this.pokemonList$);
-    // this.opponentForm.controls.details.controls.ruleset.valueChanges
-    //   .pipe(
-    //     filter((ruleset) => ruleset !== null),
-    //     takeUntil(this.destroy$),
-    //   )
-    //   .subscribe((ruleset) => {
-    //     this.loadPokemonList(ruleset);
-    //   });
     this.loadPokemonList(this.ruleset);
-    // this.opponentForm.setValidators(this.validateDraftForm);
-  }
-
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 
   private loadPokemonList(ruleset: string | null): void {
@@ -166,7 +144,7 @@ export class OpponentForm extends FormGroup<{
         coach: new FormControl(params?.coach ?? '', {
           nonNullable: true,
         }),
-        stage: new FormControl(params?.stage ?? 'Singles', {
+        stage: new FormControl(params?.stage ?? 'Week 1', {
           nonNullable: true,
           validators: Validators.required,
         }),

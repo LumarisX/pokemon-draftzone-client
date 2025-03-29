@@ -44,12 +44,14 @@ export class OpponentFormEditComponent implements OnInit {
           .getOpponent(this.matchupId, this.teamId)
           .subscribe((opponent) => {
             this.oppParams = opponent;
+            console.log(this.oppParams);
           });
       }
     });
   }
 
   editMatchup(formData: Object) {
+    console.log(formData);
     this.draftService
       .editMatchup(this.matchupId, this.teamId, formData)
       .subscribe({

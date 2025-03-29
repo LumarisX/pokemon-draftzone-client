@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { DraftService } from '../../../api/draft.service';
 import { Draft } from '../../../interfaces/draft';
 import { Matchup } from '../../../interfaces/matchup';
@@ -12,6 +12,7 @@ import { EditSVG } from '../../../images/svg-components/edit.component';
 import { ScoreSVG } from '../../../images/svg-components/score.component';
 import { LoadingComponent } from '../../../images/loading/loading.component';
 import { Opponent } from '../../../interfaces/opponent';
+import { DraftOverviewPath } from '../../draft-overview/draft-overview-routing.module';
 
 @Component({
   selector: 'opponent-preview',
@@ -40,6 +41,7 @@ export class OpponentTeamPreviewComponent implements OnInit {
 
   constructor(
     private draftService: DraftService,
+    private router: Router,
     private route: ActivatedRoute,
   ) {}
 
@@ -101,5 +103,11 @@ export class OpponentTeamPreviewComponent implements OnInit {
     if (matchup.score[0] > matchup.score[1]) return 'bg-scale-positive-2';
     if (matchup.score[0] < matchup.score[1]) return 'bg-scale-negative-2';
     return '';
+  }
+
+  newOpponent() {
+    this.router.navigate(['/', DraftOverviewPath, this.teamId, 'new'], {
+      queryParams: { stage: `Week ${(this.matchups?.length ?? 0) + 1}` },
+    });
   }
 }

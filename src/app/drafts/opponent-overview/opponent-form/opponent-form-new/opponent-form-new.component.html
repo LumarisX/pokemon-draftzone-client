@@ -12,8 +12,13 @@
         <h1 class="text-3xl font-bold text-center font-nasa">New Opponent</h1>
       </div>
     </div>
-    <opponent-form-core
-      (formSubmitted)="newMatchup($event)"
-    ></opponent-form-core>
+    @if (stage) {
+      <opponent-form-core
+        [params]="{ stage: this.stage }"
+        (formSubmitted)="newMatchup($event)"
+      ></opponent-form-core>
+    } @else {
+      <loading></loading>
+    }
   </div>
 </div>
