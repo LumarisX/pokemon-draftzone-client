@@ -1,13 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { DraftService } from '../../../../api/draft.service';
 import { LoadingComponent } from '../../../../images/loading/loading.component';
 import { Opponent } from '../../../../interfaces/opponent';
 import { DraftOverviewPath } from '../../../draft-overview/draft-overview-routing.module';
 import { OpponentFormCoreComponent } from '../opponent-form-core/opponent-form-core.component';
-import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'opponent-form-edit',

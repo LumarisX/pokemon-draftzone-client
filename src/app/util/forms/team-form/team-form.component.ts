@@ -157,7 +157,10 @@ export class TeamFormComponent {
 
   handlePokemonInput(event?: Event): void {
     event?.preventDefault();
-    console.log('handle', event, this.pokemonList$.value);
+    this.importPokemon();
+  }
+
+  importPokemon() {
     const pokemonNames = this.importInput
       .split(/[\n,]+/)
       .map((name) => name.trim())
@@ -170,7 +173,6 @@ export class TeamFormComponent {
         ),
       );
     });
-
     this.importInput = '';
   }
 

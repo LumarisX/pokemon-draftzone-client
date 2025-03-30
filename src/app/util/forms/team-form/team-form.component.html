@@ -19,7 +19,9 @@
             }
           </mat-chip-set>
           <div class="add-spacer"></div>
-          <button mat-flat-button (click)="importing = false">Details</button>
+          <button mat-flat-button (click)="importing = false; importPokemon()">
+            Details
+          </button>
         </div>
         <mat-form-field floatLabel="always">
           <mat-label>Pokemon</mat-label>

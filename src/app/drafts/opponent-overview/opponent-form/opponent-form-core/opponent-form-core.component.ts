@@ -69,6 +69,7 @@ export class OpponentFormCoreComponent implements OnInit {
   ngOnInit(): void {
     this.opponentForm = new OpponentForm(this.params, this.pokemonList$);
     this.loadPokemonList(this.ruleset);
+    this.opponentForm.setValidators(this.validateDraftForm);
   }
 
   private loadPokemonList(ruleset: string | null): void {
