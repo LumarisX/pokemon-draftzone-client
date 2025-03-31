@@ -79,13 +79,12 @@
               </ng-template>
             </mat-tab>
           }
-          @if (typechart && recommended) {
+          @if (typechart) {
             <mat-tab label="Typechart">
               <ng-template matTabContent>
                 <div class="tab-container">
                   <planner-typechart
                     [typechart]="typechart"
-                    [recommended]="recommended"
                   ></planner-typechart>
                 </div>
               </ng-template>

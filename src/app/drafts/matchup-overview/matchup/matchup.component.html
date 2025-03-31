@@ -1,7 +1,4 @@
-<div
-  class="flex flex-wrap justify-center gap-4 p-4 text-xs"
-  *ngIf="matchupData"
->
+<div class="flex flex-wrap justify-center gap-4 p-4" *ngIf="matchupData">
   <overview class="z-10" [teams]="matchupData.summary"></overview>
   <summary
     class="z-10 max-w-full w-fit"

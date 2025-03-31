@@ -1,0 +1,258 @@
+@if (summary) {
+  <table
+    cdk-table
+    [dataSource]="summary.team"
+    matSort
+    matSortActive="spe"
+    matSortDirection="desc"
+    [matSortDisableClear]="true"
+    (matSortChange)="sort($event)"
+  >
+    <ng-container cdkColumnDef="sprite">
+      <th cdk-header-cell *cdkHeaderCellDef></th>
+      <td cdk-cell *cdkCellDef="let pokemon">
+        <sprite size="3rem" flipped [pokemon]="pokemon"></sprite>
+      </td>
+      <td
+        cdk-footer-cell
+        *cdkFooterCellDef
+        colspan="2"
+        class="slider-cell left-rounded right-rounded"
+      >
+        <div class="slider-container">
+          <div class="slider-wrapper">
+            <mat-slider min="20" max="140">
+              <input matSliderThumb [(ngModel)]="baseValue" />
+            </mat-slider>
+          </div>
+          <div class="slider-label">
+            <span>Neutral Value:</span>
+            <span class="value-display">{{ baseValue }}</span>
+          </div>
+        </div>
+      </td>
+    </ng-container>
+
+    <ng-container cdkColumnDef="name">
+      <th mat-sort-header="name" cdk-header-cell *cdkHeaderCellDef>Name</th>
+      <td cdk-cell *cdkCellDef="let pokemon">
+        <div class="pokemon-label">
+          {{ pokemon.name }}
+        </div>
+        <div class="type-container">
+          @for (type of pokemon.types; track $index) {
+            <div class="type-label" [style.background-color]="typeColor(type)">
+              <div class="type-text">
+                {{ type }}
+              </div>
+            </div>
+          }
+        </div>
+      </td>
+      <td cdk-footer-cell *cdkFooterCellDef></td>
+    </ng-container>
+
+    <ng-container cdkColumnDef="abilities">
+      <th cdk-header-cell *cdkHeaderCellDef>Abilities</th>
+      <td cdk-cell *cdkCellDef="let pokemon" class="ability-cell">
+        @for (ability of pokemon.abilities; track $index) {
+          <div>
+            {{ ability }}
+          </div>
+        }
+      </td>
+      <td cdk-footer-cell *cdkFooterCellDef class="footer-label-cell">
+        <div>Average</div>
+        <div>Median</div>
+        <div>Max</div>
+      </td>
+    </ng-container>
+
+    <ng-container cdkColumnDef="hp">
+      <th mat-sort-header="hp" start="desc" cdk-header-cell *cdkHeaderCellDef>
+        HP
+      </th>
+      <td
+        cdk-cell
+        *cdkCellDef="let pokemon"
+        class="left-rounded stat-cell"
+        [ngClass]="statColor(pokemon.baseStats.hp)"
+      >
+        {{ pokemon.baseStats.hp }}
+      </td>
+      <td cdk-footer-cell *cdkFooterCellDef class="left-rounded">
+        <div [ngClass]="statColor(summary.stats.mean.hp)">
+          {{ summary.stats.mean.hp }}
+        </div>
+        <div [ngClass]="statColor(summary.stats.median.hp)">
+          {{ summary.stats.median.hp }}
+        </div>
+        <div [ngClass]="statColor(summary.stats.max.hp)">
+          {{ summary.stats.max.hp }}
+        </div>
+      </td>
+    </ng-container>
+
+    <ng-container cdkColumnDef="atk">
+      <th mat-sort-header="atk" start="desc" cdk-header-cell *cdkHeaderCellDef>
+        ATK
+      </th>
+      <td
+        cdk-cell
+        *cdkCellDef="let pokemon"
+        class="stat-cell"
+        [ngClass]="statColor(pokemon.baseStats.atk)"
+      >
+        {{ pokemon.baseStats.atk }}
+      </td>
+      <td cdk-footer-cell *cdkFooterCellDef>
+        <div [ngClass]="statColor(summary.stats.mean.atk)">
+          {{ summary.stats.mean.atk }}
+        </div>
+        <div [ngClass]="statColor(summary.stats.median.atk)">
+          {{ summary.stats.median.atk }}
+        </div>
+        <div [ngClass]="statColor(summary.stats.max.atk)">
+          {{ summary.stats.max.atk }}
+        </div>
+      </td>
+    </ng-container>
+
+    <ng-container cdkColumnDef="def">
+      <th mat-sort-header="def" start="desc" cdk-header-cell *cdkHeaderCellDef>
+        DEF
+      </th>
+      <td
+        cdk-cell
+        *cdkCellDef="let pokemon"
+        class="stat-cell"
+        [ngClass]="statColor(pokemon.baseStats.def)"
+      >
+        {{ pokemon.baseStats.def }}
+      </td>
+      <td cdk-footer-cell *cdkFooterCellDef>
+        <div [ngClass]="statColor(summary.stats.mean.def)">
+          {{ summary.stats.mean.def }}
+        </div>
+        <div [ngClass]="statColor(summary.stats.median.def)">
+          {{ summary.stats.median.def }}
+        </div>
+        <div [ngClass]="statColor(summary.stats.max.def)">
+          {{ summary.stats.max.def }}
+        </div>
+      </td>
+    </ng-container>
+    <ng-container cdkColumnDef="spa">
+      <th mat-sort-header="spa" start="desc" cdk-header-cell *cdkHeaderCellDef>
+        SPA
+      </th>
+      <td
+        cdk-cell
+        *cdkCellDef="let pokemon"
+        class="stat-cell"
+        [ngClass]="statColor(pokemon.baseStats.spa)"
+      >
+        {{ pokemon.baseStats.spa }}
+      </td>
+      <td cdk-footer-cell *cdkFooterCellDef>
+        <div [ngClass]="statColor(summary.stats.mean.spa)">
+          {{ summary.stats.mean.spa }}
+        </div>
+        <div [ngClass]="statColor(summary.stats.median.spa)">
+          {{ summary.stats.median.spa }}
+        </div>
+        <div [ngClass]="statColor(summary.stats.max.spa)">
+          {{ summary.stats.max.spa }}
+        </div>
+      </td>
+    </ng-container>
+    <ng-container cdkColumnDef="spd">
+      <th mat-sort-header="spd" start="desc" cdk-header-cell *cdkHeaderCellDef>
+        SPD
+      </th>
+      <td
+        cdk-cell
+        *cdkCellDef="let pokemon"
+        class="stat-cell"
+        [ngClass]="statColor(pokemon.baseStats.spd)"
+      >
+        {{ pokemon.baseStats.spd }}
+      </td>
+      <td cdk-footer-cell *cdkFooterCellDef>
+        <div [ngClass]="statColor(summary.stats.mean.spd)">
+          {{ summary.stats.mean.spd }}
+        </div>
+        <div [ngClass]="statColor(summary.stats.median.spd)">
+          {{ summary.stats.median.spd }}
+        </div>
+        <div [ngClass]="statColor(summary.stats.max.spd)">
+          {{ summary.stats.max.spd }}
+        </div>
+      </td>
+    </ng-container>
+    <ng-container cdkColumnDef="spe">
+      <th mat-sort-header="spe" start="desc" cdk-header-cell *cdkHeaderCellDef>
+        SPE
+      </th>
+      <td
+        cdk-cell
+        *cdkCellDef="let pokemon"
+        class="stat-cell"
+        [ngClass]="statColor(pokemon.baseStats.spe)"
+      >
+        {{ pokemon.baseStats.spe }}
+      </td>
+      <td cdk-footer-cell *cdkFooterCellDef>
+        <div [ngClass]="statColor(summary.stats.mean.spe)">
+          {{ summary.stats.mean.spe }}
+        </div>
+        <div [ngClass]="statColor(summary.stats.median.spe)">
+          {{ summary.stats.median.spe }}
+        </div>
+        <div [ngClass]="statColor(summary.stats.max.spe)">
+          {{ summary.stats.max.spe }}
+        </div>
+      </td>
+    </ng-container>
+    <ng-container cdkColumnDef="bst">
+      <th mat-sort-header="bst" start="desc" cdk-header-cell *cdkHeaderCellDef>
+        BST
+      </th>
+      <td
+        cdk-cell
+        *cdkCellDef="let pokemon"
+        [ngClass]="bstColor(pokemon.bst)"
+        class="right-rounded stat-cell"
+      >
+        {{ pokemon.bst }}
+      </td>
+      <td cdk-footer-cell *cdkFooterCellDef class="right-rounded">
+        <div [ngClass]="bstColor(summary.stats.mean.bst)">
+          {{ summary.stats.mean.bst }}
+        </div>
+        <div [ngClass]="bstColor(summary.stats.median.bst)">
+          {{ summary.stats.median.bst }}
+        </div>
+        <div [ngClass]="bstColor(summary.stats.max.bst)">
+          {{ summary.stats.max.bst }}
+        </div>
+      </td>
+    </ng-container>
+    <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+    <tr cdk-row *cdkRowDef="let row; columns: displayedColumns"></tr>
+    <tr
+      cdk-footer-row
+      *cdkFooterRowDef="[
+        'sprite',
+        'abilities',
+        'hp',
+        'atk',
+        'def',
+        'spa',
+        'spd',
+        'spe',
+        'bst',
+      ]"
+    ></tr>
+  </table>
+}

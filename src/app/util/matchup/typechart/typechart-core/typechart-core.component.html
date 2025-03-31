@@ -1,0 +1,80 @@
+@if (typechart) {
+  <table>
+    <thead>
+      <tr>
+        <th></th>
+        @for (type of types; track $index) {
+          <th
+            class="action-cell"
+            (click)="setSort(type)"
+            (mouseenter)="columnHovered.next(type)"
+            (mouseleave)="columnHovered.next(null)"
+            [ngClass]="{
+              'column-hovered': type === columnHovered.value,
+            }"
+          >
+            <div class="flex-wrapper">
+              <div
+                class="type-container"
+                [ngClass]="{
+                  'sort-press': sortedBy.value === type,
+                }"
+                [style.backgroundColor]="typeColor(type)"
+              >
+                <div class="type-icon-wrapper">
+                  <img
+                    src="../../../assets/icons/types/gen9icon/{{ type }}.png"
+                    onerror="this.src='../../../assets/icons/types/Unknown.png'"
+                    alt="{{ type }}"
+                  />
+                </div>
+                <span class="type-text">{{ type }}</span>
+              </div>
+            </div>
+          </th>
+        }
+      </tr>
+    </thead>
+    <tbody>
+      @for (pokemon of sortedTeam | async; track $index) {
+        <tr>
+          <td class="action-cell" (click)="toggleVisible(pokemon)">
+            <div class="flex-wrapper">
+              <div class="sprite-wrapper">
+                <sprite
+                  size="3rem"
+                  tooltipPosition="left"
+                  [disabled]="pokemon.disabled"
+                  flipped
+                  [pokemon]="pokemon"
+                ></sprite>
+              </div>
+            </div>
+          </td>
+          @for (type of types; track $index) {
+            <td
+              class="type-cell"
+              (mouseenter)="columnHovered.next(type)"
+              (mouseleave)="columnHovered.next(null)"
+              [ngClass]="{ 'column-hovered': type === columnHovered.value }"
+            >
+              <div class="flex-wrapper">
+                <div
+                  class="type-wrapper"
+                  [ngClass]="
+                    weaknessColor(
+                      pokemon.weak[this.abilityIndex][type],
+                      pokemon.disabled!
+                    )
+                  "
+                >
+                  {{ pokemon.weak[this.abilityIndex][type] }}
+                </div>
+              </div>
+            </td>
+          }
+        </tr>
+      }
+    </tbody>
+  </table>
+}

@@ -1,0 +1,138 @@
+@if (typechart) {
+  <table>
+    <thead>
+      <tr>
+        <th></th>
+        @for (type of types; track $index) {
+          <th
+            (mouseenter)="columnHovered.next(type)"
+            (mouseleave)="columnHovered.next(null)"
+            [ngClass]="{ 'column-hovered': type === columnHovered.value }"
+          >
+            <div class="flex-wrapper">
+              <div
+                class="type-container-small"
+                [style.backgroundColor]="typeColor(type)"
+              >
+                <span class="type-text">{{ type }}</span>
+              </div>
+            </div>
+          </th>
+        }
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th>
+          <div class="stat-label bg-menu-300">Count</div>
+        </th>
+        @for (type of types; track $index) {
+          <td
+            class="stat-cell"
+            (mouseenter)="columnHovered.next(type)"
+            (mouseleave)="columnHovered.next(null)"
+            [ngClass]="{ 'column-hovered': type === columnHovered.value }"
+          >
+            <div class="flex-wrapper">
+              <div class="stat-wrapper" [ngClass]="countColor(counts[$index])">
+                {{ counts[$index] | number: "1.0-0" }}
+              </div>
+            </div>
+          </td>
+        }
+      </tr>
+      <tr>
+        <th><div class="stat-label bg-scale-negative-3">Weaks</div></th>
+        @for (type of types; track $index) {
+          <td
+            class="stat-cell"
+            (mouseenter)="columnHovered.next(type)"
+            (mouseleave)="columnHovered.next(null)"
+            [ngClass]="{ 'column-hovered': type === columnHovered.value }"
+          >
+            <div class="flex-wrapper">
+              <div
+                class="stat-wrapper"
+                [ngClass]="weakColor(weaknesses[$index])"
+              >
+                {{ weaknesses[$index] | number: "1.0-0" }}
+              </div>
+            </div>
+          </td>
+        }
+      </tr>
+      <tr>
+        <th><div class="stat-label bg-scale-positive-3">Resists</div></th>
+        @for (type of types; track $index) {
+          <td
+            class="stat-cell"
+            (mouseenter)="columnHovered.next(type)"
+            (mouseleave)="columnHovered.next(null)"
+            [ngClass]="{ 'column-hovered': type === columnHovered.value }"
+          >
+            <div class="flex-wrapper">
+              <div
+                class="stat-wrapper"
+                [ngClass]="resistColor(resistances[$index])"
+              >
+                {{ resistances[$index] | number: "1.0-0" }}
+              </div>
+            </div>
+          </td>
+        }
+      </tr>
+      <tr>
+        <th>
+          <div
+            class="stat-label bg-gradient-to-r from-scale-negative-3 from-50% to-scale-positive-3 to-50%"
+          >
+            Diff
+          </div>
+        </th>
+        @for (type of types; track $index) {
+          <td
+            class="stat-cell"
+            (mouseenter)="columnHovered.next(type)"
+            (mouseleave)="columnHovered.next(null)"
+            [ngClass]="{ 'column-hovered': type === columnHovered.value }"
+          >
+            <div class="flex-wrapper">
+              <div
+                class="stat-wrapper"
+                [ngClass]="diffColor(difference[$index])"
+              >
+                {{ difference[$index] | number: "1.0-0" }}
+              </div>
+            </div>
+          </td>
+        }
+      </tr>
+      <tr>
+        <th>
+          <div
+            class="stat-label bg-gradient-to-r from-scale-negative-3 via-menu-200 to-scale-positive-3"
+          >
+            Log
+          </div>
+        </th>
+        @for (type of types; track $index) {
+          <td
+            class="stat-cell"
+            (mouseenter)="columnHovered.next(type)"
+            (mouseleave)="columnHovered.next(null)"
+            [ngClass]="{ 'column-hovered': type === columnHovered.value }"
+          >
+            <div class="flex-wrapper">
+              <div
+                class="stat-wrapper"
+                [ngClass]="diffColor(differential[$index])"
+              >
+                {{ differential[$index] | number: "1.0-0" }}
+              </div>
+            </div>
+          </td>
+        }
+      </tr>
+    </tbody>
+  </table>
+}
