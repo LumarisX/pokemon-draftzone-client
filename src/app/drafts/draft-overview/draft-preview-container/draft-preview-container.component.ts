@@ -3,32 +3,27 @@ import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { DraftService } from '../../../api/draft.service';
 import { LoadingComponent } from '../../../images/loading/loading.component';
-import { SpriteComponent } from '../../../images/sprite/sprite.component';
 import { ArchiveSVG } from '../../../images/svg-components/archive.component';
-import { ArchiveAddSVG } from '../../../images/svg-components/archiveAdd.component';
-import { BarChartSVG } from '../../../images/svg-components/barchart.component';
-import { EditSVG } from '../../../images/svg-components/edit.component';
 import { PlusSVG } from '../../../images/svg-components/plus.component';
 import { Draft } from '../../../interfaces/draft';
 import { DraftOverviewPath } from '../draft-overview-routing.module';
+import { DraftPreviewComponent } from './draft-preview/draft-preview.component';
 
 @Component({
-  selector: 'draft-preview',
+  selector: 'draft-preview-container',
   standalone: true,
-  templateUrl: './draft-preview.component.html',
+  templateUrl: './draft-preview-container.component.html',
+  styleUrl: './draft-preview-container.component.scss',
   imports: [
     CommonModule,
     RouterModule,
-    SpriteComponent,
-    ArchiveAddSVG,
-    EditSVG,
-    BarChartSVG,
     PlusSVG,
     LoadingComponent,
     ArchiveSVG,
+    DraftPreviewComponent,
   ],
 })
-export class DraftPreviewComponent {
+export class DraftPreviewContainerComponent {
   drafts!: (Draft & { menu: 'main' | 'archive' | 'edit' | 'delete' })[];
   draftPath = DraftOverviewPath;
   constructor(private draftService: DraftService) {}
@@ -43,18 +38,6 @@ export class DraftPreviewComponent {
       for (let team of this.drafts) {
         team.menu = 'main';
       }
-    });
-  }
-
-  archive(teamId: string) {
-    this.draftService.archiveDraft(teamId).subscribe((data) => {
-      this.reload();
-    });
-  }
-
-  delete(teamId: string) {
-    this.draftService.deleteDraft(teamId).subscribe((data) => {
-      this.reload();
     });
   }
 }

@@ -1,0 +1,35 @@
+<div class="p-2 m-2 border-2 bg-aTeam-100 rounded-xl border-aTeam-200">
+  <div class="flex items-center px-6 py-1">
+    <p class="text-2xl font-nasa font-bold">My Drafts</p>
+  </div>
+  <loading *ngIf="!drafts"></loading>
+  <div
+    *ngIf="drafts"
+    id="drafts"
+    class="grid h-auto grid-flow-row grid-cols-1 gap-4 p-2 overflow-auto md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4"
+  >
+    <div *ngFor="let draft of drafts">
+      <draft-preview
+        [draft]="draft"
+        (reloadRequested)="reload()"
+      ></draft-preview>
+    </div>
+  </div>
+  <div class="flex p-3">
+    <button
+      [routerLink]="['/', draftPath, 'new']"
+      class="flex items-center p-1 rounded-lg shadow-md bg-aTeam-300 hover:shadow shadow-aTeam-600"
+      title="Add League"
+    >
+      <plus-svg class="w-8 stroke-symbolColor-main"></plus-svg>
+    </button>
+    <div class="flex-grow"></div>
+    <button
+      [routerLink]="['/', draftPath, 'archives']"
+      class="flex items-center p-1 rounded-lg shadow-md bg-aTeam-300 hover:shadow shadow-aTeam-600"
+      title="Archives"
+    >
+      <archive-svg class="w-8"></archive-svg>
+    </button>
+  </div>
+</div>
