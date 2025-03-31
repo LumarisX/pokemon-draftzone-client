@@ -39,3 +39,12 @@ format-select,
 mat-form-field {
   margin-bottom: -1.5rem;
 }
+
+@media (max-width: 768px) {
+  ::ng-deep .mat-vertical-content-container {
+    margin-left: 0.5rem !important;
+    .mat-vertical-content {
+      padding: 0 0.75rem 0.75rem !important;
+    }
+  }
+}

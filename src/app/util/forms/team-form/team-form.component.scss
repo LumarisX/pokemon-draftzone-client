@@ -29,19 +29,73 @@
         align-items: center;
         height: 4rem;
         sprite {
+          flex-shrink: 0;
           margin: 2px 0;
-          width: 4rem;
-          height: 4rem;
+          max-width: 4rem;
+          max-height: 4rem;
+          @media (max-width: 768px) {
+            max-width: 3rem;
+            max-height: 3rem;
+          }
+        }
+
+        .drag-icon {
+          flex-shrink: 0;
+          cursor: move;
         }
 
         mat-icon {
           color: var(--mat-sys-on-surface-variant);
           &.preview-warning {
             color: var(--mat-sys-error);
-            margin: 2px 0;
             width: 4rem;
             height: 3rem;
             font-size: 3rem;
+          }
+        }
+
+        .pokemon-header {
+          min-width: 0;
+          flex-grow: 1;
+          flex-shrink: 1;
+          display: flex;
+          align-items: center;
+
+          .name-container {
+            height: 100%;
+            display: flex;
+            flex-shrink: 1;
+            min-width: 0;
+            column-gap: 0.25rem;
+
+            .name-title {
+              flex-shrink: 1;
+              min-width: 0;
+
+              overflow: hidden;
+              white-space: nowrap;
+              text-overflow: ellipsis;
+            }
+
+            @media (max-width: 768px) {
+              flex-direction: column;
+            }
+
+            .icon-container {
+              max-height: 2rem;
+              display: flex;
+              align-items: center;
+              fill: var(--mat-sys-on-surface-variant);
+            }
+          }
+        }
+
+        .setting-icon-container {
+          display: flex;
+          width: fit-content;
+          flex-shrink: 0;
+          .mat-mdc-icon-button {
+            @include mat.button-density(-1);
           }
         }
       }
@@ -236,17 +290,18 @@
   > :not(:first-child) {
     margin-top: 0.5rem;
   }
-
-  .modifier-container {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
 }
 
 .add-bar {
   padding: 0.25rem 0;
   align-items: center;
   display: flex;
+  @media (max-width: 768px) {
+    flex-direction: column-reverse;
+    > :not(:first-child) {
+      margin-bottom: 0.5rem;
+    }
+  }
   @include mat.button-density(1);
   .add-spacer {
     flex-grow: 1;
@@ -257,11 +312,13 @@
   .capt-button {
     color: var(--mat-sys-on-surface-variant);
   }
-}
-
-.drag-icon {
-  padding: 0 0.25rem;
-  cursor: move;
+  div {
+    display: flex;
+    align-items: center;
+    > :not(:first-child) {
+      margin-left: 0.5rem;
+    }
+  }
 }
 
 .cdk-drag-preview {
@@ -306,19 +363,6 @@ mat-tab-group {
       color: var(--mat-sys-outline-variant),
     )
   );
-}
-
-.icon-container {
-  height: 2rem;
-  display: flex;
-  align-items: center;
-  fill: var(--mat-sys-on-surface-variant);
-}
-
-.small-form {
-  @media (min-width: 768px) {
-    max-width: 50%;
-  }
 }
 
 dz-slide-toggle {

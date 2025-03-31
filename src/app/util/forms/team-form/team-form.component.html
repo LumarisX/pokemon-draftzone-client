@@ -39,62 +39,67 @@
       </div>
     } @else {
       <div class="add-bar">
-        <pokemon-select
-          #pokemonInput
-          [ruleset]="ruleset"
-          (pokemonSelected)="addPokemon($event); pokemonInput.clearSelection()"
-          appearance="outline"
-          label="Add Pokemon"
-        ></pokemon-select>
+        <div>
+          <pokemon-select
+            #pokemonInput
+            [ruleset]="ruleset"
+            (pokemonSelected)="
+              addPokemon($event); pokemonInput.clearSelection()
+            "
+            appearance="outline"
+            label="Add Pokemon"
+          ></pokemon-select>
 
-        <button
-          mat-icon-button
-          class="capt-button"
-          cdkOverlayOrigin
-          (click)="teamOption = true"
-          #trigger="cdkOverlayOrigin"
-        >
-          <mat-icon svgIcon="capt"></mat-icon>
-        </button>
+          <button
+            mat-icon-button
+            class="capt-button"
+            cdkOverlayOrigin
+            (click)="teamOption = true"
+            #trigger="cdkOverlayOrigin"
+          >
+            <mat-icon svgIcon="capt"></mat-icon>
+          </button>
 
-        <ng-template
-          cdkConnectedOverlay
-          [cdkConnectedOverlayOrigin]="trigger"
-          [cdkConnectedOverlayHasBackdrop]="true"
-          cdkConnectedOverlayGrowAfterOpen
-          [cdkConnectedOverlayOffsetY]="4"
-          cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
-          (backdropClick)="teamOption = false"
-          [cdkConnectedOverlayOpen]="teamOption"
-          (detach)="teamOption = false"
-        >
-          <div class="flex-overlay">
-            <mat-checkbox
-              [checked]="isAllSelected('tera')"
-              [indeterminate]="partialSelected('tera')"
-              (change)="toggleTeamControl('tera', $event.checked)"
-            >
-              <span> Team Tera</span>
-              <mat-icon svgIcon="tera"></mat-icon>
-            </mat-checkbox>
-            <mat-checkbox
-              [checked]="isAllSelected('z')"
-              [indeterminate]="partialSelected('z')"
-              (change)="toggleTeamControl('z', $event.checked)"
-            >
-              <span> Team Z</span>
-              <mat-icon svgIcon="z"></mat-icon>
-            </mat-checkbox>
-            <mat-checkbox
-              [checked]="isAllSelected('dmax')"
-              [indeterminate]="partialSelected('dmax')"
-              (change)="toggleTeamControl('dmax', $event.checked)"
-            >
-              <span>Team Dynamax</span>
-              <mat-icon svgIcon="dmax"></mat-icon>
-            </mat-checkbox>
-          </div>
-        </ng-template>
+          <ng-template
+            cdkConnectedOverlay
+            [cdkConnectedOverlayOrigin]="trigger"
+            [cdkConnectedOverlayHasBackdrop]="true"
+            cdkConnectedOverlayGrowAfterOpen
+            [cdkConnectedOverlayOffsetY]="4"
+            cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
+            (backdropClick)="teamOption = false"
+            [cdkConnectedOverlayOpen]="teamOption"
+            (detach)="teamOption = false"
+          >
+            <div class="flex-overlay">
+              <mat-checkbox
+                [checked]="isAllSelected('tera')"
+                [indeterminate]="partialSelected('tera')"
+                (change)="toggleTeamControl('tera', $event.checked)"
+              >
+                <span> Team Tera</span>
+                <mat-icon svgIcon="tera"></mat-icon>
+              </mat-checkbox>
+              <mat-checkbox
+                [checked]="isAllSelected('z')"
+                [indeterminate]="partialSelected('z')"
+                (change)="toggleTeamControl('z', $event.checked)"
+              >
+                <span> Team Z</span>
+                <mat-icon svgIcon="z"></mat-icon>
+              </mat-checkbox>
+              <mat-checkbox
+                [checked]="isAllSelected('dmax')"
+                [indeterminate]="partialSelected('dmax')"
+                (change)="toggleTeamControl('dmax', $event.checked)"
+              >
+                <span>Team Dynamax</span>
+                <mat-icon svgIcon="dmax"></mat-icon>
+              </mat-checkbox>
+            </div>
+          </ng-template>
+        </div>
+
         <div class="add-spacer"></div>
         <button mat-flat-button (click)="importing = true">Import</button>
       </div>
@@ -124,7 +129,7 @@
                   }
                 </div>
                 <button (click)="accordionItem.toggle()" class="item-header">
-                  <div class="flex items-center space-x-1">
+                  <div class="pokemon-header">
                     <mat-icon class="drag-icon" cdkDragHandle
                       >drag_indicator</mat-icon
                     >
@@ -141,33 +146,34 @@
                     } @else {
                       <mat-icon class="preview-warning">warning</mat-icon>
                     }
+                    <div class="name-container">
+                      <div class="name-title font-nasa">
+                        {{
+                          monGroup.controls.nickname.value ||
+                            monGroup.controls.pokemon.value.name
+                        }}
+                      </div>
 
-                    <div class="name-title font-nasa">
-                      {{
-                        monGroup.controls.nickname.value ||
-                          monGroup.controls.pokemon.value.name
-                      }}
-                    </div>
-
-                    <div class="icon-container">
-                      @if (
-                        monGroup.controls.tera.value &&
-                        monGroup.controls.tera.value.length > 0
-                      ) {
-                        <mat-icon svgIcon="tera"></mat-icon>
-                      }
-                      @if (
-                        monGroup.controls.z.value &&
-                        monGroup.controls.z.value.length > 0
-                      ) {
-                        <mat-icon svgIcon="z"></mat-icon>
-                      }
-                      @if (monGroup.controls.dmax.value) {
-                        <mat-icon svgIcon="dmax"></mat-icon>
-                      }
+                      <div class="icon-container">
+                        @if (
+                          monGroup.controls.tera.value &&
+                          monGroup.controls.tera.value.length > 0
+                        ) {
+                          <mat-icon svgIcon="tera"></mat-icon>
+                        }
+                        @if (
+                          monGroup.controls.z.value &&
+                          monGroup.controls.z.value.length > 0
+                        ) {
+                          <mat-icon svgIcon="z"></mat-icon>
+                        }
+                        @if (monGroup.controls.dmax.value) {
+                          <mat-icon svgIcon="dmax"></mat-icon>
+                        }
+                      </div>
                     </div>
                   </div>
-                  <div>
+                  <div class="setting-icon-container">
                     <button mat-icon-button>
                       <mat-icon
                         class="settings-icon"
@@ -503,7 +509,6 @@
                               "
                             />
                           </mat-form-field>
-
                           <mat-form-field>
                             <mat-label>New Abilities</mat-label>
                             <mat-chip-grid #abilityChipGrid>
