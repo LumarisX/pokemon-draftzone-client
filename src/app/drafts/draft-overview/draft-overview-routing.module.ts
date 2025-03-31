@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { DraftOverviewComponent } from './draft-overview.component';
 import { AuthGuard } from '@auth0/auth0-angular';
-import { DraftPreviewComponent } from './draft-preview/draft-preview.component';
+import { DraftPreviewContainerComponent } from './draft-preview-container/draft-preview-container.component';
 import { DraftFormNewComponent } from './draft-form/draft-form-new/draft-form-new.component';
 import { DraftFormEditComponent } from './draft-form/draft-form-edit/draft-form-edit.component';
 import { DraftArchiveComponent } from './draft-archives/draft-archives.component';
@@ -17,7 +17,7 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        component: DraftPreviewComponent,
+        component: DraftPreviewContainerComponent,
         canActivate: [AuthGuard],
       },
       {
@@ -48,7 +48,7 @@ const routes: Routes = [
   imports: [
     RouterModule.forChild(routes),
     DraftOverviewComponent,
-    DraftPreviewComponent,
+    DraftPreviewContainerComponent,
     DraftFormNewComponent,
     DraftFormEditComponent,
     DraftArchiveComponent,
