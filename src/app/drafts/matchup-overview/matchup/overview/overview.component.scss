@@ -6,16 +6,36 @@
     border-radius: 1rem;
     border-color: var(--mat-sys-outline);
     padding: 0.25rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     .team-header {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       border-width: 0 0 1px;
       border-color: var(--mat-sys-outline);
       margin-bottom: 0.5rem;
 
-      .team-name-title {
+      .team-name-title,
+      .team-coach-title {
+        max-width: 12rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
         text-align: center;
         font-weight: 700;
         color: var(--mat-sys-secondary);
         font-family: "Nasalization RG", sans-serif;
+      }
+
+      .team-name-title {
+      }
+
+      .team-coach-title {
+        font-size: 0.8em;
+        height: 1.25rem;
       }
     }
 

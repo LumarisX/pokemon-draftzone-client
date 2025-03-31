@@ -25,6 +25,7 @@ export type Summary = {
     baseStats: StatsTable;
   })[];
   teamName: String;
+  coach?: string;
   stats: {
     mean: {
       hp?: number;

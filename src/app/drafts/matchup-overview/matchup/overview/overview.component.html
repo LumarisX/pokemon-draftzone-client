@@ -5,6 +5,9 @@
         <div class="team-name-title">
           {{ teams[0].teamName }}
         </div>
+        @if (teams[0].coach || teams[1].coach) {
+          <div class="team-coach-title">{{ teams[0].coach }}</div>
+        }
       </div>
       <div class="team-body">
         <table matSort (matSortChange)="sortData($event)">
@@ -36,6 +39,9 @@
         <div class="team-name-title">
           {{ teams[1].teamName }}
         </div>
+        @if (teams[0].coach || teams[1].coach) {
+          <div class="team-coach-title">{{ teams[1].coach }}</div>
+        }
       </div>
       <div class="team-body">
         <table matSort (matSortChange)="sortData($event)">
