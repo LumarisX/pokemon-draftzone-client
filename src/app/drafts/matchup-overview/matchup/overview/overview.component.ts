@@ -11,6 +11,7 @@ import { Summary } from '../../matchup-interface';
   selector: 'overview',
   standalone: true,
   templateUrl: './overview.component.html',
+  styleUrls: ['../matchup.scss', './overview.component.scss'],
   imports: [CommonModule, SpriteComponent, MatSortModule, ZSVG, TeraComponent],
 })
 export class OverviewComponent {

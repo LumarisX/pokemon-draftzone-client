@@ -1,15 +1,13 @@
-<div class="content-container" [ngClass]="{ alternate: opponent }">
-  <div class="table-wrapper">
-    <div class="title-container">
-      <div class="table-label">Draft Summary</div>
-      <div class="flex">
-        <div>
-          <mat-slide-toggle [(ngModel)]="opponent"></mat-slide-toggle>
-        </div>
+<div class="widget-wrapper" [ngClass]="{ alternate: opponent }">
+  <div class="widget-container">
+    <div class="widget-label">Draft Summary</div>
+    <div class="flex">
+      <div>
+        <mat-slide-toggle [(ngModel)]="opponent"></mat-slide-toggle>
       </div>
     </div>
-    <summary-core
-      [summary]="opponent ? summaries[1] : summaries[0]"
-    ></summary-core>
   </div>
+  <summary-core
+    [summary]="opponent ? summaries[1] : summaries[0]"
+  ></summary-core>
 </div>

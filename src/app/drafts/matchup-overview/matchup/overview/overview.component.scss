@@ -1,0 +1,50 @@
+.overview-wrapper {
+  display: flex;
+  column-gap: 0.5rem;
+  .team-container {
+    border-width: 1px;
+    border-radius: 1rem;
+    border-color: var(--mat-sys-outline);
+    padding: 0.25rem;
+    .team-header {
+      border-width: 0 0 1px;
+      border-color: var(--mat-sys-outline);
+      margin-bottom: 0.5rem;
+
+      .team-name-title {
+        text-align: center;
+        font-weight: 700;
+        color: var(--mat-sys-secondary);
+        font-family: "Nasalization RG", sans-serif;
+      }
+    }
+
+    .team-body {
+      .sprite-wrapper {
+        width: 4rem;
+        height: 4rem;
+      }
+
+      table {
+        th {
+          font-size: small;
+          line-height: 0.5em;
+        }
+        .name-cell {
+          font-weight: 600;
+          max-width: 8rem;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          display: block;
+          text-align: center;
+        }
+        .speed-cell {
+          font-weight: 800;
+
+          text-align: center;
+        }
+      }
+    }
+  }
+}

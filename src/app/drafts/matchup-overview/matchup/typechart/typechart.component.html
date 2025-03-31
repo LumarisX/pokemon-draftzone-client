@@ -1,24 +1,22 @@
-<div class="content-container" [ngClass]="{ alternate: opponent }">
-  <div class="table-wrapper">
-    <div class="title-container">
-      <div class="table-label">Defensive Type Chart</div>
-      <div class="flex">
-        <div>
-          <mat-slide-toggle [(ngModel)]="abilities"></mat-slide-toggle>
-          Abilities
-        </div>
-        <div>
-          <mat-slide-toggle [(ngModel)]="opponent"></mat-slide-toggle>
-        </div>
+<div class="widget-wrapper" [ngClass]="{ alternate: opponent }">
+  <div class="widget-container">
+    <div class="widget-label">Defensive Type Chart</div>
+    <div class="flex">
+      <div>
+        <mat-slide-toggle [(ngModel)]="abilities"></mat-slide-toggle>
+        Abilities
+      </div>
+      <div>
+        <mat-slide-toggle [(ngModel)]="opponent"></mat-slide-toggle>
       </div>
     </div>
-    <typechart-core
-      [typechart]="opponent ? typecharts[1] : typecharts[0]"
-      [abilities]="abilities"
-    ></typechart-core>
-
-    <typestats-core
-      [typechart]="opponent ? typecharts[1] : typecharts[0]"
-    ></typestats-core>
   </div>
+  <typechart-core
+    [typechart]="opponent ? typecharts[1] : typecharts[0]"
+    [abilities]="abilities"
+  ></typechart-core>
+
+  <typestats-core
+    [typechart]="opponent ? typecharts[1] : typecharts[0]"
+  ></typestats-core>
 </div>
