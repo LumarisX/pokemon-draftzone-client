@@ -1,9 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
 import { MatSortModule, Sort } from '@angular/material/sort';
 import { SpriteComponent } from '../../../../images/sprite/sprite.component';
-import { ZSVG } from '../../../../images/svg-components/z.component';
-import { TeraComponent } from '../../../../images/tera.component';
 import { compare } from '../../../../util';
 import { Summary } from '../../matchup-interface';
 
@@ -12,7 +11,7 @@ import { Summary } from '../../matchup-interface';
   standalone: true,
   templateUrl: './overview.component.html',
   styleUrls: ['../matchup.scss', './overview.component.scss'],
-  imports: [CommonModule, SpriteComponent, MatSortModule, ZSVG, TeraComponent],
+  imports: [CommonModule, SpriteComponent, MatSortModule, MatIconModule],
 })
 export class OverviewComponent {
   _teams: Summary[] = [];

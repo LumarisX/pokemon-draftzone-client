@@ -30,9 +30,6 @@
         font-family: "Nasalization RG", sans-serif;
       }
 
-      .team-name-title {
-      }
-
       .team-coach-title {
         font-size: 0.8em;
         height: 1.25rem;
@@ -58,6 +55,13 @@
           white-space: nowrap;
           display: block;
           text-align: center;
+        }
+
+        .capt-row {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
         .speed-cell {
           font-weight: 800;

@@ -25,6 +25,17 @@
               </td>
               <td>
                 <div class="name-cell">{{ pokemon.name }}</div>
+                <div class="capt-row">
+                  @if (pokemon.capt?.tera) {
+                    <mat-icon svgIcon="tera"></mat-icon>
+                  }
+                  @if (pokemon.capt?.z) {
+                    <mat-icon svgIcon="z"></mat-icon>
+                  }
+                  @if (pokemon.capt?.dmax) {
+                    <mat-icon svgIcon="dmax"></mat-icon>
+                  }
+                </div>
               </td>
               <td>
                 <div class="speed-cell">{{ pokemon.baseStats.spe }}</div>
@@ -58,7 +69,18 @@
                 <div class="speed-cell">{{ pokemon.baseStats.spe }}</div>
               </td>
               <td>
-                <div class="name-cell text-end">{{ pokemon.name }}</div>
+                <div class="name-cell">{{ pokemon.name }}</div>
+                <div class="capt-row">
+                  @if (pokemon.capt?.tera) {
+                    <mat-icon svgIcon="tera"></mat-icon>
+                  }
+                  @if (pokemon.capt?.z) {
+                    <mat-icon svgIcon="z"></mat-icon>
+                  }
+                  @if (pokemon.capt?.dmax) {
+                    <mat-icon svgIcon="dmax"></mat-icon>
+                  }
+                </div>
               </td>
               <td>
                 <div class="sprite-wrapper">

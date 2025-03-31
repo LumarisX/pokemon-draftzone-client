@@ -1,0 +1,66 @@
+<div class="options-container">
+  <div>
+    <mat-slide-toggle
+      (change)="updateShownMoves($event.checked)"
+    ></mat-slide-toggle
+    >Show Unlearned
+  </div>
+
+  @if (anyOpened) {
+    <button mat-stroked-button (click)="closeAll()">Close All</button>
+  } @else {
+    <button mat-stroked-button (click)="openAll()">Open All</button>
+  }
+</div>
+<cdk-accordion #movechartAccordion multi class="movechart">
+  @for (category of shownMoves.value; track $index) {
+    <cdk-accordion-item
+      #accordionItem="cdkAccordionItem"
+      class="category-container"
+    >
+      <button
+        class="category-header"
+        [disabled]="category.moves.length === 0"
+        (click)="accordionItem.toggle()"
+        tabindex="0"
+      >
+        <div class="category-label">
+          {{ category.categoryName }}
+          <span class="count">{{ category.moves.length }}</span>
+        </div>
+        @if (category.moves.length > 0) {
+          @if (accordionItem.expanded) {
+            <mat-icon>unfold_less</mat-icon>
+          } @else {
+            <mat-icon>unfold_more</mat-icon>
+          }
+        }
+      </button>
+      <div
+        class="category-body"
+        role="region"
+        [class.expanded]="accordionItem.expanded"
+      >
+        @for (move of category.moves; track $index) {
+          <div class="move-container">
+            <div
+              [matTooltip]="move.desc"
+              matTooltipPosition="above"
+              class="move-title"
+              [style.border-color]="typeColor(move.type)"
+            >
+              {{ move.name }}
+            </div>
+            <div class="pokemon-container">
+              @for (pokemon of move.pokemon; track $index) {
+                <div class="sprite-wrapper">
+                  <sprite [pokemon]="pokemon"></sprite>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </cdk-accordion-item>
+  }
+</cdk-accordion>
