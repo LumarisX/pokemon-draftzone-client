@@ -1,129 +1,117 @@
 @if (speedchart) {
-  <div class="flex w-full px-1 bg-menu-400 rounded-t-xl">
-    <div class="flex w-full pb-1 border-b border-menu-300">
-      <div class="flex mx-1 mt-2 space-x-1 w-fit">
-        <p class="font-bold">Lvl:</p>
-        <p class="font-semibold">{{ level }}</p>
-      </div>
-      <h1 class="w-full text-xl font-bold text-center">Speed Table</h1>
-      <div class="relative w-8 mx-1 mt-2 ml-auto">
-        <div
-          (click)="showFilter = !showFilter"
-          class="px-1 rounded-md cursor-pointer bg-menu-300 hover:bg-menu-200"
-        >
-          @if (showFilter) {
-            <close-svg class="w-full" alt="Close" title="Close"></close-svg>
-          } @else {
-            <filter-svg class="w-full" alt="Filter" title="Filter"></filter-svg>
-          }
-        </div>
-        @if (showFilter) {
-          <div
-            class="absolute right-0 w-32 p-1 mt-2 bg-menu-100 border divide-y rounded-md shadow-lg z-5000"
-          >
-            <div
-              class="font-semibold text-center rounded hover:bg-menu-100"
-              (click)="resetModifiers()"
-            >
-              Reset
-            </div>
-            @for (modifier of speedchart.modifiers; track $index) {
-              <div class="flex items-center py-1 space-x-1 h-fit z-5000">
-                <input
-                  type="checkbox"
-                  class="accent-aTeam-300"
-                  id="{{ modifier }}"
-                  name="{{ modifier }}"
-                  value="{{ modifier }}"
-                  [(ngModel)]="modifiers[0][modifier]"
-                />
-                <input
-                  type="checkbox"
-                  class="accent-bTeam-300"
-                  id="{{ modifier }}"
-                  name="{{ modifier }}"
-                  value="{{ modifier }}"
-                  [(ngModel)]="modifiers[1][modifier]"
-                />
-                <speed-modifier-icon
-                  class="w-5 h-5"
-                  [modifier]="modifier"
-                ></speed-modifier-icon>
-                <label for="{{ modifier }}">{{ modifier }}</label>
-              </div>
-            }
-          </div>
-        }
-      </div>
-    </div>
-  </div>
-  <div class="w-full border-4 border-menu-400 bg-menu-400">
-    <div class="bg-menu-200">
-      <div class="flex space-x-2 border-b-2 border-menu-400">
-        <div class="w-20 font-bold text-center">Base Speed</div>
-        <div class="flex items-center justify-end flex-grow ml-auto">
-          <div class="flex-grow mr-4 font-bold text-center">Modifiers</div>
-          <div class="mr-4 font-bold text-center">Speed</div>
-          <div class="w-4"></div>
-        </div>
-      </div>
-    </div>
-    <div class="flex">
-      @if (speeds) {
-        <div class="border-r-2 border-menu-400">
-          @for (tier of speeds; track $index) {
-            <div
-              class="flex w-20 px-2 border-b border-menu-400"
-              [ngClass]="buttonColor(tier.team)"
-              (click)="toggleView(tier)"
-            >
-              <sprite
-                class="w-1/2"
-                [ngClass]="viewColor(tier)"
-                [flipped]="true"
-                [pokemon]="tier.pokemon"
-              ></sprite>
-              <div
-                class="flex items-center justify-center w-1/2 text-lg font-semibold"
-              >
-                {{ tier.pokemon.baseStats.spe }}
-              </div>
+  <div class="widget-wrapper">
+    <div class="widget-container">
+      <div class="widget-label">Speed Tiers</div>
+      <button
+        mat-icon-button
+        cdkOverlayOrigin
+        #trigger="cdkOverlayOrigin"
+        (click)="filterOpen = !filterOpen"
+      >
+        <mat-icon>filter_list</mat-icon>
+      </button>
+      <ng-template
+        cdkConnectedOverlay
+        [cdkConnectedOverlayOrigin]="trigger"
+        [cdkConnectedOverlayOpen]="filterOpen"
+        (overlayOutsideClick)="filterOpen = false"
+        (detach)="filterOpen = false"
+        [cdkConnectedOverlayFlexibleDimensions]="true"
+        [cdkConnectedOverlayPush]="true"
+      >
+        <div class="filter-main">
+          <div class="reset-button" (click)="resetModifiers()">Reset</div>
+          @for (modifier of speedchart.modifiers; track $index) {
+            <div class="option-row">
+              <mat-checkbox
+                [formControl]="getModifierControl(0, modifier)"
+              ></mat-checkbox>
+              <mat-checkbox
+                class="alternate"
+                [formControl]="getModifierControl(1, modifier)"
+              ></mat-checkbox>
+              <span class="filter-label">{{ modifier }}</span>
             </div>
           }
         </div>
-      }
-      <div class="w-full overflow-y-auto max-h-192 snap-y snap-mandatory">
-        @for (tier of speedchart.tiers; track $index) {
-          @if (filtered(tier)) {
+      </ng-template>
+    </div>
+    <div class="speed-main">
+      <div class="base-tiers-container">
+        <div class="section-title">Base Speed</div>
+        <div class="speed-container" #speedContainer>
+          @for (speed of speeds; track $index) {
             <div
-              @growIn
-              class="flex space-x-3 border-b snap-start border-menu-400"
-              [ngClass]="teamColor(tier.team)"
+              class="speed-row"
+              [ngClass]="{
+                alternate: speed.team,
+                selected: enabledMons[speed.team] === speed.pokemon.id,
+              }"
+              (click)="toggleView(speed)"
             >
-              <sprite
-                class="w-10 min-w-10 pl-2 h-fit"
-                [pokemon]="tier.pokemon"
-                [flipped]="true"
-              ></sprite>
-              <div class="flex space-x-1 flex-grow py-1">
-                @for (modifier of tier.modifiers; track $index) {
-                  <div class="w-6 aspect-square">
-                    <speed-modifier-icon
-                      [modifier]="modifier"
-                    ></speed-modifier-icon>
-                  </div>
+              <div class="sprite-wrapper">
+                <sprite
+                  [pokemon]="speed.pokemon"
+                  [flipped]="speed.team ? null : true"
+                ></sprite>
+              </div>
+              <div class="base-speed-label">
+                {{ speed.pokemon.baseStats.spe }}
+              </div>
+              <div class="speed-icon">
+                @if (enabledMons[speed.team] === speed.pokemon.id) {
+                  <mat-icon>lock</mat-icon>
                 }
               </div>
-              <div class="flex justify-end flex-grow ml-auto">
-                <div class="w-16 text-lg font-semibold text-center">
-                  {{ tier.speed }}
-                </div>
-              </div>
             </div>
           }
-        }
+        </div>
+      </div>
+      <div class="tiers-main">
+        <div class="tiers-titles">
+          <div class="section-title">Speed Tier Groups</div>
+          <div class="section-title">Lvl {{ level }}</div>
+        </div>
+        <div class="tiers-container" #tiersContainer>
+          @for (group of filteredTiers | async; track group) {
+            <div
+              class="tier-group"
+              [ngClass]="{
+                alternate: +group.tiers[0].team,
+              }"
+              (click)="group.opened = !group.opened"
+            >
+              @if (group.tiers.length === 1 || group.opened) {
+                @for (tier of group.tiers; track $index) {
+                  <speedtier [tier]="tier"></speedtier>
+                }
+              } @else {
+                <div class="collapsed-group">
+                  <div class="pokemon-row">
+                    @for (pokemon of group.pokemon; track pokemon) {
+                      <div class="sprite-wrapper">
+                        <sprite [pokemon]="pokemon" flipped></sprite>
+                      </div>
+                    }
+                  </div>
+                  <div class="group-speeds">
+                    <div class="top-speed">{{ group.tiers[0].speed }}</div>
+                    @if (
+                      group.tiers[group.tiers.length - 1].speed !==
+                      group.tiers[0].speed
+                    ) {
+                      <div class="speed-spacer"></div>
+                      <div class="bot-speed">
+                        {{ group.tiers[group.tiers.length - 1].speed }}
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          }
+        </div>
       </div>
     </div>
   </div>
-  <div class="w-full h-3 rounded-b-full bg-menu-400"></div>
 }

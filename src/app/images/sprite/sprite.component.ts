@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import {
   getNameByPid,
   getPidByName,
@@ -8,8 +9,6 @@ import {
 } from '../../data/namedex';
 import { Pokemon } from '../../interfaces/draft';
 import { SettingsService } from '../../pages/settings/settings.service';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { BooleanInput } from '@angular/cdk/coercion';
 
 @Component({
   selector: 'sprite',
@@ -61,7 +60,7 @@ export class SpriteComponent {
     return this._pokemon.id;
   }
   flip = false;
-  @Input() flipped: string | true | null = null;
+  @Input() flipped: string | boolean | null = null;
   @Input() disabled? = false;
   get pokemon(): Pokemon {
     return this._pokemon;

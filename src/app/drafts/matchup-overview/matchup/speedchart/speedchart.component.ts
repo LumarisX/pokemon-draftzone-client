@@ -1,10 +1,3 @@
-import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
-import { SpeedChart, Speedtier, Summary } from '../../matchup-interface';
-import { SpriteComponent } from '../../../../images/sprite/sprite.component';
-import { FormsModule } from '@angular/forms';
-import { Pokemon } from '../../../../interfaces/draft';
-import { SpeedModifierIconComponent } from './speed-modifier-icon.component';
 import {
   animate,
   state,
@@ -12,41 +5,56 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
-import { CloseSVG } from '../../../../images/svg-components/close.component';
-import { FilterSVG } from '../../../../images/svg-components/filter.component';
+import { CommonModule } from '@angular/common';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  Input,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
+import {
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  FormsModule,
+  NonNullableFormBuilder,
+  ReactiveFormsModule,
+} from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
+import { SpriteComponent } from '../../../../images/sprite/sprite.component';
+import { Pokemon } from '../../../../interfaces/draft';
+import { SpeedChart, Speedtier, Summary } from '../../matchup-interface';
+import { SpeedtierComponent } from './speedtier/speedtier.component';
+import { OverlayModule } from '@angular/cdk/overlay';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @Component({
   selector: 'speedchart',
-  standalone: true,
   templateUrl: './speedchart.component.html',
+  styleUrls: ['../matchup.scss', './speedchart.component.scss'],
   imports: [
     CommonModule,
     FormsModule,
+    ReactiveFormsModule,
     SpriteComponent,
-    CloseSVG,
-    FilterSVG,
-    SpeedModifierIconComponent,
-  ],
-  animations: [
-    trigger('growIn', [
-      state('void', style({ height: '0', overflow: 'hidden' })),
-      state('*', style({ height: '*' })),
-      transition('void <=> *', [animate('0.5s ease-in-out')]),
-    ]),
+    SpeedtierComponent,
+    MatButtonModule,
+    MatIconModule,
+    MatCheckboxModule,
+    OverlayModule,
   ],
 })
-export class SpeedchartComponent implements OnInit {
-  @Input() speedchart!: SpeedChart | null;
+export class SpeedchartComponent implements OnInit, OnDestroy, AfterViewInit {
+  @Input() speedchart!: SpeedChart;
   private _speeds: {
     pokemon: Pokemon & {
-      abilities: string[];
-      types: string[];
       baseStats: {
-        hp: number;
-        atk: number;
-        def: number;
-        spa: number;
-        spd: number;
         spe: number;
       };
     };
@@ -54,42 +62,16 @@ export class SpeedchartComponent implements OnInit {
   }[] = [];
 
   @Input() set speeds(summaries: Summary[]) {
-    this._speeds = [];
-    let combined: {
-      pokemon: Pokemon & {
-        abilities: string[];
-        types: string[];
-        baseStats: {
-          hp: number;
-          atk: number;
-          def: number;
-          spa: number;
-          spd: number;
-          spe: number;
-        };
-      };
-      team: number;
-    }[] = [];
-    summaries[0].team.forEach((pokemon) => {
-      combined.push({ pokemon: pokemon, team: 0 });
-    });
-    summaries[1].team.forEach((pokemon) => {
-      combined.push({ pokemon: pokemon, team: 1 });
-    });
-    combined.sort((a, b) => b.pokemon.baseStats.spe - a.pokemon.baseStats.spe);
-    this._speeds = combined;
+    this._speeds = summaries
+      .flatMap((summary, index) =>
+        summary.team.map((pokemon) => ({ pokemon: pokemon, team: index })),
+      )
+      .sort((a, b) => b.pokemon.baseStats.spe - a.pokemon.baseStats.spe);
   }
 
   get speeds(): {
     pokemon: Pokemon & {
-      abilities: string[];
-      types: string[];
       baseStats: {
-        hp: number;
-        atk: number;
-        def: number;
-        spa: number;
-        spd: number;
         spe: number;
       };
     };
@@ -99,129 +81,158 @@ export class SpeedchartComponent implements OnInit {
   }
 
   @Input() level = 100;
-  showFilter: boolean = false;
+  filterOpen: boolean = false;
 
-  modifiers: [
+  enabledMons: [string | null, string | null] = [null, null];
+
+  filteredTiers = new BehaviorSubject<
     {
-      [key: string]: boolean;
-    },
-    {
-      [key: string]: boolean;
-    },
-  ] = [{}, {}];
+      tiers: Speedtier[];
+      pokemon: Pokemon[];
+      opened: boolean;
+    }[]
+  >([]);
+  constructor(private fb: NonNullableFormBuilder) {}
 
-  enabledMons: [aTeam: string | null, bTeam: string | null] = [null, null];
+  $destroy = new Subject<void>();
 
-  constructor() {}
+  modifiersForms!: FormGroup<{ [key: string]: FormControl<boolean> }>[];
 
   ngOnInit() {
+    this.modifiersForms = [
+      this.fb.group(
+        this.speedchart.modifiers.reduce(
+          (acc, item) => {
+            acc[item] = false;
+            return acc;
+          },
+          {} as { [key: string]: boolean },
+        ),
+      ),
+      this.fb.group(
+        this.speedchart.modifiers.reduce(
+          (acc, item) => {
+            acc[item] = false;
+            return acc;
+          },
+          {} as { [key: string]: boolean },
+        ),
+      ),
+    ];
     this.resetModifiers();
+    this.filter();
+
+    this.modifiersForms.forEach((form) => {
+      form.valueChanges.pipe(takeUntil(this.$destroy)).subscribe((change) => {
+        this.filter();
+      });
+    });
   }
 
-  resetModifiers() {
-    for (let team in this.modifiers) {
-      this.modifiers[team] = {
-        '252': true,
-        Positive: true,
-        '0': true,
-        Negative: true,
-        'Swift Swim': true,
-        'Sand Rush': true,
-        Chlorophyll: true,
-        'Slush Rush': true,
-        Protosynthesis: true,
-        'Quark Drive': true,
-        'Quick Feet': true,
-        Unburden: true,
-        'Surge Surfer': true,
-      };
+  @ViewChild('speedContainer', { static: false }) speedContainer!: ElementRef;
+  @ViewChild('tiersContainer', { static: false }) tiersMain!: ElementRef;
+
+  private resizeObserver!: ResizeObserver;
+
+  ngAfterViewInit(): void {
+    this.observeBaseTiersHeight();
+  }
+
+  private observeBaseTiersHeight(): void {
+    if (this.speedContainer && this.tiersMain) {
+      this.resizeObserver = new ResizeObserver(() => {
+        this.updateTiersMainHeight();
+      });
+      this.resizeObserver.observe(this.speedContainer.nativeElement);
     }
   }
 
-  teamColor(team: number) {
-    let classes = [];
-    if (team == 0) classes.push('bg-aTeam-300');
-    else classes.push('bg-bTeam-300');
-    return classes;
+  private updateTiersMainHeight(): void {
+    if (this.speedContainer && this.tiersMain) {
+      const baseHeight = this.speedContainer.nativeElement.offsetHeight;
+      this.tiersMain.nativeElement.style.maxHeight = `${baseHeight}px`;
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.$destroy.next();
+    this.$destroy.complete();
+  }
+
+  generateGroups(tiers?: Speedtier[]) {
+    if (!tiers) return;
+    const groups = tiers.reduce((groups: Speedtier[][], tier) => {
+      const lastGroup = groups[groups.length - 1];
+      if (lastGroup && tier.team === lastGroup[0].team) {
+        lastGroup.push(tier);
+      } else {
+        groups.push([tier]);
+      }
+      return groups;
+    }, []);
+
+    this.filteredTiers.next(
+      groups.map((group) => ({
+        tiers: group,
+        opened: false,
+        pokemon: group.reduce((pokemon: Pokemon[], tier) => {
+          if (pokemon.every((p) => p.id !== tier.pokemon.id))
+            pokemon.push(tier.pokemon);
+          return pokemon;
+        }, []),
+      })),
+    );
+  }
+
+  filter() {
+    this.generateGroups(
+      this.speedchart?.tiers.filter((tier) => {
+        if (
+          this.enabledMons[tier.team] &&
+          tier.pokemon.id !== this.enabledMons[tier.team]
+        )
+          return false;
+        const teamModifiers = this.modifiersForms[tier.team].value || {};
+        return tier.modifiers.every((mod) => teamModifiers[mod]);
+      }),
+    );
   }
 
   toggleView(s: {
     pokemon: Pokemon & {
-      name: string;
-      abilities: string[];
-      types: string[];
       baseStats: {
-        hp: number;
-        atk: number;
-        def: number;
-        spa: number;
-        spd: number;
         spe: number;
       };
     };
     team: number;
   }) {
-    if (this.enabledMons[s.team] == s.pokemon.id) {
-      this.enabledMons[s.team] = null;
-    } else {
-      this.enabledMons[s.team] = s.pokemon.id;
-    }
+    this.enabledMons[s.team] =
+      this.enabledMons[s.team] == s.pokemon.id ? null : s.pokemon.id;
+    this.filter();
   }
 
-  viewColor(s: {
-    pokemon: Pokemon & {
-      name: string;
-      abilities: string[];
-      types: string[];
-      baseStats: {
-        hp: number;
-        atk: number;
-        def: number;
-        spa: number;
-        spd: number;
-        spe: number;
-      };
-    };
-    team: number;
-  }) {
-    if (this.enabledMons[s.team] && s.pokemon.id !== this.enabledMons[s.team]) {
-      return ['opacity-50'];
-    }
-    return [];
+  resetModifiers() {
+    [
+      '252',
+      ' Positive',
+      '0',
+      'Negative',
+      'Swift Swim',
+      'Sand Rush',
+      'Chlorophyll',
+      'Slush Rush',
+      'Protosynthesis',
+      'Quick Feet',
+      'Unburden',
+      'Quark Drive',
+      'Surge Surfer',
+    ].forEach((modifier) => {
+      this.modifiersForms.forEach((form) => {
+        form.get(modifier)?.setValue(true);
+      });
+    });
   }
-
-  buttonColor(team: number) {
-    let classes = [];
-    if (team == 0) {
-      classes.push('bg-aTeam-300 hover:bg-aTeam-300');
-    } else {
-      classes.push('bg-bTeam-300 hover:bg-bTeam-300');
-    }
-    return classes;
-  }
-
-  sortTiers(a: Speedtier, b: Speedtier): number {
-    if (a.speed > b.speed) return -1;
-    if (a.speed < b.speed) return 1;
-    return 0;
-  }
-
-  filtered(tier: Speedtier) {
-    if (
-      this.enabledMons[tier.team] &&
-      tier.pokemon.id !== this.enabledMons[tier.team]
-    ) {
-      return false;
-    }
-    for (let mod of tier.modifiers) {
-      if (mod in this.modifiers[tier.team]) {
-        if (!this.modifiers[tier.team][mod]) {
-          return false;
-        }
-      } else {
-        return false;
-      }
-    }
-    return true;
+  getModifierControl(team: number, modifier: string): FormControl<boolean> {
+    return this.modifiersForms[team].get(modifier) as FormControl<boolean>;
   }
 }

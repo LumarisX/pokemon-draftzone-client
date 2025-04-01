@@ -1,0 +1,13 @@
+<div class="tier-row">
+  <div class="sprite-wrapper">
+    <sprite [pokemon]="tier.pokemon" flipped></sprite>
+  </div>
+  <div class="modifier-container">
+    @for (modifier of tier.modifiers; track modifier) {
+      <div class="modifier"><img [src]="modifierPath(modifier)" /></div>
+    }
+  </div>
+  <div class="speed-label">
+    {{ tier.speed }}
+  </div>
+</div>

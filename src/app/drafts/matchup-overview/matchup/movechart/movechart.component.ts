@@ -4,6 +4,7 @@ import { MoveCoreComponent } from '../../../../util/matchup/movechart-core/moves
 import { MoveChart } from '../../matchup-interface';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { SwapOpponentButton } from '../../../../util/buttons/swap-opponent/swap-opponent.component';
 
 @Component({
   selector: 'movechart',
@@ -15,9 +16,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     ReactiveFormsModule,
     MatSlideToggleModule,
     MoveCoreComponent,
+    SwapOpponentButton,
   ],
 })
 export class MovechartComponent {
   @Input() teams!: MoveChart[];
-  opponent: boolean = false;
+  opponent: boolean = true;
 }

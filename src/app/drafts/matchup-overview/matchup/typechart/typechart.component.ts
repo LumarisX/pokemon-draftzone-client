@@ -5,6 +5,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { TypechartCoreComponent } from '../../../../util/matchup/typechart/typechart-core/typechart-core.component';
 import { TypestatsCoreComponent } from '../../../../util/matchup/typechart/typestats-core/typestatscore.component';
 import { TypeChart } from '../../matchup-interface';
+import { SwapOpponentButton } from '../../../../util/buttons/swap-opponent/swap-opponent.component';
 
 @Component({
   selector: 'typechart',
@@ -18,11 +19,12 @@ import { TypeChart } from '../../matchup-interface';
     MatSlideToggleModule,
     TypechartCoreComponent,
     TypestatsCoreComponent,
+    SwapOpponentButton,
   ],
 })
 export class TypechartComponent {
   @Input()
   typecharts: TypeChart[] = [];
   abilities: boolean = true;
-  opponent: boolean = false;
+  opponent: boolean = true;
 }

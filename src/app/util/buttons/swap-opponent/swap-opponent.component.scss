@@ -1,0 +1,9 @@
+button {
+  mat-icon {
+    transition: transform 0.3s ease-in-out;
+  }
+
+  &.opponent mat-icon {
+    transform: rotate(180deg);
+  }
+}

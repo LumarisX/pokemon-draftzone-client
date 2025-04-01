@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { Settings, SettingsService } from './settings.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { Pokemon } from '../../interfaces/draft';
+import { SettingsService } from './settings.service';
 @Component({
   selector: 'settings',
   standalone: true,

@@ -1,11 +1,7 @@
 <div class="widget-wrapper" [ngClass]="{ alternate: opponent }">
   <div class="widget-container">
     <div class="widget-label">Learned Moves</div>
-    <div class="flex">
-      <div>
-        <mat-slide-toggle [(ngModel)]="opponent"></mat-slide-toggle>
-      </div>
-    </div>
+    <swap-opponent [(ngModel)]="opponent"></swap-opponent>
   </div>
   <div class="movechart-wrapper">
     <moves-core [movechart]="opponent ? teams[1] : teams[0]"></moves-core>

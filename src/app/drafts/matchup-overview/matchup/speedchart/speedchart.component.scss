@@ -1,0 +1,144 @@
+@use "@angular/material" as mat;
+
+.speed-main {
+  display: flex;
+  column-gap: 0.5rem;
+  height: fit-content;
+  align-items: flex-start;
+  .base-tiers-container {
+    display: flex;
+    row-gap: 1px;
+    flex-direction: column;
+    align-items: center;
+    .speed-container {
+      .speed-row {
+        display: flex;
+        background-color: var(--mat-sys-secondary-container);
+        border-radius: 0.75rem;
+        border-bottom: 1px solid var(--mat-sys-outline);
+        column-gap: 0.25rem;
+        margin-bottom: 1px;
+        cursor: pointer;
+        &:hover {
+          background-color: var(--mat-sys-primary-container);
+        }
+        &.alternate {
+          flex-direction: row-reverse;
+        }
+        &.selected {
+          border-bottom: 1px solid var(--mat-sys-surface);
+          margin-bottom: 0px;
+          margin-top: 2px;
+        }
+
+        .speed-icon {
+          justify-content: center;
+          align-items: center;
+          display: flex;
+          color: var(--mat-sys-secondary);
+        }
+
+        div {
+          width: 2rem;
+          height: 2rem;
+        }
+
+        .base-speed-label {
+          text-align: center;
+          line-height: 2rem;
+          font-weight: 700;
+          color: var(--mat-sys-secondary);
+        }
+      }
+    }
+  }
+  .tiers-main {
+    .tiers-titles {
+      display: flex;
+      justify-content: space-between;
+      column-gap: 1rem;
+    }
+    .tiers-container {
+      height: 100%;
+      overflow: auto;
+      width: min-content;
+
+      .tier-group {
+        background-color: var(--mat-sys-secondary-container);
+        border-width: 1px;
+        border-color: var(--mat-sys-surface);
+        border-radius: 0.75rem;
+        padding: 0 0.25rem;
+        min-width: 15rem;
+        cursor: pointer;
+        &:hover {
+          background-color: var(--mat-sys-primary-container);
+        }
+
+        .collapsed-group {
+          display: flex;
+          align-items: center;
+          height: fit-content;
+          .pokemon-row {
+            display: flex;
+            flex-grow: 1;
+            flex-wrap: wrap;
+          }
+          .sprite-wrapper {
+            width: 2rem;
+            height: 2rem;
+          }
+          .group-speeds {
+            color: var(--mat-sys-secondary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            align-self: stretch;
+            padding: 0.25rem 0;
+            .speed-spacer {
+              min-height: 0.5rem;
+              width: 0;
+              display: flex;
+              flex-grow: 1;
+              border-radius: 1rem;
+              border-right: 2px solid var(--mat-sys-outline);
+            }
+            .top-speed,
+            .bot-speed {
+              line-height: 1em;
+              font-weight: 700;
+            }
+          }
+        }
+      }
+    }
+  }
+  .section-title {
+    font-size: 0.9em;
+    font-family: "Nasalization RG", sans-serif;
+  }
+}
+
+.filter-main {
+  box-shadow: var(--mat-sys-level2);
+  border-radius: 5px;
+  background-color: var(--mat-sys-surface);
+  padding: 10px;
+  margin: 0;
+
+  @include mat.checkbox-density(-3);
+
+  .reset-button {
+    text-align: center;
+    font-weight: 600;
+    border-bottom: 1px solid var(--mat-sys-outline);
+    height: 1.5rem;
+    cursor: pointer;
+    &:hover {
+      font-size: 1.05em;
+    }
+  }
+  .filter-label {
+    font-weight: 500;
+  }
+}
