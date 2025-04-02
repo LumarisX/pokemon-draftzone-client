@@ -62,7 +62,8 @@
       height: 100%;
       overflow: auto;
       width: min-content;
-
+      scrollbar-gutter: stable;
+      margin-right: -0.75rem;
       .tier-group {
         background-color: var(--mat-sys-secondary-container);
         border-width: 1px;

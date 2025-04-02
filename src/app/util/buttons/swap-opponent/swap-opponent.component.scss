@@ -1,3 +1,5 @@
+@use "@angular/material" as mat;
+
 button {
   mat-icon {
     transition: transform 0.3s ease-in-out;
@@ -6,4 +8,9 @@ button {
   &.opponent mat-icon {
     transform: rotate(180deg);
   }
+  @include mat.icon-button-overrides(
+    (
+      icon-color: var(--mat-sys-primary),
+    )
+  );
 }
