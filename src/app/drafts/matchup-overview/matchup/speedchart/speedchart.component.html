@@ -1,117 +1,115 @@
-@if (speedchart) {
-  <div class="widget-wrapper">
-    <div class="widget-container">
-      <div class="widget-label">Speed Tiers</div>
-      <button
-        mat-icon-button
-        cdkOverlayOrigin
-        #trigger="cdkOverlayOrigin"
-        (click)="filterOpen = !filterOpen"
-      >
-        <mat-icon>filter_list</mat-icon>
-      </button>
-      <ng-template
-        cdkConnectedOverlay
-        [cdkConnectedOverlayOrigin]="trigger"
-        [cdkConnectedOverlayOpen]="filterOpen"
-        (overlayOutsideClick)="filterOpen = false"
-        (detach)="filterOpen = false"
-        [cdkConnectedOverlayFlexibleDimensions]="true"
-        [cdkConnectedOverlayPush]="true"
-      >
-        <div class="filter-main">
-          <div class="reset-button" (click)="resetModifiers()">Reset</div>
-          @for (modifier of speedchart.modifiers; track $index) {
-            <div class="option-row">
-              <mat-checkbox
-                [formControl]="getModifierControl(0, modifier)"
-              ></mat-checkbox>
-              <mat-checkbox
-                class="alternate"
-                [formControl]="getModifierControl(1, modifier)"
-              ></mat-checkbox>
-              <span class="filter-label">{{ modifier }}</span>
-            </div>
-          }
-        </div>
-      </ng-template>
-    </div>
-    <div class="speed-main">
-      <div class="base-tiers-container">
-        <div class="section-title">Base Speed</div>
-        <div class="speed-container" #speedContainer>
-          @for (speed of speeds; track $index) {
-            <div
-              class="speed-row"
-              [ngClass]="{
-                alternate: speed.team,
-                selected: enabledMons[speed.team] === speed.pokemon.id,
-              }"
-              (click)="toggleView(speed)"
-            >
-              <div class="sprite-wrapper">
-                <sprite
-                  [pokemon]="speed.pokemon"
-                  [flipped]="speed.team ? null : true"
-                ></sprite>
-              </div>
-              <div class="base-speed-label">
-                {{ speed.pokemon.baseStats.spe }}
-              </div>
-              <div class="speed-icon">
-                @if (enabledMons[speed.team] === speed.pokemon.id) {
-                  <mat-icon>lock</mat-icon>
-                }
-              </div>
-            </div>
-          }
-        </div>
+<div class="widget-wrapper">
+  <div class="widget-container">
+    <div class="widget-label">Speed Tiers</div>
+    <button
+      mat-icon-button
+      cdkOverlayOrigin
+      #trigger="cdkOverlayOrigin"
+      (click)="filterOpen = !filterOpen"
+    >
+      <mat-icon>filter_list</mat-icon>
+    </button>
+    <ng-template
+      cdkConnectedOverlay
+      [cdkConnectedOverlayOrigin]="trigger"
+      [cdkConnectedOverlayOpen]="filterOpen"
+      (overlayOutsideClick)="filterOpen = false"
+      (detach)="filterOpen = false"
+      [cdkConnectedOverlayFlexibleDimensions]="true"
+      [cdkConnectedOverlayPush]="true"
+    >
+      <div class="filter-main">
+        <div class="reset-button" (click)="resetModifiers()">Reset</div>
+        @for (modifier of speedchart.modifiers; track $index) {
+          <div class="option-row">
+            <mat-checkbox
+              [formControl]="getModifierControl(0, modifier)"
+            ></mat-checkbox>
+            <mat-checkbox
+              class="alternate"
+              [formControl]="getModifierControl(1, modifier)"
+            ></mat-checkbox>
+            <span class="filter-label">{{ modifier }}</span>
+          </div>
+        }
       </div>
-      <div class="tiers-main">
-        <div class="tiers-titles">
-          <div class="section-title">Speed Tier Groups</div>
-          <div class="section-title">Lvl {{ level }}</div>
-        </div>
-        <div class="tiers-container" #tiersContainer>
-          @for (group of filteredTiers | async; track group) {
-            <div
-              class="tier-group"
-              [ngClass]="{
-                alternate: +group.tiers[0].team,
-              }"
-              (click)="group.opened = !group.opened"
-            >
-              @if (group.tiers.length === 1 || group.opened) {
-                @for (tier of group.tiers; track $index) {
-                  <speedtier [tier]="tier"></speedtier>
-                }
-              } @else {
-                <div class="collapsed-group">
-                  <div class="pokemon-row">
-                    @for (pokemon of group.pokemon; track pokemon) {
-                      <div class="sprite-wrapper">
-                        <sprite [pokemon]="pokemon" flipped></sprite>
-                      </div>
-                    }
-                  </div>
-                  <div class="group-speeds">
-                    <div class="top-speed">{{ group.tiers[0].speed }}</div>
-                    @if (
-                      group.tiers[group.tiers.length - 1].speed !==
-                      group.tiers[0].speed
-                    ) {
-                      <div class="speed-spacer"></div>
-                      <div class="bot-speed">
-                        {{ group.tiers[group.tiers.length - 1].speed }}
-                      </div>
-                    }
-                  </div>
-                </div>
+    </ng-template>
+  </div>
+  <div class="speed-main">
+    <div class="base-tiers-container">
+      <div class="section-title">Base Speed</div>
+      <div class="speed-container" #speedContainer>
+        @for (pokemon of pokemons; track $index) {
+          <div
+            class="speed-row"
+            [ngClass]="{
+              alternate: pokemon.team,
+              selected: enabledMons[pokemon.team] === pokemon.id,
+            }"
+            (click)="toggleView(pokemon)"
+          >
+            <div class="sprite-wrapper">
+              <sprite
+                [pokemon]="pokemon"
+                [flipped]="pokemon.team ? null : true"
+              ></sprite>
+            </div>
+            <div class="base-speed-label">
+              {{ pokemon.spe }}
+            </div>
+            <div class="speed-icon">
+              @if (enabledMons[pokemon.team] === pokemon.id) {
+                <mat-icon>lock</mat-icon>
               }
             </div>
-          }
-        </div>
+          </div>
+        }
+      </div>
+    </div>
+    <div class="tiers-main">
+      <div class="tiers-titles">
+        <div class="section-title">Speed Tier Groups</div>
+        <div class="section-title">Lvl {{ level }}</div>
+      </div>
+      <div class="tiers-container" #tiersContainer>
+        @for (group of speedGroups | async; track group) {
+          <div
+            class="tier-group"
+            [ngClass]="{
+              alternate: +group.tiers[0].team,
+            }"
+            (click)="group.opened = !group.opened"
+          >
+            @if (group.tiers.length === 1 || group.opened) {
+              @for (tier of group.tiers; track $index) {
+                <speedtier [tier]="tier"></speedtier>
+              }
+            } @else {
+              <div class="collapsed-group">
+                <div class="pokemon-row">
+                  @for (pokemon of group.pokemon; track pokemon) {
+                    <div class="sprite-wrapper">
+                      <sprite [pokemon]="pokemon" flipped></sprite>
+                    </div>
+                  }
+                </div>
+                <div class="group-speeds">
+                  <div class="top-speed">{{ group.tiers[0].speed }}</div>
+                  @if (
+                    group.tiers[group.tiers.length - 1].speed !==
+                    group.tiers[0].speed
+                  ) {
+                    <div class="speed-spacer"></div>
+                    <div class="bot-speed">
+                      {{ group.tiers[group.tiers.length - 1].speed }}
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        }
       </div>
     </div>
   </div>
-}
+</div>

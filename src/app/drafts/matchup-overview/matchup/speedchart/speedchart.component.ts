@@ -1,23 +1,16 @@
-import {
-  animate,
-  state,
-  style,
-  transition,
-  trigger,
-} from '@angular/animations';
+import { OverlayModule } from '@angular/cdk/overlay';
 import { CommonModule } from '@angular/common';
 import {
   AfterViewInit,
   Component,
   ElementRef,
+  input,
   Input,
   OnDestroy,
   OnInit,
   ViewChild,
 } from '@angular/core';
 import {
-  FormArray,
-  FormBuilder,
   FormControl,
   FormGroup,
   FormsModule,
@@ -25,14 +18,13 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
 import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import { SpriteComponent } from '../../../../images/sprite/sprite.component';
 import { Pokemon } from '../../../../interfaces/draft';
-import { SpeedChart, Speedtier, Summary } from '../../matchup-interface';
+import { SpeedChart, Speedtier } from '../../matchup-interface';
 import { SpeedtierComponent } from './speedtier/speedtier.component';
-import { OverlayModule } from '@angular/cdk/overlay';
-import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @Component({
   selector: 'speedchart',
@@ -51,77 +43,69 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
   ],
 })
 export class SpeedchartComponent implements OnInit, OnDestroy, AfterViewInit {
-  @Input() speedchart!: SpeedChart;
-  private _speeds: {
+  @Input()
+  set speedchart(value: SpeedChart) {
+    this.level = value.level;
+    this.setModifiers(value.modifiers);
+    this.pokemons = value.teams
+      .flatMap((team, teamIndex) =>
+        team.map((pokemon) => ({
+          id: pokemon.id,
+          name: pokemon.name,
+          nickname: pokemon.nickname,
+          shiny: pokemon.shiny,
+          spe: pokemon.spe,
+          team: teamIndex,
+        })),
+      )
+      .sort((x, y) => y.spe - x.spe);
+    this.sortedTiers = value.teams
+      .flatMap((team, teamIndex) =>
+        team.flatMap((pokemon) =>
+          pokemon.tiers.flatMap((tier) => ({
+            modifiers: tier.modifiers,
+            speed: tier.speed,
+            pokemon: {
+              id: pokemon.id,
+              name: pokemon.name,
+              nickname: pokemon.nickname,
+              shiny: pokemon.shiny,
+              spe: pokemon.spe,
+            },
+            team: teamIndex,
+          })),
+        ),
+      )
+      .sort((x, y) => y.speed - x.speed);
+  }
+  @Input()
+  level = 100;
+  filterOpen: boolean = false;
+  pokemons: (Pokemon & { spe: number; team: number })[] = [];
+  enabledMons: [string | null, string | null] = [null, null];
+  sortedTiers: {
+    modifiers: string[];
+    speed: number;
     pokemon: Pokemon & {
-      baseStats: {
-        spe: number;
-      };
+      spe: number;
     };
     team: number;
   }[] = [];
-
-  @Input() set speeds(summaries: Summary[]) {
-    this._speeds = summaries
-      .flatMap((summary, index) =>
-        summary.team.map((pokemon) => ({ pokemon: pokemon, team: index })),
-      )
-      .sort((a, b) => b.pokemon.baseStats.spe - a.pokemon.baseStats.spe);
-  }
-
-  get speeds(): {
-    pokemon: Pokemon & {
-      baseStats: {
-        spe: number;
-      };
-    };
-    team: number;
-  }[] {
-    return this._speeds;
-  }
-
-  @Input() level = 100;
-  filterOpen: boolean = false;
-
-  enabledMons: [string | null, string | null] = [null, null];
-
-  filteredTiers = new BehaviorSubject<
+  speedGroups = new BehaviorSubject<
     {
       tiers: Speedtier[];
       pokemon: Pokemon[];
       opened: boolean;
     }[]
   >([]);
-  constructor(private fb: NonNullableFormBuilder) {}
-
   $destroy = new Subject<void>();
-
   modifiersForms!: FormGroup<{ [key: string]: FormControl<boolean> }>[];
 
+  constructor(private fb: NonNullableFormBuilder) {}
+
   ngOnInit() {
-    this.modifiersForms = [
-      this.fb.group(
-        this.speedchart.modifiers.reduce(
-          (acc, item) => {
-            acc[item] = false;
-            return acc;
-          },
-          {} as { [key: string]: boolean },
-        ),
-      ),
-      this.fb.group(
-        this.speedchart.modifiers.reduce(
-          (acc, item) => {
-            acc[item] = false;
-            return acc;
-          },
-          {} as { [key: string]: boolean },
-        ),
-      ),
-    ];
     this.resetModifiers();
     this.filter();
-
     this.modifiersForms.forEach((form) => {
       form.valueChanges.pipe(takeUntil(this.$destroy)).subscribe((change) => {
         this.filter();
@@ -159,6 +143,29 @@ export class SpeedchartComponent implements OnInit, OnDestroy, AfterViewInit {
     this.$destroy.complete();
   }
 
+  setModifiers(modifiers: string[]) {
+    this.modifiersForms = [
+      this.fb.group(
+        modifiers.reduce(
+          (acc, item) => {
+            acc[item] = false;
+            return acc;
+          },
+          {} as { [key: string]: boolean },
+        ),
+      ),
+      this.fb.group(
+        modifiers.reduce(
+          (acc, item) => {
+            acc[item] = false;
+            return acc;
+          },
+          {} as { [key: string]: boolean },
+        ),
+      ),
+    ];
+  }
+
   generateGroups(tiers?: Speedtier[]) {
     if (!tiers) return;
     const groups = tiers.reduce((groups: Speedtier[][], tier) => {
@@ -171,7 +178,7 @@ export class SpeedchartComponent implements OnInit, OnDestroy, AfterViewInit {
       return groups;
     }, []);
 
-    this.filteredTiers.next(
+    this.speedGroups.next(
       groups.map((group) => ({
         tiers: group,
         opened: false,
@@ -186,7 +193,7 @@ export class SpeedchartComponent implements OnInit, OnDestroy, AfterViewInit {
 
   filter() {
     this.generateGroups(
-      this.speedchart?.tiers.filter((tier) => {
+      this.sortedTiers.filter((tier) => {
         if (
           this.enabledMons[tier.team] &&
           tier.pokemon.id !== this.enabledMons[tier.team]
@@ -198,16 +205,14 @@ export class SpeedchartComponent implements OnInit, OnDestroy, AfterViewInit {
     );
   }
 
-  toggleView(s: {
+  toggleView(
     pokemon: Pokemon & {
-      baseStats: {
-        spe: number;
-      };
-    };
-    team: number;
-  }) {
-    this.enabledMons[s.team] =
-      this.enabledMons[s.team] == s.pokemon.id ? null : s.pokemon.id;
+      spe: number;
+      team: number;
+    },
+  ) {
+    this.enabledMons[pokemon.team] =
+      this.enabledMons[pokemon.team] == pokemon.id ? null : pokemon.id;
     this.filter();
   }
 

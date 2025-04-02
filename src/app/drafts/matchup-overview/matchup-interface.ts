@@ -11,9 +11,15 @@ export type Speedtier = {
 };
 
 export type SpeedChart = {
-  tiers: Speedtier[];
-  modifiers: string[];
+  teams: (Pokemon & {
+    spe: number;
+    tiers: {
+      modifiers: string[];
+      speed: number;
+    }[];
+  })[][];
   level: number;
+  modifiers: string[];
 };
 
 export type Summary = {
