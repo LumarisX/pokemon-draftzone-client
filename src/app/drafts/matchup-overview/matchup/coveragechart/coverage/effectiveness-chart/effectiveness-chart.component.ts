@@ -4,7 +4,7 @@ import * as d3 from 'd3';
 @Component({
   selector: 'effectiveness-chart',
   standalone: true,
-  templateUrl: './effectiveness-chart.component.html',
+  template: `<svg></svg>`,
 })
 export class EffectivenessChartComponent implements OnInit, OnChanges {
   @Input('data') data: {
@@ -44,7 +44,7 @@ export class EffectivenessChartComponent implements OnInit, OnChanges {
       se: number;
       e: number;
       ne: number;
-    }[]
+    }[],
   ): void {
     const subgroups = Object.keys(data[0]).slice(1);
     const groups = data.map((d) => d.category);
@@ -97,16 +97,19 @@ export class EffectivenessChartComponent implements OnInit, OnChanges {
       .attr(
         'y',
         (d: { data: { category: string } }) =>
-          y(d.data.category)! + y.bandwidth() / 2
+          y(d.data.category)! + y.bandwidth() / 2,
       )
       .attr('dy', '0.35em')
       .attr('text-anchor', 'middle')
-      .attr('fill', 'black')
-      .attr('font-size', '16px')
-      .attr('font-weight', '600')
+      .attr('fill', 'white')
+
+      .attr('font-weight', '700')
       .text((d: number[]) => {
+        const segmentWidth = x(d[1]) - x(d[0]);
+        if (segmentWidth < 30) return '';
+
         let text = ((d[1] - d[0]) * 100).toFixed();
-        return d[1] - d[0] == 0 ? '' : text + '%';
+        return text + '%';
       });
   }
 }

@@ -1,0 +1,120 @@
+.coverage-main {
+  display: flex;
+  column-gap: 0.5rem;
+  align-items: stretch;
+  height: fit-content;
+  padding: 0.25rem;
+
+  .sprite-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .sprite-spacer {
+      flex-grow: 1;
+      display: flex;
+      align-items: center;
+      .sprite-wrapper {
+        width: 6rem;
+        height: 6rem;
+        align-self: center;
+        flex-shrink: 0;
+
+        @media (max-width: 768px) {
+          width: 3rem;
+          height: 3rem;
+        }
+      }
+    }
+
+    .reset-button {
+      background-color: var(--mat-sys-primary);
+      color: var(--mat-sys-on-primary);
+      &:hover {
+        background-color: var(--mat-sys-secondary);
+        color: var(--mat-sys-on-secondary);
+      }
+      &:active {
+        margin-top: 1px;
+        margin-bottom: 0px;
+        box-shadow: var(--mat-sys-level0);
+      }
+      margin-bottom: 1px;
+      box-shadow: var(--mat-sys-level1);
+      border-radius: 0.5rem;
+      padding: 0 0.5rem;
+      font-size: 0.7em;
+      line-height: 1rem;
+      font-weight: 600;
+    }
+  }
+
+  .coverage-container {
+    flex-grow: 1;
+    max-width: 16rem;
+    display: flex;
+    flex-direction: column;
+    > :not(:first-child) {
+      border-top: 1px solid var(--mat-sys-outline);
+    }
+    .category-container {
+      display: flex;
+      flex-grow: 1;
+      align-items: center;
+      padding: 0.25rem;
+      .category-img {
+        width: 2rem;
+        height: 2rem;
+      }
+      .type-container {
+        flex-grow: 1;
+        display: flex;
+        flex-wrap: wrap;
+      }
+    }
+  }
+
+  .chart-container {
+    display: flex;
+    flex-direction: column;
+    row-gap: 0.25rem;
+    padding: 0.25rem;
+    align-self: center;
+
+    .chart-wrapper {
+      border-radius: 0.5rem;
+      overflow: hidden;
+      box-shadow: var(--mat-sys-level1);
+    }
+    .sprite-container {
+      display: grid;
+      width: 8.75rem;
+      gap: 0.25rem;
+      align-items: center;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      sprite {
+        height: 2rem;
+        width: 2rem;
+        border-radius: 0.5rem;
+        background-color: var(--mat-sys-surface-dim);
+        box-shadow: var(--mat-sys-level1);
+      }
+    }
+  }
+}
+
+.type-label {
+  box-shadow: var(--mat-sys-level2);
+
+  &:hover {
+    opacity: 0.9;
+  }
+  &:not(.selected) {
+    opacity: 0.5;
+    cursor: pointer;
+    &:hover {
+      opacity: 0.6;
+    }
+    box-shadow: var(--mat-sys-level0);
+  }
+}

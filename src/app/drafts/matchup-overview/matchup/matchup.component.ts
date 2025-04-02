@@ -11,8 +11,8 @@ import { TypechartComponent } from './typechart/typechart.component';
 
 @Component({
   selector: 'matchup',
-  standalone: true,
   templateUrl: './matchup.component.html',
+  styleUrl: './matchup.component.scss',
   imports: [
     CommonModule,
     RouterModule,

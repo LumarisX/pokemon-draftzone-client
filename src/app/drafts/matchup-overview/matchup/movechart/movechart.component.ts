@@ -9,7 +9,7 @@ import { SwapOpponentButton } from '../../../../util/buttons/swap-opponent/swap-
 @Component({
   selector: 'movechart',
   templateUrl: './movechart.component.html',
-  styleUrls: ['../matchup.scss', './movechart.component.scss'],
+  styleUrls: ['../../matchup.scss', './movechart.component.scss'],
   imports: [
     CommonModule,
     FormsModule,

@@ -1,0 +1,15 @@
+.widget-body {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+  margin-right: -0.75rem;
+  max-height: 50rem;
+  max-width: 40rem;
+  row-gap: 0.5rem;
+}
+
+coverage {
+  border: 1px solid var(--mat-sys-outline);
+  border-radius: 1rem;
+}

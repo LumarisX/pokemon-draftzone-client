@@ -1,9 +1,11 @@
-<div class="widget-wrapper" [ngClass]="{ alternate: opponent }">
-  <div class="widget-container">
+<div class="widget-container" [ngClass]="{ alternate: opponent }">
+  <div class="widget-header">
     <div class="widget-label">Draft Summary</div>
     <swap-opponent [(ngModel)]="opponent"></swap-opponent>
   </div>
-  <summary-core
-    [summary]="opponent ? summaries[1] : summaries[0]"
-  ></summary-core>
+  <div class="widget-body">
+    <summary-core
+      [summary]="opponent ? summaries[1] : summaries[0]"
+    ></summary-core>
+  </div>
 </div>

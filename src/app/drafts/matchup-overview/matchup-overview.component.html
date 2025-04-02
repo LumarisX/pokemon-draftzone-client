@@ -1,158 +1,172 @@
-<div class="min-h-full">
-  <div class="flex px-2 pt-2">
-    <div class="w-fit">
-      <button
-        [routerLink]="['/', draftPath, leagueId]"
-        class="px-3 py-2 text-sm rounded-md text-symbolColor-inverted bg-menu-500 hover:bg-menu-600 focus:outline-none focus:bg-menu-600"
-      >
-        Back
-      </button>
-    </div>
-
-    <div class="flex justify-center flex-grow">
-      <div *ngIf="matchupData" class="flex flex-wrap justify-between gap-x-8">
-        <div class="w-full text-center sm:w-auto">
-          <p class="text-sm font-semibold text-symbolColor-sub">League Name</p>
-          <p class="text-xl font-bold">{{ matchupData.details.leagueName }}</p>
-        </div>
-        <div class="w-full text-center sm:w-auto">
-          <p class="text-sm font-semibold text-symbolColor-sub">Stage</p>
-          <p class="text-xl font-bold">{{ matchupData.details.stage }}</p>
-        </div>
-        <div class="w-full text-center sm:w-auto">
-          <p class="text-sm font-semibold text-symbolColor-sub">Ruleset</p>
-          <p class="text-xl font-bold">{{ matchupData.details.ruleset }}</p>
-        </div>
-        <div class="w-full text-center sm:w-auto">
-          <p class="text-sm font-semibold text-symbolColor-sub">Format</p>
-          <p class="text-xl font-bold">{{ matchupData.details.format }}</p>
-        </div>
-        <div *ngIf="timeString" class="w-full text-center sm:w-auto">
-          <p class="text-sm font-semibold text-symbolColor-sub">Game Time</p>
-          <p class="text-xl font-bold">{{ timeString }}</p>
-        </div>
+<div class="matchup-main">
+  <div class="matchup-header">
+    <button mat-flat-button [routerLink]="['/', draftPath, leagueId]">
+      Back
+    </button>
+    <div class="details-spacer">
+      <div class="details-container">
+        @if (matchupData) {
+          <div class="detail-container">
+            <p class="detail-title">League Name</p>
+            <p class="detail-text">
+              {{ matchupData.details.leagueName }}
+            </p>
+          </div>
+          <div class="detail-container">
+            <p class="detail-title">Stage</p>
+            <p class="detail-text">{{ matchupData.details.stage }}</p>
+          </div>
+          <div class="detail-container">
+            <p class="detail-title">Ruleset</p>
+            <p class="detail-text">{{ matchupData.details.ruleset }}</p>
+          </div>
+          <div class="detail-container">
+            <p class="detail-title">Format</p>
+            <p class="detail-text">{{ matchupData.details.format }}</p>
+          </div>
+          @if (timeString) {
+            <div class="detail-container">
+              <p class="detail-title">Game Time</p>
+              <p class="detail-text">{{ timeString }}</p>
+            </div>
+          }
+        }
       </div>
     </div>
-    <div class="flex items-start justify-end w-fit">
+    @if (matchupData) {
       <button
-        class="px-3 py-2 text-sm rounded-md text-symbolColor-inverted bg-menu-500 hover:bg-menu-600 focus:outline-none focus:bg-menu-600"
-        (click)="shared = true"
+        mat-flat-button
+        (click)="shared = !shared"
+        cdkOverlayOrigin
+        #shareTrigger="cdkOverlayOrigin"
       >
         Share
       </button>
-    </div>
-  </div>
-  <div
-    *ngIf="shared"
-    class="fixed inset-0 z-30 flex flex-col items-center justify-center bg-opacity-50 bg-menu-800"
-  >
-    <div
-      class="w-5/6 rounded-lg shadow-lg bg-menu-100 md:w-2/3 lg:w-1/2 xl:w-1/3"
-    >
-      <div class="flex justify-end w-full">
-        <close-svg
-          class="w-8 h-8 p-1 m-1 hover:p-0 hover:cursor-pointer"
-          (click)="shared = false"
-          alt="Close"
-        ></close-svg>
-      </div>
-      <div class="px-8">
-        <h2 class="text-3xl font-bold text-center">Share your matchup</h2>
-        <div class="flex items-center max-w-full mt-4">
-          <div
-            class="flex items-center w-full p-1 overflow-x-auto border rounded-xl border-menu-200"
-          >
-            <div class="w-auto overflow-x-auto">
-              {{ shareUrl }}
+      <ng-template
+        cdkConnectedOverlay
+        [cdkConnectedOverlayOrigin]="shareTrigger"
+        [cdkConnectedOverlayOpen]="shared"
+        (overlayOutsideClick)="shared = false"
+        (detach)="shared = false"
+        [cdkConnectedOverlayFlexibleDimensions]="true"
+        [cdkConnectedOverlayPush]="true"
+      >
+        <div class="shared-backdrop">
+          <div class="shared-container">
+            <div class="share-header">
+              <div class="share-title">Share your matchup</div>
+
+              <button mat-icon-button (click)="shared = false">
+                <mat-icon>close</mat-icon>
+              </button>
             </div>
-            <copy-svg
-              *ngIf="!copied"
-              class="w-8 h-8 p-1 m-1 hover:p-0 hover:cursor-pointer"
-              (click)="copyToClipboard()"
-              alt="Copy"
-            ></copy-svg>
-            <check-svg
-              *ngIf="copied"
-              class="w-8 h-8 p-1 m-1 hover:cursor-pointer"
-              alt="Copied"
-            ></check-svg>
-          </div>
-        </div>
-        <div class="flex-grow"></div>
-        <div
-          *ngIf="matchupData"
-          class="p-2 my-4 border border-menu-200 rounded-xl"
-        >
-          <div class="flex w-full mb-2">
-            <div class="w-1/4 text-center">
-              <p class="text-sm font-semibold text-menu-500">League Name</p>
-              <p class="font-bold">{{ matchupData.details.leagueName }}</p>
-            </div>
-            <div class="w-1/4 text-center">
-              <p class="text-sm font-semibold text-menu-500">Stage</p>
-              <p class="font-bold">{{ matchupData.details.stage }}</p>
-            </div>
-            <div class="w-1/4 text-center">
-              <p class="text-sm font-semibold text-menu-500">Ruleset</p>
-              <p class="font-bold">{{ matchupData.details.ruleset }}</p>
-            </div>
-            <div class="w-1/4 text-center">
-              <p class="text-sm font-semibold text-menu-500">Format</p>
-              <p class="font-bold">{{ matchupData.details.format }}</p>
-            </div>
-          </div>
-          <div class="flex w-full">
-            <div class="w-1/2 font-semibold text-center">
-              {{ matchupData.summary[0].teamName }}
-            </div>
-            <div class="w-1/2 font-semibold text-center">
-              {{ matchupData.summary[1].teamName }}
-            </div>
-          </div>
-          <div class="flex divide-x-2">
-            <div class="flex flex-row flex-wrap justify-end w-1/2 pr-2 h-fit">
-              <div
-                class="relative w-1/3 sm:w-1/4"
-                *ngFor="let pokemon of matchupData.summary[0].team"
-              >
-                <sprite [pokemon]="pokemon" [flipped]="true"></sprite>
-                <tera-svg
-                  *ngIf="pokemon.capt?.tera"
-                  class="absolute top-0 left-0 w-1/3"
-                ></tera-svg>
-                <div class="absolute flex justify-center w-full -bottom-1">
+            <div class="share-body">
+              <div class="url-container">
+                <span class="url-text">
+                  {{ shareUrl }}
+                </span>
+                @if (copied) {
+                  <button mat-icon-button (click)="copyToClipboard()">
+                    <mat-icon>check</mat-icon>
+                  </button>
+                } @else {
+                  <button mat-icon-button (click)="copyToClipboard()">
+                    <mat-icon>content_copy</mat-icon>
+                  </button>
+                }
+              </div>
+              <div class="matchup-preview-container">
+                <div class="details-container">
+                  <div class="detail-container">
+                    <p class="detail-title">League Name</p>
+                    <p class="detail-text">
+                      {{ matchupData.details.leagueName }}
+                    </p>
+                  </div>
+                  <div class="detail-container">
+                    <p class="detail-title">Stage</p>
+                    <p class="detail-text">{{ matchupData.details.stage }}</p>
+                  </div>
+                  <div class="detail-container">
+                    <p class="detail-title">Ruleset</p>
+                    <p class="detail-text">{{ matchupData.details.ruleset }}</p>
+                  </div>
+                  <div class="detail-container">
+                    <p class="detail-title">Format</p>
+                    <p class="detail-text">{{ matchupData.details.format }}</p>
+                  </div>
+                </div>
+                <div class="name-container">
+                  <div class="name-text">
+                    {{ matchupData.summary[0].teamName }}
+                  </div>
+                  <div class="name-text">
+                    {{ matchupData.summary[1].teamName }}
+                  </div>
+                </div>
+                <div class="name-container">
+                  <div class="name-text">
+                    {{ matchupData.summary[0].coach }}
+                  </div>
+                  <div class="name-text">
+                    {{ matchupData.summary[1].coach }}
+                  </div>
+                </div>
+                <div class="flex divide-x-2">
                   <div
-                    class="w-1/2 font-semibold text-center border rounded-full text-2xs sm:text-xs bg-menu-100 border-menu-200"
+                    class="flex flex-row flex-wrap justify-end w-1/2 pr-2 h-fit"
                   >
-                    {{ pokemon.baseStats.spe }}
+                    <div
+                      class="relative w-1/3 sm:w-1/4"
+                      *ngFor="let pokemon of matchupData.summary[0].team"
+                    >
+                      <sprite [pokemon]="pokemon" [flipped]="true"></sprite>
+
+                      @if (pokemon.capt?.tera) {
+                        <mat-icon>copy</mat-icon>
+                      }
+                      <div
+                        class="absolute flex justify-center w-full -bottom-1"
+                      >
+                        <div
+                          class="w-1/2 font-semibold text-center border rounded-full text-2xs sm:text-xs bg-menu-100 border-menu-200"
+                        >
+                          {{ pokemon.baseStats.spe }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="flex flex-wrap w-1/2 pl-2 h-fit">
+                    <div
+                      class="relative w-1/3 sm:w-1/4"
+                      *ngFor="let pokemon of matchupData.summary[1].team"
+                    >
+                      <sprite [pokemon]="pokemon"></sprite>
+                      @if (pokemon.capt?.tera) {
+                        <mat-icon>copy</mat-icon>
+                      }
+                      <div
+                        class="absolute flex justify-center w-full -bottom-1"
+                      >
+                        <div
+                          class="w-1/2 font-semibold text-center border rounded-full text-2xs sm:text-xs bg-menu-100 border-menu-200"
+                        >
+                          {{ pokemon.baseStats.spe }}
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="flex flex-wrap w-1/2 pl-2 h-fit">
-              <div
-                class="relative w-1/3 sm:w-1/4"
-                *ngFor="let pokemon of matchupData.summary[1].team"
-              >
-                <sprite [pokemon]="pokemon"></sprite>
-                <tera-svg
-                  *ngIf="pokemon.capt?.tera"
-                  class="absolute top-0 right-0 w-1/3"
-                ></tera-svg>
-                <div class="absolute flex justify-center w-full -bottom-1">
-                  <div
-                    class="w-1/2 font-semibold text-center border rounded-full text-2xs sm:text-xs bg-menu-100 border-menu-200"
-                  >
-                    {{ pokemon.baseStats.spe }}
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
-      </div>
-    </div>
+      </ng-template>
+    }
   </div>
-  <loading *ngIf="!matchupData"></loading>
-  <matchup *ngIf="matchupData" [matchupData]="matchupData"></matchup>
+  @if (matchupData) {
+    <matchup [matchupData]="matchupData"></matchup>
+  } @else {
+    <loading></loading>
+  }
 </div>

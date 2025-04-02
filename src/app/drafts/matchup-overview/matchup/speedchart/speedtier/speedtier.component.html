@@ -4,7 +4,7 @@
   </div>
   <div class="modifier-container">
     @for (modifier of tier.modifiers; track modifier) {
-      <div class="modifier"><img [src]="modifierPath(modifier)" /></div>
+      <div class="modifier">{{ modifier }}</div>
     }
   </div>
   <div class="speed-label">

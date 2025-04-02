@@ -15,6 +15,7 @@ dayjs.extend(duration);
   selector: 'matchup-shared',
   standalone: true,
   templateUrl: 'matchup-shared.component.html',
+  styleUrl: './matchup.scss',
   imports: [CommonModule, LoadingComponent, MatchupComponent, RouterModule],
 })
 export class MatchupSharedComponent implements AfterViewInit {

@@ -1,0 +1,154 @@
+.widget-container {
+  .widget-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+
+    padding: 0 1rem 0.5rem;
+    color: var(--mat-sys-primary);
+    font-weight: 700;
+    .widget-label {
+      font-size: 1.2em;
+      font-family: "Nasalization RG", sans-serif;
+    }
+
+    .widget-options {
+      display: flex;
+      align-items: center;
+      column-gap: 0.5rem;
+    }
+  }
+
+  .widget-body {
+    max-width: 100%;
+    width: fit-content;
+    overflow-x: auto;
+    scrollbar-gutter: stable;
+    margin-bottom: -0.75rem;
+  }
+}
+
+.matchup-main {
+  background: linear-gradient(
+    to right,
+    var(--mat-sys-primary-container),
+    var(--mat-sys-surface),
+    var(--mat-sys-tertiary-container)
+  );
+  height: 100%;
+  overflow-y: auto;
+
+  .matchup-header {
+    display: flex;
+    padding: 0.5rem;
+    column-gap: 1rem;
+
+    .details-spacer {
+      flex-grow: 1;
+      display: flex;
+      justify-content: center;
+      .details-container {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: row;
+        margin-top: -0.5rem;
+        padding: 0.25rem 1rem;
+        border-radius: 0 0 1rem 1rem;
+        width: fit-content;
+        justify-content: space-evenly;
+        column-gap: 2rem;
+        row-gap: 0.125rem;
+        background-color: var(--mat-sys-surface);
+        box-shadow: var(--mat-sys-level2);
+      }
+    }
+
+    @media (min-width: 768px) {
+      top: 0;
+      position: sticky;
+    }
+  }
+}
+
+.detail-container {
+  text-align: center;
+  .detail-title {
+    font-weight: 700;
+    font-size: 0.8em;
+    height: 1rem;
+    color: var(--mat-sys-secondary);
+  }
+  .detail-text {
+    font-weight: 700;
+    font-size: 1em;
+    color: var(--mat-sys-on-surface);
+  }
+}
+
+.shared-backdrop {
+  position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+
+  .shared-container {
+    @apply w-5/6 md:w-2/3 lg:w-1/2 xl:w-1/3;
+    background-color: var(--mat-sys-surface);
+    box-shadow: var(--mat-sys-level4);
+    border-radius: 1rem;
+    padding: 1rem;
+
+    .share-header {
+      display: flex;
+      justify-content: center;
+      .share-title {
+        font-size: 1.5em;
+        font-weight: bold;
+        font-family: "Nasalization RG", sans-serif;
+      }
+      button {
+        position: absolute;
+      }
+    }
+
+    .share-body {
+      display: flex;
+      flex-direction: column;
+      row-gap: 1rem;
+      .url-container {
+        border: 1px solid var(--mat-sys-outline);
+        border-radius: 1rem;
+        padding: 0 0.5rem;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        .share-url {
+        }
+      }
+      .matchup-preview-container {
+        border: 1px solid var(--mat-sys-outline);
+        border-radius: 1rem;
+        padding: 0 1rem;
+        .details-container {
+          display: flex;
+          justify-content: space-evenly;
+          border-bottom: 1px solid var(--mat-sys-outline-variant);
+        }
+        .name-container {
+          display: flex;
+          width: 100%;
+          .name-text {
+            width: 50%;
+            min-height: 0;
+            text-align: center;
+            font-weight: 600;
+          }
+        }
+      }
+    }
+  }
+}

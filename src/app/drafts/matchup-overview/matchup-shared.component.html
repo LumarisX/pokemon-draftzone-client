@@ -1,30 +1,39 @@
-<div
-  class="min-h-full bg-gradient-to-r from-aTeam-100 via-menu-100 to-bTeam-100"
->
-  <div class="flex justify-center w-full pt-2">
-    <div *ngIf="matchupData" class="flex flex-wrap justify-between gap-x-8">
-      <div class="w-full text-center sm:w-auto">
-        <p class="text-sm font-semibold text-menu-500">League Name</p>
-        <p class="text-xl font-bold">{{ matchupData.details.leagueName }}</p>
-      </div>
-      <div class="w-full text-center sm:w-auto">
-        <p class="text-sm font-semibold text-menu-500">Stage</p>
-        <p class="text-xl font-bold">{{ matchupData.details.stage }}</p>
-      </div>
-      <div class="w-full text-center sm:w-auto">
-        <p class="text-sm font-semibold text-menu-500">Ruleset</p>
-        <p class="text-xl font-bold">{{ matchupData.details.ruleset }}</p>
-      </div>
-      <div class="w-full text-center sm:w-auto">
-        <p class="text-sm font-semibold text-menu-500">Format</p>
-        <p class="text-xl font-bold">{{ matchupData.details.format }}</p>
-      </div>
-      <div *ngIf="timeString" class="w-full text-center sm:w-auto">
-        <p class="text-sm font-semibold text-menu-500">Game Time</p>
-        <p class="text-xl font-bold">{{ timeString }}</p>
+<div class="matchup-main">
+  <div class="matchup-header">
+    <div class="details-spacer">
+      <div class="details-container">
+        @if (matchupData) {
+          <div class="detail-container">
+            <p class="detail-title">League Name</p>
+            <p class="detail-text">
+              {{ matchupData.details.leagueName }}
+            </p>
+          </div>
+          <div class="detail-container">
+            <p class="detail-title">Stage</p>
+            <p class="detail-text">{{ matchupData.details.stage }}</p>
+          </div>
+          <div class="detail-container">
+            <p class="detail-title">Ruleset</p>
+            <p class="detail-text">{{ matchupData.details.ruleset }}</p>
+          </div>
+          <div class="detail-container">
+            <p class="detail-title">Format</p>
+            <p class="detail-text">{{ matchupData.details.format }}</p>
+          </div>
+          @if (timeString) {
+            <div class="detail-container">
+              <p class="detail-title">Game Time</p>
+              <p class="detail-text">{{ timeString }}</p>
+            </div>
+          }
+        }
       </div>
     </div>
   </div>
-  <loading *ngIf="!matchupData"></loading>
-  <matchup *ngIf="matchupData" [matchupData]="matchupData"></matchup>
+  @if (matchupData) {
+    <matchup [matchupData]="matchupData"></matchup>
+  } @else {
+    <loading></loading>
+  }
 </div>

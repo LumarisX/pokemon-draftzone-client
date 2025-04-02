@@ -11,6 +11,8 @@ import {
   ViewChild,
 } from '@angular/core';
 import {
+  Form,
+  FormArray,
   FormControl,
   FormGroup,
   FormsModule,
@@ -29,7 +31,7 @@ import { SpeedtierComponent } from './speedtier/speedtier.component';
 @Component({
   selector: 'speedchart',
   templateUrl: './speedchart.component.html',
-  styleUrls: ['../matchup.scss', './speedchart.component.scss'],
+  styleUrls: ['../../matchup.scss', './speedchart.component.scss'],
   imports: [
     CommonModule,
     FormsModule,
@@ -99,18 +101,20 @@ export class SpeedchartComponent implements OnInit, OnDestroy, AfterViewInit {
     }[]
   >([]);
   $destroy = new Subject<void>();
-  modifiersForms!: FormGroup<{ [key: string]: FormControl<boolean> }>[];
+  modifiersForms!: FormGroup<{
+    [key: string]: FormArray<FormControl<boolean>>;
+  }>;
 
   constructor(private fb: NonNullableFormBuilder) {}
 
   ngOnInit() {
     this.resetModifiers();
     this.filter();
-    this.modifiersForms.forEach((form) => {
-      form.valueChanges.pipe(takeUntil(this.$destroy)).subscribe((change) => {
+    this.modifiersForms.valueChanges
+      .pipe(takeUntil(this.$destroy))
+      .subscribe(() => {
         this.filter();
       });
-    });
   }
 
   @ViewChild('speedContainer', { static: false }) speedContainer!: ElementRef;
@@ -144,26 +148,15 @@ export class SpeedchartComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   setModifiers(modifiers: string[]) {
-    this.modifiersForms = [
-      this.fb.group(
-        modifiers.reduce(
-          (acc, item) => {
-            acc[item] = false;
-            return acc;
-          },
-          {} as { [key: string]: boolean },
-        ),
+    this.modifiersForms = this.fb.group(
+      modifiers.reduce(
+        (acc, item) => {
+          acc[item] = this.fb.array([false, false]);
+          return acc;
+        },
+        {} as { [key: string]: FormArray<FormControl<boolean>> },
       ),
-      this.fb.group(
-        modifiers.reduce(
-          (acc, item) => {
-            acc[item] = false;
-            return acc;
-          },
-          {} as { [key: string]: boolean },
-        ),
-      ),
-    ];
+    );
   }
 
   generateGroups(tiers?: Speedtier[]) {
@@ -199,8 +192,11 @@ export class SpeedchartComponent implements OnInit, OnDestroy, AfterViewInit {
           tier.pokemon.id !== this.enabledMons[tier.team]
         )
           return false;
-        const teamModifiers = this.modifiersForms[tier.team].value || {};
-        return tier.modifiers.every((mod) => teamModifiers[mod]);
+
+        return tier.modifiers.every(
+          (mod) =>
+            this.modifiersForms.controls[mod]?.controls.at(tier.team)?.value,
+        );
       }),
     );
   }
@@ -219,9 +215,9 @@ export class SpeedchartComponent implements OnInit, OnDestroy, AfterViewInit {
   resetModifiers() {
     [
       '252',
-      ' Positive',
+      '252+',
       '0',
-      'Negative',
+      '0-',
       'Swift Swim',
       'Sand Rush',
       'Chlorophyll',
@@ -232,12 +228,15 @@ export class SpeedchartComponent implements OnInit, OnDestroy, AfterViewInit {
       'Quark Drive',
       'Surge Surfer',
     ].forEach((modifier) => {
-      this.modifiersForms.forEach((form) => {
-        form.get(modifier)?.setValue(true);
-      });
+      const array = this.modifiersForms.get(modifier) as FormArray<
+        FormControl<boolean>
+      > | null;
+      if (!array) return;
+      array.controls.forEach((control) => control.setValue(true));
     });
   }
-  getModifierControl(team: number, modifier: string): FormControl<boolean> {
-    return this.modifiersForms[team].get(modifier) as FormControl<boolean>;
+
+  getModifiers() {
+    return Object.entries(this.modifiersForms.controls);
   }
 }

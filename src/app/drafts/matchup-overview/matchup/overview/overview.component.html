@@ -1,4 +1,4 @@
-<div class="widget-wrapper">
+<div class="widget-container">
   <div class="overview-wrapper">
     <div class="team-container">
       <div class="team-header">
@@ -10,39 +10,33 @@
         }
       </div>
       <div class="team-body">
-        <table matSort (matSortChange)="sortData($event)">
-          <tr>
-            <th></th>
-            <th mat-sort-header="name">Name</th>
-            <th mat-sort-header="spe" start="desc">SPE</th>
-          </tr>
-          @for (pokemon of teams[0].team; track pokemon) {
-            <tr>
-              <td>
-                <div class="sprite-wrapper">
-                  <sprite [pokemon]="pokemon" flipped></sprite>
-                </div>
-              </td>
-              <td>
-                <div class="name-cell">{{ pokemon.name }}</div>
-                <div class="capt-row">
-                  @if (pokemon.capt?.tera) {
-                    <mat-icon svgIcon="tera"></mat-icon>
-                  }
-                  @if (pokemon.capt?.z) {
-                    <mat-icon svgIcon="z"></mat-icon>
-                  }
-                  @if (pokemon.capt?.dmax) {
-                    <mat-icon svgIcon="dmax"></mat-icon>
-                  }
-                </div>
-              </td>
-              <td>
-                <div class="speed-cell">{{ pokemon.baseStats.spe }}</div>
-              </td>
-            </tr>
-          }
-        </table>
+        <div class="overview-row header">
+          <div class="sprite-cell"></div>
+          <div class="name-cell">Name</div>
+          <div class="speed-cell">SPE</div>
+        </div>
+        @for (pokemon of teams[0].team; track pokemon) {
+          <div class="overview-row">
+            <div class="sprite-cell">
+              <sprite [pokemon]="pokemon" flipped></sprite>
+            </div>
+            <div class="name-cell">
+              <div class="name-label">{{ pokemon.name }}</div>
+              <div class="capt-row">
+                @if (pokemon.capt?.tera) {
+                  <mat-icon svgIcon="tera"></mat-icon>
+                }
+                @if (pokemon.capt?.z) {
+                  <mat-icon svgIcon="z"></mat-icon>
+                }
+                @if (pokemon.capt?.dmax) {
+                  <mat-icon svgIcon="dmax"></mat-icon>
+                }
+              </div>
+            </div>
+            <div class="speed-cell">{{ pokemon.baseStats.spe }}</div>
+          </div>
+        }
       </div>
     </div>
     <div class="team-container alternate">
@@ -55,41 +49,33 @@
         }
       </div>
       <div class="team-body">
-        <table matSort (matSortChange)="sortData($event)">
-          <tr>
-            <th mat-sort-header="spe" start="desc" arrowPosition="before">
-              SPE
-            </th>
-            <th mat-sort-header="name" arrowPosition="before">Name</th>
-            <th></th>
-          </tr>
-          @for (pokemon of teams[1].team; track pokemon) {
-            <tr>
-              <td>
-                <div class="speed-cell">{{ pokemon.baseStats.spe }}</div>
-              </td>
-              <td>
-                <div class="name-cell">{{ pokemon.name }}</div>
-                <div class="capt-row">
-                  @if (pokemon.capt?.tera) {
-                    <mat-icon svgIcon="tera"></mat-icon>
-                  }
-                  @if (pokemon.capt?.z) {
-                    <mat-icon svgIcon="z"></mat-icon>
-                  }
-                  @if (pokemon.capt?.dmax) {
-                    <mat-icon svgIcon="dmax"></mat-icon>
-                  }
-                </div>
-              </td>
-              <td>
-                <div class="sprite-wrapper">
-                  <sprite [pokemon]="pokemon"></sprite>
-                </div>
-              </td>
-            </tr>
-          }
-        </table>
+        <div class="overview-row header">
+          <div class="speed-cell">SPE</div>
+          <div class="name-cell">Name</div>
+          <div class="sprite-cell"></div>
+        </div>
+        @for (pokemon of teams[1].team; track pokemon) {
+          <div class="overview-row">
+            <div class="speed-cell">{{ pokemon.baseStats.spe }}</div>
+            <div class="name-cell">
+              <div class="name-label">{{ pokemon.name }}</div>
+              <div class="capt-row">
+                @if (pokemon.capt?.tera) {
+                  <mat-icon svgIcon="tera"></mat-icon>
+                }
+                @if (pokemon.capt?.z) {
+                  <mat-icon svgIcon="z"></mat-icon>
+                }
+                @if (pokemon.capt?.dmax) {
+                  <mat-icon svgIcon="dmax"></mat-icon>
+                }
+              </div>
+            </div>
+            <div class="sprite-cell">
+              <sprite [pokemon]="pokemon" flipped></sprite>
+            </div>
+          </div>
+        }
       </div>
     </div>
   </div>

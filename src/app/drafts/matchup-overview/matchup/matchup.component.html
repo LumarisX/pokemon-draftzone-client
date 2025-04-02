@@ -1,27 +1,32 @@
-<div class="flex flex-wrap justify-center gap-4 p-4" *ngIf="matchupData">
-  <overview class="z-10" [teams]="matchupData.summary"></overview>
-  <summary
-    class="z-10 max-w-full w-fit"
-    [summaries]="matchupData.summary"
-    style="list-style: none"
-  ></summary>
-  <speedchart
-    class="z-10"
-    [speedchart]="matchupData.speedchart"
-    [level]="matchupData.details.level"
-  ></speedchart>
-  <typechart
-    class="z-10 max-w-full w-fit"
-    [typecharts]="matchupData.typechart"
-  ></typechart>
-  <movechart
-    class="z-10 w-full sm:w-fit"
-    [teams]="matchupData.movechart"
-  ></movechart>
-  <coveragechart
-    class="z-10 w-128"
-    [coverage]="matchupData.coveragechart"
-    [typecharts]="matchupData.typechart"
-  ></coveragechart>
-</div>
+@if (matchupData) {
+  <div class="matchup-container">
+    <div class="widget-wrapper">
+      <overview [teams]="matchupData.summary"></overview>
+    </div>
+    <div class="widget-wrapper">
+      <summary
+        [summaries]="matchupData.summary"
+        style="list-style: none"
+      ></summary>
+    </div>
+    <div class="widget-wrapper">
+      <speedchart
+        [speedchart]="matchupData.speedchart"
+        [level]="matchupData.details.level"
+      ></speedchart>
+    </div>
+    <div class="widget-wrapper">
+      <typechart [typecharts]="matchupData.typechart"></typechart>
+    </div>
+    <div class="widget-wrapper">
+      <movechart [teams]="matchupData.movechart"></movechart>
+    </div>
+    <div class="widget-wrapper">
+      <coveragechart
+        [coverage]="matchupData.coveragechart"
+        [typecharts]="matchupData.typechart"
+      ></coveragechart>
+    </div>
+  </div>
+}
 <!-- {{ matchupData.overview | json }} -->

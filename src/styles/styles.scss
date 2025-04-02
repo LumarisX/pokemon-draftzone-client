@@ -230,3 +230,29 @@ $option-lineheight: 3rem;
     }
   }
 }
+
+.type-container {
+  display: flex;
+  justify-content: center;
+  gap: 0.25rem;
+
+  $bevel-padding: 3px;
+  .type-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 2.5rem;
+    border-radius: 0.25rem;
+    box-shadow: var(--mat-sys-level1);
+    height: 1rem;
+    padding: $bevel-padding;
+
+    .type-text {
+      color: white;
+      flex-shrink: 0;
+      font-size: 0.6em;
+      line-height: 1em;
+      user-select: none;
+    }
+  }
+}

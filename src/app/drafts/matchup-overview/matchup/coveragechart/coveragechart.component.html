@@ -1,36 +1,15 @@
-<div class="">
-  <div class="flex w-full px-1 bg-menu-400 rounded-t-xl">
-    <div class="flex w-full px-1 py-0.5 border-b border-menu-300 items-center">
-      <button
-        (click)="updateAllCoverage()"
-        class="w-5 h-5 m-2 rounded cursor-pointer bg-menu-300 hover:bg-menu-200 shadow-md"
-      >
-        <reset-svg class="h-full" title="Reset"></reset-svg>
-      </button>
-      <h1 class="flex-grow text-xl font-bold text-center">Move Coverage</h1>
-      <button
-        (click)="swapTeams()"
-        class="px-3 ml-auto text-sm rounded-md shadow-md"
-        [ngClass]="clickColor(true)"
-      >
-        ⇄
-      </button>
-    </div>
+<div class="widget-container" [ngClass]="{ alternate: opponent }">
+  <div class="widget-header">
+    <div class="widget-label">Coverage</div>
+    <swap-opponent [(ngModel)]="opponent"></swap-opponent>
   </div>
-  <div
-    class="grid grid-cols-1 gap-1 overflow-y-auto border-4 grid-rows-flex bg-menu-400 border-menu-400 max-h-128"
-  >
-    <div
-      *ngFor="let pokemon of coverage[selectedTeam]"
-      class="w-full"
-      [ngClass]="teamColor()"
-    >
+
+  <div class="widget-body">
+    @for (pokemon of coverage[selectedTeam]; track pokemon) {
       <coverage
-        class="w-full"
         [pokemon]="pokemon"
         [typechart]="typecharts[(selectedTeam + 1) % typecharts.length]"
       ></coverage>
-    </div>
+    }
   </div>
-  <div class="w-full h-3 rounded-b-full bg-menu-400"></div>
 </div>

@@ -6,6 +6,7 @@
     border-radius: 1rem;
     border-color: var(--mat-sys-outline);
     padding: 0.25rem;
+    max-width: calc(50% - 1px);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -20,7 +21,7 @@
 
       .team-name-title,
       .team-coach-title {
-        max-width: 12rem;
+        max-width: 100%;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -37,24 +38,29 @@
     }
 
     .team-body {
-      .sprite-wrapper {
-        width: 4rem;
-        height: 4rem;
-      }
-
-      table {
-        th {
-          font-size: small;
-          line-height: 0.5em;
+      max-width: 100%;
+      .overview-row {
+        display: flex;
+        column-gap: 0.25rem;
+        align-items: center;
+        .sprite-cell {
+          width: 4rem;
+          flex-shrink: 0;
+          @media (max-width: 768px) {
+            width: 2rem;
+          }
         }
         .name-cell {
-          font-weight: 600;
-          max-width: 8rem;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          display: block;
+          flex-grow: 1;
           text-align: center;
+          overflow: hidden;
+          .name-label {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            display: block;
+            font-weight: 600;
+          }
         }
 
         .capt-row {
@@ -64,9 +70,24 @@
           justify-content: center;
         }
         .speed-cell {
+          flex-shrink: 0;
           font-weight: 800;
-
+          width: 2rem;
           text-align: center;
+        }
+        &:not(.header) {
+          .sprite-cell {
+            height: 4rem;
+            @media (max-width: 768px) {
+              height: 2rem;
+            }
+          }
+        }
+        &.header {
+          > div {
+            font-size: 0.8em;
+            font-weight: 700;
+          }
         }
       }
     }

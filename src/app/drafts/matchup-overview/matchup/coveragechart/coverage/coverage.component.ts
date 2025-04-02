@@ -2,18 +2,19 @@ import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { SpriteComponent } from '../../../../../images/sprite/sprite.component';
 import { Pokemon } from '../../../../../interfaces/draft';
-import { CoverageChart, TypeChart } from '../../../matchup-interface';
+import { Coverage, CoverageChart, TypeChart } from '../../../matchup-interface';
 import { EffectivenessChartComponent } from './effectiveness-chart/effectiveness-chart.component';
 import { ExtendedType } from '../../../../../data';
+import { typeColor } from '../../../../../util/styling';
 
 @Component({
   selector: 'coverage',
   standalone: true,
   templateUrl: './coverage.component.html',
+  styleUrl: './coverage.component.scss',
   imports: [CommonModule, SpriteComponent, EffectivenessChartComponent],
 })
 export class CoverageComponent implements OnInit {
-  @Input() pokemon!: CoverageChart;
   @Input() typechart!: TypeChart;
   coverage: {
     pokemon: Pokemon & {
@@ -33,11 +34,16 @@ export class CoverageComponent implements OnInit {
   e: number = 0;
   ne: number = 0;
 
+  @Input()
+  pokemon!: CoverageChart;
+
   constructor() {}
 
   ngOnInit(): void {
     this.resetRecommended();
   }
+
+  typeColor = typeColor;
 
   updateCoverage() {
     const selectedMoves = [
@@ -45,7 +51,6 @@ export class CoverageComponent implements OnInit {
         .concat(this.pokemon.coverage.special)
         .filter((move) => move.selected),
     ];
-
     this.coverage = this.typechart.team
       .map((pokemon) => ({
         pokemon,
@@ -69,16 +74,6 @@ export class CoverageComponent implements OnInit {
     this.se = this.se / this.coverage.length;
     this.e = this.e / this.coverage.length;
     this.ne = this.ne / this.coverage.length;
-  }
-
-  seColor(max: number) {
-    if (max > 1) {
-      return 'bg-scale-positive-2 border border-scale-positive-3';
-    } else if (max == 1) {
-      return 'bg-scale-neutral border border-menu-400';
-    } else {
-      return 'bg-scale-negative-2 border border-scale-negative-3';
-    }
   }
 
   resetRecommended() {

@@ -1,5 +1,5 @@
-<div class="widget-wrapper" [ngClass]="{ alternate: opponent }">
-  <div class="widget-container">
+<div class="widget-container" [ngClass]="{ alternate: opponent }">
+  <div class="widget-header">
     <div class="widget-label">Defensive Type Chart</div>
     <div class="widget-options">
       <mat-slide-toggle [(ngModel)]="abilities" labelPosition="before"
@@ -8,12 +8,14 @@
       <swap-opponent [(ngModel)]="opponent"></swap-opponent>
     </div>
   </div>
-  <typechart-core
-    [typechart]="opponent ? typecharts[1] : typecharts[0]"
-    [abilities]="abilities"
-  ></typechart-core>
+  <div class="widget-body">
+    <typechart-core
+      [typechart]="opponent ? typecharts[1] : typecharts[0]"
+      [abilities]="abilities"
+    ></typechart-core>
 
-  <typestats-core
-    [typechart]="opponent ? typecharts[1] : typecharts[0]"
-  ></typestats-core>
+    <typestats-core
+      [typechart]="opponent ? typecharts[1] : typecharts[0]"
+    ></typestats-core>
+  </div>
 </div>

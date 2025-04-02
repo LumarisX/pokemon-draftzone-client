@@ -4,7 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { TypeChart } from '../../drafts/matchup-overview/matchup-interface';
 import { TypechartCoreComponent } from '../../util/matchup/typechart/typechart-core/typechart-core.component';
-import { TypestatsCoreComponent } from '../../util/matchup/typechart/typestats-core/typestatscore.component';
+import { TypestatsCoreComponent } from '../../util/matchup/typechart/typestats-core/typestats-core.component';
 
 @Component({
   selector: 'planner-typechart',

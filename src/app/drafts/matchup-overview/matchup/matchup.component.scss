@@ -1,0 +1,23 @@
+.matchup-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-height: fit-content;
+  height: fit-content;
+  align-items: start;
+  width: 100%;
+  gap: 1rem;
+  padding: 1rem;
+  @media (max-width: 768px) {
+    padding: 0.5rem;
+  }
+
+  .widget-wrapper {
+    padding: 0.75rem;
+    max-width: 100%;
+    width: fit-content;
+    border-radius: 1rem;
+    background-color: var(--mat-sys-surface);
+    box-shadow: var(--mat-sys-level3);
+  }
+}

@@ -1,66 +1,77 @@
-<div class="flex flex-col h-auto p-2 space-y-4 w-fit">
-  <div class="flex space-x-1">
-    <div class="flex items-center w-2/3">
-      <div class="w-1/3 h-fit">
+<div class="coverage-main">
+  <div class="sprite-container">
+    <div class="sprite-spacer">
+      <div class="sprite-wrapper">
         <sprite [pokemon]="pokemon" [flipped]="true"></sprite>
       </div>
-      <div class="flex flex-col space-y-2">
-        <div
-          class="flex items-center p-1 space-x-2 border-2 rounded-lg border-menu-200"
-        >
-          <img
-            class="w-auto h-6 sprite-border"
-            src="../../../../../assets/icons/moves/move-physical.png"
-            alt="Physical Moves"
-          />
-          <div class="grid grid-cols-5 gap-1">
-            <img
-              *ngFor="let move of pokemon.coverage.physical"
-              [ngClass]="{ 'opacity-40': !move.selected }"
-              (click)="move.selected = !move.selected; updateCoverage()"
-              src="../../../../assets/icons/types/{{ move.type }}.png"
-              onerror="this.src='../../../../assets/icons/types/Unknown.png'"
-              title="{{ move.name }}"
-            />
+    </div>
+    <button class="reset-button" (click)="resetRecommended()">Reset</button>
+  </div>
+  <div class="coverage-container">
+    <div class="category-container">
+      <img
+        class="category-img"
+        src="../../../../../assets/icons/moves/move-physical.png"
+        alt="Physical Moves"
+      />
+      <div class="type-container">
+        @for (move of pokemon.coverage.physical; track move) {
+          <div
+            class="type-label"
+            [ngClass]="{
+              selected: move.selected,
+            }"
+            (click)="move.selected = !move.selected; updateCoverage()"
+            [style.background-color]="typeColor(move.type)"
+          >
+            <div class="type-text">
+              {{ move.type }}
+            </div>
           </div>
-        </div>
-        <div
-          class="flex items-center p-1 space-x-2 border-2 rounded-lg border-menu-200"
-        >
-          <img
-            class="w-auto h-6 sprite-border"
-            src="../../../../../assets/icons/moves/move-special.png"
-            alt="Special Moves"
-          />
-          <div class="grid grid-cols-5 gap-1">
-            <img
-              *ngFor="let move of pokemon.coverage.special"
-              [ngClass]="{ 'opacity-40': !move.selected }"
-              (click)="move.selected = !move.selected; updateCoverage()"
-              src="../../../../assets/icons/types/{{ move.type }}.png"
-              onerror="this.src='../../../../assets/icons/types/Unknown.png'"
-              title="{{ move.name }}"
-            />
-          </div>
-        </div>
+        }
       </div>
     </div>
-    <div class="flex flex-col w-1/3 space-y-1">
-      <div class="p-1 border-2 rounded-lg border-menu-200">
-        <effectiveness-chart
-          class=""
-          [data]="[{ category: 'effectiveness', se: se, e: e, ne: ne }]"
-        ></effectiveness-chart>
-        <div class="flex flex-wrap justify-center">
+    <div class="category-container">
+      <img
+        class="category-img"
+        src="../../../../../assets/icons/moves/move-special.png"
+        alt="Special Moves"
+      />
+      <div class="type-container">
+        @for (move of pokemon.coverage.special; track move) {
           <div
-            class="w-1/4 rounded-xl"
-            *ngFor="let pokemon of coverage"
-            [ngClass]="seColor(pokemon.max)"
+            class="type-label"
+            [ngClass]="{
+              selected: move.selected,
+            }"
+            (click)="move.selected = !move.selected; updateCoverage()"
+            [style.background-color]="typeColor(move.type)"
           >
-            <sprite [pokemon]="pokemon.pokemon"></sprite>
+            <div class="type-text">
+              {{ move.type }}
+            </div>
           </div>
-        </div>
+        }
       </div>
+    </div>
+  </div>
+  <div class="chart-container">
+    <div class="chart-wrapper">
+      <effectiveness-chart
+        class=""
+        [data]="[{ category: 'effectiveness', se: se, e: e, ne: ne }]"
+      ></effectiveness-chart>
+    </div>
+    <div class="sprite-container">
+      @for (pokemon of coverage; track $index) {
+        <sprite
+          [ngClass]="{
+            '!bg-scale-positive-2': pokemon.max > 1,
+            '!bg-scale-negative-2': pokemon.max < 1,
+          }"
+          [pokemon]="pokemon.pokemon"
+        ></sprite>
+      }
     </div>
   </div>
 </div>

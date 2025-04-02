@@ -1,6 +1,8 @@
 .movechart-wrapper {
-  max-width: 40rem;
+  max-width: 42rem;
   padding: 0.25rem;
   max-height: 50rem;
   overflow-y: auto;
+  scrollbar-gutter: stable;
+  margin-right: -0.75rem;
 }

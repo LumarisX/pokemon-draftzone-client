@@ -1,5 +1,5 @@
-<div class="widget-wrapper">
-  <div class="widget-container">
+<div class="widget-container">
+  <div class="widget-header">
     <div class="widget-label">Speed Tiers</div>
     <button
       mat-icon-button
@@ -20,16 +20,14 @@
     >
       <div class="filter-main">
         <div class="reset-button" (click)="resetModifiers()">Reset</div>
-        @for (modifier of speedchart.modifiers; track $index) {
+        @for (modifier of getModifiers(); track $index) {
           <div class="option-row">
-            <mat-checkbox
-              [formControl]="getModifierControl(0, modifier)"
-            ></mat-checkbox>
+            <mat-checkbox [formControl]="modifier[1].at(0)"></mat-checkbox>
             <mat-checkbox
               class="alternate"
-              [formControl]="getModifierControl(1, modifier)"
+              [formControl]="modifier[1].at(1)"
             ></mat-checkbox>
-            <span class="filter-label">{{ modifier }}</span>
+            <span class="filter-label">{{ modifier[0] }}</span>
           </div>
         }
       </div>
@@ -77,12 +75,15 @@
             class="tier-group"
             [ngClass]="{
               alternate: +group.tiers[0].team,
+              grouped: group.tiers.length > 1,
             }"
             (click)="group.opened = !group.opened"
           >
             @if (group.tiers.length === 1 || group.opened) {
               @for (tier of group.tiers; track $index) {
-                <speedtier [tier]="tier"></speedtier>
+                <div class="speedtier-wrapper">
+                  <speedtier [tier]="tier"></speedtier>
+                </div>
               }
             } @else {
               <div class="collapsed-group">

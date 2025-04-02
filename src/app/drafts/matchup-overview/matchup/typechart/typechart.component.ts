@@ -3,7 +3,7 @@ import { Component, Input } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { TypechartCoreComponent } from '../../../../util/matchup/typechart/typechart-core/typechart-core.component';
-import { TypestatsCoreComponent } from '../../../../util/matchup/typechart/typestats-core/typestatscore.component';
+import { TypestatsCoreComponent } from '../../../../util/matchup/typechart/typestats-core/typestats-core.component';
 import { TypeChart } from '../../matchup-interface';
 import { SwapOpponentButton } from '../../../../util/buttons/swap-opponent/swap-opponent.component';
 
@@ -11,7 +11,7 @@ import { SwapOpponentButton } from '../../../../util/buttons/swap-opponent/swap-
   selector: 'typechart',
   standalone: true,
   templateUrl: './typechart.component.html',
-  styleUrls: ['./typechart.component.scss', '../matchup.scss'],
+  styleUrls: ['./typechart.component.scss', '../../matchup.scss'],
   imports: [
     CommonModule,
     FormsModule,

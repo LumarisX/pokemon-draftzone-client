@@ -8,7 +8,7 @@ import { Summary } from '../../matchup-interface';
 @Component({
   selector: 'summary',
   templateUrl: './summary.component.html',
-  styleUrls: ['./summary.component.scss', '../matchup.scss'],
+  styleUrls: ['./summary.component.scss', '../../matchup.scss'],
   imports: [
     CommonModule,
     SummaryCoreComponent,
