@@ -72,11 +72,13 @@
           justify-content: center;
         }
         .speed-cell {
+          text-align: center;
+
           flex-shrink: 0;
           font-weight: 800;
-          width: 2rem;
-          text-align: center;
+          min-width: 2rem;
         }
+
         &:not(.header) {
           .sprite-cell {
             height: 4rem;
@@ -89,6 +91,22 @@
           > div {
             font-size: 0.8em;
             font-weight: 700;
+          }
+
+          .speed-cell,
+          .name-cell {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            mat-icon {
+              font-size: 1.2em;
+              height: fit-content;
+              left: 0;
+            }
+            &:hover {
+              opacity: 0.5;
+              cursor: pointer;
+            }
           }
         }
       }

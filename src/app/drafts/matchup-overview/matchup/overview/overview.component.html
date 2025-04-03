@@ -11,10 +11,30 @@
     <div class="team-body">
       <div class="overview-row header">
         <div class="sprite-cell"></div>
-        <div class="name-cell">Name</div>
-        <div class="speed-cell">SPE</div>
+        <div class="name-cell" (click)="sortData('name')">
+          @if (sortedBy === "name") {
+            @if (sortDirection === "desc") {
+              <mat-icon>arrow_downward</mat-icon>
+            }
+            @if (sortDirection === "asc") {
+              <mat-icon>arrow_upward</mat-icon>
+            }
+          }
+          Name
+        </div>
+        <div class="speed-cell" (click)="sortData('spe')">
+          @if (sortedBy === "spe") {
+            @if (sortDirection === "desc") {
+              <mat-icon>arrow_downward</mat-icon>
+            }
+            @if (sortDirection === "asc") {
+              <mat-icon>arrow_upward</mat-icon>
+            }
+          }
+          SPE
+        </div>
       </div>
-      @for (pokemon of teams[0].team; track pokemon) {
+      @for (pokemon of ($teams | async)![0]; track pokemon) {
         <div class="overview-row">
           <div class="sprite-cell">
             <sprite [pokemon]="pokemon" flipped></sprite>
@@ -23,10 +43,26 @@
             <div class="name-label">{{ pokemon.name }}</div>
             <div class="capt-row">
               @if (pokemon.capt?.tera) {
-                <mat-icon svgIcon="tera"></mat-icon>
+                <mat-icon
+                  [matTooltip]="
+                    pokemon.capt!.tera!.length
+                      ? pokemon.capt!.tera!.join(', ')
+                      : 'All Types'
+                  "
+                  matTooltipPosition="below"
+                  svgIcon="tera"
+                ></mat-icon>
               }
               @if (pokemon.capt?.z) {
-                <mat-icon svgIcon="z"></mat-icon>
+                <mat-icon
+                  [matTooltip]="
+                    pokemon.capt!.z!.length && pokemon.capt!.z!.length < 18
+                      ? pokemon.capt!.z!.join(', ')
+                      : 'All Types'
+                  "
+                  matTooltipPosition="below"
+                  svgIcon="z"
+                ></mat-icon>
               }
               @if (pokemon.capt?.dmax) {
                 <mat-icon svgIcon="dmax"></mat-icon>
@@ -49,21 +85,58 @@
     </div>
     <div class="team-body">
       <div class="overview-row header">
-        <div class="speed-cell">SPE</div>
-        <div class="name-cell">Name</div>
+        <div class="speed-cell" (click)="sortData('spe')">
+          SPE
+          @if (sortedBy === "spe") {
+            @if (sortDirection === "desc") {
+              <mat-icon>arrow_downward</mat-icon>
+            }
+            @if (sortDirection === "asc") {
+              <mat-icon>arrow_upward</mat-icon>
+            }
+          }
+        </div>
+        <div class="name-cell" (click)="sortData('name')">
+          Name
+          @if (sortedBy === "name") {
+            @if (sortDirection === "desc") {
+              <mat-icon>arrow_downward</mat-icon>
+            }
+            @if (sortDirection === "asc") {
+              <mat-icon>arrow_upward</mat-icon>
+            }
+          }
+        </div>
         <div class="sprite-cell"></div>
       </div>
-      @for (pokemon of teams[1].team; track pokemon) {
+      @for (pokemon of ($teams | async)![1]; track pokemon) {
         <div class="overview-row">
           <div class="speed-cell">{{ pokemon.baseStats.spe }}</div>
           <div class="name-cell">
             <div class="name-label">{{ pokemon.name }}</div>
             <div class="capt-row">
               @if (pokemon.capt?.tera) {
-                <mat-icon svgIcon="tera"></mat-icon>
+                <mat-icon
+                  [matTooltip]="
+                    pokemon.capt!.tera!.length &&
+                    pokemon.capt!.tera!.length < 19
+                      ? pokemon.capt!.tera!.join(', ')
+                      : 'All Types'
+                  "
+                  matTooltipPosition="below"
+                  svgIcon="tera"
+                ></mat-icon>
               }
               @if (pokemon.capt?.z) {
-                <mat-icon svgIcon="z"></mat-icon>
+                <mat-icon
+                  [matTooltip]="
+                    pokemon.capt!.z!.length && pokemon.capt!.z!.length < 18
+                      ? pokemon.capt!.z!.join(', ')
+                      : 'All Types'
+                  "
+                  matTooltipPosition="below"
+                  svgIcon="z"
+                ></mat-icon>
               }
               @if (pokemon.capt?.dmax) {
                 <mat-icon svgIcon="dmax"></mat-icon>

@@ -1,0 +1,3 @@
+matchup.scss: 4000
+app.component.scss: 5000
+overlay: 6000
