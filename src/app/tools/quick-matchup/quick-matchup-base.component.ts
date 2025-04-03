@@ -2,12 +2,13 @@ import { CommonModule, Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MatchupService } from '../../api/matchup.service';
-import { getNameByPid } from '../../data/namedex';
-import { LoadingComponent } from '../../images/loading/loading.component';
-import { Pokemon } from '../../interfaces/draft';
 import { MatchupData } from '../../drafts/matchup-overview/matchup-interface';
 import { MatchupComponent } from '../../drafts/matchup-overview/matchup/matchup.component';
-import { QuickMatchupFormComponent } from './form/quick-matchup-form.component';
+import { LoadingComponent } from '../../images/loading/loading.component';
+import {
+  QuickForm,
+  QuickMatchupFormComponent,
+} from './form/quick-matchup-form.component';
 
 @Component({
   selector: 'quick-matchup-base',
@@ -23,12 +24,7 @@ import { QuickMatchupFormComponent } from './form/quick-matchup-form.component';
 export class QuickMatchupBaseComponent implements OnInit {
   matchupData?: MatchupData;
   editing: boolean = true;
-  // formData!: {
-  //   format: string;
-  //   ruleset: string;
-  //   team1: Pokemon[];
-  //   team2: Pokemon[];
-  // };
+  formData?: QuickForm;
 
   constructor(
     private matchupService: MatchupService,
@@ -37,33 +33,31 @@ export class QuickMatchupBaseComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.route.queryParams.subscribe((params) => {
-      {
-        // this.formData = {
-        //   format: params['format'] ?? 'Singles',
-        //   ruleset: params['ruleset'] ?? 'Gen9 NatDex',
-        //   team1: params['team']
-        //     ? Array.isArray(params['team'])
-        //       ? params['team'].map((id) => ({ id: id, name: getNameByPid(id) }))
-        //       : [params['team']]
-        //     : [],
-        //   team2: [],
-        // };
-        // this.location.replaceState(this.location.path().split('?')[0]);
-      }
-    });
+    // this.route.queryParams.subscribe((params) => {
+    //   {
+    //     this.formData = {
+    //       format: params['format'] ?? 'Singles',
+    //       ruleset: params['ruleset'] ?? 'Gen9 NatDex',
+    //       team1: params['team']
+    //         ? Array.isArray(params['team'])
+    //           ? params['team'].map((id) => ({ id: id, name: getNameByPid(id) }))
+    //           : [params['team']]
+    //         : [],
+    //       team2: [],
+    //     };
+    //     this.location.replaceState(this.location.path().split('?')[0]);
+    //   }
+    // });
   }
 
-  getMatchupData(formData: {
-    format: string;
-    ruleset: string;
-    team1: Pokemon[];
-    team2: Pokemon[];
-  }) {
-    this.editing = false;
-    // this.formData = formData;
-    this.matchupService.getQuickMatchup(formData).subscribe((data) => {
-      this.matchupData = <MatchupData>data;
-    });
+  getMatchupData(formData: QuickForm) {
+    this.formData = formData;
+    this.matchupService
+      .getQuickMatchup(formData.toValue())
+      .subscribe((data) => {
+        console.log('data', data);
+        this.matchupData = data;
+        this.editing = false;
+      });
   }
 }

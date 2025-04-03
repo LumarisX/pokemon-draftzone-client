@@ -8,7 +8,10 @@
   </div>
   <div class="flex justify-center w-full">
     <div class="w-full max-w-400">
-      <quick-matchup-form></quick-matchup-form>
+      <quick-matchup-form
+        [quickForm]="formData"
+        (formSubmitted)="getMatchupData($event)"
+      ></quick-matchup-form>
     </div>
   </div>
 } @else {
@@ -54,7 +57,7 @@
     @if (matchupData) {
       <matchup [matchupData]="matchupData"></matchup>
     } @else {
-      <loading />>
+      <loading />
     }
   </div>
 }

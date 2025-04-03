@@ -1,11 +1,16 @@
-@if (draftForm) {
-  <mat-stepper #stepper class="pokemon-form-container" orientation="vertical">
+@if (quickForm) {
+  <mat-stepper
+    #stepper
+    class="pokemon-form-container"
+    orientation="vertical"
+    linear
+  >
     <mat-step
       state="details"
-      [stepControl]="draftForm.controls.details"
+      [stepControl]="quickForm.controls.details"
       errorMessage="Name is required."
     >
-      <form [formGroup]="draftForm.controls.details">
+      <form [formGroup]="quickForm.controls.details">
         <ng-template matStepLabel>Details</ng-template>
         <ng-template matStepContent>
           <div class="details-form-container">
@@ -27,12 +32,16 @@
         <div class="team-container">
           <mat-form-field>
             <mat-label>Team Name</mat-label>
-            <input matInput formControlName="teamName" spellcheck="false" />
+            <input
+              matInput
+              [formControl]="quickForm.controls.side1.controls.teamName"
+              spellcheck="false"
+            />
           </mat-form-field>
           <team-form
             [pokemonList$]="pokemonList$"
-            [ruleset]="draftForm.controls.details.controls.ruleset.value"
-            [teamArray]="draftForm.controls.team"
+            [ruleset]="quickForm.controls.details.controls.ruleset.value"
+            [teamArray]="quickForm.controls.side1.controls.team"
           ></team-form>
         </div>
 
@@ -46,15 +55,19 @@
     <mat-step state="team">
       <ng-template matStepLabel>Team 2</ng-template>
       <ng-template matStepContent>
-        <div class="team-container">
+        <div class="team-container alternate">
           <mat-form-field>
             <mat-label>Team Name</mat-label>
-            <input matInput formControlName="teamName" spellcheck="false" />
+            <input
+              matInput
+              [formControl]="quickForm.controls.side2.controls.teamName"
+              spellcheck="false"
+            />
           </mat-form-field>
           <team-form
             [pokemonList$]="pokemonList$"
-            [ruleset]="draftForm.controls.details.controls.ruleset.value"
-            [teamArray]="draftForm.controls.team"
+            [ruleset]="quickForm.controls.details.controls.ruleset.value"
+            [teamArray]="quickForm.controls.side2.controls.team"
           ></team-form>
         </div>
 

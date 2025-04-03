@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
+import { MatchupData } from '../drafts/matchup-overview/matchup-interface';
+import { QuickFormData } from '../tools/quick-matchup/form/quick-matchup-form.component';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -11,7 +14,7 @@ export class MatchupService {
     return this.apiService.get(`matchup/${matchupId}`, true);
   }
 
-  getQuickMatchup(matchupData: object) {
+  getQuickMatchup(matchupData: QuickFormData): Observable<MatchupData> {
     return this.apiService.post(`matchup/quick`, false, matchupData);
   }
 

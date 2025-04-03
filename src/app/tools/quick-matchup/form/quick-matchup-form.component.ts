@@ -68,16 +68,17 @@ import { RulesetSelectComponent } from '../../../util/ruleset-select/ruleset.com
 export class QuickMatchupFormComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<void>();
   pokemonList$ = new BehaviorSubject<Pokemon[]>([]);
-  draftForm!: DraftForm;
-
   @Input()
-  params: Partial<Draft> = {};
-  @Output() formSubmitted = new EventEmitter<DraftFormData>();
+  quickForm: QuickForm | undefined;
+
+  @Output() formSubmitted = new EventEmitter<QuickForm>();
   constructor(private dataService: DataService) {}
 
   ngOnInit(): void {
-    this.draftForm = new DraftForm(this.params, this.pokemonList$);
-    this.draftForm.controls.details.controls.ruleset.valueChanges
+    if (!this.quickForm) {
+      this.quickForm = new QuickForm(this.pokemonList$);
+    }
+    this.quickForm.controls.details.controls.ruleset.valueChanges
       .pipe(
         filter((ruleset) => ruleset !== null),
         takeUntil(this.destroy$),
@@ -86,9 +87,9 @@ export class QuickMatchupFormComponent implements OnInit, OnDestroy {
         this.loadPokemonList(ruleset);
       });
     this.loadPokemonList(
-      this.draftForm.controls.details.controls.ruleset.value,
+      this.quickForm.controls.details.controls.ruleset.value,
     );
-    this.draftForm.setValidators(this.validateDraftForm);
+    this.quickForm.setValidators(this.validateDraftForm);
   }
 
   ngOnDestroy() {
@@ -99,35 +100,36 @@ export class QuickMatchupFormComponent implements OnInit, OnDestroy {
   private loadPokemonList(ruleset: string): void {
     this.dataService.getPokemonList(ruleset).subscribe((list) => {
       this.pokemonList$.next(list);
-      this.draftForm.controls.team.controls.forEach((group) => {
+      this.quickForm?.controls.side1.controls.team.controls.forEach((group) => {
+        group.controls.pokemon.updateValueAndValidity();
+      });
+      this.quickForm?.controls.side2.controls.team.controls.forEach((group) => {
         group.controls.pokemon.updateValueAndValidity();
       });
     });
   }
 
   validateDraftForm(control: AbstractControl) {
-    const formGroup = control as FormGroup;
-    const teamArray = formGroup.get('team') as FormArray;
-    if (teamArray.length === 0) {
+    const quickForm = control as QuickForm;
+
+    if (
+      !quickForm.controls.side1.controls.team.value.length ||
+      !quickForm.controls.side2.controls.team.value.length
+    ) {
       return { emptyTeam: true };
     }
     return null;
   }
 
   onSubmit() {
-    if (this.draftForm.valid) {
-      this.formSubmitted.emit(this.draftForm.toValue());
+    if (!this.quickForm) return;
+    if (this.quickForm.valid) {
+      this.formSubmitted.emit(this.quickForm);
       console.log('Form is valid.');
-      console.log(this.draftForm.value);
-      console.log(this.draftForm.toValue());
+      console.log(this.quickForm.value);
+      console.log(this.quickForm.toValue());
     } else {
-      console.log('draft', this.draftForm.valid, this.draftForm.errors);
-      console.log(
-        'team',
-        this.draftForm.controls.team.valid,
-        this.draftForm.controls.team.errors,
-      );
-      this.draftForm.controls.team;
+      console.log('draft', this.quickForm.valid, this.quickForm.errors);
 
       console.log('Form is invalid.');
     }
@@ -142,71 +144,76 @@ export class QuickMatchupFormComponent implements OnInit, OnDestroy {
   }
 }
 
-export type DraftFormData = {
-  leagueName: string;
-  teamName: string;
+export type QuickFormData = {
   format: string;
   ruleset: string;
-  doc: string | undefined;
-  team: Pokemon[];
+  side1: {
+    team: Pokemon[];
+    teamName: string;
+  };
+  side2: {
+    team: Pokemon[];
+    teamName: string;
+  };
 };
 
-export class DraftForm extends FormGroup<{
+export class QuickForm extends FormGroup<{
   details: FormGroup<{
-    leagueName: FormControl<string>;
-    teamName: FormControl<string>;
     format: FormControl<string>;
     ruleset: FormControl<string>;
-    doc: FormControl<string>;
   }>;
-  team: FormArray<PokemonFormGroup>;
+  side1: FormGroup<{
+    team: FormArray<PokemonFormGroup>;
+    teamName: FormControl<string>;
+  }>;
+  side2: FormGroup<{
+    team: FormArray<PokemonFormGroup>;
+    teamName: FormControl<string>;
+  }>;
 }> {
-  constructor(
-    params: Partial<Draft>,
-    pokemonList$: BehaviorSubject<Pokemon[]>,
-  ) {
+  constructor(pokemonList$: BehaviorSubject<Pokemon[]>) {
     super({
       details: new FormGroup({
-        leagueName: new FormControl(params?.leagueName ?? '', {
+        format: new FormControl('Singles', {
           nonNullable: true,
           validators: Validators.required,
         }),
-        teamName: new FormControl(params?.teamName ?? '', {
+        ruleset: new FormControl('Gen9 NatDex', {
           nonNullable: true,
           validators: Validators.required,
         }),
-        format: new FormControl(params?.format ?? 'Singles', {
-          nonNullable: true,
-          validators: Validators.required,
-        }),
-        ruleset: new FormControl(params?.ruleset ?? 'Gen9 NatDex', {
-          nonNullable: true,
-          validators: Validators.required,
-        }),
-        doc: new FormControl(params?.doc ?? '', {
+      }),
+      side1: new FormGroup({
+        team: new FormArray([] as PokemonFormGroup[]),
+        teamName: new FormControl('', {
           nonNullable: true,
         }),
       }),
-      team: new FormArray(
-        params.team
-          ? params.team.map(
-              (pokemon) => new PokemonFormGroup(pokemon, pokemonList$),
-            )
-          : ([] as PokemonFormGroup[]),
-      ),
+      side2: new FormGroup({
+        team: new FormArray([] as PokemonFormGroup[]),
+        teamName: new FormControl('', {
+          nonNullable: true,
+        }),
+      }),
     });
   }
 
-  toValue(): DraftFormData {
+  toValue(): QuickFormData {
     return {
-      leagueName: this.controls.details.controls.leagueName.value,
-      teamName: this.controls.details.controls.teamName.value,
       format: this.controls.details.controls.format.value,
       ruleset: this.controls.details.controls.ruleset.value,
-      doc: this.controls.details.controls.doc.value || undefined,
-      team: this.controls.team.controls.map((pokemonGroup) =>
-        pokemonGroup.toPokemon(),
-      ),
+      side1: {
+        team: this.controls.side1.controls.team.controls.map((pokemonGroup) =>
+          pokemonGroup.toPokemon(),
+        ),
+        teamName: this.controls.side1.controls.teamName.value,
+      },
+      side2: {
+        team: this.controls.side2.controls.team.controls.map((pokemonGroup) =>
+          pokemonGroup.toPokemon(),
+        ),
+        teamName: this.controls.side2.controls.teamName.value,
+      },
     };
   }
 }
