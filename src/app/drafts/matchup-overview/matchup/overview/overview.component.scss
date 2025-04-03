@@ -1,12 +1,12 @@
 .overview-wrapper {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   column-gap: 0.5rem;
   .team-container {
     border-width: 1px;
     border-radius: 1rem;
     border-color: var(--mat-sys-outline);
     padding: 0.25rem;
-    max-width: calc(50% - 1px);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -38,7 +38,8 @@
     }
 
     .team-body {
-      max-width: 100%;
+      width: 100%;
+
       .overview-row {
         display: flex;
         column-gap: 0.25rem;
@@ -59,6 +60,7 @@
             text-overflow: ellipsis;
             white-space: nowrap;
             display: block;
+            max-width: 8rem;
             font-weight: 600;
           }
         }
