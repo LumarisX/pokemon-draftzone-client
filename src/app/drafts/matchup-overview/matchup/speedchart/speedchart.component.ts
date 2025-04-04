@@ -4,14 +4,12 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
-  input,
   Input,
   OnDestroy,
   OnInit,
   ViewChild,
 } from '@angular/core';
 import {
-  Form,
   FormArray,
   FormControl,
   FormGroup,
@@ -213,11 +211,11 @@ export class SpeedchartComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   resetModifiers() {
-    [
+    const defaultModifiers = [
       '252',
       '252+',
       '0',
-      '0-',
+      '0- 0ivs',
       'Swift Swim',
       'Sand Rush',
       'Chlorophyll',
@@ -227,16 +225,16 @@ export class SpeedchartComponent implements OnInit, OnDestroy, AfterViewInit {
       'Unburden',
       'Quark Drive',
       'Surge Surfer',
-    ].forEach((modifier) => {
-      const array = this.modifiersForms.get(modifier) as FormArray<
-        FormControl<boolean>
-      > | null;
-      if (!array) return;
-      array.controls.forEach((control) => control.setValue(true));
+    ];
+    this.getModifiers().forEach(([modifier, array]) => {
+      const isDefault = defaultModifiers.includes(modifier);
+      array.controls.forEach((control) => control.setValue(isDefault));
     });
   }
 
   getModifiers() {
-    return Object.entries(this.modifiersForms.controls);
+    return Object.entries(this.modifiersForms.controls).sort((x, y) =>
+      x[0].localeCompare(y[0]),
+    );
   }
 }
