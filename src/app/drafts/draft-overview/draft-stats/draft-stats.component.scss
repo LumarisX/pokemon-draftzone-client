@@ -4,7 +4,8 @@
 }
 
 .table-container {
-  max-width: 100rem;
+  max-width: min(100rem, 100%);
+  padding: 0 0.5rem 0.5rem;
 }
 
 .content-container {
@@ -15,7 +16,7 @@
 
 .table-wrapper {
   padding: 1rem;
-  overflow: auto;
+  overflow-x: auto;
   border-radius: 1rem;
   background-color: var(--mat-sys-surface);
   box-shadow: var(--mat-sys-level3);
@@ -42,9 +43,11 @@ table {
 }
 
 .back-button {
-  position: absolute;
-  top: 0.5rem;
-  left: 0.5rem;
+  @media (min-width: 768px) {
+    position: absolute;
+    top: 0.5rem;
+    left: 0.5rem;
+  }
 }
 
 tr.cdk-row {
