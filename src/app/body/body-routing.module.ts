@@ -5,6 +5,7 @@ import { HomeComponent } from '../pages/homepage/homepage.component';
 import { SettingsComponent } from '../pages/settings/settings.component';
 import { PlannerComponent } from '../planner/plannner.component';
 import { DebugPath } from '../debug/debug-routing.module';
+import { LeagueZonePath } from '../league-zone/league-zone-routing.module';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -22,10 +23,13 @@ const routes: Routes = [
         (m) => m.BattleZoneModule,
       ),
   },
-  // {
-  //   path: 'test',
-  //   loadChildren: () => import('../test/test.module').then((m) => m.TestModule),
-  // },
+  {
+    path: LeagueZonePath,
+    loadChildren: () =>
+      import('../league-zone/league-zone.module').then(
+        (m) => m.LeagueZoneModule,
+      ),
+  },
   {
     path: DebugPath,
     loadChildren: () =>
