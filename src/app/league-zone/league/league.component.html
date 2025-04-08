@@ -1,1 +1,141 @@
-<p>league works!</p>
+<div class="main-league-container">
+  <div class="main-draft">
+    <div class="draft-bar">
+      <div class="draft-bar-section alternate">
+        <div class="section-label">Upcoming:</div>
+        <div class="card-container">
+          <div class="team-card">
+            <div class="team-card-body">
+              <div class="team-card-label">Pick 7</div>
+              <div class="team-card-content">Alpine Arcanines</div>
+            </div>
+          </div>
+          <div class="team-card">
+            <div class="team-card-body">
+              <div class="team-card-label">Pick 8</div>
+              <div class="team-card-content">Twinleaf Tatsugiri</div>
+            </div>
+          </div>
+          <div class="team-card">
+            <div class="team-card-body">
+              <div class="team-card-label">Pick 9</div>
+              <div class="team-card-content">Kalos Quagsires</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="draft-bar-section">
+        <div class="section-label">Drafting:</div>
+        <div class="card-container">
+          <div class="team-card">
+            <div class="team-card-body">
+              <div class="team-card-label">Pick 6</div>
+              <div class="team-card-content">Victorious Vigoroths</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="draft-bar-section">
+        <div class="section-label">Previous:</div>
+        <div class="card-container">
+          @for (pick of picks; track $index) {
+            <div class="team-card">
+              <div class="team-card-body">
+                <div class="team-card-label">Pick {{ $index + 1 }}</div>
+                <div class="team-card-content">{{ pick.teamName }}</div>
+              </div>
+              @if (pick.pokemon) {
+                <div class="pick-sprite">
+                  <sprite [pokemon]="pick.pokemon"></sprite>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+    <div class="tier-wrapper">
+      <app-league-tier-list></app-league-tier-list>
+    </div>
+  </div>
+  <div class="draft-panel">
+    <div class="draft-picks-main">
+      <div class="draft-picks-title fancy-font">My Picks</div>
+      <div class="draft-picks-container">
+        <div class="draft-pick">
+          <div class="pick-label">1st Pick</div>
+          <div class="draft-pick-backups">
+            <div class="choice-container">
+              <div class="choice-label">Choice</div>
+              <div class="choice-pokemon">
+                <div class="choice-pokemon-name">Zapdos</div>
+                <div class="choice-pokemon-sprite">
+                  <sprite [pokemon]="{ id: 'zapdos', name: 'Zapdos' }"></sprite>
+                </div>
+              </div>
+            </div>
+            <div class="choice-container alternate">
+              <div class="choice-label">Backup</div>
+              <button class="choice-select">
+                Select<mat-icon>arrow_selector_tool</mat-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="draft-pick">
+          <div class="pick-label">2nd Pick</div>
+          <div class="draft-pick-backups">
+            <div class="choice-container">
+              <div class="choice-label">Choice</div>
+              <div class="choice-pokemon">
+                <div class="choice-pokemon-name">Swampert-Mega</div>
+                <div class="choice-pokemon-sprite">
+                  <sprite
+                    [pokemon]="{ id: 'swampertmega', name: 'Swampert-Mega' }"
+                  ></sprite>
+                </div>
+              </div>
+            </div>
+            <div class="choice-container alternate">
+              <div class="choice-label">Backup</div>
+              <div class="choice-pokemon">
+                <div class="choice-pokemon-name">Seismitoad</div>
+                <div class="choice-pokemon-sprite">
+                  <sprite
+                    [pokemon]="{ id: 'seismitoad', name: 'Seismitoad' }"
+                  ></sprite>
+                </div>
+              </div>
+            </div>
+            <div class="choice-container alternate">
+              <div class="choice-label">Backup</div>
+              <button class="choice-select">
+                Select<mat-icon>arrow_selector_tool</mat-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button class="planner-link fancy-font">
+      Planner <mat-icon>open_in_new</mat-icon>
+    </button>
+    <div class="my-draft-main">
+      <div class="my-draft-title fancy-font">Deimos Deoxys</div>
+      <ol class="my-draft-pokemons">
+        @for (pick of myDraft; track $index) {
+          <li class="my-draft-pokemon">
+            <div class="my-pokemon-index">{{ $index + 1 }}</div>
+            <div class="my-pokemon-sprite">
+              <sprite [pokemon]="pick.pokemon" flipped></sprite>
+            </div>
+            <div class="my-pokemon-name fancy-font">
+              {{ pick.pokemon.name }}
+            </div>
+            <div class="my-pokemon-tier fancy-font">{{ pick.cost }}</div>
+          </li>
+        }
+      </ol>
+    </div>
+  </div>
+</div>
