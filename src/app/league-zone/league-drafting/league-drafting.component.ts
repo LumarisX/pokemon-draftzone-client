@@ -6,17 +6,17 @@ import { LeagueTierListComponent } from '../league-tier-list/league-tier-list.co
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-league',
+  selector: 'app-league-drafting',
   imports: [
     CommonModule,
     LeagueTierListComponent,
     SpriteComponent,
     MatIconModule,
   ],
-  templateUrl: './league.component.html',
-  styleUrl: './league.component.scss',
+  templateUrl: './league-drafting.component.html',
+  styleUrl: './league-drafting.component.scss',
 })
-export class LeagueComponent {
+export class LeagueDraftingComponent {
   draftOrder: {
     teamName: string;
     status?: string;
