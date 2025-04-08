@@ -26,7 +26,6 @@ export class DebugComponent implements OnInit {
     loginId: string;
     localstorage: {
       planner: any;
-      settings: string;
     };
   };
 
@@ -43,7 +42,6 @@ export class DebugComponent implements OnInit {
       loginId: 'Not logged in',
       localstorage: {
         planner: this.getPlannerData(),
-        settings: this.getSettingsData(),
       },
     };
     this.getLoginId();
@@ -116,10 +114,6 @@ export class DebugComponent implements OnInit {
 
   getPlannerData(): string {
     return localStorage.getItem('plannerData') || 'Empty';
-  }
-
-  getSettingsData(): string {
-    return localStorage.getItem('user-settings') || 'Empty';
   }
 
   copyToClipboard(): void {

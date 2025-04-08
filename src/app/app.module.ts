@@ -14,6 +14,8 @@ import { AppComponent } from './app.component';
 import { BodyModule } from './body/body.module';
 import { LogoSVG } from './images/svg-components/logo.component';
 import { MatBadgeModule } from '@angular/material/badge';
+import { OverlayModule } from '@angular/cdk/overlay';
+import { SettingsComponent } from './pages/settings/settings.component';
 
 @NgModule({
   declarations: [AppComponent],
@@ -46,6 +48,7 @@ import { MatBadgeModule } from '@angular/material/badge';
     }),
     MatToolbarModule,
     MatBadgeModule,
+    OverlayModule,
     MatIconModule,
     MatToolbarModule,
     MatMenuModule,
@@ -53,6 +56,7 @@ import { MatBadgeModule } from '@angular/material/badge';
     RouterModule,
     LogoSVG,
     BodyModule,
+    SettingsComponent,
   ],
   providers: [provideHttpClient(withInterceptorsFromDi())],
 })

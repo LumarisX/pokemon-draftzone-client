@@ -1,16 +1,35 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import {
+  Component,
+  EventEmitter,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { Pokemon } from '../../interfaces/draft';
-import { SettingsService } from './settings.service';
+import { Settings, SettingsService } from './settings.service';
+import { MatSelectModule } from '@angular/material/select';
+import { MatButtonModule } from '@angular/material/button';
 @Component({
   selector: 'settings',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, SpriteComponent],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    SpriteComponent,
+    MatSelectModule,
+    MatButtonModule,
+  ],
   templateUrl: './settings.component.html',
+  styleUrl: './settings.component.scss',
 })
-export class SettingsComponent implements OnInit {
+export class SettingsComponent implements OnInit, OnDestroy {
   constructor(
     private settingsService: SettingsService,
     private fb: FormBuilder,
@@ -18,6 +37,8 @@ export class SettingsComponent implements OnInit {
 
   example: Pokemon = { id: 'deoxysattack', name: 'Deoxys-Attack' };
 
+  @Output()
+  closeSettings = new EventEmitter();
   themes: { id: string; name: string }[] = [
     { id: 'classic', name: 'Classic' },
     { id: 'christmas', name: 'Christmas' },
@@ -62,30 +83,59 @@ export class SettingsComponent implements OnInit {
     },
   ];
 
-  settingsForm!: FormGroup;
+  settingsForm!: FormGroup<{
+    theme: FormControl<string | null>;
+    ldMode: FormControl<string | null>;
+    spriteSet: FormControl<string | null>;
+  }>;
+
+  orgSettings!: Settings;
 
   ngOnInit(): void {
-    let form = this.fb.group({
-      theme: this.settingsService.settingsData.theme || 'classic',
-      ldMode: this.settingsService.settingsData.ldMode || 'device',
-      spriteSet: this.settingsService.settingsData.spriteSet || 'home',
+    this.orgSettings = { ...this.settingsService.settingsData };
+    const form: FormGroup<{
+      theme: FormControl<string | null>;
+      ldMode: FormControl<string | null>;
+      spriteSet: FormControl<string | null>;
+    }> = this.fb.group({
+      theme: this.orgSettings.theme || 'classic',
+      ldMode: this.orgSettings.ldMode || 'device',
+      spriteSet: this.orgSettings.spriteSet || 'home',
     });
-    form.valueChanges.subscribe((value: any) => {
-      this.settingsService.settingsData = value;
-      localStorage.setItem('user-settings', JSON.stringify(value));
+    form.valueChanges.subscribe((value: Settings) => {
+      this.settingsService.setSettings(value);
       this.example = { id: 'deoxysattack', name: 'Deoxys-Attack' };
     });
     form.get('ldMode')?.valueChanges.subscribe((value: string | null) => {
       if (value) this.settingsService.updateLDMode(value);
     });
     this.settingsForm = form;
-    if (localStorage.getItem('shinyunlocked')) {
-      this.themes.push({ id: 'shiny', name: 'Shiny' });
-    }
+  }
+
+  isShinyUnlocked() {
+    return (
+      localStorage.getItem('shinyunlocked') ||
+      this.settingsService.settingsData.shinyUnlock
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.settingsService.setSettings(this.orgSettings);
   }
 
   getCreditLink() {
-    const value: string | null = this.settingsForm.get('spriteSet')?.value;
+    const value: string | null | undefined =
+      this.settingsForm.get('spriteSet')?.value;
     return this.spriteSets.find((set) => set.id === value)?.creditLink ?? '';
+  }
+
+  save() {
+    this.orgSettings = this.settingsForm.value;
+    this.settingsService.setSettings(this.orgSettings);
+    this.settingsService.updateSettings();
+  }
+
+  close() {
+    this.closeSettings.emit();
   }
 }

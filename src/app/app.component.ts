@@ -7,6 +7,7 @@ import { AuthService } from './auth/auth0.service';
 import { DraftOverviewPath } from './drafts/draft-overview/draft-overview-routing.module';
 import { svgIcons } from './images/icons';
 import { SettingsService } from './pages/settings/settings.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -15,9 +16,7 @@ import { SettingsService } from './pages/settings/settings.service';
   styleUrl: './app.component.scss',
 })
 export class AppComponent implements OnInit {
-  userDropdown = false;
-  menuDropdown = false;
-  innerClick: undefined | 'user' | 'menu';
+  settingsOpen: boolean = false;
   TABS: {
     title: string;
     route: string;
@@ -52,6 +51,7 @@ export class AppComponent implements OnInit {
     public auth: AuthService,
     private settingsService: SettingsService,
     private leagueService: LeagueAdsService,
+    private router: Router,
     private matIconRegistry: MatIconRegistry,
     private domSanitizer: DomSanitizer,
   ) {
@@ -62,22 +62,23 @@ export class AppComponent implements OnInit {
       );
       matIconRegistry.setDefaultFontSetClass('material-symbols-outlined');
     });
+    this.checkAuthenticated();
   }
 
   ngOnInit(): void {
-    if (!localStorage.getItem('shinyunlocked')) {
-      let shiny = Math.floor(Math.random() * 100);
-      if (shiny === 0) {
-        this.settingsService.settingsData.theme = 'shiny';
-        localStorage.setItem('shinyunlocked', 'true');
-      }
+    const shiny = Math.floor(Math.random() * 100);
+    if (shiny === 0) {
+      this.settingsService.setSettings({ shinyUnlock: true });
+      this.settingsService.updateSettings();
     }
   }
 
   getTheme() {
     const classes: string[] = [];
     if (this.settingsService.settingsData.ldMode === 'dark')
-      classes.push('dark-mode');
+      this.settingsService.updateLDMode(
+        this.settingsService.settingsData.ldMode,
+      );
     switch (this.settingsService.settingsData.theme) {
       case 'shiny':
         classes.push('shiny dark:darkshiny');
@@ -95,11 +96,29 @@ export class AppComponent implements OnInit {
       'theme-name',
       this.settingsService.settingsData.theme ?? '',
     );
-
     return classes;
   }
 
   anyBadge$ = combineLatest(this.TABS.map((tab) => tab.badge ?? of(''))).pipe(
     map((badges) => badges.some((value) => value !== '')),
   );
+
+  authenticated: boolean = false;
+
+  checkAuthenticated() {
+    this.auth.isAuthenticated().subscribe((authenticated) => {
+      this.authenticated = authenticated;
+      if (authenticated) {
+        this.settingsService.refreshSettings();
+      }
+    });
+  }
+
+  login() {
+    this.auth.login();
+  }
+
+  logout() {
+    this.auth.logout();
+  }
 }

@@ -1,31 +1,33 @@
 import { Injectable } from '@angular/core';
+import { SettingApiService } from '../../api/setting.service';
+import { BehaviorSubject } from 'rxjs';
 
 export type Settings = {
-  theme?: string;
-  ldMode: 'light' | 'dark' | 'device';
-  time?: string;
-  date?: string;
-  spriteSet?: string;
+  theme?: string | null;
+  ldMode?: string | null;
+  time?: string | null;
+  date?: string | null;
+  spriteSet?: string | null;
+  shinyUnlock?: boolean | null;
 };
 
 @Injectable({
   providedIn: 'root',
 })
 export class SettingsService {
-  settingsData!: Settings;
-
-  constructor() {
-    let parsedData: Settings = JSON.parse(
-      localStorage.getItem('user-settings') || '{}',
-    );
-    this.settingsData = parsedData;
-    this.updateLDMode(this.settingsData.ldMode);
+  settingsData$ = new BehaviorSubject<Settings>({});
+  get settingsData() {
+    return this.settingsData$.value;
   }
 
-  updateLDMode(value: string) {
+  constructor(private settingApiService: SettingApiService) {
+    // this.settingsData$.pipe().subscribe()
+    // this.updateLDMode(this.settingsData.ldMode);
+  }
+
+  updateLDMode(value?: string | null) {
     const isDark =
-      (value === 'device' &&
-        window.matchMedia('(prefers-color-scheme: dark)').matches) ||
+      (!value && window.matchMedia('(prefers-color-scheme: dark)').matches) ||
       value === 'dark';
     document.documentElement.classList.toggle('dark', isDark);
     document.documentElement.classList.toggle('light', !isDark);
@@ -33,5 +35,23 @@ export class SettingsService {
       'light-mode',
       isDark ? 'dark' : 'light',
     );
+  }
+
+  refreshSettings() {
+    this.settingApiService.getSettings().subscribe((settings) => {
+      if (settings) this.settingsData$.next(settings);
+    });
+  }
+
+  setSettings(value: Partial<Settings>) {
+    this.settingsData$.next(Object.assign(this.settingsData, value));
+  }
+
+  updateSettings() {
+    this.settingApiService
+      .updateSettings(this.settingsData)
+      .subscribe((data) => {
+        console.log('Settings Updated:', data);
+      });
   }
 }

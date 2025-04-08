@@ -1,58 +1,59 @@
-<div class="flex w-full justify-center h-full p-8">
-  @if (settingsForm) {
-    <div
-      class="border-2 border-menu-300 bg-menu-100 overflow-y-auto rounded-lg w-full h-full max-w-128 flex flex-col items-center"
-      [formGroup]="settingsForm"
-    >
-      <h1 class="font-bold text-3xl py-6">Settings</h1>
-      <div class="space-y-2">
-        <div class="p-1">
-          <label class="block mb-1 font-bold">Light/Dark Mode</label>
-          <select
-            class="bg-menu-200 border border-menu-200 rounded p-1"
-            formControlName="ldMode"
-          >
-            <option value="device">Device</option>
-            <option value="light">Light</option>
-            <option value="dark">Dark</option>
-          </select>
-        </div>
-        <div class="p-1">
-          <label class="block mb-1 font-bold">Theme</label>
-          <select
-            class="bg-gradient-to-r from-aTeam-200 to-bTeam-200 border border-menu-200 rounded p-1"
-            formControlName="theme"
-          >
-            <option
-              class="bg-menu-200"
-              *ngFor="let theme of themes"
-              value="{{ theme.id }}"
-            >
-              {{ theme.name }}
-            </option>
-          </select>
-        </div>
-        <div class="p-1">
-          <label class="block mb-1 font-bold">Sprite Set</label>
-          <div class="sm:flex sm:space-x-2 items-center">
-            <div>
-              <select
-                class="bg-menu-200 h-fit border border-menu-200 rounded p-1"
-                formControlName="spriteSet"
+@if (settingsForm) {
+  <div class="setting-container" [formGroup]="settingsForm">
+    <h2 class="setting-title">Settings</h2>
+    <div class="options-container">
+      <div class="option">
+        <mat-form-field appearance="outline">
+          <mat-label>Light/Dark Mode</mat-label>
+          <mat-select formControlName="ldMode">
+            <mat-option value="device">Device</mat-option>
+            <mat-option value="light">Light</mat-option>
+            <mat-option value="dark">Dark</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="option">
+        <mat-form-field appearance="outline">
+          <mat-label>Theme</mat-label>
+          <mat-select formControlName="theme">
+            @for (theme of themes; track $index) {
+              <mat-option [value]="theme.id">{{ theme.name }}</mat-option>
+            }
+            @if (isShinyUnlocked()) {
+              <mat-option value="shiny"> Shiny </mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="option">
+        <div>
+          <mat-form-field appearance="outline">
+            <mat-label>Sprite Set</mat-label>
+            <mat-select formControlName="spriteSet">
+              @for (spriteSet of spriteSets; track $index) {
+                <mat-option [value]="spriteSet.id">{{
+                  spriteSet.name
+                }}</mat-option>
+              }
+            </mat-select>
+            <mat-hint>
+              <span
+                class="text-sm credit-link text-blue-500 hover:text-blue-400"
               >
-                @for (spriteSet of spriteSets; track $index) {
-                  <option [value]="spriteSet.id">{{ spriteSet.name }}</option>
-                }
-              </select>
-              <div class="p-1 text-sm text-blue-500 hover:text-blue-400">
                 <a [href]="getCreditLink()" target="_blank">Credits</a>
-              </div>
-            </div>
-            <div class="w-20 p-2"><sprite [pokemon]="example"></sprite></div>
-          </div>
+              </span></mat-hint
+            >
+          </mat-form-field>
+        </div>
+        <div class="sprite-wrapper">
+          <sprite [pokemon]="example"></sprite>
         </div>
       </div>
-      <!-- {{ settingsForm.value | json }} -->
     </div>
-  }
-</div>
+
+    <div class="button-container">
+      <button mat-stroked-button (click)="close()">Cancel</button
+      ><button mat-flat-button (click)="save(); close()">Save</button>
+    </div>
+  </div>
+}
