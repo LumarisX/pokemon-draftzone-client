@@ -1,0 +1,117 @@
+<div class="tier-form" cdkDropListGroup>
+  <div class="tier-form-header">
+    <div>Move To</div>
+    <div>Search</div>
+  </div>
+  @if (tierGroups) {
+    <div class="tier-main">
+      <div class="untiered-container">
+        <div class="untiered-header header-label">
+          <div class="untiered-label">Untiered</div>
+        </div>
+        <div
+          class="untiers"
+          cdkDropList
+          [cdkDropListData]="tierGroups[3].tiers[3]"
+          (cdkDropListDropped)="drop($event)"
+        >
+          @for (pokemon of tierGroups[3].tiers[3].pokemon; track pokemon) {
+            <div cdkDrag class="tier-entry">
+              <div *cdkDragPlaceholder class="drag-placeholder"></div>
+              <div class="entry-container">
+                <div class="option-group">
+                  <mat-checkbox></mat-checkbox>
+                  <mat-icon class="drag-icon">drag_indicator</mat-icon>
+                </div>
+
+                <div class="entry-sprite">
+                  <sprite [pid]="pokemon.id"></sprite>
+                </div>
+
+                <div class="option-group">
+                  <mat-icon class="gear-icon" svgIcon="gear"></mat-icon>
+                  @if (pokemon.orgTier?.length) {
+                    <mat-icon (click)="undoMove(pokemon)">undo</mat-icon>
+                  }
+                </div>
+              </div>
+              <div class="entry-name">
+                {{ pokemon.name }}
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+      <div class="tier-container">
+        @for (group of tierGroups; track group) {
+          <div class="tier-group">
+            @if (group.label !== undefined) {
+              <div class="tier-group-label header-label">
+                <mat-icon class="drag-icon">drag_indicator</mat-icon>
+                {{ group.label }}
+                <mat-icon class="gear-icon" svgIcon="gear"></mat-icon>
+              </div>
+            }
+            <div class="tier-entry-container">
+              @for (tier of group.tiers; track tier) {
+                <div
+                  class="tier"
+                  cdkDropList
+                  [cdkDropListData]="tier"
+                  (cdkDropListDropped)="drop($event)"
+                >
+                  <div class="tier-label header-label">
+                    <mat-icon class="drag-icon">drag_indicator</mat-icon>
+                    {{ tier.name }}
+                    <mat-icon class="gear-icon" svgIcon="gear"></mat-icon>
+                  </div>
+                  <div class="tier-entries">
+                    @for (pokemon of tier.pokemon; track pokemon) {
+                      <div cdkDrag class="tier-entry">
+                        <div *cdkDragPlaceholder class="drag-placeholder"></div>
+                        <div class="entry-container">
+                          <div class="option-group">
+                            <mat-checkbox></mat-checkbox>
+                            <mat-icon class="drag-icon"
+                              >drag_indicator</mat-icon
+                            >
+                          </div>
+
+                          <div class="entry-sprite">
+                            <sprite [pid]="pokemon.id"></sprite>
+                          </div>
+
+                          <div class="option-group">
+                            <mat-icon
+                              class="gear-icon"
+                              svgIcon="gear"
+                            ></mat-icon>
+                            @if (pokemon.orgTier?.length) {
+                              <mat-icon (click)="undoMove(pokemon)"
+                                >undo</mat-icon
+                              >
+                            }
+                          </div>
+                        </div>
+                        <div class="entry-name">
+                          {{ pokemon.name }}
+                        </div>
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+              <div class="new-tier">
+                <div class="add-icon">
+                  <mat-icon>add</mat-icon>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  } @else {
+    <loading></loading>
+  }
+</div>
