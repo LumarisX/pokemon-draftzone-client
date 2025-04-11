@@ -5,6 +5,7 @@ import { LeagueManagePath } from './league-manage/league-manage-routing.module';
 import { LeagueComponent } from './league/league.component';
 import { LeagueTierListFormComponent } from './league-tier-list/league-tier-list-form/league-tier-list-form.component';
 import { LeagueStandingsComponent } from './league-standings/league-standings.component';
+import { LeagueScheduleMatchupComponent } from './league-schedule-matchup/league-schedule-matchup.component';
 
 export const LeagueZonePath = 'leagues';
 const routes: Routes = [
@@ -27,6 +28,10 @@ const routes: Routes = [
   {
     path: 'view/leagueidplaceholder/standings',
     component: LeagueStandingsComponent,
+  },
+  {
+    path: 'view/leagueidplaceholder/schedule',
+    component: LeagueScheduleMatchupComponent,
   },
   {
     path: 'view/leagueidplaceholder/tier/edit',
