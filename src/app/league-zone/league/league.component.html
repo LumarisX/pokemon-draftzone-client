@@ -1,3 +1,48 @@
 <p>league works!</p>
 <div><button routerLink="drafting">Drafting</button></div>
 <div><button routerLink="tier/edit">Edit Tier</button></div>
+
+<h2>Upload File to S3</h2>
+
+<div>
+  <label for="fileInput">Choose File:</label>
+  <input type="file" id="fileInput" (change)="onFileSelected($event)" />
+</div>
+
+@if (selectedFile) {
+  <div style="margin-top: 10px">
+    Selected: {{ selectedFile.name }} ({{ selectedFile.size }} bytes)
+    <button
+      (click)="uploadFile()"
+      [disabled]="isUploading"
+      style="margin-left: 10px"
+    >
+      {{ isUploading ? "Uploading..." : "Upload" }}
+    </button>
+  </div>
+}
+
+@if (uploadProgress > 0 && uploadProgress < 100) {
+  <div style="margin-top: 10px">
+    Progress: {{ uploadProgress }}%
+    <progress [value]="uploadProgress" max="100"></progress>
+  </div>
+}
+
+@if (uploadMessage) {
+  <div
+    style="margin-top: 15px; font-weight: bold"
+    [style.color]="uploadError ? 'red' : 'green'"
+  >
+    {{ uploadMessage }}
+    @if (uploadedFileKey) {
+      <div>Uploaded file key: {{ uploadedFileKey }}</div>
+    }
+  </div>
+}
+
+@if (confirmed && imageUrl) {
+  <div style="width: 4rem; height: 4rem">
+    <img [src]="imageUrl" />
+  </div>
+}
