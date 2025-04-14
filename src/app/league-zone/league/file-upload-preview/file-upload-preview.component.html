@@ -1,0 +1,41 @@
+@if (file) {
+  <mat-card class="preview-card">
+    <mat-card-header>
+      <mat-card-title>Confirm Upload</mat-card-title>
+      <mat-card-subtitle
+        >{{ file.name }} ({{ formatBytes(file.size) }})</mat-card-subtitle
+      >
+    </mat-card-header>
+    <mat-card-content>
+      <div class="preview-container">
+        @if (isImage && previewUrl) {
+          <img
+            [src]="previewUrl"
+            alt="File Preview"
+            class="file-preview-image"
+          />
+        } @else {
+          <div class="file-preview-placeholder">
+            <mat-icon class="file-icon">insert_drive_file</mat-icon>
+            <span>{{ file.type || "File" }}</span>
+          </div>
+        }
+      </div>
+    </mat-card-content>
+    <mat-card-actions align="end">
+      <button mat-button (click)="onCancel()">Cancel</button>
+      <button mat-raised-button color="primary" (click)="onConfirm()">
+        Okay & Upload
+      </button>
+    </mat-card-actions>
+  </mat-card>
+} @else {
+  <mat-card>
+    <mat-card-content>
+      <p>No file data available.</p>
+      <mat-card-actions align="end">
+        <button mat-button (click)="onCancel()">Close</button>
+      </mat-card-actions>
+    </mat-card-content>
+  </mat-card>
+}

@@ -1,0 +1,50 @@
+// Optional: Add some spacing and styling for the status area
+.upload-status {
+  margin-top: 20px;
+  padding: 15px;
+  border: 1px solid #eee;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+}
+
+.status-message {
+  margin-top: 10px;
+  font-weight: bold;
+  padding: 8px;
+  border-radius: 4px;
+
+  &.error {
+    color: #b71c1c; // Darker red
+    background-color: #ffcdd2; // Light red background
+    border: 1px solid #e57373; // Reddish border
+  }
+
+  &.success {
+    color: #1b5e20; // Darker green
+    background-color: #c8e6c9; // Light green background
+    border: 1px solid #81c784; // Greenish border
+  }
+}
+
+.file-key {
+  font-size: 0.8em;
+  margin-top: 5px;
+  color: #555;
+  font-weight: normal;
+}
+
+.uploaded-image-container {
+  margin-top: 25px;
+  padding-top: 15px;
+  border-top: 1px solid #ccc;
+}
+
+// Ensure the custom button has some margin if needed
+// button[mat-raised-button] {
+// Example: margin-right: 10px;
+// }
+
+// Style for the progress bar text if needed
+mat-progress-bar + div {
+  text-align: center; // Center the "Progress: X%" text
+}

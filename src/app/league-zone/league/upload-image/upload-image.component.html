@@ -1,0 +1,60 @@
+<h2>Upload File to S3</h2>
+
+<div>
+  <input
+    type="file"
+    #fileInput
+    hidden
+    (change)="onFileSelected($event)"
+    accept="image/*"
+  />
+
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="openFileInput()"
+    [disabled]="isUploading"
+  >
+    <mat-icon>upload_file</mat-icon>
+    Choose File
+  </button>
+</div>
+
+@if (isUploading || uploadMessage) {
+  <div class="upload-status">
+    @if (isUploading) {
+      <mat-progress-bar
+        mode="determinate"
+        [value]="uploadProgress"
+        style="margin-top: 15px"
+      ></mat-progress-bar>
+      <div style="margin-top: 5px; font-size: 0.9em">
+        Progress: {{ uploadProgress }}%
+      </div>
+    }
+
+    @if (uploadMessage) {
+      <div
+        class="status-message"
+        [class.error]="uploadError"
+        [class.success]="!uploadError && (confirmed || uploadProgress === 100)"
+      >
+        {{ uploadMessage }}
+        @if (uploadedFileKey && !isUploading && confirmed) {
+          <div class="file-key">Uploaded file key: {{ uploadedFileKey }}</div>
+        }
+      </div>
+    }
+  </div>
+}
+
+@if (confirmed && uploadedFileKey) {
+  <div class="uploaded-image-container">
+    <h3>Uploaded Image:</h3>
+    <pdz-hosted-image [key]="uploadedFileKey"></pdz-hosted-image>
+  </div>
+} @else if (!isUploading && !uploadMessage) {
+  <p style="margin-top: 20px; color: #666">
+    Choose a file to begin the upload process.
+  </p>
+}
