@@ -21,6 +21,8 @@
             [ngClass]="{
               selected: move.selected,
             }"
+            [matTooltip]="move.name"
+            matTooltipPosition="above"
             (click)="move.selected = !move.selected; updateCoverage()"
             [style.background-color]="typeColor(move.type)"
           >
@@ -44,6 +46,8 @@
             [ngClass]="{
               selected: move.selected,
             }"
+            [matTooltip]="move.name"
+            matTooltipPosition="above"
             (click)="move.selected = !move.selected; updateCoverage()"
             [style.background-color]="typeColor(move.type)"
           >
@@ -58,12 +62,11 @@
   <div class="chart-container">
     <div class="chart-wrapper">
       <effectiveness-chart
-        class=""
         [data]="[{ category: 'effectiveness', se: se, e: e, ne: ne }]"
       ></effectiveness-chart>
     </div>
     <div class="sprite-container">
-      @for (pokemon of coverage; track $index) {
+      @for (pokemon of coverage; track pokemon) {
         <sprite
           [ngClass]="{
             '!bg-scale-positive-2': pokemon.max > 1,

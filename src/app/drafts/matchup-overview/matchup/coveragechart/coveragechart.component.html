@@ -1,14 +1,19 @@
 <div class="widget-container" [ngClass]="{ alternate: opponent }">
   <div class="widget-header">
     <div class="widget-label">Coverage</div>
-    <swap-opponent [(ngModel)]="opponent"></swap-opponent>
+    <div class="widget-options">
+      <mat-slide-toggle [(ngModel)]="abilities" labelPosition="before"
+        >Abilities</mat-slide-toggle
+      >
+      <swap-opponent [(ngModel)]="opponent"></swap-opponent>
+    </div>
   </div>
-
   <div class="widget-body">
     @for (pokemon of coverage[selectedTeam]; track pokemon) {
       <coverage
         [pokemon]="pokemon"
         [typechart]="typecharts[(selectedTeam + 1) % typecharts.length]"
+        [abilities]="abilities"
       ></coverage>
     }
   </div>
