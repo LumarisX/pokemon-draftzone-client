@@ -25,6 +25,7 @@ type EditTierPokemon = TierPokemon & {
     { name: string; pokemon: EditTierPokemon[] },
     any
   >[];
+  selected?: boolean;
 };
 
 @Component({
@@ -136,91 +137,12 @@ export class LeagueTierListFormComponent implements OnInit {
     }));
   }
 
-  updateFilter(selected: boolean, index?: number) {
-    if (index === undefined) {
-      if (selected) {
-        this.selectedTypes = [...this.types];
-      } else {
-        this.selectedTypes = [];
-      }
-      return;
-    }
-    if (selected) {
-      this.selectedTypes.push(this.types[index]);
-    } else {
-      this.selectedTypes = this.selectedTypes.filter(
-        (type) => type !== this.types[index],
-      );
-    }
-  }
-
-  applyFilter() {
-    this.filteredTypes = [...this.selectedTypes];
-    this.menu = null;
-  }
-
-  typeInFilter(pokemon: EditTierPokemon): boolean {
-    if (this.filteredTypes.length === 0) return true;
-    return pokemon.types.some((type) => this.filteredTypes.includes(type));
-  }
-
-  makeBanString(banned?: {
-    moves?: string[];
-    abilities?: string[];
-    tera?: true;
-  }): string {
-    if (!banned) return '';
-    const bans: string[] = [];
-    if (banned.tera) bans.push('Terastalization');
-    if (banned.abilities && banned.abilities.length > 0)
-      bans.push(...banned.abilities);
-    if (banned.moves && banned.moves.length > 0) bans.push(...banned.moves);
-    return 'Banned: ' + bans.join(', ');
-  }
-
-  dragEnabled = false;
-  rippleActive: string | null = null;
-  private pressTimer: any;
-  private longPressTriggered = false;
-
-  onPressStart(event: Event, pokemonId: string) {
-    this.longPressTriggered = false;
-    this.rippleActive = pokemonId;
-
-    this.pressTimer = setTimeout(() => {
-      this.dragEnabled = true;
-      this.longPressTriggered = true;
-      this.rippleActive = null;
-    }, 300);
-
-    event.preventDefault?.();
-  }
-
-  onPressEnd(event: Event) {
-    clearTimeout(this.pressTimer);
-    this.rippleActive = null;
-
-    if (!this.longPressTriggered) {
-      this.handleClick();
-    }
-
-    setTimeout(() => {
-      this.dragEnabled = false;
-    });
-  }
-
-  onPressCancel() {
-    clearTimeout(this.pressTimer);
-    this.rippleActive = null;
-    this.dragEnabled = false;
-    this.longPressTriggered = false;
-  }
-
-  handleClick() {
-    console.log('Quick click!');
-  }
-
   drop(event: CdkDragDrop<{ name: string; pokemon: EditTierPokemon[] }>) {
+    if (
+      event.container === event.previousContainer &&
+      event.previousIndex === event.currentIndex
+    )
+      return;
     const tier = event.previousContainer.data.pokemon[event.previousIndex];
     if (tier.orgTier) tier.orgTier.push(event);
     else tier.orgTier = [event];
@@ -257,5 +179,20 @@ export class LeagueTierListFormComponent implements OnInit {
         event.previousIndex,
       );
     }
+  }
+
+  dragStarted = false;
+
+  onMouseDown() {
+    this.dragStarted = false;
+  }
+
+  onMouseUp(pokemon: EditTierPokemon) {
+    if (this.dragStarted) return;
+    pokemon.selected = !pokemon.selected;
+  }
+
+  onDragStarted() {
+    this.dragStarted = true;
   }
 }

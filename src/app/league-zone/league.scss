@@ -1,0 +1,18 @@
+.draft-section {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  .draft-section-title {
+    font-family:
+      Nasalization RG,
+      sans-serif;
+    padding: 0.25rem;
+    margin: 0 0.25rem;
+    font-weight: bold;
+  }
+
+  .draft-section-body {
+    border: 1px solid var(--mat-sys-outline);
+    border-radius: 0.5rem;
+  }
+}

@@ -14,7 +14,7 @@ import { CommonModule } from '@angular/common';
     MatIconModule,
   ],
   templateUrl: './league-drafting.component.html',
-  styleUrl: './league-drafting.component.scss',
+  styleUrls: ['./league-drafting.component.scss', '../league.scss'],
 })
 export class LeagueDraftingComponent {
   draftOrder: {

@@ -57,7 +57,7 @@
   <div class="draft-panel">
     <div class="draft-picks-main draft-section">
       <div class="draft-section-title">My Picks</div>
-      <div class="draft-picks-container">
+      <div class="draft-picks-container draft-section-body">
         <div class="draft-pick">
           <div class="pick-label">1st Pick</div>
           <div class="draft-pick-backups">
@@ -120,7 +120,7 @@
       <button class="my-draft-title draft-section-title">
         <span>Deimos Deoxys </span><mat-icon>arrow_drop_down</mat-icon>
       </button>
-      <ol class="my-draft-pokemons">
+      <ol class="my-draft-pokemons draft-section-body">
         @for (pick of myDraft; track $index) {
           <li class="my-draft-pokemon">
             <div class="my-pokemon-index">{{ $index + 1 }}</div>

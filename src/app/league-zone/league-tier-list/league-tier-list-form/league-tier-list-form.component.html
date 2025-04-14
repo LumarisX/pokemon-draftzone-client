@@ -1,6 +1,15 @@
 <div class="tier-form" cdkDropListGroup>
   <div class="tier-form-header">
     <div>Move To</div>
+    <div class="flex">
+      <div>Untiered</div>
+
+      @for (tierGroup of tierGroups; track tierGroup) {
+        @for (tier of tierGroup.tiers; track tier) {
+          <div>{{ tier.name }}</div>
+        }
+      }
+    </div>
     <div>Search</div>
   </div>
   @if (tierGroups) {
@@ -16,27 +25,31 @@
           (cdkDropListDropped)="drop($event)"
         >
           @for (pokemon of tierGroups[3].tiers[3].pokemon; track pokemon) {
-            <div cdkDrag class="tier-entry">
+            <div
+              cdkDrag
+              [cdkDragStartDelay]="500"
+              (mousedown)="onMouseDown()"
+              (mouseup)="onMouseUp(pokemon)"
+              (cdkDragStarted)="onDragStarted()"
+              class="tier-entry"
+              [ngClass]="{ selected: pokemon.selected }"
+            >
               <div *cdkDragPlaceholder class="drag-placeholder"></div>
-              <div class="entry-container">
-                <div class="option-group">
-                  <mat-checkbox></mat-checkbox>
-                  <mat-icon class="drag-icon">drag_indicator</mat-icon>
-                </div>
-
-                <div class="entry-sprite">
-                  <sprite [pid]="pokemon.id"></sprite>
-                </div>
-
-                <div class="option-group">
-                  <mat-icon class="gear-icon" svgIcon="gear"></mat-icon>
-                  @if (pokemon.orgTier?.length) {
-                    <mat-icon (click)="undoMove(pokemon)">undo</mat-icon>
-                  }
-                </div>
+              <div class="entry-sprite">
+                <sprite [pid]="pokemon.id"></sprite>
               </div>
               <div class="entry-name">
                 {{ pokemon.name }}
+              </div>
+              <div class="button-container">
+                @if (pokemon.orgTier?.length) {
+                  <button class="icon-button">
+                    <mat-icon (click)="undoMove(pokemon)">undo</mat-icon>
+                  </button>
+                }
+                <button class="icon-button">
+                  <mat-icon>edit</mat-icon>
+                </button>
               </div>
             </div>
           }
@@ -49,7 +62,7 @@
               <div class="tier-group-label header-label">
                 <mat-icon class="drag-icon">drag_indicator</mat-icon>
                 {{ group.label }}
-                <mat-icon class="gear-icon" svgIcon="gear"></mat-icon>
+                <mat-icon class="edit-icon">edit</mat-icon>
               </div>
             }
             <div class="tier-entry-container">
@@ -63,38 +76,37 @@
                   <div class="tier-label header-label">
                     <mat-icon class="drag-icon">drag_indicator</mat-icon>
                     {{ tier.name }}
-                    <mat-icon class="gear-icon" svgIcon="gear"></mat-icon>
+                    <mat-icon class="edit-icon">edit</mat-icon>
                   </div>
                   <div class="tier-entries">
                     @for (pokemon of tier.pokemon; track pokemon) {
-                      <div cdkDrag class="tier-entry">
+                      <div
+                        cdkDrag
+                        [cdkDragStartDelay]="500"
+                        (mousedown)="onMouseDown()"
+                        (mouseup)="onMouseUp(pokemon)"
+                        (cdkDragStarted)="onDragStarted()"
+                        class="tier-entry"
+                        [ngClass]="{ selected: pokemon.selected }"
+                      >
                         <div *cdkDragPlaceholder class="drag-placeholder"></div>
-                        <div class="entry-container">
-                          <div class="option-group">
-                            <mat-checkbox></mat-checkbox>
-                            <mat-icon class="drag-icon"
-                              >drag_indicator</mat-icon
-                            >
-                          </div>
-
-                          <div class="entry-sprite">
-                            <sprite [pid]="pokemon.id"></sprite>
-                          </div>
-
-                          <div class="option-group">
-                            <mat-icon
-                              class="gear-icon"
-                              svgIcon="gear"
-                            ></mat-icon>
-                            @if (pokemon.orgTier?.length) {
-                              <mat-icon (click)="undoMove(pokemon)"
-                                >undo</mat-icon
-                              >
-                            }
-                          </div>
+                        <div class="entry-sprite">
+                          <sprite [pid]="pokemon.id"></sprite>
                         </div>
                         <div class="entry-name">
                           {{ pokemon.name }}
+                        </div>
+                        <div class="button-container">
+                          @if (pokemon.orgTier?.length) {
+                            <button class="icon-button">
+                              <mat-icon (click)="undoMove(pokemon)"
+                                >undo</mat-icon
+                              >
+                            </button>
+                          }
+                          <button class="icon-button">
+                            <mat-icon>edit</mat-icon>
+                          </button>
                         </div>
                       </div>
                     }
