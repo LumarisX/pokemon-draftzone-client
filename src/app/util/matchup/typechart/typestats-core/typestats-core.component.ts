@@ -60,6 +60,7 @@ export class TypestatsCoreComponent implements OnInit, OnDestroy {
   differential: number[] = [];
   uniqueSelected: boolean = true;
 
+  @Input()
   set abilities(value: boolean) {
     this.abilityIndex = value ? 0 : 1;
     this.summarize();
