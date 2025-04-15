@@ -1,18 +1,23 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { ExtendedType } from '../../../../../data';
 import { SpriteComponent } from '../../../../../images/sprite/sprite.component';
 import { Pokemon } from '../../../../../interfaces/draft';
-import { Coverage, CoverageChart, TypeChart } from '../../../matchup-interface';
-import { EffectivenessChartComponent } from './effectiveness-chart/effectiveness-chart.component';
-import { ExtendedType } from '../../../../../data';
 import { typeColor } from '../../../../../util/styling';
+import { CoverageChart, TypeChart } from '../../../matchup-interface';
+import { EffectivenessChartComponent } from './effectiveness-chart/effectiveness-chart.component';
 
 @Component({
   selector: 'coverage',
-  standalone: true,
   templateUrl: './coverage.component.html',
   styleUrl: './coverage.component.scss',
-  imports: [CommonModule, SpriteComponent, EffectivenessChartComponent],
+  imports: [
+    CommonModule,
+    SpriteComponent,
+    EffectivenessChartComponent,
+    MatTooltipModule,
+  ],
 })
 export class CoverageComponent implements OnInit {
   @Input() typechart!: TypeChart;
@@ -37,6 +42,17 @@ export class CoverageComponent implements OnInit {
   @Input()
   pokemon!: CoverageChart;
 
+  _abilities!: boolean;
+  @Input({ required: true })
+  set abilities(value: boolean) {
+    this._abilities = value;
+    this.updateCoverage();
+  }
+
+  get abilities() {
+    return this._abilities;
+  }
+
   constructor() {}
 
   ngOnInit(): void {
@@ -55,7 +71,9 @@ export class CoverageComponent implements OnInit {
       .map((pokemon) => ({
         pokemon,
         max: Math.max(
-          ...selectedMoves.map((move) => pokemon.weak[1][move.type]),
+          ...selectedMoves.map(
+            (move) => pokemon.weak[this.abilities ? 0 : 1][move.type],
+          ),
         ),
       }))
       .sort((x, y) => y.max - x.max);

@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
-import { LeagueAd } from '../../api/league-ads.service';
+import { LeagueAd } from '../../services/league-ads.service';
 import { BALLHEX, BallSVG } from '../../images/svg-components/ball.component';
 import { CompactSVG } from '../../images/svg-components/compact.component';
 import { MouseSVG } from '../../images/svg-components/mouse.component';
@@ -29,8 +29,8 @@ export class LeagueAdComponent implements OnInit {
       this.weeks = Math.round(
         Math.abs(
           new Date(this.league.seasonEnd).getTime() -
-            new Date(this.league.seasonStart).getTime()
-        ) / 604800000
+            new Date(this.league.seasonStart).getTime(),
+        ) / 604800000,
       );
   }
 

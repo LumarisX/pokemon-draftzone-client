@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, forwardRef, Input, OnInit } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MAT_SELECT_CONFIG, MatSelectModule } from '@angular/material/select';
-import { DataService } from '../../api/data.service';
+import { DataService } from '../../services/data.service';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 

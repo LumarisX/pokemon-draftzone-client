@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { SettingApiService } from '../../api/setting.service';
+import { SettingApiService } from '../../services/setting.service';
 import { BehaviorSubject } from 'rxjs';
 
 export type Settings = {
@@ -21,8 +21,8 @@ export class SettingsService {
   }
 
   constructor(private settingApiService: SettingApiService) {
-    // this.settingsData$.pipe().subscribe()
-    // this.updateLDMode(this.settingsData.ldMode);
+    const localSettings = localStorage.getItem('user-settings');
+    if (localSettings) this.settingsData$.next(JSON.parse(localSettings));
   }
 
   updateLDMode(value?: string | null) {
@@ -37,14 +37,16 @@ export class SettingsService {
     );
   }
 
-  refreshSettings() {
-    this.settingApiService.getSettings().subscribe((settings) => {
-      if (settings) this.settingsData$.next(settings);
-    });
-  }
+  // refreshSettings() {
+  //   this.settingApiService.getSettings().subscribe((settings) => {
+  //     if (settings) this.settingsData$.next(settings);
+  //   });
+  // }
 
-  setSettings(value: Partial<Settings>) {
+  setSettings(value: Partial<Settings> | undefined) {
+    if (!value) return;
     this.settingsData$.next(Object.assign(this.settingsData, value));
+    localStorage.setItem('user-settings', JSON.stringify(value));
   }
 
   updateSettings() {

@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import { DraftService } from '../../api/draft.service';
+import { DraftService } from '../../services/draft.service';
 import { DraftOverviewPath } from '../draft-overview/draft-overview-routing.module';
 import { Draft } from '../../interfaces/draft';
 

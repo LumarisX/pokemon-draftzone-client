@@ -36,7 +36,7 @@ import {
   switchMap,
   takeUntil,
 } from 'rxjs/operators';
-import { DataService } from '../../api/data.service';
+import { DataService } from '../../services/data.service';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { Pokemon } from '../../interfaces/draft';
 

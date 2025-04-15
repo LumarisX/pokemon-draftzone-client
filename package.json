@@ -5,7 +5,7 @@
     "local-dev": "ng serve --configuration=development",
     "prod": "ng serve --configuration=production",
     "api-dev": "ng serve --configuration=api-dev",
-    "build": "ng build",
+    "build": "ng build --configuration=production",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:ci": "test --runInBand"
@@ -22,6 +22,7 @@
     "@angular/platform-browser": "19.0.0",
     "@angular/platform-browser-dynamic": "19.0.0",
     "@angular/router": "19.0.0",
+    "@angular/service-worker": "19.0.0",
     "@auth0/auth0-angular": "^2.2.2",
     "@auth0/auth0-spa-js": "^2.1.3",
     "auth0-lock": "^12.4.0",

@@ -6,6 +6,7 @@ import {
 import { Injectable } from '@angular/core';
 import {
   catchError,
+  filter,
   finalize,
   Observable,
   shareReplay,
@@ -13,7 +14,7 @@ import {
   throwError,
 } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { AuthService } from '../auth/auth0.service';
+import { AuthService } from './auth0.service';
 import { ErrorService } from '../error/error.service';
 @Injectable({
   providedIn: 'root',
@@ -31,29 +32,33 @@ export class ApiService {
 
   private pendingRequests = new Map<string, Observable<any>>();
 
-  get(
+  //TODO: Remove any and make it required.
+  get<T = any>(
     path: string | string[],
     authenticated: boolean,
     params: { [key: string]: string } = {},
-  ): Observable<any> {
+    additionalHeaders: { [key: string]: string } = {},
+  ): Observable<T> {
     let headers = new HttpHeaders({
       'Content-Type': 'application/json',
+      ...additionalHeaders,
     });
-    if (Array.isArray(path)) path = path.join('/');
-    const key = path + JSON.stringify(params);
+    const apiUrl = Array.isArray(path) ? path.join('/') : path;
+    const key = apiUrl + JSON.stringify(params);
     if (this.pendingRequests.has(key)) return this.pendingRequests.get(key)!;
     const request$ = (
       authenticated
         ? this.auth.getAccessToken().pipe(
+            filter((token: string | null): token is string => !!token),
             switchMap((token: string) => {
               headers = headers.set('authorization', `Bearer ${token}`);
-              return this.http.get(`${this.serverUrl}/${path}`, {
+              return this.http.get<T>(`${this.serverUrl}/${apiUrl}`, {
                 headers,
                 params,
               });
             }),
           )
-        : this.http.get(`${this.serverUrl}/${path}`, { headers, params })
+        : this.http.get<T>(`${this.serverUrl}/${apiUrl}`, { headers, params })
     ).pipe(
       catchError((error: HttpErrorResponse) => {
         this.errorService.reportError(error);
@@ -68,17 +73,19 @@ export class ApiService {
     return request$;
   }
 
-  post(
+  //TODO: Remove any and make it required.
+  post<T = any>(
     path: string | string[],
     authenticated: boolean,
     data: Object,
-  ): Observable<any> {
-    if (Array.isArray(path)) path = path.join('/');
+  ): Observable<T> {
+    const apiUrl = Array.isArray(path) ? path.join('/') : path;
     const request$ = (
       authenticated
         ? this.auth.getAccessToken().pipe(
+            filter((token: string | null): token is string => !!token),
             switchMap((token: string) =>
-              this.http.post(`${this.serverUrl}/${path}`, data, {
+              this.http.post<T>(`${this.serverUrl}/${apiUrl}`, data, {
                 headers: new HttpHeaders({
                   'Content-Type': 'application/json',
                   authorization: `Bearer ${token}`,
@@ -86,7 +93,7 @@ export class ApiService {
               }),
             ),
           )
-        : this.http.post(`${this.serverUrl}/${path}`, data, {
+        : this.http.post<T>(`${this.serverUrl}/${apiUrl}`, data, {
             headers: new HttpHeaders({
               'Content-Type': 'application/json',
             }),
@@ -100,11 +107,12 @@ export class ApiService {
     return request$;
   }
 
-  patch(path: string | string[], data: any): Observable<any> {
-    if (Array.isArray(path)) path = path.join('/');
+  patch<T>(path: string | string[], data: any): Observable<T> {
+    const apiUrl = Array.isArray(path) ? path.join('/') : path;
     const request$ = this.auth.getAccessToken().pipe(
+      filter((token: string | null): token is string => !!token),
       switchMap((token: string) =>
-        this.http.patch(`${this.serverUrl}/${path}`, data, {
+        this.http.patch<T>(`${this.serverUrl}/${apiUrl}`, data, {
           headers: new HttpHeaders({
             'Content-Type': 'application/json',
             authorization: `Bearer ${token}`,
@@ -119,11 +127,12 @@ export class ApiService {
     return request$;
   }
 
-  delete(path: string | string[]): Observable<any> {
-    if (Array.isArray(path)) path = path.join('/');
+  delete<T>(path: string | string[]): Observable<T> {
+    const apiUrl = Array.isArray(path) ? path.join('/') : path;
     const request$ = this.auth.getAccessToken().pipe(
+      filter((token: string | null): token is string => !!token),
       switchMap((token: string) =>
-        this.http.delete(`${this.serverUrl}/${path}`, {
+        this.http.delete<T>(`${this.serverUrl}/${apiUrl}`, {
           headers: new HttpHeaders({
             'Content-Type': 'application/json',
             authorization: `Bearer ${token}`,

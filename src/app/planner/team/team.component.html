@@ -59,13 +59,14 @@
                     (selectionCleared)="onClear($index)"
                     [ruleset]="draftFormGroup.controls.ruleset.value"
                     [formControl]="teamCtrl.controls.pokemon"
+                    appearance="outline"
                   ></pokemon-select>
                 </div>
                 <!-- {{ teamCtrl.controls.pokemon.value | json }} -->
               </td>
               @if (isPoints) {
                 <td>
-                  <mat-form-field class="value-input">
+                  <mat-form-field class="value-input" appearance="outline">
                     <mat-label>Points</mat-label>
                     <input
                       matInput
@@ -77,7 +78,7 @@
                 </td>
               } @else {
                 <td>
-                  <mat-form-field class="value-input">
+                  <mat-form-field class="value-input" appearance="outline">
                     <mat-label>Tier</mat-label>
 
                     <input

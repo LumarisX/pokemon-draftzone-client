@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { FinderCoreComponent } from './finder-core.component';
-import { DataService } from '../../api/data.service';
+import { DataService } from '../../services/data.service';
 
 @Component({
   selector: 'finder-tool',

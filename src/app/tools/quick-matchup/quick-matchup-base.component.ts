@@ -1,7 +1,7 @@
 import { CommonModule, Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { MatchupService } from '../../api/matchup.service';
+import { MatchupService } from '../../services/matchup.service';
 import { MatchupData } from '../../drafts/matchup-overview/matchup-interface';
 import { MatchupComponent } from '../../drafts/matchup-overview/matchup/matchup.component';
 import { LoadingComponent } from '../../images/loading/loading.component';

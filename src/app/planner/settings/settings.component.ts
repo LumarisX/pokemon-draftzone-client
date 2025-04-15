@@ -6,7 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { RouterModule } from '@angular/router';
-import { DataService } from '../../api/data.service';
+import { DataService } from '../../services/data.service';
 import { DraftOverviewPath } from '../../drafts/draft-overview/draft-overview-routing.module';
 import { DraftFormGroup } from '../plannner.component';
 import { RulesetSelectComponent } from '../../util/ruleset-select/ruleset.component';

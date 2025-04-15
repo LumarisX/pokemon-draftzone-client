@@ -8,7 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
 import { RouterModule } from '@angular/router';
-import { TeambuilderService } from '../../api/teambuilder.service';
+import { TeambuilderService } from '../../services/teambuilder.service';
 import { NATURES, STATS, TERATYPES } from '../../data';
 import { nameList } from '../../data/namedex';
 import { Pokemon } from '../../interfaces/draft';

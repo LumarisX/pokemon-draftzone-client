@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { DraftService } from '../../../../api/draft.service';
+import { DraftService } from '../../../../services/draft.service';
 import { getNameByPid } from '../../../../data/namedex';
 import { Pokemon } from '../../../../interfaces/draft';
 import { PokemonFormGroup } from '../../../../util/forms/team-form/team-form.component';

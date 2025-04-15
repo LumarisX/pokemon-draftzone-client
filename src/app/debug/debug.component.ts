@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../auth/auth0.service';
+import { AuthService } from '../services/auth0.service';
 
 @Component({
   selector: 'debug',

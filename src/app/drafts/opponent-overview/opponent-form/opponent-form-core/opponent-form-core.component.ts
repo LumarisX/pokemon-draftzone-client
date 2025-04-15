@@ -17,7 +17,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatStepperModule } from '@angular/material/stepper';
 import { RouterModule } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
-import { DataService } from '../../../../api/data.service';
+import { DataService } from '../../../../services/data.service';
 import { Pokemon } from '../../../../interfaces/draft';
 import { Opponent } from '../../../../interfaces/opponent';
 import {

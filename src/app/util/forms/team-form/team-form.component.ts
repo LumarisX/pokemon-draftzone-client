@@ -41,7 +41,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTabChangeEvent, MatTabsModule } from '@angular/material/tabs';
 import { BehaviorSubject } from 'rxjs';
-import { DataService } from '../../../api/data.service';
+import { DataService } from '../../../services/data.service';
 import { TERATYPES, TYPES } from '../../../data';
 import { getPidByName } from '../../../data/namedex';
 import { SpriteComponent } from '../../../images/sprite/sprite.component';

@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { DraftService } from '../../../api/draft.service';
+import { DraftService } from '../../../services/draft.service';
 import { Draft } from '../../../interfaces/draft';
 import { Matchup } from '../../../interfaces/matchup';
 import { SpriteComponent } from '../../../images/sprite/sprite.component';

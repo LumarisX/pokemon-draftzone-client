@@ -8,7 +8,7 @@ import {
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { DraftService } from '../../../../api/draft.service';
+import { DraftService } from '../../../../services/draft.service';
 import { DraftOverviewPath } from '../../../draft-overview/draft-overview-routing.module';
 import { OpponentFormCoreComponent } from '../opponent-form-core/opponent-form-core.component';
 import { LoadingComponent } from '../../../../images/loading/loading.component';

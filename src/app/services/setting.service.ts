@@ -9,8 +9,8 @@ import { Observable } from 'rxjs';
 export class SettingApiService {
   constructor(private apiService: ApiService) {}
 
-  getSettings(): Observable<Settings | null> {
-    return this.apiService.get(`user/settings`, true);
+  getSettings() {
+    return this.apiService.get<Settings | null>(`user/settings`, true);
   }
 
   updateSettings(settingData: Partial<Settings>) {
