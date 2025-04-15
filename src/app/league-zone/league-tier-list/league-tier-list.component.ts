@@ -10,7 +10,7 @@ import { RouterModule } from '@angular/router';
 import { LoadingComponent } from '../../images/loading/loading.component';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { TierPokemon } from '../../battle-zone/tier-list';
-import { BattleZoneService } from '../../api/battle-zone.service';
+import { BattleZoneService } from '../../services/battle-zone.service';
 import { Type, TYPES } from '../../data';
 
 @Component({

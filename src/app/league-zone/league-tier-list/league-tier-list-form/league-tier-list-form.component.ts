@@ -13,7 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
-import { BattleZoneService } from '../../../api/battle-zone.service';
+import { BattleZoneService } from '../../../services/battle-zone.service';
 import { TierPokemon } from '../../../battle-zone/tier-list';
 import { Type, TYPES } from '../../../data';
 import { LoadingComponent } from '../../../images/loading/loading.component';

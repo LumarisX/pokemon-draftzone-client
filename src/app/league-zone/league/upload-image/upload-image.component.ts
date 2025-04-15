@@ -23,7 +23,7 @@ import {
   tap,
   throwError,
 } from 'rxjs';
-import { UploadService } from '../../../api/upload.service';
+import { UploadService } from '../../../services/upload.service';
 import { HostedImageComponent } from '../../../images/hosted-image/hosted-image.componet';
 import {
   FILE_PREVIEW_DATA_TOKEN,
