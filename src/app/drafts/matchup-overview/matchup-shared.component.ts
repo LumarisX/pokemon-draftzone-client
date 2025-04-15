@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component } from '@angular/core';
 import { Meta } from '@angular/platform-browser';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import { MatchupService } from '../../api/matchup.service';
+import { MatchupService } from '../../services/matchup.service';
 import { MatchupData, Summary } from './matchup-interface';
 import { MatchupComponent } from './matchup/matchup.component';
 import duration from 'dayjs/plugin/duration';

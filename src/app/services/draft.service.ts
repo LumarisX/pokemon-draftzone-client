@@ -17,20 +17,23 @@ export class DraftService {
     return this.apiService.get('draft/teams', true);
   }
 
-  getDraft(teamName: string): Observable<Draft> {
-    return this.apiService.get(`draft/${teamName}`, true);
+  getDraft(teamName: string) {
+    return this.apiService.get<Draft>(`draft/${teamName}`, true);
   }
 
-  getMatchup(matchupId: string, teamId: string): Observable<Matchup> {
-    return this.apiService.get(`draft/${teamId}/${matchupId}`, true);
+  getMatchup(matchupId: string, teamId: string) {
+    return this.apiService.get<Matchup>(`draft/${teamId}/${matchupId}`, true);
   }
 
-  getOpponent(matchupId: string, teamId: string): Observable<Opponent> {
-    return this.apiService.get(`draft/${teamId}/${matchupId}/opponent`, true);
+  getOpponent(matchupId: string, teamId: string) {
+    return this.apiService.get<Opponent>(
+      `draft/${teamId}/${matchupId}/opponent`,
+      true,
+    );
   }
 
-  getStats(teamName: string): Observable<Stats[]> {
-    return this.apiService.get(`draft/${teamName}/stats`, true);
+  getStats(teamName: string) {
+    return this.apiService.get<Stats[]>(`draft/${teamName}/stats`, true);
   }
 
   newDraft(draftData: Object) {
@@ -41,8 +44,8 @@ export class DraftService {
     return this.apiService.patch(`draft/${draftId}`, draftData);
   }
 
-  getMatchupList(teamName: string): Observable<Opponent[]> {
-    return this.apiService.get(`draft/${teamName}/matchups`, true);
+  getMatchupList(teamName: string) {
+    return this.apiService.get<Opponent[]>(`draft/${teamName}/matchups`, true);
   }
 
   newMatchup(teamName: string, matchupData: Object) {

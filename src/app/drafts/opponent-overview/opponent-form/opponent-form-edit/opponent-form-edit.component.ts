@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { DraftService } from '../../../../api/draft.service';
+import { DraftService } from '../../../../services/draft.service';
 import { LoadingComponent } from '../../../../images/loading/loading.component';
 import { Opponent } from '../../../../interfaces/opponent';
 import { DraftOverviewPath } from '../../../draft-overview/draft-overview-routing.module';

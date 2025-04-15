@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { DraftService } from '../../../../api/draft.service';
+import { DraftService } from '../../../../services/draft.service';
 import { LoadingComponent } from '../../../../images/loading/loading.component';
 import { Draft } from '../../../../interfaces/draft';
 import { DraftOverviewPath } from '../../draft-overview-routing.module';

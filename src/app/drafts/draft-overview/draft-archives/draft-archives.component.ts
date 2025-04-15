@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { ArchiveService } from '../../../api/archive.service';
+import { ArchiveService } from '../../../services/archive.service';
 import { LoadingComponent } from '../../../images/loading/loading.component';
 import { SpriteComponent } from '../../../images/sprite/sprite.component';
 import { TrashSVG } from '../../../images/svg-components/trash.component';

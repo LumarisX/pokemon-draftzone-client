@@ -1,21 +1,16 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { MatchupComponent } from './matchup/matchup.component';
-import { MatchupOverviewComponent } from './matchup-overview.component';
-import { MatchupSharedComponent } from './matchup-shared.component';
 import { AuthGuard } from '@auth0/auth0-angular';
 import { DraftOverviewPath } from '../draft-overview/draft-overview-routing.module';
+import { MatchupOverviewComponent } from './matchup-overview.component';
+import { MatchupSharedComponent } from './matchup-shared.component';
+import { OwnerGuard } from '../../guards/owner.guard';
 
 const routes: Routes = [
   {
-    path: DraftOverviewPath + '/matchup/:matchid',
-    component: MatchupComponent,
-    canActivate: [AuthGuard],
-  },
-  {
     path: DraftOverviewPath + '/:teamid/matchup',
     component: MatchupOverviewComponent,
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard, OwnerGuard],
   },
   {
     path: 'matchup/:id',

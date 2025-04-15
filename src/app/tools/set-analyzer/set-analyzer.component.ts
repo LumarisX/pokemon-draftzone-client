@@ -6,7 +6,7 @@ import { RouterModule } from '@angular/router';
 import {
   setCalcs as SetCalcs,
   TeambuilderService,
-} from '../../api/teambuilder.service';
+} from '../../services/teambuilder.service';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { Pokemon } from '../../interfaces/draft';
 import { compare } from '../../util';

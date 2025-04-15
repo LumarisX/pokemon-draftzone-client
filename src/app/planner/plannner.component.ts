@@ -27,7 +27,7 @@ import {
   distinctUntilChanged,
   merge,
 } from 'rxjs';
-import { PlannerService } from '../api/planner.service';
+import { PlannerService } from '../services/planner.service';
 import { Type } from '../data';
 import { getNameByPid } from '../data/namedex';
 import {

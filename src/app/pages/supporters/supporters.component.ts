@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { DataService, SupporterData } from '../../api/data.service';
+import { DataService, SupporterData } from '../../services/data.service';
 import { BallSVG } from '../../images/svg-components/ball.component';
 
 @Component({

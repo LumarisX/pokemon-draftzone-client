@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { DataService } from '../../api/data.service';
+import { DataService } from '../../services/data.service';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { Pokemon } from '../../interfaces/draft';
 import { DraftOverviewPath } from '../../drafts/draft-overview/draft-overview-routing.module';

@@ -28,7 +28,7 @@ import {
   PokemonFormGroup,
   TeamFormComponent,
 } from '../../../util/forms/team-form/team-form.component';
-import { DataService } from '../../../api/data.service';
+import { DataService } from '../../../services/data.service';
 import { Pokemon, Draft } from '../../../interfaces/draft';
 import { FormatSelectComponent } from '../../../util/format-select/format.component';
 import { RulesetSelectComponent } from '../../../util/ruleset-select/ruleset.component';

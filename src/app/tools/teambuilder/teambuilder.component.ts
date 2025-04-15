@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { TeambuilderService } from '../../api/teambuilder.service';
+import { TeambuilderService } from '../../services/teambuilder.service';
 import { PokemonBuilder } from './pokemon-builder.model';
 import { TeamBuilderPokemonComponent } from './teambuilder-pokemon.component';
 

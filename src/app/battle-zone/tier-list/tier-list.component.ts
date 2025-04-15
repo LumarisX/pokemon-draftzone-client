@@ -8,7 +8,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { TierPokemon } from '.';
-import { BattleZoneService } from '../../api/battle-zone.service';
+import { BattleZoneService } from '../../services/battle-zone.service';
 import { Type, TYPES } from '../../data';
 import { LoadingComponent } from '../../images/loading/loading.component';
 import { SpriteComponent } from '../../images/sprite/sprite.component';

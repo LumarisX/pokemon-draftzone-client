@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { LeagueAd, LeagueAdsService } from '../../api/league-ads.service';
+import { LeagueAd, LeagueAdsService } from '../../services/league-ads.service';
 import { CoinSVG } from '../../images/svg-components/pokecoin.component';
 import { BALLHEX, BallSVG } from '../../images/svg-components/ball.component';
 import { PlusSVG } from '../../images/svg-components/plus.component';
@@ -45,7 +45,7 @@ export class LeagueManageComponent implements OnInit {
       this.filteredLeagues = this.leagues;
     } else {
       this.filteredLeagues = this.leagues.filter(
-        (league) => league.status === status
+        (league) => league.status === status,
       );
     }
   }

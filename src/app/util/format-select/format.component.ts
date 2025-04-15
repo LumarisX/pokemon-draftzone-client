@@ -4,7 +4,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MAT_SELECT_CONFIG, MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { DataService } from '../../api/data.service';
+import { DataService } from '../../services/data.service';
 
 @Component({
   selector: 'format-select',

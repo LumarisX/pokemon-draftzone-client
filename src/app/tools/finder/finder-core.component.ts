@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { DataService } from '../../api/data.service';
+import { DataService } from '../../services/data.service';
 import { StatsTable, Type } from '../../data';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { FindOptionComponent } from './find-option/find-option.component';

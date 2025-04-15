@@ -24,7 +24,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatStepperModule } from '@angular/material/stepper';
 import { RouterModule } from '@angular/router';
 import { BehaviorSubject, filter, Subject, takeUntil } from 'rxjs';
-import { DataService } from '../../../../api/data.service';
+import { DataService } from '../../../../services/data.service';
 import { Draft, Pokemon } from '../../../../interfaces/draft';
 import { FormatSelectComponent } from '../../../../util/format-select/format.component';
 import {

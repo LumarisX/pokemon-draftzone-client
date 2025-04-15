@@ -8,8 +8,8 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { LeagueAdsService } from '../../api/league-ads.service';
-import { DataService } from '../../api/data.service';
+import { LeagueAdsService } from '../../services/league-ads.service';
+import { DataService } from '../../services/data.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -17,9 +17,11 @@ import { Router } from '@angular/router';
   templateUrl: './league-form.component.html',
   standalone: true,
   imports: [CommonModule, FormsModule, ReactiveFormsModule],
-  styles: `textarea {
-    resize: none
-  }`,
+  styles: `
+    textarea {
+      resize: none;
+    }
+  `,
 })
 export class LeagueFormComponent implements OnInit {
   leagueForm!: FormGroup;
@@ -30,7 +32,7 @@ export class LeagueFormComponent implements OnInit {
     private fb: FormBuilder,
     private leagueService: LeagueAdsService,
     private dataService: DataService,
-    private router: Router
+    private router: Router,
   ) {}
 
   ngOnInit(): void {

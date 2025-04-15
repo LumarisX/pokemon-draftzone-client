@@ -5,7 +5,7 @@ import { Meta } from '@angular/platform-browser';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
-import { MatchupService } from '../../api/matchup.service';
+import { MatchupService } from '../../services/matchup.service';
 import { LoadingComponent } from '../../images/loading/loading.component';
 import { DraftOverviewPath } from '../draft-overview/draft-overview-routing.module';
 import { MatchupData } from './matchup-interface';

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DraftService } from '../../../api/draft.service';
+import { DraftService } from '../../../services/draft.service';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { SpriteComponent } from '../../../images/sprite/sprite.component';

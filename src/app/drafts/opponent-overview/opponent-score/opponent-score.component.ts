@@ -8,8 +8,8 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { DraftService } from '../../../api/draft.service';
-import { ReplayService } from '../../../api/replay.service';
+import { DraftService } from '../../../services/draft.service';
+import { ReplayService } from '../../../services/replay.service';
 import { PokemonId } from '../../../data/namedex';
 import { DraftOverviewPath } from '../../draft-overview/draft-overview-routing.module';
 import { LoadingComponent } from '../../../images/loading/loading.component';

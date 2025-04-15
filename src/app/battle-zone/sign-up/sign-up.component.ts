@@ -19,7 +19,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { RouterModule } from '@angular/router';
-import { BattleZoneService } from '../../api/battle-zone.service';
+import { BattleZoneService } from '../../services/battle-zone.service';
 
 @Component({
   selector: 'bz-sign-up',
