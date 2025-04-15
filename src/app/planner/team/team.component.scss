@@ -33,7 +33,7 @@ table {
   tbody {
     td {
       text-align: center;
-      padding: 0.25rem 0 0 0.5rem;
+      padding: 0.25rem 0 0.25rem 0.5rem;
       width: fit-content;
       &:last-child {
         padding-right: 0.5rem;
@@ -46,7 +46,7 @@ table {
 }
 
 .team-item:not(:last-child) {
-  border-bottom: 1px var(--secondary-60) solid;
+  border-bottom: 1px var(--mat-sys-outline-variant) solid;
 }
 
 .value-input {
@@ -75,6 +75,11 @@ table {
 .drag-icon {
   cursor: move;
   color: var(--mat-sys-on-surface-variant);
+}
+
+.value-input,
+.pokemon-input {
+  margin-bottom: -1.5rem;
 }
 
 .cdk-drag-preview {
