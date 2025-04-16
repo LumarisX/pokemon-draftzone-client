@@ -1,0 +1,50 @@
+@if (news) {
+  @for (new of news; track new) {
+    <div class="news-item">
+      <div class="news-header">
+        <span class="news-date">{{ toDate(new.createdAt) }}</span> -
+        <span class="news-title">{{ new.title }}</span>
+      </div>
+      <div class="news-body indent">
+        @for (section of new.sections; track section) {
+          <div class="section" [ngClass]="'section-' + section.type">
+            @if (section.type === "images") {
+              @for (image of section.images; track $index) {
+                <div class="image-container">
+                  <div class="image-title">{{ image.title }}</div>
+                  <img
+                    [src]="image.imageUrl"
+                    [ngClass]="'size-' + (image.size ?? 'large')"
+                  />
+                </div>
+              }
+            } @else if (section.type === "heading") {
+              {{ section.headingText }}
+            } @else if (section.type === "list") {
+              <ul>
+                @for (item of section.items; track $index) {
+                  <li>{{ item }}</li>
+                }
+              </ul>
+            } @else if (section.type === "para") {
+              {{ section.description }}
+            } @else if (section.type === "buttons") {
+              @for (button of section.buttons; track $index) {
+                <button
+                  [routerLink]="button.link"
+                  [disabled]="button.disabled"
+                  [target]="button.newWindow ? '_blank' : undefined"
+                  mat-flat-button
+                >
+                  {{ button.text }}
+                </button>
+              }
+            }
+          </div>
+        }
+      </div>
+    </div>
+  }
+} @else {
+  <loading></loading>
+}

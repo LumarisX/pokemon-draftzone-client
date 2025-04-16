@@ -5,6 +5,8 @@
 @use "./themes/christmas.theme" as christmas;
 
 :root {
+  --pdz-fancy: Nasalization RG, sans-serif;
+
   @include mat.theme(
     (
       color: (

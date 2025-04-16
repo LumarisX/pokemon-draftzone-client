@@ -6,7 +6,8 @@ import { RouterModule } from '@angular/router';
 import { LogoSmallSVG } from '../../images/svg-components/logo-small.component';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatButtonModule } from '@angular/material/button';
-import { NewsCoreComponent } from '../news/news-core.component';
+import { NewsCoreComponent } from '../news-core/news-core.component';
+import { OldNewsCoreComponent } from '../news/news-core.component';
 
 @Component({
   selector: 'homepage',
@@ -20,6 +21,7 @@ import { NewsCoreComponent } from '../news/news-core.component';
     MatButtonModule,
     MatDividerModule,
     NewsCoreComponent,
+    OldNewsCoreComponent,
   ],
   styleUrl: './homepage.component.scss',
   templateUrl: './homepage.component.html',

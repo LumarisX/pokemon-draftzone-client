@@ -8,6 +8,37 @@ import { MatDividerModule } from '@angular/material/divider';
   imports: [CommonModule, MatDividerModule],
   template: ` <div class="space-y-1">
       <h2 class="w-full text-large font-nasa">
+        Matchup Redesign - April 3rd 2025
+      </h2>
+      <div class="space-y-1">
+        <div class="space-y-2 grid grid-cols-1 order-2 lg:order-1">
+          <div>
+            <div>
+              Another major redesign released! This new matchup design not only
+              looks more appealing but has also been optimized to make the data
+              easily visible. The Speed Tier graph has also been changed to
+              group adjacent speed tiers of the team team together. Simply click
+              to group to toggle viewing the tiers in the group. Finally, this
+              change also fixes the compatibility issues on Apple devices!
+            </div>
+          </div>
+        </div>
+        <div class="w-full flex md:flex-row flex-col md:space-x-2 items-start">
+          <div class="w-full md:w-1/2">
+            <strong>Old</strong>
+            <img src="../../../assets/screenshots/about/matchup1.webp" />
+            <img src="../../../assets/screenshots/about/matchup2.webp" />
+          </div>
+          <div class="w-full md:w-1/2">
+            <strong>New</strong>
+            <img src="../../../assets/screenshots/about/matchup_2.webp" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <mat-divider></mat-divider>
+    <div class="space-y-1">
+      <h2 class="w-full text-large font-nasa">
         Planner Redesign - March 5th 2025
       </h2>
       <div class="space-y-1">
@@ -376,4 +407,4 @@ import { MatDividerModule } from '@angular/material/divider';
       </li>
     </ul>`,
 })
-export class NewsCoreComponent {}
+export class OldNewsCoreComponent {}
