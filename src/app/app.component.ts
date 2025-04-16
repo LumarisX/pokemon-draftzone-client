@@ -8,6 +8,7 @@ import { DraftOverviewPath } from './drafts/draft-overview/draft-overview-routin
 import { svgIcons } from './images/icons';
 import { SettingsService } from './pages/settings/settings.service';
 import { Router } from '@angular/router';
+import { UnreadService } from './services/unread.service';
 
 @Component({
   selector: 'app-root',
@@ -37,7 +38,7 @@ export class AppComponent implements OnInit {
     {
       title: 'Find A League',
       route: '/league-list',
-      badge: this.leagueService.newCount,
+      badge: this.unreadService.leagueCount,
     },
     // {
     //   title: 'Other Tools',
@@ -50,7 +51,7 @@ export class AppComponent implements OnInit {
   constructor(
     public auth: AuthService,
     private settingsService: SettingsService,
-    private leagueService: LeagueAdsService,
+    private unreadService: UnreadService,
     private router: Router,
     private matIconRegistry: MatIconRegistry,
     private domSanitizer: DomSanitizer,
