@@ -8,6 +8,7 @@ import { FilterSVG } from '../images/svg-components/filter.component';
 import { SortDownSVG } from '../images/svg-components/sort.component';
 import { LeagueAdComponent } from './league-ad/league-ad.component';
 import { PlusSVG } from '../images/svg-components/plus.component';
+import { UnreadService } from '../services/unread.service';
 
 @Component({
   selector: 'app-league-ad-list',
@@ -58,12 +59,15 @@ export class LeagueAdListComponent implements OnInit {
   constructor(
     private leagueService: LeagueAdsService,
     private dataService: DataService,
+    private unreadService: UnreadService,
   ) {}
 
   ngOnInit() {
     this.leagueService.getLeagueAds().subscribe((data) => {
       this.leagues = data;
       this.filteredLeagues = [...this.leagues];
+      localStorage.setItem('leagueTime', Date.now().toString());
+      this.unreadService.leagueCount.next('');
       this.sortLeagues();
     });
     this.dataService.getFormats().subscribe((formats) => {

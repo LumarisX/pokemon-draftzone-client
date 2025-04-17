@@ -55,3 +55,12 @@ header {
     overflow: hidden;
   }
 }
+
+svg {
+  .logo-top {
+    fill: var(--mat-sys-primary);
+  }
+  .logo-bottom {
+    fill: var(--mat-sys-tertiary);
+  }
+}

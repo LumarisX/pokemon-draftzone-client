@@ -4,6 +4,7 @@ import { LoadingComponent } from '../../images/loading/loading.component';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
+import { UnreadService } from '../../services/unread.service';
 
 @Component({
   selector: 'pdz-news-core',
@@ -12,12 +13,17 @@ import { MatButtonModule } from '@angular/material/button';
   styleUrl: './news-core.component.scss',
 })
 export class NewsCoreComponent implements OnInit {
-  constructor(private newsService: NewsService) {}
+  constructor(
+    private newsService: NewsService,
+    private unreadService: UnreadService,
+  ) {}
 
   news?: News[];
   ngOnInit(): void {
     this.newsService.getNews().subscribe((news) => {
       this.news = news;
+      this.unreadService.newsCount.next('');
+      localStorage.setItem('newsTime', Date.now().toString());
     });
   }
 

@@ -38,8 +38,10 @@
 }
 
 .section-images {
-  display: grid;
-  grid-template-columns: auto auto auto;
+  display: flex;
+  overflow-x: scroll;
+  column-gap: 0.5rem;
+  max-width: 100%;
   align-self: center;
   .image-title {
     padding-left: 0.25rem;
@@ -50,16 +52,17 @@
   }
 
   .image-container {
+    flex-shrink: 0;
     .size-large {
-      max-width: 24rem;
+      width: 24rem;
       max-height: 24rem;
     }
     .size-medium {
-      max-width: 16rem;
+      width: 16rem;
       max-height: 16rem;
     }
     .size-small {
-      max-width: 8rem;
+      width: 8rem;
       max-height: 8rem;
     }
   }

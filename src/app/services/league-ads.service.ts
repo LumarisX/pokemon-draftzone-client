@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { ApiService } from './api.service';
-import { UnreadService } from './unread.service';
 
 const ROOTPATH = 'leagues';
 
@@ -9,14 +8,9 @@ const ROOTPATH = 'leagues';
   providedIn: 'root',
 })
 export class LeagueAdsService {
-  constructor(
-    private apiService: ApiService,
-    private unreadService: UnreadService,
-  ) {}
+  constructor(private apiService: ApiService) {}
 
   getLeagueAds(): Observable<LeagueAd[]> {
-    localStorage.setItem('leagueTime', Date.now().toString());
-    // this.newCount.next('');
     return this.apiService.get(ROOTPATH, false);
   }
 
