@@ -7,6 +7,7 @@ import { ApiService } from './api.service';
 })
 export class UnreadService {
   leagueCount = new BehaviorSubject<string>('');
+  newsCount = new BehaviorSubject<string>('');
 
   constructor(private api: ApiService) {
     const lastLeagueTime = +(localStorage.getItem('leagueTime') || 0);
@@ -15,14 +16,8 @@ export class UnreadService {
       leagueAd: lastLeagueTime,
       news: lastNewsTime,
     }).subscribe((count) => {
-      console.log(count);
-      // if (+count > 9) {
-      //   this.leagueCount.next('9+');
-      // } else if (+count > 0) {
-      //   this.leagueCount.next(count);
-      // } else {
-      //   this.leagueCount.next('');
-      // }
+      this.leagueCount.next(this.capNumber(count['leagueAd']));
+      this.newsCount.next(this.capNumber(count['news']));
     });
   }
 
@@ -32,5 +27,11 @@ export class UnreadService {
       false,
       counts,
     );
+  }
+
+  private capNumber(value: number): string {
+    if (value > 9) return '9+';
+    if (value > 0) return value.toString();
+    return '';
   }
 }

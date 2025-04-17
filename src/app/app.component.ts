@@ -47,6 +47,7 @@ export class AppComponent implements OnInit {
   ];
 
   draftPath = DraftOverviewPath;
+  newsBadge = this.unreadService.newsCount;
 
   constructor(
     public auth: AuthService,
