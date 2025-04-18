@@ -1,62 +1,6 @@
-/* You can add global styles to this file, and also import other style files */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-.ring_1 {
-  stop-color: hsl(
-    var(--twc-logo-ring-1) /
-      var(--twc--logo-ring-1-opacity, var(--tw-bg-opacity))
-  );
-}
-.ring_2 {
-  stop-color: hsl(
-    var(--twc-logo-ring-2) /
-      var(--twc--logo-ring-2-opacity, var(--tw-bg-opacity))
-  );
-}
-.ring_3 {
-  stop-color: hsl(
-    var(--twc-logo-ring-3) /
-      var(--twc--logo-ring-3-opacity, var(--tw-bg-opacity))
-  );
-}
-.ring_4 {
-  stop-color: hsl(
-    var(--twc-logo-ring-4) /
-      var(--twc--logo-ring-4-opacity, var(--tw-bg-opacity))
-  );
-}
-.ring_5 {
-  stop-color: hsl(
-    var(--twc-logo-ring-5) /
-      var(--twc--logo-ring-5-opacity, var(--tw-bg-opacity))
-  );
-}
-.ring_6 {
-  stop-color: hsl(
-    var(--twc-logo-ring-6) /
-      var(--twc--logo-ring-6-opacity, var(--tw-bg-opacity))
-  );
-}
-.ring_7 {
-  stop-color: hsl(
-    var(--twc-logo-ring-7) /
-      var(--twc--logo-ring-7-opacity, var(--tw-bg-opacity))
-  );
-}
-.core_1 {
-  stop-color: hsl(
-    var(--twc-logo-core-1) /
-      var(--twc--logo-core-1-opacity, var(--tw-bg-opacity))
-  );
-}
-.core_2 {
-  stop-color: hsl(
-    var(--twc-logo-core-2) /
-      var(--twc--logo-core-2-opacity, var(--tw-bg-opacity))
-  );
-}
+@use "tailwind-styles";
+@use "pdz-theming";
+@use "mat-styles";
 
 @font-face {
   font-family: "Nasalization RG";
@@ -66,34 +10,13 @@
 }
 
 @layer utilities {
-  /*tera scrollbar*/
-  .scrollbar-tera::-webkit-scrollbar {
-    width: 2px;
-    height: 2px;
-  }
-
-  .scrollbar-tera::-webkit-scrollbar-track {
-    display: none;
-  }
-
-  .scrollbar-tera::-webkit-scrollbar-thumb {
-    background: hsl(
-      var(--twc-menu-400) / var(--twc-menu-400-opacity, var(--tw-bg-opacity))
-    );
-    border-radius: 100vh;
-    border: 2px solid
-      hsl(
-        var(--twc-menu-400) / var(--twc-menu-400-opacity, var(--tw-bg-opacity))
-      );
-  }
-
   .scrollbar-hidden::-webkit-scrollbar {
     display: none;
   }
 
   .scrollbar-hidden {
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 
   ::-webkit-scrollbar {
@@ -125,7 +48,7 @@
   .tooltip::after {
     content: attr(data-title);
     position: absolute;
-    bottom: 125%; /* Adjust placement */
+    bottom: 125%;
     left: 50%;
     transform: translateX(-50%);
     background-color: #333;
@@ -144,14 +67,6 @@
   .tooltip:hover::after {
     opacity: 1;
     transform: translateX(-50%) translateY(-0.5rem);
-  }
-}
-
-$levels: 0, 1, 2, 3, 4, 5;
-
-@each $level in $levels {
-  .mat-level-#{$level} {
-    box-shadow: var(--mat-sys-level#{$level});
   }
 }
 
@@ -182,9 +97,10 @@ $screen-size-medium: 768px;
   }
 }
 
-//Fix between tailwind and angular materials
-.mdc-notched-outline__notch {
-  border-right: none;
+:root {
+  --screen-size-medium: $screen-size-medium;
+  --screen-size-large: $screen-size-large;
+  --pdz-fancy: Nasalization RG, sans-serif;
 }
 
 $option-lineheight: 3rem;

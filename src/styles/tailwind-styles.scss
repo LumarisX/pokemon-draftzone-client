@@ -1,0 +1,63 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.ring_1 {
+  stop-color: hsl(
+    var(--twc-logo-ring-1) /
+      var(--twc--logo-ring-1-opacity, var(--tw-bg-opacity))
+  );
+}
+.ring_2 {
+  stop-color: hsl(
+    var(--twc-logo-ring-2) /
+      var(--twc--logo-ring-2-opacity, var(--tw-bg-opacity))
+  );
+}
+.ring_3 {
+  stop-color: hsl(
+    var(--twc-logo-ring-3) /
+      var(--twc--logo-ring-3-opacity, var(--tw-bg-opacity))
+  );
+}
+.ring_4 {
+  stop-color: hsl(
+    var(--twc-logo-ring-4) /
+      var(--twc--logo-ring-4-opacity, var(--tw-bg-opacity))
+  );
+}
+.ring_5 {
+  stop-color: hsl(
+    var(--twc-logo-ring-5) /
+      var(--twc--logo-ring-5-opacity, var(--tw-bg-opacity))
+  );
+}
+.ring_6 {
+  stop-color: hsl(
+    var(--twc-logo-ring-6) /
+      var(--twc--logo-ring-6-opacity, var(--tw-bg-opacity))
+  );
+}
+.ring_7 {
+  stop-color: hsl(
+    var(--twc-logo-ring-7) /
+      var(--twc--logo-ring-7-opacity, var(--tw-bg-opacity))
+  );
+}
+.core_1 {
+  stop-color: hsl(
+    var(--twc-logo-core-1) /
+      var(--twc--logo-core-1-opacity, var(--tw-bg-opacity))
+  );
+}
+.core_2 {
+  stop-color: hsl(
+    var(--twc-logo-core-2) /
+      var(--twc--logo-core-2-opacity, var(--tw-bg-opacity))
+  );
+}
+
+//Fix between tailwind and angular materials
+.mdc-notched-outline__notch {
+  border-right: none;
+}

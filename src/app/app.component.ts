@@ -96,7 +96,7 @@ export class AppComponent implements OnInit {
     }
     document.documentElement.setAttribute(
       'theme-name',
-      this.settingsService.settingsData.theme ?? '',
+      this.settingsService.settingsData.theme ?? 'classic',
     );
     return classes;
   }

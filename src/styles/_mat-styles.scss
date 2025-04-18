@@ -1,0 +1,104 @@
+@use "@angular/material" as mat;
+@include mat.tooltip-overrides(
+  (
+    container-color: var(--mat-sys-secondary),
+    supporting-text-color: var(--mat-sys-on-secondary),
+    supporting-text-size: small,
+  )
+);
+
+.dialog-warn {
+  @include mat.dialog-overrides(
+    (
+      container-color: var(--mat-sys-error-container),
+      subhead-color: var(--mat-sys-error),
+      supporting-text-color: var(--mat-sys-on-error-container),
+    )
+  );
+
+  @include mat.button-overrides(
+    (
+      text-label-text-color: var(--mat-sys-error),
+      text-state-layer-color: var(--mat-sys-error),
+    )
+  );
+}
+
+.chart-tooltip {
+  max-width: 16rem;
+  box-shadow: var(--mat-sys-level4);
+  .title-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    font-size: 1.2em;
+
+    .title-wrapper {
+      flex-grow: 1;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    .icon-container {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      padding-left: 1rem;
+
+      div:not(:first-child) {
+        padding-left: 0.25rem;
+      }
+
+      .type-wrapper {
+        width: 4rem;
+        height: 1.5;
+        object-fit: contain;
+      }
+
+      .category-wrapper {
+        width: 1.5rem;
+        height: 1.5rem;
+        object-fit: contain;
+      }
+    }
+  }
+  .details-container {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    div:not(:first-child) {
+      padding-left: 0.5rem;
+    }
+  }
+
+  .desc-container {
+    max-width: 100%;
+    font-size: 0.8em;
+    word-wrap: break-word;
+    white-space: normal;
+  }
+}
+
+.flex-overlay {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+  border-radius: 1rem;
+  box-shadow: var(--mat-sys-level3);
+  padding: 0.25rem;
+  mat-icon {
+    color: var(--mat-sys-primary);
+  }
+  label {
+    display: flex;
+    align-items: center;
+    > :not(:first-child) {
+      padding-left: 0.25rem;
+    }
+  }
+}
+.cdk-overlay-container {
+  z-index: 6000 !important;
+}

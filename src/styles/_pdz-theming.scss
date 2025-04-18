@@ -1,0 +1,144 @@
+@use "@angular/material" as mat;
+@use "sass:map";
+@use "sass:meta";
+@use "themes/classic.theme" as classic;
+@use "themes/shiny.theme" as shiny_theme;
+@use "themes/christmas.theme" as xmas;
+
+$theme-configurations: (
+  "classic": (
+    prime-primary: classic.$primary-palette,
+    prime-tertiary: classic.$tertiary-palette,
+    alt-primary: classic.$primary-palette_alt,
+    alt-tertiary: classic.$tertiary-palette_alt,
+    palettes: classic.$palettes,
+  ),
+  "shiny": (
+    prime-primary: shiny_theme.$primary-palette,
+    prime-tertiary: shiny_theme.$tertiary-palette,
+    alt-primary: shiny_theme.$primary-palette_alt,
+    alt-tertiary: shiny_theme.$tertiary-palette_alt,
+    palettes: shiny_theme.$palettes,
+  ),
+  "christmas": (
+    prime-primary: xmas.$primary-palette,
+    prime-tertiary: xmas.$tertiary-palette,
+    alt-primary: xmas.$primary-palette_alt,
+    alt-tertiary: xmas.$tertiary-palette_alt,
+    palettes: xmas.$palettes,
+  ),
+);
+
+@mixin _apply-mat-theme-core($primary-palette, $tertiary-palette, $theme-type) {
+  @if $primary-palette and $tertiary-palette {
+    @if meta.type-of($primary-palette) ==
+      map and
+      meta.type-of($tertiary-palette) ==
+      map
+    {
+      @include mat.theme(
+        (
+          color: (
+            primary: $primary-palette,
+            tertiary: $tertiary-palette,
+            theme-type: $theme-type,
+          ),
+        )
+      );
+    } @else {
+      @warn "Could not apply theme: Provided palettes are not valid maps (primary: #{type-of($primary-palette)}, tertiary: #{type-of($tertiary-palette)}) for theme-type '#{$theme-type}'.";
+    }
+  } @else {
+    @warn "Could not apply theme: Missing primary or tertiary palette variables for theme-type '#{$theme-type}'. Check theme configuration map.";
+  }
+}
+
+@mixin apply-theme-variants(
+  $prime-primary,
+  $prime-tertiary,
+  $alt-primary,
+  $alt-tertiary,
+  $palettes
+) {
+  [sub-theme="prime"] {
+    @include _apply-mat-theme-core($prime-primary, $prime-tertiary, light);
+    //TODO: eventually get rid of these
+    @each $key, $value in map.get($palettes, primary) {
+      & {
+        --primary-#{$key}: #{$value};
+      }
+      .primary-#{$key} {
+        background-color: $value;
+      }
+    }
+    @each $key, $value in map.get($palettes, secondary) {
+      & {
+        --secondary-#{$key}: #{$value};
+      }
+      .secondary-#{$key} {
+        background-color: $value;
+      }
+    }
+    @each $key, $value in map.get($palettes, primary-alt) {
+      & {
+        --tertiary-#{$key}: #{$value};
+      }
+      .tertiary-#{$key} {
+        background-color: $value;
+      }
+    }
+  }
+  //TODO: replace .alternate with sub-theme
+  .alternate,
+  [sub-theme="alt"] {
+    @include _apply-mat-theme-core($alt-primary, $alt-tertiary, light);
+    //TODO: eventually get rid of these
+    @each $key, $value in map.get($palettes, primary-alt) {
+      & {
+        --primary-#{$key}: #{$value};
+      }
+      .primary-#{$key} {
+        background-color: $value;
+      }
+    }
+    @each $key, $value in map.get($palettes, secondary-alt) {
+      & {
+        --secondary-#{$key}: #{$value};
+      }
+      .secondary-#{$key} {
+        background-color: $value;
+      }
+    }
+    @each $key, $value in map.get($palettes, primary) {
+      & {
+        --tertiary-#{$key}: #{$value};
+      }
+      .tertiary-#{$key} {
+        background-color: $value;
+      }
+    }
+  }
+  &[light-mode="dark"] {
+    [sub-theme="prime"] {
+      @include _apply-mat-theme-core($prime-primary, $prime-tertiary, dark);
+    }
+    .alternate,
+    [sub-theme="alt"] {
+      @include _apply-mat-theme-core($alt-primary, $alt-tertiary, dark);
+    }
+  }
+}
+
+:root {
+  @each $theme-attribute-value, $palette-map in $theme-configurations {
+    &[theme-name="#{$theme-attribute-value}"] {
+      @include apply-theme-variants(
+        map.get($palette-map, prime-primary),
+        map.get($palette-map, prime-tertiary),
+        map.get($palette-map, alt-primary),
+        map.get($palette-map, alt-tertiary),
+        map.get($palette-map, palettes)
+      );
+    }
+  }
+}
