@@ -61,7 +61,7 @@ export interface Task {
   selector: 'debug-components',
   standalone: true,
   templateUrl: './debug-components.component.html',
-  styleUrl: './debug-component.component.scss',
+  styleUrl: './debug-components.component.scss',
   providers: [provideNativeDateAdapter()],
 
   imports: [

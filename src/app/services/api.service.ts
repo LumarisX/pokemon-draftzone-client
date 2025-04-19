@@ -2,6 +2,7 @@ import {
   HttpClient,
   HttpErrorResponse,
   HttpHeaders,
+  HttpParams,
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
@@ -36,7 +37,15 @@ export class ApiService {
   get<T = any>(
     path: string | string[],
     authenticated: boolean,
-    params: { [key: string]: string } = {},
+    params:
+      | HttpParams
+      | {
+          [param: string]:
+            | string
+            | number
+            | boolean
+            | ReadonlyArray<string | number | boolean>;
+        } = {},
     additionalHeaders: { [key: string]: string } = {},
   ): Observable<T> {
     let headers = new HttpHeaders({

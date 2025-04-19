@@ -20,7 +20,7 @@
             "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.app.json",
             "assets": ["src/manifest.webmanifest", "src/assets"],
-            "styles": ["src/styles/styles.scss", "src/styles/app-theme.scss"],
+            "styles": ["src/styles/styles.scss"],
             "scripts": []
           },
           "configurations": {

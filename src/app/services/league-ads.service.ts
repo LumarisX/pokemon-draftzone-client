@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { ApiService } from './api.service';
 
 const ROOTPATH = 'leagues';
@@ -8,30 +8,10 @@ const ROOTPATH = 'leagues';
   providedIn: 'root',
 })
 export class LeagueAdsService {
-  newCount = new BehaviorSubject<string>('');
-  time: number;
-
-  constructor(private apiService: ApiService) {
-    this.time = +(localStorage.getItem('leagueTime') || 0);
-    this.getNewCount(this.time).subscribe((count) => {
-      if (+count > 9) {
-        this.newCount.next('9+');
-      } else if (+count > 0) {
-        this.newCount.next(count);
-      } else {
-        this.newCount.next('');
-      }
-    });
-  }
+  constructor(private apiService: ApiService) {}
 
   getLeagueAds(): Observable<LeagueAd[]> {
-    localStorage.setItem('leagueTime', Date.now().toString());
-    this.newCount.next('');
     return this.apiService.get(ROOTPATH, false);
-  }
-
-  getNewCount(time: number | string): Observable<string> {
-    return this.apiService.get([ROOTPATH, 'count', time.toString()], false);
   }
 
   newAd(data: Object) {
