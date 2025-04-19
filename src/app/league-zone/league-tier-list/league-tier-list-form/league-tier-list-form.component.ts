@@ -13,13 +13,25 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
-import { BattleZoneService } from '../../../services/battle-zone.service';
+import {
+  BattleZoneService,
+  LeagueTier,
+  LeagueTierGroup,
+} from '../../../services/battle-zone.service';
 import { TierPokemon } from '../../../battle-zone/tier-list';
 import { Type, TYPES } from '../../../data';
 import { LoadingComponent } from '../../../images/loading/loading.component';
 import { SpriteComponent } from '../../../images/sprite/sprite.component';
+import { MatRippleModule } from '@angular/material/core';
+import {
+  PokemonEditDialogComponent,
+  PokemonEditDialogData,
+} from './pokemon-edit-dialog/pokemon-edit-dialog.component';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { TierGroupEditDialogComponent } from './tier-group-edit-dialog/tier-group-edit-dialog.component';
+import { TierEditDialogComponent } from './tier-edit-dialog/tier-edit-dialog.component';
 
-type EditTierPokemon = TierPokemon & {
+export type EditTierPokemon = TierPokemon & {
   orgTier?: CdkDragDrop<
     { name: string; pokemon: EditTierPokemon[] },
     { name: string; pokemon: EditTierPokemon[] },
@@ -29,7 +41,7 @@ type EditTierPokemon = TierPokemon & {
 };
 
 @Component({
-  selector: 'app-league-tier-list-form',
+  selector: 'pdz-league-tier-list-form',
   imports: [
     CommonModule,
     MatIconModule,
@@ -38,10 +50,12 @@ type EditTierPokemon = TierPokemon & {
     RouterModule,
     FormsModule,
     MatCheckboxModule,
+    MatRippleModule,
     MatTooltipModule,
     ReactiveFormsModule,
     SpriteComponent,
     LoadingComponent,
+    MatDialogModule,
     DragDropModule,
   ],
   templateUrl: './league-tier-list-form.component.html',
@@ -91,7 +105,10 @@ export class LeagueTierListFormComponent implements OnInit {
     return this._menu;
   }
 
-  constructor(private battlezoneService: BattleZoneService) {
+  constructor(
+    private battlezoneService: BattleZoneService,
+    public dialog: MatDialog,
+  ) {
     effect(() => {
       this.sortTiers(this.sortBy());
       this.menu = null;
@@ -194,5 +211,62 @@ export class LeagueTierListFormComponent implements OnInit {
 
   onDragStarted() {
     this.dragStarted = true;
+  }
+
+  onDragEnded() {
+    this.dragStarted = false;
+  }
+
+  editPokemon(
+    pokemon: EditTierPokemon,
+    tier: {
+      name: string;
+      pokemon: EditTierPokemon[];
+    },
+  ) {
+    const dialogData: PokemonEditDialogData = {
+      pokemon: pokemon,
+      currentTier: tier,
+      tierGroups: this.tierGroups ?? [],
+    };
+    const dialogRef = this.dialog.open(PokemonEditDialogComponent, {
+      width: '500px',
+      data: dialogData,
+      autoFocus: 'dialog',
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        // Process any data returned from the dialog (e.g., if you added save functionality)
+        // console.log('Data returned from dialog:', result);
+      }
+    });
+  }
+
+  editTier(tier: LeagueTier) {
+    const dialogRef = this.dialog.open(TierEditDialogComponent, {
+      width: '500px',
+      data: { tier },
+      autoFocus: 'dialog',
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        // Process any data returned from the dialog (e.g., if you added save functionality)
+        // console.log('Data returned from dialog:', result);
+      }
+    });
+  }
+
+  editTierGroup(tierGroup: LeagueTierGroup) {
+    const dialogRef = this.dialog.open(TierGroupEditDialogComponent, {
+      width: '500px',
+      data: { tierGroup },
+      autoFocus: 'dialog',
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        // Process any data returned from the dialog (e.g., if you added save functionality)
+        // console.log('Data returned from dialog:', result);
+      }
+    });
   }
 }

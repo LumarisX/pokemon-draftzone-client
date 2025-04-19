@@ -1,0 +1,35 @@
+@use "@angular/material" as mat;
+
+h2 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-weight: 500;
+  font-size: 1.2em;
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+  padding-bottom: 8px;
+}
+
+.form-field-full-width {
+  width: 100%;
+}
+
+.cost-container {
+  display: flex;
+  column-gap: 0.5rem;
+  width: 100%;
+  justify-content: stretch;
+  mat-form-field {
+    width: 100%;
+  }
+}
+
+:host {
+  @include mat.dialog-overrides(
+    (
+      subhead-weight: 700,
+      subhead-font: var(--pdz-fancy),
+      subhead-color: var(--mat-sys-primary),
+      subhead-size: 1.2em,
+    )
+  );
+}

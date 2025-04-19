@@ -1,0 +1,81 @@
+<h1 mat-dialog-title>Edit {{ data.pokemon.name }}</h1>
+
+<form [formGroup]="editForm" (ngSubmit)="onSave()">
+  <div mat-dialog-content class="dialog-layout">
+    <div class="left-column">
+      <div class="sprite-container">
+        <sprite [pokemon]="data.pokemon"></sprite>
+      </div>
+      <div class="toggle-section">
+        <pdz-slide-toggle onSVG="tera" offSVG="tera"> Tera </pdz-slide-toggle>
+      </div>
+      @if (
+        data.pokemon.originalTierName &&
+        data.pokemon.originalTierName !== data.currentTier?.name
+      ) {
+        <p class="original-tier">
+          Original Tier: {{ data.pokemon.originalTierName }}
+        </p>
+      }
+    </div>
+
+    <div class="right-column">
+      <h2>Details</h2>
+      <div class="details-container">
+        <mat-form-field appearance="outline" class="form-field-full-width">
+          <mat-label>Current Tier</mat-label>
+          <mat-select formControlName="currentTier">
+            <mat-option [value]="null">Untiered</mat-option>
+            @for (tierGroup of data.tierGroups; track tierGroup.label) {
+              <mat-optgroup [label]="tierGroup.label || 'Unnamed Group'">
+                @for (tier of tierGroup.tiers; track tier.name) {
+                  <mat-option [value]="tier.name">{{ tier.name }}</mat-option>
+                }
+              </mat-optgroup>
+            }
+          </mat-select>
+          @if (
+            editForm.get("currentTier")?.hasError("required") &&
+            editForm.get("currentTier")?.touched
+          ) {
+            <mat-error>Tier selection is required.</mat-error>
+          }
+        </mat-form-field>
+
+        @if (abilityNames.length > 0) {
+          <div class="abilities-section" formGroupName="selectedAbilities">
+            <h3>Legal Abilities</h3>
+            <div class="abilities-checkbox-group">
+              @for (ability of abilityNames; track ability) {
+                <mat-checkbox class="ability-checkbox">
+                  {{ ability }}
+                </mat-checkbox>
+              }
+            </div>
+          </div>
+        } @else {
+          <p>No abilities listed for this Pokémon.</p>
+        }
+        <mat-form-field appearance="outline" class="form-field-full-width">
+          <mat-label>Other Ban Notes</mat-label>
+          <input
+            matInput
+            formControlName="banNotes"
+            placeholder="Enter ban/restriction notes..."
+          />
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+  <div mat-dialog-actions align="end">
+    <button mat-button type="button" (click)="closeDialog()">Cancel</button>
+    <button
+      mat-raised-button
+      color="primary"
+      type="submit"
+      [disabled]="!editForm.valid && editForm.dirty"
+    >
+      Save Changes
+    </button>
+  </div>
+</form>

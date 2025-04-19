@@ -3,6 +3,7 @@
 .tier-group-label {
   height: 24px;
   min-width: 4rem;
+  flex-shrink: 0;
 }
 
 .tier-label {
@@ -24,6 +25,7 @@
   font-size: 0.875rem;
   line-height: 1.25rem;
   column-gap: 0.25rem;
+  cursor: default;
 
   .entry-sprite {
     height: 2rem;
@@ -41,6 +43,10 @@
 
   &.selected {
     background-color: var(--mat-sys-secondary-container);
+  }
+
+  &.dragStarted {
+    cursor: grabbing !important;
   }
 }
 
@@ -82,11 +88,16 @@
       padding: 0 0.25rem;
     }
   }
+
+  .tier-wrapper {
+    overflow-y: auto;
+  }
+
   .tier-container {
     width: 100%;
     display: flex;
+    height: fit-content;
     align-items: stretch;
-    overflow-y: auto;
 
     .header-label {
       background-color: var(--mat-sys-primary);
@@ -116,6 +127,7 @@
         height: fit-content;
         font-size: 1em;
         line-height: 1em;
+        cursor: pointer;
       }
     }
     .tier-group {
@@ -128,7 +140,7 @@
 
       .tier-entry-container {
         display: flex;
-
+        flex-grow: 1;
         .tier {
           display: flex;
           flex-direction: column;
@@ -202,6 +214,25 @@
     top: 0px;
     position: sticky;
     mat-icon {
+      color: var(--mat-sys-on-primary);
+    }
+  }
+}
+
+.new-tier-group {
+  background-color: var(--mat-sys-primary);
+  color: var(--mat-sys-on-primary);
+  text-align: center;
+  flex-shrink: 0;
+  width: 4rem;
+  border-left: 2px solid var(--mat-sys-outline);
+  .add-icon {
+    top: 0px;
+    position: sticky;
+    mat-icon {
+      font-size: 2.5rem;
+      width: fit-content;
+      height: fit-content;
       color: var(--mat-sys-on-primary);
     }
   }

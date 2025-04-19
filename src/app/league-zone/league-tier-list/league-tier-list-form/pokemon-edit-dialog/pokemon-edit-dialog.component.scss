@@ -1,0 +1,98 @@
+@use "@angular/material" as mat;
+
+.dialog-layout {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.left-column {
+  flex: 0 0 120px;
+  display: flex;
+  flex-direction: column;
+  row-gap: 1rem;
+  align-items: center;
+}
+
+.right-column {
+  flex: 1;
+  min-width: 250px;
+}
+
+.details-container {
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.5rem;
+}
+
+.sprite-container {
+  width: 100px;
+  height: 100px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  ::ng-deep sprite img,
+  ::ng-deep sprite > div {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+}
+
+h2 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-weight: 500;
+  font-size: 1.2em;
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+  padding-bottom: 8px;
+}
+
+.form-field-full-width {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.toggle-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  label {
+    margin: 0;
+    font-size: 0.95em;
+    color: rgba(0, 0, 0, 0.6);
+  }
+}
+
+.abilities-section {
+  h3 {
+    font-size: 1em;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: rgba(0, 0, 0, 0.7);
+  }
+}
+
+.abilities-checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+:host {
+  @include mat.dialog-overrides(
+    (
+      subhead-weight: 700,
+      subhead-font: var(--pdz-fancy),
+      subhead-color: var(--mat-sys-primary),
+      subhead-size: 1.2em,
+    )
+  );
+
+  mat-form-field {
+    margin-bottom: -1rem;
+  }
+}

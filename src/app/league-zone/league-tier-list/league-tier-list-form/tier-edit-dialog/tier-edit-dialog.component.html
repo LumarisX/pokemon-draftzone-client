@@ -1,0 +1,26 @@
+<h1 mat-dialog-title>Edit Tier</h1>
+<form>
+  <div mat-dialog-content class="dialog-layout">
+    <h2>Details</h2>
+    <div class="details-container">
+      <mat-form-field appearance="outline" class="form-field-full-width">
+        <mat-label>Tier Name</mat-label>
+        <input matInput placeholder="" />
+      </mat-form-field>
+      <div class="cost-container">
+        <mat-form-field appearance="outline" class="form-field-half-width">
+          <mat-label>Cost (Points)</mat-label>
+          <input matInput placeholder="" />
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="form-field-half-width">
+          <mat-label>Cost (Rank)</mat-label>
+          <input matInput placeholder="" />
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+  <div mat-dialog-actions align="end">
+    <button mat-button type="button" (click)="closeDialog()">Cancel</button>
+    <button mat-raised-button type="submit">Save Changes</button>
+  </div>
+</form>

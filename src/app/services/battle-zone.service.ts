@@ -2,6 +2,15 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { TierPokemon } from '../battle-zone/tier-list';
 import { ApiService } from './api.service';
+export type LeagueTier = {
+  name: string;
+  pokemon: TierPokemon[];
+};
+
+export type LeagueTierGroup = {
+  label?: string;
+  tiers: LeagueTier[];
+};
 
 @Injectable({
   providedIn: 'root',
@@ -13,15 +22,7 @@ export class BattleZoneService {
     return this.apiService.post(`battlezone/pdbl/signup`, false, signupData);
   }
 
-  getTiers(): Observable<
-    {
-      label?: string;
-      tiers: {
-        name: string;
-        pokemon: TierPokemon[];
-      }[];
-    }[]
-  > {
+  getTiers(): Observable<LeagueTierGroup[]> {
     return this.apiService.get(`battlezone/pdbl/tiers`, false);
   }
 

@@ -14,7 +14,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({
-  selector: 'dz-slide-toggle',
+  selector: 'pdz-slide-toggle',
   standalone: true,
   imports: [CommonModule, MatIconModule],
   templateUrl: './slide-toggle.component.html',
@@ -34,7 +34,7 @@ export class SlideToggleComponent implements ControlValueAccessor {
   @Input() offIcon = 'remove';
   @Input() onSVG?: string;
   @Input() offSVG?: string;
-
+  @Input() labelPosition: 'before' | 'after' = 'after';
   @HostBinding('class.checked') checkedState = false;
 
   @Output() checkedChange = new EventEmitter<boolean>();
