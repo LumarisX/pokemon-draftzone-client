@@ -1,0 +1,148 @@
+.standing-container {
+  border: 1px solid var(--mat-sys-outline);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  width: fit-content;
+  .standing-header {
+    border: 1px solid var(--mat-sys-outline);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    .standing-header-title {
+      font-family:
+        Nasalization RG,
+        sans-serif;
+      padding: 0.25rem 0.5rem;
+      background-color: var(--mat-sys-primary);
+      color: var(--mat-sys-on-primary);
+    }
+  }
+
+  table {
+    border-collapse: separate;
+    border-spacing: 2px 0;
+    td {
+      padding: 0.125rem 0.5rem;
+    }
+    tr.cutoff-border {
+      td {
+        border-bottom: 2px dotted var(--mat-sys-outline);
+      }
+    }
+    thead {
+      th {
+        border-bottom: 2px solid var(--mat-sys-outline);
+      }
+    }
+  }
+
+  .rank-cell {
+    text-align: center;
+  }
+
+  .record-cell {
+    text-align: center;
+    width: 3rem;
+    mat-icon {
+      height: fit-content;
+      overflow: hidden;
+      object-fit: contain;
+      font-size: 1.2em;
+      font-weight: 700;
+      color: var(--mat-sys-primary);
+      &.positive {
+        color: lightgreen;
+      }
+      &.negative {
+        color: lightcoral;
+      }
+    }
+  }
+
+  .logo-cell {
+    width: 3rem;
+    height: 3rem;
+
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .logo-cell img {
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+  .team-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .team-name {
+      line-height: 1em;
+    }
+    .coach-names {
+      color: var(--mat-sys-secondary);
+      font-size: 0.8em;
+      line-height: 1em;
+    }
+  }
+
+  .results-container {
+    display: flex;
+    column-gap: 0.5rem;
+    user-select: none;
+
+    .result-box {
+      background-color: var(--mat-sys-surface-container);
+      color: var(--mat-sys-surface-container);
+      text-align: center;
+      font-weight: 700;
+      font-size: 0.8em;
+      line-height: 1.5rem;
+      border-radius: 0.25rem;
+      height: 1.5rem;
+      width: 1.5rem;
+      &.positive {
+        background-color: lightgreen;
+        color: white;
+        box-shadow: var(--mat-sys-level1);
+      }
+
+      &.negative {
+        background-color: lightcoral;
+        color: white;
+        box-shadow: var(--mat-sys-level1);
+      }
+
+      .hovered-content {
+        display: none;
+      }
+
+      &:hover {
+        .default-content {
+          display: none;
+        }
+
+        .hovered-content {
+          display: inline;
+        }
+      }
+    }
+
+    .result-header {
+      width: 1.5rem;
+      height: 0.75rem;
+      text-align: center;
+      font-weight: 700;
+      font-size: 0.7em;
+    }
+
+    .streak {
+      width: 3rem;
+      display: flex;
+      justify-content: center;
+    }
+  }
+}

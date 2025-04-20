@@ -1,0 +1,179 @@
+<div class="standing-container">
+  <div class="standing-header">
+    <div class="standing-header-title">Coach Standings</div>
+  </div>
+  <div class="standing-table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>Logo</th>
+          <th>Team</th>
+          <th>Record</th>
+          <th>Weekly Results</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td>
+            <div class="results-container">
+              @for (i of standingData.weeks; track $index) {
+                <div class="result-header">W{{ $index + 1 }}</div>
+              }
+              <div class="result-header streak">Streak</div>
+            </div>
+          </td>
+        </tr>
+        @for (team of standingData.teams; track team) {
+          <tr
+            [ngClass]="{
+              'cutoff-border': $index + 1 === standingData.cutoff,
+            }"
+          >
+            <td>
+              <div class="rank-cell">
+                @if (team.direction > 0) {
+                  <mat-icon class="positive">arrow_upward</mat-icon>
+                } @else if (team.direction < 0) {
+                  <mat-icon class="negative">arrow_downward</mat-icon>
+                } @else {
+                  <mat-icon>remove</mat-icon>
+                }
+                <span>
+                  {{ $index + 1 }}
+                </span>
+              </div>
+            </td>
+            <td>
+              <div
+                class="logo-cell"
+                [ngStyle]="
+                  getGradientStyle($index + 1, standingData.teams.length)
+                "
+              >
+                @if (team.logo) {
+                  <img [src]="team.logo" />
+                }
+              </div>
+            </td>
+            <td>
+              <div class="team-cell">
+                <div class="team-name">
+                  {{ team.name }}
+                </div>
+                <div class="coach-names">
+                  @for (coach of team.coaches; track coach) {
+                    <div>{{ coach }}</div>
+                  }
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="record-cell">
+                {{ team.wins }}-{{ team.loses }} ({{ team.diff | plusSign }})
+              </div>
+            </td>
+            <td>
+              <div class="results-container">
+                @for (i of standingData.weeks; track $index) {
+                  @let result = team.results[$index];
+                  <div
+                    class="result-box"
+                    [ngClass]="{ positive: result > 0, negative: result < 0 }"
+                  >
+                    <span class="default-content">
+                      {{ result > 0 ? "W" : "L" }}
+                    </span>
+                    <span class="hovered-content">
+                      {{ result | plusSign }}</span
+                    >
+                  </div>
+                }
+                <div class="streak">
+                  <div
+                    class="result-box"
+                    [ngClass]="{
+                      positive: team.streak > 0,
+                      negative: team.streak < 0,
+                    }"
+                  >
+                    {{ team.streak | plusSign }}
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  <!-- <div class="standing-table">
+      <div class="standing-table-column">
+        <div class="column-header">Rank</div>
+        <div class="column-subheader"></div>
+        <div class="column-body">
+          @for (team of standingData.teams; track team) {
+            <div class="body-cell">
+              {{ team.rank }}
+            </div>
+          }
+        </div>
+      </div>
+      <div class="standing-table-column">
+        <div class="column-header">Logo</div>
+        <div class="column-subheader"></div>
+        <div class="column-body">
+          @for (team of standingData.teams; track team) {
+            <div class="body-cell"></div>
+          }
+        </div>
+      </div>
+      <div class="standing-table-column">
+        <div class="column-header">Name</div>
+        <div class="column-subheader"></div>
+        <div class="column-body">
+          @for (team of standingData.teams; track team) {
+            <div class="body-cell">
+              <div class="team-name">
+                {{ team.name }}
+              </div>
+              <div class="coach-names">
+                @for (coach of team.coaches; track coach) {
+                  <div>{{ coach }}</div>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </div> -->
+  <!-- <div class="standing-table-2">
+      <cdk-table [dataSource]="dataSource">
+        <ng-container cdkColumnDef="position">
+          <cdk-header-cell *cdkHeaderCellDef> No. </cdk-header-cell>
+          <cdk-cell *cdkCellDef="let element">
+            {{ element.position }}
+          </cdk-cell>
+        </ng-container>
+        <ng-container cdkColumnDef="name">
+          <cdk-header-cell *cdkHeaderCellDef> Name </cdk-header-cell>
+          <cdk-cell *cdkCellDef="let element"> {{ element.name }} </cdk-cell>
+        </ng-container>
+        <ng-container cdkColumnDef="weight">
+          <cdk-header-cell *cdkHeaderCellDef> Weight </cdk-header-cell>
+          <cdk-cell *cdkCellDef="let element"> {{ element.weight }} </cdk-cell>
+        </ng-container>
+        <ng-container cdkColumnDef="symbol">
+          <cdk-header-cell *cdkHeaderCellDef> Symbol </cdk-header-cell>
+          <cdk-cell *cdkCellDef="let element"> {{ element.symbol }} </cdk-cell>
+        </ng-container>
+
+        <cdk-header-row *cdkHeaderRowDef="displayedColumns"></cdk-header-row>
+        <cdk-row *cdkRowDef="let row; columns: displayedColumns"></cdk-row>
+      </cdk-table>
+    </div> -->
+</div>

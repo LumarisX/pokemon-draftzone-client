@@ -1,5 +1,10 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import {
   MAT_DIALOG_DATA,
   MatDialogModule,
@@ -25,6 +30,7 @@ import { MatInputModule } from '@angular/material/input';
   styleUrl: './tier-group-edit-dialog.component.scss',
 })
 export class TierGroupEditDialogComponent implements OnInit {
+  dialogForm!: FormGroup;
   constructor(
     public dialogRef: MatDialogRef<TierGroupEditDialogComponent>,
     @Inject(MAT_DIALOG_DATA)
@@ -34,7 +40,11 @@ export class TierGroupEditDialogComponent implements OnInit {
     private fb: FormBuilder,
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.dialogForm = this.fb.group({
+      groupLabel: [this.data.tierGroup.label, Validators.required],
+    });
+  }
 
   onSave(): void {
     this.dialogRef.close();

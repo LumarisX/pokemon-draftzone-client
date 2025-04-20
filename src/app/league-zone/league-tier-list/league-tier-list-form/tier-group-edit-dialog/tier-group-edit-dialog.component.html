@@ -1,9 +1,13 @@
 <h1 mat-dialog-title>Edit Tier Group</h1>
-<form>
+<form [formGroup]="dialogForm">
   <div mat-dialog-content class="dialog-layout">
     <h2>Details</h2>
     <div class="details-container">
-      <mat-form-field appearance="outline" class="form-field-full-width">
+      <mat-form-field
+        appearance="outline"
+        class="form-field-full-width"
+        formControlName="groupLabel"
+      >
         <mat-label>Tier Group Name</mat-label>
         <input matInput placeholder="" />
       </mat-form-field>
@@ -14,3 +18,4 @@
     <button mat-raised-button type="submit">Save Changes</button>
   </div>
 </form>
+{{ dialogForm.value | json }}

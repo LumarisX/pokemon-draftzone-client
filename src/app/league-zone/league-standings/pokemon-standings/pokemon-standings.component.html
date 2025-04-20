@@ -1,0 +1,73 @@
+<div class="standing-container">
+  <div class="standing-header">
+    <div class="standing-header-title">Pokemon Standings</div>
+  </div>
+  <div class="standing-table-wrapper">
+    <table
+      matSort
+      (matSortChange)="sortData($event)"
+      matSortDirection="asc"
+      matSortActive="diff"
+    >
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>Pokemon</th>
+          <th>Team</th>
+          <th mat-sort-header="brought">Brought</th>
+          <th mat-sort-header="kills">Kills</th>
+          <th mat-sort-header="deaths">Deaths</th>
+          <th mat-sort-header="diff">K/D</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (pokemon of sortedData; track pokemon) {
+          <tr>
+            <td>
+              <div class="rank-cell">
+                {{ $index + 1 }}
+              </div>
+            </td>
+            <td>
+              <div class="logo-cell">
+                <sprite flipped [pokemon]="pokemon"></sprite>
+              </div>
+            </td>
+            <td>
+              <div class="team-cell">
+                <div class="team-name">
+                  {{ pokemon.name }}
+                </div>
+                <div class="coach-names">
+                  @for (coach of pokemon.coaches; track coach) {
+                    <div>{{ coach }}</div>
+                  }
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="record-cell">
+                {{ pokemon.record.brought }}
+              </div>
+            </td>
+            <td>
+              <div class="record-cell">
+                {{ pokemon.record.kills }}
+              </div>
+            </td>
+            <td>
+              <div class="record-cell">
+                {{ pokemon.record.deaths }}
+              </div>
+            </td>
+            <td>
+              <div class="record-cell">
+                {{ pokemon.record.diff | plusSign }}
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

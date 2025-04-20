@@ -46,6 +46,12 @@ export function getNameByPid(id: PokemonId): string {
   }
 }
 
+export function getRandomPokemon() {
+  const dexArray = Object.entries(Namedex);
+  const [id, data] = dexArray[Math.round(dexArray.length * Math.random())];
+  return { id, name: data.name[0] };
+}
+
 let $nameList: Pokemon[] | undefined;
 export function nameList(): Pokemon[] {
   if ($nameList) return $nameList;
