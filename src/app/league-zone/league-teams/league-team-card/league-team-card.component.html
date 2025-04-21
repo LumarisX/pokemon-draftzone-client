@@ -1,0 +1,127 @@
+<div class="team-container">
+  <div class="team-header">
+    <div class="logo">
+      <img [src]="teamDetails.logo" />
+    </div>
+    <div class="team-info">
+      <h2 class="team-name">
+        {{ teamDetails.teamName }}
+      </h2>
+      <div class="team-coaches">
+        @for (coach of teamDetails.coaches; track coach) {
+          <h4 class="team-coach">{{ coach }}</h4>
+        }
+      </div>
+      <div class="team-info-bar">
+        <span class="team-timezone">
+          {{ teamDetails.timezone }}
+        </span>
+        <span class="team-record">
+          {{ teamDetails.record.wins }}-{{ teamDetails.record.losses }} ({{
+            teamDetails.record.diff | plusSign
+          }})
+        </span>
+      </div>
+    </div>
+    <div class="view-container">
+      <button
+        [ngClass]="{ pressed: data === 'overview' }"
+        (click)="data = 'overview'"
+      >
+        <mat-icon>list</mat-icon>
+      </button>
+      <button
+        [ngClass]="{ pressed: data === 'stats' }"
+        (click)="data = 'stats'"
+      >
+        <mat-icon>show_chart</mat-icon>
+      </button>
+      <button routerLink="../team/teamidph">
+        <mat-icon>open_in_new</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <div class="team-body">
+    @if (data === "overview") {
+      <div class="table-wrapper">
+        <table class="roster-table">
+          <thead>
+            <tr>
+              <th class="col-sprite"></th>
+              <th class="col-name">Name</th>
+              <th class="col-capt">Capt</th>
+              <th class="col-tier">Tier</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (pokemon of teamDetails.roster; track pokemon) {
+              <tr>
+                <td class="cell-sprite">
+                  <div class="sprite-wrapper">
+                    <sprite [pokemon]="pokemon" flipped></sprite>
+                  </div>
+                </td>
+                <td class="cell-name">
+                  {{ pokemon.name }}
+                </td>
+                <td class="cell-capt">
+                  @if (pokemon.capt?.tera) {
+                    <mat-icon svgIcon="tera"></mat-icon>
+                  }
+                  @if (pokemon.capt?.z) {
+                    <mat-icon svgIcon="z"></mat-icon>
+                  }
+                  @if (pokemon.capt?.dmax) {
+                    <mat-icon svgIcon="dmax"></mat-icon>
+                  }
+                </td>
+                <td class="cell-tier">
+                  {{ pokemon.tier }}
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+    @if (data === "stats") {
+      <div class="table-wrapper">
+        <table class="roster-table">
+          <thead>
+            <tr>
+              <th class="col-sprite"></th>
+              <th class="col-name">Name</th>
+              <th class="col-record">Games</th>
+              <th class="col-record">Wins</th>
+              <th class="col-record">Loses</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (pokemon of teamDetails.roster; track pokemon) {
+              <tr>
+                <td class="cell-sprite">
+                  <div class="sprite-wrapper">
+                    <sprite flipped [pokemon]="pokemon"></sprite>
+                  </div>
+                </td>
+                <td class="cell-name">
+                  {{ pokemon.name }}
+                </td>
+                <td class="cell-record">
+                  {{ pokemon.record.brought }}
+                </td>
+                <td class="cell-record">
+                  {{ pokemon.record.kills }}
+                </td>
+                <td class="cell-record">
+                  {{ pokemon.record.deaths }}
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+</div>
