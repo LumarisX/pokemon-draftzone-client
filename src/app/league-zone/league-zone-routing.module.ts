@@ -8,6 +8,7 @@ import { LeagueStandingsComponent } from './league-standings/league-standings.co
 import { LeagueScheduleMatchupComponent } from './league-schedule-matchup/league-schedule-matchup.component';
 import { LeagueBracketComponent } from './league-bracket/league-bracket.component';
 import { LeagueDraftingComponent } from './league-drafting/league-drafting.component';
+import { LeagueTradesComponent } from './league-trades/league-trades.component';
 
 export const LeagueZonePath = 'leagues';
 const routes: Routes = [
@@ -46,6 +47,10 @@ const routes: Routes = [
   {
     path: 'view/leagueidplaceholder/tier/edit',
     component: LeagueTierListFormComponent,
+  },
+  {
+    path: 'view/leagueidplaceholder/trades',
+    component: LeagueTradesComponent,
   },
 ];
 @NgModule({

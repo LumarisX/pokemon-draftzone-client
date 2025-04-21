@@ -1,0 +1,36 @@
+<div class="trade-container">
+  <div class="owner-container">
+    <div class="owner-header"></div>
+    {{ tradeLog.from.team?.teamName || "Pool" }}
+    <div class="owner-body">
+      @for (pokemon of tradeLog.from.pokemon; track pokemon) {
+        <div class="trade-pokemon-container">
+          <div class="pokemon-tier">{{ pokemon.tier }}</div>
+          <div class="sprite-wrapper">
+            <sprite flipped [pokemon]="pokemon"></sprite>
+          </div>
+          <div>
+            <mat-icon>arrow_back</mat-icon>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+  <div class="owner-container">
+    <div class="owner-header"></div>
+    {{ tradeLog.to.team?.teamName || "Pool" }}
+    <div class="owner-body">
+      @for (pokemon of tradeLog.to.pokemon; track pokemon) {
+        <div class="trade-pokemon-container">
+          <div>
+            <mat-icon>arrow_back</mat-icon>
+          </div>
+          <div class="sprite-wrapper">
+            <sprite [pokemon]="pokemon"></sprite>
+          </div>
+          <div class="pokemon-tier">{{ pokemon.tier }}</div>
+        </div>
+      }
+    </div>
+  </div>
+</div>
