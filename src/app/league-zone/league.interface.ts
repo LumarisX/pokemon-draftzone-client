@@ -2,7 +2,7 @@ export namespace League {
   export type Team = {
     teamName: string;
     coaches: string[];
-    logo: string;
+    logo?: string;
   };
 
   export type Pokemon = {

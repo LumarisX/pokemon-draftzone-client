@@ -1,5 +1,10 @@
-<p>league-trades works!</p>
-
-@for (tradeLog of tradeLogs; track tradeLog) {
-  <pdz-league-trade [tradeLog]="tradeLog"></pdz-league-trade>
-}
+<div class="trades-container">
+  <div class="stage">
+    <div class="stage-header">Week 4</div>
+    <div class="stage-body">
+      @for (tradeLog of tradeLogs; track tradeLog) {
+        <pdz-league-trade [tradeLog]="tradeLog"></pdz-league-trade>
+      }
+    </div>
+  </div>
+</div>

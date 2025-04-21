@@ -1,35 +1,72 @@
 <div class="trade-container">
-  <div class="owner-container">
-    <div class="owner-header"></div>
-    {{ tradeLog.from.team?.teamName || "Pool" }}
+  <div class="owner-container from-owner">
+    <div class="owner-header">
+      @if (tradeLog.from.team) {
+        <span class="team-logo">
+          <img [src]="tradeLog.from.team.logo" class="team-logo" />
+        </span>
+      }
+      <span class="team-name">{{
+        tradeLog.from.team?.teamName || "Draft Pool"
+      }}</span>
+    </div>
     <div class="owner-body">
-      @for (pokemon of tradeLog.from.pokemon; track pokemon) {
+      @for (pokemon of tradeLog.from.pokemon; track pokemon.id) {
         <div class="trade-pokemon-container">
-          <div class="pokemon-tier">{{ pokemon.tier }}</div>
-          <div class="sprite-wrapper">
-            <sprite flipped [pokemon]="pokemon"></sprite>
+          <div class="pokemon-info">
+            <div class="pokemon-tier">{{ pokemon.tier }}</div>
+            <div class="sprite-wrapper">
+              <sprite flipped [pokemon]="pokemon"></sprite>
+            </div>
+            <div class="pokemon-name">{{ pokemon.name }}</div>
           </div>
-          <div>
-            <mat-icon>arrow_back</mat-icon>
+          <div
+            class="trade-arrow"
+            [ngClass]="{ pickup: !tradeLog.from.team, drop: !tradeLog.to.team }"
+          >
+            <mat-icon>arrow_forward</mat-icon>
           </div>
         </div>
+      } @empty {
+        <div class="no-pokemon">No Pokémon traded</div>
       }
     </div>
   </div>
-  <div class="owner-container">
-    <div class="owner-header"></div>
-    {{ tradeLog.to.team?.teamName || "Pool" }}
+
+  <div class="trade-separator">
+    <mat-icon>swap_horiz</mat-icon>
+  </div>
+
+  <div class="owner-container to-owner">
+    <div class="owner-header">
+      @if (tradeLog.to.team) {
+        <span class="team-logo">
+          <img [src]="tradeLog.to.team.logo" class="team-logo" />
+        </span>
+      }
+      <span class="team-name">{{
+        tradeLog.to.team?.teamName || "Draft Pool"
+      }}</span>
+    </div>
     <div class="owner-body">
-      @for (pokemon of tradeLog.to.pokemon; track pokemon) {
+      @for (pokemon of tradeLog.to.pokemon; track pokemon.id) {
         <div class="trade-pokemon-container">
-          <div>
-            <mat-icon>arrow_back</mat-icon>
+          <div
+            class="trade-arrow"
+            [ngClass]="{ pickup: !tradeLog.to.team, drop: !tradeLog.from.team }"
+          >
+            <mat-icon> arrow_back </mat-icon>
           </div>
-          <div class="sprite-wrapper">
-            <sprite [pokemon]="pokemon"></sprite>
+          <div class="pokemon-info">
+            <div class="sprite-wrapper">
+              <sprite [pokemon]="pokemon"></sprite>
+            </div>
+            <div class="pokemon-name">{{ pokemon.name }}</div>
+            <div class="pokemon-tier">{{ pokemon.tier }}</div>
           </div>
-          <div class="pokemon-tier">{{ pokemon.tier }}</div>
         </div>
+      } @empty {
+        <div class="no-pokemon">No Pokémon received</div>
       }
     </div>
   </div>

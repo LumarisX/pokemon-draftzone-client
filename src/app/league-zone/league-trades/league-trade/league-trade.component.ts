@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { League } from '../../league.interface';
 import { SpriteComponent } from '../../../images/sprite/sprite.component';
 import { MatIconModule } from '@angular/material/icon';
+import { CommonModule } from '@angular/common';
 
 type Trade = {
   team?: League.Team;
@@ -16,7 +17,7 @@ export type TradeLog = {
 
 @Component({
   selector: 'pdz-league-trade',
-  imports: [SpriteComponent, MatIconModule],
+  imports: [CommonModule, SpriteComponent, MatIconModule],
   templateUrl: './league-trade.component.html',
   styleUrl: './league-trade.component.scss',
 })

@@ -1,0 +1,18 @@
+.trades-container {
+  padding: 1rem;
+}
+
+.stage {
+  .stage-header {
+    font-family: var(--pdz-fancy);
+  }
+
+  .stage-body {
+    border-left: 2px solid var(--mat-sys-primary);
+    padding: 1rem 0 1rem 1rem;
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    gap: 1rem;
+  }
+}

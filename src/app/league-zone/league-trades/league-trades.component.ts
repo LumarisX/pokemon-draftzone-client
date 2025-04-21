@@ -4,6 +4,7 @@ import {
   TradeLog,
 } from './league-trade/league-trade.component';
 import { getRandomPokemon } from '../../data/namedex';
+import { getRandomTeamOrder } from '../league-ghost';
 
 @Component({
   selector: 'pdz-league-trades',
@@ -12,28 +13,51 @@ import { getRandomPokemon } from '../../data/namedex';
   styleUrl: './league-trades.component.scss',
 })
 export class LeagueTradesComponent {
+  teams = getRandomTeamOrder();
   tradeLogs: TradeLog[] = [
     {
       from: {
-        team: {
-          teamName: `Mighty Murkrow`,
-          coaches: ['hsoj'],
-          logo: 'https://pokemondraftzone-public.s3.us-east-2.amazonaws.com/user-uploads/1745097094680-Mighty Murkrow.png',
-        },
+        team: this.teams[1],
         pokemon: [
           { ...getRandomPokemon(), tier: Math.round(Math.random() * 20) },
         ],
       },
       to: {
-        team: {
-          teamName: `Deimos Deoxys`,
-          coaches: ['Lumaris'],
-          logo: 'https://pokemondraftzone-public.s3.us-east-2.amazonaws.com/user-uploads/1744422916695-DeimosDeoxys.png',
-        },
+        team: this.teams[2],
         pokemon: [
           { ...getRandomPokemon(), tier: Math.round(Math.random() * 20) },
         ],
       },
+      activeStage: 'Week 4',
+    },
+    {
+      from: {
+        team: this.teams[0],
+        pokemon: [
+          { ...getRandomPokemon(), tier: Math.round(Math.random() * 20) },
+          { ...getRandomPokemon(), tier: Math.round(Math.random() * 20) },
+          { ...getRandomPokemon(), tier: Math.round(Math.random() * 20) },
+        ],
+      },
+      to: {
+        pokemon: [
+          { ...getRandomPokemon(), tier: Math.round(Math.random() * 20) },
+          { ...getRandomPokemon(), tier: Math.round(Math.random() * 20) },
+          { ...getRandomPokemon(), tier: Math.round(Math.random() * 20) },
+        ],
+      },
+      activeStage: 'Week 4',
+    },
+    {
+      from: {
+        team: this.teams[3],
+      },
+      to: {
+        pokemon: [
+          { ...getRandomPokemon(), tier: Math.round(Math.random() * 20) },
+        ],
+      },
+
       activeStage: 'Week 4',
     },
   ];

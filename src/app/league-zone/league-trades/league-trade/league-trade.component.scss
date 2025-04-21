@@ -1,13 +1,176 @@
+$container-padding: 1rem;
+$item-spacing: 0.5rem;
+$sprite-size: 2.5rem;
+$tier-padding: 0.2rem 0.4rem;
+$header-background: var(--mat-sys-primary);
+$header-color: var(--mat-sys-on-primary);
+
 .trade-container {
   display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #fff;
+  box-shadow: var(--mat-sys-level2);
 }
 
-.sprite-wrapper {
-  width: 2rem;
-  height: 2rem;
+.owner-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.owner-header {
+  padding: 0.25rem $container-padding;
+  font-weight: bold;
+  text-align: center;
+  background-color: $header-background;
+  color: $header-color;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  height: 3.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.owner-body {
+  padding: $container-padding;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: $item-spacing;
 }
 
 .trade-pokemon-container {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  padding: $item-spacing * 0.5;
+  border: 1px solid var(--mat-sys-outline);
+  border-radius: 4px;
+  background-color: var(--mat-sys-surface);
+}
+
+.pokemon-info {
+  display: flex;
+  align-items: center;
+  gap: $item-spacing;
+  flex-grow: 1;
+  min-width: 0;
+}
+
+.pokemon-tier {
+  background-color: var(--mat-sys-primary-container);
+  color: var(--mat-sys-on-primary-container);
+
+  padding: $tier-padding;
+  border-radius: 4px;
+  font-size: 0.8em;
+  font-weight: bold;
+  min-width: 2em;
+  text-align: center;
+}
+
+.sprite-wrapper {
+  width: $sprite-size;
+  height: $sprite-size;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  ::ng-deep sprite,
+  sprite {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+  }
+}
+
+.pokemon-name {
+  font-size: 0.9em;
+  flex-grow: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0 $item-spacing;
+}
+
+.trade-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 $item-spacing * 0.5;
+  color: var(--mat-sys-secondary);
+  &.drop {
+    color: lightcoral;
+  }
+  &.pickup {
+    color: lightgreen;
+  }
+  mat-icon {
+    font-weight: 700;
+  }
+}
+
+.trade-separator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 $container-padding * 0.5;
+  background-color: $header-background;
+
+  mat-icon {
+    font-size: 1.5rem;
+    color: $header-color;
+  }
+}
+
+.no-pokemon {
+  text-align: center;
+  color: #888;
+  padding: $container-padding;
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .trade-container {
+    flex-direction: column;
+  }
+
+  .owner-container {
+    &.from-owner {
+      border-right: none;
+    }
+  }
+
+  .trade-separator {
+    border-left: none;
+    border-right: none;
+    padding: $item-spacing 0;
+    writing-mode: vertical-rl;
+    transform: rotate(90deg);
+  }
+}
+
+.team-logo {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 2rem;
+  border-width: 1px;
+  border-color: var(--mat-sys-outline-variant);
+  overflow: hidden;
+  box-shadow: var(--mat-sys-level1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+
+  img {
+    max-width: 100%;
+    max-height: 100%;
+  }
 }

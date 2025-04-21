@@ -9,11 +9,8 @@ import { LeagueScheduleMatchupComponent } from './league-schedule-matchup/league
 import { LeagueBracketComponent } from './league-bracket/league-bracket.component';
 import { LeagueDraftingComponent } from './league-drafting/league-drafting.component';
 import { LeagueTradesComponent } from './league-trades/league-trades.component';
-<<<<<<< HEAD
-=======
-import { LeagueTeamsComponent } from './league-teams/league-teams.component';
 import { LeagueTeamComponent } from './league-team/league-team.component';
->>>>>>> 1baff6d2829e4f3276a8758e1d82acf5617ac187
+import { LeagueTeamsComponent } from './league-teams/league-teams.component';
 
 export const LeagueZonePath = 'leagues';
 const routes: Routes = [
