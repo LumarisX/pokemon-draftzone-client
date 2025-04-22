@@ -21,7 +21,7 @@ export class UploadService {
     filename: string,
     contentType: string,
   ): Observable<{ url: string; key: string }> {
-    return this.apiService.get(`file/upload-url`, true, {
+    return this.apiService.get(`file/league-upload`, true, {
       filename,
       contentType,
     });

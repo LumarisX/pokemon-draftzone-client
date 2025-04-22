@@ -18,7 +18,7 @@
           />
         </div>
         <div class="team-info">
-          <div class="coach-name">{{ matchup.team1.coachName }}</div>
+          <div class="coach-name">{{ matchup.team1.coach }}</div>
           <div class="team-name">{{ matchup.team1.teamName }}</div>
         </div>
       </div>
@@ -37,7 +37,7 @@
       </div>
       <div class="team-info-container">
         <div class="team-info left">
-          <div class="coach-name">{{ matchup.team2.coachName }}</div>
+          <div class="coach-name">{{ matchup.team2.coach }}</div>
           <div class="team-name">{{ matchup.team2.teamName }}</div>
         </div>
         <div
@@ -145,3 +145,101 @@
     }
   </div>
 </div>
+
+<pdz-comparison-card
+  [entityLeft]="leftEntity()"
+  [entityRight]="rightEntity()"
+  centerText="VS"
+  [allowToggle]="true"
+  [initiallyOpen]="false"
+  [status]="{ label: 'Replay', active: false }"
+>
+  <div cardExpandedContent class="matchup-content">
+    <div class="score-container">
+      <div class="score">
+        <div
+          class="score-box"
+          [ngClass]="{
+            positive: matchup.team1.score > matchup.team2.score,
+            negative: matchup.team2.score > matchup.team1.score,
+          }"
+        >
+          {{ matchup.team1.score }}
+        </div>
+        <div class="score-box"><mat-icon>remove</mat-icon></div>
+        <div
+          class="score-box"
+          [ngClass]="{
+            positive: matchup.team1.score < matchup.team2.score,
+            negative: matchup.team2.score < matchup.team1.score,
+          }"
+        >
+          {{ matchup.team2.score }}
+        </div>
+      </div>
+    </div>
+    <div class="matches-container">
+      <div class="team-container">
+        @for (
+          pokemon of matchup.matches[selectedMatch].team1.team;
+          track pokemon
+        ) {
+          <div
+            class="pokemon-box"
+            [ngClass]="{
+              brought: pokemon.status === 'brought',
+              fainted: pokemon.status === 'fainted',
+            }"
+          >
+            <sprite [pokemon]="pokemon" flipped> </sprite>
+          </div>
+        }
+      </div>
+      <div class="match-option-container">
+        @for (match of matchup.matches; track $index) {
+          <div class="match-option">
+            <span
+              class="match-score"
+              [ngClass]="{
+                positive: match.team1.score > match.team2.score,
+                negative: match.team1.score < match.team2.score,
+              }"
+              >{{ match.team1.score }}
+            </span>
+            <button
+              class="match-button"
+              (click)="selectedMatch = $index; $event.stopPropagation()"
+              [ngClass]="{ selected: selectedMatch === $index }"
+            >
+              Game {{ $index + 1 }}
+            </button>
+            <span
+              class="match-score"
+              [ngClass]="{
+                positive: match.team1.score < match.team2.score,
+                negative: match.team1.score > match.team2.score,
+              }"
+              >{{ match.team2.score }}
+            </span>
+          </div>
+        }
+      </div>
+      <div class="team-container">
+        @for (
+          pokemon of matchup.matches[selectedMatch].team2.team;
+          track pokemon
+        ) {
+          <div
+            class="pokemon-box"
+            [ngClass]="{
+              brought: pokemon.status === 'brought',
+              fainted: pokemon.status === 'fainted',
+            }"
+          >
+            <sprite [pokemon]="pokemon"> </sprite>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</pdz-comparison-card>

@@ -1,16 +1,16 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { LeagueOverviewComponent } from './league-overview/league-overview.component';
-import { LeagueManagePath } from './league-manage/league-manage-routing.module';
-import { LeagueComponent } from './league/league.component';
-import { LeagueTierListFormComponent } from './league-tier-list/league-tier-list-form/league-tier-list-form.component';
-import { LeagueStandingsComponent } from './league-standings/league-standings.component';
-import { LeagueScheduleMatchupComponent } from './league-schedule-matchup/league-schedule-matchup.component';
 import { LeagueBracketComponent } from './league-bracket/league-bracket.component';
 import { LeagueDraftingComponent } from './league-drafting/league-drafting.component';
-import { LeagueTradesComponent } from './league-trades/league-trades.component';
+import { LeagueManagePath } from './league-manage/league-manage-routing.module';
+import { LeagueOverviewComponent } from './league-overview/league-overview.component';
+import { LeagueScheduleComponent } from './league-schedule/league-schedule.component';
+import { LeagueStandingsComponent } from './league-standings/league-standings.component';
 import { LeagueTeamComponent } from './league-team/league-team.component';
 import { LeagueTeamsComponent } from './league-teams/league-teams.component';
+import { LeagueTierListFormComponent } from './league-tier-list/league-tier-list-form/league-tier-list-form.component';
+import { LeagueTradesComponent } from './league-trades/league-trades.component';
+import { LeagueComponent } from './league/league.component';
 
 export const LeagueZonePath = 'leagues';
 const routes: Routes = [
@@ -35,7 +35,7 @@ const routes: Routes = [
   },
   {
     path: 'view/leagueidplaceholder/schedule',
-    component: LeagueScheduleMatchupComponent,
+    component: LeagueScheduleComponent,
   },
   {
     path: 'view/leagueidplaceholder/drafting',

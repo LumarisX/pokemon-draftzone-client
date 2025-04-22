@@ -1,14 +1,13 @@
 import { Component } from '@angular/core';
-import {
-  LeagueTradeComponent,
-  TradeLog,
-} from './league-trade/league-trade.component';
+
 import { getRandomPokemon } from '../../data/namedex';
 import { getRandomTeamOrder } from '../league-ghost';
+import { TradeLog } from '../league.interface';
+import { TradeCardComponent } from './trade-card/trade-card.component';
 
 @Component({
   selector: 'pdz-league-trades',
-  imports: [LeagueTradeComponent],
+  imports: [TradeCardComponent],
   templateUrl: './league-trades.component.html',
   styleUrl: './league-trades.component.scss',
 })

@@ -1,11 +1,12 @@
 export const teamData: {
   teamName: string;
   coaches: string[];
-  logo?: string;
+  logo: string;
 }[] = [
   {
     teamName: `Philadelphia Flygons`,
     coaches: ['02ThatOneGuy'],
+    logo: '',
   },
   {
     teamName: `Mighty Murkrow`,
@@ -15,10 +16,12 @@ export const teamData: {
   {
     teamName: `Fitchburg's Sun Chasers`,
     coaches: ['Feather'],
+    logo: '',
   },
   {
     teamName: `Chicago White Fox`,
     coaches: ['TheNotoriousABS'],
+    logo: '',
   },
   {
     teamName: `Deimos Deoxys`,
@@ -28,6 +31,7 @@ export const teamData: {
   {
     teamName: `Alpine Arcanines`,
     coaches: ['Lion'],
+    logo: '',
   },
   {
     teamName: `Victorious Vigoroths`,
@@ -37,38 +41,47 @@ export const teamData: {
   {
     teamName: `Deep Sea Duskulls`,
     coaches: ['Emeglebon'],
+    logo: '',
   },
   {
     teamName: `Twinleaf Tatsugiri`,
     coaches: ['Penic'],
+    logo: '',
   },
   {
     teamName: `I like 'em THICC`,
     coaches: ['Kat'],
+    logo: '',
   },
   {
     teamName: `London Vespiquens`,
     coaches: ['Jake W'],
+    logo: '',
   },
   {
     teamName: `Tampa T-Chainz`,
     coaches: ['Spite'],
+    logo: '',
   },
   {
     teamName: `Kalos Quagsires`,
     coaches: ['Caltech_'],
+    logo: '',
   },
   {
     teamName: `Montreal Mean Mareanies`,
     coaches: ['Qofol'],
+    logo: '',
   },
   {
     teamName: `Chicago Sky Attack`,
     coaches: ['Quincy'],
+    logo: '',
   },
   {
     teamName: `Midnight Teddy's`,
     coaches: ['neb5'],
+    logo: '',
   },
 ];
 

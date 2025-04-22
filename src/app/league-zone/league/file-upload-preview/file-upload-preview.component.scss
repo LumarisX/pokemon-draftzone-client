@@ -18,6 +18,7 @@
 
 .file-preview-image {
   max-width: 100%;
+  aspect-ratio: 1;
   max-height: 280px; // Slightly less than container max-height
   height: auto;
   display: block;

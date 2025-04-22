@@ -1,0 +1,76 @@
+<div
+  class="comparison-card"
+  [class.expandable]="allowToggle"
+  (click)="toggleOpen()"
+  [ngClass]="{ open: isOpen() }"
+>
+  @if (allowToggle) {
+    <mat-icon class="toggle-icon"
+      >keyboard_arrow_{{ isOpen() ? "up" : "down" }}</mat-icon
+    >
+  }
+
+  <div class="comparison-header">
+    <div class="entity-info-container">
+      <div class="entity-logo" [ngClass]="entityLeftLogoClasses">
+        <img
+          [src]="getLogo(entityLeft)"
+          [alt]="entityLeft.primaryName + ' logo'"
+        />
+      </div>
+      <div class="entity-info">
+        <div class="entity-primary-name">{{ entityLeft.primaryName }}</div>
+        @if (entityLeft.secondaryName) {
+          <div class="entity-secondary-name">
+            {{ entityLeft.secondaryName }}
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="center-container">
+      @if (status) {
+        <div
+          class="status"
+          [class.active]="status.active"
+          [class.link]="status.link"
+        >
+          {{ status.label }}
+        </div>
+      }
+      <div class="center-action-area" (click)="stopPropagation($event)">
+        <ng-content select="[cardCenterAction]"></ng-content>
+      </div>
+
+      @if (centerText) {
+        <div class="center-text">{{ centerText }}</div>
+      } @else if (centerIcon) {
+        <div class="center-icon">
+          <mat-icon>{{ centerIcon }}</mat-icon>
+        </div>
+      }
+    </div>
+
+    <div class="entity-info-container right">
+      <div class="entity-info left">
+        <div class="entity-primary-name">{{ entityRight.primaryName }}</div>
+        @if (entityRight.secondaryName) {
+          <div class="entity-secondary-name">
+            {{ entityRight.secondaryName }}
+          </div>
+        }
+      </div>
+      <div class="entity-logo" [ngClass]="entityRightLogoClasses">
+        <img
+          [src]="getLogo(entityRight)"
+          [alt]="entityRight.primaryName + ' logo'"
+        />
+      </div>
+    </div>
+  </div>
+  @if (isOpen()) {
+    <div class="comparison-content">
+      <ng-content select="[cardExpandedContent]"></ng-content>
+    </div>
+  }
+</div>

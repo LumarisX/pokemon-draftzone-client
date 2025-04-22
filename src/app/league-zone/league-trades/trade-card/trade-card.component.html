@@ -1,0 +1,70 @@
+<pdz-comparison-card
+  [entityLeft]="leftEntity()"
+  [entityRight]="rightEntity()"
+  [status]="{ label: 'Week 6', active: false }"
+  [centerText]="
+    tradeLog.to.team && tradeLog.from.team ? 'Team to Team' : 'Free Agency'
+  "
+  [allowToggle]="true"
+  [initiallyOpen]="true"
+>
+  <div cardExpandedContent class="trade-details-content">
+    <div class="trade-columns">
+      <div class="trade-column from-column">
+        @for (pokemon of tradeLog.from.pokemon; track pokemon.id) {
+          <div class="trade-item">
+            <div class="pokemon-info">
+              <div class="pokemon-tier">{{ pokemon.tier }}</div>
+              <div class="sprite-wrapper small">
+                <sprite [pokemon]="pokemon" flipped></sprite>
+              </div>
+              <div class="pokemon-details">
+                <div class="pokemon-name">{{ pokemon.name }}</div>
+              </div>
+            </div>
+            <div
+              class="trade-arrow-indicator"
+              [ngClass]="{
+                pickup: !tradeLog.from.team,
+                drop: !tradeLog.to.team,
+              }"
+            >
+              <mat-icon>arrow_forward</mat-icon>
+            </div>
+          </div>
+        } @empty {
+          <div class="no-pokemon">No Pokémon traded</div>
+        }
+      </div>
+      <div class="trade-separator">
+        <mat-icon>swap_horiz</mat-icon>
+      </div>
+      <div class="trade-column to-column">
+        @for (pokemon of tradeLog.to.pokemon; track pokemon.id) {
+          <div class="trade-item">
+            <div
+              class="trade-arrow-indicator"
+              [ngClass]="{
+                pickup: !tradeLog.to.team,
+                drop: !tradeLog.from.team,
+              }"
+            >
+              <mat-icon>arrow_back</mat-icon>
+            </div>
+            <div class="pokemon-info">
+              <div class="pokemon-tier">{{ pokemon.tier }}</div>
+              <div class="sprite-wrapper small">
+                <sprite [pokemon]="pokemon"></sprite>
+              </div>
+              <div class="pokemon-details">
+                <div class="pokemon-name">{{ pokemon.name }}</div>
+              </div>
+            </div>
+          </div>
+        } @empty {
+          <div class="no-pokemon">No Pokémon traded</div>
+        }
+      </div>
+    </div>
+  </div>
+</pdz-comparison-card>
