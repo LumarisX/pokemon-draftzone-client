@@ -1,155 +1,25 @@
-<div
-  class="w-full h-full justify-center flex flex-col items-center space-y-4 p-2"
->
-  <div
-    class="flex flex-col items-center border shadow-lg bg-menu-50 w-full max-w-128 p-4 rounded-xl border-menu-100 space-y-4"
-  >
-    <div class="font-nasa text-2xl text-center">Support the project</div>
-    <div class="p-2 flex justify-between w-full">
-      <a
-        href="https://buymeacoffee.com/xlumarisxu"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="rounded-lg p-1 bg-menu-0 border shadow-lg hover:bg-menu-100 hover:cursor-pointer"
-      >
-        <img class="w-20 h-20" src="../../../assets/icons/media/bmc-logo.svg" />
-      </a>
-      <a
-        href="https://www.patreon.com/LumarisCreations"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="rounded-lg p-1 bg-menu-0 border shadow-lg hover:bg-menu-100 hover:cursor-pointer"
-      >
-        <img class="w-20 h-20" src="../../../assets/icons/media/patreon.svg" />
-      </a>
-      <a
-        href="https://venmo.com/u/lumarisx"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="rounded-lg p-1 border shadow-lg bg-menu-0 hover:bg-menu-100 hover:cursor-pointer"
-      >
-        <img
-          class="w-20 h-20"
-          src="../../../assets/icons/media/venmo-icon.svg"
-        />
-      </a>
-    </div>
-  </div>
-  @if (supporterData) {
-    <div
-      class="space-y-4 border shadow-lg bg-menu-50 border-menu-100 p-4 max-w-192 w-full text-center rounded-xl"
-    >
-      <div class="font-nasa text-2xl">Supporters</div>
-      <div>
-        <div class="font-nasa text-lg">Top - All Time</div>
-        <div class="flex flex-wrap justify-center gap-2">
-          @for (supporter of supporterData.top.all; track supporter) {
-            <div class="px-2 py-0.5 bg-menu-100 rounded-xl">
-              {{ supporter.name }}: ${{ supporter.amount }}
-            </div>
-          }
-        </div>
-      </div>
-      @if (supporterData.top.thirty.length > 0) {
-        <div>
-          <div class="font-nasa text-lg">Top - 30 Days</div>
-          <div class="flex flex-wrap justify-center gap-2">
-            @for (supporter of supporterData.top.thirty; track supporter) {
-              <div class="px-2 py-0.5 bg-menu-100 rounded-xl">
-                {{ supporter.name }}: ${{ supporter.amount }}
-              </div>
-            }
-          </div>
-        </div>
-      }
-      <div class="space-y-2">
-        @if (supporterData.tiers.master.length > 0) {
-          <div>
-            <div
-              class="text-violet-700 flex justify-center items-center space-x-2 font-nasa text-xl text-center"
-            >
-              <div class="w-4">
-                <ball-svg ballType="master"></ball-svg>
-              </div>
-              <div>Master Ball Supporters</div>
-              <div class="w-4">
-                <ball-svg ballType="master"></ball-svg>
-              </div>
-            </div>
-            <div class="flex flex-wrap justify-center gap-2">
-              @for (supporter of supporterData.tiers.master; track supporter) {
-                <div class="px-2 py-0.5 bg-menu-100 rounded-xl">
-                  {{ supporter.name }}: {{ supporter.months }} months
-                </div>
-              }
-            </div>
-          </div>
-        }
-        @if (supporterData.tiers.luxury.length > 0) {
-          <div>
-            <div
-              class="flex justify-center items-center space-x-2 font-nasa text-xl text-center"
-            >
-              <div class="w-4">
-                <ball-svg ballType="luxury"></ball-svg>
-              </div>
-              <div>Luxury Ball Supporters</div>
-              <div class="w-4">
-                <ball-svg ballType="luxury"></ball-svg>
-              </div>
-            </div>
-            <div class="flex flex-wrap justify-center gap-2">
-              @for (supporter of supporterData.tiers.luxury; track supporter) {
-                <div class="px-2 py-0.5 bg-menu-100 rounded-xl">
-                  {{ supporter.name }}: {{ supporter.months }} months
-                </div>
-              }
-            </div>
-          </div>
-        }
-        @if (supporterData.tiers.ultra.length > 0) {
-          <div>
-            <div
-              class="text-yellow-600 flex justify-center items-center space-x-2 font-nasa text-xl text-center"
-            >
-              <div class="w-4">
-                <ball-svg ballType="ultra"></ball-svg>
-              </div>
-              <div>Ultra Ball Supporters</div>
-              <div class="w-4">
-                <ball-svg ballType="ultra"></ball-svg>
-              </div>
-            </div>
-            <div class="flex flex-wrap justify-center gap-2">
-              @for (supporter of supporterData.tiers.ultra; track supporter) {
-                <div class="px-2 py-0.5 bg-menu-100 rounded-xl">
-                  {{ supporter.name }}: {{ supporter.months }} months
-                </div>
-              }
-            </div>
-          </div>
-        }
-        @if (supporterData.tiers.great.length > 0) {
-          <div>
-            <div
-              class="text-cyan-600 flex justify-center items-center space-x-2 font-nasa text-xl text-center"
-            >
-              <div class="w-4">
-                <ball-svg ballType="great"></ball-svg>
-              </div>
-              <div>Great Ball Supporters</div>
-              <div class="w-4">
-                <ball-svg ballType="great"></ball-svg>
-              </div>
-            </div>
-            <div class="flex flex-wrap justify-center gap-2">
-              @for (supporter of supporterData.tiers.great; track supporter) {
-                <div class="px-2 py-0.5 bg-menu-100 rounded-xl">
-                  {{ supporter.name }}: {{ supporter.months }} months
-                </div>
-              }
-            </div>
-          </div>
+<div class="support-page">
+  <h1 class="support-page__title">Support the Developers</h1>
+
+  @for (dev of developers; track dev) {
+    <div class="developer-card">
+      <h2 class="developer-card__name">{{ dev.name }}</h2>
+
+      <div class="developer-card__links">
+        @for (link of dev.links; track link) {
+          <a
+            [href]="link.href"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="support-link"
+            [attr.aria-label]="'Support ' + dev.name + ' on ' + link.name"
+          >
+            <img
+              class="support-link__icon"
+              [src]="link.iconSrc"
+              [alt]="link.name + ' logo'"
+            />
+          </a>
         }
       </div>
     </div>

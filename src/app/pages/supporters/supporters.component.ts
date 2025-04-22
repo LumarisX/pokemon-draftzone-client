@@ -1,23 +1,50 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { DataService, SupporterData } from '../../services/data.service';
-import { BallSVG } from '../../images/svg-components/ball.component';
+
+interface DevLink {
+  name: string;
+  href: string;
+  iconSrc: string;
+}
+
+interface Developer {
+  name: string;
+  links: DevLink[];
+}
 
 @Component({
   selector: 'supporters',
   standalone: true,
-  imports: [CommonModule, RouterModule, BallSVG],
+  imports: [CommonModule, RouterModule],
   templateUrl: './supporters.component.html',
+  styleUrl: './supporters.component.scss',
 })
 export class SupportersComponent implements OnInit {
-  supporterData!: SupporterData;
+  developers: Developer[] = [
+    {
+      name: 'Lumaris',
+      links: [
+        {
+          name: 'Buy Me a Coffee',
+          href: 'https://buymeacoffee.com/xlumarisxu',
+          iconSrc: '../../../assets/icons/media/bmc-logo.svg',
+        },
+        {
+          name: 'Patreon',
+          href: 'https://www.patreon.com/LumarisCreations',
+          iconSrc: '../../../assets/icons/media/patreon.svg',
+        },
+        {
+          name: 'Venmo',
+          href: 'https://venmo.com/u/lumarisx',
+          iconSrc: '../../../assets/icons/media/venmo-icon.svg',
+        },
+      ],
+    },
+  ];
 
-  constructor(private dataService: DataService) {}
+  constructor() {}
 
-  ngOnInit(): void {
-    this.dataService.getSupporters().subscribe((data) => {
-      this.supporterData = data;
-    });
-  }
+  ngOnInit(): void {}
 }

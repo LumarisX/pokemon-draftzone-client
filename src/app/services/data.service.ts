@@ -4,45 +4,6 @@ import { tap } from 'rxjs/operators';
 import { Pokemon } from '../interfaces/draft';
 import { ApiService } from './api.service';
 
-export type SupporterData = {
-  top: {
-    all: {
-      name: string;
-      amount: number;
-    }[];
-    thirty: {
-      name: string;
-      amount: number;
-    }[];
-  };
-  tiers: {
-    poke: {
-      name: string;
-      months: number;
-    }[];
-    premier: {
-      name: string;
-      months: number;
-    }[];
-    great: {
-      name: string;
-      months: number;
-    }[];
-    ultra: {
-      name: string;
-      months: number;
-    }[];
-    luxury: {
-      name: string;
-      months: number;
-    }[];
-    master: {
-      name: string;
-      months: number;
-    }[];
-  };
-};
-
 @Injectable({
   providedIn: 'root',
 })
@@ -95,10 +56,6 @@ export class DataService {
     [string, { name: string; id: string; desc?: string }[]][]
   > {
     return this.apiService.get('data/rulesetsgrouped', false);
-  }
-
-  getSupporters(): Observable<SupporterData> {
-    return this.apiService.get('supporters/', false);
   }
 
   getRandom(
