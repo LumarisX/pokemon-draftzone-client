@@ -8,7 +8,7 @@ import { TypeChart } from '../../matchup-interface';
 import { SwapOpponentButton } from '../../../../util/buttons/swap-opponent/swap-opponent.component';
 
 @Component({
-  selector: 'typechart',
+  selector: 'pdz-typechart',
   standalone: true,
   templateUrl: './typechart.component.html',
   styleUrls: ['./typechart.component.scss', '../../matchup.scss'],

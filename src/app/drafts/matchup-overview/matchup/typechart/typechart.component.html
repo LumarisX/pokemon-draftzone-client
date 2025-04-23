@@ -9,14 +9,16 @@
     </div>
   </div>
   <div class="widget-body">
-    <typechart-core
+    <pdz-typechart-core
       [typechart]="opponent ? typecharts[1] : typecharts[0]"
       [abilities]="abilities"
-    ></typechart-core>
+      (summarize)="typestats.summarize()"
+    ></pdz-typechart-core>
 
-    <typestats-core
+    <pdz-typestats-core
+      #typestats
       [typechart]="opponent ? typecharts[1] : typecharts[0]"
       [abilities]="abilities"
-    ></typestats-core>
+    ></pdz-typestats-core>
   </div>
 </div>

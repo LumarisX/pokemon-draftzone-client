@@ -18,7 +18,7 @@ import { Pokemon } from '../../../../interfaces/draft';
 import { typeColor } from '../../../styling';
 
 @Component({
-  selector: 'typestats-core',
+  selector: 'pdz-typestats-core',
   standalone: true,
   templateUrl: './typestats-core.component.html',
   styleUrl: '../typechart-core.component.scss',
@@ -41,24 +41,11 @@ export class TypestatsCoreComponent implements OnInit, OnDestroy {
 
   types = TYPES;
 
-  displayedColumns: string[] = ['label', ...this.types];
-
-  @Input() recommended?: {
-    all: {
-      pokemon: Pokemon[];
-      types: Type[][];
-    };
-    unique: {
-      pokemon: Pokemon[];
-      types: Type[][];
-    };
-  };
   counts: number[] = [];
   weaknesses: number[] = [];
   resistances: number[] = [];
   difference: number[] = [];
   differential: number[] = [];
-  uniqueSelected: boolean = true;
 
   @Input()
   set abilities(value: boolean) {
@@ -73,17 +60,6 @@ export class TypestatsCoreComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.sortedBy
-      .pipe(
-        distinctUntilChanged(),
-        tap((value) => {
-          this.sort(value);
-          this.summarize();
-        }),
-        takeUntil(this.destroy$),
-      )
-      .subscribe();
-
     this.$typechart
       .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
       .subscribe((value) => {
@@ -100,53 +76,10 @@ export class TypestatsCoreComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  sortedBy = new BehaviorSubject<string | null>(null);
-
-  setSort(value: string | null) {
-    this.sortedBy.next(value === this.sortedBy.value ? null : value);
-  }
-
   typeColor = typeColor;
 
-  compare = (
-    a: number | string | null | undefined,
-    b: number | string | null | undefined,
-  ) => {
-    if (a == null) return 1;
-    if (b == null) return -1;
-    return typeof a === 'string' && typeof b === 'string'
-      ? a.localeCompare(b)
-      : a < b
-        ? -1
-        : 1;
-  };
-
-  sort(sortBy: string | null) {
-    if (!this.typechart) return;
-    if (!sortBy) {
-      this.sortedTeam.next([...this.typechart.team]);
-    }
-
-    this.sortedTeam.next(
-      [...this.sortedTeam.value].sort((a, b) => {
-        if (!sortBy) return 0;
-        if (sortBy in a.weak[this.abilityIndex]) {
-          return this.compare(
-            a.weak[this.abilityIndex][sortBy as Type],
-            b.weak[this.abilityIndex][sortBy as Type],
-          );
-        }
-        return 0;
-      }),
-    );
-  }
-
-  toggleVisible(pokemon: TypeChartPokemon) {
-    pokemon.disabled = !pokemon.disabled;
-    this.summarize();
-  }
-
-  summarize(team: TypeChartPokemon[] = this.sortedTeam.value): void {
+  public summarize(team: TypeChartPokemon[] = this.sortedTeam.value): void {
+    console.log('suming');
     const newValues = this.types.map(() => ({
       weaknesses: 0,
       resistances: 0,
@@ -176,21 +109,6 @@ export class TypestatsCoreComponent implements OnInit, OnDestroy {
     this.difference = newValues.map((v) => v.difference);
     this.differential = newValues.map((v) => v.differential);
     this.counts = newValues.map((v) => v.counts);
-  }
-
-  weaknessColor(weak: number, disabled: boolean): string[] {
-    if (disabled) {
-      return ['text-transparent'];
-    }
-    const classes: string[] = ['type-colored'];
-    if (weak > 4) classes.push('bg-scale-negative-5');
-    else if (weak > 2) classes.push('bg-scale-negative-4');
-    else if (weak > 1) classes.push('bg-scale-negative-3');
-    else if (weak < 0.25) classes.push('bg-scale-positive-5');
-    else if (weak < 0.5) classes.push('bg-scale-positive-4');
-    else if (weak < 1) classes.push('bg-scale-positive-3');
-    else return ['type-empty'];
-    return classes;
   }
 
   weakColor(weak: number): string {
