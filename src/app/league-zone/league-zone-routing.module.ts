@@ -8,9 +8,9 @@ import { LeagueScheduleComponent } from './league-schedule/league-schedule.compo
 import { LeagueStandingsComponent } from './league-standings/league-standings.component';
 import { LeagueTeamComponent } from './league-team/league-team.component';
 import { LeagueTeamsComponent } from './league-teams/league-teams.component';
-import { LeagueTierListFormComponent } from './league-tier-list/league-tier-list-form/league-tier-list-form.component';
 import { LeagueTradesComponent } from './league-trades/league-trades.component';
 import { LeagueComponent } from './league/league.component';
+import { LeagueNewComponent } from './league-new/league-new.component';
 
 export const LeagueZonePath = 'leagues';
 const routes: Routes = [
@@ -26,39 +26,39 @@ const routes: Routes = [
       ),
   },
   {
-    path: 'view/leagueidplaceholder',
+    path: 'new',
+    component: LeagueNewComponent,
+  },
+  {
+    path: 'view/:leagueId',
     component: LeagueComponent,
   },
   {
-    path: 'view/leagueidplaceholder/standings',
+    path: 'view/:leagueId/standings',
     component: LeagueStandingsComponent,
   },
   {
-    path: 'view/leagueidplaceholder/schedule',
+    path: 'view/:leagueId/schedule',
     component: LeagueScheduleComponent,
   },
   {
-    path: 'view/leagueidplaceholder/drafting',
+    path: 'view/:leagueId/drafting',
     component: LeagueDraftingComponent,
   },
   {
-    path: 'view/leagueidplaceholder/bracket',
+    path: 'view/:leagueId/bracket',
     component: LeagueBracketComponent,
   },
   {
-    path: 'edit/leagueidplaceholder/tier',
-    component: LeagueTierListFormComponent,
-  },
-  {
-    path: 'view/leagueidplaceholder/trades',
+    path: 'view/:leagueId/trades',
     component: LeagueTradesComponent,
   },
   {
-    path: 'view/leagueidplaceholder/teams',
+    path: 'view/:leagueId/teams',
     component: LeagueTeamsComponent,
   },
   {
-    path: 'view/leagueidplaceholder/team/:teamid',
+    path: 'view/:leagueId/team/:teamid',
     component: LeagueTeamComponent,
   },
 ];

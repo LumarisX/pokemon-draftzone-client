@@ -1,23 +1,23 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { LeagueTierListFormComponent } from '../league-tier-list/league-tier-list-form/league-tier-list-form.component';
 import { LeagueManageComponent } from './league-manage.component';
-import { LeagueFormNewComponent } from '../league-form/league-form-new/league-form-new.component';
-import { LeagueFormEditComponent } from '../league-form/league-form-edit/league-form-edit.component';
+import { LeagueSettingsComponent } from './league-settings/league-settings.component';
 
 export const LeagueManagePath = 'manage';
 
 const routes: Routes = [
   {
-    path: '',
+    path: ':leagueId',
     component: LeagueManageComponent,
   },
   {
-    path: 'new',
-    component: LeagueFormNewComponent,
+    path: ':leagueId/tiers',
+    component: LeagueTierListFormComponent,
   },
   {
-    path: 'edit',
-    component: LeagueFormEditComponent,
+    path: ':leagueId/settings',
+    component: LeagueSettingsComponent,
   },
 ];
 

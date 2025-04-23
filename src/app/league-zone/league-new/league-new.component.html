@@ -1,0 +1,380 @@
+<mat-vertical-stepper [linear]="true" #stepper [formGroup]="leagueForm">
+  <mat-step [stepControl]="leagueInfoForm" formGroupName="leagueInfo">
+    <ng-template matStepLabel>League Details</ng-template>
+    <p>Basic information about your league.</p>
+
+    <mat-form-field appearance="fill">
+      <mat-label>League Name</mat-label>
+      <input matInput formControlName="leagueName" required />
+      <mat-error *ngIf="leagueInfoForm.get('leagueName')?.hasError('required')"
+        >League name is required</mat-error
+      >
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Season</mat-label>
+      <input
+        matInput
+        formControlName="season"
+        placeholder="e.g., Season 1, 2025 Spring"
+        required
+      />
+      <mat-error *ngIf="leagueInfoForm.get('season')?.hasError('required')"
+        >Season is required</mat-error
+      >
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Ruleset</mat-label>
+      <mat-select formControlName="ruleset" required>
+        <mat-option *ngFor="let ruleset of rulesets" [value]="ruleset">
+          {{ ruleset }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="leagueInfoForm.get('ruleset')?.hasError('required')"
+        >Ruleset is required</mat-error
+      >
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Format</mat-label>
+      <mat-select formControlName="format" required>
+        <mat-option *ngFor="let format of formats" [value]="format">
+          {{ format }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="leagueInfoForm.get('format')?.hasError('required')"
+        >Format is required</mat-error
+      >
+    </mat-form-field>
+
+    <div>
+      <label>League Logo (Optional):</label>
+      <span>Upload Button</span>
+      <span *ngIf="leagueInfoForm.get('logoUrl')?.value">
+        Logo Set: {{ leagueInfoForm.get("logoUrl")?.value | slice: 0 : 30 }}...
+      </span>
+      <input type="hidden" formControlName="logoUrl" />
+    </div>
+
+    <div class="step-actions">
+      <button mat-raised-button color="primary" matStepperNext>Next</button>
+    </div>
+  </mat-step>
+
+  <mat-step [stepControl]="leagueInfoForm" formGroupName="rules" optional>
+    <ng-template matStepLabel>League Rules (Optional)</ng-template>
+    <p>
+      Define specific rules for your league. You can add or modify these later.
+    </p>
+
+    <div formArrayName="items">
+      <div
+        *ngFor="let ruleItem of rulesItems.controls; let i = index"
+        [formGroupName]="i"
+        class="rule-item"
+      >
+        <h4>Rule Section {{ i + 1 }}</h4>
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Section Title (Optional)</mat-label>
+          <input
+            matInput
+            formControlName="title"
+            placeholder="e.g., Drafting Rules, Battle Clauses"
+          />
+        </mat-form-field>
+
+        <div formArrayName="points">
+          <label>Rule Points:</label>
+          <div
+            *ngFor="let point of getRulePoints(i).controls; let pIndex = index"
+            class="rule-point"
+          >
+            <mat-form-field appearance="outline" class="point-input">
+              <mat-label>Point {{ pIndex + 1 }}</mat-label>
+              <input
+                matInput
+                [formControlName]="pIndex"
+                placeholder="Enter rule point"
+              />
+            </mat-form-field>
+            <button
+              mat-icon-button
+              color="warn"
+              type="button"
+              (click)="removeRulePoint(i, pIndex)"
+              matTooltip="Remove Point"
+              [disabled]="getRulePoints(i).controls.length <= 1"
+            >
+              <mat-icon>remove_circle_outline</mat-icon>
+            </button>
+          </div>
+          <button
+            mat-stroked-button
+            type="button"
+            (click)="addRulePoint(i)"
+            color="accent"
+            class="add-point-button"
+          >
+            <mat-icon>add_circle_outline</mat-icon> Add Point
+          </button>
+        </div>
+
+        <button
+          mat-icon-button
+          color="warn"
+          type="button"
+          (click)="removeRuleItem(i)"
+          matTooltip="Remove Rule Section"
+          class="remove-section-button"
+        >
+          <mat-icon>delete_outline</mat-icon>
+        </button>
+        <mat-divider *ngIf="i < rulesItems.controls.length - 1"></mat-divider>
+      </div>
+    </div>
+
+    <button
+      mat-flat-button
+      type="button"
+      (click)="addRuleItem()"
+      color="primary"
+      class="add-section-button"
+    >
+      <mat-icon>add</mat-icon> Add Rule Section
+    </button>
+
+    <div class="step-actions">
+      <button mat-button matStepperPrevious>Back</button>
+      <button mat-raised-button color="primary" matStepperNext>Next</button>
+    </div>
+  </mat-step>
+
+  <mat-step [stepControl]="divisionsForm" formGroupName="divisions">
+    <ng-template matStepLabel>Divisions / Groups</ng-template>
+    <p>Organize teams into divisions. There must be at least one.</p>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Teams per Division</mat-label>
+      <input
+        matInput
+        type="number"
+        formControlName="teamCount"
+        required
+        min="2"
+      />
+      <mat-error *ngIf="divisionsForm.get('teamCount')?.hasError('required')"
+        >Team count is required</mat-error
+      >
+      <mat-error *ngIf="divisionsForm.get('teamCount')?.hasError('min')"
+        >Must have at least 2 teams per division</mat-error
+      >
+    </mat-form-field>
+
+    <div formArrayName="groups">
+      <h4>Division Names (must be unique)</h4>
+      <mat-error
+        *ngIf="
+          divisionsForm.hasError('uniqueDivisionNames') && divisionsForm.touched
+        "
+      >
+        Division names must be unique.
+      </mat-error>
+      <div
+        *ngFor="let group of divisionGroups.controls; let i = index"
+        [formGroupName]="i"
+        class="division-group"
+      >
+        <mat-form-field appearance="outline">
+          <mat-label>Division {{ i + 1 }} Name</mat-label>
+          <input matInput formControlName="name" required />
+          <mat-error *ngIf="group.get('name')?.hasError('required')"
+            >Division name is required</mat-error
+          >
+        </mat-form-field>
+        <button
+          mat-icon-button
+          color="warn"
+          type="button"
+          (click)="removeDivisionGroup(i)"
+          matTooltip="Remove Division"
+          [disabled]="divisionGroups.controls.length <= 1"
+        >
+          <mat-icon>remove_circle_outline</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <button
+      mat-stroked-button
+      type="button"
+      (click)="addDivisionGroup()"
+      color="primary"
+    >
+      <mat-icon>add</mat-icon> Add Division
+    </button>
+
+    <mat-error
+      *ngIf="
+        divisionsForm.get('groups')?.hasError('minlength') &&
+        divisionsForm.get('groups')?.touched
+      "
+    >
+      You must have at least one division.
+    </mat-error>
+
+    <div class="step-actions">
+      <button mat-button matStepperPrevious>Back</button>
+      <button mat-raised-button color="primary" matStepperNext>Next</button>
+    </div>
+  </mat-step>
+
+  <mat-step [stepControl]="divisionsForm" formGroupName="schedule" optional>
+    <ng-template matStepLabel>Schedule Structure (Optional)</ng-template>
+    <p>
+      Define the schedule brackets (e.g., Regular Season, Playoffs). Defaults
+      are provided. You can modify this later.
+    </p>
+
+    <div formArrayName="brackets">
+      <div
+        *ngFor="let bracket of scheduleBrackets.controls; let i = index"
+        [formGroupName]="i"
+        class="bracket-item"
+      >
+        <h4>Bracket {{ i + 1 }}</h4>
+        <mat-form-field appearance="outline">
+          <mat-label>Bracket Name</mat-label>
+          <input
+            matInput
+            formControlName="name"
+            required
+            placeholder="e.g., Regular Season, Playoffs"
+          />
+          <mat-error *ngIf="bracket.get('name')?.hasError('required')"
+            >Name is required</mat-error
+          >
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Bracket Type</mat-label>
+          <mat-select formControlName="type" required>
+            <mat-option *ngFor="let type of bracketTypes" [value]="type">{{
+              type
+            }}</mat-option>
+          </mat-select>
+          <mat-error *ngIf="bracket.get('type')?.hasError('required')"
+            >Type is required</mat-error
+          >
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Number of Stages</mat-label>
+          <input
+            matInput
+            type="number"
+            formControlName="stages"
+            required
+            min="1"
+          />
+          <mat-error *ngIf="bracket.get('stages')?.hasError('required')"
+            >Stages required</mat-error
+          >
+          <mat-error *ngIf="bracket.get('stages')?.hasError('min')"
+            >Must be at least 1 stage</mat-error
+          >
+        </mat-form-field>
+
+        <button
+          mat-icon-button
+          color="warn"
+          type="button"
+          (click)="removeBracketItem(i)"
+          matTooltip="Remove Bracket"
+        >
+          <mat-icon>delete_outline</mat-icon>
+        </button>
+        <mat-divider
+          *ngIf="i < scheduleBrackets.controls.length - 1"
+        ></mat-divider>
+      </div>
+    </div>
+
+    <button
+      mat-flat-button
+      type="button"
+      (click)="addBracketItem()"
+      color="primary"
+    >
+      <mat-icon>add</mat-icon> Add Bracket
+    </button>
+
+    <div class="step-actions">
+      <button mat-button matStepperPrevious>Back</button>
+      <button mat-raised-button color="primary" matStepperNext>Next</button>
+    </div>
+  </mat-step>
+
+  <mat-step [stepControl]="settingsForm" formGroupName="settings">
+    <ng-template matStepLabel>Confirmation & Settings</ng-template>
+    <p>Review and configure final settings.</p>
+
+    <section class="settings-section">
+      <h4>Invite Privacy</h4>
+      <mat-radio-group
+        formControlName="invitePrivacy"
+        aria-label="Invite Privacy"
+        required
+      >
+        <mat-radio-button value="private" checked
+          >Private (Invite via link only)</mat-radio-button
+        >
+        <mat-radio-button value="public"
+          >Public (Link + Posted on board)</mat-radio-button
+        >
+      </mat-radio-group>
+      <mat-error
+        *ngIf="
+          settingsForm.get('invitePrivacy')?.hasError('required') &&
+          settingsForm.get('invitePrivacy')?.touched
+        "
+        >Invite privacy selection is required</mat-error
+      >
+    </section>
+
+    <section class="settings-section">
+      <h4>Spectator Access</h4>
+      <mat-radio-group
+        formControlName="spectatePrivacy"
+        aria-label="Spectator Access"
+        required
+      >
+        <mat-radio-button value="private" checked
+          >Private (Only league members)</mat-radio-button
+        >
+        <mat-radio-button value="public"
+          >Public (Anyone can spectate)</mat-radio-button
+        >
+      </mat-radio-group>
+      <mat-error
+        *ngIf="
+          settingsForm.get('spectatePrivacy')?.hasError('required') &&
+          settingsForm.get('spectatePrivacy')?.touched
+        "
+        >Spectator access selection is required</mat-error
+      >
+    </section>
+
+    <div class="step-actions">
+      <button mat-button matStepperPrevious>Back</button>
+      <button
+        mat-raised-button
+        color="accent"
+        (click)="createLeague()"
+        [disabled]="leagueForm.invalid"
+      >
+        Create League
+      </button>
+    </div>
+  </mat-step>
+</mat-vertical-stepper>

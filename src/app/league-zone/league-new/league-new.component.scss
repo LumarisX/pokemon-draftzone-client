@@ -1,0 +1,90 @@
+// General styling for form fields within the stepper
+mat-form-field {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+// Spacing for actions within each step
+.step-actions {
+  margin-top: 20px;
+  display: flex;
+  gap: 8px; // Adds space between buttons
+}
+
+// Styling for dynamically added items
+.rule-item,
+.division-group,
+.bracket-item {
+  border: 1px solid #eee;
+  padding: 15px;
+  margin-bottom: 15px;
+  position: relative; // For positioning remove buttons if needed
+  border-radius: 4px;
+}
+
+.rule-point {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 5px;
+}
+
+.point-input {
+  flex-grow: 1; // Make the input take available space
+  margin-bottom: 0; // Override default margin if needed
+}
+
+.division-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.division-group mat-form-field {
+  flex-grow: 1;
+  margin-bottom: 0;
+}
+
+.remove-section-button,
+.remove-division-button,
+.remove-bracket-button {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  margin-top: -10px; // Adjust alignment
+}
+
+.add-section-button,
+.add-division-button,
+.add-bracket-button,
+.add-point-button {
+  margin-top: 10px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+// Settings sections
+.settings-section {
+  margin-bottom: 20px;
+
+  h4 {
+    margin-bottom: 8px;
+  }
+
+  mat-radio-group {
+    display: flex;
+    flex-direction: column; // Stack radio buttons vertically
+    gap: 5px;
+  }
+
+  mat-error {
+    margin-top: 5px;
+  }
+}
+
+// Ensure icons align nicely with buttons
+button mat-icon {
+  vertical-align: middle;
+}
