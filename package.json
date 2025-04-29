@@ -36,7 +36,7 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^19.0.0",
-    "@angular/cli": "19.0.0",
+    "@angular/cli": "19.2.9",
     "@angular/compiler-cli": "19.2.8",
     "@types/auth0-lock": "^11.27.9",
     "@types/d3": "^7.4.3",
