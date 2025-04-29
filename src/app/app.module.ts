@@ -1,22 +1,23 @@
+import { OverlayModule } from '@angular/cdk/overlay';
 import {
   provideHttpClient,
   withInterceptorsFromDi,
 } from '@angular/common/http';
-import { NgModule, isDevMode } from '@angular/core';
+import { NgModule, importProvidersFrom, isDevMode } from '@angular/core';
+import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
+import { ServiceWorkerModule } from '@angular/service-worker';
 import { AuthModule } from '@auth0/auth0-angular';
+import { MarkdownModule, provideMarkdown } from 'ngx-markdown';
 import { AppComponent } from './app.component';
 import { BodyModule } from './body/body.module';
 import { LogoSVG } from './images/svg-components/logo.component';
-import { MatBadgeModule } from '@angular/material/badge';
-import { OverlayModule } from '@angular/cdk/overlay';
 import { SettingsComponent } from './pages/settings/settings.component';
-import { ServiceWorkerModule } from '@angular/service-worker';
 
 @NgModule({
   declarations: [AppComponent],
@@ -62,9 +63,9 @@ import { ServiceWorkerModule } from '@angular/service-worker';
       enabled: !isDevMode(),
       // Register the ServiceWorker as soon as the application is stable
       // or after 30 seconds (whichever comes first).
-      registrationStrategy: 'registerWhenStable:30000'
+      registrationStrategy: 'registerWhenStable:30000',
     }),
   ],
-  providers: [provideHttpClient(withInterceptorsFromDi())],
+  providers: [provideHttpClient(withInterceptorsFromDi()), provideMarkdown()],
 })
 export class AppModule {}
