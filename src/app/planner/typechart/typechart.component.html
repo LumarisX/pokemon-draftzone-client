@@ -7,18 +7,20 @@
         Abilities
       </div>
     </div>
-    <typechart-core
+    <pdz-typechart-core
       [typechart]="typechart"
       [abilities]="abilities"
-    ></typechart-core>
+      (summarize)="typestats.summarize()"
+    ></pdz-typechart-core>
   </div>
   <div class="table-wrapper">
     <div class="title-container">
       <div class="table-label">Team Typing Statistics</div>
     </div>
-    <typestats-core
+    <pdz-typestats-core
+      #typestats
       [typechart]="typechart"
       [abilities]="abilities"
-    ></typestats-core>
+    ></pdz-typestats-core>
   </div>
 </div>

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { TypeChart } from '../../drafts/matchup-overview/matchup-interface';
@@ -7,7 +7,7 @@ import { TypechartCoreComponent } from '../../util/matchup/typechart/typechart-c
 import { TypestatsCoreComponent } from '../../util/matchup/typechart/typestats-core/typestats-core.component';
 
 @Component({
-  selector: 'planner-typechart',
+  selector: 'pdz-planner-typechart',
   standalone: true,
   templateUrl: './typechart.component.html',
   styleUrl: './typechart.component.scss',

@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import {
@@ -16,11 +23,10 @@ import {
   TypeChartPokemon,
 } from '../../../../drafts/matchup-overview/matchup-interface';
 import { SpriteComponent } from '../../../../images/sprite/sprite.component';
-import { Pokemon } from '../../../../interfaces/draft';
 import { typeColor } from '../../../styling';
 
 @Component({
-  selector: 'typechart-core',
+  selector: 'pdz-typechart-core',
   standalone: true,
   templateUrl: './typechart-core.component.html',
   styleUrl: '../typechart-core.component.scss',
@@ -49,30 +55,12 @@ export class TypechartCoreComponent implements OnInit, OnDestroy {
 
   types = TYPES;
 
-  displayedColumns: string[] = ['label', ...this.types];
-
-  @Input() recommended?: {
-    all: {
-      pokemon: Pokemon[];
-      types: Type[][];
-    };
-    unique: {
-      pokemon: Pokemon[];
-      types: Type[][];
-    };
-  };
-  counts: number[] = [];
-  weaknesses: number[] = [];
-  resistances: number[] = [];
-  difference: number[] = [];
-  differential: number[] = [];
-  uniqueSelected: boolean = true;
-
   @Input()
   set abilities(value: boolean) {
     this.abilityIndex = value ? 0 : 1;
-    this.summarize();
   }
+
+  @Output() summarize = new EventEmitter<void>();
 
   abilityIndex: number = 0;
   columnHovered = new BehaviorSubject<string | null>(null);
@@ -86,7 +74,6 @@ export class TypechartCoreComponent implements OnInit, OnDestroy {
         distinctUntilChanged(),
         tap((value) => {
           this.sort(value);
-          this.summarize();
         }),
         takeUntil(this.destroy$),
       )
@@ -94,9 +81,7 @@ export class TypechartCoreComponent implements OnInit, OnDestroy {
 
     this.$typechart
       .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
-      .subscribe((value) => {
-        this.summarize(value?.team);
-      });
+      .subscribe((value) => {});
 
     this.columnHovered
       .pipe(debounceTime(50), distinctUntilChanged(), takeUntil(this.destroy$))
@@ -151,39 +136,7 @@ export class TypechartCoreComponent implements OnInit, OnDestroy {
 
   toggleVisible(pokemon: TypeChartPokemon) {
     pokemon.disabled = !pokemon.disabled;
-    this.summarize();
-  }
-
-  summarize(team: TypeChartPokemon[] = this.sortedTeam.value): void {
-    const newValues = this.types.map(() => ({
-      weaknesses: 0,
-      resistances: 0,
-      difference: 0,
-      differential: 0,
-      counts: 0,
-    }));
-    team.forEach((pokemon) => {
-      if (!pokemon.disabled) {
-        this.types.forEach((type, index) => {
-          if (pokemon.types.includes(type)) newValues[index].counts++;
-          const weakValue = pokemon.weak[this.abilityIndex][type];
-          if (weakValue > 1) {
-            newValues[index].weaknesses++;
-            newValues[index].difference--;
-          } else if (weakValue < 1) {
-            newValues[index].resistances++;
-            newValues[index].difference++;
-          }
-          newValues[index].differential +=
-            weakValue > 0 ? -Math.log2(weakValue) : 2;
-        });
-      }
-    });
-    this.weaknesses = newValues.map((v) => v.weaknesses);
-    this.resistances = newValues.map((v) => v.resistances);
-    this.difference = newValues.map((v) => v.difference);
-    this.differential = newValues.map((v) => v.differential);
-    this.counts = newValues.map((v) => v.counts);
+    this.summarize.emit();
   }
 
   weaknessColor(weak: number, disabled: boolean): string[] {
@@ -199,43 +152,5 @@ export class TypechartCoreComponent implements OnInit, OnDestroy {
     else if (weak < 1) classes.push('bg-scale-positive-3');
     else return ['type-empty'];
     return classes;
-  }
-
-  weakColor(weak: number): string {
-    if (weak > 5) return 'bg-scale-negative-5';
-    if (weak > 4) return 'bg-scale-negative-4';
-    if (weak > 3) return 'bg-scale-negative-3';
-    if (weak < 1) return 'bg-scale-positive-5';
-    if (weak < 2) return 'bg-scale-positive-4';
-    if (weak < 3) return 'bg-scale-positive-3';
-    return 'stat-neutral';
-  }
-
-  resistColor(weak: number): string {
-    if (weak > 4) return 'bg-scale-positive-5';
-    if (weak > 3) return 'bg-scale-positive-4';
-    if (weak > 2) return 'bg-scale-positive-3';
-    if (weak < 1) return 'bg-scale-negative-4';
-    if (weak < 2) return 'bg-scale-negative-3';
-    return 'stat-neutral';
-  }
-
-  countColor(count: number): string {
-    if (count > 3) return 'bg-scale-negative-5';
-    if (count > 2) return 'bg-scale-negative-4';
-    if (count > 1) return 'stat-neutral';
-    if (count > 0) return 'bg-scale-positive-4';
-    return 'stat-neutral';
-  }
-
-  diffColor(weak: number): string {
-    if (weak > 3) return 'bg-scale-positive-6';
-    if (weak > 2) return 'bg-scale-positive-5';
-    if (weak > 1) return 'bg-scale-positive-4';
-    if (weak > 0) return 'bg-scale-positive-3';
-    if (weak < -2) return 'bg-scale-negative-5';
-    if (weak < -1) return 'bg-scale-negative-4';
-    if (weak < 0) return 'bg-scale-negative-3';
-    return 'stat-neutral';
   }
 }
