@@ -11,7 +11,7 @@
       </div>
       @if (
         data.pokemon.originalTierName &&
-        data.pokemon.originalTierName !== data.currentTier?.name
+        data.pokemon.originalTierName !== data.currentTier.name
       ) {
         <p class="original-tier">
           Original Tier: {{ data.pokemon.originalTierName }}

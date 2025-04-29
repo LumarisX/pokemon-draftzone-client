@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
 
 @Component({
-  selector: 'app-league-manage',
-  imports: [RouterLink],
+  selector: 'pdz-league-manage',
+  imports: [],
   templateUrl: './league-manage.component.html',
-  styleUrl: './league-manage.component.scss',
+  styleUrls: ['./league-manage.component.scss', '../league.scss'],
 })
-export class LeagueManageComponent {}
+export class LeagueManageComponent {
+  groups = [{ name: 'Attack Division' }, { name: 'Defense Division' }];
+}

@@ -7,6 +7,7 @@ import { LeagueSettingsComponent } from './league-settings/league-settings.compo
 export const LeagueManagePath = 'manage';
 
 const routes: Routes = [
+  
   {
     path: ':leagueId',
     component: LeagueManageComponent,
