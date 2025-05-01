@@ -11,7 +11,7 @@ import { LeagueTeamsComponent } from './league-teams/league-teams.component';
 import { LeagueTradesComponent } from './league-trades/league-trades.component';
 import { LeagueComponent } from './league/league.component';
 import { LeagueNewComponent } from './league-new/league-new.component';
-import { LeagueRulesComponent } from './league-rules/league-rules.component';
+import { LeagueRulesOverviewComponent } from './league-rules-overview/league-rules-overview.component';
 
 export const LeagueZonePath = 'leagues';
 const routes: Routes = [
@@ -56,7 +56,7 @@ const routes: Routes = [
   },
   {
     path: 'view/:leagueId/rules',
-    component: LeagueRulesComponent,
+    component: LeagueRulesOverviewComponent,
   },
   {
     path: 'view/:leagueId/teams',

@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
+import { LeagueSingleElimBracketComponent } from './league-single-elim-bracket/league-single-elim-bracket.component';
 
 @Component({
-  selector: 'app-league-bracket',
-  imports: [CommonModule],
+  selector: 'pdz-league-bracket',
+  imports: [CommonModule, LeagueSingleElimBracketComponent],
   templateUrl: './league-bracket.component.html',
   styleUrl: './league-bracket.component.scss',
 })

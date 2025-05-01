@@ -13,7 +13,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { AuthModule } from '@auth0/auth0-angular';
-import { MarkdownModule, provideMarkdown } from 'ngx-markdown';
+import { MarkdownModule, MARKED_OPTIONS, provideMarkdown } from 'ngx-markdown';
 import { AppComponent } from './app.component';
 import { BodyModule } from './body/body.module';
 import { LogoSVG } from './images/svg-components/logo.component';
@@ -66,6 +66,16 @@ import { SettingsComponent } from './pages/settings/settings.component';
       registrationStrategy: 'registerWhenStable:30000',
     }),
   ],
-  providers: [provideHttpClient(withInterceptorsFromDi()), provideMarkdown()],
+  providers: [
+    provideHttpClient(withInterceptorsFromDi()),
+    provideMarkdown({
+      markedOptions: {
+        provide: MARKED_OPTIONS,
+        useFactory: () => ({
+          breaks: true,
+        }),
+      },
+    }),
+  ],
 })
 export class AppModule {}

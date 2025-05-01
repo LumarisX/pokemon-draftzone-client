@@ -1,0 +1,99 @@
+<div class="rule-main">
+  <cdk-accordion
+    class="basic-accordion"
+    multi="false"
+    cdkDropList
+    [cdkDropListData]="sections"
+    (cdkDropListDropped)="onDrop($event)"
+  >
+    @for (section of sections; track section; let i = $index) {
+      <cdk-accordion-item
+        #accordionItem="cdkAccordionItem"
+        class="accordion-item"
+        role="button"
+        tabindex="0"
+        cdkDrag
+        @bodyExpansion
+      >
+        <div
+          class="accordion-item-header"
+          (click)="accordionItem.toggle(); view = 'edit'"
+        >
+          <button
+            mat-icon-button
+            type="button"
+            class="remove-button"
+            aria-label="Remove Section"
+            (click)="$event.stopPropagation(); removeSection(i)"
+          >
+            <mat-icon class="accordion-indicator">
+              remove_circle_outline
+            </mat-icon>
+          </button>
+
+          <span class="header-title">
+            <input
+              placeholder="Section Title"
+              spellcheck="false"
+              [(ngModel)]="section.title"
+              (click)="$event.stopPropagation()"
+              aria-label="Section Title Input"
+            />
+          </span>
+
+          <mat-icon
+            class="accordion-indicator accordion-expand-indicator"
+            [@indicatorRotate]="getExpansionState(accordionItem)"
+          >
+            expand_more
+          </mat-icon>
+
+          <mat-icon class="accordion-indicator drag-handle" cdkDragHandle>
+            drag_indicator
+          </mat-icon>
+        </div>
+        <div
+          class="accordion-item-body"
+          role="region"
+          [@bodyExpansion]="getExpansionState(accordionItem)"
+        >
+          <div class="accordion-item-body-content-wrapper">
+            <div class="accordion-item-body-content">
+              <div class="option-bar">
+                <mat-button-toggle-group
+                  [(ngModel)]="view"
+                  [hideSingleSelectionIndicator]="true"
+                  aria-label="View Mode"
+                >
+                  <mat-button-toggle value="edit" aria-label="Edit Mode">
+                    <mat-icon>edit_square</mat-icon>
+                  </mat-button-toggle>
+                  <mat-button-toggle value="preview" aria-label="Preview Mode">
+                    <mat-icon>preview</mat-icon>
+                  </mat-button-toggle>
+                </mat-button-toggle-group>
+              </div>
+              @if (view === "edit") {
+                <textarea
+                  spellcheck="false"
+                  class="edit-area"
+                  [(ngModel)]="section.body"
+                  aria-label="Section Content Editor"
+                ></textarea>
+              } @else if (view === "preview") {
+                <markdown
+                  class="prose markdown-preview"
+                  [data]="section.body"
+                ></markdown>
+              }
+            </div>
+          </div>
+        </div>
+      </cdk-accordion-item>
+    }
+  </cdk-accordion>
+  <div class="add-section" role="button" (click)="addSection()" tabindex="0">
+    <mat-icon class="accordion-indicator"> add_circle_outline </mat-icon>
+    <span>Add Section</span>
+  </div>
+</div>

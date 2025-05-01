@@ -1,0 +1,201 @@
+@use "@angular/material" as mat;
+
+.rule-wrapper {
+  list-style-type: disc;
+}
+
+.rule-title {
+  font-family: "Nasalization RG", sans-serif;
+  font-weight: bold;
+  font-size: larger;
+}
+
+.rule-description {
+  padding: 0px 12px;
+}
+
+.markdown-wrapper {
+  padding: 1rem;
+  width: 100%;
+}
+
+$border-color: var(--mat-sys-outline-variant);
+$header-bg: var(--mat-sys-surface);
+$header-bg-hover: var(--mat-sys-surface-variant);
+$body-bg: #fff;
+$text-color: var(--mat-sys-on-surface);
+$indicator-color: var(--mat-sys-primary);
+$border-radius: 1rem;
+$horizontal-padding: 1rem;
+$vertical-padding: 0.5rem;
+
+.rule-main {
+  border-radius: $border-radius;
+  overflow: hidden;
+  box-shadow: var(--mat-sys-level2);
+  width: 50rem;
+  max-width: 100%;
+}
+
+.basic-accordion {
+  display: block;
+  width: 100%;
+}
+
+.accordion-item {
+  display: block;
+  border-bottom: 1px solid $border-color;
+  box-sizing: border-box;
+}
+
+.accordion-item-header {
+  display: flex;
+  align-items: center;
+  padding: 1px $horizontal-padding 1px calc($horizontal-padding/2);
+  cursor: pointer;
+  font-family: var(--pdz-fancy);
+  background-color: $header-bg;
+  color: $text-color;
+  transition: background-color 150ms ease-out;
+  &:hover {
+    background-color: $header-bg-hover;
+  }
+
+  > {
+    flex-shrink: 0;
+  }
+
+  .header-title {
+    flex-grow: 1;
+    padding: 0 calc($horizontal-padding / 2);
+
+    input {
+      padding: 0 0.25rem;
+      font-size: large;
+      background-color: transparent;
+
+      &:focus {
+        outline: none;
+        margin-bottom: -1px;
+        border-bottom: 1px solid $indicator-color;
+        background-color: rgba(var(--mat-sys-primary-rgb), 0.05);
+      }
+      &:hover:not(:focus) {
+        margin-bottom: -1px;
+        border-bottom: 1px solid var(--mat-sys-outline);
+      }
+      field-sizing: content;
+      font-weight: bold;
+    }
+  }
+}
+
+.accordion-indicator {
+  min-width: 24px;
+  min-height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $indicator-color;
+}
+
+.accordion-item-body {
+  background-color: $body-bg;
+  color: $text-color;
+  overflow: hidden;
+  width: 100%;
+}
+
+.accordion-item-body-content {
+  padding: 0.5rem;
+  border-top: 1px solid $border-color;
+  width: 100%;
+}
+
+.rule-container {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.option-bar {
+  display: flex;
+  justify-content: end;
+  padding-bottom: $vertical-padding;
+  mat-icon {
+    font-size: 1.2em;
+    height: fit-content;
+    color: var(--mat-sys-secondary);
+    width: fit-content;
+  }
+  @include mat.button-toggle-overrides(
+    (
+      height: -1,
+    )
+  );
+}
+
+.edit-area {
+  padding: 0.5rem;
+  width: 100%;
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: 0.5rem;
+  resize: none;
+  field-sizing: content;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.add-section {
+  background-color: $header-bg;
+  padding: $vertical-padding $horizontal-padding;
+  font-family: var(--pdz-fancy);
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  span {
+    padding: 0 $horizontal-padding + 0.25rem;
+  }
+  &:hover {
+    background-color: $header-bg-hover;
+  }
+}
+
+.drag-handle {
+  cursor: move;
+  color: var(--mat-sys-outline);
+}
+
+.cdk-drag-preview {
+  box-sizing: border-box;
+  border-radius: calc($border-radius / 2);
+  box-shadow: var(--mat-sys-level4);
+  background-color: var(--mat-sys-surface);
+  .accordion-item-header {
+    padding: 0 $horizontal-padding;
+    min-height: 3rem;
+    .header-title input {
+      background-color: transparent;
+    }
+  }
+  .accordion-item-body {
+    display: none;
+  }
+}
+
+.cdk-drag-placeholder {
+  background-color: var(--mat-sys-surface-container-highest);
+  opacity: 0.3;
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+  border-radius: calc($border-radius / 2);
+  .accordion-item-header,
+  .accordion-item-body {
+    opacity: 0;
+  }
+}
+
+.cdk-drop-list-dragging .accordion-item:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
