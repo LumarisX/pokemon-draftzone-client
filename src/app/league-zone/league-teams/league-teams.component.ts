@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { getRandomPokemon } from '../../data/namedex';
-import { teamData } from '../league-ghost';
+import { defenseData } from '../league-ghost';
 import {
   LeagueTeamCardComponent,
   TeamPokemon,
@@ -13,7 +13,7 @@ import {
   styleUrl: './league-teams.component.scss',
 })
 export class LeagueTeamsComponent {
-  teams = teamData.map((team) => {
+  teams = defenseData.map((team) => {
     const roster: TeamPokemon[] = [];
     const pokemonCount = Math.round(Math.random() * 2) + 10;
     for (let i = 0; i < pokemonCount; i++) {

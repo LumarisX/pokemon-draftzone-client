@@ -10,12 +10,22 @@ import {
   ViewChild,
 } from '@angular/core';
 import * as d3 from 'd3';
-interface BracketNode {
-  name?: string;
+import { attackData, defenseData } from '../../league-ghost';
+
+type BracketTeamData = {
+  teamName: string;
+  coachName: string;
+  seed: number;
+};
+
+type BracketNode = {
   diff?: number;
   children?: BracketNode[];
   id?: number;
-}
+  team?: BracketTeamData;
+};
+
+type HierarchyPointNodeWithData = d3.HierarchyNode<BracketNode>;
 
 @Component({
   selector: 'pdz-league-single-elim-bracket',
@@ -27,41 +37,32 @@ interface BracketNode {
       <svg #bracketSvgContainer></svg>
     </div>
   `,
-  styles: [
-    `
-      /* Component-specific styles (can be moved to a separate .css file) */
-      /* Using :host ::ng-deep for potentially overriding D3 default styles if needed,
-       or just define them globally if preferred. For simplicity here, we define them directly.
-       If not using ::ng-deep, ensure these styles are in a global stylesheet or
-       configure view encapsulation appropriately. */
-
-      :host ::ng-deep .node text {
-        font: 12px sans-serif;
-        fill: #333;
-      }
-
-      /* Ensure the container allows scrolling if bracket is too wide */
-      :host .bracket-container {
-        width: 100%;
-        overflow-x: auto;
-        background-color: white; /* Ensure background for contrast */
-      }
-
-      /* Default SVG size - can be adjusted */
-      :host ::ng-deep svg {
-        width: 900px; /* Default width */
-        height: 700px; /* Default height */
-        display: block; /* Prevents extra space below SVG */
-        margin: auto; /* Center if container is wider */
-      }
-    `,
-  ],
+  styleUrl: './league-bracket-graph.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LeagueSingleElimBracketComponent
+export class LeagueBracketGraphComponent
   implements OnInit, AfterViewInit, OnChanges
 {
   @Input() componentTitle: string = 'Tournament Bracket (Single Elimination)';
+  teams: BracketTeamData[] = [
+    ...defenseData
+      .map((team) => ({
+        teamName: team.teamName,
+        coachName: team.coaches[0],
+        seed: team.seed,
+      }))
+      .filter((team) => team.seed <= 8)
+      .sort((x, y) => x.seed - y.seed),
+    ...attackData
+      .map((team) => ({
+        teamName: team.teamName,
+        coachName: team.coaches[0],
+        seed: team.seed,
+      }))
+      .filter((team) => team.seed <= 8)
+      .sort((x, y) => x.seed - y.seed),
+  ];
+
   @Input() bracketData: BracketNode = {
     children: [
       {
@@ -69,20 +70,20 @@ export class LeagueSingleElimBracketComponent
           {
             children: [
               {
-                children: [{ name: '02ThatOneGuy' }, { name: 'TheNPC420' }],
+                children: [{ team: this.teams[0] }, { team: this.teams[15] }],
               },
               {
-                children: [{ name: 'Lion' }, { name: 'Steven' }],
+                children: [{ team: this.teams[3] }, { team: this.teams[12] }],
               },
             ],
           },
           {
             children: [
               {
-                children: [{ name: 'Feather' }, { name: 'BR@D' }],
+                children: [{ team: this.teams[1] }, { team: this.teams[14] }],
               },
               {
-                children: [{ name: 'Dotexe' }, { name: 'Kat' }],
+                children: [{ team: this.teams[5] }, { team: this.teams[10] }],
               },
             ],
           },
@@ -93,26 +94,23 @@ export class LeagueSingleElimBracketComponent
           {
             children: [
               {
-                children: [{ name: 'ChristianDeputy' }, { name: 'Lumaris' }],
+                children: [{ team: this.teams[2] }, { team: this.teams[13] }],
               },
               {
-                children: [{ name: 'Speedy' }, { name: 'SuperSpiderPig' }],
+                children: [{ team: this.teams[6] }, { team: this.teams[9] }],
               },
             ],
           },
           {
             children: [
               {
-                children: [
-                  { name: 'Hsoj Super long team name' },
-                  { name: 'Jimothy J' },
-                ],
+                children: [{ team: this.teams[4] }, { team: this.teams[11] }],
               },
               {
-                name: 'Rai',
+                team: this.teams[8],
                 children: [
-                  { name: 'TheNotoriousABS', diff: -2 },
-                  { name: 'Rai', diff: 2 },
+                  { team: this.teams[7], diff: -2 },
+                  { team: this.teams[8], diff: 2 },
                 ],
               },
             ],
@@ -121,14 +119,18 @@ export class LeagueSingleElimBracketComponent
       },
     ],
   };
-  @Input() width: number = 900;
-  @Input() height: number = 700;
+  @Input() width: number = 1200;
+  @Input() height: number = 900;
   imageSize = 16;
   @ViewChild('bracketSvgContainer') private bracketContainer!: ElementRef;
 
-  constructor() {}
+  constructor() {
+    console.log(this.teams);
+  }
 
   winnerSize = 120;
+  matchupVerticalSeparation = 42; // *** NEW: Control vertical space between teams in a single matchup ***
+  nodeBoxHeight = 40; // *** NEW: Consistent height for node boxes ***
 
   ngOnInit(): void {}
 
@@ -175,7 +177,7 @@ export class LeagueSingleElimBracketComponent
       .attr('cy', 0)
       .attr('r', this.imageSize / 2);
 
-    const margin = { top: 20, right: 20, bottom: 20, left: 20 };
+    const margin = { top: 30, right: 50, bottom: 30, left: 50 }; // Adjusted margins
     const innerWidth = this.width - margin.left - margin.right;
     const innerHeight = this.height - margin.top - margin.bottom;
 
@@ -185,7 +187,8 @@ export class LeagueSingleElimBracketComponent
 
     const treeLayout = d3
       .tree<BracketNode>()
-      .size([innerHeight, innerWidth - this.winnerSize]);
+      .size([innerHeight, innerWidth - this.winnerSize]); // Original
+    //   .size([innerHeight, innerWidth]);
     const root = d3.hierarchy(this.bracketData);
 
     treeLayout(root);
@@ -197,10 +200,30 @@ export class LeagueSingleElimBracketComponent
       d.data.id = ++count;
     });
 
+    root.eachAfter((node: HierarchyPointNodeWithData) => {
+      if (node.children && node.children.length > 0) {
+        if (node.children.length === 2) {
+          const parentX = node.x!;
+          const firstChild = node.children[0];
+          const secondChild = node.children[1];
+
+          firstChild.x = parentX - this.matchupVerticalSeparation / 2;
+          secondChild.x = parentX + this.matchupVerticalSeparation / 2;
+
+          const meanX = d3.mean(node.children, (d) => d.x);
+          if (meanX !== undefined) {
+            node.x = meanX;
+          }
+        } else if (node.children.length === 1) {
+        } else if (node.children.length > 2) {
+        }
+      }
+    });
+
     function niceLinkGenerator(d: d3.HierarchyLink<BracketNode>): string {
       const source = d.source as d3.HierarchyPointNode<BracketNode>;
       const target = d.target as d3.HierarchyPointNode<BracketNode>;
-      const maxTurnSize = 20;
+      const maxTurnSize = 2;
       const pivotX = (source.y - target.y) / 6;
       const inflectY = (source.x - target.x) / 2;
       const curve = Math.min(Math.abs(pivotX), Math.abs(inflectY), maxTurnSize);
@@ -218,14 +241,22 @@ export class LeagueSingleElimBracketComponent
     g.selectAll('.link')
       .data(root.links())
       .join('path')
+      .filter((d) => !d.target.data.diff || d.target.data.diff < 0)
       .attr('fill', 'none')
       .attr('stroke', (d: d3.HierarchyLink<BracketNode>) =>
-        d.target.data.diff && d.target.data.diff > 0
-          ? 'lightgreen'
-          : d.target.data.diff && d.target.data.diff < 0
-            ? 'lightcoral'
-            : '#ccc',
+        d.target.data.diff && d.target.data.diff < 0 ? 'lightcoral' : '#ccc',
       )
+      .attr('stroke-width', (d: d3.HierarchyLink<BracketNode>) =>
+        d.target.data.diff && d.target.data.diff < 0 ? '1.95px' : '2px',
+      )
+      .attr('d', niceLinkGenerator);
+
+    g.selectAll('.link')
+      .data(root.links())
+      .join('path')
+      .filter((d) => !!d.target.data.diff && d.target.data.diff > 0)
+      .attr('fill', 'none')
+      .attr('stroke', 'lightgreen')
       .attr('stroke-width', '2px')
       .attr('d', niceLinkGenerator);
 
@@ -243,6 +274,11 @@ export class LeagueSingleElimBracketComponent
         (d: d3.HierarchyNode<BracketNode>) => `translate(${d.y},${d.x})`,
       );
 
+    const boxDims = {
+      height: 36,
+      radius: 8,
+    };
+
     node
       .append('rect')
       .attr('fill', '#fff')
@@ -259,53 +295,77 @@ export class LeagueSingleElimBracketComponent
         (d: d3.HierarchyNode<BracketNode>) =>
           `${d.parent?.y ? ((d.parent.y - d.y!) * 2) / 3 : this.winnerSize}`,
       )
-      .attr('height', '20px')
-      .attr('rx', '5')
-      .attr('transform', `translate(0,-10)`);
+      .attr('height', `${boxDims.height}px`)
+      .attr('rx', boxDims.radius)
+      .attr('transform', `translate(0,${-boxDims.height / 2})`);
 
     node
+      .filter((d: d3.HierarchyNode<BracketNode>) => !!d.data.team)
       .append('foreignObject')
       .attr(
         'width',
         (d: d3.HierarchyNode<BracketNode>) =>
           `${d.parent?.y ? ((d.parent.y - d.y!) * 2) / 3 : this.winnerSize}`,
       )
-      .attr('y', '-10px')
-      .attr('height', '20px')
+      .attr('y', `${-boxDims.height / 2}px`)
+      .attr('height', `${boxDims.height}px`)
       .append('xhtml:div')
-      .style('color', 'black')
-      .style('padding', '0 .125rem')
-      .style('height', '100%')
-      .style('box-sizing', 'border-box')
-      .style('white-space', 'nowrap')
-      .style('overflow', 'hidden')
-      .style('font-size', '.8em')
-      .style('text-overflow', 'ellipsis')
-      .html((d: d3.HierarchyNode<BracketNode>) => d.data.name ?? ``);
-
-    // node
-    //   .append('text')
-    //   .attr('dy', '0.31em')
-    //   .attr('x', 2)
-    //   .attr('text-anchor', 'start')
-    //   .text((d: d3.HierarchyNode<BracketNode>) => d.data.name ?? ``)
-    //   .clone(true)
-    //   .lower()
-    //   .attr('stroke-linejoin', 'round')
-    //   .attr('stroke-width', 3)
-    //   .attr('stroke', 'white');
+      .attr('class', 'node-team')
+      .html(
+        (d: d3.HierarchyNode<BracketNode>) => `
+        <div class="team-logo"><img [src]="match.team2.logo" /></div>
+        <div class="team-info">
+            <div class="team-name">${d.data.team!.teamName}</div>
+            <div class="coach-info">
+                <span class="coach-name">${d.data.team!.coachName}</span>
+            </div>
+        </div>
+        <div class="team-score">0</div>
+      `,
+      );
 
     node
-      .filter((d: d3.HierarchyNode<BracketNode>) => !!d.children)
+      .filter((d: d3.HierarchyNode<BracketNode>) => !d.data.team)
       .append('text')
-      .attr('dy', '0.31em')
+      .attr('dy', `.31em`)
+      .attr('dx', '4px')
+      .attr('text-anchor', 'start')
+      .attr('class', 'node-placeholder')
+      .text((d: d3.HierarchyNode<BracketNode>) => `Winner of ${d.data.id}`)
+      .clone(true)
+      .lower()
+      .attr('stroke-linejoin', 'round')
+      .attr('stroke-width', 3)
+      .attr('stroke', 'white');
+
+    node
+      .filter(
+        (d: d3.HierarchyNode<BracketNode>) =>
+          !!d.parent && d.parent.children?.indexOf(d) == 0,
+      )
+      .append('foreignObject')
       .attr(
         'x',
         (d: d3.HierarchyNode<BracketNode>) =>
-          -(d.y! - d.children![0].y!) / 6 - 4,
+          ((d.parent!.y! - d.y!) * 5) / 6 - 12,
       )
-      .attr('text-anchor', 'end')
-      .text((d: d3.HierarchyNode<BracketNode>) => d.data.id!)
+      .attr('y', (d) => d.y!)
+      .attr('width', '24px')
+      .attr('height', `${boxDims.height}px`)
+      .append('xhtml:div')
+      .html(
+        (d: d3.HierarchyNode<BracketNode>) => `
+       ${d.data.id}
+      `,
+      );
+
+    node
+      .filter((d: d3.HierarchyNode<BracketNode>) => !d.children)
+      .append('text')
+      .attr('dy', '0.31em')
+      .attr('x', -6)
+      .attr('class', 'seed')
+      .text((d: d3.HierarchyNode<BracketNode>) => d.data.team!.seed)
       .clone(true)
       .lower()
       .attr('stroke-linejoin', 'round')
