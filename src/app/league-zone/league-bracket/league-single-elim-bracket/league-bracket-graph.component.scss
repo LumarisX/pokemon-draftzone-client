@@ -13,44 +13,78 @@
   ::ng-deep .node {
     .node-placeholder {
       font-style: italic;
-      font-size: 0.8em;
+      font-size: 0.7em;
+      font-family: var(--pdz-fancy);
       line-height: 1em;
       fill: #bbb;
+      text-anchor: middle;
+      dominant-baseline: central;
+      user-select: none;
     }
 
     .seed {
       font: 12px var(--pdz-fancy);
       fill: var(--mat-sys-secondary);
-      text-anchor: end;
+      text-anchor: middle;
+      dominant-baseline: central;
+    }
+
+    .matchup-text {
+      fill: #777;
+      font: 12px var(--pdz-fancy);
+      font-style: italic;
+      text-anchor: middle;
+      dominant-baseline: central;
+      font-size: 0.8em;
+      line-height: 1em;
+    }
+
+    .matchup-link {
+      font-family: "Material Symbols Outlined";
+      font-size: 24px;
+      line-height: 1;
+      letter-spacing: normal;
+      text-transform: none;
+      display: inline-block;
+      white-space: nowrap;
+      word-wrap: normal;
+      dominant-baseline: central;
+      direction: ltr;
+      -webkit-font-feature-settings: "liga";
+      font-feature-settings: "liga";
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      -moz-osx-font-smoothing: grayscale;
+      fill: var(--mat-sys-secondary);
+      cursor: pointer;
+      &:hover {
+        fill: var(--mat-sys-primary);
+      }
     }
   }
 
   ::ng-deep svg {
-    width: 1200px;
-    height: fit-content;
     display: block;
     margin: auto;
   }
 
   ::ng-deep .node-team {
-    // color: var(--mat-sys-on-surface);
     padding: 0 0.25rem;
     height: 100%;
     box-sizing: border-box;
     width: 100%;
-    // white-space: nowrap;
     overflow: hidden;
-    // font-size: 0.8em;
-    // text-overflow: ellipsis;
     display: flex;
     align-items: center;
+    column-gap: 0.25rem;
+    border-radius: 0.5rem;
     .team-logo {
       flex-shrink: 0;
       height: 32px;
-      border-color: inherit;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
       aspect-ratio: 1 / 1;
-      border-width: 2px;
-      border-radius: 3rem;
     }
 
     .team-info {
@@ -81,8 +115,7 @@
     .team-score {
       padding: 0 0.25rem;
       flex-shrink: 0;
-      font-weight: 700;
-      font-size: 1.1em;
+      font-size: 1em;
     }
   }
 }

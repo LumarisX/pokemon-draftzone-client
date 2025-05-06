@@ -7,7 +7,7 @@ export const defenseData: {
   {
     teamName: `Philadelphia Flygons`,
     coaches: ['02ThatOneGuy'],
-    logo: '',
+    logo: 'https://pokemondraftzone-public.s3.us-east-2.amazonaws.com/league-uploads/1746565385237-Philadelphia_Flygons.png',
     seed: 1,
   },
   {
@@ -19,13 +19,13 @@ export const defenseData: {
   {
     teamName: `Fitchburg's Sun Chasers`,
     coaches: ['Feather'],
-    logo: '',
+    logo: 'https://pokemondraftzone-public.s3.us-east-2.amazonaws.com/league-uploads/1746565484354-Fitchburgs_Sun_Chaser.png',
     seed: 2,
   },
   {
     teamName: `Chicago White Fox`,
     coaches: ['TheNotoriousABS'],
-    logo: '',
+    logo: 'https://pokemondraftzone-public.s3.us-east-2.amazonaws.com/league-uploads/1746565596549-Chicago_Ninetales.png',
     seed: 8,
   },
   {
@@ -37,7 +37,7 @@ export const defenseData: {
   {
     teamName: `Alpine Arcanines`,
     coaches: ['Lion'],
-    logo: '',
+    logo: 'https://pokemondraftzone-public.s3.us-east-2.amazonaws.com/league-uploads/1746565450693-AlpineArcanines.png',
     seed: 4,
   },
   {
@@ -61,7 +61,7 @@ export const defenseData: {
   {
     teamName: `I like 'em THICC`,
     coaches: ['Kat'],
-    logo: '',
+    logo: 'https://pokemondraftzone-public.s3.us-east-2.amazonaws.com/league-uploads/1746565503663-I_like_em_THICC.png',
     seed: 6,
   },
   {
@@ -111,49 +111,49 @@ export const attackData: {
   {
     teamName: `Moochelin Star Chefs`,
     coaches: ['Rai'],
-    logo: '',
+    logo: 'https://pokemondraftzone-public.s3.us-east-2.amazonaws.com/league-uploads/1746565579136-Moochelin_Star_Chefs.png',
     seed: 1,
   },
   {
     teamName: `Kalamazoo Komalas`,
     coaches: ['SuperSpiderPig'],
-    logo: '',
+    logo: 'https://pokemondraftzone-public.s3.us-east-2.amazonaws.com/league-uploads/1746565551389-Kalamazoo_Komalas.png',
     seed: 2,
   },
   {
     teamName: `Jokic Lokix`,
     coaches: ['Dotexe'],
-    logo: '',
+    logo: 'https://pokemondraftzone-public.s3.us-east-2.amazonaws.com/league-uploads/1746565520216-Jokic_Lokix.png',
     seed: 3,
   },
   {
     teamName: `Jimothy Jirachi Tomfoolery`,
     coaches: ['Jimothy J'],
-    logo: '',
+    logo: 'https://pokemondraftzone-public.s3.us-east-2.amazonaws.com/league-uploads/1746565565925-Jimothy_Jirachi.png',
     seed: 4,
   },
   {
     teamName: `Memphis Bloodmoons`,
     coaches: ['Steven'],
-    logo: '',
+    logo: 'https://pokemondraftzone-public.s3.us-east-2.amazonaws.com/league-uploads/1746565465031-Memphis_Bloodmoons.png',
     seed: 5,
   },
   {
     teamName: `F.C. Monterayquaza`,
     coaches: ['ChristianDeputy'],
-    logo: '',
+    logo: 'https://pokemondraftzone-public.s3.us-east-2.amazonaws.com/league-uploads/1746565535075-F.C._Monterrayquaza.png',
     seed: 6,
   },
   {
     teamName: `Chicago White Sawks`,
     coaches: ['BR@D'],
-    logo: '',
+    logo: 'https://pokemondraftzone-public.s3.us-east-2.amazonaws.com/league-uploads/1746565766076-Chicago_White_SawksBrad.png',
     seed: 7,
   },
   {
     teamName: `Bug Brigade`,
     coaches: ['TheNPC420'],
-    logo: '',
+    logo: 'https://pokemondraftzone-public.s3.us-east-2.amazonaws.com/league-uploads/1746565423936-Bug_Brigade.png',
     seed: 8,
   },
   {
