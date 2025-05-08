@@ -1,15 +1,15 @@
-import { Component, Input } from '@angular/core';
-import { CdkAccordionItem, CdkAccordionModule } from '@angular/cdk/accordion';
-import { MarkdownModule } from 'ngx-markdown';
-import { Section } from '../league-rules.interface';
-import { MatIconModule } from '@angular/material/icon';
 import {
-  trigger,
-  state,
   animate,
-  transition,
+  state,
   style,
+  transition,
+  trigger,
 } from '@angular/animations';
+import { CdkAccordionItem, CdkAccordionModule } from '@angular/cdk/accordion';
+import { Component, Input } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
+import { MarkdownModule } from 'ngx-markdown';
+import { League } from '../../league.interface';
 
 @Component({
   selector: 'pdz-league-rules',
@@ -43,7 +43,7 @@ import {
 })
 export class LeagueRulesComponent {
   @Input()
-  sections: Section[] = [];
+  sections: League.Rule[] = [];
 
   getExpansionState(item: CdkAccordionItem): 'expanded' | 'collapsed' {
     return item.expanded ? 'expanded' : 'collapsed';

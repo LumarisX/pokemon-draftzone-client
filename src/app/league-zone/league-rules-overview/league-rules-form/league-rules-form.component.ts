@@ -17,7 +17,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIconModule } from '@angular/material/icon';
 import { MarkdownModule } from 'ngx-markdown';
-import { Section } from '../league-rules.interface';
+import { League } from '../../league.interface';
 
 @Component({
   selector: 'pdz-league-rules-form',
@@ -62,7 +62,7 @@ export class LeagueRulesFormComponent {
   view: string = 'edit';
 
   @Input()
-  sections: Section[] = [];
+  sections: League.Rule[] = [];
 
   addSection() {
     this.sections.push({
@@ -78,7 +78,7 @@ export class LeagueRulesFormComponent {
   getExpansionState(item: CdkAccordionItem): 'expanded' | 'collapsed' {
     return item.expanded ? 'expanded' : 'collapsed';
   }
-  onDrop(event: CdkDragDrop<Section[]>) {
+  onDrop(event: CdkDragDrop<League.Rule[]>) {
     moveItemInArray(this.sections, event.previousIndex, event.currentIndex);
   }
 }

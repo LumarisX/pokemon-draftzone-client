@@ -1,0 +1,42 @@
+.widget {
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--mat-sys-level2);
+  border-radius: 1rem;
+  overflow: hidden;
+  .widget-title {
+    padding: 0.25rem;
+    font-family: var(--pdz-fancy);
+    background-color: var(--mat-sys-primary);
+    color: var(--mat-sys-on-primary);
+    text-align: center;
+  }
+
+  .widget-body {
+    overflow: auto;
+    padding: 0.5rem;
+  }
+}
+
+.widget-container {
+  padding: 1rem;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.league-image {
+  width: 20rem;
+  height: 10rem;
+  overflow: hidden;
+  object-fit: cover;
+  img {
+  }
+}
+
+.league-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.25rem 1rem;
+}

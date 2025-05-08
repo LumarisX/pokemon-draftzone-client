@@ -1,0 +1,39 @@
+.nav-group {
+  padding: 0.25rem;
+  .nav-title {
+    font-size: small;
+    font-family: var(--pdz-fancy);
+  }
+  .nav-links {
+    margin-left: 0.25rem;
+
+    display: flex;
+    flex-direction: column;
+  }
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+}
+
+.league-group {
+  margin-left: 1rem;
+
+  .league-header {
+    height: 2rem;
+    align-items: center;
+    display: flex;
+    img {
+      max-height: 100%;
+    }
+  }
+
+  .league-links {
+    margin-left: 0.25rem;
+    padding-left: 0.25rem;
+    border-left: 2px solid var(--mat-sys-outline-variant);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .league-spacer {
+    flex-grow: 1;
+  }
+}

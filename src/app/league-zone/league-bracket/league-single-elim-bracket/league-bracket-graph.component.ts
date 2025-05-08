@@ -125,6 +125,9 @@ export class LeagueBracketGraphComponent
             ],
           },
           {
+            matchDetails: {
+              winner: 1,
+            },
             type: 'match',
             children: [
               {
@@ -141,10 +144,12 @@ export class LeagueBracketGraphComponent
                 matchDetails: {
                   winner: 0,
                 },
+                score: 4,
+
                 type: 'match',
                 children: [
-                  { type: 'team', team: this.teams[5] },
-                  { type: 'team', team: this.teams[10], score: 3 },
+                  { type: 'team', team: this.teams[5], score: 3 },
+                  { type: 'team', team: this.teams[10] },
                 ],
               },
             ],
@@ -502,17 +507,19 @@ export class LeagueBracketGraphComponent
         .append('rect')
         .attr('fill', '#fff')
         .attr(
-          'stroke',
+          'class',
+
           !d.parent ||
             (d.parent.data.type === 'match' && !d.parent.data.matchDetails)
-            ? 'steelblue'
+            ? d.data.type === 'match' && d.data.matchDetails
+              ? 'undecided'
+              : 'empty'
             : d.parent.data.type === 'match' &&
                 d.parent.data.matchDetails?.winner ===
                   d.parent.children!.indexOf(d)
-              ? 'lightgreen'
-              : 'lightcoral',
+              ? 'winner'
+              : 'loser',
         )
-        .attr('stroke-width', '2px')
         .attr(
           'width',
           `${d.parent?.y ? d.parent.y - d.y! - this.stageHorizontalSeparation : this.nodeBox.width}`,

@@ -1,5 +1,53 @@
-<p>league works!</p>
-<div><button routerLink="drafting">Drafting</button></div>
-<div><button routerLink="tier/edit">Edit Tier</button></div>
+<div class="league-container">
+  PDBL
+  <img
+    class="league-image"
+    src="../../../assets/images/battle-zone/pdbl.png"
+    alt=""
+  />
+</div>
+<div class="widget-container">
+  <div class="widget row-span-2">
+    <div class="widget-title">Deimos Deoxys</div>
+    <div class="widget-body">
+      <pdz-league-team-card [teamDetails]="team"></pdz-league-team-card>
+    </div>
+  </div>
+  <div class="widget">
+    <div class="widget-title">Upcoming Matches</div>
+    <div class="widget-body"></div>
+  </div>
+  <div class="widget row-span-3">
+    <div class="widget-title">Standings</div>
+    <div class="widget-body">
+      <pdz-coach-standings></pdz-coach-standings>
+    </div>
+  </div>
+  <div class="widget">
+    <div class="widget-title">Recent Activity</div>
+    <div class="widget-body"></div>
+  </div>
+  <div class="widget">
+    <div class="widget-title">Matches</div>
+    <div class="widget-body">
+      @for (matchup of matchups; track matchup) {
+        <pdz-matchup-card [matchup]="matchup"></pdz-matchup-card>
+      }
+    </div>
+  </div>
+  <div class="widget">
+    <div class="widget-title">Matches</div>
+    <div class="widget-body"></div>
+  </div>
+</div>
 
-<pdz-upload-image></pdz-upload-image>
+<!-- <mat-sidenav-container class="app-container">
+    <mat-sidenav #sidenav mode="side" closed class="app-sidenav">
+      <pdz-league-sidebar></pdz-league-sidebar>
+    </mat-sidenav>
+  
+    <mat-sidenav-content class="app-content">
+      <router-outlet></router-outlet>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+   -->

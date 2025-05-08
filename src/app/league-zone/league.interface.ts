@@ -33,6 +33,11 @@ export namespace League {
       team2: { team: MatchPokemon[]; score: number; winner?: boolean };
     }[];
   };
+
+  export type Rule = {
+    title: string;
+    body: string;
+  };
 }
 
 type TradeParticipant = {

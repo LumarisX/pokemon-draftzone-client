@@ -5,11 +5,6 @@
     background-color: white;
   }
 
-  //   ::ng-deep .node text {
-  //     font: 12px var(--pdz-fancy);
-  //     fill: var(--mat-sys-secondary);
-  //   }
-
   ::ng-deep .node {
     .node-placeholder {
       font-style: italic;
@@ -20,6 +15,21 @@
       text-anchor: middle;
       dominant-baseline: central;
       user-select: none;
+    }
+
+    rect {
+      stroke-width: 2px;
+      stroke: #ccc;
+
+      &.undecided {
+        stroke: steelblue;
+      }
+      &.winner {
+        stroke: lightgreen;
+      }
+      &.loser {
+        stroke: lightcoral;
+      }
     }
 
     .seed {
