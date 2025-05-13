@@ -1,0 +1,66 @@
+$tab-height: 2.5rem;
+$tab-vertical-spacing: 0.25rem;
+$tab-horizontal-spacing: 1rem;
+$transition-speed: 0.3s;
+:host {
+  position: relative;
+  display: inline-flex;
+  border: 1px solid var(--mat-sys-outline);
+  border-radius: $tab-height;
+  padding: 0;
+  overflow-x: auto;
+  &::-webkit-scrollbar {
+    /* WebKit */
+    width: 0;
+    height: 0;
+  }
+}
+
+.main-tab {
+  position: relative;
+  white-space: nowrap;
+  z-index: 1;
+  padding: $tab-vertical-spacing $tab-horizontal-spacing;
+  height: $tab-height;
+  border-radius: $tab-height;
+  font-family: "Nasalization RG", sans-serif;
+  border: none;
+  background-color: transparent;
+  color: var(--mat-color-neutral-variant-40);
+  cursor: pointer;
+  transition: color $transition-speed ease-in-out;
+  &:hover {
+    color: var(--mat-sys-primary);
+  }
+  &:not(:first-child) {
+    margin-left: calc($tab-horizontal-spacing / -4);
+  }
+  &:not(:last-child) {
+    margin-right: calc($tab-horizontal-spacing / -4);
+  }
+  &.selected,
+  &.router-active-link-imitation {
+    color: var(--mat-sys-on-primary);
+  }
+}
+
+.sliding-background {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  height: 100%;
+  background-color: var(--mat-sys-primary);
+  border-radius: $tab-height;
+  z-index: 0;
+  visibility: hidden;
+  transition:
+    left $transition-speed ease-in-out,
+    width $transition-speed ease-in-out,
+    visibility 0s $transition-speed;
+  &[style*="visibility: visible"] {
+    transition:
+      left $transition-speed ease-in-out,
+      width $transition-speed ease-in-out;
+    visibility: visible;
+  }
+}

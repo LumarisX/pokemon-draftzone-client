@@ -16,6 +16,7 @@ import { AuthService } from '../../services/auth0.service';
 import { SettingsComponent } from '../settings/settings.component';
 import { LogoSVG } from '../../images/svg-components/logo.component';
 import { CommonModule } from '@angular/common';
+import { YourTabsComponent } from '../main-tab-slide/main-tab-slide.component';
 
 @Component({
   selector: 'pdz-top-navbar',
@@ -30,39 +31,13 @@ import { CommonModule } from '@angular/common';
     MatButtonModule,
     SettingsComponent,
     RouterModule,
+    YourTabsComponent,
   ],
   templateUrl: './top-navbar.component.html',
   styleUrl: './top-navbar.component.scss',
 })
 export class TopNavbarComponent implements OnInit {
   settingsOpen: boolean = false;
-  TABS: {
-    title: string;
-    route: string;
-    badge?: BehaviorSubject<string>;
-  }[] = [
-    {
-      title: 'My Drafts',
-      route: DraftOverviewPath,
-    },
-    {
-      title: 'Planner',
-      route: '/planner',
-    },
-    {
-      title: 'Replay Analyzer',
-      route: '/tools/replay-analyzer',
-    },
-    {
-      title: 'Find A League',
-      route: '/league-list',
-      badge: this.unreadService.leagueCount,
-    },
-    // {
-    //   title: 'Other Tools',
-    //   route: '/tools',
-    // },
-  ];
 
   draftPath = DraftOverviewPath;
   newsBadge = this.unreadService.newsCount;
@@ -92,10 +67,6 @@ export class TopNavbarComponent implements OnInit {
       this.settingsService.updateSettings();
     }
   }
-
-  anyBadge$ = combineLatest(this.TABS.map((tab) => tab.badge ?? of(''))).pipe(
-    map((badges) => badges.some((value) => value !== '')),
-  );
 
   authenticated: boolean = false;
 

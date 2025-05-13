@@ -1,41 +1,13 @@
 @use "@angular/material" as mat;
 
-mat-toolbar {
-  > :not(:first-child) {
-    padding-left: 0.5rem;
-  }
+$horizontal-padding: 0.5rem;
+$vertical-padding: 0.5rem;
 
-  @include mat.toolbar-overrides(
-    (
-      container-background-color: var(--mat-sys-surface-container-highest),
-      container-text-color: var(--mat-sys-on-surface),
-    )
-  );
-  @include mat.toolbar-density(-4);
-
-  @include mat.button-density(-1);
-  @include mat.button-overrides(
-    (
-      outlined-horizontal-padding: 0.75rem,
-    )
-  );
-}
 header {
-  box-shadow: var(--mat-sys-level2);
-  z-index: 5000;
-}
-
-.toolbar-spacer {
-  flex: 1 1 auto;
-}
-
-.menu-tab {
-  padding: 0.5rem;
-  border-radius: 0.5rem;
-  font-family: "Nasalization RG", sans-serif;
-  &:hover {
-    background-color: var(--mat-sys-surface-container);
-  }
+  display: flex;
+  padding: $vertical-padding $horizontal-padding;
+  justify-content: space-between;
+  column-gap: $horizontal-padding;
 }
 
 .user-info-container {

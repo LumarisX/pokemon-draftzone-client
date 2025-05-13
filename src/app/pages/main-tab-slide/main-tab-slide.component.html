@@ -1,0 +1,19 @@
+<div class="sliding-background" [ngStyle]="sliderStyle"></div>
+
+@for (tab of TABS; track $index) {
+  <button
+    #tabButton
+    class="main-tab"
+    [ngClass]="{ selected: isSelected($index) }"
+    [routerLink]="tab.route"
+    routerLinkActive="router-active-link-imitation"
+    [routerLinkActiveOptions]="{
+      exact: tab.route === '/' || tab.route === '/home',
+    }"
+    (click)="selectTab($index)"
+    [matBadge]="tab.badge | async"
+    [matBadgeHidden]="!(tab.badge | async)"
+  >
+    <span>{{ tab.title }}</span>
+  </button>
+}
