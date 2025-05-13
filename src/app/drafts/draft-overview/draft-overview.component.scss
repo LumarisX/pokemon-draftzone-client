@@ -65,33 +65,3 @@ $vertical-padding: 0.25rem;
     }
   }
 }
-
-.draft-dashboard {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-
-  .dashboard-header {
-    flex-shrink: 0;
-  }
-  .dashboard-body {
-    flex-grow: 1;
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 0.5rem;
-  }
-}
-
-.draft-widget {
-  border-radius: 0.5rem;
-  overflow: hidden;
-  border: 1px solid var(--mat-sys-primary);
-  .draft-header {
-    background-color: var(--mat-sys-primary);
-    color: var(--mat-sys-on-primary);
-    padding: 0.25rem;
-  }
-  .draft-body {
-  }
-}

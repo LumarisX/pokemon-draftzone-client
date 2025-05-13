@@ -39,28 +39,4 @@
     <div class="add-button"></div>
   </div>
 </div>
-<!-- <router-outlet></router-outlet> -->
-@let draft = drafts[0];
-<div class="draft-dashboard">
-  <div class="dashboard-header">
-    <div class="draft-name">{{ draft.leagueName }}</div>
-    <div class="draft-record">
-      {{ draft.score.wins }}-{{ draft.score.loses }} ({{ draft.score.diff }})
-    </div>
-  </div>
-  <div class="dashboard-body">
-    <div class="draft-widget">
-      <div class="draft-header">Next Match</div>
-      <div class="draft-body h-36">View matchup</div>
-    </div>
-    <div class="draft-widget col-span-2">
-      <div class="draft-header">Statistics</div>
-      <div class="draft-body"></div>
-    </div>
-
-    <div class="draft-widget col-span-3">
-      <div class="draft-header">Past Matches</div>
-      <div class="draft-body h-96"></div>
-    </div>
-  </div>
-</div>
+<router-outlet></router-outlet>
