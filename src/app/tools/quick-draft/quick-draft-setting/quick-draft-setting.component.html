@@ -1,0 +1,27 @@
+<h2>Select Ruleset, Format, and Template prior to proceeding</h2>
+<div class="qd-options-bar">
+  <format-select appearance="outline"></format-select>
+  <ruleset-select appearance="outline"></ruleset-select>
+</div>
+<div class="qd-option-container">
+  @for (template of templates; track $index) {
+    <button
+      class="qd-template qd-option"
+      [ngClass]="{
+        selected: $index == selectedTemplate,
+      }"
+      (click)="selectedTemplate = $index"
+    >
+      <div class="qd-header">Team of {{ getTotalPicks(template) }}</div>
+      <div class="qd-tiers-container">
+        @for (tier of template.tiers; track $index) {
+          <div class="qd-tier">{{ tier[0] }}: {{ tier[1] }}</div>
+        }
+      </div>
+      <div class="qd-spacer"></div>
+      <div class="qd-rerolls">Rerolls: {{ template.rerolls }}</div>
+    </button>
+  }
+</div>
+<div class="qd-spacer"></div>
+<button mat-flat-button (click)="continue()">Continue to Draft</button>

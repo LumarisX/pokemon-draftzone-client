@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, forwardRef, Input, OnInit } from '@angular/core';
+import { Component, forwardRef, input, Input, OnInit } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MAT_SELECT_CONFIG, MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { DataService } from '../../services/data.service';
+import { MatFormFieldAppearance } from '@angular/material/form-field';
 
 @Component({
   selector: 'format-select',
@@ -32,6 +33,8 @@ export class FormatSelectComponent implements OnInit, ControlValueAccessor {
   @Input()
   classList?: string | string[] | null;
 
+  @Input()
+  appearance: MatFormFieldAppearance = 'fill';
   set selectedFormat(value: string | undefined) {
     this._selectedFormat = value;
     this.onChange(value);

@@ -4,7 +4,11 @@
     'full-screen-on-mobile': rulesetSelect.panelOpen,
   }"
 >
-  <mat-form-field class="w-full" [ngClass]="classList">
+  <mat-form-field
+    class="w-full"
+    [ngClass]="classList"
+    [appearance]="appearance"
+  >
     <mat-label>Ruleset</mat-label>
     <mat-select
       [value]="selectedRuleset"

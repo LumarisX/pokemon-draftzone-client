@@ -1,8 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { Pokemon } from '../interfaces/draft';
+import { Pokemon as OldPokemon } from '../interfaces/draft';
+import { Pokemon } from '../interfaces/pokemon';
+
 import { ApiService } from './api.service';
+import { Stat } from '../data';
 
 @Injectable({
   providedIn: 'root',
@@ -13,8 +16,8 @@ export class DataService {
   cache: {
     formats?: string[];
     rulesets?: string[];
-    pokemonList: { [key: string]: Pokemon[] };
-    formes: { [key: string]: Pokemon[] };
+    pokemonList: { [key: string]: OldPokemon[] };
+    formes: { [key: string]: OldPokemon[] };
   } = {
     pokemonList: {},
     formes: {},
@@ -62,15 +65,24 @@ export class DataService {
     count: number,
     ruleset: string,
     format: string,
-  ): Observable<Pokemon[]> {
+    options: { tier?: string; banned?: string[] } = {},
+  ): Observable<
+    Pokemon<{
+      tier: string;
+      types: string[];
+      baseStats: { [key in Stat]: number };
+      abilities: string[];
+    }>[]
+  > {
     return this.apiService.get('data/random', false, {
       count: count.toFixed(0),
       ruleset,
       format,
+      ...options,
     });
   }
 
-  getPokemonList(ruleset?: string | null): Observable<Pokemon[]> {
+  getPokemonList(ruleset?: string | null): Observable<OldPokemon[]> {
     if (!ruleset) ruleset = 'Gen9 NatDex';
     if (this.cache.pokemonList[ruleset]) {
       return of(this.cache.pokemonList[ruleset]);
@@ -78,7 +90,7 @@ export class DataService {
       return this.apiService
         .get('data/listpokemon', false, { ruleset: ruleset })
         .pipe(
-          tap((list: Pokemon[]) => {
+          tap((list: OldPokemon[]) => {
             this.cache.pokemonList[ruleset] = list;
           }),
         );
@@ -92,11 +104,11 @@ export class DataService {
     return this.apiService.get('data/advancesearch', false, params);
   }
 
-  getFormes(ruleset: string, id: string): Observable<Pokemon[]> {
+  getFormes(ruleset: string, id: string): Observable<OldPokemon[]> {
     if (this.cache.formes[id]) return of(this.cache.formes[id]);
     else {
       return this.apiService.get(`data/${ruleset}/${id}/formes`, false).pipe(
-        tap((list: Pokemon[]) => {
+        tap((list: OldPokemon[]) => {
           this.cache.formes[id] = list;
         }),
       );

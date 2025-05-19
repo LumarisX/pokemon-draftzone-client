@@ -5,6 +5,7 @@ import { MAT_SELECT_CONFIG, MatSelectModule } from '@angular/material/select';
 import { DataService } from '../../services/data.service';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatFormFieldAppearance } from '@angular/material/form-field';
 
 @Component({
   selector: 'ruleset-select',
@@ -31,6 +32,8 @@ export class RulesetSelectComponent implements OnInit, ControlValueAccessor {
   @Input()
   classList?: string | string[] | null;
 
+  @Input()
+  appearance: MatFormFieldAppearance = 'fill';
   set selectedRuleset(value: string | undefined) {
     this._selectedRuleset = value;
     this.onChange(value);

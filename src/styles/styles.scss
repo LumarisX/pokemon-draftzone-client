@@ -101,6 +101,8 @@ $screen-size-medium: 768px;
   --screen-size-medium: $screen-size-medium;
   --screen-size-large: $screen-size-large;
   --pdz-fancy: Nasalization RG, sans-serif;
+  --pdz-font-fancy: Nasalization RG;
+  --pdz-font-regular: Nunito;
 }
 
 $option-lineheight: 3rem;
@@ -169,6 +171,7 @@ $option-lineheight: 3rem;
       font-size: 0.6em;
       line-height: 1em;
       user-select: none;
+      font-family: var(--pdz-font-regular);
     }
   }
 }

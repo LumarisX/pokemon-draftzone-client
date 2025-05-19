@@ -4,7 +4,11 @@
     'full-screen-on-mobile': formatSelect.panelOpen,
   }"
 >
-  <mat-form-field class="w-full" [ngClass]="classList">
+  <mat-form-field
+    class="w-full"
+    [ngClass]="classList"
+    [appearance]="appearance"
+  >
     <mat-label>Format</mat-label>
     <mat-select
       [value]="selectedFormat"
