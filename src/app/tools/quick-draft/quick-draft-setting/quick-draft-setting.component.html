@@ -1,10 +1,10 @@
 <h2>Select Ruleset, Format, and Template prior to proceeding</h2>
 <div class="qd-options-bar">
-  <format-select appearance="outline"></format-select>
-  <ruleset-select appearance="outline"></ruleset-select>
+  <format-select appearance="outline" [(ngModel)]="format"></format-select>
+  <ruleset-select appearance="outline" [(ngModel)]="ruleset"></ruleset-select>
 </div>
 <div class="qd-option-container">
-  @for (template of templates; track $index) {
+  @for (template of formatTemplates; track $index) {
     <button
       class="qd-template qd-option"
       [ngClass]="{

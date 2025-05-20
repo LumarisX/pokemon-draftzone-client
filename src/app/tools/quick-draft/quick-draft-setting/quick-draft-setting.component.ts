@@ -3,6 +3,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { FormatSelectComponent } from '../../../util/format-select/format.component';
 import { RulesetSelectComponent } from '../../../util/ruleset-select/ruleset.component';
 import { MatButtonModule } from '@angular/material/button';
+import { FormsModule } from '@angular/forms';
 
 export type QDSettings = {
   rerolls: number;
@@ -20,6 +21,7 @@ type Template = {
   selector: 'pdz-quick-draft-setting',
   imports: [
     CommonModule,
+    FormsModule,
     FormatSelectComponent,
     RulesetSelectComponent,
     MatButtonModule,
@@ -70,12 +72,36 @@ export class QuickDraftSettingComponent {
     },
   ];
 
+  doublesTemplates: Template[] = [
+    {
+      rerolls: 1,
+      tiers: [
+        ['DOU', 2],
+        ['DUU', 4],
+      ],
+    },
+    {
+      rerolls: 1,
+      tiers: [
+        ['DUber', 1],
+        ['DOU', 3],
+        ['DUU', 4],
+      ],
+    },
+  ];
+
+  get formatTemplates() {
+    if (this.format === 'VGC' || this.format === 'Doubles')
+      return this.doublesTemplates;
+    return this.templates;
+  }
+
   @Output()
   settingsUpdated = new EventEmitter<QDSettings | undefined>();
 
   continue() {
     this.settingsUpdated.emit({
-      ...this.templates[this.selectedTemplate],
+      ...this.formatTemplates[this.selectedTemplate],
       format: this.format,
       ruleset: this.ruleset,
     });
