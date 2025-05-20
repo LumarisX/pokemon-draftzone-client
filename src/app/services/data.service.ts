@@ -7,6 +7,9 @@ import { Pokemon } from '../interfaces/pokemon';
 import { ApiService } from './api.service';
 import { Stat } from '../data';
 
+type Format = string;
+type Ruleset = string;
+
 @Injectable({
   providedIn: 'root',
 })
@@ -24,7 +27,7 @@ export class DataService {
   };
 
   //replace with fromat grouped eventually
-  getFormats(): Observable<string[]> {
+  getFormats(): Observable<Format[]> {
     if (this.cache.formats) {
       return of(this.cache.formats);
     } else {
@@ -43,7 +46,7 @@ export class DataService {
   }
 
   //replace with ruleset grouped eventually
-  getRulesets(): Observable<string[]> {
+  getRulesets(): Observable<Ruleset[]> {
     if (this.cache.rulesets) {
       return of(this.cache.rulesets);
     } else {
@@ -72,6 +75,7 @@ export class DataService {
       types: string[];
       baseStats: { [key in Stat]: number };
       abilities: string[];
+      level: string;
     }>[]
   > {
     return this.apiService.get('data/random', false, {

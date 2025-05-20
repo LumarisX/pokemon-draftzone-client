@@ -11,7 +11,25 @@
   >
     Save To New League
   </button>
-  <button mat-raised-button (click)="toPokepaste()">To PokePaste</button>
+  <form
+    #pokepasteForm
+    id="pokepasteForm"
+    style="display: inline"
+    method="post"
+    action="https://pokepast.es/create"
+    target="_blank"
+  >
+    <input type="hidden" name="title" value="Quick Draft" />
+    <input type="hidden" name="paste" [value]="teamPaste" />
+    <input
+      type="hidden"
+      name="author"
+      id="pasteAuthor"
+      [value]="loggedInUser"
+    />
+    <input type="hidden" name="notes" [value]="notes" />
+    <button mat-raised-button type="submit">To PokePaste</button>
+  </form>
   <button
     mat-raised-button
     [routerLink]="['/', toolsPath, 'quick-matchup']"

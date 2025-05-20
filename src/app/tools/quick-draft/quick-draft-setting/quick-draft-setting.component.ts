@@ -66,13 +66,13 @@ export class QuickDraftSettingComponent {
       ],
     },
     {
-      rerolls: 0,
+      rerolls: 2,
       tiers: [
-        ['Ubers', 1],
+        ['Uber', 1],
         ['OU', 2],
         ['UU', 2],
-        ['RU', 1],
-        ['NU', 1],
+        ['RU', 2],
+        ['NU', 2],
         ['PU', 1],
       ],
     },

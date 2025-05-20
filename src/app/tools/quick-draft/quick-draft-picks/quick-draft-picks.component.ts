@@ -15,6 +15,7 @@ export type QDPokemon = Pokemon<{
   types: string[];
   baseStats: { [key in Stat]: number };
   abilities: string[];
+  level: string;
 }>;
 
 @Component({
