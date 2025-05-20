@@ -2,7 +2,7 @@
   <div class="sprite-container">
     <div class="sprite-spacer">
       <div class="sprite-wrapper">
-        <sprite [pokemon]="pokemon" [flipped]="true"></sprite>
+        <pdz-sprite [pokemon]="pokemon" [flipped]="true"></pdz-sprite>
       </div>
     </div>
     <button class="reset-button" (click)="resetRecommended()">Reset</button>
@@ -67,13 +67,13 @@
     </div>
     <div class="sprite-container">
       @for (pokemon of coverage; track pokemon) {
-        <sprite
+        <pdz-sprite
           [ngClass]="{
             '!bg-scale-positive-2': pokemon.max > 1,
             '!bg-scale-negative-2': pokemon.max < 1,
           }"
           [pokemon]="pokemon.pokemon"
-        ></sprite>
+        ></pdz-sprite>
       }
     </div>
   </div>

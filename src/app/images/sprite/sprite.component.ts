@@ -11,7 +11,7 @@ import { Pokemon } from '../../interfaces/draft';
 import { SettingsService } from '../../pages/settings/settings.service';
 
 @Component({
-  selector: 'sprite',
+  selector: 'pdz-sprite',
   standalone: true,
   imports: [CommonModule, MatTooltipModule],
   styleUrl: './sprite.component.scss',

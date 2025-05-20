@@ -33,7 +33,7 @@
         >
           <td>{{ opp.rank }}</td>
           <td class="w-12 min-w-12">
-            <sprite [pokemon]="opp.pokemon"></sprite>
+            <pdz-sprite [pokemon]="opp.pokemon"></pdz-sprite>
           </td>
           <td>{{ opp.pokemon.name }}</td>
           <td>{{ opp.percent || "<1" }}%</td>
@@ -57,11 +57,14 @@
           <div class="space-y-2 border-2 p-2 rounded-lg">
             <div class="flex items-center">
               <div class="w-12 min-w-12">
-                <sprite [flipped]="true" [name]="result.attacker"></sprite>
+                <pdz-sprite
+                  [flipped]="true"
+                  [name]="result.attacker"
+                ></pdz-sprite>
               </div>
               <mat-icon svgIcon="right-arrow"></mat-icon>
               <div class="w-12 min-w-12">
-                <sprite [name]="result.defender"></sprite>
+                <pdz-sprite [name]="result.defender"></pdz-sprite>
               </div>
             </div>
             @for (calc of result.calcs; track calc) {

@@ -9,6 +9,13 @@ import { Pokemon } from '../../../interfaces/pokemon';
 import { DataService } from '../../../services/data.service';
 import { typeColor } from '../../../util/styling';
 import { QDSettings } from '../quick-draft-setting/quick-draft-setting.component';
+import {
+  trigger,
+  state,
+  animate,
+  style,
+  transition,
+} from '@angular/animations';
 
 export type QDPokemon = Pokemon<{
   tier: string;
@@ -32,6 +39,33 @@ export type QDPokemon = Pokemon<{
     './quick-draft-picks.component.scss',
     '../quick-draft.component.scss',
   ],
+  animations: [
+    trigger('optionAnimation', [
+      state(
+        'selected-disappear',
+        style({
+          opacity: 0,
+          transform: 'translateY(-50%)',
+        }),
+      ),
+      state(
+        'unselected-disappear',
+        style({
+          opacity: 0,
+          transform: 'translateY(50%)',
+        }),
+      ),
+      transition('* => selected-disappear', [animate('400ms ease-out')]),
+      transition('* => unselected-disappear', [animate('400ms ease-out')]),
+      transition('void => *', [
+        style({ opacity: 0, transform: 'translateY(50%)' }),
+        animate(
+          '300ms ease-out',
+          style({ opacity: 1, transform: 'translateY(0)' }),
+        ),
+      ]),
+    ]),
+  ],
 })
 export class QuickDraftPicksComponent implements OnInit {
   @Input({ required: true })
@@ -47,6 +81,9 @@ export class QuickDraftPicksComponent implements OnInit {
   selectedOption: number | null = null;
 
   optionCount = 3;
+
+  animationStates: ('void' | 'selected-disappear' | 'unselected-disappear')[] =
+    [];
 
   constructor(private dataService: DataService) {}
 
@@ -86,6 +123,7 @@ export class QuickDraftPicksComponent implements OnInit {
       .subscribe((data) => {
         if (data.length) {
           this.draftOptions = data;
+          this.animationStates = data.map(() => 'void');
         } else {
           tier[1] = this.currentPick;
           this.checkNext();
@@ -101,9 +139,18 @@ export class QuickDraftPicksComponent implements OnInit {
 
   draftOption() {
     if (this.selectedOption === null || !this.draftOptions) return;
-    this.draft[this.currentPick] = this.draftOptions[this.selectedOption];
-    this.currentPick++;
-    this.checkNext();
+    this.draftOptions.forEach((_, i) => {
+      if (i === this.selectedOption) {
+        this.animationStates[i] = 'selected-disappear';
+      } else {
+        this.animationStates[i] = 'unselected-disappear';
+      }
+    });
+    setTimeout(() => {
+      this.draft[this.currentPick] = this.draftOptions![this.selectedOption!];
+      this.currentPick++;
+      this.checkNext();
+    }, 400);
   }
 
   private checkNext() {

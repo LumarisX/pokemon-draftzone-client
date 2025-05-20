@@ -7,7 +7,7 @@
           @let pokemon = draftOptions[selectedOption];
           <div class="option-breakdown">
             <div class="sprite-wrapper">
-              <sprite [pokemon]="pokemon" />
+              <pdz-sprite [pokemon]="pokemon" />
             </div>
             <div class="option-info">
               <div class="option-name">
@@ -91,9 +91,10 @@
                 selected: $index == selectedOption,
               }"
               (click)="clickOption($index)"
+              [@optionAnimation]="animationStates[$index]"
             >
               <div class="sprite-wrapper">
-                <sprite [pokemon]="draftOption" />
+                <pdz-sprite [pokemon]="draftOption" />
               </div>
               <div class="option-info">
                 <div class="option-name">
@@ -131,7 +132,7 @@
             [ngClass]="{ 'active-pick': $index === currentPick }"
           >
             <div class="sprite-wrapper">
-              <sprite
+              <pdz-sprite
                 flipped
                 [pokemon]="pokemon ?? { name: 'unknown', id: 'unknown' }"
               />

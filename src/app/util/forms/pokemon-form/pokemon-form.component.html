@@ -4,13 +4,13 @@
       class="relative h-20 col-span-2 sm:h-24 md:h-28 lg:h-32 sm:col-span-1 aspect-square"
       (click)="toggleControl('shiny')"
     >
-      <sprite
+      <pdz-sprite
         [pokemon]="{
           id: pokemonForm.value.id,
           name: pokemonForm.value.name,
           shiny: pokemonForm.value.shiny,
         }"
-      ></sprite>
+      ></pdz-sprite>
       <div class="absolute top-0 right-0 w-6 h-6 hover:cursor-pointer">
         @if (pokemonForm.get("shiny")?.value) {
           <shiny-svg></shiny-svg>

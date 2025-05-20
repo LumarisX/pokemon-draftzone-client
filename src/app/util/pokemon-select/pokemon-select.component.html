@@ -7,7 +7,7 @@
   <mat-form-field class="w-full" [appearance]="appearance">
     @if (showSprite !== null && setPokemon) {
       <div matPrefix class="selected-sprite">
-        <sprite [flipped]="true" [pokemon]="setPokemon"></sprite>
+        <pdz-sprite [flipped]="true" [pokemon]="setPokemon"></pdz-sprite>
       </div>
     }
     <mat-label>{{ label }}</mat-label>
@@ -68,7 +68,7 @@
       (click)="selectOption(option)"
     >
       <div class="sprite-wrapper">
-        <sprite flipped [pokemon]="option"></sprite>
+        <pdz-sprite flipped [pokemon]="option"></pdz-sprite>
       </div>
       <div class="pokemon-text">
         {{ option.name }}

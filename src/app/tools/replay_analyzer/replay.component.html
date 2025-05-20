@@ -129,10 +129,10 @@
             <div class="flex flex-wrap">
               <div *ngFor="let mon of player.team" class="p-1">
                 <div class="w-20">
-                  <sprite
+                  <pdz-sprite
                     [pid]="mon.formes[0].id"
                     [disabled]="mon.fainted"
-                  ></sprite>
+                  ></pdz-sprite>
                 </div>
                 <div *ngIf="!mon.kills[1]">
                   <span class="font-semibold"> Kills: </span> {{ mon.kills[0] }}
