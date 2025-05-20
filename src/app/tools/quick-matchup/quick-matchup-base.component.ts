@@ -1,10 +1,9 @@
-import { CommonModule, Location } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { MatchupService } from '../../services/matchup.service';
 import { MatchupData } from '../../drafts/matchup-overview/matchup-interface';
 import { MatchupComponent } from '../../drafts/matchup-overview/matchup/matchup.component';
 import { LoadingComponent } from '../../images/loading/loading.component';
+import { MatchupService } from '../../services/matchup.service';
 import {
   QuickForm,
   QuickMatchupFormComponent,
@@ -26,29 +25,9 @@ export class QuickMatchupBaseComponent implements OnInit {
   editing: boolean = true;
   formData?: QuickForm;
 
-  constructor(
-    private matchupService: MatchupService,
-    private location: Location,
-    private route: ActivatedRoute,
-  ) {}
+  constructor(private matchupService: MatchupService) {}
 
-  ngOnInit() {
-    // this.route.queryParams.subscribe((params) => {
-    //   {
-    //     this.formData = {
-    //       format: params['format'] ?? 'Singles',
-    //       ruleset: params['ruleset'] ?? 'Gen9 NatDex',
-    //       team1: params['team']
-    //         ? Array.isArray(params['team'])
-    //           ? params['team'].map((id) => ({ id: id, name: getNameByPid(id) }))
-    //           : [params['team']]
-    //         : [],
-    //       team2: [],
-    //     };
-    //     this.location.replaceState(this.location.path().split('?')[0]);
-    //   }
-    // });
-  }
+  ngOnInit() {}
 
   getMatchupData(formData: QuickForm) {
     this.formData = formData;

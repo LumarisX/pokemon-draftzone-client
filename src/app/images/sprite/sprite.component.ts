@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import {
   getNameByPid,
@@ -7,8 +7,10 @@ import {
   getSpriteProperties,
   SpriteProperties,
 } from '../../data/namedex';
-import { Pokemon } from '../../interfaces/draft';
+import { DraftOptions, Pokemon } from '../../interfaces/pokemon';
 import { SettingsService } from '../../pages/settings/settings.service';
+
+type SpritePokemon = Pokemon<DraftOptions & { loaded?: boolean }>;
 
 @Component({
   selector: 'pdz-sprite',
@@ -20,7 +22,7 @@ import { SettingsService } from '../../pages/settings/settings.service';
 export class SpriteComponent {
   constructor(private settingService: SettingsService) {}
   @Input()
-  set pokemon(value: Pokemon) {
+  set pokemon(value: SpritePokemon) {
     this.updateData(value);
     this._pokemon = value;
   }
@@ -62,10 +64,13 @@ export class SpriteComponent {
   flip = false;
   @Input() flipped: string | boolean | null = null;
   @Input() disabled? = false;
-  get pokemon(): Pokemon {
+
+  @Output() loaded = new EventEmitter<void>();
+
+  get pokemon(): SpritePokemon {
     return this._pokemon;
   }
-  _pokemon!: Pokemon;
+  _pokemon!: SpritePokemon;
   path = '../../../../assets/icons/unknown.svg';
   _classes: string[] = [];
   set classes(value: string[]) {
@@ -83,7 +88,7 @@ export class SpriteComponent {
     return classes;
   }
 
-  updateData(pokemon: Pokemon) {
+  updateData(pokemon: SpritePokemon) {
     this.classes = [];
     let props: SpriteProperties | undefined = undefined;
     this.flip = false;
@@ -193,5 +198,10 @@ export class SpriteComponent {
           break;
       }
     }
+  }
+
+  onSpriteLoaded() {
+    this.pokemon.loaded = true;
+    this.loaded.emit();
   }
 }

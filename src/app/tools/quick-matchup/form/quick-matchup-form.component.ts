@@ -1,5 +1,5 @@
 import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import {
   Component,
   EventEmitter,
@@ -22,16 +22,18 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatStepperModule } from '@angular/material/stepper';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { BehaviorSubject, filter, Subject, takeUntil } from 'rxjs';
+import { Pokemon } from '../../../interfaces/draft';
+import { DataService } from '../../../services/data.service';
+import { FormatSelectComponent } from '../../../util/format-select/format.component';
 import {
   PokemonFormGroup,
   TeamFormComponent,
 } from '../../../util/forms/team-form/team-form.component';
-import { DataService } from '../../../services/data.service';
-import { Pokemon, Draft } from '../../../interfaces/draft';
-import { FormatSelectComponent } from '../../../util/format-select/format.component';
 import { RulesetSelectComponent } from '../../../util/ruleset-select/ruleset.component';
+import { stringify } from 'postcss';
+import { getNameByPid } from '../../../data/namedex';
 
 @Component({
   selector: 'quick-matchup-form',
@@ -72,24 +74,50 @@ export class QuickMatchupFormComponent implements OnInit, OnDestroy {
   quickForm: QuickForm | undefined;
 
   @Output() formSubmitted = new EventEmitter<QuickForm>();
-  constructor(private dataService: DataService) {}
+  constructor(
+    private dataService: DataService,
+    private location: Location,
+    private route: ActivatedRoute,
+  ) {}
 
   ngOnInit(): void {
-    if (!this.quickForm) {
-      this.quickForm = new QuickForm(this.pokemonList$);
-    }
-    this.quickForm.controls.details.controls.ruleset.valueChanges
-      .pipe(
-        filter((ruleset) => ruleset !== null),
-        takeUntil(this.destroy$),
-      )
-      .subscribe((ruleset) => {
-        this.loadPokemonList(ruleset);
-      });
-    this.loadPokemonList(
-      this.quickForm.controls.details.controls.ruleset.value,
-    );
-    this.quickForm.setValidators(this.validateDraftForm);
+    this.route.queryParams.subscribe((params) => {
+      const format: string | undefined = params['format'];
+      const ruleset: string | undefined = params['ruleset'];
+      const team1: Pokemon[] | undefined = params['team1']
+        ? (Array.isArray(params['team1'])
+            ? params['team1']
+            : [params['team1']]
+          ).map((pid) => ({ id: pid, name: getNameByPid(pid) }))
+        : undefined;
+      const team2: Pokemon[] | undefined = params['team2']
+        ? (Array.isArray(params['team2'])
+            ? params['team2']
+            : [params['team2']]
+          ).map((pid) => ({ id: pid, name: getNameByPid(pid) }))
+        : undefined;
+      if (!this.quickForm) {
+        this.quickForm = new QuickForm(this.pokemonList$, {
+          ruleset,
+          format,
+          team1,
+          team2,
+        });
+      }
+      this.quickForm.controls.details.controls.ruleset.valueChanges
+        .pipe(
+          filter((ruleset) => ruleset !== null),
+          takeUntil(this.destroy$),
+        )
+        .subscribe((ruleset) => {
+          this.loadPokemonList(ruleset);
+        });
+      this.loadPokemonList(
+        this.quickForm.controls.details.controls.ruleset.value,
+      );
+      this.quickForm.setValidators(this.validateDraftForm);
+      this.location.replaceState(this.location.path().split('?')[0]);
+    });
   }
 
   ngOnDestroy() {
@@ -171,26 +199,42 @@ export class QuickForm extends FormGroup<{
     teamName: FormControl<string>;
   }>;
 }> {
-  constructor(pokemonList$: BehaviorSubject<Pokemon[]>) {
+  constructor(
+    pokemonList$: BehaviorSubject<Pokemon[]>,
+    options: Partial<{
+      ruleset: string;
+      format: string;
+      team1: Pokemon[];
+      team2: Pokemon[];
+    }> = {},
+  ) {
     super({
       details: new FormGroup({
-        format: new FormControl('Singles', {
+        format: new FormControl(options.format ?? 'Singles', {
           nonNullable: true,
           validators: Validators.required,
         }),
-        ruleset: new FormControl('Gen9 NatDex', {
+        ruleset: new FormControl(options.ruleset ?? 'Gen9 NatDex', {
           nonNullable: true,
           validators: Validators.required,
         }),
       }),
       side1: new FormGroup({
-        team: new FormArray([] as PokemonFormGroup[]),
+        team: new FormArray(
+          options.team1?.map(
+            (pokemon) => new PokemonFormGroup(pokemon, pokemonList$),
+          ) ?? ([] as PokemonFormGroup[]),
+        ),
         teamName: new FormControl('', {
           nonNullable: true,
         }),
       }),
       side2: new FormGroup({
-        team: new FormArray([] as PokemonFormGroup[]),
+        team: new FormArray(
+          options.team2?.map(
+            (pokemon) => new PokemonFormGroup(pokemon, pokemonList$),
+          ) ?? ([] as PokemonFormGroup[]),
+        ),
         teamName: new FormControl('', {
           nonNullable: true,
         }),

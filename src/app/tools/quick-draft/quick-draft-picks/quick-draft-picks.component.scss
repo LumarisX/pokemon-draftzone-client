@@ -1,12 +1,14 @@
 .draft-option {
   display: flex;
   flex-direction: column;
+  flex-shrink: 0;
   align-items: center;
   font-family: var(--pdz-font-fancy);
   justify-content: center;
   padding: 1rem;
   width: fit-content;
-  max-width: 33.333333%;
+  max-width: 30%;
+  min-height: fit-content;
   height: 100%;
   user-select: none;
   .sprite-wrapper {
@@ -32,12 +34,6 @@
       line-height: 1.5em;
     }
   }
-}
-
-.option-tier {
-  font-size: 0.8em;
-  font-weight: 800;
-  color: var(--mat-sys-primary);
 }
 
 .qd-reroll {
@@ -71,12 +67,12 @@
   width: 100%;
 
   .pick-body {
-    width: 100%;
-    padding: 2rem;
     flex-grow: 1;
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: 1rem;
   }
 }
@@ -85,21 +81,34 @@
   display: flex;
   width: 100%;
   flex-grow: 1;
-  padding: 1rem;
   overflow: hidden;
   justify-content: space-around;
+  align-items: center;
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
 }
 
 .box-wrapper {
   width: 20%;
-  max-width: 16rem;
+  padding: 1rem;
+  flex-grow: 1;
+  height: 100%;
+  width: 100%;
+
+  @media (min-width: 768px) {
+    max-width: 16rem;
+  }
   flex-shrink: 0;
 }
 
 .info-box {
   box-shadow: var(--mat-sys-level2);
   border-radius: 1rem;
-  height: 100%;
+  @media (min-width: 768px) {
+    height: 100%;
+    width: 100%;
+  }
   overflow: auto;
   padding: 0.5rem 1rem;
   display: flex;
@@ -118,6 +127,11 @@
 .drafted-pokemon {
   display: flex;
   align-items: center;
+  min-width: 6rem;
+  @media (max-width: 768px) {
+    flex-direction: column;
+    width: 10rem;
+  }
   column-gap: 1rem;
   .sprite-wrapper {
     height: 3rem;
@@ -127,9 +141,15 @@
 
   .drafted-pokemon-info {
     flex-grow: 1;
+    justify-content: center;
     text-align: center;
+    display: flex;
+    flex-direction: column;
 
     .drafted-pokemon-name {
+      flex-grow: 1;
+      display: flex;
+      align-items: center;
       font-weight: 700;
     }
   }
@@ -138,9 +158,10 @@
 .box-body {
   font-family: var(--pdz-font-fancy);
   display: flex;
-  flex-direction: column;
+  @media (min-width: 768px) {
+    flex-direction: column;
+  }
   width: 100%;
-  height: 100%;
   row-gap: 0.25rem;
   .setting {
     .setting-name {
@@ -228,4 +249,10 @@
   overflow-y: auto;
   scrollbar-gutter: stable;
   margin-right: -1.5rem;
+  align-items: stretch;
+  padding: 0.5rem;
+}
+
+:host {
+  padding: 1rem 0rem;
 }

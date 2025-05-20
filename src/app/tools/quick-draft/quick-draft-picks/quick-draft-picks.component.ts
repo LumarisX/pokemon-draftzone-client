@@ -23,6 +23,7 @@ export type QDPokemon = Pokemon<{
   baseStats: { [key in Stat]: number };
   abilities: string[];
   level: string;
+  loaded?: boolean;
 }>;
 
 @Component({
@@ -52,7 +53,6 @@ export type QDPokemon = Pokemon<{
         'unselected-disappear',
         style({
           opacity: 0,
-          transform: 'translateY(50%)',
         }),
       ),
       transition('* => selected-disappear', [animate('400ms ease-out')]),
@@ -167,5 +167,9 @@ export class QuickDraftPicksComponent implements OnInit {
       pick -= this.settings.tiers[i][1];
     }
     return ['err', 0];
+  }
+
+  allLoaded(pokemons: QDPokemon[]) {
+    return pokemons.every((pokemon) => pokemon.loaded);
   }
 }

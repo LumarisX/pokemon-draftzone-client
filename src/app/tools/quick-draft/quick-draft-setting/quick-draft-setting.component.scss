@@ -18,18 +18,26 @@ h2 {
 .qd-template {
   font-family: var(--pdz-fancy);
   width: 15rem;
-  height: 12rem;
-  padding: 1rem 1rem;
+  min-height: 12rem;
+  padding: 1rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   row-gap: 0.5rem;
 
   .qd-header {
-    font-size: x-large;
+    font-size: 1.25em;
     text-align: center;
     width: 100%;
     border-bottom: 2px solid var(--mat-sys-outline-variant);
+  }
+
+  @media (max-width: 768px) {
+    padding: 0.5rem;
+
+    .qd-header {
+      font-size: 1.15em;
+    }
   }
 }
 
@@ -48,4 +56,8 @@ h2 {
     width: 33.333333%;
     padding: 0 0.25rem;
   }
+}
+
+.qd-options-bar {
+  margin-bottom: -1rem;
 }

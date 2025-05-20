@@ -98,11 +98,12 @@ $screen-size-medium: 768px;
 }
 
 :root {
-  --screen-size-medium: $screen-size-medium;
-  --screen-size-large: $screen-size-large;
   --pdz-fancy: Nasalization RG, sans-serif;
   --pdz-font-fancy: Nasalization RG;
   --pdz-font-regular: Nunito;
+
+  --pdz-screen-size-medium: $screen-size-medium;
+  --pdz-screen-size-large: $screen-size-large;
 }
 
 $option-lineheight: 3rem;
@@ -173,5 +174,11 @@ $option-lineheight: 3rem;
       user-select: none;
       font-family: var(--pdz-font-regular);
     }
+  }
+}
+
+.pdz-hidden-on-small {
+  @media (max-width: 768px) {
+    display: none;
   }
 }

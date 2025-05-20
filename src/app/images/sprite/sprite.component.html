@@ -14,5 +14,6 @@
     src="{{ path }}"
     onerror="this.src='../../../../assets/icons/unknown.svg'"
     (error)="fallback()"
+    (load)="onSpriteLoaded()"
   />
 }

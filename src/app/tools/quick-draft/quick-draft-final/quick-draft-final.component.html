@@ -1,5 +1,5 @@
 <h2>Draft Complete!</h2>
-<div class="options-bar">
+<div class="qd-options-bar">
   <button
     mat-raised-button
     [routerLink]="['/', draftPath, 'new']"
@@ -34,7 +34,7 @@
     mat-raised-button
     [routerLink]="['/', toolsPath, 'quick-matchup']"
     [queryParams]="{
-      team: teamIds,
+      team1: teamIds,
       format: settings.format,
       ruleset: settings.ruleset,
     }"
@@ -43,28 +43,32 @@
   </button>
 </div>
 
-<div class="draft-container">
-  @for (pokemon of draft; track $index) {
-    <div class="draft-pokemon">
-      <div class="sprite-wrapper">
-        <pdz-sprite [pokemon]="pokemon"></pdz-sprite>
-      </div>
-
-      <div class="draft-info">
-        <div class="draft-name">{{ pokemon.name }}</div>
-        <div class="type-container">
-          @for (type of pokemon.types; track $index) {
-            <div class="type-label" [style.background-color]="typeColor(type)">
-              <div class="type-text">
-                {{ type }}
-              </div>
-            </div>
-          }
+<div class="draft-container-wrapper">
+  <div class="draft-container">
+    @for (pokemon of draft; track $index) {
+      <div class="draft-pokemon">
+        <div class="sprite-wrapper">
+          <pdz-sprite [pokemon]="pokemon"></pdz-sprite>
         </div>
-        <div class="option-tier">Tier: {{ pokemon.tier }}</div>
-      </div>
-    </div>
-  }
-</div>
 
+        <div class="draft-info">
+          <div class="draft-name">{{ pokemon.name }}</div>
+          <div class="type-container">
+            @for (type of pokemon.types; track $index) {
+              <div
+                class="type-label"
+                [style.background-color]="typeColor(type)"
+              >
+                <div class="type-text">
+                  {{ type }}
+                </div>
+              </div>
+            }
+          </div>
+          <div class="option-tier">Tier: {{ pokemon.tier }}</div>
+        </div>
+      </div>
+    }
+  </div>
+</div>
 <button mat-flat-button (click)="restart()">Draft Again</button>

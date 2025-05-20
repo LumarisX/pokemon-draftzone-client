@@ -36,14 +36,6 @@ export class QuickDraftSettingComponent {
   selectedTemplate = 1;
   templates: Template[] = [
     {
-      rerolls: 99,
-      tiers: [['OU', 3]],
-    },
-    {
-      rerolls: 99,
-      tiers: [['OU', 99]],
-    },
-    {
       rerolls: 0,
       tiers: [
         ['OU', 1],
