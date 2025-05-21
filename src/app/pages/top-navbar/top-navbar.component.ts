@@ -1,4 +1,5 @@
 import { OverlayModule } from '@angular/cdk/overlay';
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
@@ -7,15 +8,13 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Router, RouterModule } from '@angular/router';
-import { BehaviorSubject, combineLatest, of, map } from 'rxjs';
+import { BehaviorSubject, combineLatest, map, of } from 'rxjs';
 import { DraftOverviewPath } from '../../drafts/draft-overview/draft-overview-routing.module';
 import { svgIcons } from '../../images/icons';
-import { UnreadService } from '../../services/unread.service';
-import { SettingsService } from '../settings/settings.service';
 import { AuthService } from '../../services/auth0.service';
+import { UnreadService } from '../../services/unread.service';
 import { SettingsComponent } from '../settings/settings.component';
-import { LogoSVG } from '../../images/svg-components/logo.component';
-import { CommonModule } from '@angular/common';
+import { SettingsService } from '../settings/settings.service';
 
 @Component({
   selector: 'pdz-top-navbar',
@@ -57,6 +56,10 @@ export class TopNavbarComponent implements OnInit {
       title: 'Find A League',
       route: '/league-list',
       badge: this.unreadService.leagueCount,
+    },
+    {
+      title: 'Quick Draft',
+      route: '/tools/quick-draft',
     },
     // {
     //   title: 'Other Tools',
