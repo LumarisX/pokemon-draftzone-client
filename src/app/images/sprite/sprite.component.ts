@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import {
   getNameByPid,
@@ -9,21 +16,28 @@ import {
 } from '../../data/namedex';
 import { DraftOptions, Pokemon } from '../../interfaces/pokemon';
 import { SettingsService } from '../../pages/settings/settings.service';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 type SpritePokemon = Pokemon<DraftOptions & { loaded?: boolean }>;
+
+type SpriteSetConfigs = {
+  getPath: (props: SpriteProperties, shiny: boolean) => string;
+  classes: string[];
+  flip?: boolean;
+  spriteSource: 'ps' | 'serebii' | 'pmd' | 'pd';
+};
 
 @Component({
   selector: 'pdz-sprite',
   standalone: true,
-  imports: [CommonModule, MatTooltipModule],
+  imports: [CommonModule, MatTooltipModule, MatProgressSpinnerModule],
   styleUrl: './sprite.component.scss',
   templateUrl: './sprite.component.html',
 })
-export class SpriteComponent {
+export class SpriteComponent implements OnChanges {
   constructor(private settingService: SettingsService) {}
   @Input()
   set pokemon(value: SpritePokemon) {
-    this.updateData(value);
     this._pokemon = value;
   }
 
@@ -42,7 +56,6 @@ export class SpriteComponent {
     let id = getPidByName(value);
     if (!id) return;
     this._pokemon = { id, name: value };
-    this.updateData(this._pokemon);
   }
 
   get name() {
@@ -55,7 +68,6 @@ export class SpriteComponent {
   set pid(value: string) {
     let name = getNameByPid(value);
     this._pokemon = { id: value, name };
-    this.updateData(this._pokemon);
   }
 
   get pid() {
@@ -71,132 +83,174 @@ export class SpriteComponent {
     return this._pokemon;
   }
   _pokemon!: SpritePokemon;
-  path = '../../../../assets/icons/unknown.svg';
+  readonly UNKNOWN_SPRITE_PATH = '../../../../assets/icons/unknown.svg';
+  path = this.UNKNOWN_SPRITE_PATH;
   _classes: string[] = [];
   set classes(value: string[]) {
     this._classes = value;
   }
 
-  get classes() {
-    let classes = [...this._classes];
-    if (
-      (this.flipped === null && this.flip) ||
-      (this.flipped !== null && !this.flip)
-    )
-      classes.push('flip');
-    if (this.disabled) classes.push('disabled');
+  get classes(): string[] {
+    const classes = [...this._classes];
+    const isUnknownSprite = this.path === this.UNKNOWN_SPRITE_PATH;
+    if (!isUnknownSprite) {
+      const shouldFlip =
+        (this.flipped === null && this.flip) ||
+        (this.flipped !== null && !this.flip);
+
+      if (shouldFlip) {
+        classes.push('flip');
+      }
+    }
+    if (this.disabled) {
+      classes.push('disabled');
+    }
     return classes;
+  }
+
+  private spriteSetMap: Map<string, SpriteSetConfigs> = new Map([
+    [
+      'bw',
+      {
+        getPath: (props, shiny) =>
+          `https://play.pokemonshowdown.com/sprites/gen5${shiny ? '-shiny' : ''}/${props.id}.png`,
+        classes: [],
+        spriteSource: 'ps',
+      },
+    ],
+    [
+      'afd',
+      {
+        getPath: (props, shiny) =>
+          `https://play.pokemonshowdown.com/sprites/afd${shiny ? '-shiny' : ''}/${props.id}.png`,
+        classes: [],
+        spriteSource: 'ps',
+      },
+    ],
+    [
+      'sv',
+      {
+        getPath: (props, shiny) => props.path(props.id, shiny),
+        classes: [],
+        spriteSource: 'ps',
+      },
+    ],
+    [
+      'ani',
+      {
+        getPath: (props, shiny) =>
+          `https://play.pokemonshowdown.com/sprites/ani${shiny ? '-shiny' : ''}/${props.id}.gif`,
+        classes: [],
+        spriteSource: 'ps',
+      },
+    ],
+    [
+      'serebii',
+      {
+        getPath: (props, shiny) => props.path(props.id, shiny),
+        classes: ['sprite-border'],
+        spriteSource: 'serebii',
+      },
+    ],
+    [
+      'pmd',
+      {
+        getPath: (props, shiny) => props.path(props.id, shiny),
+        classes: ['rounded-xl', 'border', 'border-symbolColor-sub'],
+        flip: true,
+        spriteSource: 'pmd',
+      },
+    ],
+    [
+      'default',
+      {
+        getPath: (props, shiny) => props.path(props.id, shiny),
+        classes: ['sprite-border'],
+        spriteSource: 'pd',
+      },
+    ],
+  ]);
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['pokemon'] && changes['pokemon'].currentValue) {
+      this.updateData(changes['pokemon'].currentValue);
+    } else if (changes['name'] && changes['name'].currentValue) {
+      const id = getPidByName(changes['name'].currentValue);
+      if (id) {
+        this._pokemon = { id, name: changes['name'].currentValue };
+        this.updateData(this._pokemon);
+      }
+    } else if (changes['pid'] && changes['pid'].currentValue) {
+      const name = getNameByPid(changes['pid'].currentValue);
+      if (name) {
+        this._pokemon = { id: changes['pid'].currentValue, name };
+        this.updateData(this._pokemon);
+      }
+    }
   }
 
   updateData(pokemon: SpritePokemon) {
     this.classes = [];
-    let props: SpriteProperties | undefined = undefined;
     this.flip = false;
-    switch (this.settingService.settingsData.spriteSet) {
-      case 'bw':
-        props = getSpriteProperties(pokemon.id, 'ps');
-        if (!props) {
-          this.path = '../../../../assets/icons/unknown.svg';
-          break;
-        }
-        this.path = `https://play.pokemonshowdown.com/sprites/gen5${
-          pokemon.shiny ? '-shiny' : ''
-        }/${props.id}.png`;
-        break;
-      case 'afd':
-        props = getSpriteProperties(pokemon.id, 'ps');
-        if (!props) {
-          this.path = '../../../../assets/icons/unknown.svg';
-          break;
-        }
-        this.path = `https://play.pokemonshowdown.com/sprites/afd${
-          pokemon.shiny ? '-shiny' : ''
-        }/${props.id}.png`;
-        break;
-      case 'sv':
-        props = getSpriteProperties(pokemon.id, 'ps');
-        if (!props) {
-          this.path = '../../../../assets/icons/unknown.svg';
-          break;
-        }
-        this.path = props.path(props.id, pokemon.shiny);
-        break;
-      case 'ani':
-        props = getSpriteProperties(pokemon.id, 'ps');
-        if (!props) {
-          this.path = '../../../../assets/icons/unknown.svg';
-          break;
-        }
-        this.path = `https://play.pokemonshowdown.com/sprites/ani${
-          pokemon.shiny ? '-shiny' : ''
-        }/${props.id}.gif`;
-        break;
-      case 'serebii':
-        props = getSpriteProperties(pokemon.id, 'serebii');
-        if (!props) {
-          this.path = '../../../../assets/icons/unknown.svg';
-          break;
-        }
-        this.path = props.path(props.id, pokemon.shiny);
-        this.classes = ['sprite-border'];
-        break;
-      case 'pmd':
-        props = getSpriteProperties(pokemon.id, 'pmd');
-        if (!props) {
-          this.path = '../../../../assets/icons/unknown.svg';
-          break;
-        }
-        this.path = props.path(props.id, pokemon.shiny);
-        this.flip = true;
-        this.classes = ['rounded-xl', 'border', 'border-symbolColor-sub'];
-        break;
-      default:
-        props = getSpriteProperties(pokemon.id, 'pd');
-        if (!props) {
-          this.path = '../../../../assets/icons/unknown.svg';
-          break;
-        }
-        this.path = props.path(props.id, pokemon.shiny);
-        this.classes = ['sprite-border'];
-        break;
+    const spriteSetName = this.settingService.settingsData.spriteSet;
+    const config = spriteSetName
+      ? this.spriteSetMap.get(spriteSetName) || this.spriteSetMap.get('default')
+      : this.spriteSetMap.get('default');
+
+    if (!config) {
+      this.path = this.UNKNOWN_SPRITE_PATH;
+      return;
     }
-    if (props?.flip) {
+
+    const props = getSpriteProperties(pokemon.id, config.spriteSource);
+
+    if (!props) {
+      this.path = this.UNKNOWN_SPRITE_PATH;
+      return;
+    }
+
+    this.path = config.getPath(props, pokemon.shiny || false);
+    this.classes = [...config.classes];
+    if (config.flip || props.flip) {
       this.flip = !this.flip;
     }
   }
 
-  fallback() {
-    if (this.pokemon) {
-      let props: SpriteProperties | undefined = undefined;
+  fallback(): void {
+    if (this.path !== this.UNKNOWN_SPRITE_PATH) {
+      let potentialFallbackPath: string | undefined;
       switch (this.settingService.settingsData.spriteSet) {
         case 'sv':
         case 'ani':
-          props = getSpriteProperties(this.pokemon.id, 'ps');
-          if (props) {
-            this.path = `https://play.pokemonshowdown.com/sprites/gen5${
+          const psProps = getSpriteProperties(this.pokemon.id, 'ps');
+          if (psProps) {
+            potentialFallbackPath = `https://play.pokemonshowdown.com/sprites/gen5${
               this.pokemon.shiny ? '-shiny' : ''
-            }/${props.id}.png`;
-            break;
+            }/${psProps.id}.png`;
           }
-          this.path = '../../../../assets/icons/unknown.svg';
           break;
         case 'pmd':
-          props = getSpriteProperties(this.pokemon.id, 'pmd');
-          if (props) {
-            let base = props.id.split('/');
+          const pmdProps = getSpriteProperties(this.pokemon.id, 'pmd');
+          if (pmdProps) {
+            const base = pmdProps.id.split('/');
             base.pop();
             if (base.length !== 0) {
-              this.path = `https://raw.githubusercontent.com/PMDCollab/SpriteCollab/master/portrait/${base.join(
+              potentialFallbackPath = `https://raw.githubusercontent.com/PMDCollab/SpriteCollab/master/portrait/${base.join(
                 '/',
               )}/Normal.png`;
             }
           }
-          this.path = '../../../../assets/icons/unknown.svg';
-          break;
-        default:
-          this.path = '../../../../assets/icons/unknown.svg';
           break;
       }
+      if (potentialFallbackPath) {
+        this.path = potentialFallbackPath;
+      } else {
+        this.path = this.UNKNOWN_SPRITE_PATH;
+      }
+    } else {
+      console.warn(
+        `Sprite for ${this.pokemon?.name || 'unknown'} already failed, showing fallback.`,
+      );
     }
   }
 

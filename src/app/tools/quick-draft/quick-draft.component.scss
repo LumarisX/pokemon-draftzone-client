@@ -47,7 +47,7 @@ h3 {
   margin: 4px;
   &.selected {
     border: 6px solid var(--mat-sys-outline);
-    background-color: var(--mat-sys-primary-container);
+    background-color: var(--mat-sys-surface);
     color: var(--mat-sys-on-primary-container);
     margin: 0px;
   }

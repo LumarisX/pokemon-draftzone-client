@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -43,6 +43,7 @@ export class DraftFormNewComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private draftService: DraftService,
+    private location: Location,
   ) {}
 
   params: { team?: Pokemon[] } = {};
@@ -55,6 +56,7 @@ export class DraftFormNewComponent implements OnInit {
           name: getNameByPid(id),
         }));
       }
+      this.location.replaceState(this.location.path().split('?')[0]);
     });
   }
 

@@ -133,8 +133,13 @@ export class QuickDraftPicksComponent implements OnInit {
 
   rerollPicks() {
     if (this.settings.rerolls <= 0) return;
-    this.getRandomOptions();
-    this.settings.rerolls -= 1;
+    this.draftOptions!.forEach((_, i) => {
+      this.animationStates[i] = 'unselected-disappear';
+    });
+    setTimeout(() => {
+      this.getRandomOptions();
+      this.settings.rerolls -= 1;
+    }, 400);
   }
 
   draftOption() {

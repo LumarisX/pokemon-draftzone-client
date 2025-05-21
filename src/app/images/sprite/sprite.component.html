@@ -1,3 +1,8 @@
+@if (!pokemon.loaded) {
+  <div class="sprite-placeholder" [ngStyle]="{ width: size, height: size }">
+    <mat-spinner [diameter]="24"></mat-spinner>
+  </div>
+}
 @if (pokemon.id) {
   <img
     [matTooltip]="tooltipPosition ? this.name : null"
@@ -11,9 +16,10 @@
     }"
     title="{{ pokemon.name }}"
     loading="lazy"
-    src="{{ path }}"
+    [src]="path"
     onerror="this.src='../../../../assets/icons/unknown.svg'"
     (error)="fallback()"
     (load)="onSpriteLoaded()"
+    [hidden]="!pokemon.loaded"
   />
 }
