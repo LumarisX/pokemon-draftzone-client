@@ -34,7 +34,7 @@
                   >
                     <div class="team-card-icon">
                       @if (pick.pokemon) {
-                        <sprite [pokemon]="pick.pokemon"></sprite>
+                        <pdz-sprite [pokemon]="pick.pokemon"></pdz-sprite>
                       } @else {
                         <mat-icon svgIcon="pokeball"></mat-icon>
                       }
@@ -66,7 +66,9 @@
               <div class="choice-pokemon">
                 <div class="choice-pokemon-name">Zapdos</div>
                 <div class="choice-pokemon-sprite">
-                  <sprite [pokemon]="{ id: 'zapdos', name: 'Zapdos' }"></sprite>
+                  <pdz-sprite
+                    [pokemon]="{ id: 'zapdos', name: 'Zapdos' }"
+                  ></pdz-sprite>
                 </div>
               </div>
             </div>
@@ -86,9 +88,9 @@
               <div class="choice-pokemon">
                 <div class="choice-pokemon-name">Swampert-Mega</div>
                 <div class="choice-pokemon-sprite">
-                  <sprite
+                  <pdz-sprite
                     [pokemon]="{ id: 'swampertmega', name: 'Swampert-Mega' }"
-                  ></sprite>
+                  ></pdz-sprite>
                 </div>
               </div>
             </div>
@@ -97,9 +99,9 @@
               <div class="choice-pokemon">
                 <div class="choice-pokemon-name">Seismitoad</div>
                 <div class="choice-pokemon-sprite">
-                  <sprite
+                  <pdz-sprite
                     [pokemon]="{ id: 'seismitoad', name: 'Seismitoad' }"
-                  ></sprite>
+                  ></pdz-sprite>
                 </div>
               </div>
             </div>
@@ -125,7 +127,7 @@
           <li class="my-draft-pokemon">
             <div class="my-pokemon-index">{{ $index + 1 }}</div>
             <div class="my-pokemon-sprite">
-              <sprite [pokemon]="pick.pokemon" flipped></sprite>
+              <pdz-sprite [pokemon]="pick.pokemon" flipped></pdz-sprite>
             </div>
             <div class="my-pokemon-name fancy-font">
               {{ pick.pokemon.name }}
