@@ -6043,10 +6043,10 @@ export const Namedex: {
   },
   greninjabond: {
     name: ['Greninja-Bond'],
-    ps: { id: 'greninja-ash', path: showdownOldPath },
-    serebii: { id: '658-a', path: serebiiPath },
-    default: { id: 'greninja-ash', path: homePath },
-    pmd: { id: '0658/0001', path: pmdPath },
+    ps: { id: 'greninja', path: showdownOldPath },
+    serebii: { id: '658', path: serebiiPath },
+    default: { id: 'greninja', path: homePath },
+    pmd: { id: '0658', path: pmdPath },
   },
   greninjaash: {
     name: ['Greninja-Ash'],

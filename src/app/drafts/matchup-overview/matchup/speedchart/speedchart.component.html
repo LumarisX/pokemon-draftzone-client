@@ -47,10 +47,10 @@
             (click)="toggleView(pokemon)"
           >
             <div class="sprite-wrapper">
-              <sprite
+              <pdz-sprite
                 [pokemon]="pokemon"
                 [flipped]="pokemon.team ? null : true"
-              ></sprite>
+              ></pdz-sprite>
             </div>
             <div class="base-speed-label">
               {{ pokemon.spe }}
@@ -90,7 +90,7 @@
                 <div class="pokemon-row">
                   @for (pokemon of group.pokemon; track pokemon) {
                     <div class="sprite-wrapper">
-                      <sprite [pokemon]="pokemon" flipped></sprite>
+                      <pdz-sprite [pokemon]="pokemon" flipped></pdz-sprite>
                     </div>
                   }
                 </div>

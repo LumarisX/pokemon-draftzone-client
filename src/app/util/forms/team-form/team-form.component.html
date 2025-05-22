@@ -6,11 +6,11 @@
           <mat-chip-set #importChipGrid>
             @for (monGroup of teamArray.controls; track $index) {
               <mat-chip>
-                <sprite
+                <pdz-sprite
                   matChipAvatar
                   flipped
                   [pokemon]="monGroup.controls.pokemon.value"
-                ></sprite>
+                ></pdz-sprite>
                 {{ monGroup.controls.pokemon.value.name }}
                 <button matChipRemove (click)="deletePokemon($index)">
                   <mat-icon>cancel</mat-icon>
@@ -122,8 +122,11 @@
               >
                 <div *cdkDragPreview>
                   @if (monGroup.valid) {
-                    <sprite flipped [pokemon]="monGroup.controls.pokemon.value">
-                    </sprite>
+                    <pdz-sprite
+                      flipped
+                      [pokemon]="monGroup.controls.pokemon.value"
+                    >
+                    </pdz-sprite>
                   } @else {
                     <mat-icon class="preview-warning">warning</mat-icon>
                   }
@@ -134,7 +137,7 @@
                       >drag_indicator</mat-icon
                     >
                     @if (monGroup.valid) {
-                      <sprite
+                      <pdz-sprite
                         class="preview-sprite"
                         flipped
                         [pokemon]="{
@@ -142,7 +145,7 @@
                           name: monGroup.controls.pokemon.value.name,
                           shiny: !!monGroup.controls.shiny.value,
                         }"
-                      ></sprite>
+                      ></pdz-sprite>
                     } @else {
                       <mat-icon class="preview-warning">warning</mat-icon>
                     }
@@ -427,11 +430,11 @@
                                       )
                                     "
                                   >
-                                    <sprite
+                                    <pdz-sprite
                                       matChipAvatar
                                       flipped
                                       [pokemon]="forme"
-                                    ></sprite>
+                                    ></pdz-sprite>
                                     {{ forme.name }}
                                     <button matChipRemove>
                                       <mat-icon>cancel</mat-icon>
@@ -468,11 +471,11 @@
                                     "
                                   >
                                     <div class="flex space-x-2 items-center">
-                                      <sprite
+                                      <pdz-sprite
                                         size="2rem"
                                         flipped
                                         [pokemon]="formeOption"
-                                      ></sprite>
+                                      ></pdz-sprite>
                                       <span> {{ formeOption.name }} </span>
                                     </div>
                                   </mat-option>

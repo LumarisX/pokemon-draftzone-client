@@ -1,64 +1,117 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { AuthService as Auth0Service, User } from '@auth0/auth0-angular';
-import { catchError, Observable, of, tap } from 'rxjs';
+import {
+  BehaviorSubject,
+  catchError,
+  Observable,
+  of,
+  Subscription,
+  filter,
+  switchMap,
+  tap,
+} from 'rxjs';
 import { Settings } from '../pages/settings/settings.service';
+interface AppUser extends User {
+  username: string;
+  settings: Settings;
+}
 
 @Injectable({
   providedIn: 'root',
 })
-export class AuthService {
-  private accessToken: string | null = null;
+export class AuthService implements OnDestroy {
+  public _userSubject = new BehaviorSubject<AppUser | null | undefined>(
+    undefined,
+  );
+  public user$ = this._userSubject.asObservable();
+  private userSubscription!: Subscription;
+  private _accessTokenSubject = new BehaviorSubject<string | null>(null);
+  public accessToken$ = this._accessTokenSubject.asObservable();
 
-  constructor(private auth0: Auth0Service) {}
+  private accessTokenSubscription!: Subscription;
+  constructor(
+    private auth0: Auth0Service<{ username: string; settings: Settings }>,
+  ) {
+    this.setupUserStream();
+    this.setupAccessTokenStream();
+  }
 
-  setAccessToken() {
-    this.auth0
+  private setupUserStream(): void {
+    this.userSubscription = this.auth0.user$
+      .pipe(
+        filter((user) => user !== undefined),
+        switchMap((auth0User) => {
+          return of(auth0User);
+        }),
+        tap((user) => {
+          this._userSubject.next(user as AppUser | null);
+        }),
+      )
+      .subscribe(
+        () => {},
+        (error) => console.error('Error in user stream:', error),
+      );
+  }
+
+  user(): Observable<AppUser | null | undefined> {
+    return this.user$;
+  }
+
+  isAuthenticated(): Observable<boolean> {
+    return this.auth0.isAuthenticated$;
+  }
+
+  private setupAccessTokenStream(): void {
+    this.accessTokenSubscription = this.auth0
       .getAccessTokenSilently()
       .pipe(
         tap((token) => {
+          this._accessTokenSubject.next(token);
           if (token) {
             localStorage.setItem('access_token', token);
+          } else {
+            localStorage.removeItem('access_token');
           }
         }),
         catchError((error) => {
-          if (
-            error.error === 'missing_refresh_token' ||
-            error.error === 'login_required' ||
-            error.error === 'consent_required' ||
-            error.error === 'invalid_grant'
-          ) {
-            // If the token is invalid or expired, prompt the user to log in again
-            this.login();
-          } else {
-            console.error('Failed to get access token:', error);
-          }
+          this.handleTokenError(error);
+          this._accessTokenSubject.next(null);
           return of(null);
         }),
       )
-      .subscribe();
+      .subscribe(
+        () => {},
+        (error) => console.error('Error in access token stream:', error),
+      );
   }
 
   getAccessToken(): Observable<string | null> {
-    if (this.accessToken) {
-      return of(this.accessToken);
-    }
-    return this.auth0.getAccessTokenSilently().pipe(
-      tap((token) => (this.accessToken = token)),
-      catchError((error) => this.handleTokenError(error)),
-    );
+    return this.accessToken$;
   }
 
   removeAccessToken(): void {
     localStorage.removeItem('access_token');
+    this._accessTokenSubject.next(null);
   }
 
-  login() {
+  login(): void {
     this.auth0
       .loginWithPopup()
       .pipe(
         tap(() => {
-          this.setAccessToken();
-          window.location.reload();
+          this.auth0.getAccessTokenSilently().subscribe({
+            next: (token) => {
+              if (token) {
+                this._accessTokenSubject.next(token);
+                localStorage.setItem('access_token', token);
+              }
+              window.location.reload();
+            },
+            error: (err) => {
+              console.error('Failed to get token after login:', err);
+              this._accessTokenSubject.next(null);
+            },
+          });
         }),
         catchError((error) => {
           console.error('Login failed:', error);
@@ -68,38 +121,38 @@ export class AuthService {
       .subscribe();
   }
 
-  logout() {
+  logout(): void {
     this.auth0
       .logout({
-        logoutParams: {},
+        logoutParams: {
+          returnTo: window.location.origin,
+        },
       })
       .subscribe(() => {
         this.removeAccessToken();
-        this.accessToken = null;
       });
   }
 
-  isAuthenticated() {
-    return this.auth0.isAuthenticated$;
-  }
-
-  user() {
-    return this.auth0.user$ as Observable<
-      (User & { username: string; settings: Settings }) | null | undefined
-    >;
-  }
-
-  private handleTokenError(error: any): Observable<string | null> {
+  private handleTokenError(error: any): void {
     if (
       error?.error === 'missing_refresh_token' ||
       error?.error === 'login_required' ||
       error?.error === 'consent_required' ||
       error?.error === 'invalid_grant'
     ) {
+      console.warn('Token error, redirecting to login:', error?.error);
       this.login();
     } else {
       console.error('Failed to get access token:', error);
     }
-    return of(null);
+  }
+
+  ngOnDestroy(): void {
+    if (this.userSubscription) {
+      this.userSubscription.unsubscribe();
+    }
+    if (this.accessTokenSubscription) {
+      this.accessTokenSubscription.unsubscribe();
+    }
   }
 }

@@ -11,69 +11,13 @@ import { Router } from '@angular/router';
 import { UnreadService } from './services/unread.service';
 
 @Component({
-  selector: 'app-root',
+  selector: 'pdz-root',
   standalone: false,
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
-export class AppComponent implements OnInit {
-  settingsOpen: boolean = false;
-  TABS: {
-    title: string;
-    route: string;
-    badge?: BehaviorSubject<string>;
-  }[] = [
-    {
-      title: 'My Drafts',
-      route: DraftOverviewPath,
-    },
-    {
-      title: 'Planner',
-      route: '/planner',
-    },
-    {
-      title: 'Replay Analyzer',
-      route: '/tools/replay-analyzer',
-    },
-    {
-      title: 'Find A League',
-      route: '/league-list',
-      badge: this.unreadService.leagueCount,
-    },
-    // {
-    //   title: 'Other Tools',
-    //   route: '/tools',
-    // },
-  ];
-
-  draftPath = DraftOverviewPath;
-  newsBadge = this.unreadService.newsCount;
-
-  constructor(
-    public auth: AuthService,
-    private settingsService: SettingsService,
-    private unreadService: UnreadService,
-    private router: Router,
-    private matIconRegistry: MatIconRegistry,
-    private domSanitizer: DomSanitizer,
-  ) {
-    Object.entries(svgIcons).forEach(([name, data]) => {
-      matIconRegistry.addSvgIconLiteral(
-        name,
-        domSanitizer.bypassSecurityTrustHtml(data),
-      );
-      matIconRegistry.setDefaultFontSetClass('material-symbols-outlined');
-    });
-    this.checkAuthenticated();
-  }
-
-  ngOnInit(): void {
-    const shiny = Math.floor(Math.random() * 100);
-    if (shiny === 0) {
-      this.settingsService.setSettings({ shinyUnlock: true });
-      this.settingsService.updateSettings();
-    }
-  }
+export class AppComponent {
+  constructor(private settingsService: SettingsService) {}
 
   getTheme() {
     const classes: string[] = [];
@@ -99,30 +43,5 @@ export class AppComponent implements OnInit {
       this.settingsService.settingsData.theme ?? 'classic',
     );
     return classes;
-  }
-
-  anyBadge$ = combineLatest(this.TABS.map((tab) => tab.badge ?? of(''))).pipe(
-    map((badges) => badges.some((value) => value !== '')),
-  );
-
-  authenticated: boolean = false;
-
-  checkAuthenticated() {
-    this.auth.isAuthenticated().subscribe((authenticated) => {
-      this.authenticated = authenticated;
-      if (authenticated) {
-        this.auth.user().subscribe((data) => {
-          this.settingsService.setSettings(data?.settings);
-        });
-      }
-    });
-  }
-
-  login() {
-    this.auth.login();
-  }
-
-  logout() {
-    this.auth.logout();
   }
 }
