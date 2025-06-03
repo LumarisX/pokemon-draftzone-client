@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 import { ErrorComponent } from '../error/error.component';
 
 @Component({
-  selector: 'app-body',
+  selector: 'pdz-body',
   standalone: true,
   imports: [CommonModule, RouterModule, ErrorComponent],
   templateUrl: './body.component.html',
