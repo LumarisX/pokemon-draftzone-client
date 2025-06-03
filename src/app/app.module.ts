@@ -9,11 +9,13 @@ import { AuthModule } from '@auth0/auth0-angular';
 import { AppComponent } from './app.component';
 import { BodyModule } from './body/body.module';
 import { TopNavbarComponent } from './pages/top-navbar/top-navbar.component';
-
+import { CommonModule } from '@angular/common';
 @NgModule({
-  declarations: [AppComponent],
   bootstrap: [AppComponent],
   imports: [
+    CommonModule,
+    TopNavbarComponent,
+    BodyModule,
     BrowserAnimationsModule,
     AuthModule.forRoot({
       domain: 'dev-wspjxi5f6mjqsjea.us.auth0.com',
@@ -39,15 +41,14 @@ import { TopNavbarComponent } from './pages/top-navbar/top-navbar.component';
         ],
       },
     }),
-    BodyModule,
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: !isDevMode(),
       // Register the ServiceWorker as soon as the application is stable
       // or after 30 seconds (whichever comes first).
       registrationStrategy: 'registerWhenStable:30000',
     }),
-    TopNavbarComponent,
   ],
+  declarations: [AppComponent],
   providers: [provideHttpClient(withInterceptorsFromDi())],
 })
 export class AppModule {}
