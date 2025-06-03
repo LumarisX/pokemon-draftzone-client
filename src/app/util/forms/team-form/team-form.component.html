@@ -208,40 +208,6 @@
                   >
                     <mat-tab>
                       <ng-template mat-tab-label>
-                        <span>Cosmetics</span>
-                        <div class="tab-icon-wrapper">
-                          <mat-icon svgIcon="shiny"></mat-icon>
-                        </div>
-                      </ng-template>
-                      <div class="cosmetic-container">
-                        <dz-slide-toggle
-                          [formControl]="monGroup.controls.shiny"
-                          onSVG="shiny"
-                          offSVG="shiny"
-                        >
-                          Shiny
-                        </dz-slide-toggle>
-                        <mat-form-field class="small-form">
-                          <mat-label>Nickname</mat-label>
-                          <input
-                            maxlength="18"
-                            matInput
-                            [formControl]="monGroup.controls.nickname"
-                          />
-                          @if (
-                            monGroup.controls.nickname.value &&
-                            monGroup.controls.nickname.value.length > 13
-                          ) {
-                            <mat-hint align="end"
-                              >{{ monGroup.controls.nickname.value.length }} /
-                              18</mat-hint
-                            >
-                          }
-                        </mat-form-field>
-                      </div>
-                    </mat-tab>
-                    <mat-tab>
-                      <ng-template mat-tab-label>
                         <span>Captain</span>
                         <span class="tab-icon-wrapper">
                           <mat-icon svgIcon="capt"></mat-icon>
@@ -403,6 +369,40 @@
                             </div>
                           </div>
                         }
+                      </div>
+                    </mat-tab>
+                    <mat-tab>
+                      <ng-template mat-tab-label>
+                        <span>Cosmetics</span>
+                        <div class="tab-icon-wrapper">
+                          <mat-icon svgIcon="shiny"></mat-icon>
+                        </div>
+                      </ng-template>
+                      <div class="cosmetic-container">
+                        <dz-slide-toggle
+                          [formControl]="monGroup.controls.shiny"
+                          onSVG="shiny"
+                          offSVG="shiny"
+                        >
+                          Shiny
+                        </dz-slide-toggle>
+                        <mat-form-field class="small-form">
+                          <mat-label>Nickname</mat-label>
+                          <input
+                            maxlength="18"
+                            matInput
+                            [formControl]="monGroup.controls.nickname"
+                          />
+                          @if (
+                            monGroup.controls.nickname.value &&
+                            monGroup.controls.nickname.value.length > 13
+                          ) {
+                            <mat-hint align="end"
+                              >{{ monGroup.controls.nickname.value.length }} /
+                              18</mat-hint
+                            >
+                          }
+                        </mat-form-field>
                       </div>
                     </mat-tab>
                     <mat-tab>
