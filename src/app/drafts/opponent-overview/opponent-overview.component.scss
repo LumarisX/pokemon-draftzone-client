@@ -1,0 +1,23 @@
+.draft-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 0;
+}
+
+.draft-info-container {
+  text-align: end;
+}
+
+h2 {
+  font-size: 1.75em;
+}
+
+h3 {
+  font-size: 1.5em;
+}
+
+h2,
+h3 {
+  font-family: var(--pdz-font-fancy);
+}

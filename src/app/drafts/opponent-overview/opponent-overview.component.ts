@@ -5,12 +5,21 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { DraftService } from '../../services/draft.service';
 import { DraftOverviewPath } from '../draft-overview/draft-overview-routing.module';
 import { Draft } from '../../interfaces/draft';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'opponent-overview',
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    RouterModule,
+    ReactiveFormsModule,
+    MatButtonModule,
+    MatIconModule,
+  ],
   templateUrl: './opponent-overview.component.html',
+  styleUrl: './opponent-overview.component.scss',
 })
 export class OpponentOverviewComponent implements OnInit {
   draft!: Draft;

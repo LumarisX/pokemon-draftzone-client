@@ -1,24 +1,22 @@
-<div class="m-2">
-  <div class="w-full">
-    <div class="flex items-center justify-between mx-4">
-      <button
-        [routerLink]="['/', draftPath]"
-        class="px-3 py-2 text-sm text-symbolColor-inverted rounded-md bg-menu-500 hover:bg-menu-600 focus:outline-none focus:bg-menu-600"
-      >
-        Back
-      </button>
-      <div *ngIf="draft" class="text-right">
-        <h1 class="text-3xl font-bold text-symbolColor-main">
-          {{ draft.leagueName }}
-        </h1>
-        <h2 class="text-2xl font-bold text-symbolColor-sub">
-          {{ draft.score.wins }} - {{ draft.score.loses }} |
-          {{ draft.score.diff }}
-        </h2>
+<div class="p-2">
+  <div class="draft-header">
+    <button mat-flat-button [routerLink]="['/', draftPath]">Back</button>
+    @if (draft) {
+      <div class="flex gap-2 items-center">
+        <div class="draft-info-container">
+          <h2 class="">
+            {{ draft.leagueName }}
+          </h2>
+          <h3 class="text-2xl font-bold text-symbolColor-sub">
+            {{ draft.score.wins }} - {{ draft.score.loses }} |
+            {{ draft.score.diff }}
+          </h3>
+        </div>
+        <div>
+          <button mat-mini-fab><mat-icon>edit</mat-icon></button>
+        </div>
       </div>
-    </div>
+    }
   </div>
-
-  <hr class="w-full h-1 my-2 border-0 rounded bg-menu-600" />
   <router-outlet></router-outlet>
 </div>

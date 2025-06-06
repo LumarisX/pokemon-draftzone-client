@@ -1,33 +1,27 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { DraftService } from '../../../services/draft.service';
-import { Draft } from '../../../interfaces/draft';
-import { Matchup } from '../../../interfaces/matchup';
-import { SpriteComponent } from '../../../images/sprite/sprite.component';
-import { ClockSVG } from '../../../images/svg-components/clock.component';
-import { TrashSVG } from '../../../images/svg-components/trash.component';
-import { PlusSVG } from '../../../images/svg-components/plus.component';
-import { EditSVG } from '../../../images/svg-components/edit.component';
-import { ScoreSVG } from '../../../images/svg-components/score.component';
 import { LoadingComponent } from '../../../images/loading/loading.component';
+import { SpriteComponent } from '../../../images/sprite/sprite.component';
+import { Draft } from '../../../interfaces/draft';
 import { Opponent } from '../../../interfaces/opponent';
+import { DraftService } from '../../../services/draft.service';
 import { DraftOverviewPath } from '../../draft-overview/draft-overview-routing.module';
 
 @Component({
-  selector: 'opponent-preview',
+  selector: 'pdz-opponent-preview',
   standalone: true,
   templateUrl: './opponent-preview.component.html',
+  styleUrl: './opponent-preview.component.scss',
   imports: [
     CommonModule,
     RouterModule,
     SpriteComponent,
-    ClockSVG,
-    TrashSVG,
-    PlusSVG,
     LoadingComponent,
-    EditSVG,
-    ScoreSVG,
+    MatButtonModule,
+    MatIconModule,
   ],
 })
 export class OpponentTeamPreviewComponent implements OnInit {
@@ -58,9 +52,6 @@ export class OpponentTeamPreviewComponent implements OnInit {
     });
     this.draftService.getMatchupList(this.teamId).subscribe((data) => {
       this.matchups = data;
-      // this.matchups.forEach((matchup) => {
-      //   matchup.score = this.score(matchup);
-      // });
     });
   }
 
@@ -99,9 +90,9 @@ export class OpponentTeamPreviewComponent implements OnInit {
   }
 
   scoreColor(matchup: Opponent) {
-    if (!matchup.score) return '';
-    if (matchup.score[0] > matchup.score[1]) return 'bg-scale-positive-2';
-    if (matchup.score[0] < matchup.score[1]) return 'bg-scale-negative-2';
+    if (!matchup.score) return;
+    if (matchup.score[0] > matchup.score[1]) return 'lightgreen';
+    if (matchup.score[0] < matchup.score[1]) return 'lightcoral';
     return '';
   }
 

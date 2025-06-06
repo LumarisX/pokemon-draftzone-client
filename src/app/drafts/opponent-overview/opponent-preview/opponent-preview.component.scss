@@ -1,0 +1,113 @@
+$draft-sprite-size: 4rem;
+
+.draft-bar {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: fit-content;
+  border: 1px solid var(--mat-sys-outline);
+  border-radius: 1rem;
+  padding: 0.5rem;
+  box-shadow: var(--mat-sys-level2);
+  pdz-sprite {
+    min-height: $draft-sprite-size;
+    min-width: $draft-sprite-size;
+    height: $draft-sprite-size;
+    width: $draft-sprite-size;
+    max-height: $draft-sprite-size;
+    max-width: $draft-sprite-size;
+  }
+  @media (min-width: 768px) {
+    display: hidden;
+  }
+}
+
+.matchups-section {
+  width: fit-content;
+  border: 1px solid var(--mat-sys-outline);
+  border-radius: 1rem;
+}
+
+.matchups-container {
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+}
+
+.matchup {
+  background-color: var(--mat-sys-primary-container);
+  width: 100%;
+  padding: 0.25rem 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+
+  .matchup-header {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    font-family: var(--pdz-font-fancy);
+  }
+}
+
+.matchup-team-info {
+  height: 100%;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  width: 12rem;
+  flex-shrink: 0;
+  .team-name,
+  .coach-name {
+    width: 100%;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .coach-name {
+    font-size: 0.8em;
+  }
+}
+
+$matchup-sprite-size: 3rem;
+.pokemon-container {
+  display: flex;
+  gap: 0.5rem;
+  flex-grow: 1;
+  overflow-x: auto;
+  scrollbar-width: none;
+  pdz-sprite {
+    min-height: $matchup-sprite-size;
+    min-width: $matchup-sprite-size;
+    height: $matchup-sprite-size;
+    width: $matchup-sprite-size;
+  }
+}
+
+.score-button {
+  font-size: 0.8em;
+  border: 1px solid var(--mat-sys-outline);
+  border-radius: 2rem;
+  padding: 0 0.25rem;
+  min-width: 4rem;
+}
+
+.stats-section {
+  width: fit-content;
+  border: 1px solid var(--mat-sys-outline);
+  border-radius: 1rem;
+}
+
+.section-header {
+  display: flex;
+  width: 100%;
+  font-size: 1.25em;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--pdz-font-fancy);
+  padding: 0 1rem;
+}
