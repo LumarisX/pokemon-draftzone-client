@@ -12,6 +12,7 @@ import { LeagueTradesComponent } from './league-trades/league-trades.component';
 import { LeagueComponent } from './league/league.component';
 import { LeagueNewComponent } from './league-new/league-new.component';
 import { LeagueRulesOverviewComponent } from './league-rules-overview/league-rules-overview.component';
+import { LeagueAuctionComponent } from './league-auction/league-auction.component';
 
 export const LeagueZonePath = 'leagues';
 const routes: Routes = [
@@ -65,6 +66,10 @@ const routes: Routes = [
   {
     path: 'view/:leagueId/team/:teamid',
     component: LeagueTeamComponent,
+  },
+  {
+    path: 'view/:leagueId/auction',
+    component: LeagueAuctionComponent,
   },
 ];
 @NgModule({
