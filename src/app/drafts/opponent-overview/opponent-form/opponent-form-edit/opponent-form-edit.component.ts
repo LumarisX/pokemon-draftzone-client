@@ -39,7 +39,7 @@ export class OpponentFormEditComponent implements OnInit {
     this.teamId = this.route.parent!.snapshot.paramMap.get('teamid') ?? '';
     this.route.queryParams.subscribe((params) => {
       if ('matchup' in params) {
-        this.matchupId = JSON.parse(params['matchup']);
+        this.matchupId = params['matchup'];
         this.draftService
           .getOpponent(this.matchupId, this.teamId)
           .subscribe((opponent) => {

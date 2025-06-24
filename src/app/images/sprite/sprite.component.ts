@@ -49,7 +49,7 @@ export class SpriteComponent implements OnChanges {
     | 'below'
     | 'left'
     | 'right'
-    | null = null;
+    | null = 'above';
 
   @Input()
   set name(value: string) {

@@ -22,7 +22,6 @@ import { ReplayData } from '../../../tools/replay_analyzer/replay.interface';
 
 @Component({
   selector: 'opponent-form',
-  standalone: true,
   templateUrl: './opponent-score.component.html',
   imports: [
     CommonModule,
@@ -55,7 +54,7 @@ export class OpponentScoreComponent implements OnInit {
     this.teamId = this.route.parent!.snapshot.paramMap.get('teamid') || '';
     this.route.queryParams.subscribe((params) => {
       if ('matchup' in params) {
-        this.matchupId = JSON.parse(params['matchup']);
+        this.matchupId = params['matchup'];
         this.draftService
           .getMatchup(this.matchupId, this.teamId)
           .subscribe((data) => {

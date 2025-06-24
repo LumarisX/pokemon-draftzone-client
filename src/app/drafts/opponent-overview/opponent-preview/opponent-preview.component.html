@@ -1,25 +1,8 @@
-<div class="flex min-h-full space-x-2">
-  <div
-    *ngIf="draft"
-    class="hidden w-1/6 p-1 border-2 max-w-28 sm:block bg-aTeam-100 border-aTeam-200 rounded-xl"
-  >
-    <div
-      class="h-auto p-1 m-1 shadow-md sm:p-2 sm:m-2 bg-aTeam-300 rounded-xl shadow-aTeam-600 grid grid-cols-1 gap-1"
-    >
-      <pdz-sprite
-        class=""
-        *ngFor="let pokemon of draft.team"
-        [pokemon]="pokemon"
-        [flipped]="true"
-      >
-      </pdz-sprite>
-    </div>
-  </div>
-  <div
-    class="w-full p-1 border-2 bg-bTeam-100 border-bTeam-200 rounded-xl lg:p-2"
-  >
-    <div>
-      <button
+<div class="preview-main">
+  <section class="matchups-section alternate">
+    <div class="section-header">
+      <h3>Matches</h3>
+      <!-- <button
         (click)="newOpponent()"
         class="p-2 m-3 rounded-lg shadow-md bg-bTeam-300 hover:shadow shadow-bTeam-600"
         title="Add Matchup"
@@ -27,111 +10,214 @@
         <div class="w-6 h-6">
           <plus-svg class="stroke-symbolColor-main"></plus-svg>
         </div>
+      </button> -->
+
+      <button mat-mini-fab (click)="newOpponent()">
+        <mat-icon>add</mat-icon>
       </button>
-      <loading *ngIf="!matchups"></loading>
-      <div *ngIf="matchups !== undefined && matchups.length === 0">
-        <div class="flex w-full justify-center opacity-60 text-lg">
-          Click the [+] to add your first opponent!
-        </div>
-      </div>
-      <div
-        *ngIf="matchups"
-        id="teams"
-        class="grid h-auto grid-flow-row grid-cols-1 overflow-auto md:grid-cols-2 lg:grid-cols-3"
-      >
-        <div
-          *ngFor="let matchup of matchups; let i = index"
-          class="flex flex-col m-2 shadow-md bg-bTeam-200 shadow-bTeam-600 rounded-xl"
-        >
-          <div class="flex-grow p-2 shadow-md bg-bTeam-300 rounded-xl">
-            <div class="flex items-center w-full space-x-2 h-fit">
-              <div
-                class="w-1/2 h-auto p-1 overflow-hidden font-semibold text-center whitespace-normal rounded-full shadow-inner bg-bTeam-200 overflow-ellipsis text-medium shadow-bTeam-600"
-              >
-                {{ matchup.teamName }}
-              </div>
-              <div
-                class="flex items-center justify-center w-1/6 p-1 overflow-hidden text-xs font-semibold whitespace-normal rounded-full shadow-inner bg-bTeam-200 h-fit overflow-ellipsis shadow-bTeam-600"
-                [ngClass]="scoreColor(matchup)"
-              >
-                {{ scoreString(matchup) }}
-              </div>
-              <div
-                class="flex items-center justify-center w-1/3 p-1 overflow-hidden text-xs font-semibold text-center whitespace-normal rounded-full shadow-inner bg-bTeam-200 h-fit overflow-ellipsis shadow-bTeam-600"
-              >
-                {{ matchup.stage }}
-              </div>
-            </div>
-            <div class="grid grid-cols-6 gap-1 px-4 pt-2 sprites">
-              <pdz-sprite
-                *ngFor="let pokemon of matchup.team"
-                [pokemon]="pokemon"
-              ></pdz-sprite>
-            </div>
-          </div>
-          <div
-            class="flex items-center p-2 h-fit"
-            *ngIf="!matchup.deleteConfirm"
-          >
-            <a
-              class="flex-grow p-1 font-semibold text-center shadow bg-bTeam-300 h-fit hover:shadow shadow-bTeam-600 rounded-xl"
-              routerLink="matchup/"
-              [queryParams]="{ id: matchup._id }"
-              >View Matchup</a
-            >
-            <div
-              class="grid items-center justify-center grid-cols-4 gap-2 px-2"
-            >
-              <score-svg
-                class="w-8 h-8 p-1 shadow bg-bTeam-300 hover:shadow rounded-xl hover:cursor-pointer shadow-bTeam-600"
-                routerLink="score"
-                [queryParams]="{ matchup: matchup._id | json }"
-                title="Score"
-                alt="Score"
-              ></score-svg>
-              <clock-svg
-                class="w-8 h-8 p-1 shadow bg-bTeam-300 hover:shadow rounded-xl hover:cursor-pointer shadow-bTeam-600"
-                routerLink="schedule"
-                [queryParams]="{ matchup: matchup._id | json }"
-                title="Schedule"
-                alt="Schedule"
-              ></clock-svg>
-              <edit-svg
-                class="w-8 h-8 p-1 shadow bg-bTeam-300 hover:shadow rounded-xl hover:cursor-pointer shadow-bTeam-600"
-                routerLink="edit"
-                [queryParams]="{ matchup: matchup._id | json }"
-                title="Edit"
-                alt="Edit"
-              ></edit-svg>
-              <trash-svg
-                class="w-8 h-8 p-1 shadow bg-bTeam-300 hover:shadow rounded-xl hover:cursor-pointer shadow-bTeam-600"
-                (click)="matchup.deleteConfirm = true"
-                title="Delete"
-                alt="Delete"
-              ></trash-svg>
-            </div>
-          </div>
-          <div class="flex" *ngIf="matchup.deleteConfirm">
-            <div
-              class="w-2/3 m-2 text-center shadow bg-bTeam-300 shadow-bTeam-600 rounded-xl"
-            >
-              Are you sure you want to delete? This can not be undone.
-            </div>
-            <div
-              class="flex items-center justify-center w-1/6 m-2 shadow cursor-pointer bg-bTeam-300 hover:shadow shadow-bTeam-600 rounded-xl"
-              (click)="deleteMatchup(matchup._id)"
-            >
-              Yes
-            </div>
-            <div
-              class="flex items-center justify-center w-1/6 m-2 shadow cursor-pointer bg-bTeam-300 hover:shadow shadow-bTeam-600 rounded-xl"
-              (click)="matchup.deleteConfirm = false"
-            >
-              No
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
-  </div>
+    @if (matchups) {
+      <div class="matchups-container">
+        @for (matchup of matchups; track $index) {
+          <div
+            class="matchup alternate"
+            routerLink="matchup"
+            [queryParams]="{ id: matchup._id }"
+          >
+            <div class="matchup-info">
+              <div class="matchup-stage">{{ matchup.stage }}</div>
+              <div class="matchup-team-info-container">
+                @if (matchup.logo) {
+                  <div class="matchup-logo">
+                    <img src="https://placehold.co/400" />
+                  </div>
+                }
+                <div class="matchup-team-info">
+                  <div class="team-name">{{ matchup.teamName }}</div>
+                  @if (matchup.coach) {
+                    <div class="coach-name">{{ matchup.coach }}</div>
+                  }
+                </div>
+              </div>
+            </div>
+
+            <div class="pokemon-container">
+              @for (pokemon of matchup.team; track $index) {
+                <pdz-sprite [pokemon]="pokemon"></pdz-sprite>
+              }
+            </div>
+            <div class="options-container">
+              <button
+                routerLink="score"
+                [queryParams]="{ matchup: matchup._id }"
+              >
+                <div class="score-button" [ngClass]="scoreClass(matchup)">
+                  <div>
+                    @if (matchup.score) {
+                      {{ scoreString(matchup) }}
+                    } @else {
+                      Add Score
+                    }
+                  </div>
+                </div>
+              </button>
+
+              <button
+                mat-icon-button
+                routerLink="edit"
+                [queryParams]="{ matchup: matchup._id }"
+              >
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button>
+                <mat-icon>delete_forever</mat-icon>
+              </button>
+            </div>
+          </div>
+        } @empty {
+          <div class="flex w-full justify-center opacity-60 text-lg">
+            Click the [+] to add your first opponent!
+          </div>
+        }
+      </div>
+    } @else {
+      <loading></loading>
+    }
+  </section>
+  <section class="stats-section">
+    <div class="section-header">Stats</div>
+    @if (teamStats.value !== null) {
+      @if (teamStats.value.length > 0) {
+        <div class="content-container">
+          <div class="table-container">
+            <div class="table-wrapper">
+              <table
+                cdk-table
+                [dataSource]="teamStats.value!"
+                matSort
+                [matSortDisableClear]="true"
+                (matSortChange)="sort($event)"
+              >
+                <ng-container cdkColumnDef="sprite">
+                  <th cdk-header-cell *cdkHeaderCellDef></th>
+                  <td cdk-cell *cdkCellDef="let element">
+                    <div class="sprite-wrapper">
+                      <pdz-sprite
+                        [flipped]="true"
+                        [pokemon]="element.pokemon"
+                      ></pdz-sprite>
+                    </div>
+                  </td>
+                </ng-container>
+                <ng-container cdkColumnDef="name">
+                  <th mat-sort-header="name" cdk-header-cell *cdkHeaderCellDef>
+                    Name
+                  </th>
+                  <td cdk-cell *cdkCellDef="let element">
+                    {{ element.pokemon.name }}
+                  </td>
+                </ng-container>
+
+                <ng-container cdkColumnDef="gb">
+                  <th
+                    mat-sort-header="gb"
+                    start="desc"
+                    cdk-header-cell
+                    *cdkHeaderCellDef
+                  >
+                    Games Brought
+                  </th>
+                  <td cdk-cell *cdkCellDef="let element">
+                    {{ element.brought }}
+                  </td>
+                </ng-container>
+
+                <ng-container cdkColumnDef="dk">
+                  <th
+                    mat-sort-header="dk"
+                    start="desc"
+                    cdk-header-cell
+                    *cdkHeaderCellDef
+                  >
+                    Direct Kills
+                  </th>
+                  <td cdk-cell *cdkCellDef="let element">
+                    {{ element.kills }}
+                  </td>
+                </ng-container>
+
+                <ng-container cdkColumnDef="ik">
+                  <th
+                    mat-sort-header="ik"
+                    start="desc"
+                    cdk-header-cell
+                    *cdkHeaderCellDef
+                  >
+                    Indirect Kills
+                  </th>
+                  <td cdk-cell *cdkCellDef="let element">
+                    {{ element.indirect }}
+                  </td>
+                </ng-container>
+
+                <ng-container cdkColumnDef="deaths">
+                  <th
+                    mat-sort-header="deaths"
+                    start="desc"
+                    cdk-header-cell
+                    *cdkHeaderCellDef
+                  >
+                    Deaths
+                  </th>
+                  <td cdk-cell *cdkCellDef="let element">
+                    {{ element.deaths }}
+                  </td>
+                </ng-container>
+
+                <ng-container cdkColumnDef="kdr">
+                  <th
+                    mat-sort-header="kdr"
+                    start="desc"
+                    cdk-header-cell
+                    *cdkHeaderCellDef
+                  >
+                    Kills/Deaths
+                  </th>
+                  <td cdk-cell *cdkCellDef="let element">
+                    {{ element.kdr | number: "1.0-2" }}
+                  </td>
+                </ng-container>
+
+                <ng-container cdkColumnDef="kpg">
+                  <th
+                    mat-sort-header="kpg"
+                    start="desc"
+                    cdk-header-cell
+                    *cdkHeaderCellDef
+                  >
+                    Kills/Game
+                  </th>
+                  <td cdk-cell *cdkCellDef="let element">
+                    {{ element.kpg | number: "1.0-2" }}
+                  </td>
+                </ng-container>
+
+                <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+                <tr
+                  cdk-row
+                  *cdkRowDef="let row; columns: displayedColumns"
+                ></tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      } @else {
+        <div class="score-placeholder">
+          Score your first match to see your stats
+        </div>
+      }
+    } @else {
+      <loading></loading>
+    }
+  </section>
 </div>

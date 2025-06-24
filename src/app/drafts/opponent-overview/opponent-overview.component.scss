@@ -1,0 +1,56 @@
+.draft-header {
+  display: flex;
+  align-items: center;
+  z-index: 0;
+  padding: 0 0.5rem;
+
+  border-bottom: 1px solid var(--mat-sys-outline);
+  border-top: 1px solid var(--mat-sys-outline);
+
+  margin-bottom: 0.5rem;
+  background-color: var(--mat-sys-surface);
+  box-shadow: var(--mat-sys-level2);
+}
+
+.draft-info-container {
+  padding: 0 0.5rem;
+}
+
+h2 {
+  font-size: 1.75em;
+}
+
+h3 {
+  font-size: 1.5em;
+}
+
+h2,
+h3 {
+  font-family: var(--pdz-font-fancy);
+}
+
+.opponent-main {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+$draft-sprite-size: 4rem;
+
+.draft-bar {
+  display: flex;
+  flex-grow: 1;
+  justify-content: center;
+  width: fit-content;
+  pdz-sprite {
+    min-height: $draft-sprite-size;
+    min-width: $draft-sprite-size;
+    height: $draft-sprite-size;
+    width: $draft-sprite-size;
+    max-height: $draft-sprite-size;
+    max-width: $draft-sprite-size;
+  }
+  @media (min-width: 768px) {
+    display: hidden;
+  }
+}

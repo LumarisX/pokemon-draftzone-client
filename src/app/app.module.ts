@@ -13,6 +13,8 @@ import { TopNavbarComponent } from './pages/top-navbar/top-navbar.component';
 @NgModule({
   bootstrap: [AppComponent],
   imports: [
+    TopNavbarComponent,
+    BodyModule,
     BrowserAnimationsModule,
     AuthModule.forRoot({
       domain: 'dev-wspjxi5f6mjqsjea.us.auth0.com',
@@ -38,7 +40,6 @@ import { TopNavbarComponent } from './pages/top-navbar/top-navbar.component';
         ],
       },
     }),
-    BodyModule,
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: !isDevMode(),
       // Register the ServiceWorker as soon as the application is stable

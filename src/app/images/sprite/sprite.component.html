@@ -5,6 +5,7 @@
 }
 @if (pokemon.id) {
   <img
+    matTooltip=""
     [matTooltip]="tooltipPosition ? this.name : null"
     [matTooltipPosition]="tooltipPosition ?? 'above'"
     [ngClass]="classes"
@@ -14,7 +15,6 @@
       'min-width': size,
       'min-height': size,
     }"
-    title="{{ pokemon.name }}"
     loading="lazy"
     [src]="path"
     onerror="this.src='../../../../assets/icons/unknown.svg'"

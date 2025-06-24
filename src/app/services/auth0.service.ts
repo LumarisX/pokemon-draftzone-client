@@ -9,6 +9,7 @@ import {
   filter,
   switchMap,
   tap,
+  throwError,
 } from 'rxjs';
 import { Settings } from '../pages/settings/settings.service';
 interface AppUser extends User {
@@ -114,8 +115,21 @@ export class AuthService implements OnDestroy {
           });
         }),
         catchError((error) => {
-          console.error('Login failed:', error);
-          return of(null);
+          if (
+            error &&
+            error.message &&
+            error.message.toLowerCase().includes('popup')
+          ) {
+            console.warn(
+              'Popup was blocked or closed. Falling back to redirect login.',
+            );
+            this.auth0.loginWithRedirect();
+            return of(null);
+          } else {
+            console.error('Login failed:', error);
+            this._accessTokenSubject.next(null);
+          }
+          return throwError(() => new Error('Login failed'));
         }),
       )
       .subscribe();
