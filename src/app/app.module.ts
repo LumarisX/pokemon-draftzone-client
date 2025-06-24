@@ -12,8 +12,8 @@ import { BodyModule } from './body/body.module';
 import { TopNavbarComponent } from './pages/top-navbar/top-navbar.component';
 @NgModule({
   bootstrap: [AppComponent],
+  declarations: [AppComponent],
   imports: [
-    TopNavbarComponent,
     BodyModule,
     BrowserAnimationsModule,
     AuthModule.forRoot({
@@ -46,6 +46,7 @@ import { TopNavbarComponent } from './pages/top-navbar/top-navbar.component';
       // or after 30 seconds (whichever comes first).
       registrationStrategy: 'registerWhenStable:30000',
     }),
+    TopNavbarComponent,
   ],
   providers: [
     provideHttpClient(withInterceptorsFromDi()),

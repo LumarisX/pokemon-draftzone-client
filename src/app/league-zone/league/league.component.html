@@ -36,8 +36,12 @@
     </div>
   </div>
   <div class="widget">
-    <div class="widget-title">Matches</div>
-    <div class="widget-body"></div>
+    <div class="widget-title">League Chat</div>
+    <div class="widget-body">
+      @if (leagueId) {
+        <pdz-chat [leagueId]="leagueId"></pdz-chat>
+      }
+    </div>
   </div>
 </div>
 
