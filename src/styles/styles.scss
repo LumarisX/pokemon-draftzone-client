@@ -182,3 +182,29 @@ $option-lineheight: 3rem;
     display: none;
   }
 }
+
+$lightcoral: #f08080;
+$warm-orange: #feb47b;
+
+.pdz-background-neg {
+  background: linear-gradient(to bottom right, $warm-orange, $lightcoral);
+}
+
+$lightgreen: #90ee90;
+$fresh-aqua: #76d7c4;
+
+.pdz-background-pos {
+  background: linear-gradient(to bottom right, $lightgreen, $fresh-aqua);
+}
+
+// .pdz-background-neg {
+//   background-color: lightcoral;
+// }
+
+// .pdz-background-pos {
+//   background-color: lightgreen;
+// }
+
+.pdz-background-neut {
+  background: linear-gradient(to bottom right, lightgray, gray);
+}

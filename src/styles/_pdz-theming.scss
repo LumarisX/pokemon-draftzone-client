@@ -53,6 +53,30 @@ $theme-configurations: (
   }
 }
 
+@mixin generate-palette-variables($palettes, $is-alt: false) {
+  @if $is-alt {
+    @each $key, $value in map.get($palettes, primary-alt) {
+      --primary-#{$key}: #{$value};
+    }
+    @each $key, $value in map.get($palettes, secondary-alt) {
+      --secondary-#{$key}: #{$value};
+    }
+    @each $key, $value in map.get($palettes, primary) {
+      --tertiary-#{$key}: #{$value};
+    }
+  } @else {
+    @each $key, $value in map.get($palettes, primary) {
+      --primary-#{$key}: #{$value};
+    }
+    @each $key, $value in map.get($palettes, secondary) {
+      --secondary-#{$key}: #{$value};
+    }
+    @each $key, $value in map.get($palettes, primary-alt) {
+      --tertiary-#{$key}: #{$value};
+    }
+  }
+}
+
 @mixin apply-theme-variants(
   $prime-primary,
   $prime-tertiary,
@@ -60,73 +84,47 @@ $theme-configurations: (
   $alt-tertiary,
   $palettes
 ) {
+  .theme-prime,
   [sub-theme="prime"] {
-    @include _apply-mat-theme-core($prime-primary, $prime-tertiary, light);
-    //TODO: eventually get rid of these
-    @each $key, $value in map.get($palettes, primary) {
-      & {
-        --primary-#{$key}: #{$value};
-      }
-      .primary-#{$key} {
-        background-color: $value;
-      }
-    }
-    @each $key, $value in map.get($palettes, secondary) {
-      & {
-        --secondary-#{$key}: #{$value};
-      }
-      .secondary-#{$key} {
-        background-color: $value;
-      }
-    }
-    @each $key, $value in map.get($palettes, primary-alt) {
-      & {
-        --tertiary-#{$key}: #{$value};
-      }
-      .tertiary-#{$key} {
-        background-color: $value;
-      }
+    @include generate-palette-variables($palettes);
+    & {
+      @include _apply-mat-theme-core($prime-primary, $prime-tertiary, light);
+      @include apply-custom-material-overrides();
     }
   }
-  //TODO: replace .alternate with sub-theme
+
+  .theme-alt,
   .alternate,
   [sub-theme="alt"] {
-    @include _apply-mat-theme-core($alt-primary, $alt-tertiary, light);
-    //TODO: eventually get rid of these
-    @each $key, $value in map.get($palettes, primary-alt) {
-      & {
-        --primary-#{$key}: #{$value};
-      }
-      .primary-#{$key} {
-        background-color: $value;
-      }
-    }
-    @each $key, $value in map.get($palettes, secondary-alt) {
-      & {
-        --secondary-#{$key}: #{$value};
-      }
-      .secondary-#{$key} {
-        background-color: $value;
-      }
-    }
-    @each $key, $value in map.get($palettes, primary) {
-      & {
-        --tertiary-#{$key}: #{$value};
-      }
-      .tertiary-#{$key} {
-        background-color: $value;
-      }
+    @include generate-palette-variables($palettes, true);
+    & {
+      @include _apply-mat-theme-core($alt-primary, $alt-tertiary, light);
+      @include apply-custom-material-overrides();
     }
   }
+
   &[light-mode="dark"] {
+    .theme-prime,
     [sub-theme="prime"] {
       @include _apply-mat-theme-core($prime-primary, $prime-tertiary, dark);
     }
+    & {
+      @include apply-custom-material-overrides();
+    }
+
+    .theme-alt,
     .alternate,
     [sub-theme="alt"] {
       @include _apply-mat-theme-core($alt-primary, $alt-tertiary, dark);
+      & {
+        @include apply-custom-material-overrides();
+      }
     }
   }
+}
+
+@mixin apply-custom-material-overrides() {
+  --pdz-test: var(--primary-500);
 }
 
 :root {

@@ -1,20 +1,27 @@
-<div class="p-2">
+<div class="opponent-main">
   <div class="draft-header">
     <button mat-flat-button [routerLink]="['/', draftPath]">Back</button>
+
     @if (draft) {
-      <div class="flex gap-2 items-center">
-        <div class="draft-info-container">
-          <h2 class="">
-            {{ draft.leagueName }}
-          </h2>
-          <h3 class="text-2xl font-bold text-symbolColor-sub">
-            {{ draft.score.wins }} - {{ draft.score.loses }} |
-            {{ draft.score.diff }}
-          </h3>
-        </div>
-        <div>
-          <button mat-mini-fab><mat-icon>edit</mat-icon></button>
-        </div>
+      <div class="draft-info-container">
+        <h2 class="">
+          {{ draft.leagueName }}
+        </h2>
+        <h3 class="text-2xl font-bold text-symbolColor-sub">
+          {{ draft.score.wins }} - {{ draft.score.loses }} |
+          {{ draft.score.diff }}
+        </h3>
+      </div>
+      <div class="draft-bar">
+        @for (pokemon of draft.team; track $index) {
+          <pdz-sprite [pokemon]="pokemon"> </pdz-sprite>
+        }
+      </div>
+      <div class="flex gap-2">
+        <button mat-mini-fab><mat-icon>edit</mat-icon></button>
+        <button mat-mini-fab [disabled]="!draft.doc">
+          <mat-icon>dataset_linked</mat-icon>
+        </button>
       </div>
     }
   </div>

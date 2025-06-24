@@ -7,6 +7,7 @@ import { DraftOverviewPath } from '../draft-overview/draft-overview-routing.modu
 import { Draft } from '../../interfaces/draft';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { SpriteComponent } from '../../images/sprite/sprite.component';
 
 @Component({
   selector: 'opponent-overview',
@@ -17,6 +18,7 @@ import { MatIconModule } from '@angular/material/icon';
     ReactiveFormsModule,
     MatButtonModule,
     MatIconModule,
+    SpriteComponent,
   ],
   templateUrl: './opponent-overview.component.html',
   styleUrl: './opponent-overview.component.scss',
