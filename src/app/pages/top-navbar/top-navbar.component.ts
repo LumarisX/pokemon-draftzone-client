@@ -52,11 +52,11 @@ export class TopNavbarComponent implements OnInit {
       title: 'Replay Analyzer',
       route: '/tools/replay-analyzer',
     },
-    {
-      title: 'Find A League',
-      route: '/league-list',
-      badge: this.unreadService.leagueCount,
-    },
+    // {
+    //   title: 'Find A League',
+    //   route: '/league-list',
+    //   badge: this.unreadService.leagueCount,
+    // },
     {
       title: 'Quick Draft',
       route: '/tools/quick-draft',
