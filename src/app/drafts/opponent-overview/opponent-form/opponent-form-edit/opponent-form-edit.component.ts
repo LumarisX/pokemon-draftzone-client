@@ -56,8 +56,10 @@ export class OpponentFormEditComponent implements OnInit {
       .editMatchup(this.matchupId, this.teamId, formData)
       .subscribe({
         next: (response) => {
-          console.log('Success!', response);
-          this.router.navigate(['/', this.draftPath, this.teamId]);
+          setTimeout(() => {
+            console.log('Success!', response);
+            this.router.navigate(['/', this.draftPath, this.teamId]);
+          }, 1000);
         },
         error: (error) => console.error('Error!', error),
       });

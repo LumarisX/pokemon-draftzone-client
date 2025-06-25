@@ -124,7 +124,6 @@ $theme-configurations: (
 }
 
 @mixin apply-custom-material-overrides() {
-  --pdz-test: var(--primary-500);
 }
 
 :root {

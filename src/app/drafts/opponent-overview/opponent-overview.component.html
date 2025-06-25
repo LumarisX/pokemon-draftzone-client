@@ -18,10 +18,23 @@
         }
       </div>
       <div class="flex gap-2">
-        <button mat-mini-fab><mat-icon>edit</mat-icon></button>
-        <button mat-mini-fab [disabled]="!draft.doc">
-          <mat-icon>dataset_linked</mat-icon>
+        <button
+          mat-mini-fab
+          routerLink="../edit"
+          [queryParams]="{ draft: draft.leagueId | json }"
+        >
+          <mat-icon>edit</mat-icon>
         </button>
+        <a
+          mat-mini-fab
+          [href]="draft.doc"
+          target="_blank"
+          [disabled]="!draft.doc"
+          [attr.aria-disabled]="!draft.doc"
+          [class.mat-disabled]="!draft.doc"
+        >
+          <mat-icon>dataset_linked</mat-icon>
+        </a>
       </div>
     }
   </div>
