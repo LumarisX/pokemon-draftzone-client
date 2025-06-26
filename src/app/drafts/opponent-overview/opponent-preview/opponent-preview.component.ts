@@ -13,6 +13,13 @@ import { CdkTableModule } from '@angular/cdk/table';
 import { MatSortModule, Sort } from '@angular/material/sort';
 import { BehaviorSubject } from 'rxjs';
 import { Stats } from '../../draft-overview/draft-stats/draft-stats.component';
+import { BooleanInput } from '@angular/cdk/coercion';
+
+type Matchup = Opponent & {
+  deleteConfirm?: boolean;
+  score?: [number, number] | null;
+  logo?: null; //TODO: add later
+};
 
 @Component({
   selector: 'pdz-opponent-preview',
@@ -32,15 +39,11 @@ import { Stats } from '../../draft-overview/draft-stats/draft-stats.component';
 })
 export class OpponentTeamPreviewComponent implements OnInit {
   index = 0;
-  draft?: Draft;
-  matchups?: (Opponent & {
-    deleteConfirm?: boolean;
-    score?: [number, number] | null;
-    logo?: null; //TODO: add later
-  })[];
+  matchups?: Matchup[];
   teamId: string = '';
   readonly draftPath = DraftOverviewPath;
-
+  selectedMatchup: Matchup | null = null;
+  deleteConfirm: Boolean = false;
   teamStats = new BehaviorSubject<Stats[] | null>(null);
   displayedColumns: string[] = [
     'sprite',
@@ -65,12 +68,8 @@ export class OpponentTeamPreviewComponent implements OnInit {
   }
 
   reload() {
-    this.draft = undefined;
     this.matchups = undefined;
     this.teamStats.next(null);
-    this.draftService.getDraft(this.teamId).subscribe((data) => {
-      this.draft = data;
-    });
     this.draftService.getMatchupList(this.teamId).subscribe((data) => {
       this.matchups = data;
     });
@@ -80,14 +79,22 @@ export class OpponentTeamPreviewComponent implements OnInit {
     });
   }
 
+  selectMatchup(matchup: Matchup | null) {
+    this.selectedMatchup = this.selectedMatchup === matchup ? null : matchup;
+    this.deleteConfirm = false;
+  }
+
   deleteMatchup(matchupId: string) {
-    this.draftService.deleteMatchup(matchupId).subscribe(
-      (response) => {
+    this.draftService.deleteMatchup(matchupId).subscribe({
+      next: (response) => {
         this.reload();
         console.log('Success!', response);
       },
-      (error) => console.error('Error!', error),
-    );
+      error: (error) => {
+        console.error('Error!', error);
+      },
+    });
+    this.selectedMatchup = null;
   }
 
   score(matchup: Opponent): [number, number] | null {

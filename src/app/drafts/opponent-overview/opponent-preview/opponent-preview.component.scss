@@ -1,3 +1,5 @@
+@use "@angular/material" as mat;
+
 $breakpoint-tablet: 768px;
 $breakpoint-desktop: 1200px;
 :host {
@@ -57,15 +59,21 @@ section {
   font-family: var(--pdz-font-fancy);
   user-select: none;
   border-radius: 1rem;
-  box-shadow: var(--pdz-level2);
-  background-color: var(--mat-sys-primary-container);
+  box-shadow: var(--pdz-level1);
+  background-color: var(--mat-sys-primary-fixed);
   flex-wrap: wrap;
   @media (min-width: $breakpoint-tablet) {
     flex-wrap: nowrap;
   }
 
   &:hover {
-    box-shadow: var(--pdz-level-1);
+    box-shadow: var(--pdz-level2);
+    cursor: pointer;
+  }
+
+  &.selected {
+    box-shadow: var(--pdz-level-2);
+    background-color: var(--mat-sys-primary-fixed-dim);
     cursor: pointer;
   }
 }
@@ -164,15 +172,17 @@ pdz-sprite {
 
 .score-button {
   font-size: 0.8em;
-  min-width: 4rem;
+  width: 4rem;
   padding: 3px;
   border-radius: 0.625rem;
+  line-height: 0.9em;
   box-shadow: var(--pdz-level2);
   &:hover {
     box-shadow: var(--pdz-level1);
   }
   > div {
     background-color: white;
+    padding: 0.125rem;
     border-radius: 0.5rem;
   }
 }
@@ -208,11 +218,14 @@ pdz-sprite {
 
   .table-container {
     width: 100%;
+    height: 100%;
+
     overflow: hidden;
   }
 
   .table-wrapper {
-    padding: 0 0.5rem 0.5rem;
+    padding: 0 0.5rem;
+
     overflow: auto;
     height: 100%;
     width: 100%;
@@ -232,6 +245,9 @@ pdz-sprite {
     width: 100%;
     border-collapse: separate;
     border-spacing: 0 4px;
+    padding: 0 0.25rem;
+    background-color: var(--mat-sys-primary-container);
+    border-radius: var(--mat-sys-corner-medium);
   }
 
   .title-bar {
@@ -260,5 +276,35 @@ pdz-sprite {
   tr td:last-child {
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
+  }
+}
+
+.button-container {
+  display: flex;
+  gap: 0.5rem;
+  align-items: stretch;
+
+  button {
+    display: flex;
+    justify-content: center;
+    background-color: var(--mat-sys-primary-container);
+    color: var(--mat-sys-on-primary-container);
+    border-radius: var(--mat-sys-corner-medium);
+    box-shadow: var(--pdz-level2);
+    padding: 0.5rem;
+    font-size: 0.8em;
+
+    &:hover {
+      background-color: var(--mat-sys-secondary-container);
+      box-shadow: var(--pdz-level4);
+    }
+
+    &.matchup-button {
+      background-color: var(--mat-sys-primary-fixed-dim);
+
+      &:hover {
+        background-color: var(--mat-sys-secondary-fixed-dim);
+      }
+    }
   }
 }

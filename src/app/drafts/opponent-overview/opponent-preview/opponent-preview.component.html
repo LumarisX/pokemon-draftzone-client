@@ -2,17 +2,47 @@
   <section class="matchups-section alternate">
     <div class="section-header">
       <h3>Matches</h3>
-      <button mat-mini-fab (click)="newOpponent()">
-        <mat-icon>add</mat-icon>
-      </button>
+      <div class="button-container">
+        @if (selectedMatchup) {
+          <button
+            class="matchup-button"
+            routerLink="matchup"
+            [queryParams]="{ id: selectedMatchup._id }"
+          >
+            View Matchup
+          </button>
+          <button
+            class="matchup-button"
+            routerLink="edit"
+            [queryParams]="{ matchup: selectedMatchup._id }"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+          @if (deleteConfirm) {
+            <button
+              class="matchup-button"
+              (click)="deleteMatchup(selectedMatchup._id)"
+            >
+              <mat-icon>check</mat-icon>
+            </button>
+          } @else {
+            <button class="matchup-button" (click)="deleteConfirm = true">
+              <mat-icon>delete_forever</mat-icon>
+            </button>
+          }
+        }
+        <button (click)="newOpponent()">
+          <mat-icon>add</mat-icon>
+        </button>
+      </div>
     </div>
     @if (matchups) {
       <div class="matchups-container">
         @for (matchup of matchups; track $index) {
           <div
             class="matchup alternate"
-            routerLink="matchup"
-            [queryParams]="{ id: matchup._id }"
+            (click)="selectMatchup(matchup)"
+            [ngClass]="{ selected: selectedMatchup === matchup }"
           >
             <div class="matchup-info">
               <div class="matchup-stage">{{ matchup.stage }}</div>
@@ -50,17 +80,6 @@
                     }
                   </div>
                 </div>
-              </button>
-
-              <button
-                mat-icon-button
-                routerLink="edit"
-                [queryParams]="{ matchup: matchup._id }"
-              >
-                <mat-icon>edit</mat-icon>
-              </button>
-              <button mat-icon-button>
-                <mat-icon>delete_forever</mat-icon>
               </button>
             </div>
           </div>

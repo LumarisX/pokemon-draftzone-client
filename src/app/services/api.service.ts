@@ -76,7 +76,6 @@ export class ApiService {
       finalize(() => {
         this.pendingRequests.delete(key);
       }),
-      shareReplay(1),
     );
     this.pendingRequests.set(key, request$);
     return request$;
