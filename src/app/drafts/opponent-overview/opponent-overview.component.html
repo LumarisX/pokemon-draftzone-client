@@ -4,20 +4,33 @@
 
     @if (draft) {
       <div class="draft-info-container">
-        <h2 class="">
+        <h2>
           {{ draft.leagueName }}
         </h2>
-        <h3 class="text-2xl font-bold text-symbolColor-sub">
+        <div class="details-container">
+          <h4 class="text-2xl font-bold text-symbolColor-sub">
+            {{ draft.format }}
+          </h4>
+          <h4 class="text-2xl font-bold text-symbolColor-sub">
+            {{ draft.ruleset }}
+          </h4>
+        </div>
+      </div>
+      <div class="team-info-container">
+        <h3>
+          {{ draft.teamName }}
+        </h3>
+        <h4 class="text-2xl font-bold text-symbolColor-sub">
           {{ draft.score.wins }} - {{ draft.score.loses }} |
           {{ draft.score.diff }}
-        </h3>
+        </h4>
       </div>
       <div class="draft-bar">
         @for (pokemon of draft.team; track $index) {
           <pdz-sprite [pokemon]="pokemon"> </pdz-sprite>
         }
       </div>
-      <div class="flex gap-2">
+      <div class="draft-buttons">
         <button
           mat-mini-fab
           routerLink="../edit"

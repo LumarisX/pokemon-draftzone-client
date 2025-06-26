@@ -44,7 +44,7 @@ $font-nasa: var(--pdz-fancy);
   border-radius: $border-radius-lg;
   background-color: var(--mat-sys-color-surface-container);
   border: 1px solid var(--mat-sys-outline-variant);
-  box-shadow: var(--mat-sys-level2);
+  box-shadow: var(--pdz-level2);
   &__name {
     font-size: 1.25rem;
     font-weight: 500;
@@ -69,7 +69,7 @@ $font-nasa: var(--pdz-fancy);
   border-radius: $border-radius-md;
   background-color: var(--mat-sys-surface-container-low);
   border: 1px solid transparent;
-  box-shadow: var(--mat-sys-level1);
+  box-shadow: var(--pdz-level1);
   transition:
     background-color 0.2s ease-in-out,
     border-color 0.2s ease-in-out,
@@ -78,7 +78,7 @@ $font-nasa: var(--pdz-fancy);
   text-decoration: none;
   &:hover {
     background-color: var(--mat-sys-surface-container-high);
-    box-shadow: var(--mat-sys-level2);
+    box-shadow: var(--pdz-level2);
   }
 
   &:focus-visible {

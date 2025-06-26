@@ -57,7 +57,7 @@ section {
   font-family: var(--pdz-font-fancy);
   user-select: none;
   border-radius: 1rem;
-  box-shadow: var(--mat-sys-level2);
+  box-shadow: var(--pdz-level2);
   background-color: var(--mat-sys-primary-container);
   flex-wrap: wrap;
   @media (min-width: $breakpoint-tablet) {
@@ -65,7 +65,7 @@ section {
   }
 
   &:hover {
-    box-shadow: var(--mat-sys-level1);
+    box-shadow: var(--pdz-level-1);
     cursor: pointer;
   }
 }
@@ -140,7 +140,7 @@ section {
     flex-shrink: 0;
     overflow: hidden;
     border-radius: var(--mat-sys-corner-medium);
-    box-shadow: var(--mat-sys-level1);
+    box-shadow: var(--pdz-level1);
     height: 3rem;
     width: 3rem;
     img {
@@ -167,9 +167,9 @@ pdz-sprite {
   min-width: 4rem;
   padding: 3px;
   border-radius: 0.625rem;
-  box-shadow: var(--mat-sys-level2);
+  box-shadow: var(--pdz-level2);
   &:hover {
-    box-shadow: var(--mat-sys-level1);
+    box-shadow: var(--pdz-level1);
   }
   > div {
     background-color: white;
