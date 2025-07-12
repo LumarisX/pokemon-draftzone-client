@@ -147,14 +147,23 @@ export class OpponentTeamPreviewComponent implements OnInit {
       a: number | string | null | undefined,
       b: number | string | null | undefined,
     ) => {
-      if (a == null) return 1;
-      if (b == null) return -1;
-      return typeof a === 'string' && typeof b === 'string'
-        ? a.localeCompare(b) * (isAsc ? 1 : -1)
-        : (a < b ? -1 : 1) * (isAsc ? 1 : -1);
+      if (a == null && b == null) return 0;
+      if (a == null) return isAsc ? 1 : -1;
+      if (b == null) return isAsc ? -1 : 1;
+
+      let comparison = 0;
+      if (typeof a === 'string' && typeof b === 'string') {
+        comparison = a.localeCompare(b);
+      } else if (typeof a === 'number' && typeof b === 'number') {
+        comparison = a - b;
+      } else {
+        comparison = String(a).localeCompare(String(b));
+      }
+      return comparison * (isAsc ? 1 : -1);
     };
-    this.teamStats.next(
-      this.teamStats.value?.sort((a, b) => {
+
+    if (this.teamStats.value) {
+      const sortedData = [...this.teamStats.value].sort((a, b) => {
         switch (sort.active) {
           case 'name':
             return compare(a.pokemon.name, b.pokemon.name);
@@ -173,7 +182,8 @@ export class OpponentTeamPreviewComponent implements OnInit {
           default:
             return 0;
         }
-      }) ?? null,
-    );
+      });
+      this.teamStats.next(sortedData);
+    }
   }
 }
