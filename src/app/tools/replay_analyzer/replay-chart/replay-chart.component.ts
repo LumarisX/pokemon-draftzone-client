@@ -48,6 +48,22 @@ export class ReplayChartComponent implements OnInit {
     this.addLegend();
   }
 
+  ngOnChanges(): void {
+    if(this.svg || this.graph) {
+      this.clear();
+      this.totalPercent = this.data[0].team.length * 100;
+      this.createSvg();
+      this.createTooltip();
+      this.drawLines(this.data);
+      this.addLegend(); 
+    }
+  }
+
+  clear(): void {
+    this.svg.selectAll('*').remove();
+    this.graph.selectAll('*').remove();
+  }
+
   createSvg(): void {
     this.svg = d3
       .select(this.el.nativeElement)
@@ -182,7 +198,7 @@ export class ReplayChartComponent implements OnInit {
         tooltipText
           .attr('x', xPosition)
           .attr('y', yPosition - 10)
-          .text(`${this.totalPercent - d.damage}%`)
+          .text(`${(this.totalPercent - d.damage).toFixed(2)}%`)
           .style('visibility', 'visible');
       })
       .on('mouseleave', () => {
