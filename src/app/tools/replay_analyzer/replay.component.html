@@ -211,6 +211,12 @@
                     </div>
                   }
                 </div>
+                <div *ngIf="mon.moveset && mon.moveset.length > 0">
+                  <span class="font-semibold"> Moveset: </span>
+                  <ul class="list-disc pl-4">
+                    <li *ngFor="let move of mon.moveset">{{ move }}</li>
+                  </ul>
+                </div>
               </div>
             </div>
           </div>
