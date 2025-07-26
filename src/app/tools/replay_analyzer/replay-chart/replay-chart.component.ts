@@ -103,7 +103,6 @@ export class ReplayChartComponent implements OnInit {
       ) *
         100;
 
-    console.log(data);
     const x = d3
       .scaleLinear()
       .range([0, this.graphWidth])
