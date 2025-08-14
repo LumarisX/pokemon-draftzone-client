@@ -9379,7 +9379,7 @@ export const Namedex: {
   },
   chillet: {
     name: ['Chillet'],
-    default: { id: 'pecharunt', path: homePath },
+    default: { id: 'chillet', path: rrPath },
   },
   // missingno: {
   //   name: ['MissingNo.'],
