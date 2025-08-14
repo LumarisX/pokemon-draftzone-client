@@ -9688,6 +9688,10 @@ export const Namedex: {
     name: ['Chuggalong'],
     default: { id: 'chuggalong', path: showdownOldPath },
   },
+  shox: {
+    name: ['Shox'],
+    default: { id: 'shox', path: showdownOldPath },
+  },
   doduosevii: {
     name: ['Doduo-Sevii'],
     default: { id: 'doduo-sevii', path: rrPath },
