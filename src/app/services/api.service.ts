@@ -10,6 +10,7 @@ import {
   filter,
   finalize,
   Observable,
+  OperatorFunction,
   shareReplay,
   switchMap,
   throwError,
@@ -57,22 +58,14 @@ export class ApiService {
     if (this.pendingRequests.has(key)) return this.pendingRequests.get(key)!;
     const request$ = (
       authenticated
-        ? this.auth.getAccessToken().pipe(
-            filter((token: string | null): token is string => !!token),
-            switchMap((token: string) => {
-              headers = headers.set('authorization', `Bearer ${token}`);
-              return this.http.get<T>(`${this.serverUrl}/${apiUrl}`, {
-                headers,
-                params,
-              });
-            }),
-          )
+        ? this.authenticatedRequest<T>('GET', apiUrl, {
+            params,
+            additionalHeaders,
+          })
         : this.http.get<T>(`${this.serverUrl}/${apiUrl}`, { headers, params })
     ).pipe(
-      catchError((error: HttpErrorResponse) => {
-        this.errorService.reportError(error);
-        return throwError(() => error);
-      }),
+      shareReplay({ bufferSize: 1, refCount: true }),
+      this.handleError(),
       finalize(() => {
         this.pendingRequests.delete(key);
       }),
@@ -90,68 +83,78 @@ export class ApiService {
     const apiUrl = Array.isArray(path) ? path.join('/') : path;
     const request$ = (
       authenticated
-        ? this.auth.getAccessToken().pipe(
-            filter((token: string | null): token is string => !!token),
-            switchMap((token: string) =>
-              this.http.post<T>(`${this.serverUrl}/${apiUrl}`, data, {
-                headers: new HttpHeaders({
-                  'Content-Type': 'application/json',
-                  authorization: `Bearer ${token}`,
-                }),
-              }),
-            ),
-          )
+        ? this.authenticatedRequest<T>('POST', apiUrl, { data })
         : this.http.post<T>(`${this.serverUrl}/${apiUrl}`, data, {
-            headers: new HttpHeaders({
-              'Content-Type': 'application/json',
-            }),
+            headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
           })
-    ).pipe(
-      catchError((error: HttpErrorResponse) => {
-        this.errorService.reportError(error);
-        return throwError(() => error);
-      }),
-    );
+    ).pipe(this.handleError());
     return request$;
   }
 
   patch<T>(path: string | string[], data: any): Observable<T> {
     const apiUrl = Array.isArray(path) ? path.join('/') : path;
-    const request$ = this.auth.getAccessToken().pipe(
-      filter((token: string | null): token is string => !!token),
-      switchMap((token: string) =>
-        this.http.patch<T>(`${this.serverUrl}/${apiUrl}`, data, {
-          headers: new HttpHeaders({
-            'Content-Type': 'application/json',
-            authorization: `Bearer ${token}`,
-          }),
-        }),
-      ),
-      catchError((error: HttpErrorResponse) => {
-        this.errorService.reportError(error);
-        return throwError(() => error);
-      }),
-    );
+    const request$ = this.authenticatedRequest<T>('PATCH', apiUrl, {
+      data,
+    }).pipe(this.handleError());
     return request$;
   }
 
   delete<T>(path: string | string[]): Observable<T> {
     const apiUrl = Array.isArray(path) ? path.join('/') : path;
-    const request$ = this.auth.getAccessToken().pipe(
-      filter((token: string | null): token is string => !!token),
-      switchMap((token: string) =>
-        this.http.delete<T>(`${this.serverUrl}/${apiUrl}`, {
-          headers: new HttpHeaders({
-            'Content-Type': 'application/json',
-            authorization: `Bearer ${token}`,
-          }),
-        }),
-      ),
-      catchError((error: HttpErrorResponse) => {
-        this.errorService.reportError(error);
-        return throwError(() => error);
-      }),
+    const request$ = this.authenticatedRequest<T>('DELETE', apiUrl).pipe(
+      this.handleError(),
     );
     return request$;
+  }
+
+  private handleError<T>(): OperatorFunction<T, T> {
+    return catchError((error: HttpErrorResponse) => {
+      this.errorService.reportError(error);
+      return throwError(() => error);
+    });
+  }
+
+  private authenticatedRequest<T>(
+    method: 'GET' | 'POST' | 'PATCH' | 'DELETE',
+    path: string,
+    options: {
+      data?: any;
+      params?:
+        | HttpParams
+        | {
+            [param: string]:
+              | string
+              | number
+              | boolean
+              | ReadonlyArray<string | number | boolean>;
+          };
+      additionalHeaders?: { [key: string]: string };
+    } = {},
+  ): Observable<T> {
+    const { data, params, additionalHeaders } = options;
+
+    return this.auth.getAccessToken().pipe(
+      filter((token: string | null): token is string => !!token),
+      switchMap((token: string) => {
+        const headers = new HttpHeaders({
+          'Content-Type': 'application/json',
+          authorization: `Bearer ${token}`,
+          ...additionalHeaders,
+        });
+
+        const url = `${this.serverUrl}/${path}`;
+
+        switch (method) {
+          case 'GET':
+            return this.http.get<T>(url, { headers, params });
+          case 'POST':
+            return this.http.post<T>(url, data, { headers, params });
+          case 'PATCH':
+            return this.http.patch<T>(url, data, { headers });
+          case 'DELETE':
+            return this.http.delete<T>(url, { headers, params });
+        }
+      }),
+    );
   }
 }
