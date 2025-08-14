@@ -9684,6 +9684,14 @@ export const Namedex: {
     name: ['Cresceidon'],
     default: { id: 'cresceidon', path: showdownOldPath },
   },
+  chuggon: {
+    name: ['Chuggon'],
+    default: { id: 'chuggon', path: showdownOldPath },
+  },
+  draggalong: {
+    name: ['Draggalong'],
+    default: { id: 'draggalong', path: showdownOldPath },
+  },
   chuggalong: {
     name: ['Chuggalong'],
     default: { id: 'chuggalong', path: showdownOldPath },
@@ -9691,6 +9699,14 @@ export const Namedex: {
   shox: {
     name: ['Shox'],
     default: { id: 'shox', path: showdownOldPath },
+  },
+  ramnarokradiant: {
+    name: ['Ramnarok-Radiant'],
+    default: { id: 'ramnarok-radiant', path: showdownOldPath },
+  },
+  ramnarok: {
+    name: ['Ramnarok'],
+    default: { id: 'ramnarok', path: showdownOldPath },
   },
   doduosevii: {
     name: ['Doduo-Sevii'],
