@@ -102,7 +102,6 @@ export class SpriteComponent implements OnChanges {
   updateData(pokemon: SpritePokemon) {
     const spriteData = this.spriteService.getSpriteData(pokemon);
     this.path = spriteData.path;
-    console.log(spriteData.path);
     this._fallbackPath = spriteData.fallbackPath;
     this._baseClasses = spriteData.classes;
     this._baseFlip = spriteData.flip;
