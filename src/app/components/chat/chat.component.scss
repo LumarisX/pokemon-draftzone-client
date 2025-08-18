@@ -1,0 +1,81 @@
+$primary-color: var(--mat-sys-primary);
+$primary-hover-color: var(--mat-sys-secondary);
+$border-color: var(--mat-sys-outline-variant);
+$text-color: var(--mat-sys-on-surface);
+$timestamp-color: var(--mat-sys-primary);
+$background-color: var(--mat-sys-surface);
+.message-list {
+  min-height: 4rem;
+  max-height: 20rem;
+  overflow-y: auto;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid $border-color;
+  background-color: $background-color;
+  .message {
+    display: flex;
+    align-items: flex-end;
+    margin-bottom: 1rem;
+
+    .message-header {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 0.25rem;
+    }
+
+    .timestamp {
+      font-size: 0.75rem;
+      color: $timestamp-color;
+    }
+
+    strong {
+      font-weight: 600;
+    }
+
+    .message-text {
+      padding-left: 0.25rem;
+    }
+  }
+}
+
+.message-input {
+  display: flex;
+  padding: 1rem;
+  background-color: #fff;
+
+  textarea {
+    flex-grow: 1;
+    border: 1px solid #ced4da;
+    padding: 0.5rem 0.75rem;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-family: inherit;
+    resize: none;
+    transition:
+      border-color 0.15s ease-in-out,
+      box-shadow 0.15s ease-in-out;
+
+    &:focus {
+      outline: none;
+      border-color: $primary-color;
+      box-shadow: 0 0 0 3px rgba($primary-color, 0.25);
+    }
+  }
+
+  button {
+    border: none;
+    background: $primary-color;
+    color: white;
+    padding: 0.5rem 1rem;
+    margin-left: 0.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    align-self: flex-end;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background: $primary-hover-color;
+    }
+  }
+}

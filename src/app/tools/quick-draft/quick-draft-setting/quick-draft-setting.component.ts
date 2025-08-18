@@ -14,6 +14,7 @@ import {
   style,
   transition,
 } from '@angular/animations';
+import { ChatComponent } from '../../../components/chat/chat.component';
 
 export type QDSettings = {
   rerolls: number;
@@ -36,6 +37,7 @@ type Template = {
     RulesetSelectComponent,
     MatButtonModule,
     MatSliderModule,
+    ChatComponent,
   ],
   templateUrl: './quick-draft-setting.component.html',
   styleUrls: [

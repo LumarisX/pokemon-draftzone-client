@@ -1,0 +1,23 @@
+<div class="message-list">
+  @for (msg of messages; track $index) {
+    <div class="message">
+      <div class="message-header">
+        <small class="timestamp">{{ msg.timestamp | date: "shortTime" }}</small>
+        <strong>{{ msg.user }}:</strong>
+      </div>
+      <span class="message-text">
+        <markdown class="prose markdown-preview" [data]="msg.text"></markdown>
+      </span>
+    </div>
+  }
+</div>
+<div class="message-input">
+  <textarea
+    [(ngModel)]="newMessage"
+    placeholder="Type a message..."
+    rows="1"
+    (keydown)="handleKeydown($event)"
+  >
+  </textarea>
+  <button (click)="sendMessage()">Send</button>
+</div>
