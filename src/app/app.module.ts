@@ -10,6 +10,8 @@ import { AppComponent } from './app.component';
 import { BodyModule } from './body/body.module';
 import { TopNavbarComponent } from './pages/top-navbar/top-navbar.component';
 import { CommonModule } from '@angular/common';
+import { MARKED_OPTIONS, provideMarkdown } from 'ngx-markdown';
+
 @NgModule({
   bootstrap: [AppComponent],
   imports: [
@@ -49,6 +51,16 @@ import { CommonModule } from '@angular/common';
     }),
   ],
   declarations: [AppComponent],
-  providers: [provideHttpClient(withInterceptorsFromDi())],
+  providers: [
+    provideHttpClient(withInterceptorsFromDi()),
+    provideMarkdown({
+      markedOptions: {
+        provide: MARKED_OPTIONS,
+        useFactory: () => ({
+          breaks: true,
+        }),
+      },
+    }),
+  ],
 })
 export class AppModule {}

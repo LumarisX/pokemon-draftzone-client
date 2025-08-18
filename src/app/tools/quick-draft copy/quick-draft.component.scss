@@ -1,0 +1,96 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 2rem;
+  row-gap: 1rem;
+  height: 100%;
+  width: 100%;
+  overflow-y: auto;
+  @media (max-width: 768px) {
+    padding: 1rem 1rem;
+  }
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--pdz-fancy);
+}
+
+h1 {
+  font-size: 2em;
+  @media (max-width: 768px) {
+    font-size: 1.75em;
+  }
+}
+
+h2 {
+  font-size: 1.5em;
+  text-align: center;
+  @media (max-width: 768px) {
+    font-size: 1.25em;
+  }
+}
+
+h3 {
+  font-size: 1.25em;
+  @media (max-width: 768px) {
+    font-size: 1.15em;
+  }
+}
+
+.qd-option {
+  box-shadow: var(--pdz-level2);
+  border-radius: 1rem;
+  border: 2px solid var(--mat-sys-outline-variant);
+  margin: 4px;
+  &.selected {
+    border: 6px solid var(--mat-sys-outline);
+    background-color: var(--mat-sys-surface);
+    color: var(--mat-sys-on-primary-container);
+    margin: 0px;
+  }
+
+  &:not(.selected):hover {
+    border: 2px solid var(--mat-sys-outline);
+  }
+}
+
+.qd-option-container {
+  display: flex;
+  column-gap: 2rem;
+  max-height: 100%;
+  height: fit-content;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  @media (max-width: 768px) {
+    column-gap: 0.5rem;
+  }
+}
+
+.option-tier {
+  font-size: 0.8em;
+  font-weight: 800;
+  font-family: var(--pdz-font-regular);
+  color: var(--mat-sys-primary);
+}
+
+.qd-spacer {
+  flex-grow: 1;
+}
+
+.qd-options-bar {
+  display: flex;
+  column-gap: 1rem;
+  row-gap: 0.25rem;
+  align-items: center;
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+}
+
+.type-container {
+  display: flex;
+}

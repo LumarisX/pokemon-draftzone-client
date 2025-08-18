@@ -1,19 +1,20 @@
-import {
-  animate,
-  group,
-  query,
-  state,
-  style,
-  transition,
-  trigger,
-} from '@angular/animations';
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Output } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatSliderModule } from '@angular/material/slider';
 import { FormatSelectComponent } from '../../../util/format-select/format.component';
 import { RulesetSelectComponent } from '../../../util/ruleset-select/ruleset.component';
+import { MatButtonModule } from '@angular/material/button';
+import { FormsModule } from '@angular/forms';
+import { MatSliderModule } from '@angular/material/slider';
+import {
+  trigger,
+  state,
+  query,
+  animate,
+  group,
+  style,
+  transition,
+} from '@angular/animations';
+import { ChatComponent } from '../../../components/chat/chat.component';
 
 export type QDSettings = {
   rerolls: number;
@@ -36,6 +37,7 @@ type Template = {
     RulesetSelectComponent,
     MatButtonModule,
     MatSliderModule,
+    ChatComponent,
   ],
   templateUrl: './quick-draft-setting.component.html',
   styleUrls: [

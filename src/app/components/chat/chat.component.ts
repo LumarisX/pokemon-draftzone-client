@@ -13,11 +13,11 @@ import { ChatService } from '../../services/chat.service';
   imports: [FormsModule, CommonModule, MarkdownModule],
 })
 export class ChatComponent implements OnInit, OnDestroy {
-  messages: any[] = [];
+  messages: { timestamp: Date; user: string; text: string }[] = [];
   newMessage: string = '';
   private messageSubscription!: Subscription;
 
-  @Input({ required: true }) leagueId!: string;
+  @Input({ required: true }) roomId!: string;
 
   constructor(
     private chatService: ChatService,
@@ -25,7 +25,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.chatService.joinRoom(this.leagueId);
+    this.chatService.joinRoom(this.roomId);
     this.messageSubscription = this.chatService.messages$.subscribe(
       (message) => {
         this.messages.push(message);
@@ -50,7 +50,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     if (this.newMessage.trim()) {
       this.auth.user().subscribe((user) => {
         this.chatService.sendMessage(
-          this.leagueId,
+          this.roomId,
           this.newMessage,
           user?.username,
         );

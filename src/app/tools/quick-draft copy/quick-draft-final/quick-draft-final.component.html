@@ -1,0 +1,74 @@
+<h2>Draft Complete!</h2>
+<div class="qd-options-bar">
+  <button
+    mat-raised-button
+    [routerLink]="['/', draftPath, 'new']"
+    [queryParams]="{
+      team: teamIds,
+      format: settings.format,
+      ruleset: settings.ruleset,
+    }"
+  >
+    Save To New League
+  </button>
+  <form
+    #pokepasteForm
+    id="pokepasteForm"
+    style="display: inline"
+    method="post"
+    action="https://pokepast.es/create"
+    target="_blank"
+  >
+    <input type="hidden" name="title" value="Quick Draft" />
+    <input type="hidden" name="paste" [value]="teamPaste" />
+    <input
+      type="hidden"
+      name="author"
+      id="pasteAuthor"
+      [value]="loggedInUser"
+    />
+    <input type="hidden" name="notes" [value]="notes" />
+    <button mat-raised-button type="submit">To PokePaste</button>
+  </form>
+  <button
+    mat-raised-button
+    [routerLink]="['/', toolsPath, 'quick-matchup']"
+    [queryParams]="{
+      team1: teamIds,
+      format: settings.format,
+      ruleset: settings.ruleset,
+    }"
+  >
+    Save To Quick Matchup
+  </button>
+</div>
+
+<div class="draft-container-wrapper">
+  <div class="draft-container">
+    @for (pokemon of draft; track $index) {
+      <div class="draft-pokemon">
+        <div class="sprite-wrapper">
+          <pdz-sprite [pokemon]="pokemon"></pdz-sprite>
+        </div>
+
+        <div class="draft-info">
+          <div class="draft-name">{{ pokemon.name }}</div>
+          <div class="type-container">
+            @for (type of pokemon.types; track $index) {
+              <div
+                class="type-label"
+                [style.background-color]="typeColor(type)"
+              >
+                <div class="type-text">
+                  {{ type }}
+                </div>
+              </div>
+            }
+          </div>
+          <div class="option-tier">Tier: {{ pokemon.tier }}</div>
+        </div>
+      </div>
+    }
+  </div>
+</div>
+<button mat-flat-button (click)="restart()">Draft Again</button>

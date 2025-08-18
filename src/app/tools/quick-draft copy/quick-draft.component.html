@@ -1,0 +1,24 @@
+<h1>Quick Draft</h1>
+<!-- @if (draftSettings) {
+  <h3>
+    {{ draftSettings.ruleset }} | {{ draftSettings.format }} | Team of
+    {{ getTotalPicks() }}
+  </h3>
+  @if (finalDraft) {
+    <pdz-quick-draft-final
+      [draft]="finalDraft"
+      [settings]="draftSettings"
+      (restartDraft)="restartDraft()"
+    />
+  } @else {
+    <pdz-quick-draft-picks
+      [settings]="draftSettings"
+      (finalDraft)="updateFinalDraft($event)"
+    />
+  }
+} @else {
+  <pdz-quick-draft-setting (settingsUpdated)="updateSettings($event)" />
+} -->
+<button>Solo</button>
+<button>Host</button>
+<button>Join</button>
