@@ -8,6 +8,8 @@ import { ReplayChartComponent } from './replay-chart/replay-chart.component';
 import { ReplayData } from './replay.interface';
 import { getNameByPid } from '../../data/namedex';
 
+import { MatGridListModule } from '@angular/material/grid-list'
+ 
 @Component({
   selector: 'replay-analyzer',
   standalone: true,
@@ -18,6 +20,8 @@ import { getNameByPid } from '../../data/namedex';
     FormsModule,
     SpriteComponent,
     ReplayChartComponent,
+    
+    MatGridListModule,
   ],
 })
 export class ReplayComponent implements OnInit {
