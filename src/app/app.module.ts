@@ -20,7 +20,7 @@ import { MARKED_OPTIONS, provideMarkdown } from 'ngx-markdown';
     BodyModule,
     BrowserAnimationsModule,
     AuthModule.forRoot({
-      domain: 'dev-wspjxi5f6mjqsjea.us.auth0.com',
+      domain: 'login.pokemondraftzone.com',
       clientId: 'nAyvHSOL1PbsFZfodzgIjRgYBUA1M1DH',
       useRefreshTokens: true,
       cacheLocation: 'localstorage',
