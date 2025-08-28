@@ -27,7 +27,7 @@ import { MARKED_OPTIONS, provideMarkdown } from 'ngx-markdown';
       authorizationParams: {
         redirect_uri: window.location.origin,
         audience: 'https://dev-wspjxi5f6mjqsjea.us.auth0.com/api/v2/',
-        scope: 'openid profile email read:username',
+        scope: 'openid profile email read:username offline_access',
       },
       httpInterceptor: {
         allowedList: [

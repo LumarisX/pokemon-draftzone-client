@@ -133,8 +133,8 @@ export class ApiService {
   ): Observable<T> {
     const { data, params, additionalHeaders } = options;
 
-    return this.auth.getAccessToken().pipe(
-      filter((token: string | null): token is string => !!token),
+    return this.auth.accessToken$.pipe(
+      filter((token: string | undefined): token is string => !!token),
       switchMap((token: string) => {
         const headers = new HttpHeaders({
           'Content-Type': 'application/json',

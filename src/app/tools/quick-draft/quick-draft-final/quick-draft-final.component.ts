@@ -10,10 +10,11 @@ import { typeColor } from '../../../util/styling';
 import { ToolsPath } from '../../tools.router';
 import { QDPokemon } from '../quick-draft-picks/quick-draft-picks.component';
 import { QDSettings } from '../quick-draft-setting/quick-draft-setting.component';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'pdz-quick-draft-final',
-  imports: [SpriteComponent, MatButtonModule, RouterLink],
+  imports: [SpriteComponent, MatButtonModule, RouterLink, AsyncPipe],
   templateUrl: './quick-draft-final.component.html',
   styleUrls: [
     './quick-draft-final.component.scss',
@@ -56,8 +57,8 @@ export class QuickDraftFinalComponent {
     this.restartDraft.emit();
   }
 
-  get loggedInUser(): string {
-    return this.authService._userSubject.value?.username ?? 'Pokemon DraftZone';
+  get loggedInUser() {
+    return this.authService.user$;
   }
 
   get teamPaste() {

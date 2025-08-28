@@ -25,7 +25,7 @@
       type="hidden"
       name="author"
       id="pasteAuthor"
-      [value]="loggedInUser"
+      [value]="(loggedInUser | async)?.username ?? 'Pokemon DraftZone'"
     />
     <input type="hidden" name="notes" [value]="notes" />
     <button mat-raised-button type="submit">To PokePaste</button>

@@ -48,7 +48,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   sendMessage(): void {
     if (this.newMessage.trim()) {
-      this.auth.user().subscribe((user) => {
+      this.auth.user$.subscribe((user) => {
         this.chatService.sendMessage(
           this.roomId,
           this.newMessage,
