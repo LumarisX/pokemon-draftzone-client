@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -20,6 +20,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { RouterModule } from '@angular/router';
 import { BattleZoneService } from '../../services/battle-zone.service';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'bz-sign-up',
@@ -41,10 +42,15 @@ import { BattleZoneService } from '../../services/battle-zone.service';
   ],
   styleUrl: './sign-up.component.scss',
 })
-export class BZSignUpComponent implements OnInit {
+export class BZSignUpComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
+
   signupForm!: FormGroup;
   added = false;
+  closed = false;
   timezones = Intl.supportedValuesOf('timeZone');
+  signUpDeadline: Date = new Date('2026-02-18T12:00:00');
+  signUpItem: string = 'pdbls2';
 
   details: {
     format: string;
@@ -63,26 +69,44 @@ export class BZSignUpComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.added = localStorage.getItem('pdbls1') !== null;
-
-    this.resetForm();
+    this.closed = new Date() > this.signUpDeadline;
+    this.added = localStorage.getItem(this.signUpItem) !== null;
+    this.signupForm = this.createForm();
+    this.manageFormLogic();
   }
 
-  resetForm() {
-    this.signupForm = this.fb.group(
-      {
-        discordName: ['', Validators.required],
-        timezone: [
-          Intl.DateTimeFormat().resolvedOptions().timeZone,
-          Validators.required,
-        ],
-        experience: [''],
-        droppedBefore: [null, Validators.required],
-        droppedWhy: [''],
-        confirm: [false, Validators.requiredTrue],
-      },
-      { validators: [droppedValidator()] },
-    );
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  createForm() {
+    return this.fb.group({
+      discordName: ['', Validators.required],
+      timezone: [
+        Intl.DateTimeFormat().resolvedOptions().timeZone,
+        Validators.required,
+      ],
+      experience: [''],
+      droppedBefore: [null, Validators.required],
+      droppedWhy: [''],
+      confirm: [false, Validators.requiredTrue],
+    });
+  }
+
+  private manageFormLogic(): void {
+    this.signupForm
+      .get('droppedBefore')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((dropped) => {
+        const droppedWhyControl = this.signupForm.get('droppedWhy');
+        if (dropped) {
+          droppedWhyControl?.addValidators(Validators.required);
+        } else {
+          droppedWhyControl?.clearValidators();
+        }
+        droppedWhyControl?.updateValueAndValidity();
+      });
   }
 
   onSubmit() {
@@ -92,7 +116,7 @@ export class BZSignUpComponent implements OnInit {
         .subscribe((response) => {
           this.added = true;
           localStorage.setItem(
-            'pdbls1',
+            this.signUpItem,
             this.signupForm.get('discordName')?.value ?? '',
           );
         });
@@ -100,20 +124,4 @@ export class BZSignUpComponent implements OnInit {
       console.error('Sign Up form is not valid: ', this.signupForm.errors);
     }
   }
-}
-
-function droppedValidator(): ValidatorFn {
-  return (group: AbstractControl): ValidationErrors | null => {
-    const droppedBefore = group.get('droppedBefore');
-    const droppedWhy = group.get('droppedWhy');
-    if (
-      droppedBefore?.value === true &&
-      (!droppedWhy || droppedWhy?.value.trim() === '')
-    ) {
-      droppedWhy?.setErrors({ required: true });
-      return { droppedWhyRequired: true };
-    }
-    droppedWhy?.setErrors(null);
-    return null;
-  };
 }

@@ -26,7 +26,7 @@
 
 .chart-tooltip {
   max-width: 16rem;
-  box-shadow: var(--mat-sys-level4);
+  box-shadow: var(--pdz-level4);
   .title-container {
     display: flex;
     flex-wrap: wrap;
@@ -86,7 +86,7 @@
   background-color: var(--mat-sys-surface);
   color: var(--mat-sys-on-surface);
   border-radius: 1rem;
-  box-shadow: var(--mat-sys-level3);
+  box-shadow: var(--pdz-level3);
   padding: 0.25rem;
   mat-icon {
     color: var(--mat-sys-primary);

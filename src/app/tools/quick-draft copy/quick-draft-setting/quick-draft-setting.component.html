@@ -1,0 +1,67 @@
+<h2>Select Ruleset, Format, and Template prior to proceeding</h2>
+<div class="qd-options-bar">
+  <format-select appearance="outline" [(ngModel)]="format"></format-select>
+  <ruleset-select appearance="outline" [(ngModel)]="ruleset"></ruleset-select>
+</div>
+<div class="qd-option-container">
+  @for (template of formatTemplates; track $index) {
+    <button
+      class="qd-template qd-option"
+      [ngClass]="{
+        selected: $index == selectedTemplate,
+      }"
+      (click)="selectedTemplate = $index"
+    >
+      <div class="qd-header">Team of {{ getTotalPicks(template) }}</div>
+      <div class="qd-tiers-container">
+        @for (tier of template.tiers; track $index) {
+          <div class="qd-tier">{{ tier[0] }}: {{ tier[1] }}</div>
+        }
+      </div>
+      <div class="qd-spacer"></div>
+      <div class="qd-rerolls">Rerolls: {{ template.rerolls }}</div>
+    </button>
+  }
+</div>
+<div
+  class="custom-button qd-template qd-option"
+  (click)="selectedTemplate = null"
+  [ngClass]="{
+    selected: null == selectedTemplate,
+  }"
+>
+  <div class="button-header">Custom</div>
+  <div
+    class="custom-options-container"
+    [@expandCollapse]="selectedTemplate === null ? 'expanded' : 'collapsed'"
+  >
+    <div class="custom-option">
+      <span class="option-label">
+        Rerolls: {{ customTemplateForm.rerolls }}
+      </span>
+      <mat-slider showTickMarks min="0" max="10" step="1">
+        <input matSliderThumb [(ngModel)]="customTemplateForm.rerolls" />
+      </mat-slider>
+    </div>
+    <div class="custom-tier-options">
+      @for (tier of customTemplateTiers; track $index) {
+        <div class="custom-option">
+          <span class="option-label"> {{ tier[0] }}: {{ tier[1] }} </span>
+          <mat-slider showTickMarks min="0" max="10" step="1">
+            <input matSliderThumb [(ngModel)]="tier[1]" />
+          </mat-slider>
+        </div>
+      }
+    </div>
+  </div>
+</div>
+<div class="qd-spacer"></div>
+<button
+  class="continue-button"
+  mat-flat-button
+  (click)="continue()"
+  [disabled]="validTemplate()"
+>
+  Continue to Draft
+</button>
+<pdz-chat [roomId]="'43'"></pdz-chat>

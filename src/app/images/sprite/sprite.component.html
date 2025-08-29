@@ -1,25 +1,21 @@
-@if (!pokemon.loaded) {
-  <div class="sprite-placeholder" [ngStyle]="{ width: size, height: size }">
-    <mat-spinner [diameter]="24"></mat-spinner>
-  </div>
-}
-@if (pokemon.id) {
-  <img
-    matTooltip=""
-    [matTooltip]="tooltipPosition ? this.name : null"
-    [matTooltipPosition]="tooltipPosition ?? 'above'"
-    [ngClass]="classes"
-    [ngStyle]="{
-      width: size,
-      height: size,
-      'min-width': size,
-      'min-height': size,
-    }"
-    loading="lazy"
-    [src]="path"
-    onerror="this.src='../../../../assets/icons/unknown.svg'"
-    (error)="fallback()"
-    (load)="onSpriteLoaded()"
-    [hidden]="!pokemon.loaded"
-  />
-}
+<div class="sprite-container" [ngStyle]="{ width: size, height: size }">
+  <!-- @if (!pokemon.loaded) {
+    <div class="sprite-placeholder">
+      <mat-spinner [diameter]="24"></mat-spinner>
+    </div>
+  } -->
+
+  @if (pokemon.id) {
+    <img
+      matTooltip=""
+      [matTooltip]="tooltipPosition ? this.name : null"
+      [matTooltipPosition]="tooltipPosition ?? 'above'"
+      [ngClass]="classes"
+      loading="lazy"
+      [src]="path"
+      (error)="fallback()"
+      (load)="onSpriteLoaded()"
+      [class.hidden]="!pokemon.loaded"
+    />
+  }
+</div>

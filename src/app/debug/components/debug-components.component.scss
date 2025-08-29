@@ -176,13 +176,13 @@ $icon-sizes: 20, 24, 32, 40, 48;
   text-underline-offset: 2px;
 }
 
-$levels: 0, 1, 2, 3, 4, 5;
+$levels: "-5", "-4", "-3", "-2", "-1", 0, 1, 2, 3, 4, 5;
 
 @each $level in $levels {
   .level-#{$level} {
     width: 100px;
     margin-left: -20px;
-    box-shadow: var(--mat-sys-level#{$level});
+    box-shadow: var(--pdz-level#{$level});
     background-color: var(--mat-sys-primary-container);
     color: var(--mat-sys-on-primary-container);
   }

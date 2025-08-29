@@ -52,11 +52,11 @@ export class TopNavbarComponent implements OnInit {
       title: 'Replay Analyzer',
       route: '/tools/replay-analyzer',
     },
-    {
-      title: 'Find A League',
-      route: '/league-list',
-      badge: this.unreadService.leagueCount,
-    },
+    // {
+    //   title: 'Find A League',
+    //   route: '/league-list',
+    //   badge: this.unreadService.leagueCount,
+    // },
     {
       title: 'Quick Draft',
       route: '/tools/quick-draft',
@@ -103,10 +103,10 @@ export class TopNavbarComponent implements OnInit {
   authenticated: boolean = false;
 
   checkAuthenticated() {
-    this.auth.isAuthenticated().subscribe((authenticated) => {
+    this.auth.isAuthenticated$.subscribe((authenticated) => {
       this.authenticated = authenticated;
       if (authenticated) {
-        this.auth.user().subscribe((data) => {
+        this.auth.user$.subscribe((data) => {
           this.settingsService.setSettings(data?.settings);
         });
       }

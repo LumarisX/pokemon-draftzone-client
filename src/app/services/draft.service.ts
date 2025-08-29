@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
-import { ApiService } from './api.service';
-import { Stats } from '../drafts/draft-overview/draft-stats/draft-stats.component';
-import { Observable } from 'rxjs';
-import { Draft } from '../interfaces/draft';
 import { DraftFormData } from '../drafts/draft-overview/draft-form/draft-form-core/draft-form-core.component';
+import { Stats } from '../drafts/draft-overview/draft-stats/draft-stats.component';
+import { Draft } from '../interfaces/draft';
 import { Matchup } from '../interfaces/matchup';
 import { Opponent } from '../interfaces/opponent';
+import { ApiService } from './api.service';
 
 @Injectable({
   providedIn: 'root',

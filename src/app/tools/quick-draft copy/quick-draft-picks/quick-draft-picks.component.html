@@ -1,0 +1,183 @@
+<div class="draft-section">
+  <div class="box-wrapper pdz-hidden-on-small">
+    <div class="info-box">
+      <div class="box-title">Pokemon Overview</div>
+      <div class="box-body">
+        @if (selectedOption !== null && draftOptions) {
+          @let pokemon = draftOptions[selectedOption];
+          <div class="option-breakdown">
+            <div class="sprite-wrapper">
+              <pdz-sprite [pokemon]="pokemon" />
+            </div>
+            <div class="option-info">
+              <div class="option-name">
+                {{ pokemon.name }}
+              </div>
+              <div class="type-container">
+                @for (type of pokemon.types; track $index) {
+                  <div
+                    class="type-label"
+                    [style.background-color]="typeColor(type)"
+                  >
+                    <div class="type-text">
+                      {{ type }}
+                    </div>
+                  </div>
+                }
+              </div>
+              <div class="option-abilities">
+                @for (ability of pokemon.abilities; track $index) {
+                  <div class="option-ability">{{ ability }}</div>
+                }
+              </div>
+              <div class="option-stats">
+                <div class="option-stat">
+                  <div class="option-stat-name">HP</div>
+                  <div class="option-stat-value">
+                    {{ pokemon.baseStats.hp }}
+                  </div>
+                </div>
+                <div class="option-stat">
+                  <div class="option-stat-name">ATK</div>
+                  <div class="option-stat-value">
+                    {{ pokemon.baseStats.atk }}
+                  </div>
+                </div>
+                <div class="option-stat">
+                  <div class="option-stat-name">DEF</div>
+                  <div class="option-stat-value">
+                    {{ pokemon.baseStats.def }}
+                  </div>
+                </div>
+                <div class="option-stat">
+                  <div class="option-stat-name">SPA</div>
+                  <div class="option-stat-value">
+                    {{ pokemon.baseStats.spa }}
+                  </div>
+                </div>
+                <div class="option-stat">
+                  <div class="option-stat-name">SPD</div>
+                  <div class="option-stat-value">
+                    {{ pokemon.baseStats.spd }}
+                  </div>
+                </div>
+                <div class="option-stat">
+                  <div class="option-stat-name">SPE</div>
+                  <div class="option-stat-value">
+                    {{ pokemon.baseStats.spe }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        } @else {
+          <div class="no-selected">No Pokemon Selected</div>
+        }
+      </div>
+    </div>
+  </div>
+  <div class="pick-section">
+    <h2>
+      Pick <span class="active-pick">{{ currentPick + 1 }}</span> of
+      {{ totalPicks }}
+    </h2>
+    <div class="pick-body">
+      @if (draftOptions) {
+        <div class="qd-option-container">
+          @for (draftOption of draftOptions; track $index) {
+            <button
+              class="draft-option qd-option"
+              [ngClass]="{
+                selected: $index == selectedOption,
+              }"
+              (click)="clickOption($index)"
+              [@optionAnimation]="animationStates[$index]"
+            >
+              <div class="sprite-wrapper">
+                <pdz-sprite [pokemon]="draftOption" />
+              </div>
+              <div class="option-info">
+                <div class="option-name">
+                  {{ draftOption.name }}
+                </div>
+                <div class="type-container">
+                  @for (type of draftOption.types; track $index) {
+                    <div
+                      class="type-label"
+                      [style.background-color]="typeColor(type)"
+                    >
+                      <div class="type-text">
+                        {{ type }}
+                      </div>
+                    </div>
+                  }
+                </div>
+                <div class="option-tier">Tier: {{ draftOption.tier }}</div>
+              </div>
+            </button>
+          }
+        </div>
+      } @else {
+        <loading></loading>
+      }
+    </div>
+  </div>
+  <div class="box-wrapper">
+    <div class="info-box">
+      <div class="box-title">Drafted Pokemon</div>
+      <div class="box-body drafted-pokemon-container">
+        @for (pokemon of draft; track $index) {
+          <div
+            class="drafted-pokemon"
+            [ngClass]="{ 'active-pick': $index === currentPick }"
+          >
+            <div class="sprite-wrapper">
+              <pdz-sprite
+                flipped
+                [pokemon]="pokemon ?? { name: 'unknown', id: 'unknown' }"
+              />
+            </div>
+
+            <div class="drafted-pokemon-info">
+              @if (pokemon) {
+                <div class="drafted-pokemon-name">
+                  {{ pokemon.name }}
+                </div>
+                <div class="type-container">
+                  @for (type of pokemon.types; track $index) {
+                    <div
+                      class="type-label"
+                      [style.background-color]="typeColor(type)"
+                    >
+                      <div class="type-text">
+                        {{ type }}
+                      </div>
+                    </div>
+                  }
+                </div>
+              } @else {
+                Pick {{ $index + 1 }}
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>
+<button
+  mat-stroked-button
+  [disabled]="this.settings.rerolls <= 0"
+  (click)="rerollPicks()"
+>
+  <mat-icon>refresh</mat-icon>
+  <mat-icon class="small-icon">close</mat-icon>
+  <span>{{ settings.rerolls }}</span>
+</button>
+<button
+  mat-flat-button
+  [disabled]="selectedOption === null"
+  (click)="draftOption()"
+>
+  Draft Selected
+</button>

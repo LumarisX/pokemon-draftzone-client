@@ -106,7 +106,7 @@ export class DebugComponent implements OnInit {
 
   getLoginId() {
     // Mock implementation. Replace with actual login ID retrieval logic.
-    this.authService.user().subscribe((data) => {
+    this.authService.user$.subscribe((data) => {
       if (!data) return;
       this.debugData.loginId = `${data.username} (${data.sub})`;
     });

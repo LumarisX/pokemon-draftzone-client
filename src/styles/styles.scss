@@ -114,7 +114,7 @@ $option-lineheight: 3rem;
   background-color: var(--mat-sys-surface-container-low);
   color: var(--mat-sys-on-surface-container-low);
   border-radius: 0 0 0.25rem 0.25rem;
-  box-shadow: var(--mat-sys-level2);
+  box-shadow: var(--pdz-level2);
 
   .cdk-virtual-scroll-content-wrapper {
     width: 100%;
@@ -162,7 +162,7 @@ $option-lineheight: 3rem;
     align-items: center;
     width: 2.5rem;
     border-radius: 0.25rem;
-    box-shadow: var(--mat-sys-level1);
+    box-shadow: var(--pdz-level1);
     height: 1rem;
     padding: $bevel-padding;
 

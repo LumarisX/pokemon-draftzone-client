@@ -7,6 +7,7 @@ import {
   FullCoverageMove,
 } from '../../../drafts/matchup-overview/matchup-interface';
 import { typeColor } from '../../../util/styling';
+import { SpriteService } from '../../../services/sprite.service';
 
 type DataPoint = {
   name: string;
@@ -42,7 +43,10 @@ export class CoverageChartPreviewComponent implements OnDestroy {
     this.updateChart(value);
   }
 
-  constructor(private el: ElementRef) {}
+  constructor(
+    private el: ElementRef,
+    private spriteService: SpriteService,
+  ) {}
 
   chartData!: CoveragePokemon;
   svg;
@@ -242,10 +246,7 @@ export class CoverageChartPreviewComponent implements OnDestroy {
     const parent = svg
       .append('image')
       .datum(root)
-      .attr(
-        'xlink:href',
-        `https://img.pokemondb.net/sprites/home/normal/${getSpriteProperties(this.chartData.id, 'pd')!.id}.png`,
-      )
+      .attr('xlink:href', this.spriteService.getSpriteData(this.chartData).path)
       .attr('width', radius * 2)
       .attr('height', radius * 2)
       .attr('x', -radius)

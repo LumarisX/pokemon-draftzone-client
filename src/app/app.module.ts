@@ -10,6 +10,7 @@ import { MARKED_OPTIONS, provideMarkdown } from 'ngx-markdown';
 import { AppComponent } from './app.component';
 import { BodyModule } from './body/body.module';
 import { TopNavbarComponent } from './pages/top-navbar/top-navbar.component';
+
 @NgModule({
   bootstrap: [AppComponent],
   declarations: [AppComponent],
@@ -17,14 +18,14 @@ import { TopNavbarComponent } from './pages/top-navbar/top-navbar.component';
     BodyModule,
     BrowserAnimationsModule,
     AuthModule.forRoot({
-      domain: 'dev-wspjxi5f6mjqsjea.us.auth0.com',
+      domain: 'login.pokemondraftzone.com',
       clientId: 'nAyvHSOL1PbsFZfodzgIjRgYBUA1M1DH',
       useRefreshTokens: true,
       cacheLocation: 'localstorage',
       authorizationParams: {
         redirect_uri: window.location.origin,
         audience: 'https://dev-wspjxi5f6mjqsjea.us.auth0.com/api/v2/',
-        scope: 'openid profile email read:username',
+        scope: 'openid profile email read:username offline_access',
       },
       httpInterceptor: {
         allowedList: [

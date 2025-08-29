@@ -15,6 +15,7 @@ export class ChatService {
     this.socket = io(environment.apiUrl);
 
     this.socket.on('newMessage', (message) => {
+      console.log(message);
       this.messageSubject.next(message);
     });
 

@@ -200,45 +200,45 @@
       </button>
     </div>
     <span class="toolbar-spacer"></span>
+    <!-- {{ auth.state$ | async | json }} -->
+    @let user = auth.user$ | async;
     <div class="flex flex-col items-center justify-center h-full">
-      @if (authenticated) {
-        @if (auth.user() | async; as user) {
-          <button mat-stroked-button [matMenuTriggerFor]="userMenu">
-            <div class="user-info-container">
-              <img class="user-icon" src="{{ user.picture }}" />
-              @if (user.username && user.username !== "") {
-                <span class="username-text">{{ user.username }}</span>
-              }
-            </div>
+      @if (authenticated && user) {
+        <button mat-stroked-button [matMenuTriggerFor]="userMenu">
+          <div class="user-info-container">
+            <img class="user-icon" src="{{ user.picture }}" />
+            @if (user.username && user.username !== "") {
+              <span class="username-text">{{ user.username }}</span>
+            }
+          </div>
+        </button>
+        <mat-menu #userMenu="matMenu">
+          <button
+            mat-menu-item
+            cdkOverlayOrigin
+            #trigger="cdkOverlayOrigin"
+            (click)="settingsOpen = !settingsOpen"
+          >
+            <mat-icon>settings</mat-icon>
+            <span>Settings</span>
           </button>
-          <mat-menu #userMenu="matMenu">
-            <button
-              mat-menu-item
-              cdkOverlayOrigin
-              #trigger="cdkOverlayOrigin"
-              (click)="settingsOpen = !settingsOpen"
-            >
-              <mat-icon>settings</mat-icon>
-              <span>Settings</span>
-            </button>
-            <ng-template
-              cdkConnectedOverlay
-              [cdkConnectedOverlayOrigin]="trigger"
-              [cdkConnectedOverlayOpen]="settingsOpen"
-              (overlayOutsideClick)="settingsOpen = false"
-              (detach)="settingsOpen = false"
-              [cdkConnectedOverlayFlexibleDimensions]="true"
-              [cdkConnectedOverlayPush]="true"
-              [cdkConnectedOverlayHasBackdrop]="true"
-            >
-              <settings (closeSettings)="settingsOpen = false"></settings>
-            </ng-template>
-            <button mat-menu-item (click)="logout()">
-              <mat-icon>logout</mat-icon>
-              <span>Log Out</span>
-            </button>
-          </mat-menu>
-        }
+          <ng-template
+            cdkConnectedOverlay
+            [cdkConnectedOverlayOrigin]="trigger"
+            [cdkConnectedOverlayOpen]="settingsOpen"
+            (overlayOutsideClick)="settingsOpen = false"
+            (detach)="settingsOpen = false"
+            [cdkConnectedOverlayFlexibleDimensions]="true"
+            [cdkConnectedOverlayPush]="true"
+            [cdkConnectedOverlayHasBackdrop]="true"
+          >
+            <settings (closeSettings)="settingsOpen = false"></settings>
+          </ng-template>
+          <button mat-menu-item (click)="logout()">
+            <mat-icon>logout</mat-icon>
+            <span>Log Out</span>
+          </button>
+        </mat-menu>
       } @else {
         <button mat-stroked-button (click)="login()">
           <span>Log in</span> <mat-icon>login</mat-icon>
