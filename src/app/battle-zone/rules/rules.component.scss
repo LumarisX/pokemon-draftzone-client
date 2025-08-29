@@ -1,7 +1,53 @@
-@use "@angular/material" as mat;
+.rules-container {
+  position: relative;
+  padding-bottom: 1rem;
+}
+
+.back-button {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+
+  @media (min-width: 768px) {
+    top: 1rem;
+    left: 1rem;
+  }
+}
+
+.rules-header {
+  display: flex;
+  justify-content: center;
+}
+
+.rules-title {
+  font-family: "Nasalization RG", sans-serif;
+  font-size: 1.875rem; // 30px
+  font-weight: bold;
+  text-align: center;
+}
 
 .rule-wrapper {
+  display: flex;
+  width: 100%;
+  justify-content: center;
   list-style-type: disc;
+}
+
+.rule-content {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  max-width: 48rem; // 768px
+  padding: 0 1rem;
+}
+
+.rule-description {
+  padding: 0 12px;
+  list-style: decimal;
+
+  & > li {
+    margin-bottom: 0.5rem;
+  }
 }
 
 .rule-title {
@@ -10,20 +56,16 @@
   font-size: larger;
 }
 
-::marker {
-  font-weight: 700;
-}
-
-ol {
-  list-style: decimal;
-  @apply space-y-2;
-}
-
 ul {
   list-style-type: disc;
-  margin-left: 16px;
+  margin-left: 1rem;
+  font-weight: 600;
+
+  & > li {
+    font-weight: 600;
+  }
 }
 
-.rule-description {
-  padding: 0px 12px;
+::marker {
+  font-weight: 700;
 }

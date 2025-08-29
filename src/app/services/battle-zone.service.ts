@@ -10,7 +10,7 @@ export class BattleZoneService {
   constructor(private apiService: ApiService) {}
 
   signUp(signupData: object) {
-    return this.apiService.post(`battlezone/pdbl/signup`, false, signupData);
+    return this.apiService.post(`battlezone/pdbl/signup`, true, signupData);
   }
 
   getTiers(): Observable<

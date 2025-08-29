@@ -27,7 +27,7 @@ export class SpriteComponent implements OnChanges {
 
   @Input()
   set pokemon(value: SpritePokemon) {
-    this._pokemon = value;
+    this._pokemon = { ...value, loaded: false };
   }
   get pokemon(): SpritePokemon {
     return this._pokemon;
@@ -63,7 +63,7 @@ export class SpriteComponent implements OnChanges {
   @Output() loaded = new EventEmitter<void>();
 
   _pokemon!: SpritePokemon;
-  readonly UNKNOWN_SPRITE_PATH = this.spriteService.UNKNOWN_SPRITE_PATH; // Use service constant
+  readonly UNKNOWN_SPRITE_PATH = this.spriteService.UNKNOWN_SPRITE_PATH;
   path = this.UNKNOWN_SPRITE_PATH;
 
   private _baseClasses: string[] = [];
@@ -108,6 +108,7 @@ export class SpriteComponent implements OnChanges {
   }
 
   fallback(): void {
+    this.pokemon.loaded = true;
     if (this.path !== this.UNKNOWN_SPRITE_PATH) {
       if (this._fallbackPath) {
         this.path = this._fallbackPath;

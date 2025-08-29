@@ -16,13 +16,13 @@ const routes: Routes = [
     loadChildren: () =>
       import('../pages/page.module').then((m) => m.PageModule),
   },
-  // {
-  //   path: BattleZonePath,
-  //   loadChildren: () =>
-  //     import('../battle-zone/battle-zone.module').then(
-  //       (m) => m.BattleZoneModule,
-  //     ),
-  // },
+  {
+    path: BattleZonePath,
+    loadChildren: () =>
+      import('../battle-zone/battle-zone.module').then(
+        (m) => m.BattleZoneModule,
+      ),
+  },
   // {
   //   path: 'test',
   //   loadChildren: () => import('../test/test.module').then((m) => m.TestModule),
