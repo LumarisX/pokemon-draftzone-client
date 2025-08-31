@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { interval, Subscription } from 'rxjs';
@@ -13,6 +13,9 @@ import { SpriteComponent } from '../../images/sprite/sprite.component';
   styleUrl: './league-auction.component.scss',
 })
 export class LeagueAuctionComponent implements OnInit, OnDestroy {
+  private auctionService = inject(AuctionService);
+  private route = inject(ActivatedRoute);
+
   @Input() leagueId!: string;
 
   auctions = new Map<string, any>();
@@ -23,11 +26,6 @@ export class LeagueAuctionComponent implements OnInit, OnDestroy {
   errorMessage: string | null = null;
 
   private subs = new Subscription();
-
-  constructor(
-    private auctionService: AuctionService,
-    private route: ActivatedRoute,
-  ) {}
 
   ngOnInit(): void {
     this.route.params.subscribe((params) => {

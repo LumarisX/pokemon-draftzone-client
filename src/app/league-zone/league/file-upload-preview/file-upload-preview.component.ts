@@ -1,6 +1,6 @@
 import { OverlayRef } from '@angular/cdk/overlay';
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Inject, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { InjectionToken } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -21,12 +21,10 @@ export interface FilePreviewData {
   styleUrls: ['./file-upload-preview.component.scss'], // Changed styleUrl to styleUrls
 })
 export class FileUploadPreviewComponent implements OnInit {
-  // Use Inject to get data and OverlayRef
-  constructor(
-    @Inject(OVERLAY_REF_TOKEN) public overlayRef: OverlayRef,
-    @Inject(FILE_PREVIEW_DATA_TOKEN) public data: FilePreviewData,
-    private sanitizer: DomSanitizer,
-  ) {}
+  overlayRef = inject<OverlayRef>(OVERLAY_REF_TOKEN);
+  data = inject<FilePreviewData>(FILE_PREVIEW_DATA_TOKEN);
+  private sanitizer = inject(DomSanitizer);
+
 
   @Output() confirm = new EventEmitter<void>();
   @Output() cancel = new EventEmitter<void>();

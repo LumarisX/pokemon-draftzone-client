@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { LeagueRulesFormComponent } from './league-rules-form/league-rules-form.component';
 import { LeagueRulesComponent } from './league-rules/league-rules.component';
 import { LeagueZoneService } from '../../services/league-zone.service';
@@ -11,9 +11,9 @@ import { League } from '../league.interface';
   styleUrl: './league-rules-overview.component.scss',
 })
 export class LeagueRulesOverviewComponent implements OnInit {
-  rules: League.Rule[] = [];
+  private leagueZoneService = inject(LeagueZoneService);
 
-  constructor(private leagueZoneService: LeagueZoneService) {}
+  rules: League.Rule[] = [];
 
   ngOnInit(): void {
     this.leagueZoneService.getRules().subscribe((rules) => {

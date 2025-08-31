@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ApiService } from './api.service';
 import { of } from 'rxjs';
 import { League } from '../league-zone/league.interface';
@@ -12,7 +12,8 @@ const ROOTPATH = 'league';
   providedIn: 'root',
 })
 export class LeagueZoneService {
-  constructor(private apiService: ApiService) {}
+  private apiService = inject(ApiService);
+
 
   getTeams() {
     return this.apiService.get(ROOTPATH, false);

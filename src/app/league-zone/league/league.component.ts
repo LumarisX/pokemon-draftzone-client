@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { LeagueZoneService } from '../../services/league-zone.service';
@@ -22,13 +22,12 @@ import { ChatComponent } from '../../components/chat/chat.component';
   styleUrl: './league.component.scss',
 })
 export class LeagueComponent implements OnInit {
+  private leagueZoneService = inject(LeagueZoneService);
+  private route = inject(ActivatedRoute);
+
   team!: any;
   matchups: League.Matchup[] = [];
   leagueId?: string;
-  constructor(
-    private leagueZoneService: LeagueZoneService,
-    private route: ActivatedRoute,
-  ) {}
 
   ngOnInit(): void {
     this.leagueZoneService

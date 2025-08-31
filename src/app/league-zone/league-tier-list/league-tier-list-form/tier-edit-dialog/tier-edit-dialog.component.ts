@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import {
@@ -25,14 +25,12 @@ import { LeagueTierGroup } from '../../../../services/battle-zone.service';
   styleUrl: './tier-edit-dialog.component.scss',
 })
 export class TierEditDialogComponent implements OnInit {
-  constructor(
-    public dialogRef: MatDialogRef<TierEditDialogComponent>,
-    @Inject(MAT_DIALOG_DATA)
-    public data: {
-      tierGroup: LeagueTierGroup;
-    },
-    private fb: FormBuilder,
-  ) {}
+  dialogRef = inject<MatDialogRef<TierEditDialogComponent>>(MatDialogRef);
+  data = inject<{
+    tierGroup: LeagueTierGroup;
+}>(MAT_DIALOG_DATA);
+  private fb = inject(FormBuilder);
+
 
   ngOnInit(): void {}
 

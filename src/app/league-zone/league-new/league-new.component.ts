@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -47,6 +47,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
   styleUrl: './league-new.component.scss',
 })
 export class LeagueNewComponent implements OnInit {
+  private _formBuilder = inject(FormBuilder);
+
   // --- Form Definitions ---
   leagueForm!: FormGroup;
 
@@ -74,8 +76,6 @@ export class LeagueNewComponent implements OnInit {
     'Double Elimination',
     'Groups',
   ];
-
-  constructor(private _formBuilder: FormBuilder) {}
 
   ngOnInit() {
     this._initForm();

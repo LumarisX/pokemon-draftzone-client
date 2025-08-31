@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -30,15 +30,13 @@ import { MatInputModule } from '@angular/material/input';
   styleUrl: './tier-group-edit-dialog.component.scss',
 })
 export class TierGroupEditDialogComponent implements OnInit {
+  dialogRef = inject<MatDialogRef<TierGroupEditDialogComponent>>(MatDialogRef);
+  data = inject<{
+    tierGroup: LeagueTierGroup;
+}>(MAT_DIALOG_DATA);
+  private fb = inject(FormBuilder);
+
   dialogForm!: FormGroup;
-  constructor(
-    public dialogRef: MatDialogRef<TierGroupEditDialogComponent>,
-    @Inject(MAT_DIALOG_DATA)
-    public data: {
-      tierGroup: LeagueTierGroup;
-    },
-    private fb: FormBuilder,
-  ) {}
 
   ngOnInit(): void {
     this.dialogForm = this.fb.group({

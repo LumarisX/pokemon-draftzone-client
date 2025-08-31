@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -56,13 +56,11 @@ export interface PokemonEditDialogData {
   styleUrls: ['./pokemon-edit-dialog.component.scss'],
 })
 export class PokemonEditDialogComponent implements OnInit {
-  editForm!: FormGroup;
+  dialogRef = inject<MatDialogRef<PokemonEditDialogComponent>>(MatDialogRef);
+  data = inject<PokemonEditDialogData>(MAT_DIALOG_DATA);
+  private fb = inject(FormBuilder);
 
-  constructor(
-    public dialogRef: MatDialogRef<PokemonEditDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: PokemonEditDialogData,
-    private fb: FormBuilder,
-  ) {}
+  editForm!: FormGroup;
 
   ngOnInit(): void {
     this.editForm = this.fb.group({
