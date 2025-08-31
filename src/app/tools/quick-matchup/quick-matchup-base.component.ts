@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { MatchupData } from '../../drafts/matchup-overview/matchup-interface';
 import { MatchupComponent } from '../../drafts/matchup-overview/matchup/matchup.component';
 import { LoadingComponent } from '../../images/loading/loading.component';
@@ -21,11 +21,11 @@ import {
   templateUrl: './quick-matchup-base.component.html',
 })
 export class QuickMatchupBaseComponent implements OnInit {
+  private matchupService = inject(MatchupService);
+
   matchupData?: MatchupData;
   editing: boolean = true;
   formData?: QuickForm;
-
-  constructor(private matchupService: MatchupService) {}
 
   ngOnInit() {}
 

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, forwardRef, input, Input, OnInit } from '@angular/core';
+import { Component, forwardRef, input, Input, OnInit, inject } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MAT_SELECT_CONFIG, MatSelectModule } from '@angular/material/select';
@@ -26,6 +26,8 @@ import { MatFormFieldAppearance } from '@angular/material/form-field';
   ],
 })
 export class FormatSelectComponent implements OnInit, ControlValueAccessor {
+  private dataService = inject(DataService);
+
   formats: [string, { name: string; id: string; desc?: string }[]][] = [];
 
   _selectedFormat?: string;
@@ -48,8 +50,6 @@ export class FormatSelectComponent implements OnInit, ControlValueAccessor {
   onSelectionChange(value: string | undefined) {
     this.selectedFormat = value;
   }
-
-  constructor(private dataService: DataService) {}
 
   ngOnInit() {
     this.dataService.getFormatsGrouped().subscribe((formats) => {

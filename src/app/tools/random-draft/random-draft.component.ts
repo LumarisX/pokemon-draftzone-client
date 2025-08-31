@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DataService } from '../../services/data.service';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
@@ -14,11 +14,11 @@ import { RouterModule } from '@angular/router';
   imports: [CommonModule, SpriteComponent, RouterModule, FormsModule],
 })
 export class RandomDraftComponent {
+  private dataService = inject(DataService);
+
   draftPath = DraftOverviewPath;
   ruleset = 'Gen9 NatDex';
   format = 'Singles';
-
-  constructor(private dataService: DataService) {}
   _count: number = 12;
   set count(value: number) {
     this._count = value > 0 ? (value < 20 ? value : 20) : 1;

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
 import { toPSString } from '../../../../../utils/teambuilder.utils';
@@ -22,6 +22,9 @@ import { AsyncPipe } from '@angular/common';
   ],
 })
 export class QuickDraftFinalComponent {
+  private tptService = inject(ThirdPartyToolService);
+  private authService = inject(AuthService);
+
   @Input({ required: true })
   draft!: QDPokemon[];
 
@@ -33,11 +36,6 @@ export class QuickDraftFinalComponent {
 
   draftPath = DraftOverviewPath;
   toolsPath = ToolsPath;
-
-  constructor(
-    private tptService: ThirdPartyToolService,
-    private authService: AuthService,
-  ) {}
 
   get teamIds() {
     return this.draft.map((pokemon) => pokemon.id);

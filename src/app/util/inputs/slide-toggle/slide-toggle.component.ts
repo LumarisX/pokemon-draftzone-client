@@ -1,15 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  ElementRef,
-  EventEmitter,
-  forwardRef,
-  HostBinding,
-  HostListener,
-  Input,
-  Output,
-  Renderer2,
-} from '@angular/core';
+import { Component, ElementRef, EventEmitter, forwardRef, HostBinding, HostListener, Input, Output, Renderer2, inject } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 
@@ -28,6 +18,9 @@ import { MatIconModule } from '@angular/material/icon';
   ],
 })
 export class SlideToggleComponent implements ControlValueAccessor {
+  private renderer = inject(Renderer2);
+  private elRef = inject(ElementRef);
+
   @Input() disabled = false;
   @Input() label?: string;
   @Input() onIcon = 'check';
@@ -43,11 +36,6 @@ export class SlideToggleComponent implements ControlValueAccessor {
 
   private onChange = (value: boolean) => {};
   private onTouched = () => {};
-
-  constructor(
-    private renderer: Renderer2,
-    private elRef: ElementRef,
-  ) {}
 
   writeValue(value: boolean): void {
     this.checkedState = value;

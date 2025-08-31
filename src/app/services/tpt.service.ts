@@ -1,11 +1,12 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ThirdPartyToolService {
-  constructor(private http: HttpClient) {}
+  private http = inject(HttpClient);
+
 
   newPokepaste(
     paste: string,

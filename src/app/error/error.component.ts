@@ -7,7 +7,7 @@ import {
   trigger,
 } from '@angular/animations';
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { CloseSVG } from '../images/svg-components/close.component';
@@ -70,9 +70,9 @@ import { ErrorService } from './error.service';
   styleUrl: './error.component.scss',
 })
 export class ErrorComponent implements OnInit {
-  error?: ClientError;
+  private errorService = inject(ErrorService);
 
-  constructor(private errorService: ErrorService) {}
+  error?: ClientError;
 
   ngOnInit(): void {
     this.errorService.getErrorObservable().subscribe((error) => {

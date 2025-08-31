@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { News, NewsService } from '../../services/news.service';
 import { LoadingComponent } from '../../images/loading/loading.component';
 import { CommonModule } from '@angular/common';
@@ -13,10 +13,9 @@ import { UnreadService } from '../../services/unread.service';
   styleUrl: './news-core.component.scss',
 })
 export class NewsCoreComponent implements OnInit {
-  constructor(
-    private newsService: NewsService,
-    private unreadService: UnreadService,
-  ) {}
+  private newsService = inject(NewsService);
+  private unreadService = inject(UnreadService);
+
 
   news?: News[];
   ngOnInit(): void {

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { DraftService } from '../../../services/draft.service';
 import { LoadingComponent } from '../../../images/loading/loading.component';
@@ -29,9 +29,10 @@ import { DraftOverviewPath } from '../draft-overview-routing.module';
   ],
 })
 export class DraftPreviewComponent {
+  private draftService = inject(DraftService);
+
   drafts!: (Draft & { menu: 'main' | 'archive' | 'edit' | 'delete' })[];
   draftPath = DraftOverviewPath;
-  constructor(private draftService: DraftService) {}
 
   ngOnInit() {
     this.reload();

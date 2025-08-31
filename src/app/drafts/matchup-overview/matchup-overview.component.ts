@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { Meta } from '@angular/platform-browser';
 import { ActivatedRoute, RouterModule } from '@angular/router';
@@ -33,6 +33,10 @@ dayjs.extend(duration);
   ],
 })
 export class MatchupOverviewComponent implements OnInit {
+  private route = inject(ActivatedRoute);
+  private matchupService = inject(MatchupService);
+  private meta = inject(Meta);
+
   matchupData: MatchupData | null = null;
   matchupId = '';
   shared = false;
@@ -43,12 +47,6 @@ export class MatchupOverviewComponent implements OnInit {
   draftPath = DraftOverviewPath;
 
   @ViewChild('inputFieldRef') inputFieldRef!: ElementRef;
-
-  constructor(
-    private route: ActivatedRoute,
-    private matchupService: MatchupService,
-    private meta: Meta,
-  ) {}
 
   ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {

@@ -1,5 +1,5 @@
 import { CommonModule, Location } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -23,6 +23,11 @@ import { DraftFormCoreComponent } from '../draft-form-core/draft-form-core.compo
   styleUrl: '../draft-form.component.scss',
 })
 export class DraftFormNewComponent implements OnInit {
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private draftService = inject(DraftService);
+  private location = inject(Location);
+
   teamId: string = '';
   title: string = 'New League';
   formats = [];
@@ -38,13 +43,6 @@ export class DraftFormNewComponent implements OnInit {
     team: FormArray<PokemonFormGroup>;
   }>;
   draftPath = DraftOverviewPath;
-
-  constructor(
-    private router: Router,
-    private route: ActivatedRoute,
-    private draftService: DraftService,
-    private location: Location,
-  ) {}
 
   params: { team?: Pokemon[] } = {};
 

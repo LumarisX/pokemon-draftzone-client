@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatSortModule, Sort } from '@angular/material/sort';
 import { RouterModule } from '@angular/router';
@@ -31,13 +31,13 @@ import { MatIcon } from '@angular/material/icon';
   ],
 })
 export class SetAnalyzerComponent implements OnInit {
+  private teambuilderService = inject(TeambuilderService);
+
   patList: { rank: number; pokemon: Pokemon; percent: number }[] = [];
   selectedOpponent: Pokemon | undefined;
   link: string | undefined;
   pokemonSet: PokemonBuilder | null = null;
   results: [SetCalcs, SetCalcs] | undefined;
-
-  constructor(private teambuilderService: TeambuilderService) {}
 
   ngOnInit(): void {
     this.teambuilderService.getPatsList().subscribe((data) => {

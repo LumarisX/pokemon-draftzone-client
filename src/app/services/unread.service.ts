@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { ApiService } from './api.service';
 
@@ -6,10 +6,12 @@ import { ApiService } from './api.service';
   providedIn: 'root',
 })
 export class UnreadService {
+  private api = inject(ApiService);
+
   leagueCount = new BehaviorSubject<string>('');
   newsCount = new BehaviorSubject<string>('');
 
-  constructor(private api: ApiService) {
+  constructor() {
     const lastLeagueTime = +(localStorage.getItem('leagueTime') || 0);
     const lastNewsTime = +(localStorage.getItem('newsTime') || 0);
     this.getUnreadCount({

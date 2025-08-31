@@ -1,13 +1,6 @@
 import { BooleanInput, coerceBooleanProperty } from '@angular/cdk/coercion';
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  ElementRef,
-  HostBinding,
-  Input,
-  Optional,
-  Self,
-} from '@angular/core';
+import { Component, ElementRef, HostBinding, Input, inject } from '@angular/core';
 import {
   ControlValueAccessor,
   FormBuilder,
@@ -45,6 +38,9 @@ class MyTel {
 export class MyTelInput
   implements MatFormFieldControl<MyTel>, ControlValueAccessor
 {
+  private _elementRef = inject(ElementRef);
+  ngControl = inject(NgControl, { optional: true, self: true });
+
   parts: FormGroup;
 
   @Input()
@@ -73,11 +69,9 @@ export class MyTelInput
     console.log(event);
   }
 
-  constructor(
-    fb: FormBuilder,
-    private _elementRef: ElementRef,
-    @Optional() @Self() public ngControl: NgControl,
-  ) {
+  constructor() {
+    const fb = inject(FormBuilder);
+
     if (this.ngControl != null) {
       this.ngControl.valueAccessor = this;
     }

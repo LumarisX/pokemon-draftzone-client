@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { DraftFormData } from '../drafts/draft-overview/draft-form/draft-form-core/draft-form-core.component';
 import { Stats } from '../drafts/draft-overview/draft-stats/draft-stats.component';
 import { Draft } from '../interfaces/draft';
@@ -10,7 +10,8 @@ import { ApiService } from './api.service';
   providedIn: 'root',
 })
 export class DraftService {
-  constructor(private apiService: ApiService) {}
+  private apiService = inject(ApiService);
+
 
   getDraftsList() {
     return this.apiService.get('draft/teams', true);

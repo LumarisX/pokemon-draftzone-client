@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { LeagueAd, LeagueAdsService } from '../../services/league-ads.service';
@@ -23,11 +23,11 @@ import { TrashSVG } from '../../images/svg-components/trash.component';
   ],
 })
 export class LeagueManageComponent implements OnInit {
+  private leagueService = inject(LeagueAdsService);
+
   leagues: LeagueAd[] = [];
   filteredLeagues: LeagueAd[] = [];
   SKILLBALLS: (keyof typeof BALLHEX)[] = ['poke', 'great', 'ultra', 'master'];
-
-  constructor(private leagueService: LeagueAdsService) {}
 
   ngOnInit() {
     this.getLeagues();

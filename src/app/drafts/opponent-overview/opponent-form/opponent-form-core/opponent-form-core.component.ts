@@ -1,6 +1,6 @@
 import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
 import {
   AbstractControl,
   FormArray,
@@ -56,6 +56,8 @@ import {
   styleUrl: './opponent-form-core.component.scss',
 })
 export class OpponentFormCoreComponent implements OnInit {
+  private dataService = inject(DataService);
+
   pokemonList$ = new BehaviorSubject<Pokemon[]>([]);
   opponentForm!: OpponentForm;
 
@@ -64,7 +66,6 @@ export class OpponentFormCoreComponent implements OnInit {
   @Input()
   ruleset: string | null = null;
   @Output() formSubmitted = new EventEmitter<OpponentFormData>();
-  constructor(private dataService: DataService) {}
 
   ngOnInit(): void {
     this.opponentForm = new OpponentForm(this.params, this.pokemonList$);

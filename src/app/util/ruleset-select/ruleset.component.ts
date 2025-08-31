@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, forwardRef, Input, OnInit } from '@angular/core';
+import { Component, forwardRef, Input, OnInit, inject } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MAT_SELECT_CONFIG, MatSelectModule } from '@angular/material/select';
 import { DataService } from '../../services/data.service';
@@ -25,6 +25,8 @@ import { MatFormFieldAppearance } from '@angular/material/form-field';
   ],
 })
 export class RulesetSelectComponent implements OnInit, ControlValueAccessor {
+  private dataService = inject(DataService);
+
   rulesets: [string, { name: string; id: string; desc?: string }[]][] = [];
 
   _selectedRuleset?: string;
@@ -47,8 +49,6 @@ export class RulesetSelectComponent implements OnInit, ControlValueAccessor {
   onSelectionChange(value: string | undefined) {
     this.selectedRuleset = value;
   }
-
-  constructor(private dataService: DataService) {}
 
   ngOnInit() {
     this.dataService.getRulesetsGrouped().subscribe((rulesets) => {

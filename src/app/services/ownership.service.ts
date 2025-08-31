@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { MatchupService } from './matchup.service';
@@ -7,7 +7,8 @@ import { MatchupService } from './matchup.service';
   providedIn: 'root',
 })
 export class OwnershipService {
-  constructor(private matchupService: MatchupService) {}
+  private matchupService = inject(MatchupService);
+
 
   /**
    * Checks if the given user owns the specified matchup.

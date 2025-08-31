@@ -16,7 +16,7 @@ import {
 } from '@angular/cdk/drag-drop';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import {
   AbstractControl,
   FormArray,
@@ -101,6 +101,8 @@ import { PokemonSelectComponent } from '../../pokemon-select/pokemon-select.comp
   ],
 })
 export class TeamFormComponent {
+  private dataService = inject(DataService);
+
   @Input()
   ruleset!: string;
   @Input()
@@ -114,8 +116,6 @@ export class TeamFormComponent {
   importInput = '';
   teamOption = false;
   checked = false;
-
-  constructor(private dataService: DataService) {}
 
   removeChip(control: FormControl<any[] | null>, index: number) {
     if (!control.value) return;

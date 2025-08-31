@@ -1,11 +1,12 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ApiService } from './api.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ArchiveService {
-  constructor(private apiService: ApiService) {}
+  private apiService = inject(ApiService);
+
 
   getDraftsList() {
     return this.apiService.get('archive/teams', true);

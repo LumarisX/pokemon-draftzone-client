@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { DraftService } from '../../../services/draft.service';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -37,10 +37,9 @@ export type Stats = {
   ],
 })
 export class DraftStatsComponent implements OnInit {
-  constructor(
-    private draftService: DraftService,
-    private route: ActivatedRoute,
-  ) {}
+  private draftService = inject(DraftService);
+  private route = inject(ActivatedRoute);
+
   readonly draftPath = DraftOverviewPath;
   teamStats = new BehaviorSubject<Stats[]>([]);
   displayedColumns: string[] = [

@@ -1,11 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  EventEmitter,
-  OnDestroy,
-  OnInit,
-  Output,
-} from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, Output, inject } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -30,10 +24,9 @@ import { MatButtonModule } from '@angular/material/button';
   styleUrl: './settings.component.scss',
 })
 export class SettingsComponent implements OnInit, OnDestroy {
-  constructor(
-    private settingsService: SettingsService,
-    private fb: FormBuilder,
-  ) {}
+  private settingsService = inject(SettingsService);
+  private fb = inject(FormBuilder);
+
 
   example: Pokemon = { id: 'deoxysattack', name: 'Deoxys-Attack' };
 

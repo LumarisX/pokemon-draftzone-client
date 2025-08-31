@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { AuthService as Auth0Service, User } from '@auth0/auth0-angular';
 import { catchError, map, Observable, of, shareReplay, switchMap } from 'rxjs';
 import { Settings } from '../pages/settings/settings.service';
@@ -12,11 +12,13 @@ type AppUser = User & {
   providedIn: 'root',
 })
 export class AuthService {
+  private auth0 = inject<Auth0Service<AppUser>>(Auth0Service);
+
   public readonly user$: Observable<AppUser | null>;
   public readonly isAuthenticated$: Observable<boolean>;
   public readonly accessToken$: Observable<string | undefined>;
 
-  constructor(private auth0: Auth0Service<AppUser>) {
+  constructor() {
     this.isAuthenticated$ = this.auth0.isAuthenticated$.pipe(shareReplay(1));
 
     this.user$ = this.auth0.user$.pipe(

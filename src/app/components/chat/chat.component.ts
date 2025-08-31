@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, inject } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -13,16 +13,14 @@ import { ChatService } from '../../services/chat.service';
   imports: [FormsModule, CommonModule, MarkdownModule],
 })
 export class ChatComponent implements OnInit, OnDestroy {
+  private chatService = inject(ChatService);
+  private auth = inject(AuthService);
+
   messages: { timestamp: Date; user: string; text: string }[] = [];
   newMessage: string = '';
   private messageSubscription!: Subscription;
 
   @Input({ required: true }) roomId!: string;
-
-  constructor(
-    private chatService: ChatService,
-    private auth: AuthService,
-  ) {}
 
   ngOnInit(): void {
     this.chatService.joinRoom(this.roomId);

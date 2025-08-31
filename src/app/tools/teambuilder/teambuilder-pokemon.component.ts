@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
@@ -40,6 +40,8 @@ import { FormatSelectComponent } from '../../util/format-select/format.component
   ],
 })
 export class TeamBuilderPokemonComponent {
+  private teambuilderService = inject(TeambuilderService);
+
   private _pokemon: PokemonBuilder | null = null;
   selectedPokemon: Pokemon | null = null;
   ruleset: string | null = null;
@@ -72,8 +74,6 @@ export class TeamBuilderPokemonComponent {
   natures = NATURES;
   stats = STATS;
   tab: 'main' | 'moves' | 'stats' | 'inout' = 'main';
-
-  constructor(private teambuilderService: TeambuilderService) {}
 
   import(data: string) {
     // this._pokemon = PokemonBuilder.import(data)

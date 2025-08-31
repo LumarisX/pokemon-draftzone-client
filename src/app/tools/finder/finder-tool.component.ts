@@ -1,5 +1,5 @@
 import { CommonModule, Location } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { FinderCoreComponent } from './finder-core.component';
@@ -18,18 +18,16 @@ import { DataService } from '../../services/data.service';
   ],
 })
 export class FinderToolComponent implements OnInit {
+  private dataService = inject(DataService);
+  private location = inject(Location);
+  private route = inject(ActivatedRoute);
+
   formats: string[] = [];
   rulesets: string[] = [];
   queryParamValue: string | null = null;
 
   selectedFormat: string = 'Singles';
   selectedRuleset: string = 'Gen9 NatDex';
-
-  constructor(
-    private dataService: DataService,
-    private location: Location,
-    private route: ActivatedRoute,
-  ) {}
 
   ngOnInit() {
     this.dataService.getFormats().subscribe((formats) => {

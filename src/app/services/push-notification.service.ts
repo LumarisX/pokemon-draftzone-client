@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { SwPush } from '@angular/service-worker';
 import { AuthService } from '@auth0/auth0-angular';
 import { Observable, from, throwError } from 'rxjs';
@@ -9,14 +9,12 @@ import { ApiService } from './api.service';
   providedIn: 'root',
 })
 export class PushNotificationService {
+  private swPush = inject(SwPush);
+  private auth = inject(AuthService);
+  private apiService = inject(ApiService);
+
   private readonly VAPID_PUBLIC_KEY =
     'BF7k-hu06sdFW3xAFAdgn2xqgkunQeAhO7Z67Vf7PyN2NRLJ-HB45hMtGjFQflNrcUljP78l5zl1xO5foGBr4Hg';
-
-  constructor(
-    private swPush: SwPush,
-    private auth: AuthService,
-    private apiService: ApiService,
-  ) {}
 
   public subscribeToNotifications(): Observable<any> {
     if (!this.swPush.isEnabled) {

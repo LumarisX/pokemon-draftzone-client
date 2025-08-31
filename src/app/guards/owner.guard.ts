@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {
   ActivatedRouteSnapshot,
   CanActivate,
@@ -15,11 +15,10 @@ import { OwnershipService } from '../services/ownership.service';
   providedIn: 'root',
 })
 export class OwnerGuard implements CanActivate {
-  constructor(
-    private ownershipService: OwnershipService,
-    private auth: AuthService,
-    private router: Router,
-  ) {}
+  private ownershipService = inject(OwnershipService);
+  private auth = inject(AuthService);
+  private router = inject(Router);
+
 
   canActivate(
     route: ActivatedRouteSnapshot,

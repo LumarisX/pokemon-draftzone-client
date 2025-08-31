@@ -1,13 +1,6 @@
 import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 import { CommonModule, Location } from '@angular/common';
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnDestroy,
-  OnInit,
-  Output,
-} from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, inject } from '@angular/core';
 import {
   AbstractControl,
   FormArray,
@@ -68,17 +61,16 @@ import { getNameByPid } from '../../../data/namedex';
   styleUrl: './quick-matchup-form.component.scss',
 })
 export class QuickMatchupFormComponent implements OnInit, OnDestroy {
+  private dataService = inject(DataService);
+  private location = inject(Location);
+  private route = inject(ActivatedRoute);
+
   destroy$ = new Subject<void>();
   pokemonList$ = new BehaviorSubject<Pokemon[]>([]);
   @Input()
   quickForm: QuickForm | undefined;
 
   @Output() formSubmitted = new EventEmitter<QuickForm>();
-  constructor(
-    private dataService: DataService,
-    private location: Location,
-    private route: ActivatedRoute,
-  ) {}
 
   ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {

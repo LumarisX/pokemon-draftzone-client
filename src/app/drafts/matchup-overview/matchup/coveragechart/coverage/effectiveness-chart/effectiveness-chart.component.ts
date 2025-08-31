@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, Input, OnChanges } from '@angular/core';
+import { Component, OnInit, ElementRef, Input, OnChanges, inject } from '@angular/core';
 import * as d3 from 'd3';
 
 @Component({
@@ -7,6 +7,8 @@ import * as d3 from 'd3';
   template: `<svg></svg>`,
 })
 export class EffectivenessChartComponent implements OnInit, OnChanges {
+  private el = inject(ElementRef);
+
   @Input('data') data: {
     category: string;
     se: number;
@@ -18,8 +20,6 @@ export class EffectivenessChartComponent implements OnInit, OnChanges {
   padding = 0;
   viewBoxWidth = 200;
   viewBoxHeight = 25;
-
-  constructor(private el: ElementRef) {}
   ngOnInit(): void {
     this.createSvg();
     this.drawBars(this.data);

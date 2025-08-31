@@ -1,13 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  AfterViewInit,
-  ChangeDetectorRef,
-  Component,
-  HostListener,
-  OnInit,
-  QueryList,
-  ViewChildren,
-} from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, HostListener, OnInit, QueryList, ViewChildren, inject } from '@angular/core';
 import {
   AbstractControl,
   FormArray,
@@ -90,6 +82,11 @@ interface LSDraftData {
   ],
 })
 export class PlannerComponent implements OnInit, AfterViewInit {
+  private fb = inject(FormBuilder);
+  private plannerService = inject(PlannerService);
+  private cdr = inject(ChangeDetectorRef);
+  private dialog = inject(MatDialog);
+
   plannerForm!: FormGroup<{ drafts: FormArray<DraftFormGroup> }>;
   typechart: TypeChart = {
     team: [],
@@ -109,13 +106,6 @@ export class PlannerComponent implements OnInit, AfterViewInit {
   selectedDraft = new BehaviorSubject<number>(0);
   movechart: MoveChart = [];
   isLargeScreen = false;
-
-  constructor(
-    private fb: FormBuilder,
-    private plannerService: PlannerService,
-    private cdr: ChangeDetectorRef,
-    private dialog: MatDialog,
-  ) {}
 
   private isValidTeamData(team: any): team is LSTeamData {
     return (

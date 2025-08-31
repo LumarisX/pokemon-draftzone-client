@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { SettingApiService } from '../../services/setting.service';
 import { BehaviorSubject } from 'rxjs';
 
@@ -15,12 +15,14 @@ export type Settings = {
   providedIn: 'root',
 })
 export class SettingsService {
+  private settingApiService = inject(SettingApiService);
+
   settingsData$ = new BehaviorSubject<Settings>({});
   get settingsData() {
     return this.settingsData$.value;
   }
 
-  constructor(private settingApiService: SettingApiService) {
+  constructor() {
     const localSettings = localStorage.getItem('user-settings');
     if (localSettings) this.settingsData$.next(JSON.parse(localSettings));
   }

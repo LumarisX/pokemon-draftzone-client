@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -38,6 +38,10 @@ type Matchup = Opponent & {
   ],
 })
 export class OpponentTeamPreviewComponent implements OnInit {
+  private draftService = inject(DraftService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+
   index = 0;
   matchups?: Matchup[];
   teamId: string = '';
@@ -55,12 +59,6 @@ export class OpponentTeamPreviewComponent implements OnInit {
     'kdr',
     'kpg',
   ];
-
-  constructor(
-    private draftService: DraftService,
-    private router: Router,
-    private route: ActivatedRoute,
-  ) {}
 
   ngOnInit(): void {
     this.teamId = this.route.snapshot.paramMap.get('teamid') ?? '';

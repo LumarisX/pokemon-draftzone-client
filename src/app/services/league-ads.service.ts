@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from './api.service';
 
@@ -8,7 +8,8 @@ const ROOTPATH = 'leagues';
   providedIn: 'root',
 })
 export class LeagueAdsService {
-  constructor(private apiService: ApiService) {}
+  private apiService = inject(ApiService);
+
 
   getLeagueAds(): Observable<LeagueAd[]> {
     return this.apiService.get(ROOTPATH, false);
