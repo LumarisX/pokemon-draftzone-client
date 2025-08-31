@@ -3,6 +3,12 @@ import { AuthService as Auth0Service, User } from '@auth0/auth0-angular';
 import { catchError, map, Observable, of, shareReplay, switchMap } from 'rxjs';
 import { Settings } from '../pages/settings/settings.service';
 
+export type LeagueRole = 'owner' | 'coach' | 'helper' | 'player' | 'spectator';
+
+export type LeagueRoles = {
+  [leagueId: string]: LeagueRole;
+};
+
 type AppUser = User & {
   username: string;
   settings: Settings;
@@ -47,5 +53,9 @@ export class AuthService {
         returnTo: window.location.origin,
       },
     });
+  }
+
+  public getLeagueRoles(): Observable<LeagueRoles> {
+    return of({ pdbls2: 'coach', fdl: 'spectator' });
   }
 }

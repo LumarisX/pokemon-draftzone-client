@@ -332,7 +332,6 @@ export default {
     },
   },
   plugins: [
-    require('@tailwindcss/typography'),
     createThemes(
       {
         classic: Classic.toLight(),
