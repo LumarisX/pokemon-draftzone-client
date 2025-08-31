@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -43,6 +43,9 @@ import { Subject, takeUntil } from 'rxjs';
   styleUrl: './sign-up.component.scss',
 })
 export class BZSignUpComponent implements OnInit, OnDestroy {
+  private fb = inject(FormBuilder);
+  private battlezoneService = inject(BattleZoneService);
+
   private destroy$ = new Subject<void>();
 
   signupForm!: FormGroup;
@@ -63,10 +66,6 @@ export class BZSignUpComponent implements OnInit, OnDestroy {
     draft: [new Date('2025-02-18T12:00:00'), new Date('2025-02-22T12:00:00')],
     season: [new Date('2025-02-23T12:00:00'), new Date('2025-04-20T12:00:00')],
   };
-  constructor(
-    private fb: FormBuilder,
-    private battlezoneService: BattleZoneService,
-  ) {}
 
   ngOnInit(): void {
     this.closed = new Date() > this.signUpDeadline;

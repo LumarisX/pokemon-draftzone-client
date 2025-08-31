@@ -1,5 +1,5 @@
 //@ts-nocheck
-import { Component, ElementRef, Input, OnDestroy } from '@angular/core';
+import { Component, ElementRef, Input, OnDestroy, inject } from '@angular/core';
 import * as d3 from 'd3';
 import {
   CoverageMax,
@@ -24,6 +24,8 @@ type ChartData = {
   imports: [],
 })
 export class CoverageTeamChartComponent implements OnDestroy {
+  private el = inject(ElementRef);
+
   @Input()
   set data(value: ChartData) {
     if (value) this.updateData(value);
@@ -39,8 +41,6 @@ export class CoverageTeamChartComponent implements OnDestroy {
   private margin = { top: 5, right: 5, bottom: 20, left: 10 };
   private width = 600;
   private height = 300;
-
-  constructor(private el: ElementRef) {}
 
   ngOnDestroy(): void {
     this.destroyChart();

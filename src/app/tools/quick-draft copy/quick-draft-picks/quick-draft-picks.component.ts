@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { Stat } from '../../../data';
@@ -68,6 +68,8 @@ export type QDPokemon = Pokemon<{
   ],
 })
 export class QuickDraftPicksComponent implements OnInit {
+  private dataService = inject(DataService);
+
   @Input({ required: true })
   settings!: QDSettings;
 
@@ -84,8 +86,6 @@ export class QuickDraftPicksComponent implements OnInit {
 
   animationStates: ('void' | 'selected-disappear' | 'unselected-disappear')[] =
     [];
-
-  constructor(private dataService: DataService) {}
 
   get totalPicks() {
     return this.settings.tiers.reduce((count, tier) => {

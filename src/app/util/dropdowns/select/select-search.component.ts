@@ -6,7 +6,7 @@ import {
 } from '@angular/cdk/overlay';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild, inject } from '@angular/core';
 import { FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { CompactSVG } from '../../../images/svg-components/compact.component';
 import { XMarkSVG } from '../../../images/svg-components/xmark.component';
@@ -36,6 +36,9 @@ export class SelectSearchComponent<T extends { name: string }>
   extends SelectBaseComponent<T>
   implements OnInit
 {
+  private outsideClickDispatcher = inject(OverlayOutsideClickDispatcher);
+  private overlay = inject(Overlay);
+
   private overlayRef: OverlayRef | null = null;
 
   query: string = '';
@@ -54,13 +57,6 @@ export class SelectSearchComponent<T extends { name: string }>
     if (this.overlayRef) {
       this.outsideClickDispatcher.add(this.overlayRef);
     }
-  }
-
-  constructor(
-    private outsideClickDispatcher: OverlayOutsideClickDispatcher,
-    private overlay: Overlay,
-  ) {
-    super();
   }
 
   filter() {

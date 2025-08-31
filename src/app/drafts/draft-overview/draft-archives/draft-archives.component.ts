@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { ArchiveService } from '../../../services/archive.service';
 import { LoadingComponent } from '../../../images/loading/loading.component';
@@ -21,10 +21,10 @@ import { DraftOverviewPath } from '../draft-overview-routing.module';
   ],
 })
 export class DraftArchiveComponent {
+  private archiveService = inject(ArchiveService);
+
   archives!: (Archive & { menu: 'main' | 'archive' | 'edit' | 'delete' })[];
   backPath: string = DraftOverviewPath;
-
-  constructor(private archiveService: ArchiveService) {}
 
   ngOnInit() {
     this.reload();

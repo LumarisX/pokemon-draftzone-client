@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { DataService } from '../services/data.service';
@@ -25,6 +25,10 @@ import { UnreadService } from '../services/unread.service';
   ],
 })
 export class LeagueAdListComponent implements OnInit {
+  private leagueService = inject(LeagueAdsService);
+  private dataService = inject(DataService);
+  private unreadService = inject(UnreadService);
+
   leagues: LeagueAd[] = [];
   filteredLeagues!: LeagueAd[];
   formats: string[] = [];
@@ -55,12 +59,6 @@ export class LeagueAdListComponent implements OnInit {
     this.sortLeagues();
     this.menu = null;
   }
-
-  constructor(
-    private leagueService: LeagueAdsService,
-    private dataService: DataService,
-    private unreadService: UnreadService,
-  ) {}
 
   ngOnInit() {
     this.leagueService.getLeagueAds().subscribe((data) => {

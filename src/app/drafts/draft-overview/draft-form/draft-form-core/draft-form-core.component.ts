@@ -1,13 +1,6 @@
 import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnDestroy,
-  OnInit,
-  Output,
-} from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, inject } from '@angular/core';
 import {
   AbstractControl,
   FormArray,
@@ -66,6 +59,8 @@ import { RulesetSelectComponent } from '../../../../util/ruleset-select/ruleset.
   styleUrl: './draft-form-core.component.scss',
 })
 export class DraftFormCoreComponent implements OnInit, OnDestroy {
+  private dataService = inject(DataService);
+
   destroy$ = new Subject<void>();
   pokemonList$ = new BehaviorSubject<Pokemon[]>([]);
   draftForm!: DraftForm;
@@ -73,7 +68,6 @@ export class DraftFormCoreComponent implements OnInit, OnDestroy {
   @Input()
   params: Partial<Draft> = {};
   @Output() formSubmitted = new EventEmitter<DraftFormData>();
-  constructor(private dataService: DataService) {}
 
   ngOnInit(): void {
     this.draftForm = new DraftForm(this.params, this.pokemonList$);

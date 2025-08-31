@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { TierPokemon } from '../battle-zone/tier-list';
 import { ApiService } from './api.service';
@@ -16,7 +16,8 @@ export type LeagueTierGroup = {
   providedIn: 'root',
 })
 export class BattleZoneService {
-  constructor(private apiService: ApiService) {}
+  private apiService = inject(ApiService);
+
 
   signUp(signupData: object) {
     return this.apiService.post(`battlezone/pdbl/signup`, true, signupData);

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ApiService } from './api.service';
 import { MatchupData } from '../drafts/matchup-overview/matchup-interface';
 import { QuickFormData } from '../tools/quick-matchup/form/quick-matchup-form.component';
@@ -10,7 +10,8 @@ export const matchupPath = 'matchup';
   providedIn: 'root',
 })
 export class MatchupService {
-  constructor(private apiService: ApiService) {}
+  private apiService = inject(ApiService);
+
 
   getMatchup(matchupId: string) {
     return this.apiService.get(`${matchupPath}/${matchupId}`, true);

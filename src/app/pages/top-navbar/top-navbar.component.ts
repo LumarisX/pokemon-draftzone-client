@@ -1,6 +1,6 @@
 import { OverlayModule } from '@angular/cdk/overlay';
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
@@ -34,6 +34,13 @@ import { SettingsService } from '../settings/settings.service';
   styleUrl: './top-navbar.component.scss',
 })
 export class TopNavbarComponent implements OnInit {
+  auth = inject(AuthService);
+  private settingsService = inject(SettingsService);
+  private unreadService = inject(UnreadService);
+  private router = inject(Router);
+  private matIconRegistry = inject(MatIconRegistry);
+  private domSanitizer = inject(DomSanitizer);
+
   settingsOpen: boolean = false;
   TABS: {
     title: string;
@@ -70,14 +77,10 @@ export class TopNavbarComponent implements OnInit {
   draftPath = DraftOverviewPath;
   newsBadge = this.unreadService.newsCount;
 
-  constructor(
-    public auth: AuthService,
-    private settingsService: SettingsService,
-    private unreadService: UnreadService,
-    private router: Router,
-    private matIconRegistry: MatIconRegistry,
-    private domSanitizer: DomSanitizer,
-  ) {
+  constructor() {
+    const matIconRegistry = this.matIconRegistry;
+    const domSanitizer = this.domSanitizer;
+
     Object.entries(svgIcons).forEach(([name, data]) => {
       matIconRegistry.addSvgIconLiteral(
         name,

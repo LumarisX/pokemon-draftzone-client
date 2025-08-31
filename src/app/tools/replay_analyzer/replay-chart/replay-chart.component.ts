@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, inject } from '@angular/core';
 import * as d3 from 'd3';
 import { ReplayPlayer } from '../replay.interface';
 
@@ -22,6 +22,8 @@ type DataType = {
   `,
 })
 export class ReplayChartComponent implements OnInit {
+  private el = inject(ElementRef);
+
   @Input()
   data!: ReplayPlayer[];
 
@@ -37,8 +39,6 @@ export class ReplayChartComponent implements OnInit {
   height = 300;
   graphWidth = this.width - this.margin.left - this.margin.right;
   graphHeight = this.height - this.margin.top - this.margin.bottom;
-
-  constructor(private el: ElementRef) {}
 
   ngOnInit(): void {
     this.totalPercent = this.data[0].team.length * 100;

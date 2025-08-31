@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component } from '@angular/core';
+import { AfterViewInit, Component, inject } from '@angular/core';
 import { Meta } from '@angular/platform-browser';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { MatchupService } from '../../services/matchup.service';
@@ -19,15 +19,13 @@ dayjs.extend(duration);
   imports: [CommonModule, LoadingComponent, MatchupComponent, RouterModule],
 })
 export class MatchupSharedComponent implements AfterViewInit {
+  private route = inject(ActivatedRoute);
+  private matchupService = inject(MatchupService);
+  private meta = inject(Meta);
+
   matchupId = '';
   matchupData: MatchupData | null = null;
   timeString: string | null = null;
-
-  constructor(
-    private route: ActivatedRoute,
-    private matchupService: MatchupService,
-    private meta: Meta,
-  ) {}
 
   ngAfterViewInit(): void {
     this.meta.updateTag({

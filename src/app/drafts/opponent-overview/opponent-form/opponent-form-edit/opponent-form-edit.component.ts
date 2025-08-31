@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -24,15 +24,13 @@ import { OpponentFormCoreComponent } from '../opponent-form-core/opponent-form-c
   templateUrl: './opponent-form-edit.component.html',
 })
 export class OpponentFormEditComponent implements OnInit {
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private draftService = inject(DraftService);
+
   teamId: string = '';
   matchupId: string = '';
   readonly draftPath = DraftOverviewPath;
-
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private draftService: DraftService,
-  ) {}
   oppParams!: Opponent;
 
   ngOnInit(): void {

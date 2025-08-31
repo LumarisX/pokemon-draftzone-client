@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ApiService } from './api.service';
 import { Settings } from '../pages/settings/settings.service';
 import { Observable } from 'rxjs';
@@ -7,7 +7,8 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class SettingApiService {
-  constructor(private apiService: ApiService) {}
+  private apiService = inject(ApiService);
+
 
   getSettings() {
     return this.apiService.get<Settings | null>(`user/settings`, true);

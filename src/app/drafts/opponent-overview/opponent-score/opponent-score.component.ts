@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import {
   AbstractControl,
   FormArray,
@@ -34,6 +34,12 @@ import { ReplayData } from '../../../tools/replay_analyzer/replay.interface';
   ],
 })
 export class OpponentScoreComponent implements OnInit {
+  private fb = inject(FormBuilder);
+  private draftService = inject(DraftService);
+  private replayService = inject(ReplayService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+
   teamId: string = '';
   matchupId: string = '';
   title: string = 'New Matchup';
@@ -42,13 +48,6 @@ export class OpponentScoreComponent implements OnInit {
   matchSize = 1;
   selectedMatch = 0;
   readonly draftPath = DraftOverviewPath;
-  constructor(
-    private fb: FormBuilder,
-    private draftService: DraftService,
-    private replayService: ReplayService,
-    private route: ActivatedRoute,
-    private router: Router,
-  ) {}
 
   ngOnInit(): void {
     this.teamId = this.route.parent!.snapshot.paramMap.get('teamid') || '';

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { Pokemon as OldPokemon } from '../interfaces/draft';
@@ -14,7 +14,8 @@ type Ruleset = string;
   providedIn: 'root',
 })
 export class DataService {
-  constructor(private apiService: ApiService) {}
+  private apiService = inject(ApiService);
+
 
   cache: {
     formats?: string[];

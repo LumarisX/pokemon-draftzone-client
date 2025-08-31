@@ -4,17 +4,7 @@ import {
   ScrollingModule,
 } from '@angular/cdk/scrolling';
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  EventEmitter,
-  forwardRef,
-  input,
-  Input,
-  OnDestroy,
-  OnInit,
-  Output,
-  ViewChild,
-} from '@angular/core';
+import { Component, EventEmitter, forwardRef, input, Input, OnDestroy, OnInit, Output, ViewChild, inject } from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -65,6 +55,8 @@ import { Pokemon } from '../../interfaces/draft';
   ],
 })
 export class PokemonSelectComponent implements OnInit, OnDestroy {
+  private dataService = inject(DataService);
+
   private destroy$ = new Subject<void>();
 
   private isLegal: ValidatorFn = (
@@ -85,8 +77,6 @@ export class PokemonSelectComponent implements OnInit, OnDestroy {
 
   @Output() pokemonSelected = new EventEmitter<Pokemon | null>();
   @Output() selectionCleared = new EventEmitter();
-
-  constructor(private dataService: DataService) {}
 
   private ruleset$ = new BehaviorSubject<string | null>(null);
 

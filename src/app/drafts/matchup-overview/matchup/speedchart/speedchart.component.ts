@@ -1,14 +1,6 @@
 import { OverlayModule } from '@angular/cdk/overlay';
 import { CommonModule } from '@angular/common';
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  Input,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
 import {
   FormArray,
   FormControl,
@@ -43,6 +35,8 @@ import { SpeedtierComponent } from './speedtier/speedtier.component';
   ],
 })
 export class SpeedchartComponent implements OnInit, OnDestroy, AfterViewInit {
+  private fb = inject(NonNullableFormBuilder);
+
   @Input()
   set speedchart(value: SpeedChart) {
     this.level = value.level;
@@ -102,8 +96,6 @@ export class SpeedchartComponent implements OnInit, OnDestroy, AfterViewInit {
   modifiersForms!: FormGroup<{
     [key: string]: FormArray<FormControl<boolean>>;
   }>;
-
-  constructor(private fb: NonNullableFormBuilder) {}
 
   ngOnInit() {
     this.resetModifiers();

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { DataService } from '../../services/data.service';
@@ -32,6 +32,8 @@ type QueryBuilder = {
   ],
 })
 export class FinderCoreComponent implements OnInit {
+  private dataApi = inject(DataService);
+
   @Input()
   rulesetId?: string;
   @Input()
@@ -66,8 +68,6 @@ export class FinderCoreComponent implements OnInit {
   reversed = false;
   lastFind = '';
   advancedMode: boolean = false;
-
-  constructor(private dataApi: DataService) {}
 
   ngOnInit() {
     this.addQueryGroup();

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -28,14 +28,13 @@ import { LoadingComponent } from '../../../../images/loading/loading.component';
   templateUrl: './opponent-form-new.component.html',
 })
 export class OpponentFormNewComponent implements OnInit {
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private draftService = inject(DraftService);
+
   teamId: string = '';
   stage?: string;
   readonly draftPath = DraftOverviewPath;
-  constructor(
-    private router: Router,
-    private route: ActivatedRoute,
-    private draftService: DraftService,
-  ) {}
 
   ngOnInit() {
     this.teamId = this.route.parent!.snapshot.paramMap.get('teamid') ?? '';

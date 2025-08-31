@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, effect, OnInit, signal } from '@angular/core';
+import { Component, effect, OnInit, signal, inject } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -33,6 +33,8 @@ import { SpriteComponent } from '../../images/sprite/sprite.component';
   styleUrl: './tier-list.component.scss',
 })
 export class BZTierListComponent implements OnInit {
+  private battlezoneService = inject(BattleZoneService);
+
   readonly SortOptions = [
     'Name',
     'BST',
@@ -76,7 +78,7 @@ export class BZTierListComponent implements OnInit {
     return this._menu;
   }
 
-  constructor(private battlezoneService: BattleZoneService) {
+  constructor() {
     effect(() => {
       this.sortTiers(this.sortBy());
       this.menu = null;

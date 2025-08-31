@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { SettingsService } from './pages/settings/settings.service';
 
 @Component({
@@ -8,7 +8,8 @@ import { SettingsService } from './pages/settings/settings.service';
   standalone: false,
 })
 export class AppComponent {
-  constructor(private settingsService: SettingsService) {}
+  private settingsService = inject(SettingsService);
+
 
   getTheme() {
     const classes: string[] = [];

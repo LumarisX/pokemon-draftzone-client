@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { PokemonId } from '../data/namedex';
 import { ApiService } from './api.service';
 import { Observable, map, of } from 'rxjs';
@@ -32,11 +32,11 @@ export type Planner = {
   providedIn: 'root',
 })
 export class PlannerService {
+  private apiService = inject(ApiService);
+
   private cacheSize: number = 10;
   private cache: { key: string; data: Planner }[] = new Array(this.cacheSize);
   private currentIndex: number = 0;
-
-  constructor(private apiService: ApiService) {}
 
   getPlannerDetails(
     team: PokemonId[],

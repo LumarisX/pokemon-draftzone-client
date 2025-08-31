@@ -1,5 +1,5 @@
 //@ts-nocheck
-import { Component, ElementRef, Input, OnDestroy } from '@angular/core';
+import { Component, ElementRef, Input, OnDestroy, inject } from '@angular/core';
 import * as d3 from 'd3';
 import { getSpriteProperties } from '../../../data/namedex';
 import {
@@ -38,15 +38,13 @@ interface ExtendedNode<T> extends d3.HierarchyRectangularNode<T> {
   imports: [],
 })
 export class CoverageChartPreviewComponent implements OnDestroy {
+  private el = inject(ElementRef);
+  private spriteService = inject(SpriteService);
+
   @Input()
   set data(value: CoveragePokemon) {
     this.updateChart(value);
   }
-
-  constructor(
-    private el: ElementRef,
-    private spriteService: SpriteService,
-  ) {}
 
   chartData!: CoveragePokemon;
   svg;

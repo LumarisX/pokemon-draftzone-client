@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { AuthService } from '../services/auth0.service';
 
 @Component({
@@ -8,7 +8,8 @@ import { AuthService } from '../services/auth0.service';
   templateUrl: './debug.component.html',
 })
 export class DebugComponent implements OnInit {
-  constructor(private authService: AuthService) {}
+  private authService = inject(AuthService);
+
 
   debugData!: {
     browser: string;

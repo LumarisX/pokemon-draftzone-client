@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { DraftService } from '../../../../services/draft.service';
 import { LoadingComponent } from '../../../../images/loading/loading.component';
@@ -25,14 +25,12 @@ import { MatButtonModule } from '@angular/material/button';
   templateUrl: './draft-form-edit.component.html',
 })
 export class DraftFormEditComponent implements OnInit {
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private draftService = inject(DraftService);
+
   teamId: string = '';
   draftPath: string = DraftOverviewPath;
-
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private draftService: DraftService,
-  ) {}
 
   draftParams!: Draft;
 

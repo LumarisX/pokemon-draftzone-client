@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { TeambuilderService } from '../../services/teambuilder.service';
@@ -18,9 +18,9 @@ import { TeamBuilderPokemonComponent } from './teambuilder-pokemon.component';
   ],
 })
 export class TeamBuilderComponent implements OnInit {
-  team: PokemonBuilder[] = [];
+  private teambuilderService = inject(TeambuilderService);
 
-  constructor(private teambuilderService: TeambuilderService) {}
+  team: PokemonBuilder[] = [];
 
   ngOnInit(): void {
     // this.addPokemon({ name: 'Deoxys', id: 'deoxys' });

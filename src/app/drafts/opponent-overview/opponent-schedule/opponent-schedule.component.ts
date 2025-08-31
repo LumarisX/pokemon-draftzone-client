@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { DraftService } from '../../../services/draft.service';
@@ -24,6 +24,10 @@ dayjs.extend(advancedFormat);
   imports: [CommonModule, RouterModule, FormsModule, CopySVG, CheckSVG],
 })
 export class OpponentSchedule implements OnInit {
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private draftService = inject(DraftService);
+
   teamId: string = '';
   matchupId: string = '';
   selectedDate: string = '';
@@ -51,11 +55,6 @@ export class OpponentSchedule implements OnInit {
   }
   copied: boolean = false;
   readonly draftPath = DraftOverviewPath;
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private draftService: DraftService,
-  ) {}
 
   ngOnInit() {
     this.teamId = this.route.parent!.snapshot.paramMap.get('teamid') || '';

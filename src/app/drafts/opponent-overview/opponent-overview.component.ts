@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { DraftService } from '../../services/draft.service';
@@ -24,13 +24,12 @@ import { SpriteComponent } from '../../images/sprite/sprite.component';
   styleUrl: './opponent-overview.component.scss',
 })
 export class OpponentOverviewComponent implements OnInit {
+  private route = inject(ActivatedRoute);
+  private draftService = inject(DraftService);
+
   draft!: Draft;
   teamId: string = '';
   draftPath = DraftOverviewPath;
-  constructor(
-    private route: ActivatedRoute,
-    private draftService: DraftService,
-  ) {}
 
   ngOnInit(): void {
     this.teamId = <string>this.route.snapshot.paramMap.get('teamid');

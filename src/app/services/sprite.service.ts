@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Pokemon } from '../interfaces/draft';
 import { getSpriteProperties, SpriteProperties } from '../data/namedex';
 import { SettingsService } from '../pages/settings/settings.service';
@@ -21,9 +21,9 @@ export interface SpriteData {
   providedIn: 'root',
 })
 export class SpriteService {
-  readonly UNKNOWN_SPRITE_PATH = '../../../../assets/icons/unknown.svg';
+  private settingsService = inject(SettingsService);
 
-  constructor(private settingsService: SettingsService) {}
+  readonly UNKNOWN_SPRITE_PATH = '../../../../assets/icons/unknown.svg';
 
   private spriteSetMap: Map<string, SpriteSetConfigs> = new Map([
     [

@@ -4,7 +4,7 @@ import {
   HttpHeaders,
   HttpParams,
 } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {
   catchError,
   filter,
@@ -22,15 +22,13 @@ import { ErrorService } from '../error/error.service';
   providedIn: 'root',
 })
 export class ApiService {
+  private http = inject(HttpClient);
+  private auth = inject(AuthService);
+  private errorService = inject(ErrorService);
+
   private serverUrl = `${environment.tls ? 'https' : 'http'}://${
     environment.apiUrl
   }`;
-
-  constructor(
-    private http: HttpClient,
-    private auth: AuthService,
-    private errorService: ErrorService,
-  ) {}
 
   private pendingRequests = new Map<string, Observable<any>>();
 

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import {
   FormArray,
   FormBuilder,
@@ -24,16 +24,14 @@ import { Router } from '@angular/router';
   `,
 })
 export class LeagueFormComponent implements OnInit {
+  private fb = inject(FormBuilder);
+  private leagueService = inject(LeagueAdsService);
+  private dataService = inject(DataService);
+  private router = inject(Router);
+
   leagueForm!: FormGroup;
   formats: string[] = [];
   rulesets: string[] = [];
-
-  constructor(
-    private fb: FormBuilder,
-    private leagueService: LeagueAdsService,
-    private dataService: DataService,
-    private router: Router,
-  ) {}
 
   ngOnInit(): void {
     this.leagueForm = this.fb.group({

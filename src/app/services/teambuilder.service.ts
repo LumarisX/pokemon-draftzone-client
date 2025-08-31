@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { StatsTable } from '../data';
 import { Pokemon } from '../interfaces/draft';
@@ -48,7 +48,8 @@ export type setCalcs = {
   providedIn: 'root',
 })
 export class TeambuilderService {
-  constructor(private apiService: ApiService) {}
+  private apiService = inject(ApiService);
+
 
   getPokemonData(id: string, ruleset: string): Observable<TeambuilderPokemon> {
     return this.apiService.get('teambuilder/pokemonData', false, {
