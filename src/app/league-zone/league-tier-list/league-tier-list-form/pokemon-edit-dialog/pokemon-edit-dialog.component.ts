@@ -7,7 +7,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCheckboxModule } from '@angular/material/checkbox'; // <-- Import Checkbox Module
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import {
   MAT_DIALOG_DATA,
   MatDialogModule,
@@ -18,12 +18,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { SpriteComponent } from '../../../../images/sprite/sprite.component';
+import { SlideToggleComponent } from '../../../../util/inputs/slide-toggle/slide-toggle.component';
+import { EditTierPokemon } from '../league-tier-list-form.component';
 import {
   LeagueTier,
   LeagueTierGroup,
-} from '../../../../services/battle-zone.service';
-import { SlideToggleComponent } from '../../../../util/inputs/slide-toggle/slide-toggle.component';
-import { EditTierPokemon } from '../league-tier-list-form.component';
+} from '../../../league-sign-up/league-sign-up.component';
 
 export interface PokemonEditDialogData {
   pokemon: EditTierPokemon &

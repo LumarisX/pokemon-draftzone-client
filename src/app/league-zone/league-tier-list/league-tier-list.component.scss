@@ -39,6 +39,7 @@
   width: 8rem;
   display: flex;
   align-items: center;
+  user-select: none;
   flex-grow: 1;
   padding: 0.25rem;
   border-width: 0px 0px 1px 0px;
@@ -66,6 +67,7 @@
   overflow: auto;
   border-radius: 0.5rem;
   width: fit-content;
+  justify-self: center;
 }
 
 .entry-sprite {
@@ -86,8 +88,12 @@
   text-decoration: line-through;
 }
 
+.selected {
+  box-shadow: var(--pdz-level-2);
+}
+
 .menu {
-  box-shadow: var(--mat-sys-level2);
+  box-shadow: var(--pdz-level2);
   z-index: 2100;
 }
 
@@ -131,5 +137,42 @@
     &:hover {
       background-color: var(--mat-sys-secondary);
     }
+  }
+}
+
+:host {
+  display: block;
+  position: relative;
+  height: 100%;
+}
+
+.selected-card {
+  position: absolute;
+  z-index: 3000;
+
+  background-color: var(--mat-sys-surface-container-high);
+  color: var(--mat-sys-on-surface);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  width: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+
+  box-shadow: var(--pdz-level3);
+
+  transform: translateY(-50%);
+
+  transition:
+    top 0.15s ease-out,
+    left 0.15s ease-out;
+
+  button {
+    width: 100%;
+    background-color: var(--mat-sys-primary);
+    color: var(--mat-sys-on-primary);
+    border-radius: 1rem;
+    box-shadow: --pdz-level2;
   }
 }

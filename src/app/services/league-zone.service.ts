@@ -1,10 +1,11 @@
 import { Injectable, inject } from '@angular/core';
 import { ApiService } from './api.service';
-import { of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { League } from '../league-zone/league.interface';
 import { getRandomPokemon } from '../data/namedex';
 import { TeamPokemon } from '../league-zone/league-teams/league-team-card/league-team-card.component';
 import { defenseData } from '../league-zone/league-ghost';
+import { LeagueTierGroup } from '../league-zone/league-sign-up/league-sign-up.component';
 
 const ROOTPATH = 'league';
 
@@ -13,7 +14,6 @@ const ROOTPATH = 'league';
 })
 export class LeagueZoneService {
   private apiService = inject(ApiService);
-
 
   getTeams() {
     return this.apiService.get(ROOTPATH, false);
@@ -413,4 +413,22 @@ export class LeagueZoneService {
     - Zygarde-10% & 50% may not have the ability Power Construct.`,
     },
   ];
+
+  signUp(signupData: object) {
+    return this.apiService.post(`battlezone/pdbl/signup`, true, signupData);
+  }
+
+  getTiers(): Observable<LeagueTierGroup[]> {
+    return this.apiService.get(`battlezone/pdbl/tiers`, false);
+  }
+
+  getDetails(): Observable<{
+    format: string;
+    ruleset: string;
+    draft: [Date, Date];
+    season: [Date, Date];
+    prize: number;
+  }> {
+    return this.apiService.get(`battlezone/pdbl`, false);
+  }
 }

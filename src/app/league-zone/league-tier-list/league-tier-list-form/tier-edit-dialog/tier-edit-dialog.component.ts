@@ -9,7 +9,7 @@ import {
 } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { LeagueTierGroup } from '../../../../services/battle-zone.service';
+import { LeagueTierGroup } from '../../../league-sign-up/league-sign-up.component';
 
 @Component({
   selector: 'pdz-tier-edit-dialog',
@@ -28,9 +28,8 @@ export class TierEditDialogComponent implements OnInit {
   dialogRef = inject<MatDialogRef<TierEditDialogComponent>>(MatDialogRef);
   data = inject<{
     tierGroup: LeagueTierGroup;
-}>(MAT_DIALOG_DATA);
+  }>(MAT_DIALOG_DATA);
   private fb = inject(FormBuilder);
-
 
   ngOnInit(): void {}
 

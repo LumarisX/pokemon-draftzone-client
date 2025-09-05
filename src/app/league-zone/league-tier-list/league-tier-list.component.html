@@ -20,10 +20,15 @@
                         drafted:
                           selectedDivision.value &&
                           pokemon.drafted?.includes(selectedDivision.value),
+                        selected: selectedPokemon === pokemon,
                       }"
+                      (click)="selectPokemon(pokemon, tier.name, $event)"
                     >
                       <div class="entry-sprite">
-                        <pdz-sprite [pid]="pokemon.id"></pdz-sprite>
+                        <pdz-sprite
+                          [pid]="pokemon.id"
+                          [tooltipPosition]="null"
+                        ></pdz-sprite>
                       </div>
                       <div class="entry-name">
                         {{ pokemon.name }}
@@ -50,4 +55,28 @@
   </div>
 } @else {
   <loading></loading>
+}
+
+@if (selectedPokemon) {
+  <div
+    class="selected-card"
+    [style.top]="cardPosition.top"
+    [style.left]="cardPosition.left"
+  >
+    {{ selectedPokemon.name }}
+    <pdz-sprite
+      [pokemon]="selectedPokemon"
+      [tooltipPosition]="null"
+    ></pdz-sprite>
+    <div class="type-container">
+      @for (type of selectedPokemon.types; track $index) {
+        <div class="type-label" [style.background-color]="typeColor(type)">
+          <div class="type-text">
+            {{ type }}
+          </div>
+        </div>
+      }
+    </div>
+    <button>Draft</button>
+  </div>
 }

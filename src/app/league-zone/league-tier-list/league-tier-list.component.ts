@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, effect, OnInit, signal, inject } from '@angular/core';
+import {
+  Component,
+  effect,
+  ElementRef,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -7,14 +14,15 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
+import { Type, TYPES } from '../../data';
 import { LoadingComponent } from '../../images/loading/loading.component';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
-import { TierPokemon } from '../../battle-zone/tier-list';
-import { BattleZoneService } from '../../services/battle-zone.service';
-import { Type, TYPES } from '../../data';
+import { LeagueZoneService } from '../../services/league-zone.service';
+import { typeColor } from '../../util/styling';
+import { TierPokemon } from './league-tier-old';
 
 @Component({
-  selector: 'app-league-tier-list',
+  selector: 'pdz-league-tier-list',
   imports: [
     CommonModule,
     MatIconModule,
@@ -32,7 +40,8 @@ import { Type, TYPES } from '../../data';
   styleUrl: './league-tier-list.component.scss',
 })
 export class LeagueTierListComponent implements OnInit {
-  private battlezoneService = inject(BattleZoneService);
+  private battlezoneService = inject(LeagueZoneService);
+  private elRef = inject(ElementRef);
 
   readonly SortOptions = [
     'Name',
@@ -163,5 +172,32 @@ export class LeagueTierListComponent implements OnInit {
       bans.push(...banned.abilities);
     if (banned.moves && banned.moves.length > 0) bans.push(...banned.moves);
     return 'Banned: ' + bans.join(', ');
+  }
+
+  cardPosition = { top: '0px', left: '0px' };
+  selectedPokemon: (TierPokemon & { tier: string }) | null = null;
+
+  typeColor = typeColor;
+
+  selectPokemon(pokemon: TierPokemon, tier: string, event: MouseEvent) {
+    if (this.selectedPokemon === pokemon) {
+      this.selectedPokemon = null;
+      return;
+    }
+    this.selectedPokemon = { ...pokemon, tier };
+
+    const clickedElement = event.currentTarget as HTMLElement;
+    const componentRect = this.elRef.nativeElement.getBoundingClientRect();
+    const clickedRect = clickedElement.getBoundingClientRect();
+
+    const top =
+      clickedRect.top - componentRect.top + clickedElement.offsetHeight / 2;
+    const left =
+      clickedRect.left - componentRect.left + clickedElement.offsetWidth;
+
+    this.cardPosition = {
+      top: `${top}px`,
+      left: `${left + 10}px`,
+    };
   }
 }

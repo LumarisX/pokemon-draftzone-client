@@ -21,7 +21,7 @@ import { ChatComponent } from '../../components/chat/chat.component';
   templateUrl: './league.component.html',
   styleUrl: './league.component.scss',
 })
-export class LeagueComponent implements OnInit {
+export class LeagueDashboardComponent implements OnInit {
   private leagueZoneService = inject(LeagueZoneService);
   private route = inject(ActivatedRoute);
 

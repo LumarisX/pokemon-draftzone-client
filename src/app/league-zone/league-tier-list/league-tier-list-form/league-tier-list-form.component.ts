@@ -5,31 +5,31 @@ import {
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
-import { Component, effect, OnInit, signal, inject } from '@angular/core';
+import { Component, effect, inject, OnInit, signal } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatRippleModule } from '@angular/material/core';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
-import {
-  BattleZoneService,
-  LeagueTier,
-  LeagueTierGroup,
-} from '../../../services/battle-zone.service';
-import { TierPokemon } from '../../../battle-zone/tier-list';
 import { Type, TYPES } from '../../../data';
 import { LoadingComponent } from '../../../images/loading/loading.component';
 import { SpriteComponent } from '../../../images/sprite/sprite.component';
-import { MatRippleModule } from '@angular/material/core';
+import { LeagueZoneService } from '../../../services/league-zone.service';
 import {
   PokemonEditDialogComponent,
   PokemonEditDialogData,
 } from './pokemon-edit-dialog/pokemon-edit-dialog.component';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { TierGroupEditDialogComponent } from './tier-group-edit-dialog/tier-group-edit-dialog.component';
 import { TierEditDialogComponent } from './tier-edit-dialog/tier-edit-dialog.component';
+import { TierGroupEditDialogComponent } from './tier-group-edit-dialog/tier-group-edit-dialog.component';
+import {
+  LeagueTier,
+  LeagueTierGroup,
+} from '../../league-sign-up/league-sign-up.component';
+import { TierPokemon } from '../league-tier-old';
 
 export type EditTierPokemon = TierPokemon & {
   orgTier?: CdkDragDrop<
@@ -62,7 +62,7 @@ export type EditTierPokemon = TierPokemon & {
   styleUrls: ['../tier-list.scss', './league-tier-list-form.component.scss'],
 })
 export class LeagueTierListFormComponent implements OnInit {
-  private battlezoneService = inject(BattleZoneService);
+  private battlezoneService = inject(LeagueZoneService);
   dialog = inject(MatDialog);
 
   readonly SortOptions = [

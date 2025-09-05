@@ -51,11 +51,11 @@
       </div>
     </div>
     <div class="tier-wrapper">
-      <app-league-tier-list></app-league-tier-list>
+      <pdz-league-tier-list></pdz-league-tier-list>
     </div>
   </div>
   <div class="draft-panel">
-    <div class="draft-picks-main draft-section">
+    <!-- <div class="draft-picks-main draft-section">
       <div class="draft-section-title">My Picks</div>
       <div class="draft-picks-container draft-section-body">
         <div class="draft-pick">
@@ -114,7 +114,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
     <button class="planner-link fancy-font">
       Planner <mat-icon>open_in_new</mat-icon>
     </button>
@@ -123,7 +123,7 @@
         <span>Deimos Deoxys </span><mat-icon>arrow_drop_down</mat-icon>
       </button>
       <ol class="my-draft-pokemons draft-section-body">
-        @for (pick of myDraft; track $index) {
+        @for (pick of myDraft.drafted; track $index) {
           <li class="my-draft-pokemon">
             <div class="my-pokemon-index">{{ $index + 1 }}</div>
             <div class="my-pokemon-sprite">
@@ -133,6 +133,49 @@
               {{ pick.pokemon.name }}
             </div>
             <div class="my-pokemon-tier fancy-font">{{ pick.cost }}</div>
+          </li>
+        }
+        @for (picks of myDraft.picks; track $index) {
+          <li class="my-draft-pokemon">
+            <div class="my-pokemon-index">
+              {{ $index + myDraft.drafted.length }}
+            </div>
+            <div class="my-draft-picks">
+              @for (pick of picks; track $index) {
+                <div
+                  class="my-draft-pick-container"
+                  [ngClass]="{ backup: $index > 0 }"
+                >
+                  @if ($index) {
+                    <button (click)="moveUp(picks, $index)">
+                      <mat-icon>arrow_upward_alt</mat-icon>
+                    </button>
+                  }
+                  <button
+                    class="my-draft-pick"
+                    [ngClass]="{ backup: $index > 0 }"
+                  >
+                    <div class="my-pokemon-sprite">
+                      <pdz-sprite [pokemon]="pick.pokemon" flipped></pdz-sprite>
+                    </div>
+                    <div class="pick-header">
+                      <div class="pick-text">
+                        {{ $index + 1 | numbersuffix }}
+                      </div>
+                      <div class="my-pokemon-name fancy-font">
+                        {{ pick.pokemon.name }}
+                      </div>
+                    </div>
+
+                    <div class="my-pokemon-tier fancy-font">
+                      {{ pick.cost }}
+                    </div>
+                  </button>
+                </div>
+              } @empty {
+                <button class="no-pick">Select Pick</button>
+              }
+            </div>
           </li>
         }
       </ol>

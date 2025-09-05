@@ -1,19 +1,12 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { LeagueBracketComponent } from './league-bracket/league-bracket.component';
+import { BZRulesComponent } from './league-rules-overview/league-rules-old/rules.component';
 import { LeagueDraftingComponent } from './league-drafting/league-drafting.component';
+import { LeagueLandingComponent } from './league-landing/landing.component';
 import { LeagueManagePath } from './league-manage/league-manage-routing.module';
 import { LeagueOverviewComponent } from './league-overview/league-overview.component';
-import { LeagueScheduleComponent } from './league-schedule/league-schedule.component';
-import { LeagueStandingsComponent } from './league-standings/league-standings.component';
-import { LeagueTeamComponent } from './league-team/league-team.component';
-import { LeagueTeamsComponent } from './league-teams/league-teams.component';
-import { LeagueTradesComponent } from './league-trades/league-trades.component';
-import { LeagueComponent } from './league/league.component';
-import { LeagueNewComponent } from './league-new/league-new.component';
-import { LeagueRulesOverviewComponent } from './league-rules-overview/league-rules-overview.component';
-import { LeagueAuctionComponent } from './league-auction/league-auction.component';
-import { leagueRoleGuard } from './league-role.guard';
+import { LeagueSignUpComponent } from './league-sign-up/league-sign-up.component';
+import { BZTierListComponent } from './league-tier-list/league-tier-old/tier-list.component';
 
 export const LeagueZonePath = 'leagues';
 const routes: Routes = [
@@ -28,52 +21,65 @@ const routes: Routes = [
         (m) => m.LeagueManageModule,
       ),
   },
+  // {
+  //   path: 'new',
+  //   component: LeagueNewComponent,
+  // },
   {
-    path: 'new',
-    component: LeagueNewComponent,
+    path: ':leagueId',
+    component: LeagueLandingComponent,
+  },
+  //   {
+  //   path: ':leagueId/dashboard',
+  //   component: LeagueDashboardComponent,
+  // },
+  // {
+  //   path: ':leagueId/standings',
+  //   component: LeagueStandingsComponent,
+  // },
+  // {
+  //   path: 'view/:leagueId/schedule',
+  //   component: LeagueScheduleComponent,
+  // },
+  {
+    path: ':leagueId/rules',
+    component: BZRulesComponent,
   },
   {
-    path: 'view/:leagueId',
-    component: LeagueComponent,
+    path: ':leagueId/tier-list',
+    component: BZTierListComponent,
   },
   {
-    path: 'view/:leagueId/standings',
-    component: LeagueStandingsComponent,
-  },
-  {
-    path: 'view/:leagueId/schedule',
-    component: LeagueScheduleComponent,
-  },
-  {
-    path: 'view/:leagueId/drafting',
+    path: ':leagueId/drafting',
     component: LeagueDraftingComponent,
   },
   {
-    path: 'view/:leagueId/bracket',
-    component: LeagueBracketComponent,
+    path: ':leagueId/sign-up',
+    component: LeagueSignUpComponent,
   },
-  {
-    path: 'view/:leagueId/trades',
-    component: LeagueTradesComponent,
-  },
-  {
-    path: 'view/:leagueId/rules',
-    component: LeagueRulesOverviewComponent,
-  },
-  {
-    path: 'view/:leagueId/teams',
-    component: LeagueTeamsComponent,
-  },
-  {
-    path: 'view/:leagueId/team/:teamid',
-    component: LeagueTeamComponent,
-  },
-  {
-    path: 'view/:leagueId/auction',
-    component: LeagueAuctionComponent,
-    canActivate: [leagueRoleGuard],
-    data: { role: 'coach' },
-  },
+  // {
+  //   path: 'view/:leagueId/bracket',
+  //   component: LeagueBracketComponent,
+  // },
+  // {
+  //   path: 'view/:leagueId/trades',
+  //   component: LeagueTradesComponent,
+  // },
+
+  // {
+  //   path: 'view/:leagueId/teams',
+  //   component: LeagueTeamsComponent,
+  // },
+  // {
+  //   path: 'view/:leagueId/team/:teamid',
+  //   component: LeagueTeamComponent,
+  // },
+  // {
+  //   path: 'view/:leagueId/auction',
+  //   component: LeagueAuctionComponent,
+  //   canActivate: [leagueRoleGuard],
+  //   data: { role: 'coach' },
+  // },
 ];
 @NgModule({
   imports: [RouterModule.forChild(routes)],

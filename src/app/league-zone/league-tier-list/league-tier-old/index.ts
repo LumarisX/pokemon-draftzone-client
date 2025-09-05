@@ -1,4 +1,4 @@
-import { StatsTable, Type } from '../../data';
+import { StatsTable, Type } from '../../../data';
 
 export type TierSubPokemon = {
   name: string;

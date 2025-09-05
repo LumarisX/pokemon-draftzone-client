@@ -1,17 +1,17 @@
 import { CommonModule } from '@angular/common';
-import { Component, effect, OnInit, signal, inject } from '@angular/core';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Component, OnInit, inject, signal, effect } from '@angular/core';
+import { FormsModule, ReactiveFormsModule, FormControl } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatIconModule } from '@angular/material/icon';
 import { MatRadioModule } from '@angular/material/radio';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { TierPokemon } from '.';
-import { BattleZoneService } from '../../services/battle-zone.service';
-import { Type, TYPES } from '../../data';
-import { LoadingComponent } from '../../images/loading/loading.component';
-import { SpriteComponent } from '../../images/sprite/sprite.component';
+import { Type, TYPES } from '../../../data';
+import { LoadingComponent } from '../../../images/loading/loading.component';
+import { SpriteComponent } from '../../../images/sprite/sprite.component';
+import { LeagueZoneService } from '../../../services/league-zone.service';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'bz-tier-list',
@@ -33,7 +33,7 @@ import { SpriteComponent } from '../../images/sprite/sprite.component';
   styleUrl: './tier-list.component.scss',
 })
 export class BZTierListComponent implements OnInit {
-  private battlezoneService = inject(BattleZoneService);
+  private battlezoneService = inject(LeagueZoneService);
 
   readonly SortOptions = [
     'Name',

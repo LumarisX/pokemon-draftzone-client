@@ -4,7 +4,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--mat-sys-surface);
+  background-color: var(--mat-sys-primary-container);
+  color: var(--mat-sys-on-primary-container);
   font-size: x-large;
   width: 12rem;
   color: var(--mat-sys-primary);
@@ -12,7 +13,11 @@
   border-radius: 2rem;
   box-shadow: var(--pdz-level2);
   &:hover {
-    background-color: var(--mat-sys-surface-variant);
+    background-color: var(--mat-sys-primary);
+    color: var(--mat-sys-on-primary);
+  }
+  &:active {
+    box-shadow: var(--pdz-level0);
   }
 
   @media (max-width: 768px) {

@@ -33,7 +33,7 @@ export class LeagueSidebarComponent {
   myTeamExpanded: boolean = false;
 
   // League Logo - replace with your actual logo path
-  leagueLogoUrl: string = '../../../assets/images/battle-zone/pdbl.png'; // Placeholder logo, light bg
+  leagueLogoUrl: string = '../../../assets/images/battle-zone/pdbls2.png'; // Placeholder logo, light bg
 
   toggleLeague(): void {
     this.leagueExpanded = !this.leagueExpanded;
