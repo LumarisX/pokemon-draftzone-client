@@ -23,7 +23,7 @@ interface RuleCategory {
 })
 export class BZRulesComponent {
   private leagueSettings = {
-    points: 70,
+    points: 65,
     draftCount: [10, 12],
     graceHours: 24,
     timerHours: 4,
@@ -31,7 +31,7 @@ export class BZRulesComponent {
     tradeTransactions: 7,
     extensionDays: 2,
     clauses: [
-      `Sleep Clause (Multiple pokemon cannot be knowingly put to sleep)`,
+      `Sleep Clause (Multiple Pokémon cannot be knowingly put to sleep)`,
       `Evasion Clause`,
       `OHKO Clause`,
       `Endless Battle Clause`,
@@ -49,7 +49,7 @@ export class BZRulesComponent {
       items: [
         `Bright Powder`,
         `Lax Incense`,
-        'King`s Rock',
+        `King's Rock`,
         `Focus Band`,
         `Razor Fang`,
         `Quick Claw`,
@@ -71,7 +71,7 @@ export class BZRulesComponent {
       complex: [
         {
           text: `The following complex bans are in effect:`,
-          list: [`Zygarde-10% & 50% may not have the ability Power Construct.`],
+          list: [`Zygarde-10% may not have the ability Power Construct.`],
         },
       ],
     },
@@ -82,30 +82,30 @@ export class BZRulesComponent {
       title: `Draft`,
       description: [
         `The draft is randomised and in a snake format (1-16, 16-1 etc.)`,
-        `Each coach must draft between ${this.leagueSettings.draftCount[0]} and ${this.leagueSettings.draftCount[this.leagueSettings.draftCount.length - 1]} Pokemon with ${this.leagueSettings.points} to spend.`,
+        `Each coach must draft between ${this.leagueSettings.draftCount[0]} and ${this.leagueSettings.draftCount[this.leagueSettings.draftCount.length - 1]} Pokémon with ${this.leagueSettings.points} to spend.`,
         `A coach does not need to spend their full budget and can end their draft after ${this.leagueSettings.draftCount[0]} picks`,
         `Tera Captains will be decided after the ${this.leagueSettings.graceHours} hour grace period following the draft.`,
-        `Drafting will begin on TBD with a ${this.leagueSettings.timerHours} hour timer per pick between 8AM EST and 11PM EST. Timer Is halted between those hours, though picks can still come in.`,
+        `Drafting will begin on TBD with a ${this.leagueSettings.timerHours} hour timer per pick between 8AM EST and 11PM EST. The timer is halted between those hours, though picks can still come in.`,
         `You may leave picks with a tournament organizer or someone who is behind you in the draft order.`,
-        'If a pick is skipped, the coach can make it later, but the timer for future picks will be halved each time a skip occurs. Leave picks with people so this doesn`t happen to you.',
+        `If a pick is skipped, the coach can make it later, but the timer for future picks will be halved each time a skip occurs. Leave picks with people so this doesn't happen to you.`,
       ],
     },
     {
       title: `Terastalisation`,
       description: [
         `Teams will have ${this.leagueSettings.teraShards} Tera Shards to spend on Tera Captains.`,
-        `Captaina a Pokemon costs the same amount of Tera Shards as the price you drafted it for in points.`,
+        `Captaining a Pokémon costs the same amount of Tera Shards as the price you drafted it for in points.`,
         {
           text: `The amount of tera types a Tera Captain will have access to depends on its draft point tier:`,
           list: [
-            `12-10 Point Pokemon → 0 Tera Types`,
-            `9-7 Point Pokemon → 1 Tera Types`,
-            `6-4 Point Pokemon → 2 Tera Types`,
-            `3-1 Point Pokemon → 3 Tera Types`,
+            `12-10 Point Pokémon → 0 Tera Types`,
+            `9-7 Point Pokémon → 1 Tera Types`,
+            `6-4 Point Pokémon → 2 Tera Types`,
+            `3-1 Point Pokémon → 3 Tera Types`,
           ],
         },
         {
-          text: `The following Pokemon Are Not allowed to Terastalize:`,
+          text: `The following Pokémon are not allowed to Terastalize:`,
           list: this.leagueSettings.banned.tera,
         },
       ],
@@ -113,15 +113,15 @@ export class BZRulesComponent {
     {
       title: `Z-Moves`,
       description: [
-        'Z Moves are Not Allowed. Necrozma Ultra go home, you`re drunk.',
+        `Z Moves are Not Allowed. Necrozma Ultra go home, you're drunk.`,
       ],
     },
     {
       title: `Megas`,
       description: [
-        `Megas and regular form pokemon are drafted seperately with coresponding point values.`,
-        'If you draft a mega form, its held item MUST be it`s mega stone. You can choose when/if you would like to mega it in battle, but your opponent will always know your item is the mega stone.',
-        `If you draft the regular pokemon - You cannot mega it it battle.`,
+        `Megas and regular form Pokémon are drafted separately with corresponding point values.`,
+        'If you draft a mega form, its held item MUST be its mega stone. You can choose when/if you would like to mega it in battle, but your opponent will always know your item is the mega stone.',
+        `If you draft the regular Pokémon - You cannot mega it in battle.`,
       ],
     },
     {
@@ -129,10 +129,10 @@ export class BZRulesComponent {
       description: [
         `Teams will get ${this.leagueSettings.tradeTransactions} Transaction Points up until the end of Week 7. Free Agency, Tera Switch, and Coach to Coach trades all count towards this total.`,
         `Coaches will be able to make trades before the draft ends. These trades do not count as transactions.`,
-        `A point is used for every pokemon you recieve from the trade.`,
+        `A point is used for every Pokémon you recieve from the trade.`,
         `There will be a ${this.leagueSettings.graceHours} hour grace period where each team will have unlimited Free Agency. Coaches can also trade with other coaches during this period. After the grace period has ended, coaches will declair their Tera Captains and corresponding types.`,
-        `If you drop a Tera Captain and want to Captain the Pokemon you pick up, It will only count as 1 trade, not 2.`,
-        `Changing Tera types on a pokemon may only be done once per season, using one of the ${this.leagueSettings.tradeTransactions} transactions.`,
+        `If you drop a Tera Captain and want to captain the Pokémon you pick up, it will only count as 1 trade, not 2.`,
+        `Changing Tera types on a Pokémon may only be done once per season, using one of the ${this.leagueSettings.tradeTransactions} transactions.`,
         `Transactions take effect the following week.`,
       ],
     },
@@ -153,13 +153,13 @@ export class BZRulesComponent {
         'Serious sudden reasons for not playing can warrant further extensions or down the road rescheduling. If no date or time of battle is known to TO`s by the end of the regular week, or the battle was not played at the time noted during the extension rule 4 will be referenced for the battle outcome.',
         `Forfeits will count as a 2-0 win/loss if done prior to the match beginning. Forfeiting during a match is strictly prohibited as it is poor sportsmanship.`,
         `If a coach's team is incorrect due to an organizational error at the time of the match, the opponent may decide to continue or get an automatic extension to replay the match with the fixed error.`,
-        `Battles will be played at Level 100, with all Pokemon being Level 100.`,
+        `Battles will be played at Level 100, with all Pokémon being Level 100.`,
         `Ghosting or coaching during battles is prohibited with a failure to comply being met with instant expulsion from the league`,
-        `You must bring 6 Pokemon to a battle.`,
+        `You must bring 6 Pokémon to a battle.`,
         `Battles will be played on showdown in the Gen9 NatDex Draft format. Check for team legality prior to playing!`,
         'Sharing a player`s team or build with their opponent is prohibited and will result in penalties, including voided games and bans.',
         `You can schedule and play your next weeks battle ahead of time, but do not talk about it or post results till that week please.`,
-        `If during a match, an illegal pokemon, move, tera type, or item is found to be used that does not adhere to "Gen 9 National Dex" rules or the draft board as defined by each players teams, the opposing coach can dictate if they would like the automatic 2-0 victory at that point, or if they would like to continue playing as normal with the error being dimissed and the outcome of the game playing out as normal.`,
+        `If during a match, an illegal Pokémon, move, tera type, or item is found to be used that does not adhere to "Gen 9 National Dex" rules or the draft board as defined by each players teams, the opposing coach can dictate if they would like the automatic 2-0 victory at that point, or if they would like to continue playing as normal with the error being dimissed and the outcome of the game playing out as normal.`,
       ],
     },
     {
@@ -190,10 +190,10 @@ export class BZRulesComponent {
           text: `The following moves are banned on all Pokémon:`,
           list: this.leagueSettings.banned.moves,
         },
-        `Any team containing illegal move, item, or Pokemon will be considered a loss for that coach unless the tournament organizers otherwise, like in the instance it has no affect on the battle.`,
+        `Any team containing illegal move, item, or Pokémon will be considered a loss for that coach unless the tournament organizers otherwise, like in the instance it has no affect on the battle.`,
         `Battles that go to timer will be decided by who went to timer, the losing coach will have their score lowered to 0 (eg. if the game ends 2-2 then the result will be a 2-0).`,
         `Baton Pass cannot be used to pass stats or Substitute unless granted by the opponent.`,
-        `Species clause is active, so you may not draft multiple Pokemon that share a Pokedex number or a species.`,
+        `Species clause is active, so you may not draft multiple Pokémon that share a Pokedex number or a species.`,
       ],
     },
     {
