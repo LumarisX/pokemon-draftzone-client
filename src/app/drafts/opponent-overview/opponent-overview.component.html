@@ -2,7 +2,7 @@
   <div class="draft-header">
     <button mat-flat-button [routerLink]="['/', draftPath]">Back</button>
 
-    @if (draft) {
+    @if (draft | async; as draft) {
       <div class="draft-info-container">
         <h2>
           {{ draft.leagueName }}

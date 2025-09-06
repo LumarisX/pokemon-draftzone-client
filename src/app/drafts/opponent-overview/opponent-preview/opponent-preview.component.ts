@@ -134,7 +134,7 @@ export class OpponentTeamPreviewComponent implements OnInit {
   }
 
   newOpponent() {
-    this.router.navigate(['/', DraftOverviewPath, this.teamId, 'new'], {
+    this.router.navigate(['/', DraftOverviewPath, this.teamId, 'form'], {
       queryParams: { stage: `Week ${(this.matchups?.length ?? 0) + 1}` },
     });
   }

@@ -9,13 +9,13 @@
         Cancel
       </button>
       <div class="flex justify-center">
-        <h1 class="text-3xl font-bold text-center font-nasa">Edit Opponent</h1>
+        <h1 class="text-3xl font-bold text-center font-nasa">{{ title }}</h1>
       </div>
     </div>
     @if (oppParams) {
       <opponent-form-core
         [params]="oppParams"
-        (formSubmitted)="editMatchup($event)"
+        (formSubmitted)="saveOpponent($event)"
       ></opponent-form-core>
     } @else {
       <loading></loading>

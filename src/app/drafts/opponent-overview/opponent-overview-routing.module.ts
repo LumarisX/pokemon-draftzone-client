@@ -3,11 +3,10 @@ import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from '@auth0/auth0-angular';
 import { OpponentOverviewComponent } from './opponent-overview.component';
 import { OpponentTeamPreviewComponent } from './opponent-preview/opponent-preview.component';
-import { OpponentFormNewComponent } from './opponent-form/opponent-form-new/opponent-form-new.component';
-import { OpponentFormEditComponent } from './opponent-form/opponent-form-edit/opponent-form-edit.component';
 import { OpponentScoreComponent } from './opponent-score/opponent-score.component';
 import { OpponentSchedule } from './opponent-schedule/opponent-schedule.component';
 import { DraftOverviewPath } from '../draft-overview/draft-overview-routing.module';
+import { OpponentFormComponent } from './opponent-form/opponent-form.component';
 
 const routes: Routes = [
   {
@@ -20,13 +19,8 @@ const routes: Routes = [
         canActivate: [AuthGuard],
       },
       {
-        path: 'new',
-        component: OpponentFormNewComponent,
-        canActivate: [AuthGuard],
-      },
-      {
-        path: 'edit',
-        component: OpponentFormEditComponent,
+        path: 'form',
+        component: OpponentFormComponent,
         canActivate: [AuthGuard],
       },
       {
