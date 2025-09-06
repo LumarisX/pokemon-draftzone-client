@@ -33,18 +33,49 @@
     <a href="https://discord.gg/sQUEBW4UVx" target="_blank" class="text-blue-500">Discord</a>.
   </div>
 </div>
-<!-- <loading *ngIf="analyzed && !replayData"></pdz-loading> -->
-@if (replayData) {
-  <div class="flex justify-center w-full p-2">
-    <div
-      class="flex flex-col items-center p-2 border-2 max-w-full w-fit bg-menu-100 rounded-xl border-menu-400"
-    >
-      <div class="flex space-x-4 p-1 text-lg">
-        <div>
-          <label class="font-semibold text-symbolColor-sub" for="format">
-            Format:
-          </label>
-          <span id="format">{{ replayData.gametype }}</span>
+<!-- <loading *ngIf="analyzed && !replayData"></loading> -->
+<mat-card *ngIf="replayData" class="flex justify-center w-full p-2">
+  <mat-card-title class="flex space-x-4 p-1 text-lg columns-4">
+      <div class="flex space-x-1">
+        <label class="font-semibold text-symbolColor-sub" for="format">
+          Format:
+        </label>
+        <span id="format">{{ replayData.gametype }}</span>
+      </div>
+      <div class="flex space-x-1">
+        <label class="font-semibold text-symbolColor-sub" for="gen">
+          Generation:
+        </label>
+        <span id="gen"> {{ replayData.genNum }} </span>
+      </div>
+      <div class="flex space-x-1">
+        <label class="font-semibold text-symbolColor-sub" for="turns">
+          Turns:
+        </label>
+        <span id="turns"> {{ replayData.turns }} </span>
+      </div>
+      <div class="flex space-x-1">
+        <label class="font-semibold text-symbolColor-sub" for="gameTime">
+          Game Time:
+        </label>
+        <span id="gameTime"
+          >{{ toMinutes(replayData.gameTime) }} minutes
+          {{ remainingSeconds(replayData.gameTime) }} seconds</span
+        >
+      </div>
+    </mat-card-title>
+  <mat-card-content
+    class="flex flex-col items-center p-2 border-2 max-w-full w-fit bg-menu-100 rounded-xl border-menu-400"
+  >
+    
+    <div class="space-y-4 w-fit max-w-full">
+      <div
+        *ngFor="let player of replayData.stats; let playerNum = index"
+        [ngClass]="playerClass(playerNum + 1)"
+        class="p-1 border rounded border-menu-400"
+      >
+        <div class="flex space-x-2 items-end flex-wrap pb-2">
+          <div class="text-xl font-bold">{{ player.username }}</div>
         </div>
         <div>
           <label class="font-semibold text-symbolColor-sub" for="gen">
@@ -212,10 +243,21 @@
                   }
                 </div>
                 <div *ngIf="mon.moveset && mon.moveset.length > 0">
-                  <span class="font-semibold"> Moveset: </span>
-                  <ul class="list-disc pl-4">
+                  <!-- <ul class="list-disc pl-4">
                     <li *ngFor="let move of mon.moveset">{{ move }}</li>
-                  </ul>
+                  </ul> -->
+                  <mat-accordion>  
+                    <mat-expansion-panel>
+                      <mat-expansion-panel-header>
+                        <mat-panel-title>
+                          Moveset:
+                        </mat-panel-title>
+                      </mat-expansion-panel-header>
+                      <div *ngFor="let move of mon.moveset">
+                        • {{ move }}
+                      </div>
+                    </mat-expansion-panel>
+                  </mat-accordion>
                 </div>
               </div>
             </div>
@@ -243,8 +285,8 @@
         </div>
       </div>
     </div>
-  </div>
-</div>
+  </mat-card-content>
+</mat-card>
 
 <div *ngIf="replayData" class="flex justify-center w-full p-2">
   <div
