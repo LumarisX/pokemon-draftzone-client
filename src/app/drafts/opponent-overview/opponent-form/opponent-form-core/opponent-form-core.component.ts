@@ -1,6 +1,13 @@
 import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  inject,
+} from '@angular/core';
 import {
   AbstractControl,
   FormArray,
@@ -15,15 +22,16 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatStepperModule } from '@angular/material/stepper';
-import { RouterModule } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
+import { ActivatedRoute, RouterModule } from '@angular/router';
+import { BehaviorSubject, Observable, switchMap } from 'rxjs';
 import { DataService } from '../../../../services/data.service';
-import { Pokemon } from '../../../../interfaces/draft';
+import { Draft, Pokemon } from '../../../../interfaces/draft';
 import { Opponent } from '../../../../interfaces/opponent';
 import {
   PokemonFormGroup,
   TeamFormComponent,
 } from '../../../../util/forms/team-form/team-form.component';
+import { DraftService } from '../../../../services/draft.service';
 
 @Component({
   selector: 'opponent-form-core',
@@ -57,29 +65,32 @@ import {
 })
 export class OpponentFormCoreComponent implements OnInit {
   private dataService = inject(DataService);
+  private route = inject(ActivatedRoute);
+  private draftService = inject(DraftService);
 
   pokemonList$ = new BehaviorSubject<Pokemon[]>([]);
   opponentForm!: OpponentForm;
 
+  ruleset: string | null = null;
+
   @Input()
   params: Partial<Opponent> = {};
-  @Input()
-  ruleset: string | null = null;
   @Output() formSubmitted = new EventEmitter<OpponentFormData>();
 
-  ngOnInit(): void {
-    this.opponentForm = new OpponentForm(this.params, this.pokemonList$);
-    this.loadPokemonList(this.ruleset);
-    this.opponentForm.setValidators(this.validateDraftForm);
-  }
+  draft!: Observable<Draft>;
 
-  private loadPokemonList(ruleset: string | null): void {
-    this.dataService.getPokemonList(ruleset).subscribe((list) => {
-      this.pokemonList$.next(list);
-      this.opponentForm.controls.team.controls.forEach((group) => {
-        group.controls.pokemon.updateValueAndValidity();
-      });
+  ngOnInit(): void {
+    this.draft = this.route.parent!.paramMap.pipe(
+      switchMap((params) => {
+        const teamId = params.get('teamid')!;
+        return this.draftService.getDraft(teamId);
+      }),
+    );
+    this.opponentForm = new OpponentForm(this.params, this.pokemonList$);
+    this.draft.subscribe((draft) => {
+      this.ruleset = draft.ruleset;
     });
+    this.opponentForm.setValidators(this.validateDraftForm);
   }
 
   validateDraftForm(control: AbstractControl) {
