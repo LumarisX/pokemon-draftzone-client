@@ -7,6 +7,7 @@ import { LeagueManagePath } from './league-manage/league-manage-routing.module';
 import { LeagueOverviewComponent } from './league-overview/league-overview.component';
 import { LeagueSignUpComponent } from './league-sign-up/league-sign-up.component';
 import { BZTierListComponent } from './league-tier-list/league-tier-old/tier-list.component';
+import { AuthGuard } from '@auth0/auth0-angular';
 
 export const LeagueZonePath = 'leagues';
 const routes: Routes = [
@@ -56,6 +57,7 @@ const routes: Routes = [
   {
     path: ':leagueId/sign-up',
     component: LeagueSignUpComponent,
+    canActivate: [AuthGuard],
   },
   // {
   //   path: 'view/:leagueId/bracket',
