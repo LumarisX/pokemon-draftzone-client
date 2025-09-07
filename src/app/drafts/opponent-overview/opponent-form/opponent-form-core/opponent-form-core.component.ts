@@ -89,6 +89,9 @@ export class OpponentFormCoreComponent implements OnInit {
     this.opponentForm = new OpponentForm(this.params, this.pokemonList$);
     this.draft.subscribe((draft) => {
       this.ruleset = draft.ruleset;
+      this.dataService.getPokemonList(draft.ruleset).subscribe((pokemon) => {
+        this.pokemonList$.next(pokemon);
+      });
     });
     this.opponentForm.setValidators(this.validateDraftForm);
   }
