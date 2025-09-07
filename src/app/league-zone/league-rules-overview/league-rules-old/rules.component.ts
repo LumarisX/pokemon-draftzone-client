@@ -62,7 +62,7 @@ export class BZRulesComponent {
         `Any illegal/unreleased items`,
       ],
       moves: [
-        `Hidden Powder`,
+        `Hidden Power`,
         `Last Respects`,
         `Shed Tail`,
         `Revival Blessing`,
