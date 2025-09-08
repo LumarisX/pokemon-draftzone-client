@@ -167,10 +167,11 @@ export class BZRulesComponent {
     {
       title: `League Table and Playoffs`,
       description: [
-        `Teams will play 8 teams through the regular season. Check the Schedule for who you play.`,
-        `Standings are determined in the following order: Game wins, Game differential, Head-to-head, Strength of schedule, Coin flip.`,
-        `Playoffs will consist of the top 8 coaches, with the highest seeds playing the lowest seeds first round.`,
-        `Scheduling During playoffs will follow the same 7 (+2) day week cycles for a total of 3 weeks.`,
+        // `Teams will play 8 teams through the regular season. Check the Schedule for who you play.`,
+        // `Standings are determined in the following order: Game wins, Game differential, Head-to-head, Strength of schedule, Coin flip.`,
+        // `Playoffs will consist of the top 8 coaches, with the highest seeds playing the lowest seeds first round.`,
+        // `Scheduling During playoffs will follow the same 7 (+2) day week cycles for a total of 3 weeks.`,
+        `This info is pending the player counts. An announcement will be made after sign ups are concluded and this section will be updated.`,
       ],
     },
     {
