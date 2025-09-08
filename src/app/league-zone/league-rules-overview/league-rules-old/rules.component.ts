@@ -28,6 +28,7 @@ export class BZRulesComponent {
     graceHours: 24,
     timerHours: 4,
     teraShards: 15,
+    maxTeraCaptains: 3,
     tradeTransactions: 7,
     extensionDays: 2,
     clauses: [
@@ -94,6 +95,7 @@ export class BZRulesComponent {
       title: `Terastalisation`,
       description: [
         `Teams will have ${this.leagueSettings.teraShards} Tera Shards to spend on Tera Captains.`,
+        `Teams can have no more than ${this.leagueSettings.maxTeraCaptains} Tera Captains.`,
         `Captaining a Pokémon costs the same amount of Tera Shards as the price you drafted it for in points.`,
         {
           text: `The amount of tera types a Tera Captain will have access to depends on its draft point tier:`,
