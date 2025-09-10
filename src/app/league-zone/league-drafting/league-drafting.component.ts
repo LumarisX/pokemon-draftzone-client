@@ -6,6 +6,7 @@ import { Pokemon } from '../../interfaces/draft';
 import { NumberSuffixPipe } from '../../util/pipes/number-suffix.pipe';
 import { LeagueTierListComponent } from '../league-tier-list/league-tier-list.component';
 import { LeagueDraftingService } from '../../services/league-drafting.service';
+import { TierPokemon } from '../league-tier-list/league-tier-old';
 
 @Component({
   selector: 'pdz-league-drafting',
@@ -47,5 +48,12 @@ export class LeagueDraftingComponent implements OnInit {
     const temp = picks[index];
     picks[index] = picks[index - 1];
     picks[index - 1] = temp;
+  }
+
+  draftPokemon(pokemon: TierPokemon & { tier: string }) {
+    this.myDraft.picks[0].push({
+      pokemon: { name: pokemon.name, id: pokemon.id },
+      cost: pokemon.tier,
+    });
   }
 }

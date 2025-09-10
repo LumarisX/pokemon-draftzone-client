@@ -172,7 +172,7 @@ export class LeagueDraftingService {
           teamName: `Deimos Deoxys`,
           pokemon: { id: 'pelipper', name: 'Pelipper' },
         },
-      ],
+      ].reverse(),
     ]);
   }
 }

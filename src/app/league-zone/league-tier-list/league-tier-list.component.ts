@@ -3,8 +3,10 @@ import {
   Component,
   effect,
   ElementRef,
+  EventEmitter,
   inject,
   OnInit,
+  Output,
   signal,
 } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -68,6 +70,9 @@ export class LeagueTierListComponent implements OnInit {
       pokemon: TierPokemon[];
     }[];
   }[];
+
+  @Output()
+  draftPokemon = new EventEmitter<TierPokemon & { tier: string }>();
 
   updatedTime?: string;
   sortBy = signal<(typeof this.SortOptions)[number]>('BST');
@@ -199,5 +204,10 @@ export class LeagueTierListComponent implements OnInit {
       top: `${top}px`,
       left: `${left + 10}px`,
     };
+  }
+
+  emitDraftPokemon() {
+    if (this.selectedPokemon) this.draftPokemon.emit(this.selectedPokemon);
+    this.selectedPokemon = null;
   }
 }

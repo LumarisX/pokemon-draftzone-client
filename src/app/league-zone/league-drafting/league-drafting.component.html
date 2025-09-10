@@ -51,70 +51,12 @@
       </div>
     </div>
     <div class="tier-wrapper">
-      <pdz-league-tier-list></pdz-league-tier-list>
+      <pdz-league-tier-list
+        (draftPokemon)="draftPokemon($event)"
+      ></pdz-league-tier-list>
     </div>
   </div>
   <div class="draft-panel">
-    <!-- <div class="draft-picks-main draft-section">
-      <div class="draft-section-title">My Picks</div>
-      <div class="draft-picks-container draft-section-body">
-        <div class="draft-pick">
-          <div class="pick-label">1st Pick</div>
-          <div class="draft-pick-backups">
-            <div class="choice-container">
-              <div class="choice-label">Choice</div>
-              <div class="choice-pokemon">
-                <div class="choice-pokemon-name">Zapdos</div>
-                <div class="choice-pokemon-sprite">
-                  <pdz-sprite
-                    [pokemon]="{ id: 'zapdos', name: 'Zapdos' }"
-                  ></pdz-sprite>
-                </div>
-              </div>
-            </div>
-            <div class="choice-container alternate">
-              <div class="choice-label">Backup</div>
-              <button class="choice-select">
-                Select<mat-icon>arrow_selector_tool</mat-icon>
-              </button>
-            </div>
-          </div>
-        </div>
-        <div class="draft-pick">
-          <div class="pick-label">2nd Pick</div>
-          <div class="draft-pick-backups">
-            <div class="choice-container">
-              <div class="choice-label">Choice</div>
-              <div class="choice-pokemon">
-                <div class="choice-pokemon-name">Swampert-Mega</div>
-                <div class="choice-pokemon-sprite">
-                  <pdz-sprite
-                    [pokemon]="{ id: 'swampertmega', name: 'Swampert-Mega' }"
-                  ></pdz-sprite>
-                </div>
-              </div>
-            </div>
-            <div class="choice-container alternate">
-              <div class="choice-label">Backup</div>
-              <div class="choice-pokemon">
-                <div class="choice-pokemon-name">Seismitoad</div>
-                <div class="choice-pokemon-sprite">
-                  <pdz-sprite
-                    [pokemon]="{ id: 'seismitoad', name: 'Seismitoad' }"
-                  ></pdz-sprite>
-                </div>
-              </div>
-            </div>
-            <div class="choice-container alternate">
-              <div class="choice-label">Backup</div>
-              <button class="choice-select">
-                Select<mat-icon>arrow_selector_tool</mat-icon>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div> -->
     <button class="planner-link fancy-font">
       Planner <mat-icon>open_in_new</mat-icon>
     </button>
@@ -138,7 +80,7 @@
         @for (picks of myDraft.picks; track $index) {
           <li class="my-draft-pokemon">
             <div class="my-pokemon-index">
-              {{ $index + myDraft.drafted.length }}
+              {{ $index + myDraft.drafted.length + 1 }}
             </div>
             <div class="my-draft-picks">
               @for (pick of picks; track $index) {
@@ -160,7 +102,7 @@
                     </div>
                     <div class="pick-header">
                       <div class="pick-text">
-                        {{ $index + 1 | numbersuffix }}
+                        {{ $index + 1 | numbersuffix }} Choice
                       </div>
                       <div class="my-pokemon-name fancy-font">
                         {{ pick.pokemon.name }}
