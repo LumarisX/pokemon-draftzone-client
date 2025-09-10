@@ -8,6 +8,7 @@ import { LeagueOverviewComponent } from './league-overview/league-overview.compo
 import { LeagueSignUpComponent } from './league-sign-up/league-sign-up.component';
 import { BZTierListComponent } from './league-tier-list/league-tier-old/tier-list.component';
 import { AuthGuard } from '@auth0/auth0-angular';
+import { leagueRoleGuard } from './league-role.guard';
 
 export const LeagueZonePath = 'leagues';
 const routes: Routes = [
@@ -16,11 +17,13 @@ const routes: Routes = [
     component: LeagueOverviewComponent,
   },
   {
-    path: LeagueManagePath,
+    path: `:leagueId/${LeagueManagePath}`,
     loadChildren: () =>
       import('./league-manage/league-manage.module').then(
         (m) => m.LeagueManageModule,
       ),
+    canActivate: [leagueRoleGuard],
+    data: { role: 'organizer' },
   },
   // {
   //   path: 'new',

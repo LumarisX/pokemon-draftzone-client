@@ -9,6 +9,15 @@ import { LeagueTierGroup } from '../league-zone/league-sign-up/league-sign-up.co
 
 const ROOTPATH = 'league';
 
+export type LeagueSignUp = {
+  name: string;
+  timezone: string;
+  experience: string;
+  dropped?: string;
+  confirm: boolean;
+  sub: string;
+};
+
 @Injectable({
   providedIn: 'root',
 })
@@ -415,7 +424,7 @@ export class LeagueZoneService {
   ];
 
   signUp(signupData: object) {
-    return this.apiService.post(`battlezone/pdbl/signup`, true, signupData);
+    return this.apiService.post(`leagues/pdbls2/signup`, true, signupData);
   }
 
   getTiers(): Observable<LeagueTierGroup[]> {
@@ -430,5 +439,9 @@ export class LeagueZoneService {
     prize: number;
   }> {
     return this.apiService.get(`battlezone/pdbl`, false);
+  }
+
+  getSignUps(leagueId: string): Observable<LeagueSignUp[]> {
+    return this.apiService.get(`leagues/${leagueId}/signup`, true);
   }
 }

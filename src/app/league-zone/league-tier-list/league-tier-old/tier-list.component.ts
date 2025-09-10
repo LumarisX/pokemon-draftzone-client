@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject, signal, effect } from '@angular/core';
+import { Component, OnInit, inject, signal, effect, OnDestroy } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, FormControl } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -9,9 +9,11 @@ import { TierPokemon } from '.';
 import { Type, TYPES } from '../../../data';
 import { LoadingComponent } from '../../../images/loading/loading.component';
 import { SpriteComponent } from '../../../images/sprite/sprite.component';
-import { LeagueZoneService } from '../../../services/league-zone.service';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { WebSocketService } from '../../../services/ws.service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'bz-tier-list',
@@ -32,8 +34,9 @@ import { MatTooltipModule } from '@angular/material/tooltip';
   ],
   styleUrl: './tier-list.component.scss',
 })
-export class BZTierListComponent implements OnInit {
-  private battlezoneService = inject(LeagueZoneService);
+export class BZTierListComponent implements OnInit, OnDestroy {
+  private wsService = inject(WebSocketService);
+  private destroy$ = new Subject<void>();
 
   readonly SortOptions = [
     'Name',
@@ -89,17 +92,31 @@ export class BZTierListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.refreshTiers();
+    this.wsService.connect('battlezone')
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => { // Once connected, proceed with sending messages and listening for updates
+        this.wsService.sendMessage('getTiers')
+          .pipe(takeUntil(this.destroy$))
+          .subscribe((response) => {
+            this.updatedTime = new Date(Date.now()).toLocaleTimeString();
+            this.tierGroups = response;
+          });
+
+        this.wsService.on<any>('tiersUpdated')
+          .pipe(takeUntil(this.destroy$))
+          .subscribe((response) => {
+            this.updatedTime = new Date(Date.now()).toLocaleTimeString();
+            this.tierGroups = response;
+          });
+      });
   }
 
-  refreshTiers() {
-    this.tierGroups = undefined;
-    this.sortBy.set('BST');
-    this.battlezoneService.getTiers().subscribe((response) => {
-      this.updatedTime = new Date(Date.now()).toLocaleTimeString();
-      this.tierGroups = response;
-    });
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
+
+  
 
   sortTiers(value: (typeof this.SortOptions)[number]) {
     const sortMap: Record<

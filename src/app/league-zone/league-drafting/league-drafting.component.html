@@ -83,7 +83,7 @@
               {{ $index + myDraft.drafted.length + 1 }}
             </div>
             <div class="my-draft-picks">
-              @for (pick of picks; track $index) {
+              @for (pick of picks; track pick.pokemon.id) {
                 <div
                   class="my-draft-pick-container"
                   [ngClass]="{ backup: $index > 0 }"

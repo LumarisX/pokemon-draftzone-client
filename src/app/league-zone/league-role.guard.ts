@@ -7,6 +7,7 @@ import {
 } from '@angular/router';
 import { map, Observable, take } from 'rxjs';
 import { AuthService, LeagueRole } from '../services/auth0.service';
+import { ApiService } from '../services/api.service';
 
 /**
  * A Router Guard to check if the user has a specific role for a league before allowing access to a route.
@@ -20,9 +21,9 @@ export const leagueRoleGuard: CanActivateFn = (
   state: RouterStateSnapshot,
 ): Observable<boolean> => {
   const authService = inject(AuthService);
+  const apiService = inject(ApiService);
   const router = inject(Router);
 
-  console.log('HEY IM HERE');
   const requiredRole = route.data['role'] as LeagueRole;
   if (!requiredRole) {
     console.error(
@@ -46,10 +47,10 @@ export const leagueRoleGuard: CanActivateFn = (
     });
   }
 
-  return authService.getLeagueRoles().pipe(
+  return apiService.get<string[]>(`leagues/${leagueId}/roles`, true).pipe(
     take(1),
     map((roles) => {
-      if (roles[leagueId] === requiredRole) {
+      if (roles.includes(requiredRole)) {
         return true;
       }
       console.warn(

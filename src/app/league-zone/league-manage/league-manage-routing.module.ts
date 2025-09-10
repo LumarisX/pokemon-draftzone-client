@@ -3,23 +3,27 @@ import { RouterModule, Routes } from '@angular/router';
 import { LeagueTierListFormComponent } from '../league-tier-list/league-tier-list-form/league-tier-list-form.component';
 import { LeagueManageComponent } from './league-manage.component';
 import { LeagueSettingsComponent } from './league-settings/league-settings.component';
+import { LeagueManageSignupsComponent } from './league-manage-signups/league-manage-signups.component';
 
 export const LeagueManagePath = 'manage';
 
 const routes: Routes = [
-  
   {
-    path: ':leagueId',
+    path: '',
     component: LeagueManageComponent,
   },
   {
-    path: ':leagueId/tiers',
-    component: LeagueTierListFormComponent,
+    path: 'signups',
+    component: LeagueManageSignupsComponent,
   },
-  {
-    path: ':leagueId/settings',
-    component: LeagueSettingsComponent,
-  },
+  // {
+  //   path: 'tiers',
+  //   component: LeagueTierListFormComponent,
+  // },
+  // {
+  //   path: 'settings',
+  //   component: LeagueSettingsComponent,
+  // },
 ];
 
 @NgModule({

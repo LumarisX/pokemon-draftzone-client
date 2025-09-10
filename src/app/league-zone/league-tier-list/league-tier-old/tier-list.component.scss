@@ -25,8 +25,7 @@
   min-width: 4rem;
   font-weight: bold;
   border-color: inherit;
-
-  @apply font-nasa;
+  font-family: var(--pdz-font-fancy);
 }
 
 .tier-entry-container {
@@ -45,7 +44,7 @@
   font-size: 0.875rem;
   line-height: 1.25rem;
   position: relative;
-  @apply space-x-2;
+  gap: 0.5rem;
 }
 
 .restricted-icon {
@@ -90,7 +89,7 @@
   font-weight: bold;
   border-width: 0px 0px 2px 0px;
   border-color: var(--mat-sys-outline);
-  @apply font-nasa;
+  font-family: var(--pdz-font-fancy);
 }
 
 .backbutton {
