@@ -11,7 +11,7 @@ export class WebSocketService {
   private socket$?: Socket;
   private pendingRequests = new Map<number, Subject<any>>();
   private serverEvents$ = new Subject<{event: string, data: any}>();
-  private serverUrl = `ws://${environment.apiUrl}`;
+  private serverUrl = `${environment.tls ? 'wss' : 'ws'}://${environment.apiUrl}`;
   private idCounter = 0;
 
   constructor() {}
