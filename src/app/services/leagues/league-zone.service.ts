@@ -1,5 +1,7 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
+import { filter, map, mergeMap } from 'rxjs/operators';
 import { getRandomPokemon } from '../../data/namedex';
 import { defenseData } from '../../league-zone/league-ghost';
 import { TeamPokemon } from '../../league-zone/league-teams/league-team-card/league-team-card.component';
@@ -37,6 +39,29 @@ export type DraftTeam = {
 })
 export class LeagueZoneService {
   private apiService = inject(ApiService);
+  private router = inject(Router);
+
+  leagueId = signal<string | null>(null);
+
+  constructor() {
+    this.router.events
+      .pipe(
+        filter((event) => event instanceof NavigationEnd),
+        map(() => {
+          let route = this.router.routerState.root;
+          while (route.firstChild) {
+            route = route.firstChild;
+          }
+          return route;
+        }),
+        filter((route) => route.outlet === 'primary'),
+        mergeMap((route) => route.paramMap),
+      )
+      .subscribe((paramMap) => {
+        const leagueId = paramMap.get('leagueId');
+        this.leagueId.set(leagueId);
+      });
+  }
 
   getRules(leagueId: string): Observable<RuleCategory[]> {
     return this.apiService.get<RuleCategory[]>(

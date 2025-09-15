@@ -7,9 +7,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
-import { LoadingComponent } from '../../../images/loading/loading.component';
-import { SpriteComponent } from '../../../images/sprite/sprite.component';
 import { LeagueTierListService } from '../../../services/leagues/league-tier-list.service';
+import { TierListCoreComponent } from '../tier-list-core/tier-list-core.component';
 
 @Component({
   selector: 'bz-tier-list',
@@ -25,8 +24,7 @@ import { LeagueTierListService } from '../../../services/leagues/league-tier-lis
     MatCheckboxModule,
     MatTooltipModule,
     ReactiveFormsModule,
-    SpriteComponent,
-    LoadingComponent,
+    TierListCoreComponent,
   ],
   styleUrl: './tier-list.component.scss',
 })

@@ -1,0 +1,178 @@
+@use "@angular/material" as mat;
+
+.tier-group {
+  &:not(:first-child) {
+    border-width: 0px 0px 0px 3px;
+    border-left-color: var(--mat-sys-outline);
+  }
+
+  display: flex;
+  flex-direction: column;
+}
+
+.tier {
+  &:not(:first-child) {
+    border-width: 0px 0px 0px 2px;
+    border-color: var(--mat-sys-outline);
+  }
+}
+
+.tier-group-label {
+  background-color: var(--mat-sys-primary);
+  color: var(--mat-sys-on-primary);
+  text-align: center;
+  height: 24px;
+  min-width: 4rem;
+  font-weight: bold;
+  border-color: inherit;
+  font-family:
+    Nasalization RG,
+    sans-serif;
+}
+
+.tier-entry-container {
+  display: flex;
+  height: 100%;
+}
+
+.tier-entry {
+  width: 8rem;
+  display: flex;
+  align-items: center;
+  user-select: none;
+  flex-grow: 1;
+  padding: 0.25rem;
+  border-width: 0px 0px 1px 0px;
+  border-color: var(--mat-sys-outline-variant);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  position: relative;
+  column-gap: 0.25rem;
+}
+
+.restricted-icon {
+  right: 0px;
+  bottom: 0px;
+  color: var(--mat-sys-error);
+  transform: scale(0.75);
+  position: absolute;
+}
+
+.tier-container {
+  border-width: 2px;
+  border-color: var(--mat-sys-outline);
+  max-width: 100%;
+  overflow: hidden;
+  max-height: 100%;
+  overflow: auto;
+  border-radius: 0.5rem;
+  width: fit-content;
+  justify-self: center;
+}
+
+.entry-sprite {
+  height: 2rem;
+  width: 2rem;
+}
+
+.entry-name {
+  max-height: 2rem;
+  line-height: 1rem;
+}
+
+.drafted {
+  .entry-sprite {
+    filter: grayscale(100%);
+    opacity: 70%;
+  }
+  text-decoration: line-through;
+}
+
+.selected {
+  box-shadow: var(--pdz-level-2);
+}
+
+.menu {
+  box-shadow: var(--pdz-level2);
+  z-index: 2100;
+}
+
+.tier-label {
+  background-color: var(--mat-sys-primary);
+  color: var(--mat-sys-on-primary);
+  text-align: center;
+  min-width: 4rem;
+  position: sticky;
+  top: 0px;
+  z-index: 2000;
+  font-weight: bold;
+  border-width: 0px 0px 2px 0px;
+  border-color: var(--mat-sys-outline);
+  font-family:
+    Nasalization RG,
+    sans-serif;
+}
+
+.backbutton {
+  @include mat.button-overrides(
+    (
+      filled-horizontal-padding: 1rem,
+      filled-container-height: 2rem,
+      filled-label-text-size: 0.75rem,
+    )
+  );
+}
+
+.apply-wrapper {
+  width: 100%;
+  padding: 3px;
+  border-radius: inherit;
+
+  .applybutton {
+    width: 100%;
+    text-align: center;
+    border-radius: inherit;
+    background-color: var(--mat-sys-primary);
+    color: var(--mat-sys-on-primary);
+    &:hover {
+      background-color: var(--mat-sys-secondary);
+    }
+  }
+}
+
+:host {
+  display: block;
+  position: relative;
+  height: 100%;
+}
+
+.selected-card {
+  position: absolute;
+  z-index: 3000;
+
+  background-color: var(--mat-sys-surface-container-high);
+  color: var(--mat-sys-on-surface);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  width: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+
+  box-shadow: var(--pdz-level3);
+
+  transform: translateY(-50%);
+
+  transition:
+    top 0.15s ease-out,
+    left 0.15s ease-out;
+
+  button {
+    width: 100%;
+    background-color: var(--mat-sys-primary);
+    color: var(--mat-sys-on-primary);
+    border-radius: 1rem;
+    box-shadow: --pdz-level2;
+  }
+}

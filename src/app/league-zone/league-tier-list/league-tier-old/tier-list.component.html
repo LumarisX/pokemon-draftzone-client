@@ -50,20 +50,30 @@
                   </div>
                   <div class="max-h-96 overflow-y-auto">
                     <mat-checkbox
-                      [checked]="tierListService.selectedTypes.length === tierListService.types.length"
+                      [checked]="
+                        tierListService.selectedTypes.length ===
+                        tierListService.types.length
+                      "
                       [indeterminate]="
                         tierListService.selectedTypes.length > 0 &&
-                        tierListService.selectedTypes.length < tierListService.types.length
+                        tierListService.selectedTypes.length <
+                          tierListService.types.length
                       "
                       (change)="updateFilter($event.checked)"
                     >
                       All
                     </mat-checkbox>
                     <ul>
-                      @for (type of tierListService.types; track $index; let i = $index) {
+                      @for (
+                        type of tierListService.types;
+                        track $index;
+                        let i = $index
+                      ) {
                         <li>
                           <mat-checkbox
-                            [checked]="tierListService.selectedTypes().includes(type)"
+                            [checked]="
+                              tierListService.selectedTypes().includes(type)
+                            "
                             (change)="updateFilter($event.checked, i)"
                           >
                             {{ type }}
@@ -105,58 +115,15 @@
         }
       </div>
     </div>
-    @if (tierListService.sortedTierGroups()) {
-      <div
-        class="tier-container max-w-full max-h-full flex-grow overflow-y-auto rounded-lg w-fit"
-      >
-        <div class="h-fit w-full flex">
-          @for (group of tierListService.sortedTierGroups(); track $index) {
-            <div class="tier-group">
-              @if (group.label !== undefined) {
-                <div class="tier-group-label">{{ group.label }}</div>
-              }
-              <div class="tier-entry-container">
-                @for (tier of group.tiers; track $index) {
-                  <div class="tier">
-                    <div class="tier-label">
-                      {{ tier.name }}
-                    </div>
-                    @for (pokemon of tier.pokemon; track $index) {
-                      @if (tierListService.typeInFilter(pokemon)) {
-                        <div
-                          class="tier-entry"
-                          [ngClass]="{
-                            drafted: tierListService.isDrafted(pokemon.id),
-                          }"
-                        >
-                          <div class="tier-sprite">
-                            <pdz-sprite [pid]="pokemon.id"></pdz-sprite>
-                          </div>
-                          <div>
-                            {{ pokemon.name }}
-                          </div>
-                          @if (pokemon.banned) {
-                            <mat-icon
-                              class="restricted-icon"
-                              mat-raised-button
-                              #tooltip="matTooltip"
-                              [matTooltip]="tierListService.makeBanString(pokemon.banned)"
-                            >
-                              warning
-                            </mat-icon>
-                          }
-                        </div>
-                      }
-                    }
-                  </div>
-                }
-              </div>
-            </div>
-          }
-        </div>
-      </div>
-    } @else {
-      <loading></loading>
-    }
+    <div
+      class="tier-container max-w-full max-h-full flex-grow overflow-y-auto rounded-lg w-fit"
+    >
+      <pdz-tier-list-core
+        [tierGroups]="tierListService.sortedTierGroups()"
+        [isDrafted]="tierListService.isDrafted.bind(tierListService)"
+        [typeInFilter]="tierListService.typeInFilter.bind(tierListService)"
+        [makeBanString]="tierListService.makeBanString.bind(tierListService)"
+      ></pdz-tier-list-core>
+    </div>
   </div>
 </div>

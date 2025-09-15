@@ -43,7 +43,7 @@ export class LeagueTierListService {
   readonly sortedTierGroups = computed(() => {
     const sortBy = this.sortBy();
     const tierGroups = this.tierGroups();
-    if (!tierGroups) return undefined;
+    if (!tierGroups) return null;
 
     const sortMap: Record<
       (typeof this.SortOptions)[number],
@@ -68,8 +68,7 @@ export class LeagueTierListService {
     }));
   });
 
-  constructor() {
-  }
+  constructor() {}
 
   initialize(leagueId: string): void {
     this.leagueService
