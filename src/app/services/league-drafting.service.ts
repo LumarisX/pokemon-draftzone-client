@@ -1,7 +1,12 @@
 import { Injectable, inject } from '@angular/core';
-import { ApiService } from './api.service';
 import { Observable, of } from 'rxjs';
 import { Pokemon } from '../interfaces/draft';
+import { ApiService } from './api.service';
+
+export type RuleCategory = {
+  header: string;
+  details: string[];
+};
 
 @Injectable({
   providedIn: 'root',

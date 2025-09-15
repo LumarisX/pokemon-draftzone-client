@@ -7,7 +7,15 @@ import { ApiService } from './api.service';
 export class LeagueManageService {
   private apiService = inject(ApiService);
 
-  setPick(leagueId: string, pick: { coach: string; pokemonId: string }) {
-    return this.apiService.get(`league/${leagueId}/setdraft`, true, pick);
+  setPick(
+    leagueId: string,
+    pick: {
+      teamId: string;
+      pokemonId: string;
+      pickNumber: number;
+      divisionId: string;
+    },
+  ) {
+    return this.apiService.post(`leagues/${leagueId}/setdraft`, true, pick);
   }
 }

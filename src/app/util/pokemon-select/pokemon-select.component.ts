@@ -4,7 +4,17 @@ import {
   ScrollingModule,
 } from '@angular/cdk/scrolling';
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, forwardRef, input, Input, OnDestroy, OnInit, Output, ViewChild, inject } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  forwardRef,
+  inject,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -26,9 +36,9 @@ import {
   switchMap,
   takeUntil,
 } from 'rxjs/operators';
-import { DataService } from '../../services/data.service';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { Pokemon } from '../../interfaces/draft';
+import { DataService } from '../../services/data.service';
 
 @Component({
   selector: 'pokemon-select',
@@ -90,7 +100,7 @@ export class PokemonSelectComponent implements OnInit, OnDestroy {
   @Input()
   class: string | string[] = '';
 
-  @Input()
+  @Input({ required: true })
   set ruleset(value: string | null) {
     this.ruleset$.next(value);
   }

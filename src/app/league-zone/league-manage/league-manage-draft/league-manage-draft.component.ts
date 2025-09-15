@@ -1,18 +1,64 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { LeagueManageService } from '../../../services/league-manage.service';
+import { first } from 'rxjs';
+import { CommonModule } from '@angular/common';
+import {
+  DraftTeam,
+  LeagueZoneService,
+} from '../../../services/league-zone.service';
+import { PokemonSelectComponent } from '../../../util/pokemon-select/pokemon-select.component';
+import { FormsModule } from '@angular/forms';
+import { Pokemon } from '../../../interfaces/draft';
+
+type TeamForDraft = DraftTeam & { selectedPokemon?: Pokemon | null };
 
 @Component({
   selector: 'pdz-league-manage-draft',
-  imports: [],
+  imports: [CommonModule, PokemonSelectComponent, FormsModule],
   templateUrl: './league-manage-draft.component.html',
   styleUrl: './league-manage-draft.component.scss',
+  standalone: true,
 })
-export class LeagueManageDraftComponent {
+export class LeagueManageDraftComponent implements OnInit {
   leagueManageService = inject(LeagueManageService);
+  leagueZoneService = inject(LeagueZoneService);
   private route = inject(ActivatedRoute);
-  setPick() {
-    // this.route.params
-    // this.leagueManageService.setPick();
+  private leagueId: string | null = null;
+  teams: TeamForDraft[] = [];
+  divisionId = '68c5a1c6f1ac9b585a542b86'; // TODO: The division id is hardcoded
+
+  ngOnInit(): void {
+    this.route.paramMap.pipe(first()).subscribe((params) => {
+      this.leagueId = params.get('leagueId')!;
+      this.leagueZoneService
+        .getPicks(this.leagueId, this.divisionId)
+        .subscribe((teams) => {
+          console.log(teams);
+          this.teams = teams;
+        });
+    });
+  }
+
+  addDraftPick(team: TeamForDraft) {
+    if (!team.selectedPokemon || !this.leagueId) {
+      return;
+    }
+
+    this.leagueManageService
+      .setPick(this.leagueId, {
+        teamId: team.id,
+        pokemonId: team.selectedPokemon.id,
+        pickNumber: team.picks.length,
+        divisionId: this.divisionId,
+      })
+      .subscribe(() => {
+        // Refresh data
+        this.leagueZoneService
+          .getPicks(this.leagueId!, this.divisionId)
+          .subscribe((teams) => {
+            this.teams = teams;
+          });
+      });
   }
 }

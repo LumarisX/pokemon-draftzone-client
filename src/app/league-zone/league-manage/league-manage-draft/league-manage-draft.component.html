@@ -1,2 +1,42 @@
-<p>league-manage-draft works!</p>
-<button (click)="setPick()">Test Draft</button>
+@for (team of teams; track team.name) {
+  <div class="team-draft-container">
+    <h2 class="team-name">{{ team.name }}</h2>
+    <table class="draft-table">
+      <thead class="draft-table-header-group">
+        <tr class="draft-table-row">
+          <th scope="col" class="draft-table-header">Pokemon</th>
+          <th scope="col" class="draft-table-header">Tier</th>
+          <th scope="col" class="draft-table-header">Timestamp</th>
+          <th scope="col" class="draft-table-header">Picker</th>
+        </tr>
+      </thead>
+      <tbody class="draft-table-body">
+        @for (pick of team.picks; track pick.pokemonId) {
+          <tr class="draft-table-row">
+            <td class="draft-table-cell">{{ pick.pokemonId }}</td>
+            <td class="draft-table-cell">{{ pick.tier }}</td>
+            <td class="draft-table-cell">
+              {{ pick.timestamp | date: "short" }}
+            </td>
+            <td class="draft-table-cell">{{ pick.picker }}</td>
+          </tr>
+        } @empty {
+          <tr class="draft-table-row">
+            <td colspan="4" class="draft-table-cell text-center">
+              No picks made yet.
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+    <div class="add-draft-controls">
+      <pokemon-select
+        ruleset="Gen9 NatDex"
+        [(ngModel)]="team.selectedPokemon"
+      ></pokemon-select>
+      <button (click)="addDraftPick(team)">Add Draft</button>
+    </div>
+  </div>
+} @empty {
+  <p>There are no teams or picks to display.</p>
+}
