@@ -65,8 +65,11 @@ export class BZTierListComponent implements OnInit {
     'SPE',
   ] as const;
 
-  readonly Divisions = ['Attack', 'Defense'] as const;
-
+  drafted: {
+    [division: string]: {
+      pokemonId: string;
+    }[];
+  } = {};
   types = TYPES;
 
   selectedTypes: Type[] = [];
@@ -74,9 +77,8 @@ export class BZTierListComponent implements OnInit {
 
   tierGroups?: TierGroup[]; // Changed type to use the new interface
 
-  updatedTime?: string;
   sortBy = signal<(typeof this.SortOptions)[number]>('BST');
-  selectedDivision = new FormControl<string>(this.Divisions[0]);
+  selectedDivision = new FormControl<string>('');
 
   _menu: 'sort' | 'filter' | 'division' | null = null;
 
@@ -89,6 +91,10 @@ export class BZTierListComponent implements OnInit {
 
   get menu() {
     return this._menu;
+  }
+
+  get divisionNames() {
+    return Object.keys(this.drafted);
   }
 
   constructor() {
@@ -105,8 +111,10 @@ export class BZTierListComponent implements OnInit {
     this.leagueService
       .getTierList('pdbls2')
       .pipe(first())
-      .subscribe((list) => {
-        this.tierGroups = list;
+      .subscribe((data) => {
+        this.drafted = data.divisions;
+        this.tierGroups = data.tierList;
+        this.selectedDivision.setValue(this.divisionNames[0]);
       });
   }
 
@@ -173,5 +181,12 @@ export class BZTierListComponent implements OnInit {
       bans.push(...banned.abilities);
     if (banned.moves && banned.moves.length > 0) bans.push(...banned.moves);
     return 'Banned: ' + bans.join(', ');
+  }
+
+  isDrafted(pokemonId: string): boolean {
+    if (!this.selectedDivision.value) return false;
+    return this.drafted[this.selectedDivision.value].some(
+      (drafted) => drafted.pokemonId === pokemonId,
+    );
   }
 }

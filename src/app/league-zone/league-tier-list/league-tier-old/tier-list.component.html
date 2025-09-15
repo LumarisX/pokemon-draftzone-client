@@ -75,38 +75,34 @@
                 </div>
               }
             </div>
-            <div class="relative inline-block">
-              <button
-                mat-stroked-button
-                (click)="menu = menu === 'division' ? null : 'division'"
-              >
-                Division
-              </button>
-              @if (menu === "division") {
-                <div
-                  class="absolute left-full top-0 ml-2 bg-page border rounded menu z-50"
+            @if (divisionNames.length > 2) {
+              <div class="relative inline-block">
+                <button
+                  mat-stroked-button
+                  (click)="menu = menu === 'division' ? null : 'division'"
                 >
-                  <mat-radio-group
-                    [formControl]="selectedDivision"
-                    class="flex flex-col p-1 pr-2"
+                  Division
+                </button>
+                @if (menu === "division") {
+                  <div
+                    class="absolute left-full top-0 ml-2 bg-page border rounded menu z-50"
                   >
-                    @for (option of Divisions; track $index) {
-                      <mat-radio-button [value]="option">
-                        {{ option }}
-                      </mat-radio-button>
-                    }
-                  </mat-radio-group>
-                </div>
-              }
-            </div>
+                    <mat-radio-group
+                      [formControl]="selectedDivision"
+                      class="flex flex-col p-1 pr-2"
+                    >
+                      @for (option of divisionNames; track $index) {
+                        <mat-radio-button [value]="option">
+                          {{ option }}
+                        </mat-radio-button>
+                      }
+                    </mat-radio-group>
+                  </div>
+                }
+              </div>
+            }
           </div>
         }
-      </div>
-      <div class="flex items-center space-x-2">
-        <div class="hidden sm:block md:text-base text-xs">
-          Updated at {{ updatedTime }}
-        </div>
-        
       </div>
     </div>
     @if (tierGroups) {
@@ -130,9 +126,7 @@
                         <div
                           class="tier-entry"
                           [ngClass]="{
-                            drafted:
-                              selectedDivision.value &&
-                              pokemon.drafted?.includes(selectedDivision.value),
+                            drafted: isDrafted(pokemon.id),
                           }"
                         >
                           <div class="tier-sprite">

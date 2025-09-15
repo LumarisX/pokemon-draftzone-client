@@ -45,11 +45,11 @@ export class LeagueZoneService {
     );
   }
 
-  getTierList(leagueId: string): Observable<LeagueTierGroup[]> {
-    return this.apiService.get<LeagueTierGroup[]>(
-      `${ROOTPATH}/${leagueId}/tier-list`,
-      false,
-    );
+  getTierList(leagueId: string) {
+    return this.apiService.get<{
+      tierList: LeagueTierGroup[];
+      divisions: { [key: string]: { pokemonId: string; teamId: string }[] };
+    }>(`${ROOTPATH}/${leagueId}/tier-list`, false);
   }
 
   getPicks(leagueId: string, divisionId: string) {
