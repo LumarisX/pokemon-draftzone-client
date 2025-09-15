@@ -45,6 +45,13 @@ export class LeagueZoneService {
     );
   }
 
+  getTierList(leagueId: string): Observable<LeagueTierGroup[]> {
+    return this.apiService.get<LeagueTierGroup[]>(
+      `${ROOTPATH}/${leagueId}/tier-list`,
+      false,
+    );
+  }
+
   getPicks(leagueId: string, divisionId: string) {
     return this.apiService.get<DraftTeam[]>(
       `${ROOTPATH}/${leagueId}/${divisionId}/picks`,

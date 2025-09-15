@@ -1,10 +1,3 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject, signal, effect, OnDestroy } from '@angular/core';
-import { FormsModule, ReactiveFormsModule, FormControl } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatRadioModule } from '@angular/material/radio';
-import { RouterModule } from '@angular/router';
 import { TierPokemon } from '.';
 import { Type, TYPES } from '../../../data';
 import { LoadingComponent } from '../../../images/loading/loading.component';
@@ -13,7 +6,30 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { WebSocketService } from '../../../services/ws.service';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { first, takeUntil } from 'rxjs/operators';
+import {
+  Component,
+  effect,
+  inject,
+  OnDestroy,
+  OnInit,
+  signal,
+} from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule, FormControl } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatRadioModule } from '@angular/material/radio';
+import { RouterModule } from '@angular/router';
+import { LeagueZoneService } from '../../../services/league-zone.service';
+
+interface TierGroup {
+  label?: string;
+  tiers: {
+    name: string;
+    pokemon: TierPokemon[];
+  }[];
+}
 
 @Component({
   selector: 'bz-tier-list',
@@ -34,9 +50,9 @@ import { takeUntil } from 'rxjs/operators';
   ],
   styleUrl: './tier-list.component.scss',
 })
-export class BZTierListComponent implements OnInit, OnDestroy {
+export class BZTierListComponent implements OnInit {
   private wsService = inject(WebSocketService);
-  private destroy$ = new Subject<void>();
+  private leagueService = inject(LeagueZoneService);
 
   readonly SortOptions = [
     'Name',
@@ -56,13 +72,7 @@ export class BZTierListComponent implements OnInit, OnDestroy {
   selectedTypes: Type[] = [];
   filteredTypes: Type[] = [...this.types];
 
-  tierGroups?: {
-    label?: string;
-    tiers: {
-      name: string;
-      pokemon: TierPokemon[];
-    }[];
-  }[];
+  tierGroups?: TierGroup[]; // Changed type to use the new interface
 
   updatedTime?: string;
   sortBy = signal<(typeof this.SortOptions)[number]>('BST');
@@ -92,31 +102,13 @@ export class BZTierListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.wsService.connect('battlezone')
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => { // Once connected, proceed with sending messages and listening for updates
-        this.wsService.sendMessage('getTiers')
-          .pipe(takeUntil(this.destroy$))
-          .subscribe((response) => {
-            this.updatedTime = new Date(Date.now()).toLocaleTimeString();
-            this.tierGroups = response;
-          });
-
-        this.wsService.on<any>('tiersUpdated')
-          .pipe(takeUntil(this.destroy$))
-          .subscribe((response) => {
-            this.updatedTime = new Date(Date.now()).toLocaleTimeString();
-            this.tierGroups = response;
-          });
+    this.leagueService
+      .getTierList('pdbls2')
+      .pipe(first())
+      .subscribe((list) => {
+        this.tierGroups = list;
       });
   }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
-  
 
   sortTiers(value: (typeof this.SortOptions)[number]) {
     const sortMap: Record<
