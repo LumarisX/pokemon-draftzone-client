@@ -6,7 +6,7 @@ import { Pokemon } from '../../interfaces/draft';
 import { NumberSuffixPipe } from '../../util/pipes/number-suffix.pipe';
 import { LeagueTierListComponent } from '../league-tier-list/league-tier-list.component';
 import { LeagueDraftingService } from '../../services/league-drafting.service';
-import { TierPokemon } from '../league-tier-list/league-tier-old';
+import { TierPokemon } from '../../interfaces/tier-pokemon.interface';
 
 @Component({
   selector: 'pdz-league-drafting',

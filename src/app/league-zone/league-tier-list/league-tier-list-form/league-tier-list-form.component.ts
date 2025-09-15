@@ -18,7 +18,7 @@ import { RouterModule } from '@angular/router';
 import { Type, TYPES } from '../../../data';
 import { LoadingComponent } from '../../../images/loading/loading.component';
 import { SpriteComponent } from '../../../images/sprite/sprite.component';
-import { LeagueZoneService } from '../../../services/league-zone.service';
+import { LeagueZoneService } from '../../../services/leagues/league-zone.service';
 import {
   PokemonEditDialogComponent,
   PokemonEditDialogData,

@@ -1,12 +1,12 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { getRandomPokemon } from '../data/namedex';
-import { defenseData } from '../league-zone/league-ghost';
-import { LeagueTierGroup } from '../league-zone/league-sign-up/league-sign-up.component';
-import { TeamPokemon } from '../league-zone/league-teams/league-team-card/league-team-card.component';
-import { League } from '../league-zone/league.interface';
-import { ApiService } from './api.service';
-import { RuleCategory } from './league-drafting.service';
+import { getRandomPokemon } from '../../data/namedex';
+import { defenseData } from '../../league-zone/league-ghost';
+import { TeamPokemon } from '../../league-zone/league-teams/league-team-card/league-team-card.component';
+import { League } from '../../league-zone/league.interface';
+import { ApiService } from '../api.service';
+import { RuleCategory } from '../league-drafting.service';
+import { LeagueTierGroup } from '../../interfaces/tier-pokemon.interface';
 
 const ROOTPATH = 'leagues';
 

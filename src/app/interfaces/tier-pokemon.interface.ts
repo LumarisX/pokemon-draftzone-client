@@ -1,4 +1,4 @@
-import { StatsTable, Type } from '../../../data';
+import { StatsTable, Type } from '../data';
 
 export type TierSubPokemon = {
   name: string;
@@ -17,4 +17,14 @@ export type TierPokemon = TierSubPokemon & {
   subPokemon?: TierSubPokemon[];
   drafted?: string[];
   banNotes: string;
+};
+
+export type LeagueTier = {
+  name: string;
+  pokemon: TierPokemon[];
+};
+
+export type LeagueTierGroup = {
+  label?: string;
+  tiers: LeagueTier[];
 };

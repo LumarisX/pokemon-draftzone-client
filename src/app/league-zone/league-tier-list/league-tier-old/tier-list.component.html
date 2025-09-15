@@ -6,7 +6,7 @@
           Back
         </button>
         <div class="md:text-2xl text-xl font-nasa">Tier List</div>
-        @if (tierGroups) {
+        @if (tierListService.sortedTierGroups()) {
           <div>
             <div class="relative inline-block">
               <button
@@ -20,10 +20,10 @@
                   class="absolute left-full top-0 ml-2 bg-page border rounded menu z-50"
                 >
                   <mat-radio-group
-                    [(ngModel)]="sortBy"
+                    [(ngModel)]="tierListService.sortBy"
                     class="flex flex-col p-1 pr-2"
                   >
-                    @for (option of SortOptions; track $index) {
+                    @for (option of tierListService.SortOptions; track $index) {
                       <mat-radio-button [value]="option">
                         {{ option }}
                       </mat-radio-button>
@@ -50,20 +50,20 @@
                   </div>
                   <div class="max-h-96 overflow-y-auto">
                     <mat-checkbox
-                      [checked]="selectedTypes.length === types.length"
+                      [checked]="tierListService.selectedTypes.length === tierListService.types.length"
                       [indeterminate]="
-                        selectedTypes.length > 0 &&
-                        selectedTypes.length < types.length
+                        tierListService.selectedTypes.length > 0 &&
+                        tierListService.selectedTypes.length < tierListService.types.length
                       "
                       (change)="updateFilter($event.checked)"
                     >
                       All
                     </mat-checkbox>
                     <ul>
-                      @for (type of types; track $index; let i = $index) {
+                      @for (type of tierListService.types; track $index; let i = $index) {
                         <li>
                           <mat-checkbox
-                            [checked]="selectedTypes.includes(type)"
+                            [checked]="tierListService.selectedTypes().includes(type)"
                             (change)="updateFilter($event.checked, i)"
                           >
                             {{ type }}
@@ -88,7 +88,7 @@
                     class="absolute left-full top-0 ml-2 bg-page border rounded menu z-50"
                   >
                     <mat-radio-group
-                      [formControl]="selectedDivision"
+                      [formControl]="tierListService.selectedDivision"
                       class="flex flex-col p-1 pr-2"
                     >
                       @for (option of divisionNames; track $index) {
@@ -105,12 +105,12 @@
         }
       </div>
     </div>
-    @if (tierGroups) {
+    @if (tierListService.sortedTierGroups()) {
       <div
         class="tier-container max-w-full max-h-full flex-grow overflow-y-auto rounded-lg w-fit"
       >
         <div class="h-fit w-full flex">
-          @for (group of tierGroups; track $index) {
+          @for (group of tierListService.sortedTierGroups(); track $index) {
             <div class="tier-group">
               @if (group.label !== undefined) {
                 <div class="tier-group-label">{{ group.label }}</div>
@@ -122,11 +122,11 @@
                       {{ tier.name }}
                     </div>
                     @for (pokemon of tier.pokemon; track $index) {
-                      @if (typeInFilter(pokemon)) {
+                      @if (tierListService.typeInFilter(pokemon)) {
                         <div
                           class="tier-entry"
                           [ngClass]="{
-                            drafted: isDrafted(pokemon.id),
+                            drafted: tierListService.isDrafted(pokemon.id),
                           }"
                         >
                           <div class="tier-sprite">
@@ -140,7 +140,7 @@
                               class="restricted-icon"
                               mat-raised-button
                               #tooltip="matTooltip"
-                              [matTooltip]="makeBanString(pokemon.banned)"
+                              [matTooltip]="tierListService.makeBanString(pokemon.banned)"
                             >
                               warning
                             </mat-icon>

@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import {
   LeagueSignUp,
   LeagueZoneService,
-} from '../../../services/league-zone.service';
+} from '../../../services/leagues/league-zone.service';
 
 @Component({
   selector: 'pdz-league-manage-signups',

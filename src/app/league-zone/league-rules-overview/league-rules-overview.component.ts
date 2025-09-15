@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { LeagueRulesFormComponent } from './league-rules-form/league-rules-form.component';
 import { LeagueRulesComponent } from './league-rules/league-rules.component';
-import { LeagueZoneService } from '../../services/league-zone.service';
+import { LeagueZoneService } from '../../services/leagues/league-zone.service';
 import { League } from '../league.interface';
 
 @Component({

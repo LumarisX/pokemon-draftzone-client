@@ -1,12 +1,12 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { LeagueManageService } from '../../../services/league-manage.service';
+import { LeagueManageService } from '../../../services/leagues/league-manage.service';
 import { first } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import {
   DraftTeam,
   LeagueZoneService,
-} from '../../../services/league-zone.service';
+} from '../../../services/leagues/league-zone.service';
 import { PokemonSelectComponent } from '../../../util/pokemon-select/pokemon-select.component';
 import { FormsModule } from '@angular/forms';
 import { Pokemon } from '../../../interfaces/draft';

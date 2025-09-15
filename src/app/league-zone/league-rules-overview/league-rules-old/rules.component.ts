@@ -6,7 +6,7 @@ import { RouterModule } from '@angular/router';
 import { MarkdownModule } from 'ngx-markdown';
 import { first } from 'rxjs';
 import { RuleCategory } from '../../../services/league-drafting.service';
-import { LeagueZoneService } from '../../../services/league-zone.service';
+import { LeagueZoneService } from '../../../services/leagues/league-zone.service';
 
 @Component({
   selector: `bz-rules`,
