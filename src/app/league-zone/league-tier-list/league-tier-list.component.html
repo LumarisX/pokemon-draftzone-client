@@ -1,7 +1,203 @@
-<pdz-tier-list-core
-  [tierGroups]="tierListService.sortedTierGroups()"
-  [draftedPokemonIds]="tierListService.draftedPokemonIdsForSelectedDivision()"
-  [typeInFilter]="tierListService.typeInFilter.bind(tierListService)"
-  [makeBanString]="tierListService.makeBanString.bind(tierListService)"
-  (draftPokemon)="draftPokemon.emit($event)"
-></pdz-tier-list-core>
+<div class="flex flex-col max-w-full h-full items-center">
+  <div class="h-full flex max-w-full flex-col p-2 space-y-2">
+    <div class="flex-grow-0 max-w-full flex justify-between">
+      <div class="flex items-center space-x-2">
+        <div class="md:text-2xl text-xl font-nasa">Tier List</div>
+        @if (tierListService.sortedTierGroups()) {
+          <div>
+            <div class="relative inline-block">
+              <button
+                mat-icon-button
+                (click)="menu = menu === 'sort' ? null : 'sort'"
+              >
+                <mat-icon>sort</mat-icon>
+              </button>
+              @if (menu === "sort") {
+                <div
+                  class="absolute left-full top-0 ml-2 bg-page border rounded menu z-50"
+                >
+                  <mat-radio-group
+                    [(ngModel)]="tierListService.sortBy"
+                    class="flex flex-col p-1 pr-2"
+                  >
+                    @for (option of tierListService.SortOptions; track $index) {
+                      <mat-radio-button [value]="option">
+                        {{ option }}
+                      </mat-radio-button>
+                    }
+                  </mat-radio-group>
+                </div>
+              }
+            </div>
+            <div class="relative inline-block">
+              <button
+                mat-icon-button
+                (click)="menu = menu === 'filter' ? null : 'filter'"
+              >
+                <mat-icon>filter_list</mat-icon>
+              </button>
+              @if (menu === "filter") {
+                <div
+                  class="absolute left-full top-0 ml-2 bg-page border rounded-lg menu z-50"
+                >
+                  <div class="apply-wrapper">
+                    <button class="applybutton" (click)="applyFilter()">
+                      Apply
+                    </button>
+                  </div>
+                  <div class="max-h-96 overflow-y-auto">
+                    <mat-checkbox
+                      [checked]="
+                        tierListService.selectedTypes.length ===
+                        tierListService.types.length
+                      "
+                      [indeterminate]="
+                        tierListService.selectedTypes.length > 0 &&
+                        tierListService.selectedTypes.length <
+                          tierListService.types.length
+                      "
+                      (change)="updateFilter($event.checked)"
+                    >
+                      All
+                    </mat-checkbox>
+                    <ul>
+                      @for (
+                        type of tierListService.types;
+                        track $index;
+                        let i = $index
+                      ) {
+                        <li>
+                          <mat-checkbox
+                            [checked]="
+                              tierListService.selectedTypes().includes(type)
+                            "
+                            (change)="updateFilter($event.checked, i)"
+                          >
+                            {{ type }}
+                          </mat-checkbox>
+                        </li>
+                      }
+                    </ul>
+                  </div>
+                </div>
+              }
+            </div>
+            @if (divisionNames.length > 2) {
+              <div class="relative inline-block">
+                <button
+                  mat-stroked-button
+                  (click)="menu = menu === 'division' ? null : 'division'"
+                >
+                  Division
+                </button>
+                @if (menu === "division") {
+                  <div
+                    class="absolute left-full top-0 ml-2 bg-page border rounded menu z-50"
+                  >
+                    <mat-radio-group
+                      [(ngModel)]="tierListService.selectedDivision"
+                      class="flex flex-col p-1 pr-2"
+                    >
+                      @for (option of divisionNames; track $index) {
+                        <mat-radio-button [value]="option">
+                          {{ option }}
+                        </mat-radio-button>
+                      }
+                    </mat-radio-group>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+    <div
+      class="max-w-full max-h-full flex-grow overflow-y-auto rounded-lg w-fit"
+    >
+      @if (tierGroups) {
+        <div class="tier-container">
+          <div class="h-fit w-full flex">
+            @for (group of tierGroups; track $index) {
+              <div class="tier-group">
+                @if (group.label !== undefined) {
+                  <div class="tier-group-label">{{ group.label }}</div>
+                }
+                <div class="tier-entry-container">
+                  @for (tier of group.tiers; track $index) {
+                    <div class="tier">
+                      <div class="tier-label">
+                        {{ tier.name }}
+                      </div>
+                      @for (pokemon of tier.pokemon; track $index) {
+                        @if (typeInFilter(pokemon)) {
+                          <div
+                            class="tier-entry"
+                            [ngClass]="{
+                              drafted: isPokemonDrafted(pokemon.id),
+                              selected: selectedPokemon === pokemon,
+                            }"
+                            (click)="selectPokemon(pokemon, tier.name, $event)"
+                          >
+                            <div class="entry-sprite">
+                              <pdz-sprite
+                                [pid]="pokemon.id"
+                                [tooltipPosition]="null"
+                              ></pdz-sprite>
+                            </div>
+                            <div class="entry-name">
+                              {{ pokemon.name }}
+                            </div>
+                            @if (pokemon.banned) {
+                              <mat-icon
+                                class="restricted-icon"
+                                mat-raised-button
+                                #tooltip="matTooltip"
+                                [matTooltip]="makeBanString(pokemon.banned)"
+                              >
+                                warning
+                              </mat-icon>
+                            }
+                          </div>
+                        }
+                      }
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      } @else {
+        <loading></loading>
+      }
+
+      @if (selectedPokemon) {
+        <div
+          class="selected-card"
+          [style.top]="cardPosition.top"
+          [style.left]="cardPosition.left"
+        >
+          {{ selectedPokemon.name }}
+          <pdz-sprite
+            [pokemon]="selectedPokemon"
+            [tooltipPosition]="null"
+          ></pdz-sprite>
+          <div class="type-container">
+            @for (type of selectedPokemon.types; track $index) {
+              <div
+                class="type-label"
+                [style.background-color]="typeColor(type)"
+              >
+                <div class="type-text">
+                  {{ type }}
+                </div>
+              </div>
+            }
+          </div>
+          <button (click)="emitDraftPokemon()">Draft</button>
+        </div>
+      }
+    </div>
+  </div>
+</div>

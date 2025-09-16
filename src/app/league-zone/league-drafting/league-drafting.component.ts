@@ -38,7 +38,7 @@ export class LeagueDraftingComponent implements OnInit {
   leagueService = inject(LeagueZoneService);
   ngOnInit(): void {
     // Placeholder IDs - user will decide how to obtain these later
-    const leagueId = '68c5a1c6f1ac9b585a542b8a'; // Example ID, replace with actual logic later
+    const leagueId = 'pdbls2'; // Example ID, replace with actual logic later
     const teamId = '68c44121b0a184364eb03db9'; // Example ID, replace with actual logic later
 
     this.leagueService.getTeamDetails(leagueId, teamId).subscribe((data) => {

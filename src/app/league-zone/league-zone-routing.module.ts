@@ -6,9 +6,9 @@ import { LeagueLandingComponent } from './league-landing/landing.component';
 import { LeagueManagePath } from './league-manage/league-manage-routing.module';
 import { LeagueOverviewComponent } from './league-overview/league-overview.component';
 import { LeagueSignUpComponent } from './league-sign-up/league-sign-up.component';
-import { BZTierListComponent } from './league-tier-list/league-tier-full/tier-list.component';
 import { AuthGuard } from '@auth0/auth0-angular';
 import { leagueRoleGuard } from './league-role.guard';
+import { LeagueTierListComponent } from './league-tier-list/league-tier-list.component';
 
 export const LeagueZonePath = 'leagues';
 const routes: Routes = [
@@ -51,7 +51,7 @@ const routes: Routes = [
   },
   {
     path: ':leagueId/tier-list',
-    component: BZTierListComponent,
+    component: LeagueTierListComponent,
   },
   {
     path: ':leagueId/drafting',
