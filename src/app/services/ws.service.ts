@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { io, Socket } from 'socket.io-client';
-import { Observable, Subject, throwError, timer } from 'rxjs';
+import { Observable, Subject, throwError, from } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { filter, map, takeUntil, timeout, catchError } from 'rxjs/operators';
+import { filter, map, catchError } from 'rxjs/operators';
 
 // Define JSON-RPC interfaces for client-side
 export interface JsonRpcRequest {
@@ -28,7 +28,7 @@ export interface JsonRpcResponse {
 })
 export class WebSocketService {
   private socket$?: Socket;
-  private pendingRequests = new Map<number, Subject<JsonRpcResponse>>();
+  private pendingRequests = new Map<number, { resolve: (response: JsonRpcResponse) => void; reject: (error: any) => void; timer: any }>();
   private serverEvents$ = new Subject<{ event: string; data: any }>();
   private serverUrl = `${environment.tls ? 'wss' : 'ws'}://${environment.apiUrl}`;
   private idCounter = 0;
@@ -39,15 +39,19 @@ export class WebSocketService {
   connect(urlPath: string): Observable<any> {
     if (!this.socket$ || !this.socket$.connected) {
       this.socket$ = io(this.serverUrl, { path: '/' + urlPath + '/' });
-      this.socket$.on('message', (message: JsonRpcResponse | { event: string; data: any }) =>
-        this.handleMessage(message)
-      );
+      this.socket$.on('message', (message: JsonRpcResponse | { event: string; data: any }) => {
+        console.log('Raw WebSocket message received:', message);
+        this.handleMessage(message);
+      });
       this.socket$.on('connect_error', (error: Error) =>
         console.error('WebSocket Connection Error:', error)
       );
-      this.socket$.on('disconnect', (reason: Socket.DisconnectReason) =>
-        console.warn('WebSocket Disconnected:', reason)
-      );
+      this.socket$.on('disconnect', (reason: Socket.DisconnectReason) => {
+        console.warn('WebSocket Disconnected:', reason);
+        // Reject all pending requests on disconnect
+        this.pendingRequests.forEach(({ reject }) => reject(new Error('WebSocket disconnected')));
+        this.pendingRequests.clear();
+      });
       this.socket$.on('connect', () => console.log('WebSocket Connected.'));
     }
     return new Observable((observer) => {
@@ -58,7 +62,6 @@ export class WebSocketService {
 
   sendMessage<T>(method: string, params: any = {}): Observable<T> {
     const id = this.idCounter++;
-    const responseSubject = new Subject<JsonRpcResponse>();
     const request: JsonRpcRequest = {
       jsonrpc: '2.0',
       method: method,
@@ -66,12 +69,17 @@ export class WebSocketService {
       id: id,
     };
 
-    this.pendingRequests.set(id, responseSubject);
-    this.socket$?.emit('message', request);
+    console.log(`Sending request with ID: ${id}, method: ${method}`);
 
-    return responseSubject.asObservable().pipe(
-      timeout(this.requestTimeoutMs), // Apply timeout to the observable
-      takeUntil(timer(this.requestTimeoutMs + 100)), // Ensure cleanup if timeout occurs
+    return from(new Promise<JsonRpcResponse>((resolve, reject) => {
+      const timerId = setTimeout(() => {
+        this.pendingRequests.delete(id);
+        reject(new Error('Timeout has occurred'));
+      }, this.requestTimeoutMs);
+
+      this.pendingRequests.set(id, { resolve, reject, timer: timerId });
+      this.socket$?.emit('message', request);
+    })).pipe(
       map((response) => {
         if (response.error) {
           throw new Error(response.error.message || 'Unknown server error');
@@ -79,25 +87,26 @@ export class WebSocketService {
         return response.result as T;
       }),
       catchError((err) => {
-        this.pendingRequests.delete(id); // Clean up pending request on error
-        console.error(`Request ${method} (ID: ${id}) failed or timed out:`, err);
+        console.error(`Request ${method} (ID: ${id}) failed:`, err);
         return throwError(() => new Error(`WebSocket request failed: ${err.message || err}`));
       })
     );
   }
 
   private handleMessage(message: JsonRpcResponse | { event: string; data: any }) {
-    // Check if it's a JSON-RPC response to a pending request
-    if ('id' in message && message.id !== undefined && this.pendingRequests.has(message.id)) {
-      const subject = this.pendingRequests.get(message.id);
-      if (subject) {
+    console.log('Received WebSocket message:', message);
+    if ('id' in message && message.id !== undefined) {
+      const pending = this.pendingRequests.get(message.id);
+      if (pending) {
+        clearTimeout(pending.timer); // Clear the timeout as we received a response
         if (message.jsonrpc === '2.0') {
-          subject.next(message);
+          pending.resolve(message);
         } else {
-          // If it has an ID but not jsonrpc: '2.0', it's an unexpected format
-          subject.error(new Error('Received malformed JSON-RPC response.'));
+          pending.reject(new Error('Received malformed JSON-RPC response.'));
         }
         this.pendingRequests.delete(message.id);
+      } else {
+        console.warn(`Received response for unknown or already handled request ID: ${message.id}`);
       }
     }
     // Check if it's a server-pushed event (no id, but has an event property)

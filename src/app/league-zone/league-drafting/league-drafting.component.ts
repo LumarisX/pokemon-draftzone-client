@@ -3,10 +3,15 @@ import { Component, inject, OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { Pokemon } from '../../interfaces/draft';
+import { TierPokemon } from '../../interfaces/tier-pokemon.interface';
+import { LeagueDraftingService } from '../../services/league-drafting.service';
+import {
+  LeaguePokemon,
+  LeagueTeam,
+  LeagueZoneService,
+} from '../../services/leagues/league-zone.service';
 import { NumberSuffixPipe } from '../../util/pipes/number-suffix.pipe';
 import { LeagueTierListComponent } from '../league-tier-list/league-tier-list.component';
-import { LeagueDraftingService } from '../../services/league-drafting.service';
-import { TierPokemon } from '../../interfaces/tier-pokemon.interface';
 
 @Component({
   selector: 'pdz-league-drafting',
@@ -27,23 +32,25 @@ export class LeagueDraftingComponent implements OnInit {
     pokemon?: Pokemon;
   }[][];
 
-  myTeamName = 'Deimos Deoxys';
-
-  myDraft!: {
-    drafted: { pokemon: Pokemon; cost: string }[];
-    picks: { pokemon: Pokemon; cost: string }[][];
-  };
+  myTeam!: LeagueTeam;
 
   draftingService = inject(LeagueDraftingService);
-
+  leagueService = inject(LeagueZoneService);
   ngOnInit(): void {
-    this.draftingService.getDraft().subscribe((data) => (this.myDraft = data));
+    // Placeholder IDs - user will decide how to obtain these later
+    const leagueId = '68c5a1c6f1ac9b585a542b8a'; // Example ID, replace with actual logic later
+    const teamId = '68c44121b0a184364eb03db9'; // Example ID, replace with actual logic later
+
+    this.leagueService.getTeamDetails(leagueId, teamId).subscribe((data) => {
+      this.myTeam = data;
+    });
+
     this.draftingService
       .getDraftOrder()
       .subscribe((data) => (this.draftOrder = data));
   }
 
-  moveUp(picks: { pokemon: Pokemon; cost: string }[], index: number) {
+  moveUp(picks: LeaguePokemon[], index: number) {
     if (!index || index >= picks.length) return;
     const temp = picks[index];
     picks[index] = picks[index - 1];
@@ -51,9 +58,10 @@ export class LeagueDraftingComponent implements OnInit {
   }
 
   draftPokemon(pokemon: TierPokemon & { tier: string }) {
-    this.myDraft.picks[0].push({
-      pokemon: { name: pokemon.name, id: pokemon.id },
-      cost: pokemon.tier,
+    this.myTeam.picks[0].push({
+      name: pokemon.name,
+      id: pokemon.id,
+      tier: pokemon.tier,
     });
   }
 }

@@ -14,41 +14,6 @@ export type RuleCategory = {
 export class LeagueDraftingService {
   private apiService = inject(ApiService);
 
-  getDraft(): Observable<{
-    drafted: { pokemon: Pokemon; cost: string }[];
-    picks: { pokemon: Pokemon; cost: string }[][];
-  }> {
-    return of({
-      drafted: [
-        { pokemon: { name: 'Archaludon', id: 'archaludon' }, cost: '18' },
-        { pokemon: { name: 'Pelipper', id: 'pelipper' }, cost: '11' },
-        {
-          pokemon: { name: 'Ninetales-Alola', id: 'ninetalesalola' },
-          cost: '10',
-        },
-        { pokemon: { name: 'Volcanion', id: 'volcanion' }, cost: '11' },
-        { pokemon: { name: 'Kilowattrel', id: 'kilowattrel' }, cost: '11' },
-        { pokemon: { name: 'Kartana', id: 'kartana' }, cost: '17' },
-        { pokemon: { name: 'Swampert-Mega', id: 'swampertmega' }, cost: '12' },
-        { pokemon: { name: 'Quaquaval', id: 'quaquaval' }, cost: '16' },
-        { pokemon: { name: 'Claydol', id: 'claydol' }, cost: '3' },
-      ],
-      picks: [
-        [
-          { pokemon: { name: 'Beartic', id: 'beartic' }, cost: '3' },
-          {
-            pokemon: { name: 'Qwilfish-Hisui', id: 'qwilfishhisui' },
-            cost: '7',
-          },
-          { pokemon: { name: 'Carracosta', id: 'carracosta' }, cost: '4' },
-        ],
-        [{ pokemon: { name: 'Swirlix', id: 'swirlix' }, cost: '1' }],
-        [],
-        [],
-      ],
-    });
-  }
-
   getDraftOrder(): Observable<
     {
       teamName: string;

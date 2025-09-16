@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, effect } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -51,13 +51,14 @@ export class BZTierListComponent implements OnInit {
   }
 
   constructor() {
-    this.tierListService.selectedDivision.valueChanges.subscribe(() => {
+    effect(() => {
+      this.tierListService.selectedDivision(); // This establishes the dependency
       this.menu = null;
     });
   }
 
   ngOnInit(): void {
-    this.tierListService.initialize('pdbls2');
+    this.tierListService.initialize('68c5a1c6f1ac9b585a542b8a');
   }
 
   updateFilter(selected: boolean, index?: number) {

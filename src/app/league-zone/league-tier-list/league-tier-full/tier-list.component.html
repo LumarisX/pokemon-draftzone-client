@@ -98,7 +98,7 @@
                     class="absolute left-full top-0 ml-2 bg-page border rounded menu z-50"
                   >
                     <mat-radio-group
-                      [formControl]="tierListService.selectedDivision"
+                      [(ngModel)]="tierListService.selectedDivision"
                       class="flex flex-col p-1 pr-2"
                     >
                       @for (option of divisionNames; track $index) {
@@ -116,11 +116,13 @@
       </div>
     </div>
     <div
-      class="tier-container max-w-full max-h-full flex-grow overflow-y-auto rounded-lg w-fit"
+      class="max-w-full max-h-full flex-grow overflow-y-auto rounded-lg w-fit"
     >
       <pdz-tier-list-core
         [tierGroups]="tierListService.sortedTierGroups()"
-        [isDrafted]="tierListService.isDrafted.bind(tierListService)"
+        [draftedPokemonIds]="
+          tierListService.draftedPokemonIdsForSelectedDivision()
+        "
         [typeInFilter]="tierListService.typeInFilter.bind(tierListService)"
         [makeBanString]="tierListService.makeBanString.bind(tierListService)"
       ></pdz-tier-list-core>

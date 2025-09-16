@@ -5,6 +5,8 @@ import {
   Output,
   inject,
   ElementRef,
+  OnChanges,
+  SimpleChanges,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
@@ -30,11 +32,11 @@ import { typeColor } from '../../../util/styling';
   templateUrl: './tier-list-core.component.html',
   styleUrls: ['./tier-list-core.component.scss'],
 })
-export class TierListCoreComponent {
+export class TierListCoreComponent implements OnChanges {
   private elRef = inject(ElementRef);
 
   @Input() tierGroups: LeagueTierGroup[] | null = [];
-  @Input() isDrafted: (pokemonId: string) => boolean = () => false;
+  @Input() draftedPokemonIds: Set<string> = new Set(); // New input
   @Input() typeInFilter: (pokemon: TierPokemon) => boolean = () => true;
   @Input() makeBanString: (banned?: {
     moves?: string[];
@@ -47,6 +49,12 @@ export class TierListCoreComponent {
   selectedPokemon: (TierPokemon & { tier: string }) | null = null;
   cardPosition = { top: '0px', left: '0px' };
   typeColor = typeColor;
+
+  ngOnChanges(changes: SimpleChanges): void {
+    // if (changes['draftedPokemonIds']) { // Removed debug log
+    //   console.log('TierListCoreComponent: draftedPokemonIds input changed:', changes['draftedPokemonIds'].currentValue);
+    // }
+  }
 
   selectPokemon(pokemon: TierPokemon, tier: string, event: MouseEvent) {
     if (this.selectedPokemon === pokemon) {
@@ -73,5 +81,10 @@ export class TierListCoreComponent {
   emitDraftPokemon() {
     if (this.selectedPokemon) this.draftPokemon.emit(this.selectedPokemon);
     this.selectedPokemon = null;
+  }
+
+  isPokemonDrafted(pokemonId: string): boolean {
+    // console.log('TierListCoreComponent: Checking if drafted:', pokemonId, this.draftedPokemonIds.has(pokemonId)); // Removed debug log
+    return this.draftedPokemonIds.has(pokemonId);
   }
 }

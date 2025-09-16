@@ -38,7 +38,7 @@ export class LeagueTierListService {
   tierGroups = signal<LeagueTierGroup[] | undefined>(undefined);
 
   sortBy = signal<(typeof this.SortOptions)[number]>('BST');
-  selectedDivision = new FormControl<string>('');
+  selectedDivision = signal<string | undefined>(undefined);
 
   readonly sortedTierGroups = computed(() => {
     const sortBy = this.sortBy();
@@ -68,6 +68,14 @@ export class LeagueTierListService {
     }));
   });
 
+  readonly draftedPokemonIdsForSelectedDivision = computed(() => {
+    const selectedDivision = this.selectedDivision();
+    if (!selectedDivision) return new Set<string>();
+    const drafted = this.drafted();
+    const draftedIds = new Set(drafted[selectedDivision]?.map(p => p.pokemonId) || []);
+    return draftedIds;
+  });
+
   constructor() {}
 
   initialize(leagueId: string): void {
@@ -79,7 +87,7 @@ export class LeagueTierListService {
         this.tierGroups.set(data.tierList);
         const divisionNames = Object.keys(data.divisions);
         if (divisionNames.length > 0) {
-          this.selectedDivision.setValue(divisionNames[0]);
+          this.selectedDivision.set(divisionNames[0]);
         }
       });
 
@@ -87,10 +95,17 @@ export class LeagueTierListService {
       .on<{ division: string; pokemonId: string }>('league.draft.added')
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe((data) => {
-        const drafted = this.drafted();
-        if (drafted[data.division]) {
-          drafted[data.division].push({ pokemonId: data.pokemonId });
-          this.drafted.set({ ...drafted });
+        const currentDrafted = this.drafted();
+        if (currentDrafted[data.division]) {
+          const updatedDivisionDrafts = [
+            ...currentDrafted[data.division],
+            { pokemonId: data.pokemonId }
+          ];
+
+          this.drafted.set({
+            ...currentDrafted,
+            [data.division]: updatedDivisionDrafts
+          });
         }
       });
   }
@@ -122,7 +137,7 @@ export class LeagueTierListService {
     this.filteredTypes.set([...this.selectedTypes()]);
   }
 
-  typeInFilter(pokemon: TierPokemon): boolean {
+  public typeInFilter(pokemon: TierPokemon): boolean {
     if (this.filteredTypes().length === 0) return true;
     return pokemon.types.some((type) => this.filteredTypes().includes(type));
   }
@@ -141,11 +156,11 @@ export class LeagueTierListService {
     return 'Banned: ' + bans.join(', ');
   }
 
-  isDrafted(pokemonId: string): boolean {
-    if (!this.selectedDivision.value) return false;
-    const drafted = this.drafted();
-    return drafted[this.selectedDivision.value].some(
-      (drafted) => drafted.pokemonId === pokemonId,
-    );
-  }
+  // isDrafted(pokemonId: string): boolean {
+  //   if (!this.selectedDivision.value) return false;
+  //   const drafted = this.drafted();
+  //   return drafted[this.selectedDivision.value].some(
+  //     (drafted) => drafted.pokemonId === pokemonId,
+  //   );
+  // }
 }

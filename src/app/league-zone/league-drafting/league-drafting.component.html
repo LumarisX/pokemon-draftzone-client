@@ -20,7 +20,7 @@
                   <div class="team-card-header">
                     <span
                       [ngClass]="{
-                        selectedTeam: pick.teamName === myTeamName,
+                        selectedTeam: pick.teamName === myTeam.name,
                       }"
                     >
                       {{ pick.teamName }}
@@ -65,25 +65,25 @@
         <span>Deimos Deoxys </span><mat-icon>arrow_drop_down</mat-icon>
       </button>
       <ol class="my-draft-pokemons draft-section-body">
-        @for (pick of myDraft.drafted; track $index) {
+        @for (pick of myTeam.draft; track $index) {
           <li class="my-draft-pokemon">
             <div class="my-pokemon-index">{{ $index + 1 }}</div>
             <div class="my-pokemon-sprite">
-              <pdz-sprite [pokemon]="pick.pokemon" flipped></pdz-sprite>
+              <pdz-sprite [pokemon]="pick" flipped></pdz-sprite>
             </div>
             <div class="my-pokemon-name fancy-font">
-              {{ pick.pokemon.name }}
+              {{ pick.name }}
             </div>
-            <div class="my-pokemon-tier fancy-font">{{ pick.cost }}</div>
+            <div class="my-pokemon-tier fancy-font">{{ pick.tier }}</div>
           </li>
         }
-        @for (picks of myDraft.picks; track $index) {
+        @for (picks of myTeam.picks; track $index) {
           <li class="my-draft-pokemon">
             <div class="my-pokemon-index">
-              {{ $index + myDraft.drafted.length + 1 }}
+              {{ $index + myTeam.draft.length + 1 }}
             </div>
             <div class="my-draft-picks">
-              @for (pick of picks; track pick.pokemon.id) {
+              @for (pick of picks; track pick.id) {
                 <div
                   class="my-draft-pick-container"
                   [ngClass]="{ backup: $index > 0 }"
@@ -98,19 +98,19 @@
                     [ngClass]="{ backup: $index > 0 }"
                   >
                     <div class="my-pokemon-sprite">
-                      <pdz-sprite [pokemon]="pick.pokemon" flipped></pdz-sprite>
+                      <pdz-sprite [pokemon]="pick" flipped></pdz-sprite>
                     </div>
                     <div class="pick-header">
                       <div class="pick-text">
                         {{ $index + 1 | numbersuffix }} Choice
                       </div>
                       <div class="my-pokemon-name fancy-font">
-                        {{ pick.pokemon.name }}
+                        {{ pick.name }}
                       </div>
                     </div>
 
                     <div class="my-pokemon-tier fancy-font">
-                      {{ pick.cost }}
+                      {{ pick.tier }}
                     </div>
                   </button>
                 </div>

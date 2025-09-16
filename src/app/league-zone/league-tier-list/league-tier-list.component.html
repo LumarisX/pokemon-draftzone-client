@@ -1,6 +1,6 @@
 <pdz-tier-list-core
   [tierGroups]="tierListService.sortedTierGroups()"
-  [isDrafted]="tierListService.isDrafted.bind(tierListService)"
+  [draftedPokemonIds]="tierListService.draftedPokemonIdsForSelectedDivision()"
   [typeInFilter]="tierListService.typeInFilter.bind(tierListService)"
   [makeBanString]="tierListService.makeBanString.bind(tierListService)"
   (draftPokemon)="draftPokemon.emit($event)"

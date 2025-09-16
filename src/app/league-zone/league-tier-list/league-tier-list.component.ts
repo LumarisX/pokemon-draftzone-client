@@ -76,11 +76,10 @@ export class LeagueTierListComponent implements OnDestroy {
       }
     });
 
-    this.tierListService.selectedDivision.valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.menu = null;
-      });
+    effect(() => {
+      this.tierListService.selectedDivision(); // This establishes the dependency
+      this.menu = null;
+    });
   }
 
   ngOnDestroy(): void {

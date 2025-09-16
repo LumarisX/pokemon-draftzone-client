@@ -17,7 +17,7 @@
                     <div
                       class="tier-entry"
                       [ngClass]="{
-                        drafted: isDrafted(pokemon.id),
+                        drafted: isPokemonDrafted(pokemon.id),
                         selected: selectedPokemon === pokemon
                       }"
                       (click)="selectPokemon(pokemon, tier.name, $event)"

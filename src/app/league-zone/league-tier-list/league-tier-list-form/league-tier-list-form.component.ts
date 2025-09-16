@@ -29,7 +29,7 @@ import {
   LeagueTier,
   LeagueTierGroup,
 } from '../../league-sign-up/league-sign-up.component';
-import { TierPokemon } from '../league-tier-old';
+import { TierPokemon } from '../league-tier-full';
 
 export type EditTierPokemon = TierPokemon & {
   orgTier?: CdkDragDrop<

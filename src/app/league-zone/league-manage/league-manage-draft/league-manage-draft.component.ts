@@ -52,13 +52,8 @@ export class LeagueManageDraftComponent implements OnInit {
         pickNumber: team.picks.length,
         divisionId: this.divisionId,
       })
-      .subscribe(() => {
-        // Refresh data
-        this.leagueZoneService
-          .getPicks(this.leagueId!, this.divisionId)
-          .subscribe((teams) => {
-            this.teams = teams;
-          });
+      .subscribe((response) => {
+        console.log(response);
       });
   }
 }
