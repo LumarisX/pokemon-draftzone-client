@@ -5,11 +5,13 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { RouterModule } from '@angular/router';
 import { MarkdownModule } from 'ngx-markdown';
 import { first } from 'rxjs';
-import { RuleCategory } from '../../../services/league-drafting.service';
-import { LeagueZoneService } from '../../../services/leagues/league-zone.service';
+import {
+  LeagueZoneService,
+  RuleCategory,
+} from '../../../services/leagues/league-zone.service';
 
 @Component({
-  selector: `bz-rules`,
+  selector: `pdz-league-rules`,
   templateUrl: `./rules.component.html`,
   standalone: true,
   styleUrl: `./rules.component.scss`,
@@ -21,7 +23,7 @@ import { LeagueZoneService } from '../../../services/leagues/league-zone.service
     MarkdownModule,
   ],
 })
-export class BZRulesComponent implements OnInit {
+export class LeagueRulesComponent implements OnInit {
   leagueService = inject(LeagueZoneService);
 
   leagueRules: RuleCategory[] = [];

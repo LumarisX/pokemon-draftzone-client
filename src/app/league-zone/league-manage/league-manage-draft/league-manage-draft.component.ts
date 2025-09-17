@@ -10,12 +10,22 @@ import {
 import { PokemonSelectComponent } from '../../../util/pokemon-select/pokemon-select.component';
 import { FormsModule } from '@angular/forms';
 import { Pokemon } from '../../../interfaces/draft';
+import { SpriteComponent } from '../../../images/sprite/sprite.component';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 type TeamForDraft = DraftTeam & { selectedPokemon?: Pokemon | null };
 
 @Component({
   selector: 'pdz-league-manage-draft',
-  imports: [CommonModule, PokemonSelectComponent, FormsModule],
+  imports: [
+    CommonModule,
+    PokemonSelectComponent,
+    FormsModule,
+    SpriteComponent,
+    MatButtonModule,
+    MatIconModule,
+  ],
   templateUrl: './league-manage-draft.component.html',
   styleUrl: './league-manage-draft.component.scss',
   standalone: true,
@@ -53,7 +63,11 @@ export class LeagueManageDraftComponent implements OnInit {
         divisionId: this.divisionId,
       })
       .subscribe((response) => {
+        team.selectedPokemon = null;
         console.log(response);
       });
   }
+
+  deleteDraftPick(team: TeamForDraft) {}
+  editDraftPick(team: TeamForDraft) {}
 }

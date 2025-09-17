@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { BZRulesComponent } from './league-rules-overview/league-rules-old/rules.component';
+import { LeagueRulesComponent } from './league-rules-overview/league-rules-old/rules.component';
 import { LeagueDraftingComponent } from './league-drafting/league-drafting.component';
 import { LeagueLandingComponent } from './league-landing/landing.component';
 import { LeagueManagePath } from './league-manage/league-manage-routing.module';
@@ -47,7 +47,7 @@ const routes: Routes = [
   // },
   {
     path: ':leagueId/rules',
-    component: BZRulesComponent,
+    component: LeagueRulesComponent,
   },
   {
     path: ':leagueId/tier-list',

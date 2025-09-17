@@ -72,7 +72,9 @@ export class LeagueTierListService {
     const selectedDivision = this.selectedDivision();
     if (!selectedDivision) return new Set<string>();
     const drafted = this.drafted();
-    const draftedIds = new Set(drafted[selectedDivision]?.map(p => p.pokemonId) || []);
+    const draftedIds = new Set(
+      drafted[selectedDivision]?.map((p) => p.pokemonId) || [],
+    );
     return draftedIds;
   });
 
@@ -95,16 +97,17 @@ export class LeagueTierListService {
       .on<{ division: string; pokemonId: string }>('league.draft.added')
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe((data) => {
+        console.log('league.draft.added', data);
         const currentDrafted = this.drafted();
         if (currentDrafted[data.division]) {
           const updatedDivisionDrafts = [
             ...currentDrafted[data.division],
-            { pokemonId: data.pokemonId }
+            { pokemonId: data.pokemonId },
           ];
 
           this.drafted.set({
             ...currentDrafted,
-            [data.division]: updatedDivisionDrafts
+            [data.division]: updatedDivisionDrafts,
           });
         }
       });

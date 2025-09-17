@@ -107,11 +107,7 @@ export class LeagueTierListComponent implements OnInit {
   cardPosition = { top: '0px', left: '0px' };
   typeColor = typeColor;
 
-  ngOnChanges(changes: SimpleChanges): void {
-    // if (changes['draftedPokemonIds']) { // Removed debug log
-    //   console.log('TierListCoreComponent: draftedPokemonIds input changed:', changes['draftedPokemonIds'].currentValue);
-    // }
-  }
+  
 
   selectPokemon(pokemon: TierPokemon, tier: string, event: MouseEvent) {
     if (this.selectedPokemon?.id === pokemon.id) {

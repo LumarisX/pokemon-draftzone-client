@@ -14,9 +14,10 @@
                 <div
                   class="team-card"
                   [ngClass]="{
-                    alternate: !pick.pokemon && pick.status !== 'Skipped',
+                    alternate: !pick.pokemon,
                   }"
                 >
+                  <!-- && pick.skipTime !== 'Skipped', -->
                   <div class="team-card-header">
                     <span
                       [ngClass]="{
@@ -29,18 +30,26 @@
                   <div
                     class="team-card-body"
                     [ngClass]="{
-                      picking: pick.status === 'Picking',
+                      picking: pick.skipTime,
                     }"
                   >
                     <div class="team-card-icon">
                       @if (pick.pokemon) {
                         <pdz-sprite [pokemon]="pick.pokemon"></pdz-sprite>
+                      } @else if (pick.skipTime) {
+                        {{ timeUntil(pick.skipTime) }}
                       } @else {
                         <mat-icon svgIcon="pokeball"></mat-icon>
                       }
                     </div>
                     <div class="team-card-name">
-                      {{ pick.pokemon?.name || pick.status || "Upcoming" }}
+                      @if (pick.pokemon?.name) {
+                        {{ pick.pokemon!.name }}
+                      } @else if (pick.skipTime) {
+                        Picking
+                      } @else {
+                        Upcoming
+                      }
                     </div>
                   </div>
                 </div>

@@ -4,7 +4,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { Pokemon } from '../../interfaces/draft';
 import { TierPokemon } from '../../interfaces/tier-pokemon.interface';
-import { LeagueDraftingService } from '../../services/league-drafting.service';
 import {
   LeaguePokemon,
   LeagueTeam,
@@ -28,13 +27,12 @@ import { LeagueTierListComponent } from '../league-tier-list/league-tier-list.co
 export class LeagueDraftingComponent implements OnInit {
   draftOrder!: {
     teamName: string;
-    status?: string;
     pokemon?: Pokemon;
+    skipTime?: Date;
   }[][];
 
   myTeam!: LeagueTeam;
 
-  draftingService = inject(LeagueDraftingService);
   leagueService = inject(LeagueZoneService);
   ngOnInit(): void {
     // Placeholder IDs - user will decide how to obtain these later
@@ -45,9 +43,12 @@ export class LeagueDraftingComponent implements OnInit {
       this.myTeam = data;
     });
 
-    this.draftingService
-      .getDraftOrder()
-      .subscribe((data) => (this.draftOrder = data));
+    this.leagueService
+      .getDraftOrder('68c5a1c6f1ac9b585a542b86')
+      .subscribe((data) => {
+        console.log(data);
+        this.draftOrder = data;
+      });
   }
 
   moveUp(picks: LeaguePokemon[], index: number) {
@@ -63,5 +64,25 @@ export class LeagueDraftingComponent implements OnInit {
       id: pokemon.id,
       tier: pokemon.tier,
     });
+  }
+
+  timeUntil(time: Date | string | undefined): string | null {
+    if (!time) return null;
+    const targetTime = new Date(time);
+    const now = new Date();
+    const diffMs = targetTime.getTime() - now.getTime();
+
+    if (diffMs <= 0) {
+      return '0m'; // Or some other indicator for past/current time
+    }
+
+    const diffMinutes = Math.round(diffMs / (1000 * 60));
+
+    if (diffMinutes < 60) {
+      return `${diffMinutes}m`;
+    } else {
+      const diffHours = diffMs / (1000 * 60 * 60);
+      return `${diffHours.toFixed(1)}h`;
+    }
   }
 }

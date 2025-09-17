@@ -1,4 +1,10 @@
-import { Injectable, effect, inject, signal, WritableSignal } from '@angular/core';
+import {
+  Injectable,
+  effect,
+  inject,
+  signal,
+  WritableSignal,
+} from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { filter, map, mergeMap } from 'rxjs/operators';
@@ -7,12 +13,22 @@ import { defenseData } from '../../league-zone/league-ghost';
 import { TeamPokemon } from '../../league-zone/league-teams/league-team-card/league-team-card.component';
 import { League } from '../../league-zone/league.interface';
 import { ApiService } from '../api.service';
-import { RuleCategory } from '../league-drafting.service';
 import { LeagueTierGroup } from '../../interfaces/tier-pokemon.interface';
 import { Pokemon } from '../../interfaces/pokemon';
 import { WebSocketService } from '../ws.service';
 
 const ROOTPATH = 'leagues';
+
+type DraftRound = {
+  teamName: string;
+  status?: string;
+  pokemon?: Pokemon;
+}[];
+
+export type RuleCategory = {
+  header: string;
+  details: string[];
+};
 
 export type LeagueSignUp = {
   name: string;
@@ -24,8 +40,7 @@ export type LeagueSignUp = {
 };
 
 export type DraftPick = {
-  pokemonId: string;
-  tier: string;
+  pokemon: LeaguePokemon;
   timestamp: Date;
   picker: string;
 };
@@ -61,7 +76,7 @@ export class LeagueZoneService {
   constructor() {
     this.webSocketService.connect('battlezone');
 
-    this.webSocketService.on<any>('league.draft.added').subscribe(data => {
+    this.webSocketService.on<any>('league.draft.added').subscribe((data) => {
       this.draftPick.set(data);
     });
 
@@ -76,7 +91,7 @@ export class LeagueZoneService {
           return route;
         }),
         filter((route) => route.outlet === 'primary'),
-        mergeMap((route) => route.paramMap)
+        mergeMap((route) => route.paramMap),
       )
       .subscribe((paramMap) => {
         const leagueId = paramMap.get('leagueId');
@@ -107,15 +122,15 @@ export class LeagueZoneService {
 
   getRules(leagueId: string): Observable<RuleCategory[]> {
     return this.apiService.get<RuleCategory[]>(
-      `${ROOTPATH}/${leagueId}/rules`,
-      false
+      `${ROOTPATH}/${this.leagueId()}/rules`,
+      false,
     );
   }
 
   getTeamDetails(leagueId: string, teamId: string) {
     return this.apiService.get<LeagueTeam>(
-      `${ROOTPATH}/${leagueId}/teams/${teamId}`,
-      true
+      `${ROOTPATH}/${this.leagueId()}/teams/${teamId}`,
+      true,
     );
   }
 
@@ -123,13 +138,13 @@ export class LeagueZoneService {
     return this.apiService.get<{
       tierList: LeagueTierGroup[];
       divisions: { [key: string]: { pokemonId: string; teamId: string }[] };
-    }>(`${ROOTPATH}/${leagueId}/tier-list`, false);
+    }>(`${ROOTPATH}/${this.leagueId()}/tier-list`, false);
   }
 
   getPicks(leagueId: string, divisionId: string) {
     return this.apiService.get<DraftTeam[]>(
       `${ROOTPATH}/${leagueId}/${divisionId}/picks`,
-      false
+      false,
     );
   }
 
@@ -178,6 +193,13 @@ export class LeagueZoneService {
         diff,
       },
     });
+  }
+
+  getDraftOrder(divisionId: string) {
+    return this.apiService.get<DraftRound[]>(
+      `${ROOTPATH}/${this.leagueId()}/division/${divisionId}/order`,
+      false,
+    );
   }
 
   getMatchups() {

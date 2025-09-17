@@ -25,6 +25,125 @@
   min-width: 4rem;
   font-weight: bold;
   border-color: inherit;
+  font-family: var(--pdz-font-fancy);
+}
+
+.tier-entry-container {
+  display: flex;
+  height: 100%;
+}
+
+.tier-entry {
+  width: 10rem;
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  padding: 0.25rem;
+  border-width: 0px 0px 1px 0px;
+  border-color: var(--mat-sys-outline-variant);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  position: relative;
+  gap: 0.5rem;
+}
+
+.restricted-icon {
+  right: 0px;
+  bottom: 0px;
+  color: gray;
+  transform: scale(0.75);
+  position: absolute;
+}
+
+.tier-container {
+  border-width: 2px;
+  border-color: var(--mat-sys-outline);
+}
+
+.tier-sprite {
+  height: 40px;
+  width: 40px;
+}
+
+.drafted {
+  .tier-sprite {
+    filter: grayscale(100%);
+    opacity: 70%;
+  }
+  text-decoration: line-through;
+}
+
+.menu {
+  box-shadow: var(--pdz-level2);
+  z-index: 2100;
+}
+
+.tier-label {
+  background-color: var(--mat-sys-primary);
+  color: var(--mat-sys-on-primary);
+  text-align: center;
+  min-width: 4rem;
+  position: sticky;
+  top: 0px;
+  z-index: 2000;
+  font-weight: bold;
+  border-width: 0px 0px 2px 0px;
+  border-color: var(--mat-sys-outline);
+  font-family: var(--pdz-font-fancy);
+}
+
+.backbutton {
+  @include mat.button-overrides(
+    (
+      filled-horizontal-padding: 1rem,
+      filled-container-height: 2rem,
+      filled-label-text-size: 0.75rem,
+    )
+  );
+}
+
+.apply-wrapper {
+  width: 100%;
+  padding: 3px;
+  border-radius: inherit;
+
+  .applybutton {
+    width: 100%;
+    text-align: center;
+    border-radius: inherit;
+    background-color: var(--mat-sys-primary);
+    color: var(--mat-sys-on-primary);
+    &:hover {
+      background-color: var(--mat-sys-secondary);
+    }
+  }
+}
+
+.tier-group {
+  &:not(:first-child) {
+    border-width: 0px 0px 0px 3px;
+    border-left-color: var(--mat-sys-outline);
+  }
+
+  display: flex;
+  flex-direction: column;
+}
+
+.tier {
+  &:not(:first-child) {
+    border-width: 0px 0px 0px 2px;
+    border-color: var(--mat-sys-outline);
+  }
+}
+
+.tier-group-label {
+  background-color: var(--mat-sys-primary);
+  color: var(--mat-sys-on-primary);
+  text-align: center;
+  height: 24px;
+  min-width: 4rem;
+  font-weight: bold;
+  border-color: inherit;
   font-family:
     Nasalization RG,
     sans-serif;

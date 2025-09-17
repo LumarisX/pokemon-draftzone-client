@@ -4,21 +4,39 @@
     <table class="draft-table">
       <thead class="draft-table-header-group">
         <tr class="draft-table-row">
+          <th scope="col" class="draft-table-header">Sprite</th>
           <th scope="col" class="draft-table-header">Pokemon</th>
           <th scope="col" class="draft-table-header">Tier</th>
           <th scope="col" class="draft-table-header">Timestamp</th>
           <th scope="col" class="draft-table-header">Picker</th>
+          <th scope="col" class="draft-table-header"></th>
         </tr>
       </thead>
       <tbody class="draft-table-body">
-        @for (pick of team.picks; track pick.pokemonId) {
+        @for (pick of team.picks; track pick.pokemon.id) {
           <tr class="draft-table-row">
-            <td class="draft-table-cell">{{ pick.pokemonId }}</td>
-            <td class="draft-table-cell">{{ pick.tier }}</td>
+            <td class="draft-table-cell">
+              <pdz-sprite
+                [pokemon]="pick.pokemon"
+                size="3rem"
+                flipped
+              ></pdz-sprite>
+            </td>
+
+            <td class="draft-table-cell">{{ pick.pokemon.name }}</td>
+            <td class="draft-table-cell">{{ pick.pokemon.tier }}</td>
             <td class="draft-table-cell">
               {{ pick.timestamp | date: "short" }}
             </td>
             <td class="draft-table-cell">{{ pick.picker }}</td>
+            <td class="draft-table-cell">
+              <button matIconButton (click)="editDraftPick(team)">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button matIconButton (click)="deleteDraftPick(team)">
+                <mat-icon>delete_forever</mat-icon>
+              </button>
+            </td>
           </tr>
         } @empty {
           <tr class="draft-table-row">
