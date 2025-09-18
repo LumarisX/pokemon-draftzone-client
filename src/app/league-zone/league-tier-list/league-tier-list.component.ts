@@ -8,6 +8,7 @@ import {
   Output,
   EventEmitter,
   SimpleChanges,
+  Input,
 } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -21,6 +22,8 @@ import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { TierPokemon } from '../../interfaces/tier-pokemon.interface';
 import { LeagueTierListService } from '../../services/leagues/league-tier-list.service';
 import { typeColor } from '../../util/styling';
+import { LeaguePokemon } from '../../services/leagues/league-zone.service';
+import { Pokemon } from '../../interfaces/pokemon';
 
 @Component({
   selector: 'pdz-league-tier-list',
@@ -65,15 +68,17 @@ export class LeagueTierListComponent implements OnInit {
     return Object.keys(this.tierListService.drafted());
   }
 
-  constructor() {
-    effect(() => {
-      this.tierListService.selectedDivision(); // This establishes the dependency
-      this.menu = null;
-    });
+  get pokemonStats(): [string, number][] {
+    if (!this.selectedPokemon) return [];
+    return Object.entries(this.selectedPokemon.stats);
   }
 
   ngOnInit(): void {
     this.tierListService.initialize('pdbls2');
+    effect(() => {
+      this.tierListService.selectedDivision(); // This establishes the dependency
+      this.menu = null;
+    });
   }
 
   updateFilter(selected: boolean, index?: number) {
@@ -101,13 +106,17 @@ export class LeagueTierListComponent implements OnInit {
     return this.tierListService.makeBanString.bind(this.tierListService);
   }
 
-  @Output() draftPokemon = new EventEmitter<TierPokemon & { tier: string }>();
+  @Input()
+  buttonText?: string;
 
+  @Output() pokemonSelected = new EventEmitter<
+    TierPokemon & { tier: string }
+  >();
+
+  showDrafted: boolean = true;
   selectedPokemon: (TierPokemon & { tier: string }) | null = null;
   cardPosition = { top: '0px', left: '0px' };
   typeColor = typeColor;
-
-  
 
   selectPokemon(pokemon: TierPokemon, tier: string, event: MouseEvent) {
     if (this.selectedPokemon?.id === pokemon.id) {
@@ -132,12 +141,12 @@ export class LeagueTierListComponent implements OnInit {
   }
 
   emitDraftPokemon() {
-    if (this.selectedPokemon) this.draftPokemon.emit(this.selectedPokemon);
+    if (this.selectedPokemon) this.pokemonSelected.emit(this.selectedPokemon);
     this.selectedPokemon = null;
   }
 
-  isPokemonDrafted(pokemonId: string): boolean {
-    // console.log('TierListCoreComponent: Checking if drafted:', pokemonId, this.draftedPokemonIds.has(pokemonId)); // Removed debug log
-    return this.draftedPokemonIds.has(pokemonId);
+  isPokemonDrafted(pokemon: Pokemon): boolean {
+    if (this.draftedPokemonIds.has(pokemon.id)) return true;
+    return false;
   }
 }

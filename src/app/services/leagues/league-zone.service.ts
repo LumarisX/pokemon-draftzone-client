@@ -70,7 +70,7 @@ export class LeagueZoneService {
   private router = inject(Router);
   private webSocketService = inject(WebSocketService);
 
-  leagueId = signal<string | null>(null);
+  leagueKey = signal<string | null>(null);
   draftPick: WritableSignal<any> = signal<any>(null);
 
   constructor() {
@@ -95,11 +95,11 @@ export class LeagueZoneService {
       )
       .subscribe((paramMap) => {
         const leagueId = paramMap.get('leagueId');
-        this.leagueId.set(leagueId);
+        this.leagueKey.set(leagueId);
       });
 
     effect((onCleanup) => {
-      const leagueId = this.leagueId();
+      const leagueId = this.leagueKey();
       if (leagueId) {
         this.webSocketService
           .sendMessage('league.subscribe', { leagueId })
@@ -122,14 +122,27 @@ export class LeagueZoneService {
 
   getRules(leagueId: string): Observable<RuleCategory[]> {
     return this.apiService.get<RuleCategory[]>(
-      `${ROOTPATH}/${this.leagueId()}/rules`,
+      `${ROOTPATH}/${this.leagueKey()}/rules`,
       false,
     );
   }
 
   getTeamDetails(leagueId: string, teamId: string) {
     return this.apiService.get<LeagueTeam>(
-      `${ROOTPATH}/${this.leagueId()}/teams/${teamId}`,
+      `${ROOTPATH}/${this.leagueKey()}/teams/${teamId}`,
+      true,
+    );
+  }
+
+  getDraftingDetails(divisionId: string) {
+    return this.apiService.get<{
+      order: DraftRound[];
+      teams: LeagueTeam[];
+      status: string;
+      skipTime: Date;
+      round: number;
+    }>(
+      `${ROOTPATH}/${this.leagueKey()}/divisions/${divisionId}/drafting`,
       true,
     );
   }
@@ -138,13 +151,26 @@ export class LeagueZoneService {
     return this.apiService.get<{
       tierList: LeagueTierGroup[];
       divisions: { [key: string]: { pokemonId: string; teamId: string }[] };
-    }>(`${ROOTPATH}/${this.leagueId()}/tier-list`, false);
+    }>(`${ROOTPATH}/${this.leagueKey()}/tier-list`, false);
   }
 
   getPicks(leagueId: string, divisionId: string) {
     return this.apiService.get<DraftTeam[]>(
       `${ROOTPATH}/${leagueId}/${divisionId}/picks`,
       false,
+    );
+  }
+
+  setPicks(
+    leagueKey: string,
+    divisionId: string,
+    teamId: string,
+    picks: string[][],
+  ) {
+    return this.apiService.post(
+      `${ROOTPATH}/${this.leagueKey()}/divisions/${divisionId}/teams/${teamId}/picks`,
+      true,
+      { picks },
     );
   }
 
@@ -197,7 +223,7 @@ export class LeagueZoneService {
 
   getDraftOrder(divisionId: string) {
     return this.apiService.get<DraftRound[]>(
-      `${ROOTPATH}/${this.leagueId()}/division/${divisionId}/order`,
+      `${ROOTPATH}/${this.leagueKey()}/division/${divisionId}/order`,
       false,
     );
   }

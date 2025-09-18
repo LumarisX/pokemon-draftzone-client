@@ -70,7 +70,6 @@
     filter: grayscale(100%);
     opacity: 70%;
   }
-  text-decoration: line-through;
 }
 
 .menu {
@@ -204,11 +203,12 @@
     filter: grayscale(100%);
     opacity: 70%;
   }
-  text-decoration: line-through;
+  background-color: var(--mat-sys-surface-variant);
+  color: var(--mat-sys-on-surface);
 }
 
 .selected {
-  box-shadow: var(--pdz-level-2);
+  box-shadow: var(--pdz-level2);
 }
 
 .menu {
@@ -293,5 +293,44 @@
     color: var(--mat-sys-on-primary);
     border-radius: 1rem;
     box-shadow: --pdz-level2;
+    &:disabled {
+      background-color: gray;
+      color: white;
+    }
   }
+}
+
+.stats-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  justify-content: center;
+}
+
+.stat-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: x-small;
+}
+
+.stat-name {
+  margin-bottom: 0.1rem;
+  font-weight: bold;
+}
+
+.stat-value {
+  background-color: var(--mat-sys-surface-container-high);
+  padding: 0.1rem 0.25rem;
+  border-radius: 4px;
+  box-shadow: var(--pdz-level2);
+}
+
+.card-pokemon-name {
+  font-family: var(--pdz-font-fancy);
+  font-size: 1.2rem;
+  line-height: 1.3rem;
+  font-weight: bold;
+  text-align: center;
 }

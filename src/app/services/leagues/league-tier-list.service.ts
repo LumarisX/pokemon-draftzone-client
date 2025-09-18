@@ -78,8 +78,6 @@ export class LeagueTierListService {
     return draftedIds;
   });
 
-  constructor() {}
-
   initialize(leagueId: string): void {
     this.leagueService
       .getTierList(leagueId)

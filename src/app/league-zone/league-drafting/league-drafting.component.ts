@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
+import { Subject, Subscription } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { Pokemon } from '../../interfaces/draft';
 import { TierPokemon } from '../../interfaces/tier-pokemon.interface';
@@ -24,31 +26,63 @@ import { LeagueTierListComponent } from '../league-tier-list/league-tier-list.co
   templateUrl: './league-drafting.component.html',
   styleUrls: ['./league-drafting.component.scss', '../league.scss'],
 })
-export class LeagueDraftingComponent implements OnInit {
+export class LeagueDraftingComponent implements OnInit, OnDestroy {
   draftOrder!: {
     teamName: string;
     pokemon?: Pokemon;
     skipTime?: Date;
   }[][];
 
-  myTeam!: LeagueTeam;
+  teams: LeagueTeam[] = [];
+  selectedTeam!: LeagueTeam;
+  private picksChanged = new Subject<void>();
+  private picksSubscription!: Subscription;
+
+  leagueId = 'pdbls2';
+  teamId = '68c44121b0a184364eb03db9'; // Example ID, replace with actual logic later
+  divisionId = '68c5a1c6f1ac9b585a542b86';
+
+  selectedPick: number = 0;
+
+  isDropdownOpen: boolean = false;
+
+  toggleDropdown() {
+    this.isDropdownOpen = !this.isDropdownOpen;
+  }
+
+  selectTeamAndClose(team: LeagueTeam) {
+    this.selectedTeam = team;
+    this.isDropdownOpen = false;
+  }
 
   leagueService = inject(LeagueZoneService);
   ngOnInit(): void {
-    // Placeholder IDs - user will decide how to obtain these later
-    const leagueId = 'pdbls2'; // Example ID, replace with actual logic later
-    const teamId = '68c44121b0a184364eb03db9'; // Example ID, replace with actual logic later
-
-    this.leagueService.getTeamDetails(leagueId, teamId).subscribe((data) => {
-      this.myTeam = data;
+    this.leagueService.getDraftingDetails(this.divisionId).subscribe((data) => {
+      this.draftOrder = data.order;
+      this.teams = data.teams;
+      this.selectedTeam = this.teams[0];
+      this.picksSubscription = this.picksChanged
+        .pipe(debounceTime(5000))
+        .subscribe(() => {
+          console.log(this.selectedTeam.picks);
+          this.leagueService
+            .setPicks(
+              this.leagueId,
+              this.divisionId,
+              this.teamId,
+              this.selectedTeam.picks.map((round) =>
+                round.map((pick) => pick.id),
+              ),
+            )
+            .subscribe((response) => {
+              console.log(response);
+            });
+        });
     });
+  }
 
-    this.leagueService
-      .getDraftOrder('68c5a1c6f1ac9b585a542b86')
-      .subscribe((data) => {
-        console.log(data);
-        this.draftOrder = data;
-      });
+  ngOnDestroy(): void {
+    this.picksSubscription.unsubscribe();
   }
 
   moveUp(picks: LeaguePokemon[], index: number) {
@@ -56,14 +90,21 @@ export class LeagueDraftingComponent implements OnInit {
     const temp = picks[index];
     picks[index] = picks[index - 1];
     picks[index - 1] = temp;
+    this.picksChanged.next();
   }
 
-  draftPokemon(pokemon: TierPokemon & { tier: string }) {
-    this.myTeam.picks[0].push({
+  deleteChoice(picks: LeaguePokemon[], index: number) {
+    picks.splice(index, 1);
+    this.picksChanged.next();
+  }
+
+  addChoice(pokemon: TierPokemon & { tier: string }) {
+    this.selectedTeam.picks[this.selectedPick].push({
       name: pokemon.name,
       id: pokemon.id,
       tier: pokemon.tier,
     });
+    this.picksChanged.next();
   }
 
   timeUntil(time: Date | string | undefined): string | null {
