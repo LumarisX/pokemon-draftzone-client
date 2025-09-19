@@ -14,6 +14,7 @@ import {
 import { NumberSuffixPipe } from '../../util/pipes/number-suffix.pipe';
 import { LeagueTierListComponent } from '../league-tier-list/league-tier-list.component';
 import { LoadingComponent } from '../../images/loading/loading.component';
+import { LeagueNotificationsComponent } from '../league-notifications/league-notifications.component';
 
 @Component({
   selector: 'pdz-league-drafting',
@@ -24,6 +25,7 @@ import { LoadingComponent } from '../../images/loading/loading.component';
     MatIconModule,
     NumberSuffixPipe,
     LoadingComponent,
+    LeagueNotificationsComponent,
   ],
   templateUrl: './league-drafting.component.html',
   styleUrls: ['./league-drafting.component.scss', '../league.scss'],

@@ -1,20 +1,15 @@
-import {
-  Injectable,
-  effect,
-  inject,
-  signal,
-  WritableSignal,
-} from '@angular/core';
+import { effect, inject, Injectable, signal } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { filter, map, mergeMap } from 'rxjs/operators';
 import { getRandomPokemon } from '../../data/namedex';
+import { Pokemon } from '../../interfaces/pokemon';
+import { LeagueTierGroup } from '../../interfaces/tier-pokemon.interface';
 import { defenseData } from '../../league-zone/league-ghost';
 import { TeamPokemon } from '../../league-zone/league-teams/league-team-card/league-team-card.component';
 import { League } from '../../league-zone/league.interface';
 import { ApiService } from '../api.service';
-import { LeagueTierGroup } from '../../interfaces/tier-pokemon.interface';
-import { Pokemon } from '../../interfaces/pokemon';
+import { LeagueNotificationService } from '../league-notification.service';
 import { WebSocketService } from '../ws.service';
 
 const ROOTPATH = 'leagues';
@@ -68,22 +63,30 @@ export type LeagueTeam = {
 })
 export class LeagueZoneService {
   private apiService = inject(ApiService);
+  private notificationService = inject(LeagueNotificationService);
   private router = inject(Router);
   private webSocketService = inject(WebSocketService);
 
   leagueKey = signal<string | null>(null);
   divisionKey = signal<string | null>(null);
-  draftPick: WritableSignal<any> = signal<any>(null);
 
   constructor() {
     this.webSocketService.connect('battlezone');
-
-    this.webSocketService.on<any>('league.draft.added').subscribe((data) => {
-      this.draftPick.set(data);
-    });
+    this.webSocketService
+      .on<{
+        divisionKey: string;
+        team: { id: string; name: string };
+        pokemon: { id: string; name: string };
+      }>('league.draft.added')
+      .subscribe((data) => {
+        this.notificationService.show(
+          `${data.team.name} drafted ${data.pokemon.name}!`,
+          'success',
+        );
+      });
 
     this.webSocketService.on<any>('league.draft.counter').subscribe((data) => {
-      console.log(data);
+      console.log('league.draft.counter', data);
     });
 
     this.router.events
@@ -122,10 +125,6 @@ export class LeagueZoneService {
         }
       });
     });
-  }
-
-  getDraftPick() {
-    return this.draftPick.asReadonly();
   }
 
   getRules(leagueKey: string): Observable<RuleCategory[]> {
@@ -171,10 +170,10 @@ export class LeagueZoneService {
     }>(`${ROOTPATH}/${this.leagueKey()}/tier-list`, false, params);
   }
 
-  getPicks(leagueKey: string, divisionId: string) {
+  getPicks() {
     return this.apiService.get<DraftTeam[]>(
-      `${ROOTPATH}/${leagueKey}/${divisionId}/picks`,
-      false,
+      `${ROOTPATH}/${this.leagueKey()}/divisions/${this.divisionKey()}/picks`,
+      true,
     );
   }
 

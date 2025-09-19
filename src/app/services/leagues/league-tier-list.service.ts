@@ -95,7 +95,11 @@ export class LeagueTierListService {
     this.getTierList();
 
     this.wsService
-      .on<{ division: string; pokemonId: string }>('league.draft.added')
+      .on<{
+        division: string;
+        team: { id: string; name: string };
+        pokemon: { id: string; name: string };
+      }>('league.draft.added')
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe((data) => {
         console.log('league.draft.added', data);
@@ -103,7 +107,7 @@ export class LeagueTierListService {
         if (currentDrafted[data.division]) {
           const updatedDivisionDrafts = [
             ...currentDrafted[data.division],
-            { pokemonId: data.pokemonId },
+            { pokemonId: data.pokemon.id },
           ];
 
           this.drafted.set({

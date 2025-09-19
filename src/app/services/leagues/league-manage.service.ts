@@ -18,4 +18,8 @@ export class LeagueManageService {
   ) {
     return this.apiService.post(`leagues/${leagueId}/setdraft`, true, pick);
   }
+
+  canManage(leagueKey: string) {
+    return this.apiService.get<string[]>(`leagues/${leagueKey}/roles`, true);
+  }
 }
