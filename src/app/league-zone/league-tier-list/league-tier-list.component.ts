@@ -72,12 +72,15 @@ export class LeagueTierListComponent implements OnInit {
     return Object.entries(this.selectedPokemon.stats);
   }
 
-  ngOnInit(): void {
-    this.tierListService.initialize();
+  constructor() {
     effect(() => {
       this.tierListService.selectedDivision();
       this.menu = null;
     });
+  }
+
+  ngOnInit(): void {
+    this.tierListService.initialize();
   }
 
   updateFilter(selected: boolean, index?: number) {

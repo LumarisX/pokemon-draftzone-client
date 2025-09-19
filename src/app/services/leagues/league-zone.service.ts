@@ -82,6 +82,10 @@ export class LeagueZoneService {
       this.draftPick.set(data);
     });
 
+    this.webSocketService.on<any>('league.draft.counter').subscribe((data) => {
+      console.log(data);
+    });
+
     this.router.events
       .pipe(
         filter((event) => event instanceof NavigationEnd),

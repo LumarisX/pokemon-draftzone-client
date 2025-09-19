@@ -13,6 +13,7 @@ import {
 } from '../../services/leagues/league-zone.service';
 import { NumberSuffixPipe } from '../../util/pipes/number-suffix.pipe';
 import { LeagueTierListComponent } from '../league-tier-list/league-tier-list.component';
+import { LoadingComponent } from '../../images/loading/loading.component';
 
 @Component({
   selector: 'pdz-league-drafting',
@@ -22,6 +23,7 @@ import { LeagueTierListComponent } from '../league-tier-list/league-tier-list.co
     SpriteComponent,
     MatIconModule,
     NumberSuffixPipe,
+    LoadingComponent,
   ],
   templateUrl: './league-drafting.component.html',
   styleUrls: ['./league-drafting.component.scss', '../league.scss'],
@@ -45,6 +47,8 @@ export class LeagueDraftingComponent implements OnInit, OnDestroy {
   leagueId = 'pdbls2';
   teamId = '68c44121b0a184364eb03db9'; // Example ID, replace with actual logic later
   divisionId = '68c5a1c6f1ac9b585a542b86';
+
+  isLoading: boolean = true;
 
   currentPick: {
     round: number;
@@ -78,6 +82,7 @@ export class LeagueDraftingComponent implements OnInit, OnDestroy {
       this.divisionName = data.divisionName;
       this.currentPick = data.currentPick;
       this.canDraftTeams = data.canDraft;
+      this.isLoading = false;
       console.log(this.currentPick);
       this.picksSubscription = this.picksChanged
         .pipe(debounceTime(5000))
