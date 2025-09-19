@@ -57,6 +57,7 @@ export type LeaguePokemon = Pokemon & {
 
 export type LeagueTeam = {
   name: string;
+  id: string;
   logoUrl?: string;
   draft: LeaguePokemon[];
   picks: LeaguePokemon[][];
@@ -71,6 +72,7 @@ export class LeagueZoneService {
   private webSocketService = inject(WebSocketService);
 
   leagueKey = signal<string | null>(null);
+  divisionKey = signal<string | null>(null);
   draftPick: WritableSignal<any> = signal<any>(null);
 
   constructor() {
@@ -94,22 +96,24 @@ export class LeagueZoneService {
         mergeMap((route) => route.paramMap),
       )
       .subscribe((paramMap) => {
-        const leagueId = paramMap.get('leagueId');
-        this.leagueKey.set(leagueId);
+        const leagueKey = paramMap.get('leagueKey');
+        this.leagueKey.set(leagueKey);
+        const divisionKey = paramMap.get('divisionKey');
+        this.divisionKey.set(divisionKey);
       });
 
     effect((onCleanup) => {
-      const leagueId = this.leagueKey();
-      if (leagueId) {
+      const leagueKey = this.leagueKey();
+      if (leagueKey) {
         this.webSocketService
-          .sendMessage('league.subscribe', { leagueId })
+          .sendMessage('league.subscribe', { leagueKey })
           .subscribe();
       }
 
       onCleanup(() => {
-        if (leagueId) {
+        if (leagueKey) {
           this.webSocketService
-            .sendMessage('league.unsubscribe', { leagueId })
+            .sendMessage('league.unsubscribe', { leagueKey })
             .subscribe();
         }
       });
@@ -120,57 +124,69 @@ export class LeagueZoneService {
     return this.draftPick.asReadonly();
   }
 
-  getRules(leagueId: string): Observable<RuleCategory[]> {
+  getRules(leagueKey: string): Observable<RuleCategory[]> {
     return this.apiService.get<RuleCategory[]>(
       `${ROOTPATH}/${this.leagueKey()}/rules`,
       false,
     );
   }
 
-  getTeamDetails(leagueId: string, teamId: string) {
+  getTeamDetails(leagueKey: string, teamId: string) {
     return this.apiService.get<LeagueTeam>(
       `${ROOTPATH}/${this.leagueKey()}/teams/${teamId}`,
       true,
     );
   }
 
-  getDraftingDetails(divisionId: string) {
+  getDraftingDetails() {
     return this.apiService.get<{
+      leagueName: string;
+      divisionName: string;
       order: DraftRound[];
       teams: LeagueTeam[];
       status: string;
       skipTime: Date;
-      round: number;
+      currentPick: {
+        round: number;
+        position: number;
+      };
+      canDraft: string[];
     }>(
-      `${ROOTPATH}/${this.leagueKey()}/divisions/${divisionId}/drafting`,
+      `${ROOTPATH}/${this.leagueKey()}/divisions/${this.divisionKey()}/drafting`,
       true,
     );
   }
 
-  getTierList(leagueId: string) {
+  getTierList() {
+    const params: { [key: string]: string } = {};
+    const divisionKey = this.divisionKey();
+    if (divisionKey) params['division'] = divisionKey;
     return this.apiService.get<{
       tierList: LeagueTierGroup[];
       divisions: { [key: string]: { pokemonId: string; teamId: string }[] };
-    }>(`${ROOTPATH}/${this.leagueKey()}/tier-list`, false);
+    }>(`${ROOTPATH}/${this.leagueKey()}/tier-list`, false, params);
   }
 
-  getPicks(leagueId: string, divisionId: string) {
+  getPicks(leagueKey: string, divisionId: string) {
     return this.apiService.get<DraftTeam[]>(
-      `${ROOTPATH}/${leagueId}/${divisionId}/picks`,
+      `${ROOTPATH}/${leagueKey}/${divisionId}/picks`,
       false,
     );
   }
 
-  setPicks(
-    leagueKey: string,
-    divisionId: string,
-    teamId: string,
-    picks: string[][],
-  ) {
+  setPicks(teamId: string, picks: string[][]) {
     return this.apiService.post(
-      `${ROOTPATH}/${this.leagueKey()}/divisions/${divisionId}/teams/${teamId}/picks`,
+      `${ROOTPATH}/${this.leagueKey()}/divisions/${this.divisionKey()}/teams/${teamId}/picks`,
       true,
       { picks },
+    );
+  }
+
+  draftPokemon(teamId: string, pokemon: Pokemon) {
+    return this.apiService.post(
+      `${ROOTPATH}/${this.leagueKey()}/divisions/${this.divisionKey()}/teams/${teamId}/draft`,
+      true,
+      { pokemonId: pokemon.id },
     );
   }
 
@@ -476,7 +492,7 @@ export class LeagueZoneService {
     return this.apiService.get(`battlezone/pdbl`, false);
   }
 
-  getSignUps(leagueId: string): Observable<LeagueSignUp[]> {
-    return this.apiService.get(`leagues/${leagueId}/signup`, true);
+  getSignUps(leagueKey: string): Observable<LeagueSignUp[]> {
+    return this.apiService.get(`leagues/${leagueKey}/signup`, true);
   }
 }

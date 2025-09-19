@@ -7,7 +7,6 @@ import {
   effect,
   Output,
   EventEmitter,
-  SimpleChanges,
   Input,
 } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -74,9 +73,9 @@ export class LeagueTierListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.tierListService.initialize('pdbls2');
+    this.tierListService.initialize();
     effect(() => {
-      this.tierListService.selectedDivision(); // This establishes the dependency
+      this.tierListService.selectedDivision();
       this.menu = null;
     });
   }

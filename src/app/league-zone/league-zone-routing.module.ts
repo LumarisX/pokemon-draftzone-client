@@ -17,7 +17,7 @@ const routes: Routes = [
     component: LeagueOverviewComponent,
   },
   {
-    path: `:leagueId/${LeagueManagePath}`,
+    path: `:leagueKey/${LeagueManagePath}`,
     loadChildren: () =>
       import('./league-manage/league-manage.module').then(
         (m) => m.LeagueManageModule,
@@ -30,57 +30,57 @@ const routes: Routes = [
   //   component: LeagueNewComponent,
   // },
   {
-    path: ':leagueId',
+    path: ':leagueKey',
     component: LeagueLandingComponent,
   },
   //   {
-  //   path: ':leagueId/dashboard',
+  //   path: ':leagueKey/dashboard',
   //   component: LeagueDashboardComponent,
   // },
   // {
-  //   path: ':leagueId/standings',
+  //   path: ':leagueKey/standings',
   //   component: LeagueStandingsComponent,
   // },
   // {
-  //   path: 'view/:leagueId/schedule',
+  //   path: 'view/:leagueKey/schedule',
   //   component: LeagueScheduleComponent,
   // },
   {
-    path: ':leagueId/rules',
+    path: ':leagueKey/rules',
     component: LeagueRulesComponent,
   },
   {
-    path: ':leagueId/tier-list',
+    path: ':leagueKey/tier-list',
     component: LeagueTierListComponent,
   },
   {
-    path: ':leagueId/drafting',
+    path: ':leagueKey/:divisionKey/drafting',
     component: LeagueDraftingComponent,
   },
   {
-    path: ':leagueId/sign-up',
+    path: ':leagueKey/sign-up',
     component: LeagueSignUpComponent,
     canActivate: [AuthGuard],
   },
   // {
-  //   path: 'view/:leagueId/bracket',
+  //   path: 'view/:leagueKey/bracket',
   //   component: LeagueBracketComponent,
   // },
   // {
-  //   path: 'view/:leagueId/trades',
+  //   path: 'view/:leagueKey/trades',
   //   component: LeagueTradesComponent,
   // },
 
   // {
-  //   path: 'view/:leagueId/teams',
+  //   path: 'view/:leagueKey/teams',
   //   component: LeagueTeamsComponent,
   // },
   // {
-  //   path: 'view/:leagueId/team/:teamid',
+  //   path: 'view/:leagueKey/team/:teamid',
   //   component: LeagueTeamComponent,
   // },
   // {
-  //   path: 'view/:leagueId/auction',
+  //   path: 'view/:leagueKey/auction',
   //   component: LeagueAuctionComponent,
   //   canActivate: [leagueRoleGuard],
   //   data: { role: 'coach' },

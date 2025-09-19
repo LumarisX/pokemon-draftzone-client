@@ -1,14 +1,13 @@
-import { Injectable, inject, signal, computed } from '@angular/core';
-import { WebSocketService } from '../ws.service';
-import { LeagueZoneService } from './league-zone.service';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
+import { Type, TYPES } from '../../data';
 import {
   LeagueTierGroup,
   TierPokemon,
 } from '../../interfaces/tier-pokemon.interface';
-import { Type, TYPES } from '../../data';
-import { FormControl } from '@angular/forms';
+import { WebSocketService } from '../ws.service';
+import { LeagueZoneService } from './league-zone.service';
 
 @Injectable({
   providedIn: 'root',
@@ -78,9 +77,9 @@ export class LeagueTierListService {
     return draftedIds;
   });
 
-  initialize(leagueId: string): void {
+  getTierList() {
     this.leagueService
-      .getTierList(leagueId)
+      .getTierList()
       .pipe(first())
       .subscribe((data) => {
         this.drafted.set(data.divisions);
@@ -90,6 +89,10 @@ export class LeagueTierListService {
           this.selectedDivision.set(divisionNames[0]);
         }
       });
+  }
+
+  initialize(): void {
+    this.getTierList();
 
     this.wsService
       .on<{ division: string; pokemonId: string }>('league.draft.added')
