@@ -15,6 +15,8 @@ import { NumberSuffixPipe } from '../../util/pipes/number-suffix.pipe';
 import { LeagueTierListComponent } from '../league-tier-list/league-tier-list.component';
 import { LoadingComponent } from '../../images/loading/loading.component';
 import { LeagueNotificationsComponent } from '../league-notifications/league-notifications.component';
+import { LeagueNotificationService } from '../../services/league-notification.service';
+import { WebSocketService } from '../../services/ws.service';
 
 @Component({
   selector: 'pdz-league-drafting',
@@ -31,11 +33,8 @@ import { LeagueNotificationsComponent } from '../league-notifications/league-not
   styleUrls: ['./league-drafting.component.scss', '../league.scss'],
 })
 export class LeagueDraftingComponent implements OnInit, OnDestroy {
-  draftOrder!: {
-    teamName: string;
-    pokemon?: Pokemon;
-    skipTime?: Date;
-  }[][];
+  private notificationService = inject(LeagueNotificationService);
+  private webSocketService = inject(WebSocketService);
 
   teams: LeagueTeam[] = [];
   canDraftTeams: string[] = [];
@@ -45,16 +44,14 @@ export class LeagueDraftingComponent implements OnInit, OnDestroy {
 
   leagueName: string = '';
   divisionName: string = '';
-
-  leagueId = 'pdbls2';
-  teamId = '68c44121b0a184364eb03db9'; // Example ID, replace with actual logic later
-  divisionId = '68c5a1c6f1ac9b585a542b86';
+  points: number = 0;
 
   isLoading: boolean = true;
 
   currentPick: {
     round: number;
     position: number;
+    skipTime?: Date;
   } = {
     round: 0,
     position: 0,
@@ -72,12 +69,37 @@ export class LeagueDraftingComponent implements OnInit, OnDestroy {
     this.selectedTeam = team;
     this.isDropdownOpen = false;
   }
+  draftDetails: {
+    draftStyle: 'snake' | 'linear';
+    roundCount: number;
+    teamOrder: string[];
+  } = {
+    draftStyle: 'snake',
+    roundCount: 0,
+    teamOrder: [],
+  };
+
+  get teamsMap() {
+    return new Map(this.teams.map((team) => [team.id, team]));
+  }
+
+  get draftRounds() {
+    const orderedTeams = this.draftDetails.teamOrder
+      .map((teamId) => this.teamsMap.get(teamId))
+      .filter((team) => team !== undefined);
+    return Array.from({ length: this.draftDetails.roundCount }, (_, i) => {
+      const round = [...orderedTeams];
+      if (this.draftDetails.draftStyle === 'snake' && i % 2 === 1) {
+        round.reverse();
+      }
+      return round;
+    });
+  }
 
   leagueService = inject(LeagueZoneService);
   ngOnInit(): void {
-    this.leagueService.getDraftingDetails().subscribe((data) => {
+    this.leagueService.getDivisionDetails().subscribe((data) => {
       console.log(data);
-      this.draftOrder = data.order;
       this.teams = data.teams;
       this.selectedTeam = this.teams[0];
       this.leagueName = data.leagueName;
@@ -85,14 +107,17 @@ export class LeagueDraftingComponent implements OnInit, OnDestroy {
       this.currentPick = data.currentPick;
       this.canDraftTeams = data.canDraft;
       this.isLoading = false;
-      console.log(this.currentPick);
+      this.draftDetails.draftStyle = data.draftStyle;
+      this.points = data.points;
+      this.draftDetails.roundCount = data.rounds;
+      this.draftDetails.teamOrder = data.teamOrder;
       this.picksSubscription = this.picksChanged
         .pipe(debounceTime(5000))
         .subscribe(() => {
           console.log(this.selectedTeam.picks);
           this.leagueService
             .setPicks(
-              this.teamId,
+              this.selectedTeam.id,
               this.selectedTeam.picks.map((round) =>
                 round.map((pick) => pick.id),
               ),
@@ -102,6 +127,43 @@ export class LeagueDraftingComponent implements OnInit, OnDestroy {
             });
         });
     });
+
+    this.webSocketService
+      .on<{
+        divisionKey: string;
+        team: { id: string; name: string };
+        pokemon: LeaguePokemon;
+        canDraftTeams: string[];
+      }>('league.draft.added')
+      .subscribe((data) => {
+        const team = this.teams.find((team) => team.id === data.team.id);
+        team?.draft.push(data.pokemon);
+        team?.picks.shift();
+        this.canDraftTeams = data.canDraftTeams;
+
+        this.notificationService.show(
+          `${data.team.name} drafted ${data.pokemon.name}!`,
+          'success',
+        );
+      });
+
+    this.webSocketService
+      .on<{
+        currentPick: {
+          round: number;
+          position: number;
+          skipTime?: Date;
+        };
+        nextTeam: string;
+      }>('league.draft.counter')
+      .subscribe((data) => {
+        console.log('league.draft.counter', data);
+        this.currentPick = data.currentPick;
+        this.notificationService.show(
+          `Now drafting: ${this.teamsMap.get(data.nextTeam)?.name}`,
+          'info',
+        );
+      });
   }
 
   ngOnDestroy(): void {
@@ -175,29 +237,32 @@ export class LeagueDraftingComponent implements OnInit, OnDestroy {
     );
   }
 
-  setRound(position: number): {
-    number: number;
-    team?: LeagueTeam;
-  } {
-    console.log(
-      position,
-      this.draftOrder.length,
-      this.teams.length,
-      Math.floor(position / this.teams.length),
-      position % this.teams.length,
-    );
-    const teamName =
-      this.draftOrder[Math.floor(position / this.teams.length)][
-        position % this.teams.length
-      ].teamName;
-    const team = this.teams.find((team) => team.name === teamName);
-    return {
-      number: position,
-      team,
-    };
-  }
+  // setRound(position: number): {
+  //   number: number;
+  //   team?: LeagueTeam;
+  // } {
+  //   console.log(
+  //     position,
+  //     this.draftDetails.roundCount,
+  //     this.teams.length,
+  //     Math.floor(position / this.teams.length),
+  //     position % this.teams.length,
+  //   );
+  //   const teamName =
+  //     this.draftOrder[Math.floor(position / this.teams.length)][
+  //       position % this.teams.length
+  //     ].teamName;
+  //   const team = this.teams.find((team) => team.name === teamName);
+  //   return {
+  //     number: position,
+  //     team,
+  //   };
+  // }
 
   canDraft(): boolean {
-    return this.canDraftTeams.includes(this.selectedTeam.id);
+    return (
+      this.selectedTeam.isCoach &&
+      this.canDraftTeams.includes(this.selectedTeam.id)
+    );
   }
 }

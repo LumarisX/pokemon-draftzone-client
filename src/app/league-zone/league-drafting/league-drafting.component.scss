@@ -255,7 +255,16 @@
       }
     }
 
+    .my-draft-content {
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      justify-content: space-between;
+      font-family: var(--pdz-font-fancy);
+    }
+
     .my-draft-pokemons {
+      flex-grow: 1;
       padding: 0.5rem 0.5rem;
       height: calc(100% - 2rem);
       overflow-y: scroll;
@@ -388,6 +397,16 @@
           }
         }
       }
+    }
+
+    .points-container {
+      border: 2px solid var(--mat-sys-outline-variant);
+      border-radius: 0.5rem;
+      padding: 0.25rem;
+      text-align: right;
+      margin-top: 0.5rem;
+      font-weight: 600;
+      color: var(--mat-sys-on-surface);
     }
   }
 }

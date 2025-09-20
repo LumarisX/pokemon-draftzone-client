@@ -56,6 +56,8 @@ export type LeagueTeam = {
   logoUrl?: string;
   draft: LeaguePokemon[];
   picks: LeaguePokemon[][];
+  isCoach: boolean;
+  pointTotal: number;
 };
 
 @Injectable({
@@ -63,7 +65,6 @@ export type LeagueTeam = {
 })
 export class LeagueZoneService {
   private apiService = inject(ApiService);
-  private notificationService = inject(LeagueNotificationService);
   private router = inject(Router);
   private webSocketService = inject(WebSocketService);
 
@@ -72,22 +73,6 @@ export class LeagueZoneService {
 
   constructor() {
     this.webSocketService.connect('battlezone');
-    this.webSocketService
-      .on<{
-        divisionKey: string;
-        team: { id: string; name: string };
-        pokemon: { id: string; name: string };
-      }>('league.draft.added')
-      .subscribe((data) => {
-        this.notificationService.show(
-          `${data.team.name} drafted ${data.pokemon.name}!`,
-          'success',
-        );
-      });
-
-    this.webSocketService.on<any>('league.draft.counter').subscribe((data) => {
-      console.log('league.draft.counter', data);
-    });
 
     this.router.events
       .pipe(
@@ -141,12 +126,15 @@ export class LeagueZoneService {
     );
   }
 
-  getDraftingDetails() {
+  getDivisionDetails() {
     return this.apiService.get<{
       leagueName: string;
       divisionName: string;
-      order: DraftRound[];
+      teamOrder: string[];
+      rounds: number;
+      points: number;
       teams: LeagueTeam[];
+      draftStyle: 'snake' | 'linear';
       status: string;
       skipTime: Date;
       currentPick: {
@@ -154,10 +142,7 @@ export class LeagueZoneService {
         position: number;
       };
       canDraft: string[];
-    }>(
-      `${ROOTPATH}/${this.leagueKey()}/divisions/${this.divisionKey()}/drafting`,
-      true,
-    );
+    }>(`${ROOTPATH}/${this.leagueKey()}/divisions/${this.divisionKey()}`, true);
   }
 
   getTierList() {
