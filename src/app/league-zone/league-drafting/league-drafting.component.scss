@@ -279,6 +279,7 @@
           border-bottom: 1px solid var(--mat-sys-outline-variant);
         }
         .my-pokemon-sprite {
+          border-radius: 2rem;
           width: 2.5rem;
           height: 2.5rem;
         }
@@ -352,6 +353,9 @@
 
           &:not(.backup) {
             background-color: var(--mat-sys-primary);
+            .my-pokemon-sprite {
+              background-color: white;
+            }
           }
 
           &.backup {
@@ -421,6 +425,20 @@
   font-weight: bold;
 }
 
+.pause-time {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+
+  mat-icon.mat-icon {
+    font-size: 3rem !important;
+    height: 3rem !important;
+    width: 3rem !important;
+    line-height: 1 !important;
+  }
+}
+
 .league-name {
   font-size: 1.1rem;
   font-family: var(--pdz-font-fancy);
@@ -436,7 +454,7 @@
 .custom-dropdown-container {
   position: relative;
   display: flex;
-  width: 100%; // Ensure it takes the full width of its parent
+  width: 100%;
   border-radius: 1rem;
   margin-bottom: 2px;
   &:hover {
@@ -447,16 +465,16 @@
 
 .custom-dropdown-menu {
   position: absolute;
-  top: 100%; // Position it right below the button
+  top: 100%;
   left: 0;
-  width: 100%; // Match the width of the button
-  max-height: 200px; // Set a max height
-  overflow-y: auto; // Enable scrolling
-  background-color: var(--mat-sys-surface); // Use a suitable background color
-  border: 1px solid var(--mat-sys-outline); // Add a border
+  width: 100%;
+  max-height: 200px;
+  overflow-y: auto;
+  background-color: var(--mat-sys-surface);
+  border: 1px solid var(--mat-sys-outline);
   border-radius: 0.5rem;
   box-shadow: var(--mat-sys-level2);
-  z-index: 1000; // Ensure it appears above other content
+  z-index: 1000;
 }
 
 .custom-dropdown-item {
@@ -493,20 +511,4 @@
   padding: 0.125rem 0.5rem;
   border-radius: 0.5rem;
   font-weight: bold;
-
-  &.in-progress {
-    color: green;
-  }
-
-  &.paused {
-    color: yellow;
-  }
-
-  &.pre-draft {
-    color: red;
-  }
-
-  &.completed {
-    color: green;
-  }
 }

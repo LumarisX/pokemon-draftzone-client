@@ -26,10 +26,18 @@ export class LeagueManageService {
   }
 
   setDivisionState(state: string) {
-    return this.apiService.post<string[]>(
+    return this.apiService.post(
       `leagues/${this.leagueZoneService.leagueKey()}/manage/divisions/${this.leagueZoneService.divisionKey()}/state`,
       true,
       { state },
+    );
+  }
+
+  skipCurrentPick() {
+    return this.apiService.post(
+      `leagues/${this.leagueZoneService.leagueKey()}/manage/divisions/${this.leagueZoneService.divisionKey()}/skip`,
+      true,
+      '',
     );
   }
 }

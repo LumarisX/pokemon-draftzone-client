@@ -6,6 +6,7 @@
     "prod": "ng serve --configuration=production",
     "api-dev": "ng serve --configuration=api-dev",
     "build": "ng build --configuration=production",
+    "local-dev-broadcast": "ng serve --configuration=broadcast --ssl --host 0.0.0.0",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:ci": "test --runInBand"

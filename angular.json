@@ -40,6 +40,17 @@
               "outputHashing": "all",
               "serviceWorker": "ngsw-config.json"
             },
+            "broadcast": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.broadcast.ts"
+                }
+              ]
+            },
             "development": {
               "optimization": false,
               "extractLicenses": false,
@@ -64,6 +75,9 @@
           "configurations": {
             "production": {
               "buildTarget": "pokemon-draftzone-client:build:production"
+            },
+            "broadcast": {
+              "buildTarget": "pokemon-draftzone-client:build:broadcast"
             },
             "development": {
               "buildTarget": "pokemon-draftzone-client:build:development"

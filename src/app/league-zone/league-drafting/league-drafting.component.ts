@@ -48,13 +48,10 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
 
   isLoading: boolean = true;
 
-  currentPick: {
+  currentPick?: {
     round: number;
     position: number;
     skipTime?: Date;
-  } = {
-    round: 0,
-    position: 0,
   };
 
   selectedPick: number = 0;
@@ -137,17 +134,20 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
 
     this.webSocketService
       .on<{
-        divisionKey: string;
-        team: { id: string; name: string };
-        pokemon: LeaguePokemon;
+        pick: {
+          divisionKey: string;
+          team: { id: string; name: string };
+          pokemon: LeaguePokemon;
+        };
+        canDraftTeams: string[];
       }>('league.draft.added')
       .subscribe((data) => {
-        const team = this.teams.find((team) => team.id === data.team.id);
-        team?.draft.push(data.pokemon);
+        const team = this.teams.find((team) => team.id === data.pick.team.id);
+        team?.draft.push(data.pick.pokemon);
         team?.picks.shift();
-
+        this.canDraftTeams = data.canDraftTeams;
         this.notificationService.show(
-          `${data.team.name} drafted ${data.pokemon.name}!`,
+          `${data.pick.team.name} drafted ${data.pick.pokemon.name}!`,
           'success',
         );
       });
@@ -176,9 +176,24 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
     this.webSocketService
       .on<{
         status: 'PRE_DRAFT' | 'IN_PROGRESS' | 'PAUSED' | 'COMPLETED';
+        currentPick?: {
+          round: number;
+          position: number;
+          skipTime?: Date;
+        };
       }>('league.draft.status')
       .subscribe((data) => {
         this.draftDetails.status = data.status;
+        this.currentPick = data.currentPick;
+        switch (data.status) {
+          case 'PAUSED':
+          case 'COMPLETED':
+            clearInterval(this.countdownInterval);
+            break;
+          case 'IN_PROGRESS':
+            this.startCountdown();
+            break;
+        }
         this.notificationService.show(`Draft Status: ${data.status}`, 'info');
       });
 
@@ -199,9 +214,9 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
   }
 
   startCountdown(): void {
-    clearInterval(this.countdownInterval); // Always clear the old one first
+    clearInterval(this.countdownInterval);
     this.countdownInterval = setInterval(() => {
-      this.skipTimeDisplay = this.timeUntil(this.currentPick.skipTime);
+      this.skipTimeDisplay = this.timeUntil(this.currentPick?.skipTime);
     }, 1000);
   }
 

@@ -89,7 +89,11 @@
                         [ngClass]="{ backup: $index > 0 }"
                       >
                         <div class="my-pokemon-sprite">
-                          <pdz-sprite [pokemon]="choice" flipped></pdz-sprite>
+                          <pdz-sprite
+                            [pokemon]="choice"
+                            flipped
+                            size="2.5rem"
+                          ></pdz-sprite>
                         </div>
                         <div class="pick-header">
                           <div class="pick-text">
@@ -152,6 +156,7 @@
                       class="team-card-body"
                       [ngClass]="{
                         picking:
+                          currentPick &&
                           currentPick.round === roundIndex &&
                           currentPick.position === $index,
                       }"
@@ -160,12 +165,19 @@
                         @if (pokemon) {
                           <pdz-sprite [pokemon]="pokemon"></pdz-sprite>
                         } @else if (
+                          currentPick &&
                           currentPick.round === roundIndex &&
                           currentPick.position === $index
                         ) {
-                          <span class="skip-time">
-                            {{ skipTimeDisplay }}
-                          </span>
+                          @if (this.draftDetails.status === "PAUSED") {
+                            <span class="pause-time">
+                              <mat-icon>pause</mat-icon>
+                            </span>
+                          } @else {
+                            <span class="skip-time">
+                              {{ skipTimeDisplay }}
+                            </span>
+                          }
                         } @else {
                           <mat-icon svgIcon="pokeball"></mat-icon>
                         }
@@ -174,6 +186,7 @@
                         @if (pokemon) {
                           {{ pokemon.name }}
                         } @else if (
+                          currentPick &&
                           currentPick.round === roundIndex &&
                           currentPick.position === $index
                         ) {

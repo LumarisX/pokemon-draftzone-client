@@ -10,13 +10,14 @@ import { LeagueManageService } from '../../../services/leagues/league-manage.ser
 import {
   DraftTeam,
   LeaguePokemon,
+  LeagueTeam,
   LeagueZoneService,
 } from '../../../services/leagues/league-zone.service';
 import { PokemonSelectComponent } from '../../../util/pokemon-select/pokemon-select.component';
 import { LeagueNotificationsComponent } from '../../league-notifications/league-notifications.component';
 import { WebSocketService } from '../../../services/ws.service';
 
-type TeamForDraft = DraftTeam & { selectedPokemon?: Pokemon | null };
+type TeamForDraft = LeagueTeam & { selectedPokemon?: Pokemon | null };
 
 @Component({
   selector: 'pdz-league-manage-draft',
@@ -43,9 +44,9 @@ export class LeagueManageDraftComponent implements OnInit {
   status: 'PRE_DRAFT' | 'IN_PROGRESS' | 'PAUSED' | 'COMPLETED' = 'IN_PROGRESS';
 
   ngOnInit(): void {
-    this.leagueZoneService.getPicks().subscribe((teams) => {
-      console.log(teams);
-      this.teams = teams;
+    this.leagueZoneService.getDivisionDetails().subscribe((data) => {
+      console.log(data);
+      this.teams = data.teams;
     });
 
     this.webSocketService
@@ -57,12 +58,7 @@ export class LeagueManageDraftComponent implements OnInit {
       }>('league.draft.added')
       .subscribe((data) => {
         const team = this.teams.find((team) => team.id === data.team.id);
-        team?.draft.push({
-          pokemon: data.pokemon,
-          timestamp: new Date(),
-          picker: '',
-        });
-
+        team?.draft.push(data.pokemon);
         this.notificationService.show(
           `${data.team.name} drafted ${data.pokemon.name}!`,
           'success',
@@ -108,5 +104,11 @@ export class LeagueManageDraftComponent implements OnInit {
 
   testNotification(): void {
     this.notificationService.show('This is a test notification!', 'info');
+  }
+
+  skipNext() {
+    this.leagueManageService.skipCurrentPick().subscribe((response) => {
+      console.log(response);
+    });
   }
 }
