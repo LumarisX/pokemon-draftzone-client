@@ -136,18 +136,27 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
       .on<{
         pick: {
           divisionKey: string;
-          team: { id: string; name: string };
           pokemon: LeaguePokemon;
+        };
+        team: {
+          id: string;
+          name: string;
+          draft: LeaguePokemon[];
         };
         canDraftTeams: string[];
       }>('league.draft.added')
       .subscribe((data) => {
-        const team = this.teams.find((team) => team.id === data.pick.team.id);
-        team?.draft.push(data.pick.pokemon);
-        team?.picks.shift();
+        const team = this.teams.find((team) => team.id === data.team.id)!;
+        team.draft = data.team.draft;
+        this.teams = this.teams.map((team) => ({
+          ...team,
+          picks: team.picks.map((round) =>
+            round.filter((pick) => pick.id !== data.pick.pokemon.id),
+          ),
+        }));
         this.canDraftTeams = data.canDraftTeams;
         this.notificationService.show(
-          `${data.pick.team.name} drafted ${data.pick.pokemon.name}!`,
+          `${data.team.name} drafted ${data.pick.pokemon.name}!`,
           'success',
         );
       });
