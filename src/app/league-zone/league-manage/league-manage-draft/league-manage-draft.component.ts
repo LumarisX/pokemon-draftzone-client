@@ -1,20 +1,20 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { LeagueManageService } from '../../../services/leagues/league-manage.service';
-import { first } from 'rxjs';
 import { CommonModule } from '@angular/common';
+import { Component, inject, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { SpriteComponent } from '../../../images/sprite/sprite.component';
+import { Pokemon } from '../../../interfaces/draft';
+import { LeagueNotificationService } from '../../../services/league-notification.service';
+import { LeagueManageService } from '../../../services/leagues/league-manage.service';
 import {
   DraftTeam,
+  LeaguePokemon,
   LeagueZoneService,
 } from '../../../services/leagues/league-zone.service';
 import { PokemonSelectComponent } from '../../../util/pokemon-select/pokemon-select.component';
-import { FormsModule } from '@angular/forms';
-import { Pokemon } from '../../../interfaces/draft';
-import { SpriteComponent } from '../../../images/sprite/sprite.component';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
 import { LeagueNotificationsComponent } from '../../league-notifications/league-notifications.component';
-import { LeagueNotificationService } from '../../../services/league-notification.service';
+import { WebSocketService } from '../../../services/ws.service';
 
 type TeamForDraft = DraftTeam & { selectedPokemon?: Pokemon | null };
 
@@ -36,16 +36,52 @@ type TeamForDraft = DraftTeam & { selectedPokemon?: Pokemon | null };
 export class LeagueManageDraftComponent implements OnInit {
   leagueManageService = inject(LeagueManageService);
   leagueZoneService = inject(LeagueZoneService);
-  private route = inject(ActivatedRoute);
+  webSocketService = inject(WebSocketService);
   private notificationService = inject(LeagueNotificationService);
   private leagueId: string | null = null;
   teams: TeamForDraft[] = [];
-  divisionId = '68c5a1c6f1ac9b585a542b86'; // TODO: The division id is hardcoded
+  status: 'PRE_DRAFT' | 'IN_PROGRESS' | 'PAUSED' | 'COMPLETED' = 'IN_PROGRESS';
 
   ngOnInit(): void {
     this.leagueZoneService.getPicks().subscribe((teams) => {
       console.log(teams);
       this.teams = teams;
+    });
+
+    this.webSocketService
+      .on<{
+        divisionKey: string;
+        team: { id: string; name: string };
+        pokemon: LeaguePokemon;
+        canDraftTeams: string[];
+      }>('league.draft.added')
+      .subscribe((data) => {
+        const team = this.teams.find((team) => team.id === data.team.id);
+        team?.draft.push({
+          pokemon: data.pokemon,
+          timestamp: new Date(),
+          picker: '',
+        });
+
+        this.notificationService.show(
+          `${data.team.name} drafted ${data.pokemon.name}!`,
+          'success',
+        );
+      });
+
+    this.webSocketService
+      .on<{
+        status: 'PRE_DRAFT' | 'IN_PROGRESS' | 'PAUSED' | 'COMPLETED';
+      }>('league.draft.status')
+      .subscribe((data) => {
+        this.status = data.status;
+        this.notificationService.show(`Draft Status: ${data.status}`, 'info');
+      });
+  }
+
+  setState(state: string): void {
+    this.leagueManageService.setDivisionState(state).subscribe((response) => {
+      console.log(response);
     });
   }
 
@@ -58,8 +94,8 @@ export class LeagueManageDraftComponent implements OnInit {
       .setPick(this.leagueId, {
         teamId: team.id,
         pokemonId: team.selectedPokemon.id,
-        pickNumber: team.picks.length,
-        divisionId: this.divisionId,
+        pickNumber: team.draft.length,
+        divisionId: this.leagueZoneService.divisionKey()!,
       })
       .subscribe((response) => {
         team.selectedPokemon = null;

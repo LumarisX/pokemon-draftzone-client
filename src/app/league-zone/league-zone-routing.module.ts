@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LeagueRulesComponent } from './league-rules-overview/league-rules-old/rules.component';
-import { LeagueDraftingComponent } from './league-drafting/league-drafting.component';
+import { LeagueDraftComponent } from './league-drafting/league-drafting.component';
 import { LeagueLandingComponent } from './league-landing/landing.component';
 import { LeagueManagePath } from './league-manage/league-manage-routing.module';
 import { LeagueOverviewComponent } from './league-overview/league-overview.component';
@@ -54,8 +54,8 @@ const routes: Routes = [
     component: LeagueTierListComponent,
   },
   {
-    path: ':leagueKey/:divisionKey/drafting',
-    component: LeagueDraftingComponent,
+    path: ':leagueKey/:divisionKey/draft',
+    component: LeagueDraftComponent,
   },
   {
     path: ':leagueKey/sign-up',

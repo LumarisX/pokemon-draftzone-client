@@ -43,7 +43,7 @@ export type DraftPick = {
 export type DraftTeam = {
   id: string;
   name: string;
-  picks: DraftPick[];
+  draft: DraftPick[];
 };
 
 export type LeaguePokemon = Pokemon & {
@@ -135,7 +135,7 @@ export class LeagueZoneService {
       points: number;
       teams: LeagueTeam[];
       draftStyle: 'snake' | 'linear';
-      status: string;
+      status: 'PRE_DRAFT' | 'IN_PROGRESS' | 'PAUSED' | 'COMPLETED';
       skipTime: Date;
       currentPick: {
         round: number;

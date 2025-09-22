@@ -1,3 +1,37 @@
+.draft-timer-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+
+  .draft-timer-button,
+  .skip-button {
+    width: 56px; // Standard mat-icon-button size
+    height: 56px;
+
+    .mat-icon {
+      font-size: 36px;
+      width: 36px;
+      height: 36px;
+    }
+  }
+
+  .draft-timer-button {
+    background-color: #4caf50; // Green for play
+    color: white;
+
+    &.paused {
+      background-color: #f44336; // Red for pause
+    }
+  }
+
+  .skip-button {
+    background-color: #ff9800; // Orange for skip
+    color: white;
+  }
+}
+
 .team-draft-container {
   margin-bottom: 2rem;
 }

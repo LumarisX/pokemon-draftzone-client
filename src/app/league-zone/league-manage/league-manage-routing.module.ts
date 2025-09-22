@@ -16,7 +16,7 @@ const routes: Routes = [
     component: LeagueManageSignupsComponent,
   },
   {
-    path: 'divisions/:divisionKey/draft',
+    path: ':divisionKey/draft',
     component: LeagueManageDraftComponent,
   },
   // {

@@ -1,4 +1,28 @@
 <app-league-notifications></app-league-notifications>
+<div class="draft-timer-controls">
+  @if (status === "IN_PROGRESS") {
+    <button
+      mat-icon-button
+      aria-label="Pause timer"
+      class="draft-timer-button"
+      (click)="setState('pause')"
+    >
+      <mat-icon>pause</mat-icon>
+    </button>
+  } @else {
+    <button
+      mat-icon-button
+      aria-label="Play timer"
+      class="draft-timer-button paused"
+      (click)="setState('play')"
+    >
+      <mat-icon>play_arrow</mat-icon>
+    </button>
+  }
+  <button mat-icon-button aria-label="Skip turn" class="skip-button">
+    <mat-icon>skip_next</mat-icon>
+  </button>
+</div>
 <button (click)="testNotification()">Show Test Notification</button>
 @for (team of teams; track team.name) {
   <div class="team-draft-container">
@@ -15,7 +39,7 @@
         </tr>
       </thead>
       <tbody class="draft-table-body">
-        @for (pick of team.picks; track pick.pokemon.id) {
+        @for (pick of team.draft; track pick.pokemon.id) {
           <tr class="draft-table-row">
             <td class="draft-table-cell">
               <pdz-sprite

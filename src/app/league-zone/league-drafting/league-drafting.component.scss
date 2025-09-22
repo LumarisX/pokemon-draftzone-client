@@ -473,3 +473,40 @@
     background-color: var(--mat-sys-surface-container-highest);
   }
 }
+
+.info-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.info-details-container {
+  display: flex;
+  align-self: stretch;
+  column-gap: 0.5rem;
+  justify-content: space-between;
+}
+
+.draft-status {
+  font-size: 0.85rem;
+  font-family: var(--pdz-font-fancy);
+  overflow: hidden;
+  padding: 0.125rem 0.5rem;
+  border-radius: 0.5rem;
+  font-weight: bold;
+
+  &.in-progress {
+    color: green;
+  }
+
+  &.paused {
+    color: yellow;
+  }
+
+  &.pre-draft {
+    color: red;
+  }
+
+  &.completed {
+    color: green;
+  }
+}
