@@ -7,7 +7,7 @@ import {
   TierPokemon,
 } from '../../interfaces/tier-pokemon.interface';
 import { WebSocketService } from '../ws.service';
-import { LeagueZoneService } from './league-zone.service';
+import { LeaguePokemon, LeagueZoneService } from './league-zone.service';
 
 @Injectable({
   providedIn: 'root',
@@ -96,23 +96,30 @@ export class LeagueTierListService {
 
     this.wsService
       .on<{
-        division: string;
-        team: { id: string; name: string };
-        pokemon: { id: string; name: string };
+        pick: {
+          division: string;
+          pokemon: LeaguePokemon;
+        };
+        team: {
+          id: string;
+          name: string;
+          draft: LeaguePokemon[];
+        };
+        canDraftTeams: string[];
       }>('league.draft.added')
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe((data) => {
-        console.log('league.draft.added', data);
+        console.log('league.draft.added', data, this.drafted());
         const currentDrafted = this.drafted();
-        if (currentDrafted[data.division]) {
+        if (currentDrafted[data.pick.division]) {
           const updatedDivisionDrafts = [
-            ...currentDrafted[data.division],
-            { pokemonId: data.pokemon.id },
+            ...currentDrafted[data.pick.division],
+            { pokemonId: data.pick.pokemon.id },
           ];
 
           this.drafted.set({
             ...currentDrafted,
-            [data.division]: updatedDivisionDrafts,
+            [data.pick.division]: updatedDivisionDrafts,
           });
         }
       });

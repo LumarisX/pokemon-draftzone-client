@@ -82,12 +82,12 @@ export class LeagueManageDraftComponent implements OnInit {
   }
 
   addDraftPick(team: TeamForDraft) {
-    if (!team.selectedPokemon || !this.leagueId) {
+    if (!team.selectedPokemon) {
       return;
     }
 
     this.leagueManageService
-      .setPick(this.leagueId, {
+      .setPick(this.leagueZoneService.leagueKey()!, {
         teamId: team.id,
         pokemonId: team.selectedPokemon.id,
         pickNumber: team.draft.length,

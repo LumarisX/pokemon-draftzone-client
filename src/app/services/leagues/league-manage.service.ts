@@ -18,7 +18,11 @@ export class LeagueManageService {
       divisionId: string;
     },
   ) {
-    return this.apiService.post(`leagues/${leagueId}/setdraft`, true, pick);
+    return this.apiService.post(
+      `leagues/${leagueId}/manage/divisions/${this.leagueZoneService.divisionKey()}/setdraft`,
+      true,
+      pick,
+    );
   }
 
   canManage(leagueKey: string) {

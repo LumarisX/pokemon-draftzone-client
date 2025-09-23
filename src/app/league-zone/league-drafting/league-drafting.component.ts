@@ -17,6 +17,7 @@ import { LoadingComponent } from '../../images/loading/loading.component';
 import { LeagueNotificationsComponent } from '../league-notifications/league-notifications.component';
 import { LeagueNotificationService } from '../../services/league-notification.service';
 import { WebSocketService } from '../../services/ws.service';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'pdz-league-drafting',
@@ -27,6 +28,7 @@ import { WebSocketService } from '../../services/ws.service';
     MatIconModule,
     NumberSuffixPipe,
     LoadingComponent,
+    RouterModule,
     LeagueNotificationsComponent,
   ],
   templateUrl: './league-drafting.component.html',
@@ -292,7 +294,7 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
   }
 
   pokemonSelected(pokemon: TierPokemon & { tier: string }) {
-    if (this.canDraft()) {
+    if (this.canDraft() && !this.selectedPick) {
       this.draftPokemon(pokemon);
     } else {
       this.addChoice(pokemon);
@@ -346,7 +348,7 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
   }
   buttonText() {
     if (!this.selectedTeam.picks.length) return undefined;
-    if (this.canDraft()) return 'Draft';
+    if (this.canDraft() && !this.selectedPick) return 'Draft';
     return (
       'Add to Picks \(' +
       (this.selectedPick + this.selectedTeam.draft.length + 1) +
