@@ -1,13 +1,13 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
-  OnInit,
-  inject,
   ElementRef,
-  effect,
-  Output,
   EventEmitter,
   Input,
+  OnInit,
+  Output,
+  effect,
+  inject,
 } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -18,11 +18,10 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { LoadingComponent } from '../../images/loading/loading.component';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
+import { Pokemon } from '../../interfaces/pokemon';
 import { TierPokemon } from '../../interfaces/tier-pokemon.interface';
 import { LeagueTierListService } from '../../services/leagues/league-tier-list.service';
 import { typeColor } from '../../util/styling';
-import { LeaguePokemon } from '../../services/leagues/league-zone.service';
-import { Pokemon } from '../../interfaces/pokemon';
 
 @Component({
   selector: 'pdz-league-tier-list',
@@ -119,6 +118,7 @@ export class LeagueTierListComponent implements OnInit {
   selectedPokemon: (TierPokemon & { tier: string }) | null = null;
   cardPosition = { top: '0px', left: '0px' };
   typeColor = typeColor;
+  isMobile = false;
 
   selectPokemon(pokemon: TierPokemon, tier: string, event: MouseEvent) {
     if (this.selectedPokemon?.id === pokemon.id) {
@@ -127,19 +127,23 @@ export class LeagueTierListComponent implements OnInit {
     }
     this.selectedPokemon = { ...pokemon, tier };
 
-    const clickedElement = event.currentTarget as HTMLElement;
-    const componentRect = this.elRef.nativeElement.getBoundingClientRect();
-    const clickedRect = clickedElement.getBoundingClientRect();
+    this.isMobile = window.innerWidth < 768;
 
-    const top =
-      clickedRect.top - componentRect.top + clickedElement.offsetHeight / 2;
-    const left =
-      clickedRect.left - componentRect.left + clickedElement.offsetWidth;
+    if (!this.isMobile) {
+      const clickedElement = event.currentTarget as HTMLElement;
+      const componentRect = this.elRef.nativeElement.getBoundingClientRect();
+      const clickedRect = clickedElement.getBoundingClientRect();
 
-    this.cardPosition = {
-      top: `${top}px`,
-      left: `${left + 10}px`,
-    };
+      const top =
+        clickedRect.top - componentRect.top + clickedElement.offsetHeight / 2;
+      const left =
+        clickedRect.left - componentRect.left + clickedElement.offsetWidth;
+
+      this.cardPosition = {
+        top: `${top}px`,
+        left: `${left + 10}px`,
+      };
+    }
   }
 
   emitDraftPokemon() {

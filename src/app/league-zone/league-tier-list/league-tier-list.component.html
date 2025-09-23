@@ -2,9 +2,11 @@
   <div class="h-full flex max-w-full flex-col space-y-2">
     <div class="flex-grow-0 max-w-full flex justify-between">
       <div class="flex items-center space-x-2">
-        <div class="md:text-2xl text-xl font-nasa">Tier List</div>
+        <div class="md:text-2xl text-xl font-nasa flex flex-grow">
+          Tier List
+        </div>
         @if (tierListService.sortedTierGroups()) {
-          <div class="flex items-center">
+          <div class="flex w-fit items-center flex-wrap">
             <div class="relative inline-block">
               <button
                 mat-icon-button
@@ -113,6 +115,16 @@
                 >Show Drafted</mat-checkbox
               >
             </div>
+            <div class="search-input-container">
+              <mat-icon>search</mat-icon>
+              <input
+                [(ngModel)]="tierListService.searchText"
+                (ngModelChange)="tierListService.searchText.set($event)"
+              />
+              <mat-icon (click)="tierListService.searchText.set('')"
+                >close_small</mat-icon
+              >
+            </div>
           </div>
         }
       </div>
@@ -185,40 +197,50 @@
       @if (selectedPokemon) {
         <div
           class="selected-card"
-          [style.top]="cardPosition.top"
-          [style.left]="cardPosition.left"
+          [class.mobile-view]="isMobile"
+          [style.top]="!isMobile ? cardPosition.top : null"
+          [style.left]="!isMobile ? cardPosition.left : null"
+          [style.transform]="!isMobile ? 'translateY(-50%)' : null"
         >
-          <div class="card-pokemon-name">
-            {{ selectedPokemon.name }}
+          <div class="card-header">
+            <div class="card-pokemon-name">
+              {{ selectedPokemon.name }}
+            </div>
+            <div class="sprite-wrapper">
+              <pdz-sprite
+                [pokemon]="selectedPokemon"
+                [tooltipPosition]="null"
+              ></pdz-sprite>
+            </div>
           </div>
-          <pdz-sprite
-            [pokemon]="selectedPokemon"
-            [tooltipPosition]="null"
-          ></pdz-sprite>
-          <div class="type-container">
-            @for (type of selectedPokemon.types; track $index) {
-              <div
-                class="type-label"
-                [style.background-color]="typeColor(type)"
-              >
-                <div class="type-text">
-                  {{ type }}
+
+          <div class="card-info">
+            <div class="type-container">
+              @for (type of selectedPokemon.types; track $index) {
+                <div
+                  class="type-label"
+                  [style.background-color]="typeColor(type)"
+                >
+                  <div class="type-text">
+                    {{ type }}
+                  </div>
                 </div>
-              </div>
-            }
+              }
+            </div>
+            <div class="stats-container">
+              @for (stat of pokemonStats; track $index) {
+                <div class="stat-container">
+                  <div class="stat-name">
+                    {{ stat[0] | uppercase }}
+                  </div>
+                  <div class="stat-value">
+                    {{ stat[1] }}
+                  </div>
+                </div>
+              }
+            </div>
           </div>
-          <div class="stats-container">
-            @for (stat of pokemonStats; track $index) {
-              <div class="stat-container">
-                <div class="stat-name">
-                  {{ stat[0] | uppercase }}
-                </div>
-                <div class="stat-value">
-                  {{ stat[1] }}
-                </div>
-              </div>
-            }
-          </div>
+
           @if (buttonText) {
             <button
               [disabled]="

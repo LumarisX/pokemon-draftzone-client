@@ -35,6 +35,7 @@ export class LeagueTierListService {
   filteredTypes = signal<Type[]>([...this.types]);
 
   tierGroups = signal<LeagueTierGroup[] | undefined>(undefined);
+  searchText = signal<string>('');
 
   sortBy = signal<(typeof this.SortOptions)[number]>('BST');
   selectedDivision = signal<string | undefined>(undefined);
@@ -153,6 +154,11 @@ export class LeagueTierListService {
   }
 
   public typeInFilter(pokemon: TierPokemon): boolean {
+    const searchText = this.searchText().toLowerCase();
+    if (searchText && !pokemon.name.toLowerCase().includes(searchText)) {
+      return false;
+    }
+
     if (this.filteredTypes().length === 0) return true;
     return pokemon.types.some((type) => this.filteredTypes().includes(type));
   }

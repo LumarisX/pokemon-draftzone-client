@@ -535,12 +535,12 @@
       viewport to prevent it from pushing other content off-screen.
     */
       height: auto;
-      max-height: 45vh; /* Adjust this value as needed */
+      max-height: 20vh; /* Adjust this value as needed */
     }
   }
   .main-draft {
     height: fit-content;
-    min-height: 80rem;
+    min-height: 50rem;
   }
   .tier-wrapper {
     min-height: 50rem;

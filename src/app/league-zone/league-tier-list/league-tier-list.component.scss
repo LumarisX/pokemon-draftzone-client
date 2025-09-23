@@ -287,6 +287,14 @@
     top 0.15s ease-out,
     left 0.15s ease-out;
 
+  &.mobile-view {
+    position: fixed;
+    bottom: 10px;
+    left: 50%;
+    top: unset;
+    transform: translateX(-50%);
+  }
+
   button {
     width: 100%;
     background-color: var(--mat-sys-primary);
@@ -296,6 +304,26 @@
     &:disabled {
       background-color: gray;
       color: white;
+    }
+  }
+}
+
+@media (max-width: 992px) {
+  .selected-card {
+    padding: 0.5rem;
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .sprite-wrapper {
+      height: 3rem;
+      width: 3rem;
+    }
+
+    .card-info {
+      display: none;
     }
   }
 }
@@ -333,4 +361,27 @@
   line-height: 1.3rem;
   font-weight: bold;
   text-align: center;
+}
+
+.search-input-container {
+  margin: 0 0.5rem;
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--mat-sys-primary);
+  box-shadow: var(--pdz-level-2);
+  border-radius: 4px;
+  padding: 0 2px;
+
+  mat-icon {
+    color: var(--mat-sys-primary);
+  }
+
+  input {
+    border: none;
+    outline: none;
+    background: transparent;
+    width: 6rem;
+    padding: 2px;
+    color: var(--mat-sys-on-surface);
+  }
 }
