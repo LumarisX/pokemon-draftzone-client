@@ -50,16 +50,16 @@
         </div>
         <div class="my-draft-content">
           <ol class="my-draft-pokemons draft-section-body">
-            @for (pick of selectedTeam.draft; track $index) {
+            @for (pokemon of selectedTeam.draft; track pokemon.id) {
               <li class="my-draft-pokemon">
                 <div class="my-pokemon-index">{{ $index + 1 }}</div>
                 <div class="my-pokemon-sprite">
-                  <pdz-sprite [pokemon]="pick" flipped></pdz-sprite>
+                  <pdz-sprite [pokemon]="pokemon" flipped></pdz-sprite>
                 </div>
                 <div class="my-pokemon-name fancy-font">
-                  {{ pick.name }}
+                  {{ pokemon.name }}
                 </div>
-                <div class="my-pokemon-tier fancy-font">{{ pick.tier }}</div>
+                <div class="my-pokemon-tier fancy-font">{{ pokemon.tier }}</div>
               </li>
             }
             @for (picks of selectedTeam.picks; track $index) {

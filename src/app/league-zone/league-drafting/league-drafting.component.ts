@@ -134,8 +134,8 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
 
     this.webSocketService
       .on<{
+        divisionId: string;
         pick: {
-          divisionKey: string;
           pokemon: LeaguePokemon;
         };
         team: {
@@ -146,14 +146,31 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
         canDraftTeams: string[];
       }>('league.draft.added')
       .subscribe((data) => {
-        const team = this.teams.find((team) => team.id === data.team.id)!;
-        team.draft = data.team.draft;
-        this.teams = this.teams.map((team) => ({
-          ...team,
-          picks: team.picks.map((round) =>
+        if (this.leagueService.divisionKey() !== data.divisionId) return;
+        this.teams = this.teams.map((team) => {
+          const newTeam = { ...team };
+          if (team.id === data.team.id) {
+            newTeam.draft = data.team.draft;
+            newTeam.picks = newTeam.picks.filter((round, index) => index);
+            this.points = data.team.draft.reduce((points, p) => {
+              return points + Number(p.tier);
+            }, 0);
+          }
+          newTeam.picks = newTeam.picks.map((round) =>
             round.filter((pick) => pick.id !== data.pick.pokemon.id),
-          ),
-        }));
+          );
+          return newTeam;
+        });
+
+        if (this.selectedTeam) {
+          const updatedSelectedTeam = this.teams.find(
+            (t) => t.id === this.selectedTeam.id,
+          );
+          if (updatedSelectedTeam) {
+            Object.assign(this.selectedTeam, updatedSelectedTeam);
+          }
+        }
+
         this.canDraftTeams = data.canDraftTeams;
         this.notificationService.show(
           `${data.team.name} drafted ${data.pick.pokemon.name}!`,
@@ -163,6 +180,7 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
 
     this.webSocketService
       .on<{
+        divisionId: string;
         currentPick: {
           round: number;
           position: number;
@@ -172,7 +190,7 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
         nextTeam: string;
       }>('league.draft.counter')
       .subscribe((data) => {
-        console.log(data);
+        if (this.leagueService.divisionKey() !== data.divisionId) return;
         this.currentPick = data.currentPick;
         this.canDraftTeams = data.canDraftTeams;
         this.startCountdown();
@@ -184,6 +202,7 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
 
     this.webSocketService
       .on<{
+        divisionId: string;
         status: 'PRE_DRAFT' | 'IN_PROGRESS' | 'PAUSED' | 'COMPLETED';
         currentPick?: {
           round: number;
@@ -192,6 +211,7 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
         };
       }>('league.draft.status')
       .subscribe((data) => {
+        if (this.leagueService.divisionKey() !== data.divisionId) return;
         this.draftDetails.status = data.status;
         this.currentPick = data.currentPick;
         switch (data.status) {
@@ -208,9 +228,11 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
 
     this.webSocketService
       .on<{
+        divisionId: string;
         teamName: string;
       }>('league.draft.skip')
       .subscribe((data) => {
+        if (this.leagueService.divisionKey() !== data.divisionId) return;
         this.notificationService.show(`${data.teamName} was skipped!`, 'info');
       });
   }
