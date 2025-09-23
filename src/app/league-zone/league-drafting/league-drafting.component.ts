@@ -146,15 +146,19 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
         canDraftTeams: string[];
       }>('league.draft.added')
       .subscribe((data) => {
-        if (this.leagueService.divisionKey() !== data.divisionId) return;
+        if (this.leagueService.divisionKey() !== data.divisionId) {
+          console.log(
+            'Div key doesnt match',
+            this.leagueService.divisionKey(),
+            data.divisionId,
+          );
+          return;
+        }
         this.teams = this.teams.map((team) => {
           const newTeam = { ...team };
           if (team.id === data.team.id) {
             newTeam.draft = data.team.draft;
             newTeam.picks = newTeam.picks.filter((round, index) => index);
-            this.points = data.team.draft.reduce((points, p) => {
-              return points + Number(p.tier);
-            }, 0);
           }
           newTeam.picks = newTeam.picks.map((round) =>
             round.filter((pick) => pick.id !== data.pick.pokemon.id),
@@ -166,7 +170,14 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
           const updatedSelectedTeam = this.teams.find(
             (t) => t.id === this.selectedTeam.id,
           );
+
           if (updatedSelectedTeam) {
+            updatedSelectedTeam.pointTotal = data.team.draft.reduce(
+              (points, p) => {
+                return points + Number(p.tier);
+              },
+              0,
+            );
             Object.assign(this.selectedTeam, updatedSelectedTeam);
           }
         }
@@ -190,7 +201,14 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
         nextTeam: string;
       }>('league.draft.counter')
       .subscribe((data) => {
-        if (this.leagueService.divisionKey() !== data.divisionId) return;
+        if (this.leagueService.divisionKey() !== data.divisionId) {
+          console.log(
+            'Div key doesnt match',
+            this.leagueService.divisionKey(),
+            data.divisionId,
+          );
+          return;
+        }
         this.currentPick = data.currentPick;
         this.canDraftTeams = data.canDraftTeams;
         this.startCountdown();
@@ -211,7 +229,14 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
         };
       }>('league.draft.status')
       .subscribe((data) => {
-        if (this.leagueService.divisionKey() !== data.divisionId) return;
+        if (this.leagueService.divisionKey() !== data.divisionId) {
+          console.log(
+            'Div key doesnt match',
+            this.leagueService.divisionKey(),
+            data.divisionId,
+          );
+          return;
+        }
         this.draftDetails.status = data.status;
         this.currentPick = data.currentPick;
         switch (data.status) {
@@ -232,7 +257,14 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
         teamName: string;
       }>('league.draft.skip')
       .subscribe((data) => {
-        if (this.leagueService.divisionKey() !== data.divisionId) return;
+        if (this.leagueService.divisionKey() !== data.divisionId) {
+          console.log(
+            'Div key doesnt match',
+            this.leagueService.divisionKey(),
+            data.divisionId,
+          );
+          return;
+        }
         this.notificationService.show(`${data.teamName} was skipped!`, 'info');
       });
   }

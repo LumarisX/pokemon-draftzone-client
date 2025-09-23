@@ -515,9 +515,11 @@
 
 @media (max-width: 992px) {
   .main-league-container {
+    height: 100vh;
     flex-direction: column;
     row-gap: 0.5rem;
     column-gap: 0;
+    overflow-y: auto;
   }
 
   .draft-panel {
@@ -525,17 +527,24 @@
     min-width: unset;
   }
 
-  .my-draft-main .my-draft-pokemons {
-    /*
+  .my-draft-main {
+    .my-draft-pokemons {
+      /*
       In a vertical layout, the parent's height is not fixed.
       We give the scrollable list a max-height relative to the
       viewport to prevent it from pushing other content off-screen.
     */
-    height: auto;
-    max-height: 45vh; /* Adjust this value as needed */
+      height: auto;
+      max-height: 45vh; /* Adjust this value as needed */
+    }
   }
-
+  .main-draft {
+    height: fit-content;
+    min-height: 80rem;
+  }
   .tier-wrapper {
+    min-height: 50rem;
+
     /* Allow the tier list to grow and fill the remaining vertical space */
     flex-grow: 1;
   }
