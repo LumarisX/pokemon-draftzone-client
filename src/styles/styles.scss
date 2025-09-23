@@ -40,6 +40,12 @@
     border: 1px solid var(--mat-sys-surface);
   }
 
+  /* For Firefox */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--mat-sys-surface-dim) var(--mat-sys-surface);
+  }
+
   .tooltip {
     position: relative;
     cursor: pointer;
