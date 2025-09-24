@@ -3,9 +3,7 @@
   display: flex;
   flex-direction: column;
   .draft-section-title {
-    font-family:
-      Nasalization RG,
-      sans-serif;
+    font-family: var(--pdz-font-fancy);
     padding: 0.25rem;
     margin: 0 0.25rem;
     font-weight: bold;
@@ -22,9 +20,7 @@
   display: flex;
   flex-direction: column;
   .league-section-title {
-    font-family:
-      Nasalization RG,
-      sans-serif;
+    font-family: var(--pdz-font-fancy);
     padding: 0.25rem;
     margin: 0 0.25rem;
     font-weight: bold;

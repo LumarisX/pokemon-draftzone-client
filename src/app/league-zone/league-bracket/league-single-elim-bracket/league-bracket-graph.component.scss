@@ -9,7 +9,7 @@
     .node-placeholder {
       font-style: italic;
       font-size: 0.7em;
-      font-family: var(--pdz-fancy);
+      font-family: var(--pdz-font-fancy);
       line-height: 1em;
       fill: #bbb;
       text-anchor: middle;
@@ -33,7 +33,7 @@
     }
 
     .seed {
-      font: 12px var(--pdz-fancy);
+      font: 12px var(--pdz-font-fancy);
       fill: var(--mat-sys-secondary);
       text-anchor: middle;
       dominant-baseline: central;
@@ -41,7 +41,7 @@
 
     .matchup-text {
       fill: #777;
-      font: 12px var(--pdz-fancy);
+      font: 12px var(--pdz-font-fancy);
       font-style: italic;
       text-anchor: middle;
       dominant-baseline: central;
@@ -68,7 +68,7 @@
       fill: var(--mat-sys-secondary);
       cursor: pointer;
       &:hover {
-        fill: var(--mat-sys-primary);
+        fill: var(--pdz-primary);
       }
     }
   }
@@ -108,7 +108,7 @@
         justify-content: space-between;
         display: flex;
         font-size: 0.7em;
-        color: var(--mat-sys-primary);
+        color: var(--pdz-primary);
         line-height: 0.9em;
         font-weight: 700;
         white-space: nowrap;

@@ -15,7 +15,7 @@
 h1,
 h2,
 h3 {
-  font-family: var(--pdz-fancy);
+  font-family: var(--pdz-font-fancy);
 }
 
 h1 {
@@ -47,7 +47,7 @@ h3 {
   margin: 4px;
   &.selected {
     border: 6px solid var(--mat-sys-outline);
-    background-color: var(--mat-sys-surface);
+    background-color: var(--pdz-surface);
     color: var(--mat-sys-on-primary-container);
     margin: 0px;
   }
@@ -74,7 +74,7 @@ h3 {
   font-size: 0.8em;
   font-weight: 800;
   font-family: var(--pdz-font-regular);
-  color: var(--mat-sys-primary);
+  color: var(--pdz-primary);
 }
 
 .qd-spacer {

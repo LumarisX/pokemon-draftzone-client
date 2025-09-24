@@ -27,7 +27,7 @@
           flex-direction: row-reverse;
         }
         &.selected {
-          border-bottom: 1px solid var(--mat-sys-surface);
+          border-bottom: 1px solid var(--pdz-surface);
           margin-bottom: 0px;
           margin-top: 2px;
         }
@@ -73,7 +73,7 @@
       .tier-group {
         background-color: var(--mat-sys-secondary-container);
         border-width: 1px;
-        border-color: var(--mat-sys-surface);
+        border-color: var(--pdz-surface);
         border-radius: 0.75rem;
         padding: 0 0.25rem;
         width: 40rem;
@@ -132,14 +132,14 @@
   }
   .section-title {
     font-size: 0.9em;
-    font-family: "Nasalization RG", sans-serif;
+    font-family: var(--pdz-font-fancy);
   }
 }
 
 .filter-main {
   box-shadow: var(--pdz-level2);
   border-radius: 5px;
-  background-color: var(--mat-sys-surface);
+  background-color: var(--pdz-surface);
   padding: 10px;
   margin: 0;
   color: var(--mat-sys-on-surface);

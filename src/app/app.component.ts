@@ -10,7 +10,6 @@ import { SettingsService } from './pages/settings/settings.service';
 export class AppComponent {
   private settingsService = inject(SettingsService);
 
-
   getTheme() {
     const classes: string[] = [];
     if (this.settingsService.settingsData.ldMode === 'dark')

@@ -12,8 +12,8 @@ describe('ComparisonCardComponent', () => {
     });
     fixture = TestBed.createComponent(ComparisonCardComponent);
     component = fixture.componentInstance;
-    component.leftEntity = { logoUrl: '', primaryName: '', secondaryName: '' };
-    component.rightEntity = { logoUrl: '', primaryName: '', secondaryName: '' };
+    component.entityLeft = { logoUrl: '', primaryName: '', secondaryName: '' };
+    component.entityRight = { logoUrl: '', primaryName: '', secondaryName: '' };
     fixture.detectChanges();
   });
 

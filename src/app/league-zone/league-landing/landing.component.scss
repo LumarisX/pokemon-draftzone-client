@@ -9,13 +9,13 @@
   padding: 0.25rem;
   font-size: x-large;
   width: 12rem;
-  color: var(--mat-sys-primary);
+  color: var(--pdz-primary);
   height: 8rem;
   border-radius: 2rem;
   box-shadow: var(--pdz-level2);
   &:hover {
-    background-color: var(--mat-sys-primary);
-    color: var(--mat-sys-on-primary);
+    background-color: var(--pdz-primary);
+    color: var(--pdz-on-primary);
   }
   &:active {
     box-shadow: var(--pdz-level0);

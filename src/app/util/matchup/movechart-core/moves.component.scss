@@ -8,7 +8,7 @@
   display: flex;
   width: 100%;
   padding: 0 1rem 0.5rem;
-  color: var(--mat-sys-primary);
+  color: var(--pdz-primary);
   font-weight: 700;
 }
 
@@ -45,7 +45,7 @@
   justify-content: space-around;
   flex-wrap: wrap;
   gap: 1rem 0.5rem;
-  background-color: var(--mat-sys-surface);
+  background-color: var(--pdz-surface);
   color: var(--mat-sys-on-surface);
   max-height: 0;
   opacity: 0;

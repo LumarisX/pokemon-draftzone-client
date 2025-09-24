@@ -19,9 +19,7 @@
     padding: 0px 4px;
     background: inherit;
     text-overflow: ellipsis;
-    font-family:
-      Nasalization RG,
-      sans-serif;
+    font-family: var(--pdz-font-fancy);
     border-bottom: 1px solid;
   }
 
@@ -31,7 +29,7 @@
     height: fit-content;
     width: fit-content;
     &:hover {
-      color: var(--mat-sys-primary);
+      color: var(--pdz-primary);
       border-radius: 99rem;
     }
   }
@@ -40,7 +38,11 @@
 .tab-wrapper {
   display: flex;
   overflow-x: auto;
-  @apply space-x-1;
+  > :not([hidden]) ~ :not([hidden]) {
+    --tw-space-x-reverse: 0;
+    margin-right: calc(0.25rem /* 4px */ * var(--tw-space-x-reverse));
+    margin-left: calc(0.25rem /* 4px */ * calc(1 - var(--tw-space-x-reverse)));
+  }
 }
 
 .tab-bar {
@@ -51,14 +53,22 @@
   overflow-y: clip;
   height: fit-content;
   border-width: 0 0 2px;
-  @apply space-x-1 border-menu-300;
+  > :not([hidden]) ~ :not([hidden]) {
+    --tw-space-x-reverse: 0;
+    margin-right: calc(0.25rem /* 4px */ * var(--tw-space-x-reverse));
+    margin-left: calc(0.25rem /* 4px */ * calc(1 - var(--tw-space-x-reverse)));
+  }
+  --tw-border-opacity: 1;
+  border-color: hsl(
+    var(--twc-menu-300) / var(--twc-menu-300-opacity, var(--tw-border-opacity))
+  );
 }
 
 .add-tab {
   display: flex;
   align-items: center;
   &:hover {
-    color: var(--mat-sys-primary);
+    color: var(--pdz-primary);
   }
 }
 

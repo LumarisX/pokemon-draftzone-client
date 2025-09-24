@@ -1,5 +1,5 @@
 .setting-title {
-  font-family: "Nasalization RG", sans-serif;
+  font-family: var(--pdz-font-fancy);
   font-size: 1.75em;
   color: var(--mat-sys-on-surface);
 }
@@ -15,7 +15,7 @@
   max-width: 32rem;
   max-height: fit-content;
   height: 32rem;
-  background-color: var(--mat-sys-surface);
+  background-color: var(--pdz-surface);
   overflow-y: auto;
   border-radius: 1rem;
   display: flex;

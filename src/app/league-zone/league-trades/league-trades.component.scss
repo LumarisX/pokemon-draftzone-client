@@ -4,11 +4,11 @@
 
 .stage {
   .stage-header {
-    font-family: var(--pdz-fancy);
+    font-family: var(--pdz-font-fancy);
   }
 
   .stage-body {
-    border-left: 2px solid var(--mat-sys-primary);
+    border-left: 2px solid var(--pdz-primary);
     padding: 1rem 0 1rem 1rem;
     display: flex;
     flex-direction: column;

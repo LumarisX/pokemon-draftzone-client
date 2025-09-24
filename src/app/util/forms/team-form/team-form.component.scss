@@ -240,10 +240,10 @@
       display: flex;
       justify-content: center;
       .allnone-container {
-        color: var(--mat-sys-on-primary);
+        color: var(--pdz-on-primary);
         font-weight: 600;
-        border: 2px solid var(--mat-sys-primary);
-        background-color: var(--mat-sys-primary);
+        border: 2px solid var(--pdz-primary);
+        background-color: var(--pdz-primary);
         height: 1.5rem;
         display: flex;
         align-items: center;
@@ -262,12 +262,12 @@
         .allnone {
           width: 3rem;
           height: 100%;
-          background-color: var(--mat-sys-primary);
-          color: var(--mat-sys-on-primary);
+          background-color: var(--pdz-primary);
+          color: var(--pdz-on-primary);
           border-radius: 4rem;
           &:hover,
           &:disabled {
-            background-color: var(--mat-sys-surface);
+            background-color: var(--pdz-surface);
             color: var(--mat-sys-on-surface-variant);
           }
         }

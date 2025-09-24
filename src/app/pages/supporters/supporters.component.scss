@@ -12,7 +12,7 @@ $card-max-width: 32rem;
 $border-radius-sm: var(--mat-sys-shape-corner-small, 4px);
 $border-radius-md: var(--mat-sys-shape-corner-medium, 8px);
 $border-radius-lg: var(--mat-sys-shape-corner-large, 12px);
-$font-nasa: var(--pdz-fancy);
+$font-nasa: var(--pdz-font-fancy);
 .support-page {
   display: flex;
   flex-direction: column;
@@ -82,7 +82,7 @@ $font-nasa: var(--pdz-fancy);
   }
 
   &:focus-visible {
-    outline: 2px solid var(--mat-sys-primary);
+    outline: 2px solid var(--pdz-primary);
     outline-offset: 2px;
     border-color: transparent;
   }

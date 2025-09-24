@@ -37,7 +37,6 @@ export class TopNavbarComponent implements OnInit {
   auth = inject(AuthService);
   private settingsService = inject(SettingsService);
   private unreadService = inject(UnreadService);
-  private router = inject(Router);
   private matIconRegistry = inject(MatIconRegistry);
   private domSanitizer = inject(DomSanitizer);
 

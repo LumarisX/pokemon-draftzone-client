@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import {
   provideHttpClient,
   withInterceptorsFromDi,
@@ -7,6 +8,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { AuthModule } from '@auth0/auth0-angular';
 import { MARKED_OPTIONS, provideMarkdown } from 'ngx-markdown';
+import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
 import { BodyModule } from './body/body.module';
 import { TopNavbarComponent } from './pages/top-navbar/top-navbar.component';
@@ -16,25 +18,26 @@ import { TopNavbarComponent } from './pages/top-navbar/top-navbar.component';
   declarations: [AppComponent],
   imports: [
     BodyModule,
+    CommonModule,
     BrowserAnimationsModule,
     AuthModule.forRoot({
-      domain: 'login.pokemondraftzone.com',
-      clientId: 'nAyvHSOL1PbsFZfodzgIjRgYBUA1M1DH',
+      domain: environment.auth.domain,
+      clientId: environment.auth.clientId,
       useRefreshTokens: true,
       cacheLocation: 'localstorage',
       authorizationParams: {
         redirect_uri: window.location.origin,
-        audience: 'https://dev-wspjxi5f6mjqsjea.us.auth0.com/api/v2/',
-        scope: 'openid profile email read:username offline_access',
+        audience: environment.auth.audience,
+        scope: environment.auth.scope,
       },
       httpInterceptor: {
         allowedList: [
           {
-            uri: 'https://dev-wspjxi5f6mjqsjea.us.auth0.com/api/v2/*',
+            uri: `${environment.auth.audience}*`,
             tokenOptions: {
               authorizationParams: {
-                audience: 'https://dev-wspjxi5f6mjqsjea.us.auth0.com/api/v2/',
-                scope: 'openid profile email read:username',
+                audience: environment.auth.audience,
+                scope: environment.auth.interceptorScope,
               },
             },
           },
@@ -59,7 +62,6 @@ import { TopNavbarComponent } from './pages/top-navbar/top-navbar.component';
         }),
       },
     }),
-    TopNavbarComponent,
   ],
 })
 export class AppModule {}

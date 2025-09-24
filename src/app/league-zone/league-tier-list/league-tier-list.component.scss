@@ -18,8 +18,8 @@
 }
 
 .tier-group-label {
-  background-color: var(--mat-sys-primary);
-  color: var(--mat-sys-on-primary);
+  background-color: var(--pdz-primary);
+  color: var(--pdz-on-primary);
   text-align: center;
   height: 24px;
   min-width: 4rem;
@@ -78,8 +78,8 @@
 }
 
 .tier-label {
-  background-color: var(--mat-sys-primary);
-  color: var(--mat-sys-on-primary);
+  background-color: var(--pdz-primary);
+  color: var(--pdz-on-primary);
   text-align: center;
   min-width: 4rem;
   position: sticky;
@@ -110,8 +110,8 @@
     width: 100%;
     text-align: center;
     border-radius: inherit;
-    background-color: var(--mat-sys-primary);
-    color: var(--mat-sys-on-primary);
+    background-color: var(--pdz-primary);
+    color: var(--pdz-on-primary);
     &:hover {
       background-color: var(--mat-sys-secondary);
     }
@@ -136,16 +136,14 @@
 }
 
 .tier-group-label {
-  background-color: var(--mat-sys-primary);
-  color: var(--mat-sys-on-primary);
+  background-color: var(--pdz-primary);
+  color: var(--pdz-on-primary);
   text-align: center;
   height: 24px;
   min-width: 4rem;
   font-weight: bold;
   border-color: inherit;
-  font-family:
-    Nasalization RG,
-    sans-serif;
+  font-family: var(--pdz-font-fancy);
 }
 
 .tier-entry-container {
@@ -217,8 +215,8 @@
 }
 
 .tier-label {
-  background-color: var(--mat-sys-primary);
-  color: var(--mat-sys-on-primary);
+  background-color: var(--pdz-primary);
+  color: var(--pdz-on-primary);
   text-align: center;
   min-width: 4rem;
   position: sticky;
@@ -227,9 +225,7 @@
   font-weight: bold;
   border-width: 0px 0px 2px 0px;
   border-color: var(--mat-sys-outline);
-  font-family:
-    Nasalization RG,
-    sans-serif;
+  font-family: var(--pdz-font-fancy);
 }
 
 .backbutton {
@@ -251,8 +247,8 @@
     width: 100%;
     text-align: center;
     border-radius: inherit;
-    background-color: var(--mat-sys-primary);
-    color: var(--mat-sys-on-primary);
+    background-color: var(--pdz-primary);
+    color: var(--pdz-on-primary);
     &:hover {
       background-color: var(--mat-sys-secondary);
     }
@@ -297,8 +293,8 @@
 
   button {
     width: 100%;
-    background-color: var(--mat-sys-primary);
-    color: var(--mat-sys-on-primary);
+    background-color: var(--pdz-primary);
+    color: var(--pdz-on-primary);
     border-radius: 1rem;
     box-shadow: --pdz-level2;
     &:disabled {
@@ -367,13 +363,13 @@
   margin: 0 0.5rem;
   display: flex;
   align-items: center;
-  border: 1px solid var(--mat-sys-primary);
+  border: 1px solid var(--pdz-primary);
   box-shadow: var(--pdz-level-2);
   border-radius: 4px;
   padding: 0 2px;
 
   mat-icon {
-    color: var(--mat-sys-primary);
+    color: var(--pdz-primary);
   }
 
   input {

@@ -1,9 +1,9 @@
-$primary-color: var(--mat-sys-primary);
+$primary-color: var(--pdz-primary);
 $primary-hover-color: var(--mat-sys-secondary);
 $border-color: var(--mat-sys-outline-variant);
 $text-color: var(--mat-sys-on-surface);
-$timestamp-color: var(--mat-sys-primary);
-$background-color: var(--mat-sys-surface);
+$timestamp-color: var(--pdz-primary);
+$background-color: var(--pdz-surface);
 .message-list {
   min-height: 4rem;
   max-height: 20rem;

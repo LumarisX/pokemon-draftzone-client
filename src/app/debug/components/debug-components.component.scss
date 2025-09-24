@@ -62,8 +62,8 @@ $icon-sizes: 20, 24, 32, 40, 48;
   align-items: center;
 
   &.primary {
-    background-color: var(--mat-sys-primary);
-    color: var(--mat-sys-on-primary);
+    background-color: var(--pdz-primary);
+    color: var(--pdz-on-primary);
   }
   &.secondary {
     background-color: var(--mat-sys-secondary);
@@ -122,7 +122,7 @@ $icon-sizes: 20, 24, 32, 40, 48;
     color: var(--mat-sys-on-surface);
   }
   &.surface {
-    background-color: var(--mat-sys-surface);
+    background-color: var(--pdz-surface);
     color: var(--mat-sys-on-surface);
   }
   &.surface-bright {

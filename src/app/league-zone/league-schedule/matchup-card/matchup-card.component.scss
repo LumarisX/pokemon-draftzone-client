@@ -5,7 +5,7 @@
 .matchup-card {
   display: flex;
   flex-direction: column;
-  background-color: var(--mat-sys-surface);
+  background-color: var(--pdz-surface);
   box-shadow: var(--mat-sys-level2);
   width: 26rem;
   border-radius: 2rem;
@@ -89,14 +89,14 @@
     top: -0.375rem;
     left: 50%;
     transform: translate(-50%, 0);
-    color: var(--mat-sys-primary);
+    color: var(--pdz-primary);
     padding: 0 0.25rem;
     border-radius: 0.5rem;
     font-size: 0.6em;
     &.enabled {
       box-shadow: var(--mat-sys-level1);
-      background-color: var(--mat-sys-primary);
-      color: var(--mat-sys-on-primary);
+      background-color: var(--pdz-primary);
+      color: var(--pdz-on-primary);
     }
     &:active {
       margin-top: 1px;
@@ -129,7 +129,7 @@
         border-radius: 0.25rem;
         box-shadow: var(--mat-sys-level1);
         background-color: white;
-        color: var(--mat-sys-primary);
+        color: var(--pdz-primary);
         &.positive {
           color: lightgreen;
         }
@@ -159,7 +159,7 @@
     row-gap: 0.25rem;
     .match-option {
       font-size: 0.6em;
-      color: var(--mat-sys-primary);
+      color: var(--pdz-primary);
       display: flex;
       column-gap: 0.25rem;
       align-items: center;
@@ -181,9 +181,9 @@
         box-shadow: var(--mat-sys-level1);
         border-radius: 0.5rem;
         &.selected {
-          background-color: var(--mat-sys-primary);
-          border: 1px solid var(--mat-sys-primary);
-          color: var(--mat-sys-on-primary);
+          background-color: var(--pdz-primary);
+          border: 1px solid var(--pdz-primary);
+          color: var(--pdz-on-primary);
           margin-top: 1px;
           margin-bottom: -1px;
           box-shadow: var(--mat-sys-level0);

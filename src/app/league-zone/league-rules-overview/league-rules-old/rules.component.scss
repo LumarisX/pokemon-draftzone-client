@@ -20,7 +20,7 @@
 }
 
 .rules-title {
-  font-family: "Nasalization RG", sans-serif;
+  font-family: var(--pdz-font-fancy);
   font-size: 1.875rem; // 30px
   font-weight: bold;
   text-align: center;
@@ -50,7 +50,7 @@
 }
 
 .rule-title {
-  font-family: "Nasalization RG", sans-serif;
+  font-family: var(--pdz-font-fancy);
   font-weight: bold;
   font-size: larger;
 }

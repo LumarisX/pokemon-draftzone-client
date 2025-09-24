@@ -29,7 +29,7 @@
     line-height: 2rem;
     text-align: center;
     border-bottom: 2px solid var(--mat-sys-outline);
-    font-family: var(--pdz-fancy);
+    font-family: var(--pdz-font-fancy);
     color: var(--mat-sys-on-surface);
     margin: 0 0.5rem;
     flex-shrink: 0;
@@ -37,7 +37,7 @@
 
   .news-wrapper {
     padding: 0.5rem 0.125rem 0.5rem 0.5rem;
-    background-color: var(--mat-sys-surface);
+    background-color: var(--pdz-surface);
     box-shadow: var(--pdz-level2);
     border-radius: 1rem;
     flex-grow: 1;
@@ -62,9 +62,7 @@
   align-items: center;
   width: fit-content;
   padding: 1rem 0;
-  font-family:
-    Nasalization RG,
-    sans-serif;
+  font-family: var(--pdz-font-fancy);
   column-gap: 0.5rem;
   .title-logo {
     width: 4rem;
@@ -75,7 +73,7 @@
     font-size: 2.5rem;
     line-height: 1;
     font-weight: 600;
-    color: var(--mat-sys-primary);
+    color: var(--pdz-primary);
     @media (min-width: 768px) {
       font-size: 3.75rem;
     }

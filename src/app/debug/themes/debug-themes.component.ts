@@ -15,10 +15,10 @@ export class DebugThemesComponent {
   constructor() {}
 
   setTheme(themeName: string): void {
-    this.theme = themeName;
+    document.body.setAttribute('pdz-theme', themeName);
   }
 
   setMode(modeName: 'light' | 'dark'): void {
-    this.mode = modeName;
+    document.body.setAttribute('pdz-theme-mode', modeName);
   }
 }

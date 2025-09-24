@@ -9,12 +9,10 @@
     display: flex;
     flex-direction: column;
     .standing-header-title {
-      font-family:
-        Nasalization RG,
-        sans-serif;
+      font-family: var(--pdz-font-fancy);
       padding: 0.25rem 0.5rem;
-      background-color: var(--mat-sys-primary);
-      color: var(--mat-sys-on-primary);
+      background-color: var(--pdz-primary);
+      color: var(--pdz-on-primary);
     }
   }
 
@@ -51,7 +49,7 @@
       object-fit: contain;
       font-size: 1.2em;
       font-weight: 700;
-      color: var(--mat-sys-primary);
+      color: var(--pdz-primary);
       &.positive {
         color: lightgreen;
       }

@@ -77,7 +77,7 @@ $container-padding: 0.75rem;
   overflow: hidden;
   line-height: 1em;
   max-height: 2em;
-  font-family: var(--pdz-fancy);
+  font-family: var(--pdz-font-fancy);
   text-overflow: ellipsis;
 }
 
@@ -143,8 +143,8 @@ $container-padding: 0.75rem;
   color: gray;
   &.active {
     z-index: 100;
-    background-color: var(--mat-sys-primary);
-    color: var(--mat-sys-on-primary);
+    background-color: var(--pdz-primary);
+    color: var(--pdz-on-primary);
   }
 
   &.link {

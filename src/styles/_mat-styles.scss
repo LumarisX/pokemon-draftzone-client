@@ -83,13 +83,13 @@
 .flex-overlay {
   display: flex;
   flex-direction: column;
-  background-color: var(--mat-sys-surface);
+  background-color: var(--pdz-surface);
   color: var(--mat-sys-on-surface);
   border-radius: 1rem;
   box-shadow: var(--pdz-level3);
   padding: 0.25rem;
   mat-icon {
-    color: var(--mat-sys-primary);
+    color: var(--pdz-primary);
   }
   label {
     display: flex;

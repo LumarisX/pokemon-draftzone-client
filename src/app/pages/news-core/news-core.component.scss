@@ -1,10 +1,10 @@
 .news-header {
-  font-family: var(--pdz-fancy);
+  font-family: var(--pdz-font-fancy);
   font-size: 1.2em;
   color: var(--mat-sys-secondary);
 
   .news-date {
-    color: var(--mat-sys-primary);
+    color: var(--pdz-primary);
   }
   .news-title {
     color: var(--mat-sys-on-surface);
@@ -47,7 +47,7 @@
     padding-left: 0.25rem;
     font-size: 0.8em;
     font-weight: 500;
-    font-family: var(--pdz-fancy);
+    font-family: var(--pdz-font-fancy);
     color: var(--mat-sys-secondary);
   }
 
@@ -70,7 +70,7 @@
 
 .section-heading {
   font-size: 1.1em;
-  font-family: var(--pdz-fancy);
+  font-family: var(--pdz-font-fancy);
   padding-bottom: 0rem !important;
 }
 

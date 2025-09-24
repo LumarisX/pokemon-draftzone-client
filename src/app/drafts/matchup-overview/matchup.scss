@@ -8,11 +8,11 @@
     width: 100%;
 
     padding: 0 1rem 0.5rem;
-    color: var(--mat-sys-primary);
+    color: var(--pdz-primary);
     font-weight: 700;
     .widget-label {
       font-size: 1.2em;
-      font-family: "Nasalization RG", sans-serif;
+      font-family: var(--pdz-font-fancy);
     }
 
     .widget-options {
@@ -60,7 +60,7 @@
         justify-content: space-evenly;
         column-gap: 2rem;
         row-gap: 0.125rem;
-        background-color: var(--mat-sys-surface);
+        background-color: var(--pdz-surface);
         box-shadow: var(--pdz-level2);
       }
     }
@@ -99,7 +99,7 @@
   .shared-container {
     max-width: 50rem;
     width: 100%;
-    background-color: var(--mat-sys-surface);
+    background-color: var(--pdz-surface);
     box-shadow: var(--pdz-level4);
     border-radius: 1rem;
     padding: 1rem;
@@ -113,7 +113,7 @@
       .share-title {
         font-size: 1.5em;
         font-weight: bold;
-        font-family: "Nasalization RG", sans-serif;
+        font-family: var(--pdz-font-fancy);
       }
       button {
         position: absolute;
@@ -213,7 +213,7 @@
                   position: absolute;
                   bottom: 0;
                   font-weight: 600;
-                  background-color: var(--mat-sys-surface);
+                  background-color: var(--pdz-surface);
                   box-shadow: var(--pdz-level2);
                   padding: 0 0.125rem;
                   border-radius: 1rem;

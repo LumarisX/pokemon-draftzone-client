@@ -17,7 +17,7 @@
   width: fit-content;
   height: fit-content;
   border-radius: 1rem;
-  background-color: var(--mat-sys-surface);
+  background-color: var(--pdz-surface);
   box-shadow: var(--pdz-level3);
 }
 
@@ -26,11 +26,11 @@
   justify-content: space-between;
   width: 100%;
   padding: 0 1rem 0.5rem;
-  color: var(--mat-sys-primary);
+  color: var(--pdz-primary);
   font-weight: 700;
 
   .table-label {
     font-size: 1.2em;
-    font-family: "Nasalization RG", sans-serif;
+    font-family: var(--pdz-font-fancy);
   }
 }

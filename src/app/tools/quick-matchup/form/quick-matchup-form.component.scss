@@ -1,5 +1,5 @@
 .pokemon-form-container {
-  background-color: var(--mat-sys-surface);
+  background-color: var(--pdz-surface);
   color: var(--mat-sys-on-surface);
   border-radius: 1rem;
   box-shadow: var(--pdz-level2);
@@ -20,7 +20,7 @@
     padding: 0.25rem 0;
     height: 100%;
     .team-title {
-      color: var(--mat-sys-primary);
+      color: var(--pdz-primary);
       font-weight: 600;
       font-size: large;
     }

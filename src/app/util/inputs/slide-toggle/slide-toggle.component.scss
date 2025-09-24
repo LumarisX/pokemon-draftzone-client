@@ -14,7 +14,7 @@
 
   .toggle-track {
     width: 3.5em;
-    border: 0.125em solid var(--mat-sys-primary);
+    border: 0.125em solid var(--pdz-primary);
     height: 1em;
     background-color: var(--mat-sys-surface-variant);
     border-radius: 1em;
@@ -46,12 +46,12 @@
 
   &.checked {
     .toggle-track {
-      background-color: var(--mat-sys-primary);
+      background-color: var(--pdz-primary);
     }
 
     .toggle-thumb {
       transform: translate(2em, -50%);
-      background-color: var(--mat-sys-on-primary);
+      background-color: var(--pdz-on-primary);
       color: var(--mat-sys-outline);
     }
   }
