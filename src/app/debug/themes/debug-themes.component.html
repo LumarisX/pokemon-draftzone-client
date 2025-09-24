@@ -1,0 +1,33 @@
+<div
+  class="themed-component-wrapper"
+  [attr.data-theme]="theme"
+  [attr.data-mode]="mode"
+>
+  <h1>SCSS Theme Switcher</h1>
+  <p>Select a theme (color palette) and a mode (light or dark).</p>
+
+  <div class="card theme-switcher">
+    <div class="theme-group">
+      <strong>Theme:</strong>
+      <button class="btn" (click)="setTheme('normal')">Normal</button>
+      <button class="btn" (click)="setTheme('forest')">Forest</button>
+      <button class="btn" (click)="setTheme('sunset')">Sunset</button>
+    </div>
+
+    <div class="theme-group">
+      <strong>Mode:</strong>
+      <button class="btn" (click)="setMode('light')">Light ☀️</button>
+      <button class="btn" (click)="setMode('dark')">Dark 🌙</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Example Content Card</h2>
+    <p>
+      This is a paragraph inside a card. It contains an
+      <a href="#">example link</a> to demonstrate how elements adopt the active
+      theme's colors.
+    </p>
+    <button class="btn">Click Me</button>
+  </div>
+</div>

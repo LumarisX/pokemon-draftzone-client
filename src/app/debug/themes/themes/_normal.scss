@@ -1,0 +1,32 @@
+$theme: (
+  light: (
+    primary: #19a2b3,
+    on-primary: #ffffff,
+    secondary: #338e99,
+    on-secondary: #ffffff,
+
+    background: #f7fdff,
+    surface: #f7fdff,
+    surface-container: #edf5f7,
+
+    on-surface: #151d1f,
+    on-surface-variant: #266a73,
+
+    outline: #40b0bf,
+  ),
+  dark: (
+    primary: #a6eaf2,
+    on-primary: #0d5159,
+    secondary: #b3e0e6,
+    on-secondary: #1a474d,
+
+    background: #151d1f,
+    surface: #151d1f,
+    surface-container: #242b2d,
+
+    on-surface: #dce4e6,
+    on-surface-variant: #b3e0e6,
+
+    outline: #66c0cc,
+  ),
+);
