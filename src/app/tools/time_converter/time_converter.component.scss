@@ -10,7 +10,7 @@ $height: 32px;
 .time-container {
   padding: 1rem;
   max-width: 40rem;
-  box-shadow: var(--pdz-level3);
+  box-shadow: var(--pdz-level-3);
   border-radius: 0.5rem;
 }
 mat-slider {
@@ -36,5 +36,5 @@ mat-slider {
 }
 
 .mat-level-2 {
-  box-shadow: var(--pdz-level2);
+  box-shadow: var(--pdz-level-2);
 }

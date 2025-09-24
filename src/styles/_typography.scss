@@ -1,0 +1,20 @@
+$typography: (
+  headline-large: (
+    font-family: var(--pdz-font-fancy),
+    font-size: 2rem,
+    font-weight: 700,
+    line-height: 2.5rem,
+  ),
+  body-medium: (
+    font-family: var(--pdz-font-regular),
+    font-size: 1rem,
+    font-weight: 400,
+    line-height: 1.5rem,
+  ),
+  label-small: (
+    font-family: var(--pdz-font-regular),
+    font-size: 0.75rem,
+    font-weight: 500,
+    line-height: 1rem,
+  ),
+);

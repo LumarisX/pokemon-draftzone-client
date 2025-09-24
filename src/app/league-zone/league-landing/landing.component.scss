@@ -12,13 +12,13 @@
   color: var(--pdz-primary);
   height: 8rem;
   border-radius: 2rem;
-  box-shadow: var(--pdz-level2);
+  box-shadow: var(--pdz-level-2);
   &:hover {
     background-color: var(--pdz-primary);
     color: var(--pdz-on-primary);
   }
   &:active {
-    box-shadow: var(--pdz-level0);
+    box-shadow: var(--pdz-level-0);
   }
 
   @media (max-width: 768px) {

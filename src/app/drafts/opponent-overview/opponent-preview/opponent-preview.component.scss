@@ -59,7 +59,7 @@ section {
   font-family: var(--pdz-font-fancy);
   user-select: none;
   border-radius: 1rem;
-  box-shadow: var(--pdz-level1);
+  box-shadow: var(--pdz-level-1);
   background-color: var(--mat-sys-primary-fixed);
   flex-wrap: wrap;
   @media (min-width: $breakpoint-tablet) {
@@ -67,12 +67,12 @@ section {
   }
 
   &:hover {
-    box-shadow: var(--pdz-level2);
+    box-shadow: var(--pdz-level-2);
     cursor: pointer;
   }
 
   &.selected {
-    box-shadow: var(--pdz-level-2);
+    box-shadow: var(--pdz-level-inset-2);
     background-color: var(--mat-sys-primary-fixed-dim);
     cursor: pointer;
   }
@@ -148,7 +148,7 @@ section {
     flex-shrink: 0;
     overflow: hidden;
     border-radius: var(--mat-sys-corner-medium);
-    box-shadow: var(--pdz-level1);
+    box-shadow: var(--pdz-level-1);
     height: 3rem;
     width: 3rem;
     img {
@@ -176,9 +176,9 @@ pdz-sprite {
   padding: 3px;
   border-radius: 0.625rem;
   line-height: 0.9em;
-  box-shadow: var(--pdz-level2);
+  box-shadow: var(--pdz-level-2);
   &:hover {
-    box-shadow: var(--pdz-level1);
+    box-shadow: var(--pdz-level-1);
   }
   > div {
     background-color: white;
@@ -290,13 +290,13 @@ pdz-sprite {
     background-color: var(--mat-sys-primary-container);
     color: var(--mat-sys-on-primary-container);
     border-radius: var(--mat-sys-corner-medium);
-    box-shadow: var(--pdz-level2);
+    box-shadow: var(--pdz-level-2);
     padding: 0.5rem;
     font-size: 0.8em;
 
     &:hover {
       background-color: var(--mat-sys-secondary-container);
-      box-shadow: var(--pdz-level4);
+      box-shadow: var(--pdz-level-4);
     }
 
     &.matchup-button {

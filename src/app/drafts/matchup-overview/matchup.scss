@@ -61,7 +61,7 @@
         column-gap: 2rem;
         row-gap: 0.125rem;
         background-color: var(--pdz-surface);
-        box-shadow: var(--pdz-level2);
+        box-shadow: var(--pdz-level-2);
       }
     }
 
@@ -100,7 +100,7 @@
     max-width: 50rem;
     width: 100%;
     background-color: var(--pdz-surface);
-    box-shadow: var(--pdz-level4);
+    box-shadow: var(--pdz-level-4);
     border-radius: 1rem;
     padding: 1rem;
     position: relative;
@@ -195,7 +195,7 @@
                   right: 0;
                   background-color: var(--mat-sys-secondary);
                   color: var(--mat-sys-on-secondary);
-                  box-shadow: var(--pdz-level2);
+                  box-shadow: var(--pdz-level-2);
 
                   border-radius: 1rem;
                   mat-icon {
@@ -214,7 +214,7 @@
                   bottom: 0;
                   font-weight: 600;
                   background-color: var(--pdz-surface);
-                  box-shadow: var(--pdz-level2);
+                  box-shadow: var(--pdz-level-2);
                   padding: 0 0.125rem;
                   border-radius: 1rem;
                   color: var(--mat-sys-secondary);

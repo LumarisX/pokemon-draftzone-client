@@ -73,7 +73,7 @@
 }
 
 .menu {
-  box-shadow: var(--pdz-level2);
+  box-shadow: var(--pdz-level-2);
   z-index: 2100;
 }
 
@@ -206,11 +206,11 @@
 }
 
 .selected {
-  box-shadow: var(--pdz-level2);
+  box-shadow: var(--pdz-level-2);
 }
 
 .menu {
-  box-shadow: var(--pdz-level2);
+  box-shadow: var(--pdz-level-2);
   z-index: 2100;
 }
 
@@ -275,7 +275,7 @@
   align-items: center;
   gap: 0.5rem;
 
-  box-shadow: var(--pdz-level3);
+  box-shadow: var(--pdz-level-3);
 
   transform: translateY(-50%);
 
@@ -348,7 +348,7 @@
   background-color: var(--mat-sys-surface-container-high);
   padding: 0.1rem 0.25rem;
   border-radius: 4px;
-  box-shadow: var(--pdz-level2);
+  box-shadow: var(--pdz-level-2);
 }
 
 .card-pokemon-name {
@@ -364,7 +364,7 @@
   display: flex;
   align-items: center;
   border: 1px solid var(--pdz-primary);
-  box-shadow: var(--pdz-level-2);
+  box-shadow: var(--pdz-level-inset-2);
   border-radius: 4px;
   padding: 0 2px;
 

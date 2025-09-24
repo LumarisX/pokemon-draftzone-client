@@ -37,10 +37,10 @@
       &:active {
         margin-top: 1px;
         margin-bottom: 0px;
-        box-shadow: var(--pdz-level0);
+        box-shadow: var(--pdz-level-0);
       }
       margin-bottom: 1px;
-      box-shadow: var(--pdz-level1);
+      box-shadow: var(--pdz-level-1);
       border-radius: 0.5rem;
       padding: 0 0.5rem;
       font-size: 0.7em;
@@ -84,7 +84,7 @@
     .chart-wrapper {
       border-radius: 0.5rem;
       overflow: hidden;
-      box-shadow: var(--pdz-level1);
+      box-shadow: var(--pdz-level-1);
     }
     .sprite-container {
       display: grid;
@@ -97,14 +97,14 @@
         width: 2rem;
         border-radius: 0.5rem;
         background-color: var(--mat-sys-surface-dim);
-        box-shadow: var(--pdz-level1);
+        box-shadow: var(--pdz-level-1);
       }
     }
   }
 }
 
 .type-label {
-  box-shadow: var(--pdz-level2);
+  box-shadow: var(--pdz-level-2);
 
   &:hover {
     opacity: 0.9;
@@ -115,6 +115,6 @@
     &:hover {
       opacity: 0.6;
     }
-    box-shadow: var(--pdz-level0);
+    box-shadow: var(--pdz-level-0);
   }
 }

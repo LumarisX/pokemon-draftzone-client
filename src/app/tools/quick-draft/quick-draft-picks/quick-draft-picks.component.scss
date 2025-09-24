@@ -104,7 +104,7 @@
 }
 
 .info-box {
-  box-shadow: var(--pdz-level2);
+  box-shadow: var(--pdz-level-2);
   border-radius: 1rem;
   @media (min-width: 768px) {
     height: 100%;
@@ -242,7 +242,7 @@
       background-color: var(--pdz-surface);
       font-family: var(--pdz-font-regular);
       border-radius: 0.25rem;
-      box-shadow: var(--pdz-level2);
+      box-shadow: var(--pdz-level-2);
     }
   }
 }

@@ -1,4 +1,145 @@
 @use "@angular/material" as mat;
+@use "themes/classic.theme" as classic;
+@use "themes/shiny.theme" as shiny_theme;
+@use "themes/christmas.theme" as xmas;
+
+@use "sass:map";
+@use "sass:meta";
+$theme-configurations: (
+  "classic": (
+    prime-primary: classic.$primary-palette,
+    prime-tertiary: classic.$tertiary-palette,
+    alt-primary: classic.$primary-palette_alt,
+    alt-tertiary: classic.$tertiary-palette_alt,
+    palettes: classic.$palettes,
+  ),
+  "shiny": (
+    prime-primary: shiny_theme.$primary-palette,
+    prime-tertiary: shiny_theme.$tertiary-palette,
+    alt-primary: shiny_theme.$primary-palette_alt,
+    alt-tertiary: shiny_theme.$tertiary-palette_alt,
+    palettes: shiny_theme.$palettes,
+  ),
+  "christmas": (
+    prime-primary: xmas.$primary-palette,
+    prime-tertiary: xmas.$tertiary-palette,
+    alt-primary: xmas.$primary-palette_alt,
+    alt-tertiary: xmas.$tertiary-palette_alt,
+    palettes: xmas.$palettes,
+  ),
+);
+
+@mixin _apply-mat-theme-core($primary-palette, $tertiary-palette, $theme-type) {
+  @if $primary-palette and $tertiary-palette {
+    @if meta.type-of($primary-palette) ==
+      map and
+      meta.type-of($tertiary-palette) ==
+      map
+    {
+      @include mat.theme(
+        (
+          color: (
+            primary: $primary-palette,
+            tertiary: $tertiary-palette,
+            theme-type: $theme-type,
+          ),
+        )
+      );
+    } @else {
+      @warn "Could not apply theme: Provided palettes are not valid maps (primary: #{type-of($primary-palette)}, tertiary: #{type-of($tertiary-palette)}) for theme-type '#{$theme-type}'.";
+    }
+  } @else {
+    @warn "Could not apply theme: Missing primary or tertiary palette variables for theme-type '#{$theme-type}'. Check theme configuration map.";
+  }
+}
+
+@mixin generate-palette-variables($palettes, $is-alt: false) {
+  @if $is-alt {
+    @each $key, $value in map.get($palettes, primary-alt) {
+      --primary-#{$key}: #{$value};
+    }
+    @each $key, $value in map.get($palettes, secondary-alt) {
+      --secondary-#{$key}: #{$value};
+    }
+    @each $key, $value in map.get($palettes, primary) {
+      --tertiary-#{$key}: #{$value};
+    }
+  } @else {
+    @each $key, $value in map.get($palettes, primary) {
+      --primary-#{$key}: #{$value};
+    }
+    @each $key, $value in map.get($palettes, secondary) {
+      --secondary-#{$key}: #{$value};
+    }
+    @each $key, $value in map.get($palettes, primary-alt) {
+      --tertiary-#{$key}: #{$value};
+    }
+  }
+}
+
+@mixin apply-theme-variants(
+  $prime-primary,
+  $prime-tertiary,
+  $alt-primary,
+  $alt-tertiary,
+  $palettes
+) {
+  .theme-prime,
+  [sub-theme="prime"] {
+    @include generate-palette-variables($palettes);
+    & {
+      @include _apply-mat-theme-core($prime-primary, $prime-tertiary, light);
+      @include apply-custom-material-overrides();
+    }
+  }
+
+  .theme-alt,
+  .alternate,
+  [sub-theme="alt"] {
+    @include generate-palette-variables($palettes, true);
+    & {
+      @include _apply-mat-theme-core($alt-primary, $alt-tertiary, light);
+      @include apply-custom-material-overrides();
+    }
+  }
+
+  &[light-mode="dark"] {
+    .theme-prime,
+    [sub-theme="prime"] {
+      @include _apply-mat-theme-core($prime-primary, $prime-tertiary, dark);
+    }
+    & {
+      @include apply-custom-material-overrides();
+    }
+
+    .theme-alt,
+    .alternate,
+    [sub-theme="alt"] {
+      @include _apply-mat-theme-core($alt-primary, $alt-tertiary, dark);
+      & {
+        @include apply-custom-material-overrides();
+      }
+    }
+  }
+}
+
+@mixin apply-custom-material-overrides() {
+}
+
+:root {
+  @each $theme-attribute-value, $palette-map in $theme-configurations {
+    &[theme-name="#{$theme-attribute-value}"] {
+      @include apply-theme-variants(
+        map.get($palette-map, prime-primary),
+        map.get($palette-map, prime-tertiary),
+        map.get($palette-map, alt-primary),
+        map.get($palette-map, alt-tertiary),
+        map.get($palette-map, palettes)
+      );
+    }
+  }
+}
+
 @include mat.tooltip-overrides(
   (
     container-color: var(--mat-sys-secondary),
@@ -26,7 +167,7 @@
 
 .chart-tooltip {
   max-width: 16rem;
-  box-shadow: var(--pdz-level4);
+  box-shadow: var(--pdz-level-4);
   .title-container {
     display: flex;
     flex-wrap: wrap;
@@ -86,7 +227,7 @@
   background-color: var(--pdz-surface);
   color: var(--mat-sys-on-surface);
   border-radius: 1rem;
-  box-shadow: var(--pdz-level3);
+  box-shadow: var(--pdz-level-3);
   padding: 0.25rem;
   mat-icon {
     color: var(--pdz-primary);

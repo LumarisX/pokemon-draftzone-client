@@ -2,12 +2,6 @@
 @use "pdz-theming";
 @use "mat-styles";
 
-@use "@angular/material" as mat;
-
-@use "sass:map";
-@use "variables" as *;
-@use "mixins" as *;
-
 @font-face {
   font-family: "Nasalization RG";
   src: url("../assets/fonts/nasalization-pd.otf") format("truetype");
@@ -109,33 +103,6 @@ $screen-size-medium: 768px;
   }
 }
 
-:root {
-  --pdz-font-fancy: Nasalization RG, sans-serif;
-  --pdz-font-regular: Nunito, sans-serif;
-
-  --pdz-screen-size-medium: $screen-size-medium;
-  --pdz-screen-size-large: $screen-size-large;
-  @include apply-theme(map.get(map.get($themes, normal), light));
-}
-
-body {
-  @each $theme-name, $variations in $themes {
-    @each $variation-name, $palette in $variations {
-      &[pdz-theme="#{$theme-name}"][pdz-theme-mode="#{$variation-name}"] {
-        @include apply-theme($palette);
-      }
-    }
-  }
-  *,
-  *::before,
-  *::after {
-    transition:
-      background-color 0.3s ease,
-      color 0.3s ease,
-      border-color 0.3s ease;
-  }
-}
-
 $option-lineheight: 3rem;
 
 .pokemon-viewport {
@@ -144,7 +111,7 @@ $option-lineheight: 3rem;
   background-color: var(--mat-sys-surface-container-low);
   color: var(--mat-sys-on-surface-container-low);
   border-radius: 0 0 0.25rem 0.25rem;
-  box-shadow: var(--pdz-level2);
+  box-shadow: var(--pdz-level-2);
 
   .cdk-virtual-scroll-content-wrapper {
     width: 100%;
@@ -192,7 +159,7 @@ $option-lineheight: 3rem;
     align-items: center;
     width: 2.5rem;
     border-radius: 0.25rem;
-    box-shadow: var(--pdz-level1);
+    box-shadow: var(--pdz-level-1);
     height: 1rem;
     padding: $bevel-padding;
 
