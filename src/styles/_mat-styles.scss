@@ -142,8 +142,8 @@ $theme-configurations: (
 
 @include mat.tooltip-overrides(
   (
-    container-color: var(--mat-sys-secondary),
-    supporting-text-color: var(--mat-sys-on-secondary),
+    container-color: var(--pdz-secondary),
+    supporting-text-color: var(--pdz-on-secondary),
     supporting-text-size: small,
   )
 );
@@ -151,16 +151,16 @@ $theme-configurations: (
 .dialog-warn {
   @include mat.dialog-overrides(
     (
-      container-color: var(--mat-sys-error-container),
-      subhead-color: var(--mat-sys-error),
-      supporting-text-color: var(--mat-sys-on-error-container),
+      container-color: var(--pdz-error-container),
+      subhead-color: var(--pdz-error),
+      supporting-text-color: var(--pdz-on-error-container),
     )
   );
 
   @include mat.button-overrides(
     (
-      text-label-text-color: var(--mat-sys-error),
-      text-state-layer-color: var(--mat-sys-error),
+      text-label-text-color: var(--pdz-error),
+      text-state-layer-color: var(--pdz-error),
     )
   );
 }
@@ -225,7 +225,7 @@ $theme-configurations: (
   display: flex;
   flex-direction: column;
   background-color: var(--pdz-surface);
-  color: var(--mat-sys-on-surface);
+  color: var(--pdz-on-surface);
   border-radius: 1rem;
   box-shadow: var(--pdz-level-3);
   padding: 0.25rem;

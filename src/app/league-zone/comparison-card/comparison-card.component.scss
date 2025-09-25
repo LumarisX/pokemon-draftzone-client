@@ -9,7 +9,7 @@ $container-padding: 0.75rem;
 .comparison-card {
   display: flex;
   flex-direction: column;
-  box-shadow: var(--mat-sys-level2);
+  box-shadow: var(--pdz-level2);
   border-radius: var(--card-border-radius);
   padding: $container-padding;
   position: relative;
@@ -42,14 +42,14 @@ $container-padding: 0.75rem;
   width: var(--logo-size);
   height: var(--logo-size);
   border-radius: 50%;
-  border: var(--logo-border-width) solid var(--mat-sys-outline-variant);
+  border: var(--logo-border-width) solid var(--pdz-primary-border-variant);
   flex-shrink: 0;
   overflow: hidden;
-  box-shadow: var(--mat-sys-level1);
+  box-shadow: var(--pdz-level1);
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--mat-sys-surface-container-low);
+  background-color: var(--pdz-surface-container-low);
   img {
     max-width: 100%;
     max-height: 100%;
@@ -83,7 +83,7 @@ $container-padding: 0.75rem;
 
 .entity-secondary-name {
   font-size: 0.7em;
-  color: var(--mat-sys-on-surface-variant);
+  color: var(--pdz-on-surface-variant);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -108,7 +108,7 @@ $container-padding: 0.75rem;
   font-weight: 700;
   font-size: 0.6em;
   max-width: 1rem;
-  color: var(--mat-sys-on-surface-variant);
+  color: var(--pdz-on-surface-variant);
   text-align: center;
   line-height: 0.8em;
   display: flex;
@@ -128,7 +128,7 @@ $container-padding: 0.75rem;
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
-  color: var(--mat-sys-outline);
+  color: var(--pdz-primary-border);
   transition: transform 0.3s ease-in-out;
 }
 
@@ -139,7 +139,7 @@ $container-padding: 0.75rem;
   user-select: none;
   line-height: 0.7em;
   transition: transform 0.3s ease-in-out;
-  border: 1px solid var(--mat-sys-outline-variant);
+  border: 1px solid var(--pdz-primary-border-variant);
   color: gray;
   &.active {
     z-index: 100;
@@ -148,13 +148,13 @@ $container-padding: 0.75rem;
   }
 
   &.link {
-    box-shadow: var(--mat-sys-level2);
+    box-shadow: var(--pdz-level2);
 
     cursor: pointer;
     &.active:active {
       margin-top: 1px;
       margin-bottom: -1px;
-      box-shadow: var(--mat-sys-level0);
+      box-shadow: var(--pdz-level0);
     }
   }
 }
@@ -162,7 +162,7 @@ $container-padding: 0.75rem;
 .comparison-content {
   padding-top: $container-padding;
   margin-top: 0.5rem;
-  border-top: 1px solid var(--mat-sys-outline);
+  border-top: 1px solid var(--pdz-primary-border);
   animation: fadeIn 0.3s ease-in-out;
 }
 

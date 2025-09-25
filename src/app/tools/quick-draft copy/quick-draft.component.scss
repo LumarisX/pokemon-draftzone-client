@@ -43,17 +43,17 @@ h3 {
 .qd-option {
   box-shadow: var(--pdz-level-2);
   border-radius: 1rem;
-  border: 2px solid var(--mat-sys-outline-variant);
+  border: 2px solid var(--pdz-primary-border-variant);
   margin: 4px;
   &.selected {
-    border: 6px solid var(--mat-sys-outline);
+    border: 6px solid var(--pdz-primary-border);
     background-color: var(--pdz-surface);
-    color: var(--mat-sys-on-primary-container);
+    color: var(--pdz-on-primary-container);
     margin: 0px;
   }
 
   &:not(.selected):hover {
-    border: 2px solid var(--mat-sys-outline);
+    border: 2px solid var(--pdz-primary-border);
   }
 }
 

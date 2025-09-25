@@ -34,7 +34,7 @@
 
     .seed {
       font: 12px var(--pdz-font-fancy);
-      fill: var(--mat-sys-secondary);
+      fill: var(--pdz-secondary);
       text-anchor: middle;
       dominant-baseline: central;
     }
@@ -65,7 +65,7 @@
       -webkit-font-smoothing: antialiased;
       text-rendering: optimizeLegibility;
       -moz-osx-font-smoothing: grayscale;
-      fill: var(--mat-sys-secondary);
+      fill: var(--pdz-secondary);
       cursor: pointer;
       &:hover {
         fill: var(--pdz-primary);

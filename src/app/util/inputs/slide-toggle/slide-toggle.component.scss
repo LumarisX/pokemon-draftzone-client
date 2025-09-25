@@ -16,7 +16,7 @@
     width: 3.5em;
     border: 0.125em solid var(--pdz-primary);
     height: 1em;
-    background-color: var(--mat-sys-surface-variant);
+    background-color: var(--pdz-surface-variant);
     border-radius: 1em;
     position: relative;
     transition: background-color 0.3s ease;
@@ -25,8 +25,8 @@
   .toggle-thumb {
     width: 1.5em;
     height: 1.5em;
-    background-color: var(--mat-sys-outline);
-    color: var(--mat-sys-surface-variant);
+    background-color: var(--pdz-primary-border);
+    color: var(--pdz-surface-variant);
     border-radius: 50%;
     position: absolute;
     padding: 0.125em;
@@ -40,7 +40,7 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 
     &:hover {
-      background-color: var(--mat-sys-on-surface-variant);
+      background-color: var(--pdz-on-surface-variant);
     }
   }
 
@@ -52,7 +52,7 @@
     .toggle-thumb {
       transform: translate(2em, -50%);
       background-color: var(--pdz-on-primary);
-      color: var(--mat-sys-outline);
+      color: var(--pdz-primary-border);
     }
   }
 }

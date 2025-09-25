@@ -1,12 +1,12 @@
 .pokemon-form-container {
   background-color: var(--pdz-surface);
-  color: var(--mat-sys-on-surface);
+  color: var(--pdz-on-surface);
   border-radius: 1rem;
   box-shadow: var(--pdz-level-2);
 
   .details-title {
     padding: 0 0.5rem 0.5rem;
-    color: var(--mat-sys-on-surface-variant);
+    color: var(--pdz-on-surface-variant);
     font-weight: 600;
   }
   .details-container {

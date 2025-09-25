@@ -1,13 +1,13 @@
 .news-header {
   font-family: var(--pdz-font-fancy);
   font-size: 1.2em;
-  color: var(--mat-sys-secondary);
+  color: var(--pdz-secondary);
 
   .news-date {
     color: var(--pdz-primary);
   }
   .news-title {
-    color: var(--mat-sys-on-surface);
+    color: var(--pdz-on-surface);
   }
 }
 
@@ -17,7 +17,7 @@
 
 .news-item:not(:last-child) {
   padding-bottom: 0.25rem;
-  border-bottom: 1px solid var(--mat-sys-outline-variant);
+  border-bottom: 1px solid var(--pdz-primary-border-variant);
 }
 
 :host {
@@ -48,7 +48,7 @@
     font-size: 0.8em;
     font-weight: 500;
     font-family: var(--pdz-font-fancy);
-    color: var(--mat-sys-secondary);
+    color: var(--pdz-secondary);
   }
 
   .image-container {

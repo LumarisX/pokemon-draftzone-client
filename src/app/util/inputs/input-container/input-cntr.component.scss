@@ -15,7 +15,7 @@
   top: 50%;
   left: 12px;
   transform: translateY(-50%);
-  color: var(--mat-sys-color-on-surface-variant);
+  color: var(--pdz-color-on-surface-variant);
   transition: 0.2s ease all;
   pointer-events: none;
 }
@@ -24,26 +24,26 @@ input {
   width: 100%;
   padding: 12px;
   padding-left: 36px; // Adjust based on label position
-  border: 1px solid var(--mat-sys-color-outline);
+  border: 1px solid var(--pdz-color-outline);
   border-radius: 4px;
-  background-color: var(--mat-sys-color-surface);
-  color: var(--mat-sys-color-on-surface);
-  font: var(--mat-sys-typescale-body-large-font);
+  background-color: var(--pdz-color-surface);
+  color: var(--pdz-color-on-surface);
+  font: var(--pdz-typescale-body-large-font);
   transition: border-color 0.2s ease;
 
   &:focus {
-    border-color: var(--mat-sys-color-primary);
+    border-color: var(--pdz-color-primary);
   }
 
   &:focus ~ .label,
   &:not(:placeholder-shown) ~ .label {
     top: 0;
     transform: translateY(-50%) scale(0.75);
-    color: var(--mat-sys-color-primary);
+    color: var(--pdz-color-primary);
   }
 }
 
 .error-message {
-  color: var(--mat-sys-color-error);
-  font: var(--mat-sys-typescale-body-small-font);
+  color: var(--pdz-color-error);
+  font: var(--pdz-typescale-body-small-font);
 }

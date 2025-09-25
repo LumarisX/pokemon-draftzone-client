@@ -42,7 +42,7 @@
 
       .coverage-container {
         @media (min-width: 768px) {
-          border-right: 0.125rem solid var(--mat-sys-outline-variant);
+          border-right: 0.125rem solid var(--pdz-primary-border-variant);
         }
 
         .pokemon-charts-title {
@@ -96,7 +96,7 @@
       .team-options-container {
         display: flex;
         position: relative;
-        border-bottom: 3px solid var(--mat-sys-outline-variant);
+        border-bottom: 3px solid var(--pdz-primary-border-variant);
         .team-option {
           flex-grow: 1;
           justify-content: center;
@@ -121,7 +121,7 @@
           left: 0;
           width: calc(100% / 3);
           height: 2px;
-          background-color: var(--mat-sys-outline);
+          background-color: var(--pdz-primary-border);
           transition: transform 0.3s ease-in-out;
         }
       }
@@ -147,8 +147,8 @@
 
 .chart-tooltip {
   position: fixed;
-  background-color: var(--mat-sys-secondary);
-  color: var(--mat-sys-on-secondary);
+  background-color: var(--pdz-secondary);
+  color: var(--pdz-on-secondary);
   padding: 5px 10px;
   border-radius: 5px;
   font-size: 12px;

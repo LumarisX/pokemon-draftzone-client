@@ -23,7 +23,7 @@ $breakpoint-desktop: 1200px;
 }
 
 section {
-  border: 1px solid var(--mat-sys-outline);
+  border: 1px solid var(--pdz-primary-border);
   border-radius: 1rem;
   width: fit-content;
   min-width: 33%;
@@ -60,7 +60,7 @@ section {
   user-select: none;
   border-radius: 1rem;
   box-shadow: var(--pdz-level-1);
-  background-color: var(--mat-sys-primary-fixed);
+  background-color: var(--pdz-primary-fixed);
   flex-wrap: wrap;
   @media (min-width: $breakpoint-tablet) {
     flex-wrap: nowrap;
@@ -73,7 +73,7 @@ section {
 
   &.selected {
     box-shadow: var(--pdz-level-inset-2);
-    background-color: var(--mat-sys-primary-fixed-dim);
+    background-color: var(--pdz-primary-fixed-dim);
     cursor: pointer;
   }
 }
@@ -147,7 +147,7 @@ section {
   .matchup-logo {
     flex-shrink: 0;
     overflow: hidden;
-    border-radius: var(--mat-sys-corner-medium);
+    border-radius: var(--pdz-corner-medium);
     box-shadow: var(--pdz-level-1);
     height: 3rem;
     width: 3rem;
@@ -237,7 +237,7 @@ pdz-sprite {
   }
 
   th.cdk-header-cell {
-    border-bottom: 2px solid var(--mat-sys-outline);
+    border-bottom: 2px solid var(--pdz-primary-border);
     font-size: 0.8em;
   }
 
@@ -246,8 +246,8 @@ pdz-sprite {
     border-collapse: separate;
     border-spacing: 0 4px;
     padding: 0 0.25rem;
-    background-color: var(--mat-sys-primary-container);
-    border-radius: var(--mat-sys-corner-medium);
+    background-color: var(--pdz-primary-container);
+    border-radius: var(--pdz-corner-medium);
   }
 
   .title-bar {
@@ -265,7 +265,7 @@ pdz-sprite {
 
   tr.cdk-row {
     &:hover {
-      background-color: var(--mat-sys-surface-variant);
+      background-color: var(--pdz-surface-variant);
     }
   }
 
@@ -287,23 +287,23 @@ pdz-sprite {
   button {
     display: flex;
     justify-content: center;
-    background-color: var(--mat-sys-primary-container);
-    color: var(--mat-sys-on-primary-container);
-    border-radius: var(--mat-sys-corner-medium);
+    background-color: var(--pdz-primary-container);
+    color: var(--pdz-on-primary-container);
+    border-radius: var(--pdz-corner-medium);
     box-shadow: var(--pdz-level-2);
     padding: 0.5rem;
     font-size: 0.8em;
 
     &:hover {
-      background-color: var(--mat-sys-secondary-container);
+      background-color: var(--pdz-secondary-container);
       box-shadow: var(--pdz-level-4);
     }
 
     &.matchup-button {
-      background-color: var(--mat-sys-primary-fixed-dim);
+      background-color: var(--pdz-primary-fixed-dim);
 
       &:hover {
-        background-color: var(--mat-sys-secondary-fixed-dim);
+        background-color: var(--pdz-secondary-fixed-dim);
       }
     }
   }

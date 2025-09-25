@@ -14,14 +14,14 @@
     .speed-container {
       .speed-row {
         display: flex;
-        background-color: var(--mat-sys-secondary-container);
+        background-color: var(--pdz-secondary-container);
         border-radius: 0.75rem;
-        border-bottom: 1px solid var(--mat-sys-outline);
+        border-bottom: 1px solid var(--pdz-primary-border);
         column-gap: 0.25rem;
         margin-bottom: 1px;
         cursor: pointer;
         &:hover {
-          background-color: var(--mat-sys-primary-container);
+          background-color: var(--pdz-primary-container);
         }
         &.alternate {
           flex-direction: row-reverse;
@@ -36,7 +36,7 @@
           justify-content: center;
           align-items: center;
           display: flex;
-          color: var(--mat-sys-secondary);
+          color: var(--pdz-secondary);
         }
 
         div {
@@ -48,7 +48,7 @@
           text-align: center;
           line-height: 2rem;
           font-weight: 700;
-          color: var(--mat-sys-secondary);
+          color: var(--pdz-secondary);
         }
       }
     }
@@ -71,7 +71,7 @@
       overflow: auto;
       scrollbar-gutter: stable;
       .tier-group {
-        background-color: var(--mat-sys-secondary-container);
+        background-color: var(--pdz-secondary-container);
         border-width: 1px;
         border-color: var(--pdz-surface);
         border-radius: 0.75rem;
@@ -81,12 +81,12 @@
         &.grouped {
           cursor: pointer;
           &:hover {
-            border: 1px solid var(--mat-sys-outline-variant);
+            border: 1px solid var(--pdz-primary-border-variant);
           }
         }
 
         > :not(:first-child) {
-          border-top: 1px solid var(--mat-sys-outline-variant);
+          border-top: 1px solid var(--pdz-primary-border-variant);
         }
 
         .speedtier-wrapper {
@@ -106,7 +106,7 @@
             height: 2rem;
           }
           .group-speeds {
-            color: var(--mat-sys-secondary);
+            color: var(--pdz-secondary);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -118,7 +118,7 @@
               display: flex;
               flex-grow: 1;
               border-radius: 1rem;
-              border-right: 2px solid var(--mat-sys-outline);
+              border-right: 2px solid var(--pdz-primary-border);
             }
             .top-speed,
             .bot-speed {
@@ -142,13 +142,13 @@
   background-color: var(--pdz-surface);
   padding: 10px;
   margin: 0;
-  color: var(--mat-sys-on-surface);
+  color: var(--pdz-on-surface);
   @include mat.checkbox-density(-3);
 
   .reset-button {
     text-align: center;
     font-weight: 600;
-    border-bottom: 1px solid var(--mat-sys-outline);
+    border-bottom: 1px solid var(--pdz-primary-border);
     height: 1.5rem;
     cursor: pointer;
     &:hover {

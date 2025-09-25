@@ -30,9 +30,9 @@ $trade-sprite-size: 2rem;
 .trade-header {
   font-weight: 600;
   font-size: 0.8em;
-  color: var(--mat-sys-on-surface-variant);
+  color: var(--pdz-on-surface-variant);
   padding-bottom: $trade-item-spacing * 0.5;
-  border-bottom: 1px solid var(--mat-sys-outline-variant);
+  border-bottom: 1px solid var(--pdz-primary-border-variant);
   margin-bottom: $trade-item-spacing * 0.5;
   text-align: center;
 }
@@ -42,7 +42,7 @@ $trade-sprite-size: 2rem;
   align-items: center;
   justify-content: space-between;
   padding: $trade-item-spacing * 0.5;
-  border: 1px solid var(--mat-sys-outline-variant);
+  border: 1px solid var(--pdz-primary-border-variant);
   border-radius: 4px;
   background-color: var(--pdz-surface);
   gap: $trade-item-spacing * 0.5;
@@ -86,7 +86,7 @@ $trade-sprite-size: 2rem;
 
 .pokemon-tier {
   font-size: 0.8em;
-  color: var(--mat-sys-secondary);
+  color: var(--pdz-secondary);
   padding: 0.1rem 0.3rem;
   border-radius: 3px;
   font-weight: bold;
@@ -100,7 +100,7 @@ $trade-sprite-size: 2rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--mat-sys-secondary);
+  color: var(--pdz-secondary);
   flex-shrink: 0;
 
   mat-icon {
@@ -120,7 +120,7 @@ $trade-sprite-size: 2rem;
 
 .no-trade-items {
   text-align: center;
-  color: var(--mat-sys-on-surface-variant);
+  color: var(--pdz-on-surface-variant);
   padding: $trade-item-spacing;
   font-style: italic;
   font-size: 0.9em;

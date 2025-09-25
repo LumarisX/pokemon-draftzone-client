@@ -19,11 +19,11 @@
   width: 100%;
 }
 
-$border-color: var(--mat-sys-outline-variant);
+$border-color: var(--pdz-primary-border-variant);
 $header-bg: var(--pdz-surface);
-$header-bg-hover: var(--mat-sys-surface-variant);
+$header-bg-hover: var(--pdz-surface-variant);
 $body-bg: #fff;
-$text-color: var(--mat-sys-on-surface);
+$text-color: var(--pdz-on-surface);
 $indicator-color: var(--pdz-primary);
 $border-radius: 1rem;
 $horizontal-padding: 1rem;
@@ -32,7 +32,7 @@ $vertical-padding: 0.5rem;
 .rule-main {
   border-radius: $border-radius;
   overflow: hidden;
-  box-shadow: var(--mat-sys-level2);
+  box-shadow: var(--pdz-level2);
   width: 50rem;
   max-width: 100%;
 }
@@ -78,11 +78,11 @@ $vertical-padding: 0.5rem;
         outline: none;
         margin-bottom: -1px;
         border-bottom: 1px solid $indicator-color;
-        background-color: rgba(var(--mat-sys-primary-rgb), 0.05);
+        background-color: rgba(var(--pdz-primary-rgb), 0.05);
       }
       &:hover:not(:focus) {
         margin-bottom: -1px;
-        border-bottom: 1px solid var(--mat-sys-outline);
+        border-bottom: 1px solid var(--pdz-primary-border);
       }
       field-sizing: content;
       font-weight: bold;
@@ -127,7 +127,7 @@ $vertical-padding: 0.5rem;
   mat-icon {
     font-size: 1.2em;
     height: fit-content;
-    color: var(--mat-sys-secondary);
+    color: var(--pdz-secondary);
     width: fit-content;
   }
   @include mat.button-toggle-overrides(
@@ -140,7 +140,7 @@ $vertical-padding: 0.5rem;
 .edit-area {
   padding: 0.5rem;
   width: 100%;
-  border: 1px solid var(--mat-sys-outline-variant);
+  border: 1px solid var(--pdz-primary-border-variant);
   border-radius: 0.5rem;
   resize: none;
   field-sizing: content;
@@ -165,13 +165,13 @@ $vertical-padding: 0.5rem;
 
 .drag-handle {
   cursor: move;
-  color: var(--mat-sys-outline);
+  color: var(--pdz-primary-border);
 }
 
 .cdk-drag-preview {
   box-sizing: border-box;
   border-radius: calc($border-radius / 2);
-  box-shadow: var(--mat-sys-level4);
+  box-shadow: var(--pdz-level4);
   background-color: var(--pdz-surface);
   .accordion-item-header {
     padding: 0 $horizontal-padding;
@@ -186,7 +186,7 @@ $vertical-padding: 0.5rem;
 }
 
 .cdk-drag-placeholder {
-  background-color: var(--mat-sys-surface-container-highest);
+  background-color: var(--pdz-surface-container-highest);
   opacity: 0.3;
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
   border-radius: calc($border-radius / 2);

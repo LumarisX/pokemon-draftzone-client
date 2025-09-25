@@ -159,8 +159,8 @@ export class CoverageChartPreviewComponent implements OnDestroy {
       .append('circle')
       .datum(root)
       .attr('r', (width + borderWidth) / 2)
-      .attr('fill', 'var(--mat-sys-surface)')
-      .attr('stroke', 'var(--mat-sys-outline)')
+      .attr('fill', 'var(--pdz-surface)')
+      .attr('stroke', 'var(--pdz-primary-border)')
       .attr('stroke-width', borderWidth)
       .attr('filter', 'url(#background-shadow)')
       .attr('pointer-events', 'all');

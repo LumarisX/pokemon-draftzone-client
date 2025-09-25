@@ -21,7 +21,7 @@
   }
   &.type-empty {
     color: transparent;
-    background-color: var(--mat-sys-surface-variant);
+    background-color: var(--pdz-surface-variant);
   }
 }
 
@@ -90,13 +90,13 @@ th {
 
 //Hover lines
 .column-hovered {
-  background-color: var(--mat-sys-outline-variant);
+  background-color: var(--pdz-primary-border-variant);
 }
 
 tbody {
   tr {
     &:hover {
-      background-color: var(--mat-sys-outline-variant);
+      background-color: var(--pdz-primary-border-variant);
       td:not(.column-hovered),
       th:not(.column-hovered) {
         &:first-child {
@@ -193,6 +193,6 @@ tbody {
 }
 
 .stat-neutral {
-  background-color: var(--mat-sys-secondary-container);
-  color: var(--mat-sys-on-secondary-container);
+  background-color: var(--pdz-secondary-container);
+  color: var(--pdz-on-secondary-container);
 }

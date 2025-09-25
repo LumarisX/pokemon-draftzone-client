@@ -3,9 +3,9 @@
   height: 4rem;
   border-radius: 2rem;
   border-width: 2px;
-  border-color: var(--mat-sys-outline-variant);
+  border-color: var(--pdz-primary-border-variant);
   overflow: hidden;
-  box-shadow: var(--mat-sys-level1);
+  box-shadow: var(--pdz-level1);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -35,7 +35,7 @@
     gap: 0.75rem;
     margin-bottom: 0.5rem;
     padding-bottom: 0.5rem;
-    border-bottom: 1px solid var(--mat-sys-outline);
+    border-bottom: 1px solid var(--pdz-primary-border);
     .team-info {
       flex-grow: 1;
 
@@ -61,13 +61,13 @@
       }
 
       .team-record {
-        color: var(--mat-sys-secondary);
+        color: var(--pdz-secondary);
         font-size: 0.8em;
         font-weight: 600;
       }
 
       .team-timezone {
-        color: var(--mat-sys-secondary);
+        color: var(--pdz-secondary);
         font-size: 0.8em;
         font-weight: 600;
       }
@@ -84,10 +84,10 @@
         color: var(--pdz-primary);
         border-radius: 0.25rem;
         &:hover {
-          color: var(--mat-sys-secondary);
+          color: var(--pdz-secondary);
         }
         &:not(.pressed) {
-          box-shadow: var(--mat-sys-level1);
+          box-shadow: var(--pdz-level1);
         }
       }
     }
@@ -110,7 +110,7 @@
           padding: 0.5rem 0.4rem;
           text-align: left;
           vertical-align: middle;
-          border-bottom: 1px solid var(--mat-sys-outline-variant);
+          border-bottom: 1px solid var(--pdz-primary-border-variant);
           overflow: hidden;
           text-overflow: ellipsis;
         }

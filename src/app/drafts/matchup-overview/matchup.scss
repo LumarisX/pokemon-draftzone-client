@@ -32,9 +32,9 @@
 .matchup-main {
   background: linear-gradient(
     to right,
-    var(--mat-sys-primary-container),
-    var(--mat-sys-surface),
-    var(--mat-sys-tertiary-container)
+    var(--pdz-primary-container),
+    var(--pdz-surface),
+    var(--pdz-tertiary-container)
   );
   height: 100%;
   overflow-y: auto;
@@ -78,12 +78,12 @@
     font-weight: 700;
     font-size: 0.8em;
     height: 1rem;
-    color: var(--mat-sys-secondary);
+    color: var(--pdz-secondary);
   }
   .detail-text {
     font-weight: 700;
     font-size: 1em;
-    color: var(--mat-sys-on-surface);
+    color: var(--pdz-on-surface);
   }
 }
 
@@ -127,7 +127,7 @@
       flex-direction: column;
       row-gap: 1rem;
       .url-container {
-        border: 1px solid var(--mat-sys-outline);
+        border: 1px solid var(--pdz-primary-border);
         border-radius: 1rem;
         padding: 0 0.5rem;
 
@@ -145,20 +145,20 @@
         }
       }
       .matchup-preview-container {
-        border: 1px solid var(--mat-sys-outline);
+        border: 1px solid var(--pdz-primary-border);
         border-radius: 1rem;
         padding: 0 1rem;
         .details-container {
           display: flex;
           flex-wrap: wrap;
           justify-content: space-evenly;
-          border-bottom: 1px solid var(--mat-sys-outline-variant);
+          border-bottom: 1px solid var(--pdz-primary-border-variant);
         }
         .teams-container {
           display: flex;
           padding: 0.25rem 0;
           > :not(:last-child) {
-            border-right: 1px solid var(--mat-sys-outline-variant);
+            border-right: 1px solid var(--pdz-primary-border-variant);
           }
           .team-container {
             width: 50%;
@@ -193,8 +193,8 @@
                   position: absolute;
                   top: 0;
                   right: 0;
-                  background-color: var(--mat-sys-secondary);
-                  color: var(--mat-sys-on-secondary);
+                  background-color: var(--pdz-secondary);
+                  color: var(--pdz-on-secondary);
                   box-shadow: var(--pdz-level-2);
 
                   border-radius: 1rem;
@@ -217,7 +217,7 @@
                   box-shadow: var(--pdz-level-2);
                   padding: 0 0.125rem;
                   border-radius: 1rem;
-                  color: var(--mat-sys-secondary);
+                  color: var(--pdz-secondary);
                   @media (max-width: 768px) {
                     font-size: 0.7em;
                     line-height: 0.7em;

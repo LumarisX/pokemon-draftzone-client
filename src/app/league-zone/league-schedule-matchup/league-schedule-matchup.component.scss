@@ -6,7 +6,7 @@
   display: flex;
   flex-direction: column;
   background-color: var(--pdz-surface);
-  box-shadow: var(--mat-sys-level2);
+  box-shadow: var(--pdz-level2);
   width: 26rem;
   border-radius: 2rem;
   padding: 0.75rem;
@@ -35,8 +35,8 @@
       border-width: 2px;
       flex-shrink: 0;
       overflow: hidden;
-      border-color: var(--mat-sys-outline-variant);
-      box-shadow: var(--mat-sys-level1);
+      border-color: var(--pdz-primary-border-variant);
+      box-shadow: var(--pdz-level1);
       &.positive {
         border-color: lightgreen;
       }
@@ -80,7 +80,7 @@
       bottom: -0.75rem;
       left: 50%;
       transform: translate(-50%, 0);
-      color: var(--mat-sys-surface-container-highest);
+      color: var(--pdz-surface-container-highest);
     }
   }
 
@@ -94,14 +94,14 @@
     border-radius: 0.5rem;
     font-size: 0.6em;
     &.enabled {
-      box-shadow: var(--mat-sys-level1);
+      box-shadow: var(--pdz-level1);
       background-color: var(--pdz-primary);
       color: var(--pdz-on-primary);
     }
     &:active {
       margin-top: 1px;
       margin-bottom: -1px;
-      box-shadow: var(--mat-sys-level0);
+      box-shadow: var(--pdz-level0);
     }
   }
 }
@@ -127,7 +127,7 @@
         font-size: 1em;
         height: 1.25rem;
         border-radius: 0.25rem;
-        box-shadow: var(--mat-sys-level1);
+        box-shadow: var(--pdz-level1);
         background-color: white;
         color: var(--pdz-primary);
         &.positive {
@@ -176,9 +176,9 @@
         }
       }
       .match-button {
-        border: 1px solid var(--mat-sys-outline-variant);
+        border: 1px solid var(--pdz-primary-border-variant);
         padding: 0.0675rem 0.125rem;
-        box-shadow: var(--mat-sys-level1);
+        box-shadow: var(--pdz-level1);
         border-radius: 0.5rem;
         &.selected {
           background-color: var(--pdz-primary);
@@ -186,12 +186,12 @@
           color: var(--pdz-on-primary);
           margin-top: 1px;
           margin-bottom: -1px;
-          box-shadow: var(--mat-sys-level0);
+          box-shadow: var(--pdz-level0);
         }
         &:active {
           margin-top: 1px;
           margin-bottom: -1px;
-          box-shadow: var(--mat-sys-level0);
+          box-shadow: var(--pdz-level0);
         }
       }
     }
@@ -203,11 +203,11 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
     .pokemon-box {
       height: 3rem;
-      box-shadow: var(--mat-sys-level1);
+      box-shadow: var(--pdz-level1);
       border-radius: 0.5rem;
       width: 3rem;
       border-width: 2px;
-      border-color: var(--mat-sys-outline-variant);
+      border-color: var(--pdz-primary-border-variant);
       sprite {
         filter: grayscale(100%);
       }

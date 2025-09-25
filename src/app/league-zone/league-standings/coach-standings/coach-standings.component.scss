@@ -1,10 +1,10 @@
 .standing-container {
-  border: 1px solid var(--mat-sys-outline);
+  border: 1px solid var(--pdz-primary-border);
   border-radius: 0.5rem;
   overflow: hidden;
   width: fit-content;
   .standing-header {
-    border: 1px solid var(--mat-sys-outline);
+    border: 1px solid var(--pdz-primary-border);
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -24,12 +24,12 @@
     }
     tr.cutoff-border {
       td {
-        border-bottom: 2px dotted var(--mat-sys-outline);
+        border-bottom: 2px dotted var(--pdz-primary-border);
       }
     }
     thead {
       th {
-        border-bottom: 2px solid var(--mat-sys-outline);
+        border-bottom: 2px solid var(--pdz-primary-border);
       }
     }
   }
@@ -70,7 +70,7 @@
     border-radius: 2rem;
     border-width: 2px;
     overflow: hidden;
-    box-shadow: var(--mat-sys-level1);
+    box-shadow: var(--pdz-level1);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -89,7 +89,7 @@
       line-height: 1em;
     }
     .coach-names {
-      color: var(--mat-sys-secondary);
+      color: var(--pdz-secondary);
       font-size: 0.8em;
       line-height: 1em;
     }
@@ -101,8 +101,8 @@
     user-select: none;
 
     .result-box {
-      background-color: var(--mat-sys-surface-container);
-      color: var(--mat-sys-surface-container);
+      background-color: var(--pdz-surface-container);
+      color: var(--pdz-surface-container);
       text-align: center;
       font-weight: 700;
       font-size: 0.8em;
@@ -113,13 +113,13 @@
       &.positive {
         background-color: lightgreen;
         color: white;
-        box-shadow: var(--mat-sys-level1);
+        box-shadow: var(--pdz-level1);
       }
 
       &.negative {
         background-color: lightcoral;
         color: white;
-        box-shadow: var(--mat-sys-level1);
+        box-shadow: var(--pdz-level1);
       }
 
       .hovered-content {

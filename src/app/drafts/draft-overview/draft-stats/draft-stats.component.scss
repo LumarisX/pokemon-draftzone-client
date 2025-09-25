@@ -28,7 +28,7 @@ td {
 }
 
 th.cdk-header-cell {
-  border-bottom: 2px solid var(--mat-sys-outline);
+  border-bottom: 2px solid var(--pdz-primary-border);
 }
 
 table {
@@ -52,7 +52,7 @@ table {
 
 tr.cdk-row {
   &:hover {
-    background-color: var(--mat-sys-surface-variant);
+    background-color: var(--pdz-surface-variant);
   }
 }
 

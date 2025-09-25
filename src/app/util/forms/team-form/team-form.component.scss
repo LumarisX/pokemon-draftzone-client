@@ -5,7 +5,7 @@
 
   cdk-accordion {
     display: block;
-    border: 1px solid var(--mat-sys-outline);
+    border: 1px solid var(--pdz-primary-border);
     border-radius: 0.5rem;
     overflow: hidden;
 
@@ -14,7 +14,7 @@
       overflow: hidden;
 
       &:not(:last-child) {
-        border-bottom: 1px solid var(--mat-sys-outline-variant);
+        border-bottom: 1px solid var(--pdz-primary-border-variant);
       }
 
       &:last-child {
@@ -45,9 +45,9 @@
         }
 
         mat-icon {
-          color: var(--mat-sys-on-surface-variant);
+          color: var(--pdz-on-surface-variant);
           &.preview-warning {
-            color: var(--mat-sys-error);
+            color: var(--pdz-error);
             width: 4rem;
             height: 3rem;
             font-size: 3rem;
@@ -85,7 +85,7 @@
               max-height: 2rem;
               display: flex;
               align-items: center;
-              fill: var(--mat-sys-on-surface-variant);
+              fill: var(--pdz-on-surface-variant);
             }
           }
         }
@@ -234,7 +234,7 @@
   .captain-subcontainer {
     padding: 2px;
     &:not(:first-child) {
-      border-left: 1px solid var(--mat-sys-outline-variant);
+      border-left: 1px solid var(--pdz-primary-border-variant);
     }
     .allnone-bar {
       display: flex;
@@ -268,7 +268,7 @@
           &:hover,
           &:disabled {
             background-color: var(--pdz-surface);
-            color: var(--mat-sys-on-surface-variant);
+            color: var(--pdz-on-surface-variant);
           }
         }
       }
@@ -310,7 +310,7 @@
     margin-left: 0.5rem;
   }
   .capt-button {
-    color: var(--mat-sys-on-surface-variant);
+    color: var(--pdz-on-surface-variant);
   }
   div {
     display: flex;
@@ -338,7 +338,7 @@
 }
 
 mat-tab-group {
-  background-color: var(--mat-sys-surface-variant);
+  background-color: var(--pdz-surface-variant);
 
   .tab-icon-wrapper {
     margin-left: 0.25rem;
@@ -355,12 +355,12 @@ mat-tab-group {
 .main-container {
   @include mat.tabs-overrides(
     (
-      divider-color: var(--mat-sys-outline-variant),
+      divider-color: var(--pdz-primary-border-variant),
     )
   );
   @include mat.divider-overrides(
     (
-      color: var(--mat-sys-outline-variant),
+      color: var(--pdz-primary-border-variant),
     )
   );
 }

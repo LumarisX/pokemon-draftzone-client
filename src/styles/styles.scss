@@ -25,25 +25,25 @@
   }
 
   ::-webkit-scrollbar-track {
-    background: var(--mat-sys-surface);
+    background: var(--pdz-surface);
     border-radius: 100vh;
   }
 
   ::-webkit-scrollbar-thumb {
-    background: var(--mat-sys-surface-dim);
+    background: var(--pdz-surface-dim);
     border-radius: 100vh;
-    border: 2px solid var(--mat-sys-surface);
+    border: 2px solid var(--pdz-surface);
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: var(--mat-sys-surface-container-high);
-    border: 1px solid var(--mat-sys-surface);
+    background: var(--pdz-surface-container-high);
+    border: 1px solid var(--pdz-surface);
   }
 
   /* For Firefox */
   * {
     scrollbar-width: thin;
-    scrollbar-color: var(--mat-sys-surface-dim) var(--mat-sys-surface);
+    scrollbar-color: var(--pdz-surface-dim) var(--pdz-surface);
   }
 
   .tooltip {
@@ -91,7 +91,7 @@ $screen-size-medium: 768px;
     flex-direction: column;
     align-items: center;
     z-index: 10000;
-    background-color: var(--mat-sys-surface-container);
+    background-color: var(--pdz-surface-container);
     overflow-y: auto;
   }
 
@@ -108,8 +108,8 @@ $option-lineheight: 3rem;
 .pokemon-viewport {
   height: 15rem;
   width: 100%;
-  background-color: var(--mat-sys-surface-container-low);
-  color: var(--mat-sys-on-surface-container-low);
+  background-color: var(--pdz-surface-container-low);
+  color: var(--pdz-on-surface-container-low);
   border-radius: 0 0 0.25rem 0.25rem;
   box-shadow: var(--pdz-level-2);
 
@@ -125,8 +125,8 @@ $option-lineheight: 3rem;
 
       &:hover,
       &.highlighted-option {
-        background-color: var(--mat-sys-surface-container-highest);
-        color: var(--mat-sys-on-surface-container-highest);
+        background-color: var(--pdz-surface-container-highest);
+        color: var(--pdz-on-surface-container-highest);
         cursor: pointer;
       }
 
