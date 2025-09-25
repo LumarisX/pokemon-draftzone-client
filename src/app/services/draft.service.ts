@@ -12,9 +12,8 @@ import { ApiService } from './api.service';
 export class DraftService {
   private apiService = inject(ApiService);
 
-
   getDraftsList() {
-    return this.apiService.get('draft/teams', true);
+    return this.apiService.get<Draft[]>('draft/teams', true);
   }
 
   getDraft(teamName: string) {

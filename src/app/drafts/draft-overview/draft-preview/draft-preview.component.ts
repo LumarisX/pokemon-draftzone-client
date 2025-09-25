@@ -40,21 +40,18 @@ export class DraftPreviewComponent {
 
   reload() {
     this.draftService.getDraftsList().subscribe((data) => {
-      this.drafts = data;
-      for (let team of this.drafts) {
-        team.menu = 'main';
-      }
+      this.drafts = data.map((draft) => ({ ...draft, menu: 'main' }));
     });
   }
 
   archive(teamId: string) {
-    this.draftService.archiveDraft(teamId).subscribe((data) => {
+    this.draftService.archiveDraft(teamId).subscribe(() => {
       this.reload();
     });
   }
 
   delete(teamId: string) {
-    this.draftService.deleteDraft(teamId).subscribe((data) => {
+    this.draftService.deleteDraft(teamId).subscribe(() => {
       this.reload();
     });
   }
