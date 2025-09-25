@@ -1,12 +1,25 @@
 <div class="homepage-main">
-  <h1 class="title-container">
-    <span class="title-text alternate hide-small"> POKEMON </span>
-    <logo-small-svg class="title-logo" />
-    <div>
-      <span class="title-text alternate hide-large"> POKEMON </span>
-      <span class="title-text"> DRAFTZONE </span>
+  <div class="hero-section">
+    <div class="title-container">
+      <logo-small-svg class="title-logo" />
+      <div>
+        <span class="title-text"> POKEMON </span>
+        <span class="title-text alternate"> DRAFTZONE </span>
+      </div>
     </div>
-  </h1>
+    <p class="subtitle">
+      Your ultimate destination for Pokémon drafting and league management.
+    </p>
+    <!-- <div class="cta-buttons">
+      <a class="cta-button btn btn-secondary" routerLink="/leagues"
+        >Find a League</a
+      >
+      <a class="cta-button btn btn-secondary" routerLink="/drafts"
+        >Start Drafting</a
+      >
+    </div> -->
+  </div>
+
   <div class="info-container">
     <div class="news-container">
       <h2 class="news-title">News and Updates</h2>
@@ -14,30 +27,27 @@
         <pdz-news-core></pdz-news-core>
       </div>
     </div>
-    <div class="button-container">
-      <button mat-raised-button class="homepage-button" routerLink="/about">
-        About Pokemon DraftZone
-      </button>
-      <button mat-raised-button class="homepage-button">
-        <a href="https://discord.gg/sQUEBW4UVx" target="_blank">
-          Join Our Discord
-        </a>
-      </button>
-      <button mat-raised-button class="homepage-button">
-        <a
-          href="https://github.com/LumarisX/pokemon-draftzone-client"
-          target="_blank"
-        >
-          Contribute to the Project
-        </a>
-      </button>
-      <button
-        mat-raised-button
-        class="homepage-button"
-        routerLink="/supporters"
+    <div class="secondary-actions">
+      <a
+        class="secondary-action btn"
+        href="https://discord.gg/sQUEBW4UVx"
+        target="_blank"
       >
+        Join Our Discord
+      </a>
+      <a
+        class="secondary-action btn"
+        href="https://github.com/LumarisX/pokemon-draftzone-client"
+        target="_blank"
+      >
+        Contribute to the Project
+      </a>
+      <a class="secondary-action btn" routerLink="/supporters">
         Project Supporters
-      </button>
+      </a>
+      <a class="secondary-action btn" routerLink="/about">
+        About Pokemon DraftZone
+      </a>
     </div>
   </div>
 </div>
