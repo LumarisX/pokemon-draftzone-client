@@ -1,8 +1,8 @@
 @use "sass:map";
 
 .themed-component-wrapper {
-  background-color: var(--pdz-background);
-  color: var(--pdz-on-surface);
+  background-color: var(--pdz-color-background);
+  color: var(--pdz-color-on-surface);
   font-family:
     -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
     Arial, sans-serif;
@@ -26,15 +26,15 @@
 
   h1,
   h2 {
-    color: var(--pdz-on-surface);
+    color: var(--pdz-color-on-surface);
   }
 
   p {
-    color: var(--pdz-on-surface-variant);
+    color: var(--pdz-color-on-surface-variant);
   }
 
   a {
-    color: var(--pdz-primary);
+    color: var(--pdz-color-primary);
     font-weight: bold;
     text-decoration: none;
     // transition: color 0.2s;
@@ -45,8 +45,8 @@
   }
 
   .card {
-    background-color: var(--pdz-surface);
-    border: 1px solid var(--pdz-primary-border);
+    background-color: var(--pdz-color-surface);
+    border: 1px solid var(--pdz-color-primary-border);
     border-radius: 8px;
     margin: 1rem 0;
     padding: 1.5rem;
@@ -56,8 +56,8 @@
   }
 
   .btn {
-    background-color: var(--pdz-primary);
-    color: var(--pdz-on-primary);
+    background-color: var(--pdz-color-primary);
+    color: var(--pdz-color-on-primary);
     border: none;
     border-radius: 6px;
     cursor: pointer;

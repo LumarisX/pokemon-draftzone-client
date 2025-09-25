@@ -1,18 +1,18 @@
 .standing-container {
-  border: 1px solid var(--pdz-primary-border);
+  border: 1px solid var(--pdz-color-primary-border);
   border-radius: 0.5rem;
   overflow: hidden;
   width: fit-content;
   .standing-header {
-    border: 1px solid var(--pdz-primary-border);
+    border: 1px solid var(--pdz-color-primary-border);
     overflow: hidden;
     display: flex;
     flex-direction: column;
     .standing-header-title {
       font-family: var(--pdz-font-fancy);
       padding: 0.25rem 0.5rem;
-      background-color: var(--pdz-primary);
-      color: var(--pdz-on-primary);
+      background-color: var(--pdz-color-primary);
+      color: var(--pdz-color-on-primary);
     }
   }
 
@@ -24,12 +24,12 @@
     }
     tr.cutoff-border {
       td {
-        border-bottom: 2px dotted var(--pdz-primary-border);
+        border-bottom: 2px dotted var(--pdz-color-primary-border);
       }
     }
     thead {
       th {
-        border-bottom: 2px solid var(--pdz-primary-border);
+        border-bottom: 2px solid var(--pdz-color-primary-border);
       }
     }
   }
@@ -47,7 +47,7 @@
       object-fit: contain;
       font-size: 1.2em;
       font-weight: 700;
-      color: var(--pdz-primary);
+      color: var(--pdz-color-primary);
       &.positive {
         color: lightgreen;
       }
@@ -81,7 +81,7 @@
       line-height: 1em;
     }
     .coach-names {
-      color: var(--pdz-secondary);
+      color: var(--pdz-color-secondary);
       font-size: 0.8em;
       line-height: 1em;
     }
@@ -93,8 +93,8 @@
     user-select: none;
 
     .result-box {
-      background-color: var(--pdz-surface-container);
-      color: var(--pdz-surface-container);
+      background-color: var(--pdz-color-surface-container);
+      color: var(--pdz-color-surface-container);
       text-align: center;
       font-weight: 700;
       font-size: 0.8em;

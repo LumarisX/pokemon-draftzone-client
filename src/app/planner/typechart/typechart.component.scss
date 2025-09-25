@@ -17,7 +17,7 @@
   width: fit-content;
   height: fit-content;
   border-radius: 1rem;
-  background-color: var(--pdz-surface);
+  background-color: var(--pdz-color-surface);
   box-shadow: var(--pdz-level-3);
 }
 
@@ -26,7 +26,7 @@
   justify-content: space-between;
   width: 100%;
   padding: 0 1rem 0.5rem;
-  color: var(--pdz-primary);
+  color: var(--pdz-color-primary);
   font-weight: 700;
 
   .table-label {

@@ -29,7 +29,7 @@
     height: fit-content;
     width: fit-content;
     &:hover {
-      color: var(--pdz-primary);
+      color: var(--pdz-color-primary);
       border-radius: 99rem;
     }
   }
@@ -68,13 +68,13 @@
   display: flex;
   align-items: center;
   &:hover {
-    color: var(--pdz-primary);
+    color: var(--pdz-color-primary);
   }
 }
 
 .tab {
-  background-color: var(--pdz-surface-variant);
-  color: var(--pdz-on-surface-variant);
+  background-color: var(--pdz-color-surface-variant);
+  color: var(--pdz-color-on-surface-variant);
   border-radius: 0.5rem 0.5rem 0 0;
   padding: 6px;
   cursor: pointer;

@@ -7,8 +7,8 @@ mat-toolbar {
 
   @include mat.toolbar-overrides(
     (
-      container-background-color: var(--pdz-surface-container-highest),
-      container-text-color: var(--pdz-on-surface),
+      container-background-color: var(--pdz-color-surface-container-highest),
+      container-text-color: var(--pdz-color-on-surface),
     )
   );
   @include mat.toolbar-density(-4);
@@ -34,7 +34,7 @@ header {
   border-radius: 0.5rem;
   font-family: var(--pdz-font-fancy);
   &:hover {
-    background-color: var(--pdz-surface-container);
+    background-color: var(--pdz-color-surface-container);
   }
 }
 
@@ -58,9 +58,19 @@ header {
 
 svg {
   .logo-top {
-    fill: var(--pdz-primary);
+    fill: var(--pdz-color-primary);
   }
   .logo-bottom {
-    fill: var(--pdz-secondary);
+    fill: var(--pdz-color-secondary);
   }
+}
+
+.home-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+pdz-icon {
+  height: 100%;
+  width: fit-content;
 }

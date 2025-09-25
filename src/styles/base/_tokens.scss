@@ -1,0 +1,111 @@
+$core-tokens: (
+  // Neutrals & Surfaces
+  "white": #ffffff,
+  "black": #000000,
+  "gray-50": #f0f8fa,
+  "gray-100": #e9f2f4,
+  "gray-200": #e4eced,
+  "gray-300": #dfe7e8,
+  "gray-400": #c0c4d0,
+  "gray-600": #8a9294,
+  "gray-700": #7a757e,
+  "gray-800": #586062,
+  "gray-900": #49454e,
+  "gray-950": #1d1b20,
+  "dark-surface-low": #151d1f,
+  "dark-surface": #192123,
+  "dark-surface-high": #242b2d,
+  "dark-surface-highest": #2e3638,
+  "dark-bg": #121212,
+  "dark-surface-base": #1e1e1e,
+
+  // Primary (Purple) - NEW
+  "purple-25": #fcfaff,
+  "purple-50": #f9f7fc,
+  "purple-75": #f4f0fd,
+  "purple-100": #f5f2f9,
+  "purple-150": #efedf4,
+  "purple-200": #e8e0f9,
+  "purple-250": #eae7ef,
+  "purple-300": #e7e0f2,
+  "purple-350": #e4e1ea,
+  "purple-400": #b39ddb,
+  "purple-500": #9575cd,
+  "purple-600": #7e57c2,
+  "purple-700": #673ab7,
+  "purple-950": #2f1863,
+
+  // Secondary (Pink) - NEW
+  "pink-50": #fdf2f7,
+  "pink-100": #fce4ec,
+  "pink-300": #f8bbd0,
+  "pink-400": #f48fb1,
+  "pink-500": #f06292,
+  "pink-600": #ec407a,
+  "pink-700": #e91e63,
+  "pink-800": #d81b60,
+  "pink-900": #c2185b,
+  "pink-950": #5c0c2b,
+
+  // Original Primary (Cyan)
+  "cyan-50": #f7fdff,
+  "cyan-100": #f3fbfd,
+  "cyan-200": #e9fafc,
+  "cyan-300": #d2f4f9,
+  "cyan-400": #b2f1fa,
+  "cyan-500": #79dfec,
+  "cyan-600": #4ac1d0,
+  "cyan-700": #4cd5e6,
+  "cyan-800": #19a2b3,
+  "cyan-900": #137986,
+  "cyan-950": #0d5159,
+  "cyan-subtle-dark": #0d2326,
+  "cyan-hover-dark": #a6eaf2,
+
+  // Original Secondary (Orange)
+  "orange-100": #fef6f3,
+  "orange-200": #fdece7,
+  "orange-300": #f8a88f,
+  "orange-400": #ffb366,
+  "orange-500": #f47c4f,
+  "orange-600": #eb9947,
+  "orange-700": #e06a3e,
+  "orange-900": #5d2a1a,
+  "orange-950": #331a00,
+  "orange-container-dark": #804000,
+  "orange-hover-dark": #ffcc99,
+  "orange-subtle-dark": #2e1a05,
+
+  // Error (Red)
+  "red-100": #ffdad6,
+  "red-200": #ffb4ab,
+  "red-800": #ba1a1a,
+  "red-900": #93000a,
+  "red-950": #690005,
+  "red-on-container": #410002,
+
+  // Warning (Yellow/Amber)
+  "amber-200": #ffecb3,
+  "amber-500": #ffb300,
+  "amber-900": #4d3600,
+  "amber-950": #332400,
+
+  // Success (Green)
+  "green-200": #d4f4e0,
+  "green-400": #74d98f,
+  "green-700": #2e8b57,
+  "green-950": #0c2a18,
+
+  // Info (Blue)
+  "blue-200": #cce9f9,
+  "blue-400": #8acbff,
+  "blue-700": #0288d1,
+  "blue-950": #002944,
+
+  // Logo Specific
+  "logo-core-2": #9c65aa,
+
+  // Gradients
+  "primary-gradient-light": linear-gradient(135deg, #4ac1d0, #b2f1fa),
+  "primary-gradient-purple": linear-gradient(135deg, #9575cd, #673ab7)
+);

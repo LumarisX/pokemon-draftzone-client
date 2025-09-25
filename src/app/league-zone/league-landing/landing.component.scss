@@ -4,18 +4,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--pdz-primary-container);
-  color: var(--pdz-on-primary-container);
+  background-color: var(--pdz-color-primary-container);
+  color: var(--pdz-color-on-primary-container);
   padding: 0.25rem;
   font-size: x-large;
   width: 12rem;
-  color: var(--pdz-primary);
+  color: var(--pdz-color-primary);
   height: 8rem;
   border-radius: 2rem;
   box-shadow: var(--pdz-level-2);
   &:hover {
-    background-color: var(--pdz-primary);
-    color: var(--pdz-on-primary);
+    background-color: var(--pdz-color-primary);
+    color: var(--pdz-color-on-primary);
   }
   &:active {
     box-shadow: var(--pdz-level-0);

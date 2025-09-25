@@ -15,6 +15,7 @@ import { AuthService } from '../../services/auth0.service';
 import { UnreadService } from '../../services/unread.service';
 import { SettingsComponent } from '../settings/settings.component';
 import { SettingsService } from '../settings/settings.service';
+import { IconComponent } from '../../images/icon/icon.component';
 
 @Component({
   selector: 'pdz-top-navbar',
@@ -29,6 +30,7 @@ import { SettingsService } from '../settings/settings.service';
     MatButtonModule,
     SettingsComponent,
     RouterModule,
+    IconComponent,
   ],
   templateUrl: './top-navbar.component.html',
   styleUrl: './top-navbar.component.scss',

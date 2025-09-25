@@ -1,9 +1,14 @@
 @use "sass:map";
 @use "typography" as *;
+@use "base/tokens" as *;
 
 @mixin apply-theme($theme) {
   @each $key, $value in $theme {
-    --pdz-#{$key}: #{$value};
+    @if map.has-key($core-tokens, $value) {
+      --pdz-color-#{$key}: #{map.get($core-tokens, $value)};
+    } @else {
+      --pdz-color-#{$key}: #{$value};
+    }
   }
 }
 

@@ -1,7 +1,7 @@
 .setting-title {
   font-family: var(--pdz-font-fancy);
   font-size: 1.75em;
-  color: var(--pdz-on-surface);
+  color: var(--pdz-color-on-surface);
 }
 .setting-container {
   padding: 1rem;
@@ -15,7 +15,7 @@
   max-width: 32rem;
   max-height: fit-content;
   height: 32rem;
-  background-color: var(--pdz-surface);
+  background-color: var(--pdz-color-surface);
   overflow-y: auto;
   border-radius: 1rem;
   display: flex;

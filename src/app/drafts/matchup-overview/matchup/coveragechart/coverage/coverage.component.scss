@@ -28,11 +28,11 @@
     }
 
     .reset-button {
-      background-color: var(--pdz-primary);
-      color: var(--pdz-on-primary);
+      background-color: var(--pdz-color-primary);
+      color: var(--pdz-color-on-primary);
       &:hover {
-        background-color: var(--pdz-secondary);
-        color: var(--pdz-on-secondary);
+        background-color: var(--pdz-color-secondary);
+        color: var(--pdz-color-on-secondary);
       }
       &:active {
         margin-top: 1px;
@@ -55,7 +55,7 @@
     display: flex;
     flex-direction: column;
     > :not(:first-child) {
-      border-top: 1px solid var(--pdz-primary-border);
+      border-top: 1px solid var(--pdz-color-primary-border);
     }
     .category-container {
       display: flex;
@@ -96,7 +96,7 @@
         height: 2rem;
         width: 2rem;
         border-radius: 0.5rem;
-        background-color: var(--pdz-surface-dim);
+        background-color: var(--pdz-color-surface-dim);
         box-shadow: var(--pdz-level-1);
       }
     }

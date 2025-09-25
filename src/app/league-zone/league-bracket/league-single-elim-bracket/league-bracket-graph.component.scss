@@ -34,7 +34,7 @@
 
     .seed {
       font: 12px var(--pdz-font-fancy);
-      fill: var(--pdz-secondary);
+      fill: var(--pdz-color-secondary);
       text-anchor: middle;
       dominant-baseline: central;
     }
@@ -65,10 +65,10 @@
       -webkit-font-smoothing: antialiased;
       text-rendering: optimizeLegibility;
       -moz-osx-font-smoothing: grayscale;
-      fill: var(--pdz-secondary);
+      fill: var(--pdz-color-secondary);
       cursor: pointer;
       &:hover {
-        fill: var(--pdz-primary);
+        fill: var(--pdz-color-primary);
       }
     }
   }
@@ -108,7 +108,7 @@
         justify-content: space-between;
         display: flex;
         font-size: 0.7em;
-        color: var(--pdz-primary);
+        color: var(--pdz-color-primary);
         line-height: 0.9em;
         font-weight: 700;
         white-space: nowrap;

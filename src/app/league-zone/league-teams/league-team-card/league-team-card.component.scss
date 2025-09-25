@@ -3,7 +3,7 @@
   height: 4rem;
   border-radius: 2rem;
   border-width: 2px;
-  border-color: var(--pdz-primary-border-variant);
+  border-color: var(--pdz-color-primary-border-variant);
   overflow: hidden;
   box-shadow: var(--pdz-level1);
   display: flex;
@@ -35,7 +35,7 @@
     gap: 0.75rem;
     margin-bottom: 0.5rem;
     padding-bottom: 0.5rem;
-    border-bottom: 1px solid var(--pdz-primary-border);
+    border-bottom: 1px solid var(--pdz-color-primary-border);
     .team-info {
       flex-grow: 1;
 
@@ -49,7 +49,7 @@
       .team-coaches {
         .team-coach {
           text-align: center;
-          color: var(--pdz-primary);
+          color: var(--pdz-color-primary);
           font-weight: 600;
           font-size: 0.8em;
           margin: 0;
@@ -61,13 +61,13 @@
       }
 
       .team-record {
-        color: var(--pdz-secondary);
+        color: var(--pdz-color-secondary);
         font-size: 0.8em;
         font-weight: 600;
       }
 
       .team-timezone {
-        color: var(--pdz-secondary);
+        color: var(--pdz-color-secondary);
         font-size: 0.8em;
         font-weight: 600;
       }
@@ -81,10 +81,10 @@
       button {
         width: 1.5rem;
         height: 1.5rem;
-        color: var(--pdz-primary);
+        color: var(--pdz-color-primary);
         border-radius: 0.25rem;
         &:hover {
-          color: var(--pdz-secondary);
+          color: var(--pdz-color-secondary);
         }
         &:not(.pressed) {
           box-shadow: var(--pdz-level1);
@@ -97,7 +97,7 @@
     overflow: auto;
     .table-wrapper {
       width: 100%;
-      border: 1px solid var(--pdz-primary);
+      border: 1px solid var(--pdz-color-primary);
       border-radius: 1rem;
       overflow: hidden;
       font-size: 0.8em;
@@ -110,15 +110,15 @@
           padding: 0.5rem 0.4rem;
           text-align: left;
           vertical-align: middle;
-          border-bottom: 1px solid var(--pdz-primary-border-variant);
+          border-bottom: 1px solid var(--pdz-color-primary-border-variant);
           overflow: hidden;
           text-overflow: ellipsis;
         }
 
         th {
           font-weight: 600;
-          background-color: var(--pdz-primary);
-          color: var(--pdz-on-primary);
+          background-color: var(--pdz-color-primary);
+          color: var(--pdz-color-on-primary);
           white-space: nowrap;
         }
 
@@ -134,7 +134,7 @@
           text-align: center;
           white-space: nowrap;
           mat-icon {
-            color: var(--pdz-primary);
+            color: var(--pdz-color-primary);
           }
         }
 

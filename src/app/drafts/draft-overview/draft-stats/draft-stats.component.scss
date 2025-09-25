@@ -18,7 +18,7 @@
   padding: 1rem;
   overflow-x: auto;
   border-radius: 1rem;
-  background-color: var(--pdz-surface);
+  background-color: var(--pdz-color-surface);
   box-shadow: var(--pdz-level-3);
 }
 th,
@@ -28,7 +28,7 @@ td {
 }
 
 th.cdk-header-cell {
-  border-bottom: 2px solid var(--pdz-primary-border);
+  border-bottom: 2px solid var(--pdz-color-primary-border);
 }
 
 table {
@@ -52,7 +52,7 @@ table {
 
 tr.cdk-row {
   &:hover {
-    background-color: var(--pdz-surface-variant);
+    background-color: var(--pdz-color-surface-variant);
   }
 }
 

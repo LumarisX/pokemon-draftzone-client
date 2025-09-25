@@ -12,7 +12,7 @@ $breakpoint-desktop: 1200px;
   width: 100%;
   gap: 0.5rem;
   padding: 0 0.5rem 0.5rem;
-  background-color: var(--pdz-test);
+  background-color: var(--pdz-color-test);
 
   flex-direction: column;
   align-items: stretch;
@@ -23,7 +23,7 @@ $breakpoint-desktop: 1200px;
 }
 
 section {
-  border: 1px solid var(--pdz-primary-border);
+  border: 1px solid var(--pdz-color-primary-border);
   border-radius: 1rem;
   width: fit-content;
   min-width: 33%;
@@ -60,7 +60,7 @@ section {
   user-select: none;
   border-radius: 1rem;
   box-shadow: var(--pdz-level-1);
-  background-color: var(--pdz-primary-fixed);
+  background-color: var(--pdz-color-primary-fixed);
   flex-wrap: wrap;
   @media (min-width: $breakpoint-tablet) {
     flex-wrap: nowrap;
@@ -73,7 +73,7 @@ section {
 
   &.selected {
     box-shadow: var(--pdz-level-inset-2);
-    background-color: var(--pdz-primary-fixed-dim);
+    background-color: var(--pdz-color-primary-fixed-dim);
     cursor: pointer;
   }
 }
@@ -161,7 +161,7 @@ section {
 .matchup-stage {
   font-size: 0.6em;
   line-height: 0.8em;
-  color: var(--pdz-primary);
+  color: var(--pdz-color-primary);
 }
 
 $matchup-sprite-size: 4rem;
@@ -237,7 +237,7 @@ pdz-sprite {
   }
 
   th.cdk-header-cell {
-    border-bottom: 2px solid var(--pdz-primary-border);
+    border-bottom: 2px solid var(--pdz-color-primary-border);
     font-size: 0.8em;
   }
 
@@ -246,7 +246,7 @@ pdz-sprite {
     border-collapse: separate;
     border-spacing: 0 4px;
     padding: 0 0.25rem;
-    background-color: var(--pdz-primary-container);
+    background-color: var(--pdz-color-primary-container);
     border-radius: var(--pdz-corner-medium);
   }
 
@@ -265,7 +265,7 @@ pdz-sprite {
 
   tr.cdk-row {
     &:hover {
-      background-color: var(--pdz-surface-variant);
+      background-color: var(--pdz-color-surface-variant);
     }
   }
 
@@ -287,23 +287,23 @@ pdz-sprite {
   button {
     display: flex;
     justify-content: center;
-    background-color: var(--pdz-primary-container);
-    color: var(--pdz-on-primary-container);
+    background-color: var(--pdz-color-primary-container);
+    color: var(--pdz-color-on-primary-container);
     border-radius: var(--pdz-corner-medium);
     box-shadow: var(--pdz-level-2);
     padding: 0.5rem;
     font-size: 0.8em;
 
     &:hover {
-      background-color: var(--pdz-secondary-container);
+      background-color: var(--pdz-color-secondary-container);
       box-shadow: var(--pdz-level-4);
     }
 
     &.matchup-button {
-      background-color: var(--pdz-primary-fixed-dim);
+      background-color: var(--pdz-color-primary-fixed-dim);
 
       &:hover {
-        background-color: var(--pdz-secondary-fixed-dim);
+        background-color: var(--pdz-color-secondary-fixed-dim);
       }
     }
   }

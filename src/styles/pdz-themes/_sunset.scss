@@ -1,32 +1,83 @@
+@use "../base/tokens" as *; // Imports the core token map for reference
+
 $theme: (
   light: (
-    primary: #cc6600,
-    on-primary: #ffffff,
-    secondary: #b86614,
-    on-secondary: #ffffff,
+    // Surface Colors
+    background: "purple-25",
+    surface: "purple-50",
+    surface-variant: "purple-300",
+    surface-container-lowest: "white",
+    surface-container-low: "purple-100",
+    surface-container: "purple-150",
+    surface-container-high: "purple-250",
+    surface-container-highest: "purple-350",
+    on-surface: "gray-950",
+    on-surface-variant: "gray-900",
+    outline: "gray-700",
+    outline-variant: "gray-400",
 
-    background: #f7fdff,
-    surface: #f7fdff,
-    surface-container: #edf5f7,
+    // Primary Colors
+    primary: "purple-600",
+    on-primary: "white",
+    primary-container: "purple-200",
+    on-primary-container: "purple-950",
+    primary-hover: "purple-700",
+    primary-border: "purple-400",
+    primary-subtle: "purple-75",
+    primary-gradient: "primary-gradient-purple",
 
-    on-surface: #151d1f,
-    on-surface-variant: #7a4d1f,
+    // Secondary Colors
+    secondary: "pink-600",
+    on-secondary: "white",
+    secondary-container: "pink-100",
+    on-secondary-container: "pink-950",
+    secondary-hover: "pink-800",
+    secondary-border: "pink-400",
+    secondary-subtle: "pink-50",
 
-    outline: #cc8033,
+    // Menu Colors
+    menu-background: "white",
+    menu-item-text: "gray-950",
+    menu-item-hover-background: "purple-100",
+    menu-item-selected-background: "purple-150",
+    menu-divider: "purple-350",
+
+    // System Colors
+    error: "red-800",
+    on-error: "white",
+    error-container: "red-100",
+    on-error-container: "red-on-container",
+    warning: "amber-500",
+    on-warning: "amber-950",
+    warning-container: "amber-200",
+    on-warning-container: "amber-900",
+    success: "green-700",
+    on-success: "white",
+    success-container: "green-200",
+    on-success-container: "green-950",
+    info: "blue-700",
+    on-info: "white",
+    info-container: "blue-200",
+    on-info-container: "blue-950",
+
+    // Misc
+    shadow: "black",
+    scrim: "black",
+
+    // Logo
+    logo-ring-1: "pink-300",
+    logo-ring-2: "pink-400",
+    logo-ring-3: "pink-500",
+    logo-ring-4: "pink-600",
+    logo-ring-5: "pink-700",
+    logo-ring-6: "pink-800",
+    logo-ring-7: "pink-900",
+    logo-core-1: "white",
+    logo-core-2: "logo-core-2",
+    logo-top: "purple-600",
+    logo-bottom: "pink-600",
+    logo-background: "white",
   ),
-  dark: (
-    primary: #ffcc99,
-    on-primary: #663300,
-    secondary: #f5cca3,
-    on-secondary: #5c330a,
-
-    background: #151d1f,
-    surface: #151d1f,
-    surface-container: #242b2d,
-
-    on-surface: #dce4e6,
-    on-surface-variant: #ebccad,
-
-    outline: #d6995c,
-  ),
+  // You could define a corresponding 'dark' mode here as well
+   // dark: ( ... )
 );

@@ -14,9 +14,9 @@
 
   .toggle-track {
     width: 3.5em;
-    border: 0.125em solid var(--pdz-primary);
+    border: 0.125em solid var(--pdz-color-primary);
     height: 1em;
-    background-color: var(--pdz-surface-variant);
+    background-color: var(--pdz-color-surface-variant);
     border-radius: 1em;
     position: relative;
     transition: background-color 0.3s ease;
@@ -25,8 +25,8 @@
   .toggle-thumb {
     width: 1.5em;
     height: 1.5em;
-    background-color: var(--pdz-primary-border);
-    color: var(--pdz-surface-variant);
+    background-color: var(--pdz-color-primary-border);
+    color: var(--pdz-color-surface-variant);
     border-radius: 50%;
     position: absolute;
     padding: 0.125em;
@@ -40,19 +40,19 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 
     &:hover {
-      background-color: var(--pdz-on-surface-variant);
+      background-color: var(--pdz-color-on-surface-variant);
     }
   }
 
   &.checked {
     .toggle-track {
-      background-color: var(--pdz-primary);
+      background-color: var(--pdz-color-primary);
     }
 
     .toggle-thumb {
       transform: translate(2em, -50%);
-      background-color: var(--pdz-on-primary);
-      color: var(--pdz-primary-border);
+      background-color: var(--pdz-color-on-primary);
+      color: var(--pdz-color-primary-border);
     }
   }
 }

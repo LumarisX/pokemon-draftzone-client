@@ -5,7 +5,7 @@
   .team-container {
     border-width: 1px;
     border-radius: 1rem;
-    border-color: var(--pdz-primary-border);
+    border-color: var(--pdz-color-primary-border);
     padding: 0.25rem;
     display: flex;
     flex-direction: column;
@@ -16,7 +16,7 @@
       flex-direction: column;
       align-items: center;
       border-width: 0 0 1px;
-      border-color: var(--pdz-primary-border);
+      border-color: var(--pdz-color-primary-border);
       margin-bottom: 0.5rem;
 
       .team-name-title,
@@ -27,7 +27,7 @@
         white-space: nowrap;
         text-align: center;
         font-weight: 700;
-        color: var(--pdz-secondary);
+        color: var(--pdz-color-secondary);
         font-family: var(--pdz-font-fancy);
       }
 

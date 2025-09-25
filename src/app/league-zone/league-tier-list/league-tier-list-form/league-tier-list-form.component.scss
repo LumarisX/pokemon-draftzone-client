@@ -11,7 +11,7 @@
   top: 0px;
   z-index: 2000;
   border-width: 0px 0px 2px 0px;
-  border-color: var(--pdz-primary-border);
+  border-color: var(--pdz-color-primary-border);
 }
 
 .tier-entry {
@@ -21,7 +21,7 @@
   flex-grow: 1;
   padding: 0.25rem;
   border-width: 0px 0px 1px 0px;
-  border-color: var(--pdz-primary-border-variant);
+  border-color: var(--pdz-color-primary-border-variant);
   font-size: 0.875rem;
   line-height: 1.25rem;
   column-gap: 0.25rem;
@@ -42,7 +42,7 @@
   }
 
   &.selected {
-    background-color: var(--pdz-secondary-container);
+    background-color: var(--pdz-color-secondary-container);
   }
 
   &.dragStarted {
@@ -53,14 +53,14 @@
 .restricted-icon {
   right: 0px;
   bottom: 0px;
-  color: var(--pdz-error);
+  color: var(--pdz-color-error);
   transform: scale(0.75);
   position: absolute;
 }
 
 .tier-main {
   border-width: 2px;
-  border-color: var(--pdz-primary-border);
+  border-color: var(--pdz-color-primary-border);
   max-width: 100%;
   flex-grow: 1;
   display: flex;
@@ -98,8 +98,8 @@
     align-items: stretch;
 
     .header-label {
-      background-color: var(--pdz-primary);
-      color: var(--pdz-on-primary);
+      background-color: var(--pdz-color-primary);
+      color: var(--pdz-color-on-primary);
       text-align: center;
       font-weight: bold;
       font-family: var(--pdz-font-fancy);
@@ -129,7 +129,7 @@
     .tier-group {
       &:not(:first-child) {
         border-width: 0px 0px 0px 3px;
-        border-color: var(--pdz-primary-border);
+        border-color: var(--pdz-color-primary-border);
       }
       display: flex;
       flex-direction: column;
@@ -143,7 +143,7 @@
           width: fit-content;
           &:not(:first-child) {
             border-width: 0px 0px 0px 2px;
-            border-color: var(--pdz-primary-border);
+            border-color: var(--pdz-color-primary-border);
           }
         }
       }
@@ -182,11 +182,11 @@
 }
 
 .cdk-drop-list-dragging {
-  background-color: var(--pdz-primary-border-variant);
+  background-color: var(--pdz-color-primary-border-variant);
 }
 
 .drag-placeholder {
-  border: dotted 2px var(--pdz-primary);
+  border: dotted 2px var(--pdz-color-primary);
   height: 2.5rem;
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
@@ -199,29 +199,29 @@
 }
 
 .new-tier {
-  background-color: var(--pdz-primary);
-  color: var(--pdz-on-primary);
+  background-color: var(--pdz-color-primary);
+  color: var(--pdz-color-on-primary);
   text-align: center;
   height: 100%;
 
   width: 2rem;
-  border-left: 2px solid var(--pdz-primary-border);
+  border-left: 2px solid var(--pdz-color-primary-border);
   .add-icon {
     top: 0px;
     position: sticky;
     mat-icon {
-      color: var(--pdz-on-primary);
+      color: var(--pdz-color-on-primary);
     }
   }
 }
 
 .new-tier-group {
-  background-color: var(--pdz-primary);
-  color: var(--pdz-on-primary);
+  background-color: var(--pdz-color-primary);
+  color: var(--pdz-color-on-primary);
   text-align: center;
   flex-shrink: 0;
   width: 4rem;
-  border-left: 2px solid var(--pdz-primary-border);
+  border-left: 2px solid var(--pdz-color-primary-border);
   .add-icon {
     top: 0px;
     position: sticky;
@@ -229,7 +229,7 @@
       font-size: 2.5rem;
       width: fit-content;
       height: fit-content;
-      color: var(--pdz-on-primary);
+      color: var(--pdz-color-on-primary);
     }
   }
 }
@@ -240,11 +240,11 @@
   padding: 0.125rem;
   mat-icon {
     font-size: 1.2em;
-    color: var(--pdz-secondary);
+    color: var(--pdz-color-secondary);
     height: fit-content;
     width: fit-content;
   }
   &:hover {
-    background-color: var(--pdz-primary-container);
+    background-color: var(--pdz-color-primary-container);
   }
 }

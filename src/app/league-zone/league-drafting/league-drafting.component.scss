@@ -36,7 +36,7 @@
         display: flex;
         flex-direction: column;
         .round-label {
-          color: var(--pdz-primary);
+          color: var(--pdz-color-primary);
           display: flex;
           height: fit-content;
           width: fit-content;
@@ -50,7 +50,7 @@
           font-family: var(--pdz-font-fancy);
 
           mat-icon {
-            color: var(--pdz-primary-border-variant);
+            color: var(--pdz-color-primary-border-variant);
             font-size: 1.5em;
             height: fit-content;
           }
@@ -88,18 +88,18 @@
     line-height: 0.75rem;
     overflow: hidden;
     height: 1.625rem;
-    color: var(--pdz-secondary);
+    color: var(--pdz-color-secondary);
     span {
       padding: 0 0.25rem;
     }
     .selectedTeam {
       width: 100%;
-      background-color: var(--pdz-secondary-container);
+      background-color: var(--pdz-color-secondary-container);
       border-radius: 0.25rem;
     }
   }
   .team-card-body {
-    border: 2px solid var(--pdz-primary-border-variant);
+    border: 2px solid var(--pdz-color-primary-border-variant);
     border-radius: 0.5rem;
     box-shadow: var(--pdz-level2);
     padding: 0.25rem;
@@ -111,8 +111,8 @@
     row-gap: 0.25rem;
     align-items: center;
     &.picking {
-      background-color: var(--pdz-primary-container);
-      color: var(--pdz-on-primary-container);
+      background-color: var(--pdz-color-primary-container);
+      color: var(--pdz-color-on-primary-container);
     }
     .team-card-icon {
       display: flex;
@@ -121,7 +121,7 @@
       height: 4rem;
       width: 4rem;
       mat-icon {
-        color: var(--pdz-primary);
+        color: var(--pdz-color-primary);
         height: 1.5rem;
         width: 1.5rem;
       }
@@ -152,8 +152,8 @@
 
   .planner-link {
     flex-shrink: 0;
-    background-color: var(--pdz-primary);
-    color: var(--pdz-on-primary);
+    background-color: var(--pdz-color-primary);
+    color: var(--pdz-color-on-primary);
     box-shadow: var(--pdz-level2);
     cursor: pointer;
     &:active {
@@ -184,7 +184,7 @@
       }
 
       .pick-label {
-        color: var(--pdz-primary);
+        color: var(--pdz-color-primary);
         line-height: 0.8rem;
         font-size: 0.8em;
         font-weight: 600;
@@ -192,17 +192,17 @@
       .choice-container {
         display: flex;
         column-gap: 0.5rem;
-        border-left: 2px solid var(--pdz-primary-border);
+        border-left: 2px solid var(--pdz-color-primary-border);
         margin-left: 0.5rem;
         padding: 0.125rem 0 0.125rem 0.5rem;
         .choice-label {
-          color: var(--pdz-on-primary-container);
+          color: var(--pdz-color-on-primary-container);
           font-weight: 700;
         }
 
         .choice-pokemon {
-          background-color: var(--pdz-secondary);
-          color: var(--pdz-on-secondary);
+          background-color: var(--pdz-color-secondary);
+          color: var(--pdz-color-on-secondary);
           display: flex;
           align-items: center;
           column-gap: 0.125rem;
@@ -222,8 +222,8 @@
           }
         }
         .choice-select {
-          background-color: var(--pdz-secondary);
-          color: var(--pdz-on-secondary);
+          background-color: var(--pdz-color-secondary);
+          color: var(--pdz-color-on-secondary);
           display: flex;
           align-items: center;
           column-gap: 0.125rem;
@@ -274,7 +274,7 @@
         padding: 0.125rem 0;
         column-gap: 0.25rem;
         &:not(:last-child) {
-          border-bottom: 1px solid var(--pdz-primary-border-variant);
+          border-bottom: 1px solid var(--pdz-color-primary-border-variant);
         }
         .my-pokemon-sprite {
           border-radius: 2rem;
@@ -282,7 +282,7 @@
           height: 2.5rem;
         }
         .my-pokemon-index {
-          color: var(--pdz-primary);
+          color: var(--pdz-color-primary);
           width: 1.5rem;
           display: flex;
           justify-content: center;
@@ -290,8 +290,8 @@
           border-radius: 1rem;
           text-align: center;
           &.selected-pick {
-            background-color: var(--pdz-primary);
-            color: var(--pdz-on-primary);
+            background-color: var(--pdz-color-primary);
+            color: var(--pdz-color-on-primary);
           }
         }
         .my-pokemon-name,
@@ -331,7 +331,7 @@
           display: flex;
           width: 100%;
           align-items: center;
-          color: var(--pdz-primary);
+          color: var(--pdz-color-primary);
         }
 
         .my-draft-pick {
@@ -344,25 +344,25 @@
           column-gap: 0.25rem;
           border-radius: 0.5rem;
           box-shadow: var(--pdz-level-1);
-          border: 2px solid var(--pdz-primary);
-          color: var(--pdz-on-primary);
+          border: 2px solid var(--pdz-color-primary);
+          color: var(--pdz-color-on-primary);
 
           &:not(.backup) {
-            background-color: var(--pdz-primary);
+            background-color: var(--pdz-color-primary);
             .my-pokemon-sprite {
               background-color: white;
             }
           }
 
           &.backup {
-            color: var(--pdz-primary);
+            color: var(--pdz-color-primary);
           }
           .my-pokemon-sprite {
             width: 2.5rem;
             height: 2.5rem;
           }
           .my-pokemon-index {
-            color: var(--pdz-primary);
+            color: var(--pdz-color-primary);
             width: 1.25rem;
             text-align: center;
             margin-left: -0.75rem;
@@ -385,26 +385,26 @@
         }
 
         .no-pick {
-          color: var(--pdz-primary);
+          color: var(--pdz-color-primary);
           padding: 0.125rem 0;
           text-align: center;
           align-self: center;
           font-weight: bold;
           &:hover {
-            color: var(--pdz-secondary);
+            color: var(--pdz-color-secondary);
           }
         }
       }
     }
 
     .points-container {
-      border: 2px solid var(--pdz-primary-border-variant);
+      border: 2px solid var(--pdz-color-primary-border-variant);
       border-radius: 0.5rem;
       padding: 0.25rem;
       text-align: right;
       margin-top: 0.5rem;
       font-weight: 600;
-      color: var(--pdz-on-surface);
+      color: var(--pdz-color-on-surface);
     }
   }
 }
@@ -452,7 +452,7 @@
   border-radius: 1rem;
   margin-bottom: 2px;
   &:hover {
-    background-color: var(--pdz-surface);
+    background-color: var(--pdz-color-surface);
     box-shadow: var(--pdz-level-1);
   }
 }
@@ -464,8 +464,8 @@
   width: 100%;
   max-height: 200px;
   overflow-y: auto;
-  background-color: var(--pdz-surface);
-  border: 1px solid var(--pdz-primary-border);
+  background-color: var(--pdz-color-surface);
+  border: 1px solid var(--pdz-color-primary-border);
   border-radius: 0.5rem;
   box-shadow: var(--pdz-level2);
   z-index: 1000;
@@ -479,10 +479,10 @@
   background: none;
   border: none;
   cursor: pointer;
-  color: var(--pdz-on-surface);
+  color: var(--pdz-color-on-surface);
 
   &:hover {
-    background-color: var(--pdz-surface-container-highest);
+    background-color: var(--pdz-color-surface-container-highest);
   }
 }
 

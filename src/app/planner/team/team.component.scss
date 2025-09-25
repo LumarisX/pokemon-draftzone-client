@@ -1,6 +1,6 @@
 .points-container {
   flex-grow: 0;
-  border-top: 2px var(--pdz-primary-border) solid;
+  border-top: 2px var(--pdz-color-primary-border) solid;
   display: flex;
   flex-direction: column;
 
@@ -26,7 +26,7 @@ table {
     top: 0px;
     z-index: 1100;
     background-color: var(--secondary-70);
-    color: var(--pdz-on-secondary);
+    color: var(--pdz-color-on-secondary);
     border-bottom: 2px var(--secondary-50) solid;
     position: sticky;
   }
@@ -46,7 +46,7 @@ table {
 }
 
 .team-item:not(:last-child) {
-  border-bottom: 1px var(--pdz-primary-border-variant) solid;
+  border-bottom: 1px var(--pdz-color-primary-border-variant) solid;
 }
 
 .value-input {
@@ -74,7 +74,7 @@ table {
 
 .drag-icon {
   cursor: move;
-  color: var(--pdz-on-surface-variant);
+  color: var(--pdz-color-on-surface-variant);
 }
 
 .value-input,

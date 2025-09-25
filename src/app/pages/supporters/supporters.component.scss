@@ -9,9 +9,9 @@ $spacing-md: 0.75rem;
 $spacing-lg: 1rem;
 $icon-size: 4rem;
 $card-max-width: 32rem;
-$border-radius-sm: var(--pdz-shape-corner-small, 4px);
-$border-radius-md: var(--pdz-shape-corner-medium, 8px);
-$border-radius-lg: var(--pdz-shape-corner-large, 12px);
+$border-radius-sm: var(--pdz-color-shape-corner-small, 4px);
+$border-radius-md: var(--pdz-color-shape-corner-medium, 8px);
+$border-radius-lg: var(--pdz-color-shape-corner-large, 12px);
 $font-nasa: var(--pdz-font-fancy);
 .support-page {
   display: flex;
@@ -27,7 +27,7 @@ $font-nasa: var(--pdz-font-fancy);
     font-family: $font-nasa;
     font-size: 1.75rem;
     font-weight: 500;
-    color: var(--pdz-on-surface);
+    color: var(--pdz-color-on-surface);
     text-align: center;
     margin-bottom: $spacing-md;
   }
@@ -42,13 +42,13 @@ $font-nasa: var(--pdz-font-fancy);
   max-width: $card-max-width;
   padding: $spacing-lg;
   border-radius: $border-radius-lg;
-  background-color: var(--pdz-color-surface-container);
-  border: 1px solid var(--pdz-primary-border-variant);
+  background-color: var(--pdz-color-color-surface-container);
+  border: 1px solid var(--pdz-color-primary-border-variant);
   box-shadow: var(--pdz-level-2);
   &__name {
     font-size: 1.25rem;
     font-weight: 500;
-    color: var(--pdz-on-surface-variant);
+    color: var(--pdz-color-on-surface-variant);
     margin: 0;
   }
 
@@ -67,7 +67,7 @@ $font-nasa: var(--pdz-font-fancy);
   justify-content: center;
   padding: $spacing-sm;
   border-radius: $border-radius-md;
-  background-color: var(--pdz-surface-container-low);
+  background-color: var(--pdz-color-surface-container-low);
   border: 1px solid transparent;
   box-shadow: var(--pdz-level-1);
   transition:
@@ -77,12 +77,12 @@ $font-nasa: var(--pdz-font-fancy);
   cursor: pointer;
   text-decoration: none;
   &:hover {
-    background-color: var(--pdz-surface-container-high);
+    background-color: var(--pdz-color-surface-container-high);
     box-shadow: var(--pdz-level-2);
   }
 
   &:focus-visible {
-    outline: 2px solid var(--pdz-primary);
+    outline: 2px solid var(--pdz-color-primary);
     outline-offset: 2px;
     border-color: transparent;
   }
