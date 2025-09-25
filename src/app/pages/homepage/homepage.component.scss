@@ -20,9 +20,14 @@
 
   .title-container {
     display: flex;
+    justify-content: center;
     align-items: center;
     gap: 1rem;
     margin-bottom: 1rem;
+    div {
+      display: flex;
+      flex-direction: column;
+    }
   }
 
   .title-logo {
@@ -151,6 +156,10 @@
 
 @media (min-width: 768px) {
   .hero-section {
+    .title-container div {
+      flex-direction: row;
+      gap: 1rem;
+    }
     .title-text {
       font-size: 4rem;
     }

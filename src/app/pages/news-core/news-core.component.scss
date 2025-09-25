@@ -39,7 +39,7 @@
 
 .section-images {
   display: flex;
-  overflow-x: scroll;
+  overflow-x: auto;
   column-gap: 0.5rem;
   max-width: 100%;
   align-self: center;
