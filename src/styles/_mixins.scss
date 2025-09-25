@@ -1,17 +1,31 @@
 @use "sass:map";
+@use "typography" as *;
 
 @mixin apply-theme($theme) {
-  --pdz-primary: #{map.get($theme, primary)};
-  --pdz-on-primary: #{map.get($theme, on-primary)};
-  --pdz-secondary: #{map.get($theme, secondary)};
-  --pdz-on-secondary: #{map.get($theme, on-secondary)};
+  @each $key, $value in $theme {
+    --pdz-#{$key}: #{$value};
+  }
+}
 
-  --pdz-background: #{map.get($theme, background)};
-  --pdz-surface: #{map.get($theme, surface)};
-  --pdz-surface-container: #{map.get($theme, surface-container)};
+@mixin apply-typography($style-name) {
+  $style: map.get($typography, $style-name);
 
-  --pdz-on-surface: #{map.get($theme, on-surface)};
-  --pdz-on-surface-variant: #{map.get($theme, on-surface-variant)};
+  @if $style {
+    font-family: map.get($style, font-family);
+    font-size: map.get($style, font-size);
+    font-weight: map.get($style, font-weight);
+    line-height: map.get($style, line-height);
+  } @else {
+    @warn "Typography style `#{$style-name}` not found.";
+  }
+}
 
-  --pdz-outline: #{map.get($theme, outline)};
+@mixin respond-above($breakpoint) {
+  @if map.has-key($breakpoints, $breakpoint) {
+    @media (min-width: #{map.get($breakpoints, $breakpoint)}) {
+      @content;
+    }
+  } @else {
+    @warn "Breakpoint `#{$breakpoint}` not found.";
+  }
 }
