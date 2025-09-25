@@ -14,7 +14,6 @@ import { DraftOverviewPath } from '../draft-overview-routing.module';
 
 @Component({
   selector: 'draft-preview',
-  standalone: true,
   templateUrl: './draft-preview.component.html',
   imports: [
     CommonModule,
@@ -27,6 +26,7 @@ import { DraftOverviewPath } from '../draft-overview-routing.module';
     LoadingComponent,
     ArchiveSVG,
   ],
+  styleUrl: './draft-preview.component.scss',
 })
 export class DraftPreviewComponent {
   private draftService = inject(DraftService);

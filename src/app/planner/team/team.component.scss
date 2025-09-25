@@ -25,9 +25,9 @@ table {
   thead tr {
     top: 0px;
     z-index: 1100;
-    background-color: var(--secondary-70);
+    background-color: var(--pdz-color-secondary);
     color: var(--pdz-color-on-secondary);
-    border-bottom: 2px var(--secondary-50) solid;
+    border-bottom: 2px var(--pdz-color-secondary-border) solid;
     position: sticky;
   }
   tbody {

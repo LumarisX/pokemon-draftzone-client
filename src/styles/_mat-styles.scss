@@ -138,6 +138,51 @@ $theme-configurations: (
       );
     }
   }
+
+  pdz-root {
+    @include mat.theme-overrides(
+      (
+        // Primary Palette
+        primary: var(--pdz-color-primary),
+        on-primary: var(--pdz-color-on-primary),
+        primary-container: var(--pdz-color-primary-container),
+        on-primary-container: var(--pdz-color-on-primary-container),
+        // Secondary Palette
+        secondary: var(--pdz-color-secondary),
+        on-secondary: var(--pdz-color-on-secondary),
+        secondary-container: var(--pdz-color-secondary-container),
+        on-secondary-container: var(--pdz-color-on-secondary-container),
+        // Tertiary Palette (mapped to your secondary colors as in the original)
+        tertiary: var(--pdz-color-secondary),
+        on-tertiary: var(--pdz-color-on-secondary),
+        tertiary-container: var(--pdz-color-secondary-container),
+        on-tertiary-container: var(--pdz-color-on-secondary-container),
+        // Error Palette
+        error: var(--pdz-color-error),
+        on-error: var(--pdz-color-on-error),
+        error-container: var(--pdz-color-error-container),
+        on-error-container: var(--pdz-color-on-error-container),
+        // Surface Palette
+        background: var(--pdz-color-background),
+        on-background: var(--pdz-color-on-surface),
+        surface: var(--pdz-color-surface),
+        on-surface: var(--pdz-color-on-surface),
+        surface-variant: var(--pdz-color-surface-variant),
+        on-surface-variant: var(--pdz-color-on-surface-variant),
+        // Surface Container Tones
+        surface-container-lowest: var(--pdz-color-surface-container-lowest),
+        surface-container-low: var(--pdz-color-surface-container-low),
+        surface-container: var(--pdz-color-surface-container),
+        surface-container-high: var(--pdz-color-surface-container-high),
+        surface-container-highest: var(--pdz-color-surface-container-highest),
+        // Outline & Misc
+        outline: var(--pdz-color-outline),
+        outline-variant: var(--pdz-color-outline-variant),
+        scrim: var(--pdz-color-scrim),
+        shadow: var(--pdz-color-shadow)
+      )
+    );
+  }
 }
 
 @include mat.tooltip-overrides(

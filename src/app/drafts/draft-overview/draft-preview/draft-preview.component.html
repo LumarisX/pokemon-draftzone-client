@@ -9,23 +9,21 @@
     class="grid h-auto grid-flow-row grid-cols-1 gap-4 p-2 overflow-auto md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4"
   >
     <div *ngFor="let draft of drafts">
-      <div
-        class="flex flex-col h-full shadow-md bg-aTeam-200 shadow-aTeam-600 rounded-xl"
-      >
+      <div class="flex flex-col h-full shadow-md bg-aTeam-200 rounded-xl">
         <div class="flex-grow p-2 shadow-md bg-aTeam-300 rounded-xl">
           <div class="flex items-center w-full space-x-2 h-fit">
             <div
-              class="flex items-center justify-center w-3/5 h-auto p-1 overflow-hidden font-semibold text-center whitespace-normal rounded-full shadow-inner text-medium bg-aTeam-200 shadow-aTeam-600 overflow-ellipsis"
+              class="flex items-center justify-center w-3/5 h-auto p-1 overflow-hidden font-semibold text-center whitespace-normal rounded-full shadow-inner text-medium bg-aTeam-200 overflow-ellipsis"
             >
               {{ draft.leagueName }}
             </div>
             <div
-              class="flex items-center justify-center w-1/5 p-1 overflow-hidden text-xs font-semibold text-center whitespace-normal rounded-full shadow-inner h-fit bg-aTeam-200 shadow-aTeam-600 overflow-ellipsis"
+              class="flex items-center justify-center w-1/5 p-1 overflow-hidden text-xs font-semibold text-center whitespace-normal rounded-full shadow-inner h-fit bg-aTeam-200 overflow-ellipsis"
             >
               {{ draft.ruleset }}
             </div>
             <div
-              class="flex items-center justify-center w-1/5 p-1 overflow-hidden text-xs font-semibold text-center whitespace-normal rounded-full shadow-inner h-fit bg-aTeam-200 shadow-aTeam-600 overflow-ellipsis"
+              class="flex items-center justify-center w-1/5 p-1 overflow-hidden text-xs font-semibold text-center whitespace-normal rounded-full shadow-inner h-fit bg-aTeam-200 overflow-ellipsis"
             >
               {{ draft.format }}
             </div>
@@ -39,25 +37,25 @@
         </div>
         <div class="flex p-2" *ngIf="draft.menu == 'main'">
           <a
-            class="flex-grow p-1 font-semibold text-center shadow h-fit bg-aTeam-300 hover:shadow shadow-aTeam-600 rounded-xl"
+            class="flex-grow p-1 font-semibold text-center shadow h-fit bg-aTeam-300 hover:shadow rounded-xl"
             [routerLink]="['/', draftPath, draft.leagueId]"
             >Matches</a
           >
           <div class="grid items-center justify-center grid-cols-3 gap-2 px-2">
             <barchart-svg
-              class="w-8 h-8 p-1 shadow rounded-xl hover:cursor-pointer hover:shadow bg-aTeam-300 shadow-aTeam-600"
+              class="w-8 h-8 p-1 shadow rounded-xl hover:cursor-pointer hover:shadow bg-aTeam-300"
               [routerLink]="draft.leagueId + '/stats'"
               title="Stats"
               alt="Stats"
             ></barchart-svg>
             <edit-svg
-              class="w-8 h-8 p-1 shadow rounded-xl hover:cursor-pointer hover:shadow bg-aTeam-300 shadow-aTeam-600"
+              class="w-8 h-8 p-1 shadow rounded-xl hover:cursor-pointer hover:shadow bg-aTeam-300"
               (click)="draft.menu = 'edit'"
               title="Edit"
               alt="Edit"
             ></edit-svg>
             <archive-add-svg
-              class="w-8 h-8 p-1 shadow rounded-xl bg-aTeam-300 hover:cursor-pointer hover:shadow shadow-aTeam-600"
+              class="w-8 h-8 p-1 shadow rounded-xl bg-aTeam-300 hover:cursor-pointer hover:shadow"
               alt="Archive"
               title="Archive"
               (click)="draft.menu = 'archive'"
@@ -66,19 +64,17 @@
           </div>
         </div>
         <div class="flex" *ngIf="draft.menu == 'archive'">
-          <div
-            class="w-2/3 m-2 text-center shadow bg-aTeam-300 shadow-aTeam-600 rounded-xl"
-          >
+          <div class="w-2/3 m-2 text-center shadow bg-aTeam-300 rounded-xl">
             Are you sure you want to archive? This can not be undone.
           </div>
           <div
-            class="flex items-center justify-center w-1/6 m-2 shadow cursor-pointer bg-aTeam-300 hover:shadow shadow-aTeam-600 rounded-xl"
+            class="flex items-center justify-center w-1/6 m-2 shadow cursor-pointer bg-aTeam-300 hover:shadow rounded-xl"
             (click)="archive(draft.leagueId)"
           >
             Yes
           </div>
           <div
-            class="flex items-center justify-center w-1/6 m-2 shadow cursor-pointer bg-aTeam-300 hover:shadow shadow-aTeam-600 rounded-xl"
+            class="flex items-center justify-center w-1/6 m-2 shadow cursor-pointer bg-aTeam-300 hover:shadow rounded-xl"
             (click)="draft.menu = 'main'"
           >
             No
@@ -86,40 +82,38 @@
         </div>
         <div class="flex" *ngIf="draft.menu == 'edit'">
           <a
-            class="w-1/6 m-2 text-center shadow cursor-pointer bg-aTeam-300 hover:shadow shadow-aTeam-600 rounded-xl"
+            class="w-1/6 m-2 text-center shadow cursor-pointer bg-aTeam-300 hover:shadow rounded-xl"
             (click)="draft.menu = 'main'"
             >Back</a
           >
           <a
-            class="w-1/3 m-2 text-center shadow bg-aTeam-300 shadow-aTeam-600 rounded-xl text-aTeam-500"
+            class="w-1/3 m-2 text-center shadow bg-aTeam-300 rounded-xl text-aTeam-500"
             >Trade</a
           >
           <a
-            class="w-1/3 m-2 text-center shadow bg-aTeam-300 hover:shadow shadow-aTeam-600 rounded-xl"
+            class="w-1/3 m-2 text-center shadow bg-aTeam-300 hover:shadow rounded-xl"
             routerLink="edit"
             [queryParams]="{ draft: draft.leagueId | json }"
             >Edit Team
           </a>
           <a
-            class="w-1/6 m-2 text-center shadow cursor-pointer bg-aTeam-300 hover:shadow shadow-aTeam-600 rounded-xl"
+            class="w-1/6 m-2 text-center shadow cursor-pointer bg-aTeam-300 hover:shadow rounded-xl"
             (click)="draft.menu = 'delete'"
             >Delete
           </a>
         </div>
         <div class="flex" *ngIf="draft.menu == 'delete'">
-          <div
-            class="w-2/3 m-2 text-center shadow bg-aTeam-300 shadow-aTeam-600 rounded-xl"
-          >
+          <div class="w-2/3 m-2 text-center shadow bg-aTeam-300 rounded-xl">
             Are you sure you want to delete? This can not be undone.
           </div>
           <div
-            class="flex items-center justify-center w-1/6 m-2 shadow cursor-pointer bg-aTeam-300 hover:shadow shadow-aTeam-600 rounded-xl"
+            class="flex items-center justify-center w-1/6 m-2 shadow cursor-pointer bg-aTeam-300 hover:shadow rounded-xl"
             (click)="delete(draft.leagueId)"
           >
             Yes
           </div>
           <div
-            class="flex items-center justify-center w-1/6 m-2 shadow cursor-pointer bg-aTeam-300 hover:shadow shadow-aTeam-600 rounded-xl"
+            class="flex items-center justify-center w-1/6 m-2 shadow cursor-pointer bg-aTeam-300 hover:shadow rounded-xl"
             (click)="draft.menu = 'main'"
           >
             No
@@ -131,7 +125,7 @@
   <div class="flex p-3">
     <button
       [routerLink]="['/', draftPath, 'new']"
-      class="flex items-center p-1 rounded-lg shadow-md bg-aTeam-300 hover:shadow shadow-aTeam-600"
+      class="flex items-center p-1 rounded-lg shadow-md bg-aTeam-300 hover:shadow"
       title="Add League"
     >
       <plus-svg class="w-8 stroke-symbolColor-main"></plus-svg>
@@ -139,7 +133,7 @@
     <div class="flex-grow"></div>
     <button
       [routerLink]="['/', draftPath, 'archives']"
-      class="flex items-center p-1 rounded-lg shadow-md bg-aTeam-300 hover:shadow shadow-aTeam-600"
+      class="flex items-center p-1 rounded-lg shadow-md bg-aTeam-300 hover:shadow"
       title="Archives"
     >
       <archive-svg class="w-8"></archive-svg>
