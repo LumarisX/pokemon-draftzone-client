@@ -1,0 +1,155 @@
+.team-info {
+  display: flex;
+  padding: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+  .movechart-wrapper {
+    max-width: 30rem;
+    max-height: 55rem;
+    overflow: auto;
+    scrollbar-gutter: stable;
+  }
+
+  .coverage-wrapper {
+    max-width: 60rem;
+  }
+}
+:host {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+  gap: 1rem;
+}
+.team-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  .team-name {
+    font-family: var(--pdz-font-fancy);
+    font-size: 3rem;
+  }
+  .info-card {
+    box-shadow: var(--pdz-level1);
+    background-color: var(--mat-sys-primary-container);
+    color: var(--mat-sys-on-primary-container);
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    border: 1rem;
+    width: 6rem;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    .label {
+      font-weight: bold;
+    }
+    .value {
+      font-size: 2rem;
+      font-weight: bold;
+      color: var(--mat-sys-primary);
+    }
+  }
+}
+
+input {
+  padding-left: 0.75rem;
+  width: 4.25rem;
+  text-align: center;
+  &:focus {
+    outline: none;
+  }
+  background-color: inherit;
+}
+.custom-dropdown-container {
+  position: relative;
+  display: flex;
+  width: 100%;
+  border-radius: 1rem;
+  padding: 0.25rem;
+  &:hover {
+    background-color: var(--mat-sys-surface);
+    box-shadow: var(--pdz-level1);
+  }
+}
+
+.custom-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  max-height: 200px;
+  overflow-y: auto;
+  background-color: var(--mat-sys-surface);
+  border: 1px solid var(--mat-sys-outline);
+  border-radius: 0.5rem;
+  box-shadow: var(--mat-sys-level2);
+  font-size: 1rem;
+  z-index: 1000;
+}
+
+.custom-dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 1rem;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--mat-sys-on-surface);
+
+  &:hover {
+    background-color: var(--mat-sys-surface-container-highest);
+  }
+}
+
+.sprite-wrapper {
+  height: 2rem;
+  width: 2rem;
+}
+
+.draft-container {
+  display: flex;
+}
+
+.power-rankings-table {
+  width: fit-content;
+  border-collapse: collapse;
+  box-shadow: var(--pdz-level1);
+  border-radius: 0.5rem;
+  overflow: hidden;
+
+  .cdk-header-row {
+    background-color: var(--mat-sys-surface-container-highest);
+  }
+
+  .cdk-header-cell {
+    padding: 1rem;
+    text-align: left;
+    font-weight: bold;
+  }
+
+  .cdk-row {
+    border-bottom: 1px solid var(--mat-sys-outline-variant);
+
+    &:last-of-type {
+      border-bottom: none;
+    }
+
+    &:hover {
+      background-color: var(--mat-sys-surface-container-hover);
+    }
+  }
+
+  .cdk-cell {
+    padding: 1rem;
+    vertical-align: middle;
+  }
+
+  .mat-sort-header-arrow {
+    color: var(--mat-sys-on-surface);
+  }
+}

@@ -1,0 +1,111 @@
+@if (selectedTeam) {
+  <div class="team-header">
+    <div class="info-card">
+      <div class="label">Position</div>
+      <div class="value">{{ selectedTeam.info.index + 1 }}</div>
+    </div>
+    <div class="team-name">
+      <div class="custom-dropdown-container">
+        <button
+          class="my-draft-title draft-section-title"
+          (click)="toggleDropdown()"
+        >
+          <span> {{ selectedTeam.info.name }} </span
+          ><mat-icon>{{
+            isDropdownOpen ? "arrow_drop_up" : "arrow_drop_down"
+          }}</mat-icon>
+        </button>
+        @if (isDropdownOpen) {
+          <div class="custom-dropdown-menu">
+            @for (team of teams; track team) {
+              <button
+                class="custom-dropdown-item"
+                (click)="selectTeamAndClose(team)"
+              >
+                <span>{{ team.info.name }}</span>
+              </button>
+            }
+          </div>
+        }
+      </div>
+    </div>
+    <div class="info-card">
+      <div class="label">Score</div>
+      <div class="value">
+        <input
+          type="number"
+          [ngModel]="selectedTeam.score"
+          (ngModelChange)="onScoreChange($event)"
+        />
+      </div>
+    </div>
+  </div>
+
+  <div class="team-info">
+    <planner-summary [summary]="selectedTeam.summary"></planner-summary>
+    <pdz-planner-typechart
+      [typechart]="selectedTeam.typechart"
+    ></pdz-planner-typechart>
+    <div class="movechart-wrapper">
+      <planner-moves [movechart]="selectedTeam.movechart"></planner-moves>
+    </div>
+    <div class="coverage-wrapper">
+      <planner-coverage [coverage]="selectedTeam.coverage"></planner-coverage>
+    </div>
+  </div>
+  <div class="score-comparison">
+    @if (teams) {
+      <table
+        cdk-table
+        class="power-rankings-table"
+        [dataSource]="teams"
+        matSort
+        matSortActive="score"
+        matSortDirection="desc"
+        [matSortDisableClear]="true"
+        (matSortChange)="sort($event)"
+      >
+        <ng-container cdkColumnDef="position">
+          <th cdk-header-cell *cdkHeaderCellDef>Position</th>
+          <td cdk-cell *cdkCellDef="let team">
+            {{ team.info.index + 1 }}
+          </td>
+        </ng-container>
+
+        <ng-container cdkColumnDef="teamName">
+          <th cdk-header-cell *cdkHeaderCellDef>Team Name</th>
+          <td cdk-cell *cdkCellDef="let team">
+            {{ team.info.name }}
+          </td>
+        </ng-container>
+
+        <ng-container cdkColumnDef="draft">
+          <th cdk-header-cell *cdkHeaderCellDef>Draft</th>
+          <td cdk-cell *cdkCellDef="let team">
+            <div class="draft-container">
+              @for (pokemon of team.summary.team; track $index) {
+                <div class="sprite-wrapper">
+                  <pdz-sprite [pokemon]="pokemon"></pdz-sprite>
+                </div>
+              }
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container cdkColumnDef="score">
+          <th mat-sort-header="score" cdk-header-cell *cdkHeaderCellDef>
+            Score
+          </th>
+          <td cdk-cell *cdkCellDef="let team">
+            {{ team.score }}
+          </td>
+        </ng-container>
+
+        <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+        <tr cdk-row *cdkRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    }
+  </div>
+} @else {
+  <loading></loading>
+}

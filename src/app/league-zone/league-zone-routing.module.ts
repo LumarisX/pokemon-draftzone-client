@@ -9,7 +9,7 @@ import { LeagueSignUpComponent } from './league-sign-up/league-sign-up.component
 import { AuthGuard } from '@auth0/auth0-angular';
 import { leagueRoleGuard } from './league-role.guard';
 import { LeagueTierListComponent } from './league-tier-list/league-tier-list.component';
-import { LeagueTeamComponent } from './league-team/league-team.component';
+import { PowerRankingsComponent } from './divisions/power-rankings/power-rankings.component';
 
 export const LeagueZonePath = 'leagues';
 const routes: Routes = [
@@ -77,8 +77,8 @@ const routes: Routes = [
   //   component: LeagueTeamsComponent,
   // },
   {
-    path: ':leagueKey/:divisionKey/team/:teamKey',
-    component: LeagueTeamComponent,
+    path: ':leagueKey/:divisionKey/power-rankings',
+    component: PowerRankingsComponent,
   },
   // {
   //   path: 'view/:leagueKey/auction',

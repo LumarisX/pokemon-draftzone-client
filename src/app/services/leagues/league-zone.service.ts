@@ -3,22 +3,30 @@ import { NavigationEnd, Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { filter, map, mergeMap } from 'rxjs/operators';
 import { getRandomPokemon } from '../../data/namedex';
-import { Pokemon } from '../../interfaces/pokemon';
-import { LeagueTierGroup } from '../../interfaces/tier-pokemon.interface';
-import { defenseData } from '../../league-zone/league-ghost';
-import { TeamPokemon } from '../../league-zone/league-teams/league-team-card/league-team-card.component';
-import { League } from '../../league-zone/league.interface';
-import { ApiService } from '../api.service';
-import { LeagueNotificationService } from '../league-notification.service';
-import { WebSocketService } from '../ws.service';
 import {
   Coverage,
   MoveChart,
   Summary,
   TypeChart,
 } from '../../drafts/matchup-overview/matchup-interface';
+import { Pokemon } from '../../interfaces/pokemon';
+import { LeagueTierGroup } from '../../interfaces/tier-pokemon.interface';
+import { defenseData } from '../../league-zone/league-ghost';
+import { TeamPokemon } from '../../league-zone/league-teams/league-team-card/league-team-card.component';
+import { League } from '../../league-zone/league.interface';
+import { ApiService } from '../api.service';
+import { WebSocketService } from '../ws.service';
 
 const ROOTPATH = 'leagues';
+
+export type PowerRankingTeam = {
+  info: { name: string; index: number; id: string };
+  coverage: Coverage;
+  movechart: MoveChart;
+  typechart: TypeChart;
+  summary: Summary;
+  score?: number;
+};
 
 type DraftRound = {
   teamName: string;
@@ -128,15 +136,9 @@ export class LeagueZoneService {
     );
   }
 
-  getTeamDetails() {
-    return this.apiService.get<{
-      team: { name: string; index: number };
-      coverage: Coverage;
-      movechart: MoveChart;
-      typechart: TypeChart;
-      summary: Summary;
-    }>(
-      `${ROOTPATH}/${this.leagueKey()}/divisions/${this.divisionKey()}/teams/${this.teamKey()}`,
+  powerRankingDetails() {
+    return this.apiService.get<PowerRankingTeam[]>(
+      `${ROOTPATH}/${this.leagueKey()}/divisions/${this.divisionKey()}/power-rankings`,
       true,
     );
   }
