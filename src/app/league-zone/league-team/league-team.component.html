@@ -1,3 +1,27 @@
-<p>league-team works!</p>
-This will be a full breakdown of a specific team including stats, replays,
-standings etc.
+@if (isLoaded) {
+  <div class="team-header">
+    <div class="team-index">
+      <div class="label">Position</div>
+      <div>{{ team.index + 1 }}</div>
+    </div>
+    <div class="team-name">
+      {{ team.name }}
+    </div>
+    <div class="team-index">
+      <div class="label">Rating</div>
+      <div><input /></div>
+    </div>
+  </div>
+  <div class="team-info">
+    <planner-summary [summary]="summary"></planner-summary>
+    <pdz-planner-typechart [typechart]="typechart"></pdz-planner-typechart>
+    <div class="movechart-wrapper">
+      <planner-moves [movechart]="movechart"></planner-moves>
+    </div>
+    <div class="coverage-wrapper">
+      <planner-coverage [coverage]="coverage"></planner-coverage>
+    </div>
+  </div>
+} @else {
+  <loading></loading>
+}

@@ -11,6 +11,12 @@ import { League } from '../../league-zone/league.interface';
 import { ApiService } from '../api.service';
 import { LeagueNotificationService } from '../league-notification.service';
 import { WebSocketService } from '../ws.service';
+import {
+  Coverage,
+  MoveChart,
+  Summary,
+  TypeChart,
+} from '../../drafts/matchup-overview/matchup-interface';
 
 const ROOTPATH = 'leagues';
 
@@ -70,6 +76,7 @@ export class LeagueZoneService {
 
   leagueKey = signal<string | null>(null);
   divisionKey = signal<string | null>(null);
+  teamKey = signal<string | null>(null);
 
   constructor() {
     this.webSocketService.connect('battlezone');
@@ -92,6 +99,8 @@ export class LeagueZoneService {
         this.leagueKey.set(leagueKey);
         const divisionKey = paramMap.get('divisionKey');
         this.divisionKey.set(divisionKey);
+        const teamKey = paramMap.get('teamKey');
+        this.teamKey.set(teamKey);
       });
 
     effect((onCleanup) => {
@@ -119,9 +128,15 @@ export class LeagueZoneService {
     );
   }
 
-  getTeamDetails(leagueKey: string, teamId: string) {
-    return this.apiService.get<LeagueTeam>(
-      `${ROOTPATH}/${this.leagueKey()}/teams/${teamId}`,
+  getTeamDetails() {
+    return this.apiService.get<{
+      team: { name: string; index: number };
+      coverage: Coverage;
+      movechart: MoveChart;
+      typechart: TypeChart;
+      summary: Summary;
+    }>(
+      `${ROOTPATH}/${this.leagueKey()}/divisions/${this.divisionKey()}/teams/${this.teamKey()}`,
       true,
     );
   }
