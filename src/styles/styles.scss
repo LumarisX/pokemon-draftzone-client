@@ -41,7 +41,7 @@
   }
 
   /* For Firefox */
-  * {
+  html {
     scrollbar-width: thin;
     scrollbar-color: var(--pdz-color-surface-dim) var(--pdz-color-surface);
   }

@@ -34,3 +34,22 @@
     @warn "Breakpoint `#{$breakpoint}` not found.";
   }
 }
+
+@mixin button-base($width: auto, $margin: 0.5rem, $padding: 0.25rem) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: $width;
+  margin: $margin;
+  padding: $padding;
+  text-align: center;
+  box-shadow: var(--pdz-level-2);
+  cursor: pointer;
+  background-color: var(--pdz-color-primary-container);
+  color: var(--pdz-color-on-primary-container);
+  border-radius: 0.75rem;
+
+  &:hover {
+    box-shadow: var(--pdz-level-1);
+  }
+}

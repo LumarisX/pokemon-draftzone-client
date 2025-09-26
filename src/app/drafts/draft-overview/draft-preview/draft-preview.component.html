@@ -47,26 +47,26 @@
           } @else if (draft.menu === 'archive') {
             <div class="confirmation">
               <div class="confirmation-text">Are you sure you want to archive? This can not be undone.</div>
-              <div class="confirmation-yes" (click)="archive(draft.leagueId)">Yes</div>
-              <div class="confirmation-no" (click)="draft.menu = 'main'">No</div>
+              <div class="button" (click)="archive(draft.leagueId)">Yes</div>
+              <div class="button" (click)="draft.menu = 'main'">No</div>
             </div>
           } @else if (draft.menu === 'edit') {
             <div class="edit-menu">
-              <a class="back-button" (click)="draft.menu = 'main'">Back</a>
-              <a class="trade-button">Trade</a>
+              <a class="button button--back" (click)="draft.menu = 'main'">Back</a>
+              <a class="button button--trade">Trade</a>
               <a
-                class="edit-team-button"
+                class="button button--edit-team"
                 routerLink="edit"
                 [queryParams]="{ draft: draft.leagueId | json }"
                 >Edit Team
               </a>
-              <a class="delete-button" (click)="draft.menu = 'delete'">Delete</a>
+              <a class="button button--delete" (click)="draft.menu = 'delete'">Delete</a>
             </div>
           } @else if (draft.menu === 'delete') {
             <div class="confirmation">
               <div class="confirmation-text">Are you sure you want to delete? This can not be undone.</div>
-              <div class="confirmation-yes" (click)="delete(draft.leagueId)">Yes</div>
-              <div class="confirmation-no" (click)="draft.menu = 'main'">No</div>
+              <div class="button" (click)="delete(draft.leagueId)">Yes</div>
+              <div class="button" (click)="draft.menu = 'main'">No</div>
             </div>
           }
         </div>
@@ -74,11 +74,11 @@
     }
   </div>
   <div class="footer">
-    <button [routerLink]="['/', draftPath, 'new']" class="add-league-button" title="Add League">
+    <button [routerLink]="['/', draftPath, 'new']" class="button" title="Add League">
       <plus-svg class="add-league-icon"></plus-svg>
     </button>
     <div class="spacer"></div>
-    <button [routerLink]="['/', draftPath, 'archives']" class="archives-button" title="Archives">
+    <button [routerLink]="['/', draftPath, 'archives']" class="button" title="Archives">
       <archive-svg class="archives-icon"></archive-svg>
     </button>
   </div>

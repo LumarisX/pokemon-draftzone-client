@@ -1,3 +1,8 @@
+:host {
+  overflow-y: auto;
+  height: 100%;
+}
+
 .news-header {
   font-family: var(--pdz-font-fancy);
   font-size: 1.2em;

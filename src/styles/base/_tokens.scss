@@ -63,13 +63,23 @@ $core-tokens: (
   "cyan-hover-dark": #a6eaf2,
 
   // Orange
+  "orange-50": #fff8f5,
   "orange-100": #fef6f3,
+  "orange-150": #fdf1ec,
   "orange-200": #fdece7,
+  "orange-250": #fbdacb,
   "orange-300": #f8a88f,
+  "orange-350": #f99e7b,
   "orange-400": #ffb366,
+  "orange-450": #f9975b,
   "orange-500": #f47c4f,
+  "orange-550": #ef8a4c,
   "orange-600": #eb9947,
+  "orange-650": #e58142,
   "orange-700": #e06a3e,
+  "orange-750": #c45f31,
+  "orange-800": #a65128,
+  "orange-850": #843f20,
   "orange-900": #5d2a1a,
   "orange-950": #331a00,
   "orange-container-dark": #804000,
@@ -103,9 +113,10 @@ $core-tokens: (
   "blue-950": #002944,
 
   // Logo Specific
-  "logo-core-2": #9c65aa,
+  "logo-core-color": #9c65aa,
 
   // Gradients
   "primary-gradient-light": linear-gradient(135deg, #4ac1d0, #b2f1fa),
+  "primary-gradient-dark": linear-gradient(135deg, #79dfec, #4ac1d0),
   "primary-gradient-purple": linear-gradient(135deg, #9575cd, #673ab7)
 );

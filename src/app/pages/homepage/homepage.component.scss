@@ -91,11 +91,10 @@
   }
 
   .news-wrapper {
-    background-color: white;
+    background-color: var(--pdz-color-surface);
     box-shadow: var(--pdz-level-2);
     border-radius: 1rem;
     padding: 1rem;
-    overflow-y: auto;
     max-height: 400px;
   }
 }
