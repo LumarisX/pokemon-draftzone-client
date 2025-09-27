@@ -60,7 +60,8 @@ section {
   user-select: none;
   border-radius: 1rem;
   box-shadow: var(--pdz-level-1);
-  background-color: var(--pdz-color-primary-fixed);
+  background-color: var(--pdz-color-secondary-container);
+
   flex-wrap: wrap;
   @media (min-width: $breakpoint-tablet) {
     flex-wrap: nowrap;
@@ -68,12 +69,15 @@ section {
 
   &:hover {
     box-shadow: var(--pdz-level-2);
+    background-color: var(--pdz-color-secondary-container-hover);
+
     cursor: pointer;
   }
 
   &.selected {
     box-shadow: var(--pdz-level-inset-2);
-    background-color: var(--pdz-color-primary-fixed-dim);
+    background-color: var(--pdz-color-secondary-container-darker);
+
     cursor: pointer;
   }
 }
@@ -161,7 +165,6 @@ section {
 .matchup-stage {
   font-size: 0.6em;
   line-height: 0.8em;
-  color: var(--pdz-color-primary);
 }
 
 $matchup-sprite-size: 4rem;

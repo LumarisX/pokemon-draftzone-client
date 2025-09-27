@@ -40,7 +40,7 @@
       <div class="matchups-container">
         @for (matchup of matchups; track $index) {
           <div
-            class="matchup alternate"
+            class="matchup"
             (click)="selectMatchup(matchup)"
             [ngClass]="{ selected: selectedMatchup === matchup }"
           >

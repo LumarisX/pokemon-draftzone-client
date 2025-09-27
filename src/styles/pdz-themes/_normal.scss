@@ -18,8 +18,13 @@ $theme: (
 
     // Primary Colors
     primary: "cyan-800",
+    primary-lighter: "cyan-700",
+    primary-darker: "cyan-900",
     on-primary: "white",
     primary-container: "cyan-300",
+    primary-container-lighter: "cyan-200",
+    primary-container-darker: "cyan-400",
+    primary-container-hover: "cyan-400",
     on-primary-container: "cyan-950",
     primary-hover: "cyan-900",
     primary-border: "cyan-500",
@@ -28,8 +33,13 @@ $theme: (
 
     // Secondary Colors
     secondary: "orange-500",
+    secondary-lighter: "orange-400",
+    secondary-darker: "orange-600",
     on-secondary: "white",
     secondary-container: "orange-200",
+    secondary-container-lighter: "orange-100",
+    secondary-container-darker: "orange-300",
+    secondary-container-hover: "orange-300",
     on-secondary-container: "orange-900",
     secondary-hover: "orange-700",
     secondary-border: "orange-300",
@@ -59,6 +69,14 @@ $theme: (
     on-info: "white",
     info-container: "blue-200",
     on-info-container: "blue-950",
+
+    // Disabled Colors
+    disabled-surface: "gray-200",
+    on-disabled: "gray-500",
+
+    // Inverse Colors
+    surface-inverse: "gray-900",
+    on-surface-inverse: "gray-100",
 
     // Misc
     shadow: "black",
@@ -97,8 +115,13 @@ $theme: (
 
     // Primary Colors
     primary: "cyan-500",
+    primary-lighter: "cyan-400",
+    primary-darker: "cyan-600",
     on-primary: "cyan-950",
     primary-container: "cyan-950",
+    primary-container-lighter: "cyan-900",
+    primary-container-darker: "black",
+    primary-container-hover: "cyan-900",
     on-primary-container: "cyan-300",
     primary-hover: "cyan-hover-dark",
     primary-border: "cyan-700",
@@ -107,8 +130,13 @@ $theme: (
 
     // Secondary Colors
     secondary: "orange-400",
+    secondary-lighter: "orange-300",
+    secondary-darker: "orange-500",
     on-secondary: "orange-950",
     secondary-container: "orange-container-dark",
+    secondary-container-lighter: "orange-800",
+    secondary-container-darker: "orange-900",
+    secondary-container-hover: "orange-800",
     on-secondary-container: "orange-200",
     // Custom name
     secondary-hover: "orange-hover-dark",
@@ -139,6 +167,14 @@ $theme: (
     on-info: "blue-950",
     info-container: "blue-950",
     on-info-container: "blue-200",
+
+    // Disabled Colors
+    disabled-surface: "gray-800",
+    on-disabled: "gray-600",
+
+    // Inverse Colors
+    surface-inverse: "gray-100",
+    on-surface-inverse: "gray-900",
 
     // Misc
     shadow: "black",

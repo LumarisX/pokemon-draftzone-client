@@ -1,11 +1,13 @@
+:host {
+  --pdz-cmp-text-color: var(--pdz-color-background);
+}
+
 .homepage-main {
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
   height: 100%;
-  background-color: var(--pdz-color-surface);
-  color: var(--pdz-color-on-surface);
 }
 
 .hero-section {
@@ -18,7 +20,7 @@
   background-image: url("abstract-color-wave-background-colorful-of-orange-pink-purple-yellow-background-illustration-vector.jpg");
   background-size: cover;
   background-position: center;
-  color: var(--pdz-color-on-primary);
+  color: var(--pdz-cmp-text-color);
   width: 100%;
 
   .title-container {
@@ -31,16 +33,16 @@
   .title-logo {
     width: 4rem;
     height: 4rem;
-    border-radius: var(--pdz-color-shape-corner-full);
-    --pdz-color-logo-ring-1: #fff;
-    --pdz-color-logo-ring-2: #fff;
-    --pdz-color-logo-ring-3: #fff;
-    --pdz-color-logo-ring-4: #fff;
-    --pdz-color-logo-ring-5: #fff;
-    --pdz-color-logo-ring-6: #fff;
-    --pdz-color-logo-ring-7: #fff;
-    --pdz-color-logo-core-1: #fff;
-    --pdz-color-logo-core-2: #fff;
+    border-radius: var(--pdz-shape-corner-full);
+    --pdz-color-logo-ring-1: var(--pdz-cmp-text-color);
+    --pdz-color-logo-ring-2: var(--pdz-cmp-text-color);
+    --pdz-color-logo-ring-3: var(--pdz-cmp-text-color);
+    --pdz-color-logo-ring-4: var(--pdz-cmp-text-color);
+    --pdz-color-logo-ring-5: var(--pdz-cmp-text-color);
+    --pdz-color-logo-ring-6: var(--pdz-cmp-text-color);
+    --pdz-color-logo-ring-7: var(--pdz-cmp-text-color);
+    --pdz-color-logo-core-1: var(--pdz-cmp-text-color);
+    --pdz-color-logo-core-2: var(--pdz-cmp-text-color);
   }
 
   .title-text {
@@ -108,7 +110,6 @@
   border-radius: 1rem;
 }
 
-/* === Button Styles === */
 .btn {
   display: inline-block;
   font-weight: 500;
@@ -132,9 +133,7 @@
 
 .btn-primary {
   background: var(--pdz-color-primary-gradient);
-  color: var(
-    --pdz-color-on-primary
-  ) !important; /* important to override link colors */
+  color: var(--pdz-color-on-primary) !important;
   border: none;
   padding: calc(0.75rem + 2px) calc(1.5rem + 2px);
 }
@@ -148,7 +147,6 @@
 .secondary-actions .btn {
   color: var(--pdz-color-primary);
   font-weight: 500;
-  border: 2px solid var(--pdz-color-outline-variant);
   padding: 0.5rem 1rem;
 
   &:hover {
