@@ -15,6 +15,7 @@ import { CdkTableModule } from '@angular/cdk/table';
 import { MatSortModule, Sort } from '@angular/material/sort';
 import { SpriteComponent } from '../../../images/sprite/sprite.component';
 import { Subject, debounceTime, takeUntil } from 'rxjs';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'pdz-league-power-rankings',
@@ -29,6 +30,7 @@ import { Subject, debounceTime, takeUntil } from 'rxjs';
     CommonModule,
     ReactiveFormsModule,
     FormsModule,
+    MatTooltipModule,
     MatSortModule,
     SpriteComponent,
   ],

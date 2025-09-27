@@ -42,6 +42,64 @@
   </div>
 
   <div class="team-info">
+    <div class="widget-wrapper">
+      <div class="widget-container overview-wrapper">
+        <div class="team-container">
+          <div class="team-header">
+            <div class="team-name-title">
+              {{ selectedTeam.info.name }}
+            </div>
+          </div>
+          <div class="team-body">
+            <div class="overview-row header">
+              <div class="sprite-cell"></div>
+              <div class="name-cell">Name</div>
+              <div class="speed-cell">SPE</div>
+            </div>
+            @for (pokemon of selectedTeam.summary.team; track pokemon) {
+              <div class="overview-row">
+                <div class="sprite-cell">
+                  <pdz-sprite [pokemon]="pokemon" flipped></pdz-sprite>
+                </div>
+                <div class="name-cell">
+                  <div class="name-label">{{ pokemon.name }}</div>
+                  <div class="capt-row">
+                    @if (pokemon.capt?.tera) {
+                      <mat-icon
+                        [matTooltip]="
+                          pokemon.capt!.tera!.length
+                            ? pokemon.capt!.tera!.join(', ')
+                            : 'All Types'
+                        "
+                        matTooltipPosition="below"
+                        svgIcon="tera"
+                      ></mat-icon>
+                    }
+                    @if (pokemon.capt?.z) {
+                      <mat-icon
+                        [matTooltip]="
+                          pokemon.capt!.z!.length &&
+                          pokemon.capt!.z!.length < 18
+                            ? pokemon.capt!.z!.join(', ')
+                            : 'All Types'
+                        "
+                        matTooltipPosition="below"
+                        svgIcon="z"
+                      ></mat-icon>
+                    }
+                    @if (pokemon.capt?.dmax) {
+                      <mat-icon svgIcon="dmax"></mat-icon>
+                    }
+                  </div>
+                </div>
+                <div class="speed-cell">{{ pokemon.baseStats.spe }}</div>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+
     <planner-summary [summary]="selectedTeam.summary"></planner-summary>
     <pdz-planner-typechart
       [typechart]="selectedTeam.typechart"

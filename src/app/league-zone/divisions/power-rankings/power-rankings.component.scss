@@ -153,3 +153,125 @@ input {
     color: var(--mat-sys-on-surface);
   }
 }
+
+.overview-wrapper {
+  display: flex;
+  column-gap: 0.5rem;
+  .team-container {
+    border-width: 1px;
+    border-radius: 1rem;
+    border-color: var(--mat-sys-outline);
+    padding: 0.25rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    .team-header {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border-width: 0 0 1px;
+      border-color: var(--mat-sys-outline);
+      margin-bottom: 0.5rem;
+
+      .team-name-title,
+      .team-coach-title {
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        text-align: center;
+        font-weight: 700;
+        color: var(--mat-sys-secondary);
+        font-family: "Nasalization RG", sans-serif;
+      }
+
+      .team-coach-title {
+        font-size: 0.8em;
+        height: 1.25rem;
+      }
+    }
+
+    .team-body {
+      width: 100%;
+
+      .overview-row {
+        display: flex;
+        column-gap: 0.25rem;
+        align-items: center;
+        .sprite-cell {
+          width: 4rem;
+          flex-shrink: 0;
+          @media (max-width: 768px) {
+            width: 2rem;
+          }
+        }
+        .name-cell {
+          flex-grow: 1;
+          text-align: center;
+          overflow: hidden;
+          .name-label {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            display: block;
+            max-width: 8rem;
+            font-weight: 600;
+          }
+        }
+
+        .capt-row {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .speed-cell {
+          text-align: center;
+
+          flex-shrink: 0;
+          font-weight: 800;
+          min-width: 2rem;
+        }
+
+        &:not(.header) {
+          .sprite-cell {
+            height: 4rem;
+            @media (max-width: 768px) {
+              height: 2rem;
+            }
+          }
+        }
+        &.header {
+          > div {
+            font-size: 0.8em;
+            font-weight: 700;
+          }
+
+          .speed-cell,
+          .name-cell {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            mat-icon {
+              font-size: 1.2em;
+              height: fit-content;
+              left: 0;
+            }
+            &:hover {
+              opacity: 0.5;
+              cursor: pointer;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.widget-wrapper {
+  background-color: var(--mat-sys-surface);
+  border-radius: 1rem;
+  padding: 0.5rem;
+  box-shadow: var(--pdz-level2);
+}
