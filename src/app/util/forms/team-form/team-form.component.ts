@@ -16,7 +16,7 @@ import {
 } from '@angular/cdk/drag-drop';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { CommonModule } from '@angular/common';
-import { Component, Input, inject } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import {
   AbstractControl,
   AsyncValidatorFn,
@@ -111,9 +111,12 @@ export class TeamFormComponent {
   @Input()
   pokemonList$!: BehaviorSubject<Pokemon[]>;
 
+  @Output()
+  isImporting = new EventEmitter<boolean>();
+
   readonly teraTypes = TERATYPES;
   readonly zTypes = TYPES;
-  importing = false;
+  importing: boolean = false;
   importInput = '';
   teamOption = false;
   checked = false;
@@ -289,6 +292,11 @@ export class TeamFormComponent {
           group.formeList = formes;
         });
     }
+  }
+
+  toggleImporting(setting?: boolean) {
+    this.importing = setting ?? !this.importing;
+    this.isImporting.emit(this.importing);
   }
 }
 
