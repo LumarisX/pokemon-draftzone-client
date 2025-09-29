@@ -1,4 +1,4 @@
-.login-container {
+:host {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -12,14 +12,18 @@
   .user-icon {
     width: 1.5rem;
     height: 1.5rem;
-    border-radius: var(--pdz-shape-corner-lg);
+    border-radius: var(--pdz-shape-corner-full);
   }
   .username-text {
-    padding-left: 0.5rem;
+    padding-left: var(--pdz-space-sm);
     max-width: 4rem;
     text-overflow: clip;
     font-size: 0.9em;
     line-height: 0.9em;
     overflow: hidden;
   }
+}
+
+button {
+  border-radius: var(--pdz-shape-corner-lg);
 }

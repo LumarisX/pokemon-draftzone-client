@@ -56,7 +56,8 @@
 }
 
 .draft-card {
-  background-color: var(--pdz-color-primary-container);
+  background-color: var(--pdz-color-primary-container-lighter);
+
   color: var(--pdz-color-on-primary-container);
   border-radius: var(--pdz-shape-corner-md);
   border: 1px solid var(--pdz-color-primary-border);
@@ -72,6 +73,8 @@
 }
 
 .card-header {
+  background-color: var(--pdz-color-primary-container);
+
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -140,7 +143,6 @@
 .card-body {
   padding: var(--pdz-space-md);
   flex-grow: 1;
-  background-color: var(--pdz-color-primary-container-lighter);
 
   .ruleset-format {
     font-size: 0.9rem;
@@ -156,7 +158,7 @@
 }
 
 .card-footer {
-  padding: var(--pdz-space-md);
+  padding: var(--pdz-space-xs) var(--pdz-space-md);
   border-top: 1px solid var(--pdz-color-primary-border);
   display: flex;
   justify-content: flex-end;
@@ -168,7 +170,7 @@
     color: var(--pdz-color-on-primary-container);
     text-decoration: none;
     font-weight: 500;
-    padding: var(--pdz-space-sm) var(--pdz-space-md);
+    padding: var(--pdz-space-xs) var(--pdz-space-md);
     border-radius: var(--pdz-shape-corner-sm);
     transition: background-color 0.2s;
 

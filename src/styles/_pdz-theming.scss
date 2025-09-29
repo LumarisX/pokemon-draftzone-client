@@ -22,9 +22,7 @@
   @each $name, $value in $spacing {
     --pdz-space-#{$name}: #{$value};
   }
-}
 
-body {
   @include apply-typography(body-medium);
   @include apply-theme(map.get(map.get($themes, normal), light));
   @each $theme-name, $variations in $themes {

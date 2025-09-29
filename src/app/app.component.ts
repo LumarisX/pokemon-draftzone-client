@@ -30,31 +30,34 @@ export class AppComponent {
 
   getTheme() {
     const classes: string[] = [];
-    if (this.settingsService.settingsData.ldMode === 'dark') {
-      document.body.setAttribute('pdz-theme-mode', 'dark');
-      this.settingsService.updateLDMode(
-        this.settingsService.settingsData.ldMode,
-      );
-    } else {
-      document.body.setAttribute('pdz-theme-mode', 'light');
-    }
-    switch (this.settingsService.settingsData.theme) {
-      case 'shiny':
-        classes.push('shiny dark:darkshiny');
-        break;
-      case 'graymode':
-        classes.push('graycolorblind dark:darkcolorblind');
-        break;
-      case 'christmas':
-        classes.push('christmas dark:darkchristmas');
-        break;
-      default:
-        classes.push('classic dark:darkclassic');
-    }
-    document.documentElement.setAttribute(
-      'theme-name',
-      this.settingsService.settingsData.theme ?? 'classic',
-    );
+    document.documentElement.setAttribute('pdz-theme', 'normal');
+    document.documentElement.setAttribute('pdz-theme-mode', 'dark');
+
+    // if (this.settingsService.settingsData.ldMode === 'dark') {
+    //   document.documentElement.setAttribute('pdz-theme-mode', 'dark');
+    //   this.settingsService.updateLDMode(
+    //     this.settingsService.settingsData.ldMode,
+    //   );
+    // } else {
+    //   document.documentElement.setAttribute('pdz-theme-mode', 'light');
+    // }
+    // switch (this.settingsService.settingsData.theme) {
+    //   case 'shiny':
+    //     classes.push('shiny dark:darkshiny');
+    //     break;
+    //   case 'graymode':
+    //     classes.push('graycolorblind dark:darkcolorblind');
+    //     break;
+    //   case 'christmas':
+    //     classes.push('christmas dark:darkchristmas');
+    //     break;
+    //   default:
+    //     classes.push('classic dark:darkclassic');
+    // }
+    // document.documentElement.setAttribute(
+    //   'theme-name',
+    //   this.settingsService.settingsData.theme ?? 'classic',
+    // );
     return classes;
   }
 }
