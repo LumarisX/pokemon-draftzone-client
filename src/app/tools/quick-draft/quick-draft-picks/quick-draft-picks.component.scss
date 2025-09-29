@@ -5,7 +5,7 @@
   align-items: center;
   font-family: var(--pdz-font-fancy);
   justify-content: center;
-  padding: 1rem;
+  padding: var(--pdz-space-lg);
   width: fit-content;
   max-width: 30%;
   min-height: fit-content;
@@ -92,7 +92,7 @@
 
 .box-wrapper {
   width: 20%;
-  padding: 1rem;
+  padding: var(--pdz-space-lg);
   flex-grow: 1;
   height: 100%;
   width: 100%;
@@ -105,7 +105,7 @@
 
 .info-box {
   box-shadow: var(--pdz-level-2);
-  border-radius: 1rem;
+  border-radius: var(--pdz-shape-corner-lg);
   @media (min-width: 768px) {
     height: 100%;
     width: 100%;
@@ -241,7 +241,7 @@
       height: 2rem;
       background-color: var(--pdz-color-surface);
       font-family: var(--pdz-font-regular);
-      border-radius: 0.25rem;
+      border-radius: var(--pdz-shape-corner-xs);
       box-shadow: var(--pdz-level-2);
     }
   }
@@ -252,7 +252,7 @@
   scrollbar-gutter: stable;
   margin-right: -1.5rem;
   align-items: stretch;
-  padding: 0.5rem;
+  padding: var(--pdz-space-sm);
 }
 
 :host {

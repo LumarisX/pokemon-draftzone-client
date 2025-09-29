@@ -1,5 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { SettingsService } from './pages/settings/settings.service';
+import { MatIconRegistry } from '@angular/material/icon';
+import { DomSanitizer } from '@angular/platform-browser';
+import { svgIcons } from './images/icons';
 
 @Component({
   selector: 'pdz-root',
@@ -10,12 +13,31 @@ import { SettingsService } from './pages/settings/settings.service';
 export class AppComponent {
   private settingsService = inject(SettingsService);
 
+  private matIconRegistry = inject(MatIconRegistry);
+  private domSanitizer = inject(DomSanitizer);
+  constructor() {
+    const matIconRegistry = this.matIconRegistry;
+    const domSanitizer = this.domSanitizer;
+
+    Object.entries(svgIcons).forEach(([name, data]) => {
+      matIconRegistry.addSvgIconLiteral(
+        name,
+        domSanitizer.bypassSecurityTrustHtml(data),
+      );
+      matIconRegistry.setDefaultFontSetClass('material-symbols-outlined');
+    });
+  }
+
   getTheme() {
     const classes: string[] = [];
-    if (this.settingsService.settingsData.ldMode === 'dark')
+    if (this.settingsService.settingsData.ldMode === 'dark') {
+      document.body.setAttribute('pdz-theme-mode', 'dark');
       this.settingsService.updateLDMode(
         this.settingsService.settingsData.ldMode,
       );
+    } else {
+      document.body.setAttribute('pdz-theme-mode', 'light');
+    }
     switch (this.settingsService.settingsData.theme) {
       case 'shiny':
         classes.push('shiny dark:darkshiny');

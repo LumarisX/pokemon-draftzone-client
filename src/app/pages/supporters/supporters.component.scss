@@ -9,9 +9,9 @@ $spacing-md: 0.75rem;
 $spacing-lg: 1rem;
 $icon-size: 4rem;
 $card-max-width: 32rem;
-$border-radius-sm: var(--pdz-shape-corner-small, 4px);
-$border-radius-md: var(--pdz-shape-corner-medium, 8px);
-$border-radius-lg: var(--pdz-shape-corner-large, 12px);
+$border-radius-sm: var(--pdz-shape-corner-sm, 4px);
+$border-radius-md: var(--pdz-shape-corner-md, 8px);
+$border-radius-lg: var(--pdz-shape-corner-lg, 12px);
 $font-nasa: var(--pdz-font-fancy);
 .support-page {
   display: flex;

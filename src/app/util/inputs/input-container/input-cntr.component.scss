@@ -25,7 +25,7 @@ input {
   padding: 12px;
   padding-left: 36px; // Adjust based on label position
   border: 1px solid var(--pdz-color-color-outline);
-  border-radius: 4px;
+  border-radius: var(--pdz-shape-corner-xs);
   background-color: var(--pdz-color-color-surface);
   color: var(--pdz-color-color-on-surface);
   font: var(--pdz-color-typescale-body-large-font);

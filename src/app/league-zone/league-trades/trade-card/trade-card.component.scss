@@ -43,7 +43,7 @@ $trade-sprite-size: 2rem;
   justify-content: space-between;
   padding: $trade-item-spacing * 0.5;
   border: 1px solid var(--pdz-color-primary-border-variant);
-  border-radius: 4px;
+  border-radius: var(--pdz-shape-corner-xs);
   background-color: var(--pdz-color-surface);
   gap: $trade-item-spacing * 0.5;
 }

@@ -82,7 +82,7 @@
         width: 1.5rem;
         height: 1.5rem;
         color: var(--pdz-color-primary);
-        border-radius: 0.25rem;
+        border-radius: var(--pdz-shape-corner-xs);
         &:hover {
           color: var(--pdz-color-secondary);
         }
@@ -98,7 +98,7 @@
     .table-wrapper {
       width: 100%;
       border: 1px solid var(--pdz-color-primary);
-      border-radius: 1rem;
+      border-radius: var(--pdz-shape-corner-lg);
       overflow: hidden;
       font-size: 0.8em;
       .roster-table {

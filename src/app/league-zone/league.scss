@@ -4,14 +4,14 @@
   flex-direction: column;
   .draft-section-title {
     font-family: var(--pdz-font-fancy);
-    padding: 0.25rem;
+    padding: var(--pdz-space-xs);
     margin: 0 0.25rem;
     font-weight: bold;
   }
 
   .draft-section-body {
     border: 1px solid var(--pdz-color-primary-border);
-    border-radius: 0.5rem;
+    border-radius: var(--pdz-shape-corner-sm);
   }
 }
 
@@ -21,13 +21,13 @@
   flex-direction: column;
   .league-section-title {
     font-family: var(--pdz-font-fancy);
-    padding: 0.25rem;
+    padding: var(--pdz-space-xs);
     margin: 0 0.25rem;
     font-weight: bold;
   }
 
   .league-section-body {
     border: 1px solid var(--pdz-color-primary-border);
-    border-radius: 0.5rem;
+    border-radius: var(--pdz-shape-corner-sm);
   }
 }

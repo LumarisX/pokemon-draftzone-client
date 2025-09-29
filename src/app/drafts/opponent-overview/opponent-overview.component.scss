@@ -59,7 +59,7 @@ $draft-sprite-size: 4rem;
   flex-grow: 1;
   width: fit-content;
   justify-content: center;
-  padding: 0.125rem;
+  padding: var(--pdz-space-xxs);
   overflow-x: auto;
   scrollbar-width: thin;
   scrollbar-color: rgba(0, 0, 0, 0.5) transparent;

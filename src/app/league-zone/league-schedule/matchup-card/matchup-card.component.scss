@@ -1,5 +1,5 @@
 .matchup-container {
-  padding: 1rem;
+  padding: var(--pdz-space-lg);
 }
 
 .matchup-card {
@@ -9,7 +9,7 @@
   box-shadow: var(--pdz-level2);
   width: 26rem;
   border-radius: 2rem;
-  padding: 0.75rem;
+  padding: var(--pdz-space-md);
   &.open {
     .versus-container {
       mat-icon {
@@ -91,7 +91,7 @@
     transform: translate(-50%, 0);
     color: var(--pdz-color-primary);
     padding: 0 0.25rem;
-    border-radius: 0.5rem;
+    border-radius: var(--pdz-shape-corner-sm);
     font-size: 0.6em;
     &.enabled {
       box-shadow: var(--pdz-level1);
@@ -126,7 +126,7 @@
         font-weight: 700;
         font-size: 1em;
         height: 1.25rem;
-        border-radius: 0.25rem;
+        border-radius: var(--pdz-shape-corner-xs);
         box-shadow: var(--pdz-level1);
         background-color: white;
         color: var(--pdz-color-primary);
@@ -179,7 +179,7 @@
         border: 1px solid var(--pdz-color-primary-border-variant);
         padding: 0.0675rem 0.125rem;
         box-shadow: var(--pdz-level1);
-        border-radius: 0.5rem;
+        border-radius: var(--pdz-shape-corner-sm);
         &.selected {
           background-color: var(--pdz-color-primary);
           border: 1px solid var(--pdz-color-primary);
@@ -204,7 +204,7 @@
     .pokemon-box {
       height: 3rem;
       box-shadow: var(--pdz-level1);
-      border-radius: 0.5rem;
+      border-radius: var(--pdz-shape-corner-sm);
       width: 3rem;
       border-width: 2px;
       border-color: var(--pdz-color-primary-border-variant);

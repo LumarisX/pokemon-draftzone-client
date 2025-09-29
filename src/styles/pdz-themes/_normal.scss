@@ -2,7 +2,6 @@
 
 $theme: (
   light: (
-    // Surface Colors
     background: "cyan-50",
     surface: "cyan-100",
     surface-variant: "cyan-300",
@@ -16,7 +15,6 @@ $theme: (
     outline: "gray-700",
     outline-variant: "gray-400",
 
-    // Primary Colors
     primary: "cyan-800",
     primary-lighter: "cyan-700",
     primary-darker: "cyan-900",
@@ -31,7 +29,6 @@ $theme: (
     primary-subtle: "cyan-200",
     primary-gradient: "primary-gradient-light",
 
-    // Secondary Colors
     secondary: "orange-500",
     secondary-lighter: "orange-400",
     secondary-darker: "orange-600",
@@ -45,18 +42,16 @@ $theme: (
     secondary-border: "orange-300",
     secondary-subtle: "orange-100",
 
-    // Menu Colors
     menu-background: "white",
     menu-item-text: "gray-950",
     menu-item-hover-background: "gray-50",
     menu-item-selected-background: "gray-100",
     menu-divider: "gray-300",
 
-    // System Colors
     error: "red-800",
     on-error: "white",
     error-container: "red-100",
-    on-error-container: "red-on-container",
+    on-error-container: "red-950",
     warning: "amber-500",
     on-warning: "amber-950",
     warning-container: "amber-200",
@@ -70,19 +65,15 @@ $theme: (
     info-container: "blue-200",
     on-info-container: "blue-950",
 
-    // Disabled Colors
     disabled-surface: "gray-200",
     on-disabled: "gray-500",
 
-    // Inverse Colors
     surface-inverse: "gray-900",
     on-surface-inverse: "gray-100",
 
-    // Misc
     shadow: "black",
     scrim: "black",
 
-    // Logo
     logo-ring-1: "orange-200",
     logo-ring-2: "orange-300",
     logo-ring-3: "orange-400",
@@ -92,28 +83,24 @@ $theme: (
     logo-ring-7: "orange-800",
     logo-core-1: "white",
     logo-core-2: "logo-core-color",
-    logo-top: "cyan-800",
+    logo-top: "cyan-500",
     logo-bottom: "orange-500",
     logo-background: "white",
   ),
   dark: (
-    // Surface Colors
-    background: "dark-bg",
-    surface: "dark-surface-base",
-    surface-variant: "dark-surface-high",
-    // Custom name
+    background: "gray-950",
+    surface: "dark-900",
+    surface-variant: "dark-750",
     surface-container-lowest: "black",
-    surface-container-low: "dark-surface-low",
+    surface-container-low: "dark-850",
     surface-container: "dark-surface",
-    surface-container-high: "dark-surface-high",
-    surface-container-highest: "dark-surface-highest",
+    surface-container-high: "dark-750",
+    surface-container-highest: "dark-650",
     on-surface: "gray-100",
     on-surface-variant: "gray-400",
-    // Custom name
     outline: "gray-600",
     outline-variant: "gray-800",
 
-    // Primary Colors
     primary: "cyan-500",
     primary-lighter: "cyan-400",
     primary-darker: "cyan-600",
@@ -123,34 +110,30 @@ $theme: (
     primary-container-darker: "black",
     primary-container-hover: "cyan-900",
     on-primary-container: "cyan-300",
-    primary-hover: "cyan-hover-dark",
+    primary-hover: "cyan-450",
     primary-border: "cyan-700",
-    primary-subtle: "cyan-subtle-dark",
+    primary-subtle: "cyan-900",
     primary-gradient: "primary-gradient-dark",
 
-    // Secondary Colors
     secondary: "orange-400",
     secondary-lighter: "orange-300",
     secondary-darker: "orange-500",
     on-secondary: "orange-950",
-    secondary-container: "orange-container-dark",
+    secondary-container: "orange-850",
     secondary-container-lighter: "orange-800",
     secondary-container-darker: "orange-900",
     secondary-container-hover: "orange-800",
     on-secondary-container: "orange-200",
-    // Custom name
-    secondary-hover: "orange-hover-dark",
+    secondary-hover: "orange-450",
     secondary-border: "orange-600",
-    secondary-subtle: "orange-subtle-dark",
+    secondary-subtle: "orange-900",
 
-    // Menu Colors
     menu-background: "dark-surface-low",
     menu-item-text: "gray-100",
     menu-item-hover-background: "dark-surface-high",
     menu-item-selected-background: "dark-surface-highest",
     menu-divider: "gray-800",
 
-    // System Colors
     error: "red-200",
     on-error: "red-950",
     error-container: "red-900",
@@ -168,19 +151,15 @@ $theme: (
     info-container: "blue-950",
     on-info-container: "blue-200",
 
-    // Disabled Colors
     disabled-surface: "gray-800",
     on-disabled: "gray-600",
 
-    // Inverse Colors
     surface-inverse: "gray-100",
     on-surface-inverse: "gray-900",
 
-    // Misc
     shadow: "black",
     scrim: "black",
 
-    // Logo
     logo-ring-1: "orange-200",
     logo-ring-2: "orange-300",
     logo-ring-3: "orange-400",

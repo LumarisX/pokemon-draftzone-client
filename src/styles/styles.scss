@@ -60,7 +60,7 @@
     background-color: #333;
     color: #fff;
     padding: 0.5rem 1rem;
-    border-radius: 0.25rem;
+    border-radius: var(--pdz-shape-corner-xs);
     font-size: 0.875rem;
     white-space: nowrap;
     opacity: 0;
@@ -133,7 +133,7 @@ $option-lineheight: 3rem;
       .sprite-wrapper {
         height: $option-lineheight;
         width: $option-lineheight;
-        padding: 0.25rem;
+        padding: var(--pdz-space-xs);
         flex-shrink: 0;
       }
 
@@ -158,7 +158,7 @@ $option-lineheight: 3rem;
     flex-direction: column;
     align-items: center;
     width: 2.5rem;
-    border-radius: 0.25rem;
+    border-radius: var(--pdz-shape-corner-xs);
     box-shadow: var(--pdz-level-1);
     height: 1rem;
     padding: $bevel-padding;

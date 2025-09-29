@@ -42,7 +42,7 @@ h3 {
 
 .qd-option {
   box-shadow: var(--pdz-level-2);
-  border-radius: 1rem;
+  border-radius: var(--pdz-shape-corner-lg);
   border: 2px solid var(--pdz-color-primary-border-variant);
   margin: 4px;
   &.selected {

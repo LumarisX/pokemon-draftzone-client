@@ -4,7 +4,7 @@
   color: var(--pdz-color-on-surface);
 }
 .setting-container {
-  padding: 1rem;
+  padding: var(--pdz-space-lg);
 
   position: fixed;
   top: 50%;
@@ -17,13 +17,13 @@
   height: 32rem;
   background-color: var(--pdz-color-surface);
   overflow-y: auto;
-  border-radius: 1rem;
+  border-radius: var(--pdz-shape-corner-lg);
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 .options-container {
-  padding: 1rem;
+  padding: var(--pdz-space-lg);
   display: flex;
   flex-direction: column;
 

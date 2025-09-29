@@ -15,7 +15,7 @@
       .speed-row {
         display: flex;
         background-color: var(--pdz-color-secondary-container);
-        border-radius: 0.75rem;
+        border-radius: var(--pdz-shape-corner-md);
         border-bottom: 1px solid var(--pdz-color-primary-border);
         column-gap: 0.25rem;
         margin-bottom: 1px;
@@ -74,7 +74,7 @@
         background-color: var(--pdz-color-secondary-container);
         border-width: 1px;
         border-color: var(--pdz-color-surface);
-        border-radius: 0.75rem;
+        border-radius: var(--pdz-shape-corner-md);
         padding: 0 0.25rem;
         width: 40rem;
         max-width: 100%;
@@ -117,7 +117,7 @@
               width: 0;
               display: flex;
               flex-grow: 1;
-              border-radius: 1rem;
+              border-radius: var(--pdz-shape-corner-lg);
               border-right: 2px solid var(--pdz-color-primary-border);
             }
             .top-speed,

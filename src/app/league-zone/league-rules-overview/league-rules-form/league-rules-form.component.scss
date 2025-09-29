@@ -15,7 +15,7 @@
 }
 
 .markdown-wrapper {
-  padding: 1rem;
+  padding: var(--pdz-space-lg);
   width: 100%;
 }
 
@@ -25,9 +25,9 @@ $header-bg-hover: var(--pdz-color-surface-variant);
 $body-bg: #fff;
 $text-color: var(--pdz-color-on-surface);
 $indicator-color: var(--pdz-color-primary);
-$border-radius: 1rem;
-$horizontal-padding: 1rem;
-$vertical-padding: 0.5rem;
+$border-radius: var(--pdz-shape-corner-lg);
+$horizontal-padding: var(--pdz-space-lg);
+$vertical-padding: var(--pdz-space-sm);
 
 .rule-main {
   border-radius: $border-radius;
@@ -107,13 +107,13 @@ $vertical-padding: 0.5rem;
 }
 
 .accordion-item-body-content {
-  padding: 0.5rem;
+  padding: var(--pdz-space-sm);
   border-top: 1px solid $border-color;
   width: 100%;
 }
 
 .rule-container {
-  padding: 1rem;
+  padding: var(--pdz-space-lg);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -138,10 +138,10 @@ $vertical-padding: 0.5rem;
 }
 
 .edit-area {
-  padding: 0.5rem;
+  padding: var(--pdz-space-sm);
   width: 100%;
   border: 1px solid var(--pdz-color-primary-border-variant);
-  border-radius: 0.5rem;
+  border-radius: var(--pdz-shape-corner-sm);
   resize: none;
   field-sizing: content;
   overflow: hidden;

@@ -31,9 +31,9 @@ a {
 .card {
   background-color: var(--pdz-color-surface);
   border: 1px solid var(--pdz-color-primary-border);
-  border-radius: 8px;
+  border-radius: var(--pdz-shape-corner-sm);
   margin: 1rem 0;
-  padding: 1.5rem;
+  padding: var(--pdz-space-xl);
   // transition:
   //   background-color 0.3s ease,
   //   border-color 0.3s ease;
@@ -69,7 +69,7 @@ a {
 
 .color-swatch-wrapper {
   border: 1px solid var(--pdz-color-outline-variant);
-  border-radius: 8px;
+  border-radius: var(--pdz-shape-corner-sm);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -77,7 +77,7 @@ a {
 
 .color-swatch {
   height: 80px;
-  padding: 0.5rem;
+  padding: var(--pdz-space-sm);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -86,7 +86,7 @@ a {
 }
 
 .color-info {
-  padding: 0.5rem;
+  padding: var(--pdz-space-sm);
   background-color: var(--pdz-color-surface-container-low);
   font-family: "Courier New", Courier, monospace;
   font-size: 0.8rem;

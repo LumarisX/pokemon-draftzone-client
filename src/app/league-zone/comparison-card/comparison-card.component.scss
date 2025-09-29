@@ -1,7 +1,7 @@
-$container-padding: 0.75rem;
+$container-padding: var(--pdz-space-md);
 
 :host {
-  --card-border-radius: 1rem;
+  --card-border-radius: var(--pdz-shape-corner-lg);
   --logo-size: 3.5rem;
   --logo-border-width: 2px;
 }
@@ -134,7 +134,7 @@ $container-padding: 0.75rem;
 
 .status {
   border-radius: 2rem;
-  padding: 0.25rem;
+  padding: var(--pdz-space-xs);
   font-size: 0.7em;
   user-select: none;
   line-height: 0.7em;

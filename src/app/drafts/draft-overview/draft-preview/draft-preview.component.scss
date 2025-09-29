@@ -1,224 +1,219 @@
-@use "../../../../styles/mixins" as *;
+:host {
+  display: block;
+  width: 100%;
+  padding: 0;
+}
 
-.draft-preview-container {
-  padding: 0.5rem;
-  margin: 0.5rem;
-  border-width: 2px;
-  border-style: solid;
-  border-radius: 0.75rem;
-  background-color: var(--pdz-color-surface);
-  color: var(--pdz-on-color-surface);
-  border-color: var(--pdz-color-primary-border);
+.drafts-container {
+  padding: var(--pdz-space-md);
+  width: 100%;
+  box-sizing: border-box;
+}
 
-  .header {
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--pdz-space-lg);
+
+  .title {
+    font-family: var(--pdz-font-fancy);
+    font-size: 2rem;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  .actions {
+    display: flex;
+    gap: var(--pdz-space-sm);
+  }
+}
+
+.action-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--pdz-shape-corner-full);
+  background-color: var(--pdz-color-primary-container);
+  border: 1px solid var(--pdz-color-primary-border);
+  color: var(--pdz-color-on-primary-container);
+  transition:
+    background-color 0.2s,
+    box-shadow 0.2s;
+
+  &:hover {
+    background-color: var(--pdz-color-primary-container-hover);
+    box-shadow: var(--pdz-level-1);
+  }
+}
+
+.drafts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--pdz-space-lg);
+}
+
+.draft-card {
+  background-color: var(--pdz-color-primary-container);
+  color: var(--pdz-color-on-primary-container);
+  border-radius: var(--pdz-shape-corner-md);
+  border: 1px solid var(--pdz-color-primary-border);
+  box-shadow: var(--pdz-level-1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: box-shadow 0.3s ease;
+
+  &:hover {
+    box-shadow: var(--pdz-level-2);
+  }
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--pdz-space-md);
+  border-bottom: 1px solid var(--pdz-color-primary-border);
+
+  .league-name {
+    font-size: 1.25rem;
+    margin: 0;
+    font-family: var(--pdz-font-fancy);
+  }
+}
+
+.card-menu {
+  position: relative;
+
+  .menu-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: var(--pdz-space-sm);
+    border-radius: var(--pdz-shape-corner-full);
     display: flex;
     align-items: center;
-    padding: 0.25rem 1.5rem;
+    justify-content: center;
+    color: var(--pdz-color-on-primary-container);
 
-    .title {
-      font-size: 1.5rem; /* 24px */
-      line-height: 2rem; /* 32px */
-      font-family: "Nasalization RG", sans-serif;
-      font-weight: 700;
+    &:hover {
+      background-color: var(--pdz-color-primary-container-hover);
     }
   }
 
-  .drafts-grid {
-    display: grid;
-    height: auto;
-    grid-auto-flow: row;
-    grid-template-columns: repeat(1, minmax(0, 1fr));
-    gap: 1rem;
-    padding: 0.5rem;
-    overflow: auto;
-
-    @media (min-width: 768px) {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    @media (min-width: 1024px) {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-
-    @media (min-width: 1536px) {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-    }
-  }
-
-  .draft-card {
+  .menu-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: var(--pdz-color-primary-subtle);
+    border-radius: var(--pdz-shape-corner-sm);
+    box-shadow: var(--pdz-level-2);
+    z-index: 10;
+    width: 160px;
+    padding: var(--pdz-space-sm) 0;
     display: flex;
     flex-direction: column;
-    height: 100%;
-    box-shadow: var(--pdz-level-2);
-    background-color: var(--pdz-color-primary);
-    color: var(--pdz-color-on-primary);
-    border-radius: 0.75rem;
 
-    .draft-card-body {
-      flex-grow: 1;
-      padding: 0.5rem;
-      box-shadow: var(--pdz-level-2);
-      background-color: var(--pdz-color-primary-container);
-      color: var(--pdz-color-on-primary-container);
-      border-radius: 0.75rem;
-
-      .draft-card-header {
-        display: flex;
-        align-items: center;
-        width: 100%;
-        gap: 0.5rem;
-        height: fit-content;
-
-        .league-name {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          width: 60%;
-          height: auto;
-          padding: 0.25rem;
-          overflow: hidden;
-          font-weight: 600;
-          text-align: center;
-          white-space: normal;
-          border-radius: 9999px;
-          box-shadow: var(--pdz-level-inset-2);
-          font-size: 1rem;
-          background-color: var(--pdz-color-primary);
-          color: var(--pdz-color-on-primary);
-          text-overflow: ellipsis;
-        }
-
-        .ruleset,
-        .format {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          width: 20%;
-          padding: 0.25rem;
-          overflow: hidden;
-          font-size: 0.75rem;
-          line-height: 1rem;
-          font-weight: 600;
-          text-align: center;
-          white-space: normal;
-          border-radius: 9999px;
-          box-shadow: var(--pdz-level-inset-2);
-          height: fit-content;
-          background-color: var(--pdz-color-primary);
-          color: var(--pdz-color-on-primary);
-          text-overflow: ellipsis;
-        }
-      }
-
-      .sprites {
-        display: grid;
-        grid-template-columns: repeat(6, minmax(0, 1fr));
-        gap: 0.25rem;
-        padding: 0.5rem 1rem;
-      }
-    }
-
-    .actions {
+    .menu-item {
       display: flex;
-      padding: 0.5rem;
-      gap: 0.5rem;
+      align-items: center;
+      gap: var(--pdz-space-md);
+      padding: var(--pdz-space-md);
+      background: none;
+      border: none;
+      text-align: left;
+      width: 100%;
+      cursor: pointer;
+      font-size: 1rem;
+      color: var(--pdz-color-on-primary-container);
 
-      .matches-link {
-        flex-grow: 1;
-        padding: 0.25rem;
-        font-weight: 600;
-        text-align: center;
-        box-shadow: var(--pdz-level-2);
-        height: fit-content;
-        background-color: var(--pdz-color-primary-container);
-        color: var(--pdz-color-on-primary-container);
-        border-radius: 0.75rem;
-        &:hover {
-          box-shadow: var(--pdz-level-1);
-        }
-      }
-
-      .action-buttons {
-        display: grid;
-        align-items: center;
-        justify-content: center;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 0.5rem;
-
-        .action-button {
-          @include button-base(2rem, 0, 0.25rem);
-        }
-      }
-
-      .confirmation {
-        display: flex;
-        width: 100%;
-        gap: 0.5rem;
-
-        .confirmation-text {
-          flex-grow: 1;
-          margin: 0.5rem;
-          text-align: center;
-          box-shadow: var(--pdz-level-2);
-          background-color: var(--pdz-color-primary-container);
-          color: var(--pdz-color-on-primary-container);
-          border-radius: 0.75rem;
-        }
-
-        .button {
-          @include button-base(16.666667%);
-        }
-      }
-
-      .edit-menu {
-        display: flex;
-        width: 100%;
-        gap: 0.5rem;
-
-        .button {
-          @include button-base(auto, 0.5rem, 0.5rem);
-
-          &--trade {
-            width: 33.333333%;
-            color: #747c8b; // aTeam-500
-          }
-
-          &--edit-team {
-            width: 33.333333%;
-          }
-
-          &--delete {
-            width: 16.666667%;
-          }
-
-          &--back {
-            width: 16.666667%;
-          }
-        }
+      &:hover {
+        background-color: var(--pdz-color-primary-container-hover);
       }
     }
   }
+}
 
-  .footer {
-    display: flex;
-    padding: 0.75rem;
-    gap: 0.5rem;
+.card-body {
+  padding: var(--pdz-space-md);
+  flex-grow: 1;
+  background-color: var(--pdz-color-primary-container-lighter);
 
-    .button {
-      @include button-base(auto, 0, 0.25rem);
+  .ruleset-format {
+    font-size: 0.9rem;
+    color: var(--pdz-color-on-primary-container);
+    margin-bottom: var(--pdz-space-md);
+  }
+
+  .sprites {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(48px, 1fr));
+    gap: var(--pdz-space-sm);
+  }
+}
+
+.card-footer {
+  padding: var(--pdz-space-md);
+  border-top: 1px solid var(--pdz-color-primary-border);
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--pdz-space-sm);
+
+  .footer-link {
+    background-color: var(--pdz-color-primary-container-lighter);
+    color: var(--pdz-color-on-primary-container);
+    text-decoration: none;
+    font-weight: 500;
+    padding: var(--pdz-space-sm) var(--pdz-space-md);
+    border-radius: var(--pdz-shape-corner-sm);
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: var(--pdz-color-primary-darker);
+    }
+  }
+}
+
+.confirmation {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  p {
+    margin: 0;
+    font-weight: 500;
+  }
+
+  .btn {
+    border: none;
+    padding: var(--pdz-space-sm) var(--pdz-space-md);
+    border-radius: var(--pdz-shape-corner-sm);
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s;
+
+    &-confirm {
+      background-color: var(--pdz-color-error);
+      color: var(--pdz-color-on-error);
+
+      &:hover {
+        /* TODO: Add a darker error color to the theme */
+        opacity: 0.9;
+      }
     }
 
-    .add-league-icon {
-      width: 2rem;
-      stroke: black; // symbolColor-main
-    }
+    &-cancel {
+      background-color: transparent;
+      color: var(--pdz-color-on-primary-container);
 
-    .spacer {
-      flex-grow: 1;
-    }
-
-    .archives-icon {
-      width: 2rem;
+      &:hover {
+        background-color: var(--pdz-color-primary-container-hover);
+      }
     }
   }
 }

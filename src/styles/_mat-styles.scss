@@ -271,9 +271,9 @@ $theme-configurations: (
   flex-direction: column;
   background-color: var(--pdz-surface);
   color: var(--pdz-on-surface);
-  border-radius: 1rem;
+  border-radius: var(--pdz-shape-corner-lg);
   box-shadow: var(--pdz-level-3);
-  padding: 0.25rem;
+  padding: var(--pdz-space-xs);
   mat-icon {
     color: var(--pdz-primary);
   }

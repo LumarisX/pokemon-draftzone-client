@@ -1,7 +1,7 @@
 .type-cell {
   width: 3rem;
   height: 3rem;
-  padding: 0.25rem;
+  padding: var(--pdz-space-xs);
   overflow: hidden;
 }
 
@@ -9,7 +9,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 0.25rem;
+  border-radius: var(--pdz-shape-corner-xs);
   height: 2.5rem;
   width: 2.5rem;
   font-size: 0.75em;
@@ -43,7 +43,7 @@ th {
   flex-direction: column;
   align-items: center;
   width: 2.5rem;
-  border-radius: 0.25rem;
+  border-radius: var(--pdz-shape-corner-xs);
   box-shadow: var(--pdz-level-1);
   margin-top: 0px;
 
@@ -139,7 +139,7 @@ thead {
 
 thead {
   th {
-    padding: 0.25rem;
+    padding: var(--pdz-space-xs);
   }
 }
 
@@ -149,7 +149,7 @@ tbody {
       display: flex;
       align-items: center;
       justify-content: center;
-      border-radius: 0.25rem;
+      border-radius: var(--pdz-shape-corner-xs);
       height: 1.5rem;
       width: 2.5rem;
       font-size: 0.65em;
@@ -165,7 +165,7 @@ tbody {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 0.25rem;
+  border-radius: var(--pdz-shape-corner-xs);
   height: 2.5rem;
   width: 2.5rem;
   font-size: 0.75em;
@@ -176,7 +176,7 @@ tbody {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 0.25rem;
+  border-radius: var(--pdz-shape-corner-xs);
   height: 1.5rem;
   width: 2.5rem;
   font-size: 0.75em;
@@ -188,7 +188,7 @@ tbody {
 .stat-cell {
   width: 3rem;
   height: 2rem;
-  padding: 0.25rem;
+  padding: var(--pdz-space-xs);
   overflow: hidden;
 }
 

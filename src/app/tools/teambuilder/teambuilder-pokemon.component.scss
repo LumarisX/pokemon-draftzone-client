@@ -10,8 +10,8 @@
 
 .teambuilder-wrapper {
   height: 100%;
-  padding: 1rem;
-  border-radius: 0.5rem;
+  padding: var(--pdz-space-lg);
+  border-radius: var(--pdz-shape-corner-sm);
 }
 
 .level-2 {

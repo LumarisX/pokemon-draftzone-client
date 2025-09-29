@@ -5,7 +5,7 @@
   width: 100%;
   max-height: 100%;
   column-gap: 0.5rem;
-  padding: 0.5rem;
+  padding: var(--pdz-space-sm);
 }
 .tier-wrapper {
   overflow-y: auto;
@@ -21,7 +21,7 @@
     flex-shrink: 0;
 
     .draft-rounds {
-      padding: 0.25rem;
+      padding: var(--pdz-space-xs);
       overflow-x: scroll;
       overflow-y: scroll;
       max-height: 10rem;
@@ -80,7 +80,7 @@
   user-select: none;
 
   .team-card-header {
-    padding: 0.125rem;
+    padding: var(--pdz-space-xxs);
     display: flex;
     align-items: end;
     font-size: 0.75em;
@@ -95,14 +95,14 @@
     .selectedTeam {
       width: 100%;
       background-color: var(--pdz-color-secondary-container);
-      border-radius: 0.25rem;
+      border-radius: var(--pdz-shape-corner-xs);
     }
   }
   .team-card-body {
     border: 2px solid var(--pdz-color-primary-border-variant);
-    border-radius: 0.5rem;
+    border-radius: var(--pdz-shape-corner-sm);
     box-shadow: var(--pdz-level2);
-    padding: 0.25rem;
+    padding: var(--pdz-space-xs);
     line-height: 1.2rem;
     height: fit-content;
     width: 100%;
@@ -147,7 +147,7 @@
   > a,
   > div {
     width: 100%;
-    border-radius: 0.5rem;
+    border-radius: var(--pdz-shape-corner-sm);
   }
 
   .planner-link {
@@ -173,14 +173,14 @@
 
     .draft-picks-container {
       height: fit-content;
-      padding: 0.25rem;
+      padding: var(--pdz-space-xs);
       display: flex;
       flex-direction: column;
       row-gap: 0.25rem;
 
       .draft-pick {
-        border-radius: 0.25rem;
-        padding: 0.125rem;
+        border-radius: var(--pdz-shape-corner-xs);
+        padding: var(--pdz-space-xxs);
       }
 
       .pick-label {
@@ -209,7 +209,7 @@
           padding: 0 0.25rem;
           font-weight: 500;
           font-size: 0.8em;
-          border-radius: 0.5rem;
+          border-radius: var(--pdz-shape-corner-sm);
           box-shadow: var(--pdz-level1);
           mat-icon {
             font-size: 0.8em;
@@ -230,7 +230,7 @@
           padding: 0 0.25rem;
           font-weight: 500;
           font-size: 0.8em;
-          border-radius: 0.5rem;
+          border-radius: var(--pdz-shape-corner-sm);
           box-shadow: var(--pdz-level1);
           mat-icon {
             font-size: 0.8em;
@@ -287,7 +287,7 @@
           display: flex;
           justify-content: center;
           align-items: center;
-          border-radius: 1rem;
+          border-radius: var(--pdz-shape-corner-lg);
           text-align: center;
           &.selected-pick {
             background-color: var(--pdz-color-primary);
@@ -342,7 +342,7 @@
           padding: 0 0.5rem;
           margin: 0.125rem 0;
           column-gap: 0.25rem;
-          border-radius: 0.5rem;
+          border-radius: var(--pdz-shape-corner-sm);
           box-shadow: var(--pdz-level-1);
           border: 2px solid var(--pdz-color-primary);
           color: var(--pdz-color-on-primary);
@@ -399,8 +399,8 @@
 
     .points-container {
       border: 2px solid var(--pdz-color-primary-border-variant);
-      border-radius: 0.5rem;
-      padding: 0.25rem;
+      border-radius: var(--pdz-shape-corner-sm);
+      padding: var(--pdz-space-xs);
       text-align: right;
       margin-top: 0.5rem;
       font-weight: 600;
@@ -449,7 +449,7 @@
   position: relative;
   display: flex;
   width: 100%;
-  border-radius: 1rem;
+  border-radius: var(--pdz-shape-corner-lg);
   margin-bottom: 2px;
   &:hover {
     background-color: var(--pdz-color-surface);
@@ -466,7 +466,7 @@
   overflow-y: auto;
   background-color: var(--pdz-color-surface);
   border: 1px solid var(--pdz-color-primary-border);
-  border-radius: 0.5rem;
+  border-radius: var(--pdz-shape-corner-sm);
   box-shadow: var(--pdz-level2);
   z-index: 1000;
 }
@@ -503,7 +503,7 @@
   font-family: var(--pdz-font-fancy);
   overflow: hidden;
   padding: 0.125rem 0.5rem;
-  border-radius: 0.5rem;
+  border-radius: var(--pdz-shape-corner-sm);
   font-weight: bold;
 }
 

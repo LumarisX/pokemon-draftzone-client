@@ -38,7 +38,7 @@
   display: flex;
   align-items: center;
   flex-grow: 1;
-  padding: 0.25rem;
+  padding: var(--pdz-space-xs);
   border-width: 0px 0px 1px 0px;
   border-color: var(--pdz-color-primary-border-variant);
   font-size: 0.875rem;
@@ -157,7 +157,7 @@
   align-items: center;
   user-select: none;
   flex-grow: 1;
-  padding: 0.25rem;
+  padding: var(--pdz-space-xs);
   border-width: 0px 0px 1px 0px;
   border-color: var(--pdz-color-primary-border-variant);
   font-size: 0.875rem;
@@ -181,7 +181,7 @@
   overflow: hidden;
   max-height: 100%;
   overflow: auto;
-  border-radius: 0.5rem;
+  border-radius: var(--pdz-shape-corner-sm);
   width: fit-content;
   justify-self: center;
 }
@@ -267,8 +267,8 @@
 
   background-color: var(--pdz-color-surface-container-high);
   color: var(--pdz-color-on-surface);
-  border-radius: 0.5rem;
-  padding: 1rem;
+  border-radius: var(--pdz-shape-corner-sm);
+  padding: var(--pdz-space-lg);
   width: 200px;
   display: flex;
   flex-direction: column;
@@ -295,7 +295,7 @@
     width: 100%;
     background-color: var(--pdz-color-primary);
     color: var(--pdz-color-on-primary);
-    border-radius: 1rem;
+    border-radius: var(--pdz-shape-corner-lg);
     box-shadow: --pdz-level2;
     &:disabled {
       background-color: gray;
@@ -306,7 +306,7 @@
 
 @media (max-width: 992px) {
   .selected-card {
-    padding: 0.5rem;
+    padding: var(--pdz-space-sm);
     .card-header {
       display: flex;
       align-items: center;
@@ -347,7 +347,7 @@
 .stat-value {
   background-color: var(--pdz-color-surface-container-high);
   padding: 0.1rem 0.25rem;
-  border-radius: 4px;
+  border-radius: var(--pdz-shape-corner-xs);
   box-shadow: var(--pdz-level-2);
 }
 
@@ -365,7 +365,7 @@
   align-items: center;
   border: 1px solid var(--pdz-color-primary);
   box-shadow: var(--pdz-level-inset-2);
-  border-radius: 4px;
+  border-radius: var(--pdz-shape-corner-xs);
   padding: 0 2px;
 
   mat-icon {

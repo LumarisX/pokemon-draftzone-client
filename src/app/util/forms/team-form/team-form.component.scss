@@ -6,7 +6,7 @@
   cdk-accordion {
     display: block;
     border: 1px solid var(--pdz-color-primary-border);
-    border-radius: 0.5rem;
+    border-radius: var(--pdz-shape-corner-sm);
     overflow: hidden;
 
     cdk-accordion-item {
@@ -108,7 +108,7 @@
     > :not(:first-child) {
       margin-left: 0.5rem;
     }
-    padding: 0.5rem;
+    padding: var(--pdz-space-sm);
   }
 
   .icon-grid {
@@ -203,7 +203,7 @@
 
 .captain-container {
   display: flex;
-  padding: 0.5rem;
+  padding: var(--pdz-space-sm);
   width: 100%;
   flex-wrap: wrap;
   align-items: center;
@@ -224,9 +224,9 @@
 
     &:not(.selected-type) {
       opacity: 0.6;
-      padding: 0.25rem;
+      padding: var(--pdz-space-xs);
       &:hover {
-        padding: 0.125rem;
+        padding: var(--pdz-space-xxs);
       }
     }
   }
@@ -366,7 +366,7 @@ mat-tab-group {
 }
 
 pdz-slide-toggle {
-  padding: 0.125rem;
+  padding: var(--pdz-space-xxs);
 }
 
 pokemon-select,

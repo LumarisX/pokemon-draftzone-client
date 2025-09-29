@@ -41,7 +41,7 @@
 
   .matchup-header {
     display: flex;
-    padding: 0.5rem;
+    padding: var(--pdz-space-sm);
     column-gap: 1rem;
     z-index: 4000;
 
@@ -92,7 +92,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1.5rem;
+  padding: var(--pdz-space-xl);
   inset: 0;
   background-color: rgba(0, 0, 0, 0.5);
 
@@ -101,8 +101,8 @@
     width: 100%;
     background-color: var(--pdz-color-surface);
     box-shadow: var(--pdz-level-4);
-    border-radius: 1rem;
-    padding: 1rem;
+    border-radius: var(--pdz-shape-corner-lg);
+    padding: var(--pdz-space-lg);
     position: relative;
 
     .share-header {
@@ -128,7 +128,7 @@
       row-gap: 1rem;
       .url-container {
         border: 1px solid var(--pdz-color-primary-border);
-        border-radius: 1rem;
+        border-radius: var(--pdz-shape-corner-lg);
         padding: 0 0.5rem;
 
         width: 100%;
@@ -146,7 +146,7 @@
       }
       .matchup-preview-container {
         border: 1px solid var(--pdz-color-primary-border);
-        border-radius: 1rem;
+        border-radius: var(--pdz-shape-corner-lg);
         padding: 0 1rem;
         .details-container {
           display: flex;
@@ -165,7 +165,7 @@
             padding: 0 0.25rem;
 
             .name-container {
-              padding: 0.25rem;
+              padding: var(--pdz-space-xs);
               .name-text {
                 height: 1.2rem;
                 text-align: center;
@@ -197,7 +197,7 @@
                   color: var(--pdz-color-on-secondary);
                   box-shadow: var(--pdz-level-2);
 
-                  border-radius: 1rem;
+                  border-radius: var(--pdz-shape-corner-lg);
                   mat-icon {
                     height: 1.5rem;
                     width: 1.5rem;
@@ -216,12 +216,12 @@
                   background-color: var(--pdz-color-surface);
                   box-shadow: var(--pdz-level-2);
                   padding: 0 0.125rem;
-                  border-radius: 1rem;
+                  border-radius: var(--pdz-shape-corner-lg);
                   color: var(--pdz-color-secondary);
                   @media (max-width: 768px) {
                     font-size: 0.7em;
                     line-height: 0.7em;
-                    padding: 0.125rem;
+                    padding: var(--pdz-space-xxs);
                   }
                 }
               }

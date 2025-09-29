@@ -1,6 +1,6 @@
 .standing-container {
   border: 1px solid var(--pdz-color-primary-border);
-  border-radius: 0.5rem;
+  border-radius: var(--pdz-shape-corner-sm);
   overflow: hidden;
   width: fit-content;
   .standing-header {
@@ -99,7 +99,7 @@
       font-weight: 700;
       font-size: 0.8em;
       line-height: 1.5rem;
-      border-radius: 0.25rem;
+      border-radius: var(--pdz-shape-corner-xs);
       height: 1.5rem;
       width: 1.5rem;
       &.positive {

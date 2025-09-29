@@ -7,14 +7,14 @@
   display: flex;
 
   justify-content: center;
-  padding: 1rem;
+  padding: var(--pdz-space-lg);
 
   .outlined {
-    border-radius: 1rem;
+    border-radius: var(--pdz-shape-corner-lg);
     background-color: var(--pdz-color-surface);
     color: var(--pdz-color-primary);
     box-shadow: var(--pdz-level-3);
-    padding: 1rem;
+    padding: var(--pdz-space-lg);
   }
 
   .charts-container {
@@ -52,7 +52,7 @@
         }
         .coverage-charts-wrapper {
           display: flex;
-          padding: 0.5rem;
+          padding: var(--pdz-space-sm);
           max-height: fit-content;
           overflow-x: auto;
           @media (min-width: 768px) {

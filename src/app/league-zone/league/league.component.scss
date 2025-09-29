@@ -2,10 +2,10 @@
   display: flex;
   flex-direction: column;
   box-shadow: var(--pdz-level2);
-  border-radius: 1rem;
+  border-radius: var(--pdz-shape-corner-lg);
   overflow: hidden;
   .widget-title {
-    padding: 0.25rem;
+    padding: var(--pdz-space-xs);
     font-family: var(--pdz-font-fancy);
     background-color: var(--pdz-color-primary);
     color: var(--pdz-color-on-primary);
@@ -14,12 +14,12 @@
 
   .widget-body {
     overflow: auto;
-    padding: 0.5rem;
+    padding: var(--pdz-space-sm);
   }
 }
 
 .widget-container {
-  padding: 1rem;
+  padding: var(--pdz-space-lg);
   display: grid;
   gap: 1rem;
   grid-template-columns: repeat(3, minmax(0, 1fr));

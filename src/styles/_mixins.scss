@@ -47,7 +47,7 @@
   cursor: pointer;
   background-color: var(--pdz-color-primary-container);
   color: var(--pdz-color-on-primary-container);
-  border-radius: 0.75rem;
+  border-radius: var(--pdz-shape-corner-md);
 
   &:hover {
     box-shadow: var(--pdz-level-1);

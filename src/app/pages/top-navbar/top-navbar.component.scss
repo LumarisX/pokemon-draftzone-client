@@ -1,13 +1,11 @@
 @use "@angular/material" as mat;
+@import "../../../styles/breakpoints";
+@import "../../../styles/mixins";
 
 mat-toolbar {
-  > :not(:first-child) {
-    padding-left: 0.5rem;
-  }
-
   @include mat.toolbar-overrides(
     (
-      container-background-color: var(--pdz-color-surface-container-highest),
+      container-background-color: var(--pdz-color-surface),
       container-text-color: var(--pdz-color-on-surface),
     )
   );
@@ -30,11 +28,12 @@ header {
 }
 
 .menu-tab {
-  padding: 0.5rem;
-  border-radius: 0.5rem;
+  padding: var(--pdz-space-sm);
+  border-radius: var(--pdz-shape-corner-sm);
   font-family: var(--pdz-font-fancy);
   &:hover {
-    background-color: var(--pdz-color-surface-container);
+    background-color: var(--pdz-color-primary-container);
+    color: var(--pdz-color-on-primary-container);
   }
 }
 
@@ -44,7 +43,7 @@ header {
   .user-icon {
     width: 1.5rem;
     height: 1.5rem;
-    border-radius: 1rem;
+    border-radius: var(--pdz-shape-corner-lg);
   }
   .username-text {
     padding-left: 0.5rem;
@@ -56,21 +55,37 @@ header {
   }
 }
 
-svg {
-  .logo-top {
-    fill: var(--pdz-color-primary);
-  }
-  .logo-bottom {
-    fill: var(--pdz-color-secondary);
-  }
-}
-
 .home-btn {
   display: flex;
   justify-content: center;
   align-items: center;
+  border-radius: var(--pdz-shape-corner-sm);
+  padding: 0 0.5rem;
+
+  &:hover {
+    background-color: var(--pdz-color-primary-container);
+    color: var(--pdz-color-on-primary-container);
+  }
 }
 pdz-icon {
   height: 100%;
   width: fit-content;
+}
+
+.mobile-menu {
+  display: block;
+}
+
+.desktop-tabs {
+  display: none;
+}
+
+@include respond-above(medium) {
+  .mobile-menu {
+    display: none;
+  }
+
+  .desktop-tabs {
+    display: flex;
+  }
 }

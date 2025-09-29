@@ -8,11 +8,11 @@
 }
 
 .table-wrapper {
-  padding: 1rem;
+  padding: var(--pdz-space-lg);
   min-width: fit-content;
   width: fit-content;
   height: fit-content;
-  border-radius: 1rem;
+  border-radius: var(--pdz-shape-corner-lg);
   background-color: var(--pdz-color-surface);
   box-shadow: var(--pdz-level-3);
 }

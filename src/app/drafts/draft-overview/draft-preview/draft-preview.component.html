@@ -1,18 +1,73 @@
-<div class="draft-preview-container">
+<div class="drafts-container">
   <div class="header">
-    <p class="title">My Drafts</p>
+    <h1 class="title">My Drafts</h1>
+    <div class="actions">
+      <a
+        [routerLink]="['/', draftPath, 'new']"
+        class="action-button"
+        title="Add League"
+        aria-label="Add League"
+      >
+        <mat-icon>add</mat-icon>
+      </a>
+      <a
+        [routerLink]="['/', draftPath, 'archives']"
+        class="action-button"
+        title="Archives"
+        aria-label="View Archives"
+      >
+        <mat-icon>inventory_2</mat-icon>
+      </a>
+    </div>
   </div>
+
   @if (!drafts) {
     <loading></loading>
   }
-  <div id="drafts" class="drafts-grid">
+
+  <div class="drafts-grid">
     @for (draft of drafts; track draft.leagueId) {
       <div class="draft-card">
-        <div class="draft-card-body">
-          <div class="draft-card-header">
-            <div class="league-name">{{ draft.leagueName }}</div>
-            <div class="ruleset">{{ draft.ruleset }}</div>
-            <div class="format">{{ draft.format }}</div>
+        <div class="card-header">
+          <h2 class="league-name">{{ draft.leagueName }}</h2>
+          <div class="card-menu">
+            <button
+              class="menu-toggle"
+              (click)="toggleMenu(draft.leagueId)"
+              aria-label="Open draft menu"
+            >
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            @if (menuState[draft.leagueId] === "main") {
+              <div class="menu-dropdown">
+                <a
+                  class="menu-item"
+                  [routerLink]="['edit']"
+                  [queryParams]="{ draft: draft.leagueId | json }"
+                >
+                  <mat-icon>edit_document</mat-icon> Edit Team
+                </a>
+                <button
+                  class="menu-item"
+                  (click)="setMenuState(draft.leagueId, 'confirm-archive')"
+                >
+                  <mat-icon>archive</mat-icon> Archive
+                </button>
+                <button
+                  class="menu-item"
+                  (click)="setMenuState(draft.leagueId, 'confirm-delete')"
+                >
+                  <mat-icon>delete_forever</mat-icon>
+
+                  Delete
+                </button>
+              </div>
+            }
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="ruleset-format">
+            {{ draft.ruleset }} - {{ draft.format }}
           </div>
           <div class="sprites">
             @for (pokemon of draft.team; track pokemon.name) {
@@ -20,66 +75,45 @@
             }
           </div>
         </div>
-        <div class="actions">
-          @if (draft.menu === 'main') {
-            <a class="matches-link" [routerLink]="['/', draftPath, draft.leagueId]">Matches</a>
-            <div class="action-buttons">
-              <barchart-svg
-                class="action-button"
-                [routerLink]="draft.leagueId + '/stats'"
-                title="Stats"
-                alt="Stats"
-              ></barchart-svg>
-              <edit-svg
-                class="action-button"
-                (click)="draft.menu = 'edit'"
-                title="Edit"
-                alt="Edit"
-              ></edit-svg>
-              <archive-add-svg
-                class="action-button"
-                alt="Archive"
-                title="Archive"
-                (click)="draft.menu = 'archive'"
+        <div class="card-footer">
+          @if (menuState[draft.leagueId] === "confirm-archive") {
+            <div class="confirmation">
+              <p>Archive draft?</p>
+              <button class="btn btn-confirm" (click)="archive(draft.leagueId)">
+                Yes
+              </button>
+              <button
+                class="btn btn-cancel"
+                (click)="setMenuState(draft.leagueId, '')"
               >
-              </archive-add-svg>
+                No
+              </button>
             </div>
-          } @else if (draft.menu === 'archive') {
+          } @else if (menuState[draft.leagueId] === "confirm-delete") {
             <div class="confirmation">
-              <div class="confirmation-text">Are you sure you want to archive? This can not be undone.</div>
-              <div class="button" (click)="archive(draft.leagueId)">Yes</div>
-              <div class="button" (click)="draft.menu = 'main'">No</div>
+              <p>Delete draft?</p>
+              <button class="btn btn-confirm" (click)="delete(draft.leagueId)">
+                Yes
+              </button>
+              <button
+                class="btn btn-cancel"
+                (click)="setMenuState(draft.leagueId, '')"
+              >
+                No
+              </button>
             </div>
-          } @else if (draft.menu === 'edit') {
-            <div class="edit-menu">
-              <a class="button button--back" (click)="draft.menu = 'main'">Back</a>
-              <a class="button button--trade">Trade</a>
-              <a
-                class="button button--edit-team"
-                routerLink="edit"
-                [queryParams]="{ draft: draft.leagueId | json }"
-                >Edit Team
-              </a>
-              <a class="button button--delete" (click)="draft.menu = 'delete'">Delete</a>
-            </div>
-          } @else if (draft.menu === 'delete') {
-            <div class="confirmation">
-              <div class="confirmation-text">Are you sure you want to delete? This can not be undone.</div>
-              <div class="button" (click)="delete(draft.leagueId)">Yes</div>
-              <div class="button" (click)="draft.menu = 'main'">No</div>
-            </div>
+          } @else {
+            <a
+              class="footer-link"
+              [routerLink]="['/', draftPath, draft.leagueId]"
+              >Matches</a
+            >
+            <a class="footer-link" [routerLink]="[draft.leagueId, 'stats']"
+              >Stats</a
+            >
           }
         </div>
       </div>
     }
-  </div>
-  <div class="footer">
-    <button [routerLink]="['/', draftPath, 'new']" class="button" title="Add League">
-      <plus-svg class="add-league-icon"></plus-svg>
-    </button>
-    <div class="spacer"></div>
-    <button [routerLink]="['/', draftPath, 'archives']" class="button" title="Archives">
-      <archive-svg class="archives-icon"></archive-svg>
-    </button>
   </div>
 </div>

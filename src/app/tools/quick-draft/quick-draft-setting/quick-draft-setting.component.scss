@@ -25,7 +25,7 @@ h2 {
   font-family: var(--pdz-font-fancy);
   width: 15rem;
   min-height: 12rem;
-  padding: 1rem;
+  padding: var(--pdz-space-lg);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -39,7 +39,7 @@ h2 {
   }
 
   @media (max-width: 768px) {
-    padding: 0.5rem;
+    padding: var(--pdz-space-sm);
     min-height: 0;
     height: fit-content;
     .qd-header {
@@ -49,9 +49,9 @@ h2 {
 }
 
 .qd-tiers-container {
-  padding: 0.25rem;
+  padding: var(--pdz-space-xs);
   width: 100%;
-  border-radius: 0.5rem;
+  border-radius: var(--pdz-shape-corner-sm);
   font-size: small;
   border: 2px solid var(--pdz-color-primary-border-variant);
   display: flex;

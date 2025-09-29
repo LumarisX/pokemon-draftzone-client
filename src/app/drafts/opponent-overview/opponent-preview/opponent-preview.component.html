@@ -5,38 +5,31 @@
       <div class="button-container">
         @if (selectedMatchup) {
           <button
-            class="matchup-button"
+            mat-stroked-button
             routerLink="matchup"
             [queryParams]="{ id: selectedMatchup._id }"
           >
             View Matchup
           </button>
           <button
-            class="matchup-button"
+            mat-icon-button
             routerLink="form"
             [queryParams]="{ matchup: selectedMatchup._id }"
           >
             <mat-icon>edit</mat-icon>
           </button>
-          @if (deleteConfirm) {
-            <button
-              class="matchup-button"
-              (click)="deleteMatchup(selectedMatchup._id)"
-            >
-              <mat-icon>check</mat-icon>
-            </button>
-          } @else {
-            <button class="matchup-button" (click)="deleteConfirm = true">
-              <mat-icon>delete_forever</mat-icon>
-            </button>
-          }
+          <button mat-icon-button (click)="deleteMatchup(selectedMatchup._id)">
+            <mat-icon>delete_forever</mat-icon>
+          </button>
         }
-        <button (click)="newOpponent()">
+        <button mat-icon-button (click)="newOpponent()">
           <mat-icon>add</mat-icon>
         </button>
       </div>
     </div>
-    @if (matchups) {
+    @if (!matchups) {
+      <loading></loading>
+    } @else {
       <div class="matchups-container">
         @for (matchup of matchups; track $index) {
           <div
@@ -49,7 +42,7 @@
               <div class="matchup-team-info-container">
                 @if (matchup.logo) {
                   <div class="matchup-logo">
-                    <img src="https://placehold.co/400" />
+                    <img [src]="matchup.logo" />
                   </div>
                 }
                 <div class="matchup-team-info">
@@ -71,10 +64,10 @@
                 routerLink="score"
                 [queryParams]="{ matchup: matchup._id }"
               >
-                <div class="score-button" [ngClass]="scoreClass(matchup)">
+                <div class="score-button" [ngClass]="matchup.scoreClass">
                   <div>
                     @if (matchup.score) {
-                      {{ scoreString(matchup) }}
+                      {{ matchup.scoreString }}
                     } @else {
                       Add Score
                     }
@@ -89,26 +82,26 @@
           </div>
         }
       </div>
-    } @else {
-      <loading></loading>
     }
   </section>
   <section class="stats-section">
     <div class="section-header">Stats</div>
-    @if (teamStats.value !== null) {
-      @if (teamStats.value.length > 0) {
+    @if (!teamStats) {
+      <loading></loading>
+    } @else {
+      @if (teamStats.value && teamStats.value.length > 0) {
         <div class="table-container">
           <div class="table-wrapper">
             <table
-              cdk-table
+              mat-table
               [dataSource]="teamStats.value!"
               matSort
               [matSortDisableClear]="true"
               (matSortChange)="sort($event)"
             >
-              <ng-container cdkColumnDef="sprite">
-                <th cdk-header-cell *cdkHeaderCellDef></th>
-                <td cdk-cell *cdkCellDef="let element">
+              <ng-container matColumnDef="sprite">
+                <th mat-header-cell *matHeaderCellDef></th>
+                <td mat-cell *matCellDef="let element">
                   <div class="sprite-wrapper">
                     <pdz-sprite
                       [flipped]="true"
@@ -117,101 +110,101 @@
                   </div>
                 </td>
               </ng-container>
-              <ng-container cdkColumnDef="name">
-                <th mat-sort-header="name" cdk-header-cell *cdkHeaderCellDef>
+              <ng-container matColumnDef="name">
+                <th mat-sort-header="name" mat-header-cell *matHeaderCellDef>
                   Name
                 </th>
-                <td cdk-cell *cdkCellDef="let element">
+                <td mat-cell *matCellDef="let element">
                   {{ element.pokemon.name }}
                 </td>
               </ng-container>
 
-              <ng-container cdkColumnDef="gb">
+              <ng-container matColumnDef="gb">
                 <th
                   mat-sort-header="gb"
                   start="desc"
-                  cdk-header-cell
-                  *cdkHeaderCellDef
+                  mat-header-cell
+                  *matHeaderCellDef
                 >
                   Games Brought
                 </th>
-                <td cdk-cell *cdkCellDef="let element">
+                <td mat-cell *matCellDef="let element">
                   {{ element.brought }}
                 </td>
               </ng-container>
 
-              <ng-container cdkColumnDef="dk">
+              <ng-container matColumnDef="dk">
                 <th
                   mat-sort-header="dk"
                   start="desc"
-                  cdk-header-cell
-                  *cdkHeaderCellDef
+                  mat-header-cell
+                  *matHeaderCellDef
                 >
                   Direct Kills
                 </th>
-                <td cdk-cell *cdkCellDef="let element">
+                <td mat-cell *matCellDef="let element">
                   {{ element.kills }}
                 </td>
               </ng-container>
 
-              <ng-container cdkColumnDef="ik">
+              <ng-container matColumnDef="ik">
                 <th
                   mat-sort-header="ik"
                   start="desc"
-                  cdk-header-cell
-                  *cdkHeaderCellDef
+                  mat-header-cell
+                  *matHeaderCellDef
                 >
                   Indirect Kills
                 </th>
-                <td cdk-cell *cdkCellDef="let element">
+                <td mat-cell *matCellDef="let element">
                   {{ element.indirect }}
                 </td>
               </ng-container>
 
-              <ng-container cdkColumnDef="deaths">
+              <ng-container matColumnDef="deaths">
                 <th
                   mat-sort-header="deaths"
                   start="desc"
-                  cdk-header-cell
-                  *cdkHeaderCellDef
+                  mat-header-cell
+                  *matHeaderCellDef
                 >
                   Deaths
                 </th>
-                <td cdk-cell *cdkCellDef="let element">
+                <td mat-cell *matCellDef="let element">
                   {{ element.deaths }}
                 </td>
               </ng-container>
 
-              <ng-container cdkColumnDef="kdr">
+              <ng-container matColumnDef="kdr">
                 <th
                   mat-sort-header="kdr"
                   start="desc"
-                  cdk-header-cell
-                  *cdkHeaderCellDef
+                  mat-header-cell
+                  *matHeaderCellDef
                 >
                   Kills/Deaths
                 </th>
-                <td cdk-cell *cdkCellDef="let element">
+                <td mat-cell *matCellDef="let element">
                   {{ element.kdr | number: "1.0-2" }}
                 </td>
               </ng-container>
 
-              <ng-container cdkColumnDef="kpg">
+              <ng-container matColumnDef="kpg">
                 <th
                   mat-sort-header="kpg"
                   start="desc"
-                  cdk-header-cell
-                  *cdkHeaderCellDef
+                  mat-header-cell
+                  *matHeaderCellDef
                 >
                   Kills/Game
                 </th>
-                <td cdk-cell *cdkCellDef="let element">
+                <td mat-cell *matCellDef="let element">
                   {{ element.kpg | number: "1.0-2" }}
                 </td>
               </ng-container>
 
-              <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
-              <tr cdk-row *cdkRowDef="let row; columns: displayedColumns"></tr>
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
             </table>
           </div>
         </div>
@@ -220,8 +213,6 @@
           Score your first match to see your stats
         </div>
       }
-    } @else {
-      <loading></loading>
     }
   </section>
 </div>

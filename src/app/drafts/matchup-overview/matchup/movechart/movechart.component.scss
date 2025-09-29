@@ -1,6 +1,6 @@
 .movechart-wrapper {
   max-width: 42rem;
-  padding: 0.25rem;
+  padding: var(--pdz-space-xs);
   max-height: 50rem;
   overflow-y: auto;
   scrollbar-gutter: stable;

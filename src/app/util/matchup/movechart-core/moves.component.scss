@@ -1,7 +1,7 @@
 @use "@angular/material" as mat;
 
 .options-container {
-  padding: 0.5rem;
+  padding: var(--pdz-space-sm);
   white-space: nowrap;
   text-overflow: clip;
   justify-content: space-between;
@@ -57,7 +57,7 @@
   overflow: hidden;
   &.expanded {
     max-height: 10000px;
-    padding: 0.5rem;
+    padding: var(--pdz-space-sm);
     opacity: 1;
   }
 }
@@ -106,7 +106,7 @@
   width: 100%;
   justify-content: space-evenly;
   flex-wrap: wrap;
-  padding: 0.25rem;
+  padding: var(--pdz-space-xs);
 }
 
 .category-label {
