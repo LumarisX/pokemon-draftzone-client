@@ -191,6 +191,11 @@
     font-weight: 500;
   }
 
+  .confirmation-buttons {
+    display: flex;
+    gap: var(--pdz-space-sm);
+  }
+
   .btn {
     border: none;
     padding: var(--pdz-space-sm) var(--pdz-space-md);
@@ -205,7 +210,7 @@
 
       &:hover {
         /* TODO: Add a darker error color to the theme */
-        opacity: 0.9;
+        opacity: 0.8;
       }
     }
 

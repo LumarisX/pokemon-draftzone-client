@@ -23,7 +23,7 @@ import { DraftOverviewPath } from '../draft-overview-routing.module';
 export class DraftArchiveComponent {
   private archiveService = inject(ArchiveService);
 
-  archives!: (Archive & { menu: 'main' | 'archive' | 'edit' | 'delete' })[];
+  archives!: (Archive & { menu?: 'main' | 'archive' | 'edit' | 'delete' })[];
   backPath: string = DraftOverviewPath;
 
   ngOnInit() {

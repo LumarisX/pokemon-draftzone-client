@@ -1,9 +1,15 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  inject,
+} from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { DataService } from '../../services/data.service';
-import { StatsTable, Type } from '../../data';
+import { DataService, ResultData } from '../../services/data.service';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { FindOptionComponent } from './find-option/find-option.component';
 
@@ -47,21 +53,7 @@ export class FinderCoreComponent implements OnInit {
 
   @Output() UpdatedQuery = new EventEmitter<string>();
 
-  results: {
-    id: string;
-    name: string;
-    types: Type[];
-    abilities: string[];
-    baseStats: StatsTable;
-    weightkg: number;
-    tier: string;
-    doublesTier: string;
-    eggGroups: string[];
-    nfe: boolean;
-    num: number;
-    tags: string[];
-    bst: number;
-  }[] = [];
+  results: ResultData[] = [];
   queryGroups: QueryGroup[] = [];
   finalQuery: string = '';
   sortedColumn: string = 'num';

@@ -24,7 +24,7 @@ import { DraftOverviewPath } from '../draft-overview-routing.module';
 export class DraftPreviewComponent {
   private draftService = inject(DraftService);
 
-  drafts!: Draft[];
+  drafts?: Draft[];
   draftPath = DraftOverviewPath;
   menuState: {
     [key: string]: '' | 'main' | 'confirm-archive' | 'confirm-delete';
@@ -35,6 +35,7 @@ export class DraftPreviewComponent {
   }
 
   reload() {
+    this.drafts = undefined;
     this.draftService.getDraftsList().subscribe((data) => {
       this.drafts = data;
       this.drafts.forEach((draft) => {
@@ -63,6 +64,7 @@ export class DraftPreviewComponent {
   }
 
   toggleMenu(leagueId: string) {
-    this.menuState[leagueId] = this.menuState[leagueId] === 'main' ? '' : 'main';
+    this.menuState[leagueId] =
+      this.menuState[leagueId] === 'main' ? '' : 'main';
   }
 }

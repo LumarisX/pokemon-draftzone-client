@@ -31,7 +31,7 @@ export class AppComponent {
   getTheme() {
     const classes: string[] = [];
     document.documentElement.setAttribute('pdz-theme', 'normal');
-    document.documentElement.setAttribute('pdz-theme-mode', 'dark');
+    document.documentElement.setAttribute('pdz-theme-mode', 'light');
 
     // if (this.settingsService.settingsData.ldMode === 'dark') {
     //   document.documentElement.setAttribute('pdz-theme-mode', 'dark');

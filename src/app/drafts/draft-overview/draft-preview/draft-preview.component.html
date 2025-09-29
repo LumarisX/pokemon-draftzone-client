@@ -23,96 +23,106 @@
 
   @if (!drafts) {
     <loading></loading>
-  }
-
-  <div class="drafts-grid">
-    @for (draft of drafts; track draft.leagueId) {
-      <div class="draft-card">
-        <div class="card-header">
-          <h2 class="league-name">{{ draft.leagueName }}</h2>
-          <div class="card-menu">
-            <button
-              class="menu-toggle"
-              (click)="toggleMenu(draft.leagueId)"
-              aria-label="Open draft menu"
-            >
-              <mat-icon>more_vert</mat-icon>
-            </button>
-            @if (menuState[draft.leagueId] === "main") {
-              <div class="menu-dropdown">
-                <a
-                  class="menu-item"
-                  [routerLink]="['edit']"
-                  [queryParams]="{ draft: draft.leagueId | json }"
-                >
-                  <mat-icon>edit_document</mat-icon> Edit Team
-                </a>
-                <button
-                  class="menu-item"
-                  (click)="setMenuState(draft.leagueId, 'confirm-archive')"
-                >
-                  <mat-icon>archive</mat-icon> Archive
-                </button>
-                <button
-                  class="menu-item"
-                  (click)="setMenuState(draft.leagueId, 'confirm-delete')"
-                >
-                  <mat-icon>delete_forever</mat-icon>
-                  Delete
-                </button>
+  } @else {
+    <div class="drafts-grid">
+      @for (draft of drafts; track draft.leagueId) {
+        <div class="draft-card">
+          <div class="card-header">
+            <h2 class="league-name">{{ draft.leagueName }}</h2>
+            <div class="card-menu">
+              <button
+                class="menu-toggle"
+                (click)="toggleMenu(draft.leagueId)"
+                aria-label="Open draft menu"
+              >
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              @if (menuState[draft.leagueId] === "main") {
+                <div class="menu-dropdown">
+                  <a
+                    class="menu-item"
+                    [routerLink]="['edit']"
+                    [queryParams]="{ draft: draft.leagueId | json }"
+                  >
+                    <mat-icon>edit_document</mat-icon> Edit Team
+                  </a>
+                  <button
+                    class="menu-item"
+                    (click)="setMenuState(draft.leagueId, 'confirm-archive')"
+                  >
+                    <mat-icon>archive</mat-icon> Archive
+                  </button>
+                  <button
+                    class="menu-item"
+                    (click)="setMenuState(draft.leagueId, 'confirm-delete')"
+                  >
+                    <mat-icon>delete_forever</mat-icon>
+                    Delete
+                  </button>
+                </div>
+              }
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="ruleset-format">
+              {{ draft.ruleset }} - {{ draft.format }}
+            </div>
+            <div class="sprites">
+              @for (pokemon of draft.team; track pokemon.name) {
+                <pdz-sprite [pokemon]="pokemon"></pdz-sprite>
+              }
+            </div>
+          </div>
+          <div class="card-footer">
+            @if (menuState[draft.leagueId] === "confirm-archive") {
+              <div class="confirmation">
+                <p>Archive draft?</p>
+                <div class="confirmation-buttons">
+                  <button
+                    class="btn btn-confirm"
+                    (click)="archive(draft.leagueId)"
+                  >
+                    Yes
+                  </button>
+                  <button
+                    class="btn btn-cancel"
+                    (click)="setMenuState(draft.leagueId, '')"
+                  >
+                    No
+                  </button>
+                </div>
               </div>
+            } @else if (menuState[draft.leagueId] === "confirm-delete") {
+              <div class="confirmation">
+                <p>Delete draft?</p>
+                <div class="confirmation-buttons">
+                  <button
+                    class="btn btn-confirm"
+                    (click)="delete(draft.leagueId)"
+                  >
+                    Yes
+                  </button>
+                  <button
+                    class="btn btn-cancel"
+                    (click)="setMenuState(draft.leagueId, '')"
+                  >
+                    No
+                  </button>
+                </div>
+              </div>
+            } @else {
+              <a
+                class="footer-link"
+                [routerLink]="['/', draftPath, draft.leagueId]"
+                >Matches</a
+              >
+              <a class="footer-link" [routerLink]="[draft.leagueId, 'stats']"
+                >Stats</a
+              >
             }
           </div>
         </div>
-        <div class="card-body">
-          <div class="ruleset-format">
-            {{ draft.ruleset }} - {{ draft.format }}
-          </div>
-          <div class="sprites">
-            @for (pokemon of draft.team; track pokemon.name) {
-              <pdz-sprite [pokemon]="pokemon"></pdz-sprite>
-            }
-          </div>
-        </div>
-        <div class="card-footer">
-          @if (menuState[draft.leagueId] === "confirm-archive") {
-            <div class="confirmation">
-              <p>Archive draft?</p>
-              <button class="btn btn-confirm" (click)="archive(draft.leagueId)">
-                Yes
-              </button>
-              <button
-                class="btn btn-cancel"
-                (click)="setMenuState(draft.leagueId, '')"
-              >
-                No
-              </button>
-            </div>
-          } @else if (menuState[draft.leagueId] === "confirm-delete") {
-            <div class="confirmation">
-              <p>Delete draft?</p>
-              <button class="btn btn-confirm" (click)="delete(draft.leagueId)">
-                Yes
-              </button>
-              <button
-                class="btn btn-cancel"
-                (click)="setMenuState(draft.leagueId, '')"
-              >
-                No
-              </button>
-            </div>
-          } @else {
-            <a
-              class="footer-link"
-              [routerLink]="['/', draftPath, draft.leagueId]"
-              >Matches</a
-            >
-            <a class="footer-link" [routerLink]="[draft.leagueId, 'stats']"
-              >Stats</a
-            >
-          }
-        </div>
-      </div>
-    }
-  </div>
+      }
+    </div>
+  }
 </div>
