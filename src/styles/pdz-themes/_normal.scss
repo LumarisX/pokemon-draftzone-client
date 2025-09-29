@@ -27,8 +27,7 @@ $theme: (
     primary-hover: "cyan-900",
     primary-border: "cyan-500",
     primary-subtle: "cyan-200",
-    primary-gradient: "primary-gradient-light",
-
+    primary-gradient: linear-gradient(135deg, #009cb2, #89e2ee),
     secondary: "orange-500",
     secondary-lighter: "orange-400",
     secondary-darker: "orange-600",
@@ -113,8 +112,7 @@ $theme: (
     primary-hover: "cyan-450",
     primary-border: "cyan-700",
     primary-subtle: "cyan-900",
-    primary-gradient: "primary-gradient-dark",
-
+    primary-gradient: linear-gradient(135deg, #79dfec, #4ac1d0),
     secondary: "orange-400",
     secondary-lighter: "orange-300",
     secondary-darker: "orange-500",

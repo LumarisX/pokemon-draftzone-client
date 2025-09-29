@@ -354,16 +354,7 @@
       <section>
         <div class="debug-label">Tooltips</div>
         <div class="debug-row flex flex-wrap gap-2">
-          <app-tooltip>
-            <ng-template #tooltipInfo>
-              <div class="tooltip-content">
-                <mat-icon>schedule</mat-icon>
-                <p>Information about the button</p>
-              </div>
-            </ng-template>
-
-            <button>Hover to learn more!</button>
-          </app-tooltip>
+          <button pdzTooltip="This is a tooltip!">Hover over me</button>
         </div>
       </section>
     </div>

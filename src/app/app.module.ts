@@ -12,6 +12,7 @@ import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
 import { BodyModule } from './body/body.module';
 import { TopNavbarComponent } from './pages/top-navbar/top-navbar.component';
+import { TooltipModule } from './util/tooltip/tooltip.module';
 
 @NgModule({
   bootstrap: [AppComponent],
@@ -51,6 +52,7 @@ import { TopNavbarComponent } from './pages/top-navbar/top-navbar.component';
       registrationStrategy: 'registerWhenStable:30000',
     }),
     TopNavbarComponent,
+    TooltipModule,
   ],
   providers: [
     provideHttpClient(withInterceptorsFromDi()),

@@ -17,9 +17,10 @@
   align-items: center;
   text-align: center;
   padding: 4rem 1rem;
-  background-image: url("abstract-color-wave-background-colorful-of-orange-pink-purple-yellow-background-illustration-vector.jpg");
-  background-size: cover;
-  background-position: center;
+  background: var(--pdz-color-primary-gradient);
+  // background-image: url("abstract-color-wave-background-colorful-of-orange-pink-purple-yellow-background-illustration-vector.jpg");
+  // background-size: cover;
+  // background-position: center;
   color: var(--pdz-cmp-text-color);
   width: 100%;
 

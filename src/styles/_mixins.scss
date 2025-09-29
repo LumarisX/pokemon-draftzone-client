@@ -1,6 +1,7 @@
 @use "sass:map";
 @use "typography" as *;
 @use "base/tokens" as *;
+@use "breakpoints" as *;
 
 @mixin apply-theme($theme) {
   @each $key, $value in $theme {

@@ -78,7 +78,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--pdz-space-md);
+  padding: var(--pdz-space-sm) var(--pdz-space-md);
   border-bottom: 1px solid var(--pdz-color-primary-border);
 
   .league-name {
@@ -141,13 +141,13 @@
 }
 
 .card-body {
-  padding: var(--pdz-space-md);
+  padding: var(--pdz-space-sm) var(--pdz-space-md);
   flex-grow: 1;
 
   .ruleset-format {
-    font-size: 0.9rem;
+    font-size: var(--pdz-font-size-sm);
     color: var(--pdz-color-on-primary-container);
-    margin-bottom: var(--pdz-space-md);
+    margin-bottom: var(--pdz-space-sm);
   }
 
   .sprites {

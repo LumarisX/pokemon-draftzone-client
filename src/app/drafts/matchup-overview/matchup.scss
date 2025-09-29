@@ -32,9 +32,9 @@
 .matchup-main {
   background: linear-gradient(
     to right,
-    var(--pdz-color-primary-container),
-    var(--pdz-color-surface),
-    var(--pdz-color-secondary-container)
+    var(--pdz-color-primary-subtle),
+    var(--pdz-color-background),
+    var(--pdz-color-secondary-subtle)
   );
   height: 100%;
   overflow-y: auto;
@@ -78,7 +78,7 @@
     font-weight: 700;
     font-size: 0.8em;
     height: 1rem;
-    color: var(--pdz-color-secondary);
+    color: var(--pdz-color-primary);
   }
   .detail-text {
     font-weight: 700;
@@ -152,13 +152,13 @@
           display: flex;
           flex-wrap: wrap;
           justify-content: space-evenly;
-          border-bottom: 1px solid var(--pdz-color-primary-border-variant);
+          border-bottom: 1px solid var(--pdz-color-primary-border);
         }
         .teams-container {
           display: flex;
           padding: 0.25rem 0;
           > :not(:last-child) {
-            border-right: 1px solid var(--pdz-color-primary-border-variant);
+            border-right: 1px solid var(--pdz-color-primary-border);
           }
           .team-container {
             width: 50%;
@@ -193,8 +193,8 @@
                   position: absolute;
                   top: 0;
                   right: 0;
-                  background-color: var(--pdz-color-secondary);
-                  color: var(--pdz-color-on-secondary);
+                  background-color: var(--pdz-color-primary);
+                  color: var(--pdz-color-on-primary);
                   box-shadow: var(--pdz-level-2);
 
                   border-radius: var(--pdz-shape-corner-lg);
@@ -217,7 +217,7 @@
                   box-shadow: var(--pdz-level-2);
                   padding: 0 0.125rem;
                   border-radius: var(--pdz-shape-corner-lg);
-                  color: var(--pdz-color-secondary);
+                  color: var(--pdz-color-primary);
                   @media (max-width: 768px) {
                     font-size: 0.7em;
                     line-height: 0.7em;

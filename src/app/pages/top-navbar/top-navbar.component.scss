@@ -1,6 +1,6 @@
 @use "@angular/material" as mat;
-@import "../../../styles/breakpoints";
-@import "../../../styles/mixins";
+@use "../../../styles/breakpoints" as *;
+@use "../../../styles/mixins" as *;
 
 mat-toolbar {
   @include mat.toolbar-overrides(

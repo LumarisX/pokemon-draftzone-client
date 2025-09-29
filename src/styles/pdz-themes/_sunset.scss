@@ -27,8 +27,7 @@ $theme: (
     primary-hover: "purple-700",
     primary-border: "purple-400",
     primary-subtle: "purple-100",
-    primary-gradient: "primary-gradient-purple",
-
+    primary-gradient: linear-gradient(135deg, #9575cd, #673ab7),
     secondary: "pink-600",
     secondary-lighter: "pink-500",
     secondary-darker: "pink-700",
@@ -114,8 +113,7 @@ $theme: (
     primary-hover: "purple-300",
     primary-border: "purple-700",
     primary-subtle: "purple-900",
-    primary-gradient: "primary-gradient-purple",
-
+    primary-gradient: linear-gradient(135deg, #9575cd, #673ab7),
     // Secondary Colors
     secondary: "pink-400",
     secondary-lighter: "pink-300",

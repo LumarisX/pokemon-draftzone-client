@@ -178,15 +178,16 @@ $theme-configurations: (
       outline: var(--pdz-color-outline),
       outline-variant: var(--pdz-color-outline-variant),
       scrim: var(--pdz-color-scrim),
-      shadow: var(--pdz-color-shadow)
+      shadow: var(--pdz-color-shadow),
+      corner-full: var(--pdz-shape-corner-full)
     )
   );
 }
 
 @include mat.tooltip-overrides(
   (
-    container-color: var(--pdz-secondary),
-    supporting-text-color: var(--pdz-on-secondary),
+    container-color: var(--pdz-color-surface-inverse),
+    supporting-text-color: var(--pdz-color-on-surface-inverse),
     supporting-text-size: small,
   )
 );

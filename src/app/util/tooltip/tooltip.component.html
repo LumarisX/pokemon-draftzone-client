@@ -1,19 +1,9 @@
-<div #tooltipContainer class="tooltip-container">
-  <ng-content></ng-content>
-</div>
-
-@if (showTooltip) {
+@if (tooltip$ | async; as tooltip) {
   <div
-    class="tooltip"
-    [ngClass]="{ 'fade-out': !isHovered, visible: isHovered }"
-    [ngStyle]="{
-      top: tooltipPosition.top + 'px',
-      left: tooltipPosition.left + 'px',
-    }"
+    class="tooltip-container"
+    [style.left.px]="tooltip.left"
+    [style.top.px]="tooltip.top"
   >
-    <ng-container
-      *ngTemplateOutlet="tooltipContent"
-      class="tooltip-content"
-    ></ng-container>
+    {{ tooltip.content }}
   </div>
 }

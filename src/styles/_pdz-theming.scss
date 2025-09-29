@@ -5,11 +5,9 @@
 @use "layout" as *;
 @use "shadows" as *;
 @use "breakpoints" as *;
+@use "typography" as *;
 
 :root {
-  --pdz-font-fancy: Nasalization RG, sans-serif;
-  --pdz-font-regular: Nunito, sans-serif;
-
   --pdz-screen-size-medium: $screen-size-medium;
   --pdz-screen-size-large: $screen-size-large;
 
@@ -21,6 +19,12 @@
   }
   @each $name, $value in $spacing {
     --pdz-space-#{$name}: #{$value};
+  }
+  @each $name, $value in $fonts {
+    --pdz-font-#{$name}: #{$value};
+  }
+  @each $name, $value in $font-size {
+    --pdz-font-size-#{$name}: #{$value};
   }
 
   @include apply-typography(body-medium);
