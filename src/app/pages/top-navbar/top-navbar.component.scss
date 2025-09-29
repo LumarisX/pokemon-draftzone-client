@@ -18,7 +18,7 @@ mat-toolbar {
     )
   );
 }
-header {
+:host {
   box-shadow: var(--pdz-level-2);
   z-index: 5000;
 }

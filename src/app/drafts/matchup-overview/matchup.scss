@@ -43,7 +43,7 @@
     display: flex;
     padding: var(--pdz-space-sm);
     column-gap: 1rem;
-    z-index: 4000;
+    z-index: 5001;
 
     .details-spacer {
       flex-grow: 1;
@@ -60,6 +60,7 @@
         justify-content: space-evenly;
         column-gap: 2rem;
         row-gap: 0.125rem;
+        // border-top: px solid var(--pdz-color-menu-divider);
         background-color: var(--pdz-color-surface);
         box-shadow: var(--pdz-level-2);
       }

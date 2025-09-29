@@ -3,9 +3,16 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
   column-gap: 0.5rem;
   .team-container {
+    --pdz-comp-color-border: var(--pdz-color-primary-border);
+    --pdz-comp-color-title: var(--pdz-color-primary);
+
+    &.alternate {
+      --pdz-comp-color-border: var(--pdz-color-secondary-border);
+      --pdz-comp-color-title: var(--pdz-color-secondary);
+    }
     border-width: 1px;
     border-radius: var(--pdz-shape-corner-lg);
-    border-color: var(--pdz-color-primary-border);
+    border-color: var(--pdz-comp-color-border);
     padding: var(--pdz-space-xs);
     display: flex;
     flex-direction: column;
@@ -16,7 +23,7 @@
       flex-direction: column;
       align-items: center;
       border-width: 0 0 1px;
-      border-color: var(--pdz-color-primary-border);
+      border-color: var(--pdz-comp-color-border);
       margin-bottom: 0.5rem;
 
       .team-name-title,
@@ -27,7 +34,7 @@
         white-space: nowrap;
         text-align: center;
         font-weight: 700;
-        color: var(--pdz-color-secondary);
+        color: var(--pdz-comp-color-title);
         font-family: var(--pdz-font-fancy);
       }
 
