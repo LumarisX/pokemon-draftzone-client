@@ -14,14 +14,31 @@
     .speed-container {
       .speed-row {
         display: flex;
-        background-color: var(--pdz-color-secondary-container);
-        border-radius: var(--pdz-shape-corner-md);
+        background-color: var(--pdz-color-primary-container);
+        border-radius: var(--pdz-shape-corner-sm);
         border-bottom: 1px solid var(--pdz-color-primary-border);
         column-gap: 0.25rem;
         margin-bottom: 1px;
         cursor: pointer;
         &:hover {
-          background-color: var(--pdz-color-primary-container);
+          background-color: var(--pdz-color-primary);
+          color: var(--pdz-color-on-primary);
+        }
+        &.alternate,
+        :host-context(.alternate) & {
+          background-color: var(--pdz-color-secondary-container);
+          border-bottom: 1px solid var(--pdz-color-secondary-border);
+          .speed-icon {
+            color: var(--pdz-color-on-secondary-container);
+          }
+          .base-speed-label {
+            color: var(--pdz-color-on-secondary-container);
+          }
+
+          &:hover {
+            background-color: var(--pdz-color-secondary);
+            color: var(--pdz-color-on-secondary);
+          }
         }
         &.alternate {
           flex-direction: row-reverse;
@@ -36,7 +53,7 @@
           justify-content: center;
           align-items: center;
           display: flex;
-          color: var(--pdz-color-secondary);
+          color: var(--pdz-color-on-primary-container);
         }
 
         div {
@@ -48,7 +65,7 @@
           text-align: center;
           line-height: 2rem;
           font-weight: 700;
-          color: var(--pdz-color-secondary);
+          color: var(--pdz-color-on-primary-container);
         }
       }
     }
@@ -68,25 +85,47 @@
     .tiers-container {
       width: 100%;
       height: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: var(--pdz-space-xxxs);
       overflow: auto;
       scrollbar-gutter: stable;
       .tier-group {
-        background-color: var(--pdz-color-secondary-container);
+        background-color: var(--pdz-color-primary-container);
+        border-color: var(--pdz-color-primary-border);
         border-width: 1px;
-        border-color: var(--pdz-color-surface);
-        border-radius: var(--pdz-shape-corner-md);
-        padding: 0 0.25rem;
+        border-radius: var(--pdz-shape-corner-sm);
+        padding: 0 var(--pdz-space-xs);
         width: 40rem;
         max-width: 100%;
+
+        &.alternate,
+        :host-context(.alternate) & {
+          background-color: var(--pdz-color-secondary-container);
+          border-color: var(--pdz-color-secondary-border);
+          .speed-spacer {
+            border-right: 2px solid var(--pdz-color-secondary-border) !important;
+          }
+          > :not(:first-child) {
+            border-top: 1px solid var(--pdz-color-secondary-border);
+          }
+        }
+
         &.grouped {
           cursor: pointer;
           &:hover {
-            border: 1px solid var(--pdz-color-primary-border-variant);
+            background-color: var(--pdz-color-primary);
+            color: var(--pdz-color-on-primary);
+            &.alternate,
+            :host-context(.alternate) & {
+              background-color: var(--pdz-color-secondary);
+              color: var(--pdz-color-on-secondary);
+            }
           }
         }
 
         > :not(:first-child) {
-          border-top: 1px solid var(--pdz-color-primary-border-variant);
+          border-top: 1px solid var(--pdz-color-primary-border);
         }
 
         .speedtier-wrapper {
@@ -106,11 +145,12 @@
             height: 2rem;
           }
           .group-speeds {
-            color: var(--pdz-color-secondary);
+            color: var(--pdz-color-on-primary-container);
             display: flex;
             flex-direction: column;
             align-items: center;
             align-self: stretch;
+            justify-content: center;
             padding: 0.25rem 0;
             .speed-spacer {
               min-height: 0.5rem;
@@ -157,5 +197,10 @@
   }
   .filter-label {
     font-weight: 500;
+  }
+  .option-row {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
   }
 }

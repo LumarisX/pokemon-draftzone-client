@@ -1,5 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, inject } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
+  inject,
+} from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { getNameByPid, getPidByName } from '../../data/namedex';
@@ -18,7 +26,6 @@ type SpritePokemon = Pokemon<DraftOptions & { loaded?: boolean }>;
 export class SpriteComponent implements OnChanges {
   private spriteService = inject(SpriteService);
 
-
   @Input()
   set pokemon(value: SpritePokemon) {
     this._pokemon = { ...value, loaded: false };
@@ -34,7 +41,7 @@ export class SpriteComponent implements OnChanges {
     | 'below'
     | 'left'
     | 'right'
-    | null = 'above';
+    | null = null;
   @Input() set name(value: string) {
     let id = getPidByName(value);
     if (!id) return;

@@ -188,7 +188,9 @@ $theme-configurations: (
   (
     container-color: var(--pdz-color-surface-inverse),
     supporting-text-color: var(--pdz-color-on-surface-inverse),
-    supporting-text-size: small,
+    supporting-text-size: var(--pdz-font-size-xs),
+    supporting-text-line-height: var(--pdz-font-size-xs),
+    container-shape: var(--pdz-shape-corner-sm),
   )
 );
 

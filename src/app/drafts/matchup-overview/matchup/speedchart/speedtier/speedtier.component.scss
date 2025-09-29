@@ -10,7 +10,7 @@
   .speed-label {
     line-height: 2rem;
     font-weight: 700;
-    color: var(--pdz-color-secondary);
+    color: var(--pdz-color-on-primary-container);
   }
   .modifier-container {
     display: flex;
@@ -21,14 +21,30 @@
     padding: 0.125rem 0.25rem;
     .modifier {
       height: 1rem;
+      line-height: 1rem;
       overflow: hidden;
       padding: 0 0.25rem;
       font-weight: 700;
       font-size: 0.7em;
-      border: 1px solid var(--pdz-color-secondary);
-      color: var(--pdz-color-secondary);
+      border: 1px solid var(--pdz-color-on-primary-container);
+      background-color: var(--pdz-color-primary-subtle);
+      color: var(--pdz-color-on-primary-container);
       border-radius: var(--pdz-shape-corner-lg);
       user-select: none;
+    }
+  }
+
+  &.alternate,
+  :host-context(.alternate) & {
+    .speed-label {
+      color: var(--pdz-color-on-secondary-container);
+    }
+    .modifier-container {
+      .modifier {
+        border: 1px solid var(--pdz-color-on-secondary-container);
+        background-color: var(--pdz-color-secondary-subtle);
+        color: var(--pdz-color-on-secondary-container);
+      }
     }
   }
 }

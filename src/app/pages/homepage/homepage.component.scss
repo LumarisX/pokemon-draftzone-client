@@ -27,8 +27,10 @@
   .title-container {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 0.5rem;
     margin-bottom: 1rem;
+    width: 100%;
   }
 
   .title-logo {
@@ -51,6 +53,15 @@
     font-weight: 700;
     font-family: var(--pdz-font-fancy);
     line-height: 1;
+    flex: 1;
+
+    &:first-child {
+      text-align: right;
+    }
+
+    &:last-child {
+      text-align: left;
+    }
   }
 
   .subtitle {
