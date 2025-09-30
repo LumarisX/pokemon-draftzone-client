@@ -80,7 +80,7 @@
   user-select: none;
 
   .team-card-header {
-    padding: var(--pdz-space-xxs);
+    padding: var(--pdz-space-2xs);
     display: flex;
     align-items: end;
     font-size: 0.75em;
@@ -180,7 +180,7 @@
 
       .draft-pick {
         border-radius: var(--pdz-shape-corner-xs);
-        padding: var(--pdz-space-xxs);
+        padding: var(--pdz-space-2xs);
       }
 
       .pick-label {

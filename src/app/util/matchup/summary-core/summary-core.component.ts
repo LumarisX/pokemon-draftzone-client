@@ -25,8 +25,6 @@ import { typeColor } from '../../styling';
   ],
 })
 export class SummaryCoreComponent {
-  // --- Class Properties ---
-
   baseValue: number = 80;
   private summaryData = new BehaviorSubject<Summary | null>(null);
   private sortSubject = new BehaviorSubject<Sort>({
@@ -34,12 +32,8 @@ export class SummaryCoreComponent {
     direction: 'desc',
   });
 
-  // --- Inputs & Outputs ---
-
   @Input()
   set summary(value: Summary | undefined | null) {
-    // FIX: This guard prevents the component from clearing its data if the parent
-    // component passes a null/undefined value (e.g., during a loading state).
     if (!value) {
       return;
     }
@@ -50,16 +44,12 @@ export class SummaryCoreComponent {
     return this.summaryData.getValue();
   }
 
-  // --- Observables for Template ---
-
   readonly sortedTeam$ = combineLatest([
     this.summaryData.asObservable(),
     this.sortSubject.asObservable(),
   ]).pipe(
     map(([summary, sort]) => {
       if (!summary?.team) return [];
-      // When summaryData is null initially, we need a default sort.
-      // If no sort is active, return the team as-is (or default sorted).
       if (!sort.active || sort.direction === '') {
         const defaultSorted = [...summary.team];
         return defaultSorted.sort((a, b) => b.baseStats.spe - a.baseStats.spe);
@@ -76,8 +66,6 @@ export class SummaryCoreComponent {
       });
     }),
   );
-
-  // --- Public Properties & Methods ---
 
   public readonly typeColor = typeColor;
 
@@ -101,16 +89,16 @@ export class SummaryCoreComponent {
   statColor(statValue: number | undefined): string | undefined {
     if (statValue === undefined) return undefined;
     const diff = statValue - this.baseValue;
-    if (Math.abs(diff) <= 7) return 'var(--pdz-colors-menu-200)';
+    if (Math.abs(diff) <= 7) return 'var(--pdz-color-scale-neutral)';
     const sign = diff > 0 ? 'positive' : 'negative';
     const level = Math.min(Math.floor((Math.abs(diff) - 8) / 15) + 1, 5);
-    return `var(--pdz-colors-scale-${sign}-${level})`;
+    return `var(--pdz-color-scale-${sign}-${level})`;
   }
 
   bstColor(bstValue: number | undefined): string | undefined {
     if (bstValue === undefined) return undefined;
     const diff = bstValue - this.baseValue * 6;
-    if (diff > -25 && diff <= 0) return 'var(--pdz-colors-menu-200)';
+    if (diff > -25 && diff <= 0) return 'var(--pdz-color-scale-neutral)';
     const sign = diff > 0 ? 'positive' : 'negative';
     let level: number;
     if (diff > 0) {
@@ -118,10 +106,8 @@ export class SummaryCoreComponent {
     } else {
       level = Math.floor((Math.abs(diff) - 1) / 25) + 1;
     }
-    return `var(--pdz-colors-scale-${sign}-${Math.min(level, 7)})`;
+    return `var(--pdz-color-scale-${sign}-${Math.min(level, 7)})`;
   }
-
-  // --- Private Helper Methods ---
 
   private getStatValue(pokemon: any, stat: string): number | string {
     switch (stat) {

@@ -1,5 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, OnInit, ViewChild, inject } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild,
+  inject,
+} from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { Meta } from '@angular/platform-browser';
 import { ActivatedRoute, RouterModule } from '@angular/router';
@@ -13,6 +19,7 @@ import { MatchupComponent } from './matchup/matchup.component';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { MatIconModule } from '@angular/material/icon';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
+import { FlatButtonComponent } from '../../components/buttons/flat-button/flat-button.component';
 
 dayjs.extend(duration);
 
@@ -30,6 +37,7 @@ dayjs.extend(duration);
     OverlayModule,
     MatIconModule,
     SpriteComponent,
+    FlatButtonComponent,
   ],
 })
 export class MatchupOverviewComponent implements OnInit {

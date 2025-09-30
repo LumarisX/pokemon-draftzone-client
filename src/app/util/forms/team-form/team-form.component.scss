@@ -226,7 +226,7 @@
       opacity: 0.6;
       padding: var(--pdz-space-xs);
       &:hover {
-        padding: var(--pdz-space-xxs);
+        padding: var(--pdz-space-2xs);
       }
     }
   }
@@ -366,7 +366,7 @@ mat-tab-group {
 }
 
 pdz-slide-toggle {
-  padding: var(--pdz-space-xxs);
+  padding: var(--pdz-space-2xs);
 }
 
 pokemon-select,

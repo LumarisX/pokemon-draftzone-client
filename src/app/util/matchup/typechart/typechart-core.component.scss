@@ -1,6 +1,14 @@
+@use "../../../../styles/mixins/scales" as *;
+
+:host {
+  @include generate-bg-scale();
+  --bevel-radius: var(--pdz-shape-corner-md, 0.5rem);
+  --bevel-padding: var(--pdz-space-2xs, 3px);
+}
+
 .type-cell {
-  width: 3rem;
-  height: 3rem;
+  width: var(--pdz-space-3xl);
+  height: var(--pdz-space-3xl);
   padding: var(--pdz-space-xs);
   overflow: hidden;
 }
@@ -16,7 +24,7 @@
   font-weight: bold;
   overflow: hidden;
   &.type-colored {
-    color: white;
+    color: var(--pdz-color-on-primary-fixed, white);
     box-shadow: var(--pdz-level-1);
   }
   &.type-empty {
@@ -25,15 +33,12 @@
   }
 }
 
-$bevel: 0.5rem;
-$bevel-padding: 3px;
-
 td,
 th {
   text-align: center;
-  color: white;
+  color: var(--pdz-color-on-primary-fixed, white);
   &:first-child {
-    padding-left: $bevel-padding;
+    padding-left: var(--bevel-padding);
   }
 }
 
@@ -45,24 +50,23 @@ th {
   width: 2.5rem;
   border-radius: var(--pdz-shape-corner-xs);
   box-shadow: var(--pdz-level-1);
-  margin-top: 0px;
-
+  margin-top: 0;
   margin-bottom: 1px;
-  &.sort-press {
-    margin-bottom: 0px;
-    margin-top: 1px;
 
+  &.sort-press {
+    margin-bottom: 0;
+    margin-top: 1px;
     box-shadow: var(--pdz-level-0);
   }
 
   &.type-container {
     height: 2.5rem;
-    padding: 0 $bevel-padding $bevel-padding;
+    padding: 0 var(--bevel-padding) var(--bevel-padding);
   }
 
   &.type-container-small {
-    height: 1rem;
-    padding: $bevel-padding;
+    height: var(--pdz-space-lg);
+    padding: var(--bevel-padding);
   }
 
   .type-text {
@@ -77,12 +81,12 @@ th {
     justify-content: center;
     align-items: center;
     flex-grow: 1;
-    width: 1rem;
+    width: var(--pdz-space-lg);
     overflow: hidden;
 
     img {
-      height: 1rem;
-      width: 1rem;
+      height: var(--pdz-space-lg);
+      width: var(--pdz-space-lg);
       object-fit: contain;
     }
   }
@@ -90,30 +94,30 @@ th {
 
 //Hover lines
 .column-hovered {
-  background-color: var(--pdz-color-primary-border-variant);
+  background-color: var(--pdz-color-primary-border);
 }
 
 tbody {
   tr {
     &:hover {
-      background-color: var(--pdz-color-primary-border-variant);
+      background-color: var(--pdz-color-primary-border);
       td:not(.column-hovered),
       th:not(.column-hovered) {
         &:first-child {
-          border-top-left-radius: $bevel;
-          border-bottom-left-radius: $bevel;
+          border-top-left-radius: var(--bevel-radius);
+          border-bottom-left-radius: var(--bevel-radius);
         }
         &:last-child {
-          border-top-right-radius: $bevel;
-          border-bottom-right-radius: $bevel;
+          border-top-right-radius: var(--bevel-radius);
+          border-bottom-right-radius: var(--bevel-radius);
         }
       }
     }
 
     &:last-child:not(:hover) {
       td {
-        border-bottom-left-radius: $bevel;
-        border-bottom-right-radius: $bevel;
+        border-bottom-left-radius: var(--bevel-radius);
+        border-bottom-right-radius: var(--bevel-radius);
       }
     }
   }
@@ -121,8 +125,8 @@ tbody {
 
 thead {
   th {
-    border-top-left-radius: $bevel;
-    border-top-right-radius: $bevel;
+    border-top-left-radius: var(--bevel-radius);
+    border-top-right-radius: var(--bevel-radius);
   }
 }
 
@@ -195,4 +199,8 @@ tbody {
 .stat-neutral {
   background-color: var(--pdz-color-secondary-container);
   color: var(--pdz-color-on-secondary-container);
+}
+
+.pdz-scale-neutral {
+  color: var(--pdz-color-scale-neutral);
 }
