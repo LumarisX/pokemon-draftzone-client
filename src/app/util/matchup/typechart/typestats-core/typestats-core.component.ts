@@ -79,7 +79,6 @@ export class TypestatsCoreComponent implements OnInit, OnDestroy {
   typeColor = typeColor;
 
   public summarize(team: TypeChartPokemon[] = this.sortedTeam.value): void {
-    console.log('suming');
     const newValues = this.types.map(() => ({
       weaknesses: 0,
       resistances: 0,

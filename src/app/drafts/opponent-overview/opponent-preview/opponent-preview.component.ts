@@ -4,8 +4,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSortModule, Sort } from '@angular/material/sort';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { MatTableModule } from '@angular/material/table';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { BehaviorSubject, catchError, forkJoin, of, take } from 'rxjs';
+import { IconButtonComponent } from '../../../components/buttons/icon-button/icon-button.component';
 import { LoadingComponent } from '../../../images/loading/loading.component';
 import { SpriteComponent } from '../../../images/sprite/sprite.component';
 import { Opponent } from '../../../interfaces/opponent';
@@ -13,7 +15,7 @@ import { DraftService } from '../../../services/draft.service';
 import { DraftOverviewPath } from '../../draft-overview/draft-overview-routing.module';
 import { Stats } from '../../draft-overview/draft-stats/draft-stats.component';
 import { ConfirmDeleteDialogComponent } from './confirm-delete-dialog.component';
-import { MatTableModule } from '@angular/material/table';
+import { FlatButtonComponent } from '../../../components/buttons/flat-button/flat-button.component';
 
 type Matchup = Opponent & {
   score?: [number, number] | null;
@@ -37,11 +39,12 @@ type Matchup = Opponent & {
     MatTableModule,
     MatSortModule,
     MatDialogModule,
+    IconButtonComponent,
+    FlatButtonComponent,
   ],
 })
 export class OpponentTeamPreviewComponent implements OnInit {
   private draftService = inject(DraftService);
-  private router = inject(Router);
   private route = inject(ActivatedRoute);
   private dialog = inject(MatDialog);
 
@@ -198,12 +201,6 @@ export class OpponentTeamPreviewComponent implements OnInit {
           },
         });
       }
-    });
-  }
-
-  newOpponent() {
-    this.router.navigate(['/', DraftOverviewPath, this.teamId, 'form'], {
-      queryParams: { stage: `Week ${(this.matchups?.length ?? 0) + 1}` },
     });
   }
 

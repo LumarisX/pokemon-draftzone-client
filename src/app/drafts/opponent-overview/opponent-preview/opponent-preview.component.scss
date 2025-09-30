@@ -59,24 +59,25 @@ section {
   font-family: var(--pdz-font-fancy);
   user-select: none;
   border-radius: var(--pdz-shape-corner-lg);
-  box-shadow: var(--pdz-level-1);
   background-color: var(--pdz-color-secondary-container);
+  @include shadow-hover-effect();
+  cursor: pointer;
 
   flex-wrap: wrap;
   @include respond-above(medium) {
     flex-wrap: nowrap;
   }
 
-  &:hover {
-    box-shadow: var(--pdz-level-2);
-    background-color: var(--pdz-color-secondary-container-hover);
-    cursor: pointer;
-  }
+  // &:hover {
+  //   box-shadow: var(--pdz-level-2);
+  //   background-color: var(--pdz-color-secondary-container-hover);
+  //   cursor: pointer;
+  // }
 
   &.selected {
-    box-shadow: var(--pdz-level-inset-2);
-    background-color: var(--pdz-color-secondary-container-darker);
-    cursor: pointer;
+    box-shadow: var(--pdz-level-0);
+    background-color: var(--pdz-color-secondary);
+    color: var(--pdz-color-on-secondary);
   }
 }
 
@@ -184,6 +185,7 @@ pdz-sprite {
   }
   > div {
     background-color: var(--pdz-color-secondary-container);
+    color: var(--pdz-color-on-secondary-container);
     padding: var(--pdz-space-xxs);
     border-radius: var(--pdz-shape-corner-sm);
   }
@@ -286,17 +288,4 @@ pdz-sprite {
   display: flex;
   gap: 0.5rem;
   align-items: stretch;
-
-  button {
-    display: flex;
-    justify-content: center;
-    box-shadow: var(--pdz-level-2);
-    padding: var(--pdz-space-sm);
-    font-size: 0.8em;
-
-    &:hover {
-      background-color: var(--pdz-color-secondary-container);
-      box-shadow: var(--pdz-level-4);
-    }
-  }
 }

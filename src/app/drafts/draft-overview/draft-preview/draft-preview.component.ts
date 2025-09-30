@@ -7,6 +7,7 @@ import { SpriteComponent } from '../../../images/sprite/sprite.component';
 import { Draft } from '../../../interfaces/draft';
 import { DraftService } from '../../../services/draft.service';
 import { DraftOverviewPath } from '../draft-overview-routing.module';
+import { IconButtonComponent } from '../../../components/buttons/icon-button/icon-button.component';
 
 @Component({
   selector: 'draft-preview',
@@ -19,6 +20,7 @@ import { DraftOverviewPath } from '../draft-overview-routing.module';
     SpriteComponent,
     MatIconModule,
     LoadingComponent,
+    IconButtonComponent,
   ],
 })
 export class DraftPreviewComponent {

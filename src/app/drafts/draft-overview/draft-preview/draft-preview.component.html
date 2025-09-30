@@ -2,22 +2,17 @@
   <div class="header">
     <h1 class="title">My Drafts</h1>
     <div class="actions">
-      <a
+      <pdz-icon-button
         [routerLink]="['/', draftPath, 'new']"
-        class="action-button"
-        title="Add League"
-        aria-label="Add League"
-      >
-        <mat-icon>add</mat-icon>
-      </a>
-      <a
-        [routerLink]="['/', draftPath, 'archives']"
-        class="action-button"
-        title="Archives"
-        aria-label="View Archives"
-      >
-        <mat-icon>inventory_2</mat-icon>
-      </a>
+        icon="add"
+        tooltip="Add League"
+      ></pdz-icon-button>
+      <pdz-icon-button
+        [route]="['/', draftPath, 'archives']"
+        icon="inventory_2"
+        tooltip="Archives"
+        ariaLabel="View Archives"
+      ></pdz-icon-button>
     </div>
   </div>
 
@@ -37,6 +32,8 @@
               >
                 <mat-icon>more_vert</mat-icon>
               </button>
+              <pdz-icon-button icon="more_vert" />
+
               @if (menuState[draft.leagueId] === "main") {
                 <div class="menu-dropdown">
                   <a
@@ -46,6 +43,7 @@
                   >
                     <mat-icon>edit_document</mat-icon> Edit Team
                   </a>
+
                   <button
                     class="menu-item"
                     (click)="setMenuState(draft.leagueId, 'confirm-archive')"

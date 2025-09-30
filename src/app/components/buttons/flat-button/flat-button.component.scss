@@ -1,0 +1,42 @@
+@mixin flat-button-theme($bg, $bg-hover, $border, $color) {
+  background-color: $bg;
+  border-color: $border;
+  color: $color;
+
+  &:hover {
+    background-color: $bg-hover;
+    box-shadow: var(--pdz-level-1);
+  }
+}
+
+.flat-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--pdz-shape-corner-full);
+  padding: var(--pdz-space-none) var(--pdz-space-xl);
+  border: 1px solid;
+  font-size: var(--pdz-font-size-lg);
+  font-weight: bold;
+  transition:
+    background-color 0.2s,
+    box-shadow 0.2s;
+
+  @include flat-button-theme(
+    var(--pdz-color-primary-container),
+    var(--pdz-color-primary-container-hover),
+    var(--pdz-color-primary-border),
+    var(--pdz-color-on-primary-container)
+  );
+
+  &--secondary {
+    @include flat-button-theme(
+      var(--pdz-color-secondary-container),
+      var(--pdz-color-secondary-container-hover),
+      var(--pdz-color-secondary-border),
+      var(--pdz-color-on-secondary-container)
+    );
+  }
+}

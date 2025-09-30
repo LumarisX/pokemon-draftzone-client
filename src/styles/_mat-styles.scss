@@ -179,9 +179,17 @@ $theme-configurations: (
       outline-variant: var(--pdz-color-outline-variant),
       scrim: var(--pdz-color-scrim),
       shadow: var(--pdz-color-shadow),
-      corner-full: var(--pdz-shape-corner-full)
+      corner-full: var(--pdz-shape-corner-full),
+      corner-small: var(--pdz-shape-corner-sm),
+      corner-medium: var(--pdz-shape-corner-md),
+      corner-large: var(--pdz-shape-corner-lg)
     )
   );
+}
+
+body {
+  --mat-ripple-color: rgba(255, 255, 255, 0.1) !important;
+  // --mat-fab-small-state-layer-color: magenta !important;
 }
 
 @include mat.tooltip-overrides(

@@ -9,6 +9,8 @@ import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { Draft } from '../../interfaces/draft';
 import { DraftService } from '../../services/draft.service';
 import { DraftOverviewPath } from '../draft-overview/draft-overview-routing.module';
+import { IconButtonComponent } from '../../components/buttons/icon-button/icon-button.component';
+import { FlatButtonComponent } from '../../components/buttons/flat-button/flat-button.component';
 
 @Component({
   selector: 'opponent-overview',
@@ -20,6 +22,8 @@ import { DraftOverviewPath } from '../draft-overview/draft-overview-routing.modu
     MatButtonModule,
     MatIconModule,
     SpriteComponent,
+    IconButtonComponent,
+    FlatButtonComponent,
   ],
   templateUrl: './opponent-overview.component.html',
   styleUrl: './opponent-overview.component.scss',

@@ -1,17 +1,6 @@
 @use "sass:map";
 @use "typography" as *;
-@use "base/tokens" as *;
 @use "breakpoints" as *;
-
-@mixin apply-theme($theme) {
-  @each $key, $value in $theme {
-    @if map.has-key($core-tokens, $value) {
-      --pdz-color-#{$key}: #{map.get($core-tokens, $value)};
-    } @else {
-      --pdz-color-#{$key}: #{$value};
-    }
-  }
-}
 
 @mixin apply-typography($style-name) {
   $style: map.get($typography, $style-name);
@@ -52,5 +41,31 @@
 
   &:hover {
     box-shadow: var(--pdz-level-1);
+  }
+}
+
+@mixin shadow-hover-effect(
+  $hover-shadow: var(--pdz-level-2),
+  $initial-shadow: var(--pdz-level-1),
+  $duration: 0.3s
+) {
+  box-shadow: $initial-shadow;
+  transition: box-shadow $duration ease;
+
+  &:hover {
+    box-shadow: $hover-shadow;
+  }
+}
+
+@mixin background-hover-effect(
+  $hover-background: inherit,
+  $initial-background: inherit,
+  $duration: 0.3s
+) {
+  background-color: $initial-background;
+  transition: background-color $duration ease;
+
+  &:hover {
+    background-color: $hover-background;
   }
 }

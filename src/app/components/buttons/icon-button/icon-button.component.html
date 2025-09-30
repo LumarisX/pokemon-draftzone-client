@@ -1,0 +1,28 @@
+@if (route.length || href) {
+  <a
+    class="icon-button"
+    [routerLink]="disabled ? null : route"
+    [href]="disabled ? null : href"
+    [queryParams]="queryParams"
+    [target]="newTab ? '_blank' : undefined"
+    [class.disabled]="disabled"
+    [ngClass]="'icon-button--' + theme"
+    [title]="tooltip"
+    [attr.aria-disabled]="disabled"
+    [attr.aria-label]="effectiveAriaLabel"
+  >
+    <mat-icon aria-hidden="true">{{ icon }}</mat-icon>
+  </a>
+} @else {
+  <button
+    type="button"
+    class="icon-button"
+    [ngClass]="'icon-button--' + theme"
+    [disabled]="disabled"
+    [title]="tooltip"
+    [attr.aria-label]="effectiveAriaLabel"
+    (click)="click.emit($event)"
+  >
+    <mat-icon aria-hidden="true">{{ icon }}</mat-icon>
+  </button>
+}

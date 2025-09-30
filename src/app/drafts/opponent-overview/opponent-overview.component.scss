@@ -13,14 +13,13 @@
   box-shadow: var(--pdz-level-2);
 }
 
-.draft-info-container {
+.draft-info-container,
+.team-info-container {
   padding: 0 0.5rem;
   flex-shrink: 0;
 }
 
 .team-info-container {
-  padding: 0 0.5rem;
-  flex-shrink: 0;
   padding-left: 1rem;
   border-left: 2px solid var(--pdz-color-primary-border);
 }
@@ -32,6 +31,7 @@ h2 {
 h3 {
   font-size: 1.5em;
 }
+
 h4 {
   font-size: 1em;
   line-height: 1em;
@@ -44,6 +44,12 @@ h4 {
   @media (max-width: 768px) {
     font-size: smaller;
   }
+}
+
+.stat {
+  font-size: 1.25em;
+  font-weight: bold;
+  color: var(--pdz-color-symbol-sub);
 }
 
 .opponent-main {

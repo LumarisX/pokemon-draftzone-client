@@ -1,0 +1,58 @@
+@mixin icon-button-theme($bg, $bg-hover, $border, $color) {
+  background-color: $bg;
+  border-color: $border;
+  color: $color;
+
+  &:hover {
+    background-color: $bg-hover;
+    box-shadow: var(--pdz-level-1);
+  }
+}
+
+.icon-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--pdz-shape-corner-full);
+  border: 1px solid;
+  transition:
+    background-color 0.2s,
+    box-shadow 0.2s;
+
+  @include icon-button-theme(
+    var(--pdz-color-primary-container),
+    var(--pdz-color-primary-container-hover),
+    var(--pdz-color-primary-border),
+    var(--pdz-color-on-primary-container)
+  );
+
+  &--primary {
+    @include icon-button-theme(
+      var(--pdz-color-primary-container),
+      var(--pdz-color-primary-container-hover),
+      var(--pdz-color-primary-border),
+      var(--pdz-color-on-primary-container)
+    );
+  }
+
+  &--secondary {
+    @include icon-button-theme(
+      var(--pdz-color-secondary-container),
+      var(--pdz-color-secondary-container-hover),
+      var(--pdz-color-secondary-border),
+      var(--pdz-color-on-secondary-container)
+    );
+  }
+
+  &.disabled,
+  &:disabled {
+    background-color: var(--pdz-color-disabled-container);
+    color: var(--pdz-color-on-disabled-container);
+    border-color: var(--pdz-color-disabled-border);
+    pointer-events: none;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+}

@@ -1,0 +1,28 @@
+@if (route.length || href) {
+  <a
+    class="flat-button"
+    [routerLink]="disabled ? null : route"
+    [href]="disabled ? null : href"
+    [queryParams]="queryParams"
+    [target]="newTab ? '_blank' : undefined"
+    [class.disabled]="disabled"
+    [ngClass]="'flat-button--' + theme"
+    [title]="tooltip"
+    [attr.aria-disabled]="disabled"
+    [attr.aria-label]="effectiveAriaLabel"
+  >
+    {{ text }}
+  </a>
+} @else {
+  <button
+    type="button"
+    class="flat-button"
+    [ngClass]="'flat-button--' + theme"
+    [disabled]="disabled"
+    [title]="tooltip"
+    [attr.aria-label]="effectiveAriaLabel"
+    (click)="click.emit($event)"
+  >
+    {{ text }}
+  </button>
+}

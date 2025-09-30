@@ -6,6 +6,17 @@
 @use "shadows" as *;
 @use "breakpoints" as *;
 @use "typography" as *;
+@use "base/tokens" as *;
+
+@mixin apply-theme($theme) {
+  @each $key, $value in $theme {
+    @if map.has-key($core-tokens, $value) {
+      --pdz-color-#{$key}: #{map.get($core-tokens, $value)};
+    } @else {
+      --pdz-color-#{$key}: #{$value};
+    }
+  }
+}
 
 :root {
   --pdz-screen-size-medium: $screen-size-medium;

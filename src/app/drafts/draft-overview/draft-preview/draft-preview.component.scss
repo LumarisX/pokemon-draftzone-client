@@ -1,3 +1,5 @@
+@use "../../../../styles/mixins" as *;
+
 :host {
   display: block;
   width: 100%;
@@ -29,26 +31,6 @@
   }
 }
 
-.action-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: var(--pdz-shape-corner-full);
-  background-color: var(--pdz-color-primary-container);
-  border: 1px solid var(--pdz-color-primary-border);
-  color: var(--pdz-color-on-primary-container);
-  transition:
-    background-color 0.2s,
-    box-shadow 0.2s;
-
-  &:hover {
-    background-color: var(--pdz-color-primary-container-hover);
-    box-shadow: var(--pdz-level-1);
-  }
-}
-
 .drafts-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -61,15 +43,10 @@
   color: var(--pdz-color-on-primary-container);
   border-radius: var(--pdz-shape-corner-md);
   border: 1px solid var(--pdz-color-primary-border);
-  box-shadow: var(--pdz-level-1);
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  transition: box-shadow 0.3s ease;
-
-  &:hover {
-    box-shadow: var(--pdz-level-2);
-  }
+  @include shadow-hover-effect;
 }
 
 .card-header {
@@ -152,7 +129,7 @@
 
   .sprites {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(48px, 1fr));
+    grid-template-columns: repeat(6, minmax(48px, 1fr));
     gap: var(--pdz-space-sm);
   }
 }
@@ -166,16 +143,15 @@
   gap: var(--pdz-space-sm);
 
   .footer-link {
-    background-color: var(--pdz-color-primary-container-lighter);
     color: var(--pdz-color-on-primary-container);
     text-decoration: none;
     font-weight: 500;
     padding: var(--pdz-space-xs) var(--pdz-space-md);
     border-radius: var(--pdz-shape-corner-sm);
-    transition: background-color 0.2s;
 
+    @include background-hover-effect(var(--pdz-color-primary));
     &:hover {
-      background-color: var(--pdz-color-primary-darker);
+      color: var(--pdz-color-on-primary);
     }
   }
 }
@@ -209,7 +185,6 @@
       color: var(--pdz-color-on-error);
 
       &:hover {
-        /* TODO: Add a darker error color to the theme */
         opacity: 0.8;
       }
     }
