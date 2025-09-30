@@ -7,7 +7,7 @@
 .rule-title {
   font-family: var(--pdz-font-fancy);
   font-weight: bold;
-  font-size: larger;
+  font-size: var(--pdz-font-size-lg);
 }
 
 .rule-description {
@@ -125,7 +125,7 @@ $vertical-padding: var(--pdz-space-sm);
   justify-content: end;
   padding-bottom: $vertical-padding;
   mat-icon {
-    font-size: 1.2em;
+    font-size: 1.2rem;
     height: fit-content;
     color: var(--pdz-color-secondary);
     width: fit-content;

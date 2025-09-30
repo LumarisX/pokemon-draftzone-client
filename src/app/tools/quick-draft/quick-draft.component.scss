@@ -19,24 +19,24 @@ h3 {
 }
 
 h1 {
-  font-size: 2em;
+  font-size: 2rem;
   @media (max-width: 768px) {
-    font-size: 1.75em;
+    font-size: 1.75rem;
   }
 }
 
 h2 {
-  font-size: 1.5em;
+  font-size: 1.5rem;
   text-align: center;
   @media (max-width: 768px) {
-    font-size: 1.25em;
+    font-size: 1.25rem;
   }
 }
 
 h3 {
-  font-size: 1.25em;
+  font-size: 1.25rem;
   @media (max-width: 768px) {
-    font-size: 1.15em;
+    font-size: 1.15rem;
   }
 }
 
@@ -71,7 +71,7 @@ h3 {
 }
 
 .option-tier {
-  font-size: 0.8em;
+  font-size: 0.8rem;
   font-weight: 800;
   font-family: var(--pdz-font-regular);
   color: var(--pdz-color-primary);

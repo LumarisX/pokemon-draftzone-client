@@ -13,23 +13,23 @@
   }
 
   .toggle-track {
-    width: 3.5em;
+    width: 3.5rem;
     border: 0.125em solid var(--pdz-color-primary);
-    height: 1em;
+    height: 1rem;
     background-color: var(--pdz-color-surface-variant);
-    border-radius: 1em;
+    border-radius: 1rem;
     position: relative;
     transition: background-color 0.3s ease;
   }
 
   .toggle-thumb {
-    width: 1.5em;
-    height: 1.5em;
+    width: 1.5rem;
+    height: 1.5rem;
     background-color: var(--pdz-color-primary-border);
     color: var(--pdz-color-surface-variant);
     border-radius: 50%;
     position: absolute;
-    padding: 0.125em;
+    padding: 0.125rem;
     top: 50%;
     left: -2px;
     transform: translateY(-50%);

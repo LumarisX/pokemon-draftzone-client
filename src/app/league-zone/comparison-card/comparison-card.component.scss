@@ -73,16 +73,16 @@ $container-padding: var(--pdz-space-md);
 }
 
 .entity-primary-name {
-  font-size: 0.9em;
+  font-size: 0.9rem;
   overflow: hidden;
-  line-height: 1em;
-  max-height: 2em;
+  line-height: 1rem;
+  max-height: 2rem;
   font-family: var(--pdz-font-fancy);
   text-overflow: ellipsis;
 }
 
 .entity-secondary-name {
-  font-size: 0.7em;
+  font-size: 0.7rem;
   color: var(--pdz-color-on-surface-variant);
   white-space: nowrap;
   overflow: hidden;
@@ -106,11 +106,11 @@ $container-padding: var(--pdz-space-md);
 .center-icon {
   user-select: none;
   font-weight: 700;
-  font-size: 0.6em;
+  font-size: 0.6rem;
   max-width: 1rem;
   color: var(--pdz-color-on-surface-variant);
   text-align: center;
-  line-height: 0.8em;
+  line-height: 0.8rem;
   display: flex;
   flex-grow: 1;
   align-items: center;
@@ -135,9 +135,9 @@ $container-padding: var(--pdz-space-md);
 .status {
   border-radius: 2rem;
   padding: var(--pdz-space-xs);
-  font-size: 0.7em;
+  font-size: 0.7rem;
   user-select: none;
-  line-height: 0.7em;
+  line-height: 0.7rem;
   transition: transform 0.3s ease-in-out;
   border: 1px solid var(--pdz-color-primary-border-variant);
   color: gray;

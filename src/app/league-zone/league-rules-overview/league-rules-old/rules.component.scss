@@ -52,7 +52,7 @@
 .rule-title {
   font-family: var(--pdz-font-fancy);
   font-weight: bold;
-  font-size: larger;
+  font-size: var(--pdz-font-size-lg);
 }
 
 :host ::ng-deep {

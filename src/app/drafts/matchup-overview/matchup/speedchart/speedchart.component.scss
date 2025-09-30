@@ -162,7 +162,7 @@
             }
             .top-speed,
             .bot-speed {
-              line-height: 1em;
+              line-height: 1rem;
               font-weight: 700;
             }
           }
@@ -171,7 +171,7 @@
     }
   }
   .section-title {
-    font-size: 0.9em;
+    font-size: 0.9rem;
     font-family: var(--pdz-font-fancy);
   }
 }
@@ -192,7 +192,7 @@
     height: 1.5rem;
     cursor: pointer;
     &:hover {
-      font-size: 1.05em;
+      font-size: 1.05rem;
     }
   }
   .filter-label {

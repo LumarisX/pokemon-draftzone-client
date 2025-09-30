@@ -4,6 +4,8 @@ $positive-scale: (
   3: var(--pdz-color-scale-positive-3),
   4: var(--pdz-color-scale-positive-4),
   5: var(--pdz-color-scale-positive-5),
+  6: var(--pdz-color-scale-positive-6),
+  7: var(--pdz-color-scale-positive-7),
 );
 
 $negative-scale: (
@@ -12,6 +14,8 @@ $negative-scale: (
   3: var(--pdz-color-scale-negative-3),
   4: var(--pdz-color-scale-negative-4),
   5: var(--pdz-color-scale-negative-5),
+  6: var(--pdz-color-scale-negative-6),
+  7: var(--pdz-color-scale-negative-7),
 );
 
 @mixin generate-bg-scale($class-prefix: "pdz-scale") {

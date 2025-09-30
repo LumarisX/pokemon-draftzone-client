@@ -46,12 +46,12 @@
           padding: 0 0.125rem;
           position: sticky;
           left: 0;
-          font-size: 0.8em;
+          font-size: 0.8rem;
           font-family: var(--pdz-font-fancy);
 
           mat-icon {
             color: var(--pdz-color-primary-border-variant);
-            font-size: 1.5em;
+            font-size: 1.5rem;
             height: fit-content;
           }
         }
@@ -83,7 +83,7 @@
     padding: var(--pdz-space-2xs);
     display: flex;
     align-items: end;
-    font-size: 0.75em;
+    font-size: 0.75rem;
     font-weight: 650;
     line-height: 0.75rem;
     overflow: hidden;
@@ -127,7 +127,7 @@
       }
     }
     .team-card-name {
-      font-size: 0.8em;
+      font-size: 0.8rem;
       font-weight: 600;
       line-height: 0.8rem;
       max-width: 100%;
@@ -162,7 +162,7 @@
       margin-bottom: -1px;
     }
     font-weight: 700;
-    font-size: 1.5em;
+    font-size: 1.5rem;
     display: flex;
     align-items: center;
     column-gap: 0.5rem;
@@ -186,7 +186,7 @@
       .pick-label {
         color: var(--pdz-color-primary);
         line-height: 0.8rem;
-        font-size: 0.8em;
+        font-size: 0.8rem;
         font-weight: 600;
       }
       .choice-container {
@@ -208,11 +208,11 @@
           column-gap: 0.125rem;
           padding: 0 0.25rem;
           font-weight: 500;
-          font-size: 0.8em;
+          font-size: 0.8rem;
           border-radius: var(--pdz-shape-corner-sm);
           box-shadow: var(--pdz-level1);
           mat-icon {
-            font-size: 0.8em;
+            font-size: 0.8rem;
             width: fit-content;
             height: fit-content;
           }
@@ -229,11 +229,11 @@
           column-gap: 0.125rem;
           padding: 0 0.25rem;
           font-weight: 500;
-          font-size: 0.8em;
+          font-size: 0.8rem;
           border-radius: var(--pdz-shape-corner-sm);
           box-shadow: var(--pdz-level1);
           mat-icon {
-            font-size: 0.8em;
+            font-size: 0.8rem;
             width: fit-content;
             height: fit-content;
           }
@@ -315,16 +315,16 @@
           align-items: center;
 
           mat-icon {
-            font-size: 1.25em;
+            font-size: 1.25rem;
             height: fit-content;
             width: fit;
           }
         }
 
         .pick-text {
-          font-size: 0.75em;
+          font-size: 0.75rem;
           font-weight: 700;
-          line-height: 0.75em;
+          line-height: 0.75rem;
         }
 
         .my-draft-pick-container {

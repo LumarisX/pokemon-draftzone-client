@@ -40,14 +40,14 @@
     span {
       width: 100%;
       font-weight: 600;
-      font-size: 1.1em;
+      font-size: 1.1rem;
       text-align: center;
     }
     mat-icon {
       height: fit-content;
       overflow: hidden;
       object-fit: contain;
-      font-size: 1.2em;
+      font-size: 1.2rem;
       font-weight: 700;
       color: var(--pdz-color-primary);
       &.positive {
@@ -86,12 +86,12 @@
     align-items: center;
 
     .team-name {
-      line-height: 1em;
+      line-height: 1rem;
     }
     .coach-names {
       color: var(--pdz-color-secondary);
-      font-size: 0.8em;
-      line-height: 1em;
+      font-size: 0.8rem;
+      line-height: 1rem;
     }
   }
 
@@ -105,7 +105,7 @@
       color: var(--pdz-color-surface-container);
       text-align: center;
       font-weight: 700;
-      font-size: 0.8em;
+      font-size: 0.8rem;
       line-height: 1.5rem;
       border-radius: var(--pdz-shape-corner-xs);
       height: 1.5rem;
@@ -142,7 +142,7 @@
       height: 0.75rem;
       text-align: center;
       font-weight: 700;
-      font-size: 0.7em;
+      font-size: 0.7rem;
     }
 
     .streak {

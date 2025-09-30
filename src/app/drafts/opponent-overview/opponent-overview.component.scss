@@ -25,16 +25,16 @@
 }
 
 h2 {
-  font-size: 1.75em;
+  font-size: 1.75rem;
 }
 
 h3 {
-  font-size: 1.5em;
+  font-size: 1.5rem;
 }
 
 h4 {
-  font-size: 1em;
-  line-height: 1em;
+  font-size: 1rem;
+  line-height: 1rem;
 }
 
 h2,
@@ -42,12 +42,12 @@ h3,
 h4 {
   font-family: var(--pdz-font-fancy);
   @media (max-width: 768px) {
-    font-size: smaller;
+    font-size: var(--pdz-font-size-sm);
   }
 }
 
 .stat {
-  font-size: 1.25em;
+  font-size: 1.25rem;
   font-weight: bold;
   color: var(--pdz-color-symbol-sub);
 }

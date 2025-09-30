@@ -114,15 +114,15 @@
         left: 0;
         width: fit-content;
         height: fit-content;
-        font-size: 1.2em;
+        font-size: 1.2rem;
         cursor: move;
       }
 
       mat-icon.edit-icon {
         width: fit-content;
         height: fit-content;
-        font-size: 1em;
-        line-height: 1em;
+        font-size: 1rem;
+        line-height: 1rem;
         cursor: pointer;
       }
     }
@@ -239,7 +239,7 @@
   display: inline-flex;
   padding: var(--pdz-space-2xs);
   mat-icon {
-    font-size: 1.2em;
+    font-size: 1.2rem;
     color: var(--pdz-color-secondary);
     height: fit-content;
     width: fit-content;

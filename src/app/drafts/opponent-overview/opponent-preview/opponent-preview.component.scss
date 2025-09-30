@@ -145,7 +145,7 @@ section {
       overflow: hidden;
     }
     .coach-name {
-      font-size: 0.8em;
+      font-size: 0.8rem;
     }
   }
   .matchup-logo {
@@ -163,8 +163,8 @@ section {
 }
 
 .matchup-stage {
-  font-size: 0.6em;
-  line-height: 0.8em;
+  font-size: 0.6rem;
+  line-height: 0.8rem;
 }
 
 $matchup-sprite-size: 4rem;
@@ -174,11 +174,11 @@ pdz-sprite {
 }
 
 .score-button {
-  font-size: 0.8em;
+  font-size: 0.8rem;
   width: 4rem;
   padding: 3px;
   border-radius: 0.625rem;
-  line-height: 0.9em;
+  line-height: 0.9rem;
   box-shadow: var(--pdz-level-2);
   &:hover {
     box-shadow: var(--pdz-level-1);
@@ -194,7 +194,7 @@ pdz-sprite {
 .section-header {
   display: flex;
   width: 100%;
-  font-size: 1.25em;
+  font-size: 1.25rem;
   align-items: center;
   justify-content: space-between;
   font-family: var(--pdz-font-fancy);
@@ -243,7 +243,7 @@ pdz-sprite {
 
   th.cdk-header-cell {
     border-bottom: 2px solid var(--pdz-color-primary-border);
-    font-size: 0.8em;
+    font-size: 0.8rem;
   }
 
   table {

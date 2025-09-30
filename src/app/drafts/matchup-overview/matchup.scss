@@ -11,7 +11,7 @@
     // color: var(--pdz-color-primary);
     font-weight: 700;
     .widget-label {
-      font-size: 1.2em;
+      font-size: 1.2rem;
       font-family: var(--pdz-font-fancy);
     }
 
@@ -77,13 +77,13 @@
   text-align: center;
   .detail-title {
     font-weight: 700;
-    font-size: 0.8em;
+    font-size: 0.8rem;
     height: 1rem;
     color: var(--pdz-color-primary);
   }
   .detail-text {
     font-weight: 700;
-    font-size: 1em;
+    font-size: 1rem;
     color: var(--pdz-color-on-surface);
   }
 }
@@ -112,7 +112,7 @@
       align-items: center;
       height: 3rem;
       .share-title {
-        font-size: 1.5em;
+        font-size: 1.5rem;
         font-weight: bold;
         font-family: var(--pdz-font-fancy);
       }
@@ -174,7 +174,7 @@
               }
               .coach-text {
                 height: 1.2rem;
-                font-size: 0.8em;
+                font-size: 0.8rem;
                 text-align: center;
                 font-weight: 600;
               }
@@ -220,8 +220,8 @@
                   border-radius: var(--pdz-shape-corner-lg);
                   color: var(--pdz-color-primary);
                   @media (max-width: 768px) {
-                    font-size: 0.7em;
-                    line-height: 0.7em;
+                    font-size: 0.7rem;
+                    line-height: 0.7rem;
                     padding: var(--pdz-space-2xs);
                   }
                 }

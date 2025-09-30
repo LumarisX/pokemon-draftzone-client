@@ -8,9 +8,9 @@
   ::ng-deep .node {
     .node-placeholder {
       font-style: italic;
-      font-size: 0.7em;
+      font-size: 0.7rem;
       font-family: var(--pdz-font-fancy);
-      line-height: 1em;
+      line-height: 1rem;
       fill: #bbb;
       text-anchor: middle;
       dominant-baseline: central;
@@ -45,8 +45,8 @@
       font-style: italic;
       text-anchor: middle;
       dominant-baseline: central;
-      font-size: 0.8em;
-      line-height: 1em;
+      font-size: 0.8rem;
+      line-height: 1rem;
     }
 
     .matchup-link {
@@ -107,9 +107,9 @@
       .coach-info {
         justify-content: space-between;
         display: flex;
-        font-size: 0.7em;
+        font-size: 0.7rem;
         color: var(--pdz-color-primary);
-        line-height: 0.9em;
+        line-height: 0.9rem;
         font-weight: 700;
         white-space: nowrap;
         overflow: hidden;
@@ -117,15 +117,15 @@
       .team-name {
         white-space: nowrap;
         overflow: hidden;
-        font-size: 0.8em;
-        line-height: 1em;
+        font-size: 0.8rem;
+        line-height: 1rem;
         text-overflow: ellipsis;
       }
     }
     .team-score {
       padding: 0 0.25rem;
       flex-shrink: 0;
-      font-size: 1em;
+      font-size: 1rem;
     }
   }
 }

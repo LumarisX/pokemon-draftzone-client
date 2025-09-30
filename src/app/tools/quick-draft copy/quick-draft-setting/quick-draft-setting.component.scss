@@ -18,7 +18,7 @@ h2 {
 }
 
 h2 {
-  font-size: 1.5em;
+  font-size: 1.5rem;
 }
 
 .qd-template {
@@ -32,7 +32,7 @@ h2 {
   row-gap: 0.5rem;
 
   .qd-header {
-    font-size: 1.25em;
+    font-size: 1.25rem;
     text-align: center;
     width: 100%;
     border-bottom: 2px solid var(--pdz-color-primary-border-variant);
@@ -43,7 +43,7 @@ h2 {
     min-height: 0;
     height: fit-content;
     .qd-header {
-      font-size: 1.15em;
+      font-size: 1.15rem;
     }
   }
 }
@@ -86,7 +86,7 @@ h2 {
     }
 
     .option-label {
-      font-size: 0.8em;
+      font-size: 0.8rem;
     }
     .custom-tier-options {
       display: grid;
