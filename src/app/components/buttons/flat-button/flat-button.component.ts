@@ -14,7 +14,7 @@ export class FlatButtonComponent {
   @Input() text: string = '';
   @Input() tooltip: string = '';
   @Input() ariaLabel: string = '';
-  @Input() theme: 'menu' | 'primary' | 'secondary' = 'primary';
+  @Input() theme?: 'menu' | 'primary' | 'secondary';
   @Input() href: string | null = null;
   @Input() newTab: BooleanInput = false;
   @Input() disabled: boolean = false;

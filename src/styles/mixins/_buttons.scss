@@ -1,0 +1,57 @@
+@use "../../styles/global.scss" as *;
+
+@mixin base-button-theme($bg, $bg-hover, $border, $color) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 2.5rem;
+  border-radius: var(--pdz-shape-corner-full);
+  border: 1px solid;
+  transition:
+    background-color 0.2s,
+    box-shadow 0.2s;
+
+  background-color: $bg;
+  border-color: $border;
+  color: $color;
+
+  &:hover {
+    background-color: $bg-hover;
+    box-shadow: var(--pdz-level-1);
+  }
+}
+
+@mixin flat-button-theme(
+  $bg: pdz-color(surface-container),
+  $bg-hover: pdz-color(surface-container-hover),
+  $border: pdz-color(surface-border),
+  $color: pdz-color(on-surface-container)
+) {
+  @include base-button-theme($bg, $bg-hover, $border, $color);
+
+  min-width: 2.5rem;
+  padding: var(--pdz-space-none) var(--pdz-space-xl);
+  font-size: var(--pdz-font-size-lg);
+  font-weight: bold;
+}
+
+@mixin icon-button-theme(
+  $bg: transparent,
+  $bg-hover: transparent,
+  $border: transparent,
+  $color: inherit
+) {
+  @include base-button-theme($bg, $bg-hover, $border, $color);
+
+  width: 2.5rem;
+
+  &.disabled,
+  &:disabled {
+    background-color: var(--pdz-color-disabled-container);
+    color: var(--pdz-color-on-disabled-container);
+    border-color: var(--pdz-color-disabled-border);
+    pointer-events: none;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+}

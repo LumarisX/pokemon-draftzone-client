@@ -15,13 +15,11 @@ export class IconButtonComponent {
   @Input({ required: true }) icon!: string;
   @Input() tooltip: string = '';
   @Input() ariaLabel: string = '';
-  @Input() theme: 'menu' | 'primary' | 'secondary' = 'primary';
+  @Input() theme: 'menu' | 'primary' | 'secondary' | null = null;
   @Input() href: string | null = null;
   @Input() newTab: BooleanInput = false;
   @Input() disabled: boolean = false;
   @Input() queryParams: Params | null | undefined;
-
-  @Output() click = new EventEmitter<MouseEvent>();
 
   get effectiveAriaLabel(): string {
     return this.ariaLabel || this.tooltip;

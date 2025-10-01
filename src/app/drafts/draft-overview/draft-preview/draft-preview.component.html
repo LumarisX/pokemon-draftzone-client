@@ -5,11 +5,13 @@
       <pdz-icon-button
         [routerLink]="['/', draftPath, 'new']"
         icon="add"
+        theme="primary"
         tooltip="Add League"
       ></pdz-icon-button>
       <pdz-icon-button
         [route]="['/', draftPath, 'archives']"
         icon="inventory_2"
+        theme="primary"
         tooltip="Archives"
         ariaLabel="View Archives"
       ></pdz-icon-button>
@@ -25,14 +27,11 @@
           <div class="card-header">
             <h2 class="league-name">{{ draft.leagueName }}</h2>
             <div class="card-menu">
-              <button
-                class="menu-toggle"
+              <pdz-icon-button
                 (click)="toggleMenu(draft.leagueId)"
                 aria-label="Open draft menu"
-              >
-                <mat-icon>more_vert</mat-icon>
-              </button>
-              <pdz-icon-button icon="more_vert" />
+                icon="more_vert"
+              />
 
               @if (menuState[draft.leagueId] === "main") {
                 <div class="menu-dropdown">

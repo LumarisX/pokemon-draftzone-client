@@ -2,6 +2,7 @@
   <div class="draft-header">
     <pdz-flat-button
       [routerLink]="['/', draftPath]"
+      theme="primary"
       text="Back"
     ></pdz-flat-button>
     @if (draft | async; as draft) {
@@ -37,6 +38,7 @@
           routerLink="../edit"
           [queryParams]="{ draft: draft.leagueId | json }"
           icon="edit"
+          theme="primary"
         ></pdz-icon-button>
         <pdz-icon-button
           [href]="draft.doc"
@@ -44,7 +46,7 @@
           [disabled]="!draft.doc"
           icon="dataset_linked"
           tooltip="Document"
-          ariaLabel="Document"
+          theme="primary"
         ></pdz-icon-button>
       </div>
     }

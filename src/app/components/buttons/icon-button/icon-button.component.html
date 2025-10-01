@@ -6,7 +6,7 @@
     [queryParams]="queryParams"
     [target]="newTab ? '_blank' : undefined"
     [class.disabled]="disabled"
-    [ngClass]="'icon-button--' + theme"
+    [ngClass]="theme ? 'icon-button--' + theme : undefined"
     [title]="tooltip"
     [attr.aria-disabled]="disabled"
     [attr.aria-label]="effectiveAriaLabel"
@@ -17,11 +17,10 @@
   <button
     type="button"
     class="icon-button"
-    [ngClass]="'icon-button--' + theme"
+    [ngClass]="theme ? 'icon-button--' + theme : undefined"
     [disabled]="disabled"
     [title]="tooltip"
     [attr.aria-label]="effectiveAriaLabel"
-    (click)="click.emit($event)"
   >
     <mat-icon aria-hidden="true">{{ icon }}</mat-icon>
   </button>
