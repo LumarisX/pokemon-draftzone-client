@@ -1,6 +1,7 @@
 @use "@angular/material" as mat;
 @use "../../../../styles/breakpoints" as *;
 @use "../../../../styles/mixins" as *;
+@use "../../../../styles/mixins/buttons" as *;
 
 :host {
   flex-grow: 1;
@@ -52,32 +53,20 @@ section {
 }
 
 .matchup {
-  padding: var(--pdz-space-sm);
+  @include flat-button-secondary(
+    (
+      padding: var(--pdz-space-sm),
+      font-family: var(--pdz-font-fancy),
+      border-radius: var(--pdz-shape-corner-lg),
+      background-color: var(--pdz-color-secondary-container),
+    )
+  );
   gap: 0.5rem;
   display: flex;
-  align-items: center;
-  font-family: var(--pdz-font-fancy);
-  user-select: none;
-  border-radius: var(--pdz-shape-corner-lg);
-  background-color: var(--pdz-color-secondary-container);
-  @include shadow-hover-effect();
-  cursor: pointer;
-
   flex-wrap: wrap;
+  align-items: center;
   @include respond-above(medium) {
     flex-wrap: nowrap;
-  }
-
-  // &:hover {
-  //   box-shadow: var(--pdz-level-2);
-  //   background-color: var(--pdz-color-secondary-container-hover);
-  //   cursor: pointer;
-  // }
-
-  &.selected {
-    box-shadow: var(--pdz-level-0);
-    background-color: var(--pdz-color-secondary);
-    color: var(--pdz-color-on-secondary);
   }
 }
 
@@ -288,4 +277,10 @@ pdz-sprite {
   display: flex;
   gap: 0.5rem;
   align-items: stretch;
+  .option-btn {
+    @include icon-button-secondary();
+  }
+  .matchup-btn {
+    @include flat-button-secondary();
+  }
 }

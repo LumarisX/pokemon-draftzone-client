@@ -1,4 +1,6 @@
 @use "sass:map";
+@use "sass:color";
+@use "sass:meta";
 @use "variables" as *;
 @use "mixins" as *;
 @use "shape" as *;
@@ -11,7 +13,18 @@
 @mixin apply-theme($theme) {
   @each $key, $value in $theme {
     @if map.has-key($core-tokens, $value) {
-      --pdz-color-#{$key}: #{map.get($core-tokens, $value)};
+      $col: map.get($core-tokens, $value);
+      --pdz-color-#{$key}: #{$col};
+      --pdz-color-#{$key}-rgb:
+        #{color.channel($col, "red", $space: rgb)},
+        #{color.channel($col, "green", $space: rgb)},
+        #{color.channel($col, "blue", $space: rgb)};
+    } @else if meta.type-of($value) == "color" {
+      --pdz-color-#{$key}: #{$value};
+      --pdz-color-#{$key}-rgb:
+        #{color.channel($value, "red", $space: rgb)},
+        #{color.channel($value, "green", $space: rgb)},
+        #{color.channel($value, "blue", $space: rgb)};
     } @else {
       --pdz-color-#{$key}: #{$value};
     }
@@ -21,6 +34,14 @@
 :root {
   --pdz-screen-size-medium: $screen-size-medium;
   --pdz-screen-size-large: $screen-size-large;
+
+  @each $token-name, $token-value in $core-tokens {
+    --pdz-color-#{$token-name}: #{$token-value};
+    --pdz-color-#{$token-name}-rgb:
+      #{color.channel($token-value, "red", $space: rgb)},
+      #{color.channel($token-value, "green", $space: rgb)},
+      #{color.channel($token-value, "blue", $space: rgb)};
+  }
 
   @each $level, $shadows in $shadows {
     --pdz-level-#{$level}: #{$shadows};

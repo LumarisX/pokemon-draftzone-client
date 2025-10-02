@@ -1,10 +1,6 @@
 <div class="opponent-main">
   <div class="draft-header">
-    <pdz-flat-button
-      [routerLink]="['/', draftPath]"
-      theme="primary"
-      text="Back"
-    ></pdz-flat-button>
+    <button class="back-btn" [routerLink]="['/', draftPath]">Back</button>
     @if (draft | async; as draft) {
       <div class="draft-info-container">
         <h2>
@@ -34,20 +30,15 @@
         }
       </div>
       <div class="draft-buttons">
-        <pdz-icon-button
+        <button
           routerLink="../edit"
           [queryParams]="{ draft: draft.leagueId | json }"
-          icon="edit"
-          theme="primary"
-        ></pdz-icon-button>
-        <pdz-icon-button
-          [href]="draft.doc"
-          newTab
-          [disabled]="!draft.doc"
-          icon="dataset_linked"
-          tooltip="Document"
-          theme="primary"
-        ></pdz-icon-button>
+        >
+          <mat-icon>edit</mat-icon>
+        </button>
+        <a [href]="draft.doc" target="_blank" [class.disabled]="!draft.doc"
+          ><mat-icon>dataset_linked</mat-icon></a
+        >
       </div>
     }
   </div>

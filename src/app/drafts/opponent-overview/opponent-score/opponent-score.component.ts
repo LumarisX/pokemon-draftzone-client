@@ -8,29 +8,29 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { DraftService } from '../../../services/draft.service';
-import { ReplayService } from '../../../services/replay.service';
 import { PokemonId } from '../../../data/namedex';
-import { DraftOverviewPath } from '../../draft-overview/draft-overview-routing.module';
 import { LoadingComponent } from '../../../images/loading/loading.component';
 import { SpriteComponent } from '../../../images/sprite/sprite.component';
-import { PlusSVG } from '../../../images/svg-components/plus.component';
 import { TrashSVG } from '../../../images/svg-components/trash.component';
 import { Pokemon } from '../../../interfaces/draft';
 import { Matchup } from '../../../interfaces/matchup';
+import { DraftService } from '../../../services/draft.service';
+import { ReplayService } from '../../../services/replay.service';
 import { ReplayData } from '../../../tools/replay_analyzer/replay.interface';
+import { DraftOverviewPath } from '../../draft-overview/draft-overview-routing.module';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
-  selector: 'opponent-form',
+  selector: 'pdz-opponent-score',
   templateUrl: './opponent-score.component.html',
+  styleUrls: ['./opponent-score.component.scss'],
   imports: [
     CommonModule,
     RouterModule,
     SpriteComponent,
     ReactiveFormsModule,
-    PlusSVG,
-    TrashSVG,
     LoadingComponent,
+    MatIconModule,
   ],
 })
 export class OpponentScoreComponent implements OnInit {
@@ -45,7 +45,6 @@ export class OpponentScoreComponent implements OnInit {
   title: string = 'New Matchup';
   matchup!: Matchup;
   scoreForm!: FormGroup;
-  matchSize = 1;
   selectedMatch = 0;
   readonly draftPath = DraftOverviewPath;
 
@@ -65,49 +64,44 @@ export class OpponentScoreComponent implements OnInit {
   }
 
   private initForm(): void {
-    let matchArray = [];
-    if (this.matchup.matches.length === 0) {
-      let matchGroup = this.fb.group({
-        aTeam: this.sideForm(this.matchup.aTeam.team),
-        bTeam: this.sideForm(this.matchup.bTeam.team),
-        replay: '',
-        winner: '',
-        analyzed: true,
-      });
-      matchGroup.get('replay')?.valueChanges.subscribe((replay) => {
-        if (matchGroup.get('analyzed')?.value) {
-          matchGroup.patchValue({ analyzed: false });
-        }
-      });
-      matchArray.push(matchGroup);
-    } else {
-      for (let i in this.matchup.matches) {
-        let matchGroup = this.fb.group({
-          aTeam: this.sideForm(
-            this.matchup.aTeam.team,
-            this.matchup.matches[i].aTeam,
-          ),
-          bTeam: this.sideForm(
-            this.matchup.bTeam.team,
-            this.matchup.matches[i].bTeam,
-          ),
-          replay: this.matchup.matches[i].replay,
-          winner: this.matchup.matches[i].winner || '',
-          analyzed: true,
-        });
-        matchGroup.get('replay')?.valueChanges.subscribe((replay) => {
-          if (matchGroup.get('analyzed')?.value) {
-            matchGroup.patchValue({ analyzed: false });
-          }
-        });
-        matchArray.push(matchGroup);
-      }
-    }
+    const matchArray =
+      this.matchup.matches && this.matchup.matches.length
+        ? this.matchup.matches.map((m) =>
+            this.createMatchGroup(m.aTeam, m.bTeam, m.replay, m.winner),
+          )
+        : [this.createMatchGroup()];
+
     this.scoreForm = this.fb.group({
       aTeamPaste: this.matchup.aTeam.paste || '',
       bTeamPaste: this.matchup.bTeam.paste || '',
       matches: this.fb.array(matchArray),
     });
+  }
+
+  private createMatchGroup(
+    aSide: { stats: [string, any][] } | null = null,
+    bSide: { stats: [string, any][] } | null = null,
+    replay: string | String | undefined = '',
+    winner: 'a' | 'b' | '' | null | undefined = '',
+  ) {
+    const aStats = aSide ? Object.fromEntries(aSide.stats) : {};
+    const bStats = bSide ? Object.fromEntries(bSide.stats) : {};
+
+    const group = this.fb.group({
+      aTeam: this.sideForm(this.matchup.aTeam.team, aSide || { stats: [] }),
+      bTeam: this.sideForm(this.matchup.bTeam.team, bSide || { stats: [] }),
+      replay: replay || '',
+      winner: winner || '',
+      analyzed: true,
+    });
+
+    group.get('replay')?.valueChanges.subscribe(() => {
+      if (group.get('analyzed')?.value) {
+        group.patchValue({ analyzed: false });
+      }
+    });
+
+    return group;
   }
 
   get matchesFormArray(): FormArray {
@@ -180,7 +174,7 @@ export class OpponentScoreComponent implements OnInit {
     let total = 0;
     for (let control of teamArray.controls) {
       for (let name of controlNames) {
-        total += control.get(name)?.value;
+        total += Number(control.get(name)?.value || 0);
       }
     }
 
@@ -202,32 +196,15 @@ export class OpponentScoreComponent implements OnInit {
   }
 
   addMatch() {
-    let matchGroup = this.fb.group({
-      aTeam: this.sideForm(this.matchup.aTeam.team),
-      bTeam: this.sideForm(this.matchup.bTeam.team),
-      replay: '',
-      winner: false,
-      analyzed: true,
-    });
-    matchGroup.get('replay')?.valueChanges.subscribe((replay) => {
-      if (matchGroup.get('analyzed')?.value) {
-        matchGroup.patchValue({ analyzed: false });
-      }
-    });
-    this.matchSize++;
-    this.matchesFormArray.push(matchGroup);
-    this.selectedMatch = this.matchSize - 1;
-    return;
+    const group = this.createMatchGroup();
+    this.matchesFormArray.push(group);
+    this.selectedMatch = this.matchesFormArray.length - 1;
   }
 
   deleteMatch(index: number) {
     this.matchesFormArray.removeAt(index);
-    this.matchSize--;
-    this.selectedMatch = 0;
-  }
-
-  spriteBrought(pokemonForm: AbstractControl<any, any>) {
-    return pokemonForm.value.brought ? '' : 'opacity-40';
+    const len = this.matchesFormArray.length;
+    this.selectedMatch = Math.max(0, Math.min(this.selectedMatch, len - 1));
   }
 
   switchMatch(index: number) {
@@ -312,45 +289,6 @@ export class OpponentScoreComponent implements OnInit {
     }
   }
 
-  winnerClass(player: 'a' | 'b') {
-    return this.selectedMatchForm.get('winner')?.value == player
-      ? `shadow `
-      : `shadow-inner text-symbolColor-disabled`;
-  }
-
-  gameClass(i: number) {
-    return this.selectedMatch == i
-      ? 'bg-menu-100'
-      : 'bg-menu-250 hover:bg-menu-200';
-  }
-
-  analyzeClass() {
-    return this.selectedMatchForm.get('analyzed')?.value
-      ? 'shadow-none opacity-50'
-      : 'hover:bg-menu-250 shadow';
-  }
-
-  broughtCaution() {
-    return this.statCount(this.aTeamArray, ['brought']) ===
-      this.statCount(this.bTeamArray, ['brought'])
-      ? ''
-      : 'px-2 bg-caution rounded-full';
-  }
-
-  aKillCaution() {
-    return this.statCount(this.aTeamArray, ['kills', 'indirect']) ===
-      this.statCount(this.bTeamArray, ['fainted'])
-      ? ''
-      : 'px-2 bg-caution rounded-full';
-  }
-
-  bKillCaution() {
-    return this.statCount(this.bTeamArray, ['kills', 'indirect']) ===
-      this.statCount(this.aTeamArray, ['fainted'])
-      ? ''
-      : 'px-2 bg-caution rounded-full';
-  }
-
   getWins(player: 'a' | 'b') {
     let sum = 0;
     this.matchesFormArray.controls.forEach((ctrl) => {
@@ -359,5 +297,18 @@ export class OpponentScoreComponent implements OnInit {
       }
     });
     return sum;
+  }
+
+  toggleBrought(control: AbstractControl) {
+    console.log(control);
+    const brought = control.get('brought');
+    if (!brought) return;
+    brought.setValue(!brought.value);
+  }
+
+  broughtControls(teamArray: FormArray) {
+    return teamArray.controls.filter(
+      (control) => control.get('brought')?.value,
+    );
   }
 }

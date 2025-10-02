@@ -1,4 +1,5 @@
 @use "../../../../styles/mixins" as *;
+@use "../../../../styles/mixins/buttons" as *;
 
 :host {
   display: block;
@@ -28,6 +29,9 @@
   .actions {
     display: flex;
     gap: var(--pdz-space-sm);
+    button {
+      @include icon-button-primary();
+    }
   }
 }
 
@@ -38,7 +42,7 @@
 }
 
 .draft-card {
-  background-color: var(--pdz-color-primary-container-lighter);
+  background-color: var(--pdz-color-primary-container-low);
 
   color: var(--pdz-color-on-primary-container);
   border-radius: var(--pdz-shape-corner-md);
@@ -62,6 +66,10 @@
     font-size: 1.25rem;
     margin: 0;
     font-family: var(--pdz-font-fancy);
+  }
+
+  button {
+    @include icon-button(());
   }
 }
 
@@ -124,19 +132,28 @@
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  gap: var(--pdz-space-sm);
+  gap: var(--pdz-space-2xs);
 
   .footer-link {
-    color: var(--pdz-color-on-primary-container);
-    text-decoration: none;
-    font-weight: 500;
-    padding: var(--pdz-space-xs) var(--pdz-space-md);
-    border-radius: var(--pdz-shape-corner-sm);
+    // color: var(--pdz-color-on-primary-container);
+    // text-decoration: none;
+    // font-weight: 500;
+    // padding: var(--pdz-space-xs) var(--pdz-space-md);
+    // border-radius: var(--pdz-shape-corner-sm);
 
-    @include background-hover-effect(var(--pdz-color-primary));
-    &:hover {
-      color: var(--pdz-color-on-primary);
-    }
+    // @include background-hover-effect(var(--pdz-color-primary));
+    // &:hover {
+    //   color: var(--pdz-color-on-primary);
+    // }
+
+    @include flat-button-primary(
+      (
+        padding: var(--pdz-space-xs) var(--pdz-space-md),
+        border-radius: var(--pdz-shape-corner-sm),
+        background: transparent,
+        border: none,
+      )
+    );
   }
 }
 

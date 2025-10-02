@@ -1,3 +1,5 @@
+@use "../../../styles/mixins/buttons" as *;
+
 .draft-header {
   display: flex;
   align-items: center;
@@ -111,4 +113,13 @@ $draft-sprite-size: 4rem;
 .draft-buttons {
   display: flex;
   gap: 0.5rem;
+
+  a,
+  button {
+    @include icon-button-primary();
+  }
+}
+
+.back-btn {
+  @include flat-button-primary();
 }

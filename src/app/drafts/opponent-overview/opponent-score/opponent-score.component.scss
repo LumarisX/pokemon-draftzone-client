@@ -1,0 +1,143 @@
+@use "../../../../styles/mixins/buttons" as *;
+@use "../../../../styles/global.scss" as *;
+
+:host {
+  display: block;
+  padding: var(--pdz-space-sm);
+  box-sizing: border-box;
+}
+
+.opponent-score {
+  width: 100%;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 1rem;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  &__meta {
+    display: flex;
+    justify-content: space-evenly;
+    gap: 0.5rem;
+    align-items: center;
+    margin-bottom: 1rem;
+    width: 100%;
+  }
+
+  input {
+    padding: 0.35rem 0.5rem;
+    border-radius: var(--pdz-shape-corner-sm);
+    border: 1px solid pdz-color(outline);
+    min-width: 5rem;
+    background: pdz-color(surface);
+    color: pdz-color(on-surface);
+    box-sizing: border-box;
+  }
+
+  .spacer {
+    flex: 1 1 auto;
+  }
+
+  .opponent-score__wins {
+    font-weight: 600;
+    text-align: center;
+  }
+
+  .match-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .tab {
+    @include flat-button-menu(
+      (
+        font-size: var(--pdz-font-size-sm),
+        padding: 0 var(--pdz-space-sm),
+        border-radius: var(--pdz-shape-corner-md),
+      )
+    );
+  }
+
+  .match-editor {
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    padding: 0.75rem;
+    border-radius: 6px;
+    background: rgba(0, 0, 0, 0.02);
+  }
+
+  .match-editor__replay {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .teams {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    align-items: start;
+  }
+
+  .team {
+    background: pdz-color(surface);
+    border-radius: var(--pdz-shape-corner-sm);
+    padding: var(--pdz-space-sm);
+    border: 1px solid pdz-color(outline);
+    box-shadow: var(--pdz-level-1);
+  }
+
+  .team__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+
+  .team__stats {
+    display: flex;
+    gap: 0.8rem;
+    font-size: 13px;
+    margin-bottom: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .team__list {
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .mon {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.6rem;
+    align-items: center;
+  }
+
+  .mon__fields {
+    display: flex;
+    gap: 0.4rem;
+    align-items: center;
+  }
+
+  .not-brought {
+    opacity: 0.45;
+  }
+}
+.cancel-btn {
+  @include flat-button-secondary();
+}
+
+.matches-selector-container {
+  display: flex;
+  justify-content: space-between;
+}

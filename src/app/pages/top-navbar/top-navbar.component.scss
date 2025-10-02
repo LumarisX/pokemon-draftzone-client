@@ -31,9 +31,9 @@ mat-toolbar {
   padding: var(--pdz-space-sm);
   border-radius: var(--pdz-shape-corner-sm);
   font-family: var(--pdz-font-fancy);
-  @include background-hover-effect(var(--pdz-color-primary-container));
+  @include background-hover-effect(var(--pdz-color-surface-container));
   &:hover {
-    color: var(--pdz-color-on-primary-container);
+    color: var(--pdz-color-on-surface-container);
   }
 }
 
@@ -61,9 +61,9 @@ mat-toolbar {
   align-items: center;
   border-radius: var(--pdz-shape-corner-sm);
   padding: 0 0.5rem;
-  @include background-hover-effect(var(--pdz-color-primary-container));
+  @include background-hover-effect(var(--pdz-color-surface-container));
   &:hover {
-    color: var(--pdz-color-on-primary-container);
+    color: var(--pdz-color-on-surface-container);
   }
 }
 pdz-icon {

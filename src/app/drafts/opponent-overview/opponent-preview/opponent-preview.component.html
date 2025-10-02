@@ -4,26 +4,34 @@
       <h3>Matches</h3>
       <div class="button-container">
         @if (selectedMatchup) {
-          <pdz-flat-button
-            text="View Matchup"
+          <button
+            class="matchup-btn"
             routerLink="matchup"
             [queryParams]="{ id: selectedMatchup._id }"
-          />
-          <pdz-icon-button
-            icon="edit"
+          >
+            View Matchup
+          </button>
+          <button
+            class="option-btn"
             routerLink="form"
             [queryParams]="{ matchup: selectedMatchup._id }"
-          />
-          <pdz-icon-button
-            icon="delete_forever"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button
             (click)="deleteMatchup(selectedMatchup._id)"
-          />
+            class="option-btn"
+          >
+            <mat-icon>delete_forever</mat-icon>
+          </button>
         }
-        <pdz-icon-button
-          icon="add"
+        <button
           [routerLink]="['/', draftPath, this.teamId, 'form']"
+          class="option-btn"
           [queryParams]="{ stage: `Week ${(this.matchups?.length ?? 0) + 1}` }"
-        />
+        >
+          <mat-icon>add</mat-icon>
+        </button>
       </div>
     </div>
     @if (!matchups) {

@@ -46,7 +46,7 @@ $theme-configurations: (
         )
       );
     } @else {
-      @warn "Could not apply theme: Provided palettes are not valid maps (primary: #{type-of($primary-palette)}, tertiary: #{type-of($tertiary-palette)}) for theme-type '#{$theme-type}'.";
+      @warn "Could not apply theme: Provided palettes are not valid maps (primary: #{meta.type-of($primary-palette)}, tertiary: #{meta.type-of($tertiary-palette)}) for theme-type '#{$theme-type}'.";
     }
   } @else {
     @warn "Could not apply theme: Missing primary or tertiary palette variables for theme-type '#{$theme-type}'. Check theme configuration map.";

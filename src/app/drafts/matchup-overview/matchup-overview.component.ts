@@ -19,7 +19,6 @@ import { MatchupComponent } from './matchup/matchup.component';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { MatIconModule } from '@angular/material/icon';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
-import { FlatButtonComponent } from '../../components/buttons/flat-button/flat-button.component';
 
 dayjs.extend(duration);
 
@@ -37,7 +36,6 @@ dayjs.extend(duration);
     OverlayModule,
     MatIconModule,
     SpriteComponent,
-    FlatButtonComponent,
   ],
 })
 export class MatchupOverviewComponent implements OnInit {

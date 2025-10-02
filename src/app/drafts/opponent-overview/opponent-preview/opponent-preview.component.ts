@@ -7,7 +7,6 @@ import { MatSortModule, Sort } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { BehaviorSubject, catchError, forkJoin, of, take } from 'rxjs';
-import { IconButtonComponent } from '../../../components/buttons/icon-button/icon-button.component';
 import { LoadingComponent } from '../../../images/loading/loading.component';
 import { SpriteComponent } from '../../../images/sprite/sprite.component';
 import { Opponent } from '../../../interfaces/opponent';
@@ -15,7 +14,6 @@ import { DraftService } from '../../../services/draft.service';
 import { DraftOverviewPath } from '../../draft-overview/draft-overview-routing.module';
 import { Stats } from '../../draft-overview/draft-stats/draft-stats.component';
 import { ConfirmDeleteDialogComponent } from './confirm-delete-dialog.component';
-import { FlatButtonComponent } from '../../../components/buttons/flat-button/flat-button.component';
 
 type Matchup = Opponent & {
   score?: [number, number] | null;
@@ -39,8 +37,6 @@ type Matchup = Opponent & {
     MatTableModule,
     MatSortModule,
     MatDialogModule,
-    IconButtonComponent,
-    FlatButtonComponent,
   ],
 })
 export class OpponentTeamPreviewComponent implements OnInit {
@@ -76,21 +72,20 @@ export class OpponentTeamPreviewComponent implements OnInit {
 
     forkJoin({
       matchups: this.draftService.getMatchupList(this.teamId).pipe(
-        take(1), // Ensures completion
+        take(1),
         catchError((err) => {
           console.error('Error fetching matchups:', err);
-          return of([]); // Provides a fallback value on error
+          return of([]);
         }),
       ),
       stats: this.draftService.getStats(this.teamId).pipe(
-        take(1), // Ensures completion
+        take(1),
         catchError((err) => {
           console.error('Error fetching stats:', err);
-          return of(null); // Provides a fallback value on error
+          return of(null);
         }),
       ),
     }).subscribe(({ matchups, stats }) => {
-      // This block should now reliably execute
       if (matchups) {
         this.matchups = matchups.map((m) => {
           const score = this.calculateScore(m);
