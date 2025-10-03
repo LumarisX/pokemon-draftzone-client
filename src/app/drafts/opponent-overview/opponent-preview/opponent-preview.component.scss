@@ -24,7 +24,7 @@
 }
 
 section {
-  border: 1px solid var(--pdz-color-primary-border);
+  border: 1px solid var(--pdz-color-menu-border);
   border-radius: var(--pdz-shape-corner-lg);
   width: fit-content;
   min-width: 33%;
@@ -240,8 +240,6 @@ pdz-sprite {
     border-collapse: separate;
     border-spacing: 0 4px;
     padding: 0 0.25rem;
-    background-color: var(--pdz-color-primary-container);
-    border-radius: var(--pdz-shape-corner-md);
   }
 
   .title-bar {
@@ -259,7 +257,7 @@ pdz-sprite {
 
   tr.cdk-row {
     &:hover {
-      background-color: var(--pdz-color-surface-variant);
+      background-color: var(--pdz-color-primary-container);
     }
   }
 

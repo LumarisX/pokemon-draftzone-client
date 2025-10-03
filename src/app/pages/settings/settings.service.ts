@@ -26,16 +26,16 @@ export class SettingsService {
     const localSettings = localStorage.getItem('user-settings');
     if (localSettings) this.settingsData$.next(JSON.parse(localSettings));
 
-    // if (this.settingsData.ldMode === 'dark') {
-    //   document.documentElement.setAttribute('pdz-theme-mode', 'dark');
-    //   this.updateLDMode(this.settingsData.ldMode);
-    // } else {
-    //   document.documentElement.setAttribute('pdz-theme-mode', 'light');
-    // }
-    // document.documentElement.setAttribute(
-    //   'pdz-theme',
-    //   this.settingsData.theme ?? 'normal',
-    // );
+    if (this.settingsData.ldMode === 'dark') {
+      document.documentElement.setAttribute('pdz-theme-mode', 'dark');
+      this.updateLDMode(this.settingsData.ldMode);
+    } else {
+      document.documentElement.setAttribute('pdz-theme-mode', 'light');
+    }
+    document.documentElement.setAttribute(
+      'pdz-theme',
+      this.settingsData.theme ?? 'normal',
+    );
   }
 
   updateLDMode(value?: string | null) {
@@ -46,6 +46,10 @@ export class SettingsService {
     document.documentElement.classList.toggle('light', !isDark);
     document.documentElement.setAttribute(
       'light-mode',
+      isDark ? 'dark' : 'light',
+    );
+    document.documentElement.setAttribute(
+      'pdz-theme-mode',
       isDark ? 'dark' : 'light',
     );
   }

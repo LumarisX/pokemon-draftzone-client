@@ -15,8 +15,9 @@
         class="save-btn"
         (click)="submit()"
         [routerLink]="['/', draftPath, teamId]"
-        text=""
-      ></button>
+      >
+        Submit
+      </button>
     </header>
 
     <section class="opponent-score__meta">
@@ -35,7 +36,7 @@
 
     <section class="opponent-score__matches" [formGroup]="selectedMatchForm">
       <div class="matches-selector-container">
-        <div class="match-tabs" formArrayName="matches">
+        <div class="match-tabs">
           @for (m of matchesFormArray.controls; track $index) {
             <button
               class="tab"
@@ -60,7 +61,7 @@
           <button
             type="button"
             (click)="analyzeReplay()"
-            [disabled]="selectedMatchForm.get('analyzed')?.value"
+            [disabled]="selectedMatchForm.controls.analyzed.value"
           >
             Analyze
           </button>
@@ -74,7 +75,7 @@
             <button
               type="button"
               (click)="changeWinner('a')"
-              [class.selected]="selectedMatchForm.get('winner')?.value === 'a'"
+              [class.selected]="selectedMatchForm.controls.winner.value === 'a'"
             >
               Winner
             </button>
@@ -87,29 +88,36 @@
 
           <div class="flex">
             @for (p of aTeamArray.controls; track $index) {
-              <pdz-sprite
-                (click)="toggleBrought(p)"
-                size="3rem"
-                [pokemon]="p.value.pokemon"
-                [class.not-brought]="!p.value.brought"
-              ></pdz-sprite>
+              @if (!p.controls.brought.value) {
+                <pdz-sprite
+                  (click)="toggleBrought(p)"
+                  size="3rem"
+                  [pokemon]="p.value.pokemon!"
+                  [class.not-brought]="!p.value.brought"
+                ></pdz-sprite>
+              }
             }
           </div>
           <div formArrayName="team" class="team__list">
-            @for (p of broughtControls(aTeamArray); track $index) {
-              <div [formGroupName]="$index" class="mon">
-                <pdz-sprite
-                  size="1rem"
-                  [pokemon]="p.value.pokemon"
-                  [class.not-brought]="!p.value.brought"
-                ></pdz-sprite>
-                <div class="mon__fields">
-                  <!-- <input type="number" formControlName="brought" min="0" /> -->
-                  <input type="number" formControlName="kills" min="0" />
-                  <input type="number" formControlName="indirect" min="0" />
-                  <input type="number" formControlName="fainted" min="0" />
+            @for (p of aTeamArray.controls; track $index) {
+              @if (p.controls.brought.value) {
+                <div [formGroupName]="$index" class="mon">
+                  <pdz-sprite
+                    size="1rem"
+                    (click)="toggleBrought(p)"
+                    [pokemon]="p.value.pokemon!"
+                    [class.not-brought]="!p.value.brought"
+                  ></pdz-sprite>
+                  <div class="mon__fields">
+                    <input type="number" formControlName="kills" min="0" />
+                    <input type="number" formControlName="indirect" min="0" />
+                    <label class="fainted-toggle">
+                      <input type="checkbox" formControlName="fainted" />
+                      Fainted
+                    </label>
+                  </div>
                 </div>
-              </div>
+              }
             }
           </div>
         </div>
@@ -119,7 +127,7 @@
             <button
               type="button"
               (click)="changeWinner('b')"
-              [class.selected]="selectedMatchForm.get('winner')?.value === 'b'"
+              [class.selected]="selectedMatchForm.controls.winner.value === 'b'"
             >
               Winner
             </button>
@@ -132,29 +140,36 @@
           </div>
           <div class="flex">
             @for (p of bTeamArray.controls; track $index) {
-              <pdz-sprite
-                (click)="toggleBrought(p)"
-                size="3rem"
-                [pokemon]="p.value.pokemon"
-                [class.not-brought]="!p.value.brought"
-              ></pdz-sprite>
+              @if (!p.controls.brought.value) {
+                <pdz-sprite
+                  (click)="toggleBrought(p)"
+                  size="3rem"
+                  [pokemon]="p.value.pokemon!"
+                  [class.not-brought]="!p.value.brought"
+                ></pdz-sprite>
+              }
             }
           </div>
           <div formArrayName="team" class="team__list">
-            @for (p of broughtControls(bTeamArray); track $index) {
-              <div [formGroupName]="$index" class="mon">
-                <pdz-sprite
-                  size="1rem"
-                  [pokemon]="p.value.pokemon"
-                  [class.not-brought]="!p.value.brought"
-                ></pdz-sprite>
-                <div class="mon__fields">
-                  <!-- <input type="number" formControlName="brought" min="0" /> -->
-                  <input type="number" formControlName="kills" min="0" />
-                  <input type="number" formControlName="indirect" min="0" />
-                  <input type="number" formControlName="fainted" min="0" />
+            @for (p of bTeamArray.controls; track $index) {
+              @if (p.controls.brought.value) {
+                <div [formGroupName]="$index" class="mon">
+                  <pdz-sprite
+                    size="1rem"
+                    (click)="toggleBrought(p)"
+                    [pokemon]="p.value.pokemon!"
+                    [class.not-brought]="!p.value.brought"
+                  ></pdz-sprite>
+                  <div class="mon__fields">
+                    <input type="number" formControlName="kills" min="0" />
+                    <input type="number" formControlName="indirect" min="0" />
+                    <label class="fainted-toggle">
+                      <input type="checkbox" formControlName="fainted" />
+                      Fainted
+                    </label>
+                  </div>
                 </div>
-              </div>
+              }
             }
           </div>
         </div>

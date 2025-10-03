@@ -50,7 +50,7 @@ th {
   width: 2.5rem;
   border-radius: var(--pdz-shape-corner-xs);
   box-shadow: var(--pdz-level-1);
-  margin-top: 0;
+  margin-top: 0px;
   margin-bottom: 1px;
 
   &.sort-press {
@@ -72,7 +72,7 @@ th {
   .type-text {
     flex-shrink: 0;
     font-size: 0.6rem;
-    line-height: 1rem;
+    line-height: 0.7rem;
   }
 
   .type-icon-wrapper {
@@ -132,13 +132,6 @@ thead {
 
 .action-cell {
   cursor: pointer;
-}
-
-.flex-wrapper {
-  display: flex;
-  width: 100%;
-  height: 100%;
-  justify-content: center;
 }
 
 thead {

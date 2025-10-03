@@ -2,6 +2,7 @@
 
 $theme: (
   light: (
+    // Surface Colors
     background: "white",
     surface: "gray-50",
     surface-variant: "gray-300",
@@ -15,6 +16,7 @@ $theme: (
     outline: "gray-700",
     outline-variant: "gray-400",
 
+    // Primary Theme
     primary: "cyan-500",
     primary-lighter: "cyan-400",
     primary-darker: "cyan-600",
@@ -32,6 +34,7 @@ $theme: (
         var(--pdz-color-cyan-400),
         var(--pdz-color-cyan-200)
       ),
+    // Secondary Theme
     secondary: "orange-500",
     secondary-lighter: "orange-400",
     secondary-darker: "orange-600",
@@ -44,13 +47,30 @@ $theme: (
     secondary-hover: "orange-600",
     secondary-border: "orange-300",
     secondary-subtle: "orange-100",
-
-    menu-background: "white",
-    menu-item-text: "gray-950",
-    menu-item-hover-background: "gray-50",
-    menu-item-selected-background: "gray-100",
-    menu-divider: "gray-300",
-
+    secondary-gradient: linear-gradient(
+        135deg,
+        var(--pdz-color-orange-400),
+        var(--pdz-color-orange-200)
+      ),
+    // Menu Theme (Refactored)
+    menu: "gray-800",
+    menu-lighter: "gray-700",
+    menu-darker: "gray-900",
+    on-menu: "white",
+    menu-container: "white",
+    menu-container-low: "gray-100",
+    menu-container-high: "gray-200",
+    menu-container-hover: "gray-50",
+    on-menu-container: "gray-950",
+    menu-hover: "gray-900",
+    menu-border: "gray-300",
+    menu-subtle: "gray-50",
+    menu-gradient: linear-gradient(
+        135deg,
+        var(--pdz-color-gray-200),
+        var(--pdz-color-gray-100)
+      ),
+    // Status Colors
     error: "red-800",
     on-error: "white",
     error-container: "red-100",
@@ -68,28 +88,33 @@ $theme: (
     info-container: "blue-200",
     on-info-container: "blue-950",
 
+    // Disabled State
     disabled-surface: "gray-200",
-    on-disabled: "gray-500",
+    on-disabled-surface: "gray-500",
 
+    // Inverse Colors
     surface-inverse: "gray-900",
     on-surface-inverse: "gray-100",
 
+    // Effects
     shadow: "black",
     scrim: "black",
 
-    logo-ring-1: "orange-200",
-    logo-ring-2: "orange-300",
+    // Logo Colors
+    logo-ring-1: "orange-300",
+    logo-ring-2: "orange-350",
     logo-ring-3: "orange-400",
-    logo-ring-4: "orange-500",
-    logo-ring-5: "orange-600",
-    logo-ring-6: "orange-700",
-    logo-ring-7: "orange-800",
+    logo-ring-4: "orange-450",
+    logo-ring-5: "orange-500",
+    logo-ring-6: "orange-550",
+    logo-ring-7: "orange-600",
     logo-core-1: "white",
     logo-core-2: "logo-core-color",
     logo-top: "cyan-500",
     logo-bottom: "orange-500",
     logo-background: "white",
 
+    // Semantic Data Colors
     positive: "emerald-700",
     on-positive: "white",
     positive-container: "emerald-100",
@@ -99,6 +124,7 @@ $theme: (
     negative-container: "rose-100",
     on-negative-container: "rose-950",
 
+    // Scale Colors
     scale-positive-1: "emerald-100",
     scale-positive-2: "emerald-200",
     scale-positive-3: "emerald-300",
@@ -135,34 +161,55 @@ $theme: (
     primary-lighter: "cyan-400",
     primary-darker: "cyan-600",
     on-primary: "cyan-950",
-    primary-container: "cyan-950",
-    primary-container-low: "cyan-900",
-    primary-container-high: "black",
-    primary-container-hover: "cyan-900",
-    on-primary-container: magenta,
-    primary-hover: "cyan-450",
+    primary-container: "cyan-900",
+    primary-container-low: "cyan-850",
+    primary-container-high: "cyan-950",
+    primary-container-hover: "cyan-800",
+    on-primary-container: "cyan-200",
+    primary-hover: "cyan-550",
     primary-border: "cyan-700",
     primary-subtle: "cyan-900",
-    primary-gradient: linear-gradient(135deg, #79dfec, #4ac1d0),
-    secondary: "orange-400",
-    secondary-lighter: "orange-300",
-    secondary-darker: "orange-500",
+    primary-gradient: linear-gradient(
+        135deg,
+        var(--pdz-color-cyan-500),
+        var(--pdz-color-cyan-300)
+      ),
+    // Secondary
+    secondary: "orange-500",
+    secondary-lighter: "orange-400",
+    secondary-darker: "orange-600",
     on-secondary: "orange-950",
-    secondary-container: "orange-850",
-    secondary-container-low: "orange-800",
-    secondary-container-high: "orange-900",
+    secondary-container: "orange-900",
+    secondary-container-low: "orange-850",
+    secondary-container-high: "orange-950",
     secondary-container-hover: "orange-800",
     on-secondary-container: "orange-200",
-    secondary-hover: "orange-450",
-    secondary-border: "orange-600",
+    secondary-hover: "orange-550",
+    secondary-border: "orange-700",
     secondary-subtle: "orange-900",
-
-    menu-background: "dark-surface-low",
-    menu-item-text: "gray-100",
-    menu-item-hover-background: "dark-surface-high",
-    menu-item-selected-background: "dark-surface-highest",
-    menu-divider: "gray-800",
-
+    secondary-gradient: linear-gradient(
+        135deg,
+        var(--pdz-color-orange-500),
+        var(--pdz-color-orange-300)
+      ),
+    // Menu Theme (Mirrors light theme structure)
+    menu: "gray-100",
+    menu-lighter: "gray-200",
+    menu-darker: "gray-50",
+    on-menu: "gray-950",
+    menu-container: "gray-900",
+    menu-container-low: "gray-850",
+    menu-container-high: "gray-800",
+    menu-container-hover: "gray-800",
+    on-menu-container: "gray-200",
+    menu-hover: "gray-550",
+    menu-border: "gray-700",
+    menu-subtle: "gray-950",
+    menu-gradient: linear-gradient(
+        135deg,
+        var(--pdz-color-gray-800),
+        var(--pdz-color-gray-700)
+      ),
     error: "red-200",
     on-error: "red-950",
     error-container: "red-900",
@@ -181,7 +228,7 @@ $theme: (
     on-info-container: "blue-200",
 
     disabled-surface: "gray-800",
-    on-disabled: "gray-600",
+    on-disabled-surface: "gray-600",
 
     surface-inverse: "gray-100",
     on-surface-inverse: "gray-900",
@@ -218,6 +265,7 @@ $theme: (
     scale-positive-5: "emerald-750",
     scale-positive-6: "emerald-700",
     scale-positive-7: "emerald-650",
+    scale-neutral: "gray-700",
     scale-negative-1: "rose-950",
     scale-negative-2: "rose-900",
     scale-negative-3: "rose-850",

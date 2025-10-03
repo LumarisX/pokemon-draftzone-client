@@ -3,11 +3,10 @@
 .draft-header {
   display: flex;
   align-items: center;
-  z-index: 0;
+  z-index: 5001;
   padding: 0 0.5rem;
   gap: 0.5rem;
 
-  border-bottom: 1px solid var(--pdz-color-primary-border);
   border-top: 1px solid var(--pdz-color-primary-border);
 
   margin-bottom: 0.5rem;

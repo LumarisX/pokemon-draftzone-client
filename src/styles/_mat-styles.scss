@@ -126,6 +126,7 @@ $theme-configurations: (
 @mixin apply-custom-material-overrides() {
 }
 
+.cdk-overlay-container,
 :root {
   @each $theme-attribute-value, $palette-map in $theme-configurations {
     &[theme-name="#{$theme-attribute-value}"] {

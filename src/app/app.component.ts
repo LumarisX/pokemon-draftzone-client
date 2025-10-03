@@ -26,12 +26,12 @@ export class AppComponent {
       );
       matIconRegistry.setDefaultFontSetClass('material-symbols-outlined');
     });
+    document.documentElement.setAttribute('pdz-theme', 'normal');
   }
 
   getTheme() {
     const classes: string[] = [];
-    document.documentElement.setAttribute('pdz-theme', 'normal');
-    document.documentElement.setAttribute('pdz-theme-mode', 'light');
+    // document.documentElement.setAttribute('pdz-theme-mode', 'dark');
 
     // if (this.settingsService.settingsData.ldMode === 'dark') {
     //   document.documentElement.setAttribute('pdz-theme-mode', 'dark');

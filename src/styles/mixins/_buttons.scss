@@ -65,7 +65,7 @@ $base-button-defaults: (
   &.selected {
     background-color: map.get($config, "background-selected");
   }
-  &:hover {
+  &:not(:disabled):not(.disabled):hover {
     background-color: map.get($config, "background-hover");
     color: map.get($config, "color-hover");
     border-color: map.get($config, "border-color-hover");
@@ -86,7 +86,7 @@ $base-button-defaults: (
 
 $flat-button-defaults: (
   padding: var(--pdz-space-xs) var(--pdz-space-xl),
-  border-radius: var(--pdz-shape-corner-full),
+  border-radius: var(--pdz-shape-corner-sm),
   background: transparent,
   background-hover: transparent,
   border-color: transparent,
@@ -121,7 +121,7 @@ $flat-button-menu-defaults: (
 
 $icon-button-defaults: (
   padding: var(--pdz-space-xs),
-  border-radius: var(--pdz-shape-corner-full),
+  border-radius: var(--pdz-shape-corner-sm),
   width: 2.5rem,
   height: 2.5rem,
   background: transparent,

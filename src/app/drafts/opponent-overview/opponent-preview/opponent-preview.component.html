@@ -12,6 +12,13 @@
             View Matchup
           </button>
           <button
+            routerLink="score"
+            [queryParams]="{ matchup: selectedMatchup._id }"
+            class="option-btn"
+          >
+            <mat-icon>scoreboard</mat-icon>
+          </button>
+          <button
             class="option-btn"
             routerLink="form"
             [queryParams]="{ matchup: selectedMatchup._id }"
@@ -67,7 +74,7 @@
               }
             </div>
             <div class="options-container">
-              <button
+              <!-- <button
                 routerLink="score"
                 [queryParams]="{ matchup: matchup._id }"
               >
@@ -80,7 +87,7 @@
                     }
                   </div>
                 </div>
-              </button>
+              </button> -->
             </div>
           </div>
         } @empty {
@@ -99,16 +106,10 @@
       @if (teamStats.value && teamStats.value.length > 0) {
         <div class="table-container">
           <div class="table-wrapper">
-            <table
-              mat-table
-              [dataSource]="teamStats.value!"
-              matSort
-              [matSortDisableClear]="true"
-              (matSortChange)="sort($event)"
-            >
-              <ng-container matColumnDef="sprite">
-                <th mat-header-cell *matHeaderCellDef></th>
-                <td mat-cell *matCellDef="let element">
+            <table cdk-table [dataSource]="teamStats.value!">
+              <ng-container cdkColumnDef="sprite">
+                <th cdk-header-cell *cdkHeaderCellDef></th>
+                <td cdk-cell *cdkCellDef="let element">
                   <div class="sprite-wrapper">
                     <pdz-sprite
                       [flipped]="true"
@@ -117,101 +118,57 @@
                   </div>
                 </td>
               </ng-container>
-              <ng-container matColumnDef="name">
-                <th mat-sort-header="name" mat-header-cell *matHeaderCellDef>
-                  Name
-                </th>
-                <td mat-cell *matCellDef="let element">
+              <ng-container cdkColumnDef="name">
+                <th cdk-header-cell *cdkHeaderCellDef>Name</th>
+                <td cdk-cell *cdkCellDef="let element">
                   {{ element.pokemon.name }}
                 </td>
               </ng-container>
 
-              <ng-container matColumnDef="gb">
-                <th
-                  mat-sort-header="gb"
-                  start="desc"
-                  mat-header-cell
-                  *matHeaderCellDef
-                >
-                  Games Brought
-                </th>
-                <td mat-cell *matCellDef="let element">
+              <ng-container cdkColumnDef="gb">
+                <th cdk-header-cell *cdkHeaderCellDef>Games Brought</th>
+                <td cdk-cell *cdkCellDef="let element">
                   {{ element.brought }}
                 </td>
               </ng-container>
 
-              <ng-container matColumnDef="dk">
-                <th
-                  mat-sort-header="dk"
-                  start="desc"
-                  mat-header-cell
-                  *matHeaderCellDef
-                >
-                  Direct Kills
-                </th>
-                <td mat-cell *matCellDef="let element">
+              <ng-container cdkColumnDef="dk">
+                <th cdk-header-cell *cdkHeaderCellDef>Direct Kills</th>
+                <td cdk-cell *cdkCellDef="let element">
                   {{ element.kills }}
                 </td>
               </ng-container>
 
-              <ng-container matColumnDef="ik">
-                <th
-                  mat-sort-header="ik"
-                  start="desc"
-                  mat-header-cell
-                  *matHeaderCellDef
-                >
-                  Indirect Kills
-                </th>
-                <td mat-cell *matCellDef="let element">
+              <ng-container cdkColumnDef="ik">
+                <th cdk-header-cell *cdkHeaderCellDef>Indirect Kills</th>
+                <td cdk-cell *cdkCellDef="let element">
                   {{ element.indirect }}
                 </td>
               </ng-container>
 
-              <ng-container matColumnDef="deaths">
-                <th
-                  mat-sort-header="deaths"
-                  start="desc"
-                  mat-header-cell
-                  *matHeaderCellDef
-                >
-                  Deaths
-                </th>
-                <td mat-cell *matCellDef="let element">
+              <ng-container cdkColumnDef="deaths">
+                <th cdk-header-cell *cdkHeaderCellDef>Deaths</th>
+                <td cdk-cell *cdkCellDef="let element">
                   {{ element.deaths }}
                 </td>
               </ng-container>
 
-              <ng-container matColumnDef="kdr">
-                <th
-                  mat-sort-header="kdr"
-                  start="desc"
-                  mat-header-cell
-                  *matHeaderCellDef
-                >
-                  Kills/Deaths
-                </th>
-                <td mat-cell *matCellDef="let element">
+              <ng-container cdkColumnDef="kdr">
+                <th cdk-header-cell *cdkHeaderCellDef>Kills/Deaths</th>
+                <td cdk-cell *cdkCellDef="let element">
                   {{ element.kdr | number: "1.0-2" }}
                 </td>
               </ng-container>
 
-              <ng-container matColumnDef="kpg">
-                <th
-                  mat-sort-header="kpg"
-                  start="desc"
-                  mat-header-cell
-                  *matHeaderCellDef
-                >
-                  Kills/Game
-                </th>
-                <td mat-cell *matCellDef="let element">
+              <ng-container cdkColumnDef="kpg">
+                <th cdk-header-cell *cdkHeaderCellDef>Kills/Game</th>
+                <td cdk-cell *cdkCellDef="let element">
                   {{ element.kpg | number: "1.0-2" }}
                 </td>
               </ng-container>
 
-              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-              <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+              <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+              <tr cdk-row *cdkRowDef="let row; columns: displayedColumns"></tr>
             </table>
           </div>
         </div>

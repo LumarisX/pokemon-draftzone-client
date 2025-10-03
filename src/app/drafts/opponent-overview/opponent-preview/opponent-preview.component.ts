@@ -14,6 +14,7 @@ import { DraftService } from '../../../services/draft.service';
 import { DraftOverviewPath } from '../../draft-overview/draft-overview-routing.module';
 import { Stats } from '../../draft-overview/draft-stats/draft-stats.component';
 import { ConfirmDeleteDialogComponent } from './confirm-delete-dialog.component';
+import { CdkTableModule } from '@angular/cdk/table';
 
 type Matchup = Opponent & {
   score?: [number, number] | null;
@@ -34,9 +35,9 @@ type Matchup = Opponent & {
     LoadingComponent,
     MatButtonModule,
     MatIconModule,
-    MatTableModule,
     MatSortModule,
     MatDialogModule,
+    CdkTableModule,
   ],
 })
 export class OpponentTeamPreviewComponent implements OnInit {
