@@ -15,11 +15,11 @@
 }
 
 .table-wrapper {
-  padding: 1rem;
+  padding: var(--pdz-space-lg);
   overflow-x: auto;
-  border-radius: 1rem;
-  background-color: var(--mat-sys-surface);
-  box-shadow: var(--pdz-level3);
+  border-radius: var(--pdz-shape-corner-lg);
+  background-color: var(--pdz-color-surface);
+  box-shadow: var(--pdz-level-3);
 }
 th,
 td {
@@ -28,7 +28,7 @@ td {
 }
 
 th.cdk-header-cell {
-  border-bottom: 2px solid var(--mat-sys-outline);
+  border-bottom: 2px solid var(--pdz-color-primary-border);
 }
 
 table {
@@ -39,7 +39,7 @@ table {
 
 .title-bar {
   position: relative;
-  padding: 1rem;
+  padding: var(--pdz-space-lg);
 }
 
 .back-button {
@@ -52,7 +52,7 @@ table {
 
 tr.cdk-row {
   &:hover {
-    background-color: var(--mat-sys-surface-variant);
+    background-color: var(--pdz-color-surface-variant);
   }
 }
 

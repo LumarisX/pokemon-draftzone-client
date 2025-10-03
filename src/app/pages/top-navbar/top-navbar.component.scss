@@ -1,14 +1,12 @@
 @use "@angular/material" as mat;
+@use "../../../styles/breakpoints" as *;
+@use "../../../styles/mixins" as *;
 
 mat-toolbar {
-  > :not(:first-child) {
-    padding-left: 0.5rem;
-  }
-
   @include mat.toolbar-overrides(
     (
-      container-background-color: var(--mat-sys-surface-container-highest),
-      container-text-color: var(--mat-sys-on-surface),
+      container-background-color: var(--pdz-color-surface),
+      container-text-color: var(--pdz-color-on-surface),
     )
   );
   @include mat.toolbar-density(-4);
@@ -20,8 +18,8 @@ mat-toolbar {
     )
   );
 }
-header {
-  box-shadow: var(--pdz-level2);
+:host {
+  box-shadow: var(--pdz-level-2);
   z-index: 5000;
 }
 
@@ -30,11 +28,12 @@ header {
 }
 
 .menu-tab {
-  padding: 0.5rem;
-  border-radius: 0.5rem;
-  font-family: "Nasalization RG", sans-serif;
+  padding: var(--pdz-space-sm);
+  border-radius: var(--pdz-shape-corner-sm);
+  font-family: var(--pdz-font-fancy);
+  @include background-hover-effect(var(--pdz-color-surface-container));
   &:hover {
-    background-color: var(--mat-sys-surface-container);
+    color: var(--pdz-color-on-surface-container);
   }
 }
 
@@ -44,23 +43,48 @@ header {
   .user-icon {
     width: 1.5rem;
     height: 1.5rem;
-    border-radius: 1rem;
+    border-radius: var(--pdz-shape-corner-lg);
   }
   .username-text {
     padding-left: 0.5rem;
     max-width: 4rem;
     text-overflow: clip;
-    font-size: 0.9em;
-    line-height: 0.9em;
+    font-size: 0.9rem;
+    line-height: 0.9rem;
     overflow: hidden;
   }
 }
 
-svg {
-  .logo-top {
-    fill: var(--mat-sys-primary);
+.home-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: var(--pdz-shape-corner-sm);
+  padding: 0 0.5rem;
+  @include background-hover-effect(var(--pdz-color-surface-container));
+  &:hover {
+    color: var(--pdz-color-on-surface-container);
   }
-  .logo-bottom {
-    fill: var(--mat-sys-tertiary);
+}
+pdz-icon {
+  height: 100%;
+  width: fit-content;
+}
+
+.mobile-menu {
+  display: block;
+}
+
+.desktop-tabs {
+  display: none;
+}
+
+@include respond-above(medium) {
+  .mobile-menu {
+    display: none;
+  }
+
+  .desktop-tabs {
+    display: flex;
   }
 }

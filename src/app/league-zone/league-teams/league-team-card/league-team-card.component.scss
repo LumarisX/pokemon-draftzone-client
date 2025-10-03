@@ -3,9 +3,9 @@
   height: 4rem;
   border-radius: 2rem;
   border-width: 2px;
-  border-color: var(--mat-sys-outline-variant);
+  border-color: var(--pdz-color-primary-border-variant);
   overflow: hidden;
-  box-shadow: var(--mat-sys-level1);
+  box-shadow: var(--pdz-level1);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -35,23 +35,23 @@
     gap: 0.75rem;
     margin-bottom: 0.5rem;
     padding-bottom: 0.5rem;
-    border-bottom: 1px solid var(--mat-sys-outline);
+    border-bottom: 1px solid var(--pdz-color-primary-border);
     .team-info {
       flex-grow: 1;
 
       .team-name {
         text-align: center;
         font-weight: 600;
-        font-size: 1.1em;
+        font-size: 1.1rem;
         margin: 0 0 0.2em 0;
       }
 
       .team-coaches {
         .team-coach {
           text-align: center;
-          color: var(--mat-sys-primary);
+          color: var(--pdz-color-primary);
           font-weight: 600;
-          font-size: 0.8em;
+          font-size: 0.8rem;
           margin: 0;
         }
       }
@@ -61,14 +61,14 @@
       }
 
       .team-record {
-        color: var(--mat-sys-secondary);
-        font-size: 0.8em;
+        color: var(--pdz-color-secondary);
+        font-size: 0.8rem;
         font-weight: 600;
       }
 
       .team-timezone {
-        color: var(--mat-sys-secondary);
-        font-size: 0.8em;
+        color: var(--pdz-color-secondary);
+        font-size: 0.8rem;
         font-weight: 600;
       }
     }
@@ -81,13 +81,13 @@
       button {
         width: 1.5rem;
         height: 1.5rem;
-        color: var(--mat-sys-primary);
-        border-radius: 0.25rem;
+        color: var(--pdz-color-primary);
+        border-radius: var(--pdz-shape-corner-xs);
         &:hover {
-          color: var(--mat-sys-secondary);
+          color: var(--pdz-color-secondary);
         }
         &:not(.pressed) {
-          box-shadow: var(--mat-sys-level1);
+          box-shadow: var(--pdz-level1);
         }
       }
     }
@@ -97,10 +97,10 @@
     overflow: auto;
     .table-wrapper {
       width: 100%;
-      border: 1px solid var(--mat-sys-primary);
-      border-radius: 1rem;
+      border: 1px solid var(--pdz-color-primary);
+      border-radius: var(--pdz-shape-corner-lg);
       overflow: hidden;
-      font-size: 0.8em;
+      font-size: 0.8rem;
       .roster-table {
         width: 100%;
         table-layout: fixed;
@@ -110,15 +110,15 @@
           padding: 0.5rem 0.4rem;
           text-align: left;
           vertical-align: middle;
-          border-bottom: 1px solid var(--mat-sys-outline-variant);
+          border-bottom: 1px solid var(--pdz-color-primary-border-variant);
           overflow: hidden;
           text-overflow: ellipsis;
         }
 
         th {
           font-weight: 600;
-          background-color: var(--mat-sys-primary);
-          color: var(--mat-sys-on-primary);
+          background-color: var(--pdz-color-primary);
+          color: var(--pdz-color-on-primary);
           white-space: nowrap;
         }
 
@@ -134,7 +134,7 @@
           text-align: center;
           white-space: nowrap;
           mat-icon {
-            color: var(--mat-sys-primary);
+            color: var(--pdz-color-primary);
           }
         }
 
@@ -155,7 +155,7 @@
         th.col-name,
         td.cell-name {
           white-space: normal;
-          line-height: 1em;
+          line-height: 1rem;
         }
 
         tr:last-child {

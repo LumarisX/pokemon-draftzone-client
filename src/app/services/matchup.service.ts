@@ -12,9 +12,11 @@ export const matchupPath = 'matchup';
 export class MatchupService {
   private apiService = inject(ApiService);
 
-
   getMatchup(matchupId: string) {
-    return this.apiService.get(`${matchupPath}/${matchupId}`, true);
+    return this.apiService.get<MatchupData>(
+      `${matchupPath}/${matchupId}`,
+      true,
+    );
   }
 
   getQuickMatchup(matchupData: QuickFormData): Observable<MatchupData> {

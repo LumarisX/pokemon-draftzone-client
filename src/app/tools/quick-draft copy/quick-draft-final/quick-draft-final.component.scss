@@ -1,5 +1,5 @@
 .draft-container-wrapper {
-  border: 2px solid var(--mat-sys-outline-variant);
+  border: 2px solid var(--pdz-color-primary-border-variant);
   height: 100%;
   width: 100%;
   max-height: 100%;
@@ -13,7 +13,7 @@
 .draft-container {
   display: flex;
   flex-wrap: wrap;
-  padding: 1rem;
+  padding: var(--pdz-space-lg);
   width: fit-content;
   align-items: center;
   justify-content: center;
@@ -34,7 +34,7 @@
 }
 
 h2 {
-  color: var(--mat-sys-primary);
+  color: var(--pdz-color-primary);
 }
 
 :host {
@@ -50,7 +50,7 @@ h2 {
   height: 1.5rem;
 
   .type-text {
-    font-size: 0.8em;
-    line-height: 1.5em;
+    font-size: 0.8rem;
+    line-height: 1.5rem;
   }
 }

@@ -1,29 +1,29 @@
 .setting-title {
-  font-family: "Nasalization RG", sans-serif;
-  font-size: 1.75em;
-  color: var(--mat-sys-on-surface);
+  font-family: var(--pdz-font-fancy);
+  font-size: 1.75rem;
+  color: var(--pdz-color-on-surface);
 }
 .setting-container {
-  padding: 1rem;
+  padding: var(--pdz-space-lg);
 
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  box-shadow: var(--pdz-level3);
+  box-shadow: var(--pdz-level-3);
   width: 100%;
   max-width: 32rem;
   max-height: fit-content;
   height: 32rem;
-  background-color: var(--mat-sys-surface);
+  background-color: var(--pdz-color-surface);
   overflow-y: auto;
-  border-radius: 1rem;
+  border-radius: var(--pdz-shape-corner-lg);
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 .options-container {
-  padding: 1rem;
+  padding: var(--pdz-space-lg);
   display: flex;
   flex-direction: column;
 

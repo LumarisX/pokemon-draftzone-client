@@ -14,46 +14,46 @@
 
 h1,
 h2 {
-  font-family: var(--pdz-fancy);
+  font-family: var(--pdz-font-fancy);
 }
 
 h2 {
-  font-size: 1.5em;
+  font-size: 1.5rem;
 }
 
 .qd-template {
-  font-family: var(--pdz-fancy);
+  font-family: var(--pdz-font-fancy);
   width: 15rem;
   min-height: 12rem;
-  padding: 1rem;
+  padding: var(--pdz-space-lg);
   display: flex;
   flex-direction: column;
   align-items: center;
   row-gap: 0.5rem;
 
   .qd-header {
-    font-size: 1.25em;
+    font-size: 1.25rem;
     text-align: center;
     width: 100%;
-    border-bottom: 2px solid var(--mat-sys-outline-variant);
+    border-bottom: 2px solid var(--pdz-color-primary-border-variant);
   }
 
   @media (max-width: 768px) {
-    padding: 0.5rem;
+    padding: var(--pdz-space-sm);
     min-height: 0;
     height: fit-content;
     .qd-header {
-      font-size: 1.15em;
+      font-size: 1.15rem;
     }
   }
 }
 
 .qd-tiers-container {
-  padding: 0.25rem;
+  padding: var(--pdz-space-xs);
   width: 100%;
-  border-radius: 0.5rem;
+  border-radius: var(--pdz-shape-corner-sm);
   font-size: small;
-  border: 2px solid var(--mat-sys-outline-variant);
+  border: 2px solid var(--pdz-color-primary-border-variant);
   display: flex;
   justify-content: space-around;
   flex-wrap: wrap;
@@ -86,7 +86,7 @@ h2 {
     }
 
     .option-label {
-      font-size: 0.8em;
+      font-size: 0.8rem;
     }
     .custom-tier-options {
       display: grid;

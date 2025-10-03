@@ -1,7 +1,7 @@
-$container-padding: 0.75rem;
+$container-padding: var(--pdz-space-md);
 
 :host {
-  --card-border-radius: 1rem;
+  --card-border-radius: var(--pdz-shape-corner-lg);
   --logo-size: 3.5rem;
   --logo-border-width: 2px;
 }
@@ -9,7 +9,7 @@ $container-padding: 0.75rem;
 .comparison-card {
   display: flex;
   flex-direction: column;
-  box-shadow: var(--mat-sys-level2);
+  box-shadow: var(--pdz-level2);
   border-radius: var(--card-border-radius);
   padding: $container-padding;
   position: relative;
@@ -42,14 +42,14 @@ $container-padding: 0.75rem;
   width: var(--logo-size);
   height: var(--logo-size);
   border-radius: 50%;
-  border: var(--logo-border-width) solid var(--mat-sys-outline-variant);
+  border: var(--logo-border-width) solid var(--pdz-color-primary-border-variant);
   flex-shrink: 0;
   overflow: hidden;
-  box-shadow: var(--mat-sys-level1);
+  box-shadow: var(--pdz-level1);
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--mat-sys-surface-container-low);
+  background-color: var(--pdz-color-surface-container-low);
   img {
     max-width: 100%;
     max-height: 100%;
@@ -73,17 +73,17 @@ $container-padding: 0.75rem;
 }
 
 .entity-primary-name {
-  font-size: 0.9em;
+  font-size: 0.9rem;
   overflow: hidden;
-  line-height: 1em;
-  max-height: 2em;
-  font-family: var(--pdz-fancy);
+  line-height: 1rem;
+  max-height: 2rem;
+  font-family: var(--pdz-font-fancy);
   text-overflow: ellipsis;
 }
 
 .entity-secondary-name {
-  font-size: 0.7em;
-  color: var(--mat-sys-on-surface-variant);
+  font-size: 0.7rem;
+  color: var(--pdz-color-on-surface-variant);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -106,11 +106,11 @@ $container-padding: 0.75rem;
 .center-icon {
   user-select: none;
   font-weight: 700;
-  font-size: 0.6em;
+  font-size: 0.6rem;
   max-width: 1rem;
-  color: var(--mat-sys-on-surface-variant);
+  color: var(--pdz-color-on-surface-variant);
   text-align: center;
-  line-height: 0.8em;
+  line-height: 0.8rem;
   display: flex;
   flex-grow: 1;
   align-items: center;
@@ -128,33 +128,33 @@ $container-padding: 0.75rem;
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
-  color: var(--mat-sys-outline);
+  color: var(--pdz-color-primary-border);
   transition: transform 0.3s ease-in-out;
 }
 
 .status {
   border-radius: 2rem;
-  padding: 0.25rem;
-  font-size: 0.7em;
+  padding: var(--pdz-space-xs);
+  font-size: 0.7rem;
   user-select: none;
-  line-height: 0.7em;
+  line-height: 0.7rem;
   transition: transform 0.3s ease-in-out;
-  border: 1px solid var(--mat-sys-outline-variant);
+  border: 1px solid var(--pdz-color-primary-border-variant);
   color: gray;
   &.active {
     z-index: 100;
-    background-color: var(--mat-sys-primary);
-    color: var(--mat-sys-on-primary);
+    background-color: var(--pdz-color-primary);
+    color: var(--pdz-color-on-primary);
   }
 
   &.link {
-    box-shadow: var(--mat-sys-level2);
+    box-shadow: var(--pdz-level2);
 
     cursor: pointer;
     &.active:active {
       margin-top: 1px;
       margin-bottom: -1px;
-      box-shadow: var(--mat-sys-level0);
+      box-shadow: var(--pdz-level0);
     }
   }
 }
@@ -162,7 +162,7 @@ $container-padding: 0.75rem;
 .comparison-content {
   padding-top: $container-padding;
   margin-top: 0.5rem;
-  border-top: 1px solid var(--mat-sys-outline);
+  border-top: 1px solid var(--pdz-color-primary-border);
   animation: fadeIn 0.3s ease-in-out;
 }
 

@@ -4,8 +4,8 @@ h2 {
   margin-top: 0;
   margin-bottom: 16px;
   font-weight: 500;
-  font-size: 1.2em;
-  border-bottom: 1px solid var(--mat-sys-outline-variant);
+  font-size: 1.2rem;
+  border-bottom: 1px solid var(--pdz-color-primary-border-variant);
   padding-bottom: 8px;
 }
 
@@ -27,8 +27,8 @@ h2 {
   @include mat.dialog-overrides(
     (
       subhead-weight: 700,
-      subhead-font: var(--pdz-fancy),
-      subhead-color: var(--mat-sys-primary),
+      subhead-font: var(--pdz-font-fancy),
+      subhead-color: var(--pdz-color-primary),
       subhead-size: 1.2em,
     )
   );

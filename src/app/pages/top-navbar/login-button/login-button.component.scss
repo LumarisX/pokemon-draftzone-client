@@ -1,0 +1,29 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.user-info-container {
+  display: flex;
+  align-items: center;
+  .user-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: var(--pdz-shape-corner-full);
+  }
+  .username-text {
+    padding-left: var(--pdz-space-sm);
+    max-width: 4rem;
+    text-overflow: clip;
+    font-size: 0.9rem;
+    line-height: 0.9rem;
+    overflow: hidden;
+  }
+}
+
+button {
+  border-radius: var(--pdz-shape-corner-lg);
+}

@@ -5,9 +5,9 @@
 }
 
 .rule-title {
-  font-family: "Nasalization RG", sans-serif;
+  font-family: var(--pdz-font-fancy);
   font-weight: bold;
-  font-size: larger;
+  font-size: var(--pdz-font-size-lg);
 }
 
 .rule-description {
@@ -15,24 +15,24 @@
 }
 
 .markdown-wrapper {
-  padding: 1rem;
+  padding: var(--pdz-space-lg);
   width: 100%;
 }
 
-$border-color: var(--mat-sys-outline-variant);
-$header-bg: var(--mat-sys-surface);
-$header-bg-hover: var(--mat-sys-surface-variant);
+$border-color: var(--pdz-color-primary-border-variant);
+$header-bg: var(--pdz-color-surface);
+$header-bg-hover: var(--pdz-color-surface-variant);
 $body-bg: #fff;
-$text-color: var(--mat-sys-on-surface);
-$indicator-color: var(--mat-sys-primary);
-$border-radius: 1rem;
-$horizontal-padding: 1rem;
-$vertical-padding: 0.5rem;
+$text-color: var(--pdz-color-on-surface);
+$indicator-color: var(--pdz-color-primary);
+$border-radius: var(--pdz-shape-corner-lg);
+$horizontal-padding: var(--pdz-space-lg);
+$vertical-padding: var(--pdz-space-sm);
 
 .rule-main {
   border-radius: $border-radius;
   overflow: hidden;
-  box-shadow: var(--mat-sys-level2);
+  box-shadow: var(--pdz-level2);
   width: 50rem;
   max-width: 100%;
 }
@@ -53,7 +53,7 @@ $vertical-padding: 0.5rem;
   align-items: center;
   padding: 1px $horizontal-padding 1px calc($horizontal-padding/2);
   cursor: pointer;
-  font-family: var(--pdz-fancy);
+  font-family: var(--pdz-font-fancy);
   background-color: $header-bg;
   color: $text-color;
   transition: background-color 150ms ease-out;
@@ -78,11 +78,11 @@ $vertical-padding: 0.5rem;
         outline: none;
         margin-bottom: -1px;
         border-bottom: 1px solid $indicator-color;
-        background-color: rgba(var(--mat-sys-primary-rgb), 0.05);
+        background-color: rgba(var(--pdz-color-primary-rgb), 0.05);
       }
       &:hover:not(:focus) {
         margin-bottom: -1px;
-        border-bottom: 1px solid var(--mat-sys-outline);
+        border-bottom: 1px solid var(--pdz-color-primary-border);
       }
       field-sizing: content;
       font-weight: bold;
@@ -107,13 +107,13 @@ $vertical-padding: 0.5rem;
 }
 
 .accordion-item-body-content {
-  padding: 0.5rem;
+  padding: var(--pdz-space-sm);
   border-top: 1px solid $border-color;
   width: 100%;
 }
 
 .rule-container {
-  padding: 1rem;
+  padding: var(--pdz-space-lg);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -125,9 +125,9 @@ $vertical-padding: 0.5rem;
   justify-content: end;
   padding-bottom: $vertical-padding;
   mat-icon {
-    font-size: 1.2em;
+    font-size: 1.2rem;
     height: fit-content;
-    color: var(--mat-sys-secondary);
+    color: var(--pdz-color-secondary);
     width: fit-content;
   }
   @include mat.button-toggle-overrides(
@@ -138,10 +138,10 @@ $vertical-padding: 0.5rem;
 }
 
 .edit-area {
-  padding: 0.5rem;
+  padding: var(--pdz-space-sm);
   width: 100%;
-  border: 1px solid var(--mat-sys-outline-variant);
-  border-radius: 0.5rem;
+  border: 1px solid var(--pdz-color-primary-border-variant);
+  border-radius: var(--pdz-shape-corner-sm);
   resize: none;
   field-sizing: content;
   overflow: hidden;
@@ -151,7 +151,7 @@ $vertical-padding: 0.5rem;
 .add-section {
   background-color: $header-bg;
   padding: $vertical-padding $horizontal-padding;
-  font-family: var(--pdz-fancy);
+  font-family: var(--pdz-font-fancy);
   font-weight: bold;
   display: flex;
   align-items: center;
@@ -165,14 +165,14 @@ $vertical-padding: 0.5rem;
 
 .drag-handle {
   cursor: move;
-  color: var(--mat-sys-outline);
+  color: var(--pdz-color-primary-border);
 }
 
 .cdk-drag-preview {
   box-sizing: border-box;
   border-radius: calc($border-radius / 2);
-  box-shadow: var(--mat-sys-level4);
-  background-color: var(--mat-sys-surface);
+  box-shadow: var(--pdz-level4);
+  background-color: var(--pdz-color-surface);
   .accordion-item-header {
     padding: 0 $horizontal-padding;
     min-height: 3rem;
@@ -186,7 +186,7 @@ $vertical-padding: 0.5rem;
 }
 
 .cdk-drag-placeholder {
-  background-color: var(--mat-sys-surface-container-highest);
+  background-color: var(--pdz-color-surface-container-highest);
   opacity: 0.3;
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
   border-radius: calc($border-radius / 2);

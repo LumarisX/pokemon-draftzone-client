@@ -4,21 +4,21 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--mat-sys-primary-container);
-  color: var(--mat-sys-on-primary-container);
-  padding: 0.25rem;
+  background-color: var(--pdz-color-primary-container);
+  color: var(--pdz-color-on-primary-container);
+  padding: var(--pdz-space-xs);
   font-size: x-large;
   width: 12rem;
-  color: var(--mat-sys-primary);
+  color: var(--pdz-color-primary);
   height: 8rem;
   border-radius: 2rem;
-  box-shadow: var(--pdz-level2);
+  box-shadow: var(--pdz-level-2);
   &:hover {
-    background-color: var(--mat-sys-primary);
-    color: var(--mat-sys-on-primary);
+    background-color: var(--pdz-color-primary);
+    color: var(--pdz-color-on-primary);
   }
   &:active {
-    box-shadow: var(--pdz-level0);
+    box-shadow: var(--pdz-level-0);
   }
 
   @media (max-width: 768px) {

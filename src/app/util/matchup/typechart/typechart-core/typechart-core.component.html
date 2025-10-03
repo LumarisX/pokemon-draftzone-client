@@ -13,23 +13,21 @@
               'column-hovered': type === columnHovered.value,
             }"
           >
-            <div class="flex-wrapper">
-              <div
-                class="type-container"
-                [ngClass]="{
-                  'sort-press': sortedBy.value === type,
-                }"
-                [style.backgroundColor]="typeColor(type)"
-              >
-                <div class="type-icon-wrapper">
-                  <img
-                    src="../../../assets/icons/types/gen9icon/{{ type }}.png"
-                    onerror="this.src='../../../assets/icons/types/Unknown.png'"
-                    alt="{{ type }}"
-                  />
-                </div>
-                <span class="type-text">{{ type }}</span>
+            <div
+              class="type-container"
+              [ngClass]="{
+                'sort-press': sortedBy.value === type,
+              }"
+              [style.backgroundColor]="typeColor(type)"
+            >
+              <div class="type-icon-wrapper">
+                <img
+                  src="../../../assets/icons/types/gen9icon/{{ type }}.png"
+                  onerror="this.src='../../../assets/icons/types/Unknown.png'"
+                  alt="{{ type }}"
+                />
               </div>
+              <span class="type-text">{{ type }}</span>
             </div>
           </th>
         }
@@ -39,16 +37,14 @@
       @for (pokemon of sortedTeam | async; track $index) {
         <tr>
           <td class="action-cell" (click)="toggleVisible(pokemon)">
-            <div class="flex-wrapper">
-              <div class="sprite-wrapper">
-                <pdz-sprite
-                  size="3rem"
-                  tooltipPosition="left"
-                  [disabled]="pokemon.disabled"
-                  flipped
-                  [pokemon]="pokemon"
-                ></pdz-sprite>
-              </div>
+            <div class="sprite-wrapper">
+              <pdz-sprite
+                size="3rem"
+                tooltipPosition="left"
+                [disabled]="pokemon.disabled"
+                flipped
+                [pokemon]="pokemon"
+              ></pdz-sprite>
             </div>
           </td>
           @for (type of types; track $index) {
@@ -58,18 +54,16 @@
               (mouseleave)="columnHovered.next(null)"
               [ngClass]="{ 'column-hovered': type === columnHovered.value }"
             >
-              <div class="flex-wrapper">
-                <div
-                  class="type-wrapper"
-                  [ngClass]="
-                    weaknessColor(
-                      pokemon.weak[this.abilityIndex][type],
-                      pokemon.disabled!
-                    )
-                  "
-                >
-                  {{ pokemon.weak[this.abilityIndex][type] }}
-                </div>
+              <div
+                class="type-wrapper"
+                [ngClass]="
+                  weaknessColor(
+                    pokemon.weak[this.abilityIndex][type],
+                    pokemon.disabled!
+                  )
+                "
+              >
+                {{ pokemon.weak[this.abilityIndex][type] }}
               </div>
             </td>
           }

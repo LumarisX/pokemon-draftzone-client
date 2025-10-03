@@ -3,10 +3,17 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
   column-gap: 0.5rem;
   .team-container {
+    --pdz-comp-color-border: var(--pdz-color-primary-border);
+    --pdz-comp-color-title: var(--pdz-color-primary);
+
+    &.alternate {
+      --pdz-comp-color-border: var(--pdz-color-secondary-border);
+      --pdz-comp-color-title: var(--pdz-color-secondary);
+    }
     border-width: 1px;
-    border-radius: 1rem;
-    border-color: var(--mat-sys-outline);
-    padding: 0.25rem;
+    border-radius: var(--pdz-shape-corner-lg);
+    border-color: var(--pdz-comp-color-border);
+    padding: var(--pdz-space-xs);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -16,7 +23,7 @@
       flex-direction: column;
       align-items: center;
       border-width: 0 0 1px;
-      border-color: var(--mat-sys-outline);
+      border-color: var(--pdz-comp-color-border);
       margin-bottom: 0.5rem;
 
       .team-name-title,
@@ -27,12 +34,12 @@
         white-space: nowrap;
         text-align: center;
         font-weight: 700;
-        color: var(--mat-sys-secondary);
-        font-family: "Nasalization RG", sans-serif;
+        color: var(--pdz-comp-color-title);
+        font-family: var(--pdz-font-fancy);
       }
 
       .team-coach-title {
-        font-size: 0.8em;
+        font-size: 0.8rem;
         height: 1.25rem;
       }
     }
@@ -89,7 +96,7 @@
         }
         &.header {
           > div {
-            font-size: 0.8em;
+            font-size: 0.8rem;
             font-weight: 700;
           }
 
@@ -99,7 +106,7 @@
             justify-content: center;
             align-items: center;
             mat-icon {
-              font-size: 1.2em;
+              font-size: 1.2rem;
               height: fit-content;
               left: 0;
             }

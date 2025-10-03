@@ -1,17 +1,16 @@
 <div class="opponent-main">
   <div class="draft-header">
-    <button mat-flat-button [routerLink]="['/', draftPath]">Back</button>
-
+    <button class="back-btn" [routerLink]="['/', draftPath]">Back</button>
     @if (draft | async; as draft) {
       <div class="draft-info-container">
         <h2>
           {{ draft.leagueName }}
         </h2>
         <div class="details-container">
-          <h4 class="text-2xl font-bold text-symbolColor-sub">
+          <h4 class="stat">
             {{ draft.format }}
           </h4>
-          <h4 class="text-2xl font-bold text-symbolColor-sub">
+          <h4 class="stat">
             {{ draft.ruleset }}
           </h4>
         </div>
@@ -20,7 +19,7 @@
         <h3>
           {{ draft.teamName }}
         </h3>
-        <h4 class="text-2xl font-bold text-symbolColor-sub">
+        <h4 class="stat">
           {{ draft.score.wins }} - {{ draft.score.loses }} |
           {{ draft.score.diff }}
         </h4>
@@ -32,22 +31,14 @@
       </div>
       <div class="draft-buttons">
         <button
-          mat-mini-fab
           routerLink="../edit"
           [queryParams]="{ draft: draft.leagueId | json }"
         >
           <mat-icon>edit</mat-icon>
         </button>
-        <a
-          mat-mini-fab
-          [href]="draft.doc"
-          target="_blank"
-          [disabled]="!draft.doc"
-          [attr.aria-disabled]="!draft.doc"
-          [class.mat-disabled]="!draft.doc"
+        <a [href]="draft.doc" target="_blank" [class.disabled]="!draft.doc"
+          ><mat-icon>dataset_linked</mat-icon></a
         >
-          <mat-icon>dataset_linked</mat-icon>
-        </a>
       </div>
     }
   </div>

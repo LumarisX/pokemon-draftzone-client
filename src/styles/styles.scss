@@ -25,25 +25,25 @@
   }
 
   ::-webkit-scrollbar-track {
-    background: var(--mat-sys-surface);
+    background: var(--pdz-color-surface);
     border-radius: 100vh;
   }
 
   ::-webkit-scrollbar-thumb {
-    background: var(--mat-sys-surface-dim);
+    background: var(--pdz-color-surface-dim);
     border-radius: 100vh;
-    border: 2px solid var(--mat-sys-surface);
+    border: 2px solid var(--pdz-color-surface);
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: var(--mat-sys-surface-container-high);
-    border: 1px solid var(--mat-sys-surface);
+    background: var(--pdz-color-surface-container-high);
+    border: 1px solid var(--pdz-color-surface);
   }
 
   /* For Firefox */
-  * {
+  html {
     scrollbar-width: thin;
-    scrollbar-color: var(--mat-sys-surface-dim) var(--mat-sys-surface);
+    scrollbar-color: var(--pdz-color-surface-dim) var(--pdz-color-surface);
   }
 
   .tooltip {
@@ -60,7 +60,7 @@
     background-color: #333;
     color: #fff;
     padding: 0.5rem 1rem;
-    border-radius: 0.25rem;
+    border-radius: var(--pdz-shape-corner-xs);
     font-size: 0.875rem;
     white-space: nowrap;
     opacity: 0;
@@ -91,7 +91,7 @@ $screen-size-medium: 768px;
     flex-direction: column;
     align-items: center;
     z-index: 10000;
-    background-color: var(--mat-sys-surface-container);
+    background-color: var(--pdz-color-surface-container);
     overflow-y: auto;
   }
 
@@ -103,24 +103,15 @@ $screen-size-medium: 768px;
   }
 }
 
-:root {
-  --pdz-fancy: Nasalization RG, sans-serif;
-  --pdz-font-fancy: Nasalization RG;
-  --pdz-font-regular: Nunito;
-
-  --pdz-screen-size-medium: $screen-size-medium;
-  --pdz-screen-size-large: $screen-size-large;
-}
-
 $option-lineheight: 3rem;
 
 .pokemon-viewport {
   height: 15rem;
   width: 100%;
-  background-color: var(--mat-sys-surface-container-low);
-  color: var(--mat-sys-on-surface-container-low);
+  background-color: var(--pdz-color-surface-container-low);
+  color: var(--pdz-color-on-surface-container-low);
   border-radius: 0 0 0.25rem 0.25rem;
-  box-shadow: var(--pdz-level2);
+  box-shadow: var(--pdz-level-2);
 
   .cdk-virtual-scroll-content-wrapper {
     width: 100%;
@@ -134,15 +125,15 @@ $option-lineheight: 3rem;
 
       &:hover,
       &.highlighted-option {
-        background-color: var(--mat-sys-surface-container-highest);
-        color: var(--mat-sys-on-surface-container-highest);
+        background-color: var(--pdz-color-surface-container-highest);
+        color: var(--pdz-color-on-surface-container-highest);
         cursor: pointer;
       }
 
       .sprite-wrapper {
         height: $option-lineheight;
         width: $option-lineheight;
-        padding: 0.25rem;
+        padding: var(--pdz-space-xs);
         flex-shrink: 0;
       }
 
@@ -167,16 +158,16 @@ $option-lineheight: 3rem;
     flex-direction: column;
     align-items: center;
     width: 2.5rem;
-    border-radius: 0.25rem;
-    box-shadow: var(--pdz-level1);
+    border-radius: var(--pdz-shape-corner-xs);
+    box-shadow: var(--pdz-level-1);
     height: 1rem;
     padding: $bevel-padding;
 
     .type-text {
       color: white;
       flex-shrink: 0;
-      font-size: 0.6em;
-      line-height: 1em;
+      font-size: 0.6rem;
+      line-height: 1rem;
       user-select: none;
       font-family: var(--pdz-font-regular);
     }

@@ -4,7 +4,7 @@ td {
 
 .ability-cell {
   font-size: small;
-  line-height: 1.2em;
+  line-height: 1.2rem;
 }
 
 .type-cell {
@@ -20,7 +20,7 @@ td {
 }
 
 .slider-cell {
-  border: 1.5px solid var(--mat-sys-outline);
+  border: 1.5px solid var(--pdz-color-primary-border);
   .slider-container {
     display: flex;
     flex-direction: column;
@@ -57,7 +57,7 @@ td {
 }
 
 th.cdk-header-cell {
-  border-bottom: 2px solid var(--mat-sys-outline);
+  border-bottom: 2px solid var(--pdz-color-primary-border);
 }
 
 table {

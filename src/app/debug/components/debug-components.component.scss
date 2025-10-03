@@ -150,10 +150,10 @@ $icon-sizes: 20, 24, 32, 40, 48;
     color: var(--mat-sys-on-surface);
   }
   &.outline-color {
-    background-color: var(--mat-sys-outline);
+    background-color: var(--mat-sys-primary-border);
   }
   &.outline-variant {
-    background-color: var(--mat-sys-outline-variant);
+    background-color: var(--mat-sys-primary-border-variant);
   }
   &.surface-variant {
     background-color: var(--mat-sys-surface-variant);

@@ -65,15 +65,18 @@
             [pokemonList$]="pokemonList$"
             [ruleset]="draftForm.controls.details.controls.ruleset.value"
             [teamArray]="draftForm.controls.team"
+            (isImporting)="isImporting = $event"
           ></team-form>
         </div>
 
         <div class="button-bar">
           <button type="button" mat-flat-button matStepperPrevious>Back</button>
           <div class="button-spacer"></div>
-          <button type="submit" mat-flat-button (click)="onSubmit()">
-            Submit
-          </button>
+          @if (!isImporting) {
+            <button type="submit" mat-flat-button (click)="onSubmit()">
+              Submit
+            </button>
+          }
         </div>
       </ng-template>
     </mat-step>

@@ -1,61 +1,69 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
-import { DraftService } from '../../../services/draft.service';
 import { LoadingComponent } from '../../../images/loading/loading.component';
 import { SpriteComponent } from '../../../images/sprite/sprite.component';
-import { ArchiveSVG } from '../../../images/svg-components/archive.component';
-import { ArchiveAddSVG } from '../../../images/svg-components/archiveAdd.component';
-import { BarChartSVG } from '../../../images/svg-components/barchart.component';
-import { EditSVG } from '../../../images/svg-components/edit.component';
-import { PlusSVG } from '../../../images/svg-components/plus.component';
 import { Draft } from '../../../interfaces/draft';
+import { DraftService } from '../../../services/draft.service';
 import { DraftOverviewPath } from '../draft-overview-routing.module';
 
 @Component({
   selector: 'draft-preview',
-  standalone: true,
   templateUrl: './draft-preview.component.html',
+  styleUrl: './draft-preview.component.scss',
   imports: [
     CommonModule,
     RouterModule,
     SpriteComponent,
-    ArchiveAddSVG,
-    EditSVG,
-    BarChartSVG,
-    PlusSVG,
+    MatIconModule,
     LoadingComponent,
-    ArchiveSVG,
   ],
 })
 export class DraftPreviewComponent {
   private draftService = inject(DraftService);
 
-  drafts!: (Draft & { menu: 'main' | 'archive' | 'edit' | 'delete' })[];
+  drafts?: Draft[];
   draftPath = DraftOverviewPath;
+  menuState: {
+    [key: string]: '' | 'main' | 'confirm-archive' | 'confirm-delete';
+  } = {};
 
   ngOnInit() {
     this.reload();
   }
 
   reload() {
+    this.drafts = undefined;
     this.draftService.getDraftsList().subscribe((data) => {
       this.drafts = data;
-      for (let team of this.drafts) {
-        team.menu = 'main';
-      }
+      this.drafts.forEach((draft) => {
+        this.menuState[draft.leagueId] = '';
+      });
     });
   }
 
   archive(teamId: string) {
-    this.draftService.archiveDraft(teamId).subscribe((data) => {
+    this.draftService.archiveDraft(teamId).subscribe(() => {
       this.reload();
     });
   }
 
   delete(teamId: string) {
-    this.draftService.deleteDraft(teamId).subscribe((data) => {
+    this.draftService.deleteDraft(teamId).subscribe(() => {
       this.reload();
     });
+  }
+
+  setMenuState(
+    leagueId: string,
+    state: '' | 'main' | 'confirm-archive' | 'confirm-delete',
+  ) {
+    this.menuState[leagueId] = state;
+  }
+
+  toggleMenu(leagueId: string) {
+    this.menuState[leagueId] =
+      this.menuState[leagueId] === 'main' ? '' : 'main';
   }
 }

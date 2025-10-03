@@ -12,9 +12,8 @@ import { ApiService } from './api.service';
 export class DraftService {
   private apiService = inject(ApiService);
 
-
   getDraftsList() {
-    return this.apiService.get('draft/teams', true);
+    return this.apiService.get<Draft[]>('draft/teams', true);
   }
 
   getDraft(teamName: string) {
@@ -82,7 +81,11 @@ export class DraftService {
     );
   }
   getGameTime(matchupId: string, teamId: string) {
-    return this.apiService.get(`draft/${teamId}/${matchupId}/schedule`, true);
+    //TODO: remove any
+    return this.apiService.get<any>(
+      `draft/${teamId}/${matchupId}/schedule`,
+      true,
+    );
   }
   scheduleMatchup(matchupId: string, teamId: string, timeData: Object) {
     return this.apiService.patch(

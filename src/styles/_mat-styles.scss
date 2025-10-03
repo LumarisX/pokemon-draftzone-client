@@ -1,37 +1,233 @@
 @use "@angular/material" as mat;
+@use "themes/classic.theme" as classic;
+@use "themes/shiny.theme" as shiny_theme;
+@use "themes/christmas.theme" as xmas;
+
+@use "sass:map";
+@use "sass:meta";
+$theme-configurations: (
+  "classic": (
+    prime-primary: classic.$primary-palette,
+    prime-tertiary: classic.$tertiary-palette,
+    alt-primary: classic.$primary-palette_alt,
+    alt-tertiary: classic.$tertiary-palette_alt,
+    palettes: classic.$palettes,
+  ),
+  "shiny": (
+    prime-primary: shiny_theme.$primary-palette,
+    prime-tertiary: shiny_theme.$tertiary-palette,
+    alt-primary: shiny_theme.$primary-palette_alt,
+    alt-tertiary: shiny_theme.$tertiary-palette_alt,
+    palettes: shiny_theme.$palettes,
+  ),
+  "christmas": (
+    prime-primary: xmas.$primary-palette,
+    prime-tertiary: xmas.$tertiary-palette,
+    alt-primary: xmas.$primary-palette_alt,
+    alt-tertiary: xmas.$tertiary-palette_alt,
+    palettes: xmas.$palettes,
+  ),
+);
+
+@mixin _apply-mat-theme-core($primary-palette, $tertiary-palette, $theme-type) {
+  @if $primary-palette and $tertiary-palette {
+    @if meta.type-of($primary-palette) ==
+      map and
+      meta.type-of($tertiary-palette) ==
+      map
+    {
+      @include mat.theme(
+        (
+          color: (
+            primary: $primary-palette,
+            tertiary: $tertiary-palette,
+            theme-type: $theme-type,
+          ),
+        )
+      );
+    } @else {
+      @warn "Could not apply theme: Provided palettes are not valid maps (primary: #{meta.type-of($primary-palette)}, tertiary: #{meta.type-of($tertiary-palette)}) for theme-type '#{$theme-type}'.";
+    }
+  } @else {
+    @warn "Could not apply theme: Missing primary or tertiary palette variables for theme-type '#{$theme-type}'. Check theme configuration map.";
+  }
+}
+
+@mixin generate-palette-variables($palettes, $is-alt: false) {
+  @if $is-alt {
+    @each $key, $value in map.get($palettes, primary-alt) {
+      --primary-#{$key}: #{$value};
+    }
+    @each $key, $value in map.get($palettes, secondary-alt) {
+      --secondary-#{$key}: #{$value};
+    }
+    @each $key, $value in map.get($palettes, primary) {
+      --tertiary-#{$key}: #{$value};
+    }
+  } @else {
+    @each $key, $value in map.get($palettes, primary) {
+      --primary-#{$key}: #{$value};
+    }
+    @each $key, $value in map.get($palettes, secondary) {
+      --secondary-#{$key}: #{$value};
+    }
+    @each $key, $value in map.get($palettes, primary-alt) {
+      --tertiary-#{$key}: #{$value};
+    }
+  }
+}
+
+@mixin apply-theme-variants(
+  $prime-primary,
+  $prime-tertiary,
+  $alt-primary,
+  $alt-tertiary,
+  $palettes
+) {
+  .theme-prime,
+  [sub-theme="prime"] {
+    @include generate-palette-variables($palettes);
+    & {
+      @include _apply-mat-theme-core($prime-primary, $prime-tertiary, light);
+      @include apply-custom-material-overrides();
+    }
+  }
+
+  .theme-alt,
+  .alternate,
+  [sub-theme="alt"] {
+    @include generate-palette-variables($palettes, true);
+    & {
+      @include _apply-mat-theme-core($alt-primary, $alt-tertiary, light);
+      @include apply-custom-material-overrides();
+    }
+  }
+
+  &[light-mode="dark"] {
+    .theme-prime,
+    [sub-theme="prime"] {
+      @include _apply-mat-theme-core($prime-primary, $prime-tertiary, dark);
+    }
+    & {
+      @include apply-custom-material-overrides();
+    }
+
+    .theme-alt,
+    .alternate,
+    [sub-theme="alt"] {
+      @include _apply-mat-theme-core($alt-primary, $alt-tertiary, dark);
+      & {
+        @include apply-custom-material-overrides();
+      }
+    }
+  }
+}
+
+@mixin apply-custom-material-overrides() {
+}
+
+.cdk-overlay-container,
+:root {
+  @each $theme-attribute-value, $palette-map in $theme-configurations {
+    &[theme-name="#{$theme-attribute-value}"] {
+      @include apply-theme-variants(
+        map.get($palette-map, prime-primary),
+        map.get($palette-map, prime-tertiary),
+        map.get($palette-map, alt-primary),
+        map.get($palette-map, alt-tertiary),
+        map.get($palette-map, palettes)
+      );
+    }
+  }
+
+  @include mat.theme-overrides(
+    (
+      // Primary Palette
+      primary: var(--pdz-color-primary),
+      on-primary: var(--pdz-color-on-primary),
+      primary-container: var(--pdz-color-primary-container),
+      on-primary-container: var(--pdz-color-on-primary-container),
+      // Secondary Palette
+      secondary: var(--pdz-color-secondary),
+      on-secondary: var(--pdz-color-on-secondary),
+      secondary-container: var(--pdz-color-secondary-container),
+      on-secondary-container: var(--pdz-color-on-secondary-container),
+      // Tertiary Palette (mapped to your secondary colors as in the original)
+      tertiary: var(--pdz-color-secondary),
+      on-tertiary: var(--pdz-color-on-secondary),
+      tertiary-container: var(--pdz-color-secondary-container),
+      on-tertiary-container: var(--pdz-color-on-secondary-container),
+      // Error Palette
+      error: var(--pdz-color-error),
+      on-error: var(--pdz-color-on-error),
+      error-container: var(--pdz-color-error-container),
+      on-error-container: var(--pdz-color-on-error-container),
+      // Surface Palette
+      background: var(--pdz-color-background),
+      on-background: var(--pdz-color-on-surface),
+      surface: var(--pdz-color-surface),
+      on-surface: var(--pdz-color-on-surface),
+      surface-variant: var(--pdz-color-surface-variant),
+      on-surface-variant: var(--pdz-color-on-surface-variant),
+      // Surface Container Tones
+      surface-container-lowest: var(--pdz-color-surface-container-lowest),
+      surface-container-low: var(--pdz-color-surface-container-low),
+      surface-container: var(--pdz-color-surface-container),
+      surface-container-high: var(--pdz-color-surface-container-high),
+      surface-container-highest: var(--pdz-color-surface-container-highest),
+      // Outline & Misc
+      outline: var(--pdz-color-outline),
+      outline-variant: var(--pdz-color-outline-variant),
+      scrim: var(--pdz-color-scrim),
+      shadow: var(--pdz-color-shadow),
+      corner-full: var(--pdz-shape-corner-full),
+      corner-small: var(--pdz-shape-corner-sm),
+      corner-medium: var(--pdz-shape-corner-md),
+      corner-large: var(--pdz-shape-corner-lg)
+    )
+  );
+}
+
+body {
+  --mat-ripple-color: rgba(255, 255, 255, 0.1) !important;
+  // --mat-fab-small-state-layer-color: magenta !important;
+}
+
 @include mat.tooltip-overrides(
   (
-    container-color: var(--mat-sys-secondary),
-    supporting-text-color: var(--mat-sys-on-secondary),
-    supporting-text-size: small,
+    container-color: var(--pdz-color-surface-inverse),
+    supporting-text-color: var(--pdz-color-on-surface-inverse),
+    supporting-text-size: var(--pdz-font-size-xs),
+    supporting-text-line-height: var(--pdz-font-size-xs),
+    container-shape: var(--pdz-shape-corner-sm),
   )
 );
 
 .dialog-warn {
   @include mat.dialog-overrides(
     (
-      container-color: var(--mat-sys-error-container),
-      subhead-color: var(--mat-sys-error),
-      supporting-text-color: var(--mat-sys-on-error-container),
+      container-color: var(--pdz-error-container),
+      subhead-color: var(--pdz-error),
+      supporting-text-color: var(--pdz-on-error-container),
     )
   );
 
   @include mat.button-overrides(
     (
-      text-label-text-color: var(--mat-sys-error),
-      text-state-layer-color: var(--mat-sys-error),
+      text-label-text-color: var(--pdz-error),
+      text-state-layer-color: var(--pdz-error),
     )
   );
 }
 
 .chart-tooltip {
   max-width: 16rem;
-  box-shadow: var(--pdz-level4);
+  box-shadow: var(--pdz-level-4);
   .title-container {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    font-size: 1.2em;
+    font-size: 1.2rem;
 
     .title-wrapper {
       flex-grow: 1;
@@ -74,7 +270,7 @@
 
   .desc-container {
     max-width: 100%;
-    font-size: 0.8em;
+    font-size: 0.8rem;
     word-wrap: break-word;
     white-space: normal;
   }
@@ -83,13 +279,13 @@
 .flex-overlay {
   display: flex;
   flex-direction: column;
-  background-color: var(--mat-sys-surface);
-  color: var(--mat-sys-on-surface);
-  border-radius: 1rem;
-  box-shadow: var(--pdz-level3);
-  padding: 0.25rem;
+  background-color: var(--pdz-surface);
+  color: var(--pdz-on-surface);
+  border-radius: var(--pdz-shape-corner-lg);
+  box-shadow: var(--pdz-level-3);
+  padding: var(--pdz-space-xs);
   mat-icon {
-    color: var(--mat-sys-primary);
+    color: var(--pdz-primary);
   }
   label {
     display: flex;

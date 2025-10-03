@@ -8,10 +8,10 @@ $height: 32px;
 }
 
 .time-container {
-  padding: 1rem;
+  padding: var(--pdz-space-lg);
   max-width: 40rem;
-  box-shadow: var(--pdz-level3);
-  border-radius: 0.5rem;
+  box-shadow: var(--pdz-level-3);
+  border-radius: var(--pdz-shape-corner-sm);
 }
 mat-slider {
   width: 90%;
@@ -36,5 +36,5 @@ mat-slider {
 }
 
 .mat-level-2 {
-  box-shadow: var(--pdz-level2);
+  box-shadow: var(--pdz-level-2);
 }

@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'logo-small-svg',
-  standalone: true,
   template: `<svg
     id="a"
     xmlns="http://www.w3.org/2000/svg"
@@ -19,13 +18,13 @@ import { Component } from '@angular/core';
         r="424.59134"
         gradientUnits="userSpaceOnUse"
       >
-        <stop class="ring_1" offset=".33103" />
-        <stop class="ring_2" offset=".43832" />
-        <stop class="ring_3" offset=".57619" />
-        <stop class="ring_4" offset=".70596" />
-        <stop class="ring_5" offset=".82377" />
-        <stop class="ring_6" offset=".92564" />
-        <stop class="ring_7" offset="1" />
+        <stop stop-color="var(--pdz-color-logo-ring-1, #000)" offset=".33103" />
+        <stop stop-color="var(--pdz-color-logo-ring-2, #222)" offset=".43832" />
+        <stop stop-color="var(--pdz-color-logo-ring-3, #444)" offset=".57619" />
+        <stop stop-color="var(--pdz-color-logo-ring-4, #666)" offset=".70596" />
+        <stop stop-color="var(--pdz-color-logo-ring-5, #888)" offset=".82377" />
+        <stop stop-color="var(--pdz-color-logo-ring-6, #aaa)" offset=".92564" />
+        <stop stop-color="var(--pdz-color-logo-ring-7, #ccc)" offset="1" />
       </radialGradient>
       <radialGradient
         id="inner_core_a_small"
@@ -37,8 +36,16 @@ import { Component } from '@angular/core';
         gradientUnits="userSpaceOnUse"
         gradientTransform="translate(-20,-30)"
       >
-        <stop offset="0" class="core_1" stop-opacity="0" />
-        <stop offset="1" class="core_2" stop-opacity="1" />
+        <stop
+          offset="0"
+          stop-color="var(--pdz-color-logo-core-1, #fff)"
+          stop-opacity="0"
+        />
+        <stop
+          offset="1"
+          stop-color="var(--pdz-color-logo-core-2, #000)"
+          stop-opacity="1"
+        />
       </radialGradient>
       <radialGradient
         id="inner_core_b_small"
@@ -50,8 +57,8 @@ import { Component } from '@angular/core';
         gradientUnits="userSpaceOnUse"
         gradientTransform="translate(-80,-120)"
       >
-        <stop offset="0" class="core_1" />
-        <stop offset="1" class="core_2" />
+        <stop offset="0" stop-color="var(--pdz-color-logo-core-1, #fff)" />
+        <stop offset="1" stop-color="var(--pdz-color-logo-core-2, #000)" />
       </radialGradient>
     </defs>
     <path

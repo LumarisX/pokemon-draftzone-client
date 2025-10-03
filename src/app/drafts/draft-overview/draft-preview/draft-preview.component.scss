@@ -1,0 +1,202 @@
+@use "../../../../styles/mixins" as *;
+@use "../../../../styles/mixins/buttons" as *;
+
+:host {
+  display: block;
+  width: 100%;
+  padding: 0;
+}
+
+.drafts-container {
+  padding: var(--pdz-space-md);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--pdz-space-lg);
+
+  .title {
+    font-family: var(--pdz-font-fancy);
+    font-size: 2rem;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  .actions {
+    display: flex;
+    gap: var(--pdz-space-sm);
+    button {
+      @include icon-button-primary();
+    }
+  }
+}
+
+.drafts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--pdz-space-lg);
+}
+
+.draft-card {
+  background-color: var(--pdz-color-primary-container-low);
+
+  color: var(--pdz-color-on-primary-container);
+  border-radius: var(--pdz-shape-corner-md);
+  border: 1px solid var(--pdz-color-primary-border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  @include shadow-hover-effect;
+}
+
+.card-header {
+  background-color: var(--pdz-color-primary-container);
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--pdz-space-sm) var(--pdz-space-md);
+  border-bottom: 1px solid var(--pdz-color-primary-border);
+
+  .league-name {
+    font-size: 1.25rem;
+    margin: 0;
+    font-family: var(--pdz-font-fancy);
+  }
+
+  button {
+    @include icon-button(());
+  }
+}
+
+.card-menu {
+  position: relative;
+
+  .menu-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: var(--pdz-color-primary-subtle);
+    border-radius: var(--pdz-shape-corner-sm);
+    box-shadow: var(--pdz-level-2);
+    z-index: 10;
+    width: 160px;
+    padding: var(--pdz-space-sm) 0;
+    display: flex;
+    flex-direction: column;
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: var(--pdz-space-md);
+      padding: var(--pdz-space-md);
+      background: none;
+      border: none;
+      text-align: left;
+      width: 100%;
+      cursor: pointer;
+      font-size: 1rem;
+      color: var(--pdz-color-on-primary-container);
+
+      &:hover {
+        background-color: var(--pdz-color-primary-container-hover);
+      }
+    }
+  }
+}
+
+.card-body {
+  padding: var(--pdz-space-sm) var(--pdz-space-md);
+  flex-grow: 1;
+
+  .ruleset-format {
+    font-size: var(--pdz-font-size-sm);
+    color: var(--pdz-color-on-primary-container);
+    margin-bottom: var(--pdz-space-sm);
+  }
+
+  .sprites {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(48px, 1fr));
+    gap: var(--pdz-space-sm);
+  }
+}
+
+.card-footer {
+  padding: var(--pdz-space-xs) var(--pdz-space-md);
+  border-top: 1px solid var(--pdz-color-primary-border);
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--pdz-space-2xs);
+
+  .footer-link {
+    // color: var(--pdz-color-on-primary-container);
+    // text-decoration: none;
+    // font-weight: 500;
+    // padding: var(--pdz-space-xs) var(--pdz-space-md);
+    // border-radius: var(--pdz-shape-corner-sm);
+
+    // @include background-hover-effect(var(--pdz-color-primary));
+    // &:hover {
+    //   color: var(--pdz-color-on-primary);
+    // }
+
+    @include flat-button-primary(
+      (
+        padding: var(--pdz-space-xs) var(--pdz-space-md),
+        border-radius: var(--pdz-shape-corner-sm),
+        background: transparent,
+        border: none,
+      )
+    );
+  }
+}
+
+.confirmation {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  p {
+    margin: 0;
+    font-weight: 500;
+  }
+
+  .confirmation-buttons {
+    display: flex;
+    gap: var(--pdz-space-sm);
+  }
+
+  .btn {
+    border: none;
+    padding: var(--pdz-space-sm) var(--pdz-space-md);
+    border-radius: var(--pdz-shape-corner-sm);
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s;
+
+    &-confirm {
+      background-color: var(--pdz-color-error);
+      color: var(--pdz-color-on-error);
+
+      &:hover {
+        opacity: 0.8;
+      }
+    }
+
+    &-cancel {
+      background-color: transparent;
+      color: var(--pdz-color-on-primary-container);
+
+      &:hover {
+        background-color: var(--pdz-color-primary-container-hover);
+      }
+    }
+  }
+}

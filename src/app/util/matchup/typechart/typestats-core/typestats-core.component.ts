@@ -79,7 +79,6 @@ export class TypestatsCoreComponent implements OnInit, OnDestroy {
   typeColor = typeColor;
 
   public summarize(team: TypeChartPokemon[] = this.sortedTeam.value): void {
-    console.log('suming');
     const newValues = this.types.map(() => ({
       weaknesses: 0,
       resistances: 0,
@@ -112,40 +111,40 @@ export class TypestatsCoreComponent implements OnInit, OnDestroy {
   }
 
   weakColor(weak: number): string {
-    if (weak > 5) return 'bg-scale-negative-5';
-    if (weak > 4) return 'bg-scale-negative-4';
-    if (weak > 3) return 'bg-scale-negative-3';
-    if (weak < 1) return 'bg-scale-positive-5';
-    if (weak < 2) return 'bg-scale-positive-4';
-    if (weak < 3) return 'bg-scale-positive-3';
-    return 'stat-neutral';
+    if (weak > 5) return 'pdz-scale-negative-5';
+    if (weak > 4) return 'pdz-scale-negative-4';
+    if (weak > 3) return 'pdz-scale-negative-3';
+    if (weak < 1) return 'pdz-scale-positive-5';
+    if (weak < 2) return 'pdz-scale-positive-4';
+    if (weak < 3) return 'pdz-scale-positive-3';
+    return 'pdz-scale-neutral';
   }
 
   resistColor(weak: number): string {
-    if (weak > 4) return 'bg-scale-positive-5';
-    if (weak > 3) return 'bg-scale-positive-4';
-    if (weak > 2) return 'bg-scale-positive-3';
-    if (weak < 1) return 'bg-scale-negative-4';
-    if (weak < 2) return 'bg-scale-negative-3';
-    return 'stat-neutral';
+    if (weak > 4) return 'pdz-scale-positive-5';
+    if (weak > 3) return 'pdz-scale-positive-4';
+    if (weak > 2) return 'pdz-scale-positive-3';
+    if (weak < 1) return 'pdz-scale-negative-4';
+    if (weak < 2) return 'pdz-scale-negative-3';
+    return 'pdz-scale-neutral';
   }
 
   countColor(count: number): string {
-    if (count > 3) return 'bg-scale-negative-5';
-    if (count > 2) return 'bg-scale-negative-4';
-    if (count > 1) return 'stat-neutral';
-    if (count > 0) return 'bg-scale-positive-4';
-    return 'stat-neutral';
+    if (count > 3) return 'pdz-scale-negative-5';
+    if (count > 2) return 'pdz-scale-negative-4';
+    if (count > 1) return 'pdz-scale-neutral';
+    if (count > 0) return 'pdz-scale-positive-4';
+    return 'pdz-scale-neutral';
   }
 
   diffColor(weak: number): string {
-    if (weak > 3) return 'bg-scale-positive-6';
-    if (weak > 2) return 'bg-scale-positive-5';
-    if (weak > 1) return 'bg-scale-positive-4';
-    if (weak > 0) return 'bg-scale-positive-3';
-    if (weak < -2) return 'bg-scale-negative-5';
-    if (weak < -1) return 'bg-scale-negative-4';
-    if (weak < 0) return 'bg-scale-negative-3';
-    return 'stat-neutral';
+    if (weak > 3) return 'pdz-scale-positive-6';
+    if (weak > 2) return 'pdz-scale-positive-5';
+    if (weak > 1) return 'pdz-scale-positive-4';
+    if (weak > 0) return 'pdz-scale-positive-3';
+    if (weak < -2) return 'pdz-scale-negative-5';
+    if (weak < -1) return 'pdz-scale-negative-4';
+    if (weak < 0) return 'pdz-scale-negative-3';
+    return 'pdz-scale-neutral';
   }
 }

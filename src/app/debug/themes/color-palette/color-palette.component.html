@@ -1,0 +1,29 @@
+<h2>Color Palette</h2>
+@for (group of colorGroups; track $index) {
+  <div class="color-group">
+    <h3>{{ group.name }}</h3>
+    <div class="palette">
+      @for (color of group.colors; track $index) {
+        <div class="color-swatch-wrapper">
+          <div
+            class="color-swatch"
+            [style.backgroundColor]="color.hex"
+            [style.color]="color.onColorHex || 'var(--pdz-color-on-surface)'"
+          >
+            <span class="color-name">{{ color.name }}</span>
+          </div>
+          <div class="color-info">
+            <div class="color-variable">
+              --pdz-color-{{ color.name }}: {{ color.hex }}
+            </div>
+            @if (color.onColorHex) {
+              <div class="color-variable">
+                --pdz-color-on-{{ color.name }}: {{ color.onColorHex }}
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+}

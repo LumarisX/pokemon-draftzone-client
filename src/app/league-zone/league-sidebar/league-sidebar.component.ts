@@ -222,7 +222,7 @@ $sidebar-active-indicator-color: $sidebar-accent-color-teal; // Teal for active 
   }
 
   .league-name {
-    font-size: 1.2em; // Slightly adjusted size
+    font-size: 1.2rem; // Slightly adjusted size
     font-weight: 600; // Bold
     color: $sidebar-text-color; // Match main text color
   }
@@ -316,7 +316,7 @@ $sidebar-active-indicator-color: $sidebar-accent-color-teal; // Teal for active 
     height: 40px !important;
     // Indent submenu items: initial padding + icon width + desired indent
     padding-left: calc(16px + 24px + 12px) !important; // 16px (item) + 24px (icon area if no icon) + 12px indent
-    font-size: 0.9em;
+    font-size: 0.9rem;
 
     // If submenu items have icons, adjust padding-left and icon margin
     .mat-icon { // If submenu items were to have icons
@@ -363,7 +363,7 @@ $sidebar-active-indicator-color: $sidebar-accent-color-teal; // Teal for active 
   align-items: center;
   justify-content: center;
   padding: 10px 0 !important; // Custom padding
-  font-size: 0.95em;
+  font-size: 0.95rem;
   font-weight: 500;
 
   // Override Material button styles

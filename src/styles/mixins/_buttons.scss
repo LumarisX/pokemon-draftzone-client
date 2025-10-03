@@ -1,0 +1,145 @@
+@use "../../styles/global.scss" as *;
+@use "sass:map";
+
+@function create-themed-button-map($theme-color: "primary") {
+  @return (
+    background: pdz-color("#{$theme-color}-container"),
+    background-hover: pdz-color("#{$theme-color}-container-hover"),
+    background-selected: pdz-color("#{$theme-color}-container-high"),
+    border-width: 1px,
+    border-color: pdz-color("#{$theme-color}-border"),
+    color: pdz-color(on-surface)
+  );
+}
+
+$button-primary-defaults: create-themed-button-map("primary");
+$button-secondary-defaults: create-themed-button-map("secondary");
+
+$base-button-defaults: (
+  padding: 0,
+  font-size: 1rem,
+  background: transparent,
+  border-width: 0px,
+  border-style: solid,
+  border-color: pdz-color(outline),
+  box-shadow-hover: var(--pdz-level-1),
+  opacity-disabled: 0.6,
+  cursor-disabled: not-allowed,
+  cursor: pointer,
+  transition: (
+    background-color 0.2s,
+    box-shadow 0.2s,
+    color 0.2s,
+    border-color 0.2s,
+  ),
+);
+
+@mixin base-button($overrides: ()) {
+  $config: map.merge($base-button-defaults, $overrides);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  height: map.get($config, "height");
+  width: map.get($config, "width");
+  min-width: map.get($config, "min-width");
+  max-width: map.get($config, "max-width");
+  min-height: map.get($config, "min-height");
+  max-height: map.get($config, "max-height");
+  padding: map.get($config, "padding");
+
+  font-size: map.get($config, "font-size");
+  font-family: map.get($config, "font-family");
+  font-weight: map.get($config, "font-weight");
+  background-color: map.get($config, "background");
+  color: map.get($config, "color");
+  border-radius: map.get($config, "border-radius");
+  border: map.get($config, "border") or map.get($config, "border-width")
+    map.get($config, "border-style") map.get($config, "border-color");
+  cursor: map.get($config, "cursor");
+  transition: map.get($config, "transition");
+  text-decoration: none;
+  white-space: nowrap;
+
+  &.selected {
+    background-color: map.get($config, "background-selected");
+  }
+  &:not(:disabled):not(.disabled):hover {
+    background-color: map.get($config, "background-hover");
+    color: map.get($config, "color-hover");
+    border-color: map.get($config, "border-color-hover");
+    box-shadow: map.get($config, "box-shadow-hover");
+  }
+
+  &:active {
+    background-color: map.get($config, "background-active");
+    color: map.get($config, "color-active");
+  }
+
+  &:disabled,
+  &.disabled {
+    opacity: map.get($config, "opacity-disabled");
+    cursor: map.get($config, "cursor-disabled");
+  }
+}
+
+$flat-button-defaults: (
+  padding: var(--pdz-space-xs) var(--pdz-space-xl),
+  border-radius: var(--pdz-shape-corner-sm),
+  background: transparent,
+  background-hover: transparent,
+  border-color: transparent,
+);
+
+@mixin flat-button($overrides: ()) {
+  $config: map.merge($flat-button-defaults, $overrides);
+  @include base-button($config);
+}
+
+$flat-button-menu-defaults: (
+  background: pdz-color(surface-container),
+  background-hover: pdz-color(surface-container-high),
+  background-selected: pdz-color(surface-container-highest),
+  color: pdz-color(on-surface),
+);
+
+@mixin flat-button-menu($overrides: ()) {
+  $config: map.merge($flat-button-menu-defaults, $overrides);
+  @include flat-button($config);
+}
+
+@mixin flat-button-primary($overrides: ()) {
+  $config: map.merge($button-primary-defaults, $overrides);
+  @include flat-button($config);
+}
+
+@mixin flat-button-secondary($overrides: ()) {
+  $config: map.merge($button-secondary-defaults, $overrides);
+  @include flat-button($config);
+}
+
+$icon-button-defaults: (
+  padding: var(--pdz-space-xs),
+  border-radius: var(--pdz-shape-corner-sm),
+  width: 2.5rem,
+  height: 2.5rem,
+  background: transparent,
+  background-hover: transparent,
+  border-color: transparent,
+);
+
+@mixin icon-button($overrides: ()) {
+  $config: map.merge($icon-button-defaults, $overrides);
+  @include base-button($config);
+}
+
+@mixin icon-button-primary($overrides: ()) {
+  $config: map.merge($button-primary-defaults, $overrides);
+  @include icon-button($config);
+}
+
+@mixin icon-button-secondary($overrides: ()) {
+  $config: map.merge($button-secondary-defaults, $overrides);
+  @include icon-button($config);
+}

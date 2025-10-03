@@ -1,9 +1,0 @@
-@use "themes/normal" as normal;
-@use "themes/forest" as forest;
-@use "themes/sunset" as sunset;
-
-$themes: (
-  normal: normal.$theme,
-  forest: forest.$theme,
-  sunset: sunset.$theme,
-);

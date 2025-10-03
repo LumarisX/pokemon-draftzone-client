@@ -44,15 +44,18 @@
             [ruleset]="ruleset ?? 'Gen9 NatDex'"
             [pokemonList$]="pokemonList$"
             [teamArray]="opponentForm.controls.team"
+            (isImporting)="isImporting = $event"
           ></team-form>
         </div>
 
         <div class="button-bar">
           <button type="button" mat-flat-button matStepperPrevious>Back</button>
           <div class="button-spacer"></div>
-          <button type="submit" mat-flat-button (click)="onSubmit()">
-            Submit
-          </button>
+          @if (!isImporting) {
+            <button type="submit" mat-flat-button (click)="onSubmit()">
+              Submit
+            </button>
+          }
         </div>
       </ng-template>
     </mat-step>

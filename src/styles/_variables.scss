@@ -1,0 +1,9 @@
+@use "pdz-themes/normal" as normal;
+@use "pdz-themes/forest" as forest;
+@use "pdz-themes/sunset" as sunset;
+
+$themes: (
+  normal: normal.$theme,
+  forest: forest.$theme,
+  sunset: sunset.$theme,
+);

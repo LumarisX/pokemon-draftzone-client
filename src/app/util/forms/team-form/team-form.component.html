@@ -19,8 +19,11 @@
             }
           </mat-chip-set>
           <div class="add-spacer"></div>
-          <button mat-flat-button (click)="importing = false; importPokemon()">
-            Details
+          <button
+            mat-flat-button
+            (click)="toggleImporting(false); importPokemon()"
+          >
+            Confirm
           </button>
         </div>
         <mat-form-field floatLabel="always">
@@ -101,7 +104,7 @@
         </div>
 
         <div class="add-spacer"></div>
-        <button mat-flat-button (click)="importing = true">Import</button>
+        <button mat-flat-button (click)="toggleImporting(true)">Import</button>
       </div>
       <div class="team-container">
         @if (teamArray.value.length > 0) {

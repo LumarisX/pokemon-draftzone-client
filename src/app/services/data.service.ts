@@ -3,9 +3,25 @@ import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { Pokemon as OldPokemon } from '../interfaces/draft';
 import { Pokemon } from '../interfaces/pokemon';
-
+import { StatsTable, Type } from '../data';
 import { ApiService } from './api.service';
 import { Stat } from '../data';
+
+export type ResultData = {
+  id: string;
+  name: string;
+  types: Type[];
+  abilities: string[];
+  baseStats: StatsTable;
+  weightkg: number;
+  tier: string;
+  doublesTier: string;
+  eggGroups: string[];
+  nfe: boolean;
+  num: number;
+  tags: string[];
+  bst: number;
+};
 
 type Format = string;
 type Ruleset = string;
@@ -15,7 +31,6 @@ type Ruleset = string;
 })
 export class DataService {
   private apiService = inject(ApiService);
-
 
   cache: {
     formats?: string[];
@@ -32,7 +47,7 @@ export class DataService {
     if (this.cache.formats) {
       return of(this.cache.formats);
     } else {
-      return this.apiService.get('data/formats', false).pipe(
+      return this.apiService.get<string[]>('data/formats', false).pipe(
         tap((formats: string[]) => {
           this.cache.formats = formats;
         }),
@@ -51,7 +66,7 @@ export class DataService {
     if (this.cache.rulesets) {
       return of(this.cache.rulesets);
     } else {
-      return this.apiService.get('data/rulesets', false).pipe(
+      return this.apiService.get<string[]>('data/rulesets', false).pipe(
         tap((rulesets: string[]) => {
           this.cache.rulesets = rulesets;
         }),
@@ -93,7 +108,7 @@ export class DataService {
       return of(this.cache.pokemonList[ruleset]);
     } else {
       return this.apiService
-        .get('data/listpokemon', false, { ruleset: ruleset })
+        .get<OldPokemon[]>('data/listpokemon', false, { ruleset: ruleset })
         .pipe(
           tap((list: OldPokemon[]) => {
             this.cache.pokemonList[ruleset] = list;
@@ -106,17 +121,23 @@ export class DataService {
     let encodedQuery = encodeURIComponent(query.join(''));
     let params: { [key: string]: string } = { query: encodedQuery };
     if (ruleset) params['ruleset'] = ruleset;
-    return this.apiService.get('data/advancesearch', false, params);
+    return this.apiService.get<ResultData[]>(
+      'data/advancesearch',
+      false,
+      params,
+    );
   }
 
   getFormes(ruleset: string, id: string): Observable<OldPokemon[]> {
     if (this.cache.formes[id]) return of(this.cache.formes[id]);
     else {
-      return this.apiService.get(`data/${ruleset}/${id}/formes`, false).pipe(
-        tap((list: OldPokemon[]) => {
-          this.cache.formes[id] = list;
-        }),
-      );
+      return this.apiService
+        .get<OldPokemon[]>(`data/${ruleset}/${id}/formes`, false)
+        .pipe(
+          tap((list: OldPokemon[]) => {
+            this.cache.formes[id] = list;
+          }),
+        );
     }
   }
 }

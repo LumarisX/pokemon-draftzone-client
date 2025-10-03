@@ -70,7 +70,7 @@ export class OpponentFormCoreComponent implements OnInit {
 
   pokemonList$ = new BehaviorSubject<Pokemon[]>([]);
   opponentForm!: OpponentForm;
-
+  isImporting = false;
   ruleset: string | null = null;
 
   @Input()

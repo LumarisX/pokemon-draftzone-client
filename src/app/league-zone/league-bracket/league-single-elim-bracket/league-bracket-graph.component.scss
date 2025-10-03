@@ -8,9 +8,9 @@
   ::ng-deep .node {
     .node-placeholder {
       font-style: italic;
-      font-size: 0.7em;
-      font-family: var(--pdz-fancy);
-      line-height: 1em;
+      font-size: 0.7rem;
+      font-family: var(--pdz-font-fancy);
+      line-height: 1rem;
       fill: #bbb;
       text-anchor: middle;
       dominant-baseline: central;
@@ -33,20 +33,20 @@
     }
 
     .seed {
-      font: 12px var(--pdz-fancy);
-      fill: var(--mat-sys-secondary);
+      font: 12px var(--pdz-font-fancy);
+      fill: var(--pdz-color-secondary);
       text-anchor: middle;
       dominant-baseline: central;
     }
 
     .matchup-text {
       fill: #777;
-      font: 12px var(--pdz-fancy);
+      font: 12px var(--pdz-font-fancy);
       font-style: italic;
       text-anchor: middle;
       dominant-baseline: central;
-      font-size: 0.8em;
-      line-height: 1em;
+      font-size: 0.8rem;
+      line-height: 1rem;
     }
 
     .matchup-link {
@@ -65,10 +65,10 @@
       -webkit-font-smoothing: antialiased;
       text-rendering: optimizeLegibility;
       -moz-osx-font-smoothing: grayscale;
-      fill: var(--mat-sys-secondary);
+      fill: var(--pdz-color-secondary);
       cursor: pointer;
       &:hover {
-        fill: var(--mat-sys-primary);
+        fill: var(--pdz-color-primary);
       }
     }
   }
@@ -87,7 +87,7 @@
     display: flex;
     align-items: center;
     column-gap: 0.25rem;
-    border-radius: 0.5rem;
+    border-radius: var(--pdz-shape-corner-sm);
     .team-logo {
       flex-shrink: 0;
       height: 32px;
@@ -107,9 +107,9 @@
       .coach-info {
         justify-content: space-between;
         display: flex;
-        font-size: 0.7em;
-        color: var(--mat-sys-primary);
-        line-height: 0.9em;
+        font-size: 0.7rem;
+        color: var(--pdz-color-primary);
+        line-height: 0.9rem;
         font-weight: 700;
         white-space: nowrap;
         overflow: hidden;
@@ -117,15 +117,15 @@
       .team-name {
         white-space: nowrap;
         overflow: hidden;
-        font-size: 0.8em;
-        line-height: 1em;
+        font-size: 0.8rem;
+        line-height: 1rem;
         text-overflow: ellipsis;
       }
     }
     .team-score {
       padding: 0 0.25rem;
       flex-shrink: 0;
-      font-size: 1em;
+      font-size: 1rem;
     }
   }
 }

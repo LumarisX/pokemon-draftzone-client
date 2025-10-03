@@ -1,27 +1,13 @@
 @use "sass:map";
-@use "variables" as *;
-@use "mixins" as *;
 
 .themed-component-wrapper {
-  @include apply-theme(map.get(map.get($themes, normal), light));
+  background-color: var(--pdz-color-background);
+  color: var(--pdz-color-on-surface);
 
-  @each $theme-name, $variations in $themes {
-    @each $variation-name, $palette in $variations {
-      &[data-theme="#{$theme-name}"][data-mode="#{$variation-name}"] {
-        @include apply-theme($palette);
-      }
-    }
-  }
-
-  background-color: var(--pdz-background);
-  color: var(--pdz-on-surface);
-  font-family:
-    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
-    Arial, sans-serif;
-  padding: 2rem;
-  transition:
-    background-color 0.3s ease,
-    color 0.3s ease;
+  padding: var(--pdz-space-2xl);
+  // transition:
+  //   background-color 0.3s ease,
+  //   color 0.3s ease;
 
   .theme-switcher {
     display: flex;
@@ -36,20 +22,28 @@
     gap: 0.5rem;
   }
 
-  h1,
   h2 {
-    color: var(--pdz-on-surface);
+    color: var(--pdz-color-on-surface);
+    font-family: var(--pdz-font-fancy);
+    font-size: var(--pdz-font-large);
+  }
+
+  h3 {
+    color: var(--pdz-color-on-surface-variant);
+    margin-bottom: 0.5rem;
+    margin-top: 1.5rem;
+    font-family: var(--pdz-font-fancy);
   }
 
   p {
-    color: var(--pdz-on-surface-variant);
+    color: var(--pdz-color-on-surface-variant);
   }
 
   a {
-    color: var(--pdz-primary);
+    color: var(--pdz-color-primary);
     font-weight: bold;
     text-decoration: none;
-    transition: color 0.2s;
+    // transition: color 0.2s;
 
     &:hover {
       text-decoration: underline;
@@ -57,28 +51,28 @@
   }
 
   .card {
-    background-color: var(--pdz-surface);
-    border: 1px solid var(--pdz-outline);
-    border-radius: 8px;
+    background-color: var(--pdz-color-surface);
+    border: 1px solid var(--pdz-color-primary-border);
+    border-radius: var(--pdz-shape-corner-sm);
     margin: 1rem 0;
-    padding: 1.5rem;
-    transition:
-      background-color 0.3s ease,
-      border-color 0.3s ease;
+    padding: var(--pdz-space-xl);
+    // transition:
+    //   background-color 0.3s ease,
+    //   border-color 0.3s ease;
   }
 
   .btn {
-    background-color: var(--pdz-primary);
-    color: var(--pdz-on-primary);
+    background-color: var(--pdz-color-primary);
+    color: var(--pdz-color-on-primary);
     border: none;
     border-radius: 6px;
     cursor: pointer;
     font-weight: bold;
     padding: 0.75rem 1.5rem;
-    transition:
-      background-color 0.2s ease,
-      color 0.2s ease,
-      transform 0.1s ease;
+    // transition:
+    //   background-color 0.2s ease,
+    //   color 0.2s ease,
+    //   transform 0.1s ease;
 
     &:active {
       transform: scale(0.98);

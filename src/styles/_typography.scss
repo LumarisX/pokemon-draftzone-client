@@ -1,0 +1,45 @@
+$typography: (
+  headline-large: (
+    font-family: var(--pdz-font-fancy),
+    font-size: 2rem,
+    font-weight: 700,
+    line-height: 2.5rem,
+  ),
+  body-medium: (
+    font-family: var(--pdz-font-regular),
+    font-size: 1rem,
+    font-weight: 400,
+    line-height: 1.5rem,
+  ),
+  label-small: (
+    font-family: var(--pdz-font-regular),
+    font-size: 0.75rem,
+    font-weight: 500,
+    line-height: 1rem,
+  ),
+);
+
+$fonts: (
+  fancy: "Nasalization RG",
+  regular: "Nunito",
+);
+
+$font-size: (
+  xxs: 0.5rem,
+  xs: 0.75rem,
+  sm: 0.9rem,
+  md: 1rem,
+  lg: 1.2rem,
+  xl: 1.5rem,
+  xxl: 2rem,
+);
+
+$line-height: (
+  xxs: 0.5rem,
+  xs: 0.75rem,
+  sm: 0.9rem,
+  md: 1rem,
+  lg: 1.2rem,
+  xl: 1.5rem,
+  xxl: 2rem,
+);

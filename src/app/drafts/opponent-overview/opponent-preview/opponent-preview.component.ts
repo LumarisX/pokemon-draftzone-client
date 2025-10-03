@@ -1,24 +1,26 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { MatSortModule, Sort } from '@angular/material/sort';
+import { MatTableModule } from '@angular/material/table';
+import { ActivatedRoute, RouterModule } from '@angular/router';
+import { BehaviorSubject, catchError, forkJoin, of, take } from 'rxjs';
 import { LoadingComponent } from '../../../images/loading/loading.component';
 import { SpriteComponent } from '../../../images/sprite/sprite.component';
-import { Draft } from '../../../interfaces/draft';
 import { Opponent } from '../../../interfaces/opponent';
 import { DraftService } from '../../../services/draft.service';
 import { DraftOverviewPath } from '../../draft-overview/draft-overview-routing.module';
-import { CdkTableModule } from '@angular/cdk/table';
-import { MatSortModule, Sort } from '@angular/material/sort';
-import { BehaviorSubject } from 'rxjs';
 import { Stats } from '../../draft-overview/draft-stats/draft-stats.component';
-import { BooleanInput } from '@angular/cdk/coercion';
+import { ConfirmDeleteDialogComponent } from './confirm-delete-dialog.component';
+import { CdkTableModule } from '@angular/cdk/table';
 
 type Matchup = Opponent & {
-  deleteConfirm?: boolean;
   score?: [number, number] | null;
-  logo?: null; //TODO: add later
+  scoreString?: string;
+  scoreClass?: string;
+  logo?: string | null;
 };
 
 @Component({
@@ -33,21 +35,21 @@ type Matchup = Opponent & {
     LoadingComponent,
     MatButtonModule,
     MatIconModule,
-    CdkTableModule,
     MatSortModule,
+    MatDialogModule,
+    CdkTableModule,
   ],
 })
 export class OpponentTeamPreviewComponent implements OnInit {
   private draftService = inject(DraftService);
-  private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private dialog = inject(MatDialog);
 
   index = 0;
   matchups?: Matchup[];
   teamId: string = '';
   readonly draftPath = DraftOverviewPath;
   selectedMatchup: Matchup | null = null;
-  deleteConfirm: Boolean = false;
   teamStats = new BehaviorSubject<Stats[] | null>(null);
   displayedColumns: string[] = [
     'sprite',
@@ -68,31 +70,43 @@ export class OpponentTeamPreviewComponent implements OnInit {
   reload() {
     this.matchups = undefined;
     this.teamStats.next(null);
-    this.draftService.getMatchupList(this.teamId).subscribe((data) => {
-      this.matchups = data;
-    });
 
-    this.draftService.getStats(this.teamId).subscribe((data) => {
-      this.teamStats.next(data);
+    forkJoin({
+      matchups: this.draftService.getMatchupList(this.teamId).pipe(
+        take(1),
+        catchError((err) => {
+          console.error('Error fetching matchups:', err);
+          return of([]);
+        }),
+      ),
+      stats: this.draftService.getStats(this.teamId).pipe(
+        take(1),
+        catchError((err) => {
+          console.error('Error fetching stats:', err);
+          return of(null);
+        }),
+      ),
+    }).subscribe(({ matchups, stats }) => {
+      if (matchups) {
+        this.matchups = matchups.map((m) => {
+          const score = this.calculateScore(m);
+          return {
+            ...m,
+            score,
+            scoreString: this.getScoreString(score),
+            scoreClass: this.getScoreClass(score),
+          };
+        });
+      }
+
+      if (stats) {
+        this.teamStats.next(stats);
+      }
     });
   }
 
   selectMatchup(matchup: Matchup | null) {
     this.selectedMatchup = this.selectedMatchup === matchup ? null : matchup;
-    this.deleteConfirm = false;
-  }
-
-  deleteMatchup(matchupId: string) {
-    this.draftService.deleteMatchup(matchupId).subscribe({
-      next: (response) => {
-        this.reload();
-        console.log('Success!', response);
-      },
-      error: (error) => {
-        console.error('Error!', error);
-      },
-    });
-    this.selectedMatchup = null;
   }
 
   score(matchup: Opponent): [number, number] | null {
@@ -133,50 +147,99 @@ export class OpponentTeamPreviewComponent implements OnInit {
     return 'pdz-background-neut';
   }
 
-  newOpponent() {
-    this.router.navigate(['/', DraftOverviewPath, this.teamId, 'form'], {
-      queryParams: { stage: `Week ${(this.matchups?.length ?? 0) + 1}` },
+  private calculateScore(matchup: Opponent): [number, number] | null {
+    if (!matchup || !Array.isArray(matchup.matches)) {
+      return null;
+    }
+
+    if (matchup.matches.length > 1) {
+      let aScore = 0;
+      let bScore = 0;
+      matchup.matches.forEach((match) => {
+        if (match.winner === 'a') {
+          aScore++;
+        } else if (match.winner === 'b') {
+          bScore++;
+        }
+      });
+      return [aScore, bScore];
+    } else if (matchup.matches.length > 0) {
+      return [matchup.matches[0].aTeam.score, matchup.matches[0].bTeam.score];
+    } else {
+      return null;
+    }
+  }
+
+  private getScoreString(score: [number, number] | null): string {
+    if (score) return `${score[0]} - ${score[1]}`;
+    return `Unscored`;
+  }
+
+  private getScoreClass(score: [number, number] | null): string {
+    if (!score) return 'pdz-background-neut';
+    if (score[0] > score[1]) return 'pdz-background-pos';
+    if (score[0] < score[1]) return 'pdz-background-neg';
+    return 'pdz-background-neut';
+  }
+
+  deleteMatchup(matchupId: string) {
+    const dialogRef = this.dialog.open(ConfirmDeleteDialogComponent);
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.draftService.deleteMatchup(matchupId).subscribe({
+          next: () => {
+            this.reload();
+            this.selectedMatchup = null;
+          },
+          error: (error) => {
+            console.error('Error!', error);
+          },
+        });
+      }
     });
+  }
+
+  private compare(
+    a: number | string | null | undefined,
+    b: number | string | null | undefined,
+    isAsc: boolean,
+  ) {
+    if (a == null && b == null) return 0;
+    if (a == null) return isAsc ? 1 : -1;
+    if (b == null) return isAsc ? -1 : 1;
+
+    let comparison = 0;
+    if (typeof a === 'string' && typeof b === 'string') {
+      comparison = a.localeCompare(b);
+    } else if (typeof a === 'number' && typeof b === 'number') {
+      comparison = a - b;
+    } else {
+      comparison = String(a).localeCompare(String(b));
+    }
+    return comparison * (isAsc ? 1 : -1);
   }
 
   sort(sort: Sort) {
     const isAsc = sort.direction === 'asc';
-    const compare = (
-      a: number | string | null | undefined,
-      b: number | string | null | undefined,
-    ) => {
-      if (a == null && b == null) return 0;
-      if (a == null) return isAsc ? 1 : -1;
-      if (b == null) return isAsc ? -1 : 1;
-
-      let comparison = 0;
-      if (typeof a === 'string' && typeof b === 'string') {
-        comparison = a.localeCompare(b);
-      } else if (typeof a === 'number' && typeof b === 'number') {
-        comparison = a - b;
-      } else {
-        comparison = String(a).localeCompare(String(b));
-      }
-      return comparison * (isAsc ? 1 : -1);
-    };
 
     if (this.teamStats.value) {
       const sortedData = [...this.teamStats.value].sort((a, b) => {
         switch (sort.active) {
           case 'name':
-            return compare(a.pokemon.name, b.pokemon.name);
+            return this.compare(a.pokemon.name, b.pokemon.name, isAsc);
           case 'gb':
-            return compare(a.brought, b.brought);
+            return this.compare(a.brought, b.brought, isAsc);
           case 'dk':
-            return compare(a.kills, b.kills);
+            return this.compare(a.kills, b.kills, isAsc);
           case 'ik':
-            return compare(a.indirect, b.indirect);
+            return this.compare(a.indirect, b.indirect, isAsc);
           case 'deaths':
-            return compare(a.deaths, b.deaths);
+            return this.compare(a.deaths, b.deaths, isAsc);
           case 'kdr':
-            return compare(a.kdr, b.kdr);
+            return this.compare(a.kdr, b.kdr, isAsc);
           case 'kpg':
-            return compare(a.kpg, b.kpg);
+            return this.compare(a.kpg, b.kpg, isAsc);
           default:
             return 0;
         }

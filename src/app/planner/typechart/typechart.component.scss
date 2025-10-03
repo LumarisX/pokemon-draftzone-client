@@ -12,13 +12,13 @@
 }
 
 .table-wrapper {
-  padding: 0.75rem;
+  padding: var(--pdz-space-md);
   min-width: fit-content;
   width: fit-content;
   height: fit-content;
-  border-radius: 1rem;
-  background-color: var(--mat-sys-surface);
-  box-shadow: var(--pdz-level3);
+  border-radius: var(--pdz-shape-corner-lg);
+  background-color: var(--pdz-color-surface);
+  box-shadow: var(--pdz-level-3);
 }
 
 .title-container {
@@ -26,11 +26,11 @@
   justify-content: space-between;
   width: 100%;
   padding: 0 1rem 0.5rem;
-  color: var(--mat-sys-primary);
+  color: var(--pdz-color-primary);
   font-weight: 700;
 
   .table-label {
-    font-size: 1.2em;
-    font-family: "Nasalization RG", sans-serif;
+    font-size: 1.2rem;
+    font-family: var(--pdz-font-fancy);
   }
 }

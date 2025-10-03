@@ -10,7 +10,7 @@ button {
   }
   @include mat.icon-button-overrides(
     (
-      icon-color: var(--mat-sys-primary),
+      icon-color: var(--pdz-color-primary),
     )
   );
 }

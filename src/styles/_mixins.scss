@@ -1,0 +1,71 @@
+@use "sass:map";
+@use "typography" as *;
+@use "breakpoints" as *;
+
+@mixin apply-typography($style-name) {
+  $style: map.get($typography, $style-name);
+
+  @if $style {
+    font-family: map.get($style, font-family);
+    font-size: map.get($style, font-size);
+    font-weight: map.get($style, font-weight);
+    line-height: map.get($style, line-height);
+  } @else {
+    @warn "Typography style `#{$style-name}` not found.";
+  }
+}
+
+@mixin respond-above($breakpoint) {
+  @if map.has-key($breakpoints, $breakpoint) {
+    @media (min-width: #{map.get($breakpoints, $breakpoint)}) {
+      @content;
+    }
+  } @else {
+    @warn "Breakpoint `#{$breakpoint}` not found.";
+  }
+}
+
+@mixin button-base($width: auto, $margin: 0.5rem, $padding: 0.25rem) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: $width;
+  margin: $margin;
+  padding: $padding;
+  text-align: center;
+  box-shadow: var(--pdz-level-2);
+  cursor: pointer;
+  background-color: var(--pdz-color-primary-container);
+  color: var(--pdz-color-on-primary-container);
+  border-radius: var(--pdz-shape-corner-md);
+
+  &:hover {
+    box-shadow: var(--pdz-level-1);
+  }
+}
+
+@mixin shadow-hover-effect(
+  $hover-shadow: var(--pdz-level-2),
+  $initial-shadow: var(--pdz-level-1),
+  $duration: 0.3s
+) {
+  box-shadow: $initial-shadow;
+  transition: box-shadow $duration ease;
+
+  &:hover {
+    box-shadow: $hover-shadow;
+  }
+}
+
+@mixin background-hover-effect(
+  $hover-background: inherit,
+  $initial-background: inherit,
+  $duration: 0.3s
+) {
+  background-color: $initial-background;
+  transition: background-color $duration ease;
+
+  &:hover {
+    background-color: $hover-background;
+  }
+}
