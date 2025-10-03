@@ -36,6 +36,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSliderModule } from '@angular/material/slider';
 import { PokemonSelectComponent } from '../../util/pokemon-select/pokemon-select.component';
 import { TooltipModule } from '../../util/tooltip/tooltip.module';
+import { LoadingComponent } from '../../images/loading/loading.component';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(
@@ -88,6 +89,7 @@ export interface Task {
     PokemonSelectComponent,
     ReactiveFormsModule,
     TooltipModule,
+    LoadingComponent,
   ],
 })
 export class DebugComponentsComponent {

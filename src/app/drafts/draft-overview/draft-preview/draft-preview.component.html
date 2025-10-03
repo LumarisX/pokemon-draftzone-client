@@ -12,7 +12,7 @@
   </div>
 
   @if (!drafts) {
-    <loading></loading>
+    <pdz-loading></pdz-loading>
   } @else {
     <div class="drafts-grid">
       @for (draft of drafts; track draft.leagueId) {

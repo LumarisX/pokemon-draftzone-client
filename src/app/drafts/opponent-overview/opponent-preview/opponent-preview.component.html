@@ -42,7 +42,7 @@
       </div>
     </div>
     @if (!matchups) {
-      <loading></loading>
+      <pdz-loading></pdz-loading>
     } @else {
       <div class="matchups-container">
         @for (matchup of matchups; track $index) {
@@ -101,7 +101,7 @@
   <section class="stats-section">
     <div class="section-header">Stats</div>
     @if (!teamStats) {
-      <loading></loading>
+      <pdz-loading></pdz-loading>
     } @else {
       @if (teamStats.value && teamStats.value.length > 0) {
         <div class="table-container">
