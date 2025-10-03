@@ -1,6 +1,5 @@
 <pdz-tooltip></pdz-tooltip>
-<!-- TODO: remove bg-page; breaks logo -->
-<div class="bg-page" [ngClass]="getTheme()">
+<div [ngClass]="getTheme()">
   <pdz-top-navbar></pdz-top-navbar>
   <main>
     <pdz-body></pdz-body>
@@ -17,7 +16,6 @@
       />
       <feFlood flood-color="#64748b" result="borderColor" />
 
-      <!-- tailwind slate 500 -->
       <feComposite
         in="borderColor"
         in2="border"

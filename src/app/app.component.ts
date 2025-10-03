@@ -52,7 +52,7 @@ export class AppComponent {
     //     classes.push('christmas dark:darkchristmas');
     //     break;
     //   default:
-    //     classes.push('classic dark:darkclassic');
+    classes.push('classic dark:darkclassic');
     // }
     // document.documentElement.setAttribute(
     //   'theme-name',
