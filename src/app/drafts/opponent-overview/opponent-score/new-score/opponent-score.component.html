@@ -1,0 +1,179 @@
+@if (!scoreForm) {
+  <pdz-loading></pdz-loading>
+} @else {
+  <form [formGroup]="scoreForm" class="opponent-score">
+    <header class="opponent-score__header">
+      <button
+        theme="secondary"
+        class="cancel-btn"
+        [routerLink]="['/', draftPath, teamId]"
+      >
+        Cancel
+      </button>
+      <h1>Score</h1>
+      <button
+        class="save-btn"
+        (click)="submit()"
+        [routerLink]="['/', draftPath, teamId]"
+      >
+        Submit
+      </button>
+    </header>
+
+    <section class="opponent-score__meta">
+      <label>
+        <span>A PokePaste</span>
+        <input formControlName="aTeamPaste" spellcheck="false" />
+      </label>
+      <div class="opponent-score__wins">A wins: {{ getWins("a") }}</div>
+      <div class="spacer"></div>
+      <div class="opponent-score__wins">B wins: {{ getWins("b") }}</div>
+      <label>
+        <span>B PokePaste</span>
+        <input formControlName="bTeamPaste" spellcheck="false" />
+      </label>
+    </section>
+
+    <section class="opponent-score__matches" [formGroup]="selectedMatchForm">
+      <div class="matches-selector-container">
+        <div class="match-tabs">
+          @for (m of matchesFormArray.controls; track $index) {
+            <button
+              class="tab"
+              [class.selected]="$index === selectedMatch"
+              type="button"
+              (click)="switchMatch($index)"
+            >
+              Game {{ $index + 1 }}
+              @if ($index) {
+                <mat-icon (click)="deleteMatch($index)"
+                  >delete_forever</mat-icon
+                >
+              }
+            </button>
+          }
+          <button (click)="addMatch()">
+            <mat-icon>add</mat-icon>
+          </button>
+        </div>
+        <div class="match-editor__replay">
+          <label>Replay URL <input formControlName="replay" /></label>
+          <button
+            type="button"
+            (click)="analyzeReplay()"
+            [disabled]="selectedMatchForm.controls.analyzed.value"
+          >
+            Analyze
+          </button>
+        </div>
+      </div>
+
+      <div class="teams">
+        <div class="team" formGroupName="aTeam">
+          <div class="team__header">
+            <h2>{{ matchup.aTeam.teamName }}</h2>
+            <button
+              type="button"
+              (click)="changeWinner('a')"
+              [class.selected]="selectedMatchForm.controls.winner.value === 'a'"
+            >
+              Winner
+            </button>
+          </div>
+          <div class="team__stats">
+            <div>Brought: {{ statCount(aTeamArray, ["brought"]) }}</div>
+            <div>Kills: {{ statCount(aTeamArray, ["kills", "indirect"]) }}</div>
+            <div>Deaths: {{ statCount(aTeamArray, ["fainted"]) }}</div>
+          </div>
+
+          <div class="flex">
+            @for (p of aTeamArray.controls; track $index) {
+              @if (!p.controls.brought.value) {
+                <pdz-sprite
+                  (click)="toggleBrought(p)"
+                  size="3rem"
+                  [pokemon]="p.value.pokemon!"
+                  [class.not-brought]="!p.value.brought"
+                ></pdz-sprite>
+              }
+            }
+          </div>
+          <div formArrayName="team" class="team__list">
+            @for (p of aTeamArray.controls; track $index) {
+              @if (p.controls.brought.value) {
+                <div [formGroupName]="$index" class="mon">
+                  <pdz-sprite
+                    size="1rem"
+                    (click)="toggleBrought(p)"
+                    [pokemon]="p.value.pokemon!"
+                    [class.not-brought]="!p.value.brought"
+                  ></pdz-sprite>
+                  <div class="mon__fields">
+                    <input type="number" formControlName="kills" min="0" />
+                    <input type="number" formControlName="indirect" min="0" />
+                    <label class="fainted-toggle">
+                      <input type="checkbox" formControlName="fainted" />
+                      Fainted
+                    </label>
+                  </div>
+                </div>
+              }
+            }
+          </div>
+        </div>
+
+        <div class="team" formGroupName="bTeam">
+          <div class="team__header">
+            <button
+              type="button"
+              (click)="changeWinner('b')"
+              [class.selected]="selectedMatchForm.controls.winner.value === 'b'"
+            >
+              Winner
+            </button>
+            <h2>{{ matchup.bTeam.teamName }}</h2>
+          </div>
+          <div class="team__stats">
+            <div>Brought: {{ statCount(bTeamArray, ["brought"]) }}</div>
+            <div>Kills: {{ statCount(bTeamArray, ["kills", "indirect"]) }}</div>
+            <div>Deaths: {{ statCount(bTeamArray, ["fainted"]) }}</div>
+          </div>
+          <div class="flex">
+            @for (p of bTeamArray.controls; track $index) {
+              @if (!p.controls.brought.value) {
+                <pdz-sprite
+                  (click)="toggleBrought(p)"
+                  size="3rem"
+                  [pokemon]="p.value.pokemon!"
+                  [class.not-brought]="!p.value.brought"
+                ></pdz-sprite>
+              }
+            }
+          </div>
+          <div formArrayName="team" class="team__list">
+            @for (p of bTeamArray.controls; track $index) {
+              @if (p.controls.brought.value) {
+                <div [formGroupName]="$index" class="mon">
+                  <pdz-sprite
+                    size="1rem"
+                    (click)="toggleBrought(p)"
+                    [pokemon]="p.value.pokemon!"
+                    [class.not-brought]="!p.value.brought"
+                  ></pdz-sprite>
+                  <div class="mon__fields">
+                    <input type="number" formControlName="kills" min="0" />
+                    <input type="number" formControlName="indirect" min="0" />
+                    <label class="fainted-toggle">
+                      <input type="checkbox" formControlName="fainted" />
+                      Fainted
+                    </label>
+                  </div>
+                </div>
+              }
+            }
+          </div>
+        </div>
+      </div>
+    </section>
+  </form>
+}
