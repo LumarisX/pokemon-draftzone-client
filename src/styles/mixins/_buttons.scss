@@ -14,6 +14,7 @@
 
 $button-primary-defaults: create-themed-button-map("primary");
 $button-secondary-defaults: create-themed-button-map("secondary");
+$button-menu-defaults: create-themed-button-map("menu");
 
 $base-button-defaults: (
   padding: 0,
@@ -97,15 +98,8 @@ $flat-button-defaults: (
   @include base-button($config);
 }
 
-$flat-button-menu-defaults: (
-  background: pdz-color(surface-container),
-  background-hover: pdz-color(surface-container-high),
-  background-selected: pdz-color(surface-container-highest),
-  color: pdz-color(on-surface),
-);
-
 @mixin flat-button-menu($overrides: ()) {
-  $config: map.merge($flat-button-menu-defaults, $overrides);
+  $config: map.merge($button-menu-defaults, $overrides);
   @include flat-button($config);
 }
 

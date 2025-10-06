@@ -9,6 +9,19 @@
 }
 
 coverage {
-  border: 1px solid var(--pdz-color-primary-border);
+  border: 1px solid var(--pdz-cmp-coverage-border, var(--pdz-color-menu-border));
   border-radius: var(--pdz-shape-corner-lg);
+}
+
+.widget-container {
+  --pdz-cmp-coverage-border: var(--pdz-color-primary-border);
+  --pdz-cmp-coverage-hover: var(--pdz-color-primary-hover);
+  --pdz-cmp-coverage-color: var(--pdz-color-primary);
+  --pdz-cmp-coverage-on-color: var(--pdz-color-on-primary);
+  &.alternate {
+    --pdz-cmp-coverage-border: var(--pdz-color-secondary-border);
+    --pdz-cmp-coverage-hover: var(--pdz-color-secondary-hover);
+    --pdz-cmp-coverage-color: var(--pdz-color-secondary);
+    --pdz-cmp-coverage-on-color: var(--pdz-color-on-secondary);
+  }
 }

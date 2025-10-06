@@ -31,6 +31,10 @@
     color: transparent;
     background-color: var(--pdz-color-surface-variant);
   }
+  &.disabled {
+    color: transparent;
+    background-color: none;
+  }
 }
 
 td,
@@ -93,14 +97,18 @@ th {
 }
 
 //Hover lines
+
 .column-hovered {
-  background-color: var(--pdz-color-primary-border);
+  background-color: var(--pdz-cmp-typechart-stat-hover, var(--pdz-color-menu));
 }
 
 tbody {
   tr {
     &:hover {
-      background-color: var(--pdz-color-primary-border);
+      background-color: var(
+        --pdz-cmp-typechart-stat-hover,
+        var(--pdz-color-menu)
+      );
       td:not(.column-hovered),
       th:not(.column-hovered) {
         &:first-child {
@@ -167,6 +175,9 @@ tbody {
   width: 2.5rem;
   font-size: 0.75rem;
   font-weight: bold;
+  &.disabled {
+    background-color: transparent;
+  }
 }
 
 .stat-wrapper {
@@ -192,8 +203,4 @@ tbody {
 .stat-neutral {
   background-color: var(--pdz-color-secondary-container);
   color: var(--pdz-color-on-secondary-container);
-}
-
-.pdz-scale-neutral {
-  color: var(--pdz-color-scale-neutral);
 }

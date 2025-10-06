@@ -9,7 +9,6 @@ import { SwapOpponentButton } from '../../../../util/buttons/swap-opponent/swap-
 
 @Component({
   selector: 'pdz-typechart',
-  standalone: true,
   templateUrl: './typechart.component.html',
   styleUrls: ['./typechart.component.scss', '../../matchup.scss'],
   imports: [

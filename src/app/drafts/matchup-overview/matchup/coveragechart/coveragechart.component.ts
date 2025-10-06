@@ -8,7 +8,6 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @Component({
   selector: 'coveragechart',
-  standalone: true,
   imports: [
     CommonModule,
     CoverageComponent,

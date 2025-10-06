@@ -1,7 +1,7 @@
 @if (summary) {
   <table
     cdk-table
-    [dataSource]="summary.team"
+    [dataSource]="(sortedTeam$ | async) || []"
     matSort
     matSortActive="spe"
     matSortDirection="desc"

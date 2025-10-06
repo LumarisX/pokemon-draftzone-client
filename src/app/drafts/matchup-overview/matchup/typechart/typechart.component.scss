@@ -1,0 +1,7 @@
+@use "../../../../../styles/global.scss" as *;
+.widget-container {
+  --pdz-cmp-typechart-stat-hover: var(--pdz-color-primary);
+  &.alternate {
+    --pdz-cmp-typechart-stat-hover: var(--pdz-color-secondary);
+  }
+}

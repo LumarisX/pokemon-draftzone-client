@@ -7,21 +7,18 @@ import {
   distinctUntilChanged,
   Subject,
   takeUntil,
-  tap,
 } from 'rxjs';
-import { Type, TYPES } from '../../../../data';
+import { TYPES } from '../../../../data';
 import {
   TypeChart,
   TypeChartPokemon,
 } from '../../../../drafts/matchup-overview/matchup-interface';
-import { Pokemon } from '../../../../interfaces/draft';
 import { typeColor } from '../../../styling';
 
 @Component({
   selector: 'pdz-typestats-core',
-  standalone: true,
   templateUrl: './typestats-core.component.html',
-  styleUrl: '../typechart-core.component.scss',
+  styleUrl: './typestats-core.component.scss',
   imports: [CommonModule, FormsModule, ReactiveFormsModule],
 })
 export class TypestatsCoreComponent implements OnInit, OnDestroy {

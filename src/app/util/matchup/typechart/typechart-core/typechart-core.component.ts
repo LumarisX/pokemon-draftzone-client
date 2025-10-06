@@ -27,9 +27,8 @@ import { typeColor } from '../../../styling';
 
 @Component({
   selector: 'pdz-typechart-core',
-  standalone: true,
   templateUrl: './typechart-core.component.html',
-  styleUrl: '../typechart-core.component.scss',
+  styleUrl: './typechart-core.component.scss',
   imports: [
     CommonModule,
     SpriteComponent,
@@ -140,6 +139,7 @@ export class TypechartCoreComponent implements OnInit, OnDestroy {
   }
 
   weaknessColor(weak: number, disabled: boolean): string {
+    if (disabled) return 'disabled';
     if (weak > 4) return 'pdz-scale-negative-5';
     if (weak > 2) return 'pdz-scale-negative-4';
     if (weak > 1) return 'pdz-scale-negative-3';

@@ -9,15 +9,11 @@
             (click)="setSort(type)"
             (mouseenter)="columnHovered.next(type)"
             (mouseleave)="columnHovered.next(null)"
-            [ngClass]="{
-              'column-hovered': type === columnHovered.value,
-            }"
+            [class.column-hovered]="type === columnHovered.value"
           >
             <div
               class="type-container"
-              [ngClass]="{
-                'sort-press': sortedBy.value === type,
-              }"
+              [class.sort-press]="sortedBy.value === type"
               [style.backgroundColor]="typeColor(type)"
             >
               <div class="type-icon-wrapper">
@@ -63,7 +59,9 @@
                   )
                 "
               >
-                {{ pokemon.weak[this.abilityIndex][type] }}
+                @if (pokemon.weak[this.abilityIndex][type] !== 1) {
+                  {{ pokemon.weak[this.abilityIndex][type] }}
+                }
               </div>
             </td>
           }

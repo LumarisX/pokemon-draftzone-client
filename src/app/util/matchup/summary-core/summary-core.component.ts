@@ -27,7 +27,7 @@ import { typeColor } from '../../styling';
 export class SummaryCoreComponent {
   baseValue: number = 80;
   private summaryData = new BehaviorSubject<Summary | null>(null);
-  private sortSubject = new BehaviorSubject<Sort>({
+  sortSubject = new BehaviorSubject<Sort>({
     active: 'spe',
     direction: 'desc',
   });

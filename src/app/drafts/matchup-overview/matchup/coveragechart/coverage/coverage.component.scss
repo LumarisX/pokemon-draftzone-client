@@ -28,11 +28,13 @@
     }
 
     .reset-button {
-      background-color: var(--pdz-color-primary);
-      color: var(--pdz-color-on-primary);
+      background-color: var(--pdz-cmp-coverage-color, var(--pdz-color-menu));
+      color: var(--pdz-cmp-coverage-on-color, var(--pdz-color-on-menu));
       &:hover {
-        background-color: var(--pdz-color-secondary);
-        color: var(--pdz-color-on-secondary);
+        background-color: var(
+          --pdz-cmp-coverage-hover,
+          var(--pdz-color-menu-hover)
+        );
       }
       &:active {
         margin-top: 1px;
@@ -55,7 +57,8 @@
     display: flex;
     flex-direction: column;
     > :not(:first-child) {
-      border-top: 1px solid var(--pdz-color-primary-border);
+      border-top: 1px solid
+        var(--pdz-cmp-coverage-border, var(--pdz-color-menu-border));
     }
     .category-container {
       display: flex;

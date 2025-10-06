@@ -20,7 +20,8 @@ td {
 }
 
 .slider-cell {
-  border: 1.5px solid var(--pdz-color-primary-border);
+  border: 1.5px solid
+    var(--pdz-cmp-summary-border, var(--pdz-color-menu-border));
   .slider-container {
     display: flex;
     flex-direction: column;
@@ -57,7 +58,8 @@ td {
 }
 
 th.cdk-header-cell {
-  border-bottom: 2px solid var(--pdz-color-primary-border);
+  border-bottom: 2px solid
+    var(--pdz-cmp-summary-border, var(--pdz-color-menu-border));
 }
 
 table {

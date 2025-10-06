@@ -13,7 +13,6 @@ import { typeColor } from '../../styling';
 
 @Component({
   selector: 'moves-core',
-  standalone: true,
   templateUrl: './moves.component.html',
   styleUrl: './moves.component.scss',
   imports: [
