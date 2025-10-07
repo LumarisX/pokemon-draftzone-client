@@ -6,7 +6,7 @@
   display: flex;
   flex-direction: column;
   background-color: var(--pdz-color-surface);
-  box-shadow: var(--pdz-level2);
+  box-shadow: var(--pdz-level-2);
   width: 26rem;
   border-radius: 2rem;
   padding: var(--pdz-space-md);
@@ -36,7 +36,7 @@
       flex-shrink: 0;
       overflow: hidden;
       border-color: var(--pdz-color-primary-border-variant);
-      box-shadow: var(--pdz-level1);
+      box-shadow: var(--pdz-level-1);
       &.positive {
         border-color: lightgreen;
       }
@@ -94,14 +94,14 @@
     border-radius: var(--pdz-shape-corner-sm);
     font-size: 0.6rem;
     &.enabled {
-      box-shadow: var(--pdz-level1);
+      box-shadow: var(--pdz-level-1);
       background-color: var(--pdz-color-primary);
       color: var(--pdz-color-on-primary);
     }
     &:active {
       margin-top: 1px;
       margin-bottom: -1px;
-      box-shadow: var(--pdz-level0);
+      box-shadow: var(--pdz-level-0);
     }
   }
 }
@@ -127,7 +127,7 @@
         font-size: 1rem;
         height: 1.25rem;
         border-radius: var(--pdz-shape-corner-xs);
-        box-shadow: var(--pdz-level1);
+        box-shadow: var(--pdz-level-1);
         background-color: white;
         color: var(--pdz-color-primary);
         &.positive {
@@ -178,7 +178,7 @@
       .match-button {
         border: 1px solid var(--pdz-color-primary-border-variant);
         padding: 0.0675rem 0.125rem;
-        box-shadow: var(--pdz-level1);
+        box-shadow: var(--pdz-level-1);
         border-radius: var(--pdz-shape-corner-sm);
         &.selected {
           background-color: var(--pdz-color-primary);
@@ -186,12 +186,12 @@
           color: var(--pdz-color-on-primary);
           margin-top: 1px;
           margin-bottom: -1px;
-          box-shadow: var(--pdz-level0);
+          box-shadow: var(--pdz-level-0);
         }
         &:active {
           margin-top: 1px;
           margin-bottom: -1px;
-          box-shadow: var(--pdz-level0);
+          box-shadow: var(--pdz-level-0);
         }
       }
     }
@@ -203,7 +203,7 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
     .pokemon-box {
       height: 3rem;
-      box-shadow: var(--pdz-level1);
+      box-shadow: var(--pdz-level-1);
       border-radius: var(--pdz-shape-corner-sm);
       width: 3rem;
       border-width: 2px;

@@ -57,15 +57,13 @@ mat-toolbar {
 }
 
 .home-btn {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: var(--pdz-shape-corner-sm);
-  padding: 0 0.5rem;
-  @include background-hover-effect(var(--pdz-color-surface-container));
-  &:hover {
-    color: var(--pdz-color-on-surface-container);
-  }
+  @include flat-button(
+    (
+      padding: var(--pdz-space-2xs) var(--pdz-space-sm),
+      box-shadow-hover: var(--pdz-level-0),
+      "background-hover": var(--pdz-color-surface-container),
+    )
+  );
 }
 pdz-icon {
   height: 100%;
@@ -94,6 +92,9 @@ pdz-icon {
   margin: 0 0.5rem;
   @include flat-button(
     (
+      font-family: var(--pdz-font-fancy),
+      padding: var(--pdz-space-sm) var(--pdz-space-sm),
+      box-shadow-hover: var(--pdz-level-0),
       "background-hover": var(--pdz-color-surface-container),
     )
   );

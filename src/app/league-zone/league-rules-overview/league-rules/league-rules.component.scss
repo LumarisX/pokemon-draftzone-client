@@ -32,7 +32,7 @@ $vertical-padding: var(--pdz-space-sm);
 .rule-main {
   border-radius: $border-radius;
   overflow: hidden;
-  box-shadow: var(--pdz-level2);
+  box-shadow: var(--pdz-level-2);
   width: 50rem;
   max-width: 100%;
 }
@@ -171,7 +171,7 @@ $vertical-padding: var(--pdz-space-sm);
 .cdk-drag-preview {
   box-sizing: border-box;
   border-radius: calc($border-radius / 2);
-  box-shadow: var(--pdz-level4);
+  box-shadow: var(--pdz-level-4);
   background-color: var(--pdz-color-surface);
   .accordion-item-header {
     padding: 0 $horizontal-padding;

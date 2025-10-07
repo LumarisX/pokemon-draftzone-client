@@ -24,7 +24,9 @@
     <tbody>
       <tr>
         <th>
-          <div class="stat-label bg-menu-300">Count</div>
+          <div class="stat-label count" matTooltip="Pokémon having this type">
+            Count
+          </div>
         </th>
         @for (type of types; track $index) {
           <td
@@ -42,7 +44,11 @@
         }
       </tr>
       <tr>
-        <th><div class="stat-label pdz-scale-negative-3">Weaks</div></th>
+        <th>
+          <div class="stat-label weaks" matTooltip="Pokémon weak to this type">
+            Weaks
+          </div>
+        </th>
         @for (type of types; track $index) {
           <td
             class="stat-cell"
@@ -62,7 +68,14 @@
         }
       </tr>
       <tr>
-        <th><div class="stat-label pdz-scale-positive-3">Resists</div></th>
+        <th>
+          <div
+            class="stat-label resists"
+            matTooltip="Pokémon resistant or immune to this type"
+          >
+            Resists
+          </div>
+        </th>
         @for (type of types; track $index) {
           <td
             class="stat-cell"
@@ -84,9 +97,10 @@
       <tr>
         <th>
           <div
-            class="stat-label bg-gradient-to-r from-scale-negative-3 from-50% to-scale-positive-3 to-50%"
+            class="stat-label delta"
+            matTooltip="A simple score for how weak the draft is to the type"
           >
-            Diff
+            Delta
           </div>
         </th>
         @for (type of types; track $index) {
@@ -97,11 +111,8 @@
             [ngClass]="{ 'column-hovered': type === columnHovered.value }"
           >
             <div class="flex-wrapper">
-              <div
-                class="stat-wrapper"
-                [ngClass]="diffColor(difference[$index])"
-              >
-                {{ difference[$index] | number: "1.0-0" }}
+              <div class="stat-wrapper" [ngClass]="diffColor(delta[$index])">
+                {{ delta[$index] | number: "1.0-0" }}
               </div>
             </div>
           </td>
@@ -110,9 +121,10 @@
       <tr>
         <th>
           <div
-            class="stat-label bg-gradient-to-r from-scale-negative-3 via-menu-200 to-scale-positive-3"
+            class="stat-label log-delta"
+            matTooltip="A weighted score for how weak the draft is to the type"
           >
-            Log
+            Log Delta
           </div>
         </th>
         @for (type of types; track $index) {
@@ -123,11 +135,8 @@
             [ngClass]="{ 'column-hovered': type === columnHovered.value }"
           >
             <div class="flex-wrapper">
-              <div
-                class="stat-wrapper"
-                [ngClass]="diffColor(differential[$index])"
-              >
-                {{ differential[$index] | number: "1.0-0" }}
+              <div class="stat-wrapper" [ngClass]="diffColor(logDelta[$index])">
+                {{ logDelta[$index] | number: "1.0-0" }}
               </div>
             </div>
           </td>

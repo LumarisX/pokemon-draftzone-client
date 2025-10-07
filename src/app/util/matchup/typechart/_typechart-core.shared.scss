@@ -154,10 +154,13 @@ tbody {
       display: flex;
       align-items: center;
       justify-content: center;
+      cursor: help;
+      user-select: none;
       border-radius: var(--pdz-shape-corner-xs);
       height: 1.5rem;
       width: 2.5rem;
       font-size: 0.65rem;
+      line-height: 0.7rem;
       font-weight: bold;
       overflow: hidden;
       box-shadow: var(--pdz-level-1);

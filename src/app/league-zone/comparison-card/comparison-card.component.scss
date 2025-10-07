@@ -9,7 +9,7 @@ $container-padding: var(--pdz-space-md);
 .comparison-card {
   display: flex;
   flex-direction: column;
-  box-shadow: var(--pdz-level2);
+  box-shadow: var(--pdz-level-2);
   border-radius: var(--card-border-radius);
   padding: $container-padding;
   position: relative;
@@ -45,7 +45,7 @@ $container-padding: var(--pdz-space-md);
   border: var(--logo-border-width) solid var(--pdz-color-primary-border-variant);
   flex-shrink: 0;
   overflow: hidden;
-  box-shadow: var(--pdz-level1);
+  box-shadow: var(--pdz-level-1);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -148,13 +148,13 @@ $container-padding: var(--pdz-space-md);
   }
 
   &.link {
-    box-shadow: var(--pdz-level2);
+    box-shadow: var(--pdz-level-2);
 
     cursor: pointer;
     &.active:active {
       margin-top: 1px;
       margin-bottom: -1px;
-      box-shadow: var(--pdz-level0);
+      box-shadow: var(--pdz-level-0);
     }
   }
 }

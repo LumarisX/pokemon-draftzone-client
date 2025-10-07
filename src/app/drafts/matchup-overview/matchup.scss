@@ -46,6 +46,7 @@
     padding: var(--pdz-space-sm);
     column-gap: 1rem;
     z-index: 5001;
+    pointer-events: none;
 
     button {
       @include flat-button-menu(());
@@ -56,6 +57,7 @@
       display: flex;
       justify-content: center;
       .details-container {
+        pointer-events: auto;
         display: flex;
         flex-wrap: wrap;
         flex-direction: row;

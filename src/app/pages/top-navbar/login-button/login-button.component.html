@@ -1,6 +1,6 @@
 @let user = auth.user$ | async;
 @if (authenticated && user) {
-  <button mat-stroked-button [matMenuTriggerFor]="userMenu">
+  <button class="login-btn" [matMenuTriggerFor]="userMenu">
     <div class="user-info-container">
       <img class="user-icon" src="{{ user.picture }}" />
       @if (user.username && user.username !== "") {
@@ -36,7 +36,7 @@
     </button>
   </mat-menu>
 } @else {
-  <button mat-stroked-button (click)="login()">
+  <button class="login-btn" (click)="login()">
     <span>Log in</span> <mat-icon>login</mat-icon>
   </button>
 }

@@ -14,7 +14,7 @@ $theme: (
     on-surface: "gray-950",
     on-surface-variant: "gray-900",
     outline: "gray-550",
-    outline-variant: "gray-400",
+    outline-variant: "gray-300",
 
     // Primary Theme
     primary: "cyan-500",
@@ -24,7 +24,7 @@ $theme: (
     primary-container: "cyan-150",
     primary-container-low: "cyan-100",
     primary-container-high: "cyan-300",
-    primary-container-hover: "cyan-300",
+    primary-container-hover: "cyan-200",
     on-primary-container: "cyan-900",
     primary-hover: "cyan-350",
     primary-border: "cyan-300",
@@ -147,6 +147,11 @@ $theme: (
     scale-negative-6: "rose-600",
     scale-negative-7: "rose-700",
 
+    hero: linear-gradient(
+        135deg,
+        var(--pdz-color-cyan-400),
+        var(--pdz-color-cyan-200)
+      ),
     debug: #ff00ff,
   ),
   dark: (
@@ -286,6 +291,11 @@ $theme: (
     scale-negative-6: "rose-700",
     scale-negative-7: "rose-650",
 
+    hero: linear-gradient(
+        135deg,
+        var(--pdz-color-cyan-500),
+        var(--pdz-color-cyan-300)
+      ),
     debug: #ff00ff,
   ),
 );

@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import {
   BehaviorSubject,
   debounceTime,
@@ -19,7 +20,7 @@ import { typeColor } from '../../../styling';
   selector: 'pdz-typestats-core',
   templateUrl: './typestats-core.component.html',
   styleUrl: './typestats-core.component.scss',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, MatTooltipModule],
 })
 export class TypestatsCoreComponent implements OnInit, OnDestroy {
   sortedTeam = new BehaviorSubject<TypeChartPokemon[]>([]);
@@ -41,8 +42,8 @@ export class TypestatsCoreComponent implements OnInit, OnDestroy {
   counts: number[] = [];
   weaknesses: number[] = [];
   resistances: number[] = [];
-  difference: number[] = [];
-  differential: number[] = [];
+  delta: number[] = [];
+  logDelta: number[] = [];
 
   @Input()
   set abilities(value: boolean) {
@@ -102,8 +103,8 @@ export class TypestatsCoreComponent implements OnInit, OnDestroy {
     });
     this.weaknesses = newValues.map((v) => v.weaknesses);
     this.resistances = newValues.map((v) => v.resistances);
-    this.difference = newValues.map((v) => v.difference);
-    this.differential = newValues.map((v) => v.differential);
+    this.delta = newValues.map((v) => v.difference);
+    this.logDelta = newValues.map((v) => v.differential);
     this.counts = newValues.map((v) => v.counts);
   }
 

@@ -70,7 +70,7 @@
     border-radius: 2rem;
     border-width: 2px;
     overflow: hidden;
-    box-shadow: var(--pdz-level1);
+    box-shadow: var(--pdz-level-1);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -113,13 +113,13 @@
       &.positive {
         background-color: lightgreen;
         color: white;
-        box-shadow: var(--pdz-level1);
+        box-shadow: var(--pdz-level-1);
       }
 
       &.negative {
         background-color: lightcoral;
         color: white;
-        box-shadow: var(--pdz-level1);
+        box-shadow: var(--pdz-level-1);
       }
 
       .hovered-content {

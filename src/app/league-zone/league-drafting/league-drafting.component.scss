@@ -101,7 +101,7 @@
   .team-card-body {
     border: 2px solid var(--pdz-color-primary-border-variant);
     border-radius: var(--pdz-shape-corner-sm);
-    box-shadow: var(--pdz-level2);
+    box-shadow: var(--pdz-level-2);
     padding: var(--pdz-space-xs);
     line-height: 1.2rem;
     height: fit-content;
@@ -154,10 +154,10 @@
     flex-shrink: 0;
     background-color: var(--pdz-color-primary);
     color: var(--pdz-color-on-primary);
-    box-shadow: var(--pdz-level2);
+    box-shadow: var(--pdz-level-2);
     cursor: pointer;
     &:active {
-      box-shadow: var(--pdz-level0);
+      box-shadow: var(--pdz-level-0);
       margin-top: 1px;
       margin-bottom: -1px;
     }
@@ -210,7 +210,7 @@
           font-weight: 500;
           font-size: 0.8rem;
           border-radius: var(--pdz-shape-corner-sm);
-          box-shadow: var(--pdz-level1);
+          box-shadow: var(--pdz-level-1);
           mat-icon {
             font-size: 0.8rem;
             width: fit-content;
@@ -231,7 +231,7 @@
           font-weight: 500;
           font-size: 0.8rem;
           border-radius: var(--pdz-shape-corner-sm);
-          box-shadow: var(--pdz-level1);
+          box-shadow: var(--pdz-level-1);
           mat-icon {
             font-size: 0.8rem;
             width: fit-content;
@@ -467,7 +467,7 @@
   background-color: var(--pdz-color-surface);
   border: 1px solid var(--pdz-color-primary-border);
   border-radius: var(--pdz-shape-corner-sm);
-  box-shadow: var(--pdz-level2);
+  box-shadow: var(--pdz-level-2);
   z-index: 1000;
 }
 

@@ -1,3 +1,6 @@
+@use "../../../../styles/mixins/buttons" as *;
+@use "../../../../styles/global.scss" as *;
+
 :host {
   display: flex;
   flex-direction: column;
@@ -24,6 +27,15 @@
   }
 }
 
-button {
-  border-radius: var(--pdz-shape-corner-lg);
+.login-btn {
+  user-select: none;
+  @include flat-button(
+    (
+      box-shadow-hover: var(--pdz-level-0),
+      border-radius: var(--pdz-shape-corner-md),
+      padding: var(--pdz-space-2xs) var(--pdz-space-sm),
+      background-hover: pdz-color(surface-container),
+      border: 1px solid pdz-color(outline-variant),
+    )
+  );
 }

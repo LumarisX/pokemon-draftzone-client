@@ -1,5 +1,6 @@
 @use "../../../../styles/mixins" as *;
 @use "../../../../styles/mixins/buttons" as *;
+@use "../../../../styles/global.scss" as *;
 
 :host {
   display: block;
@@ -42,7 +43,7 @@
 }
 
 .draft-card {
-  background-color: var(--pdz-color-primary-container-low);
+  background-color: var(--pdz-color-primary-container);
 
   color: var(--pdz-color-on-primary-container);
   border-radius: var(--pdz-shape-corner-md);
@@ -54,7 +55,7 @@
 }
 
 .card-header {
-  background-color: var(--pdz-color-primary-container);
+  background-color: var(--pdz-color-primary-container-high);
 
   display: flex;
   justify-content: space-between;
@@ -135,22 +136,11 @@
   gap: var(--pdz-space-2xs);
 
   .footer-link {
-    // color: var(--pdz-color-on-primary-container);
-    // text-decoration: none;
-    // font-weight: 500;
-    // padding: var(--pdz-space-xs) var(--pdz-space-md);
-    // border-radius: var(--pdz-shape-corner-sm);
-
-    // @include background-hover-effect(var(--pdz-color-primary));
-    // &:hover {
-    //   color: var(--pdz-color-on-primary);
-    // }
-
-    @include flat-button-primary(
+    @include flat-button(
       (
         padding: var(--pdz-space-xs) var(--pdz-space-md),
         border-radius: var(--pdz-shape-corner-sm),
-        background: transparent,
+        background-hover: pdz-color(primary-container-high),
         border: none,
       )
     );

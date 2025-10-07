@@ -1,2 +1,32 @@
 @use "../_typechart-core.shared" as *;
 @use "../../../../../styles/global.scss" as *;
+
+.stat-label {
+  &.count {
+    background-color: var(--pdz-color-scale-neutral);
+  }
+
+  &.weaks {
+    background-color: var(--pdz-color-scale-negative-4);
+  }
+
+  &.resists {
+    background-color: var(--pdz-color-scale-positive-4);
+  }
+
+  &.delta {
+    background-image: linear-gradient(
+      to right,
+      var(--pdz-color-scale-negative-4) 50%,
+      var(--pdz-color-scale-positive-4) 50%
+    );
+  }
+  &.log-delta {
+    background-image: linear-gradient(
+      to right,
+      var(--pdz-color-scale-negative-4) 10%,
+      var(--pdz-color-scale-neutral),
+      var(--pdz-color-scale-positive-4) 90%
+    );
+  }
+}

@@ -19,6 +19,7 @@ $button-menu-defaults: create-themed-button-map("menu");
 $base-button-defaults: (
   padding: 0,
   font-size: 1rem,
+  gap: var(--pdz-space-xs),
   background: transparent,
   border-width: 0px,
   border-style: solid,
@@ -27,19 +28,13 @@ $base-button-defaults: (
   opacity-disabled: 0.6,
   cursor-disabled: not-allowed,
   cursor: pointer,
-  transition: (
-    background-color 0.2s,
-    box-shadow 0.2s,
-    color 0.2s,
-    border-color 0.2s,
-  ),
+  transition: all 0.2s ease-in-out,
 );
 
 @mixin base-button($overrides: ()) {
   $config: map.merge($base-button-defaults, $overrides);
 
   display: inline-flex;
-  gap: var(--pdz-space-md);
   align-items: center;
   justify-content: center;
 
@@ -50,15 +45,18 @@ $base-button-defaults: (
   min-height: map.get($config, "min-height");
   max-height: map.get($config, "max-height");
   padding: map.get($config, "padding");
-
+  gap: map.get($config, "gap");
   font-size: map.get($config, "font-size");
   font-family: map.get($config, "font-family");
   font-weight: map.get($config, "font-weight");
   background-color: map.get($config, "background");
   color: map.get($config, "color");
   border-radius: map.get($config, "border-radius");
-  border: map.get($config, "border") or map.get($config, "border-width")
-    map.get($config, "border-style") map.get($config, "border-color");
+  border-width: map.get($config, "border-width");
+  border-style: map.get($config, "border-style");
+  border-color: map.get($config, "border-color");
+  border: map.get($config, "border");
+
   cursor: map.get($config, "cursor");
   transition: map.get($config, "transition");
   text-decoration: none;
@@ -88,11 +86,10 @@ $base-button-defaults: (
 
 $flat-button-defaults: (
   padding: var(--pdz-space-xs) var(--pdz-space-xl),
-  border-radius: var(--pdz-shape-corner-sm),
+  border-radius: var(--pdz-shape-corner-xs),
   background: transparent,
   background-hover: transparent,
   border-color: transparent,
-  font-weight: var(--pdz-font-weight-bold),
 );
 
 @mixin flat-button($overrides: ()) {
