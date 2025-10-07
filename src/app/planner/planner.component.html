@@ -1,17 +1,15 @@
 @if (plannerForm) {
   <form
     [formGroup]="plannerForm"
-    class="h-full"
+    class="planner-form"
     (keydown.enter)="$event.preventDefault()"
   >
-    <div formArrayName="drafts" class="flex flex-col h-full">
+    <div formArrayName="drafts" class="planner-container">
       <div class="tab-bar">
         <div class="tab-wrapper scrollbar-hidden">
           @for (draftCtrl of draftArray.controls; track $index) {
             <div
-              [ngClass]="{
-                alternate: $index !== selectedDraft.value,
-              }"
+              [class.selected]="$index === selectedDraft.value"
               class="draft-tab tab"
               [formGroupName]="$index"
               (click)="selectedDraft.next($index)"
@@ -26,20 +24,14 @@
         </div>
         <button
           (click)="addDraft(this.createDraftFormGroup({}))"
-          class="add-tab tab alternate"
+          class="add-tab tab"
         >
           <mat-icon>add</mat-icon>
         </button>
       </div>
-      <div
-        [formGroup]="draftFormGroup"
-        class="flex min-h-0 overflow-auto h-full divide-x-4 divide-menu-300"
-      >
+      <div [formGroup]="draftFormGroup" class="widget-container">
         @if (isLargeScreen) {
-          <mat-tab-group
-            mat-stretch-tabs="false"
-            class="w-fit h-full flex-grow-0"
-          >
+          <mat-tab-group mat-stretch-tabs="false" class="tab-group-compact">
             <mat-tab label="Team">
               <planner-team [draftFormGroup]="draftFormGroup"></planner-team>
             </mat-tab>
@@ -53,7 +45,7 @@
         <mat-tab-group
           mat-stretch-tabs="false"
           [(selectedIndex)]="tabIndex"
-          class="flex-grow h-full overflow-auto"
+          class="tab-group-grow"
           mat-align-tabs="start"
         >
           @if (!isLargeScreen) {
@@ -104,7 +96,7 @@
               <ng-template matTabContent>
                 <div class="coverage-container">
                   <planner-coverage
-                    class="w-full overflow-y-auto"
+                    class="coverage"
                     [coverage]="coverage"
                   ></planner-coverage>
                 </div>
@@ -114,7 +106,7 @@
           <mat-tab label="Find">
             <ng-template matTabContent>
               <finder-core
-                class="h-full min-w-full overflow-y-auto"
+                class="finder"
                 [rulesetId]="
                   draftFormGroup.controls.ruleset.value || 'Gen9 NatDex'
                 "

@@ -9,7 +9,7 @@
   width: 100%;
   padding: 0 1rem 0.5rem;
   color: var(--pdz-cmp-movechart-color, var(--pdz-color-menu));
-  font-weight: 700;
+  font-weight: var(--pdz-font-weight-bold);
 }
 
 .movechart {

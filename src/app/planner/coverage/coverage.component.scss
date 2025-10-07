@@ -84,7 +84,7 @@
     }
 
     .team-chart-container {
-      font-weight: 700;
+      font-weight: var(--pdz-font-weight-bold);
       max-width: fit-content;
 
       .team-chart-title {

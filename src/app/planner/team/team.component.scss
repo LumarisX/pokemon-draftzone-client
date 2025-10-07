@@ -1,6 +1,15 @@
+@use "../../../styles/global.scss" as *;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  max-width: 100%;
+  height: 100%;
+}
+
 .points-container {
   flex-grow: 0;
-  border-top: 2px var(--pdz-color-primary-border) solid;
+  border-top: 2px pdz-color(outline) solid;
   display: flex;
   flex-direction: column;
 
@@ -25,10 +34,11 @@ table {
   thead tr {
     top: 0px;
     z-index: 1100;
-    background-color: var(--pdz-color-secondary);
-    color: var(--pdz-color-on-secondary);
-    border-bottom: 2px var(--pdz-color-secondary-border) solid;
+    background-color: pdz-color(primary);
+    color: pdz-color(on-primary);
+    border-bottom: 2px pdz-color(primary-border) solid;
     position: sticky;
+    font-size: var(--pdz-font-size-xs);
   }
   tbody {
     td {
@@ -46,7 +56,7 @@ table {
 }
 
 .team-item:not(:last-child) {
-  border-bottom: 1px var(--pdz-color-primary-border-variant) solid;
+  border-bottom: 1px pdz-color(primary-border) solid;
 }
 
 .value-input {
@@ -74,7 +84,7 @@ table {
 
 .drag-icon {
   cursor: move;
-  color: var(--pdz-color-on-surface-variant);
+  color: pdz-color(on-surface-variant);
 }
 
 .value-input,

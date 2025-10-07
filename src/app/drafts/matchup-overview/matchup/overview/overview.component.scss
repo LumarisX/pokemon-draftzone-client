@@ -33,7 +33,7 @@
         text-overflow: ellipsis;
         white-space: nowrap;
         text-align: center;
-        font-weight: 700;
+        font-weight: var(--pdz-font-weight-bold);
         color: var(--pdz-comp-color-title);
         font-family: var(--pdz-font-fancy);
       }
@@ -97,7 +97,7 @@
         &.header {
           > div {
             font-size: 0.8rem;
-            font-weight: 700;
+            font-weight: var(--pdz-font-weight-bold);
           }
 
           .speed-cell,

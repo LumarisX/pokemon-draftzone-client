@@ -48,7 +48,7 @@
       overflow: hidden;
       object-fit: contain;
       font-size: 1.2rem;
-      font-weight: 700;
+      font-weight: var(--pdz-font-weight-bold);
       color: var(--pdz-color-primary);
       &.positive {
         color: lightgreen;
@@ -104,7 +104,7 @@
       background-color: var(--pdz-color-surface-container);
       color: var(--pdz-color-surface-container);
       text-align: center;
-      font-weight: 700;
+      font-weight: var(--pdz-font-weight-bold);
       font-size: 0.8rem;
       line-height: 1.5rem;
       border-radius: var(--pdz-shape-corner-xs);
@@ -141,7 +141,7 @@
       width: 1.5rem;
       height: 0.75rem;
       text-align: center;
-      font-weight: 700;
+      font-weight: var(--pdz-font-weight-bold);
       font-size: 0.7rem;
     }
 

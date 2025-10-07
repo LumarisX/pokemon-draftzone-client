@@ -105,7 +105,7 @@ $container-padding: var(--pdz-space-md);
 .center-text,
 .center-icon {
   user-select: none;
-  font-weight: 700;
+  font-weight: var(--pdz-font-weight-bold);
   font-size: 0.6rem;
   max-width: 1rem;
   color: var(--pdz-color-on-surface-variant);

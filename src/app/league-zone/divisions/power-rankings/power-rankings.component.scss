@@ -181,7 +181,7 @@ input {
         text-overflow: ellipsis;
         white-space: nowrap;
         text-align: center;
-        font-weight: 700;
+        font-weight: var(--pdz-font-weight-bold);
         color: var(--mat-sys-secondary);
         font-family: "Nasalization RG", sans-serif;
       }
@@ -245,7 +245,7 @@ input {
         &.header {
           > div {
             font-size: 0.8em;
-            font-weight: 700;
+            font-weight: var(--pdz-font-weight-bold);
           }
 
           .speed-cell,

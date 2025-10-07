@@ -39,6 +39,7 @@ $base-button-defaults: (
   $config: map.merge($base-button-defaults, $overrides);
 
   display: inline-flex;
+  gap: var(--pdz-space-md);
   align-items: center;
   justify-content: center;
 
@@ -91,6 +92,7 @@ $flat-button-defaults: (
   background: transparent,
   background-hover: transparent,
   border-color: transparent,
+  font-weight: var(--pdz-font-weight-bold),
 );
 
 @mixin flat-button($overrides: ()) {
@@ -135,5 +137,10 @@ $icon-button-defaults: (
 
 @mixin icon-button-secondary($overrides: ()) {
   $config: map.merge($button-secondary-defaults, $overrides);
+  @include icon-button($config);
+}
+
+@mixin icon-button-menu($overrides: ()) {
+  $config: map.merge($button-menu-defaults, $overrides);
   @include icon-button($config);
 }

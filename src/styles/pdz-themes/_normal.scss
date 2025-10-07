@@ -13,7 +13,7 @@ $theme: (
     surface-container-highest: "gray-300",
     on-surface: "gray-950",
     on-surface-variant: "gray-900",
-    outline: "gray-700",
+    outline: "gray-550",
     outline-variant: "gray-400",
 
     // Primary Theme
@@ -21,12 +21,12 @@ $theme: (
     primary-lighter: "cyan-400",
     primary-darker: "cyan-600",
     on-primary: "white",
-    primary-container: "cyan-250",
+    primary-container: "cyan-150",
     primary-container-low: "cyan-100",
     primary-container-high: "cyan-300",
     primary-container-hover: "cyan-300",
     on-primary-container: "cyan-900",
-    primary-hover: "cyan-600",
+    primary-hover: "cyan-350",
     primary-border: "cyan-300",
     primary-subtle: "cyan-100",
     primary-gradient: linear-gradient(
@@ -39,12 +39,12 @@ $theme: (
     secondary-lighter: "orange-400",
     secondary-darker: "orange-600",
     on-secondary: "white",
-    secondary-container: "orange-100",
+    secondary-container: "orange-150",
     secondary-container-low: "orange-100",
     secondary-container-high: "orange-300",
     secondary-container-hover: "orange-200",
     on-secondary-container: "orange-900",
-    secondary-hover: "orange-600",
+    secondary-hover: "orange-350",
     secondary-border: "orange-300",
     secondary-subtle: "orange-100",
     secondary-gradient: linear-gradient(
@@ -53,18 +53,18 @@ $theme: (
         var(--pdz-color-orange-200)
       ),
     // Menu Theme (Refactored)
-    menu: "gray-800",
-    menu-lighter: "gray-700",
-    menu-darker: "gray-900",
+    menu: "gray-500",
+    menu-lighter: "gray-400",
+    menu-darker: "gray-600",
     on-menu: "white",
-    menu-container: "white",
+    menu-container: "gray-150",
     menu-container-low: "gray-100",
-    menu-container-high: "gray-200",
-    menu-container-hover: "gray-50",
+    menu-container-high: "gray-350",
+    menu-container-hover: "gray-250",
     on-menu-container: "gray-950",
-    menu-hover: "gray-900",
-    menu-border: "gray-300",
-    menu-subtle: "gray-50",
+    menu-hover: "gray-400",
+    menu-border: "gray-350",
+    menu-subtle: "gray-150",
     menu-gradient: linear-gradient(
         135deg,
         var(--pdz-color-gray-200),
@@ -97,7 +97,7 @@ $theme: (
     on-surface-inverse: "gray-100",
 
     // Effects
-    shadow: "black",
+    shadow: #4d4d4d,
     scrim: "black",
 
     // Logo Colors
@@ -113,6 +113,12 @@ $theme: (
     logo-top: "cyan-500",
     logo-bottom: "orange-500",
     logo-background: "white",
+
+    // Loading Colors
+    loading-primary-high: "cyan-600",
+    loading-primary-low: "cyan-400",
+    loading-secondary-high: "orange-600",
+    loading-secondary-low: "orange-400",
 
     // Semantic Data Colors
     positive: "emerald-700",
@@ -248,6 +254,12 @@ $theme: (
     logo-top: "cyan-500",
     logo-bottom: "orange-500",
     logo-background: "white",
+
+    // Loading Colors
+    loading-primary-high: "cyan-600",
+    loading-primary-low: "cyan-400",
+    loading-secondary-high: "orange-600",
+    loading-secondary-low: "orange-400",
 
     positive: "emerald-400",
     on-positive: "emerald-950",

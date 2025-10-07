@@ -110,7 +110,7 @@
         font-size: 0.7rem;
         color: var(--pdz-color-primary);
         line-height: 0.9rem;
-        font-weight: 700;
+        font-weight: var(--pdz-font-weight-bold);
         white-space: nowrap;
         overflow: hidden;
       }

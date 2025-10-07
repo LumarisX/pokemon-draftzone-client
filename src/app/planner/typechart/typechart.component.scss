@@ -27,7 +27,7 @@
   width: 100%;
   padding: 0 1rem 0.5rem;
   color: var(--pdz-color-primary);
-  font-weight: 700;
+  font-weight: var(--pdz-font-weight-bold);
 
   .table-label {
     font-size: 1.2rem;

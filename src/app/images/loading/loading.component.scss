@@ -35,20 +35,20 @@
     @keyframes wave-fill-secondary {
       0%,
       100% {
-        fill: var(--pdz-color-orange-400);
+        fill: var(--pdz-color-loading-secondary-low);
       }
       50% {
-        fill: var(--pdz-color-orange-600);
+        fill: var(--pdz-color-loading-secondary-high);
       }
     }
 
     @keyframes wave-fill-primary {
       0%,
       100% {
-        fill: var(--pdz-color-cyan-400);
+        fill: var(--pdz-color-loading-primary-low);
       }
       50% {
-        fill: var(--pdz-color-cyan-600);
+        fill: var(--pdz-color-loading-primary-high);
       }
     }
 

@@ -9,7 +9,7 @@
   }
   .speed-label {
     line-height: 2rem;
-    font-weight: 700;
+    font-weight: var(--pdz-font-weight-bold);
     color: var(--pdz-color-on-primary-container);
   }
   .modifier-container {
@@ -24,7 +24,7 @@
       line-height: 1rem;
       overflow: hidden;
       padding: 0 0.25rem;
-      font-weight: 700;
+      font-weight: var(--pdz-font-weight-bold);
       font-size: 0.7rem;
       border: 1px solid var(--pdz-color-on-primary-container);
       background-color: var(--pdz-color-primary-subtle);

@@ -11,13 +11,13 @@
   --pdz-cmp-movechart-color: var(--pdz-color-primary);
   --pdz-cmp-movechart-on-container: var(--pdz-color-on-primary-container);
   --pdz-cmp-movechart-container: var(--pdz-color-primary-container);
-  --pdz-cmp-movechart-hover: var(--pdz-color-primary-hover);
+  --pdz-cmp-movechart-hover: var(--pdz-color-primary-container-hover);
   --pdz-cmp-movechart-border: var(--pdz-color-primary-border);
   &.alternate {
     --pdz-cmp-movechart-color: var(--pdz-color-secondary);
     --pdz-cmp-movechart-on-container: var(--pdz-color-on-secondary-container);
     --pdz-cmp-movechart-container: var(--pdz-color-secondary-container);
-    --pdz-cmp-movechart-hover: var(--pdz-color-secondary-hover);
+    --pdz-cmp-movechart-hover: var(--pdz-color-secondary-container-hover);
     --pdz-cmp-movechart-border: var(--pdz-color-secondary-border);
   }
 }

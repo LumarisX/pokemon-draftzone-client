@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'pdz-loading',
@@ -8,9 +8,12 @@ import { Component, OnInit } from '@angular/core';
   styleUrl: 'loading.component.scss',
 })
 export class LoadingComponent implements OnInit {
-  readonly numPairs = 12;
-  readonly animDuration = 2;
-  readonly waveDelay = Math.sqrt(2);
+  @Input()
+  numPairs = 12;
+  @Input()
+  animDuration = 2;
+  @Input()
+  waveDelay = Math.sqrt(2);
 
   circles!: { cx: number; delay: number; className: string }[];
 

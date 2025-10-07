@@ -21,8 +21,7 @@
         margin-bottom: 1px;
         cursor: pointer;
         &:hover {
-          background-color: var(--pdz-color-primary);
-          color: var(--pdz-color-on-primary);
+          background-color: var(--pdz-color-primary-container-hover);
         }
         &.alternate,
         :host-context(.alternate) & {
@@ -36,8 +35,7 @@
           }
 
           &:hover {
-            background-color: var(--pdz-color-secondary);
-            color: var(--pdz-color-on-secondary);
+            background-color: var(--pdz-color-secondary-container-hover);
           }
         }
         &.alternate {
@@ -64,7 +62,7 @@
         .base-speed-label {
           text-align: center;
           line-height: 2rem;
-          font-weight: 700;
+          font-weight: var(--pdz-font-weight-bold);
           color: var(--pdz-color-on-primary-container);
         }
       }
@@ -114,12 +112,10 @@
         &.grouped {
           cursor: pointer;
           &:hover {
-            background-color: var(--pdz-color-primary);
-            color: var(--pdz-color-on-primary);
+            background-color: var(--pdz-color-primary-container-hover);
             &.alternate,
             :host-context(.alternate) & {
-              background-color: var(--pdz-color-secondary);
-              color: var(--pdz-color-on-secondary);
+              background-color: var(--pdz-color-secondary-container-hover);
             }
           }
         }
@@ -163,7 +159,7 @@
             .top-speed,
             .bot-speed {
               line-height: 1rem;
-              font-weight: 700;
+              font-weight: var(--pdz-font-weight-bold);
             }
           }
         }

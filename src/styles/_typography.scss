@@ -2,7 +2,7 @@ $typography: (
   headline-large: (
     font-family: var(--pdz-font-fancy),
     font-size: 2rem,
-    font-weight: 700,
+    font-weight: var(--pdz-font-weight-bold),
     line-height: 2.5rem,
   ),
   body-medium: (
@@ -32,6 +32,10 @@ $font-size: (
   lg: 1.2rem,
   xl: 1.5rem,
   xxl: 2rem,
+);
+
+$font-weight: (
+  bold: 700,
 );
 
 $line-height: (

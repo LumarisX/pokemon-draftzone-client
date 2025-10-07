@@ -58,6 +58,9 @@
   @each $name, $value in $font-size {
     --pdz-font-size-#{$name}: #{$value};
   }
+  @each $name, $value in $font-weight {
+    --pdz-font-weight-#{$name}: #{$value};
+  }
   @each $name, $value in $line-height {
     --pdz-line-height-#{$name}: #{$value};
   }

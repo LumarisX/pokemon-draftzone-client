@@ -161,7 +161,7 @@
       margin-top: 1px;
       margin-bottom: -1px;
     }
-    font-weight: 700;
+    font-weight: var(--pdz-font-weight-bold);
     font-size: 1.5rem;
     display: flex;
     align-items: center;
@@ -197,7 +197,7 @@
         padding: 0.125rem 0 0.125rem 0.5rem;
         .choice-label {
           color: var(--pdz-color-on-primary-container);
-          font-weight: 700;
+          font-weight: var(--pdz-font-weight-bold);
         }
 
         .choice-pokemon {
@@ -323,7 +323,7 @@
 
         .pick-text {
           font-size: 0.75rem;
-          font-weight: 700;
+          font-weight: var(--pdz-font-weight-bold);
           line-height: 0.75rem;
         }
 

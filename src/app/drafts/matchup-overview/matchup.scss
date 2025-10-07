@@ -11,7 +11,7 @@
 
     padding: 0 1rem 0.5rem;
     // color: var(--pdz-color-primary);
-    font-weight: 700;
+    font-weight: var(--pdz-font-weight-bold);
     .widget-label {
       font-size: 1.2rem;
       font-family: var(--pdz-font-fancy);
@@ -81,13 +81,13 @@
 .detail-container {
   text-align: center;
   .detail-title {
-    font-weight: 700;
+    font-weight: var(--pdz-font-weight-bold);
     font-size: 0.8rem;
     height: 1rem;
     color: var(--pdz-color-primary);
   }
   .detail-text {
-    font-weight: 700;
+    font-weight: var(--pdz-font-weight-bold);
     font-size: 1rem;
     color: var(--pdz-color-on-surface);
   }

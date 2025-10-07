@@ -1,34 +1,41 @@
 @if (draftFormGroup && draftFormGroup.controls.team) {
-  <div class="flex flex-col max-w-full h-full">
-    <div class="table-container">
-      <table class="table-fixed">
-        <thead>
-          <tr>
-            <th></th>
-            <th></th>
-            <th>Name</th>
-            <th>Value</th>
-            <th class="text-xs">Captain</th>
-            <th class="text-xs">Drafted</th>
-          </tr>
-        </thead>
-        <tbody
-          cdkDropList
-          (cdkDropListDropped)="drop($event)"
-          class="team-list"
-        >
-          @for (
-            teamCtrl of draftFormGroup.controls.team.controls;
-            track $index
-          ) {
-            <tr
-              cdkDrag
-              class="team-item"
-              [ngClass]="{
-                alternate: $index > min - 1,
-              }"
-            >
-              <div *cdkDragPreview>
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th></th>
+          <th></th>
+          <th>Name</th>
+          <th>Value</th>
+          <th>Captain</th>
+          <th>Drafted</th>
+        </tr>
+      </thead>
+      <tbody cdkDropList (cdkDropListDropped)="drop($event)" class="team-list">
+        @for (teamCtrl of draftFormGroup.controls.team.controls; track $index) {
+          <tr
+            cdkDrag
+            class="team-item"
+            [ngClass]="{
+              alternate: $index > min - 1,
+            }"
+          >
+            <div *cdkDragPreview>
+              @if (teamCtrl.controls.pokemon.value) {
+                <pdz-sprite
+                  [flipped]="true"
+                  [pokemon]="teamCtrl.controls.pokemon.value"
+                >
+                </pdz-sprite>
+              }
+            </div>
+            <td>
+              <mat-icon class="drag-icon" cdkDragHandle
+                >drag_indicator</mat-icon
+              >
+            </td>
+            <td>
+              <div class="sprite-wrapper">
                 @if (teamCtrl.controls.pokemon.value) {
                   <pdz-sprite
                     [flipped]="true"
@@ -37,89 +44,74 @@
                   </pdz-sprite>
                 }
               </div>
+            </td>
+            <td>
+              <div class="pokemon-input">
+                <pokemon-select
+                  (selectionCleared)="onClear($index)"
+                  [ruleset]="draftFormGroup.controls.ruleset.value"
+                  [formControl]="teamCtrl.controls.pokemon"
+                  appearance="outline"
+                ></pokemon-select>
+              </div>
+              <!-- {{ teamCtrl.controls.pokemon.value | json }} -->
+            </td>
+            @if (isPoints) {
               <td>
-                <mat-icon class="drag-icon" cdkDragHandle
-                  >drag_indicator</mat-icon
-                >
+                <mat-form-field class="value-input" appearance="outline">
+                  <mat-label>Points</mat-label>
+                  <input
+                    matInput
+                    type="number"
+                    placeholder="0"
+                    [formControl]="teamCtrl.controls.value"
+                  />
+                </mat-form-field>
               </td>
+            } @else {
               <td>
-                <div class="sprite-wrapper">
-                  @if (teamCtrl.controls.pokemon.value) {
-                    <pdz-sprite
-                      [flipped]="true"
-                      [pokemon]="teamCtrl.controls.pokemon.value"
-                    >
-                    </pdz-sprite>
-                  }
-                </div>
-              </td>
-              <td>
-                <div class="pokemon-input">
-                  <pokemon-select
-                    (selectionCleared)="onClear($index)"
-                    [ruleset]="draftFormGroup.controls.ruleset.value"
-                    [formControl]="teamCtrl.controls.pokemon"
-                    appearance="outline"
-                  ></pokemon-select>
-                </div>
-                <!-- {{ teamCtrl.controls.pokemon.value | json }} -->
-              </td>
-              @if (isPoints) {
-                <td>
-                  <mat-form-field class="value-input" appearance="outline">
-                    <mat-label>Points</mat-label>
-                    <input
-                      matInput
-                      type="number"
-                      placeholder="0"
-                      [formControl]="teamCtrl.controls.value"
-                    />
-                  </mat-form-field>
-                </td>
-              } @else {
-                <td>
-                  <mat-form-field class="value-input" appearance="outline">
-                    <mat-label>Tier</mat-label>
+                <mat-form-field class="value-input" appearance="outline">
+                  <mat-label>Tier</mat-label>
 
-                    <input
-                      matInput
-                      type="text"
-                      spellcheck="false"
-                      [formControl]="teamCtrl.controls.tier"
-                    />
-                  </mat-form-field>
-                </td>
-              }
-              <td class="w-1/8">
-                <mat-checkbox
-                  [formControl]="teamCtrl.controls.capt"
-                ></mat-checkbox>
+                  <input
+                    matInput
+                    type="text"
+                    spellcheck="false"
+                    [formControl]="teamCtrl.controls.tier"
+                  />
+                </mat-form-field>
               </td>
-              <td class="w-1/8">
-                <mat-checkbox
-                  [formControl]="teamCtrl.controls.drafted"
-                ></mat-checkbox>
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
-    @if (isPoints) {
-      <div class="points-container">
-        <div class="points-box">
-          <div>
-            <strong>Points Remaining:</strong>
-            {{ remainingPoints }}
-          </div>
-          <div>
-            <strong>Average:</strong>
-            {{ remainingPoints / remainingPokemon | number: "1.0-2" }} ×
-            {{ remainingPokemon }} Pokémon
-          </div>
+            }
+            <td class="col-checkbox">
+              <mat-checkbox
+                [formControl]="teamCtrl.controls.capt"
+              ></mat-checkbox>
+            </td>
+            <td class="col-checkbox">
+              <mat-checkbox
+                [formControl]="teamCtrl.controls.drafted"
+              ></mat-checkbox>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  @if (isPoints) {
+    <div class="points-container">
+      <div class="points-box">
+        <div>
+          <strong>Points Remaining:</strong>
+          {{ remainingPoints }}
+        </div>
+        <div>
+          <strong>Average:</strong>
+          {{ remainingPoints / remainingPokemon | number: "1.0-2" }} ×
+          {{ remainingPokemon }} Pokémon
         </div>
       </div>
-      <!-- <div class="points-container">
+    </div>
+    <!-- <div class="points-container">
         <table class="points-box table">
           <tr>
             <th>Points Remaining</th>
@@ -131,6 +123,5 @@
           </tr>
         </table>
       </div> -->
-    }
-  </div>
+  }
 }

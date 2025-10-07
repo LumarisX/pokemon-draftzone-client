@@ -1,6 +1,7 @@
 @use "@angular/material" as mat;
 @use "../../../styles/breakpoints" as *;
 @use "../../../styles/mixins" as *;
+@use "../../../styles/mixins/buttons" as *;
 
 mat-toolbar {
   @include mat.toolbar-overrides(
@@ -87,4 +88,13 @@ pdz-icon {
   .desktop-tabs {
     display: flex;
   }
+}
+
+.store-button {
+  margin: 0 0.5rem;
+  @include flat-button(
+    (
+      "background-hover": var(--pdz-color-surface-container),
+    )
+  );
 }
