@@ -69,3 +69,11 @@
     background-color: $hover-background;
   }
 }
+
+@mixin apply-scheme($scheme) {
+  --pdz-color-scheme: var(--pdz-color-#{$scheme});
+  --pdz-color-on-scheme: var(--pdz-color-on-#{$scheme});
+  --pdz-color-scheme-border: var(--pdz-color-#{$scheme}-border);
+  --pdz-color-scheme-container-low: var(--pdz-color-#{$scheme}-container-low);
+  --pdz-color-scheme-container: var(--pdz-color-#{$scheme}-container);
+}

@@ -86,9 +86,9 @@ $base-button-defaults: (
 
 $flat-button-defaults: (
   padding: var(--pdz-space-xs) var(--pdz-space-xl),
-  border-radius: var(--pdz-shape-corner-xs),
+  border-radius: var(--pdz-shape-corner-sm),
   background: transparent,
-  background-hover: transparent,
+  background-hover: none,
   border-color: transparent,
 );
 
@@ -118,7 +118,7 @@ $icon-button-defaults: (
   width: 2.5rem,
   height: 2.5rem,
   background: transparent,
-  background-hover: transparent,
+  background-hover: none,
   border-color: transparent,
 );
 

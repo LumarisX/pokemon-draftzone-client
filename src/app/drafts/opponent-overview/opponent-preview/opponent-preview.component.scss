@@ -282,3 +282,11 @@ pdz-sprite {
     @include flat-button-secondary();
   }
 }
+
+.no-matchups {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  opacity: 60%;
+  font: var(--pdz-font-size-lg);
+}

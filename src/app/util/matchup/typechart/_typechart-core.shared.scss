@@ -99,14 +99,23 @@ th {
 //Hover lines
 
 .column-hovered {
-  background-color: var(--pdz-cmp-typechart-stat-hover, var(--pdz-color-menu));
+  background-color: var(
+    --pdz-cmp-typechart-border-hover,
+    var(--pdz-color-menu-border)
+  );
+  .pdz-scale-neutral {
+    background-color: var(
+      --pdz-cmp-typechart-stat-hover,
+      var(--pdz-color-menu-container)
+    );
+  }
 }
 
 tbody {
   tr {
     &:hover {
       background-color: var(
-        --pdz-cmp-typechart-stat-hover,
+        --pdz-cmp-typechart-border-hover,
         var(--pdz-color-menu)
       );
       td:not(.column-hovered),
@@ -119,6 +128,12 @@ tbody {
           border-top-right-radius: var(--bevel-radius);
           border-bottom-right-radius: var(--bevel-radius);
         }
+      }
+      .pdz-scale-neutral {
+        background-color: var(
+          --pdz-cmp-typechart-stat-hover,
+          var(--pdz-color-menu-container)
+        );
       }
     }
 
@@ -201,9 +216,4 @@ tbody {
   height: 2rem;
   padding: var(--pdz-space-xs);
   overflow: hidden;
-}
-
-.stat-neutral {
-  background-color: var(--pdz-color-secondary-container);
-  color: var(--pdz-color-on-secondary-container);
 }

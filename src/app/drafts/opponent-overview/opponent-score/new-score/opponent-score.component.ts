@@ -1,32 +1,30 @@
 // import { CommonModule } from '@angular/common';
-// import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+// import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 // import {
-//   AbstractControl,
 //   FormArray,
 //   FormBuilder,
 //   FormControl,
 //   FormGroup,
 //   ReactiveFormsModule,
 // } from '@angular/forms';
+// import { MatIconModule } from '@angular/material/icon';
 // import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+// import { Subject, takeUntil } from 'rxjs';
 // import { PokemonId } from '../../../data/namedex';
 // import { LoadingComponent } from '../../../images/loading/loading.component';
 // import { SpriteComponent } from '../../../images/sprite/sprite.component';
-// import { TrashSVG } from '../../../images/svg-components/trash.component';
 // import { Pokemon } from '../../../interfaces/draft';
 // import { Matchup } from '../../../interfaces/matchup';
 // import { DraftService } from '../../../services/draft.service';
 // import { ReplayService } from '../../../services/replay.service';
 // import { ReplayData } from '../../../tools/replay_analyzer/replay.interface';
 // import { DraftOverviewPath } from '../../draft-overview/draft-overview-routing.module';
-// import { MatIconModule } from '@angular/material/icon';
-// import { Subject, takeUntil } from 'rxjs';
 
 // type MonForm = FormGroup<{
 //   pokemon: FormControl<Pokemon>;
-//   kills: FormControl<number | null>;
+//   kills: FormControl<number>;
 //   fainted: FormControl<boolean | null>;
-//   indirect: FormControl<number | null>;
+//   indirect: FormControl<number>;
 //   brought: FormControl<boolean | null>;
 // }>;
 
@@ -154,9 +152,9 @@
 //     let teamGroup = team.map((pokemon: Pokemon) => {
 //       let monGroup = this.fb.group({
 //         pokemon: pokemon,
-//         kills: [stats[<PokemonId>pokemon.id]?.kills ?? null],
+//         kills: [stats[<PokemonId>pokemon.id]?.kills ?? 0],
 //         fainted: [!!stats[<PokemonId>pokemon.id]?.deaths],
-//         indirect: [stats[<PokemonId>pokemon.id]?.indirect ?? null],
+//         indirect: [stats[<PokemonId>pokemon.id]?.indirect ?? 0],
 //         brought: [!!stats[<PokemonId>pokemon.id]?.brought],
 //       }) as MonForm;
 //       monGroup.controls.fainted.valueChanges
@@ -360,5 +358,14 @@
 //     return teamArray.controls.filter(
 //       (control) => control.controls.brought?.value,
 //     );
+//   }
+
+//   incrementControl(control: FormControl<number>) {
+//     const value: number = control.value;
+//     control.setValue(value + 1);
+//   }
+//   decrementControl(control: FormControl<number>) {
+//     const value: number = control.value;
+//     if (value) control.setValue(value - 1);
 //   }
 // }
