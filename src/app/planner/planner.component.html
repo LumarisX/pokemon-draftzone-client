@@ -7,7 +7,10 @@
     <div formArrayName="drafts" class="planner-container">
       <div class="tab-bar">
         <div class="tab-wrapper scrollbar-hidden">
-          @for (draftCtrl of draftArray.controls; track $index) {
+          @for (
+            draftCtrl of draftArray.controls;
+            track draftCtrl.controls.draftName
+          ) {
             <div
               [class.selected]="$index === selectedDraft.value"
               class="draft-tab tab"
@@ -15,6 +18,7 @@
               (click)="selectedDraft.next($index)"
             >
               <input formControlName="draftName" />
+
               <mat-icon (click)="copyToNew($index)">content_copy</mat-icon>
               @if (draftArray.controls.length > 1) {
                 <mat-icon (click)="deletePlan($index)">delete_forever</mat-icon>

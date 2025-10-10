@@ -69,7 +69,7 @@
     font-family: var(--pdz-font-fancy);
   }
 
-  button {
+  .more-btn {
     @include icon-button(());
   }
 }
@@ -85,7 +85,7 @@
     border-radius: var(--pdz-shape-corner-sm);
     box-shadow: var(--pdz-level-2);
     z-index: 10;
-    width: 160px;
+    width: fit-content;
     padding: var(--pdz-space-sm) 0;
     display: flex;
     flex-direction: column;
@@ -97,12 +97,11 @@
       padding: var(--pdz-space-md);
       background: none;
       border: none;
-      text-align: left;
       width: 100%;
       cursor: pointer;
       font-size: 1rem;
       color: var(--pdz-color-on-primary-container);
-
+      text-wrap: nowrap;
       &:hover {
         background-color: var(--pdz-color-primary-container-hover);
       }

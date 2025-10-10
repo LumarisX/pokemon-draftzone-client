@@ -116,7 +116,7 @@ tbody {
     &:hover {
       background-color: var(
         --pdz-cmp-typechart-border-hover,
-        var(--pdz-color-menu)
+        var(--pdz-color-menu-border)
       );
       td:not(.column-hovered),
       th:not(.column-hovered) {

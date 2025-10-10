@@ -47,11 +47,11 @@
       <div class="matchups-container">
         @for (matchup of matchups; track $index) {
           <div
-            class="matchup"
+            class="matchup-card"
             (click)="selectMatchup(matchup)"
             [ngClass]="{ selected: selectedMatchup === matchup }"
           >
-            <div class="matchup-info">
+            <div class="card-header">
               <div class="matchup-stage">{{ matchup.stage }}</div>
               <div class="matchup-team-info-container">
                 @if (matchup.logo) {
@@ -66,28 +66,35 @@
                   }
                 </div>
               </div>
+
+              <div class="card-menu">
+                <button
+                  (click)="$event.stopPropagation(); selectMatchup(matchup)"
+                >
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+              </div>
             </div>
 
-            <div class="pokemon-container">
-              @for (pokemon of matchup.team; track $index) {
-                <pdz-sprite [pokemon]="pokemon"></pdz-sprite>
-              }
+            <div class="card-body">
+              <div class="sprites">
+                @for (pokemon of matchup.team; track pokemon.name) {
+                  <pdz-sprite [pokemon]="pokemon"></pdz-sprite>
+                }
+              </div>
             </div>
-            <div class="options-container">
-              <!-- <button
-                routerLink="score"
-                [queryParams]="{ matchup: matchup._id }"
-              >
-                <div class="score-button" [ngClass]="matchup.scoreClass">
-                  <div>
-                    @if (matchup.score) {
-                      {{ matchup.scoreString }}
-                    } @else {
-                      Add Score
-                    }
+
+            <div class="card-footer">
+              <!-- Score / actions go here -->
+              <div class="options-container">
+                @if (matchup.score) {
+                  <div class="score-button" [ngClass]="matchup.scoreClass">
+                    {{ matchup.scoreString }}
                   </div>
-                </div>
-              </button> -->
+                } @else {
+                  <div class="score-placeholder">View Matchup</div>
+                }
+              </div>
             </div>
           </div>
         } @empty {

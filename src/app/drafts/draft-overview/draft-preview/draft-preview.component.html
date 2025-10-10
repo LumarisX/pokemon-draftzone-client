@@ -20,20 +20,26 @@
           <div class="card-header">
             <h2 class="league-name">{{ draft.leagueName }}</h2>
             <div class="card-menu">
-              <button (click)="toggleMenu(draft.leagueId)">
+              <button class="more-btn" (click)="toggleMenu(draft.leagueId)">
                 <mat-icon>more_vert</mat-icon>
               </button>
 
               @if (menuState[draft.leagueId] === "main") {
                 <div class="menu-dropdown">
-                  <a
+                  <button
                     class="menu-item"
                     [routerLink]="['edit']"
                     [queryParams]="{ draft: draft.leagueId | json }"
                   >
                     <mat-icon>edit_document</mat-icon> Edit Team
-                  </a>
-
+                  </button>
+                  <button
+                    class="menu-item"
+                    routerLink="/planner"
+                    [queryParams]="{ draft: toPlanner(draft) }"
+                  >
+                    <mat-icon>event_list</mat-icon> Open in Planner
+                  </button>
                   <button
                     class="menu-item"
                     (click)="setMenuState(draft.leagueId, 'confirm-archive')"

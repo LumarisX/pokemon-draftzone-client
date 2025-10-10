@@ -5,6 +5,7 @@ import { RouterModule } from '@angular/router';
 import { LoadingComponent } from '../../../images/loading/loading.component';
 import { SpriteComponent } from '../../../images/sprite/sprite.component';
 import { Draft } from '../../../interfaces/draft';
+import { LSDraftData } from '../../../planner/plannner.component';
 import { DraftService } from '../../../services/draft.service';
 import { DraftOverviewPath } from '../draft-overview-routing.module';
 
@@ -65,5 +66,21 @@ export class DraftPreviewComponent {
   toggleMenu(leagueId: string) {
     this.menuState[leagueId] =
       this.menuState[leagueId] === 'main' ? '' : 'main';
+  }
+
+  toPlanner(draft: Draft): string {
+    const plannerData: Partial<LSDraftData> = {
+      team: draft.team.map((t) => ({
+        id: t.id,
+        capt: !!(t.capt?.dmax || t.capt?.tera?.length || t.capt?.z?.length),
+        drafted: true,
+        value: null,
+        tier: '',
+      })),
+      format: draft.format,
+      ruleset: draft.ruleset,
+      draftName: draft.leagueName,
+    };
+    return JSON.stringify(plannerData);
   }
 }
