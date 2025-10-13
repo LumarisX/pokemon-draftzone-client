@@ -1,10 +1,10 @@
+import { CdkTableModule } from '@angular/cdk/table';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSortModule, Sort } from '@angular/material/sort';
-import { MatTableModule } from '@angular/material/table';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { BehaviorSubject, catchError, forkJoin, of, take } from 'rxjs';
 import { LoadingComponent } from '../../../images/loading/loading.component';
@@ -14,7 +14,7 @@ import { DraftService } from '../../../services/draft.service';
 import { DraftOverviewPath } from '../../draft-overview/draft-overview-routing.module';
 import { Stats } from '../../draft-overview/draft-stats/draft-stats.component';
 import { ConfirmDeleteDialogComponent } from './confirm-delete-dialog.component';
-import { CdkTableModule } from '@angular/cdk/table';
+import { CdkStepLabel } from '@angular/cdk/stepper';
 
 type Matchup = Opponent & {
   score?: [number, number] | null;
@@ -38,6 +38,7 @@ type Matchup = Opponent & {
     MatSortModule,
     MatDialogModule,
     CdkTableModule,
+    CdkStepLabel,
   ],
 })
 export class OpponentTeamPreviewComponent implements OnInit {
@@ -49,7 +50,6 @@ export class OpponentTeamPreviewComponent implements OnInit {
   matchups?: Matchup[];
   teamId: string = '';
   readonly draftPath = DraftOverviewPath;
-  selectedMatchup: Matchup | null = null;
   teamStats = new BehaviorSubject<Stats[] | null>(null);
   displayedColumns: string[] = [
     'sprite',
@@ -61,6 +61,10 @@ export class OpponentTeamPreviewComponent implements OnInit {
     'kdr',
     'kpg',
   ];
+
+  menuState: {
+    [key: string]: '' | 'main' | 'confirm-archive' | 'confirm-delete';
+  } = {};
 
   ngOnInit(): void {
     this.teamId = this.route.snapshot.paramMap.get('teamid') ?? '';
@@ -90,6 +94,7 @@ export class OpponentTeamPreviewComponent implements OnInit {
       if (matchups) {
         this.matchups = matchups.map((m) => {
           const score = this.calculateScore(m);
+          console.log(score);
           return {
             ...m,
             score,
@@ -103,10 +108,6 @@ export class OpponentTeamPreviewComponent implements OnInit {
         this.teamStats.next(stats);
       }
     });
-  }
-
-  selectMatchup(matchup: Matchup | null) {
-    this.selectedMatchup = this.selectedMatchup === matchup ? null : matchup;
   }
 
   score(matchup: Opponent): [number, number] | null {
@@ -190,7 +191,6 @@ export class OpponentTeamPreviewComponent implements OnInit {
         this.draftService.deleteMatchup(matchupId).subscribe({
           next: () => {
             this.reload();
-            this.selectedMatchup = null;
           },
           error: (error) => {
             console.error('Error!', error);
@@ -246,5 +246,18 @@ export class OpponentTeamPreviewComponent implements OnInit {
       });
       this.teamStats.next(sortedData);
     }
+  }
+
+  toggleMenu(leagueId: string) {
+    this.menuState[leagueId] =
+      this.menuState[leagueId] === 'main' ? '' : 'main';
+  }
+
+  openReplays(matchup: Matchup) {
+    matchup.matches
+      .filter((match) => match.replay)
+      .forEach((match) => {
+        window.open(match.replay, '_blank');
+      });
   }
 }

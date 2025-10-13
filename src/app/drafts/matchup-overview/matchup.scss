@@ -1,4 +1,5 @@
 @use "../../../styles/mixins/buttons" as *;
+@use "../../../styles/global.scss" as *;
 
 .widget-container {
   width: fit-content;
@@ -10,7 +11,7 @@
     width: 100%;
 
     padding: 0 1rem 0.5rem;
-    // color: var(--pdz-color-primary);
+    // color: pdz-color(primary);
     font-weight: var(--pdz-font-weight-bold);
     .widget-label {
       font-size: 1.2rem;
@@ -34,15 +35,16 @@
 .matchup-main {
   background: linear-gradient(
     to right,
-    var(--pdz-color-primary-subtle),
-    var(--pdz-color-background),
-    var(--pdz-color-secondary-subtle)
+    pdz-color(primary-subtle),
+    pdz-color(background),
+    pdz-color(secondary-subtle)
   );
   height: 100%;
   overflow-y: auto;
 
   .matchup-header {
     display: flex;
+    align-items: center;
     padding: var(--pdz-space-sm);
     column-gap: 1rem;
     z-index: 5001;
@@ -57,19 +59,19 @@
       flex-grow: 1;
       display: flex;
       justify-content: center;
+
       .details-container {
         pointer-events: auto;
         display: flex;
         flex-wrap: wrap;
-        flex-direction: row;
-        margin-top: -0.5rem;
-        padding: 0 1rem 0.25rem;
+        margin-top: -0.75rem;
+        padding: 0.25rem 1rem;
         border-radius: 0 0 var(--pdz-shape-corner-sm) var(--pdz-shape-corner-sm);
         width: fit-content;
         justify-content: space-evenly;
         column-gap: 2rem;
-        row-gap: 0.125rem;
-        background-color: var(--pdz-color-surface);
+        row-gap: var(--pdz-space-xs);
+        background-color: pdz-color(surface);
         box-shadow: var(--pdz-level-2);
       }
     }
@@ -82,17 +84,22 @@
 }
 
 .detail-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--pdz-space-2xs);
   text-align: center;
   .detail-title {
     font-weight: var(--pdz-font-weight-bold);
     font-size: 0.8rem;
-    height: 1rem;
-    color: var(--pdz-color-primary);
+    line-height: 0.8rem;
+    color: pdz-color(primary);
   }
   .detail-text {
     font-weight: var(--pdz-font-weight-bold);
     font-size: 1rem;
-    color: var(--pdz-color-on-surface);
+    line-height: 1rem;
+    color: pdz-color(on-surface);
   }
 }
 
@@ -108,7 +115,7 @@
   .shared-container {
     max-width: 50rem;
     width: 100%;
-    background-color: var(--pdz-color-surface);
+    background-color: pdz-color(surface);
     box-shadow: var(--pdz-level-4);
     border-radius: var(--pdz-shape-corner-lg);
     padding: var(--pdz-space-lg);
@@ -136,7 +143,7 @@
       flex-direction: column;
       row-gap: 1rem;
       .url-container {
-        border: 1px solid var(--pdz-color-primary-border);
+        border: 1px solid pdz-color(primary-border);
         border-radius: var(--pdz-shape-corner-lg);
         padding: 0 0.5rem;
 
@@ -154,20 +161,20 @@
         }
       }
       .matchup-preview-container {
-        border: 1px solid var(--pdz-color-primary-border);
+        border: 1px solid pdz-color(primary-border);
         border-radius: var(--pdz-shape-corner-lg);
         padding: 0 1rem;
         .details-container {
           display: flex;
           flex-wrap: wrap;
           justify-content: space-evenly;
-          border-bottom: 1px solid var(--pdz-color-primary-border);
+          border-bottom: 1px solid pdz-color(primary-border);
         }
         .teams-container {
           display: flex;
           padding: 0.25rem 0;
           > :not(:last-child) {
-            border-right: 1px solid var(--pdz-color-primary-border);
+            border-right: 1px solid pdz-color(primary-border);
           }
           .team-container {
             width: 50%;
@@ -202,8 +209,8 @@
                   position: absolute;
                   top: 0;
                   right: 0;
-                  background-color: var(--pdz-color-primary);
-                  color: var(--pdz-color-on-primary);
+                  background-color: pdz-color(primary);
+                  color: pdz-color(on-primary);
                   box-shadow: var(--pdz-level-2);
 
                   border-radius: var(--pdz-shape-corner-lg);
@@ -222,11 +229,11 @@
                   position: absolute;
                   bottom: 0;
                   font-weight: 600;
-                  background-color: var(--pdz-color-surface);
+                  background-color: pdz-color(surface);
                   box-shadow: var(--pdz-level-2);
                   padding: 0 0.125rem;
                   border-radius: var(--pdz-shape-corner-lg);
-                  color: var(--pdz-color-primary);
+                  color: pdz-color(primary);
                   @media (max-width: 768px) {
                     font-size: 0.7rem;
                     line-height: 0.7rem;

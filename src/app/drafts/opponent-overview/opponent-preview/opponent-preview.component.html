@@ -3,35 +3,6 @@
     <div class="section-header">
       <h3>Matches</h3>
       <div class="button-container">
-        @if (selectedMatchup) {
-          <button
-            class="matchup-btn"
-            routerLink="matchup"
-            [queryParams]="{ id: selectedMatchup._id }"
-          >
-            View Matchup
-          </button>
-          <button
-            routerLink="score"
-            [queryParams]="{ matchup: selectedMatchup._id }"
-            class="option-btn"
-          >
-            <mat-icon>scoreboard</mat-icon>
-          </button>
-          <button
-            class="option-btn"
-            routerLink="form"
-            [queryParams]="{ matchup: selectedMatchup._id }"
-          >
-            <mat-icon>edit</mat-icon>
-          </button>
-          <button
-            (click)="deleteMatchup(selectedMatchup._id)"
-            class="option-btn"
-          >
-            <mat-icon>delete_forever</mat-icon>
-          </button>
-        }
         <button
           [routerLink]="['/', draftPath, this.teamId, 'form']"
           class="option-btn"
@@ -46,13 +17,20 @@
     } @else {
       <div class="matchups-container">
         @for (matchup of matchups; track $index) {
-          <div
-            class="matchup-card"
-            (click)="selectMatchup(matchup)"
-            [ngClass]="{ selected: selectedMatchup === matchup }"
-          >
+          <div class="matchup-card">
             <div class="card-header">
-              <div class="matchup-stage">{{ matchup.stage }}</div>
+              <div class="matchup-stage">
+                <div class="score-button" [ngClass]="matchup.scoreClass">
+                  <div>
+                    {{ matchup.stage }}
+                  </div>
+                  @if (matchup.score) {
+                    <div class="score">
+                      {{ matchup.scoreString }}
+                    </div>
+                  }
+                </div>
+              </div>
               <div class="matchup-team-info-container">
                 @if (matchup.logo) {
                   <div class="matchup-logo">
@@ -68,11 +46,49 @@
               </div>
 
               <div class="card-menu">
-                <button
-                  (click)="$event.stopPropagation(); selectMatchup(matchup)"
-                >
+                <button class="more-btn" (click)="toggleMenu(matchup._id)">
                   <mat-icon>more_vert</mat-icon>
                 </button>
+
+                @if (menuState[matchup._id] === "main") {
+                  <div class="menu-dropdown">
+                    @if (matchup.score) {
+                      <button
+                        class="menu-item"
+                        routerLink="matchup"
+                        [queryParams]="{ id: matchup._id }"
+                      >
+                        <mat-icon> search_insights </mat-icon> View Matchup
+                      </button>
+                    }
+                    <button
+                      class="menu-item"
+                      routerLink="form"
+                      [queryParams]="{ matchup: matchup._id }"
+                    >
+                      <mat-icon>edit_document</mat-icon> Edit Match
+                    </button>
+                    <button
+                      routerLink="score"
+                      [queryParams]="{ matchup: matchup._id }"
+                      class="menu-item"
+                    >
+                      <mat-icon>scoreboard</mat-icon>
+                      @if (matchup.score) {
+                        Edit
+                      } @else {
+                        Add
+                      }
+                      Score
+                    </button>
+                    <button
+                      (click)="deleteMatchup(matchup._id)"
+                      class="menu-item"
+                    >
+                      <mat-icon>delete_forever</mat-icon> Delete
+                    </button>
+                  </div>
+                }
               </div>
             </div>
 
@@ -85,16 +101,24 @@
             </div>
 
             <div class="card-footer">
-              <!-- Score / actions go here -->
-              <div class="options-container">
-                @if (matchup.score) {
-                  <div class="score-button" [ngClass]="matchup.scoreClass">
-                    {{ matchup.scoreString }}
-                  </div>
-                } @else {
-                  <div class="score-placeholder">View Matchup</div>
-                }
-              </div>
+              @if (matchup.score) {
+                <a
+                  (click)="openReplays(matchup)"
+                  class="footer-link"
+                  [class.disabled]="!matchup.matches.length"
+                  >View Replay
+                  @if (matchup.matches.length > 1) {
+                    s
+                  }
+                </a>
+              } @else {
+                <a
+                  class="footer-link"
+                  routerLink="matchup"
+                  [queryParams]="{ id: matchup._id }"
+                  >View Matchup</a
+                >
+              }
             </div>
           </div>
         } @empty {
