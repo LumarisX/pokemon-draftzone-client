@@ -1,6 +1,7 @@
 @use "@angular/material" as mat;
 @use "../../../../styles/breakpoints" as *;
 @use "../../../../styles/mixins" as *;
+@use "../../../../styles/mixins/typography" as *;
 @use "../../../../styles/mixins/buttons" as *;
 @use "../../../../styles/global" as *;
 
@@ -63,7 +64,6 @@ section {
   overflow: hidden;
   height: 100%;
   @include shadow-hover-effect;
-  cursor: pointer;
 
   &.selected {
     box-shadow: var(--pdz-level-2);
@@ -294,8 +294,8 @@ section {
   width: 100%;
 
   @include respond-above(desktop) {
-    width: 380px; // A fixed width is often more stable
-    flex-shrink: 0; // Prevent it from being squashed
+    width: 380px;
+    flex-shrink: 0;
   }
 
   .sprite-wrapper {
@@ -324,7 +324,7 @@ section {
 
   th.cdk-header-cell {
     border-bottom: 2px solid pdz-color(secondary-border);
-    font-size: 0.8rem;
+    @include font-size(0.8rem);
   }
 
   table {
@@ -381,4 +381,14 @@ section {
   justify-content: center;
   opacity: 60%;
   font: var(--pdz-font-size-lg);
+}
+
+.direction-btn {
+  mat-icon {
+    transition: transform 0.3s ease-in-out;
+  }
+
+  &.up mat-icon {
+    transform: rotate(180deg);
+  }
 }

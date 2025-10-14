@@ -1,4 +1,5 @@
 @use "../../../styles/mixins/buttons" as *;
+@use "../../../styles/mixins/typography" as *;
 
 .draft-header {
   display: flex;
@@ -6,49 +7,58 @@
   z-index: 5001;
   padding: 0 0.5rem;
   gap: 0.5rem;
-
+  width: 100%;
   border-top: 1px solid var(--pdz-color-primary-border);
 
   margin-bottom: 0.5rem;
   background-color: var(--pdz-color-surface);
   box-shadow: var(--pdz-level-2);
+
+  .draft-flex {
+    display: flex;
+    gap: 0.5rem;
+    flex-grow: 1;
+    align-items: center;
+    overflow: hidden;
+  }
 }
 
-.draft-info-container,
+.draft-info-container {
+  h2 {
+    white-space: nowrap;
+    text-overflow: clip;
+  }
+}
+
 .team-info-container {
-  padding: 0 0.5rem;
+  padding-left: 0.5rem;
+  border-left: 2px solid var(--pdz-color-primary-border);
   flex-shrink: 0;
 }
 
-.team-info-container {
-  padding-left: 1rem;
-  border-left: 2px solid var(--pdz-color-primary-border);
-}
-
 h2 {
-  font-size: 1.75rem;
+  @include font-size(1.5rem);
 }
 
 h3 {
-  font-size: 1.5rem;
+  @include font-size(1.25rem);
 }
 
 h4 {
-  font-size: 1rem;
-  line-height: 1rem;
+  @include font-size(1rem);
 }
 
 h2,
 h3,
 h4 {
   font-family: var(--pdz-font-fancy);
+
   @media (max-width: 768px) {
     font-size: var(--pdz-font-size-sm) !important;
   }
 }
 
 .stat {
-  font-size: 1.25rem;
   font-weight: bold;
   color: var(--pdz-color-symbol-sub);
 }
@@ -105,14 +115,15 @@ $draft-sprite-size: 4rem;
 
 .details-container {
   display: flex;
-  gap: 0.5rem;
+  flex-wrap: wrap;
+  column-gap: 0.5rem;
   justify-content: space-between;
 }
 
 .draft-buttons {
   display: flex;
   gap: 0.5rem;
-
+  padding: var(--pdz-space-2xs) 0;
   a,
   button {
     @include icon-button-primary();

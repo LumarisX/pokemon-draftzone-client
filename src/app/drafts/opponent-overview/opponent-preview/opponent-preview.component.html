@@ -4,6 +4,13 @@
       <h3>Matches</h3>
       <div class="button-container">
         <button
+          class="option-btn direction-btn"
+          [class.up]="directionUp"
+          (click)="toggleDirection()"
+        >
+          <mat-icon>arrow_downward</mat-icon>
+        </button>
+        <button
           [routerLink]="['/', draftPath, this.teamId, 'form']"
           class="option-btn"
           [queryParams]="{ stage: `Week ${(this.matchups?.length ?? 0) + 1}` }"
@@ -137,7 +144,15 @@
       @if (teamStats.value && teamStats.value.length > 0) {
         <div class="table-container">
           <div class="table-wrapper">
-            <table cdk-table [dataSource]="teamStats.value!">
+            <table
+              cdk-table
+              [dataSource]="teamStats.value!"
+              matSort
+              (matSortChange)="sort($event)"
+              [matSortActive]="'kpg'"
+              [matSortDirection]="'desc'"
+              matSortDisableClear
+            >
               <ng-container cdkColumnDef="sprite">
                 <th cdk-header-cell *cdkHeaderCellDef></th>
                 <td cdk-cell *cdkCellDef="let element">
@@ -150,49 +165,63 @@
                 </td>
               </ng-container>
               <ng-container cdkColumnDef="name">
-                <th cdk-header-cell *cdkHeaderCellDef>Name</th>
+                <th cdk-header-cell *cdkHeaderCellDef mat-sort-header="name">
+                  Name
+                </th>
                 <td cdk-cell *cdkCellDef="let element">
                   {{ element.pokemon.name }}
                 </td>
               </ng-container>
 
               <ng-container cdkColumnDef="gb">
-                <th cdk-header-cell *cdkHeaderCellDef>Games Brought</th>
+                <th cdk-header-cell *cdkHeaderCellDef mat-sort-header="gb">
+                  Games Brought
+                </th>
                 <td cdk-cell *cdkCellDef="let element">
                   {{ element.brought }}
                 </td>
               </ng-container>
 
               <ng-container cdkColumnDef="dk">
-                <th cdk-header-cell *cdkHeaderCellDef>Direct Kills</th>
+                <th cdk-header-cell *cdkHeaderCellDef mat-sort-header="dk">
+                  Direct Kills
+                </th>
                 <td cdk-cell *cdkCellDef="let element">
                   {{ element.kills }}
                 </td>
               </ng-container>
 
               <ng-container cdkColumnDef="ik">
-                <th cdk-header-cell *cdkHeaderCellDef>Indirect Kills</th>
+                <th cdk-header-cell *cdkHeaderCellDef mat-sort-header="ik">
+                  Indirect Kills
+                </th>
                 <td cdk-cell *cdkCellDef="let element">
                   {{ element.indirect }}
                 </td>
               </ng-container>
 
               <ng-container cdkColumnDef="deaths">
-                <th cdk-header-cell *cdkHeaderCellDef>Deaths</th>
+                <th cdk-header-cell *cdkHeaderCellDef mat-sort-header="deaths">
+                  Deaths
+                </th>
                 <td cdk-cell *cdkCellDef="let element">
                   {{ element.deaths }}
                 </td>
               </ng-container>
 
               <ng-container cdkColumnDef="kdr">
-                <th cdk-header-cell *cdkHeaderCellDef>Kills/Deaths</th>
+                <th cdk-header-cell *cdkHeaderCellDef mat-sort-header="kdr">
+                  Kills/Deaths
+                </th>
                 <td cdk-cell *cdkCellDef="let element">
                   {{ element.kdr | number: "1.0-2" }}
                 </td>
               </ng-container>
 
               <ng-container cdkColumnDef="kpg">
-                <th cdk-header-cell *cdkHeaderCellDef>Kills/Game</th>
+                <th cdk-header-cell *cdkHeaderCellDef mat-sort-header="kpg">
+                  Kills/Game
+                </th>
                 <td cdk-cell *cdkCellDef="let element">
                   {{ element.kpg | number: "1.0-2" }}
                 </td>

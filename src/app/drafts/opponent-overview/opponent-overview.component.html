@@ -2,32 +2,34 @@
   <div class="draft-header">
     <button class="back-btn" [routerLink]="['/', draftPath]">Back</button>
     @if (draft | async; as draft) {
-      <div class="draft-info-container">
-        <h2>
-          {{ draft.leagueName }}
-        </h2>
-        <div class="details-container">
+      <div class="draft-flex">
+        <div class="draft-info-container">
+          <h2>
+            {{ draft.leagueName }}
+          </h2>
+          <div class="details-container">
+            <h4 class="stat">
+              {{ draft.format }}
+            </h4>
+            <h4 class="stat">
+              {{ draft.ruleset }}
+            </h4>
+          </div>
+        </div>
+        <div class="team-info-container">
+          <h3>
+            {{ draft.teamName }}
+          </h3>
           <h4 class="stat">
-            {{ draft.format }}
-          </h4>
-          <h4 class="stat">
-            {{ draft.ruleset }}
+            {{ draft.score.wins }} - {{ draft.score.loses }} |
+            {{ draft.score.diff }}
           </h4>
         </div>
-      </div>
-      <div class="team-info-container">
-        <h3>
-          {{ draft.teamName }}
-        </h3>
-        <h4 class="stat">
-          {{ draft.score.wins }} - {{ draft.score.loses }} |
-          {{ draft.score.diff }}
-        </h4>
-      </div>
-      <div class="draft-bar">
-        @for (pokemon of draft.team; track $index) {
-          <pdz-sprite [pokemon]="pokemon"> </pdz-sprite>
-        }
+        <div class="draft-bar">
+          @for (pokemon of draft.team; track $index) {
+            <pdz-sprite [pokemon]="pokemon"> </pdz-sprite>
+          }
+        </div>
       </div>
       <div class="draft-buttons">
         <button

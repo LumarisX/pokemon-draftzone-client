@@ -1,10 +1,16 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  inject,
+  ViewChild,
+  AfterViewInit,
+} from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { MatSortModule, Sort } from '@angular/material/sort';
+import { MatSortModule, MatSort, Sort } from '@angular/material/sort';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { BehaviorSubject, catchError, forkJoin, of, take } from 'rxjs';
 import { LoadingComponent } from '../../../images/loading/loading.component';
@@ -14,7 +20,6 @@ import { DraftService } from '../../../services/draft.service';
 import { DraftOverviewPath } from '../../draft-overview/draft-overview-routing.module';
 import { Stats } from '../../draft-overview/draft-stats/draft-stats.component';
 import { ConfirmDeleteDialogComponent } from './confirm-delete-dialog.component';
-import { CdkStepLabel } from '@angular/cdk/stepper';
 
 type Matchup = Opponent & {
   score?: [number, number] | null;
@@ -38,10 +43,18 @@ type Matchup = Opponent & {
     MatSortModule,
     MatDialogModule,
     CdkTableModule,
-    CdkStepLabel,
   ],
 })
-export class OpponentTeamPreviewComponent implements OnInit {
+export class OpponentTeamPreviewComponent implements OnInit, AfterViewInit {
+  @ViewChild(MatSort) matSort?: MatSort;
+  private readonly defaultSort: Sort = { active: 'kpg', direction: 'desc' };
+
+  ngAfterViewInit(): void {
+    if (this.matSort) {
+      this.matSort.active = this.defaultSort.active;
+      this.matSort.direction = this.defaultSort.direction;
+    }
+  }
   private draftService = inject(DraftService);
   private route = inject(ActivatedRoute);
   private dialog = inject(MatDialog);
@@ -106,6 +119,8 @@ export class OpponentTeamPreviewComponent implements OnInit {
 
       if (stats) {
         this.teamStats.next(stats);
+        // Always apply the default sort on load so the table starts sorted by kpg desc
+        this.sort(this.defaultSort);
       }
     });
   }
@@ -259,5 +274,13 @@ export class OpponentTeamPreviewComponent implements OnInit {
       .forEach((match) => {
         window.open(match.replay, '_blank');
       });
+  }
+
+  directionUp: boolean = false;
+
+  toggleDirection() {
+    this.directionUp = !this.directionUp;
+    if (!this.matchups) return;
+    this.matchups = this.matchups.reverse();
   }
 }
