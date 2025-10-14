@@ -14,7 +14,7 @@ $theme: (
     on-surface: "gray-950",
     on-surface-variant: "gray-900",
     outline: "gray-550",
-    outline-variant: "gray-400",
+    outline-variant: "gray-300",
 
     // Primary Theme
     primary: "purple-500",
@@ -24,15 +24,15 @@ $theme: (
     primary-container: "purple-150",
     primary-container-low: "purple-100",
     primary-container-high: "purple-300",
-    primary-container-hover: "purple-300",
+    primary-container-hover: "purple-200",
     on-primary-container: "purple-900",
     primary-hover: "purple-350",
-    primary-border: "purple-300",
+    primary-border: "purple-250",
     primary-subtle: "purple-100",
     primary-gradient: linear-gradient(
         135deg,
-        var(--pdz-color-purple-400),
-        var(--pdz-color-purple-200)
+        var(--pdz-color-purple-500),
+        var(--pdz-color-purple-300)
       ),
     // Secondary Theme
     secondary: "pink-500",
@@ -45,12 +45,12 @@ $theme: (
     secondary-container-hover: "pink-200",
     on-secondary-container: "pink-900",
     secondary-hover: "pink-350",
-    secondary-border: "pink-300",
+    secondary-border: "pink-250",
     secondary-subtle: "pink-100",
     secondary-gradient: linear-gradient(
         135deg,
-        var(--pdz-color-pink-400),
-        var(--pdz-color-pink-200)
+        var(--pdz-color-pink-500),
+        var(--pdz-color-pink-300)
       ),
     // Menu Theme (Refactored)
     menu: "gray-500",
@@ -125,10 +125,10 @@ $theme: (
     on-positive: "white",
     positive-container: "emerald-100",
     on-positive-container: "emerald-950",
-    negative: "rose-800",
+    negative: "red-800",
     on-negative: "white",
-    negative-container: "rose-100",
-    on-negative-container: "rose-950",
+    negative-container: "red-100",
+    on-negative-container: "red-950",
 
     // Scale Colors
     scale-positive-1: "emerald-100",
@@ -139,13 +139,13 @@ $theme: (
     scale-positive-6: "emerald-600",
     scale-positive-7: "emerald-700",
     scale-neutral: "gray-200",
-    scale-negative-1: "rose-100",
-    scale-negative-2: "rose-200",
-    scale-negative-3: "rose-300",
-    scale-negative-4: "rose-400",
-    scale-negative-5: "rose-500",
-    scale-negative-6: "rose-600",
-    scale-negative-7: "rose-700",
+    scale-negative-1: "red-100",
+    scale-negative-2: "red-200",
+    scale-negative-3: "red-300",
+    scale-negative-4: "red-400",
+    scale-negative-5: "red-500",
+    scale-negative-6: "red-600",
+    scale-negative-7: "red-700",
 
     hero:
       url("/assets/images/hero/abstract-color-wave-background-colorful-of-orange-pink-purple-yellow-background-illustration-vector.jpg"),
@@ -267,10 +267,10 @@ $theme: (
     on-positive: "emerald-950",
     positive-container: "emerald-900",
     on-positive-container: "emerald-100",
-    negative: "rose-250",
-    on-negative: "rose-950",
-    negative-container: "rose-900",
-    on-negative-container: "rose-100",
+    negative: "red-250",
+    on-negative: "red-950",
+    negative-container: "red-900",
+    on-negative-container: "red-100",
 
     scale-positive-1: "emerald-950",
     scale-positive-2: "emerald-900",
@@ -280,13 +280,13 @@ $theme: (
     scale-positive-6: "emerald-700",
     scale-positive-7: "emerald-650",
     scale-neutral: "gray-700",
-    scale-negative-1: "rose-950",
-    scale-negative-2: "rose-900",
-    scale-negative-3: "rose-850",
-    scale-negative-4: "rose-800",
-    scale-negative-5: "rose-750",
-    scale-negative-6: "rose-700",
-    scale-negative-7: "rose-650",
+    scale-negative-1: "red-950",
+    scale-negative-2: "red-900",
+    scale-negative-3: "red-850",
+    scale-negative-4: "red-800",
+    scale-negative-5: "red-750",
+    scale-negative-6: "red-700",
+    scale-negative-7: "red-650",
 
     hero: linear-gradient(
         135deg,

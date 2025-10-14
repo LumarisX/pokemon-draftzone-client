@@ -31,8 +31,8 @@ $theme: (
     primary-subtle: "cyan-100",
     primary-gradient: linear-gradient(
         135deg,
-        var(--pdz-color-cyan-400),
-        var(--pdz-color-cyan-200)
+        var(--pdz-color-cyan-500),
+        var(--pdz-color-cyan-300)
       ),
     // Secondary Theme
     secondary: "orange-500",
@@ -49,8 +49,8 @@ $theme: (
     secondary-subtle: "orange-100",
     secondary-gradient: linear-gradient(
         135deg,
-        var(--pdz-color-orange-400),
-        var(--pdz-color-orange-200)
+        var(--pdz-color-orange-500),
+        var(--pdz-color-orange-300)
       ),
     // Menu Theme (Refactored)
     menu: "gray-500",
