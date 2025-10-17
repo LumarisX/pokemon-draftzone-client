@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, OnDestroy, OnInit, Output, inject } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  OnDestroy,
+  OnInit,
+  Output,
+  inject,
+} from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -9,17 +16,9 @@ import {
 import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { Pokemon } from '../../interfaces/draft';
 import { Settings, SettingsService } from './settings.service';
-import { MatSelectModule } from '@angular/material/select';
-import { MatButtonModule } from '@angular/material/button';
 @Component({
   selector: 'settings',
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    SpriteComponent,
-    MatSelectModule,
-    MatButtonModule,
-  ],
+  imports: [CommonModule, ReactiveFormsModule, SpriteComponent],
   templateUrl: './settings.component.html',
   styleUrl: './settings.component.scss',
 })
@@ -27,16 +26,86 @@ export class SettingsComponent implements OnInit, OnDestroy {
   private settingsService = inject(SettingsService);
   private fb = inject(FormBuilder);
 
-
   example: Pokemon = { id: 'deoxysattack', name: 'Deoxys-Attack' };
 
   @Output()
   closeSettings = new EventEmitter();
   themes: { id: string; name: string }[] = [
     { id: 'classic', name: 'Classic' },
-    { id: 'christmas', name: 'Christmas' },
-    { id: 'graymode', name: 'Grayscale' },
+    { id: 'sunset', name: 'Sunset' },
   ];
+
+  dropdownOpen: null | 'theme' | 'ld' | 'sprite' = null;
+
+  getThemeClass(themeId?: string | null) {
+    switch (themeId) {
+      case 'sunset':
+        return 'sunset';
+      case 'shiny':
+        return 'shiny';
+      case 'classic':
+      default:
+        return 'classic';
+    }
+  }
+
+  getThemeName(themeId?: string | null) {
+    if (!themeId) return 'Classic';
+    if (themeId === 'shiny') return 'Shiny';
+    const found = this.themes.find((t) => t.id === themeId);
+    return found?.name ?? 'Theme';
+  }
+
+  toggleDropdown(dropdown: null | 'ld' | 'theme' | 'sprite') {
+    this.dropdownOpen = this.dropdownOpen === dropdown ? null : dropdown;
+  }
+
+  selectLdMode(mode: 'device' | 'light' | 'dark') {
+    this.settingsForm.get('ldMode')?.setValue(mode);
+    this.dropdownOpen = null;
+    this.settingsService.updateLDMode(mode);
+  }
+
+  getLdModeLabel(mode?: string | null) {
+    switch (mode) {
+      case 'light':
+        return 'Light';
+      case 'dark':
+        return 'Dark';
+      default:
+        return 'Device';
+    }
+  }
+
+  onLdModeKeydown(event: KeyboardEvent) {
+    if (event.key === 'Escape') this.dropdownOpen = null;
+  }
+
+  selectTheme(themeId: string) {
+    this.settingsForm.get('theme')?.setValue(themeId);
+    this.dropdownOpen = null;
+  }
+
+  onThemeKeydown(event: KeyboardEvent) {
+    if (event.key === 'Escape') {
+      this.dropdownOpen = null;
+    }
+  }
+
+  selectSprite(id: string) {
+    this.settingsForm.get('spriteSet')?.setValue(id);
+    this.dropdownOpen = null;
+  }
+
+  getSpriteSetName(id?: string | null) {
+    if (!id) return 'Default';
+    const found = this.spriteSets.find((s) => s.id === id);
+    return found?.name ?? 'Sprite';
+  }
+
+  onSpriteKeydown(event: KeyboardEvent) {
+    if (event.key === 'Escape') this.dropdownOpen = null;
+  }
 
   spriteSets: { name: string; id: string; creditLink: string }[] = [
     {
@@ -83,9 +152,13 @@ export class SettingsComponent implements OnInit, OnDestroy {
   }>;
 
   orgSettings!: Settings;
+  saving = false;
+  saveError: string | null = null;
 
   ngOnInit(): void {
-    this.orgSettings = { ...this.settingsService.settingsData };
+    this.orgSettings = JSON.parse(
+      JSON.stringify(this.settingsService.settingsData || {}),
+    );
     const form: FormGroup<{
       theme: FormControl<string | null>;
       ldMode: FormControl<string | null>;
@@ -96,7 +169,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
       spriteSet: this.orgSettings.spriteSet || 'home',
     });
     form.valueChanges.subscribe((value: Settings) => {
-      this.settingsService.setSettings(value);
+      this.settingsService.setSettings(value, { source: 'local' });
       this.example = { id: 'deoxysattack', name: 'Deoxys-Attack' };
     });
     form.get('ldMode')?.valueChanges.subscribe((value: string | null) => {
@@ -113,7 +186,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.settingsService.setSettings(this.orgSettings);
+    this.settingsService.setSettings(this.orgSettings, { source: 'local' });
   }
 
   getCreditLink() {
@@ -123,9 +196,30 @@ export class SettingsComponent implements OnInit, OnDestroy {
   }
 
   save() {
-    this.orgSettings = this.settingsForm.value;
-    this.settingsService.setSettings(this.orgSettings);
-    this.settingsService.updateSettings();
+    this.saveError = null;
+    this.saving = true;
+    const newSettings = this.settingsForm.value as Settings;
+    this.orgSettings = JSON.parse(JSON.stringify(newSettings));
+
+    this.settingsService.setSettings(newSettings, { source: 'local' });
+
+    this.settingsService.saveToServer().subscribe({
+      next: (resp) => {
+        this.saving = false;
+        if (resp) {
+          try {
+            this.settingsService.setSettings(resp as Settings, {
+              source: 'server',
+            });
+          } catch (e) {}
+        }
+      },
+      error: (err) => {
+        this.saving = false;
+        this.saveError = 'Failed to save settings. Please try again.';
+        console.error('Settings save failed', err);
+      },
+    });
   }
 
   close() {

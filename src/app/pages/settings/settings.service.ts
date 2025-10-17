@@ -9,6 +9,7 @@ export type Settings = {
   date?: string | null;
   spriteSet?: string | null;
   shinyUnlock?: boolean | null;
+  themeOverride?: string | null;
 };
 
 @Injectable({
@@ -21,56 +22,86 @@ export class SettingsService {
   get settingsData() {
     return this.settingsData$.value;
   }
+  get settings$() {
+    return this.settingsData$.asObservable();
+  }
+
+  private readonly DEFAULT_THEME: string = 'sunset';
+
+  private themeOverride?: string = 'dripzone';
 
   constructor() {
-    const localSettings = localStorage.getItem('user-settings');
-    if (localSettings) this.settingsData$.next(JSON.parse(localSettings));
-
-    if (this.settingsData.ldMode === 'dark') {
-      document.documentElement.setAttribute('pdz-theme-mode', 'dark');
-      this.updateLDMode(this.settingsData.ldMode);
-    } else {
-      document.documentElement.setAttribute('pdz-theme-mode', 'light');
+    try {
+      const localSettings = localStorage.getItem('user-settings');
+      if (localSettings) this.settingsData$.next(JSON.parse(localSettings));
+    } catch (e) {
+      console.warn('Failed to parse local user settings', e);
     }
-    document.documentElement.setAttribute(
-      'pdz-theme',
-      this.settingsData.theme ?? 'normal',
-    );
+
+    this.applyThemeAndMode(this.settingsData);
   }
 
   updateLDMode(value?: string | null) {
     const isDark =
-      (!value && window.matchMedia('(prefers-color-scheme: dark)').matches) ||
-      value === 'dark';
+      value === 'dark' ||
+      (value !== 'light' &&
+        window.matchMedia &&
+        window.matchMedia('(prefers-color-scheme: dark)').matches);
+
     document.documentElement.classList.toggle('dark', isDark);
     document.documentElement.classList.toggle('light', !isDark);
-    document.documentElement.setAttribute(
-      'light-mode',
-      isDark ? 'dark' : 'light',
-    );
+
     document.documentElement.setAttribute(
       'pdz-theme-mode',
       isDark ? 'dark' : 'light',
     );
   }
 
-  // refreshSettings() {
-  //   this.settingApiService.getSettings().subscribe((settings) => {
-  //     if (settings) this.settingsData$.next(settings);
-  //   });
-  // }
+  private applyThemeAndMode(settings: Settings) {
+    const theme =
+      this.themeOverride && this.themeOverride === settings.themeOverride
+        ? this.DEFAULT_THEME
+        : (settings?.theme ?? this.DEFAULT_THEME);
+    const ldMode = settings?.ldMode ?? 'device';
 
-  setSettings(value: Partial<Settings> | undefined) {
-    if (!value) return;
-    this.settingsData$.next(Object.assign(this.settingsData, value));
-    localStorage.setItem('user-settings', JSON.stringify(value));
+    try {
+      document.documentElement.setAttribute('pdz-theme', theme);
+    } catch (e) {}
+
+    this.updateLDMode(ldMode ?? undefined);
   }
 
-  updateSettings() {
-    this.settingApiService
-      .updateSettings(this.settingsData)
-      .subscribe((data) => {
-        console.log('Settings Updated:', data);
-      });
+  /**
+   * Update settings locally and optionally mark them as coming from the server.
+   * This method will not call the server — use saveToServer() for that.
+   *
+   * @param value Partial settings to merge
+   * @param options.source 'server' when these settings came from backend (server wins)
+   */
+  setSettings(
+    value: Partial<Settings> | undefined,
+    options?: { source?: 'local' | 'server' },
+  ) {
+    if (!value) return;
+    const merged: Settings = {
+      ...this.settingsData,
+      ...value,
+      themeOverride: this.themeOverride,
+    };
+    this.settingsData$.next(merged);
+    try {
+      localStorage.setItem('user-settings', JSON.stringify(merged));
+    } catch (e) {
+      console.warn('Failed to persist user settings to localStorage', e);
+    }
+    this.applyThemeAndMode(merged);
+  }
+
+  saveToServer() {
+    return this.settingApiService.updateSettings(this.settingsData);
+  }
+
+  refreshFromServer() {
+    return this.settingApiService.getSettings();
   }
 }

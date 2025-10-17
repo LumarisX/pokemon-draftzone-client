@@ -6,9 +6,9 @@
   <div class="card theme-switcher">
     <div class="theme-group">
       <strong>Theme:</strong>
-      <button class="btn" (click)="setTheme('normal')">Normal</button>
-      <button class="btn" (click)="setTheme('forest')">Forest</button>
-      <button class="btn" (click)="setTheme('sunset')">Sunset</button>
+      <button class="btn normal" (click)="setTheme('classic')">Classic</button>
+      <button class="btn sunset" (click)="setTheme('sunset')">Sunset</button>
+      <button class="btn shiny" (click)="setTheme('shiny')">Shiny</button>
     </div>
 
     <div class="theme-group">
@@ -17,8 +17,10 @@
       <button class="btn" (click)="setMode('dark')">Dark 🌙</button>
     </div>
   </div>
+  <div class="card"><pdz-color-box></pdz-color-box></div>
 
   <div class="card"><pdz-color-palette></pdz-color-palette></div>
+
   <div class="card">
     <h2>Example Content Card</h2>
     <p>

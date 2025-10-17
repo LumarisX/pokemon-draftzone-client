@@ -1,5 +1,4 @@
 import { Component, inject } from '@angular/core';
-import { SettingsService } from './pages/settings/settings.service';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { svgIcons } from './images/icons';
@@ -11,8 +10,6 @@ import { svgIcons } from './images/icons';
   standalone: false,
 })
 export class AppComponent {
-  private settingsService = inject(SettingsService);
-
   private matIconRegistry = inject(MatIconRegistry);
   private domSanitizer = inject(DomSanitizer);
   constructor() {
@@ -26,7 +23,6 @@ export class AppComponent {
       );
       matIconRegistry.setDefaultFontSetClass('material-symbols-outlined');
     });
-    document.documentElement.setAttribute('pdz-theme', 'normal');
   }
 
   getTheme() {

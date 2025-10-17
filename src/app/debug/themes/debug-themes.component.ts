@@ -1,16 +1,15 @@
-// debug-themes.component.ts
-
 import { Component, ViewChild } from '@angular/core';
+import { ColorBoxComponent } from './color-box/color-box.component';
 import { ColorPaletteComponent } from './color-palette/color-palette.component';
 
 @Component({
   selector: 'pdz-debug-themes',
   templateUrl: './debug-themes.component.html',
   styleUrl: './debug-themes.component.scss',
-  imports: [ColorPaletteComponent],
+  imports: [ColorPaletteComponent, ColorBoxComponent],
 })
 export class DebugThemesComponent {
-  theme: string = 'normal';
+  theme: string = 'classic';
   mode: string = 'light';
 
   setTheme(themeName: string): void {
@@ -25,7 +24,7 @@ export class DebugThemesComponent {
     setTimeout(() => this.updateColorValues(), 0);
   }
 
-  @ViewChild(ColorPaletteComponent) colorPalette?: ColorPaletteComponent;
+  @ViewChild(ColorBoxComponent) colorPalette?: ColorPaletteComponent;
 
   updateColorValues(): void {
     this.colorPalette?.updateColorValues();

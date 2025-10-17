@@ -1,50 +1,152 @@
 @if (settingsForm) {
-  <div class="setting-container" [formGroup]="settingsForm">
+  <div
+    class="setting-container"
+    [formGroup]="settingsForm"
+    role="dialog"
+    aria-label="Settings dialog"
+  >
     <h2 class="setting-title">Settings</h2>
+
     <div class="options-container">
       <div class="option">
-        <mat-form-field appearance="outline">
-          <mat-label>Light/Dark Mode</mat-label>
-          <mat-select formControlName="ldMode">
-            <mat-option value="device">Device</mat-option>
-            <mat-option value="light">Light</mat-option>
-            <mat-option value="dark">Dark</mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
-      <!-- <div class="option">
-        <mat-form-field appearance="outline">
-          <mat-label>Theme</mat-label>
-          <mat-select formControlName="theme">
-            @for (theme of themes; track $index) {
-              <mat-option [value]="theme.id">{{ theme.name }}</mat-option>
-            }
-            @if (isShinyUnlocked()) {
-              <mat-option value="shiny"> Shiny </mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
-      </div> -->
-      <div class="option">
-        <div>
-          <mat-form-field appearance="outline">
-            <mat-label>Sprite Set</mat-label>
-            <mat-select formControlName="spriteSet">
-              @for (spriteSet of spriteSets; track $index) {
-                <mat-option [value]="spriteSet.id">{{
-                  spriteSet.name
-                }}</mat-option>
-              }
-            </mat-select>
-            <mat-hint>
-              <span
-                class="text-sm credit-link text-blue-500 hover:text-blue-400"
+        <label class="label">Light / Dark</label>
+        <div class="custom-dropdown" (keydown)="onLdModeKeydown($event)">
+          <button
+            type="button"
+            class="custom-toggle"
+            (click)="toggleDropdown('ld')"
+            [attr.aria-expanded]="dropdownOpen === 'ld'"
+            aria-haspopup="listbox"
+          >
+            <span class="theme-label">{{
+              getLdModeLabel(settingsForm.get("ldMode")?.value)
+            }}</span>
+            <span class="caret">▾</span>
+          </button>
+
+          @if (dropdownOpen === "ld") {
+            <ul class="custom-options" role="listbox">
+              <li
+                role="option"
+                class="custom-option"
+                (click)="selectLdMode('device')"
               >
-                <a [href]="getCreditLink()" target="_blank">Credits</a>
-              </span></mat-hint
-            >
-          </mat-form-field>
+                Device
+              </li>
+              <li
+                role="option"
+                class="custom-option"
+                (click)="selectLdMode('light')"
+              >
+                Light
+              </li>
+              <li
+                role="option"
+                class="custom-option"
+                (click)="selectLdMode('dark')"
+              >
+                Dark
+              </li>
+            </ul>
+          }
         </div>
+      </div>
+
+      <div class="option">
+        <label class="label">Theme</label>
+        <div class="theme-dropdown" (keydown)="onThemeKeydown($event)">
+          <button
+            type="button"
+            class="theme-toggle"
+            (click)="toggleDropdown('theme')"
+            [attr.aria-expanded]="dropdownOpen === 'theme'"
+            aria-haspopup="listbox"
+          >
+            <span
+              class="theme-preview"
+              [ngClass]="getThemeClass(settingsForm.get('theme')?.value)"
+            ></span>
+            <span class="theme-label">{{
+              getThemeName(settingsForm.get("theme")?.value)
+            }}</span>
+            <span class="caret">▾</span>
+          </button>
+
+          @if (dropdownOpen === "theme") {
+            <ul class="theme-options" role="listbox">
+              @for (theme of themes; track $index) {
+                <li
+                  role="option"
+                  [attr.aria-selected]="
+                    settingsForm.get('theme')?.value === theme.id
+                  "
+                  class="theme-option"
+                  [ngClass]="getThemeClass(theme.id)"
+                  (click)="selectTheme(theme.id)"
+                >
+                  {{ theme.name }}
+                </li>
+              }
+              @if (isShinyUnlocked()) {
+                <li
+                  role="option"
+                  [attr.aria-selected]="
+                    settingsForm.get('theme')?.value === 'shiny'
+                  "
+                  class="theme-option shiny"
+                  (click)="selectTheme('shiny')"
+                >
+                  Shiny
+                </li>
+              }
+            </ul>
+          }
+        </div>
+      </div>
+
+      <div class="option sprite-option">
+        <div class="sprite-form">
+          <label class="label">Sprite Set</label>
+          <div class="custom-dropdown" (keydown)="onSpriteKeydown($event)">
+            <button
+              type="button"
+              class="custom-toggle"
+              (click)="toggleDropdown('sprite')"
+              [attr.aria-expanded]="dropdownOpen === 'sprite'"
+              aria-haspopup="listbox"
+            >
+              <span class="theme-label">{{
+                getSpriteSetName(settingsForm.get("spriteSet")?.value)
+              }}</span>
+              <span class="caret">▾</span>
+            </button>
+
+            @if (dropdownOpen === "sprite") {
+              <ul class="custom-options" role="listbox">
+                @for (spriteSet of spriteSets; track $index) {
+                  <li
+                    role="option"
+                    class="custom-option"
+                    (click)="selectSprite(spriteSet.id)"
+                  >
+                    {{ spriteSet.name }}
+                  </li>
+                }
+              </ul>
+            }
+          </div>
+
+          <div class="credit">
+            <a
+              [href]="getCreditLink()"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="credit-link"
+              >Credits</a
+            >
+          </div>
+        </div>
+
         <div class="sprite-wrapper">
           <pdz-sprite [pokemon]="example"></pdz-sprite>
         </div>
@@ -52,8 +154,33 @@
     </div>
 
     <div class="button-container">
-      <button mat-stroked-button (click)="close()">Cancel</button
-      ><button mat-flat-button (click)="save(); close()">Save</button>
+      <button
+        type="button"
+        class="btn btn-outline"
+        (click)="close()"
+        [disabled]="saving"
+      >
+        Cancel
+      </button>
+      <button
+        type="button"
+        class="btn btn-primary"
+        (click)="save(); close()"
+        [disabled]="saving"
+      >
+        @if (!saving) {
+          <span>Save</span>
+        }
+        @if (saving) {
+          <span>Saving...</span>
+        }
+      </button>
     </div>
+
+    @if (saveError) {
+      <div class="save-feedback" aria-live="polite">
+        <div class="error">{{ saveError }}</div>
+      </div>
+    }
   </div>
 }

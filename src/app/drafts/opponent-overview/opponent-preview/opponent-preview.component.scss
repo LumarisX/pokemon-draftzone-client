@@ -248,17 +248,22 @@ section {
 .score-button {
   padding: var(--pdz-space-2xs) var(--pdz-space-sm);
   border-radius: 0.625rem;
-  box-shadow: var(--pdz-level-1);
   &.pdz-background-neg {
-    background-color: var(--pdz-color-scale-negative-2);
+    background-color: pdz-color(negative);
+    color: pdz-color(on-negative);
+    box-shadow: var(--pdz-level-1);
   }
 
   &.pdz-background-pos {
-    background-color: var(--pdz-color-scale-positive-2);
+    background-color: pdz-color(positive);
+    color: pdz-color(on-positive);
+    box-shadow: var(--pdz-level-1);
   }
 
   &.pdz-background-neut {
-    background-color: var(--pdz-color-secondary-container);
+    background-color: pdz-color(secondary-container);
+    color: pdz-color(on-secondary-container);
+    box-shadow: var(--pdz-level-inset-1);
   }
 
   color: pdz-color(on-secondary-container);

@@ -1,10 +1,10 @@
 @use "@angular/material" as mat;
 @use "themes/classic.theme" as classic;
-@use "themes/shiny.theme" as shiny_theme;
-@use "themes/christmas.theme" as xmas;
 
 @use "sass:map";
 @use "sass:meta";
+
+//TODO: remove tailwind themeing
 $theme-configurations: (
   "classic": (
     prime-primary: classic.$primary-palette,
@@ -13,22 +13,9 @@ $theme-configurations: (
     alt-tertiary: classic.$tertiary-palette_alt,
     palettes: classic.$palettes,
   ),
-  "shiny": (
-    prime-primary: shiny_theme.$primary-palette,
-    prime-tertiary: shiny_theme.$tertiary-palette,
-    alt-primary: shiny_theme.$primary-palette_alt,
-    alt-tertiary: shiny_theme.$tertiary-palette_alt,
-    palettes: shiny_theme.$palettes,
-  ),
-  "christmas": (
-    prime-primary: xmas.$primary-palette,
-    prime-tertiary: xmas.$tertiary-palette,
-    alt-primary: xmas.$primary-palette_alt,
-    alt-tertiary: xmas.$tertiary-palette_alt,
-    palettes: xmas.$palettes,
-  ),
 );
 
+//TODO: remove tailwind themeing
 @mixin _apply-mat-theme-core($primary-palette, $tertiary-palette, $theme-type) {
   @if $primary-palette and $tertiary-palette {
     @if meta.type-of($primary-palette) ==
@@ -53,6 +40,7 @@ $theme-configurations: (
   }
 }
 
+//TODO: remove tailwind themeing
 @mixin generate-palette-variables($palettes, $is-alt: false) {
   @if $is-alt {
     @each $key, $value in map.get($palettes, primary-alt) {
@@ -77,6 +65,7 @@ $theme-configurations: (
   }
 }
 
+//TODO: remove tailwind themeing
 @mixin apply-theme-variants(
   $prime-primary,
   $prime-tertiary,
@@ -89,6 +78,7 @@ $theme-configurations: (
     @include generate-palette-variables($palettes);
     & {
       @include _apply-mat-theme-core($prime-primary, $prime-tertiary, light);
+      @include apply-pdz-mat-overrides();
       @include apply-custom-material-overrides();
     }
   }
@@ -99,6 +89,7 @@ $theme-configurations: (
     @include generate-palette-variables($palettes, true);
     & {
       @include _apply-mat-theme-core($alt-primary, $alt-tertiary, light);
+      @include apply-pdz-mat-overrides();
       @include apply-custom-material-overrides();
     }
   }
@@ -107,6 +98,8 @@ $theme-configurations: (
     .theme-prime,
     [sub-theme="prime"] {
       @include _apply-mat-theme-core($prime-primary, $prime-tertiary, dark);
+      @include apply-pdz-mat-overrides();
+      @include apply-custom-material-overrides();
     }
     & {
       @include apply-custom-material-overrides();
@@ -117,6 +110,7 @@ $theme-configurations: (
     [sub-theme="alt"] {
       @include _apply-mat-theme-core($alt-primary, $alt-tertiary, dark);
       & {
+        @include apply-pdz-mat-overrides();
         @include apply-custom-material-overrides();
       }
     }
@@ -126,20 +120,8 @@ $theme-configurations: (
 @mixin apply-custom-material-overrides() {
 }
 
-.cdk-overlay-container,
-:root {
-  @each $theme-attribute-value, $palette-map in $theme-configurations {
-    &[theme-name="#{$theme-attribute-value}"] {
-      @include apply-theme-variants(
-        map.get($palette-map, prime-primary),
-        map.get($palette-map, prime-tertiary),
-        map.get($palette-map, alt-primary),
-        map.get($palette-map, alt-tertiary),
-        map.get($palette-map, palettes)
-      );
-    }
-  }
-
+@mixin apply-pdz-mat-overrides() {
+  color: var(--pdz-color-on-surface);
   @include mat.theme-overrides(
     (
       // Primary Palette
@@ -186,6 +168,24 @@ $theme-configurations: (
       corner-large: var(--pdz-shape-corner-lg)
     )
   );
+}
+
+.cdk-overlay-container,
+:root {
+  //TODO: remove tailwind themeing
+  @each $theme-attribute-value, $palette-map in $theme-configurations {
+    &[theme-name="#{$theme-attribute-value}"] {
+      @include apply-theme-variants(
+        map.get($palette-map, prime-primary),
+        map.get($palette-map, prime-tertiary),
+        map.get($palette-map, alt-primary),
+        map.get($palette-map, alt-tertiary),
+        map.get($palette-map, palettes)
+      );
+    }
+  }
+
+  @include apply-pdz-mat-overrides();
 }
 
 body {

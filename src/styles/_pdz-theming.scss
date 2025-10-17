@@ -65,7 +65,7 @@
     --pdz-line-height-#{$name}: #{$value};
   }
   @include apply-typography(body-medium);
-  @include apply-theme(map.get(map.get($themes, normal), light));
+  @include apply-theme(map.get(map.get($themes, classic), light));
   @each $theme-name, $variations in $themes {
     @each $variation-name, $palette in $variations {
       &[pdz-theme="#{$theme-name}"][pdz-theme-mode="#{$variation-name}"] {

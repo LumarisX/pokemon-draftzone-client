@@ -42,6 +42,7 @@
     "@angular-devkit/build-angular": "^20.3.0",
     "@angular/cli": "20.3.0",
     "@angular/compiler-cli": "20.3.0",
+    "@k-vyn/coloralgorithm": "^1.2.0",
     "@tailwindcss/typography": "^0.5.16",
     "@types/auth0-lock": "^11.27.9",
     "@types/d3": "^7.4.3",

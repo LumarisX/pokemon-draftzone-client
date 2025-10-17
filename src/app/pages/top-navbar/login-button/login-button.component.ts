@@ -7,6 +7,8 @@ import { SettingsComponent } from '../../settings/settings.component';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { SettingsService } from '../../settings/settings.service';
 import { CommonModule } from '@angular/common';
+import { SettingApiService } from '../../../services/setting.service';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'pdz-login-button',
@@ -25,22 +27,55 @@ import { CommonModule } from '@angular/common';
 export class LoginButtonComponent {
   auth = inject(AuthService);
   private settingsService = inject(SettingsService);
+  private settingApi = inject(SettingApiService);
 
   authenticated: boolean = false;
   settingsOpen: boolean = false;
 
   ngOnInit() {
     this.checkAuthenticated();
+    this.refreshSettingsFromServerIfAuthenticated();
   }
 
   checkAuthenticated() {
     this.auth.isAuthenticated$.subscribe((authenticated) => {
       this.authenticated = authenticated;
       if (authenticated) {
-        this.auth.user$.subscribe((data) => {
-          this.settingsService.setSettings(data?.settings);
-        });
+        this.settingApi
+          .getSettings()
+          .pipe(take(1))
+          .subscribe((serverSettings) => {
+            if (serverSettings) {
+              this.settingsService.setSettings(serverSettings, {
+                source: 'server',
+              });
+            } else {
+              this.auth.user$.pipe(take(1)).subscribe((data) => {
+                if (data?.settings) {
+                  this.settingsService.setSettings(data.settings, {
+                    source: 'server',
+                  });
+                }
+              });
+            }
+          });
       }
+    });
+  }
+
+  private refreshSettingsFromServerIfAuthenticated() {
+    this.auth.isAuthenticated$.pipe(take(1)).subscribe((authenticated) => {
+      if (!authenticated) return;
+      this.settingApi
+        .getSettings()
+        .pipe(take(1))
+        .subscribe((serverSettings) => {
+          if (serverSettings) {
+            this.settingsService.setSettings(serverSettings, {
+              source: 'server',
+            });
+          }
+        });
     });
   }
 

@@ -63,6 +63,7 @@
 
   .btn {
     background-color: var(--pdz-color-primary);
+
     color: var(--pdz-color-on-primary);
     border: none;
     border-radius: 6px;
@@ -76,6 +77,31 @@
 
     &:active {
       transform: scale(0.98);
+    }
+
+    &.normal {
+      background: linear-gradient(
+        135deg,
+        var(--pdz-color-cyan-400),
+        var(--pdz-color-orange-400)
+      );
+    }
+
+    &.sunset {
+      background: linear-gradient(
+        135deg,
+        var(--pdz-color-purple-400),
+        var(--pdz-color-orange-400),
+        var(--pdz-color-pink-400)
+      );
+    }
+
+    &.shiny {
+      background: linear-gradient(
+        135deg,
+        var(--pdz-color-mint-400),
+        var(--pdz-color-yellow-400)
+      );
     }
   }
 }

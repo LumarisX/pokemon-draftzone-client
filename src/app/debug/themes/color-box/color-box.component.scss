@@ -1,0 +1,120 @@
+@use "sass:map";
+@use "../../../../styles/mixins/buttons" as *;
+
+h2 {
+  color: var(--pdz-color-on-surface);
+  font-family: var(--pdz-font-fancy);
+  font-size: var(--pdz-font-large);
+}
+
+h3 {
+  color: var(--pdz-color-on-surface-variant);
+  font-family: var(--pdz-font-fancy);
+}
+
+p {
+  color: var(--pdz-color-on-surface-variant);
+}
+
+a {
+  color: var(--pdz-color-primary);
+  font-weight: bold;
+  text-decoration: none;
+  // transition: color 0.2s;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.card {
+  background-color: var(--pdz-color-surface);
+  border: 1px solid var(--pdz-color-primary-border);
+  border-radius: var(--pdz-shape-corner-sm);
+  padding: var(--pdz-space-xl);
+}
+
+.btn {
+  background-color: var(--pdz-color-primary);
+  color: var(--pdz-color-on-primary);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  padding: 0.75rem 1.5rem;
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.color-container {
+  display: flex;
+  gap: 1rem;
+  max-width: 100%;
+  padding-bottom: 0.25rem;
+  margin-bottom: -0.25rem;
+  overflow-x: auto;
+}
+
+.color-palette {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.color-set {
+  display: flex;
+  border-radius: var(--pdz-shape-corner-sm);
+  border: 1px solid var(--pdz-color-outline-variant);
+  overflow: hidden;
+}
+
+.color-mode {
+  display: flex;
+  flex-direction: column;
+}
+
+.color-step {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: bold;
+  padding: var(--pdz-space-md);
+
+  .color-step-text {
+    font-size: var(--pdz-font-size-sm);
+    min-width: 2rem;
+  }
+  .color-swatch {
+    text-align: end;
+    min-width: 8rem;
+  }
+}
+
+.palette-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.copy-btn {
+  @include icon-button(
+    (
+      padding: 0.125rem,
+    )
+  );
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+
+  .header-buttons {
+    display: flex;
+    gap: 0.25rem;
+    flex-wrap: wrap;
+    button {
+      @include flat-button-menu();
+    }
+  }
+}
