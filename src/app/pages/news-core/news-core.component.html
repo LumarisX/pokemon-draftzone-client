@@ -30,14 +30,25 @@
               {{ section.description }}
             } @else if (section.type === "buttons") {
               @for (button of section.buttons; track $index) {
-                <button
-                  [routerLink]="button.link"
-                  [disabled]="button.disabled"
-                  [target]="button.newWindow ? '_blank' : undefined"
-                  mat-flat-button
-                >
-                  {{ button.text }}
-                </button>
+                @if (button.href) {
+                  <a
+                    [href]="button.href"
+                    [disabled]="button.disabled"
+                    [target]="button.newWindow ? '_blank' : undefined"
+                    mat-flat-button
+                  >
+                    {{ button.text }}
+                  </a>
+                } @else {
+                  <a
+                    [routerLink]="button.link"
+                    [disabled]="button.disabled"
+                    [target]="button.newWindow ? '_blank' : undefined"
+                    mat-flat-button
+                  >
+                    {{ button.text }}
+                  </a>
+                }
               }
             }
           </div>

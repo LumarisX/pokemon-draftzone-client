@@ -57,7 +57,10 @@ export class SettingsService {
     );
   }
 
-  private applyThemeAndMode(settings: Settings) {
+  private applyThemeAndMode(
+    settings: Settings,
+    options?: { source?: 'local' | 'server' },
+  ) {
     const theme =
       this.themeOverride && this.themeOverride === settings.themeOverride
         ? this.DEFAULT_THEME
@@ -86,15 +89,18 @@ export class SettingsService {
     const merged: Settings = {
       ...this.settingsData,
       ...value,
-      themeOverride: this.themeOverride,
     };
+    merged.themeOverride =
+      !this.settingsData.theme && !merged.theme
+        ? this.themeOverride
+        : undefined;
     this.settingsData$.next(merged);
     try {
       localStorage.setItem('user-settings', JSON.stringify(merged));
     } catch (e) {
       console.warn('Failed to persist user settings to localStorage', e);
     }
-    this.applyThemeAndMode(merged);
+    this.applyThemeAndMode(merged, options);
   }
 
   saveToServer() {
