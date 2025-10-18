@@ -109,9 +109,9 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   spriteSets: { name: string; id: string; creditLink: string }[] = [
     {
-      name: 'Pokemon Home',
+      name: 'Pokemon Showdown - Home',
       id: 'home',
-      creditLink: 'https://home.pokemon.com/en-us/',
+      creditLink: 'https://github.com/smogon/sprites',
     },
     {
       name: 'Serebii',

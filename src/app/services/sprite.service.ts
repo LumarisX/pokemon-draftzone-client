@@ -75,7 +75,7 @@ export class SpriteService {
         getPath: (props, shiny) => props.path(props.id, shiny),
         classes: ['rounded-xl', 'border', 'border-symbolColor-sub'],
         flip: true,
-        spriteSource: 'pmd',
+        spriteSource: 'ps',
       },
     ],
     [

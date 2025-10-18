@@ -90,8 +90,8 @@ function serebiiPath(id: string, shiny: boolean | undefined) {
 }
 
 function homePath(id: string, shiny: boolean | undefined) {
-  return `https://img.pokemondb.net/sprites/home/${
-    shiny ? 'shiny' : 'normal'
+  return `https://play.pokemonshowdown.com/sprites/home-centered${
+    shiny ? '-shiny' : ''
   }/${id}.png`;
 }
 
