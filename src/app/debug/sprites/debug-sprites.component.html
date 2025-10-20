@@ -1,11 +1,7 @@
 <div class="flex flex-wrap">
   @for (pokemon of names; track pokemon) {
-    <div class="w-12">
-      <pdz-sprite [pokemon]="pokemon"></pdz-sprite>
-      <span
-        class="text-xs text-page text-clip w-12 overflow-clip whitespace-nowrap"
-        >{{ pokemon.name }}</span
-      >
+    <div class="w-12" [matTooltip]="pokemon.id + ' ' + sprite.path">
+      <pdz-sprite [pokemon]="pokemon" #sprite></pdz-sprite>
     </div>
   }
 </div>

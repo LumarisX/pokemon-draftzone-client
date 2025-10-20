@@ -48,7 +48,7 @@ section {
 
 .matchups-container {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(25rem, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
   gap: var(--pdz-space-lg);
   padding: 0 0.5rem 0.5rem;
   align-items: start;
@@ -134,7 +134,7 @@ section {
 
     .sprites {
       display: grid;
-      grid-template-columns: repeat(6, minmax(48px, 1fr));
+      grid-template-columns: repeat(6, minmax(36px, 1fr));
       gap: var(--pdz-space-sm);
     }
   }
