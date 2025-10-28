@@ -1,30 +1,35 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { ArchiveService } from '../../../services/archive.service';
 import { LoadingComponent } from '../../../images/loading/loading.component';
 import { SpriteComponent } from '../../../images/sprite/sprite.component';
-import { TrashSVG } from '../../../images/svg-components/trash.component';
 import { Archive } from '../../../interfaces/archive';
+import { ArchiveService } from '../../../services/archive.service';
 import { DraftOverviewPath } from '../draft-overview-routing.module';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'draft-archives',
-  standalone: true,
   templateUrl: './draft-archives.component.html',
+  styleUrl: './draft-archives.component.scss',
+
   imports: [
     CommonModule,
     RouterModule,
     SpriteComponent,
-    TrashSVG,
     LoadingComponent,
+    MatIconModule,
   ],
 })
 export class DraftArchiveComponent {
   private archiveService = inject(ArchiveService);
 
-  archives!: (Archive & { menu?: 'main' | 'archive' | 'edit' | 'delete' })[];
+  archives!: (Archive & { menu?: 'main' | 'delete' })[];
   backPath: string = DraftOverviewPath;
+
+  menuState: {
+    [key: string]: '' | 'main' | 'confirm-delete';
+  } = {};
 
   ngOnInit() {
     this.reload();
@@ -44,5 +49,14 @@ export class DraftArchiveComponent {
     this.archiveService.deleteDraft(id).subscribe((data) => {
       this.reload();
     });
+  }
+
+  setMenuState(leagueId: string, state: '' | 'main' | 'confirm-delete') {
+    this.menuState[leagueId] = state;
+  }
+
+  toggleMenu(leagueId: string) {
+    this.menuState[leagueId] =
+      this.menuState[leagueId] === 'main' ? '' : 'main';
   }
 }

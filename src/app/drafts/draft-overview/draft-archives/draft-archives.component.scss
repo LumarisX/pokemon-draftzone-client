@@ -9,7 +9,7 @@
   padding: 0;
 }
 
-.drafts-container {
+.archives-container {
   padding: var(--pdz-space-md);
   width: 100%;
   box-sizing: border-box;
@@ -17,10 +17,10 @@
 
 .header {
   display: flex;
-  justify-content: space-between;
+  gap: 1rem;
   align-items: center;
   margin-bottom: var(--pdz-space-lg);
-
+  min-height: 40px;
   .title {
     font-family: var(--pdz-font-fancy);
     font-size: 2rem;
@@ -37,13 +37,17 @@
   }
 }
 
-.drafts-grid {
+.back-btn {
+  @include flat-button-primary();
+}
+
+.archives-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(20em, 1fr));
   gap: var(--pdz-space-lg);
 }
 
-.draft-card {
+.archive-card {
   @include shadow-hover-effect;
   @include pdz-card("primary");
   .card-header {

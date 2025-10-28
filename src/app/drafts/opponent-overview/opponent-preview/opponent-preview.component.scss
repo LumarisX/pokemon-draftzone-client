@@ -3,6 +3,7 @@
 @use "../../../../styles/mixins" as *;
 @use "../../../../styles/mixins/typography" as *;
 @use "../../../../styles/mixins/buttons" as *;
+@use "../../../../styles/mixins/cards" as *;
 @use "../../../../styles/global" as *;
 
 :host {
@@ -55,110 +56,20 @@ section {
 }
 
 .matchup-card {
-  background-color: pdz-color(secondary-container);
-  color: pdz-color(on-secondary-container);
-  border-radius: var(--pdz-shape-corner-md);
-  border: 1px solid pdz-color(secondary-border);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  height: 100%;
   @include shadow-hover-effect;
-
-  &.selected {
-    box-shadow: var(--pdz-level-2);
-  }
-
+  @include pdz-card("secondary");
   .card-header {
-    background-color: pdz-color(secondary-container-high);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: var(--pdz-space-sm) var(--pdz-space-md);
-    border-bottom: 1px solid pdz-color(secondary-border);
-
     .matchup-stage {
       font-size: 0.8rem;
       margin-right: var(--pdz-space-md);
     }
 
     .matchup-team-info-container {
+      font-family: var(--pdz-font-fancy);
       display: flex;
       gap: 0.25rem;
       align-items: center;
       flex-grow: 1;
-    }
-
-    button {
-      @include icon-button(());
-    }
-  }
-  .card-menu {
-    position: relative;
-
-    .menu-dropdown {
-      position: absolute;
-      top: 100%;
-      right: 0;
-      background-color: var(--pdz-color-secondary-subtle);
-      border-radius: var(--pdz-shape-corner-sm);
-      box-shadow: var(--pdz-level-2);
-      z-index: 10;
-      width: fit-content;
-      padding: var(--pdz-space-sm) 0;
-      display: flex;
-      flex-direction: column;
-
-      .menu-item {
-        display: flex;
-        align-items: center;
-        gap: var(--pdz-space-md);
-        padding: var(--pdz-space-md);
-        background: none;
-        border: none;
-        width: 100%;
-        cursor: pointer;
-        font-size: 1rem;
-        color: var(--pdz-color-on-secondary-container);
-        text-wrap: nowrap;
-        &:hover {
-          background-color: var(--pdz-color-secondary-container-hover);
-        }
-      }
-    }
-  }
-
-  .card-body {
-    padding: var(--pdz-space-sm) var(--pdz-space-md);
-    flex-grow: 1;
-
-    .sprites {
-      display: grid;
-      grid-template-columns: repeat(6, minmax(36px, 1fr));
-      gap: var(--pdz-space-sm);
-    }
-  }
-
-  .card-footer {
-    padding: var(--pdz-space-xs) var(--pdz-space-md);
-    border-top: 1px solid pdz-color(secondary-border);
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    gap: var(--pdz-space-2xs);
-
-    .score-placeholder {
-      opacity: 0.7;
-    }
-    .footer-link {
-      @include flat-button(
-        (
-          padding: var(--pdz-space-xs) var(--pdz-space-md),
-          border-radius: var(--pdz-shape-corner-sm),
-          background-hover: pdz-color(secondary-container-high),
-          border: none,
-        )
-      );
     }
   }
 }
