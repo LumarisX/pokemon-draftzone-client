@@ -120,7 +120,6 @@ export class OpponentTeamPreviewComponent implements OnInit, AfterViewInit {
 
       if (stats) {
         this.teamStats.next(stats);
-        // Always apply the default sort on load so the table starts sorted by kpg desc
         this.sort(this.defaultSort);
       }
     });

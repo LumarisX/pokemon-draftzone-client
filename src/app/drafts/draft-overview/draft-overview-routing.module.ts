@@ -6,6 +6,7 @@ import { DraftFormEditComponent } from './draft-form/draft-form-edit/draft-form-
 import { DraftFormNewComponent } from './draft-form/draft-form-new/draft-form-new.component';
 import { DraftPreviewComponent } from './draft-preview/draft-preview.component';
 import { DraftStatsComponent } from './draft-stats/draft-stats.component';
+import { ArchiveStatsComponent } from './archive-stats/archive-stats.component';
 
 export const DraftOverviewPath: string = 'drafts';
 
@@ -33,6 +34,11 @@ const routes: Routes = [
   {
     path: `${DraftOverviewPath}/:teamId/stats`,
     component: DraftStatsComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: `${DraftOverviewPath}/archives/:teamId/stats`,
+    component: ArchiveStatsComponent,
     canActivate: [AuthGuard],
   },
 ];

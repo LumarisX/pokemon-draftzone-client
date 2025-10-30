@@ -35,6 +35,10 @@ export class DraftService {
     return this.apiService.get<Stats[]>(`draft/${teamName}/stats`, true);
   }
 
+  getArchiveStats(teamName: string) {
+    return this.apiService.get<Stats[]>(`archive/${teamName}/stats`, true);
+  }
+
   newDraft(draftData: Object) {
     return this.apiService.post(`draft/teams`, true, draftData);
   }
