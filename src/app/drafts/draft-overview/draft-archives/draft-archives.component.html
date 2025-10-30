@@ -12,7 +12,10 @@
           <div class="card-header">
             <h2 class="league-name">{{ archive.leagueName }}</h2>
             <div class="card-menu">
-              <button class="more-btn" (click)="toggleMenu(archive._id)">
+              <button
+                class="more-btn"
+                (click)="toggleMenu(archive._id, $event)"
+              >
                 <mat-icon>more_vert</mat-icon>
               </button>
 

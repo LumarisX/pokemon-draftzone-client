@@ -53,7 +53,10 @@
               </div>
 
               <div class="card-menu">
-                <button class="more-btn" (click)="toggleMenu(matchup._id)">
+                <button
+                  class="more-btn"
+                  (click)="toggleMenu(matchup._id, $event)"
+                >
                   <mat-icon>more_vert</mat-icon>
                 </button>
 

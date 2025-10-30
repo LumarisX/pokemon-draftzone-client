@@ -20,7 +20,10 @@
           <div class="card-header">
             <h2 class="league-name">{{ draft.leagueName }}</h2>
             <div class="card-menu">
-              <button class="more-btn" (click)="toggleMenu(draft.leagueId)">
+              <button
+                class="more-btn"
+                (click)="toggleMenu(draft.leagueId, $event)"
+              >
                 <mat-icon>more_vert</mat-icon>
               </button>
 

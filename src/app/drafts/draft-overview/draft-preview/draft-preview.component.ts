@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, HostListener, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { LoadingComponent } from '../../../images/loading/loading.component';
@@ -63,9 +63,13 @@ export class DraftPreviewComponent {
     this.menuState[leagueId] = state;
   }
 
-  toggleMenu(leagueId: string) {
-    this.menuState[leagueId] =
-      this.menuState[leagueId] === 'main' ? '' : 'main';
+  toggleMenu(leagueId: string, event: MouseEvent) {
+    event.stopPropagation();
+    const currentState = this.menuState[leagueId];
+    this.closeAllMenus();
+    if (currentState !== 'main') {
+      this.menuState[leagueId] = 'main';
+    }
   }
 
   toPlanner(draft: Draft): string {
@@ -82,5 +86,14 @@ export class DraftPreviewComponent {
       draftName: draft.leagueName,
     };
     return JSON.stringify(plannerData);
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    this.closeAllMenus();
+  }
+
+  closeAllMenus(): void {
+    this.menuState = {};
   }
 }

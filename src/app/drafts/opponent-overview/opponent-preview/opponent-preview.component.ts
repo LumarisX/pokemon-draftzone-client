@@ -6,6 +6,7 @@ import {
   inject,
   ViewChild,
   AfterViewInit,
+  HostListener,
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -263,9 +264,22 @@ export class OpponentTeamPreviewComponent implements OnInit, AfterViewInit {
     }
   }
 
-  toggleMenu(leagueId: string) {
-    this.menuState[leagueId] =
-      this.menuState[leagueId] === 'main' ? '' : 'main';
+  toggleMenu(matchupId: string, event: MouseEvent) {
+    event.stopPropagation();
+    const currentState = this.menuState[matchupId];
+    this.closeAllMenus();
+    if (currentState !== 'main') {
+      this.menuState[matchupId] = 'main';
+    }
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    this.closeAllMenus();
+  }
+
+  closeAllMenus(): void {
+    this.menuState = {};
   }
 
   openReplays(matchup: Matchup) {

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, HostListener, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { LoadingComponent } from '../../../images/loading/loading.component';
 import { SpriteComponent } from '../../../images/sprite/sprite.component';
@@ -55,8 +55,21 @@ export class DraftArchiveComponent {
     this.menuState[leagueId] = state;
   }
 
-  toggleMenu(leagueId: string) {
-    this.menuState[leagueId] =
-      this.menuState[leagueId] === 'main' ? '' : 'main';
+  toggleMenu(leagueId: string, event: MouseEvent) {
+    event.stopPropagation();
+    const currentState = this.menuState[leagueId];
+    this.closeAllMenus();
+    if (currentState !== 'main') {
+      this.menuState[leagueId] = 'main';
+    }
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    this.closeAllMenus();
+  }
+
+  closeAllMenus(): void {
+    this.menuState = {};
   }
 }

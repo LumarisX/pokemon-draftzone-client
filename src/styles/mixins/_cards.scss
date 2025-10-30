@@ -36,9 +36,11 @@ $card-defaults: ();
   border-style: map.get($config, "border-style");
   display: flex;
   flex-direction: column;
-  overflow: hidden;
   height: 100%;
+
   .card-header {
+    border-radius: map.get($config, "border-radius")
+      map.get($config, "border-radius") 0 0;
     background-color: map.get($config, "header");
     display: flex;
     justify-content: space-between;
