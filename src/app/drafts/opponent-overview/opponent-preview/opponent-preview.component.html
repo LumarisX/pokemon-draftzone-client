@@ -60,7 +60,7 @@
                   <mat-icon>more_vert</mat-icon>
                 </button>
 
-                @if (menuState[matchup._id] === "main") {
+                @if (openDropdown === matchup._id) {
                   <div class="menu-dropdown">
                     @if (matchup.score) {
                       <button

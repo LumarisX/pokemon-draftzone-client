@@ -19,7 +19,7 @@
                 <mat-icon>more_vert</mat-icon>
               </button>
 
-              @if (menuState[archive._id] === "main") {
+              @if (openDropdown === archive._id) {
                 <div class="menu-dropdown">
                   <button
                     class="menu-item"

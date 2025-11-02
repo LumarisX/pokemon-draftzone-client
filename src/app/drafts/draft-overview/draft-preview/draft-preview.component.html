@@ -27,7 +27,7 @@
                 <mat-icon>more_vert</mat-icon>
               </button>
 
-              @if (menuState[draft.leagueId] === "main") {
+              @if (openDropdown === draft.leagueId) {
                 <div class="menu-dropdown">
                   <button
                     class="menu-item"

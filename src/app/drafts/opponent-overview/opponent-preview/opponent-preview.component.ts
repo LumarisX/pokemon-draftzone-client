@@ -77,8 +77,10 @@ export class OpponentTeamPreviewComponent implements OnInit, AfterViewInit {
   ];
 
   menuState: {
-    [key: string]: '' | 'main' | 'confirm-archive' | 'confirm-delete';
+    [key: string]: '' | 'confirm-archive' | 'confirm-delete';
   } = {};
+
+  openDropdown: string | null = null;
 
   ngOnInit(): void {
     this.teamId = this.route.snapshot.paramMap.get('teamid') ?? '';
@@ -265,20 +267,18 @@ export class OpponentTeamPreviewComponent implements OnInit, AfterViewInit {
 
   toggleMenu(matchupId: string, event: MouseEvent) {
     event.stopPropagation();
-    const currentState = this.menuState[matchupId];
-    this.closeAllMenus();
-    if (currentState !== 'main') {
-      this.menuState[matchupId] = 'main';
+    if (this.openDropdown !== matchupId) {
+      this.openDropdown = matchupId;
     }
   }
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {
-    this.closeAllMenus();
+    this.closeDropdown();
   }
 
-  closeAllMenus(): void {
-    this.menuState = {};
+  closeDropdown(): void {
+    this.openDropdown = null;
   }
 
   openReplays(matchup: Matchup) {

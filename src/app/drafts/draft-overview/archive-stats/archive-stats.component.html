@@ -1,5 +1,9 @@
 <div class="title-bar">
-  <button [routerLink]="'/' + draftPath" class="back-button" mat-flat-button>
+  <button
+    [routerLink]="['/', draftPath, 'archives']"
+    class="back-button"
+    mat-flat-button
+  >
     Back
   </button>
   <div class="flex justify-center">

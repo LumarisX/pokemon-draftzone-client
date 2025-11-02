@@ -28,8 +28,10 @@ export class DraftArchiveComponent {
   backPath: string = DraftOverviewPath;
 
   menuState: {
-    [key: string]: '' | 'main' | 'confirm-delete';
+    [key: string]: '' | 'confirm-delete';
   } = {};
+
+  openDropdown: string | null = null;
 
   ngOnInit() {
     this.reload();
@@ -51,25 +53,23 @@ export class DraftArchiveComponent {
     });
   }
 
-  setMenuState(leagueId: string, state: '' | 'main' | 'confirm-delete') {
+  setMenuState(leagueId: string, state: '' | 'confirm-delete') {
     this.menuState[leagueId] = state;
   }
 
   toggleMenu(leagueId: string, event: MouseEvent) {
     event.stopPropagation();
-    const currentState = this.menuState[leagueId];
-    this.closeAllMenus();
-    if (currentState !== 'main') {
-      this.menuState[leagueId] = 'main';
+    if (this.openDropdown !== leagueId) {
+      this.openDropdown = leagueId;
     }
   }
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {
-    this.closeAllMenus();
+    this.closeDropdown();
   }
 
-  closeAllMenus(): void {
-    this.menuState = {};
+  closeDropdown(): void {
+    this.openDropdown = null;
   }
 }

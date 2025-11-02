@@ -27,14 +27,17 @@ export class DraftPreviewComponent {
   drafts?: Draft[];
   draftPath = DraftOverviewPath;
   menuState: {
-    [key: string]: '' | 'main' | 'confirm-archive' | 'confirm-delete';
+    [key: string]: '' | 'confirm-archive' | 'confirm-delete';
   } = {};
 
+  openDropdown: string | null = null;
+
   ngOnInit() {
-    this.reload();
+    this.loadDrafts();
   }
 
-  reload() {
+  loadDrafts() {
+    console.log('Loading drafts...');
     this.drafts = undefined;
     this.draftService.getDraftsList().subscribe((data) => {
       this.drafts = data;
@@ -46,30 +49,27 @@ export class DraftPreviewComponent {
 
   archive(teamId: string) {
     this.draftService.archiveDraft(teamId).subscribe(() => {
-      this.reload();
+      console.log('Archived draft');
+      this.loadDrafts();
     });
   }
 
   delete(teamId: string) {
     this.draftService.deleteDraft(teamId).subscribe(() => {
-      this.reload();
+      this.loadDrafts();
     });
   }
 
   setMenuState(
     leagueId: string,
-    state: '' | 'main' | 'confirm-archive' | 'confirm-delete',
+    state: '' | 'confirm-archive' | 'confirm-delete',
   ) {
     this.menuState[leagueId] = state;
   }
 
   toggleMenu(leagueId: string, event: MouseEvent) {
     event.stopPropagation();
-    const currentState = this.menuState[leagueId];
-    this.closeAllMenus();
-    if (currentState !== 'main') {
-      this.menuState[leagueId] = 'main';
-    }
+    this.openDropdown = this.openDropdown === leagueId ? null : leagueId;
   }
 
   toPlanner(draft: Draft): string {
@@ -90,10 +90,10 @@ export class DraftPreviewComponent {
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {
-    this.closeAllMenus();
+    this.closeDropdown();
   }
 
-  closeAllMenus(): void {
-    this.menuState = {};
+  closeDropdown(): void {
+    this.openDropdown = null;
   }
 }
