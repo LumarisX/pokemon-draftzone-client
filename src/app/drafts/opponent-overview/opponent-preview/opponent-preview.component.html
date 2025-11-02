@@ -26,19 +26,12 @@
         @for (matchup of matchups; track $index) {
           <div class="matchup-card">
             <div class="card-header">
-              <div class="matchup-stage">
-                <div class="score-button" [ngClass]="matchup.scoreClass">
-                  <div>
-                    {{ matchup.stage }}
-                  </div>
-                  @if (matchup.score) {
-                    <div class="score">
-                      {{ matchup.scoreString }}
-                    </div>
-                  }
+              @if (matchup.score) {
+                <div class="card-score" [ngClass]="matchup.scoreClass">
+                  {{ matchup.scoreString }}
                 </div>
-              </div>
-              <div class="matchup-team-info-container">
+              }
+              <div class="card-title">
                 @if (matchup.logo) {
                   <div class="matchup-logo">
                     <img [src]="matchup.logo" />
@@ -103,6 +96,9 @@
             </div>
 
             <div class="card-body">
+              <div class="body-header">
+                {{ matchup.stage }}
+              </div>
               <div class="sprites">
                 @for (pokemon of matchup.team; track pokemon.name) {
                   <pdz-sprite [pokemon]="pokemon"></pdz-sprite>

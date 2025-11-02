@@ -110,7 +110,6 @@ export class OpponentTeamPreviewComponent implements OnInit, AfterViewInit {
       if (matchups) {
         this.matchups = matchups.map((m) => {
           const score = this.calculateScore(m);
-          console.log(score);
           return {
             ...m,
             score,
@@ -149,13 +148,6 @@ export class OpponentTeamPreviewComponent implements OnInit, AfterViewInit {
   scoreString(matchup: Opponent) {
     if (matchup.score) return `${matchup.score[0]} - ${matchup.score[1]}`;
     return `Unscored`;
-  }
-
-  scoreColor(matchup: Opponent) {
-    if (!matchup.score) return;
-    if (matchup.score[0] > matchup.score[1]) return 'lightgreen';
-    if (matchup.score[0] < matchup.score[1]) return 'lightcoral';
-    return '';
   }
 
   scoreClass(matchup: Opponent) {

@@ -16,7 +16,7 @@ $card-defaults: ();
     border-radius: var(--pdz-shape-corner-md),
     border-width: 1px,
     border-style: solid,
-    header-padding: var(--pdz-space-sm) var(--pdz-space-md),
+    header-padding: var(--pdz-space-sm) var(--pdz-space-sm),
     body-padding: var(--pdz-space-sm) var(--pdz-space-md),
     footer-padding: var(--pdz-space-xs) var(--pdz-space-md),
     menu-item-font-size: 1rem,
@@ -43,11 +43,53 @@ $card-defaults: ();
       map.get($config, "border-radius") 0 0;
     background-color: map.get($config, "header");
     display: flex;
+    gap: map.get($config, "header-padding");
     justify-content: space-between;
     align-items: center;
     padding: map.get($config, "header-padding");
+
     .more-btn {
       @include icon-button(());
+    }
+    .card-title {
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      font-weight: bold;
+    }
+
+    .card-score {
+      padding: var(--pdz-space-2xs) var(--pdz-space-sm);
+      align-self: stretch;
+      display: flex;
+      align-items: center;
+      border-radius: 0.625rem;
+      font-size: 0.8rem;
+      line-height: 0.9rem;
+      font-weight: bold;
+
+      &.pdz-background-neg {
+        background-color: pdz-color(negative);
+        color: pdz-color(on-negative);
+        box-shadow: var(--pdz-level-1);
+      }
+
+      &.pdz-background-pos {
+        background-color: pdz-color(positive);
+        color: pdz-color(on-positive);
+        box-shadow: var(--pdz-level-1);
+      }
+
+      &.pdz-background-neut {
+        background-color: pdz-color(menu-container);
+        color: pdz-color(on-menu-container);
+      }
+
+      color: pdz-color(on-secondary-container);
+      border-radius: var(--pdz-shape-corner-sm);
+
+      justify-content: center;
+      text-align: center;
     }
   }
 
@@ -90,10 +132,9 @@ $card-defaults: ();
     padding: map.get($config, "body-padding");
     flex-grow: 1;
 
-    .ruleset-format {
+    .body-header {
       font-size: var(--pdz-font-size-sm);
       color: pdz-color(on-primary-container);
-      margin-bottom: var(--pdz-space-sm);
     }
 
     .sprites {

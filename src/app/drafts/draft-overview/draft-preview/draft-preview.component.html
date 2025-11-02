@@ -18,7 +18,14 @@
       @for (draft of drafts; track draft.leagueId) {
         <div class="draft-card">
           <div class="card-header">
-            <h2 class="league-name">{{ draft.leagueName }}</h2>
+            @if (draft.score) {
+              <div class="card-score" [ngClass]="scoreClass(draft)">
+                {{ scoreString(draft) }}
+              </div>
+            }
+            <div class="card-title">
+              <h2 class="league-name">{{ draft.leagueName }}</h2>
+            </div>
             <div class="card-menu">
               <button
                 class="more-btn"
@@ -61,7 +68,7 @@
             </div>
           </div>
           <div class="card-body">
-            <div class="ruleset-format">
+            <div class="body-header">
               {{ draft.ruleset }} - {{ draft.format }}
             </div>
             <div class="sprites">

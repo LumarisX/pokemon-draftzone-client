@@ -72,4 +72,16 @@ export class DraftArchiveComponent {
   closeDropdown(): void {
     this.openDropdown = null;
   }
+
+  scoreString(archive: Archive) {
+    if (archive.score) return `${archive.score.wins} - ${archive.score.loses}`;
+    return `Unscored`;
+  }
+
+  scoreClass(archive: Archive) {
+    if (!archive.score) return 'pdz-background-neut';
+    if (archive.score.wins > archive.score.loses) return 'pdz-background-pos';
+    if (archive.score.wins < archive.score.loses) return 'pdz-background-neg';
+    return 'pdz-background-neut';
+  }
 }

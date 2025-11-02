@@ -122,69 +122,32 @@ section {
   }
 }
 
-.matchup-team-info-container {
-  display: flex;
-  gap: 0.25rem;
-  align-items: center;
-  .matchup-team-info {
-    justify-content: center;
-    display: flex;
-    flex-direction: column;
-    min-width: 12rem;
-    .team-name,
-    .coach-name {
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      overflow: hidden;
-    }
-    .coach-name {
-      font-size: 0.8rem;
-      line-height: 0.9rem;
-    }
-  }
-  .matchup-logo {
-    flex-shrink: 0;
-    overflow: hidden;
-    border-radius: var(--pdz-shape-corner-md);
-    box-shadow: var(--pdz-level-1);
-    height: 3rem;
-    width: 3rem;
-    img {
-      aspect-ratio: 1/1;
-      object-fit: contain;
-    }
-  }
-}
-
-.score-button {
-  padding: var(--pdz-space-2xs) var(--pdz-space-sm);
-  border-radius: 0.625rem;
-  &.pdz-background-neg {
-    background-color: pdz-color(negative);
-    color: pdz-color(on-negative);
-    box-shadow: var(--pdz-level-1);
-  }
-
-  &.pdz-background-pos {
-    background-color: pdz-color(positive);
-    color: pdz-color(on-positive);
-    box-shadow: var(--pdz-level-1);
-  }
-
-  &.pdz-background-neut {
-    background-color: pdz-color(secondary-container);
-    color: pdz-color(on-secondary-container);
-    box-shadow: var(--pdz-level-inset-1);
-  }
-
-  color: pdz-color(on-secondary-container);
-  border-radius: var(--pdz-shape-corner-sm);
-
+.matchup-team-info {
   justify-content: center;
-  text-align: center;
-  .score {
+  display: flex;
+  flex-direction: column;
+  min-width: 12rem;
+  .team-name,
+  .coach-name {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+  .coach-name {
     font-size: 0.8rem;
     line-height: 0.9rem;
+  }
+}
+.matchup-logo {
+  flex-shrink: 0;
+  overflow: hidden;
+  border-radius: var(--pdz-shape-corner-md);
+  box-shadow: var(--pdz-level-1);
+  height: 3rem;
+  width: 3rem;
+  img {
+    aspect-ratio: 1/1;
+    object-fit: contain;
   }
 }
 

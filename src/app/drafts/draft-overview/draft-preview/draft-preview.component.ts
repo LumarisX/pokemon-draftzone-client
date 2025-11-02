@@ -96,4 +96,16 @@ export class DraftPreviewComponent {
   closeDropdown(): void {
     this.openDropdown = null;
   }
+
+  scoreString(draft: Draft) {
+    if (draft.score) return `${draft.score.wins} - ${draft.score.loses}`;
+    return `Unscored`;
+  }
+
+  scoreClass(draft: Draft) {
+    if (!draft.score) return 'pdz-background-neut';
+    if (draft.score.wins > draft.score.loses) return 'pdz-background-pos';
+    if (draft.score.wins < draft.score.loses) return 'pdz-background-neg';
+    return 'pdz-background-neut';
+  }
 }

@@ -22,7 +22,6 @@
   margin-bottom: var(--pdz-space-lg);
   min-height: 40px;
   .title {
-    font-family: var(--pdz-font-fancy);
     font-size: 2rem;
     font-weight: 600;
     margin: 0;
@@ -53,8 +52,6 @@
   .card-header {
     .league-name {
       font-size: 1.25rem;
-      margin: 0;
-      font-family: var(--pdz-font-fancy);
     }
   }
 }

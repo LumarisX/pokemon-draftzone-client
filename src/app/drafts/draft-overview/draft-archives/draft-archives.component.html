@@ -10,7 +10,14 @@
       @for (archive of archives; track $index) {
         <div class="archive-card">
           <div class="card-header">
-            <h2 class="league-name">{{ archive.leagueName }}</h2>
+            @if (archive.score) {
+              <div class="card-score" [ngClass]="scoreClass(archive)">
+                {{ scoreString(archive) }}
+              </div>
+            }
+            <div class="card-title">
+              <h2 class="league-name">{{ archive.leagueName }}</h2>
+            </div>
             <div class="card-menu">
               <button
                 class="more-btn"
