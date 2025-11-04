@@ -1,29 +1,17 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { DraftService } from '../../../services/draft.service';
-import { ActivatedRoute, RouterModule } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import { SpriteComponent } from '../../../images/sprite/sprite.component';
-import { LoadingComponent } from '../../../images/loading/loading.component';
-import { DraftOverviewPath } from '../draft-overview-routing.module';
-import { Pokemon } from '../../../interfaces/draft';
-import { MatSortModule, Sort } from '@angular/material/sort';
 import { CdkTableModule } from '@angular/cdk/table';
-import { BehaviorSubject } from 'rxjs';
+import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-
-export type Stats = {
-  pokemon: Pokemon;
-  kills: number;
-  indirect: number;
-  brought: number;
-  deaths: number;
-  kdr: number;
-  kpg: number;
-};
+import { MatSortModule, Sort } from '@angular/material/sort';
+import { ActivatedRoute, RouterModule } from '@angular/router';
+import { BehaviorSubject } from 'rxjs';
+import { LoadingComponent } from '../../../images/loading/loading.component';
+import { SpriteComponent } from '../../../images/sprite/sprite.component';
+import { DraftService, PokemonStat } from '../../../services/draft.service';
+import { DraftOverviewPath } from '../draft-overview-routing.module';
 
 @Component({
   selector: 'archive-stats',
-  standalone: true,
   templateUrl: './archive-stats.component.html',
   styleUrl: './archive-stats.component.scss',
   imports: [
@@ -41,7 +29,7 @@ export class ArchiveStatsComponent implements OnInit {
   private route = inject(ActivatedRoute);
 
   readonly draftPath = DraftOverviewPath;
-  teamStats = new BehaviorSubject<Stats[]>([]);
+  teamStats = new BehaviorSubject<PokemonStat[]>([]);
   displayedColumns: string[] = [
     'sprite',
     'name',
@@ -56,7 +44,8 @@ export class ArchiveStatsComponent implements OnInit {
   ngOnInit(): void {
     const teamId = this.route.snapshot.paramMap.get('teamId') || '';
     this.draftService.getArchiveStats(teamId).subscribe((data) => {
-      this.teamStats.next(data);
+      console.log(data);
+      this.teamStats.next(data.pokemon);
     });
   }
 

@@ -1,10 +1,23 @@
 import { Injectable, inject } from '@angular/core';
 import { DraftFormData } from '../drafts/draft-overview/draft-form/draft-form-core/draft-form-core.component';
-import { Stats } from '../drafts/draft-overview/draft-stats/draft-stats.component';
-import { Draft } from '../interfaces/draft';
+import { Draft, Pokemon } from '../interfaces/draft';
 import { Matchup } from '../interfaces/matchup';
 import { Opponent } from '../interfaces/opponent';
 import { ApiService } from './api.service';
+
+export type PokemonStat = {
+  pokemon: Pokemon;
+  kills: number;
+  indirect: number;
+  brought: number;
+  deaths: number;
+  kdr: number;
+  kpg: number;
+};
+
+export type Stats = {
+  pokemon: PokemonStat[];
+};
 
 @Injectable({
   providedIn: 'root',
@@ -32,11 +45,11 @@ export class DraftService {
   }
 
   getStats(teamName: string) {
-    return this.apiService.get<Stats[]>(`draft/${teamName}/stats`, true);
+    return this.apiService.get<Stats>(`draft/${teamName}/stats`, true);
   }
 
   getArchiveStats(teamName: string) {
-    return this.apiService.get<Stats[]>(`archive/${teamName}/stats`, true);
+    return this.apiService.get<Stats>(`archive/${teamName}/stats`, true);
   }
 
   newDraft(draftData: Object) {

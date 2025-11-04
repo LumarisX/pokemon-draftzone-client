@@ -1,25 +1,24 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { CommonModule } from '@angular/common';
 import {
-  Component,
-  OnInit,
-  inject,
-  ViewChild,
   AfterViewInit,
+  Component,
   HostListener,
+  inject,
+  OnInit,
+  ViewChild,
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { MatSortModule, MatSort, Sort } from '@angular/material/sort';
+import { MatSort, MatSortModule, Sort } from '@angular/material/sort';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { BehaviorSubject, catchError, forkJoin, of, take } from 'rxjs';
 import { LoadingComponent } from '../../../images/loading/loading.component';
 import { SpriteComponent } from '../../../images/sprite/sprite.component';
 import { Opponent } from '../../../interfaces/opponent';
-import { DraftService } from '../../../services/draft.service';
+import { DraftService, PokemonStat } from '../../../services/draft.service';
 import { DraftOverviewPath } from '../../draft-overview/draft-overview-routing.module';
-import { Stats } from '../../draft-overview/draft-stats/draft-stats.component';
 import { ConfirmDeleteDialogComponent } from './confirm-delete-dialog.component';
 
 type Matchup = Opponent & {
@@ -64,7 +63,7 @@ export class OpponentTeamPreviewComponent implements OnInit, AfterViewInit {
   matchups?: Matchup[];
   teamId: string = '';
   readonly draftPath = DraftOverviewPath;
-  teamStats = new BehaviorSubject<Stats[] | null>(null);
+  teamStats = new BehaviorSubject<PokemonStat[] | null>(null);
   displayedColumns: string[] = [
     'sprite',
     'name',
@@ -120,7 +119,7 @@ export class OpponentTeamPreviewComponent implements OnInit, AfterViewInit {
       }
 
       if (stats) {
-        this.teamStats.next(stats);
+        this.teamStats.next(stats.pokemon);
         this.sort(this.defaultSort);
       }
     });
