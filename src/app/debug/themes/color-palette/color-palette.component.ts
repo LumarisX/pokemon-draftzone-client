@@ -39,7 +39,7 @@ export class ColorPaletteComponent implements AfterViewInit {
         { name: 'surface-container-highest' },
         { name: 'outline' },
         { name: 'outline-variant' },
-        { name: 'disabled-surface' },
+        { name: 'surface-disabled' },
         { name: 'surface-inverse' },
       ],
     },

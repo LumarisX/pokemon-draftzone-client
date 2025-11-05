@@ -53,18 +53,18 @@ $theme: (
         var(--pdz-color-pink-300)
       ),
     // Menu Theme (Refactored)
-    menu: "gray-500",
-    menu-lighter: "gray-400",
-    menu-darker: "gray-600",
+    menu: "orange-500",
+    menu-lighter: "orange-400",
+    menu-darker: "orange-600",
     on-menu: "white",
-    menu-container: "gray-150",
-    menu-container-low: "gray-100",
-    menu-container-high: "gray-350",
-    menu-container-hover: "gray-250",
-    on-menu-container: "gray-950",
-    menu-hover: "gray-400",
-    menu-border: "gray-350",
-    menu-subtle: "gray-150",
+    menu-container: "orange-150",
+    menu-container-low: "orange-100",
+    menu-container-high: "orange-350",
+    menu-container-hover: "orange-250",
+    on-menu-container: "orange-950",
+    menu-hover: "orange-400",
+    menu-border: "orange-350",
+    menu-subtle: "orange-150",
     menu-gradient: linear-gradient(
         135deg,
         var(--pdz-color-gray-200),
@@ -89,8 +89,8 @@ $theme: (
     on-info-container: "blue-950",
 
     // Disabled State
-    disabled-surface: "gray-200",
-    on-disabled-surface: "gray-500",
+    surface-disabled: "gray-150",
+    on-surface-disabled: "gray-500",
 
     // Inverse Colors
     surface-inverse: "gray-900",
@@ -236,8 +236,8 @@ $theme: (
     info-container: "blue-950",
     on-info-container: "blue-200",
 
-    disabled-surface: "gray-800",
-    on-disabled-surface: "gray-600",
+    surface-disabled: "gray-800",
+    on-surface-disabled: "gray-600",
 
     surface-inverse: "gray-100",
     on-surface-inverse: "gray-900",

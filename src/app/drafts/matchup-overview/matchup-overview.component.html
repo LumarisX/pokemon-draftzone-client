@@ -187,4 +187,29 @@
   } @else {
     <pdz-loading></pdz-loading>
   }
+  <div class="matchup-tabs-container">
+    <div class="radial-stack" [class.open]="toolOpen">
+      <button
+        class="open-tools-button"
+        (click)="toolOpen = !toolOpen"
+        [attr.aria-expanded]="toolOpen"
+      >
+        @if (toolOpen) {
+          <mat-icon>close</mat-icon>
+        } @else {
+          <mat-icon>home_repair_service</mat-icon>
+        }
+      </button>
+
+      <button class="tool-button">
+        <mat-icon>sticky_note_2</mat-icon>
+      </button>
+      <button class="tool-button" [disabled]="true">
+        <mat-icon>search_insights</mat-icon>
+      </button>
+      <button class="tool-button">
+        <mat-icon>build</mat-icon>
+      </button>
+    </div>
+  </div>
 </div>

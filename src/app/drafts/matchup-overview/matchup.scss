@@ -52,7 +52,11 @@
 
     button {
       pointer-events: auto;
-      @include flat-button-menu(());
+      @include flat-button-menu(
+        (
+          max-width: 4rem,
+        )
+      );
     }
 
     .details-spacer {
@@ -64,6 +68,7 @@
         pointer-events: auto;
         display: flex;
         flex-wrap: wrap;
+        z-index: 5001;
         margin-top: -0.75rem;
         padding: 0.25rem 1rem;
         border-radius: 0 0 var(--pdz-shape-corner-sm) var(--pdz-shape-corner-sm);
@@ -79,7 +84,20 @@
     @media (min-width: 768px) {
       top: 0;
       position: sticky;
+
+      button {
+        pointer-events: auto;
+        @include flat-button-menu(
+          (
+            max-width: 5rem,
+          )
+        );
+      }
     }
+  }
+
+  .matchup-tabs-container {
+    @include float-buttons();
   }
 }
 

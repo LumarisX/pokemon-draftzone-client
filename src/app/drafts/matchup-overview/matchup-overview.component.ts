@@ -26,7 +26,7 @@ dayjs.extend(duration);
   selector: 'matchup-overview',
   standalone: true,
   templateUrl: 'matchup-overview.component.html',
-  styleUrl: './matchup.scss',
+  styleUrls: ['./matchup.scss', './matchup-overview.component.scss'],
   imports: [
     CommonModule,
     LoadingComponent,
@@ -51,6 +51,8 @@ export class MatchupOverviewComponent implements OnInit {
   timeString: string | null = null;
   copied = false;
   draftPath = DraftOverviewPath;
+
+  toolOpen: boolean = false;
 
   @ViewChild('inputFieldRef') inputFieldRef!: ElementRef;
 

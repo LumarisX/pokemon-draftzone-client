@@ -141,3 +141,98 @@ $icon-button-defaults: (
   $config: map.merge($button-menu-defaults, $overrides);
   @include icon-button($config);
 }
+
+@mixin float-buttons($overrides: ()) {
+  position: sticky;
+  bottom: var(--pdz-space-lg);
+  margin-left: auto;
+  margin-right: var(--pdz-space-lg);
+  width: fit-content;
+  height: fit-content;
+  z-index: 10000;
+  --radial-radius: 6rem;
+  overflow: visible;
+  mat-icon {
+    display: flex;
+    width: fit-content;
+    height: fit-content;
+    max-height: fit-content;
+    max-width: fit-content;
+    font-size: 2rem;
+  }
+  .radial-stack {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: fit-content;
+    height: fit-content;
+  }
+
+  button {
+    background-color: pdz-color(menu-container);
+    padding: var(--pdz-space-md);
+    border-radius: var(--pdz-shape-corner-full);
+    box-shadow: var(--pdz-level-3);
+    border: 1px solid pdz-color(menu-container-low);
+    color: pdz-color(on-menu-container);
+    &:hover:not(:disabled) {
+      box-shadow: var(--pdz-level-4);
+      background-color: pdz-color(menu-container-hover);
+      border: 1px solid pdz-color(menu-container);
+    }
+
+    &.open-tools-button {
+      position: relative;
+      z-index: 2;
+    }
+
+    &.tool-button {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(var(--angle, -90deg)) translate(0)
+        rotate(calc(var(--angle, -90deg) * -1)) scale(0.85);
+      opacity: 0;
+      pointer-events: none;
+      will-change: transform, opacity;
+      transition:
+        transform 220ms ease,
+        opacity 180ms ease,
+        box-shadow 180ms ease,
+        background-color 180ms ease;
+    }
+
+    &:disabled {
+      background-color: pdz-color(surface-disabled);
+      color: pdz-color(on-surface-disabled);
+      border-width: 0;
+    }
+  }
+
+  .radial-stack.open > button.tool-button {
+    transform: translate(-50%, -50%) rotate(var(--angle, -90deg))
+      translate(var(--radial-radius)) rotate(calc(var(--angle, -90deg) * -1))
+      scale(1);
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .radial-stack.open > button:nth-of-type(2).tool-button {
+    transition-delay: 0ms;
+  }
+  .radial-stack.open > button:nth-of-type(3).tool-button {
+    transition-delay: 40ms;
+  }
+  .radial-stack.open > button:nth-of-type(4).tool-button {
+    transition-delay: 80ms;
+  }
+
+  .radial-stack > button:nth-of-type(2).tool-button {
+    --angle: -90deg;
+  }
+  .radial-stack > button:nth-of-type(3).tool-button {
+    --angle: -135deg;
+  }
+  .radial-stack > button:nth-of-type(4).tool-button {
+    --angle: -180deg;
+  }
+}
