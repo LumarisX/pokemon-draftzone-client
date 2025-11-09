@@ -1,6 +1,7 @@
 @use "tailwind-styles";
 @use "pdz-theming";
 @use "mat-styles";
+@use "mixins/typography" as *;
 
 @font-face {
   font-family: "Nasalization RG";
@@ -177,5 +178,31 @@ $option-lineheight: 3rem;
 .pdz-hidden-on-small {
   @media (max-width: 768px) {
     display: none;
+  }
+}
+
+markdown {
+  ul {
+    list-style-type: disc !important;
+    list-style-position: inside !important;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--pdz-font-fancy);
+  }
+
+  h1 {
+    @include font-size(1.5rem);
+  }
+  h2 {
+    @include font-size(1.3rem);
+  }
+  h3 {
+    @include font-size(1.15rem);
+  }
+  h4 {
+    @include font-size(1rem);
   }
 }

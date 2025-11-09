@@ -1,0 +1,28 @@
+<div class="widget-container">
+  <div class="widget-header">
+    <div class="widget-label">Notes</div>
+    <div class="widget-options">
+      @if (mode !== "view-only") {
+        @if (previewMode) {
+          <button (click)="previewMode = false">
+            <mat-icon>edit_note</mat-icon>
+          </button>
+        } @else {
+          <button (click)="previewMode = true">
+            <mat-icon>preview</mat-icon>
+          </button>
+        }
+      }
+    </div>
+  </div>
+  <div class="widget-body" [class.preview]="isPreview()">
+    @if (isPreview()) {
+      <markdown [data]="notes"></markdown>
+    } @else {
+      <textarea
+        [(ngModel)]="notes"
+        (ngModelChange)="onNotesChange($event)"
+      ></textarea>
+    }
+  </div>
+</div>

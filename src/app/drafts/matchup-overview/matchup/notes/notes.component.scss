@@ -1,0 +1,70 @@
+@use "../../../../../styles/global.scss" as *;
+@use "../../../../../styles/mixins/buttons" as *;
+.widget-body {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+  max-width: 40rem;
+  row-gap: 0.5rem;
+  width: 30rem !important;
+  height: 40rem;
+  border-radius: var(--pdz-shape-corner-lg);
+  padding: 1rem;
+  background-color: var(--pdz-cmp-coverage-on-color, inherit);
+  border: 2px dashed rgba(pdz-color(menu-border-rgb), 0.75);
+
+  @media (min-width: 768px) {
+    height: 50rem;
+  }
+
+  &.preview {
+    border: 2px solid pdz-color(menu-border);
+  }
+
+  &:focus {
+    border-color: pdz-color(menu-border);
+  }
+  textarea {
+    width: 100%;
+    height: 100%;
+    resize: none;
+
+    font-family: inherit;
+    transition:
+      border-color 0.2s,
+      box-shadow 0.2s;
+    outline: none;
+
+    &::placeholder {
+      opacity: 0.7;
+      font-style: italic;
+    }
+  }
+}
+
+button {
+  @include icon-button-menu();
+}
+
+coverage {
+  border: 1px solid var(--pdz-cmp-coverage-border, var(--pdz-color-menu-border));
+  border-radius: var(--pdz-shape-corner-lg);
+}
+
+.widget-container {
+  --pdz-cmp-coverage-border: var(--pdz-color-primary-border);
+  --pdz-cmp-coverage-hover: var(--pdz-color-primary-hover);
+  --pdz-cmp-coverage-color: var(--pdz-color-primary);
+  --pdz-cmp-coverage-on-color: var(--pdz-color-on-primary);
+  &.alternate {
+    --pdz-cmp-coverage-border: var(--pdz-color-secondary-border);
+    --pdz-cmp-coverage-hover: var(--pdz-color-secondary-hover);
+    --pdz-cmp-coverage-color: var(--pdz-color-secondary);
+    --pdz-cmp-coverage-on-color: var(--pdz-color-on-secondary);
+  }
+}
+
+.widget-header {
+  min-height: 3rem;
+}

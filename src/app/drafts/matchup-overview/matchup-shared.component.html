@@ -32,7 +32,11 @@
     </div>
   </div>
   @if (matchupData) {
-    <matchup [matchupData]="matchupData"></matchup>
+    <matchup
+      [matchupId]="matchupId"
+      [matchupData]="matchupData"
+      [options]="{ notes: 'view-only' }"
+    ></matchup>
   } @else {
     <pdz-loading></pdz-loading>
   }

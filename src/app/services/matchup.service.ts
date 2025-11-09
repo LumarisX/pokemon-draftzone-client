@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { ApiService } from './api.service';
 import { MatchupData } from '../drafts/matchup-overview/matchup-interface';
 import { QuickFormData } from '../tools/quick-matchup/form/quick-matchup-form.component';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 
 export const matchupPath = 'matchup';
 
@@ -55,6 +55,26 @@ export class MatchupService {
       `${matchupPath}/${matchupId}/check-ownership`,
       false,
       { userId },
+    );
+  }
+
+  getNotes(matchupId: string) {
+    return this.apiService.get<{ notes: string }>(
+      `${matchupPath}/${matchupId}/notes`,
+      false,
+    );
+  }
+
+  updateNotes(matchupId: string, notes: string) {
+    const payload = notes.trim();
+    if (!payload) {
+      return of({ success: true, message: 'No notes to save' });
+    }
+    console.log(matchupId);
+    return this.apiService.post(
+      `${matchupPath}/${matchupId}/update-notes`,
+      true,
+      { notes: payload },
     );
   }
 }

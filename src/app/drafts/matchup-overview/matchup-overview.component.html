@@ -183,11 +183,18 @@
     }
   </div>
   @if (matchupData) {
-    <matchup [matchupData]="matchupData"></matchup>
+    @if (matchupId) {
+      <matchup [matchupId]="matchupId" [matchupData]="matchupData"></matchup>
+    }
   } @else {
     <pdz-loading></pdz-loading>
   }
-  <div class="matchup-tabs-container">
+  <!-- <div class="matchup-tools-container">
+    <button class="tool-button">
+      <mat-icon>build</mat-icon>
+    </button>
+  </div> -->
+  <!-- <div class="matchup-tabs-container">
     <div class="radial-stack" [class.open]="toolOpen">
       <button
         class="open-tools-button"
@@ -211,5 +218,5 @@
         <mat-icon>build</mat-icon>
       </button>
     </div>
-  </div>
+  </div> -->
 </div>

@@ -27,6 +27,14 @@
         [typecharts]="matchupData.typechart"
       ></coveragechart>
     </div>
+    @if (matchupId) {
+      <div class="widget-wrapper">
+        <pdz-matchup-notes
+          [mode]="options.notes"
+          [matchupId]="matchupId"
+        ></pdz-matchup-notes>
+      </div>
+    }
   </div>
 }
 <!-- {{ matchupData.overview | json }} -->
