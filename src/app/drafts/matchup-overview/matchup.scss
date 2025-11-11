@@ -11,7 +11,6 @@
     width: 100%;
 
     padding: 0 1rem 0.5rem;
-    // color: pdz-color(primary);
     font-weight: var(--pdz-font-weight-bold);
     .widget-label {
       font-size: 1.2rem;
@@ -95,6 +94,13 @@
       }
     }
   }
+
+  .matchup-body {
+    padding: var(--pdz-space-lg);
+    @media (max-width: 768px) {
+      padding: var(--pdz-space-sm);
+    }
+  }
 }
 
 .detail-container {
@@ -117,148 +123,22 @@
   }
 }
 
-.shared-backdrop {
-  position: fixed;
+@mixin widget-container() {
   display: flex;
-  align-items: center;
+  flex-wrap: wrap;
   justify-content: center;
-  padding: var(--pdz-space-xl);
-  inset: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  max-height: fit-content;
+  height: fit-content;
+  align-items: start;
+  width: 100%;
+  gap: 1rem;
 
-  .shared-container {
-    max-width: 50rem;
-    width: 100%;
-    background-color: pdz-color(surface);
-    box-shadow: var(--pdz-level-4);
+  > * {
+    padding: var(--pdz-space-md);
+    max-width: 100%;
+    width: fit-content;
     border-radius: var(--pdz-shape-corner-lg);
-    padding: var(--pdz-space-lg);
-    position: relative;
-
-    .share-header {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 3rem;
-      .share-title {
-        font-size: 1.5rem;
-        font-weight: bold;
-        font-family: var(--pdz-font-fancy);
-      }
-      button {
-        position: absolute;
-        right: 0;
-        top: 0;
-      }
-    }
-
-    .share-body {
-      display: flex;
-      flex-direction: column;
-      row-gap: 1rem;
-      .url-container {
-        border: 1px solid pdz-color(primary-border);
-        border-radius: var(--pdz-shape-corner-lg);
-        padding: 0 0.5rem;
-
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        .url-text {
-          text-overflow: ellipsis;
-          width: fit-content;
-          overflow: hidden;
-
-          max-width: 100%;
-          display: block;
-        }
-      }
-      .matchup-preview-container {
-        border: 1px solid pdz-color(primary-border);
-        border-radius: var(--pdz-shape-corner-lg);
-        padding: 0 1rem;
-        .details-container {
-          display: flex;
-          flex-wrap: wrap;
-          justify-content: space-evenly;
-          border-bottom: 1px solid pdz-color(primary-border);
-        }
-        .teams-container {
-          display: flex;
-          padding: 0.25rem 0;
-          > :not(:last-child) {
-            border-right: 1px solid pdz-color(primary-border);
-          }
-          .team-container {
-            width: 50%;
-            padding: 0 0.25rem;
-
-            .name-container {
-              padding: var(--pdz-space-xs);
-              .name-text {
-                height: 1.2rem;
-                text-align: center;
-                font-weight: 600;
-              }
-              .coach-text {
-                height: 1.2rem;
-                font-size: 0.8rem;
-                text-align: center;
-                font-weight: 600;
-              }
-            }
-
-            .sprite-container {
-              display: grid;
-              gap: 0.5rem;
-              grid-template-columns: repeat(4, minmax(0, 1fr));
-              .sprite-wrapper {
-                position: relative;
-                .capt-label {
-                  display: flex;
-                  flex-direction: column;
-                  justify-content: center;
-                  align-items: center;
-                  position: absolute;
-                  top: 0;
-                  right: 0;
-                  background-color: pdz-color(primary);
-                  color: pdz-color(on-primary);
-                  box-shadow: var(--pdz-level-2);
-
-                  border-radius: var(--pdz-shape-corner-lg);
-                  mat-icon {
-                    height: 1.5rem;
-                    width: 1.5rem;
-                  }
-                  @media (max-width: 768px) {
-                    mat-icon {
-                      height: 1rem;
-                      width: 1rem;
-                    }
-                  }
-                }
-                .speed-label {
-                  position: absolute;
-                  bottom: 0;
-                  font-weight: 600;
-                  background-color: pdz-color(surface);
-                  box-shadow: var(--pdz-level-2);
-                  padding: 0 0.125rem;
-                  border-radius: var(--pdz-shape-corner-lg);
-                  color: pdz-color(primary);
-                  @media (max-width: 768px) {
-                    font-size: 0.7rem;
-                    line-height: 0.7rem;
-                    padding: var(--pdz-space-2xs);
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
+    background-color: var(--pdz-color-surface);
+    box-shadow: var(--pdz-level-3);
   }
 }

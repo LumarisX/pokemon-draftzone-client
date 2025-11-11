@@ -1,3 +1,4 @@
+import { OverlayModule } from '@angular/cdk/overlay';
 import { CommonModule } from '@angular/common';
 import {
   Component,
@@ -7,18 +8,18 @@ import {
   inject,
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { Meta } from '@angular/platform-browser';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
-import { MatchupService } from '../../services/matchup.service';
 import { LoadingComponent } from '../../images/loading/loading.component';
+import { SpriteComponent } from '../../images/sprite/sprite.component';
+import { MatchupService } from '../../services/matchup.service';
 import { DraftOverviewPath } from '../draft-overview/draft-overview-routing.module';
 import { MatchupData } from './matchup-interface';
+import { MatchupTeambuilderComponent } from './matchup-teambuilder/matchup-teambuilder.component';
 import { MatchupComponent } from './matchup/matchup.component';
-import { OverlayModule } from '@angular/cdk/overlay';
-import { MatIconModule } from '@angular/material/icon';
-import { SpriteComponent } from '../../images/sprite/sprite.component';
 
 dayjs.extend(duration);
 
@@ -36,6 +37,7 @@ dayjs.extend(duration);
     OverlayModule,
     MatIconModule,
     SpriteComponent,
+    MatchupTeambuilderComponent,
   ],
 })
 export class MatchupOverviewComponent implements OnInit {
@@ -43,31 +45,27 @@ export class MatchupOverviewComponent implements OnInit {
   private matchupService = inject(MatchupService);
   private meta = inject(Meta);
 
-  matchupData: MatchupData | null = null;
-  matchupId = '';
-  shared = false;
-  shareUrl = '';
-  leagueId = '';
-  timeString: string | null = null;
-  copied = false;
+  matchupData?: MatchupData;
+  matchupId?: string;
+  shared: boolean = false;
+  shareUrl?: string;
+  leagueId?: string;
+  timeString?: string;
+  copied: boolean = false;
   draftPath = DraftOverviewPath;
+
+  view: 'matchup' | 'teambuilder' = 'teambuilder';
 
   toolOpen: boolean = false;
 
   @ViewChild('inputFieldRef') inputFieldRef!: ElementRef;
 
   ngOnInit(): void {
-    this.route.queryParams.subscribe((params) => {
-      if ('id' in params) {
-        this.matchupId = params['id'];
-        this.shareUrl =
-          'https://pokemondraftzone.com/matchup/' + this.matchupId;
-      }
-      let leagueId = this.route.snapshot.paramMap.get('teamid');
-      if (leagueId) {
-        this.leagueId = leagueId;
-      }
-      this.matchupService.getMatchup(this.matchupId).subscribe((data) => {
+    this.route.params.subscribe((params) => {
+      this.matchupId = params['matchupId'];
+      this.shareUrl = 'https://pokemondraftzone.com/matchup/' + this.matchupId;
+      this.leagueId = params['teamId'];
+      this.matchupService.getMatchup(this.matchupId!).subscribe((data) => {
         this.matchupData = <MatchupData>data;
         if ('gameTime' in this.matchupData) {
           let gameTime = dayjs(this.matchupData.details.gameTime);
@@ -95,7 +93,7 @@ export class MatchupOverviewComponent implements OnInit {
           });
           this.meta.updateTag({
             name: 'og:url',
-            content: this.shareUrl,
+            content: this.shareUrl ?? '',
           });
         }
       });
@@ -103,6 +101,7 @@ export class MatchupOverviewComponent implements OnInit {
   }
 
   copyToClipboard() {
+    if (!this.shareUrl) return;
     navigator.clipboard
       .writeText(this.shareUrl)
       .then(() => {

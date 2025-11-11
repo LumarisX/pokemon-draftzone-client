@@ -1,0 +1,41 @@
+@use "../../../../../styles/global.scss" as *;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  .teambuilder-widget {
+    max-width: 100%;
+    width: fit-content;
+
+    .teambuilder-tabs {
+      display: flex;
+      padding: 0 var(--pdz-shape-corner-lg);
+      .tab {
+        background-color: pdz-color(surface);
+        width: fit-content;
+        box-shadow: var(--pdz-level-2);
+        border-radius: var(--pdz-shape-corner-md) var(--pdz-shape-corner-md) 0 0;
+        padding: 0 var(--pdz-shape-corner-md);
+      }
+    }
+
+    .teambuilder-main {
+      width: 100%;
+      padding: var(--pdz-space-md);
+      border-radius: var(--pdz-shape-corner-lg);
+      background-color: pdz-color(surface);
+      box-shadow: var(--pdz-level-2);
+
+      .options {
+        display: flex;
+      }
+      .sprite-wrapper {
+        width: 4rem;
+        height: 4rem;
+        max-height: 4rem;
+        max-width: 4rem;
+      }
+    }
+  }
+}

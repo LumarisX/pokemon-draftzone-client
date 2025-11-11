@@ -143,14 +143,24 @@ $icon-button-defaults: (
 }
 
 @mixin float-button($overrides: ()) {
-  position: sticky;
-  bottom: var(--pdz-space-lg);
-  margin-left: auto;
-  margin-right: var(--pdz-space-lg);
-  width: fit-content;
-  height: fit-content;
-  z-index: 10000;
-  overflow: visible;
+  background-color: pdz-color(menu-container);
+  padding: var(--pdz-space-md);
+  border-radius: var(--pdz-shape-corner-full);
+  box-shadow: var(--pdz-level-3);
+  border: 1px solid pdz-color(menu-border);
+  color: pdz-color(on-menu-container);
+  transition: all 0.2s ease-in-out;
+  &:hover:not(:disabled) {
+    box-shadow: var(--pdz-level-4);
+    background-color: pdz-color(menu-container-hover);
+  }
+
+  &:disabled {
+    background-color: pdz-color(surface-disabled);
+    color: pdz-color(on-surface-disabled);
+    border-width: 0;
+  }
+
   mat-icon {
     display: flex;
     width: fit-content;
@@ -158,27 +168,6 @@ $icon-button-defaults: (
     max-height: fit-content;
     max-width: fit-content;
     font-size: 2rem;
-  }
-
-  button {
-    background-color: pdz-color(menu-container);
-    padding: var(--pdz-space-md);
-    border-radius: var(--pdz-shape-corner-full);
-    box-shadow: var(--pdz-level-3);
-    border: 1px solid pdz-color(menu-container-low);
-    color: pdz-color(on-menu-container);
-    transition: all 0.2s ease-in-out;
-    &:hover:not(:disabled) {
-      box-shadow: var(--pdz-level-4);
-      background-color: pdz-color(menu-container-hover);
-      border: 1px solid pdz-color(menu-border);
-    }
-
-    &:disabled {
-      background-color: pdz-color(surface-disabled);
-      color: pdz-color(on-surface-disabled);
-      border-width: 0;
-    }
   }
 }
 

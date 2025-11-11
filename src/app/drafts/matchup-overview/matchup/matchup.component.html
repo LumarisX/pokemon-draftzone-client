@@ -1,39 +1,19 @@
 @if (matchupData) {
   <div class="matchup-container">
-    <div class="widget-wrapper">
-      <overview [teams]="matchupData.summary"></overview>
-    </div>
-    <div class="widget-wrapper">
-      <summary
-        [summaries]="matchupData.summary"
-        style="list-style: none"
-      ></summary>
-    </div>
-    <div class="widget-wrapper">
-      <speedchart
-        [speedchart]="matchupData.speedchart"
-        [level]="matchupData.details.level"
-      ></speedchart>
-    </div>
-    <div class="widget-wrapper">
-      <pdz-typechart [typecharts]="matchupData.typechart"></pdz-typechart>
-    </div>
-    <div class="widget-wrapper">
-      <movechart [teams]="matchupData.movechart"></movechart>
-    </div>
-    <div class="widget-wrapper">
-      <coveragechart
-        [coverage]="matchupData.coveragechart"
-        [typecharts]="matchupData.typechart"
-      ></coveragechart>
-    </div>
+    <overview [teams]="matchupData.summary" />
+    <pdz-summary [summaries]="matchupData.summary" style="list-style: none" />
+    <speedchart
+      [speedchart]="matchupData.speedchart"
+      [level]="matchupData.details.level"
+    />
+    <pdz-typechart [typecharts]="matchupData.typechart" />
+    <movechart [teams]="matchupData.movechart" />
+    <coveragechart
+      [coverage]="matchupData.coveragechart"
+      [typecharts]="matchupData.typechart"
+    />
     @if (matchupId) {
-      <div class="widget-wrapper">
-        <pdz-matchup-notes
-          [mode]="options.notes"
-          [matchupId]="matchupId"
-        ></pdz-matchup-notes>
-      </div>
+      <pdz-matchup-notes [mode]="options.notes" [matchupId]="matchupId" />
     }
   </div>
 }

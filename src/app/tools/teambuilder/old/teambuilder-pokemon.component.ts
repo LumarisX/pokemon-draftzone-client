@@ -8,19 +8,18 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
 import { RouterModule } from '@angular/router';
-import { TeambuilderService } from '../../services/teambuilder.service';
-import { NATURES, STATS, TERATYPES } from '../../data';
-import { nameList } from '../../data/namedex';
-import { Pokemon } from '../../interfaces/draft';
-import { PokemonSelectComponent } from '../../util/pokemon-select/pokemon-select.component';
-import { PokemonBuilder, TeambuilderPokemon } from './pokemon-builder.model';
+import { TeambuilderService } from '../../../services/teambuilder.service';
+import { NATURES, STATS, TERATYPES } from '../../../data';
+import { nameList } from '../../../data/namedex';
+import { Pokemon } from '../../../interfaces/draft';
+import { PokemonSelectComponent } from '../../../util/pokemon-select/pokemon-select.component';
+import { PokemonBuilder, TeambuilderPokemon } from '../pokemon-builder.model';
 import { MatSliderModule } from '@angular/material/slider';
-import { RulesetSelectComponent } from '../../util/ruleset-select/ruleset.component';
-import { FormatSelectComponent } from '../../util/format-select/format.component';
+import { RulesetSelectComponent } from '../../../util/ruleset-select/ruleset.component';
+import { FormatSelectComponent } from '../../../util/format-select/format.component';
 
 @Component({
-  selector: 'teambuilder-pokemon',
-  standalone: true,
+  selector: 'pdz-teambuilder-core',
   templateUrl: './teambuilder-pokemon.component.html',
   styleUrl: './teambuilder-pokemon.component.scss',
   imports: [
@@ -35,16 +34,16 @@ import { FormatSelectComponent } from '../../util/format-select/format.component
     MatSliderModule,
     MatFormFieldModule,
     PokemonSelectComponent,
-    RulesetSelectComponent,
-    FormatSelectComponent,
   ],
 })
-export class TeamBuilderPokemonComponent {
+export class TeambuilderComponent {
   private teambuilderService = inject(TeambuilderService);
 
   private _pokemon: PokemonBuilder | null = null;
   selectedPokemon: Pokemon | null = null;
+  @Input()
   ruleset: string | null = null;
+  @Input()
   format: string | null = null;
 
   @Input() showBoosts: boolean = false;

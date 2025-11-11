@@ -3,12 +3,12 @@ import { Component, input, Input } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { MatchupData } from '../matchup-interface';
 import { CoveragechartComponent } from './coveragechart/coveragechart.component';
-import { MovechartComponent } from './movechart/movechart.component';
-import { OverviewComponent } from './overview/overview.component';
+import { MovechartComponent } from '../widgets/movechart/movechart.component';
+import { OverviewComponent } from '../widgets/overview/overview.component';
 import { SpeedchartComponent } from './speedchart/speedchart.component';
-import { SummaryComponent } from './summary/summary.component';
-import { TypechartComponent } from './typechart/typechart.component';
-import { MatchupNotesComponent } from './notes/notes.component';
+import { SummaryComponent } from '../widgets/summary/summary.component';
+import { TypechartComponent } from '../widgets/typechart/typechart.component';
+import { MatchupNotesComponent } from '../widgets/notes/notes.component';
 
 @Component({
   selector: 'matchup',

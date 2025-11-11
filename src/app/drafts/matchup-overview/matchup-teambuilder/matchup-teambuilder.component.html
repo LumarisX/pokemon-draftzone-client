@@ -1,0 +1,12 @@
+@if (matchupData) {
+  <div class="teambuilder-container">
+    <div class="widget-wrapper">
+      <pdz-teambuilder-widget
+        [matchupData]="matchupData"
+        [matchupId]="matchupId"
+      />
+    </div>
+  </div>
+} @else {
+  <pdz-loading></pdz-loading>
+}

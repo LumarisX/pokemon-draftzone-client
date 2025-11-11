@@ -1,25 +1,18 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { TeambuilderService } from '../../services/teambuilder.service';
+import { TeambuilderComponent } from './old/teambuilder-pokemon.component';
 import { PokemonBuilder } from './pokemon-builder.model';
-import { TeamBuilderPokemonComponent } from './teambuilder-pokemon.component';
 
 @Component({
   selector: 'teambuilder-analyzer',
-  standalone: true,
   templateUrl: './teambuilder.component.html',
-  imports: [
-    CommonModule,
-    RouterModule,
-    FormsModule,
-    TeamBuilderPokemonComponent,
-  ],
+  imports: [CommonModule, RouterModule, FormsModule, TeambuilderComponent],
 })
 export class TeamBuilderComponent implements OnInit {
-  private teambuilderService = inject(TeambuilderService);
-
+  ruleset: string | null = null;
+  format: string | null = null;
   team: PokemonBuilder[] = [];
 
   ngOnInit(): void {

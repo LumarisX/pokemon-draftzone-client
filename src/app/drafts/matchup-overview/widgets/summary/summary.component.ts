@@ -6,7 +6,7 @@ import { SummaryCoreComponent } from '../../../../util/matchup/summary-core/summ
 import { Summary } from '../../matchup-interface';
 
 @Component({
-  selector: 'summary',
+  selector: 'pdz-summary',
   templateUrl: './summary.component.html',
   styleUrls: ['./summary.component.scss', '../../matchup.scss'],
   imports: [

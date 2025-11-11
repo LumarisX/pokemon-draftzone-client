@@ -182,19 +182,35 @@
       </ng-template>
     }
   </div>
-  @if (matchupData) {
-    @if (matchupId) {
-      <matchup [matchupId]="matchupId" [matchupData]="matchupData"></matchup>
+  <div class="matchup-body">
+    @if (matchupId && matchupData) {
+      @if (view === "matchup") {
+        <matchup [matchupId]="matchupId" [matchupData]="matchupData"></matchup>
+      } @else if (view === "teambuilder") {
+        <pdz-matchup-teambuilder
+          [matchupId]="matchupId"
+          [matchupData]="matchupData"
+        ></pdz-matchup-teambuilder>
+      }
+    } @else {
+      <pdz-loading></pdz-loading>
     }
-  } @else {
-    <pdz-loading></pdz-loading>
-  }
-  <!-- <div class="matchup-tools-container">
-    <button class="tool-button">
+  </div>
+</div>
+<div class="matchup-tools-container">
+  @if (view !== "teambuilder") {
+    <button class="tool-button" (click)="view = 'teambuilder'">
       <mat-icon>build</mat-icon>
     </button>
-  </div> -->
-  <!-- <div class="matchup-tabs-container">
+  }
+  @if (view != "matchup") {
+    <button class="tool-button" (click)="view = 'matchup'">
+      <mat-icon>search_insights</mat-icon>
+    </button>
+  }
+</div>
+
+<!-- <div class="matchup-tabs-container">
     <div class="radial-stack" [class.open]="toolOpen">
       <button
         class="open-tools-button"
@@ -219,4 +235,3 @@
       </button>
     </div>
   </div> -->
-</div>

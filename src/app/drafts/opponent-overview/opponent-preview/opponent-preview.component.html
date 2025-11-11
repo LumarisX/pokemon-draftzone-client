@@ -118,10 +118,7 @@
                   }
                 </a>
               } @else {
-                <a
-                  class="footer-link"
-                  routerLink="matchup"
-                  [queryParams]="{ id: matchup._id }"
+                <a class="footer-link" [routerLink]="['matchup', matchup._id]"
                   >View Matchup</a
                 >
               }
