@@ -3,6 +3,14 @@
     width: 100%;
     overflow-x: auto;
     background-color: white;
+
+    h2 {
+      font-size: 1.25rem;
+      line-height: 1.75rem;
+      font-weight: 600;
+      text-align: center;
+      padding: 1rem 0;
+    }
   }
 
   ::ng-deep .node {

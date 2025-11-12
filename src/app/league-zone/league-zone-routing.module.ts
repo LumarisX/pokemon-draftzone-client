@@ -10,6 +10,7 @@ import { AuthGuard } from '@auth0/auth0-angular';
 import { leagueRoleGuard } from './league-role.guard';
 import { LeagueTierListComponent } from './league-tier-list/league-tier-list.component';
 import { PowerRankingsComponent } from './divisions/power-rankings/power-rankings.component';
+import { LeagueBracketComponent } from './league-bracket/league-bracket.component';
 
 export const LeagueZonePath = 'leagues';
 const routes: Routes = [
@@ -63,10 +64,10 @@ const routes: Routes = [
     component: LeagueSignUpComponent,
     canActivate: [AuthGuard],
   },
-  // {
-  //   path: 'view/:leagueKey/bracket',
-  //   component: LeagueBracketComponent,
-  // },
+  {
+    path: ':leagueKey/bracket',
+    component: LeagueBracketComponent,
+  },
   // {
   //   path: 'view/:leagueKey/trades',
   //   component: LeagueTradesComponent,

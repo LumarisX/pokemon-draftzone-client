@@ -500,4 +500,8 @@ export class LeagueZoneService {
   getSignUps(leagueKey: string): Observable<LeagueSignUp[]> {
     return this.apiService.get(`leagues/${leagueKey}/signup`, true);
   }
+
+  getBracket(leagueKey: string): Observable<{}> {
+    return this.apiService.get(`leagues/bracket`, true);
+  }
 }

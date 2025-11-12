@@ -100,109 +100,101 @@ export const defenseData: {
     logo: '',
     seed: 16,
   },
-];
-
-export const attackData: {
-  teamName: string;
-  coaches: string[];
-  logo: string;
-  seed: number;
-}[] = [
   {
     teamName: `Moochelin Star Chefs`,
     coaches: ['Rai'],
     logo: 'https://pokemondraftzone-public.s3.us-east-2.amazonaws.com/league-uploads/1746565579136-Moochelin_Star_Chefs.png',
-    seed: 1,
+    seed: 17,
   },
   {
     teamName: `Kalamazoo Komalas`,
     coaches: ['SuperSpiderPig'],
     logo: 'https://pokemondraftzone-public.s3.us-east-2.amazonaws.com/league-uploads/1746565551389-Kalamazoo_Komalas.png',
-    seed: 2,
+    seed: 18,
   },
   {
     teamName: `Jokic Lokix`,
     coaches: ['Dotexe'],
     logo: 'https://pokemondraftzone-public.s3.us-east-2.amazonaws.com/league-uploads/1746565520216-Jokic_Lokix.png',
-    seed: 3,
+    seed: 19,
   },
   {
     teamName: `Jimothy Jirachi Tomfoolery`,
     coaches: ['Jimothy J'],
     logo: 'https://pokemondraftzone-public.s3.us-east-2.amazonaws.com/league-uploads/1746565565925-Jimothy_Jirachi.png',
-    seed: 4,
+    seed: 20,
   },
   {
     teamName: `Memphis Bloodmoons`,
     coaches: ['Steven'],
     logo: 'https://pokemondraftzone-public.s3.us-east-2.amazonaws.com/league-uploads/1746565465031-Memphis_Bloodmoons.png',
-    seed: 5,
+    seed: 21,
   },
   {
     teamName: `F.C. Monterayquaza`,
     coaches: ['ChristianDeputy'],
     logo: 'https://pokemondraftzone-public.s3.us-east-2.amazonaws.com/league-uploads/1746565535075-F.C._Monterrayquaza.png',
-    seed: 6,
+    seed: 22,
   },
   {
     teamName: `Chicago White Sawks`,
     coaches: ['BR@D'],
     logo: 'https://pokemondraftzone-public.s3.us-east-2.amazonaws.com/league-uploads/1746565766076-Chicago_White_SawksBrad.png',
-    seed: 7,
+    seed: 23,
   },
   {
     teamName: `Bug Brigade`,
     coaches: ['TheNPC420'],
     logo: 'https://pokemondraftzone-public.s3.us-east-2.amazonaws.com/league-uploads/1746565423936-Bug_Brigade.png',
-    seed: 8,
+    seed: 24,
   },
   {
     teamName: `Minnesota Lycanrocs`,
     coaches: ['SpiralBB'],
     logo: '',
-    seed: 9,
+    seed: 25,
   },
   {
     teamName: `Seattle Supersonics`,
     coaches: ['AwesomenessGuy'],
     logo: '',
-    seed: 10,
+    seed: 26,
   },
   {
     teamName: `Fairview Floatzels`,
     coaches: ['Lupa'],
     logo: '',
-    seed: 12,
+    seed: 27,
   },
   {
     teamName: `McTesuda's`,
     coaches: ['Lewis'],
     logo: '',
-    seed: 13,
+    seed: 28,
   },
   {
     teamName: `Pacifidlog Pichus`,
     coaches: ['13Luken'],
     logo: '',
-    seed: 14,
+    seed: 29,
   },
   {
     teamName: `Mossdeep City Sharpedos`,
     coaches: ['Travis'],
     logo: '',
-    seed: 15,
+    seed: 30,
   },
   {
     teamName: `Texas Thousand`,
     coaches: ['CheesyBP'],
     logo: '',
-    seed: 11,
+    seed: 31,
   },
   {
     teamName: `Kommo-o Kommanders`,
     coaches: ['AnimaSean'],
     logo: '',
-    seed: 16,
+    seed: 32,
   },
 ];
 
