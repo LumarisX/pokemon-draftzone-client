@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { TeambuilderComponent } from './old/teambuilder-pokemon.component';
-import { PokemonBuilder } from './pokemon-builder.model';
+import { PokemonSet } from './pokemon-builder.model';
 
 @Component({
   selector: 'teambuilder-analyzer',
@@ -13,7 +13,7 @@ import { PokemonBuilder } from './pokemon-builder.model';
 export class TeamBuilderComponent implements OnInit {
   ruleset: string | null = null;
   format: string | null = null;
-  team: PokemonBuilder[] = [];
+  team: PokemonSet[] = [];
 
   ngOnInit(): void {
     // this.addPokemon({ name: 'Deoxys', id: 'deoxys' });

@@ -6,17 +6,15 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSliderModule } from '@angular/material/slider';
 import { MatTabsModule } from '@angular/material/tabs';
 import { RouterModule } from '@angular/router';
-import { TeambuilderService } from '../../../services/teambuilder.service';
 import { NATURES, STATS, TERATYPES } from '../../../data';
 import { nameList } from '../../../data/namedex';
 import { Pokemon } from '../../../interfaces/draft';
+import { TeambuilderService } from '../../../services/teambuilder.service';
 import { PokemonSelectComponent } from '../../../util/pokemon-select/pokemon-select.component';
-import { PokemonBuilder, TeambuilderPokemon } from '../pokemon-builder.model';
-import { MatSliderModule } from '@angular/material/slider';
-import { RulesetSelectComponent } from '../../../util/ruleset-select/ruleset.component';
-import { FormatSelectComponent } from '../../../util/format-select/format.component';
+import { PokemonSet, TeambuilderPokemon } from '../pokemon-builder.model';
 
 @Component({
   selector: 'pdz-teambuilder-core',
@@ -39,7 +37,7 @@ import { FormatSelectComponent } from '../../../util/format-select/format.compon
 export class TeambuilderComponent {
   private teambuilderService = inject(TeambuilderService);
 
-  private _pokemon: PokemonBuilder | null = null;
+  private _pokemon: PokemonSet | null = null;
   selectedPokemon: Pokemon | null = null;
   @Input()
   ruleset: string | null = null;
@@ -57,16 +55,16 @@ export class TeambuilderComponent {
     this.teambuilderService
       .getPokemonData(value.id, this.ruleset)
       .subscribe((data: TeambuilderPokemon) => {
-        this._pokemon = new PokemonBuilder(data);
+        this._pokemon = PokemonSet.fromTeambuilder(data);
         this.builderSet.emit(this._pokemon);
       });
   }
-  get pokemon(): PokemonBuilder | null {
+  get pokemon(): PokemonSet | null {
     return this._pokemon;
   }
 
   @Output()
-  builderSet: EventEmitter<PokemonBuilder | null> = new EventEmitter();
+  builderSet: EventEmitter<PokemonSet | null> = new EventEmitter();
 
   names = nameList();
   teraTypes = TERATYPES;
@@ -75,7 +73,6 @@ export class TeambuilderComponent {
   tab: 'main' | 'moves' | 'stats' | 'inout' = 'main';
 
   import(data: string) {
-    // this._pokemon = PokemonBuilder.import(data)
     console.log(data);
   }
 

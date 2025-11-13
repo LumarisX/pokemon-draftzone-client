@@ -8,11 +8,11 @@
       @for (pokemon of team; track $index) {
         <div class="tab pokemon-tab">
           <div class="sprite-wrapper">
-            <pdz-sprite size="1.5rem" [pokemon]="pokemon" />
+            <pdz-sprite size="3rem" [pokemon]="pokemon" />
           </div>
         </div>
       }
-      <div class="tab add-tab">+</div>
+      <!-- <div class="tab add-tab">+</div> -->
     </div>
     <div class="teambuilder-main">
       @if (view == null || !team[view]) {
@@ -28,10 +28,168 @@
           }
         </div>
       } @else {
-        <div class="pokemon-tabs">
+        @let pokemon = team[view];
+        <!-- <div class="pokemon-tabs">
           <div class="tab">Details</div>
           <div class="tab">Moves</div>
           <div class="tab">Stats</div>
+        </div> -->
+        <div class="tab-view">
+          <div class="tab-view__section tab-view__nickname">
+            <label for="nickname">Nickname</label>
+            <input
+              id="nickname"
+              type="text"
+              class="input input--nickname"
+              [(ngModel)]="pokemon.nickname"
+              placeholder="Enter nickname"
+            />
+          </div>
+          <div class="tab-view__section tab-view__level">
+            <label for="nickname">Level</label>
+            <input
+              id="nickname"
+              type="number"
+              class="input input--nickname"
+              max="100"
+              min="1"
+              [(ngModel)]="pokemon.level"
+              placeholder="Enter nickname"
+            />
+          </div>
+          <div class="tab-view__section tab-view__Shiny">
+            <label for="shiny">Shiny</label>
+            <input
+              id="shiny"
+              type="checkbox"
+              class="input input--shiny"
+              [(ngModel)]="pokemon.shiny"
+            />
+          </div>
+          <div class="tab-view__section tab-view__dropdowns">
+            <label for="tera">Tera</label>
+            <select
+              id="tera"
+              class="dropdown dropdown--tera"
+              [(ngModel)]="pokemon.teraType"
+            >
+              @for (type of pokemon.teraTypes; track type) {
+                <option [value]="type">{{ type }}</option>
+              }
+            </select>
+          </div>
+          <div>
+            <label for="item">Item</label>
+            <select
+              id="item"
+              class="dropdown dropdown--item"
+              [(ngModel)]="pokemon.item"
+            >
+              @for (item of pokemon.items; track item.id) {
+                <option [value]="item.name">{{ item.name }}</option>
+              }
+            </select>
+          </div>
+          <div>
+            <label for="item">Ability</label>
+            <select
+              id="item"
+              class="dropdown dropdown--item"
+              [(ngModel)]="pokemon.ability"
+            >
+              @for (ability of pokemon.abilities; track ability) {
+                <option [value]="ability">{{ ability }}</option>
+              }
+            </select>
+          </div>
+          <div class="tab-view__section tab-view__stats stats-container">
+            @for (stat of statNames; track stat) {
+              <div class="stat">
+                <div>
+                  <label [for]="'stat-' + $index">
+                    {{ stat | uppercase }}
+                  </label>
+                  {{ pokemon.stats[stat].base }}
+                  <input
+                    type="number"
+                    class="input input--stat"
+                    [min]="pokemon.stats[stat].range()[0]"
+                    [max]="pokemon.stats[stat].range()[1]"
+                    [ngModel]="pokemon.stats[stat].get()"
+                    (ngModelChange)="pokemon.stats[stat].set($event)"
+                  />
+                  @if (stat === "hp") {
+                    {{ hpRating(pokemon.stats[stat].get()) }}
+                  } @else {
+                    <button
+                      class="positive"
+                      [class.active]="pokemon.nature?.boost === stat"
+                      (click)="setNature(stat, 'positive')"
+                    >
+                      +
+                    </button>
+                    <button
+                      class="negative"
+                      [class.active]="pokemon.nature?.drop === stat"
+                      (click)="setNature(stat, 'negative')"
+                    >
+                      -
+                    </button>
+                  }
+                </div>
+                <div class="evs">
+                  <label [for]="'stat-' + $index">EVs</label>
+                  <input
+                    [id]="'stat-' + $index"
+                    type="range"
+                    [min]="0"
+                    [max]="252"
+                    [step]="getStep()"
+                    class="slider slider--stat"
+                    [(ngModel)]="pokemon!.stats[stat].evs"
+                  />
+                  <input
+                    type="number"
+                    [min]="0"
+                    [max]="252"
+                    [step]="getStep()"
+                    class="input input--stat"
+                    [(ngModel)]="pokemon!.stats[stat].evs"
+                  />
+                  <label [for]="'stat-' + $index">IVs</label>
+
+                  <input
+                    type="number"
+                    [min]="0"
+                    [max]="31"
+                    class="input input--stat"
+                    [(ngModel)]="pokemon!.stats[stat].ivs"
+                  />
+                </div>
+                <div class="ivs"></div>
+              </div>
+            }
+          </div>
+          <div class="tab-view__section tab-view__moves moves-container">
+            <label>Moves</label>
+            <div class="moves-list">
+              @for (moveSlot of [0, 1, 2, 3]; track moveSlot) {
+                <select
+                  class="dropdown dropdown--move"
+                  [(ngModel)]="pokemon.moves[moveSlot]"
+                >
+                  <option value="">Select Move</option>
+                  @for (move of pokemon.moveList; track move) {
+                    <option [value]="move">{{ move.name }}</option>
+                  }
+                </select>
+              }
+            </div>
+          </div>
+        </div>
+
+        <div class="export">
+          <textarea [value]="pokemon.export()"></textarea>
         </div>
       }
     </div>

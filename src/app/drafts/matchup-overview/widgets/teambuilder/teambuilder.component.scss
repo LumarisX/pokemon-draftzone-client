@@ -36,6 +36,105 @@
         max-height: 4rem;
         max-width: 4rem;
       }
+      .tab-view {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+        padding: 2rem 1.5rem;
+        background: pdz-color(surface);
+        border-radius: var(--pdz-shape-corner-lg);
+        box-shadow: var(--pdz-level-2);
+        width: 100%;
+        max-width: 32rem;
+        margin: 0 auto;
+        &__section {
+          margin-bottom: 1.5rem;
+        }
+        &__nickname {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          label {
+            font-weight: 600;
+            margin-right: 0.5rem;
+          }
+          .input--nickname {
+            flex: 1;
+            padding: 0.5rem 1rem;
+            border-radius: var(--pdz-shape-corner-sm);
+            border: 1px solid var(--pdz-color-border);
+            background: var(--pdz-color-input-bg);
+          }
+        }
+        &__dropdowns {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          label {
+            font-weight: 500;
+            margin-right: 0.5rem;
+          }
+          .dropdown {
+            padding: 0.5rem 1rem;
+            border-radius: var(--pdz-shape-corner-sm);
+            border: 1px solid var(--pdz-color-border);
+            background: var(--pdz-color-input-bg);
+            min-width: 6rem;
+          }
+        }
+        &__stats {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 1rem 2rem;
+          .stat {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            label {
+              min-width: 7rem;
+              font-weight: 500;
+            }
+            .slider--stat {
+              flex: 1;
+              accent-color: var(--pdz-color-primary);
+              height: 2px;
+              margin: 0 0.5rem;
+            }
+            .input--stat {
+              width: 4rem;
+              padding: 0.25rem 0.5rem;
+              border-radius: var(--pdz-shape-corner-xs);
+              border: 1px solid var(--pdz-color-border);
+              background: var(--pdz-color-input-bg);
+              text-align: right;
+            }
+          }
+        }
+        &__moves {
+          label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: block;
+          }
+          .moves-list {
+            display: flex;
+            gap: 1rem;
+            .dropdown {
+              padding: 0.5rem 1rem;
+              border-radius: var(--pdz-shape-corner-sm);
+              border: 1px solid var(--pdz-color-border);
+              background: var(--pdz-color-input-bg);
+              min-width: 6rem;
+            }
+          }
+        }
+      }
     }
+  }
+}
+
+button {
+  &.active {
+    background-color: lightblue;
   }
 }

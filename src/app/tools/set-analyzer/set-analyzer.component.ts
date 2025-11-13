@@ -10,10 +10,9 @@ import {
 import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { Pokemon } from '../../interfaces/draft';
 import { compare } from '../../util';
-import { TeamBuilderPokemonComponent } from '../teambuilder/pdz-teambuilder-core.component';
-import { PokemonBuilder } from '../teambuilder/pokemon-builder.model';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
+import { PokemonSet } from '../teambuilder/pokemon-builder.model';
 
 @Component({
   selector: 'teambuilder-analyzer',
@@ -23,7 +22,6 @@ import { MatIcon } from '@angular/material/icon';
     CommonModule,
     RouterModule,
     FormsModule,
-    TeamBuilderPokemonComponent,
     SpriteComponent,
     MatIcon,
     MatButtonModule,
@@ -36,7 +34,7 @@ export class SetAnalyzerComponent implements OnInit {
   patList: { rank: number; pokemon: Pokemon; percent: number }[] = [];
   selectedOpponent: Pokemon | undefined;
   link: string | undefined;
-  pokemonSet: PokemonBuilder | null = null;
+  pokemonSet: PokemonSet | null = null;
   results: [SetCalcs, SetCalcs] | undefined;
 
   ngOnInit(): void {
@@ -68,10 +66,10 @@ export class SetAnalyzerComponent implements OnInit {
   }
 
   calcMatchup() {
-    if (this.selectedOpponent && this.pokemonSet?.set.toJson()) {
+    if (this.selectedOpponent && this.pokemonSet?.toJson()) {
       this.teambuilderService
         .getPatsMatchup({
-          set: btoa(JSON.stringify(this.pokemonSet?.set.toJson())),
+          set: btoa(JSON.stringify(this.pokemonSet.toJson())),
           opp: this.selectedOpponent.name,
         })
         .subscribe((data) => {

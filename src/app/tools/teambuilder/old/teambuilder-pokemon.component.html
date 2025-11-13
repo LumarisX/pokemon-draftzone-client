@@ -12,7 +12,7 @@
           <mat-tab label="Info">
             <mat-form-field>
               <mat-label>Ability</mat-label>
-              <mat-select [(ngModel)]="pokemon.set.ability" name="ability">
+              <mat-select [(ngModel)]="pokemon.ability" name="ability">
                 @for (ability of pokemon.abilities; track ability) {
                   <mat-option [value]="ability">{{ ability }}</mat-option>
                 }
@@ -20,7 +20,7 @@
             </mat-form-field>
             <mat-form-field>
               <mat-label>Item</mat-label>
-              <mat-select [(ngModel)]="pokemon.set.item" name="item">
+              <mat-select [(ngModel)]="pokemon.item" name="item">
                 @for (item of pokemon.items; track item) {
                   <mat-option [value]="item.name">
                     {{ item.name }}
@@ -30,18 +30,18 @@
             </mat-form-field>
             <mat-form-field>
               <mat-label>Tera Type</mat-label>
-              <mat-select [(ngModel)]="pokemon.set.teraType" name="teratype">
+              <mat-select [(ngModel)]="pokemon.teraType" name="teratype">
                 <mat-select-trigger>
                   <div class="tera-option">
                     <img
                       class="sprite-border"
                       [src]="
                         '../../../assets/icons/tera_types/Tera' +
-                        pokemon.set.teraType +
+                        pokemon.teraType +
                         '.png'
                       "
                     />
-                    {{ pokemon.set.teraType }}
+                    {{ pokemon.teraType }}
                   </div>
                 </mat-select-trigger>
                 <mat-option [value]="null">
@@ -69,7 +69,7 @@
                 type="number"
                 min="1"
                 max="100"
-                [(ngModel)]="pokemon.set.level"
+                [(ngModel)]="pokemon.level"
               />
             </mat-form-field>
           </mat-tab>
@@ -203,7 +203,7 @@
                 aria-label="Move 1"
                 spellcheck="false"
                 matInput
-                [(ngModel)]="pokemon.set.moves[0]"
+                [(ngModel)]="pokemon.moves[0]"
                 [matAutocomplete]="auto"
               />
               <mat-autocomplete
@@ -225,7 +225,7 @@
                 aria-label="Move 2"
                 spellcheck="false"
                 matInput
-                [(ngModel)]="pokemon.set.moves[1]"
+                [(ngModel)]="pokemon.moves[1]"
                 [matAutocomplete]="auto"
               />
               <mat-autocomplete
@@ -247,7 +247,7 @@
                 aria-label="Move 3"
                 spellcheck="false"
                 matInput
-                [(ngModel)]="pokemon.set.moves[2]"
+                [(ngModel)]="pokemon.moves[2]"
                 [matAutocomplete]="auto"
               />
               <mat-autocomplete
@@ -269,7 +269,7 @@
                 aria-label="Move 4"
                 spellcheck="false"
                 matInput
-                [(ngModel)]="pokemon.set.moves[3]"
+                [(ngModel)]="pokemon.moves[3]"
                 [matAutocomplete]="auto"
               />
               <mat-autocomplete
@@ -288,7 +288,7 @@
           <mat-tab label="Stats">
             <mat-form-field>
               <mat-label>Nature</mat-label>
-              <mat-select [(ngModel)]="pokemon.set.nature" name="ability">
+              <mat-select [(ngModel)]="pokemon.nature" name="ability">
                 @for (nature of natures; track nature) {
                   <mat-option [value]="nature">
                     {{ nature.name }}
@@ -314,7 +314,7 @@
                       min="0"
                       max="252"
                       step="4"
-                      [(ngModel)]="pokemon.set.evs[stat.id]"
+                      [(ngModel)]="pokemon.stats[stat.id].evs"
                     />
                   </mat-form-field>
                   <mat-form-field>
@@ -324,12 +324,10 @@
                       type="number"
                       min="0"
                       max="31"
-                      [(ngModel)]="pokemon.set.ivs[stat.id]"
+                      [(ngModel)]="pokemon.stats[stat.id].ivs"
                     />
                   </mat-form-field>
-                  @if (
-                    showBoosts && pokemon.set.boosts[stat.id] !== undefined
-                  ) {
+                  @if (showBoosts && pokemon.boosts[stat.id] !== undefined) {
                     <mat-form-field>
                       <mat-label>Stage</mat-label>
                       <input
@@ -337,11 +335,11 @@
                         type="number"
                         min="-6"
                         max="6"
-                        [(ngModel)]="pokemon.set.boosts[stat.id]"
+                        [(ngModel)]="pokemon.boosts[stat.id]"
                       />
                     </mat-form-field>
                   }
-                  <div>{{ pokemon.set[stat.id] }}</div>
+                  <div>{{ pokemon.stats[stat.id].get() }}</div>
                 </div>
               }
             </div>
@@ -363,12 +361,12 @@
                   matInput
                   #pokemondata
                   spellcheck="false"
-                  [value]="pokemon.set.export()"
+                  [value]="pokemon.export()"
                 >
                 </textarea>
               </mat-form-field>
             </div>
-            {{ pokemon.set.toJson() | json }}
+            {{ pokemon.toJson() | json }}
           </mat-tab>
         </mat-tab-group>
       </div>
