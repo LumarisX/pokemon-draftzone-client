@@ -12,7 +12,10 @@
         </tr>
       </thead>
       <tbody cdkDropList (cdkDropListDropped)="drop($event)" class="team-list">
-        @for (teamCtrl of draftFormGroup.controls.team.controls; track $index) {
+        @for (
+          teamCtrl of draftFormGroup.controls.team.controls;
+          track teamCtrl
+        ) {
           <tr
             cdkDrag
             class="team-item"
