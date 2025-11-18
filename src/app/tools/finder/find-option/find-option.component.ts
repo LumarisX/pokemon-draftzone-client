@@ -172,7 +172,7 @@ export class FindOptionComponent {
     },
     {
       name: 'Special Attack',
-      value: 'def',
+      value: 'spa',
       operations: ['=', '≠', '>=', '>', '<', '<='],
       query: 'number',
     },
