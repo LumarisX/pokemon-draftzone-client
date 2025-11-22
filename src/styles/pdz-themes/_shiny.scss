@@ -77,12 +77,19 @@ $theme-overrides: (
     // Scale Colors (Shiny uses green instead of mint)
     scale-positive: "green-300",
     scale-positive-1: "green-100",
-    scale-positive-2: "green-200",
-    scale-positive-3: "green-300",
-    scale-positive-4: "green-400",
-    scale-positive-5: "green-500",
-    scale-positive-6: "green-600",
-    scale-positive-7: "green-700",
+    scale-positive-2: "green-250",
+    scale-positive-3: "green-400",
+    scale-positive-4: "green-500",
+    scale-positive-5: "green-600",
+    scale-positive-6: "green-700",
+    scale-positive-7: "green-800",
+    scale-negative-1: "rose-100",
+    scale-negative-2: "rose-250",
+    scale-negative-3: "rose-400",
+    scale-negative-4: "rose-500",
+    scale-negative-5: "rose-600",
+    scale-negative-6: "rose-700",
+    scale-negative-7: "rose-800",
 
     // Hero
     hero: linear-gradient(

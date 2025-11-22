@@ -59,7 +59,8 @@ export class TypechartCoreComponent implements OnInit, OnDestroy {
     this.abilityIndex = value ? 0 : 1;
   }
 
-  @Output() summarize = new EventEmitter<void>();
+  @Output()
+  togglePokemon = new EventEmitter<TypeChartPokemon>();
 
   abilityIndex: number = 0;
   columnHovered = new BehaviorSubject<string | null>(null);
@@ -135,11 +136,19 @@ export class TypechartCoreComponent implements OnInit, OnDestroy {
 
   toggleVisible(pokemon: TypeChartPokemon) {
     pokemon.disabled = !pokemon.disabled;
-    this.summarize.emit();
+    this.togglePokemon.emit(pokemon);
   }
 
   weaknessColor(weak: number, disabled: boolean): string {
-    if (disabled) return 'disabled';
+    if (disabled) {
+      if (weak > 4) return 'pdz-scale-inverse-negative-5';
+      if (weak > 2) return 'pdz-scale-inverse-negative-4';
+      if (weak > 1) return 'pdz-scale-inverse-negative-3';
+      if (weak < 0.25) return 'pdz-scale-inverse-positive-5';
+      if (weak < 0.5) return 'pdz-scale-inverse-positive-4';
+      if (weak < 1) return 'pdz-scale-inverse-positive-3';
+      return 'pdz-scale-inverse-neutral';
+    }
     if (weak > 4) return 'pdz-scale-negative-5';
     if (weak > 2) return 'pdz-scale-negative-4';
     if (weak > 1) return 'pdz-scale-negative-3';

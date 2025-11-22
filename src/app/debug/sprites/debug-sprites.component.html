@@ -2,7 +2,7 @@
 Shiny
 <div class="flex flex-wrap">
   @for (pokemon of names; track pokemon) {
-    <div class="w-12" [matTooltip]="pokemon.id + ' ' + sprite.path">
+    <div class="w-12" [matTooltip]="pokemon.id + ' ' + sprite">
       <pdz-sprite
         [pokemon]="{ id: pokemon.id, name: pokemon.name, shiny: shiny.checked }"
         #sprite

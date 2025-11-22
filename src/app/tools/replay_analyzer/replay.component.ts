@@ -6,6 +6,7 @@ import { ReplayService } from '../../services/replay.service';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { ReplayChartComponent } from './replay-chart/replay-chart.component';
 import { ReplayData } from './replay.interface';
+import { getNameByPid } from '../../data/namedex';
 
 @Component({
   selector: 'replay-analyzer',
@@ -69,5 +70,9 @@ export class ReplayComponent implements OnInit {
     }
 
     return '';
+  }
+
+  getNameByPid(pid: string) {
+    return getNameByPid(pid);
   }
 }

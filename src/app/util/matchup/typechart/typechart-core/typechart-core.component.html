@@ -18,9 +18,11 @@
             >
               <div class="type-icon-wrapper">
                 <img
-                  src="../../../assets/icons/types/gen9icon/{{ type }}.png"
+                  [src]="
+                    '../../../assets/icons/types/gen9icon/' + type + '.png'
+                  "
                   onerror="this.src='../../../assets/icons/types/Unknown.png'"
-                  alt="{{ type }}"
+                  [alt]="type"
                 />
               </div>
               <span class="type-text">{{ type }}</span>
@@ -31,13 +33,12 @@
     </thead>
     <tbody>
       @for (pokemon of sortedTeam | async; track $index) {
-        <tr>
+        <tr [class.disabled]="pokemon.disabled">
           <td class="action-cell" (click)="toggleVisible(pokemon)">
             <div class="sprite-wrapper">
               <pdz-sprite
                 size="3rem"
                 tooltipPosition="left"
-                [disabled]="pokemon.disabled"
                 flipped
                 [pokemon]="pokemon"
               ></pdz-sprite>

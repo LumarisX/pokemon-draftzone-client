@@ -27,21 +27,25 @@ import { MatIconModule } from '@angular/material/icon';
 })
 export class SwapOpponentButton implements ControlValueAccessor {
   @Input()
-  opponent: BooleanInput;
+  opponent: number | BooleanInput;
 
   @Output()
-  opponentChanged = new EventEmitter<boolean>();
+  opponentChanged = new EventEmitter<number | boolean>();
   constructor() {}
 
   toggleOpponent() {
-    this.opponent = !this.opponent;
+    if (typeof this.opponent === 'number') {
+      this.opponent = this.opponent === 1 ? 0 : 1;
+    } else {
+      this.opponent = !this.opponent;
+    }
     this.onChange(this.opponent);
     this.onTouched();
     this.opponentChanged.emit(this.opponent);
   }
 
   private onTouched: () => void = () => {};
-  private onChange: (value: BooleanInput) => void = () => {};
+  private onChange: (value: number | BooleanInput) => void = () => {};
 
   writeValue(value: BooleanInput): void {
     this.opponent = value;

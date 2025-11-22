@@ -1,0 +1,31 @@
+<div class="animated-selector__container">
+  @if (label) {
+    <label class="animated-selector__label">{{ label }}</label>
+  }
+  <div class="animated-selector" [attr.data-direction]="direction" #selector>
+    <div class="animated-selector__highlight" #highlightBar></div>
+    <div class="animated-selector__options">
+      @for (option of options; track trackByOption($index, option)) {
+        <button
+          type="button"
+          class="selector-option"
+          [class.selected]="getOptionValue(option) === selected"
+          (click)="selectOption(option)"
+          [attr.aria-label]="
+            'Select ' + getOptionLabel(option) + (label ? ' ' + label : '')
+          "
+          [attr.aria-pressed]="getOptionValue(option) === selected"
+        >
+          @if (getOptionIcon(option); as icon) {
+            <mat-icon>{{ getOptionIcon(option) }}</mat-icon>
+          }
+          @if (getOptionLabel(option)) {
+            <span class="selector-option__label">{{
+              getOptionLabel(option)
+            }}</span>
+          }
+        </button>
+      }
+    </div>
+  </div>
+</div>

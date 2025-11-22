@@ -17,6 +17,8 @@ const MAX_HAPPINESS = 255;
 const MAX_DYNAMAX_LEVEL = 255;
 const MAX_IV = 31;
 const MAX_EV = 255;
+const DEFAULT_NATURE = NATURES[0]; // Hardy
+const DEFAULT_TERATYPE: TeraType = 'Stellar';
 
 export interface Item {
   readonly id: string;
@@ -30,18 +32,38 @@ export interface MoveData {
   readonly id: string;
   readonly name: string;
   readonly type: Type;
-  readonly category: string;
-  readonly effectivePower: number;
-  readonly basePower: number;
+  readonly category: 'Physical' | 'Special' | 'Status';
+  readonly basePower: number | '-';
   readonly accuracy: number | true;
+  readonly tags: string[];
+  readonly pp: number;
+  readonly multihit?: number | [number, number];
+  readonly duration?: number;
+  readonly desc: string;
+  readonly epModifier?: number;
 }
+
+export type Move = {
+  id: string;
+  name: string;
+  type: TeraType;
+  category: 'Physical' | 'Special' | 'Status';
+  basePower: number;
+  accuracy: number | '-';
+  modified?: { basePower?: true; accuracy?: true; type?: true };
+  pp: number;
+  desc: string;
+  isStab: boolean;
+  strength: number;
+  tags: string[];
+};
 
 export interface TeambuilderPokemon {
   abilities: string[];
-  learnset: MoveData[];
   data: Pokemon & {
     types: [Type] | [Type, Type];
     baseStats: StatsTable;
+    genders: ('M' | 'F')[];
   };
   items: Item[];
   teraType?: TeraType;
@@ -51,52 +73,51 @@ export class PokemonSet {
   id: string;
   name: string;
   types: [Type] | [Type, Type];
-  level: number;
-  nature: Nature | null;
+  level: number = DEFAULT_LEVEL;
+  nature: Nature;
   nickname: string;
   item: string | null;
-  teraType: TeraType | null;
-  boosts: Partial<StatsTable>;
+  teraType: TeraType;
   gender: '' | 'M' | 'F';
+  genders: ('M' | 'F')[];
   happiness: number;
   hiddenpower: Type;
   gmax: boolean;
   shiny: boolean;
   dynamaxLevel: number;
   gigantamax: boolean;
-  moves: (MoveData | null)[];
+  moves: (Move | null)[];
   ability: string;
   stats: StatsTable<{
     base: number;
     ivs: number;
     evs: number;
-    range: () => [number, number];
+    boosts: number;
+    min: () => number;
+    mid: () => number;
+    max: () => number;
     get: () => number;
     set: (value: number) => void;
+    reset: () => void;
   }>;
 
   // Team builder properties
   abilities: string[];
-  learnset: MoveData[];
   items: Item[];
   teraTypes: readonly TeraType[];
-  moveList: Array<{
-    name: string;
-    id: string;
-    basePower: string | number;
-    accuracy: string | number;
-    typePath: string;
-    categoryPath: string;
-  }>;
 
   constructor(
     data: Pokemon & {
       types: [Type] | [Type, Type];
       baseStats: StatsTable;
-    } & Partial<PokemonSet> & { ivs?: StatsTable; evs?: StatsTable },
-    teambuilder?: {
+      genders: ('M' | 'F')[];
+    } & Partial<PokemonSet> & {
+        ivs?: StatsTable;
+        evs?: StatsTable;
+        boosts?: Partial<StatsTable>;
+      },
+    teambuilder: {
       abilities?: string[];
-      learnset?: MoveData[];
       items?: Item[];
       teraType?: TeraType;
     },
@@ -105,11 +126,10 @@ export class PokemonSet {
     this.name = data.name ?? '';
     this.types = data.types;
     this.level = data.level && data.level > 0 ? data.level : DEFAULT_LEVEL;
-    this.nature = data.nature ?? null;
+    this.nature = data.nature ?? DEFAULT_NATURE;
     this.nickname = data.nickname ?? '';
     this.item = data.item ?? null;
-    this.teraType = data.teraType ?? null;
-    this.boosts = data.boosts ?? { atk: 0, def: 0, spa: 0, spd: 0, spe: 0 };
+    this.teraType = data.teraType ?? DEFAULT_TERATYPE;
     this.gender = data.gender ?? '';
     this.happiness = data.happiness ?? MAX_HAPPINESS;
     this.hiddenpower = data.hiddenpower ?? 'Dark';
@@ -118,86 +138,53 @@ export class PokemonSet {
     this.dynamaxLevel = data.dynamaxLevel ?? MAX_DYNAMAX_LEVEL;
     this.gigantamax = data.gigantamax ?? false;
     this.moves = data.moves ?? [null, null, null, null];
-
-    // Initialize team builder properties
     this.abilities = teambuilder?.abilities ?? data.abilities ?? [];
-    this.learnset = teambuilder?.learnset ?? data.learnset ?? [];
+    this.genders = data.genders;
     this.items = teambuilder?.items ?? data.items ?? [];
     this.teraTypes = teambuilder?.teraType
       ? [teambuilder.teraType]
       : (data.teraTypes ?? TERATYPES);
     this.ability = data.ability ?? this.abilities[0] ?? '';
-    this.moveList = this.learnset.map((move) => ({
-      name: move.name,
-      id: move.id,
-      basePower: move.basePower || '-',
-      accuracy: move.accuracy === true ? '-' : move.accuracy,
-      typePath: `../../../../assets/icons/types/${move.type}.png`,
-      categoryPath: `../../../../assets/icons/moves/move-${move.category.toLowerCase()}.png`,
-    }));
 
-    this.stats = {
-      hp: {
-        base: data.baseStats.hp,
-        ivs: data.ivs?.hp ?? MAX_IV,
-        evs: data.evs?.hp ?? 0,
-        range: () => this.getStatRange('hp'),
-        get: () => this.calcStat('hp'),
-        set: (value: number) => {
-          this.calcValue('hp', value);
-        },
-      },
-      atk: {
-        base: data.baseStats.atk,
-        ivs: data.ivs?.atk ?? MAX_IV,
-        evs: data.evs?.atk ?? 0,
-        range: () => this.getStatRange('atk'),
-        get: () => this.calcStat('atk'),
-        set: (value: number) => {
-          this.calcValue('atk', value);
-        },
-      },
-      def: {
-        base: data.baseStats.def,
-        ivs: data.ivs?.def ?? MAX_IV,
-        evs: data.evs?.def ?? 0,
-        range: () => this.getStatRange('def'),
-        get: () => this.calcStat('def'),
-        set: (value: number) => {
-          this.calcValue('def', value);
-        },
-      },
-      spa: {
-        base: data.baseStats.spa,
-        ivs: data.ivs?.spa ?? MAX_IV,
-        evs: data.evs?.spa ?? 0,
-        range: () => this.getStatRange('spa'),
-        get: () => this.calcStat('spa'),
-        set: (value: number) => {
-          this.calcValue('spa', value);
-        },
-      },
-      spd: {
-        base: data.baseStats.spd,
-        ivs: data.ivs?.spd ?? MAX_IV,
-        evs: data.evs?.spd ?? 0,
-        range: () => this.getStatRange('spd'),
-        get: () => this.calcStat('spd'),
-        set: (value: number) => {
-          this.calcValue('spd', value);
-        },
-      },
-      spe: {
-        base: data.baseStats.spe,
-        ivs: data.ivs?.spe ?? MAX_IV,
-        evs: data.evs?.spe ?? 0,
-        range: () => this.getStatRange('spe'),
-        get: () => this.calcStat('spe'),
-        set: (value: number) => {
-          this.calcValue('spe', value);
-        },
-      },
-    };
+    this.stats = {} as typeof this.stats;
+    for (const stat of STATS) {
+      this.stats[stat.id] = {
+        base: data.baseStats[stat.id],
+        ivs: data.ivs?.[stat.id] ?? MAX_IV,
+        evs: data.evs?.[stat.id] ?? 0,
+        boosts: data.boosts?.[stat.id] ?? 0,
+        min: () =>
+          calcStat(
+            stat.id,
+            this.stats[stat.id].base,
+            0,
+            0,
+            this.level,
+            this.nature,
+          ),
+        mid: () =>
+          calcStat(
+            stat.id,
+            this.stats[stat.id].base,
+            MAX_IV,
+            0,
+            this.level,
+            this.nature,
+          ),
+        max: () =>
+          calcStat(
+            stat.id,
+            this.stats[stat.id].base,
+            MAX_IV,
+            MAX_EV,
+            this.level,
+            this.nature,
+          ),
+        get: () => this.calcStat(stat.id),
+        set: (value: number) => this.calcValue(stat.id, value),
+        reset: () => this.resetStat(stat.id),
+      };
+    }
   }
 
   private calcStat(stat: keyof StatsTable) {
@@ -212,9 +199,13 @@ export class PokemonSet {
   }
 
   private calcValue(stat: keyof StatsTable, value: number) {
+    const min = this.stats[stat].min();
+    const max = this.stats[stat].max();
+    if (value > max) value = max;
+    else if (value < min) value = min;
     if (
       stat !== 'hp' &&
-      this.isJumpPoint(value, getNatureValue(stat, this.nature))
+      isJumpPoint(value, getNatureValue(stat, this.nature))
     ) {
       if (value > this.stats[stat].get()) value = value + 1;
       else if (value < this.stats[stat].get()) value = value - 1;
@@ -226,28 +217,65 @@ export class PokemonSet {
       this.level,
       this.nature,
     );
+    if (a.evs > MAX_EV) a.evs = MAX_EV;
+    if (a.ivs > MAX_IV) a.ivs = MAX_IV;
     this.stats[stat].evs = a.evs;
     this.stats[stat].ivs = a.ivs;
   }
 
-  private isJumpPoint(value: number, natureValue: number): boolean {
-    if (natureValue === 1) return false;
-    return (
-      Math.ceil(value / natureValue) === Math.ceil((value + 1) / natureValue)
-    );
+  private resetStat(stat: keyof StatsTable) {
+    this.stats[stat].ivs = MAX_IV;
+    this.stats[stat].evs = 0;
   }
-  private getStatRange(stat: keyof StatsTable): [number, number] {
-    return [
-      calcStat(stat, this.stats[stat].base, 0, 0, this.level, this.nature),
-      calcStat(
-        stat,
-        this.stats[stat].base,
-        MAX_IV,
-        252,
-        this.level,
-        this.nature,
-      ),
-    ];
+
+  hasLegalEvs(): boolean {
+    const totalEvs =
+      this.stats.hp.evs +
+      this.stats.atk.evs +
+      this.stats.def.evs +
+      this.stats.spa.evs +
+      this.stats.spd.evs +
+      this.stats.spe.evs;
+    return totalEvs <= 510;
+  }
+
+  getStrength(move: Move): number {
+    const accuracy =
+      move.accuracy === '-' || move.accuracy > 100 ? 100 : move.accuracy;
+    return (move.basePower * accuracy) / 100;
+  }
+
+  get evs() {
+    return {
+      hp: this.stats.hp.evs,
+      atk: this.stats.atk.evs,
+      def: this.stats.def.evs,
+      spa: this.stats.spa.evs,
+      spd: this.stats.spd.evs,
+      spe: this.stats.spe.evs,
+    };
+  }
+
+  get ivs() {
+    return {
+      hp: this.stats.hp.ivs,
+      atk: this.stats.atk.ivs,
+      def: this.stats.def.ivs,
+      spa: this.stats.spa.ivs,
+      spd: this.stats.spd.ivs,
+      spe: this.stats.spe.ivs,
+    };
+  }
+
+  get boosts() {
+    return {
+      hp: this.stats.hp.boosts,
+      atk: this.stats.atk.boosts,
+      def: this.stats.def.boosts,
+      spa: this.stats.spa.boosts,
+      spd: this.stats.spd.boosts,
+      spe: this.stats.spe.boosts,
+    };
   }
 
   toJson() {
@@ -291,22 +319,21 @@ export class PokemonSet {
     let text = '';
     text +=
       this.nickname && this.nickname !== this.name
-        ? `${this.nickname} (${this.name})`
+        ? `${this.nickname.trim()} (${this.name})`
         : `${this.name}`;
     if (this.gender === 'M') text += ` (M)`;
     if (this.gender === 'F') text += ` (F)`;
     if (this.item) text += ` @ ${this.item}`;
-    text += `  \n`;
-    if (this.ability) text += `Ability: ${this.ability}  \n`;
-    for (const move of this.moves) {
-      if (!move) continue;
-      let moveName = move.name;
-      if (moveName.startsWith('Hidden Power ')) {
-        const hpType = moveName.slice(13);
-        moveName = `Hidden Power[${hpType}]`;
-      }
-      text += `- ${moveName}  \n`;
-    }
+    text += `\n`;
+    if (this.ability) text += `Ability: ${this.ability}\n`;
+    if (this.level !== MAX_LEVEL) text += `Level: ${this.level}\n`;
+    if (this.shiny) text += `Shiny: Yes\n`;
+    if (this.happiness !== MAX_HAPPINESS)
+      text += `Happiness: ${this.happiness}\n`;
+    if (this.dynamaxLevel !== MAX_DYNAMAX_LEVEL)
+      text += `Dynamax Level: ${this.dynamaxLevel}\n`;
+    if (this.gigantamax) text += `Gigantamax: Yes\n`;
+    if (this.teraType) text += `Tera Type: ${this.teraType}\n`;
     const evs = {
       hp: this.stats.hp.evs,
       atk: this.stats.atk.evs,
@@ -324,18 +351,19 @@ export class PokemonSet {
       spe: this.stats.spe.ivs,
     };
     const evString = statsToString(evs, (v) => v > 0);
-    if (evString) text += `EVs: ${evString} \n`;
-    if (this.nature) text += `${this.nature.name} Nature  \n`;
+    if (evString) text += `EVs: ${evString}\n`;
+    if (this.nature) text += `${this.nature.name} Nature\n`;
     const ivString = statsToString(ivs, (v) => v < MAX_IV);
-    if (ivString) text += `IVs: ${ivString} \n`;
-    if (this.level !== MAX_LEVEL) text += `Level: ${this.level}  \n`;
-    if (this.shiny) text += `Shiny: Yes  \n`;
-    if (this.happiness !== MAX_HAPPINESS)
-      text += `Happiness: ${this.happiness}  \n`;
-    if (this.dynamaxLevel !== MAX_DYNAMAX_LEVEL)
-      text += `Dynamax Level: ${this.dynamaxLevel}  \n`;
-    if (this.gigantamax) text += `Gigantamax: Yes  \n`;
-    text += `\n`;
+    if (ivString) text += `IVs: ${ivString}\n`;
+    for (const move of this.moves) {
+      if (!move) continue;
+      let moveName = move.name;
+      if (moveName.startsWith('Hidden Power ')) {
+        const hpType = moveName.slice(13);
+        moveName = `Hidden Power[${hpType}]`;
+      }
+      text += `- ${moveName}\n`;
+    }
     return text;
   }
 
@@ -402,7 +430,8 @@ export class PokemonSet {
         const natureName = line.slice(0, natureIndex);
         if (natureName !== 'undefined')
           setOptions.nature =
-            NATURES.find((nature) => nature.name === natureName) ?? null;
+            NATURES.find((nature) => nature.name === natureName) ??
+            DEFAULT_NATURE;
       } else if (line.charAt(0) === '-' || line.charAt(0) === '~') {
         const moveName = line.slice(line.charAt(1) === ' ' ? 2 : 1);
         if (moveName === 'Frustration' && setOptions.happiness === undefined) {
@@ -424,7 +453,6 @@ export class PokemonSet {
       },
       {
         abilities: pokemon.abilities,
-        learnset: pokemon.learnset,
         items: pokemon.items,
         teraType: pokemon.teraType,
       },
@@ -475,7 +503,6 @@ export function calcValues(
             : 1;
     a = (Math.ceil(totalStat / natureValue - 5) * 100) / level - 2 * baseStat;
   }
-  console.log(a);
   if (a <= 31) return { ivs: a, evs: 0 };
   return {
     ivs: 31,
@@ -483,8 +510,8 @@ export function calcValues(
   };
 }
 
-function getNatureValue(
-  stat: keyof Omit<StatsTable, 'hp'>,
+export function getNatureValue(
+  stat: keyof StatsTable,
   nature: Nature | null,
 ): number {
   if (!nature) return 1;
@@ -509,7 +536,10 @@ function statsToString(
 ): string {
   return Object.entries(stats)
     .filter(([_, v]) => predicate(v))
-    .map(([k, v]) => `${v} ${k.toUpperCase()}`)
+    .map(
+      ([k, v]) =>
+        `${v} ${k === 'hp' ? k.toUpperCase() : k[0].toUpperCase() + k.slice(1)}`,
+    )
     .join(' / ');
 }
 
@@ -536,4 +566,18 @@ function parseStats(line: string, defaultValue: number): StatsTable {
     }
   }
   return stats;
+}
+
+export function isJumpPoint(value: number, natureValue: number): boolean {
+  if (natureValue === 1) return false;
+  console.log(
+    value,
+    natureValue,
+    Math.ceil(value / natureValue),
+    Math.ceil((value + 1) / natureValue),
+    Math.ceil(value / natureValue) === Math.ceil((value + 1) / natureValue),
+  );
+  return (
+    Math.ceil(value / natureValue) === Math.ceil((value + 1) / natureValue)
+  );
 }

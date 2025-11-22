@@ -1,0 +1,355 @@
+// ============================================================================
+// Dropdown Mixins
+// ============================================================================
+// Comprehensive dropdown component system for custom select inputs,
+// autocomplete, and searchable dropdowns with consistent styling.
+//
+// @requires _variables - For CSS custom properties
+// @requires _typography - For custom typography mixins
+// ============================================================================
+
+@use "../variables" as *;
+@use "typography" as *;
+@use "../global.scss" as *;
+
+// ----------------------------------------------------------------------------
+// Container
+// ----------------------------------------------------------------------------
+
+/// Base dropdown container with positioning context
+/// @output Container styling for dropdown wrapper
+@mixin dropdown-container {
+  position: relative;
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  min-width: 10rem;
+  cursor: pointer;
+  overflow: visible;
+  border: 1px solid pdz-color(menu-border);
+  background-color: pdz-color(menu-container-low);
+  border-radius: var(--pdz-shape-corner-sm);
+}
+
+// ----------------------------------------------------------------------------
+// Label
+// ----------------------------------------------------------------------------
+
+/// Optional label for dropdown that appears above the control
+/// @output Label styling positioned above dropdown
+@mixin dropdown-label-text {
+  display: block;
+  font-weight: 600;
+  @include pdz-font-size(0.875rem);
+  color: pdz-color(on-menu-container);
+  cursor: default;
+}
+
+// ----------------------------------------------------------------------------
+// Control Button
+// ----------------------------------------------------------------------------
+
+/// Main dropdown control button that users click to open the dropdown
+/// @output Control button styling with hover and focus states
+@mixin dropdown-control {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: var(--pdz-shape-corner-sm);
+  padding: 0 0.25rem;
+
+  width: 100%;
+  cursor: pointer;
+  transition: border-color 0.15s ease-in-out;
+
+  &:hover {
+    border-color: pdz-color(menu);
+  }
+
+  &:focus-within {
+    outline: 2px solid pdz-color(menu);
+    outline-offset: 1px;
+  }
+}
+
+// ----------------------------------------------------------------------------
+// Icon Styling
+// ----------------------------------------------------------------------------
+
+/// Dropdown icon styling for leading/trailing icons
+/// @param {Length} $size [1.25rem] - Icon size
+/// @output Fixed-size icon styling
+@mixin dropdown-icon($size: 1.25rem) {
+  width: $size;
+  height: $size;
+  min-width: $size;
+  min-height: $size;
+  max-width: none;
+  max-height: none;
+  object-fit: contain;
+  display: block;
+}
+
+// ----------------------------------------------------------------------------
+// Label Text
+// ----------------------------------------------------------------------------
+
+/// Selected value label text styling
+/// @output Flexible text with overflow handling
+@mixin dropdown-label {
+  flex: 1;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/// @deprecated Use dropdown-control-label instead for clarity
+/// @alias dropdown-control-label
+@mixin dropdown-label {
+  @include dropdown-control-label;
+}
+
+/// Selected value display label inside the control
+/// @output Flexible text with overflow handling
+@mixin dropdown-control-label {
+  flex: 1;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// ----------------------------------------------------------------------------
+// Arrow Indicator
+// ----------------------------------------------------------------------------
+
+/// Animated arrow that rotates when dropdown opens
+/// @output Arrow indicator with rotation animation
+@mixin dropdown-arrow {
+  display: inline-block;
+  margin-left: 0.5rem;
+  transition: transform 0.12s ease-in-out;
+  color: pdz-color(on-menu-container);
+
+  .open & {
+    transform: rotate(180deg);
+  }
+}
+
+// ----------------------------------------------------------------------------
+// Dropdown List
+// ----------------------------------------------------------------------------
+
+/// Dropdown menu list container with elevation and scrolling
+/// @param {Length} $max-height [16rem] - Maximum height before scrolling
+/// @output Positioned dropdown list styling
+@mixin dropdown-list($max-height: 16rem) {
+  position: absolute;
+  left: 0;
+  top: calc(100% + 0.35rem);
+  background: pdz-color(surface);
+  border-radius: var(--pdz-shape-corner-sm);
+  box-shadow: var(--pdz-level-3);
+  z-index: 9999;
+  max-height: $max-height;
+  overflow: auto;
+  padding: 0.25rem 0;
+  min-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+// ----------------------------------------------------------------------------
+// Dropdown Item
+// ----------------------------------------------------------------------------
+
+/// Individual selectable item within dropdown list
+/// @output Item styling with hover, active, and selected states
+@mixin dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0.75rem 0 0;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.1s ease-in-out;
+
+  &:hover {
+    background: rgba(pdz-color(menu-hover-rgb), 0.15);
+  }
+
+  &:active {
+    background: rgba(pdz-color(menu-hover-rgb), 0.3);
+  }
+
+  &.selected {
+    background: rgba(pdz-color(menu-rgb), 0.1);
+  }
+
+  &:disabled,
+  &.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}
+
+// ----------------------------------------------------------------------------
+// Table Header
+// ----------------------------------------------------------------------------
+
+/// Sticky table header for dropdown items with column labels
+/// @output Sticky header styling with column layout
+@mixin dropdown-table-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0 0.75rem;
+  background: pdz-color(surface);
+  border-bottom: 1px solid pdz-color(menu-border);
+  font-weight: 600;
+  font-size: 0.875rem;
+  position: sticky;
+  text-align: center;
+  top: 0;
+  z-index: 2;
+  white-space: nowrap;
+}
+
+// ----------------------------------------------------------------------------
+// Table Item
+// ----------------------------------------------------------------------------
+
+/// Table-style dropdown item with defined column widths
+/// @output Item styling formatted as table row
+@mixin dropdown-table-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0 0.375rem 0.75rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.1s ease-in-out;
+
+  &:hover {
+    background: rgba(pdz-color(menu-hover-rgb), 0.15);
+  }
+
+  &:active {
+    background: rgba(pdz-color(menu-hover-rgb), 0.3);
+  }
+
+  &.selected {
+    background: rgba(pdz-color(menu-rgb), 0.1);
+  }
+
+  &:disabled,
+  &.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}
+
+// ----------------------------------------------------------------------------
+// Search Input
+// ----------------------------------------------------------------------------
+
+/// Search input field for filtering dropdown items
+/// @output Input styling integrated with dropdown design
+@mixin dropdown-search-input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: none;
+  border-bottom: 1px solid pdz-color(menu-border);
+  border-radius: var(--pdz-shape-corner-sm) var(--pdz-shape-corner-sm) 0 0;
+  background: transparent;
+  font-size: inherit;
+  font-family: inherit;
+  outline: none;
+
+  &::placeholder {
+    color: pdz-color(on-menu-container);
+  }
+}
+
+// ----------------------------------------------------------------------------
+// Empty State
+// ----------------------------------------------------------------------------
+
+/// Empty state message when no items match search
+/// @output Centered empty state styling
+@mixin dropdown-empty-state {
+  padding: 0.75rem;
+  text-align: center;
+  color: pdz-color(on-menu-container);
+  font-style: italic;
+}
+
+// ----------------------------------------------------------------------------
+// Complete Autocomplete Dropdown
+// ----------------------------------------------------------------------------
+
+/// Complete autocomplete dropdown with all features included.
+/// Combines all dropdown mixins into a single, ready-to-use component.
+/// Use this for quick implementation of searchable dropdowns.
+///
+/// @param {Length} $max-height [16rem] - Maximum list height before scrolling
+/// @param {Length} $icon-size [1.25rem] - Size of icons in control and items
+/// @param {Boolean} $include-label [false] - Whether to include label styling
+/// @output Complete dropdown component styling
+/// @example scss
+///   .my-autocomplete {
+///     @include autocomplete-dropdown(20rem, 1.5rem, true);
+///   }
+@mixin autocomplete-dropdown(
+  $max-height: 16rem,
+  $icon-size: 1.25rem,
+  $include-label: false
+) {
+  @include dropdown-container;
+
+  @if $include-label {
+    display: flex;
+    flex-direction: column;
+  }
+
+  @if $include-label {
+    .dropdown-label-text {
+      @include dropdown-label-text;
+    }
+  }
+
+  .dropdown-control {
+    @include dropdown-control;
+  }
+
+  .dropdown-icon,
+  .dropdown-item-icon {
+    @include dropdown-icon($icon-size);
+  }
+
+  .dropdown-label {
+    @include dropdown-control-label;
+  }
+
+  .dropdown-arrow {
+    @include dropdown-arrow;
+  }
+
+  .dropdown-list {
+    @include dropdown-list($max-height);
+  }
+
+  .dropdown-search {
+    @include dropdown-search-input;
+  }
+
+  .dropdown-item {
+    @include dropdown-item;
+  }
+
+  .dropdown-empty {
+    @include dropdown-empty-state;
+  }
+}

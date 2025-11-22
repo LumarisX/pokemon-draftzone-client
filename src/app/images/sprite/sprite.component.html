@@ -1,21 +1,14 @@
-<div class="sprite-container" [ngStyle]="{ width: size, height: size }">
-  <!-- @if (!pokemon.loaded) {
-    <div class="sprite-placeholder">
-      <mat-spinner [diameter]="24"></mat-spinner>
-    </div>
-  } -->
-
+<div class="sprite-container" [style.width]="size" [style.height]="size">
   @if (pokemon.id) {
     <img
-      matTooltip=""
-      [matTooltip]="tooltipPosition ? this.name : null"
+      [matTooltip]="tooltipPosition ? pokemonName : ''"
       [matTooltipPosition]="tooltipPosition ?? 'above'"
       [ngClass]="classes"
-      loading="lazy"
       [src]="path"
+      [alt]="pokemonName + ' sprite'"
+      loading="lazy"
       (error)="fallback()"
       (load)="onSpriteLoaded()"
-      [class.hidden]="!pokemon.loaded"
     />
   }
 </div>

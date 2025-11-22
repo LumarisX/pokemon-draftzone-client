@@ -16,6 +16,12 @@ import {
 } from '../../../../drafts/matchup-overview/matchup-interface';
 import { typeColor } from '../../../styling';
 
+type ScoreRange = {
+  min: number;
+  max: number;
+  colorClass: string;
+};
+
 @Component({
   selector: 'pdz-typestats-core',
   templateUrl: './typestats-core.component.html',
@@ -32,6 +38,49 @@ export class TypestatsCoreComponent implements OnInit, OnDestroy {
     this.$typechart.next(value ?? null);
     if (value) this.sortedTeam.next([...value.team]);
   }
+
+  @Input()
+  scoringRanges: {
+    weak: ScoreRange[];
+    resist: ScoreRange[];
+    count: ScoreRange[];
+    diff: ScoreRange[];
+  } = {
+    weak: [
+      { min: 6, max: Infinity, colorClass: 'pdz-scale-negative-5' },
+      { min: 5, max: 6, colorClass: 'pdz-scale-negative-4' },
+      { min: 4, max: 5, colorClass: 'pdz-scale-negative-3' },
+      { min: 3, max: 4, colorClass: 'pdz-scale-neutral' },
+      { min: 2, max: 3, colorClass: 'pdz-scale-positive-3' },
+      { min: 1, max: 2, colorClass: 'pdz-scale-positive-4' },
+      { min: -Infinity, max: 1, colorClass: 'pdz-scale-positive-5' },
+    ],
+    resist: [
+      { min: 5, max: Infinity, colorClass: 'pdz-scale-positive-5' },
+      { min: 4, max: 5, colorClass: 'pdz-scale-positive-4' },
+      { min: 3, max: 4, colorClass: 'pdz-scale-positive-3' },
+      { min: 2, max: 3, colorClass: 'pdz-scale-neutral' },
+      { min: 1, max: 2, colorClass: 'pdz-scale-negative-3' },
+      { min: -Infinity, max: 1, colorClass: 'pdz-scale-negative-4' },
+    ],
+    count: [
+      { min: 4, max: Infinity, colorClass: 'pdz-scale-negative-5' },
+      { min: 3, max: 4, colorClass: 'pdz-scale-negative-4' },
+      { min: 2, max: 3, colorClass: 'pdz-scale-neutral' },
+      { min: 1, max: 2, colorClass: 'pdz-scale-positive-4' },
+      { min: -Infinity, max: 1, colorClass: 'pdz-scale-neutral' },
+    ],
+    diff: [
+      { min: 4, max: Infinity, colorClass: 'pdz-scale-positive-6' },
+      { min: 3, max: 4, colorClass: 'pdz-scale-positive-5' },
+      { min: 2, max: 3, colorClass: 'pdz-scale-positive-4' },
+      { min: 1, max: 2, colorClass: 'pdz-scale-positive-3' },
+      { min: 0, max: 1, colorClass: 'pdz-scale-neutral' },
+      { min: -1, max: 0, colorClass: 'pdz-scale-negative-3' },
+      { min: -2, max: -1, colorClass: 'pdz-scale-negative-4' },
+      { min: -Infinity, max: -2, colorClass: 'pdz-scale-negative-5' },
+    ],
+  };
 
   get typechart() {
     return this.$typechart.value;
@@ -109,40 +158,27 @@ export class TypestatsCoreComponent implements OnInit, OnDestroy {
   }
 
   weakColor(weak: number): string {
-    if (weak > 5) return 'pdz-scale-negative-5';
-    if (weak > 4) return 'pdz-scale-negative-4';
-    if (weak > 3) return 'pdz-scale-negative-3';
-    if (weak < 1) return 'pdz-scale-positive-5';
-    if (weak < 2) return 'pdz-scale-positive-4';
-    if (weak < 3) return 'pdz-scale-positive-3';
-    return 'pdz-scale-neutral';
+    return this.getColorFromRanges(weak, this.scoringRanges.weak);
   }
 
-  resistColor(weak: number): string {
-    if (weak > 4) return 'pdz-scale-positive-5';
-    if (weak > 3) return 'pdz-scale-positive-4';
-    if (weak > 2) return 'pdz-scale-positive-3';
-    if (weak < 1) return 'pdz-scale-negative-4';
-    if (weak < 2) return 'pdz-scale-negative-3';
-    return 'pdz-scale-neutral';
+  resistColor(resist: number): string {
+    return this.getColorFromRanges(resist, this.scoringRanges.resist);
   }
 
   countColor(count: number): string {
-    if (count > 3) return 'pdz-scale-negative-5';
-    if (count > 2) return 'pdz-scale-negative-4';
-    if (count > 1) return 'pdz-scale-neutral';
-    if (count > 0) return 'pdz-scale-positive-4';
-    return 'pdz-scale-neutral';
+    return this.getColorFromRanges(count, this.scoringRanges.count);
   }
 
-  diffColor(weak: number): string {
-    if (weak > 3) return 'pdz-scale-positive-6';
-    if (weak > 2) return 'pdz-scale-positive-5';
-    if (weak > 1) return 'pdz-scale-positive-4';
-    if (weak > 0) return 'pdz-scale-positive-3';
-    if (weak < -2) return 'pdz-scale-negative-5';
-    if (weak < -1) return 'pdz-scale-negative-4';
-    if (weak < 0) return 'pdz-scale-negative-3';
+  diffColor(diff: number): string {
+    return this.getColorFromRanges(diff, this.scoringRanges.diff);
+  }
+
+  private getColorFromRanges(value: number, ranges: ScoreRange[]): string {
+    for (const range of ranges) {
+      if (value >= range.min && value < range.max) {
+        return range.colorClass;
+      }
+    }
     return 'pdz-scale-neutral';
   }
 }
