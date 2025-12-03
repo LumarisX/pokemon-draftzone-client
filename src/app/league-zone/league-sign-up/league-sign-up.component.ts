@@ -50,7 +50,7 @@ export class LeagueSignUpComponent implements OnInit, OnDestroy {
   added = false;
   closed = false;
   timezones = Intl.supportedValuesOf('timeZone');
-  signUpDeadline: Date = new Date('2026-10-21T12:00:00');
+  signUpDeadline: Date = new Date('2025-10-21T12:00:00');
   signUpItem: string = 'pdbls2';
 
   details: {
