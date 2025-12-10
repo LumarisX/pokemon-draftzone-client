@@ -10,6 +10,14 @@
     font-size: map.get($style, font-size);
     font-weight: map.get($style, font-weight);
     line-height: map.get($style, line-height);
+
+    @if map.has-key($style, text-transform) {
+      text-transform: map.get($style, text-transform);
+    }
+
+    @if map.has-key($style, opacity) {
+      opacity: map.get($style, opacity);
+    }
   } @else {
     @warn "Typography style `#{$style-name}` not found.";
   }
