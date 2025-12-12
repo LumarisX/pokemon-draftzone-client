@@ -1,22 +1,20 @@
+@use "sass:map";
 @use "../base/tokens" as *;
+@use "defaults" as *;
 
-$theme: (
+$theme-overrides: (
   light: (
-    // Surface Colors
-    background: "white",
+    // Surface Colors (Orange-tinted)
     surface: "orange-50",
     surface-variant: "orange-300",
-    surface-container-lowest: "white",
     surface-container-low: "orange-50",
     surface-container: "orange-100",
     surface-container-high: "orange-200",
     surface-container-highest: "orange-300",
     on-surface: "orange-950",
     on-surface-variant: "orange-900",
-    outline: "gray-550",
-    outline-variant: "gray-300",
 
-    // Primary Theme
+    // Primary Theme (Purple)
     primary: "purple-500",
     primary-lighter: "purple-400",
     primary-darker: "purple-600",
@@ -34,7 +32,7 @@ $theme: (
         var(--pdz-color-purple-500),
         var(--pdz-color-purple-300)
       ),
-    // Secondary Theme
+    // Secondary Theme (Pink)
     secondary: "pink-500",
     secondary-lighter: "pink-400",
     secondary-darker: "pink-600",
@@ -52,11 +50,10 @@ $theme: (
         var(--pdz-color-pink-500),
         var(--pdz-color-pink-300)
       ),
-    // Menu Theme (Refactored)
+    // Menu Theme (Orange)
     menu: "orange-500",
     menu-lighter: "orange-400",
     menu-darker: "orange-600",
-    on-menu: "white",
     menu-container: "orange-150",
     menu-container-low: "orange-100",
     menu-container-high: "orange-350",
@@ -65,54 +62,16 @@ $theme: (
     menu-hover: "orange-400",
     menu-border: "orange-350",
     menu-subtle: "orange-150",
-    menu-gradient: linear-gradient(
-        135deg,
-        var(--pdz-color-gray-200),
-        var(--pdz-color-gray-100)
-      ),
+
     // Status Colors
     error: "red-800",
-    on-error: "white",
-    error-container: "red-100",
-    on-error-container: "red-950",
-    warning: "amber-500",
-    on-warning: "amber-950",
-    warning-container: "amber-200",
-    on-warning-container: "amber-900",
-    success: "green-700",
-    on-success: "white",
-    success-container: "green-200",
-    on-success-container: "green-950",
-    info: "blue-700",
-    on-info: "white",
-    info-container: "blue-200",
-    on-info-container: "blue-950",
 
     // Disabled State
     surface-disabled: "gray-150",
-    on-surface-disabled: "gray-500",
-
-    // Inverse Colors
-    surface-inverse: "gray-900",
-    on-surface-inverse: "gray-100",
-
-    // Effects
-    shadow: #4d4d4d,
-    scrim: "black",
 
     // Logo Colors
-    logo-ring-1: "orange-200",
-    logo-ring-2: "orange-300",
-    logo-ring-3: "orange-350",
-    logo-ring-4: "orange-400",
-    logo-ring-5: "orange-450",
-    logo-ring-6: "orange-500",
-    logo-ring-7: "orange-600",
-    logo-core-1: "white",
-    logo-core-2: "logo-core-color",
     logo-top: "purple-500",
     logo-bottom: "pink-500",
-    logo-background: "white",
 
     // Loading Colors
     loading-primary-high: "purple-600",
@@ -120,52 +79,11 @@ $theme: (
     loading-secondary-high: "pink-600",
     loading-secondary-low: "pink-400",
 
-    // Semantic Data Colors
-    positive: "mint-400",
-    on-positive: "mint-950",
-    positive-container: "mint-900",
-    on-positive-container: "mint-100",
-    negative: "rose-250",
-    on-negative: "rose-950",
-    negative-container: "rose-900",
-    on-negative-container: "rose-100",
-
-    // Scale Colors
-    scale-neutral: "gray-200",
-    scale-positive: "mint-300",
-    scale-negative: "rose-300",
-    scale-positive-1: "mint-100",
-    scale-positive-2: "mint-200",
-    scale-positive-3: "mint-300",
-    scale-positive-4: "mint-400",
-    scale-positive-5: "mint-500",
-    scale-positive-6: "mint-600",
-    scale-positive-7: "mint-700",
-    scale-negative-1: "rose-100",
-    scale-negative-2: "rose-200",
-    scale-negative-3: "rose-300",
-    scale-negative-4: "rose-400",
-    scale-negative-5: "rose-500",
-    scale-negative-6: "rose-600",
-    scale-negative-7: "rose-700",
-
+    // Hero
     hero: url("/assets/images/hero/hero_sunset.webp"),
-    debug: #ff00ff,
   ),
   dark: (
-    background: "gray-950",
-    surface: "gray-900",
-    surface-variant: "gray-750",
-    surface-container-lowest: "black",
-    surface-container-low: "gray-850",
-    surface-container: "gray-700",
-    surface-container-high: "gray-750",
-    surface-container-highest: "gray-650",
-    on-surface: "gray-100",
-    on-surface-variant: "gray-400",
-    outline: "gray-600",
-    outline-variant: "gray-800",
-
+    // Primary Theme (Purple)
     primary: "purple-500",
     primary-lighter: "purple-400",
     primary-darker: "purple-600",
@@ -183,7 +101,7 @@ $theme: (
         var(--pdz-color-purple-500),
         var(--pdz-color-purple-300)
       ),
-    // Secondary
+    // Secondary Theme (Pink)
     secondary: "pink-500",
     secondary-lighter: "pink-400",
     secondary-darker: "pink-600",
@@ -201,62 +119,9 @@ $theme: (
         var(--pdz-color-pink-500),
         var(--pdz-color-pink-300)
       ),
-    // Menu Theme (Mirrors light theme structure)
-    menu: "gray-100",
-    menu-lighter: "gray-200",
-    menu-darker: "gray-50",
-    on-menu: "gray-950",
-    menu-container: "gray-900",
-    menu-container-low: "gray-850",
-    menu-container-high: "gray-800",
-    menu-container-hover: "gray-800",
-    on-menu-container: "gray-200",
-    menu-hover: "gray-550",
-    menu-border: "gray-700",
-    menu-subtle: "gray-950",
-    menu-gradient: linear-gradient(
-        135deg,
-        var(--pdz-color-gray-800),
-        var(--pdz-color-gray-700)
-      ),
-    error: "red-200",
-    on-error: "red-950",
-    error-container: "red-900",
-    on-error-container: "red-100",
-    warning: "amber-200",
-    on-warning: "amber-900",
-    warning-container: "amber-900",
-    on-warning-container: "amber-200",
-    success: "green-400",
-    on-success: "green-950",
-    success-container: "green-950",
-    on-success-container: "green-200",
-    info: "blue-400",
-    on-info: "blue-950",
-    info-container: "blue-950",
-    on-info-container: "blue-200",
-
-    surface-disabled: "gray-800",
-    on-surface-disabled: "gray-600",
-
-    surface-inverse: "gray-100",
-    on-surface-inverse: "gray-900",
-
-    shadow: "black",
-    scrim: "black",
-
-    logo-ring-1: "orange-200",
-    logo-ring-2: "orange-300",
-    logo-ring-3: "orange-350",
-    logo-ring-4: "orange-400",
-    logo-ring-5: "orange-450",
-    logo-ring-6: "orange-500",
-    logo-ring-7: "orange-600",
-    logo-core-1: "white",
-    logo-core-2: "logo-core-color",
+    // Logo Colors
     logo-top: "purple-500",
     logo-bottom: "pink-500",
-    logo-background: "white",
 
     // Loading Colors
     loading-primary-high: "purple-600",
@@ -264,38 +129,17 @@ $theme: (
     loading-secondary-high: "pink-600",
     loading-secondary-low: "pink-400",
 
-    positive: "mint-700",
-    on-positive: "white",
-    positive-container: "mint-100",
-    on-positive-container: "mint-950",
-    negative: "rose-800",
-    on-negative: "white",
-    negative-container: "rose-100",
-    on-negative-container: "rose-950",
-
-    scale-neutral: "gray-700",
-    scale-positive: "mint-850",
-    scale-negative: "rose-850",
-    scale-positive-1: "mint-950",
-    scale-positive-2: "mint-900",
-    scale-positive-3: "mint-850",
-    scale-positive-4: "mint-800",
-    scale-positive-5: "mint-750",
-    scale-positive-6: "mint-700",
-    scale-positive-7: "mint-650",
-    scale-negative-1: "rose-950",
-    scale-negative-2: "rose-900",
-    scale-negative-3: "rose-850",
-    scale-negative-4: "rose-800",
-    scale-negative-5: "rose-750",
-    scale-negative-6: "rose-700",
-    scale-negative-7: "rose-650",
-
+    // Hero
     hero: linear-gradient(
         135deg,
         var(--pdz-color-purple-500),
         var(--pdz-color-purple-300)
       ),
-    debug: #ff00ff,
   ),
+);
+
+// Merge defaults with theme-specific overrides
+$theme: (
+  light: map.merge(map.get($defaults, light), map.get($theme-overrides, light)),
+  dark: map.merge(map.get($defaults, dark), map.get($theme-overrides, dark)),
 );

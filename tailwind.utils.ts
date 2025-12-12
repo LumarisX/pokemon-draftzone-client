@@ -227,7 +227,6 @@ export class ThemeBuilder {
       900: '#15191E',
       950: '#0B0C0F',
     };
-    console.log(bScale);
     return {
       logo: {
         top: aScale[500],

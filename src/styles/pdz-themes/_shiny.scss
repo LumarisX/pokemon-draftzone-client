@@ -1,22 +1,10 @@
+@use "sass:map";
 @use "../base/tokens" as *;
+@use "defaults" as *;
 
-$theme: (
+$theme-overrides: (
   light: (
-    // Surface Colors
-    background: "white",
-    surface: "gray-50",
-    surface-variant: "gray-300",
-    surface-container-lowest: "white",
-    surface-container-low: "gray-50",
-    surface-container: "gray-100",
-    surface-container-high: "gray-200",
-    surface-container-highest: "gray-300",
-    on-surface: "gray-950",
-    on-surface-variant: "gray-900",
-    outline: "gray-550",
-    outline-variant: "gray-300",
-
-    // Primary Theme
+    // Primary Theme (Mint)
     primary: "mint-500",
     primary-lighter: "mint-400",
     primary-darker: "mint-600",
@@ -34,7 +22,7 @@ $theme: (
         var(--pdz-color-mint-500),
         var(--pdz-color-mint-300)
       ),
-    // Secondary Theme
+    // Secondary Theme (Yellow)
     secondary: "yellow-500",
     secondary-lighter: "yellow-400",
     secondary-darker: "yellow-600",
@@ -52,53 +40,12 @@ $theme: (
         var(--pdz-color-yellow-500),
         var(--pdz-color-yellow-300)
       ),
-    // Menu Theme (Refactored)
-    menu: "gray-500",
-    menu-lighter: "gray-400",
-    menu-darker: "gray-600",
-    on-menu: "white",
-    menu-container: "gray-150",
-    menu-container-low: "gray-100",
-    menu-container-high: "gray-350",
-    menu-container-hover: "gray-250",
-    on-menu-container: "gray-950",
-    menu-hover: "gray-400",
-    menu-border: "gray-350",
-    menu-subtle: "gray-150",
-    menu-gradient: linear-gradient(
-        135deg,
-        var(--pdz-color-gray-200),
-        var(--pdz-color-gray-100)
-      ),
-    // Status Colors
-    error: "red-800",
-    on-error: "white",
-    error-container: "red-100",
-    on-error-container: "red-950",
+    // Status Colors (Shiny-specific)
     warning: "mint-500",
     on-warning: "mint-950",
+    warning-border: "mint-300",
     warning-container: "mint-200",
     on-warning-container: "mint-900",
-    success: "green-700",
-    on-success: "white",
-    success-container: "green-200",
-    on-success-container: "green-950",
-    info: "blue-700",
-    on-info: "white",
-    info-container: "blue-200",
-    on-info-container: "blue-950",
-
-    // Disabled State
-    surface-disabled: "gray-200",
-    on-surface-disabled: "gray-500",
-
-    // Inverse Colors
-    surface-inverse: "gray-900",
-    on-surface-inverse: "gray-100",
-
-    // Effects
-    shadow: #4d4d4d,
-    scrim: "black",
 
     // Logo Colors
     logo-ring-1: "yellow-200",
@@ -108,11 +55,8 @@ $theme: (
     logo-ring-5: "yellow-450",
     logo-ring-6: "yellow-500",
     logo-ring-7: "yellow-600",
-    logo-core-1: "white",
-    logo-core-2: "logo-core-color",
     logo-top: "mint-500",
     logo-bottom: "yellow-500",
-    logo-background: "white",
 
     // Loading Colors
     loading-primary-high: "mint-600",
@@ -120,7 +64,7 @@ $theme: (
     loading-secondary-high: "yellow-600",
     loading-secondary-low: "yellow-400",
 
-    // Semantic Data Colors
+    // Semantic Data Colors (Shiny uses green instead of mint)
     positive: "green-700",
     on-positive: "white",
     positive-container: "green-100",
@@ -130,10 +74,8 @@ $theme: (
     negative-container: "rose-100",
     on-negative-container: "rose-950",
 
-    // Scale Colors
-    scale-neutral: "gray-200",
+    // Scale Colors (Shiny uses green instead of mint)
     scale-positive: "green-300",
-    scale-negative: "rose-300",
     scale-positive-1: "green-100",
     scale-positive-2: "green-200",
     scale-positive-3: "green-300",
@@ -141,35 +83,16 @@ $theme: (
     scale-positive-5: "green-500",
     scale-positive-6: "green-600",
     scale-positive-7: "green-700",
-    scale-negative-1: "rose-100",
-    scale-negative-2: "rose-200",
-    scale-negative-3: "rose-300",
-    scale-negative-4: "rose-400",
-    scale-negative-5: "rose-500",
-    scale-negative-6: "rose-600",
-    scale-negative-7: "rose-700",
 
+    // Hero
     hero: linear-gradient(
         135deg,
         var(--pdz-color-mint-500),
         var(--pdz-color-mint-300)
       ),
-    debug: #ff00ff,
   ),
   dark: (
-    background: "gray-950",
-    surface: "gray-900",
-    surface-variant: "gray-750",
-    surface-container-lowest: "black",
-    surface-container-low: "gray-850",
-    surface-container: "gray-700",
-    surface-container-high: "gray-750",
-    surface-container-highest: "gray-650",
-    on-surface: "gray-100",
-    on-surface-variant: "gray-400",
-    outline: "gray-600",
-    outline-variant: "gray-800",
-
+    // Primary Theme (Mint)
     primary: "mint-500",
     primary-lighter: "mint-400",
     primary-darker: "mint-600",
@@ -187,7 +110,7 @@ $theme: (
         var(--pdz-color-mint-500),
         var(--pdz-color-mint-300)
       ),
-    // Secondary
+    // Secondary Theme (Yellow)
     secondary: "yellow-500",
     secondary-lighter: "yellow-400",
     secondary-darker: "yellow-600",
@@ -205,50 +128,13 @@ $theme: (
         var(--pdz-color-yellow-500),
         var(--pdz-color-yellow-300)
       ),
-    // Menu Theme (Mirrors light theme structure)
-    menu: "gray-100",
-    menu-lighter: "gray-200",
-    menu-darker: "gray-50",
-    on-menu: "gray-950",
-    menu-container: "gray-900",
-    menu-container-low: "gray-850",
-    menu-container-high: "gray-800",
-    menu-container-hover: "gray-800",
-    on-menu-container: "gray-200",
-    menu-hover: "gray-550",
-    menu-border: "gray-700",
-    menu-subtle: "gray-950",
-    menu-gradient: linear-gradient(
-        135deg,
-        var(--pdz-color-gray-800),
-        var(--pdz-color-gray-700)
-      ),
-    error: "red-200",
-    on-error: "red-950",
-    error-container: "red-900",
-    on-error-container: "red-100",
+    // Status Colors (Shiny-specific)
     warning: "mint-200",
     on-warning: "mint-900",
     warning-container: "mint-900",
     on-warning-container: "mint-200",
-    success: "green-400",
-    on-success: "green-950",
-    success-container: "green-950",
-    on-success-container: "green-200",
-    info: "blue-400",
-    on-info: "blue-950",
-    info-container: "blue-950",
-    on-info-container: "blue-200",
 
-    surface-disabled: "gray-800",
-    on-surface-disabled: "gray-600",
-
-    surface-inverse: "gray-100",
-    on-surface-inverse: "gray-900",
-
-    shadow: "black",
-    scrim: "black",
-
+    // Logo Colors
     logo-ring-1: "yellow-200",
     logo-ring-2: "yellow-300",
     logo-ring-3: "yellow-350",
@@ -256,11 +142,8 @@ $theme: (
     logo-ring-5: "yellow-450",
     logo-ring-6: "yellow-500",
     logo-ring-7: "yellow-600",
-    logo-core-1: "white",
-    logo-core-2: "logo-core-color",
     logo-top: "mint-500",
     logo-bottom: "yellow-500",
-    logo-background: "white",
 
     // Loading Colors
     loading-primary-high: "mint-600",
@@ -268,6 +151,7 @@ $theme: (
     loading-secondary-high: "yellow-600",
     loading-secondary-low: "yellow-400",
 
+    // Semantic Data Colors (Shiny uses green instead of mint)
     positive: "green-400",
     on-positive: "green-950",
     positive-container: "green-900",
@@ -277,9 +161,8 @@ $theme: (
     negative-container: "rose-900",
     on-negative-container: "rose-100",
 
-    scale-neutral: "gray-700",
+    // Scale Colors (Shiny uses green instead of mint)
     scale-positive: "green-850",
-    scale-negative: "rose-850",
     scale-positive-1: "green-950",
     scale-positive-2: "green-900",
     scale-positive-3: "green-850",
@@ -287,19 +170,18 @@ $theme: (
     scale-positive-5: "green-750",
     scale-positive-6: "green-700",
     scale-positive-7: "green-650",
-    scale-negative-1: "rose-950",
-    scale-negative-2: "rose-900",
-    scale-negative-3: "rose-850",
-    scale-negative-4: "rose-800",
-    scale-negative-5: "rose-750",
-    scale-negative-6: "rose-700",
-    scale-negative-7: "rose-650",
 
+    // Hero
     hero: linear-gradient(
         135deg,
         var(--pdz-color-mint-500),
         var(--pdz-color-mint-300)
       ),
-    debug: #ff00ff,
   ),
+);
+
+// Merge defaults with theme-specific overrides
+$theme: (
+  light: map.merge(map.get($defaults, light), map.get($theme-overrides, light)),
+  dark: map.merge(map.get($defaults, dark), map.get($theme-overrides, dark)),
 );
