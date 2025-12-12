@@ -2,15 +2,18 @@ export const range = (start: number, end: number): number[] => {
   return [...Array(end - start).keys()].map((el) => el + start);
 };
 
-export const pluck = (elements: any[], field: string) => {
+export const pluck = <T, K extends keyof T>(
+  elements: T[],
+  field: K,
+): T[K][] => {
   return elements.map((el) => el[field]);
 };
 
-function trimName(name: string) {
+function trimName(name: string): string {
   return name
     .trim()
     .toLowerCase()
-    .replace(/[-.'\s]/, '');
+    .replace(/[-.'\s]/g, '');
 }
 
 export function includeName(name: string, partial: string) {
