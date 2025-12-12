@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from '../pages/homepage/homepage.component';
+import { NotFoundComponent } from '../pages/not-found/not-found.component';
 import { SettingsComponent } from '../pages/settings/settings.component';
 import { PlannerComponent } from '../planner/plannner.component';
 import { DebugPath } from '../debug/debug-routing.module';
@@ -33,7 +34,7 @@ const routes: Routes = [
     loadChildren: () =>
       import('../debug/debug.module').then((m) => m.DebugModule),
   },
-  { path: '**', component: HomeComponent },
+  { path: '**', component: NotFoundComponent },
 ];
 
 @NgModule({
