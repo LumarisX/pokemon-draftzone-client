@@ -81,7 +81,11 @@ export class ExternalLinkComponent implements OnInit {
   }
 
   goBack(): void {
-    this.location.back();
+    if (window.history.length > 1) {
+      this.location.back();
+    } else {
+      window.close();
+    }
   }
 
   goHome(): void {

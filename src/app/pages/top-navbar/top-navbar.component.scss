@@ -3,6 +3,7 @@
 @use "../../../styles/mixins" as *;
 @use "../../../styles/mixins/buttons" as *;
 
+// Material overrides
 mat-toolbar {
   @include mat.toolbar-overrides(
     (
@@ -11,7 +12,6 @@ mat-toolbar {
     )
   );
   @include mat.toolbar-density(-4);
-
   @include mat.button-density(-1);
   @include mat.button-overrides(
     (
@@ -19,6 +19,7 @@ mat-toolbar {
     )
   );
 }
+
 :host {
   box-shadow: var(--pdz-level-2);
   z-index: 5000;
@@ -33,26 +34,9 @@ mat-toolbar {
   border-radius: var(--pdz-shape-corner-sm);
   font-family: var(--pdz-font-fancy);
   @include background-hover-effect(var(--pdz-color-surface-container));
+
   &:hover {
     color: var(--pdz-color-on-surface-container);
-  }
-}
-
-.user-info-container {
-  display: flex;
-  align-items: center;
-  .user-icon {
-    width: 1.5rem;
-    height: 1.5rem;
-    border-radius: var(--pdz-shape-corner-lg);
-  }
-  .username-text {
-    padding-left: 0.5rem;
-    max-width: 4rem;
-    text-overflow: clip;
-    font-size: 0.9rem;
-    line-height: 0.9rem;
-    overflow: hidden;
   }
 }
 
@@ -61,17 +45,40 @@ mat-toolbar {
     (
       padding: var(--pdz-space-2xs) var(--pdz-space-sm),
       box-shadow-hover: var(--pdz-level-0),
-      "background-hover": var(--pdz-color-surface-container),
+      background-hover: var(--pdz-color-surface-container),
     )
   );
-}
-pdz-icon {
-  height: 100%;
-  width: fit-content;
+
+  pdz-icon {
+    height: 100%;
+    width: fit-content;
+  }
 }
 
+// Store button - mobile first
+.store-button {
+  margin: 0 var(--pdz-space-xs);
+  @include flat-button(
+    (
+      font-family: var(--pdz-font-fancy),
+      padding: var(--pdz-space-2xs) var(--pdz-space-sm),
+      box-shadow-hover: var(--pdz-level-0),
+      background-hover: var(--pdz-color-surface-container),
+    )
+  );
+
+  &__text {
+    display: none;
+
+    @include respond-above(small) {
+      display: inline;
+    }
+  }
+}
+
+// Responsive navigation - mobile first
 .mobile-menu {
-  display: block;
+  display: flex;
 }
 
 .desktop-tabs {
@@ -85,17 +92,10 @@ pdz-icon {
 
   .desktop-tabs {
     display: flex;
+    gap: var(--pdz-space-2xs);
   }
-}
 
-.store-button {
-  margin: 0 0.5rem;
-  @include flat-button(
-    (
-      font-family: var(--pdz-font-fancy),
-      padding: var(--pdz-space-sm) var(--pdz-space-sm),
-      box-shadow-hover: var(--pdz-level-0),
-      "background-hover": var(--pdz-color-surface-container),
-    )
-  );
+  .store-button {
+    padding: var(--pdz-space-sm);
+  }
 }

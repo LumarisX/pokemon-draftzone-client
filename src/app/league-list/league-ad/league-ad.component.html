@@ -1,158 +1,163 @@
-<div class="p-5 rounded-lg shadow-md" [ngClass]="getTeamColor('200', '500')">
-  <div (click)="toggleCollapsed()">
-    <div class="flex justify-between items-center mb-2">
-      <h2 class="text-xl font-semibold">
-        {{ league.leagueName }}
-      </h2>
-      <div class="h-6 w-6">
-        <compact-svg [up]="collapsed"></compact-svg>
+<div class="league-ad-card" [ngClass]="teamClass">
+  <div class="card-header">
+    <h2 class="card-title">{{ league.leagueName }}</h2>
+    <div class="header-right">
+      @if (mode === "manage") {
+        <div class="status-badge" [ngClass]="getStatusClass(league.status)">
+          {{ league.status | titlecase }}
+        </div>
+      } @else {
+        <div class="tag-icons">
+          @for (skill of league.skillLevels; track skill) {
+            <div class="tag-icon">
+              <ball-svg [ballType]="SKILLBALLS[skill]"></ball-svg>
+            </div>
+          }
+          @if (league.prizeValue) {
+            <div class="tag-icon">
+              <coin-svg></coin-svg>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+
+  <div class="card-body">
+    <div class="description-section">
+      <div class="meta-grid">
+        <div class="meta-item">
+          <span class="meta-label"
+            >{{ "Format" + (league.formats.length > 1 ? "s" : "") }}
+          </span>
+          <span class="meta-value">{{ league.formats.join(", ") }}</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label"
+            >{{ "Ruleset" + (league.rulesets.length > 1 ? "s" : "") }}
+          </span>
+          <span class="meta-value">{{ league.rulesets.join(", ") }}</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label"
+            >{{ "Platform" + (league.platforms.length > 1 ? "s" : "") }}
+          </span>
+          <span class="meta-value">{{ league.platforms.join(", ") }}</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Closes At</span>
+          <span class="meta-value">{{ league.closesAt | date }}</span>
+        </div>
       </div>
+
+      @if (league.description) {
+        <div class="description-content">
+          <span class="description-label">About</span>
+
+          <div class="markdown-preview">
+            <markdown [data]="league.description"></markdown>
+          </div>
+        </div>
+      }
     </div>
 
-    <span class="text-sm">{{ league.description }}</span>
-
-    <div class="mt-2" *ngIf="!collapsed">
-      <div class="space-x-1 flex">
-        <label for="hostlink" class="font-semibold">Host Link:</label>
-        <a
-          id="hostlink"
-          [href]="
-            league.hostLink?.startsWith('http')
-              ? league.hostLink
-              : 'https://' + league.hostLink
-          "
-          class="text-center underline block overflow-hidden whitespace-nowrap text-ellipsis sm:overflow-visible"
-          style="max-width: 250px"
-        >
-          {{ league.hostLink }}
-        </a>
-      </div>
-      <p class="mt-2"><strong>Divisions:</strong></p>
-      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-        <div
-          *ngFor="let division of league.divisions"
-          class="p-3 rounded-md shadow"
-          [ngClass]="getTeamColor('100', '500')"
-        >
-          <div class="font-semibold">{{ division.divisionName }}</div>
-          <span *ngIf="division.description" class="text-sm">{{
-            division.description
-          }}</span>
-          <div class="text-sm px-2">
-            <div class="space-x-1">
-              <label for="format" class="font-semibold">Format:</label>
-              <span id="format">{{ division.format }}</span>
-            </div>
-            <div class="space-x-1">
-              <label for="ruleset" class="font-semibold">Ruleset:</label>
-              <span id="ruleset">{{ division.ruleset }}</span>
-            </div>
-            <div class="space-x-1">
-              <label for="platform" class="font-semibold">Platform:</label>
-              <span id="platform">{{ division.platform }}</span>
-            </div>
-            <div
-              class="space-x-1 flex items-center"
-              *ngIf="division.prizeValue && division.prizeValue > 0"
+    @if (mode === "manage") {
+      <div class="league-details">
+        @if (league.leagueDoc) {
+          <div class="link-section">
+            <label>Details:</label>
+            <a
+              [href]="formatLink(league.leagueDoc)"
+              target="_blank"
+              rel="noopener noreferrer"
             >
-              <label for="prize" class="font-semibold">Prize Value:</label>
-              <div id="prize" class="flex items-center">
-                <div
-                  *ngFor="let i of [].constructor(division.prizeValue)"
-                  class="h-4 w-4"
-                >
-                  <coin-svg></coin-svg>
-                </div>
-              </div>
-            </div>
-            <div class="space-x-1 flex items-center">
-              <label for="skillrange" class="font-semibold">Skill Range:</label>
-              <div id="skillrange" class="flex items-center space-x-0.5 mt-1">
-                <div *ngFor="let skill of division.skillLevels" class="h-6 w-6">
-                  <ball-svg [ballType]="SKILLBALLS[skill]"></ball-svg>
-                </div>
-              </div>
+              {{ league.leagueDoc }}
+            </a>
+          </div>
+        }
+
+        @if (league.signupLink) {
+          <div class="link-section">
+            <label>Signup:</label>
+            <a
+              [href]="formatLink(league.signupLink)"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {{ league.signupLink }}
+            </a>
+          </div>
+        }
+      </div>
+    }
+
+    <div class="league-info-section">
+      @if (league.seasonStart || league.seasonEnd) {
+        <div class="info-item">
+          <strong>Season:</strong>
+          <span class="info-content">
+            {{ league.seasonStart | date }}
+            @if (league.seasonEnd) {
+              - {{ league.seasonEnd | date }}
+              @if (weeks) {
+                ({{ weeks }} weeks)
+              }
+            }
+          </span>
+        </div>
+      }
+
+      @if (league.prizeValue > 0) {
+        <div class="info-item prize-section">
+          <strong>Prize Pool:</strong>
+          <div class="prize-icons">
+            <div class="prize-icon">
+              <coin-svg></coin-svg>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-
-    <div
-      class="mt-4 flex flex-wrap justify-between items-center space-y-2 sm:space-y-0"
-      *ngIf="!collapsed"
-    >
-      <div class="flex-1 justify-center flex flex-wrap space-x-2">
-        <strong>Signup Link:</strong>
-        <a
-          id="hostlink"
-          [href]="
-            league.signupLink.startsWith('http')
-              ? league.signupLink
-              : 'https://' + league.signupLink
-          "
-          class="text-center underline block overflow-hidden whitespace-nowrap text-ellipsis sm:overflow-visible"
-          style="max-width: 250px"
-        >
-          {{ league.signupLink }}</a
-        >
-      </div>
-      <div class="flex-1 justify-center flex flex-wrap space-x-2">
-        <strong>Closes At:</strong>
-        <div
-          class="text-center block overflow-hidden whitespace-nowrap text-ellipsis sm:overflow-visible"
-        >
-          {{ league.closesAt | date }}
-        </div>
-      </div>
-      @if (league.seasonStart || league.seasonEnd) {
-      <div class="flex-1 justify-center flex flex-wrap space-x-2">
-        <strong>Season:</strong>
-        <div
-          class="text-center block overflow-hidden whitespace-nowrap text-ellipsis sm:overflow-visible"
-        >
-          {{ league.seasonStart | date }}
-          @if (league.seasonEnd) { - {{ league.seasonEnd | date }} ({{ weeks }}
-          weeks) }
-        </div>
-      </div>
       }
     </div>
-    <div class="flex items-center space-x-1 mt-1 flex-wrap" *ngIf="collapsed">
-      <div class="h-6 aspect-square" *ngIf="league.tags.includes('poke')">
-        <ball-svg [ballType]="'poke'"></ball-svg>
-      </div>
-      <div class="h-6 aspect-square" *ngIf="league.tags.includes('great')">
-        <ball-svg [ballType]="'great'"></ball-svg>
-      </div>
-      <div class="h-6 aspect-square" *ngIf="league.tags.includes('ultra')">
-        <ball-svg [ballType]="'ultra'"></ball-svg>
-      </div>
-      <div class="h-6 aspect-square" *ngIf="league.tags.includes('master')">
-        <ball-svg [ballType]="'master'"></ball-svg>
-      </div>
+  </div>
 
-      <div
-        *ngIf="league.tags.includes('singles')"
-        class="font-extrabold text-xl"
+  <div class="card-footer">
+    @if (mode === "public") {
+      @if (league.serverLink) {
+        <a
+          [href]="getExternalLinkUrl(league.serverLink)"
+          class="footer-link details-button"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Join Server
+        </a>
+      }
+      @if (league.leagueDoc) {
+        <a
+          [href]="getExternalLinkUrl(league.leagueDoc)"
+          class="footer-link details-button"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          View Details
+        </a>
+      }
+      <a
+        [href]="getExternalLinkUrl(league.signupLink)"
+        class="footer-link signup-button"
+        target="_blank"
+        rel="noopener noreferrer"
       >
-        1v1
-      </div>
-      <div
-        *ngIf="league.tags.includes('doubles')"
-        class="font-extrabold text-xl"
+        Sign Up
+      </a>
+    } @else {
+      <button
+        class="delete-btn"
+        (click)="onDelete()"
+        aria-label="Delete league"
       >
-        2v2
-      </div>
-      <div *ngIf="league.tags.includes('ps')" class="h-6 aspect-square">
-        <mouse-svg></mouse-svg>
-      </div>
-      <div *ngIf="league.tags.includes('game')" class="h-6 aspect-square">
-        <gamepad-svg></gamepad-svg>
-      </div>
-      <div *ngIf="league.tags.includes('prize')" class="h-6 aspect-square">
-        <coin-svg></coin-svg>
-      </div>
-    </div>
+        Delete
+      </button>
+    }
   </div>
 </div>

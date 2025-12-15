@@ -1,0 +1,352 @@
+@use "../../../styles/global.scss" as *;
+@use "../../../styles/mixins" as *;
+@use "../../../styles/mixins/cards" as *;
+@use "../../../styles/mixins/buttons" as *;
+
+:host {
+  display: block;
+}
+
+.league-ad-card {
+  transition: box-shadow 0.2s ease;
+  box-shadow: var(--pdz-level-1);
+
+  &.team-a {
+    @include pdz-card("primary");
+  }
+
+  &.team-b {
+    @include pdz-card("secondary");
+  }
+
+  &:hover {
+    box-shadow: var(--pdz-level-2);
+  }
+
+  .card-header {
+    .header-right {
+      display: flex;
+      align-items: center;
+
+      .tag-icons {
+        display: flex;
+        align-items: center;
+        gap: var(--pdz-space-2xs);
+
+        .tag-icon {
+          width: 1.5rem;
+          height: 1.5rem;
+        }
+      }
+    }
+    .card-title {
+      @include apply-typography(headline-small);
+    }
+  }
+
+  .card-body {
+    .description-section {
+      margin-bottom: var(--pdz-space-md);
+
+      .meta-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--pdz-space-sm);
+        margin-bottom: var(--pdz-space-lg);
+        padding: var(--pdz-space-md);
+        background-color: pdz-color(primary-container-low);
+        border-radius: var(--pdz-shape-corner-sm);
+
+        @include respond-above(medium) {
+          grid-template-columns: repeat(4, 1fr);
+        }
+
+        .meta-item {
+          display: flex;
+          flex-direction: column;
+          gap: var(--pdz-space-2xs);
+
+          .meta-label {
+            @include apply-typography(label-small);
+            color: pdz-color(on-primary-container);
+          }
+
+          .meta-value {
+            @include apply-typography(body-small);
+            font-weight: var(--pdz-font-weight-semibold);
+            color: pdz-color(on-primary-container);
+          }
+        }
+      }
+
+      .description-content {
+        .description-label {
+          display: block;
+          @include apply-typography(label-small);
+          color: pdz-color(on-primary-container);
+          margin-bottom: var(--pdz-space-xs);
+        }
+
+        .markdown-preview {
+          @include apply-typography(body-medium);
+          color: pdz-color(on-primary-container);
+          padding: var(--pdz-space-sm);
+          background-color: pdz-color(primary-container-low);
+          border-radius: var(--pdz-shape-corner-sm);
+          max-height: 16rem;
+          overflow-x: auto;
+        }
+      }
+    }
+
+    .league-details {
+      .link-section {
+        display: flex;
+        gap: var(--pdz-space-xs);
+        align-items: baseline;
+        flex-wrap: wrap;
+        margin-bottom: var(--pdz-space-sm);
+
+        label {
+          font-weight: var(--pdz-font-weight-semibold);
+        }
+
+        a {
+          color: pdz-color(primary);
+          text-decoration: underline;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+
+          &:hover {
+            opacity: 0.8;
+          }
+        }
+      }
+
+      .host-link-section {
+        display: flex;
+        gap: var(--pdz-space-xs);
+        align-items: baseline;
+        flex-wrap: wrap;
+        margin-bottom: var(--pdz-space-md);
+
+        label {
+          font-weight: var(--pdz-font-weight-semibold);
+        }
+
+        a {
+          color: pdz-color(primary);
+          text-decoration: underline;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          max-width: 250px;
+
+          @include respond-above(small) {
+            overflow: visible;
+          }
+
+          &:hover {
+            opacity: 0.8;
+          }
+        }
+      }
+
+      .divisions-section {
+        margin-top: var(--pdz-space-md);
+
+        > strong {
+          display: block;
+          margin-bottom: var(--pdz-space-sm);
+          font-weight: var(--pdz-font-weight-bold);
+        }
+
+        .divisions-grid {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: var(--pdz-space-md);
+
+          @include respond-above(medium) {
+            grid-template-columns: repeat(2, 1fr);
+          }
+
+          @include respond-above(desktop) {
+            grid-template-columns: repeat(3, 1fr);
+          }
+
+          .division-card {
+            padding: var(--pdz-space-md);
+            border-radius: var(--pdz-shape-corner-sm);
+            box-shadow: var(--pdz-level-1);
+
+            &.team-a {
+              background-color: pdz-color(primary-container-low);
+            }
+
+            &.team-b {
+              background-color: pdz-color(secondary-container-low);
+            }
+
+            .division-name {
+              font-weight: var(--pdz-font-weight-semibold);
+              margin-bottom: var(--pdz-space-2xs);
+            }
+
+            .division-description {
+              @include apply-typography(body-small);
+              opacity: 0.8;
+              margin-bottom: var(--pdz-space-xs);
+            }
+
+            .division-details {
+              @include apply-typography(body-small);
+              padding: 0 var(--pdz-space-sm);
+
+              .division-field {
+                display: flex;
+                gap: var(--pdz-space-xs);
+                margin-bottom: var(--pdz-space-2xs);
+
+                label {
+                  font-weight: var(--pdz-font-weight-semibold);
+                }
+
+                span {
+                  opacity: 0.8;
+                }
+
+                &.prize-value {
+                  display: flex;
+                  align-items: center;
+                  gap: var(--pdz-space-xs);
+
+                  .prize-icons {
+                    display: flex;
+                    align-items: center;
+                  }
+                }
+
+                &.skill-range {
+                  display: flex;
+                  align-items: center;
+                  gap: var(--pdz-space-xs);
+
+                  .skill-icons {
+                    display: flex;
+                    align-items: center;
+                    gap: var(--pdz-space-2xs);
+                    margin-top: var(--pdz-space-2xs);
+
+                    .skill-icon {
+                      width: 1.5rem;
+                      height: 1.5rem;
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .league-info-section {
+      margin-top: var(--pdz-space-md);
+      padding-top: var(--pdz-space-md);
+      border-top: 1px solid pdz-color(primary-border);
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: var(--pdz-space-sm);
+
+      .info-item {
+        display: flex;
+        gap: var(--pdz-space-xs);
+        align-items: center;
+
+        strong {
+          font-weight: var(--pdz-font-weight-bold);
+        }
+
+        .info-content {
+          opacity: 0.8;
+        }
+
+        &.prize-section {
+          .prize-icons {
+            display: flex;
+            align-items: center;
+            gap: var(--pdz-space-2xs);
+
+            .prize-icon {
+              width: 1rem;
+              height: 1rem;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .card-footer {
+    display: flex;
+    gap: var(--pdz-space-sm);
+
+    .signup-button {
+      @include flat-button-primary();
+    }
+
+    .details-button {
+      @include flat-button-primary();
+    }
+
+    .delete-btn {
+      @include flat-button-menu(
+        (
+          padding: var(--pdz-space-xs) var(--pdz-space-md),
+        )
+      );
+      background-color: pdz-color(error-container);
+      color: pdz-color(on-error-container);
+
+      &:hover {
+        background-color: pdz-color(error);
+        color: pdz-color(on-error);
+      }
+    }
+  }
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--pdz-space-2xs) var(--pdz-space-sm);
+  border-radius: var(--pdz-shape-corner-full);
+  box-shadow: var(--pdz-level-1);
+  font-size: 0.75rem;
+  font-weight: var(--pdz-font-weight-semibold);
+  text-transform: capitalize;
+  white-space: nowrap;
+
+  &.status-pending {
+    background-color: pdz-color(warning-container);
+    color: pdz-color(on-warning-container);
+  }
+
+  &.status-approved {
+    background-color: pdz-color(success);
+    color: pdz-color(on-success);
+  }
+
+  &.status-denied {
+    background-color: pdz-color(error);
+    color: pdz-color(on-error);
+  }
+}
+
+.prize-icon {
+  width: 1rem;
+  height: 1rem;
+}

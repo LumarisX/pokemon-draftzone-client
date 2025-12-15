@@ -1,0 +1,15 @@
+<div class="select-input-container">
+  @if (label) {
+    <label class="select-label">{{ label }}</label>
+  }
+  <select
+    class="select-element"
+    [value]="value"
+    (change)="onSelectChange($event)"
+  >
+    <option value="">{{ placeholder }}</option>
+    @for (option of options; track option.value) {
+      <option [value]="option.value">{{ option.label }}</option>
+    }
+  </select>
+</div>

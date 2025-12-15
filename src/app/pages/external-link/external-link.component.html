@@ -23,13 +23,7 @@
       @if (urlWarnings.length > 0) {
         <div class="external-link__warnings">
           <div class="external-link__warnings-header">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-            >
-              <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z" />
-            </svg>
+            <mat-icon>warning</mat-icon>
             <span>Security Notices</span>
           </div>
           <ul class="external-link__warnings-list">
@@ -57,15 +51,7 @@
         (click)="goBack()"
         type="button"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="currentColor"
-        >
-          <path
-            d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"
-          />
-        </svg>
+        <mat-icon>arrow_back</mat-icon>
         Go Back
       </button>
 
@@ -76,12 +62,6 @@
       >
         Continue to Site
       </a>
-    </div>
-
-    <div class="external-link__footer">
-      <button class="external-link__home-link" (click)="goHome()" type="button">
-        Return to Pokemon DraftZone Home
-      </button>
     </div>
   </div>
 </div>

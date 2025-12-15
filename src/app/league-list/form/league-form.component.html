@@ -1,304 +1,280 @@
-<div class="p-4">
-  <form
-    [formGroup]="leagueForm"
-    (ngSubmit)="onSubmit()"
-    class="space-y-6 max-w-3xl mx-auto p-6 bg-menu-100 border border-menu-200 rounded-lg shadow-lg"
-  >
-    <div class="text-xl font-nasa">New League Form</div>
+<div class="league-form-container">
+  <header class="form-header">
+    <h1>Create League Advertisement</h1>
+    <p class="form-description">
+      Fill out the form below to advertise your league to potential players
+    </p>
+  </header>
 
+  <form [formGroup]="leagueForm" (ngSubmit)="onSubmit()" class="league-form">
     <!-- League Name -->
-    <div>
-      <label for="leagueName" class="text-sm font-medium text-menu-700"
-        >League Name<span class="text-required">*</span></label
-      >
+    <div class="form-field">
+      <label for="leagueName" class="form-label">
+        League Name <span class="required">*</span>
+      </label>
       <input
         id="leagueName"
-        maxlength="100"
+        type="text"
         formControlName="leagueName"
-        class="w-full p-2 bg-page border rounded-md sm:text-sm"
-        placeholder="Enter League Name"
+        class="form-input"
+        [class.is-invalid]="isFieldInvalid('leagueName')"
+        placeholder="Enter your league name"
+        [maxlength]="LEAGUE_NAME_MAX_LENGTH"
       />
+      @if (isFieldInvalid("leagueName")) {
+        <span class="error-message"
+          >League name is required (max
+          {{ LEAGUE_NAME_MAX_LENGTH }} characters)</span
+        >
+      }
     </div>
 
     <!-- Description -->
-    <div>
-      <label for="description" class="text-sm font-medium text-menu-700"
-        >Description<span class="text-required">*</span></label
-      >
+    <div class="form-field">
+      <label for="description" class="form-label">
+        Description <span class="required">*</span>
+      </label>
       <textarea
         id="description"
         formControlName="description"
-        maxlength="500"
-        class="w-full p-2 bg-page border rounded-md sm:text-sm"
-        placeholder="Enter League Description"
+        class="form-textarea"
+        [class.is-invalid]="isFieldInvalid('description')"
+        placeholder="Describe your league, rules, and what makes it unique"
+        rows="4"
+        [maxlength]="DESCRIPTION_MAX_LENGTH"
       ></textarea>
-    </div>
-
-    <!-- Host Link -->
-    <div>
-      <label for="hostLink" class="text-sm font-medium text-menu-700"
-        >Host Link (Discord, Battlefy, etc.)</label
-      >
-      <input
-        id="hostLink"
-        formControlName="hostLink"
-        maxlength="100"
-        class="w-full p-2 bg-page border rounded-md sm:text-sm"
-        placeholder="Enter Host Link"
-      />
-    </div>
-
-    <!-- Divisions -->
-    <div formArrayName="divisions" class="space-y-6">
-      <div
-        *ngFor="let division of divisions.controls; let i = index"
-        [formGroupName]="i"
-        class="space-y-4 p-4 rounded-md border bg-page"
-      >
-        <h3 class="text-lg font-semibold text-menu-800">
-          Division {{ i + 1 }}
-        </h3>
-
-        <div>
-          <label
-            for="divisionName-{{ i }}"
-            class="text-sm font-medium text-menu-700"
-            >Division Name<span class="text-required">*</span></label
-          >
-          <input
-            id="divisionName-{{ i }}"
-            maxlength="50"
-            formControlName="divisionName"
-            class="w-full bg-page p-2 border rounded-md sm:text-sm"
-            placeholder="Enter Division Name"
-          />
-        </div>
-
-        <!-- Skill Level Range -->
-        <div formGroupName="skillLevelRange">
-          <label class="text-sm font-medium text-menu-700"
-            >Skill Level Range</label
-          >
-          <div class="flex space-x-2">
-            <div class="w-1/2">
-              <label for="from-{{ i }}" class="text-sm"
-                >From<span class="text-required">*</span></label
-              >
-              <select
-                formControlName="from"
-                class="w-full p-2 bg-page border rounded-md sm:text-sm"
-                id="from-{{ i }}"
-              >
-                <option value="0">Amateur</option>
-                <option value="1">Intermediate</option>
-                <option value="2">Advanced</option>
-                <option value="3">Expert</option>
-              </select>
-            </div>
-
-            <div class="w-1/2">
-              <label for="to-{{ i }}" class="text-sm"
-                >To<span class="text-required">*</span></label
-              >
-              <select
-                formControlName="to"
-                class="w-full p-2 bg-page border rounded-md sm:text-sm"
-                id="to-{{ i }}"
-              >
-                <option value="0">Amateur</option>
-                <option value="1">Intermediate</option>
-                <option value="2">Advanced</option>
-                <option value="3">Expert</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <!-- Prize Value, Platform, Format, and Ruleset Section -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <!-- Platform -->
-          <div>
-            <label
-              for="platform-{{ i }}"
-              class="text-sm font-medium text-menu-700"
-            >
-              Platform<span class="text-required">*</span>
-            </label>
-            <select
-              id="platform-{{ i }}"
-              formControlName="platform"
-              class="w-full bg-page p-2 border rounded-md sm:text-sm"
-            >
-              <option value="Pokémon Showdown">Pokémon Showdown</option>
-              <option value="Scarlet/Violet">Scarlet/Violet</option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
-
-          <!-- Prize Value -->
-          <div>
-            <label
-              for="prizeValue-{{ i }}"
-              class="text-sm font-medium text-menu-700"
-            >
-              Prize Value<span class="text-required">*</span>
-            </label>
-            <select
-              id="prizeValue-{{ i }}"
-              formControlName="prizeValue"
-              class="w-full p-2 bg-page border rounded-md sm:text-sm"
-            >
-              <option value="0">None</option>
-              <option value="1">$1 - $25</option>
-              <option value="2">$25 - $75</option>
-              <option value="3">$75 - $150</option>
-              <option value="4">$150+</option>
-            </select>
-          </div>
-
-          <!-- Format -->
-          <div>
-            <label
-              for="format-{{ i }}"
-              class="text-sm font-medium text-menu-700"
-            >
-              Format<span class="text-required">*</span>
-            </label>
-            <select
-              id="format-{{ i }}"
-              formControlName="format"
-              class="w-full p-2 bg-page border rounded-md sm:text-sm"
-            >
-              <option *ngFor="let format of formats" [value]="format">
-                {{ format }}
-              </option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
-
-          <!-- Ruleset -->
-          <div>
-            <label
-              for="ruleset-{{ i }}"
-              class="text-sm font-medium text-menu-700"
-            >
-              Ruleset<span class="text-required">*</span>
-            </label>
-            <select
-              id="ruleset-{{ i }}"
-              formControlName="ruleset"
-              class="w-full p-2 bg-page border rounded-md sm:text-sm"
-            >
-              <option *ngFor="let ruleset of rulesets" [value]="ruleset">
-                {{ ruleset }}
-              </option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
-        </div>
-
-        <!-- Description -->
-        <div>
-          <label
-            for="description-{{ i }}"
-            class="text-sm font-medium text-menu-700"
-            >Division Description</label
-          >
-          <textarea
-            id="description-{{ i }}"
-            formControlName="description"
-            maxlength="300"
-            class="w-full p-2 bg-page border rounded-md sm:text-sm"
-            placeholder="Enter Division Description"
-          ></textarea>
-        </div>
-
-        <button
-          type="button"
-          *ngIf="divisions.controls.length > 1"
-          (click)="removeDivision(i)"
-          class="text-red-600 hover:text-red-800 font-semibold"
+      @if (isFieldInvalid("description")) {
+        <span class="error-message"
+          >Description is required (max
+          {{ DESCRIPTION_MAX_LENGTH }} characters)</span
         >
-          Remove Division
-        </button>
+      }
+    </div>
+
+    <div class="form-row">
+      <!-- Signup Link -->
+      <div class="form-field">
+        <label for="signupLink" class="form-label">
+          Signup Link <span class="required">*</span>
+        </label>
+        <input
+          id="signupLink"
+          type="text"
+          formControlName="signupLink"
+          class="form-input"
+          [class.is-invalid]="isFieldInvalid('signupLink')"
+          placeholder="Link to your league signup form or page"
+          maxlength="100"
+        />
+        @if (isFieldInvalid("signupLink")) {
+          <span class="error-message">Signup link is required</span>
+        }
+      </div>
+
+      <!-- Prize Value -->
+      <div class="form-field">
+        <label for="prizeValue" class="form-label"> Prize Value </label>
+        <select
+          id="prizeValue"
+          formControlName="prizeValue"
+          class="form-select"
+        >
+          <option value="0">None</option>
+          <option value="1">Small (&lt; $25)</option>
+          <option value="2">Medium ($25-$100)</option>
+          <option value="3">Large (&gt; $100)</option>
+        </select>
       </div>
     </div>
 
-    <button
-      type="button"
-      (click)="addDivision()"
-      class="mt-4 bg-bTeam-400 text-symbolColor-inverted p-2 rounded-md hover:bg-bTeam-500"
-    >
-      Add Division
-    </button>
+    <div class="form-row">
+      <!-- Server Link -->
+      <div class="form-field">
+        <label for="serverLink" class="form-label"> Server Link </label>
+        <input
+          id="serverLink"
+          type="text"
+          formControlName="serverLink"
+          class="form-input"
+          placeholder="Discord server invite link (optional)"
+        />
+      </div>
 
-    <!-- Signup Link -->
-    <div>
-      <label for="signupLink" class="text-sm font-medium text-menu-700">
-        Signup Link<span class="text-required">*</span>
-      </label>
-      <input
-        id="signupLink"
-        formControlName="signupLink"
-        maxlength="100"
-        class="w-full p-2 bg-page border rounded-md sm:text-sm"
-        placeholder="Enter Signup Link"
-      />
+      <!-- League Documents Link -->
+      <div class="form-field">
+        <label for="leagueDoc" class="form-label"> League Documents </label>
+        <input
+          id="leagueDoc"
+          type="text"
+          formControlName="leagueDoc"
+          class="form-input"
+          [class.is-invalid]="isFieldInvalid('leagueDoc')"
+          placeholder="Google Doc or other league info link (optional)"
+          maxlength="100"
+        />
+      </div>
     </div>
 
-    <!-- Closes At -->
-    <div>
-      <label for="closesAt" class="text-sm font-medium text-menu-700">
-        Closes At<span class="text-required">*</span>
-      </label>
-      <input
-        id="closesAt"
-        formControlName="closesAt"
-        type="date"
-        class="w-full bg-page p-2 border rounded-md sm:text-sm"
-      />
-    </div>
-
-    <!-- Season Section -->
-    <div>
-      <h2 class="text-lg font-semibold text-menu-700">Season</h2>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <!-- Season Start -->
-        <div>
-          <label for="seasonStart" class="text-sm font-medium text-menu-700"
-            >Start</label
+    <!-- Skill Level Range -->
+    <div formGroupName="skillLevelRange">
+      <label class="form-label"> Skill Level Range </label>
+      <div class="form-row">
+        <div class="form-field form-field--inline">
+          <label for="skillLevelFrom" class="form-label-inline">From</label>
+          <select
+            id="skillLevelFrom"
+            formControlName="from"
+            class="form-select"
           >
-          <input
-            id="seasonStart"
-            formControlName="seasonStart"
-            type="date"
-            class="w-full bg-page p-2 border rounded-md sm:text-sm"
-          />
+            <option value="0">Novice</option>
+            <option value="1">Intermediate</option>
+            <option value="2">Advanced</option>
+            <option value="3">Expert</option>
+          </select>
         </div>
 
-        <!-- Season End -->
-        <div>
-          <label for="seasonEnd" class="text-sm font-medium text-menu-700"
-            >End</label
-          >
-          <input
-            id="seasonEnd"
-            formControlName="seasonEnd"
-            type="date"
-            class="w-full bg-page p-2 border rounded-md sm:text-sm"
-          />
+        <div class="form-field form-field--inline">
+          <label for="skillLevelTo" class="form-label-inline">To</label>
+          <select id="skillLevelTo" formControlName="to" class="form-select">
+            <option value="0">Novice</option>
+            <option value="1">Intermediate</option>
+            <option value="2">Advanced</option>
+            <option value="3">Expert</option>
+          </select>
         </div>
       </div>
     </div>
 
-    <!-- Submit Button -->
-    <div class="pt-4">
+    <!-- Multi-Select Game Settings -->
+    <div class="form-row form-row--three">
+      <!-- Platforms -->
+      <div class="form-field">
+        <label class="form-label">
+          Platform(s) <span class="required">*</span>
+        </label>
+        <div
+          class="checkbox-group"
+          [class.is-invalid]="isFieldInvalid('platforms')"
+          formArrayName="platforms"
+        >
+          @for (platform of platforms; track platform; let i = $index) {
+            <label class="checkbox-item">
+              <input type="checkbox" [formControlName]="i" />
+              <span class="checkbox-label">{{ platform }}</span>
+            </label>
+          }
+        </div>
+        @if (isFieldInvalid("platforms")) {
+          <span class="error-message">Select at least one platform</span>
+        }
+      </div>
+
+      <!-- Formats -->
+      <div class="form-field">
+        <label class="form-label">
+          Format(s) <span class="required">*</span>
+        </label>
+        <div
+          class="checkbox-group"
+          [class.is-invalid]="isFieldInvalid('formats')"
+          formArrayName="formats"
+        >
+          @for (format of formats; track format; let i = $index) {
+            <label class="checkbox-item">
+              <input type="checkbox" [formControlName]="i" />
+              <span class="checkbox-label">{{ format }}</span>
+            </label>
+          }
+        </div>
+        @if (isFieldInvalid("formats")) {
+          <span class="error-message">Select at least one format</span>
+        }
+      </div>
+
+      <!-- Rulesets -->
+      <div class="form-field">
+        <label class="form-label">
+          Ruleset(s) <span class="required">*</span>
+        </label>
+        <div
+          class="checkbox-group"
+          [class.is-invalid]="isFieldInvalid('rulesets')"
+          formArrayName="rulesets"
+        >
+          @for (ruleset of rulesets; track ruleset; let i = $index) {
+            <label class="checkbox-item">
+              <input type="checkbox" [formControlName]="i" />
+              <span class="checkbox-label">{{ ruleset }}</span>
+            </label>
+          }
+        </div>
+        @if (isFieldInvalid("rulesets")) {
+          <span class="error-message">Select at least one ruleset</span>
+        }
+      </div>
+    </div>
+
+    <!-- Dates Section -->
+    <div class="form-row form-row--three">
+      <!-- Closes At -->
+      <div class="form-field">
+        <label for="closesAt" class="form-label">
+          Registration Closes <span class="required">*</span>
+        </label>
+        <input
+          id="closesAt"
+          type="date"
+          formControlName="closesAt"
+          class="form-input"
+          [class.is-invalid]="isFieldInvalid('closesAt')"
+        />
+        @if (isFieldInvalid("closesAt")) {
+          <span class="error-message">Registration close date is required</span>
+        }
+      </div>
+
+      <!-- Season Start -->
+      <div class="form-field">
+        <label for="seasonStart" class="form-label"> Season Start Date </label>
+        <input
+          id="seasonStart"
+          type="date"
+          formControlName="seasonStart"
+          class="form-input"
+        />
+      </div>
+      <!-- Season End -->
+      <div class="form-field">
+        <label for="seasonEnd" class="form-label"> Season End Date </label>
+        <input
+          id="seasonEnd"
+          type="date"
+          formControlName="seasonEnd"
+          class="form-input"
+        />
+      </div>
+    </div>
+
+    <!-- Form Actions -->
+    <div class="form-actions">
+      <button
+        type="button"
+        routerLink="/league-list"
+        class="form-button form-button--secondary"
+        [disabled]="isSubmitting"
+      >
+        Cancel
+      </button>
       <button
         type="submit"
-        class="bg-aTeam-400 text-symbolColor-inverted p-2 rounded-md hover:bg-aTeam-500 w-full"
+        class="form-button form-button--primary"
+        [disabled]="isSubmitting"
       >
-        Submit
+        @if (isSubmitting) {
+          <span>Creating...</span>
+        } @else {
+          <span>Create League Ad</span>
+        }
       </button>
     </div>
   </form>

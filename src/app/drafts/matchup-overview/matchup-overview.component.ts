@@ -54,7 +54,7 @@ export class MatchupOverviewComponent implements OnInit {
   copied: boolean = false;
   draftPath = DraftOverviewPath;
 
-  view: 'matchup' | 'teambuilder' = 'teambuilder';
+  view: 'matchup' | 'teambuilder' = 'matchup';
 
   toolOpen: boolean = false;
 

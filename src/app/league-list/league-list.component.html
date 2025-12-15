@@ -1,91 +1,61 @@
-<div class="p-6 bg-page">
-  <div class="flex justify-between items-center mb-6">
-    <h1 class="text-2xl font-bold font-nasa">Open Leagues</h1>
-
-    <div class="flex space-x-4 items-center">
-      <button
-        routerLink="manage/new"
-        class="h-10 w-10 bg-menu-500 stroke-symbolColor-inverted rounded-md flex justify-center items-center shadow hover:bg-menu-600"
-      >
-        <plus-svg class="h-5 w-5"></plus-svg>
-      </button>
-      <button
-        class="px-4 py-2 bg-menu-500 text-symbolColor-inverted rounded-md shadow hover:bg-menu-600"
-        routerLink="manage"
-      >
-        My League Ads
-      </button>
-    </div>
+<div class="page-header">
+  <h1 class="page-header__title">Open Leagues</h1>
+  <div class="page-header__actions">
+    <button routerLink="manage/new" class="add-button">
+      <mat-icon>add</mat-icon>
+    </button>
+    <button routerLink="manage" class="manage-button">My League Ads</button>
   </div>
-  <div class="flex justify-between items-center text-sm font-semibold mb-2">
-    <div>
-      <ng-container *ngIf="filteredLeagues"
-        >Results: {{ filteredLeagues.length }}</ng-container
-      >
-    </div>
-    <div class="flex space-x-4 items-center">
-      <!-- Filter Button -->
+</div>
 
-      <div class="relative h-6 aspect-square">
-        <filter-svg (click)="toggleMenu('filter')"></filter-svg>
-        <!-- Filter Box (initially hidden) -->
-        <div
-          *ngIf="menu === 'filter'"
-          class="absolute top-7 border right-0 bg-page p-4 shadow-lg rounded-lg w-72"
-        >
-          <h3 class="text-lg font-semibold mb-4">Filter Options</h3>
+<div class="toolbar">
+  <div class="toolbar__results">
+    @if (filteredLeagues) {
+      Results: {{ filteredLeagues.length }}
+    }
+  </div>
+  <div class="toolbar__controls">
+    <!-- Filter Button -->
+    <div class="menu-trigger">
+      <mat-icon (click)="toggleMenu('filter', $event)">filter_list</mat-icon>
+      @if (menu === "filter") {
+        <div class="dropdown" (click)="$event.stopPropagation()">
+          <h3 class="dropdown__title">Filter Options</h3>
 
-          <div class="mb-4">
-            <label class="block text-sm font-bold text-menu-600 mb-1"
-              >Format</label
-            >
-            <select
-              [(ngModel)]="filter.format"
-              class="w-full bg-page p-2 border rounded-md"
-            >
+          <div class="filter-group">
+            <label class="filter-group__label">Format</label>
+            <select [(ngModel)]="filter.format" class="filter-group__select">
               <option value="">Any</option>
-              <option *ngFor="let format of formats" [value]="format">
-                {{ format }}
-              </option>
+              @for (format of formats; track format) {
+                <option [value]="format">{{ format }}</option>
+              }
             </select>
           </div>
 
-          <div class="mb-4">
-            <label class="block text-sm font-bold text-menu-600 mb-1"
-              >Ruleset</label
-            >
-            <select
-              [(ngModel)]="filter.ruleset"
-              class="w-full bg-page p-2 border rounded-md"
-            >
+          <div class="filter-group">
+            <label class="filter-group__label">Ruleset</label>
+            <select [(ngModel)]="filter.ruleset" class="filter-group__select">
               <option value="">Any</option>
-              <option *ngFor="let ruleset of rulesets" [value]="ruleset">
-                {{ ruleset }}
-              </option>
+              @for (ruleset of rulesets; track ruleset) {
+                <option [value]="ruleset">{{ ruleset }}</option>
+              }
             </select>
           </div>
 
-          <div class="mb-4">
-            <label class="block text-sm font-bold text-menu-600 mb-1"
-              >Platform</label
-            >
-            <select
-              [(ngModel)]="filter.platform"
-              class="w-full bg-page p-2 border rounded-md"
-            >
+          <div class="filter-group">
+            <label class="filter-group__label">Platform</label>
+            <select [(ngModel)]="filter.platform" class="filter-group__select">
               <option value="">Any</option>
               <option value="Pokémon Showdown">Pokémon Showdown</option>
               <option value="Scarlet/Violet">Scarlet/Violet</option>
             </select>
           </div>
 
-          <div class="mb-4">
-            <label class="block text-sm font-bold text-menu-600 mb-1"
-              >Skill Level</label
-            >
+          <div class="filter-group">
+            <label class="filter-group__label">Skill Level</label>
             <select
               [(ngModel)]="filter.skillLevel"
-              class="w-full p-2 bg-page border rounded-md"
+              class="filter-group__select"
             >
               <option value="any">Any</option>
               <option value="0">Amateur</option>
@@ -95,52 +65,43 @@
             </select>
           </div>
 
-          <div class="flex justify-end space-x-2">
-            <button
-              (click)="applyFilters()"
-              class="px-4 py-2 bg-green-500 text-white rounded-md shadow hover:bg-green-600"
-            >
-              Apply
-            </button>
-            <button
-              (click)="clearFilters()"
-              class="px-4 py-2 bg-red-500 text-white rounded-md shadow hover:bg-red-600"
-            >
-              Clear
-            </button>
+          <div class="dropdown-actions">
+            <button (click)="applyFilters()" class="apply-button">Apply</button>
+            <button (click)="clearFilters()" class="clear-button">Clear</button>
           </div>
         </div>
-      </div>
-      <!-- Sort Options -->
+      }
+    </div>
 
-      <div class="relative h-6 aspect-square">
-        <sort-down-svg (click)="toggleMenu('sort')"></sort-down-svg>
-        <!-- Sort Box (initially hidden) -->
-        <div
-          *ngIf="menu === 'sort'"
-          class="absolute top-7 border right-0 bg-page p-2 shadow-lg rounded-lg w-72"
-        >
-          <div class="">
-            <label class="block text-sm font-bold mb-1">Sort</label>
-            <select
-              [(ngModel)]="sortOption"
-              class="w-full bg-page p-2 border rounded-md"
-            >
+    <!-- Sort Options -->
+    <div class="menu-trigger">
+      <mat-icon (click)="toggleMenu('sort', $event)">sort</mat-icon>
+      @if (menu === "sort") {
+        <div class="dropdown" (click)="$event.stopPropagation()">
+          <div class="filter-group">
+            <label class="filter-group__label">Sort</label>
+            <select [(ngModel)]="sortOption" class="sort-select">
               <option value="createdAt">Created At</option>
               <option value="closesAt">Closes At</option>
             </select>
           </div>
         </div>
-      </div>
+      }
     </div>
   </div>
-
-  <!-- League Ads List -->
-  <div class="flex flex-col px-2 space-y-6">
-    <league-ad
-      [league]="league"
-      [index]="i"
-      *ngFor="let league of filteredLeagues; let i = index"
-    ></league-ad>
-  </div>
 </div>
+
+<!-- League Ads Grid -->
+@if (filteredLeagues.length) {
+  <div class="league-grid">
+    @for (league of filteredLeagues; track league; let i = $index) {
+      <pdz-league-ad [league]="league" [index]="i"></pdz-league-ad>
+    }
+  </div>
+} @else {
+  <div class="empty-state">
+    <p class="empty-state__message">
+      No leagues looking for players right now. Check back later!
+    </p>
+  </div>
+}

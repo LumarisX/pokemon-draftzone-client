@@ -1,21 +1,27 @@
 $typography: (
-  headline-large: (
+  headline-xlarge: (
     font-family: var(--pdz-font-fancy),
     font-size: 2rem,
     font-weight: var(--pdz-font-weight-bold),
     line-height: 2.5rem,
   ),
-  headline-medium: (
+  headline-large: (
     font-family: var(--pdz-font-fancy),
     font-size: 1.75rem,
     font-weight: var(--pdz-font-weight-bold),
     line-height: 2rem,
   ),
-  headline-small: (
+  headline-medium: (
     font-family: var(--pdz-font-fancy),
     font-size: 1.2rem,
     font-weight: var(--pdz-font-weight-bold),
     line-height: 1.5rem,
+  ),
+  headline-small: (
+    font-family: var(--pdz-font-fancy),
+    font-size: 1rem,
+    font-weight: var(--pdz-font-weight-bold),
+    line-height: 1.2rem,
   ),
 
   body-large: (
