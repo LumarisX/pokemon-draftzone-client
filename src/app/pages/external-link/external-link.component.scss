@@ -110,6 +110,7 @@
     margin: 0;
     padding-left: var(--pdz-space-lg);
     color: pdz-color(on-error-container);
+    list-style-type: disc;
 
     li {
       margin-bottom: var(--pdz-space-xs);
@@ -135,6 +136,7 @@
       padding-left: var(--pdz-space-lg);
       color: pdz-color(on-menu-container);
       opacity: 0.85;
+      list-style-type: "– ";
 
       li {
         margin-bottom: var(--pdz-space-xs);
