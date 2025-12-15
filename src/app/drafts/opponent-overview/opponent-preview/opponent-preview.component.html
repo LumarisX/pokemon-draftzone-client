@@ -58,8 +58,7 @@
                     @if (matchup.score) {
                       <button
                         class="menu-item"
-                        routerLink="matchup"
-                        [queryParams]="{ id: matchup._id }"
+                        [routerLink]="['matchup', matchup._id]"
                       >
                         <mat-icon> search_insights </mat-icon> View Matchup
                       </button>
