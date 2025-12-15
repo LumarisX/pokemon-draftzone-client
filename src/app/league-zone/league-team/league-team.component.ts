@@ -4,8 +4,6 @@ import { Component } from '@angular/core';
   selector: 'pdz-league-team',
   imports: [],
   templateUrl: './league-team.component.html',
-  styleUrl: './league-team.component.scss'
+  styleUrl: './league-team.component.scss',
 })
-export class LeagueTeamComponent {
-
-}
+export class LeagueTeamComponent {}

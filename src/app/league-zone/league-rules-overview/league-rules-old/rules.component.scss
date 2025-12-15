@@ -20,7 +20,7 @@
 }
 
 .rules-title {
-  font-family: "Nasalization RG", sans-serif;
+  font-family: var(--pdz-font-fancy);
   font-size: 1.875rem; // 30px
   font-weight: bold;
   text-align: center;
@@ -43,29 +43,43 @@
 
 .rule-description {
   padding: 0 12px;
-  list-style: decimal;
 
-  & > li {
+  & > .rule-item {
     margin-bottom: 0.5rem;
   }
 }
 
 .rule-title {
-  font-family: "Nasalization RG", sans-serif;
+  font-family: var(--pdz-font-fancy);
   font-weight: bold;
-  font-size: larger;
+  font-size: var(--pdz-font-size-lg);
 }
 
-ul {
-  list-style-type: disc;
-  margin-left: 1rem;
-  font-weight: 600;
+:host ::ng-deep {
+  markdown {
+    ul {
+      list-style-type: disc !important;
+      list-style-position: inside !important;
+      font-weight: 600;
 
-  & > li {
+      & > li {
+        font-weight: 600;
+      }
+    }
+  }
+
+  ol {
+    list-style-type: nth !important;
+    margin-left: 1rem;
     font-weight: 600;
+    padding-left: 0.5rem;
+
+    & > li {
+      font-weight: 600;
+    }
   }
 }
 
 ::marker {
-  font-weight: 700;
+  font-weight: var(--pdz-font-weight-bold);
 }

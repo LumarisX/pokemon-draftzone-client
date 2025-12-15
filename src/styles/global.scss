@@ -1,0 +1,3 @@
+@function pdz-color($color-name) {
+  @return var(--pdz-color-#{$color-name}, var(--pdz-color-debug));
+}

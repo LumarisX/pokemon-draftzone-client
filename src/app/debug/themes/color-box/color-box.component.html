@@ -1,0 +1,39 @@
+<div class="card-header">
+  <h2>Color Palette</h2>
+  <div class="header-buttons">
+    <button (click)="copyAll()">Copy All</button>
+    <button (click)="export()">Export</button>
+  </div>
+</div>
+<div class="color-container">
+  @for (palette of colorPalettes; track $index) {
+    <div class="color-palette">
+      <div class="palette-header">
+        <h3>{{ palette.options.name }}</h3>
+        <button class="copy-btn" (click)="copyPalette(palette)">
+          @if (palette.copied) {
+            <mat-icon>check</mat-icon>
+          } @else {
+            <mat-icon>content_copy</mat-icon>
+          }
+        </button>
+      </div>
+      <div class="color-set">
+        @for (mode of palette.set; track $index; let modeIndex = $index) {
+          <div class="color-mode">
+            @for (color of mode.colors; track $index) {
+              <div class="color-step" [style.backgroundColor]="color.hex">
+                @if (!modeIndex) {
+                  <div class="color-step-text">{{ (color.step + 1) * 50 }}</div>
+                }
+                <div class="color-swatch">
+                  {{ color.hex }}
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

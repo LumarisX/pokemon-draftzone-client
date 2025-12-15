@@ -3,53 +3,38 @@
     <div class="section-header">
       <h3>Matches</h3>
       <div class="button-container">
-        @if (selectedMatchup) {
-          <button
-            class="matchup-button"
-            routerLink="matchup"
-            [queryParams]="{ id: selectedMatchup._id }"
-          >
-            View Matchup
-          </button>
-          <button
-            class="matchup-button"
-            routerLink="edit"
-            [queryParams]="{ matchup: selectedMatchup._id }"
-          >
-            <mat-icon>edit</mat-icon>
-          </button>
-          @if (deleteConfirm) {
-            <button
-              class="matchup-button"
-              (click)="deleteMatchup(selectedMatchup._id)"
-            >
-              <mat-icon>check</mat-icon>
-            </button>
-          } @else {
-            <button class="matchup-button" (click)="deleteConfirm = true">
-              <mat-icon>delete_forever</mat-icon>
-            </button>
-          }
-        }
-        <button (click)="newOpponent()">
+        <button
+          class="option-btn direction-btn"
+          [class.up]="directionUp"
+          (click)="toggleDirection()"
+        >
+          <mat-icon>arrow_downward</mat-icon>
+        </button>
+        <button
+          [routerLink]="['/', draftPath, this.teamId, 'form']"
+          class="option-btn"
+          [queryParams]="{ stage: `Week ${(this.matchups?.length ?? 0) + 1}` }"
+        >
           <mat-icon>add</mat-icon>
         </button>
       </div>
     </div>
-    @if (matchups) {
+    @if (!matchups) {
+      <pdz-loading></pdz-loading>
+    } @else {
       <div class="matchups-container">
         @for (matchup of matchups; track $index) {
-          <div
-            class="matchup alternate"
-            (click)="selectMatchup(matchup)"
-            [ngClass]="{ selected: selectedMatchup === matchup }"
-          >
-            <div class="matchup-info">
-              <div class="matchup-stage">{{ matchup.stage }}</div>
-              <div class="matchup-team-info-container">
+          <div class="matchup-card">
+            <div class="card-header">
+              @if (matchup.score) {
+                <div class="card-score" [ngClass]="matchup.scoreClass">
+                  {{ matchup.scoreString }}
+                </div>
+              }
+              <div class="card-title">
                 @if (matchup.logo) {
                   <div class="matchup-logo">
-                    <img src="https://placehold.co/400" />
+                    <img [src]="matchup.logo" />
                   </div>
                 }
                 <div class="matchup-team-info">
@@ -59,52 +44,110 @@
                   }
                 </div>
               </div>
+
+              <div class="card-menu">
+                <button
+                  class="more-btn"
+                  (click)="toggleMenu(matchup._id, $event)"
+                >
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+
+                @if (openDropdown === matchup._id) {
+                  <div class="menu-dropdown">
+                    @if (matchup.score) {
+                      <button
+                        class="menu-item"
+                        routerLink="matchup"
+                        [queryParams]="{ id: matchup._id }"
+                      >
+                        <mat-icon> search_insights </mat-icon> View Matchup
+                      </button>
+                    }
+                    <button
+                      class="menu-item"
+                      routerLink="form"
+                      [queryParams]="{ matchup: matchup._id }"
+                    >
+                      <mat-icon>edit_document</mat-icon> Edit Match
+                    </button>
+                    <button
+                      routerLink="score"
+                      [queryParams]="{ matchup: matchup._id }"
+                      class="menu-item"
+                    >
+                      <mat-icon>scoreboard</mat-icon>
+                      @if (matchup.score) {
+                        Edit
+                      } @else {
+                        Add
+                      }
+                      Score
+                    </button>
+                    <button
+                      (click)="deleteMatchup(matchup._id)"
+                      class="menu-item"
+                    >
+                      <mat-icon>delete_forever</mat-icon> Delete
+                    </button>
+                  </div>
+                }
+              </div>
             </div>
 
-            <div class="pokemon-container">
-              @for (pokemon of matchup.team; track $index) {
-                <pdz-sprite [pokemon]="pokemon"></pdz-sprite>
-              }
+            <div class="card-body">
+              <div class="body-header">
+                {{ matchup.stage }}
+              </div>
+              <div class="sprites">
+                @for (pokemon of matchup.team; track pokemon.name) {
+                  <pdz-sprite [pokemon]="pokemon"></pdz-sprite>
+                }
+              </div>
             </div>
-            <div class="options-container">
-              <button
-                routerLink="score"
-                [queryParams]="{ matchup: matchup._id }"
-              >
-                <div class="score-button" [ngClass]="scoreClass(matchup)">
-                  <div>
-                    @if (matchup.score) {
-                      {{ scoreString(matchup) }}
-                    } @else {
-                      Add Score
-                    }
-                  </div>
-                </div>
-              </button>
+
+            <div class="card-footer">
+              @if (matchup.score) {
+                <a
+                  (click)="openReplays(matchup)"
+                  class="footer-link"
+                  [class.disabled]="!matchup.matches.length"
+                  >View Replay
+                  @if (matchup.matches.length > 1) {
+                    s
+                  }
+                </a>
+              } @else {
+                <a class="footer-link" [routerLink]="['matchup', matchup._id]"
+                  >View Matchup</a
+                >
+              }
             </div>
           </div>
         } @empty {
-          <div class="flex w-full justify-center opacity-60 text-lg">
+          <div class="no-matchups">
             Click the [+] to add your first opponent!
           </div>
         }
       </div>
-    } @else {
-      <loading></loading>
     }
   </section>
   <section class="stats-section">
     <div class="section-header">Stats</div>
-    @if (teamStats.value !== null) {
-      @if (teamStats.value.length > 0) {
+    @if (!teamStats) {
+      <pdz-loading></pdz-loading>
+    } @else {
+      @if (teamStats.value && teamStats.value.length > 0) {
         <div class="table-container">
           <div class="table-wrapper">
             <table
               cdk-table
               [dataSource]="teamStats.value!"
               matSort
-              [matSortDisableClear]="true"
               (matSortChange)="sort($event)"
+              [matSortActive]="'kpg'"
+              [matSortDirection]="'desc'"
+              matSortDisableClear
             >
               <ng-container cdkColumnDef="sprite">
                 <th cdk-header-cell *cdkHeaderCellDef></th>
@@ -118,7 +161,7 @@
                 </td>
               </ng-container>
               <ng-container cdkColumnDef="name">
-                <th mat-sort-header="name" cdk-header-cell *cdkHeaderCellDef>
+                <th cdk-header-cell *cdkHeaderCellDef mat-sort-header="name">
                   Name
                 </th>
                 <td cdk-cell *cdkCellDef="let element">
@@ -127,12 +170,7 @@
               </ng-container>
 
               <ng-container cdkColumnDef="gb">
-                <th
-                  mat-sort-header="gb"
-                  start="desc"
-                  cdk-header-cell
-                  *cdkHeaderCellDef
-                >
+                <th cdk-header-cell *cdkHeaderCellDef mat-sort-header="gb">
                   Games Brought
                 </th>
                 <td cdk-cell *cdkCellDef="let element">
@@ -141,12 +179,7 @@
               </ng-container>
 
               <ng-container cdkColumnDef="dk">
-                <th
-                  mat-sort-header="dk"
-                  start="desc"
-                  cdk-header-cell
-                  *cdkHeaderCellDef
-                >
+                <th cdk-header-cell *cdkHeaderCellDef mat-sort-header="dk">
                   Direct Kills
                 </th>
                 <td cdk-cell *cdkCellDef="let element">
@@ -155,12 +188,7 @@
               </ng-container>
 
               <ng-container cdkColumnDef="ik">
-                <th
-                  mat-sort-header="ik"
-                  start="desc"
-                  cdk-header-cell
-                  *cdkHeaderCellDef
-                >
+                <th cdk-header-cell *cdkHeaderCellDef mat-sort-header="ik">
                   Indirect Kills
                 </th>
                 <td cdk-cell *cdkCellDef="let element">
@@ -169,12 +197,7 @@
               </ng-container>
 
               <ng-container cdkColumnDef="deaths">
-                <th
-                  mat-sort-header="deaths"
-                  start="desc"
-                  cdk-header-cell
-                  *cdkHeaderCellDef
-                >
+                <th cdk-header-cell *cdkHeaderCellDef mat-sort-header="deaths">
                   Deaths
                 </th>
                 <td cdk-cell *cdkCellDef="let element">
@@ -183,12 +206,7 @@
               </ng-container>
 
               <ng-container cdkColumnDef="kdr">
-                <th
-                  mat-sort-header="kdr"
-                  start="desc"
-                  cdk-header-cell
-                  *cdkHeaderCellDef
-                >
+                <th cdk-header-cell *cdkHeaderCellDef mat-sort-header="kdr">
                   Kills/Deaths
                 </th>
                 <td cdk-cell *cdkCellDef="let element">
@@ -197,12 +215,7 @@
               </ng-container>
 
               <ng-container cdkColumnDef="kpg">
-                <th
-                  mat-sort-header="kpg"
-                  start="desc"
-                  cdk-header-cell
-                  *cdkHeaderCellDef
-                >
+                <th cdk-header-cell *cdkHeaderCellDef mat-sort-header="kpg">
                   Kills/Game
                 </th>
                 <td cdk-cell *cdkCellDef="let element">
@@ -220,8 +233,6 @@
           Score your first match to see your stats
         </div>
       }
-    } @else {
-      <loading></loading>
     }
   </section>
 </div>

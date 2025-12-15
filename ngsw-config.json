@@ -26,17 +26,5 @@
         ]
       }
     }
-  ],
-  "dataGroups": [
-    {
-      "name": "api",
-      "urls": ["api.pokemondraftzone.com/*"],
-      "cacheConfig": {
-        "maxSize": 200,
-        "maxAge": "2d",
-        "timeout": "2s",
-        "strategy": "freshness"
-      }
-    }
   ]
 }

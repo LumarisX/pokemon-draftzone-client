@@ -1,30 +1,37 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, HostListener, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { ArchiveService } from '../../../services/archive.service';
 import { LoadingComponent } from '../../../images/loading/loading.component';
 import { SpriteComponent } from '../../../images/sprite/sprite.component';
-import { TrashSVG } from '../../../images/svg-components/trash.component';
 import { Archive } from '../../../interfaces/archive';
+import { ArchiveService } from '../../../services/archive.service';
 import { DraftOverviewPath } from '../draft-overview-routing.module';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'draft-archives',
-  standalone: true,
   templateUrl: './draft-archives.component.html',
+  styleUrl: './draft-archives.component.scss',
+
   imports: [
     CommonModule,
     RouterModule,
     SpriteComponent,
-    TrashSVG,
     LoadingComponent,
+    MatIconModule,
   ],
 })
 export class DraftArchiveComponent {
   private archiveService = inject(ArchiveService);
 
-  archives!: (Archive & { menu: 'main' | 'archive' | 'edit' | 'delete' })[];
+  archives!: (Archive & { menu?: 'main' | 'delete' })[];
   backPath: string = DraftOverviewPath;
+
+  menuState: {
+    [key: string]: '' | 'confirm-delete';
+  } = {};
+
+  openDropdown: string | null = null;
 
   ngOnInit() {
     this.reload();
@@ -44,5 +51,37 @@ export class DraftArchiveComponent {
     this.archiveService.deleteDraft(id).subscribe((data) => {
       this.reload();
     });
+  }
+
+  setMenuState(leagueId: string, state: '' | 'confirm-delete') {
+    this.menuState[leagueId] = state;
+  }
+
+  toggleMenu(leagueId: string, event: MouseEvent) {
+    event.stopPropagation();
+    if (this.openDropdown !== leagueId) {
+      this.openDropdown = leagueId;
+    }
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    this.closeDropdown();
+  }
+
+  closeDropdown(): void {
+    this.openDropdown = null;
+  }
+
+  scoreString(archive: Archive) {
+    if (archive.score) return `${archive.score.wins} - ${archive.score.loses}`;
+    return `Unscored`;
+  }
+
+  scoreClass(archive: Archive) {
+    if (!archive.score) return 'pdz-background-neut';
+    if (archive.score.wins > archive.score.loses) return 'pdz-background-pos';
+    if (archive.score.wins < archive.score.loses) return 'pdz-background-neg';
+    return 'pdz-background-neut';
   }
 }

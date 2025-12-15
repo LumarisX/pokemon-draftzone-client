@@ -1,13 +1,18 @@
+:host {
+  overflow-y: auto;
+  height: 100%;
+}
+
 .news-header {
-  font-family: var(--pdz-fancy);
-  font-size: 1.2em;
-  color: var(--mat-sys-secondary);
+  font-family: var(--pdz-font-fancy);
+  font-size: 1.2rem;
+  color: var(--pdz-color-secondary);
 
   .news-date {
-    color: var(--mat-sys-primary);
+    color: var(--pdz-color-primary);
   }
   .news-title {
-    color: var(--mat-sys-on-surface);
+    color: var(--pdz-color-on-surface);
   }
 }
 
@@ -17,7 +22,7 @@
 
 .news-item:not(:last-child) {
   padding-bottom: 0.25rem;
-  border-bottom: 1px solid var(--mat-sys-outline-variant);
+  border-bottom: 1px solid var(--pdz-color-primary-border-variant);
 }
 
 :host {
@@ -39,16 +44,16 @@
 
 .section-images {
   display: flex;
-  overflow-x: scroll;
+  overflow-x: auto;
   column-gap: 0.5rem;
   max-width: 100%;
   align-self: center;
   .image-title {
     padding-left: 0.25rem;
-    font-size: 0.8em;
+    font-size: 0.8rem;
     font-weight: 500;
-    font-family: var(--pdz-fancy);
-    color: var(--mat-sys-secondary);
+    font-family: var(--pdz-font-fancy);
+    color: var(--pdz-color-secondary);
   }
 
   .image-container {
@@ -69,13 +74,13 @@
 }
 
 .section-heading {
-  font-size: 1.1em;
-  font-family: var(--pdz-fancy);
+  font-size: 1.1rem;
+  font-family: var(--pdz-font-fancy);
   padding-bottom: 0rem !important;
 }
 
 .section-list {
-  font-size: 0.9em;
+  font-size: 0.9rem;
   ul {
     padding-left: 1rem;
     list-style-type: disc;

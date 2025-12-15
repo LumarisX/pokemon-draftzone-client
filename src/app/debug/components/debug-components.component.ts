@@ -14,6 +14,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
@@ -34,8 +35,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSliderModule } from '@angular/material/slider';
 import { PokemonSelectComponent } from '../../util/pokemon-select/pokemon-select.component';
-import { TooltipComponent } from '../../util/tooltip/tooltip.component';
-import { MatBadgeModule } from '@angular/material/badge';
+import { TooltipModule } from '../../util/tooltip/tooltip.module';
+import { LoadingComponent } from '../../images/loading/loading.component';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(
@@ -87,7 +88,8 @@ export interface Task {
     MatExpansionModule,
     PokemonSelectComponent,
     ReactiveFormsModule,
-    TooltipComponent,
+    TooltipModule,
+    LoadingComponent,
   ],
 })
 export class DebugComponentsComponent {

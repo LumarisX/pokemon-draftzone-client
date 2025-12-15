@@ -17,19 +17,8 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { RouterModule } from '@angular/router';
 import { map, Subject, take, takeUntil } from 'rxjs';
-import { LeagueZoneService } from '../../services/league-zone.service';
+import { LeagueZoneService } from '../../services/leagues/league-zone.service';
 import { AuthService } from '../../services/auth0.service';
-import { TierPokemon } from '../league-tier-list/league-tier-old';
-
-export type LeagueTier = {
-  name: string;
-  pokemon: TierPokemon[];
-};
-
-export type LeagueTierGroup = {
-  label?: string;
-  tiers: LeagueTier[];
-};
 
 @Component({
   selector: 'pdz-league-sign-up',
@@ -61,7 +50,7 @@ export class LeagueSignUpComponent implements OnInit, OnDestroy {
   added = false;
   closed = false;
   timezones = Intl.supportedValuesOf('timeZone');
-  signUpDeadline: Date = new Date('2026-09-21T12:00:00');
+  signUpDeadline: Date = new Date('2025-10-21T12:00:00');
   signUpItem: string = 'pdbls2';
 
   details: {

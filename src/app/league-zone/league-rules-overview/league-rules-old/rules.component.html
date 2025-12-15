@@ -15,30 +15,14 @@
           <mat-expansion-panel>
             <mat-expansion-panel-header>
               <mat-panel-title>
-                <span class="rule-title">{{ ruleCategory.title }}</span>
+                <span class="rule-title">{{ ruleCategory.header }}</span>
               </mat-panel-title>
             </mat-expansion-panel-header>
             <ol class="rule-description">
-              @for (rule of ruleCategory.description; track $index) {
-                @if (isRuleString(rule)) {
-                  <li>{{ rule }}</li>
-                }
-                @if (isRuleList(rule)) {
-                  <li>
-                    @if (rule.text) {
-                      <ng-container>
-                        {{ rule.text }}
-                      </ng-container>
-                    }
-                    @if (rule.list) {
-                      <ul>
-                        @for (subRule of rule.list; track $index) {
-                          <li>{{ subRule }}</li>
-                        }
-                      </ul>
-                    }
-                  </li>
-                }
+              @for (rule of ruleCategory.details; track $index) {
+                <li>
+                  <markdown>{{ rule }}</markdown>
+                </li>
               }
             </ol>
           </mat-expansion-panel>

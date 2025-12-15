@@ -27,9 +27,8 @@ import { typeColor } from '../../../styling';
 
 @Component({
   selector: 'pdz-typechart-core',
-  standalone: true,
   templateUrl: './typechart-core.component.html',
-  styleUrl: '../typechart-core.component.scss',
+  styleUrl: './typechart-core.component.scss',
   imports: [
     CommonModule,
     SpriteComponent,
@@ -139,18 +138,14 @@ export class TypechartCoreComponent implements OnInit, OnDestroy {
     this.summarize.emit();
   }
 
-  weaknessColor(weak: number, disabled: boolean): string[] {
-    if (disabled) {
-      return ['text-transparent'];
-    }
-    const classes: string[] = ['type-colored'];
-    if (weak > 4) classes.push('bg-scale-negative-5');
-    else if (weak > 2) classes.push('bg-scale-negative-4');
-    else if (weak > 1) classes.push('bg-scale-negative-3');
-    else if (weak < 0.25) classes.push('bg-scale-positive-5');
-    else if (weak < 0.5) classes.push('bg-scale-positive-4');
-    else if (weak < 1) classes.push('bg-scale-positive-3');
-    else return ['type-empty'];
-    return classes;
+  weaknessColor(weak: number, disabled: boolean): string {
+    if (disabled) return 'disabled';
+    if (weak > 4) return 'pdz-scale-negative-5';
+    if (weak > 2) return 'pdz-scale-negative-4';
+    if (weak > 1) return 'pdz-scale-negative-3';
+    if (weak < 0.25) return 'pdz-scale-positive-5';
+    if (weak < 0.5) return 'pdz-scale-positive-4';
+    if (weak < 1) return 'pdz-scale-positive-3';
+    return 'pdz-scale-neutral';
   }
 }

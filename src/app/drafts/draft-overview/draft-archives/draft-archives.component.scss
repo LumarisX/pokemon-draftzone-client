@@ -1,0 +1,101 @@
+@use "../../../../styles/mixins" as *;
+@use "../../../../styles/mixins/buttons" as *;
+@use "../../../../styles/global.scss" as *;
+@use "../../../../styles/mixins/cards" as *;
+
+:host {
+  display: block;
+  width: 100%;
+  padding: 0;
+}
+
+.archives-container {
+  padding: var(--pdz-space-md);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.header {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: var(--pdz-space-lg);
+  min-height: 40px;
+  .title {
+    font-size: 2rem;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  .actions {
+    display: flex;
+    gap: var(--pdz-space-sm);
+    button {
+      @include icon-button-primary();
+    }
+  }
+}
+
+.back-btn {
+  @include flat-button-primary();
+}
+
+.archives-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(20em, 1fr));
+  gap: var(--pdz-space-lg);
+}
+
+.archive-card {
+  @include shadow-hover-effect;
+  @include pdz-card("primary");
+  .card-header {
+    .league-name {
+      font-size: 1.25rem;
+    }
+  }
+}
+
+.confirmation {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  p {
+    margin: 0;
+    font-weight: 500;
+  }
+
+  .confirmation-buttons {
+    display: flex;
+    gap: var(--pdz-space-sm);
+  }
+
+  .btn {
+    border: none;
+    padding: var(--pdz-space-sm) var(--pdz-space-md);
+    border-radius: var(--pdz-shape-corner-sm);
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s;
+
+    &-confirm {
+      background-color: var(--pdz-color-error);
+      color: var(--pdz-color-on-error);
+
+      &:hover {
+        opacity: 0.8;
+      }
+    }
+
+    &-cancel {
+      background-color: transparent;
+      color: var(--pdz-color-on-primary-container);
+
+      &:hover {
+        background-color: var(--pdz-color-primary-container-hover);
+      }
+    }
+  }
+}

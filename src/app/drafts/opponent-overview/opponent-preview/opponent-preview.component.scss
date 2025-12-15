@@ -1,7 +1,11 @@
 @use "@angular/material" as mat;
+@use "../../../../styles/breakpoints" as *;
+@use "../../../../styles/mixins" as *;
+@use "../../../../styles/mixins/typography" as *;
+@use "../../../../styles/mixins/buttons" as *;
+@use "../../../../styles/mixins/cards" as *;
+@use "../../../../styles/global" as *;
 
-$breakpoint-tablet: 768px;
-$breakpoint-desktop: 1200px;
 :host {
   flex-grow: 1;
   display: flex;
@@ -12,19 +16,18 @@ $breakpoint-desktop: 1200px;
   width: 100%;
   gap: 0.5rem;
   padding: 0 0.5rem 0.5rem;
-  background-color: var(--pdz-test);
 
   flex-direction: column;
   align-items: stretch;
 
-  @media (min-width: $breakpoint-tablet) {
+  @include respond-above(medium) {
     flex-direction: row;
   }
 }
 
 section {
-  border: 1px solid var(--mat-sys-outline);
-  border-radius: 1rem;
+  border: 1px solid pdz-color(menu-border);
+  border-radius: var(--pdz-shape-corner-lg);
   width: fit-content;
   min-width: 33%;
   overflow-y: auto;
@@ -38,43 +41,36 @@ section {
   flex-direction: column;
   width: 100%;
 
-  @media (min-width: $breakpoint-tablet) {
+  @include respond-above(medium) {
     width: auto;
     flex-grow: 1;
   }
 }
 
 .matchups-container {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
+  gap: var(--pdz-space-lg);
   padding: 0 0.5rem 0.5rem;
+  align-items: start;
 }
 
-.matchup {
-  padding: 0.5rem;
-  gap: 0.5rem;
-  display: flex;
-  align-items: center;
-  font-family: var(--pdz-font-fancy);
-  user-select: none;
-  border-radius: 1rem;
-  box-shadow: var(--pdz-level1);
-  background-color: var(--mat-sys-primary-fixed);
-  flex-wrap: wrap;
-  @media (min-width: $breakpoint-tablet) {
-    flex-wrap: nowrap;
-  }
+.matchup-card {
+  @include shadow-hover-effect;
+  @include pdz-card("secondary");
+  .card-header {
+    .matchup-stage {
+      font-size: 0.8rem;
+      margin-right: var(--pdz-space-md);
+    }
 
-  &:hover {
-    box-shadow: var(--pdz-level2);
-    cursor: pointer;
-  }
-
-  &.selected {
-    box-shadow: var(--pdz-level-2);
-    background-color: var(--mat-sys-primary-fixed-dim);
-    cursor: pointer;
+    .matchup-team-info-container {
+      font-family: var(--pdz-font-fancy);
+      display: flex;
+      gap: 0.25rem;
+      align-items: center;
+      flex-grow: 1;
+    }
   }
 }
 
@@ -104,7 +100,8 @@ section {
 
   scrollbar-width: thin;
   scrollbar-color: rgba(0, 0, 0, 0.5) transparent;
-  @media (min-width: $breakpoint-tablet) {
+
+  @include respond-above(medium) {
     flex-basis: auto;
     flex-grow: 1;
     order: 0;
@@ -125,72 +122,39 @@ section {
   }
 }
 
-.matchup-team-info-container {
+.matchup-team-info {
+  justify-content: center;
   display: flex;
-  gap: 0.25rem;
-  align-items: center;
-  .matchup-team-info {
-    justify-content: center;
-    display: flex;
-    flex-direction: column;
-    min-width: 12rem;
-    .team-name,
-    .coach-name {
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      overflow: hidden;
-    }
-    .coach-name {
-      font-size: 0.8em;
-    }
-  }
-  .matchup-logo {
-    flex-shrink: 0;
+  flex-direction: column;
+  min-width: 12rem;
+  .team-name,
+  .coach-name {
+    white-space: nowrap;
+    text-overflow: ellipsis;
     overflow: hidden;
-    border-radius: var(--mat-sys-corner-medium);
-    box-shadow: var(--pdz-level1);
-    height: 3rem;
-    width: 3rem;
-    img {
-      aspect-ratio: 1/1;
-      object-fit: contain;
-    }
+  }
+  .coach-name {
+    font-size: 0.8rem;
+    line-height: 0.9rem;
   }
 }
-
-.matchup-stage {
-  font-size: 0.6em;
-  line-height: 0.8em;
-  color: var(--mat-sys-primary);
-}
-
-$matchup-sprite-size: 4rem;
-pdz-sprite {
-  max-height: $matchup-sprite-size;
-  aspect-ratio: 1/1;
-}
-
-.score-button {
-  font-size: 0.8em;
-  width: 4rem;
-  padding: 3px;
-  border-radius: 0.625rem;
-  line-height: 0.9em;
-  box-shadow: var(--pdz-level2);
-  &:hover {
-    box-shadow: var(--pdz-level1);
-  }
-  > div {
-    background-color: white;
-    padding: 0.125rem;
-    border-radius: 0.5rem;
+.matchup-logo {
+  flex-shrink: 0;
+  overflow: hidden;
+  border-radius: var(--pdz-shape-corner-md);
+  box-shadow: var(--pdz-level-1);
+  height: 3rem;
+  width: 3rem;
+  img {
+    aspect-ratio: 1/1;
+    object-fit: contain;
   }
 }
 
 .section-header {
   display: flex;
   width: 100%;
-  font-size: 1.25em;
+  font-size: 1.25rem;
   align-items: center;
   justify-content: space-between;
   font-family: var(--pdz-font-fancy);
@@ -199,7 +163,7 @@ pdz-sprite {
 }
 
 .score-placeholder {
-  padding: 1rem;
+  padding: var(--pdz-space-lg);
 }
 
 .stats-section {
@@ -207,10 +171,12 @@ pdz-sprite {
   flex-direction: column;
   overflow: hidden;
   width: 100%;
-  @media (min-width: $breakpoint-desktop) {
-    width: 380px; // A fixed width is often more stable
-    flex-shrink: 0; // Prevent it from being squashed
+
+  @include respond-above(desktop) {
+    width: 380px;
+    flex-shrink: 0;
   }
+
   .sprite-wrapper {
     width: 4rem;
     max-width: 4rem;
@@ -219,17 +185,16 @@ pdz-sprite {
   .table-container {
     width: 100%;
     height: 100%;
-
     overflow: hidden;
   }
 
   .table-wrapper {
     padding: 0 0.5rem;
-
     overflow: auto;
     height: 100%;
     width: 100%;
   }
+
   th,
   td {
     padding: 0 4px;
@@ -237,8 +202,8 @@ pdz-sprite {
   }
 
   th.cdk-header-cell {
-    border-bottom: 2px solid var(--mat-sys-outline);
-    font-size: 0.8em;
+    border-bottom: 2px solid pdz-color(secondary-border);
+    @include font-size(0.8rem);
   }
 
   table {
@@ -246,17 +211,15 @@ pdz-sprite {
     border-collapse: separate;
     border-spacing: 0 4px;
     padding: 0 0.25rem;
-    background-color: var(--mat-sys-primary-container);
-    border-radius: var(--mat-sys-corner-medium);
   }
 
   .title-bar {
     position: relative;
-    padding: 1rem;
+    padding: var(--pdz-space-lg);
   }
 
   .back-button {
-    @media (min-width: 768px) {
+    @include respond-above(medium) {
       position: absolute;
       top: 0.5rem;
       left: 0.5rem;
@@ -265,7 +228,7 @@ pdz-sprite {
 
   tr.cdk-row {
     &:hover {
-      background-color: var(--mat-sys-surface-variant);
+      background-color: pdz-color(secondary-container);
     }
   }
 
@@ -283,28 +246,28 @@ pdz-sprite {
   display: flex;
   gap: 0.5rem;
   align-items: stretch;
+  .option-btn {
+    @include icon-button-secondary();
+  }
+  .matchup-btn {
+    @include flat-button-secondary();
+  }
+}
 
-  button {
-    display: flex;
-    justify-content: center;
-    background-color: var(--mat-sys-primary-container);
-    color: var(--mat-sys-on-primary-container);
-    border-radius: var(--mat-sys-corner-medium);
-    box-shadow: var(--pdz-level2);
-    padding: 0.5rem;
-    font-size: 0.8em;
+.no-matchups {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  opacity: 60%;
+  font: var(--pdz-font-size-lg);
+}
 
-    &:hover {
-      background-color: var(--mat-sys-secondary-container);
-      box-shadow: var(--pdz-level4);
-    }
+.direction-btn {
+  mat-icon {
+    transition: transform 0.3s ease-in-out;
+  }
 
-    &.matchup-button {
-      background-color: var(--mat-sys-primary-fixed-dim);
-
-      &:hover {
-        background-color: var(--mat-sys-secondary-fixed-dim);
-      }
-    }
+  &.up mat-icon {
+    transform: rotate(180deg);
   }
 }

@@ -1,184 +1,214 @@
-<div class="main-league-container">
-  <div class="main-draft">
-    <div class="draft-bar draft-section">
-      <div class="draft-section-title">Draft Order</div>
-      <div class="draft-rounds draft-section-body">
-        @for (round of draftOrder; track $index) {
-          <div class="draft-round-container">
-            <div class="round-label">
-              <span>Round {{ $index + 1 }}</span>
-              <mat-icon>trending_flat</mat-icon>
-            </div>
-            <div class="card-container">
-              @for (pick of round; track $index) {
-                <div
-                  class="team-card"
-                  [ngClass]="{
-                    alternate: !pick.pokemon && pick.status !== 'Skipped',
-                  }"
+<app-league-notifications></app-league-notifications>
+@if (isLoading) {
+  <pdz-loading></pdz-loading>
+} @else {
+  <div class="main-league-container">
+    <div class="draft-panel">
+      <div class="info-container">
+        <div class="league-name">{{ leagueName }}</div>
+        <div class="info-details-container">
+          <div class="division-name">Division: {{ divisionName }}</div>
+          <div
+            class="draft-status"
+            [ngClass]="{
+              'in-progress': draftDetails.status === 'IN_PROGRESS',
+              paused: draftDetails.status === 'PAUSED',
+              'pre-draft': draftDetails.status === 'PRE_DRAFT',
+              completed: draftDetails.status === 'COMPLETED',
+            }"
+          >
+            {{ draftDetails.status.replace("_", " ") | titlecase }}
+          </div>
+        </div>
+      </div>
+      <a class="planner-link fancy-font" target="_blank" routerLink="/planner">
+        Planner <mat-icon>open_in_new</mat-icon>
+      </a>
+      <div class="my-draft-main draft-section">
+        <div class="custom-dropdown-container">
+          <button
+            class="my-draft-title draft-section-title"
+            (click)="toggleDropdown()"
+          >
+            <span>{{ selectedTeam.name }} </span
+            ><mat-icon>{{
+              isDropdownOpen ? "arrow_drop_up" : "arrow_drop_down"
+            }}</mat-icon>
+          </button>
+          @if (isDropdownOpen) {
+            <div class="custom-dropdown-menu">
+              @for (team of teams; track team) {
+                <button
+                  class="custom-dropdown-item"
+                  (click)="selectTeamAndClose(team)"
                 >
-                  <div class="team-card-header">
-                    <span
-                      [ngClass]="{
-                        selectedTeam: pick.teamName === myTeamName,
-                      }"
+                  <span>{{ team.name }}</span>
+                </button>
+              }
+            </div>
+          }
+        </div>
+        <div class="my-draft-content">
+          <ol class="my-draft-pokemons draft-section-body">
+            @for (pokemon of selectedTeam.draft; track pokemon.id) {
+              <li class="my-draft-pokemon">
+                <div class="my-pokemon-index">{{ $index + 1 }}</div>
+                <div class="my-pokemon-sprite">
+                  <pdz-sprite [pokemon]="pokemon" flipped></pdz-sprite>
+                </div>
+                <div class="my-pokemon-name fancy-font">
+                  {{ pokemon.name }}
+                </div>
+                <div class="my-pokemon-tier fancy-font">{{ pokemon.tier }}</div>
+              </li>
+            }
+            @for (picks of selectedTeam.picks; track $index) {
+              <li
+                class="my-draft-pokemon my-pick"
+                (click)="selectedPick = $index"
+              >
+                <div
+                  class="my-pokemon-index"
+                  [ngClass]="{ 'selected-pick': selectedPick === $index }"
+                >
+                  {{ $index + selectedTeam.draft.length + 1 }}
+                </div>
+                <div class="my-draft-picks">
+                  @for (choice of picks; track choice.id) {
+                    <div
+                      class="my-draft-pick-container"
+                      [ngClass]="{ backup: $index > 0 }"
                     >
-                      {{ pick.teamName }}
-                    </span>
-                  </div>
+                      @if ($index) {
+                        <button (click)="moveUp(picks, $index)">
+                          <mat-icon>arrow_upward_alt</mat-icon>
+                        </button>
+                      }
+                      <button
+                        class="my-draft-pick"
+                        [ngClass]="{ backup: $index > 0 }"
+                      >
+                        <div class="my-pokemon-sprite">
+                          <pdz-sprite
+                            [pokemon]="choice"
+                            flipped
+                            size="2.5rem"
+                          ></pdz-sprite>
+                        </div>
+                        <div class="pick-header">
+                          <div class="pick-text">
+                            {{ $index + 1 | numbersuffix }} Choice
+                          </div>
+                          <div class="my-pokemon-name fancy-font">
+                            {{ choice.name }}
+                          </div>
+                        </div>
+                        <div class="my-pokemon-tier fancy-font">
+                          {{ choice.tier }}
+                        </div>
+                        <button (click)="deleteChoice(picks, $index)">
+                          <mat-icon>delete_forever</mat-icon>
+                        </button>
+                      </button>
+                    </div>
+                  } @empty {
+                    <button class="no-pick">Select Pick</button>
+                  }
+                </div>
+              </li>
+            }
+          </ol>
+          <div class="points-container">
+            Points: {{ selectedTeam.pointTotal }}/{{ points }}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="main-draft">
+      <div class="draft-bar draft-section">
+        <div class="draft-section-title">Draft Order</div>
+        <div class="draft-rounds draft-section-body">
+          @for (round of draftRounds; track $index; let roundIndex = $index) {
+            <div class="draft-round-container">
+              <div class="round-label">
+                <span>Round {{ roundIndex + 1 }}</span>
+                <mat-icon>trending_flat</mat-icon>
+              </div>
+              <div class="card-container">
+                @for (position of round; track $index) {
+                  @let pokemon = position.draft[roundIndex];
                   <div
-                    class="team-card-body"
+                    class="team-card"
                     [ngClass]="{
-                      picking: pick.status === 'Picking',
+                      alternate: !pokemon,
                     }"
                   >
-                    <div class="team-card-icon">
-                      @if (pick.pokemon) {
-                        <pdz-sprite [pokemon]="pick.pokemon"></pdz-sprite>
-                      } @else {
-                        <mat-icon svgIcon="pokeball"></mat-icon>
-                      }
+                    <div class="team-card-header">
+                      <span
+                        [ngClass]="{
+                          selectedTeam: position.name === selectedTeam.name,
+                        }"
+                      >
+                        {{ position.name }}
+                      </span>
                     </div>
-                    <div class="team-card-name">
-                      {{ pick.pokemon?.name || pick.status || "Upcoming" }}
+                    <div
+                      class="team-card-body"
+                      [ngClass]="{
+                        picking:
+                          currentPick &&
+                          currentPick.round === roundIndex &&
+                          currentPick.position === $index,
+                      }"
+                    >
+                      <div class="team-card-icon">
+                        @if (pokemon) {
+                          <pdz-sprite [pokemon]="pokemon"></pdz-sprite>
+                        } @else if (
+                          currentPick &&
+                          currentPick.round === roundIndex &&
+                          currentPick.position === $index
+                        ) {
+                          @if (this.draftDetails.status === "PAUSED") {
+                            <span class="pause-time">
+                              <mat-icon>pause</mat-icon>
+                            </span>
+                          } @else {
+                            <span class="skip-time">
+                              {{ skipTimeDisplay }}
+                            </span>
+                          }
+                        } @else {
+                          <mat-icon svgIcon="pokeball"></mat-icon>
+                        }
+                      </div>
+                      <div class="team-card-name">
+                        @if (pokemon) {
+                          {{ pokemon.name }}
+                        } @else if (
+                          currentPick &&
+                          currentPick.round === roundIndex &&
+                          currentPick.position === $index
+                        ) {
+                          Picking
+                        } @else {
+                          Upcoming
+                        }
+                      </div>
                     </div>
                   </div>
-                </div>
-              }
-            </div>
-          </div>
-        }
-      </div>
-    </div>
-    <div class="tier-wrapper">
-      <pdz-league-tier-list></pdz-league-tier-list>
-    </div>
-  </div>
-  <div class="draft-panel">
-    <!-- <div class="draft-picks-main draft-section">
-      <div class="draft-section-title">My Picks</div>
-      <div class="draft-picks-container draft-section-body">
-        <div class="draft-pick">
-          <div class="pick-label">1st Pick</div>
-          <div class="draft-pick-backups">
-            <div class="choice-container">
-              <div class="choice-label">Choice</div>
-              <div class="choice-pokemon">
-                <div class="choice-pokemon-name">Zapdos</div>
-                <div class="choice-pokemon-sprite">
-                  <pdz-sprite
-                    [pokemon]="{ id: 'zapdos', name: 'Zapdos' }"
-                  ></pdz-sprite>
-                </div>
+                }
               </div>
             </div>
-            <div class="choice-container alternate">
-              <div class="choice-label">Backup</div>
-              <button class="choice-select">
-                Select<mat-icon>arrow_selector_tool</mat-icon>
-              </button>
-            </div>
-          </div>
-        </div>
-        <div class="draft-pick">
-          <div class="pick-label">2nd Pick</div>
-          <div class="draft-pick-backups">
-            <div class="choice-container">
-              <div class="choice-label">Choice</div>
-              <div class="choice-pokemon">
-                <div class="choice-pokemon-name">Swampert-Mega</div>
-                <div class="choice-pokemon-sprite">
-                  <pdz-sprite
-                    [pokemon]="{ id: 'swampertmega', name: 'Swampert-Mega' }"
-                  ></pdz-sprite>
-                </div>
-              </div>
-            </div>
-            <div class="choice-container alternate">
-              <div class="choice-label">Backup</div>
-              <div class="choice-pokemon">
-                <div class="choice-pokemon-name">Seismitoad</div>
-                <div class="choice-pokemon-sprite">
-                  <pdz-sprite
-                    [pokemon]="{ id: 'seismitoad', name: 'Seismitoad' }"
-                  ></pdz-sprite>
-                </div>
-              </div>
-            </div>
-            <div class="choice-container alternate">
-              <div class="choice-label">Backup</div>
-              <button class="choice-select">
-                Select<mat-icon>arrow_selector_tool</mat-icon>
-              </button>
-            </div>
-          </div>
+          }
         </div>
       </div>
-    </div> -->
-    <button class="planner-link fancy-font">
-      Planner <mat-icon>open_in_new</mat-icon>
-    </button>
-    <div class="my-draft-main draft-section">
-      <button class="my-draft-title draft-section-title">
-        <span>Deimos Deoxys </span><mat-icon>arrow_drop_down</mat-icon>
-      </button>
-      <ol class="my-draft-pokemons draft-section-body">
-        @for (pick of myDraft.drafted; track $index) {
-          <li class="my-draft-pokemon">
-            <div class="my-pokemon-index">{{ $index + 1 }}</div>
-            <div class="my-pokemon-sprite">
-              <pdz-sprite [pokemon]="pick.pokemon" flipped></pdz-sprite>
-            </div>
-            <div class="my-pokemon-name fancy-font">
-              {{ pick.pokemon.name }}
-            </div>
-            <div class="my-pokemon-tier fancy-font">{{ pick.cost }}</div>
-          </li>
-        }
-        @for (picks of myDraft.picks; track $index) {
-          <li class="my-draft-pokemon">
-            <div class="my-pokemon-index">
-              {{ $index + myDraft.drafted.length }}
-            </div>
-            <div class="my-draft-picks">
-              @for (pick of picks; track $index) {
-                <div
-                  class="my-draft-pick-container"
-                  [ngClass]="{ backup: $index > 0 }"
-                >
-                  @if ($index) {
-                    <button (click)="moveUp(picks, $index)">
-                      <mat-icon>arrow_upward_alt</mat-icon>
-                    </button>
-                  }
-                  <button
-                    class="my-draft-pick"
-                    [ngClass]="{ backup: $index > 0 }"
-                  >
-                    <div class="my-pokemon-sprite">
-                      <pdz-sprite [pokemon]="pick.pokemon" flipped></pdz-sprite>
-                    </div>
-                    <div class="pick-header">
-                      <div class="pick-text">
-                        {{ $index + 1 | numbersuffix }}
-                      </div>
-                      <div class="my-pokemon-name fancy-font">
-                        {{ pick.pokemon.name }}
-                      </div>
-                    </div>
-
-                    <div class="my-pokemon-tier fancy-font">
-                      {{ pick.cost }}
-                    </div>
-                  </button>
-                </div>
-              } @empty {
-                <button class="no-pick">Select Pick</button>
-              }
-            </div>
-          </li>
-        }
-      </ol>
+      <div class="tier-wrapper">
+        <pdz-league-tier-list
+          [buttonText]="buttonText()"
+          (pokemonSelected)="pokemonSelected($event)"
+        ></pdz-league-tier-list>
+      </div>
     </div>
   </div>
-</div>
+}

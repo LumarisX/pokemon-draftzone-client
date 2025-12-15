@@ -1,5 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, inject } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
+  inject,
+} from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { getNameByPid, getPidByName } from '../../data/namedex';
@@ -18,7 +26,6 @@ type SpritePokemon = Pokemon<DraftOptions & { loaded?: boolean }>;
 export class SpriteComponent implements OnChanges {
   private spriteService = inject(SpriteService);
 
-
   @Input()
   set pokemon(value: SpritePokemon) {
     this._pokemon = { ...value, loaded: false };
@@ -34,9 +41,9 @@ export class SpriteComponent implements OnChanges {
     | 'below'
     | 'left'
     | 'right'
-    | null = 'above';
+    | null = null;
   @Input() set name(value: string) {
-    let id = getPidByName(value);
+    const id = getPidByName(value);
     if (!id) return;
     this._pokemon = { id, name: value };
   }
@@ -45,7 +52,7 @@ export class SpriteComponent implements OnChanges {
   }
   @Input() size?: string;
   @Input() set pid(value: string) {
-    let name = getNameByPid(value);
+    const name = getNameByPid(value);
     this._pokemon = { id: value, name };
   }
   get pid() {
@@ -59,7 +66,6 @@ export class SpriteComponent implements OnChanges {
   _pokemon!: SpritePokemon;
   readonly UNKNOWN_SPRITE_PATH = this.spriteService.UNKNOWN_SPRITE_PATH;
   path = this.UNKNOWN_SPRITE_PATH;
-
   private _baseClasses: string[] = [];
   private _baseFlip = false;
   private _fallbackPath: string | undefined;
@@ -94,7 +100,11 @@ export class SpriteComponent implements OnChanges {
   }
 
   updateData(pokemon: SpritePokemon) {
-    const spriteData = this.spriteService.getSpriteData(pokemon);
+    const spriteData = this.spriteService.getSpriteData(pokemon) ?? {
+      path: this.UNKNOWN_SPRITE_PATH,
+      classes: [],
+      flip: false,
+    };
     this.path = spriteData.path;
     this._fallbackPath = spriteData.fallbackPath;
     this._baseClasses = spriteData.classes;

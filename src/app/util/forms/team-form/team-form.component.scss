@@ -5,8 +5,8 @@
 
   cdk-accordion {
     display: block;
-    border: 1px solid var(--mat-sys-outline);
-    border-radius: 0.5rem;
+    border: 1px solid var(--pdz-color-primary-border);
+    border-radius: var(--pdz-shape-corner-sm);
     overflow: hidden;
 
     cdk-accordion-item {
@@ -14,7 +14,7 @@
       overflow: hidden;
 
       &:not(:last-child) {
-        border-bottom: 1px solid var(--mat-sys-outline-variant);
+        border-bottom: 1px solid var(--pdz-color-primary-border-variant);
       }
 
       &:last-child {
@@ -45,9 +45,9 @@
         }
 
         mat-icon {
-          color: var(--mat-sys-on-surface-variant);
+          color: var(--pdz-color-on-surface-variant);
           &.preview-warning {
-            color: var(--mat-sys-error);
+            color: var(--pdz-color-error);
             width: 4rem;
             height: 3rem;
             font-size: 3rem;
@@ -85,7 +85,7 @@
               max-height: 2rem;
               display: flex;
               align-items: center;
-              fill: var(--mat-sys-on-surface-variant);
+              fill: var(--pdz-color-on-surface-variant);
             }
           }
         }
@@ -108,7 +108,7 @@
     > :not(:first-child) {
       margin-left: 0.5rem;
     }
-    padding: 0.5rem;
+    padding: var(--pdz-space-sm);
   }
 
   .icon-grid {
@@ -203,7 +203,7 @@
 
 .captain-container {
   display: flex;
-  padding: 0.5rem;
+  padding: var(--pdz-space-sm);
   width: 100%;
   flex-wrap: wrap;
   align-items: center;
@@ -224,9 +224,9 @@
 
     &:not(.selected-type) {
       opacity: 0.6;
-      padding: 0.25rem;
+      padding: var(--pdz-space-xs);
       &:hover {
-        padding: 0.125rem;
+        padding: var(--pdz-space-2xs);
       }
     }
   }
@@ -234,24 +234,24 @@
   .captain-subcontainer {
     padding: 2px;
     &:not(:first-child) {
-      border-left: 1px solid var(--mat-sys-outline-variant);
+      border-left: 1px solid var(--pdz-color-primary-border-variant);
     }
     .allnone-bar {
       display: flex;
       justify-content: center;
       .allnone-container {
-        color: var(--mat-sys-on-primary);
+        color: var(--pdz-color-on-primary);
         font-weight: 600;
-        border: 2px solid var(--mat-sys-primary);
-        background-color: var(--mat-sys-primary);
+        border: 2px solid var(--pdz-color-primary);
+        background-color: var(--pdz-color-primary);
         height: 1.5rem;
         display: flex;
         align-items: center;
         justify-content: center;
         border-radius: 4rem;
         overflow: hidden;
-        font-size: 0.8em;
-        line-height: 0.8em;
+        font-size: 0.8rem;
+        line-height: 0.8rem;
 
         mat-icon {
           margin: 0 0.125rem;
@@ -262,13 +262,13 @@
         .allnone {
           width: 3rem;
           height: 100%;
-          background-color: var(--mat-sys-primary);
-          color: var(--mat-sys-on-primary);
+          background-color: var(--pdz-color-primary);
+          color: var(--pdz-color-on-primary);
           border-radius: 4rem;
           &:hover,
           &:disabled {
-            background-color: var(--mat-sys-surface);
-            color: var(--mat-sys-on-surface-variant);
+            background-color: var(--pdz-color-surface);
+            color: var(--pdz-color-on-surface-variant);
           }
         }
       }
@@ -310,7 +310,7 @@
     margin-left: 0.5rem;
   }
   .capt-button {
-    color: var(--mat-sys-on-surface-variant);
+    color: var(--pdz-color-on-surface-variant);
   }
   div {
     display: flex;
@@ -338,16 +338,16 @@
 }
 
 mat-tab-group {
-  background-color: var(--mat-sys-surface-variant);
+  background-color: var(--pdz-color-surface-variant);
 
   .tab-icon-wrapper {
     margin-left: 0.25rem;
-    height: 1em;
-    width: 1em;
+    height: 1rem;
+    width: 1rem;
     mat-icon {
       height: 100%;
       width: 100%;
-      font-size: 1em;
+      font-size: 1rem;
     }
   }
 }
@@ -355,18 +355,18 @@ mat-tab-group {
 .main-container {
   @include mat.tabs-overrides(
     (
-      divider-color: var(--mat-sys-outline-variant),
+      divider-color: var(--pdz-color-primary-border-variant),
     )
   );
   @include mat.divider-overrides(
     (
-      color: var(--mat-sys-outline-variant),
+      color: var(--pdz-color-primary-border-variant),
     )
   );
 }
 
 pdz-slide-toggle {
-  padding: 0.125rem;
+  padding: var(--pdz-space-2xs);
 }
 
 pokemon-select,

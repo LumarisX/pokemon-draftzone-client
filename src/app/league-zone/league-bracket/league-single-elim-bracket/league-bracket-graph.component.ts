@@ -3,15 +3,17 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
+  inject,
   Input,
   OnChanges,
   OnInit,
   SimpleChanges,
   ViewChild,
 } from '@angular/core';
-import * as d3 from 'd3';
-import { attackData, defenseData } from '../../league-ghost';
 import { RouterModule } from '@angular/router';
+import * as d3 from 'd3';
+import { defenseData } from '../../league-ghost';
+import { LeagueZoneService } from '../../../services/leagues/league-zone.service';
 
 type BracketTeamData = {
   teamName: string;
@@ -43,17 +45,33 @@ export type BracketNode = TeamNode | MatchNode;
 
 type HierarchyPointNodeWithData = d3.HierarchyNode<BracketNode>;
 
+type SeedSlot = { type: 'seed'; seed: number };
+type WinnerSlot = { type: 'winner'; from: string };
+type LoserSlot = { type: 'loser'; from: string };
+type ByeSlot = { type: 'bye'; seed: number };
+
+type BracketSlot = SeedSlot | WinnerSlot | ByeSlot | LoserSlot;
+
+interface BracketMatch {
+  id: string;
+  round: number;
+  position: number;
+  a: BracketSlot;
+  b: BracketSlot;
+  winner?: 0 | 1;
+  replay?: string;
+}
+
+interface BracketDataNormalized {
+  format: 'single-elim';
+  teams: BracketTeamData[];
+  matches: BracketMatch[];
+}
+
 @Component({
   imports: [RouterModule],
   selector: 'pdz-league-single-elim-bracket',
-  template: `
-    <div class="bracket-container p-4 bg-white rounded shadow">
-      <h2 class="text-xl font-semibold text-center mb-4">
-        {{ componentTitle }}
-      </h2>
-      <svg #bracketSvgContainer></svg>
-    </div>
-  `,
+  templateUrl: './league-bracket-graph.component.html',
   styleUrl: './league-bracket-graph.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -61,28 +79,17 @@ export class LeagueBracketGraphComponent
   implements OnInit, AfterViewInit, OnChanges
 {
   @Input() componentTitle: string = 'Tournament Bracket (Single Elimination)';
-  teams: BracketTeamData[] = [
-    ...defenseData
-      .map((team) => ({
-        teamName: team.teamName,
-        coachName: team.coaches[0],
-        seed: team.seed,
-        logo: team.logo,
-      }))
-      .filter((team) => team.seed <= 8)
-      .sort((x, y) => x.seed - y.seed),
-    ...attackData
-      .map((team) => ({
-        teamName: team.teamName,
-        coachName: team.coaches[0],
-        seed: team.seed,
-        logo: team.logo,
-      }))
-      .filter((team) => team.seed <= 8)
-      .sort((x, y) => x.seed - y.seed),
-  ];
+  teams: BracketTeamData[] = defenseData
+    .map((team) => ({
+      teamName: team.teamName,
+      coachName: team.coaches[0],
+      seed: team.seed,
+      logo: team.logo,
+    }))
+    .filter((team) => team.seed <= 24)
+    .sort((x, y) => x.seed - y.seed);
 
-  altTeams: BracketTeamData[] = [...defenseData, ...attackData]
+  altTeams: BracketTeamData[] = defenseData
 
     .sort((x, y) => x.seed - y.seed)
     .map((team, index) => ({
@@ -91,140 +98,15 @@ export class LeagueBracketGraphComponent
       seed: index,
       logo: team.logo,
     }))
-    .filter((team) => team.seed <= 32);
+    .filter((team) => team.seed <= 24);
 
-  @Input() bracketData: BracketNode = {
-    type: 'match',
-    children: [
-      {
-        type: 'match',
-        children: [
-          {
-            type: 'match',
-            children: [
-              {
-                matchDetails: {
-                  winner: 0,
-                },
-                type: 'match',
-                children: [
-                  { type: 'team', team: this.teams[0], score: 5 },
-                  { type: 'team', team: this.teams[15] },
-                ],
-              },
-              {
-                matchDetails: {
-                  winner: 0,
-                },
-                type: 'match',
-                children: [
-                  { type: 'team', team: this.teams[3], score: 2 },
-                  { type: 'team', team: this.teams[12] },
-                ],
-              },
-            ],
-          },
-          {
-            matchDetails: {
-              winner: 1,
-            },
-            type: 'match',
-            children: [
-              {
-                type: 'match',
-                matchDetails: {
-                  winner: 0,
-                },
-                children: [
-                  { type: 'team', team: this.teams[1], score: 4 },
-                  { type: 'team', team: this.teams[14] },
-                ],
-              },
-              {
-                matchDetails: {
-                  winner: 0,
-                },
-                score: 4,
-
-                type: 'match',
-                children: [
-                  { type: 'team', team: this.teams[5], score: 3 },
-                  { type: 'team', team: this.teams[10] },
-                ],
-              },
-            ],
-          },
-        ],
-      },
-      {
-        type: 'match',
-        children: [
-          {
-            type: 'match',
-
-            children: [
-              {
-                type: 'match',
-                matchDetails: {
-                  winner: 1,
-                },
-                children: [
-                  { type: 'team', team: this.teams[2] },
-                  { type: 'team', team: this.teams[13], score: 2 },
-                ],
-              },
-              {
-                type: 'match',
-                matchDetails: {
-                  winner: 1,
-                },
-                children: [
-                  { type: 'team', team: this.teams[6] },
-                  { type: 'team', team: this.teams[9], score: 4 },
-                ],
-              },
-            ],
-          },
-          {
-            type: 'match',
-
-            children: [
-              {
-                type: 'match',
-                matchDetails: {
-                  winner: 0,
-                },
-                children: [
-                  { type: 'team', team: this.teams[4], score: 5 },
-                  { type: 'team', team: this.teams[11] },
-                ],
-              },
-              {
-                type: 'match',
-                matchDetails: {
-                  winner: 1,
-                },
-                children: [
-                  { type: 'team', team: this.teams[7] },
-                  { type: 'team', team: this.teams[8], score: 2 },
-                ],
-              },
-            ],
-          },
-        ],
-      },
-    ],
-  };
   @Input() maxWidth: number = 1200;
   @Input() maxHeight: number = 1600;
   @Input() margin = { top: 50, right: 10, bottom: 10, left: 30 };
   imageSize = 16;
   @ViewChild('bracketSvgContainer') private bracketContainer!: ElementRef;
 
-  constructor() {
-    // this.teams = this.altTeams;
-    // this.bracketData = this.generateBracket(this.teams);
-  }
+  leagueService = inject(LeagueZoneService);
 
   generateBracket(teams: BracketTeamData[]): BracketNode {
     if (teams.length > 2) {
@@ -256,12 +138,83 @@ export class LeagueBracketGraphComponent
   matchupVerticalSeparation = 6;
   stageHorizontalSeparation = 64;
   nodeBox = { height: 40, width: 160, radius: 4 };
+
+  bracketData?: BracketDataNormalized;
   ngOnInit(): void {}
 
   ngAfterViewInit(): void {
-    if (this.bracketData) {
-      this.createBracket();
-    }
+    this.leagueService.getBracket('test-league-key').subscribe((data) => {
+      this.bracketData = data as BracketDataNormalized;
+      this.createBracket(this.buildBracketTree(this.bracketData));
+    });
+  }
+
+  buildBracketTree(data: BracketDataNormalized): BracketNode {
+    const matchMap = new Map<string, { id: number; match: BracketMatch }>();
+    data.matches.forEach((m, index) =>
+      matchMap.set(m.id, { id: index + 1, match: m }),
+    );
+    const cache = new Map<string, MatchNode>();
+
+    const slotToNode = (slot: BracketSlot): BracketNode => {
+      if (slot.type === 'seed') {
+        const team = data.teams.find((t) => t.seed === slot.seed);
+        if (!team) {
+          return {
+            type: 'team',
+            team: {
+              teamName: `Unknown #${slot.seed}`,
+              coachName: '-',
+              seed: slot.seed,
+            },
+          };
+        }
+        return { type: 'team', team };
+      }
+      if (slot.type === 'bye') {
+        const team = data.teams.find((t) => t.seed === slot.seed);
+        return {
+          type: 'team',
+          team: team ?? {
+            teamName: `Unknown #${slot.seed}`,
+            coachName: '-',
+            seed: slot.seed,
+          },
+        };
+      }
+      return buildMatchNode(slot.from);
+    };
+
+    const buildMatchNode = (id: string): MatchNode => {
+      if (cache.has(id)) return cache.get(id)!;
+      const entry = matchMap.get(id);
+      if (!entry) {
+        const placeholder: MatchNode = {
+          type: 'match',
+          id: undefined,
+          children: [],
+        };
+        return placeholder;
+      }
+      const node: MatchNode = {
+        type: 'match',
+        id: entry.id || undefined,
+        matchDetails:
+          entry.match.winner !== undefined
+            ? { winner: entry.match.winner, replay: entry.match.replay }
+            : undefined,
+        children: [slotToNode(entry.match.a), slotToNode(entry.match.b)],
+      };
+      cache.set(id, node);
+      return node;
+    };
+
+    const final = data.matches.reduce(
+      (best, m) => (!best || m.round > best.round ? m : best),
+      undefined as BracketMatch | undefined,
+    );
+    if (!final) throw new Error('No matches in bracket');
+    return buildMatchNode(final.id);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -269,18 +222,13 @@ export class LeagueBracketGraphComponent
       (changes['bracketData'] || changes['width'] || changes['height']) &&
       !changes['bracketData']?.firstChange
     ) {
-      if (this.bracketContainer?.nativeElement) {
-        this.createBracket();
+      if (this.bracketContainer?.nativeElement && this.bracketData) {
+        this.createBracket(this.buildBracketTree(this.bracketData));
       }
     }
   }
 
-  private createBracket(): void {
-    if (!this.bracketData) {
-      console.error('Bracket data is missing.');
-      return;
-    }
-
+  private createBracket(bracketData: BracketNode): void {
     const element = this.bracketContainer.nativeElement;
     d3.select(element).selectAll('*').remove();
 
@@ -294,7 +242,7 @@ export class LeagueBracketGraphComponent
       .nodeSize([verticalNodeCenterSeparation, horizontalNodeCenterSeparation])
       .separation((a, b) => (a.parent == b.parent ? 1 : 1.25));
 
-    const root = d3.hierarchy(this.bracketData);
+    const root = d3.hierarchy(bracketData);
     treeLayout(root);
 
     let count = 0;

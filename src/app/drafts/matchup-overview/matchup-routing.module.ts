@@ -4,12 +4,13 @@ import { AuthGuard } from '@auth0/auth0-angular';
 import { DraftOverviewPath } from '../draft-overview/draft-overview-routing.module';
 import { MatchupOverviewComponent } from './matchup-overview.component';
 import { MatchupSharedComponent } from './matchup-shared.component';
+import { MatchupTeambuilderComponent } from './matchup-teambuilder/matchup-teambuilder.component';
 
 const routes: Routes = [
   {
-    path: DraftOverviewPath + '/:teamid/matchup',
-    component: MatchupOverviewComponent,
+    path: DraftOverviewPath + '/:teamId/matchup/:matchupId',
     canActivate: [AuthGuard],
+    component: MatchupOverviewComponent,
   },
   {
     path: 'matchup/:id',

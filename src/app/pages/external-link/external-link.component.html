@@ -1,0 +1,87 @@
+<div class="external-link">
+  <div class="external-link__card">
+    <div class="external-link__header">
+      <div class="external-link__icon">
+        <mat-icon>warning</mat-icon>
+      </div>
+      <h1 class="external-link__title">You're leaving Pokemon DraftZone</h1>
+    </div>
+
+    <div class="external-link__body">
+      <p class="external-link__message">
+        You're about to visit an external website. Please verify that you trust
+        this destination before continuing.
+      </p>
+
+      @if (displayUrl) {
+        <div class="external-link__url-container">
+          <span class="external-link__url-label">Destination:</span>
+          <code class="external-link__url">{{ externalUrl }}</code>
+        </div>
+      }
+
+      @if (urlWarnings.length > 0) {
+        <div class="external-link__warnings">
+          <div class="external-link__warnings-header">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
+              <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z" />
+            </svg>
+            <span>Security Notices</span>
+          </div>
+          <ul class="external-link__warnings-list">
+            @for (warning of urlWarnings; track warning) {
+              <li>{{ warning }}</li>
+            }
+          </ul>
+        </div>
+      }
+
+      <div class="external-link__tips">
+        <p><strong>Tips to stay safe:</strong></p>
+        <ul>
+          <li>Verify the domain name matches the expected website</li>
+          <li>Look for HTTPS in the URL for secure connections</li>
+          <li>Never enter sensitive information on unfamiliar sites</li>
+          <li>When in doubt, search for the website directly</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="external-link__actions">
+      <button
+        class="external-link__btn external-link__btn--back"
+        (click)="goBack()"
+        type="button"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+        >
+          <path
+            d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"
+          />
+        </svg>
+        Go Back
+      </button>
+
+      <a
+        class="external-link__btn external-link__btn--continue"
+        [href]="externalUrl"
+        [class.disabled]="!isValidUrl"
+      >
+        Continue to Site
+      </a>
+    </div>
+
+    <div class="external-link__footer">
+      <button class="external-link__home-link" (click)="goHome()" type="button">
+        Return to Pokemon DraftZone Home
+      </button>
+    </div>
+  </div>
+</div>

@@ -23,11 +23,12 @@
         @for (modifier of getModifiers(); track $index) {
           <div class="option-row">
             <mat-checkbox [formControl]="modifier[1].at(0)"></mat-checkbox>
+
+            <span class="filter-label">{{ modifier[0] }}</span>
             <mat-checkbox
               class="alternate"
               [formControl]="modifier[1].at(1)"
             ></mat-checkbox>
-            <span class="filter-label">{{ modifier[0] }}</span>
           </div>
         }
       </div>

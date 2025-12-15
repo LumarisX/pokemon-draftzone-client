@@ -6,7 +6,8 @@ import {
   RouterStateSnapshot,
 } from '@angular/router';
 import { map, Observable, take } from 'rxjs';
-import { AuthService, LeagueRole } from '../services/auth0.service';
+import { LeagueRole } from '../services/auth0.service';
+import { LeagueManageService } from '../services/leagues/league-manage.service';
 
 /**
  * A Router Guard to check if the user has a specific role for a league before allowing access to a route.
@@ -19,10 +20,9 @@ export const leagueRoleGuard: CanActivateFn = (
   route: ActivatedRouteSnapshot,
   state: RouterStateSnapshot,
 ): Observable<boolean> => {
-  const authService = inject(AuthService);
+  const leagueManageService = inject(LeagueManageService);
   const router = inject(Router);
 
-  console.log('HEY IM HERE');
   const requiredRole = route.data['role'] as LeagueRole;
   if (!requiredRole) {
     console.error(
@@ -34,10 +34,10 @@ export const leagueRoleGuard: CanActivateFn = (
     });
   }
 
-  const leagueId = route.paramMap.get('leagueId');
-  if (!leagueId) {
+  const leagueKey = route.paramMap.get('leagueKey');
+  if (!leagueKey) {
     console.error(
-      'leagueRoleGuard: "leagueId" parameter is not defined in the route.',
+      'leagueRoleGuard: "leagueKey" parameter is not defined in the route.',
     );
     router.navigate(['/forbidden']);
     return new Observable<boolean>((subscriber) => {
@@ -46,14 +46,14 @@ export const leagueRoleGuard: CanActivateFn = (
     });
   }
 
-  return authService.getLeagueRoles().pipe(
+  return leagueManageService.canManage(leagueKey).pipe(
     take(1),
     map((roles) => {
-      if (roles[leagueId] === requiredRole) {
+      if (roles.includes(requiredRole)) {
         return true;
       }
       console.warn(
-        `Access denied: User does not have the required role '${requiredRole}' for league '${leagueId}'.`,
+        `Access denied: User does not have the required role '${requiredRole}' for league '${leagueKey}'.`,
       );
       router.navigate(['/forbidden']);
       return false;

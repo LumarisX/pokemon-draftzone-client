@@ -6,14 +6,14 @@ describe('ComparisonCardComponent', () => {
   let component: ComparisonCardComponent;
   let fixture: ComponentFixture<ComparisonCardComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [ComparisonCardComponent]
-    })
-    .compileComponents();
-
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [ComparisonCardComponent],
+    });
     fixture = TestBed.createComponent(ComparisonCardComponent);
     component = fixture.componentInstance;
+    component.entityLeft = { logoUrl: '', primaryName: '', secondaryName: '' };
+    component.entityRight = { logoUrl: '', primaryName: '', secondaryName: '' };
     fixture.detectChanges();
   });
 

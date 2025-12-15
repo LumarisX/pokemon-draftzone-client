@@ -1,8 +1,8 @@
 .nav-group {
-  padding: 0.25rem;
+  padding: var(--pdz-space-xs);
   .nav-title {
     font-size: small;
-    font-family: var(--pdz-fancy);
+    font-family: var(--pdz-font-fancy);
   }
   .nav-links {
     margin-left: 0.25rem;
@@ -10,7 +10,7 @@
     display: flex;
     flex-direction: column;
   }
-  border-bottom: 1px solid var(--mat-sys-outline-variant);
+  border-bottom: 1px solid var(--pdz-color-primary-border-variant);
 }
 
 .league-group {
@@ -28,7 +28,7 @@
   .league-links {
     margin-left: 0.25rem;
     padding-left: 0.25rem;
-    border-left: 2px solid var(--mat-sys-outline-variant);
+    border-left: 2px solid var(--pdz-color-primary-border-variant);
     display: flex;
     flex-direction: column;
   }

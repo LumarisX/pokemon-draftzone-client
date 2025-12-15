@@ -1,8 +1,6 @@
 <div class="matchup-main">
   <div class="matchup-header">
-    <button mat-flat-button [routerLink]="['/', draftPath, leagueId]">
-      Back
-    </button>
+    <button [routerLink]="['/', draftPath, leagueId]">Back</button>
     <div class="details-spacer">
       <div class="details-container">
         @if (matchupData) {
@@ -35,7 +33,6 @@
     </div>
     @if (matchupData) {
       <button
-        mat-flat-button
         (click)="shared = !shared"
         cdkOverlayOrigin
         #shareTrigger="cdkOverlayOrigin"
@@ -137,7 +134,7 @@
                       }
                     </div>
                   </div>
-                  <div class="team-container alternate">
+                  <div class="team-container">
                     <div class="name-container">
                       <div class="name-text">
                         {{ matchupData.summary[1].teamName }}
@@ -185,9 +182,56 @@
       </ng-template>
     }
   </div>
-  @if (matchupData) {
-    <matchup [matchupData]="matchupData"></matchup>
-  } @else {
-    <loading></loading>
+  <div class="matchup-body">
+    @if (matchupId && matchupData) {
+      @if (view === "matchup") {
+        <matchup [matchupId]="matchupId" [matchupData]="matchupData"></matchup>
+      } @else if (view === "teambuilder") {
+        <pdz-matchup-teambuilder
+          [matchupId]="matchupId"
+          [matchupData]="matchupData"
+        ></pdz-matchup-teambuilder>
+      }
+    } @else {
+      <pdz-loading></pdz-loading>
+    }
+  </div>
+</div>
+<div class="matchup-tools-container">
+  @if (view !== "teambuilder") {
+    <button class="tool-button" (click)="view = 'teambuilder'">
+      <mat-icon>build</mat-icon>
+    </button>
+  }
+  @if (view != "matchup") {
+    <button class="tool-button" (click)="view = 'matchup'">
+      <mat-icon>search_insights</mat-icon>
+    </button>
   }
 </div>
+
+<!-- <div class="matchup-tabs-container">
+    <div class="radial-stack" [class.open]="toolOpen">
+      <button
+        class="open-tools-button"
+        (click)="toolOpen = !toolOpen"
+        [attr.aria-expanded]="toolOpen"
+      >
+        @if (toolOpen) {
+          <mat-icon>close</mat-icon>
+        } @else {
+          <mat-icon>home_repair_service</mat-icon>
+        }
+      </button>
+
+      <button class="tool-button">
+        <mat-icon>sticky_note_2</mat-icon>
+      </button>
+      <button class="tool-button" [disabled]="true">
+        <mat-icon>search_insights</mat-icon>
+      </button>
+      <button class="tool-button">
+        <mat-icon>build</mat-icon>
+      </button>
+    </div>
+  </div> -->

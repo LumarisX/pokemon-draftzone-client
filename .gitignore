@@ -47,3 +47,6 @@ src/app/api/api.service.ts
 src/app/charts/
 src/app/pages/test/
 src/app/test/*
+
+# Start with dash
+-*

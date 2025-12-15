@@ -5,7 +5,7 @@
 
   .form-content {
     width: 100%;
-    padding: 0.5rem;
+    padding: var(--pdz-space-sm);
     max-width: 70rem;
     display: flex;
     flex-direction: column;

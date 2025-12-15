@@ -1,0 +1,33 @@
+<div
+  class="themed-component-wrapper"
+  [attr.data-theme]="theme"
+  [attr.data-mode]="mode"
+>
+  <div class="card theme-switcher">
+    <div class="theme-group">
+      <strong>Theme:</strong>
+      <button class="btn normal" (click)="setTheme('classic')">Classic</button>
+      <button class="btn sunset" (click)="setTheme('sunset')">Sunset</button>
+      <button class="btn shiny" (click)="setTheme('shiny')">Shiny</button>
+    </div>
+
+    <div class="theme-group">
+      <strong>Mode:</strong>
+      <button class="btn" (click)="setMode('light')">Light ☀️</button>
+      <button class="btn" (click)="setMode('dark')">Dark 🌙</button>
+    </div>
+  </div>
+  <div class="card"><pdz-color-box></pdz-color-box></div>
+
+  <div class="card"><pdz-color-palette></pdz-color-palette></div>
+
+  <div class="card">
+    <h2>Example Content Card</h2>
+    <p>
+      This is a paragraph inside a card. It contains an
+      <a href="#">example link</a> to demonstrate how elements adopt the active
+      theme's colors.
+    </p>
+    <button class="btn">Click Me</button>
+  </div>
+</div>

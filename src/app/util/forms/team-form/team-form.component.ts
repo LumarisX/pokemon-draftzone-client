@@ -16,16 +16,16 @@ import {
 } from '@angular/cdk/drag-drop';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { CommonModule } from '@angular/common';
-import { Component, Input, inject } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import {
   AbstractControl,
+  AsyncValidatorFn,
   FormArray,
   FormControl,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
   ValidationErrors,
-  ValidatorFn,
 } from '@angular/forms';
 import {
   MatAutocompleteModule,
@@ -40,12 +40,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTabChangeEvent, MatTabsModule } from '@angular/material/tabs';
-import { BehaviorSubject } from 'rxjs';
-import { DataService } from '../../../services/data.service';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { filter, map, take } from 'rxjs/operators';
 import { TERATYPES, TYPES } from '../../../data';
 import { getPidByName } from '../../../data/namedex';
 import { SpriteComponent } from '../../../images/sprite/sprite.component';
 import { Pokemon } from '../../../interfaces/draft';
+import { DataService } from '../../../services/data.service';
 import { SlideToggleComponent } from '../../inputs/slide-toggle/slide-toggle.component';
 import { PokemonSelectComponent } from '../../pokemon-select/pokemon-select.component';
 
@@ -110,9 +111,12 @@ export class TeamFormComponent {
   @Input()
   pokemonList$!: BehaviorSubject<Pokemon[]>;
 
+  @Output()
+  isImporting = new EventEmitter<boolean>();
+
   readonly teraTypes = TERATYPES;
   readonly zTypes = TYPES;
-  importing = false;
+  importing: boolean = false;
   importInput = '';
   teamOption = false;
   checked = false;
@@ -183,7 +187,9 @@ export class TeamFormComponent {
         (pControl) => pControl.value.pokemon?.id !== pokemon.id,
       )
     ) {
-      this.teamArray.push(new PokemonFormGroup(pokemon, this.pokemonList$));
+      const newGroup = new PokemonFormGroup(pokemon, this.pokemonList$);
+      this.teamArray.push(newGroup);
+      newGroup.controls.pokemon.updateValueAndValidity();
     }
   }
 
@@ -287,6 +293,11 @@ export class TeamFormComponent {
         });
     }
   }
+
+  toggleImporting(setting?: boolean) {
+    this.importing = setting ?? !this.importing;
+    this.isImporting.emit(this.importing);
+  }
 }
 
 export class PokemonFormGroup extends FormGroup<{
@@ -305,7 +316,7 @@ export class PokemonFormGroup extends FormGroup<{
     super({
       pokemon: new FormControl<Pokemon>(pokemon, {
         nonNullable: true,
-        validators: [pokemonValidator(pokemonList)],
+        asyncValidators: [pokemonAsyncValidator(pokemonList)],
       }),
       shiny: new FormControl<boolean | null>(!!pokemon.shiny),
       nickname: new FormControl<string>('', {
@@ -359,14 +370,20 @@ export class PokemonFormGroup extends FormGroup<{
   }
 }
 
-function pokemonValidator(
+function pokemonAsyncValidator(
   pokemonList$: BehaviorSubject<Pokemon[]>,
-): ValidatorFn {
-  return (control: AbstractControl): ValidationErrors | null => {
+): AsyncValidatorFn {
+  return (control: AbstractControl): Observable<ValidationErrors | null> => {
     const pokemon = control.value;
-    if (!pokemon || !pokemon.id) return { invalidPokemon: true };
-    const pokemonList = pokemonList$.getValue();
-    const exists = pokemonList.some((p) => p.id === pokemon.id);
-    return exists ? null : { invalidPokemon: true };
+    if (!pokemon || !pokemon.id) return of({ invalidPokemon: true });
+
+    return pokemonList$.pipe(
+      filter((list) => list.length > 0), // Wait until the list is populated
+      take(1), // Take the first populated list and complete
+      map((pokemonList) => {
+        const exists = pokemonList.some((p) => p.id === pokemon.id);
+        return exists ? null : { invalidPokemon: true };
+      }),
+    );
   };
 }

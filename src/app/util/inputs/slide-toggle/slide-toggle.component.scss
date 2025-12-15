@@ -13,23 +13,23 @@
   }
 
   .toggle-track {
-    width: 3.5em;
-    border: 0.125em solid var(--mat-sys-primary);
-    height: 1em;
-    background-color: var(--mat-sys-surface-variant);
-    border-radius: 1em;
+    width: 3.5rem;
+    border: 0.125em solid var(--pdz-color-primary);
+    height: 1rem;
+    background-color: var(--pdz-color-surface-variant);
+    border-radius: 1rem;
     position: relative;
     transition: background-color 0.3s ease;
   }
 
   .toggle-thumb {
-    width: 1.5em;
-    height: 1.5em;
-    background-color: var(--mat-sys-outline);
-    color: var(--mat-sys-surface-variant);
+    width: 1.5rem;
+    height: 1.5rem;
+    background-color: var(--pdz-color-primary-border);
+    color: var(--pdz-color-surface-variant);
     border-radius: 50%;
     position: absolute;
-    padding: 0.125em;
+    padding: 0.125rem;
     top: 50%;
     left: -2px;
     transform: translateY(-50%);
@@ -40,19 +40,19 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 
     &:hover {
-      background-color: var(--mat-sys-on-surface-variant);
+      background-color: var(--pdz-color-on-surface-variant);
     }
   }
 
   &.checked {
     .toggle-track {
-      background-color: var(--mat-sys-primary);
+      background-color: var(--pdz-color-primary);
     }
 
     .toggle-thumb {
       transform: translate(2em, -50%);
-      background-color: var(--mat-sys-on-primary);
-      color: var(--mat-sys-outline);
+      background-color: var(--pdz-color-on-primary);
+      color: var(--pdz-color-primary-border);
     }
   }
 }

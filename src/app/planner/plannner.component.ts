@@ -1,5 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, ChangeDetectorRef, Component, HostListener, OnInit, QueryList, ViewChildren, inject } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  HostListener,
+  OnInit,
+  QueryList,
+  ViewChildren,
+  inject,
+} from '@angular/core';
 import {
   AbstractControl,
   FormArray,
@@ -13,13 +22,13 @@ import {
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTab, MatTabsModule } from '@angular/material/tabs';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   BehaviorSubject,
   debounceTime,
   distinctUntilChanged,
   merge,
 } from 'rxjs';
-import { PlannerService } from '../services/planner.service';
 import { Type } from '../data';
 import { getNameByPid } from '../data/namedex';
 import {
@@ -30,6 +39,7 @@ import {
 } from '../drafts/matchup-overview/matchup-interface';
 import { LoadingComponent } from '../images/loading/loading.component';
 import { Pokemon } from '../interfaces/draft';
+import { PlannerService } from '../services/planner.service';
 import { FinderCoreComponent } from '../tools/finder/finder-core.component';
 import { ensureNumber, ensureString } from '../util';
 import { PlannerCoverageComponent } from './coverage/coverage.component';
@@ -48,7 +58,7 @@ interface LSTeamData {
   drafted: boolean;
 }
 
-interface LSDraftData {
+export interface LSDraftData {
   format: string;
   ruleset: string;
   draftName: string;
@@ -86,6 +96,8 @@ export class PlannerComponent implements OnInit, AfterViewInit {
   private plannerService = inject(PlannerService);
   private cdr = inject(ChangeDetectorRef);
   private dialog = inject(MatDialog);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
 
   plannerForm!: FormGroup<{ drafts: FormArray<DraftFormGroup> }>;
   typechart: TypeChart = {
@@ -163,6 +175,18 @@ export class PlannerComponent implements OnInit, AfterViewInit {
       }>[];
     }>[],
   ) {
+    for (let i = 0; i < draftArrayData.length; i++) {
+      const name = draftArrayData[i]?.draftName;
+      if (name?.endsWith('*')) {
+        const ctrl = this.draftArray?.at(i);
+        if (ctrl && ctrl.controls && ctrl.controls.draftName) {
+          const trimmed = name.slice(0, -1);
+          ctrl.controls.draftName.setValue(trimmed, { emitEvent: false });
+          draftArrayData[i].draftName = trimmed;
+        }
+      }
+    }
+
     const lsData = draftArrayData.map((draft) => ({
       format: draft.format,
       ruleset: draft.ruleset,
@@ -188,10 +212,49 @@ export class PlannerComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    const storedData = this.getStoredPlannerData();
+    const draftParam = this.route.snapshot.queryParamMap.get('draft');
+    let importedDraft: Partial<LSDraftData> | null = null;
+    if (draftParam) {
+      try {
+        const parsed = JSON.parse(decodeURIComponent(draftParam));
+        importedDraft = this.sanitizeDraftData(parsed);
+        importedDraft.draftName = importedDraft.draftName ?? 'Imported Draft';
+        if (!importedDraft.draftName.endsWith('*')) {
+          importedDraft.draftName = importedDraft.draftName + '*';
+        }
+      } catch (err) {
+        console.warn('Invalid draft query param:', err);
+        importedDraft = null;
+      }
+
+      try {
+        this.router.navigate([], {
+          relativeTo: this.route,
+          queryParams: {},
+          replaceUrl: true,
+        });
+      } catch {}
+    }
+
+    const storedData = this.getStoredPlannerData().filter(
+      (d) => Object.keys(d).length > 0,
+    );
+
+    const normalize = (s?: string) => (s ?? '').trim().toLowerCase();
+    let combinedData: Partial<LSDraftData>[];
+    if (importedDraft) {
+      const importedName = normalize(importedDraft.draftName);
+      const filteredStored = storedData.filter(
+        (sd) => normalize(sd.draftName) !== importedName,
+      );
+      combinedData = [importedDraft, ...filteredStored];
+    } else {
+      combinedData = storedData.length ? storedData : [{}];
+    }
+
     this.plannerForm = this.fb.group({
       drafts: new FormArray<DraftFormGroup>(
-        storedData.map((data) => this.createDraftFormGroup(data)),
+        combinedData.map((data) => this.createDraftFormGroup(data)),
       ),
     });
     this.isLargeScreen = window.innerWidth >= 1024;

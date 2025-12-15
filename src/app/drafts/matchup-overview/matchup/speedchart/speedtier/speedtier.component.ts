@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, HostBinding, Input } from '@angular/core';
 import { SpriteComponent } from '../../../../../images/sprite/sprite.component';
 import { Speedtier } from '../../../matchup-interface';
 
@@ -8,9 +8,13 @@ import { Speedtier } from '../../../matchup-interface';
   templateUrl: './speedtier.component.html',
   styleUrl: './speedtier.component.scss',
   imports: [CommonModule, SpriteComponent],
+  standalone: true,
 })
 export class SpeedtierComponent {
   @Input() tier!: Speedtier;
+  @HostBinding('class.alternate')
+  @Input()
+  alternate = false;
 
   modifierPath(modifier: string): string {
     switch (modifier) {

@@ -4,14 +4,14 @@ textarea {
   resize: none;
 }
 
-$form-color: var(--mat-sys-surface-container);
+$form-color: var(--pdz-color-surface-container);
 .sign-up {
   margin-left: auto;
   margin-right: auto;
   max-width: 48rem;
-  padding: 1.5rem;
-  border-radius: 0.5rem;
-  box-shadow: var(--pdz-level2);
+  padding: var(--pdz-space-xl);
+  border-radius: var(--pdz-shape-corner-sm);
+  box-shadow: var(--pdz-level-2);
 }
 
 mat-expansion-panel {
@@ -37,7 +37,7 @@ mat-card {
 }
 
 th {
-  padding: 0.25rem;
+  padding: var(--pdz-space-xs);
   text-align: start;
 }
 

@@ -1,0 +1,9 @@
+<div class="widget-container" [class.alternate]="opponent">
+  <div class="widget-header">
+    <div class="widget-label">Learned Moves</div>
+    <swap-opponent [(ngModel)]="opponent"></swap-opponent>
+  </div>
+  <div class="movechart-wrapper">
+    <moves-core [movechart]="opponent ? teams[1] : teams[0]"></moves-core>
+  </div>
+</div>

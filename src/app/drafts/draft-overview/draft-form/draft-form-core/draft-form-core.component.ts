@@ -1,6 +1,14 @@
 import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, inject } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  inject,
+} from '@angular/core';
 import {
   AbstractControl,
   FormArray,
@@ -64,6 +72,7 @@ export class DraftFormCoreComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<void>();
   pokemonList$ = new BehaviorSubject<Pokemon[]>([]);
   draftForm!: DraftForm;
+  isImporting = false;
 
   @Input()
   params: Partial<Draft> = {};

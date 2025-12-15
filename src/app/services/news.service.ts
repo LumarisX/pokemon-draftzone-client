@@ -15,7 +15,8 @@ export type Section =
       buttons: {
         text: string;
         disabled?: boolean;
-        link: string;
+        link?: string;
+        href?: string;
         newWindow?: boolean;
       }[];
     }
@@ -33,7 +34,6 @@ export type News = {
 })
 export class NewsService {
   private api = inject(ApiService);
-
 
   getNews() {
     return this.api.get<News[]>([newsPath], false);

@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { ApiService } from './api.service';
+import { Archive } from '../interfaces/archive';
 
 @Injectable({
   providedIn: 'root',
@@ -7,9 +8,8 @@ import { ApiService } from './api.service';
 export class ArchiveService {
   private apiService = inject(ApiService);
 
-
   getDraftsList() {
-    return this.apiService.get('archive/teams', true);
+    return this.apiService.get<Archive[]>('archive/teams', true);
   }
 
   getDraft(teamName: string) {
@@ -40,7 +40,7 @@ export class ArchiveService {
     return this.apiService.post(
       `archive/${teamName}/matchups`,
       true,
-      matchupData
+      matchupData,
     );
   }
 
@@ -63,7 +63,7 @@ export class ArchiveService {
   scoreMatchup(matchupId: string, teamId: string, scoreData: Object) {
     return this.apiService.patch(
       `archive/${teamId}/${matchupId}/score`,
-      scoreData
+      scoreData,
     );
   }
   getGameTime(matchupId: string, teamId: string) {
@@ -72,7 +72,7 @@ export class ArchiveService {
   scheduleMatchup(matchupId: string, teamId: string, timeData: Object) {
     return this.apiService.patch(
       `archive/${teamId}/${matchupId}/schedule`,
-      timeData
+      timeData,
     );
   }
 }

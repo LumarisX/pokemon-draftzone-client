@@ -1,0 +1,82 @@
+<app-league-notifications></app-league-notifications>
+<div class="draft-timer-controls">
+  @if (status === "IN_PROGRESS") {
+    <button
+      mat-icon-button
+      aria-label="Pause timer"
+      class="draft-timer-button"
+      (click)="setState('pause')"
+    >
+      <mat-icon>pause</mat-icon>
+    </button>
+  } @else {
+    <button
+      mat-icon-button
+      aria-label="Play timer"
+      class="draft-timer-button paused"
+      (click)="setState('play')"
+    >
+      <mat-icon>play_arrow</mat-icon>
+    </button>
+  }
+  <button
+    mat-icon-button
+    aria-label="Skip turn"
+    class="skip-button"
+    (click)="skipNext()"
+  >
+    <mat-icon>skip_next</mat-icon>
+  </button>
+</div>
+<button (click)="testNotification()">Show Test Notification</button>
+@for (team of teams; track team.name) {
+  <div class="team-draft-container">
+    <h2 class="team-name">{{ team.name }}</h2>
+    <table class="draft-table">
+      <thead class="draft-table-header-group">
+        <tr class="draft-table-row">
+          <th scope="col" class="draft-table-header">Sprite</th>
+          <th scope="col" class="draft-table-header">Pokemon</th>
+          <th scope="col" class="draft-table-header">Tier</th>
+          <!-- <th scope="col" class="draft-table-header"></th> -->
+        </tr>
+      </thead>
+      <tbody class="draft-table-body">
+        @for (pokemon of team.draft; track pokemon.id) {
+          <tr class="draft-table-row">
+            <td class="draft-table-cell">
+              <pdz-sprite [pokemon]="pokemon" size="3rem" flipped></pdz-sprite>
+            </td>
+
+            <td class="draft-table-cell">{{ pokemon.name }}</td>
+            <td class="draft-table-cell">{{ pokemon.tier }}</td>
+
+            <!-- <td class="draft-table-cell">
+              <button matIconButton (click)="editDraftPick(team)">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button matIconButton (click)="deleteDraftPick(team)">
+                <mat-icon>delete_forever</mat-icon>
+              </button>
+            </td> -->
+          </tr>
+        } @empty {
+          <tr class="draft-table-row">
+            <td colspan="4" class="draft-table-cell text-center">
+              No picks made yet.
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+    <div class="add-draft-controls">
+      <pokemon-select
+        ruleset="Gen9 NatDex"
+        [(ngModel)]="team.selectedPokemon"
+      ></pokemon-select>
+      <button (click)="addDraftPick(team)">Add Draft</button>
+    </div>
+  </div>
+} @empty {
+  <p>There are no teams or picks to display.</p>
+}

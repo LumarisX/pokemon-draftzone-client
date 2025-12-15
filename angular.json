@@ -29,16 +29,27 @@
                 {
                   "type": "initial",
                   "maximumWarning": "3MB",
-                  "maximumError": "10MB"
+                  "maximumError": "50mb"
                 },
                 {
                   "type": "anyComponentStyle",
                   "maximumWarning": "2kb",
-                  "maximumError": "10kb"
+                  "maximumError": "50kb"
                 }
               ],
               "outputHashing": "all",
               "serviceWorker": "ngsw-config.json"
+            },
+            "broadcast": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.broadcast.ts"
+                }
+              ]
             },
             "development": {
               "optimization": false,
@@ -64,6 +75,9 @@
           "configurations": {
             "production": {
               "buildTarget": "pokemon-draftzone-client:build:production"
+            },
+            "broadcast": {
+              "buildTarget": "pokemon-draftzone-client:build:broadcast"
             },
             "development": {
               "buildTarget": "pokemon-draftzone-client:build:development"
@@ -95,7 +109,29 @@
   },
   "schematics": {
     "@schematics/angular:component": {
-      "style": "scss"
+      "style": "scss",
+      "type": "component"
+    },
+    "@schematics/angular:directive": {
+      "type": "directive"
+    },
+    "@schematics/angular:service": {
+      "type": "service"
+    },
+    "@schematics/angular:guard": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:interceptor": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:module": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:pipe": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:resolver": {
+      "typeSeparator": "."
     }
   },
   "cli": {

@@ -19,8 +19,11 @@
             }
           </mat-chip-set>
           <div class="add-spacer"></div>
-          <button mat-flat-button (click)="importing = false; importPokemon()">
-            Details
+          <button
+            mat-flat-button
+            (click)="toggleImporting(false); importPokemon()"
+          >
+            Confirm
           </button>
         </div>
         <mat-form-field floatLabel="always">
@@ -101,7 +104,7 @@
         </div>
 
         <div class="add-spacer"></div>
-        <button mat-flat-button (click)="importing = true">Import</button>
+        <button mat-flat-button (click)="toggleImporting(true)">Import</button>
       </div>
       <div class="team-container">
         @if (teamArray.value.length > 0) {
@@ -216,7 +219,7 @@
                       <div class="captain-container">
                         <div class="captain-subcontainer box-container">
                           <pdz-slide-toggle
-                            [ngModel]="monGroup.controls.tera.value"
+                            [formControl]="monGroup.controls.tera"
                             (checkedChange)="
                               setArrayControl(
                                 monGroup.controls.tera,
@@ -229,7 +232,7 @@
                             Tera Captain
                           </pdz-slide-toggle>
                           <pdz-slide-toggle
-                            [ngModel]="monGroup.controls.z.value"
+                            [formControl]="monGroup.controls.z"
                             (checkedChange)="
                               setArrayControl(
                                 monGroup.controls.z,
@@ -379,13 +382,13 @@
                         </div>
                       </ng-template>
                       <div class="cosmetic-container">
-                        <dz-slide-toggle
+                        <pdz-slide-toggle
                           [formControl]="monGroup.controls.shiny"
                           onSVG="shiny"
                           offSVG="shiny"
                         >
                           Shiny
-                        </dz-slide-toggle>
+                        </pdz-slide-toggle>
                         <mat-form-field class="small-form">
                           <mat-label>Nickname</mat-label>
                           <input
@@ -556,5 +559,7 @@
   </div>
 }
 <!-- @for (control of teamArray.controls; track $index) {
-  {{ control.value | json }}
-} -->
+  {{ control. | json }}
+}
+
+{{ pokemonList$ | async | json }} -->

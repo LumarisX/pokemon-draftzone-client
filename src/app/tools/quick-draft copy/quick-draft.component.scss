@@ -15,45 +15,45 @@
 h1,
 h2,
 h3 {
-  font-family: var(--pdz-fancy);
+  font-family: var(--pdz-font-fancy);
 }
 
 h1 {
-  font-size: 2em;
+  font-size: 2rem;
   @media (max-width: 768px) {
-    font-size: 1.75em;
+    font-size: 1.75rem;
   }
 }
 
 h2 {
-  font-size: 1.5em;
+  font-size: 1.5rem;
   text-align: center;
   @media (max-width: 768px) {
-    font-size: 1.25em;
+    font-size: 1.25rem;
   }
 }
 
 h3 {
-  font-size: 1.25em;
+  font-size: 1.25rem;
   @media (max-width: 768px) {
-    font-size: 1.15em;
+    font-size: 1.15rem;
   }
 }
 
 .qd-option {
-  box-shadow: var(--pdz-level2);
-  border-radius: 1rem;
-  border: 2px solid var(--mat-sys-outline-variant);
+  box-shadow: var(--pdz-level-2);
+  border-radius: var(--pdz-shape-corner-lg);
+  border: 2px solid var(--pdz-color-primary-border-variant);
   margin: 4px;
   &.selected {
-    border: 6px solid var(--mat-sys-outline);
-    background-color: var(--mat-sys-surface);
-    color: var(--mat-sys-on-primary-container);
+    border: 6px solid var(--pdz-color-primary-border);
+    background-color: var(--pdz-color-surface);
+    color: var(--pdz-color-on-primary-container);
     margin: 0px;
   }
 
   &:not(.selected):hover {
-    border: 2px solid var(--mat-sys-outline);
+    border: 2px solid var(--pdz-color-primary-border);
   }
 }
 
@@ -71,10 +71,10 @@ h3 {
 }
 
 .option-tier {
-  font-size: 0.8em;
+  font-size: 0.8rem;
   font-weight: 800;
   font-family: var(--pdz-font-regular);
-  color: var(--mat-sys-primary);
+  color: var(--pdz-color-primary);
 }
 
 .qd-spacer {

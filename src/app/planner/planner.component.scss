@@ -1,3 +1,24 @@
+.planner-form {
+  height: 100%;
+
+  .planner-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    .widget-container {
+      display: flex;
+      min-width: 0;
+      overflow: auto;
+      height: 100%;
+
+      > :not([hidden]) ~ :not([hidden]) {
+        border-left: 2px solid var(--pdz-color-outline);
+      }
+    }
+  }
+}
+
 .hide-on-big {
   display: block;
 
@@ -6,68 +27,89 @@
   }
 }
 
-.draft-tab {
-  display: flex;
-  align-items: center;
-  input {
-    &:focus {
-      outline: none;
-    }
-    width: 7rem;
-    font-size: 0.875rem;
-    line-height: 1.25rem;
-    padding: 0px 4px;
-    background: inherit;
-    text-overflow: ellipsis;
-    font-family:
-      Nasalization RG,
-      sans-serif;
-    border-bottom: 1px solid;
-  }
-
-  mat-icon {
-    font-size: 1.2em;
-    padding: 2px;
-    height: fit-content;
-    width: fit-content;
-    &:hover {
-      color: var(--mat-sys-primary);
-      border-radius: 99rem;
-    }
-  }
-}
-
-.tab-wrapper {
-  display: flex;
-  overflow-x: auto;
-  @apply space-x-1;
-}
-
 .tab-bar {
-  padding: 0.5rem 0.5rem 0;
+  padding: 0 var(--pdz-space-sm);
   max-width: 100%;
+  height: fit-content;
   display: flex;
   flex-shrink: 0;
   overflow-y: clip;
   height: fit-content;
   border-width: 0 0 2px;
-  @apply space-x-1 border-menu-300;
-}
+  gap: var(--pdz-space-xs);
+  border-bottom: 2px solid var(--pdz-color-outline);
+  align-items: end;
 
-.add-tab {
-  display: flex;
-  align-items: center;
-  &:hover {
-    color: var(--mat-sys-primary);
+  .tab {
+    background-color: var(--pdz-color-secondary-container);
+    color: var(--pdz-color-on-secondary-container);
+    border-radius: var(--pdz-shape-corner-sm) var(--pdz-shape-corner-sm) 0 0;
+    padding: var(--pdz-space-xs) var(--pdz-space-xs) 0;
+    font-size: var(--pdz-font-size-xs);
+    height: fit-content;
+    min-height: 1.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    mat-icon {
+      font-size: 1.2rem;
+      height: fit-content;
+      width: fit-content;
+      border-radius: var(--pdz-shape-corner-full);
+    }
+    box-shadow: var(--pdz-level-1);
   }
-}
 
-.tab {
-  background-color: var(--mat-sys-surface-variant);
-  color: var(--mat-sys-on-surface-variant);
-  border-radius: 0.5rem 0.5rem 0 0;
-  padding: 6px;
-  cursor: pointer;
+  .tab-wrapper {
+    height: 2.5rem;
+
+    display: flex;
+    overflow-x: auto;
+    gap: var(--pdz-space-xs);
+    align-items: end;
+
+    .draft-tab {
+      transition:
+        height 0.2s ease,
+        min-height 0.2s ease,
+        box-shadow 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease,
+        background-color 0.2s ease,
+        font-size 0.2s ease;
+      input {
+        &:focus {
+          outline: none;
+        }
+        width: 6rem;
+        line-height: 1.25rem;
+        padding: 0px var(--pdz-space-xs);
+        margin-bottom: 1px;
+        background: inherit;
+        text-overflow: ellipsis;
+        font-family: var(--pdz-font-fancy);
+      }
+
+      &.selected {
+        background-color: var(--pdz-color-primary-container);
+        color: var(--pdz-color-on-primary-container);
+        box-shadow: var(--pdz-level-2);
+        font-size: var(--pdz-font-size-sm);
+        min-height: 2rem;
+        mat-icon {
+          &:hover {
+            color: var(--pdz-color-primary);
+          }
+        }
+        input {
+          &:focus {
+            margin-bottom: 0px;
+            border-bottom: 1px solid;
+          }
+        }
+      }
+    }
+  }
 }
 
 .movechart-container {
@@ -83,7 +125,7 @@
 }
 
 .tab-container {
-  padding: 1rem;
+  padding: var(--pdz-space-lg);
   width: 100%;
   height: 100%;
   overflow: auto;
@@ -91,4 +133,28 @@
 
 mat-tab {
   height: fit-content;
+}
+
+.tab-group-compact {
+  width: auto;
+  height: 100%;
+  flex-grow: 0;
+}
+
+.tab-group-grow {
+  flex: 1 1 auto;
+  height: 100%;
+  overflow: auto;
+  min-width: 0;
+}
+
+.finder {
+  height: 100%;
+  min-width: 100%;
+  overflow-y: auto;
+}
+
+.coverage {
+  width: 100%;
+  overflow-y: auto;
 }

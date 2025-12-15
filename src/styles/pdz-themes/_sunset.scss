@@ -1,0 +1,145 @@
+@use "sass:map";
+@use "../base/tokens" as *;
+@use "defaults" as *;
+
+$theme-overrides: (
+  light: (
+    // Surface Colors (Orange-tinted)
+    surface: "orange-50",
+    surface-variant: "orange-300",
+    surface-container-low: "orange-50",
+    surface-container: "orange-100",
+    surface-container-high: "orange-200",
+    surface-container-highest: "orange-300",
+    on-surface: "orange-950",
+    on-surface-variant: "orange-900",
+
+    // Primary Theme (Purple)
+    primary: "purple-500",
+    primary-lighter: "purple-400",
+    primary-darker: "purple-600",
+    on-primary: "white",
+    primary-container: "purple-150",
+    primary-container-low: "purple-100",
+    primary-container-high: "purple-300",
+    primary-container-hover: "purple-200",
+    on-primary-container: "purple-900",
+    primary-hover: "purple-350",
+    primary-border: "purple-250",
+    primary-subtle: "purple-100",
+    primary-gradient: linear-gradient(
+        135deg,
+        var(--pdz-color-purple-500),
+        var(--pdz-color-purple-300)
+      ),
+    // Secondary Theme (Pink)
+    secondary: "pink-500",
+    secondary-lighter: "pink-400",
+    secondary-darker: "pink-600",
+    on-secondary: "white",
+    secondary-container: "pink-150",
+    secondary-container-low: "pink-100",
+    secondary-container-high: "pink-300",
+    secondary-container-hover: "pink-200",
+    on-secondary-container: "pink-900",
+    secondary-hover: "pink-350",
+    secondary-border: "pink-250",
+    secondary-subtle: "pink-100",
+    secondary-gradient: linear-gradient(
+        135deg,
+        var(--pdz-color-pink-500),
+        var(--pdz-color-pink-300)
+      ),
+    // Menu Theme (Orange)
+    menu: "orange-500",
+    menu-lighter: "orange-400",
+    menu-darker: "orange-600",
+    menu-container: "orange-150",
+    menu-container-low: "orange-100",
+    menu-container-high: "orange-350",
+    menu-container-hover: "orange-250",
+    on-menu-container: "orange-950",
+    menu-hover: "orange-400",
+    menu-border: "orange-350",
+    menu-subtle: "orange-150",
+
+    // Status Colors
+    error: "red-800",
+
+    // Disabled State
+    surface-disabled: "gray-150",
+
+    // Logo Colors
+    logo-top: "purple-500",
+    logo-bottom: "pink-500",
+
+    // Loading Colors
+    loading-primary-high: "purple-600",
+    loading-primary-low: "purple-400",
+    loading-secondary-high: "pink-600",
+    loading-secondary-low: "pink-400",
+
+    // Hero
+    hero: url("/assets/images/hero/hero_sunset.webp"),
+  ),
+  dark: (
+    // Primary Theme (Purple)
+    primary: "purple-500",
+    primary-lighter: "purple-400",
+    primary-darker: "purple-600",
+    on-primary: "purple-950",
+    primary-container: "purple-900",
+    primary-container-low: "purple-850",
+    primary-container-high: "purple-950",
+    primary-container-hover: "purple-800",
+    on-primary-container: "purple-200",
+    primary-hover: "purple-550",
+    primary-border: "purple-700",
+    primary-subtle: "purple-900",
+    primary-gradient: linear-gradient(
+        135deg,
+        var(--pdz-color-purple-500),
+        var(--pdz-color-purple-300)
+      ),
+    // Secondary Theme (Pink)
+    secondary: "pink-500",
+    secondary-lighter: "pink-400",
+    secondary-darker: "pink-600",
+    on-secondary: "pink-950",
+    secondary-container: "pink-900",
+    secondary-container-low: "pink-850",
+    secondary-container-high: "pink-950",
+    secondary-container-hover: "pink-800",
+    on-secondary-container: "pink-200",
+    secondary-hover: "pink-550",
+    secondary-border: "pink-700",
+    secondary-subtle: "pink-900",
+    secondary-gradient: linear-gradient(
+        135deg,
+        var(--pdz-color-pink-500),
+        var(--pdz-color-pink-300)
+      ),
+    // Logo Colors
+    logo-top: "purple-500",
+    logo-bottom: "pink-500",
+
+    // Loading Colors
+    loading-primary-high: "purple-600",
+    loading-primary-low: "purple-400",
+    loading-secondary-high: "pink-600",
+    loading-secondary-low: "pink-400",
+
+    // Hero
+    hero: linear-gradient(
+        135deg,
+        var(--pdz-color-purple-500),
+        var(--pdz-color-purple-300)
+      ),
+  ),
+);
+
+// Merge defaults with theme-specific overrides
+$theme: (
+  light: map.merge(map.get($defaults, light), map.get($theme-overrides, light)),
+  dark: map.merge(map.get($defaults, dark), map.get($theme-overrides, dark)),
+);

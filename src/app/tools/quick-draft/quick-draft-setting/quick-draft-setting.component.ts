@@ -149,6 +149,7 @@ export class QuickDraftSettingComponent {
       ['RU', 0],
       ['NU', 0],
       ['PU', 0],
+      ['ZU', 0],
     ],
     doubleTiers: [
       ['DUber', 0],

@@ -1,0 +1,309 @@
+<!-- @if (!scoreForm) {
+  <pdz-loading></pdz-loading>
+} @else {
+  <form [formGroup]="scoreForm" class="opponent-score">
+    <header class="opponent-score__header">
+      <button
+        theme="secondary"
+        class="cancel-btn"
+        [routerLink]="['/', draftPath, teamId]"
+      >
+        Cancel
+      </button>
+      <h1>Score</h1>
+      <button
+        class="save-btn"
+        (click)="submit()"
+        [routerLink]="['/', draftPath, teamId]"
+      >
+        Submit
+      </button>
+    </header>
+
+    <section class="opponent-score__meta">
+      <label>
+        <span>A PokePaste</span>
+        <input formControlName="aTeamPaste" spellcheck="false" />
+      </label>
+      <div class="opponent-score__wins">A wins: {{ getWins("a") }}</div>
+      <div class="spacer"></div>
+      <div class="opponent-score__wins">B wins: {{ getWins("b") }}</div>
+      <label>
+        <span>B PokePaste</span>
+        <input formControlName="bTeamPaste" spellcheck="false" />
+      </label>
+    </section>
+
+    <section class="opponent-score__matches" [formGroup]="selectedMatchForm">
+      <div class="matches-selector-container">
+        <div class="match-tabs">
+          @for (m of matchesFormArray.controls; track $index) {
+            <button
+              class="tab"
+              [class.selected]="$index === selectedMatch"
+              type="button"
+              (click)="switchMatch($index)"
+            >
+              Game {{ $index + 1 }}
+              @if ($index) {
+                <mat-icon (click)="deleteMatch($index)"
+                  >delete_forever</mat-icon
+                >
+              }
+            </button>
+          }
+          <button (click)="addMatch()">
+            <mat-icon>add</mat-icon>
+          </button>
+        </div>
+        <div class="match-editor__replay">
+          <label>Replay URL <input formControlName="replay" /></label>
+          <button
+            type="button"
+            (click)="analyzeReplay()"
+            [disabled]="selectedMatchForm.controls.analyzed.value"
+          >
+            Analyze
+          </button>
+        </div>
+      </div>
+
+      <div class="teams">
+        <div class="team" formGroupName="aTeam">
+          <div class="team__header">
+            <h2>{{ matchup.aTeam.teamName }}</h2>
+            <button
+              type="button"
+              (click)="changeWinner('a')"
+              [class.selected]="selectedMatchForm.controls.winner.value === 'a'"
+            >
+              Winner
+            </button>
+          </div>
+          <div class="team__stats">
+            <div>Brought: {{ statCount(aTeamArray, ["brought"]) }}</div>
+            <div>Kills: {{ statCount(aTeamArray, ["kills", "indirect"]) }}</div>
+            <div>Deaths: {{ statCount(aTeamArray, ["fainted"]) }}</div>
+          </div>
+
+          <div class="team__bench">
+            @for (p of aTeamArray.controls; track $index) {
+              <pdz-sprite
+                (click)="toggleBrought(p)"
+                size="3rem"
+                [pokemon]="p.value.pokemon!"
+                [class.not-brought]="!p.value.brought"
+              ></pdz-sprite>
+            }
+          </div>
+          <div formArrayName="team" class="team__list">
+            @for (p of aTeamArray.controls; track $index) {
+              @if (p.controls.brought.value) {
+                <div class="pokemon-score-form">
+                  <div class="pokemon-score-header">
+                    <div>{{ p.controls.pokemon.value.name }}</div>
+                    <div>
+                      <button class="faint-btn">
+                        <mat-icon>skull</mat-icon>
+                      </button>
+                      <button class="faint-btn" (click)="toggleBrought(p)">
+                        <mat-icon>clear</mat-icon>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="pokemon-score-body">
+                    <div class="sprite-wrapper">
+                      <pdz-sprite
+                        flipped
+                        [pokemon]="p.controls.pokemon.value"
+                      ></pdz-sprite>
+                    </div>
+                    <div class="forms">
+                      <div class="kills">
+                        <div class="kills-header">
+                          <div class="kill-label">Kills</div>
+                          <div class="total-kills">
+                            {{
+                              p.controls.kills.value + p.controls.indirect.value
+                            }}
+                          </div>
+                        </div>
+                        <div class="kills-body">
+                          <div class="kills-container">
+                            <div class="type-container">
+                              <div class="kill-value">
+                                {{ p.controls.kills.value }}
+                              </div>
+                              <div class="kill-type">Direct</div>
+                              <div class="counter-container">
+                                <button
+                                  class="add-counter"
+                                  (click)="incrementControl(p.controls.kills)"
+                                >
+                                  <mat-icon> add</mat-icon>
+                                </button>
+                                <button
+                                  class="sub-counter"
+                                  (click)="decrementControl(p.controls.kills)"
+                                  [disabled]="!p.controls.kills.value"
+                                >
+                                  <mat-icon>remove</mat-icon>
+                                </button>
+                              </div>
+                            </div>
+                            <div class="type-container">
+                              <div class="kill-value">
+                                {{ p.controls.indirect.value }}
+                              </div>
+                              <div class="kill-type">Indirect</div>
+                              <div class="counter-container">
+                                <button
+                                  class="add-counter"
+                                  (click)="
+                                    incrementControl(p.controls.indirect)
+                                  "
+                                >
+                                  <mat-icon> add</mat-icon>
+                                </button>
+                                <button
+                                  class="sub-counter"
+                                  (click)="
+                                    decrementControl(p.controls.indirect)
+                                  "
+                                  [disabled]="!p.controls.indirect.value"
+                                >
+                                  <mat-icon>remove</mat-icon>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              }
+            }
+          </div>
+        </div>
+        <div class="team alternate" formGroupName="bTeam">
+          <div class="team__header">
+            <h2>{{ matchup.bTeam.teamName }}</h2>
+            <button
+              type="button"
+              (click)="changeWinner('a')"
+              [class.selected]="selectedMatchForm.controls.winner.value === 'a'"
+            >
+              Winner
+            </button>
+          </div>
+          <div class="team__stats">
+            <div>Brought: {{ statCount(bTeamArray, ["brought"]) }}</div>
+            <div>Kills: {{ statCount(bTeamArray, ["kills", "indirect"]) }}</div>
+            <div>Deaths: {{ statCount(bTeamArray, ["fainted"]) }}</div>
+          </div>
+
+          <div class="team__bench">
+            @for (p of bTeamArray.controls; track $index) {
+              <pdz-sprite
+                (click)="toggleBrought(p)"
+                size="3rem"
+                [pokemon]="p.value.pokemon!"
+                [class.not-brought]="!p.value.brought"
+              ></pdz-sprite>
+            }
+          </div>
+          <div formArrayName="team" class="team__list">
+            @for (p of bTeamArray.controls; track $index) {
+              @if (p.controls.brought.value) {
+                <div class="pokemon-score-form">
+                  <div class="pokemon-score-header">
+                    <div>{{ p.controls.pokemon.value.name }}</div>
+                    <div>
+                      <button class="faint-btn">
+                        <mat-icon>skull</mat-icon>
+                      </button>
+                      <button class="faint-btn" (click)="toggleBrought(p)">
+                        <mat-icon>clear</mat-icon>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="pokemon-score-body">
+                    <div class="sprite-wrapper">
+                      <pdz-sprite
+                        flipped
+                        [pokemon]="p.controls.pokemon.value"
+                      ></pdz-sprite>
+                    </div>
+                    <div class="forms">
+                      <div class="kills">
+                        <div class="kills-header">
+                          <div class="kill-label">Kills</div>
+                          <div class="total-kills">
+                            {{
+                              p.controls.kills.value + p.controls.indirect.value
+                            }}
+                          </div>
+                        </div>
+                        <div class="kills-body">
+                          <div class="kills-container">
+                            <div class="type-container">
+                              <div class="kill-value">
+                                {{ p.controls.kills.value }}
+                              </div>
+                              <div class="kill-type">Direct</div>
+                              <div class="counter-container">
+                                <button
+                                  class="add-counter"
+                                  (click)="incrementControl(p.controls.kills)"
+                                >
+                                  <mat-icon> add</mat-icon>
+                                </button>
+                                <button
+                                  class="sub-counter"
+                                  (click)="decrementControl(p.controls.kills)"
+                                  [disabled]="!p.controls.kills.value"
+                                >
+                                  <mat-icon>remove</mat-icon>
+                                </button>
+                              </div>
+                            </div>
+                            <div class="type-container">
+                              <div class="kill-value">
+                                {{ p.controls.indirect.value }}
+                              </div>
+                              <div class="kill-type">Indirect</div>
+                              <div class="counter-container">
+                                <button
+                                  class="add-counter"
+                                  (click)="
+                                    incrementControl(p.controls.indirect)
+                                  "
+                                >
+                                  <mat-icon> add</mat-icon>
+                                </button>
+                                <button
+                                  class="sub-counter"
+                                  (click)="
+                                    decrementControl(p.controls.indirect)
+                                  "
+                                  [disabled]="!p.controls.indirect.value"
+                                >
+                                  <mat-icon>remove</mat-icon>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              }
+            }
+          </div>
+        </div>
+      </div>
+    </section>
+  </form>
+} -->

@@ -1,0 +1,30 @@
+<h2>League Sign-Ups</h2>
+
+@if (signUps.length > 0) {
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Discord Name</th>
+          <th>Timezone</th>
+          <th>Experience</th>
+          <th>Dropped</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (signUp of signUps; track signUp) {
+          <tr>
+            <td>{{ $index + 1 }}</td>
+            <td>{{ signUp.name }}</td>
+            <td>{{ signUp.timezone }}</td>
+            <td>{{ signUp.experience }}</td>
+            <td>{{ signUp.dropped }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+} @else {
+  <p>No sign-ups found for this league.</p>
+}

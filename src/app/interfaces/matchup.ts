@@ -43,6 +43,6 @@ export type Match = {
     ];
     score: number;
   };
-  replay?: String;
+  replay?: string;
   winner?: null | 'a' | 'b';
 };

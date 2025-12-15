@@ -32,8 +32,7 @@ export class ApiService {
 
   private pendingRequests = new Map<string, Observable<any>>();
 
-  //TODO: Remove any and make it required.
-  get<T = any>(
+  get<T>(
     path: string | string[],
     authenticated: boolean,
     params:
@@ -72,8 +71,7 @@ export class ApiService {
     return request$;
   }
 
-  //TODO: Remove any and make it required.
-  post<T = any>(
+  post<T>(
     path: string | string[],
     authenticated: boolean,
     data: Object,

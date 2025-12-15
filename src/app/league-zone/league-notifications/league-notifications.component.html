@@ -1,0 +1,13 @@
+<div class="notification-container">
+  @for (notification of notifications; track notification) {
+    <div class="notification-box {{ notification.type }}" [class.fade-out]="notification.fadingOut">
+      <span>{{ notification.message }}</span>
+      <button
+        class="close-button"
+        (click)="dismissNotification(notification.id)"
+      >
+        X
+      </button>
+    </div>
+  }
+</div>
