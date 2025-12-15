@@ -197,18 +197,28 @@
     }
   </div>
 </div>
-<!-- <div class="matchup-tools-container">
-  @if (view !== "teambuilder") {
-    <button class="tool-button" (click)="view = 'teambuilder'">
-      <mat-icon>build</mat-icon>
+<div class="matchup-teambuilder-panel" [class.is-open]="teambuilderPanelOpen">
+  <div class="teambuilder-panel-header">
+    <span class="teambuilder-panel-title">Teambuilder</span>
+    <button class="close-button" (click)="teambuilderPanelOpen = false">
+      <mat-icon>close</mat-icon>
     </button>
-  }
-  @if (view != "matchup") {
-    <button class="tool-button" (click)="view = 'matchup'">
-      <mat-icon>search_insights</mat-icon>
-    </button>
-  }
-</div> -->
+  </div>
+  <div class="teambuilder-panel-content">
+    <!-- Tool panel content goes here -->
+  </div>
+</div>
+<div
+  class="matchup-teambuilder-container"
+  [class.is-hidden]="teambuilderPanelOpen"
+>
+  <button
+    class="teambuilder-button"
+    (click)="teambuilderPanelOpen = !teambuilderPanelOpen"
+  >
+    <mat-icon>build</mat-icon>
+  </button>
+</div>
 
 <!-- <div class="matchup-tabs-container">
     <div class="radial-stack" [class.open]="toolOpen">

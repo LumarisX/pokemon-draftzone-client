@@ -36,8 +36,8 @@ dayjs.extend(duration);
     OverlayModule,
     MatIconModule,
     SpriteComponent,
-    MatchupTeambuilderComponent
-],
+    MatchupTeambuilderComponent,
+  ],
 })
 export class MatchupOverviewComponent implements OnInit {
   private route = inject(ActivatedRoute);
@@ -56,6 +56,7 @@ export class MatchupOverviewComponent implements OnInit {
   view: 'matchup' | 'teambuilder' = 'matchup';
 
   toolOpen: boolean = false;
+  teambuilderPanelOpen: boolean = false;
 
   @ViewChild('inputFieldRef') inputFieldRef!: ElementRef;
 
