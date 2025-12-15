@@ -1,11 +1,11 @@
-import { CommonModule, Location } from '@angular/common';
+import { Location } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'pdz-external-link',
-  imports: [CommonModule, MatIconModule],
+  imports: [MatIconModule],
   templateUrl: './external-link.component.html',
   styleUrl: './external-link.component.scss',
 })

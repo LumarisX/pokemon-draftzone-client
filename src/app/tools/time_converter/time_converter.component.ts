@@ -1,5 +1,5 @@
 import { ClipboardModule } from '@angular/cdk/clipboard';
-import { CommonModule } from '@angular/common';
+
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -39,7 +39,6 @@ type TimeZone = {
   providers: [provideNativeDateAdapter()],
 
   imports: [
-    CommonModule,
     RouterModule,
     FormsModule,
     ReactiveFormsModule,
@@ -52,8 +51,8 @@ type TimeZone = {
     MatAutocompleteModule,
     MatFormFieldModule,
     MatSliderModule,
-    MatIconModule,
-  ],
+    MatIconModule
+],
 })
 export class TimeConverterComponent implements OnInit {
   timeZones: TimeZone[] = Intl.supportedValuesOf('timeZone')

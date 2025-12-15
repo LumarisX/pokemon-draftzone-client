@@ -1,7 +1,7 @@
 <div class="p-2 md:p-4">
   <div
     class="p-4 bg-menu-100 rounded shadow-md w-full max-w-lg mx-auto overflow-auto"
-  >
+    >
     <h2 class="text-xl font-bold mb-4">Debugging Information</h2>
     <div class="mb-2">
       <span class="font-semibold">Browser:</span> {{ debugData.browser }}
@@ -26,21 +26,29 @@
     <div class="mb-2">
       <span class="font-semibold">Memory Usage:</span>
       <ul class="list-disc ml-6">
-        <li *ngIf="debugData.memoryUsage.jsHeapSizeLimit !== 'N/A'">
-          JS Heap Size Limit:
-          {{ convertToMB(debugData.memoryUsage.jsHeapSizeLimit) }} MB
-        </li>
-        <li *ngIf="debugData.memoryUsage.totalJSHeapSize !== 'N/A'">
-          Total JS Heap Size:
-          {{ convertToMB(debugData.memoryUsage.totalJSHeapSize) }} MB
-        </li>
-        <li *ngIf="debugData.memoryUsage.usedJSHeapSize !== 'N/A'">
-          Used JS Heap Size:
-          {{ convertToMB(debugData.memoryUsage.usedJSHeapSize) }} MB
-        </li>
-        <li *ngIf="debugData.memoryUsage.jsHeapSizeLimit === 'N/A'">
-          Memory info not available
-        </li>
+        @if (debugData.memoryUsage.jsHeapSizeLimit !== 'N/A') {
+          <li>
+            JS Heap Size Limit:
+            {{ convertToMB(debugData.memoryUsage.jsHeapSizeLimit) }} MB
+          </li>
+        }
+        @if (debugData.memoryUsage.totalJSHeapSize !== 'N/A') {
+          <li>
+            Total JS Heap Size:
+            {{ convertToMB(debugData.memoryUsage.totalJSHeapSize) }} MB
+          </li>
+        }
+        @if (debugData.memoryUsage.usedJSHeapSize !== 'N/A') {
+          <li>
+            Used JS Heap Size:
+            {{ convertToMB(debugData.memoryUsage.usedJSHeapSize) }} MB
+          </li>
+        }
+        @if (debugData.memoryUsage.jsHeapSizeLimit === 'N/A') {
+          <li>
+            Memory info not available
+          </li>
+        }
       </ul>
     </div>
     <div class="mb-4">
@@ -51,7 +59,7 @@
       <div class="font-semibold">Planner:</div>
       <div
         class="shadow-inner p-1 rounded-lg bg-menu-50 max-h-32 max-w-full text-wrap overflow-y-auto"
-      >
+        >
         {{ debugData.localstorage.planner }}
       </div>
     </div>
@@ -59,13 +67,13 @@
       <button
         class="px-4 py-2 bg-aTeam-200 rounded hover:bg-aTeam-300"
         (click)="copyToClipboard()"
-      >
+        >
         Export to Clipboard
       </button>
       <button
         class="px-4 py-2 bg-bTeam-200 rounded hover:bg-bTeam-300"
         (click)="downloadAsTxt()"
-      >
+        >
         Download as .txt
       </button>
     </div>

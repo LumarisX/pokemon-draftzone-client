@@ -2,7 +2,7 @@
   <select
     [(ngModel)]="selectedOption"
     class="border-menu-100 rounded border bg-page"
-  >
+    >
     @for (option of options; track $index) {
       <option [ngValue]="option">
         {{ option.name }}
@@ -12,12 +12,12 @@
 
   @if (
     selectedOption.operations.length > 0 && selectedOption.query !== "boolean"
-  ) {
+    ) {
     <select
       [(ngModel)]="condition.operation"
       (ngModelChange)="onOperationChange()"
       class="border-menu-100 rounded border bg-page"
-    >
+      >
       @for (operation of selectedOption.operations; track $index) {
         <option [ngValue]="operation">
           {{ operation }}
@@ -34,70 +34,72 @@
             [(ngModel)]="queryValue"
             type="text"
             placeholder="Enter text"
-          />
-        }
-        @case ("number") {
-          <input
-            class="border-menu-100 rounded border bg-page"
-            [(ngModel)]="queryValue"
-            type="number"
-            placeholder="Enter number"
-          />
-        }
-        @case ("type") {
-          <select
-            class="border-menu-100 rounded border bg-page"
-            [(ngModel)]="queryValue"
-          >
-            @for (type of typeOptions; track $index) {
-              <option [ngValue]="type">
-                {{ type }}
-              </option>
+            />
+          }
+          @case ("number") {
+            <input
+              class="border-menu-100 rounded border bg-page"
+              [(ngModel)]="queryValue"
+              type="number"
+              placeholder="Enter number"
+              />
             }
-          </select>
-        }
-        @case ("eggs") {
-          <select
-            class="border-menu-100 rounded border bg-page"
-            [(ngModel)]="queryValue"
-          >
-            @for (group of eggGroups; track $index) {
-              <option [ngValue]="group">
-                {{ group }}
-              </option>
+            @case ("type") {
+              <select
+                class="border-menu-100 rounded border bg-page"
+                [(ngModel)]="queryValue"
+                >
+                @for (type of typeOptions; track $index) {
+                  <option [ngValue]="type">
+                    {{ type }}
+                  </option>
+                }
+              </select>
             }
-          </select>
-        }
-        @case ("tier") {
-          <select
-            class="border-menu-100 rounded border bg-page"
-            [(ngModel)]="queryValue"
-          >
-            @for (tier of tiers; track $index) {
-              <option [ngValue]="tier">
-                {{ tier }}
-              </option>
+            @case ("eggs") {
+              <select
+                class="border-menu-100 rounded border bg-page"
+                [(ngModel)]="queryValue"
+                >
+                @for (group of eggGroups; track $index) {
+                  <option [ngValue]="group">
+                    {{ group }}
+                  </option>
+                }
+              </select>
             }
-          </select>
+            @case ("tier") {
+              <select
+                class="border-menu-100 rounded border bg-page"
+                [(ngModel)]="queryValue"
+                >
+                @for (tier of tiers; track $index) {
+                  <option [ngValue]="tier">
+                    {{ tier }}
+                  </option>
+                }
+              </select>
+            }
+            @case ("evolves") {
+              <select
+                class="border-menu-100 rounded border bg-page"
+                [(ngModel)]="queryValue"
+                >
+                @for (option of evolveOptions; track option) {
+                  <option [ngValue]="option">
+                    {{ option }}
+                  </option>
+                }
+              </select>
+            }
+            @case ("boolean") {
+              <input
+                class="border-menu-100 rounded border bg-page"
+                [(ngModel)]="queryValue"
+                type="checkbox"
+                />
+              }
+            }
+          </div>
         }
-        @case ("evolves") {
-          <select
-            class="border-menu-100 rounded border bg-page"
-            [(ngModel)]="queryValue"
-          >
-            <option *ngFor="let option of evolveOptions" [ngValue]="option">
-              {{ option }}
-            </option>
-          </select>
-        }
-        @case ("boolean") {
-          <input
-            class="border-menu-100 rounded border bg-page"
-            [(ngModel)]="queryValue"
-            type="checkbox"
-          />
-        }
-      }
-    </div>
-  }
-</div>
+      </div>

@@ -8,278 +8,304 @@
           type="checkbox"
           class="form-checkbox rounded"
           [(ngModel)]="advancedMode"
-        />
-      </div>
+          />
+        </div>
 
-      @if (!advancedMode) {
-        <div class="space-y-4">
-          <div>
-            <div
-              class="p-4 border-2 border-menu-300 rounded-lg bg-page space-y-2"
-            >
-              <div class="flex items-center justify-between">
-                <select
-                  id="conjunction"
-                  [(ngModel)]="queryGroups[0].conjunction"
-                  class="rounded border border-menu-300 bg-menu-100"
-                >
-                  <option value=" && ">All</option>
-                  <option value=" || ">Any</option>
-                </select>
-              </div>
+        @if (!advancedMode) {
+          <div class="space-y-4">
+            <div>
               <div
-                *ngFor="let query of queryGroups[0].queries; let i = index"
-                class="flex items-center space-x-2"
-              >
-                <find-option
-                  [condition]="query"
-                  (queryChange)="onQueryChange(query, $event)"
-                ></find-option>
-                <button
-                  (click)="removeQueryBuilder(queryGroups[0], i)"
-                  class="border border-red-400 bg-red-100 text-red-500 hover:bg-red-200 px-2 py-1 rounded"
+                class="p-4 border-2 border-menu-300 rounded-lg bg-page space-y-2"
                 >
-                  -
-                </button>
-              </div>
-
-              <button
-                (click)="addQueryBuilder(queryGroups[0])"
-                class="border border-blue-400 bg-blue-100 text-blue-500 hover:bg-blue-200 px-4 py-2 rounded"
-              >
-                Add Condition
-              </button>
-            </div>
-            @for (group of queryGroups.slice(1); track $index) {
-              <div>
-                <p class="p-2 font-semibold">AND</p>
-                <div
-                  class="p-4 border-2 border-menu-300 rounded-lg bg-page space-y-2"
-                >
-                  <div class="flex items-center justify-between">
-                    <select
-                      id="conjunction"
-                      [(ngModel)]="group.conjunction"
-                      class="form-select rounded border border-menu-300 bg-menu-100"
+                <div class="flex items-center justify-between">
+                  <select
+                    id="conjunction"
+                    [(ngModel)]="queryGroups[0].conjunction"
+                    class="rounded border border-menu-300 bg-menu-100"
                     >
-                      <option value=" && ">All</option>
-                      <option value=" || ">Any</option>
-                    </select>
+                    <option value=" && ">All</option>
+                    <option value=" || ">Any</option>
+                  </select>
+                </div>
+                @for (query of queryGroups[0].queries; track query; let i = $index) {
+                  <div
+                    class="flex items-center space-x-2"
+                    >
+                    <find-option
+                      [condition]="query"
+                      (queryChange)="onQueryChange(query, $event)"
+                    ></find-option>
                     <button
-                      (click)="removeQueryGroup($index + 1)"
+                      (click)="removeQueryBuilder(queryGroups[0], i)"
                       class="border border-red-400 bg-red-100 text-red-500 hover:bg-red-200 px-2 py-1 rounded"
-                    >
-                      Remove
+                      >
+                      -
                     </button>
                   </div>
-                  @for (query of group.queries; track $index) {
-                    <div class="flex items-center space-x-2">
-                      <find-option
-                        [condition]="query"
-                        (queryChange)="onQueryChange(query, $event)"
-                      ></find-option>
+                }
+
+                <button
+                  (click)="addQueryBuilder(queryGroups[0])"
+                  class="border border-blue-400 bg-blue-100 text-blue-500 hover:bg-blue-200 px-4 py-2 rounded"
+                  >
+                  Add Condition
+                </button>
+              </div>
+              @for (group of queryGroups.slice(1); track $index) {
+                <div>
+                  <p class="p-2 font-semibold">AND</p>
+                  <div
+                    class="p-4 border-2 border-menu-300 rounded-lg bg-page space-y-2"
+                    >
+                    <div class="flex items-center justify-between">
+                      <select
+                        id="conjunction"
+                        [(ngModel)]="group.conjunction"
+                        class="form-select rounded border border-menu-300 bg-menu-100"
+                        >
+                        <option value=" && ">All</option>
+                        <option value=" || ">Any</option>
+                      </select>
                       <button
-                        (click)="removeQueryBuilder(group, $index)"
+                        (click)="removeQueryGroup($index + 1)"
                         class="border border-red-400 bg-red-100 text-red-500 hover:bg-red-200 px-2 py-1 rounded"
-                      >
-                        -
+                        >
+                        Remove
                       </button>
                     </div>
-                  }
-                  <button
-                    (click)="addQueryBuilder(group)"
-                    class="border border-blue-400 bg-blue-100 text-blue-500 hover:bg-blue-200 px-4 py-2 rounded"
-                  >
-                    Add Condition
-                  </button>
+                    @for (query of group.queries; track $index) {
+                      <div class="flex items-center space-x-2">
+                        <find-option
+                          [condition]="query"
+                          (queryChange)="onQueryChange(query, $event)"
+                        ></find-option>
+                        <button
+                          (click)="removeQueryBuilder(group, $index)"
+                          class="border border-red-400 bg-red-100 text-red-500 hover:bg-red-200 px-2 py-1 rounded"
+                          >
+                          -
+                        </button>
+                      </div>
+                    }
+                    <button
+                      (click)="addQueryBuilder(group)"
+                      class="border border-blue-400 bg-blue-100 text-blue-500 hover:bg-blue-200 px-4 py-2 rounded"
+                      >
+                      Add Condition
+                    </button>
+                  </div>
                 </div>
-              </div>
-            }
+              }
+            </div>
+            <div class="flex w-full">
+              <button
+                (click)="addQueryGroup()"
+                class="border border-green-400 bg-green-100 text-green-500 hover:bg-green-200 px-4 py-2 rounded"
+                >
+                Add Group
+              </button>
+              <div class="flex flex-grow"></div>
+              <button
+                class="border border-menu-400 bg-menu-100 hover:bg-menu-200 px-4 py-2 rounded"
+                (click)="find()"
+                >
+                Find
+              </button>
+            </div>
           </div>
-          <div class="flex w-full">
-            <button
-              (click)="addQueryGroup()"
-              class="border border-green-400 bg-green-100 text-green-500 hover:bg-green-200 px-4 py-2 rounded"
-            >
-              Add Group
-            </button>
-            <div class="flex flex-grow"></div>
+        }
+
+        @if (advancedMode) {
+          <div class="space-y-4">
+            <div>
+              <textarea
+                class="text-wrap p-1 w-full border-2 border-menu-300 rounded-lg"
+                placeholder="Enter advanced query"
+                [(ngModel)]="finalQuery"
+                >
+              </textarea>
+            </div>
             <button
               class="border border-menu-400 bg-menu-100 hover:bg-menu-200 px-4 py-2 rounded"
               (click)="find()"
-            >
+              >
               Find
             </button>
           </div>
-        </div>
-      }
-
-      @if (advancedMode) {
-        <div class="space-y-4">
-          <div>
-            <textarea
-              class="text-wrap p-1 w-full border-2 border-menu-300 rounded-lg"
-              placeholder="Enter advanced query"
-              [(ngModel)]="finalQuery"
-            >
-            </textarea>
-          </div>
-          <button
-            class="border border-menu-400 bg-menu-100 hover:bg-menu-200 px-4 py-2 rounded"
-            (click)="find()"
-          >
-            Find
-          </button>
-        </div>
-      }
+        }
+      </div>
     </div>
-  </div>
 
-  <div class="px-4 text-right font-semibold text-menu-600">
-    Total Results: {{ results.length }}
-  </div>
+    <div class="px-4 text-right font-semibold text-menu-600">
+      Total Results: {{ results.length }}
+    </div>
 
-  <div class="overflow-x-auto">
-    <table class="min-w-full bg-page border border-menu-200 rounded-lg">
-      <thead class="bg-menu-100 border-b border-menu-200">
-        <tr>
-          <th></th>
-          <th
-            class="p-2 cursor-pointer hover:bg-menu-200"
-            (click)="sortBy('name')"
-          >
-            Name
-            <span *ngIf="sortedColumn === 'name'">
-              {{ reversed ? "↥" : "↧" }}
-            </span>
-          </th>
-          <th class="p-2">Types</th>
-          <th class="p-2">Abilities</th>
-          <th
-            class="p-2 cursor-pointer hover:bg-menu-200"
-            (click)="sortBy('num')"
-          >
-            Num
-            <span *ngIf="sortedColumn === 'num'">
-              {{ reversed ? "↥" : "↧" }}
-            </span>
-          </th>
-          <th
-            class="p-2 cursor-pointer hover:bg-menu-200"
-            (click)="sortBy('hp')"
-          >
-            HP
-            <span *ngIf="sortedColumn === 'hp'">
-              {{ reversed ? "↧" : "↥" }}
-            </span>
-          </th>
-          <th
-            class="p-2 cursor-pointer hover:bg-menu-200"
-            (click)="sortBy('atk')"
-          >
-            Attack
-            <span *ngIf="sortedColumn === 'atk'">
-              {{ reversed ? "↧" : "↥" }}
-            </span>
-          </th>
-          <th
-            class="p-2 cursor-pointer hover:bg-menu-200"
-            (click)="sortBy('def')"
-          >
-            Defense
-            <span *ngIf="sortedColumn === 'def'">
-              {{ reversed ? "↧" : "↥" }}
-            </span>
-          </th>
-          <th
-            class="p-2 cursor-pointer hover:bg-menu-200"
-            (click)="sortBy('spa')"
-          >
-            Sp. Attack
-            <span *ngIf="sortedColumn === 'spa'">
-              {{ reversed ? "↧" : "↥" }}
-            </span>
-          </th>
-          <th
-            class="p-2 cursor-pointer hover:bg-menu-200"
-            (click)="sortBy('spd')"
-          >
-            Sp. Defense
-            <span *ngIf="sortedColumn === 'spd'">
-              {{ reversed ? "↧" : "↥" }}
-            </span>
-          </th>
-          <th
-            class="p-2 cursor-pointer hover:bg-menu-200"
-            (click)="sortBy('spe')"
-          >
-            Speed
-            <span *ngIf="sortedColumn === 'spe'">
-              {{ reversed ? "↧" : "↥" }}
-            </span>
-          </th>
-          <th
-            class="p-2 cursor-pointer hover:bg-menu-200"
-            (click)="sortBy('bst')"
-          >
-            BST
-            <span *ngIf="sortedColumn === 'bst'">
-              {{ reversed ? "↧" : "↥" }}
-            </span>
-          </th>
-          <th
-            class="p-2 cursor-pointer hover:bg-menu-200"
-            (click)="sortBy('weightkg')"
-          >
-            Weight (Kg)
-            <span *ngIf="sortedColumn === 'weightkg'">
-              {{ reversed ? "↥" : "↧" }}
-            </span>
-          </th>
-        </tr>
-      </thead>
+    <div class="overflow-x-auto">
+      <table class="min-w-full bg-page border border-menu-200 rounded-lg">
+        <thead class="bg-menu-100 border-b border-menu-200">
+          <tr>
+            <th></th>
+            <th
+              class="p-2 cursor-pointer hover:bg-menu-200"
+              (click)="sortBy('name')"
+              >
+              Name
+              @if (sortedColumn === 'name') {
+                <span>
+                  {{ reversed ? "↥" : "↧" }}
+                </span>
+              }
+            </th>
+            <th class="p-2">Types</th>
+            <th class="p-2">Abilities</th>
+            <th
+              class="p-2 cursor-pointer hover:bg-menu-200"
+              (click)="sortBy('num')"
+              >
+              Num
+              @if (sortedColumn === 'num') {
+                <span>
+                  {{ reversed ? "↥" : "↧" }}
+                </span>
+              }
+            </th>
+            <th
+              class="p-2 cursor-pointer hover:bg-menu-200"
+              (click)="sortBy('hp')"
+              >
+              HP
+              @if (sortedColumn === 'hp') {
+                <span>
+                  {{ reversed ? "↧" : "↥" }}
+                </span>
+              }
+            </th>
+            <th
+              class="p-2 cursor-pointer hover:bg-menu-200"
+              (click)="sortBy('atk')"
+              >
+              Attack
+              @if (sortedColumn === 'atk') {
+                <span>
+                  {{ reversed ? "↧" : "↥" }}
+                </span>
+              }
+            </th>
+            <th
+              class="p-2 cursor-pointer hover:bg-menu-200"
+              (click)="sortBy('def')"
+              >
+              Defense
+              @if (sortedColumn === 'def') {
+                <span>
+                  {{ reversed ? "↧" : "↥" }}
+                </span>
+              }
+            </th>
+            <th
+              class="p-2 cursor-pointer hover:bg-menu-200"
+              (click)="sortBy('spa')"
+              >
+              Sp. Attack
+              @if (sortedColumn === 'spa') {
+                <span>
+                  {{ reversed ? "↧" : "↥" }}
+                </span>
+              }
+            </th>
+            <th
+              class="p-2 cursor-pointer hover:bg-menu-200"
+              (click)="sortBy('spd')"
+              >
+              Sp. Defense
+              @if (sortedColumn === 'spd') {
+                <span>
+                  {{ reversed ? "↧" : "↥" }}
+                </span>
+              }
+            </th>
+            <th
+              class="p-2 cursor-pointer hover:bg-menu-200"
+              (click)="sortBy('spe')"
+              >
+              Speed
+              @if (sortedColumn === 'spe') {
+                <span>
+                  {{ reversed ? "↧" : "↥" }}
+                </span>
+              }
+            </th>
+            <th
+              class="p-2 cursor-pointer hover:bg-menu-200"
+              (click)="sortBy('bst')"
+              >
+              BST
+              @if (sortedColumn === 'bst') {
+                <span>
+                  {{ reversed ? "↧" : "↥" }}
+                </span>
+              }
+            </th>
+            <th
+              class="p-2 cursor-pointer hover:bg-menu-200"
+              (click)="sortBy('weightkg')"
+              >
+              Weight (Kg)
+              @if (sortedColumn === 'weightkg') {
+                <span>
+                  {{ reversed ? "↥" : "↧" }}
+                </span>
+              }
+            </th>
+          </tr>
+        </thead>
 
-      <tbody>
-        <tr
-          *ngFor="let pokemon of results"
-          class="border-b border-menu-200 hover:bg-menu-100"
-        >
-          <td class="p-2 flex justify-center">
-            <div class="max-w-20 min-w-10">
-              <pdz-sprite
-                [flipped]="true"
-                [pokemon]="{ id: pokemon.id, name: pokemon.name }"
-              ></pdz-sprite>
-            </div>
-          </td>
-          <td class="p-2 text-center">{{ pokemon.name }}</td>
-          <td class="p-2">
-            <div class="flex flex-col items-center justify-center">
-              <div *ngFor="let type of pokemon.types">
-                <img
-                  src="../../../../assets/icons/types/{{ type }}.png"
-                  onerror="this.src='../../../../assets/icons/types/Unknown.png'"
-                  alt="{{ type }}"
-                />
-              </div>
-            </div>
-          </td>
-          <td class="p-2">
-            <div *ngFor="let ability of pokemon.abilities" class="text-center">
-              {{ ability }}
-            </div>
-          </td>
-          <td class="p-2 text-center">{{ pokemon.num }}</td>
-          <td class="p-2 text-center">{{ pokemon.baseStats.hp }}</td>
-          <td class="p-2 text-center">{{ pokemon.baseStats.atk }}</td>
-          <td class="p-2 text-center">{{ pokemon.baseStats.def }}</td>
-          <td class="p-2 text-center">{{ pokemon.baseStats.spa }}</td>
-          <td class="p-2 text-center">{{ pokemon.baseStats.spd }}</td>
-          <td class="p-2 text-center">{{ pokemon.baseStats.spe }}</td>
-          <td class="p-2 text-center">{{ pokemon.bst }}</td>
-          <td class="p-2 text-center">{{ pokemon.weightkg }}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</div>
+        <tbody>
+          @for (pokemon of results; track pokemon) {
+            <tr
+              class="border-b border-menu-200 hover:bg-menu-100"
+              >
+              <td class="p-2 flex justify-center">
+                <div class="max-w-20 min-w-10">
+                  <pdz-sprite
+                    [flipped]="true"
+                    [pokemon]="{ id: pokemon.id, name: pokemon.name }"
+                  ></pdz-sprite>
+                </div>
+              </td>
+              <td class="p-2 text-center">{{ pokemon.name }}</td>
+              <td class="p-2">
+                <div class="flex flex-col items-center justify-center">
+                  @for (type of pokemon.types; track type) {
+                    <div>
+                      <img
+                        src="../../../../assets/icons/types/{{ type }}.png"
+                        onerror="this.src='../../../../assets/icons/types/Unknown.png'"
+                        alt="{{ type }}"
+                        />
+                      </div>
+                    }
+                  </div>
+                </td>
+                <td class="p-2">
+                  @for (ability of pokemon.abilities; track ability) {
+                    <div class="text-center">
+                      {{ ability }}
+                    </div>
+                  }
+                </td>
+                <td class="p-2 text-center">{{ pokemon.num }}</td>
+                <td class="p-2 text-center">{{ pokemon.baseStats.hp }}</td>
+                <td class="p-2 text-center">{{ pokemon.baseStats.atk }}</td>
+                <td class="p-2 text-center">{{ pokemon.baseStats.def }}</td>
+                <td class="p-2 text-center">{{ pokemon.baseStats.spa }}</td>
+                <td class="p-2 text-center">{{ pokemon.baseStats.spd }}</td>
+                <td class="p-2 text-center">{{ pokemon.baseStats.spe }}</td>
+                <td class="p-2 text-center">{{ pokemon.bst }}</td>
+                <td class="p-2 text-center">{{ pokemon.weightkg }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>

@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, OnInit, inject } from '@angular/core';
 import {
   FormBuilder,
@@ -40,7 +40,6 @@ export interface PokemonEditDialogData {
   selector: 'pdz-pokemon-edit-dialog',
   standalone: true,
   imports: [
-    CommonModule,
     MatDialogModule,
     MatButtonModule,
     ReactiveFormsModule,
@@ -50,8 +49,8 @@ export interface PokemonEditDialogData {
     MatIconModule,
     SpriteComponent,
     SlideToggleComponent,
-    MatCheckboxModule,
-  ],
+    MatCheckboxModule
+],
   templateUrl: './pokemon-edit-dialog.component.html',
   styleUrls: ['./pokemon-edit-dialog.component.scss'],
 })

@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
@@ -15,12 +15,11 @@ type FilterStatus = 'All' | 'Pending' | 'Approved' | 'Denied';
   styleUrls: ['./league-manage.component.scss'],
   standalone: true,
   imports: [
-    CommonModule,
     FormsModule,
     RouterModule,
     MatIconModule,
-    LeagueAdComponent,
-  ],
+    LeagueAdComponent
+],
 })
 export class LeagueManageComponent implements OnInit {
   private leagueService = inject(LeagueAdsService);

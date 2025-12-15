@@ -1,12 +1,22 @@
-import { CommonModule } from '@angular/common';
-import { Component, ElementRef, EventEmitter, forwardRef, HostBinding, HostListener, Input, Output, Renderer2, inject } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  forwardRef,
+  HostBinding,
+  HostListener,
+  Input,
+  Output,
+  Renderer2,
+  inject,
+} from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'pdz-slide-toggle',
   standalone: true,
-  imports: [CommonModule, MatIconModule],
+  imports: [MatIconModule],
   templateUrl: './slide-toggle.component.html',
   styleUrls: ['./slide-toggle.component.scss'],
   providers: [
@@ -72,7 +82,7 @@ export class SlideToggleComponent implements ControlValueAccessor {
   }
 
   @HostListener('keydown.space', ['$event'])
-  handleKeydown(event: KeyboardEvent): void {
+  handleKeydown(event: Event): void {
     event.preventDefault();
     this.toggle();
   }

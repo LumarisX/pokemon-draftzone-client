@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import {
   AfterViewInit,
   ChangeDetectorRef,
@@ -72,7 +72,7 @@ type ColorPalette = Config & {
 
 @Component({
   selector: 'pdz-color-box',
-  imports: [CommonModule, MatIconModule],
+  imports: [MatIconModule],
   templateUrl: './color-box.component.html',
   styleUrl: './color-box.component.scss',
 })

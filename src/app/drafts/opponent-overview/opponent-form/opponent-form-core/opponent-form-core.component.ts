@@ -1,5 +1,5 @@
 import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
-import { CommonModule } from '@angular/common';
+
 import {
   Component,
   EventEmitter,
@@ -37,7 +37,6 @@ import { DraftService } from '../../../../services/draft.service';
   selector: 'opponent-form-core',
   standalone: true,
   imports: [
-    CommonModule,
     RouterModule,
     ReactiveFormsModule,
     MatInputModule,
@@ -45,8 +44,8 @@ import { DraftService } from '../../../../services/draft.service';
     MatDividerModule,
     MatStepperModule,
     MatIconModule,
-    TeamFormComponent,
-  ],
+    TeamFormComponent
+],
   providers: [
     {
       provide: STEPPER_GLOBAL_OPTIONS,

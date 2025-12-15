@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, Input, OnInit, inject } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -17,13 +17,12 @@ import { Draft } from '../../../interfaces/draft';
   selector: 'opponent-form',
   standalone: true,
   imports: [
-    CommonModule,
     RouterModule,
     OpponentFormCoreComponent,
     ReactiveFormsModule,
     MatButtonModule,
-    LoadingComponent,
-  ],
+    LoadingComponent
+],
   styleUrl: './opponent-form.component.scss',
   templateUrl: './opponent-form.component.html',
 })

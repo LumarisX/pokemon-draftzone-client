@@ -1,5 +1,5 @@
 import { OverlayModule } from '@angular/cdk/overlay';
-import { CommonModule } from '@angular/common';
+
 import {
   Component,
   ElementRef,
@@ -29,7 +29,6 @@ dayjs.extend(duration);
   templateUrl: 'matchup-overview.component.html',
   styleUrls: ['./matchup.scss', './matchup-overview.component.scss'],
   imports: [
-    CommonModule,
     LoadingComponent,
     MatchupComponent,
     RouterModule,
@@ -37,8 +36,8 @@ dayjs.extend(duration);
     OverlayModule,
     MatIconModule,
     SpriteComponent,
-    MatchupTeambuilderComponent,
-  ],
+    MatchupTeambuilderComponent
+],
 })
 export class MatchupOverviewComponent implements OnInit {
   private route = inject(ActivatedRoute);

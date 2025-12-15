@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, Input } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
@@ -12,14 +12,13 @@ import { SwapOpponentButton } from '../../../../util/buttons/swap-opponent/swap-
   templateUrl: './typechart.component.html',
   styleUrls: ['./typechart.component.scss', '../../matchup.scss'],
   imports: [
-    CommonModule,
     FormsModule,
     ReactiveFormsModule,
     MatSlideToggleModule,
     TypechartCoreComponent,
     TypestatsCoreComponent,
-    SwapOpponentButton,
-  ],
+    SwapOpponentButton
+],
 })
 export class TypechartComponent {
   @Input()

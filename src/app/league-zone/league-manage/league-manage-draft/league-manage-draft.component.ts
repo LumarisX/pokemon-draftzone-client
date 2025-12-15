@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -22,14 +22,13 @@ type TeamForDraft = LeagueTeam & { selectedPokemon?: Pokemon | null };
 @Component({
   selector: 'pdz-league-manage-draft',
   imports: [
-    CommonModule,
     PokemonSelectComponent,
     FormsModule,
     SpriteComponent,
     MatButtonModule,
     MatIconModule,
-    LeagueNotificationsComponent,
-  ],
+    LeagueNotificationsComponent
+],
   templateUrl: './league-manage-draft.component.html',
   styleUrl: './league-manage-draft.component.scss',
   standalone: true,

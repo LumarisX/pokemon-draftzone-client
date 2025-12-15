@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, input, Input } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { MatchupData } from '../matchup-interface';
@@ -15,7 +15,6 @@ import { MatchupNotesComponent } from '../widgets/notes/notes.component';
   templateUrl: './matchup.component.html',
   styleUrl: './matchup.component.scss',
   imports: [
-    CommonModule,
     RouterModule,
     SummaryComponent,
     TypechartComponent,
@@ -23,8 +22,8 @@ import { MatchupNotesComponent } from '../widgets/notes/notes.component';
     SpeedchartComponent,
     CoveragechartComponent,
     OverviewComponent,
-    MatchupNotesComponent,
-  ],
+    MatchupNotesComponent
+],
 })
 export class MatchupComponent {
   @Input({ required: true }) matchupData!: MatchupData;

@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, HostBinding, Input } from '@angular/core';
 import { SpriteComponent } from '../../../../../images/sprite/sprite.component';
 import { Speedtier } from '../../../matchup-interface';
@@ -7,7 +7,7 @@ import { Speedtier } from '../../../matchup-interface';
   selector: 'speedtier',
   templateUrl: './speedtier.component.html',
   styleUrl: './speedtier.component.scss',
-  imports: [CommonModule, SpriteComponent],
+  imports: [SpriteComponent],
   standalone: true,
 })
 export class SpeedtierComponent {

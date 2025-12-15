@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, OnInit } from '@angular/core';
 import {
   QDPokemon,
@@ -13,11 +13,10 @@ import { QuickDraftFinalComponent } from './quick-draft-final/quick-draft-final.
 @Component({
   selector: 'pdz-quick-draft',
   imports: [
-    CommonModule,
     QuickDraftSettingComponent,
     QuickDraftPicksComponent,
-    QuickDraftFinalComponent,
-  ],
+    QuickDraftFinalComponent
+],
   templateUrl: './quick-draft.component.html',
   styleUrl: './quick-draft.component.scss',
 })

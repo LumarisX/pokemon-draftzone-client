@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -21,7 +21,7 @@ dayjs.extend(advancedFormat);
   selector: 'opponent-schedule',
   standalone: true,
   templateUrl: './opponent-schedule.component.html',
-  imports: [CommonModule, RouterModule, FormsModule, CopySVG, CheckSVG],
+  imports: [RouterModule, FormsModule, CopySVG, CheckSVG],
 })
 export class OpponentSchedule implements OnInit {
   private route = inject(ActivatedRoute);

@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -16,12 +16,11 @@ import {
   standalone: true,
   styleUrl: `./rules.component.scss`,
   imports: [
-    CommonModule,
     MatButtonModule,
     MatExpansionModule,
     RouterModule,
-    MarkdownModule,
-  ],
+    MarkdownModule
+],
 })
 export class LeagueRulesComponent implements OnInit {
   leagueService = inject(LeagueZoneService);

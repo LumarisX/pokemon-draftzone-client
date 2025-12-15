@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DataService } from '../../services/data.service';
@@ -11,7 +11,7 @@ import { RouterModule } from '@angular/router';
   selector: 'random-draft',
   standalone: true,
   templateUrl: './random-draft.component.html',
-  imports: [CommonModule, SpriteComponent, RouterModule, FormsModule],
+  imports: [SpriteComponent, RouterModule, FormsModule],
 })
 export class RandomDraftComponent {
   private dataService = inject(DataService);

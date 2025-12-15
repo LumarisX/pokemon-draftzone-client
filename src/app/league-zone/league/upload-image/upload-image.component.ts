@@ -1,6 +1,6 @@
 import { Overlay, OverlayConfig, OverlayRef } from '@angular/cdk/overlay';
 import { ComponentPortal } from '@angular/cdk/portal';
-import { CommonModule } from '@angular/common';
+
 import { HttpEventType, HttpResponse } from '@angular/common/http';
 import {
   Component,
@@ -34,12 +34,11 @@ import {
   selector: 'pdz-upload-image',
   standalone: true,
   imports: [
-    CommonModule,
     HostedImageComponent,
     MatButtonModule,
     MatIconModule,
-    MatProgressBarModule,
-  ],
+    MatProgressBarModule
+],
   templateUrl: './upload-image.component.html',
   styleUrls: ['./upload-image.component.scss'],
 })

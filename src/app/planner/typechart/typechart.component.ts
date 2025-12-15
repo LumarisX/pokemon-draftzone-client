@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, Input, ViewChild } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
@@ -12,13 +12,12 @@ import { TypestatsCoreComponent } from '../../util/matchup/typechart/typestats-c
   templateUrl: './typechart.component.html',
   styleUrl: './typechart.component.scss',
   imports: [
-    CommonModule,
     FormsModule,
     ReactiveFormsModule,
     MatSlideToggleModule,
     TypechartCoreComponent,
-    TypestatsCoreComponent,
-  ],
+    TypestatsCoreComponent
+],
 })
 export class PlannerTypechartComponent {
   @Input()

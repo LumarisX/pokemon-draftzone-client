@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import {
   Component,
   HostListener,
@@ -23,13 +23,12 @@ import {
 @Component({
   selector: 'pdz-matchup-notes',
   imports: [
-    CommonModule,
     FormsModule,
     ReactiveFormsModule,
     MatSlideToggleModule,
     MatIcon,
-    MarkdownComponent,
-  ],
+    MarkdownComponent
+],
   templateUrl: './notes.component.html',
   styleUrls: ['../../matchup.scss', './notes.component.scss'],
 })

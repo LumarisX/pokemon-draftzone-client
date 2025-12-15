@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
@@ -16,7 +16,7 @@ interface Developer {
 @Component({
   selector: 'supporters',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [RouterModule],
   templateUrl: './supporters.component.html',
   styleUrl: './supporters.component.scss',
 })

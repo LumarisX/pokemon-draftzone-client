@@ -1,5 +1,5 @@
 import { OverlayRef } from '@angular/cdk/overlay';
-import { CommonModule } from '@angular/common';
+
 import { Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { InjectionToken } from '@angular/core';
@@ -16,7 +16,7 @@ export interface FilePreviewData {
 
 @Component({
   selector: 'pdz-file-upload-preview',
-  imports: [CommonModule, MatCardModule, MatButtonModule, MatIconModule],
+  imports: [MatCardModule, MatButtonModule, MatIconModule],
   templateUrl: './file-upload-preview.component.html',
   styleUrls: ['./file-upload-preview.component.scss'], // Changed styleUrl to styleUrls
 })
