@@ -1,3 +1,9 @@
+:host {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+}
+
 td {
   text-align: center;
 }
@@ -85,4 +91,13 @@ table {
 
 .pokemon-label {
   font-weight: 600;
+}
+
+.cdk-footer-cell {
+  div {
+    min-height: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 }
