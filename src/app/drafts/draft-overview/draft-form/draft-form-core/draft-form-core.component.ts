@@ -1,5 +1,5 @@
 import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
-import { CommonModule } from '@angular/common';
+
 import {
   Component,
   EventEmitter,
@@ -38,7 +38,6 @@ import { RulesetSelectComponent } from '../../../../util/ruleset-select/ruleset.
   selector: 'draft-form-core',
   standalone: true,
   imports: [
-    CommonModule,
     RouterModule,
     ReactiveFormsModule,
     MatInputModule,
@@ -48,8 +47,8 @@ import { RulesetSelectComponent } from '../../../../util/ruleset-select/ruleset.
     MatIconModule,
     FormatSelectComponent,
     TeamFormComponent,
-    RulesetSelectComponent,
-  ],
+    RulesetSelectComponent
+],
   providers: [
     {
       provide: STEPPER_GLOBAL_OPTIONS,

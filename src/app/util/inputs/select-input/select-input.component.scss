@@ -1,0 +1,42 @@
+@use "../../../../styles/global.scss" as *;
+@use "../../../../styles/mixins" as *;
+
+.select-input-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pdz-space-xs);
+}
+
+.select-label {
+  display: block;
+  @include apply-typography(label-medium);
+  font-weight: var(--pdz-font-weight-bold);
+  color: pdz-color(menu-darker);
+}
+
+.select-element {
+  width: 100%;
+  padding: var(--pdz-space-sm);
+  background-color: pdz-color(surface);
+  color: pdz-color(on-surface);
+  border: 1px solid pdz-color(outline);
+  border-radius: var(--pdz-shape-corner-sm);
+  @include apply-typography(body-medium);
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: pdz-color(primary);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: pdz-color(primary);
+    box-shadow: 0 0 0 2px pdz-color(primary-subtle);
+  }
+
+  option {
+    background-color: pdz-color(surface);
+    color: pdz-color(on-surface);
+  }
+}

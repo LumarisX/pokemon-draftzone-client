@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -29,7 +29,7 @@ type Conditional = {
   selector: 'find-option',
   standalone: true,
   templateUrl: './find-option.component.html',
-  imports: [CommonModule, RouterModule, FormsModule, ReactiveFormsModule],
+  imports: [RouterModule, FormsModule, ReactiveFormsModule],
 })
 export class FindOptionComponent {
   @Output() queryChange = new EventEmitter<Conditional>();

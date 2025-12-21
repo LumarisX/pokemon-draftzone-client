@@ -1,10 +1,10 @@
-import { CommonModule } from '@angular/common'; // Needed for [src], [alt] etc. if standalone
+ // Needed for [src], [alt] etc. if standalone
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'pdz-hosted-image',
-  imports: [CommonModule],
+  imports: [],
   template: `<img
     [src]="hasError ? fallbackImageUrl : imageUrl"
     [alt]="effectiveAlt"

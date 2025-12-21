@@ -1,0 +1,146 @@
+@use "../../../styles/global.scss" as *;
+@use "../../../styles/_mixins.scss" as *;
+@use "../../../styles/mixins/_buttons.scss" as *;
+
+:host {
+  display: block;
+  padding: var(--pdz-space-lg);
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--pdz-space-lg);
+
+  &__title {
+    @include apply-typography(headline-large);
+  }
+
+  &__actions {
+    display: flex;
+    gap: var(--pdz-space-md);
+    align-items: center;
+  }
+
+  &__left {
+    display: flex;
+    gap: 1rem;
+  }
+}
+
+.add-league-btn {
+  @include icon-button-menu(
+    (
+      width: 2.5rem,
+      height: 2.5rem,
+    )
+  );
+}
+
+.back-btn {
+  @include flat-button-menu(
+    (
+      height: 2.5rem,
+    )
+  );
+}
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--pdz-space-lg);
+  flex-wrap: wrap;
+  gap: var(--pdz-space-md);
+
+  &__results {
+    @include apply-typography(body-medium);
+    color: pdz-color(on-surface-variant);
+  }
+
+  &__controls {
+    display: flex;
+    gap: var(--pdz-space-sm);
+    align-items: center;
+    flex-wrap: wrap;
+  }
+}
+
+.filter-btn {
+  @include flat-button-menu(
+    (
+      padding: var(--pdz-space-xs) var(--pdz-space-md),
+    )
+  );
+  font-size: 0.875rem;
+
+  // &.selected {
+  // }
+
+  &.filter-pending {
+    background-color: pdz-color(warning-container);
+    color: pdz-color(on-warning-container);
+
+    &:hover {
+      background-color: pdz-color(warning);
+      color: pdz-color(on-warning);
+    }
+  }
+
+  &.filter-approved {
+    background-color: pdz-color(success-container);
+    color: pdz-color(on-success-container);
+
+    &:hover {
+      background-color: pdz-color(success);
+      color: pdz-color(on-success);
+    }
+  }
+
+  &.filter-denied {
+    background-color: pdz-color(error-container);
+    color: pdz-color(on-error-container);
+
+    &:hover {
+      background-color: pdz-color(error);
+      color: pdz-color(on-error);
+    }
+  }
+}
+
+.leagues-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
+  gap: var(--pdz-space-lg);
+
+  @include respond-above(medium) {
+    grid-template-columns: repeat(auto-fill, minmax(22rem, 1fr));
+  }
+
+  @include respond-above(large) {
+    grid-template-columns: repeat(auto-fill, minmax(24rem, 1fr));
+  }
+}
+
+.empty-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: var(--pdz-space-2xl) var(--pdz-space-lg);
+  text-align: center;
+
+  &__message {
+    @include apply-typography(body-large);
+    color: pdz-color(on-surface-variant);
+  }
+
+  &__link {
+    color: pdz-color(primary);
+    text-decoration: underline;
+
+    &:hover {
+      color: pdz-color(primary-hover);
+    }
+  }
+}

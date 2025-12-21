@@ -1,11 +1,11 @@
-import { CommonModule, Location } from '@angular/common';
+import { Location } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'pdz-external-link',
-  imports: [CommonModule, MatIconModule],
+  imports: [MatIconModule],
   templateUrl: './external-link.component.html',
   styleUrl: './external-link.component.scss',
 })
@@ -81,7 +81,11 @@ export class ExternalLinkComponent implements OnInit {
   }
 
   goBack(): void {
-    this.location.back();
+    if (window.history.length > 1) {
+      this.location.back();
+    } else {
+      window.close();
+    }
   }
 
   goHome(): void {

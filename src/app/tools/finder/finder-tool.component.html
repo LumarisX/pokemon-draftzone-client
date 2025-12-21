@@ -6,10 +6,12 @@
         class="p-0.5 font-semibold rounded bg-menu-100"
         [(ngModel)]="selectedFormat"
         id="format"
-      >
-        <option *ngFor="let format of formats" value="{{ format }}">
-          {{ format }}
-        </option>
+        >
+        @for (format of formats; track format) {
+          <option value="{{ format }}">
+            {{ format }}
+          </option>
+        }
       </select>
     </div>
 
@@ -19,10 +21,12 @@
         class="p-0.5 font-semibold rounded bg-menu-100"
         [(ngModel)]="selectedRuleset"
         id="ruleset"
-      >
-        <option *ngFor="let ruleset of rulesets" value="{{ ruleset }}">
-          {{ ruleset }}
-        </option>
+        >
+        @for (ruleset of rulesets; track ruleset) {
+          <option value="{{ ruleset }}">
+            {{ ruleset }}
+          </option>
+        }
       </select>
     </div>
   </div>

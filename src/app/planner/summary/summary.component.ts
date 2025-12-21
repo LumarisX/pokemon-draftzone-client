@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, Input } from '@angular/core';
 import { Summary } from '../../drafts/matchup-overview/matchup-interface';
 import { SummaryCoreComponent } from '../../util/matchup/summary-core/summary-core.component';
@@ -7,7 +7,7 @@ import { SummaryCoreComponent } from '../../util/matchup/summary-core/summary-co
   selector: 'planner-summary',
   templateUrl: './summary.component.html',
   styleUrl: './summary.component.scss',
-  imports: [CommonModule, SummaryCoreComponent],
+  imports: [SummaryCoreComponent],
 })
 export class PlannerSummaryComponent {
   @Input()

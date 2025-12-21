@@ -1,5 +1,5 @@
 import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
-import { CommonModule, Location } from '@angular/common';
+import { Location } from '@angular/common';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, inject } from '@angular/core';
 import {
   AbstractControl,
@@ -32,7 +32,6 @@ import { getNameByPid } from '../../../data/namedex';
   selector: 'quick-matchup-form',
   standalone: true,
   imports: [
-    CommonModule,
     RouterModule,
     ReactiveFormsModule,
     MatInputModule,
@@ -42,8 +41,8 @@ import { getNameByPid } from '../../../data/namedex';
     MatIconModule,
     FormatSelectComponent,
     TeamFormComponent,
-    RulesetSelectComponent,
-  ],
+    RulesetSelectComponent
+],
   providers: [
     {
       provide: STEPPER_GLOBAL_OPTIONS,

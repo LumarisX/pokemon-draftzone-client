@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { DraftService } from '../../../../services/draft.service';
@@ -15,12 +15,11 @@ import { MatButtonModule } from '@angular/material/button';
   selector: 'draft-form-edit',
   standalone: true,
   imports: [
-    CommonModule,
     RouterModule,
     MatButtonModule,
     DraftFormCoreComponent,
-    LoadingComponent,
-  ],
+    LoadingComponent
+],
   styleUrl: '../draft-form.component.scss',
   templateUrl: './draft-form-edit.component.html',
 })

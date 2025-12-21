@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
@@ -27,13 +27,12 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MoveComponent,
     PlannerCoverageComponent,
     CdkTableModule,
-    CommonModule,
     ReactiveFormsModule,
     FormsModule,
     MatTooltipModule,
     MatSortModule,
-    SpriteComponent,
-  ],
+    SpriteComponent
+],
   templateUrl: './power-rankings.component.html',
   styleUrl: './power-rankings.component.scss',
 })

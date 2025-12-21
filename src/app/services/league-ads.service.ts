@@ -10,32 +10,25 @@ const ROOTPATH = 'leagues';
 export class LeagueAdsService {
   private apiService = inject(ApiService);
 
-
   getLeagueAds(): Observable<LeagueAd[]> {
-    return this.apiService.get(ROOTPATH, false);
+    return this.apiService.get([ROOTPATH, 'ad-list'], false);
   }
 
   newAd(data: Object) {
-    return this.apiService.post([ROOTPATH, 'manage'], true, data);
+    return this.apiService.post([ROOTPATH, 'ad-list/manage'], true, data, {
+      invalidateCache: [[ROOTPATH, 'ad-list/manage']],
+    });
   }
 
   getMyAds(): Observable<LeagueAd[]> {
-    return this.apiService.get([ROOTPATH, 'manage'], true);
+    return this.apiService.get([ROOTPATH, 'ad-list/manage'], true);
   }
 
   deleteAd(_id: string) {
-    return this.apiService.delete([ROOTPATH, _id]);
+    return this.apiService.delete([ROOTPATH, 'ad-list', 'manage', _id], {
+      invalidateCache: [[ROOTPATH, 'ad-list/manage']],
+    });
   }
-}
-
-interface Division {
-  divisionName: string;
-  ruleset: string;
-  skillLevels: number[];
-  prizeValue: number;
-  platform: 'Pokémon Showdown' | 'Scarlet/Violet';
-  format: string;
-  description?: string;
 }
 
 export interface LeagueAd {
@@ -44,8 +37,13 @@ export interface LeagueAd {
   organizer: string;
   description: string;
   recruitmentStatus: 'Open' | 'Closed' | 'Full' | 'Canceled';
-  hostLink?: string;
-  divisions: Division[];
+  leagueDoc?: string;
+  serverLink?: string;
+  rulesets: string[];
+  skillLevels: number[];
+  prizeValue: number;
+  platforms: string[];
+  formats: string[];
   signupLink: string;
   closesAt: string;
   seasonStart?: string;

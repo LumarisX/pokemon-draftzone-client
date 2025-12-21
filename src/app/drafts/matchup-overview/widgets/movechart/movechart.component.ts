@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, Input } from '@angular/core';
 import { MoveCoreComponent } from '../../../../util/matchup/movechart-core/moves.component';
 import { MoveChart } from '../../matchup-interface';
@@ -11,13 +11,12 @@ import { SwapOpponentButton } from '../../../../util/buttons/swap-opponent/swap-
   templateUrl: './movechart.component.html',
   styleUrls: ['../../matchup.scss', './movechart.component.scss'],
   imports: [
-    CommonModule,
     FormsModule,
     ReactiveFormsModule,
     MatSlideToggleModule,
     MoveCoreComponent,
-    SwapOpponentButton,
-  ],
+    SwapOpponentButton
+],
 })
 export class MovechartComponent {
   @Input() teams!: MoveChart[];

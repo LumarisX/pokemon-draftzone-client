@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -8,7 +8,7 @@ import { PokemonSet } from './pokemon-builder.model';
 @Component({
   selector: 'teambuilder-analyzer',
   templateUrl: './teambuilder.component.html',
-  imports: [CommonModule, RouterModule, FormsModule, TeambuilderComponent],
+  imports: [RouterModule, FormsModule, TeambuilderComponent],
 })
 export class TeamBuilderComponent implements OnInit {
   ruleset: string | null = null;

@@ -1,4 +1,4 @@
-import { CommonModule, Location } from '@angular/common';
+import { Location } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
@@ -10,12 +10,11 @@ import { DataService } from '../../services/data.service';
   standalone: true,
   templateUrl: './finder-tool.component.html',
   imports: [
-    CommonModule,
     RouterModule,
     FormsModule,
     ReactiveFormsModule,
-    FinderCoreComponent,
-  ],
+    FinderCoreComponent
+],
 })
 export class FinderToolComponent implements OnInit {
   private dataService = inject(DataService);

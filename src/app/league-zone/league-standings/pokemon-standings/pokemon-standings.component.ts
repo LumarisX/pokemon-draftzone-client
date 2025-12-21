@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { PlusSignPipe } from '../../../util/pipes/plus-sign.pipe';
@@ -22,12 +22,11 @@ export type StandingsPokemon = Pokemon & {
 @Component({
   selector: 'pdz-pokemon-standings',
   imports: [
-    CommonModule,
     MatIconModule,
     SpriteComponent,
     MatSortModule,
-    PlusSignPipe,
-  ],
+    PlusSignPipe
+],
   templateUrl: './pokemon-standings.component.html',
   styleUrl: './pokemon-standings.component.scss',
 })

@@ -13,6 +13,7 @@ import {
   OperatorFunction,
   shareReplay,
   switchMap,
+  tap,
   throwError,
 } from 'rxjs';
 import { environment } from '../../environments/environment';
@@ -31,6 +32,17 @@ export class ApiService {
   }`;
 
   private pendingRequests = new Map<string, Observable<any>>();
+
+  private invalidateCachePaths(paths: (string | string[])[]): void {
+    for (const path of paths) {
+      const keyPrefix = Array.isArray(path) ? path.join('/') : path;
+      for (const key of this.pendingRequests.keys()) {
+        if (key.startsWith(keyPrefix)) {
+          this.pendingRequests.delete(key);
+        }
+      }
+    }
+  }
 
   get<T>(
     path: string | string[],
@@ -75,6 +87,7 @@ export class ApiService {
     path: string | string[],
     authenticated: boolean,
     data: Object,
+    options?: { invalidateCache?: (string | string[])[] },
   ): Observable<T> {
     const apiUrl = Array.isArray(path) ? path.join('/') : path;
     const request$ = (
@@ -83,21 +96,44 @@ export class ApiService {
         : this.http.post<T>(`${this.serverUrl}/${apiUrl}`, data, {
             headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
           })
-    ).pipe(this.handleError());
+    ).pipe(
+      tap(() => {
+        if (options?.invalidateCache)
+          this.invalidateCachePaths(options.invalidateCache);
+      }),
+      this.handleError(),
+    );
     return request$;
   }
 
-  patch<T>(path: string | string[], data: any): Observable<T> {
+  patch<T>(
+    path: string | string[],
+    data: any,
+    options?: { invalidateCache?: (string | string[])[] },
+  ): Observable<T> {
     const apiUrl = Array.isArray(path) ? path.join('/') : path;
     const request$ = this.authenticatedRequest<T>('PATCH', apiUrl, {
       data,
-    }).pipe(this.handleError());
+    }).pipe(
+      tap(() => {
+        if (options?.invalidateCache)
+          this.invalidateCachePaths(options.invalidateCache);
+      }),
+      this.handleError(),
+    );
     return request$;
   }
 
-  delete<T>(path: string | string[]): Observable<T> {
+  delete<T>(
+    path: string | string[],
+    options?: { invalidateCache?: (string | string[])[] },
+  ): Observable<T> {
     const apiUrl = Array.isArray(path) ? path.join('/') : path;
     const request$ = this.authenticatedRequest<T>('DELETE', apiUrl).pipe(
+      tap(() => {
+        if (options?.invalidateCache)
+          this.invalidateCachePaths(options.invalidateCache);
+      }),
       this.handleError(),
     );
     return request$;

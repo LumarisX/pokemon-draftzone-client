@@ -1,28 +1,18 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, HostListener, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { DataService } from '../services/data.service';
 import { LeagueAd, LeagueAdsService } from '../services/league-ads.service';
-import { FilterSVG } from '../images/svg-components/filter.component';
-import { SortDownSVG } from '../images/svg-components/sort.component';
-import { LeagueAdComponent } from './league-ad/league-ad.component';
-import { PlusSVG } from '../images/svg-components/plus.component';
 import { UnreadService } from '../services/unread.service';
+import { LeagueAdComponent } from './league-ad/league-ad.component';
 
 @Component({
   selector: 'app-league-ad-list',
   templateUrl: './league-list.component.html',
+  styleUrls: ['./league-list.component.scss'],
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    LeagueAdComponent,
-    FilterSVG,
-    RouterModule,
-    SortDownSVG,
-    PlusSVG,
-  ],
+  imports: [FormsModule, LeagueAdComponent, RouterModule, MatIconModule],
 })
 export class LeagueAdListComponent implements OnInit {
   private leagueService = inject(LeagueAdsService);
@@ -78,34 +68,27 @@ export class LeagueAdListComponent implements OnInit {
 
   filterLeagues() {
     this.filteredLeagues = this.leagues.filter((league) => {
-      if (
-        this.filter.format !== '' &&
-        !league.divisions.some(
-          (division) => division.format === this.filter.format,
-        )
-      )
+      if (this.filter.format && !league.formats.includes(this.filter.format)) {
         return false;
+      }
       if (
-        this.filter.ruleset !== '' &&
-        !league.divisions.some(
-          (division) => division.ruleset === this.filter.ruleset,
-        )
-      )
+        this.filter.ruleset &&
+        !league.rulesets.includes(this.filter.ruleset)
+      ) {
         return false;
+      }
       if (
-        this.filter.platform !== '' &&
-        !league.divisions.some(
-          (division) => division.platform === this.filter.platform,
-        )
-      )
+        this.filter.platform &&
+        !league.platforms.includes(this.filter.platform)
+      ) {
         return false;
+      }
       if (
         this.filter.skillLevel !== 'any' &&
-        !league.divisions.some((division) =>
-          division.skillLevels.includes(+this.filter.skillLevel),
-        )
-      )
+        !league.skillLevels.includes(Number(this.filter.skillLevel))
+      ) {
         return false;
+      }
       return true;
     });
     this.sortLeagues();
@@ -113,13 +96,18 @@ export class LeagueAdListComponent implements OnInit {
 
   sortLeagues() {
     this.filteredLeagues = this.filteredLeagues.sort((a, b) =>
-      a[this.sortOption] > b[this.sortOption] ? 1 : -1,
+      a[this.sortOption] < b[this.sortOption] ? 1 : -1,
     );
   }
 
-  toggleMenu(menu: 'filter' | 'sort'): void {
-    if (this.menu === menu) this.menu = null;
-    else this.menu = menu;
+  @HostListener('document:click')
+  onDocumentClick(): void {
+    this.menu = null;
+  }
+
+  toggleMenu(menu: 'filter' | 'sort', event: MouseEvent): void {
+    event.stopPropagation();
+    this.menu = this.menu === menu ? null : menu;
   }
 
   applyFilters(): void {

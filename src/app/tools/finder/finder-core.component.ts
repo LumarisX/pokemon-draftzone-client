@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import {
   Component,
   EventEmitter,
@@ -29,13 +29,12 @@ type QueryBuilder = {
   standalone: true,
   templateUrl: './finder-core.component.html',
   imports: [
-    CommonModule,
     RouterModule,
     FormsModule,
     ReactiveFormsModule,
     SpriteComponent,
-    FindOptionComponent,
-  ],
+    FindOptionComponent
+],
 })
 export class FinderCoreComponent implements OnInit {
   private dataApi = inject(DataService);

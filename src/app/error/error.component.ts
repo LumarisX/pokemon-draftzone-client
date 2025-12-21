@@ -6,7 +6,7 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
-import { CommonModule } from '@angular/common';
+
 import { Component, OnInit, inject } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -17,7 +17,7 @@ import { ErrorService } from './error.service';
 @Component({
   selector: 'error',
   standalone: true,
-  imports: [CommonModule, RouterModule, CloseSVG, ReactiveFormsModule],
+  imports: [RouterModule, CloseSVG, ReactiveFormsModule],
   animations: [
     trigger('fadeInOut', [
       transition(':enter', [

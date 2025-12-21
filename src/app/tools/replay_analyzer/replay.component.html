@@ -2,7 +2,7 @@
 <div class="flex flex-col items-center w-full space-y-3">
   <div
     class="p-2 border-2 flex items-center w-128 max-w-full bg-menu-100 rounded-xl border-menu-400"
-  >
+    >
     <div class="font-semibold">Replay</div>
     <input
       [(ngModel)]="replayURI"
@@ -209,6 +209,12 @@
                   </mat-card-content>
                 </mat-card>
               </div>
+            </div>
+            <div class="w-full flex justify-center">
+              <replay-chart
+                class="w-full bg-slate-200 rounded-lg border-2 border-slate-400 max-w-160"
+                [data]="replayData.stats"
+              ></replay-chart>
             </div>
           </div>
         </div>

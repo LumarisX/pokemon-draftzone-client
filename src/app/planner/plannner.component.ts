@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import {
   AfterViewInit,
   ChangeDetectorRef,
@@ -75,7 +75,6 @@ export interface LSDraftData {
   templateUrl: './planner.component.html',
   styleUrl: './planner.component.scss',
   imports: [
-    CommonModule,
     PlannerTypechartComponent,
     PlannerSummaryComponent,
     MoveComponent,
@@ -88,8 +87,8 @@ export interface LSDraftData {
     PlannerCoverageComponent,
     PlannerSettingsComponent,
     PlannerTeamComponent,
-    LoadingComponent,
-  ],
+    LoadingComponent
+],
 })
 export class PlannerComponent implements OnInit, AfterViewInit {
   private fb = inject(FormBuilder);

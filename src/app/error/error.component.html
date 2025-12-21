@@ -2,10 +2,10 @@
   <div
     @fadeInOut
     class="fixed error-container top-24 w-full flex justify-center"
-  >
+    >
     <div
       class="w-96 bg-opacity-90 error-box shadow-xl min-h-16 bg-red-300 rounded-xl border-2 border-red-400"
-    >
+      >
       <div class="w-full flex">
         @if (error.status !== undefined && error.status != 0) {
           <div class="px-2 font-semibold">Error {{ error.status }}:</div>
@@ -17,15 +17,15 @@
         <div
           class="w-6 h-6 pt-1 pr-1 hover:cursor-pointer"
           (click)="clearError()"
-        >
+          >
           <close-svg></close-svg>
         </div>
       </div>
       <!-- fix overflow text -->
       <div class="px-2 pb-2 whitespace-normal">
-        <ng-container [ngSwitch]="error.status">
-          <ng-container *ngSwitchDefault
-            ><div>
+        @switch (error.status) {
+          @default {
+            <div>
               {{ error.statusText }}
             </div>
             @if (error.error?.message) {
@@ -35,14 +35,14 @@
               <div>Code: {{ error.error!.code }}</div>
             }
             <div>URI: {{ error.url }}</div>
-          </ng-container>
-          <ng-container *ngSwitchCase="0"
-            ><div>
+          }
+          @case (0) {
+            <div>
               The server is unresponsive. Please try again later and follow our
               Discord server for outage updates.
             </div>
-          </ng-container>
-        </ng-container>
+          }
+        }
       </div>
     </div>
   </div>

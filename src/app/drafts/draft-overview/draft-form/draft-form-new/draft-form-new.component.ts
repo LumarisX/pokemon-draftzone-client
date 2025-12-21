@@ -1,4 +1,4 @@
-import { CommonModule, Location } from '@angular/common';
+import { Location } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -14,11 +14,10 @@ import { DraftFormCoreComponent } from '../draft-form-core/draft-form-core.compo
   selector: 'draft-form-new',
   standalone: true,
   imports: [
-    CommonModule,
     RouterModule,
     MatButtonModule,
-    DraftFormCoreComponent,
-  ],
+    DraftFormCoreComponent
+],
   templateUrl: './draft-form-new.component.html',
   styleUrl: '../draft-form.component.scss',
 })

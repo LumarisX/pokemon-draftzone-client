@@ -1,14 +1,16 @@
-import { Component, inject } from '@angular/core';
-import { AuthService } from '../../../services/auth0.service';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { SettingsComponent } from '../../settings/settings.component';
 import { OverlayModule } from '@angular/cdk/overlay';
-import { SettingsService } from '../../settings/settings.service';
 import { CommonModule } from '@angular/common';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { of } from 'rxjs';
+import { switchMap, take } from 'rxjs/operators';
+import { AuthService } from '../../../services/auth0.service';
 import { SettingApiService } from '../../../services/setting.service';
-import { take } from 'rxjs/operators';
+import { SettingsComponent } from '../../settings/settings.component';
+import { SettingsService } from '../../settings/settings.service';
 
 @Component({
   selector: 'pdz-login-button',
@@ -24,66 +26,60 @@ import { take } from 'rxjs/operators';
   templateUrl: './login-button.component.html',
   styleUrl: './login-button.component.scss',
 })
-export class LoginButtonComponent {
-  auth = inject(AuthService);
-  private settingsService = inject(SettingsService);
-  private settingApi = inject(SettingApiService);
+export class LoginButtonComponent implements OnInit {
+  readonly auth = inject(AuthService);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly settingsService = inject(SettingsService);
+  private readonly settingApi = inject(SettingApiService);
 
   authenticated: boolean = false;
   settingsOpen: boolean = false;
 
-  ngOnInit() {
-    this.checkAuthenticated();
-    this.refreshSettingsFromServerIfAuthenticated();
+  ngOnInit(): void {
+    this.initAuthSubscription();
   }
 
-  checkAuthenticated() {
-    this.auth.isAuthenticated$.subscribe((authenticated) => {
-      this.authenticated = authenticated;
-      if (authenticated) {
-        this.settingApi
-          .getSettings()
-          .pipe(take(1))
-          .subscribe((serverSettings) => {
-            if (serverSettings) {
-              this.settingsService.setSettings(serverSettings, {
-                source: 'server',
-              });
-            } else {
-              this.auth.user$.pipe(take(1)).subscribe((data) => {
-                if (data?.settings) {
-                  this.settingsService.setSettings(data.settings, {
-                    source: 'server',
-                  });
-                }
-              });
-            }
-          });
-      }
-    });
+  private initAuthSubscription(): void {
+    this.auth.isAuthenticated$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((authenticated) => {
+        this.authenticated = authenticated;
+        if (authenticated) {
+          this.loadSettings();
+        }
+      });
   }
 
-  private refreshSettingsFromServerIfAuthenticated() {
-    this.auth.isAuthenticated$.pipe(take(1)).subscribe((authenticated) => {
-      if (!authenticated) return;
-      this.settingApi
-        .getSettings()
-        .pipe(take(1))
-        .subscribe((serverSettings) => {
+  private loadSettings(): void {
+    this.settingApi
+      .getSettings()
+      .pipe(
+        take(1),
+        switchMap((serverSettings) => {
           if (serverSettings) {
             this.settingsService.setSettings(serverSettings, {
               source: 'server',
             });
+            return of(null);
           }
-        });
-    });
+          // Fallback to user settings if no server settings
+          return this.auth.user$.pipe(take(1));
+        }),
+      )
+      .subscribe((userData) => {
+        if (userData?.settings) {
+          this.settingsService.setSettings(userData.settings, {
+            source: 'server',
+          });
+        }
+      });
   }
 
-  login() {
+  login(): void {
     this.auth.login();
   }
 
-  logout() {
+  logout(): void {
     this.auth.logout();
   }
 }

@@ -1,46 +1,44 @@
 <header>
   <mat-toolbar>
-    <div class="mobile-menu">
-      <button mat-icon-button [matMenuTriggerFor]="menu">
-        <mat-icon
-          matBadge="1"
-          matBadgeSize="small"
-          matBadgeOverlap="false"
-          [matBadgeHidden]="!(anyBadge$ | async)"
-          >menu</mat-icon
-        >
-      </button>
-    </div>
+    <!-- Mobile menu button -->
+    <button
+      class="mobile-menu"
+      mat-icon-button
+      [matMenuTriggerFor]="mobileMenu"
+      aria-label="Open navigation menu"
+    >
+      <mat-icon
+        matBadge="1"
+        matBadgeSize="small"
+        matBadgeOverlap="false"
+        [matBadgeHidden]="!(anyBadge$ | async)"
+        >menu</mat-icon
+      >
+    </button>
 
-    <mat-menu #menu="matMenu">
-      @for (tab of TABS; track $index) {
-        <button
-          mat-menu-item
-          [routerLink]="tab.route"
-          [matBadge]="tab.badge | async"
-          [matBadgeHidden]="!tab.badge || (tab.badge | async) === ''"
-        >
-          <span>{{ tab.title }}</span>
-        </button>
+    <!-- Mobile navigation menu -->
+    <mat-menu #mobileMenu="matMenu">
+      @for (tab of TABS; track tab.route) {
+        <ng-container
+          *ngTemplateOutlet="tabMenuItem; context: { $implicit: tab }"
+        ></ng-container>
       }
       <button mat-menu-item [matMenuTriggerFor]="toolsMenu">
         <span>Other Tools</span>
       </button>
     </mat-menu>
+
+    <!-- Shared tools submenu -->
     <mat-menu #toolsMenu="matMenu">
-      <button mat-menu-item routerLink="/tools/quick-matchup">
-        <mat-icon>bolt</mat-icon>
-        <span> Quick Matchup </span>
-      </button>
-      <button mat-menu-item routerLink="/tools/time-converter">
-        <mat-icon>calendar_clock</mat-icon>
-        <span> Time Converter </span>
-      </button>
-      <button mat-menu-item routerLink="/tools/pokemon-search">
-        <mat-icon>search</mat-icon>
-        <span> Pokemon Search </span>
-      </button>
+      @for (tool of TOOLS; track tool.route) {
+        <button mat-menu-item [routerLink]="tool.route">
+          <mat-icon>{{ tool.icon }}</mat-icon>
+          <span>{{ tool.title }}</span>
+        </button>
+      }
     </mat-menu>
+
+    <!-- Home button with logo -->
     <button
       class="home-btn"
       routerLink="/"
@@ -48,40 +46,60 @@
       matBadgeSize="small"
       matBadgeOverlap="false"
       [matBadgeHidden]="!(newsBadge | async)"
+      aria-label="Go to home page"
     >
       <pdz-icon name="logo"></pdz-icon>
     </button>
-    <div class="tab-container desktop-tabs">
-      @for (tab of TABS; track $index) {
+
+    <!-- Desktop navigation tabs -->
+    <nav class="desktop-tabs" aria-label="Main navigation">
+      @for (tab of TABS; track tab.route) {
         <button
           class="menu-tab"
           [routerLink]="tab.route"
-          [matBadge]="tab.badge | async"
-          [matBadgeHidden]="!tab.badge || (tab.badge | async) === ''"
+          [matBadge]="(tab.badge | async) ?? ''"
+          [matBadgeHidden]="!tab.badge || !(tab.badge | async)"
         >
-          <span>{{ tab.title }}</span>
+          {{ tab.title }}
         </button>
       }
       <button class="menu-tab" [matMenuTriggerFor]="toolsMenu">
-        <span>Other Tools</span>
+        Other Tools
       </button>
-    </div>
+    </nav>
 
     <span class="toolbar-spacer"></span>
-    <!-- {{ auth.state$ | async | json }} -->
+
+    <!-- Shop link -->
     <a
       href="https://shop.pokemondraftzone.com"
       target="_blank"
+      rel="noopener noreferrer"
       class="store-button"
-      >Shop<mat-icon
+      aria-label="Visit the shop (opens in new tab)"
+    >
+      <span class="store-button__text">Shop</span>
+      <mat-icon
         matBadge="1"
         matBadgeSize="small"
         matBadgeOverlap="false"
         [matBadgeHidden]="false"
         >apparel</mat-icon
-      ></a
-    >
+      >
+    </a>
 
     <pdz-login-button></pdz-login-button>
   </mat-toolbar>
 </header>
+
+<!-- Reusable template for tab menu items -->
+<ng-template #tabMenuItem let-tab>
+  <button
+    mat-menu-item
+    [routerLink]="tab.route"
+    [matBadge]="(tab.badge | async) ?? ''"
+    [matBadgeHidden]="!tab.badge || !(tab.badge | async)"
+  >
+    <span>{{ tab.title }}</span>
+  </button>
+</ng-template>

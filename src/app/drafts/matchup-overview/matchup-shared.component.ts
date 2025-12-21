@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { AfterViewInit, Component, inject } from '@angular/core';
 import { Meta } from '@angular/platform-browser';
 import { ActivatedRoute, RouterModule } from '@angular/router';
@@ -16,7 +16,7 @@ dayjs.extend(duration);
   standalone: true,
   templateUrl: 'matchup-shared.component.html',
   styleUrl: './matchup.scss',
-  imports: [CommonModule, LoadingComponent, MatchupComponent, RouterModule],
+  imports: [LoadingComponent, MatchupComponent, RouterModule],
 })
 export class MatchupSharedComponent implements AfterViewInit {
   private route = inject(ActivatedRoute);

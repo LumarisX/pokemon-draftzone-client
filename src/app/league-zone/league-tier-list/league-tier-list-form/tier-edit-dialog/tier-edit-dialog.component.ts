@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -14,13 +14,12 @@ import { LeagueTierGroup } from '../../../league-sign-up/league-sign-up.componen
 @Component({
   selector: 'pdz-tier-edit-dialog',
   imports: [
-    CommonModule,
     MatDialogModule,
     MatButtonModule,
     ReactiveFormsModule,
     MatFormFieldModule,
-    MatInputModule,
-  ],
+    MatInputModule
+],
   templateUrl: './tier-edit-dialog.component.html',
   styleUrl: './tier-edit-dialog.component.scss',
 })

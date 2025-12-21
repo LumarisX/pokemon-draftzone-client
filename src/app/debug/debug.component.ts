@@ -1,10 +1,10 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, OnInit, inject } from '@angular/core';
 import { AuthService } from '../services/auth0.service';
 
 @Component({
   selector: 'debug',
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './debug.component.html',
 })
 export class DebugComponent implements OnInit {

@@ -1,5 +1,5 @@
 import { CdkAccordionItem, CdkAccordionModule } from '@angular/cdk/accordion';
-import { CommonModule } from '@angular/common';
+
 import { Component, Input, QueryList, ViewChildren } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -16,15 +16,14 @@ import { typeColor } from '../../styling';
   templateUrl: './moves.component.html',
   styleUrl: './moves.component.scss',
   imports: [
-    CommonModule,
     FormsModule,
     MatSlideToggleModule,
     CdkAccordionModule,
     MatIconModule,
     MatButtonModule,
     MatTooltipModule,
-    SpriteComponent,
-  ],
+    SpriteComponent
+],
 })
 export class MoveCoreComponent {
   _movechart: MoveChart = [];

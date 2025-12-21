@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, Input, OnInit, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -18,7 +18,6 @@ import { FormatSelectComponent } from '../../util/format-select/format.component
   styleUrl: './settings.component.scss',
   templateUrl: './settings.component.html',
   imports: [
-    CommonModule,
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
@@ -27,8 +26,8 @@ import { FormatSelectComponent } from '../../util/format-select/format.component
     ReactiveFormsModule,
     RouterModule,
     RulesetSelectComponent,
-    FormatSelectComponent,
-  ],
+    FormatSelectComponent
+],
 })
 export class PlannerSettingsComponent implements OnInit {
   private dataService = inject(DataService);

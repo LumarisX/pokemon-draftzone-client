@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -11,15 +11,14 @@ import { NewsCoreComponent } from '../news-core/news-core.component';
 @Component({
   selector: 'homepage',
   imports: [
-    CommonModule,
     RouterModule,
     ReactiveFormsModule,
     MatExpansionModule,
     MatButtonModule,
     MatDividerModule,
     NewsCoreComponent,
-    IconComponent,
-  ],
+    IconComponent
+],
   styleUrl: './homepage.component.scss',
   templateUrl: './homepage.component.html',
 })
