@@ -1,21 +1,32 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, RouterModule } from '@angular/router';
-import { ReplayService } from '../../services/replay.service';
-import { SpriteComponent } from '../../images/sprite/sprite.component';
-import { ReplayChartComponent } from './replay-chart/replay-chart.component';
-import { ReplayData } from './replay.interface';
+import { CommonModule } from "@angular/common";
+import { Component, OnInit, inject } from "@angular/core";
+import { FormsModule } from "@angular/forms";
+import { ActivatedRoute, RouterModule } from "@angular/router";
+import { ReplayService } from "../../services/replay.service";
+import { SpriteComponent } from "../../images/sprite/sprite.component";
+import { ReplayChartComponent } from "./replay-chart/replay-chart.component";
+import { ReplayData } from "./replay.interface";
 
-import { MatGridListModule } from '@angular/material/grid-list'
-import { MatTreeModule } from '@angular/material/tree';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { MatCardModule } from '@angular/material/card';
- 
+import { MatGridListModule } from "@angular/material/grid-list";
+import { MatTreeModule } from "@angular/material/tree";
+import { MatExpansionModule } from "@angular/material/expansion";
+import { MatCardModule } from "@angular/material/card";
+import { MatDividerModule } from "@angular/material/divider";
+
 @Component({
-  selector: 'replay-analyzer',
+  selector: "replay-analyzer",
   standalone: true,
-  templateUrl: './replay.component.html',
+  templateUrl: "./replay.component.html",
+  styles: [
+    `
+      ::ng-deep mat-divider {
+        width: 100% !important;
+        display: block !important;
+        margin-top: 10px !important;
+        margin-bottom: 10px !important;
+      }
+    `,
+  ],
   imports: [
     CommonModule,
     RouterModule,
@@ -26,13 +37,14 @@ import { MatCardModule } from '@angular/material/card';
     MatTreeModule,
     MatExpansionModule,
     MatCardModule,
-],
+    MatDividerModule,
+  ],
 })
 export class ReplayComponent implements OnInit {
   private replayService = inject(ReplayService);
   private route = inject(ActivatedRoute);
 
-  private _replayURI: string = '';
+  private _replayURI: string = "";
   replayData: ReplayData | undefined;
   analyzed: boolean = true;
   get replayURI() {
@@ -46,8 +58,8 @@ export class ReplayComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
-      if ('replay' in params) {
-        this.replayURI = decodeURIComponent(params['replay']);
+      if ("replay" in params) {
+        this.replayURI = decodeURIComponent(params["replay"]);
         this.analyze();
         this.analyzed = true;
       }
@@ -71,12 +83,12 @@ export class ReplayComponent implements OnInit {
 
   playerClass(index: number) {
     if (index === 1) {
-      return 'bg-aTeam-200';
+      return "bg-aTeam-200";
     }
     if (index === 2) {
-      return 'bg-bTeam-200';
+      return "bg-bTeam-200";
     }
 
-    return '';
+    return "";
   }
 }
