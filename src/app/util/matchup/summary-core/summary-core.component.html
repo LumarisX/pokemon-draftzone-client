@@ -222,11 +222,11 @@
         cdk-cell
         *cdkCellDef="let pokemon"
         [style.background-color]="bstColor(pokemon.bst)"
-        class="right-rounded stat-cell"
+        class="stat-cell"
       >
         {{ pokemon.bst }}
       </td>
-      <td cdk-footer-cell *cdkFooterCellDef class="right-rounded">
+      <td cdk-footer-cell *cdkFooterCellDef>
         <div [style.background-color]="bstColor(summary.stats.mean.bst)">
           {{ summary.stats.mean.bst }}
         </div>
@@ -235,6 +235,30 @@
         </div>
         <div [style.background-color]="bstColor(summary.stats.max.bst)">
           {{ summary.stats.max.bst }}
+        </div>
+      </td>
+    </ng-container>
+    <ng-container cdkColumnDef="cst">
+      <th mat-sort-header="cst" start="desc" cdk-header-cell *cdkHeaderCellDef>
+        CST
+      </th>
+      <td
+        cdk-cell
+        *cdkCellDef="let pokemon"
+        [style.background-color]="cstColor(pokemon.cst)"
+        class="right-rounded stat-cell"
+      >
+        {{ pokemon.cst }}
+      </td>
+      <td cdk-footer-cell *cdkFooterCellDef class="right-rounded">
+        <div [style.background-color]="cstColor(summary.stats.mean.cst)">
+          {{ summary.stats.mean.cst }}
+        </div>
+        <div [style.background-color]="cstColor(summary.stats.median.cst)">
+          {{ summary.stats.median.cst }}
+        </div>
+        <div [style.background-color]="cstColor(summary.stats.max.cst)">
+          {{ summary.stats.max.cst }}
         </div>
       </td>
     </ng-container>
@@ -252,6 +276,7 @@
         'spd',
         'spe',
         'bst',
+        'cst',
       ]"
     ></tr>
   </table>

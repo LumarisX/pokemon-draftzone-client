@@ -28,6 +28,7 @@ export type Summary = {
     index: number;
     types: string[];
     bst: number;
+    cst: number;
     baseStats: StatsTable;
   })[];
   teamName: String;
@@ -41,6 +42,7 @@ export type Summary = {
       spd?: number;
       spe?: number;
       bst?: number;
+      cst?: number;
     };
     median: {
       hp?: number;
@@ -50,6 +52,7 @@ export type Summary = {
       spd?: number;
       spe?: number;
       bst?: number;
+      cst?: number;
     };
     max: {
       hp?: number;
@@ -59,6 +62,7 @@ export type Summary = {
       spd?: number;
       spe?: number;
       bst?: number;
+      cst?: number;
     };
   };
 };
