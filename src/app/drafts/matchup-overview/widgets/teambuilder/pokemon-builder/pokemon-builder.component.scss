@@ -88,12 +88,14 @@ input {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
+  flex: 1;
   justify-content: space-around;
 
   .section {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+    height: min-content;
     align-items: center;
     justify-content: space-around;
   }

@@ -17,6 +17,9 @@ import { PokemonSet } from '../../../../tools/teambuilder/pokemon-builder.model'
 import { MatchupData } from '../../matchup-interface';
 import { MatchupPokemonBuilderComponent } from './pokemon-builder/pokemon-builder.component';
 import { PokemonBuilderView } from './pokemon-builder/pokemon-builder.component';
+import { IconComponent } from '../../../../images/icon/icon.component';
+
+type Tab = number | 'add' | 'export';
 
 @Component({
   selector: 'pdz-matchup-teambuilder',
@@ -28,6 +31,7 @@ import { PokemonBuilderView } from './pokemon-builder/pokemon-builder.component'
     SpriteComponent,
     MatIconModule,
     MatchupPokemonBuilderComponent,
+    IconComponent,
   ],
 })
 export class MatchupTeambuilderComponent implements OnInit, OnDestroy {
@@ -38,7 +42,7 @@ export class MatchupTeambuilderComponent implements OnInit, OnDestroy {
 
   private teambuilderService = inject(TeambuilderService);
 
-  tab: number | null = null;
+  tab: Tab = 'add';
   view: PokemonBuilderView = 'details';
 
   ngOnInit() {
@@ -66,13 +70,17 @@ export class MatchupTeambuilderComponent implements OnInit, OnDestroy {
     return this.team.some((teamMon) => teamMon.id === pokemon.id);
   }
 
-  selectTab(index: number | null, event?: Event) {
+  selectTab(tab: Tab, event?: Event) {
     if (event) {
       if (event instanceof KeyboardEvent) {
         event.preventDefault();
       }
       event.stopPropagation();
     }
-    this.tab = index;
+    this.tab = tab;
+  }
+
+  exportTeam(): string {
+    return this.team.map((pokemonSet) => pokemonSet.export()).join('\n');
   }
 }

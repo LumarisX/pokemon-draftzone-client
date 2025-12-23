@@ -26,17 +26,29 @@
       class="teambuilder__tab teambuilder__tab--add"
       role="button"
       tabindex="0"
-      aria-selected="{{ tab === null }}"
-      [class.is-active]="tab === null"
-      (click)="selectTab(null, $event)"
-      (keydown.enter)="selectTab(null, $event)"
-      (keydown.space)="selectTab(null, $event)"
+      aria-selected="{{ tab === 'add' }}"
+      [class.is-active]="tab === 'add'"
+      (click)="selectTab('add', $event)"
+      (keydown.enter)="selectTab('add', $event)"
+      (keydown.space)="selectTab('add', $event)"
     >
-      +
+      <pdz-icon name="add" />
+    </div>
+    <div
+      class="teambuilder__tab teambuilder__tab--add"
+      role="button"
+      tabindex="0"
+      aria-selected="{{ tab === 'export' }}"
+      [class.is-active]="tab === 'export'"
+      (click)="selectTab('export', $event)"
+      (keydown.enter)="selectTab('export', $event)"
+      (keydown.space)="selectTab('export', $event)"
+    >
+      <pdz-icon name="upload" />
     </div>
   </div>
   <div class="teambuilder__main">
-    @if (tab == null || !team[tab]) {
+    @if (tab === "add") {
       <div class="teambuilder__add-header">
         <h2>Add new Pokemon</h2>
       </div>
@@ -55,7 +67,14 @@
           </button>
         }
       </div>
-    } @else {
+    } @else if (tab === "export") {
+      <textarea
+        class="export-area"
+        id="export"
+        spellcheck="false"
+        [value]="exportTeam()"
+      ></textarea>
+    } @else if (team[tab]) {
       <pdz-matchup-pokemon-builder
         [pokemon]="team[tab]"
         [matchupData]="matchupData"
