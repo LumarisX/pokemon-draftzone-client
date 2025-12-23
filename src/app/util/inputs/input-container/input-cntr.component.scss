@@ -28,7 +28,7 @@ input {
   border-radius: var(--pdz-shape-corner-xs);
   background-color: var(--pdz-color-color-surface);
   color: var(--pdz-color-color-on-surface);
-  font: var(--pdz-color-typescale-body-large-font);
+  font: var(--pdz-color-typescale-body-lg-font);
   transition: border-color 0.2s ease;
 
   &:focus {
@@ -45,5 +45,5 @@ input {
 
 .error-message {
   color: var(--pdz-color-color-error);
-  font: var(--pdz-color-typescale-body-small-font);
+  font: var(--pdz-color-typescale-body-sm-font);
 }

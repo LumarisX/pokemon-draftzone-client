@@ -43,7 +43,7 @@
   }
 
   &__title {
-    @include apply-typography("headline-medium");
+    @include apply-typography("headline-md");
     margin: 0;
     color: pdz-color(on-menu-container);
   }
@@ -71,13 +71,13 @@
   }
 
   &__url-label {
-    @include apply-typography("label-medium");
+    @include apply-typography("label-md");
     color: pdz-color(on-menu-container);
     opacity: 0.7;
   }
 
   &__url {
-    @include apply-typography("body-medium");
+    @include apply-typography("body-md");
     word-break: break-all;
     color: pdz-color(primary);
     background: none;

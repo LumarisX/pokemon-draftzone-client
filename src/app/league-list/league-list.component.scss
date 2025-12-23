@@ -14,7 +14,7 @@
   margin-bottom: var(--pdz-space-lg);
 
   &__title {
-    @include apply-typography(headline-large);
+    @include apply-typography(headline-lg);
   }
 
   &__actions {
@@ -81,7 +81,7 @@
   z-index: 100;
 
   &__title {
-    @include apply-typography(headline-medium);
+    @include apply-typography(headline-md);
     margin-bottom: var(--pdz-space-md);
   }
 }
@@ -166,7 +166,7 @@
   text-align: center;
 
   &__message {
-    @include apply-typography(body-large);
+    @include apply-typography(body-lg);
     color: pdz-color(on-surface-variant);
   }
 }

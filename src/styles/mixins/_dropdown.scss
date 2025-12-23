@@ -11,6 +11,7 @@
 @use "../variables" as *;
 @use "typography" as *;
 @use "../global.scss" as *;
+@use "../mixins" as *;
 
 // ----------------------------------------------------------------------------
 // Container
@@ -26,7 +27,7 @@
   cursor: pointer;
   overflow: visible;
   border: 1px solid pdz-color(menu-border);
-  background-color: pdz-color(menu-container-low);
+  background-color: pdz-color(surface);
   border-radius: var(--pdz-shape-corner-sm);
 }
 
@@ -38,7 +39,6 @@
 /// @output Label styling positioned above dropdown
 @mixin dropdown-label-text {
   display: block;
-  font-weight: 600;
   @include pdz-font-size(0.875rem);
   color: pdz-color(on-menu-container);
   cursor: default;
@@ -56,6 +56,7 @@
   gap: 0.5rem;
   border-radius: var(--pdz-shape-corner-sm);
   padding: 0 0.25rem;
+  @include apply-typography(body-sm);
 
   width: 100%;
   cursor: pointer;
@@ -270,6 +271,10 @@
 
   &::placeholder {
     color: pdz-color(on-menu-container);
+  }
+
+  input {
+    background-color: inherit;
   }
 }
 

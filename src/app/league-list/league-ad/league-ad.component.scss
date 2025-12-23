@@ -40,7 +40,7 @@
       }
     }
     .card-title {
-      @include apply-typography(headline-small);
+      @include apply-typography(headline-sm);
     }
   }
 
@@ -67,12 +67,12 @@
           gap: var(--pdz-space-2xs);
 
           .meta-label {
-            @include apply-typography(label-small);
+            @include apply-typography(label-sm);
             color: pdz-color(on-primary-container);
           }
 
           .meta-value {
-            @include apply-typography(body-small);
+            @include apply-typography(body-sm);
             font-weight: var(--pdz-font-weight-semibold);
             color: pdz-color(on-primary-container);
           }
@@ -82,13 +82,13 @@
       .description-content {
         .description-label {
           display: block;
-          @include apply-typography(label-small);
+          @include apply-typography(label-sm);
           color: pdz-color(on-primary-container);
           margin-bottom: var(--pdz-space-xs);
         }
 
         .markdown-preview {
-          @include apply-typography(body-medium);
+          @include apply-typography(body-md);
           color: pdz-color(on-primary-container);
           padding: var(--pdz-space-sm);
           background-color: pdz-color(primary-container-low);
@@ -194,13 +194,13 @@
             }
 
             .division-description {
-              @include apply-typography(body-small);
+              @include apply-typography(body-sm);
               opacity: 0.8;
               margin-bottom: var(--pdz-space-xs);
             }
 
             .division-details {
-              @include apply-typography(body-small);
+              @include apply-typography(body-sm);
               padding: 0 var(--pdz-space-sm);
 
               .division-field {

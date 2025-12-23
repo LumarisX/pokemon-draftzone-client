@@ -190,6 +190,7 @@
         <pdz-matchup-teambuilder
           [matchupId]="matchupId"
           [matchupData]="matchupData"
+          [team]="team"
         ></pdz-matchup-teambuilder>
       }
     } @else {
@@ -197,28 +198,29 @@
     }
   </div>
 </div>
-<div class="matchup-teambuilder-panel" [class.is-open]="teambuilderPanelOpen">
-  <div class="teambuilder-panel-header">
-    <span class="teambuilder-panel-title">Teambuilder</span>
-    <button class="close-button" (click)="teambuilderPanelOpen = false">
-      <mat-icon>close</mat-icon>
-    </button>
-  </div>
-  <div class="teambuilder-panel-content">
-    <!-- Tool panel content goes here -->
-  </div>
-</div>
 <div
-  class="matchup-teambuilder-container"
-  [class.is-hidden]="teambuilderPanelOpen"
+  class="matchup-teambuilder-panel"
+  [class.is-open]="teambuilderPanelOpen"
+  [class.is-resizing]="isResizing"
+  [style.width.%]="teambuilderPanelOpen ? panelWidthPercent : 0"
 >
-  <button
-    class="teambuilder-button"
-    (click)="teambuilderPanelOpen = !teambuilderPanelOpen"
-  >
-    <mat-icon>build</mat-icon>
-  </button>
+  <div class="resize-handle" (mousedown)="startResize($event)"></div>
+  <pdz-matchup-teambuilder
+    [matchupData]="matchupData"
+    [matchupId]="matchupId"
+    [team]="team"
+    (closePanel)="teambuilderPanelOpen = false"
+  />
 </div>
+
+<button
+  class=""
+  class="teambuilder-button matchup-teambuilder-container"
+  [class.is-hidden]="teambuilderPanelOpen"
+  (click)="teambuilderPanelOpen = !teambuilderPanelOpen"
+>
+  <mat-icon>build</mat-icon>
+</button>
 
 <!-- <div class="matchup-tabs-container">
     <div class="radial-stack" [class.open]="toolOpen">

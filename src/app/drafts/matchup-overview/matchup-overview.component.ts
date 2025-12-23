@@ -3,6 +3,7 @@ import { OverlayModule } from '@angular/cdk/overlay';
 import {
   Component,
   ElementRef,
+  HostListener,
   OnInit,
   ViewChild,
   inject,
@@ -15,11 +16,14 @@ import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 import { LoadingComponent } from '../../images/loading/loading.component';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
+import { Pokemon } from '../../interfaces/draft';
 import { MatchupService } from '../../services/matchup.service';
+import { TeambuilderService } from '../../services/teambuilder.service';
+import { PokemonSet } from '../../tools/teambuilder/pokemon-builder.model';
 import { DraftOverviewPath } from '../draft-overview/draft-overview-routing.module';
-import { MatchupData } from './matchup-interface';
-import { MatchupTeambuilderComponent } from './matchup-teambuilder/matchup-teambuilder.component';
+import { MatchupData, TypeChartPokemon } from './matchup-interface';
 import { MatchupComponent } from './matchup/matchup.component';
+import { MatchupTeambuilderComponent } from './widgets/teambuilder/teambuilder.component';
 
 dayjs.extend(duration);
 
@@ -44,8 +48,8 @@ export class MatchupOverviewComponent implements OnInit {
   private matchupService = inject(MatchupService);
   private meta = inject(Meta);
 
-  matchupData?: MatchupData;
-  matchupId?: string;
+  matchupData!: MatchupData;
+  matchupId!: string;
   shared: boolean = false;
   shareUrl?: string;
   leagueId?: string;
@@ -55,10 +59,41 @@ export class MatchupOverviewComponent implements OnInit {
 
   view: 'matchup' | 'teambuilder' = 'matchup';
 
-  toolOpen: boolean = false;
-  teambuilderPanelOpen: boolean = false;
+  teambuilderPanelOpen: boolean = true;
+
+  // Panel resizing state
+  isResizing: boolean = false;
+  panelWidthPercent: number = 40; // Default width percentage
+  private readonly MIN_WIDTH_PERCENT = 15;
+  private readonly MAX_WIDTH_PERCENT = 70;
 
   @ViewChild('inputFieldRef') inputFieldRef!: ElementRef;
+
+  startResize(event: MouseEvent): void {
+    event.preventDefault();
+    this.isResizing = true;
+  }
+
+  @HostListener('document:mousemove', ['$event'])
+  onMouseMove(event: MouseEvent): void {
+    if (!this.isResizing) return;
+
+    const containerWidth = window.innerWidth;
+    const mouseX = event.clientX;
+    // Calculate width from right edge (panel is on the right)
+    const newWidthPercent = ((containerWidth - mouseX) / containerWidth) * 100;
+
+    // Clamp between min and max
+    this.panelWidthPercent = Math.min(
+      this.MAX_WIDTH_PERCENT,
+      Math.max(this.MIN_WIDTH_PERCENT, newWidthPercent),
+    );
+  }
+
+  @HostListener('document:mouseup')
+  onMouseUp(): void {
+    this.isResizing = false;
+  }
 
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
@@ -98,6 +133,7 @@ export class MatchupOverviewComponent implements OnInit {
         }
       });
     });
+    this.loadTeam();
   }
 
   copyToClipboard() {
@@ -114,5 +150,60 @@ export class MatchupOverviewComponent implements OnInit {
       .catch((error) => {
         console.error('Failed to copy URL to clipboard: ', error);
       });
+  }
+
+  team: PokemonSet[] = [];
+  private teambuilderService = inject(TeambuilderService);
+
+  loadTeam() {
+    this.addPokemonToTeam(this.matchupData.summary[0].team[5]);
+    this.addPokemonToTeam(this.matchupData.summary[0].team[4]);
+    this.addPokemonToTeam(this.matchupData.summary[0].team[3]);
+    this.addPokemonToTeam(this.matchupData.summary[0].team[7]);
+    this.addPokemonToTeam(this.matchupData.summary[0].team[0]);
+    this.addPokemonToTeam(this.matchupData.summary[0].team[9]);
+  }
+
+  getTypechart() {
+    const typechart = this.matchupData.typechart[0];
+    return [
+      {
+        ...typechart,
+        team: typechart.team.map((t) => {
+          const p = this.team.find((p) => p.id === t.id);
+          return {
+            ...t,
+            ...p,
+            disabled: !p,
+          };
+        }),
+      },
+    ];
+  }
+
+  onToggle(pokemon: TypeChartPokemon) {
+    if (!pokemon.disabled) {
+      this.addPokemonToTeam(pokemon);
+    } else {
+      this.removePokemonFromTeam(pokemon);
+    }
+  }
+
+  addPokemonToTeam(pokemon: Pokemon) {
+    this.teambuilderService
+      .getPokemonData(pokemon.id, this.matchupData.details.ruleset)
+      .subscribe((pokemonData) => {
+        console.log(pokemonData);
+        const pokemonSet = PokemonSet.fromTeambuilder(pokemonData, {
+          shiny: pokemon.shiny,
+          nickname: pokemon.nickname,
+          level: this.matchupData.details.level,
+        });
+        this.team.push(pokemonSet);
+      });
+  }
+
+  removePokemonFromTeam(pokemon: Pokemon) {
+    this.team = this.team.filter((p) => p.id !== pokemon.id);
   }
 }

@@ -1,48 +1,84 @@
 $typography: (
-  headline-xlarge: (
+  headline-xl: (
     font-family: var(--pdz-font-fancy),
     font-size: 2rem,
     font-weight: var(--pdz-font-weight-bold),
     line-height: 2.5rem,
   ),
-  headline-large: (
+  headline-lg: (
     font-family: var(--pdz-font-fancy),
     font-size: 1.75rem,
     font-weight: var(--pdz-font-weight-bold),
     line-height: 2rem,
   ),
-  headline-medium: (
+  headline-md: (
     font-family: var(--pdz-font-fancy),
     font-size: 1.2rem,
     font-weight: var(--pdz-font-weight-bold),
     line-height: 1.5rem,
   ),
-  headline-small: (
+  headline-sm: (
     font-family: var(--pdz-font-fancy),
     font-size: 1rem,
     font-weight: var(--pdz-font-weight-bold),
     line-height: 1.2rem,
   ),
-
-  body-large: (
+  headline-xs: (
+    font-family: var(--pdz-font-fancy),
+    font-size: 0.8rem,
+    font-weight: var(--pdz-font-weight-bold),
+    line-height: 1rem,
+  ),
+  title-xl: (
+    font-family: var(--pdz-font-fancy),
+    font-size: 2rem,
+    line-height: 2.5rem,
+  ),
+  title-lg: (
+    font-family: var(--pdz-font-fancy),
+    font-size: 1.75rem,
+    line-height: 2rem,
+  ),
+  title-md: (
+    font-family: var(--pdz-font-fancy),
+    font-size: 1.2rem,
+    line-height: 1.5rem,
+  ),
+  title-sm: (
+    font-family: var(--pdz-font-fancy),
+    font-size: 1rem,
+    line-height: 1.2rem,
+  ),
+  title-xs: (
+    font-family: var(--pdz-font-fancy),
+    font-size: 0.8rem,
+    line-height: 1rem,
+  ),
+  body-lg: (
     font-family: var(--pdz-font-regular),
     font-size: 1.2rem,
     font-weight: 400,
-    line-height: 1.6rem,
+    line-height: 1.5rem,
   ),
-  body-medium: (
+  body-md: (
     font-family: var(--pdz-font-regular),
     font-size: 1rem,
     font-weight: 400,
     line-height: 1.2rem,
   ),
-  body-small: (
+  body-sm: (
     font-family: var(--pdz-font-regular),
     font-size: 0.9rem,
     font-weight: 400,
     line-height: 1.1rem,
   ),
-  label-small: (
+  body-xs: (
+    font-family: var(--pdz-font-regular),
+    font-size: 0.8rem,
+    font-weight: 400,
+    line-height: 1rem,
+  ),
+  label-sm: (
     font-family: var(--pdz-font-regular),
     font-size: 0.75rem,
     font-weight: 500,
@@ -50,7 +86,7 @@ $typography: (
     text-transform: uppercase,
     opacity: 0.7,
   ),
-  label-medium: (
+  label-md: (
     font-family: var(--pdz-font-regular),
     font-size: 0.9rem,
     font-weight: 500,
@@ -58,7 +94,7 @@ $typography: (
     text-transform: uppercase,
     opacity: 0.7,
   ),
-  label-large: (
+  label-lg: (
     font-family: var(--pdz-font-regular),
     font-size: 1rem,
     font-weight: 500,

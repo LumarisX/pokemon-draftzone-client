@@ -14,7 +14,7 @@
   margin-bottom: var(--pdz-space-lg);
 
   &__title {
-    @include apply-typography(headline-large);
+    @include apply-typography(headline-lg);
   }
 
   &__actions {
@@ -55,7 +55,7 @@
   gap: var(--pdz-space-md);
 
   &__results {
-    @include apply-typography(body-medium);
+    @include apply-typography(body-md);
     color: pdz-color(on-surface-variant);
   }
 
@@ -131,7 +131,7 @@
   text-align: center;
 
   &__message {
-    @include apply-typography(body-large);
+    @include apply-typography(body-lg);
     color: pdz-color(on-surface-variant);
   }
 

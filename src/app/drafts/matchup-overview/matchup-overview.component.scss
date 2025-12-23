@@ -1,7 +1,6 @@
 @use "../../../styles/mixins/buttons" as *;
 @use "../../../styles/global.scss" as *;
 
-$teambuilder-panel-width: 35%;
 $transition-duration: 0.3s;
 
 :host {
@@ -20,55 +19,70 @@ $transition-duration: 0.3s;
   .matchup-teambuilder-panel {
     position: relative;
     width: 0;
+    min-width: 0;
     height: 100%;
     background-color: pdz-color(surface);
     box-shadow: var(--pdz-level-2);
     transition: width $transition-duration ease-in-out;
-    z-index: 9999;
     display: flex;
     flex-direction: column;
     overflow: hidden;
 
-    &.is-open {
-      width: $teambuilder-panel-width;
+    // Disable transition while actively resizing for smooth dragging
+    &.is-resizing {
+      transition: none;
+      user-select: none;
     }
 
-    .teambuilder-panel-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: var(--pdz-space-md);
-      border-bottom: 1px solid pdz-color(outline-variant);
-      min-width: $teambuilder-panel-width;
+    .resize-handle {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 6px;
+      height: 100%;
+      cursor: ew-resize;
+      background: transparent;
+      z-index: 10001;
+      transition: background-color 0.15s ease;
 
-      .teambuilder-panel-title {
-        font-family: var(--pdz-font-fancy);
-        font-size: 1.25rem;
-        font-weight: var(--pdz-font-weight-bold);
-        color: pdz-color(on-surface);
+      &:hover {
+        background-color: pdz-color(outline);
       }
 
-      .close-button {
-        @include icon-button-menu();
+      &::before {
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 4px;
+        height: 40px;
+        border-radius: 2px;
+        background-color: pdz-color(outline-variant);
+        opacity: 0;
+        transition: opacity 0.15s ease;
       }
-    }
 
-    .teambuilder-panel-content {
-      flex: 1;
-      padding: var(--pdz-space-md);
-      overflow-y: auto;
-      min-width: $teambuilder-panel-width;
+      &:hover::before {
+        opacity: 1;
+        background-color: pdz-color(on-primary);
+      }
     }
   }
 
-  .matchup-teambuilder-container {
+  button {
+    background-color: pdz-color(surface);
+    border: 1px solid pdz-color(menu-border);
+    border-right-width: 0px;
+    border-radius: 1rem 0 0 1rem;
     position: absolute;
+    padding: var(--pdz-space-sm);
     bottom: var(--pdz-space-lg);
-    right: var(--pdz-space-lg);
+    top: 0.675rem;
+    height: 1.5rem;
+    right: 0.675rem;
     z-index: 10000;
-    transition:
-      opacity 0.2s ease-in-out,
-      transform 0.2s ease-in-out;
+    transition: all 0.2s ease-in-out;
 
     &.is-hidden {
       opacity: 0;
@@ -76,8 +90,16 @@ $transition-duration: 0.3s;
       transform: scale(0.8);
     }
 
-    button {
-      @include float-button();
+    mat-icon {
+      display: flex;
+      font-size: 2rem;
+      width: fit-content;
+      height: fit-content;
+      max-height: fit-content;
+      max-width: fit-content;
+    }
+    &:hover {
+      padding-right: var(--pdz-space-md);
     }
   }
 }

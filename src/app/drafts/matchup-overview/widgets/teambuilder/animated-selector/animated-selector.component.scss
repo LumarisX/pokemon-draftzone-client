@@ -1,21 +1,16 @@
 @use "../../../../../../styles/global.scss" as *;
 @use "../../../../../../styles/mixins/typography" as *;
+@use "../../../../../../styles/mixins" as *;
 
-.animated-selector__container {
-  background: pdz-color(menu-container-low);
-  border: 1px solid pdz-color(menu-border);
-  border-radius: var(--pdz-shape-corner-md);
+:host {
   display: flex;
   flex-direction: column;
   align-items: center;
   width: fit-content;
-  padding: 0.25rem;
 }
 
 .animated-selector__label {
-  font-weight: 600;
-  @include pdz-font-size(0.875rem);
-  color: pdz-color(on-surface-variant);
+  @include apply-typography(label-sm);
   display: block;
 }
 
@@ -60,15 +55,14 @@
   position: absolute;
   left: 0.125rem;
   right: 0.125rem;
-  background: pdz-color(menu);
-  border: 1px solid pdz-color(menu);
+  background: pdz-color(menu-container-low);
+  border: 1px solid pdz-color(menu-container);
   border-radius: var(--pdz-shape-corner-sm);
   transition:
     transform 400ms cubic-bezier(0.4, 0, 0.2, 1),
     height 400ms cubic-bezier(0.4, 0, 0.2, 1);
   pointer-events: none;
   z-index: 0;
-  opacity: 0.15;
 }
 
 .animated-selector__options {
