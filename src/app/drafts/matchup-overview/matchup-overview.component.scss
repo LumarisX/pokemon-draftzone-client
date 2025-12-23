@@ -1,7 +1,7 @@
 @use "../../../styles/mixins/buttons" as *;
 @use "../../../styles/global.scss" as *;
 
-$transition-duration: 0.3s;
+$transition-duration: 0.2s;
 
 :host {
   position: relative;
@@ -28,10 +28,28 @@ $transition-duration: 0.3s;
     flex-direction: column;
     overflow: hidden;
 
-    // Disable transition while actively resizing for smooth dragging
     &.is-resizing {
       transition: none;
       user-select: none;
+    }
+
+    @media (max-width: 767px) {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 100%;
+      z-index: 10002;
+      visibility: hidden;
+      pointer-events: none;
+      transition:
+        width $transition-duration ease-in-out,
+        visibility 0s ease-in-out $transition-duration;
+
+      &.is-open {
+        visibility: visible;
+        pointer-events: auto;
+        transition: width $transition-duration ease-in-out;
+      }
     }
 
     .resize-handle {
@@ -67,39 +85,35 @@ $transition-duration: 0.3s;
         opacity: 1;
         background-color: pdz-color(on-primary);
       }
+
+      @media (max-width: 767px) {
+        display: none;
+      }
     }
   }
 
   button {
-    background-color: pdz-color(surface);
-    border: 1px solid pdz-color(menu-border);
-    border-right-width: 0px;
-    border-radius: 1rem 0 0 1rem;
-    position: absolute;
-    padding: var(--pdz-space-sm);
-    bottom: var(--pdz-space-lg);
-    top: 0.675rem;
-    height: 1.5rem;
-    right: 0.675rem;
-    z-index: 10000;
-    transition: all 0.2s ease-in-out;
+    &.teambuilder-button {
+      background-color: pdz-color(surface);
+      border: 1px solid pdz-color(menu-border);
+      border-right-width: 0px;
+      border-radius: 1rem 0 0 1rem;
+      position: absolute;
+      padding: var(--pdz-space-sm);
+      bottom: var(--pdz-space-lg);
+      right: 0.675rem;
+      z-index: 10000;
+      transition: all 0.2s ease-in-out;
 
-    &.is-hidden {
-      opacity: 0;
-      pointer-events: none;
-      transform: scale(0.8);
-    }
+      &.is-hidden {
+        opacity: 0;
+        pointer-events: none;
+        transform: scale(0.8);
+      }
 
-    mat-icon {
-      display: flex;
-      font-size: 2rem;
-      width: fit-content;
-      height: fit-content;
-      max-height: fit-content;
-      max-width: fit-content;
-    }
-    &:hover {
-      padding-right: var(--pdz-space-md);
+      &:hover {
+        padding-right: var(--pdz-space-md);
+      }
     }
   }
 }

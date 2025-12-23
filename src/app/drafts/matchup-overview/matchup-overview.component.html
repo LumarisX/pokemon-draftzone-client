@@ -202,7 +202,9 @@
   class="matchup-teambuilder-panel"
   [class.is-open]="teambuilderPanelOpen"
   [class.is-resizing]="isResizing"
-  [style.width.%]="teambuilderPanelOpen ? panelWidthPercent : 0"
+  [style.width.%]="
+    teambuilderPanelOpen ? (isMobile ? 100 : panelWidthPercent) : 0
+  "
 >
   <div class="resize-handle" (mousedown)="startResize($event)"></div>
   <pdz-matchup-teambuilder
@@ -219,7 +221,7 @@
   [class.is-hidden]="teambuilderPanelOpen"
   (click)="teambuilderPanelOpen = !teambuilderPanelOpen"
 >
-  <mat-icon>build</mat-icon>
+  <pdz-icon name="build" />
 </button>
 
 <!-- <div class="matchup-tabs-container">

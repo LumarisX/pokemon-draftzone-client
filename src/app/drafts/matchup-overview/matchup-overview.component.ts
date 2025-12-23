@@ -24,6 +24,7 @@ import { DraftOverviewPath } from '../draft-overview/draft-overview-routing.modu
 import { MatchupData, TypeChartPokemon } from './matchup-interface';
 import { MatchupComponent } from './matchup/matchup.component';
 import { MatchupTeambuilderComponent } from './widgets/teambuilder/teambuilder.component';
+import { IconComponent } from '../../images/icon/icon.component';
 
 dayjs.extend(duration);
 
@@ -41,6 +42,7 @@ dayjs.extend(duration);
     MatIconModule,
     SpriteComponent,
     MatchupTeambuilderComponent,
+    IconComponent,
   ],
 })
 export class MatchupOverviewComponent implements OnInit {
@@ -60,23 +62,23 @@ export class MatchupOverviewComponent implements OnInit {
   view: 'matchup' | 'teambuilder' = 'matchup';
 
   teambuilderPanelOpen: boolean = true;
-
-  // Panel resizing state
   isResizing: boolean = false;
-  panelWidthPercent: number = 40; // Default width percentage
+  panelWidthPercent: number = 40;
   private readonly MIN_WIDTH_PERCENT = 15;
   private readonly MAX_WIDTH_PERCENT = 70;
+  isMobile: boolean = false;
 
   @ViewChild('inputFieldRef') inputFieldRef!: ElementRef;
 
   startResize(event: MouseEvent): void {
+    if (this.isMobile) return;
     event.preventDefault();
     this.isResizing = true;
   }
 
   @HostListener('document:mousemove', ['$event'])
   onMouseMove(event: MouseEvent): void {
-    if (!this.isResizing) return;
+    if (!this.isResizing || this.isMobile) return;
 
     const containerWidth = window.innerWidth;
     const mouseX = event.clientX;
@@ -96,6 +98,9 @@ export class MatchupOverviewComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.checkIfMobile();
+    window.addEventListener('resize', () => this.checkIfMobile());
+
     this.route.params.subscribe((params) => {
       this.matchupId = params['matchupId'];
       this.shareUrl = 'https://pokemondraftzone.com/matchup/' + this.matchupId;
@@ -203,6 +208,9 @@ export class MatchupOverviewComponent implements OnInit {
       });
   }
 
+  private checkIfMobile(): void {
+    this.isMobile = window.innerWidth < 768;
+  }
   removePokemonFromTeam(pokemon: Pokemon) {
     this.team = this.team.filter((p) => p.id !== pokemon.id);
   }
