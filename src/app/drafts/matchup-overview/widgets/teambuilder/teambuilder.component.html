@@ -5,46 +5,58 @@
   </button>
 </div>
 <div class="teambuilder-panel__content">
-  <div class="teambuilder__tabs">
-    @for (pokemon of team; track $index) {
+  <div class="teambuilder__tabs-container">
+    <div class="teambuilder__tabs">
+      @for (pokemon of team; track $index) {
+        <div
+          class="teambuilder__tab teambuilder__tab--pokemon"
+          role="button"
+          tabindex="0"
+          aria-selected="{{ tab === $index }}"
+          [class.is-active]="tab === $index"
+          (click)="selectTab($index, $event)"
+          (keydown.enter)="selectTab($index, $event)"
+          (keydown.space)="selectTab($index, $event)"
+        >
+          <button
+            class="teambuilder__delete-btn"
+            (click)="deletePokemon($index, $event)"
+            [attr.aria-label]="'Delete ' + pokemon.name"
+            title="Delete Pokemon"
+          >
+            <pdz-icon name="close" [size]="16" />
+          </button>
+          <div class="teambuilder__sprite-wrapper">
+            <pdz-sprite size="3rem" [pokemon]="pokemon" />
+          </div>
+        </div>
+      }
+    </div>
+    <div class="teambuilder__action-buttons">
       <div
-        class="teambuilder__tab teambuilder__tab--pokemon"
+        class="teambuilder__tab teambuilder__tab--add"
         role="button"
         tabindex="0"
-        aria-selected="{{ tab === $index }}"
-        [class.is-active]="tab === $index"
-        (click)="selectTab($index, $event)"
-        (keydown.enter)="selectTab($index, $event)"
-        (keydown.space)="selectTab($index, $event)"
+        aria-selected="{{ tab === 'add' }}"
+        [class.is-active]="tab === 'add'"
+        (click)="selectTab('add', $event)"
+        (keydown.enter)="selectTab('add', $event)"
+        (keydown.space)="selectTab('add', $event)"
       >
-        <div class="teambuilder__sprite-wrapper">
-          <pdz-sprite size="3rem" [pokemon]="pokemon" />
-        </div>
+        <pdz-icon name="add" />
       </div>
-    }
-    <div
-      class="teambuilder__tab teambuilder__tab--add"
-      role="button"
-      tabindex="0"
-      aria-selected="{{ tab === 'add' }}"
-      [class.is-active]="tab === 'add'"
-      (click)="selectTab('add', $event)"
-      (keydown.enter)="selectTab('add', $event)"
-      (keydown.space)="selectTab('add', $event)"
-    >
-      <pdz-icon name="add" />
-    </div>
-    <div
-      class="teambuilder__tab teambuilder__tab--add"
-      role="button"
-      tabindex="0"
-      aria-selected="{{ tab === 'export' }}"
-      [class.is-active]="tab === 'export'"
-      (click)="selectTab('export', $event)"
-      (keydown.enter)="selectTab('export', $event)"
-      (keydown.space)="selectTab('export', $event)"
-    >
-      <pdz-icon name="upload" />
+      <div
+        class="teambuilder__tab teambuilder__tab--add"
+        role="button"
+        tabindex="0"
+        aria-selected="{{ tab === 'export' }}"
+        [class.is-active]="tab === 'export'"
+        (click)="selectTab('export', $event)"
+        (keydown.enter)="selectTab('export', $event)"
+        (keydown.space)="selectTab('export', $event)"
+      >
+        <pdz-icon name="upload" />
+      </div>
     </div>
   </div>
   <div class="teambuilder__main">

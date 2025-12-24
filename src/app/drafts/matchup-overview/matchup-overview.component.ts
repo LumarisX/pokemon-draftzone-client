@@ -1,5 +1,4 @@
 import { OverlayModule } from '@angular/cdk/overlay';
-
 import {
   Component,
   ElementRef,
@@ -14,6 +13,7 @@ import { Meta } from '@angular/platform-browser';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
+import { IconComponent } from '../../images/icon/icon.component';
 import { LoadingComponent } from '../../images/loading/loading.component';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { Pokemon } from '../../interfaces/draft';
@@ -24,7 +24,6 @@ import { DraftOverviewPath } from '../draft-overview/draft-overview-routing.modu
 import { MatchupData, TypeChartPokemon } from './matchup-interface';
 import { MatchupComponent } from './matchup/matchup.component';
 import { MatchupTeambuilderComponent } from './widgets/teambuilder/teambuilder.component';
-import { IconComponent } from '../../images/icon/icon.component';
 
 dayjs.extend(duration);
 
@@ -61,7 +60,7 @@ export class MatchupOverviewComponent implements OnInit {
 
   view: 'matchup' | 'teambuilder' = 'matchup';
 
-  teambuilderPanelOpen: boolean = true;
+  teambuilderPanelOpen: boolean = false;
   isResizing: boolean = false;
   panelWidthPercent: number = 40;
   private readonly MIN_WIDTH_PERCENT = 15;

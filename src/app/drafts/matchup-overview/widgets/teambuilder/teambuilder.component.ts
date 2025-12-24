@@ -10,14 +10,16 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
+import { IconComponent } from '../../../../images/icon/icon.component';
 import { SpriteComponent } from '../../../../images/sprite/sprite.component';
 import { Pokemon } from '../../../../interfaces/draft';
 import { TeambuilderService } from '../../../../services/teambuilder.service';
 import { PokemonSet } from '../../../../tools/teambuilder/pokemon-builder.model';
 import { MatchupData } from '../../matchup-interface';
-import { MatchupPokemonBuilderComponent } from './pokemon-builder/pokemon-builder.component';
-import { PokemonBuilderView } from './pokemon-builder/pokemon-builder.component';
-import { IconComponent } from '../../../../images/icon/icon.component';
+import {
+  MatchupPokemonBuilderComponent,
+  PokemonBuilderView,
+} from './pokemon-builder/pokemon-builder.component';
 
 type Tab = number | 'add' | 'export';
 
@@ -82,5 +84,19 @@ export class MatchupTeambuilderComponent implements OnInit, OnDestroy {
 
   exportTeam(): string {
     return this.team.map((pokemonSet) => pokemonSet.export()).join('\n');
+  }
+
+  deletePokemon(index: number, event: Event) {
+    event.stopPropagation();
+    this.team.splice(index, 1);
+
+    // Adjust active tab if needed
+    if (typeof this.tab === 'number') {
+      if (this.tab >= this.team.length && this.team.length > 0) {
+        this.tab = this.team.length - 1;
+      } else if (this.team.length === 0) {
+        this.tab = 'add';
+      }
+    }
   }
 }
