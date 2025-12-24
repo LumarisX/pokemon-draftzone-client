@@ -245,19 +245,19 @@
       <td
         cdk-cell
         *cdkCellDef="let pokemon"
-        [style.background-color]="cstColor(pokemon.cst)"
+        [style.background-color]="bstColor(pokemon.cst)"
         class="right-rounded stat-cell"
       >
         {{ pokemon.cst }}
       </td>
       <td cdk-footer-cell *cdkFooterCellDef class="right-rounded">
-        <div [style.background-color]="cstColor(summary.stats.mean.cst)">
+        <div [style.background-color]="bstColor(summary.stats.mean.cst)">
           {{ summary.stats.mean.cst }}
         </div>
-        <div [style.background-color]="cstColor(summary.stats.median.cst)">
+        <div [style.background-color]="bstColor(summary.stats.median.cst)">
           {{ summary.stats.median.cst }}
         </div>
-        <div [style.background-color]="cstColor(summary.stats.max.cst)">
+        <div [style.background-color]="bstColor(summary.stats.max.cst)">
           {{ summary.stats.max.cst }}
         </div>
       </td>
