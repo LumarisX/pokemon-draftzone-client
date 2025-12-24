@@ -104,6 +104,8 @@ $transition-duration: 0.2s;
       right: 0.675rem;
       z-index: 10000;
       transition: all 0.2s ease-in-out;
+      display: flex;
+      align-items: center;
 
       &.is-hidden {
         opacity: 0;

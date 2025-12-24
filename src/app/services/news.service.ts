@@ -8,6 +8,10 @@ export type Section =
       type: 'para';
       description: string;
     }
+  | {
+      type: 'markdown';
+      description: string;
+    }
   | { type: 'list'; listTitle?: string; items: string[]; ordered?: boolean }
   | { type: 'heading'; headingText: string }
   | {

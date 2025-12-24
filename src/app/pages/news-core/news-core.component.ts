@@ -5,17 +5,23 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { UnreadService } from '../../services/unread.service';
+import { MarkdownModule } from 'ngx-markdown';
 
 @Component({
   selector: 'pdz-news-core',
-  imports: [CommonModule, LoadingComponent, RouterLink, MatButtonModule],
+  imports: [
+    CommonModule,
+    LoadingComponent,
+    RouterLink,
+    MatButtonModule,
+    MarkdownModule,
+  ],
   templateUrl: './news-core.component.html',
   styleUrl: './news-core.component.scss',
 })
 export class NewsCoreComponent implements OnInit {
   private newsService = inject(NewsService);
   private unreadService = inject(UnreadService);
-
 
   news?: News[];
   ngOnInit(): void {
