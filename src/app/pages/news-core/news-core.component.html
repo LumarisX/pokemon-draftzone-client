@@ -28,6 +28,8 @@
               </ul>
             } @else if (section.type === "para") {
               {{ section.description }}
+            } @else if (section.type === "markdown") {
+              <markdown [data]="section.description"> </markdown>
             } @else if (section.type === "buttons") {
               @for (button of section.buttons; track $index) {
                 @if (button.href) {

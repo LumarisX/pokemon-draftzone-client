@@ -1,0 +1,173 @@
+@use "../../../../../styles/mixins/scales" as *;
+
+:host {
+  @include generate-bg-scale();
+  --bevel-radius: var(--pdz-shape-corner-sm, 0.5rem);
+  --bevel-padding: var(--pdz-space-2xs, 3px);
+}
+.widget-container {
+  --pdz-cmp-typechart-stat-hover: var(--pdz-color-primary-container);
+  --pdz-cmp-typechart-border-hover: var(--pdz-color-primary-border);
+}
+
+.type-cell {
+  width: var(--pdz-space-3xl);
+  height: var(--pdz-space-3xl);
+  padding: var(--pdz-space-xs);
+  overflow: hidden;
+}
+
+.type-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--pdz-shape-corner-xs);
+  height: 2.5rem;
+  width: 2.5rem;
+  font-size: 0.75rem;
+  font-weight: bold;
+  overflow: hidden;
+
+  img {
+    max-width: 1rem;
+    max-height: 1rem;
+  }
+}
+
+td,
+th {
+  text-align: center;
+  color: var(--pdz-color-on-primary-fixed, white);
+  &:first-child {
+    padding-left: var(--pdz-space-xs);
+  }
+}
+
+//Hover lines
+
+.column-hovered {
+  background-color: var(
+    --pdz-cmp-typechart-border-hover,
+    var(--pdz-color-menu-border)
+  );
+  .pdz-scale-neutral {
+    background-color: var(
+      --pdz-cmp-typechart-stat-hover,
+      var(--pdz-color-menu-container)
+    );
+  }
+}
+
+tbody {
+  tr {
+    &:hover {
+      background-color: var(
+        --pdz-cmp-typechart-border-hover,
+        var(--pdz-color-menu-border)
+      );
+      td:not(.column-hovered),
+      th:not(.column-hovered) {
+        &:first-child {
+          border-top-left-radius: var(--bevel-radius);
+          border-bottom-left-radius: var(--bevel-radius);
+        }
+        &:last-child {
+          border-top-right-radius: var(--bevel-radius);
+          border-bottom-right-radius: var(--bevel-radius);
+        }
+      }
+      .pdz-scale-neutral {
+        background-color: var(
+          --pdz-cmp-typechart-stat-hover,
+          var(--pdz-color-menu-container)
+        );
+      }
+    }
+
+    &:last-child:not(:hover) {
+      td {
+        border-bottom-left-radius: var(--bevel-radius);
+        border-bottom-right-radius: var(--bevel-radius);
+      }
+    }
+  }
+}
+
+thead {
+  th {
+    border-top-left-radius: var(--bevel-radius);
+    border-top-right-radius: var(--bevel-radius);
+  }
+}
+
+.action-cell {
+  cursor: pointer;
+}
+
+thead {
+  th {
+    padding: var(--pdz-space-xs);
+  }
+}
+
+tbody {
+  th {
+    .stat-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: help;
+      user-select: none;
+      border-radius: var(--pdz-shape-corner-xs);
+      height: 1.5rem;
+      width: 2.5rem;
+      font-size: 0.65rem;
+      line-height: 0.7rem;
+      font-weight: bold;
+      overflow: hidden;
+      box-shadow: var(--pdz-level-1);
+    }
+  }
+}
+
+.sprite-wrapper {
+  background-color: var(--pdz-color-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--pdz-shape-corner-xs);
+  height: 2.5rem;
+  width: 2.5rem;
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+
+.stat-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--pdz-shape-corner-xs);
+  height: 1.5rem;
+  width: 2.5rem;
+  font-size: 0.75rem;
+  font-weight: bold;
+  overflow: hidden;
+  box-shadow: var(--pdz-level-1);
+}
+
+.stat-cell {
+  width: 3rem;
+  height: 2rem;
+  padding: var(--pdz-space-xs);
+  overflow: hidden;
+}
+
+.stat-label {
+  &.weaks {
+    background-color: var(--pdz-color-scale-positive-4);
+  }
+
+  &.resists {
+    background-color: var(--pdz-color-scale-negative-4);
+  }
+}

@@ -1,81 +1,102 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, Input } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  inject,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
-import { StatsTable } from '../../../../data';
+import { MatIconModule } from '@angular/material/icon';
+import { IconComponent } from '../../../../images/icon/icon.component';
 import { SpriteComponent } from '../../../../images/sprite/sprite.component';
+import { Pokemon } from '../../../../interfaces/draft';
 import { TeambuilderService } from '../../../../services/teambuilder.service';
 import { PokemonSet } from '../../../../tools/teambuilder/pokemon-builder.model';
 import { MatchupData } from '../../matchup-interface';
+import {
+  MatchupPokemonBuilderComponent,
+  PokemonBuilderView,
+} from './pokemon-builder/pokemon-builder.component';
+
+type Tab = number | 'add' | 'export';
 
 @Component({
-  selector: 'pdz-teambuilder-widget',
+  selector: 'pdz-matchup-teambuilder',
   templateUrl: './teambuilder.component.html',
-  styleUrls: ['./teambuilder.component.scss', '../../matchup.scss'],
-  imports: [CommonModule, RouterModule, FormsModule, SpriteComponent],
+  styleUrls: ['./teambuilder.component.scss'],
+  imports: [
+    CommonModule,
+    FormsModule,
+    SpriteComponent,
+    MatIconModule,
+    MatchupPokemonBuilderComponent,
+    IconComponent,
+  ],
 })
-export class TeambuilderWidgetComponent {
+export class MatchupTeambuilderComponent implements OnInit, OnDestroy {
   @Input({ required: true }) matchupId!: string;
   @Input({ required: true }) matchupData!: MatchupData;
+  @Input({ required: true }) team!: PokemonSet[];
+  @Output() closePanel = new EventEmitter<void>();
 
-  teambuilderService = inject(TeambuilderService);
+  private teambuilderService = inject(TeambuilderService);
 
-  team: PokemonSet[] = [];
-  view: number | null = 0;
-
-  statNames: (keyof StatsTable)[] = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'];
+  tab: Tab = 'add';
+  view: PokemonBuilderView = 'details';
 
   ngOnInit() {
-    this.loadTeam();
+    this.addPokemonToTeamAndSelect(this.matchupData.summary[0].team[0]);
   }
 
-  loadTeam() {
+  ngOnDestroy() {}
+
+  addPokemonToTeamAndSelect(pokemon: Pokemon) {
+    const teamIndex = this.team.length;
     this.teambuilderService
-      .getPokemonData(
-        this.matchupData.summary[0].team[0].id,
-        this.matchupData.details.ruleset,
-      )
+      .getPokemonData(pokemon.id, this.matchupData.details.ruleset)
       .subscribe((pokemonData) => {
-        this.team = [
-          PokemonSet.fromTeambuilder(pokemonData, {
-            shiny: this.matchupData.summary[0].team[0].shiny,
-            nickname: this.matchupData.summary[0].team[0].nickname,
-            level: this.matchupData.details.level,
-          }),
-        ];
+        const pokemonSet = PokemonSet.fromTeambuilder(pokemonData, {
+          shiny: pokemon.shiny,
+          nickname: pokemon.nickname,
+          level: this.matchupData.details.level,
+        });
+        this.team.push(pokemonSet);
+        this.tab = teamIndex;
       });
   }
 
-  getStep() {
-    return 4;
+  isPokemonInTeam(pokemon: Pokemon): boolean {
+    return this.team.some((teamMon) => teamMon.id === pokemon.id);
   }
 
-  hpRating(hp: number): string {
-    let stars = '';
-    if (hp % this.matchupData.details.level === 1) {
-      stars += '*';
+  selectTab(tab: Tab, event?: Event) {
+    if (event) {
+      if (event instanceof KeyboardEvent) {
+        event.preventDefault();
+      }
+      event.stopPropagation();
     }
-
-    if (hp % 16 === 1) {
-      stars += '*';
-    }
-    if (hp % 4 === 1) {
-      stars += '*';
-    }
-    if (hp % 2 === 1) {
-      stars += '*';
-    }
-
-    return stars;
+    this.tab = tab;
   }
 
-  setNature(stat: keyof StatsTable, natureType: 'positive' | 'negative') {
-    this.team[0].nature = {
-      name: 'test',
-      drop:
-        natureType === 'negative' ? stat : (this.team[0].nature?.drop ?? 'hp'),
-      boost:
-        natureType === 'positive' ? stat : (this.team[0].nature?.boost ?? 'hp'),
-    };
+  exportTeam(): string {
+    return this.team.map((pokemonSet) => pokemonSet.export()).join('\n');
+  }
+
+  deletePokemon(index: number, event: Event) {
+    event.stopPropagation();
+    this.team.splice(index, 1);
+
+    // Adjust active tab if needed
+    if (typeof this.tab === 'number') {
+      if (this.tab >= this.team.length && this.team.length > 0) {
+        this.tab = this.team.length - 1;
+      } else if (this.team.length === 0) {
+        this.tab = 'add';
+      }
+    }
   }
 }

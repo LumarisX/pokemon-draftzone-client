@@ -1,23 +1,24 @@
-<div class="widget-container" [class.alternate]="opponent">
+<div class="widget-container" [class.alternate]="shownTeam === 1">
   <div class="widget-header">
     <div class="widget-label">Defensive Type Chart</div>
     <div class="widget-options">
       <mat-slide-toggle [(ngModel)]="abilities" labelPosition="before"
         >Abilities</mat-slide-toggle
       >
-      <swap-opponent [(ngModel)]="opponent"></swap-opponent>
+      @if (typecharts.length > 1) {
+        <swap-opponent [(ngModel)]="shownTeam"></swap-opponent>
+      }
     </div>
   </div>
   <div class="widget-body">
     <pdz-typechart-core
-      [typechart]="opponent ? typecharts[1] : typecharts[0]"
+      [typechart]="typecharts[shownTeam]"
       [abilities]="abilities"
-      (summarize)="typestats.summarize()"
+      (togglePokemon)="typestats.summarize(); togglePokemon.emit($event)"
     ></pdz-typechart-core>
-
     <pdz-typestats-core
       #typestats
-      [typechart]="opponent ? typecharts[1] : typecharts[0]"
+      [typechart]="typecharts[shownTeam]"
       [abilities]="abilities"
     ></pdz-typestats-core>
   </div>

@@ -213,3 +213,9 @@ export type ExtendedType = Type | (typeof TYPECONDITIONS)[number];
 export type StatsTable<T = number> = {
   [key in Stat]: T;
 };
+
+export function getNature(boost: Stat, drop: Stat): Nature {
+  return (
+    NATURES.find((n) => n.boost === boost && n.drop === drop) ?? NATURES[0]
+  );
+}

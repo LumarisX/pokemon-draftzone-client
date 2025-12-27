@@ -211,11 +211,11 @@
                 autoActiveFirstOption
                 #auto="matAutocomplete"
               >
-                @for (move of pokemon.moveList; track move) {
+                <!-- @for (move of pokemon.learnset; track move) {
                   <mat-option [value]="move">
                     {{ move.name }}
                   </mat-option>
-                }
+                } -->
               </mat-autocomplete>
             </mat-form-field>
             <mat-form-field class="example-full-width">
@@ -233,11 +233,11 @@
                 autoActiveFirstOption
                 #auto="matAutocomplete"
               >
-                @for (move of pokemon.moveList; track move) {
+                <!-- @for (move of pokemon.learnset; track move) {
                   <mat-option [value]="move">
                     {{ move.name }}
                   </mat-option>
-                }
+                } -->
               </mat-autocomplete>
             </mat-form-field>
             <mat-form-field class="example-full-width">
@@ -255,11 +255,11 @@
                 autoActiveFirstOption
                 #auto="matAutocomplete"
               >
-                @for (move of pokemon.moveList; track move) {
+                <!-- @for (move of pokemon.learnset; track move) {
                   <mat-option [value]="move">
                     {{ move.name }}
                   </mat-option>
-                }
+                } -->
               </mat-autocomplete>
             </mat-form-field>
             <mat-form-field class="example-full-width">
@@ -277,11 +277,11 @@
                 autoActiveFirstOption
                 #auto="matAutocomplete"
               >
-                @for (move of pokemon.moveList; track move) {
+                <!-- @for (move of pokemon.learnset; track move) {
                   <mat-option [value]="move">
                     {{ move.name }}
                   </mat-option>
-                }
+                } -->
               </mat-autocomplete>
             </mat-form-field>
           </mat-tab>
@@ -327,7 +327,9 @@
                       [(ngModel)]="pokemon.stats[stat.id].ivs"
                     />
                   </mat-form-field>
-                  @if (showBoosts && pokemon.boosts[stat.id] !== undefined) {
+                  @if (
+                    showBoosts && pokemon.stats[stat.id].boosts !== undefined
+                  ) {
                     <mat-form-field>
                       <mat-label>Stage</mat-label>
                       <input
@@ -335,7 +337,7 @@
                         type="number"
                         min="-6"
                         max="6"
-                        [(ngModel)]="pokemon.boosts[stat.id]"
+                        [(ngModel)]="pokemon.stats[stat.id].boosts"
                       />
                     </mat-form-field>
                   }

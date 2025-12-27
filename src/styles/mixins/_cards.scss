@@ -1,10 +1,37 @@
+// ============================================================================
+// Card Mixins
+// ============================================================================
+// Flexible card component system with theming support.
+// Provides structured layouts for headers, bodies, footers, menus, and scores.
+//
+// @requires sass:map - For map manipulation and merging
+// @requires global - For pdz-color() function and theme access
+// @requires buttons - For integrated button styling
+// ============================================================================
+
 @use "./buttons" as *;
 @use "sass:map";
 @use "../../styles/global.scss" as *;
 
-$card-defaults: ();
+// ----------------------------------------------------------------------------
+// Card Mixin
+// ----------------------------------------------------------------------------
 
+/// Creates a themed card component with header, body, and footer sections.
+/// Includes built-in support for menus, scores, and sprite grids.
+///
+/// @param {String} $style ['menu'] - Theme style (menu, primary, secondary, etc.)
+/// @param {Map} $overrides [()] - Map of properties to override defaults
+/// @output Complete card styling with nested component support
+/// @example scss
+///   .my-card {
+///     @include pdz-card('primary', (
+///       border-radius: var(--pdz-shape-corner-lg),
+///       sprites-columns: 8
+///     ));
+///   }
 @mixin pdz-card($style: "menu", $overrides: ()) {
+  // Dynamic defaults based on style parameter
   $card-defaults: (
     background: pdz-color(#{$style}-container),
     color: pdz-color(on-#{$style}-container),
@@ -21,6 +48,7 @@ $card-defaults: ();
     footer-padding: var(--pdz-space-xs) var(--pdz-space-md),
     menu-item-font-size: 1rem,
     menu-item-padding: var(--pdz-space-md),
+    menu-width: null,
     sprites-columns: 6,
     sprites-min-size: 36px,
     sprites-gap: var(--pdz-space-sm),
@@ -28,6 +56,7 @@ $card-defaults: ();
 
   $config: map.merge($card-defaults, $overrides);
 
+  // Base card styling
   background-color: map.get($config, "background");
   color: map.get($config, "color");
   border-radius: map.get($config, "border-radius");
@@ -37,6 +66,10 @@ $card-defaults: ();
   display: flex;
   flex-direction: column;
   height: 100%;
+
+  // ----------------------------------------------------------------------------
+  // Card Header
+  // ----------------------------------------------------------------------------
 
   .card-header {
     border-radius: map.get($config, "border-radius")
@@ -51,6 +84,7 @@ $card-defaults: ();
     .more-btn {
       @include icon-button(());
     }
+
     .card-title {
       display: flex;
       flex-direction: column;
@@ -63,11 +97,14 @@ $card-defaults: ();
       align-self: stretch;
       display: flex;
       align-items: center;
-      border-radius: 0.625rem;
+      border-radius: var(--pdz-shape-corner-sm);
       font-size: 0.8rem;
       line-height: 0.9rem;
       font-weight: bold;
+      justify-content: center;
+      text-align: center;
 
+      // Score variants
       &.pdz-background-neg {
         background-color: pdz-color(negative);
         color: pdz-color(on-negative);
@@ -84,14 +121,12 @@ $card-defaults: ();
         background-color: pdz-color(menu-container);
         color: pdz-color(on-menu-container);
       }
-
-      color: pdz-color(on-secondary-container);
-      border-radius: var(--pdz-shape-corner-sm);
-
-      justify-content: center;
-      text-align: center;
     }
   }
+
+  // ----------------------------------------------------------------------------
+  // Card Menu
+  // ----------------------------------------------------------------------------
 
   .card-menu {
     position: relative;
@@ -121,22 +156,37 @@ $card-defaults: ();
         cursor: pointer;
         font-size: map.get($config, "menu-item-font-size");
         text-wrap: nowrap;
+        color: inherit;
+        text-align: left;
+
         &:hover {
           background-color: map.get($config, "menu-hover");
+        }
+
+        &:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
         }
       }
     }
   }
 
+  // ----------------------------------------------------------------------------
+  // Card Body
+  // ----------------------------------------------------------------------------
+
   .card-body {
     padding: map.get($config, "body-padding");
     flex-grow: 1;
+    overflow: auto;
 
     .body-header {
       font-size: var(--pdz-font-size-sm);
       color: pdz-color(on-primary-container);
+      margin-bottom: var(--pdz-space-xs);
     }
 
+    // Sprite grid layout
     .sprites {
       display: grid;
       grid-template-columns: repeat(
@@ -147,6 +197,10 @@ $card-defaults: ();
     }
   }
 
+  // ----------------------------------------------------------------------------
+  // Card Footer
+  // ----------------------------------------------------------------------------
+
   .card-footer {
     padding: map.get($config, "footer-padding");
     border-top: map.get($config, "border-width")
@@ -155,6 +209,7 @@ $card-defaults: ();
     justify-content: flex-end;
     align-items: center;
     gap: var(--pdz-space-2xs);
+    flex-shrink: 0;
 
     .footer-link {
       @include flat-button(

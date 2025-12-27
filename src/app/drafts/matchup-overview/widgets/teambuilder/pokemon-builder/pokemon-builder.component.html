@@ -1,0 +1,562 @@
+<div class="header">
+  <div class="header__title">{{ pokemon.name }}</div>
+  <div class="view-tabs" role="tablist" aria-label="Pokemon view tabs">
+    <div
+      class="view-tab view-tab--details"
+      role="tab"
+      tabindex="0"
+      [attr.aria-selected]="view === 'details'"
+      [class.active]="view === 'details'"
+      (click)="selectView('details', $event)"
+      (keydown.enter)="selectView('details', $event)"
+      (keydown.space)="selectView('details', $event)"
+    >
+      Details
+    </div>
+    <div
+      class="view-tab view-tab--moves"
+      role="tab"
+      tabindex="0"
+      [attr.aria-selected]="view === 'moves'"
+      [class.active]="view === 'moves'"
+      (click)="selectMoveView($event)"
+      (keydown.enter)="selectMoveView($event)"
+      (keydown.space)="selectMoveView($event)"
+    >
+      Moves
+    </div>
+    <div
+      class="view-tab view-tab--stats"
+      role="tab"
+      tabindex="0"
+      [attr.aria-selected]="view === 'stats'"
+      [class.active]="view === 'stats'"
+      (click)="selectView('stats', $event)"
+      (keydown.enter)="selectView('stats', $event)"
+      (keydown.space)="selectView('stats', $event)"
+    >
+      Stats
+    </div>
+    <!-- <div
+      class="view-tab view-tab--stats"
+      role="tab"
+      tabindex="0"
+      [attr.aria-selected]="view === 'roles'"
+      [class.active]="view === 'roles'"
+      (click)="selectView('roles', $event)"
+      (keydown.enter)="selectView('roles', $event)"
+      (keydown.space)="selectView('roles', $event)"
+    >
+      Roles
+    </div>
+    <div
+      class="view-tab view-tab--stats"
+      role="tab"
+      tabindex="0"
+      [attr.aria-selected]="view === 'calcs'"
+      [class.active]="view === 'calcs'"
+      (click)="selectView('calcs', $event)"
+      (keydown.enter)="selectView('calcs', $event)"
+      (keydown.space)="selectView('calcs', $event)"
+    >
+      Calcs
+    </div> -->
+  </div>
+</div>
+@switch (view) {
+  @case ("details") {
+    <div class="view view--details">
+      <div class="section">
+        <div class="input-field input-field--nickname">
+          <label for="nickname" class="input-field__label">Nickname</label>
+          <div class="input-field__container">
+            <input
+              id="nickname"
+              type="text"
+              class="input-field__input"
+              [(ngModel)]="pokemon.nickname"
+              placeholder="Enter nickname"
+            />
+          </div>
+        </div>
+        <pdz-animated-selector
+          [options]="[255, 0]"
+          [selected]="pokemon.happiness"
+          [label]="'Happiness'"
+          direction="horizontal"
+          [(ngModel)]="pokemon.happiness"
+        />
+        <pdz-animated-selector
+          [options]="getGenderOptions(pokemon)"
+          [selected]="pokemon.gender"
+          label="Gender"
+          direction="horizontal"
+          [(ngModel)]="pokemon.gender"
+        />
+      </div>
+      <div class="section">
+        <div
+          class="input-field input-field--items"
+          [class.open]="openDropdown === 'item'"
+          (click)="toggleDropdown('item', $event)"
+          tabindex="0"
+          role="button"
+          aria-haspopup="listbox"
+        >
+          <label for="item" class="input-field__label">Item</label>
+          <div class="dropdown-control">
+            @if (getSelectedItem(); as selectedItem) {
+              <img
+                [src]="getItemIcon(selectedItem.pngId)"
+                class="dropdown-icon"
+                width="20"
+                height="20"
+                [alt]="selectedItem.name + ' icon'"
+              />
+            }
+            <span class="dropdown-label">{{
+              pokemon.item || "Select Item"
+            }}</span>
+            <span class="dropdown-arrow" aria-hidden="true">▾</span>
+          </div>
+          @if (openDropdown === "item") {
+            <div class="dropdown-list" role="listbox">
+              <div class="dropdown-search">
+                <input
+                  type="text"
+                  placeholder="Search items..."
+                  [(ngModel)]="itemSearchQuery"
+                  (ngModelChange)="filterItems()"
+                  (click)="$event.stopPropagation()"
+                />
+                <button>X</button>
+              </div>
+
+              @if (filteredItems.length === 0) {
+                <div class="dropdown-empty">No items found</div>
+              } @else {
+                <ul class="dropdown-items-list">
+                  @for (item of filteredItems; track item.id) {
+                    <li
+                      class="dropdown-item"
+                      [class.selected]="item.name === pokemon.item"
+                      role="option"
+                      (click)="selectItem(item.name, $event)"
+                    >
+                      <img
+                        [src]="getItemIcon(item.pngId)"
+                        class="dropdown-item-icon"
+                        width="20"
+                        height="20"
+                        [alt]="item.name + ' icon'"
+                      />
+                      <span class="dropdown-item-label">{{ item.name }}</span>
+                    </li>
+                  }
+                </ul>
+              }
+            </div>
+          }
+        </div>
+        <div
+          class="input-field input-field--tera"
+          [class.open]="openDropdown === 'tera'"
+          (click)="toggleDropdown('tera', $event)"
+          tabindex="0"
+          role="button"
+          aria-haspopup="listbox"
+        >
+          <label for="tera" class="input-field__label">Tera</label>
+          <div class="dropdown-control" #teraControl>
+            @if (pokemon.teraType) {
+              <img
+                [src]="getTeraIcon(pokemon.teraType)"
+                class="dropdown-icon"
+                width="20"
+                height="20"
+                [alt]="pokemon.teraType + ' icon'"
+              />
+            }
+            <span class="dropdown-label">{{
+              pokemon.teraType || "Select Tera"
+            }}</span>
+            <span class="dropdown-arrow" aria-hidden="true">▾</span>
+          </div>
+          @if (openDropdown === "tera") {
+            <ul class="dropdown-list" role="listbox">
+              @for (type of pokemon.teraTypes; track type) {
+                <li
+                  class="dropdown-item"
+                  role="option"
+                  (click)="selectTeraType(type, $event)"
+                >
+                  <img
+                    [src]="getTeraIcon(type)"
+                    class="dropdown-item-icon"
+                    width="20"
+                    height="20"
+                    [alt]="type + ' icon'"
+                  />
+                  <span class="dropdown-item-label">{{ type }}</span>
+                </li>
+              }
+            </ul>
+          }
+        </div>
+        <pdz-animated-selector
+          [options]="pokemon.abilities"
+          [selected]="pokemon.ability"
+          label="Ability"
+          [(ngModel)]="pokemon.ability"
+        />
+      </div>
+
+      <div class="section">
+        <div class="input-field--horizontal input-field--shiny">
+          <label for="shiny" class="input-field__label">Shiny</label>
+          <div class="input-field__container">
+            <input [(ngModel)]="pokemon.shiny" type="checkbox" />
+          </div>
+        </div>
+        <div class="input-field">
+          <div class="input-field__header">
+            <label for="export" class="input-field__label">Export</label>
+            <button
+              class="input-field__button"
+              (click)="copyToClipboard(pokemon.export())"
+            >
+              <pdz-icon [size]="16" name="content_copy" />
+            </button>
+          </div>
+          <div class="input-field__container">
+            <textarea
+              id="export"
+              spellcheck="false"
+              [value]="pokemon.export()"
+            ></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+  @case ("moves") {
+    <div class="view view--moves">
+      <div class="view__section--moves">
+        <div class="moves-list section__body">
+          @for (moveSlot of [0, 1, 2, 3]; track moveSlot) {
+            <button
+              class="button button--moves"
+              [class.selected]="selectedMove === moveSlot"
+              [class.set]="pokemon.moves[moveSlot]"
+              [style.background]="typeColor(pokemon.moves[moveSlot]?.type)"
+              (click)="selectedMove = moveSlot"
+            >
+              {{ pokemon.moves[moveSlot]?.name || "Select Move" }}
+            </button>
+          }
+        </div>
+        <div class="learnset" role="listbox">
+          <div class="learnset__search">
+            <input
+              type="text"
+              placeholder="Search moves..."
+              [(ngModel)]="moveSearchQuery"
+              (ngModelChange)="filterMoves()"
+              (click)="$event.stopPropagation()"
+            />
+            <button (click)="selectMove(selectedMove, null, $event)">✕</button>
+          </div>
+          @if (filteredMoves === null) {
+            <pdz-loading></pdz-loading>
+          } @else if (filteredMoves.length === 0) {
+            <div class="learnset__empty-state">No moves found</div>
+          } @else {
+            <div class="learnset__table-wrapper">
+              <div class="learnset__table">
+                <div class="learnset__header">
+                  <span
+                    class="learnset__col learnset__col--type"
+                    [class.learnset__col--sorted]="sortColumn === 'type'"
+                    (click)="sortByColumn('type')"
+                    role="button"
+                    tabindex="0"
+                    >Type</span
+                  >
+                  <span class="learnset__col learnset__col--category"></span>
+                  <span
+                    class="learnset__col learnset__col--name"
+                    [class.learnset__col--sorted]="sortColumn === 'name'"
+                    (click)="sortByColumn('name')"
+                    role="button"
+                    tabindex="0"
+                    >Move</span
+                  >
+                  <span class="learnset__col learnset__col--desc" tabindex="0"
+                    >Description</span
+                  >
+                  <span
+                    class="learnset__col learnset__col--power"
+                    [class.learnset__col--sorted]="sortColumn === 'power'"
+                    (click)="sortByColumn('power')"
+                    role="button"
+                    tabindex="0"
+                    >Power</span
+                  >
+                  <span
+                    class="learnset__col learnset__col--accuracy"
+                    [class.learnset__col--sorted]="sortColumn === 'accuracy'"
+                    (click)="sortByColumn('accuracy')"
+                    role="button"
+                    tabindex="0"
+                    >Acc.</span
+                  >
+                  <span
+                    class="learnset__col learnset__col--strength"
+                    [class.learnset__col--sorted]="sortColumn === 'strength'"
+                    (click)="sortByColumn('strength')"
+                    role="button"
+                    tabindex="0"
+                    >Strength</span
+                  >
+                </div>
+                <ul class="learnset__list">
+                  @for (move of filteredMoves; track move.id) {
+                    <li
+                      class="learnset__item"
+                      [class.learnset__item--selected]="isMoveSelected(move)"
+                      [class.learnset__item--stab]="move.isStab"
+                      role="option"
+                      (click)="selectMove(selectedMove, move, $event)"
+                    >
+                      <div class="learnset__col learnset__col--type">
+                        <div
+                          class="learnset__type-badge"
+                          [style.background]="typeColor(move.type)"
+                        >
+                          {{ move.type }}
+                        </div>
+                      </div>
+                      <img
+                        class="learnset__col learnset__col--category"
+                        [src]="categoryIcon(move.category)"
+                      />
+                      <span class="learnset__col learnset__col--name">{{
+                        move.name
+                      }}</span>
+                      <span class="learnset__col learnset__col--desc">{{
+                        move.desc
+                      }}</span>
+                      <span class="learnset__col learnset__col--power">{{
+                        move.basePower + (move.modified?.basePower ? "*" : "")
+                      }}</span>
+                      <span class="learnset__col learnset__col--accuracy">{{
+                        move.accuracy + (move.modified?.accuracy ? "*" : "")
+                      }}</span>
+                      <span class="learnset__col learnset__col--strength">{{
+                        move.strength | number: "1.0-1"
+                      }}</span>
+                    </li>
+                  }
+                </ul>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+      <div class="view__section--coverage">
+        @for (pokemon of matchupData.typechart[1].team; track pokemon.id) {
+          <div
+            class="sprite-wrapper"
+            [style.background-color]="getCoverageEffectiveness(pokemon)"
+          >
+            <pdz-sprite size="3rem" [pokemon]="pokemon" />
+          </div>
+        }
+      </div>
+    </div>
+  }
+  @case ("stats") {
+    <div class="view view--stats">
+      <div class="view__section">
+        <div class="section__header">Stats</div>
+        <div class="section__body section__body--stats">
+          @for (stat of STATS; track stat) {
+            <div class="stat">
+              <div class="stat__row">
+                <label [for]="'stat-' + $index" class="stat-label">
+                  {{ stat.full }}
+                </label>
+                @if (
+                  pokemon.stats[stat.id].get() != pokemon.stats[stat.id].mid()
+                ) {
+                  <button
+                    class="btn-reset"
+                    (click)="pokemon.stats[stat.id].reset()"
+                  >
+                    Reset
+                  </button>
+                }
+              </div>
+
+              <div class="stat__row">
+                <div class="stat-base">
+                  <span class="base-label">Base</span>
+                  <span
+                    class="base-value"
+                    [style.background-color]="
+                      statColor(pokemon.stats[stat.id].base)
+                    "
+                    >{{ pokemon.stats[stat.id].base }}</span
+                  >
+                </div>
+                <input
+                  [id]="'stat-' + $index"
+                  type="range"
+                  [style.accent-color]="getSliderColor(stat.id)"
+                  [min]="pokemon.stats[stat.id].min()"
+                  [max]="pokemon.stats[stat.id].max()"
+                  class="slider slider-stat"
+                  [ngModel]="pokemon.stats[stat.id].get()"
+                  (ngModelChange)="pokemon.stats[stat.id].set($event)"
+                />
+                <input
+                  class="input input-stat"
+                  [id]="'stat-' + $index"
+                  type="number"
+                  [min]="pokemon.stats[stat.id].min()"
+                  [max]="pokemon.stats[stat.id].max()"
+                  [ngModel]="pokemon.stats[stat.id].get()"
+                  (ngModelChange)="pokemon.stats[stat.id].set($event)"
+                />
+              </div>
+              <div class="stat__row">
+                <div class="stat__row--values">
+                  <div class="input-field--inline">
+                    <label [for]="'stat-ev-' + $index" class="input__label"
+                      >EVs</label
+                    >
+                    <input
+                      [id]="'stat-ev-' + $index"
+                      type="number"
+                      [min]="0"
+                      [max]="252"
+                      [step]="getStep()"
+                      class="input input-stat"
+                      [(ngModel)]="pokemon!.stats[stat.id].evs"
+                    />
+                  </div>
+                  <div class="input-field--inline">
+                    <label [for]="'stat-iv-' + $index" class="input__label"
+                      >IVs</label
+                    >
+                    <input
+                      [id]="'stat-iv-' + $index"
+                      type="number"
+                      [min]="0"
+                      [max]="31"
+                      class="input input-stat"
+                      [(ngModel)]="pokemon!.stats[stat.id].ivs"
+                    />
+                  </div>
+                </div>
+                @if (stat.id === "hp") {
+                  <div class="hp-rating">
+                    @let rating = hpRating(pokemon.stats[stat.id].get());
+                    <pdz-icon
+                      class="hp-star"
+                      type="material"
+                      size="sm"
+                      name="star"
+                      [fill]="rating > 0"
+                    />
+                    <pdz-icon
+                      class="hp-star"
+                      type="material"
+                      size="sm"
+                      name="star"
+                      [fill]="rating > 1"
+                    />
+                    <pdz-icon
+                      class="hp-star"
+                      type="material"
+                      size="sm"
+                      name="star"
+                      [fill]="rating > 2"
+                    />
+                  </div>
+                } @else {
+                  <div class="nature-buttons">
+                    <button
+                      class="btn-nature btn-positive"
+                      [class.active]="pokemon.nature.boost === stat.id"
+                      (click)="setNature(stat.id, 'positive')"
+                    >
+                      +
+                    </button>
+                    <button
+                      class="btn-nature btn-negative"
+                      [class.active]="pokemon.nature.drop === stat.id"
+                      (click)="setNature(stat.id, 'negative')"
+                    >
+                      -
+                    </button>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="view__section">
+        <div class="section__header">Speed Tiers</div>
+        <div class="section__body">
+          @for (tier of getSpeedTiers(); track $index) {
+            <div
+              class="speedtier-wrapper"
+              [class.dragging]="isDragging(tier)"
+              (dragstart)="onDragStart(tier, $event)"
+              (dragover)="onDragOver(tier, $event)"
+              (dragleave)="onDragLeave($event)"
+              (drop)="onDrop(tier, $event)"
+              (dragend)="onDragEnd()"
+            >
+              @if (shouldShowPlaceholder(tier) && draggedTier) {
+                <div class="speedtier speedtier-placeholder aTeam">
+                  <div class="sprite-wrapper">
+                    <pdz-sprite [pokemon]="draggedTier.pokemon" />
+                  </div>
+                  <div class="speed">
+                    {{ tier.speed + 1 }}
+                  </div>
+                </div>
+              }
+              <div
+                class="speedtier"
+                [class.aTeam]="tier.team === '0'"
+                [class.bTeam]="tier.team === '1'"
+                [class.draggable]="tier.team === '0'"
+                [class.dragging]="isDragging(tier)"
+                [attr.draggable]="tier.team === '0'"
+              >
+                <div class="sprite-wrapper">
+                  <pdz-sprite [pokemon]="tier.pokemon" />
+                </div>
+                <div class="speed">
+                  {{ tier.speed }}
+                </div>
+                <div class="modifiers">
+                  @for (modifier of tier.modifiers; track $index) {
+                    <span class="modifier">
+                      {{ modifier }}
+                    </span>
+                  }
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  }
+}

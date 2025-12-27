@@ -9,7 +9,7 @@
 
 .select-label {
   display: block;
-  @include apply-typography(label-medium);
+  @include apply-typography(label-md);
   font-weight: var(--pdz-font-weight-bold);
   color: pdz-color(menu-darker);
 }
@@ -21,7 +21,7 @@
   color: pdz-color(on-surface);
   border: 1px solid pdz-color(outline);
   border-radius: var(--pdz-shape-corner-sm);
-  @include apply-typography(body-medium);
+  @include apply-typography(body-md);
   cursor: pointer;
   transition: all 0.2s ease;
 

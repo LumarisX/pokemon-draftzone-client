@@ -20,11 +20,11 @@
   text-align: center;
 
   h1 {
-    @include apply-typography(headline-medium);
+    @include apply-typography(headline-md);
   }
 
   .form-description {
-    @include apply-typography(body-small);
+    @include apply-typography(body-sm);
   }
 }
 
@@ -50,7 +50,7 @@
 }
 
 .form-label {
-  @include apply-typography(label-medium);
+  @include apply-typography(label-md);
   color: pdz-color(on-surface);
   margin-bottom: var(--pdz-space-xs);
   font-weight: 500;
@@ -62,7 +62,7 @@
 }
 
 .form-label-inline {
-  @include apply-typography(label-small);
+  @include apply-typography(label-sm);
   color: pdz-color(on-surface);
   margin-bottom: var(--pdz-space-xs);
   font-weight: 500;
@@ -71,7 +71,7 @@
 .form-input,
 .form-textarea,
 .form-select {
-  @include apply-typography(body-medium);
+  @include apply-typography(body-md);
   width: 100%;
   padding: var(--pdz-space-sm) var(--pdz-space-md);
   background-color: pdz-color(menu-container);
@@ -169,14 +169,14 @@
   }
 
   .checkbox-label {
-    @include apply-typography(body-small);
+    @include apply-typography(body-sm);
     color: pdz-color(on-menu-container);
     user-select: none;
   }
 }
 
 .error-message {
-  @include apply-typography(body-small);
+  @include apply-typography(body-sm);
   color: pdz-color(error);
   margin-top: var(--pdz-space-xs);
   display: block;

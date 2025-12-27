@@ -53,14 +53,7 @@ export class LeagueNewComponent implements OnInit {
   leagueForm!: FormGroup;
 
   // --- Data for Selects ---
-  rulesets = [
-    'Nat Dex Gen 9',
-    'Paldea Dex',
-    'Unova Dex',
-    'OU',
-    'Ubers',
-    'Custom',
-  ];
+
   formats = [
     'Singles',
     'Doubles (VGC)',

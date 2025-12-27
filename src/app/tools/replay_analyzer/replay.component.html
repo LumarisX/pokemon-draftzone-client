@@ -253,6 +253,26 @@
               {{ event.message }}
             </div>
           </div>
+        }
+        <div class="w-full">
+          <h2 class="text-xl font-bold fill-">Events</h2>
+          <div class="border-2 border-menu-400 rounded w-full">
+            @for (event of replayData.events; track event) {
+              <div
+                class="py-1 px-2 border-b border-menu-400 w-full"
+                [ngClass]="playerClass(event.player)"
+              >
+                <span class="font-semibold"> Turn {{ event.turn }}:</span>
+                {{ event.message }}
+              </div>
+            }
+          </div>
+        </div>
+        <div class="w-full flex justify-center">
+          <replay-chart
+            class="w-full bg-slate-200 rounded-lg border-2 border-slate-400 max-w-160"
+            [data]="replayData.stats"
+          ></replay-chart>
         </div>
         <div class="w-full flex justify-center">
           <replay-chart

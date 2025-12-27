@@ -1,20 +1,22 @@
 import { CommonModule } from '@angular/common';
 import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
   OnChanges,
+  OnDestroy,
   Output,
   SimpleChanges,
   inject,
 } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { getNameByPid, getPidByName } from '../../data/namedex';
 import { DraftOptions, Pokemon } from '../../interfaces/pokemon';
 import { SpriteService } from '../../services/sprite.service';
 
-type SpritePokemon = Pokemon<DraftOptions & { loaded?: boolean }>;
+type SpritePokemon = Pokemon<DraftOptions>;
 
 @Component({
   selector: 'pdz-sprite',
@@ -22,18 +24,13 @@ type SpritePokemon = Pokemon<DraftOptions & { loaded?: boolean }>;
   imports: [CommonModule, MatTooltipModule, MatProgressSpinnerModule],
   styleUrl: './sprite.component.scss',
   templateUrl: './sprite.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SpriteComponent implements OnChanges {
+export class SpriteComponent implements OnChanges, OnDestroy {
   private spriteService = inject(SpriteService);
+  private cdr = inject(ChangeDetectorRef);
 
-  @Input()
-  set pokemon(value: SpritePokemon) {
-    this._pokemon = { ...value, loaded: false };
-  }
-  get pokemon(): SpritePokemon {
-    return this._pokemon;
-  }
-
+  @Input({ required: true }) pokemon!: SpritePokemon;
   @Input() tooltipPosition:
     | 'before'
     | 'after'
@@ -42,35 +39,26 @@ export class SpriteComponent implements OnChanges {
     | 'left'
     | 'right'
     | null = null;
-  @Input() set name(value: string) {
-    const id = getPidByName(value);
-    if (!id) return;
-    this._pokemon = { id, name: value };
-  }
-  get name() {
-    return this._pokemon.name;
-  }
   @Input() size?: string;
-  @Input() set pid(value: string) {
-    const name = getNameByPid(value);
-    this._pokemon = { id: value, name };
-  }
-  get pid() {
-    return this._pokemon.id;
-  }
   @Input() flipped: string | boolean | null = null;
-  @Input() disabled? = false;
+  @Input() disabled?: boolean = false;
 
-  @Output() loaded = new EventEmitter<void>();
+  @Output() loadedEvent = new EventEmitter<void>();
 
-  _pokemon!: SpritePokemon;
-  readonly UNKNOWN_SPRITE_PATH = this.spriteService.UNKNOWN_SPRITE_PATH;
-  path = this.UNKNOWN_SPRITE_PATH;
+  protected loaded = false;
+  protected readonly UNKNOWN_SPRITE_PATH =
+    this.spriteService.UNKNOWN_SPRITE_PATH;
+  protected path = this.UNKNOWN_SPRITE_PATH;
   private _baseClasses: string[] = [];
   private _baseFlip = false;
   private _fallbackPath: string | undefined;
+  private _destroyed = false;
 
-  get classes(): string[] {
+  protected get pokemonName(): string {
+    return this.pokemon?.name ?? 'Unknown';
+  }
+
+  protected get classes(): string[] {
     const classes = [...this._baseClasses];
     const isUnknownSprite = this.path === this.UNKNOWN_SPRITE_PATH;
     if (!isUnknownSprite) {
@@ -89,14 +77,13 @@ export class SpriteComponent implements OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    const pokemonChanged =
-      changes['pokemon']?.currentValue ||
-      changes['name']?.currentValue ||
-      changes['pid']?.currentValue;
-
-    if (pokemonChanged && this._pokemon) {
-      this.updateData(this._pokemon);
+    if (changes['pokemon'] && this.pokemon?.id) {
+      this.updateData(this.pokemon);
     }
+  }
+
+  ngOnDestroy(): void {
+    this._destroyed = true;
   }
 
   updateData(pokemon: SpritePokemon) {
@@ -109,10 +96,12 @@ export class SpriteComponent implements OnChanges {
     this._fallbackPath = spriteData.fallbackPath;
     this._baseClasses = spriteData.classes;
     this._baseFlip = spriteData.flip;
+    this.loaded = false;
   }
 
-  fallback(): void {
-    this.pokemon.loaded = true;
+  protected fallback(): void {
+    if (this._destroyed) return;
+
     if (this.path !== this.UNKNOWN_SPRITE_PATH) {
       if (this._fallbackPath) {
         this.path = this._fallbackPath;
@@ -120,15 +109,16 @@ export class SpriteComponent implements OnChanges {
       } else {
         this.path = this.UNKNOWN_SPRITE_PATH;
       }
-    } else {
-      console.warn(
-        `Sprite for ${this.pokemon?.name || 'unknown'} already failed, showing fallback.`,
-      );
     }
+    this.loaded = true;
+    this.cdr.markForCheck();
   }
 
-  onSpriteLoaded() {
-    this.pokemon.loaded = true;
-    this.loaded.emit();
+  protected onSpriteLoaded(): void {
+    if (this._destroyed) return;
+
+    this.loaded = true;
+    this.loadedEvent.emit();
+    this.cdr.markForCheck();
   }
 }

@@ -80,6 +80,7 @@ export class SummaryCoreComponent {
     'spd',
     'spe',
     'bst',
+    'cst',
   ];
 
   sort(sortState: Sort): void {
@@ -109,12 +110,28 @@ export class SummaryCoreComponent {
     return `var(--pdz-color-scale-${sign}-${Math.min(level, 7)})`;
   }
 
+  cstColor(cstValue: number | undefined): string | undefined {
+    if (cstValue === undefined) return undefined;
+    const diff = cstValue - this.baseValue * 4;
+    if (diff > -25 && diff <= 0) return 'var(--pdz-color-scale-neutral)';
+    const sign = diff > 0 ? 'positive' : 'negative';
+    let level: number;
+    if (diff > 0) {
+      level = Math.floor(diff / 25) + 1;
+    } else {
+      level = Math.floor((Math.abs(diff) - 1) / 25) + 1;
+    }
+    return `var(--pdz-color-scale-${sign}-${Math.min(level, 7)})`;
+  }
+
   private getStatValue(pokemon: any, stat: string): number | string {
     switch (stat) {
       case 'name':
         return pokemon.name;
       case 'bst':
         return pokemon.bst;
+      case 'cst':
+        return pokemon.cst;
       default:
         return pokemon.baseStats[stat as Stat];
     }

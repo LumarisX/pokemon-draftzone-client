@@ -1,4 +1,5 @@
-export function typeColor(type: string) {
+export function typeColor(type?: string | null) {
+  if (!type) return undefined;
   switch (type) {
     case 'Bug':
       return '#91A119';
@@ -35,7 +36,7 @@ export function typeColor(type: string) {
     case 'Steel':
       return '#60A1B8';
     case 'Stellar':
-      return '#FFF';
+      return 'linear-gradient(120deg in hsl longer hue, hsl(0 75% 45%) 0%, hsl(360 75% 45%) 100%)';
     case 'Water':
       return '#2980EF';
   }

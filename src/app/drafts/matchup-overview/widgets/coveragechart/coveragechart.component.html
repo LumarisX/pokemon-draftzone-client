@@ -1,0 +1,128 @@
+<div class="widget-container">
+  <div class="widget-header">
+    <div class="widget-label">Offensive Coverage Chart</div>
+    <div class="widget-options">
+      <mat-slide-toggle [(ngModel)]="abilities" labelPosition="before"
+        >Abilities</mat-slide-toggle
+      >
+    </div>
+  </div>
+  <div class="widget-body">
+    <table>
+      <thead>
+        <tr>
+          <th></th>
+          @for (pokemon of typechart.team; track $index) {
+            <th
+              class="action-cell"
+              (mouseenter)="columnHovered.next(pokemon.id)"
+              (mouseleave)="columnHovered.next(null)"
+              [class.column-hovered]="pokemon.id === columnHovered.value"
+            >
+              <div class="sprite-wrapper">
+                <pdz-sprite
+                  size="3rem"
+                  tooltipPosition="left"
+                  flipped
+                  [pokemon]="pokemon"
+                ></pdz-sprite>
+              </div>
+            </th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for (pokemon of team; track $index) {
+          <tr>
+            <td class="action-cell">
+              <div class="sprite-wrapper">
+                <pdz-sprite
+                  size="3rem"
+                  tooltipPosition="left"
+                  flipped
+                  [pokemon]="pokemon"
+                ></pdz-sprite>
+              </div>
+            </td>
+            @for (oppPokemon of typechart.team; track $index) {
+              <td
+                class="type-cell"
+                (mouseenter)="columnHovered.next(oppPokemon.id)"
+                (mouseleave)="columnHovered.next(null)"
+                [class.column-hovered]="oppPokemon.id === columnHovered.value"
+              >
+                @let best = getBestWeakness(pokemon, oppPokemon);
+                <div class="type-wrapper" [ngClass]="weaknessColor(best.weak)">
+                  @if (best.move) {
+                    <img
+                      [src]="
+                        '../../../assets/icons/types/gen9icon/' +
+                        best.move.type +
+                        '.png'
+                      "
+                      onerror="this.src='../../../assets/icons/types/Unknown.png'"
+                      [alt]="best.move.type"
+                    />
+                    <!-- {{best.weak === 1 ? '' : best.weak }} -->
+                  }
+                </div>
+              </td>
+            }
+          </tr>
+        }
+
+        <tr>
+          <th>
+            <div
+              class="stat-label weaks"
+              matTooltip="Pokémon weak to this type"
+            >
+              Weaks
+            </div>
+          </th>
+          @for (oppPokemon of typechart.team; track $index) {
+            <td
+              class="stat-cell"
+              (mouseenter)="columnHovered.next(oppPokemon.id)"
+              (mouseleave)="columnHovered.next(null)"
+              [class.column-hovered]="oppPokemon.id === columnHovered.value"
+            >
+              @let weaks = weakCount(oppPokemon);
+              <div class="flex-wrapper">
+                <div class="stat-wrapper" [ngClass]="weakColor(weaks)">
+                  {{ weaks | number: "1.0-0" }}
+                </div>
+              </div>
+            </td>
+          }
+        </tr>
+        <tr>
+          <th>
+            <div
+              class="stat-label resists"
+              matTooltip="Pokémon resistant or immune to this type"
+            >
+              Resists
+            </div>
+          </th>
+          @for (oppPokemon of typechart.team; track $index) {
+            <td
+              class="stat-cell"
+              (mouseenter)="columnHovered.next(oppPokemon.id)"
+              (mouseleave)="columnHovered.next(null)"
+              [class.column-hovered]="oppPokemon.id === columnHovered.value"
+            >
+              @let resists = resistCount(oppPokemon);
+
+              <div class="flex-wrapper">
+                <div class="stat-wrapper" [ngClass]="resistColor(resists)">
+                  {{ resists | number: "1.0-0" }}
+                </div>
+              </div>
+            </td>
+          }
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

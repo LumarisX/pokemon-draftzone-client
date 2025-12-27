@@ -50,7 +50,35 @@ $theme-overrides: (
     loading-secondary-high: "orange-600",
     loading-secondary-low: "orange-400",
 
-    // Hero
+    // Semantic Data Colors
+    positive: "mint-400",
+    on-positive: "mint-950",
+    positive-container: "mint-900",
+    on-positive-container: "mint-100",
+    negative: "rose-250",
+    on-negative: "rose-950",
+    negative-container: "rose-900",
+    on-negative-container: "rose-100",
+
+    // Scale Colors
+    scale-neutral: "gray-200",
+    scale-positive: "mint-300",
+    scale-negative: "rose-300",
+    scale-positive-1: "mint-100",
+    scale-positive-2: "mint-250",
+    scale-positive-3: "mint-400",
+    scale-positive-4: "mint-500",
+    scale-positive-5: "mint-600",
+    scale-positive-6: "mint-700",
+    scale-positive-7: "mint-800",
+    scale-negative-1: "rose-100",
+    scale-negative-2: "rose-250",
+    scale-negative-3: "rose-400",
+    scale-negative-4: "rose-500",
+    scale-negative-5: "rose-600",
+    scale-negative-6: "rose-700",
+    scale-negative-7: "rose-800",
+
     hero: linear-gradient(
         135deg,
         var(--pdz-color-cyan-400),

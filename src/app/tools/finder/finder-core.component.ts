@@ -12,6 +12,7 @@ import { RouterModule } from '@angular/router';
 import { DataService, ResultData } from '../../services/data.service';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { FindOptionComponent } from './find-option/find-option.component';
+import { typeColor } from '../../util/styling';
 
 type QueryGroup = {
   queries: QueryBuilder[];
@@ -174,4 +175,6 @@ export class FinderCoreComponent implements OnInit {
         break;
     }
   }
+
+  typeColor = typeColor;
 }

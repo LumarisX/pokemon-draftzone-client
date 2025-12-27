@@ -1,6 +1,27 @@
+// ============================================================================
+// Button Mixins
+// ============================================================================
+// Comprehensive button system with theme support and consistent styling.
+// Provides base, flat, icon, and floating button variants with customization.
+//
+// @requires sass:map - For map manipulation and merging
+// @requires global - For pdz-color() function and theme access
+// ============================================================================
+
 @use "../../styles/global.scss" as *;
 @use "sass:map";
 
+// ----------------------------------------------------------------------------
+// Theme Functions
+// ----------------------------------------------------------------------------
+
+/// Creates a themed button color map based on a theme color name.
+/// Generates consistent background, hover, selected, and border colors.
+///
+/// @param {String} $theme-color ['primary'] - Theme color name (primary, secondary, menu)
+/// @return {Map} Button color configuration map
+/// @example scss
+///   $custom-theme: create-themed-button-map('secondary');
 @function create-themed-button-map($theme-color: "primary") {
   @return (
     background: pdz-color("#{$theme-color}-container"),
@@ -12,10 +33,21 @@
   );
 }
 
-$button-primary-defaults: create-themed-button-map("primary");
-$button-secondary-defaults: create-themed-button-map("secondary");
-$button-menu-defaults: create-themed-button-map("menu");
+// ----------------------------------------------------------------------------
+// Theme Presets
+// ----------------------------------------------------------------------------
 
+/// Pre-configured theme maps for common button types
+$button-primary-defaults: create-themed-button-map("primary") !default;
+$button-secondary-defaults: create-themed-button-map("secondary") !default;
+$button-menu-defaults: create-themed-button-map("menu") !default;
+
+// ----------------------------------------------------------------------------
+// Base Configuration
+// ----------------------------------------------------------------------------
+
+/// Base button default configuration
+/// All button mixins extend from these defaults
 $base-button-defaults: (
   padding: 0,
   font-size: 1rem,
@@ -29,42 +61,75 @@ $base-button-defaults: (
   cursor-disabled: not-allowed,
   cursor: pointer,
   transition: all 0.2s ease-in-out,
-);
+) !default;
 
+// ----------------------------------------------------------------------------
+// Base Button Mixin
+// ----------------------------------------------------------------------------
+
+/// Base button mixin that provides core button styling and behavior.
+/// All specialized button mixins should use this as their foundation.
+///
+/// @param {Map} $overrides [()] - Map of properties to override defaults
+/// @output Complete button styling including layout, states, and accessibility
+/// @example scss
+///   .my-button {
+///     @include base-button((
+///       padding: 1rem 2rem,
+///       background: blue,
+///       border-radius: 8px
+///     ));
+///   }
 @mixin base-button($overrides: ()) {
   $config: map.merge($base-button-defaults, $overrides);
 
+  // Layout
   display: inline-flex;
   align-items: center;
   justify-content: center;
 
+  // Dimensions
   height: map.get($config, "height");
   width: map.get($config, "width");
   min-width: map.get($config, "min-width");
   max-width: map.get($config, "max-width");
   min-height: map.get($config, "min-height");
   max-height: map.get($config, "max-height");
+
+  // Spacing
   padding: map.get($config, "padding");
   gap: map.get($config, "gap");
+
+  // Typography
   font-size: map.get($config, "font-size");
   font-family: map.get($config, "font-family");
   font-weight: map.get($config, "font-weight");
-  background-color: map.get($config, "background");
-  color: map.get($config, "color");
-  border-radius: map.get($config, "border-radius");
-  border-width: map.get($config, "border-width");
-  border-style: map.get($config, "border-style");
-  border-color: map.get($config, "border-color");
-  border: map.get($config, "border");
-
-  cursor: map.get($config, "cursor");
-  transition: map.get($config, "transition");
   text-decoration: none;
   white-space: nowrap;
 
+  // Appearance
+  background-color: map.get($config, "background");
+  color: map.get($config, "color");
+  border-radius: map.get($config, "border-radius");
+
+  // Borders (support both shorthand and individual properties)
+  @if map.get($config, "border") {
+    border: map.get($config, "border");
+  } @else {
+    border-width: map.get($config, "border-width");
+    border-style: map.get($config, "border-style");
+    border-color: map.get($config, "border-color");
+  }
+
+  // Interaction
+  cursor: map.get($config, "cursor");
+  transition: map.get($config, "transition");
+
+  // States
   &.selected {
     background-color: map.get($config, "background-selected");
   }
+
   &:not(:disabled):not(.disabled):hover {
     background-color: map.get($config, "background-hover");
     color: map.get($config, "color-hover");
@@ -84,34 +149,52 @@ $base-button-defaults: (
   }
 }
 
+// ----------------------------------------------------------------------------
+// Flat Button Variants
+// ----------------------------------------------------------------------------
+
+/// Flat button default configuration
 $flat-button-defaults: (
   padding: var(--pdz-space-xs) var(--pdz-space-xl),
   border-radius: var(--pdz-shape-corner-sm),
   background: transparent,
   background-hover: none,
   border-color: transparent,
-);
+) !default;
 
+/// Flat button mixin - minimal styling with subtle hover effects
+/// @param {Map} $overrides [()] - Override configuration
 @mixin flat-button($overrides: ()) {
   $config: map.merge($flat-button-defaults, $overrides);
   @include base-button($config);
 }
 
+/// Flat button with menu theme colors
+/// @param {Map} $overrides [()] - Override configuration
 @mixin flat-button-menu($overrides: ()) {
   $config: map.merge($button-menu-defaults, $overrides);
   @include flat-button($config);
 }
 
+/// Flat button with primary theme colors
+/// @param {Map} $overrides [()] - Override configuration
 @mixin flat-button-primary($overrides: ()) {
   $config: map.merge($button-primary-defaults, $overrides);
   @include flat-button($config);
 }
 
+/// Flat button with secondary theme colors
+/// @param {Map} $overrides [()] - Override configuration
 @mixin flat-button-secondary($overrides: ()) {
   $config: map.merge($button-secondary-defaults, $overrides);
   @include flat-button($config);
 }
 
+// ----------------------------------------------------------------------------
+// Icon Button Variants
+// ----------------------------------------------------------------------------
+
+/// Icon button default configuration - square buttons for icons only
 $icon-button-defaults: (
   padding: var(--pdz-space-xs),
   border-radius: var(--pdz-shape-corner-sm),
@@ -120,44 +203,77 @@ $icon-button-defaults: (
   background: transparent,
   background-hover: none,
   border-color: transparent,
-);
+) !default;
 
+/// Icon button mixin - square button optimized for single icons
+/// @param {Map} $overrides [()] - Override configuration
 @mixin icon-button($overrides: ()) {
   $config: map.merge($icon-button-defaults, $overrides);
   @include base-button($config);
 }
 
+/// Icon button with primary theme colors
+/// @param {Map} $overrides [()] - Override configuration
 @mixin icon-button-primary($overrides: ()) {
   $config: map.merge($button-primary-defaults, $overrides);
   @include icon-button($config);
 }
 
+/// Icon button with secondary theme colors
+/// @param {Map} $overrides [()] - Override configuration
 @mixin icon-button-secondary($overrides: ()) {
   $config: map.merge($button-secondary-defaults, $overrides);
   @include icon-button($config);
 }
 
+/// Icon button with menu theme colors
+/// @param {Map} $overrides [()] - Override configuration
 @mixin icon-button-menu($overrides: ()) {
   $config: map.merge($button-menu-defaults, $overrides);
   @include icon-button($config);
 }
 
+// ----------------------------------------------------------------------------
+// Floating Action Button (FAB)
+// ----------------------------------------------------------------------------
+
+/// Floating action button default configuration
+$float-button-defaults: (
+  background: pdz-color(menu-container),
+  background-hover: pdz-color(menu-container-hover),
+  background-disabled: pdz-color(surface-disabled),
+  padding: var(--pdz-space-md),
+  border-radius: var(--pdz-shape-corner-full),
+  box-shadow: var(--pdz-level-3),
+  box-shadow-hover: var(--pdz-level-4),
+  border: 1px solid pdz-color(menu-border),
+  color: pdz-color(on-menu-container),
+  color-disabled: pdz-color(on-surface-disabled),
+  transition: all 0.2s ease-in-out,
+  icon-size: 2rem,
+) !default;
+
+/// Floating action button - circular elevated button for primary actions
+/// @param {Map} $overrides [()] - Override configuration
 @mixin float-button($overrides: ()) {
-  background-color: pdz-color(menu-container);
-  padding: var(--pdz-space-md);
-  border-radius: var(--pdz-shape-corner-full);
-  box-shadow: var(--pdz-level-3);
-  border: 1px solid pdz-color(menu-border);
-  color: pdz-color(on-menu-container);
-  transition: all 0.2s ease-in-out;
+  $config: map.merge($float-button-defaults, $overrides);
+
+  background-color: map.get($config, "background");
+  padding: map.get($config, "padding");
+  border-radius: map.get($config, "border-radius");
+  box-shadow: map.get($config, "box-shadow");
+  border: map.get($config, "border");
+  color: map.get($config, "color");
+  transition: map.get($config, "transition");
+
   &:hover:not(:disabled) {
-    box-shadow: var(--pdz-level-4);
-    background-color: pdz-color(menu-container-hover);
+    box-shadow: map.get($config, "box-shadow-hover");
+    background-color: map.get($config, "background-hover");
   }
 
   &:disabled {
-    background-color: pdz-color(surface-disabled);
-    color: pdz-color(on-surface-disabled);
+    background-color: map.get($config, "background-disabled");
+    color: map.get($config, "color-disabled");
     border-width: 0;
   }
 
@@ -167,28 +283,54 @@ $icon-button-defaults: (
     height: fit-content;
     max-height: fit-content;
     max-width: fit-content;
-    font-size: 2rem;
+    font-size: map.get($config, "icon-size");
   }
 }
 
+// ----------------------------------------------------------------------------
+// Floating Button Container with Radial Menu
+// ----------------------------------------------------------------------------
+
+/// Floating buttons container default configuration
+$float-buttons-defaults: (
+  position: sticky,
+  bottom: var(--pdz-space-lg),
+  margin-right: var(--pdz-space-lg),
+  z-index: 10000,
+  radial-radius: 6rem,
+  icon-size: 2rem,
+  transition-base: 220ms ease,
+  transition-opacity: 180ms ease,
+  button-scale: 0.85,
+  stagger-delay: 40ms,
+) !default;
+
+/// Floating buttons container with radial menu expansion
+/// Creates a FAB that expands into a radial menu of action buttons
+/// @param {Map} $overrides [()] - Override configuration
 @mixin float-buttons($overrides: ()) {
-  position: sticky;
-  bottom: var(--pdz-space-lg);
+  $config: map.merge($float-buttons-defaults, $overrides);
+
+  position: map.get($config, "position");
+  bottom: map.get($config, "bottom");
   margin-left: auto;
-  margin-right: var(--pdz-space-lg);
+  margin-right: map.get($config, "margin-right");
   width: fit-content;
   height: fit-content;
-  z-index: 10000;
-  --radial-radius: 6rem;
+  z-index: map.get($config, "z-index");
+  --radial-radius: #{map.get($config, "radial-radius")};
   overflow: visible;
+  // Icon sizing for Material icons
   mat-icon {
     display: flex;
     width: fit-content;
     height: fit-content;
     max-height: fit-content;
     max-width: fit-content;
-    font-size: 2rem;
+    font-size: map.get($config, "icon-size");
   }
+
+  // Radial menu container
   .radial-stack {
     position: relative;
     display: grid;
@@ -197,6 +339,7 @@ $icon-button-defaults: (
     height: fit-content;
   }
 
+  // All buttons in the radial menu
   button {
     background-color: pdz-color(menu-container);
     padding: var(--pdz-space-md);
@@ -204,31 +347,35 @@ $icon-button-defaults: (
     box-shadow: var(--pdz-level-3);
     border: 1px solid pdz-color(menu-container-low);
     color: pdz-color(on-menu-container);
+
     &:hover:not(:disabled) {
       box-shadow: var(--pdz-level-4);
       background-color: pdz-color(menu-container-hover);
       border: 1px solid pdz-color(menu-container);
     }
 
+    // Main toggle button
     &.open-tools-button {
       position: relative;
       z-index: 2;
     }
 
+    // Radial menu action buttons (hidden by default)
     &.tool-button {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%) rotate(var(--angle, -90deg)) translate(0)
-        rotate(calc(var(--angle, -90deg) * -1)) scale(0.85);
+        rotate(calc(var(--angle, -90deg) * -1))
+        scale(#{map.get($config, "button-scale")});
       opacity: 0;
       pointer-events: none;
       will-change: transform, opacity;
       transition:
-        transform 220ms ease,
-        opacity 180ms ease,
-        box-shadow 180ms ease,
-        background-color 180ms ease;
+        transform #{map.get($config, "transition-base")},
+        opacity #{map.get($config, "transition-opacity")},
+        box-shadow #{map.get($config, "transition-opacity")},
+        background-color #{map.get($config, "transition-opacity")};
     }
 
     &:disabled {
@@ -238,6 +385,7 @@ $icon-button-defaults: (
     }
   }
 
+  // Open state - expand buttons radially
   .radial-stack.open > button.tool-button {
     transform: translate(-50%, -50%) rotate(var(--angle, -90deg))
       translate(var(--radial-radius)) rotate(calc(var(--angle, -90deg) * -1))
@@ -245,16 +393,19 @@ $icon-button-defaults: (
     opacity: 1;
     pointer-events: auto;
   }
+
+  // Staggered animation delays for smooth sequential appearance
   .radial-stack.open > button:nth-of-type(2).tool-button {
     transition-delay: 0ms;
   }
   .radial-stack.open > button:nth-of-type(3).tool-button {
-    transition-delay: 40ms;
+    transition-delay: #{map.get($config, "stagger-delay")};
   }
   .radial-stack.open > button:nth-of-type(4).tool-button {
-    transition-delay: 80ms;
+    transition-delay: calc(#{map.get($config, "stagger-delay")} * 2);
   }
 
+  // Button positioning angles (customizable via --angle CSS variable)
   .radial-stack > button:nth-of-type(2).tool-button {
     --angle: -90deg;
   }
