@@ -16,12 +16,12 @@ export const STATS = [
   },
   {
     id: 'spa',
-    name: 'Spa',
+    name: 'SpA',
     full: 'Sp. Attack',
   },
   {
     id: 'spd',
-    name: 'Spd',
+    name: 'SpD',
     full: 'Sp. Defense',
   },
   {
@@ -32,6 +32,11 @@ export const STATS = [
 ] as const;
 
 export type Stat = (typeof STATS)[number]['id'];
+
+export function getStatName(statId: string): string | undefined {
+  const stat = STATS.find((s) => s.id === statId);
+  return stat?.name;
+}
 
 export type Nature = {
   name: string;

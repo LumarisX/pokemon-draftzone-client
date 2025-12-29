@@ -1,4 +1,5 @@
 import {
+  getStatName,
   Nature,
   NATURES,
   STATS,
@@ -536,10 +537,7 @@ function statsToString(
 ): string {
   return Object.entries(stats)
     .filter(([_, v]) => predicate(v))
-    .map(
-      ([k, v]) =>
-        `${v} ${k === 'hp' ? k.toUpperCase() : k[0].toUpperCase() + k.slice(1)}`,
-    )
+    .map(([k, v]) => `${v} ${getStatName(k) ?? '???'}`)
     .join(' / ');
 }
 
