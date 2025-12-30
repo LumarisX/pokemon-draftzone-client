@@ -1,9 +1,9 @@
 import { ExtendedType, StatsTable, Type } from '../../data';
 import { PokemonId } from '../../data/namedex';
-import { Pokemon } from '../../interfaces/draft';
+import { DraftPokemon } from '../../interfaces/draft';
 
 export type Speedtier = {
-  pokemon: Pokemon;
+  pokemon: DraftPokemon;
   speed: number;
   modifiers: string[];
   team: number;
@@ -11,7 +11,7 @@ export type Speedtier = {
 };
 
 export type SpeedChart = {
-  teams: (Pokemon & {
+  teams: (DraftPokemon & {
     spe: number;
     tiers: {
       modifiers: string[];
@@ -23,7 +23,7 @@ export type SpeedChart = {
 };
 
 export type Summary = {
-  team: (Pokemon & {
+  team: (DraftPokemon & {
     abilities: string[];
     index: number;
     types: string[];
@@ -67,7 +67,7 @@ export type Summary = {
   };
 };
 
-export type TypeChartPokemon = Pokemon & {
+export type TypeChartPokemon = DraftPokemon & {
   weak: [
     {
       [key in ExtendedType]: number;
@@ -139,10 +139,15 @@ export type Coverage = {
 export type MoveCategory = {
   categoryName: string;
   show?: boolean;
-  moves: { name: string; type: string; pokemon: Pokemon[]; desc: string }[];
+  moves: {
+    name: string;
+    type: string;
+    pokemon: DraftPokemon[];
+    desc: string;
+  }[];
 };
 
-export type CoverageChart = Pokemon & {
+export type CoverageChart = DraftPokemon & {
   coverage: {
     physical: [
       {

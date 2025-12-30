@@ -14,15 +14,15 @@ export type Draft = {
     diff: string;
   };
   owner: string;
-  team: Pokemon[];
+  team: DraftPokemon[];
 };
 
-export type Pokemon = {
+export type DraftPokemon = {
   id: PokemonId | '';
   name: string;
   shiny?: boolean;
   nickname?: string;
-  draftFormes?: Pokemon[];
+  draftFormes?: DraftPokemon[];
   modifiers?: {
     moves?: string[];
     abilities?: string[];

@@ -25,7 +25,7 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { BehaviorSubject, Observable, switchMap } from 'rxjs';
 import { DataService } from '../../../../services/data.service';
-import { Draft, Pokemon } from '../../../../interfaces/draft';
+import { Draft, DraftPokemon } from '../../../../interfaces/draft';
 import { Opponent } from '../../../../interfaces/opponent';
 import {
   PokemonFormGroup,
@@ -44,8 +44,8 @@ import { DraftService } from '../../../../services/draft.service';
     MatDividerModule,
     MatStepperModule,
     MatIconModule,
-    TeamFormComponent
-],
+    TeamFormComponent,
+  ],
   providers: [
     {
       provide: STEPPER_GLOBAL_OPTIONS,
@@ -67,7 +67,7 @@ export class OpponentFormCoreComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private draftService = inject(DraftService);
 
-  pokemonList$ = new BehaviorSubject<Pokemon[]>([]);
+  pokemonList$ = new BehaviorSubject<DraftPokemon[]>([]);
   opponentForm!: OpponentForm;
   isImporting = false;
   ruleset: string | null = null;
@@ -135,7 +135,7 @@ export type OpponentFormData = {
   stage: string;
   teamName: string;
   coach: string;
-  team: Pokemon[];
+  team: DraftPokemon[];
 };
 
 export class OpponentForm extends FormGroup<{
@@ -148,7 +148,7 @@ export class OpponentForm extends FormGroup<{
 }> {
   constructor(
     params: Partial<Opponent>,
-    pokemonList$: BehaviorSubject<Pokemon[]>,
+    pokemonList$: BehaviorSubject<DraftPokemon[]>,
   ) {
     super({
       details: new FormGroup({

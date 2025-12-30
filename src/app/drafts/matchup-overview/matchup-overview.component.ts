@@ -16,10 +16,10 @@ import duration from 'dayjs/plugin/duration';
 import { IconComponent } from '../../images/icon/icon.component';
 import { LoadingComponent } from '../../images/loading/loading.component';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
-import { Pokemon } from '../../interfaces/draft';
+import { DraftPokemon } from '../../interfaces/draft';
 import { MatchupService } from '../../services/matchup.service';
 import { TeambuilderService } from '../../services/teambuilder.service';
-import { PokemonSet } from '../../tools/teambuilder/pokemon-builder.model';
+import { PokemonBuilder } from './widgets/teambuilder/pokemon-builder/pokemon-builder.model';
 import { DraftOverviewPath } from '../draft-overview/draft-overview-routing.module';
 import { MatchupData, TypeChartPokemon } from './matchup-interface';
 import { MatchupComponent } from './matchup/matchup.component';
@@ -156,7 +156,7 @@ export class MatchupOverviewComponent implements OnInit {
       });
   }
 
-  team: PokemonSet[] = [];
+  team: PokemonBuilder[] = [];
   private teambuilderService = inject(TeambuilderService);
 
   loadTeam() {
@@ -193,12 +193,11 @@ export class MatchupOverviewComponent implements OnInit {
     }
   }
 
-  addPokemonToTeam(pokemon: Pokemon) {
+  addPokemonToTeam(pokemon: DraftPokemon) {
     this.teambuilderService
       .getPokemonData(pokemon.id, this.matchupData.details.ruleset)
       .subscribe((pokemonData) => {
-        console.log(pokemonData);
-        const pokemonSet = PokemonSet.fromTeambuilder(pokemonData, {
+        const pokemonSet = PokemonBuilder.fromTeambuilder(pokemonData, {
           shiny: pokemon.shiny,
           nickname: pokemon.nickname,
           level: this.matchupData.details.level,
@@ -210,7 +209,7 @@ export class MatchupOverviewComponent implements OnInit {
   private checkIfMobile(): void {
     this.isMobile = window.innerWidth < 768;
   }
-  removePokemonFromTeam(pokemon: Pokemon) {
+  removePokemonFromTeam(pokemon: DraftPokemon) {
     this.team = this.team.filter((p) => p.id !== pokemon.id);
   }
 }

@@ -1,4 +1,4 @@
-import { Pokemon } from '../interfaces/draft';
+import { DraftPokemon } from '../interfaces/draft';
 
 export namespace League {
   export type Team = {
@@ -20,7 +20,7 @@ export namespace League {
     logo: string;
   };
 
-  type MatchPokemon = Pokemon & {
+  type MatchPokemon = DraftPokemon & {
     status?: 'brought' | 'fainted';
   };
 

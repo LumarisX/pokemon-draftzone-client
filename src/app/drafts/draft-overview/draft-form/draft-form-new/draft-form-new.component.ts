@@ -5,7 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { DraftService } from '../../../../services/draft.service';
 import { getNameByPid } from '../../../../data/namedex';
-import { Pokemon } from '../../../../interfaces/draft';
+import { DraftPokemon } from '../../../../interfaces/draft';
 import { PokemonFormGroup } from '../../../../util/forms/team-form/team-form.component';
 import { DraftOverviewPath } from '../../draft-overview-routing.module';
 import { DraftFormCoreComponent } from '../draft-form-core/draft-form-core.component';
@@ -13,11 +13,7 @@ import { DraftFormCoreComponent } from '../draft-form-core/draft-form-core.compo
 @Component({
   selector: 'draft-form-new',
   standalone: true,
-  imports: [
-    RouterModule,
-    MatButtonModule,
-    DraftFormCoreComponent
-],
+  imports: [RouterModule, MatButtonModule, DraftFormCoreComponent],
   templateUrl: './draft-form-new.component.html',
   styleUrl: '../draft-form.component.scss',
 })
@@ -43,7 +39,7 @@ export class DraftFormNewComponent implements OnInit {
   }>;
   draftPath = DraftOverviewPath;
 
-  params: { team?: Pokemon[] } = {};
+  params: { team?: DraftPokemon[] } = {};
 
   ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {

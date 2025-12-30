@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
-import { Pokemon } from '../../interfaces/draft';
+import { DraftPokemon } from '../../interfaces/draft';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
 
 @Component({

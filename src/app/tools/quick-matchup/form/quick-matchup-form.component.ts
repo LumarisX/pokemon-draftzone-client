@@ -1,6 +1,14 @@
 import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 import { Location } from '@angular/common';
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, inject } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  inject,
+} from '@angular/core';
 import {
   AbstractControl,
   FormArray,
@@ -17,7 +25,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatStepperModule } from '@angular/material/stepper';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { BehaviorSubject, filter, Subject, takeUntil } from 'rxjs';
-import { Pokemon } from '../../../interfaces/draft';
+import { DraftPokemon } from '../../../interfaces/draft';
 import { DataService } from '../../../services/data.service';
 import { FormatSelectComponent } from '../../../util/format-select/format.component';
 import {
@@ -41,8 +49,8 @@ import { getNameByPid } from '../../../data/namedex';
     MatIconModule,
     FormatSelectComponent,
     TeamFormComponent,
-    RulesetSelectComponent
-],
+    RulesetSelectComponent,
+  ],
   providers: [
     {
       provide: STEPPER_GLOBAL_OPTIONS,
@@ -65,7 +73,7 @@ export class QuickMatchupFormComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
 
   destroy$ = new Subject<void>();
-  pokemonList$ = new BehaviorSubject<Pokemon[]>([]);
+  pokemonList$ = new BehaviorSubject<DraftPokemon[]>([]);
   @Input()
   quickForm: QuickForm | undefined;
 
@@ -75,13 +83,13 @@ export class QuickMatchupFormComponent implements OnInit, OnDestroy {
     this.route.queryParams.subscribe((params) => {
       const format: string | undefined = params['format'];
       const ruleset: string | undefined = params['ruleset'];
-      const team1: Pokemon[] | undefined = params['team1']
+      const team1: DraftPokemon[] | undefined = params['team1']
         ? (Array.isArray(params['team1'])
             ? params['team1']
             : [params['team1']]
           ).map((pid) => ({ id: pid, name: getNameByPid(pid) }))
         : undefined;
-      const team2: Pokemon[] | undefined = params['team2']
+      const team2: DraftPokemon[] | undefined = params['team2']
         ? (Array.isArray(params['team2'])
             ? params['team2']
             : [params['team2']]
@@ -167,11 +175,11 @@ export type QuickFormData = {
   format: string;
   ruleset: string;
   side1: {
-    team: Pokemon[];
+    team: DraftPokemon[];
     teamName: string;
   };
   side2: {
-    team: Pokemon[];
+    team: DraftPokemon[];
     teamName: string;
   };
 };
@@ -191,12 +199,12 @@ export class QuickForm extends FormGroup<{
   }>;
 }> {
   constructor(
-    pokemonList$: BehaviorSubject<Pokemon[]>,
+    pokemonList$: BehaviorSubject<DraftPokemon[]>,
     options: Partial<{
       ruleset: string;
       format: string;
-      team1: Pokemon[];
-      team2: Pokemon[];
+      team1: DraftPokemon[];
+      team2: DraftPokemon[];
     }> = {},
   ) {
     super({

@@ -3,7 +3,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ExtendedType } from '../../../../../data';
 import { SpriteComponent } from '../../../../../images/sprite/sprite.component';
-import { Pokemon } from '../../../../../interfaces/draft';
+import { DraftPokemon } from '../../../../../interfaces/draft';
 import { typeColor } from '../../../../../util/styling';
 import { CoverageChart, TypeChart } from '../../../matchup-interface';
 import { EffectivenessChartComponent } from './effectiveness-chart/effectiveness-chart.component';
@@ -22,7 +22,7 @@ import { EffectivenessChartComponent } from './effectiveness-chart/effectiveness
 export class CoverageComponent implements OnInit {
   @Input() typechart!: TypeChart;
   coverage: {
-    pokemon: Pokemon & {
+    pokemon: DraftPokemon & {
       weak: [
         {
           [key in ExtendedType]: number;

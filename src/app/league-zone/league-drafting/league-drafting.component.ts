@@ -4,7 +4,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
-import { Pokemon } from '../../interfaces/draft';
+import { DraftPokemon } from '../../interfaces/draft';
 import { TierPokemon } from '../../interfaces/tier-pokemon.interface';
 import {
   LeaguePokemon,
@@ -301,7 +301,7 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
     }
   }
 
-  draftPokemon(pokemon: Pokemon) {
+  draftPokemon(pokemon: DraftPokemon) {
     this.canDraftTeams = [];
     this.leagueService
       .draftPokemon(this.selectedTeam.id, pokemon)

@@ -15,7 +15,7 @@ import { BadgeSVG } from '../../../images/svg-components/badge.component';
 import { CircleSVG } from '../../../images/svg-components/circle.component';
 import { ShinySVG } from '../../../images/svg-components/shiny.component';
 import { XMarkSVG } from '../../../images/svg-components/xmark.component';
-import { Pokemon } from '../../../interfaces/draft';
+import { DraftPokemon } from '../../../interfaces/draft';
 import { SelectSearchComponent } from '../../dropdowns/select/select-search.component';
 
 @Component({
@@ -39,13 +39,13 @@ export class PokemonFormComponent implements OnInit {
   @Input() pokemonForm!: FormGroup;
   @Input() formIndex!: number;
   @Output() deletePokemonEvent = new EventEmitter<number>();
-  @Output() addPokemonEvent = new EventEmitter<Pokemon>();
+  @Output() addPokemonEvent = new EventEmitter<DraftPokemon>();
   @Input() color: string = 'page';
   @Input() colorValue: number | undefined;
 
   @Input() class: string = '';
 
-  pokemon: Pokemon = { name: '', id: '' };
+  pokemon: DraftPokemon = { name: '', id: '' };
   names = nameList();
 
   set allTeras(value: boolean) {
@@ -71,7 +71,7 @@ export class PokemonFormComponent implements OnInit {
   }
 
   static addPokemonForm(
-    pokemonData: Pokemon = {
+    pokemonData: DraftPokemon = {
       id: '',
       shiny: false,
       name: '',
@@ -114,7 +114,7 @@ export class PokemonFormComponent implements OnInit {
     return group;
   }
 
-  resultSelected(result: Pokemon | null) {
+  resultSelected(result: DraftPokemon | null) {
     if (result) {
       this.pokemonForm.patchValue({ name: result.name, id: result.id });
     } else {

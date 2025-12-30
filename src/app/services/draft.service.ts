@@ -1,12 +1,12 @@
 import { Injectable, inject } from '@angular/core';
 import { DraftFormData } from '../drafts/draft-overview/draft-form/draft-form-core/draft-form-core.component';
-import { Draft, Pokemon } from '../interfaces/draft';
+import { Draft, DraftPokemon } from '../interfaces/draft';
 import { Matchup } from '../interfaces/matchup';
 import { Opponent } from '../interfaces/opponent';
 import { ApiService } from './api.service';
 
 export type PokemonStat = {
-  pokemon: Pokemon;
+  pokemon: DraftPokemon;
   kills: number;
   indirect: number;
   brought: number;

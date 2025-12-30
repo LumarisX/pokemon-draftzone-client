@@ -37,7 +37,7 @@ import {
   takeUntil,
 } from 'rxjs/operators';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
-import { Pokemon } from '../../interfaces/draft';
+import { DraftPokemon } from '../../interfaces/draft';
 import { DataService } from '../../services/data.service';
 
 @Component({
@@ -82,10 +82,10 @@ export class PokemonSelectComponent implements OnInit, OnDestroy {
   highlightedIndex!: number;
 
   selectedForm = new FormControl<string | null>(null, [this.isLegal]);
-  options = new BehaviorSubject<Pokemon[]>([]);
-  filteredOptions = new BehaviorSubject<Pokemon[]>([]);
+  options = new BehaviorSubject<DraftPokemon[]>([]);
+  filteredOptions = new BehaviorSubject<DraftPokemon[]>([]);
 
-  @Output() pokemonSelected = new EventEmitter<Pokemon | null>();
+  @Output() pokemonSelected = new EventEmitter<DraftPokemon | null>();
   @Output() selectionCleared = new EventEmitter();
 
   private ruleset$ = new BehaviorSubject<string | null>(null);
@@ -105,7 +105,7 @@ export class PokemonSelectComponent implements OnInit, OnDestroy {
     this.ruleset$.next(value);
   }
 
-  get setPokemon(): Pokemon | null {
+  get setPokemon(): DraftPokemon | null {
     const value = this.selectedForm.value;
     return typeof value === 'string' || !value ? null : value;
   }
@@ -160,7 +160,7 @@ export class PokemonSelectComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  private _filter(value: string | Pokemon | null): Pokemon[] {
+  private _filter(value: string | DraftPokemon | null): DraftPokemon[] {
     const names = this.options.value;
     if (!value) return this.options.value;
     if (typeof value !== 'string') value = value.name;
@@ -183,15 +183,15 @@ export class PokemonSelectComponent implements OnInit, OnDestroy {
 
   isDisabled = false;
 
-  displayFn(pokemon: Pokemon | string | null): string {
+  displayFn(pokemon: DraftPokemon | string | null): string {
     if (typeof pokemon === 'string') return pokemon;
     return pokemon ? pokemon.name : '';
   }
 
-  private onChange: (value: Pokemon | null) => void = () => {};
+  private onChange: (value: DraftPokemon | null) => void = () => {};
   private onTouched: () => void = () => {};
 
-  writeValue(value: Pokemon | null): void {
+  writeValue(value: DraftPokemon | null): void {
     this.selectedForm.setValue(value?.name || null);
     this.onChange(value);
   }
@@ -208,7 +208,7 @@ export class PokemonSelectComponent implements OnInit, OnDestroy {
     this.isDisabled = isDisabled;
   }
 
-  selectOption(option: Pokemon | null): void {
+  selectOption(option: DraftPokemon | null): void {
     clearTimeout(this.blurTimeout);
     this.selectedForm.setValue(option?.name || null);
     this.onChange(option);
@@ -217,7 +217,7 @@ export class PokemonSelectComponent implements OnInit, OnDestroy {
     this.isOpen = false;
   }
 
-  trackByFn(index: number, item: Pokemon) {
+  trackByFn(index: number, item: DraftPokemon) {
     return item.id;
   }
 

@@ -1,4 +1,4 @@
-import { Pokemon } from '../interfaces/draft';
+import { DraftPokemon } from '../interfaces/draft';
 
 export type SpriteProperties = {
   id?: string;
@@ -51,8 +51,8 @@ export function getRandomPokemon() {
   return { id, name: data.name[0] };
 }
 
-let $nameList: Pokemon[] | undefined;
-export function nameList(): Pokemon[] {
+let $nameList: DraftPokemon[] | undefined;
+export function nameList(): DraftPokemon[] {
   if ($nameList) return $nameList;
   return ($nameList = Object.entries(Namedex)
     .map((e) => ({

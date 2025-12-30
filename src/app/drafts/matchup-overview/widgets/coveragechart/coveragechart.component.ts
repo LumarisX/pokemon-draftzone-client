@@ -12,8 +12,8 @@ import {
 import { SpriteComponent } from '../../../../images/sprite/sprite.component';
 import {
   Move,
-  PokemonSet,
-} from '../../../../tools/teambuilder/pokemon-builder.model';
+  PokemonBuilder,
+} from '../teambuilder/pokemon-builder/pokemon-builder.model';
 import { TypeChart, TypeChartPokemon } from '../../matchup-interface';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
@@ -38,7 +38,7 @@ type ScoreRange = {
 })
 export class CoverageComponent {
   @Input({ required: true }) typechart!: TypeChart;
-  @Input({ required: true }) team!: PokemonSet[];
+  @Input({ required: true }) team!: PokemonBuilder[];
 
   @Input()
   weakRanges: ScoreRange[] = [
@@ -72,7 +72,7 @@ export class CoverageComponent {
   }
 
   getBestWeakness(
-    pokemon: PokemonSet,
+    pokemon: PokemonBuilder,
     against: TypeChartPokemon,
   ): { weak: number; move?: Move } {
     const abilityIndex = this.abilities ? 0 : 1;

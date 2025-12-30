@@ -1,4 +1,4 @@
-import { Pokemon } from './draft';
+import { DraftPokemon } from './draft';
 
 export type Matchup = {
   _id: string;
@@ -13,7 +13,7 @@ export type Matchup = {
 export type Side = {
   _id?: string;
   teamName: string;
-  team: Pokemon[];
+  team: DraftPokemon[];
   coach?: string;
   paste?: String;
 };

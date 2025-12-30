@@ -1,6 +1,15 @@
 import { OverlayModule } from '@angular/cdk/overlay';
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  Input,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+  inject,
+} from '@angular/core';
 import {
   FormArray,
   FormControl,
@@ -14,7 +23,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
 import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import { SpriteComponent } from '../../../../images/sprite/sprite.component';
-import { Pokemon } from '../../../../interfaces/draft';
+import { DraftPokemon } from '../../../../interfaces/draft';
 import { SpeedChart, Speedtier } from '../../matchup-interface';
 import { SpeedtierComponent } from './speedtier/speedtier.component';
 
@@ -75,12 +84,12 @@ export class SpeedchartComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input()
   level = 100;
   filterOpen: boolean = false;
-  pokemons: (Pokemon & { spe: number; team: number })[] = [];
+  pokemons: (DraftPokemon & { spe: number; team: number })[] = [];
   enabledMons: [string | null, string | null] = [null, null];
   sortedTiers: {
     modifiers: string[];
     speed: number;
-    pokemon: Pokemon & {
+    pokemon: DraftPokemon & {
       spe: number;
     };
     team: number;
@@ -88,7 +97,7 @@ export class SpeedchartComponent implements OnInit, OnDestroy, AfterViewInit {
   speedGroups = new BehaviorSubject<
     {
       tiers: Speedtier[];
-      pokemon: Pokemon[];
+      pokemon: DraftPokemon[];
       opened: boolean;
     }[]
   >([]);
@@ -165,7 +174,7 @@ export class SpeedchartComponent implements OnInit, OnDestroy, AfterViewInit {
       groups.map((group) => ({
         tiers: group,
         opened: false,
-        pokemon: group.reduce((pokemon: Pokemon[], tier) => {
+        pokemon: group.reduce((pokemon: DraftPokemon[], tier) => {
           if (pokemon.every((p) => p.id !== tier.pokemon.id))
             pokemon.push(tier.pokemon);
           return pokemon;
@@ -192,7 +201,7 @@ export class SpeedchartComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   toggleView(
-    pokemon: Pokemon & {
+    pokemon: DraftPokemon & {
       spe: number;
       team: number;
     },

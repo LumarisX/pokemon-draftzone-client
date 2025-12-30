@@ -45,7 +45,7 @@ import { filter, map, take } from 'rxjs/operators';
 import { TERATYPES, TYPES } from '../../../data';
 import { getPidByName } from '../../../data/namedex';
 import { SpriteComponent } from '../../../images/sprite/sprite.component';
-import { Pokemon } from '../../../interfaces/draft';
+import { DraftPokemon } from '../../../interfaces/draft';
 import { DataService } from '../../../services/data.service';
 import { SlideToggleComponent } from '../../inputs/slide-toggle/slide-toggle.component';
 import { PokemonSelectComponent } from '../../pokemon-select/pokemon-select.component';
@@ -109,7 +109,7 @@ export class TeamFormComponent {
   @Input()
   teamArray!: FormArray<PokemonFormGroup>;
   @Input()
-  pokemonList$!: BehaviorSubject<Pokemon[]>;
+  pokemonList$!: BehaviorSubject<DraftPokemon[]>;
 
   @Output()
   isImporting = new EventEmitter<boolean>();
@@ -145,8 +145,8 @@ export class TeamFormComponent {
   }
 
   isSelected(
-    group: FormControl<Pokemon[] | null>,
-    formeOption: Pokemon,
+    group: FormControl<DraftPokemon[] | null>,
+    formeOption: DraftPokemon,
   ): boolean {
     return !!group.value?.some((f: any) => f.name === formeOption.name);
   }
@@ -180,7 +180,7 @@ export class TeamFormComponent {
     this.importInput = '';
   }
 
-  addPokemon(pokemon: Pokemon | null) {
+  addPokemon(pokemon: DraftPokemon | null) {
     if (
       pokemon &&
       this.teamArray.controls.every(
@@ -301,20 +301,23 @@ export class TeamFormComponent {
 }
 
 export class PokemonFormGroup extends FormGroup<{
-  pokemon: FormControl<Pokemon>;
+  pokemon: FormControl<DraftPokemon>;
   shiny: FormControl<boolean | null>;
   nickname: FormControl<string>;
   tera: FormControl<string[] | null>;
   z: FormControl<string[] | null>;
   dmax: FormControl<boolean | null>;
-  formes: FormControl<Pokemon[]>;
+  formes: FormControl<DraftPokemon[]>;
   moves: FormControl<string[]>;
   abilities: FormControl<string[]>;
 }> {
-  formeList?: Pokemon[];
-  constructor(pokemon: Pokemon, pokemonList: BehaviorSubject<Pokemon[]>) {
+  formeList?: DraftPokemon[];
+  constructor(
+    pokemon: DraftPokemon,
+    pokemonList: BehaviorSubject<DraftPokemon[]>,
+  ) {
     super({
-      pokemon: new FormControl<Pokemon>(pokemon, {
+      pokemon: new FormControl<DraftPokemon>(pokemon, {
         nonNullable: true,
         asyncValidators: [pokemonAsyncValidator(pokemonList)],
       }),
@@ -325,7 +328,7 @@ export class PokemonFormGroup extends FormGroup<{
       tera: new FormControl<string[] | null>(pokemon.capt?.tera ?? null),
       z: new FormControl<string[] | null>(pokemon.capt?.z ?? null),
       dmax: new FormControl<boolean | null>(false),
-      formes: new FormControl<Pokemon[]>(pokemon.draftFormes ?? [], {
+      formes: new FormControl<DraftPokemon[]>(pokemon.draftFormes ?? [], {
         nonNullable: true,
       }),
       moves: new FormControl<string[]>(pokemon.modifiers?.moves ?? [], {
@@ -338,7 +341,7 @@ export class PokemonFormGroup extends FormGroup<{
     this.controls.pokemon.updateValueAndValidity();
   }
 
-  toPokemon(): Pokemon {
+  toPokemon(): DraftPokemon {
     const capt = {
       tera: this.controls.tera.value?.length
         ? this.controls.tera.value
@@ -371,7 +374,7 @@ export class PokemonFormGroup extends FormGroup<{
 }
 
 function pokemonAsyncValidator(
-  pokemonList$: BehaviorSubject<Pokemon[]>,
+  pokemonList$: BehaviorSubject<DraftPokemon[]>,
 ): AsyncValidatorFn {
   return (control: AbstractControl): Observable<ValidationErrors | null> => {
     const pokemon = control.value;

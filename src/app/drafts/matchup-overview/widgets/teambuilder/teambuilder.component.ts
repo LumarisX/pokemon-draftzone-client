@@ -12,9 +12,9 @@ import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { IconComponent } from '../../../../images/icon/icon.component';
 import { SpriteComponent } from '../../../../images/sprite/sprite.component';
-import { Pokemon } from '../../../../interfaces/draft';
+import { DraftPokemon } from '../../../../interfaces/draft';
 import { TeambuilderService } from '../../../../services/teambuilder.service';
-import { PokemonSet } from '../../../../tools/teambuilder/pokemon-builder.model';
+import { PokemonBuilder } from './pokemon-builder/pokemon-builder.model';
 import { MatchupData } from '../../matchup-interface';
 import {
   MatchupPokemonBuilderComponent,
@@ -39,7 +39,7 @@ type Tab = number | 'add' | 'export';
 export class MatchupTeambuilderComponent implements OnInit, OnDestroy {
   @Input({ required: true }) matchupId!: string;
   @Input({ required: true }) matchupData!: MatchupData;
-  @Input({ required: true }) team!: PokemonSet[];
+  @Input({ required: true }) team!: PokemonBuilder[];
   @Output() closePanel = new EventEmitter<void>();
 
   private teambuilderService = inject(TeambuilderService);
@@ -53,12 +53,12 @@ export class MatchupTeambuilderComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {}
 
-  addPokemonToTeamAndSelect(pokemon: Pokemon) {
+  addPokemonToTeamAndSelect(pokemon: DraftPokemon) {
     const teamIndex = this.team.length;
     this.teambuilderService
       .getPokemonData(pokemon.id, this.matchupData.details.ruleset)
       .subscribe((pokemonData) => {
-        const pokemonSet = PokemonSet.fromTeambuilder(pokemonData, {
+        const pokemonSet = PokemonBuilder.fromTeambuilder(pokemonData, {
           shiny: pokemon.shiny,
           nickname: pokemon.nickname,
           level: this.matchupData.details.level,
@@ -68,7 +68,7 @@ export class MatchupTeambuilderComponent implements OnInit, OnDestroy {
       });
   }
 
-  isPokemonInTeam(pokemon: Pokemon): boolean {
+  isPokemonInTeam(pokemon: DraftPokemon): boolean {
     return this.team.some((teamMon) => teamMon.id === pokemon.id);
   }
 

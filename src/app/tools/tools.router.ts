@@ -4,7 +4,6 @@ import { FinderToolComponent } from './finder/finder-tool.component';
 import { QuickMatchupBaseComponent } from './quick-matchup/quick-matchup-base.component';
 import { RandomDraftComponent } from './random-draft/random-draft.component';
 import { ReplayComponent } from './replay_analyzer/replay.component';
-import { TeamBuilderComponent } from './teambuilder/teambuilder.component';
 import { TimeConverterComponent } from './time_converter/time_converter.component';
 import { ToolsComponent } from './tools.component';
 
@@ -31,10 +30,6 @@ const routes: Routes = [
   //   path: 'set-analyzer',
   //   component: SetAnalyzerComponent,
   // },
-  {
-    path: 'teambuilder',
-    component: TeamBuilderComponent,
-  },
   {
     path: 'quick-matchup',
     component: QuickMatchupBaseComponent,

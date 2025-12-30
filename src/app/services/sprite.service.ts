@@ -5,7 +5,7 @@ import {
   SpriteSetKey,
   SpriteSets,
 } from '../data/namedex';
-import { Pokemon } from '../interfaces/draft';
+import { DraftPokemon } from '../interfaces/draft';
 import { SettingsService } from '../pages/settings/settings.service';
 
 export type SpriteData = {
@@ -31,7 +31,7 @@ export class SpriteService {
    * @returns An object containing the primary path, a potential fallback path, CSS classes, and flip status.
    */
   public getSpriteData(
-    pokemon: Pick<Pokemon, 'id' | 'shiny'>,
+    pokemon: Pick<DraftPokemon, 'id' | 'shiny'>,
   ): SpriteData | null {
     let spriteSet = this.settingsService.settingsData.spriteSet;
     if (!(spriteSet && spriteSet in SpriteSets)) spriteSet = this.DEFAULT;

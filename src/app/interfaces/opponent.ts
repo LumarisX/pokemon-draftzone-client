@@ -1,4 +1,4 @@
-import { Pokemon } from './draft';
+import { DraftPokemon } from './draft';
 import { Match } from './matchup';
 
 export type Opponent = {
@@ -7,7 +7,7 @@ export type Opponent = {
   ruleset: string;
   coach?: string;
   stage: string;
-  team: Pokemon[];
+  team: DraftPokemon[];
   matches: Match[];
   score: [number, number] | null;
 };

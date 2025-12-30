@@ -8,7 +8,7 @@ import {
   MoveChart,
   Coverage,
 } from '../drafts/matchup-overview/matchup-interface';
-import { Pokemon } from '../interfaces/draft';
+import { DraftPokemon } from '../interfaces/draft';
 import { Type } from '../data';
 
 export type Planner = {
@@ -18,11 +18,11 @@ export type Planner = {
   coverage: Coverage;
   recommended: {
     all: {
-      pokemon: Pokemon[];
+      pokemon: DraftPokemon[];
       types: Type[][];
     };
     unique: {
-      pokemon: Pokemon[];
+      pokemon: DraftPokemon[];
       types: Type[][];
     };
   };

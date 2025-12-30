@@ -1,9 +1,8 @@
-
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DataService } from '../../services/data.service';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
-import { Pokemon } from '../../interfaces/draft';
+import { DraftPokemon } from '../../interfaces/draft';
 import { DraftOverviewPath } from '../../drafts/draft-overview/draft-overview-routing.module';
 import { RouterModule } from '@angular/router';
 
@@ -27,7 +26,7 @@ export class RandomDraftComponent {
     return this._count;
   }
 
-  team: Pokemon[] = [];
+  team: DraftPokemon[] = [];
 
   getRandom() {
     this.dataService

@@ -1,11 +1,12 @@
 import { inject, Injectable, OnDestroy } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { StatsTable, TeraType } from '../data';
-import { Pokemon } from '../interfaces/draft';
+import { Pokemon } from '../interfaces/pokemon';
 import {
-  PokemonSet,
-  TeambuilderPokemon,
-} from '../tools/teambuilder/pokemon-builder.model';
+  PokemonBuilder,
+  PokemonSetData,
+  PokemonData,
+} from '../drafts/matchup-overview/widgets/teambuilder/pokemon-builder/pokemon-builder.model';
 import { ApiService } from './api.service';
 import { WebSocketService } from './ws.service';
 
@@ -82,7 +83,10 @@ export class TeambuilderService implements OnDestroy {
     this.isConnected = false;
   }
 
-  getPokemonData(id: string, ruleset: string): Observable<TeambuilderPokemon> {
+  getPokemonData(
+    id: string,
+    ruleset: string,
+  ): Observable<Pokemon<PokemonData>> {
     return this.apiService.get('teambuilder/pokemonData', false, {
       id,
       ruleset,
@@ -100,7 +104,15 @@ export class TeambuilderService implements OnDestroy {
     return this.apiService.get('teambuilder/pats-matchup', false, data);
   }
 
-  getPokemonLearnset(pokemon: PokemonSet, ruleset: string) {
+  getMoveCalculations(params: {
+    attacker: PokemonSetData;
+    target: PokemonSetData;
+  }): Observable<setCalcs> {
+    this.ensureConnected();
+    return this.wsService.sendMessage<setCalcs>('move.calculations', params);
+  }
+
+  getPokemonLearnset(pokemon: PokemonBuilder, ruleset: string) {
     this.ensureConnected();
     return this.wsService.sendMessage<
       {

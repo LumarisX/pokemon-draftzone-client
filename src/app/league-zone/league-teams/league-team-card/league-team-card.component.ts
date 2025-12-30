@@ -1,12 +1,12 @@
 import { Component, Input } from '@angular/core';
-import { Pokemon } from '../../../interfaces/draft';
+import { DraftPokemon } from '../../../interfaces/draft';
 import { SpriteComponent } from '../../../images/sprite/sprite.component';
 import { PlusSignPipe } from '../../../util/pipes/plus-sign.pipe';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
-export type TeamPokemon = Pokemon & {
+export type TeamPokemon = DraftPokemon & {
   tier: number | string;
   record: {
     deaths: number;

@@ -8,11 +8,11 @@ import {
   TeambuilderService,
 } from '../../services/teambuilder.service';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
-import { Pokemon } from '../../interfaces/draft';
+import { DraftPokemon } from '../../interfaces/draft';
 import { compare } from '../../util';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
-import { PokemonSet } from '../teambuilder/pokemon-builder.model';
+import { PokemonBuilder } from '../../drafts/matchup-overview/widgets/teambuilder/pokemon-builder/pokemon-builder.model';
 
 @Component({
   selector: 'teambuilder-analyzer',
@@ -31,10 +31,10 @@ import { PokemonSet } from '../teambuilder/pokemon-builder.model';
 export class SetAnalyzerComponent implements OnInit {
   private teambuilderService = inject(TeambuilderService);
 
-  patList: { rank: number; pokemon: Pokemon; percent: number }[] = [];
-  selectedOpponent: Pokemon | undefined;
+  patList: { rank: number; pokemon: DraftPokemon; percent: number }[] = [];
+  selectedOpponent: DraftPokemon | undefined;
   link: string | undefined;
-  pokemonSet: PokemonSet | null = null;
+  pokemonSet: PokemonBuilder | null = null;
   results: [SetCalcs, SetCalcs] | undefined;
 
   ngOnInit(): void {

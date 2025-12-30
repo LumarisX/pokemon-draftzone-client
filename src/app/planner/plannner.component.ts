@@ -1,4 +1,3 @@
-
 import {
   AfterViewInit,
   ChangeDetectorRef,
@@ -38,7 +37,7 @@ import {
   TypeChart,
 } from '../drafts/matchup-overview/matchup-interface';
 import { LoadingComponent } from '../images/loading/loading.component';
-import { Pokemon } from '../interfaces/draft';
+import { DraftPokemon } from '../interfaces/draft';
 import { PlannerService } from '../services/planner.service';
 import { FinderCoreComponent } from '../tools/finder/finder-core.component';
 import { ensureNumber, ensureString } from '../util';
@@ -87,8 +86,8 @@ export interface LSDraftData {
     PlannerCoverageComponent,
     PlannerSettingsComponent,
     PlannerTeamComponent,
-    LoadingComponent
-],
+    LoadingComponent,
+  ],
 })
 export class PlannerComponent implements OnInit, AfterViewInit {
   private fb = inject(FormBuilder);
@@ -104,11 +103,11 @@ export class PlannerComponent implements OnInit, AfterViewInit {
   };
   recommended?: {
     all: {
-      pokemon: Pokemon[];
+      pokemon: DraftPokemon[];
       types: Type[][];
     };
     unique: {
-      pokemon: Pokemon[];
+      pokemon: DraftPokemon[];
       types: Type[][];
     };
   };
@@ -166,7 +165,7 @@ export class PlannerComponent implements OnInit, AfterViewInit {
       system: string;
       totalPoints: number;
       team: Partial<{
-        pokemon: Pokemon | null;
+        pokemon: DraftPokemon | null;
         capt: boolean;
         tier: string;
         value: number | null;
@@ -336,7 +335,7 @@ export class PlannerComponent implements OnInit, AfterViewInit {
     }
   }
 
-  resultSelected(formGroup: AbstractControl, result: Pokemon | null) {
+  resultSelected(formGroup: AbstractControl, result: DraftPokemon | null) {
     if (result) {
       formGroup.patchValue({ name: result.name, id: result.id });
     } else {
@@ -452,7 +451,7 @@ export class PlannerComponent implements OnInit, AfterViewInit {
 }
 
 export class TeamFormGroup extends FormGroup<{
-  pokemon: FormControl<Pokemon | null>;
+  pokemon: FormControl<DraftPokemon | null>;
   capt: FormControl<boolean>;
   tier: FormControl<string>;
   value: FormControl<number | null>;

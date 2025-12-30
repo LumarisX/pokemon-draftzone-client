@@ -16,7 +16,7 @@ import { LoadingComponent } from '../../../images/loading/loading.component';
 import { SpriteComponent } from '../../../images/sprite/sprite.component';
 import { PlusSVG } from '../../../images/svg-components/plus.component';
 import { TrashSVG } from '../../../images/svg-components/trash.component';
-import { Pokemon } from '../../../interfaces/draft';
+import { DraftPokemon } from '../../../interfaces/draft';
 import { Matchup } from '../../../interfaces/matchup';
 import { ReplayData } from '../../../tools/replay_analyzer/replay.interface';
 
@@ -119,13 +119,13 @@ export class OpponentScoreComponent implements OnInit {
   }
 
   private sideForm(
-    team: Pokemon[],
+    team: DraftPokemon[],
     side: {
       stats: [string, any][];
     } = { stats: [] },
   ): FormGroup {
     let stats = Object.fromEntries(side.stats);
-    let teamGroup = team.map((pokemon: Pokemon) => {
+    let teamGroup = team.map((pokemon: DraftPokemon) => {
       let monGroup = this.fb.group({
         pokemon: pokemon,
         kills: [stats[<PokemonId>pokemon.id]?.kills],

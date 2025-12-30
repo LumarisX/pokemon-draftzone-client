@@ -7,7 +7,7 @@ import { compare } from '../../../../util';
 import { Summary } from '../../matchup-interface';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { BehaviorSubject } from 'rxjs';
-import { Pokemon } from '../../../../interfaces/draft';
+import { DraftPokemon } from '../../../../interfaces/draft';
 import { StatsTable } from '../../../../data';
 
 @Component({
@@ -26,7 +26,7 @@ import { StatsTable } from '../../../../data';
 export class OverviewComponent {
   private _teams: Summary[] = [];
   $teams = new BehaviorSubject<
-    (Pokemon & {
+    (DraftPokemon & {
       abilities: string[];
       index: number;
       types: string[];

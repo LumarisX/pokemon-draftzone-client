@@ -25,8 +25,9 @@ import {
   isJumpPoint,
   Item,
   Move,
-  PokemonSet,
-} from '../../../../../tools/teambuilder/pokemon-builder.model';
+  PokemonBuilder,
+  PokemonSetData,
+} from './pokemon-builder.model';
 import { typeColor } from '../../../../../util/styling';
 import { MatchupData, TypeChartPokemon } from '../../../matchup-interface';
 import { AnimatedSelectorComponent } from '../animated-selector/animated-selector.component';
@@ -63,9 +64,9 @@ type SpeedTier = {
   ],
 })
 export class MatchupPokemonBuilderComponent implements OnInit, OnDestroy {
-  @Input({ required: true }) pokemon!: PokemonSet;
+  @Input({ required: true }) pokemon!: PokemonBuilder;
   @Input({ required: true }) matchupData!: MatchupData;
-  @Input({ required: true }) team!: PokemonSet[];
+  @Input({ required: true }) team!: PokemonBuilder[];
   @Input() view: PokemonBuilderView = 'details';
   @Output() viewChange = new EventEmitter<PokemonBuilderView>();
 
@@ -196,11 +197,11 @@ export class MatchupPokemonBuilderComponent implements OnInit, OnDestroy {
   private processedLearnsets = new Map<string, Move[]>();
   private learnsetRequests = new Map<string, boolean>();
 
-  private getCacheKey(pokemon: PokemonSet): string {
+  private getCacheKey(pokemon: PokemonBuilder): string {
     return `${pokemon.id}-${pokemon.ability}-${pokemon.item}-${pokemon.teraType}`;
   }
 
-  private requestProcessedLearnset(pokemon: PokemonSet): void {
+  private requestProcessedLearnset(pokemon: PokemonBuilder): void {
     const cacheKey = this.getCacheKey(pokemon);
 
     if (
@@ -238,11 +239,11 @@ export class MatchupPokemonBuilderComponent implements OnInit, OnDestroy {
       });
   }
 
-  private getProcessedLearnset(pokemon: PokemonSet): Move[] | undefined {
+  private getProcessedLearnset(pokemon: PokemonBuilder): Move[] | undefined {
     return this.processedLearnsets.get(this.getCacheKey(pokemon));
   }
 
-  private refreshProcessedLearnset(pokemon: PokemonSet): void {
+  private refreshProcessedLearnset(pokemon: PokemonBuilder): void {
     this.processedLearnsets.delete(this.getCacheKey(pokemon));
     this.learnsetRequests.delete(this.getCacheKey(pokemon));
     this.requestProcessedLearnset(pokemon);
@@ -274,6 +275,31 @@ export class MatchupPokemonBuilderComponent implements OnInit, OnDestroy {
     this.selectAbility(ability);
   }
 
+  fetchMoveCalculations(move: Move, pokemon: PokemonSetData): void {
+    const oppTeam = this.matchupData.summary[1].team;
+
+    for (let oppPokemon of oppTeam) {
+      const params: {
+        attacker: PokemonSetData;
+        target: PokemonSetData;
+        move: Move;
+      } = {
+        move,
+        attacker: pokemon,
+        target: { id: oppPokemon.id, name: oppPokemon.name },
+      };
+
+      this.teambuilderService.getMoveCalculations(params).subscribe({
+        next: (response) => {
+          console.log('Move calculations:', response);
+        },
+        error: (err) => {
+          console.error('Error fetching move calculations:', err);
+        },
+      });
+    }
+  }
+
   selectMove(moveSlot: number, move: Move | null, event?: MouseEvent) {
     if (event) {
       event.stopPropagation();
@@ -294,6 +320,7 @@ export class MatchupPokemonBuilderComponent implements OnInit, OnDestroy {
           : null;
         if (move) {
           this.findEmptyMoveSlot();
+          this.fetchMoveCalculations(move, pokemon); // Trigger WebSocket request
         }
       }
     }
@@ -630,7 +657,7 @@ export class MatchupPokemonBuilderComponent implements OnInit, OnDestroy {
     this.dragOverTier = null;
   }
 
-  setSpeedTier(pokemon: PokemonSet, targetSpeed: number) {
+  setSpeedTier(pokemon: PokemonBuilder, targetSpeed: number) {
     const max = pokemon.stats.spe.max();
     if (pokemon.stats.spe.get() === max && targetSpeed > max) {
       pokemon.nature = getNature('spe', pokemon.nature.drop);
@@ -659,7 +686,7 @@ export class MatchupPokemonBuilderComponent implements OnInit, OnDestroy {
     );
   }
 
-  getGenderOptions(pokemon: PokemonSet) {
+  getGenderOptions(pokemon: PokemonBuilder) {
     const genderOptions = {
       M: { value: 'M', label: '', icon: 'male' },
       F: { value: 'F', label: '', icon: 'female' },

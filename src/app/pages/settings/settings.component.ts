@@ -14,7 +14,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
-import { Pokemon } from '../../interfaces/draft';
+import { DraftPokemon } from '../../interfaces/draft';
 import { Settings, SettingsService } from './settings.service';
 @Component({
   selector: 'settings',
@@ -26,7 +26,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
   private settingsService = inject(SettingsService);
   private fb = inject(FormBuilder);
 
-  example: Pokemon = { id: 'deoxysattack', name: 'Deoxys-Attack' };
+  example: DraftPokemon = { id: 'deoxysattack', name: 'Deoxys-Attack' };
 
   @Output()
   closeSettings = new EventEmitter();

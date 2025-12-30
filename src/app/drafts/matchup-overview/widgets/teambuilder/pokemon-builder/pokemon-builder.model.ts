@@ -8,9 +8,9 @@ import {
   TERATYPES,
   Type,
   TYPES,
-} from '../../data';
-import { getPidByName } from '../../data/namedex';
-import { Pokemon } from '../../interfaces/draft';
+} from '../../../../../data';
+import { getPidByName } from '../../../../../data/namedex';
+import { Pokemon } from '../../../../../interfaces/pokemon';
 
 const DEFAULT_LEVEL = 50;
 const MAX_LEVEL = 100;
@@ -59,18 +59,34 @@ export type Move = {
   tags: string[];
 };
 
-export interface TeambuilderPokemon {
+export interface PokemonData {
   abilities: string[];
-  data: Pokemon & {
-    types: [Type] | [Type, Type];
-    baseStats: StatsTable;
-    genders: ('M' | 'F')[];
-  };
+  types: [Type] | [Type, Type];
+  baseStats: StatsTable;
+  genders: ('M' | 'F')[];
   items: Item[];
   teraType?: TeraType;
 }
 
-export class PokemonSet {
+export type PokemonSetData = Pokemon<{
+  nature?: Nature;
+  nickname?: string;
+  item?: string | null;
+  teraType?: TeraType;
+  gender?: '' | 'M' | 'F';
+  happiness?: number;
+  hiddenpower?: Type;
+  gmax?: boolean;
+  shiny?: boolean;
+  dynamaxLevel?: number;
+  gigantamax?: boolean;
+  moves?: (Move | null)[];
+  level?: number;
+  stats?: StatsTable<{ ivs: number; evs: number; boosts: number }>;
+  ability?: string;
+}>;
+
+export class PokemonBuilder {
   id: string;
   name: string;
   types: [Type] | [Type, Type];
@@ -108,15 +124,11 @@ export class PokemonSet {
   teraTypes: readonly TeraType[];
 
   constructor(
-    data: Pokemon & {
+    data: PokemonSetData & {
       types: [Type] | [Type, Type];
       baseStats: StatsTable;
       genders: ('M' | 'F')[];
-    } & Partial<PokemonSet> & {
-        ivs?: StatsTable;
-        evs?: StatsTable;
-        boosts?: Partial<StatsTable>;
-      },
+    },
     teambuilder: {
       abilities?: string[];
       items?: Item[];
@@ -139,21 +151,19 @@ export class PokemonSet {
     this.dynamaxLevel = data.dynamaxLevel ?? MAX_DYNAMAX_LEVEL;
     this.gigantamax = data.gigantamax ?? false;
     this.moves = data.moves ?? [null, null, null, null];
-    this.abilities = teambuilder?.abilities ?? data.abilities ?? [];
+    this.abilities = teambuilder?.abilities ?? [];
     this.genders = data.genders;
-    this.items = teambuilder?.items ?? data.items ?? [];
-    this.teraTypes = teambuilder?.teraType
-      ? [teambuilder.teraType]
-      : (data.teraTypes ?? TERATYPES);
+    this.items = teambuilder?.items ?? [];
+    this.teraTypes = teambuilder?.teraType ? [teambuilder.teraType] : TERATYPES;
     this.ability = data.ability ?? this.abilities[0] ?? '';
 
     this.stats = {} as typeof this.stats;
     for (const stat of STATS) {
       this.stats[stat.id] = {
         base: data.baseStats[stat.id],
-        ivs: data.ivs?.[stat.id] ?? MAX_IV,
-        evs: data.evs?.[stat.id] ?? 0,
-        boosts: data.boosts?.[stat.id] ?? 0,
+        ivs: data.stats ? data.stats[stat.id].ivs : MAX_IV,
+        evs: data.stats ? data.stats[stat.id].evs : 0,
+        boosts: data.stats ? data.stats[stat.id].boosts : 0,
         min: () =>
           calcStat(
             stat.id,
@@ -368,10 +378,10 @@ export class PokemonSet {
     return text;
   }
 
-  static import(buffer: string): Partial<PokemonSet> {
+  static import(buffer: string): Partial<PokemonBuilder> {
     const split = buffer.split('\n').map((line) => line.trim());
     let firstLine: string | undefined = split[0];
-    const setOptions: Pokemon & Partial<PokemonSet> = { name: '', id: '' };
+    const setOptions: Pokemon & Partial<PokemonBuilder> = { name: '', id: '' };
     if (!firstLine) throw new Error('Invalid import string');
     [firstLine, setOptions.item] = firstLine.split(' @ ');
     if (firstLine.endsWith(' (M)')) {
@@ -444,18 +454,18 @@ export class PokemonSet {
   }
 
   static fromTeambuilder(
-    pokemon: TeambuilderPokemon,
-    options: Partial<PokemonSet> = {},
-  ): PokemonSet {
-    return new PokemonSet(
+    pokemonData: Pokemon<PokemonData>,
+    options: Partial<PokemonBuilder> = {},
+  ): PokemonBuilder {
+    return new PokemonBuilder(
       {
-        ...pokemon.data,
+        ...pokemonData,
         ...options,
       },
       {
-        abilities: pokemon.abilities,
-        items: pokemon.items,
-        teraType: pokemon.teraType,
+        abilities: pokemonData.abilities,
+        items: pokemonData.items,
+        teraType: pokemonData.teraType,
       },
     );
   }

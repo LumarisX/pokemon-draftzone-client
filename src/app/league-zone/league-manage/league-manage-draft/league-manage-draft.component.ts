@@ -1,10 +1,9 @@
-
 import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { SpriteComponent } from '../../../images/sprite/sprite.component';
-import { Pokemon } from '../../../interfaces/draft';
+import { DraftPokemon } from '../../../interfaces/draft';
 import { LeagueNotificationService } from '../../../services/league-notification.service';
 import { LeagueManageService } from '../../../services/leagues/league-manage.service';
 import {
@@ -17,7 +16,7 @@ import { PokemonSelectComponent } from '../../../util/pokemon-select/pokemon-sel
 import { LeagueNotificationsComponent } from '../../league-notifications/league-notifications.component';
 import { WebSocketService } from '../../../services/ws.service';
 
-type TeamForDraft = LeagueTeam & { selectedPokemon?: Pokemon | null };
+type TeamForDraft = LeagueTeam & { selectedPokemon?: DraftPokemon | null };
 
 @Component({
   selector: 'pdz-league-manage-draft',
@@ -27,8 +26,8 @@ type TeamForDraft = LeagueTeam & { selectedPokemon?: Pokemon | null };
     SpriteComponent,
     MatButtonModule,
     MatIconModule,
-    LeagueNotificationsComponent
-],
+    LeagueNotificationsComponent,
+  ],
   templateUrl: './league-manage-draft.component.html',
   styleUrl: './league-manage-draft.component.scss',
   standalone: true,
