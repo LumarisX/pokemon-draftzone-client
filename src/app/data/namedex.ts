@@ -687,6 +687,24 @@ export const Namedex: {
       psgh: { id: 's832' },
     },
   },
+  raichumegax: {
+    name: ['Mega Raichu X', 'Raichu-Mega-X'],
+    sources: {
+      ps: { id: 'raichu-megax' },
+      serebii: { id: '026' },
+      pmd: { id: '0026' },
+      psgh: { id: 's832' },
+    },
+  },
+  raichumegay: {
+    name: ['Mega Raichu Y', 'Raichu-Mega-Y'],
+    sources: {
+      ps: { id: 'raichu-megay' },
+      serebii: { id: '026' },
+      pmd: { id: '0026' },
+      psgh: { id: 's832' },
+    },
+  },
   raichualola: {
     name: ['Alolan Raichu', 'Raichu-Alola', 'Raichu-A'],
     sources: {
@@ -797,6 +815,15 @@ export const Namedex: {
   },
   clefable: {
     name: ['Clefable'],
+    sources: {
+      ps: {},
+      serebii: { id: '036' },
+      pmd: { id: '0036' },
+      psgh: { id: 's1152' },
+    },
+  },
+  clefablemega: {
+    name: ['Mega Clefable', 'Clefable-Mega'],
     sources: {
       ps: {},
       serebii: { id: '036' },
@@ -1229,6 +1256,15 @@ export const Namedex: {
   },
   victreebel: {
     name: ['Victreebel'],
+    sources: {
+      ps: {},
+      serebii: { id: '071' },
+      pmd: { id: '0071' },
+      psgh: { id: 's2272' },
+    },
+  },
+  victreebelmega: {
+    name: ['Mega Victreebel', 'Victreebel-Mega'],
     sources: {
       ps: {},
       serebii: { id: '071' },
@@ -1875,6 +1911,15 @@ export const Namedex: {
       psgh: { id: 's3872' },
     },
   },
+  starmiemega: {
+    name: ['Mega Starmie', 'Starmie-Mega'],
+    sources: {
+      ps: {},
+      serebii: { id: '121' },
+      pmd: { id: '0121' },
+      psgh: { id: 's3872' },
+    },
+  },
   mrmime: {
     name: ['Mr. Mime'],
     sources: {
@@ -2271,6 +2316,15 @@ export const Namedex: {
       psgh: { id: 's4768' },
     },
   },
+  dragonitemega: {
+    name: ['Mega Dragonite', 'Dragonite-Mega'],
+    sources: {
+      ps: {},
+      serebii: { id: '149' },
+      pmd: { id: '0149' },
+      psgh: { id: 's4768' },
+    },
+  },
   mewtwo: {
     name: ['Mewtwo'],
     sources: {
@@ -2334,6 +2388,16 @@ export const Namedex: {
       psgh: { id: 's4928' },
     },
   },
+  meganiummega: {
+    name: ['Mega Meganium', 'Meganium-Mega'],
+    sources: {
+      ps: {},
+      serebii: { id: '154' },
+      pmd: { id: '0154' },
+      psgh: { id: 's4928' },
+    },
+  },
+
   cyndaquil: {
     name: ['Cyndaquil'],
     sources: {
@@ -2390,6 +2454,15 @@ export const Namedex: {
   },
   feraligatr: {
     name: ['Feraligatr'],
+    sources: {
+      ps: {},
+      serebii: { id: '160' },
+      pmd: { id: '0160' },
+      psgh: { id: 's5120' },
+    },
+  },
+  feraligatrmega: {
+    name: ['Mega Feraligatr', 'Feraligatr-Mega'],
     sources: {
       ps: {},
       serebii: { id: '160' },
@@ -3074,6 +3147,15 @@ export const Namedex: {
   },
   skarmory: {
     name: ['Skarmory'],
+    sources: {
+      ps: {},
+      serebii: { id: '227' },
+      pmd: { id: '0227' },
+      psgh: { id: 's7264' },
+    },
+  },
+  skarmorymega: {
+    name: ['Mega Skarmory', 'Skarmory-Mega'],
     sources: {
       ps: {},
       serebii: { id: '227' },
@@ -4440,6 +4522,15 @@ export const Namedex: {
       psgh: { id: 's11456' },
     },
   },
+  chimechomega: {
+    name: ['Mega Chimecho', 'Chimecho-Mega'],
+    sources: {
+      ps: { id: 'chimecho-mega' },
+      serebii: { id: '358' },
+      pmd: { id: '0358' },
+      psgh: { id: 's11456' },
+    },
+  },
   absol: {
     name: ['Absol'],
     sources: {
@@ -4453,6 +4544,15 @@ export const Namedex: {
     name: ['Mega Absol', 'Absol-Mega'],
     sources: {
       ps: { id: 'absol-mega' },
+      serebii: { id: '359-m' },
+      pmd: { id: '0359/0001' },
+      psgh: { id: 's11489' },
+    },
+  },
+  absolmegaz: {
+    name: ['Mega Absol Z', 'Absol-Mega-Z'],
+    sources: {
+      ps: { id: 'absol-megaz' },
       serebii: { id: '359-m' },
       pmd: { id: '0359/0001' },
       psgh: { id: 's11489' },
@@ -4903,6 +5003,15 @@ export const Namedex: {
     name: ['Staraptor'],
     sources: {
       ps: {},
+      serebii: { id: '398' },
+      pmd: { id: '0398' },
+      psgh: { id: 's12736' },
+    },
+  },
+  staraptormega: {
+    name: ['Mega Staraptor', 'Staraptor-Mega'],
+    sources: {
+      ps: { id: 'staraptor-mega' },
       serebii: { id: '398' },
       pmd: { id: '0398' },
       psgh: { id: 's12736' },
@@ -5376,6 +5485,15 @@ export const Namedex: {
       psgh: { id: 's14241' },
     },
   },
+  garchompmegaz: {
+    name: ['Mega Garchomp Z', 'Garchomp-Mega-Z'],
+    sources: {
+      ps: { id: 'garchomp-megaz' },
+      serebii: { id: '445-m' },
+      pmd: { id: '0445/0001' },
+      psgh: { id: 's14241' },
+    },
+  },
   munchlax: {
     name: ['Munchlax'],
     sources: {
@@ -5407,6 +5525,15 @@ export const Namedex: {
     name: ['Mega Lucario', 'Lucario-Mega'],
     sources: {
       ps: { id: 'lucario-mega', flip: true },
+      serebii: { id: '448-m' },
+      pmd: { id: '0448/0001' },
+      psgh: { id: 's14337', flip: true },
+    },
+  },
+  lucariomegaz: {
+    name: ['Mega Lucario Z', 'Lucario-Mega-Z'],
+    sources: {
+      ps: { id: 'lucario-megaz', flip: true },
       serebii: { id: '448-m' },
       pmd: { id: '0448/0001' },
       psgh: { id: 's14337', flip: true },
@@ -5700,6 +5827,15 @@ export const Namedex: {
       psgh: { id: 's15296' },
     },
   },
+  froslassmega: {
+    name: ['Mega Froslass', 'Froslass-Mega'],
+    sources: {
+      ps: {},
+      serebii: { id: '478' },
+      pmd: { id: '0478' },
+      psgh: { id: 's15296' },
+    },
+  },
   rotom: {
     name: ['Rotom'],
     sources: {
@@ -5835,6 +5971,15 @@ export const Namedex: {
       psgh: { id: 's15520' },
     },
   },
+  heatranmega: {
+    name: ['Mega Heatran', 'Heatran-Mega'],
+    sources: {
+      ps: { id: 'heatran-mega' },
+      serebii: { id: '485' },
+      pmd: { id: '0485' },
+      psgh: { id: 's15520' },
+    },
+  },
   regigigas: {
     name: ['Regigigas'],
     sources: {
@@ -5893,6 +6038,15 @@ export const Namedex: {
     name: ['Darkrai'],
     sources: {
       ps: {},
+      serebii: { id: '491' },
+      pmd: { id: '0491' },
+      psgh: { id: 's15712' },
+    },
+  },
+  darkraimega: {
+    name: ['Mega Darkrai', 'Darkrai-Mega'],
+    sources: {
+      ps: { id: 'darkrai-mega' },
       serebii: { id: '491' },
       pmd: { id: '0491' },
       psgh: { id: 's15712' },
@@ -6134,6 +6288,15 @@ export const Namedex: {
   },
   emboar: {
     name: ['Emboar'],
+    sources: {
+      ps: {},
+      serebii: { id: '500' },
+      pmd: { id: '0500' },
+      psgh: { id: 's16000' },
+    },
+  },
+  emboarmega: {
+    name: ['Mega Emboar', 'Emboar-Mega'],
     sources: {
       ps: {},
       serebii: { id: '500' },
@@ -6420,6 +6583,15 @@ export const Namedex: {
       psgh: { id: 's16960', flip: true },
     },
   },
+  excadrillmega: {
+    name: ['Mega Excadrill', 'Excadrill-Mega'],
+    sources: {
+      ps: { flip: true },
+      serebii: { id: '530' },
+      pmd: { id: '0530' },
+      psgh: { id: 's16960', flip: true },
+    },
+  },
   audino: {
     name: ['Audino'],
     sources: {
@@ -6557,6 +6729,15 @@ export const Namedex: {
   },
   scolipede: {
     name: ['Scolipede'],
+    sources: {
+      ps: {},
+      serebii: { id: '545' },
+      pmd: { id: '0545' },
+      psgh: { id: 's17440' },
+    },
+  },
+  scolipedemega: {
+    name: ['Mega Scolipede', 'Scolipede-Mega'],
     sources: {
       ps: {},
       serebii: { id: '545' },
@@ -6755,6 +6936,15 @@ export const Namedex: {
   },
   scrafty: {
     name: ['Scrafty'],
+    sources: {
+      ps: {},
+      serebii: { id: '560' },
+      pmd: { id: '0560' },
+      psgh: { id: 's17920' },
+    },
+  },
+  scraftymega: {
+    name: ['Mega Scrafty', 'Scrafty-Mega'],
     sources: {
       ps: {},
       serebii: { id: '560' },
@@ -7203,6 +7393,15 @@ export const Namedex: {
       psgh: { id: 's19328' },
     },
   },
+  eelektrossmega: {
+    name: ['Mega Eelektross', 'Eelektross-Mega'],
+    sources: {
+      ps: {},
+      serebii: { id: '604' },
+      pmd: { id: '0604' },
+      psgh: { id: 's19328' },
+    },
+  },
   elgyem: {
     name: ['Elgyem'],
     sources: {
@@ -7241,6 +7440,15 @@ export const Namedex: {
   },
   chandelure: {
     name: ['Chandelure'],
+    sources: {
+      ps: {},
+      serebii: { id: '609' },
+      pmd: { id: '0609' },
+      psgh: { id: 's19488' },
+    },
+  },
+  chandeluremega: {
+    name: ['Mega Chandelure', 'Chandelure-Mega'],
     sources: {
       ps: {},
       serebii: { id: '609' },
@@ -7378,6 +7586,15 @@ export const Namedex: {
     name: ['Golurk'],
     sources: {
       ps: {},
+      serebii: { id: '623' },
+      pmd: { id: '0623' },
+      psgh: { id: 's19936' },
+    },
+  },
+  golurkmega: {
+    name: ['Mega Golurk', 'Golurk-Mega'],
+    sources: {
+      ps: { id: 'golurk-mega' },
       serebii: { id: '623' },
       pmd: { id: '0623' },
       psgh: { id: 's19936' },
@@ -7752,6 +7969,16 @@ export const Namedex: {
       psgh: { id: 's20864' },
     },
   },
+  chesnaughtmega: {
+    name: ['Mega Chesnaught', 'Chesnaught-Mega'],
+    sources: {
+      ps: {},
+      serebii: { id: '652' },
+      pmd: { id: '0652' },
+      psgh: { id: 's20864' },
+    },
+  },
+
   fennekin: {
     name: ['Fennekin'],
     sources: {
@@ -7779,6 +8006,16 @@ export const Namedex: {
       psgh: { id: 's20960' },
     },
   },
+  delphoxmega: {
+    name: ['Mega Delphox', 'Delphox-Mega'],
+    sources: {
+      ps: {},
+      serebii: { id: '655' },
+      pmd: { id: '0655' },
+      psgh: { id: 's20960' },
+    },
+  },
+
   froakie: {
     name: ['Froakie'],
     sources: {
@@ -7799,6 +8036,15 @@ export const Namedex: {
   },
   greninja: {
     name: ['Greninja'],
+    sources: {
+      ps: { flip: true },
+      serebii: { id: '658' },
+      pmd: { id: '0658' },
+      psgh: { id: 's21056', flip: true },
+    },
+  },
+  greninjamega: {
+    name: ['Mega Greninja', 'Greninja-Mega'],
     sources: {
       ps: { flip: true },
       serebii: { id: '658' },
@@ -7932,6 +8178,15 @@ export const Namedex: {
       psgh: { id: 's21376', flip: true },
     },
   },
+  pyroarmega: {
+    name: ['Mega Pyroar', 'Pyroar-Mega'],
+    sources: {
+      ps: { flip: true },
+      serebii: { id: '668' },
+      pmd: { id: '0668' },
+      psgh: { id: 's21376', flip: true },
+    },
+  },
   flabebe: {
     name: ['Flabébé'],
     sources: {
@@ -7957,6 +8212,15 @@ export const Namedex: {
       serebii: { id: '670' },
       pmd: { id: '0670/0005' },
       psgh: { id: 's21445', flip: true },
+    },
+  },
+  floettemega: {
+    name: ['Mega Floette', 'Floette-Mega'],
+    sources: {
+      ps: { flip: true },
+      serebii: { id: '670' },
+      pmd: { id: '0670' },
+      psgh: { id: 's21440', flip: true },
     },
   },
   florges: {
@@ -8041,6 +8305,36 @@ export const Namedex: {
     name: ['Meowstic-Female', 'Meowstic-F'],
     sources: {
       ps: { id: 'meowstic-f' },
+      serebii: { id: '678-f' },
+      pmd: { id: '0678/0000/0000/0002' },
+      psgh: { id: 's21697' },
+    },
+  },
+  meowsticmmega: {
+    name: [
+      'Mega Meowstic-Male',
+      'Mega Meowstic-M',
+      'Meowstic-Male-Mega',
+      'Meowstic-M-Mega',
+      'Mega Meowstic',
+      'Meowstic-Mega',
+    ],
+    sources: {
+      ps: { id: 'meowstic-mega' },
+      serebii: { id: '678' },
+      pmd: { id: '0678' },
+      psgh: { id: 's21696' },
+    },
+  },
+  meowsticfmega: {
+    name: [
+      'Mega Meowstic-Female',
+      'Mega Meowstic-F',
+      'Meowstic-Female-Mega',
+      'Meowstic-F-Mega',
+    ],
+    sources: {
+      ps: { id: 'meowstic-f-mega' },
       serebii: { id: '678-f' },
       pmd: { id: '0678/0000/0000/0002' },
       psgh: { id: 's21697' },
@@ -8136,6 +8430,15 @@ export const Namedex: {
       psgh: { id: 's21984' },
     },
   },
+  malamarmega: {
+    name: ['Mega Malamar', 'Malamar-Mega'],
+    sources: {
+      ps: {},
+      serebii: { id: '687' },
+      pmd: { id: '0687' },
+      psgh: { id: 's21984' },
+    },
+  },
   binacle: {
     name: ['Binacle'],
     sources: {
@@ -8154,6 +8457,15 @@ export const Namedex: {
       psgh: { id: 's22048' },
     },
   },
+  barbaraclemega: {
+    name: ['Mega Barbaracle', 'Barbaracle-Mega'],
+    sources: {
+      ps: {},
+      serebii: { id: '689' },
+      pmd: { id: '0689' },
+      psgh: { id: 's22048' },
+    },
+  },
   skrelp: {
     name: ['Skrelp'],
     sources: {
@@ -8165,6 +8477,15 @@ export const Namedex: {
   },
   dragalge: {
     name: ['Dragalge'],
+    sources: {
+      ps: {},
+      serebii: { id: '691' },
+      pmd: { id: '0691' },
+      psgh: { id: 's22112' },
+    },
+  },
+  dragalgemega: {
+    name: ['Mega Dragalge', 'Dragalge-Mega'],
     sources: {
       ps: {},
       serebii: { id: '691' },
@@ -8255,6 +8576,15 @@ export const Namedex: {
   },
   hawlucha: {
     name: ['Hawlucha'],
+    sources: {
+      ps: {},
+      serebii: { id: '701' },
+      pmd: { id: '0701' },
+      psgh: { id: 's22432' },
+    },
+  },
+  hawluchamega: {
+    name: ['Mega Hawlucha', 'Hawlucha-Mega'],
     sources: {
       ps: {},
       serebii: { id: '701' },
@@ -8523,6 +8853,15 @@ export const Namedex: {
       psgh: { id: 's22980' },
     },
   },
+  zygardemega: {
+    name: ['Mega Zygarde', 'Zygarde-Mega'],
+    sources: {
+      ps: {},
+      serebii: { id: '718-c' },
+      pmd: { id: '0718/0002' },
+      psgh: { id: 's22980' },
+    },
+  },
   diancie: {
     name: ['Diancie'],
     sources: {
@@ -8743,6 +9082,15 @@ export const Namedex: {
     name: ['Crabominable'],
     sources: {
       ps: {},
+      serebii: { id: '740' },
+      pmd: { id: '0740' },
+      psgh: { id: 's23680' },
+    },
+  },
+  crabominablemega: {
+    name: ['Mega Crabominable', 'Crabominable-Mega'],
+    sources: {
+      ps: { id: 'crabominable-mega' },
       serebii: { id: '740' },
       pmd: { id: '0740' },
       psgh: { id: 's23680' },
@@ -9054,6 +9402,15 @@ export const Namedex: {
       psgh: { id: 's24576' },
     },
   },
+  golisopodmega: {
+    name: ['Mega Golisopod', 'Golisopod-Mega'],
+    sources: {
+      ps: { id: 'golisopod-mega' },
+      serebii: { id: '768' },
+      pmd: { id: '0768' },
+      psgh: { id: 's24576' },
+    },
+  },
   sandygast: {
     name: ['Sandygast'],
     sources: {
@@ -9333,6 +9690,15 @@ export const Namedex: {
       psgh: { id: 's24960' },
     },
   },
+  drampamega: {
+    name: ['Mega Drampa', 'Drampa-Mega'],
+    sources: {
+      ps: {},
+      serebii: { id: '780' },
+      pmd: { id: '0780' },
+      psgh: { id: 's24960' },
+    },
+  },
   dhelmise: {
     name: ['Dhelmise'],
     sources: {
@@ -9558,6 +9924,24 @@ export const Namedex: {
       psgh: { id: 's25633' },
     },
   },
+  magearnamega: {
+    name: ['Mega Magearna', 'Magearna-Mega'],
+    sources: {
+      ps: { id: 'magearna-mega' },
+      serebii: { id: '801' },
+      pmd: { id: '0801' },
+      psgh: { id: 's25632' },
+    },
+  },
+  magearnaoriginalmega: {
+    name: ['Mega Magearna-Original', 'Magearna-Original-Mega'],
+    sources: {
+      ps: { id: 'magearna-original-mega' },
+      serebii: { id: '801-o' },
+      pmd: { id: '0801/0001' },
+      psgh: { id: 's25633' },
+    },
+  },
   marshadow: {
     name: ['Marshadow'],
     sources: {
@@ -9607,6 +9991,15 @@ export const Namedex: {
     name: ['Zeraora'],
     sources: {
       ps: {},
+      serebii: { id: '807' },
+      pmd: { id: '0807' },
+      psgh: { id: 's25824' },
+    },
+  },
+  zeraoramega: {
+    name: ['Mega Zeraora', 'Zeraora-Mega'],
+    sources: {
+      ps: { id: 'zeraora-mega' },
       serebii: { id: '807' },
       pmd: { id: '0807' },
       psgh: { id: 's25824' },
@@ -10424,6 +10817,15 @@ export const Namedex: {
   },
   falinks: {
     name: ['Falinks'],
+    sources: {
+      ps: {},
+      serebii: { id: '870' },
+      pmd: { id: '0870' },
+      psgh: { id: 's27840' },
+    },
+  },
+  falinksmega: {
+    name: ['Mega Falinks', 'Falinks-Mega'],
     sources: {
       ps: {},
       serebii: { id: '870' },
@@ -11376,6 +11778,15 @@ export const Namedex: {
       psgh: { id: 's30464', flip: true },
     },
   },
+  scovillainmega: {
+    name: ['Mega Scovillain', 'Scovillain-Mega'],
+    sources: {
+      ps: { id: 'scovillain-mega', flip: true },
+      serebii: { id: '952' },
+      pmd: { id: '0952' },
+      psgh: { id: 's30464', flip: true },
+    },
+  },
   rellor: {
     name: ['Rellor'],
     sources: {
@@ -11547,6 +11958,15 @@ export const Namedex: {
       psgh: { id: 's31040', flip: true },
     },
   },
+  glimmoramega: {
+    name: ['Mega Glimmora', 'Glimmora-Mega'],
+    sources: {
+      ps: { id: 'glimmora-mega', flip: true },
+      serebii: { id: '970' },
+      pmd: { id: '0970' },
+      psgh: { id: 's31040', flip: true },
+    },
+  },
   greavard: {
     name: ['Greavard'],
     sources: {
@@ -11614,6 +12034,15 @@ export const Namedex: {
     name: ['Tatsugiri'],
     sources: {
       ps: { flip: true },
+      serebii: { id: '978' },
+      pmd: { id: '0978' },
+      psgh: { id: 's31296', flip: true },
+    },
+  },
+  tatsugirimega: {
+    name: ['Mega Tatsugiri', 'Tatsugiri-Mega'],
+    sources: {
+      ps: { id: 'tatsugiri-mega', flip: true },
       serebii: { id: '978' },
       pmd: { id: '0978' },
       psgh: { id: 's31296', flip: true },
@@ -11803,6 +12232,15 @@ export const Namedex: {
     name: ['Baxcalibur'],
     sources: {
       ps: {},
+      serebii: { id: '998' },
+      pmd: { id: '0998' },
+      psgh: { id: 's31936' },
+    },
+  },
+  baxcaliburmega: {
+    name: ['Mega Baxcalibur', 'Baxcalibur-Mega'],
+    sources: {
+      ps: { id: 'baxcalibur-mega' },
       serebii: { id: '998' },
       pmd: { id: '0998' },
       psgh: { id: 's31936' },
@@ -12297,239 +12735,5 @@ export const Namedex: {
     name: ['Noivern-Sevii'],
     sources: { rr: { id: 'noivern-sevii' } },
     default: 'rr',
-  },
-  clefablemega: {
-    name: ['Mega Clefable', 'Clefable-Mega'],
-    sources: {
-      ps: {},
-      serebii: { id: '036' },
-      pmd: { id: '0036' },
-      psgh: { id: 's1152' },
-    },
-  },
-  victreebelmega: {
-    name: ['Mega Victreebel', 'Victreebel-Mega'],
-    sources: {
-      ps: {},
-      serebii: { id: '071' },
-      pmd: { id: '0071' },
-      psgh: { id: 's2272' },
-    },
-  },
-  starmiemega: {
-    name: ['Mega Starmie', 'Starmie-Mega'],
-    sources: {
-      ps: {},
-      serebii: { id: '121' },
-      pmd: { id: '0121' },
-      psgh: { id: 's3872' },
-    },
-  },
-  dragonitemega: {
-    name: ['Mega Dragonite', 'Dragonite-Mega'],
-    sources: {
-      ps: {},
-      serebii: { id: '149' },
-      pmd: { id: '0149' },
-      psgh: { id: 's4768' },
-    },
-  },
-  meganiummega: {
-    name: ['Mega Meganium', 'Meganium-Mega'],
-    sources: {
-      ps: {},
-      serebii: { id: '154' },
-      pmd: { id: '0154' },
-      psgh: { id: 's4928' },
-    },
-  },
-  feraligatrmega: {
-    name: ['Mega Feraligatr', 'Feraligatr-Mega'],
-    sources: {
-      ps: {},
-      serebii: { id: '160' },
-      pmd: { id: '0160' },
-      psgh: { id: 's5120' },
-    },
-  },
-  skarmorymega: {
-    name: ['Mega Skarmory', 'Skarmory-Mega'],
-    sources: {
-      ps: {},
-      serebii: { id: '227' },
-      pmd: { id: '0227' },
-      psgh: { id: 's7264' },
-    },
-  },
-  froslassmega: {
-    name: ['Mega Froslass', 'Froslass-Mega'],
-    sources: {
-      ps: {},
-      serebii: { id: '478' },
-      pmd: { id: '0478' },
-      psgh: { id: 's15296' },
-    },
-  },
-  emboarmega: {
-    name: ['Mega Emboar', 'Emboar-Mega'],
-    sources: {
-      ps: {},
-      serebii: { id: '500' },
-      pmd: { id: '0500' },
-      psgh: { id: 's16000' },
-    },
-  },
-  excadrillmega: {
-    name: ['Mega Excadrill', 'Excadrill-Mega'],
-    sources: {
-      ps: { flip: true },
-      serebii: { id: '530' },
-      pmd: { id: '0530' },
-      psgh: { id: 's16960', flip: true },
-    },
-  },
-  scolipedemega: {
-    name: ['Mega Scolipede', 'Scolipede-Mega'],
-    sources: {
-      ps: {},
-      serebii: { id: '545' },
-      pmd: { id: '0545' },
-      psgh: { id: 's17440' },
-    },
-  },
-  scraftymega: {
-    name: ['Mega Scrafty', 'Scrafty-Mega'],
-    sources: {
-      ps: {},
-      serebii: { id: '560' },
-      pmd: { id: '0560' },
-      psgh: { id: 's17920' },
-    },
-  },
-  eelektrossmega: {
-    name: ['Mega Eelektross', 'Eelektross-Mega'],
-    sources: {
-      ps: {},
-      serebii: { id: '604' },
-      pmd: { id: '0604' },
-      psgh: { id: 's19328' },
-    },
-  },
-  chandeluremega: {
-    name: ['Mega Chandelure', 'Chandelure-Mega'],
-    sources: {
-      ps: {},
-      serebii: { id: '609' },
-      pmd: { id: '0609' },
-      psgh: { id: 's19488' },
-    },
-  },
-  chesnaughtmega: {
-    name: ['Mega Chesnaught', 'Chesnaught-Mega'],
-    sources: {
-      ps: {},
-      serebii: { id: '652' },
-      pmd: { id: '0652' },
-      psgh: { id: 's20864' },
-    },
-  },
-  delphoxmega: {
-    name: ['Mega Delphox', 'Delphox-Mega'],
-    sources: {
-      ps: {},
-      serebii: { id: '655' },
-      pmd: { id: '0655' },
-      psgh: { id: 's20960' },
-    },
-  },
-  greninjamega: {
-    name: ['Mega Greninja', 'Greninja-Mega'],
-    sources: {
-      ps: { flip: true },
-      serebii: { id: '658' },
-      pmd: { id: '0658' },
-      psgh: { id: 's21056', flip: true },
-    },
-  },
-  pyroarmega: {
-    name: ['Mega Pyroar', 'Pyroar-Mega'],
-    sources: {
-      ps: { flip: true },
-      serebii: { id: '668' },
-      pmd: { id: '0668' },
-      psgh: { id: 's21376', flip: true },
-    },
-  },
-  floettemega: {
-    name: ['Mega Floette', 'Floette-Mega'],
-    sources: {
-      ps: { flip: true },
-      serebii: { id: '670' },
-      pmd: { id: '0670' },
-      psgh: { id: 's21440', flip: true },
-    },
-  },
-  malamarmega: {
-    name: ['Mega Malamar', 'Malamar-Mega'],
-    sources: {
-      ps: {},
-      serebii: { id: '687' },
-      pmd: { id: '0687' },
-      psgh: { id: 's21984' },
-    },
-  },
-  barbaraclemega: {
-    name: ['Mega Barbaracle', 'Barbaracle-Mega'],
-    sources: {
-      ps: {},
-      serebii: { id: '689' },
-      pmd: { id: '0689' },
-      psgh: { id: 's22048' },
-    },
-  },
-  dragalgemega: {
-    name: ['Mega Dragalge', 'Dragalge-Mega'],
-    sources: {
-      ps: {},
-      serebii: { id: '691' },
-      pmd: { id: '0691' },
-      psgh: { id: 's22112' },
-    },
-  },
-  hawluchamega: {
-    name: ['Mega Hawlucha', 'Hawlucha-Mega'],
-    sources: {
-      ps: {},
-      serebii: { id: '701' },
-      pmd: { id: '0701' },
-      psgh: { id: 's22432' },
-    },
-  },
-  zygardemega: {
-    name: ['Mega Zygarde', 'Zygarde-Mega'],
-    sources: {
-      ps: {},
-      serebii: { id: '718' },
-      pmd: { id: '0718' },
-      psgh: { id: 's22976' },
-    },
-  },
-  drampamega: {
-    name: ['Mega Drampa', 'Drampa-Mega'],
-    sources: {
-      ps: {},
-      serebii: { id: '780' },
-      pmd: { id: '0780' },
-      psgh: { id: 's24960' },
-    },
-  },
-  falinksmega: {
-    name: ['Mega Falinks', 'Falinks-Mega'],
-    sources: {
-      ps: {},
-      serebii: { id: '870' },
-      pmd: { id: '0870' },
-      psgh: { id: 's27840' },
-    },
   },
 };
