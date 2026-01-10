@@ -1,4 +1,3 @@
-
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -257,7 +256,7 @@ export class FindOptionComponent {
     {
       name: 'Tags',
       value: 'tags',
-      operations: ['∈', '∉'],
+      operations: ['=', '≠'],
       query: 'string',
     },
   ];
