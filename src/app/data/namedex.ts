@@ -4553,7 +4553,7 @@ export const Namedex: {
     name: ['Mega Absol Z', 'Absol-Mega-Z'],
     sources: {
       ps: { id: 'absol-megaz' },
-      serebii: { id: '359-m' },
+      serebii: { id: '359-mz' },
       pmd: { id: '0359/0001' },
       psgh: { id: 's11489' },
     },
@@ -11050,7 +11050,7 @@ export const Namedex: {
     },
   },
   zacian: {
-    name: ['Zacian'],
+    name: ['Zacian', 'Zacian-Hero'],
     sources: {
       ps: { flip: true },
       serebii: { id: '888' },
@@ -11068,7 +11068,7 @@ export const Namedex: {
     },
   },
   zamazenta: {
-    name: ['Zamazenta'],
+    name: ['Zamazenta', 'Zamazenta-Hero'],
     sources: {
       ps: {},
       serebii: { id: '889' },

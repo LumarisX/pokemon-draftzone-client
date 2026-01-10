@@ -1,7 +1,8 @@
 :host {
   display: block;
   width: 100%;
-  overflow: hidden;
+  overflow-x: auto;
+  padding-right: 2px;
 }
 
 td {
