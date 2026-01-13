@@ -1,0 +1,544 @@
+<div class="calculator-container" [formGroup]="calculatorForm">
+  <div class="calculator-columns">
+    <div class="attacker-section form-section" formGroupName="attacker">
+      <h3 class="section-title">Attacker</h3>
+
+      <div class="form-field">
+        <label class="form-label" for="attackerName">Attacker Name</label>
+        <input
+          class="form-input"
+          id="attackerName"
+          type="text"
+          formControlName="name"
+          placeholder="e.g., Pikachu"
+        />
+      </div>
+
+      <div class="form-field">
+        <label class="form-label" for="attackerMove">Move Name</label>
+        <input
+          class="form-input"
+          id="attackerMove"
+          type="text"
+          formControlName="move"
+          placeholder="e.g., Thunderbolt"
+        />
+      </div>
+
+      <div class="form-field">
+        <label class="form-label" for="attackerItem">Item</label>
+        <input
+          class="form-input"
+          id="attackerItem"
+          type="text"
+          formControlName="item"
+          placeholder="e.g., Choice Specs"
+        />
+      </div>
+
+      <div class="form-compact-row">
+        <div class="form-field">
+          <label class="form-label" for="attackerCrit">Critical Hit</label>
+          <select class="form-select" id="attackerCrit" formControlName="crit">
+            <option [value]="undefined">-</option>
+            <option [value]="true">Yes</option>
+            <option [value]="false">No</option>
+          </select>
+        </div>
+
+        <div class="form-field">
+          <label class="form-label" for="attackerLevel">Level</label>
+          <input
+            class="form-input"
+            id="attackerLevel"
+            type="number"
+            formControlName="level"
+            placeholder="50"
+            min="1"
+            max="100"
+          />
+        </div>
+      </div>
+
+      <div class="form-compact-row">
+        <div class="form-field">
+          <label class="form-label" for="attackerNature">Nature</label>
+          <input
+            class="form-input"
+            id="attackerNature"
+            type="text"
+            formControlName="nature"
+            placeholder="e.g., Adamant"
+          />
+        </div>
+
+        <div class="form-field form-field--inline">
+          <input
+            class="form-checkbox"
+            id="attackerHit"
+            type="checkbox"
+            formControlName="alwaysHits"
+          />
+          <label class="form-label" for="attackerHit">Always Hits</label>
+        </div>
+      </div>
+
+      <fieldset class="form-fieldset">
+        <legend class="form-legend">EVs (Effort Values)</legend>
+        <div formGroupName="evs" class="stats-grid">
+          <div class="form-field">
+            <label class="form-label" for="attackerEVHP">HP</label>
+            <input
+              class="form-input form-input--small"
+              id="attackerEVHP"
+              type="number"
+              formControlName="hp"
+              placeholder="0"
+              min="0"
+              max="252"
+            />
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="attackerEVAtk">Atk</label>
+            <input
+              class="form-input form-input--small"
+              id="attackerEVAtk"
+              type="number"
+              formControlName="atk"
+              placeholder="0"
+              min="0"
+              max="252"
+            />
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="attackerEVDef">Def</label>
+            <input
+              class="form-input form-input--small"
+              id="attackerEVDef"
+              type="number"
+              formControlName="def"
+              placeholder="0"
+              min="0"
+              max="252"
+            />
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="attackerEVSpa">SpA</label>
+            <input
+              class="form-input form-input--small"
+              id="attackerEVSpa"
+              type="number"
+              formControlName="spa"
+              placeholder="0"
+              min="0"
+              max="252"
+            />
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="attackerEVSpd">SpD</label>
+            <input
+              class="form-input form-input--small"
+              id="attackerEVSpd"
+              type="number"
+              formControlName="spd"
+              placeholder="0"
+              min="0"
+              max="252"
+            />
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="attackerEVSpe">Spe</label>
+            <input
+              class="form-input form-input--small"
+              id="attackerEVSpe"
+              type="number"
+              formControlName="spe"
+              placeholder="0"
+              min="0"
+              max="252"
+            />
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset class="form-fieldset">
+        <legend class="form-legend">IVs (Individual Values)</legend>
+        <div formGroupName="ivs" class="stats-grid">
+          <div class="form-field">
+            <label class="form-label" for="attackerIVHP">HP</label>
+            <input
+              class="form-input form-input--small"
+              id="attackerIVHP"
+              type="number"
+              formControlName="hp"
+              placeholder="31"
+              min="0"
+              max="31"
+            />
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="attackerIVAtk">Atk</label>
+            <input
+              class="form-input form-input--small"
+              id="attackerIVAtk"
+              type="number"
+              formControlName="atk"
+              placeholder="31"
+              min="0"
+              max="31"
+            />
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="attackerIVDef">Def</label>
+            <input
+              class="form-input form-input--small"
+              id="attackerIVDef"
+              type="number"
+              formControlName="def"
+              placeholder="31"
+              min="0"
+              max="31"
+            />
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="attackerIVSpa">SpA</label>
+            <input
+              class="form-input form-input--small"
+              id="attackerIVSpa"
+              type="number"
+              formControlName="spa"
+              placeholder="31"
+              min="0"
+              max="31"
+            />
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="attackerIVSpd">SpD</label>
+            <input
+              class="form-input form-input--small"
+              id="attackerIVSpd"
+              type="number"
+              formControlName="spd"
+              placeholder="31"
+              min="0"
+              max="31"
+            />
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="attackerIVSpe">Spe</label>
+            <input
+              class="form-input form-input--small"
+              id="attackerIVSpe"
+              type="number"
+              formControlName="spe"
+              placeholder="31"
+              min="0"
+              max="31"
+            />
+          </div>
+        </div>
+      </fieldset>
+    </div>
+
+    <div class="defender-section form-section" formGroupName="defender">
+      <h3 class="section-title">Defender</h3>
+
+      <div class="form-field">
+        <label class="form-label" for="defenderName">Defender Name</label>
+        <input
+          class="form-input"
+          id="defenderName"
+          type="text"
+          formControlName="name"
+          placeholder="e.g., Charizard"
+        />
+      </div>
+
+      <div class="form-field">
+        <label class="form-label" for="defenderMove">Move Name</label>
+        <input
+          class="form-input"
+          id="defenderMove"
+          type="text"
+          formControlName="move"
+          placeholder="Optional"
+        />
+      </div>
+
+      <div class="form-field">
+        <label class="form-label" for="defenderItem">Item</label>
+        <input
+          class="form-input"
+          id="defenderItem"
+          type="text"
+          formControlName="item"
+          placeholder="e.g., Assault Vest"
+        />
+      </div>
+
+      <div class="form-compact-row">
+        <div class="form-field">
+          <label class="form-label" for="defenderCrit">Critical Hit</label>
+          <select class="form-select" id="defenderCrit" formControlName="crit">
+            <option [value]="undefined">-</option>
+            <option [value]="true">Yes</option>
+            <option [value]="false">No</option>
+          </select>
+        </div>
+
+        <div class="form-field">
+          <label class="form-label" for="defenderLevel">Level</label>
+          <input
+            class="form-input"
+            id="defenderLevel"
+            type="number"
+            formControlName="level"
+            placeholder="50"
+            min="1"
+            max="100"
+          />
+        </div>
+      </div>
+
+      <div class="form-compact-row">
+        <div class="form-field">
+          <label class="form-label" for="defenderNature">Nature</label>
+          <input
+            class="form-input"
+            id="defenderNature"
+            type="text"
+            formControlName="nature"
+            placeholder="e.g., Adamant"
+          />
+        </div>
+
+        <div class="form-field form-field--inline">
+          <input
+            class="form-checkbox"
+            id="defenderHit"
+            type="checkbox"
+            formControlName="alwaysHits"
+          />
+          <label class="form-label" for="defenderHit">Always Hits</label>
+        </div>
+      </div>
+
+      <fieldset class="form-fieldset">
+        <legend class="form-legend">EVs (Effort Values)</legend>
+        <div formGroupName="evs" class="stats-grid">
+          <div class="form-field">
+            <label class="form-label" for="defenderEVHP">HP</label>
+            <input
+              class="form-input form-input--small"
+              id="defenderEVHP"
+              type="number"
+              formControlName="hp"
+              placeholder="0"
+              min="0"
+              max="252"
+            />
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="defenderEVAtk">Atk</label>
+            <input
+              class="form-input form-input--small"
+              id="defenderEVAtk"
+              type="number"
+              formControlName="atk"
+              placeholder="0"
+              min="0"
+              max="252"
+            />
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="defenderEVDef">Def</label>
+            <input
+              class="form-input form-input--small"
+              id="defenderEVDef"
+              type="number"
+              formControlName="def"
+              placeholder="0"
+              min="0"
+              max="252"
+            />
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="defenderEVSpa">SpA</label>
+            <input
+              class="form-input form-input--small"
+              id="defenderEVSpa"
+              type="number"
+              formControlName="spa"
+              placeholder="0"
+              min="0"
+              max="252"
+            />
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="defenderEVSpd">SpD</label>
+            <input
+              class="form-input form-input--small"
+              id="defenderEVSpd"
+              type="number"
+              formControlName="spd"
+              placeholder="0"
+              min="0"
+              max="252"
+            />
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="defenderEVSpe">Spe</label>
+            <input
+              class="form-input form-input--small"
+              id="defenderEVSpe"
+              type="number"
+              formControlName="spe"
+              placeholder="0"
+              min="0"
+              max="252"
+            />
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset class="form-fieldset">
+        <legend class="form-legend">IVs (Individual Values)</legend>
+        <div formGroupName="ivs" class="stats-grid">
+          <div class="form-field">
+            <label class="form-label" for="defenderIVHP">HP</label>
+            <input
+              class="form-input form-input--small"
+              id="defenderIVHP"
+              type="number"
+              formControlName="hp"
+              placeholder="31"
+              min="0"
+              max="31"
+            />
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="defenderIVAtk">Atk</label>
+            <input
+              class="form-input form-input--small"
+              id="defenderIVAtk"
+              type="number"
+              formControlName="atk"
+              placeholder="31"
+              min="0"
+              max="31"
+            />
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="defenderIVDef">Def</label>
+            <input
+              class="form-input form-input--small"
+              id="defenderIVDef"
+              type="number"
+              formControlName="def"
+              placeholder="31"
+              min="0"
+              max="31"
+            />
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="defenderIVSpa">SpA</label>
+            <input
+              class="form-input form-input--small"
+              id="defenderIVSpa"
+              type="number"
+              formControlName="spa"
+              placeholder="31"
+              min="0"
+              max="31"
+            />
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="defenderIVSpd">SpD</label>
+            <input
+              class="form-input form-input--small"
+              id="defenderIVSpd"
+              type="number"
+              formControlName="spd"
+              placeholder="31"
+              min="0"
+              max="31"
+            />
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="defenderIVSpe">Spe</label>
+            <input
+              class="form-input form-input--small"
+              id="defenderIVSpe"
+              type="number"
+              formControlName="spe"
+              placeholder="31"
+              min="0"
+              max="31"
+            />
+          </div>
+        </div>
+      </fieldset>
+    </div>
+
+    <div class="button-group">
+      <button
+        class="calculate-button"
+        (click)="calculate()"
+        [disabled]="isLoading"
+      >
+        {{ isLoading ? "Calculating..." : "Calculate" }}
+      </button>
+    </div>
+  </div>
+
+  @if (error) {
+    <div class="error-message">
+      <p>Error: {{ error }}</p>
+    </div>
+  }
+
+  @if (
+    calculationResult && (smogonOutcomes.length > 0 || dmgOutcomes.length > 0)
+  ) {
+    <div class="charts-container">
+      <h3 class="charts-title">Damage Distribution Comparison</h3>
+      <div class="charts-grid">
+        @if (smogonOutcomes.length > 0) {
+          <div class="chart-section">
+            <h4 class="section-title">Smogon Calculator</h4>
+            <pdz-hp-chart
+              [maxHp]="maxHP"
+              [outcomes]="smogonOutcomes"
+            ></pdz-hp-chart>
+          </div>
+        }
+        @if (dmgOutcomes.length > 0) {
+          <div class="chart-section">
+            <h4 class="section-title">DMG Calculator</h4>
+            <pdz-hp-chart
+              [maxHp]="maxHP"
+              [outcomes]="dmgOutcomes"
+            ></pdz-hp-chart>
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  @if (calculationResult) {
+    <div class="result-container">
+      <h4 class="result-title">Calculation Result</h4>
+      <div class="result-content">
+        <pre>{{ calculationResult | json }}</pre>
+      </div>
+    </div>
+  }
+  @if (payloadDebug) {
+    <div class="debug-container">
+      <h4 class="debug-title">Request Payload (DEBUG)</h4>
+      <div class="debug-content">
+        <pre>{{ payloadDebug | json }}</pre>
+      </div>
+    </div>
+  }
+</div>

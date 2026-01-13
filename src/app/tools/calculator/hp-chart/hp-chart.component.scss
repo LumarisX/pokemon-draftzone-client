@@ -1,0 +1,66 @@
+@use "../../../../styles/global.scss" as *;
+@use "../../../../styles/mixins" as *;
+
+:host {
+  display: block;
+  width: 100%;
+  min-height: 300px;
+}
+
+.chart-container {
+  width: 100%;
+  height: 300px;
+  background: pdz-color("surface-container");
+  border-radius: var(--pdz-shape-border-radius-md);
+  padding: var(--pdz-space-sm);
+  box-shadow: var(--pdz-level-1);
+}
+
+:host ::ng-deep {
+  .x-axis,
+  .y-axis {
+    path,
+    line {
+      stroke: pdz-color("on-surface-variant");
+    }
+
+    text {
+      fill: pdz-color("on-surface");
+      font-size: 12px;
+    }
+  }
+
+  .axis-label {
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .grid line {
+    stroke: pdz-color("outline-variant");
+  }
+
+  .bar {
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+
+    &:hover {
+      opacity: 1 !important;
+    }
+  }
+
+  .mean-line {
+    pointer-events: none;
+
+    line {
+      transition: opacity 0.3s ease;
+    }
+
+    rect {
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+    }
+
+    text {
+      pointer-events: none;
+    }
+  }
+}

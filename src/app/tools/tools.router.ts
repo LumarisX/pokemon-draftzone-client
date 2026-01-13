@@ -6,6 +6,7 @@ import { RandomDraftComponent } from './random-draft/random-draft.component';
 import { ReplayComponent } from './replay_analyzer/replay.component';
 import { TimeConverterComponent } from './time_converter/time_converter.component';
 import { ToolsComponent } from './tools.component';
+import { CalculatorComponent } from './calculator/calculator.component';
 
 export const ToolsPath = 'tools';
 
@@ -44,6 +45,10 @@ const routes: Routes = [
       import('./quick-draft/quick-draft.module').then(
         (m) => m.QuickDraftModule,
       ),
+  },
+  {
+    path: 'calculator',
+    component: CalculatorComponent,
   },
 ];
 
