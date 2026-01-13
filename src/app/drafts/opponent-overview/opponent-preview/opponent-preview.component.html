@@ -111,10 +111,7 @@
                   (click)="openReplays(matchup)"
                   class="footer-link"
                   [class.disabled]="!matchup.matches.length"
-                  >View Replay
-                  @if (matchup.matches.length > 1) {
-                    s
-                  }
+                  >{{ "View Replay" + (matchup.matches.length > 1 ? "s" : "") }}
                 </a>
               } @else {
                 <a class="footer-link" [routerLink]="['matchup', matchup._id]"
