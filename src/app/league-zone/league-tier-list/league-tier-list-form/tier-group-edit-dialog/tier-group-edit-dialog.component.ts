@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import {
   FormBuilder,
@@ -5,13 +6,12 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import {
   MAT_DIALOG_DATA,
   MatDialogModule,
   MatDialogRef,
 } from '@angular/material/dialog';
-import { CommonModule } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { LeagueTierGroup } from '../../../league-sign-up/league-sign-up.component';
@@ -27,7 +27,7 @@ import { LeagueTierGroup } from '../../../league-sign-up/league-sign-up.componen
     MatInputModule,
   ],
   templateUrl: './tier-group-edit-dialog.component.html',
-  styleUrl: './tier-group-edit-dialog.component.scss',
+  styleUrls: ['./tier-group-edit-dialog.component.scss'],
 })
 export class TierGroupEditDialogComponent implements OnInit {
   dialogRef = inject<MatDialogRef<TierGroupEditDialogComponent>>(MatDialogRef);

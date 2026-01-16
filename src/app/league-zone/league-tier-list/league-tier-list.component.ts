@@ -40,7 +40,7 @@ import { typeColor } from '../../util/styling';
     LoadingComponent,
     SpriteComponent,
   ],
-  styleUrl: './league-tier-list.component.scss',
+  styleUrls: ['./league-tier-list.component.scss'],
 })
 export class LeagueTierListComponent implements OnInit {
   private elRef = inject(ElementRef);

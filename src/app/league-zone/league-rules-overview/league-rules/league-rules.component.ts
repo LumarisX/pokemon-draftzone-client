@@ -15,7 +15,7 @@ import { League } from '../../league.interface';
   selector: 'pdz-league-rules',
   imports: [CdkAccordionModule, MarkdownModule, MatIconModule],
   templateUrl: './league-rules.component.html',
-  styleUrl: './league-rules.component.scss',
+  styleUrls: ['./league-rules.component.scss'],
   animations: [
     trigger('bodyExpansion', [
       state(

@@ -7,7 +7,7 @@ import { PlusSignPipe } from '../../../util/pipes/plus-sign.pipe';
   selector: 'pdz-coach-standings',
   imports: [CommonModule, MatIconModule, PlusSignPipe],
   templateUrl: './coach-standings.component.html',
-  styleUrl: './coach-standings.component.scss',
+  styleUrls: ['./coach-standings.component.scss'],
 })
 export class CoachStandingsComponent {
   standingData: {

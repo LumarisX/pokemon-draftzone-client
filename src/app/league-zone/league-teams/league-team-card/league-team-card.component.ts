@@ -1,19 +1,10 @@
+import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { DraftPokemon } from '../../../interfaces/draft';
+import { MatIconModule } from '@angular/material/icon';
+import { RouterLink } from '@angular/router';
 import { SpriteComponent } from '../../../images/sprite/sprite.component';
 import { PlusSignPipe } from '../../../util/pipes/plus-sign.pipe';
-import { MatIconModule } from '@angular/material/icon';
-import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
-
-export type TeamPokemon = DraftPokemon & {
-  tier: number | string;
-  record: {
-    deaths: number;
-    kills: number;
-    brought: number;
-  };
-};
+import { League } from '../../league.interface';
 
 @Component({
   selector: 'pdz-league-team-card',
@@ -25,22 +16,16 @@ export type TeamPokemon = DraftPokemon & {
     RouterLink,
   ],
   templateUrl: './league-team-card.component.html',
-  styleUrl: './league-team-card.component.scss',
+  styleUrls: ['./league-team-card.component.scss'],
 })
 export class LeagueTeamCardComponent {
   @Input({ required: true })
-  teamDetails!: {
-    teamName: string;
-    coaches: string[];
-    logo?: string;
-    roster: TeamPokemon[];
-    record: {
-      wins: number;
-      losses: number;
-      diff: number;
-    };
-    timezone: string;
-  };
+  teamDetails!: League.LeagueTeam;
 
   data: 'overview' | 'stats' = 'overview';
+
+  getLogoUrl(): string | undefined {
+    if (!this.teamDetails.logo) return undefined;
+    return `https://pokemondraftzone-public.s3.us-east-2.amazonaws.com/user-uploads/${this.teamDetails.logo}`;
+  }
 }

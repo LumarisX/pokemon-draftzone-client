@@ -1,10 +1,44 @@
+import {
+  Coverage,
+  MoveChart,
+  TypeChart,
+  Summary,
+} from '../drafts/matchup-overview/matchup-interface';
 import { DraftPokemon } from '../interfaces/draft';
+import { Pokemon } from '../interfaces/pokemon';
 
 export namespace League {
   export type Team = {
-    teamName: string;
+    name: string;
     coaches: string[];
     logo: string;
+  };
+
+  export type LeagueTeam = {
+    name: string;
+    id: string;
+    logo?: string;
+    draft: LeaguePokemon[];
+    picks: LeaguePokemon[][];
+    isCoach: boolean;
+    coaches: string[];
+
+    pointTotal: number;
+    record?: {
+      wins: number;
+      losses: number;
+      diff: number;
+    };
+    timezone?: string;
+  };
+
+  export type LeaguePokemon = DraftPokemon & {
+    tier: string | string;
+    record?: {
+      deaths: number;
+      kills: number;
+      brought: number;
+    };
   };
 
   export type TieredPokemon = {
@@ -37,6 +71,47 @@ export namespace League {
   export type Rule = {
     title: string;
     body: string;
+  };
+
+  export type PowerRankingTeam = {
+    info: { name: string; index: number; id: string };
+    coverage: Coverage;
+    movechart: MoveChart;
+    typechart: TypeChart;
+    summary: Summary;
+    score?: number;
+  };
+
+  export type DraftRound = {
+    teamName: string;
+    status?: string;
+    pokemon?: Pokemon;
+  }[];
+
+  export type RuleCategory = {
+    header: string;
+    details: string[];
+  };
+
+  export type LeagueSignUp = {
+    name: string;
+    timezone: string;
+    experience: string;
+    dropped?: string;
+    confirm: boolean;
+    sub: string;
+  };
+
+  export type DraftPick = {
+    pokemon: LeaguePokemon;
+    timestamp: Date;
+    picker: string;
+  };
+
+  export type DraftTeam = {
+    id: string;
+    name: string;
+    draft: DraftPick[];
   };
 }
 

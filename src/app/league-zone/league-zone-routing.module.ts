@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { LeagueRulesComponent } from './league-rules-overview/league-rules-old/rules.component';
 import { LeagueDraftComponent } from './league-drafting/league-drafting.component';
 import { LeagueLandingComponent } from './league-landing/landing.component';
 import { LeagueManagePath } from './league-manage/league-manage-routing.module';
@@ -11,6 +10,12 @@ import { leagueRoleGuard } from './league-role.guard';
 import { LeagueTierListComponent } from './league-tier-list/league-tier-list.component';
 import { PowerRankingsComponent } from './divisions/power-rankings/power-rankings.component';
 import { LeagueBracketComponent } from './league-bracket/league-bracket.component';
+import { LeagueDashboardComponent } from './league/league.component';
+import { LeagueScheduleComponent } from './league-schedule/league-schedule.component';
+import { LeagueStandingsComponent } from './league-standings/league-standings.component';
+import { LeagueTradesComponent } from './league-trades/league-trades.component';
+import { LeagueTeamsComponent } from './league-teams/league-teams.component';
+import { LeagueRulesOverviewComponent } from './league-rules-overview/league-rules-overview.component';
 
 export const LeagueZonePath = 'leagues';
 const routes: Routes = [
@@ -35,21 +40,21 @@ const routes: Routes = [
     path: ':leagueKey',
     component: LeagueLandingComponent,
   },
-  //   {
-  //   path: ':leagueKey/dashboard',
-  //   component: LeagueDashboardComponent,
-  // },
-  // {
-  //   path: ':leagueKey/standings',
-  //   component: LeagueStandingsComponent,
-  // },
-  // {
-  //   path: 'view/:leagueKey/schedule',
-  //   component: LeagueScheduleComponent,
-  // },
+  {
+    path: ':leagueKey/dashboard',
+    component: LeagueDashboardComponent,
+  },
+  {
+    path: ':leagueKey/standings',
+    component: LeagueStandingsComponent,
+  },
+  {
+    path: ':leagueKey/schedule',
+    component: LeagueScheduleComponent,
+  },
   {
     path: ':leagueKey/rules',
-    component: LeagueRulesComponent,
+    component: LeagueRulesOverviewComponent,
   },
   {
     path: ':leagueKey/tier-list',
@@ -68,21 +73,20 @@ const routes: Routes = [
     path: ':leagueKey/bracket',
     component: LeagueBracketComponent,
   },
-  // {
-  //   path: 'view/:leagueKey/trades',
-  //   component: LeagueTradesComponent,
-  // },
-
-  // {
-  //   path: 'view/:leagueKey/teams',
-  //   component: LeagueTeamsComponent,
-  // },
+  {
+    path: ':leagueKey/trades',
+    component: LeagueTradesComponent,
+  },
+  {
+    path: ':leagueKey/:divisionKey/teams',
+    component: LeagueTeamsComponent,
+  },
   {
     path: ':leagueKey/:divisionKey/power-rankings',
     component: PowerRankingsComponent,
   },
   // {
-  //   path: 'view/:leagueKey/auction',
+  //   path: 'view/:leagueId/auction',
   //   component: LeagueAuctionComponent,
   //   canActivate: [leagueRoleGuard],
   //   data: { role: 'coach' },

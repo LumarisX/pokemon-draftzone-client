@@ -81,7 +81,7 @@ export class LeagueBracketGraphComponent
   @Input() componentTitle: string = 'Tournament Bracket (Single Elimination)';
   teams: BracketTeamData[] = defenseData
     .map((team) => ({
-      teamName: team.teamName,
+      teamName: team.name,
       coachName: team.coaches[0],
       seed: team.seed,
       logo: team.logo,
@@ -93,7 +93,7 @@ export class LeagueBracketGraphComponent
 
     .sort((x, y) => x.seed - y.seed)
     .map((team, index) => ({
-      teamName: team.teamName,
+      teamName: team.name,
       coachName: team.coaches[0],
       seed: index,
       logo: team.logo,

@@ -1,23 +1,43 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { LeagueRulesFormComponent } from './league-rules-form/league-rules-form.component';
-import { LeagueRulesComponent } from './league-rules/league-rules.component';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { RouterModule } from '@angular/router';
+import { Subject, takeUntil } from 'rxjs';
 import { LeagueZoneService } from '../../services/leagues/league-zone.service';
 import { League } from '../league.interface';
+import { LeagueRulesComponent } from './league-rules/league-rules.component';
 
 @Component({
   selector: 'pdz-league-rules-overview',
-  imports: [LeagueRulesFormComponent, LeagueRulesComponent],
+  imports: [LeagueRulesComponent, RouterModule],
   templateUrl: './league-rules-overview.component.html',
-  styleUrl: './league-rules-overview.component.scss',
+  styleUrls: ['./league-rules-overview.component.scss'],
 })
-export class LeagueRulesOverviewComponent implements OnInit {
+export class LeagueRulesOverviewComponent implements OnInit, OnDestroy {
   private leagueZoneService = inject(LeagueZoneService);
+  private destroy$ = new Subject<void>();
 
   rules: League.Rule[] = [];
 
   ngOnInit(): void {
-    this.leagueZoneService.getRules().subscribe((rules) => {
-      this.rules = rules;
-    });
+    const leagueKey = this.leagueZoneService.leagueKey();
+    if (leagueKey) {
+      this.leagueZoneService
+        .getRules(leagueKey)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((ruleCategories) => {
+          this.rules = this.transformRules(ruleCategories);
+        });
+    }
+  }
+
+  private transformRules(categories: League.RuleCategory[]): League.Rule[] {
+    return categories.map((category) => ({
+      title: category.header,
+      body: category.details.map((detail) => `- ${detail}`).join('\n'),
+    }));
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

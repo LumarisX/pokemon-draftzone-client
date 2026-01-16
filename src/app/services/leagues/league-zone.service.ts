@@ -12,67 +12,12 @@ import {
 import { Pokemon } from '../../interfaces/pokemon';
 import { LeagueTierGroup } from '../../interfaces/tier-pokemon.interface';
 import { defenseData } from '../../league-zone/league-ghost';
-import { TeamPokemon } from '../../league-zone/league-teams/league-team-card/league-team-card.component';
 import { League } from '../../league-zone/league.interface';
 import { ApiService } from '../api.service';
 import { WebSocketService } from '../ws.service';
+import { DraftPokemon } from '../../interfaces/draft';
 
 const ROOTPATH = 'leagues';
-
-export type PowerRankingTeam = {
-  info: { name: string; index: number; id: string };
-  coverage: Coverage;
-  movechart: MoveChart;
-  typechart: TypeChart;
-  summary: Summary;
-  score?: number;
-};
-
-type DraftRound = {
-  teamName: string;
-  status?: string;
-  pokemon?: Pokemon;
-}[];
-
-export type RuleCategory = {
-  header: string;
-  details: string[];
-};
-
-export type LeagueSignUp = {
-  name: string;
-  timezone: string;
-  experience: string;
-  dropped?: string;
-  confirm: boolean;
-  sub: string;
-};
-
-export type DraftPick = {
-  pokemon: LeaguePokemon;
-  timestamp: Date;
-  picker: string;
-};
-
-export type DraftTeam = {
-  id: string;
-  name: string;
-  draft: DraftPick[];
-};
-
-export type LeaguePokemon = Pokemon & {
-  tier: string;
-};
-
-export type LeagueTeam = {
-  name: string;
-  id: string;
-  logoUrl?: string;
-  draft: LeaguePokemon[];
-  picks: LeaguePokemon[][];
-  isCoach: boolean;
-  pointTotal: number;
-};
 
 @Injectable({
   providedIn: 'root',
@@ -129,15 +74,15 @@ export class LeagueZoneService {
     });
   }
 
-  getRules(leagueKey: string): Observable<RuleCategory[]> {
-    return this.apiService.get<RuleCategory[]>(
+  getRules(leagueKey: string): Observable<League.RuleCategory[]> {
+    return this.apiService.get<League.RuleCategory[]>(
       `${ROOTPATH}/${this.leagueKey()}/rules`,
       false,
     );
   }
 
   powerRankingDetails() {
-    return this.apiService.get<PowerRankingTeam[]>(
+    return this.apiService.get<League.PowerRankingTeam[]>(
       `${ROOTPATH}/${this.leagueKey()}/divisions/${this.divisionKey()}/power-rankings`,
       true,
     );
@@ -150,7 +95,7 @@ export class LeagueZoneService {
       teamOrder: string[];
       rounds: number;
       points: number;
-      teams: LeagueTeam[];
+      teams: League.LeagueTeam[];
       draftStyle: 'snake' | 'linear';
       status: 'PRE_DRAFT' | 'IN_PROGRESS' | 'PAUSED' | 'COMPLETED';
       skipTime: Date;
@@ -173,7 +118,7 @@ export class LeagueZoneService {
   }
 
   getPicks() {
-    return this.apiService.get<DraftTeam[]>(
+    return this.apiService.get<League.DraftTeam[]>(
       `${ROOTPATH}/${this.leagueKey()}/divisions/${this.divisionKey()}/picks`,
       true,
     );
@@ -201,7 +146,7 @@ export class LeagueZoneService {
 
   getTeamDetail(teamIndex: number) {
     const team = defenseData[teamIndex];
-    const roster: TeamPokemon[] = [];
+    const roster: League.LeaguePokemon[] = [];
     const pokemonCount = Math.round(Math.random() * 2) + 10;
     for (let i = 0; i < pokemonCount; i++) {
       const brought = Math.round(Math.random() * 8);
@@ -213,7 +158,7 @@ export class LeagueZoneService {
 
       roster.push({
         ...getRandomPokemon(),
-        tier: Math.round(Math.random() * 20),
+        tier: Math.round(Math.random() * 20).toFixed(0),
         record: {
           brought,
           kills,
@@ -243,7 +188,7 @@ export class LeagueZoneService {
   }
 
   getDraftOrder(divisionId: string) {
-    return this.apiService.get<DraftRound[]>(
+    return this.apiService.get<League.DraftRound[]>(
       `${ROOTPATH}/${this.leagueKey()}/division/${divisionId}/order`,
       false,
     );
@@ -497,7 +442,7 @@ export class LeagueZoneService {
     return this.apiService.get(`battlezone/pdbl`, false);
   }
 
-  getSignUps(leagueKey: string): Observable<LeagueSignUp[]> {
+  getSignUps(leagueKey: string): Observable<League.LeagueSignUp[]> {
     return this.apiService.get(`leagues/${leagueKey}/signup`, true);
   }
 

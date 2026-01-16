@@ -7,7 +7,8 @@ import {
   TierPokemon,
 } from '../../interfaces/tier-pokemon.interface';
 import { WebSocketService } from '../ws.service';
-import { LeaguePokemon, LeagueZoneService } from './league-zone.service';
+import { LeagueZoneService } from './league-zone.service';
+import { League } from '../../league-zone/league.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -99,12 +100,12 @@ export class LeagueTierListService {
       .on<{
         pick: {
           division: string;
-          pokemon: LeaguePokemon;
+          pokemon: League.LeaguePokemon;
         };
         team: {
           id: string;
           name: string;
-          draft: LeaguePokemon[];
+          draft: League.LeaguePokemon[];
         };
         canDraftTeams: string[];
       }>('league.draft.added')

@@ -1,4 +1,3 @@
-
 import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -18,10 +17,10 @@ import { LeagueTierGroup } from '../../../league-sign-up/league-sign-up.componen
     MatButtonModule,
     ReactiveFormsModule,
     MatFormFieldModule,
-    MatInputModule
-],
+    MatInputModule,
+  ],
   templateUrl: './tier-edit-dialog.component.html',
-  styleUrl: './tier-edit-dialog.component.scss',
+  styleUrls: ['./tier-edit-dialog.component.scss'],
 })
 export class TierEditDialogComponent implements OnInit {
   dialogRef = inject<MatDialogRef<TierEditDialogComponent>>(MatDialogRef);

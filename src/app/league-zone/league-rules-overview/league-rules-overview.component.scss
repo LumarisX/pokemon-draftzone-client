@@ -1,7 +1,99 @@
-.rule-container {
-  padding: var(--pdz-space-lg);
+@use "../../../styles/global.scss" as *;
+@use "../../../styles/mixins" as *;
+@use "../../../styles/mixins/buttons" as *;
+
+// ============================================================================
+// Page Container Layout
+// ============================================================================
+
+:host {
   display: flex;
   flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+
+.rules-container {
+  position: relative;
+  padding: var(--pdz-space-lg) var(--pdz-space-md);
+
+  @include respond-above("medium") {
+    padding: var(--pdz-space-xl) var(--pdz-space-lg);
+  }
+}
+
+// ============================================================================
+// Back Button
+// ============================================================================
+
+.back-button {
+  @include base-button(
+    (
+      padding: var(--pdz-space-sm) var(--pdz-space-md),
+      border-radius: var(--pdz-shape-corner-sm),
+      font-weight: bold,
+      position: absolute,
+      top: var(--pdz-space-md),
+      left: var(--pdz-space-md),
+    )
+  );
+
+  background: pdz-color("primary-container");
+  color: pdz-color("on-primary-container");
+  border: 1px solid pdz-color("primary-border");
+
+  &:hover:not(:disabled) {
+    background: pdz-color("primary-container-hover");
+  }
+
+  &:active:not(:disabled) {
+    background: pdz-color("primary-container-high");
+  }
+
+  &:disabled {
+    opacity: var(--pdz-opacity-disabled);
+    cursor: not-allowed;
+  }
+
+  @include respond-above("medium") {
+    top: var(--pdz-space-lg);
+    left: var(--pdz-space-lg);
+  }
+}
+
+// ============================================================================
+// Page Header
+// ============================================================================
+
+.rules-header {
+  display: flex;
   justify-content: center;
   align-items: center;
+  margin: var(--pdz-space-lg) 0 var(--pdz-space-xl) 0;
+  gap: var(--pdz-space-md);
+}
+
+.rules-title {
+  @include apply-typography("headline-lg");
+  color: pdz-color("on-surface");
+  text-align: center;
+}
+
+// ============================================================================
+// Content Wrapper
+// ============================================================================
+
+.rules-wrapper {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 0 var(--pdz-space-md) var(--pdz-space-lg);
+  gap: var(--pdz-space-lg);
+  flex: 1;
+  overflow-y: auto;
+
+  @include respond-above("medium") {
+    padding: 0 var(--pdz-space-lg) var(--pdz-space-xl);
+  }
 }

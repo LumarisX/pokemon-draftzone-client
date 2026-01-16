@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -17,13 +17,13 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { RouterModule } from '@angular/router';
 import { map, Subject, take, takeUntil } from 'rxjs';
-import { LeagueZoneService } from '../../services/leagues/league-zone.service';
 import { AuthService } from '../../services/auth0.service';
+import { LeagueZoneService } from '../../services/leagues/league-zone.service';
 
 @Component({
   selector: 'pdz-league-sign-up',
   templateUrl: './league-sign-up.component.html',
-  styleUrl: './league-sign-up.component.scss',
+  styleUrls: ['./league-sign-up.component.scss'],
   imports: [
     CommonModule,
     FormsModule,

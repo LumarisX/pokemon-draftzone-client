@@ -9,7 +9,7 @@ import { TradeCardComponent } from './trade-card/trade-card.component';
   selector: 'pdz-league-trades',
   imports: [TradeCardComponent],
   templateUrl: './league-trades.component.html',
-  styleUrl: './league-trades.component.scss',
+  styleUrls: ['./league-trades.component.scss'],
 })
 export class LeagueTradesComponent {
   teams = getRandomTeamOrder();

@@ -1,4 +1,10 @@
-<div class="rule-container">
-  <pdz-league-rules-form [sections]="rules"></pdz-league-rules-form>
+<div class="rules-container">
+  <button class="back-button" [routerLink]="['../']">← Back</button>
+  <div class="rules-header">
+    <h1 class="rules-title">League Rules</h1>
+  </div>
+</div>
+
+<div class="rules-wrapper">
   <pdz-league-rules [sections]="rules"></pdz-league-rules>
 </div>

@@ -6,17 +6,15 @@ import { SpriteComponent } from '../../../images/sprite/sprite.component';
 import { DraftPokemon } from '../../../interfaces/draft';
 import { LeagueNotificationService } from '../../../services/league-notification.service';
 import { LeagueManageService } from '../../../services/leagues/league-manage.service';
-import {
-  DraftTeam,
-  LeaguePokemon,
-  LeagueTeam,
-  LeagueZoneService,
-} from '../../../services/leagues/league-zone.service';
+import { LeagueZoneService } from '../../../services/leagues/league-zone.service';
 import { PokemonSelectComponent } from '../../../util/pokemon-select/pokemon-select.component';
 import { LeagueNotificationsComponent } from '../../league-notifications/league-notifications.component';
 import { WebSocketService } from '../../../services/ws.service';
+import { League } from '../../league.interface';
 
-type TeamForDraft = LeagueTeam & { selectedPokemon?: DraftPokemon | null };
+type TeamForDraft = League.LeagueTeam & {
+  selectedPokemon?: DraftPokemon | null;
+};
 
 @Component({
   selector: 'pdz-league-manage-draft',
@@ -51,7 +49,7 @@ export class LeagueManageDraftComponent implements OnInit {
       .on<{
         divisionKey: string;
         team: { id: string; name: string };
-        pokemon: LeaguePokemon;
+        pokemon: League.LeaguePokemon;
         canDraftTeams: string[];
       }>('league.draft.added')
       .subscribe((data) => {

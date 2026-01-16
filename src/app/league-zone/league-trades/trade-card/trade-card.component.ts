@@ -39,7 +39,7 @@ export class TradeCardComponent {
     const from = this.tradeLog.from;
     return {
       logoUrl: from.team?.logo || this.DEFAULT_LOGO,
-      primaryName: from.team?.teamName || this.DRAFT_POOL_NAME,
+      primaryName: from.team?.name || this.DRAFT_POOL_NAME,
       secondaryName: from.team?.coaches[0],
       defaultLogo: this.DEFAULT_LOGO,
     };
@@ -49,7 +49,7 @@ export class TradeCardComponent {
     const to = this.tradeLog.to;
     return {
       logoUrl: to.team?.logo || this.DEFAULT_LOGO,
-      primaryName: to.team?.teamName || this.DRAFT_POOL_NAME,
+      primaryName: to.team?.name || this.DRAFT_POOL_NAME,
       secondaryName: to.team?.coaches[0],
       defaultLogo: this.DEFAULT_LOGO,
     };

@@ -6,7 +6,7 @@ import { MatchupCardComponent } from './matchup-card/matchup-card.component';
   selector: 'pdz-league-schedule',
   imports: [MatchupCardComponent],
   templateUrl: './league-schedule.component.html',
-  styleUrl: './league-schedule.component.scss',
+  styleUrls: ['./league-schedule.component.scss'],
 })
 export class LeagueScheduleComponent {
   matchups: League.Matchup[] = [

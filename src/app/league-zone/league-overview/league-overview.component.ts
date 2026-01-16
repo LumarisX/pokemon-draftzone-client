@@ -5,6 +5,6 @@ import { RouterModule } from '@angular/router';
   selector: 'pdz-league-overview',
   imports: [RouterModule],
   templateUrl: './league-overview.component.html',
-  styleUrl: './league-overview.component.scss',
+  styleUrls: ['./league-overview.component.scss'],
 })
 export class LeagueOverviewComponent {}

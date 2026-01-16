@@ -1,16 +1,18 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  inject,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
-import { Subject, Subscription } from 'rxjs';
+import { Subject, interval, takeUntil } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { DraftPokemon } from '../../interfaces/draft';
 import { TierPokemon } from '../../interfaces/tier-pokemon.interface';
-import {
-  LeaguePokemon,
-  LeagueTeam,
-  LeagueZoneService,
-} from '../../services/leagues/league-zone.service';
+import { LeagueZoneService } from '../../services/leagues/league-zone.service';
 import { NumberSuffixPipe } from '../../util/pipes/number-suffix.pipe';
 import { LeagueTierListComponent } from '../league-tier-list/league-tier-list.component';
 import { LoadingComponent } from '../../images/loading/loading.component';
@@ -18,6 +20,46 @@ import { LeagueNotificationsComponent } from '../league-notifications/league-not
 import { LeagueNotificationService } from '../../services/league-notification.service';
 import { WebSocketService } from '../../services/ws.service';
 import { RouterModule } from '@angular/router';
+import { League } from '../league.interface';
+
+interface DraftAddedEvent {
+  divisionId: string;
+  pick: {
+    pokemon: League.LeaguePokemon;
+  };
+  team: {
+    id: string;
+    name: string;
+    draft: League.LeaguePokemon[];
+  };
+  canDraftTeams: string[];
+}
+
+interface DraftCounterEvent {
+  divisionId: string;
+  currentPick: {
+    round: number;
+    position: number;
+    skipTime?: Date;
+  };
+  canDraftTeams: string[];
+  nextTeam: string;
+}
+
+interface DraftStatusEvent {
+  divisionId: string;
+  status: 'PRE_DRAFT' | 'IN_PROGRESS' | 'PAUSED' | 'COMPLETED';
+  currentPick?: {
+    round: number;
+    position: number;
+    skipTime?: Date;
+  };
+}
+
+interface DraftSkipEvent {
+  divisionId: string;
+  teamName: string;
+}
 
 @Component({
   selector: 'pdz-league-drafting',
@@ -37,12 +79,16 @@ import { RouterModule } from '@angular/router';
 export class LeagueDraftComponent implements OnInit, OnDestroy {
   private notificationService = inject(LeagueNotificationService);
   private webSocketService = inject(WebSocketService);
+  private leagueService = inject(LeagueZoneService);
+  private cdr = inject(ChangeDetectorRef);
 
-  teams: LeagueTeam[] = [];
+  private destroy$ = new Subject<void>();
+  private countdownTick$ = new Subject<void>();
+  private picksChanged$ = new Subject<void>();
+
+  teams: League.LeagueTeam[] = [];
   canDraftTeams: string[] = [];
-  selectedTeam!: LeagueTeam;
-  private picksChanged = new Subject<void>();
-  private picksSubscription!: Subscription;
+  selectedTeam!: League.LeagueTeam;
 
   leagueName: string = '';
   divisionName: string = '';
@@ -57,20 +103,9 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
   };
 
   selectedPick: number = 0;
-
   isDropdownOpen: boolean = false;
-
   skipTimeDisplay: string | null = null;
-  private countdownInterval: any;
 
-  toggleDropdown() {
-    this.isDropdownOpen = !this.isDropdownOpen;
-  }
-
-  selectTeamAndClose(team: LeagueTeam) {
-    this.selectedTeam = team;
-    this.isDropdownOpen = false;
-  }
   draftDetails: {
     draftStyle: 'snake' | 'linear';
     roundCount: number;
@@ -83,14 +118,28 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
     status: 'IN_PROGRESS',
   };
 
-  get teamsMap() {
+  // Configuration constants
+  private readonly PICKS_SAVE_DELAY_MS = 3000;
+  private readonly COUNTDOWN_TICK_MS = 1000;
+  private readonly FAST_TIME_THRESHOLD_MS = 300; // seconds
+
+  toggleDropdown(): void {
+    this.isDropdownOpen = !this.isDropdownOpen;
+  }
+
+  selectTeamAndClose(team: League.LeagueTeam): void {
+    this.selectedTeam = team;
+    this.isDropdownOpen = false;
+  }
+
+  get teamsMap(): Map<string, League.LeagueTeam> {
     return new Map(this.teams.map((team) => [team.id, team]));
   }
 
-  get draftRounds() {
+  get draftRounds(): League.LeagueTeam[][] {
     const orderedTeams = this.draftDetails.teamOrder
       .map((teamId) => this.teamsMap.get(teamId))
-      .filter((team) => team !== undefined);
+      .filter((team): team is League.LeagueTeam => team !== undefined);
     return Array.from({ length: this.draftDetails.roundCount }, (_, i) => {
       const round = [...orderedTeams];
       if (this.draftDetails.draftStyle === 'snake' && i % 2 === 1) {
@@ -100,67 +149,56 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
     });
   }
 
-  leagueService = inject(LeagueZoneService);
   ngOnInit(): void {
-    this.leagueService.getDivisionDetails().subscribe((data) => {
-      this.teams = data.teams;
-      this.selectedTeam = this.teams[0];
-      this.leagueName = data.leagueName;
-      this.divisionName = data.divisionName;
-      this.currentPick = data.currentPick;
-      this.canDraftTeams = data.canDraft;
-      this.isLoading = false;
-      this.draftDetails.draftStyle = data.draftStyle;
-      this.points = data.points;
-      this.draftDetails.roundCount = data.rounds;
-      this.draftDetails.teamOrder = data.teamOrder;
-      this.draftDetails.status = data.status;
-      this.picksSubscription = this.picksChanged
-        .pipe(debounceTime(3000))
-        .subscribe(() => {
-          console.log(this.selectedTeam.picks);
-          this.leagueService
-            .setPicks(
-              this.selectedTeam.id,
-              this.selectedTeam.picks.map((round) =>
-                round.map((pick) => pick.id),
-              ),
-            )
-            .subscribe((response) => {
-              console.log(response);
-            });
-        });
+    this.leagueService
+      .getDivisionDetails()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((data) => {
+        this.teams = data.teams;
+        this.selectedTeam = this.teams[0];
+        this.leagueName = data.leagueName;
+        this.divisionName = data.divisionName;
+        this.currentPick = data.currentPick;
+        this.canDraftTeams = data.canDraft;
+        this.isLoading = false;
+        this.draftDetails.draftStyle = data.draftStyle;
+        this.points = data.points;
+        this.draftDetails.roundCount = data.rounds;
+        this.draftDetails.teamOrder = data.teamOrder;
+        this.draftDetails.status = data.status;
 
-      this.startCountdown();
-    });
+        this.picksChanged$
+          .pipe(
+            debounceTime(this.PICKS_SAVE_DELAY_MS),
+            takeUntil(this.destroy$),
+          )
+          .subscribe(() => {
+            this.leagueService
+              .setPicks(
+                this.selectedTeam.id,
+                this.selectedTeam.picks.map((round) =>
+                  round.map((pick) => pick.id),
+                ),
+              )
+              .pipe(takeUntil(this.destroy$))
+              .subscribe();
+          });
+
+        this.startCountdown();
+      });
 
     this.webSocketService
-      .on<{
-        divisionId: string;
-        pick: {
-          pokemon: LeaguePokemon;
-        };
-        team: {
-          id: string;
-          name: string;
-          draft: LeaguePokemon[];
-        };
-        canDraftTeams: string[];
-      }>('league.draft.added')
+      .on<DraftAddedEvent>('league.draft.added')
+      .pipe(takeUntil(this.destroy$))
       .subscribe((data) => {
         if (this.leagueService.divisionKey() !== data.divisionId) {
-          console.log(
-            'Div key doesnt match',
-            this.leagueService.divisionKey(),
-            data.divisionId,
-          );
           return;
         }
         this.teams = this.teams.map((team) => {
           const newTeam = { ...team };
           if (team.id === data.team.id) {
             newTeam.draft = data.team.draft;
-            newTeam.picks = newTeam.picks.filter((round, index) => index);
+            newTeam.picks = newTeam.picks.filter((_, index) => index);
           }
           newTeam.picks = newTeam.picks.map((round) =>
             round.filter((pick) => pick.id !== data.pick.pokemon.id),
@@ -175,9 +213,7 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
 
           if (updatedSelectedTeam) {
             updatedSelectedTeam.pointTotal = data.team.draft.reduce(
-              (points, p) => {
-                return points + Number(p.tier);
-              },
+              (points, p) => points + Number(p.tier),
               0,
             );
             Object.assign(this.selectedTeam, updatedSelectedTeam);
@@ -192,23 +228,10 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
       });
 
     this.webSocketService
-      .on<{
-        divisionId: string;
-        currentPick: {
-          round: number;
-          position: number;
-          skipTime?: Date;
-        };
-        canDraftTeams: string[];
-        nextTeam: string;
-      }>('league.draft.counter')
+      .on<DraftCounterEvent>('league.draft.counter')
+      .pipe(takeUntil(this.destroy$))
       .subscribe((data) => {
         if (this.leagueService.divisionKey() !== data.divisionId) {
-          console.log(
-            'Div key doesnt match',
-            this.leagueService.divisionKey(),
-            data.divisionId,
-          );
           return;
         }
         this.currentPick = data.currentPick;
@@ -221,22 +244,10 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
       });
 
     this.webSocketService
-      .on<{
-        divisionId: string;
-        status: 'PRE_DRAFT' | 'IN_PROGRESS' | 'PAUSED' | 'COMPLETED';
-        currentPick?: {
-          round: number;
-          position: number;
-          skipTime?: Date;
-        };
-      }>('league.draft.status')
+      .on<DraftStatusEvent>('league.draft.status')
+      .pipe(takeUntil(this.destroy$))
       .subscribe((data) => {
         if (this.leagueService.divisionKey() !== data.divisionId) {
-          console.log(
-            'Div key doesnt match',
-            this.leagueService.divisionKey(),
-            data.divisionId,
-          );
           return;
         }
         this.draftDetails.status = data.status;
@@ -244,7 +255,7 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
         switch (data.status) {
           case 'PAUSED':
           case 'COMPLETED':
-            clearInterval(this.countdownInterval);
+            this.countdownTick$.next();
             break;
           case 'IN_PROGRESS':
             this.startCountdown();
@@ -254,17 +265,10 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
       });
 
     this.webSocketService
-      .on<{
-        divisionId: string;
-        teamName: string;
-      }>('league.draft.skip')
+      .on<DraftSkipEvent>('league.draft.skip')
+      .pipe(takeUntil(this.destroy$))
       .subscribe((data) => {
         if (this.leagueService.divisionKey() !== data.divisionId) {
-          console.log(
-            'Div key doesnt match',
-            this.leagueService.divisionKey(),
-            data.divisionId,
-          );
           return;
         }
         this.notificationService.show(`${data.teamName} was skipped!`, 'info');
@@ -272,28 +276,32 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.picksSubscription.unsubscribe();
-    if (this.countdownInterval) {
-      clearInterval(this.countdownInterval);
-    }
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.countdownTick$.next();
+    this.countdownTick$.complete();
   }
 
   startCountdown(): void {
-    clearInterval(this.countdownInterval);
-    this.countdownInterval = setInterval(() => {
-      this.skipTimeDisplay = this.timeUntil(this.currentPick?.skipTime);
-    }, 1000);
+    this.countdownTick$.next();
+    interval(this.COUNTDOWN_TICK_MS)
+      .pipe(takeUntil(this.countdownTick$))
+      .subscribe(() => {
+        this.skipTimeDisplay = this.timeUntil(this.currentPick?.skipTime);
+      });
   }
 
-  moveUp(picks: LeaguePokemon[], index: number) {
+  moveUp(picks: League.LeaguePokemon[], index: number): void {
     if (!index || index >= picks.length) return;
-    const temp = picks[index];
-    picks[index] = picks[index - 1];
-    picks[index - 1] = temp;
-    this.picksChanged.next();
+    const newPicks = [...picks];
+    const temp = newPicks[index];
+    newPicks[index] = newPicks[index - 1];
+    newPicks[index - 1] = temp;
+    picks.splice(0, picks.length, ...newPicks);
+    this.picksChanged$.next();
   }
 
-  pokemonSelected(pokemon: TierPokemon & { tier: string }) {
+  pokemonSelected(pokemon: TierPokemon & { tier: string }): void {
     if (this.canDraft() && !this.selectedPick) {
       this.draftPokemon(pokemon);
     } else {
@@ -301,27 +309,27 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
     }
   }
 
-  draftPokemon(pokemon: DraftPokemon) {
+  draftPokemon(pokemon: DraftPokemon): void {
     this.canDraftTeams = [];
     this.leagueService
       .draftPokemon(this.selectedTeam.id, pokemon)
-      .subscribe((response) => {
-        console.log(response);
-      });
+      .pipe(takeUntil(this.destroy$))
+      .subscribe();
   }
 
-  deleteChoice(picks: LeaguePokemon[], index: number) {
-    picks.splice(index, 1);
-    this.picksChanged.next();
+  deleteChoice(picks: League.LeaguePokemon[], index: number): void {
+    const newPicks = picks.filter((_, i) => i !== index);
+    picks.splice(0, picks.length, ...newPicks);
+    this.picksChanged$.next();
   }
 
-  addChoice(pokemon: TierPokemon & { tier: string }) {
+  addChoice(pokemon: TierPokemon & { tier: string }): void {
     this.selectedTeam.picks[this.selectedPick].push({
       name: pokemon.name,
       id: pokemon.id,
       tier: pokemon.tier,
     });
-    this.picksChanged.next();
+    this.picksChanged$.next();
   }
 
   timeUntil(time: Date | string | undefined): string | null {
@@ -334,7 +342,7 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
     }
 
     const diffSeconds = diffMs / 1000;
-    if (diffSeconds < 300) {
+    if (diffSeconds < this.FAST_TIME_THRESHOLD_MS) {
       return `${Math.floor(diffSeconds)}s`;
     }
 
@@ -346,37 +354,16 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
     const diffHours = diffMs / (1000 * 60 * 60);
     return `${diffHours.toFixed(1)}h`;
   }
-  buttonText() {
+
+  buttonText(): string | undefined {
     if (!this.selectedTeam.picks.length) return undefined;
     if (this.canDraft() && !this.selectedPick) return 'Draft';
     return (
-      'Add to Picks \(' +
+      'Add to Picks (' +
       (this.selectedPick + this.selectedTeam.draft.length + 1) +
-      '\)'
+      ')'
     );
   }
-
-  // setRound(position: number): {
-  //   number: number;
-  //   team?: LeagueTeam;
-  // } {
-  //   console.log(
-  //     position,
-  //     this.draftDetails.roundCount,
-  //     this.teams.length,
-  //     Math.floor(position / this.teams.length),
-  //     position % this.teams.length,
-  //   );
-  //   const teamName =
-  //     this.draftOrder[Math.floor(position / this.teams.length)][
-  //       position % this.teams.length
-  //     ].teamName;
-  //   const team = this.teams.find((team) => team.name === teamName);
-  //   return {
-  //     number: position,
-  //     team,
-  //   };
-  // }
 
   canDraft(): boolean {
     return (

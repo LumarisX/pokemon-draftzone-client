@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
-import { PlusSignPipe } from '../../../util/pipes/plus-sign.pipe';
-import { DraftPokemon } from '../../../interfaces/draft';
-import { SpriteComponent } from '../../../images/sprite/sprite.component';
-import { getRandomPokemon } from '../../../data/namedex';
 import { MatSortModule, Sort } from '@angular/material/sort';
+import { getRandomPokemon } from '../../../data/namedex';
+import { SpriteComponent } from '../../../images/sprite/sprite.component';
+import { DraftPokemon } from '../../../interfaces/draft';
+import { PlusSignPipe } from '../../../util/pipes/plus-sign.pipe';
 
 export type StandingsPokemon = DraftPokemon & {
   direction: number;
@@ -22,7 +22,7 @@ export type StandingsPokemon = DraftPokemon & {
   selector: 'pdz-pokemon-standings',
   imports: [MatIconModule, SpriteComponent, MatSortModule, PlusSignPipe],
   templateUrl: './pokemon-standings.component.html',
-  styleUrl: './pokemon-standings.component.scss',
+  styleUrls: ['./pokemon-standings.component.scss'],
 })
 export class PokemonStandingsComponent {
   standingData = [

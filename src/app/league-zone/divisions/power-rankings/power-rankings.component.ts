@@ -1,21 +1,18 @@
-
+import { CdkTableModule } from '@angular/cdk/table';
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSortModule, Sort } from '@angular/material/sort';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { Subject, debounceTime, takeUntil } from 'rxjs';
 import { LoadingComponent } from '../../../images/loading/loading.component';
+import { SpriteComponent } from '../../../images/sprite/sprite.component';
 import { PlannerCoverageComponent } from '../../../planner/coverage/coverage.component';
 import { MoveComponent } from '../../../planner/moves/moves.component';
 import { PlannerSummaryComponent } from '../../../planner/summary/summary.component';
 import { PlannerTypechartComponent } from '../../../planner/typechart/typechart.component';
-import {
-  LeagueZoneService,
-  PowerRankingTeam,
-} from '../../../services/leagues/league-zone.service';
-import { CdkTableModule } from '@angular/cdk/table';
-import { MatSortModule, Sort } from '@angular/material/sort';
-import { SpriteComponent } from '../../../images/sprite/sprite.component';
-import { Subject, debounceTime, takeUntil } from 'rxjs';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { LeagueZoneService } from '../../../services/leagues/league-zone.service';
+import { League } from '../../league.interface';
 
 @Component({
   selector: 'pdz-league-power-rankings',
@@ -31,10 +28,10 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     FormsModule,
     MatTooltipModule,
     MatSortModule,
-    SpriteComponent
-],
+    SpriteComponent,
+  ],
   templateUrl: './power-rankings.component.html',
-  styleUrl: './power-rankings.component.scss',
+  styleUrls: ['./power-rankings.component.scss'],
 })
 export class PowerRankingsComponent implements OnInit, OnDestroy {
   leagueService = inject(LeagueZoneService);
@@ -43,21 +40,24 @@ export class PowerRankingsComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   private readonly storageKey = 'league-power-rankings';
 
-  selectedTeam?: PowerRankingTeam;
-  teams?: PowerRankingTeam[];
+  selectedTeam?: League.PowerRankingTeam;
+  teams?: League.PowerRankingTeam[];
   isDropdownOpen: boolean = false;
   displayedColumns: string[] = ['position', 'teamName', 'draft', 'score'];
   ngOnInit() {
-    this.leagueService.powerRankingDetails().subscribe((data) => {
-      const savedScores = this.getSavedScores();
-      this.teams = data.map((team) => {
-        if (savedScores[team.info.id]) {
-          team.score = savedScores[team.info.id];
-        }
-        return team;
+    this.leagueService
+      .powerRankingDetails()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((data) => {
+        const savedScores = this.getSavedScores();
+        this.teams = data.map((team) => {
+          if (savedScores[team.info.id]) {
+            team.score = savedScores[team.info.id];
+          }
+          return team;
+        });
+        this.selectedTeam = this.teams[0];
       });
-      this.selectedTeam = this.teams[0];
-    });
 
     this.scoreUpdate$
       .pipe(debounceTime(3000), takeUntil(this.destroy$))
@@ -80,7 +80,7 @@ export class PowerRankingsComponent implements OnInit, OnDestroy {
     this.isDropdownOpen = !this.isDropdownOpen;
   }
 
-  selectTeamAndClose(team: PowerRankingTeam) {
+  selectTeamAndClose(team: League.PowerRankingTeam) {
     this.selectedTeam = team;
     this.isDropdownOpen = false;
   }

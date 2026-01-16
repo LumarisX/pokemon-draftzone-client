@@ -1,9 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import {
-  LeagueSignUp,
-  LeagueZoneService,
-} from '../../../services/leagues/league-zone.service';
+import { LeagueZoneService } from '../../../services/leagues/league-zone.service';
+import { League } from '../../league.interface';
 
 @Component({
   selector: 'pdz-league-manage-signups',
@@ -12,7 +10,7 @@ import {
 })
 export class LeagueManageSignupsComponent implements OnInit {
   leagueId: string | null = null;
-  signUps: LeagueSignUp[] = [];
+  signUps: League.LeagueSignUp[] = [];
 
   route = inject(ActivatedRoute);
   leagueService = inject(LeagueZoneService);

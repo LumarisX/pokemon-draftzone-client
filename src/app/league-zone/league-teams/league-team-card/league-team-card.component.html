@@ -1,11 +1,11 @@
 <div class="team-container">
   <div class="team-header">
     <div class="logo">
-      <img [src]="teamDetails.logo" />
+      <img [src]="getLogoUrl()" />
     </div>
     <div class="team-info">
       <h2 class="team-name">
-        {{ teamDetails.teamName }}
+        {{ teamDetails.name }}
       </h2>
       <div class="team-coaches">
         @for (coach of teamDetails.coaches; track coach) {
@@ -16,11 +16,13 @@
         <span class="team-timezone">
           {{ teamDetails.timezone }}
         </span>
-        <span class="team-record">
-          {{ teamDetails.record.wins }}-{{ teamDetails.record.losses }} ({{
-            teamDetails.record.diff | plusSign
-          }})
-        </span>
+        @if (teamDetails.record) {
+          <span class="team-record">
+            {{ teamDetails.record.wins }}-{{ teamDetails.record.losses }} ({{
+              teamDetails.record.diff | plusSign
+            }})
+          </span>
+        }
       </div>
     </div>
     <div class="view-container">
@@ -55,7 +57,7 @@
             </tr>
           </thead>
           <tbody>
-            @for (pokemon of teamDetails.roster; track pokemon) {
+            @for (pokemon of teamDetails.draft; track pokemon) {
               <tr>
                 <td class="cell-sprite">
                   <div class="sprite-wrapper">
@@ -98,7 +100,7 @@
             </tr>
           </thead>
           <tbody>
-            @for (pokemon of teamDetails.roster; track pokemon) {
+            @for (pokemon of teamDetails.draft; track pokemon) {
               <tr>
                 <td class="cell-sprite">
                   <div class="sprite-wrapper">
@@ -109,13 +111,13 @@
                   {{ pokemon.name }}
                 </td>
                 <td class="cell-record">
-                  {{ pokemon.record.brought }}
+                  {{ pokemon.record?.brought ?? 0 }}
                 </td>
                 <td class="cell-record">
-                  {{ pokemon.record.kills }}
+                  {{ pokemon.record?.kills ?? 0 }}
                 </td>
                 <td class="cell-record">
-                  {{ pokemon.record.deaths }}
+                  {{ pokemon.record?.deaths ?? 0 }}
                 </td>
               </tr>
             }

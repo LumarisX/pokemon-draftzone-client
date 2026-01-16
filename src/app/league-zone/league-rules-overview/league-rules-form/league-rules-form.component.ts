@@ -1,9 +1,9 @@
 import {
-  trigger,
-  state,
   animate,
+  state,
   style,
   transition,
+  trigger,
 } from '@angular/animations';
 import { CdkAccordionItem, CdkAccordionModule } from '@angular/cdk/accordion';
 import {
@@ -32,7 +32,7 @@ import { League } from '../../league.interface';
   ],
   standalone: true,
   templateUrl: './league-rules-form.component.html',
-  styleUrl: './league-rules-form.component.scss',
+  styleUrls: ['./league-rules-form.component.scss'],
   animations: [
     trigger('bodyExpansion', [
       state(
