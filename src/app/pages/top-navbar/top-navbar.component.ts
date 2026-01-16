@@ -47,7 +47,11 @@ export class TopNavbarComponent {
     { title: 'My Drafts', route: DraftOverviewPath },
     { title: 'Planner', route: '/planner' },
     { title: 'Replay Analyzer', route: '/tools/replay-analyzer' },
-    { title: 'Find A League', route: '/league-list' },
+    {
+      title: 'Find A League',
+      route: '/league-list',
+      badge: this.unreadService.leagueCount,
+    },
   ];
 
   readonly TOOLS: NavTool[] = [
