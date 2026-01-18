@@ -1,112 +1,105 @@
-import {
-  Component,
-  Input,
-  OnInit,
-  OnChanges,
-  SimpleChanges,
-} from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSortModule, Sort } from '@angular/material/sort';
 import { getRandomPokemon } from '../../../data/namedex';
 import { SpriteComponent } from '../../../images/sprite/sprite.component';
 import { PlusSignPipe } from '../../../util/pipes/plus-sign.pipe';
 import { League } from '../../league.interface';
-import { NgClass } from '../../../../../node_modules/@angular/common/types/_common_module-chunk';
 
 const DEFAULT_STANDINGS: League.PokemonStanding[] = [
   {
     teamName: `Philadelphia Flygons`,
-    coaches: ['02ThatOneGuy'],
+    coach: '02ThatOneGuy',
     direction: 0,
     ...getRandomPokemon(),
   },
   {
     teamName: `Mighty Murkrow`,
-    coaches: ['hsoj'],
+    coach: 'hsoj',
     direction: 0,
     ...getRandomPokemon(),
   },
   {
     teamName: `Fitchburg's Sun Chasers`,
-    coaches: ['Feather'],
+    coach: 'Feather',
     direction: 0,
     ...getRandomPokemon(),
   },
   {
     teamName: `Chicago White Fox`,
-    coaches: ['TheNotoriousABS'],
+    coach: 'TheNotoriousABS',
     direction: 1,
     ...getRandomPokemon(),
   },
   {
     teamName: `Deimos Deoxys`,
-    coaches: ['Lumaris'],
+    coach: 'Lumaris',
     direction: 0,
     ...getRandomPokemon(),
   },
   {
     teamName: `Alpine Arcanines`,
-    coaches: ['Lion'],
+    coach: 'Lion',
     direction: 1,
     ...getRandomPokemon(),
   },
   {
     teamName: `Victorious Vigoroths`,
-    coaches: ['Speedy'],
+    coach: 'Speedy',
     direction: -1,
     ...getRandomPokemon(),
   },
   {
     teamName: `Deep Sea Duskulls`,
-    coaches: ['Emeglebon'],
+    coach: 'Emeglebon',
     direction: 0,
     ...getRandomPokemon(),
   },
   {
     teamName: `Twinleaf Tatsugiri`,
-    coaches: ['Penic'],
+    coach: 'Penic',
     direction: 0,
     ...getRandomPokemon(),
   },
   {
     teamName: `I like 'em THICC`,
-    coaches: ['Kat'],
+    coach: 'Kat',
     direction: 0,
     ...getRandomPokemon(),
   },
   {
     teamName: `London Vespiquens`,
-    coaches: ['Jake W'],
+    coach: 'Jake W',
     direction: 0,
     ...getRandomPokemon(),
   },
   {
     teamName: `Tampa T-Chainz`,
-    coaches: ['Spite'],
+    coach: 'Spite',
     direction: -1,
     ...getRandomPokemon(),
   },
   {
     teamName: `Kalos Quagsires`,
-    coaches: ['Caltech_'],
+    coach: 'Caltech_',
     direction: 1,
     ...getRandomPokemon(),
   },
   {
     teamName: `Montreal Mean Mareanies`,
-    coaches: ['Qofol'],
+    coach: 'Qofol',
     direction: 0,
     ...getRandomPokemon(),
   },
   {
     teamName: `Chicago Sky Attack`,
-    coaches: ['Quincy'],
+    coach: 'Quincy',
     direction: 0,
     ...getRandomPokemon(),
   },
   {
     teamName: `Midnight Teddy's`,
-    coaches: ['neb5'],
+    coach: 'neb5',
     direction: 0,
     ...getRandomPokemon(),
   },

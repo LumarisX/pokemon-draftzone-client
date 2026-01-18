@@ -1,1 +1,10 @@
-Team working
+<div class="team-container">
+  <div *ngIf="loading" class="loading-state">Loading team data...</div>
+
+  <div *ngIf="error && !loading" class="error-state">Error: {{ error }}</div>
+
+  <div *ngIf="teamData && !loading && !error" class="team-data">
+    <h2>Team Data (Raw JSON)</h2>
+    <pre>{{ teamData | json }}</pre>
+  </div>
+</div>

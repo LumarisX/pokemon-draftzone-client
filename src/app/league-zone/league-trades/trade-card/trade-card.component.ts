@@ -40,7 +40,7 @@ export class TradeCardComponent {
     return {
       logoUrl: from.team?.logo || this.DEFAULT_LOGO,
       primaryName: from.team?.name || this.DRAFT_POOL_NAME,
-      secondaryName: from.team?.coaches[0],
+      secondaryName: from.team?.coach,
       defaultLogo: this.DEFAULT_LOGO,
     };
   });
@@ -50,7 +50,7 @@ export class TradeCardComponent {
     return {
       logoUrl: to.team?.logo || this.DEFAULT_LOGO,
       primaryName: to.team?.name || this.DRAFT_POOL_NAME,
-      secondaryName: to.team?.coaches[0],
+      secondaryName: to.team?.coach,
       defaultLogo: this.DEFAULT_LOGO,
     };
   });

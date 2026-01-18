@@ -10,7 +10,7 @@ import { Pokemon } from '../interfaces/pokemon';
 export namespace League {
   export type Team = {
     name: string;
-    coaches: string[];
+    coach: string;
     logo: string;
   };
 
@@ -139,7 +139,7 @@ export namespace League {
 
   export type PokemonStanding = Pokemon<{
     direction?: number;
-    coaches: string[];
+    coach: string;
     teamName: string;
     record: {
       brought: number;

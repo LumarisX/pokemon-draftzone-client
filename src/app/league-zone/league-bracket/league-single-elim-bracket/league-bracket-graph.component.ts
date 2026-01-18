@@ -82,7 +82,7 @@ export class LeagueBracketGraphComponent
   teams: BracketTeamData[] = defenseData
     .map((team) => ({
       teamName: team.name,
-      coachName: team.coaches[0],
+      coachName: team.coach,
       seed: team.seed,
       logo: team.logo,
     }))
@@ -94,7 +94,7 @@ export class LeagueBracketGraphComponent
     .sort((x, y) => x.seed - y.seed)
     .map((team, index) => ({
       teamName: team.name,
-      coachName: team.coaches[0],
+      coachName: team.coach,
       seed: index,
       logo: team.logo,
     }))

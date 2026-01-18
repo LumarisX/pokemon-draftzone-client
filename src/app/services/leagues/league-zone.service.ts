@@ -459,4 +459,11 @@ export class LeagueZoneService {
       true,
     );
   }
+
+  getTeam(teamId: string) {
+    return this.apiService.get(
+      `${ROOTPATH}/${this.leagueKey()}/teams/${teamId}`,
+      true,
+    );
+  }
 }
