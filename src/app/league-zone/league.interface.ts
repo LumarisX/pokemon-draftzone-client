@@ -63,11 +63,16 @@ export namespace League {
     team2: MatchTeam;
     matches: {
       link: string;
-      team1: { team: MatchPokemon[]; score: number; winner?: boolean };
-      team2: { team: MatchPokemon[]; score: number; winner?: boolean };
+      team1: { team: MatchPokemon[]; score: number; winner: boolean };
+      team2: { team: MatchPokemon[]; score: number; winner: boolean };
     }[];
   };
 
+  export type Stage = {
+    _id: string;
+    name: string;
+    matchups: Matchup[];
+  };
   export type Rule = {
     title: string;
     body: string;
@@ -113,6 +118,36 @@ export namespace League {
     name: string;
     draft: DraftPick[];
   };
+
+  export type TeamStandingData = {
+    name: string;
+    results: number[];
+    coaches: string[];
+    streak: number;
+    direction?: number;
+    wins: number;
+    loses: number;
+    diff: number;
+    logo?: string;
+  };
+
+  export type CoachStandingData = {
+    cutoff: number;
+    weeks: number;
+    teams: TeamStandingData[];
+  };
+
+  export type PokemonStanding = Pokemon<{
+    direction?: number;
+    coaches: string[];
+    teamName: string;
+    record: {
+      brought: number;
+      kills: number;
+      deaths: number;
+      diff: number;
+    };
+  }>;
 }
 
 type TradeParticipant = {

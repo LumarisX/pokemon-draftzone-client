@@ -1,6 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { takeUntil } from 'rxjs';
 import { League } from '../league.interface';
 import { MatchupCardComponent } from './matchup-card/matchup-card.component';
+import { ApiService } from '../../services/api.service';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'pdz-league-schedule',
@@ -8,230 +12,77 @@ import { MatchupCardComponent } from './matchup-card/matchup-card.component';
   templateUrl: './league-schedule.component.html',
   styleUrls: ['./league-schedule.component.scss'],
 })
-export class LeagueScheduleComponent {
-  matchups: League.Matchup[] = [
-    {
-      team1: {
-        teamName: 'Deimos Deoxys',
-        coach: 'Lumaris',
-        score: 1,
-        logo: 'https://pokemondraftzone-public.s3.us-east-2.amazonaws.com/user-uploads/1744422916695-DeimosDeoxys.png',
-      },
-      team2: {
-        teamName: 'Mighty Murkrow',
-        coach: 'hsoj',
-        score: 2,
-        logo: 'https://pokemondraftzone-public.s3.us-east-2.amazonaws.com/user-uploads/1745097094680-Mighty Murkrow.png',
-      },
-      matches: [
-        {
-          link: 'test',
-          team1: {
-            score: 1,
-            team: [
-              {
-                id: 'pelipper',
-                name: 'Pelipper',
-                status: 'fainted',
-              },
-              {
-                id: 'archaludon',
-                name: 'Archaludon',
-                status: 'brought',
-              },
-              {
-                id: 'swampertmega',
-                name: 'Swampert-Mega',
-                status: 'fainted',
-              },
-              {
-                id: 'quaquaval',
-                name: 'Quaquaval',
-                status: 'fainted',
-              },
-              {
-                id: 'claydol',
-                name: 'Claydol',
-              },
-              {
-                id: 'qwilfishhisui',
-                name: 'Qwilfish-Hisui',
-              },
-            ],
-          },
-          team2: {
-            score: 0,
-            team: [
-              {
-                id: 'tapukoko',
-                name: 'Tapu Koko',
-                status: 'fainted',
-              },
-              {
-                id: 'ironleaves',
-                name: 'Iron Leaves',
-              },
-              {
-                id: 'ironjugulis',
-                name: 'Iron Jugulis',
-                status: 'fainted',
-              },
-              {
-                id: 'terapagosterastal',
-                name: 'Terapagos-Terastal',
-                status: 'fainted',
-              },
-              {
-                id: 'clodsire',
-                name: 'Clodsire',
-                status: 'fainted',
-              },
-              {
-                id: 'shedinja',
-                name: 'Shedinja',
-              },
-            ],
-          },
+export class LeagueScheduleComponent implements OnInit, OnDestroy {
+  private activatedRoute = inject(ActivatedRoute);
+  private apiService = inject(ApiService);
+  private destroy$ = new Subject<void>();
+
+  stages: League.Stage[] = [];
+  isLoading = true;
+  error: string | null = null;
+
+  ngOnInit(): void {
+    this.activatedRoute.params
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((params) => {
+        const leagueKey = params['leagueKey'];
+        const divisionKey = params['divisionKey'];
+
+        if (leagueKey && divisionKey) {
+          // Division-level schedule
+          this.loadSchedule(leagueKey, divisionKey);
+        } else if (leagueKey) {
+          // League-level schedule (all divisions)
+          this.loadLeagueSchedule(leagueKey);
+        }
+      });
+  }
+
+  private loadSchedule(leagueKey: string, divisionKey: string): void {
+    this.isLoading = true;
+    this.error = null;
+
+    this.apiService
+      .get<League.Stage[]>(
+        ['leagues', leagueKey, 'divisions', divisionKey, 'schedule'],
+        false,
+      )
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (data) => {
+          this.stages = data;
+          this.isLoading = false;
         },
-        {
-          link: '',
-          team1: {
-            score: 0,
-            team: [
-              {
-                id: 'pelipper',
-                name: 'Pelipper',
-                status: 'fainted',
-              },
-              {
-                id: 'archaludon',
-                name: 'Archaludon',
-                status: 'fainted',
-              },
-              {
-                id: 'swampertmega',
-                name: 'Swampert-Mega',
-              },
-              {
-                id: 'quaquaval',
-                name: 'Quaquaval',
-                status: 'fainted',
-              },
-              {
-                id: 'claydol',
-                name: 'Claydol',
-              },
-              {
-                id: 'qwilfishhisui',
-                name: 'Qwilfish-Hisui',
-                status: 'fainted',
-              },
-            ],
-          },
-          team2: {
-            score: 1,
-            team: [
-              {
-                id: 'tapukoko',
-                name: 'Tapu Koko',
-                status: 'fainted',
-              },
-              {
-                id: 'ironleaves',
-                name: 'Iron Leaves',
-                status: 'fainted',
-              },
-              {
-                id: 'ironjugulis',
-                name: 'Iron Jugulis',
-                status: 'fainted',
-              },
-              {
-                id: 'terapagosterastal',
-                name: 'Terapagos-Terastal',
-              },
-              {
-                id: 'clodsire',
-                name: 'Clodsire',
-                status: 'brought',
-              },
-              {
-                id: 'shedinja',
-                name: 'Shedinja',
-              },
-            ],
-          },
+        error: (error) => {
+          console.error('Error loading schedule:', error);
+          this.error = 'Failed to load schedule';
+          this.isLoading = false;
         },
-        {
-          link: '',
-          team1: {
-            score: 0,
-            team: [
-              {
-                id: 'pelipper',
-                name: 'Pelipper',
-                status: 'fainted',
-              },
-              {
-                id: 'archaludon',
-                name: 'Archaludon',
-                status: 'fainted',
-              },
-              {
-                id: 'swampertmega',
-                name: 'Swampert-Mega',
-                status: 'fainted',
-              },
-              {
-                id: 'quaquaval',
-                name: 'Quaquaval',
-              },
-              {
-                id: 'claydol',
-                name: 'Claydol',
-                status: 'fainted',
-              },
-              {
-                id: 'qwilfishhisui',
-                name: 'Qwilfish-Hisui',
-              },
-            ],
-          },
-          team2: {
-            score: 2,
-            team: [
-              {
-                id: 'tapukoko',
-                name: 'Tapu Koko',
-                status: 'fainted',
-              },
-              {
-                id: 'ironleaves',
-                name: 'Iron Leaves',
-              },
-              {
-                id: 'ironjugulis',
-                name: 'Iron Jugulis',
-              },
-              {
-                id: 'terapagosterastal',
-                name: 'Terapagos-Terastal',
-                status: 'fainted',
-              },
-              {
-                id: 'clodsire',
-                name: 'Clodsire',
-                status: 'fainted',
-              },
-              {
-                id: 'shedinja',
-                name: 'Shedinja',
-                status: 'brought',
-              },
-            ],
-          },
+      });
+  }
+
+  private loadLeagueSchedule(leagueKey: string): void {
+    this.isLoading = true;
+    this.error = null;
+
+    this.apiService
+      .get<League.Stage[]>(['leagues', leagueKey, 'schedule'], false)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (data) => {
+          this.stages = data;
+          this.isLoading = false;
         },
-      ],
-    },
-  ];
+        error: (error) => {
+          console.error('Error loading schedule:', error);
+          this.error = 'Failed to load schedule';
+          this.isLoading = false;
+        },
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 }

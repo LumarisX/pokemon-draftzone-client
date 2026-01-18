@@ -5,6 +5,7 @@ import { RouterLink } from '@angular/router';
 import { SpriteComponent } from '../../../images/sprite/sprite.component';
 import { PlusSignPipe } from '../../../util/pipes/plus-sign.pipe';
 import { League } from '../../league.interface';
+import { getLogoUrl } from '../../league.util';
 
 @Component({
   selector: 'pdz-league-team-card',
@@ -24,8 +25,5 @@ export class LeagueTeamCardComponent {
 
   data: 'overview' | 'stats' = 'overview';
 
-  getLogoUrl(): string | undefined {
-    if (!this.teamDetails.logo) return undefined;
-    return `https://pokemondraftzone-public.s3.us-east-2.amazonaws.com/user-uploads/${this.teamDetails.logo}`;
-  }
+  getLogoUrl = getLogoUrl;
 }

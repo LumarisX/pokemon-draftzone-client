@@ -4,7 +4,11 @@
   centerText="VS"
   [allowToggle]="true"
   [initiallyOpen]="false"
-  [status]="{ label: 'Replay', active: false }"
+  [status]="{
+    label: 'Replay',
+    active: matchup.matches[selectedMatch].link ? true : false,
+  }"
+  (statusClicked)="onReplayClick($event)"
 >
   <div cardExpandedContent class="matchup-content">
     <div class="score-container">

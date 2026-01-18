@@ -35,12 +35,14 @@
   }
 
   .rank-cell {
-    text-align: center;
-  }
-
-  .record-cell {
-    text-align: center;
-    width: 3rem;
+    display: flex;
+    align-items: center;
+    span {
+      width: 100%;
+      font-weight: 600;
+      font-size: 1.1rem;
+      text-align: center;
+    }
     mat-icon {
       height: fit-content;
       overflow: hidden;
@@ -54,6 +56,22 @@
       &.negative {
         color: lightcoral;
       }
+    }
+  }
+
+  .record-cell {
+    text-align: center;
+    width: 3rem;
+  }
+
+  .colored-cell {
+    font-weight: var(--pdz-font-weight-bold);
+
+    &.positive {
+      color: lightgreen;
+    }
+    &.negative {
+      color: lightcoral;
     }
   }
 

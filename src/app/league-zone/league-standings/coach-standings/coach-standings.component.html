@@ -21,8 +21,8 @@
           <td></td>
           <td>
             <div class="results-container">
-              @for (i of standingData.weeks; track $index) {
-                <div class="result-header">W{{ $index + 1 }}</div>
+              @for (i of weekRange; track i) {
+                <div class="result-header">W{{ i + 1 }}</div>
               }
               <div class="result-header streak">Streak</div>
             </div>
@@ -36,12 +36,14 @@
           >
             <td>
               <div class="rank-cell">
-                @if (team.direction > 0) {
-                  <mat-icon class="positive">arrow_upward</mat-icon>
-                } @else if (team.direction < 0) {
-                  <mat-icon class="negative">arrow_downward</mat-icon>
-                } @else {
-                  <mat-icon>remove</mat-icon>
+                @if (team.direction !== undefined) {
+                  @if (team.direction > 0) {
+                    <mat-icon class="positive">arrow_upward</mat-icon>
+                  } @else if (team.direction < 0) {
+                    <mat-icon class="negative">arrow_downward</mat-icon>
+                  } @else {
+                    <mat-icon>remove</mat-icon>
+                  }
                 }
                 <span>
                   {{ $index + 1 }}
@@ -56,7 +58,7 @@
                 "
               >
                 @if (team.logo) {
-                  <img [src]="team.logo" />
+                  <img [src]="getLogoUrl(team.logo)" />
                 }
               </div>
             </td>
@@ -79,8 +81,8 @@
             </td>
             <td>
               <div class="results-container">
-                @for (i of standingData.weeks; track $index) {
-                  @let result = team.results[$index];
+                @for (i of weekRange; track i) {
+                  @let result = team.results[i];
                   <div
                     class="result-box"
                     [ngClass]="{ positive: result > 0, negative: result < 0 }"

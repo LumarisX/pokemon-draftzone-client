@@ -13,10 +13,12 @@
   <div class="comparison-header">
     <div class="entity-info-container">
       <div class="entity-logo" [ngClass]="entityLeftLogoClasses">
-        <img
-          [src]="getLogo(entityLeft)"
-          [alt]="entityLeft.primaryName + ' logo'"
-        />
+        @if (getLogo(entityLeft)) {
+          <img
+            [src]="getLogo(entityLeft)"
+            [alt]="entityLeft.primaryName + ' logo'"
+          />
+        }
       </div>
       <div class="entity-info">
         <div class="entity-primary-name">{{ entityLeft.primaryName }}</div>
@@ -61,10 +63,12 @@
         }
       </div>
       <div class="entity-logo" [ngClass]="entityRightLogoClasses">
-        <img
-          [src]="getLogo(entityRight)"
-          [alt]="entityRight.primaryName + ' logo'"
-        />
+        @if (getLogo(entityRight)) {
+          <img
+            [src]="getLogo(entityRight)"
+            [alt]="entityRight.primaryName + ' logo'"
+          />
+        }
       </div>
     </div>
   </div>

@@ -9,7 +9,7 @@ import {
 import { MatIconModule } from '@angular/material/icon';
 
 export interface ComparisonEntity {
-  logoUrl: string;
+  logoUrl?: string;
   primaryName: string;
   secondaryName?: string;
   defaultLogo?: string;

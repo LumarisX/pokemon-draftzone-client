@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { PlusSignPipe } from '../../../util/pipes/plus-sign.pipe';
+import { League } from '../../league.interface';
+import { getLogoUrl } from '../../league.util';
 
 @Component({
   selector: 'pdz-coach-standings',
@@ -10,23 +12,9 @@ import { PlusSignPipe } from '../../../util/pipes/plus-sign.pipe';
   styleUrls: ['./coach-standings.component.scss'],
 })
 export class CoachStandingsComponent {
-  standingData: {
-    cutoff: number;
-    weeks: 0[];
-    teams: {
-      name: string;
-      results: number[];
-      coaches: string[];
-      streak: number;
-      direction: number;
-      wins: number;
-      loses: number;
-      diff: number;
-      logo?: string;
-    }[];
-  } = {
+  @Input() standingData: League.CoachStandingData = {
     cutoff: 8,
-    weeks: Array(8).fill(0),
+    weeks: 8,
     teams: [
       {
         name: `Philadelphia Flygons`,
@@ -39,7 +27,7 @@ export class CoachStandingsComponent {
         results: [6, 4, 2, 4, -4, -2, 2],
         coaches: ['hsoj'],
         direction: 0,
-        logo: 'https://pokemondraftzone-public.s3.us-east-2.amazonaws.com/user-uploads/1745097094680-Mighty Murkrow.png',
+        logo: '1745097094680-Mighty Murkrow.png',
       },
       {
         name: `Fitchburg's Sun Chasers`,
@@ -58,7 +46,7 @@ export class CoachStandingsComponent {
         results: [-2, -2, 2, 2, 4, 3, 2],
         coaches: ['Lumaris'],
         direction: 0,
-        logo: 'https://pokemondraftzone-public.s3.us-east-2.amazonaws.com/user-uploads/1744422916695-DeimosDeoxys.png',
+        logo: '1744422916695-DeimosDeoxys.png',
       },
       {
         name: `Alpine Arcanines`,
@@ -71,7 +59,7 @@ export class CoachStandingsComponent {
         results: [1, 2, -2, 3, -2, 3, -4],
         coaches: ['Speedy'],
         direction: -1,
-        logo: 'https://pokemondraftzone-public.s3.us-east-2.amazonaws.com/user-uploads/1745097393478-Victorious_Vigoroths.png',
+        logo: '1745097393478-Victorious_Vigoroths.png',
       },
       {
         name: `Deep Sea Duskulls`,
@@ -150,6 +138,10 @@ export class CoachStandingsComponent {
       .sort((x, y) => y.wins - x.wins),
   };
 
+  get weekRange(): number[] {
+    return Array.from({ length: this.standingData.weeks }, (_, i) => i);
+  }
+
   getGradientStyle(index: number, total: number): { [klass: string]: any } {
     const startColor = [144, 238, 144]; // lightgreen
     const midColor = [255, 255, 255]; // white
@@ -173,4 +165,6 @@ export class CoachStandingsComponent {
 
     return { 'border-color': `rgb(${r}, ${g}, ${b})` };
   }
+
+  getLogoUrl = getLogoUrl;
 }

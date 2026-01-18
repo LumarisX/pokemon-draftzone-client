@@ -44,10 +44,7 @@ const routes: Routes = [
     path: ':leagueKey/dashboard',
     component: LeagueDashboardComponent,
   },
-  {
-    path: ':leagueKey/standings',
-    component: LeagueStandingsComponent,
-  },
+
   {
     path: ':leagueKey/schedule',
     component: LeagueScheduleComponent,
@@ -60,10 +57,7 @@ const routes: Routes = [
     path: ':leagueKey/tier-list',
     component: LeagueTierListComponent,
   },
-  {
-    path: ':leagueKey/:divisionKey/draft',
-    component: LeagueDraftComponent,
-  },
+
   {
     path: ':leagueKey/sign-up',
     component: LeagueSignUpComponent,
@@ -76,6 +70,18 @@ const routes: Routes = [
   {
     path: ':leagueKey/trades',
     component: LeagueTradesComponent,
+  },
+  {
+    path: ':leagueKey/:divisionKey/schedule',
+    component: LeagueScheduleComponent,
+  },
+  {
+    path: ':leagueKey/:divisionKey/standings',
+    component: LeagueStandingsComponent,
+  },
+  {
+    path: ':leagueKey/:divisionKey/draft',
+    component: LeagueDraftComponent,
   },
   {
     path: ':leagueKey/:divisionKey/teams',

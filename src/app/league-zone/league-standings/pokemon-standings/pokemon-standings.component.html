@@ -25,7 +25,18 @@
           <tr>
             <td>
               <div class="rank-cell">
-                {{ $index + 1 }}
+                @if (pokemon.direction !== undefined) {
+                  @if (pokemon.direction > 0) {
+                    <mat-icon class="positive">arrow_upward</mat-icon>
+                  } @else if (pokemon.direction < 0) {
+                    <mat-icon class="negative">arrow_downward</mat-icon>
+                  } @else {
+                    <mat-icon>remove</mat-icon>
+                  }
+                }
+                <span>
+                  {{ $index + 1 }}
+                </span>
               </div>
             </td>
             <td>
@@ -39,9 +50,7 @@
                   {{ pokemon.name }}
                 </div>
                 <div class="coach-names">
-                  @for (coach of pokemon.coaches; track coach) {
-                    <div>{{ coach }}</div>
-                  }
+                  {{ pokemon.teamName }}
                 </div>
               </div>
             </td>
@@ -61,7 +70,11 @@
               </div>
             </td>
             <td>
-              <div class="record-cell">
+              <div
+                class="record-cell colored-cell"
+                [class.positive]="pokemon.record.diff > 0"
+                [class.negative]="pokemon.record.diff < 0"
+              >
                 {{ pokemon.record.diff | plusSign }}
               </div>
             </td>

@@ -1,5 +1,24 @@
-<div class="matchups-container">
-  @for (matchup of matchups; track matchup) {
-    <pdz-matchup-card [matchup]="matchup"></pdz-matchup-card>
+<div class="schedule-container">
+  @if (isLoading) {
+    <p>Loading schedule...</p>
+  } @else if (error) {
+    <p class="error">{{ error }}</p>
+  } @else if (stages.length === 0) {
+    <p>No stages scheduled.</p>
+  } @else {
+    @for (stage of stages; track stage._id) {
+      <div class="stage-section">
+        <h2 class="stage-title">{{ stage.name }}</h2>
+        <div class="matchups-container">
+          @if (stage.matchups.length === 0) {
+            <p class="no-matchups">No matchups in this stage.</p>
+          } @else {
+            @for (matchup of stage.matchups; track matchup) {
+              <pdz-matchup-card [matchup]="matchup"></pdz-matchup-card>
+            }
+          }
+        </div>
+      </div>
+    }
   }
 </div>

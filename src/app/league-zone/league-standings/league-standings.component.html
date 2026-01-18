@@ -1,4 +1,12 @@
 <div class="standing-wrapper">
+  @if (coachStandings) {
+    <pdz-coach-standings [standingData]="coachStandings"></pdz-coach-standings>
+  }
+  <pdz-pokemon-standings
+    [standingData]="pokemonStandings"
+  ></pdz-pokemon-standings>
+</div>
+<div class="standing-wrapper">
   <pdz-coach-standings></pdz-coach-standings>
   <pdz-pokemon-standings></pdz-pokemon-standings>
 </div>
