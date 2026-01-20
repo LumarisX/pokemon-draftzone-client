@@ -21,6 +21,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { UploadImageComponent } from '../league/upload-image/upload-image.component';
+import { DataService } from '../../services/data.service';
 
 // Assuming your pdz-upload-button component exists and is standalone or declared elsewhere
 // If it's standalone, add it to the imports array below
@@ -41,6 +43,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatRadioModule,
     MatDividerModule,
     MatTooltipModule,
+    UploadImageComponent,
     // PdzUploadButtonComponent, // <-- Add your upload button component here if it's standalone
   ],
   templateUrl: './league-new.component.html',
@@ -48,12 +51,13 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 })
 export class LeagueNewComponent implements OnInit {
   private _formBuilder = inject(FormBuilder);
+  private dataService = inject(DataService);
 
   // --- Form Definitions ---
   leagueForm!: FormGroup;
 
   // --- Data for Selects ---
-
+  rulesets: [string, { name: string; id: string; desc?: string }[]][] = [];
   formats = [
     'Singles',
     'Doubles (VGC)',
@@ -72,6 +76,9 @@ export class LeagueNewComponent implements OnInit {
 
   ngOnInit() {
     this._initForm();
+    this.dataService.getRulesetsGrouped().subscribe((rulesets) => {
+      this.rulesets = rulesets;
+    });
   }
 
   private _initForm(): void {

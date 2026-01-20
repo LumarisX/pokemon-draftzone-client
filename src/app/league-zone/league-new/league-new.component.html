@@ -6,411 +6,378 @@
     <mat-form-field appearance="fill">
       <mat-label>League Name</mat-label>
       <input matInput formControlName="leagueName" required />
-      @if (leagueInfoForm.get('leagueName')?.hasError('required')) {
-        <mat-error
-          >League name is required</mat-error
-          >
-        }
-      </mat-form-field>
+      @if (leagueInfoForm.get("leagueName")?.hasError("required")) {
+        <mat-error>League name is required</mat-error>
+      }
+    </mat-form-field>
 
-      <mat-form-field appearance="fill">
-        <mat-label>Season</mat-label>
-        <input
-          matInput
-          formControlName="season"
-          placeholder="e.g., Season 1, 2025 Spring"
-          required
-          />
-          @if (leagueInfoForm.get('season')?.hasError('required')) {
-            <mat-error
-              >Season is required</mat-error
-              >
-          }
-        </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Season</mat-label>
+      <input
+        matInput
+        formControlName="season"
+        placeholder="e.g., Season 1, 2025 Spring"
+        required
+      />
+      @if (leagueInfoForm.get("season")?.hasError("required")) {
+        <mat-error>Season is required</mat-error>
+      }
+    </mat-form-field>
 
-        <mat-form-field appearance="fill">
-          <mat-label>Ruleset</mat-label>
-          <mat-select formControlName="ruleset" required>
-            @for (ruleset of rulesets; track ruleset) {
-              <mat-option [value]="ruleset">
-                {{ ruleset }}
+    <mat-form-field appearance="fill">
+      <mat-label>Ruleset</mat-label>
+      <mat-select formControlName="ruleset" required>
+        @for (group of rulesets; track group) {
+          <mat-optgroup [label]="group[0]">
+            @for (ruleset of group[1]; track ruleset.id) {
+              <mat-option [value]="ruleset.id">
+                {{ ruleset.name }}
               </mat-option>
             }
-          </mat-select>
-          @if (leagueInfoForm.get('ruleset')?.hasError('required')) {
-            <mat-error
-              >Ruleset is required</mat-error
-              >
-            }
+          </mat-optgroup>
+        }
+      </mat-select>
+      @if (leagueInfoForm.get("ruleset")?.hasError("required")) {
+        <mat-error>Ruleset is required</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Format</mat-label>
+      <mat-select formControlName="format" required>
+        @for (format of formats; track format) {
+          <mat-option [value]="format">
+            {{ format }}
+          </mat-option>
+        }
+      </mat-select>
+      @if (leagueInfoForm.get("format")?.hasError("required")) {
+        <mat-error>Format is required</mat-error>
+      }
+    </mat-form-field>
+
+    <div>
+      <label>League Logo (Optional):</label>
+      <pdz-upload-image></pdz-upload-image>
+      @if (leagueInfoForm.get("logoUrl")?.value) {
+        <span>
+          Logo Set:
+          {{ leagueInfoForm.get("logoUrl")?.value | slice: 0 : 30 }}...
+        </span>
+      }
+      <input type="hidden" formControlName="logoUrl" />
+    </div>
+
+    <div class="step-actions">
+      <button mat-raised-button color="primary" matStepperNext>Next</button>
+    </div>
+  </mat-step>
+
+  <mat-step [stepControl]="leagueInfoForm" formGroupName="rules" optional>
+    <ng-template matStepLabel>League Rules (Optional)</ng-template>
+    <p>
+      Define specific rules for your league. You can add or modify these later.
+    </p>
+
+    <div formArrayName="items">
+      @for (ruleItem of rulesItems.controls; track ruleItem; let i = $index) {
+        <div [formGroupName]="i" class="rule-item">
+          <h4>Rule Section {{ i + 1 }}</h4>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Section Title (Optional)</mat-label>
+            <input
+              matInput
+              formControlName="title"
+              placeholder="e.g., Drafting Rules, Battle Clauses"
+            />
           </mat-form-field>
-
-          <mat-form-field appearance="fill">
-            <mat-label>Format</mat-label>
-            <mat-select formControlName="format" required>
-              @for (format of formats; track format) {
-                <mat-option [value]="format">
-                  {{ format }}
-                </mat-option>
-              }
-            </mat-select>
-            @if (leagueInfoForm.get('format')?.hasError('required')) {
-              <mat-error
-                >Format is required</mat-error
-                >
-              }
-            </mat-form-field>
-
-            <div>
-              <label>League Logo (Optional):</label>
-              <span>Upload Button</span>
-              @if (leagueInfoForm.get('logoUrl')?.value) {
-                <span>
-                  Logo Set: {{ leagueInfoForm.get("logoUrl")?.value | slice: 0 : 30 }}...
-                </span>
-              }
-              <input type="hidden" formControlName="logoUrl" />
-            </div>
-
-            <div class="step-actions">
-              <button mat-raised-button color="primary" matStepperNext>Next</button>
-            </div>
-          </mat-step>
-
-          <mat-step [stepControl]="leagueInfoForm" formGroupName="rules" optional>
-            <ng-template matStepLabel>League Rules (Optional)</ng-template>
-            <p>
-              Define specific rules for your league. You can add or modify these later.
-            </p>
-
-            <div formArrayName="items">
-              @for (ruleItem of rulesItems.controls; track ruleItem; let i = $index) {
-                <div
-                  [formGroupName]="i"
-                  class="rule-item"
-                  >
-                  <h4>Rule Section {{ i + 1 }}</h4>
-                  <mat-form-field appearance="outline" class="full-width">
-                    <mat-label>Section Title (Optional)</mat-label>
-                    <input
-                      matInput
-                      formControlName="title"
-                      placeholder="e.g., Drafting Rules, Battle Clauses"
-                      />
-                    </mat-form-field>
-                    <div formArrayName="points">
-                      <label>Rule Points:</label>
-                      @for (point of getRulePoints(i).controls; track point; let pIndex = $index) {
-                        <div
-                          class="rule-point"
-                          >
-                          <mat-form-field appearance="outline" class="point-input">
-                            <mat-label>Point {{ pIndex + 1 }}</mat-label>
-                            <input
-                              matInput
-                              [formControlName]="pIndex"
-                              placeholder="Enter rule point"
-                              />
-                            </mat-form-field>
-                            <button
-                              mat-icon-button
-                              color="warn"
-                              type="button"
-                              (click)="removeRulePoint(i, pIndex)"
-                              matTooltip="Remove Point"
-                              [disabled]="getRulePoints(i).controls.length <= 1"
-                              >
-                              <mat-icon>remove_circle_outline</mat-icon>
-                            </button>
-                          </div>
-                        }
-                        <button
-                          mat-stroked-button
-                          type="button"
-                          (click)="addRulePoint(i)"
-                          color="accent"
-                          class="add-point-button"
-                          >
-                          <mat-icon>add_circle_outline</mat-icon> Add Point
-                        </button>
-                      </div>
-                      <button
-                        mat-icon-button
-                        color="warn"
-                        type="button"
-                        (click)="removeRuleItem(i)"
-                        matTooltip="Remove Rule Section"
-                        class="remove-section-button"
-                        >
-                        <mat-icon>delete_outline</mat-icon>
-                      </button>
-                      @if (i < rulesItems.controls.length - 1) {
-                        <mat-divider></mat-divider>
-                      }
-                    </div>
-                  }
-                </div>
-
-                <button
-                  mat-flat-button
-                  type="button"
-                  (click)="addRuleItem()"
-                  color="primary"
-                  class="add-section-button"
-                  >
-                  <mat-icon>add</mat-icon> Add Rule Section
-                </button>
-
-                <div class="step-actions">
-                  <button mat-button matStepperPrevious>Back</button>
-                  <button mat-raised-button color="primary" matStepperNext>Next</button>
-                </div>
-              </mat-step>
-
-              <mat-step [stepControl]="divisionsForm" formGroupName="divisions">
-                <ng-template matStepLabel>Divisions / Groups</ng-template>
-                <p>Organize teams into divisions. There must be at least one.</p>
-
-                <mat-form-field appearance="fill">
-                  <mat-label>Teams per Division</mat-label>
+          <div formArrayName="points">
+            <label>Rule Points:</label>
+            @for (
+              point of getRulePoints(i).controls;
+              track point;
+              let pIndex = $index
+            ) {
+              <div class="rule-point">
+                <mat-form-field appearance="outline" class="point-input">
+                  <mat-label>Point {{ pIndex + 1 }}</mat-label>
                   <input
                     matInput
-                    type="number"
-                    formControlName="teamCount"
-                    required
-                    min="2"
-                    />
-                    @if (divisionsForm.get('teamCount')?.hasError('required')) {
-                      <mat-error
-                        >Team count is required</mat-error
-                        >
-                    }
-                    @if (divisionsForm.get('teamCount')?.hasError('min')) {
-                      <mat-error
-                        >Must have at least 2 teams per division</mat-error
-                        >
-                      }
-                    </mat-form-field>
+                    [formControlName]="pIndex"
+                    placeholder="Enter rule point"
+                  />
+                </mat-form-field>
+                <button
+                  mat-icon-button
+                  color="warn"
+                  type="button"
+                  (click)="removeRulePoint(i, pIndex)"
+                  matTooltip="Remove Point"
+                  [disabled]="getRulePoints(i).controls.length <= 1"
+                >
+                  <mat-icon>remove_circle_outline</mat-icon>
+                </button>
+              </div>
+            }
+            <button
+              mat-stroked-button
+              type="button"
+              (click)="addRulePoint(i)"
+              color="accent"
+              class="add-point-button"
+            >
+              <mat-icon>add_circle_outline</mat-icon> Add Point
+            </button>
+          </div>
+          <button
+            mat-icon-button
+            color="warn"
+            type="button"
+            (click)="removeRuleItem(i)"
+            matTooltip="Remove Rule Section"
+            class="remove-section-button"
+          >
+            <mat-icon>delete_outline</mat-icon>
+          </button>
+          @if (i < rulesItems.controls.length - 1) {
+            <mat-divider></mat-divider>
+          }
+        </div>
+      }
+    </div>
 
-                    <div formArrayName="groups">
-                      <h4>Division Names (must be unique)</h4>
-                      @if (
-                        divisionsForm.hasError('uniqueDivisionNames') && divisionsForm.touched
-                        ) {
-                        <mat-error
-                          >
-                          Division names must be unique.
-                        </mat-error>
-                      }
-                      @for (group of divisionGroups.controls; track group; let i = $index) {
-                        <div
-                          [formGroupName]="i"
-                          class="division-group"
-                          >
-                          <mat-form-field appearance="outline">
-                            <mat-label>Division {{ i + 1 }} Name</mat-label>
-                            <input matInput formControlName="name" required />
-                            @if (group.get('name')?.hasError('required')) {
-                              <mat-error
-                                >Division name is required</mat-error
-                                >
-                              }
-                            </mat-form-field>
-                            <button
-                              mat-icon-button
-                              color="warn"
-                              type="button"
-                              (click)="removeDivisionGroup(i)"
-                              matTooltip="Remove Division"
-                              [disabled]="divisionGroups.controls.length <= 1"
-                              >
-                              <mat-icon>remove_circle_outline</mat-icon>
-                            </button>
-                          </div>
-                        }
-                      </div>
+    <button
+      mat-flat-button
+      type="button"
+      (click)="addRuleItem()"
+      color="primary"
+      class="add-section-button"
+    >
+      <mat-icon>add</mat-icon> Add Rule Section
+    </button>
 
-                      <button
-                        mat-stroked-button
-                        type="button"
-                        (click)="addDivisionGroup()"
-                        color="primary"
-                        >
-                        <mat-icon>add</mat-icon> Add Division
-                      </button>
+    <div class="step-actions">
+      <button mat-button matStepperPrevious>Back</button>
+      <button mat-raised-button color="primary" matStepperNext>Next</button>
+    </div>
+  </mat-step>
 
-                      @if (
-                        divisionsForm.get('groups')?.hasError('minlength') &&
-                        divisionsForm.get('groups')?.touched
-                        ) {
-                        <mat-error
-                          >
-                          You must have at least one division.
-                        </mat-error>
-                      }
+  <mat-step [stepControl]="divisionsForm" formGroupName="divisions">
+    <ng-template matStepLabel>Divisions / Groups</ng-template>
+    <p>Organize teams into divisions. There must be at least one.</p>
 
-                      <div class="step-actions">
-                        <button mat-button matStepperPrevious>Back</button>
-                        <button mat-raised-button color="primary" matStepperNext>Next</button>
-                      </div>
-                    </mat-step>
+    <mat-form-field appearance="fill">
+      <mat-label>Teams per Division</mat-label>
+      <input
+        matInput
+        type="number"
+        formControlName="teamCount"
+        required
+        min="2"
+      />
+      @if (divisionsForm.get("teamCount")?.hasError("required")) {
+        <mat-error>Team count is required</mat-error>
+      }
+      @if (divisionsForm.get("teamCount")?.hasError("min")) {
+        <mat-error>Must have at least 2 teams per division</mat-error>
+      }
+    </mat-form-field>
 
-                    <mat-step [stepControl]="divisionsForm" formGroupName="schedule" optional>
-                      <ng-template matStepLabel>Schedule Structure (Optional)</ng-template>
-                      <p>
-                        Define the schedule brackets (e.g., Regular Season, Playoffs). Defaults
-                        are provided. You can modify this later.
-                      </p>
+    <div formArrayName="groups">
+      <h4>Division Names (must be unique)</h4>
+      @if (
+        divisionsForm.hasError("uniqueDivisionNames") && divisionsForm.touched
+      ) {
+        <mat-error> Division names must be unique. </mat-error>
+      }
+      @for (group of divisionGroups.controls; track group; let i = $index) {
+        <div [formGroupName]="i" class="division-group">
+          <mat-form-field appearance="outline">
+            <mat-label>Division {{ i + 1 }} Name</mat-label>
+            <input matInput formControlName="name" required />
+            @if (group.get("name")?.hasError("required")) {
+              <mat-error>Division name is required</mat-error>
+            }
+          </mat-form-field>
+          <button
+            mat-icon-button
+            color="warn"
+            type="button"
+            (click)="removeDivisionGroup(i)"
+            matTooltip="Remove Division"
+            [disabled]="divisionGroups.controls.length <= 1"
+          >
+            <mat-icon>remove_circle_outline</mat-icon>
+          </button>
+        </div>
+      }
+    </div>
 
-                      <div formArrayName="brackets">
-                        @for (bracket of scheduleBrackets.controls; track bracket; let i = $index) {
-                          <div
-                            [formGroupName]="i"
-                            class="bracket-item"
-                            >
-                            <h4>Bracket {{ i + 1 }}</h4>
-                            <mat-form-field appearance="outline">
-                              <mat-label>Bracket Name</mat-label>
-                              <input
-                                matInput
-                                formControlName="name"
-                                required
-                                placeholder="e.g., Regular Season, Playoffs"
-                                />
-                                @if (bracket.get('name')?.hasError('required')) {
-                                  <mat-error
-                                    >Name is required</mat-error
-                                    >
-                                }
-                              </mat-form-field>
-                              <mat-form-field appearance="outline">
-                                <mat-label>Bracket Type</mat-label>
-                                <mat-select formControlName="type" required>
-                                  @for (type of bracketTypes; track type) {
-                                    <mat-option [value]="type">{{
-                                      type
-                                    }}</mat-option>
-                                  }
-                                </mat-select>
-                                @if (bracket.get('type')?.hasError('required')) {
-                                  <mat-error
-                                    >Type is required</mat-error
-                                    >
-                                  }
-                                </mat-form-field>
-                                <mat-form-field appearance="outline">
-                                  <mat-label>Number of Stages</mat-label>
-                                  <input
-                                    matInput
-                                    type="number"
-                                    formControlName="stages"
-                                    required
-                                    min="1"
-                                    />
-                                    @if (bracket.get('stages')?.hasError('required')) {
-                                      <mat-error
-                                        >Stages required</mat-error
-                                        >
-                                    }
-                                    @if (bracket.get('stages')?.hasError('min')) {
-                                      <mat-error
-                                        >Must be at least 1 stage</mat-error
-                                        >
-                                      }
-                                    </mat-form-field>
-                                    <button
-                                      mat-icon-button
-                                      color="warn"
-                                      type="button"
-                                      (click)="removeBracketItem(i)"
-                                      matTooltip="Remove Bracket"
-                                      >
-                                      <mat-icon>delete_outline</mat-icon>
-                                    </button>
-                                    @if (i < scheduleBrackets.controls.length - 1) {
-                                      <mat-divider
-                                      ></mat-divider>
-                                    }
-                                  </div>
-                                }
-                              </div>
+    <button
+      mat-stroked-button
+      type="button"
+      (click)="addDivisionGroup()"
+      color="primary"
+    >
+      <mat-icon>add</mat-icon> Add Division
+    </button>
 
-                              <button
-                                mat-flat-button
-                                type="button"
-                                (click)="addBracketItem()"
-                                color="primary"
-                                >
-                                <mat-icon>add</mat-icon> Add Bracket
-                              </button>
+    @if (
+      divisionsForm.get("groups")?.hasError("minlength") &&
+      divisionsForm.get("groups")?.touched
+    ) {
+      <mat-error> You must have at least one division. </mat-error>
+    }
 
-                              <div class="step-actions">
-                                <button mat-button matStepperPrevious>Back</button>
-                                <button mat-raised-button color="primary" matStepperNext>Next</button>
-                              </div>
-                            </mat-step>
+    <div class="step-actions">
+      <button mat-button matStepperPrevious>Back</button>
+      <button mat-raised-button color="primary" matStepperNext>Next</button>
+    </div>
+  </mat-step>
 
-                            <mat-step [stepControl]="settingsForm" formGroupName="settings">
-                              <ng-template matStepLabel>Confirmation & Settings</ng-template>
-                              <p>Review and configure final settings.</p>
+  <mat-step [stepControl]="divisionsForm" formGroupName="schedule" optional>
+    <ng-template matStepLabel>Schedule Structure (Optional)</ng-template>
+    <p>
+      Define the schedule brackets (e.g., Regular Season, Playoffs). Defaults
+      are provided. You can modify this later.
+    </p>
 
-                              <section class="settings-section">
-                                <h4>Invite Privacy</h4>
-                                <mat-radio-group
-                                  formControlName="invitePrivacy"
-                                  aria-label="Invite Privacy"
-                                  required
-                                  >
-                                  <mat-radio-button value="private" checked
-                                    >Private (Invite via link only)</mat-radio-button
-                                    >
-                                    <mat-radio-button value="public"
-                                      >Public (Link + Posted on board)</mat-radio-button
-                                      >
-                                    </mat-radio-group>
-                                    @if (
-                                      settingsForm.get('invitePrivacy')?.hasError('required') &&
-                                      settingsForm.get('invitePrivacy')?.touched
-                                      ) {
-                                      <mat-error
-                                        >Invite privacy selection is required</mat-error
-                                        >
-                                      }
-                                    </section>
+    <div formArrayName="brackets">
+      @for (
+        bracket of scheduleBrackets.controls;
+        track bracket;
+        let i = $index
+      ) {
+        <div [formGroupName]="i" class="bracket-item">
+          <h4>Bracket {{ i + 1 }}</h4>
+          <mat-form-field appearance="outline">
+            <mat-label>Bracket Name</mat-label>
+            <input
+              matInput
+              formControlName="name"
+              required
+              placeholder="e.g., Regular Season, Playoffs"
+            />
+            @if (bracket.get("name")?.hasError("required")) {
+              <mat-error>Name is required</mat-error>
+            }
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Bracket Type</mat-label>
+            <mat-select formControlName="type" required>
+              @for (type of bracketTypes; track type) {
+                <mat-option [value]="type">{{ type }}</mat-option>
+              }
+            </mat-select>
+            @if (bracket.get("type")?.hasError("required")) {
+              <mat-error>Type is required</mat-error>
+            }
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Number of Stages</mat-label>
+            <input
+              matInput
+              type="number"
+              formControlName="stages"
+              required
+              min="1"
+            />
+            @if (bracket.get("stages")?.hasError("required")) {
+              <mat-error>Stages required</mat-error>
+            }
+            @if (bracket.get("stages")?.hasError("min")) {
+              <mat-error>Must be at least 1 stage</mat-error>
+            }
+          </mat-form-field>
+          <button
+            mat-icon-button
+            color="warn"
+            type="button"
+            (click)="removeBracketItem(i)"
+            matTooltip="Remove Bracket"
+          >
+            <mat-icon>delete_outline</mat-icon>
+          </button>
+          @if (i < scheduleBrackets.controls.length - 1) {
+            <mat-divider></mat-divider>
+          }
+        </div>
+      }
+    </div>
 
-                                    <section class="settings-section">
-                                      <h4>Spectator Access</h4>
-                                      <mat-radio-group
-                                        formControlName="spectatePrivacy"
-                                        aria-label="Spectator Access"
-                                        required
-                                        >
-                                        <mat-radio-button value="private" checked
-                                          >Private (Only league members)</mat-radio-button
-                                          >
-                                          <mat-radio-button value="public"
-                                            >Public (Anyone can spectate)</mat-radio-button
-                                            >
-                                          </mat-radio-group>
-                                          @if (
-                                            settingsForm.get('spectatePrivacy')?.hasError('required') &&
-                                            settingsForm.get('spectatePrivacy')?.touched
-                                            ) {
-                                            <mat-error
-                                              >Spectator access selection is required</mat-error
-                                              >
-                                            }
-                                          </section>
+    <button
+      mat-flat-button
+      type="button"
+      (click)="addBracketItem()"
+      color="primary"
+    >
+      <mat-icon>add</mat-icon> Add Bracket
+    </button>
 
-                                          <div class="step-actions">
-                                            <button mat-button matStepperPrevious>Back</button>
-                                            <button
-                                              mat-raised-button
-                                              color="accent"
-                                              (click)="createLeague()"
-                                              [disabled]="leagueForm.invalid"
-                                              >
-                                              Create League
-                                            </button>
-                                          </div>
-                                        </mat-step>
-                                      </mat-vertical-stepper>
+    <div class="step-actions">
+      <button mat-button matStepperPrevious>Back</button>
+      <button mat-raised-button color="primary" matStepperNext>Next</button>
+    </div>
+  </mat-step>
+
+  <mat-step [stepControl]="settingsForm" formGroupName="settings">
+    <ng-template matStepLabel>Confirmation & Settings</ng-template>
+    <p>Review and configure final settings.</p>
+
+    <section class="settings-section">
+      <h4>Invite Privacy</h4>
+      <mat-radio-group
+        formControlName="invitePrivacy"
+        aria-label="Invite Privacy"
+        required
+      >
+        <mat-radio-button value="private" checked
+          >Private (Invite via link only)</mat-radio-button
+        >
+        <mat-radio-button value="public"
+          >Public (Link + Posted on board)</mat-radio-button
+        >
+      </mat-radio-group>
+      @if (
+        settingsForm.get("invitePrivacy")?.hasError("required") &&
+        settingsForm.get("invitePrivacy")?.touched
+      ) {
+        <mat-error>Invite privacy selection is required</mat-error>
+      }
+    </section>
+
+    <section class="settings-section">
+      <h4>Spectator Access</h4>
+      <mat-radio-group
+        formControlName="spectatePrivacy"
+        aria-label="Spectator Access"
+        required
+      >
+        <mat-radio-button value="private" checked
+          >Private (Only league members)</mat-radio-button
+        >
+        <mat-radio-button value="public"
+          >Public (Anyone can spectate)</mat-radio-button
+        >
+      </mat-radio-group>
+      @if (
+        settingsForm.get("spectatePrivacy")?.hasError("required") &&
+        settingsForm.get("spectatePrivacy")?.touched
+      ) {
+        <mat-error>Spectator access selection is required</mat-error>
+      }
+    </section>
+
+    <div class="step-actions">
+      <button mat-button matStepperPrevious>Back</button>
+      <button
+        mat-raised-button
+        color="accent"
+        (click)="createLeague()"
+        [disabled]="leagueForm.invalid"
+      >
+        Create League
+      </button>
+    </div>
+  </mat-step>
+</mat-vertical-stepper>

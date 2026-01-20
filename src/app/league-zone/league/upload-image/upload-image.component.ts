@@ -37,8 +37,8 @@ import {
     HostedImageComponent,
     MatButtonModule,
     MatIconModule,
-    MatProgressBarModule
-],
+    MatProgressBarModule,
+  ],
   templateUrl: './upload-image.component.html',
   styleUrls: ['./upload-image.component.scss'],
 })
@@ -223,7 +223,8 @@ export class UploadImageComponent implements OnDestroy {
         if (confirmationResponse) {
           console.log('Backend confirmation response:', confirmationResponse);
           this.uploadMessage =
-            confirmationResponse.message || 'Backend confirmation received.';
+            (confirmationResponse as any).message ||
+            'Backend confirmation received.';
           this.uploadError = false;
           this.confirmed = true;
         }

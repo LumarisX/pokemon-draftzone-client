@@ -17,6 +17,7 @@ import { LeagueTradesComponent } from './league-trades/league-trades.component';
 import { LeagueTeamsComponent } from './league-teams/league-teams.component';
 import { LeagueRulesOverviewComponent } from './league-rules-overview/league-rules-overview.component';
 import { LeagueTeamComponent } from './league-team/league-team.component';
+import { LeagueNewComponent } from './league-new/league-new.component';
 
 export const LeagueZonePath = 'leagues';
 const routes: Routes = [
@@ -33,10 +34,10 @@ const routes: Routes = [
     canActivate: [leagueRoleGuard],
     data: { role: 'organizer' },
   },
-  // {
-  //   path: 'new',
-  //   component: LeagueNewComponent,
-  // },
+  {
+    path: 'new',
+    component: LeagueNewComponent,
+  },
   {
     path: ':leagueKey',
     component: LeagueLandingComponent,
