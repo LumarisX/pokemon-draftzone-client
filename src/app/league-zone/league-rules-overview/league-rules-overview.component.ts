@@ -1,13 +1,19 @@
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import {
+  Component,
+  OnDestroy,
+  OnInit,
+  inject,
+  HostListener,
+} from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
+import { MarkdownModule } from 'ngx-markdown';
 import { LeagueZoneService } from '../../services/leagues/league-zone.service';
 import { League } from '../league.interface';
-import { LeagueRulesComponent } from './league-rules/league-rules.component';
 
 @Component({
   selector: 'pdz-league-rules-overview',
-  imports: [LeagueRulesComponent, RouterModule],
+  imports: [MarkdownModule, RouterModule],
   templateUrl: './league-rules-overview.component.html',
   styleUrls: ['./league-rules-overview.component.scss'],
 })
@@ -15,7 +21,8 @@ export class LeagueRulesOverviewComponent implements OnInit, OnDestroy {
   private leagueZoneService = inject(LeagueZoneService);
   private destroy$ = new Subject<void>();
 
-  rules: League.Rule[] = [];
+  rules: League.RuleSection[] = [];
+  activeSection = 0;
 
   ngOnInit(): void {
     const leagueKey = this.leagueZoneService.leagueKey();
@@ -23,17 +30,22 @@ export class LeagueRulesOverviewComponent implements OnInit, OnDestroy {
       this.leagueZoneService
         .getRules(leagueKey)
         .pipe(takeUntil(this.destroy$))
-        .subscribe((ruleCategories) => {
-          this.rules = this.transformRules(ruleCategories);
+        .subscribe((ruleSections) => {
+          // Convert tabs to spaces for proper markdown parsing
+          this.rules = ruleSections.map((section) => ({
+            ...section,
+            body: section.body.replace(/\t/g, '  '), // Convert tabs to 2 spaces
+          }));
         });
     }
   }
 
-  private transformRules(categories: League.RuleCategory[]): League.Rule[] {
-    return categories.map((category) => ({
-      title: category.header,
-      body: category.details.map((detail) => `- ${detail}`).join('\n'),
-    }));
+  scrollToSection(event: Event, index: number): void {
+    event.preventDefault();
+    const element = document.getElementById(`section-${index}`);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   }
 
   ngOnDestroy(): void {

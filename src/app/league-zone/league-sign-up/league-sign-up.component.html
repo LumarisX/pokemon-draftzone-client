@@ -1,172 +1,262 @@
-<div class="p-3 relative space-y-3">
-  <button class="absolute" routerLink="/leagues/pdbls2/" mat-flat-button>
-    Back
-  </button>
+<button class="back-btn" routerLink=".." type="button">Back</button>
+@if (leagueInfo) {
   <form
     [formGroup]="signupForm"
     (ngSubmit)="onSubmit()"
-    class="sign-up space-y-4"
+    class="sign-up__container"
   >
-    <div class="flex justify-between h-16">
-      <div class="text-xl font-nasa flex items-center">
-        Pokemon DraftZone Battle League (PDBL)
+    <div class="sign-up__header">
+      <div class="sign-up__title">
+        {{ leagueInfo.name }}
       </div>
-      <img src="../../../assets/images/battle-zone/pdbls2.png" />
+      <img class="sign-up__logo" [src]="getLogoUrl(leagueInfo.logo)" />
     </div>
 
-    <mat-expansion-panel class="mat-elevation-z0">
-      <mat-expansion-panel-header>
-        <mat-panel-title class="font-bold"> Details </mat-panel-title>
-      </mat-expansion-panel-header>
-      @if (details) {
-        <table class="w-full">
+    <div class="details-section">
+      <div class="details-section__header">
+        <h2 class="details-section__title">Details</h2>
+      </div>
+      <div class="details-section__content">
+        <table class="details-table">
           <tr>
             <th>Format:</th>
-            <td>{{ details.format }}</td>
-            <th>Draft Period:</th>
-            <td>
-              {{ details.draft[0] | date }} - {{ details.draft[1] | date }}
-            </td>
+            <td>{{ leagueInfo.format }}</td>
+            @if (leagueInfo.draftStart && leagueInfo.draftEnd) {
+              <th>Draft Period:</th>
+              <td>
+                {{ leagueInfo.draftStart | date }} -
+                {{ leagueInfo.draftEnd | date }}
+              </td>
+            }
           </tr>
           <tr>
             <th>Ruleset:</th>
-            <td>{{ details.ruleset }}</td>
-            <th>Season:</th>
-            <td>
-              {{ details.season[0] | date }} - {{ details.season[1] | date }}
-            </td>
+            <td>{{ leagueInfo.ruleset }}</td>
+            @if (leagueInfo.draftStart && leagueInfo.draftEnd) {
+              <th>Season:</th>
+              <td>
+                {{ leagueInfo.seasonStart | date }} -
+                {{ leagueInfo.seasonEnd | date }}
+              </td>
+            }
           </tr>
         </table>
-      }
-    </mat-expansion-panel>
+      </div>
+    </div>
 
     @if (added) {
-      <section class="space-y-2">
-        <mat-card appearance="outlined">
-          <mat-card-content>
-            <div class="space-y-4 px-2 py-6">
-              <div class="text-xl font-bold w-full text-center">
-                Thank you for signing up for the PDBL
-              </div>
-              <div class="text-center">
-                Join the
-                <a
-                  target="_blank"
-                  href="https://discord.gg/FsxXcWFaF6"
-                  class="text-blue-600 font-bold hover:text-blue-700 hover:cursor-pointer"
-                >
-                  PDBL Discord Server
-                </a>
-                to complete your registration!
-              </div>
-              <div class="text-center font-medium">
-                Consider
-                <a
-                  target="_blank"
-                  href="https://pokemondraftzone.com/donate"
-                  class="text-blue-600 hover:text-blue-700 hover:cursor-pointer"
-                  >donating</a
-                >
-                to the winnings pot. (Leave a note that it's for the PBDL)
-              </div>
-            </div>
-          </mat-card-content>
-        </mat-card>
-      </section>
+      <div class="message-card">
+        <h2 class="message-card__title">
+          Thank you for signing up for the PDBL
+        </h2>
+        <p class="message-card__text">
+          Join the
+          <a
+            target="_blank"
+            href="https://discord.gg/FsxXcWFaF6"
+            class="link link--primary"
+          >
+            PDBL Discord Server
+          </a>
+          to complete your registration!
+        </p>
+        <p class="message-card__text">
+          Consider
+          <a
+            target="_blank"
+            href="https://pokemondraftzone.com/donate"
+            class="link"
+            >donating</a
+          >
+          to the winnings pot. (Leave a note that it's for the PBDL)
+        </p>
+      </div>
     } @else if (closed) {
-      <section class="space-y-2">
-        <mat-card appearance="outlined">
-          <mat-card-content>
-            <div class="space-y-4 px-2 py-6">
-              <div class="text-xl font-bold w-full text-center">
-                Sign ups for PDBL are now closed.
-              </div>
-              <div class="text-center">
-                Join the
-                <a
-                  target="_blank"
-                  href="https://discord.gg/FsxXcWFaF6"
-                  class="text-blue-600 font-bold hover:text-blue-700 hover:cursor-pointer"
-                >
-                  PDBL Discord Server
-                </a>
-                to get notified for the next season!
-              </div>
-            </div>
-          </mat-card-content>
-        </mat-card>
-      </section>
+      <div class="message-card">
+        <h2 class="message-card__title">Sign ups for PDBL are now closed.</h2>
+        <p class="message-card__text">
+          Join the
+          <a
+            target="_blank"
+            href="https://discord.gg/FsxXcWFaF6"
+            class="link link--primary"
+          >
+            PDBL Discord Server
+          </a>
+          to get notified for the next season!
+        </p>
+      </div>
     } @else {
-      <section>
-        <mat-form-field class="w-full">
-          <mat-label>Discord Username</mat-label>
+      <div class="form-row">
+        <div class="form-field">
+          <label for="discordName" class="form-field__label">
+            Discord Username <span class="required">*</span>
+          </label>
           <input
-            matInput
+            id="discordName"
+            type="text"
+            class="form-field__input"
             placeholder="Enter Discord Name"
             formControlName="discordName"
           />
-          @if (signupForm.get("discordName")?.hasError("required")) {
-            <mat-error>Required</mat-error>
+          @if (
+            signupForm.get("discordName")?.hasError("required") &&
+            signupForm.get("discordName")?.touched
+          ) {
+            <span class="form-field__error">Required</span>
           }
-        </mat-form-field>
-
-        <mat-form-field class="w-full">
-          <mat-label>Time Zone</mat-label>
-          <mat-select formControlName="timezone">
-            @for (tz of timezones; track $index) {
-              <mat-option [value]="tz">{{ tz }}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
-
-        <mat-form-field class="w-full">
-          <mat-label>Experience</mat-label>
-          <textarea
-            matInput
-            formControlName="experience"
-            maxlength="500"
-            placeholder="How much experience do you have in draft?"
-          >
-          </textarea>
-        </mat-form-field>
-
-        <div>
-          <div>Have you dropped from a league before?</div>
-          <mat-radio-group formControlName="droppedBefore">
-            <mat-radio-button [value]="true"> Yes </mat-radio-button>
-            <mat-radio-button [value]="false"> No </mat-radio-button>
-          </mat-radio-group>
         </div>
-        @if (signupForm.get("droppedBefore")?.value) {
-          <mat-form-field class="w-full">
-            <mat-label>Why?</mat-label>
-            <textarea matInput formControlName="droppedWhy" maxlength="500">
-            </textarea>
-            @if (signupForm.get("droppedWhy")?.hasError("required")) {
-              <mat-error>Required</mat-error>
-            }
-          </mat-form-field>
-        }
 
-        <div class="text-sm font-medium py-2">
-          <div>
-            Do you accept the
+        <div class="form-field">
+          <label for="timezone" class="form-field__label">
+            Time Zone <span class="required">*</span>
+          </label>
+          <select
+            id="timezone"
+            class="form-field__input"
+            formControlName="timezone"
+          >
+            <option value="" disabled>Select a timezone</option>
+            @for (tz of timezones; track $index) {
+              <option [value]="tz">{{ tz }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-field">
+          <label for="teamName" class="form-field__label">
+            Team Name <span class="required">*</span>
+          </label>
+          <input
+            id="teamName"
+            type="text"
+            class="form-field__input"
+            placeholder="Enter your team name"
+            formControlName="teamName"
+          />
+          @if (
+            signupForm.get("teamName")?.hasError("required") &&
+            signupForm.get("teamName")?.touched
+          ) {
+            <span class="form-field__error">Required</span>
+          }
+        </div>
+
+        <div class="form-field">
+          <label class="form-field__label">Team Logo</label>
+          <input
+            #logoInput
+            id="logo"
+            type="file"
+            class="file-input-hidden"
+            accept="image/*"
+            (change)="onLogoUpload($event)"
+          />
+          <button
+            type="button"
+            class="form-field__input file-input-button"
+            (click)="logoInput.click()"
+          >
+            {{ logoFileName || "Choose File" }}
+          </button>
+          <span class="form-field__hint"
+            >You can submit one later if you need to</span
+          >
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label for="experience" class="form-field__label">Experience</label>
+        <textarea
+          id="experience"
+          class="form-field__input form-field__input--textarea"
+          formControlName="experience"
+          maxlength="500"
+          rows="4"
+          placeholder="How much experience do you have in draft?"
+        ></textarea>
+      </div>
+
+      <div class="form-field">
+        <div class="form-field__label">
+          Have you dropped from a league before?
+        </div>
+        <div class="radio-group">
+          <label class="radio-label">
+            <input
+              type="radio"
+              name="droppedBefore"
+              class="radio-input"
+              [value]="true"
+              formControlName="droppedBefore"
+            />
+            <span>Yes</span>
+          </label>
+          <label class="radio-label">
+            <input
+              type="radio"
+              name="droppedBefore"
+              class="radio-input"
+              [value]="false"
+              formControlName="droppedBefore"
+            />
+            <span>No</span>
+          </label>
+        </div>
+      </div>
+
+      @if (signupForm.get("droppedBefore")?.value) {
+        <div class="form-field">
+          <label for="droppedWhy" class="form-field__label">
+            Why? <span class="required">*</span>
+          </label>
+          <textarea
+            id="droppedWhy"
+            class="form-field__input form-field__input--textarea"
+            formControlName="droppedWhy"
+            maxlength="500"
+            rows="4"
+          ></textarea>
+          @if (
+            signupForm.get("droppedWhy")?.hasError("required") &&
+            signupForm.get("droppedWhy")?.touched
+          ) {
+            <span class="form-field__error">Required</span>
+          }
+        </div>
+      }
+
+      <div class="form-field">
+        <label class="checkbox-label">
+          <input
+            type="checkbox"
+            class="checkbox-input"
+            formControlName="confirm"
+          />
+          <span>
+            I have read and accept the
             <a
               target="_blank"
-              href="https://pokemondraftzone.com/leagues/pdbls2/rules"
-              class="text-blue-600 hover:text-blue-700 hover:cursor-pointer"
+              [href]="
+                'https://pokemondraftzone.com/leagues/' +
+                leagueInfo.leagueKey +
+                '/rules'
+              "
+              class="link"
               >league rules</a
             >
-            and agree to commit to playing for 8-11 weeks?
-          </div>
-          <mat-checkbox formControlName="confirm"> Accept </mat-checkbox>
-        </div>
+            and agree to commit to playing for the entire season.
+          </span>
+        </label>
+      </div>
 
-        <button mat-raised-button type="submit" [disabled]="!signupForm.valid">
-          Submit
-        </button>
-      </section>
+      <button class="submit-btn" type="submit" [disabled]="!signupForm.valid">
+        Submit
+      </button>
     }
   </form>
-</div>
-<!-- {{ signupForm.value | json }} -->
+} @else {
+  <pdz-loading></pdz-loading>
+}

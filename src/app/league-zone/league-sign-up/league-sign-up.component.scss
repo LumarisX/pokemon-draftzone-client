@@ -1,50 +1,363 @@
-@use "@angular/material" as mat;
+@use "../../../styles/global.scss" as *;
+@use "../../../styles/mixins" as *;
+@use "../../../styles/mixins/buttons" as *;
 
-textarea {
-  resize: none;
+:host {
+  position: relative;
+  padding: var(--pdz-space-md);
+  display: block;
 }
 
-$form-color: var(--pdz-color-surface-container);
+.back-btn {
+  position: absolute;
+  top: var(--pdz-space-md);
+  left: var(--pdz-space-md);
+  @include flat-button-menu();
+
+  @include respond-above(medium) {
+    top: var(--pdz-space-xl);
+    left: var(--pdz-space-xl);
+  }
+}
+
 .sign-up {
-  margin-left: auto;
-  margin-right: auto;
-  max-width: 48rem;
+  &__container {
+    margin: 0 auto;
+    max-width: 48rem;
+    padding: var(--pdz-space-lg);
+    border-radius: var(--pdz-shape-corner-md);
+    box-shadow: var(--pdz-level-2);
+    display: flex;
+    flex-direction: column;
+    gap: var(--pdz-space-lg);
+
+    @include respond-above(medium) {
+      padding: var(--pdz-space-xl);
+    }
+  }
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--pdz-space-md);
+    flex-wrap: wrap;
+
+    @include respond-above(medium) {
+      height: 6rem;
+      flex-wrap: nowrap;
+    }
+  }
+
+  &__title {
+    @include apply-typography(headline-md);
+    flex: 1;
+    min-width: 200px;
+  }
+
+  &__logo {
+    max-height: 4rem;
+    height: auto;
+    width: auto;
+    max-width: 8rem;
+    object-fit: contain;
+
+    @include respond-above(medium) {
+      max-height: 100%;
+      max-width: 12rem;
+    }
+  }
+}
+
+// Details Section
+.details-section {
+  border-radius: var(--pdz-shape-corner-sm);
+  overflow: hidden;
+  border: 1px solid pdz-color(outline-variant);
+  background: pdz-color(surface);
+
+  &__header {
+    padding: var(--pdz-space-sm) var(--pdz-space-md);
+    background: pdz-color(surface-container-high);
+    border-bottom: 1px solid pdz-color(outline-variant);
+  }
+
+  &__title {
+    @include apply-typography(title-md);
+    margin: 0;
+  }
+
+  &__content {
+    padding: var(--pdz-space-md);
+  }
+}
+
+.details-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th {
+    @include apply-typography(label-md);
+    padding: var(--pdz-space-xs);
+    text-align: start;
+    color: pdz-color(on-surface-variant);
+    font-weight: 600;
+    white-space: nowrap;
+    vertical-align: top;
+  }
+
+  td {
+    @include apply-typography(body-md);
+    padding: var(--pdz-space-xs);
+    color: pdz-color(on-surface);
+  }
+
+  tr {
+    display: flex;
+    flex-direction: column;
+    gap: var(--pdz-space-xs);
+    margin-bottom: var(--pdz-space-sm);
+
+    @include respond-above(medium) {
+      display: table-row;
+      margin-bottom: 0;
+    }
+  }
+}
+
+// Message Card
+.message-card {
   padding: var(--pdz-space-xl);
   border-radius: var(--pdz-shape-corner-sm);
-  box-shadow: var(--pdz-level-2);
+  border: 1px solid pdz-color(outline-variant);
+  background: pdz-color(surface-container-low);
+  display: flex;
+  flex-direction: column;
+  gap: var(--pdz-space-md);
+  text-align: center;
+
+  &__title {
+    @include apply-typography(headline-sm);
+    margin: 0;
+    color: pdz-color(on-surface);
+  }
+
+  &__text {
+    @include apply-typography(body-md);
+    margin: 0;
+    color: pdz-color(on-surface-variant);
+  }
 }
 
-mat-expansion-panel {
-  border-width: 1px;
-  border-bottom: 1px solid black;
-  @include mat.expansion-overrides(
-    (
-      header-collapsed-state-height: 2.5rem,
-      header-expanded-state-height: 2.5rem,
+// Form Styles
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--pdz-space-md);
 
-      container-background-color: $form-color,
-      container-shape: 0.25rem 0.25rem 0px 0px,
-    )
-  );
+  @include respond-above(medium) {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
-mat-card {
-  @include mat.card-overrides(
-    (
-      outlined-container-color: $form-color,
-    )
-  );
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pdz-space-xs);
+
+  &__label {
+    @include apply-typography(label-sm);
+    color: pdz-color(on-surface);
+    font-weight: 600;
+  }
+
+  &__input {
+    @include apply-typography(body-md);
+    padding: var(--pdz-space-sm) var(--pdz-space-md);
+    border: 1px solid pdz-color(outline);
+    border-radius: var(--pdz-shape-corner-sm);
+    background: pdz-color(surface);
+    color: pdz-color(on-surface);
+    min-height: 2.75rem;
+    line-height: 1.5;
+    transition: border-color 0.2s ease;
+
+    &:focus {
+      outline: none;
+      border-color: pdz-color(primary);
+    }
+
+    &:disabled {
+      background: pdz-color(surface-disabled);
+      color: pdz-color(on-surface-disabled);
+      cursor: not-allowed;
+    }
+
+    &::placeholder {
+      color: pdz-color(on-surface-variant);
+      opacity: 0.6;
+    }
+
+    &--textarea {
+      resize: none;
+      min-height: 80px;
+      font-family: inherit;
+    }
+  }
+
+  &__error {
+    @include apply-typography(label-xs);
+    color: pdz-color(error);
+  }
+
+  &__hint {
+    @include apply-typography(label-xs);
+    color: pdz-color(on-surface-variant);
+  }
 }
 
-th {
-  padding: var(--pdz-space-xs);
-  text-align: start;
+.file-input-hidden {
+  display: none;
 }
 
-mat-form-field {
-  @include mat.form-field-overrides(
-    (
-      filled-container-color: $form-color,
-    )
-  );
+.file-input-button {
+  cursor: pointer;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  &:hover {
+    background: pdz-color(surface-container-low);
+    border-color: pdz-color(outline-variant);
+  }
+}
+
+.required {
+  color: pdz-color(error);
+}
+
+// Radio Group
+.radio-group {
+  display: flex;
+  gap: var(--pdz-space-lg);
+}
+
+.radio-label {
+  @include apply-typography(body-md);
+  display: flex;
+  align-items: center;
+  gap: var(--pdz-space-xs);
+  cursor: pointer;
+  color: pdz-color(on-surface);
+
+  &:hover .radio-input {
+    border-color: pdz-color(primary);
+  }
+}
+
+.radio-input {
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 2px solid pdz-color(outline);
+  border-radius: 50%;
+  appearance: none;
+  cursor: pointer;
+  position: relative;
+  transition: border-color 0.2s ease;
+
+  &:checked {
+    border-color: pdz-color(primary);
+
+    &::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 0.625rem;
+      height: 0.625rem;
+      border-radius: 50%;
+      background: pdz-color(primary);
+    }
+  }
+
+  &:focus {
+    outline: 2px solid pdz-color(primary-container);
+    outline-offset: 2px;
+  }
+}
+
+// Checkbox
+.checkbox-label {
+  @include apply-typography(body-sm);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--pdz-space-sm);
+  cursor: pointer;
+  color: pdz-color(on-surface);
+}
+
+.checkbox-input {
+  width: 1.25rem;
+  height: 1.25rem;
+  min-width: 1.25rem;
+  border: 2px solid pdz-color(outline);
+  border-radius: var(--pdz-shape-corner-xs);
+  appearance: none;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+  margin-top: 0.125rem;
+
+  &:checked {
+    background: pdz-color(primary);
+    border-color: pdz-color(primary);
+
+    &::after {
+      content: "";
+      position: absolute;
+      top: 0.125rem;
+      left: 0.375rem;
+      width: 0.375rem;
+      height: 0.625rem;
+      border: solid pdz-color(on-primary);
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+  }
+
+  &:focus {
+    outline: 2px solid pdz-color(primary-container);
+    outline-offset: 2px;
+  }
+}
+
+// Links
+.link {
+  color: pdz-color(primary);
+  text-decoration: none;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: pdz-color(primary-darker);
+    text-decoration: underline;
+  }
+
+  &--primary {
+    font-weight: 600;
+  }
+}
+
+// Submit Button
+.submit-btn {
+  @include flat-button-primary();
+  width: 100%;
+  margin-top: var(--pdz-space-md);
+
+  @include respond-above(medium) {
+    width: auto;
+    min-width: 12rem;
+    align-self: flex-end;
+  }
 }

@@ -74,8 +74,8 @@ export class LeagueZoneService {
     });
   }
 
-  getRules(leagueKey: string): Observable<League.RuleCategory[]> {
-    return this.apiService.get<League.RuleCategory[]>(
+  getRules(leagueKey: string): Observable<League.RuleSection[]> {
+    return this.apiService.get<League.RuleSection[]>(
       `${ROOTPATH}/${this.leagueKey()}/rules`,
       false,
     );
@@ -426,6 +426,10 @@ export class LeagueZoneService {
 
   signUp(signupData: object) {
     return this.apiService.post(`leagues/pdbls2/signup`, true, signupData);
+  }
+
+  getLeagueInfo(): Observable<League.LeagueInfo> {
+    return this.apiService.get(`leagues/${this.leagueKey()}/info`, false);
   }
 
   getTiers(): Observable<LeagueTierGroup[]> {

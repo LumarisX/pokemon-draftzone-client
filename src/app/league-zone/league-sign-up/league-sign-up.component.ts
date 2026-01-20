@@ -7,18 +7,13 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatRadioModule } from '@angular/material/radio';
-import { MatSelectModule } from '@angular/material/select';
 import { RouterModule } from '@angular/router';
 import { map, Subject, take, takeUntil } from 'rxjs';
 import { AuthService } from '../../services/auth0.service';
 import { LeagueZoneService } from '../../services/leagues/league-zone.service';
+import { LoadingComponent } from '../../images/loading/loading.component';
+import { League } from '../league.interface';
+import { getLogoUrl } from '../league.util';
 
 @Component({
   selector: 'pdz-league-sign-up',
@@ -27,46 +22,42 @@ import { LeagueZoneService } from '../../services/leagues/league-zone.service';
   imports: [
     CommonModule,
     FormsModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatInputModule,
-    MatButtonModule,
-    MatExpansionModule,
-    MatCardModule,
-    MatRadioModule,
-    MatCheckboxModule,
     ReactiveFormsModule,
     RouterModule,
+    LoadingComponent,
   ],
 })
 export class LeagueSignUpComponent implements OnInit, OnDestroy {
   private fb = inject(FormBuilder);
   private leagueService = inject(LeagueZoneService);
   private authService = inject(AuthService);
-
+  isLoading = true;
   private destroy$ = new Subject<void>();
 
   signupForm!: FormGroup;
   added = false;
   closed = false;
   timezones = Intl.supportedValuesOf('timeZone');
-  signUpDeadline: Date = new Date('2025-10-21T12:00:00');
-  signUpItem: string = 'pdbls2';
+  signUpDeadline?: Date;
+  logoFile: File | null = null;
+  logoFileName: string = '';
 
-  details: {
-    format: string;
-    ruleset: string;
-    draft: [Date, Date];
-    season: [Date, Date];
-  } = {
-    format: 'Singles',
-    ruleset: 'Gen9 NatDex',
-    draft: [new Date('2025-09-22T12:00:00'), new Date('2025-09-27T12:00:00')],
-    season: [new Date('2025-09-29T12:00:00'), new Date('2025-11-23T12:00:00')],
-  };
+  leagueInfo: League.LeagueInfo | null = null;
 
   ngOnInit(): void {
-    this.closed = new Date() > this.signUpDeadline;
+    // Fetch league info from API
+    this.leagueService
+      .getLeagueInfo()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (leagueInfo) => {
+          this.leagueInfo = leagueInfo;
+        },
+        error: (error) => {
+          console.error('Error fetching league info:', error);
+        },
+      });
+
     // this.added = localStorage.getItem(this.signUpItem) !== null;
     this.createForm().subscribe((form) => {
       this.signupForm = form;
@@ -93,6 +84,7 @@ export class LeagueSignUpComponent implements OnInit, OnDestroy {
             Intl.DateTimeFormat().resolvedOptions().timeZone,
             Validators.required,
           ],
+          teamName: ['', Validators.required],
           experience: [''],
           droppedBefore: [null, Validators.required],
           droppedWhy: [''],
@@ -118,11 +110,12 @@ export class LeagueSignUpComponent implements OnInit, OnDestroy {
   }
 
   onSubmit() {
-    if (this.signupForm.valid) {
+    const leagueKey = this.leagueService.leagueKey();
+    if (this.signupForm.valid && leagueKey) {
       this.leagueService.signUp(this.signupForm.value).subscribe((response) => {
         this.added = true;
         localStorage.setItem(
-          this.signUpItem,
+          leagueKey,
           this.signupForm.get('discordName')?.value ?? '',
         );
       });
@@ -130,4 +123,19 @@ export class LeagueSignUpComponent implements OnInit, OnDestroy {
       console.error('Sign Up form is not valid: ', this.signupForm.errors);
     }
   }
+
+  onLogoUpload(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.logoFile = input.files[0];
+      this.logoFileName = this.logoFile.name;
+      // TODO: Add logic to upload the logo file or include it in the form submission
+      console.log('Logo file selected:', this.logoFile.name);
+    } else {
+      this.logoFile = null;
+      this.logoFileName = '';
+    }
+  }
+
+  getLogoUrl = getLogoUrl('league-uploads');
 }

@@ -43,7 +43,7 @@ import { League } from '../../league.interface';
 })
 export class LeagueRulesComponent {
   @Input()
-  sections: League.Rule[] = [];
+  sections: League.RuleSection[] = [];
 
   getExpansionState(item: CdkAccordionItem): 'expanded' | 'collapsed' {
     return item.expanded ? 'expanded' : 'collapsed';

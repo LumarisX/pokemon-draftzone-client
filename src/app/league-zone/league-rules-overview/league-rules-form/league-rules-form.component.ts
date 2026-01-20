@@ -62,7 +62,7 @@ export class LeagueRulesFormComponent {
   view: string = 'edit';
 
   @Input()
-  sections: League.Rule[] = [];
+  sections: League.RuleSection[] = [];
 
   addSection() {
     this.sections.push({
@@ -78,7 +78,7 @@ export class LeagueRulesFormComponent {
   getExpansionState(item: CdkAccordionItem): 'expanded' | 'collapsed' {
     return item.expanded ? 'expanded' : 'collapsed';
   }
-  onDrop(event: CdkDragDrop<League.Rule[]>) {
+  onDrop(event: CdkDragDrop<League.RuleSection[]>) {
     moveItemInArray(this.sections, event.previousIndex, event.currentIndex);
   }
 }

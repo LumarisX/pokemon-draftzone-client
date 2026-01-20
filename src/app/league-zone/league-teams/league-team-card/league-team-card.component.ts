@@ -25,5 +25,5 @@ export class LeagueTeamCardComponent {
 
   data: 'overview' | 'stats' = 'overview';
 
-  getLogoUrl = getLogoUrl;
+  getLogoUrl = getLogoUrl('user-uploads');
 }

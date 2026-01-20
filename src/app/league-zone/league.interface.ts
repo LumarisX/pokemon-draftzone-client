@@ -73,7 +73,7 @@ export namespace League {
     name: string;
     matchups: Matchup[];
   };
-  export type Rule = {
+  export type RuleSection = {
     title: string;
     body: string;
   };
@@ -92,11 +92,6 @@ export namespace League {
     status?: string;
     pokemon?: Pokemon;
   }[];
-
-  export type RuleCategory = {
-    header: string;
-    details: string[];
-  };
 
   export type LeagueSignUp = {
     name: string;
@@ -148,6 +143,20 @@ export namespace League {
       diff: number;
     };
   }>;
+
+  export type LeagueInfo = {
+    name: string;
+    leagueKey: string;
+    description?: string;
+    format: string;
+    ruleset: string;
+    signUpDeadline: Date;
+    draftStart?: Date;
+    draftEnd?: Date;
+    seasonStart?: Date;
+    seasonEnd?: Date;
+    logo?: string;
+  };
 }
 
 type TradeParticipant = {

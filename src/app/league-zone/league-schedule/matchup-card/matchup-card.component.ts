@@ -31,13 +31,13 @@ export class MatchupCardComponent {
   @Input() cardOpen: boolean = false;
   selectedMatch = 0;
   leftEntity = computed<ComparisonEntity>(() => ({
-    logoUrl: getLogoUrl(this.matchup.team1.logo),
+    logoUrl: this.getLogoUrl(this.matchup.team1.logo),
     primaryName: this.matchup.team1.teamName,
     secondaryName: this.matchup.team1.coach,
   }));
 
   rightEntity = computed<ComparisonEntity>(() => ({
-    logoUrl: getLogoUrl(this.matchup.team2.logo),
+    logoUrl: this.getLogoUrl(this.matchup.team2.logo),
     primaryName: this.matchup.team2.teamName,
     secondaryName: this.matchup.team2.coach,
   }));
@@ -68,4 +68,6 @@ export class MatchupCardComponent {
     event.stopPropagation();
     this.selectedMatch = index;
   }
+
+  getLogoUrl = getLogoUrl('user-uploads');
 }

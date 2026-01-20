@@ -1,10 +1,37 @@
-<div class="rules-container">
-  <button class="back-button" [routerLink]="['../']">← Back</button>
-  <div class="rules-header">
-    <h1 class="rules-title">League Rules</h1>
-  </div>
-</div>
+<button class="back-btn" [routerLink]="['../']">Back</button>
 
-<div class="rules-wrapper">
-  <pdz-league-rules [sections]="rules"></pdz-league-rules>
+<div class="rules-page">
+  <aside class="rules-nav">
+    <h2 class="rules-nav__title">Jump to Section</h2>
+    <nav class="rules-nav__list">
+      @for (rule of rules; track rule.title; let i = $index) {
+        <a
+          class="rules-nav__item"
+          [href]="'#section-' + i"
+          (click)="scrollToSection($event, i)"
+        >
+          {{ rule.title }}
+        </a>
+      }
+    </nav>
+  </aside>
+
+  <main class="rules-content">
+    <div class="rules-header">
+      <h1 class="rules-header__title">League Rules</h1>
+    </div>
+
+    @for (rule of rules; track rule.title; let i = $index) {
+      <section
+        class="rules-section"
+        [id]="'section-' + i"
+        [attr.data-section]="i"
+      >
+        <h2 class="rules-section__title">{{ rule.title }}</h2>
+        <div class="rules-section__content">
+          <markdown class="markdown-content" [data]="rule.body"></markdown>
+        </div>
+      </section>
+    }
+  </main>
 </div>
