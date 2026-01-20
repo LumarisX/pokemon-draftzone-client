@@ -56,6 +56,15 @@ export class UploadImageComponent implements OnDestroy {
   uploadedFileKey: string | null = null;
   confirmed: boolean = false;
 
+  // Security constants (matches server)
+  private readonly MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+  private readonly ALLOWED_TYPES = [
+    'image/jpeg',
+    'image/png',
+    'image/gif',
+    'image/webp',
+  ];
+
   private overlayRef: OverlayRef | null = null;
   private destroy$ = new Subject<void>();
 
@@ -68,7 +77,18 @@ export class UploadImageComponent implements OnDestroy {
     const fileList: FileList | null = element.files;
 
     if (fileList && fileList.length > 0) {
-      this.selectedFile = fileList[0];
+      const file = fileList[0];
+
+      // Client-side validation
+      const validation = this.validateFile(file);
+      if (!validation.valid) {
+        this.uploadMessage = validation.error || 'Invalid file';
+        this.uploadError = true;
+        element.value = '';
+        return;
+      }
+
+      this.selectedFile = file;
       this.uploadMessage = '';
       this.uploadError = false;
       this.uploadProgress = 0;
@@ -80,6 +100,35 @@ export class UploadImageComponent implements OnDestroy {
     }
 
     element.value = '';
+  }
+
+  private validateFile(file: File): { valid: boolean; error?: string } {
+    // Check file type
+    if (!this.ALLOWED_TYPES.includes(file.type)) {
+      return {
+        valid: false,
+        error: `Invalid file type. Allowed: ${this.ALLOWED_TYPES.join(', ')}`,
+      };
+    }
+
+    // Check file size
+    if (file.size > this.MAX_FILE_SIZE) {
+      return {
+        valid: false,
+        error: `File size exceeds maximum (${this.MAX_FILE_SIZE / 1024 / 1024}MB)`,
+      };
+    }
+
+    // Check file name
+    if (
+      file.name.includes('..') ||
+      file.name.includes('/') ||
+      file.name.includes('\\')
+    ) {
+      return { valid: false, error: 'Invalid file name' };
+    }
+
+    return { valid: true };
   }
 
   openPreviewOverlay(file: File): void {
