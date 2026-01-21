@@ -10,11 +10,12 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
+import { forkJoin } from 'rxjs';
 import { IconComponent } from '../../../../images/icon/icon.component';
 import { SpriteComponent } from '../../../../images/sprite/sprite.component';
 import { DraftPokemon } from '../../../../interfaces/draft';
 import { TeambuilderService } from '../../../../services/teambuilder.service';
-import { PokemonBuilder } from './pokemon-builder/pokemon-builder.model';
+import { PokemonBuilder, Move } from './pokemon-builder/pokemon-builder.model';
 import { MatchupData } from '../../matchup-interface';
 import {
   MatchupPokemonBuilderComponent,
@@ -23,6 +24,31 @@ import {
 import { NATURES } from '../../../../data';
 
 type Tab = number | 'add' | 'export';
+
+interface SerializedPokemon {
+  id: string;
+  name: string;
+  nickname: string;
+  shiny: boolean;
+  level: number;
+  nature: string;
+  item: string | null;
+  teraType: string;
+  gender: '' | 'M' | 'F';
+  happiness: number;
+  dynamaxLevel: number;
+  gigantamax: boolean;
+  ability: string;
+  moves: (Move | null)[];
+  stats: {
+    hp: { ivs: number; evs: number; boosts: number };
+    atk: { ivs: number; evs: number; boosts: number };
+    def: { ivs: number; evs: number; boosts: number };
+    spa: { ivs: number; evs: number; boosts: number };
+    spd: { ivs: number; evs: number; boosts: number };
+    spe: { ivs: number; evs: number; boosts: number };
+  };
+}
 
 @Component({
   selector: 'pdz-matchup-teambuilder',
@@ -55,10 +81,10 @@ export class MatchupTeambuilderComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.loadTeamFromStorage();
-    // Auto-save every 2 seconds to capture form changes
+    // Auto-save every 5 seconds to capture form changes while minimizing performance impact
     this.saveInterval = window.setInterval(() => {
       this.saveTeamToStorage();
-    }, 2000);
+    }, 5000);
   }
 
   ngOnDestroy() {
@@ -149,7 +175,7 @@ export class MatchupTeambuilderComponent implements OnInit, OnDestroy {
     }
   }
 
-  private serializePokemon(pokemon: PokemonBuilder): any {
+  private serializePokemon(pokemon: PokemonBuilder): SerializedPokemon {
     return {
       id: pokemon.id,
       name: pokemon.name,
@@ -179,21 +205,31 @@ export class MatchupTeambuilderComponent implements OnInit, OnDestroy {
         modified: move.modified
       } : null),
       stats: {
-        hp: { ivs: pokemon.stats.hp.ivs, evs: pokemon.stats.hp.evs },
-        atk: { ivs: pokemon.stats.atk.ivs, evs: pokemon.stats.atk.evs },
-        def: { ivs: pokemon.stats.def.ivs, evs: pokemon.stats.def.evs },
-        spa: { ivs: pokemon.stats.spa.ivs, evs: pokemon.stats.spa.evs },
-        spd: { ivs: pokemon.stats.spd.ivs, evs: pokemon.stats.spd.evs },
-        spe: { ivs: pokemon.stats.spe.ivs, evs: pokemon.stats.spe.evs },
+        hp: { ivs: pokemon.stats.hp.ivs, evs: pokemon.stats.hp.evs, boosts: pokemon.stats.hp.boosts },
+        atk: { ivs: pokemon.stats.atk.ivs, evs: pokemon.stats.atk.evs, boosts: pokemon.stats.atk.boosts },
+        def: { ivs: pokemon.stats.def.ivs, evs: pokemon.stats.def.evs, boosts: pokemon.stats.def.boosts },
+        spa: { ivs: pokemon.stats.spa.ivs, evs: pokemon.stats.spa.evs, boosts: pokemon.stats.spa.boosts },
+        spd: { ivs: pokemon.stats.spd.ivs, evs: pokemon.stats.spd.evs, boosts: pokemon.stats.spd.boosts },
+        spe: { ivs: pokemon.stats.spe.ivs, evs: pokemon.stats.spe.evs, boosts: pokemon.stats.spe.boosts },
       }
     };
   }
 
-  private restoreTeamFromData(teamData: any[]): void {
-    teamData.forEach(pokemonData => {
-      this.teambuilderService
-        .getPokemonData(pokemonData.id, this.matchupData.details.ruleset)
-        .subscribe((fullPokemonData) => {
+  private restoreTeamFromData(teamData: SerializedPokemon[]): void {
+    // Use forkJoin to wait for all Pokemon data to load before adding to team
+    // This prevents race conditions and ensures Pokemon are added in the correct order
+    const pokemonObservables = teamData.map(pokemonData =>
+      this.teambuilderService.getPokemonData(pokemonData.id, this.matchupData.details.ruleset)
+    );
+
+    if (pokemonObservables.length === 0) {
+      return;
+    }
+
+    forkJoin(pokemonObservables).subscribe({
+      next: (fullPokemonDataArray) => {
+        fullPokemonDataArray.forEach((fullPokemonData, index) => {
+          const pokemonData = teamData[index];
           // Find the nature by name
           const nature = NATURES.find(n => n.name === pokemonData.nature) || NATURES[0];
           
@@ -203,17 +239,23 @@ export class MatchupTeambuilderComponent implements OnInit, OnDestroy {
             level: pokemonData.level,
             nature: nature,
             item: pokemonData.item,
-            teraType: pokemonData.teraType,
+            teraType: pokemonData.teraType as any, // Type assertion for stored string to TeraType
             gender: pokemonData.gender,
             happiness: pokemonData.happiness,
             dynamaxLevel: pokemonData.dynamaxLevel,
             gigantamax: pokemonData.gigantamax,
             ability: pokemonData.ability,
             moves: pokemonData.moves,
-            stats: pokemonData.stats
+            stats: pokemonData.stats as any // Type assertion for stats - constructor will properly initialize
           });
           this.team.push(pokemonSet);
         });
+      },
+      error: (err) => {
+        console.error('Failed to restore team from storage:', err);
+        // Fallback to default if restoration fails
+        this.addPokemonToTeamAndSelect(this.matchupData.summary[0].team[0]);
+      }
     });
   }
 }
