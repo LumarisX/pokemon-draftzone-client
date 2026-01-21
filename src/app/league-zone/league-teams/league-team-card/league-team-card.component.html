@@ -8,9 +8,8 @@
         {{ teamDetails.name }}
       </h2>
       <div class="team-coaches">
-        @for (coach of teamDetails.coaches; track coach) {
-          <h4 class="team-coach">{{ coach }}</h4>
-        }
+          <h4 class="team-coach">{{ teamDetails.coach }}</h4>
+        
       </div>
       <div class="team-info-bar">
         <span class="team-timezone">

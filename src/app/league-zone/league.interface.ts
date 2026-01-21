@@ -8,11 +8,7 @@ import { DraftPokemon } from '../interfaces/draft';
 import { Pokemon } from '../interfaces/pokemon';
 
 export namespace League {
-  export type Team = {
-    name: string;
-    coach: string;
-    logo: string;
-  };
+
 
   export type LeagueTeam = {
     name: string;
@@ -21,7 +17,7 @@ export namespace League {
     draft: LeaguePokemon[];
     picks: LeaguePokemon[][];
     isCoach: boolean;
-    coaches: string[];
+    coach: string;
 
     pointTotal: number;
     record?: {
@@ -156,11 +152,19 @@ export namespace League {
     seasonStart?: Date;
     seasonEnd?: Date;
     logo?: string;
+    divisions: { name: string; divisionKey: string }[];
+    discord?: string;
   };
 }
 
+  export type Team = {
+    name: string;
+    coach: string;
+    logo: string;
+  };
+
 type TradeParticipant = {
-  team?: League.Team;
+  team?: Team;
   pokemon?: League.TieredPokemon[];
 };
 

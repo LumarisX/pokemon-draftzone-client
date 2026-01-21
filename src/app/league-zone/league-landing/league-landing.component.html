@@ -1,0 +1,84 @@
+@if (leagueInfo) {
+  <div class="landing-container">
+    <!-- Hero Section with Logo -->
+    <div class="hero-section">
+      <div class="logo-container">
+        <img
+          [src]="leagueInfo.logo ? getLogoUrl(leagueInfo.logo) : '../../assets/images/battle-zone/pdbls2.png'"
+          [alt]="leagueInfo.name + ' logo'"
+          class="league-logo"
+        />
+      </div>
+      
+      <div class="league-info">
+        <h1 class="league-title">{{ leagueInfo.name }}</h1>
+        @if (leagueInfo.description) {
+          <p class="league-description">
+            {{ leagueInfo.description }}
+          </p>
+        }
+        
+        <div class="league-details">
+          <div class="detail-item">
+            <span class="detail-label">Format</span>
+            <span class="detail-value">{{ leagueInfo.format }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Ruleset</span>
+            <span class="detail-value">{{ leagueInfo.ruleset }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="actions-section">
+      <button
+        [routerLink]="['/leagues', leagueInfo.leagueKey, 'sign-up']"
+        class="button button--primary"
+        [disabled]="isSignUpClosed()"
+        [class.is-disabled]="isSignUpClosed()"
+      >
+        <span class="button__text">{{ isSignUpClosed() ? 'Sign Up Closed' : 'Sign Up' }}</span>
+        @if (!isSignUpClosed()) {
+          <span class="button__subtext">
+            Closes {{ leagueInfo.signUpDeadline | date: 'MMM d' }}
+          </span>
+        }
+      </button>
+
+      @if (leagueInfo.discord) {
+        <a
+          [href]="'https://discord.gg/'+leagueInfo.discord"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="button button--discord"
+        >
+          <span class="button__text">Join Discord</span>
+          <span class="button__subtext">Connect with coaches</span>
+        </a>
+      }
+    </div>
+
+    <!-- Divisions Section -->
+    @if (leagueInfo.divisions.length) {
+      <div class="divisions-section">
+        <h2 class="divisions-section__title">Divisions</h2>
+        <div class="divisions-section__grid">
+          @for (division of leagueInfo.divisions; track division.divisionKey) {
+            <button
+              [routerLink]="['/leagues', leagueInfo.leagueKey, division.divisionKey]"
+              class="button button--division"
+            >
+              <span class="button__text">{{ division.name }}</span>
+            </button>
+          }
+        </div>
+      </div>
+    }
+  </div>
+} @else {
+  <div class="loading-state">
+    <pdz-loading></pdz-loading>
+  </div>
+}

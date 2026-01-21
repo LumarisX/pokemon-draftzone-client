@@ -1,0 +1,248 @@
+@use "../../../styles/global.scss" as *;
+@use "../../../styles/mixins" as *;
+
+:host {
+  display: block;
+  width: 100%;
+  min-height: 100%;
+  background: var(--pdz-color-background);
+}
+
+.landing-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--pdz-space-xl) var(--pdz-space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--pdz-space-2xl);
+
+  @include respond-above(medium) {
+    padding: var(--pdz-space-2xl) var(--pdz-space-lg);
+    gap: var(--pdz-space-3xl);
+  }
+}
+
+// Hero Section
+.hero-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--pdz-space-xl);
+  text-align: center;
+
+  @include respond-above(medium) {
+    flex-direction: row;
+    text-align: left;
+    gap: var(--pdz-space-2xl);
+  }
+}
+
+.logo-container {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.league-logo {
+  width: 100%;
+  max-width: 280px;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.15));
+
+  @include respond-above(medium) {
+    max-width: 360px;
+  }
+}
+
+.league-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--pdz-space-md);
+}
+
+.league-title {
+  @include apply-typography(title-lg);
+  color: var(--pdz-color-primary);
+  margin: 0;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.league-description {
+  @include apply-typography(body-lg);
+  color: var(--pdz-color-on-surface-variant);
+  margin: 0;
+  line-height: 1.6;
+}
+
+.league-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--pdz-space-lg);
+  margin-top: var(--pdz-space-sm);
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pdz-space-xs);
+}
+
+.detail-label {
+  @include apply-typography(label-sm);
+  color: var(--pdz-color-on-surface-variant);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+
+.detail-value {
+  @include apply-typography(body-lg);
+  color: var(--pdz-color-on-surface);
+  font-weight: 500;
+}
+
+// Actions Section
+.actions-section {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--pdz-space-md);
+  max-width: 600px;
+  margin: 0 auto;
+
+  @include respond-above(medium) {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: none;
+  }
+}
+
+// Button Block (shared base styles for all buttons)
+.button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--pdz-space-lg) var(--pdz-space-md);
+  border-radius: var(--pdz-shape-lg);
+  box-shadow: var(--pdz-level-2);
+  transition: all 0.2s ease;
+  text-decoration: none;
+  gap: var(--pdz-space-xs);
+  min-height: 100px;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  border-radius: 1rem;
+
+  // Button Elements
+  &__text {
+    @include apply-typography(title-lg);
+    font-weight: 600;
+  }
+
+  &__subtext {
+    @include apply-typography(label-md);
+    opacity: 0.9;
+  }
+
+  // Button Modifiers (variants)
+  &--primary {
+    background: linear-gradient(135deg, pdz-color(primary) 0%, pdz-color(primary-darker) 100%);
+    color: pdz-color(on-primary);
+
+    &:hover:not(.is-disabled) {
+      box-shadow: var(--pdz-level-3);
+      transform: translateY(-2px);
+    }
+
+    &:active:not(.is-disabled) {
+      box-shadow: var(--pdz-level-1);
+      transform: translateY(0);
+    }
+  }
+
+  &--discord {
+    background: linear-gradient(135deg, #5865F2 0%, #4752C4 100%);
+    color: white;
+
+    &:hover {
+      box-shadow: var(--pdz-level-3);
+      transform: translateY(-2px);
+    }
+
+    &:active {
+      box-shadow: var(--pdz-level-1);
+      transform: translateY(0);
+    }
+  }
+
+  &--division {
+    background: pdz-color(surface-container);
+    min-height: 80px;
+    color: var(--pdz-color-on-surface);
+
+    &:hover {
+      background: pdz-color(primary);
+      box-shadow: var(--pdz-level-2);
+      transform: translateY(-2px);
+
+      .button__text {
+        color: pdz-color(on-primary);
+      }
+    }
+
+    &:active {
+      transform: translateY(0);
+      box-shadow: var(--pdz-level-1);
+    }
+  }
+
+  // Button States
+  &.is-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: pdz-color(surface-container);
+    color: pdz-color(on-surface-variant);
+  }
+}
+
+// Divisions Section
+.divisions-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pdz-space-lg);
+
+  &__title {
+    @include apply-typography(headline-lg);
+    color: var(--pdz-color-on-surface);
+    margin: 0;
+    text-align: center;
+    font-weight: 600;
+
+    @include respond-above(medium) {
+      text-align: left;
+    }
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--pdz-space-md);
+
+    @include respond-above(medium) {
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+  }
+}
+
+// Loading State
+.loading-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  width: 100%;
+}

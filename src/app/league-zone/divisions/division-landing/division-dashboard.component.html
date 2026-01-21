@@ -1,18 +1,35 @@
-<div class="league-container">
-  PDBL
+<div class="division-header">
+  <div class="division-header__info">
+    <h1 class="division-header__league-name">{{ leagueName }}</h1>
+    <h2 class="division-header__division-name">{{ divisionName }}</h2>
+  </div>
   <img
-    class="league-image"
+    class="division-header__image"
     src="../../../assets/images/battle-zone/pdbls2.png"
-    alt=""
+    alt="League logo"
   />
 </div>
-<div class="widget-container">
+
+<nav class="navigation-tabs">
+  @for (section of navigationSections; track section.route) {
+    <button 
+      class="navigation-tabs__tab"
+      (click)="navigateTo(section.route)"
+      type="button"
+    >
+      {{ section.label }}
+    </button>
+  }
+</nav>
+<!-- <div class="widget-container">
+  @if(team){
   <div class="widget row-span-2">
     <div class="widget-title">Deimos Deoxys</div>
     <div class="widget-body">
       <pdz-league-team-card [teamDetails]="team"></pdz-league-team-card>
     </div>
   </div>
+}
   <div class="widget">
     <div class="widget-title">Upcoming Matches</div>
     <div class="widget-body"></div>
@@ -43,15 +60,5 @@
       }
     </div>
   </div>
-</div>
+</div> -->
 
-<!-- <mat-sidenav-container class="app-container">
-    <mat-sidenav #sidenav mode="side" closed class="app-sidenav">
-      <pdz-league-sidebar></pdz-league-sidebar>
-    </mat-sidenav>
-  
-    <mat-sidenav-content class="app-content">
-      <router-outlet></router-outlet>
-    </mat-sidenav-content>
-  </mat-sidenav-container>
-   -->

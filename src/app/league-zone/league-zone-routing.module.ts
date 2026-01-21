@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LeagueDraftComponent } from './league-drafting/league-drafting.component';
-import { LeagueLandingComponent } from './league-landing/landing.component';
+import { LeagueLandingComponent } from './league-landing/league-landing.component';
 import { LeagueManagePath } from './league-manage/league-manage-routing.module';
 import { LeagueOverviewComponent } from './league-overview/league-overview.component';
 import { LeagueSignUpComponent } from './league-sign-up/league-sign-up.component';
@@ -10,7 +10,7 @@ import { leagueRoleGuard } from './league-role.guard';
 import { LeagueTierListComponent } from './league-tier-list/league-tier-list.component';
 import { PowerRankingsComponent } from './divisions/power-rankings/power-rankings.component';
 import { LeagueBracketComponent } from './league-bracket/league-bracket.component';
-import { LeagueDashboardComponent } from './league/league.component';
+import { LeagueDashboardComponent } from './divisions/division-landing/division-dashboard.component';
 import { LeagueScheduleComponent } from './league-schedule/league-schedule.component';
 import { LeagueStandingsComponent } from './league-standings/league-standings.component';
 import { LeagueTradesComponent } from './league-trades/league-trades.component';
@@ -43,15 +43,6 @@ const routes: Routes = [
     component: LeagueLandingComponent,
   },
   {
-    path: ':leagueKey/dashboard',
-    component: LeagueDashboardComponent,
-  },
-
-  {
-    path: ':leagueKey/schedule',
-    component: LeagueScheduleComponent,
-  },
-  {
     path: ':leagueKey/rules',
     component: LeagueRulesOverviewComponent,
   },
@@ -72,6 +63,14 @@ const routes: Routes = [
   {
     path: ':leagueKey/trades',
     component: LeagueTradesComponent,
+  },
+    {
+    path: ':leagueKey/:divisionKey',
+    component: LeagueDashboardComponent,
+  },
+  {
+    path: ':leagueKey/:divisionKey/schedule',
+    component: LeagueScheduleComponent,
   },
   {
     path: ':leagueKey/:divisionKey/schedule',

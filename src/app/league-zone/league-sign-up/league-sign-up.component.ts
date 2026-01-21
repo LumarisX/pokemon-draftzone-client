@@ -31,7 +31,6 @@ export class LeagueSignUpComponent implements OnInit, OnDestroy {
   private fb = inject(FormBuilder);
   private leagueService = inject(LeagueZoneService);
   private authService = inject(AuthService);
-  isLoading = true;
   private destroy$ = new Subject<void>();
 
   signupForm!: FormGroup;

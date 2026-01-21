@@ -166,5 +166,5 @@ export class CoachStandingsComponent {
     return { 'border-color': `rgb(${r}, ${g}, ${b})` };
   }
 
-  getLogoUrl = getLogoUrl;
+  getLogoUrl = getLogoUrl('user-uploads');
 }

@@ -1,0 +1,120 @@
+@use "../../../../styles/global.scss" as *;
+@use "../../../../styles/mixins" as *;
+@use "../../../../styles/mixins/buttons" as *;
+
+.widget {
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--pdz-level-2);
+  border-radius: var(--pdz-shape-corner-lg);
+  overflow: hidden;
+
+  &__title {
+    padding: var(--pdz-space-xs);
+    font-family: var(--pdz-font-fancy);
+    background-color: var(--pdz-color-primary);
+    color: var(--pdz-color-on-primary);
+    text-align: center;
+  }
+
+  &__body {
+    overflow: auto;
+    padding: var(--pdz-space-sm);
+  }
+}
+
+.widget-container {
+  padding: var(--pdz-space-lg);
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.division-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--pdz-space-sm);
+  padding: var(--pdz-space-sm);
+  background-color: pdz-color(surface-container-low);
+  border-bottom: 2px solid pdz-color(primary);
+
+  @include respond-above(medium) {
+    flex-direction: row;
+    justify-content: space-between;
+    padding: var(--pdz-space-sm) var(--pdz-space-lg);
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--pdz-space-xs);
+    text-align: center;
+
+    @include respond-above(medium) {
+      text-align: left;
+    }
+  }
+
+  &__league-name {
+    @include apply-typography(headline-md);
+    color: pdz-color(primary);
+    margin: 0;
+
+    @include respond-above(medium) {
+      @include apply-typography(headline-lg);
+    }
+  }
+
+  &__division-name {
+    @include apply-typography(title-md);
+    color: pdz-color(on-surface);
+    margin: 0;
+
+    @include respond-above(medium) {
+      @include apply-typography(title-lg);
+    }
+  }
+
+  &__image {
+    max-width: 12rem;
+    max-height: 6rem;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+
+    @include respond-above(medium) {
+      max-width: 20rem;
+      max-height: 10rem;
+    }
+  }
+}
+
+.navigation-tabs {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--pdz-space-sm);
+  padding: var(--pdz-space-sm);
+  border-bottom: 1px solid pdz-color(outline-variant);
+
+  @include respond-above(medium) {
+    grid-template-columns: repeat(5, 1fr);
+    padding: var(--pdz-space-md) var(--pdz-space-lg);
+  }
+
+  &__tab {
+    @include flat-button-primary();
+    padding: var(--pdz-space-sm) var(--pdz-space-md);
+    border-radius: var(--pdz-shape-corner-sm);
+    transition: all 0.2s ease;
+    text-align: center;
+
+    @include respond-above(medium) {
+      padding: var(--pdz-space-sm) var(--pdz-space-lg);
+    }
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--pdz-level-1);
+    }
+  }
+}
