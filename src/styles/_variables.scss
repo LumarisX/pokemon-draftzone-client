@@ -1,9 +1,11 @@
 @use "pdz-themes/classic" as classic;
 @use "pdz-themes/shiny" as shiny;
 @use "pdz-themes/sunset" as sunset;
+@use "pdz-themes/classic-reverse" as classicR;
 
 $themes: (
   classic: classic.$theme,
   shiny: shiny.$theme,
   sunset: sunset.$theme,
+  classic-reverse: classicR.$theme,
 );

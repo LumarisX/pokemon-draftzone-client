@@ -134,31 +134,6 @@
   opacity: 0.9;
 }
 
-.theme-pill.classic {
-  background: linear-gradient(
-    135deg,
-    var(--pdz-color-cyan-400),
-    var(--pdz-color-orange-400)
-  );
-}
-
-.theme-pill.sunset {
-  background: linear-gradient(
-    135deg,
-    var(--pdz-color-purple-400),
-    var(--pdz-color-orange-400),
-    var(--pdz-color-pink-400)
-  );
-}
-
-.theme-pill.shiny {
-  background: linear-gradient(
-    135deg,
-    var(--pdz-color-mint-400),
-    var(--pdz-color-yellow-400)
-  );
-}
-
 .theme-pill:focus,
 .theme-pill[aria-pressed="true"] {
   outline: 2px solid
@@ -192,14 +167,21 @@
   margin-right: 0.5rem;
 }
 
-.theme-preview.classic {
+.classic {
   background: linear-gradient(
     135deg,
     var(--pdz-color-cyan-400),
     var(--pdz-color-orange-400)
   );
 }
-.theme-preview.sunset {
+.classic-reverse {
+  background: linear-gradient(
+    135deg,
+    var(--pdz-color-orange-400),
+    var(--pdz-color-cyan-400)
+  );
+}
+.sunset {
   background: linear-gradient(
     135deg,
     var(--pdz-color-purple-400),
@@ -207,7 +189,7 @@
     var(--pdz-color-pink-400)
   );
 }
-.theme-preview.shiny {
+.shiny {
   background: linear-gradient(
     135deg,
     var(--pdz-color-mint-400),

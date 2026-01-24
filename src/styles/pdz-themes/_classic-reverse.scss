@@ -1,0 +1,147 @@
+@use "sass:map";
+@use "../base/tokens" as *;
+@use "defaults" as *;
+
+$theme-overrides: (
+  light: (
+    // Primary Theme (Orange)
+    primary: "orange-500",
+    primary-lighter: "orange-400",
+    primary-darker: "orange-600",
+    on-primary: "white",
+    primary-container: "orange-150",
+    primary-container-low: "orange-100",
+    primary-container-high: "orange-300",
+    primary-container-hover: "orange-200",
+    on-primary-container: "orange-900",
+    primary-hover: "orange-350",
+    primary-border: "orange-250",
+    primary-subtle: "orange-100",
+    primary-gradient: linear-gradient(
+        135deg,
+        var(--pdz-color-orange-500),
+        var(--pdz-color-orange-300)
+      ),
+    // Secondary Theme (Cyan)
+    secondary: "cyan-500",
+    secondary-lighter: "cyan-400",
+    secondary-darker: "cyan-600",
+    on-secondary: "white",
+    secondary-container: "cyan-150",
+    secondary-container-low: "cyan-100",
+    secondary-container-high: "cyan-300",
+    secondary-container-hover: "cyan-200",
+    on-secondary-container: "cyan-900",
+    secondary-hover: "cyan-350",
+    secondary-border: "cyan-250",
+    secondary-subtle: "cyan-100",
+    secondary-gradient: linear-gradient(
+        135deg,
+        var(--pdz-color-cyan-500),
+        var(--pdz-color-cyan-300)
+      ),
+    // Logo Colors
+    logo-top: "orange-500",
+    logo-bottom: "cyan-500",
+
+    // Loading Colors
+    loading-primary-high: "orange-600",
+    loading-primary-low: "orange-400",
+    loading-secondary-high: "cyan-600",
+    loading-secondary-low: "cyan-400",
+
+    // Semantic Data Colors
+    positive: "mint-400",
+    on-positive: "mint-950",
+    positive-container: "mint-900",
+    on-positive-container: "mint-100",
+    negative: "rose-250",
+    on-negative: "rose-950",
+    negative-container: "rose-900",
+    on-negative-container: "rose-100",
+
+    // Scale Colors
+    scale-neutral: "gray-200",
+    scale-positive: "mint-300",
+    scale-negative: "rose-300",
+    scale-positive-1: "mint-100",
+    scale-positive-2: "mint-250",
+    scale-positive-3: "mint-400",
+    scale-positive-4: "mint-500",
+    scale-positive-5: "mint-600",
+    scale-positive-6: "mint-700",
+    scale-positive-7: "mint-800",
+    scale-negative-1: "rose-100",
+    scale-negative-2: "rose-250",
+    scale-negative-3: "rose-400",
+    scale-negative-4: "rose-500",
+    scale-negative-5: "rose-600",
+    scale-negative-6: "rose-700",
+    scale-negative-7: "rose-800",
+
+    hero: linear-gradient(
+        135deg,
+        var(--pdz-color-orange-400),
+        var(--pdz-color-orange-200)
+      ),
+  ),
+  dark: (
+    // Primary Theme (Orange)
+    primary: "orange-500",
+    primary-lighter: "orange-400",
+    primary-darker: "orange-600",
+    on-primary: "orange-950",
+    primary-container: "orange-900",
+    primary-container-low: "orange-850",
+    primary-container-high: "orange-950",
+    primary-container-hover: "orange-800",
+    on-primary-container: "orange-200",
+    primary-hover: "orange-550",
+    primary-border: "orange-700",
+    primary-subtle: "orange-900",
+    primary-gradient: linear-gradient(
+        135deg,
+        var(--pdz-color-orange-500),
+        var(--pdz-color-orange-300)
+      ),
+    // Secondary Theme (Cyan)
+    secondary: "cyan-500",
+    secondary-lighter: "cyan-400",
+    secondary-darker: "cyan-600",
+    on-secondary: "cyan-950",
+    secondary-container: "cyan-900",
+    secondary-container-low: "cyan-850",
+    secondary-container-high: "cyan-950",
+    secondary-container-hover: "cyan-800",
+    on-secondary-container: "cyan-200",
+    secondary-hover: "cyan-550",
+    secondary-border: "cyan-700",
+    secondary-subtle: "cyan-900",
+    secondary-gradient: linear-gradient(
+        135deg,
+        var(--pdz-color-cyan-500),
+        var(--pdz-color-cyan-300)
+      ),
+    // Logo Colors
+    logo-top: "orange-500",
+    logo-bottom: "cyan-500",
+
+    // Loading Colors
+    loading-primary-high: "orange-600",
+    loading-primary-low: "orange-400",
+    loading-secondary-high: "cyan-600",
+    loading-secondary-low: "cyan-400",
+
+    // Hero
+    hero: linear-gradient(
+        135deg,
+        var(--pdz-color-orange-500),
+        var(--pdz-color-orange-300)
+      ),
+  ),
+);
+
+$theme: (
+  light: map.merge(map.get($defaults, light), map.get($theme-overrides, light)),
+  dark: map.merge(map.get($defaults, dark), map.get($theme-overrides, dark)),
+);

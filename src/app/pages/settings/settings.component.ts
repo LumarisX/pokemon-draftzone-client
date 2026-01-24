@@ -33,6 +33,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
   themes: { id: string; name: string }[] = [
     { id: 'classic', name: 'Classic' },
     { id: 'sunset', name: 'Sunset' },
+    { id: 'classic-reverse', name: 'Classic Reversed' },
   ];
 
   dropdownOpen: null | 'theme' | 'ld' | 'sprite' = null;
@@ -43,6 +44,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
         return 'sunset';
       case 'shiny':
         return 'shiny';
+      case 'classic-reverse':
+        return 'classic-reverse';
       case 'classic':
       default:
         return 'classic';
