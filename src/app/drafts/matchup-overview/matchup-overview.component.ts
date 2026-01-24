@@ -49,7 +49,7 @@ export class MatchupOverviewComponent implements OnInit {
   private matchupService = inject(MatchupService);
   private meta = inject(Meta);
 
-  matchupData!: MatchupData;
+  matchupData?: MatchupData;
   matchupId!: string;
   shared: boolean = false;
   shareUrl?: string;
@@ -57,8 +57,6 @@ export class MatchupOverviewComponent implements OnInit {
   timeString?: string;
   copied: boolean = false;
   draftPath = DraftOverviewPath;
-
-  view: 'matchup' | 'teambuilder' = 'matchup';
 
   teambuilderPanelOpen: boolean = false;
   isResizing: boolean = false;
@@ -160,6 +158,7 @@ export class MatchupOverviewComponent implements OnInit {
   private teambuilderService = inject(TeambuilderService);
 
   loadTeam() {
+    if (!this.matchupData) return;
     this.addPokemonToTeam(this.matchupData.summary[0].team[5]);
     this.addPokemonToTeam(this.matchupData.summary[0].team[4]);
     this.addPokemonToTeam(this.matchupData.summary[0].team[3]);
@@ -169,6 +168,7 @@ export class MatchupOverviewComponent implements OnInit {
   }
 
   getTypechart() {
+    if (!this.matchupData) return [];
     const typechart = this.matchupData.typechart[0];
     return [
       {
@@ -194,13 +194,14 @@ export class MatchupOverviewComponent implements OnInit {
   }
 
   addPokemonToTeam(pokemon: DraftPokemon) {
+    if (!this.matchupData) return;
     this.teambuilderService
       .getPokemonData(pokemon.id, this.matchupData.details.ruleset)
       .subscribe((pokemonData) => {
         const pokemonSet = PokemonBuilder.fromTeambuilder(pokemonData, {
           shiny: pokemon.shiny,
           nickname: pokemon.nickname,
-          level: this.matchupData.details.level,
+          level: this.matchupData!.details.level,
         });
         this.team.push(pokemonSet);
       });

@@ -20,6 +20,9 @@ import { IconComponent } from '../../../../../images/icon/icon.component';
 import { LoadingComponent } from '../../../../../images/loading/loading.component';
 import { SpriteComponent } from '../../../../../images/sprite/sprite.component';
 import { TeambuilderService } from '../../../../../services/teambuilder.service';
+import { typeColor } from '../../../../../util/styling';
+import { MatchupData, TypeChartPokemon } from '../../../matchup-interface';
+import { AnimatedSelectorComponent } from '../animated-selector/animated-selector.component';
 import {
   getNatureValue,
   isJumpPoint,
@@ -28,9 +31,6 @@ import {
   PokemonBuilder,
   PokemonSetData,
 } from './pokemon-builder.model';
-import { typeColor } from '../../../../../util/styling';
-import { MatchupData, TypeChartPokemon } from '../../../matchup-interface';
-import { AnimatedSelectorComponent } from '../animated-selector/animated-selector.component';
 
 export type PokemonBuilderView =
   | 'details'
@@ -69,6 +69,7 @@ export class MatchupPokemonBuilderComponent implements OnInit, OnDestroy {
   @Input({ required: true }) team!: PokemonBuilder[];
   @Input() view: PokemonBuilderView = 'details';
   @Output() viewChange = new EventEmitter<PokemonBuilderView>();
+  @Output() pokemonChange = new EventEmitter<void>();
 
   private teambuilderService = inject(TeambuilderService);
   openDropdown: string | null = null;
@@ -143,6 +144,7 @@ export class MatchupPokemonBuilderComponent implements OnInit, OnDestroy {
     }
     if (this.pokemon) {
       this.pokemon.teraType = type;
+      this.pokemonChange.emit();
     }
     this.openDropdown = null;
   }
@@ -153,6 +155,7 @@ export class MatchupPokemonBuilderComponent implements OnInit, OnDestroy {
     }
     if (this.pokemon) {
       this.pokemon.item = itemName;
+      this.pokemonChange.emit();
     }
     this.itemSearchQuery = '';
     this.openDropdown = null;
@@ -166,6 +169,7 @@ export class MatchupPokemonBuilderComponent implements OnInit, OnDestroy {
       this.pokemon.ability = ability;
       // Always refresh the cache when ability changes
       this.refreshProcessedLearnset(this.pokemon);
+      this.pokemonChange.emit();
     }
     this.openDropdown = null;
   }
@@ -268,6 +272,7 @@ export class MatchupPokemonBuilderComponent implements OnInit, OnDestroy {
     } else {
       this.pokemon.nature = getNature(this.pokemon.nature.boost, stat);
     }
+    this.pokemonChange.emit();
   }
 
   // Overload for when called from new ability selector (no event)
@@ -276,43 +281,37 @@ export class MatchupPokemonBuilderComponent implements OnInit, OnDestroy {
   }
 
   fetchMoveCalculations(move: Move, pokemon: PokemonSetData): void {
-    const oppTeam = this.matchupData.summary[1].team;
-
-    for (let oppPokemon of oppTeam) {
-      const params: {
-        attacker: PokemonSetData;
-        target: PokemonSetData;
-        move: Move;
-      } = {
-        move,
-        attacker: pokemon,
-        target: { id: oppPokemon.id, name: oppPokemon.name },
-      };
-
-      this.teambuilderService.getMoveCalculations(params).subscribe({
-        next: (response) => {
-          console.log('Move calculations:', response);
-        },
-        error: (err) => {
-          console.error('Error fetching move calculations:', err);
-        },
-      });
-    }
+    // const oppTeam = this.matchupData.summary[1].team;
+    // for (let oppPokemon of oppTeam) {
+    //   const params: {
+    //     attacker: PokemonSetData;
+    //     target: PokemonSetData;
+    //     move: Move;
+    //   } = {
+    //     move,
+    //     attacker: pokemon,
+    //     target: { id: oppPokemon.id, name: oppPokemon.name },
+    //   };
+    //   this.teambuilderService.getMoveCalculations(params).subscribe({
+    //     next: (response) => {
+    //       console.log('Move calculations:', response);
+    //     },
+    //     error: (err) => {
+    //       console.error('Error fetching move calculations:', err);
+    //     },
+    //   });
+    // }
   }
 
   selectMove(moveSlot: number, move: Move | null, event?: MouseEvent) {
-    if (event) {
-      event.stopPropagation();
-    }
+    if (event) event.stopPropagation();
     if (this.pokemon) {
-      const foundMove = this.pokemon.moves.findIndex(
-        (m) => m && m?.id === move?.id,
-      );
-      if (foundMove >= 0) {
+      const foundMove = this.pokemon.moves.findIndex((m) => m === move?.name);
+      if (!move || foundMove >= 0) {
         this.selectedMove = foundMove;
         this.pokemon.moves[foundMove] = null;
       } else {
-        this.pokemon.moves[moveSlot] = move;
+        this.pokemon.moves[moveSlot] = move.name;
         const pokemon = this.pokemon;
         const processedLearnset = this.getProcessedLearnset(pokemon);
         this.filteredMoves = processedLearnset
@@ -323,15 +322,14 @@ export class MatchupPokemonBuilderComponent implements OnInit, OnDestroy {
           this.fetchMoveCalculations(move, pokemon); // Trigger WebSocket request
         }
       }
+      this.pokemonChange.emit();
     }
     this.moveSearchQuery = '';
   }
 
   findEmptyMoveSlot() {
     const emptySlot = this.pokemon.moves.findIndex((m) => m === null);
-    if (emptySlot >= 0) {
-      this.selectedMove = emptySlot;
-    }
+    if (emptySlot >= 0) this.selectedMove = emptySlot;
   }
 
   toggleItemDropdown(event?: MouseEvent) {
@@ -433,11 +431,16 @@ export class MatchupPokemonBuilderComponent implements OnInit, OnDestroy {
   typeColor = typeColor;
 
   isMoveSelected(move: Move | null): boolean {
-    return this.pokemon.moves.some((m) => m?.id === move?.id);
+    return this.pokemon.moves.some((m) => m === move?.name);
   }
 
   getCoverageEffectiveness(pokemon: TypeChartPokemon) {
     const coverage = this.pokemon.moves
+      .map((moveName) => {
+        if (!moveName) return null;
+        const processedLearnset = this.getProcessedLearnset(this.pokemon);
+        return processedLearnset?.find((m) => m.name === moveName) || null;
+      })
       .filter((move) => move?.category !== 'Status')
       .reduce(
         (acc, curr) =>
@@ -705,5 +708,12 @@ export class MatchupPokemonBuilderComponent implements OnInit, OnDestroy {
     navigator.clipboard.writeText(text).catch((err) => {
       console.error('Could not copy text: ', err);
     });
+  }
+
+  getMoveFromLearnset(moveName: string | null): Move | null {
+    if (!moveName) return null;
+    const processedLearnset = this.getProcessedLearnset(this.pokemon);
+    if (!processedLearnset) return null;
+    return processedLearnset.find((move) => move.name === moveName) || null;
   }
 }

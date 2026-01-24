@@ -75,6 +75,7 @@
               type="text"
               class="input-field__input"
               [(ngModel)]="pokemon.nickname"
+              (ngModelChange)="pokemonChange.emit()"
               placeholder="Enter nickname"
             />
           </div>
@@ -85,6 +86,7 @@
           [label]="'Happiness'"
           direction="horizontal"
           [(ngModel)]="pokemon.happiness"
+          (ngModelChange)="pokemonChange.emit()"
         />
         <pdz-animated-selector
           [options]="getGenderOptions(pokemon)"
@@ -92,6 +94,7 @@
           label="Gender"
           direction="horizontal"
           [(ngModel)]="pokemon.gender"
+          (ngModelChange)="pokemonChange.emit()"
         />
       </div>
       <div class="section">
@@ -208,6 +211,7 @@
           [selected]="pokemon.ability"
           label="Ability"
           [(ngModel)]="pokemon.ability"
+          (ngModelChange)="pokemonChange.emit()"
         />
       </div>
 
@@ -215,7 +219,11 @@
         <div class="input-field--horizontal input-field--shiny">
           <label for="shiny" class="input-field__label">Shiny</label>
           <div class="input-field__container">
-            <input [(ngModel)]="pokemon.shiny" type="checkbox" />
+            <input
+              [(ngModel)]="pokemon.shiny"
+              (ngModelChange)="pokemonChange.emit()"
+              type="checkbox"
+            />
           </div>
         </div>
         <div class="input-field">
@@ -248,10 +256,12 @@
               class="button button--moves"
               [class.selected]="selectedMove === moveSlot"
               [class.set]="pokemon.moves[moveSlot]"
-              [style.background]="typeColor(pokemon.moves[moveSlot]?.type)"
+              [style.background]="
+                typeColor(getMoveFromLearnset(pokemon.moves[moveSlot])?.type)
+              "
               (click)="selectedMove = moveSlot"
             >
-              {{ pokemon.moves[moveSlot]?.name || "Select Move" }}
+              {{ pokemon.moves[moveSlot] || "Select Move" }}
             </button>
           }
         </div>
@@ -417,7 +427,9 @@
                   [max]="pokemon.stats[stat.id].max()"
                   class="slider slider-stat"
                   [ngModel]="pokemon.stats[stat.id].get()"
-                  (ngModelChange)="pokemon.stats[stat.id].set($event)"
+                  (ngModelChange)="
+                    pokemon.stats[stat.id].set($event); pokemonChange.emit()
+                  "
                 />
                 <input
                   class="input input-stat"
@@ -426,7 +438,9 @@
                   [min]="pokemon.stats[stat.id].min()"
                   [max]="pokemon.stats[stat.id].max()"
                   [ngModel]="pokemon.stats[stat.id].get()"
-                  (ngModelChange)="pokemon.stats[stat.id].set($event)"
+                  (ngModelChange)="
+                    pokemon.stats[stat.id].set($event); pokemonChange.emit()
+                  "
                 />
               </div>
               <div class="stat__row">
@@ -443,6 +457,7 @@
                       [step]="getStep()"
                       class="input input-stat"
                       [(ngModel)]="pokemon!.stats[stat.id].evs"
+                      (ngModelChange)="pokemonChange.emit()"
                     />
                   </div>
                   <div class="input-field--inline">
@@ -456,6 +471,7 @@
                       [max]="31"
                       class="input input-stat"
                       [(ngModel)]="pokemon!.stats[stat.id].ivs"
+                      (ngModelChange)="pokemonChange.emit()"
                     />
                   </div>
                 </div>

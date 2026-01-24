@@ -68,6 +68,21 @@ export interface PokemonData {
   teraType?: TeraType;
 }
 
+export type PokemonJson = Pokemon<{
+  nickname?: string;
+  stats?: StatsTable<{ ivs: number; evs: number; boosts: number }>;
+  item?: string;
+  level?: number;
+  nature?: string;
+  teraType: TeraType;
+  gigantamax?: true;
+  happiness?: number;
+  dynamaxLevel?: number;
+  moves: string[];
+  ability?: string;
+  gender: PokemonSetData['gender'];
+}>;
+
 export type PokemonSetData = Pokemon<{
   nature?: Nature;
   nickname?: string;
@@ -80,7 +95,7 @@ export type PokemonSetData = Pokemon<{
   shiny?: boolean;
   dynamaxLevel?: number;
   gigantamax?: boolean;
-  moves?: (Move | null)[];
+  moves?: (string | null)[];
   level?: number;
   stats?: StatsTable<{ ivs: number; evs: number; boosts: number }>;
   ability?: string;
@@ -103,7 +118,7 @@ export class PokemonBuilder {
   shiny: boolean;
   dynamaxLevel: number;
   gigantamax: boolean;
-  moves: (Move | null)[];
+  moves: (string | null)[];
   ability: string;
   stats: StatsTable<{
     base: number;
@@ -150,7 +165,7 @@ export class PokemonBuilder {
     this.shiny = data.shiny ?? false;
     this.dynamaxLevel = data.dynamaxLevel ?? MAX_DYNAMAX_LEVEL;
     this.gigantamax = data.gigantamax ?? false;
-    this.moves = data.moves ?? [null, null, null, null];
+    this.moves = this.normalizeMoves(data.moves);
     this.abilities = teambuilder?.abilities ?? [];
     this.genders = data.genders;
     this.items = teambuilder?.items ?? [];
@@ -196,6 +211,21 @@ export class PokemonBuilder {
         reset: () => this.resetStat(stat.id),
       };
     }
+  }
+
+  private normalizeMoves(
+    moves: (string | null)[] = [],
+  ): [string | null, string | null, string | null, string | null] {
+    const normalized: (string | null)[] = [];
+    for (let i = 0; i < 4; i++) {
+      normalized[i] = moves[i] ?? null;
+    }
+    return normalized as [
+      string | null,
+      string | null,
+      string | null,
+      string | null,
+    ];
   }
 
   private calcStat(stat: keyof StatsTable) {
@@ -289,21 +319,11 @@ export class PokemonBuilder {
     };
   }
 
-  toJson() {
-    const extractStats = (key: 'ivs' | 'evs') => {
-      return {
-        hp: this.stats.hp[key],
-        atk: this.stats.atk[key],
-        def: this.stats.def[key],
-        spa: this.stats.spa[key],
-        spd: this.stats.spd[key],
-        spe: this.stats.spe[key],
-      };
-    };
+  toJson(): PokemonJson {
     return {
       name: this.name,
-      ivs: filterStats(extractStats('ivs'), (v) => v < MAX_IV && v >= 0),
-      evs: filterStats(extractStats('evs'), (v) => v <= MAX_EV && v > 0),
+      id: this.id,
+      nickname: this.nickname || undefined,
       item: this.item ?? undefined,
       level: this.level > 0 && this.level < MAX_LEVEL ? this.level : MAX_LEVEL,
       nature:
@@ -320,9 +340,41 @@ export class PokemonBuilder {
         this.dynamaxLevel < MAX_DYNAMAX_LEVEL && this.dynamaxLevel >= 0
           ? this.dynamaxLevel
           : undefined,
-      moves: this.moves.filter(Boolean).map((move) => move!.name),
+      moves: this.moves.filter((move) => move !== null),
       ability: this.ability,
       gender: this.gender === '' ? undefined : this.gender,
+      stats: {
+        hp: {
+          ivs: this.stats.hp.ivs,
+          evs: this.stats.hp.evs,
+          boosts: this.stats.hp.boosts,
+        },
+        atk: {
+          ivs: this.stats.atk.ivs,
+          evs: this.stats.atk.evs,
+          boosts: this.stats.atk.boosts,
+        },
+        def: {
+          ivs: this.stats.def.ivs,
+          evs: this.stats.def.evs,
+          boosts: this.stats.def.boosts,
+        },
+        spa: {
+          ivs: this.stats.spa.ivs,
+          evs: this.stats.spa.evs,
+          boosts: this.stats.spa.boosts,
+        },
+        spd: {
+          ivs: this.stats.spd.ivs,
+          evs: this.stats.spd.evs,
+          boosts: this.stats.spd.boosts,
+        },
+        spe: {
+          ivs: this.stats.spe.ivs,
+          evs: this.stats.spe.evs,
+          boosts: this.stats.spe.boosts,
+        },
+      } as any,
     };
   }
 
@@ -366,9 +418,8 @@ export class PokemonBuilder {
     if (this.nature) text += `${this.nature.name} Nature\n`;
     const ivString = statsToString(ivs, (v) => v < MAX_IV);
     if (ivString) text += `IVs: ${ivString}\n`;
-    for (const move of this.moves) {
-      if (!move) continue;
-      let moveName = move.name;
+    for (let moveName of this.moves) {
+      if (!moveName) continue;
       if (moveName.startsWith('Hidden Power ')) {
         const hpType = moveName.slice(13);
         moveName = `Hidden Power[${hpType}]`;
@@ -461,6 +512,56 @@ export class PokemonBuilder {
       {
         ...pokemonData,
         ...options,
+      },
+      {
+        abilities: pokemonData.abilities,
+        items: pokemonData.items,
+        teraType: pokemonData.teraType,
+      },
+    );
+  }
+
+  static fromJson(
+    pokemonJson: PokemonJson,
+    pokemonData: Pokemon<PokemonData>,
+  ): PokemonBuilder {
+    const stats: Partial<
+      StatsTable<{ ivs: number; evs: number; boosts: number }>
+    > = {};
+
+    // Restore stats from saved JSON data, or use defaults
+    (['hp', 'atk', 'def', 'spa', 'spd', 'spe'] as const).forEach((stat) => {
+      const savedStat =
+        pokemonJson.stats?.[stat as keyof typeof pokemonJson.stats];
+      stats[stat] = {
+        ivs: savedStat?.ivs ?? MAX_IV,
+        evs: savedStat?.evs ?? 0,
+        boosts: savedStat?.boosts ?? 0,
+      };
+    });
+
+    const nature = pokemonJson.nature
+      ? NATURES.find((n) => n.name === pokemonJson.nature)
+      : undefined;
+
+    return new PokemonBuilder(
+      {
+        ...pokemonData,
+        level: pokemonJson.level ?? DEFAULT_LEVEL,
+        nature: nature ?? DEFAULT_NATURE,
+        nickname: pokemonJson.nickname ?? '',
+        item: pokemonJson.item ?? null,
+        teraType: (pokemonJson.teraType as TeraType) ?? DEFAULT_TERATYPE,
+        gender: (pokemonJson.gender as '' | 'M' | 'F') ?? '',
+        happiness: pokemonJson.happiness ?? MAX_HAPPINESS,
+        dynamaxLevel: pokemonJson.dynamaxLevel ?? MAX_DYNAMAX_LEVEL,
+        gigantamax: pokemonJson.gigantamax ?? false,
+        gmax: false,
+        shiny: false,
+        hiddenpower: 'Dark',
+        moves: pokemonJson.moves ?? [null, null, null, null],
+        ability: pokemonJson.ability ?? '',
+        stats: stats as any,
       },
       {
         abilities: pokemonData.abilities,

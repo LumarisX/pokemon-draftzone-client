@@ -10,16 +10,23 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
+import { Subject } from 'rxjs';
+import { debounceTime, takeUntil } from 'rxjs/operators';
 import { IconComponent } from '../../../../images/icon/icon.component';
 import { SpriteComponent } from '../../../../images/sprite/sprite.component';
 import { DraftPokemon } from '../../../../interfaces/draft';
 import { TeambuilderService } from '../../../../services/teambuilder.service';
-import { PokemonBuilder } from './pokemon-builder/pokemon-builder.model';
+import {
+  PokemonBuilder,
+  PokemonData,
+  PokemonJson,
+} from './pokemon-builder/pokemon-builder.model';
 import { MatchupData } from '../../matchup-interface';
 import {
   MatchupPokemonBuilderComponent,
   PokemonBuilderView,
 } from './pokemon-builder/pokemon-builder.component';
+import { isPokemon, Pokemon } from '../../../../interfaces/pokemon';
 
 type Tab = number | 'add' | 'export';
 
@@ -39,24 +46,57 @@ type Tab = number | 'add' | 'export';
 export class MatchupTeambuilderComponent implements OnInit, OnDestroy {
   @Input({ required: true }) matchupId!: string;
   @Input({ required: true }) matchupData!: MatchupData;
-  @Input({ required: true }) team!: PokemonBuilder[];
+  team!: PokemonBuilder[];
   @Output() closePanel = new EventEmitter<void>();
 
   private teambuilderService = inject(TeambuilderService);
+  private saveTeamSubject = new Subject<void>();
+  private destroy$ = new Subject<void>();
+  LOCAL_STORAGE_TEAM_KEY = 'matchup_teambuilder';
 
   tab: Tab = 'add';
   view: PokemonBuilderView = 'details';
 
   ngOnInit() {
-    this.addPokemonToTeamAndSelect(this.matchupData.summary[0].team[0]);
+    this.saveTeamSubject
+      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .subscribe(() => this.performSaveTeam());
+
+    this.loadTeam();
   }
 
-  ngOnDestroy() {}
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.saveTeamSubject.complete();
+  }
 
-  addPokemonToTeamAndSelect(pokemon: DraftPokemon) {
-    const teamIndex = this.team.length;
+  loadTeam() {
+    this.team = [];
+    const existing = localStorage.getItem(this.LOCAL_STORAGE_TEAM_KEY);
+    if (existing) {
+      const teamData = JSON.parse(existing);
+      if (teamData[this.matchupId]) {
+        const savedTeam = teamData[this.matchupId].team;
+        savedTeam.forEach((pokemonJson: PokemonJson) => {
+          this.teambuilderService
+            .getPokemonData(pokemonJson.id, this.matchupData.details.ruleset)
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((pokemonData) => {
+              this.team.push(PokemonBuilder.fromJson(pokemonJson, pokemonData));
+            });
+        });
+      }
+    }
+  }
+
+  addPokemonToTeam(
+    pokemon: DraftPokemon,
+    then: ((pokemon: Pokemon<PokemonData>) => void) | null = null,
+  ) {
     this.teambuilderService
       .getPokemonData(pokemon.id, this.matchupData.details.ruleset)
+      .pipe(takeUntil(this.destroy$))
       .subscribe((pokemonData) => {
         const pokemonSet = PokemonBuilder.fromTeambuilder(pokemonData, {
           shiny: pokemon.shiny,
@@ -64,8 +104,16 @@ export class MatchupTeambuilderComponent implements OnInit, OnDestroy {
           level: this.matchupData.details.level,
         });
         this.team.push(pokemonSet);
-        this.tab = teamIndex;
+        this.saveTeamSubject.next();
+        if (then) then(pokemonData);
       });
+  }
+
+  addPokemonToTeamAndSelect(pokemon: DraftPokemon) {
+    const teamIndex = this.team.length;
+    this.addPokemonToTeam(pokemon, () => {
+      this.tab = teamIndex;
+    });
   }
 
   isPokemonInTeam(pokemon: DraftPokemon): boolean {
@@ -89,6 +137,7 @@ export class MatchupTeambuilderComponent implements OnInit, OnDestroy {
   deletePokemon(index: number, event: Event) {
     event.stopPropagation();
     this.team.splice(index, 1);
+    this.saveTeamSubject.next();
 
     // Adjust active tab if needed
     if (typeof this.tab === 'number') {
@@ -98,5 +147,22 @@ export class MatchupTeambuilderComponent implements OnInit, OnDestroy {
         this.tab = 'add';
       }
     }
+  }
+
+  formatTeamForStorage(): {} {
+    return {
+      team: this.team.map((pokemonSet) => pokemonSet.toJson()),
+    };
+  }
+
+  saveTeam() {
+    this.saveTeamSubject.next();
+  }
+
+  private performSaveTeam() {
+    const existing = localStorage.getItem(this.LOCAL_STORAGE_TEAM_KEY);
+    const teamData = existing ? JSON.parse(existing) : {};
+    teamData[this.matchupId] = this.formatTeamForStorage();
+    localStorage.setItem(this.LOCAL_STORAGE_TEAM_KEY, JSON.stringify(teamData));
   }
 }
