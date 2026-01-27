@@ -8,9 +8,22 @@ import {
   Validators,
 } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { map, Subject, take, takeUntil } from 'rxjs';
+import { HttpEventType, HttpResponse } from '@angular/common/http';
+import {
+  catchError,
+  finalize,
+  map,
+  of,
+  Subject,
+  switchMap,
+  take,
+  takeUntil,
+  tap,
+  throwError,
+} from 'rxjs';
 import { AuthService } from '../../services/auth0.service';
 import { LeagueZoneService } from '../../services/leagues/league-zone.service';
+import { UploadService } from '../../services/upload.service';
 import { LoadingComponent } from '../../images/loading/loading.component';
 import { League } from '../league.interface';
 import { getLogoUrl } from '../league.util';
@@ -30,6 +43,7 @@ import { getLogoUrl } from '../league.util';
 export class LeagueSignUpComponent implements OnInit, OnDestroy {
   private fb = inject(FormBuilder);
   private leagueService = inject(LeagueZoneService);
+  private uploadService = inject(UploadService);
   private authService = inject(AuthService);
   private destroy$ = new Subject<void>();
 
@@ -40,6 +54,9 @@ export class LeagueSignUpComponent implements OnInit, OnDestroy {
   signUpDeadline?: Date;
   logoFile: File | null = null;
   logoFileName: string = '';
+  isUploading = false;
+  uploadError: string | null = null;
+  relatedEntityId: string | null = null;
 
   leagueInfo: League.LeagueInfo | null = null;
 
@@ -111,16 +128,117 @@ export class LeagueSignUpComponent implements OnInit, OnDestroy {
   onSubmit() {
     const leagueKey = this.leagueService.leagueKey();
     if (this.signupForm.valid && leagueKey) {
-      this.leagueService.signUp(this.signupForm.value).subscribe((response) => {
-        this.added = true;
-        localStorage.setItem(
-          leagueKey,
-          this.signupForm.get('discordName')?.value ?? '',
-        );
+      this.leagueService.signUp(this.signupForm.value).subscribe({
+        next: (response: any) => {
+          this.added = true;
+          this.relatedEntityId = response.userId;
+          localStorage.setItem(
+            leagueKey,
+            this.signupForm.get('discordName')?.value ?? '',
+          );
+
+          // Upload logo if one was selected
+          if (this.logoFile) {
+            this.uploadLogo();
+          }
+        },
+        error: (error) => {
+          console.error('Sign up failed:', error);
+        },
       });
     } else {
       console.error('Sign Up form is not valid: ', this.signupForm.errors);
     }
+  }
+
+  private uploadLogo(): void {
+    if (!this.logoFile) {
+      console.warn('uploadLogo called but no file selected');
+      return;
+    }
+
+    if (!this.relatedEntityId) {
+      this.uploadError = 'Cannot upload logo: User ID not available';
+      console.error('uploadLogo called but relatedEntityId is null');
+      return;
+    }
+
+    this.isUploading = true;
+    this.uploadError = null;
+
+    const file = this.logoFile;
+    let uploadedFileKey: string | null = null;
+
+    console.log(`Starting logo upload for user: ${this.relatedEntityId}`);
+
+    this.leagueService
+      .getLeagueUploadPresignedUrl(file.name, file.type || 'image/png')
+      .pipe(
+        tap((response) => {
+          console.log('Received presigned URL response:', {
+            hasUrl: !!response.url,
+            key: response.key,
+          });
+          uploadedFileKey = response.key;
+        }),
+        switchMap((response) => {
+          if (!response || !response.url) {
+            throw new Error('Failed to get pre-signed URL from server');
+          }
+          console.log('Uploading to S3...');
+          return this.uploadService.uploadToS3(response.url, file);
+        }),
+        // Filter out progress events and only process HttpResponse
+        switchMap((s3Response) => {
+          if (s3Response.type === HttpEventType.UploadProgress) {
+            // Skip progress events
+            return of(null);
+          } else if (s3Response instanceof HttpResponse) {
+            if (s3Response.ok && uploadedFileKey) {
+              console.log('S3 upload successful, confirming with backend...');
+              return of(uploadedFileKey);
+            } else {
+              throw new Error(
+                `S3 upload failed with status: ${s3Response.status}`,
+              );
+            }
+          }
+          return of(null);
+        }),
+        // Only confirm when we have a fileKey (skip null values from progress events)
+        switchMap((fileKey) => {
+          if (!fileKey) return of(null);
+
+          return this.leagueService.confirmUploadWithRelatedEntity(
+            fileKey,
+            file.size,
+            file.type || 'image/png',
+            this.relatedEntityId!,
+          );
+        }),
+        catchError((error) => {
+          this.uploadError = error?.message || 'Upload failed';
+          console.error('Logo upload error:', error);
+          return throwError(() => error);
+        }),
+        finalize(() => {
+          this.isUploading = false;
+        }),
+        takeUntil(this.destroy$),
+      )
+      .subscribe({
+        next: (response) => {
+          if (response) {
+            console.log('Logo uploaded and confirmed successfully:', response);
+            // Upload completed successfully
+          }
+        },
+        error: (error) => {
+          console.error('Upload process failed:', error);
+          this.uploadError =
+            error?.message || 'Upload failed. Please try again.';
+        },
+      });
   }
 
   onLogoUpload(event: Event): void {
@@ -128,8 +246,6 @@ export class LeagueSignUpComponent implements OnInit, OnDestroy {
     if (input.files && input.files.length > 0) {
       this.logoFile = input.files[0];
       this.logoFileName = this.logoFile.name;
-      // TODO: Add logic to upload the logo file or include it in the form submission
-      console.log('Logo file selected:', this.logoFile.name);
     } else {
       this.logoFile = null;
       this.logoFileName = '';

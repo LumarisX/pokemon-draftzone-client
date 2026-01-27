@@ -3,19 +3,13 @@ import { NavigationEnd, Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { filter, map, mergeMap } from 'rxjs/operators';
 import { getRandomPokemon } from '../../data/namedex';
-import {
-  Coverage,
-  MoveChart,
-  Summary,
-  TypeChart,
-} from '../../drafts/matchup-overview/matchup-interface';
 import { Pokemon } from '../../interfaces/pokemon';
 import { LeagueTierGroup } from '../../interfaces/tier-pokemon.interface';
 import { defenseData } from '../../league-zone/league-ghost';
 import { League } from '../../league-zone/league.interface';
 import { ApiService } from '../api.service';
+import { UploadService } from '../upload.service';
 import { WebSocketService } from '../ws.service';
-import { DraftPokemon } from '../../interfaces/draft';
 
 const ROOTPATH = 'leagues';
 
@@ -24,6 +18,7 @@ const ROOTPATH = 'leagues';
 })
 export class LeagueZoneService {
   private apiService = inject(ApiService);
+  private uploadService = inject(UploadService);
   private router = inject(Router);
   private webSocketService = inject(WebSocketService);
 
@@ -425,7 +420,11 @@ export class LeagueZoneService {
   // ];
 
   signUp(signupData: object) {
-    return this.apiService.post(`leagues/pdbls2/signup`, true, signupData);
+    return this.apiService.post(
+      `leagues/${this.leagueKey()}/signup`,
+      true,
+      signupData,
+    );
   }
 
   getLeagueInfo(): Observable<League.LeagueInfo> {
@@ -469,5 +468,34 @@ export class LeagueZoneService {
       `${ROOTPATH}/${this.leagueKey()}/teams/${teamId}`,
       true,
     );
+  }
+
+  getLeagueUploadPresignedUrl(
+    filename: string,
+    contentType: string,
+  ): Observable<{ url: string; key: string }> {
+    return this.uploadService.getUploadLink(filename, contentType);
+  }
+
+  confirmUpload(fileKey: string, fileSize: number, contentType: string) {
+    return this.uploadService.confirmUploadWithBackend(
+      fileKey,
+      fileSize,
+      contentType,
+    );
+  }
+
+  confirmUploadWithRelatedEntity(
+    fileKey: string,
+    fileSize: number,
+    contentType: string,
+    relatedEntityId?: string,
+  ) {
+    return this.apiService.post('file/confirm-upload', true, {
+      fileKey,
+      fileSize,
+      contentType,
+      relatedEntityId,
+    });
   }
 }

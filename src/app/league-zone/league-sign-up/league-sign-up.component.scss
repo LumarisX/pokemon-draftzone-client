@@ -164,6 +164,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--pdz-space-xs);
+  min-width: 0;
 
   &__label {
     @include apply-typography(label-sm);

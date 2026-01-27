@@ -4,12 +4,16 @@
     <div class="hero-section">
       <div class="logo-container">
         <img
-          [src]="leagueInfo.logo ? getLogoUrl(leagueInfo.logo) : '../../assets/images/battle-zone/pdbls2.png'"
+          [src]="
+            leagueInfo.logo
+              ? getLogoUrl(leagueInfo.logo)
+              : '../../assets/images/battle-zone/pdbls2.png'
+          "
           [alt]="leagueInfo.name + ' logo'"
           class="league-logo"
         />
       </div>
-      
+
       <div class="league-info">
         <h1 class="league-title">{{ leagueInfo.name }}</h1>
         @if (leagueInfo.description) {
@@ -17,7 +21,7 @@
             {{ leagueInfo.description }}
           </p>
         }
-        
+
         <div class="league-details">
           <div class="detail-item">
             <span class="detail-label">Format</span>
@@ -39,17 +43,27 @@
         [disabled]="isSignUpClosed()"
         [class.is-disabled]="isSignUpClosed()"
       >
-        <span class="button__text">{{ isSignUpClosed() ? 'Sign Up Closed' : 'Sign Up' }}</span>
+        <span class="button__text">{{
+          isSignUpClosed() ? "Sign Up Closed" : "Sign Up"
+        }}</span>
         @if (!isSignUpClosed()) {
           <span class="button__subtext">
-            Closes {{ leagueInfo.signUpDeadline | date: 'MMM d' }}
+            Closes {{ leagueInfo.signUpDeadline | date: "MMM d" }}
           </span>
         }
       </button>
 
+      <button
+        [routerLink]="['/leagues', leagueInfo.leagueKey, 'rules']"
+        class="button button--primary"
+      >
+        <span class="button__text"> Rules </span>
+        <span class="button__subtext"> Read them!</span>
+      </button>
+
       @if (leagueInfo.discord) {
         <a
-          [href]="'https://discord.gg/'+leagueInfo.discord"
+          [href]="'https://discord.gg/' + leagueInfo.discord"
           target="_blank"
           rel="noopener noreferrer"
           class="button button--discord"
@@ -67,7 +81,11 @@
         <div class="divisions-section__grid">
           @for (division of leagueInfo.divisions; track division.divisionKey) {
             <button
-              [routerLink]="['/leagues', leagueInfo.leagueKey, division.divisionKey]"
+              [routerLink]="[
+                '/leagues',
+                leagueInfo.leagueKey,
+                division.divisionKey,
+              ]"
               class="button button--division"
             >
               <span class="button__text">{{ division.name }}</span>

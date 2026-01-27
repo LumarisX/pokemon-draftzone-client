@@ -16,11 +16,11 @@ export class UploadService {
   }`;
 
   getUploadLink(
-    filename: string,
+    fileName: string,
     contentType: string,
   ): Observable<{ url: string; key: string }> {
     return this.apiService.get(`file/league-upload`, true, {
-      filename,
+      fileName,
       contentType,
     });
   }
