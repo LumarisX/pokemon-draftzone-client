@@ -57,6 +57,7 @@ export class LeagueSignUpComponent implements OnInit, OnDestroy {
   isUploading = false;
   uploadError: string | null = null;
   relatedEntityId: string | null = null;
+  leagueId: string | null = null;
 
   leagueInfo: League.LeagueInfo | null = null;
 
@@ -132,6 +133,7 @@ export class LeagueSignUpComponent implements OnInit, OnDestroy {
         next: (response: any) => {
           this.added = true;
           this.relatedEntityId = response.userId;
+          this.leagueId = response.leagueId;
           localStorage.setItem(
             leagueKey,
             this.signupForm.get('discordName')?.value ?? '',
@@ -214,6 +216,7 @@ export class LeagueSignUpComponent implements OnInit, OnDestroy {
             file.size,
             file.type || 'image/png',
             this.relatedEntityId!,
+            this.leagueId!,
           );
         }),
         catchError((error) => {

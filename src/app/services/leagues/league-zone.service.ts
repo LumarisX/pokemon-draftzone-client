@@ -489,13 +489,15 @@ export class LeagueZoneService {
     fileKey: string,
     fileSize: number,
     contentType: string,
-    relatedEntityId?: string,
+    relatedEntityId: string,
+    leagueId?: string,
   ) {
     return this.apiService.post('file/confirm-upload', true, {
       fileKey,
       fileSize,
       contentType,
       relatedEntityId,
+      leagueId,
     });
   }
 }
