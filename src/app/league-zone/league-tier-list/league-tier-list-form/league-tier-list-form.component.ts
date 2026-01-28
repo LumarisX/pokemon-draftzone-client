@@ -69,11 +69,13 @@ export class LeagueTierListFormComponent implements OnInit, OnDestroy {
 
   // State
   tiers = signal<EditableTier[] | undefined>(undefined);
-  nullTier = signal<EditableTier | undefined>(undefined);
+  untiered = signal<EditableTier | undefined>(undefined);
   sortBy = signal<SortOption>('BST');
   searchText = signal<string>('');
   isLoading = signal<boolean>(false);
   hasUnsavedChanges = signal<boolean>(false);
+
+  UNTIERED_TIER_NAME = 'Untiered';
 
   // Multi-select state
   selectedPokemonIds = signal<Set<string>>(new Set());
@@ -102,13 +104,14 @@ export class LeagueTierListFormComponent implements OnInit, OnDestroy {
             (group) => group.tiers,
           );
 
-          // Separate Null tier (trash) from regular tiers
+          // Separate Untiered tier from regular tiers
           const nullTierIndex = flatTiers.findIndex(
-            (tier) => tier.name.toLowerCase() === 'null',
+            (tier) =>
+              tier.name.toLowerCase() === this.UNTIERED_TIER_NAME.toLowerCase(),
           );
 
           if (nullTierIndex !== -1) {
-            this.nullTier.set(flatTiers[nullTierIndex] as EditableTier);
+            this.untiered.set(flatTiers[nullTierIndex] as EditableTier);
             flatTiers.splice(nullTierIndex, 1);
           }
 
@@ -197,15 +200,15 @@ export class LeagueTierListFormComponent implements OnInit, OnDestroy {
     if (!tiers) return -1;
 
     // Check if it's the null tier
-    if (tier === this.nullTier()) {
+    if (tier === this.untiered()) {
       return tiers.length; // Null tier is conceptually after all regular tiers
     }
 
     return tiers.indexOf(tier);
   }
 
-  isNullTier(tier: EditableTier): boolean {
-    return tier === this.nullTier();
+  isUntiered(tier: EditableTier): boolean {
+    return tier === this.untiered();
   }
 
   undoLastMove(pokemon: EditTierPokemon): void {
@@ -213,16 +216,16 @@ export class LeagueTierListFormComponent implements OnInit, OnDestroy {
 
     const lastMove = pokemon.moveHistory.pop()!;
     const tiers = this.tiers();
-    const nullTier = this.nullTier();
+    const untier = this.untiered();
     if (!tiers) return;
 
     const fromTier =
       lastMove.toTierIndex >= tiers.length
-        ? nullTier
+        ? untier
         : tiers[lastMove.toTierIndex];
     const toTier =
       lastMove.fromTierIndex >= tiers.length
-        ? nullTier
+        ? untier
         : tiers[lastMove.fromTierIndex];
 
     if (!fromTier || !toTier) return;
@@ -333,7 +336,7 @@ export class LeagueTierListFormComponent implements OnInit, OnDestroy {
     if (selectedIds.size === 0) return;
 
     const tiers = this.tiers();
-    const nullTier = this.nullTier();
+    const nullTier = this.untiered();
     if (!tiers) return;
 
     const allTiers = nullTier ? [...tiers, nullTier] : tiers;
@@ -480,23 +483,62 @@ export class LeagueTierListFormComponent implements OnInit, OnDestroy {
     });
 
     this.tiers.set([...tiers]);
-    this.snackBar.open('All tiers sorted (excluding Null)', undefined, {
-      duration: 2000,
-    });
+    this.snackBar.open(
+      `All tiers sorted (excluding ${this.UNTIERED_TIER_NAME})`,
+      undefined,
+      {
+        duration: 2000,
+      },
+    );
   }
 
   saveTierList(): void {
     this.isLoading.set(true);
     this.snackBar.open('Saving tier list...', undefined);
 
-    // TODO: Implement actual save to API
-    setTimeout(() => {
+    const tiers = this.tiers();
+    const nullTier = this.untiered();
+    if (!tiers) {
       this.isLoading.set(false);
-      this.hasUnsavedChanges.set(false);
-      this.snackBar.open('Tier list saved successfully', undefined, {
-        duration: 3000,
+      this.snackBar.open('No tier data to save', 'Close', { duration: 3000 });
+      return;
+    }
+
+    // Combine regular tiers with null tier for saving
+    const allTiers = nullTier ? [...tiers, nullTier] : tiers;
+
+    // Convert to server format
+    const tierData = allTiers.map((tier) => ({
+      name: tier.name,
+      pokemon: tier.pokemon.map((p) => ({
+        id: p.id,
+        name: p.name,
+      })),
+    }));
+
+    this.leagueService
+      .saveTierListEdit(tierData)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          this.isLoading.set(false);
+          this.hasUnsavedChanges.set(false);
+          this.snackBar.open(
+            response.message || 'Tier list saved successfully',
+            undefined,
+            { duration: 3000 },
+          );
+        },
+        error: (err) => {
+          this.isLoading.set(false);
+          this.snackBar.open(
+            'Failed to save tier list: ' + (err.error?.message || err.message),
+            'Close',
+            { duration: 5000 },
+          );
+          console.error('Failed to save tier list:', err);
+        },
       });
-    }, 1000);
   }
 
   resetChanges(): void {

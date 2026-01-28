@@ -12525,6 +12525,15 @@ export const Namedex: {
       psgh: { id: 's32769', flip: true },
     },
   },
+  terapagosstellar: {
+    name: ['Terapagos-Stellar'],
+    sources: {
+      ps: { id: 'terapagos-Stellar', flip: true },
+      serebii: { id: '1024-s' },
+      pmd: { id: '1024/0002' },
+      psgh: { id: 's32770', flip: true },
+    },
+  },
   pecharunt: {
     name: ['Pecharunt'],
     sources: {

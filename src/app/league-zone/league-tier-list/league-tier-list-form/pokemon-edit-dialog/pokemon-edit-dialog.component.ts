@@ -108,8 +108,6 @@ export class PokemonEditDialogComponent implements OnInit {
   }
 
   get abilityNames(): string[] {
-    return (
-      this.data.pokemon.abilities || ['Unnerve', 'Levitate', 'Volt Absorb']
-    );
+    return this.data.pokemon.abilities || [];
   }
 }

@@ -122,6 +122,19 @@ export class LeagueZoneService {
     }>(`${ROOTPATH}/${this.leagueKey()}/tier-list/edit`, true, params);
   }
 
+  saveTierListEdit(
+    tiers: Array<{
+      name: string;
+      pokemon: Array<{ id: string; name: string }>;
+    }>,
+  ) {
+    return this.apiService.post<{ success: boolean; message: string }>(
+      `${ROOTPATH}/${this.leagueKey()}/tier-list/edit`,
+      true,
+      { tiers },
+    );
+  }
+
   getPicks() {
     return this.apiService.get<League.DraftTeam[]>(
       `${ROOTPATH}/${this.leagueKey()}/divisions/${this.divisionKey()}/picks`,

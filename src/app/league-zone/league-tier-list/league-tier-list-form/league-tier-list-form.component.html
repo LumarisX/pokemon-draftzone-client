@@ -205,38 +205,38 @@
       </div>
 
       <!-- Null Tier (Trash - Fixed on Right) -->
-      @if (nullTier()) {
+      @if (untiered()) {
         <div class="null-tier-container">
           <div class="tier tier--null">
             <!-- Tier Header -->
             <div class="tier__header tier__header--null">
               <mat-icon class="tier__trash-icon">delete</mat-icon>
-              <span class="tier__name">{{ nullTier()!.name }}</span>
+              <span class="tier__name">{{ untiered()!.name }}</span>
             </div>
 
             <!-- Pokemon List (Drop Zone) -->
             <div
               class="tier__pokemon-list"
               cdkDropList
-              [cdkDropListData]="nullTier()!"
+              [cdkDropListData]="untiered()!"
               (cdkDropListDropped)="onDrop($event, 0, true)"
               cdkDropListOrientation="vertical"
               [class.tier__pokemon-list--empty]="
-                nullTier()!.pokemon.length === 0
+                untiered()!.pokemon.length === 0
               "
             >
-              @if (nullTier()!.pokemon.length === 0) {
+              @if (untiered()!.pokemon.length === 0) {
                 <span>Drop Pokemon here to remove from tiers</span>
               }
 
-              @for (pokemon of nullTier()!.pokemon; track pokemon.id) {
+              @for (pokemon of untiered()!.pokemon; track pokemon.id) {
                 @if (filterPokemon(pokemon)) {
                   <div
                     class="pokemon-entry"
                     cdkDrag
                     [cdkDragData]="pokemon"
                     (cdkDragStarted)="onDragStarted()"
-                    (click)="onPokemonClick(pokemon, nullTier()!, $event)"
+                    (click)="onPokemonClick(pokemon, untiered()!, $event)"
                     [class.pokemon-entry--has-moves]="
                       pokemon.moveHistory?.length
                     "
@@ -280,7 +280,7 @@
                     <div class="pokemon-entry__actions">
                       <button
                         class="icon-button icon-button--edit"
-                        (click)="onEditPokemon(pokemon, nullTier()!, $event)"
+                        (click)="onEditPokemon(pokemon, untiered()!, $event)"
                         matTooltip="Edit Pokemon"
                       >
                         <mat-icon>edit</mat-icon>
