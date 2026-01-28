@@ -1,4 +1,3 @@
-
 import { Component, OnInit, inject } from '@angular/core';
 import {
   FormBuilder,
@@ -23,7 +22,7 @@ import { EditTierPokemon } from '../league-tier-list-form.component';
 import {
   LeagueTier,
   LeagueTierGroup,
-} from '../../../league-sign-up/league-sign-up.component';
+} from '../../../../interfaces/tier-pokemon.interface';
 
 export interface PokemonEditDialogData {
   pokemon: EditTierPokemon &
@@ -49,8 +48,8 @@ export interface PokemonEditDialogData {
     MatIconModule,
     SpriteComponent,
     SlideToggleComponent,
-    MatCheckboxModule
-],
+    MatCheckboxModule,
+  ],
   templateUrl: './pokemon-edit-dialog.component.html',
   styleUrls: ['./pokemon-edit-dialog.component.scss'],
 })

@@ -112,6 +112,16 @@ export class LeagueZoneService {
     }>(`${ROOTPATH}/${this.leagueKey()}/tier-list`, false, params);
   }
 
+  getTierListEdit() {
+    const params: { [key: string]: string } = {};
+    const divisionKey = this.divisionKey();
+    if (divisionKey) params['division'] = divisionKey;
+    return this.apiService.get<{
+      tierList: LeagueTierGroup[];
+      divisions: { [key: string]: { pokemonId: string; teamId: string }[] };
+    }>(`${ROOTPATH}/${this.leagueKey()}/tier-list/edit`, true, params);
+  }
+
   getPicks() {
     return this.apiService.get<League.DraftTeam[]>(
       `${ROOTPATH}/${this.leagueKey()}/divisions/${this.divisionKey()}/picks`,
@@ -429,10 +439,6 @@ export class LeagueZoneService {
 
   getLeagueInfo(): Observable<League.LeagueInfo> {
     return this.apiService.get(`leagues/${this.leagueKey()}/info`, false);
-  }
-
-  getTiers(): Observable<LeagueTierGroup[]> {
-    return this.apiService.get(`battlezone/pdbl/tiers`, false);
   }
 
   getDetails(): Observable<{

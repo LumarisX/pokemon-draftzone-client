@@ -177,12 +177,4 @@ export class LeagueTierListService {
     if (banned.moves && banned.moves.length > 0) bans.push(...banned.moves);
     return 'Banned: ' + bans.join(', ');
   }
-
-  // isDrafted(pokemonId: string): boolean {
-  //   if (!this.selectedDivision.value) return false;
-  //   const drafted = this.drafted();
-  //   return drafted[this.selectedDivision.value].some(
-  //     (drafted) => drafted.pokemonId === pokemonId,
-  //   );
-  // }
 }

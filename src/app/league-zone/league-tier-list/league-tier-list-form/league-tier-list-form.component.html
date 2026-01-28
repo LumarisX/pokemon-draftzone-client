@@ -1,159 +1,310 @@
-<div class="tier-form" cdkDropListGroup>
-  <div class="tier-form-header">
-    <div>Move To</div>
-    <div class="flex">
-      <div>Untiered</div>
+<div class="tier-form">
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <h2 class="toolbar__title">Edit Tier List</h2>
 
-      @for (tierGroup of tierGroups; track tierGroup) {
-        @for (tier of tierGroup.tiers; track tier) {
-          <div>{{ tier.name }}</div>
-        }
-      }
-    </div>
-    <div>Search</div>
-  </div>
-  @if (tierGroups) {
-    <div class="tier-main">
-      <div class="untiered-container">
-        <div class="untiered-header header-label">
-          <div class="untiered-label">Untiered</div>
-        </div>
-        <div
-          class="untiers"
-          cdkDropList
-          [cdkDropListData]="tierGroups[3].tiers[3]"
-          (cdkDropListDropped)="drop($event)"
+    @if (hasUnsavedChanges()) {
+      <div class="unsaved-indicator">
+        <mat-icon>edit</mat-icon>
+        <span>Unsaved changes</span>
+      </div>
+    }
+
+    @if (selectedPokemonIds().size > 0) {
+      <div class="selection-indicator">
+        <mat-icon>check_box</mat-icon>
+        <span>{{ selectedPokemonIds().size }} selected</span>
+        <button
+          class="icon-button"
+          (click)="clearSelection()"
+          matTooltip="Clear selection"
         >
-          @for (pokemon of tierGroups[3].tiers[3].pokemon; track pokemon) {
-            <div
-              cdkDrag
-              [cdkDragStartDelay]="500"
-              (mousedown)="onMouseDown()"
-              (mouseup)="onMouseUp(pokemon)"
-              (cdkDragStarted)="onDragStarted()"
-              class="tier-entry"
-              [ngClass]="{ selected: pokemon.selected }"
-            >
-              <div *cdkDragPlaceholder class="drag-placeholder"></div>
-              <div class="entry-sprite">
-                <pdz-sprite [pid]="pokemon.id"></pdz-sprite>
-              </div>
-              <div class="entry-name">
-                {{ pokemon.name }}
-              </div>
-              <div class="button-container">
-                @if (pokemon.orgTier?.length) {
-                  <button class="icon-button">
-                    <mat-icon (click)="undoMove(pokemon)">undo</mat-icon>
-                  </button>
-                }
-                <button class="icon-button">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    }
+
+    <div class="toolbar__spacer"></div>
+
+    <div class="toolbar__search">
+      <mat-icon>search</mat-icon>
+      <input
+        type="text"
+        placeholder="Search Pokemon..."
+        [(ngModel)]="searchText"
+        [ngModelOptions]="{ updateOn: 'change' }"
+      />
+    </div>
+
+    <div class="toolbar__actions">
+      <button
+        class="action-button"
+        (click)="sortAllTiers()"
+        matTooltip="Sort all tiers by current sort option"
+      >
+        <mat-icon>sort</mat-icon>
+        Sort All
+      </button>
+
+      <button
+        class="action-button"
+        [disabled]="!hasUnsavedChanges()"
+        (click)="resetChanges()"
+        matTooltip="Discard unsaved changes"
+      >
+        <mat-icon>refresh</mat-icon>
+        Reset
+      </button>
+
+      <button
+        class="action-button action-button--primary"
+        [disabled]="!hasUnsavedChanges()"
+        (click)="saveTierList()"
+        matTooltip="Save changes to tier list"
+      >
+        <mat-icon>save</mat-icon>
+        Save
+      </button>
+    </div>
+  </div>
+
+  <!-- Main tier list editor -->
+  <div class="tier-main" cdkDropListGroup>
+    @if (isLoading()) {
+      <pdz-loading></pdz-loading>
+    } @else if (tiers()) {
+      <!-- Regular Tiers (scrollable) -->
+      <div class="tiers-container">
+        @for (tier of tiers(); track $index; let tierIndex = $index) {
+          <div class="tier">
+            <!-- Tier Header -->
+            <div class="tier__header">
+              <span class="tier__name">{{ tier.name }}</span>
+              <div class="tier__actions">
+                <button
+                  class="icon-button"
+                  (click)="sortTier(tier)"
+                  matTooltip="Sort this tier"
+                >
+                  <mat-icon>sort</mat-icon>
+                </button>
+                <button
+                  class="icon-button"
+                  (click)="editTier(tier)"
+                  matTooltip="Edit tier"
+                >
                   <mat-icon>edit</mat-icon>
+                </button>
+                <button
+                  class="icon-button icon-button--delete"
+                  (click)="deleteTier(tierIndex)"
+                  matTooltip="Delete tier"
+                >
+                  <mat-icon>delete</mat-icon>
                 </button>
               </div>
             </div>
-          }
-        </div>
-      </div>
-      <div class="tier-wrapper">
-        <div class="tier-container">
-          @for (group of tierGroups; track group) {
-            <div class="tier-group">
-              @if (group.label !== undefined) {
-                <div class="tier-group-label header-label">
-                  <mat-icon class="drag-icon">drag_indicator</mat-icon>
-                  {{ group.label }}
-                  <mat-icon class="edit-icon" (click)="editTierGroup(group)"
-                    >edit</mat-icon
-                  >
-                </div>
+
+            <!-- Pokemon List (Drop Zone) -->
+            <div
+              class="tier__pokemon-list"
+              cdkDropList
+              [cdkDropListData]="tier"
+              (cdkDropListDropped)="onDrop($event, tierIndex)"
+              cdkDropListOrientation="vertical"
+              [class.tier__pokemon-list--empty]="tier.pokemon.length === 0"
+            >
+              @if (tier.pokemon.length === 0) {
+                <span>Drag Pokemon here</span>
               }
-              <div class="tier-entry-container">
-                @for (tier of group.tiers; track tier) {
+
+              @for (pokemon of tier.pokemon; track pokemon.id) {
+                @if (filterPokemon(pokemon)) {
                   <div
-                    class="tier"
-                    cdkDropList
-                    [cdkDropListData]="tier"
-                    (cdkDropListDropped)="drop($event)"
+                    class="pokemon-entry"
+                    cdkDrag
+                    [cdkDragData]="pokemon"
+                    (cdkDragStarted)="onDragStarted()"
+                    (click)="onPokemonClick(pokemon, tier, $event)"
+                    [class.pokemon-entry--has-moves]="
+                      pokemon.moveHistory?.length
+                    "
+                    [class.pokemon-entry--selected]="isPokemonSelected(pokemon)"
                   >
-                    <div class="tier-label header-label">
-                      <mat-icon class="drag-icon">drag_indicator</mat-icon>
-                      {{ tier.name }}
-                      <mat-icon class="edit-icon" (click)="editTier(tier)"
-                        >edit</mat-icon
-                      >
-                    </div>
-                    <div class="tier-entries">
-                      @for (pokemon of tier.pokemon; track pokemon) {
-                        <div
-                          cdkDrag
-                          matRipple
-                          [matRippleCentered]="true"
-                          [matRippleRadius]="40"
-                          [matRippleDisabled]="false"
-                          [cdkDragStartDelay]="500"
-                          (mousedown)="onMouseDown()"
-                          (mouseup)="onMouseUp(pokemon)"
-                          (cdkDragStarted)="onDragStarted()"
-                          class="tier-entry"
-                          [ngClass]="{
-                            selected: pokemon.selected,
-                            dragStarted: dragStarted,
-                          }"
-                        >
-                          <div
-                            *cdkDragPlaceholder
-                            class="drag-placeholder"
-                          ></div>
-                          <div class="entry-sprite">
-                            <pdz-sprite [pid]="pokemon.id"></pdz-sprite>
+                    <div *cdkDragPlaceholder class="cdk-drag-placeholder"></div>
+
+                    @if (isPokemonSelected(pokemon)) {
+                      <div class="pokemon-entry__select-indicator">
+                        <mat-icon>check_circle</mat-icon>
+                      </div>
+                    }
+
+                    @if (
+                      isPokemonSelected(pokemon) &&
+                      selectedPokemonIds().size > 1
+                    ) {
+                      <div *cdkDragPreview class="multi-drag-preview">
+                        <div class="pokemon-entry">
+                          <div class="pokemon-entry__sprite">
+                            <pdz-sprite [pokemon]="pokemon"></pdz-sprite>
                           </div>
-                          <div class="entry-name">
+                          <span class="pokemon-entry__name">
                             {{ pokemon.name }}
-                          </div>
-                          <div class="button-container">
-                            @if (pokemon.orgTier?.length) {
-                              <button class="icon-button">
-                                <mat-icon
-                                  (click)="
-                                    undoMove(pokemon); $event.stopPropagation()
-                                  "
-                                  >undo</mat-icon
-                                >
-                              </button>
-                            }
-                            <button class="icon-button">
-                              <mat-icon
-                                (click)="
-                                  editPokemon(pokemon, tier);
-                                  $event.stopPropagation()
-                                "
-                                >edit</mat-icon
-                              >
-                            </button>
+                          </span>
+                          <div class="multi-drag-badge">
+                            +{{ selectedPokemonIds().size - 1 }}
                           </div>
                         </div>
+                      </div>
+                    }
+
+                    <div class="pokemon-entry__sprite">
+                      <pdz-sprite [pokemon]="pokemon"></pdz-sprite>
+                    </div>
+
+                    <span class="pokemon-entry__name">
+                      {{ pokemon.name }}
+                    </span>
+
+                    <div class="pokemon-entry__actions">
+                      <button
+                        class="icon-button icon-button--edit"
+                        (click)="onEditPokemon(pokemon, tier, $event)"
+                        matTooltip="Edit Pokemon"
+                      >
+                        <mat-icon>edit</mat-icon>
+                      </button>
+
+                      @if (pokemon.moveHistory?.length) {
+                        <button
+                          class="icon-button icon-button--undo"
+                          (click)="
+                            undoLastMove(pokemon); $event.stopPropagation()
+                          "
+                          matTooltip="Undo last move"
+                        >
+                          <mat-icon>undo</mat-icon>
+                        </button>
                       }
                     </div>
                   </div>
                 }
-                <div class="new-tier">
-                  <div class="add-icon">
-                    <mat-icon>add</mat-icon>
-                  </div>
-                </div>
-              </div>
+              }
             </div>
-          }
-          <div class="new-tier-group">
-            <div class="add-icon">
-              <mat-icon>add</mat-icon>
+          </div>
+        }
+
+        <!-- Add Tier Button -->
+        <div
+          class="add-tier-button"
+          (click)="addNewTier()"
+          matTooltip="Add new tier"
+        >
+          <mat-icon>add</mat-icon>
+        </div>
+      </div>
+
+      <!-- Null Tier (Trash - Fixed on Right) -->
+      @if (nullTier()) {
+        <div class="null-tier-container">
+          <div class="tier tier--null">
+            <!-- Tier Header -->
+            <div class="tier__header tier__header--null">
+              <mat-icon class="tier__trash-icon">delete</mat-icon>
+              <span class="tier__name">{{ nullTier()!.name }}</span>
+            </div>
+
+            <!-- Pokemon List (Drop Zone) -->
+            <div
+              class="tier__pokemon-list"
+              cdkDropList
+              [cdkDropListData]="nullTier()!"
+              (cdkDropListDropped)="onDrop($event, 0, true)"
+              cdkDropListOrientation="vertical"
+              [class.tier__pokemon-list--empty]="
+                nullTier()!.pokemon.length === 0
+              "
+            >
+              @if (nullTier()!.pokemon.length === 0) {
+                <span>Drop Pokemon here to remove from tiers</span>
+              }
+
+              @for (pokemon of nullTier()!.pokemon; track pokemon.id) {
+                @if (filterPokemon(pokemon)) {
+                  <div
+                    class="pokemon-entry"
+                    cdkDrag
+                    [cdkDragData]="pokemon"
+                    (cdkDragStarted)="onDragStarted()"
+                    (click)="onPokemonClick(pokemon, nullTier()!, $event)"
+                    [class.pokemon-entry--has-moves]="
+                      pokemon.moveHistory?.length
+                    "
+                    [class.pokemon-entry--selected]="isPokemonSelected(pokemon)"
+                  >
+                    <div *cdkDragPlaceholder class="cdk-drag-placeholder"></div>
+
+                    @if (isPokemonSelected(pokemon)) {
+                      <div class="pokemon-entry__select-indicator">
+                        <mat-icon>check_circle</mat-icon>
+                      </div>
+                    }
+
+                    @if (
+                      isPokemonSelected(pokemon) &&
+                      selectedPokemonIds().size > 1
+                    ) {
+                      <div *cdkDragPreview class="multi-drag-preview">
+                        <div class="pokemon-entry">
+                          <div class="pokemon-entry__sprite">
+                            <pdz-sprite [pokemon]="pokemon"></pdz-sprite>
+                          </div>
+                          <span class="pokemon-entry__name">
+                            {{ pokemon.name }}
+                          </span>
+                          <div class="multi-drag-badge">
+                            +{{ selectedPokemonIds().size - 1 }}
+                          </div>
+                        </div>
+                      </div>
+                    }
+
+                    <div class="pokemon-entry__sprite">
+                      <pdz-sprite [pokemon]="pokemon"></pdz-sprite>
+                    </div>
+
+                    <span class="pokemon-entry__name">
+                      {{ pokemon.name }}
+                    </span>
+
+                    <div class="pokemon-entry__actions">
+                      <button
+                        class="icon-button icon-button--edit"
+                        (click)="onEditPokemon(pokemon, nullTier()!, $event)"
+                        matTooltip="Edit Pokemon"
+                      >
+                        <mat-icon>edit</mat-icon>
+                      </button>
+
+                      @if (pokemon.moveHistory?.length) {
+                        <button
+                          class="icon-button icon-button--undo"
+                          (click)="
+                            undoLastMove(pokemon); $event.stopPropagation()
+                          "
+                          matTooltip="Undo last move"
+                        >
+                          <mat-icon>undo</mat-icon>
+                        </button>
+                      }
+                    </div>
+                  </div>
+                }
+              }
             </div>
           </div>
         </div>
-      </div>
-    </div>
-  } @else {
-    <pdz-loading></pdz-loading>
-  }
+      }
+    }
+  </div>
 </div>

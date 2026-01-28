@@ -8,7 +8,7 @@ import {
 } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { LeagueTierGroup } from '../../../league-sign-up/league-sign-up.component';
+import { LeagueTierGroup } from '../../../../interfaces/tier-pokemon.interface';
 
 @Component({
   selector: 'pdz-tier-edit-dialog',

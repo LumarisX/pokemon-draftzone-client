@@ -4,10 +4,13 @@ import {
   ElementRef,
   EventEmitter,
   Input,
+  OnDestroy,
   OnInit,
   Output,
+  computed,
   effect,
   inject,
+  signal,
 } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -16,12 +19,27 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
+import { Subject } from 'rxjs';
+import { first, takeUntil } from 'rxjs/operators';
+import { Type, TYPES } from '../../data';
 import { LoadingComponent } from '../../images/loading/loading.component';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { Pokemon } from '../../interfaces/pokemon';
-import { TierPokemon } from '../../interfaces/tier-pokemon.interface';
-import { LeagueTierListService } from '../../services/leagues/league-tier-list.service';
+import {
+  LeagueTierGroup,
+  TierPokemon,
+} from '../../interfaces/tier-pokemon.interface';
+import { League } from '../../league-zone/league.interface';
+import { LeagueZoneService } from '../../services/leagues/league-zone.service';
+import { WebSocketService } from '../../services/ws.service';
 import { typeColor } from '../../util/styling';
+import {
+  makeBanString,
+  SORT_MAP,
+  SORT_OPTIONS,
+  SortOption,
+  typeInFilter,
+} from './tier-list.utils';
 
 @Component({
   selector: 'pdz-league-tier-list',
@@ -42,18 +60,53 @@ import { typeColor } from '../../util/styling';
   ],
   styleUrls: ['./league-tier-list.component.scss'],
 })
-export class LeagueTierListComponent implements OnInit {
+export class LeagueTierListComponent implements OnInit, OnDestroy {
   private elRef = inject(ElementRef);
+  private leagueService = inject(LeagueZoneService);
+  private wsService = inject(WebSocketService);
+  private destroy$ = new Subject<void>();
 
-  tierListService = inject(LeagueTierListService);
+  // State signals
+  drafted = signal<{ [division: string]: { pokemonId: string }[] }>({});
+  tierGroups = signal<LeagueTierGroup[] | undefined>(undefined);
+  sortBy = signal<SortOption>('BST');
+  selectedDivision = signal<string | undefined>(undefined);
+  searchText = signal<string>('');
+  selectedTypes = signal<Type[]>([]);
+  filteredTypes = signal<Type[]>([...TYPES]);
 
+  // Constants
+  readonly SortOptions = SORT_OPTIONS;
+  readonly types = TYPES;
+
+  // Computed signals
+  readonly sortedTierGroups = computed(() => {
+    const sortBy = this.sortBy();
+    const tierGroups = this.tierGroups();
+    if (!tierGroups) return null;
+
+    return tierGroups.map((group) => ({
+      ...group,
+      tiers: group.tiers.map((tier) => ({
+        ...tier,
+        pokemon: [...tier.pokemon].sort(SORT_MAP[sortBy]),
+      })),
+    }));
+  });
+
+  readonly draftedPokemonIds = computed(() => {
+    const selectedDivision = this.selectedDivision();
+    if (!selectedDivision) return new Set<string>();
+    const drafted = this.drafted();
+    return new Set(drafted[selectedDivision]?.map((p) => p.pokemonId) || []);
+  });
+
+  // Menu state
   _menu: 'sort' | 'filter' | 'division' | null = null;
 
   set menu(value: 'sort' | 'filter' | 'division' | null) {
     if (value === 'filter') {
-      this.tierListService.selectedTypes.set([
-        ...this.tierListService.filteredTypes(),
-      ]);
+      this.selectedTypes.set([...this.filteredTypes()]);
     }
     this._menu = value;
   }
@@ -63,7 +116,7 @@ export class LeagueTierListComponent implements OnInit {
   }
 
   get divisionNames() {
-    return Object.keys(this.tierListService.drafted());
+    return Object.keys(this.drafted());
   }
 
   get pokemonStats(): [string, number][] {
@@ -71,40 +124,95 @@ export class LeagueTierListComponent implements OnInit {
     return Object.entries(this.selectedPokemon.stats);
   }
 
+  // Utility function bindings
+  typeInFilter = (pokemon: TierPokemon) =>
+    typeInFilter(pokemon, this.filteredTypes(), this.searchText());
+
+  makeBanString = makeBanString;
+
   constructor() {
     effect(() => {
-      this.tierListService.selectedDivision();
+      this.selectedDivision();
       this.menu = null;
     });
   }
 
   ngOnInit(): void {
-    this.tierListService.initialize();
+    this.loadTierList();
+    this.subscribeToLiveUpdates();
   }
 
-  updateFilter(selected: boolean, index?: number) {
-    this.tierListService.updateFilter(selected, index);
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
-  applyFilter() {
-    this.tierListService.applyFilter();
+  private loadTierList(): void {
+    this.leagueService
+      .getTierList()
+      .pipe(first())
+      .subscribe((data) => {
+        this.drafted.set(data.divisions);
+        this.tierGroups.set(data.tierList);
+        const divisionNames = Object.keys(data.divisions);
+        if (divisionNames.length > 0) {
+          this.selectedDivision.set(divisionNames[0]);
+        }
+      });
+  }
+
+  private subscribeToLiveUpdates(): void {
+    this.wsService
+      .on<{
+        pick: {
+          division: string;
+          pokemon: League.LeaguePokemon;
+        };
+        team: {
+          id: string;
+          name: string;
+          draft: League.LeaguePokemon[];
+        };
+        canDraftTeams: string[];
+      }>('league.draft.added')
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((data) => {
+        const currentDrafted = this.drafted();
+        if (currentDrafted[data.pick.division]) {
+          const updatedDivisionDrafts = [
+            ...currentDrafted[data.pick.division],
+            { pokemonId: data.pick.pokemon.id },
+          ];
+
+          this.drafted.set({
+            ...currentDrafted,
+            [data.pick.division]: updatedDivisionDrafts,
+          });
+        }
+      });
+  }
+
+  updateFilter(selected: boolean, index?: number): void {
+    if (index === undefined) {
+      if (selected) {
+        this.selectedTypes.set([...this.types]);
+      } else {
+        this.selectedTypes.set([]);
+      }
+      return;
+    }
+    if (selected) {
+      this.selectedTypes.update((types) => [...types, this.types[index]]);
+    } else {
+      this.selectedTypes.update((types) =>
+        types.filter((type) => type !== this.types[index]),
+      );
+    }
+  }
+
+  applyFilter(): void {
+    this.filteredTypes.set([...this.selectedTypes()]);
     this.menu = null;
-  }
-
-  get tierGroups() {
-    return this.tierListService.sortedTierGroups();
-  }
-
-  get draftedPokemonIds() {
-    return this.tierListService.draftedPokemonIdsForSelectedDivision();
-  }
-
-  get typeInFilter() {
-    return this.tierListService.typeInFilter.bind(this.tierListService);
-  }
-
-  get makeBanString() {
-    return this.tierListService.makeBanString.bind(this.tierListService);
   }
 
   @Input()
@@ -152,7 +260,6 @@ export class LeagueTierListComponent implements OnInit {
   }
 
   isPokemonDrafted(pokemon: Pokemon): boolean {
-    if (this.draftedPokemonIds.has(pokemon.id)) return true;
-    return false;
+    return this.draftedPokemonIds().has(pokemon.id);
   }
 }

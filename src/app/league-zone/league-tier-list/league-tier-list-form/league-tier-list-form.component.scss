@@ -1,250 +1,578 @@
-@use "@angular/material" as mat;
+@use "../../../../styles/global.scss" as *;
+@use "../../../../styles/mixins" as *;
 
-.tier-group-label {
-  height: 24px;
-  min-width: 4rem;
-  flex-shrink: 0;
-}
-
-.tier-label {
-  position: sticky;
-  top: 0px;
-  z-index: 2000;
-  border-width: 0px 0px 2px 0px;
-  border-color: var(--pdz-color-primary-border);
-}
-
-.tier-entry {
-  display: flex;
-  align-items: center;
-  width: 10rem;
-  flex-grow: 1;
-  padding: var(--pdz-space-xs);
-  border-width: 0px 0px 1px 0px;
-  border-color: var(--pdz-color-primary-border-variant);
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-  column-gap: 0.25rem;
-  cursor: default;
-
-  .entry-sprite {
-    height: 2rem;
-    width: 2rem;
-  }
-
-  .entry-name {
-    flex-grow: 1;
-    max-height: 2rem;
-    line-height: 1rem;
-  }
-  .button-container {
-    display: flex;
-  }
-
-  &.selected {
-    background-color: var(--pdz-color-secondary-container);
-  }
-
-  &.dragStarted {
-    cursor: grabbing !important;
-  }
-}
-
-.restricted-icon {
-  right: 0px;
-  bottom: 0px;
-  color: var(--pdz-color-error);
-  transform: scale(0.75);
-  position: absolute;
-}
-
-.tier-main {
-  border-width: 2px;
-  border-color: var(--pdz-color-primary-border);
-  max-width: 100%;
-  flex-grow: 1;
-  display: flex;
+:host {
+  display: block;
+  height: 100%;
   overflow: hidden;
-  border-radius: var(--pdz-shape-corner-sm);
-  width: fit-content;
+}
 
-  .untiered-container {
+.tier-form {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: var(--pdz-space-md);
+  gap: var(--pdz-space-md);
+}
+
+// Header toolbar
+.toolbar {
+  display: flex;
+  gap: var(--pdz-space-md);
+  align-items: center;
+  padding: var(--pdz-space-sm) var(--pdz-space-md);
+  background-color: pdz-color(surface-container);
+  border-radius: var(--pdz-shape-corner-md);
+  box-shadow: var(--pdz-level-1);
+
+  &__title {
+    @include apply-typography(headline-small);
+    color: pdz-color(on-surface);
+    margin: 0;
+  }
+
+  &__spacer {
+    flex: 1;
+  }
+
+  &__search {
+    position: relative;
     display: flex;
-    flex-shrink: 0;
-    width: fit-content;
-    overflow-y: auto;
-    flex-direction: column;
-    box-shadow: var(--pdz-level-3);
+    align-items: center;
 
-    .header-label {
-      text-align: center;
-      font-weight: bold;
-      font-family: var(--pdz-font-fancy);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 0.25rem;
+    input {
+      padding: var(--pdz-space-sm) var(--pdz-space-md);
+      padding-left: var(--pdz-space-xl);
+      border: 1px solid pdz-color(outline);
+      border-radius: var(--pdz-shape-corner-full);
+      background-color: pdz-color(surface);
+      color: pdz-color(on-surface);
+      min-width: 200px;
+
+      &:focus {
+        outline: 2px solid pdz-color(primary);
+        outline-offset: 1px;
+      }
+    }
+
+    mat-icon {
+      position: absolute;
+      left: var(--pdz-space-sm);
+      color: pdz-color(on-surface-variant);
+      font-size: 1.25rem;
     }
   }
 
-  .tier-wrapper {
-    overflow-y: auto;
+  &__actions {
+    display: flex;
+    gap: var(--pdz-space-sm);
+  }
+}
+
+// Main content area
+.tier-main {
+  flex: 1;
+  display: flex;
+  gap: var(--pdz-space-md);
+  overflow: hidden;
+  border-radius: var(--pdz-shape-corner-md);
+  background-color: pdz-color(surface);
+  box-shadow: var(--pdz-level-2);
+  position: relative;
+}
+
+// Tiers container (horizontal layout)
+.tiers-container {
+  flex: 1;
+  display: flex;
+  gap: var(--pdz-space-md);
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: var(--pdz-space-md);
+  padding-right: 0;
+
+  &::-webkit-scrollbar {
+    height: 8px;
   }
 
-  .tier-container {
-    width: 100%;
-    display: flex;
-    height: fit-content;
-    align-items: stretch;
+  &::-webkit-scrollbar-track {
+    background: pdz-color(surface-container-low);
+  }
 
-    .header-label {
-      background-color: var(--pdz-color-primary);
-      color: var(--pdz-color-on-primary);
-      text-align: center;
-      font-weight: bold;
-      font-family: var(--pdz-font-fancy);
+  &::-webkit-scrollbar-thumb {
+    background: pdz-color(outline);
+    border-radius: var(--pdz-shape-corner-full);
+
+    &:hover {
+      background: pdz-color(outline-variant);
+    }
+  }
+}
+
+// Null tier container (fixed on right)
+.null-tier-container {
+  display: flex;
+  flex-direction: column;
+  min-width: 280px;
+  max-width: 320px;
+  flex-shrink: 0;
+  padding: var(--pdz-space-md);
+  padding-left: 0;
+  border-left: 3px solid pdz-color(outline);
+}
+
+// Individual tier
+.tier {
+  display: flex;
+  flex-direction: column;
+  min-width: 280px;
+  max-height: 100%;
+  background-color: pdz-color(surface-container);
+  border-radius: var(--pdz-shape-corner-md);
+  border: 2px solid pdz-color(outline-variant);
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--pdz-space-sm) var(--pdz-space-md);
+    background-color: pdz-color(primary-container);
+    color: pdz-color(on-primary-container);
+    border-radius: var(--pdz-shape-corner-md) var(--pdz-shape-corner-md) 0 0;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    border-bottom: 2px solid pdz-color(primary);
+
+    &--null {
+      background-color: pdz-color(secondary-container);
+      color: pdz-color(on-secondary-container);
+      border-bottom: 2px solid pdz-color(secondary);
+    }
+  }
+
+  &__trash-icon {
+    margin-right: var(--pdz-space-xs);
+    font-size: 1.25rem;
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  &__name {
+    @include apply-typography(title-medium);
+    font-weight: 600;
+  }
+
+  &__actions {
+    display: flex;
+    gap: var(--pdz-space-2xs);
+    opacity: 0.8;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  &__pokemon-list {
+    flex: 1;
+    padding: var(--pdz-space-sm);
+    display: flex;
+    flex-direction: column;
+    gap: var(--pdz-space-xs);
+    min-height: 100px;
+    overflow-y: auto;
+    transition: all 0.2s ease;
+
+    // When dragging over this list
+    &.cdk-drop-list-dragging {
+      background-color: pdz-color(primary-container-low);
+      box-shadow: inset 0 0 0 2px pdz-color(primary);
+      border-radius: var(--pdz-shape-corner-xs);
+    }
+
+    &--empty {
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 0 1rem;
-      position: relative;
-      column-gap: 0.25rem;
-      mat-icon.drag-icon {
-        position: absolute;
-        left: 0;
-        width: fit-content;
-        height: fit-content;
-        font-size: 1.2rem;
-        cursor: move;
+      color: pdz-color(on-surface-variant);
+      @include apply-typography(body-small);
+      font-style: italic;
+      min-height: 120px;
+      border: 2px dashed pdz-color(outline-variant);
+      border-radius: var(--pdz-shape-corner-xs);
+      margin: var(--pdz-space-2xs);
+
+      span {
+        padding: var(--pdz-space-md);
+        text-align: center;
       }
 
-      mat-icon.edit-icon {
-        width: fit-content;
-        height: fit-content;
-        font-size: 1rem;
-        line-height: 1rem;
-        cursor: pointer;
+      // Enhanced styling when dragging
+      &.cdk-drop-list-dragging {
+        border-color: pdz-color(primary);
+        border-style: solid;
+        color: pdz-color(on-primary-container);
+        font-weight: 500;
       }
     }
-    .tier-group {
-      &:not(:first-child) {
-        border-width: 0px 0px 0px 3px;
-        border-color: var(--pdz-color-primary-border);
-      }
-      display: flex;
-      flex-direction: column;
+  }
 
-      .tier-entry-container {
-        display: flex;
-        flex-grow: 1;
-        .tier {
-          display: flex;
-          flex-direction: column;
-          width: fit-content;
-          &:not(:first-child) {
-            border-width: 0px 0px 0px 2px;
-            border-color: var(--pdz-color-primary-border);
-          }
-        }
-      }
+  &--null {
+    border: 2px solid pdz-color(secondary);
+    background-color: pdz-color(surface-container-low);
+
+    .tier__pokemon-list {
+      min-height: 150px;
     }
   }
 }
 
-.drafted {
-  .entry-sprite {
-    filter: grayscale(100%);
-    opacity: 70%;
-  }
-  text-decoration: line-through;
-}
-
-.entry-container {
-  flex-grow: 1;
-  width: 8rem;
-  flex-shrink: 1;
+// Pokemon entry
+.pokemon-entry {
   display: flex;
-  column-gap: 0.25rem;
   align-items: center;
+  gap: var(--pdz-space-xs);
+  padding: var(--pdz-space-xs);
+  background-color: pdz-color(surface);
+  border: 1px solid pdz-color(outline-variant);
+  border-radius: var(--pdz-shape-corner-xs);
+  cursor: grab;
+  transition: all 0.2s ease;
+  position: relative;
+  user-select: none;
+  touch-action: none;
+
+  &:active {
+    cursor: grabbing;
+  }
+
+  &:hover {
+    background-color: pdz-color(surface-container-high);
+    border-color: pdz-color(primary);
+    transform: translateX(2px);
+    box-shadow: var(--pdz-level-1);
+  }
+
+  &__select-indicator {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: pdz-color(primary);
+    border-radius: var(--pdz-shape-corner-full);
+    padding: 2px;
+    box-shadow: var(--pdz-level-2);
+    z-index: 1;
+
+    mat-icon {
+      font-size: 1rem;
+      width: 1rem;
+      height: 1rem;
+      color: pdz-color(on-primary);
+    }
+  }
+
+  &__sprite {
+    width: 2rem;
+    height: 2rem;
+    flex-shrink: 0;
+  }
+
+  &__name {
+    flex: 1;
+    @include apply-typography(body-medium);
+    color: pdz-color(on-surface);
+  }
+
+  &__actions {
+    display: flex;
+    gap: var(--pdz-space-2xs);
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+  }
+
+  &:hover &__actions {
+    opacity: 1;
+  }
+
+  &--has-moves {
+    border-left: 3px solid pdz-color(warning);
+  }
+
+  &--selected {
+    background-color: pdz-color(primary-container);
+    border-color: pdz-color(primary);
+    border-width: 2px;
+
+    &:hover {
+      background-color: pdz-color(primary-container-high);
+    }
+
+    .pokemon-entry__actions {
+      opacity: 1;
+    }
+  }
 }
 
+// Icon button
+.icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: none;
+  background: transparent;
+  border-radius: var(--pdz-shape-corner-full);
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  mat-icon {
+    font-size: 1.25rem;
+    width: 1.25rem;
+    height: 1.25rem;
+    color: pdz-color(on-surface-variant);
+  }
+
+  &:hover {
+    background-color: pdz-color(surface-container-highest);
+
+    mat-icon {
+      color: pdz-color(primary);
+    }
+  }
+
+  &--delete:hover mat-icon {
+    color: pdz-color(error);
+  }
+
+  &--edit mat-icon {
+    color: pdz-color(primary);
+  }
+
+  &--undo mat-icon {
+    color: pdz-color(warning);
+  }
+}
+
+// Action button
+.action-button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--pdz-space-xs);
+  padding: var(--pdz-space-xs) var(--pdz-space-md);
+  border: 1px solid pdz-color(outline);
+  background-color: pdz-color(surface);
+  color: pdz-color(on-surface);
+  border-radius: var(--pdz-shape-corner-full);
+  cursor: pointer;
+  @include apply-typography(label-medium);
+  transition: all 0.2s ease;
+
+  mat-icon {
+    font-size: 1.25rem;
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  &:hover {
+    background-color: pdz-color(primary);
+    color: pdz-color(on-primary);
+    border-color: pdz-color(primary);
+  }
+
+  &--primary {
+    background-color: pdz-color(primary);
+    color: pdz-color(on-primary);
+    border-color: pdz-color(primary);
+
+    &:hover {
+      background-color: pdz-color(primary-darker);
+    }
+  }
+
+  &--secondary {
+    background-color: pdz-color(secondary);
+    color: pdz-color(on-secondary);
+    border-color: pdz-color(secondary);
+
+    &:hover {
+      background-color: pdz-color(secondary-darker);
+    }
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}
+
+// Add tier button
+.add-tier-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--pdz-space-lg);
+  min-width: 280px;
+  background-color: pdz-color(surface-container-low);
+  border: 2px dashed pdz-color(outline);
+  border-radius: var(--pdz-shape-corner-md);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: pdz-color(on-surface-variant);
+  flex-shrink: 0;
+
+  mat-icon {
+    font-size: 2.5rem;
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  &:hover {
+    background-color: pdz-color(primary-container);
+    border-color: pdz-color(primary);
+    color: pdz-color(on-primary-container);
+  }
+}
+
+// Drag and drop states
 .cdk-drag-preview {
   box-sizing: border-box;
   border-radius: var(--pdz-shape-corner-xs);
-  box-shadow:
-    0 5px 5px -3px rgba(0, 0, 0, 0.2),
-    0 8px 10px 1px rgba(0, 0, 0, 0.14),
-    0 3px 14px 2px rgba(0, 0, 0, 0.12);
+  box-shadow: var(--pdz-level-4);
+  opacity: 0.95;
+  background-color: pdz-color(surface) !important;
+  border: 2px solid pdz-color(primary) !important;
+  cursor: grabbing !important;
+  overflow: visible !important;
+
+  // Make the preview look like the original item
+  .pokemon-entry {
+    background-color: pdz-color(surface);
+    border-color: pdz-color(primary);
+    box-shadow: var(--pdz-level-2);
+    overflow: visible !important;
+  }
+}
+
+.cdk-drag-placeholder {
+  border: 2px dashed pdz-color(primary);
+  background-color: pdz-color(primary-container-low);
+  border-radius: var(--pdz-shape-corner-xs);
+  min-height: 40px;
+  opacity: 0.6;
+  animation: pulse 1s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 0.8;
+  }
 }
 
 .cdk-drag-animating {
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
-.cdk-drop-list-dragging {
-  background-color: var(--pdz-color-primary-border-variant);
+// Drop list receiving state
+.tier__pokemon-list.cdk-drop-list-receiving {
+  background-color: pdz-color(primary-container) !important;
+  box-shadow: inset 0 0 0 3px pdz-color(primary) !important;
 }
 
-.drag-placeholder {
-  border: dotted 2px var(--pdz-color-primary);
-  height: 2.5rem;
-  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+// Multi-drag preview
+.multi-drag-preview {
+  box-sizing: border-box;
+  overflow: visible !important;
+
+  .pokemon-entry {
+    position: relative;
+    overflow: visible !important;
+  }
 }
 
-.tier-form {
+.multi-drag-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background-color: pdz-color(primary);
+  color: pdz-color(on-primary);
+  border-radius: var(--pdz-shape-corner-full);
+  padding: 4px 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  box-shadow: var(--pdz-level-3);
+  min-width: 24px;
+  text-align: center;
+  z-index: 1000;
+  white-space: nowrap;
+  line-height: 1;
   display: flex;
-  flex-direction: column;
-  padding: var(--pdz-space-lg);
+  align-items: center;
+  justify-content: center;
+}
+
+// Loading state
+pdz-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   height: 100%;
 }
 
-.new-tier {
-  background-color: var(--pdz-color-primary);
-  color: var(--pdz-color-on-primary);
-  text-align: center;
-  height: 100%;
-
-  width: 2rem;
-  border-left: 2px solid var(--pdz-color-primary-border);
-  .add-icon {
-    top: 0px;
-    position: sticky;
-    mat-icon {
-      color: var(--pdz-color-on-primary);
-    }
-  }
-}
-
-.new-tier-group {
-  background-color: var(--pdz-color-primary);
-  color: var(--pdz-color-on-primary);
-  text-align: center;
-  flex-shrink: 0;
-  width: 4rem;
-  border-left: 2px solid var(--pdz-color-primary-border);
-  .add-icon {
-    top: 0px;
-    position: sticky;
-    mat-icon {
-      font-size: 2.5rem;
-      width: fit-content;
-      height: fit-content;
-      color: var(--pdz-color-on-primary);
-    }
-  }
-}
-
-.icon-button {
-  border-radius: 100rem;
+// Unsaved changes indicator
+.unsaved-indicator {
   display: inline-flex;
-  padding: var(--pdz-space-2xs);
+  align-items: center;
+  gap: var(--pdz-space-xs);
+  padding: var(--pdz-space-xs) var(--pdz-space-sm);
+  background-color: pdz-color(warning-container);
+  color: pdz-color(on-warning-container);
+  border-radius: var(--pdz-shape-corner-full);
+  @include apply-typography(label-small);
+
   mat-icon {
-    font-size: 1.2rem;
-    color: var(--pdz-color-secondary);
-    height: fit-content;
-    width: fit-content;
+    font-size: 1rem;
+    width: 1rem;
+    height: 1rem;
   }
-  &:hover {
-    background-color: var(--pdz-color-primary-container);
+}
+
+// Selection indicator
+.selection-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--pdz-space-xs);
+  padding: var(--pdz-space-xs) var(--pdz-space-sm);
+  background-color: pdz-color(primary-container);
+  color: pdz-color(on-primary-container);
+  border-radius: var(--pdz-shape-corner-full);
+  @include apply-typography(label-small);
+  font-weight: 600;
+
+  mat-icon {
+    font-size: 1rem;
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .icon-button {
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-left: var(--pdz-space-xs);
+
+    mat-icon {
+      font-size: 1rem;
+      width: 1rem;
+      height: 1rem;
+    }
   }
 }

@@ -5,7 +5,7 @@
         <div class="md:text-2xl text-xl font-nasa flex flex-grow">
           Tier List
         </div>
-        @if (tierListService.sortedTierGroups()) {
+        @if (sortedTierGroups()) {
           <div class="flex w-fit items-center flex-wrap">
             <div class="relative inline-block">
               <button
@@ -19,10 +19,10 @@
                   class="absolute left-full top-0 ml-2 bg-page border rounded menu z-50"
                 >
                   <mat-radio-group
-                    [(ngModel)]="tierListService.sortBy"
+                    [(ngModel)]="sortBy"
                     class="flex flex-col p-1 pr-2"
                   >
-                    @for (option of tierListService.SortOptions; track $index) {
+                    @for (option of SortOptions; track $index) {
                       <mat-radio-button [value]="option">
                         {{ option }}
                       </mat-radio-button>
@@ -49,30 +49,20 @@
                   </div>
                   <div class="max-h-96 overflow-y-auto">
                     <mat-checkbox
-                      [checked]="
-                        tierListService.selectedTypes.length ===
-                        tierListService.types.length
-                      "
+                      [checked]="selectedTypes().length === types.length"
                       [indeterminate]="
-                        tierListService.selectedTypes.length > 0 &&
-                        tierListService.selectedTypes.length <
-                          tierListService.types.length
+                        selectedTypes().length > 0 &&
+                        selectedTypes().length < types.length
                       "
                       (change)="updateFilter($event.checked)"
                     >
                       All
                     </mat-checkbox>
                     <ul>
-                      @for (
-                        type of tierListService.types;
-                        track $index;
-                        let i = $index
-                      ) {
+                      @for (type of types; track $index; let i = $index) {
                         <li>
                           <mat-checkbox
-                            [checked]="
-                              tierListService.selectedTypes().includes(type)
-                            "
+                            [checked]="selectedTypes().includes(type)"
                             (change)="updateFilter($event.checked, i)"
                           >
                             {{ type }}
@@ -97,7 +87,7 @@
                     class="absolute left-full top-0 ml-2 bg-page border rounded menu z-50"
                   >
                     <mat-radio-group
-                      [(ngModel)]="tierListService.selectedDivision"
+                      [(ngModel)]="selectedDivision"
                       class="flex flex-col p-1 pr-2"
                     >
                       @for (option of divisionNames; track $index) {
@@ -118,12 +108,10 @@
             <div class="search-input-container">
               <mat-icon>search</mat-icon>
               <input
-                [(ngModel)]="tierListService.searchText"
-                (ngModelChange)="tierListService.searchText.set($event)"
+                [(ngModel)]="searchText"
+                (ngModelChange)="searchText.set($event)"
               />
-              <mat-icon (click)="tierListService.searchText.set('')"
-                >close_small</mat-icon
-              >
+              <mat-icon (click)="searchText.set('')">close_small</mat-icon>
             </div>
           </div>
         }
@@ -132,10 +120,10 @@
     <div
       class="max-w-full max-h-full flex-grow overflow-y-auto rounded-lg w-fit"
     >
-      @if (tierGroups) {
+      @if (sortedTierGroups()) {
         <div class="tier-container">
           <div class="h-fit w-full flex">
-            @for (group of tierGroups; track $index) {
+            @for (group of sortedTierGroups(); track $index) {
               <div class="tier-group">
                 @if (group.label !== undefined) {
                   <div class="tier-group-label">{{ group.label }}</div>

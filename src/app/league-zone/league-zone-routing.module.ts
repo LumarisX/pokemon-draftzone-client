@@ -18,6 +18,7 @@ import { LeagueTeamsComponent } from './league-teams/league-teams.component';
 import { LeagueRulesOverviewComponent } from './league-rules-overview/league-rules-overview.component';
 import { LeagueTeamComponent } from './league-team/league-team.component';
 import { LeagueNewComponent } from './league-new/league-new.component';
+import { LeagueTierListFormComponent } from './league-tier-list/league-tier-list-form/league-tier-list-form.component';
 
 export const LeagueZonePath = 'leagues';
 const routes: Routes = [
@@ -50,7 +51,10 @@ const routes: Routes = [
     path: ':leagueKey/tier-list',
     component: LeagueTierListComponent,
   },
-
+  {
+    path: ':leagueKey/tier-list/edit',
+    component: LeagueTierListFormComponent,
+  },
   {
     path: ':leagueKey/sign-up',
     component: LeagueSignUpComponent,
@@ -64,7 +68,7 @@ const routes: Routes = [
     path: ':leagueKey/trades',
     component: LeagueTradesComponent,
   },
-    {
+  {
     path: ':leagueKey/:divisionKey',
     component: LeagueDashboardComponent,
   },
