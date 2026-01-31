@@ -60,7 +60,12 @@
         <span class="button__text"> Rules </span>
         <span class="button__subtext"> Read them!</span>
       </button>
-
+      <button
+        [routerLink]="['/leagues', leagueInfo.leagueKey, 'tier-list']"
+        class="button button--primary"
+      >
+        <span class="button__text"> Tier List </span>
+      </button>
       @if (leagueInfo.discord) {
         <a
           [href]="'https://discord.gg/' + leagueInfo.discord"

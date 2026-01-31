@@ -8,8 +8,6 @@ import { DraftPokemon } from '../interfaces/draft';
 import { Pokemon } from '../interfaces/pokemon';
 
 export namespace League {
-
-
   export type LeagueTeam = {
     name: string;
     id: string;
@@ -94,8 +92,11 @@ export namespace League {
     timezone: string;
     experience: string;
     dropped?: string;
-    confirm: boolean;
-    sub: string;
+    status: string;
+    teamName: string;
+    logo?: string;
+    signedUpAt: Date;
+    division?: string;
   };
 
   export type DraftPick = {
@@ -157,11 +158,11 @@ export namespace League {
   };
 }
 
-  export type Team = {
-    name: string;
-    coach: string;
-    logo: string;
-  };
+export type Team = {
+  name: string;
+  coach: string;
+  logo: string;
+};
 
 type TradeParticipant = {
   team?: Team;

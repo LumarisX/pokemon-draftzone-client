@@ -20,16 +20,30 @@ export class LeagueDashboardComponent implements OnInit, OnDestroy {
   leagueId?: string;
   leagueName = '';
   divisionName = '';
-  leagueKey = '';
-  divisionKey = '';
 
-  navigationSections: { label: string; route: string; disabled?: boolean }[] = [
-    { label: 'Scheduling', route: 'schedule' },
-    { label: 'Teams', route: 'teams' },
-    { label: 'Standings', route: 'standings' },
-    { label: 'Tier List', route: 'tier-list' },
-    { label: 'Draft', route: 'draft' },
-  ];
+  navigationSections: { label: string; route: string[]; disabled?: boolean }[] =
+    [
+      {
+        label: 'Scheduling',
+        route: ['/leagues', this.leagueKey, this.divisionKey, 'schedule'],
+      },
+      {
+        label: 'Teams',
+        route: ['/leagues', this.leagueKey, this.divisionKey, 'teams'],
+      },
+      {
+        label: 'Standings',
+        route: ['/leagues', this.leagueKey, this.divisionKey, 'standings'],
+      },
+      {
+        label: 'Tier List',
+        route: ['/leagues', this.leagueKey, 'tier-list'],
+      },
+      {
+        label: 'Draft',
+        route: ['/leagues', this.leagueKey, this.divisionKey, 'draft'],
+      },
+    ];
 
   ngOnInit(): void {
     this.leagueZoneService
@@ -38,13 +52,19 @@ export class LeagueDashboardComponent implements OnInit, OnDestroy {
       .subscribe((details) => {
         this.leagueName = details.leagueName;
         this.divisionName = details.divisionName;
-        this.leagueKey = this.leagueZoneService.leagueKey() || '';
-        this.divisionKey = this.leagueZoneService.divisionKey() || '';
       });
   }
 
-  navigateTo(route: string): void {
-    this.router.navigate(['/leagues', this.leagueKey, this.divisionKey, route]);
+  get leagueKey(): string {
+    return this.leagueZoneService.leagueKey() || '';
+  }
+
+  get divisionKey(): string {
+    return this.leagueZoneService.divisionKey() || '';
+  }
+
+  navigateTo(route: string[]): void {
+    this.router.navigate(route);
   }
 
   ngOnDestroy(): void {

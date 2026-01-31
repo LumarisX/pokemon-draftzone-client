@@ -12,7 +12,7 @@ const routes: Routes = [
     component: LeagueManageComponent,
   },
   {
-    path: 'signups',
+    path: 'sign-ups',
     component: LeagueManageSignupsComponent,
   },
   {

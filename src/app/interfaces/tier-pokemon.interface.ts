@@ -4,6 +4,7 @@ export type TierSubPokemon = {
   name: string;
   id: string;
   types: [Type] | [Type, Type];
+  teraCost?: string;
   stats: StatsTable;
   bst: number;
   banned?: {

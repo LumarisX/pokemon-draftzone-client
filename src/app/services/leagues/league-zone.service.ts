@@ -464,8 +464,8 @@ export class LeagueZoneService {
     return this.apiService.get(`battlezone/pdbl`, false);
   }
 
-  getSignUps(leagueKey: string): Observable<League.LeagueSignUp[]> {
-    return this.apiService.get(`leagues/${leagueKey}/signup`, true);
+  getSignUps(): Observable<League.LeagueSignUp[]> {
+    return this.apiService.get(`leagues/${this.leagueKey()}/signup`, true);
   }
 
   getBracket(leagueKey: string): Observable<{}> {

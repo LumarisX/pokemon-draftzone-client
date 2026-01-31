@@ -1,13 +1,11 @@
-<div class="flex flex-col max-w-full h-full items-center">
-  <div class="h-full flex max-w-full flex-col space-y-2">
-    <div class="flex-grow-0 max-w-full flex justify-between">
-      <div class="flex items-center space-x-2">
-        <div class="md:text-2xl text-xl font-nasa flex flex-grow">
-          Tier List
-        </div>
+<div class="tier-list">
+  <div class="tier-list__content-wrapper">
+    <div class="tier-list__header">
+      <div class="tier-list__title-section">
+        <div class="tier-list__title">Tier List</div>
         @if (sortedTierGroups()) {
-          <div class="flex w-fit items-center flex-wrap">
-            <div class="relative inline-block">
+          <div class="tier-list__controls">
+            <div class="menu-button">
               <button
                 mat-icon-button
                 (click)="menu = menu === 'sort' ? null : 'sort'"
@@ -15,12 +13,10 @@
                 <mat-icon>sort</mat-icon>
               </button>
               @if (menu === "sort") {
-                <div
-                  class="absolute left-full top-0 ml-2 bg-page border rounded menu z-50"
-                >
+                <div class="menu-button__dropdown">
                   <mat-radio-group
                     [(ngModel)]="sortBy"
-                    class="flex flex-col p-1 pr-2"
+                    class="menu-button__radio-group"
                   >
                     @for (option of SortOptions; track $index) {
                       <mat-radio-button [value]="option">
@@ -31,7 +27,7 @@
                 </div>
               }
             </div>
-            <div class="relative inline-block">
+            <div class="menu-button">
               <button
                 mat-icon-button
                 (click)="menu = menu === 'filter' ? null : 'filter'"
@@ -39,15 +35,16 @@
                 <mat-icon>filter_list</mat-icon>
               </button>
               @if (menu === "filter") {
-                <div
-                  class="absolute left-full top-0 ml-2 bg-page border rounded-lg menu z-50"
-                >
-                  <div class="apply-wrapper">
-                    <button class="applybutton" (click)="applyFilter()">
+                <div class="menu-button__dropdown">
+                  <div class="filter-apply">
+                    <button
+                      class="filter-apply__button"
+                      (click)="applyFilter()"
+                    >
                       Apply
                     </button>
                   </div>
-                  <div class="max-h-96 overflow-y-auto">
+                  <div class="menu-button__filter-content">
                     <mat-checkbox
                       [checked]="selectedTypes().length === types.length"
                       [indeterminate]="
@@ -58,7 +55,7 @@
                     >
                       All
                     </mat-checkbox>
-                    <ul>
+                    <ul class="menu-button__filter-list">
                       @for (type of types; track $index; let i = $index) {
                         <li>
                           <mat-checkbox
@@ -75,7 +72,7 @@
               }
             </div>
             @if (divisionNames.length > 2) {
-              <div class="relative inline-block">
+              <div class="menu-button">
                 <button
                   mat-stroked-button
                   (click)="menu = menu === 'division' ? null : 'division'"
@@ -83,12 +80,10 @@
                   Division
                 </button>
                 @if (menu === "division") {
-                  <div
-                    class="absolute left-full top-0 ml-2 bg-page border rounded menu z-50"
-                  >
+                  <div class="menu-button__dropdown">
                     <mat-radio-group
                       [(ngModel)]="selectedDivision"
-                      class="flex flex-col p-1 pr-2"
+                      class="menu-button__radio-group"
                     >
                       @for (option of divisionNames; track $index) {
                         <mat-radio-button [value]="option">
@@ -100,84 +95,123 @@
                 }
               </div>
             }
-            <div class="inline-block">
+            <div class="checkbox-control">
               <mat-checkbox [(ngModel)]="showDrafted"
                 >Show Drafted</mat-checkbox
               >
             </div>
-            <div class="search-input-container">
-              <mat-icon>search</mat-icon>
+            <div class="search-input">
+              <mat-icon class="search-input__icon">search</mat-icon>
               <input
+                class="search-input__field"
                 [(ngModel)]="searchText"
                 (ngModelChange)="searchText.set($event)"
               />
-              <mat-icon (click)="searchText.set('')">close_small</mat-icon>
+              <mat-icon class="search-input__icon" (click)="searchText.set('')"
+                >close_small</mat-icon
+              >
             </div>
           </div>
         }
       </div>
     </div>
-    <div
-      class="max-w-full max-h-full flex-grow overflow-y-auto rounded-lg w-fit"
-    >
+    <div class="tier-list__content">
       @if (sortedTierGroups()) {
-        <div class="tier-container">
-          <div class="h-fit w-full flex">
-            @for (group of sortedTierGroups(); track $index) {
-              <div class="tier-group">
-                @if (group.label !== undefined) {
-                  <div class="tier-group-label">{{ group.label }}</div>
-                }
-                <div class="tier-entry-container">
-                  @for (tier of group.tiers; track $index) {
-                    <div class="tier">
-                      <div class="tier-label">
-                        {{ tier.name }}
-                      </div>
-                      @for (pokemon of tier.pokemon; track $index) {
-                        @if (
-                          typeInFilter(pokemon) &&
-                          (showDrafted || !isPokemonDrafted(pokemon))
-                        ) {
-                          <div
-                            class="tier-entry"
-                            [ngClass]="{
-                              drafted:
-                                isPokemonDrafted(pokemon) ||
-                                tier.name === 'Ban',
-                              selected: selectedPokemon === pokemon,
-                            }"
-                            (click)="selectPokemon(pokemon, tier.name, $event)"
-                          >
-                            <div class="entry-sprite">
-                              <pdz-sprite
-                                [pokemon]="pokemon"
-                                [tooltipPosition]="null"
-                              ></pdz-sprite>
-                            </div>
-                            <div class="entry-name">
-                              {{ pokemon.name }}
-                            </div>
-                            @if (pokemon.banned) {
-                              <mat-icon
-                                class="restricted-icon"
-                                mat-raised-button
-                                #tooltip="matTooltip"
-                                [matTooltip]="makeBanString(pokemon.banned)"
-                              >
-                                warning
-                              </mat-icon>
-                            }
-                          </div>
-                        }
-                      }
-                    </div>
-                  }
+        @if (compact) {
+          @for (group of sortedTierGroups(); track $index) {
+            @for (tier of group.tiers; track $index) {
+              <div class="tier--compact flex">
+                <div class="tier__label">
+                  {{ tier.name }}
                 </div>
+                @for (pokemon of tier.pokemon; track $index) {
+                  <div>
+                    <pdz-sprite
+                      [pokemon]="pokemon"
+                      [tooltipPosition]="null"
+                    ></pdz-sprite>
+                  </div>
+                }
               </div>
             }
+          }
+        } @else {
+          <div class="tier-container">
+            <div class="tier-container__wrapper">
+              @for (group of sortedTierGroups(); track $index) {
+                <div class="tier-group">
+                  @if (group.label !== undefined) {
+                    <div class="tier-group__label">{{ group.label }}</div>
+                  }
+                  <div class="tier-group__tiers">
+                    @for (tier of group.tiers; track $index) {
+                      <div class="tier">
+                        <div class="tier__label">
+                          {{ tier.name }}
+                        </div>
+                        <div class="tier__pokemon-list">
+                          @for (pokemon of tier.pokemon; track $index) {
+                            @if (
+                              typeInFilter(pokemon) &&
+                              (showDrafted || !isPokemonDrafted(pokemon))
+                            ) {
+                              <div
+                                class="tier-entry"
+                                [class.is-drafted]="
+                                  isPokemonDrafted(pokemon) ||
+                                  tier.name === 'Ban'
+                                "
+                                [class.is-selected]="
+                                  selectedPokemon === pokemon
+                                "
+                                (click)="
+                                  selectPokemon(pokemon, tier.name, $event)
+                                "
+                              >
+                                <div class="tier-entry__sprite">
+                                  <pdz-sprite
+                                    [pokemon]="pokemon"
+                                    [tooltipPosition]="null"
+                                  ></pdz-sprite>
+                                </div>
+                                <div class="tier-entry__content">
+                                  <div class="tier-entry__name">
+                                    {{ pokemon.name }}
+                                  </div>
+                                  <div class="tier-entry__tera-cost">
+                                    <span>{{
+                                      pokemon.teraCost
+                                        ? justNumber(pokemon.teraCost)
+                                        : "Ban"
+                                    }}</span>
+                                    <pdz-icon
+                                      name="tera"
+                                      [height]="20"
+                                    ></pdz-icon>
+                                  </div>
+                                </div>
+                                @if (pokemon.banned) {
+                                  <mat-icon
+                                    class="tier-entry__restricted-icon"
+                                    mat-raised-button
+                                    #tooltip="matTooltip"
+                                    [matTooltip]="makeBanString(pokemon.banned)"
+                                  >
+                                    warning
+                                  </mat-icon>
+                                }
+                              </div>
+                            }
+                          }
+                        </div>
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
           </div>
-        </div>
+        }
       } @else {
         <pdz-loading></pdz-loading>
       }
@@ -185,16 +219,16 @@
       @if (selectedPokemon) {
         <div
           class="selected-card"
-          [class.mobile-view]="isMobile"
+          [class.selected-card--mobile]="isMobile"
           [style.top]="!isMobile ? cardPosition.top : null"
           [style.left]="!isMobile ? cardPosition.left : null"
           [style.transform]="!isMobile ? 'translateY(-50%)' : null"
         >
-          <div class="card-header">
-            <div class="card-pokemon-name">
+          <div class="selected-card__header">
+            <div class="selected-card__pokemon-name">
               {{ selectedPokemon.name }}
             </div>
-            <div class="sprite-wrapper">
+            <div class="selected-card__sprite-wrapper">
               <pdz-sprite
                 [pokemon]="selectedPokemon"
                 [tooltipPosition]="null"
@@ -202,14 +236,14 @@
             </div>
           </div>
 
-          <div class="card-info">
+          <div class="selected-card__info">
             <div class="type-container">
               @for (type of selectedPokemon.types; track $index) {
                 <div
                   class="type-label"
                   [style.background-color]="typeColor(type)"
                 >
-                  <div class="type-text">
+                  <div class="type-label__text">
                     {{ type }}
                   </div>
                 </div>
@@ -217,11 +251,11 @@
             </div>
             <div class="stats-container">
               @for (stat of pokemonStats; track $index) {
-                <div class="stat-container">
-                  <div class="stat-name">
+                <div class="stat">
+                  <div class="stat__name">
                     {{ stat[0] | uppercase }}
                   </div>
-                  <div class="stat-value">
+                  <div class="stat__value">
                     {{ stat[1] }}
                   </div>
                 </div>
@@ -231,6 +265,7 @@
 
           @if (buttonText) {
             <button
+              class="selected-card__button"
               [disabled]="
                 isPokemonDrafted(selectedPokemon) ||
                 selectedPokemon.tier == 'Ban'

@@ -1,15 +1,15 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
+  computed,
+  effect,
   ElementRef,
   EventEmitter,
+  inject,
   Input,
   OnDestroy,
   OnInit,
   Output,
-  computed,
-  effect,
-  inject,
   signal,
 } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -22,6 +22,7 @@ import { RouterModule } from '@angular/router';
 import { Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
 import { Type, TYPES } from '../../data';
+import { IconComponent } from '../../images/icon/icon.component';
 import { LoadingComponent } from '../../images/loading/loading.component';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { Pokemon } from '../../interfaces/pokemon';
@@ -57,6 +58,7 @@ import {
     ReactiveFormsModule,
     LoadingComponent,
     SpriteComponent,
+    IconComponent,
   ],
   styleUrls: ['./league-tier-list.component.scss'],
 })
@@ -66,7 +68,6 @@ export class LeagueTierListComponent implements OnInit, OnDestroy {
   private wsService = inject(WebSocketService);
   private destroy$ = new Subject<void>();
 
-  // State signals
   drafted = signal<{ [division: string]: { pokemonId: string }[] }>({});
   tierGroups = signal<LeagueTierGroup[] | undefined>(undefined);
   sortBy = signal<SortOption>('BST');
@@ -75,11 +76,11 @@ export class LeagueTierListComponent implements OnInit, OnDestroy {
   selectedTypes = signal<Type[]>([]);
   filteredTypes = signal<Type[]>([...TYPES]);
 
-  // Constants
   readonly SortOptions = SORT_OPTIONS;
   readonly types = TYPES;
 
-  // Computed signals
+  compact: boolean = false;
+
   readonly sortedTierGroups = computed(() => {
     const sortBy = this.sortBy();
     const tierGroups = this.tierGroups();
@@ -101,7 +102,6 @@ export class LeagueTierListComponent implements OnInit, OnDestroy {
     return new Set(drafted[selectedDivision]?.map((p) => p.pokemonId) || []);
   });
 
-  // Menu state
   _menu: 'sort' | 'filter' | 'division' | null = null;
 
   set menu(value: 'sort' | 'filter' | 'division' | null) {
@@ -124,7 +124,6 @@ export class LeagueTierListComponent implements OnInit, OnDestroy {
     return Object.entries(this.selectedPokemon.stats);
   }
 
-  // Utility function bindings
   typeInFilter = (pokemon: TierPokemon) =>
     typeInFilter(pokemon, this.filteredTypes(), this.searchText());
 
@@ -261,5 +260,9 @@ export class LeagueTierListComponent implements OnInit, OnDestroy {
 
   isPokemonDrafted(pokemon: Pokemon): boolean {
     return this.draftedPokemonIds().has(pokemon.id);
+  }
+
+  justNumber(value: string) {
+    return value.split(' ')[0];
   }
 }

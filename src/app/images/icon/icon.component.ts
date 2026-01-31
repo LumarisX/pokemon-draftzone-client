@@ -19,11 +19,16 @@ import { BooleanInput } from '@angular/cdk/coercion';
   imports: [CommonModule],
   template: `
     @if (hasSvg) {
-      <div [innerHTML]="svgIcon$ | async" class="icon-wrapper"></div>
+      <div
+        [innerHTML]="svgIcon$ | async"
+        class="icon-wrapper"
+        [style.width.px]="computedWidth"
+        [style.height.px]="computedHeight"
+      ></div>
     } @else {
       <span
         class="material-symbols-outlined"
-        [style.fontSize.px]="computedSize"
+        [style.fontSize.px]="computedHeight ?? 24"
         [style.fontVariationSettings]="fontSettings"
         [attr.aria-label]="ariaLabel"
       >
@@ -60,59 +65,35 @@ import { BooleanInput } from '@angular/cdk/coercion';
       }
 
       .icon-wrapper {
-        display: contents;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        svg {
+          display: block;
+        }
       }
     `,
   ],
 })
 export class IconComponent implements OnChanges {
-  /**
-   * List of available local SVG icon names
-   */
   private readonly localSvgIcons = new Set<string>([
     'logo',
     'logo-small',
     'unknown',
+    'tera',
   ]);
 
-  /**
-   * Icon name (Material Symbol name or custom SVG key)
-   */
   @Input({ required: true }) name!: string;
-
-  /**
-   * Icon size in pixels. Can also use preset sizes: 'sm' (16px), 'md' (24px), 'lg' (32px), 'xl' (48px)
-   * @default 24
-   */
   @Input() size: number | 'sm' | 'md' | 'lg' | 'xl' = 24;
+  @Input() width?: number | 'sm' | 'md' | 'lg' | 'xl';
+  @Input() height?: number | 'sm' | 'md' | 'lg' | 'xl';
+  @Input() square: BooleanInput = false;
 
-  /**
-   * Font weight for Material Symbols (100-700)
-   * @default 400
-   */
   @Input() weight: number = 400;
-
-  /**
-   * Fill for Material Symbols (0 or 1)
-   * @default 0
-   */
   @Input() fill: BooleanInput = false;
-
-  /**
-   * Grade for Material Symbols (-25, 0, 200)
-   * @default 0
-   */
   @Input() grade: -25 | 0 | 200 = 0;
-
-  /**
-   * Optical size for Material Symbols (20-48)
-   * @default 24
-   */
   @Input() opticalSize: number = 24;
-
-  /**
-   * ARIA label for accessibility
-   */
   @Input() ariaLabel?: string;
 
   svgIcon$?: Observable<SafeHtml>;
@@ -129,7 +110,69 @@ export class IconComponent implements OnChanges {
     private sanitizer: DomSanitizer,
   ) {}
 
-  get computedSize(): number {
+  get computedWidth(): number | undefined {
+    if (this.width !== undefined) {
+      if (typeof this.width === 'number') return this.width;
+      const sizeMap: Record<string, number> = {
+        xs: 16,
+        sm: 20,
+        md: 24,
+        lg: 32,
+        xl: 48,
+      };
+      return sizeMap[this.width] || 24;
+    }
+    if (this.height !== undefined) {
+      if (this.square) {
+        if (typeof this.height === 'number') return this.height;
+        const sizeMap: Record<string, number> = {
+          xs: 16,
+          sm: 20,
+          md: 24,
+          lg: 32,
+          xl: 48,
+        };
+        return sizeMap[this.height] || 24;
+      }
+      return undefined;
+    }
+    if (typeof this.size === 'number') return this.size;
+    const sizeMap: Record<string, number> = {
+      xs: 16,
+      sm: 20,
+      md: 24,
+      lg: 32,
+      xl: 48,
+    };
+    return sizeMap[this.size] || 24;
+  }
+
+  get computedHeight(): number | undefined {
+    if (this.height !== undefined) {
+      if (typeof this.height === 'number') return this.height;
+      const sizeMap: Record<string, number> = {
+        xs: 16,
+        sm: 20,
+        md: 24,
+        lg: 32,
+        xl: 48,
+      };
+      return sizeMap[this.height] || 24;
+    }
+    if (this.width !== undefined) {
+      if (this.square) {
+        if (typeof this.width === 'number') return this.width;
+        const sizeMap: Record<string, number> = {
+          xs: 16,
+          sm: 20,
+          md: 24,
+          lg: 32,
+          xl: 48,
+        };
+        return sizeMap[this.width] || 24;
+      }
+      return undefined;
+    }
     if (typeof this.size === 'number') return this.size;
     const sizeMap: Record<string, number> = {
       xs: 16,
@@ -156,7 +199,23 @@ export class IconComponent implements OnChanges {
   private loadSvg(): void {
     const iconPath = `assets/icons/${this.name}.svg`;
     this.svgIcon$ = this.http.get(iconPath, { responseType: 'text' }).pipe(
-      map((svg) => this.sanitizer.bypassSecurityTrustHtml(svg)),
+      map((svg) => {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(svg, 'image/svg+xml');
+        const svgElement = doc.querySelector('svg');
+
+        if (svgElement) {
+          if (this.computedWidth !== undefined) {
+            svgElement.setAttribute('width', `${this.computedWidth}`);
+          }
+          if (this.computedHeight !== undefined) {
+            svgElement.setAttribute('height', `${this.computedHeight}`);
+          }
+          svg = new XMLSerializer().serializeToString(svgElement);
+        }
+
+        return this.sanitizer.bypassSecurityTrustHtml(svg);
+      }),
       catchError((err) => {
         console.error(`Could not load SVG icon: ${this.name}`, err);
         return of(this.sanitizer.bypassSecurityTrustHtml('<svg></svg>'));

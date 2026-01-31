@@ -10,16 +10,24 @@
           <th>Timezone</th>
           <th>Experience</th>
           <th>Dropped</th>
+          <th>Signed Up At</th>
+          <th>Team Name</th>
+          <th>Logo</th>
+          <th>Division</th>
         </tr>
       </thead>
       <tbody>
-        @for (signUp of signUps; track signUp) {
+        @for (user of signUps; track user) {
           <tr>
             <td>{{ $index + 1 }}</td>
-            <td>{{ signUp.name }}</td>
-            <td>{{ signUp.timezone }}</td>
-            <td>{{ signUp.experience }}</td>
-            <td>{{ signUp.dropped }}</td>
+            <td>{{ user.name }}</td>
+            <td>{{ user.timezone }}</td>
+            <td>{{ user.experience }}</td>
+            <td>{{ user.dropped }}</td>
+            <td>{{ user.signedUpAt | date: "short" }}</td>
+            <td>{{ user.teamName }}</td>
+            <td><img [src]="user.logo" alt="" /></td>
+            <td>{{ user.division }}</td>
           </tr>
         }
       </tbody>
