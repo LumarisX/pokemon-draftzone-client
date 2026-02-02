@@ -25,26 +25,26 @@ export class LeagueScheduleComponent implements OnInit, OnDestroy {
     this.activatedRoute.params
       .pipe(takeUntil(this.destroy$))
       .subscribe((params) => {
-        const leagueKey = params['leagueKey'];
+        const tournamentKey = params['tournamentKey'];
         const divisionKey = params['divisionKey'];
 
-        if (leagueKey && divisionKey) {
+        if (tournamentKey && divisionKey) {
           // Division-level schedule
-          this.loadSchedule(leagueKey, divisionKey);
-        } else if (leagueKey) {
+          this.loadSchedule(tournamentKey, divisionKey);
+        } else if (tournamentKey) {
           // League-level schedule (all divisions)
-          this.loadLeagueSchedule(leagueKey);
+          this.loadLeagueSchedule(tournamentKey);
         }
       });
   }
 
-  private loadSchedule(leagueKey: string, divisionKey: string): void {
+  private loadSchedule(tournamentKey: string, divisionKey: string): void {
     this.isLoading = true;
     this.error = null;
 
     this.apiService
       .get<League.Stage[]>(
-        ['leagues', leagueKey, 'divisions', divisionKey, 'schedule'],
+        ['leagues', tournamentKey, 'divisions', divisionKey, 'schedule'],
         false,
       )
       .pipe(takeUntil(this.destroy$))
@@ -61,12 +61,12 @@ export class LeagueScheduleComponent implements OnInit, OnDestroy {
       });
   }
 
-  private loadLeagueSchedule(leagueKey: string): void {
+  private loadLeagueSchedule(tournamentKey: string): void {
     this.isLoading = true;
     this.error = null;
 
     this.apiService
-      .get<League.Stage[]>(['leagues', leagueKey, 'schedule'], false)
+      .get<League.Stage[]>(['leagues', tournamentKey, 'schedule'], false)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (data) => {

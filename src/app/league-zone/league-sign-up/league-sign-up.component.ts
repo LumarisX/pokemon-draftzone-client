@@ -57,7 +57,7 @@ export class LeagueSignUpComponent implements OnInit, OnDestroy {
   isUploading = false;
   uploadError: string | null = null;
   relatedEntityId: string | null = null;
-  leagueId: string | null = null;
+  tournamentId: string | null = null;
 
   leagueInfo: League.LeagueInfo | null = null;
 
@@ -127,15 +127,15 @@ export class LeagueSignUpComponent implements OnInit, OnDestroy {
   }
 
   onSubmit() {
-    const leagueKey = this.leagueService.leagueKey();
-    if (this.signupForm.valid && leagueKey) {
+    const tournamentKey = this.leagueService.tournamentKey();
+    if (this.signupForm.valid && tournamentKey) {
       this.leagueService.signUp(this.signupForm.value).subscribe({
         next: (response: any) => {
           this.added = true;
           this.relatedEntityId = response.userId;
-          this.leagueId = response.leagueId;
+          this.tournamentId = response.tournamentId;
           localStorage.setItem(
-            leagueKey,
+            tournamentKey,
             this.signupForm.get('discordName')?.value ?? '',
           );
 
@@ -216,7 +216,7 @@ export class LeagueSignUpComponent implements OnInit, OnDestroy {
             file.size,
             file.type || 'image/png',
             this.relatedEntityId!,
-            this.leagueId!,
+            this.tournamentId!,
           );
         }),
         catchError((error) => {

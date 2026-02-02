@@ -16,7 +16,7 @@ export class LeagueAuctionComponent implements OnInit, OnDestroy {
   private auctionService = inject(AuctionService);
   private route = inject(ActivatedRoute);
 
-  @Input() leagueId!: string;
+  @Input() tournamentId!: string;
 
   auctions = new Map<string, any>();
   bidAmounts = new Map<string, number>();
@@ -29,8 +29,8 @@ export class LeagueAuctionComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
-      this.leagueId = params['leagueId']!;
-      this.auctionService.joinAuction(this.leagueId);
+      this.tournamentId = params['tournamentId']!;
+      this.auctionService.joinAuction(this.tournamentId);
 
       this.subs.add(
         this.auctionService.allAuctions$.subscribe((auctionsObj) => {
@@ -81,7 +81,7 @@ export class LeagueAuctionComponent implements OnInit, OnDestroy {
     this.errorMessage = null;
     const bidAmount = this.bidAmounts.get(itemId);
     if (bidAmount && bidAmount > 0) {
-      this.auctionService.placeBid(this.leagueId, itemId, bidAmount);
+      this.auctionService.placeBid(this.tournamentId, itemId, bidAmount);
     }
   }
 

@@ -25,10 +25,10 @@ export class LeagueRulesOverviewComponent implements OnInit, OnDestroy {
   activeSection = 0;
 
   ngOnInit(): void {
-    const leagueKey = this.leagueZoneService.leagueKey();
-    if (leagueKey) {
+    const tournamentKey = this.leagueZoneService.tournamentKey();
+    if (tournamentKey) {
       this.leagueZoneService
-        .getRules(leagueKey)
+        .getRules(tournamentKey)
         .pipe(takeUntil(this.destroy$))
         .subscribe((ruleSections) => {
           // Convert tabs to spaces for proper markdown parsing

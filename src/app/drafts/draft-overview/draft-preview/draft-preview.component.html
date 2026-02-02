@@ -15,7 +15,7 @@
     <pdz-loading></pdz-loading>
   } @else {
     <div class="drafts-grid">
-      @for (draft of drafts; track draft.leagueId) {
+      @for (draft of drafts; track draft.tournamentId) {
         <div class="draft-card">
           <div class="card-header">
             @if (draft.score) {
@@ -29,17 +29,17 @@
             <div class="card-menu">
               <button
                 class="more-btn"
-                (click)="toggleMenu(draft.leagueId, $event)"
+                (click)="toggleMenu(draft.tournamentId, $event)"
               >
                 <mat-icon>more_vert</mat-icon>
               </button>
 
-              @if (openDropdown === draft.leagueId) {
+              @if (openDropdown === draft.tournamentId) {
                 <div class="menu-dropdown">
                   <button
                     class="menu-item"
                     [routerLink]="['edit']"
-                    [queryParams]="{ draft: draft.leagueId | json }"
+                    [queryParams]="{ draft: draft.tournamentId | json }"
                   >
                     <mat-icon>edit_document</mat-icon> Edit Team
                   </button>
@@ -52,13 +52,15 @@
                   </button>
                   <button
                     class="menu-item"
-                    (click)="setMenuState(draft.leagueId, 'confirm-archive')"
+                    (click)="
+                      setMenuState(draft.tournamentId, 'confirm-archive')
+                    "
                   >
                     <mat-icon>archive</mat-icon> Archive
                   </button>
                   <button
                     class="menu-item"
-                    (click)="setMenuState(draft.leagueId, 'confirm-delete')"
+                    (click)="setMenuState(draft.tournamentId, 'confirm-delete')"
                   >
                     <mat-icon>delete_forever</mat-icon>
                     Delete
@@ -78,37 +80,37 @@
             </div>
           </div>
           <div class="card-footer">
-            @if (menuState[draft.leagueId] === "confirm-archive") {
+            @if (menuState[draft.tournamentId] === "confirm-archive") {
               <div class="confirmation">
                 <p>Archive draft?</p>
                 <div class="confirmation-buttons">
                   <button
                     class="btn btn-confirm"
-                    (click)="archive(draft.leagueId)"
+                    (click)="archive(draft.tournamentId)"
                   >
                     Yes
                   </button>
                   <button
                     class="btn btn-cancel"
-                    (click)="setMenuState(draft.leagueId, '')"
+                    (click)="setMenuState(draft.tournamentId, '')"
                   >
                     No
                   </button>
                 </div>
               </div>
-            } @else if (menuState[draft.leagueId] === "confirm-delete") {
+            } @else if (menuState[draft.tournamentId] === "confirm-delete") {
               <div class="confirmation">
                 <p>Delete draft?</p>
                 <div class="confirmation-buttons">
                   <button
                     class="btn btn-confirm"
-                    (click)="delete(draft.leagueId)"
+                    (click)="delete(draft.tournamentId)"
                   >
                     Yes
                   </button>
                   <button
                     class="btn btn-cancel"
-                    (click)="setMenuState(draft.leagueId, '')"
+                    (click)="setMenuState(draft.tournamentId, '')"
                   >
                     No
                   </button>
@@ -117,10 +119,12 @@
             } @else {
               <a
                 class="footer-link"
-                [routerLink]="['/', draftPath, draft.leagueId]"
+                [routerLink]="['/', draftPath, draft.tournamentId]"
                 >Matches</a
               >
-              <a class="footer-link" [routerLink]="[draft.leagueId, 'stats']"
+              <a
+                class="footer-link"
+                [routerLink]="[draft.tournamentId, 'stats']"
                 >Stats</a
               >
             }

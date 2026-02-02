@@ -17,7 +17,7 @@ export class LeagueDashboardComponent implements OnInit, OnDestroy {
 
   team?: League.LeagueTeam;
   matchups: League.Matchup[] = [];
-  leagueId?: string;
+  tournamentId?: string;
   leagueName = '';
   divisionName = '';
 
@@ -25,23 +25,23 @@ export class LeagueDashboardComponent implements OnInit, OnDestroy {
     [
       {
         label: 'Scheduling',
-        route: ['/leagues', this.leagueKey, this.divisionKey, 'schedule'],
+        route: ['/leagues', this.tournamentKey, this.divisionKey, 'schedule'],
       },
       {
         label: 'Teams',
-        route: ['/leagues', this.leagueKey, this.divisionKey, 'teams'],
+        route: ['/leagues', this.tournamentKey, this.divisionKey, 'teams'],
       },
       {
         label: 'Standings',
-        route: ['/leagues', this.leagueKey, this.divisionKey, 'standings'],
+        route: ['/leagues', this.tournamentKey, this.divisionKey, 'standings'],
       },
       {
         label: 'Tier List',
-        route: ['/leagues', this.leagueKey, 'tier-list'],
+        route: ['/leagues', this.tournamentKey, 'tier-list'],
       },
       {
         label: 'Draft',
-        route: ['/leagues', this.leagueKey, this.divisionKey, 'draft'],
+        route: ['/leagues', this.tournamentKey, this.divisionKey, 'draft'],
       },
     ];
 
@@ -55,8 +55,8 @@ export class LeagueDashboardComponent implements OnInit, OnDestroy {
       });
   }
 
-  get leagueKey(): string {
-    return this.leagueZoneService.leagueKey() || '';
+  get tournamentKey(): string {
+    return this.leagueZoneService.tournamentKey() || '';
   }
 
   get divisionKey(): string {

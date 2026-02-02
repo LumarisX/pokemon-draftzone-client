@@ -12,7 +12,7 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule],
 })
 export class LeagueManageSignupsComponent implements OnInit {
-  leagueId: string | null = null;
+  tournamentId: string | null = null;
   signUps: League.LeagueSignUp[] = [];
 
   route = inject(ActivatedRoute);

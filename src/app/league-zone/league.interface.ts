@@ -143,7 +143,7 @@ export namespace League {
 
   export type LeagueInfo = {
     name: string;
-    leagueKey: string;
+    tournamentKey: string;
     description?: string;
     format: string;
     ruleset: string;

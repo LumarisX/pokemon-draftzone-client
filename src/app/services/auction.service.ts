@@ -41,15 +41,15 @@ export class AuctionService {
     );
   }
 
-  joinAuction(leagueId: string) {
-    if (leagueId) {
-      this.socket.emit('joinAuction', leagueId);
+  joinAuction(tournamentId: string) {
+    if (tournamentId) {
+      this.socket.emit('joinAuction', tournamentId);
     }
   }
 
-  placeBid(leagueId: string, itemId: string, bidAmount: number) {
-    if (leagueId && itemId && bidAmount > 0) {
-      this.socket.emit('placeBid', { leagueId, itemId, bidAmount });
+  placeBid(tournamentId: string, itemId: string, bidAmount: number) {
+    if (tournamentId && itemId && bidAmount > 0) {
+      this.socket.emit('placeBid', { tournamentId, itemId, bidAmount });
     }
   }
 }

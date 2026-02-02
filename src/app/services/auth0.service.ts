@@ -6,7 +6,7 @@ import { Settings } from '../pages/settings/settings.service';
 export type LeagueRole = 'owner' | 'coach' | 'helper' | 'player' | 'spectator';
 
 export type LeagueRoles = {
-  [leagueId: string]: LeagueRole;
+  [tournamentId: string]: LeagueRole;
 };
 
 type AppUser = User & {

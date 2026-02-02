@@ -53,14 +53,14 @@ export class DraftArchiveComponent {
     });
   }
 
-  setMenuState(leagueId: string, state: '' | 'confirm-delete') {
-    this.menuState[leagueId] = state;
+  setMenuState(tournamentId: string, state: '' | 'confirm-delete') {
+    this.menuState[tournamentId] = state;
   }
 
-  toggleMenu(leagueId: string, event: MouseEvent) {
+  toggleMenu(tournamentId: string, event: MouseEvent) {
     event.stopPropagation();
-    if (this.openDropdown !== leagueId) {
-      this.openDropdown = leagueId;
+    if (this.openDropdown !== tournamentId) {
+      this.openDropdown = tournamentId;
     }
   }
 

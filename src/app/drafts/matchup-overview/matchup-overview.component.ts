@@ -53,7 +53,7 @@ export class MatchupOverviewComponent implements OnInit {
   matchupId!: string;
   shared: boolean = false;
   shareUrl?: string;
-  leagueId?: string;
+  tournamentId?: string;
   timeString?: string;
   copied: boolean = false;
   draftPath = DraftOverviewPath;
@@ -101,7 +101,7 @@ export class MatchupOverviewComponent implements OnInit {
     this.route.params.subscribe((params) => {
       this.matchupId = params['matchupId'];
       this.shareUrl = 'https://pokemondraftzone.com/matchup/' + this.matchupId;
-      this.leagueId = params['teamId'];
+      this.tournamentId = params['teamId'];
       this.matchupService.getMatchup(this.matchupId!).subscribe((data) => {
         this.matchupData = <MatchupData>data;
         if ('gameTime' in this.matchupData) {

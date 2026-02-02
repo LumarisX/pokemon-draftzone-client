@@ -12,7 +12,7 @@
 
 <nav class="navigation-tabs">
   @for (section of navigationSections; track section.route) {
-    <button 
+    <button
       class="navigation-tabs__tab"
       (click)="navigateTo(section.route)"
       type="button"
@@ -55,10 +55,9 @@
   <div class="widget">
     <div class="widget-title">League Chat</div>
     <div class="widget-body">
-      @if (leagueId) {
-        <pdz-chat [roomId]="leagueId"></pdz-chat>
+      @if (tournamentId) {
+        <pdz-chat [roomId]="tournamentId"></pdz-chat>
       }
     </div>
   </div>
 </div> -->
-

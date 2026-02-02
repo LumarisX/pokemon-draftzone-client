@@ -42,7 +42,7 @@ export class DraftPreviewComponent {
     this.draftService.getDraftsList().subscribe((data) => {
       this.drafts = data;
       this.drafts.forEach((draft) => {
-        this.menuState[draft.leagueId] = '';
+        this.menuState[draft.tournamentId] = '';
       });
     });
   }
@@ -61,15 +61,16 @@ export class DraftPreviewComponent {
   }
 
   setMenuState(
-    leagueId: string,
+    tournamentId: string,
     state: '' | 'confirm-archive' | 'confirm-delete',
   ) {
-    this.menuState[leagueId] = state;
+    this.menuState[tournamentId] = state;
   }
 
-  toggleMenu(leagueId: string, event: MouseEvent) {
+  toggleMenu(tournamentId: string, event: MouseEvent) {
     event.stopPropagation();
-    this.openDropdown = this.openDropdown === leagueId ? null : leagueId;
+    this.openDropdown =
+      this.openDropdown === tournamentId ? null : tournamentId;
   }
 
   toPlanner(draft: Draft): string {

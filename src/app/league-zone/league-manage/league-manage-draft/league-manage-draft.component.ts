@@ -35,7 +35,7 @@ export class LeagueManageDraftComponent implements OnInit {
   leagueZoneService = inject(LeagueZoneService);
   webSocketService = inject(WebSocketService);
   private notificationService = inject(LeagueNotificationService);
-  private leagueId: string | null = null;
+  private tournamentId: string | null = null;
   teams: TeamForDraft[] = [];
   status: 'PRE_DRAFT' | 'IN_PROGRESS' | 'PAUSED' | 'COMPLETED' = 'IN_PROGRESS';
 
@@ -83,7 +83,7 @@ export class LeagueManageDraftComponent implements OnInit {
     }
 
     this.leagueManageService
-      .setPick(this.leagueZoneService.leagueKey()!, {
+      .setPick(this.leagueZoneService.tournamentKey()!, {
         teamId: team.id,
         pokemonId: team.selectedPokemon.id,
         pickNumber: team.draft.length,

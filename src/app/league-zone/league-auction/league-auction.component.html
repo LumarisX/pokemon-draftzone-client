@@ -1,5 +1,5 @@
 <div class="auction-house">
-  <h3>Live Auctions for {{ leagueId }}</h3>
+  <h3>Live Auctions for {{ tournamentId }}</h3>
 
   @for (auction of auctionArray; track $index) {
     <div class="auction-container">
@@ -20,51 +20,51 @@
         Current Bid:
         <strong>
           <mat-icon svgIcon="pdollar" class="pdollar" />{{
-          auction.currentBid | number: "1.0-2"
+            auction.currentBid | number: "1.0-2"
           }}</strong
-          >
-        </div>
-        <div class="bid-form">
-          <input
-            type="number"
-            [ngModel]="bidAmounts.get(auction.itemId)"
-            (ngModelChange)="bidAmounts.set(auction.itemId, $event)"
-            placeholder="Your bid"
-            [step]="minBidIncrease"
-            [min]="auction.currentBid + minBidIncrease"
-            />
-            <button (click)="placeBid(auction.itemId)">Place Bid</button>
-          </div>
-        </div>
-        } @empty {
-        <div class="no-auctions">
-          <p>No active auctions at the moment.</p>
+        >
+      </div>
+      <div class="bid-form">
+        <input
+          type="number"
+          [ngModel]="bidAmounts.get(auction.itemId)"
+          (ngModelChange)="bidAmounts.set(auction.itemId, $event)"
+          placeholder="Your bid"
+          [step]="minBidIncrease"
+          [min]="auction.currentBid + minBidIncrease"
+        />
+        <button (click)="placeBid(auction.itemId)">Place Bid</button>
+      </div>
+    </div>
+  } @empty {
+    <div class="no-auctions">
+      <p>No active auctions at the moment.</p>
+    </div>
+  }
+
+  @if (endedAuctionArray.length > 0) {
+    <div class="ended-auctions-container">
+      <h4>Recently Ended</h4>
+      @for (result of endedAuctionArray; track result) {
+        <div class="auction-ended">
+          <p>
+            <strong>{{ result.itemName }}</strong> sold for
+            <strong>
+              <mat-icon svgIcon="pdollar" class="pdollar" />{{
+                result.finalBid | number: "1.0-2"
+              }}</strong
+            >
+            to
+            {{ result.winner }}
+          </p>
         </div>
       }
+    </div>
+  }
 
-      @if (endedAuctionArray.length > 0) {
-        <div class="ended-auctions-container">
-          <h4>Recently Ended</h4>
-          @for (result of endedAuctionArray; track result) {
-            <div class="auction-ended">
-              <p>
-                <strong>{{ result.itemName }}</strong> sold for
-                <strong>
-                  <mat-icon svgIcon="pdollar" class="pdollar" />{{
-                  result.finalBid | number: "1.0-2"
-                  }}</strong
-                  >
-                  to
-                  {{ result.winner }}
-                </p>
-              </div>
-            }
-          </div>
-        }
-
-        @if (errorMessage) {
-          <div class="error-message">
-            {{ errorMessage }}
-          </div>
-        }
-      </div>
+  @if (errorMessage) {
+    <div class="error-message">
+      {{ errorMessage }}
+    </div>
+  }
+</div>

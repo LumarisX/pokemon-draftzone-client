@@ -27,7 +27,7 @@ const routes: Routes = [
     component: LeagueOverviewComponent,
   },
   {
-    path: `:leagueKey/${LeagueManagePath}`,
+    path: `:tournamentKey/${LeagueManagePath}`,
     loadChildren: () =>
       import('./league-manage/league-manage.module').then(
         (m) => m.LeagueManageModule,
@@ -40,68 +40,68 @@ const routes: Routes = [
     component: LeagueNewComponent,
   },
   {
-    path: ':leagueKey',
+    path: ':tournamentKey',
     component: LeagueLandingComponent,
   },
   {
-    path: ':leagueKey/rules',
+    path: ':tournamentKey/rules',
     component: LeagueRulesOverviewComponent,
   },
   {
-    path: ':leagueKey/tier-list',
+    path: ':tournamentKey/tier-list',
     component: LeagueTierListComponent,
   },
   {
-    path: ':leagueKey/tier-list/edit',
+    path: ':tournamentKey/tier-list/edit',
     component: LeagueTierListFormComponent,
   },
   {
-    path: ':leagueKey/sign-up',
+    path: ':tournamentKey/sign-up',
     component: LeagueSignUpComponent,
     canActivate: [AuthGuard],
   },
   {
-    path: ':leagueKey/bracket',
+    path: ':tournamentKey/bracket',
     component: LeagueBracketComponent,
   },
   {
-    path: ':leagueKey/trades',
+    path: ':tournamentKey/trades',
     component: LeagueTradesComponent,
   },
   {
-    path: ':leagueKey/:divisionKey',
+    path: ':tournamentKey/:divisionKey',
     component: LeagueDashboardComponent,
   },
   {
-    path: ':leagueKey/:divisionKey/schedule',
+    path: ':tournamentKey/:divisionKey/schedule',
     component: LeagueScheduleComponent,
   },
   {
-    path: ':leagueKey/:divisionKey/schedule',
+    path: ':tournamentKey/:divisionKey/schedule',
     component: LeagueScheduleComponent,
   },
   {
-    path: ':leagueKey/:divisionKey/standings',
+    path: ':tournamentKey/:divisionKey/standings',
     component: LeagueStandingsComponent,
   },
   {
-    path: ':leagueKey/:divisionKey/draft',
+    path: ':tournamentKey/:divisionKey/draft',
     component: LeagueDraftComponent,
   },
   {
-    path: ':leagueKey/:divisionKey/teams',
+    path: ':tournamentKey/:divisionKey/teams',
     component: LeagueTeamsComponent,
   },
   {
-    path: ':leagueKey/:divisionKey/power-rankings',
+    path: ':tournamentKey/:divisionKey/power-rankings',
     component: PowerRankingsComponent,
   },
   {
-    path: ':leagueKey/:divisionKey/team/:teamId',
+    path: ':tournamentKey/:divisionKey/team/:teamId',
     component: LeagueTeamComponent,
   },
   // {
-  //   path: 'view/:leagueId/auction',
+  //   path: 'view/:tournamentId/auction',
   //   component: LeagueAuctionComponent,
   //   canActivate: [leagueRoleGuard],
   //   data: { role: 'coach' },

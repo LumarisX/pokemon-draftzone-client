@@ -489,7 +489,7 @@ export class LeagueBracketGraphComponent
           .attr('height', `${this.nodeBox.height}px`)
           .append('xhtml:a')
           .attr('class', 'node-team')
-          .attr('href', 'leagues/view/leagueidplaceholder/team/1')
+          .attr('href', 'leagues/view/tournamentIdplaceholder/team/1')
           .html(`<div class="team-logo"><img src="${teamData.logo ?? ''}" /></div>
         <div class="team-info">
             <div class="team-name">${teamData.teamName}</div>

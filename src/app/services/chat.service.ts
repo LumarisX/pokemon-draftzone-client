@@ -28,20 +28,20 @@ export class ChatService {
     });
   }
 
-  joinRoom(leagueId: string) {
-    if (this.socket && leagueId) {
-      this.socket.emit('joinRoom', leagueId);
+  joinRoom(tournamentId: string) {
+    if (this.socket && tournamentId) {
+      this.socket.emit('joinRoom', tournamentId);
     }
   }
 
   sendMessage(
-    leagueId: string,
+    tournamentId: string,
     message: string,
     username: string = 'Anonymous',
   ) {
     if (this.socket && message) {
       const messageData = {
-        leagueId: leagueId,
+        tournamentId: tournamentId,
         text: message,
         user: username,
         timestamp: new Date(),

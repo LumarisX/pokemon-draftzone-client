@@ -34,10 +34,10 @@ export const leagueRoleGuard: CanActivateFn = (
     });
   }
 
-  const leagueKey = route.paramMap.get('leagueKey');
-  if (!leagueKey) {
+  const tournamentKey = route.paramMap.get('tournamentKey');
+  if (!tournamentKey) {
     console.error(
-      'leagueRoleGuard: "leagueKey" parameter is not defined in the route.',
+      'leagueRoleGuard: "tournamentKey" parameter is not defined in the route.',
     );
     router.navigate(['/forbidden']);
     return new Observable<boolean>((subscriber) => {
@@ -46,14 +46,14 @@ export const leagueRoleGuard: CanActivateFn = (
     });
   }
 
-  return leagueManageService.canManage(leagueKey).pipe(
+  return leagueManageService.canManage(tournamentKey).pipe(
     take(1),
     map((roles) => {
       if (roles.includes(requiredRole)) {
         return true;
       }
       console.warn(
-        `Access denied: User does not have the required role '${requiredRole}' for league '${leagueKey}'.`,
+        `Access denied: User does not have the required role '${requiredRole}' for league '${tournamentKey}'.`,
       );
       router.navigate(['/forbidden']);
       return false;

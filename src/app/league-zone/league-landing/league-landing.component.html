@@ -38,7 +38,7 @@
     <!-- Action Buttons -->
     <div class="actions-section">
       <button
-        [routerLink]="['/leagues', leagueInfo.leagueKey, 'sign-up']"
+        [routerLink]="['/leagues', leagueInfo.tournamentKey, 'sign-up']"
         class="button button--primary"
         [disabled]="isSignUpClosed()"
         [class.is-disabled]="isSignUpClosed()"
@@ -54,14 +54,14 @@
       </button>
 
       <button
-        [routerLink]="['/leagues', leagueInfo.leagueKey, 'rules']"
+        [routerLink]="['/leagues', leagueInfo.tournamentKey, 'rules']"
         class="button button--primary"
       >
         <span class="button__text"> Rules </span>
         <span class="button__subtext"> Read them!</span>
       </button>
       <button
-        [routerLink]="['/leagues', leagueInfo.leagueKey, 'tier-list']"
+        [routerLink]="['/leagues', leagueInfo.tournamentKey, 'tier-list']"
         class="button button--primary"
       >
         <span class="button__text"> Tier List </span>
@@ -88,7 +88,7 @@
             <button
               [routerLink]="[
                 '/leagues',
-                leagueInfo.leagueKey,
+                leagueInfo.tournamentKey,
                 division.divisionKey,
               ]"
               class="button button--division"

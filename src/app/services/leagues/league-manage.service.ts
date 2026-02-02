@@ -10,7 +10,7 @@ export class LeagueManageService {
   leagueZoneService = inject(LeagueZoneService);
 
   setPick(
-    leagueId: string,
+    tournamentId: string,
     pick: {
       teamId: string;
       pokemonId: string;
@@ -19,19 +19,22 @@ export class LeagueManageService {
     },
   ) {
     return this.apiService.post(
-      `leagues/${leagueId}/manage/divisions/${this.leagueZoneService.divisionKey()}/setdraft`,
+      `leagues/${tournamentId}/manage/divisions/${this.leagueZoneService.divisionKey()}/setdraft`,
       true,
       pick,
     );
   }
 
-  canManage(leagueKey: string) {
-    return this.apiService.get<string[]>(`leagues/${leagueKey}/roles`, true);
+  canManage(tournamentKey: string) {
+    return this.apiService.get<string[]>(
+      `leagues/${tournamentKey}/roles`,
+      true,
+    );
   }
 
   setDivisionState(state: string) {
     return this.apiService.post(
-      `leagues/${this.leagueZoneService.leagueKey()}/manage/divisions/${this.leagueZoneService.divisionKey()}/state`,
+      `leagues/${this.leagueZoneService.tournamentKey()}/manage/divisions/${this.leagueZoneService.divisionKey()}/state`,
       true,
       { state },
     );
@@ -39,7 +42,7 @@ export class LeagueManageService {
 
   skipCurrentPick() {
     return this.apiService.post(
-      `leagues/${this.leagueZoneService.leagueKey()}/manage/divisions/${this.leagueZoneService.divisionKey()}/skip`,
+      `leagues/${this.leagueZoneService.tournamentKey()}/manage/divisions/${this.leagueZoneService.divisionKey()}/skip`,
       true,
       '',
     );
