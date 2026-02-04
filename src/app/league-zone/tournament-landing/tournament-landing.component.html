@@ -38,7 +38,7 @@
     <!-- Action Buttons -->
     <div class="actions-section">
       <button
-        [routerLink]="['/leagues', leagueInfo.tournamentKey, 'sign-up']"
+        routerLink="./sign-up"
         class="button button--primary"
         [disabled]="isSignUpClosed()"
         [class.is-disabled]="isSignUpClosed()"
@@ -53,17 +53,11 @@
         }
       </button>
 
-      <button
-        [routerLink]="['/leagues', leagueInfo.tournamentKey, 'rules']"
-        class="button button--primary"
-      >
+      <button routerLink="./rules" class="button button--primary">
         <span class="button__text"> Rules </span>
         <span class="button__subtext"> Read them!</span>
       </button>
-      <button
-        [routerLink]="['/leagues', leagueInfo.tournamentKey, 'tier-list']"
-        class="button button--primary"
-      >
+      <button routerLink="./tier-list" class="button button--primary">
         <span class="button__text"> Tier List </span>
       </button>
       @if (leagueInfo.discord) {
@@ -86,11 +80,7 @@
         <div class="divisions-section__grid">
           @for (division of leagueInfo.divisions; track division.divisionKey) {
             <button
-              [routerLink]="[
-                '/leagues',
-                leagueInfo.tournamentKey,
-                division.divisionKey,
-              ]"
+              [routerLink]="'./divisions/' + division.divisionKey"
               class="button button--division"
             >
               <span class="button__text">{{ division.name }}</span>

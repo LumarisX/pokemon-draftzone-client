@@ -1,17 +1,16 @@
-
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
-import { LoadingComponent } from "../../images/loading/loading.component";
+import { LoadingComponent } from '../../images/loading/loading.component';
 import { LeagueZoneService } from '../../services/leagues/league-zone.service';
 import { League } from '../league.interface';
 import { getLogoUrl } from '../league.util';
 
 @Component({
   selector: 'pdz-league-landing',
-  templateUrl: './league-landing.component.html',
-  styleUrl: './league-landing.component.scss',
+  templateUrl: './tournament-landing.component.html',
+  styleUrl: './tournament-landing.component.scss',
   imports: [CommonModule, RouterModule, LoadingComponent],
 })
 export class LeagueLandingComponent implements OnInit {

@@ -5,12 +5,12 @@ import { LeagueZoneService } from '../../../services/leagues/league-zone.service
 import { League } from '../../league.interface';
 
 @Component({
-  selector: 'pdz-league',
+  selector: 'pdz-division-dashboard',
   imports: [RouterModule],
   templateUrl: './division-dashboard.component.html',
   styleUrls: ['./division-dashboard.component.scss'],
 })
-export class LeagueDashboardComponent implements OnInit, OnDestroy {
+export class DivisionDashboardComponent implements OnInit, OnDestroy {
   private leagueZoneService = inject(LeagueZoneService);
   private router = inject(Router);
   private destroy$ = new Subject<void>();
