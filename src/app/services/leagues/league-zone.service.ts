@@ -457,16 +457,6 @@ export class LeagueZoneService {
     return this.apiService.get(`leagues/${this.tournamentKey()}/info`, false);
   }
 
-  getDetails(): Observable<{
-    format: string;
-    ruleset: string;
-    draft: [Date, Date];
-    season: [Date, Date];
-    prize: number;
-  }> {
-    return this.apiService.get(`battlezone/pdbl`, false);
-  }
-
   getSignUps(): Observable<League.LeagueSignUp[]> {
     return this.apiService.get(`leagues/${this.tournamentKey()}/signup`, true);
   }

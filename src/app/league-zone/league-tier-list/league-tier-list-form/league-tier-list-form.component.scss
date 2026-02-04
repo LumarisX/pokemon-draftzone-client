@@ -15,7 +15,6 @@
   gap: var(--pdz-space-md);
 }
 
-// Header toolbar
 .toolbar {
   display: flex;
   gap: var(--pdz-space-md);
@@ -26,7 +25,7 @@
   box-shadow: var(--pdz-level-1);
 
   &__title {
-    @include apply-typography(headline-small);
+    @include apply-typography(headline-sm);
     color: pdz-color(on-surface);
     margin: 0;
   }
@@ -69,7 +68,6 @@
   }
 }
 
-// Main content area
 .tier-main {
   flex: 1;
   display: flex;
@@ -81,7 +79,6 @@
   position: relative;
 }
 
-// Tiers container (horizontal layout)
 .tiers-container {
   flex: 1;
   display: flex;
@@ -109,7 +106,6 @@
   }
 }
 
-// Null tier container (fixed on right)
 .null-tier-container {
   display: flex;
   flex-direction: column;
@@ -121,7 +117,6 @@
   border-left: 3px solid pdz-color(outline);
 }
 
-// Individual tier
 .tier {
   display: flex;
   flex-direction: column;
@@ -159,7 +154,7 @@
   }
 
   &__name {
-    @include apply-typography(title-medium);
+    @include apply-typography(title-md);
     font-weight: 600;
   }
 
@@ -183,7 +178,6 @@
     overflow-y: auto;
     transition: all 0.2s ease;
 
-    // When dragging over this list
     &.cdk-drop-list-dragging {
       background-color: pdz-color(primary-container-low);
       box-shadow: inset 0 0 0 2px pdz-color(primary);
@@ -195,7 +189,7 @@
       align-items: center;
       justify-content: center;
       color: pdz-color(on-surface-variant);
-      @include apply-typography(body-small);
+      @include apply-typography(body-sm);
       font-style: italic;
       min-height: 120px;
       border: 2px dashed pdz-color(outline-variant);
@@ -207,7 +201,6 @@
         text-align: center;
       }
 
-      // Enhanced styling when dragging
       &.cdk-drop-list-dragging {
         border-color: pdz-color(primary);
         border-style: solid;
@@ -227,7 +220,6 @@
   }
 }
 
-// Pokemon entry
 .pokemon-entry {
   display: flex;
   align-items: center;
@@ -282,7 +274,7 @@
 
   &__name {
     flex: 1;
-    @include apply-typography(body-medium);
+    @include apply-typography(body-md);
     color: pdz-color(on-surface);
   }
 
@@ -316,7 +308,6 @@
   }
 }
 
-// Icon button
 .icon-button {
   display: inline-flex;
   align-items: center;
@@ -358,7 +349,6 @@
   }
 }
 
-// Action button
 .action-button {
   display: inline-flex;
   align-items: center;
@@ -369,7 +359,7 @@
   color: pdz-color(on-surface);
   border-radius: var(--pdz-shape-corner-full);
   cursor: pointer;
-  @include apply-typography(label-medium);
+  @include apply-typography(label-md);
   transition: all 0.2s ease;
 
   mat-icon {
@@ -411,7 +401,6 @@
   }
 }
 
-// Add tier button
 .add-tier-button {
   display: flex;
   align-items: center;
@@ -439,7 +428,6 @@
   }
 }
 
-// Drag and drop states
 .cdk-drag-preview {
   box-sizing: border-box;
   border-radius: var(--pdz-shape-corner-xs);
@@ -450,7 +438,6 @@
   cursor: grabbing !important;
   overflow: visible !important;
 
-  // Make the preview look like the original item
   .pokemon-entry {
     background-color: pdz-color(surface);
     border-color: pdz-color(primary);
@@ -482,13 +469,11 @@
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
-// Drop list receiving state
 .tier__pokemon-list.cdk-drop-list-receiving {
   background-color: pdz-color(primary-container) !important;
   box-shadow: inset 0 0 0 3px pdz-color(primary) !important;
 }
 
-// Multi-drag preview
 .multi-drag-preview {
   box-sizing: border-box;
   overflow: visible !important;
@@ -520,7 +505,6 @@
   justify-content: center;
 }
 
-// Loading state
 pdz-loading {
   display: flex;
   align-items: center;
@@ -528,7 +512,6 @@ pdz-loading {
   height: 100%;
 }
 
-// Unsaved changes indicator
 .unsaved-indicator {
   display: inline-flex;
   align-items: center;
@@ -537,7 +520,7 @@ pdz-loading {
   background-color: pdz-color(warning-container);
   color: pdz-color(on-warning-container);
   border-radius: var(--pdz-shape-corner-full);
-  @include apply-typography(label-small);
+  @include apply-typography(label-sm);
 
   mat-icon {
     font-size: 1rem;
@@ -546,7 +529,6 @@ pdz-loading {
   }
 }
 
-// Selection indicator
 .selection-indicator {
   display: inline-flex;
   align-items: center;
@@ -555,7 +537,7 @@ pdz-loading {
   background-color: pdz-color(primary-container);
   color: pdz-color(on-primary-container);
   border-radius: var(--pdz-shape-corner-full);
-  @include apply-typography(label-small);
+  @include apply-typography(label-sm);
   font-weight: 600;
 
   mat-icon {

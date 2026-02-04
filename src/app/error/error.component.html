@@ -1,49 +1,92 @@
-@if (error) {
-  <div
-    @fadeInOut
-    class="fixed error-container top-24 w-full flex justify-center"
-    >
+<div class="error-container">
+  @for (error of errors; track trackByErrorId($index, error)) {
     <div
-      class="w-96 bg-opacity-90 error-box shadow-xl min-h-16 bg-red-300 rounded-xl border-2 border-red-400"
-      >
-      <div class="w-full flex">
-        @if (error.status !== undefined && error.status != 0) {
-          <div class="px-2 font-semibold">Error {{ error.status }}:</div>
-        }
-        @if (error.status === undefined || error.status === 0) {
-          <div class="px-2 font-semibold">Error:</div>
-        }
-        <div class="flex-grow"></div>
-        <div
-          class="w-6 h-6 pt-1 pr-1 hover:cursor-pointer"
-          (click)="clearError()"
-          >
-          <close-svg></close-svg>
-        </div>
-      </div>
-      <!-- fix overflow text -->
-      <div class="px-2 pb-2 whitespace-normal">
-        @switch (error.status) {
-          @default {
-            <div>
-              {{ error.statusText }}
-            </div>
-            @if (error.error?.message) {
-              <div>Message: {{ error.error!.message }}</div>
-            }
-            @if (error.error?.code) {
-              <div>Code: {{ error.error!.code }}</div>
-            }
-            <div>URI: {{ error.url }}</div>
+      class="error-box"
+      [class.error-box--dismissing]="isDismissing(error.id)"
+    >
+      <div class="error-box__header">
+        <div class="error-box__title">
+          @if (error.status !== undefined && error.status !== 0) {
+            <span>Error {{ error.status }}</span>
+          } @else {
+            <span>Error</span>
           }
+          @if (error.error?.code) {
+            <span class="error-box__code">{{ error.error!.code }}</span>
+          }
+        </div>
+        <button
+          class="error-box__close"
+          (click)="dismissError(error.id)"
+          aria-label="Close error message"
+        >
+          <pdz-icon name="close" [size]="20"></pdz-icon>
+        </button>
+      </div>
+
+      <div class="error-box__content">
+        @switch (error.status) {
           @case (0) {
-            <div>
+            <div class="error-box__message">
               The server is unresponsive. Please try again later and follow our
               Discord server for outage updates.
             </div>
           }
+          @default {
+            @if (error.error?.message) {
+              <div class="error-box__message">{{ error.error!.message }}</div>
+            } @else if (error.statusText) {
+              <div class="error-box__message">{{ error.statusText }}</div>
+            } @else {
+              <div class="error-box__message">{{ error.message }}</div>
+            }
+
+            @if (error.url) {
+              <div class="error-box__url">URI: {{ error.url }}</div>
+            }
+
+            @if (hasDetails(error)) {
+              <button
+                class="error-box__details-toggle"
+                (click)="toggleDetails(error.id)"
+              >
+                {{ isExpanded(error.id) ? "Hide" : "Show" }} Details
+              </button>
+
+              @if (isExpanded(error.id)) {
+                <div class="error-box__details">
+                  @for (entry of getDetailsEntries(error); track entry[0]) {
+                    <div class="error-box__detail-item">
+                      <span class="error-box__detail-key">{{ entry[0] }}:</span>
+                      <span class="error-box__detail-value">{{
+                        entry[1]
+                      }}</span>
+                    </div>
+                  }
+                </div>
+              }
+            }
+          }
         }
       </div>
+
+      @if (hasStack(error) || hasRequestId(error)) {
+        <div class="error-box__footer">
+          @if (hasStack(error)) {
+            <details class="error-box__stack-details">
+              <summary class="error-box__stack-summary">Stack Trace</summary>
+              <pre class="error-box__stack-trace">{{
+                error!.error!.stack
+              }}</pre>
+            </details>
+          }
+          @if (hasRequestId(error)) {
+            <div class="error-box__request-id">
+              Request ID: {{ error!.meta!.requestId }}
+            </div>
+          }
+        </div>
+      }
     </div>
-  </div>
-}
+  }
+</div>
