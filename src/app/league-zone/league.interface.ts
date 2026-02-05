@@ -89,6 +89,8 @@ export namespace League {
 
   export type LeagueSignUp = {
     name: string;
+    gameName: string;
+    discordName: string;
     timezone: string;
     experience: string;
     dropped?: string;

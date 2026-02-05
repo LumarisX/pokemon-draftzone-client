@@ -71,14 +71,14 @@ export class LeagueZoneService {
 
   getRules(tournamentKey: string): Observable<League.RuleSection[]> {
     return this.apiService.get<League.RuleSection[]>(
-      `${ROOTPATH}/${this.tournamentKey()}/rules`,
+      `${ROOTPATH}/tournaments/${this.tournamentKey()}/rules`,
       false,
     );
   }
 
   powerRankingDetails() {
     return this.apiService.get<League.PowerRankingTeam[]>(
-      `${ROOTPATH}/${this.tournamentKey()}/divisions/${this.divisionKey()}/power-rankings`,
+      `${ROOTPATH}/tournaments/${this.tournamentKey()}/divisions/${this.divisionKey()}/power-rankings`,
       true,
     );
   }
@@ -100,7 +100,7 @@ export class LeagueZoneService {
       };
       canDraft: string[];
     }>(
-      `${ROOTPATH}/${this.tournamentKey()}/divisions/${this.divisionKey()}`,
+      `${ROOTPATH}/tournaments/${this.tournamentKey()}/divisions/${this.divisionKey()}`,
       true,
     );
   }
@@ -112,7 +112,11 @@ export class LeagueZoneService {
     return this.apiService.get<{
       tierList: LeagueTierGroup[];
       divisions: { [key: string]: { pokemonId: string; teamId: string }[] };
-    }>(`${ROOTPATH}/${this.tournamentKey()}/tier-list`, false, params);
+    }>(
+      `${ROOTPATH}/tournaments/${this.tournamentKey()}/tier-list`,
+      false,
+      params,
+    );
   }
 
   getTierListEdit() {
@@ -122,7 +126,11 @@ export class LeagueZoneService {
     return this.apiService.get<{
       tierList: LeagueTierGroup[];
       divisions: { [key: string]: { pokemonId: string; teamId: string }[] };
-    }>(`${ROOTPATH}/${this.tournamentKey()}/tier-list/edit`, true, params);
+    }>(
+      `${ROOTPATH}/tournaments/${this.tournamentKey()}/tier-list/edit`,
+      true,
+      params,
+    );
   }
 
   saveTierListEdit(
@@ -132,7 +140,7 @@ export class LeagueZoneService {
     }>,
   ) {
     return this.apiService.post<{ success: boolean; message: string }>(
-      `${ROOTPATH}/${this.tournamentKey()}/tier-list/edit`,
+      `${ROOTPATH}/tournaments/${this.tournamentKey()}/tier-list/edit`,
       true,
       { tiers },
     );
@@ -140,14 +148,14 @@ export class LeagueZoneService {
 
   getPicks() {
     return this.apiService.get<League.DraftTeam[]>(
-      `${ROOTPATH}/${this.tournamentKey()}/divisions/${this.divisionKey()}/picks`,
+      `${ROOTPATH}/tournaments/${this.tournamentKey()}/divisions/${this.divisionKey()}/picks`,
       true,
     );
   }
 
   setPicks(teamId: string, picks: string[][]) {
     return this.apiService.post(
-      `${ROOTPATH}/${this.tournamentKey()}/divisions/${this.divisionKey()}/teams/${teamId}/picks`,
+      `${ROOTPATH}/tournaments/${this.tournamentKey()}/divisions/${this.divisionKey()}/teams/${teamId}/picks`,
       true,
       { picks },
     );
@@ -155,7 +163,7 @@ export class LeagueZoneService {
 
   draftPokemon(teamId: string, pokemon: Pokemon) {
     return this.apiService.post(
-      `${ROOTPATH}/${this.tournamentKey()}/divisions/${this.divisionKey()}/teams/${teamId}/draft`,
+      `${ROOTPATH}/tournaments/${this.tournamentKey()}/divisions/${this.divisionKey()}/teams/${teamId}/draft`,
       true,
       { pokemonId: pokemon.id },
     );
@@ -210,7 +218,7 @@ export class LeagueZoneService {
 
   getDraftOrder(divisionId: string) {
     return this.apiService.get<League.DraftRound[]>(
-      `${ROOTPATH}/${this.tournamentKey()}/division/${divisionId}/order`,
+      `${ROOTPATH}/tournaments/${this.tournamentKey()}/division/${divisionId}/order`,
       false,
     );
   }
@@ -447,22 +455,28 @@ export class LeagueZoneService {
 
   signUp(signupData: object) {
     return this.apiService.post(
-      `leagues/${this.tournamentKey()}/signup`,
+      `${ROOTPATH}/tournaments/${this.tournamentKey()}/signup`,
       true,
       signupData,
     );
   }
 
   getLeagueInfo(): Observable<League.LeagueInfo> {
-    return this.apiService.get(`leagues/${this.tournamentKey()}/info`, false);
+    return this.apiService.get(
+      `${ROOTPATH}/tournaments/${this.tournamentKey()}/info`,
+      false,
+    );
   }
 
   getSignUps(): Observable<League.LeagueSignUp[]> {
-    return this.apiService.get(`leagues/${this.tournamentKey()}/signup`, true);
+    return this.apiService.get(
+      `${ROOTPATH}/tournaments/${this.tournamentKey()}/signup`,
+      true,
+    );
   }
 
   getBracket(tournamentKey: string): Observable<{}> {
-    return this.apiService.get(`leagues/bracket`, true);
+    return this.apiService.get(`${ROOTPATH}/tournaments/bracket`, true);
   }
 
   getStandings(): Observable<{
@@ -470,14 +484,14 @@ export class LeagueZoneService {
     pokemonStandings: League.PokemonStanding[];
   }> {
     return this.apiService.get(
-      `${ROOTPATH}/${this.tournamentKey()}/divisions/${this.divisionKey()}/standings`,
+      `${ROOTPATH}/tournaments/${this.tournamentKey()}/divisions/${this.divisionKey()}/standings`,
       true,
     );
   }
 
   getTeam(teamId: string) {
     return this.apiService.get(
-      `${ROOTPATH}/${this.tournamentKey()}/teams/${teamId}`,
+      `${ROOTPATH}/tournaments/${this.tournamentKey()}/teams/${teamId}`,
       true,
     );
   }

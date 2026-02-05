@@ -18,7 +18,7 @@ import { LeagueTeamsComponent } from './league-teams/league-teams.component';
 import { LeagueTierListFormComponent } from './league-tier-list/league-tier-list-form/league-tier-list-form.component';
 import { LeagueTierListComponent } from './league-tier-list/league-tier-list.component';
 import { LeagueTradesComponent } from './league-trades/league-trades.component';
-import { LeagueLandingComponent } from './tournament-landing/tournament-landing.component';
+import { TournamentLandingComponent } from './tournaments/tournament-landing/tournament-landing.component';
 
 export const LeagueZonePath = 'leagues';
 const routes: Routes = [
@@ -27,7 +27,7 @@ const routes: Routes = [
     component: LeagueOverviewComponent,
   },
   {
-    path: `:tournamentKey/${LeagueManagePath}`,
+    path: `pdbl/tournaments/:tournamentKey/${LeagueManagePath}`,
     loadChildren: () =>
       import('./league-manage/league-manage.module').then(
         (m) => m.LeagueManageModule,
@@ -35,13 +35,13 @@ const routes: Routes = [
     canActivate: [leagueRoleGuard],
     data: { role: 'organizer' },
   },
-  {
-    path: 'new',
-    component: LeagueNewComponent,
-  },
+  // {
+  //   path: 'new',
+  //   component: LeagueNewComponent,
+  // },
   {
     path: 'pdbl/tournaments/:tournamentKey',
-    component: LeagueLandingComponent,
+    component: TournamentLandingComponent,
   },
   {
     path: 'pdbl/tournaments/:tournamentKey/rules',

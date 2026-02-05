@@ -48,7 +48,7 @@ export class LeagueSignUpComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   signupForm!: FormGroup;
-  added = true;
+  added = false;
   closed = false;
   timezones = Intl.supportedValuesOf('timeZone');
   signUpDeadline?: Date;

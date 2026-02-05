@@ -19,7 +19,7 @@ export class LeagueManageService {
     },
   ) {
     return this.apiService.post(
-      `leagues/${tournamentId}/manage/divisions/${this.leagueZoneService.divisionKey()}/setdraft`,
+      `leagues/tournaments/${tournamentId}/manage/divisions/${this.leagueZoneService.divisionKey()}/setdraft`,
       true,
       pick,
     );
@@ -27,14 +27,14 @@ export class LeagueManageService {
 
   canManage(tournamentKey: string) {
     return this.apiService.get<string[]>(
-      `leagues/${tournamentKey}/roles`,
+      `leagues/tournaments/${tournamentKey}/roles`,
       true,
     );
   }
 
   setDivisionState(state: string) {
     return this.apiService.post(
-      `leagues/${this.leagueZoneService.tournamentKey()}/manage/divisions/${this.leagueZoneService.divisionKey()}/state`,
+      `leagues/tournaments/${this.leagueZoneService.tournamentKey()}/manage/divisions/${this.leagueZoneService.divisionKey()}/state`,
       true,
       { state },
     );
@@ -42,7 +42,7 @@ export class LeagueManageService {
 
   skipCurrentPick() {
     return this.apiService.post(
-      `leagues/${this.leagueZoneService.tournamentKey()}/manage/divisions/${this.leagueZoneService.divisionKey()}/skip`,
+      `leagues/tournaments/${this.leagueZoneService.tournamentKey()}/manage/divisions/${this.leagueZoneService.divisionKey()}/skip`,
       true,
       '',
     );

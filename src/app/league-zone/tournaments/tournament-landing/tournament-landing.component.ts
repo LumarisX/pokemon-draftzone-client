@@ -2,18 +2,18 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
-import { LoadingComponent } from '../../images/loading/loading.component';
-import { LeagueZoneService } from '../../services/leagues/league-zone.service';
-import { League } from '../league.interface';
-import { getLogoUrl } from '../league.util';
+import { LeagueZoneService } from '../../../services/leagues/league-zone.service';
+import { League } from '../../league.interface';
+import { getLogoUrl } from '../../league.util';
+import { LoadingComponent } from '../../../images/loading/loading.component';
 
 @Component({
-  selector: 'pdz-league-landing',
+  selector: 'pdz-tournament-landing',
   templateUrl: './tournament-landing.component.html',
   styleUrl: './tournament-landing.component.scss',
   imports: [CommonModule, RouterModule, LoadingComponent],
 })
-export class LeagueLandingComponent implements OnInit {
+export class TournamentLandingComponent implements OnInit {
   leagueService = inject(LeagueZoneService);
   leagueInfo: League.LeagueInfo | null = null;
   private destroy$ = new Subject<void>();

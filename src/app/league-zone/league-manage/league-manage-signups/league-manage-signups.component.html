@@ -6,6 +6,8 @@
       <thead>
         <tr>
           <th>#</th>
+          <th>Name</th>
+          <th>Showdown Name</th>
           <th>Discord Name</th>
           <th>Timezone</th>
           <th>Experience</th>
@@ -21,6 +23,8 @@
           <tr>
             <td>{{ $index + 1 }}</td>
             <td>{{ user.name }}</td>
+            <td>{{ user.gameName }}</td>
+            <td>{{ user.discordName }}</td>
             <td>{{ user.timezone }}</td>
             <td>{{ user.experience }}</td>
             <td>{{ user.dropped }}</td>
