@@ -48,7 +48,7 @@ export class LeagueSignUpComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   signupForm!: FormGroup;
-  added = false;
+  added = true;
   closed = false;
   timezones = Intl.supportedValuesOf('timeZone');
   signUpDeadline?: Date;
@@ -62,7 +62,6 @@ export class LeagueSignUpComponent implements OnInit, OnDestroy {
   leagueInfo: League.LeagueInfo | null = null;
 
   ngOnInit(): void {
-    // Fetch league info from API
     this.leagueService
       .getLeagueInfo()
       .pipe(takeUntil(this.destroy$))
@@ -75,7 +74,6 @@ export class LeagueSignUpComponent implements OnInit, OnDestroy {
         },
       });
 
-    // this.added = localStorage.getItem(this.signUpItem) !== null;
     this.createForm().subscribe((form) => {
       this.signupForm = form;
       this.manageFormLogic();
@@ -96,15 +94,17 @@ export class LeagueSignUpComponent implements OnInit, OnDestroy {
           : '';
 
         return this.fb.group({
+          name: ['', Validators.required],
+          gameName: ['', Validators.required],
           discordName: [discordName, Validators.required],
           timezone: [
             Intl.DateTimeFormat().resolvedOptions().timeZone,
             Validators.required,
           ],
           teamName: ['', Validators.required],
-          experience: [''],
+          experience: ['', Validators.required],
           droppedBefore: [null, Validators.required],
-          droppedWhy: [''],
+          droppedWhy: ['', Validators.required],
           confirm: [false, Validators.requiredTrue],
         });
       }),
@@ -139,7 +139,6 @@ export class LeagueSignUpComponent implements OnInit, OnDestroy {
             this.signupForm.get('discordName')?.value ?? '',
           );
 
-          // Upload logo if one was selected
           if (this.logoFile) {
             this.uploadLogo();
           }
@@ -190,10 +189,8 @@ export class LeagueSignUpComponent implements OnInit, OnDestroy {
           console.log('Uploading to S3...');
           return this.uploadService.uploadToS3(response.url, file);
         }),
-        // Filter out progress events and only process HttpResponse
         switchMap((s3Response) => {
           if (s3Response.type === HttpEventType.UploadProgress) {
-            // Skip progress events
             return of(null);
           } else if (s3Response instanceof HttpResponse) {
             if (s3Response.ok && uploadedFileKey) {
@@ -207,7 +204,6 @@ export class LeagueSignUpComponent implements OnInit, OnDestroy {
           }
           return of(null);
         }),
-        // Only confirm when we have a fileKey (skip null values from progress events)
         switchMap((fileKey) => {
           if (!fileKey) return of(null);
 
@@ -233,7 +229,6 @@ export class LeagueSignUpComponent implements OnInit, OnDestroy {
         next: (response) => {
           if (response) {
             console.log('Logo uploaded and confirmed successfully:', response);
-            // Upload completed successfully
           }
         },
         error: (error) => {

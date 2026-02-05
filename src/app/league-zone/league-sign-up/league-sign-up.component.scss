@@ -146,6 +146,28 @@
     @include apply-typography(body-md);
     margin: 0;
     color: pdz-color(on-surface-variant);
+
+    &--secondary {
+      margin-top: var(--pdz-space-sm);
+      font-size: 0.9em;
+    }
+  }
+}
+
+.discord-btn {
+  @include flat-button-primary();
+  @include apply-typography(title-md);
+  margin: var(--pdz-space-sm) auto;
+  min-width: 16rem;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--pdz-space-sm);
+
+  &__icon {
+    width: 1.5rem;
+    height: 1.5rem;
   }
 }
 

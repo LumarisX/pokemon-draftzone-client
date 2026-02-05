@@ -50,17 +50,21 @@
           Thank you for signing up for the PDBL
         </h2>
         <p class="message-card__text">
-          Join the
-          <a
-            target="_blank"
-            href="https://discord.gg/FsxXcWFaF6"
-            class="link link--primary"
-          >
-            PDBL Discord Server
-          </a>
-          to complete your registration!
+          Complete your registration by joining the PDBL Discord Server:
         </p>
-        <p class="message-card__text">
+        <a
+          target="_blank"
+          href="https://discord.gg/FsxXcWFaF6"
+          class="discord-btn"
+        >
+          <img
+            src="assets/icons/discord-mark-blue.svg"
+            alt="Discord"
+            class="discord-btn__icon"
+          />
+          Join PDBL Discord Server
+        </a>
+        <p class="message-card__text message-card__text--secondary">
           Consider
           <a
             target="_blank"
@@ -87,6 +91,46 @@
         </p>
       </div>
     } @else {
+      <div class="form-row">
+        <div class="form-field">
+          <label for="name" class="form-field__label">
+            Display Name <span class="required">*</span>
+          </label>
+          <input
+            id="name"
+            type="text"
+            class="form-field__input"
+            placeholder="Deoxys"
+            formControlName="name"
+          />
+          @if (
+            signupForm.get("name")?.hasError("required") &&
+            signupForm.get("name")?.touched
+          ) {
+            <span class="form-field__error">Required</span>
+          }
+        </div>
+
+        <div class="form-field">
+          <label for="gameName" class="form-field__label">
+            Showdown Name <span class="required">*</span>
+          </label>
+          <input
+            id="gameName"
+            type="text"
+            class="form-field__input"
+            placeholder="Deoxys-II"
+            formControlName="gameName"
+          />
+          @if (
+            signupForm.get("gameName")?.hasError("required") &&
+            signupForm.get("gameName")?.touched
+          ) {
+            <span class="form-field__error">Required</span>
+          }
+        </div>
+      </div>
+
       <div class="form-row">
         <div class="form-field">
           <label for="discordName" class="form-field__label">
@@ -133,7 +177,7 @@
             id="teamName"
             type="text"
             class="form-field__input"
-            placeholder="Sturdy Shedinjas"
+            placeholder="The Double Helixes"
             formControlName="teamName"
           />
           @if (
@@ -168,7 +212,9 @@
       </div>
 
       <div class="form-field">
-        <label for="experience" class="form-field__label">Experience</label>
+        <label for="experience" class="form-field__label">
+          Experience <span class="required">*</span>
+        </label>
         <textarea
           id="experience"
           class="form-field__input form-field__input--textarea"
@@ -177,6 +223,12 @@
           rows="4"
           placeholder="How much experience do you have in draft?"
         ></textarea>
+        @if (
+          signupForm.get("experience")?.hasError("required") &&
+          signupForm.get("experience")?.touched
+        ) {
+          <span class="form-field__error">Required</span>
+        }
       </div>
 
       <div class="form-field">

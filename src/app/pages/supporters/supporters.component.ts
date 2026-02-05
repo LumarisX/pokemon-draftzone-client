@@ -1,4 +1,3 @@
-
 import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
@@ -23,22 +22,27 @@ interface Developer {
 export class SupportersComponent implements OnInit {
   developers: Developer[] = [
     {
-      name: 'Lumaris',
+      name: 'Pokémon DraftZone',
       links: [
         {
-          name: 'Buy Me a Coffee',
-          href: 'https://buymeacoffee.com/xlumarisxu',
-          iconSrc: '../../../assets/icons/media/bmc-logo.svg',
+          name: 'FourthWall',
+          href: 'https://shop.pokemondraftzone.com/pages/join-support',
+          iconSrc: '../../../assets/icons/media/fourthwall.svg',
         },
-        {
-          name: 'Patreon',
-          href: 'https://www.patreon.com/LumarisCreations',
-          iconSrc: '../../../assets/icons/media/patreon.svg',
-        },
+      ],
+    },
+    {
+      name: 'Lumaris',
+      links: [
         {
           name: 'Venmo',
           href: 'https://venmo.com/u/lumarisx',
           iconSrc: '../../../assets/icons/media/venmo-icon.svg',
+        },
+        {
+          name: 'Buy Me a Coffee',
+          href: 'https://buymeacoffee.com/xlumarisxu',
+          iconSrc: '../../../assets/icons/media/bmc-logo.svg',
         },
       ],
     },
