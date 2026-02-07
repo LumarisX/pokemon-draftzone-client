@@ -178,17 +178,17 @@
                                   <div class="tier-entry__name">
                                     {{ pokemon.name }}
                                   </div>
-                                  <div class="tier-entry__tera-cost">
-                                    <span>{{
-                                      pokemon.teraCost
-                                        ? justNumber(pokemon.teraCost)
-                                        : "Ban"
-                                    }}</span>
-                                    <pdz-icon
-                                      name="tera"
-                                      [height]="20"
-                                    ></pdz-icon>
-                                  </div>
+                                  @if (pokemon.teraCost) {
+                                    <div class="tier-entry__tera-cost">
+                                      <span>{{
+                                        justNumber(pokemon.teraCost)
+                                      }}</span>
+                                      <pdz-icon
+                                        name="tera"
+                                        [height]="20"
+                                      ></pdz-icon>
+                                    </div>
+                                  }
                                 </div>
                                 @if (pokemon.banned) {
                                   <mat-icon
