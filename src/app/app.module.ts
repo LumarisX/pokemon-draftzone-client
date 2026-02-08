@@ -3,7 +3,12 @@ import {
   provideHttpClient,
   withInterceptorsFromDi,
 } from '@angular/common/http';
-import { isDevMode, NgModule } from '@angular/core';
+import {
+  inject,
+  isDevMode,
+  NgModule,
+  provideAppInitializer,
+} from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { AuthModule } from '@auth0/auth0-angular';
@@ -13,6 +18,7 @@ import { AppComponent } from './app.component';
 import { BodyModule } from './body/body.module';
 import { TopNavbarComponent } from './pages/top-navbar/top-navbar.component';
 import { TooltipModule } from './util/tooltip/tooltip.module';
+import { RumService } from './services/rum.service';
 
 @NgModule({
   bootstrap: [AppComponent],
@@ -56,6 +62,7 @@ import { TooltipModule } from './util/tooltip/tooltip.module';
   ],
   providers: [
     provideHttpClient(withInterceptorsFromDi()),
+    provideAppInitializer(() => inject(RumService).init()),
     provideMarkdown({
       markedOptions: {
         provide: MARKED_OPTIONS,

@@ -1,6 +1,7 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
+import { RumService } from '../services/rum.service';
 
 export interface PDZError {
   code: string;
@@ -33,6 +34,7 @@ export interface ClientError {
   providedIn: 'root',
 })
 export class ErrorService {
+  private rumService = inject(RumService);
   private readonly MAX_ERRORS = 5;
   private errorsSubject = new BehaviorSubject<ClientError[]>([]);
   private errorIdCounter = 0;
@@ -61,6 +63,7 @@ export class ErrorService {
         this.MAX_ERRORS,
       );
       this.errorsSubject.next(updatedErrors);
+      this.rumService.recordClientError(clientError);
     }
   }
 
