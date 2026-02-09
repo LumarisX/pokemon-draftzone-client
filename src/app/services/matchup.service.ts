@@ -75,6 +75,7 @@ export class MatchupService {
       `${matchupPath}/${matchupId}/update-notes`,
       true,
       { notes: payload },
+      { invalidateCache: [`${matchupPath}/${matchupId}/notes`] },
     );
   }
 }

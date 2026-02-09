@@ -53,11 +53,15 @@ export class DraftService {
   }
 
   newDraft(draftData: Object) {
-    return this.apiService.post(`draft/teams`, true, draftData);
+    return this.apiService.post(`draft/teams`, true, draftData, {
+      invalidateCache: ['draft/teams'],
+    });
   }
 
   editDraft(draftId: string, draftData: DraftFormData) {
-    return this.apiService.patch(`draft/${draftId}`, draftData);
+    return this.apiService.patch(`draft/${draftId}`, draftData, {
+      invalidateCache: ['draft/teams', `draft/${draftId}`],
+    });
   }
 
   getMatchupList(teamName: string) {
@@ -69,6 +73,9 @@ export class DraftService {
       `draft/${teamName}/matchups`,
       true,
       matchupData,
+      {
+        invalidateCache: ['draft/${teamName}/matchups'],
+      },
     );
   }
 
@@ -76,19 +83,28 @@ export class DraftService {
     return this.apiService.patch(
       `draft/${teamId}/${matchupId}/opponent`,
       matchupData,
+      {
+        invalidateCache: ['draft/${teamName}/matchups'],
+      },
     );
   }
 
   deleteMatchup(matchupId: string) {
-    return this.apiService.delete(`matchup/${matchupId}`);
+    return this.apiService.delete(`matchup/${matchupId}`, {
+      invalidateCache: ['draft/${teamName}/matchups'],
+    });
   }
 
   archiveDraft(teamName: string) {
-    return this.apiService.delete(`draft/${teamName}/archive`);
+    return this.apiService.delete(`draft/${teamName}/archive`, {
+      invalidateCache: ['draft/teams', `draft/${teamName}`],
+    });
   }
 
   deleteDraft(teamName: string) {
-    return this.apiService.delete(`draft/${teamName}`);
+    return this.apiService.delete(`draft/${teamName}`, {
+      invalidateCache: ['draft/teams', `draft/${teamName}`],
+    });
   }
 
   scoreMatchup(matchupId: string, teamId: string, scoreData: Object) {
