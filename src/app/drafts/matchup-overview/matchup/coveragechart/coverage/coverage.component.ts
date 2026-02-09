@@ -20,7 +20,7 @@ import { EffectivenessChartComponent } from './effectiveness-chart/effectiveness
   ],
 })
 export class CoverageComponent implements OnInit {
-  @Input() typechart!: TypeChart;
+  @Input({ required: true }) typechart!: TypeChart;
   coverage: {
     pokemon: DraftPokemon & {
       weak: [
@@ -31,7 +31,7 @@ export class CoverageComponent implements OnInit {
           [key in ExtendedType]: number;
         },
       ];
-      disabled?: Boolean | undefined;
+      disabled?: boolean;
     };
     max: number;
   }[] = [];
@@ -52,8 +52,6 @@ export class CoverageComponent implements OnInit {
   get abilities() {
     return this._abilities;
   }
-
-  constructor() {}
 
   ngOnInit(): void {
     this.resetRecommended();
@@ -102,5 +100,15 @@ export class CoverageComponent implements OnInit {
       move.selected = move.recommended;
     });
     this.updateCoverage();
+  }
+
+  weaknessColor(weak: number): string {
+    if (weak > 4) return 'var(--pdz-color-scale-positive-5)';
+    if (weak > 2) return 'var(--pdz-color-scale-positive-4)';
+    if (weak > 1) return 'var(--pdz-color-scale-positive-2)';
+    if (weak < 0.25) return 'var(--pdz-color-scale-negative-5)';
+    if (weak < 0.5) return 'var(--pdz-color-scale-negative-4)';
+    if (weak < 1) return 'var(--pdz-color-scale-negative-2)';
+    return 'var(--pdz-color-scale-neutral)';
   }
 }

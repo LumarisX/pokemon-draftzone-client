@@ -68,10 +68,7 @@
     <div class="sprite-container">
       @for (pokemon of coverage; track pokemon) {
         <pdz-sprite
-          [ngClass]="{
-            '!bg-scale-positive-2': pokemon.max > 1,
-            '!bg-scale-negative-2': pokemon.max < 1,
-          }"
+          [style.background]="weaknessColor(pokemon.max)"
           [pokemon]="pokemon.pokemon"
         ></pdz-sprite>
       }
