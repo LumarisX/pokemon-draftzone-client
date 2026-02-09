@@ -14,8 +14,7 @@ import { PokemonId } from '../../../data/namedex';
 import { DraftOverviewPath } from '../../draft-overview/draft-overview-routing.module';
 import { LoadingComponent } from '../../../images/loading/loading.component';
 import { SpriteComponent } from '../../../images/sprite/sprite.component';
-import { PlusSVG } from '../../../images/svg-components/plus.component';
-import { TrashSVG } from '../../../images/svg-components/trash.component';
+import { IconComponent } from '../../../images/icon/icon.component';
 import { DraftPokemon } from '../../../interfaces/draft';
 import { Matchup } from '../../../interfaces/matchup';
 import { ReplayData } from '../../../tools/replay_analyzer/replay.interface';
@@ -28,8 +27,7 @@ import { ReplayData } from '../../../tools/replay_analyzer/replay.interface';
     RouterModule,
     SpriteComponent,
     ReactiveFormsModule,
-    PlusSVG,
-    TrashSVG,
+    IconComponent,
     LoadingComponent,
   ],
 })

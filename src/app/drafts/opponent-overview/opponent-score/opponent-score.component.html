@@ -65,24 +65,32 @@
             (click)="switchMatch($index)"
           >
             <div
-              class="w-fit flex px-2 py-0.5 font-semibold rounded bg-inherit text-nowrap"
+              class="w-fit flex px-2 py-0.5 max-h-6 h-6 items-center font-semibold rounded bg-inherit text-nowrap"
               [ngClass]="gameClass($index)"
             >
               Game {{ $index + 1 }}
               @if ($index > 0) {
-                <trash-svg
-                  class="m-1 max-w-4 min-w-4"
+                <pdz-icon
+                  class="m-1 max-w-4 min-w-4 text-symbolColor-main"
+                  name="delete"
+                  size="sm"
+                  ariaLabel="Delete game"
                   (click)="deleteMatch($index)"
-                ></trash-svg>
+                ></pdz-icon>
               }
             </div>
           </div>
         }
         <button (click)="addMatch()">
           <div
-            class="h-8 p-1 border rounded max-w-8 min-w-8 border-menu-500 bg-menu-100 hover:bg-menu-150 hover:cursor-pointer"
+            class="h-6 border flex items-center align-middle rounded w-6 border-menu-500 bg-menu-100 hover:bg-menu-150 hover:cursor-pointer"
           >
-            <plus-svg class="stroke-symbolColor-main"></plus-svg>
+            <pdz-icon
+              class="text-symbolColor-main"
+              name="add"
+              size="sm"
+              ariaLabel="Add game"
+            ></pdz-icon>
           </div>
         </button>
       </div>
