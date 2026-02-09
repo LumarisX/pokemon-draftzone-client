@@ -4,6 +4,8 @@ export type TierSubPokemon = {
   name: string;
   id: string;
   types: [Type] | [Type, Type];
+  abilities?: string[];
+  selectedAbilities?: string[];
   teraCost?: string;
   stats: StatsTable;
   bst: number;

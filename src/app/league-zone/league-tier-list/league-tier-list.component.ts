@@ -39,7 +39,7 @@ import {
   SORT_MAP,
   SORT_OPTIONS,
   SortOption,
-  typeInFilter,
+  filterBySearch,
 } from './tier-list.utils';
 
 @Component({
@@ -125,7 +125,7 @@ export class LeagueTierListComponent implements OnInit, OnDestroy {
   }
 
   typeInFilter = (pokemon: TierPokemon) =>
-    typeInFilter(pokemon, this.filteredTypes(), this.searchText());
+    filterBySearch(pokemon, this.filteredTypes(), this.searchText());
 
   makeBanString = makeBanString;
 

@@ -1,24 +1,72 @@
-import { TierPokemon } from '../../interfaces/tier-pokemon.interface';
 import { Type } from '../../data';
+import { TierPokemon } from '../../interfaces/tier-pokemon.interface';
 
-/**
- * Checks if a Pokemon matches the current type filter and search text
- */
-export function typeInFilter(
+function normalizeText(text: string): string {
+  return text.toLowerCase().replace(/\s/g, '');
+}
+
+type StatKey = 'hp' | 'atk' | 'def' | 'spa' | 'spd' | 'spe' | 'bst';
+
+function parseStatFilter(search: string): {
+  stat: StatKey;
+  operator: '>' | '<' | '>=' | '<=';
+  value: number;
+} | null {
+  const match = search.match(/^(hp|atk|def|spa|spd|spe|bst)(>=|<=|>|<)(\d+)$/);
+  if (!match) return null;
+  const [, stat, operator, value] = match as [
+    string,
+    StatKey,
+    '>' | '<' | '>=' | '<=',
+    string,
+  ];
+  return { stat, operator, value: Number(value) };
+}
+
+function matchesStatFilter(
+  pokemon: TierPokemon,
+  filter: {
+    stat: StatKey;
+    operator: '>' | '<' | '>=' | '<=';
+    value: number;
+  },
+): boolean {
+  const statValue =
+    filter.stat === 'bst' ? pokemon.bst : pokemon.stats[filter.stat];
+  switch (filter.operator) {
+    case '>':
+      return statValue > filter.value;
+    case '<':
+      return statValue < filter.value;
+    case '>=':
+      return statValue >= filter.value;
+    case '<=':
+      return statValue <= filter.value;
+  }
+}
+
+export function filterBySearch(
   pokemon: TierPokemon,
   filteredTypes: Type[],
   searchText: string = '',
 ): boolean {
-  const normalizedSearch = searchText.toLowerCase();
-  if (
-    normalizedSearch &&
-    !pokemon.name.toLowerCase().includes(normalizedSearch)
-  ) {
-    return false;
-  }
+  const normalizedSearch = searchText.split(',').map(normalizeText);
+  return (
+    pokemon.types.some((type) => filteredTypes.includes(type)) &&
+    normalizedSearch.every((search) => {
+      if (search === '') return true;
+      const statFilter = parseStatFilter(search);
+      if (statFilter) return matchesStatFilter(pokemon, statFilter);
 
-  if (filteredTypes.length === 0) return true;
-  return pokemon.types.some((type) => filteredTypes.includes(type));
+      return (
+        pokemon.types.some((type) => normalizeText(type).includes(search)) ||
+        pokemon.abilities?.some((ability) =>
+          normalizeText(ability).includes(search),
+        ) ||
+        normalizeText(pokemon.name).includes(search)
+      );
+    })
+  );
 }
 
 /**
