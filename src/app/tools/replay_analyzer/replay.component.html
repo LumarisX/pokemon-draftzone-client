@@ -36,7 +36,7 @@
     >.
   </div>
   <!-- <loading *ngIf="analyzed && !replayData"></loading> -->
-  <mat-card *ngIf="replayData" class="w-full p-2 max-w-7xl">
+  <mat-card *ngIf="replayData" class="w-[90%] p-2">
     <mat-card-title class="flex space-x-4 p-2 text-lg columns-4">
       <div class="flex space-x-1">
         <label class="font-semibold text-symbolColor-sub" for="format">
@@ -69,7 +69,7 @@
     <mat-card-content
       class="flex flex-col items-center p-2 border-2 max-w-full w-full bg-menu-100 rounded-xl border-menu-400"
     >
-      <div class="space-y-4 w-full max-w-full pt-3">
+      <div class="space-y-8 w-full max-w-full pt-3">
         <div
           *ngFor="let player of replayData.stats; let playerNum = index"
           [ngClass]="playerClass(playerNum + 1)"
@@ -78,8 +78,11 @@
           <div class="flex space-x-2 items-end flex-wrap pb-6">
             <div class="text-xl font-bold">{{ player.username }}</div>
           </div>
-          <div class="flex space-x-2">
-            <div class="">
+          <div class="flex space-x-4">
+            <!-- Sidebar with player stats -->
+            <div
+              class="flex-shrink-0 w-64 space-y-4 p-4 border-2 rounded-lg border-menu-400"
+            >
               <div>
                 <span class="font-semibold">Kills:</span>
                 {{ player.total.kills }}
@@ -137,31 +140,32 @@
                   {{ player.luck.status.expected | percent }}
                 </div>
               </div>
-              <div *ngIf="player.win" class="font-bold">Winner</div>
+              <div *ngIf="player.win" class="font-bold mt-2">Winner</div>
             </div>
-            <div class="w-full flex justify-center">
-              <div class="w-full grid grid-cols-3 gap-2">
+            <!-- Pokemon cards area -->
+            <div class="flex-grow flex justify-center">
+              <div class="w-full grid grid-cols-6 gap-2">
                 <mat-card *ngFor="let mon of player.team" class="p-1 w-fit">
                   <mat-card-header class="justify-center">
                     <mat-card-title class="w-20 pb-5">
                       <pdz-sprite
                         title="{{ mon.formes[0].detail }}"
-                        [pid]="mon.formes[0].id"
+                        [pokemon]="{ id: mon.formes[0].id, name: '' }"
                         [disabled]="mon.fainted"
                       ></pdz-sprite>
                     </mat-card-title>
                   </mat-card-header>
-                  <mat-card-content class="!grid !grid-cols-2 gap-x-4 gap-y-2">
+                  <mat-card-content class="!flex flex-col gap-1">
                     <div
                       *ngIf="!mon.kills[1]"
-                      class="p-2 border rounded-lg border-menu-400"
+                      class="p-2 border rounded-lg border-menu-400 text-center"
                     >
                       <span class="font-semibold"> Kills: </span>
                       {{ mon.kills[0] }}
                     </div>
                     <div
                       *ngIf="mon.kills[1]"
-                      class="p-2 border rounded-lg border-menu-400"
+                      class="p-2 border rounded-lg border-menu-400 text-center"
                     >
                       <span class="font-semibold"> Kills: </span>
                       <div>
@@ -173,55 +177,61 @@
                         {{ mon.kills[1] }}
                       </div>
                     </div>
-                    <div
-                      *ngIf="!mon.damageDealt[1]"
-                      class="p-2 border rounded-lg border-menu-400"
-                    >
+                    <div class="p-2 border rounded-lg border-menu-400">
                       <span class="font-semibold"> Damage Dealt: </span>
-                      {{ mon.damageDealt[0] | number: "1.0-0" }}%
-                    </div>
-                    <div
-                      *ngIf="mon.damageDealt[1]"
-                      class="p-2 border rounded-lg border-menu-400"
-                    >
-                      <span class="font-semibold"> Damage Dealt: </span>
-                      <div>
-                        <span> Direct: </span>
-                        {{ mon.damageDealt[0] | number: "1.0-0" }}%
-                      </div>
-                      <div>
-                        <span> Indirect: </span>
-                        {{ mon.damageDealt[1] | number: "1.0-0" }}%
-                      </div>
-                    </div>
-                    <div
-                      *ngIf="!mon.damageTaken[1]"
-                      class="p-2 border rounded-lg border-menu-400"
-                    >
-                      <span class="font-semibold"> Damage Taken: </span>
-                      {{ mon.damageTaken[0] | number: "1.0-0" }}%
-                    </div>
-                    <div
-                      *ngIf="mon.damageTaken[1]"
-                      class="p-2 border rounded-lg border-menu-400"
-                    >
-                      <span class="font-semibold"> Damage Taken: </span>
-                      <div>
-                        <span> Direct: </span>
-                        {{ mon.damageTaken[0] | number: "1.0-0" }}%
-                      </div>
-                      <div>
-                        <span> Indirect: </span>
-                        {{ mon.damageTaken[1] | number: "1.0-0" }}%
-                      </div>
+                      <mat-accordion>
+                        <mat-expansion-panel>
+                          <mat-expansion-panel-header>
+                            <mat-panel-title>
+                              {{
+                                mon.damageDealt[0] + (mon.damageDealt[1] || 0)
+                                  | number: "1.0-0"
+                              }}%
+                            </mat-panel-title>
+                          </mat-expansion-panel-header>
+                          <div>
+                            • Direct:
+                            {{ mon.damageDealt[0] | number: "1.0-0" }}%
+                          </div>
+                          <div *ngIf="mon.damageDealt[1]">
+                            • Indirect:
+                            {{ mon.damageDealt[1] | number: "1.0-0" }}%
+                          </div>
+                        </mat-expansion-panel>
+                      </mat-accordion>
                     </div>
                     <div class="p-2 border rounded-lg border-menu-400">
+                      <span class="font-semibold"> Damage Taken: </span>
+                      <mat-accordion>
+                        <mat-expansion-panel>
+                          <mat-expansion-panel-header>
+                            <mat-panel-title>
+                              {{
+                                mon.damageTaken[0] + (mon.damageTaken[1] || 0)
+                                  | number: "1.0-0"
+                              }}%
+                            </mat-panel-title>
+                          </mat-expansion-panel-header>
+                          <div>
+                            • Direct:
+                            {{ mon.damageTaken[0] | number: "1.0-0" }}%
+                          </div>
+                          <div *ngIf="mon.damageTaken[1]">
+                            • Indirect:
+                            {{ mon.damageTaken[1] | number: "1.0-0" }}%
+                          </div>
+                        </mat-expansion-panel>
+                      </mat-accordion>
+                    </div>
+                    <div
+                      class="p-2 border rounded-lg border-menu-400 text-center"
+                    >
                       <span class="font-semibold"> HP Restored: </span>
                       {{ mon.hpRestored | number: "1.0-0" }}%
                     </div>
                     <div
                       *ngIf="mon.moveset && mon.moveset.length > 0"
-                      class="p-2 border rounded-lg border-menu-400 col-span-2"
+                      class="p-2 border rounded-lg border-menu-400"
                     >
                       <!-- <ul class="list-disc pl-4">
                       <li *ngFor="let move of mon.moveset">{{ move }}</li>
@@ -243,17 +253,19 @@
             </div>
           </div>
         </div>
+
         <div class="w-full">
-          <h2 class="text-xl font-bold fill-">Events</h2>
-          <div class="border-2 border-menu-400 rounded w-full">
-            <div
-              *ngFor="let event of replayData.events"
-              class="py-1 px-2 border-b border-menu-400 w-full"
-              [ngClass]="playerClass(event.player)"
-            >
-              <span class="font-semibold"> Turn {{ event.turn }}:</span>
-              {{ event.message }}
-            </div>
+          <h2 class="text-xl font-bold pb-2">Events</h2>
+          <div class="flex flex-col gap-1">
+            @for (event of replayData.events; track event) {
+              <div
+                class="py-1 px-2 border rounded-lg border-menu-400"
+                [ngClass]="playerClass(event.player)"
+              >
+                <span class="font-semibold"> Turn {{ event.turn }}:</span>
+                {{ event.message }}
+              </div>
+            }
           </div>
         </div>
         <div class="w-full flex justify-center">
