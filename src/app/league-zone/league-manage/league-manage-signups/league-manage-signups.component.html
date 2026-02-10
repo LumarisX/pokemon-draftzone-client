@@ -1,6 +1,13 @@
 <h2>League Sign-Ups</h2>
 
 @if (signUps.length > 0) {
+  <input
+    type="file"
+    #logoFileInput
+    class="file-input-hidden"
+    accept="image/*"
+    (change)="onLogoFileSelected($event)"
+  />
   <div class="table-container">
     <table>
       <thead>
@@ -30,7 +37,29 @@
             <td>{{ user.dropped }}</td>
             <td>{{ user.signedUpAt | date: "short" }}</td>
             <td>{{ user.teamName }}</td>
-            <td><img [src]="user.logo" alt="" /></td>
+            <td class="logo-cell">
+              <button
+                type="button"
+                class="logo-button"
+                (click)="onLogoCellClick(user)"
+                [disabled]="!user.id || uploadingForId === user.id"
+                [attr.aria-label]="user.logo ? 'Replace logo' : 'Add logo'"
+              >
+                @if (user.logo) {
+                  <img [src]="user.logo" alt="" />
+                } @else {
+                  <div class="add-logo-btn">
+                    <pdz-icon name="add"> </pdz-icon>
+                  </div>
+                }
+              </button>
+              @if (user.id && uploadErrorById[user.id]) {
+                <div class="logo-error">{{ uploadErrorById[user.id] }}</div>
+              }
+              @if (uploadingForId === user.id) {
+                <div class="logo-uploading">Uploading...</div>
+              }
+            </td>
             <td>{{ user.division }}</td>
           </tr>
         }

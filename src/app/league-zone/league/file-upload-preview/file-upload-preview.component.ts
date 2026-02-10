@@ -18,13 +18,12 @@ export interface FilePreviewData {
   selector: 'pdz-file-upload-preview',
   imports: [MatCardModule, MatButtonModule, MatIconModule],
   templateUrl: './file-upload-preview.component.html',
-  styleUrls: ['./file-upload-preview.component.scss'], // Changed styleUrl to styleUrls
+  styleUrls: ['./file-upload-preview.component.scss'],
 })
 export class FileUploadPreviewComponent implements OnInit {
   overlayRef = inject<OverlayRef>(OVERLAY_REF_TOKEN);
   data = inject<FilePreviewData>(FILE_PREVIEW_DATA_TOKEN);
   private sanitizer = inject(DomSanitizer);
-
 
   @Output() confirm = new EventEmitter<void>();
   @Output() cancel = new EventEmitter<void>();
@@ -58,15 +57,13 @@ export class FileUploadPreviewComponent implements OnInit {
 
   onConfirm(): void {
     this.confirm.emit();
-    // Overlay will be closed by the parent component
   }
 
   onCancel(): void {
     this.cancel.emit();
-    this.overlayRef.dispose(); // Close overlay on cancel
+    this.overlayRef.dispose();
   }
 
-  // Helper to format bytes
   formatBytes(bytes: number, decimals = 2): string {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;

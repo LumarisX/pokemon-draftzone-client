@@ -1,6 +1,6 @@
 import { effect, inject, Injectable, signal } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
-import { Observable, of } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { filter, map, mergeMap } from 'rxjs/operators';
 import { getRandomPokemon } from '../../data/namedex';
 import { Pokemon } from '../../interfaces/pokemon';
@@ -76,7 +76,9 @@ export class LeagueZoneService {
     );
   }
 
-  saveRules(ruleSections: League.RuleSection[]): Observable<{ success: boolean; message: string }> {
+  saveRules(
+    ruleSections: League.RuleSection[],
+  ): Observable<{ success: boolean; message: string }> {
     return this.apiService.post<{ success: boolean; message: string }>(
       `${ROOTPATH}/tournaments/${this.tournamentKey()}/rules`,
       true,
@@ -483,8 +485,11 @@ export class LeagueZoneService {
     );
   }
 
-  getBracket(tournamentKey: string): Observable<{}> {
-    return this.apiService.get(`${ROOTPATH}/tournaments/bracket`, true);
+  getBracket(): Observable<{}> {
+    return this.apiService.get(
+      `${ROOTPATH}/tournaments/${this.tournamentKey()}/bracket`,
+      true,
+    );
   }
 
   getStandings(): Observable<{
@@ -533,5 +538,19 @@ export class LeagueZoneService {
       relatedEntityId,
       tournamentId,
     });
+  }
+
+  updateCoachLogo(coachId: string, fileKey: string) {
+    const tournamentKey = this.tournamentKey();
+    if (!tournamentKey)
+      return throwError(() => new Error('Tournament key not available'));
+
+    return this.apiService.patch(
+      `${ROOTPATH}/tournaments/${tournamentKey}/coaches/${coachId}/logo`,
+      { fileKey },
+      {
+        invalidateCache: [`${ROOTPATH}/tournaments/${tournamentKey}/signup`],
+      },
+    );
   }
 }

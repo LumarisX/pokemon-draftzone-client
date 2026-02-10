@@ -1,3 +1,5 @@
+@use "../../../../styles/global" as *;
+
 table {
   border-collapse: collapse;
   table-layout: auto;
@@ -37,4 +39,54 @@ h2 {
 img {
   height: 4rem;
   width: 4rem;
+}
+
+.file-input-hidden {
+  display: none;
+}
+
+.logo-cell {
+  vertical-align: top;
+}
+
+.logo-button {
+  border: none;
+  background: transparent;
+  padding: 0;
+  width: 4rem;
+  height: 4rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+}
+
+.add-logo-btn {
+  min-height: 4rem;
+  height: 100%;
+  width: 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: pdz-color(primary-container);
+  &:hover {
+    background-color: pdz-color(primary-hover);
+  }
+}
+
+.logo-error {
+  margin-top: 0.35rem;
+  font-size: 0.8rem;
+  color: pdz-color(error);
+}
+
+.logo-uploading {
+  margin-top: 0.35rem;
+  font-size: 0.8rem;
+  color: pdz-color(on-surface-variant);
 }

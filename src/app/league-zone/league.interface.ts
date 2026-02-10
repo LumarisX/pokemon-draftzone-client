@@ -88,6 +88,7 @@ export namespace League {
   }[];
 
   export type LeagueSignUp = {
+    id: string;
     name: string;
     gameName: string;
     discordName: string;
