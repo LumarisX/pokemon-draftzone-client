@@ -69,10 +69,18 @@ export class LeagueZoneService {
     });
   }
 
-  getRules(tournamentKey: string): Observable<League.RuleSection[]> {
+  getRules(): Observable<League.RuleSection[]> {
     return this.apiService.get<League.RuleSection[]>(
       `${ROOTPATH}/tournaments/${this.tournamentKey()}/rules`,
       false,
+    );
+  }
+
+  saveRules(ruleSections: League.RuleSection[]): Observable<{ success: boolean; message: string }> {
+    return this.apiService.post<{ success: boolean; message: string }>(
+      `${ROOTPATH}/tournaments/${this.tournamentKey()}/rules`,
+      true,
+      { ruleSections },
     );
   }
 

@@ -25,19 +25,15 @@ export class LeagueRulesOverviewComponent implements OnInit, OnDestroy {
   activeSection = 0;
 
   ngOnInit(): void {
-    const tournamentKey = this.leagueZoneService.tournamentKey();
-    if (tournamentKey) {
-      this.leagueZoneService
-        .getRules(tournamentKey)
-        .pipe(takeUntil(this.destroy$))
-        .subscribe((ruleSections) => {
-          // Convert tabs to spaces for proper markdown parsing
-          this.rules = ruleSections.map((section) => ({
-            ...section,
-            body: section.body.replace(/\t/g, '  '), // Convert tabs to 2 spaces
-          }));
-        });
-    }
+    this.leagueZoneService
+      .getRules()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((ruleSections) => {
+        this.rules = ruleSections.map((section) => ({
+          ...section,
+          body: section.body.replace(/\t/g, '  '),
+        }));
+      });
   }
 
   scrollToSection(event: Event, index: number): void {

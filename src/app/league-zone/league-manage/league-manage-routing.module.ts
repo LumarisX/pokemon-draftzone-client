@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { LeagueRulesFormComponent } from '../league-rules-overview/league-rules-form/league-rules-form.component';
 import { LeagueManageDraftComponent } from './league-manage-draft/league-manage-draft.component';
 import { LeagueManageSignupsComponent } from './league-manage-signups/league-manage-signups.component';
 import { LeagueManageComponent } from './league-manage.component';
@@ -14,6 +15,10 @@ const routes: Routes = [
   {
     path: 'sign-ups',
     component: LeagueManageSignupsComponent,
+  },
+  {
+    path: 'rules',
+    component: LeagueRulesFormComponent,
   },
   {
     path: ':divisionKey/draft',

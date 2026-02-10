@@ -1,84 +1,136 @@
-import {
-  animate,
-  state,
-  style,
-  transition,
-  trigger,
-} from '@angular/animations';
-import { CdkAccordionItem, CdkAccordionModule } from '@angular/cdk/accordion';
-import {
-  CdkDragDrop,
-  DragDropModule,
-  moveItemInArray,
-} from '@angular/cdk/drag-drop';
-import { Component, Input } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import { MatIconModule } from '@angular/material/icon';
-import { MarkdownModule } from 'ngx-markdown';
 import { League } from '../../league.interface';
+import { LeagueZoneService } from '../../../services/leagues/league-zone.service';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'pdz-league-rules-form',
-  imports: [
-    FormsModule,
-    MarkdownModule,
-    CdkAccordionModule,
-    DragDropModule,
-    MatButtonToggleModule,
-    MatButtonModule,
-    MatIconModule,
-  ],
-  standalone: true,
+  imports: [CommonModule, FormsModule],
   templateUrl: './league-rules-form.component.html',
   styleUrls: ['./league-rules-form.component.scss'],
-  animations: [
-    trigger('bodyExpansion', [
-      state(
-        'collapsed',
-        style({ height: '0px', visibility: 'hidden', opacity: 0 }),
-      ),
-      state(
-        'expanded',
-        style({ height: '*', visibility: 'visible', opacity: 1 }),
-      ),
-      transition(
-        'expanded <=> collapsed',
-        animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)'),
-      ),
-    ]),
-    trigger('indicatorRotate', [
-      state('collapsed', style({ transform: 'rotate(0deg)' })),
-      state('expanded', style({ transform: 'rotate(180deg)' })),
-      transition(
-        'expanded <=> collapsed',
-        animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)'),
-      ),
-    ]),
-  ],
 })
-export class LeagueRulesFormComponent {
-  view: string = 'edit';
+export class LeagueRulesFormComponent implements OnInit, OnDestroy {
+  private leagueZoneService = inject(LeagueZoneService);
+  private destroy$ = new Subject<void>();
 
-  @Input()
-  sections: League.RuleSection[] = [];
+  rules = signal<League.RuleSection[]>([]);
+  originalRules = signal<League.RuleSection[]>([]);
+  hasUnsavedChanges = signal(false);
+  isSaving = signal(false);
+  saveMessage = signal<{ type: 'success' | 'error'; text: string } | null>(
+    null,
+  );
 
-  addSection() {
-    this.sections.push({
-      title: '',
+  ngOnInit(): void {
+    this.leagueZoneService
+      .getRules()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((ruleSections) => {
+        const normalized = ruleSections.map((section) => ({
+          ...section,
+          body: section.body.replace(/\t/g, '  '),
+        }));
+        this.rules.set(normalized);
+        this.originalRules.set(JSON.parse(JSON.stringify(normalized)));
+        this.hasUnsavedChanges.set(false);
+      });
+
+    window.addEventListener('beforeunload', this.onBeforeUnload);
+  }
+
+  ngOnDestroy(): void {
+    window.removeEventListener('beforeunload', this.onBeforeUnload);
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  private onBeforeUnload = (e: BeforeUnloadEvent) => {
+    if (this.hasUnsavedChanges()) {
+      e.preventDefault();
+      e.returnValue = '';
+    }
+  };
+
+  onRuleChange(): void {
+    this.hasUnsavedChanges.set(
+      JSON.stringify(this.rules()) !== JSON.stringify(this.originalRules()),
+    );
+    this.saveMessage.set(null);
+  }
+
+  addSection(): void {
+    const newSection: League.RuleSection = {
+      title: 'New Section',
       body: '',
-    });
+    };
+    this.rules.set([...this.rules(), newSection]);
+    this.onRuleChange();
   }
 
-  removeSection(index: number) {
-    this.sections.splice(index, 1);
+  deleteSection(index: number): void {
+    const updatedRules = this.rules().filter((_, i) => i !== index);
+    this.rules.set(updatedRules);
+    this.onRuleChange();
   }
 
-  getExpansionState(item: CdkAccordionItem): 'expanded' | 'collapsed' {
-    return item.expanded ? 'expanded' : 'collapsed';
+  moveUp(index: number): void {
+    if (index === 0) return;
+    const rulesArray = [...this.rules()];
+    [rulesArray[index - 1], rulesArray[index]] = [
+      rulesArray[index],
+      rulesArray[index - 1],
+    ];
+    this.rules.set(rulesArray);
+    this.onRuleChange();
   }
-  onDrop(event: CdkDragDrop<League.RuleSection[]>) {
-    moveItemInArray(this.sections, event.previousIndex, event.currentIndex);
+
+  moveDown(index: number): void {
+    const rulesArray = this.rules();
+    if (index === rulesArray.length - 1) return;
+    const updatedRules = [...rulesArray];
+    [updatedRules[index], updatedRules[index + 1]] = [
+      updatedRules[index + 1],
+      updatedRules[index],
+    ];
+    this.rules.set(updatedRules);
+    this.onRuleChange();
+  }
+
+  saveRules(): void {
+    this.isSaving.set(true);
+    this.leagueZoneService
+      .saveRules(this.rules())
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.originalRules.set(JSON.parse(JSON.stringify(this.rules())));
+          this.hasUnsavedChanges.set(false);
+          this.saveMessage.set({
+            type: 'success',
+            text: 'Rules saved successfully!',
+          });
+          this.isSaving.set(false);
+          setTimeout(() => this.saveMessage.set(null), 3000);
+        },
+        error: (err) => {
+          this.saveMessage.set({
+            type: 'error',
+            text: 'Failed to save rules. Please try again.',
+          });
+          this.isSaving.set(false);
+          console.error('Error saving rules:', err);
+        },
+      });
+  }
+
+  canDeactivate(): boolean {
+    if (this.hasUnsavedChanges()) {
+      return confirm(
+        'You have unsaved changes. Are you sure you want to leave? You will lose your progress.',
+      );
+    }
+    return true;
   }
 }

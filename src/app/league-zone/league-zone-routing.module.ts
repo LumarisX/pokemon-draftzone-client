@@ -19,12 +19,17 @@ import { LeagueTierListFormComponent } from './league-tier-list/league-tier-list
 import { LeagueTierListComponent } from './league-tier-list/league-tier-list.component';
 import { LeagueTradesComponent } from './league-trades/league-trades.component';
 import { TournamentLandingComponent } from './tournaments/tournament-landing/tournament-landing.component';
+import { LeagueLandingComponent } from './league-landing/league-landing.component';
 
 export const LeagueZonePath = 'leagues';
 const routes: Routes = [
   {
     path: '',
     component: LeagueOverviewComponent,
+  },
+  {
+    path: `:leagueKey`,
+    component: LeagueLandingComponent,
   },
   {
     path: `pdbl/tournaments/:tournamentKey/${LeagueManagePath}`,
