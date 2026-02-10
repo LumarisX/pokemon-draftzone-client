@@ -8,16 +8,16 @@ import { ReplayChartComponent } from './replay-chart/replay-chart.component';
 import { ReplayData } from './replay.interface';
 import { getNameByPid } from '../../data/namedex';
 
-import { MatGridListModule } from "@angular/material/grid-list";
-import { MatTreeModule } from "@angular/material/tree";
-import { MatExpansionModule } from "@angular/material/expansion";
-import { MatCardModule } from "@angular/material/card";
-import { MatDividerModule } from "@angular/material/divider";
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatTreeModule } from '@angular/material/tree';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatCardModule } from '@angular/material/card';
+import { MatDividerModule } from '@angular/material/divider';
 
 @Component({
-  selector: "replay-analyzer",
+  selector: 'replay-analyzer',
   standalone: true,
-  templateUrl: "./replay.component.html",
+  templateUrl: './replay.component.html',
   styles: [
     `
       ::ng-deep mat-divider {
@@ -45,7 +45,7 @@ export class ReplayComponent implements OnInit {
   private replayService = inject(ReplayService);
   private route = inject(ActivatedRoute);
 
-  private _replayURI: string = "";
+  private _replayURI: string = '';
   replayData: ReplayData | undefined;
   analyzed: boolean = true;
   get replayURI() {
@@ -59,8 +59,8 @@ export class ReplayComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
-      if ("replay" in params) {
-        this.replayURI = decodeURIComponent(params["replay"]);
+      if ('replay' in params) {
+        this.replayURI = decodeURIComponent(params['replay']);
         this.analyze();
         this.analyzed = true;
       }
@@ -84,13 +84,13 @@ export class ReplayComponent implements OnInit {
 
   playerClass(index: number) {
     if (index === 1) {
-      return "bg-aTeam-200";
+      return 'bg-aTeam-200';
     }
     if (index === 2) {
-      return "bg-bTeam-200";
+      return 'bg-bTeam-200';
     }
 
-    return "";
+    return '';
   }
 
   getNameByPid(pid: string) {
