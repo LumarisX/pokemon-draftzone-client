@@ -60,7 +60,7 @@ export class TeambuilderService implements OnDestroy {
 
   private ensureConnected(): void {
     if (!this.isConnected) {
-      this.wsSubscription = this.wsService.connect('battlezone').subscribe({
+      this.wsSubscription = this.wsService.connect().subscribe({
         next: () => {
           this.isConnected = true;
           console.log('TeambuilderService: WebSocket connected');

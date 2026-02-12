@@ -27,7 +27,7 @@ export class LeagueZoneService {
   teamKey = signal<string | null>(null);
 
   constructor() {
-    this.webSocketService.connect('battlezone');
+    this.webSocketService.connect();
 
     this.router.events
       .pipe(
