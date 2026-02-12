@@ -284,6 +284,10 @@
     gap: var(--pdz-space-2xs);
     color: pdz-color(on-surface-variant);
     flex-shrink: 0;
+    position: absolute;
+    right: var(--pdz-space-2xs);
+    top: var(--pdz-space-2xs);
+
     @include apply-typography(body-xs);
   }
 

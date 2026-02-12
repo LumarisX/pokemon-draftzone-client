@@ -4,12 +4,15 @@ import { Observable, of, throwError } from 'rxjs';
 import { filter, map, mergeMap } from 'rxjs/operators';
 import { getRandomPokemon } from '../../data/namedex';
 import { Pokemon } from '../../interfaces/pokemon';
-import { LeagueTierGroup } from '../../interfaces/tier-pokemon.interface';
 import { defenseData } from '../../league-zone/league-ghost';
 import { League } from '../../league-zone/league.interface';
 import { ApiService } from '../api.service';
 import { UploadService } from '../upload.service';
 import { WebSocketService } from '../ws.service';
+import {
+  LeagueTier,
+  LeagueTierGroup,
+} from '../../interfaces/tier-pokemon.interface';
 
 const ROOTPATH = 'leagues';
 
@@ -120,7 +123,7 @@ export class LeagueZoneService {
     const divisionKey = this.divisionKey();
     if (divisionKey) params['division'] = divisionKey;
     return this.apiService.get<{
-      tierList: LeagueTierGroup[];
+      tierList: LeagueTier[];
       divisions: { [key: string]: { pokemonId: string; teamId: string }[] };
     }>(
       `${ROOTPATH}/tournaments/${this.tournamentKey()}/tier-list`,

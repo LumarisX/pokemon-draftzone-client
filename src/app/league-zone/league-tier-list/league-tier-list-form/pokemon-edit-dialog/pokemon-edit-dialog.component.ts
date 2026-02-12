@@ -63,7 +63,7 @@ export class PokemonEditDialogComponent implements OnInit {
   ngOnInit(): void {
     this.editForm = this.fb.group({
       currentTier: [this.data.currentTier?.name || null, Validators.required],
-      banNotes: [this.data.pokemon.banNotes || ''],
+      notes: [this.data.pokemon.notes || ''],
       selectedAbilities: this.fb.group({}),
     });
 

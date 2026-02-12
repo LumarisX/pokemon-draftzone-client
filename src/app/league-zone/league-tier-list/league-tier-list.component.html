@@ -3,7 +3,7 @@
     <div class="tier-list__header">
       <div class="tier-list__title-section">
         <div class="tier-list__title">Tier List</div>
-        @if (sortedTierGroups()) {
+        @if (sortedTiers()) {
           <div class="tier-list__controls">
             <div class="menu-button">
               <button
@@ -116,95 +116,74 @@
       </div>
     </div>
     <div class="tier-list__content">
-      @if (sortedTierGroups()) {
+      @if (sortedTiers()) {
         @if (compact) {
-          @for (group of sortedTierGroups(); track $index) {
-            @for (tier of group.tiers; track $index) {
-              <div class="tier--compact flex">
-                <div class="tier__label">
-                  {{ tier.name }}
-                </div>
-                @for (pokemon of tier.pokemon; track $index) {
-                  <div>
-                    <pdz-sprite
-                      [pokemon]="pokemon"
-                      [tooltipPosition]="null"
-                    ></pdz-sprite>
-                  </div>
-                }
+          @for (tier of sortedTiers(); track $index) {
+            <div class="tier--compact flex">
+              <div class="tier__label">
+                {{ tier.name }}
               </div>
-            }
+              @for (pokemon of tier.pokemon; track $index) {
+                <div>
+                  <pdz-sprite
+                    [pokemon]="pokemon"
+                    [tooltipPosition]="null"
+                  ></pdz-sprite>
+                </div>
+              }
+            </div>
           }
         } @else {
           <div class="tier-container">
             <div class="tier-container__wrapper">
-              @for (group of sortedTierGroups(); track $index) {
-                <div class="tier-group">
-                  @if (group.label !== undefined) {
-                    <div class="tier-group__label">{{ group.label }}</div>
-                  }
-                  <div class="tier-group__tiers">
-                    @for (tier of group.tiers; track $index) {
-                      <div class="tier">
-                        <div class="tier__label">
-                          {{ tier.name }}
-                        </div>
-                        <div class="tier__pokemon-list">
-                          @for (pokemon of tier.pokemon; track $index) {
-                            @if (
-                              typeInFilter(pokemon) &&
-                              (showDrafted || !isPokemonDrafted(pokemon))
-                            ) {
-                              <div
-                                class="tier-entry"
-                                [class.is-drafted]="
-                                  isPokemonDrafted(pokemon) ||
-                                  tier.name === 'Ban'
-                                "
-                                [class.is-selected]="
-                                  selectedPokemon === pokemon
-                                "
-                                (click)="
-                                  selectPokemon(pokemon, tier.name, $event)
-                                "
-                              >
-                                <div class="tier-entry__sprite">
-                                  <pdz-sprite
-                                    [pokemon]="pokemon"
-                                    [tooltipPosition]="null"
-                                  ></pdz-sprite>
-                                </div>
-                                <div class="tier-entry__content">
-                                  <div class="tier-entry__name">
-                                    {{ pokemon.name }}
-                                  </div>
-                                  @if (pokemon.teraCost) {
-                                    <div class="tier-entry__tera-cost">
-                                      <span>{{
-                                        justNumber(pokemon.teraCost)
-                                      }}</span>
-                                      <pdz-icon
-                                        name="tera"
-                                        [height]="20"
-                                      ></pdz-icon>
-                                    </div>
-                                  }
-                                </div>
-                                @if (pokemon.banned) {
-                                  <mat-icon
-                                    class="tier-entry__restricted-icon"
-                                    mat-raised-button
-                                    #tooltip="matTooltip"
-                                    [matTooltip]="makeBanString(pokemon.banned)"
-                                  >
-                                    warning
-                                  </mat-icon>
-                                }
-                              </div>
-                            }
+              @for (tier of sortedTiers(); track $index) {
+                <div class="tier">
+                  <div class="tier__label">
+                    {{ tier.name }}
+                  </div>
+                  <div class="tier__pokemon-list">
+                    @for (pokemon of tier.pokemon; track $index) {
+                      @if (
+                        typeInFilter(pokemon) &&
+                        (showDrafted || !isPokemonDrafted(pokemon))
+                      ) {
+                        <div
+                          class="tier-entry"
+                          [class.is-drafted]="
+                            isPokemonDrafted(pokemon) || tier.name === 'Ban'
+                          "
+                          [class.is-selected]="selectedPokemon === pokemon"
+                          (click)="selectPokemon(pokemon, tier.name, $event)"
+                        >
+                          <div class="tier-entry__sprite">
+                            <pdz-sprite
+                              [pokemon]="pokemon"
+                              [tooltipPosition]="null"
+                            ></pdz-sprite>
+                          </div>
+                          <div class="tier-entry__content">
+                            <div class="tier-entry__name">
+                              {{ pokemon.name }}
+                            </div>
+                          </div>
+                          @if (pokemon.addons?.length) {
+                            <div class="tier-entry__tera-cost">
+                              <span>{{ pokemon.addons![0].cost }}</span>
+                              <pdz-icon name="tera" [height]="20"></pdz-icon>
+                            </div>
+                          }
+                          @if (pokemon.banned) {
+                            <mat-icon
+                              class="tier-entry__restricted-icon"
+                              mat-raised-button
+                              #tooltip="matTooltip"
+                              [matTooltip]="makeBanString(pokemon.banned)"
+                            >
+                              warning
+                            </mat-icon>
                           }
                         </div>
-                      </div>
+                      }
                     }
                   </div>
                 </div>

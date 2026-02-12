@@ -27,7 +27,7 @@ import { LoadingComponent } from '../../images/loading/loading.component';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { Pokemon } from '../../interfaces/pokemon';
 import {
-  LeagueTierGroup,
+  LeagueTier,
   TierPokemon,
 } from '../../interfaces/tier-pokemon.interface';
 import { League } from '../../league-zone/league.interface';
@@ -69,7 +69,7 @@ export class LeagueTierListComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   drafted = signal<{ [division: string]: { pokemonId: string }[] }>({});
-  tierGroups = signal<LeagueTierGroup[] | undefined>(undefined);
+  tiers = signal<LeagueTier[] | undefined>(undefined);
   sortBy = signal<SortOption>('BST');
   selectedDivision = signal<string | undefined>(undefined);
   searchText = signal<string>('');
@@ -81,17 +81,14 @@ export class LeagueTierListComponent implements OnInit, OnDestroy {
 
   compact: boolean = false;
 
-  readonly sortedTierGroups = computed(() => {
+  readonly sortedTiers = computed(() => {
     const sortBy = this.sortBy();
-    const tierGroups = this.tierGroups();
-    if (!tierGroups) return null;
+    const tiers = this.tiers();
+    if (!tiers) return null;
 
-    return tierGroups.map((group) => ({
-      ...group,
-      tiers: group.tiers.map((tier) => ({
-        ...tier,
-        pokemon: [...tier.pokemon].sort(SORT_MAP[sortBy]),
-      })),
+    return tiers.map((tier) => ({
+      ...tier,
+      pokemon: [...tier.pokemon].sort(SORT_MAP[sortBy]),
     }));
   });
 
@@ -152,7 +149,7 @@ export class LeagueTierListComponent implements OnInit, OnDestroy {
       .pipe(first())
       .subscribe((data) => {
         this.drafted.set(data.divisions);
-        this.tierGroups.set(data.tierList);
+        this.tiers.set(data.tierList);
         const divisionNames = Object.keys(data.divisions);
         if (divisionNames.length > 0) {
           this.selectedDivision.set(divisionNames[0]);
