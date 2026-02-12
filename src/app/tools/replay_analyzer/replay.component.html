@@ -129,25 +129,23 @@
                         [disabled]="mon.fainted"></pdz-sprite>
                     </mat-card-title>
                   </mat-card-header>
-                  <!-- <div class="w-3/4 mx-auto border-b border-black mb-2"></div> -->
                   <mat-card-content class="!flex flex-col gap-1">
-                    <div *ngIf="!mon.kills[1]" class="p-2 text-center">
-                      <span class="font-semibold"> Kills: </span>
-                      {{ mon.kills[0] }}
-                    </div>
-                    <div *ngIf="mon.kills[1]" class="p-2 text-center">
-                      <span class="font-semibold"> Kills: </span>
-                      <div>
-                        <span> Direct: </span>
-                        {{ mon.kills[0] }}
-                      </div>
-                      <div>
-                        <span> Indirect: </span>
-                        {{ mon.kills[1] }}
-                      </div>
+                    <div class="p-2 text-center">
+                      <span class="font-semibold block mb-1"> Kills: </span>
+                      <mat-expansion-panel disabled hideToggle>
+                        <!-- Prevent greyed out text while the mat-expansion-panel is disabled -->
+                        <mat-expansion-panel-header class="!text-[var(--mat-expansion-header-text-color)]">
+                          <mat-panel-title>
+                            {{ mon.kills[0] }}
+                            <span *ngIf="mon.kills[1]" class="ml-1">
+                              ({{ mon.kills[1] }} indirect)
+                            </span>
+                          </mat-panel-title>
+                        </mat-expansion-panel-header>
+                      </mat-expansion-panel>
                     </div>
                     <div class="p-2 text-center">
-                      <span class="font-semibold"> Damage Dealt:</span>
+                      <span class="font-semibold block mb-1"> Damage Dealt:</span>
                       <mat-accordion>
                         <mat-expansion-panel>
                           <mat-expansion-panel-header>
@@ -170,7 +168,7 @@
                       </mat-accordion>
                     </div>
                     <div class="p-2 text-center">
-                      <span class="font-semibold"> Damage Taken: </span>
+                      <span class="font-semibold block mb-1"> Damage Taken: </span>
                       <mat-accordion>
                         <mat-expansion-panel>
                           <mat-expansion-panel-header>
@@ -193,8 +191,15 @@
                       </mat-accordion>
                     </div>
                     <div class="p-2 text-center">
-                      <span class="font-semibold"> HP Restored: </span>
-                      {{ mon.hpRestored | number: "1.0-0" }}%
+                      <span class="font-semibold block mb-1"> HP Restored: </span>
+                      <mat-expansion-panel disabled hideToggle>
+                        <!-- Prevent greyed out text while the mat-expansion-panel is disabled -->
+                        <mat-expansion-panel-header class="!text-[var(--mat-expansion-header-text-color)]">
+                          <mat-panel-title>
+                            {{ mon.hpRestored | number: "1.0-0" }}%
+                          </mat-panel-title>
+                        </mat-expansion-panel-header>
+                      </mat-expansion-panel>
                     </div>
                     <div *ngIf="mon.moveset && mon.moveset.length > 0" class="p-2">
                       <!-- <ul class="list-disc pl-4">
