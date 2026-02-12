@@ -31,8 +31,3 @@ export type LeagueTier = {
   cost?: number;
   pokemon: TierPokemon[];
 };
-
-export type LeagueTierGroup = {
-  label?: string;
-  tiers: LeagueTier[];
-};

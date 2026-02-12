@@ -19,10 +19,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { SpriteComponent } from '../../../../images/sprite/sprite.component';
 import { SlideToggleComponent } from '../../../../util/inputs/slide-toggle/slide-toggle.component';
 import { EditTierPokemon } from '../league-tier-list-form.component';
-import {
-  LeagueTier,
-  LeagueTierGroup,
-} from '../../../../interfaces/tier-pokemon.interface';
+import { LeagueTier } from '../../../../interfaces/tier-pokemon.interface';
 
 export interface PokemonEditDialogData {
   pokemon: EditTierPokemon &
@@ -32,7 +29,7 @@ export interface PokemonEditDialogData {
       selectedAbilities: string[];
     }>;
   currentTier: LeagueTier;
-  tierGroups: LeagueTierGroup[];
+  tiers: LeagueTier[];
 }
 
 @Component({

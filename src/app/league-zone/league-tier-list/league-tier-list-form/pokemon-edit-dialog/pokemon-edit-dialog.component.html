@@ -26,12 +26,8 @@
           <mat-label>Current Tier</mat-label>
           <mat-select formControlName="currentTier">
             <mat-option [value]="null">Untiered</mat-option>
-            @for (tierGroup of data.tierGroups; track tierGroup.label) {
-              <mat-optgroup [label]="tierGroup.label || 'Unnamed Group'">
-                @for (tier of tierGroup.tiers; track tier.name) {
-                  <mat-option [value]="tier.name">{{ tier.name }}</mat-option>
-                }
-              </mat-optgroup>
+            @for (tier of data.tiers; track tier.name) {
+              <mat-option [value]="tier.name">{{ tier.name }}</mat-option>
             }
           </mat-select>
           @if (

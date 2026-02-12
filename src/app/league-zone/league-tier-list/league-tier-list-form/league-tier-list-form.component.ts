@@ -16,7 +16,7 @@ import { takeUntil } from 'rxjs/operators';
 import { LoadingComponent } from '../../../images/loading/loading.component';
 import { SpriteComponent } from '../../../images/sprite/sprite.component';
 import {
-  LeagueTierGroup,
+  LeagueTier,
   TierPokemon,
 } from '../../../interfaces/tier-pokemon.interface';
 import { LeagueZoneService } from '../../../services/leagues/league-zone.service';
@@ -98,12 +98,8 @@ export class LeagueTierListFormComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (data) => {
-          // Flatten tier groups into a single array of tiers
-          const flatTiers = (data.tierList as LeagueTierGroup[]).flatMap(
-            (group) => group.tiers,
-          );
+          const flatTiers = [...data.tierList];
 
-          // Separate Untiered tier from regular tiers
           const nullTierIndex = flatTiers.findIndex(
             (tier) =>
               tier.name.toLowerCase() === this.UNTIERED_TIER_NAME.toLowerCase(),
@@ -384,7 +380,7 @@ export class LeagueTierListFormComponent implements OnInit, OnDestroy {
     const dialogData: PokemonEditDialogData = {
       pokemon: pokemon,
       currentTier: tier,
-      tierGroups: [{ tiers: this.tiers() ?? [] }] as LeagueTierGroup[],
+      tiers: this.tiers() ?? [],
     };
 
     const dialogRef = this.dialog.open(PokemonEditDialogComponent, {
