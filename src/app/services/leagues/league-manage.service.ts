@@ -21,7 +21,7 @@ export class LeagueManageService {
     return this.apiService.post(
       `leagues/tournaments/${tournamentId}/manage/divisions/${this.leagueZoneService.divisionKey()}/setdraft`,
       true,
-      pick,
+      { pick },
     );
   }
 
