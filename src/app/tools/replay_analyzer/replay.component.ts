@@ -26,6 +26,10 @@ import { MatDividerModule } from '@angular/material/divider';
         margin-top: 10px !important;
         margin-bottom: 10px !important;
       }
+      ::ng-deep .pdz-centered-panel .mat-content,
+      ::ng-deep .pdz-left-aligned-panel .mat-content {
+        margin-right: 0 !important;
+      }
     `,
   ],
   imports: [
