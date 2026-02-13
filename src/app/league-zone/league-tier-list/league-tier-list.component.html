@@ -228,6 +228,13 @@
                 </div>
               }
             </div>
+            <div class="ability-container">
+              @for (type of selectedPokemon.abilities; track $index) {
+                <div class="ability">
+                  {{ type }}
+                </div>
+              }
+            </div>
             <div class="stats-container">
               @for (stat of pokemonStats; track $index) {
                 <div class="stat">
@@ -252,6 +259,18 @@
               (click)="emitDraftPokemon()"
             >
               {{ buttonText }}
+            </button>
+          }
+          @if (altButtonText) {
+            <button
+              class="selected-card__button--alt"
+              [disabled]="
+                isPokemonDrafted(selectedPokemon) ||
+                selectedPokemon.tier == 'Ban'
+              "
+              (click)="emitDraftPokemon()"
+            >
+              {{ altButtonText }}
             </button>
           }
         </div>

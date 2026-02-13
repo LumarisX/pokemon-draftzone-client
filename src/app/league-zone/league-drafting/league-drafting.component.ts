@@ -358,6 +358,16 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
     );
   }
 
+  altButtonText(): string | undefined {
+    if (!this.selectedTeam.picks.length) return undefined;
+    if (this.canDraft() && !this.selectedPick) return 'Draft Tera Capt.';
+    return (
+      'Add as Tera Capt. (' +
+      (this.selectedPick + this.selectedTeam.draft.length + 1) +
+      ')'
+    );
+  }
+
   canDraft(): boolean {
     return (
       this.selectedTeam.isCoach &&

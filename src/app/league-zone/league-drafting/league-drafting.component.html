@@ -69,7 +69,7 @@
               >
                 <div
                   class="my-pokemon-index"
-                  [ngClass]="{ 'selected-pick': selectedPick === $index }"
+                  [class.selected-pick]="selectedPick === $index"
                 >
                   {{ $index + selectedTeam.draft.length + 1 }}
                 </div>
@@ -77,17 +77,14 @@
                   @for (choice of picks; track choice.id) {
                     <div
                       class="my-draft-pick-container"
-                      [ngClass]="{ backup: $index > 0 }"
+                      [class.backup]="$index > 0"
                     >
                       @if ($index) {
                         <button (click)="moveUp(picks, $index)">
                           <mat-icon>arrow_upward_alt</mat-icon>
                         </button>
                       }
-                      <button
-                        class="my-draft-pick"
-                        [ngClass]="{ backup: $index > 0 }"
-                      >
+                      <button class="my-draft-pick" [class.backup]="$index > 0">
                         <div class="my-pokemon-sprite">
                           <pdz-sprite
                             [pokemon]="choice"
@@ -137,29 +134,23 @@
               <div class="card-container">
                 @for (position of round; track $index) {
                   @let pokemon = position.draft[roundIndex];
-                  <div
-                    class="team-card"
-                    [ngClass]="{
-                      alternate: !pokemon,
-                    }"
-                  >
+                  <div class="team-card" [class.alternate]="!pokemon">
                     <div class="team-card-header">
                       <span
-                        [ngClass]="{
-                          selectedTeam: position.name === selectedTeam.name,
-                        }"
+                        [class.selectedTeam]="
+                          position.name === selectedTeam.name
+                        "
                       >
                         {{ position.name }}
                       </span>
                     </div>
                     <div
                       class="team-card-body"
-                      [ngClass]="{
-                        picking:
-                          currentPick &&
-                          currentPick.round === roundIndex &&
-                          currentPick.position === $index,
-                      }"
+                      [class.picking]="
+                        currentPick &&
+                        currentPick.round === roundIndex &&
+                        currentPick.position === $index
+                      "
                     >
                       <div class="team-card-icon">
                         @if (pokemon) {
@@ -206,6 +197,7 @@
       <div class="tier-wrapper">
         <pdz-league-tier-list
           [buttonText]="buttonText()"
+          [altButtonText]="altButtonText()"
           (pokemonSelected)="pokemonSelected($event)"
         ></pdz-league-tier-list>
       </div>

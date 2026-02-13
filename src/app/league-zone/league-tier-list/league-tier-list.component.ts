@@ -214,6 +214,9 @@ export class LeagueTierListComponent implements OnInit, OnDestroy {
   @Input()
   buttonText?: string;
 
+  @Input()
+  altButtonText?: string;
+
   @Output() pokemonSelected = new EventEmitter<
     TierPokemon & { tier: string }
   >();

@@ -297,7 +297,7 @@
 .selected-card {
   position: absolute;
   z-index: 3000;
-  background-color: pdz-color(surface-container-high);
+  background-color: pdz-color(surface-container);
   color: pdz-color(on-surface);
   border-radius: var(--pdz-shape-corner-sm);
   padding: var(--pdz-space-lg);
@@ -324,14 +324,12 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: var(--pdz-space-sm);
+    gap: var(--pdz-space-xs);
   }
 
   &__pokemon-name {
-    font-family: var(--pdz-font-fancy);
-    font-size: 1.2rem;
-    line-height: 1.3rem;
-    font-weight: bold;
+    @include apply-typography(title-md);
+
     text-align: center;
   }
 
@@ -352,12 +350,28 @@
     background-color: pdz-color(primary);
     color: pdz-color(on-primary);
     border-radius: var(--pdz-shape-corner-lg);
-    box-shadow: var(--pdz-level-2);
-    padding: var(--pdz-space-sm);
+    box-shadow: var(--pdz-level-1);
+    height: 2rem;
+    @include apply-typography(body-sm);
 
     &:disabled {
       background-color: pdz-color(surface-disabled);
       color: pdz-color(on-surface-disabled);
+    }
+
+    &--alt {
+      background-color: pdz-color(secondary);
+      width: 100%;
+      color: pdz-color(on-primary);
+      border-radius: var(--pdz-shape-corner-lg);
+      box-shadow: var(--pdz-level-1);
+      @include apply-typography(body-xs);
+
+      height: 1.5rem;
+      &:disabled {
+        background-color: pdz-color(surface-disabled);
+        color: pdz-color(on-surface-disabled);
+      }
     }
   }
 
@@ -395,17 +409,36 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-size: x-small;
 
   &__name {
     margin-bottom: 0.1rem;
-    font-weight: bold;
+    @include apply-typography(label-xs);
   }
 
   &__value {
-    background-color: pdz-color(surface-container-high);
+    background-color: pdz-color(surface);
     padding: 0.1rem var(--pdz-space-xs);
     border-radius: var(--pdz-shape-corner-xs);
-    box-shadow: var(--pdz-level-2);
+    box-shadow: var(--pdz-level-1);
+    @include apply-typography(body-xs);
   }
+}
+
+.ability-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  column-gap: var(--pdz-space-xs);
+  row-gap: var(--pdz-space-2xs);
+
+  justify-content: center;
+  @include apply-typography(body-xs);
+}
+
+.ability {
+  @include apply-typography(body-xs);
+  background-color: pdz-color(surface);
+  border-radius: var(--pdz-shape-corner-xs);
+  box-shadow: var(--pdz-level-1);
+  padding: 0 var(--pdz-space-xs);
 }
