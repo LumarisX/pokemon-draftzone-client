@@ -178,7 +178,7 @@ export class LeagueZoneService {
     return this.apiService.post(
       `${ROOTPATH}/tournaments/${this.tournamentKey()}/divisions/${this.divisionKey()}/teams/${teamId}/draft`,
       true,
-      pick,
+      { pick },
     );
   }
 
