@@ -11,15 +11,25 @@
 </div>
 
 <nav class="navigation-tabs">
-  @for (section of navigationSections; track section.route) {
-    <button
-      class="navigation-tabs__tab"
-      (click)="navigateTo(section.route)"
-      type="button"
-    >
-      {{ section.label }}
-    </button>
-  }
+  <button class="navigation-tabs__tab" routerLink="./schedule" type="button">
+    Scheduling
+  </button>
+  <button class="navigation-tabs__tab" routerLink="./teams" type="button">
+    Teams
+  </button>
+  <button class="navigation-tabs__tab" routerLink="./standings" type="button">
+    Standings
+  </button>
+  <button
+    class="navigation-tabs__tab"
+    routerLink="../../tier-list"
+    type="button"
+  >
+    Tier List
+  </button>
+  <button class="navigation-tabs__tab" routerLink="./draft" type="button">
+    Draft
+  </button>
 </nav>
 <!-- <div class="widget-container">
   @if(team){

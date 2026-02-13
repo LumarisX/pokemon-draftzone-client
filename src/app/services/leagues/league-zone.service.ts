@@ -163,7 +163,10 @@ export class LeagueZoneService {
     );
   }
 
-  setPicks(teamId: string, picks: string[][]) {
+  setPicks(
+    teamId: string,
+    picks: { pokemonId: string; addons?: string[] }[][],
+  ) {
     return this.apiService.post(
       `${ROOTPATH}/tournaments/${this.tournamentKey()}/divisions/${this.divisionKey()}/teams/${teamId}/picks`,
       true,
@@ -171,11 +174,11 @@ export class LeagueZoneService {
     );
   }
 
-  draftPokemon(teamId: string, pokemon: Pokemon) {
+  draftPokemon(teamId: string, pick: { pokemonId: string; addons?: string[] }) {
     return this.apiService.post(
       `${ROOTPATH}/tournaments/${this.tournamentKey()}/divisions/${this.divisionKey()}/teams/${teamId}/draft`,
       true,
-      { pokemonId: pokemon.id },
+      pick,
     );
   }
 

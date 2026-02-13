@@ -82,10 +82,6 @@ const routes: Routes = [
     component: LeagueScheduleComponent,
   },
   {
-    path: 'pdbl/tournaments/:tournamentKey/divisions/:divisionKey/schedule',
-    component: LeagueScheduleComponent,
-  },
-  {
     path: 'pdbl/tournaments/:tournamentKey/divisions/:divisionKey/standings',
     component: LeagueStandingsComponent,
   },

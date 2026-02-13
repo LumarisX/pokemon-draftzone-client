@@ -1,25 +1,19 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectorRef,
-  Component,
-  inject,
-  OnDestroy,
-  OnInit,
-} from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
-import { Subject, interval, takeUntil } from 'rxjs';
+import { RouterModule } from '@angular/router';
+import { interval, Subject, takeUntil } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
+import { LoadingComponent } from '../../images/loading/loading.component';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { DraftPokemon } from '../../interfaces/draft';
 import { TierPokemon } from '../../interfaces/tier-pokemon.interface';
-import { LeagueZoneService } from '../../services/leagues/league-zone.service';
-import { NumberSuffixPipe } from '../../util/pipes/number-suffix.pipe';
-import { LeagueTierListComponent } from '../league-tier-list/league-tier-list.component';
-import { LoadingComponent } from '../../images/loading/loading.component';
-import { LeagueNotificationsComponent } from '../league-notifications/league-notifications.component';
 import { LeagueNotificationService } from '../../services/league-notification.service';
+import { LeagueZoneService } from '../../services/leagues/league-zone.service';
 import { WebSocketService } from '../../services/ws.service';
-import { RouterModule } from '@angular/router';
+import { NumberSuffixPipe } from '../../util/pipes/number-suffix.pipe';
+import { LeagueNotificationsComponent } from '../league-notifications/league-notifications.component';
+import { LeagueTierListComponent } from '../league-tier-list/league-tier-list.component';
 import { League } from '../league.interface';
 
 interface DraftAddedEvent {
@@ -80,7 +74,6 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
   private notificationService = inject(LeagueNotificationService);
   private webSocketService = inject(WebSocketService);
   private leagueService = inject(LeagueZoneService);
-  private cdr = inject(ChangeDetectorRef);
 
   private destroy$ = new Subject<void>();
   private countdownTick$ = new Subject<void>();
@@ -177,7 +170,7 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
               .setPicks(
                 this.selectedTeam.id,
                 this.selectedTeam.picks.map((round) =>
-                  round.map((pick) => pick.id),
+                  round.map((pick) => ({ pokemonId: pick.id })),
                 ),
               )
               .pipe(takeUntil(this.destroy$))
@@ -312,7 +305,7 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
   draftPokemon(pokemon: DraftPokemon): void {
     this.canDraftTeams = [];
     this.leagueService
-      .draftPokemon(this.selectedTeam.id, pokemon)
+      .draftPokemon(this.selectedTeam.id, { pokemonId: pokemon.id })
       .pipe(takeUntil(this.destroy$))
       .subscribe();
   }
