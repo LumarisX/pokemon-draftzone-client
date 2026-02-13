@@ -13,6 +13,7 @@ import { MatTreeModule } from '@angular/material/tree';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'replay-analyzer',
@@ -43,6 +44,7 @@ import { MatDividerModule } from '@angular/material/divider';
     MatExpansionModule,
     MatCardModule,
     MatDividerModule,
+    MatTooltipModule,
   ],
 })
 export class ReplayComponent implements OnInit {
