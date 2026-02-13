@@ -5,7 +5,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-league-notifications',
+  selector: 'pdz-league-notifications',
   templateUrl: './league-notifications.component.html',
   styleUrls: ['./league-notifications.component.scss'],
 })

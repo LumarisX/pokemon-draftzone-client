@@ -1,8 +1,8 @@
 .notification-container {
   position: fixed;
-  top: 20px;
+  top: 4rem;
   right: 20px;
-  z-index: 1000; /* Ensure it floats above other content */
+  z-index: 10000; /* Ensure it floats above other content */
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -23,7 +23,7 @@
 }
 
 .notification-box.success {
-  background-color: #4CAF50;
+  background-color: #4caf50;
 }
 
 .notification-box.error {
@@ -31,7 +31,7 @@
 }
 
 .notification-box.info {
-  background-color: #2196F3;
+  background-color: #2196f3;
 }
 
 .notification-box.warning {
