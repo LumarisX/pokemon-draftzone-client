@@ -27,7 +27,9 @@ export namespace League {
   };
 
   export type LeaguePokemon = DraftPokemon & {
-    tier: string | string;
+    tier: string;
+    cost: number;
+    addons?: string[];
     record?: {
       deaths: number;
       kills: number;
@@ -38,7 +40,8 @@ export namespace League {
   export type TieredPokemon = {
     name: string;
     id: string;
-    tier: string | number;
+    tier: string;
+    cost: number;
   };
 
   type MatchTeam = {

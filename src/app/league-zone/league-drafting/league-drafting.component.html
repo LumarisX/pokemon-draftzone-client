@@ -59,7 +59,7 @@
                 <div class="my-pokemon-name fancy-font">
                   {{ pokemon.name }}
                 </div>
-                <div class="my-pokemon-tier fancy-font">{{ pokemon.tier }}</div>
+                <div class="my-pokemon-tier fancy-font">{{ pokemon.cost }}</div>
               </li>
             }
             @for (picks of selectedTeam.picks; track $index) {
@@ -101,7 +101,7 @@
                           </div>
                         </div>
                         <div class="my-pokemon-tier fancy-font">
-                          {{ choice.tier }}
+                          {{ choice.cost }}
                         </div>
                         <button (click)="deleteChoice(picks, $index)">
                           <mat-icon>delete_forever</mat-icon>

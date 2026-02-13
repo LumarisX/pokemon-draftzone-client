@@ -63,7 +63,6 @@ import {
   styleUrls: ['./league-tier-list.component.scss'],
 })
 export class LeagueTierListComponent implements OnInit, OnDestroy {
-  private elRef = inject(ElementRef);
   private leagueService = inject(LeagueZoneService);
   private wsService = inject(WebSocketService);
   private destroy$ = new Subject<void>();
@@ -217,52 +216,53 @@ export class LeagueTierListComponent implements OnInit, OnDestroy {
   @Input()
   altButtonText?: string;
 
-  @Output() pokemonSelected = new EventEmitter<
-    TierPokemon & { tier: string }
-  >();
+  @Output() pokemonSelected = new EventEmitter<{
+    id: string;
+    name: string;
+    addons?: string[];
+    tier: string;
+    cost?: number;
+  }>();
 
   showDrafted: boolean = true;
-  selectedPokemon: (TierPokemon & { tier: string }) | null = null;
-  cardPosition = { top: '0px', left: '0px' };
+  selectedPokemon: (TierPokemon & { tier: LeagueTier }) | null = null;
   typeColor = typeColor;
-  isMobile = false;
 
-  selectPokemon(pokemon: TierPokemon, tier: string, event: MouseEvent) {
+  selectPokemon(pokemon: TierPokemon, tier: LeagueTier) {
     if (this.selectedPokemon?.id === pokemon.id) {
       this.selectedPokemon = null;
       return;
     }
     this.selectedPokemon = { ...pokemon, tier };
-
-    this.isMobile = window.innerWidth < 768;
-
-    if (!this.isMobile) {
-      const clickedElement = event.currentTarget as HTMLElement;
-      const componentRect = this.elRef.nativeElement.getBoundingClientRect();
-      const clickedRect = clickedElement.getBoundingClientRect();
-
-      const top =
-        clickedRect.top - componentRect.top + clickedElement.offsetHeight / 2;
-      const left =
-        clickedRect.left - componentRect.left + clickedElement.offsetWidth;
-
-      this.cardPosition = {
-        top: `${top}px`,
-        left: `${left + 10}px`,
-      };
-    }
   }
 
-  emitDraftPokemon() {
-    if (this.selectedPokemon) this.pokemonSelected.emit(this.selectedPokemon);
+  emitDraftPokemon(teraCapt: boolean = false) {
+    if (!this.selectedPokemon) return;
+    const pokemon: {
+      id: string;
+      name: string;
+      addons?: string[];
+      tier: string;
+      cost?: number;
+    } = {
+      id: this.selectedPokemon.id,
+      name: this.selectedPokemon.name,
+      tier: this.selectedPokemon.tier.name,
+      cost: this.selectedPokemon.tier.cost,
+    };
+    if (teraCapt) {
+      pokemon.cost = this.selectedPokemon.addons![0].cost;
+      pokemon.addons = ['Tera Captain'];
+    }
+    this.pokemonSelected.emit(pokemon);
+    this.clearSelection();
+  }
+
+  clearSelection(): void {
     this.selectedPokemon = null;
   }
 
   isPokemonDrafted(pokemon: Pokemon): boolean {
     return this.draftedPokemonIds().has(pokemon.id);
-  }
-
-  justNumber(value: string) {
-    return value.split(' ')[0];
   }
 }

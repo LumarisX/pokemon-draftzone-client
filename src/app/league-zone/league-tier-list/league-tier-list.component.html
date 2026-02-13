@@ -147,42 +147,155 @@
                         typeInFilter(pokemon) &&
                         (showDrafted || !isPokemonDrafted(pokemon))
                       ) {
-                        <div
-                          class="tier-entry"
-                          [class.is-drafted]="
-                            isPokemonDrafted(pokemon) || tier.name === 'Ban'
-                          "
-                          [class.is-selected]="selectedPokemon === pokemon"
-                          (click)="selectPokemon(pokemon, tier.name, $event)"
-                        >
-                          <div class="tier-entry__sprite">
-                            <pdz-sprite
-                              [pokemon]="pokemon"
-                              [tooltipPosition]="null"
-                            ></pdz-sprite>
-                          </div>
-                          <div class="tier-entry__content">
-                            <div class="tier-entry__name">
-                              {{ pokemon.name }}
-                            </div>
-                          </div>
-                          @if (pokemon.addons?.length) {
-                            <div class="tier-entry__tera-cost">
-                              <span>{{ pokemon.addons![0].cost }}</span>
-                              <pdz-icon name="tera" [height]="20"></pdz-icon>
-                            </div>
-                          }
-                          @if (pokemon.banned) {
-                            <mat-icon
-                              class="tier-entry__restricted-icon"
-                              mat-raised-button
-                              #tooltip="matTooltip"
-                              [matTooltip]="makeBanString(pokemon.banned)"
+                        @if (
+                          selectedPokemon && selectedPokemon.id === pokemon.id
+                        ) {
+                          <div class="tier-entry--selected">
+                            <button
+                              class="tier-entry--selected__close"
+                              (click)="clearSelection()"
+                              aria-label="Close"
                             >
-                              warning
-                            </mat-icon>
-                          }
-                        </div>
+                              <pdz-icon size="sm" name="close"></pdz-icon>
+                            </button>
+                            <div class="tier-entry--selected__header">
+                              <div class="tier-entry--selected__pokemon-name">
+                                {{ selectedPokemon.name }}
+                              </div>
+                              <div class="tier-entry--selected__sprite-wrapper">
+                                <pdz-sprite
+                                  [pokemon]="selectedPokemon"
+                                  [tooltipPosition]="null"
+                                ></pdz-sprite>
+                                <div
+                                  class="tier-entry--selected__sprite-badges"
+                                >
+                                  @if (selectedPokemon.addons?.length) {
+                                    <div
+                                      class="tier-entry--selected__tera-cost"
+                                    >
+                                      <span>{{
+                                        selectedPokemon.addons![0].cost
+                                      }}</span>
+                                      <pdz-icon
+                                        name="tera"
+                                        [height]="20"
+                                      ></pdz-icon>
+                                    </div>
+                                  }
+                                  @if (selectedPokemon.banned) {
+                                    <pdz-icon
+                                      [matTooltip]="
+                                        makeBanString(pokemon.banned)
+                                      "
+                                      #tooltip="matTooltip"
+                                      class="tier-entry--selected__restricted-icon"
+                                      name="warning"
+                                    ></pdz-icon>
+                                  }
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="tier-entry--selected__info">
+                              <div class="type-container">
+                                @for (
+                                  type of selectedPokemon.types;
+                                  track $index
+                                ) {
+                                  <div
+                                    class="type-label"
+                                    [style.background-color]="typeColor(type)"
+                                  >
+                                    <div class="type-text">
+                                      {{ type }}
+                                    </div>
+                                  </div>
+                                }
+                              </div>
+                              <div class="ability-container">
+                                @for (
+                                  ability of selectedPokemon.abilities;
+                                  track $index
+                                ) {
+                                  <div class="ability">
+                                    {{ ability }}
+                                  </div>
+                                }
+                              </div>
+                              <div class="stats-container">
+                                @for (stat of pokemonStats; track $index) {
+                                  <div class="stat">
+                                    <div class="stat__name">
+                                      {{ stat[0] | uppercase }}
+                                    </div>
+                                    <div class="stat__value">
+                                      {{ stat[1] }}
+                                    </div>
+                                  </div>
+                                }
+                              </div>
+                            </div>
+
+                            @if (buttonText && selectedPokemon.tier.cost) {
+                              <button
+                                class="tier-entry--selected__button"
+                                [disabled]="isPokemonDrafted(selectedPokemon)"
+                                (click)="emitDraftPokemon()"
+                              >
+                                {{ buttonText }}
+                              </button>
+                            }
+                            @if (
+                              altButtonText &&
+                              selectedPokemon.tier.cost &&
+                              selectedPokemon.addons?.length
+                            ) {
+                              <button
+                                class="tier-entry--selected__button--alt"
+                                [disabled]="isPokemonDrafted(selectedPokemon)"
+                                (click)="emitDraftPokemon(true)"
+                              >
+                                {{ altButtonText }}
+                              </button>
+                            }
+                          </div>
+                        } @else {
+                          <div
+                            class="tier-entry"
+                            [class.is-drafted]="
+                              isPokemonDrafted(pokemon) || tier.name === 'Ban'
+                            "
+                            [class.is-selected]="selectedPokemon === pokemon"
+                            (click)="selectPokemon(pokemon, tier)"
+                          >
+                            <div class="tier-entry__sprite">
+                              <pdz-sprite
+                                [pokemon]="pokemon"
+                                [tooltipPosition]="null"
+                              ></pdz-sprite>
+                            </div>
+                            <div class="tier-entry__content">
+                              <div class="tier-entry__name">
+                                {{ pokemon.name }}
+                              </div>
+                            </div>
+                            @if (pokemon.addons?.length) {
+                              <div class="tier-entry__tera-cost">
+                                <span>{{ pokemon.addons![0].cost }}</span>
+                                <pdz-icon name="tera" [height]="20"></pdz-icon>
+                              </div>
+                            }
+                            @if (pokemon.banned) {
+                              <pdz-icon
+                                [matTooltip]="makeBanString(pokemon.banned)"
+                                #tooltip="matTooltip"
+                                class="tier-entry__restricted-icon"
+                                name="warning"
+                              ></pdz-icon>
+                            }
+                          </div>
+                        }
                       }
                     }
                   </div>
@@ -193,87 +306,6 @@
         }
       } @else {
         <pdz-loading></pdz-loading>
-      }
-
-      @if (selectedPokemon) {
-        <div
-          class="selected-card"
-          [class.selected-card--mobile]="isMobile"
-          [style.top]="!isMobile ? cardPosition.top : null"
-          [style.left]="!isMobile ? cardPosition.left : null"
-          [style.transform]="!isMobile ? 'translateY(-50%)' : null"
-        >
-          <div class="selected-card__header">
-            <div class="selected-card__pokemon-name">
-              {{ selectedPokemon.name }}
-            </div>
-            <div class="selected-card__sprite-wrapper">
-              <pdz-sprite
-                [pokemon]="selectedPokemon"
-                [tooltipPosition]="null"
-              ></pdz-sprite>
-            </div>
-          </div>
-
-          <div class="selected-card__info">
-            <div class="type-container">
-              @for (type of selectedPokemon.types; track $index) {
-                <div
-                  class="type-label"
-                  [style.background-color]="typeColor(type)"
-                >
-                  <div class="type-text">
-                    {{ type }}
-                  </div>
-                </div>
-              }
-            </div>
-            <div class="ability-container">
-              @for (type of selectedPokemon.abilities; track $index) {
-                <div class="ability">
-                  {{ type }}
-                </div>
-              }
-            </div>
-            <div class="stats-container">
-              @for (stat of pokemonStats; track $index) {
-                <div class="stat">
-                  <div class="stat__name">
-                    {{ stat[0] | uppercase }}
-                  </div>
-                  <div class="stat__value">
-                    {{ stat[1] }}
-                  </div>
-                </div>
-              }
-            </div>
-          </div>
-
-          @if (buttonText) {
-            <button
-              class="selected-card__button"
-              [disabled]="
-                isPokemonDrafted(selectedPokemon) ||
-                selectedPokemon.tier == 'Ban'
-              "
-              (click)="emitDraftPokemon()"
-            >
-              {{ buttonText }}
-            </button>
-          }
-          @if (altButtonText) {
-            <button
-              class="selected-card__button--alt"
-              [disabled]="
-                isPokemonDrafted(selectedPokemon) ||
-                selectedPokemon.tier == 'Ban'
-              "
-              (click)="emitDraftPokemon()"
-            >
-              {{ altButtonText }}
-            </button>
-          }
-        </div>
       }
     </div>
   </div>

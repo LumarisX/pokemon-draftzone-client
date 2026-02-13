@@ -201,6 +201,7 @@ export class LeagueZoneService {
       roster.push({
         ...getRandomPokemon(),
         tier: Math.round(Math.random() * 20).toFixed(0),
+        cost: Math.round(Math.random() * 10),
         record: {
           brought,
           kills,

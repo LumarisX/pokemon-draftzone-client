@@ -170,7 +170,10 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
               .setPicks(
                 this.selectedTeam.id,
                 this.selectedTeam.picks.map((round) =>
-                  round.map((pick) => ({ pokemonId: pick.id })),
+                  round.map((pick) => ({
+                    pokemonId: pick.id,
+                    addons: pick.addons,
+                  })),
                 ),
               )
               .pipe(takeUntil(this.destroy$))
@@ -294,7 +297,12 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
     this.picksChanged$.next();
   }
 
-  pokemonSelected(pokemon: TierPokemon & { tier: string }): void {
+  pokemonSelected(pokemon: {
+    id: string;
+    name: string;
+    addons?: string[];
+    tier: string;
+  }): void {
     if (this.canDraft() && !this.selectedPick) {
       this.draftPokemon(pokemon);
     } else {
@@ -302,10 +310,18 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
     }
   }
 
-  draftPokemon(pokemon: DraftPokemon): void {
+  draftPokemon(pokemon: {
+    id: string;
+    name: string;
+    addons?: string[];
+    tier: string;
+  }): void {
     this.canDraftTeams = [];
     this.leagueService
-      .draftPokemon(this.selectedTeam.id, { pokemonId: pokemon.id })
+      .draftPokemon(this.selectedTeam.id, {
+        pokemonId: pokemon.id,
+        addons: pokemon.addons,
+      })
       .pipe(takeUntil(this.destroy$))
       .subscribe();
   }
@@ -316,11 +332,20 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
     this.picksChanged$.next();
   }
 
-  addChoice(pokemon: TierPokemon & { tier: string }): void {
+  addChoice(pokemon: {
+    id: string;
+    name: string;
+    addons?: string[];
+    tier: string;
+    cost?: number;
+  }): void {
+    if (!pokemon.cost) return;
     this.selectedTeam.picks[this.selectedPick].push({
       name: pokemon.name,
       id: pokemon.id,
       tier: pokemon.tier,
+      cost: pokemon.cost,
+      addons: pokemon.addons,
     });
     this.picksChanged$.next();
   }

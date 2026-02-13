@@ -18,13 +18,21 @@ export class LeagueTradesComponent {
       from: {
         team: this.teams[1],
         pokemon: [
-          { ...getRandomPokemon(), tier: Math.round(Math.random() * 20) },
+          {
+            ...getRandomPokemon(),
+            tier: Math.round(Math.random() * 20).toFixed(0),
+            cost: Math.round(Math.random() * 10),
+          },
         ],
       },
       to: {
         team: this.teams[2],
         pokemon: [
-          { ...getRandomPokemon(), tier: Math.round(Math.random() * 20) },
+          {
+            ...getRandomPokemon(),
+            tier: Math.round(Math.random() * 20).toFixed(0),
+            cost: Math.round(Math.random() * 10),
+          },
         ],
       },
       activeStage: 'Week 4',
@@ -33,16 +41,40 @@ export class LeagueTradesComponent {
       from: {
         team: this.teams[0],
         pokemon: [
-          { ...getRandomPokemon(), tier: Math.round(Math.random() * 20) },
-          { ...getRandomPokemon(), tier: Math.round(Math.random() * 20) },
-          { ...getRandomPokemon(), tier: Math.round(Math.random() * 20) },
+          {
+            ...getRandomPokemon(),
+            tier: Math.round(Math.random() * 20).toFixed(0),
+            cost: Math.round(Math.random() * 10),
+          },
+          {
+            ...getRandomPokemon(),
+            tier: Math.round(Math.random() * 20).toFixed(0),
+            cost: Math.round(Math.random() * 10),
+          },
+          {
+            ...getRandomPokemon(),
+            tier: Math.round(Math.random() * 20).toFixed(0),
+            cost: Math.round(Math.random() * 10),
+          },
         ],
       },
       to: {
         pokemon: [
-          { ...getRandomPokemon(), tier: Math.round(Math.random() * 20) },
-          { ...getRandomPokemon(), tier: Math.round(Math.random() * 20) },
-          { ...getRandomPokemon(), tier: Math.round(Math.random() * 20) },
+          {
+            ...getRandomPokemon(),
+            tier: Math.round(Math.random() * 20).toFixed(0),
+            cost: Math.round(Math.random() * 10),
+          },
+          {
+            ...getRandomPokemon(),
+            tier: Math.round(Math.random() * 20).toFixed(0),
+            cost: Math.round(Math.random() * 10),
+          },
+          {
+            ...getRandomPokemon(),
+            tier: Math.round(Math.random() * 20).toFixed(0),
+            cost: Math.round(Math.random() * 10),
+          },
         ],
       },
       activeStage: 'Week 4',
@@ -53,7 +85,11 @@ export class LeagueTradesComponent {
       },
       to: {
         pokemon: [
-          { ...getRandomPokemon(), tier: Math.round(Math.random() * 20) },
+          {
+            ...getRandomPokemon(),
+            tier: Math.round(Math.random() * 20).toFixed(0),
+            cost: Math.round(Math.random() * 10),
+          },
         ],
       },
 
