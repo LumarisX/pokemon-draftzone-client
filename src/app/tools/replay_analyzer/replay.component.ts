@@ -8,8 +8,6 @@ import { ReplayChartComponent } from './replay-chart/replay-chart.component';
 import { ReplayData } from './replay.interface';
 import { getNameByPid } from '../../data/namedex';
 
-import { MatGridListModule } from '@angular/material/grid-list';
-import { MatTreeModule } from '@angular/material/tree';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
@@ -39,8 +37,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     FormsModule,
     SpriteComponent,
     ReplayChartComponent,
-    MatGridListModule,
-    MatTreeModule,
     MatExpansionModule,
     MatCardModule,
     MatDividerModule,
