@@ -8,6 +8,7 @@ import { Draft } from '../../../interfaces/draft';
 import { LSDraftData } from '../../../planner/plannner.component';
 import { DraftService } from '../../../services/draft.service';
 import { DraftOverviewPath } from '../draft-overview-routing.module';
+import { TournamentDetails } from '../../../interfaces/league';
 
 @Component({
   selector: 'draft-preview',
@@ -25,6 +26,7 @@ export class DraftPreviewComponent {
   private draftService = inject(DraftService);
 
   drafts?: Draft[];
+  tournaments?: TournamentDetails[];
   draftPath = DraftOverviewPath;
   menuState: {
     [key: string]: '' | 'confirm-archive' | 'confirm-delete';
@@ -40,9 +42,13 @@ export class DraftPreviewComponent {
     console.log('Loading drafts...');
     this.drafts = undefined;
     this.draftService.getDraftsList().subscribe((data) => {
-      this.drafts = data;
+      this.drafts = data.drafts;
       this.drafts.forEach((draft) => {
         this.menuState[draft.tournamentId] = '';
+      });
+      this.tournaments = data.tournaments;
+      this.tournaments.forEach((tournament) => {
+        this.menuState[tournament.tournamentKey] = '';
       });
     });
   }
