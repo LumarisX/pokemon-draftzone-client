@@ -4,6 +4,7 @@ import { Draft, DraftPokemon } from '../interfaces/draft';
 import { Matchup } from '../interfaces/matchup';
 import { Opponent } from '../interfaces/opponent';
 import { ApiService } from './api.service';
+import { TournamentDetails } from '../interfaces/league';
 
 export type PokemonStat = {
   pokemon: DraftPokemon;
@@ -26,7 +27,10 @@ export class DraftService {
   private apiService = inject(ApiService);
 
   getDraftsList() {
-    return this.apiService.get<Draft[]>('draft/teams', true);
+    return this.apiService.get<{
+      drafts: Draft[];
+      tournaments: TournamentDetails[];
+    }>('draft/teams', true);
   }
 
   getDraft(teamName: string) {

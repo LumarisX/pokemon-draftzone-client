@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { Observable, of } from 'rxjs';
+import { Observable, of, shareReplay } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { BooleanInput } from '@angular/cdk/coercion';
 
@@ -77,6 +77,7 @@ import { BooleanInput } from '@angular/cdk/coercion';
   ],
 })
 export class IconComponent implements OnChanges {
+  private static svgCache = new Map<string, Observable<string>>();
   private readonly localSvgIcons = new Set<string>([
     'logo',
     'logo-small',
@@ -198,7 +199,15 @@ export class IconComponent implements OnChanges {
 
   private loadSvg(): void {
     const iconPath = `assets/icons/${this.name}.svg`;
-    this.svgIcon$ = this.http.get(iconPath, { responseType: 'text' }).pipe(
+    let svgSource$ = IconComponent.svgCache.get(this.name);
+    if (!svgSource$) {
+      svgSource$ = this.http
+        .get(iconPath, { responseType: 'text' })
+        .pipe(shareReplay(1));
+      IconComponent.svgCache.set(this.name, svgSource$);
+    }
+
+    this.svgIcon$ = svgSource$.pipe(
       map((svg) => {
         const parser = new DOMParser();
         const doc = parser.parseFromString(svg, 'image/svg+xml');

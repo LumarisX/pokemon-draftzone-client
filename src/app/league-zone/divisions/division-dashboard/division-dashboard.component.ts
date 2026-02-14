@@ -21,30 +21,6 @@ export class DivisionDashboardComponent implements OnInit, OnDestroy {
   leagueName = '';
   divisionName = '';
 
-  navigationSections: { label: string; route: string[]; disabled?: boolean }[] =
-    [
-      {
-        label: 'Scheduling',
-        route: ['/leagues', this.tournamentKey, this.divisionKey, 'schedule'],
-      },
-      {
-        label: 'Teams',
-        route: ['/leagues', this.tournamentKey, this.divisionKey, 'teams'],
-      },
-      {
-        label: 'Standings',
-        route: ['/leagues', this.tournamentKey, this.divisionKey, 'standings'],
-      },
-      {
-        label: 'Tier List',
-        route: ['/leagues', this.tournamentKey, 'tier-list'],
-      },
-      {
-        label: 'Draft',
-        route: ['/leagues', this.tournamentKey, this.divisionKey, 'draft'],
-      },
-    ];
-
   ngOnInit(): void {
     this.leagueZoneService
       .getDivisionDetails()

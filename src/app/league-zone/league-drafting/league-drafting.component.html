@@ -182,6 +182,13 @@
                           currentPick.position === $index
                         ) {
                           Picking
+                        } @else if (
+                          currentPick &&
+                          (currentPick.round > roundIndex ||
+                            (currentPick.round === roundIndex &&
+                              currentPick.position > $index))
+                        ) {
+                          Skipped
                         } @else {
                           Upcoming
                         }
