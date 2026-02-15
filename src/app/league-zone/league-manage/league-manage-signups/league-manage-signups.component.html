@@ -23,6 +23,8 @@
           <th>Team Name</th>
           <th>Logo</th>
           <th>Division</th>
+          <th>Joined</th>
+          <th>Role</th>
         </tr>
       </thead>
       <tbody>
@@ -61,6 +63,24 @@
               }
             </td>
             <td>{{ user.division }}</td>
+            <td>
+              <input
+                type="checkbox"
+                class="readonly-checkbox"
+                [checked]="user.inDiscordServer"
+                tabindex="-1"
+                aria-readonly="true"
+              />
+            </td>
+            <td>
+              <input
+                type="checkbox"
+                class="readonly-checkbox"
+                [checked]="user.hasDiscordRole"
+                tabindex="-1"
+                aria-readonly="true"
+              />
+            </td>
           </tr>
         }
       </tbody>

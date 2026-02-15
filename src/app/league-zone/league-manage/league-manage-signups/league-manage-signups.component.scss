@@ -90,3 +90,7 @@ img {
   font-size: 0.8rem;
   color: pdz-color(on-surface-variant);
 }
+
+.readonly-checkbox {
+  pointer-events: none;
+}

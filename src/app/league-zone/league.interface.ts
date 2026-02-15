@@ -103,6 +103,8 @@ export namespace League {
     logo?: string;
     signedUpAt: Date;
     division?: string;
+    hasDiscordRole?: boolean;
+    inDiscordServer?: boolean;
   };
 
   export type DraftPick = {
