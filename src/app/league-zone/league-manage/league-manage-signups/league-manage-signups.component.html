@@ -1,4 +1,24 @@
-<h2>League Sign-Ups</h2>
+<div class="signups-header">
+  <h2>League Sign-Ups</h2>
+  <div class="signups-header__actions">
+    <button
+      type="button"
+      class="signups-header__button"
+      (click)="saveChanges()"
+      [disabled]="!modified"
+    >
+      Save
+    </button>
+    <button
+      type="button"
+      class="signups-header__button signups-header__button--ghost"
+      (click)="revertChanges()"
+      [disabled]="!modified"
+    >
+      Revert
+    </button>
+  </div>
+</div>
 
 @if (signUps.length > 0) {
   <input
@@ -8,84 +28,108 @@
     accept="image/*"
     (change)="onLogoFileSelected($event)"
   />
-  <div class="table-container">
-    <table>
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Name</th>
-          <th>Showdown Name</th>
-          <th>Discord Name</th>
-          <th>Timezone</th>
-          <th>Experience</th>
-          <th>Dropped</th>
-          <th>Signed Up At</th>
-          <th>Team Name</th>
-          <th>Logo</th>
-          <th>Division</th>
-          <th>Joined</th>
-          <th>Role</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (user of signUps; track user) {
+
+  @for (div of divisions; track div?.divisionKey) {
+    <div class="table-container">
+      <div class="division-header">
+        <div class="division-title">{{ div?.name ?? "No Division" }}</div>
+        <button
+          class="division-move-btn"
+          (click)="moveToDivision(div?.divisionKey)"
+        >
+          Move Here
+        </button>
+      </div>
+
+      <table>
+        <thead>
           <tr>
-            <td>{{ $index + 1 }}</td>
-            <td>{{ user.name }}</td>
-            <td>{{ user.gameName }}</td>
-            <td>{{ user.discordName }}</td>
-            <td>{{ user.timezone }}</td>
-            <td>{{ user.experience }}</td>
-            <td>{{ user.dropped }}</td>
-            <td>{{ user.signedUpAt | date: "short" }}</td>
-            <td>{{ user.teamName }}</td>
-            <td class="logo-cell">
-              <button
-                type="button"
-                class="logo-button"
-                (click)="onLogoCellClick(user)"
-                [disabled]="!user.id || uploadingForId === user.id"
-                [attr.aria-label]="user.logo ? 'Replace logo' : 'Add logo'"
-              >
-                @if (user.logo) {
-                  <img [src]="user.logo" alt="" />
-                } @else {
-                  <div class="add-logo-btn">
-                    <pdz-icon name="add"> </pdz-icon>
-                  </div>
-                }
-              </button>
-              @if (user.id && uploadErrorById[user.id]) {
-                <div class="logo-error">{{ uploadErrorById[user.id] }}</div>
-              }
-              @if (uploadingForId === user.id) {
-                <div class="logo-uploading">Uploading...</div>
-              }
-            </td>
-            <td>{{ user.division }}</td>
-            <td>
-              <input
-                type="checkbox"
-                class="readonly-checkbox"
-                [checked]="user.inDiscordServer"
-                tabindex="-1"
-                aria-readonly="true"
-              />
-            </td>
-            <td>
-              <input
-                type="checkbox"
-                class="readonly-checkbox"
-                [checked]="user.hasDiscordRole"
-                tabindex="-1"
-                aria-readonly="true"
-              />
-            </td>
+            <th></th>
+            <th>#</th>
+            <th>Name</th>
+            <th>Showdown Name</th>
+            <th>Discord Name</th>
+            <th>Time</th>
+            <th>Experience</th>
+            <th>Dropped</th>
+            <th>Signed Up At</th>
+            <th>Team Name</th>
+            <th>Logo</th>
+            <th>Joined</th>
+            <th>Role</th>
           </tr>
-        }
-      </tbody>
-    </table>
-  </div>
+        </thead>
+        <tbody>
+          @for (user of signUpInDivision(div?.divisionKey); track user) {
+            <tr>
+              <td>
+                <input type="checkbox" [(ngModel)]="user.selected" />
+              </td>
+              <td>{{ $index + 1 }}</td>
+              <td>{{ user.name }}</td>
+              <td>{{ user.gameName }}</td>
+              <td>{{ user.discordName }}</td>
+              <td>
+                <div class="time-cell">
+                  <div class="time-cell__time">
+                    {{ getCurrentTimeForTimezone(user.timezone) }}
+                  </div>
+                  <div class="time-cell__zone">
+                    ({{ user.timezone || "Unknown" }})
+                  </div>
+                </div>
+              </td>
+              <td>{{ user.experience }}</td>
+              <td>{{ user.dropped }}</td>
+              <td>{{ user.signedUpAt | date: "short" }}</td>
+              <td>{{ user.teamName }}</td>
+              <td class="logo-cell">
+                <button
+                  type="button"
+                  class="logo-button"
+                  (click)="onLogoCellClick(user)"
+                  [disabled]="!user.id || uploadingForId === user.id"
+                  [attr.aria-label]="user.logo ? 'Replace logo' : 'Add logo'"
+                >
+                  @if (user.logo) {
+                    <img [src]="user.logo" alt="" />
+                  } @else {
+                    <div class="add-logo-btn">
+                      <pdz-icon name="add"> </pdz-icon>
+                    </div>
+                  }
+                </button>
+                @if (user.id && uploadErrorById[user.id]) {
+                  <div class="logo-error">{{ uploadErrorById[user.id] }}</div>
+                }
+                @if (uploadingForId === user.id) {
+                  <div class="logo-uploading">Uploading...</div>
+                }
+              </td>
+              <td>
+                <input
+                  type="checkbox"
+                  class="readonly-checkbox"
+                  [checked]="user.inDiscordServer"
+                  tabindex="-1"
+                  aria-readonly="true"
+                />
+              </td>
+              <td>
+                <input
+                  type="checkbox"
+                  class="readonly-checkbox"
+                  [checked]="user.hasDiscordRole"
+                  tabindex="-1"
+                  aria-readonly="true"
+                />
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
 } @else {
   <p>No sign-ups found for this league.</p>
 }

@@ -1,3 +1,5 @@
+import { CommonModule } from '@angular/common';
+import { HttpEventType, HttpResponse } from '@angular/common/http';
 import {
   Component,
   ElementRef,
@@ -6,34 +8,39 @@ import {
   ViewChild,
   inject,
 } from '@angular/core';
-import { HttpEventType, HttpResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
-import { LeagueZoneService } from '../../../services/leagues/league-zone.service';
-import { UploadService } from '../../../services/upload.service';
-import { League } from '../../league.interface';
-import { getLogoUrl } from '../../league.util';
-import { CommonModule } from '@angular/common';
-import { IconComponent } from '../../../images/icon/icon.component';
 import {
   Subject,
   catchError,
   finalize,
+  interval,
   of,
   switchMap,
   takeUntil,
   tap,
-  throwError,
 } from 'rxjs';
+import { IconComponent } from '../../../images/icon/icon.component';
+import { LeagueZoneService } from '../../../services/leagues/league-zone.service';
+import { UploadService } from '../../../services/upload.service';
+import { League } from '../../league.interface';
+import { getLogoUrl } from '../../league.util';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'pdz-league-manage-signups',
   templateUrl: './league-manage-signups.component.html',
   styleUrls: ['./league-manage-signups.component.scss'],
-  imports: [CommonModule, IconComponent],
+  imports: [CommonModule, IconComponent, FormsModule],
 })
 export class LeagueManageSignupsComponent implements OnInit, OnDestroy {
   tournamentId: string | null = null;
-  signUps: League.LeagueSignUp[] = [];
+  signUps: (League.LeagueSignUp & {
+    selected?: boolean;
+    modified?: boolean;
+  })[] = [];
+  originalSignUps: League.LeagueSignUp[] = [];
+  divisions: ({ name: string; divisionKey: string } | undefined)[] = [];
+  modified = false;
 
   @ViewChild('logoFileInput') logoFileInput!: ElementRef<HTMLInputElement>;
 
@@ -45,6 +52,7 @@ export class LeagueManageSignupsComponent implements OnInit, OnDestroy {
   uploadErrorById: Record<string, string> = {};
   private selectedSignup: League.LeagueSignUp | null = null;
   private destroy$ = new Subject<void>();
+  currentTime = new Date();
 
   private readonly MAX_FILE_SIZE = 5 * 1024 * 1024;
   private readonly ALLOWED_TYPES = [
@@ -56,6 +64,11 @@ export class LeagueManageSignupsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.getSignUps();
+    interval(60000)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.currentTime = new Date();
+      });
   }
 
   ngOnDestroy(): void {
@@ -65,8 +78,11 @@ export class LeagueManageSignupsComponent implements OnInit, OnDestroy {
 
   getSignUps(): void {
     this.leagueService.getSignUps().subscribe({
-      next: (signUps) => {
-        this.signUps = signUps;
+      next: (data) => {
+        this.signUps = data.signups;
+        this.originalSignUps = JSON.parse(JSON.stringify(data.signups));
+        this.divisions = [undefined, ...data.divisions];
+        this.modified = false;
       },
       error: (error) => {
         console.error('Error fetching sign-ups:', error);
@@ -75,6 +91,21 @@ export class LeagueManageSignupsComponent implements OnInit, OnDestroy {
   }
 
   getLogoUrl = getLogoUrl('league-uploads');
+
+  getCurrentTimeForTimezone(timezone?: string | null): string {
+    if (!timezone) {
+      return 'Unknown';
+    }
+
+    try {
+      return new Intl.DateTimeFormat('en-US', {
+        timeStyle: 'short',
+        timeZone: timezone,
+      }).format(this.currentTime);
+    } catch {
+      return 'Unknown';
+    }
+  }
 
   onLogoCellClick(signUp: League.LeagueSignUp): void {
     if (!signUp.id) {
@@ -201,5 +232,43 @@ export class LeagueManageSignupsComponent implements OnInit, OnDestroy {
     }
 
     return { valid: true };
+  }
+
+  signUpInDivision(divisionKey?: string) {
+    return this.signUps.filter((s) => s.division == divisionKey);
+  }
+
+  moveToDivision(divisionKey?: string) {
+    for (const signUp of this.signUps) {
+      if (signUp.selected) {
+        signUp.division = divisionKey;
+        signUp.selected = false;
+        signUp.modified = true;
+      }
+    }
+    this.modified = true;
+  }
+
+  saveChanges(): void {
+    this.leagueService
+      .updateSignUps(
+        this.signUps
+          .filter((s) => s.modified)
+          .map((s) => ({ id: s.id, division: s.division })),
+      )
+      .subscribe({
+        next: () => {
+          this.originalSignUps = JSON.parse(JSON.stringify(this.signUps));
+          this.modified = false;
+        },
+        error: (error) => {
+          console.error('Error saving sign-ups:', error);
+        },
+      });
+  }
+
+  revertChanges(): void {
+    this.signUps = JSON.parse(JSON.stringify(this.originalSignUps));
+    this.modified = false;
   }
 }

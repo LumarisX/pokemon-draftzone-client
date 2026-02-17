@@ -482,10 +482,23 @@ export class LeagueZoneService {
     );
   }
 
-  getSignUps(): Observable<League.LeagueSignUp[]> {
+  getSignUps(): Observable<{
+    signups: League.LeagueSignUp[];
+    divisions: { name: string; divisionKey: string }[];
+  }> {
     return this.apiService.get(
-      `${ROOTPATH}/tournaments/${this.tournamentKey()}/signup`,
+      `${ROOTPATH}/tournaments/${this.tournamentKey()}/signup/manage`,
       true,
+    );
+  }
+
+  updateSignUps(
+    signups: {}[],
+  ): Observable<{ success: boolean; message: string }> {
+    return this.apiService.post(
+      `${ROOTPATH}/tournaments/${this.tournamentKey()}/signup/manage`,
+      true,
+      { signups },
     );
   }
 
