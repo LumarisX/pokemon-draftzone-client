@@ -6,8 +6,6 @@ import { interval, Subject, takeUntil } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { LoadingComponent } from '../../images/loading/loading.component';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
-import { DraftPokemon } from '../../interfaces/draft';
-import { TierPokemon } from '../../interfaces/tier-pokemon.interface';
 import { LeagueNotificationService } from '../../services/league-notification.service';
 import { LeagueZoneService } from '../../services/leagues/league-zone.service';
 import { WebSocketService } from '../../services/ws.service';

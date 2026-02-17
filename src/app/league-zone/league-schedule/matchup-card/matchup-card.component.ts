@@ -12,7 +12,7 @@ import { League } from '../../league.interface';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { SpriteComponent } from '../../../images/sprite/sprite.component';
-import { getLogoUrl } from '../../league.util';
+import { getLogoUrlOld } from '../../league.util';
 
 @Component({
   selector: 'pdz-matchup-card',
@@ -69,5 +69,5 @@ export class MatchupCardComponent {
     this.selectedMatch = index;
   }
 
-  getLogoUrl = getLogoUrl('user-uploads');
+  getLogoUrl = getLogoUrlOld('user-uploads');
 }

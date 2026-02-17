@@ -1,7 +1,35 @@
+@use "../../../styles/global.scss" as *;
+@use "../../../styles/mixins" as *;
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.teams-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: auto;
+}
+
+.teams-header {
+  padding: var(--pdz-space-xl) var(--pdz-space-lg) var(--pdz-space-md);
+  border-bottom: 2px solid var(--pdz-color-primary);
+  background: var(--pdz-color-surface);
+
+  .teams-title {
+    @include apply-typography(title-lg);
+    color: var(--pdz-color-primary);
+    margin: 0;
+    font-weight: 700;
+  }
+}
+
 .teams-container {
   display: grid;
   padding: var(--pdz-space-lg);
-  display: grid;
   grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
   gap: 1rem;
 }

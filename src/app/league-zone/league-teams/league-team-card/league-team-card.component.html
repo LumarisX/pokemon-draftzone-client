@@ -8,12 +8,11 @@
         {{ teamDetails.name }}
       </h2>
       <div class="team-coaches">
-          <h4 class="team-coach">{{ teamDetails.coach }}</h4>
-        
+        <h4 class="team-coach">{{ teamDetails.coach }}</h4>
       </div>
       <div class="team-info-bar">
         <span class="team-timezone">
-          {{ teamDetails.timezone }}
+          {{ getCurrentTimeInTimezone(teamDetails.timezone) }}
         </span>
         @if (teamDetails.record) {
           <span class="team-record">

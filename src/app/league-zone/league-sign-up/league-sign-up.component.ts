@@ -26,7 +26,7 @@ import { LeagueZoneService } from '../../services/leagues/league-zone.service';
 import { UploadService } from '../../services/upload.service';
 import { LoadingComponent } from '../../images/loading/loading.component';
 import { League } from '../league.interface';
-import { getLogoUrl } from '../league.util';
+import { getLogoUrlOld } from '../league.util';
 
 @Component({
   selector: 'pdz-league-sign-up',
@@ -250,5 +250,5 @@ export class LeagueSignUpComponent implements OnInit, OnDestroy {
     }
   }
 
-  getLogoUrl = getLogoUrl('league-uploads');
+  getLogoUrl = getLogoUrlOld('league-uploads');
 }

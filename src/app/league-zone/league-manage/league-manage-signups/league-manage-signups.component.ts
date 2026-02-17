@@ -23,7 +23,7 @@ import { IconComponent } from '../../../images/icon/icon.component';
 import { LeagueZoneService } from '../../../services/leagues/league-zone.service';
 import { UploadService } from '../../../services/upload.service';
 import { League } from '../../league.interface';
-import { getLogoUrl } from '../../league.util';
+import { getLogoUrlOld } from '../../league.util';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -90,7 +90,7 @@ export class LeagueManageSignupsComponent implements OnInit, OnDestroy {
     });
   }
 
-  getLogoUrl = getLogoUrl('league-uploads');
+  getLogoUrl = getLogoUrlOld('league-uploads');
 
   getCurrentTimeForTimezone(timezone?: string | null): string {
     if (!timezone) {

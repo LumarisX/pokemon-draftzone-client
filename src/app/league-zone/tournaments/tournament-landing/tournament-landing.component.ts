@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { LeagueZoneService } from '../../../services/leagues/league-zone.service';
 import { League } from '../../league.interface';
-import { getLogoUrl } from '../../league.util';
+import { getLogoUrlOld } from '../../league.util';
 import { LoadingComponent } from '../../../images/loading/loading.component';
 
 @Component({
@@ -37,7 +37,7 @@ export class TournamentLandingComponent implements OnInit {
     this.destroy$.complete();
   }
 
-  getLogoUrl = getLogoUrl('league-uploads');
+  getLogoUrl = getLogoUrlOld('league-uploads');
 
   isSignUpClosed(): boolean {
     if (!this.leagueInfo?.signUpDeadline) return false;

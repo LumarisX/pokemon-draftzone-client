@@ -3,13 +3,12 @@ import { NavigationEnd, Router } from '@angular/router';
 import { Observable, of, throwError } from 'rxjs';
 import { filter, map, mergeMap } from 'rxjs/operators';
 import { getRandomPokemon } from '../../data/namedex';
-import { Pokemon } from '../../interfaces/pokemon';
+import { LeagueTier } from '../../interfaces/tier-pokemon.interface';
 import { defenseData } from '../../league-zone/league-ghost';
 import { League } from '../../league-zone/league.interface';
 import { ApiService } from '../api.service';
 import { UploadService } from '../upload.service';
 import { WebSocketService } from '../ws.service';
-import { LeagueTier } from '../../interfaces/tier-pokemon.interface';
 
 const ROOTPATH = 'leagues';
 
@@ -156,6 +155,13 @@ export class LeagueZoneService {
     );
   }
 
+  getSchedule() {
+    return this.apiService.get<League.Stage[]>(
+      `${ROOTPATH}/tournaments/${this.tournamentKey()}/divisions/${this.divisionKey()}/schedule`,
+      true,
+    );
+  }
+
   getPicks() {
     return this.apiService.get<League.DraftTeam[]>(
       `${ROOTPATH}/tournaments/${this.tournamentKey()}/divisions/${this.divisionKey()}/picks`,
@@ -182,8 +188,11 @@ export class LeagueZoneService {
     );
   }
 
-  get getTeams() {
-    return this.apiService.get(ROOTPATH, false);
+  getTeams(): Observable<{ teams: League.LeagueTeam[] }> {
+    return this.apiService.get(
+      `${ROOTPATH}/tournaments/${this.tournamentKey()}/divisions/${this.divisionKey()}/teams`,
+      true,
+    );
   }
 
   getTeamDetail(teamIndex: number) {
@@ -519,7 +528,7 @@ export class LeagueZoneService {
     );
   }
 
-  getTeam(teamId: string) {
+  getTeam(teamId: string): Observable<League.LeagueTeam> {
     return this.apiService.get(
       `${ROOTPATH}/tournaments/${this.tournamentKey()}/teams/${teamId}`,
       true,

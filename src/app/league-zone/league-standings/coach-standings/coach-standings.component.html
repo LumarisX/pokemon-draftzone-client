@@ -29,11 +29,7 @@
           </td>
         </tr>
         @for (team of standingData.teams; track team) {
-          <tr
-            [ngClass]="{
-              'cutoff-border': $index + 1 === standingData.cutoff,
-            }"
-          >
+          <tr [class.cuttoff-border]="$index + 1 === standingData.cutoff">
             <td>
               <div class="rank-cell">
                 @if (team.direction !== undefined) {
@@ -57,9 +53,7 @@
                   getGradientStyle($index + 1, standingData.teams.length)
                 "
               >
-                @if (team.logo) {
-                  <img [src]="getLogoUrl(team.logo)" />
-                }
+                <img [src]="getLogoUrl(team.logo)" />
               </div>
             </td>
             <td>
@@ -68,9 +62,7 @@
                   {{ team.name }}
                 </div>
                 <div class="coach-names">
-                  @for (coach of team.coaches; track coach) {
-                    <div>{{ coach }}</div>
-                  }
+                  {{ team.coach }}
                 </div>
               </div>
             </td>
@@ -85,7 +77,8 @@
                   @let result = team.results[i];
                   <div
                     class="result-box"
-                    [ngClass]="{ positive: result > 0, negative: result < 0 }"
+                    [class.positive]="result > 0"
+                    [class.negative]="result < 0"
                   >
                     <span class="default-content">
                       {{ result > 0 ? "W" : "L" }}
@@ -98,10 +91,8 @@
                 <div class="streak">
                   <div
                     class="result-box"
-                    [ngClass]="{
-                      positive: team.streak > 0,
-                      negative: team.streak < 0,
-                    }"
+                    [class.positive]="team.streak > 0"
+                    [class.negative]="team.streak < 0"
                   >
                     {{ team.streak | plusSign }}
                   </div>

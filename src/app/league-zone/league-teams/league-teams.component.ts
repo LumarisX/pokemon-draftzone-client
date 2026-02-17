@@ -14,7 +14,7 @@ export class LeagueTeamsComponent implements OnInit {
   teams: League.LeagueTeam[] = [];
 
   ngOnInit(): void {
-    this.leagueService.getDivisionDetails().subscribe((data) => {
+    this.leagueService.getTeams().subscribe((data) => {
       this.teams = data.teams;
       console.log(this.teams);
     });

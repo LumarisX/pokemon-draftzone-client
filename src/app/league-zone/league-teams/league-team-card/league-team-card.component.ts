@@ -25,5 +25,21 @@ export class LeagueTeamCardComponent {
 
   data: 'overview' | 'stats' = 'overview';
 
-  getLogoUrl = getLogoUrl('user-uploads');
+  getLogoUrl = getLogoUrl;
+
+  getCurrentTimeInTimezone(timezone?: string): string {
+    if (!timezone) return '';
+    try {
+      const now = new Date();
+      const formatter = new Intl.DateTimeFormat('en-US', {
+        timeZone: timezone,
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true,
+      });
+      return formatter.format(now);
+    } catch (error) {
+      return timezone;
+    }
+  }
 }

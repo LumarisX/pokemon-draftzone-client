@@ -16,7 +16,6 @@ export namespace League {
     picks: LeaguePokemon[][];
     isCoach: boolean;
     coach: string;
-
     pointTotal: number;
     record?: {
       wins: number;
@@ -122,7 +121,8 @@ export namespace League {
   export type TeamStandingData = {
     name: string;
     results: number[];
-    coaches: string[];
+    coach: string;
+    coaches?: string[];
     streak: number;
     direction?: number;
     wins: number;

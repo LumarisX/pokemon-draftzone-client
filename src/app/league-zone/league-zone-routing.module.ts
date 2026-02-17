@@ -98,7 +98,7 @@ const routes: Routes = [
     component: PowerRankingsComponent,
   },
   {
-    path: 'pdbl/tournaments/:tournamentKey/divisions/:divisionKey/teams/:teamId',
+    path: 'pdbl/tournaments/:tournamentKey/divisions/:divisionKey/team/:teamId',
     component: LeagueTeamComponent,
   },
   {
