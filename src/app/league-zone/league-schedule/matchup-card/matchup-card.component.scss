@@ -1,229 +1,301 @@
-.matchup-container {
-  padding: var(--pdz-space-lg);
-}
+@use "../../league.mixins" as *;
+@use "../../../../styles/global" as *;
+
+$container-padding: var(--pdz-space-xs);
 
 .matchup-card {
   display: flex;
   flex-direction: column;
-  background-color: var(--pdz-color-surface);
   box-shadow: var(--pdz-level-2);
-  width: 26rem;
-  border-radius: 2rem;
-  padding: var(--pdz-space-md);
-  &.open {
-    .versus-container {
-      mat-icon {
-        display: none;
-      }
-    }
+  border-radius: var(--pdz-shape-corner-lg);
+  padding: $container-padding;
+  position: relative;
+  transition: all 0.3s ease-in-out;
+
+  &.clickable {
+    cursor: pointer;
   }
 }
 
 .matchup-header {
   display: flex;
-  width: 100%;
-  align-items: stretch;
+  align-items: center;
+  gap: var(--pdz-space-sm);
+}
 
-  .team-info-container {
-    display: flex;
-    width: 46%;
-    align-items: center;
-    .team-logo {
-      width: 4rem;
-      height: 4rem;
-      border-radius: 2rem;
-      border-width: 2px;
-      flex-shrink: 0;
-      overflow: hidden;
-      border-color: var(--pdz-color-primary-border-variant);
-      box-shadow: var(--pdz-level-1);
-      &.positive {
-        border-color: lightgreen;
-      }
-      &.negative {
-        border-color: lightcoral;
-      }
-    }
-    .team-info {
-      padding: 0 0.5rem;
-      flex-grow: 1;
-      &.left {
-        text-align: end;
-      }
-      .team-name {
-        font-size: 0.7rem;
-      }
-      .coach-name {
-        font-size: 0.9rem;
-        font-weight: 600;
-      }
-    }
+.team-info-container {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: var(--pdz-space-sm);
+  padding: $container-padding;
+  border-radius: var(--pdz-shape-corner-lg);
+
+  &:hover {
+    background-color: pdz-color(surface-container);
   }
 
-  .versus-container {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    width: 8%;
-    .versus {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-weight: var(--pdz-font-weight-bold);
-      font-size: 0.8rem;
-    }
-    mat-icon {
-      position: absolute;
-      bottom: -0.75rem;
-      left: 50%;
-      transform: translate(-50%, 0);
-      color: var(--pdz-color-surface-container-highest);
-    }
+  &:active {
+    cursor: pointer;
+    margin-top: 1px;
+    margin-bottom: -1px;
+    box-shadow: var(--pdz-level-inset-1);
   }
 
-  .replay-button {
-    position: absolute;
-    top: -0.375rem;
-    left: 50%;
-    transform: translate(-50%, 0);
-    color: var(--pdz-color-primary);
-    padding: 0 0.25rem;
-    border-radius: var(--pdz-shape-corner-sm);
-    font-size: 0.6rem;
-    &.enabled {
-      box-shadow: var(--pdz-level-1);
-      background-color: var(--pdz-color-primary);
-      color: var(--pdz-color-on-primary);
-    }
+  &.right {
+    flex-direction: row-reverse;
+  }
+}
+
+.team-logo {
+  @include pdz-league-logo(3rem);
+  &.winner {
+    border-color: var(--pdz-color-success);
+  }
+
+  &.loser {
+    border-color: var(--pdz-color-error);
+  }
+}
+
+.team-info {
+  flex: 1;
+  min-width: 0;
+  width: 8rem;
+
+  &.right {
+    text-align: right;
+  }
+}
+
+.team-name {
+  font-size: 0.9rem;
+  font-weight: var(--pdz-font-weight-semibold);
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.coach-name {
+  font-size: 0.75rem;
+  color: var(--pdz-color-on-surface-variant);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.center-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 2rem;
+  gap: var(--pdz-space-xs);
+  flex-shrink: 0;
+}
+
+.replay-button {
+  padding: var(--pdz-space-xs) var(--pdz-space-sm);
+  border-radius: var(--pdz-shape-corner-full);
+  font-size: 0.7rem;
+  line-height: 1;
+  border: 1px solid var(--pdz-color-outline);
+  background: transparent;
+  color: var(--pdz-color-on-surface-variant);
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &.active {
+    background-color: var(--pdz-color-primary);
+    color: var(--pdz-color-on-primary);
+    border-color: var(--pdz-color-primary);
+    box-shadow: var(--pdz-level-1);
+
     &:active {
-      margin-top: 1px;
-      margin-bottom: -1px;
       box-shadow: var(--pdz-level-0);
+      transform: translateY(1px);
+    }
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}
+
+.versus-text {
+  font-weight: var(--pdz-font-weight-bold);
+  font-size: 0.65rem;
+  color: var(--pdz-color-on-surface-variant);
+  user-select: none;
+}
+
+.toggle-icon {
+  position: absolute;
+  bottom: -0.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--pdz-color-outline);
+  font-size: 1.5rem;
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.matchup-content {
+  margin-top: var(--pdz-space-md);
+  padding-top: var(--pdz-space-md);
+  border-top: 1px solid var(--pdz-color-outline-variant);
+  display: flex;
+  flex-direction: column;
+  gap: var(--pdz-space-md);
+  animation: fadeIn 0.3s ease-in-out;
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
     }
   }
 }
 
-.matchup-content {
+.score-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--pdz-space-sm);
+}
+
+.score-box {
+  min-width: 2rem;
+  padding: var(--pdz-space-xs);
+  text-align: center;
+  font-weight: var(--pdz-font-weight-bold);
+  font-size: 1.1rem;
+  border-radius: var(--pdz-shape-corner-sm);
+  box-shadow: var(--pdz-level-1);
+  background-color: var(--pdz-color-surface-container);
+  color: var(--pdz-color-on-surface);
+
+  &.winning {
+    color: var(--pdz-color-success);
+  }
+
+  &.losing {
+    color: var(--pdz-color-error);
+  }
+}
+
+.score-separator {
+  font-size: 1.2rem;
+  color: var(--pdz-color-on-surface-variant);
+}
+
+.match-details {
+  display: flex;
+  align-items: center;
+  gap: var(--pdz-space-sm);
+}
+
+.pokemon-team {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--pdz-space-xs);
+  flex: 1;
+}
+
+.pokemon-slot {
+  aspect-ratio: 1;
+  border: 2px solid var(--pdz-color-outline-variant);
+  border-radius: var(--pdz-shape-corner-sm);
+  box-shadow: var(--pdz-level-1);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  pdz-sprite {
+    filter: grayscale(100%);
+    opacity: 0.6;
+  }
+
+  &.brought {
+    border-color: var(--pdz-color-info);
+
+    pdz-sprite {
+      filter: grayscale(0%);
+      opacity: 1;
+    }
+  }
+
+  &.fainted {
+    border-color: var(--pdz-color-error);
+
+    pdz-sprite {
+      filter: grayscale(0%);
+      opacity: 1;
+    }
+  }
+}
+
+.match-selector {
   display: flex;
   flex-direction: column;
-  .score-container {
-    display: flex;
-    width: 100%;
-    height: 0.75rem;
-    align-items: center;
-    justify-content: center;
-    .score {
-      display: flex;
-      width: fit-content;
-      column-gap: 0.25rem;
-      .score-box {
-        width: 1.25rem;
-        line-height: 1.25rem;
-        text-align: center;
-        font-weight: var(--pdz-font-weight-bold);
-        font-size: 1rem;
-        height: 1.25rem;
-        border-radius: var(--pdz-shape-corner-xs);
-        box-shadow: var(--pdz-level-1);
-        background-color: white;
-        color: var(--pdz-color-primary);
-        &.positive {
-          color: lightgreen;
-        }
+  gap: var(--pdz-space-xs);
+  flex-shrink: 0;
+}
 
-        &.negative {
-          color: lightcoral;
-        }
-        mat-icon {
-          font-size: 1.2rem;
-          width: fit-content;
-          line-height: 1.25rem;
-        }
-      }
-    }
-  }
-  .matches-container {
-    display: flex;
-    min-width: 100%;
-    justify-content: space-between;
-    align-items: center;
-    column-gap: 0.25rem;
+.match-option {
+  display: flex;
+  align-items: center;
+  gap: var(--pdz-space-xs);
+  font-size: 0.7rem;
+}
+
+.match-score {
+  min-width: 1.5rem;
+  font-weight: var(--pdz-font-weight-semibold);
+  font-size: 1rem;
+  text-align: center;
+  color: var(--pdz-color-on-surface-variant);
+
+  &.winning {
+    color: var(--pdz-color-success);
   }
 
-  .match-option-container {
-    display: flex;
-    flex-direction: column;
-    row-gap: 0.25rem;
-    .match-option {
-      font-size: 0.6rem;
-      color: var(--pdz-color-primary);
-      display: flex;
-      column-gap: 0.25rem;
-      align-items: center;
-      .match-score {
-        font-weight: 600;
-        font-size: 1.2rem;
+  &.losing {
+    color: var(--pdz-color-error);
+  }
+}
 
-        text-align: center;
-        &.positive {
-          color: lightgreen;
-        }
-        &.negative {
-          color: lightcoral;
-        }
-      }
-      .match-button {
-        border: 1px solid var(--pdz-color-primary-border-variant);
-        padding: 0.0675rem 0.125rem;
-        box-shadow: var(--pdz-level-1);
-        border-radius: var(--pdz-shape-corner-sm);
-        &.selected {
-          background-color: var(--pdz-color-primary);
-          border: 1px solid var(--pdz-color-primary);
-          color: var(--pdz-color-on-primary);
-          margin-top: 1px;
-          margin-bottom: -1px;
-          box-shadow: var(--pdz-level-0);
-        }
-        &:active {
-          margin-top: 1px;
-          margin-bottom: -1px;
-          box-shadow: var(--pdz-level-0);
-        }
-      }
-    }
+.game-button {
+  padding: var(--pdz-space-xs) var(--pdz-space-sm);
+  border: 1px solid var(--pdz-color-outline);
+  border-radius: var(--pdz-shape-corner-sm);
+  background: var(--pdz-color-surface-container);
+  box-shadow: var(--pdz-level-1);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.65rem;
+  white-space: nowrap;
+
+  &:hover:not(.selected) {
+    background: var(--pdz-color-surface-container-high);
   }
 
-  .team-container {
-    display: grid;
-    gap: 0.25rem;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    .pokemon-box {
-      height: 3rem;
-      box-shadow: var(--pdz-level-1);
-      border-radius: var(--pdz-shape-corner-sm);
-      width: 3rem;
-      border-width: 2px;
-      border-color: var(--pdz-color-primary-border-variant);
-      sprite {
-        filter: grayscale(100%);
-      }
-      &.brought {
-        border-color: lightgreen;
-      }
-      &.fainted {
-        border-color: lightcoral;
-      }
+  &.selected {
+    background-color: var(--pdz-color-primary);
+    border-color: var(--pdz-color-primary);
+    color: var(--pdz-color-on-primary);
+    box-shadow: var(--pdz-level-0);
+    transform: translateY(1px);
+  }
 
-      &.brought,
-      &.fainted {
-        sprite {
-          filter: grayscale(0%);
-        }
-      }
-    }
+  &:active {
+    box-shadow: var(--pdz-level-0);
+    transform: translateY(1px);
   }
 }

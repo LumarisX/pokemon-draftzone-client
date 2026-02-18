@@ -17,7 +17,7 @@ import { getLogoUrl } from '../../league.util';
     RouterLink,
   ],
   templateUrl: './league-team-card.component.html',
-  styleUrls: ['./league-team-card.component.scss'],
+  styleUrls: ['./league-team-card.component.scss', '../../league.scss'],
 })
 export class LeagueTeamCardComponent {
   @Input({ required: true })

@@ -44,6 +44,7 @@ export namespace League {
   };
 
   type MatchTeam = {
+    id: string;
     teamName: string;
     coach: string;
     score: number;

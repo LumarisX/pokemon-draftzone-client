@@ -75,10 +75,24 @@
           to the winnings pot. (Leave a note that it's for the PBDL)
         </p>
       </div>
-    } @else if (closed) {
+    } @else if (closed && !wantsToSignUpAsSub) {
       <div class="message-card">
-        <h2 class="message-card__title">Sign ups for PDBL are now closed.</h2>
+        <h2 class="message-card__title">The season has already started</h2>
         <p class="message-card__text">
+          Would you like to sign up as a sub? Subs can fill in for players who
+          drop from the league.
+        </p>
+        <div class="message-card__actions">
+          <button
+            type="button"
+            class="btn btn--primary"
+            (click)="confirmSignUpAsSub()"
+          >
+            Yes, Sign Up as a Sub
+          </button>
+          <a routerLink=".." class="btn btn--secondary"> No, Thanks </a>
+        </div>
+        <p class="message-card__text message-card__text--secondary">
           Join the
           <a
             target="_blank"

@@ -1,18 +1,7 @@
-.logo {
-  width: 4rem;
-  height: 4rem;
-  border-radius: 2rem;
-  overflow: hidden;
-  box-shadow: var(--pdz-level-1);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-shrink: 0;
+@use "../../league.mixins.scss" as *;
 
-  img {
-    max-width: 100%;
-    max-height: 100%;
-  }
+.logo {
+  @include pdz-league-logo(4rem);
 }
 
 .sprite-wrapper {

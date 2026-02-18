@@ -1,11 +1,8 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { takeUntil } from 'rxjs';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Subject, takeUntil } from 'rxjs';
+import { LeagueZoneService } from '../../services/leagues/league-zone.service';
 import { League } from '../league.interface';
 import { MatchupCardComponent } from './matchup-card/matchup-card.component';
-import { ApiService } from '../../services/api.service';
-import { Subject } from 'rxjs';
-import { LeagueZoneService } from '../../services/leagues/league-zone.service';
 
 @Component({
   selector: 'pdz-league-schedule',
@@ -14,7 +11,6 @@ import { LeagueZoneService } from '../../services/leagues/league-zone.service';
   styleUrls: ['./league-schedule.component.scss'],
 })
 export class LeagueScheduleComponent implements OnInit, OnDestroy {
-  private activatedRoute = inject(ActivatedRoute);
   private destroy$ = new Subject<void>();
   private leagueService = inject(LeagueZoneService);
 

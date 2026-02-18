@@ -1,5 +1,6 @@
 @use "../../../styles/global.scss" as *;
 @use "../../../styles/mixins" as *;
+@use "../league.mixins" as *;
 
 :host {
   display: block;
@@ -40,21 +41,7 @@
     gap: var(--pdz-space-lg);
 
     .logo {
-      width: 8rem;
-      height: 8rem;
-      border-radius: 4rem;
-      overflow: hidden;
-      box-shadow: var(--pdz-level-3);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-shrink: 0;
-      background: var(--pdz-color-surface-variant);
-
-      img {
-        max-width: 100%;
-        max-height: 100%;
-      }
+      @include pdz-league-logo(8rem);
     }
 
     .team-info {

@@ -40,16 +40,18 @@
       <button
         routerLink="./sign-up"
         class="button button--primary"
-        [disabled]="isSignUpClosed()"
-        [class.is-disabled]="isSignUpClosed()"
+        [disabled]="isSeasonOver()"
+        [class.is-disabled]="isSeasonOver()"
       >
         <span class="button__text">{{
-          isSignUpClosed() ? "Sign Up Closed" : "Sign Up"
+          isSeasonOver() ? "Sign Up Closed" : "Sign Up"
         }}</span>
-        @if (!isSignUpClosed()) {
+        @if (!isSeasonOver() && !isSignUpClosed()) {
           <span class="button__subtext">
             Closes {{ leagueInfo.signUpDeadline | date: "MMM d" }}
           </span>
+        } @else if (!isSeasonOver() && isSignUpClosed()) {
+          <span class="button__subtext"> Be a sub! </span>
         }
       </button>
 

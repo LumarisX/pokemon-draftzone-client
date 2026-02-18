@@ -171,6 +171,39 @@
   }
 }
 
+.message-card__actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pdz-space-md);
+  margin: var(--pdz-space-md) 0;
+
+  @include respond-above(medium) {
+    flex-direction: row;
+    justify-content: center;
+  }
+}
+
+.btn {
+  padding: var(--pdz-space-md) var(--pdz-space-lg);
+  border-radius: var(--pdz-shape-corner-sm);
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  transition: all 0.2s ease-in-out;
+
+  &--primary {
+    @include flat-button-primary();
+  }
+
+  &--secondary {
+    @include flat-button-menu();
+  }
+}
+
 // Form Styles
 .form-row {
   display: grid;

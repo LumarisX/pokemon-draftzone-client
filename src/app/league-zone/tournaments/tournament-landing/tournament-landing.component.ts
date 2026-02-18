@@ -43,4 +43,9 @@ export class TournamentLandingComponent implements OnInit {
     if (!this.leagueInfo?.signUpDeadline) return false;
     return new Date() > new Date(this.leagueInfo.signUpDeadline);
   }
+
+  isSeasonOver(): boolean {
+    if (!this.leagueInfo?.seasonEnd) return false;
+    return new Date() > new Date(this.leagueInfo.seasonEnd);
+  }
 }

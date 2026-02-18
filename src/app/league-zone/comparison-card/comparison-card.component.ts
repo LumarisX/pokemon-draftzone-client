@@ -7,6 +7,7 @@ import {
   signal,
 } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
+import { getLogoUrl } from '../league.util';
 
 export interface ComparisonEntity {
   logoUrl?: string;
@@ -54,7 +55,7 @@ export class ComparisonCardComponent implements OnInit {
   }
 
   getLogo(entity: ComparisonEntity): string {
-    return entity.logoUrl || entity.defaultLogo || '';
+    return getLogoUrl(entity.logoUrl);
   }
 
   stopPropagation(event: Event): void {

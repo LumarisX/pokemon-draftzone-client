@@ -1,0 +1,19 @@
+@use "../../styles/global" as *;
+
+@mixin pdz-league-logo($size: 4rem) {
+  width: $size;
+  height: $size;
+  border-radius: $size;
+  overflow: hidden;
+  box-shadow: var(--pdz-level-1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+  background-color: pdz-color(surface);
+
+  img {
+    max-width: 100%;
+    max-height: 100%;
+  }
+}
