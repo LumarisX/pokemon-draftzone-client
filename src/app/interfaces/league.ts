@@ -1,3 +1,5 @@
+import { Pokemon } from './pokemon';
+
 export type TournamentDetails = {
   name: string;
   teamName: string;
@@ -7,4 +9,13 @@ export type TournamentDetails = {
   tournamentKey: string;
   leagueName: string;
   leagueKey: string;
+  divisionKey: string;
+  draft: Pokemon[];
+  format: string;
+  ruleset: string;
+  score: {
+    wins: number;
+    loses: number;
+    diff: number;
+  };
 };

@@ -3,17 +3,15 @@
 @mixin pdz-league-logo($size: 4rem) {
   width: $size;
   height: $size;
-  border-radius: $size;
-  overflow: hidden;
-  box-shadow: var(--pdz-level-1);
+  overflow: visible;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-shrink: 0;
-  background-color: pdz-color(surface);
-
+  border-radius: $size;
   img {
     max-width: 100%;
     max-height: 100%;
+    filter: drop-shadow(0 0.125rem 0.25rem pdz-color(outline-variant));
   }
 }

@@ -15,6 +15,44 @@
     <pdz-loading></pdz-loading>
   } @else {
     <div class="drafts-grid">
+      @for (tournament of tournaments; track tournament.tournamentKey) {
+        <div class="draft-card">
+          <div class="card-header">
+            @if (tournament.score) {
+              <div class="card-score" [ngClass]="scoreClass(tournament)">
+                {{ scoreString(tournament) }}
+              </div>
+            }
+            <div class="card-title">
+              <h2 class="league-name">{{ tournament.tournamentName }}</h2>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="body-header">
+              {{ tournament.ruleset }} - {{ tournament.format }}
+            </div>
+            <div class="sprites">
+              @for (pokemon of tournament.draft; track pokemon.name) {
+                <pdz-sprite [pokemon]="pokemon"></pdz-sprite>
+              }
+            </div>
+          </div>
+          <div class="card-footer">
+            <a
+              class="footer-link"
+              [routerLink]="[
+                '/leagues',
+                tournament.leagueKey,
+                'tournaments',
+                tournament.tournamentKey,
+                'divisions',
+                tournament.divisionKey,
+              ]"
+              >View Tournament</a
+            >
+          </div>
+        </div>
+      }
       @for (draft of drafts; track draft.tournamentId) {
         <div class="draft-card">
           <div class="card-header">
@@ -134,36 +172,3 @@
     </div>
   }
 </div>
-
-@if (tournaments?.length) {
-  <div class="drafts-container">
-    <div class="header">
-      <h1 class="title">My Tournaments</h1>
-    </div>
-
-    <div class="drafts-grid">
-      @for (tournament of tournaments; track tournament.tournamentKey) {
-        <div class="draft-card">
-          <div class="card-header">
-            <div class="card-title">
-              <h2 class="league-name">{{ tournament.tournamentName }}</h2>
-            </div>
-          </div>
-          <!-- <div class="card-body"></div> -->
-          <div class="card-footer">
-            <a
-              class="footer-link"
-              [routerLink]="[
-                '/leagues',
-                tournament.leagueKey,
-                'tournaments',
-                tournament.tournamentKey,
-              ]"
-              >View Tournament</a
-            >
-          </div>
-        </div>
-      }
-    </div>
-  </div>
-}

@@ -39,7 +39,7 @@ export class CoachStandingsComponent {
     const g = Math.round(from[1] + (to[1] - from[1]) * ratio);
     const b = Math.round(from[2] + (to[2] - from[2]) * ratio);
 
-    return { 'border-color': `rgb(${r}, ${g}, ${b})` };
+    return { 'background-color': `rgb(${r}, ${g}, ${b})` };
   }
 
   getLogoUrl = getLogoUrl;
