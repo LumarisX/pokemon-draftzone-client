@@ -134,9 +134,12 @@
     <div class="main-draft">
       <div class="draft-bar draft-section">
         <div class="draft-section-title">Draft Order</div>
-        <div class="draft-rounds draft-section-body">
+        <div class="draft-rounds draft-section-body" #draftRoundsContainer>
           @for (round of draftRounds; track $index; let roundIndex = $index) {
-            <div class="draft-round-container">
+            <div
+              class="draft-round-container"
+              [attr.data-round-index]="roundIndex"
+            >
               <div class="round-label">
                 <span>Round {{ roundIndex + 1 }}</span>
                 <mat-icon>trending_flat</mat-icon>

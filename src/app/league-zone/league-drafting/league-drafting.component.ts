@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  inject,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { interval, Subject, takeUntil } from 'rxjs';
@@ -78,6 +85,12 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   private countdownTick$ = new Subject<void>();
   private picksChanged$ = new Subject<void>();
+  private hasAutoScrolledToCurrentRound = false;
+  private readonly SCROLL_RETRY_DELAY_MS = 50;
+  private readonly SCROLL_MAX_ATTEMPTS = 10;
+
+  @ViewChild('draftRoundsContainer')
+  draftRoundsContainer?: ElementRef<HTMLDivElement>;
 
   teams: League.LeagueTeam[] = [];
   canDraftTeams: string[] = [];
@@ -159,6 +172,7 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
         this.draftDetails.roundCount = data.rounds;
         this.draftDetails.teamOrder = data.teamOrder;
         this.draftDetails.status = data.status;
+        this.scheduleScrollToCurrentRoundOnLoad();
 
         this.picksChanged$
           .pipe(
@@ -276,6 +290,43 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
     this.countdownTick$.next();
     this.countdownTick$.complete();
+  }
+
+  private scrollToCurrentRoundOnLoad(): void {
+    if (this.hasAutoScrolledToCurrentRound || !this.currentPick) return;
+    const container = this.draftRoundsContainer?.nativeElement;
+    if (!container) return;
+
+    const roundIndex = Math.max(this.currentPick.round, 0);
+    const targetRound = container.querySelector<HTMLElement>(
+      `[data-round-index="${roundIndex}"]`,
+    );
+
+    if (!targetRound) return;
+
+    const containerTop = container.getBoundingClientRect().top;
+    const targetTop = targetRound.getBoundingClientRect().top;
+
+    container.scrollTo({
+      top: container.scrollTop + (targetTop - containerTop),
+      behavior: 'auto',
+    });
+
+    this.hasAutoScrolledToCurrentRound = true;
+  }
+
+  private scheduleScrollToCurrentRoundOnLoad(attempt: number = 0): void {
+    if (this.hasAutoScrolledToCurrentRound || !this.currentPick) return;
+
+    setTimeout(() => {
+      this.scrollToCurrentRoundOnLoad();
+      if (
+        !this.hasAutoScrolledToCurrentRound &&
+        attempt < this.SCROLL_MAX_ATTEMPTS
+      ) {
+        this.scheduleScrollToCurrentRoundOnLoad(attempt + 1);
+      }
+    }, this.SCROLL_RETRY_DELAY_MS);
   }
 
   startCountdown(): void {
