@@ -13,6 +13,7 @@ import { NumberSuffixPipe } from '../../util/pipes/number-suffix.pipe';
 import { LeagueNotificationsComponent } from '../league-notifications/league-notifications.component';
 import { LeagueTierListComponent } from '../league-tier-list/league-tier-list.component';
 import { League } from '../league.interface';
+import { IconComponent } from '../../images/icon/icon.component';
 
 interface DraftAddedEvent {
   divisionId: string;
@@ -64,6 +65,7 @@ interface DraftSkipEvent {
     LoadingComponent,
     RouterModule,
     LeagueNotificationsComponent,
+    IconComponent,
   ],
   templateUrl: './league-drafting.component.html',
   styleUrls: ['./league-drafting.component.scss', '../league.scss'],

@@ -32,11 +32,11 @@ $container-padding: var(--pdz-space-xs);
   border-radius: var(--pdz-shape-corner-lg);
 
   &:hover {
+    cursor: pointer;
     background-color: pdz-color(surface-container);
   }
 
   &:active {
-    cursor: pointer;
     margin-top: 1px;
     margin-bottom: -1px;
     box-shadow: var(--pdz-level-inset-1);
@@ -50,11 +50,11 @@ $container-padding: var(--pdz-space-xs);
 .team-logo {
   @include pdz-league-logo(3rem);
   &.winner {
-    border-color: var(--pdz-color-success);
+    border-color: pdz-color(success);
   }
 
   &.loser {
-    border-color: var(--pdz-color-error);
+    border-color: pdz-color(error);
   }
 }
 
@@ -79,7 +79,7 @@ $container-padding: var(--pdz-space-xs);
 
 .coach-name {
   font-size: 0.75rem;
-  color: var(--pdz-color-on-surface-variant);
+  color: pdz-color(on-surface-variant);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -99,16 +99,16 @@ $container-padding: var(--pdz-space-xs);
   border-radius: var(--pdz-shape-corner-full);
   font-size: 0.7rem;
   line-height: 1;
-  border: 1px solid var(--pdz-color-outline);
+  border: 1px solid pdz-color(outline);
   background: transparent;
-  color: var(--pdz-color-on-surface-variant);
+  color: pdz-color(on-surface-variant);
   cursor: pointer;
   transition: all 0.2s;
 
   &.active {
-    background-color: var(--pdz-color-primary);
-    color: var(--pdz-color-on-primary);
-    border-color: var(--pdz-color-primary);
+    background-color: pdz-color(primary);
+    color: pdz-color(on-primary);
+    border-color: pdz-color(primary);
     box-shadow: var(--pdz-level-1);
 
     &:active {
@@ -126,7 +126,7 @@ $container-padding: var(--pdz-space-xs);
 .versus-text {
   font-weight: var(--pdz-font-weight-bold);
   font-size: 0.65rem;
-  color: var(--pdz-color-on-surface-variant);
+  color: pdz-color(on-surface-variant);
   user-select: none;
 }
 
@@ -135,7 +135,7 @@ $container-padding: var(--pdz-space-xs);
   bottom: -0.5rem;
   left: 50%;
   transform: translateX(-50%);
-  color: var(--pdz-color-outline);
+  color: pdz-color(outline);
   font-size: 1.5rem;
   width: 1.5rem;
   height: 1.5rem;
@@ -144,7 +144,7 @@ $container-padding: var(--pdz-space-xs);
 .matchup-content {
   margin-top: var(--pdz-space-md);
   padding-top: var(--pdz-space-md);
-  border-top: 1px solid var(--pdz-color-outline-variant);
+  border-top: 1px solid pdz-color(outline-variant);
   display: flex;
   flex-direction: column;
   gap: var(--pdz-space-md);
@@ -177,21 +177,21 @@ $container-padding: var(--pdz-space-xs);
   font-size: 1.1rem;
   border-radius: var(--pdz-shape-corner-sm);
   box-shadow: var(--pdz-level-1);
-  background-color: var(--pdz-color-surface-container);
-  color: var(--pdz-color-on-surface);
+  background-color: pdz-color(surface-container);
+  color: pdz-color(on-surface);
 
   &.winning {
-    color: var(--pdz-color-success);
+    color: pdz-color(success);
   }
 
   &.losing {
-    color: var(--pdz-color-error);
+    color: pdz-color(error);
   }
 }
 
 .score-separator {
   font-size: 1.2rem;
-  color: var(--pdz-color-on-surface-variant);
+  color: pdz-color(on-surface-variant);
 }
 
 .match-details {
@@ -209,7 +209,7 @@ $container-padding: var(--pdz-space-xs);
 
 .pokemon-slot {
   aspect-ratio: 1;
-  border: 2px solid var(--pdz-color-outline-variant);
+  border: 2px solid pdz-color(outline-variant);
   border-radius: var(--pdz-shape-corner-sm);
   box-shadow: var(--pdz-level-1);
   overflow: hidden;
@@ -223,7 +223,7 @@ $container-padding: var(--pdz-space-xs);
   }
 
   &.brought {
-    border-color: var(--pdz-color-info);
+    border-color: pdz-color(info);
 
     pdz-sprite {
       filter: grayscale(0%);
@@ -232,7 +232,7 @@ $container-padding: var(--pdz-space-xs);
   }
 
   &.fainted {
-    border-color: var(--pdz-color-error);
+    border-color: pdz-color(error);
 
     pdz-sprite {
       filter: grayscale(0%);
@@ -260,22 +260,22 @@ $container-padding: var(--pdz-space-xs);
   font-weight: var(--pdz-font-weight-semibold);
   font-size: 1rem;
   text-align: center;
-  color: var(--pdz-color-on-surface-variant);
+  color: pdz-color(on-surface-variant);
 
   &.winning {
-    color: var(--pdz-color-success);
+    color: pdz-color(success);
   }
 
   &.losing {
-    color: var(--pdz-color-error);
+    color: pdz-color(error);
   }
 }
 
 .game-button {
   padding: var(--pdz-space-xs) var(--pdz-space-sm);
-  border: 1px solid var(--pdz-color-outline);
+  border: 1px solid pdz-color(outline);
   border-radius: var(--pdz-shape-corner-sm);
-  background: var(--pdz-color-surface-container);
+  background: pdz-color(surface-container);
   box-shadow: var(--pdz-level-1);
   cursor: pointer;
   transition: all 0.2s;
@@ -283,13 +283,13 @@ $container-padding: var(--pdz-space-xs);
   white-space: nowrap;
 
   &:hover:not(.selected) {
-    background: var(--pdz-color-surface-container-high);
+    background: pdz-color(surface-container-high);
   }
 
   &.selected {
-    background-color: var(--pdz-color-primary);
-    border-color: var(--pdz-color-primary);
-    color: var(--pdz-color-on-primary);
+    background-color: pdz-color(primary);
+    border-color: pdz-color(primary);
+    color: pdz-color(on-primary);
     box-shadow: var(--pdz-level-0);
     transform: translateY(1px);
   }

@@ -59,6 +59,11 @@
                 <div class="my-pokemon-name fancy-font">
                   {{ pokemon.name }}
                 </div>
+                @if (pokemon.capt?.tera) {
+                  <div class="my-pokemon-capt fancy-font">
+                    <pdz-icon name="tera"></pdz-icon>
+                  </div>
+                }
                 <div class="my-pokemon-tier fancy-font">{{ pokemon.cost }}</div>
               </li>
             }
@@ -100,6 +105,11 @@
                             {{ choice.name }}
                           </div>
                         </div>
+                        @if (choice.addons?.includes("Tera Captain")) {
+                          <div class="my-pokemon-capt fancy-font">
+                            <pdz-icon name="tera"></pdz-icon>
+                          </div>
+                        }
                         <div class="my-pokemon-tier fancy-font">
                           {{ choice.cost }}
                         </div>
