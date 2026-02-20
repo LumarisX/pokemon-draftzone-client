@@ -42,4 +42,10 @@ export class LeagueTeamCardComponent {
       return timezone;
     }
   }
+
+  hasCapt(): boolean {
+    return this.teamDetails.draft.some(
+      (pokemon) => pokemon.capt?.tera || pokemon.capt?.dmax || pokemon.capt?.z,
+    );
+  }
 }

@@ -50,7 +50,9 @@
             <tr>
               <th class="col-sprite"></th>
               <th class="col-name">Name</th>
-              <th class="col-capt">Capt</th>
+              @if (hasCapt()) {
+                <th class="col-capt">Capt</th>
+              }
               <th class="col-tier">Tier</th>
             </tr>
           </thead>
@@ -65,17 +67,19 @@
                 <td class="cell-name">
                   {{ pokemon.name }}
                 </td>
-                <td class="cell-capt">
-                  @if (pokemon.capt?.tera) {
-                    <mat-icon svgIcon="tera"></mat-icon>
-                  }
-                  @if (pokemon.capt?.z) {
-                    <mat-icon svgIcon="z"></mat-icon>
-                  }
-                  @if (pokemon.capt?.dmax) {
-                    <mat-icon svgIcon="dmax"></mat-icon>
-                  }
-                </td>
+                @if (hasCapt()) {
+                  <td class="cell-capt">
+                    @if (pokemon.capt?.tera) {
+                      <mat-icon svgIcon="tera"></mat-icon>
+                    }
+                    @if (pokemon.capt?.z) {
+                      <mat-icon svgIcon="z"></mat-icon>
+                    }
+                    @if (pokemon.capt?.dmax) {
+                      <mat-icon svgIcon="dmax"></mat-icon>
+                    }
+                  </td>
+                }
                 <td class="cell-tier">
                   {{ pokemon.tier }}
                 </td>
