@@ -1,64 +1,76 @@
-<div class="homepage-main">
-  <div class="hero-section">
-    <div class="title-container">
-      <span class="title-text mobile-hidden"> POKEMON </span>
+<div class="homepage">
+  <div class="homepage__hero">
+    <div class="homepage__title">
+      <span class="homepage__title-text homepage__title-text--desktop">
+        POKEMON
+      </span>
       <pdz-icon
         name="logo-small"
         [height]="64"
         [width]="64"
-        class="title-logo"
+        class="homepage__title-logo"
       ></pdz-icon>
-      <span class="title-text mobile-container">
-        <span class="mobile-show"> POKEMON </span>
+      <span class="homepage__title-text homepage__title-text--mobile-stack">
+        <span class="homepage__title-text homepage__title-text--mobile">
+          POKEMON
+        </span>
 
-        <span class=""> DRAFTZONE </span>
+        <span class="homepage__title-text"> DRAFTZONE </span>
       </span>
     </div>
-    <p class="subtitle">
+    <p class="homepage__subtitle">
       Your ultimate destination for Pokémon drafting and league management.
     </p>
-    <div class="cta-buttons">
-      <a class="cta-button btn btn-secondary" routerLink="/drafts"
-        >View my Matchups</a
-      >
-      <a class="cta-button btn btn-secondary" routerLink="/planner"
-        >Plan your Draft
-      </a>
+    <div class="homepage__cta-buttons">
+      <button type="button" class="homepage__cta-button" routerLink="/drafts">
+        View my Matchups
+      </button>
+      <button type="button" class="homepage__cta-button" routerLink="/planner">
+        Plan your Draft
+      </button>
     </div>
   </div>
-
-  <div class="info-container">
-    <div class="news-container">
-      <h2 class="news-title">News and Updates</h2>
-      <div class="news-wrapper">
-        <pdz-news-core></pdz-news-core>
-      </div>
+  <div class="homepage__secondary-actions">
+    <a
+      class="homepage__secondary-action homepage__secondary-action--discord"
+      href="https://discord.gg/sQUEBW4UVx"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      Join Our Discord
+    </a>
+    <a
+      class="homepage__secondary-action"
+      href="https://github.com/LumarisX/pokemon-draftzone-client"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      Contribute to the Project
+    </a>
+    <a
+      class="homepage__secondary-action"
+      href="https://draftzone-shop.fourthwall.com/pages/join-support"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      Support the Project
+    </a>
+    <button
+      type="button"
+      class="homepage__secondary-action"
+      routerLink="/about"
+    >
+      About Pokemon DraftZone
+    </button>
+  </div>
+  <div class="homepage__info">
+    <div class="homepage__panel">
+      <h2 class="homepage__panel-title">News</h2>
+      <pdz-news-core></pdz-news-core>
     </div>
-    <div class="secondary-actions">
-      <a
-        class="secondary-action btn btn-primary"
-        href="https://discord.gg/sQUEBW4UVx"
-        target="_blank"
-      >
-        Join Our Discord
-      </a>
-      <a
-        class="secondary-action btn btn-primary"
-        href="https://github.com/LumarisX/pokemon-draftzone-client"
-        target="_blank"
-      >
-        Contribute to the Project
-      </a>
-      <a
-        class="secondary-action btn btn-primary"
-        href="https://draftzone-shop.fourthwall.com/pages/join-support"
-        target="_blank"
-      >
-        Support the Project
-      </a>
-      <a class="secondary-action btn btn-primary" routerLink="/about">
-        About Pokemon DraftZone
-      </a>
+    <div class="homepage__panel">
+      <h2 class="homepage__panel-title">Releases</h2>
+      <pdz-news-core></pdz-news-core>
     </div>
   </div>
 </div>
