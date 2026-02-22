@@ -175,11 +175,11 @@ export type Team = {
 
 type TradeParticipant = {
   team?: Team;
-  pokemon?: League.TieredPokemon[];
+  pokemon: League.TieredPokemon[];
 };
 
 export type TradeLog = {
-  from: TradeParticipant;
-  to: TradeParticipant;
+  side1: TradeParticipant;
+  side2: TradeParticipant;
   activeStage: string;
 };

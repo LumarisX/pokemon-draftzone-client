@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { LeagueRulesFormComponent } from '../league-rules-overview/league-rules-form/league-rules-form.component';
 import { LeagueManageDraftComponent } from './league-manage-draft/league-manage-draft.component';
 import { LeagueManageSignupsComponent } from './league-manage-signups/league-manage-signups.component';
+import { LeagueManageTradesComponent } from './league-manage-trades/league-manage-trades.component';
 import { LeagueManageComponent } from './league-manage.component';
 
 export const LeagueManagePath = 'manage';
@@ -23,6 +24,10 @@ const routes: Routes = [
   {
     path: ':divisionKey/draft',
     component: LeagueManageDraftComponent,
+  },
+  {
+    path: ':divisionKey/trades',
+    component: LeagueManageTradesComponent,
   },
   // {
   //   path: 'tiers',

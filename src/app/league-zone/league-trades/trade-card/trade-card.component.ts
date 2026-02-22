@@ -36,7 +36,7 @@ export class TradeCardComponent {
     'https://pokemondraftzone-public.s3.us-east-2.amazonaws.com/league-uploads/1745265573766-pdbl.png';
 
   leftEntity = computed<ComparisonEntity>(() => {
-    const from = this.tradeLog.from;
+    const from = this.tradeLog.side1;
     return {
       logoUrl: from.team?.logo || this.DEFAULT_LOGO,
       primaryName: from.team?.name || this.DRAFT_POOL_NAME,
@@ -46,7 +46,7 @@ export class TradeCardComponent {
   });
 
   rightEntity = computed<ComparisonEntity>(() => {
-    const to = this.tradeLog.to;
+    const to = this.tradeLog.side2;
     return {
       logoUrl: to.team?.logo || this.DEFAULT_LOGO,
       primaryName: to.team?.name || this.DRAFT_POOL_NAME,

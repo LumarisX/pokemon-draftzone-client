@@ -105,6 +105,10 @@ const routes: Routes = [
     path: 'pdbl/tournaments/:tournamentKey/divisions/:divisionKey/tier-list',
     component: LeagueTierListComponent,
   },
+  {
+    path: 'pdbl/tournaments/:tournamentKey/divisions/:divisionKey/trades',
+    component: LeagueTradesComponent,
+  },
   // {
   //   path: 'view/:tournamentId/auction',
   //   component: LeagueAuctionComponent,

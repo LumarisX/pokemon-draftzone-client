@@ -9,6 +9,7 @@ import { League } from '../../league-zone/league.interface';
 import { ApiService } from '../api.service';
 import { UploadService } from '../upload.service';
 import { WebSocketService } from '../ws.service';
+import { TradeData } from '../../league-zone/league-manage/league-manage-trades/league-manage-trades.component';
 
 const ROOTPATH = 'leagues';
 
@@ -111,6 +112,37 @@ export class LeagueZoneService {
     }>(
       `${ROOTPATH}/tournaments/${this.tournamentKey()}/divisions/${this.divisionKey()}`,
       true,
+    );
+  }
+
+  getPokemonList() {
+    const params: { [key: string]: string } = {};
+    const divisionKey = this.divisionKey();
+    if (divisionKey) params['division'] = divisionKey;
+    return this.apiService.get<
+      {
+        pokemon: { id: string; name: string; cost: number }[];
+        team?: { id: string; name: string; coachName: string };
+      }[]
+    >(
+      `${ROOTPATH}/tournaments/${this.tournamentKey()}/pokemon-list`,
+      false,
+      params,
+    );
+  }
+
+  getTrades() {
+    return this.apiService.get<[]>(
+      `${ROOTPATH}/tournaments/${this.tournamentKey()}/manage/divisions/${this.divisionKey()}/trades`,
+      true,
+    );
+  }
+
+  sendTrade(tradeData: TradeData) {
+    return this.apiService.post(
+      `${ROOTPATH}/tournaments/${this.tournamentKey()}/manage/divisions/${this.divisionKey()}/trades`,
+      true,
+      tradeData,
     );
   }
 

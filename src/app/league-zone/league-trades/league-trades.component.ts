@@ -1,9 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 
-import { getRandomPokemon } from '../../data/namedex';
-import { getRandomTeamOrder } from '../league-ghost';
 import { TradeLog } from '../league.interface';
 import { TradeCardComponent } from './trade-card/trade-card.component';
+import { LeagueZoneService } from '../../services/leagues/league-zone.service';
 
 @Component({
   selector: 'pdz-league-trades',
@@ -11,89 +10,15 @@ import { TradeCardComponent } from './trade-card/trade-card.component';
   templateUrl: './league-trades.component.html',
   styleUrls: ['./league-trades.component.scss'],
 })
-export class LeagueTradesComponent {
-  teams = getRandomTeamOrder();
-  tradeLogs: TradeLog[] = [
-    {
-      from: {
-        team: this.teams[1],
-        pokemon: [
-          {
-            ...getRandomPokemon(),
-            tier: Math.round(Math.random() * 20).toFixed(0),
-            cost: Math.round(Math.random() * 10),
-          },
-        ],
-      },
-      to: {
-        team: this.teams[2],
-        pokemon: [
-          {
-            ...getRandomPokemon(),
-            tier: Math.round(Math.random() * 20).toFixed(0),
-            cost: Math.round(Math.random() * 10),
-          },
-        ],
-      },
-      activeStage: 'Week 4',
-    },
-    {
-      from: {
-        team: this.teams[0],
-        pokemon: [
-          {
-            ...getRandomPokemon(),
-            tier: Math.round(Math.random() * 20).toFixed(0),
-            cost: Math.round(Math.random() * 10),
-          },
-          {
-            ...getRandomPokemon(),
-            tier: Math.round(Math.random() * 20).toFixed(0),
-            cost: Math.round(Math.random() * 10),
-          },
-          {
-            ...getRandomPokemon(),
-            tier: Math.round(Math.random() * 20).toFixed(0),
-            cost: Math.round(Math.random() * 10),
-          },
-        ],
-      },
-      to: {
-        pokemon: [
-          {
-            ...getRandomPokemon(),
-            tier: Math.round(Math.random() * 20).toFixed(0),
-            cost: Math.round(Math.random() * 10),
-          },
-          {
-            ...getRandomPokemon(),
-            tier: Math.round(Math.random() * 20).toFixed(0),
-            cost: Math.round(Math.random() * 10),
-          },
-          {
-            ...getRandomPokemon(),
-            tier: Math.round(Math.random() * 20).toFixed(0),
-            cost: Math.round(Math.random() * 10),
-          },
-        ],
-      },
-      activeStage: 'Week 4',
-    },
-    {
-      from: {
-        team: this.teams[3],
-      },
-      to: {
-        pokemon: [
-          {
-            ...getRandomPokemon(),
-            tier: Math.round(Math.random() * 20).toFixed(0),
-            cost: Math.round(Math.random() * 10),
-          },
-        ],
-      },
+export class LeagueTradesComponent implements OnInit {
+  tradeLogs: TradeLog[] = [];
 
-      activeStage: 'Week 4',
-    },
-  ];
+  leagueService = inject(LeagueZoneService);
+
+  ngOnInit() {
+    this.leagueService.getTrades().subscribe((trades) => {
+      console.log('Received trades:', trades);
+      this.tradeLogs = trades;
+    });
+  }
 }
