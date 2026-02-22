@@ -3,7 +3,10 @@ import { NavigationEnd, Router } from '@angular/router';
 import { Observable, of, throwError } from 'rxjs';
 import { filter, map, mergeMap } from 'rxjs/operators';
 import { getRandomPokemon } from '../../data/namedex';
-import { LeagueTier } from '../../interfaces/tier-pokemon.interface';
+import {
+  LeagueTier,
+  TierPokemonAddon,
+} from '../../interfaces/tier-pokemon.interface';
 import { defenseData } from '../../league-zone/league-ghost';
 import { League } from '../../league-zone/league.interface';
 import { ApiService } from '../api.service';
@@ -121,7 +124,13 @@ export class LeagueZoneService {
     if (divisionKey) params['division'] = divisionKey;
     return this.apiService.get<
       {
-        pokemon: { id: string; name: string; cost: number }[];
+        pokemon: {
+          id: string;
+          name: string;
+          cost: number;
+          addons?: TierPokemonAddon[];
+          setAddons?: string[];
+        }[];
         team?: { id: string; name: string; coachName: string };
       }[]
     >(

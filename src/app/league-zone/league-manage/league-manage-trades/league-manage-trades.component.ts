@@ -12,6 +12,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { LeagueZoneService } from '../../../services/leagues/league-zone.service';
+import { LoadingComponent } from '../../../images/loading/loading.component';
 
 interface TradeGroup {
   id: string;
@@ -40,7 +41,7 @@ export interface TradeData {
 
 @Component({
   selector: 'pdz-league-manage-trades',
-  imports: [ReactiveFormsModule, FormsModule],
+  imports: [ReactiveFormsModule, FormsModule, LoadingComponent],
   templateUrl: './league-manage-trades.component.html',
   styleUrl: './league-manage-trades.component.scss',
 })
@@ -49,6 +50,7 @@ export class LeagueManageTradesComponent implements OnInit {
   private fb = inject(FormBuilder);
 
   // Groups derived from teams in pokemon list
+  loading = true;
   groups = signal<TradeGroup[]>([]);
 
   // Map of group id to pokemon in that group
@@ -102,6 +104,7 @@ export class LeagueManageTradesComponent implements OnInit {
     this.leagueService.getPokemonList().subscribe({
       next: (data) => {
         console.log('Raw pokemon list data:', data);
+        this.loading = false;
         const normalized = Array.isArray(data)
           ? data
           : (data as { groups?: typeof data })?.groups || [];

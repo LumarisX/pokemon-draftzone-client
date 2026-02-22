@@ -1,213 +1,215 @@
 <div class="trade-container">
-  <form [formGroup]="tradeForm" (ngSubmit)="submitTrade()" class="trade-form">
-    <!-- Side 1 -->
-    <div class="trade-side">
-      <h3 class="trade-side__heading">Side 1</h3>
+  @if (loading) {
+    <pdz-loading />
+  } @else {
+    <form [formGroup]="tradeForm" (ngSubmit)="submitTrade()" class="trade-form">
+      <!-- Side 1 -->
+      <div class="trade-side">
+        <h3 class="trade-side__heading">Side 1</h3>
 
-      <!-- Group Selection -->
-      <div class="trade-side__group-select">
-        <label for="side1Group" class="trade-label">Select Team</label>
-        <select
-          id="side1Group"
-          formControlName="side1Group"
-          class="trade-dropdown"
-        >
-          <option value="">-- Choose a team --</option>
-          @for (group of groups(); track group.id) {
-            <option [value]="group.id">
-              {{ group.name }}
-              @if (group.team) {
-                ({{ group.team.coachName }})
-              }
-            </option>
-          }
-        </select>
-      </div>
-
-      <!-- Pokemon Selection -->
-      @if (tradeForm.get("side1Group")?.value) {
-        <div class="trade-side__pokemon-list">
-          <label class="trade-label">Select Pokemon</label>
-
-          <!-- Search Input -->
-          <div class="search-container">
-            <input
-              type="text"
-              class="search-input"
-              placeholder="Search Pokemon..."
-              [value]="side1SearchQuery()"
-              (input)="updateSearchQuery('side1', $any($event.target).value)"
-            />
-          </div>
-
-          <!-- Pokemon Grid -->
-          <div class="pokemon-grid">
-            @for (pokemon of getGroupPokemon("side1"); track pokemon.id) {
-              <div
-                class="pokemon-item"
-                [class.pokemon-item--selected]="
-                  isPokemonSelected('side1', pokemon.id)
-                "
-                (click)="togglePokemon('side1', pokemon.id)"
-              >
-                <input
-                  type="checkbox"
-                  [id]="'side1-' + pokemon.id"
-                  [checked]="isPokemonSelected('side1', pokemon.id)"
-                  class="pokemon-checkbox"
-                  tabindex="-1"
-                />
-                <label [for]="'side1-' + pokemon.id" class="pokemon-label">
-                  {{ pokemon.name }}
-                </label>
-                <span class="pokemon-cost">{{ pokemon.cost }}</span>
-              </div>
-            } @empty {
-              <div class="empty-message">
-                @if (side1SearchQuery()) {
-                  <p>No Pokemon match your search.</p>
-                } @else {
-                  <p>No Pokemon available for this team.</p>
+        <!-- Group Selection -->
+        <div class="trade-side__group-select">
+          <label for="side1Group" class="trade-label">Select Team</label>
+          <select
+            id="side1Group"
+            formControlName="side1Group"
+            class="trade-dropdown"
+          >
+            <option value="">-- Choose a team --</option>
+            @for (group of groups(); track group.id) {
+              <option [value]="group.id">
+                {{ group.name }}
+                @if (group.team) {
+                  ({{ group.team.coachName }})
                 }
-              </div>
+              </option>
             }
-          </div>
+          </select>
         </div>
 
-        <!-- Selected Pokemon Summary -->
-        <div class="trade-side__summary">
-          <p class="summary-text">
-            Selected:
-            {{ getSelectedTotalCost("side1") }}
-          </p>
-          <p class="summary-text">Total: {{ getTotalCost("side1") }}</p>
-        </div>
-      } @else {
-        <div class="placeholder-message">
-          <p>Select a team to view available Pokemon</p>
-        </div>
-      }
-    </div>
+        <!-- Pokemon Selection -->
+        @if (tradeForm.get("side1Group")?.value) {
+          <div class="trade-side__pokemon-list">
+            <label class="trade-label">Select Pokemon</label>
 
-    <!-- Arrow Divider -->
-    <div class="trade-divider">
-      <span class="divider-arrow">⇄</span>
-    </div>
+            <!-- Search Input -->
+            <div class="search-container">
+              <input
+                type="text"
+                class="search-input"
+                placeholder="Search Pokemon..."
+                [value]="side1SearchQuery()"
+                (input)="updateSearchQuery('side1', $any($event.target).value)"
+              />
+            </div>
 
-    <!-- Side 2 -->
-    <div class="trade-side">
-      <h3 class="trade-side__heading">Side 2</h3>
-
-      <!-- Group Selection -->
-      <div class="trade-side__group-select">
-        <label for="side2Group" class="trade-label">Select Team</label>
-        <select
-          id="side2Group"
-          formControlName="side2Group"
-          class="trade-dropdown"
-        >
-          <option value="">-- Choose a team --</option>
-          @for (group of groups(); track group.id) {
-            <option [value]="group.id">
-              {{ group.name }}
-              @if (group.team) {
-                ({{ group.team.coachName }})
+            <!-- Pokemon Grid -->
+            <div class="pokemon-grid">
+              @for (pokemon of getGroupPokemon("side1"); track pokemon.id) {
+                <div
+                  class="pokemon-item"
+                  [class.pokemon-item--selected]="
+                    isPokemonSelected('side1', pokemon.id)
+                  "
+                  (click)="togglePokemon('side1', pokemon.id)"
+                >
+                  <input
+                    type="checkbox"
+                    [id]="'side1-' + pokemon.id"
+                    [checked]="isPokemonSelected('side1', pokemon.id)"
+                    class="pokemon-checkbox"
+                    tabindex="-1"
+                  />
+                  <label [for]="'side1-' + pokemon.id" class="pokemon-label">
+                    {{ pokemon.name }}
+                  </label>
+                  <span class="pokemon-cost">{{ pokemon.cost }}</span>
+                </div>
+              } @empty {
+                <div class="empty-message">
+                  @if (side1SearchQuery()) {
+                    <p>No Pokemon match your search.</p>
+                  } @else {
+                    <p>No Pokemon available for this team.</p>
+                  }
+                </div>
               }
-            </option>
-          }
-        </select>
-      </div>
-
-      <!-- Pokemon Selection -->
-      @if (tradeForm.get("side2Group")?.value) {
-        <div class="trade-side__pokemon-list">
-          <label class="trade-label">Select Pokemon</label>
-
-          <!-- Search Input -->
-          <div class="search-container">
-            <input
-              type="text"
-              class="search-input"
-              placeholder="Search Pokemon..."
-              [value]="side2SearchQuery()"
-              (input)="updateSearchQuery('side2', $any($event.target).value)"
-            />
+            </div>
           </div>
 
-          <!-- Pokemon Grid -->
-          <div class="pokemon-grid">
-            @for (pokemon of getGroupPokemon("side2"); track pokemon.id) {
-              <div
-                class="pokemon-item"
-                [class.pokemon-item--selected]="
-                  isPokemonSelected('side2', pokemon.id)
-                "
-                (click)="togglePokemon('side2', pokemon.id)"
-              >
-                <input
-                  type="checkbox"
-                  [id]="'side2-' + pokemon.id"
-                  [checked]="isPokemonSelected('side2', pokemon.id)"
-                  class="pokemon-checkbox"
-                  tabindex="-1"
-                />
-                <label [for]="'side2-' + pokemon.id" class="pokemon-label">
-                  {{ pokemon.name }}
-                </label>
-                <span class="pokemon-cost">{{ pokemon.cost }}</span>
-              </div>
-            } @empty {
-              <div class="empty-message">
-                @if (side2SearchQuery()) {
-                  <p>No Pokemon match your search.</p>
-                } @else {
-                  <p>No Pokemon available for this team.</p>
-                }
-              </div>
-            }
+          <!-- Selected Pokemon Summary -->
+          <div class="trade-side__summary">
+            <p class="summary-text">
+              Selected:
+              {{ getSelectedTotalCost("side1") }}
+            </p>
+            <p class="summary-text">Total: {{ getTotalCost("side1") }}</p>
           </div>
-        </div>
-
-        <!-- Selected Pokemon Summary -->
-        <div class="trade-side__summary">
-          <p class="summary-text">
-            Selected:
-            {{ getSelectedTotalCost("side2") }}
-          </p>
-          <p class="summary-text">Total: {{ getTotalCost("side2") }}</p>
-        </div>
-      } @else {
-        <div class="placeholder-message">
-          <p>Select a team to view available Pokemon</p>
-        </div>
-      }
-    </div>
-
-    <!-- Stage Selector -->
-    <div class="stage-selector-inline">
-      <label for="stage" class="trade-label">Trade Stage</label>
-      <select id="stage" formControlName="stage" class="trade-dropdown">
-        @for (stage of stageOptions; track stage) {
-          <option [value]="stage">Week {{ stage }}</option>
+        } @else {
+          <div class="placeholder-message">
+            <p>Select a team to view available Pokemon</p>
+          </div>
         }
-      </select>
-    </div>
-  </form>
+      </div>
 
-  <!-- Action Buttons -->
-  <div class="trade-actions">
-    <button type="button" (click)="resetTrade()" class="btn btn--secondary">
-      Reset
-    </button>
-    <button
-      type="button"
-      (click)="submitTrade()"
-      [disabled]="tradeForm.invalid"
-      class="btn btn--primary"
-    >
-      Send Trade
-    </button>
-  </div>
+      <!-- Arrow Divider -->
+      <div class="trade-divider">
+        <span class="divider-arrow">⇄</span>
+      </div>
+
+      <!-- Side 2 -->
+      <div class="trade-side">
+        <h3 class="trade-side__heading">Side 2</h3>
+
+        <!-- Group Selection -->
+        <div class="trade-side__group-select">
+          <label for="side2Group" class="trade-label">Select Team</label>
+          <select
+            id="side2Group"
+            formControlName="side2Group"
+            class="trade-dropdown"
+          >
+            <option value="">-- Choose a team --</option>
+            @for (group of groups(); track group.id) {
+              <option [value]="group.id">
+                {{ group.name }}
+                @if (group.team) {
+                  ({{ group.team.coachName }})
+                }
+              </option>
+            }
+          </select>
+        </div>
+
+        <!-- Pokemon Selection -->
+        @if (tradeForm.get("side2Group")?.value) {
+          <div class="trade-side__pokemon-list">
+            <label class="trade-label">Select Pokemon</label>
+
+            <!-- Search Input -->
+            <div class="search-container">
+              <input
+                type="text"
+                class="search-input"
+                placeholder="Search Pokemon..."
+                [value]="side2SearchQuery()"
+                (input)="updateSearchQuery('side2', $any($event.target).value)"
+              />
+            </div>
+
+            <!-- Pokemon Grid -->
+            <div class="pokemon-grid">
+              @for (pokemon of getGroupPokemon("side2"); track pokemon.id) {
+                <div
+                  class="pokemon-item"
+                  [class.pokemon-item--selected]="
+                    isPokemonSelected('side2', pokemon.id)
+                  "
+                  (click)="togglePokemon('side2', pokemon.id)"
+                >
+                  <input
+                    type="checkbox"
+                    [id]="'side2-' + pokemon.id"
+                    [checked]="isPokemonSelected('side2', pokemon.id)"
+                    class="pokemon-checkbox"
+                    tabindex="-1"
+                  />
+                  <label [for]="'side2-' + pokemon.id" class="pokemon-label">
+                    {{ pokemon.name }}
+                  </label>
+                  <span class="pokemon-cost">{{ pokemon.cost }}</span>
+                </div>
+              } @empty {
+                <div class="empty-message">
+                  @if (side2SearchQuery()) {
+                    <p>No Pokemon match your search.</p>
+                  } @else {
+                    <p>No Pokemon available for this team.</p>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+
+          <!-- Selected Pokemon Summary -->
+          <div class="trade-side__summary">
+            <p class="summary-text">
+              Selected:
+              {{ getSelectedTotalCost("side2") }}
+            </p>
+            <p class="summary-text">Total: {{ getTotalCost("side2") }}</p>
+          </div>
+        } @else {
+          <div class="placeholder-message">
+            <p>Select a team to view available Pokemon</p>
+          </div>
+        }
+      </div>
+
+      <!-- Stage Selector -->
+      <div class="stage-selector-inline">
+        <label for="stage" class="trade-label">Trade Stage</label>
+        <select id="stage" formControlName="stage" class="trade-dropdown">
+          @for (stage of stageOptions; track stage) {
+            <option [value]="stage">Week {{ stage }}</option>
+          }
+        </select>
+      </div>
+    </form>
+
+    <!-- Action Buttons -->
+    <div class="trade-actions">
+      <button type="button" (click)="resetTrade()" class="btn btn--secondary">
+        Reset
+      </button>
+      <button
+        type="button"
+        (click)="submitTrade()"
+        [disabled]="tradeForm.invalid"
+        class="btn btn--primary"
+      >
+        Send Trade
+      </button>
+    </div>
+  }
 </div>
-Side1
-{{ this.tradeForm.get("side1Group")?.value }}
