@@ -1,5 +1,6 @@
 @use "../../league.mixins" as *;
 @use "../../../../styles/global" as *;
+@use "../../../../styles/mixins" as *;
 
 $container-padding: var(--pdz-space-xs);
 
@@ -11,6 +12,8 @@ $container-padding: var(--pdz-space-xs);
   padding: $container-padding;
   position: relative;
   transition: all 0.3s ease-in-out;
+  width: 100%;
+  min-width: 0;
 
   &--clickable {
     cursor: pointer;
@@ -25,6 +28,7 @@ $container-padding: var(--pdz-space-xs);
   display: flex;
   align-items: center;
   gap: var(--pdz-space-sm);
+  min-width: 0;
 }
 
 .matchup-card__team-info-container {
@@ -35,6 +39,7 @@ $container-padding: var(--pdz-space-xs);
   padding: $container-padding;
   border-radius: var(--pdz-shape-corner-lg);
   transition: all 0.2s;
+  min-width: 0;
 
   &:hover {
     cursor: pointer;
@@ -54,7 +59,11 @@ $container-padding: var(--pdz-space-xs);
 }
 
 .matchup-card__team-logo {
-  @include pdz-league-logo(3rem);
+  @include pdz-league-logo(2rem);
+
+  @include respond-above(medium) {
+    @include pdz-league-logo(3rem);
+  }
 
   &--winner {
     border-color: pdz-color(success);
@@ -67,7 +76,7 @@ $container-padding: var(--pdz-space-xs);
 
 .matchup-card__team-info {
   flex: 1;
-  width: 4rem;
+  min-width: 0;
 }
 
 .matchup-card__team-name {
@@ -77,6 +86,7 @@ $container-padding: var(--pdz-space-xs);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  margin: 0;
 }
 
 .matchup-card__coach-name {
@@ -85,13 +95,13 @@ $container-padding: var(--pdz-space-xs);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  margin: 0;
 }
 
 .matchup-card__center {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 2rem;
   gap: var(--pdz-space-xs);
   flex-shrink: 0;
 }
@@ -130,6 +140,8 @@ $container-padding: var(--pdz-space-xs);
   font-size: 0.65rem;
   color: pdz-color(on-surface-variant);
   user-select: none;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .matchup-card__toggle-icon {
