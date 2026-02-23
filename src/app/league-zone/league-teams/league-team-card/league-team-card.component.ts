@@ -48,4 +48,17 @@ export class LeagueTeamCardComponent {
       (pokemon) => pokemon.capt?.tera || pokemon.capt?.dmax || pokemon.capt?.z,
     );
   }
+
+  totalCost() {
+    return this.teamDetails.draft.reduce(
+      (total, pokemon) => total + pokemon.cost,
+      0,
+    );
+  }
+
+  totalCaptCount() {
+    return this.teamDetails.draft.filter(
+      (pokemon) => pokemon.capt?.tera || pokemon.capt?.dmax || pokemon.capt?.z,
+    ).length;
+  }
 }
