@@ -12,24 +12,29 @@ $container-padding: var(--pdz-space-xs);
   position: relative;
   transition: all 0.3s ease-in-out;
 
-  &.clickable {
+  &--clickable {
     cursor: pointer;
+  }
+
+  &--open {
+    box-shadow: var(--pdz-level-3);
   }
 }
 
-.matchup-header {
+.matchup-card__header {
   display: flex;
   align-items: center;
   gap: var(--pdz-space-sm);
 }
 
-.team-info-container {
+.matchup-card__team-info-container {
   display: flex;
   flex: 1;
   align-items: center;
   gap: var(--pdz-space-sm);
   padding: $container-padding;
   border-radius: var(--pdz-shape-corner-lg);
+  transition: all 0.2s;
 
   &:hover {
     cursor: pointer;
@@ -42,33 +47,30 @@ $container-padding: var(--pdz-space-xs);
     box-shadow: var(--pdz-level-inset-1);
   }
 
-  &.right {
+  &--right {
     flex-direction: row-reverse;
-  }
-}
-
-.team-logo {
-  @include pdz-league-logo(3rem);
-  &.winner {
-    border-color: pdz-color(success);
-  }
-
-  &.loser {
-    border-color: pdz-color(error);
-  }
-}
-
-.team-info {
-  flex: 1;
-  min-width: 0;
-  width: 8rem;
-
-  &.right {
     text-align: right;
   }
 }
 
-.team-name {
+.matchup-card__team-logo {
+  @include pdz-league-logo(3rem);
+
+  &--winner {
+    border-color: pdz-color(success);
+  }
+
+  &--loser {
+    border-color: pdz-color(error);
+  }
+}
+
+.matchup-card__team-info {
+  flex: 1;
+  width: 4rem;
+}
+
+.matchup-card__team-name {
   font-size: 0.9rem;
   font-weight: var(--pdz-font-weight-semibold);
   line-height: 1.2;
@@ -77,7 +79,7 @@ $container-padding: var(--pdz-space-xs);
   white-space: nowrap;
 }
 
-.coach-name {
+.matchup-card__coach-name {
   font-size: 0.75rem;
   color: pdz-color(on-surface-variant);
   overflow: hidden;
@@ -85,7 +87,7 @@ $container-padding: var(--pdz-space-xs);
   white-space: nowrap;
 }
 
-.center-container {
+.matchup-card__center {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -94,7 +96,7 @@ $container-padding: var(--pdz-space-xs);
   flex-shrink: 0;
 }
 
-.replay-button {
+.matchup-card__replay-button {
   padding: var(--pdz-space-xs) var(--pdz-space-sm);
   border-radius: var(--pdz-shape-corner-full);
   font-size: 0.7rem;
@@ -105,7 +107,7 @@ $container-padding: var(--pdz-space-xs);
   cursor: pointer;
   transition: all 0.2s;
 
-  &.active {
+  &--active {
     background-color: pdz-color(primary);
     color: pdz-color(on-primary);
     border-color: pdz-color(primary);
@@ -123,14 +125,14 @@ $container-padding: var(--pdz-space-xs);
   }
 }
 
-.versus-text {
+.matchup-card__versus {
   font-weight: var(--pdz-font-weight-bold);
   font-size: 0.65rem;
   color: pdz-color(on-surface-variant);
   user-select: none;
 }
 
-.toggle-icon {
+.matchup-card__toggle-icon {
   position: absolute;
   bottom: -0.5rem;
   left: 50%;
@@ -141,7 +143,7 @@ $container-padding: var(--pdz-space-xs);
   height: 1.5rem;
 }
 
-.matchup-content {
+.matchup-card__content {
   margin-top: var(--pdz-space-md);
   padding-top: var(--pdz-space-md);
   border-top: 1px solid pdz-color(outline-variant);
@@ -162,14 +164,14 @@ $container-padding: var(--pdz-space-xs);
   }
 }
 
-.score-display {
+.matchup-card__score-display {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: var(--pdz-space-sm);
 }
 
-.score-box {
+.matchup-card__score-box {
   min-width: 2rem;
   padding: var(--pdz-space-xs);
   text-align: center;
@@ -180,34 +182,34 @@ $container-padding: var(--pdz-space-xs);
   background-color: pdz-color(surface-container);
   color: pdz-color(on-surface);
 
-  &.winning {
+  &--winning {
     color: pdz-color(success);
   }
 
-  &.losing {
+  &--losing {
     color: pdz-color(error);
   }
 }
 
-.score-separator {
+.matchup-card__score-separator {
   font-size: 1.2rem;
   color: pdz-color(on-surface-variant);
 }
 
-.match-details {
+.matchup-card__match-details {
   display: flex;
   align-items: center;
   gap: var(--pdz-space-sm);
 }
 
-.pokemon-team {
+.matchup-card__pokemon-team {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: var(--pdz-space-xs);
   flex: 1;
 }
 
-.pokemon-slot {
+.matchup-card__pokemon-slot {
   aspect-ratio: 1;
   border: 2px solid pdz-color(outline-variant);
   border-radius: var(--pdz-shape-corner-sm);
@@ -222,7 +224,7 @@ $container-padding: var(--pdz-space-xs);
     opacity: 0.6;
   }
 
-  &.brought {
+  &--brought {
     border-color: pdz-color(info);
 
     pdz-sprite {
@@ -231,7 +233,7 @@ $container-padding: var(--pdz-space-xs);
     }
   }
 
-  &.fainted {
+  &--fainted {
     border-color: pdz-color(error);
 
     pdz-sprite {
@@ -241,37 +243,37 @@ $container-padding: var(--pdz-space-xs);
   }
 }
 
-.match-selector {
+.matchup-card__match-selector {
   display: flex;
   flex-direction: column;
   gap: var(--pdz-space-xs);
   flex-shrink: 0;
 }
 
-.match-option {
+.matchup-card__match-option {
   display: flex;
   align-items: center;
   gap: var(--pdz-space-xs);
   font-size: 0.7rem;
 }
 
-.match-score {
+.matchup-card__match-score {
   min-width: 1.5rem;
   font-weight: var(--pdz-font-weight-semibold);
   font-size: 1rem;
   text-align: center;
   color: pdz-color(on-surface-variant);
 
-  &.winning {
+  &--winning {
     color: pdz-color(success);
   }
 
-  &.losing {
+  &--losing {
     color: pdz-color(error);
   }
 }
 
-.game-button {
+.matchup-card__game-button {
   padding: var(--pdz-space-xs) var(--pdz-space-sm);
   border: 1px solid pdz-color(outline);
   border-radius: var(--pdz-shape-corner-sm);
@@ -282,11 +284,11 @@ $container-padding: var(--pdz-space-xs);
   font-size: 0.65rem;
   white-space: nowrap;
 
-  &:hover:not(.selected) {
+  &:hover:not(.matchup-card__game-button--selected) {
     background: pdz-color(surface-container-high);
   }
 
-  &.selected {
+  &--selected {
     background-color: pdz-color(primary);
     border-color: pdz-color(primary);
     color: pdz-color(on-primary);
@@ -296,6 +298,30 @@ $container-padding: var(--pdz-space-xs);
 
   &:active {
     box-shadow: var(--pdz-level-0);
+    transform: translateY(1px);
+  }
+}
+
+.matchup-card__view-button {
+  width: 100%;
+  margin-top: var(--pdz-space-md);
+  padding: var(--pdz-space-sm) var(--pdz-space-md);
+  border: 1px solid pdz-color(primary-border);
+  border-radius: var(--pdz-shape-corner-md);
+  background-color: pdz-color(primary-container);
+  color: pdz-color(on-primary-container);
+  font-weight: var(--pdz-font-weight-semibold);
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    background-color: pdz-color(primary);
+    color: pdz-color(on-primary);
+    box-shadow: var(--pdz-level-2);
+  }
+
+  &:active {
+    box-shadow: var(--pdz-level-1);
     transform: translateY(1px);
   }
 }

@@ -56,6 +56,7 @@ export namespace League {
   };
 
   export type Matchup = {
+    id: string;
     team1: MatchTeam;
     team2: MatchTeam;
     matches: {
