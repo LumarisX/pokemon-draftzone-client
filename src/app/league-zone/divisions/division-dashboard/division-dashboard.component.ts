@@ -4,10 +4,12 @@ import { Subject, takeUntil } from 'rxjs';
 import { LeagueZoneService } from '../../../services/leagues/league-zone.service';
 import { League } from '../../league.interface';
 import { getLogoUrlOld } from '../../league.util';
+import { IconComponent } from '../../../images/icon/icon.component';
+import { MatchupCardComponent } from '../../league-schedule/matchup-card/matchup-card.component';
 
 @Component({
   selector: 'pdz-division-dashboard',
-  imports: [RouterModule],
+  imports: [RouterModule, IconComponent, MatchupCardComponent],
   templateUrl: './division-dashboard.component.html',
   styleUrls: ['./division-dashboard.component.scss'],
 })
@@ -22,6 +24,7 @@ export class DivisionDashboardComponent implements OnInit, OnDestroy {
   leagueName = '';
   divisionName = '';
   logo?: string;
+  stage?: League.Stage = undefined;
 
   ngOnInit(): void {
     this.leagueZoneService
@@ -34,10 +37,10 @@ export class DivisionDashboardComponent implements OnInit, OnDestroy {
       });
 
     this.leagueZoneService
-      .getSchedule({ currentStage: true })
+      .getSchedule({ stage: 'current' })
       .pipe(takeUntil(this.destroy$))
-      .subscribe((data) => {
-        console.log('Got schedule data:', data);
+      .subscribe((matchups) => {
+        this.stage = matchups[0];
       });
   }
 

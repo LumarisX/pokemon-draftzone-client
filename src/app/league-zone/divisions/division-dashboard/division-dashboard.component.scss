@@ -24,15 +24,21 @@
   }
 }
 
-.widget-container {
-  padding: var(--pdz-space-lg);
-  display: grid;
-  gap: 1rem;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
 .division-header {
   @include pdz-league-page-header-large();
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    gap: var(--pdz-space-md);
+    flex: 1 1 auto;
+    min-width: 0;
+    height: 100%;
+  }
+
+  &__back {
+    @include pdz-league-page-back-button();
+  }
 
   &__info {
     display: flex;
@@ -105,6 +111,78 @@
     &:hover {
       transform: translateY(-2px);
       box-shadow: var(--pdz-level-1);
+    }
+  }
+}
+
+.division-body {
+  padding: var(--pdz-space-md);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--pdz-space-md);
+  justify-content: center;
+}
+
+.section {
+  padding: var(--pdz-space-md) var(--pdz-space-xs);
+  background-color: pdz-color(surface-container);
+  border-radius: var(--pdz-shape-corner-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--pdz-space-sm);
+  height: fit-content;
+
+  &--matchups {
+    width: fit-content;
+  }
+
+  &-message {
+    @include apply-typography(body-md);
+    color: var(--pdz-color-on-surface-variant);
+    margin: 0;
+
+    &--error {
+      color: var(--pdz-color-error);
+    }
+  }
+
+  &-header {
+    @include apply-typography(title-md);
+    border-bottom: 2px solid pdz-color(primary);
+    padding: 0 var(--pdz-space-xs);
+  }
+
+  &-body {
+    max-height: 40rem;
+    overflow: auto;
+    scrollbar-gutter: stable both-edges;
+    padding: 0 var(--pdz-space-xs);
+    @include respond-above(medium) {
+      max-height: calc(100vh - 21rem);
+    }
+  }
+}
+
+.matchup-stage-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pdz-space-sm);
+}
+
+.matchup-stage {
+  &__title {
+    @include apply-typography(title-sm);
+  }
+
+  &__cards {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--pdz-space-sm);
+
+    pdz-matchup-card {
+      width: 100%;
+      max-width: 32rem;
+      background-color: pdz-color(surface);
     }
   }
 }

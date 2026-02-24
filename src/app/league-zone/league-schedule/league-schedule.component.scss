@@ -12,7 +12,7 @@
     padding: var(--pdz-space-lg);
     display: flex;
     flex-direction: column;
-    gap: var(--pdz-space-xl);
+    gap: var(--pdz-space-md);
   }
 
   &__back {
@@ -29,7 +29,11 @@
   &__stage {
     display: flex;
     flex-direction: column;
-    gap: var(--pdz-space-md);
+    gap: var(--pdz-space-xs);
+    padding: var(--pdz-space-sm);
+    border-radius: var(--pdz-shape-corner-sm);
+    background-color: pdz-color(surface-container-low);
+    border: 1px solid pdz-color(outline-variant);
   }
 }
 
@@ -39,12 +43,7 @@
 }
 
 .schedule__stage-title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin: 0;
-  color: var(--pdz-color-on-surface);
-  padding-bottom: var(--pdz-space-md);
-  border-bottom: 2px solid var(--pdz-color-primary);
+  @include apply-typography(title-md);
 }
 
 .schedule__matchups {
@@ -67,4 +66,8 @@
   color: var(--pdz-color-on-surface-variant);
   font-style: italic;
   margin: 0;
+}
+
+pdz-matchup-card {
+  background-color: pdz-color(surface);
 }

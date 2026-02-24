@@ -197,7 +197,7 @@ export class LeagueZoneService {
     );
   }
 
-  getSchedule(params?: { currentStage?: boolean }) {
+  getSchedule(params?: { stage?: string }) {
     const teamKey = this.teamKey();
     return this.apiService.get<League.Stage[]>(
       `${ROOTPATH}/tournaments/${this.tournamentKey()}/divisions/${this.divisionKey()}/schedule`,

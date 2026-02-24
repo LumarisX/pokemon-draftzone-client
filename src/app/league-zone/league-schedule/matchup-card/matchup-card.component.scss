@@ -12,7 +12,7 @@ $container-padding: var(--pdz-space-xs);
 .matchup-card {
   display: flex;
   flex-direction: column;
-
+  gap: var(--pdz-space-xs);
   padding: $container-padding;
   position: relative;
   transition: all 0.3s ease-in-out;

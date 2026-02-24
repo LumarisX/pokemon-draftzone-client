@@ -74,7 +74,7 @@
 }
 
 .section {
-  padding: var(--pdz-space-md) var(--pdz-space-md) var(--pdz-space-sm);
+  padding: var(--pdz-space-md) var(--pdz-space-xs);
   background-color: pdz-color(surface-container);
   border-radius: var(--pdz-shape-corner-md);
   display: flex;
@@ -99,15 +99,14 @@
   &-header {
     @include apply-typography(title-md);
     border-bottom: 2px solid pdz-color(primary);
+    padding: 0 var(--pdz-space-xs);
   }
 
   &-body {
     max-height: 40rem;
     overflow: auto;
-    padding: 0 var(--pdz-space-xs) var(--pdz-space-sm);
-    scrollbar-gutter: stable;
-    margin-right: -0.625rem;
-
+    scrollbar-gutter: stable both-edges;
+    padding: 0 var(--pdz-space-xs);
     @include respond-above(medium) {
       max-height: calc(100vh - 17rem);
     }
