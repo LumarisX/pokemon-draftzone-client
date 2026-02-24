@@ -112,6 +112,7 @@ export class LeagueZoneService {
         position: number;
       };
       canDraft: string[];
+      logo: string;
     }>(
       `${ROOTPATH}/tournaments/${this.tournamentKey()}/divisions/${this.divisionKey()}`,
       true,
@@ -196,10 +197,15 @@ export class LeagueZoneService {
     );
   }
 
-  getSchedule() {
+  getSchedule(params?: { currentStage?: boolean }) {
+    const teamKey = this.teamKey();
     return this.apiService.get<League.Stage[]>(
       `${ROOTPATH}/tournaments/${this.tournamentKey()}/divisions/${this.divisionKey()}/schedule`,
       true,
+      {
+        ...params,
+        ...(teamKey ? { teamId: teamKey } : undefined),
+      },
     );
   }
 
@@ -569,9 +575,9 @@ export class LeagueZoneService {
     );
   }
 
-  getTeam(teamId: string): Observable<League.LeagueTeam> {
+  getTeam(): Observable<League.LeagueTeam> {
     return this.apiService.get(
-      `${ROOTPATH}/tournaments/${this.tournamentKey()}/teams/${teamId}`,
+      `${ROOTPATH}/tournaments/${this.tournamentKey()}/teams/${this.teamKey()}`,
       true,
     );
   }

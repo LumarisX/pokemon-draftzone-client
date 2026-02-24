@@ -1,7 +1,137 @@
-<div class="team-page">
+@if (teamData) {
+  <div class="team-header">
+    <div class="team-header__meta">
+      <button type="button" class="team-header__back" [routerLink]="['../']">
+        <pdz-icon name="arrow_back" size="sm"></pdz-icon> Back
+      </button>
+      <div class="team-header__info">
+        <h1 class="team-header__team-name">{{ teamData.name }}</h1>
+        <h2 class="team-header__coach-name">{{ teamData.coach }}</h2>
+      </div>
+    </div>
+    <img
+      class="team-header__image"
+      [src]="getLogoUrl(teamData.logo)"
+      alt="Team logo"
+    />
+  </div>
+  <div class="team-body">
+    <div class="section section--matchups">
+      <div class="section-header">
+        <h3>Matchups</h3>
+      </div>
+      <div class="section-body">
+        @if (scheduleStages) {
+          <div class="matchup-stage-list">
+            @for (stage of scheduleStages; track stage._id) {
+              <div class="matchup-stage">
+                <h4 class="matchup-stage__title">{{ stage.name }}</h4>
+                <div class="matchup-stage__cards">
+                  @if (stage.matchups.length === 0) {
+                    <p class="section-message">No matchups in this stage.</p>
+                  } @else {
+                    @for (matchup of stage.matchups; track matchup.id) {
+                      <pdz-matchup-card [matchup]="matchup"></pdz-matchup-card>
+                    }
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        } @else {
+          <p class="section-message">No matchups scheduled.</p>
+        }
+      </div>
+    </div>
+    <div class="section section--draft">
+      <div class="section-header">
+        <h3>Draft Roster</h3>
+      </div>
+      <div class="section-body">
+        <div class="stats-table-wrapper">
+          <table class="stats-table">
+            <thead>
+              <tr>
+                <th class="col-sprite"></th>
+                <th class="col-name">Pokémon</th>
+                <th class="col-stat">Brought</th>
+                <th class="col-stat">Kills</th>
+                <th class="col-stat">Deaths</th>
+                <th class="col-stat">K/D Ratio</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (pokemon of teamData.draft; track pokemon.id) {
+                <tr>
+                  <td class="cell-sprite">
+                    <pdz-sprite flipped [pokemon]="pokemon"></pdz-sprite>
+                  </td>
+                  <td class="cell-name">
+                    <div class="name-cell">
+                      <span class="name">{{ pokemon.name }}</span>
+                      <div class="details">
+                        <span class="cost">{{ pokemon.cost }}</span>
+                        @if (pokemon.capt && pokemon.capt.tera) {
+                          <pdz-icon name="tera" [size]="16"></pdz-icon>
+                        }
+                      </div>
+                    </div>
+                  </td>
+                  <td class="cell-stat">
+                    {{ pokemon.record?.brought ?? 0 }}
+                  </td>
+                  <td class="cell-stat">
+                    {{ pokemon.record?.kills ?? 0 }}
+                  </td>
+                  <td class="cell-stat">
+                    {{ pokemon.record?.deaths ?? 0 }}
+                  </td>
+                  <td class="cell-stat">
+                    @if (pokemon.record?.deaths) {
+                      {{
+                        (
+                          (pokemon.record?.kills ?? 0) /
+                          (pokemon.record?.deaths ?? 1)
+                        ).toFixed(2)
+                      }}
+                    } @else {
+                      {{
+                        (pokemon.record?.kills ?? 0) > 0
+                          ? pokemon.record?.kills
+                          : "—"
+                      }}
+                    }
+                  </td>
+                </tr>
+              }
+            </tbody>
+            <tfoot>
+              <tr>
+                <th class="col-sprite"></th>
+                <th class="col-name">{{ total.cost }}</th>
+                <th class="col-stat"></th>
+                <th class="col-stat">{{ total.kill }}</th>
+                <th class="col-stat">{{ total.deaths }}</th>
+                <th class="col-stat"></th>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+} @else {
+  <pdz-loading></pdz-loading>
+}
+<!-- <div class="team-page">
   @if (teamData) {
     <div class="team-container">
       <div class="team-header">
+        <button
+          class="back-button"
+          [routerLink]="['../']"
+          aria-label="Go back"
+        ></button>
         <div class="team-identity">
           <div class="logo">
             <img [src]="getLogoUrl(teamData.logo)" />
@@ -14,60 +144,19 @@
             <div class="team-info-bar">
               <span class="team-timezone">
                 <mat-icon>schedule</mat-icon>
-                {{ getCurrentTimeInTimezone(teamData.timezone) }}
-              </span>
-              @if (teamData.record) {
-                <span class="team-record">
-                  <mat-icon>emoji_events</mat-icon>
-                  {{ teamData.record.wins }}-{{ teamData.record.losses }} ({{
-                    teamData.record.diff | plusSign
-                  }})
-                </span>
-              }
+                {{ getCurrentTimeInTimezone(teamData.timezone) }} </span
+              >x
             </div>
           </div>
         </div>
       </div>
 
       <div class="team-body">
-        <div class="roster-section">
-          <div class="section-header">
-            <h3>Team Roster</h3>
-            <span class="pokemon-count"
-              >{{ teamData.draft.length }} Pokémon</span
-            >
-          </div>
-          <div class="roster-grid">
-            @for (pokemon of teamData.draft; track pokemon) {
-              <div class="pokemon-card">
-                <div class="pokemon-sprite">
-                  <pdz-sprite [pokemon]="pokemon" flipped></pdz-sprite>
-                </div>
-                <div class="pokemon-details">
-                  <h4 class="pokemon-name">{{ pokemon.name }}</h4>
-                  <div class="pokemon-meta">
-                    <span class="pokemon-tier">{{ pokemon.tier }}</span>
-                    <div class="pokemon-captain">
-                      @if (pokemon.capt?.tera) {
-                        <mat-icon svgIcon="tera"></mat-icon>
-                      }
-                      @if (pokemon.capt?.z) {
-                        <mat-icon svgIcon="z"></mat-icon>
-                      }
-                      @if (pokemon.capt?.dmax) {
-                        <mat-icon svgIcon="dmax"></mat-icon>
-                      }
-                    </div>
-                  </div>
-                </div>
-              </div>
-            }
-          </div>
-        </div>
+      
 
         <div class="stats-section">
           <div class="section-header">
-            <h3>Performance Statistics</h3>
+            <h3>Team</h3>
           </div>
           <div class="stats-table-wrapper">
             <table class="stats-table">
@@ -82,7 +171,7 @@
                 </tr>
               </thead>
               <tbody>
-                @for (pokemon of teamData.draft; track pokemon) {
+                @for (pokemon of teamData.draft; track pokemon.id) {
                   <tr>
                     <td class="cell-sprite">
                       <pdz-sprite flipped [pokemon]="pokemon"></pdz-sprite>
@@ -129,4 +218,4 @@
   } @else {
     <pdz-loading></pdz-loading>
   }
-</div>
+</div> -->

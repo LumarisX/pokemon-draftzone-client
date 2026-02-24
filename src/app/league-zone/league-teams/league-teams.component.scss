@@ -1,5 +1,6 @@
 @use "../../../styles/global.scss" as *;
 @use "../../../styles/mixins" as *;
+@use "../league.mixins" as *;
 
 :host {
   display: block;
@@ -7,31 +8,35 @@
   height: 100%;
 }
 
-.teams-page {
+.teams {
   display: flex;
   flex-direction: column;
   height: 100%;
   overflow: auto;
-}
 
-.teams-header {
-  padding: var(--pdz-space-xl) var(--pdz-space-lg) var(--pdz-space-md);
-  border-bottom: 2px solid var(--pdz-color-primary);
-  background: var(--pdz-color-surface);
-
-  .teams-title {
-    @include apply-typography(title-lg);
-    color: var(--pdz-color-primary);
-    margin: 0;
-    font-weight: 700;
+  &__header {
+    @include pdz-league-page-header();
   }
-}
 
-.teams-container {
-  display: grid;
-  padding: var(--pdz-space-lg);
-  grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
-  gap: 1rem;
+  &__back {
+    @include pdz-league-page-back-button();
+  }
+
+  &__title {
+    @include pdz-league-page-title();
+  }
+
+  &__body {
+    display: grid;
+    padding: var(--pdz-space-lg);
+    grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+    gap: 1rem;
+  }
+
+  &__empty {
+    @include apply-typography(body-lg);
+    color: var(--pdz-color-on-surface-variant);
+  }
 }
 
 pdz-league-team-card {

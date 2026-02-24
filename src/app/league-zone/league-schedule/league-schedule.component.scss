@@ -1,29 +1,41 @@
 @use "../../../styles/global.scss" as *;
 @use "../../../styles/mixins" as *;
+@use "../league.mixins" as *;
 
 .schedule {
-  padding: var(--pdz-space-lg);
   display: flex;
   flex-direction: column;
-  gap: var(--pdz-space-xl);
   width: 100%;
   box-sizing: border-box;
-}
 
-.schedule__message {
-  margin: 0;
-  color: var(--pdz-color-on-surface);
+  &__body {
+    padding: var(--pdz-space-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--pdz-space-xl);
+  }
 
-  &--error {
-    color: var(--pdz-color-error);
-    font-weight: var(--pdz-font-weight-semibold);
+  &__back {
+    @include pdz-league-page-back-button();
+  }
+
+  &__title {
+    @include pdz-league-page-title();
+  }
+  &__header {
+    @include pdz-league-page-header();
+  }
+
+  &__stage {
+    display: flex;
+    flex-direction: column;
+    gap: var(--pdz-space-md);
   }
 }
 
-.schedule__stage {
-  display: flex;
-  flex-direction: column;
-  gap: var(--pdz-space-md);
+.schedule__empty {
+  margin: 0;
+  color: var(--pdz-color-on-surface);
 }
 
 .schedule__stage-title {

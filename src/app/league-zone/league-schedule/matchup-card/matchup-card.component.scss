@@ -4,11 +4,15 @@
 
 $container-padding: var(--pdz-space-xs);
 
+:host {
+  border-radius: var(--pdz-shape-corner-lg);
+  box-shadow: var(--pdz-level-2);
+}
+
 .matchup-card {
   display: flex;
   flex-direction: column;
-  box-shadow: var(--pdz-level-2);
-  border-radius: var(--pdz-shape-corner-lg);
+
   padding: $container-padding;
   position: relative;
   transition: all 0.3s ease-in-out;
@@ -80,17 +84,18 @@ $container-padding: var(--pdz-space-xs);
 }
 
 .matchup-card__team-name {
-  font-size: 0.9rem;
   font-weight: var(--pdz-font-weight-semibold);
-  line-height: 1.2;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  @include apply-typography(body-sm);
   margin: 0;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
 }
 
 .matchup-card__coach-name {
-  font-size: 0.75rem;
+  @include apply-typography(body-xs);
   color: pdz-color(on-surface-variant);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -316,7 +321,6 @@ $container-padding: var(--pdz-space-xs);
 
 .matchup-card__view-button {
   width: 100%;
-  margin-top: var(--pdz-space-md);
   padding: var(--pdz-space-sm) var(--pdz-space-md);
   border: 1px solid pdz-color(primary-border);
   border-radius: var(--pdz-shape-corner-md);

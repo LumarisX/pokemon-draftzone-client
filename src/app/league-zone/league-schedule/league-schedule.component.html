@@ -1,24 +1,29 @@
 <div class="schedule">
-  @if (isLoading) {
-    <p class="schedule__message">Loading schedule...</p>
-  } @else if (error) {
-    <p class="schedule__message schedule__message--error">{{ error }}</p>
-  } @else if (stages.length === 0) {
-    <p class="schedule__message">No stages scheduled.</p>
-  } @else {
-    @for (stage of stages; track stage._id) {
-      <div class="schedule__stage">
-        <h2 class="schedule__stage-title">{{ stage.name }}</h2>
-        <div class="schedule__matchups">
-          @if (stage.matchups.length === 0) {
-            <p class="schedule__no-matchups">No matchups in this stage.</p>
-          } @else {
+  <div class="schedule__header">
+    <button type="button" class="schedule__back" [routerLink]="['../']">
+      <pdz-icon name="arrow_back" size="sm"></pdz-icon> Back
+    </button>
+    <h1 class="schedule__title">Schedule</h1>
+  </div>
+
+  <div class="schedule__body">
+    @if (stages) {
+      @for (stage of stages; track stage._id) {
+        <div class="schedule__stage">
+          <h2 class="schedule__stage-title">{{ stage.name }}</h2>
+          <div class="schedule__matchups">
             @for (matchup of stage.matchups; track matchup) {
               <pdz-matchup-card [matchup]="matchup"></pdz-matchup-card>
+            } @empty {
+              <p class="schedule__no-matchups">No matchups in this stage.</p>
             }
-          }
+          </div>
         </div>
-      </div>
+      } @empty {
+        <p class="schedule__empty">No stages scheduled.</p>
+      }
+    } @else {
+      <pdz-loading></pdz-loading>
     }
-  }
+  </div>
 </div>

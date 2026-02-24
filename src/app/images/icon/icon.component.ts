@@ -42,6 +42,7 @@ import { BooleanInput } from '@angular/cdk/coercion';
         display: inline-flex;
         align-items: center;
         justify-content: center;
+        vertical-align: middle;
 
         &[size='xs'] {
           --icon-size: 16px;

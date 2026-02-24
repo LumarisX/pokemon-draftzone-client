@@ -90,15 +90,15 @@ const routes: Routes = [
     component: LeagueDraftComponent,
   },
   {
-    path: 'pdbl/tournaments/:tournamentKey/divisions/:divisionKey/teams',
-    component: LeagueTeamsComponent,
-  },
-  {
     path: 'pdbl/tournaments/:tournamentKey/divisions/:divisionKey/power-rankings',
     component: PowerRankingsComponent,
   },
   {
-    path: 'pdbl/tournaments/:tournamentKey/divisions/:divisionKey/team/:teamId',
+    path: 'pdbl/tournaments/:tournamentKey/divisions/:divisionKey/teams',
+    component: LeagueTeamsComponent,
+  },
+  {
+    path: 'pdbl/tournaments/:tournamentKey/divisions/:divisionKey/teams/:teamKey',
     component: LeagueTeamComponent,
   },
   {

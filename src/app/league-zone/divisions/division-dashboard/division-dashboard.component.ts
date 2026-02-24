@@ -3,6 +3,7 @@ import { Router, RouterModule } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { LeagueZoneService } from '../../../services/leagues/league-zone.service';
 import { League } from '../../league.interface';
+import { getLogoUrlOld } from '../../league.util';
 
 @Component({
   selector: 'pdz-division-dashboard',
@@ -20,6 +21,7 @@ export class DivisionDashboardComponent implements OnInit, OnDestroy {
   tournamentId?: string;
   leagueName = '';
   divisionName = '';
+  logo?: string;
 
   ngOnInit(): void {
     this.leagueZoneService
@@ -28,8 +30,18 @@ export class DivisionDashboardComponent implements OnInit, OnDestroy {
       .subscribe((details) => {
         this.leagueName = details.leagueName;
         this.divisionName = details.divisionName;
+        this.logo = details.logo;
+      });
+
+    this.leagueZoneService
+      .getSchedule({ currentStage: true })
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((data) => {
+        console.log('Got schedule data:', data);
       });
   }
+
+  getLogoUrl = getLogoUrlOld('league-uploads');
 
   get tournamentKey(): string {
     return this.leagueZoneService.tournamentKey() || '';

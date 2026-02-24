@@ -1,6 +1,7 @@
 @use "@angular/material" as mat;
 @use "../../../styles/global.scss" as *;
 @use "../../../styles/mixins" as *;
+@use "../league.mixins" as *;
 
 :host {
   display: block;
@@ -27,9 +28,13 @@
   }
 
   &__header {
+    @include pdz-league-page-header(
+      $padding: 0,
+      $border-bottom: none,
+      $background: transparent
+    );
     flex-grow: 0;
     max-width: 100%;
-    display: flex;
     justify-content: space-between;
   }
 
