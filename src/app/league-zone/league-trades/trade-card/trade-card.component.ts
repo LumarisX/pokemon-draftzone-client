@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, Input } from '@angular/core';
+import { Component, Input, OnChanges } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { SpriteComponent } from '../../../images/sprite/sprite.component';
 import {
@@ -22,26 +22,33 @@ import { TradeLog } from '../../league.interface';
   templateUrl: './trade-card.component.html',
   styleUrls: ['./trade-card.component.scss'],
 })
-export class TradeCardComponent {
+export class TradeCardComponent implements OnChanges {
   @Input({ required: true }) tradeLog!: TradeLog;
 
   private readonly DRAFT_POOL_NAME = 'Draft Pool';
 
-  leftEntity = computed<ComparisonEntity>(() => {
+  leftEntity: ComparisonEntity = {
+    primaryName: this.DRAFT_POOL_NAME,
+  };
+
+  rightEntity: ComparisonEntity = {
+    primaryName: this.DRAFT_POOL_NAME,
+  };
+
+  ngOnChanges(): void {
     const from = this.tradeLog.side1;
-    return {
+    const to = this.tradeLog.side2;
+
+    this.leftEntity = {
       logoUrl: from.team?.logo,
       primaryName: from.team?.name || this.DRAFT_POOL_NAME,
       secondaryName: from.team?.coach,
     };
-  });
 
-  rightEntity = computed<ComparisonEntity>(() => {
-    const to = this.tradeLog.side2;
-    return {
+    this.rightEntity = {
       logoUrl: to.team?.logo,
       primaryName: to.team?.name || this.DRAFT_POOL_NAME,
       secondaryName: to.team?.coach,
     };
-  });
+  }
 }

@@ -1,5 +1,5 @@
 @if (tradeStages) {
-  @for (stage of tradeStages.reverse(); track $index) {
+  @for (stage of tradeStages; track stage.name) {
     @if (stage.trades.length) {
       <div class="stage">
         <div class="stage-header">{{ stage.name }}</div>

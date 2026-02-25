@@ -1,10 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  inject,
-  OnDestroy,
-  OnInit,
-} from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { LeagueZoneService } from '../../../services/leagues/league-zone.service';
 import { TradeLog } from '../../league.interface';
@@ -28,7 +22,7 @@ export class LeagueTradeWidgetComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (data) => {
-          this.tradeStages = data.stages;
+          this.tradeStages = [...data.stages].reverse();
         },
       });
   }
