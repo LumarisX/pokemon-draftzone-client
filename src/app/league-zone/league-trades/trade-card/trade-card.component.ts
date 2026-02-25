@@ -1,10 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  Input,
-} from '@angular/core';
+import { Component, computed, Input } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { SpriteComponent } from '../../../images/sprite/sprite.component';
 import {
@@ -12,7 +7,6 @@ import {
   ComparisonEntity,
 } from '../../comparison-card/comparison-card.component'; // Adjust path
 import { TradeLog } from '../../league.interface';
-import { getLogoUrl } from '../../league.util';
 
 // Define interfaces matching your tradeLog structure (simplified example)
 
@@ -27,7 +21,6 @@ import { getLogoUrl } from '../../league.util';
   ],
   templateUrl: './trade-card.component.html',
   styleUrls: ['./trade-card.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TradeCardComponent {
   @Input({ required: true }) tradeLog!: TradeLog;
