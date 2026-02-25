@@ -12,6 +12,7 @@ import {
   ComparisonEntity,
 } from '../../comparison-card/comparison-card.component'; // Adjust path
 import { TradeLog } from '../../league.interface';
+import { getLogoUrl } from '../../league.util';
 
 // Define interfaces matching your tradeLog structure (simplified example)
 
@@ -32,26 +33,22 @@ export class TradeCardComponent {
   @Input({ required: true }) tradeLog!: TradeLog;
 
   private readonly DRAFT_POOL_NAME = 'Draft Pool';
-  private readonly DEFAULT_LOGO =
-    'https://pokemondraftzone-public.s3.us-east-2.amazonaws.com/league-uploads/1745265573766-pdbl.png';
 
   leftEntity = computed<ComparisonEntity>(() => {
     const from = this.tradeLog.side1;
     return {
-      logoUrl: from.team?.logo || this.DEFAULT_LOGO,
+      logoUrl: from.team?.logo,
       primaryName: from.team?.name || this.DRAFT_POOL_NAME,
       secondaryName: from.team?.coach,
-      defaultLogo: this.DEFAULT_LOGO,
     };
   });
 
   rightEntity = computed<ComparisonEntity>(() => {
     const to = this.tradeLog.side2;
     return {
-      logoUrl: to.team?.logo || this.DEFAULT_LOGO,
+      logoUrl: to.team?.logo,
       primaryName: to.team?.name || this.DRAFT_POOL_NAME,
       secondaryName: to.team?.coach,
-      defaultLogo: this.DEFAULT_LOGO,
     };
   });
 }

@@ -43,14 +43,14 @@
       <h3>Matchups</h3>
     </div>
     <div class="section-body">
-      @if (stage) {
+      @if (matchupStage) {
         <div class="matchup-stage">
-          <h4 class="matchup-stage__title">{{ stage.name }}</h4>
+          <h4 class="matchup-stage__title">{{ matchupStage.name }}</h4>
           <div class="matchup-stage__cards">
-            @if (stage.matchups.length === 0) {
+            @if (matchupStage.matchups.length === 0) {
               <p class="section-message">No matchups in this stage.</p>
             } @else {
-              @for (matchup of stage.matchups; track matchup.id) {
+              @for (matchup of matchupStage.matchups; track matchup.id) {
                 <pdz-matchup-card [matchup]="matchup"></pdz-matchup-card>
               }
             }
@@ -59,6 +59,15 @@
       }
     </div>
   </div>
+  <div class="section section--trades">
+    <div class="section-header">
+      <h3>Trades</h3>
+    </div>
+    <div class="section-body">
+      <pdz-league-trade-widget></pdz-league-trade-widget>
+    </div>
+  </div>
+
   <!-- @if(team){
   <div class="widget row-span-2">
     <div class="widget-title">Deimos Deoxys</div>

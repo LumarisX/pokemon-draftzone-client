@@ -281,7 +281,7 @@ export class LeagueManageTradesComponent implements OnInit {
           (id) => ({ id }),
         ),
       },
-      stage: this.tradeForm.get('stage')?.value ?? -1,
+      stage: Number(this.tradeForm.get('stage')?.value ?? -1),
     };
 
     this.leagueService.sendTrade(tradeData).subscribe({

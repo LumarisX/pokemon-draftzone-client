@@ -1,18 +1,28 @@
-.trades-container {
-  padding: var(--pdz-space-lg);
-}
+@use "../../../styles/global.scss" as *;
+@use "../../../styles/mixins" as *;
+@use "../league.mixins" as *;
 
-.stage {
-  .stage-header {
-    font-family: var(--pdz-font-fancy);
-  }
+.trades {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  box-sizing: border-box;
 
-  .stage-body {
-    border-left: 2px solid var(--pdz-color-primary);
-    padding: 1rem 0 1rem 1rem;
+  &__body {
+    padding: var(--pdz-space-lg);
     display: flex;
     flex-direction: column;
-    width: fit-content;
-    gap: 1rem;
+    gap: var(--pdz-space-md);
+  }
+
+  &__back {
+    @include pdz-league-page-back-button();
+  }
+
+  &__title {
+    @include pdz-league-page-title();
+  }
+  &__header {
+    @include pdz-league-page-header();
   }
 }

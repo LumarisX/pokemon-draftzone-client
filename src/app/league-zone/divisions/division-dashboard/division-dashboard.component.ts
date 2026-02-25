@@ -2,14 +2,21 @@ import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { LeagueZoneService } from '../../../services/leagues/league-zone.service';
-import { League } from '../../league.interface';
+import { League, TradeLog } from '../../league.interface';
 import { getLogoUrlOld } from '../../league.util';
 import { IconComponent } from '../../../images/icon/icon.component';
 import { MatchupCardComponent } from '../../league-schedule/matchup-card/matchup-card.component';
+import { TradeCardComponent } from '../../league-trades/trade-card/trade-card.component';
+import { LeagueTradeWidgetComponent } from '../../league-widgets/league-trade-widget/league-trade-widget.component';
 
 @Component({
   selector: 'pdz-division-dashboard',
-  imports: [RouterModule, IconComponent, MatchupCardComponent],
+  imports: [
+    RouterModule,
+    IconComponent,
+    MatchupCardComponent,
+    LeagueTradeWidgetComponent,
+  ],
   templateUrl: './division-dashboard.component.html',
   styleUrls: ['./division-dashboard.component.scss'],
 })
@@ -24,8 +31,7 @@ export class DivisionDashboardComponent implements OnInit, OnDestroy {
   leagueName = '';
   divisionName = '';
   logo?: string;
-  stage?: League.Stage = undefined;
-
+  matchupStage?: League.Stage = undefined;
   ngOnInit(): void {
     this.leagueZoneService
       .getDivisionDetails()
@@ -40,7 +46,7 @@ export class DivisionDashboardComponent implements OnInit, OnDestroy {
       .getSchedule({ stage: 'current' })
       .pipe(takeUntil(this.destroy$))
       .subscribe((matchups) => {
-        this.stage = matchups[0];
+        this.matchupStage = matchups[0];
       });
   }
 

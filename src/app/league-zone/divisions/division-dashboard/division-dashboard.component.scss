@@ -125,12 +125,13 @@
 
 .section {
   padding: var(--pdz-space-md) var(--pdz-space-xs);
-  background-color: pdz-color(surface-container);
+  background-color: pdz-color(surface-container-low);
   border-radius: var(--pdz-shape-corner-md);
   display: flex;
   flex-direction: column;
   gap: var(--pdz-space-sm);
   height: fit-content;
+  box-shadow: var(--pdz-level-1);
 
   &--matchups {
     width: fit-content;
@@ -175,8 +176,11 @@
   }
 
   &__cards {
-    display: grid;
-    grid-template-columns: 1fr;
+    border-left: 2px solid var(--pdz-color-primary);
+    padding: var(--pdz-space-md) 0 var(--pdz-space-md) var(--pdz-space-md);
+    display: flex;
+    flex-direction: column;
+
     gap: var(--pdz-space-sm);
 
     pdz-matchup-card {

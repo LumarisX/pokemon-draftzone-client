@@ -8,7 +8,7 @@ import {
   TierPokemonAddon,
 } from '../../interfaces/tier-pokemon.interface';
 import { defenseData } from '../../league-zone/league-ghost';
-import { League } from '../../league-zone/league.interface';
+import { League, TradeLog } from '../../league-zone/league.interface';
 import { ApiService } from '../api.service';
 import { UploadService } from '../upload.service';
 import { WebSocketService } from '../ws.service';
@@ -141,10 +141,20 @@ export class LeagueZoneService {
     );
   }
 
-  getTrades() {
-    return this.apiService.get<[]>(
-      `${ROOTPATH}/tournaments/${this.tournamentKey()}/manage/divisions/${this.divisionKey()}/trades`,
+  getTrades(params?: {}) {
+    const teamKey = this.teamKey();
+    return this.apiService.get<{
+      stages: {
+        name: string;
+        trades: TradeLog[];
+      }[];
+    }>(
+      `${ROOTPATH}/tournaments/${this.tournamentKey()}/divisions/${this.divisionKey()}/trades`,
       true,
+      {
+        ...params,
+        ...(teamKey ? { teamId: teamKey } : undefined),
+      },
     );
   }
 

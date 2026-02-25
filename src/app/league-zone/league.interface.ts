@@ -171,7 +171,7 @@ export namespace League {
 export type Team = {
   name: string;
   coach: string;
-  logo: string;
+  logo?: string;
 };
 
 type TradeParticipant = {
@@ -182,5 +182,4 @@ type TradeParticipant = {
 export type TradeLog = {
   side1: TradeParticipant;
   side2: TradeParticipant;
-  activeStage: string;
 };

@@ -75,12 +75,13 @@
 
 .section {
   padding: var(--pdz-space-md) var(--pdz-space-xs);
-  background-color: pdz-color(surface-container);
+  background-color: pdz-color(surface-container-low);
   border-radius: var(--pdz-shape-corner-md);
   display: flex;
   flex-direction: column;
   gap: var(--pdz-space-sm);
   height: fit-content;
+  box-shadow: var(--pdz-level-1);
 
   &--matchups {
     width: fit-content;
@@ -125,9 +126,10 @@
   }
 
   &__cards {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: var(--pdz-space-sm);
+    border-left: 2px solid var(--pdz-color-primary);
+    padding: var(--pdz-space-md) 0 var(--pdz-space-md) var(--pdz-space-md);
+    display: flex;
+    flex-direction: column;
 
     pdz-matchup-card {
       width: 100%;
@@ -176,7 +178,7 @@
         transition: background-color 0.2s ease;
 
         &:hover {
-          background: var(--pdz-color-surface-container-high);
+          background: var(--pdz-color-surface-container);
         }
 
         &:not(:last-child) {

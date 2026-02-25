@@ -13,7 +13,6 @@ export interface ComparisonEntity {
   logoUrl?: string;
   primaryName: string;
   secondaryName?: string;
-  defaultLogo?: string;
 }
 
 export interface StatusEntity {

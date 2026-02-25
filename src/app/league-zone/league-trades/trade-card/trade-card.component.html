@@ -1,7 +1,6 @@
 <pdz-comparison-card
   [entityLeft]="leftEntity()"
   [entityRight]="rightEntity()"
-  [status]="{ label: 'Week 6', active: false }"
   [centerText]="
     tradeLog.side2.team && tradeLog.side1.team ? 'Team to Team' : 'Free Agency'
   "
@@ -14,7 +13,7 @@
         @for (pokemon of tradeLog.side1.pokemon; track pokemon.id) {
           <div class="trade-item">
             <div class="pokemon-info">
-              <div class="pokemon-tier">{{ pokemon.tier }}</div>
+              <div class="pokemon-tier">{{ pokemon.cost }}</div>
               <div class="sprite-wrapper small">
                 <pdz-sprite [pokemon]="pokemon" flipped></pdz-sprite>
               </div>
@@ -52,7 +51,7 @@
               <mat-icon>arrow_back</mat-icon>
             </div>
             <div class="pokemon-info">
-              <div class="pokemon-tier">{{ pokemon.tier }}</div>
+              <div class="pokemon-tier">{{ pokemon.cost }}</div>
               <div class="sprite-wrapper small">
                 <pdz-sprite [pokemon]="pokemon"></pdz-sprite>
               </div>

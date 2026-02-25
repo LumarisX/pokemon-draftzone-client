@@ -6,11 +6,12 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { IconComponent } from '../../images/icon/icon.component';
 import { LoadingComponent } from '../../images/loading/loading.component';
-import { LeagueZoneService } from '../../services/leagues/league-zone.service';
-import { League } from '../league.interface';
-import { getLogoUrl } from '../league.util';
-import { MatchupCardComponent } from '../league-schedule/matchup-card/matchup-card.component';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
+import { LeagueZoneService } from '../../services/leagues/league-zone.service';
+import { MatchupCardComponent } from '../league-schedule/matchup-card/matchup-card.component';
+import { LeagueTradeWidgetComponent } from '../league-widgets/league-trade-widget/league-trade-widget.component';
+import { League, TradeLog } from '../league.interface';
+import { getLogoUrl } from '../league.util';
 
 @Component({
   selector: 'pdz-league-team',
@@ -22,6 +23,7 @@ import { SpriteComponent } from '../../images/sprite/sprite.component';
     IconComponent,
     MatchupCardComponent,
     SpriteComponent,
+    LeagueTradeWidgetComponent,
   ],
   templateUrl: './league-team.component.html',
   styleUrls: ['./league-team.component.scss'],
@@ -31,6 +33,7 @@ export class LeagueTeamComponent implements OnInit, OnDestroy {
 
   teamData?: League.LeagueTeam;
   scheduleStages!: League.Stage[];
+  tradeStages?: { name: string; trades: TradeLog[] }[];
   getLogoUrl = getLogoUrl;
 
   total = {
@@ -60,6 +63,7 @@ export class LeagueTeamComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loadTeam();
     this.loadSchedule();
+    this.loadTrades();
   }
 
   private loadTeam(): void {
@@ -98,6 +102,17 @@ export class LeagueTeamComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           console.error('Error loading schedule:', error);
+        },
+      });
+  }
+
+  private loadTrades(): void {
+    this.leagueService
+      .getTrades()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (data) => {
+          this.tradeStages = data.stages;
         },
       });
   }
