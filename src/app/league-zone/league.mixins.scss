@@ -46,11 +46,13 @@
   padding: $padding;
   border-bottom: $border-bottom;
   background: $background;
-  height: $height;
+  height: auto;
+  min-height: $height;
 
   @include respond-above(medium) {
     flex-direction: row;
     justify-content: space-between;
+    height: $height;
   }
 }
 

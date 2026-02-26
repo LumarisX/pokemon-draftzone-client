@@ -40,13 +40,6 @@ export class DivisionDashboardComponent implements OnInit, OnDestroy {
         this.divisionName = details.divisionName;
         this.logo = details.logo;
       });
-
-    this.leagueZoneService
-      .getSchedule({ stage: 'current' })
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((matchups) => {
-        this.matchupStage = matchups[0];
-      });
   }
 
   getLogoUrl = getLogoUrlOld('league-uploads');

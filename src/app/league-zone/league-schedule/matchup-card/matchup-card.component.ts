@@ -2,19 +2,22 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  inject,
   Input,
   OnInit,
   signal,
 } from '@angular/core';
-import { MatIconModule } from '@angular/material/icon';
+import { RouterModule } from '@angular/router';
+import { IconComponent } from '../../../images/icon/icon.component';
 import { SpriteComponent } from '../../../images/sprite/sprite.component';
+import { LeagueZoneService } from '../../../services/leagues/league-zone.service';
 import { League } from '../../league.interface';
 import { getLogoUrl } from '../../league.util';
-import { RouterModule } from '@angular/router';
+import { getNameByPid } from '../../../data/namedex';
 
 @Component({
   selector: 'pdz-matchup-card',
-  imports: [CommonModule, MatIconModule, SpriteComponent, RouterModule],
+  imports: [CommonModule, SpriteComponent, RouterModule, IconComponent],
   templateUrl: './matchup-card.component.html',
   styleUrls: ['./matchup-card.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -22,6 +25,8 @@ import { RouterModule } from '@angular/router';
 export class MatchupCardComponent implements OnInit {
   @Input({ required: true }) matchup!: League.Matchup;
   @Input() initiallyOpen: boolean = false;
+
+  leagueService = inject(LeagueZoneService);
 
   private _isOpen = signal<boolean>(false);
   isOpen = this._isOpen.asReadonly();
@@ -54,5 +59,51 @@ export class MatchupCardComponent implements OnInit {
 
   getLogo(logoUrl?: string): string {
     return getLogoUrl(logoUrl);
+  }
+
+  getTeam1Pokemon() {
+    const match = this.matchup.matches[this.selectedMatch];
+    if (!match) return [];
+
+    return this.matchup.team1.draft.map((pokemon) => {
+      const stats = match.team1.team[pokemon.id];
+      return {
+        ...pokemon,
+        status: stats?.brought
+          ? stats.deaths
+            ? 'fainted'
+            : 'brought'
+          : undefined,
+      };
+    });
+  }
+
+  getTeam2Pokemon() {
+    const match = this.matchup.matches[this.selectedMatch];
+    if (!match) return [];
+
+    return this.matchup.team2.draft.map((pokemon) => {
+      const stats = match.team2.team[pokemon.id];
+      return {
+        ...pokemon,
+        status: stats?.brought
+          ? stats.deaths
+            ? 'fainted'
+            : 'brought'
+          : undefined,
+      };
+    });
+  }
+
+  getTeam(team: { [key: string]: { brought?: number; deaths?: number } }) {
+    return Object.entries(team).map(([id, stats]) => ({
+      id,
+      name: getNameByPid(id),
+      status: stats?.brought
+        ? stats.deaths
+          ? 'fainted'
+          : 'brought'
+        : undefined,
+    }));
   }
 }

@@ -9,6 +9,48 @@ export class LeagueManageService {
   private apiService = inject(ApiService);
   leagueZoneService = inject(LeagueZoneService);
 
+  updateMatchupSchedule(
+    matchupId: string,
+    payload: {
+      score?: { team1: number; team2: number };
+      winner?: 'team1' | 'team2';
+      matches: Array<{
+        link?: string;
+        winner: 'team1' | 'team2';
+        team1: {
+          score: number;
+          pokemon: Record<
+            string,
+            {
+              kills?: number;
+              indirect?: number;
+              deaths?: number;
+              brought?: number;
+            }
+          >;
+        };
+        team2: {
+          score: number;
+          pokemon: Record<
+            string,
+            {
+              kills?: number;
+              indirect?: number;
+              deaths?: number;
+              brought?: number;
+            }
+          >;
+        };
+      }>;
+    },
+  ) {
+    return this.apiService.post(
+      `leagues/tournaments/${this.leagueZoneService.tournamentKey()}/manage/divisions/${this.leagueZoneService.divisionKey()}/schedule/${matchupId}`,
+      true,
+      payload,
+    );
+  }
+
   setPick(
     tournamentId: string,
     pick: {

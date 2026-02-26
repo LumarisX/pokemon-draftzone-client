@@ -22,7 +22,9 @@ export class LeagueTradeWidgetComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (data) => {
-          this.tradeStages = [...data.stages].reverse();
+          this.tradeStages = [...data.stages]
+            .filter((stage) => stage.trades.length)
+            .reverse();
         },
       });
   }

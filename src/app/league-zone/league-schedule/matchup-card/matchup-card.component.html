@@ -1,40 +1,46 @@
 <div
   class="matchup-card"
-  [class.matchup-card--open]="isOpen()"
   [class.matchup-card--clickable]="matchup.matches.length > 0"
   (click)="toggleOpen()"
 >
   @if (matchup.matches.length > 0) {
-    <mat-icon class="matchup-card__toggle-icon">
-      keyboard_arrow_{{ isOpen() ? "up" : "down" }}
-    </mat-icon>
+    <pdz-icon
+      class="matchup-card__toggle-icon"
+      [name]="isOpen() ? 'keyboard_arrow_up' : 'keyboard_arrow_down'"
+    >
+    </pdz-icon>
   }
 
   <div class="matchup-card__header">
     <div
       class="matchup-card__team-info-container"
-      [routerLink]="'../teams/' + matchup.team1.id"
+      [class.matchup-card__team-info-container--winner]="
+        isOpen() &&
+        matchup.matches.length &&
+        matchup.matches[selectedMatch].team1.winner
+      "
+      [class.matchup-card__team-info-container--loser]="
+        isOpen() &&
+        matchup.matches.length &&
+        matchup.matches[selectedMatch].team2.winner
+      "
+      [routerLink]="
+        '/leagues/pdbl/tournaments/' +
+        leagueService.tournamentKey() +
+        '/divisions/' +
+        leagueService.divisionKey() +
+        '/teams/' +
+        matchup.team1.id
+      "
     >
-      <div
-        class="matchup-card__team-logo"
-        [class.matchup-card__team-logo--winner]="
-          isOpen() &&
-          matchup.matches.length &&
-          matchup.matches[selectedMatch].team1.winner
-        "
-        [class.matchup-card__team-logo--loser]="
-          isOpen() &&
-          matchup.matches.length &&
-          matchup.matches[selectedMatch].team2.winner
-        "
-      >
+      <div class="matchup-card__team-logo">
         <img
           [src]="getLogo(matchup.team1.logo)"
-          [alt]="matchup.team1.teamName + ' logo'"
+          [alt]="matchup.team1.name + ' logo'"
         />
       </div>
       <div class="matchup-card__team-info">
-        <div class="matchup-card__team-name">{{ matchup.team1.teamName }}</div>
+        <div class="matchup-card__team-name">{{ matchup.team1.name }}</div>
         <div class="matchup-card__coach-name">{{ matchup.team1.coach }}</div>
       </div>
     </div>
@@ -53,7 +59,7 @@
         </button>
       } @else {
         <button
-          class="matchup-card__replay-button matchup-card__replay-button--active"
+          class="matchup-card__matchup-button"
           [routerLink]="'/matchup/' + matchup.id"
           (click)="onReplayClick($event)"
         >
@@ -65,28 +71,33 @@
 
     <div
       class="matchup-card__team-info-container matchup-card__team-info-container--right"
-      [routerLink]="'../teams/' + matchup.team2.id"
+      [class.matchup-card__team-info-container--winner]="
+        isOpen() &&
+        matchup.matches.length &&
+        matchup.matches[selectedMatch].team2.winner
+      "
+      [class.matchup-card__team-info-container--loser]="
+        isOpen() &&
+        matchup.matches.length &&
+        matchup.matches[selectedMatch].team1.winner
+      "
+      [routerLink]="
+        '/leagues/pdbl/tournaments/' +
+        leagueService.tournamentKey() +
+        '/divisions/' +
+        leagueService.divisionKey() +
+        '/teams/' +
+        matchup.team2.id
+      "
     >
-      <div
-        class="matchup-card__team-logo"
-        [class.matchup-card__team-logo--winner]="
-          isOpen() &&
-          matchup.matches.length &&
-          matchup.matches[selectedMatch].team2.winner
-        "
-        [class.matchup-card__team-logo--loser]="
-          isOpen() &&
-          matchup.matches.length &&
-          matchup.matches[selectedMatch].team1.winner
-        "
-      >
+      <div class="matchup-card__team-logo">
         <img
           [src]="getLogo(matchup.team2.logo)"
-          [alt]="matchup.team2.teamName + ' logo'"
+          [alt]="matchup.team2.name + ' logo'"
         />
       </div>
       <div class="matchup-card__team-info">
-        <div class="matchup-card__team-name">{{ matchup.team2.teamName }}</div>
+        <div class="matchup-card__team-name">{{ matchup.team2.name }}</div>
         <div class="matchup-card__coach-name">{{ matchup.team2.coach }}</div>
       </div>
     </div>
@@ -106,7 +117,10 @@
         >
           {{ matchup.team1.score }}
         </div>
-        <mat-icon class="matchup-card__score-separator">remove</mat-icon>
+        <pdz-icon
+          class="matchup-card__score-separator"
+          name="remove"
+        ></pdz-icon>
         <div
           class="matchup-card__score-box"
           [class.matchup-card__score-box--winning]="
@@ -123,8 +137,8 @@
       <div class="matchup-card__match-details">
         <div class="matchup-card__pokemon-team">
           @for (
-            pokemon of matchup.matches[selectedMatch].team1.team;
-            track pokemon
+            pokemon of getTeam(matchup.matches[selectedMatch].team1.team);
+            track pokemon.id
           ) {
             <div
               class="matchup-card__pokemon-slot"
@@ -180,8 +194,8 @@
 
         <div class="matchup-card__pokemon-team">
           @for (
-            pokemon of matchup.matches[selectedMatch].team2.team;
-            track pokemon
+            pokemon of getTeam(matchup.matches[selectedMatch].team2.team);
+            track pokemon.id
           ) {
             <div
               class="matchup-card__pokemon-slot"

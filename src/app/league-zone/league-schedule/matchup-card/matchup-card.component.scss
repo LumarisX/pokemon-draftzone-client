@@ -22,10 +22,6 @@ $container-padding: var(--pdz-space-xs);
   &--clickable {
     cursor: pointer;
   }
-
-  &--open {
-    box-shadow: var(--pdz-level-3);
-  }
 }
 
 .matchup-card__header {
@@ -44,6 +40,7 @@ $container-padding: var(--pdz-space-xs);
   border-radius: var(--pdz-shape-corner-lg);
   transition: all 0.2s;
   min-width: 0;
+  border: 2px solid transparent;
 
   &:hover {
     cursor: pointer;
@@ -60,6 +57,14 @@ $container-padding: var(--pdz-space-xs);
     flex-direction: row-reverse;
     text-align: right;
   }
+
+  &--winner {
+    border: 2px solid pdz-color(positive);
+  }
+
+  &--loser {
+    border: 2px solid pdz-color(negative);
+  }
 }
 
 .matchup-card__team-logo {
@@ -67,14 +72,6 @@ $container-padding: var(--pdz-space-xs);
 
   @include respond-above(medium) {
     @include pdz-league-logo(3rem);
-  }
-
-  &--winner {
-    border-color: pdz-color(success);
-  }
-
-  &--loser {
-    border-color: pdz-color(error);
   }
 }
 
@@ -140,6 +137,30 @@ $container-padding: var(--pdz-space-xs);
   }
 }
 
+.matchup-card__matchup-button {
+  padding: var(--pdz-space-xs) var(--pdz-space-sm);
+  border-radius: var(--pdz-shape-corner-full);
+  font-size: 0.7rem;
+  line-height: 1;
+  border: 1px solid pdz-color(outline);
+  cursor: pointer;
+  transition: all 0.2s;
+  background-color: pdz-color(secondary);
+  color: pdz-color(on-secondary);
+  border-color: pdz-color(secondary);
+  box-shadow: var(--pdz-level-1);
+
+  &:active {
+    box-shadow: var(--pdz-level-0);
+    transform: translateY(1px);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}
+
 .matchup-card__versus {
   font-weight: var(--pdz-font-weight-bold);
   font-size: 0.65rem;
@@ -151,7 +172,7 @@ $container-padding: var(--pdz-space-xs);
 
 .matchup-card__toggle-icon {
   position: absolute;
-  bottom: -0.5rem;
+  bottom: -0.25rem;
   left: 50%;
   transform: translateX(-50%);
   color: pdz-color(outline);
@@ -161,12 +182,9 @@ $container-padding: var(--pdz-space-xs);
 }
 
 .matchup-card__content {
-  margin-top: var(--pdz-space-md);
-  padding-top: var(--pdz-space-md);
-  border-top: 1px solid pdz-color(outline-variant);
   display: flex;
   flex-direction: column;
-  gap: var(--pdz-space-md);
+  gap: var(--pdz-space-xs);
   animation: fadeIn 0.3s ease-in-out;
 
   @keyframes fadeIn {
@@ -189,22 +207,25 @@ $container-padding: var(--pdz-space-xs);
 }
 
 .matchup-card__score-box {
-  min-width: 2rem;
-  padding: var(--pdz-space-xs);
-  text-align: center;
-  font-weight: var(--pdz-font-weight-bold);
-  font-size: 1.1rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  @include apply-typography(title-md);
   border-radius: var(--pdz-shape-corner-sm);
   box-shadow: var(--pdz-level-1);
-  background-color: pdz-color(surface-container);
+  background-color: pdz-color(surface-container-low);
   color: pdz-color(on-surface);
 
   &--winning {
-    color: pdz-color(success);
+    background-color: pdz-color(positive);
+    color: pdz-color(on-primary);
   }
 
   &--losing {
-    color: pdz-color(error);
+    background-color: pdz-color(negative);
+    color: pdz-color(on-primary);
   }
 }
 
@@ -242,7 +263,7 @@ $container-padding: var(--pdz-space-xs);
   }
 
   &--brought {
-    border-color: pdz-color(info);
+    border-color: pdz-color(positive);
 
     pdz-sprite {
       filter: grayscale(0%);
@@ -251,7 +272,7 @@ $container-padding: var(--pdz-space-xs);
   }
 
   &--fainted {
-    border-color: pdz-color(error);
+    border-color: pdz-color(negative);
 
     pdz-sprite {
       filter: grayscale(0%);
@@ -275,18 +296,25 @@ $container-padding: var(--pdz-space-xs);
 }
 
 .matchup-card__match-score {
-  min-width: 1.5rem;
-  font-weight: var(--pdz-font-weight-semibold);
-  font-size: 1rem;
-  text-align: center;
-  color: pdz-color(on-surface-variant);
+  width: 1.5rem;
+  height: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  @include apply-typography(title-md);
+  border-radius: var(--pdz-shape-corner-sm);
+  box-shadow: var(--pdz-level-1);
+  background-color: pdz-color(surface-container-low);
+  color: pdz-color(on-surface);
 
   &--winning {
-    color: pdz-color(success);
+    background-color: pdz-color(positive);
+    color: pdz-color(on-primary);
   }
 
   &--losing {
-    color: pdz-color(error);
+    background-color: pdz-color(negative);
+    color: pdz-color(on-primary);
   }
 }
 
@@ -296,9 +324,9 @@ $container-padding: var(--pdz-space-xs);
   border-radius: var(--pdz-shape-corner-sm);
   background: pdz-color(surface-container);
   box-shadow: var(--pdz-level-1);
+  @include apply-typography(label-xs);
   cursor: pointer;
   transition: all 0.2s;
-  font-size: 0.65rem;
   white-space: nowrap;
 
   &:hover:not(.matchup-card__game-button--selected) {

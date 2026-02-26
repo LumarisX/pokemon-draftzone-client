@@ -26,14 +26,24 @@
 
 .division-header {
   @include pdz-league-page-header-large();
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
 
   &__meta {
     display: flex;
-    align-items: center;
-    gap: var(--pdz-space-md);
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--pdz-space-xs);
     flex: 1 1 auto;
     min-width: 0;
     height: 100%;
+
+    @include respond-above(medium) {
+      flex-direction: row;
+      align-items: center;
+      gap: var(--pdz-space-md);
+    }
   }
 
   &__back {
@@ -44,11 +54,7 @@
     display: flex;
     flex-direction: column;
     gap: var(--pdz-space-xs);
-    text-align: center;
-
-    @include respond-above(medium) {
-      text-align: left;
-    }
+    text-align: left;
   }
 
   &__league-name {

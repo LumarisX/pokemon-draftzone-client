@@ -1,14 +1,14 @@
 @if (tradeStages) {
   @for (stage of tradeStages; track stage.name) {
-    @if (stage.trades.length) {
-      <div class="stage">
-        <div class="stage-header">{{ stage.name }}</div>
-        <div class="stage-body">
-          @for (tradeLog of stage.trades; track tradeLog) {
-            <pdz-trade-card [tradeLog]="tradeLog"></pdz-trade-card>
-          }
-        </div>
+    <div class="stage">
+      <div class="stage-header">{{ stage.name }}</div>
+      <div class="stage-body">
+        @for (tradeLog of stage.trades; track tradeLog) {
+          <pdz-trade-card [tradeLog]="tradeLog"></pdz-trade-card>
+        }
       </div>
-    }
+    </div>
+  } @empty {
+    <p class="stage__empty">No trades made.</p>
   }
 }
