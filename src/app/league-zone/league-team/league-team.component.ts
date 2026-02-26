@@ -8,7 +8,7 @@ import { IconComponent } from '../../images/icon/icon.component';
 import { LoadingComponent } from '../../images/loading/loading.component';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { LeagueZoneService } from '../../services/leagues/league-zone.service';
-import { MatchupCardComponent } from '../league-schedule/matchup-card/matchup-card.component';
+import { LeagueScheduleWidgetComponent } from '../league-widgets/league-schedule-widget/league-schedule-widget.component';
 import { LeagueTradeWidgetComponent } from '../league-widgets/league-trade-widget/league-trade-widget.component';
 import { League, TradeLog } from '../league.interface';
 import { getLogoUrl } from '../league.util';
@@ -21,9 +21,9 @@ import { getLogoUrl } from '../league.util';
     LoadingComponent,
     MatIconModule,
     IconComponent,
-    MatchupCardComponent,
     SpriteComponent,
     LeagueTradeWidgetComponent,
+    LeagueScheduleWidgetComponent,
   ],
   templateUrl: './league-team.component.html',
   styleUrls: ['./league-team.component.scss'],

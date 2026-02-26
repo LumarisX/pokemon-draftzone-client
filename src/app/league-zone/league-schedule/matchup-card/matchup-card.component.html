@@ -51,6 +51,14 @@
         >
           Replay
         </button>
+      } @else {
+        <button
+          class="matchup-card__replay-button matchup-card__replay-button--active"
+          [routerLink]="'/matchup/' + matchup.id"
+          (click)="onReplayClick($event)"
+        >
+          Matchup
+        </button>
       }
       <div class="matchup-card__versus">VS</div>
     </div>
@@ -191,11 +199,4 @@
       </div>
     </div>
   }
-
-  <button
-    class="matchup-card__view-button"
-    [routerLink]="'/matchup/' + matchup.id"
-  >
-    View Matchup
-  </button>
 </div>

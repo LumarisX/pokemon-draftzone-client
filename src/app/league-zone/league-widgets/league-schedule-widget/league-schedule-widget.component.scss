@@ -1,3 +1,28 @@
-:host {
-  display: block;
+@use "../../../../styles/mixins" as *;
+@use "../../../../styles/global" as *;
+
+.matchup-stage-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pdz-space-sm);
+}
+
+.matchup-stage {
+  &__title {
+    @include apply-typography(title-sm);
+  }
+
+  &__cards {
+    border-left: 2px solid var(--pdz-color-primary);
+    padding: var(--pdz-space-md) 0 var(--pdz-space-md) var(--pdz-space-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--pdz-space-sm);
+
+    pdz-matchup-card {
+      width: 100%;
+      max-width: 32rem;
+      background-color: pdz-color(surface);
+    }
+  }
 }

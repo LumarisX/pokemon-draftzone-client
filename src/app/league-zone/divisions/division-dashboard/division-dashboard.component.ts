@@ -1,21 +1,20 @@
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
-import { LeagueZoneService } from '../../../services/leagues/league-zone.service';
-import { League, TradeLog } from '../../league.interface';
-import { getLogoUrlOld } from '../../league.util';
 import { IconComponent } from '../../../images/icon/icon.component';
-import { MatchupCardComponent } from '../../league-schedule/matchup-card/matchup-card.component';
-import { TradeCardComponent } from '../../league-trades/trade-card/trade-card.component';
+import { LeagueZoneService } from '../../../services/leagues/league-zone.service';
+import { LeagueScheduleWidgetComponent } from '../../league-widgets/league-schedule-widget/league-schedule-widget.component';
 import { LeagueTradeWidgetComponent } from '../../league-widgets/league-trade-widget/league-trade-widget.component';
+import { League } from '../../league.interface';
+import { getLogoUrlOld } from '../../league.util';
 
 @Component({
   selector: 'pdz-division-dashboard',
   imports: [
     RouterModule,
     IconComponent,
-    MatchupCardComponent,
     LeagueTradeWidgetComponent,
+    LeagueScheduleWidgetComponent,
   ],
   templateUrl: './division-dashboard.component.html',
   styleUrls: ['./division-dashboard.component.scss'],

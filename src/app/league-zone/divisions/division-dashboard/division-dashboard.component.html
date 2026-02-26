@@ -43,25 +43,12 @@
       <h3>Matchups</h3>
     </div>
     <div class="section-body">
-      @if (matchupStage) {
-        <div class="matchup-stage">
-          <h4 class="matchup-stage__title">{{ matchupStage.name }}</h4>
-          <div class="matchup-stage__cards">
-            @if (matchupStage.matchups.length === 0) {
-              <p class="section-message">No matchups in this stage.</p>
-            } @else {
-              @for (matchup of matchupStage.matchups; track matchup.id) {
-                <pdz-matchup-card [matchup]="matchup"></pdz-matchup-card>
-              }
-            }
-          </div>
-        </div>
-      }
+      <pdz-league-schedule-widget stages="current"></pdz-league-schedule-widget>
     </div>
   </div>
   <div class="section section--trades">
     <div class="section-header">
-      <h3>Trades</h3>
+      <h3>Active Trades</h3>
     </div>
     <div class="section-body">
       <pdz-league-trade-widget></pdz-league-trade-widget>
