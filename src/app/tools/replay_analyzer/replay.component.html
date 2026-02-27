@@ -144,7 +144,7 @@
                       <div class="w-20">
                         <pdz-sprite
                           [pokemon]="{ id: mon.formes[0].id, name: '' }"
-                          [disabled]="mon.fainted"
+                          [disabled]="mon.status === 'fainted'"
                         ></pdz-sprite>
                       </div>
                       @if (!mon.kills[1]) {

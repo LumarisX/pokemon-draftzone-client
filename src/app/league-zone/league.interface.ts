@@ -48,8 +48,17 @@ export namespace League {
     cost: number;
   };
 
-  type MatchPokemon = DraftPokemon & {
-    status?: 'brought' | 'fainted';
+  export type MatchPokemonStats = {
+    kills?: {
+      direct?: number;
+      indirect?: number;
+      teammate?: number;
+    };
+    status: 'brought' | 'used' | 'fainted';
+  };
+
+  export type MatchTeamStats = {
+    [key: string]: MatchPokemonStats;
   };
 
   export type Matchup = {
@@ -59,27 +68,12 @@ export namespace League {
     matches: {
       link: string;
       team1: {
-        team: {
-          [key: string]: {
-            kills?: number;
-            deaths?: number;
-            brought?: number;
-            indirect?: number;
-          };
-        };
-
+        team: MatchTeamStats;
         score: number;
         winner: boolean;
       };
       team2: {
-        team: {
-          [key: string]: {
-            kills?: number;
-            deaths?: number;
-            brought?: number;
-            indirect?: number;
-          };
-        };
+        team: MatchTeamStats;
         score: number;
         winner: boolean;
       };

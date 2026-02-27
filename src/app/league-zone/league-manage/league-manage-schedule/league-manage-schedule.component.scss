@@ -223,7 +223,7 @@
 
 .pokemon-row {
   display: grid;
-  grid-template-columns: 1.4fr repeat(4, minmax(0, 1fr));
+  grid-template-columns: 1.4fr 1fr 0.8fr 0.8fr 0.8fr;
   gap: var(--pdz-space-xs);
   align-items: center;
 

@@ -21,10 +21,12 @@ import { League } from '../../league.interface';
 
 type PokemonStatsForm = FormGroup<{
   id: FormControl<PokemonId | ''>;
-  brought: FormControl<number>;
-  kills: FormControl<number>;
-  indirect: FormControl<number>;
-  deaths: FormControl<number>;
+  kills: FormGroup<{
+    direct: FormControl<number>;
+    indirect: FormControl<number>;
+    teammate: FormControl<number>;
+  }>;
+  status: FormControl<'brought' | 'used' | 'fainted' | null>;
 }>;
 
 type MatchForm = FormGroup<{
@@ -43,12 +45,7 @@ type MatchupForm = FormGroup<{
   matches: FormArray<MatchForm>;
 }>;
 
-type PokemonStatsSeed = {
-  brought?: number;
-  kills?: number;
-  indirect?: number;
-  deaths?: number;
-};
+type PokemonStatsSeed = League.MatchPokemonStats | { status: null };
 
 type ScheduleMatchPayload = {
   link?: string;
@@ -267,10 +264,10 @@ export class LeagueManageScheduleComponent {
     // Check brought limit (max 6 per team)
     const team1Brought = (
       matchForm.controls.team1Pokemon.controls as PokemonStatsForm[]
-    ).filter((control) => control.controls.brought.value > 0).length;
+    ).filter((control) => control.controls.status.value !== null).length;
     const team2Brought = (
       matchForm.controls.team2Pokemon.controls as PokemonStatsForm[]
-    ).filter((control) => control.controls.brought.value > 0).length;
+    ).filter((control) => control.controls.status.value !== null).length;
 
     if (team1Brought > 6) {
       warnings.push(`Team 1 brought ${team1Brought} Pokémon (max 6)`);
@@ -280,35 +277,59 @@ export class LeagueManageScheduleComponent {
     }
 
     // Check kills/indirect vs deaths balance
-    const team1KillsIndirect = (
+    const team1Kills = (
       matchForm.controls.team1Pokemon.controls as PokemonStatsForm[]
     ).reduce(
       (sum, control) =>
-        sum + control.controls.kills.value + control.controls.indirect.value,
+        sum +
+        control.controls.kills.controls.direct.value +
+        control.controls.kills.controls.indirect.value,
+      0,
+    );
+    const team1TeamKills = (
+      matchForm.controls.team1Pokemon.controls as PokemonStatsForm[]
+    ).reduce(
+      (sum, control) => sum + control.controls.kills.controls.teammate.value,
       0,
     );
     const team2Deaths = (
       matchForm.controls.team2Pokemon.controls as PokemonStatsForm[]
-    ).reduce((sum, control) => sum + control.controls.deaths.value, 0);
-    const team2KillsIndirect = (
+    ).reduce(
+      (sum, control) =>
+        sum + (control.controls.status.value === 'fainted' ? 1 : 0),
+      0,
+    );
+    const team2Kills = (
       matchForm.controls.team2Pokemon.controls as PokemonStatsForm[]
     ).reduce(
       (sum, control) =>
-        sum + control.controls.kills.value + control.controls.indirect.value,
+        sum +
+        control.controls.kills.controls.direct.value +
+        control.controls.kills.controls.indirect.value,
+      0,
+    );
+    const team2TeamKills = (
+      matchForm.controls.team2Pokemon.controls as PokemonStatsForm[]
+    ).reduce(
+      (sum, control) => sum + control.controls.kills.controls.teammate.value,
       0,
     );
     const team1Deaths = (
       matchForm.controls.team1Pokemon.controls as PokemonStatsForm[]
-    ).reduce((sum, control) => sum + control.controls.deaths.value, 0);
+    ).reduce(
+      (sum, control) =>
+        sum + (control.controls.status.value === 'fainted' ? 1 : 0),
+      0,
+    );
 
-    if (team1KillsIndirect !== team2Deaths) {
+    if (team1Kills !== team2Deaths - team2TeamKills) {
       warnings.push(
-        `Team 1 kills (${team1KillsIndirect}) ≠ Team 2 deaths (${team2Deaths})`,
+        `Team 1 kills (${team1Kills}) ≠ Team 2 deaths (${team2Deaths - team2TeamKills})`,
       );
     }
-    if (team2KillsIndirect !== team1Deaths) {
+    if (team2Kills !== team1Deaths - team1TeamKills) {
       warnings.push(
-        `Team 2 kills (${team2KillsIndirect}) ≠ Team 1 deaths (${team1Deaths})`,
+        `Team 2 kills (${team2Kills}) ≠ Team 1 deaths (${team1Deaths - team1TeamKills})`,
       );
     }
 
@@ -374,14 +395,22 @@ export class LeagueManageScheduleComponent {
 
   private buildPokemonStatsForm(
     pokemonId: PokemonId | '',
-    seed?: PokemonStatsSeed,
+    stats?: League.MatchPokemonStats,
   ): PokemonStatsForm {
     return this.fb.group({
       id: this.fb.control(pokemonId, { nonNullable: true }),
-      brought: this.fb.control(seed?.brought ?? 0, { nonNullable: true }),
-      kills: this.fb.control(seed?.kills ?? 0, { nonNullable: true }),
-      indirect: this.fb.control(seed?.indirect ?? 0, { nonNullable: true }),
-      deaths: this.fb.control(seed?.deaths ?? 0, { nonNullable: true }),
+      kills: this.fb.group({
+        direct: this.fb.control(stats?.kills?.direct ?? 0, {
+          nonNullable: true,
+        }),
+        indirect: this.fb.control(stats?.kills?.indirect ?? 0, {
+          nonNullable: true,
+        }),
+        teammate: this.fb.control(stats?.kills?.teammate ?? 0, {
+          nonNullable: true,
+        }),
+      }),
+      status: this.fb.control(stats?.status ?? null),
     });
   }
 
@@ -420,17 +449,18 @@ export class LeagueManageScheduleComponent {
       matchForm.controls.team2Pokemon,
       assignment.team2,
     );
+    matchForm.controls.winner.setValue(
+      assignment.team1.win ? 'team1' : assignment.team2.win ? 'team2' : null,
+    );
 
-    const winner = assignment.team1.win
-      ? 'team1'
-      : assignment.team2.win
-        ? 'team2'
-        : null;
-    matchForm.controls.winner.setValue(winner);
-    if (winner) {
-      matchForm.controls.team1Score.setValue(winner === 'team1' ? 1 : 0);
-      matchForm.controls.team2Score.setValue(winner === 'team2' ? 1 : 0);
-    }
+    matchForm.controls.team1Score.setValue(
+      // assignment.team1.team.reduce(
+      //   (sum, mon) => sum + (mon. === 'used' ? 1 : 0),
+      //   0,
+      // ),
+      0,
+    );
+    matchForm.controls.team2Score.setValue(1);
   }
 
   private mapReplayPlayersToTeams(
@@ -470,10 +500,12 @@ export class LeagueManageScheduleComponent {
   private resetPokemonStats(array: FormArray<PokemonStatsForm>): void {
     array.controls.forEach((control) => {
       control.patchValue({
-        brought: 0,
-        kills: 0,
-        indirect: 0,
-        deaths: 0,
+        status: null,
+        kills: {
+          direct: 0,
+          indirect: 0,
+          teammate: 0,
+        },
       });
     });
   }
@@ -492,10 +524,12 @@ export class LeagueManageScheduleComponent {
       if (!control) return;
 
       control.patchValue({
-        brought: mon.brought ? 1 : 0,
-        kills: mon.kills?.[0] ?? 0,
-        indirect: mon.kills?.[1] ?? 0,
-        deaths: mon.fainted ? 1 : 0,
+        kills: {
+          direct: mon.kills?.[0] ?? 0,
+          indirect: mon.kills?.[1] ?? 0,
+          teammate: mon.kills?.[2] ?? 0,
+        },
+        status: mon.status ?? null,
       });
     });
   }
@@ -572,10 +606,10 @@ export class LeagueManageScheduleComponent {
   ): Record<string, PokemonStatsSeed> {
     return array.controls.reduce<Record<string, PokemonStatsSeed>>(
       (acc, control) => {
-        const { id, brought, kills, indirect, deaths } = control.getRawValue();
-        const hasStats = brought || kills || indirect || deaths;
+        const { id, status, kills } = control.getRawValue();
+        const hasStats = status || kills;
         if (id && hasStats) {
-          acc[id] = { brought, kills, indirect, deaths };
+          acc[id] = { kills, status };
         }
         return acc;
       },

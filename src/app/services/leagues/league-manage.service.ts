@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { ApiService } from '../api.service';
 import { LeagueZoneService } from './league-zone.service';
+import { League } from '../../league-zone/league.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -19,27 +20,11 @@ export class LeagueManageService {
         winner: 'team1' | 'team2';
         team1: {
           score: number;
-          pokemon: Record<
-            string,
-            {
-              kills?: number;
-              indirect?: number;
-              deaths?: number;
-              brought?: number;
-            }
-          >;
+          pokemon: Record<string, League.MatchPokemonStats | { status: null }>;
         };
         team2: {
           score: number;
-          pokemon: Record<
-            string,
-            {
-              kills?: number;
-              indirect?: number;
-              deaths?: number;
-              brought?: number;
-            }
-          >;
+          pokemon: Record<string, League.MatchPokemonStats | { status: null }>;
         };
       }>;
     },

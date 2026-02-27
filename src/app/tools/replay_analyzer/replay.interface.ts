@@ -44,10 +44,9 @@ export type ReplayPlayer = {
 
 export type ReplayMon = {
   formes: { detail: string; id: PokemonId }[];
-  kills: [number, number];
+  kills: [number, number, number];
   damageDealt: [number, number];
   damageTaken: [number, number];
   hpRestored: number;
-  fainted: boolean;
-  brought: boolean;
+  status: 'brought' | 'used' | 'fainted';
 };

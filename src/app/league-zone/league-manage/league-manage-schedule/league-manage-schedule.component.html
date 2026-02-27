@@ -194,10 +194,10 @@
                             </div>
                             <div class="pokemon-row pokemon-row--header">
                               <span>Pokemon</span>
-                              <span>Brought</span>
+                              <span>Status</span>
                               <span>Direct Kills</span>
                               <span>Indirect Kills</span>
-                              <span>Fainted</span>
+                              <span>Teammate Kills</span>
                             </div>
                             @for (
                               pokemon of getPokemonControls(
@@ -217,52 +217,33 @@
                                     getPokemonLabel(pokemon.controls.id.value)
                                   }}
                                 </span>
-                                <button
-                                  type="button"
-                                  class="toggle-button"
-                                  [class.toggle-button--active]="
-                                    pokemon.controls.brought.value > 0
-                                  "
-                                  (click)="
-                                    pokemon.controls.brought.setValue(
-                                      pokemon.controls.brought.value > 0 ? 0 : 1
-                                    )
-                                  "
-                                >
-                                  {{
-                                    pokemon.controls.brought.value > 0
-                                      ? "Yes"
-                                      : "No"
-                                  }}
-                                </button>
-                                <input
-                                  type="number"
-                                  min="0"
-                                  formControlName="kills"
-                                />
-                                <input
-                                  type="number"
-                                  min="0"
-                                  formControlName="indirect"
-                                />
-                                <button
-                                  type="button"
-                                  class="toggle-button"
-                                  [class.toggle-button--active]="
-                                    pokemon.controls.deaths.value > 0
-                                  "
-                                  (click)="
-                                    pokemon.controls.deaths.setValue(
-                                      pokemon.controls.deaths.value > 0 ? 0 : 1
-                                    )
-                                  "
-                                >
-                                  {{
-                                    pokemon.controls.deaths.value > 0
-                                      ? "Yes"
-                                      : "No"
-                                  }}
-                                </button>
+                                <select formControlName="status">
+                                  <option [ngValue]="null">-</option>
+                                  <option value="brought">Brought</option>
+                                  <option value="used">Used</option>
+                                  <option value="fainted">Fainted</option>
+                                </select>
+                                <div formGroupName="kills">
+                                  <input
+                                    type="number"
+                                    min="0"
+                                    formControlName="direct"
+                                  />
+                                </div>
+                                <div formGroupName="kills">
+                                  <input
+                                    type="number"
+                                    min="0"
+                                    formControlName="indirect"
+                                  />
+                                </div>
+                                <div formGroupName="kills">
+                                  <input
+                                    type="number"
+                                    min="0"
+                                    formControlName="teammate"
+                                  />
+                                </div>
                               </div>
                             }
                           </div>
@@ -275,10 +256,10 @@
                             </div>
                             <div class="pokemon-row pokemon-row--header">
                               <span>Pokemon</span>
-                              <span>Brought</span>
+                              <span>Status</span>
                               <span>Direct Kills</span>
                               <span>Indirect Kills</span>
-                              <span>Fainted</span>
+                              <span>Teammate Kills</span>
                             </div>
                             @for (
                               pokemon of getPokemonControls(
@@ -298,52 +279,33 @@
                                     getPokemonLabel(pokemon.controls.id.value)
                                   }}
                                 </span>
-                                <button
-                                  type="button"
-                                  class="toggle-button"
-                                  [class.toggle-button--active]="
-                                    pokemon.controls.brought.value > 0
-                                  "
-                                  (click)="
-                                    pokemon.controls.brought.setValue(
-                                      pokemon.controls.brought.value > 0 ? 0 : 1
-                                    )
-                                  "
-                                >
-                                  {{
-                                    pokemon.controls.brought.value > 0
-                                      ? "Yes"
-                                      : "No"
-                                  }}
-                                </button>
-                                <input
-                                  type="number"
-                                  min="0"
-                                  formControlName="kills"
-                                />
-                                <input
-                                  type="number"
-                                  min="0"
-                                  formControlName="indirect"
-                                />
-                                <button
-                                  type="button"
-                                  class="toggle-button"
-                                  [class.toggle-button--active]="
-                                    pokemon.controls.deaths.value > 0
-                                  "
-                                  (click)="
-                                    pokemon.controls.deaths.setValue(
-                                      pokemon.controls.deaths.value > 0 ? 0 : 1
-                                    )
-                                  "
-                                >
-                                  {{
-                                    pokemon.controls.deaths.value > 0
-                                      ? "Yes"
-                                      : "No"
-                                  }}
-                                </button>
+                                <select formControlName="status">
+                                  <option [ngValue]="null">-</option>
+                                  <option value="brought">Brought</option>
+                                  <option value="used">Used</option>
+                                  <option value="fainted">Fainted</option>
+                                </select>
+                                <div formGroupName="kills">
+                                  <input
+                                    type="number"
+                                    min="0"
+                                    formControlName="direct"
+                                  />
+                                </div>
+                                <div formGroupName="kills">
+                                  <input
+                                    type="number"
+                                    min="0"
+                                    formControlName="indirect"
+                                  />
+                                </div>
+                                <div formGroupName="kills">
+                                  <input
+                                    type="number"
+                                    min="0"
+                                    formControlName="teammate"
+                                  />
+                                </div>
                               </div>
                             }
                           </div>

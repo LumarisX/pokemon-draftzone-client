@@ -142,8 +142,8 @@
           ) {
             <div
               class="matchup-card__pokemon-slot"
-              [class.matchup-card__pokemon-slot--brought]="
-                pokemon.status === 'brought'
+              [class.matchup-card__pokemon-slot--used]="
+                pokemon.status === 'used'
               "
               [class.matchup-card__pokemon-slot--fainted]="
                 pokemon.status === 'fainted'
@@ -199,8 +199,8 @@
           ) {
             <div
               class="matchup-card__pokemon-slot"
-              [class.matchup-card__pokemon-slot--brought]="
-                pokemon.status === 'brought'
+              [class.matchup-card__pokemon-slot--used]="
+                pokemon.status === 'used'
               "
               [class.matchup-card__pokemon-slot--fainted]="
                 pokemon.status === 'fainted'

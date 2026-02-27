@@ -61,49 +61,11 @@ export class MatchupCardComponent implements OnInit {
     return getLogoUrl(logoUrl);
   }
 
-  getTeam1Pokemon() {
-    const match = this.matchup.matches[this.selectedMatch];
-    if (!match) return [];
-
-    return this.matchup.team1.draft.map((pokemon) => {
-      const stats = match.team1.team[pokemon.id];
-      return {
-        ...pokemon,
-        status: stats?.brought
-          ? stats.deaths
-            ? 'fainted'
-            : 'brought'
-          : undefined,
-      };
-    });
-  }
-
-  getTeam2Pokemon() {
-    const match = this.matchup.matches[this.selectedMatch];
-    if (!match) return [];
-
-    return this.matchup.team2.draft.map((pokemon) => {
-      const stats = match.team2.team[pokemon.id];
-      return {
-        ...pokemon,
-        status: stats?.brought
-          ? stats.deaths
-            ? 'fainted'
-            : 'brought'
-          : undefined,
-      };
-    });
-  }
-
-  getTeam(team: { [key: string]: { brought?: number; deaths?: number } }) {
+  getTeam(team: League.MatchTeamStats) {
     return Object.entries(team).map(([id, stats]) => ({
       id,
       name: getNameByPid(id),
-      status: stats?.brought
-        ? stats.deaths
-          ? 'fainted'
-          : 'brought'
-        : undefined,
+      status: stats.status,
     }));
   }
 }
