@@ -454,13 +454,17 @@ export class LeagueManageScheduleComponent {
     );
 
     matchForm.controls.team1Score.setValue(
-      // assignment.team1.team.reduce(
-      //   (sum, mon) => sum + (mon. === 'used' ? 1 : 0),
-      //   0,
-      // ),
-      0,
+      assignment.team1.team.reduce(
+        (sum, mon) => sum + (mon.status === 'used' ? 1 : 0),
+        0,
+      ),
     );
-    matchForm.controls.team2Score.setValue(1);
+    matchForm.controls.team2Score.setValue(
+      assignment.team2.team.reduce(
+        (sum, mon) => sum + (mon.status === 'used' ? 1 : 0),
+        0,
+      ),
+    );
   }
 
   private mapReplayPlayersToTeams(
