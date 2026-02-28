@@ -1,11 +1,21 @@
 <div class="division-header">
-  <div class="division-header__info">
-    <h1 class="division-header__league-name">{{ leagueName }}</h1>
-    <h2 class="division-header__division-name">{{ divisionName }}</h2>
+  <div class="division-header__meta">
+    <button
+      type="button"
+      class="division-header__back"
+      [routerLink]="['../../']"
+    >
+      <pdz-icon name="arrow_back" size="sm"></pdz-icon> Back
+    </button>
+    <div class="division-header__info">
+      <h1 class="division-header__league-name">{{ leagueName }}</h1>
+      <h2 class="division-header__division-name">{{ divisionName }}</h2>
+    </div>
   </div>
+
   <img
     class="division-header__image"
-    src="../../../assets/images/battle-zone/pdbls2.png"
+    [src]="getLogoUrl(logo)"
     alt="League logo"
   />
 </div>
@@ -27,8 +37,24 @@
     Draft
   </button>
 </nav>
-<div class="widget-container">
-  Coming soon! All the info you need, at a glance!
+<div class="division-body">
+  <div class="section section--matchups">
+    <div class="section-header">
+      <h3>Matchups</h3>
+    </div>
+    <div class="section-body">
+      <pdz-league-schedule-widget stage="current"></pdz-league-schedule-widget>
+    </div>
+  </div>
+  <div class="section section--trades">
+    <div class="section-header">
+      <h3>Active Trades</h3>
+    </div>
+    <div class="section-body">
+      <pdz-league-trade-widget></pdz-league-trade-widget>
+    </div>
+  </div>
+
   <!-- @if(team){
   <div class="widget row-span-2">
     <div class="widget-title">Deimos Deoxys</div>

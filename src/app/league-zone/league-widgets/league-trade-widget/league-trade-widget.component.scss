@@ -1,0 +1,23 @@
+@use "../../../../styles/global" as *;
+@use "../../../../styles/mixins" as *;
+
+.stage {
+  &-header {
+    @include apply-typography(title-sm);
+  }
+
+  &-body {
+    border-left: 2px solid var(--pdz-color-primary);
+    padding: var(--pdz-space-md) 0 var(--pdz-space-md) var(--pdz-space-md);
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    gap: var(--pdz-space-sm);
+  }
+
+  &__empty {
+    color: var(--pdz-color-on-surface);
+    font-style: italic;
+    padding: 0 var(pdz-space-md);
+  }
+}

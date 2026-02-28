@@ -1,6 +1,6 @@
 import { StatsTable, Type } from '../data';
 
-type TierPokemonAddon = {
+export type TierPokemonAddon = {
   name: string;
   cost: number;
   capt?: {

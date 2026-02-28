@@ -201,9 +201,8 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
       .on<DraftAddedEvent>('league.draft.added')
       .pipe(takeUntil(this.destroy$))
       .subscribe((data) => {
-        if (this.leagueService.divisionKey() !== data.divisionId) {
-          return;
-        }
+        if (this.leagueService.divisionKey() !== data.divisionId) return;
+
         this.teams = this.teams.map((team) => {
           const newTeam = { ...team };
           if (team.id === data.team.id) {
@@ -223,7 +222,7 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
 
           if (updatedSelectedTeam) {
             updatedSelectedTeam.pointTotal = data.team.draft.reduce(
-              (points, p) => points + Number(p.tier),
+              (points, p) => points + p.cost,
               0,
             );
             Object.assign(this.selectedTeam, updatedSelectedTeam);

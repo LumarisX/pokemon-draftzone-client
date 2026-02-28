@@ -1,8 +1,30 @@
-<div class="standing-wrapper">
-  @if (coachStandings) {
-    <pdz-coach-standings [standingData]="coachStandings"></pdz-coach-standings>
-  }
-  <pdz-pokemon-standings
-    [standingData]="pokemonStandings"
-  ></pdz-pokemon-standings>
+<div class="standings">
+  <div class="standings__header">
+    <button type="button" class="standings__back" [routerLink]="['../']">
+      <pdz-icon name="arrow_back" size="sm"></pdz-icon> Back
+    </button>
+    <h1 class="standings__title">Standings</h1>
+  </div>
+
+  <div class="standings__body">
+    @if (isLoading) {
+      <pdz-loading></pdz-loading>
+    } @else if (error) {
+      <p class="standings__empty standings__empty--error">{{ error }}</p>
+    } @else {
+      @if (coachStandings) {
+        <pdz-coach-standings
+          [standingData]="coachStandings"
+        ></pdz-coach-standings>
+      }
+
+      @if (pokemonStandings.length) {
+        <pdz-pokemon-standings
+          [standingData]="pokemonStandings"
+        ></pdz-pokemon-standings>
+      } @else {
+        <p class="standings__empty">No pokemon standings available.</p>
+      }
+    }
+  </div>
 </div>

@@ -1,10 +1,12 @@
-<div class="trades-container">
-  <div class="stage">
-    <div class="stage-header">Week 4</div>
-    <div class="stage-body">
-      @for (tradeLog of tradeLogs; track tradeLog) {
-        <pdz-trade-card [tradeLog]="tradeLog"></pdz-trade-card>
-      }
-    </div>
+<div class="trades">
+  <div class="trades__header">
+    <button type="button" class="trades__back" [routerLink]="['../']">
+      <pdz-icon name="arrow_back" size="sm"></pdz-icon> Back
+    </button>
+    <h1 class="trades__title">Trades</h1>
+  </div>
+
+  <div class="trades__body">
+    <pdz-league-trade-widget></pdz-league-trade-widget>
   </div>
 </div>

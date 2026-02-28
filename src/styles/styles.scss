@@ -10,43 +10,184 @@
   font-style: normal;
 }
 
-@layer utilities {
-  .scrollbar-hidden::-webkit-scrollbar {
-    display: none;
-  }
+:root {
+  --pdz-scrollbar-size-thin: 0.375rem;
+  --pdz-scrollbar-size-expanded: 0.375rem;
+  --pdz-scrollbar-thumb-radius: 999px;
+  --pdz-scrollbar-thumb-idle: color-mix(
+    in srgb,
+    var(--pdz-color-on-surface) 22%,
+    transparent
+  );
+  --pdz-scrollbar-thumb-hover: color-mix(
+    in srgb,
+    var(--pdz-color-on-surface) 36%,
+    transparent
+  );
+  --pdz-scrollbar-thumb-active: color-mix(
+    in srgb,
+    var(--pdz-color-on-surface) 52%,
+    transparent
+  );
+  --pdz-scrollbar-track: color-mix(
+    in srgb,
+    var(--pdz-color-surface-container-high) 45%,
+    transparent
+  );
+  --pdz-scrollbar-thumb-gap-idle: 0.125rem;
+  --pdz-scrollbar-thumb-gap-hover: 0.0625rem;
+  --pdz-scrollbar-thumb-gap-active: 0.03125rem;
+  --pdz-scrollbar-hover-glow-size: 0.1875rem;
+  --pdz-scrollbar-transition-ms: 180ms;
+  --pdz-scrollbar-fade-delay-ms: 2200ms;
+}
 
-  .scrollbar-hidden {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
+:where(*):not(input):not(select):not(progress) {
+  scrollbar-gutter: auto;
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
 
-  ::-webkit-scrollbar {
-    width: 12px;
-    height: 12px;
-  }
+:where(*):not(input):not(select):not(progress):hover,
+:where(*):not(input):not(select):not(progress):focus,
+:where(*):not(input):not(select):not(progress):focus-within,
+:where(*):not(input):not(select):not(progress):active,
+:where(*):not(input):not(select):not(progress).pdz-scrollbar-visible {
+  scrollbar-width: thin;
+  scrollbar-color: var(--pdz-scrollbar-thumb-idle) transparent;
+}
 
-  ::-webkit-scrollbar-track {
-    background: var(--pdz-color-surface);
-    border-radius: 100vh;
-  }
+:where(*):not(input):not(select):not(progress)::-webkit-scrollbar {
+  width: var(--pdz-scrollbar-size-thin);
+  height: var(--pdz-scrollbar-size-thin);
+}
 
-  ::-webkit-scrollbar-thumb {
-    background: var(--pdz-color-surface-container);
-    border-radius: 100vh;
-    border: 2px solid var(--pdz-color-surface);
-  }
+:where(*):not(input):not(select):not(progress)::-webkit-scrollbar-track,
+:where(*):not(input):not(select):not(progress)::-webkit-scrollbar-corner {
+  background: transparent;
+}
 
-  ::-webkit-scrollbar-thumb:hover {
-    background: var(--pdz-color-surface-container-high);
-    border: 1px solid var(--pdz-color-surface);
-  }
+:where(*):not(input):not(select):not(progress)::-webkit-scrollbar-thumb {
+  border-radius: var(--pdz-scrollbar-thumb-radius);
+  border: var(--pdz-scrollbar-thumb-gap-idle) solid transparent;
+  background: transparent;
+  background-clip: content-box;
+  min-height: 2rem;
+  min-width: 2rem;
+  transition:
+    background-color var(--pdz-scrollbar-transition-ms) ease,
+    border-width var(--pdz-scrollbar-transition-ms) ease,
+    box-shadow var(--pdz-scrollbar-transition-ms) ease;
+  transition-delay: var(--pdz-scrollbar-fade-delay-ms);
+}
 
-  /* For Firefox */
-  html {
+:where(*):not(input):not(select):not(progress):hover::-webkit-scrollbar-thumb,
+:where(*):not(input):not(select):not(
+    progress
+  ):focus-within::-webkit-scrollbar-thumb,
+:where(*):not(input):not(select):not(progress):active::-webkit-scrollbar-thumb,
+:where(*):not(input):not(select):not(
+    progress
+  ).pdz-scrollbar-visible::-webkit-scrollbar-thumb {
+  border-width: var(--pdz-scrollbar-thumb-gap-hover);
+  background-color: var(--pdz-scrollbar-thumb-idle);
+  box-shadow: 0 0 0 var(--pdz-scrollbar-hover-glow-size)
+    color-mix(in srgb, var(--pdz-scrollbar-thumb-idle) 32%, transparent);
+  transition-delay: 0ms;
+}
+
+:where(*):not(input):not(select):not(
+    progress
+  ):hover::-webkit-scrollbar-thumb:hover,
+:where(*):not(input):not(select):not(
+    progress
+  ):focus-within::-webkit-scrollbar-thumb:hover,
+:where(*):not(input):not(select):not(
+    progress
+  ).pdz-scrollbar-visible::-webkit-scrollbar-thumb:hover {
+  border-width: var(--pdz-scrollbar-thumb-gap-active);
+  background-color: var(--pdz-scrollbar-thumb-hover);
+  box-shadow: 0 0 0 var(--pdz-scrollbar-hover-glow-size)
+    color-mix(in srgb, var(--pdz-scrollbar-thumb-hover) 45%, transparent);
+}
+
+:where(*):not(input):not(select):not(progress):active::-webkit-scrollbar-thumb {
+  border-width: var(--pdz-scrollbar-thumb-gap-active);
+  background-color: var(--pdz-scrollbar-thumb-active);
+  box-shadow: 0 0 0 var(--pdz-scrollbar-hover-glow-size)
+    color-mix(in srgb, var(--pdz-scrollbar-thumb-active) 45%, transparent);
+  transition-delay: 0ms;
+}
+
+.pdz-scrollbar-native,
+.pdz-scrollbar-native * {
+  scrollbar-gutter: auto;
+  scrollbar-width: auto;
+  scrollbar-color: auto;
+}
+
+.pdz-scrollbar-stable {
+  scrollbar-gutter: stable;
+}
+
+.pdz-scrollbar-stable-both {
+  scrollbar-gutter: stable both-edges;
+}
+
+.pdz-scrollbar-native::-webkit-scrollbar,
+.pdz-scrollbar-native *::-webkit-scrollbar {
+  width: initial;
+  height: initial;
+}
+
+.pdz-scrollbar-native::-webkit-scrollbar-track,
+.pdz-scrollbar-native::-webkit-scrollbar-thumb,
+.pdz-scrollbar-native *::-webkit-scrollbar-track,
+.pdz-scrollbar-native *::-webkit-scrollbar-thumb {
+  background: initial;
+  border: initial;
+  border-radius: initial;
+  transition: initial;
+}
+
+@media (hover: none), (pointer: coarse) {
+  :where(*):not(input):not(select):not(progress) {
     scrollbar-width: thin;
-    scrollbar-color: var(--pdz-color-surface-dim) var(--pdz-color-surface);
+    scrollbar-color: var(--pdz-scrollbar-thumb-idle) transparent;
   }
 
+  :where(*):not(input):not(select):not(progress)::-webkit-scrollbar {
+    width: var(--pdz-scrollbar-size-thin);
+    height: var(--pdz-scrollbar-size-thin);
+  }
+
+  :where(*):not(input):not(select):not(progress)::-webkit-scrollbar-thumb {
+    border-width: var(--pdz-scrollbar-thumb-gap-hover);
+    background-color: var(--pdz-scrollbar-thumb-idle);
+    transition-delay: 0ms;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where(*):not(input):not(select):not(progress)::-webkit-scrollbar-thumb {
+    transition: none;
+    transition-delay: 0ms;
+  }
+}
+
+@media (forced-colors: active) {
+  :where(*):not(input):not(select):not(progress) {
+    scrollbar-width: auto;
+    scrollbar-color: auto;
+  }
+
+  :where(*):not(input):not(select):not(progress)::-webkit-scrollbar-thumb {
+    background-color: CanvasText;
+    border-color: transparent;
+  }
+}
+
+@layer utilities {
   .tooltip {
     position: relative;
     cursor: pointer;

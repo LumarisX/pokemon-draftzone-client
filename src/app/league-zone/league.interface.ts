@@ -8,6 +8,13 @@ import { DraftPokemon } from '../interfaces/draft';
 import { Pokemon } from '../interfaces/pokemon';
 
 export namespace League {
+  export type Team = {
+    id: string;
+    name: string;
+    coach: string;
+    logo?: string;
+  };
+
   export type LeagueTeam = {
     name: string;
     id: string;
@@ -36,33 +43,48 @@ export namespace League {
     };
   };
 
-  export type TieredPokemon = {
-    name: string;
-    id: string;
+  export type TieredPokemon = Pokemon & {
     tier: string;
     cost: number;
   };
 
-  type MatchTeam = {
-    id: string;
-    teamName: string;
-    coach: string;
-    score: number;
-    logo: string;
+  export type MatchPokemonStats = {
+    kills?: {
+      direct?: number;
+      indirect?: number;
+      teammate?: number;
+    };
+    status: 'brought' | 'used' | 'fainted';
   };
 
-  type MatchPokemon = DraftPokemon & {
-    status?: 'brought' | 'fainted';
+  export type MatchTeamStats = {
+    [key: string]: MatchPokemonStats;
   };
 
   export type Matchup = {
-    team1: MatchTeam;
-    team2: MatchTeam;
+    id: string;
+    team1: Team & { score: number; draft: DraftPokemon[] };
+    team2: Team & { score: number; draft: DraftPokemon[] };
     matches: {
       link: string;
-      team1: { team: MatchPokemon[]; score: number; winner: boolean };
-      team2: { team: MatchPokemon[]; score: number; winner: boolean };
+      team1: {
+        team: MatchTeamStats;
+        score: number;
+        winner: boolean;
+      };
+      team2: {
+        team: MatchTeamStats;
+        score: number;
+        winner: boolean;
+      };
     }[];
+    scheduledDate?: Date;
+    notes?: string;
+    winner?: 'team1' | 'team2';
+    score?: {
+      team1: number;
+      team2: number;
+    };
   };
 
   export type Stage = {
@@ -167,19 +189,12 @@ export namespace League {
   };
 }
 
-export type Team = {
-  name: string;
-  coach: string;
-  logo: string;
-};
-
 type TradeParticipant = {
-  team?: Team;
-  pokemon?: League.TieredPokemon[];
+  team?: League.Team;
+  pokemon: League.TieredPokemon[];
 };
 
 export type TradeLog = {
-  from: TradeParticipant;
-  to: TradeParticipant;
-  activeStage: string;
+  side1: TradeParticipant;
+  side2: TradeParticipant;
 };

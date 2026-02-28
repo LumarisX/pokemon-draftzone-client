@@ -36,7 +36,7 @@
       >
         <mat-icon>show_chart</mat-icon>
       </button>
-      <button [routerLink]="'../team/' + teamDetails.id">
+      <button [routerLink]="'../teams/' + teamDetails.id">
         <mat-icon>open_in_new</mat-icon>
       </button>
     </div>
@@ -81,11 +81,21 @@
                   </td>
                 }
                 <td class="cell-tier">
-                  {{ pokemon.tier }}
+                  {{ pokemon.cost }}
                 </td>
               </tr>
             }
           </tbody>
+          <tfoot>
+            <tr>
+              <th class="col-sprite"></th>
+              <th class="col-name"></th>
+              @if (hasCapt()) {
+                <th class="col-capt">{{ totalCaptCount() }}</th>
+              }
+              <th class="col-tier">{{ totalCost() }}</th>
+            </tr>
+          </tfoot>
         </table>
       </div>
     }

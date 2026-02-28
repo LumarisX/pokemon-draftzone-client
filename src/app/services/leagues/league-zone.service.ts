@@ -3,12 +3,16 @@ import { NavigationEnd, Router } from '@angular/router';
 import { Observable, of, throwError } from 'rxjs';
 import { filter, map, mergeMap } from 'rxjs/operators';
 import { getRandomPokemon } from '../../data/namedex';
-import { LeagueTier } from '../../interfaces/tier-pokemon.interface';
+import {
+  LeagueTier,
+  TierPokemonAddon,
+} from '../../interfaces/tier-pokemon.interface';
 import { defenseData } from '../../league-zone/league-ghost';
-import { League } from '../../league-zone/league.interface';
+import { League, TradeLog } from '../../league-zone/league.interface';
 import { ApiService } from '../api.service';
 import { UploadService } from '../upload.service';
 import { WebSocketService } from '../ws.service';
+import { TradeData } from '../../league-zone/league-manage/league-manage-trades/league-manage-trades.component';
 
 const ROOTPATH = 'leagues';
 
@@ -108,9 +112,57 @@ export class LeagueZoneService {
         position: number;
       };
       canDraft: string[];
+      logo: string;
     }>(
       `${ROOTPATH}/tournaments/${this.tournamentKey()}/divisions/${this.divisionKey()}`,
       true,
+    );
+  }
+
+  getPokemonList() {
+    const params: { [key: string]: string } = {};
+    const divisionKey = this.divisionKey();
+    if (divisionKey) params['division'] = divisionKey;
+    return this.apiService.get<
+      {
+        pokemon: {
+          id: string;
+          name: string;
+          cost: number;
+          addons?: TierPokemonAddon[];
+          setAddons?: string[];
+        }[];
+        team?: { id: string; name: string; coachName: string };
+      }[]
+    >(
+      `${ROOTPATH}/tournaments/${this.tournamentKey()}/pokemon-list`,
+      false,
+      params,
+    );
+  }
+
+  getTrades(params?: {}) {
+    const teamKey = this.teamKey();
+    return this.apiService.get<{
+      stages: {
+        name: string;
+        trades: TradeLog[];
+      }[];
+    }>(
+      `${ROOTPATH}/tournaments/${this.tournamentKey()}/divisions/${this.divisionKey()}/trades`,
+      true,
+      {
+        ...params,
+        ...(teamKey ? { teamId: teamKey } : undefined),
+      },
+    );
+  }
+
+  sendTrade(tradeData: TradeData) {
+    return this.apiService.post(
+      `${ROOTPATH}/tournaments/${this.tournamentKey()}/manage/divisions/${this.divisionKey()}/trades`,
+      true,
+      tradeData,
     );
   }
 
@@ -155,10 +207,15 @@ export class LeagueZoneService {
     );
   }
 
-  getSchedule() {
+  getSchedule(params?: { stage?: string }) {
+    const teamKey = this.teamKey();
     return this.apiService.get<League.Stage[]>(
       `${ROOTPATH}/tournaments/${this.tournamentKey()}/divisions/${this.divisionKey()}/schedule`,
       true,
+      {
+        ...params,
+        ...(teamKey ? { teamId: teamKey } : undefined),
+      },
     );
   }
 
@@ -246,236 +303,6 @@ export class LeagueZoneService {
     );
   }
 
-  // getMatchups() {
-  //   return of(this.matchups);
-  // }
-
-  // matchups: League.Matchup[] = [
-  //   {
-  //     team1: {
-  //       teamName: 'Deimos Deoxys',
-  //       coach: 'Lumaris',
-  //       score: 1,
-  //       logo: 'https://pokemondraftzone-public.s3.us-east-2.amazonaws.com/user-uploads/1744422916695-DeimosDeoxys.png',
-  //     },
-  //     team2: {
-  //       teamName: 'Mighty Murkrow',
-  //       coach: 'hsoj',
-  //       score: 2,
-  //       logo: 'https://pokemondraftzone-public.s3.us-east-2.amazonaws.com/user-uploads/1745097094680-Mighty Murkrow.png',
-  //     },
-  //     matches: [
-  //       {
-  //         link: 'test',
-  //         team1: {
-  //           score: 1,
-  //           team: [
-  //             {
-  //               id: 'pelipper',
-  //               name: 'Pelipper',
-  //               status: 'fainted',
-  //             },
-  //             {
-  //               id: 'archaludon',
-  //               name: 'Archaludon',
-  //               status: 'brought',
-  //             },
-  //             {
-  //               id: 'swampertmega',
-  //               name: 'Swampert-Mega',
-  //               status: 'fainted',
-  //             },
-  //             {
-  //               id: 'quaquaval',
-  //               name: 'Quaquaval',
-  //               status: 'fainted',
-  //             },
-  //             {
-  //               id: 'claydol',
-  //               name: 'Claydol',
-  //             },
-  //             {
-  //               id: 'qwilfishhisui',
-  //               name: 'Qwilfish-Hisui',
-  //             },
-  //           ],
-  //         },
-  //         team2: {
-  //           score: 0,
-  //           team: [
-  //             {
-  //               id: 'tapukoko',
-  //               name: 'Tapu Koko',
-  //               status: 'fainted',
-  //             },
-  //             {
-  //               id: 'ironleaves',
-  //               name: 'Iron Leaves',
-  //             },
-  //             {
-  //               id: 'ironjugulis',
-  //               name: 'Iron Jugulis',
-  //               status: 'fainted',
-  //             },
-  //             {
-  //               id: 'terapagosterastal',
-  //               name: 'Terapagos-Terastal',
-  //               status: 'fainted',
-  //             },
-  //             {
-  //               id: 'clodsire',
-  //               name: 'Clodsire',
-  //               status: 'fainted',
-  //             },
-  //             {
-  //               id: 'shedinja',
-  //               name: 'Shedinja',
-  //             },
-  //           ],
-  //         },
-  //       },
-  //       {
-  //         link: '',
-  //         team1: {
-  //           score: 0,
-  //           team: [
-  //             {
-  //               id: 'pelipper',
-  //               name: 'Pelipper',
-  //               status: 'fainted',
-  //             },
-  //             {
-  //               id: 'archaludon',
-  //               name: 'Archaludon',
-  //               status: 'fainted',
-  //             },
-  //             {
-  //               id: 'swampertmega',
-  //               name: 'Swampert-Mega',
-  //             },
-  //             {
-  //               id: 'quaquaval',
-  //               name: 'Quaquaval',
-  //               status: 'fainted',
-  //             },
-  //             {
-  //               id: 'claydol',
-  //               name: 'Claydol',
-  //             },
-  //             {
-  //               id: 'qwilfishhisui',
-  //               name: 'Qwilfish-Hisui',
-  //               status: 'fainted',
-  //             },
-  //           ],
-  //         },
-  //         team2: {
-  //           score: 1,
-  //           team: [
-  //             {
-  //               id: 'tapukoko',
-  //               name: 'Tapu Koko',
-  //               status: 'fainted',
-  //             },
-  //             {
-  //               id: 'ironleaves',
-  //               name: 'Iron Leaves',
-  //               status: 'fainted',
-  //             },
-  //             {
-  //               id: 'ironjugulis',
-  //               name: 'Iron Jugulis',
-  //               status: 'fainted',
-  //             },
-  //             {
-  //               id: 'terapagosterastal',
-  //               name: 'Terapagos-Terastal',
-  //             },
-  //             {
-  //               id: 'clodsire',
-  //               name: 'Clodsire',
-  //               status: 'brought',
-  //             },
-  //             {
-  //               id: 'shedinja',
-  //               name: 'Shedinja',
-  //             },
-  //           ],
-  //         },
-  //       },
-  //       {
-  //         link: '',
-  //         team1: {
-  //           score: 0,
-  //           team: [
-  //             {
-  //               id: 'pelipper',
-  //               name: 'Pelipper',
-  //               status: 'fainted',
-  //             },
-  //             {
-  //               id: 'archaludon',
-  //               name: 'Archaludon',
-  //               status: 'fainted',
-  //             },
-  //             {
-  //               id: 'swampertmega',
-  //               name: 'Swampert-Mega',
-  //               status: 'fainted',
-  //             },
-  //             {
-  //               id: 'quaquaval',
-  //               name: 'Quaquaval',
-  //             },
-  //             {
-  //               id: 'claydol',
-  //               name: 'Claydol',
-  //               status: 'fainted',
-  //             },
-  //             {
-  //               id: 'qwilfishhisui',
-  //               name: 'Qwilfish-Hisui',
-  //             },
-  //           ],
-  //         },
-  //         team2: {
-  //           score: 2,
-  //           team: [
-  //             {
-  //               id: 'tapukoko',
-  //               name: 'Tapu Koko',
-  //               status: 'fainted',
-  //             },
-  //             {
-  //               id: 'ironleaves',
-  //               name: 'Iron Leaves',
-  //             },
-  //             {
-  //               id: 'ironjugulis',
-  //               name: 'Iron Jugulis',
-  //             },
-  //             {
-  //               id: 'terapagosterastal',
-  //               name: 'Terapagos-Terastal',
-  //               status: 'fainted',
-  //             },
-  //             {
-  //               id: 'clodsire',
-  //               name: 'Clodsire',
-  //               status: 'fainted',
-  //             },
-  //             {
-  //               id: 'shedinja',
-  //               name: 'Shedinja',
-  //               status: 'brought',
-  //             },
-  //           ],
-  //         },
-  //       },
-  //     ],
-  //   },
-  // ];
-
   signUp(signupData: object) {
     return this.apiService.post(
       `${ROOTPATH}/tournaments/${this.tournamentKey()}/signup`,
@@ -528,9 +355,9 @@ export class LeagueZoneService {
     );
   }
 
-  getTeam(teamId: string): Observable<League.LeagueTeam> {
+  getTeam(): Observable<League.LeagueTeam> {
     return this.apiService.get(
-      `${ROOTPATH}/tournaments/${this.tournamentKey()}/teams/${teamId}`,
+      `${ROOTPATH}/tournaments/${this.tournamentKey()}/teams/${this.teamKey()}`,
       true,
     );
   }

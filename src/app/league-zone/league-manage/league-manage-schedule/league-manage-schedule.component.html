@@ -1,0 +1,334 @@
+@if (!scheduleStages?.length) {
+  <div class="empty-state">No schedule data available.</div>
+} @else {
+  <div class="schedule">
+    @for (stage of scheduleStages; track stage._id) {
+      <section class="stage">
+        <button
+          type="button"
+          class="stage__header"
+          (click)="toggleStage(stage._id)"
+          [class.stage__header--collapsed]="!isStageOpen(stage._id)"
+        >
+          <pdz-icon
+            class="stage__toggle-icon"
+            [name]="
+              isStageOpen(stage._id)
+                ? 'keyboard_arrow_down'
+                : 'keyboard_arrow_right'
+            "
+          ></pdz-icon>
+          <h2 class="stage__title">{{ stage.name }}</h2>
+        </button>
+        @if (isStageOpen(stage._id)) {
+          <div class="stage__matchups">
+            @for (
+              matchup of getSortedMatchups(stage.matchups);
+              track matchup.id
+            ) {
+              @if (getMatchupForm(matchup.id); as matchupForm) {
+                <form class="matchup-card" [formGroup]="matchupForm">
+                  <div class="matchup-header">
+                    <div class="matchup-header__title">
+                      {{ matchup.team1.name }} ({{ matchup.team1.coach }}) vs
+                      {{ matchup.team2.name }} ({{ matchup.team2.coach }})
+                    </div>
+                    <div class="matchup-header__action">
+                      <button
+                        type="button"
+                        class="btn-primary"
+                        (click)="saveMatchup(matchup)"
+                        [disabled]="isSaving(matchup.id)"
+                        [class.btn-success]="getSaveSuccess(matchup.id)"
+                        [class.btn-error]="getSaveError(matchup.id)"
+                      >
+                        @if (isSaving(matchup.id)) {
+                          <span class="btn-loading">Saving...</span>
+                        } @else if (getSaveSuccess(matchup.id)) {
+                          <span class="btn-check">✓ Saved</span>
+                        } @else {
+                          Save Matchup
+                        }
+                      </button>
+                      @if (getSaveError(matchup.id); as errorMsg) {
+                        <div class="save-error">{{ errorMsg }}</div>
+                      }
+                    </div>
+                  </div>
+
+                  <div class="score-grid">
+                    <div class="field">
+                      <label>Matchup {{ matchup.team1.name }} Score</label>
+                      <input
+                        type="number"
+                        min="0"
+                        formControlName="matchupScoreTeam1"
+                      />
+                    </div>
+                    <div class="field">
+                      <label>Matchup {{ matchup.team2.name }} Score</label>
+                      <input
+                        type="number"
+                        min="0"
+                        formControlName="matchupScoreTeam2"
+                      />
+                    </div>
+                    <div class="field">
+                      <label>Matchup Winner</label>
+                      <select formControlName="matchupWinner">
+                        <option [ngValue]="null">Unassigned</option>
+                        <option value="team1">{{ matchup.team1.name }}</option>
+                        <option value="team2">{{ matchup.team2.name }}</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="match-list" formArrayName="matches">
+                    @for (
+                      matchForm of getMatchControls(matchup.id);
+                      track $index;
+                      let matchIndex = $index
+                    ) {
+                      <div class="match-card" [formGroupName]="matchIndex">
+                        <div class="match-card__header">
+                          <div class="match-card__title-group">
+                            <div class="match-card__title">
+                              Match {{ matchIndex + 1 }}
+                            </div>
+                            @if (
+                              getMatchValidationWarnings(
+                                matchup.id,
+                                matchIndex
+                              );
+                              as warnings
+                            ) {
+                              @if (warnings.length > 0) {
+                                <div class="match-card__warnings">
+                                  @for (warning of warnings; track warning) {
+                                    <div class="validation-warning">
+                                      ⚠ {{ warning }}
+                                    </div>
+                                  }
+                                </div>
+                              }
+                            }
+                          </div>
+                          <div class="match-card__actions">
+                            <button
+                              type="button"
+                              class="btn-secondary"
+                              (click)="analyzeMatchReplay(matchup, matchIndex)"
+                              [disabled]="isAnalyzing(matchup.id, matchIndex)"
+                            >
+                              {{
+                                isAnalyzing(matchup.id, matchIndex)
+                                  ? "Analyzing..."
+                                  : "Analyze Replay"
+                              }}
+                            </button>
+                            <button
+                              type="button"
+                              class="btn-remove"
+                              (click)="removeMatch(matchup.id, matchIndex)"
+                              title="Remove Match"
+                            >
+                              Remove
+                            </button>
+                          </div>
+                        </div>
+
+                        @if (
+                          getAnalysisError(matchup.id, matchIndex);
+                          as errorMessage
+                        ) {
+                          <div class="match-card__error">
+                            {{ errorMessage }}
+                          </div>
+                        }
+
+                        <div class="match-controls">
+                          <div class="field">
+                            <label>Replay URL</label>
+                            <input
+                              type="text"
+                              formControlName="link"
+                              placeholder="https://replay.pokemonshowdown.com/..."
+                            />
+                          </div>
+                          <div class="field">
+                            <label>{{ matchup.team1.name }} Score</label>
+                            <input
+                              type="number"
+                              min="0"
+                              formControlName="team1Score"
+                            />
+                          </div>
+                          <div class="field">
+                            <label>{{ matchup.team2.name }} Score</label>
+                            <input
+                              type="number"
+                              min="0"
+                              formControlName="team2Score"
+                            />
+                          </div>
+                          <div class="field">
+                            <label>Match Winner</label>
+                            <select formControlName="winner">
+                              <option [ngValue]="null">Unassigned</option>
+                              <option value="team1">
+                                {{ matchup.team1.name }}
+                              </option>
+                              <option value="team2">
+                                {{ matchup.team2.name }}
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+
+                        <div class="team-grid">
+                          <div class="team-panel" formArrayName="team1Pokemon">
+                            <div class="team-panel__title">
+                              {{ matchup.team1.name }} ({{
+                                matchup.team1.coach
+                              }})
+                            </div>
+                            <div class="pokemon-row pokemon-row--header">
+                              <span>Pokemon</span>
+                              <span>Status</span>
+                              <span>Direct Kills</span>
+                              <span>Indirect Kills</span>
+                              <span>Teammate Kills</span>
+                            </div>
+                            @for (
+                              pokemon of getPokemonControls(
+                                matchup.id,
+                                matchIndex,
+                                "team1"
+                              );
+                              track $index;
+                              let pokemonIndex = $index
+                            ) {
+                              <div
+                                class="pokemon-row"
+                                [formGroupName]="pokemonIndex"
+                              >
+                                <span class="pokemon-name">
+                                  {{
+                                    getPokemonLabel(pokemon.controls.id.value)
+                                  }}
+                                </span>
+                                <select formControlName="status">
+                                  <option [ngValue]="null">-</option>
+                                  <option value="brought">Brought</option>
+                                  <option value="used">Used</option>
+                                  <option value="fainted">Fainted</option>
+                                </select>
+                                <div formGroupName="kills">
+                                  <input
+                                    type="number"
+                                    min="0"
+                                    formControlName="direct"
+                                  />
+                                </div>
+                                <div formGroupName="kills">
+                                  <input
+                                    type="number"
+                                    min="0"
+                                    formControlName="indirect"
+                                  />
+                                </div>
+                                <div formGroupName="kills">
+                                  <input
+                                    type="number"
+                                    min="0"
+                                    formControlName="teammate"
+                                  />
+                                </div>
+                              </div>
+                            }
+                          </div>
+
+                          <div class="team-panel" formArrayName="team2Pokemon">
+                            <div class="team-panel__title">
+                              {{ matchup.team2.name }} ({{
+                                matchup.team2.coach
+                              }})
+                            </div>
+                            <div class="pokemon-row pokemon-row--header">
+                              <span>Pokemon</span>
+                              <span>Status</span>
+                              <span>Direct Kills</span>
+                              <span>Indirect Kills</span>
+                              <span>Teammate Kills</span>
+                            </div>
+                            @for (
+                              pokemon of getPokemonControls(
+                                matchup.id,
+                                matchIndex,
+                                "team2"
+                              );
+                              track $index;
+                              let pokemonIndex = $index
+                            ) {
+                              <div
+                                class="pokemon-row"
+                                [formGroupName]="pokemonIndex"
+                              >
+                                <span class="pokemon-name">
+                                  {{
+                                    getPokemonLabel(pokemon.controls.id.value)
+                                  }}
+                                </span>
+                                <select formControlName="status">
+                                  <option [ngValue]="null">-</option>
+                                  <option value="brought">Brought</option>
+                                  <option value="used">Used</option>
+                                  <option value="fainted">Fainted</option>
+                                </select>
+                                <div formGroupName="kills">
+                                  <input
+                                    type="number"
+                                    min="0"
+                                    formControlName="direct"
+                                  />
+                                </div>
+                                <div formGroupName="kills">
+                                  <input
+                                    type="number"
+                                    min="0"
+                                    formControlName="indirect"
+                                  />
+                                </div>
+                                <div formGroupName="kills">
+                                  <input
+                                    type="number"
+                                    min="0"
+                                    formControlName="teammate"
+                                  />
+                                </div>
+                              </div>
+                            }
+                          </div>
+                        </div>
+                      </div>
+                    }
+                  </div>
+
+                  <div class="matchup-footer">
+                    <button
+                      type="button"
+                      class="btn-secondary"
+                      (click)="addMatch(matchup)"
+                    >
+                      Add Match
+                    </button>
+                  </div>
+                </form>
+              }
+            }
+          </div>
+        }
+      </section>
+    }
+  </div>
+}

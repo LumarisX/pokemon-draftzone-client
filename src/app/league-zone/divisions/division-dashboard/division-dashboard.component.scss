@@ -1,6 +1,7 @@
 @use "../../../../styles/global.scss" as *;
 @use "../../../../styles/mixins" as *;
 @use "../../../../styles/mixins/buttons" as *;
+@use "../../league.mixins" as *;
 
 .widget {
   display: flex;
@@ -23,37 +24,37 @@
   }
 }
 
-.widget-container {
-  padding: var(--pdz-space-lg);
-  display: grid;
-  gap: 1rem;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
 .division-header {
-  display: flex;
-  flex-direction: column;
+  @include pdz-league-page-header-large();
+  flex-direction: row;
   align-items: center;
-  gap: var(--pdz-space-sm);
-  padding: var(--pdz-space-sm);
-  background-color: pdz-color(surface-container-low);
-  border-bottom: 2px solid pdz-color(primary);
+  justify-content: space-between;
 
-  @include respond-above(medium) {
-    flex-direction: row;
-    justify-content: space-between;
-    padding: var(--pdz-space-sm) var(--pdz-space-lg);
+  &__meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--pdz-space-xs);
+    flex: 1 1 auto;
+    min-width: 0;
+    height: 100%;
+
+    @include respond-above(medium) {
+      flex-direction: row;
+      align-items: center;
+      gap: var(--pdz-space-md);
+    }
+  }
+
+  &__back {
+    @include pdz-league-page-back-button();
   }
 
   &__info {
     display: flex;
     flex-direction: column;
     gap: var(--pdz-space-xs);
-    text-align: center;
-
-    @include respond-above(medium) {
-      text-align: left;
-    }
+    text-align: left;
   }
 
   &__league-name {
@@ -78,7 +79,8 @@
 
   &__image {
     max-width: 12rem;
-    max-height: 6rem;
+    height: 100%;
+    max-height: 8rem;
     object-fit: contain;
     filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
 
@@ -115,6 +117,82 @@
     &:hover {
       transform: translateY(-2px);
       box-shadow: var(--pdz-level-1);
+    }
+  }
+}
+
+.division-body {
+  padding: var(--pdz-space-md);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--pdz-space-md);
+  justify-content: center;
+}
+
+.section {
+  padding: var(--pdz-space-md) var(--pdz-space-xs);
+  background-color: pdz-color(surface-container-low);
+  border-radius: var(--pdz-shape-corner-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--pdz-space-sm);
+  height: fit-content;
+  box-shadow: var(--pdz-level-1);
+
+  &--matchups {
+    width: fit-content;
+  }
+
+  &-message {
+    @include apply-typography(body-md);
+    color: var(--pdz-color-on-surface-variant);
+    margin: 0;
+
+    &--error {
+      color: var(--pdz-color-error);
+    }
+  }
+
+  &-header {
+    @include apply-typography(title-md);
+    border-bottom: 2px solid pdz-color(primary);
+    padding: 0 var(--pdz-space-xs);
+  }
+
+  &-body {
+    max-height: 40rem;
+    overflow: auto;
+    scrollbar-gutter: stable both-edges;
+    padding: 0 var(--pdz-space-xs);
+    @include respond-above(medium) {
+      max-height: calc(100vh - 21rem);
+    }
+  }
+}
+
+.matchup-stage-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pdz-space-sm);
+}
+
+.matchup-stage {
+  &__title {
+    @include apply-typography(title-sm);
+  }
+
+  &__cards {
+    border-left: 2px solid var(--pdz-color-primary);
+    padding: var(--pdz-space-md) 0 var(--pdz-space-md) var(--pdz-space-md);
+    display: flex;
+    flex-direction: column;
+
+    gap: var(--pdz-space-sm);
+
+    pdz-matchup-card {
+      width: 100%;
+      max-width: 32rem;
+      background-color: pdz-color(surface);
     }
   }
 }

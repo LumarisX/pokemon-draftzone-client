@@ -1,3 +1,5 @@
+@use "../league.mixins" as *;
+
 $container-padding: var(--pdz-space-md);
 
 :host {
@@ -39,28 +41,13 @@ $container-padding: var(--pdz-space-md);
 }
 
 .entity-logo {
-  width: var(--logo-size);
-  height: var(--logo-size);
-  border-radius: 50%;
-  border: var(--logo-border-width) solid var(--pdz-color-primary-border-variant);
-  flex-shrink: 0;
-  overflow: hidden;
-  box-shadow: var(--pdz-level-1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: var(--pdz-color-surface-container-low);
-  img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: cover;
-  }
+  @include pdz-league-logo(3rem);
 
   &.positive {
-    border-color: lightgreen;
+    background-color: pdz-color(success);
   }
   &.negative {
-    border-color: lightcoral;
+    background-color: pdz-color(error);
   }
 }
 

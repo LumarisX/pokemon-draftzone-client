@@ -2,19 +2,22 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  inject,
   Input,
   OnInit,
   signal,
 } from '@angular/core';
-import { MatIconModule } from '@angular/material/icon';
+import { RouterModule } from '@angular/router';
+import { IconComponent } from '../../../images/icon/icon.component';
 import { SpriteComponent } from '../../../images/sprite/sprite.component';
+import { LeagueZoneService } from '../../../services/leagues/league-zone.service';
 import { League } from '../../league.interface';
 import { getLogoUrl } from '../../league.util';
-import { RouterModule } from '@angular/router';
+import { getNameByPid } from '../../../data/namedex';
 
 @Component({
   selector: 'pdz-matchup-card',
-  imports: [CommonModule, MatIconModule, SpriteComponent, RouterModule],
+  imports: [CommonModule, SpriteComponent, RouterModule, IconComponent],
   templateUrl: './matchup-card.component.html',
   styleUrls: ['./matchup-card.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -22,6 +25,8 @@ import { RouterModule } from '@angular/router';
 export class MatchupCardComponent implements OnInit {
   @Input({ required: true }) matchup!: League.Matchup;
   @Input() initiallyOpen: boolean = false;
+
+  leagueService = inject(LeagueZoneService);
 
   private _isOpen = signal<boolean>(false);
   isOpen = this._isOpen.asReadonly();
@@ -54,5 +59,13 @@ export class MatchupCardComponent implements OnInit {
 
   getLogo(logoUrl?: string): string {
     return getLogoUrl(logoUrl);
+  }
+
+  getTeam(team: League.MatchTeamStats) {
+    return Object.entries(team).map(([id, stats]) => ({
+      id,
+      name: getNameByPid(id),
+      status: stats.status,
+    }));
   }
 }

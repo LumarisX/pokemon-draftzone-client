@@ -1,0 +1,20 @@
+@if (scheduleStages) {
+  <div class="matchup-stage-list">
+    @for (stage of scheduleStages; track stage._id) {
+      <div class="matchup-stage">
+        <h4 class="matchup-stage__title">{{ stage.name }}</h4>
+        <div class="matchup-stage__cards">
+          @if (stage.matchups.length === 0) {
+            <p class="section-message">No matchups in this stage.</p>
+          } @else {
+            @for (matchup of stage.matchups; track matchup.id) {
+              <pdz-matchup-card [matchup]="matchup"></pdz-matchup-card>
+            }
+          }
+        </div>
+      </div>
+    }
+  </div>
+} @else {
+  <p class="section-message">No matchups scheduled.</p>
+}
