@@ -269,11 +269,11 @@ export class LeagueManageScheduleComponent {
       matchForm.controls.team2Pokemon.controls as PokemonStatsForm[]
     ).filter((control) => control.controls.status.value !== null).length;
 
-    if (team1Brought > 6) {
-      warnings.push(`Team 1 brought ${team1Brought} Pokémon (max 6)`);
+    if (team1Brought != 6) {
+      warnings.push(`Team 1 has ${team1Brought} Pokémon`);
     }
-    if (team2Brought > 6) {
-      warnings.push(`Team 2 brought ${team2Brought} Pokémon (max 6)`);
+    if (team2Brought != 6) {
+      warnings.push(`Team 2 has ${team2Brought} Pokémon`);
     }
 
     // Check kills/indirect vs deaths balance
