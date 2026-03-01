@@ -1,4 +1,13 @@
-import { Component, ElementRef, Input, OnInit, inject } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  Input,
+  OnChanges,
+  SimpleChanges,
+  inject,
+} from '@angular/core';
 import * as d3 from 'd3';
 import { ReplayPlayer } from '../replay.interface';
 
@@ -9,62 +18,77 @@ type DataType = {
 };
 
 @Component({
-  selector: 'replay-chart',
+  selector: 'pdz-replay-chart',
   standalone: true,
-  template: `<svg></svg>`,
-  styles: `
-  .fill-0 {
-    fill: var(--twc-aTeam-400)
-  }
-  .fill-1{
-    fill: var(--twc-bTeam-400)
-  }
-  `,
+  template: `<svg class="replay-chart__svg"></svg>`,
+  styleUrl: './replay-chart.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ReplayChartComponent implements OnInit {
-  private el = inject(ElementRef);
+export class ReplayChartComponent implements AfterViewInit, OnChanges {
+  private readonly el = inject<ElementRef<HTMLElement>>(ElementRef);
+  private readonly lineColors = [
+    'var(--pdz-color-primary)',
+    'var(--pdz-color-secondary)',
+  ];
+  private readonly axisColor = 'var(--pdz-color-on-surface)';
+  private readonly gridColor = 'var(--pdz-color-outline-variant)';
+  private isViewInitialized = false;
 
-  @Input()
-  data!: ReplayPlayer[];
+  private svg!: d3.Selection<SVGGElement, unknown, null, undefined>;
+  private graph!: d3.Selection<SVGGElement, unknown, null, undefined>;
+  private tooltipText!: d3.Selection<SVGTextElement, unknown, null, undefined>;
 
-  @Input()
-  monCount!: number;
+  @Input({ required: true }) data!: ReplayPlayer[];
 
   totalPercent = 100;
 
-  svg: any;
-  graph: any;
-  margin = { top: 25, right: 40, bottom: 10, left: 60 };
-  width = 500;
-  height = 300;
-  graphWidth = this.width - this.margin.left - this.margin.right;
-  graphHeight = this.height - this.margin.top - this.margin.bottom;
+  private readonly margin = { top: 25, right: 25, bottom: 10, left: 85 };
+  private readonly width = 500;
+  private readonly height = 300;
+  private readonly graphWidth =
+    this.width - this.margin.left - this.margin.right;
+  private readonly graphHeight =
+    this.height - this.margin.top - this.margin.bottom;
 
-  ngOnInit(): void {
-    this.totalPercent = this.data[0].team.length * 100;
+  ngAfterViewInit(): void {
+    this.isViewInitialized = true;
+    this.renderChart();
+  }
+
+  ngOnChanges(_: SimpleChanges): void {
+    if (this.isViewInitialized) {
+      this.renderChart();
+    }
+  }
+
+  private renderChart(): void {
+    this.clear();
+
+    if (!this.data.length) {
+      return;
+    }
+
+    const largestTeamSize = this.data.reduce(
+      (maxTeamSize, player) => Math.max(maxTeamSize, player.team.length),
+      0,
+    );
+
+    if (!largestTeamSize) {
+      return;
+    }
+
+    this.totalPercent = largestTeamSize * 100;
     this.createSvg();
     this.createTooltip();
     this.drawLines(this.data);
     this.addLegend();
   }
 
-  ngOnChanges(): void {
-    if(this.svg || this.graph) {
-      this.clear();
-      this.totalPercent = this.data[0].team.length * 100;
-      this.createSvg();
-      this.createTooltip();
-      this.drawLines(this.data);
-      this.addLegend(); 
-    }
+  private clear(): void {
+    d3.select(this.el.nativeElement).select('svg').selectAll('*').remove();
   }
 
-  clear(): void {
-    this.svg.selectAll('*').remove();
-    this.graph.selectAll('*').remove();
-  }
-
-  createSvg(): void {
+  private createSvg(): void {
     this.svg = d3
       .select(this.el.nativeElement)
       .select('svg')
@@ -72,55 +96,47 @@ export class ReplayChartComponent implements OnInit {
         'viewBox',
         `0 0 ${this.width + this.margin.left + this.margin.right} ${
           this.height + this.margin.top + this.margin.bottom
-        }`
+        }`,
       )
+      .attr('preserveAspectRatio', 'xMidYMid meet')
       .append('g')
       .attr('transform', `translate(${this.margin.left},${this.margin.top})`);
 
     this.graph = this.svg.append('g');
   }
 
-  createTooltip(): void {
-    this.svg
+  private createTooltip(): void {
+    this.tooltipText = this.svg
       .append('text')
-      .attr('id', 'tooltip-text')
+      .attr('class', 'replay-chart__tooltip')
       .attr('text-anchor', 'middle')
       .attr('alignment-baseline', 'middle')
       .attr('font-size', '12px')
+      .attr('fill', this.axisColor)
       .style('visibility', 'hidden');
   }
 
-  drawLines(data: ReplayPlayer[]): void {
-    // Create the x and y scales
+  private drawLines(data: ReplayPlayer[]): void {
     const linePad = 1;
     const min = 0;
-    const max =
-      linePad +
-      data.reduce(
-        (max, player) =>
-          (max = player.team.length > max ? player.team.length : max),
-        0
-      ) *
-        100;
-
-    const x = d3
-      .scaleLinear()
-      .range([0, this.graphWidth])
-      .domain([
+    const max = linePad + this.totalPercent;
+    const maxTurn = data.reduce((currentMax, player) => {
+      const playerMaxTurn = player.turnChart.reduce(
+        (turnMax, turnPoint) => Math.max(turnMax, turnPoint.turn),
         0,
-        data.reduce(
-          (max, player) =>
-            (max =
-              player.turnChart[player.turnChart.length - 1].turn > max
-                ? player.turnChart[player.turnChart.length - 1].turn
-                : max),
-          0
-        ),
-      ]);
+      );
+
+      return Math.max(currentMax, playerMaxTurn);
+    }, 0);
+
+    if (!maxTurn) {
+      return;
+    }
+
+    const x = d3.scaleLinear().range([0, this.graphWidth]).domain([0, maxTurn]);
 
     const y = d3.scaleLinear().domain([min, max]).range([this.graphHeight, 0]);
 
-    // Add horizontal grid lines
     this.graph
       .append('g')
       .attr('class', 'grid')
@@ -132,35 +148,37 @@ export class ReplayChartComponent implements OnInit {
       .attr('x2', this.graphWidth)
       .attr('y1', (d: number) => y(d))
       .attr('y2', (d: number) => y(d))
-      .attr('stroke', 'lightgrey')
+      .attr('stroke', this.gridColor)
       .attr('stroke-width', 0.5);
 
-    // Add the x Axis
     this.graph
       .append('g')
+      .attr('class', 'replay-chart__x-axis')
       .attr('transform', 'translate(0,' + this.graphHeight + ')')
       .call(d3.axisBottom(x));
 
-    // Add x-axis label
     this.graph
       .append('text')
-      .attr('class', 'x-axis-label')
+      .attr('class', 'replay-chart__axis-label')
       .attr('text-anchor', 'middle')
       .attr('x', this.graphWidth / 2)
-      .attr('y', this.graphHeight + this.margin.bottom + 25) // Adjusted position
+      .attr('y', this.graphHeight + this.margin.bottom + 25)
+      .attr('fill', this.axisColor)
       .text('Turn');
 
-    // Add the y Axis
-    this.graph.append('g').call(d3.axisLeft(y).tickFormat((d) => d + '%'));
+    this.graph
+      .append('g')
+      .attr('class', 'replay-chart__y-axis')
+      .call(d3.axisLeft(y).tickFormat((d) => `${d}%`));
 
-    // Add y-axis label
     this.graph
       .append('text')
-      .attr('class', 'y-axis-label')
+      .attr('class', 'replay-chart__axis-label')
       .attr('text-anchor', 'middle')
       .attr('transform', 'rotate(-90)')
       .attr('x', -this.graphHeight / 2)
-      .attr('y', -this.margin.left + 20) // Adjusted position
+      .attr('y', -this.margin.left + 26)
+      .attr('fill', this.axisColor)
       .text('Total HP (%)');
 
     const line = d3
@@ -168,78 +186,78 @@ export class ReplayChartComponent implements OnInit {
       .x((d) => x(d.turn)!)
       .y((d) => y(this.totalPercent - d.damage));
 
-    let colors = ['#06b6d4', '#EE6717'];
-    for (let i in data) {
+    for (const [index, player] of data.entries()) {
+      const strokeColor = this.lineColors[index] ?? this.axisColor;
+
       this.graph
         .append('path')
-        .datum(data[i].turnChart)
+        .datum(player.turnChart)
         .attr('fill', 'none')
         .attr('stroke-width', 2)
         .attr('d', line)
-        .attr('stroke', `${colors[i]}`);
+        .attr('stroke', strokeColor);
 
       this.graph
         .append('g')
         .selectAll('dot')
-        .data(data[i].turnChart)
+        .data(player.turnChart)
         .join('circle')
         .attr('cx', (d: DataType) => x(d.turn)!)
         .attr('cy', (d: DataType) => y(this.totalPercent - d.damage))
         .attr('r', 3)
-        .attr('fill', `${colors[i]}`);
+        .attr('fill', strokeColor);
     }
-    const tooltipText = d3.select('#tooltip-text');
 
     this.graph
-      .selectAll('circle')
+      .selectAll<SVGCircleElement, DataType>('circle')
       .on('mouseover', (event: MouseEvent, d: DataType) => {
         const [xPosition, yPosition] = d3.pointer(event);
-        tooltipText
+        this.tooltipText
           .attr('x', xPosition)
           .attr('y', yPosition - 10)
           .text(`${(this.totalPercent - d.damage).toFixed(2)}%`)
           .style('visibility', 'visible');
       })
       .on('mouseleave', () => {
-        tooltipText.style('visibility', 'hidden');
+        this.tooltipText.style('visibility', 'hidden');
       });
   }
-  addLegend(): void {
+
+  private addLegend(): void {
     const legend = this.svg
       .append('g')
-      .attr('class', 'legend')
+      .attr('class', 'replay-chart__legend')
       .attr('transform', `translate(${this.graphWidth + 20}, 20)`);
 
     const legendItems = legend
-      .selectAll('.legend-item')
+      .selectAll('.replay-chart__legend-item')
       .data(this.data.map((d) => d.username))
       .enter()
       .append('g')
-      .attr('class', 'legend-item')
-      .attr('transform', (d: any, i: number) => `translate(0, ${i * 20})`);
+      .attr('class', 'replay-chart__legend-item')
+      .attr(
+        'transform',
+        (_: string | undefined, i: number) => `translate(0, ${i * 20})`,
+      );
 
     legendItems
       .append('rect')
       .attr('x', 0)
       .attr('width', 10)
       .attr('height', 10)
-      .attr('fill', (d: any, i: number) => ['#06b6d4', '#EE6717'][i]);
+      .attr(
+        'fill',
+        (_: string | undefined, i: number) =>
+          this.lineColors[i] ?? this.axisColor,
+      );
 
     legendItems
       .append('text')
       .attr('x', 20)
       .attr('y', 5)
       .attr('dy', '0.35em')
+      .attr('fill', this.axisColor)
       .attr('font-size', '12px')
-      .text((d: any) => d);
-  }
-
-  filterTicks(maxTicks: number): number[] {
-    const desiredTickCount = 20; // Adjust as needed
-    const step = Math.ceil(maxTicks / desiredTickCount);
-    return Array.from(
-      { length: Math.ceil(maxTicks / step) },
-      (_, i) => i * step
-    );
+      .text((d: string | undefined) => d ?? 'Unknown');
   }
 }

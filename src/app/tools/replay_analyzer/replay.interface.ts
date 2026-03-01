@@ -10,7 +10,7 @@ export type ReplayData = {
 };
 
 export type ReplayPlayer = {
-  username: undefined | string;
+  username?: string;
   total: {
     kills: number;
     deaths: number;

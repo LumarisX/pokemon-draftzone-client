@@ -1,7 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  OnInit,
+  inject,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ReplayService } from '../../services/replay.service';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { ReplayChartComponent } from './replay-chart/replay-chart.component';
@@ -14,23 +21,9 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
-  selector: 'replay-analyzer',
-  standalone: true,
+  selector: 'pdz-replay-analyzer',
   templateUrl: './replay.component.html',
-  styles: [
-    `
-      ::ng-deep mat-divider {
-        width: 100% !important;
-        display: block !important;
-        margin-top: 10px !important;
-        margin-bottom: 10px !important;
-      }
-      ::ng-deep .pdz-centered-panel .mat-content,
-      ::ng-deep .pdz-left-aligned-panel .mat-content {
-        margin-right: 0 !important;
-      }
-    `,
-  ],
+  styleUrls: ['./replay.component.scss'],
   imports: [
     CommonModule,
     RouterModule,
@@ -42,60 +35,80 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatDividerModule,
     MatTooltipModule,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ReplayComponent implements OnInit {
   private replayService = inject(ReplayService);
   private route = inject(ActivatedRoute);
+  private destroyRef = inject(DestroyRef);
 
-  private _replayURI: string = '';
+  private _replayURI = '';
   replayData: ReplayData | undefined;
-  analyzed: boolean = true;
-  get replayURI() {
+  analyzed = true;
+
+  get replayURI(): string {
     return this._replayURI;
   }
 
-  set replayURI(value) {
+  set replayURI(value: string) {
     this.analyzed = false;
     this._replayURI = value;
   }
 
   ngOnInit(): void {
-    this.route.queryParams.subscribe((params) => {
-      if ('replay' in params) {
-        this.replayURI = decodeURIComponent(params['replay']);
-        this.analyze();
-        this.analyzed = true;
-      }
-    });
+    this.route.queryParams
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((params) => {
+        if ('replay' in params && typeof params['replay'] === 'string') {
+          this.replayURI = decodeURIComponent(params['replay']);
+          this.analyze();
+        }
+      });
   }
 
-  analyze() {
+  analyze(): void {
+    const replayURI = this.replayURI.trim();
+    if (!replayURI) {
+      this.analyzed = false;
+      this.replayData = undefined;
+      return;
+    }
+
     this.analyzed = true;
     this.replayService
-      .analyzeReplay(this.replayURI)
-      .subscribe((data) => (this.replayData = data));
+      .analyzeReplay(replayURI)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (data) => {
+          this.replayData = data;
+        },
+        error: () => {
+          this.replayData = undefined;
+          this.analyzed = false;
+        },
+      });
   }
 
-  remainingSeconds(seconds: number) {
+  remainingSeconds(seconds: number): number {
     return Math.floor(seconds % 60);
   }
 
-  toMinutes(seconds: number) {
+  toMinutes(seconds: number): number {
     return Math.floor(seconds / 60);
   }
 
-  playerClass(index: number) {
+  playerClass(index: number): string {
     if (index === 1) {
-      return 'bg-aTeam-200';
+      return 'replay-analyzer__player--team-a';
     }
     if (index === 2) {
-      return 'bg-bTeam-200';
+      return 'replay-analyzer__player--team-b';
     }
 
     return '';
   }
 
-  getNameByPid(pid: string) {
+  getNameByPid(pid: string): string {
     return getNameByPid(pid);
   }
 }

@@ -1,0 +1,30 @@
+@use "../../../../styles/global" as *;
+@use "../../../../styles/mixins" as *;
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+.replay-chart {
+  &__svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+}
+
+:host ::ng-deep {
+  .replay-chart__x-axis,
+  .replay-chart__y-axis {
+    text {
+      fill: pdz-color("on-surface");
+      @include apply-typography(body-sm);
+    }
+
+    path,
+    line {
+      stroke: pdz-color("outline");
+    }
+  }
+}
