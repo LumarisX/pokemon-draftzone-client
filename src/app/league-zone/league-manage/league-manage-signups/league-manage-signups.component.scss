@@ -1,3 +1,5 @@
+@use "../../../../styles/global" as *;
+@use "../../../../styles/_mixins" as *;
 table {
   border-collapse: collapse;
   table-layout: auto;
@@ -25,16 +27,154 @@ tr:hover {
 
 .table-container {
   padding: 16px;
-  overflow-x: auto; /* Add horizontal scroll for small screens */
+  overflow: auto;
+  width: 100%;
+  table {
+    width: 100%;
+
+    overflow: auto;
+
+    max-height: 40rem;
+  }
 }
 
 h2 {
   font-family: var(--pdz-font-fancy);
   font-size: 1.5rem;
+}
+
+.signups-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--pdz-space-md);
   padding: var(--pdz-space-lg);
+
+  &__actions {
+    display: flex;
+    gap: var(--pdz-space-sm);
+    flex-wrap: wrap;
+  }
+
+  &__button {
+    border: 1px solid pdz-color(primary-border);
+    border-radius: var(--pdz-shape-corner-sm);
+    background-color: pdz-color(primary-container);
+    color: pdz-color(on-primary-container);
+    padding: 0.35rem 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+      background-color: pdz-color(primary-container-hover);
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+
+    &--ghost {
+      background-color: pdz-color(surface-container);
+      color: pdz-color(on-surface);
+
+      &:hover:not(:disabled) {
+        background-color: pdz-color(surface-container-low);
+      }
+    }
+  }
 }
 
 img {
   height: 4rem;
   width: 4rem;
+}
+
+.file-input-hidden {
+  display: none;
+}
+
+.logo-cell {
+  vertical-align: top;
+}
+
+.logo-button {
+  border: none;
+  background: transparent;
+  padding: 0;
+  width: 4rem;
+  height: 4rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+}
+
+.add-logo-btn {
+  min-height: 4rem;
+  height: 100%;
+  width: 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: pdz-color(primary-container);
+  &:hover {
+    background-color: pdz-color(primary-hover);
+  }
+}
+
+.logo-error {
+  margin-top: 0.35rem;
+  font-size: 0.8rem;
+  color: pdz-color(error);
+}
+
+.logo-uploading {
+  margin-top: 0.35rem;
+  font-size: 0.8rem;
+  color: pdz-color(on-surface-variant);
+}
+
+.readonly-checkbox {
+  pointer-events: none;
+}
+
+.division-header {
+  display: flex;
+  gap: var(--pdz-space-md);
+  margin-bottom: var(--pdz-space-sm);
+}
+
+.division-move-btn {
+  box-shadow: var(--pdz-level-1);
+  border-radius: var(--pdz-shape-corner-sm);
+  padding: 0 var(--pdz-space-sm);
+  background-color: pdz-color(surface-container);
+  &:hover {
+    background-color: pdz-color(surface-container-low);
+  }
+}
+
+.division-title {
+  @include apply-typography(title-md);
+}
+
+.time-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+
+  &__time {
+    font-weight: 600;
+  }
+
+  &__zone {
+    font-size: 0.85rem;
+    color: pdz-color(on-surface-variant);
+  }
 }

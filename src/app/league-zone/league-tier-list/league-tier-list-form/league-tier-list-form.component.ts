@@ -9,25 +9,23 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { LoadingComponent } from '../../../images/loading/loading.component';
 import { SpriteComponent } from '../../../images/sprite/sprite.component';
-import { LeagueZoneService } from '../../../services/leagues/league-zone.service';
 import {
   LeagueTier,
-  LeagueTierGroup,
   TierPokemon,
 } from '../../../interfaces/tier-pokemon.interface';
+import { LeagueZoneService } from '../../../services/leagues/league-zone.service';
 import { SORT_MAP, SortOption } from '../tier-list.utils';
 import {
   PokemonEditDialogComponent,
   PokemonEditDialogData,
 } from './pokemon-edit-dialog/pokemon-edit-dialog.component';
 import { TierEditDialogComponent } from './tier-edit-dialog/tier-edit-dialog.component';
-import { TierGroupEditDialogComponent } from './tier-group-edit-dialog/tier-group-edit-dialog.component';
 
 export type EditTierPokemon = TierPokemon & {
   moveHistory?: Array<{
@@ -40,6 +38,7 @@ export type EditTierPokemon = TierPokemon & {
 
 interface EditableTier {
   name: string;
+  cost?: number;
   pokemon: EditTierPokemon[];
 }
 
@@ -99,12 +98,8 @@ export class LeagueTierListFormComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (data) => {
-          // Flatten tier groups into a single array of tiers
-          const flatTiers = (data.tierList as LeagueTierGroup[]).flatMap(
-            (group) => group.tiers,
-          );
+          const flatTiers = [...data.tierList];
 
-          // Separate Untiered tier from regular tiers
           const nullTierIndex = flatTiers.findIndex(
             (tier) =>
               tier.name.toLowerCase() === this.UNTIERED_TIER_NAME.toLowerCase(),
@@ -385,7 +380,7 @@ export class LeagueTierListFormComponent implements OnInit, OnDestroy {
     const dialogData: PokemonEditDialogData = {
       pokemon: pokemon,
       currentTier: tier,
-      tierGroups: [{ tiers: this.tiers() ?? [] }] as LeagueTierGroup[],
+      tiers: this.tiers() ?? [],
     };
 
     const dialogRef = this.dialog.open(PokemonEditDialogComponent, {

@@ -43,9 +43,9 @@ export class WebSocketService {
 
   constructor() {}
 
-  connect(urlPath: string): Observable<any> {
+  connect(): Observable<any> {
     if (!this.socket$ || !this.socket$.connected) {
-      this.socket$ = io(this.serverUrl, { path: '/' + urlPath + '/' });
+      this.socket$ = io(this.serverUrl, { path: '/ws/' });
       this.socket$.on(
         'message',
         (message: JsonRpcResponse | { event: string; data: any }) => {

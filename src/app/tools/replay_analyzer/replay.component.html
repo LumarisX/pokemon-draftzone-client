@@ -117,34 +117,15 @@
                   {{ player.luck.status.expected | percent }}
                 </div>
               </div>
-              <div *ngIf="player.win" class="font-bold mt-2">Winner</div>
-            </div>
-            <!-- Pokemon cards area -->
-            <div class="flex-grow flex justify-center">
-              <div class="w-full flex flex-wrap gap-2 justify-center">
-                <mat-card *ngFor="let mon of player.team" class="p-1 w-fit">
-                  <mat-card-header class="justify-center">
-                    <mat-card-title class="w-20 pb-5">
-                      <pdz-sprite title="{{ mon.formes[0].detail }}" [pokemon]="{ id: mon.formes[0].id, name: '' }"
-                        [disabled]="mon.fainted"></pdz-sprite>
-                    </mat-card-title>
-                  </mat-card-header>
-                  <mat-card-content class="!flex flex-col gap-1 !mr-0">
-                    <div class="grid grid-cols-2 gap-2">
-                      <div class="p-2 text-center">
-                        <span class="font-semibold block mb-1"> Kills: </span>
-                        <!-- Tooltip for direct and indirect kills - shows up only when indirect > 0 -->
-                        <mat-expansion-panel disabled hideToggle class="pdz-centered-panel cursor-help"
-                          [matTooltip]="mon.kills[1] ? mon.kills[0] + ' direct, ' + mon.kills[1] + ' indirect' : ''">
-                          <!-- Class prevents greyed out text on disabled expansion panel -->
-                          <mat-expansion-panel-header class="!text-[var(--mat-expansion-header-text-color)]">
-                            <mat-panel-title class="!mr-0 !flex !justify-center !w-full">
-                              <span>
-                                {{ mon.kills[0] + (mon.kills[1] || 0) }}
-                              </span>
-                            </mat-panel-title>
-                          </mat-expansion-panel-header>
-                        </mat-expansion-panel>
+              <div class="w-full flex justify-center">
+                <div class="flex flex-wrap">
+                  @for (mon of player.team; track mon) {
+                    <div class="p-1">
+                      <div class="w-20">
+                        <pdz-sprite
+                          [pokemon]="{ id: mon.formes[0].id, name: '' }"
+                          [disabled]="mon.status === 'fainted'"
+                        ></pdz-sprite>
                       </div>
                       <div class="p-2 text-center">
                         <span class="font-semibold block mb-1"> Deaths: </span>

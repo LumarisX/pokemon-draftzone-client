@@ -8,6 +8,7 @@ import { Draft } from '../../../interfaces/draft';
 import { LSDraftData } from '../../../planner/plannner.component';
 import { DraftService } from '../../../services/draft.service';
 import { DraftOverviewPath } from '../draft-overview-routing.module';
+import { TournamentDetails } from '../../../interfaces/league';
 
 @Component({
   selector: 'draft-preview',
@@ -25,6 +26,7 @@ export class DraftPreviewComponent {
   private draftService = inject(DraftService);
 
   drafts?: Draft[];
+  tournaments?: TournamentDetails[];
   draftPath = DraftOverviewPath;
   menuState: {
     [key: string]: '' | 'confirm-archive' | 'confirm-delete';
@@ -40,9 +42,13 @@ export class DraftPreviewComponent {
     console.log('Loading drafts...');
     this.drafts = undefined;
     this.draftService.getDraftsList().subscribe((data) => {
-      this.drafts = data;
+      this.drafts = data.drafts;
       this.drafts.forEach((draft) => {
         this.menuState[draft.tournamentId] = '';
+      });
+      this.tournaments = data.tournaments;
+      this.tournaments.forEach((tournament) => {
+        this.menuState[tournament.tournamentKey] = '';
       });
     });
   }
@@ -98,12 +104,12 @@ export class DraftPreviewComponent {
     this.openDropdown = null;
   }
 
-  scoreString(draft: Draft) {
+  scoreString(draft: { score: { wins: number; loses: number } }) {
     if (draft.score) return `${draft.score.wins} - ${draft.score.loses}`;
     return `Unscored`;
   }
 
-  scoreClass(draft: Draft) {
+  scoreClass(draft: { score: { wins: number; loses: number } }) {
     if (!draft.score) return 'pdz-background-neut';
     if (draft.score.wins > draft.score.loses) return 'pdz-background-pos';
     if (draft.score.wins < draft.score.loses) return 'pdz-background-neg';

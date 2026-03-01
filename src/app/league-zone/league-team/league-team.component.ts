@@ -1,52 +1,118 @@
-import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
-import { LeagueZoneService } from '../../services/leagues/league-zone.service';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
+import { RouterModule } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { IconComponent } from '../../images/icon/icon.component';
+import { LoadingComponent } from '../../images/loading/loading.component';
+import { SpriteComponent } from '../../images/sprite/sprite.component';
+import { LeagueZoneService } from '../../services/leagues/league-zone.service';
+import { LeagueScheduleWidgetComponent } from '../league-widgets/league-schedule-widget/league-schedule-widget.component';
+import { LeagueTradeWidgetComponent } from '../league-widgets/league-trade-widget/league-trade-widget.component';
+import { League, TradeLog } from '../league.interface';
+import { getLogoUrl } from '../league.util';
 
 @Component({
   selector: 'pdz-league-team',
-  imports: [CommonModule],
+  imports: [
+    CommonModule,
+    RouterModule,
+    LoadingComponent,
+    MatIconModule,
+    IconComponent,
+    SpriteComponent,
+    LeagueTradeWidgetComponent,
+    LeagueScheduleWidgetComponent,
+  ],
   templateUrl: './league-team.component.html',
   styleUrls: ['./league-team.component.scss'],
 })
 export class LeagueTeamComponent implements OnInit, OnDestroy {
-  leagueService = inject(LeagueZoneService);
-  private activatedRoute = inject(ActivatedRoute);
+  private readonly leagueService = inject(LeagueZoneService);
 
-  teamData: any = null;
-  loading = false;
-  error: string | null = null;
+  teamData?: League.LeagueTeam;
+  scheduleStages!: League.Stage[];
+  tradeStages?: { name: string; trades: TradeLog[] }[];
+  getLogoUrl = getLogoUrl;
 
-  private destroy$ = new Subject<void>();
+  total = {
+    cost: 0,
+    kill: 0,
+    deaths: 0,
+  };
 
-  ngOnInit(): void {
-    this.activatedRoute.paramMap
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((params) => {
-        const teamId = params.get('teamId');
-        if (teamId) {
-          this.fetchTeamData(teamId);
-        }
+  private readonly destroy$ = new Subject<void>();
+
+  getCurrentTimeInTimezone(timezone?: string): string {
+    if (!timezone) return '';
+    try {
+      const now = new Date();
+      const formatter = new Intl.DateTimeFormat('en-US', {
+        timeZone: timezone,
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true,
       });
+      return formatter.format(now);
+    } catch (error) {
+      return timezone;
+    }
   }
 
-  fetchTeamData(teamId: string): void {
-    this.loading = true;
-    this.error = null;
+  ngOnInit(): void {
+    this.loadTeam();
+    this.loadSchedule();
+    this.loadTrades();
+  }
 
+  private loadTeam(): void {
     this.leagueService
-      .getTeam(teamId)
+      .getTeam()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (data) => {
           this.teamData = data;
-          this.loading = false;
+          this.total = data.draft.reduce(
+            (sum, p) => ({
+              cost: sum.cost + p.cost,
+              kill: sum.kill,
+              deaths: sum.deaths,
+            }),
+            {
+              cost: 0,
+              kill: 0,
+              deaths: 0,
+            },
+          );
         },
-        error: (err) => {
-          this.error = err?.message || 'Failed to fetch team data';
-          this.loading = false;
+        error: (error) => {
+          console.error('Error loading team data:', error);
+        },
+      });
+  }
+
+  private loadSchedule(): void {
+    this.leagueService
+      .getSchedule()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (data) => {
+          this.scheduleStages = data;
+        },
+        error: (error) => {
+          console.error('Error loading schedule:', error);
+        },
+      });
+  }
+
+  private loadTrades(): void {
+    this.leagueService
+      .getTrades()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (data) => {
+          this.tradeStages = data.stages;
         },
       });
   }

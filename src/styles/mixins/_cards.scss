@@ -80,7 +80,7 @@
     justify-content: space-between;
     align-items: center;
     padding: map.get($config, "header-padding");
-
+    min-height: 3.5rem;
     .more-btn {
       @include icon-button(());
     }

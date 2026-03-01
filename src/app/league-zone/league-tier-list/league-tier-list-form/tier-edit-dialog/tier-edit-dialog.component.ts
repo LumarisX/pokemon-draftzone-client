@@ -1,5 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import {
   MAT_DIALOG_DATA,
@@ -8,7 +8,7 @@ import {
 } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { LeagueTierGroup } from '../../../../interfaces/tier-pokemon.interface';
+import { LeagueTier } from '../../../../interfaces/tier-pokemon.interface';
 
 @Component({
   selector: 'pdz-tier-edit-dialog',
@@ -24,10 +24,7 @@ import { LeagueTierGroup } from '../../../../interfaces/tier-pokemon.interface';
 })
 export class TierEditDialogComponent implements OnInit {
   dialogRef = inject<MatDialogRef<TierEditDialogComponent>>(MatDialogRef);
-  data = inject<{
-    tierGroup: LeagueTierGroup;
-  }>(MAT_DIALOG_DATA);
-  private fb = inject(FormBuilder);
+  data = inject<{ tier: LeagueTier }>(MAT_DIALOG_DATA);
 
   ngOnInit(): void {}
 

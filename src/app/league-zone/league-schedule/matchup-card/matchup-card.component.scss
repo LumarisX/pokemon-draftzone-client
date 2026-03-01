@@ -1,229 +1,371 @@
-.matchup-container {
-  padding: var(--pdz-space-lg);
+@use "../../league.mixins" as *;
+@use "../../../../styles/global" as *;
+@use "../../../../styles/mixins" as *;
+
+$container-padding: var(--pdz-space-xs);
+
+:host {
+  border-radius: var(--pdz-shape-corner-lg);
+  box-shadow: var(--pdz-level-2);
 }
 
 .matchup-card {
   display: flex;
   flex-direction: column;
-  background-color: var(--pdz-color-surface);
-  box-shadow: var(--pdz-level-2);
-  width: 26rem;
-  border-radius: 2rem;
-  padding: var(--pdz-space-md);
-  &.open {
-    .versus-container {
-      mat-icon {
-        display: none;
-      }
-    }
-  }
-}
-
-.matchup-header {
-  display: flex;
+  gap: var(--pdz-space-xs);
+  padding: $container-padding;
+  position: relative;
+  transition: all 0.3s ease-in-out;
   width: 100%;
-  align-items: stretch;
+  min-width: 0;
 
-  .team-info-container {
-    display: flex;
-    width: 46%;
-    align-items: center;
-    .team-logo {
-      width: 4rem;
-      height: 4rem;
-      border-radius: 2rem;
-      border-width: 2px;
-      flex-shrink: 0;
-      overflow: hidden;
-      border-color: var(--pdz-color-primary-border-variant);
-      box-shadow: var(--pdz-level-1);
-      &.positive {
-        border-color: lightgreen;
-      }
-      &.negative {
-        border-color: lightcoral;
-      }
-    }
-    .team-info {
-      padding: 0 0.5rem;
-      flex-grow: 1;
-      &.left {
-        text-align: end;
-      }
-      .team-name {
-        font-size: 0.7rem;
-      }
-      .coach-name {
-        font-size: 0.9rem;
-        font-weight: 600;
-      }
-    }
-  }
-
-  .versus-container {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    width: 8%;
-    .versus {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-weight: var(--pdz-font-weight-bold);
-      font-size: 0.8rem;
-    }
-    mat-icon {
-      position: absolute;
-      bottom: -0.75rem;
-      left: 50%;
-      transform: translate(-50%, 0);
-      color: var(--pdz-color-surface-container-highest);
-    }
-  }
-
-  .replay-button {
-    position: absolute;
-    top: -0.375rem;
-    left: 50%;
-    transform: translate(-50%, 0);
-    color: var(--pdz-color-primary);
-    padding: 0 0.25rem;
-    border-radius: var(--pdz-shape-corner-sm);
-    font-size: 0.6rem;
-    &.enabled {
-      box-shadow: var(--pdz-level-1);
-      background-color: var(--pdz-color-primary);
-      color: var(--pdz-color-on-primary);
-    }
-    &:active {
-      margin-top: 1px;
-      margin-bottom: -1px;
-      box-shadow: var(--pdz-level-0);
-    }
+  &--clickable {
+    cursor: pointer;
   }
 }
 
-.matchup-content {
+.matchup-card__header {
+  display: flex;
+  align-items: center;
+  gap: var(--pdz-space-sm);
+  min-width: 0;
+}
+
+.matchup-card__team-info-container {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: var(--pdz-space-sm);
+  padding: $container-padding;
+  border-radius: var(--pdz-shape-corner-lg);
+  transition: all 0.2s;
+  min-width: 0;
+  border: 2px solid transparent;
+
+  &:hover {
+    cursor: pointer;
+    background-color: pdz-color(surface-container);
+  }
+
+  &:active {
+    margin-top: 1px;
+    margin-bottom: -1px;
+    box-shadow: var(--pdz-level-inset-1);
+  }
+
+  &--right {
+    flex-direction: row-reverse;
+    text-align: right;
+  }
+
+  &--winner {
+    border: 2px solid pdz-color(positive);
+  }
+
+  &--loser {
+    border: 2px solid pdz-color(negative);
+  }
+}
+
+.matchup-card__team-logo {
+  @include pdz-league-logo(2rem);
+
+  @include respond-above(medium) {
+    @include pdz-league-logo(3rem);
+  }
+}
+
+.matchup-card__team-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.matchup-card__team-name {
+  font-weight: var(--pdz-font-weight-semibold);
+  @include apply-typography(body-sm);
+  margin: 0;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+}
+
+.matchup-card__coach-name {
+  @include apply-typography(body-xs);
+  color: pdz-color(on-surface-variant);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin: 0;
+}
+
+.matchup-card__center {
   display: flex;
   flex-direction: column;
-  .score-container {
-    display: flex;
-    width: 100%;
-    height: 0.75rem;
-    align-items: center;
-    justify-content: center;
-    .score {
-      display: flex;
-      width: fit-content;
-      column-gap: 0.25rem;
-      .score-box {
-        width: 1.25rem;
-        line-height: 1.25rem;
-        text-align: center;
-        font-weight: var(--pdz-font-weight-bold);
-        font-size: 1rem;
-        height: 1.25rem;
-        border-radius: var(--pdz-shape-corner-xs);
-        box-shadow: var(--pdz-level-1);
-        background-color: white;
-        color: var(--pdz-color-primary);
-        &.positive {
-          color: lightgreen;
-        }
+  align-items: center;
+  gap: var(--pdz-space-xs);
+  flex-shrink: 0;
+}
 
-        &.negative {
-          color: lightcoral;
-        }
-        mat-icon {
-          font-size: 1.2rem;
-          width: fit-content;
-          line-height: 1.25rem;
-        }
-      }
-    }
-  }
-  .matches-container {
-    display: flex;
-    min-width: 100%;
-    justify-content: space-between;
-    align-items: center;
-    column-gap: 0.25rem;
-  }
+.matchup-card__replay-button {
+  padding: var(--pdz-space-xs) var(--pdz-space-sm);
+  border-radius: var(--pdz-shape-corner-full);
+  font-size: 0.7rem;
+  line-height: 1;
+  border: 1px solid pdz-color(outline);
+  background: transparent;
+  color: pdz-color(on-surface-variant);
+  cursor: pointer;
+  transition: all 0.2s;
 
-  .match-option-container {
-    display: flex;
-    flex-direction: column;
-    row-gap: 0.25rem;
-    .match-option {
-      font-size: 0.6rem;
-      color: var(--pdz-color-primary);
-      display: flex;
-      column-gap: 0.25rem;
-      align-items: center;
-      .match-score {
-        font-weight: 600;
-        font-size: 1.2rem;
+  &--active {
+    background-color: pdz-color(primary);
+    color: pdz-color(on-primary);
+    border-color: pdz-color(primary);
+    box-shadow: var(--pdz-level-1);
 
-        text-align: center;
-        &.positive {
-          color: lightgreen;
-        }
-        &.negative {
-          color: lightcoral;
-        }
-      }
-      .match-button {
-        border: 1px solid var(--pdz-color-primary-border-variant);
-        padding: 0.0675rem 0.125rem;
-        box-shadow: var(--pdz-level-1);
-        border-radius: var(--pdz-shape-corner-sm);
-        &.selected {
-          background-color: var(--pdz-color-primary);
-          border: 1px solid var(--pdz-color-primary);
-          color: var(--pdz-color-on-primary);
-          margin-top: 1px;
-          margin-bottom: -1px;
-          box-shadow: var(--pdz-level-0);
-        }
-        &:active {
-          margin-top: 1px;
-          margin-bottom: -1px;
-          box-shadow: var(--pdz-level-0);
-        }
-      }
+    &:active {
+      box-shadow: var(--pdz-level-0);
+      transform: translateY(1px);
     }
   }
 
-  .team-container {
-    display: grid;
-    gap: 0.25rem;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    .pokemon-box {
-      height: 3rem;
-      box-shadow: var(--pdz-level-1);
-      border-radius: var(--pdz-shape-corner-sm);
-      width: 3rem;
-      border-width: 2px;
-      border-color: var(--pdz-color-primary-border-variant);
-      sprite {
-        filter: grayscale(100%);
-      }
-      &.brought {
-        border-color: lightgreen;
-      }
-      &.fainted {
-        border-color: lightcoral;
-      }
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}
 
-      &.brought,
-      &.fainted {
-        sprite {
-          filter: grayscale(0%);
-        }
-      }
+.matchup-card__matchup-button {
+  padding: var(--pdz-space-xs) var(--pdz-space-sm);
+  border-radius: var(--pdz-shape-corner-full);
+  font-size: 0.7rem;
+  line-height: 1;
+  border: 1px solid pdz-color(outline);
+  cursor: pointer;
+  transition: all 0.2s;
+  background-color: pdz-color(secondary);
+  color: pdz-color(on-secondary);
+  border-color: pdz-color(secondary);
+  box-shadow: var(--pdz-level-1);
+
+  &:active {
+    box-shadow: var(--pdz-level-0);
+    transform: translateY(1px);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}
+
+.matchup-card__versus {
+  font-weight: var(--pdz-font-weight-bold);
+  font-size: 0.65rem;
+  color: pdz-color(on-surface-variant);
+  user-select: none;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.matchup-card__toggle-icon {
+  position: absolute;
+  bottom: -0.25rem;
+  left: 50%;
+  transform: translateX(-50%);
+  color: pdz-color(outline);
+  font-size: 1.5rem;
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.matchup-card__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pdz-space-xs);
+  animation: fadeIn 0.3s ease-in-out;
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
     }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+.matchup-card__score-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--pdz-space-sm);
+}
+
+.matchup-card__score-box {
+  width: 1.5rem;
+  height: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  @include apply-typography(title-md);
+  border-radius: var(--pdz-shape-corner-sm);
+  box-shadow: var(--pdz-level-1);
+  background-color: pdz-color(surface-container-low);
+  color: pdz-color(on-surface);
+
+  &--winning {
+    background-color: pdz-color(positive);
+    color: pdz-color(on-primary);
+  }
+
+  &--losing {
+    background-color: pdz-color(negative);
+    color: pdz-color(on-primary);
+  }
+}
+
+.matchup-card__score-separator {
+  font-size: 1.2rem;
+  color: pdz-color(on-surface-variant);
+}
+
+.matchup-card__match-details {
+  display: flex;
+  align-items: center;
+  gap: var(--pdz-space-sm);
+}
+
+.matchup-card__pokemon-team {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--pdz-space-xs);
+  flex: 1;
+}
+
+.matchup-card__pokemon-slot {
+  aspect-ratio: 1;
+  border: 2px solid pdz-color(outline-variant);
+  border-radius: var(--pdz-shape-corner-sm);
+  box-shadow: var(--pdz-level-1);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  pdz-sprite {
+    filter: grayscale(100%);
+    opacity: 0.6;
+  }
+
+  &--used {
+    border-color: pdz-color(positive);
+
+    pdz-sprite {
+      filter: grayscale(0%);
+      opacity: 1;
+    }
+  }
+
+  &--fainted {
+    border-color: pdz-color(negative);
+
+    pdz-sprite {
+      filter: grayscale(0%);
+      opacity: 1;
+    }
+  }
+}
+
+.matchup-card__match-selector {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pdz-space-xs);
+  flex-shrink: 0;
+}
+
+.matchup-card__match-option {
+  display: flex;
+  align-items: center;
+  gap: var(--pdz-space-xs);
+  font-size: 0.7rem;
+}
+
+.matchup-card__match-score {
+  width: 1.5rem;
+  height: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  @include apply-typography(title-md);
+  border-radius: var(--pdz-shape-corner-sm);
+  box-shadow: var(--pdz-level-1);
+  background-color: pdz-color(surface-container-low);
+  color: pdz-color(on-surface);
+
+  &--winning {
+    background-color: pdz-color(positive);
+    color: pdz-color(on-primary);
+  }
+
+  &--losing {
+    background-color: pdz-color(negative);
+    color: pdz-color(on-primary);
+  }
+}
+
+.matchup-card__game-button {
+  padding: var(--pdz-space-xs) var(--pdz-space-sm);
+  border: 1px solid pdz-color(outline);
+  border-radius: var(--pdz-shape-corner-sm);
+  background: pdz-color(surface-container);
+  box-shadow: var(--pdz-level-1);
+  @include apply-typography(label-xs);
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+
+  &:hover:not(.matchup-card__game-button--selected) {
+    background: pdz-color(surface-container-high);
+  }
+
+  &--selected {
+    background-color: pdz-color(primary);
+    border-color: pdz-color(primary);
+    color: pdz-color(on-primary);
+    box-shadow: var(--pdz-level-0);
+    transform: translateY(1px);
+  }
+
+  &:active {
+    box-shadow: var(--pdz-level-0);
+    transform: translateY(1px);
+  }
+}
+
+.matchup-card__view-button {
+  width: 100%;
+  padding: var(--pdz-space-sm) var(--pdz-space-md);
+  border: 1px solid pdz-color(primary-border);
+  border-radius: var(--pdz-shape-corner-md);
+  background-color: pdz-color(primary-container);
+  color: pdz-color(on-primary-container);
+  font-weight: var(--pdz-font-weight-semibold);
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    background-color: pdz-color(primary);
+    color: pdz-color(on-primary);
+    box-shadow: var(--pdz-level-2);
+  }
+
+  &:active {
+    box-shadow: var(--pdz-level-1);
+    transform: translateY(1px);
   }
 }

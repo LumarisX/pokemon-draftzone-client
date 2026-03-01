@@ -1,26 +1,26 @@
 import { CommonModule } from '@angular/common';
 import {
-  ChangeDetectorRef,
   Component,
+  ElementRef,
   inject,
   OnDestroy,
   OnInit,
+  ViewChild,
 } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
-import { Subject, interval, takeUntil } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
-import { SpriteComponent } from '../../images/sprite/sprite.component';
-import { DraftPokemon } from '../../interfaces/draft';
-import { TierPokemon } from '../../interfaces/tier-pokemon.interface';
-import { LeagueZoneService } from '../../services/leagues/league-zone.service';
-import { NumberSuffixPipe } from '../../util/pipes/number-suffix.pipe';
-import { LeagueTierListComponent } from '../league-tier-list/league-tier-list.component';
-import { LoadingComponent } from '../../images/loading/loading.component';
-import { LeagueNotificationsComponent } from '../league-notifications/league-notifications.component';
-import { LeagueNotificationService } from '../../services/league-notification.service';
-import { WebSocketService } from '../../services/ws.service';
 import { RouterModule } from '@angular/router';
+import { interval, Subject, takeUntil } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
+import { LoadingComponent } from '../../images/loading/loading.component';
+import { SpriteComponent } from '../../images/sprite/sprite.component';
+import { LeagueNotificationService } from '../../services/league-notification.service';
+import { LeagueZoneService } from '../../services/leagues/league-zone.service';
+import { WebSocketService } from '../../services/ws.service';
+import { NumberSuffixPipe } from '../../util/pipes/number-suffix.pipe';
+import { LeagueNotificationsComponent } from '../league-notifications/league-notifications.component';
+import { LeagueTierListComponent } from '../league-tier-list/league-tier-list.component';
 import { League } from '../league.interface';
+import { IconComponent } from '../../images/icon/icon.component';
 
 interface DraftAddedEvent {
   divisionId: string;
@@ -72,6 +72,7 @@ interface DraftSkipEvent {
     LoadingComponent,
     RouterModule,
     LeagueNotificationsComponent,
+    IconComponent,
   ],
   templateUrl: './league-drafting.component.html',
   styleUrls: ['./league-drafting.component.scss', '../league.scss'],
@@ -80,11 +81,16 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
   private notificationService = inject(LeagueNotificationService);
   private webSocketService = inject(WebSocketService);
   private leagueService = inject(LeagueZoneService);
-  private cdr = inject(ChangeDetectorRef);
 
   private destroy$ = new Subject<void>();
   private countdownTick$ = new Subject<void>();
   private picksChanged$ = new Subject<void>();
+  private hasAutoScrolledToCurrentRound = false;
+  private readonly SCROLL_RETRY_DELAY_MS = 50;
+  private readonly SCROLL_MAX_ATTEMPTS = 10;
+
+  @ViewChild('draftRoundsContainer')
+  draftRoundsContainer?: ElementRef<HTMLDivElement>;
 
   teams: League.LeagueTeam[] = [];
   canDraftTeams: string[] = [];
@@ -166,6 +172,7 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
         this.draftDetails.roundCount = data.rounds;
         this.draftDetails.teamOrder = data.teamOrder;
         this.draftDetails.status = data.status;
+        this.scheduleScrollToCurrentRoundOnLoad();
 
         this.picksChanged$
           .pipe(
@@ -177,7 +184,10 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
               .setPicks(
                 this.selectedTeam.id,
                 this.selectedTeam.picks.map((round) =>
-                  round.map((pick) => pick.id),
+                  round.map((pick) => ({
+                    pokemonId: pick.id,
+                    addons: pick.addons,
+                  })),
                 ),
               )
               .pipe(takeUntil(this.destroy$))
@@ -191,9 +201,8 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
       .on<DraftAddedEvent>('league.draft.added')
       .pipe(takeUntil(this.destroy$))
       .subscribe((data) => {
-        if (this.leagueService.divisionKey() !== data.divisionId) {
-          return;
-        }
+        if (this.leagueService.divisionKey() !== data.divisionId) return;
+
         this.teams = this.teams.map((team) => {
           const newTeam = { ...team };
           if (team.id === data.team.id) {
@@ -213,7 +222,7 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
 
           if (updatedSelectedTeam) {
             updatedSelectedTeam.pointTotal = data.team.draft.reduce(
-              (points, p) => points + Number(p.tier),
+              (points, p) => points + p.cost,
               0,
             );
             Object.assign(this.selectedTeam, updatedSelectedTeam);
@@ -282,6 +291,43 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
     this.countdownTick$.complete();
   }
 
+  private scrollToCurrentRoundOnLoad(): void {
+    if (this.hasAutoScrolledToCurrentRound || !this.currentPick) return;
+    const container = this.draftRoundsContainer?.nativeElement;
+    if (!container) return;
+
+    const roundIndex = Math.max(this.currentPick.round, 0);
+    const targetRound = container.querySelector<HTMLElement>(
+      `[data-round-index="${roundIndex}"]`,
+    );
+
+    if (!targetRound) return;
+
+    const containerTop = container.getBoundingClientRect().top;
+    const targetTop = targetRound.getBoundingClientRect().top;
+
+    container.scrollTo({
+      top: container.scrollTop + (targetTop - containerTop),
+      behavior: 'auto',
+    });
+
+    this.hasAutoScrolledToCurrentRound = true;
+  }
+
+  private scheduleScrollToCurrentRoundOnLoad(attempt: number = 0): void {
+    if (this.hasAutoScrolledToCurrentRound || !this.currentPick) return;
+
+    setTimeout(() => {
+      this.scrollToCurrentRoundOnLoad();
+      if (
+        !this.hasAutoScrolledToCurrentRound &&
+        attempt < this.SCROLL_MAX_ATTEMPTS
+      ) {
+        this.scheduleScrollToCurrentRoundOnLoad(attempt + 1);
+      }
+    }, this.SCROLL_RETRY_DELAY_MS);
+  }
+
   startCountdown(): void {
     this.countdownTick$.next();
     interval(this.COUNTDOWN_TICK_MS)
@@ -301,7 +347,12 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
     this.picksChanged$.next();
   }
 
-  pokemonSelected(pokemon: TierPokemon & { tier: string }): void {
+  pokemonSelected(pokemon: {
+    id: string;
+    name: string;
+    addons?: string[];
+    tier: string;
+  }): void {
     if (this.canDraft() && !this.selectedPick) {
       this.draftPokemon(pokemon);
     } else {
@@ -309,10 +360,18 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
     }
   }
 
-  draftPokemon(pokemon: DraftPokemon): void {
+  draftPokemon(pokemon: {
+    id: string;
+    name: string;
+    addons?: string[];
+    tier: string;
+  }): void {
     this.canDraftTeams = [];
     this.leagueService
-      .draftPokemon(this.selectedTeam.id, pokemon)
+      .draftPokemon(this.selectedTeam.id, {
+        pokemonId: pokemon.id,
+        addons: pokemon.addons,
+      })
       .pipe(takeUntil(this.destroy$))
       .subscribe();
   }
@@ -323,11 +382,20 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
     this.picksChanged$.next();
   }
 
-  addChoice(pokemon: TierPokemon & { tier: string }): void {
+  addChoice(pokemon: {
+    id: string;
+    name: string;
+    addons?: string[];
+    tier: string;
+    cost?: number;
+  }): void {
+    if (!pokemon.cost) return;
     this.selectedTeam.picks[this.selectedPick].push({
       name: pokemon.name,
       id: pokemon.id,
       tier: pokemon.tier,
+      cost: pokemon.cost,
+      addons: pokemon.addons,
     });
     this.picksChanged$.next();
   }
@@ -360,6 +428,16 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
     if (this.canDraft() && !this.selectedPick) return 'Draft';
     return (
       'Add to Picks (' +
+      (this.selectedPick + this.selectedTeam.draft.length + 1) +
+      ')'
+    );
+  }
+
+  altButtonText(): string | undefined {
+    if (!this.selectedTeam.picks.length) return undefined;
+    if (this.canDraft() && !this.selectedPick) return 'Draft Tera Capt.';
+    return (
+      'Add as Tera Capt. (' +
       (this.selectedPick + this.selectedTeam.draft.length + 1) +
       ')'
     );

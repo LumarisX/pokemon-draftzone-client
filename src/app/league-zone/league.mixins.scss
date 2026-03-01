@@ -1,0 +1,78 @@
+@use "../../styles/global" as *;
+@use "../../styles/mixins" as *;
+@use "../../styles/mixins/buttons" as *;
+
+@mixin pdz-league-logo($size: 4rem) {
+  width: $size;
+  height: $size;
+  overflow: visible;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+  border-radius: $size;
+  img {
+    max-width: 100%;
+    max-height: 100%;
+    filter: drop-shadow(0 0.125rem 0.25rem pdz-color(outline-variant));
+  }
+}
+
+@mixin pdz-league-page-header(
+  $gap: var(--pdz-space-md),
+  $padding: var(--pdz-space-md) var(--pdz-space-lg),
+  $border-bottom: 2px solid pdz-color(primary),
+  $background: pdz-color(surface)
+) {
+  display: flex;
+  align-items: center;
+  gap: $gap;
+  padding: $padding;
+  border-bottom: $border-bottom;
+  background: $background;
+}
+
+@mixin pdz-league-page-header-large(
+  $gap: var(--pdz-space-md),
+  $padding: var(--pdz-space-md) var(--pdz-space-lg),
+  $border-bottom: 2px solid pdz-color(primary),
+  $background: pdz-color(surface),
+  $height: 8rem
+) {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $gap;
+  padding: $padding;
+  border-bottom: $border-bottom;
+  background: $background;
+  height: auto;
+  min-height: $height;
+
+  @include respond-above(medium) {
+    flex-direction: row;
+    justify-content: space-between;
+    height: $height;
+  }
+}
+
+@mixin pdz-league-page-back-button(
+  $padding: var(--pdz-space-2xs) var(--pdz-space-sm),
+  $height: 2rem
+) {
+  align-self: flex-start;
+  @include flat-button-primary(
+    (
+      padding: $padding,
+      height: $height,
+    )
+  );
+  @include apply-typography(label-md);
+}
+
+@mixin pdz-league-page-title($color: pdz-color(primary), $weight: 700) {
+  @include apply-typography(title-lg);
+  color: $color;
+  margin: 0;
+  font-weight: $weight;
+}

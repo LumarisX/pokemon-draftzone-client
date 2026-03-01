@@ -1,9 +1,42 @@
-.teams-container {
-  display: grid;
-  padding: var(--pdz-space-lg);
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
-  gap: 1rem;
+@use "../../../styles/global.scss" as *;
+@use "../../../styles/mixins" as *;
+@use "../league.mixins" as *;
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.teams {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: auto;
+
+  &__header {
+    @include pdz-league-page-header();
+  }
+
+  &__back {
+    @include pdz-league-page-back-button();
+  }
+
+  &__title {
+    @include pdz-league-page-title();
+  }
+
+  &__body {
+    display: grid;
+    padding: var(--pdz-space-lg);
+    grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+    gap: 1rem;
+  }
+
+  &__empty {
+    @include apply-typography(body-lg);
+    color: var(--pdz-color-on-surface-variant);
+  }
 }
 
 pdz-league-team-card {

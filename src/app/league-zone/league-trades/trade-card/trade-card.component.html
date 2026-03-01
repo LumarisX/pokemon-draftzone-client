@@ -1,9 +1,8 @@
 <pdz-comparison-card
-  [entityLeft]="leftEntity()"
-  [entityRight]="rightEntity()"
-  [status]="{ label: 'Week 6', active: false }"
+  [entityLeft]="leftEntity"
+  [entityRight]="rightEntity"
   [centerText]="
-    tradeLog.to.team && tradeLog.from.team ? 'Team to Team' : 'Free Agency'
+    tradeLog.side2.team && tradeLog.side1.team ? 'Team to Team' : 'Free Agency'
   "
   [allowToggle]="true"
   [initiallyOpen]="true"
@@ -11,10 +10,10 @@
   <div cardExpandedContent class="trade-details-content">
     <div class="trade-columns">
       <div class="trade-column from-column">
-        @for (pokemon of tradeLog.from.pokemon; track pokemon.id) {
+        @for (pokemon of tradeLog.side1.pokemon; track pokemon.id) {
           <div class="trade-item">
             <div class="pokemon-info">
-              <div class="pokemon-tier">{{ pokemon.tier }}</div>
+              <div class="pokemon-tier">{{ pokemon.cost }}</div>
               <div class="sprite-wrapper small">
                 <pdz-sprite [pokemon]="pokemon" flipped></pdz-sprite>
               </div>
@@ -25,8 +24,8 @@
             <div
               class="trade-arrow-indicator"
               [ngClass]="{
-                pickup: !tradeLog.from.team,
-                drop: !tradeLog.to.team,
+                pickup: !tradeLog.side1.team,
+                drop: !tradeLog.side2.team,
               }"
             >
               <mat-icon>arrow_forward</mat-icon>
@@ -40,19 +39,19 @@
         <mat-icon>swap_horiz</mat-icon>
       </div>
       <div class="trade-column to-column">
-        @for (pokemon of tradeLog.to.pokemon; track pokemon.id) {
+        @for (pokemon of tradeLog.side2.pokemon; track pokemon.id) {
           <div class="trade-item">
             <div
               class="trade-arrow-indicator"
               [ngClass]="{
-                pickup: !tradeLog.to.team,
-                drop: !tradeLog.from.team,
+                pickup: !tradeLog.side2.team,
+                drop: !tradeLog.side1.team,
               }"
             >
               <mat-icon>arrow_back</mat-icon>
             </div>
             <div class="pokemon-info">
-              <div class="pokemon-tier">{{ pokemon.tier }}</div>
+              <div class="pokemon-tier">{{ pokemon.cost }}</div>
               <div class="sprite-wrapper small">
                 <pdz-sprite [pokemon]="pokemon"></pdz-sprite>
               </div>

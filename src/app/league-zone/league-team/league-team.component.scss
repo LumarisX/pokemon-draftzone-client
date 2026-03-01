@@ -1,0 +1,245 @@
+@use "../../../styles/global.scss" as *;
+@use "../../../styles/mixins" as *;
+@use "../league.mixins" as *;
+
+.team-header {
+  @include pdz-league-page-header-large();
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  row-gap: var(--pdz-space-sm);
+
+  &__meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--pdz-space-xs);
+    flex: 1 1 auto;
+    min-width: 0;
+    height: 100%;
+
+    @include respond-above(medium) {
+      flex-direction: row;
+      align-items: center;
+      gap: var(--pdz-space-md);
+    }
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--pdz-space-xs);
+    text-align: left;
+    min-width: 0;
+  }
+
+  &__back {
+    @include pdz-league-page-back-button();
+  }
+
+  &__team-name {
+    @include apply-typography(headline-md);
+    color: pdz-color(primary);
+    margin: 0;
+
+    @include respond-above(medium) {
+      @include apply-typography(headline-lg);
+    }
+  }
+
+  &__coach-name {
+    @include apply-typography(title-md);
+    color: pdz-color(on-surface);
+    margin: 0;
+
+    @include respond-above(medium) {
+      @include apply-typography(title-lg);
+    }
+  }
+
+  &__image {
+    max-width: 12rem;
+    height: 100%;
+    max-height: 8rem;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+
+    @include respond-above(medium) {
+      max-width: 20rem;
+      max-height: 10rem;
+    }
+  }
+}
+
+.team-body {
+  padding: var(--pdz-space-md);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--pdz-space-md);
+  justify-content: center;
+}
+
+.section {
+  padding: var(--pdz-space-md) var(--pdz-space-xs);
+  background-color: pdz-color(surface-container-low);
+  border-radius: var(--pdz-shape-corner-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--pdz-space-sm);
+  height: fit-content;
+  box-shadow: var(--pdz-level-1);
+
+  &--matchups {
+    width: fit-content;
+  }
+
+  &-message {
+    @include apply-typography(body-md);
+    color: var(--pdz-color-on-surface-variant);
+    margin: 0;
+
+    &--error {
+      color: var(--pdz-color-error);
+    }
+  }
+
+  &-header {
+    @include apply-typography(title-md);
+    border-bottom: 2px solid pdz-color(primary);
+    padding: 0 var(--pdz-space-xs);
+  }
+
+  &-body {
+    max-height: 40rem;
+    overflow: auto;
+    scrollbar-gutter: stable both-edges;
+    padding: 0 var(--pdz-space-xs);
+    @include respond-above(medium) {
+      max-height: calc(100vh - 17rem);
+    }
+  }
+}
+
+.stats-table-wrapper {
+  background: var(--pdz-color-surface);
+  border-radius: var(--pdz-shape-corner-lg);
+  box-shadow: var(--pdz-level-2);
+  overflow: hidden;
+
+  .stats-table {
+    width: 100%;
+    border-collapse: collapse;
+
+    thead {
+      tr {
+        background: var(--pdz-color-primary);
+        color: var(--pdz-color-on-primary);
+
+        th {
+          @include apply-typography(label-sm);
+          padding: var(--pdz-space-sm) var(--pdz-space-md);
+          text-align: left;
+          white-space: nowrap;
+
+          &.col-sprite {
+            width: 5rem;
+            text-align: center;
+          }
+
+          &.col-stat {
+            width: 4rem;
+            text-align: center;
+          }
+        }
+      }
+    }
+
+    tbody {
+      tr {
+        transition: background-color 0.2s ease;
+
+        &:hover {
+          background: var(--pdz-color-surface-container);
+        }
+
+        &:not(:last-child) {
+          border-bottom: 1px solid var(--pdz-color-outline-variant);
+        }
+
+        td {
+          padding: var(--pdz-space-sm) var(--pdz-space-md);
+          vertical-align: middle;
+
+          &.cell-sprite {
+            text-align: center;
+            width: 5rem;
+
+            pdz-sprite {
+              display: inline-block;
+              width: 3rem;
+              height: 3rem;
+            }
+          }
+
+          &.cell-name {
+            .name-cell {
+              display: flex;
+              flex-direction: column;
+              gap: var(--pdz-space-2xs);
+
+              .name {
+                @include apply-typography(body-md);
+                font-weight: 600;
+                color: var(--pdz-color-on-surface);
+              }
+
+              .details {
+                display: flex;
+                align-items: center;
+                color: var(--pdz-color-primary);
+                gap: var(--pdz-space-2xs);
+              }
+
+              .cost {
+                @include apply-typography(label-md);
+                font-weight: 500;
+              }
+            }
+          }
+
+          &.cell-stat {
+            @include apply-typography(body-md);
+            text-align: center;
+            font-weight: 500;
+            color: var(--pdz-color-on-surface-variant);
+          }
+        }
+      }
+    }
+
+    tfoot {
+      tr {
+        background: var(--pdz-color-primary);
+        color: var(--pdz-color-on-primary);
+
+        th {
+          @include apply-typography(label-sm);
+          padding: var(--pdz-space-sm) var(--pdz-space-md);
+          text-align: left;
+          white-space: nowrap;
+
+          &.col-sprite {
+            width: 5rem;
+            text-align: center;
+          }
+
+          &.col-stat {
+            width: 4rem;
+            text-align: center;
+          }
+        }
+      }
+    }
+  }
+}

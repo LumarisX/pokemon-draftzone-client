@@ -1,10 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  Input,
-} from '@angular/core';
+import { Component, Input, OnChanges } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { SpriteComponent } from '../../../images/sprite/sprite.component';
 import {
@@ -26,32 +21,34 @@ import { TradeLog } from '../../league.interface';
   ],
   templateUrl: './trade-card.component.html',
   styleUrls: ['./trade-card.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TradeCardComponent {
+export class TradeCardComponent implements OnChanges {
   @Input({ required: true }) tradeLog!: TradeLog;
 
   private readonly DRAFT_POOL_NAME = 'Draft Pool';
-  private readonly DEFAULT_LOGO =
-    'https://pokemondraftzone-public.s3.us-east-2.amazonaws.com/league-uploads/1745265573766-pdbl.png';
 
-  leftEntity = computed<ComparisonEntity>(() => {
-    const from = this.tradeLog.from;
-    return {
-      logoUrl: from.team?.logo || this.DEFAULT_LOGO,
+  leftEntity: ComparisonEntity = {
+    primaryName: this.DRAFT_POOL_NAME,
+  };
+
+  rightEntity: ComparisonEntity = {
+    primaryName: this.DRAFT_POOL_NAME,
+  };
+
+  ngOnChanges(): void {
+    const from = this.tradeLog.side1;
+    const to = this.tradeLog.side2;
+
+    this.leftEntity = {
+      logoUrl: from.team?.logo,
       primaryName: from.team?.name || this.DRAFT_POOL_NAME,
       secondaryName: from.team?.coach,
-      defaultLogo: this.DEFAULT_LOGO,
     };
-  });
 
-  rightEntity = computed<ComparisonEntity>(() => {
-    const to = this.tradeLog.to;
-    return {
-      logoUrl: to.team?.logo || this.DEFAULT_LOGO,
+    this.rightEntity = {
+      logoUrl: to.team?.logo,
       primaryName: to.team?.name || this.DRAFT_POOL_NAME,
       secondaryName: to.team?.coach,
-      defaultLogo: this.DEFAULT_LOGO,
     };
-  });
+  }
 }

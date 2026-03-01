@@ -82,10 +82,6 @@ const routes: Routes = [
     component: LeagueScheduleComponent,
   },
   {
-    path: 'pdbl/tournaments/:tournamentKey/divisions/:divisionKey/schedule',
-    component: LeagueScheduleComponent,
-  },
-  {
     path: 'pdbl/tournaments/:tournamentKey/divisions/:divisionKey/standings',
     component: LeagueStandingsComponent,
   },
@@ -94,16 +90,24 @@ const routes: Routes = [
     component: LeagueDraftComponent,
   },
   {
-    path: 'pdbl/tournaments/:tournamentKey/divisions/:divisionKey/teams',
-    component: LeagueTeamsComponent,
-  },
-  {
     path: 'pdbl/tournaments/:tournamentKey/divisions/:divisionKey/power-rankings',
     component: PowerRankingsComponent,
   },
   {
-    path: 'pdbl/tournaments/:tournamentKey/divisions/:divisionKey/teams/:teamId',
+    path: 'pdbl/tournaments/:tournamentKey/divisions/:divisionKey/teams',
+    component: LeagueTeamsComponent,
+  },
+  {
+    path: 'pdbl/tournaments/:tournamentKey/divisions/:divisionKey/teams/:teamKey',
     component: LeagueTeamComponent,
+  },
+  {
+    path: 'pdbl/tournaments/:tournamentKey/divisions/:divisionKey/tier-list',
+    component: LeagueTierListComponent,
+  },
+  {
+    path: 'pdbl/tournaments/:tournamentKey/divisions/:divisionKey/trades',
+    component: LeagueTradesComponent,
   },
   // {
   //   path: 'view/:tournamentId/auction',

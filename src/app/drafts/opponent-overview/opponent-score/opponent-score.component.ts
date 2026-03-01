@@ -263,32 +263,32 @@ export class OpponentScoreComponent implements OnInit {
         }
         if (aReplayTeam >= 0 && aReplayTeam < replayData.stats.length) {
           replayData.stats[aReplayTeam].team.forEach((mon) => {
-            if (mon.brought) {
+            if (mon.status !== 'brought') {
               let replayCtrl = this.aTeamArray.controls.find((ctrl) => {
                 return mon.formes.some((forme) =>
                   ctrl.value.pokemon.id.startsWith(forme.id),
                 );
               });
               replayCtrl?.patchValue({
-                brought: +mon.brought,
+                brought: mon.status === 'used' ? 1 : 0,
                 kills: mon.kills[0],
                 indirect: mon.kills[1],
-                fainted: +mon.fainted,
+                fainted: mon.status === 'fainted' ? 1 : 0,
               });
             }
           });
           replayData.stats[(aReplayTeam + 1) % 2].team.forEach((mon) => {
-            if (mon.brought) {
+            if (mon.status !== 'brought') {
               let replayCtrl = this.bTeamArray.controls.find((ctrl) => {
                 return mon.formes.some((forme) =>
                   ctrl.value.pokemon.id.startsWith(forme.id),
                 );
               });
               replayCtrl?.patchValue({
-                brought: +mon.brought,
+                brought: mon.status === 'used' ? 1 : 0,
                 kills: mon.kills[0],
                 indirect: mon.kills[1],
-                fainted: +mon.fainted,
+                fainted: mon.status === 'fainted' ? 1 : 0,
               });
             }
           });

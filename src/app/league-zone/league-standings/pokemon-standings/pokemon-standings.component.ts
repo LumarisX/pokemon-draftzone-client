@@ -6,117 +6,6 @@ import { SpriteComponent } from '../../../images/sprite/sprite.component';
 import { PlusSignPipe } from '../../../util/pipes/plus-sign.pipe';
 import { League } from '../../league.interface';
 
-const DEFAULT_STANDINGS: League.PokemonStanding[] = [
-  {
-    teamName: `Philadelphia Flygons`,
-    coach: '02ThatOneGuy',
-    direction: 0,
-    ...getRandomPokemon(),
-  },
-  {
-    teamName: `Mighty Murkrow`,
-    coach: 'hsoj',
-    direction: 0,
-    ...getRandomPokemon(),
-  },
-  {
-    teamName: `Fitchburg's Sun Chasers`,
-    coach: 'Feather',
-    direction: 0,
-    ...getRandomPokemon(),
-  },
-  {
-    teamName: `Chicago White Fox`,
-    coach: 'TheNotoriousABS',
-    direction: 1,
-    ...getRandomPokemon(),
-  },
-  {
-    teamName: `Deimos Deoxys`,
-    coach: 'Lumaris',
-    direction: 0,
-    ...getRandomPokemon(),
-  },
-  {
-    teamName: `Alpine Arcanines`,
-    coach: 'Lion',
-    direction: 1,
-    ...getRandomPokemon(),
-  },
-  {
-    teamName: `Victorious Vigoroths`,
-    coach: 'Speedy',
-    direction: -1,
-    ...getRandomPokemon(),
-  },
-  {
-    teamName: `Deep Sea Duskulls`,
-    coach: 'Emeglebon',
-    direction: 0,
-    ...getRandomPokemon(),
-  },
-  {
-    teamName: `Twinleaf Tatsugiri`,
-    coach: 'Penic',
-    direction: 0,
-    ...getRandomPokemon(),
-  },
-  {
-    teamName: `I like 'em THICC`,
-    coach: 'Kat',
-    direction: 0,
-    ...getRandomPokemon(),
-  },
-  {
-    teamName: `London Vespiquens`,
-    coach: 'Jake W',
-    direction: 0,
-    ...getRandomPokemon(),
-  },
-  {
-    teamName: `Tampa T-Chainz`,
-    coach: 'Spite',
-    direction: -1,
-    ...getRandomPokemon(),
-  },
-  {
-    teamName: `Kalos Quagsires`,
-    coach: 'Caltech_',
-    direction: 1,
-    ...getRandomPokemon(),
-  },
-  {
-    teamName: `Montreal Mean Mareanies`,
-    coach: 'Qofol',
-    direction: 0,
-    ...getRandomPokemon(),
-  },
-  {
-    teamName: `Chicago Sky Attack`,
-    coach: 'Quincy',
-    direction: 0,
-    ...getRandomPokemon(),
-  },
-  {
-    teamName: `Midnight Teddy's`,
-    coach: 'neb5',
-    direction: 0,
-    ...getRandomPokemon(),
-  },
-].map((pokemon) => {
-  const kills = Math.round(Math.random() * 20);
-  const deaths = Math.round(Math.random() * 20);
-  return {
-    ...pokemon,
-    record: {
-      kills,
-      brought: Math.round(Math.random() * 20),
-      deaths,
-      diff: kills - deaths,
-    },
-  };
-});
-
 @Component({
   selector: 'pdz-pokemon-standings',
   imports: [MatIconModule, SpriteComponent, MatSortModule, PlusSignPipe],
@@ -124,8 +13,8 @@ const DEFAULT_STANDINGS: League.PokemonStanding[] = [
   styleUrls: ['./pokemon-standings.component.scss'],
 })
 export class PokemonStandingsComponent implements OnChanges {
-  @Input() standingData: League.PokemonStanding[] = [];
-  sortedData: League.PokemonStanding[] = DEFAULT_STANDINGS;
+  @Input({ required: true }) standingData!: League.PokemonStanding[];
+  sortedData: League.PokemonStanding[] = [];
   @Input() showCount: number = 20;
 
   ngOnChanges(changes: SimpleChanges) {

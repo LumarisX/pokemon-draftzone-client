@@ -1,0 +1,43 @@
+<div class="hub">
+  <h1>League Management</h1>
+
+  <div class="nav-section">
+    <h2>General</h2>
+    <button (click)="navigateTo('sign-ups')" class="nav-button">
+      Manage Sign-ups
+    </button>
+    <button (click)="navigateTo('rules')" class="nav-button">
+      League Rules
+    </button>
+  </div>
+
+  <div class="nav-section">
+    <h2>Division Management</h2>
+    <p class="info-text">
+      Note: Replace "divisionKey" with your actual division identifier
+    </p>
+    <div class="division-buttons">
+      <button (click)="navigateToDivision('divisionKey')" class="nav-button">
+        Division Dashboard
+      </button>
+      <button
+        (click)="navigateToDivision('divisionKey', 'draft')"
+        class="nav-button"
+      >
+        Manage Draft
+      </button>
+      <button
+        (click)="navigateToDivision('divisionKey', 'trades')"
+        class="nav-button"
+      >
+        Manage Trades
+      </button>
+      <button
+        (click)="navigateToDivision('divisionKey', 'schedule')"
+        class="nav-button"
+      >
+        Manage Schedule
+      </button>
+    </div>
+  </div>
+</div>

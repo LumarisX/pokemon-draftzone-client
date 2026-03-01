@@ -17,7 +17,7 @@ import { getLogoUrl } from '../../league.util';
     RouterLink,
   ],
   templateUrl: './league-team-card.component.html',
-  styleUrls: ['./league-team-card.component.scss'],
+  styleUrls: ['./league-team-card.component.scss', '../../league.scss'],
 })
 export class LeagueTeamCardComponent {
   @Input({ required: true })
@@ -25,5 +25,40 @@ export class LeagueTeamCardComponent {
 
   data: 'overview' | 'stats' = 'overview';
 
-  getLogoUrl = getLogoUrl('user-uploads');
+  getLogoUrl = getLogoUrl;
+
+  getCurrentTimeInTimezone(timezone?: string): string {
+    if (!timezone) return '';
+    try {
+      const now = new Date();
+      const formatter = new Intl.DateTimeFormat('en-US', {
+        timeZone: timezone,
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true,
+      });
+      return formatter.format(now);
+    } catch (error) {
+      return timezone;
+    }
+  }
+
+  hasCapt(): boolean {
+    return this.teamDetails.draft.some(
+      (pokemon) => pokemon.capt?.tera || pokemon.capt?.dmax || pokemon.capt?.z,
+    );
+  }
+
+  totalCost() {
+    return this.teamDetails.draft.reduce(
+      (total, pokemon) => total + pokemon.cost,
+      0,
+    );
+  }
+
+  totalCaptCount() {
+    return this.teamDetails.draft.filter(
+      (pokemon) => pokemon.capt?.tera || pokemon.capt?.dmax || pokemon.capt?.z,
+    ).length;
+  }
 }

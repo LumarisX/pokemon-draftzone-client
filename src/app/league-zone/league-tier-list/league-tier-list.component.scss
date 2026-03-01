@@ -1,6 +1,7 @@
 @use "@angular/material" as mat;
 @use "../../../styles/global.scss" as *;
 @use "../../../styles/mixins" as *;
+@use "../league.mixins" as *;
 
 :host {
   display: block;
@@ -27,9 +28,13 @@
   }
 
   &__header {
+    @include pdz-league-page-header(
+      $padding: 0,
+      $border-bottom: none,
+      $background: transparent
+    );
     flex-grow: 0;
     max-width: 100%;
-    display: flex;
     justify-content: space-between;
   }
 
@@ -167,36 +172,6 @@
   }
 }
 
-.tier-group {
-  display: flex;
-  flex-direction: column;
-
-  &:not(:first-child) {
-    border-left: 3px solid pdz-color(primary-border);
-  }
-
-  &__label {
-    background-color: pdz-color(primary);
-    color: pdz-color(on-primary);
-    text-align: center;
-    max-height: 2rem;
-    min-width: 4rem;
-    font-weight: bold;
-    font-family: var(--pdz-font-fancy);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-  }
-
-  &__tiers {
-    display: flex;
-    height: 100%;
-  }
-}
-
 .tier {
   display: flex;
   flex-direction: column;
@@ -284,6 +259,10 @@
     gap: var(--pdz-space-2xs);
     color: pdz-color(on-surface-variant);
     flex-shrink: 0;
+    position: absolute;
+    right: var(--pdz-space-2xs);
+    top: var(--pdz-space-2xs);
+
     @include apply-typography(body-xs);
   }
 
@@ -320,55 +299,65 @@
   }
 }
 
-.selected-card {
-  position: absolute;
-  z-index: 3000;
-  background-color: pdz-color(surface-container-high);
+.tier-entry--selected {
+  background-color: pdz-color(surface);
+  border-bottom: 1px solid pdz-color(primary-border);
   color: pdz-color(on-surface);
-  border-radius: var(--pdz-shape-corner-sm);
-  padding: var(--pdz-space-lg);
-  width: 12.5rem;
+  padding: var(--pdz-space-sm) var(--pdz-space-xs);
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: var(--pdz-space-sm);
-  box-shadow: var(--pdz-level-3);
-  transform: translateY(-50%);
-  transition:
-    top 0.15s ease-out,
-    left 0.15s ease-out;
-
-  &--mobile {
-    position: fixed;
-    bottom: 0.625rem;
-    left: 50%;
-    top: unset;
-    transform: translateX(-50%);
-  }
+  position: relative;
+  overflow: hidden;
+  transform-origin: top;
+  animation: tier-selected-open 0.2s ease-out both;
 
   &__header {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: var(--pdz-space-sm);
+    gap: var(--pdz-space-xs);
+  }
+
+  &__close {
+    position: absolute;
+    top: var(--pdz-space-2xs);
+    right: var(--pdz-space-2xs);
+    width: fit-content;
+    height: fit-content;
+    &:hover {
+      opacity: 0.7;
+    }
   }
 
   &__pokemon-name {
-    font-family: var(--pdz-font-fancy);
-    font-size: 1.2rem;
-    line-height: 1.3rem;
-    font-weight: bold;
+    @include apply-typography(title-md);
+
     text-align: center;
   }
 
   &__sprite-wrapper {
     height: auto;
     width: auto;
+    position: relative;
+  }
+
+  &__sprite-badges {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: var(--pdz-space-2xs);
   }
 
   &__info {
     display: flex;
     flex-direction: column;
+    width: 100%;
     gap: var(--pdz-space-sm);
     align-items: center;
   }
@@ -378,13 +367,43 @@
     background-color: pdz-color(primary);
     color: pdz-color(on-primary);
     border-radius: var(--pdz-shape-corner-lg);
-    box-shadow: var(--pdz-level-2);
-    padding: var(--pdz-space-sm);
+    box-shadow: var(--pdz-level-1);
+    height: 2rem;
+    @include apply-typography(body-sm);
 
     &:disabled {
       background-color: pdz-color(surface-disabled);
       color: pdz-color(on-surface-disabled);
     }
+
+    &--alt {
+      background-color: pdz-color(secondary);
+      width: 100%;
+      color: pdz-color(on-primary);
+      border-radius: var(--pdz-shape-corner-lg);
+      box-shadow: var(--pdz-level-1);
+      @include apply-typography(body-xs);
+
+      height: 1.5rem;
+      &:disabled {
+        background-color: pdz-color(surface-disabled);
+        color: pdz-color(on-surface-disabled);
+      }
+    }
+  }
+
+  &__tera-cost {
+    display: flex;
+    align-items: center;
+    gap: var(--pdz-space-2xs);
+    color: pdz-color(on-surface-variant);
+
+    @include apply-typography(body-xs);
+  }
+
+  &__restricted-icon {
+    color: pdz-color(error);
+    transform: scale(0.75);
   }
 
   @media (max-width: 992px) {
@@ -409,47 +428,61 @@
   }
 }
 
-.type-container {
-  display: flex;
-  gap: var(--pdz-space-2xs);
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.type-label {
-  padding: var(--pdz-space-2xs) var(--pdz-space-xs);
-  border-radius: var(--pdz-shape-corner-xs);
-
-  &__text {
-    font-size: 0.75rem;
-    font-weight: bold;
-    text-transform: uppercase;
+@keyframes tier-selected-open {
+  from {
+    max-height: 0;
+    opacity: 0;
+    transform: translateY(-0.25rem);
+  }
+  to {
+    max-height: 60rem;
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
 .stats-container {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
   gap: var(--pdz-space-2xs);
-  justify-content: center;
+  width: 100%;
 }
 
 .stat {
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-size: x-small;
 
   &__name {
     margin-bottom: 0.1rem;
-    font-weight: bold;
+    @include apply-typography(label-xs);
   }
 
   &__value {
-    background-color: pdz-color(surface-container-high);
-    padding: 0.1rem var(--pdz-space-xs);
+    width: 100%;
+    background-color: pdz-color(surface-container-low);
     border-radius: var(--pdz-shape-corner-xs);
-    box-shadow: var(--pdz-level-2);
+    box-shadow: var(--pdz-level-1);
+    text-align: center;
+    @include apply-typography(body-xs);
   }
+}
+
+.ability-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  column-gap: var(--pdz-space-xs);
+  row-gap: var(--pdz-space-2xs);
+
+  justify-content: center;
+  @include apply-typography(body-xs);
+}
+
+.ability {
+  @include apply-typography(body-xs);
+  background-color: pdz-color(surface-container-low);
+  border-radius: var(--pdz-shape-corner-xs);
+  box-shadow: var(--pdz-level-1);
+  padding: 0 var(--pdz-space-xs);
 }

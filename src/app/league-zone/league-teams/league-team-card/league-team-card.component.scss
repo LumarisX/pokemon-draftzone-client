@@ -1,20 +1,7 @@
-.logo {
-  width: 4rem;
-  height: 4rem;
-  border-radius: 2rem;
-  border-width: 2px;
-  border-color: var(--pdz-color-primary-border-variant);
-  overflow: hidden;
-  box-shadow: var(--pdz-level-1);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-shrink: 0;
+@use "../../league.mixins.scss" as *;
 
-  img {
-    max-width: 100%;
-    max-height: 100%;
-  }
+.logo {
+  @include pdz-league-logo(4rem);
 }
 
 .sprite-wrapper {
@@ -95,16 +82,45 @@
   .team-body {
     flex-grow: 1;
     overflow: auto;
+    display: flex;
+    flex-direction: column;
     .table-wrapper {
       width: 100%;
+      height: 100%;
       border: 1px solid var(--pdz-color-primary);
       border-radius: var(--pdz-shape-corner-lg);
       overflow: hidden;
       font-size: 0.8rem;
+      display: flex;
+      flex-direction: column;
       .roster-table {
         width: 100%;
+        height: 100%;
         table-layout: fixed;
         border-collapse: collapse;
+        display: flex;
+        flex-direction: column;
+
+        thead,
+        tfoot {
+          flex-shrink: 0;
+          display: table;
+          width: 100%;
+          table-layout: fixed;
+        }
+
+        tbody {
+          flex-grow: 1;
+          display: block;
+          overflow-y: auto;
+
+          tr {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+          }
+        }
+
         th,
         td {
           padding: 0.5rem 0.4rem;

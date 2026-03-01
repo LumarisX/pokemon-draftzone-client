@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { SupportersComponent } from './supporters/supporters.component';
 import { AboutComponent } from './about/about.component';
 import { ExternalLinkComponent } from './external-link/external-link.component';
+import { externalLinkBypassGuard } from './external-link/external-link.guard';
 
 export const ExternalLinkPath = 'external';
 
@@ -22,6 +23,7 @@ const routes: Routes = [
   {
     path: ExternalLinkPath,
     component: ExternalLinkComponent,
+    canActivate: [externalLinkBypassGuard],
   },
 ];
 

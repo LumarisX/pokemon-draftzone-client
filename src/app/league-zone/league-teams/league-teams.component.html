@@ -1,7 +1,19 @@
-<div class="teams-container">
-  @for (team of teams; track team) {
-    <pdz-league-team-card [teamDetails]="team"></pdz-league-team-card>
-  } @empty {
-    <div>No teams added to this division</div>
-  }
+<div class="teams">
+  <div class="teams__header">
+    <button type="button" class="teams__back" [routerLink]="['../']">
+      <pdz-icon name="arrow_back" size="sm"></pdz-icon> Back
+    </button>
+    <h1 class="teams__title">League Teams</h1>
+  </div>
+  <div class="teams__body">
+    @if (teams) {
+      @for (team of teams; track team) {
+        <pdz-league-team-card [teamDetails]="team"></pdz-league-team-card>
+      } @empty {
+        <div class="teams__empty">No teams added to this division</div>
+      }
+    } @else {
+      <pdz-loading></pdz-loading>
+    }
+  </div>
 </div>

@@ -143,7 +143,7 @@ export class LeagueBracketGraphComponent
   ngOnInit(): void {}
 
   ngAfterViewInit(): void {
-    this.leagueService.getBracket('test-league-key').subscribe((data) => {
+    this.leagueService.getBracket().subscribe((data) => {
       this.bracketData = data as BracketDataNormalized;
       this.createBracket(this.buildBracketTree(this.bracketData));
     });

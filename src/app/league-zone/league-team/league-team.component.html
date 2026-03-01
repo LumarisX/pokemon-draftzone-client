@@ -1,10 +1,210 @@
-<div class="team-container">
-  <div *ngIf="loading" class="loading-state">Loading team data...</div>
-
-  <div *ngIf="error && !loading" class="error-state">Error: {{ error }}</div>
-
-  <div *ngIf="teamData && !loading && !error" class="team-data">
-    <h2>Team Data (Raw JSON)</h2>
-    <pre>{{ teamData | json }}</pre>
+@if (teamData) {
+  <div class="team-header">
+    <div class="team-header__meta">
+      <button type="button" class="team-header__back" [routerLink]="['../']">
+        <pdz-icon name="arrow_back" size="sm"></pdz-icon> Back
+      </button>
+      <div class="team-header__info">
+        <h1 class="team-header__team-name">{{ teamData.name }}</h1>
+        <h2 class="team-header__coach-name">{{ teamData.coach }}</h2>
+      </div>
+    </div>
+    <img
+      class="team-header__image"
+      [src]="getLogoUrl(teamData.logo)"
+      alt="Team logo"
+    />
   </div>
-</div>
+  <div class="team-body">
+    <div class="section section--matchups">
+      <div class="section-header">
+        <h3>Schedule</h3>
+      </div>
+      <div class="section-body">
+        <pdz-league-schedule-widget></pdz-league-schedule-widget>
+      </div>
+    </div>
+    <div class="section section--draft">
+      <div class="section-header">
+        <h3>Draft Roster</h3>
+      </div>
+      <div class="section-body">
+        <div class="stats-table-wrapper">
+          <table class="stats-table">
+            <thead>
+              <tr>
+                <th class="col-sprite"></th>
+                <th class="col-name">Pokémon</th>
+                <th class="col-stat">Brought</th>
+                <th class="col-stat">Kills</th>
+                <th class="col-stat">Deaths</th>
+                <th class="col-stat">K/D Ratio</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (pokemon of teamData.draft; track pokemon.id) {
+                <tr>
+                  <td class="cell-sprite">
+                    <pdz-sprite flipped [pokemon]="pokemon"></pdz-sprite>
+                  </td>
+                  <td class="cell-name">
+                    <div class="name-cell">
+                      <span class="name">{{ pokemon.name }}</span>
+                      <div class="details">
+                        <span class="cost">{{ pokemon.cost }}</span>
+                        @if (pokemon.capt && pokemon.capt.tera) {
+                          <pdz-icon name="tera" [size]="16"></pdz-icon>
+                        }
+                      </div>
+                    </div>
+                  </td>
+                  <td class="cell-stat">
+                    {{ pokemon.record?.brought ?? 0 }}
+                  </td>
+                  <td class="cell-stat">
+                    {{ pokemon.record?.kills ?? 0 }}
+                  </td>
+                  <td class="cell-stat">
+                    {{ pokemon.record?.deaths ?? 0 }}
+                  </td>
+                  <td class="cell-stat">
+                    @if (pokemon.record?.deaths) {
+                      {{
+                        (
+                          (pokemon.record?.kills ?? 0) /
+                          (pokemon.record?.deaths ?? 1)
+                        ).toFixed(2)
+                      }}
+                    } @else {
+                      {{
+                        (pokemon.record?.kills ?? 0) > 0
+                          ? pokemon.record?.kills
+                          : "—"
+                      }}
+                    }
+                  </td>
+                </tr>
+              }
+            </tbody>
+            <tfoot>
+              <tr>
+                <th class="col-sprite"></th>
+                <th class="col-name">{{ total.cost }}</th>
+                <th class="col-stat"></th>
+                <th class="col-stat">{{ total.kill }}</th>
+                <th class="col-stat">{{ total.deaths }}</th>
+                <th class="col-stat"></th>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="section section--trades">
+      <div class="section-header">
+        <h3>Active Trades</h3>
+      </div>
+      <div class="section-body">
+        <pdz-league-trade-widget></pdz-league-trade-widget>
+      </div>
+    </div>
+  </div>
+} @else {
+  <pdz-loading></pdz-loading>
+}
+<!-- <div class="team-page">
+  @if (teamData) {
+    <div class="team-container">
+      <div class="team-header">
+        <button
+          class="back-button"
+          [routerLink]="['../']"
+          aria-label="Go back"
+        ></button>
+        <div class="team-identity">
+          <div class="logo">
+            <img [src]="getLogoUrl(teamData.logo)" />
+          </div>
+          <div class="team-info">
+            <h1 class="team-name">
+              {{ teamData.name }}
+            </h1>
+            <h2 class="team-coach">{{ teamData.coach }}</h2>
+            <div class="team-info-bar">
+              <span class="team-timezone">
+                <mat-icon>schedule</mat-icon>
+                {{ getCurrentTimeInTimezone(teamData.timezone) }} </span
+              >x
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="team-body">
+      
+
+        <div class="stats-section">
+          <div class="section-header">
+            <h3>Team</h3>
+          </div>
+          <div class="stats-table-wrapper">
+            <table class="stats-table">
+              <thead>
+                <tr>
+                  <th class="col-sprite"></th>
+                  <th class="col-name">Pokémon</th>
+                  <th class="col-stat">Games Brought</th>
+                  <th class="col-stat">Kills</th>
+                  <th class="col-stat">Deaths</th>
+                  <th class="col-stat">K/D Ratio</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (pokemon of teamData.draft; track pokemon.id) {
+                  <tr>
+                    <td class="cell-sprite">
+                      <pdz-sprite flipped [pokemon]="pokemon"></pdz-sprite>
+                    </td>
+                    <td class="cell-name">
+                      <div class="name-cell">
+                        <span class="name">{{ pokemon.name }}</span>
+                        <span class="tier">{{ pokemon.tier }}</span>
+                      </div>
+                    </td>
+                    <td class="cell-stat">
+                      {{ pokemon.record?.brought ?? 0 }}
+                    </td>
+                    <td class="cell-stat">
+                      {{ pokemon.record?.kills ?? 0 }}
+                    </td>
+                    <td class="cell-stat">
+                      {{ pokemon.record?.deaths ?? 0 }}
+                    </td>
+                    <td class="cell-stat">
+                      @if (pokemon.record?.deaths) {
+                        {{
+                          (
+                            (pokemon.record?.kills ?? 0) /
+                            (pokemon.record?.deaths ?? 1)
+                          ).toFixed(2)
+                        }}
+                      } @else {
+                        {{
+                          (pokemon.record?.kills ?? 0) > 0
+                            ? pokemon.record?.kills
+                            : "—"
+                        }}
+                      }
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  } @else {
+    <pdz-loading></pdz-loading>
+  }
+</div> -->

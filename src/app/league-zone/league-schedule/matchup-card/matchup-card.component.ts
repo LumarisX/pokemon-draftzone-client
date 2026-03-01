@@ -1,73 +1,71 @@
-import {
-  Component,
-  Input,
-  ChangeDetectionStrategy,
-  computed,
-} from '@angular/core';
-import {
-  ComparisonCardComponent,
-  ComparisonEntity,
-} from '../../comparison-card/comparison-card.component';
-import { League } from '../../league.interface';
 import { CommonModule } from '@angular/common';
-import { MatIconModule } from '@angular/material/icon';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  Input,
+  OnInit,
+  signal,
+} from '@angular/core';
+import { RouterModule } from '@angular/router';
+import { IconComponent } from '../../../images/icon/icon.component';
 import { SpriteComponent } from '../../../images/sprite/sprite.component';
+import { LeagueZoneService } from '../../../services/leagues/league-zone.service';
+import { League } from '../../league.interface';
 import { getLogoUrl } from '../../league.util';
+import { getNameByPid } from '../../../data/namedex';
 
 @Component({
   selector: 'pdz-matchup-card',
-  imports: [
-    CommonModule,
-    ComparisonCardComponent,
-    MatIconModule,
-    SpriteComponent,
-  ],
+  imports: [CommonModule, SpriteComponent, RouterModule, IconComponent],
   templateUrl: './matchup-card.component.html',
   styleUrls: ['./matchup-card.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MatchupCardComponent {
+export class MatchupCardComponent implements OnInit {
   @Input({ required: true }) matchup!: League.Matchup;
-  @Input() cardOpen: boolean = false;
+  @Input() initiallyOpen: boolean = false;
+
+  leagueService = inject(LeagueZoneService);
+
+  private _isOpen = signal<boolean>(false);
+  isOpen = this._isOpen.asReadonly();
   selectedMatch = 0;
-  leftEntity = computed<ComparisonEntity>(() => ({
-    logoUrl: this.getLogoUrl(this.matchup.team1.logo),
-    primaryName: this.matchup.team1.teamName,
-    secondaryName: this.matchup.team1.coach,
-  }));
 
-  rightEntity = computed<ComparisonEntity>(() => ({
-    logoUrl: this.getLogoUrl(this.matchup.team2.logo),
-    primaryName: this.matchup.team2.teamName,
-    secondaryName: this.matchup.team2.coach,
-  }));
-
-  leftLogoClasses = computed(() => ({
-    positive:
-      this.cardOpen && this.matchup.matches[this.selectedMatch].team1.winner,
-    negative:
-      this.cardOpen && this.matchup.matches[this.selectedMatch].team2.winner,
-  }));
-
-  rightLogoClasses = computed(() => ({
-    positive:
-      this.cardOpen && this.matchup.matches[this.selectedMatch].team2.winner,
-    negative:
-      this.cardOpen && this.matchup.matches[this.selectedMatch].team1.winner,
-  }));
-
-  onReplayClick(event: Event) {
-    event.stopPropagation();
-    const replayLink = this.matchup.matches[this.selectedMatch].link;
-    if (replayLink) {
-      window.open(replayLink, '_blank');
+  ngOnInit(): void {
+    if (this.initiallyOpen && this.matchup.matches.length > 0) {
+      this._isOpen.set(true);
     }
   }
 
-  selectGame(index: number, event: Event) {
+  toggleOpen(): void {
+    if (this.matchup.matches.length > 0) {
+      this._isOpen.update((open) => !open);
+    }
+  }
+
+  onReplayClick(event: Event): void {
+    event.stopPropagation();
+    const match = this.matchup.matches[this.selectedMatch];
+    if (match?.link) {
+      window.open(match.link, '_blank');
+    }
+  }
+
+  selectMatch(index: number, event: Event): void {
     event.stopPropagation();
     this.selectedMatch = index;
   }
 
-  getLogoUrl = getLogoUrl('user-uploads');
+  getLogo(logoUrl?: string): string {
+    return getLogoUrl(logoUrl);
+  }
+
+  getTeam(team: League.MatchTeamStats) {
+    return Object.entries(team).map(([id, stats]) => ({
+      id,
+      name: getNameByPid(id),
+      status: stats.status,
+    }));
+  }
 }

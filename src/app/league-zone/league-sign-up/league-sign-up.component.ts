@@ -26,7 +26,7 @@ import { LeagueZoneService } from '../../services/leagues/league-zone.service';
 import { UploadService } from '../../services/upload.service';
 import { LoadingComponent } from '../../images/loading/loading.component';
 import { League } from '../league.interface';
-import { getLogoUrl } from '../league.util';
+import { getLogoUrlOld } from '../league.util';
 
 @Component({
   selector: 'pdz-league-sign-up',
@@ -50,6 +50,7 @@ export class LeagueSignUpComponent implements OnInit, OnDestroy {
   signupForm!: FormGroup;
   added = false;
   closed = false;
+  wantsToSignUpAsSub = false;
   timezones = Intl.supportedValuesOf('timeZone');
   signUpDeadline?: Date;
   logoFile: File | null = null;
@@ -68,6 +69,7 @@ export class LeagueSignUpComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (leagueInfo) => {
           this.leagueInfo = leagueInfo;
+          this.updateClosedStatus();
         },
         error: (error) => {
           console.error('Error fetching league info:', error);
@@ -78,6 +80,14 @@ export class LeagueSignUpComponent implements OnInit, OnDestroy {
       this.signupForm = form;
       this.manageFormLogic();
     });
+  }
+
+  private updateClosedStatus(): void {
+    if (this.leagueInfo?.signUpDeadline) {
+      const now = new Date();
+      const deadline = new Date(this.leagueInfo.signUpDeadline);
+      this.closed = now > deadline;
+    }
   }
 
   ngOnDestroy(): void {
@@ -150,6 +160,14 @@ export class LeagueSignUpComponent implements OnInit, OnDestroy {
     } else {
       console.error('Sign Up form is not valid: ', this.signupForm.errors);
     }
+  }
+
+  confirmSignUpAsSub(): void {
+    this.wantsToSignUpAsSub = true;
+  }
+
+  cancelSignUp(): void {
+    this.wantsToSignUpAsSub = false;
   }
 
   private uploadLogo(): void {
@@ -250,5 +268,5 @@ export class LeagueSignUpComponent implements OnInit, OnDestroy {
     }
   }
 
-  getLogoUrl = getLogoUrl('league-uploads');
+  getLogoUrl = getLogoUrlOld('league-uploads');
 }
