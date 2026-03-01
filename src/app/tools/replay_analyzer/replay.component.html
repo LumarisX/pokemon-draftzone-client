@@ -44,11 +44,23 @@
     @if (replayData; as data) {
       <mat-card class="replay-analyzer__card">
         <div class="replay-analyzer__summary">
+          <a
+            class="replay-analyzer__watch-replay"
+            [href]="analyzedReplayURI"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <pdz-icon name="play_circle" size="sm"></pdz-icon>
+            <span class="replay-analyzer__watch-replay-label"
+              >Watch Replay</span
+            >
+          </a>
+
           <span class="replay-analyzer__summary-item">
             <label class="replay-analyzer__summary-label" for="format"
               >Format:</label
             >
-            <span id="format">{{ data.gametype }}</span>
+            <span id="format">{{ data.gametype | titlecase }}</span>
           </span>
           <span class="replay-analyzer__summary-item">
             <label class="replay-analyzer__summary-label" for="gen"
@@ -71,12 +83,31 @@
               {{ remainingSeconds(data.gameTime) }}s</span
             >
           </span>
+
+          <button
+            type="button"
+            class="replay-analyzer__advanced-toggle"
+            [attr.aria-pressed]="showAdvancedDetails"
+            (click)="toggleAdvancedDetails()"
+          >
+            <pdz-icon
+              [name]="showAdvancedDetails ? 'visibility_off' : 'visibility'"
+              size="sm"
+            ></pdz-icon>
+            <span class="replay-analyzer__advanced-toggle-label">
+              {{
+                showAdvancedDetails
+                  ? "Hide advanced details"
+                  : "Show advanced details"
+              }}
+            </span>
+          </button>
         </div>
 
         <mat-card-content class="replay-analyzer__details">
           <div class="replay-analyzer__players">
             @for (
-              player of data.stats;
+              player of data.players;
               track player.username ?? $index;
               let playerNum = $index
             ) {
@@ -102,76 +133,78 @@
                       <span class="replay-analyzer__stat-label">Deaths:</span>
                       {{ player.total.deaths }}
                     </div>
-                    <mat-divider></mat-divider>
+                    @if (showAdvancedDetails) {
+                      <mat-divider></mat-divider>
 
-                    <div class="replay-analyzer__stat-row">
-                      <span class="replay-analyzer__stat-label"
-                        >Damage Dealt:</span
-                      >
-                      {{ player.total.damageDealt | number: "1.0-0" }}%
-                    </div>
-                    <mat-divider></mat-divider>
-
-                    <div class="replay-analyzer__stat-row">
-                      <span class="replay-analyzer__stat-label"
-                        >Damage Taken:</span
-                      >
-                      {{ player.total.damageTaken | number: "1.0-0" }}%
-                    </div>
-                    <mat-divider></mat-divider>
-
-                    <div class="replay-analyzer__stat-row">
-                      <span class="replay-analyzer__stat-label"
-                        >Total Accuracy:</span
-                      >
-                      {{ player.luck.moves.actual | percent }} ({{
-                        player.luck.moves.hits
-                      }}/{{ player.luck.moves.total }})
-                    </div>
-                    <mat-divider></mat-divider>
-
-                    <div class="replay-analyzer__stat-row">
-                      <span class="replay-analyzer__stat-label"
-                        >Expected Accuracy:</span
-                      >
-                      {{ player.luck.moves.expected | percent }}
-                    </div>
-                    <mat-divider></mat-divider>
-
-                    <div class="replay-analyzer__stat-row">
-                      <span class="replay-analyzer__stat-label"
-                        >Total Crits:</span
-                      >
-                      {{ player.luck.crits.actual | percent }} ({{
-                        player.luck.crits.hits
-                      }}/{{ player.luck.crits.total }})
-                    </div>
-                    <mat-divider></mat-divider>
-
-                    <div class="replay-analyzer__stat-row">
-                      <span class="replay-analyzer__stat-label"
-                        >Expected Crits:</span
-                      >
-                      {{ player.luck.crits.expected | percent }}
-                    </div>
-                    <mat-divider></mat-divider>
-
-                    @if (player.luck.status.total > 0) {
                       <div class="replay-analyzer__stat-row">
                         <span class="replay-analyzer__stat-label"
-                          >Total Fully Parad:</span
+                          >Damage Dealt:</span
                         >
-                        {{ player.luck.status.actual | percent }} ({{
-                          player.luck.status.full
-                        }}/{{ player.luck.status.total }})
+                        {{ player.total.damageDealt | number: "1.0-0" }}%
                       </div>
                       <mat-divider></mat-divider>
+
                       <div class="replay-analyzer__stat-row">
                         <span class="replay-analyzer__stat-label"
-                          >Expected Fully Parad:</span
+                          >Damage Taken:</span
                         >
-                        {{ player.luck.status.expected | percent }}
+                        {{ player.total.damageTaken | number: "1.0-0" }}%
                       </div>
+                      <mat-divider></mat-divider>
+
+                      <div class="replay-analyzer__stat-row">
+                        <span class="replay-analyzer__stat-label"
+                          >Total Accuracy:</span
+                        >
+                        {{ player.luck.moves.actual | percent }} ({{
+                          player.luck.moves.hits
+                        }}/{{ player.luck.moves.total }})
+                      </div>
+                      <mat-divider></mat-divider>
+
+                      <div class="replay-analyzer__stat-row">
+                        <span class="replay-analyzer__stat-label"
+                          >Expected Accuracy:</span
+                        >
+                        {{ player.luck.moves.expected | percent }}
+                      </div>
+                      <mat-divider></mat-divider>
+
+                      <div class="replay-analyzer__stat-row">
+                        <span class="replay-analyzer__stat-label"
+                          >Total Crits:</span
+                        >
+                        {{ player.luck.crits.actual | percent }} ({{
+                          player.luck.crits.hits
+                        }}/{{ player.luck.crits.total }})
+                      </div>
+                      <mat-divider></mat-divider>
+
+                      <div class="replay-analyzer__stat-row">
+                        <span class="replay-analyzer__stat-label"
+                          >Expected Crits:</span
+                        >
+                        {{ player.luck.crits.expected | percent }}
+                      </div>
+
+                      @if (player.luck.status.total > 0) {
+                        <mat-divider></mat-divider>
+                        <div class="replay-analyzer__stat-row">
+                          <span class="replay-analyzer__stat-label"
+                            >Total Fully Parad:</span
+                          >
+                          {{ player.luck.status.actual | percent }} ({{
+                            player.luck.status.full
+                          }}/{{ player.luck.status.total }})
+                        </div>
+                        <mat-divider></mat-divider>
+                        <div class="replay-analyzer__stat-row">
+                          <span class="replay-analyzer__stat-label"
+                            >Expected Fully Parad:</span
+                          >
+                          {{ player.luck.status.expected | percent }}
+                        </div>
+                      }
                     }
 
                     @if (player.win) {
@@ -180,10 +213,7 @@
                   </div>
 
                   <div class="replay-analyzer__team">
-                    @for (
-                      mon of player.team;
-                      track mon.formes[0]?.id ?? $index
-                    ) {
+                    @for (pokemon of player.team; track pokemon.id) {
                       <mat-card class="replay-analyzer__mon-card">
                         <mat-card-header
                           class="replay-analyzer__mon-card-header"
@@ -192,9 +222,8 @@
                             class="replay-analyzer__mon-card-title"
                           >
                             <pdz-sprite
-                              title="{{ mon.formes[0].detail }}"
-                              [pokemon]="{ id: mon.formes[0].id, name: '' }"
-                              [disabled]="mon.fainted"
+                              [title]="pokemon.name"
+                              [pokemon]="pokemon"
                             ></pdz-sprite>
                           </mat-card-title>
                         </mat-card-header>
@@ -202,6 +231,13 @@
                         <mat-card-content
                           class="replay-analyzer__mon-card-content"
                         >
+                          <div
+                            class="replay-analyzer__mon-status"
+                            [ngClass]="monStatusClass(pokemon.status)"
+                          >
+                            {{ monStatusLabel(pokemon.status) }}
+                          </div>
+
                           <div class="replay-analyzer__mon-grid">
                             <div class="replay-analyzer__mon-stat-tile">
                               <span
@@ -214,10 +250,10 @@
                                 hideToggle
                                 class="replay-analyzer__compact-panel replay-analyzer__compact-panel--centered"
                                 [matTooltip]="
-                                  mon.kills[1]
-                                    ? mon.kills[0] +
+                                  pokemon.kills.indirect
+                                    ? pokemon.kills.direct +
                                       ' direct, ' +
-                                      mon.kills[1] +
+                                      pokemon.kills.indirect +
                                       ' indirect'
                                     : ''
                                 "
@@ -226,7 +262,10 @@
                                   <mat-panel-title
                                     class="replay-analyzer__panel-title replay-analyzer__panel-title--centered"
                                   >
-                                    {{ mon.kills[0] + (mon.kills[1] || 0) }}
+                                    {{
+                                      pokemon.kills.direct +
+                                        (pokemon.kills.indirect || 0)
+                                    }}
                                   </mat-panel-title>
                                 </mat-expansion-panel-header>
                               </mat-expansion-panel>
@@ -247,125 +286,141 @@
                                   <mat-panel-title
                                     class="replay-analyzer__panel-title replay-analyzer__panel-title--centered"
                                   >
-                                    {{ mon.fainted ? 1 : 0 }}
+                                    {{ pokemon.status === "fainted" ? 1 : 0 }}
                                   </mat-panel-title>
                                 </mat-expansion-panel-header>
                               </mat-expansion-panel>
                             </div>
                           </div>
 
-                          <div class="replay-analyzer__mon-section">
-                            <span
-                              class="replay-analyzer__stat-label replay-analyzer__stat-label--block replay-analyzer__stat-label--centered"
-                            >
-                              Damage Dealt:
-                            </span>
-                            <mat-accordion>
-                              <mat-expansion-panel
-                                class="replay-analyzer__compact-panel replay-analyzer__compact-panel--left"
-                              >
-                                <mat-expansion-panel-header>
-                                  <mat-panel-title
-                                    class="replay-analyzer__panel-title replay-analyzer__panel-title--left"
-                                  >
-                                    {{
-                                      mon.damageDealt[0] +
-                                        (mon.damageDealt[1] || 0)
-                                        | number: "1.0-0"
-                                    }}%
-                                  </mat-panel-title>
-                                </mat-expansion-panel-header>
-                                <div>
-                                  • Direct:
-                                  {{ mon.damageDealt[0] | number: "1.0-0" }}%
-                                </div>
-                                @if (mon.damageDealt[1]) {
-                                  <div>
-                                    • Indirect:
-                                    {{ mon.damageDealt[1] | number: "1.0-0" }}%
-                                  </div>
-                                }
-                              </mat-expansion-panel>
-                            </mat-accordion>
-                          </div>
-
-                          <div class="replay-analyzer__mon-section">
-                            <span
-                              class="replay-analyzer__stat-label replay-analyzer__stat-label--block replay-analyzer__stat-label--centered"
-                            >
-                              Damage Taken:
-                            </span>
-                            <mat-accordion>
-                              <mat-expansion-panel
-                                class="replay-analyzer__compact-panel replay-analyzer__compact-panel--left"
-                              >
-                                <mat-expansion-panel-header>
-                                  <mat-panel-title
-                                    class="replay-analyzer__panel-title replay-analyzer__panel-title--left"
-                                  >
-                                    {{
-                                      mon.damageTaken[0] +
-                                        (mon.damageTaken[1] || 0)
-                                        | number: "1.0-0"
-                                    }}%
-                                  </mat-panel-title>
-                                </mat-expansion-panel-header>
-                                <div>
-                                  • Direct:
-                                  {{ mon.damageTaken[0] | number: "1.0-0" }}%
-                                </div>
-                                @if (mon.damageTaken[1]) {
-                                  <div>
-                                    • Indirect:
-                                    {{ mon.damageTaken[1] | number: "1.0-0" }}%
-                                  </div>
-                                }
-                              </mat-expansion-panel>
-                            </mat-accordion>
-                          </div>
-
-                          <div
-                            class="replay-analyzer__mon-stat-tile replay-analyzer__mon-stat-tile--centered"
-                          >
-                            <span
-                              class="replay-analyzer__stat-label replay-analyzer__stat-label--block"
-                            >
-                              HP Restored:
-                            </span>
-                            <mat-expansion-panel
-                              disabled
-                              hideToggle
-                              class="replay-analyzer__compact-panel"
-                            >
-                              <mat-expansion-panel-header>
-                                <mat-panel-title
-                                  class="replay-analyzer__panel-title"
-                                >
-                                  {{ mon.hpRestored | number: "1.0-0" }}%
-                                </mat-panel-title>
-                              </mat-expansion-panel-header>
-                            </mat-expansion-panel>
-                          </div>
-
-                          @if (mon.moveset && mon.moveset.length > 0) {
+                          @if (showAdvancedDetails) {
                             <div class="replay-analyzer__mon-section">
+                              <span
+                                class="replay-analyzer__stat-label replay-analyzer__stat-label--block replay-analyzer__stat-label--centered"
+                              >
+                                Damage Dealt:
+                              </span>
                               <mat-accordion>
                                 <mat-expansion-panel
-                                  class="replay-analyzer__compact-panel"
+                                  class="replay-analyzer__compact-panel replay-analyzer__compact-panel--left"
                                 >
                                   <mat-expansion-panel-header>
                                     <mat-panel-title
-                                      class="replay-analyzer__panel-title"
+                                      class="replay-analyzer__panel-title replay-analyzer__panel-title--left"
                                     >
-                                      Moveset:
+                                      {{
+                                        pokemon.damageDealt.direct +
+                                          (pokemon.damageDealt.indirect || 0)
+                                          | number: "1.0-0"
+                                      }}%
                                     </mat-panel-title>
                                   </mat-expansion-panel-header>
-                                  @for (move of mon.moveset; track move) {
-                                    <div>• {{ move }}</div>
+                                  <div>
+                                    • Direct:
+                                    {{
+                                      pokemon.damageDealt.direct
+                                        | number: "1.0-0"
+                                    }}%
+                                  </div>
+                                  @if (pokemon.damageDealt.indirect) {
+                                    <div>
+                                      • Indirect:
+                                      {{
+                                        pokemon.damageDealt.indirect
+                                          | number: "1.0-0"
+                                      }}%
+                                    </div>
                                   }
                                 </mat-expansion-panel>
                               </mat-accordion>
                             </div>
+
+                            <div class="replay-analyzer__mon-section">
+                              <span
+                                class="replay-analyzer__stat-label replay-analyzer__stat-label--block replay-analyzer__stat-label--centered"
+                              >
+                                Damage Taken:
+                              </span>
+                              <mat-accordion>
+                                <mat-expansion-panel
+                                  class="replay-analyzer__compact-panel replay-analyzer__compact-panel--left"
+                                >
+                                  <mat-expansion-panel-header>
+                                    <mat-panel-title
+                                      class="replay-analyzer__panel-title replay-analyzer__panel-title--left"
+                                    >
+                                      {{
+                                        pokemon.damageTaken.direct +
+                                          (pokemon.damageTaken.indirect || 0)
+                                          | number: "1.0-0"
+                                      }}%
+                                    </mat-panel-title>
+                                  </mat-expansion-panel-header>
+                                  <div>
+                                    • Direct:
+                                    {{
+                                      pokemon.damageTaken.direct
+                                        | number: "1.0-0"
+                                    }}%
+                                  </div>
+                                  @if (pokemon.damageTaken.indirect) {
+                                    <div>
+                                      • Indirect:
+                                      {{
+                                        pokemon.damageTaken.indirect
+                                          | number: "1.0-0"
+                                      }}%
+                                    </div>
+                                  }
+                                </mat-expansion-panel>
+                              </mat-accordion>
+                            </div>
+
+                            <div
+                              class="replay-analyzer__mon-stat-tile replay-analyzer__mon-stat-tile--centered"
+                            >
+                              <span
+                                class="replay-analyzer__stat-label replay-analyzer__stat-label--block"
+                              >
+                                HP Restored:
+                              </span>
+                              <mat-expansion-panel
+                                disabled
+                                hideToggle
+                                class="replay-analyzer__compact-panel"
+                              >
+                                <mat-expansion-panel-header>
+                                  <mat-panel-title
+                                    class="replay-analyzer__panel-title"
+                                  >
+                                    {{ pokemon.hpRestored | number: "1.0-0" }}%
+                                  </mat-panel-title>
+                                </mat-expansion-panel-header>
+                              </mat-expansion-panel>
+                            </div>
+
+                            @if (
+                              pokemon.moveset && pokemon.moveset.length > 0
+                            ) {
+                              <div class="replay-analyzer__mon-section">
+                                <mat-accordion>
+                                  <mat-expansion-panel
+                                    class="replay-analyzer__compact-panel"
+                                  >
+                                    <mat-expansion-panel-header>
+                                      <mat-panel-title
+                                        class="replay-analyzer__panel-title"
+                                      >
+                                        Moveset:
+                                      </mat-panel-title>
+                                    </mat-expansion-panel-header>
+                                    @for (move of pokemon.moveset; track move) {
+                                      <div>• {{ move }}</div>
+                                    }
+                                  </mat-expansion-panel>
+                                </mat-accordion>
+                              </div>
+                            }
                           }
                         </mat-card-content>
                       </mat-card>
@@ -396,7 +451,7 @@
           <div class="replay-analyzer__chart-wrap">
             <pdz-replay-chart
               class="replay-analyzer__chart"
-              [data]="data.stats"
+              [data]="data.players"
             ></pdz-replay-chart>
           </div>
         </mat-card-content>

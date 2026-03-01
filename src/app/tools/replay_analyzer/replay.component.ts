@@ -1,23 +1,18 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  DestroyRef,
-  OnInit,
-  inject,
-} from '@angular/core';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ReplayService } from '../../services/replay.service';
-import { SpriteComponent } from '../../images/sprite/sprite.component';
-import { ReplayChartComponent } from './replay-chart/replay-chart.component';
-import { ReplayData } from './replay.interface';
 import { getNameByPid } from '../../data/namedex';
+import { IconComponent } from '../../images/icon/icon.component';
+import { SpriteComponent } from '../../images/sprite/sprite.component';
+import { ReplayService } from '../../services/replay.service';
+import { ReplayChartComponent } from './replay-chart/replay-chart.component';
+import { ReplayAnalysis, ReplayPokemon } from './replay.interface';
 
-import { MatExpansionModule } from '@angular/material/expansion';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
@@ -28,6 +23,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     CommonModule,
     RouterModule,
     FormsModule,
+    IconComponent,
     SpriteComponent,
     ReplayChartComponent,
     MatExpansionModule,
@@ -35,7 +31,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatDividerModule,
     MatTooltipModule,
   ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ReplayComponent implements OnInit {
   private replayService = inject(ReplayService);
@@ -43,8 +38,10 @@ export class ReplayComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
 
   private _replayURI = '';
-  replayData: ReplayData | undefined;
+  replayData?: ReplayAnalysis;
   analyzed = true;
+  showAdvancedDetails = false;
+  analyzedReplayURI = '';
 
   get replayURI(): string {
     return this._replayURI;
@@ -75,18 +72,24 @@ export class ReplayComponent implements OnInit {
     }
 
     this.analyzed = true;
+    this.analyzedReplayURI = replayURI;
+    this._replayURI = '';
     this.replayService
       .analyzeReplay(replayURI)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (data) => {
-          this.replayData = data;
+          this.replayData = data.analysis;
         },
         error: () => {
           this.replayData = undefined;
           this.analyzed = false;
         },
       });
+  }
+
+  toggleAdvancedDetails(): void {
+    this.showAdvancedDetails = !this.showAdvancedDetails;
   }
 
   remainingSeconds(seconds: number): number {
@@ -110,5 +113,25 @@ export class ReplayComponent implements OnInit {
 
   getNameByPid(pid: string): string {
     return getNameByPid(pid);
+  }
+
+  monStatusLabel(status: ReplayPokemon['status']): string {
+    if (status === 'used') {
+      return 'Survived';
+    }
+
+    return status[0].toUpperCase() + status.slice(1);
+  }
+
+  monStatusClass(status: ReplayPokemon['status']): string {
+    if (status === 'fainted') {
+      return 'replay-analyzer__mon-status--fainted';
+    }
+
+    if (status === 'used') {
+      return 'replay-analyzer__mon-status--survived';
+    }
+
+    return 'replay-analyzer__mon-status--brought';
   }
 }

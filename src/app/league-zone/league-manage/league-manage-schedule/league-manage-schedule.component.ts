@@ -14,7 +14,7 @@ import { LeagueManageService } from '../../../services/leagues/league-manage.ser
 import { LeagueZoneService } from '../../../services/leagues/league-zone.service';
 import { ReplayService } from '../../../services/replay.service';
 import {
-  ReplayData,
+  ReplayAnalysis,
   ReplayPlayer,
 } from '../../../tools/replay_analyzer/replay.interface';
 import { League } from '../../league.interface';
@@ -174,7 +174,7 @@ export class LeagueManageScheduleComponent {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (data) => {
-          this.applyReplayToMatch(matchup, matchIndex, data);
+          this.applyReplayToMatch(matchup, matchIndex, data.analysis);
           this.updateMatchupScoresFromMatches(matchup.id);
           this.analysisState.set(stateKey, { loading: false });
         },
@@ -430,7 +430,7 @@ export class LeagueManageScheduleComponent {
   private applyReplayToMatch(
     matchup: League.Matchup,
     matchIndex: number,
-    replay: ReplayData,
+    replay: ReplayAnalysis,
   ): void {
     const matchForm = this.getMatchForm(matchup.id, matchIndex);
     if (!matchForm) return;
@@ -468,10 +468,10 @@ export class LeagueManageScheduleComponent {
   }
 
   private mapReplayPlayersToTeams(
-    replay: ReplayData,
+    replay: ReplayAnalysis,
     matchup: League.Matchup,
   ): { team1?: ReplayPlayer; team2?: ReplayPlayer } {
-    const players = replay.stats.slice(0, 2);
+    const players = replay.players.slice(0, 2);
     if (players.length < 2) {
       return { team1: players[0], team2: players[1] };
     }
@@ -496,7 +496,7 @@ export class LeagueManageScheduleComponent {
 
   private countOverlap(player: ReplayPlayer, ids: Set<PokemonId | ''>): number {
     return player.team.reduce((count, mon) => {
-      const pid = mon.formes[0]?.id ?? '';
+      const pid = mon.id;
       return ids.has(pid) ? count + 1 : count;
     }, 0);
   }
@@ -523,15 +523,14 @@ export class LeagueManageScheduleComponent {
     );
 
     player.team.forEach((mon) => {
-      const pid = mon.formes[0]?.id ?? '';
-      const control = controlMap.get(pid);
+      const control = controlMap.get(mon.id);
       if (!control) return;
 
       control.patchValue({
         kills: {
-          direct: mon.kills?.[0] ?? 0,
-          indirect: mon.kills?.[1] ?? 0,
-          teammate: mon.kills?.[2] ?? 0,
+          direct: mon.kills?.direct ?? 0,
+          indirect: mon.kills?.indirect ?? 0,
+          teammate: mon.kills?.teammate ?? 0,
         },
         status: mon.status ?? null,
       });

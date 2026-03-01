@@ -238,63 +238,58 @@ export class OpponentScoreComponent implements OnInit {
     if (replayURI) {
       this.selectedMatchForm.patchValue({ analyzed: true });
       this.replayService.analyzeReplay(replayURI).subscribe((data) => {
-        let replayData: ReplayData = data;
+        let replayData = data.analysis;
         let aReplayTeam = -1;
-        for (let mon of replayData.stats[0].team) {
+        for (let mon of replayData.players[0].team) {
           let anyFound = mon.formes.some((forme) => {
-            if (forme.id) {
-              let aFind = this.matchup.aTeam.team.find((muMon) =>
-                muMon.id.startsWith(forme.id!),
-              );
-              let bFind = this.matchup.bTeam.team.find((muMon) =>
-                muMon.id.startsWith(forme.id!),
-              );
-              if (aFind && !bFind) {
-                aReplayTeam = 0;
-                return true;
-              } else if (bFind && !aFind) {
-                aReplayTeam = 1;
-                return true;
-              }
+            let aFind = this.matchup.aTeam.team.find((muMon) =>
+              muMon.id.startsWith(forme),
+            );
+            let bFind = this.matchup.bTeam.team.find((muMon) =>
+              muMon.id.startsWith(forme),
+            );
+            if (aFind && !bFind) {
+              aReplayTeam = 0;
+              return true;
+            }
+            if (bFind && !aFind) {
+              aReplayTeam = 1;
+              return true;
             }
             return false;
           });
           if (anyFound) break;
         }
-        if (aReplayTeam >= 0 && aReplayTeam < replayData.stats.length) {
-          replayData.stats[aReplayTeam].team.forEach((mon) => {
+        if (aReplayTeam >= 0 && aReplayTeam < replayData.players.length) {
+          replayData.players[aReplayTeam].team.forEach((mon) => {
             if (mon.status !== 'brought') {
-              let replayCtrl = this.aTeamArray.controls.find((ctrl) => {
-                return mon.formes.some((forme) =>
-                  ctrl.value.pokemon.id.startsWith(forme.id),
-                );
-              });
+              let replayCtrl = this.aTeamArray.controls.find((ctrl) =>
+                mon.formes.includes(ctrl.value.pokemon.id),
+              );
               replayCtrl?.patchValue({
                 brought: mon.status === 'used' ? 1 : 0,
-                kills: mon.kills[0],
-                indirect: mon.kills[1],
+                kills: mon.kills.direct,
+                indirect: mon.kills.indirect,
                 fainted: mon.status === 'fainted' ? 1 : 0,
               });
             }
           });
-          replayData.stats[(aReplayTeam + 1) % 2].team.forEach((mon) => {
+          replayData.players[(aReplayTeam + 1) % 2].team.forEach((mon) => {
             if (mon.status !== 'brought') {
-              let replayCtrl = this.bTeamArray.controls.find((ctrl) => {
-                return mon.formes.some((forme) =>
-                  ctrl.value.pokemon.id.startsWith(forme.id),
-                );
-              });
+              let replayCtrl = this.bTeamArray.controls.find((ctrl) =>
+                mon.formes.includes(ctrl.value.pokemon.id),
+              );
               replayCtrl?.patchValue({
                 brought: mon.status === 'used' ? 1 : 0,
-                kills: mon.kills[0],
-                indirect: mon.kills[1],
+                kills: mon.kills.direct,
+                indirect: mon.kills.indirect,
                 fainted: mon.status === 'fainted' ? 1 : 0,
               });
             }
           });
-          if (replayData.stats[aReplayTeam].win) {
+          if (replayData.players[aReplayTeam].win) {
             this.selectedMatchForm.patchValue({ winner: 'a' });
-          } else if (replayData.stats[(aReplayTeam + 1) % 2].win) {
+          } else if (replayData.players[(aReplayTeam + 1) % 2].win) {
             this.selectedMatchForm.patchValue({ winner: 'b' });
           }
         }

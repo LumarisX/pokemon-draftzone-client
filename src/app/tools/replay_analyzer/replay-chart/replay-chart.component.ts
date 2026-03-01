@@ -1,6 +1,5 @@
 import {
   AfterViewInit,
-  ChangeDetectionStrategy,
   Component,
   ElementRef,
   Input,
@@ -22,7 +21,6 @@ type DataType = {
   standalone: true,
   template: `<svg class="replay-chart__svg"></svg>`,
   styleUrl: './replay-chart.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ReplayChartComponent implements AfterViewInit, OnChanges {
   private readonly el = inject<ElementRef<HTMLElement>>(ElementRef);
