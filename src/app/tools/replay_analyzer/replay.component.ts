@@ -8,16 +8,39 @@ import { ReplayChartComponent } from './replay-chart/replay-chart.component';
 import { ReplayData } from './replay.interface';
 import { getNameByPid } from '../../data/namedex';
 
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatCardModule } from '@angular/material/card';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatTooltipModule } from '@angular/material/tooltip';
+
 @Component({
   selector: 'replay-analyzer',
   standalone: true,
   templateUrl: './replay.component.html',
+  styles: [
+    `
+      ::ng-deep mat-divider {
+        width: 100% !important;
+        display: block !important;
+        margin-top: 10px !important;
+        margin-bottom: 10px !important;
+      }
+      ::ng-deep .pdz-centered-panel .mat-content,
+      ::ng-deep .pdz-left-aligned-panel .mat-content {
+        margin-right: 0 !important;
+      }
+    `,
+  ],
   imports: [
     CommonModule,
     RouterModule,
     FormsModule,
     SpriteComponent,
     ReplayChartComponent,
+    MatExpansionModule,
+    MatCardModule,
+    MatDividerModule,
+    MatTooltipModule,
   ],
 })
 export class ReplayComponent implements OnInit {

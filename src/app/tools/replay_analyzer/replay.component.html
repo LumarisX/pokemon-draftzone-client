@@ -1,141 +1,121 @@
 <h1 class="w-full text-2xl p-3 text-center font-nasa">Replay Analyzer</h1>
 <div class="flex flex-col items-center w-full space-y-3">
-  <div
-    class="p-2 border-2 flex items-center w-128 max-w-full bg-menu-100 rounded-xl border-menu-400"
-  >
+  <div class="p-2 border-2 flex items-center w-128 max-w-full bg-menu-100 rounded-xl border-menu-400">
     <div class="font-semibold">Replay</div>
-    <input
-      [(ngModel)]="replayURI"
-      type="text"
-      class="p-1 bg-menu-100 border-2 flex-grow border-menu-300 rounded-lg mx-2"
-    />
+    <input [(ngModel)]="replayURI" type="text"
+      class="p-1 bg-menu-100 border-2 flex-grow border-menu-300 rounded-lg mx-2" />
     @if (!analyzed) {
-      <button
-        (click)="analyze()"
-        class="px-2 py-1 border-2 shadow bg-menu-200 rounded-xl border-menu-400"
-      >
-        Analyze
-      </button>
+    <button (click)="analyze()" class="px-2 py-1 border-2 shadow bg-menu-200 rounded-xl border-menu-400">
+      Analyze
+    </button>
     }
     @if (analyzed) {
-      <button
-        class="opacity-50 px-2 py-1 border-2 shadow bg-menu-200 rounded-xl border-menu-400"
-      >
-        Analyze
-      </button>
+    <button class="opacity-50 px-2 py-1 border-2 shadow bg-menu-200 rounded-xl border-menu-400">
+      Analyze
+    </button>
     }
   </div>
-  <div
-    class="max-w-full p-2 font-bold text-center rounded-full bg-caution w-fit"
-  >
+  <div class="max-w-full p-2 font-bold text-center rounded-full bg-caution w-fit">
     The replay analyzer is currently still in testing. If you find errors,
     please share the replay on our
-    <a href="https://discord.gg/sQUEBW4UVx" class="text-blue-500">Discord</a>.
+    <a href="https://discord.gg/sQUEBW4UVx" target="_blank" class="text-blue-500">Discord</a>.
   </div>
-</div>
-<!-- <loading *ngIf="analyzed && !replayData"></pdz-loading> -->
-@if (replayData) {
-  <div class="flex justify-center w-full p-2">
-    <div
-      class="flex flex-col items-center p-2 border-2 max-w-full w-fit bg-menu-100 rounded-xl border-menu-400"
-    >
-      <div class="flex space-x-4 p-1 text-lg">
-        <div>
-          <label class="font-semibold text-symbolColor-sub" for="format">
-            Format:
-          </label>
-          <span id="format">{{ replayData.gametype }}</span>
-        </div>
-        <div>
-          <label class="font-semibold text-symbolColor-sub" for="gen">
-            Generation:
-          </label>
-          <span id="gen"> {{ replayData.genNum }} </span>
-        </div>
-        <div>
-          <label class="font-semibold text-symbolColor-sub" for="turns">
-            Turns:
-          </label>
-          <span id="turns"> {{ replayData.turns }} </span>
-        </div>
-        <div>
-          <label class="font-semibold text-symbolColor-sub" for="gameTime">
-            Game Time:
-          </label>
-          <span id="gameTime"
-            >{{ toMinutes(replayData.gameTime) }} minutes
-            {{ remainingSeconds(replayData.gameTime) }} seconds</span
-          >
-        </div>
-      </div>
-      <div class="space-y-4 w-fit max-w-full">
-        @for (
-          player of replayData.stats;
-          track player;
-          let playerNum = $index
-        ) {
-          <div
-            [ngClass]="playerClass(playerNum + 1)"
-            class="p-1 border rounded border-menu-400"
-          >
-            <div class="flex space-x-2 items-end flex-wrap pb-2">
-              <div class="text-xl font-bold">{{ player.username }}</div>
-            </div>
-            <div class="flex space-x-2">
-              <div class="">
+  <!-- <loading *ngIf="analyzed && !replayData"></loading> -->
+  <mat-card *ngIf="replayData" class="w-[90%] p-2">
+    <div class="flex flex-row overflow-x-auto gap-6 md:justify-center items-center p-3 text-lg w-full no-scrollbar">
+      <span class="flex space-x-1 whitespace-nowrap md:mx-16">
+        <label class="font-semibold text-symbolColor-sub" for="format">
+          Format:
+        </label>
+        <span id="format">{{ replayData.gametype }}</span>
+      </span>
+      <span class="flex space-x-1 whitespace-nowrap md:mx-16">
+        <label class="font-semibold text-symbolColor-sub" for="gen">
+          Generation:
+        </label>
+        <span id="gen"> {{ replayData.genNum }} </span>
+      </span>
+      <span class="flex space-x-1 whitespace-nowrap md:mx-16">
+        <label class="font-semibold text-symbolColor-sub" for="turns">
+          Turns:
+        </label>
+        <span id="turns"> {{ replayData.turns }} </span>
+      </span>
+      <span class="flex space-x-1 whitespace-nowrap md:mx-16">
+        <label class="font-semibold text-symbolColor-sub" for="gameTime">
+          Game Time:
+        </label>
+        <span id="gameTime">{{ toMinutes(replayData.gameTime) }}m
+          {{ remainingSeconds(replayData.gameTime) }}s</span>
+      </span>
+    </div>
+    <mat-card-content
+      class="flex flex-col items-center p-2 border-2 max-w-full w-full bg-menu-100 rounded-xl border-menu-400">
+      <div class="space-y-8 w-full max-w-full pt-3">
+        <div *ngFor="let player of replayData.stats; let playerNum = index" [ngClass]="playerClass(playerNum + 1)"
+          class="p-4 border border-menu-400 rounded-lg">
+          <div class="flex space-x-2 items-end flex-wrap pb-6">
+            <div class="text-xl font-bold">{{ player.username }}</div>
+          </div>
+          <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
+            <!-- Sidebar with player stats -->
+            <div class="flex-shrink-0 w-full md:w-64 space-y-4 p-4 border-2 rounded-lg border-menu-400">
+              <div>
+                <span class="font-semibold">Kills:</span>
+                {{ player.total.kills }}
+              </div>
+              <mat-divider></mat-divider>
+              <div>
+                <span class="font-semibold">Deaths:</span>
+                {{ player.total.deaths }}
+              </div>
+              <mat-divider></mat-divider>
+              <div>
+                <span class="font-semibold">Damage Dealt:</span>
+                {{ player.total.damageDealt | number: "1.0-0" }}%
+              </div>
+              <mat-divider></mat-divider>
+              <div>
+                <span class="font-semibold">Damage Taken:</span>
+                {{ player.total.damageTaken | number: "1.0-0" }}%
+              </div>
+              <mat-divider></mat-divider>
+              <div>
+                <span class="font-semibold"> Total Accuracy: </span>
+                {{ player.luck.moves.actual | percent }} ({{
+                player.luck.moves.hits
+                }}/{{ player.luck.moves.total }})
+              </div>
+              <mat-divider></mat-divider>
+              <div>
+                <span class="font-semibold"> Expected Accuracy: </span>
+                {{ player.luck.moves.expected | percent }}
+              </div>
+              <mat-divider></mat-divider>
+              <div>
+                <span class="font-semibold"> Total Crits: </span>
+                {{ player.luck.crits.actual | percent }} ({{
+                player.luck.crits.hits
+                }}/{{ player.luck.crits.total }})
+              </div>
+              <mat-divider></mat-divider>
+              <div>
+                <span class="font-semibold"> Expected Crits: </span>
+                {{ player.luck.crits.expected | percent }}
+              </div>
+              <mat-divider></mat-divider>
+              <div *ngIf="player.luck.status.total > 0">
                 <div>
-                  <span class="font-semibold">Kills:</span>
-                  {{ player.total.kills }}
+                  <span class="font-semibold"> Total Fully Parad: </span>
+                  {{ player.luck.status.actual | percent }} ({{
+                  player.luck.status.full
+                  }}/{{ player.luck.status.total }})
                 </div>
+                <mat-divider></mat-divider>
                 <div>
-                  <span class="font-semibold">Deaths:</span>
-                  {{ player.total.deaths }}
+                  <span class="font-semibold"> Expected Fully Parad: </span>
+                  {{ player.luck.status.expected | percent }}
                 </div>
-                <div>
-                  <span class="font-semibold">Damage Dealt:</span>
-                  {{ player.total.damageDealt | number: "1.0-0" }}%
-                </div>
-                <div>
-                  <span class="font-semibold">Damage Taken:</span>
-                  {{ player.total.damageTaken | number: "1.0-0" }}%
-                </div>
-                <div>
-                  <span class="font-semibold"> Total Accuracy: </span>
-                  {{ player.luck.moves.actual | percent }} ({{
-                    player.luck.moves.hits
-                  }}/{{ player.luck.moves.total }})
-                </div>
-                <div>
-                  <span class="font-semibold"> Expected Accuracy: </span>
-                  {{ player.luck.moves.expected | percent }}
-                </div>
-                <div>
-                  <span class="font-semibold"> Total Crits: </span>
-                  {{ player.luck.crits.actual | percent }} ({{
-                    player.luck.crits.hits
-                  }}/{{ player.luck.crits.total }})
-                </div>
-                <div>
-                  <span class="font-semibold"> Expected Crits: </span>
-                  {{ player.luck.crits.expected | percent }}
-                </div>
-                @if (player.luck.status.total > 0) {
-                  <div>
-                    <div>
-                      <span class="font-semibold"> Total Fully Parad: </span>
-                      {{ player.luck.status.actual | percent }} ({{
-                        player.luck.status.full
-                      }}/{{ player.luck.status.total }})
-                    </div>
-                    <div>
-                      <span class="font-semibold"> Expected Fully Parad: </span>
-                      {{ player.luck.status.expected | percent }}
-                    </div>
-                  </div>
-                }
-                @if (player.win) {
-                  <div class="font-bold">Winner</div>
-                }
               </div>
               <div class="w-full flex justify-center">
                 <div class="flex flex-wrap">
@@ -147,95 +127,109 @@
                           [disabled]="mon.status === 'fainted'"
                         ></pdz-sprite>
                       </div>
-                      @if (!mon.kills[1]) {
-                        <div>
-                          <span class="font-semibold"> Kills: </span>
-                          {{ mon.kills[0] }}
-                        </div>
-                      }
-                      @if (mon.kills[1]) {
-                        <div>
-                          <span class="font-semibold"> Kills: </span>
-                          <div>
-                            <span> Direct: </span>
-                            {{ mon.kills[0] }}
-                          </div>
-                          <div>
-                            <span> Indirect: </span>
-                            {{ mon.kills[1] }}
-                          </div>
-                        </div>
-                      }
-                      @if (!mon.damageDealt[1]) {
-                        <div>
-                          <span class="font-semibold"> Damage Dealt: </span>
-                          {{ mon.damageDealt[0] | number: "1.0-0" }}%
-                        </div>
-                      }
-                      @if (mon.damageDealt[1]) {
-                        <div>
-                          <span class="font-semibold"> Damage Dealt: </span>
-                          <div>
-                            <span> Direct: </span>
-                            {{ mon.damageDealt[0] | number: "1.0-0" }}%
-                          </div>
-                          <div>
-                            <span> Indirect: </span>
-                            {{ mon.damageDealt[1] | number: "1.0-0" }}%
-                          </div>
-                        </div>
-                      }
-                      @if (!mon.damageTaken[1]) {
-                        <div>
-                          <span class="font-semibold"> Damage Taken: </span>
-                          {{ mon.damageTaken[0] | number: "1.0-0" }}%
-                        </div>
-                      }
-                      @if (mon.damageTaken[1]) {
-                        <div>
-                          <span class="font-semibold"> Damage Taken: </span>
-                          <div>
-                            <span> Direct: </span>
-                            {{ mon.damageTaken[0] | number: "1.0-0" }}%
-                          </div>
-                          <div>
-                            <span> Indirect: </span>
-                            {{ mon.damageTaken[1] | number: "1.0-0" }}%
-                          </div>
-                        </div>
-                      }
-                      <div>
-                        <span class="font-semibold"> HP Restored: </span>
-                        {{ mon.hpRestored | number: "1.0-0" }}%
+                      <div class="p-2 text-center">
+                        <span class="font-semibold block mb-1"> Deaths: </span>
+                        <mat-expansion-panel disabled hideToggle class="pdz-centered-panel">
+                          <mat-expansion-panel-header class="!text-[var(--mat-expansion-header-text-color)] !mr-0">
+                            <mat-panel-title class="!mr-0 !flex !justify-center !w-full">
+                              {{ mon.fainted ? 1 : 0 }}
+                            </mat-panel-title>
+                          </mat-expansion-panel-header>
+                        </mat-expansion-panel>
                       </div>
                     </div>
-                  }
-                </div>
+                    <div class="p-2">
+                      <span class="font-semibold block mb-1 text-center"> Damage Dealt:</span>
+                      <mat-accordion>
+                        <mat-expansion-panel class="pdz-left-aligned-panel">
+                          <mat-expansion-panel-header>
+                            <mat-panel-title class="!flex !justify-start !w-full !mr-0 !text-left">
+                              {{
+                              mon.damageDealt[0] + (mon.damageDealt[1] || 0)
+                              | number: "1.0-0"
+                              }}%
+                            </mat-panel-title>
+                          </mat-expansion-panel-header>
+                          <div>
+                            • Direct:
+                            {{ mon.damageDealt[0] | number: "1.0-0" }}%
+                          </div>
+                          <div *ngIf="mon.damageDealt[1]">
+                            • Indirect:
+                            {{ mon.damageDealt[1] | number: "1.0-0" }}%
+                          </div>
+                        </mat-expansion-panel>
+                      </mat-accordion>
+                    </div>
+                    <div class="p-2">
+                      <span class="font-semibold block mb-1 text-center"> Damage Taken: </span>
+                      <mat-accordion>
+                        <mat-expansion-panel class="pdz-left-aligned-panel">
+                          <mat-expansion-panel-header>
+                            <mat-panel-title class="!flex !justify-start !w-full !mr-0 !text-left">
+                              {{
+                              mon.damageTaken[0] + (mon.damageTaken[1] || 0)
+                              | number: "1.0-0"
+                              }}%
+                            </mat-panel-title>
+                          </mat-expansion-panel-header>
+                          <div>
+                            • Direct:
+                            {{ mon.damageTaken[0] | number: "1.0-0" }}%
+                          </div>
+                          <div *ngIf="mon.damageTaken[1]">
+                            • Indirect:
+                            {{ mon.damageTaken[1] | number: "1.0-0" }}%
+                          </div>
+                        </mat-expansion-panel>
+                      </mat-accordion>
+                    </div>
+                    <div class="p-2 text-center">
+                      <span class="font-semibold block mb-1"> HP Restored: </span>
+                      <mat-expansion-panel disabled hideToggle>
+                        <!-- Prevent greyed out text while the mat-expansion-panel is disabled -->
+                        <mat-expansion-panel-header class="!text-[var(--mat-expansion-header-text-color)]">
+                          <mat-panel-title>
+                            {{ mon.hpRestored | number: "1.0-0" }}%
+                          </mat-panel-title>
+                        </mat-expansion-panel-header>
+                      </mat-expansion-panel>
+                    </div>
+                    <div *ngIf="mon.moveset && mon.moveset.length > 0" class="p-2">
+                      <mat-accordion>
+                        <mat-expansion-panel>
+                          <mat-expansion-panel-header>
+                            <mat-panel-title> Moveset: </mat-panel-title>
+                          </mat-expansion-panel-header>
+                          <div *ngFor="let move of mon.moveset">
+                            • {{ move }}
+                          </div>
+                        </mat-expansion-panel>
+                      </mat-accordion>
+                    </div>
+                  </mat-card-content>
+                </mat-card>
               </div>
             </div>
           </div>
-        }
+        </div>
+
         <div class="w-full">
-          <h2 class="text-xl font-bold fill-">Events</h2>
-          <div class="border-2 border-menu-400 rounded w-full">
+          <h2 class="text-xl font-bold pb-2">Events</h2>
+          <div class="flex flex-col gap-1">
             @for (event of replayData.events; track event) {
-              <div
-                class="py-1 px-2 border-b border-menu-400 w-full"
-                [ngClass]="playerClass(event.player)"
-              >
-                <span class="font-semibold"> Turn {{ event.turn }}:</span>
-                {{ event.message }}
-              </div>
+            <div class="py-1 px-2 border rounded-lg border-menu-400" [ngClass]="playerClass(event.player)">
+              <span class="font-semibold"> Turn {{ event.turn }}:</span>
+              {{ event.message }}
+            </div>
             }
           </div>
         </div>
         <div class="w-full flex justify-center">
-          <replay-chart
-            class="w-full bg-slate-200 rounded-lg border-2 border-slate-400 max-w-160"
-            [data]="replayData.stats"
-          ></replay-chart>
+          <replay-chart class="w-full bg-slate-200 text-black rounded-lg border-2 border-slate-400 max-w-160"
+            [data]="replayData.stats"></replay-chart>
         </div>
       </div>
-    </div>
-  </div>
-}
+    </mat-card-content>
+  </mat-card>
+</div>

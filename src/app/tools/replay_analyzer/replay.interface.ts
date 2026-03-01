@@ -44,6 +44,7 @@ export type ReplayPlayer = {
 
 export type ReplayMon = {
   formes: { detail: string; id: PokemonId }[];
+  moveset: string[];
   kills: [number, number, number];
   damageDealt: [number, number];
   damageTaken: [number, number];
