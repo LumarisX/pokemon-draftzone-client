@@ -5,6 +5,7 @@
     {
       "name": "app",
       "installMode": "prefetch",
+      "updateMode": "prefetch",
       "resources": {
         "files": [
           "/favicon.ico",
@@ -14,6 +15,9 @@
           "/*.css",
           "/*.js"
         ]
+      },
+      "cacheQueryOptions": {
+        "ignoreVary": true
       }
     },
     {
@@ -24,6 +28,17 @@
         "files": [
           "/**/*.(svg|cur|jpg|jpeg|png|apng|webp|avif|gif|otf|ttf|woff|woff2)"
         ]
+      }
+    }
+  ],
+  "dataGroups": [
+    {
+      "name": "api-default",
+      "urls": ["/api/**"],
+      "cacheConfig": {
+        "strategy": "performance",
+        "maxSize": 100,
+        "maxAge": "24h"
       }
     }
   ]

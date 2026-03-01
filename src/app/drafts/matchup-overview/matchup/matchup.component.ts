@@ -1,14 +1,13 @@
-
-import { Component, input, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { MatchupData } from '../matchup-interface';
-import { CoveragechartComponent } from './coveragechart/coveragechart.component';
 import { MovechartComponent } from '../widgets/movechart/movechart.component';
+import { MatchupNotesComponent } from '../widgets/notes/notes.component';
 import { OverviewComponent } from '../widgets/overview/overview.component';
-import { SpeedchartComponent } from './speedchart/speedchart.component';
 import { SummaryComponent } from '../widgets/summary/summary.component';
 import { TypechartComponent } from '../widgets/typechart/typechart.component';
-import { MatchupNotesComponent } from '../widgets/notes/notes.component';
+import { CoveragechartComponent } from './coveragechart/coveragechart.component';
+import { SpeedchartComponent } from './speedchart/speedchart.component';
 
 @Component({
   selector: 'matchup',
@@ -22,8 +21,8 @@ import { MatchupNotesComponent } from '../widgets/notes/notes.component';
     SpeedchartComponent,
     CoveragechartComponent,
     OverviewComponent,
-    MatchupNotesComponent
-],
+    MatchupNotesComponent,
+  ],
 })
 export class MatchupComponent {
   @Input({ required: true }) matchupData!: MatchupData;
@@ -31,6 +30,4 @@ export class MatchupComponent {
   @Input() options: { notes: 'view-only' | 'editable' } = {
     notes: 'editable',
   };
-
-  constructor() {}
 }
