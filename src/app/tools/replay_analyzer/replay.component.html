@@ -1,28 +1,47 @@
 <h1 class="w-full text-2xl p-3 text-center font-nasa">Replay Analyzer</h1>
 <div class="flex flex-col items-center w-full space-y-3">
-  <div class="p-2 border-2 flex items-center w-128 max-w-full bg-menu-100 rounded-xl border-menu-400">
+  <div
+    class="p-2 border-2 flex items-center w-128 max-w-full bg-menu-100 rounded-xl border-menu-400"
+  >
     <div class="font-semibold">Replay</div>
-    <input [(ngModel)]="replayURI" type="text"
-      class="p-1 bg-menu-100 border-2 flex-grow border-menu-300 rounded-lg mx-2" />
+    <input
+      [(ngModel)]="replayURI"
+      type="text"
+      class="p-1 bg-menu-100 border-2 flex-grow border-menu-300 rounded-lg mx-2"
+    />
     @if (!analyzed) {
-    <button (click)="analyze()" class="px-2 py-1 border-2 shadow bg-menu-200 rounded-xl border-menu-400">
-      Analyze
-    </button>
+      <button
+        (click)="analyze()"
+        class="px-2 py-1 border-2 shadow bg-menu-200 rounded-xl border-menu-400"
+      >
+        Analyze
+      </button>
     }
     @if (analyzed) {
-    <button class="opacity-50 px-2 py-1 border-2 shadow bg-menu-200 rounded-xl border-menu-400">
-      Analyze
-    </button>
+      <button
+        class="opacity-50 px-2 py-1 border-2 shadow bg-menu-200 rounded-xl border-menu-400"
+      >
+        Analyze
+      </button>
     }
   </div>
-  <div class="max-w-full p-2 font-bold text-center rounded-full bg-caution w-fit">
+  <div
+    class="max-w-full p-2 font-bold text-center rounded-full bg-caution w-fit"
+  >
     The replay analyzer is currently still in testing. If you find errors,
     please share the replay on our
-    <a href="https://discord.gg/sQUEBW4UVx" target="_blank" class="text-blue-500">Discord</a>.
+    <a
+      href="https://discord.gg/sQUEBW4UVx"
+      target="_blank"
+      class="text-blue-500"
+      >Discord</a
+    >.
   </div>
   <!-- <loading *ngIf="analyzed && !replayData"></loading> -->
   <mat-card *ngIf="replayData" class="w-[90%] p-2">
-    <div class="flex flex-row overflow-x-auto gap-6 md:justify-center items-center p-3 text-lg w-full no-scrollbar">
+    <div
+      class="flex flex-row overflow-x-auto gap-6 md:justify-center items-center p-3 text-lg w-full no-scrollbar"
+    >
       <span class="flex space-x-1 whitespace-nowrap md:mx-16">
         <label class="font-semibold text-symbolColor-sub" for="format">
           Format:
@@ -45,21 +64,31 @@
         <label class="font-semibold text-symbolColor-sub" for="gameTime">
           Game Time:
         </label>
-        <span id="gameTime">{{ toMinutes(replayData.gameTime) }}m
-          {{ remainingSeconds(replayData.gameTime) }}s</span>
+        <span id="gameTime"
+          >{{ toMinutes(replayData.gameTime) }}m
+          {{ remainingSeconds(replayData.gameTime) }}s</span
+        >
       </span>
     </div>
     <mat-card-content
-      class="flex flex-col items-center p-2 border-2 max-w-full w-full bg-menu-100 rounded-xl border-menu-400">
+      class="flex flex-col items-center p-2 border-2 max-w-full w-full bg-menu-100 rounded-xl border-menu-400"
+    >
       <div class="space-y-8 w-full max-w-full pt-3">
-        <div *ngFor="let player of replayData.stats; let playerNum = index" [ngClass]="playerClass(playerNum + 1)"
-          class="p-4 border border-menu-400 rounded-lg">
+        <div
+          *ngFor="let player of replayData.stats; let playerNum = index"
+          [ngClass]="playerClass(playerNum + 1)"
+          class="p-4 border border-menu-400 rounded-lg"
+        >
           <div class="flex space-x-2 items-end flex-wrap pb-6">
             <div class="text-xl font-bold">{{ player.username }}</div>
           </div>
-          <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
+          <div
+            class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4"
+          >
             <!-- Sidebar with player stats -->
-            <div class="flex-shrink-0 w-full md:w-64 space-y-4 p-4 border-2 rounded-lg border-menu-400">
+            <div
+              class="flex-shrink-0 w-full md:w-64 space-y-4 p-4 border-2 rounded-lg border-menu-400"
+            >
               <div>
                 <span class="font-semibold">Kills:</span>
                 {{ player.total.kills }}
@@ -83,7 +112,7 @@
               <div>
                 <span class="font-semibold"> Total Accuracy: </span>
                 {{ player.luck.moves.actual | percent }} ({{
-                player.luck.moves.hits
+                  player.luck.moves.hits
                 }}/{{ player.luck.moves.total }})
               </div>
               <mat-divider></mat-divider>
@@ -95,7 +124,7 @@
               <div>
                 <span class="font-semibold"> Total Crits: </span>
                 {{ player.luck.crits.actual | percent }} ({{
-                player.luck.crits.hits
+                  player.luck.crits.hits
                 }}/{{ player.luck.crits.total }})
               </div>
               <mat-divider></mat-divider>
@@ -108,7 +137,7 @@
                 <div>
                   <span class="font-semibold"> Total Fully Parad: </span>
                   {{ player.luck.status.actual | percent }} ({{
-                  player.luck.status.full
+                    player.luck.status.full
                   }}/{{ player.luck.status.total }})
                 </div>
                 <mat-divider></mat-divider>
@@ -117,21 +146,66 @@
                   {{ player.luck.status.expected | percent }}
                 </div>
               </div>
-              <div class="w-full flex justify-center">
-                <div class="flex flex-wrap">
-                  @for (mon of player.team; track mon) {
-                    <div class="p-1">
-                      <div class="w-20">
-                        <pdz-sprite
-                          [pokemon]="{ id: mon.formes[0].id, name: '' }"
-                          [disabled]="mon.status === 'fainted'"
-                        ></pdz-sprite>
+              <div *ngIf="player.win" class="font-bold mt-2">Winner</div>
+            </div>
+            <!-- Pokemon cards area -->
+            <div class="flex-grow flex justify-center">
+              <div class="w-full flex flex-wrap gap-2 justify-center">
+                <mat-card *ngFor="let mon of player.team" class="p-1 w-fit">
+                  <mat-card-header class="justify-center">
+                    <mat-card-title class="w-20 pb-5">
+                      <pdz-sprite
+                        title="{{ mon.formes[0].detail }}"
+                        [pokemon]="{ id: mon.formes[0].id, name: '' }"
+                        [disabled]="mon.fainted"
+                      ></pdz-sprite>
+                    </mat-card-title>
+                  </mat-card-header>
+                  <mat-card-content class="!flex flex-col gap-1 !mr-0">
+                    <div class="grid grid-cols-2 gap-2">
+                      <div class="p-2 text-center">
+                        <span class="font-semibold block mb-1"> Kills: </span>
+                        <!-- Tooltip for direct and indirect kills - shows up only when indirect > 0 -->
+                        <mat-expansion-panel
+                          disabled
+                          hideToggle
+                          class="pdz-centered-panel cursor-help"
+                          [matTooltip]="
+                            mon.kills[1]
+                              ? mon.kills[0] +
+                                ' direct, ' +
+                                mon.kills[1] +
+                                ' indirect'
+                              : ''
+                          "
+                        >
+                          <!-- Class prevents greyed out text on disabled expansion panel -->
+                          <mat-expansion-panel-header
+                            class="!text-[var(--mat-expansion-header-text-color)]"
+                          >
+                            <mat-panel-title
+                              class="!mr-0 !flex !justify-center !w-full"
+                            >
+                              <span>
+                                {{ mon.kills[0] + (mon.kills[1] || 0) }}
+                              </span>
+                            </mat-panel-title>
+                          </mat-expansion-panel-header>
+                        </mat-expansion-panel>
                       </div>
                       <div class="p-2 text-center">
                         <span class="font-semibold block mb-1"> Deaths: </span>
-                        <mat-expansion-panel disabled hideToggle class="pdz-centered-panel">
-                          <mat-expansion-panel-header class="!text-[var(--mat-expansion-header-text-color)] !mr-0">
-                            <mat-panel-title class="!mr-0 !flex !justify-center !w-full">
+                        <mat-expansion-panel
+                          disabled
+                          hideToggle
+                          class="pdz-centered-panel"
+                        >
+                          <mat-expansion-panel-header
+                            class="!text-[var(--mat-expansion-header-text-color)] !mr-0"
+                          >
+                            <mat-panel-title
+                              class="!mr-0 !flex !justify-center !w-full"
+                            >
                               {{ mon.fainted ? 1 : 0 }}
                             </mat-panel-title>
                           </mat-expansion-panel-header>
@@ -139,14 +213,18 @@
                       </div>
                     </div>
                     <div class="p-2">
-                      <span class="font-semibold block mb-1 text-center"> Damage Dealt:</span>
+                      <span class="font-semibold block mb-1 text-center">
+                        Damage Dealt:</span
+                      >
                       <mat-accordion>
                         <mat-expansion-panel class="pdz-left-aligned-panel">
                           <mat-expansion-panel-header>
-                            <mat-panel-title class="!flex !justify-start !w-full !mr-0 !text-left">
+                            <mat-panel-title
+                              class="!flex !justify-start !w-full !mr-0 !text-left"
+                            >
                               {{
-                              mon.damageDealt[0] + (mon.damageDealt[1] || 0)
-                              | number: "1.0-0"
+                                mon.damageDealt[0] + (mon.damageDealt[1] || 0)
+                                  | number: "1.0-0"
                               }}%
                             </mat-panel-title>
                           </mat-expansion-panel-header>
@@ -162,14 +240,18 @@
                       </mat-accordion>
                     </div>
                     <div class="p-2">
-                      <span class="font-semibold block mb-1 text-center"> Damage Taken: </span>
+                      <span class="font-semibold block mb-1 text-center">
+                        Damage Taken:
+                      </span>
                       <mat-accordion>
                         <mat-expansion-panel class="pdz-left-aligned-panel">
                           <mat-expansion-panel-header>
-                            <mat-panel-title class="!flex !justify-start !w-full !mr-0 !text-left">
+                            <mat-panel-title
+                              class="!flex !justify-start !w-full !mr-0 !text-left"
+                            >
                               {{
-                              mon.damageTaken[0] + (mon.damageTaken[1] || 0)
-                              | number: "1.0-0"
+                                mon.damageTaken[0] + (mon.damageTaken[1] || 0)
+                                  | number: "1.0-0"
                               }}%
                             </mat-panel-title>
                           </mat-expansion-panel-header>
@@ -185,17 +267,24 @@
                       </mat-accordion>
                     </div>
                     <div class="p-2 text-center">
-                      <span class="font-semibold block mb-1"> HP Restored: </span>
+                      <span class="font-semibold block mb-1">
+                        HP Restored:
+                      </span>
                       <mat-expansion-panel disabled hideToggle>
                         <!-- Prevent greyed out text while the mat-expansion-panel is disabled -->
-                        <mat-expansion-panel-header class="!text-[var(--mat-expansion-header-text-color)]">
+                        <mat-expansion-panel-header
+                          class="!text-[var(--mat-expansion-header-text-color)]"
+                        >
                           <mat-panel-title>
                             {{ mon.hpRestored | number: "1.0-0" }}%
                           </mat-panel-title>
                         </mat-expansion-panel-header>
                       </mat-expansion-panel>
                     </div>
-                    <div *ngIf="mon.moveset && mon.moveset.length > 0" class="p-2">
+                    <div
+                      *ngIf="mon.moveset && mon.moveset.length > 0"
+                      class="p-2"
+                    >
                       <mat-accordion>
                         <mat-expansion-panel>
                           <mat-expansion-panel-header>
@@ -218,16 +307,21 @@
           <h2 class="text-xl font-bold pb-2">Events</h2>
           <div class="flex flex-col gap-1">
             @for (event of replayData.events; track event) {
-            <div class="py-1 px-2 border rounded-lg border-menu-400" [ngClass]="playerClass(event.player)">
-              <span class="font-semibold"> Turn {{ event.turn }}:</span>
-              {{ event.message }}
-            </div>
+              <div
+                class="py-1 px-2 border rounded-lg border-menu-400"
+                [ngClass]="playerClass(event.player)"
+              >
+                <span class="font-semibold"> Turn {{ event.turn }}:</span>
+                {{ event.message }}
+              </div>
             }
           </div>
         </div>
         <div class="w-full flex justify-center">
-          <replay-chart class="w-full bg-slate-200 text-black rounded-lg border-2 border-slate-400 max-w-160"
-            [data]="replayData.stats"></replay-chart>
+          <replay-chart
+            class="w-full bg-slate-200 text-black rounded-lg border-2 border-slate-400 max-w-160"
+            [data]="replayData.stats"
+          ></replay-chart>
         </div>
       </div>
     </mat-card-content>

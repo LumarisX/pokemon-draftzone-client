@@ -50,4 +50,6 @@ export type ReplayMon = {
   damageTaken: [number, number];
   hpRestored: number;
   status: 'brought' | 'used' | 'fainted';
+  fainted: boolean;
+  brought: boolean;
 };
