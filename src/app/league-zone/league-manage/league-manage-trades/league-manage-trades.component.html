@@ -53,17 +53,22 @@
                   "
                   (click)="togglePokemon('side1', pokemon.id)"
                 >
-                  <input
-                    type="checkbox"
-                    [id]="'side1-' + pokemon.id"
-                    [checked]="isPokemonSelected('side1', pokemon.id)"
-                    class="pokemon-checkbox"
-                    tabindex="-1"
-                  />
-                  <label [for]="'side1-' + pokemon.id" class="pokemon-label">
+                  <label class="pokemon-label">
                     {{ pokemon.name }}
                   </label>
-                  <span class="pokemon-cost">{{ pokemon.cost }}</span>
+                  <span class="pokemon-cost">{{
+                    getPokemonCost("side1", pokemon.id)
+                  }}</span>
+                  <div class="pokemon-tera" (click)="$event.stopPropagation()">
+                    <span>Tera</span>
+                    <input
+                      type="checkbox"
+                      class="tera-checkbox"
+                      [checked]="isPokemonTera('side1', pokemon.id)"
+                      (click)="$event.stopPropagation()"
+                      (change)="togglePokemonTera('side1', pokemon.id)"
+                    />
+                  </div>
                 </div>
               } @empty {
                 <div class="empty-message">
@@ -147,17 +152,22 @@
                   "
                   (click)="togglePokemon('side2', pokemon.id)"
                 >
-                  <input
-                    type="checkbox"
-                    [id]="'side2-' + pokemon.id"
-                    [checked]="isPokemonSelected('side2', pokemon.id)"
-                    class="pokemon-checkbox"
-                    tabindex="-1"
-                  />
-                  <label [for]="'side2-' + pokemon.id" class="pokemon-label">
+                  <label class="pokemon-label">
                     {{ pokemon.name }}
                   </label>
-                  <span class="pokemon-cost">{{ pokemon.cost }}</span>
+                  <span class="pokemon-cost">{{
+                    getPokemonCost("side2", pokemon.id)
+                  }}</span>
+                  <div class="pokemon-tera" (click)="$event.stopPropagation()">
+                    <span>Tera</span>
+                    <input
+                      type="checkbox"
+                      class="tera-checkbox"
+                      [checked]="isPokemonTera('side2', pokemon.id)"
+                      (click)="$event.stopPropagation()"
+                      (change)="togglePokemonTera('side2', pokemon.id)"
+                    />
+                  </div>
                 </div>
               } @empty {
                 <div class="empty-message">
@@ -191,7 +201,7 @@
         <label for="stage" class="trade-label">Trade Stage</label>
         <select id="stage" formControlName="stage" class="trade-dropdown">
           @for (stage of stageOptions; track stage) {
-            <option [value]="stage">Week {{ stage }}</option>
+            <option [value]="stage">Week {{ stage + 1 }}</option>
           }
         </select>
       </div>

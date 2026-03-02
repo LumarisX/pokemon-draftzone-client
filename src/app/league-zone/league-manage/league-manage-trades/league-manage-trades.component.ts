@@ -1,18 +1,13 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  inject,
-  OnInit,
-  signal,
-} from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import {
   FormBuilder,
   FormsModule,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { LeagueZoneService } from '../../../services/leagues/league-zone.service';
 import { LoadingComponent } from '../../../images/loading/loading.component';
+import { LeagueZoneService } from '../../../services/leagues/league-zone.service';
+import { TierPokemonAddon } from '../../../interfaces/tier-pokemon.interface';
 
 interface TradeGroup {
   id: string;
@@ -23,18 +18,22 @@ interface TradeGroup {
 interface TradePokemon {
   id: string;
   name: string;
-  cost: number;
+  cost?: number;
   team?: { id: string; name: string; coachName: string };
+  tera: boolean;
+  addons?: TierPokemonAddon[];
 }
+
+type SelectedTradePokemon = { id: string; tera: boolean };
 
 export interface TradeData {
   side1: {
     team?: string;
-    pokemon: { id: string }[];
+    pokemon: SelectedTradePokemon[];
   };
   side2: {
     team?: string;
-    pokemon: { id: string }[];
+    pokemon: SelectedTradePokemon[];
   };
   stage: number;
 }
@@ -49,27 +48,21 @@ export class LeagueManageTradesComponent implements OnInit {
   private leagueService = inject(LeagueZoneService);
   private fb = inject(FormBuilder);
 
-  // Groups derived from teams in pokemon list
   loading = true;
   groups = signal<TradeGroup[]>([]);
-
-  // Map of group id to pokemon in that group
   private pokemonByGroup = signal(new Map<string, TradePokemon[]>());
 
-  // Search queries for each side
   side1SearchQuery = signal<string>('');
   side2SearchQuery = signal<string>('');
 
-  // Form group
   tradeForm = this.fb.group({
     side1Group: ['', Validators.required],
-    side1Pokemon: [[] as string[]],
+    side1Pokemon: [[] as SelectedTradePokemon[]],
     side2Group: ['', Validators.required],
-    side2Pokemon: [[] as string[]],
+    side2Pokemon: [[] as SelectedTradePokemon[]],
     stage: [1, Validators.required],
   });
 
-  // Stage options (Week 1 through Week 8)
   stageOptions = Array.from({ length: 8 }, (_, i) => i);
 
   getGroupPokemon(side: 'side1' | 'side2'): TradePokemon[] {
@@ -77,15 +70,13 @@ export class LeagueManageTradesComponent implements OnInit {
     const map = this.pokemonByGroup();
     const allPokemon = groupId ? map.get(groupId) || [] : [];
 
-    // Filter by search query
     const searchQuery = (
       side === 'side1' ? this.side1SearchQuery() : this.side2SearchQuery()
     )
       .toLowerCase()
       .trim();
-    if (!searchQuery) {
-      return allPokemon;
-    }
+
+    if (!searchQuery) return allPokemon;
 
     return allPokemon.filter((pokemon) =>
       pokemon.id.toLowerCase().includes(searchQuery),
@@ -93,25 +84,15 @@ export class LeagueManageTradesComponent implements OnInit {
   }
 
   updateSearchQuery(side: 'side1' | 'side2', query: string): void {
-    if (side === 'side1') {
-      this.side1SearchQuery.set(query);
-    } else {
-      this.side2SearchQuery.set(query);
-    }
+    if (side === 'side1') this.side1SearchQuery.set(query);
+    else this.side2SearchQuery.set(query);
   }
 
   ngOnInit(): void {
     this.leagueService.getPokemonList().subscribe({
       next: (data) => {
-        console.log('Raw pokemon list data:', data);
         this.loading = false;
-        const normalized = Array.isArray(data)
-          ? data
-          : (data as { groups?: typeof data })?.groups || [];
-        console.log('Normalized data:', normalized);
-        this.buildGroupsAndMapping(normalized);
-        console.log('Groups:', this.groups());
-        console.log('Pokemon by group:', this.pokemonByGroup());
+        this.buildGroupsAndMapping(data.groups || []);
       },
       error: (err) => {
         console.error('Error fetching pokemon list:', err);
@@ -119,25 +100,25 @@ export class LeagueManageTradesComponent implements OnInit {
     });
   }
 
-  /**
-   * Build groups from team data and create pokemon grouping map
-   */
   private buildGroupsAndMapping(
     data: {
-      pokemon: { id: string; name: string; cost?: number }[];
+      pokemon: {
+        id: string;
+        name: string;
+        cost?: number;
+        setAddons?: string[];
+        addons?: TierPokemonAddon[];
+      }[];
       team?: { id: string; name: string; coachName: string };
     }[],
   ): void {
     const groupMap = new Map<string, TradeGroup>();
     const pokemonMap = new Map<string, TradePokemon[]>();
 
-    // Process each pokemon entry
     data.forEach((entry) => {
       const teamName = entry.team?.name || 'Free Agency';
       const groupId = entry.team?.id || 'free-agency';
-      const pokemonList = entry.pokemon;
 
-      // Create group if it doesn't exist
       if (!groupMap.has(groupId)) {
         groupMap.set(groupId, {
           id: groupId,
@@ -147,112 +128,172 @@ export class LeagueManageTradesComponent implements OnInit {
         pokemonMap.set(groupId, []);
       }
 
-      // Add pokemon to its group
-      pokemonList.forEach((pokemon) => {
+      entry.pokemon.forEach((pokemon) => {
+        const hasTeraCaptain = (pokemon.setAddons || []).includes(
+          'Tera Captain',
+        );
+
+        if (pokemon.setAddons)
+          console.log('Set Tera', pokemon.id, hasTeraCaptain, pokemon.addons);
+
         pokemonMap.get(groupId)?.push({
           id: pokemon.id,
           name: pokemon.name,
-          cost: pokemon.cost ?? -1,
+          cost: pokemon.cost ?? undefined,
           team: entry.team,
+          addons: pokemon.addons,
+          tera: hasTeraCaptain,
         });
       });
     });
 
-    // Update signals
     this.groups.set(Array.from(groupMap.values()));
     this.pokemonByGroup.set(pokemonMap);
   }
 
-  /**
-   * Toggle pokemon selection for a side
-   */
+  private getSelectedControlValue(
+    side: 'side1' | 'side2',
+  ): SelectedTradePokemon[] {
+    const control = this.tradeForm.get(`${side}Pokemon`);
+    const currentValue = control?.value;
+    return Array.isArray(currentValue) ? [...currentValue] : [];
+  }
+
   togglePokemon(side: 'side1' | 'side2', pokemonId: string): void {
-    const controlName = `${side}Pokemon`;
-    const control = this.tradeForm.get(controlName);
+    const control = this.tradeForm.get(`${side}Pokemon`);
     if (!control) return;
 
-    const currentValue = Array.isArray(control.value) ? control.value : [];
-    const next = new Set(currentValue);
-    if (next.has(pokemonId)) {
-      next.delete(pokemonId);
+    const currentValue = this.getSelectedControlValue(side);
+    const index = currentValue.findIndex((p) => p.id === pokemonId);
+
+    if (index >= 0) {
+      currentValue.splice(index, 1);
     } else {
-      next.add(pokemonId);
+      // default tera value comes from source pokemon in current group
+      const groupId = this.tradeForm.get(`${side}Group`)?.value;
+      const source = (groupId ? this.pokemonByGroup().get(groupId) : [])?.find(
+        (p) => p.id === pokemonId,
+      );
+
+      currentValue.push({
+        id: pokemonId,
+        tera: !!source?.tera,
+      });
     }
 
-    control.setValue(Array.from(next));
+    control.setValue(currentValue);
   }
 
-  /**
-   * Check if pokemon is selected
-   */
+  togglePokemonTera(side: 'side1' | 'side2', pokemonId: string): void {
+    const control = this.tradeForm.get(`${side}Pokemon`);
+    if (!control) return;
+
+    const currentValue = Array.isArray(control.value) ? [...control.value] : [];
+    const index = currentValue.findIndex(
+      (p: { id: string; tera: boolean }) => p.id === pokemonId,
+    );
+
+    if (index < 0) {
+      currentValue.push({ id: pokemonId, tera: true });
+    } else {
+      currentValue[index] = {
+        ...currentValue[index],
+        tera: !currentValue[index].tera,
+      };
+    }
+
+    control.setValue(currentValue);
+  }
+
   isPokemonSelected(side: 'side1' | 'side2', pokemonId: string): boolean {
-    const controlName = `${side}Pokemon`;
-    const control = this.tradeForm.get(controlName);
-    if (!control) return false;
-    const currentValue = Array.isArray(control.value) ? control.value : [];
-    return currentValue.includes(pokemonId);
+    return this.getSelectedControlValue(side).some((p) => p.id === pokemonId);
   }
 
-  /**
-   * Get total cost for selected pokemon on a side
-   */
+  isPokemonTera(side: 'side1' | 'side2', pokemonId: string): boolean {
+    // 1) If selected in form, use selected tera value
+    const selected = this.getSelectedControlValue(side).find(
+      (p) => p.id === pokemonId,
+    );
+    if (selected) return selected.tera;
+
+    // 2) Otherwise show default tera from source pokemon list (setAddons -> hasTeraCaptain)
+    const groupId = this.tradeForm.get(`${side}Group`)?.value;
+    if (!groupId) return false;
+
+    const source = (this.pokemonByGroup().get(groupId) || []).find(
+      (p) => p.id === pokemonId,
+    );
+    return source?.tera ?? false;
+  }
+
+  getPokemonCost(side: 'side1' | 'side2', pokemonId: string): number {
+    // 2) Otherwise show default tera from source pokemon list (setAddons -> hasTeraCaptain)
+    const groupId = this.tradeForm.get(`${side}Group`)?.value;
+    if (!groupId) return 0;
+
+    const source = (this.pokemonByGroup().get(groupId) || []).find(
+      (p) => p.id === pokemonId,
+    );
+
+    if (this.isPokemonTera(side, pokemonId))
+      return source?.addons?.[0].cost ?? 0;
+    return source?.cost ?? 0;
+  }
+
   getSelectedTotalCost(side: 'side1' | 'side2'): number {
     const groupId = this.tradeForm.get(`${side}Group`)?.value;
     if (!groupId) return 0;
 
-    const selectedIds = this.tradeForm.get(`${side}Pokemon`)?.value as
-      | string[]
-      | null
-      | undefined;
-    if (!selectedIds?.length) return 0;
+    const selected = this.getSelectedControlValue(side);
+    if (!selected.length) return 0;
 
+    const selectedIds = new Set(selected.map((p) => p.id));
     const allPokemon = this.pokemonByGroup().get(groupId) || [];
-    const selectedSet = new Set(selectedIds);
 
     return allPokemon
-      .filter((pokemon) => selectedSet.has(pokemon.id))
-      .reduce((total, pokemon) => total + (pokemon.cost || 0), 0);
+      .filter((pokemon) => selectedIds.has(pokemon.id))
+      .reduce(
+        (total, pokemon) => total + this.getPokemonCost(side, pokemon.id),
+        0,
+      );
   }
 
   getTotalCost(side: 'side1' | 'side2'): number {
     const groupId = this.tradeForm.get(`${side}Group`)?.value;
     if (!groupId) return 0;
 
-    const selectedIds = this.tradeForm.get(`${side}Pokemon`)?.value as
-      | string[]
-      | null
-      | undefined;
-    const selectedSet = new Set(selectedIds || []);
+    const selectedSet = new Set(
+      this.getSelectedControlValue(side).map((p) => p.id),
+    );
 
     const otherSide = side === 'side1' ? 'side2' : 'side1';
     const otherGroupId = this.tradeForm.get(`${otherSide}Group`)?.value;
     if (!otherGroupId) return 0;
 
-    const otherSideIds = this.tradeForm.get(`${otherSide}Pokemon`)?.value as
-      | string[]
-      | null
-      | undefined;
-    const otherSelectedSet = new Set(otherSideIds || []);
+    const otherSelectedSet = new Set(
+      this.getSelectedControlValue(otherSide).map((p) => p.id),
+    );
 
     const allPokemon = this.pokemonByGroup().get(groupId) || [];
     const otherAllPokemon = this.pokemonByGroup().get(otherGroupId) || [];
 
-    // Unselected on current side
     const unselectedCost = allPokemon
       .filter((pokemon) => !selectedSet.has(pokemon.id))
-      .reduce((total, pokemon) => total + (pokemon.cost || 0), 0);
+      .reduce(
+        (total, pokemon) => total + this.getPokemonCost(side, pokemon.id),
+        0,
+      );
 
-    // Selected on other side
     const otherSelectedCost = otherAllPokemon
       .filter((pokemon) => otherSelectedSet.has(pokemon.id))
-      .reduce((total, pokemon) => total + (pokemon.cost || 0), 0);
+      .reduce(
+        (total, pokemon) => total + this.getPokemonCost(side, pokemon.id),
+        0,
+      );
 
     return unselectedCost + otherSelectedCost;
   }
 
-  /**
-   * Build and console log the trade data
-   */
   submitTrade(): void {
     if (this.tradeForm.invalid) {
       console.warn('Trade form is invalid');
@@ -268,18 +309,14 @@ export class LeagueManageTradesComponent implements OnInit {
           side1GroupId && side1GroupId !== 'free-agency'
             ? side1GroupId
             : undefined,
-        pokemon: (this.tradeForm.get('side1Pokemon')?.value as string[]).map(
-          (id) => ({ id }),
-        ),
+        pokemon: this.getSelectedControlValue('side1'),
       },
       side2: {
         team:
           side2GroupId && side2GroupId !== 'free-agency'
             ? side2GroupId
             : undefined,
-        pokemon: (this.tradeForm.get('side2Pokemon')?.value as string[]).map(
-          (id) => ({ id }),
-        ),
+        pokemon: this.getSelectedControlValue('side2'),
       },
       stage: Number(this.tradeForm.get('stage')?.value ?? -1),
     };
@@ -300,9 +337,7 @@ export class LeagueManageTradesComponent implements OnInit {
     const side1GroupId = tradeData.side1.team;
     const side2GroupId = tradeData.side2.team;
 
-    if (!side1GroupId || !side2GroupId || side1GroupId === side2GroupId) {
-      return;
-    }
+    if (!side1GroupId || !side2GroupId || side1GroupId === side2GroupId) return;
 
     const groupLookup = new Map(
       this.groups().map((group) => [group.id, group]),
@@ -314,11 +349,11 @@ export class LeagueManageTradesComponent implements OnInit {
     const side1List = [...(map.get(side1GroupId) || [])];
     const side2List = [...(map.get(side2GroupId) || [])];
 
-    const side1Ids = new Set(
-      tradeData.side1.pokemon.map((pokemon) => pokemon.id),
+    const side1SelectedMap = new Map(
+      tradeData.side1.pokemon.map((pokemon) => [pokemon.id, pokemon.tera]),
     );
-    const side2Ids = new Set(
-      tradeData.side2.pokemon.map((pokemon) => pokemon.id),
+    const side2SelectedMap = new Map(
+      tradeData.side2.pokemon.map((pokemon) => [pokemon.id, pokemon.tera]),
     );
 
     const side1Selected: TradePokemon[] = [];
@@ -326,8 +361,11 @@ export class LeagueManageTradesComponent implements OnInit {
 
     const nextSide1List: TradePokemon[] = [];
     side1List.forEach((pokemon) => {
-      if (side1Ids.has(pokemon.id)) {
-        side1Selected.push(pokemon);
+      if (side1SelectedMap.has(pokemon.id)) {
+        side1Selected.push({
+          ...pokemon,
+          tera: side1SelectedMap.get(pokemon.id) ?? pokemon.tera,
+        });
       } else {
         nextSide1List.push(pokemon);
       }
@@ -335,8 +373,11 @@ export class LeagueManageTradesComponent implements OnInit {
 
     const nextSide2List: TradePokemon[] = [];
     side2List.forEach((pokemon) => {
-      if (side2Ids.has(pokemon.id)) {
-        side2Selected.push(pokemon);
+      if (side2SelectedMap.has(pokemon.id)) {
+        side2Selected.push({
+          ...pokemon,
+          tera: side2SelectedMap.get(pokemon.id) ?? pokemon.tera,
+        });
       } else {
         nextSide2List.push(pokemon);
       }
@@ -359,9 +400,6 @@ export class LeagueManageTradesComponent implements OnInit {
     this.pokemonByGroup.set(map);
   }
 
-  /**
-   * Reset the form
-   */
   resetTrade(): void {
     const stage = this.tradeForm.get('stage')?.value || 0;
     this.side1SearchQuery.set('');

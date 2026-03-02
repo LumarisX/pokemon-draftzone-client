@@ -123,8 +123,8 @@ export class LeagueZoneService {
     const params: { [key: string]: string } = {};
     const divisionKey = this.divisionKey();
     if (divisionKey) params['division'] = divisionKey;
-    return this.apiService.get<
-      {
+    return this.apiService.get<{
+      groups?: {
         pokemon: {
           id: string;
           name: string;
@@ -133,8 +133,8 @@ export class LeagueZoneService {
           setAddons?: string[];
         }[];
         team?: { id: string; name: string; coachName: string };
-      }[]
-    >(
+      }[];
+    }>(
       `${ROOTPATH}/tournaments/${this.tournamentKey()}/pokemon-list`,
       false,
       params,
