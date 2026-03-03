@@ -55,17 +55,23 @@
               </div>
             </td>
             <td>
-              <div class="record-cell">
+              <div class="record-cell colored-cell">
                 {{ pokemon.record.brought }}
               </div>
             </td>
             <td>
-              <div class="record-cell">
+              <div
+                class="record-cell colored-cell"
+                [class.positive]="pokemon.record.kills > 0"
+              >
                 {{ pokemon.record.kills }}
               </div>
             </td>
             <td>
-              <div class="record-cell">
+              <div
+                class="record-cell colored-cell"
+                [class.negative]="pokemon.record.deaths > 0"
+              >
                 {{ pokemon.record.deaths }}
               </div>
             </td>

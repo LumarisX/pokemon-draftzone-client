@@ -1,4 +1,6 @@
 @use "../../league.mixins" as *;
+@use "../../../../styles/global" as *;
+@use "../../../../styles/mixins" as *;
 
 .standing-container {
   border: 1px solid var(--pdz-color-primary-border);
@@ -53,17 +55,55 @@
       font-weight: var(--pdz-font-weight-bold);
       color: var(--pdz-color-primary);
       &.positive {
-        color: lightgreen;
+        color: pdz-color(positive);
       }
       &.negative {
-        color: lightcoral;
+        color: pdz-color(negative);
       }
     }
   }
 
   .record-cell {
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    flex-wrap: wrap;
     width: 100%;
+
+    .record-chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      @include apply-typography(body-xs);
+      line-height: 1.5rem;
+      font-weight: var(--pdz-font-weight-bold);
+      border-radius: var(--pdz-shape-corner-xs);
+      background-color: pdz-color(surface-container);
+      color: pdz-color(on-surface);
+      padding: var(--pdz-space-2xs);
+      height: 1.5rem;
+      min-width: 1.5rem;
+
+      &--record {
+        @include apply-typography(body-sm);
+        line-height: 1.5rem;
+        font-weight: var(--pdz-font-weight-bold);
+      }
+
+      &--positive {
+        background-color: pdz-color(positive);
+        box-shadow: var(--pdz-level-1);
+        color: pdz-color(on-menu);
+      }
+
+      &--negative {
+        background-color: pdz-color(negative);
+        box-shadow: var(--pdz-level-1);
+        color: pdz-color(on-menu);
+      }
+    }
   }
 
   .logo-cell {
@@ -95,21 +135,21 @@
       background-color: var(--pdz-color-surface-container);
       color: var(--pdz-color-surface-container);
       text-align: center;
-      font-weight: var(--pdz-font-weight-bold);
-      font-size: 0.8rem;
+      @include apply-typography(body-sm);
       line-height: 1.5rem;
+      font-weight: var(--pdz-font-weight-bold);
       border-radius: var(--pdz-shape-corner-xs);
       height: 1.5rem;
       width: 1.5rem;
       &.positive {
-        background-color: lightgreen;
-        color: white;
+        background-color: pdz-color(positive);
+        color: pdz-color(on-menu);
         box-shadow: var(--pdz-level-1);
       }
 
       &.negative {
-        background-color: lightcoral;
-        color: white;
+        background-color: pdz-color(negative);
+        color: pdz-color(on-menu);
         box-shadow: var(--pdz-level-1);
       }
 

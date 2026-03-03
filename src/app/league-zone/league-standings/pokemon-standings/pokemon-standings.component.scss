@@ -1,3 +1,5 @@
+@use "../../../../styles/global" as *;
+
 .standing-container {
   border: 1px solid var(--pdz-color-primary-border);
   border-radius: var(--pdz-shape-corner-sm);
@@ -65,13 +67,26 @@
   }
 
   .colored-cell {
+    background-color: var(--pdz-color-surface-container);
+    color: pdz-color(on-surface);
+    text-align: center;
     font-weight: var(--pdz-font-weight-bold);
+    font-size: 0.8rem;
+    line-height: 1.5rem;
+    border-radius: var(--pdz-shape-corner-xs);
+    height: 1.5rem;
+    width: 1.5rem;
 
     &.positive {
-      color: lightgreen;
+      background-color: pdz-color(positive);
+      color: pdz-color(on-menu);
+      box-shadow: var(--pdz-level-1);
     }
+
     &.negative {
-      color: lightcoral;
+      background-color: pdz-color(negative);
+      color: pdz-color(on-menu);
+      box-shadow: var(--pdz-level-1);
     }
   }
 

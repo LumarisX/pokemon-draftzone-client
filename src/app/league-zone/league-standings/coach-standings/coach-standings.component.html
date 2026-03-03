@@ -68,9 +68,23 @@
             </td>
             <td>
               <div class="record-cell">
-                {{ team.wins }}-{{ team.loses }} ({{
-                  getDiffValue(team) | plusSign
-                }})
+                <span class="record-chip record-chip--record"
+                  >{{ team.wins }}-{{ team.loses }}</span
+                >
+                <span
+                  class="record-chip"
+                  [class.record-chip--positive]="team.gameDiff > 0"
+                  [class.record-chip--negative]="team.gameDiff < 0"
+                >
+                  G {{ team.gameDiff | plusSign }}
+                </span>
+                <span
+                  class="record-chip"
+                  [class.record-chip--positive]="team.pokemonDiff > 0"
+                  [class.record-chip--negative]="team.pokemonDiff < 0"
+                >
+                  P {{ team.pokemonDiff | plusSign }}
+                </span>
               </div>
             </td>
             <td>
