@@ -115,7 +115,7 @@ export class ReplayComponent implements OnInit {
       return 'replay-analyzer__mon-status--fainted';
     }
 
-    if (status === 'used') {
+    if (status === 'survived') {
       return 'replay-analyzer__mon-status--survived';
     }
 

@@ -67,7 +67,7 @@ export type ReplayPokemon = {
   formes: PokemonId[];
   item?: string;
   kills: StatBreakdown;
-  status: 'brought' | 'used' | 'fainted';
+  status: 'brought' | 'survived' | 'fainted';
   moveset: string[];
   damageDealt: StatBreakdown;
   damageTaken: StatBreakdown;

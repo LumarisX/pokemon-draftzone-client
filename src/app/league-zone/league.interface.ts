@@ -55,7 +55,7 @@ export namespace League {
       indirect?: number;
       teammate?: number;
     };
-    status: 'brought' | 'used' | 'fainted';
+    status: 'brought' | 'survived' | 'fainted';
   };
 
   export type MatchTeamStats = {

@@ -1,4 +1,19 @@
-@if (!scheduleStages?.length) {
+<div class="division-header">
+  <div class="division-header__nav">
+    <button class="btn btn--secondary" routerLink="../../attack/schedule">
+      Attack
+    </button>
+    <button class="btn btn--secondary" routerLink="../../speed/schedule">
+      Speed
+    </button>
+    <button class="btn btn--secondary" routerLink="../../defense/schedule">
+      Defense
+    </button>
+  </div>
+</div>
+@if (scheduleStages === undefined) {
+  <pdz-loading></pdz-loading>
+} @else if (!scheduleStages.length) {
   <div class="empty-state">No schedule data available.</div>
 } @else {
   <div class="schedule">
@@ -83,6 +98,80 @@
                     </div>
                   </div>
 
+                  <div class="matchup-summary">
+                    <button
+                      type="button"
+                      class="matchup-summary__header"
+                      (click)="toggleMatchupSummary(matchup.id)"
+                    >
+                      <pdz-icon
+                        class="matchup-summary__toggle-icon"
+                        [name]="
+                          isMatchupSummaryOpen(matchup.id)
+                            ? 'keyboard_arrow_down'
+                            : 'keyboard_arrow_right'
+                        "
+                      ></pdz-icon>
+                      <span>Pokemon Totals Summary</span>
+                    </button>
+
+                    @if (isMatchupSummaryOpen(matchup.id)) {
+                      <div class="matchup-summary__content">
+                        <div class="matchup-summary__teams">
+                          <div class="summary-team">
+                            <div class="summary-team__title">
+                              {{ matchup.team1.name }}
+                            </div>
+                            <div class="summary-grid summary-grid--header">
+                              <span>Pokemon</span>
+                              <span>Kills (Direct + Indirect)</span>
+                              <span>Deaths (Fainted)</span>
+                            </div>
+                            @for (
+                              summary of getMatchupPokemonSummary(
+                                matchup,
+                                matchup.id,
+                                "team1"
+                              );
+                              track summary.key
+                            ) {
+                              <div class="summary-grid">
+                                <span>{{ summary.name }}</span>
+                                <span>{{ summary.kills }}</span>
+                                <span>{{ summary.deaths }}</span>
+                              </div>
+                            }
+                          </div>
+
+                          <div class="summary-team">
+                            <div class="summary-team__title">
+                              {{ matchup.team2.name }}
+                            </div>
+                            <div class="summary-grid summary-grid--header">
+                              <span>Pokemon</span>
+                              <span>Kills (Direct + Indirect)</span>
+                              <span>Deaths (Fainted)</span>
+                            </div>
+                            @for (
+                              summary of getMatchupPokemonSummary(
+                                matchup,
+                                matchup.id,
+                                "team2"
+                              );
+                              track summary.key
+                            ) {
+                              <div class="summary-grid">
+                                <span>{{ summary.name }}</span>
+                                <span>{{ summary.kills }}</span>
+                                <span>{{ summary.deaths }}</span>
+                              </div>
+                            }
+                          </div>
+                        </div>
+                      </div>
+                    }
+                  </div>
+
                   <div class="match-list" formArrayName="matches">
                     @for (
                       matchForm of getMatchControls(matchup.id);
@@ -91,28 +180,45 @@
                     ) {
                       <div class="match-card" [formGroupName]="matchIndex">
                         <div class="match-card__header">
-                          <div class="match-card__title-group">
-                            <div class="match-card__title">
-                              Match {{ matchIndex + 1 }}
+                          <button
+                            type="button"
+                            class="match-card__toggle"
+                            (click)="toggleMatch(matchup.id, matchIndex)"
+                          >
+                            <pdz-icon
+                              class="match-card__toggle-icon"
+                              [name]="
+                                isMatchOpen(matchup.id, matchIndex)
+                                  ? 'keyboard_arrow_down'
+                                  : 'keyboard_arrow_right'
+                              "
+                            ></pdz-icon>
+                            <div class="match-card__title-group">
+                              <div class="match-card__title">
+                                Match {{ matchIndex + 1 }}
+                              </div>
+                              <div class="match-card__summary">
+                                <span>
+                                  {{ matchup.team1.name }}:
+                                  {{ matchForm.controls.team1Score.value }}
+                                </span>
+                                <span>
+                                  {{ matchup.team2.name }}:
+                                  {{ matchForm.controls.team2Score.value }}
+                                </span>
+                                <span>
+                                  Winner:
+                                  {{
+                                    getMatchWinnerLabel(
+                                      matchup,
+                                      matchup.id,
+                                      matchIndex
+                                    )
+                                  }}
+                                </span>
+                              </div>
                             </div>
-                            @if (
-                              getMatchValidationWarnings(
-                                matchup.id,
-                                matchIndex
-                              );
-                              as warnings
-                            ) {
-                              @if (warnings.length > 0) {
-                                <div class="match-card__warnings">
-                                  @for (warning of warnings; track warning) {
-                                    <div class="validation-warning">
-                                      ⚠ {{ warning }}
-                                    </div>
-                                  }
-                                </div>
-                              }
-                            }
-                          </div>
+                          </button>
                           <div class="match-card__actions">
                             <button
                               type="button"
@@ -138,178 +244,201 @@
                         </div>
 
                         @if (
-                          getAnalysisError(matchup.id, matchIndex);
-                          as errorMessage
+                          getMatchValidationWarnings(matchup.id, matchIndex);
+                          as warnings
                         ) {
-                          <div class="match-card__error">
-                            {{ errorMessage }}
-                          </div>
+                          @if (warnings.length > 0) {
+                            <div class="match-card__warnings">
+                              @for (warning of warnings; track warning) {
+                                <div class="validation-warning">
+                                  ⚠ {{ warning }}
+                                </div>
+                              }
+                            </div>
+                          }
                         }
 
-                        <div class="match-controls">
-                          <div class="field">
-                            <label>Replay URL</label>
-                            <input
-                              type="text"
-                              formControlName="link"
-                              placeholder="https://replay.pokemonshowdown.com/..."
-                            />
-                          </div>
-                          <div class="field">
-                            <label>{{ matchup.team1.name }} Score</label>
-                            <input
-                              type="number"
-                              min="0"
-                              formControlName="team1Score"
-                            />
-                          </div>
-                          <div class="field">
-                            <label>{{ matchup.team2.name }} Score</label>
-                            <input
-                              type="number"
-                              min="0"
-                              formControlName="team2Score"
-                            />
-                          </div>
-                          <div class="field">
-                            <label>Match Winner</label>
-                            <select formControlName="winner">
-                              <option [ngValue]="null">Unassigned</option>
-                              <option value="team1">
-                                {{ matchup.team1.name }}
-                              </option>
-                              <option value="team2">
-                                {{ matchup.team2.name }}
-                              </option>
-                            </select>
-                          </div>
-                        </div>
+                        @if (isMatchOpen(matchup.id, matchIndex)) {
+                          @if (
+                            getAnalysisError(matchup.id, matchIndex);
+                            as errorMessage
+                          ) {
+                            <div class="match-card__error">
+                              {{ errorMessage }}
+                            </div>
+                          }
 
-                        <div class="team-grid">
-                          <div class="team-panel" formArrayName="team1Pokemon">
-                            <div class="team-panel__title">
-                              {{ matchup.team1.name }} ({{
-                                matchup.team1.coach
-                              }})
+                          <div class="match-controls">
+                            <div class="field">
+                              <label>Replay URL</label>
+                              <input
+                                type="text"
+                                formControlName="link"
+                                placeholder="https://replay.pokemonshowdown.com/..."
+                              />
                             </div>
-                            <div class="pokemon-row pokemon-row--header">
-                              <span>Pokemon</span>
-                              <span>Status</span>
-                              <span>Direct Kills</span>
-                              <span>Indirect Kills</span>
-                              <span>Teammate Kills</span>
+                            <div class="field">
+                              <label>{{ matchup.team1.name }} Score</label>
+                              <input
+                                type="number"
+                                min="0"
+                                formControlName="team1Score"
+                              />
                             </div>
-                            @for (
-                              pokemon of getPokemonControls(
-                                matchup.id,
-                                matchIndex,
-                                "team1"
-                              );
-                              track $index;
-                              let pokemonIndex = $index
-                            ) {
-                              <div
-                                class="pokemon-row"
-                                [formGroupName]="pokemonIndex"
-                              >
-                                <span class="pokemon-name">
-                                  {{
-                                    getPokemonLabel(pokemon.controls.id.value)
-                                  }}
-                                </span>
-                                <select formControlName="status">
-                                  <option [ngValue]="null">-</option>
-                                  <option value="brought">Brought</option>
-                                  <option value="used">Used</option>
-                                  <option value="fainted">Fainted</option>
-                                </select>
-                                <div formGroupName="kills">
-                                  <input
-                                    type="number"
-                                    min="0"
-                                    formControlName="direct"
-                                  />
-                                </div>
-                                <div formGroupName="kills">
-                                  <input
-                                    type="number"
-                                    min="0"
-                                    formControlName="indirect"
-                                  />
-                                </div>
-                                <div formGroupName="kills">
-                                  <input
-                                    type="number"
-                                    min="0"
-                                    formControlName="teammate"
-                                  />
-                                </div>
-                              </div>
-                            }
+                            <div class="field">
+                              <label>{{ matchup.team2.name }} Score</label>
+                              <input
+                                type="number"
+                                min="0"
+                                formControlName="team2Score"
+                              />
+                            </div>
+                            <div class="field">
+                              <label>Match Winner</label>
+                              <select formControlName="winner">
+                                <option [ngValue]="null">Unassigned</option>
+                                <option value="team1">
+                                  {{ matchup.team1.name }}
+                                </option>
+                                <option value="team2">
+                                  {{ matchup.team2.name }}
+                                </option>
+                              </select>
+                            </div>
                           </div>
 
-                          <div class="team-panel" formArrayName="team2Pokemon">
-                            <div class="team-panel__title">
-                              {{ matchup.team2.name }} ({{
-                                matchup.team2.coach
-                              }})
-                            </div>
-                            <div class="pokemon-row pokemon-row--header">
-                              <span>Pokemon</span>
-                              <span>Status</span>
-                              <span>Direct Kills</span>
-                              <span>Indirect Kills</span>
-                              <span>Teammate Kills</span>
-                            </div>
-                            @for (
-                              pokemon of getPokemonControls(
-                                matchup.id,
-                                matchIndex,
-                                "team2"
-                              );
-                              track $index;
-                              let pokemonIndex = $index
-                            ) {
-                              <div
-                                class="pokemon-row"
-                                [formGroupName]="pokemonIndex"
-                              >
-                                <span class="pokemon-name">
-                                  {{
-                                    getPokemonLabel(pokemon.controls.id.value)
-                                  }}
-                                </span>
-                                <select formControlName="status">
-                                  <option [ngValue]="null">-</option>
-                                  <option value="brought">Brought</option>
-                                  <option value="used">Used</option>
-                                  <option value="fainted">Fainted</option>
-                                </select>
-                                <div formGroupName="kills">
-                                  <input
-                                    type="number"
-                                    min="0"
-                                    formControlName="direct"
-                                  />
-                                </div>
-                                <div formGroupName="kills">
-                                  <input
-                                    type="number"
-                                    min="0"
-                                    formControlName="indirect"
-                                  />
-                                </div>
-                                <div formGroupName="kills">
-                                  <input
-                                    type="number"
-                                    min="0"
-                                    formControlName="teammate"
-                                  />
-                                </div>
+                          <div class="team-grid">
+                            <div
+                              class="team-panel"
+                              formArrayName="team1Pokemon"
+                            >
+                              <div class="team-panel__title">
+                                {{ matchup.team1.name }} ({{
+                                  matchup.team1.coach
+                                }})
                               </div>
-                            }
+                              <div class="pokemon-row pokemon-row--header">
+                                <span>Pokemon</span>
+                                <span>Status</span>
+                                <span>Direct Kills</span>
+                                <span>Indirect Kills</span>
+                                <span>Teammate Kills</span>
+                              </div>
+                              @for (
+                                pokemon of getPokemonControls(
+                                  matchup.id,
+                                  matchIndex,
+                                  "team1"
+                                );
+                                track $index;
+                                let pokemonIndex = $index
+                              ) {
+                                <div
+                                  class="pokemon-row"
+                                  [formGroupName]="pokemonIndex"
+                                >
+                                  <span class="pokemon-name">
+                                    {{
+                                      getPokemonLabel(pokemon.controls.id.value)
+                                    }}
+                                  </span>
+                                  <select formControlName="status">
+                                    <option [ngValue]="null">-</option>
+                                    <option value="brought">Brought</option>
+                                    <option value="survived">Survived</option>
+                                    <option value="fainted">Fainted</option>
+                                  </select>
+                                  <div formGroupName="kills">
+                                    <input
+                                      type="number"
+                                      min="0"
+                                      formControlName="direct"
+                                    />
+                                  </div>
+                                  <div formGroupName="kills">
+                                    <input
+                                      type="number"
+                                      min="0"
+                                      formControlName="indirect"
+                                    />
+                                  </div>
+                                  <div formGroupName="kills">
+                                    <input
+                                      type="number"
+                                      min="0"
+                                      formControlName="teammate"
+                                    />
+                                  </div>
+                                </div>
+                              }
+                            </div>
+
+                            <div
+                              class="team-panel"
+                              formArrayName="team2Pokemon"
+                            >
+                              <div class="team-panel__title">
+                                {{ matchup.team2.name }} ({{
+                                  matchup.team2.coach
+                                }})
+                              </div>
+                              <div class="pokemon-row pokemon-row--header">
+                                <span>Pokemon</span>
+                                <span>Status</span>
+                                <span>Direct Kills</span>
+                                <span>Indirect Kills</span>
+                                <span>Teammate Kills</span>
+                              </div>
+                              @for (
+                                pokemon of getPokemonControls(
+                                  matchup.id,
+                                  matchIndex,
+                                  "team2"
+                                );
+                                track $index;
+                                let pokemonIndex = $index
+                              ) {
+                                <div
+                                  class="pokemon-row"
+                                  [formGroupName]="pokemonIndex"
+                                >
+                                  <span class="pokemon-name">
+                                    {{
+                                      getPokemonLabel(pokemon.controls.id.value)
+                                    }}
+                                  </span>
+                                  <select formControlName="status">
+                                    <option [ngValue]="null">-</option>
+                                    <option value="brought">Brought</option>
+                                    <option value="used">Used</option>
+                                    <option value="fainted">Fainted</option>
+                                  </select>
+                                  <div formGroupName="kills">
+                                    <input
+                                      type="number"
+                                      min="0"
+                                      formControlName="direct"
+                                    />
+                                  </div>
+                                  <div formGroupName="kills">
+                                    <input
+                                      type="number"
+                                      min="0"
+                                      formControlName="indirect"
+                                    />
+                                  </div>
+                                  <div formGroupName="kills">
+                                    <input
+                                      type="number"
+                                      min="0"
+                                      formControlName="teammate"
+                                    />
+                                  </div>
+                                </div>
+                              }
+                            </div>
                           </div>
-                        </div>
+                        }
                       </div>
                     }
                   </div>

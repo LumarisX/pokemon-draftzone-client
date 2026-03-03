@@ -6,14 +6,18 @@ import { concat, filter, first, interval } from 'rxjs';
   providedIn: 'root',
 })
 export class SwUpdateService {
+  private static readonly UPDATE_SIGNAL_KEY = 'pdzAppUpdate';
+  private static readonly LAST_RELOADED_HASH_KEY = 'pdzLastReloadedHash';
+
   private readonly swUpdate = inject(SwUpdate);
   private readonly appRef = inject(ApplicationRef);
-  private updateAvailable = false;
 
   init(): void {
     if (!this.swUpdate.isEnabled) {
       return;
     }
+
+    this.listenForCrossTabUpdates();
 
     const appIsStable$ = this.appRef.isStable.pipe(
       first((isStable) => isStable),
@@ -61,51 +65,79 @@ export class SwUpdateService {
           '->',
           evt.latestVersion,
         );
-        this.updateAvailable = true;
-        await this.activateUpdate();
-        // Notify other tabs about the update
-        this.notifyOtherTabs();
+        await this.activateAndReload(evt.latestVersion.hash);
       });
 
-    // Listen for updates from other tabs
-    window.addEventListener('storage', (event) => {
-      if (
-        event.key === 'pdzAppUpdate' &&
-        event.newValue === 'updateAvailable'
-      ) {
-        console.log('Update detected from another tab');
-        this.reloadPage();
-      }
+    this.swUpdate.unrecoverable.subscribe((event) => {
+      console.error('Unrecoverable service worker state:', event.reason);
+      this.reloadPage();
     });
   }
 
-  private async activateUpdate(): Promise<void> {
+  private async activateAndReload(latestHash: string): Promise<void> {
     try {
       await this.swUpdate.activateUpdate();
-      // Reload after a small delay to ensure update is activated
-      setTimeout(() => {
-        this.reloadPage();
-      }, 500);
+      this.notifyOtherTabs(latestHash);
+      this.markReloadedHash(latestHash);
+      this.reloadPage();
     } catch (err) {
       console.error('Failed to activate update:', err);
     }
   }
 
-  private notifyOtherTabs(): void {
+  private listenForCrossTabUpdates(): void {
+    window.addEventListener('storage', (event) => {
+      if (event.key !== SwUpdateService.UPDATE_SIGNAL_KEY || !event.newValue) {
+        return;
+      }
+
+      const update = this.parseUpdatePayload(event.newValue);
+      if (!update?.hash) {
+        return;
+      }
+
+      if (this.hasReloadedForHash(update.hash)) {
+        return;
+      }
+
+      this.markReloadedHash(update.hash);
+      console.log('Update detected from another tab:', update.hash);
+      this.reloadPage();
+    });
+  }
+
+  private notifyOtherTabs(hash: string): void {
     try {
-      // Use localStorage to notify other tabs/windows
-      localStorage.setItem('pdzAppUpdate', 'updateAvailable');
-      // Clear after a short delay
-      setTimeout(() => {
-        localStorage.removeItem('pdzAppUpdate');
-      }, 100);
+      localStorage.setItem(
+        SwUpdateService.UPDATE_SIGNAL_KEY,
+        JSON.stringify({ hash, ts: Date.now() }),
+      );
     } catch (err) {
       console.error('Failed to notify other tabs:', err);
     }
   }
 
+  private parseUpdatePayload(
+    payload: string,
+  ): { hash: string; ts: number } | null {
+    try {
+      return JSON.parse(payload) as { hash: string; ts: number };
+    } catch {
+      return null;
+    }
+  }
+
+  private hasReloadedForHash(hash: string): boolean {
+    return (
+      sessionStorage.getItem(SwUpdateService.LAST_RELOADED_HASH_KEY) === hash
+    );
+  }
+
+  private markReloadedHash(hash: string): void {
+    sessionStorage.setItem(SwUpdateService.LAST_RELOADED_HASH_KEY, hash);
+  }
+
   private reloadPage(): void {
-    // Hard refresh to ensure we get the latest version
-    window.location.href = window.location.href;
+    window.location.reload();
   }
 }

@@ -267,7 +267,7 @@ export class OpponentScoreComponent implements OnInit {
                 mon.formes.includes(ctrl.value.pokemon.id),
               );
               replayCtrl?.patchValue({
-                brought: mon.status === 'used' ? 1 : 0,
+                brought: mon.status === 'survived' ? 1 : 0,
                 kills: mon.kills.direct,
                 indirect: mon.kills.indirect,
                 fainted: mon.status === 'fainted' ? 1 : 0,
@@ -280,7 +280,7 @@ export class OpponentScoreComponent implements OnInit {
                 mon.formes.includes(ctrl.value.pokemon.id),
               );
               replayCtrl?.patchValue({
-                brought: mon.status === 'used' ? 1 : 0,
+                brought: mon.status === 'survived' ? 1 : 0,
                 kills: mon.kills.direct,
                 indirect: mon.kills.indirect,
                 fainted: mon.status === 'fainted' ? 1 : 0,

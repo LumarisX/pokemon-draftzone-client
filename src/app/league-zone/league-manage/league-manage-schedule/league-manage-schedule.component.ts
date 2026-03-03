@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import {
   FormArray,
   FormBuilder,
@@ -7,9 +7,17 @@ import {
   FormGroup,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { IconComponent } from '../../../images/icon/icon.component';
-import { Subject, takeUntil } from 'rxjs';
+import { ActivatedRoute, RouterModule } from '@angular/router';
+import {
+  distinctUntilChanged,
+  map,
+  Subject,
+  switchMap,
+  takeUntil,
+  tap,
+} from 'rxjs';
 import { getNameByPid, PokemonId } from '../../../data/namedex';
+import { IconComponent } from '../../../images/icon/icon.component';
 import { LeagueManageService } from '../../../services/leagues/league-manage.service';
 import { LeagueZoneService } from '../../../services/leagues/league-zone.service';
 import { ReplayService } from '../../../services/replay.service';
@@ -18,6 +26,7 @@ import {
   ReplayPlayer,
 } from '../../../tools/replay_analyzer/replay.interface';
 import { League } from '../../league.interface';
+import { LoadingComponent } from '../../../images/loading/loading.component';
 
 type PokemonStatsForm = FormGroup<{
   id: FormControl<PokemonId | ''>;
@@ -26,7 +35,7 @@ type PokemonStatsForm = FormGroup<{
     indirect: FormControl<number>;
     teammate: FormControl<number>;
   }>;
-  status: FormControl<'brought' | 'used' | 'fainted' | null>;
+  status: FormControl<'brought' | 'survived' | 'fainted' | null>;
 }>;
 
 type MatchForm = FormGroup<{
@@ -60,10 +69,23 @@ type ScheduleMatchupPayload = {
   matches: ScheduleMatchPayload[];
 };
 
+type MatchupPokemonSummary = {
+  key: string;
+  name: string;
+  kills: number;
+  deaths: number;
+};
+
 @Component({
   selector: 'pdz-league-manage-schedule',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, IconComponent],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    IconComponent,
+    RouterModule,
+    LoadingComponent,
+  ],
   templateUrl: './league-manage-schedule.component.html',
   styleUrl: './league-manage-schedule.component.scss',
 })
@@ -71,6 +93,7 @@ export class LeagueManageScheduleComponent {
   private leagueService = inject(LeagueZoneService);
   private leagueManageService = inject(LeagueManageService);
   private replayService = inject(ReplayService);
+  private route = inject(ActivatedRoute);
   private fb = inject(FormBuilder);
   private readonly destroy$ = new Subject<void>();
   private matchupForms = new Map<string, MatchupForm>();
@@ -83,17 +106,33 @@ export class LeagueManageScheduleComponent {
     { loading: boolean; success: boolean; error?: string }
   >();
   private stageCollapsedState = new Map<string, boolean>();
+  private openMatchIndexState = new Map<string, number | null>();
+  private matchupSummaryCollapsedState = new Map<string, boolean>();
 
   scheduleStages?: League.Stage[];
 
   ngOnInit(): void {
-    this.leagueService
-      .getSchedule()
-      .pipe(takeUntil(this.destroy$))
+    this.route.paramMap
+      .pipe(
+        map((params) => params.get('divisionKey')),
+        distinctUntilChanged(),
+        tap(() => {
+          this.scheduleStages = undefined;
+          this.matchupForms.clear();
+          this.stageCollapsedState.clear();
+          this.openMatchIndexState.clear();
+          this.matchupSummaryCollapsedState.clear();
+        }),
+        switchMap((divisionKey) =>
+          this.leagueService.getSchedule(undefined, divisionKey),
+        ),
+        takeUntil(this.destroy$),
+      )
       .subscribe({
         next: (stages) => {
           this.scheduleStages = stages;
           this.buildMatchupForms(stages);
+          this.stageCollapsedState.set(stages[1]?._id, true);
         },
       });
   }
@@ -133,12 +172,110 @@ export class LeagueManageScheduleComponent {
     const form = this.getMatchupForm(matchup.id);
     if (!form) return;
     form.controls.matches.push(this.buildMatchForm(matchup));
+    this.openMatchIndexState.set(matchup.id, form.controls.matches.length - 1);
   }
 
   removeMatch(matchupId: string, matchIndex: number): void {
     const form = this.getMatchupForm(matchupId);
     if (!form) return;
     form.controls.matches.removeAt(matchIndex);
+
+    const openMatchIndex = this.openMatchIndexState.get(matchupId);
+    if (openMatchIndex === null || openMatchIndex === undefined) return;
+    if (openMatchIndex === matchIndex) {
+      this.openMatchIndexState.set(matchupId, null);
+      return;
+    }
+    if (openMatchIndex > matchIndex) {
+      this.openMatchIndexState.set(matchupId, openMatchIndex - 1);
+    }
+  }
+
+  toggleMatch(matchupId: string, matchIndex: number): void {
+    const currentOpen = this.openMatchIndexState.get(matchupId);
+    this.openMatchIndexState.set(
+      matchupId,
+      currentOpen === matchIndex ? null : matchIndex,
+    );
+  }
+
+  isMatchOpen(matchupId: string, matchIndex: number): boolean {
+    return this.openMatchIndexState.get(matchupId) === matchIndex;
+  }
+
+  toggleMatchupSummary(matchupId: string): void {
+    this.matchupSummaryCollapsedState.set(
+      matchupId,
+      this.isMatchupSummaryOpen(matchupId),
+    );
+  }
+
+  isMatchupSummaryOpen(matchupId: string): boolean {
+    return !(this.matchupSummaryCollapsedState.get(matchupId) ?? true);
+  }
+
+  getMatchWinnerLabel(
+    matchup: League.Matchup,
+    matchupId: string,
+    matchIndex: number,
+  ): string {
+    const matchForm = this.getMatchForm(matchupId, matchIndex);
+    if (!matchForm) return 'Unassigned';
+    const winner = matchForm.controls.winner.value;
+    if (winner === 'team1') return matchup.team1.name;
+    if (winner === 'team2') return matchup.team2.name;
+    return 'Unassigned';
+  }
+
+  getMatchupPokemonSummary(
+    matchup: League.Matchup,
+    matchupId: string,
+    team: 'team1' | 'team2',
+  ): MatchupPokemonSummary[] {
+    const matches = this.getMatchControls(matchupId);
+    const totals = new Map<
+      string,
+      MatchupPokemonSummary & { hadStatus: boolean }
+    >();
+
+    matches.forEach((match, matchIndex) => {
+      const pokemonControls = this.getPokemonControls(
+        matchupId,
+        matchIndex,
+        team,
+      );
+      pokemonControls.forEach((control) => {
+        const pokemonId = control.controls.id.value;
+        if (!pokemonId) return;
+
+        const key = `${team}-${pokemonId}`;
+        const status = control.controls.status.value;
+        const existing = totals.get(key) ?? {
+          key,
+          name: this.getPokemonLabel(pokemonId),
+          kills: 0,
+          deaths: 0,
+          hadStatus: false,
+        };
+
+        existing.kills +=
+          control.controls.kills.controls.direct.value +
+          control.controls.kills.controls.indirect.value;
+        existing.deaths += status === 'fainted' ? 1 : 0;
+        existing.hadStatus ||= status !== null;
+
+        totals.set(key, existing);
+      });
+    });
+
+    return [...totals.values()]
+      .filter((summary) => summary.hadStatus)
+      .map(({ key, name, kills, deaths }) => ({ key, name, kills, deaths }))
+      .sort((a, b) => {
+        if (b.kills !== a.kills) return b.kills - a.kills;
+        if (a.deaths !== b.deaths) return a.deaths - b.deaths;
+        return a.name.localeCompare(b.name);
+      });
   }
 
   getSortedMatchups(matchups: League.Matchup[]): League.Matchup[] {
@@ -252,7 +389,7 @@ export class LeagueManageScheduleComponent {
   }
 
   isStageOpen(stageId: string): boolean {
-    return !(this.stageCollapsedState.get(stageId) ?? false);
+    return this.stageCollapsedState.get(stageId) ?? false;
   }
 
   getMatchValidationWarnings(matchupId: string, matchIndex: number): string[] {
@@ -338,9 +475,13 @@ export class LeagueManageScheduleComponent {
 
   private buildMatchupForms(stages: League.Stage[]): void {
     this.matchupForms.clear();
+    this.openMatchIndexState.clear();
+    this.matchupSummaryCollapsedState.clear();
     stages.forEach((stage) => {
       stage.matchups.forEach((matchup) => {
         this.matchupForms.set(matchup.id, this.buildMatchupForm(matchup));
+        this.openMatchIndexState.set(matchup.id, null);
+        this.matchupSummaryCollapsedState.set(matchup.id, true);
       });
     });
   }
@@ -455,13 +596,13 @@ export class LeagueManageScheduleComponent {
 
     matchForm.controls.team1Score.setValue(
       assignment.team1.team.reduce(
-        (sum, mon) => sum + (mon.status === 'used' ? 1 : 0),
+        (sum, mon) => sum + (mon.status === 'survived' ? 1 : 0),
         0,
       ),
     );
     matchForm.controls.team2Score.setValue(
       assignment.team2.team.reduce(
-        (sum, mon) => sum + (mon.status === 'used' ? 1 : 0),
+        (sum, mon) => sum + (mon.status === 'survived' ? 1 : 0),
         0,
       ),
     );

@@ -8,6 +8,7 @@ import {
 import { LoadingComponent } from '../../../images/loading/loading.component';
 import { LeagueZoneService } from '../../../services/leagues/league-zone.service';
 import { TierPokemonAddon } from '../../../interfaces/tier-pokemon.interface';
+import { RouterModule } from '@angular/router';
 
 interface TradeGroup {
   id: string;
@@ -40,7 +41,7 @@ export interface TradeData {
 
 @Component({
   selector: 'pdz-league-manage-trades',
-  imports: [ReactiveFormsModule, FormsModule, LoadingComponent],
+  imports: [ReactiveFormsModule, FormsModule, LoadingComponent, RouterModule],
   templateUrl: './league-manage-trades.component.html',
   styleUrl: './league-manage-trades.component.scss',
 })

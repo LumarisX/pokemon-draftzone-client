@@ -3,12 +3,7 @@ import {
   provideHttpClient,
   withInterceptorsFromDi,
 } from '@angular/common/http';
-import {
-  inject,
-  isDevMode,
-  NgModule,
-  provideAppInitializer,
-} from '@angular/core';
+import { inject, NgModule, provideAppInitializer } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { AuthModule } from '@auth0/auth0-angular';
@@ -53,7 +48,7 @@ import { SwUpdateService } from './services/sw-update.service';
       },
     }),
     ServiceWorkerModule.register('ngsw-worker.js', {
-      enabled: !isDevMode(),
+      enabled: environment.serviceWorkerEnabled ?? environment.production,
       // Register the ServiceWorker as soon as the application is stable
       // or after 30 seconds (whichever comes first).
       registrationStrategy: 'registerWhenStable:30000',
@@ -64,7 +59,7 @@ import { SwUpdateService } from './services/sw-update.service';
   providers: [
     provideHttpClient(withInterceptorsFromDi()),
     provideAppInitializer(() => inject(RumService).init()),
-    // provideAppInitializer(() => inject(SwUpdateService).init()),
+    provideAppInitializer(() => inject(SwUpdateService).init()),
     provideMarkdown({
       markedOptions: {
         provide: MARKED_OPTIONS,
