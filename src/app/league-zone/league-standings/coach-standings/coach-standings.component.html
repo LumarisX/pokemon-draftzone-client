@@ -68,7 +68,9 @@
             </td>
             <td>
               <div class="record-cell">
-                {{ team.wins }}-{{ team.loses }} ({{ team.diff | plusSign }})
+                {{ team.wins }}-{{ team.loses }} ({{
+                  getDiffValue(team) | plusSign
+                }})
               </div>
             </td>
             <td>

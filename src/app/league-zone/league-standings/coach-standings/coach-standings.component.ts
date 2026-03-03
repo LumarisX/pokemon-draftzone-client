@@ -42,5 +42,11 @@ export class CoachStandingsComponent {
     return { 'background-color': `rgb(${r}, ${g}, ${b})` };
   }
 
+  getDiffValue(team: League.TeamStandingData): number {
+    return this.standingData.diffMode === 'game'
+      ? team.gameDiff
+      : team.pokemonDiff;
+  }
+
   getLogoUrl = getLogoUrl;
 }

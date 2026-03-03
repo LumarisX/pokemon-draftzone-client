@@ -151,13 +151,15 @@ export namespace League {
     direction?: number;
     wins: number;
     loses: number;
-    diff: number;
+    gameDiff: number;
+    pokemonDiff: number;
     logo?: string;
   };
 
   export type CoachStandingData = {
     cutoff: number;
     weeks: number;
+    diffMode: 'game' | 'pokemon';
     teams: TeamStandingData[];
   };
 
