@@ -2,7 +2,7 @@ import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { LeagueZoneService } from '../../../services/leagues/league-zone.service';
 import { League } from '../../league.interface';
-import { MatchupCardComponent } from '../../league-schedule/matchup-card/matchup-card.component';
+import { MatchupCardComponent } from './matchup-card/matchup-card.component';
 
 @Component({
   selector: 'pdz-league-schedule-widget',

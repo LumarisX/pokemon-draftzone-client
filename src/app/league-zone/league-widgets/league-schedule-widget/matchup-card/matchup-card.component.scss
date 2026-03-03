@@ -1,6 +1,6 @@
-@use "../../league.mixins" as *;
-@use "../../../../styles/global" as *;
-@use "../../../../styles/mixins" as *;
+@use "../../../league.mixins" as *;
+@use "../../../../../styles/global" as *;
+@use "../../../../../styles/mixins" as *;
 
 $container-padding: var(--pdz-space-xs);
 

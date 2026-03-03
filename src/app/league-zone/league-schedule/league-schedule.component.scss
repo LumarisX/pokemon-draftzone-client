@@ -25,49 +25,4 @@
   &__header {
     @include pdz-league-page-header();
   }
-
-  &__stage {
-    display: flex;
-    flex-direction: column;
-    gap: var(--pdz-space-xs);
-    padding: var(--pdz-space-sm);
-    border-radius: var(--pdz-shape-corner-sm);
-    background-color: pdz-color(surface-container-low);
-    border: 1px solid pdz-color(outline-variant);
-  }
-}
-
-.schedule__empty {
-  margin: 0;
-  color: var(--pdz-color-on-surface);
-}
-
-.schedule__stage-title {
-  @include apply-typography(title-md);
-}
-
-.schedule__matchups {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: var(--pdz-space-md);
-  width: 100%;
-  box-sizing: border-box;
-
-  @include respond-above(medium) {
-    grid-template-columns: repeat(
-      auto-fill,
-      minmax(clamp(18rem, 20vw, 24rem), 1fr)
-    );
-  }
-}
-
-.schedule__no-matchups {
-  grid-column: 1 / -1;
-  color: var(--pdz-color-on-surface-variant);
-  font-style: italic;
-  margin: 0;
-}
-
-pdz-matchup-card {
-  background-color: pdz-color(surface);
 }

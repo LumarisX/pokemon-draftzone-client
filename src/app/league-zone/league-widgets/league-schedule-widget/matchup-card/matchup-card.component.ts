@@ -8,12 +8,12 @@ import {
   signal,
 } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { IconComponent } from '../../../images/icon/icon.component';
-import { SpriteComponent } from '../../../images/sprite/sprite.component';
-import { LeagueZoneService } from '../../../services/leagues/league-zone.service';
-import { League } from '../../league.interface';
-import { getLogoUrl } from '../../league.util';
-import { getNameByPid } from '../../../data/namedex';
+import { getNameByPid } from '../../../../data/namedex';
+import { IconComponent } from '../../../../images/icon/icon.component';
+import { SpriteComponent } from '../../../../images/sprite/sprite.component';
+import { LeagueZoneService } from '../../../../services/leagues/league-zone.service';
+import { League } from '../../../league.interface';
+import { getLogoUrl } from '../../../league.util';
 
 @Component({
   selector: 'pdz-matchup-card',

@@ -18,7 +18,13 @@
           <td></td>
           <td></td>
           <td></td>
-          <td></td>
+          <td>
+            <div class="records-container">
+              <div class="record-header record-header--big">W/L</div>
+              <div class="record-header">GD</div>
+              <div class="record-header">PD</div>
+            </div>
+          </td>
           <td>
             <div class="results-container">
               @for (i of weekRange; track i) {
@@ -68,22 +74,25 @@
             </td>
             <td>
               <div class="record-cell">
-                <span class="record-chip record-chip--record"
+                <span
+                  class="record-box record-box--big"
+                  [class.positive]="team.wins > team.loses"
+                  [class.negative]="team.wins < team.loses"
                   >{{ team.wins }}-{{ team.loses }}</span
                 >
                 <span
-                  class="record-chip"
-                  [class.record-chip--positive]="team.gameDiff > 0"
-                  [class.record-chip--negative]="team.gameDiff < 0"
+                  class="record-box"
+                  [class.positive]="team.gameDiff > 0"
+                  [class.negative]="team.gameDiff < 0"
                 >
-                  G {{ team.gameDiff | plusSign }}
+                  {{ team.gameDiff | plusSign }}
                 </span>
                 <span
-                  class="record-chip"
-                  [class.record-chip--positive]="team.pokemonDiff > 0"
-                  [class.record-chip--negative]="team.pokemonDiff < 0"
+                  class="record-box"
+                  [class.positive]="team.pokemonDiff > 0"
+                  [class.negative]="team.pokemonDiff < 0"
                 >
-                  P {{ team.pokemonDiff | plusSign }}
+                  {{ team.pokemonDiff | plusSign }}
                 </span>
               </div>
             </td>

@@ -63,51 +63,8 @@
     }
   }
 
-  .record-cell {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.25rem;
-    flex-wrap: wrap;
-    width: 100%;
-
-    .record-chip {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      @include apply-typography(body-xs);
-      line-height: 1.5rem;
-      font-weight: var(--pdz-font-weight-bold);
-      border-radius: var(--pdz-shape-corner-xs);
-      background-color: pdz-color(surface-container);
-      color: pdz-color(on-surface);
-      padding: var(--pdz-space-2xs);
-      height: 1.5rem;
-      min-width: 1.5rem;
-
-      &--record {
-        @include apply-typography(body-sm);
-        line-height: 1.5rem;
-        font-weight: var(--pdz-font-weight-bold);
-      }
-
-      &--positive {
-        background-color: pdz-color(positive);
-        box-shadow: var(--pdz-level-1);
-        color: pdz-color(on-menu);
-      }
-
-      &--negative {
-        background-color: pdz-color(negative);
-        box-shadow: var(--pdz-level-1);
-        color: pdz-color(on-menu);
-      }
-    }
-  }
-
   .logo-cell {
-    @include pdz-league-logo(3.5rem);
+    @include pdz-league-logo(3rem);
     padding: 0.25rem;
   }
 
@@ -132,26 +89,8 @@
     user-select: none;
 
     .result-box {
-      background-color: var(--pdz-color-surface-container);
-      color: var(--pdz-color-surface-container);
-      text-align: center;
-      @include apply-typography(body-sm);
-      line-height: 1.5rem;
-      font-weight: var(--pdz-font-weight-bold);
-      border-radius: var(--pdz-shape-corner-xs);
-      height: 1.5rem;
-      width: 1.5rem;
-      &.positive {
-        background-color: pdz-color(positive);
-        color: pdz-color(on-menu);
-        box-shadow: var(--pdz-level-1);
-      }
-
-      &.negative {
-        background-color: pdz-color(negative);
-        color: pdz-color(on-menu);
-        box-shadow: var(--pdz-level-1);
-      }
+      @include pdz-league-record-box();
+      color: pdz-color(surface-container);
 
       .hovered-content {
         display: none;
@@ -180,6 +119,74 @@
       width: 3rem;
       display: flex;
       justify-content: center;
+    }
+  }
+
+  .records-container {
+    display: flex;
+    column-gap: 0.25rem;
+    user-select: none;
+    width: 100%;
+    justify-content: center;
+
+    .record-header {
+      width: 1.5rem;
+      height: 0.75rem;
+      text-align: center;
+      font-weight: var(--pdz-font-weight-bold);
+      font-size: 0.7rem;
+      &--big {
+        width: 2.5rem;
+      }
+    }
+  }
+
+  .record-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    flex-wrap: wrap;
+    width: 100%;
+
+    .record-box {
+      // display: inline-flex;
+      // align-items: center;
+      // justify-content: center;
+      // text-align: center;
+      // @include apply-typography(body-xs);
+      // line-height: 1.5rem;
+      // font-weight: var(--pdz-font-weight-bold);
+      // border-radius: var(--pdz-shape-corner-xs);
+      // background-color: pdz-color(surface-container);
+      // color: pdz-color(on-surface);
+      // padding: var(--pdz-space-2xs);
+      // height: 1.5rem;
+      // min-width: 1.5rem;
+
+      // &--record {
+      //   @include apply-typography(body-sm);
+      //   line-height: 1.5rem;
+      //   font-weight: var(--pdz-font-weight-bold);
+      // }
+
+      // &--positive {
+      //   background-color: pdz-color(positive);
+      //   box-shadow: var(--pdz-level-1);
+      //   color: pdz-color(on-menu);
+      // }
+
+      // &--negative {
+      //   background-color: pdz-color(negative);
+      //   box-shadow: var(--pdz-level-1);
+      //   color: pdz-color(on-menu);
+      // }
+
+      @include pdz-league-record-box();
+
+      &--big {
+        width: 2.5rem;
+      }
     }
   }
 }

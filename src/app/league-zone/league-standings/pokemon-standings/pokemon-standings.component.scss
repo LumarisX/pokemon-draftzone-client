@@ -1,4 +1,5 @@
 @use "../../../../styles/global" as *;
+@use "../../league.mixins" as *;
 
 .standing-container {
   border: 1px solid var(--pdz-color-primary-border);
@@ -32,6 +33,27 @@
     thead {
       th {
         border-bottom: 2px solid var(--pdz-color-primary-border);
+
+        &.sortable-header {
+          cursor: pointer;
+          user-select: none;
+
+          &:focus-visible {
+            outline: 2px solid var(--pdz-color-primary);
+            outline-offset: 2px;
+          }
+          &:hover:not(.is-sorted) {
+            background-color: pdz-color(surface-container);
+          }
+
+          &.is-sorted {
+            background-color: pdz-color(primary-container);
+          }
+
+          &.is-sorted.is-reversed {
+            background-color: pdz-color(secondary-container);
+          }
+        }
       }
     }
   }
@@ -62,32 +84,14 @@
   }
 
   .record-cell {
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 3rem;
   }
 
-  .colored-cell {
-    background-color: var(--pdz-color-surface-container);
-    color: pdz-color(on-surface);
-    text-align: center;
-    font-weight: var(--pdz-font-weight-bold);
-    font-size: 0.8rem;
-    line-height: 1.5rem;
-    border-radius: var(--pdz-shape-corner-xs);
-    height: 1.5rem;
-    width: 1.5rem;
-
-    &.positive {
-      background-color: pdz-color(positive);
-      color: pdz-color(on-menu);
-      box-shadow: var(--pdz-level-1);
-    }
-
-    &.negative {
-      background-color: pdz-color(negative);
-      color: pdz-color(on-menu);
-      box-shadow: var(--pdz-level-1);
-    }
+  .record-box {
+    @include pdz-league-record-box();
   }
 
   .logo-cell {
