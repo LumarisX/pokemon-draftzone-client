@@ -1,3 +1,6 @@
+@use "../../../../../styles/global" as *;
+@use "../../../../../styles/mixins" as *;
+
 $trade-item-spacing: 0.25rem;
 $trade-sprite-size: 2rem;
 .trade-details-content {
@@ -72,9 +75,12 @@ $trade-sprite-size: 2rem;
 
 .pokemon-details {
   display: flex;
-  flex-direction: column;
   flex-grow: 1;
   min-width: 0;
+
+  &.pokemon-details--right {
+    justify-content: end;
+  }
 }
 
 .pokemon-name {
@@ -85,14 +91,16 @@ $trade-sprite-size: 2rem;
 }
 
 .pokemon-tier {
-  font-size: 0.8rem;
-  color: var(--pdz-color-secondary);
-  padding: 0.1rem 0.3rem;
-  border-radius: 3px;
-  font-weight: bold;
+  color: pdz-color(on-primary);
+  background-color: pdz-color(primary);
+  box-shadow: var(--pdz-level-1);
+  border-radius: var(--pdz-shape-corner-xs);
+  @include apply-typography(label-sm);
   min-width: 1.5rem;
   height: 1.5rem;
-  line-height: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
 }
 
@@ -100,7 +108,7 @@ $trade-sprite-size: 2rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--pdz-color-secondary);
+  color: pdz-color(primary);
   flex-shrink: 0;
 
   mat-icon {
@@ -111,10 +119,10 @@ $trade-sprite-size: 2rem;
   }
 
   &.pickup mat-icon {
-    color: lightgreen;
+    color: pdz-color(positive);
   }
   &.drop mat-icon {
-    color: lightcoral;
+    color: pdz-color(negative);
   }
 }
 

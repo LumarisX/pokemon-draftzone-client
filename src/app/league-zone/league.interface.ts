@@ -46,6 +46,7 @@ export namespace League {
   export type TieredPokemon = Pokemon & {
     tier: string;
     cost: number;
+    tera?: boolean;
   };
 
   export type MatchPokemonStats = {

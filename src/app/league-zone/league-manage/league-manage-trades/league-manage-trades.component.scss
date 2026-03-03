@@ -7,6 +7,19 @@
   padding: var(--pdz-space-lg);
 }
 
+.division-header {
+  display: flex;
+  justify-content: center;
+  margin-bottom: var(--pdz-space-md);
+
+  &__nav {
+    display: flex;
+    gap: var(--pdz-space-sm);
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
 .trade-container {
   display: flex;
   flex-direction: column;
@@ -273,6 +286,10 @@
   cursor: pointer;
   transition: all 0.2s ease;
   font-weight: 600;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 
   &--primary {
     background: pdz-color(primary);

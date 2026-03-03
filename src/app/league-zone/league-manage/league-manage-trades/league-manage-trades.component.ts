@@ -89,6 +89,16 @@ export class LeagueManageTradesComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.tradeForm.get('side1Group')?.valueChanges.subscribe(() => {
+      this.side1SearchQuery.set('');
+      this.tradeForm.get('side1Pokemon')?.setValue([]);
+    });
+
+    this.tradeForm.get('side2Group')?.valueChanges.subscribe(() => {
+      this.side2SearchQuery.set('');
+      this.tradeForm.get('side2Pokemon')?.setValue([]);
+    });
+
     this.leagueService.getPokemonList().subscribe({
       next: (data) => {
         this.loading = false;
@@ -132,9 +142,6 @@ export class LeagueManageTradesComponent implements OnInit {
         const hasTeraCaptain = (pokemon.setAddons || []).includes(
           'Tera Captain',
         );
-
-        if (pokemon.setAddons)
-          console.log('Set Tera', pokemon.id, hasTeraCaptain, pokemon.addons);
 
         pokemonMap.get(groupId)?.push({
           id: pokemon.id,
@@ -193,14 +200,12 @@ export class LeagueManageTradesComponent implements OnInit {
       (p: { id: string; tera: boolean }) => p.id === pokemonId,
     );
 
-    if (index < 0) {
-      currentValue.push({ id: pokemonId, tera: true });
-    } else {
-      currentValue[index] = {
-        ...currentValue[index],
-        tera: !currentValue[index].tera,
-      };
-    }
+    if (index < 0) return;
+
+    currentValue[index] = {
+      ...currentValue[index],
+      tera: !currentValue[index].tera,
+    };
 
     control.setValue(currentValue);
   }
@@ -226,18 +231,38 @@ export class LeagueManageTradesComponent implements OnInit {
     return source?.tera ?? false;
   }
 
-  getPokemonCost(side: 'side1' | 'side2', pokemonId: string): number {
-    // 2) Otherwise show default tera from source pokemon list (setAddons -> hasTeraCaptain)
+  private getPokemonForSide(
+    side: 'side1' | 'side2',
+    pokemonId: string,
+  ): TradePokemon | undefined {
     const groupId = this.tradeForm.get(`${side}Group`)?.value;
-    if (!groupId) return 0;
+    if (!groupId) return undefined;
 
-    const source = (this.pokemonByGroup().get(groupId) || []).find(
-      (p) => p.id === pokemonId,
+    return (this.pokemonByGroup().get(groupId) || []).find(
+      (pokemon) => pokemon.id === pokemonId,
+    );
+  }
+
+  private getTeraAddonCost(pokemon?: TradePokemon): number | undefined {
+    if (!pokemon?.addons?.length) return undefined;
+
+    const teraAddon = pokemon.addons.find(
+      (addon) =>
+        addon.name === 'Tera Captain' || addon.capt?.tera !== undefined,
     );
 
-    if (this.isPokemonTera(side, pokemonId))
-      return source?.addons?.[0].cost ?? 0;
-    return source?.cost ?? 0;
+    return teraAddon?.cost;
+  }
+
+  getPokemonCost(side: 'side1' | 'side2', pokemonId: string): number {
+    const source = this.getPokemonForSide(side, pokemonId);
+    if (!source) return 0;
+
+    if (this.isPokemonTera(side, pokemonId)) {
+      return this.getTeraAddonCost(source) ?? source.cost ?? 0;
+    }
+
+    return source.cost ?? 0;
   }
 
   getSelectedTotalCost(side: 'side1' | 'side2'): number {
@@ -287,7 +312,7 @@ export class LeagueManageTradesComponent implements OnInit {
     const otherSelectedCost = otherAllPokemon
       .filter((pokemon) => otherSelectedSet.has(pokemon.id))
       .reduce(
-        (total, pokemon) => total + this.getPokemonCost(side, pokemon.id),
+        (total, pokemon) => total + this.getPokemonCost(otherSide, pokemon.id),
         0,
       );
 

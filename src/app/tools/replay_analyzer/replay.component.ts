@@ -3,7 +3,6 @@ import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import { getNameByPid } from '../../data/namedex';
 import { IconComponent } from '../../images/icon/icon.component';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { ReplayService } from '../../services/replay.service';
@@ -109,18 +108,6 @@ export class ReplayComponent implements OnInit {
     }
 
     return '';
-  }
-
-  getNameByPid(pid: string): string {
-    return getNameByPid(pid);
-  }
-
-  monStatusLabel(status: ReplayPokemon['status']): string {
-    if (status === 'used') {
-      return 'Survived';
-    }
-
-    return status[0].toUpperCase() + status.slice(1);
   }
 
   monStatusClass(status: ReplayPokemon['status']): string {

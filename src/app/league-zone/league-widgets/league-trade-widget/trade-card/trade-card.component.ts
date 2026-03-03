@@ -1,12 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnChanges } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
-import { SpriteComponent } from '../../../images/sprite/sprite.component';
+import { SpriteComponent } from '../../../../images/sprite/sprite.component';
 import {
   ComparisonCardComponent,
   ComparisonEntity,
-} from '../../comparison-card/comparison-card.component'; // Adjust path
-import { TradeLog } from '../../league.interface';
+} from '../../../comparison-card/comparison-card.component'; // Adjust path
+import { TradeLog } from '../../../league.interface';
+import { IconComponent } from '../../../../images/icon/icon.component';
 
 // Define interfaces matching your tradeLog structure (simplified example)
 
@@ -18,6 +19,7 @@ import { TradeLog } from '../../league.interface';
     SpriteComponent,
     MatIconModule,
     CommonModule,
+    IconComponent,
   ],
   templateUrl: './trade-card.component.html',
   styleUrls: ['./trade-card.component.scss'],

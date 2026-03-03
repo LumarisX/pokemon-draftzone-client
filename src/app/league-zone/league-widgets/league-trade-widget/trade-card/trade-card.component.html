@@ -18,6 +18,9 @@
                 <pdz-sprite [pokemon]="pokemon" flipped></pdz-sprite>
               </div>
               <div class="pokemon-details">
+                @if (pokemon.tera) {
+                  <pdz-icon name="tera" [size]="16"></pdz-icon>
+                }
                 <div class="pokemon-name">{{ pokemon.name }}</div>
               </div>
             </div>
@@ -55,8 +58,11 @@
               <div class="sprite-wrapper small">
                 <pdz-sprite [pokemon]="pokemon"></pdz-sprite>
               </div>
-              <div class="pokemon-details">
+              <div class="pokemon-details pokemon-details--right">
                 <div class="pokemon-name">{{ pokemon.name }}</div>
+                @if (pokemon.tera) {
+                  <pdz-icon name="tera" [size]="16"></pdz-icon>
+                }
               </div>
             </div>
           </div>

@@ -235,7 +235,11 @@
                             class="replay-analyzer__mon-status"
                             [ngClass]="monStatusClass(pokemon.status)"
                           >
-                            {{ monStatusLabel(pokemon.status) }}
+                            {{
+                              pokemon.status === "used"
+                                ? "survived"
+                                : (pokemon.status | titlecase)
+                            }}
                           </div>
 
                           <div class="replay-analyzer__mon-grid">

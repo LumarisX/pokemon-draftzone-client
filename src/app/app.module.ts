@@ -64,7 +64,7 @@ import { SwUpdateService } from './services/sw-update.service';
   providers: [
     provideHttpClient(withInterceptorsFromDi()),
     provideAppInitializer(() => inject(RumService).init()),
-    provideAppInitializer(() => inject(SwUpdateService).init()),
+    // provideAppInitializer(() => inject(SwUpdateService).init()),
     provideMarkdown({
       markedOptions: {
         provide: MARKED_OPTIONS,
