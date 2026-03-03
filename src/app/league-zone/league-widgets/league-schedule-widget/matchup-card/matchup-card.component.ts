@@ -66,6 +66,7 @@ export class MatchupCardComponent implements OnInit {
       id,
       name: getNameByPid(id),
       status: stats.status,
+      kills: (stats.kills?.direct || 0) + (stats.kills?.indirect || 0),
     }));
   }
 }
