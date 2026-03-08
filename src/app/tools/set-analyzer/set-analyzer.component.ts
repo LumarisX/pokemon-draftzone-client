@@ -15,7 +15,7 @@ import { MatIcon } from '@angular/material/icon';
 import { PokemonBuilder } from '../../drafts/matchup-overview/widgets/teambuilder/pokemon-builder/pokemon-builder.model';
 
 @Component({
-  selector: 'teambuilder-analyzer',
+  selector: 'pdz-teambuilder-analyzer',
   standalone: true,
   templateUrl: './set-analyzer.component.html',
   imports: [

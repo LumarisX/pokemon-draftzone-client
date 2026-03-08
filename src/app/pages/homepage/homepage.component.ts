@@ -1,4 +1,3 @@
-
 import { Component } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -9,7 +8,7 @@ import { IconComponent } from '../../images/icon/icon.component';
 import { NewsCoreComponent } from '../news-core/news-core.component';
 
 @Component({
-  selector: 'homepage',
+  selector: 'pdz-homepage',
   imports: [
     RouterModule,
     ReactiveFormsModule,
@@ -17,8 +16,8 @@ import { NewsCoreComponent } from '../news-core/news-core.component';
     MatButtonModule,
     MatDividerModule,
     NewsCoreComponent,
-    IconComponent
-],
+    IconComponent,
+  ],
   styleUrl: './homepage.component.scss',
   templateUrl: './homepage.component.html',
 })

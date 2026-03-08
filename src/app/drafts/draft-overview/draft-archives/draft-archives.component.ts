@@ -9,7 +9,7 @@ import { DraftOverviewPath } from '../draft-overview-routing.module';
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({
-  selector: 'draft-archives',
+  selector: 'pdz-draft-archives',
   templateUrl: './draft-archives.component.html',
   styleUrl: './draft-archives.component.scss',
 

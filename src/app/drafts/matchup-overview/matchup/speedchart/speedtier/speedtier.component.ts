@@ -1,10 +1,9 @@
-
 import { Component, HostBinding, Input } from '@angular/core';
 import { SpriteComponent } from '../../../../../images/sprite/sprite.component';
 import { Speedtier } from '../../../matchup-interface';
 
 @Component({
-  selector: 'speedtier',
+  selector: 'pdz-speedtier',
   templateUrl: './speedtier.component.html',
   styleUrl: './speedtier.component.scss',
   imports: [SpriteComponent],

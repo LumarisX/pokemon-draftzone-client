@@ -1,8 +1,15 @@
-import { Component, OnInit, ElementRef, Input, OnChanges, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ElementRef,
+  Input,
+  OnChanges,
+  inject,
+} from '@angular/core';
 import * as d3 from 'd3';
 
 @Component({
-  selector: 'effectiveness-chart',
+  selector: 'pdz-effectiveness-chart',
   standalone: true,
   template: `<svg></svg>`,
 })

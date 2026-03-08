@@ -35,7 +35,7 @@ import {
 import { RulesetSelectComponent } from '../../../../util/ruleset-select/ruleset.component';
 
 @Component({
-  selector: 'draft-form-core',
+  selector: 'pdz-draft-form-core',
   standalone: true,
   imports: [
     RouterModule,

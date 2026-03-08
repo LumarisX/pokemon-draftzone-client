@@ -1,4 +1,3 @@
-
 import { AfterViewInit, Component, inject } from '@angular/core';
 import { Meta } from '@angular/platform-browser';
 import { ActivatedRoute, RouterModule } from '@angular/router';
@@ -12,7 +11,7 @@ import { LoadingComponent } from '../../images/loading/loading.component';
 dayjs.extend(duration);
 
 @Component({
-  selector: 'matchup-shared',
+  selector: 'pdz-matchup-shared',
   standalone: true,
   templateUrl: 'matchup-shared.component.html',
   styleUrl: './matchup.scss',

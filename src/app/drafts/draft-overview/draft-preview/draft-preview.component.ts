@@ -11,7 +11,7 @@ import { DraftOverviewPath } from '../draft-overview-routing.module';
 import { TournamentDetails } from '../../../interfaces/league';
 
 @Component({
-  selector: 'draft-preview',
+  selector: 'pdz-draft-preview',
   templateUrl: './draft-preview.component.html',
   styleUrl: './draft-preview.component.scss',
   imports: [

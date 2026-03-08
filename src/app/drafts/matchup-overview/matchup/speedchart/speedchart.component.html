@@ -83,7 +83,7 @@
             @if (group.tiers.length === 1 || group.opened) {
               @for (tier of group.tiers; track $index) {
                 <div class="speedtier-wrapper">
-                  <speedtier [tier]="tier"></speedtier>
+                  <pdz-speedtier [tier]="tier"></pdz-speedtier>
                 </div>
               }
             } @else {

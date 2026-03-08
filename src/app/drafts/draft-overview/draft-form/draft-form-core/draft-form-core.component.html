@@ -27,8 +27,10 @@
                 <mat-label>Team Name</mat-label>
                 <input matInput formControlName="teamName" spellcheck="false" />
               </mat-form-field>
-              <format-select formControlName="format"></format-select>
-              <ruleset-select formControlName="ruleset"></ruleset-select>
+              <pdz-format-select formControlName="format"></pdz-format-select>
+              <pdz-ruleset-select
+                formControlName="ruleset"
+              ></pdz-ruleset-select>
               <mat-form-field class="md:col-span-2">
                 <mat-label>Document Link</mat-label>
                 <input
@@ -61,12 +63,12 @@
       <ng-template matStepLabel>Team</ng-template>
       <ng-template matStepContent>
         <div class="team-container">
-          <team-form
+          <pdz-team-form
             [pokemonList$]="pokemonList$"
             [ruleset]="draftForm.controls.details.controls.ruleset.value"
             [teamArray]="draftForm.controls.team"
             (isImporting)="isImporting = $event"
-          ></team-form>
+          ></pdz-team-form>
         </div>
 
         <div class="button-bar">

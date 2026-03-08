@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'copy-svg',
+  selector: 'pdz-copy-svg',
   standalone: true,
   template: `<svg
     xmlns="http://www.w3.org/2000/svg"

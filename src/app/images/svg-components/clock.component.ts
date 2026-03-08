@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'clock-svg',
+  selector: 'pdz-clock-svg',
   standalone: true,
   imports: [CommonModule],
   template: `

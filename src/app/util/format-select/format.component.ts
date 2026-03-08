@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, forwardRef, input, Input, OnInit, inject } from '@angular/core';
+import {
+  Component,
+  forwardRef,
+  input,
+  Input,
+  OnInit,
+  inject,
+} from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MAT_SELECT_CONFIG, MatSelectModule } from '@angular/material/select';
@@ -8,7 +15,7 @@ import { DataService } from '../../services/data.service';
 import { MatFormFieldAppearance } from '@angular/material/form-field';
 
 @Component({
-  selector: 'format-select',
+  selector: 'pdz-format-select',
   imports: [CommonModule, MatSelectModule, MatIconModule, MatTooltipModule],
   templateUrl: './format.component.html',
   styleUrl: './format.component.scss',

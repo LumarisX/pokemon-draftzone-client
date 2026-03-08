@@ -69,7 +69,7 @@ export interface LSDraftData {
 }
 
 @Component({
-  selector: 'planner',
+  selector: 'pdz-planner',
   standalone: true,
   templateUrl: './planner.component.html',
   styleUrl: './planner.component.scss',

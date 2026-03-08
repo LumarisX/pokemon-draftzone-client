@@ -10,7 +10,7 @@ import { CoveragechartComponent } from './coveragechart/coveragechart.component'
 import { SpeedchartComponent } from './speedchart/speedchart.component';
 
 @Component({
-  selector: 'matchup',
+  selector: 'pdz-matchup',
   templateUrl: './matchup.component.html',
   styleUrl: './matchup.component.scss',
   imports: [

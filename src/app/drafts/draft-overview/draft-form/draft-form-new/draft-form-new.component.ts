@@ -11,7 +11,7 @@ import { DraftOverviewPath } from '../../draft-overview-routing.module';
 import { DraftFormCoreComponent } from '../draft-form-core/draft-form-core.component';
 
 @Component({
-  selector: 'draft-form-new',
+  selector: 'pdz-draft-form-new',
   standalone: true,
   imports: [RouterModule, MatButtonModule, DraftFormCoreComponent],
   templateUrl: './draft-form-new.component.html',

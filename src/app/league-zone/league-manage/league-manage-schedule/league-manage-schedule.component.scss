@@ -21,7 +21,7 @@
   }
 }
 .btn {
-  @include apply-typography("label-large");
+  @include apply-typography("label-lg");
   padding: var(--pdz-space-md) var(--pdz-space-lg);
   border: none;
   border-radius: var(--pdz-shape-md);

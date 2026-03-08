@@ -51,7 +51,7 @@ import { SlideToggleComponent } from '../../inputs/slide-toggle/slide-toggle.com
 import { PokemonSelectComponent } from '../../pokemon-select/pokemon-select.component';
 
 @Component({
-  selector: 'team-form',
+  selector: 'pdz-team-form',
   standalone: true,
   imports: [
     CommonModule,

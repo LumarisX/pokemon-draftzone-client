@@ -1,4 +1,3 @@
-
 import { Component, Input, OnInit, inject } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -14,15 +13,15 @@ import {
 import { Draft } from '../../../interfaces/draft';
 
 @Component({
-  selector: 'opponent-form',
+  selector: 'pdz-opponent-form',
   standalone: true,
   imports: [
     RouterModule,
     OpponentFormCoreComponent,
     ReactiveFormsModule,
     MatButtonModule,
-    LoadingComponent
-],
+    LoadingComponent,
+  ],
   styleUrl: './opponent-form.component.scss',
   templateUrl: './opponent-form.component.html',
 })

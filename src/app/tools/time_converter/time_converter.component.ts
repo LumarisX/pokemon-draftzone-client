@@ -32,7 +32,7 @@ type TimeZone = {
 };
 
 @Component({
-  selector: 'time-converter',
+  selector: 'pdz-time-converter',
   standalone: true,
   templateUrl: './time_converter.component.html',
   styleUrl: './time_converter.component.scss',
@@ -51,8 +51,8 @@ type TimeZone = {
     MatAutocompleteModule,
     MatFormFieldModule,
     MatSliderModule,
-    MatIconModule
-],
+    MatIconModule,
+  ],
 })
 export class TimeConverterComponent implements OnInit {
   timeZones: TimeZone[] = Intl.supportedValuesOf('timeZone')

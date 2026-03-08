@@ -11,7 +11,7 @@ import { DraftService } from '../../services/draft.service';
 import { DraftOverviewPath } from '../draft-overview/draft-overview-routing.module';
 
 @Component({
-  selector: 'opponent-overview',
+  selector: 'pdz-opponent-overview',
   standalone: true,
   imports: [
     CommonModule,

@@ -23,7 +23,7 @@ export const BALLHEX: {
 };
 
 @Component({
-  selector: 'ball-svg',
+  selector: 'pdz-ball-svg',
   standalone: true,
   template: `<svg
     viewBox="0 0 24 24"

@@ -10,12 +10,12 @@
         <div class="tag-icons">
           @for (skill of league.skillLevels; track skill) {
             <div class="tag-icon">
-              <ball-svg [ballType]="SKILLBALLS[skill]"></ball-svg>
+              <pdz-ball-svg [ballType]="SKILLBALLS[skill]"></pdz-ball-svg>
             </div>
           }
           @if (league.prizeValue) {
             <div class="tag-icon">
-              <coin-svg></coin-svg>
+              <pdz-coin-svg></pdz-coin-svg>
             </div>
           }
         </div>
@@ -112,7 +112,7 @@
           <strong>Prize Pool:</strong>
           <div class="prize-icons">
             <div class="prize-icon">
-              <coin-svg></coin-svg>
+              <pdz-coin-svg></pdz-coin-svg>
             </div>
           </div>
         </div>

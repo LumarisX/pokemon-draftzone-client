@@ -1,7 +1,13 @@
 <h2>Select Ruleset, Format, and Template prior to proceeding</h2>
 <div class="qd-options-bar">
-  <format-select appearance="outline" [(ngModel)]="format"></format-select>
-  <ruleset-select appearance="outline" [(ngModel)]="ruleset"></ruleset-select>
+  <pdz-format-select
+    appearance="outline"
+    [(ngModel)]="format"
+  ></pdz-format-select>
+  <pdz-ruleset-select
+    appearance="outline"
+    [(ngModel)]="ruleset"
+  ></pdz-ruleset-select>
 </div>
 <div class="qd-option-container">
   @for (template of formatTemplates; track $index) {

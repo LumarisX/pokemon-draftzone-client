@@ -13,10 +13,10 @@
       </div>
     </div>
     @if (draftParams) {
-      <draft-form-core
+      <pdz-draft-form-core
         [params]="draftParams"
         (formSubmitted)="editDraft($event)"
-      ></draft-form-core>
+      ></pdz-draft-form-core>
     } @else {
       <pdz-loading></pdz-loading>
     }

@@ -100,15 +100,19 @@
       </div>
     </div>
 
-    <planner-summary [summary]="selectedTeam.summary"></planner-summary>
+    <pdz-planner-summary [summary]="selectedTeam.summary"></pdz-planner-summary>
     <pdz-planner-typechart
       [typechart]="selectedTeam.typechart"
     ></pdz-planner-typechart>
     <div class="movechart-wrapper">
-      <planner-moves [movechart]="selectedTeam.movechart"></planner-moves>
+      <pdz-planner-moves
+        [movechart]="selectedTeam.movechart"
+      ></pdz-planner-moves>
     </div>
     <div class="coverage-wrapper">
-      <planner-coverage [coverage]="selectedTeam.coverage"></planner-coverage>
+      <pdz-planner-coverage
+        [coverage]="selectedTeam.coverage"
+      ></pdz-planner-coverage>
     </div>
   </div>
   <div class="score-comparison">

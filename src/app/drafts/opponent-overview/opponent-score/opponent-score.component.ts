@@ -20,7 +20,7 @@ import { Matchup } from '../../../interfaces/matchup';
 import { ReplayData } from '../../../tools/replay_analyzer/replay.interface';
 
 @Component({
-  selector: 'opponent-form',
+  selector: 'pdz-opponent-form',
   templateUrl: './opponent-score.component.html',
   imports: [
     CommonModule,

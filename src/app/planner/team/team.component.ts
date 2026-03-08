@@ -17,7 +17,7 @@ import { PokemonSelectComponent } from '../../util/pokemon-select/pokemon-select
 import { DraftFormGroup } from '../plannner.component';
 
 @Component({
-  selector: 'planner-team',
+  selector: 'pdz-planner-team',
   standalone: true,
   styleUrl: './team.component.scss',
   templateUrl: './team.component.html',

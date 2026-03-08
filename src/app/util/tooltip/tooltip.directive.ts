@@ -2,7 +2,7 @@ import { Directive, ElementRef, HostListener, Input } from '@angular/core';
 import { TooltipService } from './tooltip.service';
 
 @Directive({
-  selector: '[pdzTooltip]',
+  selector: 'pdz-[pdzTooltip]',
   standalone: false,
 })
 export class TooltipDirective {

@@ -28,7 +28,7 @@ import { MatchupTeambuilderComponent } from './widgets/teambuilder/teambuilder.c
 dayjs.extend(duration);
 
 @Component({
-  selector: 'matchup-overview',
+  selector: 'pdz-matchup-overview',
   standalone: true,
   templateUrl: 'matchup-overview.component.html',
   styleUrls: ['./matchup.scss', './matchup-overview.component.scss'],

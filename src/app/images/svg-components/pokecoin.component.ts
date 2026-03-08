@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'coin-svg',
+  selector: 'pdz-coin-svg',
   standalone: true,
   template: `<svg
     class="stroke-symbolColor-main fill-symbolColor-main"

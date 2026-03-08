@@ -1,4 +1,3 @@
-
 import { Component, Input, QueryList, ViewChildren } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SwapOpponentButton } from '../../../../util/buttons/swap-opponent/swap-opponent.component';
@@ -7,14 +6,14 @@ import { CoverageComponent } from './coverage/coverage.component';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @Component({
-  selector: 'coveragechart',
+  selector: 'pdz-coveragechart',
   imports: [
     CoverageComponent,
     SwapOpponentButton,
     FormsModule,
     ReactiveFormsModule,
-    MatSlideToggleModule
-],
+    MatSlideToggleModule,
+  ],
   templateUrl: './coveragechart.component.html',
   styleUrls: ['../../matchup.scss', './coveragechart.component.scss'],
 })

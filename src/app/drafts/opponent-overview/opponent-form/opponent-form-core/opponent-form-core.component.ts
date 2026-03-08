@@ -34,7 +34,7 @@ import {
 import { DraftService } from '../../../../services/draft.service';
 
 @Component({
-  selector: 'opponent-form-core',
+  selector: 'pdz-opponent-form-core',
   standalone: true,
   imports: [
     RouterModule,

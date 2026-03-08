@@ -472,7 +472,7 @@ html, body {
 // import { LeagueSidebarComponent } from './league-sidebar/league-sidebar.component';
 
 // @Component({
-//   selector: 'app-root',
+//   selector: 'pdz-root',
 //   standalone: true,
 //   imports: [
 //     RouterModule,

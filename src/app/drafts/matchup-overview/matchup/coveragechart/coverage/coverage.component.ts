@@ -9,7 +9,7 @@ import { CoverageChart, TypeChart } from '../../../matchup-interface';
 import { EffectivenessChartComponent } from './effectiveness-chart/effectiveness-chart.component';
 
 @Component({
-  selector: 'coverage',
+  selector: 'pdz-coverage',
   templateUrl: './coverage.component.html',
   styleUrl: './coverage.component.scss',
   imports: [

@@ -1,9 +1,8 @@
-
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
 @Component({
-  selector: 'about',
+  selector: 'pdz-about',
   standalone: true,
   imports: [RouterModule],
   templateUrl: './about.component.html',

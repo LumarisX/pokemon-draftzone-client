@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'shiny-svg',
+  selector: 'pdz-shiny-svg',
   standalone: true,
   template: `
     <svg

@@ -6,7 +6,7 @@ import { CompactSVG } from '../../../images/svg-components/compact.component';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
-  selector: 'select-no-search',
+  selector: 'pdz-select-no-search',
   standalone: true,
   imports: [CommonModule, CompactSVG, ScrollingModule],
   templateUrl: 'select-no-search.component.html',

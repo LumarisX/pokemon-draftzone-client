@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 
 @Component({
-  selector: 'xmark-svg',
+  selector: 'pdz-xmark-svg',
   standalone: true,
   imports: [CommonModule],
   template: `

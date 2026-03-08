@@ -48,7 +48,7 @@
   height: 100%;
 
   &__heading {
-    @include apply-typography("label-large");
+    @include apply-typography("label-lg");
     color: pdz-color(on-surface);
     margin: 0;
   }
@@ -74,7 +74,7 @@
 }
 
 .trade-label {
-  @include apply-typography("label-medium");
+  @include apply-typography("label-md");
   color: pdz-color(on-surface);
   font-weight: 600;
 }
@@ -85,7 +85,7 @@
   border-radius: var(--pdz-shape-sm);
   background: pdz-color(surface);
   color: pdz-color(on-surface);
-  @include apply-typography("body-medium");
+  @include apply-typography("body-md");
   cursor: pointer;
   transition: all 0.2s ease;
 
@@ -128,7 +128,7 @@
   border-radius: var(--pdz-shape-sm);
   background: pdz-color(surface);
   color: pdz-color(on-surface);
-  @include apply-typography("body-medium");
+  @include apply-typography("body-md");
   transition: all 0.2s ease;
 
   &:focus {
@@ -150,7 +150,7 @@
   padding: var(--pdz-space-xl);
   text-align: center;
   color: pdz-color(on-surface-variant);
-  @include apply-typography("body-medium");
+  @include apply-typography("body-md");
   font-style: italic;
   min-height: 150px;
 
@@ -205,7 +205,7 @@
 }
 
 .pokemon-label {
-  @include apply-typography("label-medium");
+  @include apply-typography("label-md");
   color: pdz-color(on-surface);
   cursor: pointer;
   user-select: none;
@@ -219,7 +219,7 @@
 }
 
 .pokemon-cost {
-  @include apply-typography("label-small");
+  @include apply-typography("label-sm");
   color: pdz-color(on-surface-variant);
   border-radius: var(--pdz-shape-sm);
   padding: 0 var(--pdz-space-xs);
@@ -228,7 +228,7 @@
 }
 
 .summary-text {
-  @include apply-typography("label-small");
+  @include apply-typography("label-sm");
   color: pdz-color(on-primary-container);
   margin: 0;
 }
@@ -279,7 +279,7 @@
 }
 
 .btn {
-  @include apply-typography("label-large");
+  @include apply-typography("label-lg");
   padding: var(--pdz-space-md) var(--pdz-space-lg);
   border: none;
   border-radius: var(--pdz-shape-md);

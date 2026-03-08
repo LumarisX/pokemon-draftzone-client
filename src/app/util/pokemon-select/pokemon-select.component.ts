@@ -41,7 +41,7 @@ import { DraftPokemon } from '../../interfaces/draft';
 import { DataService } from '../../services/data.service';
 
 @Component({
-  selector: 'pokemon-select',
+  selector: 'pdz-pokemon-select',
   imports: [
     CommonModule,
     MatFormFieldModule,

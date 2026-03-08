@@ -47,7 +47,7 @@
     color: pdz-color("on-primary-container");
     border: 1px solid pdz-color("primary-border");
     border-radius: var(--pdz-shape-small);
-    @include apply-typography(lebel-md);
+    @include apply-typography(label-md);
     cursor: pointer;
     transition: all 0.2s ease;
 

@@ -28,7 +28,7 @@ import { SpeedChart, Speedtier } from '../../matchup-interface';
 import { SpeedtierComponent } from './speedtier/speedtier.component';
 
 @Component({
-  selector: 'speedchart',
+  selector: 'pdz-speedchart',
   templateUrl: './speedchart.component.html',
   styleUrls: ['../../matchup.scss', './speedchart.component.scss'],
   imports: [
