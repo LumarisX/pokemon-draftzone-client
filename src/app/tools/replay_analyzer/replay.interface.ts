@@ -49,7 +49,7 @@ export type ReplayMon = {
   damageDealt: [number, number];
   damageTaken: [number, number];
   hpRestored: number;
-  status: 'brought' | 'used' | 'fainted';
+  status: 'brought' | 'survived' | 'fainted';
   fainted: boolean;
   brought: boolean;
 };
