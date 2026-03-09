@@ -1,24 +1,22 @@
-
 import {
   Component,
   HostListener,
   inject,
-  input,
   Input,
   OnDestroy,
   OnInit,
 } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatIcon } from '@angular/material/icon';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MarkdownComponent } from 'ngx-markdown';
-import { MatchupService } from '../../../../services/matchup.service';
 import {
-  Subject,
-  Subscription,
   debounceTime,
   distinctUntilChanged,
+  Subject,
+  Subscription,
 } from 'rxjs';
+import { MatchupService } from '../../../../services/matchup.service';
 
 @Component({
   selector: 'pdz-matchup-notes',
@@ -27,15 +25,16 @@ import {
     ReactiveFormsModule,
     MatSlideToggleModule,
     MatIcon,
-    MarkdownComponent
-],
+    MarkdownComponent,
+  ],
   templateUrl: './notes.component.html',
   styleUrls: ['../../matchup.scss', './notes.component.scss'],
 })
 export class MatchupNotesComponent implements OnInit, OnDestroy {
   @Input({ required: true })
   matchupId!: string;
-  notes: string = '';
+  @Input({ required: true })
+  notes!: string;
   @Input({ required: true })
   mode!: 'view-only' | 'editable';
   previewMode: boolean = false;
@@ -57,16 +56,6 @@ export class MatchupNotesComponent implements OnInit, OnDestroy {
           });
         this.lastSaved = value;
       });
-
-    this.matchupService.getNotes(this.matchupId).subscribe({
-      next: (response) => {
-        this.notes = response.notes;
-        this.lastSaved = response.notes;
-      },
-      error: (err) => {
-        console.error('Failed to fetch notes:', err);
-      },
-    });
   }
 
   onNotesChange(value: string) {

@@ -19,9 +19,12 @@ export class UploadService {
     fileName: string,
     contentType: string,
   ): Observable<{ url: string; key: string }> {
-    return this.apiService.get(`file/league-upload`, true, {
-      fileName,
-      contentType,
+    return this.apiService.get(`file/league-upload`, {
+      authenticated: true,
+      params: {
+        fileName,
+        contentType,
+      },
     });
   }
   uploadToS3(presignedUrl: string, file: File) {
@@ -42,10 +45,14 @@ export class UploadService {
     fileSize: number,
     fileType: string,
   ) {
-    return this.apiService.post('file/confirm-upload', true, {
-      fileKey,
-      fileSize,
-      fileType,
-    });
+    return this.apiService.post(
+      'file/confirm-upload',
+      {
+        fileKey,
+        fileSize,
+        fileType,
+      },
+      { authenticated: true },
+    );
   }
 }

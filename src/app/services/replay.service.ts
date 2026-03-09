@@ -15,6 +15,6 @@ export class ReplayService {
     return this.apiService.get<{
       analysis: ReplayAnalysis;
       warnings: ReplayWarning[];
-    }>(`replay/analyze/${encodeURIComponent(replayURI.trim())}`, false);
+    }>(`replay/analyze/${encodeURIComponent(replayURI.trim())}`);
   }
 }

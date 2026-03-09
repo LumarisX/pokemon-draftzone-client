@@ -11,17 +11,20 @@ export class LeagueAdsService {
   private apiService = inject(ApiService);
 
   getLeagueAds(): Observable<LeagueAd[]> {
-    return this.apiService.get([ROOTPATH, 'ad-list'], false);
+    return this.apiService.get([ROOTPATH, 'ad-list']);
   }
 
   newAd(data: Object) {
-    return this.apiService.post([ROOTPATH, 'ad-list/manage'], true, data, {
+    return this.apiService.post([ROOTPATH, 'ad-list/manage'], data, {
+      authenticated: true,
       invalidateCache: [[ROOTPATH, 'ad-list/manage']],
     });
   }
 
   getMyAds(): Observable<LeagueAd[]> {
-    return this.apiService.get([ROOTPATH, 'ad-list/manage'], true);
+    return this.apiService.get([ROOTPATH, 'ad-list/manage'], {
+      authenticated: true,
+    });
   }
 
   deleteAd(_id: string) {

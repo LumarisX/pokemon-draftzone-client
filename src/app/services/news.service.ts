@@ -40,6 +40,6 @@ export class NewsService {
   private api = inject(ApiService);
 
   getNews() {
-    return this.api.get<News[]>([newsPath], false);
+    return this.api.get<News[]>([newsPath]);
   }
 }

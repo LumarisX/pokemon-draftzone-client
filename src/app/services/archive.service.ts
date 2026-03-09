@@ -9,19 +9,25 @@ export class ArchiveService {
   private apiService = inject(ApiService);
 
   getDraftsList() {
-    return this.apiService.get<Archive[]>('archive/teams', true);
+    return this.apiService.get<Archive[]>('archive/teams', {
+      authenticated: true,
+    });
   }
 
   getDraft(teamName: string) {
-    return this.apiService.get(`archive/${teamName}`, true);
+    return this.apiService.get(`archive/${teamName}`, { authenticated: true });
   }
 
   getMatchup(matchupId: string, teamId: string) {
-    return this.apiService.get(`archive/${teamId}/${matchupId}`, true);
+    return this.apiService.get(`archive/${teamId}/${matchupId}`, {
+      authenticated: true,
+    });
   }
 
   getStats(teamName: string) {
-    return this.apiService.get(`archive/${teamName}/stats`, true);
+    return this.apiService.get(`archive/${teamName}/stats`, {
+      authenticated: true,
+    });
   }
 
   newDraft(draftData: Object) {
@@ -33,7 +39,9 @@ export class ArchiveService {
   }
 
   getMatchupList(teamName: string) {
-    return this.apiService.get(`archive/${teamName}/matchups`, true);
+    return this.apiService.get(`archive/${teamName}/matchups`, {
+      authenticated: true,
+    });
   }
 
   newMatchup(teamName: string, matchupData: Object) {
@@ -67,7 +75,9 @@ export class ArchiveService {
     );
   }
   getGameTime(matchupId: string, teamId: string) {
-    return this.apiService.get(`archive/${teamId}/${matchupId}/schedule`, true);
+    return this.apiService.get(`archive/${teamId}/${matchupId}/schedule`, {
+      authenticated: true,
+    });
   }
   scheduleMatchup(matchupId: string, teamId: string, timeData: Object) {
     return this.apiService.patch(

@@ -12,8 +12,12 @@
       [coverage]="matchupData.coveragechart"
       [typecharts]="matchupData.typechart"
     />
-    @if (matchupId) {
-      <pdz-matchup-notes [mode]="options.notes" [matchupId]="matchupId" />
+    @if (matchupData.notes !== undefined && matchupId) {
+      <pdz-matchup-notes
+        [notes]="matchupData.notes"
+        [mode]="options.notes"
+        [matchupId]="matchupId"
+      />
     }
   </div>
 }

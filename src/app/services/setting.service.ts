@@ -9,9 +9,10 @@ import { Observable } from 'rxjs';
 export class SettingApiService {
   private apiService = inject(ApiService);
 
-
   getSettings() {
-    return this.apiService.get<Settings | null>(`user/settings`, true);
+    return this.apiService.get<Settings | null>(`user/settings`, {
+      authenticated: true,
+    });
   }
 
   updateSettings(settingData: Partial<Settings>) {
