@@ -359,7 +359,7 @@ export class LeagueZoneService {
 
   getTeam(): Observable<League.LeagueTeam> {
     return this.apiService.get(
-      `${ROOTPATH}/tournaments/${this.tournamentKey()}/teams/${this.teamKey()}`,
+      `${ROOTPATH}/tournaments/${this.tournamentKey()}/divisions/${this.divisionKey()}/teams/${this.teamKey()}`,
       { authenticated: true },
     );
   }
