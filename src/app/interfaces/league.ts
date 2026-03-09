@@ -16,7 +16,7 @@ export type TournamentDetails = {
   ruleset: string;
   score: {
     wins: number;
-    loses: number;
+    losses: number;
     diff: number;
   };
 };

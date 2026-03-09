@@ -9,7 +9,7 @@ export type Archive = {
   ruleset: number;
   score: {
     wins: number;
-    loses: number;
+    losses: number;
     diff: string;
   };
   owner: string;

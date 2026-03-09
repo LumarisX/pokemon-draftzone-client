@@ -150,7 +150,7 @@ export namespace League {
     streak: number;
     direction?: number;
     wins: number;
-    loses: number;
+    losses: number;
     gameDiff: number;
     pokemonDiff: number;
     logo?: string;

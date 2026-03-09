@@ -10,7 +10,7 @@ export type Draft = {
   doc: string;
   score: {
     wins: number;
-    loses: number;
+    losses: number;
     diff: string;
   };
   owner: string;
