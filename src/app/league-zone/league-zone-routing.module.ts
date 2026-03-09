@@ -83,7 +83,7 @@ const routes: Routes = [
     component: LeagueScheduleComponent,
   },
   {
-    path: 'pdbl/tournaments/:tournamentKey/divisions/:divisionKey/schedule/:matchupId',
+    path: 'pdbl/tournaments/:tournamentKey/divisions/:divisionKey/schedule/matchups/:matchupId',
     component: MatchupOverviewComponent,
   },
   {
