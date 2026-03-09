@@ -74,4 +74,13 @@ export class LeagueManageService {
       { authenticated: true },
     );
   }
+
+  getSchedule() {
+    return this.apiService.get<League.Stage[]>(
+      `leagues/tournaments/${this.leagueZoneService.tournamentKey()}/manage/divisions/${this.leagueZoneService.divisionKey()}/schedule`,
+      {
+        authenticated: true,
+      },
+    );
+  }
 }

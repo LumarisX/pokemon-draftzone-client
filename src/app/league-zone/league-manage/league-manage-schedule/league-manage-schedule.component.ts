@@ -18,15 +18,14 @@ import {
 } from 'rxjs';
 import { getNameByPid, PokemonId } from '../../../data/namedex';
 import { IconComponent } from '../../../images/icon/icon.component';
+import { LoadingComponent } from '../../../images/loading/loading.component';
 import { LeagueManageService } from '../../../services/leagues/league-manage.service';
-import { LeagueZoneService } from '../../../services/leagues/league-zone.service';
 import { ReplayService } from '../../../services/replay.service';
 import {
   ReplayAnalysis,
   ReplayPlayer,
 } from '../../../tools/replay_analyzer/replay.interface';
 import { League } from '../../league.interface';
-import { LoadingComponent } from '../../../images/loading/loading.component';
 
 type PokemonStatsForm = FormGroup<{
   id: FormControl<PokemonId | ''>;
@@ -90,7 +89,6 @@ type MatchupPokemonSummary = {
   styleUrl: './league-manage-schedule.component.scss',
 })
 export class LeagueManageScheduleComponent {
-  private leagueService = inject(LeagueZoneService);
   private leagueManageService = inject(LeagueManageService);
   private replayService = inject(ReplayService);
   private route = inject(ActivatedRoute);
@@ -123,9 +121,7 @@ export class LeagueManageScheduleComponent {
           this.openMatchIndexState.clear();
           this.matchupSummaryCollapsedState.clear();
         }),
-        switchMap((divisionKey) =>
-          this.leagueService.getSchedule(undefined, divisionKey),
-        ),
+        switchMap(() => this.leagueManageService.getSchedule()),
         takeUntil(this.destroy$),
       )
       .subscribe({
