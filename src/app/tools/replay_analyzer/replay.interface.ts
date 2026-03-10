@@ -64,7 +64,7 @@ export type ReplayPokemon = {
   id: PokemonId;
   name: string;
   shiny?: true;
-  formes: PokemonId[];
+  formes?: PokemonId[];
   item?: string;
   kills: StatBreakdown;
   status: 'brought' | 'survived' | 'fainted';
