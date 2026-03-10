@@ -12,7 +12,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({
-  selector: 'swap-opponent',
+  selector: 'pdz-swap-opponent',
   imports: [CommonModule, MatIconModule, MatButtonModule],
   templateUrl: './swap-opponent.component.html',
   styleUrl: './swap-opponent.component.scss',

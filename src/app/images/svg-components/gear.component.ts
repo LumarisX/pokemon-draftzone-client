@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'gear-svg',
+  selector: 'pdz-gear-svg',
   standalone: true,
   template: `<svg
     xmlns="http://www.w3.org/2000/svg"

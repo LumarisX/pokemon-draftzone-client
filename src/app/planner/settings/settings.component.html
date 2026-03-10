@@ -1,12 +1,12 @@
 @if (draftFormGroup) {
   <div class="p-4 flex flex-col justify-between items-center">
     <div class="settings-container">
-      <format-select
+      <pdz-format-select
         [formControl]="draftFormGroup.controls.format"
-      ></format-select>
-      <ruleset-select
+      ></pdz-format-select>
+      <pdz-ruleset-select
         [formControl]="draftFormGroup.controls.ruleset"
-      ></ruleset-select>
+      ></pdz-ruleset-select>
     </div>
     <div class="settings-container">
       <mat-form-field>

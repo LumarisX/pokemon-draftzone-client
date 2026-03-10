@@ -8,6 +8,13 @@
   box-sizing: border-box;
 }
 
+.stat-caution {
+  padding: 0 var(--pdz-space-xs);
+  border-radius: 999px;
+  background-color: pdz-color(warning-container);
+  color: pdz-color(on-warning-container);
+}
+
 .opponent-score {
   width: 100%;
   overflow: auto;

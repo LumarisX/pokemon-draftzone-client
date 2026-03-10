@@ -13,22 +13,23 @@
         @for (pokemon of tradeLog.side1.pokemon; track pokemon.id) {
           <div class="trade-item">
             <div class="pokemon-info">
-              <div class="pokemon-tier">{{ pokemon.cost }}</div>
+              <div class="pokemon-tier primary">{{ pokemon.cost }}</div>
               <div class="sprite-wrapper small">
                 <pdz-sprite [pokemon]="pokemon" flipped></pdz-sprite>
               </div>
               <div class="pokemon-details">
+                @if (pokemon.tera) {
+                  <pdz-icon name="tera" [size]="16"></pdz-icon>
+                }
                 <div class="pokemon-name">{{ pokemon.name }}</div>
               </div>
             </div>
             <div
               class="trade-arrow-indicator"
-              [ngClass]="{
-                pickup: !tradeLog.side1.team,
-                drop: !tradeLog.side2.team,
-              }"
+              [class.pickup]="!tradeLog.side1.team"
+              [class.drop]="!tradeLog.side2.team"
             >
-              <mat-icon>arrow_forward</mat-icon>
+              <pdz-icon name="arrow_forward" [size]="20" [weight]="600" />
             </div>
           </div>
         } @empty {
@@ -36,27 +37,28 @@
         }
       </div>
       <div class="trade-separator">
-        <mat-icon>swap_horiz</mat-icon>
+        <pdz-icon name="swap_horiz" />
       </div>
       <div class="trade-column to-column">
         @for (pokemon of tradeLog.side2.pokemon; track pokemon.id) {
           <div class="trade-item">
             <div
               class="trade-arrow-indicator"
-              [ngClass]="{
-                pickup: !tradeLog.side2.team,
-                drop: !tradeLog.side1.team,
-              }"
+              [class.pickup]="!tradeLog.side2.team"
+              [class.drop]="!tradeLog.side1.team"
             >
-              <mat-icon>arrow_back</mat-icon>
+              <pdz-icon name="arrow_back" [size]="20" [weight]="600" />
             </div>
             <div class="pokemon-info">
-              <div class="pokemon-tier">{{ pokemon.cost }}</div>
+              <div class="pokemon-tier secondary">{{ pokemon.cost }}</div>
               <div class="sprite-wrapper small">
                 <pdz-sprite [pokemon]="pokemon"></pdz-sprite>
               </div>
-              <div class="pokemon-details">
+              <div class="pokemon-details pokemon-details--right">
                 <div class="pokemon-name">{{ pokemon.name }}</div>
+                @if (pokemon.tera) {
+                  <pdz-icon name="tera" [size]="16"></pdz-icon>
+                }
               </div>
             </div>
           </div>

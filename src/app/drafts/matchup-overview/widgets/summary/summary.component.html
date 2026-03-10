@@ -1,11 +1,11 @@
 <div class="widget-container" [class.alternate]="opponent">
   <div class="widget-header">
     <div class="widget-label">Draft Summary</div>
-    <swap-opponent [(ngModel)]="opponent"></swap-opponent>
+    <pdz-swap-opponent [(ngModel)]="opponent"></pdz-swap-opponent>
   </div>
   <div class="widget-body">
-    <summary-core
+    <pdz-summary-core
       [summary]="opponent ? summaries[1] : summaries[0]"
-    ></summary-core>
+    ></pdz-summary-core>
   </div>
 </div>

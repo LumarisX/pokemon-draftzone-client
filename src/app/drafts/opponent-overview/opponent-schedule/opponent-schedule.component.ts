@@ -1,4 +1,3 @@
-
 import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -18,7 +17,7 @@ dayjs.extend(duration);
 dayjs.extend(advancedFormat);
 
 @Component({
-  selector: 'opponent-schedule',
+  selector: 'pdz-opponent-schedule',
   standalone: true,
   templateUrl: './opponent-schedule.component.html',
   imports: [RouterModule, FormsModule, CopySVG, CheckSVG],

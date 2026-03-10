@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'z-svg',
+  selector: 'pdz-z-svg',
   standalone: true,
   template: `<svg
     viewBox="0 0 542 239"

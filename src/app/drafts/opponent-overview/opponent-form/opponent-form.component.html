@@ -13,10 +13,10 @@
       </div>
     </div>
     @if (oppParams) {
-      <opponent-form-core
+      <pdz-opponent-form-core
         [params]="oppParams"
         (formSubmitted)="saveOpponent($event)"
-      ></opponent-form-core>
+      ></pdz-opponent-form-core>
     } @else {
       <pdz-loading></pdz-loading>
     }

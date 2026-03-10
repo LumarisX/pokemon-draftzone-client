@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'close-svg',
+  selector: 'pdz-close-svg',
   standalone: true,
   imports: [],
   template: `<svg

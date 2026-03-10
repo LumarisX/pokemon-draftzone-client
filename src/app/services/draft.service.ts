@@ -30,34 +30,43 @@ export class DraftService {
     return this.apiService.get<{
       drafts: Draft[];
       tournaments: TournamentDetails[];
-    }>('draft/teams', true);
+    }>('draft/teams', { authenticated: true });
   }
 
   getDraft(teamName: string) {
-    return this.apiService.get<Draft>(`draft/${teamName}`, true);
+    return this.apiService.get<Draft>(`draft/${teamName}`, {
+      authenticated: true,
+    });
   }
 
   getMatchup(matchupId: string, teamId: string) {
-    return this.apiService.get<Matchup>(`draft/${teamId}/${matchupId}`, true);
+    return this.apiService.get<Matchup>(`draft/${teamId}/${matchupId}`, {
+      authenticated: true,
+    });
   }
 
   getOpponent(matchupId: string, teamId: string) {
     return this.apiService.get<Opponent>(
       `draft/${teamId}/${matchupId}/opponent`,
-      true,
+      { authenticated: true },
     );
   }
 
   getStats(teamName: string) {
-    return this.apiService.get<Stats>(`draft/${teamName}/stats`, true);
+    return this.apiService.get<Stats>(`draft/${teamName}/stats`, {
+      authenticated: true,
+    });
   }
 
   getArchiveStats(teamName: string) {
-    return this.apiService.get<Stats>(`archive/${teamName}/stats`, true);
+    return this.apiService.get<Stats>(`archive/${teamName}/stats`, {
+      authenticated: true,
+    });
   }
 
   newDraft(draftData: Object) {
-    return this.apiService.post(`draft/teams`, true, draftData, {
+    return this.apiService.post(`draft/teams`, draftData, {
+      authenticated: true,
       invalidateCache: ['draft/teams'],
     });
   }
@@ -69,18 +78,17 @@ export class DraftService {
   }
 
   getMatchupList(teamName: string) {
-    return this.apiService.get<Opponent[]>(`draft/${teamName}/matchups`, true);
+    return this.apiService.get<Opponent[]>(`draft/${teamName}/matchups`, {
+      authenticated: true,
+    });
   }
 
   newMatchup(teamName: string, matchupData: Object) {
-    return this.apiService.post(
-      `draft/${teamName}/matchups`,
-      true,
-      matchupData,
-      {
-        invalidateCache: ['draft/${teamName}/matchups'],
-      },
-    );
+    return this.apiService.post(`draft/${teamName}/matchups`, matchupData, {
+      authenticated: true,
+
+      invalidateCache: ['draft/${teamName}/matchups'],
+    });
   }
 
   editMatchup(matchupId: string, teamId: string, matchupData: Object) {
@@ -119,10 +127,9 @@ export class DraftService {
   }
   getGameTime(matchupId: string, teamId: string) {
     //TODO: remove any
-    return this.apiService.get<any>(
-      `draft/${teamId}/${matchupId}/schedule`,
-      true,
-    );
+    return this.apiService.get<any>(`draft/${teamId}/${matchupId}/schedule`, {
+      authenticated: true,
+    });
   }
   scheduleMatchup(matchupId: string, teamId: string, timeData: Object) {
     return this.apiService.patch(

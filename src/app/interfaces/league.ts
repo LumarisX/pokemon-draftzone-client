@@ -10,12 +10,13 @@ export type TournamentDetails = {
   leagueName: string;
   leagueKey: string;
   divisionKey: string;
+  teamId: string;
   draft: Pokemon[];
   format: string;
   ruleset: string;
   score: {
     wins: number;
-    loses: number;
+    losses: number;
     diff: number;
   };
 };

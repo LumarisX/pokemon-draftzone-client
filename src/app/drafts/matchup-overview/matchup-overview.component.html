@@ -1,7 +1,7 @@
 @if (matchupId && matchupData) {
   <div class="matchup-main">
     <div class="matchup-header">
-      <button [routerLink]="['/', draftPath, tournamentId]">Back</button>
+      <button routerLink="../../">Back</button>
       <div class="details-spacer">
         <div class="details-container">
           @if (matchupData) {
@@ -192,7 +192,10 @@
     </div>
 
     <div class="matchup-body">
-      <matchup [matchupId]="matchupId" [matchupData]="matchupData"></matchup>
+      <pdz-matchup
+        [matchupId]="matchupId"
+        [matchupData]="matchupData"
+      ></pdz-matchup>
     </div>
   </div>
   <div

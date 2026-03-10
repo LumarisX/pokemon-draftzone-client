@@ -1,4 +1,3 @@
-
 import { Component, Input, OnInit, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -13,7 +12,7 @@ import { RulesetSelectComponent } from '../../util/ruleset-select/ruleset.compon
 import { FormatSelectComponent } from '../../util/format-select/format.component';
 
 @Component({
-  selector: 'planner-settings',
+  selector: 'pdz-planner-settings',
   standalone: true,
   styleUrl: './settings.component.scss',
   templateUrl: './settings.component.html',
@@ -26,8 +25,8 @@ import { FormatSelectComponent } from '../../util/format-select/format.component
     ReactiveFormsModule,
     RouterModule,
     RulesetSelectComponent,
-    FormatSelectComponent
-],
+    FormatSelectComponent,
+  ],
 })
 export class PlannerSettingsComponent implements OnInit {
   private dataService = inject(DataService);

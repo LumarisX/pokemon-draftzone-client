@@ -10,14 +10,15 @@ import {
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { Meta } from '@angular/platform-browser';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
+import { ErrorService } from '../../error/error.service';
 import { IconComponent } from '../../images/icon/icon.component';
 import { LoadingComponent } from '../../images/loading/loading.component';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { DraftPokemon } from '../../interfaces/draft';
-import { MatchupService } from '../../services/matchup.service';
+import { matchupPath, MatchupService } from '../../services/matchup.service';
 import { TeambuilderService } from '../../services/teambuilder.service';
 import { PokemonBuilder } from './widgets/teambuilder/pokemon-builder/pokemon-builder.model';
 import { DraftOverviewPath } from '../draft-overview/draft-overview-routing.module';
@@ -28,7 +29,7 @@ import { MatchupTeambuilderComponent } from './widgets/teambuilder/teambuilder.c
 dayjs.extend(duration);
 
 @Component({
-  selector: 'matchup-overview',
+  selector: 'pdz-matchup-overview',
   standalone: true,
   templateUrl: 'matchup-overview.component.html',
   styleUrls: ['./matchup.scss', './matchup-overview.component.scss'],
@@ -46,7 +47,9 @@ dayjs.extend(duration);
 })
 export class MatchupOverviewComponent implements OnInit {
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
   private matchupService = inject(MatchupService);
+  private errorService = inject(ErrorService);
   private meta = inject(Meta);
 
   matchupData?: MatchupData;
@@ -102,37 +105,47 @@ export class MatchupOverviewComponent implements OnInit {
       this.matchupId = params['matchupId'];
       this.shareUrl = 'https://pokemondraftzone.com/matchup/' + this.matchupId;
       this.tournamentId = params['teamId'];
-      this.matchupService.getMatchup(this.matchupId!).subscribe((data) => {
-        this.matchupData = <MatchupData>data;
-        if ('gameTime' in this.matchupData) {
-          let gameTime = dayjs(this.matchupData.details.gameTime);
-          if (gameTime.isValid()) {
-            const currentTime = dayjs();
-            if (!gameTime.isBefore(currentTime)) {
-              const duration = dayjs.duration(gameTime.diff(currentTime));
-              const days = Math.floor(Math.abs(duration.asDays()));
-              const hours = Math.abs(duration.hours());
-              this.timeString =
-                days > 0 ? `${days} days ${hours} hours` : `${hours} hours`;
-            } else {
-              this.timeString = 'Already past';
+      this.matchupService.getMatchup(this.matchupId!).subscribe({
+        next: (data) => {
+          this.matchupData = <MatchupData>data;
+          if ('gameTime' in this.matchupData) {
+            let gameTime = dayjs(this.matchupData.details.gameTime);
+            if (gameTime.isValid()) {
+              const currentTime = dayjs();
+              if (!gameTime.isBefore(currentTime)) {
+                const duration = dayjs.duration(gameTime.diff(currentTime));
+                const days = Math.floor(Math.abs(duration.asDays()));
+                const hours = Math.abs(duration.hours());
+                this.timeString =
+                  days > 0 ? `${days} days ${hours} hours` : `${hours} hours`;
+              } else {
+                this.timeString = 'Already past';
+              }
             }
           }
-        }
-        if (this.matchupData) {
-          this.meta.updateTag({
-            name: 'og:title',
-            content: `${this.matchupData.details.leagueName} ${this.matchupData.details.stage} | ${this.matchupData.summary[0].teamName} vs ${this.matchupData.summary[1].teamName}`,
-          });
-          this.meta.updateTag({
-            name: 'og:description',
-            content: `View the matchup between ${this.matchupData.summary[0].teamName} and ${this.matchupData.summary[1].teamName}.`,
-          });
-          this.meta.updateTag({
-            name: 'og:url',
-            content: this.shareUrl ?? '',
-          });
-        }
+          if (this.matchupData) {
+            this.meta.updateTag({
+              name: 'og:title',
+              content: `${this.matchupData.details.leagueName} ${this.matchupData.details.stage} | ${this.matchupData.summary[0].teamName} vs ${this.matchupData.summary[1].teamName}`,
+            });
+            this.meta.updateTag({
+              name: 'og:description',
+              content: `View the matchup between ${this.matchupData.summary[0].teamName} and ${this.matchupData.summary[1].teamName}.`,
+            });
+            this.meta.updateTag({
+              name: 'og:url',
+              content: this.shareUrl ?? '',
+            });
+          }
+        },
+        error: (error) => {
+          if (error?.status === 401 || error?.status === 403) {
+            this.router.navigate(['/' + matchupPath, this.matchupId]);
+            return;
+          }
+
+          this.errorService.reportError(error);
+        },
       });
     });
     this.loadTeam();

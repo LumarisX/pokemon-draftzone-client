@@ -9,7 +9,7 @@ import { DraftOverviewPath } from '../draft-overview-routing.module';
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({
-  selector: 'draft-archives',
+  selector: 'pdz-draft-archives',
   templateUrl: './draft-archives.component.html',
   styleUrl: './draft-archives.component.scss',
 
@@ -74,14 +74,14 @@ export class DraftArchiveComponent {
   }
 
   scoreString(archive: Archive) {
-    if (archive.score) return `${archive.score.wins} - ${archive.score.loses}`;
+    if (archive.score) return `${archive.score.wins} - ${archive.score.losses}`;
     return `Unscored`;
   }
 
   scoreClass(archive: Archive) {
     if (!archive.score) return 'pdz-background-neut';
-    if (archive.score.wins > archive.score.loses) return 'pdz-background-pos';
-    if (archive.score.wins < archive.score.loses) return 'pdz-background-neg';
+    if (archive.score.wins > archive.score.losses) return 'pdz-background-pos';
+    if (archive.score.wins < archive.score.losses) return 'pdz-background-neg';
     return 'pdz-background-neut';
   }
 }

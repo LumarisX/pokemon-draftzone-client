@@ -1,19 +1,23 @@
 @if (matchupData) {
   <div class="matchup-container">
-    <overview [teams]="matchupData.summary" />
+    <pdz-overview [teams]="matchupData.summary" />
     <pdz-summary [summaries]="matchupData.summary" style="list-style: none" />
-    <speedchart
+    <pdz-speedchart
       [speedchart]="matchupData.speedchart"
       [level]="matchupData.details.level"
     />
     <pdz-typechart [typecharts]="matchupData.typechart" />
-    <movechart [teams]="matchupData.movechart" />
-    <coveragechart
+    <pdz-movechart [teams]="matchupData.movechart" />
+    <pdz-coveragechart
       [coverage]="matchupData.coveragechart"
       [typecharts]="matchupData.typechart"
     />
-    @if (matchupId) {
-      <pdz-matchup-notes [mode]="options.notes" [matchupId]="matchupId" />
+    @if (matchupData.notes !== undefined && matchupId) {
+      <pdz-matchup-notes
+        [notes]="matchupData.notes"
+        [mode]="options.notes"
+        [matchupId]="matchupId"
+      />
     }
   </div>
 }

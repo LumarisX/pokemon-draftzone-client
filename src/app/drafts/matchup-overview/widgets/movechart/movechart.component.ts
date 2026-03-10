@@ -1,4 +1,3 @@
-
 import { Component, Input } from '@angular/core';
 import { MoveCoreComponent } from '../../../../util/matchup/movechart-core/moves.component';
 import { MoveChart } from '../../matchup-interface';
@@ -7,7 +6,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SwapOpponentButton } from '../../../../util/buttons/swap-opponent/swap-opponent.component';
 
 @Component({
-  selector: 'movechart',
+  selector: 'pdz-movechart',
   templateUrl: './movechart.component.html',
   styleUrls: ['../../matchup.scss', './movechart.component.scss'],
   imports: [
@@ -15,8 +14,8 @@ import { SwapOpponentButton } from '../../../../util/buttons/swap-opponent/swap-
     ReactiveFormsModule,
     MatSlideToggleModule,
     MoveCoreComponent,
-    SwapOpponentButton
-],
+    SwapOpponentButton,
+  ],
 })
 export class MovechartComponent {
   @Input() teams!: MoveChart[];

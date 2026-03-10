@@ -19,27 +19,34 @@ export class CoachStandingsComponent {
   }
 
   getGradientStyle(index: number, total: number): { [klass: string]: any } {
-    const startColor = [144, 238, 144]; // lightgreen
-    const midColor = [255, 255, 255]; // white
-    const endColor = [240, 128, 128]; // lightcoral
     const midpointIndex = this.standingData.cutoff;
-    let from: number[], to: number[], ratio: number;
+    let fromColor: string;
+    let toColor: string;
+    let toPercent: number;
 
     if (index <= midpointIndex) {
-      from = startColor;
-      to = midColor;
-      ratio = midpointIndex > 0 ? index / midpointIndex : 0;
+      fromColor = 'var(--pdz-color-positive)';
+      toColor = 'var(--pdz-color-surface)';
+      toPercent = midpointIndex > 0 ? (index / midpointIndex) * 100 : 0;
     } else {
-      from = midColor;
-      to = endColor;
-      ratio = (index - midpointIndex) / (total - 1 - midpointIndex);
+      const denominator = Math.max(total - 1 - midpointIndex, 1);
+      fromColor = 'var(--pdz-color-surface)';
+      toColor = 'var(--pdz-color-negative)';
+      toPercent = ((index - midpointIndex) / denominator) * 100;
     }
 
-    const r = Math.round(from[0] + (to[0] - from[0]) * ratio);
-    const g = Math.round(from[1] + (to[1] - from[1]) * ratio);
-    const b = Math.round(from[2] + (to[2] - from[2]) * ratio);
+    const clampedToPercent = Math.max(0, Math.min(100, Math.round(toPercent)));
+    const fromPercent = 100 - clampedToPercent;
 
-    return { 'background-color': `rgb(${r}, ${g}, ${b})` };
+    return {
+      'background-color': `color-mix(in srgb, ${fromColor} ${fromPercent}%, ${toColor} ${clampedToPercent}%)`,
+    };
+  }
+
+  getDiffValue(team: League.TeamStandingData): number {
+    return this.standingData.diffMode === 'game'
+      ? team.gameDiff
+      : team.pokemonDiff;
   }
 
   getLogoUrl = getLogoUrl;

@@ -11,7 +11,7 @@ import { DraftService, PokemonStat } from '../../../services/draft.service';
 import { DraftOverviewPath } from '../draft-overview-routing.module';
 
 @Component({
-  selector: 'archive-stats',
+  selector: 'pdz-archive-stats',
   templateUrl: './archive-stats.component.html',
   styleUrl: './archive-stats.component.scss',
   imports: [

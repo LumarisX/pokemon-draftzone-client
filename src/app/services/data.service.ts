@@ -47,7 +47,7 @@ export class DataService {
     if (this.cache.formats) {
       return of(this.cache.formats);
     } else {
-      return this.apiService.get<string[]>('data/formats', false).pipe(
+      return this.apiService.get<string[]>('data/formats').pipe(
         tap((formats: string[]) => {
           this.cache.formats = formats;
         }),
@@ -58,7 +58,7 @@ export class DataService {
   getFormatsGrouped(): Observable<
     [string, { name: string; id: string; desc?: string }[]][]
   > {
-    return this.apiService.get('data/formatsgrouped', false);
+    return this.apiService.get('data/formatsgrouped');
   }
 
   //replace with ruleset grouped eventually
@@ -66,7 +66,7 @@ export class DataService {
     if (this.cache.rulesets) {
       return of(this.cache.rulesets);
     } else {
-      return this.apiService.get<string[]>('data/rulesets', false).pipe(
+      return this.apiService.get<string[]>('data/rulesets').pipe(
         tap((rulesets: string[]) => {
           this.cache.rulesets = rulesets;
         }),
@@ -77,7 +77,7 @@ export class DataService {
   getRulesetsGrouped(): Observable<
     [string, { name: string; id: string; desc?: string }[]][]
   > {
-    return this.apiService.get('data/rulesetsgrouped', false);
+    return this.apiService.get('data/rulesetsgrouped');
   }
 
   getRandom(
@@ -94,11 +94,13 @@ export class DataService {
       level: string;
     }>[]
   > {
-    return this.apiService.get('data/random', false, {
-      count: count.toFixed(0),
-      ruleset,
-      format,
-      ...options,
+    return this.apiService.get('data/random', {
+      params: {
+        count: count.toFixed(0),
+        ruleset,
+        format,
+        ...options,
+      },
     });
   }
 
@@ -108,7 +110,7 @@ export class DataService {
       return of(this.cache.pokemonList[ruleset]);
     } else {
       return this.apiService
-        .get<OldPokemon[]>('data/listpokemon', false, { ruleset: ruleset })
+        .get<OldPokemon[]>('data/listpokemon', { params: { ruleset: ruleset } })
         .pipe(
           tap((list: OldPokemon[]) => {
             this.cache.pokemonList[ruleset] = list;
@@ -121,18 +123,14 @@ export class DataService {
     let encodedQuery = encodeURIComponent(query.join(''));
     let params: { [key: string]: string } = { query: encodedQuery };
     if (ruleset) params['ruleset'] = ruleset;
-    return this.apiService.get<ResultData[]>(
-      'data/advancesearch',
-      false,
-      params,
-    );
+    return this.apiService.get<ResultData[]>('data/advancesearch', { params });
   }
 
   getFormes(ruleset: string, id: string): Observable<OldPokemon[]> {
     if (this.cache.formes[id]) return of(this.cache.formes[id]);
     else {
       return this.apiService
-        .get<OldPokemon[]>(`data/${ruleset}/${id}/formes`, false)
+        .get<OldPokemon[]>(`data/${ruleset}/${id}/formes`)
         .pipe(
           tap((list: OldPokemon[]) => {
             this.cache.formes[id] = list;

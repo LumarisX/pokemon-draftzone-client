@@ -20,6 +20,7 @@ import { LeagueTierListComponent } from './league-tier-list/league-tier-list.com
 import { LeagueTradesComponent } from './league-trades/league-trades.component';
 import { TournamentLandingComponent } from './tournaments/tournament-landing/tournament-landing.component';
 import { LeagueLandingComponent } from './league-landing/league-landing.component';
+import { MatchupOverviewComponent } from '../drafts/matchup-overview/matchup-overview.component';
 
 export const LeagueZonePath = 'leagues';
 const routes: Routes = [
@@ -82,6 +83,10 @@ const routes: Routes = [
     component: LeagueScheduleComponent,
   },
   {
+    path: 'pdbl/tournaments/:tournamentKey/divisions/:divisionKey/schedule/matchups/:matchupId',
+    component: MatchupOverviewComponent,
+  },
+  {
     path: 'pdbl/tournaments/:tournamentKey/divisions/:divisionKey/standings',
     component: LeagueStandingsComponent,
   },
@@ -101,6 +106,7 @@ const routes: Routes = [
     path: 'pdbl/tournaments/:tournamentKey/divisions/:divisionKey/teams/:teamKey',
     component: LeagueTeamComponent,
   },
+
   {
     path: 'pdbl/tournaments/:tournamentKey/divisions/:divisionKey/tier-list',
     component: LeagueTierListComponent,

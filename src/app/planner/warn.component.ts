@@ -10,7 +10,7 @@ import {
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({
-  selector: 'dialog-animations-example-dialog',
+  selector: 'pdz-dialog-animations-example-dialog',
   template: `<h2 mat-dialog-title>Planner limit reached</h2>
     <mat-dialog-content>
       Please delete a draft plan before continuing.

@@ -32,7 +32,7 @@ interface ExtendedNode<T> extends d3.HierarchyRectangularNode<T> {
 }
 
 @Component({
-  selector: 'coverage-chart',
+  selector: 'pdz-coverage-chart',
   standalone: true,
   template: '<svg></svg>',
   imports: [],

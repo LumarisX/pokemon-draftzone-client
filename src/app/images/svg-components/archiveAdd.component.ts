@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'archive-add-svg',
+  selector: 'pdz-archive-add-svg',
   standalone: true,
   imports: [],
   template: `<svg

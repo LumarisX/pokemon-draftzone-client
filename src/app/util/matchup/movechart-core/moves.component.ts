@@ -12,7 +12,7 @@ import { SpriteComponent } from '../../../images/sprite/sprite.component';
 import { typeColor } from '../../styling';
 
 @Component({
-  selector: 'moves-core',
+  selector: 'pdz-moves-core',
   templateUrl: './moves.component.html',
   styleUrl: './moves.component.scss',
   imports: [
@@ -22,8 +22,8 @@ import { typeColor } from '../../styling';
     MatIconModule,
     MatButtonModule,
     MatTooltipModule,
-    SpriteComponent
-],
+    SpriteComponent,
+  ],
 })
 export class MoveCoreComponent {
   _movechart: MoveChart = [];

@@ -1,5 +1,6 @@
 export type Environment = {
   production: boolean;
+  serviceWorkerEnabled?: boolean;
   apiUrl: string;
   tls?: boolean;
   bucketUrl: string;

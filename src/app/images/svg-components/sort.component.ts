@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'sort-down-svg',
+  selector: 'pdz-sort-down-svg',
   standalone: true,
   template: ` <svg
     viewBox="0 0 24 24"

@@ -19,6 +19,12 @@ import {
 import { environment } from '../../environments/environment';
 import { AuthService } from './auth0.service';
 import { ErrorService } from '../error/error.service';
+
+interface ErrorHandlingOptions {
+  suppressErrorReporting?: boolean;
+  suppressStatuses?: number[];
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -46,35 +52,41 @@ export class ApiService {
 
   get<T>(
     path: string | string[],
-    authenticated: boolean,
-    params:
-      | HttpParams
-      | {
-          [param: string]:
-            | string
-            | number
-            | boolean
-            | ReadonlyArray<string | number | boolean>;
-        } = {},
-    additionalHeaders: { [key: string]: string } = {},
+    options: {
+      authenticated?: boolean;
+      params?:
+        | HttpParams
+        | {
+            [param: string]:
+              | string
+              | number
+              | boolean
+              | ReadonlyArray<string | number | boolean>;
+          };
+      additionalHeaders?: { [key: string]: string };
+      errorHandlingOptions?: ErrorHandlingOptions;
+    } = {},
   ): Observable<T> {
     let headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      ...additionalHeaders,
+      ...options.additionalHeaders,
     });
     const apiUrl = Array.isArray(path) ? path.join('/') : path;
-    const key = apiUrl + JSON.stringify(params);
+    const key = apiUrl + JSON.stringify(options.params);
     if (this.pendingRequests.has(key)) return this.pendingRequests.get(key)!;
     const request$ = (
-      authenticated
+      options.authenticated
         ? this.authenticatedRequest<T>('GET', apiUrl, {
-            params,
-            additionalHeaders,
+            params: options.params,
+            additionalHeaders: options.additionalHeaders,
           })
-        : this.http.get<T>(`${this.serverUrl}/${apiUrl}`, { headers, params })
+        : this.http.get<T>(`${this.serverUrl}/${apiUrl}`, {
+            headers,
+            params: options.params,
+          })
     ).pipe(
       shareReplay({ bufferSize: 1, refCount: true }),
-      this.handleError(),
+      this.handleError(options.errorHandlingOptions),
       finalize(() => {
         this.pendingRequests.delete(key);
       }),
@@ -85,13 +97,15 @@ export class ApiService {
 
   post<T>(
     path: string | string[],
-    authenticated: boolean,
     data: Object,
-    options?: { invalidateCache?: (string | string[])[] },
+    options: {
+      authenticated?: boolean;
+      invalidateCache?: (string | string[])[];
+    } = {},
   ): Observable<T> {
     const apiUrl = Array.isArray(path) ? path.join('/') : path;
     const request$ = (
-      authenticated
+      options.authenticated
         ? this.authenticatedRequest<T>('POST', apiUrl, { data })
         : this.http.post<T>(`${this.serverUrl}/${apiUrl}`, data, {
             headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
@@ -108,7 +122,7 @@ export class ApiService {
 
   patch<T>(
     path: string | string[],
-    data: any,
+    data: Object,
     options?: { invalidateCache?: (string | string[])[] },
   ): Observable<T> {
     const apiUrl = Array.isArray(path) ? path.join('/') : path;
@@ -139,9 +153,18 @@ export class ApiService {
     return request$;
   }
 
-  private handleError<T>(): OperatorFunction<T, T> {
+  private handleError<T>(
+    options: ErrorHandlingOptions = {},
+  ): OperatorFunction<T, T> {
     return catchError((error: HttpErrorResponse) => {
-      this.errorService.reportError(error);
+      const shouldSuppress =
+        options.suppressErrorReporting ||
+        options.suppressStatuses?.includes(error.status);
+
+      if (!shouldSuppress) {
+        this.errorService.reportError(error);
+      }
+
       return throwError(() => error);
     });
   }

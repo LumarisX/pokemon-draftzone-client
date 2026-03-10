@@ -1,7 +1,8 @@
 import { Injectable, inject } from '@angular/core';
+import { TierPokemonAddon } from '../../interfaces/tier-pokemon.interface';
+import { League } from '../../league-zone/league.interface';
 import { ApiService } from '../api.service';
 import { LeagueZoneService } from './league-zone.service';
-import { League } from '../../league-zone/league.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -31,8 +32,8 @@ export class LeagueManageService {
   ) {
     return this.apiService.post(
       `leagues/tournaments/${this.leagueZoneService.tournamentKey()}/manage/divisions/${this.leagueZoneService.divisionKey()}/schedule/${matchupId}`,
-      true,
       payload,
+      { authenticated: true },
     );
   }
 
@@ -47,31 +48,58 @@ export class LeagueManageService {
   ) {
     return this.apiService.post(
       `leagues/tournaments/${tournamentId}/manage/divisions/${this.leagueZoneService.divisionKey()}/setdraft`,
-      true,
       { pick: { pokemonId: pick.pokemonId }, teamId: pick.teamId },
+      { authenticated: true },
     );
   }
 
   canManage(tournamentKey: string) {
     return this.apiService.get<string[]>(
       `leagues/tournaments/${tournamentKey}/roles`,
-      true,
+      { authenticated: true },
     );
   }
 
   setDivisionState(state: string) {
     return this.apiService.post(
       `leagues/tournaments/${this.leagueZoneService.tournamentKey()}/manage/divisions/${this.leagueZoneService.divisionKey()}/state`,
-      true,
       { state },
+      { authenticated: true },
     );
   }
 
   skipCurrentPick() {
     return this.apiService.post(
       `leagues/tournaments/${this.leagueZoneService.tournamentKey()}/manage/divisions/${this.leagueZoneService.divisionKey()}/skip`,
-      true,
       '',
+      { authenticated: true },
+    );
+  }
+
+  getSchedule() {
+    return this.apiService.get<League.Stage[]>(
+      `leagues/tournaments/${this.leagueZoneService.tournamentKey()}/manage/divisions/${this.leagueZoneService.divisionKey()}/schedule`,
+      {
+        authenticated: true,
+      },
+    );
+  }
+
+  getPokemonList() {
+    return this.apiService.get<{
+      groups?: {
+        roster: {
+          id: string;
+          name: string;
+          cost: number;
+          addons?: TierPokemonAddon[];
+          setAddons?: string[];
+        }[];
+        team?: { id: string; name: string; coachName: string };
+      }[];
+    }>(
+      `leagues/tournaments/${this.leagueZoneService.tournamentKey()}/manage/divisions/${this.leagueZoneService.divisionKey()}/pokemon-list`,
+      { authenticated: true },
     );
   }
 }

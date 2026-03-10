@@ -19,7 +19,7 @@ import { DraftPokemon } from '../../../interfaces/draft';
 import { SelectSearchComponent } from '../../dropdowns/select/select-search.component';
 
 @Component({
-  selector: 'pokemon-form',
+  selector: 'pdz-pokemon-form',
   standalone: true,
   templateUrl: './pokemon-form.component.html',
   imports: [

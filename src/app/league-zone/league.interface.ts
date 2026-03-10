@@ -46,6 +46,7 @@ export namespace League {
   export type TieredPokemon = Pokemon & {
     tier: string;
     cost: number;
+    tera?: boolean;
   };
 
   export type MatchPokemonStats = {
@@ -54,7 +55,7 @@ export namespace League {
       indirect?: number;
       teammate?: number;
     };
-    status: 'brought' | 'used' | 'fainted';
+    status: 'brought' | 'survived' | 'fainted';
   };
 
   export type MatchTeamStats = {
@@ -149,14 +150,16 @@ export namespace League {
     streak: number;
     direction?: number;
     wins: number;
-    loses: number;
-    diff: number;
+    losses: number;
+    gameDiff: number;
+    pokemonDiff: number;
     logo?: string;
   };
 
   export type CoachStandingData = {
     cutoff: number;
     weeks: number;
+    diffMode: 'game' | 'pokemon';
     teams: TeamStandingData[];
   };
 

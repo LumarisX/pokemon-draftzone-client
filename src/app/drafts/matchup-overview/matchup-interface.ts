@@ -184,4 +184,5 @@ export type MatchupData = {
     ruleset: string;
     level: number;
   };
+  notes?: string;
 };

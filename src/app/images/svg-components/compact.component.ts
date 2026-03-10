@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 
 @Component({
-  selector: 'compact-svg',
+  selector: 'pdz-compact-svg',
   standalone: true,
   imports: [CommonModule],
   template: ` <svg

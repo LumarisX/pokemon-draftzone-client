@@ -11,7 +11,7 @@ import { SpriteComponent } from '../../../images/sprite/sprite.component';
 import { typeColor } from '../../styling';
 
 @Component({
-  selector: 'summary-core',
+  selector: 'pdz-summary-core',
   standalone: true,
   templateUrl: './summary-core.component.html',
   styleUrl: './summary-core.component.scss',

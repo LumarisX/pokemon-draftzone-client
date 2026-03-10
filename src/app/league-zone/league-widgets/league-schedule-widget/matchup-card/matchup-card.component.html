@@ -60,7 +60,17 @@
       } @else {
         <button
           class="matchup-card__matchup-button"
-          [routerLink]="'/matchup/' + matchup.id"
+          [routerLink]="[
+            '/leagues',
+            'pdbl',
+            'tournaments',
+            leagueService.tournamentKey(),
+            'divisions',
+            leagueService.divisionKey(),
+            'schedule',
+            'matchups',
+            matchup.id,
+          ]"
           (click)="onReplayClick($event)"
         >
           Matchup
@@ -142,14 +152,20 @@
           ) {
             <div
               class="matchup-card__pokemon-slot"
-              [class.matchup-card__pokemon-slot--used]="
-                pokemon.status === 'used'
+              [class.matchup-card__pokemon-slot--survived]="
+                pokemon.status === 'survived'
               "
               [class.matchup-card__pokemon-slot--fainted]="
                 pokemon.status === 'fainted'
               "
             >
               <pdz-sprite [pokemon]="pokemon" flipped></pdz-sprite>
+              <span class="matchup-card__pokemon-kills">
+                <span class="matchup-card__pokemon-kills-value">{{
+                  pokemon.kills
+                }}</span>
+                <span class="matchup-card__pokemon-kills-label">Kills</span>
+              </span>
             </div>
           }
         </div>
@@ -199,14 +215,20 @@
           ) {
             <div
               class="matchup-card__pokemon-slot"
-              [class.matchup-card__pokemon-slot--used]="
-                pokemon.status === 'used'
+              [class.matchup-card__pokemon-slot--survived]="
+                pokemon.status === 'survived'
               "
               [class.matchup-card__pokemon-slot--fainted]="
                 pokemon.status === 'fainted'
               "
             >
               <pdz-sprite [pokemon]="pokemon"></pdz-sprite>
+              <span class="matchup-card__pokemon-kills">
+                <span class="matchup-card__pokemon-kills-value">{{
+                  pokemon.kills
+                }}</span>
+                <span class="matchup-card__pokemon-kills-label">Kills</span>
+              </span>
             </div>
           }
         </div>

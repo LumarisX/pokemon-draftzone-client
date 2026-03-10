@@ -40,12 +40,12 @@
       <ng-template matStepLabel>Team</ng-template>
       <ng-template matStepContent>
         <div class="team-container">
-          <team-form
+          <pdz-team-form
             [ruleset]="ruleset ?? 'Gen9 NatDex'"
             [pokemonList$]="pokemonList$"
             [teamArray]="opponentForm.controls.team"
             (isImporting)="isImporting = $event"
-          ></team-form>
+          ></pdz-team-form>
         </div>
 
         <div class="button-bar">

@@ -3,11 +3,11 @@ import { Location } from '@angular/common';
 import {
   Component,
   EventEmitter,
+  inject,
   Input,
   OnDestroy,
   OnInit,
   Output,
-  inject,
 } from '@angular/core';
 import {
   AbstractControl,
@@ -25,6 +25,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatStepperModule } from '@angular/material/stepper';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { BehaviorSubject, filter, Subject, takeUntil } from 'rxjs';
+import { getNameByPid } from '../../../data/namedex';
 import { DraftPokemon } from '../../../interfaces/draft';
 import { DataService } from '../../../services/data.service';
 import { FormatSelectComponent } from '../../../util/format-select/format.component';
@@ -33,11 +34,9 @@ import {
   TeamFormComponent,
 } from '../../../util/forms/team-form/team-form.component';
 import { RulesetSelectComponent } from '../../../util/ruleset-select/ruleset.component';
-import { stringify } from 'postcss';
-import { getNameByPid } from '../../../data/namedex';
 
 @Component({
-  selector: 'quick-matchup-form',
+  selector: 'pdz-quick-matchup-form',
   standalone: true,
   imports: [
     RouterModule,

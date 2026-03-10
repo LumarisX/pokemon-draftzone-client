@@ -3,21 +3,56 @@
     <div class="standing-header-title">Pokemon Standings</div>
   </div>
   <div class="standing-table-wrapper">
-    <table
-      matSort
-      (matSortChange)="sortData($event)"
-      matSortDirection="asc"
-      matSortActive="diff"
-    >
+    <table>
       <thead>
         <tr>
           <th>Rank</th>
           <th>Pokemon</th>
           <th>Team</th>
-          <th mat-sort-header="brought">Brought</th>
-          <th mat-sort-header="kills">Kills</th>
-          <th mat-sort-header="deaths">Deaths</th>
-          <th mat-sort-header="diff">K/D</th>
+          <th
+            class="sortable-header"
+            [class.is-sorted]="activeSort === 'brought'"
+            [class.is-reversed]="activeSort === 'brought' && !isSortDescending"
+            tabindex="0"
+            (click)="sortData('brought')"
+            (keydown.enter)="sortData('brought')"
+            (keydown.space)="sortData('brought'); $event.preventDefault()"
+          >
+            Brought
+          </th>
+          <th
+            class="sortable-header"
+            [class.is-sorted]="activeSort === 'kills'"
+            [class.is-reversed]="activeSort === 'kills' && !isSortDescending"
+            tabindex="0"
+            (click)="sortData('kills')"
+            (keydown.enter)="sortData('kills')"
+            (keydown.space)="sortData('kills'); $event.preventDefault()"
+          >
+            Kills
+          </th>
+          <th
+            class="sortable-header"
+            [class.is-sorted]="activeSort === 'deaths'"
+            [class.is-reversed]="activeSort === 'deaths' && !isSortDescending"
+            tabindex="0"
+            (click)="sortData('deaths')"
+            (keydown.enter)="sortData('deaths')"
+            (keydown.space)="sortData('deaths'); $event.preventDefault()"
+          >
+            Deaths
+          </th>
+          <th
+            class="sortable-header"
+            [class.is-sorted]="activeSort === 'diff'"
+            [class.is-reversed]="activeSort === 'diff' && !isSortDescending"
+            tabindex="0"
+            (click)="sortData('diff')"
+            (keydown.enter)="sortData('diff')"
+            (keydown.space)="sortData('diff'); $event.preventDefault()"
+          >
+            K/D
+          </th>
         </tr>
       </thead>
       <tbody>
@@ -56,26 +91,38 @@
             </td>
             <td>
               <div class="record-cell">
-                {{ pokemon.record.brought }}
+                <div class="record-box">{{ pokemon.record.brought }}</div>
               </div>
             </td>
             <td>
               <div class="record-cell">
-                {{ pokemon.record.kills }}
+                <div
+                  class="record-box"
+                  [class.positive]="pokemon.record.kills > 0"
+                >
+                  {{ pokemon.record.kills }}
+                </div>
               </div>
             </td>
             <td>
               <div class="record-cell">
-                {{ pokemon.record.deaths }}
+                <div
+                  class="record-box"
+                  [class.negative]="pokemon.record.deaths > 0"
+                >
+                  {{ pokemon.record.deaths }}
+                </div>
               </div>
             </td>
             <td>
-              <div
-                class="record-cell colored-cell"
-                [class.positive]="pokemon.record.diff > 0"
-                [class.negative]="pokemon.record.diff < 0"
-              >
-                {{ pokemon.record.diff | plusSign }}
+              <div class="record-cell">
+                <div
+                  class="record-box"
+                  [class.positive]="pokemon.record.diff > 0"
+                  [class.negative]="pokemon.record.diff < 0"
+                >
+                  {{ pokemon.record.diff | plusSign }}
+                </div>
               </div>
             </td>
           </tr>

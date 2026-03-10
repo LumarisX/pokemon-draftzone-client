@@ -21,7 +21,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { CoverageChartPreviewComponent } from './charts/coverage-chart-preview.component';
 
 @Component({
-  selector: 'planner-coverage',
+  selector: 'pdz-planner-coverage',
   standalone: true,
   templateUrl: './coverage.component.html',
   styleUrl: './coverage.component.scss',

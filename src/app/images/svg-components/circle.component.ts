@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'circle-svg',
+  selector: 'pdz-circle-svg',
   standalone: true,
   template: `
     <svg

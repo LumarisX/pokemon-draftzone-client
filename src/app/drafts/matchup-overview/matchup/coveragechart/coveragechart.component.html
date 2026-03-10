@@ -5,16 +5,16 @@
       <mat-slide-toggle [(ngModel)]="abilities" labelPosition="before"
         >Abilities</mat-slide-toggle
       >
-      <swap-opponent [(ngModel)]="opponent"></swap-opponent>
+      <pdz-swap-opponent [(ngModel)]="opponent"></pdz-swap-opponent>
     </div>
   </div>
   <div class="widget-body">
     @for (pokemon of coverage[selectedTeam]; track pokemon) {
-      <coverage
+      <pdz-coverage
         [pokemon]="pokemon"
         [typechart]="typecharts[(selectedTeam + 1) % typecharts.length]"
         [abilities]="abilities"
-      ></coverage>
+      ></pdz-coverage>
     }
   </div>
 </div>

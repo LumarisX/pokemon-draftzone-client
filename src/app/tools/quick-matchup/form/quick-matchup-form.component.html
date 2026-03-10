@@ -15,8 +15,10 @@
         <ng-template matStepContent>
           <div class="details-form-container">
             <div class="league-container details-container">
-              <format-select formControlName="format"></format-select>
-              <ruleset-select formControlName="ruleset"></ruleset-select>
+              <pdz-format-select formControlName="format"></pdz-format-select>
+              <pdz-ruleset-select
+                formControlName="ruleset"
+              ></pdz-ruleset-select>
             </div>
           </div>
           <div class="button-bar">
@@ -38,11 +40,11 @@
               spellcheck="false"
             />
           </mat-form-field>
-          <team-form
+          <pdz-team-form
             [pokemonList$]="pokemonList$"
             [ruleset]="quickForm.controls.details.controls.ruleset.value"
             [teamArray]="quickForm.controls.side1.controls.team"
-          ></team-form>
+          ></pdz-team-form>
         </div>
 
         <div class="button-bar">
@@ -64,11 +66,11 @@
               spellcheck="false"
             />
           </mat-form-field>
-          <team-form
+          <pdz-team-form
             [pokemonList$]="pokemonList$"
             [ruleset]="quickForm.controls.details.controls.ruleset.value"
             [teamArray]="quickForm.controls.side2.controls.team"
-          ></team-form>
+          ></pdz-team-form>
         </div>
 
         <div class="button-bar">

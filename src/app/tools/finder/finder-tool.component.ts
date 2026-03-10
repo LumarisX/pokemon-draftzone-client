@@ -6,15 +6,15 @@ import { FinderCoreComponent } from './finder-core.component';
 import { DataService } from '../../services/data.service';
 
 @Component({
-  selector: 'finder-tool',
+  selector: 'pdz-finder-tool',
   standalone: true,
   templateUrl: './finder-tool.component.html',
   imports: [
     RouterModule,
     FormsModule,
     ReactiveFormsModule,
-    FinderCoreComponent
-],
+    FinderCoreComponent,
+  ],
 })
 export class FinderToolComponent implements OnInit {
   private dataService = inject(DataService);

@@ -1,4 +1,3 @@
-
 import {
   Component,
   EventEmitter,
@@ -26,16 +25,15 @@ type QueryBuilder = {
 };
 
 @Component({
-  selector: 'finder-core',
-  standalone: true,
+  selector: 'pdz-finder-core',
   templateUrl: './finder-core.component.html',
   imports: [
     RouterModule,
     FormsModule,
     ReactiveFormsModule,
     SpriteComponent,
-    FindOptionComponent
-],
+    FindOptionComponent,
+  ],
 })
 export class FinderCoreComponent implements OnInit {
   private dataApi = inject(DataService);

@@ -37,12 +37,14 @@
         @if (isLargeScreen) {
           <mat-tab-group mat-stretch-tabs="false" class="tab-group-compact">
             <mat-tab label="Team">
-              <planner-team [draftFormGroup]="draftFormGroup"></planner-team>
+              <pdz-planner-team
+                [draftFormGroup]="draftFormGroup"
+              ></pdz-planner-team>
             </mat-tab>
             <mat-tab label="Settings">
-              <planner-settings
+              <pdz-planner-settings
                 [draftFormGroup]="draftFormGroup"
-              ></planner-settings>
+              ></pdz-planner-settings>
             </mat-tab>
           </mat-tab-group>
         }
@@ -55,14 +57,16 @@
           @if (!isLargeScreen) {
             <mat-tab label="Team">
               <ng-template matTabContent>
-                <planner-team [draftFormGroup]="draftFormGroup"></planner-team>
+                <pdz-planner-team
+                  [draftFormGroup]="draftFormGroup"
+                ></pdz-planner-team>
               </ng-template>
             </mat-tab>
             <mat-tab label="Settings">
               <ng-template matTabContent>
-                <planner-settings
+                <pdz-planner-settings
                   [draftFormGroup]="draftFormGroup"
-                ></planner-settings>
+                ></pdz-planner-settings>
               </ng-template>
             </mat-tab>
           }
@@ -70,7 +74,9 @@
             <mat-tab label="Summary" [tabIndex]="0">
               <ng-template matTabContent>
                 <div class="tab-container">
-                  <planner-summary [summary]="summary"></planner-summary>
+                  <pdz-planner-summary
+                    [summary]="summary"
+                  ></pdz-planner-summary>
                 </div>
               </ng-template>
             </mat-tab>
@@ -90,7 +96,9 @@
             <mat-tab label="Moves">
               <ng-template matTabContent>
                 <div class="movechart-container">
-                  <planner-moves [movechart]="movechart"></planner-moves>
+                  <pdz-planner-moves
+                    [movechart]="movechart"
+                  ></pdz-planner-moves>
                 </div>
               </ng-template>
             </mat-tab>
@@ -99,23 +107,23 @@
             <mat-tab label="Coverage">
               <ng-template matTabContent>
                 <div class="coverage-container">
-                  <planner-coverage
+                  <pdz-planner-coverage
                     class="coverage"
                     [coverage]="coverage"
-                  ></planner-coverage>
+                  ></pdz-planner-coverage>
                 </div>
               </ng-template>
             </mat-tab>
           }
           <mat-tab label="Find">
             <ng-template matTabContent>
-              <finder-core
+              <pdz-finder-core
                 class="finder"
                 [rulesetId]="
                   draftFormGroup.controls.ruleset.value || 'Gen9 NatDex'
                 "
                 [formatId]="draftFormGroup.controls.format.value || 'Singles'"
-              ></finder-core>
+              ></pdz-finder-core>
             </ng-template>
           </mat-tab>
         </mat-tab-group>

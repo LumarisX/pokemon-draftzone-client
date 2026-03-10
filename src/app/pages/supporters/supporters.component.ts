@@ -13,7 +13,7 @@ interface Developer {
 }
 
 @Component({
-  selector: 'supporters',
+  selector: 'pdz-supporters',
   standalone: true,
   imports: [RouterModule],
   templateUrl: './supporters.component.html',

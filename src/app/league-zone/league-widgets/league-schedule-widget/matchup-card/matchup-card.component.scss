@@ -1,6 +1,6 @@
-@use "../../league.mixins" as *;
-@use "../../../../styles/global" as *;
-@use "../../../../styles/mixins" as *;
+@use "../../../league.mixins" as *;
+@use "../../../../../styles/global" as *;
+@use "../../../../../styles/mixins" as *;
 
 $container-padding: var(--pdz-space-xs);
 
@@ -253,6 +253,7 @@ $container-padding: var(--pdz-space-xs);
   border-radius: var(--pdz-shape-corner-sm);
   box-shadow: var(--pdz-level-1);
   overflow: hidden;
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -262,7 +263,7 @@ $container-padding: var(--pdz-space-xs);
     opacity: 0.6;
   }
 
-  &--used {
+  &--survived {
     border-color: pdz-color(positive);
 
     pdz-sprite {
@@ -273,12 +274,54 @@ $container-padding: var(--pdz-space-xs);
 
   &--fainted {
     border-color: pdz-color(negative);
-
     pdz-sprite {
       filter: grayscale(0%);
       opacity: 1;
     }
   }
+
+  &--fainted:hover {
+    background-color: pdz-color(negative);
+    pdz-sprite {
+      visibility: hidden;
+    }
+
+    .matchup-card__pokemon-kills {
+      display: flex;
+      color: pdz-color(on-menu);
+    }
+  }
+  &--survived:hover {
+    background-color: pdz-color(positive);
+    pdz-sprite {
+      visibility: hidden;
+    }
+
+    .matchup-card__pokemon-kills {
+      display: flex;
+      color: pdz-color(on-menu);
+    }
+  }
+}
+
+.matchup-card__pokemon-kills {
+  display: none;
+  position: absolute;
+  inset: 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: pdz-color(on-surface);
+}
+
+.matchup-card__pokemon-kills-value {
+  @include apply-typography(title-md);
+  line-height: 1;
+}
+
+.matchup-card__pokemon-kills-label {
+  @include apply-typography(label-xs);
+  line-height: 1;
 }
 
 .matchup-card__match-selector {

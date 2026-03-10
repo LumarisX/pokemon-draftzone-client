@@ -24,11 +24,9 @@ export class UnreadService {
   }
 
   getUnreadCount(counts: { [key: string]: number }) {
-    return this.api.get<typeof counts>(
-      ['data', 'unread-counts'],
-      false,
-      counts,
-    );
+    return this.api.get<typeof counts>(['data', 'unread-counts'], {
+      params: counts,
+    });
   }
 
   private capNumber(value: number): string {

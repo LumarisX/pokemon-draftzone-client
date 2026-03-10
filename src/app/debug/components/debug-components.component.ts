@@ -59,7 +59,7 @@ export interface Task {
 }
 
 @Component({
-  selector: 'debug-components',
+  selector: 'pdz-debug-components',
   standalone: true,
   templateUrl: './debug-components.component.html',
   styleUrl: './debug-components.component.scss',

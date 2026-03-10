@@ -13,10 +13,10 @@
                 class="chart-wrapper"
                 [ngClass]="{ hidden: pokemon === selected }"
               >
-                <coverage-chart-preview
+                <pdz-coverage-chart-preview
                   (click)="$event.stopPropagation(); selected = pokemon"
                   [data]="pokemon"
-                ></coverage-chart-preview>
+                ></pdz-coverage-chart-preview>
               </div>
             }
           </div>
@@ -25,7 +25,7 @@
         <div class="selected-container">
           @if (selected) {
             <div class="selected-wrapper">
-              <coverage-chart [data]="selected"></coverage-chart>
+              <pdz-coverage-chart [data]="selected"></pdz-coverage-chart>
             </div>
           }
         </div>
@@ -68,7 +68,7 @@
             <img src="../../../assets/icons/moves/move-special.png" />
           </div>
         </div>
-        <coverage-team-chart [data]="teamData"></coverage-team-chart>
+        <pdz-coverage-team-chart [data]="teamData"></pdz-coverage-team-chart>
         <div class="slider-container">
           <span>Minimum Move BP</span>
           <mat-slider min="20" max="120" step="10" showTickMarks discrete>

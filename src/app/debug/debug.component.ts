@@ -1,15 +1,13 @@
-
 import { Component, OnInit, inject } from '@angular/core';
 import { AuthService } from '../services/auth0.service';
 
 @Component({
-  selector: 'debug',
+  selector: 'pdz-debug',
   imports: [],
   templateUrl: './debug.component.html',
 })
 export class DebugComponent implements OnInit {
   private authService = inject(AuthService);
-
 
   debugData!: {
     browser: string;

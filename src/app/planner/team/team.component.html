@@ -50,12 +50,12 @@
             </td>
             <td>
               <div class="pokemon-input">
-                <pokemon-select
+                <pdz-pokemon-select
                   (selectionCleared)="onClear($index)"
                   [ruleset]="draftFormGroup.controls.ruleset.value"
                   [formControl]="teamCtrl.controls.pokemon"
                   appearance="outline"
-                ></pokemon-select>
+                ></pdz-pokemon-select>
               </div>
               <!-- {{ teamCtrl.controls.pokemon.value | json }} -->
             </td>

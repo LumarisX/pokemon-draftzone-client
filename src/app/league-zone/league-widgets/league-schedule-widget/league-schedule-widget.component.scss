@@ -15,9 +15,19 @@
   &__cards {
     border-left: 2px solid var(--pdz-color-primary);
     padding: var(--pdz-space-md) 0 var(--pdz-space-md) var(--pdz-space-md);
-    display: flex;
-    flex-direction: column;
-    gap: var(--pdz-space-sm);
+
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--pdz-space-md);
+    width: 100%;
+    box-sizing: border-box;
+
+    @include respond-above(medium) {
+      grid-template-columns: repeat(
+        auto-fill,
+        minmax(clamp(18rem, 20vw, 24rem), 1fr)
+      );
+    }
 
     pdz-matchup-card {
       width: 100%;

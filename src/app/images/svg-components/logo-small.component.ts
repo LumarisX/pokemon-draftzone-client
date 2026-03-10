@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'logo-small-svg',
+  selector: 'pdz-logo-small-svg',
   template: `<svg
     id="a"
     xmlns="http://www.w3.org/2000/svg"

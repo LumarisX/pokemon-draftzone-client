@@ -1,6 +1,12 @@
 import { BooleanInput, coerceBooleanProperty } from '@angular/cdk/coercion';
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, HostBinding, Input, inject } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  HostBinding,
+  Input,
+  inject,
+} from '@angular/core';
 import {
   ControlValueAccessor,
   FormBuilder,
@@ -23,7 +29,7 @@ class MyTel {
 }
 
 @Component({
-  selector: 'example-tel-input',
+  selector: 'pdz-example-tel-input',
   imports: [
     CommonModule,
     FormsModule,

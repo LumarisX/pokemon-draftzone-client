@@ -1,11 +1,9 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-league-form-new',
+  selector: 'pdz-league-form-new',
   imports: [],
   templateUrl: './league-form-new.component.html',
-  styleUrl: './league-form-new.component.scss'
+  styleUrl: './league-form-new.component.scss',
 })
-export class LeagueFormNewComponent {
-
-}
+export class LeagueFormNewComponent {}

@@ -6,14 +6,21 @@ import {
 } from '@angular/cdk/overlay';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, Input, OnInit, ViewChild, inject } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  Input,
+  OnInit,
+  ViewChild,
+  inject,
+} from '@angular/core';
 import { FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { CompactSVG } from '../../../images/svg-components/compact.component';
 import { XMarkSVG } from '../../../images/svg-components/xmark.component';
 import { SelectBaseComponent } from './select-base.component';
 
 @Component({
-  selector: 'select-search',
+  selector: 'pdz-select-search',
   standalone: true,
   imports: [
     CommonModule,

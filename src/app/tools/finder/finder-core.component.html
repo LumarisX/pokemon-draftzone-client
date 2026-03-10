@@ -33,10 +33,10 @@
                 let i = $index
               ) {
                 <div class="flex items-center space-x-2">
-                  <find-option
+                  <pdz-find-option
                     [condition]="query"
                     (queryChange)="onQueryChange(query, $event)"
-                  ></find-option>
+                  ></pdz-find-option>
                   <button
                     (click)="removeQueryBuilder(queryGroups[0], i)"
                     class="border border-red-400 bg-red-100 text-red-500 hover:bg-red-200 px-2 py-1 rounded"
@@ -77,10 +77,10 @@
                   </div>
                   @for (query of group.queries; track $index) {
                     <div class="flex items-center space-x-2">
-                      <find-option
+                      <pdz-find-option
                         [condition]="query"
                         (queryChange)="onQueryChange(query, $event)"
-                      ></find-option>
+                      ></pdz-find-option>
                       <button
                         (click)="removeQueryBuilder(group, $index)"
                         class="border border-red-400 bg-red-100 text-red-500 hover:bg-red-200 px-2 py-1 rounded"
@@ -280,7 +280,9 @@
                   <div>
                     <img
                       src="../../../../assets/icons/types/{{ type }}.png"
-                      onerror="this.src='../../../../assets/icons/types/Unknown.png'"
+                      onerror="
+                        this.src = '../../../../assets/icons/types/Unknown.png'
+                      "
                       alt="{{ type }}"
                     />
                   </div>

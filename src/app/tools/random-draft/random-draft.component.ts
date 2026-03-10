@@ -7,7 +7,7 @@ import { DraftOverviewPath } from '../../drafts/draft-overview/draft-overview-ro
 import { RouterModule } from '@angular/router';
 
 @Component({
-  selector: 'random-draft',
+  selector: 'pdz-random-draft',
   standalone: true,
   templateUrl: './random-draft.component.html',
   imports: [SpriteComponent, RouterModule, FormsModule],

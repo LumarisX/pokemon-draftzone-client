@@ -3,7 +3,7 @@ import { Component, Input, forwardRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
-  selector: 'select-input',
+  selector: 'pdz-select-input',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './select-input.component.html',

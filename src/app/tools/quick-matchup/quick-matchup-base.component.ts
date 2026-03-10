@@ -1,4 +1,3 @@
-
 import { Component, OnInit, inject } from '@angular/core';
 import { MatchupData } from '../../drafts/matchup-overview/matchup-interface';
 import { MatchupComponent } from '../../drafts/matchup-overview/matchup/matchup.component';
@@ -10,13 +9,9 @@ import {
 } from './form/quick-matchup-form.component';
 
 @Component({
-  selector: 'quick-matchup-base',
+  selector: 'pdz-quick-matchup-base',
   standalone: true,
-  imports: [
-    QuickMatchupFormComponent,
-    MatchupComponent,
-    LoadingComponent
-],
+  imports: [QuickMatchupFormComponent, MatchupComponent, LoadingComponent],
   templateUrl: './quick-matchup-base.component.html',
 })
 export class QuickMatchupBaseComponent implements OnInit {

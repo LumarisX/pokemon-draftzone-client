@@ -49,10 +49,12 @@ export class PlannerService {
       return of(cachedData.data);
     } else {
       return this.apiService
-        .get<Planner>(`planner`, false, {
-          team: team.join(','),
-          format: format,
-          ruleset: ruleset,
+        .get<Planner>(`planner`, {
+          params: {
+            team: team.join(','),
+            format: format,
+            ruleset: ruleset,
+          },
         })
         .pipe(
           map((data: Planner) => {

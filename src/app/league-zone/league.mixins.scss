@@ -76,3 +76,37 @@
   margin: 0;
   font-weight: $weight;
 }
+
+@mixin pdz-league-record-box() {
+  background-color: pdz-color(surface-container);
+  color: pdz-color(on-surface);
+  text-align: center;
+  font-size: 0.9rem;
+  line-height: 1.5rem;
+  font-weight: var(--pdz-font-weight-bold);
+  border-radius: var(--pdz-shape-corner-xs);
+  height: 1.5rem;
+  width: 1.5rem;
+  &.primary {
+    background-color: pdz-color(primary);
+    color: pdz-color(on-primary);
+    box-shadow: var(--pdz-level-1);
+  }
+
+  &.secondary {
+    background-color: pdz-color(secondary);
+    color: pdz-color(on-secondary);
+    box-shadow: var(--pdz-level-1);
+  }
+  &.positive {
+    background-color: pdz-color(positive);
+    color: pdz-color(on-menu);
+    box-shadow: var(--pdz-level-1);
+  }
+
+  &.negative {
+    background-color: pdz-color(negative);
+    color: pdz-color(on-menu);
+    box-shadow: var(--pdz-level-1);
+  }
+}

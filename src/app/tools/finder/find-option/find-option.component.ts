@@ -25,7 +25,7 @@ type Conditional = {
 };
 
 @Component({
-  selector: 'find-option',
+  selector: 'pdz-find-option',
   standalone: true,
   templateUrl: './find-option.component.html',
   imports: [RouterModule, FormsModule, ReactiveFormsModule],

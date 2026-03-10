@@ -6,7 +6,7 @@
         class="p-0.5 font-semibold rounded bg-menu-100"
         [(ngModel)]="selectedFormat"
         id="format"
-        >
+      >
         @for (format of formats; track format) {
           <option value="{{ format }}">
             {{ format }}
@@ -21,7 +21,7 @@
         class="p-0.5 font-semibold rounded bg-menu-100"
         [(ngModel)]="selectedRuleset"
         id="ruleset"
-        >
+      >
         @for (ruleset of rulesets; track ruleset) {
           <option value="{{ ruleset }}">
             {{ ruleset }}
@@ -31,10 +31,10 @@
     </div>
   </div>
 
-  <finder-core
+  <pdz-finder-core
     [formatId]="selectedFormat"
     [rulesetId]="selectedRuleset"
     [startQuery]="queryParamValue"
     (UpdatedQuery)="updateURLQuery($event)"
-  ></finder-core>
+  ></pdz-finder-core>
 </div>

@@ -11,7 +11,7 @@ import { DraftOverviewPath } from '../draft-overview-routing.module';
 import { TournamentDetails } from '../../../interfaces/league';
 
 @Component({
-  selector: 'draft-preview',
+  selector: 'pdz-draft-preview',
   templateUrl: './draft-preview.component.html',
   styleUrl: './draft-preview.component.scss',
   imports: [
@@ -104,15 +104,15 @@ export class DraftPreviewComponent {
     this.openDropdown = null;
   }
 
-  scoreString(draft: { score: { wins: number; loses: number } }) {
-    if (draft.score) return `${draft.score.wins} - ${draft.score.loses}`;
+  scoreString(draft: { score: { wins: number; losses: number } }) {
+    if (draft.score) return `${draft.score.wins} - ${draft.score.losses}`;
     return `Unscored`;
   }
 
-  scoreClass(draft: { score: { wins: number; loses: number } }) {
+  scoreClass(draft: { score: { wins: number; losses: number } }) {
     if (!draft.score) return 'pdz-background-neut';
-    if (draft.score.wins > draft.score.loses) return 'pdz-background-pos';
-    if (draft.score.wins < draft.score.loses) return 'pdz-background-neg';
+    if (draft.score.wins > draft.score.losses) return 'pdz-background-pos';
+    if (draft.score.wins < draft.score.losses) return 'pdz-background-neg';
     return 'pdz-background-neut';
   }
 }

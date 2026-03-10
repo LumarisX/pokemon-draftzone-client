@@ -17,7 +17,7 @@ import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { DraftPokemon } from '../../interfaces/draft';
 import { Settings, SettingsService } from './settings.service';
 @Component({
-  selector: 'settings',
+  selector: 'pdz-settings',
   imports: [CommonModule, ReactiveFormsModule, SpriteComponent],
   templateUrl: './settings.component.html',
   styleUrl: './settings.component.scss',

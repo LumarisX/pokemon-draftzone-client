@@ -8,7 +8,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatFormFieldAppearance } from '@angular/material/form-field';
 
 @Component({
-  selector: 'ruleset-select',
+  selector: 'pdz-ruleset-select',
   imports: [CommonModule, MatSelectModule, MatIconModule, MatTooltipModule],
   templateUrl: './ruleset.component.html',
   styleUrl: './ruleset.component.scss',

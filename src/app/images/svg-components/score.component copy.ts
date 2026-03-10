@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'check-svg',
+  selector: 'pdz-check-svg',
   standalone: true,
   template: ` <svg
     class="w-full h-full stroke-symbolColor-main"

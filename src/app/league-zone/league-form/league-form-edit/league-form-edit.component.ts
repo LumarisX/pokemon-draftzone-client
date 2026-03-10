@@ -1,11 +1,9 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-league-form-edit',
+  selector: 'pdz-league-form-edit',
   imports: [],
   templateUrl: './league-form-edit.component.html',
-  styleUrl: './league-form-edit.component.scss'
+  styleUrl: './league-form-edit.component.scss',
 })
-export class LeagueFormEditComponent {
-
-}
+export class LeagueFormEditComponent {}

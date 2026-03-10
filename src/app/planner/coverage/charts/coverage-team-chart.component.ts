@@ -18,7 +18,7 @@ type ChartData = {
 };
 
 @Component({
-  selector: 'coverage-team-chart',
+  selector: 'pdz-coverage-team-chart',
   standalone: true,
   template: '<svg></svg>',
   imports: [],

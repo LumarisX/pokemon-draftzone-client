@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'mouse-svg',
+  selector: 'pdz-mouse-svg',
   standalone: true,
   template: `<svg
     class="w-full h-full stroke-symbolColor-main"

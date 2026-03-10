@@ -17,11 +17,12 @@ import { SpriteComponent } from '../../../images/sprite/sprite.component';
 import { IconComponent } from '../../../images/icon/icon.component';
 import { DraftPokemon } from '../../../interfaces/draft';
 import { Matchup } from '../../../interfaces/matchup';
-import { ReplayData } from '../../../tools/replay_analyzer/replay.interface';
+import { ReplayAnalysis } from '../../../tools/replay_analyzer/replay.interface';
 
 @Component({
-  selector: 'opponent-form',
+  selector: 'pdz-opponent-form',
   templateUrl: './opponent-score.component.html',
+  styleUrl: './opponent-score.component.scss',
   imports: [
     CommonModule,
     RouterModule,
@@ -126,10 +127,10 @@ export class OpponentScoreComponent implements OnInit {
     let teamGroup = team.map((pokemon: DraftPokemon) => {
       let monGroup = this.fb.group({
         pokemon: pokemon,
-        kills: [stats[<PokemonId>pokemon.id]?.kills],
-        fainted: [stats[<PokemonId>pokemon.id]?.deaths],
-        indirect: [stats[<PokemonId>pokemon.id]?.indirect],
-        brought: [stats[<PokemonId>pokemon.id]?.brought],
+        kills: [stats[<PokemonId>pokemon.id]?.kills ?? 0],
+        fainted: [stats[<PokemonId>pokemon.id]?.deaths ?? 0],
+        indirect: [stats[<PokemonId>pokemon.id]?.indirect ?? 0],
+        brought: [stats[<PokemonId>pokemon.id]?.brought ?? 0],
       });
       monGroup.get('fainted')?.valueChanges.subscribe((fainted) => {
         if (monGroup.get('fainted')?.value) {
@@ -138,11 +139,11 @@ export class OpponentScoreComponent implements OnInit {
         let a = this.statCount(this.aTeamArray, ['fainted']);
         let b = this.statCount(this.bTeamArray, ['fainted']);
         if (a > b) {
-          this.changeWinner('b');
+          this.setWinner('b');
         } else if (a < b) {
-          this.changeWinner('a');
+          this.setWinner('a');
         } else {
-          this.changeWinner('');
+          this.setWinner('');
         }
       });
       monGroup.get('kills')?.valueChanges.subscribe((kills) => {
@@ -178,7 +179,7 @@ export class OpponentScoreComponent implements OnInit {
     let total = 0;
     for (let control of teamArray.controls) {
       for (let name of controlNames) {
-        total += control.get(name)?.value;
+        total += Number(control.get(name)?.value ?? 0);
       }
     }
 
@@ -204,7 +205,7 @@ export class OpponentScoreComponent implements OnInit {
       aTeam: this.sideForm(this.matchup.aTeam.team),
       bTeam: this.sideForm(this.matchup.bTeam.team),
       replay: '',
-      winner: false,
+      winner: '',
       analyzed: true,
     });
     matchGroup.get('replay')?.valueChanges.subscribe((replay) => {
@@ -233,73 +234,185 @@ export class OpponentScoreComponent implements OnInit {
   }
 
   analyzeReplay() {
-    if (this.selectedMatchForm.get('analyzed')?.value) return;
-    let replayURI = this.selectedMatchForm.get('replay')?.value;
-    if (replayURI) {
-      this.selectedMatchForm.patchValue({ analyzed: true });
-      this.replayService.analyzeReplay(replayURI).subscribe((data) => {
-        let replayData: ReplayData = data;
-        let aReplayTeam = -1;
-        for (let mon of replayData.stats[0].team) {
-          let anyFound = mon.formes.some((forme) => {
-            if (forme.id) {
-              let aFind = this.matchup.aTeam.team.find((muMon) =>
-                muMon.id.startsWith(forme.id!),
-              );
-              let bFind = this.matchup.bTeam.team.find((muMon) =>
-                muMon.id.startsWith(forme.id!),
-              );
-              if (aFind && !bFind) {
-                aReplayTeam = 0;
-                return true;
-              } else if (bFind && !aFind) {
-                aReplayTeam = 1;
-                return true;
-              }
-            }
-            return false;
-          });
-          if (anyFound) break;
+    const selectedMatchForm = this.selectedMatchForm;
+    const replayURI = selectedMatchForm.get('replay')?.value;
+    if (!replayURI) return;
+    selectedMatchForm.patchValue({ analyzed: true });
+    this.replayService.analyzeReplay(replayURI).subscribe({
+      next: (data) => {
+        const replayData = data.analysis;
+        const teamMapping = this.resolveReplayTeamMapping(replayData);
+        if (!teamMapping) {
+          console.warn(
+            'Could not confidently map replay players to draft sides.',
+          );
+          selectedMatchForm.patchValue({ analyzed: false });
+          return;
         }
-        if (aReplayTeam >= 0 && aReplayTeam < replayData.stats.length) {
-          replayData.stats[aReplayTeam].team.forEach((mon) => {
-            if (mon.status !== 'brought') {
-              let replayCtrl = this.aTeamArray.controls.find((ctrl) => {
-                return mon.formes.some((forme) =>
-                  ctrl.value.pokemon.id.startsWith(forme.id),
-                );
-              });
-              replayCtrl?.patchValue({
-                brought: mon.status === 'used' ? 1 : 0,
-                kills: mon.kills[0],
-                indirect: mon.kills[1],
-                fainted: mon.status === 'fainted' ? 1 : 0,
-              });
-            }
-          });
-          replayData.stats[(aReplayTeam + 1) % 2].team.forEach((mon) => {
-            if (mon.status !== 'brought') {
-              let replayCtrl = this.bTeamArray.controls.find((ctrl) => {
-                return mon.formes.some((forme) =>
-                  ctrl.value.pokemon.id.startsWith(forme.id),
-                );
-              });
-              replayCtrl?.patchValue({
-                brought: mon.status === 'used' ? 1 : 0,
-                kills: mon.kills[0],
-                indirect: mon.kills[1],
-                fainted: mon.status === 'fainted' ? 1 : 0,
-              });
-            }
-          });
-          if (replayData.stats[aReplayTeam].win) {
-            this.selectedMatchForm.patchValue({ winner: 'a' });
-          } else if (replayData.stats[(aReplayTeam + 1) % 2].win) {
-            this.selectedMatchForm.patchValue({ winner: 'b' });
-          }
+
+        const aTeamArray = this.getTeamArray(selectedMatchForm, 'aTeam');
+        const bTeamArray = this.getTeamArray(selectedMatchForm, 'bTeam');
+
+        this.resetTeamStats(aTeamArray);
+        this.resetTeamStats(bTeamArray);
+
+        const aPlayer = replayData.players[teamMapping.aPlayerIndex];
+        const bPlayer = replayData.players[teamMapping.bPlayerIndex];
+
+        this.applyReplayStats(aTeamArray, aPlayer.team);
+        this.applyReplayStats(bTeamArray, bPlayer.team);
+
+        if (aPlayer.win && !bPlayer.win) {
+          selectedMatchForm.patchValue({ winner: 'a' });
+        } else if (bPlayer.win && !aPlayer.win) {
+          selectedMatchForm.patchValue({ winner: 'b' });
+        } else {
+          selectedMatchForm.patchValue({ winner: '' });
         }
-      });
+      },
+      error: () => {
+        selectedMatchForm.patchValue({ analyzed: false });
+      },
+    });
+  }
+
+  private resolveReplayTeamMapping(replayData: ReplayAnalysis): {
+    aPlayerIndex: number;
+    bPlayerIndex: number;
+  } | null {
+    if (replayData.players.length !== 2) {
+      return null;
     }
+
+    const aDraftFormes = this.getSideDraftFormes(this.matchup.aTeam.team);
+    const bDraftFormes = this.getSideDraftFormes(this.matchup.bTeam.team);
+
+    const p0ToA = this.countFormeMatches(replayData.players[0], aDraftFormes);
+    const p0ToB = this.countFormeMatches(replayData.players[0], bDraftFormes);
+    const p1ToA = this.countFormeMatches(replayData.players[1], aDraftFormes);
+    const p1ToB = this.countFormeMatches(replayData.players[1], bDraftFormes);
+
+    const directAssignmentScore = p0ToA + p1ToB;
+    const swappedAssignmentScore = p0ToB + p1ToA;
+
+    if (directAssignmentScore > swappedAssignmentScore) {
+      return { aPlayerIndex: 0, bPlayerIndex: 1 };
+    }
+    if (swappedAssignmentScore > directAssignmentScore) {
+      return { aPlayerIndex: 1, bPlayerIndex: 0 };
+    }
+
+    if (p0ToA > p0ToB) {
+      return { aPlayerIndex: 0, bPlayerIndex: 1 };
+    }
+    if (p0ToB > p0ToA) {
+      return { aPlayerIndex: 1, bPlayerIndex: 0 };
+    }
+    if (p1ToA > p1ToB) {
+      return { aPlayerIndex: 1, bPlayerIndex: 0 };
+    }
+    if (p1ToB > p1ToA) {
+      return { aPlayerIndex: 0, bPlayerIndex: 1 };
+    }
+
+    return null;
+  }
+
+  private getSideDraftFormes(team: DraftPokemon[]): Set<PokemonId> {
+    return new Set(
+      team.flatMap((pokemon) => this.getPokemonDraftFormes(pokemon)),
+    );
+  }
+
+  private getPokemonDraftFormes(pokemon: DraftPokemon): PokemonId[] {
+    const formeCandidates = [
+      pokemon.id,
+      ...(pokemon.draftFormes?.map((forme) => forme.id) ?? []),
+    ];
+    return formeCandidates.filter((id): id is PokemonId => !!id);
+  }
+
+  private countFormeMatches(
+    replayPlayer: ReplayAnalysis['players'][number],
+    draftFormes: Set<PokemonId>,
+  ): number {
+    const replayFormes = this.getSideDraftFormes(replayPlayer.team);
+    let matches = 0;
+    draftFormes.forEach((draftForme) => {
+      const foundMatch = [...replayFormes].some((replayForme) =>
+        draftForme.startsWith(replayForme),
+      );
+      if (foundMatch) {
+        matches++;
+      }
+    });
+    return matches;
+  }
+
+  private getTeamArray(
+    matchForm: FormGroup,
+    side: 'aTeam' | 'bTeam',
+  ): FormArray {
+    return matchForm.get(`${side}.team`) as FormArray;
+  }
+
+  private resetTeamStats(teamArray: FormArray): void {
+    teamArray.controls.forEach((control) => {
+      control.patchValue(
+        {
+          brought: 0,
+          kills: 0,
+          indirect: 0,
+          fainted: 0,
+        },
+        { emitEvent: false },
+      );
+    });
+  }
+
+  private applyReplayStats(
+    teamArray: FormArray,
+    replayTeam: ReplayAnalysis['players'][number]['team'],
+  ): void {
+    replayTeam.forEach((replayMon) => {
+      const teamControl = teamArray.controls.find((control) => {
+        const draftMon = control.get('pokemon')?.value as
+          | DraftPokemon
+          | undefined;
+        if (!draftMon) {
+          return false;
+        }
+        const draftFormes = this.getPokemonDraftFormes(draftMon);
+        console.log(replayMon.id, replayMon.formes);
+        return (
+          draftFormes.includes(replayMon.id) ||
+          replayMon.formes?.some((replayForme) =>
+            draftFormes.some((draftForme) => draftForme === replayForme),
+          )
+        );
+      });
+
+      if (!teamControl) {
+        return;
+      }
+
+      teamControl.patchValue(
+        {
+          brought:
+            replayMon.status === 'survived' || replayMon.status === 'fainted'
+              ? 1
+              : 0,
+          kills: replayMon.kills.direct,
+          indirect: replayMon.kills.indirect,
+          fainted: replayMon.status === 'fainted' ? 1 : 0,
+        },
+        { emitEvent: false },
+      );
+    });
+  }
+
+  private setWinner(player: 'a' | 'b' | '') {
+    this.selectedMatchForm.patchValue({ winner: player });
   }
 
   changeWinner(player: 'a' | 'b' | '') {
@@ -329,24 +442,24 @@ export class OpponentScoreComponent implements OnInit {
   }
 
   broughtCaution() {
-    return this.statCount(this.aTeamArray, ['brought']) ===
+    return (
+      this.statCount(this.aTeamArray, ['brought']) !==
       this.statCount(this.bTeamArray, ['brought'])
-      ? ''
-      : 'px-2 bg-caution rounded-full';
+    );
   }
 
   aKillCaution() {
-    return this.statCount(this.aTeamArray, ['kills', 'indirect']) ===
+    return (
+      this.statCount(this.aTeamArray, ['kills', 'indirect']) !==
       this.statCount(this.bTeamArray, ['fainted'])
-      ? ''
-      : 'px-2 bg-caution rounded-full';
+    );
   }
 
   bKillCaution() {
-    return this.statCount(this.bTeamArray, ['kills', 'indirect']) ===
+    return (
+      this.statCount(this.bTeamArray, ['kills', 'indirect']) !==
       this.statCount(this.aTeamArray, ['fainted'])
-      ? ''
-      : 'px-2 bg-caution rounded-full';
+    );
   }
 
   getWins(player: 'a' | 'b') {

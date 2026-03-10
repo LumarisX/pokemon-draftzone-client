@@ -9,7 +9,7 @@ import { AbstractControl, NgControl } from '@angular/forms';
 import { forwardRef } from '@angular/core';
 
 @Component({
-  selector: 'input-cntr',
+  selector: 'pdz-input-cntr',
   standalone: true,
   imports: [CommonModule, forwardRef(() => ErrorDisplayComponent)],
   templateUrl: './input-cntr.component.html',
@@ -27,7 +27,7 @@ export class InputContainerComponent implements AfterContentInit {
 }
 
 @Component({
-  selector: 'app-error-display',
+  selector: 'pdz-error-display',
   template: `
     <div *ngIf="control?.errors && (control?.dirty || control?.touched)">
       <span *ngIf="control?.hasError('required')">This field is required.</span>

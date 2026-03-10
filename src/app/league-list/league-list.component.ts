@@ -8,7 +8,7 @@ import { UnreadService } from '../services/unread.service';
 import { LeagueAdComponent } from './league-ad/league-ad.component';
 
 @Component({
-  selector: 'app-league-ad-list',
+  selector: 'pdz--league-ad-list',
   templateUrl: './league-list.component.html',
   styleUrls: ['./league-list.component.scss'],
   standalone: true,

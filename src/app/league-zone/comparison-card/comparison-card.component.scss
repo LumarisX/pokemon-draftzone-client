@@ -25,6 +25,7 @@ $container-padding: var(--pdz-space-md);
   display: flex;
   width: 100%;
   align-items: stretch;
+  justify-content: space-between;
 }
 
 .entity-info-container {

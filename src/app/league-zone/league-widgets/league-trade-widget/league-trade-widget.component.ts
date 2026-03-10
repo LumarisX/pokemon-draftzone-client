@@ -2,7 +2,7 @@ import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { LeagueZoneService } from '../../../services/leagues/league-zone.service';
 import { TradeLog } from '../../league.interface';
-import { TradeCardComponent } from '../../league-trades/trade-card/trade-card.component';
+import { TradeCardComponent } from './trade-card/trade-card.component';
 
 @Component({
   selector: 'pdz-league-trade-widget',

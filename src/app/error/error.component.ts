@@ -6,7 +6,7 @@ import type { ClientError } from './error.service';
 import { ErrorService } from './error.service';
 
 @Component({
-  selector: 'error',
+  selector: 'pdz-error',
   standalone: true,
   imports: [CommonModule, IconComponent],
   templateUrl: './error.component.html',

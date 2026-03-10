@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'gamepad-svg',
+  selector: 'pdz-gamepad-svg',
   standalone: true,
   template: `<svg
     class="w-full h-full stroke-symbolColor-main"

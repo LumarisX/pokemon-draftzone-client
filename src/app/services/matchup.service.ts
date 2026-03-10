@@ -13,55 +13,56 @@ export class MatchupService {
   private apiService = inject(ApiService);
 
   getMatchup(matchupId: string) {
-    return this.apiService.get<MatchupData>(
-      `${matchupPath}/${matchupId}`,
-      true,
-    );
+    return this.apiService.get<MatchupData>(`${matchupPath}/${matchupId}`, {
+      authenticated: true,
+      errorHandlingOptions: { suppressErrorReporting: true },
+    });
   }
 
   getQuickMatchup(matchupData: QuickFormData): Observable<MatchupData> {
-    return this.apiService.post(`${matchupPath}/quick`, false, matchupData);
+    return this.apiService.post(`${matchupPath}/quick`, matchupData);
   }
 
   getSharedMatchup(matchupId: string) {
-    return this.apiService.get(`${matchupPath}/${matchupId}`, false);
+    return this.apiService.get<MatchupData>(
+      `${matchupPath}/${matchupId}/shared`,
+    );
   }
 
   getSpeedchart(matchupId: string) {
-    return this.apiService.get(`${matchupPath}/${matchupId}/speedchart`, true);
+    return this.apiService.get(`${matchupPath}/${matchupId}/speedchart`, {
+      authenticated: true,
+    });
   }
 
   getsummary(matchupId: string) {
-    return this.apiService.get(`${matchupPath}/${matchupId}/summary`, true);
+    return this.apiService.get(`${matchupPath}/${matchupId}/summary`, {
+      authenticated: true,
+    });
   }
 
   getTypechart(matchupId: string) {
-    return this.apiService.get(`${matchupPath}/${matchupId}/typechart`, true);
+    return this.apiService.get(`${matchupPath}/${matchupId}/typechart`, {
+      authenticated: true,
+    });
   }
 
   getMovechart(matchupId: string) {
-    return this.apiService.get(`${matchupPath}/${matchupId}/movechart`, true);
+    return this.apiService.get(`${matchupPath}/${matchupId}/movechart`, {
+      authenticated: true,
+    });
   }
 
   getCoveragechart(matchupId: string) {
-    return this.apiService.get(
-      `${matchupPath}/${matchupId}/coveragechart`,
-      true,
-    );
+    return this.apiService.get(`${matchupPath}/${matchupId}/coveragechart`, {
+      authenticated: true,
+    });
   }
 
   getMatchupOwnership(userId: string, matchupId: string) {
     return this.apiService.get<{ isOwner: boolean }>(
       `${matchupPath}/${matchupId}/check-ownership`,
-      false,
-      { userId },
-    );
-  }
-
-  getNotes(matchupId: string) {
-    return this.apiService.get<{ notes: string }>(
-      `${matchupPath}/${matchupId}/notes`,
-      false,
+      { params: { userId } },
     );
   }
 
@@ -73,9 +74,11 @@ export class MatchupService {
     console.log(matchupId);
     return this.apiService.post(
       `${matchupPath}/${matchupId}/update-notes`,
-      true,
       { notes: payload },
-      { invalidateCache: [`${matchupPath}/${matchupId}/notes`] },
+      {
+        authenticated: true,
+        invalidateCache: [`${matchupPath}/${matchupId}/notes`],
+      },
     );
   }
 }

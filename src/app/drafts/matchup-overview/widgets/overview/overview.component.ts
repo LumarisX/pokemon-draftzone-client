@@ -11,7 +11,7 @@ import { DraftPokemon } from '../../../../interfaces/draft';
 import { StatsTable } from '../../../../data';
 
 @Component({
-  selector: 'overview',
+  selector: 'pdz-overview',
   standalone: true,
   templateUrl: './overview.component.html',
   styleUrls: ['../../matchup.scss', './overview.component.scss'],
