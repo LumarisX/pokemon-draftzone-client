@@ -7,12 +7,7 @@ import { IconComponent } from '../../images/icon/icon.component';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { ReplayService } from '../../services/replay.service';
 import { ReplayChartComponent } from './replay-chart/replay-chart.component';
-import { ReplayAnalysis, ReplayPokemon } from './replay.interface';
-
-import { MatCardModule } from '@angular/material/card';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { ReplayAnalysis, ReplayPlayer } from './replay.interface';
 
 @Component({
   selector: 'pdz-replay-analyzer',
@@ -25,13 +20,11 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     IconComponent,
     SpriteComponent,
     ReplayChartComponent,
-    MatExpansionModule,
-    MatCardModule,
-    MatDividerModule,
-    MatTooltipModule,
   ],
 })
 export class ReplayComponent implements OnInit {
+  private readonly advancedDetailsStorageKey =
+    'pdz.replayAnalyzer.showAdvancedDetails';
   private replayService = inject(ReplayService);
   private route = inject(ActivatedRoute);
   private destroyRef = inject(DestroyRef);
@@ -52,6 +45,8 @@ export class ReplayComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.showAdvancedDetails = this.loadAdvancedDetailsPreference();
+
     this.route.queryParams
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((params) => {
@@ -89,6 +84,36 @@ export class ReplayComponent implements OnInit {
 
   toggleAdvancedDetails(): void {
     this.showAdvancedDetails = !this.showAdvancedDetails;
+    this.storeAdvancedDetailsPreference(this.showAdvancedDetails);
+  }
+
+  private loadAdvancedDetailsPreference(): boolean {
+    if (typeof window === 'undefined') {
+      return false;
+    }
+
+    try {
+      return (
+        window.localStorage.getItem(this.advancedDetailsStorageKey) === 'true'
+      );
+    } catch {
+      return false;
+    }
+  }
+
+  private storeAdvancedDetailsPreference(enabled: boolean): void {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    try {
+      window.localStorage.setItem(
+        this.advancedDetailsStorageKey,
+        String(enabled),
+      );
+    } catch {
+      // Ignore storage errors to keep the toggle functional.
+    }
   }
 
   remainingSeconds(seconds: number): number {
@@ -99,26 +124,21 @@ export class ReplayComponent implements OnInit {
     return Math.floor(seconds / 60);
   }
 
-  playerClass(index: number): string {
-    if (index === 1) {
-      return 'replay-analyzer__player--team-a';
-    }
-    if (index === 2) {
-      return 'replay-analyzer__player--team-b';
-    }
-
-    return '';
+  validateKills(player: ReplayPlayer) {
+    return (
+      player.total.kills ===
+      this.replayData?.players
+        .filter((p) => p.username !== player.username)
+        .reduce((sum, p) => sum + p.total.deaths, 0)
+    );
   }
 
-  monStatusClass(status: ReplayPokemon['status']): string {
-    if (status === 'fainted') {
-      return 'replay-analyzer__mon-status--fainted';
-    }
-
-    if (status === 'survived') {
-      return 'replay-analyzer__mon-status--survived';
-    }
-
-    return 'replay-analyzer__mon-status--brought';
+  validateDeaths(player: ReplayPlayer) {
+    return (
+      player.total.deaths ===
+      this.replayData?.players
+        .filter((p) => p.username !== player.username)
+        .reduce((sum, p) => sum + p.total.kills, 0)
+    );
   }
 }
