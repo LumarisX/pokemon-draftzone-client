@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import {
+  booleanAttribute,
   Component,
   Input,
   OnChanges,
@@ -11,7 +12,6 @@ import { HttpClient } from '@angular/common/http';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Observable, of, shareReplay } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
-import { BooleanInput } from '@angular/cdk/coercion';
 
 @Component({
   selector: 'pdz-icon',
@@ -79,21 +79,24 @@ import { BooleanInput } from '@angular/cdk/coercion';
 })
 export class IconComponent implements OnChanges {
   private static svgCache = new Map<string, Observable<string>>();
-  private readonly localSvgIcons = new Set<string>([
-    'logo',
-    'logo-small',
-    'unknown',
-    'tera',
-  ]);
+  private static readonly localSvgIconPaths: Readonly<Record<string, string>> =
+    {
+      logo: 'assets/icons/logo.svg',
+      'logo-small': 'assets/icons/logo-small.svg',
+      unknown: 'assets/icons/unknown.svg',
+      tera: 'assets/icons/tera.svg',
+      discord: 'assets/icons/media/discord-mark-blue.svg',
+      github: 'assets/icons/media/github-mark.svg',
+    };
 
   @Input({ required: true }) name!: string;
   @Input() size: number | 'sm' | 'md' | 'lg' | 'xl' = 24;
   @Input() width?: number | 'sm' | 'md' | 'lg' | 'xl';
   @Input() height?: number | 'sm' | 'md' | 'lg' | 'xl';
-  @Input() square: BooleanInput = false;
+  @Input({ transform: booleanAttribute }) square = false;
 
   @Input() weight: number = 400;
-  @Input() fill: BooleanInput = false;
+  @Input({ transform: booleanAttribute }) fill = false;
   @Input() grade: -25 | 0 | 200 = 0;
   @Input() opticalSize: number = 24;
   @Input() ariaLabel?: string;
@@ -104,7 +107,7 @@ export class IconComponent implements OnChanges {
   svgContainer?: ViewContainerRef;
 
   get hasSvg(): boolean {
-    return this.localSvgIcons.has(this.name);
+    return IconComponent.localSvgIconPaths[this.name] !== undefined;
   }
 
   constructor(
@@ -199,13 +202,17 @@ export class IconComponent implements OnChanges {
   }
 
   private loadSvg(): void {
-    const iconPath = `assets/icons/${this.name}.svg`;
-    let svgSource$ = IconComponent.svgCache.get(this.name);
+    const iconPath = IconComponent.localSvgIconPaths[this.name];
+    if (!iconPath) {
+      return;
+    }
+
+    let svgSource$ = IconComponent.svgCache.get(iconPath);
     if (!svgSource$) {
       svgSource$ = this.http
         .get(iconPath, { responseType: 'text' })
         .pipe(shareReplay(1));
-      IconComponent.svgCache.set(this.name, svgSource$);
+      IconComponent.svgCache.set(iconPath, svgSource$);
     }
 
     this.svgIcon$ = svgSource$.pipe(

@@ -1,8 +1,8 @@
 :host > div {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   height: 100dvh;
+  min-height: 0;
   color: var(--pdz-color-on-surface);
   font-family: var(--pdz-font-regular);
   background-color: var(--pdz-color-background);
@@ -10,7 +10,7 @@
 
 main {
   width: 100%;
-  height: 100%;
-  margin-bottom: auto;
+  flex: 1 1 auto;
+  min-height: 0;
   overflow-y: auto;
 }

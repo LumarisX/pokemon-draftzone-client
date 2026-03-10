@@ -1,6 +1,16 @@
 :host {
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.25rem;
   height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.news-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
 }
 
 .news-header {
@@ -23,12 +33,6 @@
 .news-item:not(:last-child) {
   padding-bottom: 0.25rem;
   border-bottom: 1px solid var(--pdz-color-primary-border-variant);
-}
-
-:host {
-  display: flex;
-  flex-direction: column;
-  row-gap: 0.25rem;
 }
 
 .news-body {

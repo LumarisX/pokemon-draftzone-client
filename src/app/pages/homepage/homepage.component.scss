@@ -4,6 +4,9 @@
 
 :host {
   --pdz-cmp-text-color: var(--pdz-color-background);
+  display: block;
+  height: 100%;
+  min-height: 0;
 }
 
 .homepage {
@@ -12,21 +15,22 @@
   align-items: center;
   width: 100%;
   height: 100%;
+  min-height: 0;
+  overflow: hidden;
   gap: var(--pdz-space-md);
-
   &__hero {
     user-select: none;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    padding: 4rem 1rem;
+    padding: 3rem 1rem;
     background: pdz-color(hero);
     background-size: cover;
     background-position: center;
     color: var(--pdz-cmp-text-color);
     width: 100%;
-    gap: 1.5rem;
+    gap: 3rem;
   }
 
   &__title {
@@ -115,9 +119,10 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 1rem;
-    padding: var(--pdz-space-sm);
+    row-gap: 0.5rem;
+    column-gap: 1rem;
     border-radius: var(--pdz-shape-corner-lg);
+    padding-bottom: var(--pdz-space-xs);
   }
 
   &__secondary-action {
@@ -126,42 +131,56 @@
     cursor: pointer;
     background-color: pdz-color(surface-container-low);
     border-radius: var(--pdz-shape-corner-md);
-    color: pdz-color(on-primary);
-    background: linear-gradient(
-      135deg,
-      pdz-color(primary) 0%,
-      pdz-color(primary-lighter) 100%
-    );
-    max-width: 100%;
-    width: 12rem;
-    height: 5rem;
+    color: pdz-color(primary-lighter);
+    background-color: pdz-color(background);
+    width: 100%;
+    height: 4rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    @include apply-typography(title-md);
     text-align: center;
     box-shadow: var(--pdz-level-2);
 
-    &--discord {
-      background: linear-gradient(135deg, #4752c4 0%, #5865f2 100%);
+    &:hover {
+      margin-top: -1px;
+      margin-bottom: 1px;
     }
+  }
+
+  &__secondary-action-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--pdz-space-sm);
+    width: 9rem;
+  }
+
+  &__secondary-action-title {
+    @include apply-typography(title-xs);
   }
 
   &__info {
     padding: 2rem 1rem;
-    display: grid;
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-wrap: wrap;
     width: 100%;
-    max-width: 60rem;
+    justify-content: center;
+    flex: 1 1 auto;
+    min-height: 30rem;
+    overflow: hidden;
     gap: 2rem;
-    align-items: start;
+    align-items: stretch;
   }
 
   &__panel {
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    height: 100%;
+    width: 40rem;
+    max-width: 100%;
     min-width: 0;
+    min-height: 0;
+    overflow: visible;
   }
 
   &__panel-title {
@@ -172,14 +191,20 @@
     border-bottom: 2px solid pdz-color(primary-border);
     padding-bottom: 0.5rem;
     margin: 0;
+    flex-shrink: 0;
   }
 
   &__panel pdz-news-core {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
     background-color: pdz-color(surface);
     box-shadow: var(--pdz-level-2);
     border-radius: var(--pdz-shape-corner-lg);
     padding: var(--pdz-space-lg);
-    max-height: 20rem;
+    min-height: 0;
+    overflow: hidden;
   }
 
   &__cta-button:hover,
@@ -190,6 +215,10 @@
 
 @media (max-width: 768px) {
   .homepage {
+    height: auto;
+    min-height: 100%;
+    overflow: visible;
+
     &__title {
       display: flex;
       justify-content: center;
@@ -236,6 +265,18 @@
       width: 100%;
       max-width: 28rem;
       height: 3.5rem;
+    }
+
+    &__info {
+      flex: 0 0 auto;
+      overflow: visible;
+      grid-auto-rows: minmax(30rem, auto);
+    }
+
+    &__panel {
+      height: auto;
+      min-height: 20rem;
+      max-height: 40rem;
     }
   }
 }

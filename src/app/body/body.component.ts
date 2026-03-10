@@ -1,4 +1,3 @@
-
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { ErrorComponent } from '../error/error.component';
@@ -8,6 +7,7 @@ import { ErrorComponent } from '../error/error.component';
   standalone: true,
   imports: [RouterModule, ErrorComponent],
   templateUrl: './body.component.html',
+  styleUrl: './body.component.scss',
 })
 export class BodyComponent {
   constructor() {}
