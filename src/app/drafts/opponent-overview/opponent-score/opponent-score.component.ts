@@ -126,10 +126,10 @@ export class OpponentScoreComponent implements OnInit {
     let teamGroup = team.map((pokemon: DraftPokemon) => {
       let monGroup = this.fb.group({
         pokemon: pokemon,
-        kills: [stats[<PokemonId>pokemon.id]?.kills],
-        fainted: [stats[<PokemonId>pokemon.id]?.deaths],
-        indirect: [stats[<PokemonId>pokemon.id]?.indirect],
-        brought: [stats[<PokemonId>pokemon.id]?.brought],
+        kills: [stats[<PokemonId>pokemon.id]?.kills ?? 0],
+        fainted: [stats[<PokemonId>pokemon.id]?.deaths ?? 0],
+        indirect: [stats[<PokemonId>pokemon.id]?.indirect ?? 0],
+        brought: [stats[<PokemonId>pokemon.id]?.brought ?? 0],
       });
       monGroup.get('fainted')?.valueChanges.subscribe((fainted) => {
         if (monGroup.get('fainted')?.value) {
@@ -138,11 +138,11 @@ export class OpponentScoreComponent implements OnInit {
         let a = this.statCount(this.aTeamArray, ['fainted']);
         let b = this.statCount(this.bTeamArray, ['fainted']);
         if (a > b) {
-          this.changeWinner('b');
+          this.setWinner('b');
         } else if (a < b) {
-          this.changeWinner('a');
+          this.setWinner('a');
         } else {
-          this.changeWinner('');
+          this.setWinner('');
         }
       });
       monGroup.get('kills')?.valueChanges.subscribe((kills) => {
@@ -178,7 +178,7 @@ export class OpponentScoreComponent implements OnInit {
     let total = 0;
     for (let control of teamArray.controls) {
       for (let name of controlNames) {
-        total += control.get(name)?.value;
+        total += Number(control.get(name)?.value ?? 0);
       }
     }
 
@@ -204,7 +204,7 @@ export class OpponentScoreComponent implements OnInit {
       aTeam: this.sideForm(this.matchup.aTeam.team),
       bTeam: this.sideForm(this.matchup.bTeam.team),
       replay: '',
-      winner: false,
+      winner: '',
       analyzed: true,
     });
     matchGroup.get('replay')?.valueChanges.subscribe((replay) => {
@@ -267,7 +267,7 @@ export class OpponentScoreComponent implements OnInit {
                 mon.formes.includes(ctrl.value.pokemon.id),
               );
               replayCtrl?.patchValue({
-                brought: mon.status === 'survived' ? 1 : 0,
+                brought: 1,
                 kills: mon.kills.direct,
                 indirect: mon.kills.indirect,
                 fainted: mon.status === 'fainted' ? 1 : 0,
@@ -280,21 +280,37 @@ export class OpponentScoreComponent implements OnInit {
                 mon.formes.includes(ctrl.value.pokemon.id),
               );
               replayCtrl?.patchValue({
-                brought: mon.status === 'survived' ? 1 : 0,
+                brought: 1,
                 kills: mon.kills.direct,
                 indirect: mon.kills.indirect,
                 fainted: mon.status === 'fainted' ? 1 : 0,
               });
             }
           });
-          if (replayData.players[aReplayTeam].win) {
-            this.selectedMatchForm.patchValue({ winner: 'a' });
-          } else if (replayData.players[(aReplayTeam + 1) % 2].win) {
-            this.selectedMatchForm.patchValue({ winner: 'b' });
+          const aWin = replayData.players[aReplayTeam].win;
+          const bWin = replayData.players[(aReplayTeam + 1) % 2].win;
+          if (aWin && !bWin) {
+            this.setWinner('a');
+          } else if (bWin && !aWin) {
+            this.setWinner('b');
+          } else {
+            const aFainted = this.statCount(this.aTeamArray, ['fainted']);
+            const bFainted = this.statCount(this.bTeamArray, ['fainted']);
+            if (aFainted > bFainted) {
+              this.setWinner('b');
+            } else if (aFainted < bFainted) {
+              this.setWinner('a');
+            } else {
+              this.setWinner('');
+            }
           }
         }
       });
     }
+  }
+
+  private setWinner(player: 'a' | 'b' | '') {
+    this.selectedMatchForm.patchValue({ winner: player });
   }
 
   changeWinner(player: 'a' | 'b' | '') {
