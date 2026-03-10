@@ -9,6 +9,7 @@ import { LoadingComponent } from '../../../images/loading/loading.component';
 import { LeagueZoneService } from '../../../services/leagues/league-zone.service';
 import { TierPokemonAddon } from '../../../interfaces/tier-pokemon.interface';
 import { RouterModule } from '@angular/router';
+import { LeagueManageService } from '../../../services/leagues/league-manage.service';
 
 interface TradeGroup {
   id: string;
@@ -47,6 +48,7 @@ export interface TradeData {
 })
 export class LeagueManageTradesComponent implements OnInit {
   private leagueService = inject(LeagueZoneService);
+  private leagueManageService = inject(LeagueManageService);
   private fb = inject(FormBuilder);
 
   loading = true;
@@ -100,7 +102,7 @@ export class LeagueManageTradesComponent implements OnInit {
       this.tradeForm.get('side2Pokemon')?.setValue([]);
     });
 
-    this.leagueService.getPokemonList().subscribe({
+    this.leagueManageService.getPokemonList().subscribe({
       next: (data) => {
         this.loading = false;
         this.buildGroupsAndMapping(data.groups || []);
@@ -113,7 +115,7 @@ export class LeagueManageTradesComponent implements OnInit {
 
   private buildGroupsAndMapping(
     data: {
-      pokemon: {
+      roster: {
         id: string;
         name: string;
         cost?: number;
@@ -139,7 +141,7 @@ export class LeagueManageTradesComponent implements OnInit {
         pokemonMap.set(groupId, []);
       }
 
-      entry.pokemon.forEach((pokemon) => {
+      entry.roster.forEach((pokemon) => {
         const hasTeraCaptain = (pokemon.setAddons || []).includes(
           'Tera Captain',
         );

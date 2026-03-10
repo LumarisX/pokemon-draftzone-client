@@ -1,7 +1,8 @@
 import { Injectable, inject } from '@angular/core';
+import { TierPokemonAddon } from '../../interfaces/tier-pokemon.interface';
+import { League } from '../../league-zone/league.interface';
 import { ApiService } from '../api.service';
 import { LeagueZoneService } from './league-zone.service';
-import { League } from '../../league-zone/league.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -81,6 +82,24 @@ export class LeagueManageService {
       {
         authenticated: true,
       },
+    );
+  }
+
+  getPokemonList() {
+    return this.apiService.get<{
+      groups?: {
+        roster: {
+          id: string;
+          name: string;
+          cost: number;
+          addons?: TierPokemonAddon[];
+          setAddons?: string[];
+        }[];
+        team?: { id: string; name: string; coachName: string };
+      }[];
+    }>(
+      `leagues/tournaments/${this.leagueZoneService.tournamentKey()}/manage/divisions/${this.leagueZoneService.divisionKey()}/pokemon-list`,
+      { authenticated: true },
     );
   }
 }

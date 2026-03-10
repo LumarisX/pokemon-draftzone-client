@@ -3,16 +3,13 @@ import { NavigationEnd, Router } from '@angular/router';
 import { Observable, of, throwError } from 'rxjs';
 import { filter, map, mergeMap } from 'rxjs/operators';
 import { getRandomPokemon } from '../../data/namedex';
-import {
-  LeagueTier,
-  TierPokemonAddon,
-} from '../../interfaces/tier-pokemon.interface';
+import { LeagueTier } from '../../interfaces/tier-pokemon.interface';
 import { defenseData } from '../../league-zone/league-ghost';
+import { TradeData } from '../../league-zone/league-manage/league-manage-trades/league-manage-trades.component';
 import { League, TradeLog } from '../../league-zone/league.interface';
 import { ApiService } from '../api.service';
 import { UploadService } from '../upload.service';
 import { WebSocketService } from '../ws.service';
-import { TradeData } from '../../league-zone/league-manage/league-manage-trades/league-manage-trades.component';
 
 const ROOTPATH = 'leagues';
 
@@ -116,26 +113,6 @@ export class LeagueZoneService {
       `${ROOTPATH}/tournaments/${this.tournamentKey()}/divisions/${this.divisionKey()}`,
       { authenticated: true },
     );
-  }
-
-  getPokemonList() {
-    const params: { [key: string]: string } = {};
-    const divisionKey = this.divisionKey();
-    if (divisionKey) params['division'] = divisionKey;
-    return this.apiService.get<{
-      groups?: {
-        pokemon: {
-          id: string;
-          name: string;
-          cost: number;
-          addons?: TierPokemonAddon[];
-          setAddons?: string[];
-        }[];
-        team?: { id: string; name: string; coachName: string };
-      }[];
-    }>(`${ROOTPATH}/tournaments/${this.tournamentKey()}/pokemon-list`, {
-      params,
-    });
   }
 
   getTrades(params?: {}) {
