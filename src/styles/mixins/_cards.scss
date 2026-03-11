@@ -81,6 +81,7 @@
     align-items: center;
     padding: map.get($config, "header-padding");
     min-height: 3.5rem;
+    max-width: 100%;
     .more-btn {
       @include icon-button(());
     }
@@ -89,11 +90,24 @@
       display: flex;
       flex-direction: column;
       flex-grow: 1;
+      min-width: 0;
       font-weight: bold;
+
+      > * {
+        margin: 0;
+        min-width: 0;
+        max-width: 100%;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        white-space: normal;
+        overflow-wrap: anywhere;
+      }
     }
 
     .card-score {
-      padding: var(--pdz-space-2xs) var(--pdz-space-sm);
       align-self: stretch;
       display: flex;
       align-items: center;
@@ -103,7 +117,9 @@
       font-weight: bold;
       justify-content: center;
       text-align: center;
-
+      height: 2.5rem;
+      width: 2.5rem;
+      flex-shrink: 0;
       // Score variants
       &.pdz-background-neg {
         background-color: pdz-color(negative);
