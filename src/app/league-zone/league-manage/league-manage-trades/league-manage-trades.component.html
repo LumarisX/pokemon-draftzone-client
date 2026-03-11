@@ -238,3 +238,114 @@
     </div>
   }
 </div>
+
+<section class="trade-log">
+  <h3 class="trade-log__heading">Submitted Trades</h3>
+
+  @if (stages?.length) {
+    @for (stage of stages; track stage.name) {
+      <details class="trade-stage">
+        <summary class="trade-stage__summary">
+          <span class="trade-stage__heading">{{ stage.name }}</span>
+          <span class="trade-stage__count">
+            {{ stage.trades.length }}
+            {{ stage.trades.length === 1 ? "trade" : "trades" }}
+          </span>
+        </summary>
+
+        <div class="trade-stage__content">
+          @if (stage.trades.length) {
+            <div class="trade-stage__list">
+              @for (trade of stage.trades; track $index) {
+                <article class="trade-entry">
+                  <div class="trade-entry__header">
+                    <span
+                      class="trade-entry__status"
+                      [class.trade-entry__status--pending]="
+                        trade.status === 'PENDING'
+                      "
+                      [class.trade-entry__status--approved]="
+                        trade.status === 'APPROVED'
+                      "
+                      [class.trade-entry__status--rejected]="
+                        trade.status === 'REJECTED'
+                      "
+                    >
+                      {{ trade.status }}
+                    </span>
+                    <span class="trade-entry__timestamp">
+                      {{ trade.timestamp | date: "medium" }}
+                    </span>
+                  </div>
+
+                  <div class="trade-entry__body">
+                    <div class="trade-entry__side">
+                      <p class="trade-entry__team">
+                        {{ trade.side1.team?.name || "Free Agency" }}
+                      </p>
+                      <p class="trade-entry__pokemon">
+                        @if (trade.side1.pokemon.length) {
+                          @for (
+                            pokemon of trade.side1.pokemon;
+                            track pokemon.id
+                          ) {
+                            <span>
+                              {{ pokemon.name }}
+                              @if (pokemon.tera) {
+                                (Tera)
+                              }
+                            </span>
+                          }
+                        } @else {
+                          <span>No Pokemon selected</span>
+                        }
+                      </p>
+                    </div>
+
+                    <span class="trade-entry__swap">⇄</span>
+
+                    <div class="trade-entry__side">
+                      <p class="trade-entry__team">
+                        {{ trade.side2.team?.name || "Free Agency" }}
+                      </p>
+                      <p class="trade-entry__pokemon">
+                        @if (trade.side2.pokemon.length) {
+                          @for (
+                            pokemon of trade.side2.pokemon;
+                            track pokemon.id
+                          ) {
+                            <span>
+                              {{ pokemon.name }}
+                              @if (pokemon.tera) {
+                                (Tera)
+                              }
+                            </span>
+                          }
+                        } @else {
+                          <span>No Pokemon selected</span>
+                        }
+                      </p>
+                    </div>
+                  </div>
+
+                  <div class="trade-entry__actions">
+                    <button type="button" class="btn btn--secondary" disabled>
+                      Delete
+                    </button>
+                    <button type="button" class="btn btn--primary" disabled>
+                      Approve
+                    </button>
+                  </div>
+                </article>
+              }
+            </div>
+          } @else {
+            <p class="trade-stage__empty">No trades in this stage yet.</p>
+          }
+        </div>
+      </details>
+    }
+  } @else {
+    <p class="trade-log__empty">No submitted trades yet.</p>
+  }
+</section>

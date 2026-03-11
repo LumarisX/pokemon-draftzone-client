@@ -278,6 +278,194 @@
   }
 }
 
+.trade-log {
+  margin-top: var(--pdz-space-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--pdz-space-md);
+
+  &__heading {
+    @include apply-typography("title-md");
+    margin: 0;
+    color: pdz-color(on-surface);
+  }
+
+  &__empty {
+    margin: 0;
+    color: pdz-color(on-surface-variant);
+    @include apply-typography("body-md");
+  }
+}
+
+.trade-stage {
+  border: 1px solid pdz-color(outline-variant);
+  border-radius: var(--pdz-shape-md);
+  background: pdz-color(surface-container-low);
+  overflow: hidden;
+
+  &__summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--pdz-space-sm);
+    padding: var(--pdz-space-md);
+    cursor: pointer;
+    list-style: none;
+  }
+
+  &__summary::-webkit-details-marker {
+    display: none;
+  }
+
+  &__summary::after {
+    content: "▸";
+    color: pdz-color(on-surface-variant);
+    transition: transform 0.2s ease;
+  }
+
+  &[open] &__summary::after {
+    transform: rotate(90deg);
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--pdz-space-sm);
+    padding: 0 var(--pdz-space-md) var(--pdz-space-md);
+  }
+
+  &__heading {
+    @include apply-typography("label-lg");
+    color: pdz-color(on-surface);
+    margin: 0;
+  }
+
+  &__count {
+    @include apply-typography("body-sm");
+    color: pdz-color(on-surface-variant);
+    margin-right: var(--pdz-space-md);
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--pdz-space-sm);
+  }
+
+  &__empty {
+    margin: 0;
+    @include apply-typography("body-sm");
+    color: pdz-color(on-surface-variant);
+  }
+}
+
+.trade-entry {
+  background: pdz-color(surface);
+  border: 1px solid pdz-color(outline-variant);
+  border-radius: var(--pdz-shape-md);
+  padding: var(--pdz-space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--pdz-space-sm);
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--pdz-space-sm);
+    flex-wrap: wrap;
+  }
+
+  &__status {
+    @include apply-typography("label-sm");
+    border-radius: var(--pdz-shape-sm);
+    padding: var(--pdz-space-2xs) var(--pdz-space-xs);
+    font-weight: 600;
+    border: 1px solid transparent;
+
+    &--pending {
+      background: pdz-color(warning-container);
+      color: pdz-color(on-warning-container);
+      border-color: pdz-color(warning);
+    }
+
+    &--approved {
+      background: pdz-color(success-container);
+      color: pdz-color(on-success-container);
+      border-color: pdz-color(success);
+    }
+
+    &--rejected {
+      background: pdz-color(error-container);
+      color: pdz-color(on-error-container);
+      border-color: pdz-color(error);
+    }
+  }
+
+  &__timestamp {
+    @include apply-typography("body-sm");
+    color: pdz-color(on-surface-variant);
+  }
+
+  &__body {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: var(--pdz-space-sm);
+    align-items: start;
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__side {
+    background: pdz-color(surface-container-low);
+    border-radius: var(--pdz-shape-sm);
+    border: 1px solid pdz-color(outline-variant);
+    padding: var(--pdz-space-sm);
+  }
+
+  &__team {
+    @include apply-typography("label-md");
+    color: pdz-color(on-surface);
+    margin: 0 0 var(--pdz-space-2xs) 0;
+    font-weight: 600;
+  }
+
+  &__pokemon {
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--pdz-space-2xs) var(--pdz-space-xs);
+    @include apply-typography("body-sm");
+    color: pdz-color(on-surface-variant);
+  }
+
+  &__swap {
+    align-self: center;
+    color: pdz-color(primary);
+    @include apply-typography("label-lg");
+
+    @media (max-width: 768px) {
+      transform: rotate(90deg);
+    }
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--pdz-space-sm);
+
+    @media (max-width: 768px) {
+      justify-content: stretch;
+
+      .btn {
+        flex: 1;
+      }
+    }
+  }
+}
+
 .btn {
   @include apply-typography("label-lg");
   padding: var(--pdz-space-md) var(--pdz-space-lg);

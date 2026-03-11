@@ -200,6 +200,9 @@ type TradeParticipant = {
 };
 
 export type TradeLog = {
+  activeStage: number;
   side1: TradeParticipant;
   side2: TradeParticipant;
+  timestamp: Date;
+  status: 'PENDING' | 'APPROVED' | 'REJECTED';
 };

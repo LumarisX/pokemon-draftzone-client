@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { TierPokemonAddon } from '../../interfaces/tier-pokemon.interface';
-import { League } from '../../league-zone/league.interface';
+import { League, TradeLog } from '../../league-zone/league.interface';
 import { ApiService } from '../api.service';
 import { LeagueZoneService } from './league-zone.service';
 
@@ -73,6 +73,20 @@ export class LeagueManageService {
       `leagues/tournaments/${this.leagueZoneService.tournamentKey()}/manage/divisions/${this.leagueZoneService.divisionKey()}/skip`,
       '',
       { authenticated: true },
+    );
+  }
+
+  getTrades() {
+    return this.apiService.get<{
+      stages: {
+        name: string;
+        trades: TradeLog[];
+      }[];
+    }>(
+      `leagues/tournaments/${this.leagueZoneService.tournamentKey()}/manage/divisions/${this.leagueZoneService.divisionKey()}/trades`,
+      {
+        authenticated: true,
+      },
     );
   }
 

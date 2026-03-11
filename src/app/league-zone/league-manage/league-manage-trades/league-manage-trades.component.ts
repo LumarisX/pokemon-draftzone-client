@@ -10,6 +10,9 @@ import { LeagueZoneService } from '../../../services/leagues/league-zone.service
 import { TierPokemonAddon } from '../../../interfaces/tier-pokemon.interface';
 import { RouterModule } from '@angular/router';
 import { LeagueManageService } from '../../../services/leagues/league-manage.service';
+import { LeagueTradeWidgetComponent } from '../../league-widgets/league-trade-widget/league-trade-widget.component';
+import { TradeLog } from '../../league.interface';
+import { CommonModule } from '@angular/common';
 
 interface TradeGroup {
   id: string;
@@ -28,6 +31,11 @@ interface TradePokemon {
 
 type SelectedTradePokemon = { id: string; tera: boolean };
 
+type TradeStage = {
+  name: string;
+  trades: TradeLog[];
+};
+
 export interface TradeData {
   side1: {
     team?: string;
@@ -42,7 +50,13 @@ export interface TradeData {
 
 @Component({
   selector: 'pdz-league-manage-trades',
-  imports: [ReactiveFormsModule, FormsModule, LoadingComponent, RouterModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    LoadingComponent,
+    RouterModule,
+  ],
   templateUrl: './league-manage-trades.component.html',
   styleUrl: './league-manage-trades.component.scss',
 })
@@ -67,6 +81,8 @@ export class LeagueManageTradesComponent implements OnInit {
   });
 
   stageOptions = Array.from({ length: 8 }, (_, i) => i);
+
+  stages?: TradeStage[];
 
   getGroupPokemon(side: 'side1' | 'side2'): TradePokemon[] {
     const groupId = this.tradeForm.get(`${side}Group`)?.value;
@@ -102,15 +118,52 @@ export class LeagueManageTradesComponent implements OnInit {
       this.tradeForm.get('side2Pokemon')?.setValue([]);
     });
 
+    this.loadPokemonList();
+    this.loadTrades();
+  }
+
+  private loadPokemonList(): void {
     this.leagueManageService.getPokemonList().subscribe({
       next: (data) => {
         this.loading = false;
         this.buildGroupsAndMapping(data.groups || []);
       },
       error: (err) => {
+        this.loading = false;
         console.error('Error fetching pokemon list:', err);
       },
     });
+  }
+
+  private loadTrades(): void {
+    this.leagueManageService.getTrades().subscribe({
+      next: (data) => {
+        this.stages = this.sortTradesWithinStages(data.stages || []);
+      },
+      error: (err) => {
+        console.error('Error fetching trades:', err);
+      },
+    });
+  }
+
+  private sortTradesWithinStages(stages: TradeStage[]): TradeStage[] {
+    return stages.map((stage) => ({
+      ...stage,
+      trades: this.sortTradesByNewest(stage.trades),
+    }));
+  }
+
+  private sortTradesByNewest(trades: TradeLog[]): TradeLog[] {
+    return [...trades].sort((a, b) => {
+      return (
+        this.getTimestampMs(b.timestamp) - this.getTimestampMs(a.timestamp)
+      );
+    });
+  }
+
+  private getTimestampMs(timestamp: Date): number {
+    const value = new Date(timestamp).getTime();
+    return Number.isNaN(value) ? 0 : value;
   }
 
   private buildGroupsAndMapping(
@@ -352,80 +405,14 @@ export class LeagueManageTradesComponent implements OnInit {
     this.leagueService.sendTrade(tradeData).subscribe({
       next: (response) => {
         console.log('Trade submitted successfully:', response);
-        this.swapPokemonOnClient(tradeData);
         this.resetTrade();
+        this.loadPokemonList();
+        this.loadTrades();
       },
       error: (err) => {
         console.error('Error submitting trade:', err);
       },
     });
-  }
-
-  private swapPokemonOnClient(tradeData: TradeData): void {
-    const side1GroupId = tradeData.side1.team;
-    const side2GroupId = tradeData.side2.team;
-
-    if (!side1GroupId || !side2GroupId || side1GroupId === side2GroupId) return;
-
-    const groupLookup = new Map(
-      this.groups().map((group) => [group.id, group]),
-    );
-    const side1Group = groupLookup.get(side1GroupId);
-    const side2Group = groupLookup.get(side2GroupId);
-
-    const map = new Map(this.pokemonByGroup());
-    const side1List = [...(map.get(side1GroupId) || [])];
-    const side2List = [...(map.get(side2GroupId) || [])];
-
-    const side1SelectedMap = new Map(
-      tradeData.side1.pokemon.map((pokemon) => [pokemon.id, pokemon.tera]),
-    );
-    const side2SelectedMap = new Map(
-      tradeData.side2.pokemon.map((pokemon) => [pokemon.id, pokemon.tera]),
-    );
-
-    const side1Selected: TradePokemon[] = [];
-    const side2Selected: TradePokemon[] = [];
-
-    const nextSide1List: TradePokemon[] = [];
-    side1List.forEach((pokemon) => {
-      if (side1SelectedMap.has(pokemon.id)) {
-        side1Selected.push({
-          ...pokemon,
-          tera: side1SelectedMap.get(pokemon.id) ?? pokemon.tera,
-        });
-      } else {
-        nextSide1List.push(pokemon);
-      }
-    });
-
-    const nextSide2List: TradePokemon[] = [];
-    side2List.forEach((pokemon) => {
-      if (side2SelectedMap.has(pokemon.id)) {
-        side2Selected.push({
-          ...pokemon,
-          tera: side2SelectedMap.get(pokemon.id) ?? pokemon.tera,
-        });
-      } else {
-        nextSide2List.push(pokemon);
-      }
-    });
-
-    const side1Team = side1Group?.team;
-    const side2Team = side2Group?.team;
-
-    const side1Incoming = side2Selected.map((pokemon) => ({
-      ...pokemon,
-      team: side1Team,
-    }));
-    const side2Incoming = side1Selected.map((pokemon) => ({
-      ...pokemon,
-      team: side2Team,
-    }));
-
-    map.set(side1GroupId, [...nextSide1List, ...side1Incoming]);
-    map.set(side2GroupId, [...nextSide2List, ...side2Incoming]);
-    this.pokemonByGroup.set(map);
   }
 
   resetTrade(): void {
