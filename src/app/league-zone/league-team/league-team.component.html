@@ -1,22 +1,40 @@
 @if (teamData) {
   <div class="team-header">
-    <div class="team-header__meta">
-      <button type="button" class="team-header__back" [routerLink]="['../']">
-        <pdz-icon name="arrow_back" size="sm"></pdz-icon> Back
-      </button>
-      <div class="team-header__info">
-        <h1 class="team-header__team-name">{{ teamData.name }}</h1>
-        <h2 class="team-header__coach-name">{{ teamData.coach }}</h2>
+    <button type="button" class="team-header__back" [routerLink]="['../']">
+      <pdz-icon name="arrow_back" size="sm"></pdz-icon> Back
+    </button>
+    <div class="team-header__content">
+      <div class="team-header__meta">
+        <div class="team-header__info">
+          <div class="team-header__identity">
+            <h1 class="team-header__team-name">{{ teamData.name }}</h1>
+            <h2 class="team-header__coach-name">{{ teamData.coach }}</h2>
+          </div>
+          <div class="team-header__details">
+            <p class="team-header__record">
+              <span class="team-header__wins">{{
+                teamData.record?.wins ?? 0
+              }}</span>
+              <span class="team-header__losses">{{
+                teamData.record?.losses ?? 0
+              }}</span>
+            </p>
+            @if (coachCurrentTime) {
+              <p class="team-header__time">{{ coachCurrentTime }}</p>
+            }
+          </div>
+        </div>
       </div>
+      <img
+        class="team-header__image"
+        [src]="getLogoUrl(teamData.logo)"
+        alt="Team logo"
+      />
     </div>
-    <img
-      class="team-header__image"
-      [src]="getLogoUrl(teamData.logo)"
-      alt="Team logo"
-    />
   </div>
   <div class="team-body">
     <div class="section section--matchups">
+      F
       <div class="section-header">
         <h3>Schedule</h3>
       </div>
@@ -73,7 +91,7 @@
                         (
                           (pokemon.record?.kills ?? 0) /
                           (pokemon.record?.deaths ?? 1)
-                        ).toFixed(2)
+                        ).toFixed(1)
                       }}
                     } @else {
                       {{

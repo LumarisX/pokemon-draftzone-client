@@ -3,19 +3,12 @@ import { Component, Input } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
 import { SpriteComponent } from '../../../images/sprite/sprite.component';
-import { PlusSignPipe } from '../../../util/pipes/plus-sign.pipe';
 import { League } from '../../league.interface';
 import { getLogoUrl } from '../../league.util';
 
 @Component({
   selector: 'pdz-league-team-card',
-  imports: [
-    CommonModule,
-    SpriteComponent,
-    PlusSignPipe,
-    MatIconModule,
-    RouterLink,
-  ],
+  imports: [CommonModule, SpriteComponent, MatIconModule, RouterLink],
   templateUrl: './league-team-card.component.html',
   styleUrls: ['./league-team-card.component.scss', '../../league.scss'],
 })
@@ -41,6 +34,13 @@ export class LeagueTeamCardComponent {
     } catch (error) {
       return timezone;
     }
+  }
+
+  recordDiff(): number {
+    if (!this.teamDetails.record) return 0;
+    return this.teamDetails.diffMode === 'game'
+      ? this.teamDetails.record.gameDiff
+      : this.teamDetails.record.pokemonDiff;
   }
 
   hasCapt(): boolean {

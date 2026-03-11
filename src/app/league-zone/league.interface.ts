@@ -27,8 +27,10 @@ export namespace League {
     record?: {
       wins: number;
       losses: number;
-      diff: number;
+      gameDiff: number;
+      pokemonDiff: number;
     };
+    diffMode?: 'game' | 'pokemon';
     timezone?: string;
   };
 

@@ -3,12 +3,31 @@
 @use "../league.mixins" as *;
 
 .team-header {
-  @include pdz-league-page-header-large();
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  row-gap: var(--pdz-space-sm);
+  @include pdz-league-page-header();
+  align-items: stretch;
+  flex-direction: column;
+  gap: var(--pdz-space-sm);
+
+  @include respond-above(medium) {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--pdz-space-md);
+  }
+
+  &__content {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--pdz-space-sm);
+    width: 100%;
+
+    @include respond-above(medium) {
+      align-items: center;
+      gap: var(--pdz-space-md);
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+  }
 
   &__meta {
     display: flex;
@@ -17,11 +36,9 @@
     gap: var(--pdz-space-xs);
     flex: 1 1 auto;
     min-width: 0;
-    height: 100%;
 
     @include respond-above(medium) {
-      flex-direction: row;
-      align-items: center;
+      align-items: flex-start;
       gap: var(--pdz-space-md);
     }
   }
@@ -32,10 +49,40 @@
     gap: var(--pdz-space-xs);
     text-align: left;
     min-width: 0;
+
+    @include respond-above(medium) {
+      flex-direction: row;
+      align-items: center;
+      gap: var(--pdz-space-md);
+    }
+  }
+
+  &__identity {
+    display: flex;
+    flex-direction: column;
+    gap: var(--pdz-space-xs);
+    min-width: 0;
+  }
+
+  &__details {
+    display: flex;
+    flex-direction: column;
+    gap: var(--pdz-space-sm);
+
+    @include respond-above(medium) {
+      align-items: flex-start;
+      text-align: left;
+    }
   }
 
   &__back {
     @include pdz-league-page-back-button();
+    margin-bottom: var(--pdz-space-2xs);
+
+    @include respond-above(medium) {
+      margin-bottom: 0;
+      align-self: flex-start;
+    }
   }
 
   &__team-name {
@@ -58,16 +105,55 @@
     }
   }
 
+  &__time {
+    @include apply-typography(body-lg);
+    color: pdz-color(secondary);
+    margin: 0;
+  }
+
+  &__record {
+    margin: 0;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--pdz-space-xs);
+  }
+
+  &__wins {
+    @include pdz-league-record-box();
+    font-size: 1.2rem;
+    background-color: pdz-color(positive);
+    color: pdz-color(on-positive);
+    line-height: 2rem;
+    width: 2rem;
+    height: 2rem;
+  }
+
+  &__losses {
+    @include pdz-league-record-box();
+    background-color: pdz-color(negative);
+    font-size: 1.2rem;
+    color: pdz-color(on-negative);
+    line-height: 2rem;
+    width: 2rem;
+    height: 2rem;
+  }
+
   &__image {
-    max-width: 12rem;
-    height: 100%;
-    max-height: 8rem;
+    width: clamp(4rem, 22vw, 6rem);
+    height: clamp(4rem, 22vw, 6rem);
     object-fit: contain;
     filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+    flex-shrink: 0;
+    align-self: center;
 
     @include respond-above(medium) {
-      max-width: 20rem;
-      max-height: 10rem;
+      margin-left: auto;
+      width: auto;
+      height: 100%;
+      max-width: 14rem;
+      max-height: 7rem;
+      align-self: auto;
     }
   }
 }

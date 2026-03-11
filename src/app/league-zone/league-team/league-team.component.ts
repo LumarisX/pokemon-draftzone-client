@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
-import { Subject } from 'rxjs';
+import { interval, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { IconComponent } from '../../images/icon/icon.component';
 import { LoadingComponent } from '../../images/loading/loading.component';
@@ -35,6 +35,7 @@ export class LeagueTeamComponent implements OnInit, OnDestroy {
   scheduleStages!: League.Stage[];
   tradeStages?: { name: string; trades: TradeLog[] }[];
   getLogoUrl = getLogoUrl;
+  coachCurrentTime = '';
 
   total = {
     cost: 0,
@@ -61,9 +62,24 @@ export class LeagueTeamComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.startCoachClock();
     this.loadTeam();
     this.loadSchedule();
     this.loadTrades();
+  }
+
+  private startCoachClock(): void {
+    interval(30_000)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.updateCoachCurrentTime();
+      });
+  }
+
+  private updateCoachCurrentTime(): void {
+    this.coachCurrentTime = this.getCurrentTimeInTimezone(
+      this.teamData?.timezone,
+    );
   }
 
   private loadTeam(): void {
@@ -73,11 +89,12 @@ export class LeagueTeamComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (data) => {
           this.teamData = data;
+          this.updateCoachCurrentTime();
           this.total = data.draft.reduce(
             (sum, p) => ({
               cost: sum.cost + p.cost,
-              kill: sum.kill,
-              deaths: sum.deaths,
+              kill: sum.kill + (p.record?.kills ?? 0),
+              deaths: sum.deaths + (p.record?.deaths ?? 0),
             }),
             {
               cost: 0,

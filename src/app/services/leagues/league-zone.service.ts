@@ -334,7 +334,12 @@ export class LeagueZoneService {
     );
   }
 
-  getTeam(): Observable<League.LeagueTeam> {
+  getTeam(): Observable<
+    League.LeagueTeam & {
+      pokemonStandings: League.PokemonStanding[];
+      matchups: League.Matchup[];
+    }
+  > {
     return this.apiService.get(
       `${ROOTPATH}/tournaments/${this.tournamentKey()}/divisions/${this.divisionKey()}/teams/${this.teamKey()}`,
       { authenticated: true },

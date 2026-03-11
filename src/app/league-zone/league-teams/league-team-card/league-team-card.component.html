@@ -16,9 +16,19 @@
         </span>
         @if (teamDetails.record) {
           <span class="team-record">
-            {{ teamDetails.record.wins }}-{{ teamDetails.record.losses }} ({{
-              teamDetails.record.diff | plusSign
-            }})
+            <span class="team-record__wins">{{ teamDetails.record.wins }}</span>
+            <span class="team-record__losses">{{
+              teamDetails.record.losses
+            }}</span>
+            <!-- <span
+              class="team-record__diff"
+              [ngClass]="{
+                'team-record__diff--positive': recordDiff() > 0,
+                'team-record__diff--negative': recordDiff() < 0,
+              }"
+            >
+              {{ recordDiff() | plusSign }}
+            </span> -->
           </span>
         }
       </div>

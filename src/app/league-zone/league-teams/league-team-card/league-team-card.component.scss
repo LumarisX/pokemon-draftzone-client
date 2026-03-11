@@ -45,12 +45,57 @@
       .team-info-bar {
         display: flex;
         justify-content: space-between;
+        align-items: center;
+        gap: 0.4rem;
+        flex-wrap: wrap;
       }
 
       .team-record {
-        color: var(--pdz-color-secondary);
-        font-size: 0.8rem;
-        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+
+        &__wins {
+          @include pdz-league-record-box();
+          background-color: var(--pdz-color-positive);
+          color: var(--pdz-color-on-positive);
+          width: 1.25rem;
+          height: 1.25rem;
+          line-height: 1.25rem;
+          font-size: 0.75rem;
+        }
+
+        &__losses {
+          @include pdz-league-record-box();
+          background-color: var(--pdz-color-negative);
+          color: var(--pdz-color-on-negative);
+          width: 1.25rem;
+          height: 1.25rem;
+          line-height: 1.25rem;
+          font-size: 0.75rem;
+        }
+
+        &__diff {
+          @include pdz-league-record-box();
+          background-color: var(--pdz-color-secondary-container);
+          color: var(--pdz-color-on-secondary-container);
+          width: auto;
+          min-width: 2.1rem;
+          height: 1.35rem;
+          line-height: 1.35rem;
+          padding: 0 0.35rem;
+          font-size: 0.72rem;
+
+          &--positive {
+            background-color: var(--pdz-color-positive-container);
+            color: var(--pdz-color-on-positive-container);
+          }
+
+          &--negative {
+            background-color: var(--pdz-color-negative-container);
+            color: var(--pdz-color-on-negative-container);
+          }
+        }
       }
 
       .team-timezone {
