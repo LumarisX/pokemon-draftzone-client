@@ -11145,7 +11145,7 @@ export const Namedex: {
       ps: { id: 'urshifu-rapidstrikegmax', flip: true },
       serebii: { id: '892-rgi' },
       pmd: { id: '0892' },
-      psgh: { id: 's28544-g' },
+      psgh: { id: 's28545-g', flip: true },
     },
   },
   zarude: {
