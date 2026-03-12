@@ -138,7 +138,7 @@
   gap: var(--pdz-space-sm);
   height: fit-content;
   box-shadow: var(--pdz-level-1);
-
+  max-width: 100%;
   &--matchups {
     width: fit-content;
   }

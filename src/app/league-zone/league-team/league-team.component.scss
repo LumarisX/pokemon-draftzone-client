@@ -175,7 +175,7 @@
   gap: var(--pdz-space-sm);
   height: fit-content;
   box-shadow: var(--pdz-level-1);
-
+  max-width: 100%;
   &--matchups {
     width: fit-content;
   }
@@ -198,6 +198,7 @@
 
   &-body {
     max-height: 40rem;
+    width: 100%;
     overflow: auto;
     scrollbar-gutter: stable both-edges;
     padding: 0 var(--pdz-space-xs);
@@ -211,7 +212,7 @@
   background: var(--pdz-color-surface);
   border-radius: var(--pdz-shape-corner-lg);
   box-shadow: var(--pdz-level-2);
-  overflow: hidden;
+  overflow: auto;
 
   .stats-table {
     width: 100%;
