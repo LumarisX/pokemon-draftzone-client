@@ -184,12 +184,8 @@
             <div class="matchup-card__match-option">
               <span
                 class="matchup-card__match-score"
-                [class.matchup-card__match-score--winning]="
-                  match.team1.score > match.team2.score
-                "
-                [class.matchup-card__match-score--losing]="
-                  match.team1.score < match.team2.score
-                "
+                [class.matchup-card__match-score--winning]="match.team1.winner"
+                [class.matchup-card__match-score--losing]="match.team2.winner"
               >
                 {{ match.team1.score }}
               </span>
@@ -204,12 +200,8 @@
               </button>
               <span
                 class="matchup-card__match-score"
-                [class.matchup-card__match-score--winning]="
-                  match.team2.score > match.team1.score
-                "
-                [class.matchup-card__match-score--losing]="
-                  match.team2.score < match.team1.score
-                "
+                [class.matchup-card__match-score--winning]="match.team2.winner"
+                [class.matchup-card__match-score--losing]="match.team1.winner"
               >
                 {{ match.team2.score }}
               </span>
