@@ -78,12 +78,14 @@
                   class="record-box record-box--big"
                   [class.positive]="team.wins > team.losses"
                   [class.negative]="team.wins < team.losses"
+                  [class.neutral]="team.wins === team.losses"
                   >{{ team.wins }}-{{ team.losses }}</span
                 >
                 <span
                   class="record-box"
                   [class.positive]="team.gameDiff > 0"
                   [class.negative]="team.gameDiff < 0"
+                  [class.neutral]="team.gameDiff === 0"
                 >
                   {{ team.gameDiff | plusSign }}
                 </span>
@@ -91,6 +93,7 @@
                   class="record-box"
                   [class.positive]="team.pokemonDiff > 0"
                   [class.negative]="team.pokemonDiff < 0"
+                  [class.neutral]="team.pokemonDiff === 0"
                 >
                   {{ team.pokemonDiff | plusSign }}
                 </span>

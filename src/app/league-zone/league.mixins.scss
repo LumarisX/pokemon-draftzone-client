@@ -79,7 +79,7 @@
 
 @mixin pdz-league-record-box() {
   background-color: pdz-color(surface-container);
-  color: pdz-color(on-surface);
+  color: pdz-color(surface-container);
   text-align: center;
   font-size: 0.9rem;
   line-height: 1.75rem;
@@ -98,6 +98,13 @@
     color: pdz-color(on-secondary);
     box-shadow: var(--pdz-level-1);
   }
+
+  &.neutral {
+    background-color: pdz-color(menu-container);
+    color: pdz-color(background);
+    box-shadow: var(--pdz-level-1);
+  }
+
   &.positive {
     background-color: pdz-color(positive);
     color: pdz-color(on-menu);
