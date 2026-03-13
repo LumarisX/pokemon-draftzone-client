@@ -15,10 +15,18 @@ export class LeagueManageService {
     matchupId: string,
     payload: {
       score?: { team1: number; team2: number };
-      winner?: 'team1' | 'team2';
+      winner?:
+        | 'side1'
+        | 'side2'
+        | 'draw'
+        | 'side1ffw'
+        | 'side2ffw'
+        | 'dffl'
+        | null;
+
       matches: Array<{
         link?: string;
-        winner: 'team1' | 'team2';
+        winner: 'side1' | 'side2' | 'draw';
         team1: {
           score: number;
           pokemon: Record<string, League.MatchPokemonStats | { status: null }>;
@@ -91,7 +99,10 @@ export class LeagueManageService {
   }
 
   getSchedule() {
-    return this.apiService.get<League.Stage[]>(
+    return this.apiService.get<{
+      stages: League.Stage[];
+      currentStage: number;
+    }>(
       `leagues/tournaments/${this.leagueZoneService.tournamentKey()}/manage/divisions/${this.leagueZoneService.divisionKey()}/schedule`,
       {
         authenticated: true,
@@ -111,6 +122,8 @@ export class LeagueManageService {
         }[];
         team?: { id: string; name: string; coachName: string };
       }[];
+      stages: string[];
+      currentStage: number;
     }>(
       `leagues/tournaments/${this.leagueZoneService.tournamentKey()}/manage/divisions/${this.leagueZoneService.divisionKey()}/pokemon-list`,
       { authenticated: true },

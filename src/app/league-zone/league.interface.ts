@@ -83,11 +83,7 @@ export namespace League {
     }[];
     scheduledDate?: Date;
     notes?: string;
-    winner?: 'team1' | 'team2';
-    score?: {
-      team1: number;
-      team2: number;
-    };
+    winner?: 'side1' | 'side2' | 'draw';
   };
 
   export type Stage = {
@@ -146,7 +142,10 @@ export namespace League {
 
   export type TeamStandingData = {
     name: string;
-    results: number[];
+    results: ({
+      outcome: 'w' | 'l' | 't' | 'ff';
+      score: number;
+    } | null)[];
     coach: string;
     coaches?: string[];
     streak: number;

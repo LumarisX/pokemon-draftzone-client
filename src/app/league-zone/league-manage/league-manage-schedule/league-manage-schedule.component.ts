@@ -41,7 +41,7 @@ type MatchForm = FormGroup<{
   link: FormControl<string>;
   team1Score: FormControl<number>;
   team2Score: FormControl<number>;
-  winner: FormControl<'team1' | 'team2' | null>;
+  winner: FormControl<'side1' | 'side2' | 'draw' | null>;
   team1Pokemon: FormArray<PokemonStatsForm>;
   team2Pokemon: FormArray<PokemonStatsForm>;
 }>;
@@ -49,7 +49,9 @@ type MatchForm = FormGroup<{
 type MatchupForm = FormGroup<{
   matchupScoreTeam1: FormControl<number>;
   matchupScoreTeam2: FormControl<number>;
-  matchupWinner: FormControl<'team1' | 'team2' | null>;
+  matchupWinner: FormControl<
+    'side1' | 'side2' | 'draw' | 'side1ffw' | 'side2ffw' | 'dffl' | null
+  >;
   matches: FormArray<MatchForm>;
 }>;
 
@@ -57,14 +59,14 @@ type PokemonStatsSeed = League.MatchPokemonStats | { status: null };
 
 type ScheduleMatchPayload = {
   link?: string;
-  winner: 'team1' | 'team2';
+  winner: 'side1' | 'side2' | 'draw';
   team1: { score: number; pokemon: Record<string, PokemonStatsSeed> };
   team2: { score: number; pokemon: Record<string, PokemonStatsSeed> };
 };
 
 type ScheduleMatchupPayload = {
   score?: { team1: number; team2: number };
-  winner?: 'team1' | 'team2';
+  winner?: 'side1' | 'side2' | 'draw' | 'side1ffw' | 'side2ffw' | 'dffl' | null;
   matches: ScheduleMatchPayload[];
 };
 
@@ -125,10 +127,13 @@ export class LeagueManageScheduleComponent {
         takeUntil(this.destroy$),
       )
       .subscribe({
-        next: (stages) => {
-          this.scheduleStages = stages;
-          this.buildMatchupForms(stages);
-          this.stageCollapsedState.set(stages[1]?._id, true);
+        next: (data) => {
+          this.scheduleStages = data.stages;
+          this.buildMatchupForms(data.stages);
+          this.stageCollapsedState.set(
+            data.stages[data.currentStage]?._id,
+            true,
+          );
         },
       });
   }
@@ -218,8 +223,8 @@ export class LeagueManageScheduleComponent {
     const matchForm = this.getMatchForm(matchupId, matchIndex);
     if (!matchForm) return 'Unassigned';
     const winner = matchForm.controls.winner.value;
-    if (winner === 'team1') return matchup.team1.name;
-    if (winner === 'team2') return matchup.team2.name;
+    if (winner === 'side1') return matchup.team1.name;
+    if (winner === 'side2') return matchup.team2.name;
     return 'Unassigned';
   }
 
@@ -285,8 +290,8 @@ export class LeagueManageScheduleComponent {
 
   private isMatchupScored(matchup: League.Matchup): boolean {
     return (
-      (matchup.score?.team1 ?? 0) > 0 ||
-      (matchup.score?.team2 ?? 0) > 0 ||
+      (matchup.team1.score ?? 0) > 0 ||
+      (matchup.team2.score ?? 0) > 0 ||
       !!matchup.winner ||
       matchup.matches.some((match) => match.link && match.link.trim() !== '')
     );
@@ -483,8 +488,8 @@ export class LeagueManageScheduleComponent {
   }
 
   private buildMatchupForm(matchup: League.Matchup): MatchupForm {
-    const scoreTeam1 = matchup.score?.team1 ?? matchup.team1.score ?? 0;
-    const scoreTeam2 = matchup.score?.team2 ?? matchup.team2.score ?? 0;
+    const scoreTeam1 = matchup.team1.score ?? 0;
+    const scoreTeam2 = matchup.team2.score ?? 0;
     const matchForms = matchup.matches.length
       ? matchup.matches.map((match) => this.buildMatchForm(matchup, match))
       : [];
@@ -492,9 +497,9 @@ export class LeagueManageScheduleComponent {
     return this.fb.group({
       matchupScoreTeam1: this.fb.control(scoreTeam1, { nonNullable: true }),
       matchupScoreTeam2: this.fb.control(scoreTeam2, { nonNullable: true }),
-      matchupWinner: this.fb.control<'team1' | 'team2' | null>(
-        matchup.winner ?? null,
-      ),
+      matchupWinner: this.fb.control<
+        'side1' | 'side2' | 'draw' | 'side1ffw' | 'side2ffw' | 'dffl' | null
+      >(matchup.winner ?? null),
       matches: this.fb.array(matchForms),
     });
   }
@@ -514,8 +519,8 @@ export class LeagueManageScheduleComponent {
       team2Score: this.fb.control(match?.team2?.score ?? 0, {
         nonNullable: true,
       }),
-      winner: this.fb.control<'team1' | 'team2' | null>(
-        match?.team1?.winner ? 'team1' : match?.team2?.winner ? 'team2' : null,
+      winner: this.fb.control<'side1' | 'side2' | 'draw' | null>(
+        match?.team1?.winner ? 'side1' : match?.team2?.winner ? 'side2' : null,
       ),
       team1Pokemon: this.fb.array(
         matchup.team1.draft.map((pokemon) =>
@@ -587,7 +592,7 @@ export class LeagueManageScheduleComponent {
       assignment.team2,
     );
     matchForm.controls.winner.setValue(
-      assignment.team1.win ? 'team1' : assignment.team2.win ? 'team2' : null,
+      assignment.team1.win ? 'side1' : assignment.team2.win ? 'side2' : null,
     );
 
     matchForm.controls.team1Score.setValue(
@@ -683,9 +688,9 @@ export class LeagueManageScheduleComponent {
 
     form.controls.matches.controls.forEach((match) => {
       const winner = match.controls.winner.value;
-      if (winner === 'team1') {
+      if (winner === 'side1') {
         team1Wins++;
-      } else if (winner === 'team2') {
+      } else if (winner === 'side2') {
         team2Wins++;
       }
     });
@@ -693,11 +698,11 @@ export class LeagueManageScheduleComponent {
     form.controls.matchupScoreTeam1.setValue(team1Wins);
     form.controls.matchupScoreTeam2.setValue(team2Wins);
 
-    let matchupWinner: 'team1' | 'team2' | null = null;
+    let matchupWinner: 'side1' | 'side2' | 'draw' | null = null;
     if (team1Wins > team2Wins) {
-      matchupWinner = 'team1';
+      matchupWinner = 'side1';
     } else if (team2Wins > team1Wins) {
-      matchupWinner = 'team2';
+      matchupWinner = 'side2';
     }
     form.controls.matchupWinner.setValue(matchupWinner);
   }
@@ -713,8 +718,8 @@ export class LeagueManageScheduleComponent {
       const winner =
         match.controls.winner.value ??
         (match.controls.team1Score.value >= match.controls.team2Score.value
-          ? 'team1'
-          : 'team2');
+          ? 'side1'
+          : 'side2');
 
       return {
         link: match.controls.link.value.trim() || undefined,

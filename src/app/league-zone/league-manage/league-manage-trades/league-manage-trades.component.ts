@@ -1,18 +1,26 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import {
   FormBuilder,
   FormsModule,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { ActivatedRoute, RouterModule } from '@angular/router';
+import {
+  distinctUntilChanged,
+  finalize,
+  forkJoin,
+  map,
+  Subject,
+  take,
+  takeUntil,
+} from 'rxjs';
 import { LoadingComponent } from '../../../images/loading/loading.component';
-import { LeagueZoneService } from '../../../services/leagues/league-zone.service';
 import { TierPokemonAddon } from '../../../interfaces/tier-pokemon.interface';
-import { RouterModule } from '@angular/router';
 import { LeagueManageService } from '../../../services/leagues/league-manage.service';
-import { LeagueTradeWidgetComponent } from '../../league-widgets/league-trade-widget/league-trade-widget.component';
+import { LeagueZoneService } from '../../../services/leagues/league-zone.service';
 import { TradeLog } from '../../league.interface';
-import { CommonModule } from '@angular/common';
 
 interface TradeGroup {
   id: string;
@@ -60,12 +68,15 @@ export interface TradeData {
   templateUrl: './league-manage-trades.component.html',
   styleUrl: './league-manage-trades.component.scss',
 })
-export class LeagueManageTradesComponent implements OnInit {
+export class LeagueManageTradesComponent implements OnInit, OnDestroy {
   private leagueService = inject(LeagueZoneService);
   private leagueManageService = inject(LeagueManageService);
+  private route = inject(ActivatedRoute);
   private fb = inject(FormBuilder);
+  private readonly destroy$ = new Subject<void>();
 
   loading = true;
+  submitting = false;
   groups = signal<TradeGroup[]>([]);
   private pokemonByGroup = signal(new Map<string, TradePokemon[]>());
 
@@ -77,10 +88,10 @@ export class LeagueManageTradesComponent implements OnInit {
     side1Pokemon: [[] as SelectedTradePokemon[]],
     side2Group: ['', Validators.required],
     side2Pokemon: [[] as SelectedTradePokemon[]],
-    stage: [1, Validators.required],
+    stage: [0, Validators.required],
   });
 
-  stageOptions = Array.from({ length: 8 }, (_, i) => i);
+  stageOptions: string[] = [];
 
   stages?: TradeStage[];
 
@@ -108,42 +119,83 @@ export class LeagueManageTradesComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.tradeForm.get('side1Group')?.valueChanges.subscribe(() => {
-      this.side1SearchQuery.set('');
-      this.tradeForm.get('side1Pokemon')?.setValue([]);
-    });
+    this.tradeForm
+      .get('side1Group')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.side1SearchQuery.set('');
+        this.tradeForm.get('side1Pokemon')?.setValue([]);
+      });
 
-    this.tradeForm.get('side2Group')?.valueChanges.subscribe(() => {
-      this.side2SearchQuery.set('');
-      this.tradeForm.get('side2Pokemon')?.setValue([]);
-    });
+    this.tradeForm
+      .get('side2Group')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.side2SearchQuery.set('');
+        this.tradeForm.get('side2Pokemon')?.setValue([]);
+      });
 
-    this.loadPokemonList();
-    this.loadTrades();
+    this.route.paramMap
+      .pipe(
+        map((params) => params.get('divisionKey')),
+        distinctUntilChanged(),
+        takeUntil(this.destroy$),
+      )
+      .subscribe(() => {
+        this.groups.set([]);
+        this.pokemonByGroup.set(new Map());
+        this.stages = undefined;
+        this.side1SearchQuery.set('');
+        this.side2SearchQuery.set('');
+        this.tradeForm.patchValue(
+          {
+            side1Group: '',
+            side2Group: '',
+            side1Pokemon: [],
+            side2Pokemon: [],
+          },
+          { emitEvent: false },
+        );
+
+        this.refreshTradeData();
+      });
   }
 
-  private loadPokemonList(): void {
-    this.leagueManageService.getPokemonList().subscribe({
-      next: (data) => {
-        this.loading = false;
-        this.buildGroupsAndMapping(data.groups || []);
-      },
-      error: (err) => {
-        this.loading = false;
-        console.error('Error fetching pokemon list:', err);
-      },
-    });
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
-  private loadTrades(): void {
-    this.leagueManageService.getTrades().subscribe({
-      next: (data) => {
-        this.stages = this.sortTradesWithinStages(data.stages || []);
-      },
-      error: (err) => {
-        console.error('Error fetching trades:', err);
-      },
-    });
+  private refreshTradeData(): void {
+    this.loading = true;
+
+    forkJoin({
+      pokemonList: this.leagueManageService.getPokemonList().pipe(take(1)),
+      trades: this.leagueManageService.getTrades().pipe(take(1)),
+    })
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: ({ pokemonList, trades }) => {
+          this.buildGroupsAndMapping(pokemonList.groups || []);
+          this.stageOptions = pokemonList.stages || [];
+
+          const stageControl = this.tradeForm.controls.stage;
+          const selectedStage = Number(stageControl.value ?? 0);
+          const maxStageIndex = Math.max(0, this.stageOptions.length - 1);
+          const stageToApply =
+            selectedStage >= 0 && selectedStage <= maxStageIndex
+              ? selectedStage
+              : pokemonList.currentStage;
+
+          stageControl.setValue(stageToApply);
+          this.stages = this.sortTradesWithinStages(trades.stages || []);
+          this.loading = false;
+        },
+        error: (err) => {
+          this.loading = false;
+          console.error('Error refreshing trade data:', err);
+        },
+      });
   }
 
   private sortTradesWithinStages(stages: TradeStage[]): TradeStage[] {
@@ -376,7 +428,7 @@ export class LeagueManageTradesComponent implements OnInit {
   }
 
   submitTrade(): void {
-    if (this.tradeForm.invalid) {
+    if (this.tradeForm.invalid || this.submitting) {
       console.warn('Trade form is invalid');
       return;
     }
@@ -402,17 +454,26 @@ export class LeagueManageTradesComponent implements OnInit {
       stage: Number(this.tradeForm.get('stage')?.value ?? -1),
     };
 
-    this.leagueService.sendTrade(tradeData).subscribe({
-      next: (response) => {
-        console.log('Trade submitted successfully:', response);
-        this.resetTrade();
-        this.loadPokemonList();
-        this.loadTrades();
-      },
-      error: (err) => {
-        console.error('Error submitting trade:', err);
-      },
-    });
+    this.submitting = true;
+    this.leagueService
+      .sendTrade(tradeData)
+      .pipe(
+        take(1),
+        takeUntil(this.destroy$),
+        finalize(() => {
+          this.submitting = false;
+        }),
+      )
+      .subscribe({
+        next: (response) => {
+          console.log('Trade submitted successfully:', response);
+          this.resetTrade();
+          this.refreshTradeData();
+        },
+        error: (err) => {
+          console.error('Error submitting trade:', err);
+        },
+      });
   }
 
   resetTrade(): void {

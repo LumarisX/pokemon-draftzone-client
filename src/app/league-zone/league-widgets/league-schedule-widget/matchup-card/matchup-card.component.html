@@ -1,9 +1,9 @@
 <div
   class="matchup-card"
-  [class.matchup-card--clickable]="matchup.matches.length > 0"
+  [class.matchup-card--clickable]="matchup.winner"
   (click)="toggleOpen()"
 >
-  @if (matchup.matches.length > 0) {
+  @if (matchup.winner) {
     <pdz-icon
       class="matchup-card__toggle-icon"
       [name]="isOpen() ? 'keyboard_arrow_up' : 'keyboard_arrow_down'"
@@ -15,14 +15,10 @@
     <div
       class="matchup-card__team-info-container"
       [class.matchup-card__team-info-container--winner]="
-        isOpen() &&
-        matchup.matches.length &&
-        matchup.matches[selectedMatch].team1.winner
+        isOpen() && matchup.winner === 'side1'
       "
       [class.matchup-card__team-info-container--loser]="
-        isOpen() &&
-        matchup.matches.length &&
-        matchup.matches[selectedMatch].team2.winner
+        isOpen() && matchup.winner !== 'side1'
       "
       [routerLink]="
         '/leagues/pdbl/tournaments/' +
@@ -46,17 +42,34 @@
     </div>
 
     <div class="matchup-card__center">
-      @if (matchup.matches.length > 0) {
-        <button
-          class="matchup-card__replay-button"
-          [class.matchup-card__replay-button--active]="
-            matchup.matches[selectedMatch]?.link
-          "
-          [disabled]="!matchup.matches[selectedMatch]?.link"
-          (click)="onReplayClick($event)"
-        >
-          Replay
-        </button>
+      @if (matchup.winner) {
+        @if (!matchup.matches.length) {
+          <button
+            class="matchup-card__replay-button"
+            disabled
+            (click)="resetReplays($event)"
+          >
+            Replay
+          </button>
+        } @else if (replayIndex >= matchup.matches.length) {
+          <button
+            class="matchup-card__replay-button matchup-card__replay-button--active"
+            (click)="resetReplays($event)"
+          >
+            Rewatch
+          </button>
+        } @else {
+          <button
+            class="matchup-card__replay-button"
+            [class.matchup-card__replay-button--active]="
+              matchup.matches[selectedMatch]?.link
+            "
+            [disabled]="!matchup.matches[selectedMatch]?.link"
+            (click)="onReplayClick($event)"
+          >
+            Game {{ replayIndex + 1 }}
+          </button>
+        }
       } @else {
         <button
           class="matchup-card__matchup-button"
@@ -82,14 +95,10 @@
     <div
       class="matchup-card__team-info-container matchup-card__team-info-container--right"
       [class.matchup-card__team-info-container--winner]="
-        isOpen() &&
-        matchup.matches.length &&
-        matchup.matches[selectedMatch].team2.winner
+        isOpen() && matchup.winner === 'side2'
       "
       [class.matchup-card__team-info-container--loser]="
-        isOpen() &&
-        matchup.matches.length &&
-        matchup.matches[selectedMatch].team1.winner
+        isOpen() && matchup.winner !== 'side2'
       "
       [routerLink]="
         '/leagues/pdbl/tournaments/' +
@@ -113,7 +122,7 @@
     </div>
   </div>
 
-  @if (isOpen() && matchup.matches.length > 0) {
+  @if (isOpen() && matchup.winner) {
     <div class="matchup-card__content">
       <div class="matchup-card__score-display">
         <div

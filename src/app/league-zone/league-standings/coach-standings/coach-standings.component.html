@@ -100,18 +100,22 @@
               <div class="results-container">
                 @for (i of weekRange; track i) {
                   @let result = team.results[i];
-                  <div
-                    class="result-box"
-                    [class.positive]="result > 0"
-                    [class.negative]="result < 0"
-                  >
-                    <span class="default-content">
-                      {{ result > 0 ? "W" : "L" }}
-                    </span>
-                    <span class="hovered-content">
-                      {{ result | plusSign }}</span
+                  @if (result) {
+                    <div
+                      class="result-box"
+                      [class.positive]="result.outcome === 'w'"
+                      [class.negative]="
+                        result.outcome === 'l' || result.outcome === 'ff'
+                      "
                     >
-                  </div>
+                      <span class="default-content">
+                        {{ result.outcome | uppercase }}
+                      </span>
+                      <span class="hovered-content">
+                        {{ result.score | plusSign }}</span
+                      >
+                    </div>
+                  }
                 }
                 <div class="streak">
                   <div

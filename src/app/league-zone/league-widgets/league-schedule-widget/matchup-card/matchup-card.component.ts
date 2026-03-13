@@ -31,25 +31,32 @@ export class MatchupCardComponent implements OnInit {
   private _isOpen = signal<boolean>(false);
   isOpen = this._isOpen.asReadonly();
   selectedMatch = 0;
+  replayIndex = 0;
 
   ngOnInit(): void {
-    if (this.initiallyOpen && this.matchup.matches.length > 0) {
+    if (this.initiallyOpen && this.matchup.winner) {
       this._isOpen.set(true);
     }
   }
 
   toggleOpen(): void {
-    if (this.matchup.matches.length > 0) {
+    if (this.matchup.winner) {
       this._isOpen.update((open) => !open);
     }
   }
 
   onReplayClick(event: Event): void {
     event.stopPropagation();
-    const match = this.matchup.matches[this.selectedMatch];
+    const match = this.matchup.matches[this.replayIndex];
     if (match?.link) {
       window.open(match.link, '_blank');
     }
+    this.replayIndex++;
+  }
+
+  resetReplays(event: Event): void {
+    event.stopPropagation();
+    this.replayIndex = 0;
   }
 
   selectMatch(index: number, event: Event): void {

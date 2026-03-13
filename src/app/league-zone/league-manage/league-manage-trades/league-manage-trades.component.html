@@ -216,7 +216,7 @@
         <label for="stage" class="trade-label">Trade Stage</label>
         <select id="stage" formControlName="stage" class="trade-dropdown">
           @for (stage of stageOptions; track stage) {
-            <option [value]="stage">Week {{ stage + 1 }}</option>
+            <option [value]="$index">{{ stage }}</option>
           }
         </select>
       </div>
@@ -230,7 +230,7 @@
       <button
         type="button"
         (click)="submitTrade()"
-        [disabled]="tradeForm.invalid"
+        [disabled]="tradeForm.invalid || submitting || loading"
         class="btn btn--primary"
       >
         Send Trade

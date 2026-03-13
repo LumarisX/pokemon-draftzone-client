@@ -146,8 +146,9 @@
 
 .score-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
   gap: var(--pdz-space-sm);
+  align-items: end;
 }
 
 .match-list {

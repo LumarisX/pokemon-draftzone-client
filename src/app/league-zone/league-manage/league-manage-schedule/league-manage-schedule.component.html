@@ -89,11 +89,22 @@
                       />
                     </div>
                     <div class="field">
-                      <label>Matchup Winner</label>
+                      <label>Matchup Outcome</label>
                       <select formControlName="matchupWinner">
-                        <option [ngValue]="null">Unassigned</option>
-                        <option value="team1">{{ matchup.team1.name }}</option>
-                        <option value="team2">{{ matchup.team2.name }}</option>
+                        <option [ngValue]="null">---</option>
+                        <option value="side1">
+                          Win: {{ matchup.team1.name }}
+                        </option>
+                        <option value="side2">
+                          Win: {{ matchup.team2.name }}
+                        </option>
+                        <option value="side1ffw">
+                          Forfeit Win: {{ matchup.team1.name }}
+                        </option>
+                        <option value="side2ffw">
+                          Forfeit Win: {{ matchup.team2.name }}
+                        </option>
+                        <option value="dffl">Double Forfeit Loss</option>
                       </select>
                     </div>
                   </div>
@@ -297,10 +308,10 @@
                               <label>Match Winner</label>
                               <select formControlName="winner">
                                 <option [ngValue]="null">Unassigned</option>
-                                <option value="team1">
+                                <option value="side1">
                                   {{ matchup.team1.name }}
                                 </option>
-                                <option value="team2">
+                                <option value="side2">
                                   {{ matchup.team2.name }}
                                 </option>
                               </select>
