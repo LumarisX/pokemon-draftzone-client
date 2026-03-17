@@ -5,6 +5,7 @@ import { OpponentOverviewModule } from '../drafts/opponent-overview/opponent-ove
 import { LeagueAdModule } from '../league-list/league-list.module';
 import { BodyRoutingModule } from './body-routing.module';
 import { BodyComponent } from './body.component';
+import { StatisticsModule } from '../statistics/statistics.module';
 
 @NgModule({
   imports: [
@@ -14,6 +15,7 @@ import { BodyComponent } from './body.component';
     OpponentOverviewModule,
     LeagueAdModule,
     BodyRoutingModule,
+    StatisticsModule,
   ],
   exports: [BodyComponent],
 })

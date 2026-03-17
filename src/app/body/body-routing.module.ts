@@ -7,6 +7,7 @@ import { PlannerComponent } from '../planner/plannner.component';
 import { DebugPath } from '../debug/debug-routing.module';
 import { LeagueZonePath } from '../league-zone/league-zone-routing.module';
 import { ToolsPath } from '../tools/tools.router';
+import { StatisticsPath } from '../statistics/statistics-routing.module';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -33,6 +34,11 @@ const routes: Routes = [
     path: DebugPath,
     loadChildren: () =>
       import('../debug/debug.module').then((m) => m.DebugModule),
+  },
+  {
+    path: StatisticsPath,
+    loadChildren: () =>
+      import('../statistics/statistics.module').then((m) => m.StatisticsModule),
   },
   { path: '**', component: NotFoundComponent },
 ];

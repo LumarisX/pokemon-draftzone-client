@@ -1,0 +1,87 @@
+<section class="statistics">
+  <header class="statistics__header">
+    <h1 class="statistics__title">Draft Usage Statistics</h1>
+  </header>
+
+  <div class="statistics__formats">
+    @if (singlesLoading) {
+      <div class="format-panel__empty"><pdz-loading></pdz-loading></div>
+    } @else if (!singlesData) {
+      <div class="format-panel__empty">No Singles draft data found.</div>
+    } @else {
+      <article class="bucket-card">
+        <header class="bucket-card__header">
+          <div>
+            <h3 class="bucket-card__title">Singles Top Drafted</h3>
+          </div>
+          <div class="bucket-card__totals">
+            <span>Teams: {{ singlesData.totalTeams }}</span>
+            <span>Drafted: {{ singlesData.draftedPokemonCount }}</span>
+            <span>Unique: {{ singlesData.uniquePokemonCount }}</span>
+          </div>
+        </header>
+
+        <div class="usage-chart">
+          @for (row of singlesData.chartRows; track row.pokemon.id) {
+            <div class="usage-chart__row">
+              <div class="usage-chart__pokemon">
+                <span class="usage-chart__rank">{{ row.rank }}</span>
+                <span class="usage-chart__avatar">
+                  <pdz-sprite flipped [pokemon]="row.pokemon"></pdz-sprite>
+                </span>
+                <span class="usage-chart__name">{{ row.pokemon.name }}</span>
+              </div>
+              <div class="usage-chart__bar-track">
+                <div
+                  class="usage-chart__bar"
+                  [style.width.%]="row.barPercent"
+                ></div>
+              </div>
+              <div class="usage-chart__count">{{ row.count }}</div>
+            </div>
+          }
+        </div>
+      </article>
+    }
+
+    @if (vgcLoading) {
+      <div class="format-panel__empty">Loading VGC statistics...</div>
+    } @else if (!vgcData) {
+      <div class="format-panel__empty">No VGC draft data found.</div>
+    } @else {
+      <article class="bucket-card">
+        <header class="bucket-card__header">
+          <div>
+            <h3 class="bucket-card__title">VGC Top Drafted</h3>
+          </div>
+          <div class="bucket-card__totals">
+            <span>Teams: {{ vgcData.totalTeams }}</span>
+            <span>Drafted: {{ vgcData.draftedPokemonCount }}</span>
+            <span>Unique: {{ vgcData.uniquePokemonCount }}</span>
+          </div>
+        </header>
+
+        <div class="usage-chart">
+          @for (row of vgcData.chartRows; track row.pokemon.id) {
+            <div class="usage-chart__row">
+              <div class="usage-chart__pokemon">
+                <span class="usage-chart__rank">{{ row.rank }}</span>
+                <span class="usage-chart__avatar">
+                  <pdz-sprite flipped [pokemon]="row.pokemon"></pdz-sprite>
+                </span>
+                <span class="usage-chart__name">{{ row.pokemon.name }}</span>
+              </div>
+              <div class="usage-chart__bar-track">
+                <div
+                  class="usage-chart__bar"
+                  [style.width.%]="row.barPercent"
+                ></div>
+              </div>
+              <div class="usage-chart__count">{{ row.count }}</div>
+            </div>
+          }
+        </div>
+      </article>
+    }
+  </div>
+</section>
