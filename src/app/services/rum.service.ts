@@ -18,6 +18,7 @@ export class RumService {
   private rum: AwsRum | null = null;
   private initialized = false;
   private routeListenerInitialized = false;
+  private recordedRoutes = new Set<string>();
 
   init(): void {
     if (this.initialized || !environment.rum?.enabled) {
@@ -54,8 +55,24 @@ export class RumService {
         ),
       )
       .subscribe((event) => {
-        this.rum?.recordPageView(event.urlAfterRedirects);
+        const route = this.normalizeRoute(event.urlAfterRedirects);
+        if (this.recordedRoutes.has(route)) {
+          return;
+        }
+
+        this.recordedRoutes.add(route);
+        this.rum?.recordPageView(route);
       });
+  }
+
+  private normalizeRoute(url: string): string {
+    try {
+      const parsedUrl = new URL(url, window.location.origin);
+      return parsedUrl.pathname.replace(/\/+$/, '') || '/';
+    } catch {
+      const fallbackPath = url.split(/[?#]/)[0] || '/';
+      return fallbackPath.replace(/\/+$/, '') || '/';
+    }
   }
 
   recordClientError(error: ClientError): void {
@@ -71,12 +88,5 @@ export class RumService {
     }
 
     this.rum.recordError(errorToRecord);
-    this.rum.recordEvent('client_error', {
-      status: error.status,
-      statusText: error.statusText,
-      url: error.url,
-      requestId: error.meta?.requestId,
-      errorCode: error.error?.code,
-    });
   }
 }

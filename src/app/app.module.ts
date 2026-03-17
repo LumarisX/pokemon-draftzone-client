@@ -13,6 +13,7 @@ import { AppComponent } from './app.component';
 import { BodyModule } from './body/body.module';
 import { TopNavbarComponent } from './pages/top-navbar/top-navbar.component';
 import { TooltipModule } from './util/tooltip/tooltip.module';
+import { RumService } from './services/rum.service';
 import { SwUpdateService } from './services/sw-update.service';
 
 @NgModule({
@@ -57,6 +58,7 @@ import { SwUpdateService } from './services/sw-update.service';
   ],
   providers: [
     provideHttpClient(withInterceptorsFromDi()),
+    provideAppInitializer(() => inject(RumService).init()),
     provideAppInitializer(() => inject(SwUpdateService).init()),
     provideMarkdown({
       markedOptions: {
