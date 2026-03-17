@@ -1,6 +1,4 @@
-<div
-  class="form-container"
->
+<div class="form-container">
   <mat-form-field
     class="w-full"
     [ngClass]="classList"
@@ -20,12 +18,12 @@
             <mat-option [value]="ruleset.id">
               <span>{{ ruleset.name }}</span>
               @if (ruleset.desc) {
-                <mat-icon
+                <pdz-icon
                   #tooltip="matTooltip"
                   [matTooltip]="ruleset.desc"
                   matTooltipPosition="above"
-                  >info</mat-icon
-                >
+                  name="info"
+                ></pdz-icon>
               }
             </mat-option>
           }

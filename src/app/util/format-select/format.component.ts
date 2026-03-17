@@ -8,15 +8,16 @@ import {
   inject,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { MatIconModule } from '@angular/material/icon';
+
 import { MAT_SELECT_CONFIG, MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { DataService } from '../../services/data.service';
 import { MatFormFieldAppearance } from '@angular/material/form-field';
 
+import { IconComponent } from '../../images/icon/icon.component';
 @Component({
   selector: 'pdz-format-select',
-  imports: [CommonModule, MatSelectModule, MatIconModule, MatTooltipModule],
+  imports: [CommonModule, MatSelectModule, IconComponent, MatTooltipModule],
   templateUrl: './format.component.html',
   styleUrl: './format.component.scss',
 

@@ -10,15 +10,15 @@ import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatIconModule } from '@angular/material/icon';
+
 import { MatInputModule } from '@angular/material/input';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { PokemonSelectComponent } from '../../util/pokemon-select/pokemon-select.component';
 import { DraftFormGroup } from '../plannner.component';
+import { IconComponent } from '../../images/icon/icon.component';
 
 @Component({
   selector: 'pdz-planner-team',
-  standalone: true,
   styleUrl: './team.component.scss',
   templateUrl: './team.component.html',
   imports: [
@@ -26,7 +26,7 @@ import { DraftFormGroup } from '../plannner.component';
     FormsModule,
     ReactiveFormsModule,
     MatInputModule,
-    MatIconModule,
+    IconComponent,
     MatCheckboxModule,
     PokemonSelectComponent,
     CdkDrag,

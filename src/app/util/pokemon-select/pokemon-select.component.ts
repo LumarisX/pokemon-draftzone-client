@@ -25,7 +25,7 @@ import {
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
+
 import { MatInputModule } from '@angular/material/input';
 import { BehaviorSubject, combineLatest, fromEvent, of, Subject } from 'rxjs';
 import {
@@ -39,6 +39,7 @@ import {
 import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { DraftPokemon } from '../../interfaces/draft';
 import { DataService } from '../../services/data.service';
+import { IconComponent } from '../../images/icon/icon.component';
 
 @Component({
   selector: 'pdz-pokemon-select',
@@ -51,8 +52,8 @@ import { DataService } from '../../services/data.service';
     ReactiveFormsModule,
     MatButtonModule,
     ScrollingModule,
-    MatIconModule,
     SpriteComponent,
+    IconComponent,
   ],
   templateUrl: './pokemon-select.component.html',
   styleUrl: './pokemon-select.component.scss',

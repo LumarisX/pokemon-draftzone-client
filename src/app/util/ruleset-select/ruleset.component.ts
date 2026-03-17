@@ -3,13 +3,14 @@ import { Component, forwardRef, Input, OnInit, inject } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MAT_SELECT_CONFIG, MatSelectModule } from '@angular/material/select';
 import { DataService } from '../../services/data.service';
-import { MatIconModule } from '@angular/material/icon';
+
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatFormFieldAppearance } from '@angular/material/form-field';
 
+import { IconComponent } from '../../images/icon/icon.component';
 @Component({
   selector: 'pdz-ruleset-select',
-  imports: [CommonModule, MatSelectModule, MatIconModule, MatTooltipModule],
+  imports: [CommonModule, MatSelectModule, IconComponent, MatTooltipModule],
   templateUrl: './ruleset.component.html',
   styleUrl: './ruleset.component.scss',
   providers: [

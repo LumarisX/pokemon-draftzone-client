@@ -1,6 +1,4 @@
-<div
-  class="form-container"
->
+<div class="form-container">
   <mat-form-field
     class="w-full"
     [ngClass]="classList"
@@ -20,12 +18,12 @@
             <mat-option [value]="format.id">
               <span>{{ format.name }}</span>
               @if (format.desc) {
-                <mat-icon
+                <pdz-icon
                   #tooltip="matTooltip"
                   matTooltipPosition="above"
                   [matTooltip]="format.desc"
-                  >info</mat-icon
-                >
+                  name="info"
+                ></pdz-icon>
               }
             </mat-option>
           }
