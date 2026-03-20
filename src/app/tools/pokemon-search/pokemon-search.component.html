@@ -1,0 +1,40 @@
+<div class="p-4 space-y-2 flex flex-col">
+  <div class="bg-menu-100 flex p-2 space-x-4 rounded shadow">
+    <div class="space-x-1">
+      <label for="format" class="font-bold">Format</label>
+      <select
+        class="p-0.5 font-semibold rounded bg-menu-100"
+        [(ngModel)]="selectedFormat"
+        id="format"
+      >
+        @for (format of formats; track format) {
+          <option value="{{ format }}">
+            {{ format }}
+          </option>
+        }
+      </select>
+    </div>
+
+    <div class="space-x-1">
+      <label for="ruleset" class="font-bold">Ruleset</label>
+      <select
+        class="p-0.5 font-semibold rounded bg-menu-100"
+        [(ngModel)]="selectedRuleset"
+        id="ruleset"
+      >
+        @for (ruleset of rulesets; track ruleset) {
+          <option value="{{ ruleset }}">
+            {{ ruleset }}
+          </option>
+        }
+      </select>
+    </div>
+  </div>
+
+  <pdz-pokemon-search-core
+    [rulesetId]="selectedRuleset"
+    [formatId]="selectedFormat"
+    [startQuery]="queryParamValue"
+    (updatedQuery)="updateURLQuery($event)"
+  ></pdz-pokemon-search-core>
+</div>

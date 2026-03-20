@@ -243,7 +243,7 @@ export class FindOptionComponent {
     },
     {
       name: 'Egg Group',
-      value: 'dexnum',
+      value: 'eggGroups',
       operations: ['∈', '∉'],
       query: 'eggs',
     },

@@ -126,6 +126,33 @@ export class DataService {
     return this.apiService.get<ResultData[]>('data/advancesearch', { params });
   }
 
+  pokemonSearch(
+    query: string | string[] | Record<string, unknown>,
+    ruleset?: string,
+    format?: string,
+  ) {
+    const queryText =
+      typeof query === 'string' || Array.isArray(query) ? query : undefined;
+    const joinedQueryText = Array.isArray(queryText)
+      ? queryText.join('')
+      : queryText;
+
+    let parsedQuery: unknown = query;
+    if (joinedQueryText !== undefined) {
+      parsedQuery = joinedQueryText;
+      try {
+        parsedQuery = JSON.parse(joinedQueryText);
+      } catch {
+        parsedQuery = joinedQueryText;
+      }
+    }
+
+    return this.apiService.post<ResultData[]>('data/pokemonsearch', {
+      ruleset,
+      query: parsedQuery,
+    });
+  }
+
   getFormes(ruleset: string, id: string): Observable<OldPokemon[]> {
     if (this.cache.formes[id]) return of(this.cache.formes[id]);
     else {
