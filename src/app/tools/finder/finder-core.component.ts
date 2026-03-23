@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { DataService, ResultData } from '../../services/data.service';
+import { DataService, PokemonFullData } from '../../services/data.service';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { FindOptionComponent } from './find-option/find-option.component';
 import { typeColor } from '../../util/styling';
@@ -51,7 +51,7 @@ export class FinderCoreComponent implements OnInit {
 
   @Output() UpdatedQuery = new EventEmitter<string>();
 
-  results: ResultData[] = [];
+  results: PokemonFullData[] = [];
   queryGroups: QueryGroup[] = [];
   finalQuery: string = '';
   sortedColumn: string = 'num';

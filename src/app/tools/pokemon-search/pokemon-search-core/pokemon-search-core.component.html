@@ -1,303 +1,127 @@
-<div class="finder-core">
-  <div class="finder-core__controls">
-    <div class="finder-core__quick-search">
-      <label for="quickName">Quick Search</label>
-      <div class="finder-core__quick-input-row">
-        <input
-          id="quickName"
-          type="text"
-          [(ngModel)]="quickName"
-          placeholder="e.g. Charizard"
-          (keydown.enter)="quickSearch()"
-        />
-        <button type="button" (click)="quickSearch()">Search Name</button>
-      </div>
+<div class="pokemon-results">
+  @if (errorMessage) {
+    <p class="pokemon-results__error">{{ errorMessage }}</p>
+  }
+
+  <div class="pokemon-results__header">
+    @if (isLoading) {
+      <p class="pokemon-results__meta">Searching...</p>
+    } @else {
+      <p class="pokemon-results__meta">{{ results.length }} results</p>
+    }
+
+    <div
+      class="pokemon-results__view-toggle"
+      role="group"
+      aria-label="View mode"
+    >
+      <button
+        type="button"
+        class="pokemon-results__view-button"
+        [class.is-active]="viewMode === 'grid'"
+        [attr.aria-pressed]="viewMode === 'grid'"
+        (click)="setViewMode('grid')"
+      >
+        <pdz-icon name="view_cozy"></pdz-icon>
+      </button>
+      <button
+        type="button"
+        class="pokemon-results__view-button"
+        [class.is-active]="viewMode === 'list'"
+        [attr.aria-pressed]="viewMode === 'list'"
+        (click)="setViewMode('list')"
+      >
+        <pdz-icon name="view_list"></pdz-icon>
+      </button>
     </div>
+  </div>
 
-    <div class="finder-core__advanced-query">
-      <div class="finder-core__query-options">
-        <div class="finder-core__query-option">
-          <label for="mode">Match Mode</label>
-          <select id="mode" [(ngModel)]="mode">
-            <option value="and">All filters (AND)</option>
-            <option value="or">Any filter (OR)</option>
-          </select>
-        </div>
-
-        <div class="finder-core__query-option">
-          <label for="sortBy">Sort Field</label>
-          <select id="sortBy" [(ngModel)]="sortBy">
-            @for (field of fields; track field.key) {
-              <option [ngValue]="field.key">{{ field.label }}</option>
-            }
-          </select>
-        </div>
-
-        <div class="finder-core__query-option">
-          <label for="sortDirection">Sort Direction</label>
-          <select id="sortDirection" [(ngModel)]="sortDirection">
-            <option value="asc">Ascending</option>
-            <option value="desc">Descending</option>
-          </select>
-        </div>
-
-        <div class="finder-core__query-option">
-          <label for="pageSize">Page Size</label>
-          <select
-            id="pageSize"
-            [(ngModel)]="pageSize"
-            (ngModelChange)="onPageSizeChange()"
+  @if (hasResults) {
+    @if (viewMode === "grid") {
+      <div class="pokemon-results__grid">
+        @for (pokemon of results; track pokemon.id + "-" + $index) {
+          <button
+            type="button"
+            class="pokemon-results__card"
+            (click)="openSummary(pokemon)"
           >
-            @for (size of pageSizeOptions; track size) {
-              <option [ngValue]="size">{{ size }}</option>
-            }
-          </select>
-        </div>
+            <pdz-sprite
+              flipped
+              [pokemon]="pokemon"
+              class="pokemon-results__sprite"
+            ></pdz-sprite>
+            <span class="pokemon-results__card-name">{{ pokemon.name }}</span>
+          </button>
+        }
       </div>
-
-      <div class="finder-core__filters">
-        <div class="finder-core__filters-title">Advanced Filters</div>
-
-        @for (filter of filters; track filter; let filterIndex = $index) {
-          <div class="finder-core__filter-card">
-            <div class="finder-core__filter-row">
-              <div class="finder-core__field-group">
-                <label>Field</label>
-                <select
-                  [(ngModel)]="filter.field"
-                  (ngModelChange)="onFilterFieldChange(filter)"
-                >
-                  @for (field of fields; track field.key) {
-                    <option [ngValue]="field.key">{{ field.label }}</option>
-                  }
-                </select>
+    } @else {
+      <div class="pokemon-results__list">
+        @for (pokemon of results; track pokemon.id + "-" + $index) {
+          <div class="pokemon-results__list-row">
+            <div class="pokemon-results__list-main">
+              <pdz-sprite
+                flipped
+                [pokemon]="pokemon"
+                size="3.5rem"
+              ></pdz-sprite>
+              <div class="pokemon-results__list-details">
+                <p class="pokemon-results__list-name">{{ pokemon.name }}</p>
+                <p class="pokemon-results__list-meta">
+                  #{{ pokemon.num }} · {{ pokemon.types.join(" / ") }}
+                </p>
               </div>
-
-              <div class="finder-core__field-group">
-                <label>Operator</label>
-                <select [(ngModel)]="filter.operator">
-                  @for (
-                    operator of fieldOperators(filter.field);
-                    track operator
-                  ) {
-                    <option [ngValue]="operator">
-                      {{ operatorLabels[operator] }}
-                    </option>
-                  }
-                </select>
-              </div>
-
-              @if (filter.field !== "learns") {
-                <div
-                  class="finder-core__field-group finder-core__field-group--value"
-                >
-                  <label>Value</label>
-                  @if (
-                    filter.field === "nfe" ||
-                    filter.field === "evolved" ||
-                    filter.field === "isMega" ||
-                    filter.field === "isPrimal" ||
-                    filter.field === "isGigantamax"
-                  ) {
-                    <select [(ngModel)]="filter.value">
-                      <option [ngValue]="true">True</option>
-                      <option [ngValue]="false">False</option>
-                    </select>
-                  } @else if (
-                    filter.field === "num" ||
-                    filter.field === "gen" ||
-                    filter.field === "weightkg" ||
-                    filter.field === "bst" ||
-                    filter.field === "cst" ||
-                    filter.field === "hp" ||
-                    filter.field === "atk" ||
-                    filter.field === "def" ||
-                    filter.field === "spa" ||
-                    filter.field === "spd" ||
-                    filter.field === "spe"
-                  ) {
-                    <input type="number" [(ngModel)]="filter.value" />
-                  } @else {
-                    <input type="text" [(ngModel)]="filter.value" />
-                  }
-                </div>
-              }
-
-              <button
-                type="button"
-                class="finder-core__danger"
-                (click)="removeFilter(filterIndex)"
-              >
-                Remove
-              </button>
             </div>
 
-            @if (filter.field === "learns") {
-              <div class="finder-core__move-mode">
-                <label>Move Match Mode</label>
-                <select [(ngModel)]="filter.moveMode">
-                  <option value="and">All move conditions (AND)</option>
-                  <option value="or">Any move condition (OR)</option>
-                </select>
-              </div>
-
-              <div class="finder-core__move-filters">
-                @for (
-                  moveFilter of filter.moveFilters || [];
-                  track moveFilter;
-                  let moveIndex = $index
-                ) {
-                  <div
-                    class="finder-core__filter-row finder-core__filter-row--move"
-                  >
-                    <div class="finder-core__field-group">
-                      <label>Move Field</label>
-                      <select
-                        [(ngModel)]="moveFilter.field"
-                        (ngModelChange)="onMoveFieldChange(moveFilter)"
-                      >
-                        @for (moveField of moveFields; track moveField.key) {
-                          <option [ngValue]="moveField.key">
-                            {{ moveField.label }}
-                          </option>
-                        }
-                      </select>
-                    </div>
-
-                    <div class="finder-core__field-group">
-                      <label>Move Operator</label>
-                      <select [(ngModel)]="moveFilter.operator">
-                        @for (
-                          operator of moveFieldOperators(moveFilter.field);
-                          track operator
-                        ) {
-                          <option [ngValue]="operator">
-                            {{ operatorLabels[operator] }}
-                          </option>
-                        }
-                      </select>
-                    </div>
-
-                    <div
-                      class="finder-core__field-group finder-core__field-group--value"
-                    >
-                      <label>Move Value</label>
-                      @if (
-                        moveFilter.field === "basePower" ||
-                        moveFilter.field === "accuracy" ||
-                        moveFilter.field === "pp" ||
-                        moveFilter.field === "priority"
-                      ) {
-                        <input type="number" [(ngModel)]="moveFilter.value" />
-                      } @else {
-                        <input type="text" [(ngModel)]="moveFilter.value" />
-                      }
-                    </div>
-
-                    <button
-                      type="button"
-                      class="finder-core__danger"
-                      (click)="removeMoveFilter(filter, moveIndex)"
-                    >
-                      Remove Move Filter
-                    </button>
-                  </div>
-                }
-
-                <button
-                  type="button"
-                  class="finder-core__subtle"
-                  (click)="addMoveFilter(filter)"
-                >
-                  Add Move Filter
-                </button>
-              </div>
-            }
+            <button
+              type="button"
+              class="pokemon-results__list-action"
+              (click)="openSummary(pokemon)"
+            >
+              Summary
+            </button>
           </div>
         }
+      </div>
+    }
+  } @else if (!isLoading) {
+    <p class="pokemon-results__empty">No Pokemon found.</p>
+  }
+</div>
 
-        <div class="finder-core__actions">
-          <button
-            type="button"
-            class="finder-core__subtle"
-            (click)="addFilter()"
-          >
-            Add Filter
-          </button>
-          <button
-            type="button"
-            class="finder-core__subtle"
-            (click)="resetFilters()"
-          >
-            Reset
-          </button>
-          <button type="button" (click)="search()">Run Advanced Search</button>
+@if (selectedPokemon; as pokemon) {
+  <div class="pokemon-summary-overlay" (click)="closeSummary()">
+    <div
+      class="pokemon-summary-overlay__dialog"
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-label]="pokemon.name + ' summary'"
+      (click)="$event.stopPropagation()"
+    >
+      <button
+        type="button"
+        class="pokemon-summary-overlay__close"
+        (click)="closeSummary()"
+      >
+        Close
+      </button>
+
+      <div class="pokemon-summary-overlay__content">
+        <pdz-sprite [pokemon]="pokemon"></pdz-sprite>
+        <h3 class="pokemon-summary-overlay__name">{{ pokemon.name }}</h3>
+
+        <div class="pokemon-summary-overlay__abilities">
+          <p class="pokemon-summary-overlay__label">Abilities</p>
+          @if (pokemon.abilities.length) {
+            <ul>
+              @for (ability of pokemon.abilities; track ability) {
+                <li>{{ ability }}</li>
+              }
+            </ul>
+          } @else {
+            <p>None listed.</p>
+          }
         </div>
       </div>
     </div>
-
-    @if (errorMessage) {
-      <p class="finder-core__error">{{ errorMessage }}</p>
-    }
   </div>
-
-  <div class="finder-core__results-header">
-    <p>Page {{ page }} Results: {{ results.length }}</p>
-    <div class="finder-core__pagination">
-      <button
-        type="button"
-        (click)="goToPreviousPage()"
-        [disabled]="isPreviousDisabled"
-      >
-        Previous
-      </button>
-      <button
-        type="button"
-        (click)="goToNextPage()"
-        [disabled]="isNextDisabled"
-      >
-        Next
-      </button>
-    </div>
-    @if (isLoading) {
-      <p>Searching...</p>
-    }
-  </div>
-
-  <div class="finder-core__table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Dex #</th>
-          <th>Types</th>
-          <th>Abilities</th>
-          <th>HP</th>
-          <th>Atk</th>
-          <th>Def</th>
-          <th>SpA</th>
-          <th>SpD</th>
-          <th>Spe</th>
-          <th>BST</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (pokemon of results; track pokemon.id) {
-          <tr>
-            <td>{{ pokemon.name }}</td>
-            <td>{{ pokemon.num }}</td>
-            <td>{{ pokemon.types.join(" / ") }}</td>
-            <td>{{ pokemon.abilities.join(", ") }}</td>
-            <td>{{ pokemon.baseStats.hp }}</td>
-            <td>{{ pokemon.baseStats.atk }}</td>
-            <td>{{ pokemon.baseStats.def }}</td>
-            <td>{{ pokemon.baseStats.spa }}</td>
-            <td>{{ pokemon.baseStats.spd }}</td>
-            <td>{{ pokemon.baseStats.spe }}</td>
-            <td>{{ pokemon.bst }}</td>
-          </tr>
-        }
-      </tbody>
-    </table>
-  </div>
-</div>
+}

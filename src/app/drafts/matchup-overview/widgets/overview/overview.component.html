@@ -45,7 +45,8 @@
               @if (pokemon.capt?.tera) {
                 <mat-icon
                   [matTooltip]="
-                    pokemon.capt!.tera!.length
+                    pokemon.capt!.tera!.length &&
+                    pokemon.capt!.tera!.length < 19
                       ? pokemon.capt!.tera!.join(', ')
                       : 'All Types'
                   "

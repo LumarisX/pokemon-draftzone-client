@@ -6,7 +6,7 @@ import { RandomDraftComponent } from './random-draft/random-draft.component';
 import { ReplayComponent } from './replay_analyzer/replay.component';
 import { TimeConverterComponent } from './time_converter/time_converter.component';
 import { ToolsComponent } from './tools.component';
-import { PokemonSearchComponent } from './pokemon-search/pokemon-searchcomponent';
+import { PokemonSearchComponent } from './pokemon-search/pokemon-search.component';
 
 export const ToolsPath = 'tools';
 
