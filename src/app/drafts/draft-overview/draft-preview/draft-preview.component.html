@@ -3,10 +3,10 @@
     <h1 class="title">My Drafts</h1>
     <div class="actions">
       <button [routerLink]="['/', draftPath, 'new']">
-        <mat-icon>add</mat-icon>
+        <pdz-icon name="add"></pdz-icon>
       </button>
       <button [routerLink]="['/', draftPath, 'archives']">
-        <mat-icon>inventory_2</mat-icon>
+        <pdz-icon name="inventory_2"></pdz-icon>
       </button>
     </div>
   </div>
@@ -14,163 +14,184 @@
   @if (!drafts) {
     <pdz-loading></pdz-loading>
   } @else {
-    <div class="drafts-grid">
-      @for (tournament of tournaments; track tournament.tournamentKey) {
-        <div class="draft-card">
-          <div class="card-header">
-            @if (tournament.score) {
-              <div class="card-score" [ngClass]="scoreClass(tournament)">
-                {{ scoreString(tournament) }}
-              </div>
-            }
-            <div class="card-title">
-              <h2 class="league-name">{{ tournament.tournamentName }}</h2>
-            </div>
-          </div>
-          <div class="card-body">
-            <div class="body-header">
-              {{ tournament.ruleset }} - {{ tournament.format }}
-            </div>
-            <div class="sprites">
-              @for (pokemon of tournament.draft; track pokemon.name) {
-                <pdz-sprite [pokemon]="pokemon"></pdz-sprite>
+    @if (hasAnyDrafts()) {
+      <div class="drafts-grid">
+        @for (tournament of tournaments; track tournament.tournamentKey) {
+          <div class="draft-card">
+            <div class="card-header">
+              @if (tournament.score) {
+                <div class="card-score" [ngClass]="scoreClass(tournament)">
+                  {{ scoreString(tournament) }}
+                </div>
               }
-            </div>
-          </div>
-          <div class="card-footer">
-            <a
-              class="footer-link"
-              [routerLink]="[
-                '/leagues',
-                tournament.leagueKey,
-                'tournaments',
-                tournament.tournamentKey,
-                'divisions',
-                tournament.divisionKey,
-                'teams',
-                tournament.teamId,
-              ]"
-              >View Tournament</a
-            >
-          </div>
-        </div>
-      }
-      @for (draft of drafts; track draft.tournamentId) {
-        <div class="draft-card">
-          <div class="card-header">
-            @if (draft.score) {
-              <div class="card-score" [ngClass]="scoreClass(draft)">
-                {{ scoreString(draft) }}
+              <div class="card-title">
+                <h2 class="league-name">{{ tournament.tournamentName }}</h2>
               </div>
-            }
-            <div class="card-title">
-              <h2 class="league-name">{{ draft.leagueName }}</h2>
             </div>
-            <div class="card-menu">
-              <button
-                class="more-btn"
-                (click)="toggleMenu(draft.tournamentId, $event)"
+            <div class="card-body">
+              <div class="body-header">
+                {{ tournament.ruleset }} - {{ tournament.format }}
+              </div>
+              <div class="sprites">
+                @for (pokemon of tournament.draft; track pokemon.name) {
+                  <pdz-sprite [pokemon]="pokemon"></pdz-sprite>
+                }
+              </div>
+            </div>
+            <div class="card-footer">
+              <a
+                class="footer-link"
+                [routerLink]="[
+                  '/leagues',
+                  tournament.leagueKey,
+                  'tournaments',
+                  tournament.tournamentKey,
+                  'divisions',
+                  tournament.divisionKey,
+                  'teams',
+                  tournament.teamId,
+                ]"
+                >View Tournament</a
               >
-                <mat-icon>more_vert</mat-icon>
-              </button>
+            </div>
+          </div>
+        }
+        @for (draft of drafts; track draft.tournamentId) {
+          <div class="draft-card">
+            <div class="card-header">
+              @if (draft.score) {
+                <div class="card-score" [ngClass]="scoreClass(draft)">
+                  {{ scoreString(draft) }}
+                </div>
+              }
+              <div class="card-title">
+                <h2 class="league-name">{{ draft.leagueName }}</h2>
+              </div>
+              <div class="card-menu">
+                <button
+                  class="more-btn"
+                  (click)="toggleMenu(draft.tournamentId, $event)"
+                >
+                  <pdz-icon name="more_vert"></pdz-icon>
+                </button>
 
-              @if (openDropdown === draft.tournamentId) {
-                <div class="menu-dropdown">
-                  <button
-                    class="menu-item"
-                    [routerLink]="['edit']"
-                    [queryParams]="{ draft: draft.tournamentId | json }"
-                  >
-                    <mat-icon>edit_document</mat-icon> Edit Team
-                  </button>
-                  <button
-                    class="menu-item"
-                    routerLink="/planner"
-                    [queryParams]="{ draft: toPlanner(draft) }"
-                  >
-                    <mat-icon>event_list</mat-icon> Open in Planner
-                  </button>
-                  <button
-                    class="menu-item"
-                    (click)="
-                      setMenuState(draft.tournamentId, 'confirm-archive')
-                    "
-                  >
-                    <mat-icon>archive</mat-icon> Archive
-                  </button>
-                  <button
-                    class="menu-item"
-                    (click)="setMenuState(draft.tournamentId, 'confirm-delete')"
-                  >
-                    <mat-icon>delete_forever</mat-icon>
-                    Delete
-                  </button>
+                @if (openDropdown === draft.tournamentId) {
+                  <div class="menu-dropdown">
+                    <button
+                      class="menu-item"
+                      [routerLink]="['edit']"
+                      [queryParams]="{ draft: draft.tournamentId | json }"
+                    >
+                      <pdz-icon name="edit_document"></pdz-icon> Edit Team
+                    </button>
+                    <button
+                      class="menu-item"
+                      routerLink="/planner"
+                      [queryParams]="{ draft: toPlanner(draft) }"
+                    >
+                      <pdz-icon name="event_list"></pdz-icon> Open in Planner
+                    </button>
+                    <button
+                      class="menu-item"
+                      (click)="
+                        setMenuState(draft.tournamentId, 'confirm-archive')
+                      "
+                    >
+                      <pdz-icon name="archive"></pdz-icon> Archive
+                    </button>
+                    <button
+                      class="menu-item"
+                      (click)="
+                        setMenuState(draft.tournamentId, 'confirm-delete')
+                      "
+                    >
+                      <pdz-icon name="delete_forever"></pdz-icon>
+                      Delete
+                    </button>
+                  </div>
+                }
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="body-header">
+                {{ draft.ruleset }} - {{ draft.format }}
+              </div>
+              <div class="sprites">
+                @for (pokemon of draft.team; track pokemon.name) {
+                  <pdz-sprite [pokemon]="pokemon"></pdz-sprite>
+                }
+              </div>
+            </div>
+            <div class="card-footer">
+              @if (menuState[draft.tournamentId] === "confirm-archive") {
+                <div class="confirmation">
+                  <p>Archive draft?</p>
+                  <div class="confirmation-buttons">
+                    <button
+                      class="btn btn-confirm"
+                      (click)="archive(draft.tournamentId)"
+                    >
+                      Yes
+                    </button>
+                    <button
+                      class="btn btn-cancel"
+                      (click)="setMenuState(draft.tournamentId, '')"
+                    >
+                      No
+                    </button>
+                  </div>
                 </div>
+              } @else if (menuState[draft.tournamentId] === "confirm-delete") {
+                <div class="confirmation">
+                  <p>Delete draft?</p>
+                  <div class="confirmation-buttons">
+                    <button
+                      class="btn btn-confirm"
+                      (click)="delete(draft.tournamentId)"
+                    >
+                      Yes
+                    </button>
+                    <button
+                      class="btn btn-cancel"
+                      (click)="setMenuState(draft.tournamentId, '')"
+                    >
+                      No
+                    </button>
+                  </div>
+                </div>
+              } @else {
+                <a
+                  class="footer-link"
+                  [routerLink]="['/', draftPath, draft.tournamentId]"
+                  >Matches</a
+                >
+                <a
+                  class="footer-link"
+                  [routerLink]="[draft.tournamentId, 'stats']"
+                  >Stats</a
+                >
               }
             </div>
           </div>
-          <div class="card-body">
-            <div class="body-header">
-              {{ draft.ruleset }} - {{ draft.format }}
-            </div>
-            <div class="sprites">
-              @for (pokemon of draft.team; track pokemon.name) {
-                <pdz-sprite [pokemon]="pokemon"></pdz-sprite>
-              }
-            </div>
-          </div>
-          <div class="card-footer">
-            @if (menuState[draft.tournamentId] === "confirm-archive") {
-              <div class="confirmation">
-                <p>Archive draft?</p>
-                <div class="confirmation-buttons">
-                  <button
-                    class="btn btn-confirm"
-                    (click)="archive(draft.tournamentId)"
-                  >
-                    Yes
-                  </button>
-                  <button
-                    class="btn btn-cancel"
-                    (click)="setMenuState(draft.tournamentId, '')"
-                  >
-                    No
-                  </button>
-                </div>
-              </div>
-            } @else if (menuState[draft.tournamentId] === "confirm-delete") {
-              <div class="confirmation">
-                <p>Delete draft?</p>
-                <div class="confirmation-buttons">
-                  <button
-                    class="btn btn-confirm"
-                    (click)="delete(draft.tournamentId)"
-                  >
-                    Yes
-                  </button>
-                  <button
-                    class="btn btn-cancel"
-                    (click)="setMenuState(draft.tournamentId, '')"
-                  >
-                    No
-                  </button>
-                </div>
-              </div>
-            } @else {
-              <a
-                class="footer-link"
-                [routerLink]="['/', draftPath, draft.tournamentId]"
-                >Matches</a
-              >
-              <a
-                class="footer-link"
-                [routerLink]="[draft.tournamentId, 'stats']"
-                >Stats</a
-              >
-            }
-          </div>
+        }
+      </div>
+    } @else {
+      <div class="empty-state">
+        <h2 class="empty-state__title">No Drafts Yet</h2>
+        <p class="empty-state__text">
+          Add your first draft to start prepping against opponents and track
+          your season details!
+        </p>
+        <div class="empty-state__actions">
+          <button
+            class="empty-state__button"
+            [routerLink]="['/', draftPath, 'new']"
+          >
+            <pdz-icon name="add"></pdz-icon>
+            Create First Draft
+          </button>
         </div>
-      }
-    </div>
+      </div>
+    }
   }
 </div>
