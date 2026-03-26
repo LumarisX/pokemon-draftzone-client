@@ -17,4 +17,11 @@ export class ReplayService {
       warnings: ReplayWarning[];
     }>(`replay/analyze/${encodeURIComponent(replayURI.trim())}`);
   }
+
+  analyzeReplayV2(replayURI: string) {
+    return this.apiService.get<{
+      analysis: ReplayAnalysis;
+      warnings: ReplayWarning[];
+    }>(`replay/analyze-v2/${encodeURIComponent(replayURI.trim())}`);
+  }
 }
