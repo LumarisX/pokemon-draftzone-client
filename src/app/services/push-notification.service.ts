@@ -53,7 +53,9 @@ export class PushNotificationService {
     subscription: PushSubscription,
     token: string,
   ): Observable<any> {
-    return this.apiService.post('/push/subscribe', true, subscription).pipe(
+    return this.apiService
+      .post('/push/subscribe', subscription, { authenticated: true })
+      .pipe(
       catchError((err) => {
         console.error('Failed to send subscription to backend:', err);
         // Handle specific errors (401, 403, etc.) if needed

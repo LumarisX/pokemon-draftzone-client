@@ -31,7 +31,9 @@ export class ArchiveService {
   }
 
   newDraft(draftData: Object) {
-    return this.apiService.post(`archive/teams`, true, draftData);
+    return this.apiService.post(`archive/teams`, draftData, {
+      authenticated: true,
+    });
   }
 
   editDraft(draftId: string, draftData: Object) {
@@ -47,8 +49,8 @@ export class ArchiveService {
   newMatchup(teamName: string, matchupData: Object) {
     return this.apiService.post(
       `archive/${teamName}/matchups`,
-      true,
       matchupData,
+      { authenticated: true },
     );
   }
 
