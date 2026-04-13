@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { interval, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, map, takeUntil } from 'rxjs/operators';
 import { IconComponent } from '../../images/icon/icon.component';
 import { LoadingComponent } from '../../images/loading/loading.component';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
@@ -30,6 +30,7 @@ import { getLogoUrl } from '../league.util';
 })
 export class LeagueTeamComponent implements OnInit, OnDestroy {
   private readonly leagueService = inject(LeagueZoneService);
+  private readonly route = inject(ActivatedRoute);
 
   teamData?: League.LeagueTeam;
   scheduleStages!: League.Stage[];
@@ -63,9 +64,21 @@ export class LeagueTeamComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.startCoachClock();
-    this.loadTeam();
-    this.loadSchedule();
-    this.loadTrades();
+
+    this.route.paramMap
+      .pipe(
+        map((params) => params.get('teamKey')),
+        distinctUntilChanged(),
+        takeUntil(this.destroy$),
+      )
+      .subscribe(() => {
+        // Force child widgets to re-initialize after team route changes.
+        this.teamData = undefined;
+
+        this.loadTeam();
+        this.loadSchedule();
+        this.loadTrades();
+      });
   }
 
   private startCoachClock(): void {
