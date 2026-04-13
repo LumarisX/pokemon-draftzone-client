@@ -464,18 +464,15 @@ export class MatchupPokemonBuilderComponent implements OnInit, OnDestroy {
   getSliderColor(stat: Stat): string | undefined {
     const pokemon = this.pokemon;
     if (pokemon.stats[stat].get() > pokemon.stats[stat].mid()) {
-      if (!pokemon.hasLegalEvs()) {
-        return 'var(--pdz-color-warning)';
-      } else if (
+      if (!pokemon.hasLegalEvs()) return 'var(--pdz-color-warning)';
+      if (
         isJumpPoint(
           pokemon.stats[stat].get() - 1,
           getNatureValue(stat, pokemon.nature),
         )
-      ) {
+      )
         return 'var(--pdz-color-scale-positive-5)';
-      } else {
-        return 'var(--pdz-color-scale-positive)';
-      }
+      return 'var(--pdz-color-scale-positive)';
     } else if (pokemon.stats[stat].get() < pokemon.stats[stat].mid()) {
       return 'var(--pdz-color-scale-negative)';
     }
@@ -541,6 +538,15 @@ export class MatchupPokemonBuilderComponent implements OnInit, OnDestroy {
     team: string;
   }[] = [];
 
+  modifiers: {
+    [key: string]: boolean;
+  } = {
+    252: true,
+    '252+': true,
+    0: true,
+    '0- 0ivs': true,
+  };
+
   getSpeedTiers(): SpeedTier[] {
     const tiers: {
       pokemon: { name: string; id: string; shiny?: boolean };
@@ -554,7 +560,8 @@ export class MatchupPokemonBuilderComponent implements OnInit, OnDestroy {
       tiers.push(
         ...pokemon.tiers
           .filter((tier) => {
-            if (tier.modifiers.length > 1) return false;
+            if (tier.modifiers.some((mod) => !this.modifiers[mod]))
+              return false;
             return true;
           })
           .map((tier) => ({
@@ -715,5 +722,10 @@ export class MatchupPokemonBuilderComponent implements OnInit, OnDestroy {
     const processedLearnset = this.getProcessedLearnset(this.pokemon);
     if (!processedLearnset) return null;
     return processedLearnset.find((move) => move.name === moveName) || null;
+  }
+
+  get totalEvs() {
+    const evs = this.pokemon.evs;
+    return evs.hp + evs.atk + evs.def + evs.spa + evs.spd + evs.spe;
   }
 }

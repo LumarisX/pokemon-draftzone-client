@@ -522,6 +522,10 @@
             </div>
           }
         </div>
+        <div class="section__footer">
+          <div>Remaining Evs: {{ 508 - totalEvs }}</div>
+          <!-- <div><button>Unlock Evs</button></div> -->
+        </div>
       </div>
 
       <div class="view__section">
@@ -571,6 +575,12 @@
               </div>
             </div>
           }
+        </div>
+        <div class="section__footer">
+          <div>
+            Choice Scarf
+            <input type="checkbox" [(ngModel)]="modifiers['Choice Scarf']" />
+          </div>
         </div>
       </div>
     </div>
