@@ -62,6 +62,7 @@ export class LeagueSignUpComponent implements OnInit, OnDestroy {
 
   leagueInfo: League.LeagueInfo | null = null;
 
+  leagueKey = 'pdbl';
   ngOnInit(): void {
     this.leagueService
       .getLeagueInfo()

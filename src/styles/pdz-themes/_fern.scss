@@ -1,0 +1,147 @@
+@use "sass:map";
+@use "../base/tokens" as *;
+@use "defaults" as *;
+
+$theme-overrides: (
+  light: (
+    // Primary Theme (jade)
+    primary: "jade-500",
+    primary-lighter: "jade-400",
+    primary-darker: "jade-600",
+    on-primary: "white",
+    primary-container: "jade-150",
+    primary-container-low: "jade-100",
+    primary-container-high: "jade-300",
+    primary-container-hover: "jade-200",
+    on-primary-container: "jade-900",
+    primary-hover: "jade-350",
+    primary-border: "jade-250",
+    primary-subtle: "jade-100",
+    primary-gradient: linear-gradient(
+        135deg,
+        var(--pdz-color-jade-500),
+        var(--pdz-color-jade-300)
+      ),
+    // Secondary Theme (blue)
+    secondary: "blue-500",
+    secondary-lighter: "blue-400",
+    secondary-darker: "blue-600",
+    on-secondary: "white",
+    secondary-container: "blue-150",
+    secondary-container-low: "blue-100",
+    secondary-container-high: "blue-300",
+    secondary-container-hover: "blue-200",
+    on-secondary-container: "blue-900",
+    secondary-hover: "blue-350",
+    secondary-border: "blue-250",
+    secondary-subtle: "blue-100",
+    secondary-gradient: linear-gradient(
+        135deg,
+        var(--pdz-color-blue-500),
+        var(--pdz-color-blue-300)
+      ),
+    // Logo Colors
+    logo-top: "jade-500",
+    logo-bottom: "blue-500",
+
+    // Loading Colors
+    loading-primary-high: "jade-600",
+    loading-primary-low: "jade-400",
+    loading-secondary-high: "blue-600",
+    loading-secondary-low: "blue-400",
+
+    // Semantic Data Colors
+    positive: "mint-400",
+    on-positive: "mint-950",
+    positive-container: "mint-900",
+    on-positive-container: "mint-100",
+    negative: "rose-250",
+    on-negative: "rose-950",
+    negative-container: "rose-900",
+    on-negative-container: "rose-100",
+
+    // Scale Colors
+    scale-neutral: "gray-200",
+    scale-positive: "mint-300",
+    scale-negative: "rose-300",
+    scale-positive-1: "mint-100",
+    scale-positive-2: "mint-250",
+    scale-positive-3: "mint-400",
+    scale-positive-4: "mint-500",
+    scale-positive-5: "mint-600",
+    scale-positive-6: "mint-700",
+    scale-positive-7: "mint-800",
+    scale-negative-1: "rose-100",
+    scale-negative-2: "rose-250",
+    scale-negative-3: "rose-400",
+    scale-negative-4: "rose-500",
+    scale-negative-5: "rose-600",
+    scale-negative-6: "rose-700",
+    scale-negative-7: "rose-800",
+
+    hero: linear-gradient(
+        135deg,
+        var(--pdz-color-jade-350),
+        var(--pdz-color-blue-350)
+      ),
+  ),
+  dark: (
+    // Primary Theme (jade)
+    primary: "jade-500",
+    primary-lighter: "jade-400",
+    primary-darker: "jade-600",
+    on-primary: "jade-950",
+    primary-container: "jade-900",
+    primary-container-low: "jade-850",
+    primary-container-high: "jade-950",
+    primary-container-hover: "jade-800",
+    on-primary-container: "jade-200",
+    primary-hover: "jade-550",
+    primary-border: "jade-700",
+    primary-subtle: "jade-900",
+    primary-gradient: linear-gradient(
+        135deg,
+        var(--pdz-color-jade-500),
+        var(--pdz-color-jade-300)
+      ),
+    // Secondary Theme (blue)
+    secondary: "blue-500",
+    secondary-lighter: "blue-400",
+    secondary-darker: "blue-600",
+    on-secondary: "blue-950",
+    secondary-container: "blue-900",
+    secondary-container-low: "blue-850",
+    secondary-container-high: "blue-950",
+    secondary-container-hover: "blue-800",
+    on-secondary-container: "blue-200",
+    secondary-hover: "blue-550",
+    secondary-border: "blue-700",
+    secondary-subtle: "blue-900",
+    secondary-gradient: linear-gradient(
+        135deg,
+        var(--pdz-color-blue-500),
+        var(--pdz-color-blue-300)
+      ),
+    // Logo Colors
+    logo-top: "jade-500",
+    logo-bottom: "blue-500",
+
+    // Loading Colors
+    loading-primary-high: "jade-600",
+    loading-primary-low: "jade-400",
+    loading-secondary-high: "blue-600",
+    loading-secondary-low: "blue-400",
+
+    // Hero
+    hero: linear-gradient(
+        135deg,
+        var(--pdz-color-jade-500),
+        var(--pdz-color-jade-300)
+      ),
+  ),
+);
+
+$theme: (
+  light: map.merge(map.get($defaults, light), map.get($theme-overrides, light)),
+  dark: map.merge(map.get($defaults, dark), map.get($theme-overrides, dark)),
+);

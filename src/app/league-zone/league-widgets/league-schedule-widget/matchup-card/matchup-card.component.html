@@ -14,6 +14,7 @@
   <div class="matchup-card__header">
     <div
       class="matchup-card__team-info-container"
+      (click)="$event.stopPropagation()"
       [class.matchup-card__team-info-container--winner]="
         isOpen() && matchup.winner === 'side1'
       "
@@ -94,6 +95,7 @@
 
     <div
       class="matchup-card__team-info-container matchup-card__team-info-container--right"
+      (click)="$event.stopPropagation()"
       [class.matchup-card__team-info-container--winner]="
         isOpen() && matchup.winner === 'side2'
       "

@@ -1,0 +1,105 @@
+<div class="finder-core">
+  @if (errorMessage) {
+    <p class="finder-core__error">{{ errorMessage }}</p>
+  }
+
+  <div class="finder-core__results-header">
+    <p>
+      Page {{ page }} of {{ totalPages }} | Showing {{ results.length }} of
+      {{ displayTotalResults }}
+    </p>
+
+    <div class="finder-core__results-controls">
+      <div class="finder-core__query-option finder-core__query-option--compact">
+        <label for="pageSize">Rows per page</label>
+        <select
+          id="pageSize"
+          [(ngModel)]="pageSize"
+          (ngModelChange)="onPageSizeChange()"
+        >
+          @for (size of pageSizeOptions; track size) {
+            <option [ngValue]="size">{{ size }}</option>
+          }
+        </select>
+      </div>
+
+      <details class="finder-core__column-picker">
+        <summary>Columns</summary>
+        <div class="finder-core__column-actions">
+          <button
+            type="button"
+            class="finder-core__subtle"
+            (click)="showAllColumns()"
+          >
+            All
+          </button>
+        </div>
+        <div class="finder-core__column-options">
+          @for (column of allColumns; track column.key) {
+            <label class="finder-core__column-option">
+              <input
+                type="checkbox"
+                [ngModel]="
+                  columnVisibility[column.key] || isColumnForced(column.key)
+                "
+                (ngModelChange)="onColumnVisibilityChange(column.key, $event)"
+                [disabled]="isColumnForced(column.key)"
+              />
+              <span>{{ column.label }}</span>
+            </label>
+          }
+        </div>
+      </details>
+
+      <div class="finder-core__pagination">
+        <button
+          type="button"
+          (click)="goToPreviousPage()"
+          [disabled]="isPreviousDisabled"
+        >
+          Previous
+        </button>
+        <button
+          type="button"
+          (click)="goToNextPage()"
+          [disabled]="isNextDisabled"
+        >
+          Next
+        </button>
+      </div>
+    </div>
+
+    @if (isLoading) {
+      <p>Searching...</p>
+    }
+  </div>
+
+  <div class="finder-core__table-wrap">
+    <table>
+      <thead>
+        <tr>
+          @for (column of visibleColumns; track column.key) {
+            <th>{{ column.label }}</th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @if (!results.length && !isLoading) {
+          <tr>
+            <td [attr.colspan]="visibleColumns.length">
+              No results to display.
+            </td>
+          </tr>
+        } @else {
+          @for (pokemon of results; track pokemon.id + "-" + $index) {
+            <tr>
+              @for (column of visibleColumns; track column.key) {
+                <td>{{ getColumnValue(pokemon, column.key) }}</td>
+              }
+            </tr>
+          }
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

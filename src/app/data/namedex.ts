@@ -540,7 +540,7 @@ export const Namedex: {
       ps: { id: 'pikachu-cosplay' },
       serebii: { id: '025' },
       pmd: { id: '0025' },
-      psgh: { id: 's815' },
+      psgh: { id: 's800' },
     },
   },
   pikachurockstar: {
@@ -549,7 +549,7 @@ export const Namedex: {
       ps: { id: 'pikachu-rockstar' },
       serebii: { id: '025' },
       pmd: { id: '0025/0002' },
-      psgh: { id: 's810' },
+      psgh: { id: 's800' },
     },
   },
   pikachubelle: {
@@ -558,7 +558,7 @@ export const Namedex: {
       ps: { id: 'pikachu-belle' },
       serebii: { id: '025' },
       pmd: { id: '0025/0003' },
-      psgh: { id: 's811' },
+      psgh: { id: 's800' },
     },
   },
   pikachupopstar: {
@@ -567,7 +567,7 @@ export const Namedex: {
       ps: { id: 'pikachu-popstar' },
       serebii: { id: '025' },
       pmd: { id: '0025/0004' },
-      psgh: { id: 's812' },
+      psgh: { id: 's800' },
     },
   },
   pikachuphd: {
@@ -576,7 +576,7 @@ export const Namedex: {
       ps: { id: 'pikachu-phd' },
       serebii: { id: '025' },
       pmd: { id: '0025/0005' },
-      psgh: { id: 's813' },
+      psgh: { id: 's800' },
     },
   },
   pikachulibre: {
@@ -585,7 +585,7 @@ export const Namedex: {
       ps: { id: 'pikachu-libre' },
       serebii: { id: '025' },
       pmd: { id: '0025/0006' },
-      psgh: { id: 's814' },
+      psgh: { id: 's800' },
     },
   },
   pikachuoriginal: {
@@ -10500,6 +10500,24 @@ export const Namedex: {
       psgh: { id: 's27040' },
     },
   },
+  cramorantgulping: {
+    name: ['Cramorant-Gulping'],
+    sources: {
+      ps: {},
+      serebii: { id: '845' },
+      pmd: { id: '0845' },
+      psgh: { id: 's27041', flip: true },
+    },
+  },
+  cramorantgorging: {
+    name: ['Cramorant-Gorging'],
+    sources: {
+      ps: {},
+      serebii: { id: '845' },
+      pmd: { id: '0845' },
+      psgh: { id: 's27042', flip: true },
+    },
+  },
   arrokuda: {
     name: ['Arrokuda'],
     sources: {
@@ -12039,6 +12057,24 @@ export const Namedex: {
       psgh: { id: 's31296', flip: true },
     },
   },
+    tatsugiridroopy: {
+    name: ['Tatsugiri-Droopy'],
+    sources: {
+      ps: { flip: true },
+      serebii: { id: '978' },
+      pmd: { id: '0978' },
+      psgh: { id: 's31297', flip: true },
+    },
+  },
+    tatsugiristretchy: {
+    name: ['Tatsugiri-Stretchy'],
+    sources: {
+      ps: { flip: true },
+      serebii: { id: '978' },
+      pmd: { id: '0978' },
+      psgh: { id: 's31298', flip: true },
+    },
+  },
   tatsugirimega: {
     name: ['Mega Tatsugiri', 'Tatsugiri-Mega'],
     sources: {
@@ -12451,6 +12487,42 @@ export const Namedex: {
       serebii: { id: '1017-c' },
       pmd: { id: '1017/0007' },
       psgh: { id: 's32547' },
+    },
+  },
+    ogerpontealetera: {
+    name: ['Ogerpon-Teal-Tera'],
+    sources: {
+      ps: { id: 'ogerpon-teal-tera' },
+      serebii: { id: '1017-c' },
+      pmd: { id: '1017/0008' },
+      psgh: { id: 's32548' },
+    },
+  },
+    ogerponwellspringtera: {
+    name: ['Ogerpon-Wellspring-Tera'],
+    sources: {
+      ps: { id: 'ogerpon-wellspring-tera' },
+      serebii: { id: '1017-w' },
+      pmd: { id: '1017/0005' },
+      psgh: { id: 's32549' },
+    },
+  },
+  ogerponhearthflametera: {
+    name: ['Ogerpon-Hearthflame-Tera'],
+    sources: {
+      ps: { id: 'ogerpon-hearthflame' },
+      serebii: { id: '1017-h' },
+      pmd: { id: '1017/0006' },
+      psgh: { id: 's32550' },
+    },
+  },
+  ogerponcornerstonetera: {
+    name: ['Ogerpon-Cornerstone-Tera'],
+    sources: {
+      ps: { id: 'ogerpon-cornerstone' },
+      serebii: { id: '1017-c' },
+      pmd: { id: '1017/0007' },
+      psgh: { id: 's32551' },
     },
   },
   archaludon: {

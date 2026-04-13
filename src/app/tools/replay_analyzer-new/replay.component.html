@@ -1,0 +1,517 @@
+<section class="replay-analyzer">
+  <h1 class="replay-analyzer__title">Replay Analyzer</h1>
+
+  <div class="replay-analyzer__content">
+    <div class="replay-analyzer__input-row">
+      <label class="replay-analyzer__input-label" for="replay-uri"
+        >Replay</label
+      >
+      <input
+        id="replay-uri"
+        [(ngModel)]="replayURI"
+        type="url"
+        class="replay-analyzer__input"
+        inputmode="url"
+        autocomplete="off"
+        spellcheck="false"
+      />
+      <button
+        type="button"
+        (click)="analyze()"
+        [disabled]="analyzed || !replayURI.trim()"
+        class="replay-analyzer__analyze-button"
+        [ngClass]="{
+          'replay-analyzer__analyze-button--disabled':
+            analyzed || !replayURI.trim(),
+        }"
+      >
+        Analyze
+      </button>
+    </div>
+
+    <div class="replay-analyzer__notice">
+      The replay analyzer is currently still in testing. If you find errors,
+      please share the replay on our
+      <a
+        href="https://discord.gg/sQUEBW4UVx"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="replay-analyzer__notice-link"
+        >Discord</a
+      >.
+    </div>
+
+    @if (replayData; as data) {
+      <div class="replay-analyzer__card">
+        <div class="replay-analyzer__summary">
+          <div class="replay-analyzer__summary-actions">
+            <a
+              class="replay-analyzer__watch-replay"
+              [href]="analyzedReplayURI"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <pdz-icon name="play_circle" size="sm"></pdz-icon>
+              <span class="replay-analyzer__watch-replay-label"
+                >Watch Replay</span
+              >
+            </a>
+
+            <button
+              type="button"
+              class="replay-analyzer__advanced-toggle"
+              [attr.aria-pressed]="showAdvancedDetails"
+              (click)="toggleAdvancedDetails()"
+            >
+              <pdz-icon
+                [name]="showAdvancedDetails ? 'visibility_off' : 'visibility'"
+                size="sm"
+              ></pdz-icon>
+              <span class="replay-analyzer__advanced-toggle-label">
+                {{ showAdvancedDetails ? "Hide details" : "Show details" }}
+              </span>
+            </button>
+          </div>
+
+          <div class="replay-analyzer__summary-stats">
+            <span class="replay-analyzer__summary-item">
+              <label class="replay-analyzer__summary-label" for="format"
+                >Format:</label
+              >
+              <span id="format">{{ data.gametype | titlecase }}</span>
+            </span>
+            <span class="replay-analyzer__summary-item">
+              <label class="replay-analyzer__summary-label" for="gen"
+                >Generation:</label
+              >
+              <span id="gen">{{ data.genNum }}</span>
+            </span>
+            <span class="replay-analyzer__summary-item">
+              <label class="replay-analyzer__summary-label" for="turns"
+                >Turns:</label
+              >
+              <span id="turns">{{ data.turns }}</span>
+            </span>
+            <span class="replay-analyzer__summary-item">
+              <label class="replay-analyzer__summary-label" for="game-time"
+                >Game Time:</label
+              >
+              <span id="game-time"
+                >{{ toMinutes(data.gameTime) }}m
+                {{ remainingSeconds(data.gameTime) }}s</span
+              >
+            </span>
+          </div>
+        </div>
+
+        <div class="replay-analyzer__details">
+          <div class="replay-analyzer__players">
+            @for (
+              player of data.players;
+              track player.username ?? $index;
+              let playerNum = $index
+            ) {
+              <div
+                class="replay-analyzer__player"
+                [class.replay-analyzer__player--team-a]="playerNum === 0"
+                [class.replay-analyzer__player--team-b]="playerNum === 1"
+              >
+                <div class="replay-analyzer__player-header">
+                  <div class="replay-analyzer__player-identity">
+                    <div class="replay-analyzer__player-name">
+                      {{ player.username }}
+                    </div>
+
+                    @if (player.win) {
+                      <div
+                        class="replay-analyzer__result replay-analyzer__result--winner"
+                      >
+                        Winner
+                      </div>
+                    } @else {
+                      <div
+                        class="replay-analyzer__result replay-analyzer__result--loser"
+                      >
+                        Loser
+                      </div>
+                    }
+                  </div>
+
+                  <div class="replay-analyzer__player-headline-stats">
+                    <div
+                      class="replay-analyzer__stat replay-analyzer__stat--headline"
+                      [class.replay-analyzer__warning]="!validateKills(player)"
+                    >
+                      <span
+                        class="replay-analyzer__stat-label replay-analyzer__stat-label--headline"
+                        >Kills</span
+                      >
+                      <span
+                        class="replay-analyzer__stat-value replay-analyzer__stat-value--headline"
+                      >
+                        {{ player.total.kills }}
+                      </span>
+                    </div>
+                    <div
+                      class="replay-analyzer__stat replay-analyzer__stat--headline"
+                      [class.replay-analyzer__warning]="!validateDeaths(player)"
+                    >
+                      <span
+                        class="replay-analyzer__stat-label replay-analyzer__stat-label--headline"
+                        >Deaths</span
+                      >
+                      <span
+                        class="replay-analyzer__stat-value replay-analyzer__stat-value--headline"
+                      >
+                        {{ player.total.deaths }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="replay-analyzer__player-layout">
+                  @if (showAdvancedDetails) {
+                    <div class="replay-analyzer__player-stats">
+                      <div class="replay-analyzer__player-stat">
+                        <span
+                          class="replay-analyzer__stat-detail-label replay-analyzer__stat-detail-label--centered"
+                        >
+                          Damage Dealt:
+                        </span>
+                        <div class="replay-analyzer__compact-panel">
+                          <div class="replay-analyzer__panel-title">
+                            {{ player.total.damageDealt | number: "1.0-0" }}%
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="replay-analyzer__player-stat">
+                        <span
+                          class="replay-analyzer__stat-detail-label replay-analyzer__stat-detail-label--centered"
+                        >
+                          Damage Taken:
+                        </span>
+                        <div class="replay-analyzer__compact-panel">
+                          <div class="replay-analyzer__panel-title">
+                            {{ player.total.damageTaken | number: "1.0-0" }}%
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="replay-analyzer__player-stat">
+                        <span
+                          class="replay-analyzer__stat-detail-label replay-analyzer__stat-detail-label--centered"
+                        >
+                          Total Accuracy:
+                        </span>
+                        <div class="replay-analyzer__compact-panel">
+                          <div class="replay-analyzer__panel-title">
+                            {{ player.luck.moves.actual | percent }}
+                          </div>
+                          <div class="replay-analyzer__panel-content">
+                            <div>
+                              Hits: {{ player.luck.moves.hits }}/{{
+                                player.luck.moves.total
+                              }}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="replay-analyzer__player-stat">
+                        <span
+                          class="replay-analyzer__stat-detail-label replay-analyzer__stat-detail-label--centered"
+                        >
+                          Expected Accuracy:
+                        </span>
+                        <div class="replay-analyzer__compact-panel">
+                          <div class="replay-analyzer__panel-title">
+                            {{ player.luck.moves.expected | percent }}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="replay-analyzer__player-stat">
+                        <span
+                          class="replay-analyzer__stat-detail-label replay-analyzer__stat-detail-label--centered"
+                        >
+                          Total Crits:
+                        </span>
+                        <div class="replay-analyzer__compact-panel">
+                          <div class="replay-analyzer__panel-title">
+                            {{ player.luck.crits.actual | percent }}
+                          </div>
+                          <div class="replay-analyzer__panel-content">
+                            <div>
+                              Crits: {{ player.luck.crits.hits }}/{{
+                                player.luck.crits.total
+                              }}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="replay-analyzer__player-stat">
+                        <span
+                          class="replay-analyzer__stat-detail-label replay-analyzer__stat-detail-label--centered"
+                        >
+                          Expected Crits:
+                        </span>
+                        <div class="replay-analyzer__compact-panel">
+                          <div class="replay-analyzer__panel-title">
+                            {{ player.luck.crits.expected | percent }}
+                          </div>
+                        </div>
+                      </div>
+
+                      @if (player.luck.status.total > 0) {
+                        <div class="replay-analyzer__player-stat">
+                          <span
+                            class="replay-analyzer__stat-detail-label replay-analyzer__stat-detail-label--centered"
+                          >
+                            Total Fully Parad:
+                          </span>
+                          <div class="replay-analyzer__compact-panel">
+                            <div class="replay-analyzer__panel-title">
+                              {{ player.luck.status.actual | percent }}
+                            </div>
+                            <div class="replay-analyzer__panel-content">
+                              <div>
+                                Full para: {{ player.luck.status.full }}/{{
+                                  player.luck.status.total
+                                }}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="replay-analyzer__player-stat">
+                          <span
+                            class="replay-analyzer__stat-detail-label replay-analyzer__stat-detail-label--centered"
+                          >
+                            Expected Fully Parad:
+                          </span>
+                          <div class="replay-analyzer__compact-panel">
+                            <div class="replay-analyzer__panel-title">
+                              {{ player.luck.status.expected | percent }}
+                            </div>
+                          </div>
+                        </div>
+                      }
+                    </div>
+                  }
+
+                  <div class="replay-analyzer__team">
+                    @for (pokemon of player.team; track pokemon.id) {
+                      <article class="replay-analyzer__mon-card">
+                        <div class="replay-analyzer__mon-card-header">
+                          <div class="replay-analyzer__mon-card-title">
+                            <pdz-sprite
+                              [title]="pokemon.name"
+                              [pokemon]="pokemon"
+                            ></pdz-sprite>
+                          </div>
+                        </div>
+
+                        <div class="replay-analyzer__mon-card-content">
+                          <div
+                            class="replay-analyzer__mon-status"
+                            [class.replay-analyzer__mon-status--fainted]="
+                              pokemon.status === 'fainted'
+                            "
+                            [class.replay-analyzer__mon-status--survived]="
+                              pokemon.status === 'survived'
+                            "
+                          >
+                            {{ pokemon.status | titlecase }}
+                          </div>
+
+                          <div class="replay-analyzer__mon-grid">
+                            <!-- <div class="replay-analyzer__mon-stat-tile">
+                              <span class="replay-analyzer__stat-detail-label">
+                                Kills:
+                              </span>
+                              <div class="replay-analyzer__compact-panel">
+                                <div class="replay-analyzer__panel-title">
+                                  {{
+                                    pokemon.kills.direct +
+                                      (pokemon.kills.indirect || 0)
+                                  }}
+                                </div>
+                              </div>
+                            </div> -->
+                            <div class="replay-analyzer__stat">
+                              <span class="replay-analyzer__stat-label"
+                                >Kills</span
+                              >
+                              <span class="replay-analyzer__stat-value">
+                                {{
+                                  pokemon.kills.direct +
+                                    (pokemon.kills.indirect || 0)
+                                }}
+                              </span>
+                            </div>
+
+                            <!-- <div class="replay-analyzer__mon-stat-tile">
+                              <span class="replay-analyzer__stat-detail-label">
+                                Deaths:
+                              </span>
+                              <div class="replay-analyzer__compact-panel">
+                                <div class="replay-analyzer__panel-title">
+                                  {{ pokemon.status === "fainted" ? 1 : 0 }}
+                                </div>
+                              </div>
+                            </div> -->
+
+                            <div class="replay-analyzer__stat">
+                              <span class="replay-analyzer__stat-label"
+                                >Deaths</span
+                              >
+                              <span class="replay-analyzer__stat-value">
+                                {{ pokemon.status === "fainted" ? 1 : 0 }}
+                              </span>
+                            </div>
+                          </div>
+
+                          @if (showAdvancedDetails) {
+                            <div class="replay-analyzer__mon-section">
+                              <span
+                                class="replay-analyzer__stat-detail-label replay-analyzer__stat-detail-label--centered"
+                              >
+                                Damage Dealt:
+                              </span>
+                              <div class="replay-analyzer__compact-panel">
+                                <div class="replay-analyzer__panel-title">
+                                  {{
+                                    pokemon.damageDealt.direct +
+                                      (pokemon.damageDealt.indirect || 0)
+                                      | number: "1.0-0"
+                                  }}%
+                                </div>
+                                <div class="replay-analyzer__panel-content">
+                                  <div>
+                                    Direct:
+                                    {{
+                                      pokemon.damageDealt.direct
+                                        | number: "1.0-0"
+                                    }}%
+                                  </div>
+                                  @if (pokemon.damageDealt.indirect) {
+                                    <div>
+                                      Indirect:
+                                      {{
+                                        pokemon.damageDealt.indirect
+                                          | number: "1.0-0"
+                                      }}%
+                                    </div>
+                                  }
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="replay-analyzer__mon-section">
+                              <span
+                                class="replay-analyzer__stat-detail-label replay-analyzer__stat-detail-label--centered"
+                              >
+                                Damage Taken:
+                              </span>
+                              <div class="replay-analyzer__compact-panel">
+                                <div class="replay-analyzer__panel-title">
+                                  {{
+                                    pokemon.damageTaken.direct +
+                                      (pokemon.damageTaken.indirect || 0)
+                                      | number: "1.0-0"
+                                  }}%
+                                </div>
+                                <div class="replay-analyzer__panel-content">
+                                  <div>
+                                    Direct:
+                                    {{
+                                      pokemon.damageTaken.direct
+                                        | number: "1.0-0"
+                                    }}%
+                                  </div>
+                                  @if (pokemon.damageTaken.indirect) {
+                                    <div>
+                                      Indirect:
+                                      {{
+                                        pokemon.damageTaken.indirect
+                                          | number: "1.0-0"
+                                      }}%
+                                    </div>
+                                  }
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="replay-analyzer__mon-section">
+                              <span
+                                class="replay-analyzer__stat-detail-label replay-analyzer__stat-detail-label--centered"
+                              >
+                                HP Restored:
+                              </span>
+                              <div class="replay-analyzer__compact-panel">
+                                <div class="replay-analyzer__panel-title">
+                                  {{ pokemon.hpRestored | number: "1.0-0" }}%
+                                </div>
+                              </div>
+                            </div>
+
+                            @if (
+                              pokemon.moveset && pokemon.moveset.length > 0
+                            ) {
+                              <div class="replay-analyzer__mon-section">
+                                <div class="replay-analyzer__compact-panel">
+                                  <div class="replay-analyzer__panel-title">
+                                    Moveset:
+                                  </div>
+                                  <div class="replay-analyzer__panel-content">
+                                    @for (move of pokemon.moveset; track move) {
+                                      <div>{{ move }}</div>
+                                    }
+                                  </div>
+                                </div>
+                              </div>
+                            }
+                          }
+                        </div>
+                      </article>
+                    }
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+
+          <div class="replay-analyzer__events">
+            <h2 class="replay-analyzer__section-title">Events</h2>
+            <div class="replay-analyzer__events-list">
+              @for (event of data.events; track $index) {
+                <div
+                  class="replay-analyzer__event"
+                  [class.replay-analyzer__player--team-a]="event.player === 1"
+                  [class.replay-analyzer__player--team-b]="event.player === 2"
+                >
+                  <span class="replay-analyzer__turn-label"
+                    >Turn {{ event.turn }}</span
+                  >
+                  {{ event.message }}
+                </div>
+              }
+            </div>
+          </div>
+
+          <div class="replay-analyzer__chart-section">
+            <h2 class="replay-analyzer__section-title">Team HP Chart</h2>
+            <div class="replay-analyzer__chart-wrap">
+              <pdz-replay-chart
+                class="replay-analyzer__chart"
+                [data]="data.players"
+              ></pdz-replay-chart>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</section>

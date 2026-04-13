@@ -286,8 +286,8 @@ export class LeagueZoneService {
   signUp(signupData: object) {
     return this.apiService.post(
       `${ROOTPATH}/tournaments/${this.tournamentKey()}/signup`,
-      true,
       signupData,
+      { authenticated: true },
     );
   }
 

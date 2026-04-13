@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, HostListener, inject } from '@angular/core';
-import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
+import { IconComponent } from '../../../images/icon/icon.component';
 import { LoadingComponent } from '../../../images/loading/loading.component';
 import { SpriteComponent } from '../../../images/sprite/sprite.component';
 import { Draft } from '../../../interfaces/draft';
@@ -18,7 +18,7 @@ import { TournamentDetails } from '../../../interfaces/league';
     CommonModule,
     RouterModule,
     SpriteComponent,
-    MatIconModule,
+    IconComponent,
     LoadingComponent,
   ],
 })
@@ -114,5 +114,9 @@ export class DraftPreviewComponent {
     if (draft.score.wins > draft.score.losses) return 'pdz-background-pos';
     if (draft.score.wins < draft.score.losses) return 'pdz-background-neg';
     return 'pdz-background-neut';
+  }
+
+  hasAnyDrafts(): boolean {
+    return (this.drafts?.length ?? 0) + (this.tournaments?.length ?? 0) > 0;
   }
 }
