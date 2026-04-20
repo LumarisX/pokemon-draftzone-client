@@ -1,4 +1,3 @@
-
 import { Component, OnInit, inject, DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
@@ -33,7 +32,11 @@ export class LeagueFormComponent implements OnInit {
   leagueForm!: FormGroup;
   formats: string[] = [];
   rulesets: string[] = [];
-  platforms: string[] = ['Pokémon Showdown', 'Scarlet/Violet'];
+  platforms: string[] = [
+    'Pokémon Showdown',
+    'Pokémon Champions',
+    'Scarlet/Violet',
+  ];
   isSubmitting = false;
 
   readonly MILLISECONDS_IN_WEEK = 604800000;
