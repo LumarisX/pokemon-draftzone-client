@@ -3,17 +3,14 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
-  inject,
   Input,
   OnChanges,
-  OnInit,
   SimpleChanges,
   ViewChild,
 } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import * as d3 from 'd3';
-import { defenseData } from '../../league-ghost';
-import { LeagueZoneService } from '../../../services/leagues/league-zone.service';
+import { getLogoUrl } from '../../league.util';
 
 type BracketTeamData = {
   teamName: string;
@@ -62,7 +59,7 @@ interface BracketMatch {
   replay?: string;
 }
 
-interface BracketDataNormalized {
+export interface BracketDataNormalized {
   format: 'single-elim';
   teams: BracketTeamData[];
   matches: BracketMatch[];
@@ -75,78 +72,27 @@ interface BracketDataNormalized {
   styleUrl: './league-bracket-graph.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LeagueBracketGraphComponent
-  implements OnInit, AfterViewInit, OnChanges
-{
+export class LeagueBracketGraphComponent implements AfterViewInit, OnChanges {
   @Input() componentTitle: string = 'Tournament Bracket (Single Elimination)';
-  teams: BracketTeamData[] = defenseData
-    .map((team) => ({
-      teamName: team.name,
-      coachName: team.coach,
-      seed: team.seed,
-      logo: team.logo,
-    }))
-    .filter((team) => team.seed <= 24)
-    .sort((x, y) => x.seed - y.seed);
-
-  altTeams: BracketTeamData[] = defenseData
-
-    .sort((x, y) => x.seed - y.seed)
-    .map((team, index) => ({
-      teamName: team.name,
-      coachName: team.coach,
-      seed: index,
-      logo: team.logo,
-    }))
-    .filter((team) => team.seed <= 24);
+  @Input() bracketData?: BracketDataNormalized;
 
   @Input() maxWidth: number = 1200;
   @Input() maxHeight: number = 1600;
-  @Input() margin = { top: 50, right: 10, bottom: 10, left: 30 };
-  imageSize = 16;
+  @Input() margin = { top: 50, right: 10, bottom: 10, left: 10 };
+  imageSize = 24;
   @ViewChild('bracketSvgContainer') private bracketContainer!: ElementRef;
 
-  leagueService = inject(LeagueZoneService);
+  private hasViewInitialized = false;
 
-  generateBracket(teams: BracketTeamData[]): BracketNode {
-    if (teams.length > 2) {
-      const sides: [BracketTeamData[], BracketTeamData[]] = [[], []];
-      teams.forEach((team, index) => {
-        sides[index % 2 === Math.floor(index / 2) % 2 ? 0 : 1].push(team);
-      });
-      return {
-        type: 'match',
-        children: [
-          this.generateBracket(sides[0]),
-          this.generateBracket(sides[1]),
-        ],
-      };
-    }
-    if (teams.length === 2) {
-      return {
-        type: 'match',
-        children: [
-          { type: 'team', team: teams[0] },
-          { type: 'team', team: teams[1] },
-        ],
-      };
-    } else {
-      return { type: 'team', team: teams[0] };
-    }
-  }
+  matchupVerticalSeparation = 12;
+  stageHorizontalSeparation = 72;
+  nodeBox = { height: 56, width: 220, radius: 10 };
 
-  matchupVerticalSeparation = 6;
-  stageHorizontalSeparation = 64;
-  nodeBox = { height: 40, width: 160, radius: 4 };
-
-  bracketData?: BracketDataNormalized;
-  ngOnInit(): void {}
+  private readonly getLogoUrl = getLogoUrl;
 
   ngAfterViewInit(): void {
-    this.leagueService.getBracket().subscribe((data) => {
-      this.bracketData = data as BracketDataNormalized;
-      this.createBracket(this.buildBracketTree(this.bracketData));
-    });
+    this.hasViewInitialized = true;
+    this.renderBracket();
   }
 
   buildBracketTree(data: BracketDataNormalized): BracketNode {
@@ -218,14 +164,22 @@ export class LeagueBracketGraphComponent
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (
-      (changes['bracketData'] || changes['width'] || changes['height']) &&
-      !changes['bracketData']?.firstChange
-    ) {
-      if (this.bracketContainer?.nativeElement && this.bracketData) {
-        this.createBracket(this.buildBracketTree(this.bracketData));
-      }
+    if (changes['bracketData'] || changes['maxWidth'] || changes['maxHeight']) {
+      this.renderBracket();
     }
+  }
+
+  private renderBracket(): void {
+    if (!this.hasViewInitialized || !this.bracketContainer?.nativeElement) {
+      return;
+    }
+
+    if (!this.bracketData) {
+      d3.select(this.bracketContainer.nativeElement).selectAll('*').remove();
+      return;
+    }
+
+    this.createBracket(this.buildBracketTree(this.bracketData));
   }
 
   private createBracket(bracketData: BracketNode): void {
@@ -371,67 +325,72 @@ export class LeagueBracketGraphComponent
       .selectAll('text')
       .data(sortedStages)
       .join('text')
-      .attr('x', (d) => d[1]) // Use the stored y-coordinate (which is now horizontal position)
-      .attr('y', finalMinX - this.margin.top / 2) // Position above the bracket, adjusting based on margin
-      .attr('dy', '0.31em') // Vertical alignment adjustment
-      .attr('text-anchor', 'middle') // Center the text horizontally
+      .attr('x', (d) => d[1])
+      .attr('y', finalMinX - this.margin.top / 2)
+      .attr('dy', '0.31em')
+      .attr('text-anchor', 'middle')
       .attr('font-weight', 'bold')
-      .attr('font-size', '14px') // Adjust font size as needed
-      .attr('fill', '#555') // Adjust color as needed
-      .text((d) => stageTitles[d[0]] || `Round ${d[0] + 1}`); // Use title or default
+      .attr('font-size', '14px')
+      .attr('fill', 'var(--pdz-color-on-surface-variant)')
+      .text((d) => stageTitles[d[0]] || `Round ${d[0] + 1}`);
 
-    const niceLinkGenerator = (d: d3.HierarchyLink<BracketNode>): string => {
-      const source = d.source as d3.HierarchyPointNode<BracketNode>;
-      const target = d.target as d3.HierarchyPointNode<BracketNode>;
+    const childToMidPath = (d: d3.HierarchyLink<BracketNode>): string => {
+      const parent = d.source as d3.HierarchyPointNode<BracketNode>;
+      const child = d.target as d3.HierarchyPointNode<BracketNode>;
       const maxTurnSize = 2;
-      const pivotX = this.stageHorizontalSeparation / 2;
-      const inflectY = (source.x - target.x) / 2;
-      const curve = Math.min(Math.abs(pivotX), Math.abs(inflectY), maxTurnSize);
-      const sign = inflectY > 0 ? 1 : -1;
+      const midY = parent.y! - this.stageHorizontalSeparation / 2;
+      const verticalOffset = (parent.x! - child.x!) / 2;
+      const curve = Math.min(
+        Math.abs(this.stageHorizontalSeparation / 2),
+        Math.abs(verticalOffset),
+        maxTurnSize,
+      );
+      const sign = verticalOffset > 0 ? 1 : -1;
+
       return (
-        `M${target.y},${target.x}` +
-        `H${source.y - pivotX - curve}` +
+        `M${child.y},${child.x}` +
+        `H${midY - curve}` +
         `q${curve} 0 ${curve} ${sign * curve}` +
-        `v${(inflectY - sign * curve) * 2}` +
-        `q0 ${sign * curve} ${curve} ${sign * curve}` +
-        `H${source.y}`
+        `v${(verticalOffset - sign * curve) * 2}` +
+        `q0 ${sign * curve} ${curve} ${sign * curve}`
       );
     };
 
     g.selectAll('.link')
       .data(root.links())
       .join('path')
-      .filter(
-        (d) =>
-          !(d.source.data.type === 'match' && d.source.data?.matchDetails) ||
-          (!!d.source.children &&
-            d.target !== d.source.children[d.source.data.matchDetails.winner]),
-      )
+      .attr('class', 'link')
       .attr('fill', 'none')
-      .attr('stroke', (d: d3.HierarchyLink<BracketNode>) =>
-        d.source.data.type === 'match' && d.source.data.matchDetails
-          ? 'lightcoral'
-          : '#ccc',
-      )
-      .attr('stroke-width', (d: d3.HierarchyLink<BracketNode>) =>
-        d.source.data.type === 'match' && d.source.data.matchDetails
-          ? '1.95px'
-          : '2px',
-      )
-      .attr('d', niceLinkGenerator);
-
-    g.selectAll('.link')
-      .data(root.links())
-      .join('path')
-      .filter(
-        (d) =>
-          !!(d.source.data.type === 'match' && d.source.data?.matchDetails) &&
-          d.target === d.source.children![d.source.data.matchDetails.winner],
-      )
-      .attr('fill', 'none')
-      .attr('stroke', 'lightgreen')
+      .attr('stroke', (d: d3.HierarchyLink<BracketNode>) => {
+        const parent = d.source;
+        if (parent.data.type !== 'match' || !parent.data.matchDetails) {
+          return 'var(--pdz-color-outline-variant)';
+        }
+        const isWinner =
+          parent.children &&
+          d.target === parent.children[parent.data.matchDetails.winner];
+        return isWinner
+          ? 'var(--pdz-color-positive)'
+          : 'var(--pdz-color-negative)';
+      })
       .attr('stroke-width', '2px')
-      .attr('d', niceLinkGenerator);
+      .attr('d', childToMidPath);
+
+    const parentsWithChildren = root
+      .descendants()
+      .filter((d) => d.children && d.children.length > 0);
+
+    g.selectAll('.link-shared')
+      .data(parentsWithChildren)
+      .join('path')
+      .attr('class', 'link-shared')
+      .attr('fill', 'none')
+      .attr('stroke', 'var(--pdz-color-outline-variant)')
+      .attr('stroke-width', '2px')
+      .attr('d', (d) => {
+        const node = d as d3.HierarchyPointNode<BracketNode>;
+        return `M${node.y! - this.stageHorizontalSeparation / 2},${node.x}H${node.y}`;
+      });
 
     const node = g
       .selectAll('.node')
@@ -477,7 +436,6 @@ export class LeagueBracketGraphComponent
         .attr('transform', `translate(0,${-this.nodeBox.height / 2})`);
 
       const teamData = getWinningTeam(d);
-      //Team data
       if (teamData) {
         currentNode
           .append('foreignObject')
@@ -490,17 +448,16 @@ export class LeagueBracketGraphComponent
           .append('xhtml:a')
           .attr('class', 'node-team')
           .attr('href', 'leagues/view/tournamentIdplaceholder/team/1')
-          .html(`<div class="team-logo"><img src="${teamData.logo ?? ''}" /></div>
+          .html(`<div class="team-logo"><img src="${this.getLogoUrl(teamData.logo)}" /></div>
         <div class="team-info">
             <div class="team-name">${teamData.teamName}</div>
             <div class="coach-info">
+                <span class="seed-number">${teamData.seed}</span>
                 <span class="coach-name">${teamData.coachName}</span>
             </div>
         </div>
         <div class="team-score">${d.data.score ?? 0}</div>`);
-      }
-      //Placeholder text
-      else {
+      } else {
         currentNode
           .append('text')
           .attr(
@@ -518,7 +475,6 @@ export class LeagueBracketGraphComponent
           .attr('stroke', 'white');
       }
 
-      //Game number or link
       if (d.parent && d.parent.children?.indexOf(d) === 0) {
         const parent = d.parent as d3.HierarchyNode<MatchNode>;
         (parent?.data.matchDetails
@@ -557,64 +513,12 @@ export class LeagueBracketGraphComponent
           .attr('stroke-width', 3)
           .attr('stroke', 'white');
       }
-
-      //Seed text
-      if (d.data.type === 'team') {
-        currentNode
-          .append('text')
-          .attr('x', -this.margin.left / 2)
-          .attr('class', 'seed')
-          .text((d as d3.HierarchyNode<TeamNode>).data.team!.seed)
-          .clone(true)
-          .lower()
-          .attr('stroke-linejoin', 'round')
-          .attr('stroke-width', 3)
-          .attr('stroke', 'white');
-      }
     });
   }
 
-  /**
-   * Generates stage titles based on the maximum depth of the bracket.
-   * @param maxDepth - The maximum depth of the hierarchy (0-based).
-   * @returns An array of stage titles, ordered from earliest round to champion.
-   */
   private getStageTitles(maxDepth: number): string[] {
-    const standardTitles = [
-      'Finals', // Depth maxDepth - 1
-      'Champion', // Depth maxDepth (root)
-    ];
-
-    const rounds = [];
-    let teams = 1; // Start with 2 teams in the final
-    for (let depth = maxDepth - 1; depth >= 0; depth--) {
-      teams *= 2; // Double teams for the previous round
-      if (depth === maxDepth - 1) {
-        rounds.push('Finals');
-      } else if (depth === maxDepth - 2) {
-        rounds.push('Semi-Finals');
-      } else if (depth === maxDepth - 3) {
-        rounds.push('Quarter-Finals');
-      } else {
-        rounds.push(`Round of ${teams}`);
-      }
-    }
-
-    // Combine rounds and the Champion title
-    // The order needs to match the depth: [Round of X, ..., Quarter-Finals, Semi-Finals, Finals, Champion]
-    const titles = rounds.reverse(); // Reverse to match depth order (0 to maxDepth)
-    titles.push('Champion'); // Add Champion for the final node (depth 0 in original hierarchy, but max depth visually)
-
-    // The titles array should now align with depths [0, 1, 2, ..., maxDepth]
-    // Example for maxDepth = 4 (16 teams -> 5 stages including champion):
-    // Depth 0: Round of 16
-    // Depth 1: Quarter-Finals
-    // Depth 2: Semi-Finals
-    // Depth 3: Finals
-    // Depth 4: Champion
-    // We need to return titles ordered by depth for lookup:
     const depthTitles: string[] = [];
-    let currentTeams = Math.pow(2, maxDepth); // Total teams for the first round (depth 0)
+    let currentTeams = Math.pow(2, maxDepth);
 
     for (let i = 0; i <= maxDepth; i++) {
       if (i === maxDepth) {

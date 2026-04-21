@@ -1,60 +1,77 @@
+@use "../../../../styles/global.scss" as *;
+@use "../../../../styles/mixins/typography.scss" as *;
+
 :host {
+  display: block;
+
   .bracket-container {
     width: 100%;
     overflow-x: auto;
-    background-color: white;
+    padding: 0.75rem 0.75rem 1rem;
+    border-radius: var(--pdz-shape-corner-lg);
+    background: pdz-color("surface-container-low");
+    box-shadow: var(--pdz-level-2);
 
     h2 {
-      font-size: 1.25rem;
-      line-height: 1.75rem;
+      @include pdz-font-size(1.25rem, 1.4);
       font-weight: 600;
       text-align: center;
-      padding: 1rem 0;
+      color: pdz-color("on-surface");
+      padding: 0.25rem 0 1rem;
+      margin: 0;
     }
   }
 
   ::ng-deep .node {
     .node-placeholder {
       font-style: italic;
-      font-size: 0.7rem;
+      @include pdz-font-size(0.72rem, 1.2);
       font-family: var(--pdz-font-fancy);
-      line-height: 1rem;
-      fill: #bbb;
+      fill: pdz-color("on-surface-variant");
       text-anchor: middle;
       dominant-baseline: central;
       user-select: none;
     }
 
     rect {
+      fill: pdz-color("surface-container");
       stroke-width: 2px;
-      stroke: #ccc;
+      stroke: pdz-color("outline-variant");
+      filter: drop-shadow(0 4px 10px rgba(15, 23, 42, 0.14));
+      transition:
+        fill 160ms ease,
+        stroke 160ms ease,
+        filter 160ms ease;
 
       &.undecided {
-        stroke: steelblue;
+        fill: pdz-color("primary-container-low");
+        stroke: pdz-color("primary-border");
       }
+
       &.winner {
-        stroke: lightgreen;
+        fill: pdz-color("positive-container");
+        stroke: pdz-color("positive");
       }
+
       &.loser {
-        stroke: lightcoral;
+        fill: pdz-color("negative-container");
+        stroke: pdz-color("negative");
       }
     }
 
     .seed {
-      font: 12px var(--pdz-font-fancy);
-      fill: var(--pdz-color-secondary);
+      font: 600 12px var(--pdz-font-fancy);
+      fill: pdz-color("secondary");
       text-anchor: middle;
       dominant-baseline: central;
     }
 
     .matchup-text {
-      fill: #777;
-      font: 12px var(--pdz-font-fancy);
+      fill: pdz-color("on-surface-variant");
+      @include pdz-font-size(0.8rem, 1.2);
       font-style: italic;
       text-anchor: middle;
       dominant-baseline: central;
-      font-size: 0.8rem;
-      line-height: 1rem;
     }
 
     .matchup-link {
@@ -73,10 +90,11 @@
       -webkit-font-smoothing: antialiased;
       text-rendering: optimizeLegibility;
       -moz-osx-font-smoothing: grayscale;
-      fill: var(--pdz-color-secondary);
+      fill: pdz-color("secondary");
       cursor: pointer;
+
       &:hover {
-        fill: var(--pdz-color-primary);
+        fill: pdz-color("primary");
       }
     }
   }
@@ -84,56 +102,90 @@
   ::ng-deep svg {
     display: block;
     margin: auto;
+    overflow: visible;
   }
 
   ::ng-deep .node-team {
-    padding: 0 0.25rem;
     height: 100%;
-    box-sizing: border-box;
     width: 100%;
+    padding: 0 0.65rem;
+    box-sizing: border-box;
     overflow: hidden;
     display: flex;
     align-items: center;
-    column-gap: 0.25rem;
+    column-gap: 0.5rem;
     border-radius: var(--pdz-shape-corner-sm);
+    color: pdz-color("on-surface");
+
     .team-logo {
       flex-shrink: 0;
-      height: 32px;
+      height: 36px;
       overflow: hidden;
       display: flex;
       align-items: center;
+      justify-content: center;
       aspect-ratio: 1 / 1;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
     }
 
     .team-info {
       flex-grow: 1;
+      min-width: 0;
       overflow: hidden;
       display: flex;
       height: 100%;
       flex-direction: column;
-      justify-content: space-evenly;
+      justify-content: center;
+
       .coach-info {
         justify-content: space-between;
         display: flex;
-        font-size: 0.7rem;
-        color: var(--pdz-color-primary);
-        line-height: 0.9rem;
+        align-items: center;
+        gap: 0.35rem;
+        @include pdz-font-size(0.76rem, 1.2);
+        color: pdz-color("primary");
         font-weight: var(--pdz-font-weight-bold);
         white-space: nowrap;
         overflow: hidden;
+
+        .seed-number {
+          flex-shrink: 0;
+          color: pdz-color("secondary");
+          font-family: var(--pdz-font-fancy);
+        }
+
+        .coach-name {
+          flex-grow: 1;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
       }
+
       .team-name {
-        white-space: nowrap;
+        display: -webkit-box;
         overflow: hidden;
-        font-size: 0.8rem;
-        line-height: 1rem;
+        @include pdz-font-size(0.92rem, 1.15);
+        font-weight: var(--pdz-font-weight-bold);
         text-overflow: ellipsis;
+        white-space: normal;
+        word-break: break-word;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
       }
     }
+
     .team-score {
-      padding: 0 0.25rem;
+      padding-left: 0.35rem;
       flex-shrink: 0;
-      font-size: 1rem;
+      @include pdz-font-size(1.05rem, 1);
+      font-weight: var(--pdz-font-weight-bold);
+      color: pdz-color("on-surface");
     }
   }
 }

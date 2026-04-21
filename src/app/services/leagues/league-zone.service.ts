@@ -10,6 +10,7 @@ import { League, TradeLog } from '../../league-zone/league.interface';
 import { ApiService } from '../api.service';
 import { UploadService } from '../upload.service';
 import { WebSocketService } from '../ws.service';
+import { BracketDataNormalized } from '../../league-zone/league-bracket/league-single-elim-bracket/league-bracket-graph.component';
 
 const ROOTPATH = 'leagues';
 
@@ -317,7 +318,7 @@ export class LeagueZoneService {
     );
   }
 
-  getBracket(): Observable<{}> {
+  getBracket(): Observable<BracketDataNormalized> {
     return this.apiService.get(
       `${ROOTPATH}/tournaments/${this.tournamentKey()}/bracket`,
       { authenticated: true },
