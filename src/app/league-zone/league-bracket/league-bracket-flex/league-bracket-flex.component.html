@@ -1,0 +1,149 @@
+<div class="bracket-container">
+  <h2>{{ componentTitle }}</h2>
+
+  <div class="bracket-scroll">
+    <div class="bracket-content" #bracketContent>
+      <!-- SVG overlay: connector paths drawn between match cards -->
+      <svg
+        class="bracket-paths"
+        [attr.width]="svgWidth"
+        [attr.height]="svgHeight"
+        aria-hidden="true"
+      >
+        @for (path of connectorPaths; track $index) {
+          <path
+            [attr.d]="path.d"
+            class="connector-path"
+            [class.connector-path--winner]="path.cls === 'winner'"
+            [class.connector-path--loser]="path.cls === 'loser'"
+          />
+        }
+      </svg>
+
+      <!-- Bracket sections: stacked vertically for multi-bracket formats (double-elim, etc.) -->
+      @for (section of layoutSections; track section.key) {
+        <div class="bracket-section">
+          @if (section.title) {
+            <div class="section-title">{{ section.title }}</div>
+          }
+
+          <!-- Round title headers: shared row so all titles sit at the same height -->
+          <div class="bracket-round-headers">
+            @for (round of section.rounds; track round.roundNum) {
+              <div class="round-title">{{ round.title }}</div>
+            }
+          </div>
+
+          <!-- Rounds: one column per round, separated by path connector gap -->
+          <div class="bracket-rounds">
+            @for (round of section.rounds; track round.roundNum) {
+              <!-- Match cards: absolutely positioned within this column using computed vertical centers -->
+              <div class="round-matches" [style.height.px]="section.height">
+                @for (match of round.matches; track match.id) {
+                  <div
+                    class="match-card"
+                    [attr.data-match-id]="match.id"
+                    [style.top.px]="match.cardTop"
+                  >
+                    <!-- Match label / replay link -->
+                    <div class="match-card__label">
+                      @if (match.replay) {
+                        <a
+                          [href]="match.replay"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="match-card__label-link"
+                          >{{ match.label }}</a
+                        >
+                      } @else {
+                        <span class="match-card__label-text">{{
+                          match.label
+                        }}</span>
+                      }
+                    </div>
+
+                    <!-- Slot A (first team row) -->
+                    <div
+                      class="match-card__team"
+                      [attr.data-slot]="0"
+                      [attr.data-status]="getTeamStatus(match, 0)"
+                    >
+                      @if (match.slotA.team) {
+                        <a
+                          [href]="getTeamUrl(match.slotA.team)"
+                          class="team-link"
+                        >
+                          <div class="team-logo">
+                            <img
+                              [src]="getLogoUrl(match.slotA.team.logo)"
+                              [alt]="match.slotA.team.teamName"
+                            />
+                          </div>
+                          <div class="team-info">
+                            <div class="team-name">
+                              {{ match.slotA.team.teamName }}
+                            </div>
+                            <div class="team-meta">
+                              <span class="team-seed">{{
+                                match.slotA.team.seed
+                              }}</span>
+                              <span class="team-coach">{{
+                                match.slotA.team.coachName
+                              }}</span>
+                            </div>
+                          </div>
+                        </a>
+                      } @else {
+                        <div class="team-placeholder">
+                          {{ match.slotA.placeholder ?? "TBD" }}
+                        </div>
+                      }
+                    </div>
+
+                    <!-- Slot B (second team row) -->
+                    <div
+                      class="match-card__team"
+                      [attr.data-slot]="1"
+                      [attr.data-status]="getTeamStatus(match, 1)"
+                    >
+                      @if (match.slotB.team) {
+                        <a
+                          [href]="getTeamUrl(match.slotB.team)"
+                          class="team-link"
+                        >
+                          <div class="team-logo">
+                            <img
+                              [src]="getLogoUrl(match.slotB.team.logo)"
+                              [alt]="match.slotB.team.teamName"
+                            />
+                          </div>
+                          <div class="team-info">
+                            <div class="team-name">
+                              {{ match.slotB.team.teamName }}
+                            </div>
+                            <div class="team-meta">
+                              <span class="team-seed">{{
+                                match.slotB.team.seed
+                              }}</span>
+                              <span class="team-coach">{{
+                                match.slotB.team.coachName
+                              }}</span>
+                            </div>
+                          </div>
+                        </a>
+                      } @else {
+                        <div class="team-placeholder">
+                          {{ match.slotB.placeholder ?? "TBD" }}
+                        </div>
+                      }
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>

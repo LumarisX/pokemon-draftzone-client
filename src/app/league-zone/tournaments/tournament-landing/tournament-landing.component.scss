@@ -242,6 +242,35 @@
   }
 }
 
+// Playoffs Section
+.playoffs-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pdz-space-lg);
+
+  &__title {
+    @include apply-typography(headline-lg);
+    color: var(--pdz-color-on-surface);
+    margin: 0;
+    text-align: center;
+    font-weight: 600;
+
+    @include respond-above(medium) {
+      text-align: left;
+    }
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--pdz-space-md);
+
+    @include respond-above(medium) {
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+  }
+}
+
 // Loading State
 .loading-state {
   display: flex;

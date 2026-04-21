@@ -42,4 +42,9 @@
       color: var(--pdz-color-error);
     }
   }
+
+  &__table {
+    max-height: 100vh;
+    overflow-y: auto;
+  }
 }

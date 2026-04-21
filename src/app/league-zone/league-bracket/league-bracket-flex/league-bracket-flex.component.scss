@@ -1,0 +1,280 @@
+@use "../../../../styles/global.scss" as *;
+@use "../../../../styles/mixins/typography.scss" as *;
+
+:host {
+  display: block;
+
+  // ─── Outer wrapper ──────────────────────────────────────────────────────────
+
+  .bracket-container {
+    width: 100%;
+    padding: var(--pdz-space-lg);
+
+    h2 {
+      @include pdz-font-size(1.25rem, 1.4);
+      font-weight: 600;
+      text-align: center;
+      color: pdz-color("on-surface");
+      margin: 0 0 var(--pdz-space-xl) 0;
+    }
+  }
+
+  .bracket-scroll {
+    overflow-x: auto;
+    overflow-y: visible;
+    width: 100%;
+  }
+
+  // Inline-flex so the scroll container shrink-wraps the content width
+  .bracket-content {
+    position: relative;
+    display: inline-flex;
+    flex-direction: column;
+    gap: var(--pdz-space-2xl);
+    min-width: max-content;
+    padding-bottom: var(--pdz-space-lg);
+  }
+
+  // ─── SVG path overlay ────────────────────────────────────────────────────────
+
+  .bracket-paths {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    overflow: visible;
+    z-index: 0;
+  }
+
+  .connector-path {
+    fill: none;
+    stroke: pdz-color("outline-variant");
+    stroke-width: 2px;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: stroke 160ms ease;
+
+    &--winner {
+      stroke: pdz-color("positive");
+    }
+
+    &--loser {
+      stroke: pdz-color("negative");
+    }
+  }
+
+  // ─── Bracket sections ────────────────────────────────────────────────────────
+
+  .bracket-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--pdz-space-md);
+    position: relative;
+    z-index: 1;
+  }
+
+  .section-title {
+    @include pdz-font-size(0.95rem, 1.3);
+    font-weight: 600;
+    color: pdz-color("on-surface-variant");
+    font-family: var(--pdz-font-fancy);
+    padding-bottom: var(--pdz-space-sm);
+    border-bottom: 1px solid pdz-color("outline-variant");
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  // ─── Round columns ───────────────────────────────────────────────────────────
+
+  // Shared header row: one title per round, aligned with the match columns below
+  .bracket-round-headers {
+    display: flex;
+    flex-direction: row;
+    gap: 80px;
+  }
+
+  .bracket-rounds {
+    display: flex;
+    flex-direction: row;
+    // 80px gap between columns gives the connector paths a clear lane to travel through
+    gap: 80px;
+    align-items: flex-start;
+  }
+
+  .round-title {
+    @include pdz-font-size(0.9rem, 1.3);
+    font-weight: 600;
+    text-align: center;
+    color: pdz-color("on-surface-variant");
+    font-family: var(--pdz-font-fancy);
+    white-space: nowrap;
+    flex-shrink: 0;
+    width: 240px;
+    padding-bottom: var(--pdz-space-sm);
+  }
+
+  // The match cards are absolutely positioned within each round column
+  .round-matches {
+    position: relative;
+    flex-shrink: 0;
+    width: 240px;
+  }
+
+  // ─── Match card ──────────────────────────────────────────────────────────────
+
+  .match-card {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    background: pdz-color("surface-container-low");
+    border: 1px solid pdz-color("outline-variant");
+    border-radius: var(--pdz-shape-corner-md);
+    padding: var(--pdz-space-xs);
+    gap: var(--pdz-space-xs);
+    box-shadow: var(--pdz-level-1);
+    transition: box-shadow 160ms ease;
+    z-index: 1;
+
+    &:hover {
+      box-shadow: var(--pdz-level-2);
+    }
+
+    &__label {
+      text-align: center;
+      padding: var(--pdz-space-xs) 0;
+      flex-shrink: 0;
+    }
+
+    &__label-text {
+      @include pdz-font-size(0.85rem, 1.2);
+      color: pdz-color("on-surface-variant");
+      font-family: var(--pdz-font-fancy);
+      font-weight: var(--pdz-font-weight-bold);
+    }
+
+    &__label-link {
+      @include pdz-font-size(0.85rem, 1.2);
+      color: pdz-color("primary");
+      font-family: var(--pdz-font-fancy);
+      font-weight: var(--pdz-font-weight-bold);
+      text-decoration: none;
+      transition: color 160ms ease;
+
+      &:hover {
+        color: pdz-color("primary-darker");
+        text-decoration: underline;
+      }
+    }
+
+    &__team {
+      background: pdz-color("surface");
+      box-shadow: var(--pdz-level-inset-1);
+      border-radius: var(--pdz-shape-corner-sm);
+      overflow: hidden;
+      flex-shrink: 0;
+      transition:
+        background 160ms ease,
+        border-color 160ms ease;
+
+      &[data-status="undecided"] {
+        background: pdz-color("surface-container");
+      }
+
+      &[data-status="winner"] {
+        background: pdz-color("positive-container");
+      }
+
+      &[data-status="loser"] {
+        background: pdz-color("negative-container");
+      }
+    }
+  }
+
+  // ─── Team content ────────────────────────────────────────────────────────────
+
+  .team-link {
+    display: flex;
+    align-items: center;
+    gap: var(--pdz-space-sm);
+    height: 3rem;
+    padding: var(--pdz-space-sm) var(--pdz-space-md);
+    text-decoration: none;
+    color: pdz-color("on-surface");
+    transition: opacity 160ms ease;
+
+    &:hover {
+      opacity: 0.85;
+    }
+  }
+
+  .team-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 3rem;
+    padding: var(--pdz-space-sm);
+    @include pdz-font-size(0.8rem, 1.2);
+    color: pdz-color("on-surface-variant");
+    font-style: italic;
+    font-family: var(--pdz-font-fancy);
+    text-align: center;
+  }
+
+  .team-logo {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+  }
+
+  .team-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    overflow: hidden;
+  }
+
+  .team-name {
+    @include pdz-font-size(0.92rem, 1.15);
+    font-weight: var(--pdz-font-weight-bold);
+    color: pdz-color("on-surface");
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .team-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--pdz-space-xs);
+    @include pdz-font-size(0.76rem, 1.2);
+    overflow: hidden;
+  }
+
+  .team-seed {
+    color: pdz-color("secondary");
+    font-family: var(--pdz-font-fancy);
+    font-weight: var(--pdz-font-weight-bold);
+    flex-shrink: 0;
+  }
+
+  .team-coach {
+    color: pdz-color("primary");
+    font-weight: var(--pdz-font-weight-bold);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}

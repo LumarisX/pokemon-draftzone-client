@@ -38,7 +38,18 @@
                 }
               </div>
             </div>
+
             <div class="card-footer">
+              <a
+                class="footer-link"
+                [routerLink]="[
+                  '/leagues',
+                  tournament.leagueKey,
+                  'tournaments',
+                  tournament.tournamentKey,
+                ]"
+                >View Tournament</a
+              >
               <a
                 class="footer-link"
                 [routerLink]="[
@@ -51,7 +62,7 @@
                   'teams',
                   tournament.teamId,
                 ]"
-                >View Tournament</a
+                >View My Team</a
               >
             </div>
           </div>

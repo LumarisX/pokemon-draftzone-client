@@ -15,7 +15,7 @@ type SortKey = 'brought' | 'kills' | 'deaths' | 'diff';
 export class PokemonStandingsComponent implements OnChanges {
   @Input({ required: true }) standingData!: League.PokemonStanding[];
   sortedData: League.PokemonStanding[] = [];
-  @Input() showCount: number = 20;
+  @Input() showCount: number = 100;
   activeSort: SortKey = 'diff';
   isSortDescending: boolean = true;
 

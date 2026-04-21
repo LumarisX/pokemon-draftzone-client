@@ -14,12 +14,14 @@
     } @else {
       @if (coachStandings) {
         <pdz-coach-standings
+          class="standings__table"
           [standingData]="coachStandings"
         ></pdz-coach-standings>
       }
 
       @if (pokemonStandings.length) {
         <pdz-pokemon-standings
+          class="standings__table"
           [standingData]="pokemonStandings"
         ></pdz-pokemon-standings>
       } @else {
