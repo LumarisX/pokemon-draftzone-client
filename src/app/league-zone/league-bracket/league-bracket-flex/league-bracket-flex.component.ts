@@ -46,6 +46,7 @@ export interface FlexBracketMatch {
   replay?: string;
   /** Override the auto-generated match label. */
   label?: string;
+  divisionKey?: string;
 }
 
 export interface FlexBracketSectionConfig {
@@ -82,6 +83,7 @@ interface LayoutMatch {
   winner?: 0 | 1;
   replay?: string;
   label: string;
+  divisionKey?: string;
   /** Vertical pixel center within the round column, used for absolute positioning. */
   verticalCenter: number;
   /** CSS `top` offset for the match card. */
@@ -197,12 +199,12 @@ export class LeagueBracketFlexComponent
         totalTeams,
         cfg?.roundTitles,
       );
-
+      let matchNumber = 1;
       const rounds: LayoutRound[] = roundNums.map((rn, idx) => {
         const rawMatches = roundMap
           .get(rn)!
           .sort((a, b) => a.position - b.position);
-        const layoutMatches: LayoutMatch[] = rawMatches.map((m) => {
+        const layoutMatches: LayoutMatch[] = rawMatches.map((m, index) => {
           const vc = verticalCenters.get(m.id) ?? 0;
           return {
             id: m.id,
@@ -213,7 +215,8 @@ export class LeagueBracketFlexComponent
             slotB: this.resolveSlot(m.b, teams, matches),
             winner: m.winner,
             replay: m.replay,
-            label: m.label ?? `Match ${m.id}`,
+            label: m.label ?? `Match ${matchNumber++}`,
+            divisionKey: m.divisionKey,
             verticalCenter: vc,
             cardTop: vc - MATCH_H / 2,
           };
@@ -333,7 +336,7 @@ export class LeagueBracketFlexComponent
         const advancingSlot = src.winner === 0 ? src.a : src.b;
         return this.resolveSlot(advancingSlot, teams, allMatches, depth + 1);
       }
-      return { team: null, placeholder: `Winner of Match ${slot.from}` };
+      return { team: null, placeholder: `` };
     }
 
     if (slot.type === 'loser') {
@@ -481,5 +484,15 @@ export class LeagueBracketFlexComponent
   getTeamUrl(team: BracketTeamFlex | null): string {
     if (!team?.divisionKey || !team.teamId || !this.tournamentKey) return '#';
     return `/leagues/pdbl/tournaments/${this.tournamentKey}/divisions/${team.divisionKey}/teams/${team.teamId}`;
+  }
+
+  getMatchupUrl(match: LayoutMatch): string | null {
+    if (!match.slotA.team || !match.slotB.team) return null;
+    const divisionKey =
+      match.divisionKey ??
+      match.slotA.team?.divisionKey ??
+      match.slotB.team?.divisionKey;
+    if (!divisionKey || !this.tournamentKey) return null;
+    return `/leagues/pdbl/tournaments/${this.tournamentKey}/divisions/${divisionKey}/schedule/matchups/${match.id}`;
   }
 }

@@ -142,8 +142,11 @@
     }
 
     &__label {
-      text-align: center;
-      padding: var(--pdz-space-xs) 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--pdz-space-xs);
+      padding: var(--pdz-space-xs) var(--pdz-space-xs);
       flex-shrink: 0;
     }
 
@@ -154,17 +157,62 @@
       font-weight: var(--pdz-font-weight-bold);
     }
 
-    &__label-link {
-      @include pdz-font-size(0.85rem, 1.2);
-      color: pdz-color("primary");
-      font-family: var(--pdz-font-fancy);
-      font-weight: var(--pdz-font-weight-bold);
+    &__replay-btn {
+      padding: 2px var(--pdz-space-xs);
+      border-radius: var(--pdz-shape-corner-full);
+      font-size: 0.7rem;
+      line-height: 1.4;
+      border: 1px solid pdz-color("primary");
+      background-color: pdz-color("primary");
+      color: pdz-color("on-primary");
       text-decoration: none;
-      transition: color 160ms ease;
+      cursor: pointer;
+      box-shadow: var(--pdz-level-1);
+      transition: all 160ms ease;
+      flex-shrink: 0;
 
       &:hover {
-        color: pdz-color("primary-darker");
-        text-decoration: underline;
+        background-color: pdz-color("primary-darker");
+        border-color: pdz-color("primary-darker");
+      }
+
+      &:active {
+        box-shadow: var(--pdz-level-0);
+        transform: translateY(1px);
+      }
+
+      &--disabled {
+        background-color: transparent;
+        color: pdz-color("on-surface-variant");
+        border-color: pdz-color("outline");
+        box-shadow: none;
+        cursor: not-allowed;
+        opacity: 0.5;
+      }
+    }
+
+    &__matchup-btn {
+      padding: 2px var(--pdz-space-xs);
+      border-radius: var(--pdz-shape-corner-full);
+      font-size: 0.7rem;
+      line-height: 1.4;
+      border: 1px solid pdz-color("secondary");
+      background-color: pdz-color("secondary");
+      color: pdz-color("on-secondary");
+      text-decoration: none;
+      cursor: pointer;
+      box-shadow: var(--pdz-level-1);
+      transition: all 160ms ease;
+      flex-shrink: 0;
+
+      &:hover {
+        background-color: pdz-color("secondary-darker");
+        border-color: pdz-color("secondary-darker");
+      }
+
+      &:active {
+        box-shadow: var(--pdz-level-0);
+        transform: translateY(1px);
       }
     }
 

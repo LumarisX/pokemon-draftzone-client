@@ -45,20 +45,36 @@
                     [attr.data-match-id]="match.id"
                     [style.top.px]="match.cardTop"
                   >
-                    <!-- Match label / replay link -->
+                    <!-- Match label / matchup+replay button -->
                     <div class="match-card__label">
-                      @if (match.replay) {
-                        <a
-                          [href]="match.replay"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          class="match-card__label-link"
-                          >{{ match.label }}</a
-                        >
+                      <span class="match-card__label-text">{{
+                        match.label
+                      }}</span>
+                      @if (match.winner !== undefined) {
+                        @if (match.replay) {
+                          <a
+                            [href]="match.replay"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="match-card__replay-btn"
+                            >Replay</a
+                          >
+                        } @else {
+                          <span
+                            class="match-card__replay-btn match-card__replay-btn--disabled"
+                            >Replay</span
+                          >
+                        }
                       } @else {
-                        <span class="match-card__label-text">{{
-                          match.label
-                        }}</span>
+                        @if (getMatchupUrl(match); as matchupUrl) {
+                          <a
+                            [href]="matchupUrl"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="match-card__matchup-btn"
+                            >Matchup</a
+                          >
+                        }
                       }
                     </div>
 

@@ -10,9 +10,50 @@ import { League, TradeLog } from '../../league-zone/league.interface';
 import { ApiService } from '../api.service';
 import { UploadService } from '../upload.service';
 import { WebSocketService } from '../ws.service';
-import { BracketDataNormalized } from '../../league-zone/league-bracket/league-single-elim-bracket/league-bracket-graph.component';
+import {
+  BracketSlotFlex,
+  BracketTeamFlex,
+  FlexBracketData,
+  FlexBracketMatch,
+} from '../../league-zone/league-bracket/league-bracket-flex/league-bracket-flex.component';
 
 const ROOTPATH = 'leagues';
+
+type RawBracketSlot =
+  | { type: 'seed'; seed: number }
+  | { type: 'winner'; from: string }
+  | { type: 'loser'; from: string };
+
+type RawBracketMatch = {
+  _id: string;
+  round: string;
+  roundName: string;
+  a: RawBracketSlot | null;
+  b: RawBracketSlot | null;
+  winner?: 0 | 1;
+  replay?: string;
+  divisionKey?: string | null;
+};
+
+type RawBracketRound = {
+  _id: string;
+  name: string;
+  matchDeadline: string | null;
+};
+
+type RawBracketResponse = {
+  format: string | null;
+  teams: BracketTeamFlex[];
+  rounds: RawBracketRound[];
+  matches: RawBracketMatch[];
+};
+
+function mapBracketSlot(
+  slot: RawBracketSlot | null | undefined,
+): BracketSlotFlex | null {
+  if (!slot) return null;
+  return slot as BracketSlotFlex;
+}
 
 @Injectable({
   providedIn: 'root',
@@ -318,11 +359,60 @@ export class LeagueZoneService {
     );
   }
 
-  getBracket(): Observable<BracketDataNormalized> {
-    return this.apiService.get(
-      `${ROOTPATH}/tournaments/${this.tournamentKey()}/bracket`,
-      { authenticated: true },
-    );
+  getBracket(): Observable<FlexBracketData> {
+    return this.apiService
+      .get<RawBracketResponse>(
+        `${ROOTPATH}/tournaments/${this.tournamentKey()}/bracket`,
+        { authenticated: true },
+      )
+      .pipe(
+        map((raw): FlexBracketData => {
+          if (!raw.format || !raw.matches?.length) {
+            return { teams: raw.teams ?? [], matches: [] };
+          }
+
+          const roundIndexMap = new Map<string, number>();
+          (raw.rounds ?? []).forEach((r, i) => roundIndexMap.set(r._id, i));
+
+          const positionCounters = new Map<number, number>();
+
+          const matches: FlexBracketMatch[] = raw.matches.map((m) => {
+            const roundIdx = roundIndexMap.get(m.round) ?? 0;
+            const position = positionCounters.get(roundIdx) ?? 0;
+            positionCounters.set(roundIdx, position + 1);
+
+            return {
+              id: m._id,
+              round: roundIdx,
+              position,
+              a: mapBracketSlot(m.a) ?? { type: 'seed', seed: 0 },
+              b: mapBracketSlot(m.b) ?? { type: 'seed', seed: 0 },
+              ...(m.winner !== undefined ? { winner: m.winner } : {}),
+              ...(m.replay ? { replay: m.replay } : {}),
+              ...(m.divisionKey ? { divisionKey: m.divisionKey } : {}),
+            };
+          });
+
+          const roundTitles: Record<number, string> = {};
+          (raw.rounds ?? []).forEach((r, i) => {
+            roundTitles[i] = r.name;
+          });
+
+          const format =
+            raw.format === 'single-elimination'
+              ? 'single-elim'
+              : raw.format === 'double-elimination'
+                ? 'double-elim'
+                : 'custom';
+
+          return {
+            format,
+            teams: raw.teams ?? [],
+            matches,
+            sections: [{ key: 'main', roundTitles }],
+          };
+        }),
+      );
   }
 
   getStandings(): Observable<{
