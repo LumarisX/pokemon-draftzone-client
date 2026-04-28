@@ -110,6 +110,49 @@ export class LeagueManageService {
     );
   }
 
+  getPlayoffSchedule() {
+    return this.apiService.get<{
+      stages: League.Stage[];
+      currentStage: number;
+    }>(
+      `leagues/tournaments/${this.leagueZoneService.tournamentKey()}/manage/playoffs/schedule`,
+      { authenticated: true },
+    );
+  }
+
+  updatePlayoffMatchup(
+    matchupId: string,
+    payload: {
+      score?: { team1: number; team2: number };
+      winner?:
+        | 'side1'
+        | 'side2'
+        | 'draw'
+        | 'side1ffw'
+        | 'side2ffw'
+        | 'dffl'
+        | null;
+      matches: Array<{
+        link?: string;
+        winner: 'side1' | 'side2' | 'draw';
+        team1: {
+          score: number;
+          pokemon: Record<string, League.MatchPokemonStats | { status: null }>;
+        };
+        team2: {
+          score: number;
+          pokemon: Record<string, League.MatchPokemonStats | { status: null }>;
+        };
+      }>;
+    },
+  ) {
+    return this.apiService.post(
+      `leagues/tournaments/${this.leagueZoneService.tournamentKey()}/manage/playoffs/schedule/${matchupId}`,
+      payload,
+      { authenticated: true },
+    );
+  }
+
   getPokemonList() {
     return this.apiService.get<{
       groups?: {

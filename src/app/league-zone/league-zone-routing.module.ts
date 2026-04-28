@@ -71,6 +71,10 @@ const routes: Routes = [
     component: LeagueBracketComponent,
   },
   {
+    path: 'pdbl/tournaments/:tournamentKey/playoffs/schedule',
+    component: LeagueBracketComponent,
+  },
+  {
     path: 'pdbl/tournaments/:tournamentKey/trades',
     component: LeagueTradesComponent,
   },

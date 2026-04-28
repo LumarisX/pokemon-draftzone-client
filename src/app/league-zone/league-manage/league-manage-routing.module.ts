@@ -37,6 +37,11 @@ const routes: Routes = [
     component: LeagueManageTradesComponent,
   },
   {
+    path: 'playoffs/schedule',
+    component: LeagueManageScheduleComponent,
+    data: { mode: 'playoffs' },
+  },
+  {
     path: ':divisionKey/schedule',
     component: LeagueManageScheduleComponent,
   },
