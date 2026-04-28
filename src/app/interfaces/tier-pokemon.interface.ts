@@ -18,6 +18,7 @@ export type TierPokemon = {
   stats: StatsTable;
   bst: number;
   notes?: string;
+  draftBanned?: boolean;
   banned?: {
     moves?: string[];
     abilities?: string[];

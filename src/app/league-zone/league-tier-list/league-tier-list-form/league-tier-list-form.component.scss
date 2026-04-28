@@ -71,7 +71,6 @@
 .tier-main {
   flex: 1;
   display: flex;
-  gap: var(--pdz-space-md);
   overflow: hidden;
   border-radius: var(--pdz-shape-corner-md);
   background-color: pdz-color(surface);
@@ -86,35 +85,28 @@
   overflow-x: auto;
   overflow-y: hidden;
   padding: var(--pdz-space-md);
-  padding-right: 0;
-
-  &::-webkit-scrollbar {
-    height: 8px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: pdz-color(surface-container-low);
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: pdz-color(outline);
-    border-radius: var(--pdz-shape-corner-full);
-
-    &:hover {
-      background: pdz-color(outline-variant);
-    }
-  }
 }
 
 .null-tier-container {
   display: flex;
   flex-direction: column;
+  gap: var(--pdz-space-sm);
   min-width: 280px;
   max-width: 320px;
   flex-shrink: 0;
   padding: var(--pdz-space-md);
-  padding-left: 0;
-  border-left: 3px solid pdz-color(outline);
+  padding-left: var(--pdz-space-sm);
+  border-left: 2px solid pdz-color(outline-variant);
+
+  .tier--null {
+    flex: 2;
+    min-height: 0;
+  }
+
+  .tier--banned {
+    flex: 1;
+    min-height: 0;
+  }
 }
 
 .tier {
@@ -144,6 +136,12 @@
       color: pdz-color(on-secondary-container);
       border-bottom: 2px solid pdz-color(secondary);
     }
+
+    &--banned {
+      background-color: pdz-color(error-container);
+      color: pdz-color(on-error-container);
+      border-bottom: 2px solid pdz-color(error);
+    }
   }
 
   &__trash-icon {
@@ -156,6 +154,37 @@
   &__name {
     @include apply-typography(title-md);
     font-weight: 600;
+  }
+
+  &__move-buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 0;
+    margin-right: var(--pdz-space-2xs);
+    flex-shrink: 0;
+
+    .icon-button {
+      width: 20px;
+      height: 20px;
+      min-width: 20px;
+      min-height: 20px;
+      opacity: 0.5;
+
+      mat-icon {
+        font-size: 14px;
+        width: 14px;
+        height: 14px;
+      }
+
+      &:not([disabled]):hover {
+        opacity: 1;
+      }
+
+      &[disabled] {
+        opacity: 0.15;
+        cursor: default;
+      }
+    }
   }
 
   &__actions {
@@ -176,9 +205,12 @@
     gap: var(--pdz-space-xs);
     min-height: 100px;
     overflow-y: auto;
-    transition: all 0.2s ease;
+    contain: layout style;
+    transition:
+      background-color 0.2s ease,
+      box-shadow 0.2s ease;
 
-    &.cdk-drop-list-dragging {
+    &.is-drag-over {
       background-color: pdz-color(primary-container-low);
       box-shadow: inset 0 0 0 2px pdz-color(primary);
       border-radius: var(--pdz-shape-corner-xs);
@@ -201,7 +233,7 @@
         text-align: center;
       }
 
-      &.cdk-drop-list-dragging {
+      &.is-drag-over {
         border-color: pdz-color(primary);
         border-style: solid;
         color: pdz-color(on-primary-container);
@@ -218,6 +250,15 @@
       min-height: 150px;
     }
   }
+
+  &--banned {
+    border: 2px solid pdz-color(error);
+    background-color: pdz-color(surface-container-low);
+
+    .tier__pokemon-list {
+      min-height: 80px;
+    }
+  }
 }
 
 .pokemon-entry {
@@ -229,10 +270,14 @@
   border: 1px solid pdz-color(outline-variant);
   border-radius: var(--pdz-shape-corner-xs);
   cursor: grab;
-  transition: all 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
   position: relative;
   user-select: none;
   touch-action: none;
+  will-change: transform;
 
   &:active {
     cursor: grabbing;
@@ -241,7 +286,6 @@
   &:hover {
     background-color: pdz-color(surface-container-high);
     border-color: pdz-color(primary);
-    transform: translateX(2px);
     box-shadow: var(--pdz-level-1);
   }
 
@@ -426,83 +470,6 @@
     border-color: pdz-color(primary);
     color: pdz-color(on-primary-container);
   }
-}
-
-.cdk-drag-preview {
-  box-sizing: border-box;
-  border-radius: var(--pdz-shape-corner-xs);
-  box-shadow: var(--pdz-level-4);
-  opacity: 0.95;
-  background-color: pdz-color(surface) !important;
-  border: 2px solid pdz-color(primary) !important;
-  cursor: grabbing !important;
-  overflow: visible !important;
-
-  .pokemon-entry {
-    background-color: pdz-color(surface);
-    border-color: pdz-color(primary);
-    box-shadow: var(--pdz-level-2);
-    overflow: visible !important;
-  }
-}
-
-.cdk-drag-placeholder {
-  border: 2px dashed pdz-color(primary);
-  background-color: pdz-color(primary-container-low);
-  border-radius: var(--pdz-shape-corner-xs);
-  min-height: 40px;
-  opacity: 0.6;
-  animation: pulse 1s ease-in-out infinite;
-}
-
-@keyframes pulse {
-  0%,
-  100% {
-    opacity: 0.6;
-  }
-  50% {
-    opacity: 0.8;
-  }
-}
-
-.cdk-drag-animating {
-  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
-}
-
-.tier__pokemon-list.cdk-drop-list-receiving {
-  background-color: pdz-color(primary-container) !important;
-  box-shadow: inset 0 0 0 3px pdz-color(primary) !important;
-}
-
-.multi-drag-preview {
-  box-sizing: border-box;
-  overflow: visible !important;
-
-  .pokemon-entry {
-    position: relative;
-    overflow: visible !important;
-  }
-}
-
-.multi-drag-badge {
-  position: absolute;
-  top: -6px;
-  right: -6px;
-  background-color: pdz-color(primary);
-  color: pdz-color(on-primary);
-  border-radius: var(--pdz-shape-corner-full);
-  padding: 4px 8px;
-  font-size: 0.75rem;
-  font-weight: 700;
-  box-shadow: var(--pdz-level-3);
-  min-width: 24px;
-  text-align: center;
-  z-index: 1000;
-  white-space: nowrap;
-  line-height: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 pdz-loading {

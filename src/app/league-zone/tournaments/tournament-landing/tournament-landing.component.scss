@@ -32,8 +32,10 @@
 
   @include respond-above(medium) {
     flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: var(--pdz-space-3xl);
     text-align: left;
-    gap: var(--pdz-space-2xl);
   }
 }
 
@@ -52,15 +54,20 @@
   filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.15));
 
   @include respond-above(medium) {
-    max-width: 360px;
+    max-width: 520px;
   }
 }
 
 .league-info {
-  flex: 1;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
   gap: var(--pdz-space-md);
+
+  @include respond-above(medium) {
+    align-items: flex-start;
+  }
 }
 
 .league-title {
@@ -69,26 +76,25 @@
   margin: 0;
   font-weight: 700;
   letter-spacing: -0.02em;
-}
-
-.league-description {
-  @include apply-typography(body-lg);
-  color: var(--pdz-color-on-surface-variant);
-  margin: 0;
-  line-height: 1.6;
+  align-self: center;
 }
 
 .league-details {
   display: flex;
+  flex-direction: row;
   flex-wrap: wrap;
-  gap: var(--pdz-space-lg);
-  margin-top: var(--pdz-space-sm);
+  gap: var(--pdz-space-md) var(--pdz-space-2xl);
 }
 
 .detail-item {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: var(--pdz-space-xs);
+
+  &--description {
+    max-width: 260px;
+  }
 }
 
 .detail-label {

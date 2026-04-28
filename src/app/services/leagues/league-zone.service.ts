@@ -213,7 +213,8 @@ export class LeagueZoneService {
   saveTierListEdit(
     tiers: Array<{
       name: string;
-      pokemon: Array<{ id: string; name: string }>;
+      cost: number;
+      pokemon: Array<{ id: string; name: string; banned?: boolean }>;
     }>,
   ) {
     return this.apiService.post<{ success: boolean; message: string }>(

@@ -69,7 +69,7 @@
   </div>
 
   <!-- Main tier list editor -->
-  <div class="tier-main" cdkDropListGroup>
+  <div class="tier-main">
     @if (isLoading()) {
       <pdz-loading></pdz-loading>
     } @else if (tiers()) {
@@ -79,6 +79,24 @@
           <div class="tier">
             <!-- Tier Header -->
             <div class="tier__header">
+              <div class="tier__move-buttons">
+                <button
+                  class="icon-button"
+                  [disabled]="tierIndex === 0"
+                  (click)="moveTier(tierIndex, tierIndex - 1)"
+                  matTooltip="Move tier left"
+                >
+                  <mat-icon>arrow_back</mat-icon>
+                </button>
+                <button
+                  class="icon-button"
+                  [disabled]="tierIndex === tiers()!.length - 1"
+                  (click)="moveTier(tierIndex, tierIndex + 1)"
+                  matTooltip="Move tier right"
+                >
+                  <mat-icon>arrow_forward</mat-icon>
+                </button>
+              </div>
               <span class="tier__name">{{ tier.name }}</span>
               <div class="tier__actions">
                 <button
@@ -108,10 +126,10 @@
             <!-- Pokemon List (Drop Zone) -->
             <div
               class="tier__pokemon-list"
-              cdkDropList
-              [cdkDropListData]="tier"
-              (cdkDropListDropped)="onDrop($event, tierIndex)"
-              cdkDropListOrientation="vertical"
+              (dragover)="onDragOver($event, tier)"
+              (dragleave)="onDragLeave($event, tier)"
+              (drop)="onDrop($event, tier)"
+              [class.is-drag-over]="isTierDragOver(tier)"
               [class.tier__pokemon-list--empty]="tier.pokemon.length === 0"
             >
               @if (tier.pokemon.length === 0) {
@@ -122,39 +140,19 @@
                 @if (filterPokemon(pokemon)) {
                   <div
                     class="pokemon-entry"
-                    cdkDrag
-                    [cdkDragData]="pokemon"
-                    (cdkDragStarted)="onDragStarted()"
+                    draggable="true"
+                    (dragstart)="onDragStart($event, pokemon, tier)"
+                    (dragend)="onDragEnd()"
                     (click)="onPokemonClick(pokemon, tier, $event)"
                     [class.pokemon-entry--has-moves]="
                       pokemon.moveHistory?.length
                     "
                     [class.pokemon-entry--selected]="isPokemonSelected(pokemon)"
+                    [class.pokemon-entry--draft-banned]="pokemon.draftBanned"
                   >
-                    <div *cdkDragPlaceholder class="cdk-drag-placeholder"></div>
-
                     @if (isPokemonSelected(pokemon)) {
                       <div class="pokemon-entry__select-indicator">
                         <mat-icon>check_circle</mat-icon>
-                      </div>
-                    }
-
-                    @if (
-                      isPokemonSelected(pokemon) &&
-                      selectedPokemonIds().size > 1
-                    ) {
-                      <div *cdkDragPreview class="multi-drag-preview">
-                        <div class="pokemon-entry">
-                          <div class="pokemon-entry__sprite">
-                            <pdz-sprite [pokemon]="pokemon"></pdz-sprite>
-                          </div>
-                          <span class="pokemon-entry__name">
-                            {{ pokemon.name }}
-                          </span>
-                          <div class="multi-drag-badge">
-                            +{{ selectedPokemonIds().size - 1 }}
-                          </div>
-                        </div>
                       </div>
                     }
 
@@ -204,68 +202,47 @@
         </div>
       </div>
 
-      <!-- Null Tier (Trash - Fixed on Right) -->
-      @if (untiered()) {
-        <div class="null-tier-container">
+      <!-- Side Panel: Banned + Untiered (Fixed on Right) -->
+      <div class="null-tier-container">
+        <!-- Untiered Section -->
+        @if (untiered()) {
           <div class="tier tier--null">
             <!-- Tier Header -->
             <div class="tier__header tier__header--null">
-              <mat-icon class="tier__trash-icon">delete</mat-icon>
               <span class="tier__name">{{ untiered()!.name }}</span>
             </div>
 
             <!-- Pokemon List (Drop Zone) -->
             <div
               class="tier__pokemon-list"
-              cdkDropList
-              [cdkDropListData]="untiered()!"
-              (cdkDropListDropped)="onDrop($event, 0, true)"
-              cdkDropListOrientation="vertical"
+              (dragover)="onDragOver($event, untiered()!)"
+              (dragleave)="onDragLeave($event, untiered()!)"
+              (drop)="onDrop($event, untiered()!)"
+              [class.is-drag-over]="isTierDragOver(untiered()!)"
               [class.tier__pokemon-list--empty]="
                 untiered()!.pokemon.length === 0
               "
             >
               @if (untiered()!.pokemon.length === 0) {
-                <span>Drop Pokemon here to remove from tiers</span>
+                <span>Drop Pokémon here to remove from tiers</span>
               }
 
               @for (pokemon of untiered()!.pokemon; track pokemon.id) {
                 @if (filterPokemon(pokemon)) {
                   <div
                     class="pokemon-entry"
-                    cdkDrag
-                    [cdkDragData]="pokemon"
-                    (cdkDragStarted)="onDragStarted()"
+                    draggable="true"
+                    (dragstart)="onDragStart($event, pokemon, untiered()!)"
+                    (dragend)="onDragEnd()"
                     (click)="onPokemonClick(pokemon, untiered()!, $event)"
                     [class.pokemon-entry--has-moves]="
                       pokemon.moveHistory?.length
                     "
                     [class.pokemon-entry--selected]="isPokemonSelected(pokemon)"
                   >
-                    <div *cdkDragPlaceholder class="cdk-drag-placeholder"></div>
-
                     @if (isPokemonSelected(pokemon)) {
                       <div class="pokemon-entry__select-indicator">
                         <mat-icon>check_circle</mat-icon>
-                      </div>
-                    }
-
-                    @if (
-                      isPokemonSelected(pokemon) &&
-                      selectedPokemonIds().size > 1
-                    ) {
-                      <div *cdkDragPreview class="multi-drag-preview">
-                        <div class="pokemon-entry">
-                          <div class="pokemon-entry__sprite">
-                            <pdz-sprite [pokemon]="pokemon"></pdz-sprite>
-                          </div>
-                          <span class="pokemon-entry__name">
-                            {{ pokemon.name }}
-                          </span>
-                          <div class="multi-drag-badge">
-                            +{{ selectedPokemonIds().size - 1 }}
-                          </div>
-                        </div>
                       </div>
                     }
 
@@ -303,8 +280,84 @@
               }
             </div>
           </div>
-        </div>
-      }
+        }
+
+        <!-- Banned Section -->
+        @if (banned()) {
+          <div class="tier tier--banned">
+            <!-- Tier Header -->
+            <div class="tier__header tier__header--banned">
+              <span class="tier__name">{{ banned()!.name }}</span>
+            </div>
+
+            <!-- Pokemon List (Drop Zone) -->
+            <div
+              class="tier__pokemon-list"
+              (dragover)="onDragOver($event, banned()!)"
+              (dragleave)="onDragLeave($event, banned()!)"
+              (drop)="onDrop($event, banned()!)"
+              [class.is-drag-over]="isTierDragOver(banned()!)"
+              [class.tier__pokemon-list--empty]="banned()!.pokemon.length === 0"
+            >
+              @if (banned()!.pokemon.length === 0) {
+                <span>Drag Pokémon here to ban from draft</span>
+              }
+
+              @for (pokemon of banned()!.pokemon; track pokemon.id) {
+                @if (filterPokemon(pokemon)) {
+                  <div
+                    class="pokemon-entry"
+                    draggable="true"
+                    (dragstart)="onDragStart($event, pokemon, banned()!)"
+                    (dragend)="onDragEnd()"
+                    (click)="onPokemonClick(pokemon, banned()!, $event)"
+                    [class.pokemon-entry--has-moves]="
+                      pokemon.moveHistory?.length
+                    "
+                    [class.pokemon-entry--selected]="isPokemonSelected(pokemon)"
+                  >
+                    @if (isPokemonSelected(pokemon)) {
+                      <div class="pokemon-entry__select-indicator">
+                        <mat-icon>check_circle</mat-icon>
+                      </div>
+                    }
+
+                    <div class="pokemon-entry__sprite">
+                      <pdz-sprite [pokemon]="pokemon"></pdz-sprite>
+                    </div>
+
+                    <span class="pokemon-entry__name">
+                      {{ pokemon.name }}
+                    </span>
+
+                    <div class="pokemon-entry__actions">
+                      <button
+                        class="icon-button icon-button--edit"
+                        (click)="onEditPokemon(pokemon, banned()!, $event)"
+                        matTooltip="Edit Pokemon"
+                      >
+                        <mat-icon>edit</mat-icon>
+                      </button>
+
+                      @if (pokemon.moveHistory?.length) {
+                        <button
+                          class="icon-button icon-button--undo"
+                          (click)="
+                            undoLastMove(pokemon); $event.stopPropagation()
+                          "
+                          matTooltip="Undo last move"
+                        >
+                          <mat-icon>undo</mat-icon>
+                        </button>
+                      }
+                    </div>
+                  </div>
+                }
+              }
+            </div>
+          </div>
+        }
+      </div>
     }
   </div>
 </div>

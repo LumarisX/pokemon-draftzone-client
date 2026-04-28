@@ -17,11 +17,11 @@
       <div class="league-info">
         <h1 class="league-title">{{ leagueInfo.name }}</h1>
         @if (leagueInfo.description) {
-          <p class="league-description">
-            {{ leagueInfo.description }}
-          </p>
+          <div class="detail-item detail-item--description">
+            <span class="detail-label">About</span>
+            <span class="detail-value">{{ leagueInfo.description }}</span>
+          </div>
         }
-
         <div class="league-details">
           <div class="detail-item">
             <span class="detail-label">Format</span>
@@ -94,13 +94,13 @@
 
     <!-- Playoffs Section -->
     <div class="playoffs-section">
-      <h2 class="playoffs-section__title">Playoffs</h2>
+      <h2 class="playoffs-section__title">Tournament Bracket</h2>
       <div class="playoffs-section__grid">
         <button
           routerLink="./playoffs/schedule"
           class="button button--division"
         >
-          <span class="button__text">Bracket</span>
+          <span class="button__text">Schedule</span>
         </button>
       </div>
     </div>

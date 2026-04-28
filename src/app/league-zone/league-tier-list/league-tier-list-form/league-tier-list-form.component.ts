@@ -1,8 +1,3 @@
-import {
-  CdkDragDrop,
-  DragDropModule,
-  transferArrayItem,
-} from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -25,7 +20,10 @@ import {
   PokemonEditDialogComponent,
   PokemonEditDialogData,
 } from './pokemon-edit-dialog/pokemon-edit-dialog.component';
-import { TierEditDialogComponent } from './tier-edit-dialog/tier-edit-dialog.component';
+import {
+  TierEditDialogComponent,
+  TierDialogResult,
+} from './tier-edit-dialog/tier-edit-dialog.component';
 
 export type EditTierPokemon = TierPokemon & {
   moveHistory?: Array<{
@@ -55,7 +53,6 @@ interface EditableTier {
     SpriteComponent,
     LoadingComponent,
     MatDialogModule,
-    DragDropModule,
   ],
   templateUrl: './league-tier-list-form.component.html',
   styleUrls: ['./league-tier-list-form.component.scss'],
@@ -75,12 +72,19 @@ export class LeagueTierListFormComponent implements OnInit, OnDestroy {
   hasUnsavedChanges = signal<boolean>(false);
 
   UNTIERED_TIER_NAME = 'Untiered';
+  BANNED_TIER_NAME = 'Banned';
+  banned = signal<EditableTier | undefined>(undefined);
 
   // Multi-select state
   selectedPokemonIds = signal<Set<string>>(new Set());
   lastSelectedPokemon: { pokemon: EditTierPokemon; tier: EditableTier } | null =
     null;
   isDragging = signal<boolean>(false);
+
+  // Native drag state
+  draggedPokemon: EditTierPokemon | null = null;
+  draggedFromTier: EditableTier | null = null;
+  dragOverTier = signal<EditableTier | null>(null);
 
   ngOnInit(): void {
     this.loadTierList();
@@ -105,11 +109,29 @@ export class LeagueTierListFormComponent implements OnInit, OnDestroy {
               tier.name.toLowerCase() === this.UNTIERED_TIER_NAME.toLowerCase(),
           );
 
-          if (nullTierIndex !== -1) {
-            this.untiered.set(flatTiers[nullTierIndex] as EditableTier);
-            flatTiers.splice(nullTierIndex, 1);
-          }
+          const untieredTier: EditableTier =
+            nullTierIndex !== -1
+              ? (flatTiers.splice(nullTierIndex, 1)[0] as EditableTier)
+              : { name: this.UNTIERED_TIER_NAME, pokemon: [] };
 
+          // Extract pokemon with draftBanned: true from all tiers into the banned section
+          const bannedPokemon: EditTierPokemon[] = [];
+          const extractBanned = (tier: EditableTier) => {
+            const kept: EditTierPokemon[] = [];
+            (tier.pokemon as EditTierPokemon[]).forEach((p) =>
+              p.draftBanned ? bannedPokemon.push(p) : kept.push(p),
+            );
+            tier.pokemon = kept;
+          };
+          (flatTiers as EditableTier[]).forEach(extractBanned);
+          extractBanned(untieredTier);
+          bannedPokemon.forEach((p) => delete p.draftBanned);
+
+          this.untiered.set(untieredTier);
+          this.banned.set({
+            name: this.BANNED_TIER_NAME,
+            pokemon: bannedPokemon,
+          });
           this.tiers.set(flatTiers as EditableTier[]);
           this.isLoading.set(false);
           this.hasUnsavedChanges.set(false);
@@ -124,81 +146,91 @@ export class LeagueTierListFormComponent implements OnInit, OnDestroy {
       });
   }
 
-  onDragStarted(): void {
+  onDragStart(
+    event: DragEvent,
+    pokemon: EditTierPokemon,
+    tier: EditableTier,
+  ): void {
+    this.draggedPokemon = pokemon;
+    this.draggedFromTier = tier;
     this.isDragging.set(true);
+    if (event.dataTransfer) {
+      event.dataTransfer.effectAllowed = 'move';
+      event.dataTransfer.setData('text/plain', pokemon.id);
+    }
   }
 
-  onDrop(
-    event: CdkDragDrop<EditableTier>,
-    tierIndex: number,
-    isNullTier = false,
-  ): void {
-    // Reset drag state
+  onDragEnd(): void {
+    this.draggedPokemon = null;
+    this.draggedFromTier = null;
+    this.dragOverTier.set(null);
     setTimeout(() => this.isDragging.set(false), 100);
+  }
 
-    const draggedPokemon =
-      event.previousContainer.data.pokemon[event.previousIndex];
-    const sameTier = event.previousContainer === event.container;
+  onDragOver(event: DragEvent, tier: EditableTier): void {
+    event.preventDefault();
+    if (event.dataTransfer) {
+      event.dataTransfer.dropEffect = 'move';
+    }
+    if (this.dragOverTier() !== tier) {
+      this.dragOverTier.set(tier);
+    }
+  }
+
+  onDragLeave(event: DragEvent, tier: EditableTier): void {
+    const relatedTarget = event.relatedTarget as Node | null;
+    const currentTarget = event.currentTarget as Node;
+    if (relatedTarget && currentTarget.contains(relatedTarget)) return;
+    if (this.dragOverTier() === tier) {
+      this.dragOverTier.set(null);
+    }
+  }
+
+  onDrop(event: DragEvent, targetTier: EditableTier): void {
+    event.preventDefault();
+    this.dragOverTier.set(null);
+
+    const pokemon = this.draggedPokemon;
+    const fromTier = this.draggedFromTier;
+
+    this.draggedPokemon = null;
+    this.draggedFromTier = null;
+    this.isDragging.set(false);
+
+    if (!pokemon || !fromTier || fromTier === targetTier) return;
+
     const selectedIds = this.selectedPokemonIds();
-    const isDraggingSelected = selectedIds.has(draggedPokemon.id);
-
-    // Handle reordering within the same tier (no sorting, just reorder)
-    if (sameTier) {
-      const pokemonArray = event.container.data.pokemon;
-      const movedPokemon = pokemonArray.splice(event.previousIndex, 1)[0];
-      pokemonArray.splice(event.currentIndex, 0, movedPokemon);
-      this.hasUnsavedChanges.set(true);
+    if (selectedIds.has(pokemon.id) && selectedIds.size > 1) {
+      this.moveSelectedToTier(targetTier);
       return;
     }
 
-    // If dragging a selected Pokemon with multiple selections, move all selected
-    if (isDraggingSelected && selectedIds.size > 1) {
-      // Don't use the event's transfer - manually move all selected
-      this.moveSelectedToTier(event.container.data);
-      return;
-    }
-
-    // Moving single Pokemon between different tiers
-    let prevTierIndex = this.findTierIndex(event.previousContainer.data);
-    const actualTierIndex = isNullTier
-      ? (this.tiers()?.length ?? 0)
-      : tierIndex;
-
-    if (!draggedPokemon.moveHistory) {
-      draggedPokemon.moveHistory = [];
-    }
-
-    draggedPokemon.moveHistory.push({
-      fromTierIndex: prevTierIndex,
-      toTierIndex: actualTierIndex,
-      fromPosition: event.previousIndex,
-      toPosition: event.currentIndex,
+    if (!pokemon.moveHistory) pokemon.moveHistory = [];
+    const fromIndex = fromTier.pokemon.indexOf(pokemon);
+    pokemon.moveHistory.push({
+      fromTierIndex: this.findTierIndex(fromTier),
+      toTierIndex: this.findTierIndex(targetTier),
+      fromPosition: fromIndex,
+      toPosition: targetTier.pokemon.length,
     });
 
-    // Transfer to new tier
-    transferArrayItem(
-      event.previousContainer.data.pokemon,
-      event.container.data.pokemon,
-      event.previousIndex,
-      event.container.data.pokemon.length, // Add to end
-    );
-
-    // Auto-sort the destination tier
-    const sortBy = this.sortBy();
-    event.container.data.pokemon.sort(SORT_MAP[sortBy]);
+    fromTier.pokemon.splice(fromIndex, 1);
+    targetTier.pokemon.push(pokemon);
+    targetTier.pokemon.sort(SORT_MAP[this.sortBy()]);
 
     this.hasUnsavedChanges.set(true);
+  }
+
+  isTierDragOver(tier: EditableTier): boolean {
+    return this.dragOverTier() === tier;
   }
 
   private findTierIndex(tier: EditableTier): number {
     const tiers = this.tiers();
     if (!tiers) return -1;
 
-    // Check if it's the null tier
-    if (tier === this.untiered()) {
-      return tiers.length; // Null tier is conceptually after all regular tiers
-    }
-
+    if (tier === this.untiered()) return tiers.length;
+    if (tier === this.banned()) return tiers.length + 1;
     return tiers.indexOf(tier);
   }
 
@@ -212,16 +244,16 @@ export class LeagueTierListFormComponent implements OnInit, OnDestroy {
     const lastMove = pokemon.moveHistory.pop()!;
     const tiers = this.tiers();
     const untier = this.untiered();
+    const bannedTier = this.banned();
     if (!tiers) return;
 
-    const fromTier =
-      lastMove.toTierIndex >= tiers.length
-        ? untier
-        : tiers[lastMove.toTierIndex];
-    const toTier =
-      lastMove.fromTierIndex >= tiers.length
-        ? untier
-        : tiers[lastMove.fromTierIndex];
+    const resolveTier = (index: number) => {
+      if (index === tiers.length + 1) return bannedTier;
+      if (index >= tiers.length) return untier;
+      return tiers[index];
+    };
+    const fromTier = resolveTier(lastMove.toTierIndex);
+    const toTier = resolveTier(lastMove.fromTierIndex);
 
     if (!fromTier || !toTier) return;
 
@@ -334,7 +366,10 @@ export class LeagueTierListFormComponent implements OnInit, OnDestroy {
     const nullTier = this.untiered();
     if (!tiers) return;
 
-    const allTiers = nullTier ? [...tiers, nullTier] : tiers;
+    const bannedTier = this.banned();
+    const allTiers = [...tiers];
+    if (nullTier) allTiers.push(nullTier);
+    if (bannedTier) allTiers.push(bannedTier);
     const sortBy = this.sortBy();
     const targetTierIndex = this.findTierIndex(targetTier);
 
@@ -401,41 +436,61 @@ export class LeagueTierListFormComponent implements OnInit, OnDestroy {
       });
   }
 
+  moveTier(fromIndex: number, toIndex: number): void {
+    const tiers = this.tiers();
+    if (!tiers || toIndex < 0 || toIndex >= tiers.length) return;
+    const [tier] = tiers.splice(fromIndex, 1);
+    tiers.splice(toIndex, 0, tier);
+    this.tiers.set([...tiers]);
+    this.hasUnsavedChanges.set(true);
+  }
+
   addNewTier(): void {
     const tiers = this.tiers();
     if (!tiers) return;
 
-    const newTierName = prompt('Enter tier name:');
-    if (!newTierName || !newTierName.trim()) return;
-
-    tiers.push({
-      name: newTierName.trim(),
-      pokemon: [],
-    });
-
-    this.tiers.set([...tiers]);
-    this.hasUnsavedChanges.set(true);
-    this.snackBar.open(`Tier "${newTierName}" added`, undefined, {
-      duration: 2000,
-    });
-  }
-
-  editTier(tier: EditableTier): void {
     const dialogRef = this.dialog.open(TierEditDialogComponent, {
-      width: '500px',
+      width: '400px',
       maxWidth: '95vw',
-      data: { tier },
-      autoFocus: 'dialog',
+      data: {},
+      autoFocus: 'first-tabbable',
     });
 
     dialogRef
       .afterClosed()
       .pipe(takeUntil(this.destroy$))
-      .subscribe((result) => {
-        if (result) {
-          this.hasUnsavedChanges.set(true);
-          this.snackBar.open('Tier updated', undefined, { duration: 2000 });
-        }
+      .subscribe((result: TierDialogResult | null) => {
+        if (!result) return;
+
+        tiers.push({
+          name: result.name,
+          pokemon: [],
+        });
+
+        this.tiers.set([...tiers]);
+        this.hasUnsavedChanges.set(true);
+        this.snackBar.open(`Tier "${result.name}" added`, undefined, {
+          duration: 2000,
+        });
+      });
+  }
+
+  editTier(tier: EditableTier): void {
+    const dialogRef = this.dialog.open(TierEditDialogComponent, {
+      width: '400px',
+      maxWidth: '95vw',
+      data: { tier },
+      autoFocus: 'first-tabbable',
+    });
+
+    dialogRef
+      .afterClosed()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((result: TierDialogResult | null) => {
+        if (!result) return;
+        tier.name = result.name;
+        this.hasUnsavedChanges.set(true);
+        this.snackBar.open('Tier updated', undefined, { duration: 2000 });
       });
   }
 
@@ -499,17 +554,41 @@ export class LeagueTierListFormComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // Combine regular tiers with null tier for saving
-    const allTiers = nullTier ? [...tiers, nullTier] : tiers;
+    // Combine regular tiers with untiered for saving
+    const allTiers = [...tiers];
+    if (nullTier) allTiers.push(nullTier);
 
     // Convert to server format
     const tierData = allTiers.map((tier) => ({
       name: tier.name,
+      cost: tier.cost ?? 0,
       pokemon: tier.pokemon.map((p) => ({
         id: p.id,
         name: p.name,
       })),
     }));
+
+    // Merge banned pokemon into untiered with banned: true
+    const bannedTier = this.banned();
+    if (bannedTier && bannedTier.pokemon.length > 0) {
+      const untieredEntry = tierData.find(
+        (t) => t.name === this.UNTIERED_TIER_NAME,
+      );
+      const bannedPayload = bannedTier.pokemon.map((p) => ({
+        id: p.id,
+        name: p.name,
+        banned: true as const,
+      }));
+      if (untieredEntry) {
+        untieredEntry.pokemon.push(...bannedPayload);
+      } else {
+        tierData.push({
+          name: this.UNTIERED_TIER_NAME,
+          cost: 0,
+          pokemon: bannedPayload,
+        });
+      }
+    }
 
     this.leagueService
       .saveTierListEdit(tierData)
@@ -539,6 +618,10 @@ export class LeagueTierListFormComponent implements OnInit, OnDestroy {
   resetChanges(): void {
     if (!confirm('Discard all unsaved changes?')) return;
     this.loadTierList();
+  }
+
+  isSortingDisabled(_tier: EditableTier): boolean {
+    return this.searchText().length > 0;
   }
 
   filterPokemon(pokemon: EditTierPokemon): boolean {

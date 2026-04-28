@@ -1,5 +1,10 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import {
   MAT_DIALOG_DATA,
@@ -8,7 +13,16 @@ import {
 } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { LeagueTier } from '../../../../interfaces/tier-pokemon.interface';
+
+export interface TierDialogData {
+  tier?: { name: string; cost?: number; required?: number };
+}
+
+export interface TierDialogResult {
+  name: string;
+  cost: number;
+  required: number;
+}
 
 @Component({
   selector: 'pdz-tier-edit-dialog',
@@ -24,15 +38,42 @@ import { LeagueTier } from '../../../../interfaces/tier-pokemon.interface';
 })
 export class TierEditDialogComponent implements OnInit {
   dialogRef = inject<MatDialogRef<TierEditDialogComponent>>(MatDialogRef);
-  data = inject<{ tier: LeagueTier }>(MAT_DIALOG_DATA);
+  data = inject<TierDialogData>(MAT_DIALOG_DATA);
+  private fb = inject(FormBuilder);
 
-  ngOnInit(): void {}
+  form!: FormGroup;
+  isAddMode = !this.data?.tier;
+
+  ngOnInit(): void {
+    this.form = this.fb.group({
+      name: [
+        this.data?.tier?.name ?? '',
+        [Validators.required, Validators.maxLength(30)],
+      ],
+      cost: [this.data?.tier?.cost ?? null, Validators.required],
+      required: [this.data?.tier?.required ?? 0, Validators.required],
+    });
+
+    this.form.get('name')!.valueChanges.subscribe((value: string) => {
+      const num = Number(value?.trim());
+      if (value?.trim() !== '' && !isNaN(num) && isFinite(num)) {
+        this.form.get('cost')!.setValue(num, { emitEvent: false });
+      }
+    });
+  }
 
   onSave(): void {
-    this.dialogRef.close();
+    if (this.form.invalid) return;
+    const { name, cost, required } = this.form.value;
+    const result: TierDialogResult = {
+      name: name.trim(),
+      cost: Number(cost),
+      required: Number(required),
+    };
+    this.dialogRef.close(result);
   }
 
   closeDialog(): void {
-    this.dialogRef.close();
+    this.dialogRef.close(null);
   }
 }

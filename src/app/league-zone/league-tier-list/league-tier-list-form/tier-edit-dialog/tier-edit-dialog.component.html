@@ -1,26 +1,51 @@
-<h1 mat-dialog-title>Edit Tier</h1>
-<form>
+<h1 mat-dialog-title>{{ isAddMode ? "Add New Tier" : "Edit Tier" }}</h1>
+<form [formGroup]="form" (ngSubmit)="onSave()">
   <div mat-dialog-content class="dialog-layout">
-    <h2>Details</h2>
     <div class="details-container">
       <mat-form-field appearance="outline" class="form-field-full-width">
         <mat-label>Tier Name</mat-label>
-        <input matInput placeholder="" />
+        <input matInput formControlName="name" placeholder="e.g. S, A, B" />
+        @if (
+          form.get("name")?.hasError("required") && form.get("name")?.touched
+        ) {
+          <mat-error>Tier name is required</mat-error>
+        }
+        @if (form.get("name")?.hasError("maxlength")) {
+          <mat-error>Tier name cannot exceed 30 characters</mat-error>
+        }
       </mat-form-field>
       <div class="cost-container">
         <mat-form-field appearance="outline" class="form-field-half-width">
-          <mat-label>Cost (Points)</mat-label>
-          <input matInput placeholder="" />
+          <mat-label>Required Count</mat-label>
+          <input min="0" type="number" matInput formControlName="required" />
+          @if (
+            form.get("required")?.hasError("required") &&
+            form.get("required")?.touched
+          ) {
+            <mat-error>Required</mat-error>
+          }
         </mat-form-field>
         <mat-form-field appearance="outline" class="form-field-half-width">
-          <mat-label>Cost (Rank)</mat-label>
-          <input matInput placeholder="" />
+          <mat-label>Cost (Points)</mat-label>
+          <input type="number" matInput formControlName="cost" />
+          @if (
+            form.get("cost")?.hasError("required") && form.get("cost")?.touched
+          ) {
+            <mat-error>Required</mat-error>
+          }
         </mat-form-field>
       </div>
     </div>
   </div>
   <div mat-dialog-actions align="end">
     <button mat-button type="button" (click)="closeDialog()">Cancel</button>
-    <button mat-raised-button type="submit">Save Changes</button>
+    <button
+      mat-raised-button
+      color="primary"
+      type="submit"
+      [disabled]="form.invalid"
+    >
+      {{ isAddMode ? "Add Tier" : "Save Changes" }}
+    </button>
   </div>
 </form>
