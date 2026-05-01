@@ -64,7 +64,71 @@
 
   &__actions {
     display: flex;
+    align-items: center;
     gap: var(--pdz-space-sm);
+  }
+}
+
+.sort-control {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  mat-icon {
+    position: absolute;
+    left: var(--pdz-space-sm);
+    font-size: 1.125rem;
+    width: 1.125rem;
+    height: 1.125rem;
+    color: pdz-color(on-surface-variant);
+    pointer-events: none;
+  }
+
+  select {
+    padding: var(--pdz-space-xs) var(--pdz-space-md);
+    padding-left: calc(var(--pdz-space-sm) + 1.25rem + var(--pdz-space-xs));
+    border: 1px solid pdz-color(outline);
+    border-radius: var(--pdz-shape-corner-full);
+    background-color: pdz-color(surface);
+    color: pdz-color(on-surface);
+    @include apply-typography(label-md);
+    cursor: pointer;
+    appearance: none;
+    padding-right: var(--pdz-space-xl);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23888'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right var(--pdz-space-sm) center;
+    transition: border-color 0.15s ease;
+
+    &:focus {
+      outline: 2px solid pdz-color(primary);
+      outline-offset: 1px;
+    }
+
+    &:hover {
+      border-color: pdz-color(primary);
+    }
+  }
+}
+
+.toolbar__history {
+  display: flex;
+  gap: var(--pdz-space-2xs);
+  align-items: center;
+
+  .icon-button {
+    width: 2.25rem;
+    height: 2.25rem;
+
+    &:not([disabled]):hover mat-icon {
+      color: pdz-color(primary);
+    }
+
+    &[disabled] {
+      opacity: 0.35;
+      cursor: default;
+      pointer-events: none;
+    }
   }
 }
 
@@ -81,10 +145,10 @@
 .tiers-container {
   flex: 1;
   display: flex;
-  gap: var(--pdz-space-md);
+  gap: var(--pdz-space-sm);
   overflow-x: auto;
   overflow-y: hidden;
-  padding: var(--pdz-space-md);
+  padding: var(--pdz-space-sm);
 }
 
 .null-tier-container {
@@ -156,12 +220,53 @@
     font-weight: 600;
   }
 
+  &__info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--pdz-space-2xs);
+    min-width: 0;
+  }
+
+  &__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--pdz-space-2xs);
+  }
+
+  &__meta-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    @include apply-typography(label-sm);
+    border: 1px solid pdz-color(primary-border);
+    border-radius: var(--pdz-shape-corner-full);
+    padding: 0 var(--pdz-space-xs);
+    line-height: 1.4;
+    opacity: 0.85;
+
+    mat-icon {
+      font-size: 0.8rem;
+      width: 0.8rem;
+      height: 0.8rem;
+    }
+  }
+
   &__move-buttons {
+    display: none;
+  }
+
+  &__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    flex-shrink: 0;
+  }
+
+  &__actions-row {
     display: flex;
     flex-direction: row;
     gap: 0;
-    margin-right: var(--pdz-space-2xs);
-    flex-shrink: 0;
 
     .icon-button {
       width: 20px;
@@ -187,19 +292,9 @@
     }
   }
 
-  &__actions {
-    display: flex;
-    gap: var(--pdz-space-2xs);
-    opacity: 0.8;
-
-    &:hover {
-      opacity: 1;
-    }
-  }
-
   &__pokemon-list {
     flex: 1;
-    padding: var(--pdz-space-sm);
+    padding: var(--pdz-space-xs);
     display: flex;
     flex-direction: column;
     gap: var(--pdz-space-xs);
@@ -258,6 +353,18 @@
     .tier__pokemon-list {
       min-height: 80px;
     }
+  }
+}
+
+@keyframes pokemon-flash {
+  0% {
+    background-color: pdz-color(surface);
+  }
+  30% {
+    background-color: pdz-color(primary-container);
+  }
+  100% {
+    background-color: pdz-color(surface);
   }
 }
 
@@ -333,10 +440,6 @@
     opacity: 1;
   }
 
-  &--has-moves {
-    border-left: 3px solid pdz-color(warning);
-  }
-
   &--selected {
     background-color: pdz-color(primary-container);
     border-color: pdz-color(primary);
@@ -349,6 +452,10 @@
     .pokemon-entry__actions {
       opacity: 1;
     }
+  }
+
+  &--flash {
+    animation: pokemon-flash 0.6s ease-out forwards;
   }
 }
 
@@ -386,10 +493,6 @@
 
   &--edit mat-icon {
     color: pdz-color(primary);
-  }
-
-  &--undo mat-icon {
-    color: pdz-color(warning);
   }
 }
 

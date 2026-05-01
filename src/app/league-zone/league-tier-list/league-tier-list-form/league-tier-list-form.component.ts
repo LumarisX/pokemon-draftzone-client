@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  HostListener,
+  inject,
+  OnDestroy,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -25,18 +32,23 @@ import {
   TierDialogResult,
 } from './tier-edit-dialog/tier-edit-dialog.component';
 
-export type EditTierPokemon = TierPokemon & {
-  moveHistory?: Array<{
-    fromTierIndex: number;
-    toTierIndex: number;
-    fromPosition: number;
-    toPosition: number;
-  }>;
-};
+export type EditTierPokemon = TierPokemon;
+
+interface MoveRecord {
+  pokemon: EditTierPokemon;
+  fromTier: EditableTier;
+  fromIndex: number;
+  toTier: EditableTier;
+}
+
+interface HistoryEntry {
+  moves: MoveRecord[];
+}
 
 interface EditableTier {
   name: string;
   cost?: number;
+  required?: number;
   pokemon: EditTierPokemon[];
 }
 
@@ -74,6 +86,18 @@ export class LeagueTierListFormComponent implements OnInit, OnDestroy {
   UNTIERED_TIER_NAME = 'Untiered';
   BANNED_TIER_NAME = 'Banned';
   banned = signal<EditableTier | undefined>(undefined);
+
+  // Undo/redo history
+  private undoStack: HistoryEntry[] = [];
+  private redoStack: HistoryEntry[] = [];
+  private savedHistoryDepth = 0;
+  readonly MAX_HISTORY = 50;
+  canUndo = signal(false);
+  canRedo = signal(false);
+
+  // Flash animation state
+  flashedPokemonIds = signal<Set<string>>(new Set());
+  private flashTimeouts = new Map<string, ReturnType<typeof setTimeout>>();
 
   // Multi-select state
   selectedPokemonIds = signal<Set<string>>(new Set());
@@ -127,6 +151,11 @@ export class LeagueTierListFormComponent implements OnInit, OnDestroy {
           extractBanned(untieredTier);
           bannedPokemon.forEach((p) => delete p.draftBanned);
 
+          this.undoStack = [];
+          this.redoStack = [];
+          this.savedHistoryDepth = 0;
+          this.canUndo.set(false);
+          this.canRedo.set(false);
           this.untiered.set(untieredTier);
           this.banned.set({
             name: this.BANNED_TIER_NAME,
@@ -205,19 +234,16 @@ export class LeagueTierListFormComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (!pokemon.moveHistory) pokemon.moveHistory = [];
     const fromIndex = fromTier.pokemon.indexOf(pokemon);
-    pokemon.moveHistory.push({
-      fromTierIndex: this.findTierIndex(fromTier),
-      toTierIndex: this.findTierIndex(targetTier),
-      fromPosition: fromIndex,
-      toPosition: targetTier.pokemon.length,
+    this.pushHistory({
+      moves: [{ pokemon, fromTier, fromIndex, toTier: targetTier }],
     });
 
     fromTier.pokemon.splice(fromIndex, 1);
     targetTier.pokemon.push(pokemon);
     targetTier.pokemon.sort(SORT_MAP[this.sortBy()]);
 
+    this.flashPokemon([pokemon.id]);
     this.hasUnsavedChanges.set(true);
   }
 
@@ -225,45 +251,90 @@ export class LeagueTierListFormComponent implements OnInit, OnDestroy {
     return this.dragOverTier() === tier;
   }
 
-  private findTierIndex(tier: EditableTier): number {
-    const tiers = this.tiers();
-    if (!tiers) return -1;
-
-    if (tier === this.untiered()) return tiers.length;
-    if (tier === this.banned()) return tiers.length + 1;
-    return tiers.indexOf(tier);
-  }
-
   isUntiered(tier: EditableTier): boolean {
     return tier === this.untiered();
   }
 
-  undoLastMove(pokemon: EditTierPokemon): void {
-    if (!pokemon.moveHistory || pokemon.moveHistory.length === 0) return;
+  private flashPokemon(ids: string[]): void {
+    const current = new Set(this.flashedPokemonIds());
+    ids.forEach((id) => {
+      current.add(id);
+      // Reset any existing timeout for this id
+      const existing = this.flashTimeouts.get(id);
+      if (existing) clearTimeout(existing);
+      const t = setTimeout(() => {
+        this.flashedPokemonIds.update((s) => {
+          const next = new Set(s);
+          next.delete(id);
+          return next;
+        });
+        this.flashTimeouts.delete(id);
+      }, 600);
+      this.flashTimeouts.set(id, t);
+    });
+    this.flashedPokemonIds.set(current);
+  }
 
-    const lastMove = pokemon.moveHistory.pop()!;
-    const tiers = this.tiers();
-    const untier = this.untiered();
-    const bannedTier = this.banned();
-    if (!tiers) return;
+  isPokemonFlashing(pokemon: EditTierPokemon): boolean {
+    return this.flashedPokemonIds().has(pokemon.id);
+  }
 
-    const resolveTier = (index: number) => {
-      if (index === tiers.length + 1) return bannedTier;
-      if (index >= tiers.length) return untier;
-      return tiers[index];
-    };
-    const fromTier = resolveTier(lastMove.toTierIndex);
-    const toTier = resolveTier(lastMove.fromTierIndex);
+  private pushHistory(entry: HistoryEntry): void {
+    this.undoStack.push(entry);
+    if (this.undoStack.length > this.MAX_HISTORY) {
+      this.undoStack.shift();
+    }
+    this.redoStack = [];
+    this.canUndo.set(true);
+    this.canRedo.set(false);
+  }
 
-    if (!fromTier || !toTier) return;
+  undo(): void {
+    if (this.undoStack.length === 0) return;
+    const entry = this.undoStack.pop()!;
 
-    const currentIndex = fromTier.pokemon.indexOf(pokemon);
-    if (currentIndex === -1) return;
+    // Sort moves by fromIndex ascending within the same fromTier for correct position restoration
+    const sortedMoves = [...entry.moves].sort((a, b) =>
+      a.fromTier === b.fromTier ? a.fromIndex - b.fromIndex : 0,
+    );
 
-    fromTier.pokemon.splice(currentIndex, 1);
-    toTier.pokemon.splice(lastMove.fromPosition, 0, pokemon);
+    sortedMoves.forEach((move) => {
+      const currentIdx = move.toTier.pokemon.indexOf(move.pokemon);
+      if (currentIdx === -1) return;
+      move.toTier.pokemon.splice(currentIdx, 1);
+      move.fromTier.pokemon.splice(move.fromIndex, 0, move.pokemon);
+    });
 
-    this.snackBar.open('Move undone', undefined, { duration: 2000 });
+    this.redoStack.push(entry);
+    this.canUndo.set(this.undoStack.length > 0);
+    this.canRedo.set(true);
+    this.hasUnsavedChanges.set(
+      this.undoStack.length !== this.savedHistoryDepth,
+    );
+    this.tiers.set([...(this.tiers() ?? [])]);
+    this.flashPokemon(entry.moves.map((m) => m.pokemon.id));
+  }
+
+  redo(): void {
+    if (this.redoStack.length === 0) return;
+    const entry = this.redoStack.pop()!;
+
+    entry.moves.forEach((move) => {
+      const currentIdx = move.fromTier.pokemon.indexOf(move.pokemon);
+      if (currentIdx === -1) return;
+      move.fromTier.pokemon.splice(currentIdx, 1);
+      move.toTier.pokemon.push(move.pokemon);
+      move.toTier.pokemon.sort(SORT_MAP[this.sortBy()]);
+    });
+
+    this.undoStack.push(entry);
+    this.canUndo.set(true);
+    this.canRedo.set(this.redoStack.length > 0);
+    this.hasUnsavedChanges.set(
+      this.undoStack.length !== this.savedHistoryDepth,
+    );
+    this.tiers.set([...(this.tiers() ?? [])]);
+    this.flashPokemon(entry.moves.map((m) => m.pokemon.id));
   }
 
   onPokemonClick(
@@ -371,39 +442,38 @@ export class LeagueTierListFormComponent implements OnInit, OnDestroy {
     if (nullTier) allTiers.push(nullTier);
     if (bannedTier) allTiers.push(bannedTier);
     const sortBy = this.sortBy();
-    const targetTierIndex = this.findTierIndex(targetTier);
 
-    // Collect selected Pokemon from all tiers with their source info
-    const selectedPokemon: EditTierPokemon[] = [];
-    allTiers.forEach((tier, tierIndex) => {
-      const matches = tier.pokemon.filter((p) => selectedIds.has(p.id));
-
-      // Add move history to each Pokemon
-      matches.forEach((pokemon, index) => {
-        if (!pokemon.moveHistory) {
-          pokemon.moveHistory = [];
+    // Collect moves before modifying arrays
+    const moves: MoveRecord[] = [];
+    allTiers.forEach((tier) => {
+      tier.pokemon.forEach((pokemon, index) => {
+        if (selectedIds.has(pokemon.id) && tier !== targetTier) {
+          moves.push({
+            pokemon,
+            fromTier: tier,
+            fromIndex: index,
+            toTier: targetTier,
+          });
         }
-        const sourcePosition = tier.pokemon.indexOf(pokemon);
-        pokemon.moveHistory.push({
-          fromTierIndex: tierIndex,
-          toTierIndex: targetTierIndex,
-          fromPosition: sourcePosition,
-          toPosition: -1, // Will be sorted anyway
-        });
       });
+    });
 
-      selectedPokemon.push(...matches);
-      // Remove from source tiers
+    if (moves.length === 0) return;
+    this.pushHistory({ moves });
+
+    // Remove from source tiers
+    allTiers.forEach((tier) => {
       tier.pokemon = tier.pokemon.filter((p) => !selectedIds.has(p.id));
     });
 
     // Add to target tier and sort
-    targetTier.pokemon.push(...selectedPokemon);
+    targetTier.pokemon.push(...moves.map((m) => m.pokemon));
     targetTier.pokemon.sort(SORT_MAP[sortBy]);
 
+    this.flashPokemon(moves.map((m) => m.pokemon.id));
     this.clearSelection();
     this.hasUnsavedChanges.set(true);
-    this.snackBar.open(`Moved ${selectedPokemon.length} Pokemon`, undefined, {
+    this.snackBar.open(`Moved ${moves.length} Pokemon`, undefined, {
       duration: 2000,
     });
   }
@@ -464,6 +534,8 @@ export class LeagueTierListFormComponent implements OnInit, OnDestroy {
 
         tiers.push({
           name: result.name,
+          cost: result.cost,
+          required: result.required,
           pokemon: [],
         });
 
@@ -489,6 +561,8 @@ export class LeagueTierListFormComponent implements OnInit, OnDestroy {
       .subscribe((result: TierDialogResult | null) => {
         if (!result) return;
         tier.name = result.name;
+        tier.cost = result.cost;
+        tier.required = result.required;
         this.hasUnsavedChanges.set(true);
         this.snackBar.open('Tier updated', undefined, { duration: 2000 });
       });
@@ -517,29 +591,18 @@ export class LeagueTierListFormComponent implements OnInit, OnDestroy {
     });
   }
 
-  sortTier(tier: EditableTier): void {
-    const sortBy = this.sortBy();
-    tier.pokemon.sort(SORT_MAP[sortBy]);
-    this.tiers.set([...(this.tiers() ?? [])]);
-  }
+  readonly sortOptions: { value: SortOption; label: string }[] = [
+    { value: 'BST', label: 'BST' },
+    { value: 'Name', label: 'A-Z' },
+  ];
 
-  sortAllTiers(): void {
+  setSortOption(option: SortOption): void {
+    if (this.sortBy() === option) return;
+    this.sortBy.set(option);
     const tiers = this.tiers();
     if (!tiers) return;
-
-    const sortBy = this.sortBy();
-    tiers.forEach((tier) => {
-      tier.pokemon.sort(SORT_MAP[sortBy]);
-    });
-
+    tiers.forEach((tier) => tier.pokemon.sort(SORT_MAP[option]));
     this.tiers.set([...tiers]);
-    this.snackBar.open(
-      `All tiers sorted (excluding ${this.UNTIERED_TIER_NAME})`,
-      undefined,
-      {
-        duration: 2000,
-      },
-    );
   }
 
   saveTierList(): void {
@@ -596,6 +659,7 @@ export class LeagueTierListFormComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (response) => {
           this.isLoading.set(false);
+          this.savedHistoryDepth = this.undoStack.length;
           this.hasUnsavedChanges.set(false);
           this.snackBar.open(
             response.message || 'Tier list saved successfully',
@@ -615,9 +679,16 @@ export class LeagueTierListFormComponent implements OnInit, OnDestroy {
       });
   }
 
-  resetChanges(): void {
-    if (!confirm('Discard all unsaved changes?')) return;
-    this.loadTierList();
+  @HostListener('window:beforeunload', ['$event'])
+  onBeforeUnload(event: BeforeUnloadEvent): void {
+    if (this.hasUnsavedChanges()) {
+      event.preventDefault();
+    }
+  }
+
+  canDeactivate(): boolean {
+    if (!this.hasUnsavedChanges()) return true;
+    return confirm('You have unsaved changes. Are you sure you want to leave?');
   }
 
   isSortingDisabled(_tier: EditableTier): boolean {

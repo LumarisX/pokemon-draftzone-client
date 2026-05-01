@@ -26,6 +26,25 @@
 
     <div class="toolbar__spacer"></div>
 
+    <div class="toolbar__history">
+      <button
+        class="icon-button"
+        [disabled]="!canUndo()"
+        (click)="undo()"
+        matTooltip="Undo"
+      >
+        <mat-icon>undo</mat-icon>
+      </button>
+      <button
+        class="icon-button"
+        [disabled]="!canRedo()"
+        (click)="redo()"
+        matTooltip="Redo"
+      >
+        <mat-icon>redo</mat-icon>
+      </button>
+    </div>
+
     <div class="toolbar__search">
       <mat-icon>search</mat-icon>
       <input
@@ -37,24 +56,14 @@
     </div>
 
     <div class="toolbar__actions">
-      <button
-        class="action-button"
-        (click)="sortAllTiers()"
-        matTooltip="Sort all tiers by current sort option"
-      >
+      <div class="sort-control">
         <mat-icon>sort</mat-icon>
-        Sort All
-      </button>
-
-      <button
-        class="action-button"
-        [disabled]="!hasUnsavedChanges()"
-        (click)="resetChanges()"
-        matTooltip="Discard unsaved changes"
-      >
-        <mat-icon>refresh</mat-icon>
-        Reset
-      </button>
+        <select [ngModel]="sortBy()" (ngModelChange)="setSortOption($event)">
+          @for (option of sortOptions; track option.value) {
+            <option [value]="option.value">{{ option.label }}</option>
+          }
+        </select>
+      </div>
 
       <button
         class="action-button action-button--primary"
@@ -79,47 +88,56 @@
           <div class="tier">
             <!-- Tier Header -->
             <div class="tier__header">
-              <div class="tier__move-buttons">
-                <button
-                  class="icon-button"
-                  [disabled]="tierIndex === 0"
-                  (click)="moveTier(tierIndex, tierIndex - 1)"
-                  matTooltip="Move tier left"
-                >
-                  <mat-icon>arrow_back</mat-icon>
-                </button>
-                <button
-                  class="icon-button"
-                  [disabled]="tierIndex === tiers()!.length - 1"
-                  (click)="moveTier(tierIndex, tierIndex + 1)"
-                  matTooltip="Move tier right"
-                >
-                  <mat-icon>arrow_forward</mat-icon>
-                </button>
+              <div class="tier__info">
+                <span class="tier__name">{{ tier.name }}</span>
+                <div class="tier__meta">
+                  @if (tier.cost != null) {
+                    <span class="tier__meta-chip">
+                      <mat-icon>currency_ruble</mat-icon>{{ tier.cost }}
+                    </span>
+                  }
+                  @if (tier.required) {
+                    <span class="tier__meta-chip">
+                      <mat-icon>add_circle</mat-icon>{{ tier.required }} req
+                    </span>
+                  }
+                </div>
               </div>
-              <span class="tier__name">{{ tier.name }}</span>
               <div class="tier__actions">
-                <button
-                  class="icon-button"
-                  (click)="sortTier(tier)"
-                  matTooltip="Sort this tier"
-                >
-                  <mat-icon>sort</mat-icon>
-                </button>
-                <button
-                  class="icon-button"
-                  (click)="editTier(tier)"
-                  matTooltip="Edit tier"
-                >
-                  <mat-icon>edit</mat-icon>
-                </button>
-                <button
-                  class="icon-button icon-button--delete"
-                  (click)="deleteTier(tierIndex)"
-                  matTooltip="Delete tier"
-                >
-                  <mat-icon>delete</mat-icon>
-                </button>
+                <div class="tier__actions-row">
+                  <button
+                    class="icon-button"
+                    (click)="editTier(tier)"
+                    matTooltip="Edit tier"
+                  >
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button
+                    class="icon-button icon-button--delete"
+                    (click)="deleteTier(tierIndex)"
+                    matTooltip="Delete tier"
+                  >
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+                <div class="tier__actions-row">
+                  <button
+                    class="icon-button"
+                    [disabled]="tierIndex === 0"
+                    (click)="moveTier(tierIndex, tierIndex - 1)"
+                    matTooltip="Move tier left"
+                  >
+                    <mat-icon>arrow_back</mat-icon>
+                  </button>
+                  <button
+                    class="icon-button"
+                    [disabled]="tierIndex === tiers()!.length - 1"
+                    (click)="moveTier(tierIndex, tierIndex + 1)"
+                    matTooltip="Move tier right"
+                  >
+                    <mat-icon>arrow_forward</mat-icon>
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -144,10 +162,8 @@
                     (dragstart)="onDragStart($event, pokemon, tier)"
                     (dragend)="onDragEnd()"
                     (click)="onPokemonClick(pokemon, tier, $event)"
-                    [class.pokemon-entry--has-moves]="
-                      pokemon.moveHistory?.length
-                    "
                     [class.pokemon-entry--selected]="isPokemonSelected(pokemon)"
+                    [class.pokemon-entry--flash]="isPokemonFlashing(pokemon)"
                     [class.pokemon-entry--draft-banned]="pokemon.draftBanned"
                   >
                     @if (isPokemonSelected(pokemon)) {
@@ -172,18 +188,6 @@
                       >
                         <mat-icon>edit</mat-icon>
                       </button>
-
-                      @if (pokemon.moveHistory?.length) {
-                        <button
-                          class="icon-button icon-button--undo"
-                          (click)="
-                            undoLastMove(pokemon); $event.stopPropagation()
-                          "
-                          matTooltip="Undo last move"
-                        >
-                          <mat-icon>undo</mat-icon>
-                        </button>
-                      }
                     </div>
                   </div>
                 }
@@ -235,10 +239,8 @@
                     (dragstart)="onDragStart($event, pokemon, untiered()!)"
                     (dragend)="onDragEnd()"
                     (click)="onPokemonClick(pokemon, untiered()!, $event)"
-                    [class.pokemon-entry--has-moves]="
-                      pokemon.moveHistory?.length
-                    "
                     [class.pokemon-entry--selected]="isPokemonSelected(pokemon)"
+                    [class.pokemon-entry--flash]="isPokemonFlashing(pokemon)"
                   >
                     @if (isPokemonSelected(pokemon)) {
                       <div class="pokemon-entry__select-indicator">
@@ -262,18 +264,6 @@
                       >
                         <mat-icon>edit</mat-icon>
                       </button>
-
-                      @if (pokemon.moveHistory?.length) {
-                        <button
-                          class="icon-button icon-button--undo"
-                          (click)="
-                            undoLastMove(pokemon); $event.stopPropagation()
-                          "
-                          matTooltip="Undo last move"
-                        >
-                          <mat-icon>undo</mat-icon>
-                        </button>
-                      }
                     </div>
                   </div>
                 }
@@ -311,10 +301,8 @@
                     (dragstart)="onDragStart($event, pokemon, banned()!)"
                     (dragend)="onDragEnd()"
                     (click)="onPokemonClick(pokemon, banned()!, $event)"
-                    [class.pokemon-entry--has-moves]="
-                      pokemon.moveHistory?.length
-                    "
                     [class.pokemon-entry--selected]="isPokemonSelected(pokemon)"
+                    [class.pokemon-entry--flash]="isPokemonFlashing(pokemon)"
                   >
                     @if (isPokemonSelected(pokemon)) {
                       <div class="pokemon-entry__select-indicator">
@@ -338,18 +326,6 @@
                       >
                         <mat-icon>edit</mat-icon>
                       </button>
-
-                      @if (pokemon.moveHistory?.length) {
-                        <button
-                          class="icon-button icon-button--undo"
-                          (click)="
-                            undoLastMove(pokemon); $event.stopPropagation()
-                          "
-                          matTooltip="Undo last move"
-                        >
-                          <mat-icon>undo</mat-icon>
-                        </button>
-                      }
                     </div>
                   </div>
                 }

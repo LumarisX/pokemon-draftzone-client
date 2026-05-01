@@ -16,6 +16,7 @@ import { LeagueStandingsComponent } from './league-standings/league-standings.co
 import { LeagueTeamComponent } from './league-team/league-team.component';
 import { LeagueTeamsComponent } from './league-teams/league-teams.component';
 import { LeagueTierListFormComponent } from './league-tier-list/league-tier-list-form/league-tier-list-form.component';
+import { unsavedChangesGuard } from './league-tier-list/league-tier-list-form/unsaved-changes.guard';
 import { LeagueTierListComponent } from './league-tier-list/league-tier-list.component';
 import { LeagueTradesComponent } from './league-trades/league-trades.component';
 import { TournamentLandingComponent } from './tournaments/tournament-landing/tournament-landing.component';
@@ -60,6 +61,7 @@ const routes: Routes = [
   {
     path: 'pdbl/tournaments/:tournamentKey/tier-list/edit',
     component: LeagueTierListFormComponent,
+    canDeactivate: [unsavedChangesGuard],
   },
   {
     path: 'pdbl/tournaments/:tournamentKey/sign-up',
