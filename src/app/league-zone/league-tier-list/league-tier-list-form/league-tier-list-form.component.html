@@ -10,20 +10,6 @@
       </div>
     }
 
-    @if (selectedPokemonIds().size > 0) {
-      <div class="selection-indicator">
-        <mat-icon>check_box</mat-icon>
-        <span>{{ selectedPokemonIds().size }} selected</span>
-        <button
-          class="icon-button"
-          (click)="clearSelection()"
-          matTooltip="Clear selection"
-        >
-          <mat-icon>close</mat-icon>
-        </button>
-      </div>
-    }
-
     <div class="toolbar__spacer"></div>
 
     <div class="toolbar__history">
@@ -31,7 +17,7 @@
         class="icon-button"
         [disabled]="!canUndo()"
         (click)="undo()"
-        matTooltip="Undo"
+        matTooltip="Undo (Ctrl+Z)"
       >
         <mat-icon>undo</mat-icon>
       </button>
@@ -39,7 +25,7 @@
         class="icon-button"
         [disabled]="!canRedo()"
         (click)="redo()"
-        matTooltip="Redo"
+        matTooltip="Redo (Ctrl+Y)"
       >
         <mat-icon>redo</mat-icon>
       </button>
@@ -69,7 +55,7 @@
         class="action-button action-button--primary"
         [disabled]="!hasUnsavedChanges()"
         (click)="saveTierList()"
-        matTooltip="Save changes to tier list"
+        matTooltip="Save changes (Ctrl+S)"
       >
         <mat-icon>save</mat-icon>
         Save
@@ -91,6 +77,9 @@
               <div class="tier__info">
                 <span class="tier__name">{{ tier.name }}</span>
                 <div class="tier__meta">
+                  <span class="tier__meta-chip"
+                    ><mat-icon>numbers</mat-icon>{{ tier.pokemon.length }}</span
+                  >
                   @if (tier.cost != null) {
                     <span class="tier__meta-chip">
                       <mat-icon>currency_ruble</mat-icon>{{ tier.cost }}
@@ -214,6 +203,10 @@
             <!-- Tier Header -->
             <div class="tier__header tier__header--null">
               <span class="tier__name">{{ untiered()!.name }}</span>
+              <span class="tier__meta-chip tier__meta-chip--untiered"
+                ><mat-icon>numbers</mat-icon
+                >{{ untiered()!.pokemon.length }}</span
+              >
             </div>
 
             <!-- Pokemon List (Drop Zone) -->
@@ -278,6 +271,10 @@
             <!-- Tier Header -->
             <div class="tier__header tier__header--banned">
               <span class="tier__name">{{ banned()!.name }}</span>
+              <span class="tier__meta-chip tier__meta-chip--banned"
+                ><mat-icon>numbers</mat-icon
+                >{{ banned()!.pokemon.length }}</span
+              >
             </div>
 
             <!-- Pokemon List (Drop Zone) -->

@@ -250,6 +250,14 @@
       width: 0.8rem;
       height: 0.8rem;
     }
+
+    &--untiered {
+      border: 1px solid pdz-color(secondary-border);
+    }
+
+    &--banned {
+      border: 1px solid pdz-color(negative-border);
+    }
   }
 
   &__move-buttons {
@@ -591,6 +599,24 @@ pdz-loading {
   color: pdz-color(on-warning-container);
   border-radius: var(--pdz-shape-corner-full);
   @include apply-typography(label-sm);
+
+  mat-icon {
+    font-size: 1rem;
+    width: 1rem;
+    height: 1rem;
+  }
+}
+
+.drag-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--pdz-space-xs);
+  padding: var(--pdz-space-xs) var(--pdz-space-sm);
+  background-color: pdz-color(secondary-container);
+  color: pdz-color(on-secondary-container);
+  border-radius: var(--pdz-shape-corner-full);
+  @include apply-typography(label-sm);
+  font-weight: 600;
 
   mat-icon {
     font-size: 1rem;

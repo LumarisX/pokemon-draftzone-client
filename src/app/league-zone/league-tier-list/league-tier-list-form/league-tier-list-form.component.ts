@@ -17,10 +17,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { LoadingComponent } from '../../../images/loading/loading.component';
 import { SpriteComponent } from '../../../images/sprite/sprite.component';
-import {
-  LeagueTier,
-  TierPokemon,
-} from '../../../interfaces/tier-pokemon.interface';
+import { TierPokemon } from '../../../interfaces/tier-pokemon.interface';
 import { LeagueZoneService } from '../../../services/leagues/league-zone.service';
 import { SORT_MAP, SortOption } from '../tier-list.utils';
 import {
@@ -28,8 +25,8 @@ import {
   PokemonEditDialogData,
 } from './pokemon-edit-dialog/pokemon-edit-dialog.component';
 import {
-  TierEditDialogComponent,
   TierDialogResult,
+  TierEditDialogComponent,
 } from './tier-edit-dialog/tier-edit-dialog.component';
 
 export type EditTierPokemon = TierPokemon;
@@ -109,6 +106,7 @@ export class LeagueTierListFormComponent implements OnInit, OnDestroy {
   draggedPokemon: EditTierPokemon | null = null;
   draggedFromTier: EditableTier | null = null;
   dragOverTier = signal<EditableTier | null>(null);
+  dragCount = signal<number>(0);
 
   ngOnInit(): void {
     this.loadTierList();
@@ -183,6 +181,12 @@ export class LeagueTierListFormComponent implements OnInit, OnDestroy {
     this.draggedPokemon = pokemon;
     this.draggedFromTier = tier;
     this.isDragging.set(true);
+    const selectedIds = this.selectedPokemonIds();
+    this.dragCount.set(
+      selectedIds.has(pokemon.id) && selectedIds.size > 1
+        ? selectedIds.size
+        : 1,
+    );
     if (event.dataTransfer) {
       event.dataTransfer.effectAllowed = 'move';
       event.dataTransfer.setData('text/plain', pokemon.id);
@@ -193,6 +197,7 @@ export class LeagueTierListFormComponent implements OnInit, OnDestroy {
     this.draggedPokemon = null;
     this.draggedFromTier = null;
     this.dragOverTier.set(null);
+    this.dragCount.set(0);
     setTimeout(() => this.isDragging.set(false), 100);
   }
 
@@ -287,6 +292,71 @@ export class LeagueTierListFormComponent implements OnInit, OnDestroy {
     this.redoStack = [];
     this.canUndo.set(true);
     this.canRedo.set(false);
+  }
+
+  @HostListener('window:keydown', ['$event'])
+  onKeyDown(event: KeyboardEvent): void {
+    const target = event.target as HTMLElement;
+    const isTyping =
+      target.tagName === 'INPUT' ||
+      target.tagName === 'TEXTAREA' ||
+      target.isContentEditable;
+
+    if (event.key === 'Escape') {
+      this.clearSelection();
+      return;
+    }
+
+    if (isTyping) return;
+
+    if (event.ctrlKey || event.metaKey) {
+      if (event.key === 'z' && !event.shiftKey) {
+        event.preventDefault();
+        this.undo();
+      } else if (event.key === 'y' || (event.key === 'z' && event.shiftKey)) {
+        event.preventDefault();
+        this.redo();
+      } else if (event.key === 's') {
+        event.preventDefault();
+        if (this.hasUnsavedChanges() && !this.isLoading()) {
+          this.saveTierList();
+        }
+      } else if (event.key === 'a') {
+        event.preventDefault();
+        this.selectAll();
+      }
+    } else {
+      if (event.key === 'Delete' || event.key === 'Backspace') {
+        const untiered = this.untiered();
+        if (this.selectedPokemonIds().size > 0 && untiered) {
+          this.moveSelectedToTier(untiered);
+        }
+      } else if (event.key === 'b') {
+        const bannedTier = this.banned();
+        if (this.selectedPokemonIds().size > 0 && bannedTier) {
+          this.moveSelectedToTier(bannedTier);
+        }
+      }
+    }
+  }
+
+  selectAll(): void {
+    const tiers = this.tiers();
+    const nullTier = this.untiered();
+    const bannedTier = this.banned();
+    if (!tiers) return;
+
+    const allTiers = [...tiers];
+    if (nullTier) allTiers.push(nullTier);
+    if (bannedTier) allTiers.push(bannedTier);
+
+    const newSelected = new Set<string>();
+    allTiers.forEach((tier) => {
+      tier.pokemon.forEach((p) => {
+        if (this.filterPokemon(p)) newSelected.add(p.id);
+      });
+    });
+    this.selectedPokemonIds.set(newSelected);
   }
 
   undo(): void {
