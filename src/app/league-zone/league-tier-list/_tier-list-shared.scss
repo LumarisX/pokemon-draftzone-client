@@ -1,0 +1,319 @@
+// Shared styles between league-tier-list and league-tier-list-form.
+// Include via: @include tier-list-shared()
+@use "../../../styles/global.scss" as *;
+@use "../../../styles/mixins" as *;
+
+@mixin tier-list-shared() {
+  :host {
+    display: block;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  // ─── Toolbar ──────────────────────────────────────────────────────────────
+
+  .toolbar {
+    display: flex;
+    gap: var(--pdz-space-sm);
+    align-items: center;
+    flex-wrap: wrap;
+    padding: var(--pdz-space-sm) var(--pdz-space-md);
+    background-color: pdz-color(surface-container);
+    border-radius: var(--pdz-shape-corner-md);
+    box-shadow: var(--pdz-level-1);
+    flex-shrink: 0;
+
+    &__title {
+      @include apply-typography(headline-sm);
+      font-family: var(--pdz-font-fancy);
+      color: pdz-color(on-surface);
+      margin: 0;
+    }
+
+    &__spacer {
+      flex: 1;
+    }
+
+    &__search {
+      position: relative;
+      display: flex;
+      align-items: center;
+
+      input {
+        padding: var(--pdz-space-xs) var(--pdz-space-md);
+        padding-left: var(--pdz-space-xl);
+        border: 1px solid pdz-color(outline);
+        border-radius: var(--pdz-shape-corner-full);
+        background-color: pdz-color(surface);
+        color: pdz-color(on-surface);
+        @include apply-typography(body-sm);
+        min-width: 180px;
+        transition: border-color 0.15s ease;
+
+        &:focus {
+          outline: 2px solid pdz-color(primary);
+          outline-offset: 1px;
+          border-color: pdz-color(primary);
+        }
+
+        &::placeholder {
+          color: pdz-color(on-surface-variant);
+        }
+      }
+
+      mat-icon {
+        position: absolute;
+        left: var(--pdz-space-sm);
+        color: pdz-color(on-surface-variant);
+        font-size: 1.125rem;
+        width: 1.125rem;
+        height: 1.125rem;
+        pointer-events: none;
+      }
+    }
+  }
+
+  // ─── Sort control ─────────────────────────────────────────────────────────
+
+  .sort-control {
+    position: relative;
+    display: flex;
+    align-items: center;
+
+    mat-icon {
+      position: absolute;
+      left: var(--pdz-space-sm);
+      font-size: 1.125rem;
+      width: 1.125rem;
+      height: 1.125rem;
+      color: pdz-color(on-surface-variant);
+      pointer-events: none;
+    }
+
+    select {
+      padding: var(--pdz-space-xs) var(--pdz-space-xl) var(--pdz-space-xs)
+        calc(var(--pdz-space-sm) + 1.25rem + var(--pdz-space-xs));
+      border: 1px solid pdz-color(outline);
+      border-radius: var(--pdz-shape-corner-full);
+      background-color: pdz-color(surface);
+      color: pdz-color(on-surface);
+      @include apply-typography(label-md);
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23888'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right var(--pdz-space-sm) center;
+      transition: border-color 0.15s ease;
+
+      &:focus {
+        outline: 2px solid pdz-color(primary);
+        outline-offset: 1px;
+      }
+
+      &:hover {
+        border-color: pdz-color(primary);
+      }
+    }
+  }
+
+  // ─── Action button ────────────────────────────────────────────────────────
+
+  .action-button {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--pdz-space-xs);
+    padding: var(--pdz-space-xs) var(--pdz-space-md);
+    border: 1px solid pdz-color(outline);
+    background-color: pdz-color(surface);
+    color: pdz-color(on-surface);
+    border-radius: var(--pdz-shape-corner-full);
+    cursor: pointer;
+    @include apply-typography(label-md);
+    transition: all 0.2s ease;
+    white-space: nowrap;
+
+    mat-icon {
+      font-size: 1.25rem;
+      width: 1.25rem;
+      height: 1.25rem;
+    }
+
+    &:hover {
+      background-color: pdz-color(primary);
+      color: pdz-color(on-primary);
+      border-color: pdz-color(primary);
+    }
+
+    &--primary {
+      background-color: pdz-color(primary);
+      color: pdz-color(on-primary);
+      border-color: pdz-color(primary);
+
+      &:hover {
+        background-color: pdz-color(primary-darker);
+      }
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+  }
+
+  // ─── Icon button ──────────────────────────────────────────────────────────
+
+  .icon-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    border: none;
+    background: transparent;
+    border-radius: var(--pdz-shape-corner-full);
+    cursor: pointer;
+    color: pdz-color(on-surface-variant);
+    transition: all 0.2s ease;
+
+    mat-icon {
+      font-size: 1.25rem;
+      width: 1.25rem;
+      height: 1.25rem;
+    }
+
+    &:hover {
+      background-color: pdz-color(surface-container-highest);
+
+      mat-icon {
+        color: pdz-color(primary);
+      }
+    }
+  }
+
+  // ─── Main tier area ───────────────────────────────────────────────────────
+
+  .tier-main {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+    border-radius: var(--pdz-shape-corner-md);
+    background-color: pdz-color(surface);
+    box-shadow: var(--pdz-level-2);
+    position: relative;
+  }
+
+  pdz-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+  }
+
+  .tiers-container {
+    flex: 1;
+    display: flex;
+    gap: var(--pdz-space-sm);
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: var(--pdz-space-sm);
+  }
+
+  // ─── Tier column ──────────────────────────────────────────────────────────
+
+  .tier {
+    display: flex;
+    flex-direction: column;
+    max-height: 100%;
+    background-color: pdz-color(surface-container);
+    border-radius: var(--pdz-shape-corner-md);
+    border: 2px solid pdz-color(outline-variant);
+    flex-shrink: 0;
+
+    &__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--pdz-space-sm) var(--pdz-space-md);
+      background-color: pdz-color(primary-container);
+      color: pdz-color(on-primary-container);
+      border-radius: var(--pdz-shape-corner-md) var(--pdz-shape-corner-md) 0 0;
+      border-bottom: 2px solid pdz-color(primary);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    &__info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: var(--pdz-space-2xs);
+      min-width: 0;
+    }
+
+    &__name-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--pdz-space-xs);
+    }
+
+    &__cost {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      @include apply-typography(label-sm);
+      color: pdz-color(on-primary-container);
+      opacity: 0.7;
+
+      mat-icon {
+        font-size: 0.85rem;
+        width: 0.85rem;
+        height: 0.85rem;
+      }
+    }
+
+    &__name {
+      @include apply-typography(title-md);
+      font-family: var(--pdz-font-fancy);
+      font-weight: 700;
+      color: pdz-color(on-primary-container);
+    }
+
+    &__meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--pdz-space-2xs);
+    }
+
+    &__meta-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      @include apply-typography(label-sm);
+      border: 1px solid pdz-color(primary-border);
+      border-radius: var(--pdz-shape-corner-full);
+      padding: 0 var(--pdz-space-xs);
+      line-height: 1.5;
+      opacity: 0.85;
+
+      mat-icon {
+        font-size: 0.8rem;
+        width: 0.8rem;
+        height: 0.8rem;
+      }
+    }
+
+    &__pokemon-list {
+      flex: 1;
+      padding: var(--pdz-space-xs);
+      display: flex;
+      flex-direction: column;
+      gap: var(--pdz-space-xs);
+      overflow-y: auto;
+    }
+  }
+}

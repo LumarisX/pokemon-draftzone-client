@@ -3,7 +3,6 @@ import {
   Component,
   computed,
   effect,
-  ElementRef,
   EventEmitter,
   inject,
   Input,
@@ -15,8 +14,8 @@ import {
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { MatRadioModule } from '@angular/material/radio';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { Subject } from 'rxjs';
@@ -41,6 +40,10 @@ import {
   SortOption,
   filterBySearch,
 } from './tier-list.utils';
+import {
+  PokemonDetailDialogComponent,
+  PokemonDetailDialogResult,
+} from './pokemon-detail-dialog/pokemon-detail-dialog.component';
 
 @Component({
   selector: 'pdz-league-tier-list',
@@ -49,8 +52,8 @@ import {
   imports: [
     CommonModule,
     MatIconModule,
-    MatRadioModule,
     MatButtonModule,
+    MatDialogModule,
     RouterModule,
     FormsModule,
     MatCheckboxModule,
@@ -65,6 +68,7 @@ import {
 export class LeagueTierListComponent implements OnInit, OnDestroy {
   private leagueService = inject(LeagueZoneService);
   private wsService = inject(WebSocketService);
+  private dialog = inject(MatDialog);
   private destroy$ = new Subject<void>();
 
   drafted = signal<{ [division: string]: { pokemonId: string }[] }>({});
@@ -113,11 +117,6 @@ export class LeagueTierListComponent implements OnInit, OnDestroy {
 
   get divisionNames() {
     return Object.keys(this.drafted());
-  }
-
-  get pokemonStats(): [string, number][] {
-    if (!this.selectedPokemon) return [];
-    return Object.entries(this.selectedPokemon.stats);
   }
 
   typeInFilter = (pokemon: TierPokemon) =>
@@ -225,41 +224,51 @@ export class LeagueTierListComponent implements OnInit, OnDestroy {
   }>();
 
   showDrafted: boolean = true;
-  selectedPokemon: (TierPokemon & { tier: LeagueTier }) | null = null;
   typeColor = typeColor;
 
-  selectPokemon(pokemon: TierPokemon, tier: LeagueTier) {
-    if (this.selectedPokemon?.id === pokemon.id) {
-      this.selectedPokemon = null;
-      return;
-    }
-    this.selectedPokemon = { ...pokemon, tier };
+  openPokemonDetails(pokemon: TierPokemon, tier: LeagueTier): void {
+    const dialogRef = this.dialog.open(PokemonDetailDialogComponent, {
+      data: {
+        pokemon: { ...pokemon, tier },
+        isDrafted: this.isPokemonDrafted(pokemon) || tier.name === 'Ban',
+        buttonText: this.buttonText,
+        altButtonText: this.altButtonText,
+      },
+      maxWidth: '420px',
+      width: '92vw',
+      panelClass: 'pokemon-detail-panel',
+    });
+
+    dialogRef
+      .afterClosed()
+      .pipe(first())
+      .subscribe((result: PokemonDetailDialogResult) => {
+        if (!result || result.action !== 'draft') return;
+        const emit: {
+          id: string;
+          name: string;
+          addons?: string[];
+          tier: string;
+          cost?: number;
+        } = {
+          id: pokemon.id,
+          name: pokemon.name,
+          tier: tier.name,
+          cost: tier.cost,
+        };
+        if (result.teraCapt) {
+          emit.cost = pokemon.addons![0].cost;
+          emit.addons = ['Tera Captain'];
+        }
+        this.pokemonSelected.emit(emit);
+      });
   }
 
-  emitDraftPokemon(teraCapt: boolean = false) {
-    if (!this.selectedPokemon) return;
-    const pokemon: {
-      id: string;
-      name: string;
-      addons?: string[];
-      tier: string;
-      cost?: number;
-    } = {
-      id: this.selectedPokemon.id,
-      name: this.selectedPokemon.name,
-      tier: this.selectedPokemon.tier.name,
-      cost: this.selectedPokemon.tier.cost,
-    };
-    if (teraCapt) {
-      pokemon.cost = this.selectedPokemon.addons![0].cost;
-      pokemon.addons = ['Tera Captain'];
-    }
-    this.pokemonSelected.emit(pokemon);
-    this.clearSelection();
-  }
-
-  clearSelection(): void {
-    this.selectedPokemon = null;
+  getVisiblePokemon(tier: LeagueTier): TierPokemon[] {
+    return tier.pokemon.filter(
+      (p) =>
+        this.typeInFilter(p) && (this.showDrafted || !this.isPokemonDrafted(p)),
+    );
   }
 
   isPokemonDrafted(pokemon: Pokemon): boolean {

@@ -1,0 +1,94 @@
+<div class="dialog">
+  <div class="dialog__header">
+    <span class="dialog__title">{{ data.pokemon.name }}</span>
+    <button class="icon-button" mat-dialog-close aria-label="Close">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <div class="dialog__body" mat-dialog-content>
+    <div class="dialog__sprite-section">
+      <div class="dialog__sprite">
+        <pdz-sprite
+          [pokemon]="data.pokemon"
+          [tooltipPosition]="null"
+        ></pdz-sprite>
+      </div>
+      <div class="dialog__tier-info">
+        <span class="tier-badge">{{ data.pokemon.tier.name }}</span>
+        @if (data.pokemon.tier.cost != null) {
+          <span class="cost-badge">
+            <mat-icon>currency_ruble</mat-icon>{{ data.pokemon.tier.cost }}
+          </span>
+        }
+        @if (data.isDrafted) {
+          <span class="drafted-badge">
+            <mat-icon>check_circle</mat-icon>Drafted
+          </span>
+        }
+      </div>
+    </div>
+
+    <div class="dialog__info">
+      <div class="type-row type-container">
+        @for (type of data.pokemon.types; track $index) {
+          <div class="type-label" [style.background-color]="typeColor(type)">
+            <span class="type-text">{{ type }}</span>
+          </div>
+        }
+      </div>
+
+      @if (data.pokemon.abilities?.length) {
+        <div class="ability-row">
+          @for (ability of data.pokemon.abilities!; track $index) {
+            <span class="ability-chip">{{ ability }}</span>
+          }
+        </div>
+      }
+
+      <div class="stats-grid">
+        @for (stat of pokemonStats; track $index) {
+          <div class="stat">
+            <div class="stat__label">{{ stat[0] | uppercase }}</div>
+            <div class="stat__value">{{ stat[1] }}</div>
+          </div>
+        }
+      </div>
+
+      @if (data.pokemon.addons?.length) {
+        <div class="addon-row">
+          <pdz-icon name="tera" [height]="18"></pdz-icon>
+          <span>Tera Captain — cost: {{ data.pokemon.addons![0].cost }}</span>
+        </div>
+      }
+
+      @if (data.pokemon.banned) {
+        <div class="ban-row">
+          <pdz-icon name="warning"></pdz-icon>
+          <span>{{ makeBanString(data.pokemon.banned) }}</span>
+        </div>
+      }
+    </div>
+  </div>
+
+  @if (data.buttonText && data.pokemon.tier.cost != null) {
+    <div class="dialog__actions" mat-dialog-actions>
+      <button
+        class="draft-button"
+        [disabled]="data.isDrafted"
+        (click)="draft(false)"
+      >
+        {{ data.buttonText }}
+      </button>
+      @if (data.altButtonText && data.pokemon.addons?.length) {
+        <button
+          class="draft-button draft-button--alt"
+          [disabled]="data.isDrafted"
+          (click)="draft(true)"
+        >
+          {{ data.altButtonText }}
+        </button>
+      }
+    </div>
+  }
+</div>

@@ -75,16 +75,15 @@
             <!-- Tier Header -->
             <div class="tier__header">
               <div class="tier__info">
-                <span class="tier__name">{{ tier.name }}</span>
-                <div class="tier__meta">
-                  <span class="tier__meta-chip"
-                    ><mat-icon>numbers</mat-icon>{{ tier.pokemon.length }}</span
-                  >
+                <div class="tier__name-row">
+                  <span class="tier__name">{{ tier.name }}</span>
                   @if (tier.cost != null) {
-                    <span class="tier__meta-chip">
+                    <span class="tier__cost">
                       <mat-icon>currency_ruble</mat-icon>{{ tier.cost }}
                     </span>
                   }
+                </div>
+                <div class="tier__meta">
                   @if (tier.required) {
                     <span class="tier__meta-chip">
                       <mat-icon>add_circle</mat-icon>{{ tier.required }} req
@@ -139,6 +138,11 @@
               [class.is-drag-over]="isTierDragOver(tier)"
               [class.tier__pokemon-list--empty]="tier.pokemon.length === 0"
             >
+              @if (tier.pokemon.length > 0) {
+                <span class="tier__count"
+                  >{{ tier.pokemon.length }} Pokémon</span
+                >
+              }
               @if (tier.pokemon.length === 0) {
                 <span>Drag Pokemon here</span>
               }
@@ -203,10 +207,6 @@
             <!-- Tier Header -->
             <div class="tier__header tier__header--null">
               <span class="tier__name">{{ untiered()!.name }}</span>
-              <span class="tier__meta-chip tier__meta-chip--untiered"
-                ><mat-icon>numbers</mat-icon
-                >{{ untiered()!.pokemon.length }}</span
-              >
             </div>
 
             <!-- Pokemon List (Drop Zone) -->
@@ -220,6 +220,11 @@
                 untiered()!.pokemon.length === 0
               "
             >
+              @if (untiered()!.pokemon.length > 0) {
+                <span class="tier__count"
+                  >{{ untiered()!.pokemon.length }} Pokémon</span
+                >
+              }
               @if (untiered()!.pokemon.length === 0) {
                 <span>Drop Pokémon here to remove from tiers</span>
               }
@@ -271,10 +276,6 @@
             <!-- Tier Header -->
             <div class="tier__header tier__header--banned">
               <span class="tier__name">{{ banned()!.name }}</span>
-              <span class="tier__meta-chip tier__meta-chip--banned"
-                ><mat-icon>numbers</mat-icon
-                >{{ banned()!.pokemon.length }}</span
-              >
             </div>
 
             <!-- Pokemon List (Drop Zone) -->
@@ -286,6 +287,11 @@
               [class.is-drag-over]="isTierDragOver(banned()!)"
               [class.tier__pokemon-list--empty]="banned()!.pokemon.length === 0"
             >
+              @if (banned()!.pokemon.length > 0) {
+                <span class="tier__count"
+                  >{{ banned()!.pokemon.length }} Pokémon</span
+                >
+              }
               @if (banned()!.pokemon.length === 0) {
                 <span>Drag Pokémon here to ban from draft</span>
               }

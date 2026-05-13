@@ -299,8 +299,8 @@ $option-lineheight: 3rem;
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 2.5rem;
-    border-radius: var(--pdz-shape-corner-xs);
+    width: 2.75rem;
+    border-radius: var(--pdz-shape-corner-sm);
     box-shadow: var(--pdz-level-1);
     height: 1rem;
     padding: $bevel-padding;
@@ -312,6 +312,7 @@ $option-lineheight: 3rem;
       line-height: 0.6rem;
       user-select: none;
       font-family: var(--pdz-font-regular);
+      font-weight: 700;
     }
   }
 }
