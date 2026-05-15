@@ -422,7 +422,7 @@ export class MatchupPokemonBuilderComponent implements OnInit, OnDestroy {
   statColor(statValue: number | undefined): string | undefined {
     if (statValue === undefined) return undefined;
     const diff = statValue - 80;
-    if (Math.abs(diff) <= 7) return 'var(--pdz-color-scale-neutral)';
+    if (Math.abs(diff) <= 7) return 'var(--pdz-color-neutral)';
     const sign = diff > 0 ? 'positive' : 'negative';
     const level = Math.min(Math.floor((Math.abs(diff) - 8) / 15) + 1, 5);
     return `var(--pdz-color-scale-${sign}-${level})`;
@@ -458,7 +458,7 @@ export class MatchupPokemonBuilderComponent implements OnInit, OnDestroy {
     if (coverage > 1) return 'var(--pdz-color-scale-positive-3)';
     if (coverage < 0.5) return 'var(--pdz-color-scale-negative-5)';
     if (coverage < 1) return 'var(--pdz-color-scale-negative-3)';
-    return 'var(--pdz-color-scale-neutral)';
+    return 'var(--pdz-color-neutral)';
   }
 
   getSliderColor(stat: Stat): string | undefined {

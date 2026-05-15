@@ -109,6 +109,6 @@ export class CoverageComponent implements OnInit {
     if (weak < 0.25) return 'var(--pdz-color-scale-negative-5)';
     if (weak < 0.5) return 'var(--pdz-color-scale-negative-4)';
     if (weak < 1) return 'var(--pdz-color-scale-negative-2)';
-    return 'var(--pdz-color-scale-neutral)';
+    return 'var(--pdz-color-neutral)';
   }
 }

@@ -30,7 +30,7 @@ Color scale system for visualizing graduated positive, negative, and neutral val
 <!-- Use generated classes -->
 <div class="pdz-scale-positive-5">Strong advantage</div>
 <div class="pdz-scale-negative-3">Moderate disadvantage</div>
-<div class="pdz-scale-neutral">No effect</div>
+<div class="pdz-neutral">No effect</div>
 ```
 
 ## Overview
@@ -115,7 +115,7 @@ $negative-scale: (
 ### Neutral Color
 
 ```scss
-var(--pdz-color-scale-neutral)
+var(--pdz-color-neutral)
 ```
 
 Typically a gray or neutral theme color representing zero/no effect.
@@ -139,7 +139,7 @@ Generates background color utility classes for all scale levels.
 // Generates:
 .pdz-scale-positive-1 through .pdz-scale-positive-7
 .pdz-scale-negative-1 through .pdz-scale-negative-7
-.pdz-scale-neutral
+.pdz-neutral
 
 // Custom prefix
 @include generate-bg-scale('score');
@@ -163,8 +163,8 @@ Each class sets the `background-color` property:
   background-color: var(--pdz-color-scale-negative-3);
 }
 
-.pdz-scale-neutral {
-  background-color: var(--pdz-color-scale-neutral);
+.pdz-neutral {
+  background-color: var(--pdz-color-neutral);
 }
 ```
 
@@ -177,7 +177,7 @@ Each class sets the `background-color` property:
 
 <div class="stat-cell pdz-scale-negative-6">0.5x Effective</div>
 
-<div class="stat-cell pdz-scale-neutral">1x Effective</div>
+<div class="stat-cell pdz-neutral">1x Effective</div>
 ```
 
 ```scss
@@ -205,7 +205,7 @@ getScaleClass(effectiveness: number): string {
   if (effectiveness >= 4) return 'pdz-scale-positive-7';
   if (effectiveness >= 2) return 'pdz-scale-positive-6';
   if (effectiveness > 1) return 'pdz-scale-positive-4';
-  if (effectiveness === 1) return 'pdz-scale-neutral';
+  if (effectiveness === 1) return 'pdz-neutral';
   if (effectiveness >= 0.5) return 'pdz-scale-negative-4';
   if (effectiveness >= 0.25) return 'pdz-scale-negative-6';
   return 'pdz-scale-negative-7';
@@ -264,7 +264,7 @@ getScaleClass(effectiveness: number): string {
   <div class="stat-row">
     <span class="stat-name">Speed</span>
     <span class="stat-value">100</span>
-    <span class="stat-diff pdz-scale-neutral">0</span>
+    <span class="stat-diff pdz-neutral">0</span>
   </div>
 </div>
 ```
@@ -316,7 +316,7 @@ export class ScoreBadgeComponent {
       return `pdz-scale-negative-${level}`;
     }
 
-    return "pdz-scale-neutral";
+    return "pdz-neutral";
   }
 
   formatScore(): string {
@@ -361,7 +361,7 @@ getHeatClass(value: number): string {
   } else if (normalized < 0) {
     return `pdz-scale-negative-${Math.abs(normalized)}`;
   }
-  return 'pdz-scale-neutral';
+  return 'pdz-neutral';
 }
 
 normalizeValue(value: number): number {
@@ -447,7 +447,7 @@ Override the CSS variables to customize colors:
   --pdz-color-scale-negative-7: #f57c00;
 
   // Custom neutral
-  --pdz-color-scale-neutral: #e0e0e0;
+  --pdz-color-neutral: #e0e0e0;
 }
 ```
 
@@ -473,7 +473,7 @@ Override the CSS variables to customize colors:
   --pdz-color-scale-negative-6: #ef5350;
   --pdz-color-scale-negative-7: #e57373;
 
-  --pdz-color-scale-neutral: #424242;
+  --pdz-color-neutral: #424242;
 }
 ```
 
@@ -589,7 +589,7 @@ function getPerformanceScale(percentage: number): string {
   if (percentage >= 90) return "pdz-scale-positive-7"; // Excellent
   if (percentage >= 75) return "pdz-scale-positive-5"; // Good
   if (percentage >= 60) return "pdz-scale-positive-3"; // Above average
-  if (percentage >= 40) return "pdz-scale-neutral"; // Average
+  if (percentage >= 40) return "pdz-neutral"; // Average
   if (percentage >= 25) return "pdz-scale-negative-3"; // Below average
   if (percentage >= 10) return "pdz-scale-negative-5"; // Poor
   return "pdz-scale-negative-7"; // Very poor
@@ -654,7 +654,7 @@ Don't use all 7 levels if fewer would suffice:
 function getSimpleScale(value: number): string {
   if (value > 0) return "pdz-scale-positive-4";
   if (value < 0) return "pdz-scale-negative-4";
-  return "pdz-scale-neutral";
+  return "pdz-neutral";
 }
 
 // ❌ Avoid - Unnecessary precision
@@ -811,7 +811,7 @@ Respect user preferences:
 @media (prefers-reduced-motion: reduce) {
   .pdz-scale-positive-1,
   .pdz-scale-negative-1,
-  .pdz-scale-neutral {
+  .pdz-neutral {
     transition: none;
   }
 }
@@ -831,7 +831,7 @@ The scale mixins rely on these CSS custom properties:
 
 **Neutral:**
 
-- `--pdz-color-scale-neutral`
+- `--pdz-color-neutral`
 
 Example definitions:
 
@@ -853,6 +853,6 @@ Example definitions:
   --pdz-color-scale-negative-6: #f44336;
   --pdz-color-scale-negative-7: #c62828;
 
-  --pdz-color-scale-neutral: #e0e0e0;
+  --pdz-color-neutral: #e0e0e0;
 }
 ```

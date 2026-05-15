@@ -1,3 +1,6 @@
+@use "../../../styles/global.scss" as *;
+@use "../../../styles/mixins" as *;
+
 :host {
   display: flex;
   flex-direction: column;
@@ -14,15 +17,18 @@
 }
 
 .news-header {
+  display: flex;
+  flex-direction: column;
   font-family: var(--pdz-font-fancy);
-  font-size: 1.2rem;
-  color: var(--pdz-color-secondary);
 
   .news-date {
-    color: var(--pdz-color-primary);
+    color: pdz-color(primary);
+    font-weight: var(--pdz-font-weight-bold);
+    font-size: 1.2rem;
   }
   .news-title {
-    color: var(--pdz-color-on-surface);
+    color: pdz-color(on-surface);
+    font-size: 1rem;
   }
 }
 
@@ -32,6 +38,7 @@
 
 .news-item:not(:last-child) {
   padding-bottom: 0.25rem;
+  margin-bottom: 0.25rem;
   border-bottom: 1px solid var(--pdz-color-primary-border-variant);
 }
 
@@ -81,6 +88,12 @@
   font-size: 1.1rem;
   font-family: var(--pdz-font-fancy);
   padding-bottom: 0rem !important;
+}
+
+.section-para {
+  font-size: 0.875rem;
+  color: pdz-color(on-surface-variant);
+  margin: 0.125rem 0 0;
 }
 
 .section-list {

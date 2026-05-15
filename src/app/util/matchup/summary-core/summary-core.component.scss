@@ -1,3 +1,5 @@
+@use "../../../../styles/global.scss" as *;
+
 :host {
   display: block;
   width: 100%;
@@ -75,14 +77,36 @@ table {
   border-spacing: 0 4px;
 }
 
+$corner-radius: var(--pdz-shape-corner-md);
+
 .left-rounded {
-  border-top-left-radius: 10px;
-  border-bottom-left-radius: 10px;
+  border-top-left-radius: $corner-radius;
+  border-bottom-left-radius: $corner-radius;
   overflow: hidden;
 }
 .right-rounded {
-  border-top-right-radius: 10px;
-  border-bottom-right-radius: 10px;
+  border-top-right-radius: $corner-radius;
+  border-bottom-right-radius: $corner-radius;
+  overflow: hidden;
+}
+
+.top-right-rounded {
+  border-top-right-radius: $corner-radius;
+  overflow: hidden;
+}
+
+.bottom-right-rounded {
+  border-bottom-right-radius: $corner-radius;
+  overflow: hidden;
+}
+
+.top-left-rounded {
+  border-top-left-radius: $corner-radius;
+  overflow: hidden;
+}
+
+.bottom-left-rounded {
+  border-bottom-left-radius: $corner-radius;
   overflow: hidden;
 }
 
@@ -101,4 +125,28 @@ table {
     align-items: center;
     justify-content: center;
   }
+}
+
+.pdz-types {
+  justify-content: center;
+}
+
+.border-top {
+  border-top: 1px solid
+    var(--pdz-cmp-summary-border, var(--pdz-color-menu-border));
+}
+
+.border-bottom {
+  border-bottom: 1px solid
+    var(--pdz-cmp-summary-border, var(--pdz-color-menu-border));
+}
+
+.border-right {
+  border-right: 1px solid
+    var(--pdz-cmp-summary-border, var(--pdz-color-menu-border));
+}
+
+.border-left {
+  border-left: 1px solid
+    var(--pdz-cmp-summary-border, var(--pdz-color-menu-border));
 }

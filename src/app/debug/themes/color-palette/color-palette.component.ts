@@ -141,7 +141,7 @@ export class ColorPaletteComponent implements AfterViewInit {
         { name: 'scale-positive-3' },
         { name: 'scale-positive-2' },
         { name: 'scale-positive-1' },
-        { name: 'scale-neutral' },
+        { name: 'neutral' },
         { name: 'scale-negative-1' },
         { name: 'scale-negative-2' },
         { name: 'scale-negative-3' },

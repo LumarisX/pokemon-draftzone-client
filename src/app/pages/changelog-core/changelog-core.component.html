@@ -1,0 +1,30 @@
+<div class="changelog-scroll">
+  @for (entry of changelog; track entry.date) {
+    <div class="changelog-item">
+      <div class="changelog-header">
+        <span class="changelog-date">{{ toDate(entry.date) }}</span>
+        <span class="changelog-title">{{ entry.title }}</span>
+      </div>
+      @if (entry.description) {
+        <p class="changelog-description indent">{{ entry.description }}</p>
+      }
+      <div class="changelog-body indent">
+        @for (category of entry.categories; track category.type) {
+          <div
+            class="changelog-category"
+            [class]="'changelog-category--' + category.type"
+          >
+            <span class="changelog-category__label">{{
+              category.type | titlecase
+            }}</span>
+            <ul class="changelog-category__list">
+              @for (item of category.items; track $index) {
+                <li>{{ item }}</li>
+              }
+            </ul>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

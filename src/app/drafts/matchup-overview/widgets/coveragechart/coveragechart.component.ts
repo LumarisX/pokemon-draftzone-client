@@ -46,7 +46,7 @@ export class CoverageComponent {
     { min: 4, max: 5, colorClass: 'pdz-scale-positive-5' },
     { min: 3, max: 4, colorClass: 'pdz-scale-positive-4' },
     { min: 2, max: 3, colorClass: 'pdz-scale-positive-3' },
-    { min: 1, max: 2, colorClass: 'pdz-scale-neutral' },
+    { min: 1, max: 2, colorClass: 'pdz-neutral' },
     { min: -Infinity, max: 1, colorClass: 'pdz-scale-negative-3' },
   ];
   @Input() resistRanges: ScoreRange[] = [
@@ -54,7 +54,7 @@ export class CoverageComponent {
     { min: 4, max: 5, colorClass: 'pdz-scale-negative-5' },
     { min: 3, max: 4, colorClass: 'pdz-scale-negative-4' },
     { min: 2, max: 3, colorClass: 'pdz-scale-negative-3' },
-    { min: 1, max: 2, colorClass: 'pdz-scale-neutral' },
+    { min: 1, max: 2, colorClass: 'pdz-neutral' },
     { min: -Infinity, max: 1, colorClass: 'pdz-scale-positive-3' },
   ];
 
@@ -68,7 +68,7 @@ export class CoverageComponent {
     if (weak < 0.25) return 'pdz-scale-negative-5';
     if (weak < 0.5) return 'pdz-scale-negative-4';
     if (weak < 1) return 'pdz-scale-negative-3';
-    return 'pdz-scale-neutral';
+    return 'pdz-neutral';
   }
 
   getBestWeakness(
@@ -128,6 +128,6 @@ export class CoverageComponent {
         return range.colorClass;
       }
     }
-    return 'pdz-scale-neutral';
+    return 'pdz-neutral';
   }
 }

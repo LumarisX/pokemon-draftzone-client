@@ -2,7 +2,7 @@
   <div class="sprite-container">
     <div class="sprite-spacer">
       <div class="sprite-wrapper">
-        <pdz-sprite [pokemon]="pokemon" [flipped]="true"></pdz-sprite>
+        <pdz-sprite [pokemon]="pokemon" flipped></pdz-sprite>
       </div>
     </div>
     <button class="reset-button" (click)="resetRecommended()">Reset</button>
@@ -14,10 +14,10 @@
         src="../../../../../assets/icons/moves/move-physical.png"
         alt="Physical Moves"
       />
-      <div class="type-container">
+      <div class="pdz-types">
         @for (move of pokemon.coverage.physical; track move) {
           <div
-            class="type-label"
+            class="pdz-type"
             [ngClass]="{
               selected: move.selected,
             }"
@@ -26,7 +26,7 @@
             (click)="move.selected = !move.selected; updateCoverage()"
             [style.background-color]="typeColor(move.type)"
           >
-            <div class="type-text">
+            <div class="pdz-type__text">
               {{ move.type }}
             </div>
           </div>
@@ -39,10 +39,10 @@
         src="../../../../../assets/icons/moves/move-special.png"
         alt="Special Moves"
       />
-      <div class="type-container">
+      <div class="pdz-types">
         @for (move of pokemon.coverage.special; track move) {
           <div
-            class="type-label"
+            class="pdz-type"
             [ngClass]="{
               selected: move.selected,
             }"
@@ -51,7 +51,7 @@
             (click)="move.selected = !move.selected; updateCoverage()"
             [style.background-color]="typeColor(move.type)"
           >
-            <div class="type-text">
+            <div class="pdz-type__text">
               {{ move.type }}
             </div>
           </div>

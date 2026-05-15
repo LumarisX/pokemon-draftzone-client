@@ -179,6 +179,6 @@ export class TypestatsCoreComponent implements OnInit, OnDestroy {
         return range.colorClass;
       }
     }
-    return 'pdz-scale-neutral';
+    return 'pdz-neutral';
   }
 }

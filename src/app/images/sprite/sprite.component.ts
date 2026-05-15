@@ -9,6 +9,7 @@ import {
   OnDestroy,
   Output,
   SimpleChanges,
+  booleanAttribute,
   inject,
 } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -40,7 +41,7 @@ export class SpriteComponent implements OnChanges, OnDestroy {
     | 'right'
     | null = null;
   @Input() size?: string;
-  @Input() flipped: string | boolean | null = null;
+  @Input({ transform: booleanAttribute }) flipped = false;
   @Input() disabled?: boolean = false;
 
   @Output() loadedEvent = new EventEmitter<void>();
@@ -62,9 +63,7 @@ export class SpriteComponent implements OnChanges, OnDestroy {
     const classes = [...this._baseClasses];
     const isUnknownSprite = this.path === this.UNKNOWN_SPRITE_PATH;
     if (!isUnknownSprite) {
-      const shouldFlip =
-        (this.flipped === null && this._baseFlip) ||
-        (this.flipped !== null && !this._baseFlip);
+      const shouldFlip = this.flipped !== this._baseFlip;
 
       if (shouldFlip) {
         classes.push('flip');

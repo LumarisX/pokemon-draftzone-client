@@ -8,10 +8,19 @@ import {
 } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { DataService, PokemonFullData } from '../../services/data.service';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import {
+  DataService,
+  PokemonFullData,
+  PokemonSearchMoveData,
+} from '../../services/data.service';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { FindOptionComponent } from './find-option/find-option.component';
 import { typeColor } from '../../util/styling';
+import {
+  PokemonDialogComponent,
+  PokemonDialogData,
+} from '../../components/pokemon-dialog/pokemon-dialog.component';
 
 type QueryGroup = {
   queries: QueryBuilder[];
@@ -31,12 +40,14 @@ type QueryBuilder = {
     RouterModule,
     FormsModule,
     ReactiveFormsModule,
+    MatDialogModule,
     SpriteComponent,
     FindOptionComponent,
   ],
 })
 export class FinderCoreComponent implements OnInit {
   private dataApi = inject(DataService);
+  private dialog = inject(MatDialog);
 
   @Input()
   rulesetId?: string;
@@ -175,4 +186,44 @@ export class FinderCoreComponent implements OnInit {
   }
 
   typeColor = typeColor;
+
+  openPokemonDialog(pokemon: PokemonFullData): void {
+    const dataList = this.results.map((p) => this.buildDialogData(p));
+    dataList.forEach((d, i) => {
+      if (i > 0) d.prev = dataList[i - 1];
+      if (i < dataList.length - 1) d.next = dataList[i + 1];
+    });
+
+    const idx = this.results.indexOf(pokemon);
+    const data = idx >= 0 ? dataList[idx] : this.buildDialogData(pokemon);
+
+    this.dialog.open(PokemonDialogComponent, {
+      data,
+      maxWidth: '420px',
+      width: '92vw',
+      panelClass: 'pokemon-detail-panel',
+    });
+  }
+
+  private buildDialogData(pokemon: PokemonFullData): PokemonDialogData {
+    const learns = pokemon.learns;
+    const moves =
+      Array.isArray(learns) &&
+      learns.length > 0 &&
+      typeof learns[0] !== 'string'
+        ? (learns as PokemonSearchMoveData[])
+        : undefined;
+    return {
+      pokemon: {
+        id: pokemon.id,
+        name: pokemon.name,
+        types: pokemon.types,
+        abilities: pokemon.abilities,
+        stats: pokemon.baseStats,
+        bst: pokemon.bst,
+        cst: pokemon.cst,
+        moves,
+      },
+    };
+  }
 }

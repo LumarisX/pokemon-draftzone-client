@@ -1,0 +1,63 @@
+import { Component, Input } from '@angular/core';
+
+export function typeColor(type?: string | null) {
+  if (!type) return undefined;
+  switch (type) {
+    case 'Bug':
+      return '#91A119';
+    case 'Dark':
+      return '#50413F';
+    case 'Dragon':
+      return '#5060E1';
+    case 'Electric':
+      return '#FAC000';
+    case 'Fairy':
+      return '#EF70EF';
+    case 'Fighting':
+      return '#FF8000';
+    case 'Fire':
+      return '#E62829';
+    case 'Flying':
+      return '#81B9EF';
+    case 'Ghost':
+      return '#704170';
+    case 'Grass':
+      return '#3FA129';
+    case 'Ground':
+      return '#915121';
+    case 'Ice':
+      return '#3FD8FF';
+    case 'Normal':
+      return '#9FA19F';
+    case 'Poison':
+      return '#9141CB';
+    case 'Psychic':
+      return '#EF4179';
+    case 'Rock':
+      return '#AFA981';
+    case 'Steel':
+      return '#60A1B8';
+    case 'Stellar':
+      return 'linear-gradient(120deg in hsl longer hue, hsl(0 75% 45%) 0%, hsl(360 75% 45%) 100%)';
+    case 'Water':
+      return '#2980EF';
+  }
+  return null;
+}
+
+@Component({
+  selector: 'pdz-pokemon-type',
+  imports: [],
+  templateUrl: './pokemon-type.component.html',
+  styleUrl: './pokemon-type.component.scss',
+})
+export class PokemonTypeComponent {
+  @Input({ required: true }) type!: string;
+  @Input() size: 'small' | 'medium' | 'large' = 'medium';
+  @Input() display: 'icon' | 'text' | 'both' = 'text';
+  @Input() direction: 'row' | 'column' = 'row';
+
+  get color(): string {
+    return typeColor(this.type) ?? 'var(--pdz-color-text)';
+  }
+}

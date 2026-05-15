@@ -41,9 +41,11 @@ import {
   filterBySearch,
 } from './tier-list.utils';
 import {
-  PokemonDetailDialogComponent,
-  PokemonDetailDialogResult,
-} from './pokemon-detail-dialog/pokemon-detail-dialog.component';
+  PokemonDialogButton,
+  PokemonDialogComponent,
+  PokemonDialogData,
+} from '../../components/pokemon-dialog/pokemon-dialog.component';
+import { PokemonTypeComponent } from '../../components/pokemon-type/pokemon-type.component';
 
 @Component({
   selector: 'pdz-league-tier-list',
@@ -62,6 +64,7 @@ import {
     LoadingComponent,
     SpriteComponent,
     IconComponent,
+    PokemonTypeComponent,
   ],
   styleUrls: ['./league-tier-list.component.scss'],
 })
@@ -227,14 +230,33 @@ export class LeagueTierListComponent implements OnInit, OnDestroy {
   typeColor = typeColor;
 
   openPokemonDetails(pokemon: TierPokemon, tier: LeagueTier): void {
-    const dialogRef = this.dialog.open(PokemonDetailDialogComponent, {
-      data: {
-        pokemon: { ...pokemon, tier },
-        isDrafted: this.isPokemonDrafted(pokemon) || tier.name === 'Ban',
-        buttonText: this.buttonText,
-        altButtonText: this.altButtonText,
-      },
-      maxWidth: '420px',
+    const sortedTiers = this.sortedTiers();
+    if (!sortedTiers) return;
+
+    // Build flat list of all currently visible pokemon in display order
+    const flatList: { pokemon: TierPokemon; tier: LeagueTier }[] = [];
+    for (const t of sortedTiers) {
+      for (const p of this.getVisiblePokemon(t)) {
+        flatList.push({ pokemon: p, tier: t });
+      }
+    }
+
+    // Build dialog data for each entry and link as doubly-linked list
+    const dataList = flatList.map(({ pokemon: p, tier: t }) =>
+      this.buildPokemonDialogData(p, t),
+    );
+    dataList.forEach((d, i) => {
+      if (i > 0) d.prev = dataList[i - 1];
+      if (i < dataList.length - 1) d.next = dataList[i + 1];
+    });
+
+    const idx = flatList.findIndex((item) => item.pokemon.id === pokemon.id);
+    const dialogData =
+      idx >= 0 ? dataList[idx] : this.buildPokemonDialogData(pokemon, tier);
+
+    const dialogRef = this.dialog.open(PokemonDialogComponent, {
+      data: dialogData,
+      maxWidth: '460px',
       width: '92vw',
       panelClass: 'pokemon-detail-panel',
     });
@@ -242,26 +264,71 @@ export class LeagueTierListComponent implements OnInit, OnDestroy {
     dialogRef
       .afterClosed()
       .pipe(first())
-      .subscribe((result: PokemonDetailDialogResult) => {
-        if (!result || result.action !== 'draft') return;
+      .subscribe((result) => {
+        const r = result as
+          | {
+              action: string;
+              teraCapt: boolean;
+              pokemon: TierPokemon;
+              tier: LeagueTier;
+            }
+          | undefined;
+        if (!r || r.action !== 'draft') return;
+        const p = r.pokemon;
+        const t = r.tier;
         const emit: {
           id: string;
           name: string;
           addons?: string[];
           tier: string;
           cost?: number;
-        } = {
-          id: pokemon.id,
-          name: pokemon.name,
-          tier: tier.name,
-          cost: tier.cost,
-        };
-        if (result.teraCapt) {
-          emit.cost = pokemon.addons![0].cost;
+        } = { id: p.id, name: p.name, tier: t.name, cost: t.cost };
+        if (r.teraCapt) {
+          emit.cost = p.addons![0].cost;
           emit.addons = ['Tera Captain'];
         }
         this.pokemonSelected.emit(emit);
       });
+  }
+
+  private buildPokemonDialogData(
+    pokemon: TierPokemon,
+    tier: LeagueTier,
+  ): PokemonDialogData {
+    const isDrafted = this.isPokemonDrafted(pokemon) || tier.name === 'Ban';
+    const buttons: PokemonDialogButton[] = [];
+    if (this.buttonText && tier.cost != null) {
+      buttons.push({
+        label: this.buttonText,
+        result: { action: 'draft', teraCapt: false, pokemon, tier },
+        variant: 'primary',
+        disabled: isDrafted,
+      });
+    }
+    if (this.altButtonText && pokemon.addons?.length) {
+      buttons.push({
+        label: this.altButtonText,
+        result: { action: 'draft', teraCapt: true, pokemon, tier },
+        variant: 'secondary',
+        disabled: isDrafted,
+      });
+    }
+    return {
+      pokemon: {
+        id: pokemon.id,
+        name: pokemon.name,
+        types: pokemon.types,
+        abilities: pokemon.abilities,
+        stats: pokemon.stats,
+        bst: pokemon.bst,
+        cst: pokemon.bst,
+        banned: pokemon.banned,
+        addons: pokemon.addons,
+      },
+      tier: { name: tier.name, cost: tier.cost },
+      isDrafted,
+      buttons,
+    };
   }
 
   getVisiblePokemon(tier: LeagueTier): TierPokemon[] {

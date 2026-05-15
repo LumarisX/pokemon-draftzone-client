@@ -264,11 +264,14 @@
 
       <tbody>
         @for (pokemon of results; track pokemon) {
-          <tr class="border-b border-menu-200 hover:bg-menu-100">
+          <tr
+            class="border-b border-menu-200 hover:bg-menu-100 cursor-pointer"
+            (click)="openPokemonDialog(pokemon)"
+          >
             <td class="p-2 flex justify-center">
               <div class="max-w-20 min-w-10">
                 <pdz-sprite
-                  [flipped]="true"
+                  flipped
                   [pokemon]="{ id: pokemon.id, name: pokemon.name }"
                 ></pdz-sprite>
               </div>

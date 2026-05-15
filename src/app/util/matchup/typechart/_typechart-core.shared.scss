@@ -52,40 +52,38 @@ th {
   }
 }
 
-.type-container,
-.type-container-small {
+// Vertical icon+text pill used in typechart-core header — wraps a global .pdz-type
+.pdz-types {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  width: 2.5rem;
-  border-radius: var(--pdz-shape-corner-xs);
-  box-shadow: var(--pdz-level-1);
-  margin-top: 0px;
+  justify-content: center;
+  margin-top: 0;
   margin-bottom: 1px;
 
   &.sort-press {
     margin-bottom: 0;
     margin-top: 1px;
-    box-shadow: var(--pdz-level-0);
+
+    .pdz-type {
+      box-shadow: var(--pdz-level-0);
+    }
   }
 
-  &.type-container {
+  // Override global .pdz-type sizing for the taller vertical layout
+  .pdz-type {
+    flex-direction: column;
+    width: 2.5rem;
     height: 2.5rem;
     padding: 0 var(--bevel-padding) var(--bevel-padding);
   }
 
-  &.type-container-small {
-    height: var(--pdz-space-lg);
-    padding: var(--bevel-padding);
-  }
-
-  .type-text {
+  .pdz-type__text {
     flex-shrink: 0;
-    font-size: 0.6rem;
-    line-height: 0.7rem;
+    font-size: 0.5rem;
+    line-height: 1;
   }
 
-  .type-icon-wrapper {
+  .pdz-type__icon-wrapper {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -94,10 +92,9 @@ th {
     width: var(--pdz-space-lg);
     overflow: hidden;
 
-    img {
+    .pdz-type__icon {
       height: var(--pdz-space-lg);
       width: var(--pdz-space-lg);
-      object-fit: contain;
     }
   }
 }

@@ -30,10 +30,10 @@
     </div>
 
     <div class="dialog__info">
-      <div class="type-row type-container">
+      <div class="type-row pdz-types">
         @for (type of data.pokemon.types; track $index) {
-          <div class="type-label" [style.background-color]="typeColor(type)">
-            <span class="type-text">{{ type }}</span>
+          <div class="pdz-type" [style.background-color]="typeColor(type)">
+            <span class="pdz-type__text">{{ type }}</span>
           </div>
         }
       </div>

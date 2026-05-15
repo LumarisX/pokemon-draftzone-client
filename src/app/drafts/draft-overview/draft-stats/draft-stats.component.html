@@ -21,10 +21,7 @@
             <th cdk-header-cell *cdkHeaderCellDef></th>
             <td cdk-cell *cdkCellDef="let element">
               <div class="sprite-wrapper">
-                <pdz-sprite
-                  [flipped]="true"
-                  [pokemon]="element.pokemon"
-                ></pdz-sprite>
+                <pdz-sprite flipped [pokemon]="element.pokemon"></pdz-sprite>
               </div>
             </td>
           </ng-container>

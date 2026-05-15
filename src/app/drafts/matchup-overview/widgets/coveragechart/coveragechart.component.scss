@@ -50,7 +50,7 @@ th {
     --pdz-cmp-typechart-border-hover,
     var(--pdz-color-menu-border)
   );
-  .pdz-scale-neutral {
+  .pdz-neutral {
     background-color: var(
       --pdz-cmp-typechart-stat-hover,
       var(--pdz-color-menu-container)
@@ -76,7 +76,7 @@ tbody {
           border-bottom-right-radius: var(--bevel-radius);
         }
       }
-      .pdz-scale-neutral {
+      .pdz-neutral {
         background-color: var(
           --pdz-cmp-typechart-stat-hover,
           var(--pdz-color-menu-container)

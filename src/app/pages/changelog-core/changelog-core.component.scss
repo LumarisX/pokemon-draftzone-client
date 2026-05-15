@@ -1,0 +1,89 @@
+@use "../../../styles/global.scss" as *;
+@use "../../../styles/mixins" as *;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.25rem;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.changelog-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.changelog-header {
+  display: flex;
+  flex-direction: column;
+  font-family: var(--pdz-font-fancy);
+}
+
+.changelog-date {
+  color: pdz-color(primary);
+  font-weight: var(--pdz-font-weight-bold);
+  font-size: 1.2rem;
+}
+
+.changelog-title {
+  color: pdz-color(on-surface);
+  font-size: 1rem;
+}
+
+.changelog-description {
+  font-size: 0.875rem;
+  color: pdz-color(on-surface-variant);
+  margin: 0.125rem 0 0;
+}
+
+.changelog-item:not(:last-child) {
+  padding-bottom: 0.25rem;
+  margin-bottom: 0.25rem;
+  border-bottom: 1px solid var(--pdz-color-primary-border-variant);
+}
+
+.changelog-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.indent {
+  padding-left: 0.5rem;
+}
+
+.changelog-category {
+  &__label {
+    font-size: 0.8rem;
+    font-weight: var(--pdz-font-weight-bold);
+    font-family: var(--pdz-font-fancy);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  &__list {
+    font-size: 0.9rem;
+    padding-left: 1rem;
+    margin: 0.125rem 0 0;
+    list-style-type: disc;
+  }
+
+  &--added .changelog-category__label {
+    color: pdz-color(success);
+  }
+
+  &--changed .changelog-category__label {
+    color: pdz-color(info);
+  }
+
+  &--fixed .changelog-category__label {
+    color: pdz-color(warning);
+  }
+
+  &--removed .changelog-category__label {
+    color: pdz-color(error);
+  }
+}

@@ -1,0 +1,522 @@
+@use "../../../styles/global.scss" as *;
+@use "../../../styles/mixins" as *;
+
+.dialog__tabs {
+  display: flex;
+  padding: 0 var(--pdz-space-md);
+  gap: var(--pdz-space-2xs);
+}
+
+.dialog__tab {
+  @include apply-typography(label-md);
+  padding: var(--pdz-space-xs) var(--pdz-space-sm);
+  border: none;
+  background: transparent;
+  color: pdz-color(on-surface-variant);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition:
+    color 0.15s,
+    border-color 0.15s;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--pdz-space-2xs);
+
+  &:hover {
+    color: pdz-color(on-surface);
+  }
+
+  &--active {
+    color: pdz-color(primary);
+    border-bottom-color: pdz-color(primary);
+    font-weight: 600;
+  }
+
+  &-badge {
+    @include apply-typography(label-sm);
+    background-color: pdz-color(surface-container-high);
+    border-radius: var(--pdz-shape-corner-full);
+    padding: 0 var(--pdz-space-2xs);
+    min-width: 1.25rem;
+    text-align: center;
+    line-height: 1.4;
+  }
+}
+
+// ─── Moves tab ────────────────────────────────────────────────────────────────
+
+.move-search {
+  &__input {
+    width: 100%;
+    padding: var(--pdz-space-xs) var(--pdz-space-sm);
+    border: 1px solid pdz-color(outline-variant);
+    border-radius: var(--pdz-shape-corner-sm);
+    background-color: pdz-color(surface-container);
+    color: pdz-color(on-surface);
+    @include apply-typography(body-sm);
+    outline: none;
+
+    &:focus {
+      border-color: pdz-color(primary);
+    }
+  }
+}
+
+.move-list {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid pdz-color(outline-variant);
+  border-radius: var(--pdz-shape-corner-sm);
+  overflow: hidden;
+
+  &__header {
+    display: grid;
+    grid-template-columns: 1fr 2.5rem 2.5rem 2.5rem 2.5rem;
+    gap: var(--pdz-space-xs);
+    padding: var(--pdz-space-2xs) var(--pdz-space-sm);
+    background-color: pdz-color(surface-container-high);
+    @include apply-typography(label-sm);
+    color: pdz-color(on-surface-variant);
+    font-weight: 600;
+    text-transform: uppercase;
+
+    span:not(:first-child) {
+      text-align: center;
+    }
+  }
+}
+
+.move-row {
+  display: grid;
+  grid-template-columns: 1fr 2.5rem 2.5rem 2.5rem 2.5rem;
+  align-items: center;
+  gap: var(--pdz-space-xs);
+  padding: var(--pdz-space-2xs) var(--pdz-space-sm);
+  @include apply-typography(body-sm);
+  border-top: 1px solid pdz-color(outline-variant);
+
+  &:hover {
+    background-color: pdz-color(surface-container-low);
+  }
+
+  &__name {
+    display: flex;
+    align-items: center;
+    gap: var(--pdz-space-xs);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__type {
+    @include apply-typography(label-sm);
+    color: white;
+    border-radius: var(--pdz-shape-corner-xs);
+    padding: 1px var(--pdz-space-2xs);
+    font-size: 0.55rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  &__category {
+    text-align: center;
+    font-weight: 700;
+    font-size: 0.7rem;
+    border-radius: var(--pdz-shape-corner-xs);
+    padding: 1px 4px;
+
+    &--physical {
+      background-color: #c92112;
+      color: white;
+    }
+
+    &--special {
+      background-color: #4f5870;
+      color: white;
+    }
+
+    &--status {
+      background-color: pdz-color(surface-container-high);
+      color: pdz-color(on-surface-variant);
+    }
+  }
+
+  &__stat {
+    text-align: center;
+    color: pdz-color(on-surface-variant);
+  }
+}
+
+.move-empty {
+  @include apply-typography(body-sm);
+  color: pdz-color(on-surface-variant);
+  text-align: center;
+  padding: var(--pdz-space-lg);
+}
+
+// ─── Dialog shell ─────────────────────────────────────────────────────────────
+
+.dialog {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.dialog__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--pdz-space-md) var(--pdz-space-md) var(--pdz-space-sm);
+  border-bottom: 1px solid pdz-color(outline-variant);
+  gap: var(--pdz-space-sm);
+}
+
+.dialog__nav {
+  display: flex;
+  align-items: center;
+  gap: var(--pdz-space-2xs);
+  flex: 1;
+  min-width: 0;
+}
+
+.dialog__title {
+  @include apply-typography(headline-lg);
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.close-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  border: none;
+  border-radius: var(--pdz-shape-corner-full);
+  background: transparent;
+  color: pdz-color(on-surface-variant);
+  cursor: pointer;
+  transition: background-color 0.15s;
+
+  &:hover {
+    background-color: pdz-color(surface-container-high);
+  }
+}
+
+.nav-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  border: none;
+  border-radius: var(--pdz-shape-corner-full);
+  background: transparent;
+  color: pdz-color(on-surface-variant);
+  cursor: pointer;
+  transition: background-color 0.15s;
+
+  &:hover:not(:disabled) {
+    background-color: pdz-color(surface-container-high);
+  }
+
+  &:disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
+}
+
+.dialog__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pdz-space-md);
+  padding: var(--pdz-space-md) !important;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.dialog__actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pdz-space-xs);
+  padding: var(--pdz-space-sm) var(--pdz-space-md) var(--pdz-space-md) !important;
+  border-top: 1px solid pdz-color(outline-variant);
+  min-height: unset !important;
+}
+
+// ─── Hero (sprite + meta) ─────────────────────────────────────────────────────
+
+.pokemon-hero {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--pdz-space-md);
+}
+
+.pokemon-hero__sprite {
+  flex-shrink: 0;
+  width: 8rem;
+  height: 8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: pdz-color(surface-container-low);
+  border-radius: var(--pdz-shape-corner-md);
+  overflow: hidden;
+}
+
+.pokemon-hero__meta {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--pdz-space-sm);
+  padding-top: var(--pdz-space-2xs);
+}
+
+// ─── Badges ───────────────────────────────────────────────────────────────────
+
+.badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--pdz-space-xs);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--pdz-space-2xs);
+  padding: 2px var(--pdz-space-sm);
+  border-radius: var(--pdz-shape-corner-full);
+  @include apply-typography(label-sm);
+  font-weight: 600;
+  line-height: 1.6;
+
+  &--tier {
+    background-color: pdz-color(primary);
+    color: pdz-color(on-primary);
+    font-family: var(--pdz-font-fancy);
+  }
+
+  &--cost {
+    background-color: pdz-color(secondary-container);
+    color: pdz-color(on-secondary-container);
+  }
+
+  &--drafted {
+    background-color: pdz-color(success-container);
+    color: pdz-color(on-success-container);
+  }
+}
+
+// ─── Type label override (icon + text inline) ───────────────────────────────
+
+.pdz-types {
+  justify-content: flex-start;
+
+  .pdz-type {
+    width: auto;
+    padding: 0 var(--pdz-space-xs);
+    gap: var(--pdz-space-2xs);
+
+    .pdz-type__icon {
+      width: 0.875rem;
+      height: 0.875rem;
+    }
+  }
+}
+
+// ─── Sections ─────────────────────────────────────────────────────────────────
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pdz-space-xs);
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__title {
+    @include apply-typography(title-md);
+    color: pdz-color(on-surface-variant);
+  }
+}
+
+// ─── Abilities ────────────────────────────────────────────────────────────────
+
+.ability-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--pdz-space-xs);
+}
+
+.ability-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--pdz-space-2xs);
+  @include apply-typography(body-sm);
+  background-color: pdz-color(surface-container);
+  border: 1px solid pdz-color(outline-variant);
+  border-radius: var(--pdz-shape-corner-xs);
+  padding: 2px var(--pdz-space-sm);
+  box-shadow: var(--pdz-level-1);
+  font-size: var(--pdz-font-size-xs);
+
+  &--banned {
+    background-color: pdz-color(surface-container-low);
+    border-color: pdz-color(error-border);
+    color: pdz-color(error);
+    box-shadow: none;
+    opacity: 0.7;
+  }
+}
+
+// ─── Stat bars ────────────────────────────────────────────────────────────────
+
+.stat-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pdz-space-2xs);
+}
+
+.stat-row {
+  display: grid;
+  grid-template-columns: 2.8rem 1fr 2.4rem;
+  align-items: center;
+  gap: var(--pdz-space-xs);
+
+  &__label {
+    @include apply-typography(label-sm);
+    color: pdz-color(on-surface-variant);
+    text-align: right;
+    cursor: default;
+  }
+
+  &__track {
+    height: 0.875rem;
+    background-color: pdz-color(surface-container-high);
+    border-radius: var(--pdz-shape-corner-full);
+    overflow: hidden;
+    border: 1px solid pdz-color(outline-variant);
+  }
+
+  &__bar {
+    height: 100%;
+    border-radius: var(--pdz-shape-corner-full);
+    transition: width 0.3s ease;
+    min-width: 2px;
+    border-right: 1px solid pdz-color(outline-variant);
+  }
+
+  &__value {
+    @include apply-typography(body-sm);
+    font-weight: 600;
+    text-align: left;
+  }
+}
+
+// ─── Chips ─────────────────────────────────────────────────────────────────
+
+.chips {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--pdz-space-2xs);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--pdz-space-2xs);
+
+  border-radius: var(--pdz-shape-corner-xs);
+  padding: var(--pdz-space-2xs) var(--pdz-space-xs);
+
+  &__label {
+    @include apply-typography(label-sm);
+    color: pdz-color(on-surface-variant);
+    text-transform: uppercase;
+  }
+
+  &__value {
+    @include apply-typography(body-sm);
+  }
+}
+
+// ─── Info banners ─────────────────────────────────────────────────────────────
+
+.info-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--pdz-space-sm);
+  padding: var(--pdz-space-xs) var(--pdz-space-sm);
+  border-radius: var(--pdz-shape-corner-sm);
+  @include apply-typography(body-sm);
+
+  pdz-icon {
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  &--addon {
+    background-color: pdz-color(secondary-container);
+    color: pdz-color(on-secondary-container);
+  }
+
+  &--ban {
+    background-color: pdz-color(error-container);
+    color: pdz-color(on-error-container);
+  }
+
+  &__detail {
+    margin-left: var(--pdz-space-2xs);
+    font-weight: 700;
+  }
+}
+
+// ─── Action buttons ───────────────────────────────────────────────────────────
+
+.action-btn {
+  width: 100%;
+  padding: var(--pdz-space-sm) var(--pdz-space-md);
+  border: none;
+  border-radius: var(--pdz-shape-corner-sm);
+  @include apply-typography(label-lg);
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.15s,
+    opacity 0.15s;
+
+  &--primary {
+    background-color: pdz-color(primary);
+    color: pdz-color(on-primary);
+
+    &:hover:not(:disabled) {
+      background-color: pdz-color(primary-hover);
+    }
+  }
+
+  &--secondary {
+    background-color: pdz-color(secondary-container);
+    color: pdz-color(on-secondary-container);
+
+    &:hover:not(:disabled) {
+      background-color: pdz-color(secondary-container-hover);
+    }
+  }
+
+  &:disabled {
+    background-color: pdz-color(surface-disabled);
+    color: pdz-color(on-surface-disabled);
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+}

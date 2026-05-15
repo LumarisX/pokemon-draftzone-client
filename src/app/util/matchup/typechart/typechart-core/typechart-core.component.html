@@ -11,21 +11,22 @@
             (mouseleave)="columnHovered.next(null)"
             [class.column-hovered]="type === columnHovered.value"
           >
-            <div
-              class="type-container"
-              [class.sort-press]="sortedBy.value === type"
-              [style.backgroundColor]="typeColor(type)"
-            >
-              <div class="type-icon-wrapper">
-                <img
-                  [src]="
-                    '../../../assets/icons/types/gen9icon/' + type + '.png'
-                  "
-                  onerror="this.src='../../../assets/icons/types/Unknown.png'"
-                  [alt]="type"
-                />
+            <div class="pdz-types" [class.sort-press]="sortedBy.value === type">
+              <div class="pdz-type" [style.backgroundColor]="typeColor(type)">
+                <div class="pdz-type__icon-wrapper">
+                  <img
+                    class="pdz-type__icon"
+                    [src]="
+                      '../../../assets/icons/types/gen9icon/' + type + '.png'
+                    "
+                    onerror="
+                      this.src = '../../../assets/icons/types/Unknown.png'
+                    "
+                    [alt]="type"
+                  />
+                </div>
+                <span class="pdz-type__text">{{ type }}</span>
               </div>
-              <span class="type-text">{{ type }}</span>
             </div>
           </th>
         }

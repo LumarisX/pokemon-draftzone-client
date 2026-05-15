@@ -53,7 +53,7 @@ $negative-scale: (
 /// @example html
 ///   <div class="pdz-scale-positive-5">High advantage</div>
 ///   <div class="pdz-scale-negative-3">Moderate disadvantage</div>
-///   <div class="pdz-scale-neutral">No advantage</div>
+///   <div class="pdz-neutral">No advantage</div>
 @mixin generate-bg-scale($class-prefix: "pdz-scale") {
   // Generate positive scale classes (1-7)
   @each $level, $color in $positive-scale {
@@ -71,7 +71,7 @@ $negative-scale: (
 
   // Generate neutral class
   .#{$class-prefix}-neutral {
-    background-color: var(--pdz-color-scale-neutral);
+    background-color: var(--pdz-color-neutral);
   }
 
   @each $level, $color in $positive-scale {
@@ -91,7 +91,7 @@ $negative-scale: (
 
   // Generate neutral class
   .#{$class-prefix}-inverse-neutral {
-    color: var(--pdz-color-scale-neutral);
-    border: 2px solid var(--pdz-color-scale-neutral);
+    color: var(--pdz-color-neutral);
+    border: 2px solid var(--pdz-color-neutral);
   }
 }

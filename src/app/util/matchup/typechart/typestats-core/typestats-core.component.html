@@ -10,11 +10,8 @@
             [ngClass]="{ 'column-hovered': type === columnHovered.value }"
           >
             <div class="flex-wrapper">
-              <div
-                class="type-container-small"
-                [style.backgroundColor]="typeColor(type)"
-              >
-                <span class="type-text">{{ type }}</span>
+              <div class="pdz-type" [style.backgroundColor]="typeColor(type)">
+                <span class="pdz-type__text">{{ type }}</span>
               </div>
             </div>
           </th>

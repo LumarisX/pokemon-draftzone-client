@@ -1,0 +1,19 @@
+<div
+  class="type__container"
+  [class.type__container--small]="size === 'small'"
+  [class.type__container--large]="size === 'large'"
+  [class.type__container--column]="direction === 'column'"
+  [style.background]="color"
+>
+  @if (display === 'icon' || display === 'both') {
+    <img
+      class="type__icon"
+      [src]="'assets/icons/types/gen9icon/' + type + '.png'"
+      [alt]="type"
+      onerror="this.src = 'assets/icons/types/Unknown.png'"
+    />
+  }
+  @if (display === 'text' || display === 'both') {
+    <span class="type__text">{{ type }}</span>
+  }
+</div>

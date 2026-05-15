@@ -458,7 +458,7 @@ input {
 
     .slider-stat {
       flex: 1;
-      accent-color: pdz-color(scale-neutral);
+      accent-color: pdz-color(neutral);
       height: 6px;
       cursor: pointer;
     }
@@ -526,7 +526,7 @@ input {
         cursor: pointer;
         font-weight: 600;
         font-size: 1rem;
-        background: pdz-color(scale-neutral);
+        background: pdz-color(neutral);
         color: pdz-color(on-surface-variant);
 
         &.active {

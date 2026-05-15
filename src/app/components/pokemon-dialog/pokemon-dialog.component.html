@@ -1,0 +1,264 @@
+<div class="dialog">
+  <!-- Header -->
+  <div class="dialog__header">
+    <div class="dialog__nav">
+      @if (data.prev || data.next) {
+        <button
+          class="nav-btn"
+          [disabled]="!data.prev"
+          (click)="navigate('prev')"
+          aria-label="Previous"
+        >
+          <pdz-icon name="chevron_left" [height]="20"></pdz-icon>
+        </button>
+      }
+      <h2 class="dialog__title">{{ data.pokemon.name }}</h2>
+      @if (data.prev || data.next) {
+        <button
+          class="nav-btn"
+          [disabled]="!data.next"
+          (click)="navigate('next')"
+          aria-label="Next"
+        >
+          <pdz-icon name="chevron_right" [height]="20"></pdz-icon>
+        </button>
+      }
+    </div>
+    <button class="close-btn" mat-dialog-close aria-label="Close">
+      <pdz-icon name="close" [height]="20"></pdz-icon>
+    </button>
+  </div>
+
+  <!-- Tabs -->
+  <div class="dialog__tabs">
+    <button
+      class="dialog__tab"
+      [class.dialog__tab--active]="activeTab === 'overview'"
+      (click)="activeTab = 'overview'"
+    >
+      Overview
+    </button>
+    <button
+      class="dialog__tab"
+      [class.dialog__tab--active]="activeTab === 'moves'"
+      (click)="activeTab = 'moves'"
+    >
+      Moves
+    </button>
+  </div>
+
+  <!-- Body -->
+  <div class="dialog__body" mat-dialog-content>
+    @if (activeTab === "overview") {
+      <!-- Hero: sprite + meta badges -->
+      <div class="pokemon-hero">
+        <div class="pokemon-hero__sprite">
+          <pdz-sprite
+            [pokemon]="data.pokemon"
+            [tooltipPosition]="null"
+            flipped
+            size="8rem"
+          ></pdz-sprite>
+        </div>
+
+        <div class="pokemon-hero__meta">
+          <!-- Types -->
+          <div class="section">
+            <div class="section__title">Types</div>
+            <div class="pdz-types">
+              @for (type of data.pokemon.types; track $index) {
+                <pdz-pokemon-type
+                  display="both"
+                  [type]="type"
+                ></pdz-pokemon-type>
+              }
+            </div>
+          </div>
+          <!-- Abilities -->
+          @if (data.pokemon.abilities?.length) {
+            <div class="section">
+              <div class="section__title">Abilities</div>
+              <div class="ability-list">
+                @for (ability of data.pokemon.abilities!; track $index) {
+                  @let isBanned =
+                    data.pokemon.banned?.abilities?.includes(ability);
+                  <span
+                    class="ability-chip"
+                    [class.ability-chip--banned]="isBanned"
+                    [title]="isBanned ? 'Banned' : ''"
+                  >
+                    {{ ability }}
+                  </span>
+                }
+              </div>
+            </div>
+          }
+          <!-- Tiering -->
+          @if (data.tier) {
+            <div class="section">
+              <div class="section__title">Tier</div>
+              <div class="badge-row">
+                <span class="badge badge--tier">{{ data.tier.name }}</span>
+                @if (data.tier.cost != null) {
+                  <span class="badge badge--cost"
+                    >{{ data.tier.cost }} pts</span
+                  >
+                }
+                @if (data.isDrafted) {
+                  <span class="badge badge--drafted">
+                    <pdz-icon
+                      name="check_circle"
+                      [height]="14"
+                      [fill]="true"
+                    ></pdz-icon>
+                    Drafted
+                  </span>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Base Stats -->
+      <div class="section">
+        <div class="section__header">
+          <div class="section__title">Base Stats</div>
+          <div class="chips">
+            <div
+              class="chip"
+              [style.background-color]="bstColor(data.pokemon.cst)"
+            >
+              <span class="chip__label">BST</span>
+              <span class="chip__value">{{ data.pokemon.bst }}</span>
+            </div>
+            @if (data.pokemon.cst) {
+              <div
+                class="chip"
+                [style.background-color]="bstColor(data.pokemon.cst)"
+              >
+                <span class="chip__label">CST</span>
+                <span class="chip__value">{{ data.pokemon.cst }}</span>
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="stat-list">
+          @for (stat of pokemonStats; track stat.id) {
+            <div class="stat-row">
+              <div class="stat-row__label" [title]="stat.full">
+                {{ stat.name }}
+              </div>
+              <div class="stat-row__track">
+                <div
+                  class="stat-row__bar"
+                  [style.width]="statBarWidth(stat.value)"
+                  [style.background-color]="statColor(stat.value)"
+                ></div>
+              </div>
+              <div class="stat-row__value">
+                {{ stat.value }}
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Tera Captain addon -->
+      @if (data.pokemon.addons?.length) {
+        <div class="info-banner info-banner--addon">
+          <pdz-icon name="tera" [height]="18"></pdz-icon>
+          <div>
+            <strong>Tera Captain</strong> available
+            <span class="info-banner__detail"
+              >+{{ data.pokemon.addons![0].cost }} pts</span
+            >
+          </div>
+        </div>
+      }
+
+      <!-- Restrictions / Bans -->
+      @if (data.pokemon.banned) {
+        <div class="info-banner info-banner--ban">
+          <pdz-icon name="warning" [height]="18"></pdz-icon>
+          <span>{{ makeBanString(data.pokemon.banned) }}</span>
+        </div>
+      }
+    }
+
+    @if (activeTab === "moves") {
+      <!-- Move search -->
+      <div class="move-search">
+        <input
+          class="move-search__input"
+          type="text"
+          placeholder="Search moves…"
+          [(ngModel)]="moveSearch"
+        />
+      </div>
+
+      <!-- Move list -->
+      @if (filteredMoves.length) {
+        <div class="move-list">
+          <div class="move-list__header">
+            <span>Move</span>
+            <span>Cat</span>
+            <span>BP</span>
+            <span>Acc</span>
+            <span>PP</span>
+          </div>
+          @for (move of filteredMoves; track move.id ?? move.name) {
+            <div class="move-row">
+              <div class="move-row__name">
+                <span
+                  class="move-row__type"
+                  [style.background]="typeColor(move.type)"
+                >
+                  {{ move.type ?? "?" }}
+                </span>
+                {{ move.name }}
+              </div>
+              <span
+                class="move-row__category"
+                [class.move-row__category--physical]="
+                  move.category === 'Physical'
+                "
+                [class.move-row__category--special]="
+                  move.category === 'Special'
+                "
+                [class.move-row__category--status]="move.category === 'Status'"
+              >
+                {{ move.category ? move.category[0] : "—" }}
+              </span>
+              <span class="move-row__stat">{{ move.basePower || "—" }}</span>
+              <span class="move-row__stat">{{
+                move.accuracy === true ? "∞" : (move.accuracy ?? "—")
+              }}</span>
+              <span class="move-row__stat">{{ move.pp ?? "—" }}</span>
+            </div>
+          }
+        </div>
+      } @else {
+        <div class="move-empty">No moves found.</div>
+      }
+    }
+  </div>
+
+  <!-- Action Buttons -->
+  @if (data.buttons?.length) {
+    <div class="dialog__actions" mat-dialog-actions>
+      @for (btn of data.buttons!; track $index) {
+        <button
+          class="action-btn"
+          [class.action-btn--primary]="btn.variant !== 'secondary'"
+          [class.action-btn--secondary]="btn.variant === 'secondary'"
+          [disabled]="btn.disabled ?? false"
+          (click)="clickButton(btn.result)"
+        >
+          {{ btn.label }}
+        </button>
+      }
+    </div>
+  }
+</div>

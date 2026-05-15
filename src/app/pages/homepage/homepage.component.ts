@@ -3,6 +3,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { IconComponent } from '../../images/icon/icon.component';
 import { NewsCoreComponent } from '../news-core/news-core.component';
+import { ChangelogCoreComponent } from '../changelog-core/changelog-core.component';
 
 @Component({
   selector: 'pdz-homepage',
@@ -10,6 +11,7 @@ import { NewsCoreComponent } from '../news-core/news-core.component';
     RouterModule,
     ReactiveFormsModule,
     NewsCoreComponent,
+    ChangelogCoreComponent,
     IconComponent,
   ],
   styleUrl: './homepage.component.scss',

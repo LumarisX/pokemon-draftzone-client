@@ -13,13 +13,13 @@
               <div class="option-name">
                 {{ pokemon.name }}
               </div>
-              <div class="type-container">
+              <div class="pdz-types">
                 @for (type of pokemon.types; track $index) {
                   <div
-                    class="type-label"
+                    class="pdz-type"
                     [style.background-color]="typeColor(type)"
                   >
-                    <div class="type-text">
+                    <div class="pdz-type__text">
                       {{ type }}
                     </div>
                   </div>
@@ -100,13 +100,13 @@
                 <div class="option-name">
                   {{ draftOption.name }}
                 </div>
-                <div class="type-container">
+                <div class="pdz-types">
                   @for (type of draftOption.types; track $index) {
                     <div
-                      class="type-label"
+                      class="pdz-type"
                       [style.background-color]="typeColor(type)"
                     >
-                      <div class="type-text">
+                      <div class="pdz-type__text">
                         {{ type }}
                       </div>
                     </div>
@@ -143,13 +143,13 @@
                 <div class="drafted-pokemon-name">
                   {{ pokemon.name }}
                 </div>
-                <div class="type-container">
+                <div class="pdz-types">
                   @for (type of pokemon.types; track $index) {
                     <div
-                      class="type-label"
+                      class="pdz-type"
                       [style.background-color]="typeColor(type)"
                     >
-                      <div class="type-text">
+                      <div class="pdz-type__text">
                         {{ type }}
                       </div>
                     </div>

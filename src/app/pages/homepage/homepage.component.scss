@@ -194,7 +194,8 @@
     flex-shrink: 0;
   }
 
-  &__panel pdz-news-core {
+  &__panel pdz-news-core,
+  &__panel pdz-changelog-core {
     flex: 1 1 auto;
     display: flex;
     flex-direction: column;

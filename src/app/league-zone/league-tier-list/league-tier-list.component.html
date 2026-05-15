@@ -75,10 +75,10 @@
                   (change)="updateFilter($event.checked, i)"
                 ></mat-checkbox>
                 <div
-                  class="type-label"
+                  class="pdz-type"
                   [style.background-color]="typeColor(type)"
                 >
-                  <span class="type-text">{{ type }}</span>
+                  <span class="pdz-type__text">{{ type }}</span>
                 </div>
               </label>
             }
@@ -177,30 +177,31 @@
                   </div>
                   <div class="pokemon-entry__info">
                     <span class="pokemon-entry__name">{{ pokemon.name }}</span>
-                    <div class="pokemon-entry__types type-container">
+
+                    <div class="pdz-types">
                       @for (type of pokemon.types; track $index) {
-                        <div
-                          class="type-label"
-                          [style.background-color]="typeColor(type)"
-                        >
-                          <span class="type-text">{{ type }}</span>
-                        </div>
+                        <pdz-pokemon-type
+                          [type]="type"
+                          display="icon"
+                        ></pdz-pokemon-type>
                       }
                     </div>
                   </div>
-                  @if (pokemon.addons?.length) {
-                    <div class="pokemon-entry__tera">
-                      <span>{{ pokemon.addons![0].cost }}</span>
-                      <pdz-icon name="tera" [height]="16"></pdz-icon>
-                    </div>
-                  }
-                  @if (pokemon.banned) {
-                    <pdz-icon
-                      class="pokemon-entry__ban-icon"
-                      name="warning"
-                      [matTooltip]="makeBanString(pokemon.banned)"
-                    ></pdz-icon>
-                  }
+                  <div class="pokemon-entry__side">
+                    @if (pokemon.addons?.length) {
+                      <div class="pokemon-entry__tera">
+                        <span>{{ pokemon.addons![0].cost }}</span>
+                        <pdz-icon name="tera" [height]="16"></pdz-icon>
+                      </div>
+                    }
+                    @if (pokemon.banned) {
+                      <mat-icon
+                        class="pokemon-entry__ban-icon"
+                        [matTooltip]="makeBanString(pokemon.banned)"
+                        >warning</mat-icon
+                      >
+                    }
+                  </div>
                 </div>
               }
             </div>

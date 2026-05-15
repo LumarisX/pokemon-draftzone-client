@@ -39,10 +39,10 @@
         <div class="pokemon-label">
           {{ pokemon.name }}
         </div>
-        <div class="type-container">
+        <div class="pdz-types">
           @for (type of pokemon.types; track $index) {
-            <div class="type-label" [style.background-color]="typeColor(type)">
-              <div class="type-text">
+            <div class="pdz-type" [style.background-color]="typeColor(type)">
+              <div class="pdz-type__text">
                 {{ type }}
               </div>
             </div>
@@ -75,19 +75,28 @@
       <td
         cdk-cell
         *cdkCellDef="let pokemon"
-        class="left-rounded stat-cell"
+        class="left-rounded border-left border-top border-bottom stat-cell"
         [style.background-color]="statColor(pokemon.baseStats.hp)"
       >
         {{ pokemon.baseStats.hp }}
       </td>
-      <td cdk-footer-cell *cdkFooterCellDef class="left-rounded">
-        <div [style.background-color]="statColor(summary.stats.mean.hp)">
+      <td cdk-footer-cell *cdkFooterCellDef>
+        <div
+          [style.background-color]="statColor(summary.stats.mean.hp)"
+          class="border-top border-left top-left-rounded"
+        >
           {{ summary.stats.mean.hp }}
         </div>
-        <div [style.background-color]="statColor(summary.stats.median.hp)">
+        <div
+          [style.background-color]="statColor(summary.stats.median.hp)"
+          class="border-left"
+        >
           {{ summary.stats.median.hp }}
         </div>
-        <div [style.background-color]="statColor(summary.stats.max.hp)">
+        <div
+          [style.background-color]="statColor(summary.stats.max.hp)"
+          class="border-bottom border-left bottom-left-rounded"
+        >
           {{ summary.stats.max.hp }}
         </div>
       </td>
@@ -100,19 +109,25 @@
       <td
         cdk-cell
         *cdkCellDef="let pokemon"
-        class="stat-cell"
+        class="border-top border-bottom"
         [style.background-color]="statColor(pokemon.baseStats.atk)"
       >
         {{ pokemon.baseStats.atk }}
       </td>
       <td cdk-footer-cell *cdkFooterCellDef>
-        <div [style.background-color]="statColor(summary.stats.mean.atk)">
+        <div
+          [style.background-color]="statColor(summary.stats.mean.atk)"
+          class="border-top"
+        >
           {{ summary.stats.mean.atk }}
         </div>
         <div [style.background-color]="statColor(summary.stats.median.atk)">
           {{ summary.stats.median.atk }}
         </div>
-        <div [style.background-color]="statColor(summary.stats.max.atk)">
+        <div
+          [style.background-color]="statColor(summary.stats.max.atk)"
+          class="border-bottom"
+        >
           {{ summary.stats.max.atk }}
         </div>
       </td>
@@ -125,19 +140,25 @@
       <td
         cdk-cell
         *cdkCellDef="let pokemon"
-        class="stat-cell"
+        class="border-top border-bottom"
         [style.background-color]="statColor(pokemon.baseStats.def)"
       >
         {{ pokemon.baseStats.def }}
       </td>
       <td cdk-footer-cell *cdkFooterCellDef>
-        <div [style.background-color]="statColor(summary.stats.mean.def)">
+        <div
+          [style.background-color]="statColor(summary.stats.mean.def)"
+          class="border-top"
+        >
           {{ summary.stats.mean.def }}
         </div>
         <div [style.background-color]="statColor(summary.stats.median.def)">
           {{ summary.stats.median.def }}
         </div>
-        <div [style.background-color]="statColor(summary.stats.max.def)">
+        <div
+          [style.background-color]="statColor(summary.stats.max.def)"
+          class="border-bottom"
+        >
           {{ summary.stats.max.def }}
         </div>
       </td>
@@ -149,19 +170,25 @@
       <td
         cdk-cell
         *cdkCellDef="let pokemon"
-        class="stat-cell"
+        class="border-top border-bottom"
         [style.background-color]="statColor(pokemon.baseStats.spa)"
       >
         {{ pokemon.baseStats.spa }}
       </td>
       <td cdk-footer-cell *cdkFooterCellDef>
-        <div [style.background-color]="statColor(summary.stats.mean.spa)">
+        <div
+          [style.background-color]="statColor(summary.stats.mean.spa)"
+          class="border-top"
+        >
           {{ summary.stats.mean.spa }}
         </div>
         <div [style.background-color]="statColor(summary.stats.median.spa)">
           {{ summary.stats.median.spa }}
         </div>
-        <div [style.background-color]="statColor(summary.stats.max.spa)">
+        <div
+          [style.background-color]="statColor(summary.stats.max.spa)"
+          class="border-bottom"
+        >
           {{ summary.stats.max.spa }}
         </div>
       </td>
@@ -173,19 +200,25 @@
       <td
         cdk-cell
         *cdkCellDef="let pokemon"
-        class="stat-cell"
+        class="border-top border-bottom"
         [style.background-color]="statColor(pokemon.baseStats.spd)"
       >
         {{ pokemon.baseStats.spd }}
       </td>
       <td cdk-footer-cell *cdkFooterCellDef>
-        <div [style.background-color]="statColor(summary.stats.mean.spd)">
+        <div
+          [style.background-color]="statColor(summary.stats.mean.spd)"
+          class="border-top"
+        >
           {{ summary.stats.mean.spd }}
         </div>
         <div [style.background-color]="statColor(summary.stats.median.spd)">
           {{ summary.stats.median.spd }}
         </div>
-        <div [style.background-color]="statColor(summary.stats.max.spd)">
+        <div
+          [style.background-color]="statColor(summary.stats.max.spd)"
+          class="border-bottom"
+        >
           {{ summary.stats.max.spd }}
         </div>
       </td>
@@ -197,19 +230,25 @@
       <td
         cdk-cell
         *cdkCellDef="let pokemon"
-        class="stat-cell"
+        class="border-top border-bottom"
         [style.background-color]="statColor(pokemon.baseStats.spe)"
       >
         {{ pokemon.baseStats.spe }}
       </td>
       <td cdk-footer-cell *cdkFooterCellDef>
-        <div [style.background-color]="statColor(summary.stats.mean.spe)">
+        <div
+          [style.background-color]="statColor(summary.stats.mean.spe)"
+          class="border-top"
+        >
           {{ summary.stats.mean.spe }}
         </div>
         <div [style.background-color]="statColor(summary.stats.median.spe)">
           {{ summary.stats.median.spe }}
         </div>
-        <div [style.background-color]="statColor(summary.stats.max.spe)">
+        <div
+          [style.background-color]="statColor(summary.stats.max.spe)"
+          class="border-bottom"
+        >
           {{ summary.stats.max.spe }}
         </div>
       </td>
@@ -222,18 +261,24 @@
         cdk-cell
         *cdkCellDef="let pokemon"
         [style.background-color]="bstColor(pokemon.bst)"
-        class="stat-cell"
+        class="border-top border-bottom"
       >
         {{ pokemon.bst }}
       </td>
       <td cdk-footer-cell *cdkFooterCellDef>
-        <div [style.background-color]="bstColor(summary.stats.mean.bst)">
+        <div
+          [style.background-color]="bstColor(summary.stats.mean.bst)"
+          class="border-top"
+        >
           {{ summary.stats.mean.bst }}
         </div>
         <div [style.background-color]="bstColor(summary.stats.median.bst)">
           {{ summary.stats.median.bst }}
         </div>
-        <div [style.background-color]="bstColor(summary.stats.max.bst)">
+        <div
+          [style.background-color]="bstColor(summary.stats.max.bst)"
+          class="border-bottom"
+        >
           {{ summary.stats.max.bst }}
         </div>
       </td>
@@ -246,18 +291,27 @@
         cdk-cell
         *cdkCellDef="let pokemon"
         [style.background-color]="bstColor(pokemon.cst)"
-        class="right-rounded stat-cell"
+        class="right-rounded border-top border-bottom border-right"
       >
         {{ pokemon.cst }}
       </td>
-      <td cdk-footer-cell *cdkFooterCellDef class="right-rounded">
-        <div [style.background-color]="bstColor(summary.stats.mean.cst)">
+      <td cdk-footer-cell *cdkFooterCellDef>
+        <div
+          [style.background-color]="bstColor(summary.stats.mean.cst)"
+          class="border-top border-right top-right-rounded"
+        >
           {{ summary.stats.mean.cst }}
         </div>
-        <div [style.background-color]="bstColor(summary.stats.median.cst)">
+        <div
+          [style.background-color]="bstColor(summary.stats.median.cst)"
+          class="border-right"
+        >
           {{ summary.stats.median.cst }}
         </div>
-        <div [style.background-color]="bstColor(summary.stats.max.cst)">
+        <div
+          [style.background-color]="bstColor(summary.stats.max.cst)"
+          class="border-bottom border-right bottom-right-rounded"
+        >
           {{ summary.stats.max.cst }}
         </div>
       </td>

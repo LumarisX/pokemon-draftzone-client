@@ -3,7 +3,7 @@
 
 .stat-label {
   &.count {
-    background-color: var(--pdz-color-scale-neutral);
+    background-color: var(--pdz-color-neutral);
   }
 
   &.weaks {
@@ -25,7 +25,7 @@
     background-image: linear-gradient(
       to right,
       var(--pdz-color-scale-negative-4) 10%,
-      var(--pdz-color-scale-neutral),
+      var(--pdz-color-neutral),
       var(--pdz-color-scale-positive-4) 90%
     );
   }

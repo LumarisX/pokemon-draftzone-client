@@ -53,13 +53,10 @@
 
         <div class="draft-info">
           <div class="draft-name">{{ pokemon.name }}</div>
-          <div class="type-container">
+          <div class="pdz-types">
             @for (type of pokemon.types; track $index) {
-              <div
-                class="type-label"
-                [style.background-color]="typeColor(type)"
-              >
-                <div class="type-text">
+              <div class="pdz-type" [style.background-color]="typeColor(type)">
+                <div class="pdz-type__text">
                   {{ type }}
                 </div>
               </div>
