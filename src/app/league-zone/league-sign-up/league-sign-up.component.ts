@@ -42,7 +42,7 @@ import { getLogoUrlOld } from '../league.util';
 })
 export class LeagueSignUpComponent implements OnInit, OnDestroy {
   private fb = inject(FormBuilder);
-  private leagueService = inject(LeagueZoneService);
+  leagueService = inject(LeagueZoneService);
   private uploadService = inject(UploadService);
   private authService = inject(AuthService);
   private destroy$ = new Subject<void>();
@@ -62,7 +62,6 @@ export class LeagueSignUpComponent implements OnInit, OnDestroy {
 
   leagueInfo: League.LeagueInfo | null = null;
 
-  leagueKey = 'pdbl';
   ngOnInit(): void {
     this.leagueService
       .getLeagueInfo()

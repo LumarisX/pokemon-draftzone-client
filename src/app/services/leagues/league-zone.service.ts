@@ -64,6 +64,7 @@ export class LeagueZoneService {
   private router = inject(Router);
   private webSocketService = inject(WebSocketService);
 
+  leagueKey = signal<string | null>(null);
   tournamentKey = signal<string | null>(null);
   divisionKey = signal<string | null>(null);
   teamKey = signal<string | null>(null);
@@ -85,6 +86,8 @@ export class LeagueZoneService {
         mergeMap((route) => route.paramMap),
       )
       .subscribe((paramMap) => {
+        const leagueKey = paramMap.get('leagueKey');
+        this.leagueKey.set(leagueKey);
         const tournamentKey = paramMap.get('tournamentKey');
         this.tournamentKey.set(tournamentKey);
         const divisionKey = paramMap.get('divisionKey');

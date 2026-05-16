@@ -22,7 +22,9 @@
         isOpen() && matchup.winner !== 'side1'
       "
       [routerLink]="
-        '/leagues/pdbl/tournaments/' +
+        '/leagues/' +
+        leagueService.leagueKey() +
+        '/tournaments/' +
         leagueService.tournamentKey() +
         '/divisions/' +
         leagueService.divisionKey() +
@@ -76,7 +78,7 @@
           class="matchup-card__matchup-button"
           [routerLink]="[
             '/leagues',
-            'pdbl',
+            leagueService.leagueKey(),
             'tournaments',
             leagueService.tournamentKey(),
             'divisions',
@@ -103,7 +105,9 @@
         isOpen() && matchup.winner !== 'side2'
       "
       [routerLink]="
-        '/leagues/pdbl/tournaments/' +
+        '/leagues/' +
+        leagueService.leagueKey() +
+        '/tournaments/' +
         leagueService.tournamentKey() +
         '/divisions/' +
         leagueService.divisionKey() +

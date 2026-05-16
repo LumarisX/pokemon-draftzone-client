@@ -15,10 +15,8 @@ export class LeagueBracketComponent implements OnInit {
   private readonly leagueService = inject(LeagueZoneService);
 
   bracketData?: FlexBracketData;
-  tournamentKey?: string;
 
   ngOnInit(): void {
-    this.tournamentKey = this.leagueService.tournamentKey() ?? undefined;
     this.leagueService.getBracket().subscribe((data) => {
       this.bracketData = data;
     });
