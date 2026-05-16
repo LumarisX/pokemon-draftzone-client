@@ -34,14 +34,14 @@
     <button
       class="dialog__tab"
       [class.dialog__tab--active]="activeTab === 'overview'"
-      (click)="activeTab = 'overview'"
+      (click)="selectTab('overview')"
     >
       Overview
     </button>
     <button
       class="dialog__tab"
       [class.dialog__tab--active]="activeTab === 'moves'"
-      (click)="activeTab = 'moves'"
+      (click)="selectTab('moves')"
     >
       Moves
     </button>
@@ -188,60 +188,115 @@
     }
 
     @if (activeTab === "moves") {
-      <!-- Move search -->
-      <div class="move-search">
-        <input
-          class="move-search__input"
-          type="text"
-          placeholder="Search moves…"
-          [(ngModel)]="moveSearch"
-        />
-      </div>
-
-      <!-- Move list -->
-      @if (filteredMoves.length) {
-        <div class="move-list">
-          <div class="move-list__header">
-            <span>Move</span>
-            <span>Cat</span>
-            <span>BP</span>
-            <span>Acc</span>
-            <span>PP</span>
-          </div>
-          @for (move of filteredMoves; track move.id ?? move.name) {
-            <div class="move-row">
-              <div class="move-row__name">
-                <span
-                  class="move-row__type"
-                  [style.background]="typeColor(move.type)"
-                >
-                  {{ move.type ?? "?" }}
-                </span>
-                {{ move.name }}
-              </div>
-              <span
-                class="move-row__category"
-                [class.move-row__category--physical]="
-                  move.category === 'Physical'
-                "
-                [class.move-row__category--special]="
-                  move.category === 'Special'
-                "
-                [class.move-row__category--status]="move.category === 'Status'"
-              >
-                {{ move.category ? move.category[0] : "—" }}
-              </span>
-              <span class="move-row__stat">{{ move.basePower || "—" }}</span>
-              <span class="move-row__stat">{{
-                move.accuracy === true ? "∞" : (move.accuracy ?? "—")
-              }}</span>
-              <span class="move-row__stat">{{ move.pp ?? "—" }}</span>
-            </div>
+      <div class="learnset">
+        <!-- Search bar -->
+        <div class="learnset__search">
+          <input
+            type="text"
+            placeholder="Search moves…"
+            [(ngModel)]="moveSearch"
+            (click)="$event.stopPropagation()"
+          />
+          @if (moveSearch) {
+            <button (click)="moveSearch = ''">✕</button>
           }
         </div>
-      } @else {
-        <div class="move-empty">No moves found.</div>
-      }
+
+        @if (movesLoading) {
+          <div class="learnset__empty-state">Loading moves…</div>
+        } @else if (!data.pokemon.moves) {
+          <div class="learnset__empty-state">
+            Move data unavailable for this Pokémon.
+          </div>
+        } @else if (sortedMoves.length === 0) {
+          <div class="learnset__empty-state">No moves found.</div>
+        } @else {
+          <div class="learnset__table-wrapper">
+            <div class="learnset__table">
+              <!-- Header -->
+              <div class="learnset__header">
+                <span
+                  class="learnset__col learnset__col--type"
+                  [class.learnset__col--sorted]="sortColumn === 'type'"
+                  (click)="sortByColumn('type')"
+                  role="button"
+                  tabindex="0"
+                  >Type</span
+                >
+                <span class="learnset__col learnset__col--category"></span>
+                <span
+                  class="learnset__col learnset__col--name"
+                  [class.learnset__col--sorted]="sortColumn === 'name'"
+                  (click)="sortByColumn('name')"
+                  role="button"
+                  tabindex="0"
+                  >Move</span
+                >
+                <span
+                  class="learnset__col learnset__col--power"
+                  [class.learnset__col--sorted]="sortColumn === 'power'"
+                  (click)="sortByColumn('power')"
+                  role="button"
+                  tabindex="0"
+                  >Power</span
+                >
+                <span
+                  class="learnset__col learnset__col--accuracy"
+                  [class.learnset__col--sorted]="sortColumn === 'accuracy'"
+                  (click)="sortByColumn('accuracy')"
+                  role="button"
+                  tabindex="0"
+                  >Acc.</span
+                >
+                <span
+                  class="learnset__col learnset__col--pp"
+                  [class.learnset__col--sorted]="sortColumn === 'pp'"
+                  (click)="sortByColumn('pp')"
+                  role="button"
+                  tabindex="0"
+                  >PP</span
+                >
+              </div>
+
+              <!-- Rows -->
+              <ul class="learnset__list">
+                @for (move of sortedMoves; track move.id ?? move.name) {
+                  <li
+                    class="learnset__item"
+                    [class.learnset__item--stab]="isStab(move.type)"
+                  >
+                    <div class="learnset__col learnset__col--type">
+                      <div
+                        class="learnset__type-badge"
+                        [style.background]="typeColor(move.type)"
+                      >
+                        {{ move.type ?? "?" }}
+                      </div>
+                    </div>
+                    <img
+                      class="learnset__col learnset__col--category"
+                      [src]="categoryIcon(move.category)"
+                      [alt]="move.category ?? ''"
+                    />
+                    <span class="learnset__col learnset__col--name">{{
+                      move.name
+                    }}</span>
+                    <span class="learnset__col learnset__col--power">{{
+                      move.basePower || "—"
+                    }}</span>
+                    <span class="learnset__col learnset__col--accuracy">{{
+                      move.accuracy === true ? "—" : (move.accuracy ?? "—")
+                    }}</span>
+                    <span class="learnset__col learnset__col--pp">{{
+                      move.pp ?? "—"
+                    }}</span>
+                  </li>
+                }
+              </ul>
+            </div>
+          </div>
+        }
+      </div>
     }
   </div>
 

@@ -256,7 +256,7 @@ export class LeagueTierListComponent implements OnInit, OnDestroy {
 
     const dialogRef = this.dialog.open(PokemonDialogComponent, {
       data: dialogData,
-      maxWidth: '460px',
+      maxWidth: '30rem',
       width: '92vw',
       panelClass: 'pokemon-detail-panel',
     });

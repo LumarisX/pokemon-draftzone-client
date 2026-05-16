@@ -6,13 +6,16 @@ import {
   MatDialogModule,
   MatDialogRef,
 } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
+import { finalize } from 'rxjs/operators';
 import { STATS, StatsTable, Type } from '../../data';
 import { IconComponent } from '../../images/icon/icon.component';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { TierPokemonAddon } from '../../interfaces/tier-pokemon.interface';
 import { makeBanString } from '../../league-zone/league-tier-list/tier-list.utils';
-import { PokemonSearchMoveData } from '../../services/data.service';
+import {
+  DataService,
+  PokemonSearchMoveData,
+} from '../../services/data.service';
 import { typeColor } from '../../util/styling';
 import { PokemonTypeComponent } from '../pokemon-type/pokemon-type.component';
 
@@ -41,6 +44,7 @@ export interface PokemonDialogData {
   tier?: { name: string; cost?: number };
   isDrafted?: boolean;
   buttons?: PokemonDialogButton[];
+  rulesetId?: string;
   prev?: PokemonDialogData;
   next?: PokemonDialogData;
 }
@@ -62,6 +66,7 @@ export type PokemonDialogResult = unknown;
   styleUrls: ['./pokemon-dialog.component.scss'],
 })
 export class PokemonDialogComponent {
+  private dataService = inject(DataService);
   dialogRef =
     inject<MatDialogRef<PokemonDialogComponent, PokemonDialogResult>>(
       MatDialogRef,
@@ -70,12 +75,58 @@ export class PokemonDialogComponent {
 
   activeTab: string = 'overview';
   moveSearch: string = '';
+  movesLoading = false;
+  sortColumn: 'type' | 'name' | 'power' | 'accuracy' | 'pp' = 'name';
+  sortDir: 1 | -1 = 1;
 
-  get filteredMoves(): PokemonSearchMoveData[] {
+  get sortedMoves(): PokemonSearchMoveData[] {
     const moves = this.data.pokemon.moves ?? [];
     const q = this.moveSearch.toLowerCase().trim();
-    if (!q) return moves;
-    return moves.filter((m) => m.name?.toLowerCase().includes(q));
+    const filtered = q
+      ? moves.filter((m) => m.name?.toLowerCase().includes(q))
+      : moves;
+    return [...filtered].sort((a, b) => {
+      let cmp = 0;
+      switch (this.sortColumn) {
+        case 'type':
+          cmp = (a.type ?? '').localeCompare(b.type ?? '');
+          break;
+        case 'name':
+          cmp = (a.name ?? '').localeCompare(b.name ?? '');
+          break;
+        case 'power':
+          cmp = (a.basePower ?? 0) - (b.basePower ?? 0);
+          break;
+        case 'accuracy':
+          cmp =
+            (typeof a.accuracy === 'number' ? a.accuracy : 101) -
+            (typeof b.accuracy === 'number' ? b.accuracy : 101);
+          break;
+        case 'pp':
+          cmp = (a.pp ?? 0) - (b.pp ?? 0);
+          break;
+      }
+      return cmp * this.sortDir;
+    });
+  }
+
+  sortByColumn(col: 'type' | 'name' | 'power' | 'accuracy' | 'pp'): void {
+    if (this.sortColumn === col) {
+      this.sortDir = this.sortDir === 1 ? -1 : 1;
+    } else {
+      this.sortColumn = col;
+      this.sortDir =
+        col === 'power' || col === 'accuracy' || col === 'pp' ? -1 : 1;
+    }
+  }
+
+  categoryIcon(category: string | undefined): string {
+    return `/assets/icons/moves/move-${(category ?? 'status').toLowerCase()}.png`;
+  }
+
+  isStab(moveType: string | undefined): boolean {
+    if (!moveType) return false;
+    return this.data.pokemon.types.includes(moveType as any);
   }
 
   readonly STATS = STATS;
@@ -93,32 +144,6 @@ export class PokemonDialogComponent {
     return STATS.map((s) => ({ ...s, value: this.data.pokemon.stats[s.id] }));
   }
 
-  // statColor(value: number): string {
-  //   if (value >= 130) return 'var(--pdz-color-scale-positive-6)';
-  //   if (value >= 110) return 'var(--pdz-color-scale-positive-2)';
-  //   if (value >= 80) return 'var(--pdz-color-scale-positive-4)';
-  //   if (value >= 80) return 'var(--pdz-color-scale-positive-3)';
-  //   if (value >= 80) return 'var(--pdz-color-scale-positive-2)';
-  //   if (value >= 80) return 'var(--pdz-color-scale-positive-1)';
-  //   if (value >= 70) return 'var(--pdz-color-neutral)';
-  //   if (value >= 60) return 'var(--pdz-color-scale-negative-1)';
-  //   if (value >= 50) return 'var(--pdz-color-scale-negative-2)';
-  //   if (value >= 40) return 'var(--pdz-color-scale-negative-3)';
-  //   if (value >= 30) return 'var(--pdz-color-scale-negative-4)';
-
-  //   return 'var(--pdz-color-scale-negative-5)';
-  // }
-
-  // bstColor(bst: number): string {
-  //   if (bst >= 650) return 'var(--pdz-color-scale-positive-6)';
-  //   if (bst >= 600) return 'var(--pdz-color-scale-positive-4)';
-  //   if (bst >= 550) return 'var(--pdz-color-scale-positive-2)';
-  //   if (bst >= 500) return 'var(--pdz-color-neutral)';
-  //   if (bst >= 450) return 'var(--pdz-color-scale-negative-1)';
-  //   if (bst >= 400) return 'var(--pdz-color-scale-negative-3)';
-  //   return 'var(--pdz-color-scale-negative-5)';
-  // }
-
   baseValue = 80;
 
   statColor(statValue: number | undefined): string | undefined {
@@ -133,7 +158,7 @@ export class PokemonDialogComponent {
   bstColor(bstValue: number | undefined): string | undefined {
     if (bstValue === undefined) return undefined;
     const diff = bstValue - this.baseValue * 6;
-    if (diff > -25 && diff <= 0) return 'var(--pdz-color-scale-neutral)';
+    if (diff > -25 && diff <= 0) return 'var(--pdz-color-neutral)';
     const sign = diff > 0 ? 'positive' : 'negative';
     let level: number;
     if (diff > 0) {
@@ -152,8 +177,37 @@ export class PokemonDialogComponent {
     this.dialogRef.close(result);
   }
 
+  selectTab(tab: string): void {
+    this.activeTab = tab;
+    if (tab === 'moves' && !this.data.pokemon.moves && this.data.rulesetId) {
+      this.movesLoading = true;
+      this.dataService
+        .getPokemonMoves(this.data.rulesetId, this.data.pokemon.id)
+        .pipe(finalize(() => (this.movesLoading = false)))
+        .subscribe((moves) => {
+          this.data.pokemon.moves = moves;
+        });
+    }
+  }
+
   navigate(direction: 'prev' | 'next'): void {
     const target = this.data[direction];
-    if (target) this.data = target;
+    if (target) {
+      this.data = target;
+      this.moveSearch = '';
+      if (
+        this.activeTab === 'moves' &&
+        !this.data.pokemon.moves &&
+        this.data.rulesetId
+      ) {
+        this.movesLoading = true;
+        this.dataService
+          .getPokemonMoves(this.data.rulesetId, this.data.pokemon.id)
+          .pipe(finalize(() => (this.movesLoading = false)))
+          .subscribe((moves) => {
+            this.data.pokemon.moves = moves;
+          });
+      }
+    }
   }
 }

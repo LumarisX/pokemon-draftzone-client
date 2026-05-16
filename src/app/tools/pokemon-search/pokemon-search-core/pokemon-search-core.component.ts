@@ -54,7 +54,7 @@ export class PokemonSearchCoreComponent {
 
     this.dialog.open(PokemonDialogComponent, {
       data,
-      maxWidth: '420px',
+      maxWidth: '30rem',
       width: '92vw',
       panelClass: 'pokemon-detail-panel',
     });
@@ -79,6 +79,7 @@ export class PokemonSearchCoreComponent {
         cst: pokemon.cst,
         moves,
       },
+      rulesetId: this.rulesetId,
     };
   }
 

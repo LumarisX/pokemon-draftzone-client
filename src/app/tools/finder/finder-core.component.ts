@@ -224,6 +224,7 @@ export class FinderCoreComponent implements OnInit {
         cst: pokemon.cst,
         moves,
       },
+      rulesetId: this.rulesetId,
     };
   }
 }

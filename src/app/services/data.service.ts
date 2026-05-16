@@ -189,6 +189,15 @@ export class DataService {
     });
   }
 
+  getPokemonMoves(
+    rulesetId: string,
+    pokemonId: string,
+  ): Observable<PokemonSearchMoveData[]> {
+    return this.apiService.get<PokemonSearchMoveData[]>(
+      `data/${rulesetId}/pokemon/${pokemonId}/learnset`,
+    );
+  }
+
   getFormes(ruleset: string, id: string): Observable<OldPokemon[]> {
     if (this.cache.formes[id]) return of(this.cache.formes[id]);
     return this.apiService
