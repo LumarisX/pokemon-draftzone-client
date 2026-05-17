@@ -1,6 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { News, NewsService } from '../../services/news.service';
-import { LoadingComponent } from '../../images/loading/loading.component';
+import { NEWS } from './news.data';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
@@ -9,27 +8,18 @@ import { MarkdownModule } from 'ngx-markdown';
 
 @Component({
   selector: 'pdz-news-core',
-  imports: [
-    CommonModule,
-    LoadingComponent,
-    RouterLink,
-    MatButtonModule,
-    MarkdownModule,
-  ],
+  imports: [CommonModule, RouterLink, MatButtonModule, MarkdownModule],
   templateUrl: './news-core.component.html',
   styleUrl: './news-core.component.scss',
 })
 export class NewsCoreComponent implements OnInit {
-  private newsService = inject(NewsService);
   private unreadService = inject(UnreadService);
 
-  news?: News[];
+  readonly news = NEWS;
+
   ngOnInit(): void {
-    this.newsService.getNews().subscribe((news) => {
-      this.news = news;
-      this.unreadService.newsCount.next('');
-      localStorage.setItem('newsTime', Date.now().toString());
-    });
+    this.unreadService.newsCount.next('');
+    localStorage.setItem('newsTime', Date.now().toString());
   }
 
   toDate(dateString: string) {

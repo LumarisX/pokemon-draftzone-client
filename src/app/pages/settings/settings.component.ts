@@ -33,7 +33,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
   themes: { id: string; name: string }[] = [
     { id: 'classic', name: 'Classic' },
     { id: 'sunset', name: 'Sunset' },
-    // { id: 'fern', name: 'Fern' },
+    { id: 'fern', name: 'Fern' },
     { id: 'classic-reverse', name: 'Classic Reversed' },
   ];
 

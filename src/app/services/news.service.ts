@@ -1,5 +1,6 @@
-import { Injectable, inject } from '@angular/core';
-import { ApiService } from './api.service';
+import { Injectable } from '@angular/core';
+import { of } from 'rxjs';
+import { NEWS } from '../pages/news-core/news.data';
 
 export const newsPath = 'news';
 
@@ -26,7 +27,11 @@ export type Section =
     }
   | {
       type: 'images';
-      images: { title?: string; imageUrl: string; size?: 'small' | 'medium' }[];
+      images: {
+        title?: string;
+        imageUrl: string;
+        size?: 'small' | 'medium' | 'large';
+      }[];
     };
 export type News = {
   title: string;
@@ -37,9 +42,7 @@ export type News = {
   providedIn: 'root',
 })
 export class NewsService {
-  private api = inject(ApiService);
-
   getNews() {
-    return this.api.get<News[]>([newsPath]);
+    return of(NEWS);
   }
 }

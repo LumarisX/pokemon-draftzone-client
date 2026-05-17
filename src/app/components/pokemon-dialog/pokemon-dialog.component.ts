@@ -146,12 +146,17 @@ export class PokemonDialogComponent {
 
   baseValue = 80;
 
+  MAX_LEVEL = 7;
+
   statColor(statValue: number | undefined): string | undefined {
     if (statValue === undefined) return undefined;
     const diff = statValue - this.baseValue;
     if (Math.abs(diff) <= 7) return 'var(--pdz-color-scale-neutral)';
     const sign = diff > 0 ? 'positive' : 'negative';
-    const level = Math.min(Math.floor((Math.abs(diff) - 8) / 15) + 1, 5);
+    const level = Math.min(
+      Math.floor((Math.abs(diff) - 8) / 15) + 1,
+      this.MAX_LEVEL,
+    );
     return `var(--pdz-color-scale-${sign}-${level})`;
   }
 
@@ -166,7 +171,7 @@ export class PokemonDialogComponent {
     } else {
       level = Math.floor((Math.abs(diff) - 1) / 25) + 1;
     }
-    return `var(--pdz-color-scale-${sign}-${Math.min(level, 7)})`;
+    return `var(--pdz-color-scale-${sign}-${Math.min(level, this.MAX_LEVEL)})`;
   }
 
   statBarWidth(value: number): string {

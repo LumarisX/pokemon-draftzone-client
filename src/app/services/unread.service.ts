@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { ApiService } from './api.service';
+import { NEWS } from '../pages/news-core/news.data';
 
 @Injectable({
   providedIn: 'root',
@@ -14,12 +15,14 @@ export class UnreadService {
   constructor() {
     const lastLeagueTime = +(localStorage.getItem('leagueTime') || 0);
     const lastNewsTime = +(localStorage.getItem('newsTime') || 0);
-    this.getUnreadCount({
-      leagueAd: lastLeagueTime,
-      news: lastNewsTime,
-    }).subscribe((count) => {
+
+    const newsUnread = NEWS.filter(
+      (n) => new Date(n.createdAt).getTime() > lastNewsTime,
+    ).length;
+    this.newsCount.next(this.capNumber(newsUnread));
+
+    this.getUnreadCount({ leagueAd: lastLeagueTime }).subscribe((count) => {
       this.leagueCount.next(this.capNumber(count['leagueAd']));
-      this.newsCount.next(this.capNumber(count['news']));
     });
   }
 
