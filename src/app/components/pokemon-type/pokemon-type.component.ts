@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { IconComponent } from '../../images/icon/icon.component';
 
 export function typeColor(type?: string | null) {
   if (!type) return undefined;
@@ -47,7 +48,7 @@ export function typeColor(type?: string | null) {
 
 @Component({
   selector: 'pdz-pokemon-type',
-  imports: [],
+  imports: [IconComponent],
   templateUrl: './pokemon-type.component.html',
   styleUrl: './pokemon-type.component.scss',
 })
@@ -56,8 +57,51 @@ export class PokemonTypeComponent {
   @Input() size: 'small' | 'medium' | 'large' = 'medium';
   @Input() display: 'icon' | 'text' | 'both' = 'text';
   @Input() direction: 'row' | 'column' = 'row';
+  @Input() disabled = false;
 
   get color(): string {
     return typeColor(this.type) ?? 'var(--pdz-color-text)';
+  }
+
+  get typeIconName(): string | null {
+    const key = `type-${this.type.toLowerCase()}`;
+    // Stellar and unknown types don't have gen9 icons
+    if (
+      ![
+        'bug',
+        'dark',
+        'dragon',
+        'electric',
+        'fairy',
+        'fighting',
+        'fire',
+        'flying',
+        'ghost',
+        'grass',
+        'ground',
+        'ice',
+        'normal',
+        'poison',
+        'psychic',
+        'rock',
+        'steel',
+        'water',
+      ].includes(this.type.toLowerCase())
+    ) {
+      return null;
+    }
+    return key;
+  }
+
+  get iconSize(): number {
+    if (this.direction === 'column') return 22;
+    switch (this.size) {
+      case 'small':
+        return 10;
+      case 'large':
+        return 22;
+      default:
+        return 12;
+    }
   }
 }

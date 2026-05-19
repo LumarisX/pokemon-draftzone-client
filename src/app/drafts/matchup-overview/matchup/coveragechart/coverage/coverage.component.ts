@@ -1,10 +1,9 @@
-import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ExtendedType } from '../../../../../data';
 import { SpriteComponent } from '../../../../../images/sprite/sprite.component';
+import { PokemonTypeComponent } from '../../../../../components/pokemon-type/pokemon-type.component';
 import { DraftPokemon } from '../../../../../interfaces/draft';
-import { typeColor } from '../../../../../util/styling';
 import { CoverageChart, TypeChart } from '../../../matchup-interface';
 import { EffectivenessChartComponent } from './effectiveness-chart/effectiveness-chart.component';
 
@@ -13,10 +12,10 @@ import { EffectivenessChartComponent } from './effectiveness-chart/effectiveness
   templateUrl: './coverage.component.html',
   styleUrl: './coverage.component.scss',
   imports: [
-    CommonModule,
     SpriteComponent,
     EffectivenessChartComponent,
     MatTooltipModule,
+    PokemonTypeComponent,
   ],
 })
 export class CoverageComponent implements OnInit {
@@ -56,8 +55,6 @@ export class CoverageComponent implements OnInit {
   ngOnInit(): void {
     this.resetRecommended();
   }
-
-  typeColor = typeColor;
 
   updateCoverage() {
     const selectedMoves = [

@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { AuthService as Auth0Service, User } from '@auth0/auth0-angular';
 import { catchError, map, Observable, of, shareReplay, switchMap } from 'rxjs';
-import { Settings } from '../pages/settings/settings.service';
+import { Settings } from './settings.service';
 
 export type LeagueRole = 'owner' | 'coach' | 'helper' | 'player' | 'spectator';
 

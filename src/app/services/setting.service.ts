@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { ApiService } from './api.service';
-import { Settings } from '../pages/settings/settings.service';
+import { Settings } from './settings.service';
 import { Observable } from 'rxjs';
 
 @Injectable({

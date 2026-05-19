@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { SettingApiService } from '../../services/setting.service';
+import { SettingApiService } from './setting.service';
 import { BehaviorSubject } from 'rxjs';
 
 export type Settings = {

@@ -153,6 +153,46 @@ export class LeagueManageService {
     );
   }
 
+  getTournamentSettings() {
+    return this.apiService.get<{
+      name: string;
+      description?: string;
+      format: string;
+      ruleset: string;
+      signUpDeadline: string;
+      draftStart?: string;
+      draftEnd?: string;
+      seasonStart?: string;
+      seasonEnd?: string;
+      discord?: string;
+      forfeit: { gameDiff: number; pokemonDiff: number };
+      diffMode: 'pokemon' | 'game';
+    }>(
+      `leagues/tournaments/${this.leagueZoneService.tournamentKey()}/manage/settings`,
+      { authenticated: true },
+    );
+  }
+
+  updateTournamentSettings(settings: {
+    name: string;
+    description?: string;
+    format: string;
+    ruleset: string;
+    signUpDeadline: Date;
+    draftStart?: Date;
+    draftEnd?: Date;
+    seasonStart?: Date;
+    seasonEnd?: Date;
+    discord?: string;
+    forfeit?: { gameDiff: number; pokemonDiff: number };
+    diffMode?: 'pokemon' | 'game';
+  }) {
+    return this.apiService.patch<{ message: string }>(
+      `leagues/tournaments/${this.leagueZoneService.tournamentKey()}/manage/settings`,
+      settings,
+    );
+  }
+
   getPokemonList() {
     return this.apiService.get<{
       groups?: {

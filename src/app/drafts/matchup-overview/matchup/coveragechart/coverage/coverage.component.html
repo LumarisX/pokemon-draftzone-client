@@ -16,20 +16,19 @@
       />
       <div class="pdz-types">
         @for (move of pokemon.coverage.physical; track move) {
-          <div
-            class="pdz-type"
-            [ngClass]="{
-              selected: move.selected,
-            }"
+          <button
+            type="button"
+            class="coverage-type-btn"
             [matTooltip]="move.name"
             matTooltipPosition="above"
             (click)="move.selected = !move.selected; updateCoverage()"
-            [style.background-color]="typeColor(move.type)"
           >
-            <div class="pdz-type__text">
-              {{ move.type }}
-            </div>
-          </div>
+            <pdz-pokemon-type
+              [type]="move.type"
+              [disabled]="!move.selected"
+              display="both"
+            ></pdz-pokemon-type>
+          </button>
         }
       </div>
     </div>
@@ -41,20 +40,19 @@
       />
       <div class="pdz-types">
         @for (move of pokemon.coverage.special; track move) {
-          <div
-            class="pdz-type"
-            [ngClass]="{
-              selected: move.selected,
-            }"
+          <button
+            type="button"
+            class="coverage-type-btn"
             [matTooltip]="move.name"
             matTooltipPosition="above"
             (click)="move.selected = !move.selected; updateCoverage()"
-            [style.background-color]="typeColor(move.type)"
           >
-            <div class="pdz-type__text">
-              {{ move.type }}
-            </div>
-          </div>
+            <pdz-pokemon-type
+              [type]="move.type"
+              [disabled]="!move.selected"
+              display="both"
+            ></pdz-pokemon-type>
+          </button>
         }
       </div>
     </div>

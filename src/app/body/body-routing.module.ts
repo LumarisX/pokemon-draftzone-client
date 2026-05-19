@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from '../pages/homepage/homepage.component';
 import { NotFoundComponent } from '../pages/not-found/not-found.component';
-import { SettingsComponent } from '../pages/settings/settings.component';
 import { PlannerComponent } from '../planner/plannner.component';
 import { DebugPath } from '../debug/debug-routing.module';
 import { LeagueZonePath } from '../league-zone/league-zone-routing.module';
@@ -12,7 +11,6 @@ import { StatisticsPath } from '../statistics/statistics-routing.module';
 const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'planner', component: PlannerComponent },
-  { path: 'settings', component: SettingsComponent },
   {
     path: '',
     loadChildren: () =>

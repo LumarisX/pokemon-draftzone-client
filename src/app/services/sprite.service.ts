@@ -6,7 +6,7 @@ import {
   SpriteSets,
 } from '../data/namedex';
 import { DraftPokemon } from '../interfaces/draft';
-import { SettingsService } from '../pages/settings/settings.service';
+import { SettingsService } from './settings.service';
 
 export type SpriteData = {
   path: string;

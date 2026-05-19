@@ -1,10 +1,12 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
+  ElementRef,
   EventEmitter,
   OnDestroy,
   OnInit,
   Output,
+  ViewChild,
   inject,
 } from '@angular/core';
 import {
@@ -14,22 +16,27 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
+import { IconComponent } from '../../images/icon/icon.component';
 import { DraftPokemon } from '../../interfaces/draft';
-import { Settings, SettingsService } from './settings.service';
+import { Settings, SettingsService } from '../../services/settings.service';
+
 @Component({
-  selector: 'pdz-settings',
-  imports: [CommonModule, ReactiveFormsModule, SpriteComponent],
-  templateUrl: './settings.component.html',
-  styleUrl: './settings.component.scss',
+  selector: 'pdz-settings-dialog',
+  imports: [CommonModule, ReactiveFormsModule, SpriteComponent, IconComponent],
+  templateUrl: './settings-dialog.component.html',
+  styleUrl: './settings-dialog.component.scss',
 })
-export class SettingsComponent implements OnInit, OnDestroy {
+export class SettingsDialogComponent implements OnInit, OnDestroy {
   private settingsService = inject(SettingsService);
   private fb = inject(FormBuilder);
+
+  @ViewChild('dialogEl') dialogEl!: ElementRef<HTMLDialogElement>;
 
   example: DraftPokemon = { id: 'deoxysattack', name: 'Deoxys-Attack' };
 
   @Output()
   closeSettings = new EventEmitter();
+
   themes: { id: string; name: string }[] = [
     { id: 'classic', name: 'Classic' },
     { id: 'sunset', name: 'Sunset' },
@@ -228,7 +235,31 @@ export class SettingsComponent implements OnInit, OnDestroy {
     });
   }
 
+  openDialog() {
+    this.dialogEl.nativeElement.showModal();
+  }
+
+  onBackdropClick(event: MouseEvent) {
+    const rect = this.dialogEl.nativeElement.getBoundingClientRect();
+    const clickedOutside =
+      event.clientX < rect.left ||
+      event.clientX > rect.right ||
+      event.clientY < rect.top ||
+      event.clientY > rect.bottom;
+    if (clickedOutside) {
+      this.close();
+    }
+  }
+
+  onDialogCancel(event: Event) {
+    // Native dialog closes on Escape — restore settings and notify parent
+    event.preventDefault();
+    this.close();
+  }
+
   close() {
+    this.settingsService.setSettings(this.orgSettings, { source: 'local' });
+    this.dialogEl.nativeElement.close();
     this.closeSettings.emit();
   }
 }

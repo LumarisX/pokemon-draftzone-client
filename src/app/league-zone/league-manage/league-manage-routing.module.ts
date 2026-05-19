@@ -7,6 +7,7 @@ import { LeagueManageTradesComponent } from './league-manage-trades/league-manag
 import { LeagueManageScheduleComponent } from './league-manage-schedule/league-manage-schedule.component';
 import { LeagueManageDashboardComponent } from './league-manage-dashboard/league-manage-dashboard.component';
 import { LeagueManageHubComponent } from './league-manage-hub.component';
+import { LeagueSettingsComponent } from './league-settings/league-settings.component';
 
 export const LeagueManagePath = 'manage';
 
@@ -15,6 +16,10 @@ const routes: Routes = [
     path: '',
     component: LeagueManageHubComponent,
     pathMatch: 'full',
+  },
+  {
+    path: 'settings',
+    component: LeagueSettingsComponent,
   },
   {
     path: 'sign-ups',
@@ -45,14 +50,6 @@ const routes: Routes = [
     path: ':divisionKey/schedule',
     component: LeagueManageScheduleComponent,
   },
-  // {
-  //   path: 'tiers',
-  //   component: LeagueTierListFormComponent,
-  // },
-  // {
-  //   path: 'settings',
-  //   component: LeagueSettingsComponent,
-  // },
 ];
 
 @NgModule({

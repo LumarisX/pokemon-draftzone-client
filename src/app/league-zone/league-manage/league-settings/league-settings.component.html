@@ -1,1 +1,264 @@
-<p>league-settings works!</p>
+@if (isLoading) {
+  <div class="loading-state">
+    <pdz-loading></pdz-loading>
+  </div>
+} @else {
+  <div class="settings-page">
+    <div class="settings-page__header">
+      <a [routerLink]="managePath" class="settings-page__back">
+        <pdz-icon name="arrow_back" [size]="20"></pdz-icon>
+        Back to Hub
+      </a>
+      <h1 class="settings-page__title">Tournament Settings</h1>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="save()" class="settings-form">
+      <!-- Tournament Info -->
+      <section class="settings-section">
+        <h2 class="settings-section__title">Tournament Info</h2>
+        <div class="settings-section__body">
+          <div class="form-field">
+            <label class="form-field__label" for="name"
+              >Tournament Name *</label
+            >
+            <input
+              id="name"
+              class="form-field__input"
+              [class.form-field__input--invalid]="
+                form.get('name')?.invalid && form.get('name')?.touched
+              "
+              type="text"
+              formControlName="name"
+              placeholder="e.g. Spring 2025 Draft League"
+            />
+          </div>
+
+          <div class="form-field">
+            <label class="form-field__label" for="description"
+              >Description</label
+            >
+            <textarea
+              id="description"
+              class="form-field__textarea"
+              formControlName="description"
+              rows="3"
+              placeholder="Optional tournament description"
+            ></textarea>
+          </div>
+
+          <div class="form-row">
+            <div class="form-field">
+              <label class="form-field__label" for="format">Format *</label>
+              <input
+                id="format"
+                class="form-field__input"
+                [class.form-field__input--invalid]="
+                  form.get('format')?.invalid && form.get('format')?.touched
+                "
+                type="text"
+                formControlName="format"
+                placeholder="e.g. VGC 2025"
+              />
+            </div>
+            <div class="form-field">
+              <label class="form-field__label" for="ruleset">Ruleset *</label>
+              <input
+                id="ruleset"
+                class="form-field__input"
+                [class.form-field__input--invalid]="
+                  form.get('ruleset')?.invalid && form.get('ruleset')?.touched
+                "
+                type="text"
+                formControlName="ruleset"
+                placeholder="e.g. Regulation G"
+              />
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label class="form-field__label" for="discord"
+              >Discord Invite Link</label
+            >
+            <input
+              id="discord"
+              class="form-field__input"
+              type="text"
+              formControlName="discord"
+              placeholder="https://discord.gg/..."
+            />
+          </div>
+        </div>
+      </section>
+
+      <!-- Schedule -->
+      <section class="settings-section">
+        <h2 class="settings-section__title">Schedule</h2>
+        <div class="settings-section__body">
+          <div class="form-row">
+            <div class="form-field">
+              <label class="form-field__label" for="signUpDeadline"
+                >Sign-up Deadline *</label
+              >
+              <input
+                id="signUpDeadline"
+                class="form-field__input"
+                [class.form-field__input--invalid]="
+                  form.get('signUpDeadline')?.invalid &&
+                  form.get('signUpDeadline')?.touched
+                "
+                type="date"
+                formControlName="signUpDeadline"
+              />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-field">
+              <label class="form-field__label" for="draftStart"
+                >Draft Start</label
+              >
+              <input
+                id="draftStart"
+                class="form-field__input"
+                type="date"
+                formControlName="draftStart"
+              />
+            </div>
+            <div class="form-field">
+              <label class="form-field__label" for="draftEnd">Draft End</label>
+              <input
+                id="draftEnd"
+                class="form-field__input"
+                type="date"
+                formControlName="draftEnd"
+              />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-field">
+              <label class="form-field__label" for="seasonStart"
+                >Season Start</label
+              >
+              <input
+                id="seasonStart"
+                class="form-field__input"
+                type="date"
+                formControlName="seasonStart"
+              />
+            </div>
+            <div class="form-field">
+              <label class="form-field__label" for="seasonEnd"
+                >Season End</label
+              >
+              <input
+                id="seasonEnd"
+                class="form-field__input"
+                type="date"
+                formControlName="seasonEnd"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Scoring & Forfeits -->
+      <section class="settings-section">
+        <h2 class="settings-section__title">Scoring &amp; Forfeits</h2>
+        <div class="settings-section__body">
+          <div class="form-field">
+            <label class="form-field__label">Score Mode</label>
+            <div class="radio-group">
+              <label class="radio-option">
+                <input
+                  type="radio"
+                  formControlName="diffMode"
+                  value="pokemon"
+                />
+                <span class="radio-option__label">Pokémon Diff</span>
+                <span class="radio-option__hint"
+                  >Score based on remaining Pokémon</span
+                >
+              </label>
+              <label class="radio-option">
+                <input type="radio" formControlName="diffMode" value="game" />
+                <span class="radio-option__label">Game Diff</span>
+                <span class="radio-option__hint">Score based on game wins</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-field">
+              <label class="form-field__label" for="forfeitGameDiff"
+                >Forfeit Game Diff</label
+              >
+              <input
+                id="forfeitGameDiff"
+                class="form-field__input form-field__input--number"
+                type="number"
+                formControlName="forfeitGameDiff"
+                min="0"
+              />
+              <span class="form-field__hint"
+                >Points awarded for a game forfeit win</span
+              >
+            </div>
+            <div class="form-field">
+              <label class="form-field__label" for="forfeitPokemonDiff"
+                >Forfeit Pokémon Diff</label
+              >
+              <input
+                id="forfeitPokemonDiff"
+                class="form-field__input form-field__input--number"
+                type="number"
+                formControlName="forfeitPokemonDiff"
+                min="0"
+              />
+              <span class="form-field__hint"
+                >Pokémon diff awarded for a forfeit win</span
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Actions -->
+      <div class="settings-actions">
+        @if (saveSuccess) {
+          <div class="settings-actions__success">
+            <pdz-icon name="check_circle" [size]="18"></pdz-icon>
+            Settings saved successfully!
+          </div>
+        }
+        @if (saveError) {
+          <div class="settings-actions__error">
+            <pdz-icon name="error" [size]="18"></pdz-icon>
+            {{ saveError }}
+          </div>
+        }
+        <button
+          type="button"
+          class="btn btn--secondary"
+          (click)="cancel()"
+          [disabled]="isSaving"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          class="btn btn--primary"
+          [disabled]="form.invalid || isSaving"
+        >
+          @if (isSaving) {
+            <pdz-icon name="progress_activity" [size]="18"></pdz-icon>
+            Saving…
+          } @else {
+            <pdz-icon name="save" [size]="18"></pdz-icon>
+            Save Settings
+          }
+        </button>
+      </div>
+    </form>
+  </div>
+}

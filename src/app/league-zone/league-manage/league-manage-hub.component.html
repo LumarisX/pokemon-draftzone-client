@@ -1,52 +1,237 @@
-<div class="hub">
-  <h1>League Management</h1>
-
-  <div class="nav-section">
-    <h2>General</h2>
-    <button (click)="navigateTo('sign-ups')" class="nav-button">
-      Manage Sign-ups
-    </button>
-    <button (click)="navigateTo('rules')" class="nav-button">
-      League Rules
-    </button>
+@if (isLoading) {
+  <div class="loading-state">
+    <pdz-loading></pdz-loading>
   </div>
+} @else if (leagueInfo) {
+  <div class="hub">
+    <!-- Header -->
+    <div class="hub__header">
+      <div class="hub__header-top">
+        @if (leagueInfo.logo) {
+          <img
+            [src]="getLogoUrl(leagueInfo.logo)"
+            [alt]="leagueInfo.name + ' logo'"
+            class="hub__logo"
+          />
+        }
+        <div class="hub__header-info">
+          <span class="hub__eyebrow">Admin Control Center</span>
+          <h1 class="hub__title">{{ leagueInfo.name }}</h1>
+          <div class="hub__meta">
+            <span class="hub__meta-item">{{ leagueInfo.format }}</span>
+            <span class="hub__meta-sep">·</span>
+            <span class="hub__meta-item">{{ leagueInfo.ruleset }}</span>
+          </div>
+          <div class="hub__chips">
+            @if (isSignUpOpen()) {
+              <span class="chip chip--success">Sign-ups Open</span>
+            } @else {
+              <span class="chip chip--muted">Sign-ups Closed</span>
+            }
+            @if (isDraftActive()) {
+              <span class="chip chip--warning">Draft Active</span>
+            }
+            @if (isSeasonActive()) {
+              <span class="chip chip--primary">Season Active</span>
+            }
+          </div>
+        </div>
+      </div>
 
-  <div class="nav-section">
-    <h2>Division Management</h2>
-    <p class="info-text">
-      Note: Replace "divisionKey" with your actual division identifier
-    </p>
-    <div class="division-buttons">
-      <button (click)="navigateToDivision('divisionKey')" class="nav-button">
-        Division Dashboard
-      </button>
-      <button
-        (click)="navigateToDivision('divisionKey', 'draft')"
-        class="nav-button"
-      >
-        Manage Draft
-      </button>
-      <button
-        (click)="navigateToDivision('divisionKey', 'trades')"
-        class="nav-button"
-      >
-        Manage Trades
-      </button>
-      <button
-        (click)="navigateToDivision('divisionKey', 'schedule')"
-        class="nav-button"
-      >
-        Manage Schedule
-      </button>
+      <div class="hub__dates">
+        @if (leagueInfo.signUpDeadline) {
+          <div class="date-item">
+            <span class="date-item__label">Sign-up Deadline</span>
+            <span class="date-item__value">{{
+              leagueInfo.signUpDeadline | date: "MMM d, y"
+            }}</span>
+          </div>
+        }
+        @if (leagueInfo.draftStart) {
+          <div class="date-item">
+            <span class="date-item__label">Draft Start</span>
+            <span class="date-item__value">{{
+              leagueInfo.draftStart | date: "MMM d, y"
+            }}</span>
+          </div>
+        }
+        @if (leagueInfo.draftEnd) {
+          <div class="date-item">
+            <span class="date-item__label">Draft End</span>
+            <span class="date-item__value">{{
+              leagueInfo.draftEnd | date: "MMM d, y"
+            }}</span>
+          </div>
+        }
+        @if (leagueInfo.seasonStart) {
+          <div class="date-item">
+            <span class="date-item__label">Season Start</span>
+            <span class="date-item__value">{{
+              leagueInfo.seasonStart | date: "MMM d, y"
+            }}</span>
+          </div>
+        }
+        @if (leagueInfo.seasonEnd) {
+          <div class="date-item">
+            <span class="date-item__label">Season End</span>
+            <span class="date-item__value">{{
+              leagueInfo.seasonEnd | date: "MMM d, y"
+            }}</span>
+          </div>
+        }
+      </div>
     </div>
-  </div>
 
-  <div class="nav-section">
-    <h2>Playoffs</h2>
-    <div class="division-buttons">
-      <button (click)="navigateTo('playoffs/schedule')" class="nav-button">
-        Manage Playoff Scores
-      </button>
-    </div>
+    <!-- General Section -->
+    <section class="hub__section">
+      <h2 class="hub__section-title">General</h2>
+      <div class="hub__grid">
+        <a [routerLink]="managePath + '/settings'" class="nav-card">
+          <span class="nav-card__icon">
+            <pdz-icon name="settings" [size]="28"></pdz-icon>
+          </span>
+          <div class="nav-card__body">
+            <span class="nav-card__title">Settings</span>
+            <span class="nav-card__desc"
+              >Edit name, dates &amp; scoring rules</span
+            >
+          </div>
+          <pdz-icon
+            name="chevron_right"
+            [size]="20"
+            class="nav-card__arrow"
+          ></pdz-icon>
+        </a>
+
+        <a [routerLink]="managePath + '/sign-ups'" class="nav-card">
+          <span class="nav-card__icon">
+            <pdz-icon name="people" [size]="28"></pdz-icon>
+          </span>
+          <div class="nav-card__body">
+            <span class="nav-card__title">Sign-ups</span>
+            <span class="nav-card__desc"
+              >Manage registrations &amp; assign divisions</span
+            >
+          </div>
+          <pdz-icon
+            name="chevron_right"
+            [size]="20"
+            class="nav-card__arrow"
+          ></pdz-icon>
+        </a>
+
+        <a [routerLink]="managePath + '/rules'" class="nav-card">
+          <span class="nav-card__icon">
+            <pdz-icon name="menu_book" [size]="28"></pdz-icon>
+          </span>
+          <div class="nav-card__body">
+            <span class="nav-card__title">Rules</span>
+            <span class="nav-card__desc"
+              >Edit tournament rules &amp; regulations</span
+            >
+          </div>
+          <pdz-icon
+            name="chevron_right"
+            [size]="20"
+            class="nav-card__arrow"
+          ></pdz-icon>
+        </a>
+
+        <a
+          [routerLink]="tournamentBasePath + '/tier-list/edit'"
+          class="nav-card"
+        >
+          <span class="nav-card__icon">
+            <pdz-icon name="star" [size]="28"></pdz-icon>
+          </span>
+          <div class="nav-card__body">
+            <span class="nav-card__title">Tier List</span>
+            <span class="nav-card__desc">Edit Pokémon tiers &amp; costs</span>
+          </div>
+          <pdz-icon
+            name="chevron_right"
+            [size]="20"
+            class="nav-card__arrow"
+          ></pdz-icon>
+        </a>
+      </div>
+    </section>
+
+    <!-- Divisions Section -->
+    @if (leagueInfo.divisions.length > 0) {
+      <section class="hub__section">
+        <h2 class="hub__section-title">Divisions</h2>
+        @for (division of leagueInfo.divisions; track division.divisionKey) {
+          <div class="division-block">
+            <h3 class="division-block__name">{{ division.name }}</h3>
+            <div class="hub__grid hub__grid--compact">
+              <a
+                [routerLink]="managePath + '/' + division.divisionKey"
+                class="nav-card nav-card--compact"
+              >
+                <span class="nav-card__icon">
+                  <pdz-icon name="dashboard" [size]="24"></pdz-icon>
+                </span>
+                <span class="nav-card__title">Dashboard</span>
+              </a>
+              <a
+                [routerLink]="
+                  managePath + '/' + division.divisionKey + '/draft'
+                "
+                class="nav-card nav-card--compact"
+              >
+                <span class="nav-card__icon">
+                  <pdz-icon name="sports_esports" [size]="24"></pdz-icon>
+                </span>
+                <span class="nav-card__title">Draft</span>
+              </a>
+              <a
+                [routerLink]="
+                  managePath + '/' + division.divisionKey + '/trades'
+                "
+                class="nav-card nav-card--compact"
+              >
+                <span class="nav-card__icon">
+                  <pdz-icon name="swap_horiz" [size]="24"></pdz-icon>
+                </span>
+                <span class="nav-card__title">Trades</span>
+              </a>
+              <a
+                [routerLink]="
+                  managePath + '/' + division.divisionKey + '/schedule'
+                "
+                class="nav-card nav-card--compact"
+              >
+                <span class="nav-card__icon">
+                  <pdz-icon name="calendar_month" [size]="24"></pdz-icon>
+                </span>
+                <span class="nav-card__title">Schedule</span>
+              </a>
+            </div>
+          </div>
+        }
+      </section>
+    }
+
+    <!-- Playoffs Section -->
+    <section class="hub__section">
+      <h2 class="hub__section-title">Playoffs</h2>
+      <div class="hub__grid">
+        <a [routerLink]="managePath + '/playoffs/schedule'" class="nav-card">
+          <span class="nav-card__icon">
+            <pdz-icon name="emoji_events" [size]="28"></pdz-icon>
+          </span>
+          <div class="nav-card__body">
+            <span class="nav-card__title">Playoff Scores</span>
+            <span class="nav-card__desc">Manage playoff match results</span>
+          </div>
+          <pdz-icon
+            name="chevron_right"
+            [size]="20"
+            class="nav-card__arrow"
+          ></pdz-icon>
+        </a>
+      </div>
+    </section>
   </div>
-</div>
+}

@@ -1,0 +1,257 @@
+@use "../../../../styles/global.scss" as *;
+@use "../../../../styles/mixins" as *;
+@use "../../../../styles/mixins/buttons" as *;
+
+:host {
+  display: block;
+}
+
+.loading-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 40vh;
+}
+
+.settings-page {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: var(--pdz-space-xl) var(--pdz-space-lg);
+
+  &__header {
+    margin-bottom: var(--pdz-space-xl);
+  }
+
+  &__back {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--pdz-space-xs);
+    color: pdz-color(primary);
+    text-decoration: none;
+    @include apply-typography(label-md);
+    margin-bottom: var(--pdz-space-sm);
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  &__title {
+    @include apply-typography(headline-md);
+    color: pdz-color(on-surface);
+    margin: 0;
+  }
+}
+
+.settings-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pdz-space-xl);
+}
+
+.settings-section {
+  background: pdz-color(surface-container-low);
+  border: 1px solid pdz-color(outline-variant);
+  border-radius: var(--pdz-shape-md);
+  overflow: hidden;
+
+  &__title {
+    @include apply-typography(title-sm);
+    color: pdz-color(on-surface-variant);
+    background: pdz-color(surface-container);
+    border-bottom: 1px solid pdz-color(outline-variant);
+    margin: 0;
+    padding: var(--pdz-space-sm) var(--pdz-space-lg);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--pdz-space-lg);
+    padding: var(--pdz-space-lg);
+  }
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--pdz-space-md);
+
+  @include respond-above(medium) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pdz-space-xs);
+
+  &__label {
+    @include apply-typography(label-md);
+    color: pdz-color(on-surface-variant);
+  }
+
+  &__input {
+    background: pdz-color(surface);
+    border: 1px solid pdz-color(outline-variant);
+    border-radius: var(--pdz-shape-sm);
+    color: pdz-color(on-surface);
+    @include apply-typography(body-md);
+    padding: var(--pdz-space-sm) var(--pdz-space-md);
+    transition: border-color 0.15s ease;
+    width: 100%;
+    box-sizing: border-box;
+
+    &:focus {
+      outline: none;
+      border-color: pdz-color(primary);
+      box-shadow: 0 0 0 2px pdz-color(primary-subtle);
+    }
+
+    &--invalid {
+      border-color: pdz-color(error);
+
+      &:focus {
+        box-shadow: 0 0 0 2px pdz-color(error-container);
+      }
+    }
+
+    &--number {
+      max-width: 120px;
+    }
+  }
+
+  &__textarea {
+    background: pdz-color(surface);
+    border: 1px solid pdz-color(outline-variant);
+    border-radius: var(--pdz-shape-sm);
+    color: pdz-color(on-surface);
+    @include apply-typography(body-md);
+    padding: var(--pdz-space-sm) var(--pdz-space-md);
+    resize: vertical;
+    transition: border-color 0.15s ease;
+    width: 100%;
+    box-sizing: border-box;
+
+    &:focus {
+      outline: none;
+      border-color: pdz-color(primary);
+      box-shadow: 0 0 0 2px pdz-color(primary-subtle);
+    }
+  }
+
+  &__hint {
+    @include apply-typography(body-sm);
+    color: pdz-color(on-surface-variant);
+  }
+}
+
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pdz-space-sm);
+}
+
+.radio-option {
+  display: flex;
+  align-items: center;
+  gap: var(--pdz-space-sm);
+  padding: var(--pdz-space-sm) var(--pdz-space-md);
+  border: 1px solid pdz-color(outline-variant);
+  border-radius: var(--pdz-shape-sm);
+  cursor: pointer;
+  background: pdz-color(surface);
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+
+  &:has(input:checked) {
+    background: pdz-color(primary-container-low);
+    border-color: pdz-color(primary-border);
+  }
+
+  input[type="radio"] {
+    accent-color: pdz-color(primary);
+    width: 1rem;
+    height: 1rem;
+    flex-shrink: 0;
+  }
+
+  &__label {
+    @include apply-typography(label-md);
+    color: pdz-color(on-surface);
+  }
+
+  &__hint {
+    @include apply-typography(body-sm);
+    color: pdz-color(on-surface-variant);
+    margin-left: auto;
+  }
+}
+
+.settings-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--pdz-space-md);
+  justify-content: flex-end;
+  flex-wrap: wrap;
+
+  &__success {
+    display: flex;
+    align-items: center;
+    gap: var(--pdz-space-xs);
+    @include apply-typography(label-md);
+    color: pdz-color(success);
+    margin-right: auto;
+  }
+
+  &__error {
+    display: flex;
+    align-items: center;
+    gap: var(--pdz-space-xs);
+    @include apply-typography(label-md);
+    color: pdz-color(error);
+    margin-right: auto;
+  }
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--pdz-space-xs);
+  padding: var(--pdz-space-sm) var(--pdz-space-lg);
+  border-radius: var(--pdz-shape-sm);
+  border: none;
+  cursor: pointer;
+  @include apply-typography(label-lg);
+  transition:
+    background 0.15s ease,
+    opacity 0.15s ease;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &--primary {
+    background: pdz-color(primary);
+    color: pdz-color(on-primary);
+
+    &:hover:not(:disabled) {
+      background: pdz-color(primary-darker);
+    }
+  }
+
+  &--secondary {
+    background: pdz-color(surface-container-high);
+    color: pdz-color(on-surface);
+
+    &:hover:not(:disabled) {
+      background: pdz-color(surface-container-highest);
+    }
+  }
+}

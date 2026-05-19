@@ -1,0 +1,252 @@
+<div
+  class="filter-drawer"
+  role="dialog"
+  [attr.aria-label]="isEditing ? 'Edit filter' : 'Add filter'"
+>
+  <div class="filter-drawer__header">
+    <h3 class="filter-drawer__title">
+      {{ isEditing ? "Edit Filter" : "Add Filter" }}
+    </h3>
+    <button
+      type="button"
+      class="filter-drawer__close"
+      (click)="cancelFilter()"
+      aria-label="Close filter drawer"
+    >
+      ✕
+    </button>
+  </div>
+
+  <div class="filter-drawer__body">
+    <!-- Field Picker -->
+    <div class="filter-drawer__section">
+      <label class="filter-drawer__label" for="drawer-field">Field</label>
+      <select
+        id="drawer-field"
+        [(ngModel)]="draft.field"
+        (ngModelChange)="onFieldChange()"
+      >
+        @for (cat of fieldCategories; track cat) {
+          <optgroup [label]="cat">
+            @for (f of fieldsInCategory(cat); track f.key) {
+              <option [ngValue]="f.key">{{ f.label }}</option>
+            }
+          </optgroup>
+        }
+      </select>
+    </div>
+
+    @if (draft.field !== "learns") {
+      <!-- Operator Chips -->
+      <div class="filter-drawer__section">
+        <span class="filter-drawer__label" id="drawer-op-label">Operator</span>
+        <div
+          class="filter-drawer__op-chips"
+          role="group"
+          aria-labelledby="drawer-op-label"
+        >
+          @for (op of currentFieldDef.operators; track op) {
+            <button
+              type="button"
+              class="filter-drawer__op-chip"
+              [class.is-active]="draft.operator === op"
+              (click)="setOperator(op)"
+            >
+              {{ operatorLabels[op] }}
+            </button>
+          }
+        </div>
+      </div>
+
+      <!-- Value Input -->
+      <div class="filter-drawer__section">
+        <label class="filter-drawer__label" for="drawer-value">Value</label>
+        @if (currentFieldDef.type === "boolean") {
+          <div
+            class="filter-drawer__bool-toggle"
+            role="group"
+            aria-label="Value"
+          >
+            <button
+              type="button"
+              class="filter-drawer__bool-btn"
+              [class.is-active]="draft.value === true"
+              (click)="draft.value = true"
+            >
+              Yes
+            </button>
+            <button
+              type="button"
+              class="filter-drawer__bool-btn"
+              [class.is-active]="draft.value === false"
+              (click)="draft.value = false"
+            >
+              No
+            </button>
+          </div>
+        } @else if (currentFieldDef.type === "number") {
+          <input
+            id="drawer-value"
+            type="number"
+            [(ngModel)]="draft.value"
+            (keydown.enter)="applyFilter()"
+          />
+        } @else if (isTypeField) {
+          <div
+            class="filter-drawer__type-grid"
+            role="group"
+            aria-label="Select a type"
+          >
+            @for (type of allTypes; track type) {
+              <button
+                type="button"
+                class="filter-drawer__type-btn"
+                [class.is-selected]="draft.value === type"
+                (click)="draft.value = type"
+                [attr.aria-label]="type"
+                [attr.aria-pressed]="draft.value === type"
+              >
+                <pdz-pokemon-type
+                  [type]="type"
+                  [disabled]="draft.value !== type"
+                  display="both"
+                ></pdz-pokemon-type>
+              </button>
+            }
+          </div>
+        } @else {
+          <input
+            id="drawer-value"
+            type="text"
+            [(ngModel)]="draft.value"
+            (keydown.enter)="applyFilter()"
+            autocomplete="off"
+          />
+        }
+      </div>
+    }
+
+    <!-- Move Filters -->
+    @if (draft.field === "learns") {
+      <div class="filter-drawer__section">
+        <div
+          class="filter-drawer__move-mode"
+          role="radiogroup"
+          aria-label="Move match mode"
+        >
+          <span class="filter-drawer__label">Move Match Mode</span>
+          <label class="filter-drawer__radio-label">
+            <input
+              type="radio"
+              [(ngModel)]="draft.moveMode"
+              value="and"
+              name="moveMode"
+            />
+            All conditions (AND)
+          </label>
+          <label class="filter-drawer__radio-label">
+            <input
+              type="radio"
+              [(ngModel)]="draft.moveMode"
+              value="or"
+              name="moveMode"
+            />
+            Any condition (OR)
+          </label>
+        </div>
+      </div>
+
+      <div class="filter-drawer__move-filters">
+        @for (mf of draft.moveFilters; track mf.id; let mfIdx = $index) {
+          <div class="filter-drawer__move-row">
+            <div class="filter-drawer__move-fields">
+              <div
+                class="filter-drawer__section filter-drawer__section--compact"
+              >
+                <label class="filter-drawer__label">Move Field</label>
+                <select
+                  [(ngModel)]="mf.field"
+                  (ngModelChange)="onMoveFieldChange(mf)"
+                >
+                  @for (mField of moveFields; track mField.key) {
+                    <option [ngValue]="mField.key">{{ mField.label }}</option>
+                  }
+                </select>
+              </div>
+
+              <div
+                class="filter-drawer__section filter-drawer__section--compact"
+              >
+                <span class="filter-drawer__label">Operator</span>
+                <div class="filter-drawer__op-chips">
+                  @for (op of getMoveFieldDef(mf).operators; track op) {
+                    <button
+                      type="button"
+                      class="filter-drawer__op-chip filter-drawer__op-chip--sm"
+                      [class.is-active]="mf.operator === op"
+                      (click)="setMoveOperator(mf, op)"
+                    >
+                      {{ operatorLabels[op] }}
+                    </button>
+                  }
+                </div>
+              </div>
+
+              <div
+                class="filter-drawer__section filter-drawer__section--compact"
+              >
+                <label class="filter-drawer__label">Value</label>
+                @if (getMoveFieldDef(mf).type === "number") {
+                  <input type="number" [(ngModel)]="mf.value" />
+                } @else {
+                  <input
+                    type="text"
+                    [(ngModel)]="mf.value"
+                    autocomplete="off"
+                  />
+                }
+              </div>
+            </div>
+
+            @if (draft.moveFilters.length > 1) {
+              <button
+                type="button"
+                class="filter-drawer__remove-move"
+                (click)="removeMoveFilter(mfIdx)"
+                aria-label="Remove move condition"
+              >
+                ✕
+              </button>
+            }
+          </div>
+        }
+
+        <button
+          type="button"
+          class="filter-drawer__add-move"
+          (click)="addMoveFilter()"
+        >
+          + Add Move Condition
+        </button>
+      </div>
+    }
+  </div>
+
+  <div class="filter-drawer__footer">
+    <button
+      type="button"
+      class="filter-drawer__cancel-btn"
+      (click)="cancelFilter()"
+    >
+      Cancel
+    </button>
+    <button
+      type="button"
+      class="filter-drawer__apply-btn"
+      [disabled]="!isApplyEnabled"
+      (click)="applyFilter()"
+    >
+      Apply
+    </button>
+  </div>
+</div>

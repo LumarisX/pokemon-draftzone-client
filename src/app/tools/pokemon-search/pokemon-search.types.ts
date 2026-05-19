@@ -98,6 +98,23 @@ export type FieldDefinition = {
   label: string;
   type: SearchFieldType;
   operators: SearchOperator[];
+  category?: string;
+  valueType?: 'type';
+};
+
+export type DraftMoveFilter = {
+  id: string;
+  field: MoveField;
+  operator: SearchOperator;
+  value: string | number | boolean | undefined;
+};
+
+export type DraftFilter = {
+  field: SearchField;
+  operator: SearchOperator;
+  value: string | number | boolean | undefined;
+  moveMode: SearchLogicalMode;
+  moveFilters: DraftMoveFilter[];
 };
 
 export type MoveFieldDefinition = {
@@ -130,171 +147,261 @@ const NUMBER_OPERATORS: SearchOperator[] = [
 const BOOLEAN_OPERATORS: SearchOperator[] = ['eq', 'ne'];
 
 export const FIELD_DEFINITIONS: FieldDefinition[] = [
-  { key: 'name', label: 'Name', type: 'string', operators: STRING_OPERATORS },
+  {
+    key: 'name',
+    label: 'Name',
+    type: 'string',
+    operators: STRING_OPERATORS,
+    category: 'Identity',
+  },
   {
     key: 'baseSpecies',
     label: 'Base Species',
     type: 'string',
     operators: STRING_OPERATORS,
+    category: 'Identity',
   },
   {
     key: 'num',
     label: 'Dex Number',
     type: 'number',
     operators: NUMBER_OPERATORS,
+    category: 'Identity',
   },
   {
     key: 'gen',
     label: 'Generation',
     type: 'number',
     operators: NUMBER_OPERATORS,
+    category: 'Identity',
   },
-  { key: 'tier', label: 'Tier', type: 'string', operators: STRING_OPERATORS },
+  {
+    key: 'tier',
+    label: 'Tier',
+    type: 'string',
+    operators: STRING_OPERATORS,
+    category: 'Tier / Meta',
+  },
   {
     key: 'natDexTier',
     label: 'NatDex Tier',
     type: 'string',
     operators: STRING_OPERATORS,
+    category: 'Tier / Meta',
   },
   {
     key: 'doublesTier',
     label: 'Doubles Tier',
     type: 'string',
     operators: STRING_OPERATORS,
+    category: 'Tier / Meta',
   },
   {
     key: 'isNonstandard',
     label: 'Nonstandard',
     type: 'string',
     operators: STRING_OPERATORS,
-  },
-  { key: 'types', label: 'Types', type: 'string', operators: STRING_OPERATORS },
-  {
-    key: 'abilities',
-    label: 'Abilities',
-    type: 'string',
-    operators: STRING_OPERATORS,
+    category: 'Tier / Meta',
   },
   {
-    key: 'eggGroups',
-    label: 'Egg Groups',
+    key: 'types',
+    label: 'Types',
     type: 'string',
     operators: STRING_OPERATORS,
+    category: 'Typing',
+    valueType: 'type',
   },
   {
     key: 'weaks',
     label: 'Weaknesses',
     type: 'string',
     operators: STRING_OPERATORS,
+    category: 'Typing',
+    valueType: 'type',
   },
   {
     key: 'resists',
     label: 'Resistances',
     type: 'string',
     operators: STRING_OPERATORS,
+    category: 'Typing',
+    valueType: 'type',
   },
   {
     key: 'immunities',
     label: 'Immunities',
     type: 'string',
     operators: STRING_OPERATORS,
-  },
-  { key: 'tags', label: 'Tags', type: 'string', operators: STRING_OPERATORS },
-  {
-    key: 'weightkg',
-    label: 'Weight (kg)',
-    type: 'number',
-    operators: NUMBER_OPERATORS,
-  },
-  { key: 'bst', label: 'BST', type: 'number', operators: NUMBER_OPERATORS },
-  { key: 'cst', label: 'CST', type: 'number', operators: NUMBER_OPERATORS },
-  { key: 'hp', label: 'HP', type: 'number', operators: NUMBER_OPERATORS },
-  { key: 'atk', label: 'Attack', type: 'number', operators: NUMBER_OPERATORS },
-  { key: 'def', label: 'Defense', type: 'number', operators: NUMBER_OPERATORS },
-  {
-    key: 'spa',
-    label: 'Special Attack',
-    type: 'number',
-    operators: NUMBER_OPERATORS,
+    category: 'Typing',
+    valueType: 'type',
   },
   {
-    key: 'spd',
-    label: 'Special Defense',
-    type: 'number',
-    operators: NUMBER_OPERATORS,
-  },
-  { key: 'spe', label: 'Speed', type: 'number', operators: NUMBER_OPERATORS },
-  {
-    key: 'nfe',
-    label: 'Not Fully Evolved',
-    type: 'boolean',
-    operators: BOOLEAN_OPERATORS,
-  },
-  {
-    key: 'evolved',
-    label: 'Fully Evolved',
-    type: 'boolean',
-    operators: BOOLEAN_OPERATORS,
-  },
-  {
-    key: 'isMega',
-    label: 'Is Mega',
-    type: 'boolean',
-    operators: BOOLEAN_OPERATORS,
-  },
-  {
-    key: 'isPrimal',
-    label: 'Is Primal',
-    type: 'boolean',
-    operators: BOOLEAN_OPERATORS,
-  },
-  {
-    key: 'isGigantamax',
-    label: 'Is Gigantamax',
-    type: 'boolean',
-    operators: BOOLEAN_OPERATORS,
-  },
-  {
-    key: 'prevo',
-    label: 'Pre-evolution',
+    key: 'abilities',
+    label: 'Abilities',
     type: 'string',
     operators: STRING_OPERATORS,
-  },
-  {
-    key: 'evos',
-    label: 'Evolutions',
-    type: 'string',
-    operators: STRING_OPERATORS,
+    category: 'Abilities',
   },
   {
     key: 'requiredAbility',
     label: 'Required Ability',
     type: 'string',
     operators: STRING_OPERATORS,
+    category: 'Abilities',
+  },
+  {
+    key: 'hp',
+    label: 'HP',
+    type: 'number',
+    operators: NUMBER_OPERATORS,
+    category: 'Stats',
+  },
+  {
+    key: 'atk',
+    label: 'Attack',
+    type: 'number',
+    operators: NUMBER_OPERATORS,
+    category: 'Stats',
+  },
+  {
+    key: 'def',
+    label: 'Defense',
+    type: 'number',
+    operators: NUMBER_OPERATORS,
+    category: 'Stats',
+  },
+  {
+    key: 'spa',
+    label: 'Special Attack',
+    type: 'number',
+    operators: NUMBER_OPERATORS,
+    category: 'Stats',
+  },
+  {
+    key: 'spd',
+    label: 'Special Defense',
+    type: 'number',
+    operators: NUMBER_OPERATORS,
+    category: 'Stats',
+  },
+  {
+    key: 'spe',
+    label: 'Speed',
+    type: 'number',
+    operators: NUMBER_OPERATORS,
+    category: 'Stats',
+  },
+  {
+    key: 'bst',
+    label: 'BST',
+    type: 'number',
+    operators: NUMBER_OPERATORS,
+    category: 'Stats',
+  },
+  {
+    key: 'cst',
+    label: 'CST',
+    type: 'number',
+    operators: NUMBER_OPERATORS,
+    category: 'Stats',
+  },
+  {
+    key: 'weightkg',
+    label: 'Weight (kg)',
+    type: 'number',
+    operators: NUMBER_OPERATORS,
+    category: 'Stats',
+  },
+  {
+    key: 'nfe',
+    label: 'Not Fully Evolved',
+    type: 'boolean',
+    operators: BOOLEAN_OPERATORS,
+    category: 'Flags',
+  },
+  {
+    key: 'evolved',
+    label: 'Fully Evolved',
+    type: 'boolean',
+    operators: BOOLEAN_OPERATORS,
+    category: 'Flags',
+  },
+  {
+    key: 'isMega',
+    label: 'Is Mega',
+    type: 'boolean',
+    operators: BOOLEAN_OPERATORS,
+    category: 'Flags',
+  },
+  {
+    key: 'isPrimal',
+    label: 'Is Primal',
+    type: 'boolean',
+    operators: BOOLEAN_OPERATORS,
+    category: 'Flags',
+  },
+  {
+    key: 'isGigantamax',
+    label: 'Is Gigantamax',
+    type: 'boolean',
+    operators: BOOLEAN_OPERATORS,
+    category: 'Flags',
+  },
+  {
+    key: 'eggGroups',
+    label: 'Egg Groups',
+    type: 'string',
+    operators: STRING_OPERATORS,
+    category: 'Evolution',
+  },
+  {
+    key: 'prevo',
+    label: 'Pre-evolution',
+    type: 'string',
+    operators: STRING_OPERATORS,
+    category: 'Evolution',
+  },
+  {
+    key: 'evos',
+    label: 'Evolutions',
+    type: 'string',
+    operators: STRING_OPERATORS,
+    category: 'Evolution',
   },
   {
     key: 'requiredItem',
     label: 'Required Item',
     type: 'string',
     operators: STRING_OPERATORS,
+    category: 'Evolution',
   },
   {
     key: 'requiredMove',
     label: 'Required Move',
     type: 'string',
     operators: STRING_OPERATORS,
+    category: 'Evolution',
+  },
+  {
+    key: 'tags',
+    label: 'Tags',
+    type: 'string',
+    operators: STRING_OPERATORS,
+    category: 'Tier / Meta',
   },
   {
     key: 'learns',
-    label: 'Learnset (with move filters)',
+    label: 'Learnset',
     type: 'string',
     operators: ['contains'],
+    category: 'Moves',
   },
   {
     key: 'coverage',
     label: 'Coverage',
     type: 'string',
     operators: STRING_OPERATORS,
+    category: 'Moves',
   },
 ];
 

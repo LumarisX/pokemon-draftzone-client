@@ -1,15 +1,17 @@
+@use "../../../styles/global" as *;
+
 .type {
   &__container {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    gap: var(--pdz-space-2xs);
+    gap: 1px;
     height: 1rem;
     border-radius: var(--pdz-shape-corner-xs);
     box-shadow: var(--pdz-level-1);
     overflow: hidden;
-    padding: var(--pdz-space-2xs);
+    padding: 1px 2px;
 
     &--small {
       height: 0.75rem;
@@ -37,18 +39,22 @@
       gap: var(--pdz-space-xs);
       padding: var(--pdz-space-xs);
     }
+
+    &--disabled {
+      background: var(--pdz-color-surface);
+      box-shadow: none;
+      opacity: 0.75;
+
+      .type__text {
+        color: inherit;
+      }
+    }
   }
 
   &__icon {
-    object-fit: contain;
-    height: 100%;
-    aspect-ratio: 1;
-
-    .type__container--column & {
-      flex: 1;
-      min-height: 0;
-      width: auto;
-    }
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
 
   &__text {

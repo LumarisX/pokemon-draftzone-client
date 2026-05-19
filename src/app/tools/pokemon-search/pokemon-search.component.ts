@@ -5,6 +5,8 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 import { DataService, PokemonFullData } from '../../services/data.service';
 import {
+  DraftFilter,
+  DraftMoveFilter,
   FIELD_DEFINITIONS,
   LegacySearchPokemonRequest,
   MOVE_FIELD_DEFINITIONS,
@@ -18,13 +20,18 @@ import {
   SearchPokemonRequest,
 } from './pokemon-search.types';
 import { PokemonSearchCoreComponent } from './pokemon-search-core/pokemon-search-core.component';
+import { FilterDrawerComponent } from './filter-drawer/filter-drawer.component';
 
 @Component({
   selector: 'pdz-pokemon-search',
-  standalone: true,
   templateUrl: './pokemon-search.component.html',
   styleUrl: './pokemon-search.component.scss',
-  imports: [RouterModule, FormsModule, PokemonSearchCoreComponent],
+  imports: [
+    RouterModule,
+    FormsModule,
+    PokemonSearchCoreComponent,
+    FilterDrawerComponent,
+  ],
 })
 export class PokemonSearchComponent implements OnInit {
   private dataService = inject(DataService);
@@ -53,11 +60,15 @@ export class PokemonSearchComponent implements OnInit {
   searchMode: 'quick' | 'advanced' = 'quick';
   quickName = '';
   mode: SearchLogicalMode = 'or';
-  filters: SearchFilter[] = [this.createDefaultFilter()];
+  filters: SearchFilter[] = [];
   activeFilterCriteria: SearchFilter[] = [];
   allResults: PokemonFullData[] = [];
   isLoading = false;
   errorMessage = '';
+
+  drawerOpen = false;
+  editingFilterIndex: number | null = null;
+  draftFilter: DraftFilter | null = null;
 
   private lastAppliedQuerySignature = '';
 
@@ -131,9 +142,16 @@ export class PokemonSearchComponent implements OnInit {
   }
 
   removeFilter(index: number): void {
+    if (this.drawerOpen && this.editingFilterIndex === index) {
+      this.closeDrawer();
+    }
     this.filters.splice(index, 1);
-    if (!this.filters.length) {
-      this.filters.push(this.createDefaultFilter());
+    if (this.filters.length) {
+      this.search();
+    } else {
+      this.activeFilterCriteria = [];
+      this.allResults = [];
+      this.errorMessage = '';
     }
   }
 
@@ -176,10 +194,62 @@ export class PokemonSearchComponent implements OnInit {
 
   resetFilters(): void {
     this.mode = 'or';
-    this.filters = [this.createDefaultFilter()];
+    this.filters = [];
     this.activeFilterCriteria = [];
     this.allResults = [];
     this.errorMessage = '';
+    this.closeDrawer();
+  }
+
+  openAddDrawer(): void {
+    const field = this.fields[0];
+    this.draftFilter = {
+      field: field.key,
+      operator: field.operators[0],
+      value: this.getDefaultValueByType(field.type),
+      moveMode: 'and',
+      moveFilters: [],
+    };
+    this.editingFilterIndex = null;
+    this.drawerOpen = true;
+  }
+
+  openEditDrawer(index: number): void {
+    const filter = this.filters[index];
+    if (!filter) return;
+    this.draftFilter = this.filterToDraft(filter);
+    this.editingFilterIndex = index;
+    this.drawerOpen = true;
+  }
+
+  applyDrawerFilter(committed: SearchFilter): void {
+    if (this.editingFilterIndex !== null) {
+      this.filters[this.editingFilterIndex] = committed;
+    } else {
+      this.filters.push(committed);
+    }
+    this.closeDrawer();
+    this.search();
+  }
+
+  closeDrawer(): void {
+    this.drawerOpen = false;
+    this.draftFilter = null;
+    this.editingFilterIndex = null;
+  }
+
+  getPillLabel(filter: SearchFilter): string {
+    const fieldDef = this.getFieldDefinition(filter.field);
+    if (filter.field === 'learns') {
+      const count = filter.moveFilters?.length ?? 0;
+      return `${fieldDef.label} (${count} condition${count !== 1 ? 's' : ''})`;
+    }
+    const op = this.operatorLabels[filter.operator];
+    return `${fieldDef.label} ${op} ${filter.value}`;
+  }
+
+  getPillAriaLabel(filter: SearchFilter, index: number): string {
+    return `Filter ${index + 1}: ${this.getPillLabel(filter)}. Press Enter to edit.`;
   }
 
   fieldOperators(field: SearchField): SearchOperator[] {
@@ -365,6 +435,32 @@ export class PokemonSearchComponent implements OnInit {
     }
 
     return output;
+  }
+
+  private filterToDraft(filter: SearchFilter): DraftFilter {
+    if (filter.field === 'learns') {
+      return {
+        field: 'learns',
+        operator: 'contains',
+        value: undefined,
+        moveMode: filter.moveMode ?? 'and',
+        moveFilters: (filter.moveFilters ?? []).map(
+          (mf): DraftMoveFilter => ({
+            id: crypto.randomUUID(),
+            field: mf.field,
+            operator: mf.operator,
+            value: mf.value,
+          }),
+        ),
+      };
+    }
+    return {
+      field: filter.field,
+      operator: filter.operator,
+      value: filter.value,
+      moveMode: 'and',
+      moveFilters: [],
+    };
   }
 
   private hasPrimitiveValue(
