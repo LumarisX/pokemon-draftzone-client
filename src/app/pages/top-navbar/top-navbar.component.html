@@ -31,15 +31,15 @@
     <!-- Shared tools submenu -->
     <mat-menu #toolsMenu="matMenu">
       @for (tool of TOOLS; track tool.route) {
-        <button mat-menu-item [routerLink]="tool.route">
+        <a mat-menu-item [routerLink]="tool.route">
           <mat-icon>{{ tool.icon }}</mat-icon>
           <span>{{ tool.title }}</span>
-        </button>
+        </a>
       }
     </mat-menu>
 
     <!-- Home button with logo -->
-    <button
+    <a
       class="home-btn"
       routerLink="/"
       matBadge="1"
@@ -49,19 +49,19 @@
       aria-label="Go to home page"
     >
       <pdz-icon name="logo" [height]="36"></pdz-icon>
-    </button>
+    </a>
 
     <!-- Desktop navigation tabs -->
     <nav class="desktop-tabs" aria-label="Main navigation">
       @for (tab of TABS; track tab.route) {
-        <button
+        <a
           class="menu-tab"
           [routerLink]="tab.route"
           [matBadge]="(tab.badge | async) ?? ''"
           [matBadgeHidden]="!tab.badge || !(tab.badge | async)"
         >
           {{ tab.title }}
-        </button>
+        </a>
       }
       <button class="menu-tab" [matMenuTriggerFor]="toolsMenu">
         Other Tools
@@ -94,12 +94,12 @@
 
 <!-- Reusable template for tab menu items -->
 <ng-template #tabMenuItem let-tab>
-  <button
+  <a
     mat-menu-item
     [routerLink]="tab.route"
     [matBadge]="(tab.badge | async) ?? ''"
     [matBadgeHidden]="!tab.badge || !(tab.badge | async)"
   >
     <span>{{ tab.title }}</span>
-  </button>
+  </a>
 </ng-template>

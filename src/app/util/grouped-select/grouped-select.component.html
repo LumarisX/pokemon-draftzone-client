@@ -1,0 +1,21 @@
+<label class="grouped-select__label" [for]="selectId">{{ label }}</label>
+<select
+  class="grouped-select__select"
+  [id]="selectId"
+  [value]="value"
+  (change)="handleChange($event)"
+>
+  @for (group of groups; track group[0]) {
+    <optgroup [label]="group[0]">
+      @for (option of group[1]; track option.id) {
+        <option
+          [value]="option.id"
+          [selected]="option.id === value"
+          [title]="option.desc ?? ''"
+        >
+          {{ option.name }}
+        </option>
+      }
+    </optgroup>
+  }
+</select>

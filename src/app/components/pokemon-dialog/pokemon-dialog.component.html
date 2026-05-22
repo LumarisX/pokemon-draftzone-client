@@ -267,12 +267,14 @@
                     [class.learnset__item--stab]="isStab(move.type)"
                   >
                     <div class="learnset__col learnset__col--type">
-                      <div
-                        class="learnset__type-badge"
-                        [style.background]="typeColor(move.type)"
-                      >
-                        {{ move.type ?? "?" }}
-                      </div>
+                      @if (move.type) {
+                        <pdz-pokemon-type
+                          [type]="move.type"
+                          display="both"
+                        ></pdz-pokemon-type>
+                      } @else {
+                        <span>?</span>
+                      }
                     </div>
                     <img
                       class="learnset__col learnset__col--category"

@@ -16,7 +16,6 @@ import {
   DataService,
   PokemonSearchMoveData,
 } from '../../services/data.service';
-import { typeColor } from '../../util/styling';
 import { PokemonTypeComponent } from '../pokemon-type/pokemon-type.component';
 
 export interface PokemonDialogButton {
@@ -130,7 +129,6 @@ export class PokemonDialogComponent {
   }
 
   readonly STATS = STATS;
-  typeColor = typeColor;
   makeBanString = makeBanString;
 
   readonly MAX_STAT = 255;

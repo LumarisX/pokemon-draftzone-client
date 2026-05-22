@@ -84,7 +84,7 @@
                     "
                     class="theme-option"
                     [ngClass]="getThemeClass(theme.id)"
-                    (click)="selectTheme(theme.id)"
+                    (click)="selectTheme(theme.id); $event.stopPropagation()"
                   >
                     {{ theme.name }}
                   </li>
@@ -96,7 +96,7 @@
                       settingsForm.get('theme')?.value === 'shiny'
                     "
                     class="theme-option shiny"
-                    (click)="selectTheme('shiny')"
+                    (click)="selectTheme('shiny'); $event.stopPropagation()"
                   >
                     <span>Shiny</span>
                     <span class="unlock-icon">
@@ -132,7 +132,9 @@
                     <li
                       role="option"
                       class="custom-option"
-                      (click)="selectSprite(spriteSet.id)"
+                      (click)="
+                        selectSprite(spriteSet.id); $event.stopPropagation()
+                      "
                     >
                       {{ spriteSet.name }}
                     </li>

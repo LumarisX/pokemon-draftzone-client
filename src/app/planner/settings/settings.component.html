@@ -1,6 +1,6 @@
 @if (draftFormGroup) {
-  <div class="p-4 flex flex-col justify-between items-center">
-    <div class="settings-container">
+  <div class="settings">
+    <div class="settings__row">
       <pdz-format-select
         [formControl]="draftFormGroup.controls.format"
       ></pdz-format-select>
@@ -8,58 +8,76 @@
         [formControl]="draftFormGroup.controls.ruleset"
       ></pdz-ruleset-select>
     </div>
-    <div class="settings-container">
-      <mat-form-field>
-        <mat-label>Minimum</mat-label>
+
+    <div class="settings__row">
+      <div class="settings__field">
+        <label for="settings-min">Minimum</label>
         <input
-          matInput
+          id="settings-min"
           type="number"
           [formControl]="draftFormGroup.controls.min"
           min="0"
           max="18"
         />
-      </mat-form-field>
-      <mat-form-field>
-        <mat-label>Maximum</mat-label>
+      </div>
+      <div class="settings__field">
+        <label for="settings-max">Maximum</label>
         <input
-          matInput
+          id="settings-max"
           type="number"
           [formControl]="draftFormGroup.controls.max"
           min="0"
           max="18"
         />
-      </mat-form-field>
-    </div>
-    <div class="settings-container">
-      <mat-form-field>
-        <mat-label>Value Type</mat-label>
-        <mat-select [formControl]="draftFormGroup.controls.system">
-          <mat-option value="points">Points</mat-option>
-          <mat-option value="tiers">Tiers</mat-option>
-        </mat-select>
-      </mat-form-field>
-      @if (isPoints) {
-        <mat-form-field>
-          <mat-label>Total Points</mat-label>
-          <input
-            matInput
-            type="number"
-            [formControl]="draftFormGroup.controls.totalPoints"
-          />
-        </mat-form-field>
-      }
+      </div>
     </div>
 
-    <button
-      mat-stroked-button
-      [routerLink]="['/', draftPath, 'new']"
-      [queryParams]="{
-        team: teamIds,
-        format: draftFormGroup.controls.format.value,
-        ruleset: draftFormGroup.controls.ruleset.value,
-      }"
-    >
-      Save to New League
-    </button>
+    <div class="settings__row">
+      <div class="settings__field settings__field">
+        <label>Value Type</label>
+        <div class="settings__segmented" role="group" aria-label="Value type">
+          <button
+            type="button"
+            class="settings__seg-btn"
+            [class.is-active]="
+              draftFormGroup.controls.system.value === 'points'
+            "
+            (click)="draftFormGroup.controls.system.setValue('points')"
+          >
+            Points
+          </button>
+          <button
+            type="button"
+            class="settings__seg-btn"
+            [class.is-active]="draftFormGroup.controls.system.value === 'tiers'"
+            (click)="draftFormGroup.controls.system.setValue('tiers')"
+          >
+            Tiers
+          </button>
+        </div>
+      </div>
+      <div class="settings__field" [class.is-hidden]="!isPoints">
+        <label for="settings-total-points">Total Points</label>
+        <input
+          id="settings-total-points"
+          type="number"
+          [formControl]="draftFormGroup.controls.totalPoints"
+        />
+      </div>
+    </div>
+
+    <div class="settings__actions">
+      <a
+        class="settings__save-button"
+        [routerLink]="['/', draftPath, 'new']"
+        [queryParams]="{
+          team: teamIds,
+          format: draftFormGroup.controls.format.value,
+          ruleset: draftFormGroup.controls.ruleset.value,
+        }"
+      >
+        Save to New League
+      </a>
+    </div>
   </div>
 }

@@ -1,34 +1,6 @@
-<div class="form-container">
-  <mat-form-field
-    class="w-full"
-    [ngClass]="classList"
-    [appearance]="appearance"
-  >
-    <mat-label>Format</mat-label>
-    <mat-select
-      [value]="selectedFormat"
-      #formatSelect
-      (selectionChange)="onSelectionChange($event.value)"
-      (opened)="onSelectOpen()"
-    >
-      <mat-select-trigger>{{ triggerString() }}</mat-select-trigger>
-      @for (group of formats; track $index) {
-        <mat-optgroup [label]="group[0]">
-          @for (format of group[1]; track format) {
-            <mat-option [value]="format.id">
-              <span>{{ format.name }}</span>
-              @if (format.desc) {
-                <pdz-icon
-                  #tooltip="matTooltip"
-                  matTooltipPosition="above"
-                  [matTooltip]="format.desc"
-                  name="info"
-                ></pdz-icon>
-              }
-            </mat-option>
-          }
-        </mat-optgroup>
-      }
-    </mat-select>
-  </mat-form-field>
-</div>
+<pdz-grouped-select
+  label="Format"
+  [groups]="formats"
+  [value]="selectedFormat"
+  (valueChange)="onSelectionChange($event)"
+></pdz-grouped-select>

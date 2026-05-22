@@ -10,29 +10,75 @@
       <p class="pokemon-results__meta">{{ results.length }} results</p>
     }
 
-    <div
-      class="pokemon-results__view-toggle"
-      role="group"
-      aria-label="View mode"
-    >
+    <div class="pokemon-results__header-controls">
       <button
         type="button"
-        class="pokemon-results__view-button"
-        [class.is-active]="viewMode === 'grid'"
-        [attr.aria-pressed]="viewMode === 'grid'"
-        (click)="setViewMode('grid')"
+        class="pokemon-results__icon-btn"
+        [class.is-bookmarked]="isBookmarked"
+        [attr.aria-label]="
+          isBookmarked ? 'Remove bookmark' : 'Bookmark this search'
+        "
+        [attr.aria-pressed]="isBookmarked"
+        (click)="toggleBookmark()"
       >
-        <pdz-icon name="view_cozy"></pdz-icon>
+        <pdz-icon
+          [name]="isBookmarked ? 'bookmark' : 'bookmark_add'"
+        ></pdz-icon>
       </button>
       <button
         type="button"
-        class="pokemon-results__view-button"
-        [class.is-active]="viewMode === 'list'"
-        [attr.aria-pressed]="viewMode === 'list'"
-        (click)="setViewMode('list')"
+        class="pokemon-results__icon-btn"
+        [class.is-copied]="copyLinkSuccess"
+        [attr.aria-label]="copyLinkSuccess ? 'Copied!' : 'Copy link'"
+        (click)="copyLink()"
       >
-        <pdz-icon name="view_list"></pdz-icon>
+        <pdz-icon [name]="copyLinkSuccess ? 'check' : 'link_2'"></pdz-icon>
       </button>
+      <div class="pokemon-results__sort">
+        <select
+          [(ngModel)]="sortField"
+          (ngModelChange)="onSortFieldChange()"
+          aria-label="Sort by"
+        >
+          @for (opt of sortFieldOptions; track opt.value) {
+            <option [value]="opt.value">{{ opt.label }}</option>
+          }
+        </select>
+        <button
+          type="button"
+          class="pokemon-results__sort-dir"
+          [class.is-desc]="sortDir === 'desc'"
+          [attr.aria-label]="sortDir === 'asc' ? 'Ascending' : 'Descending'"
+          (click)="toggleSortDir()"
+        >
+          <pdz-icon name="arrow_upward"></pdz-icon>
+        </button>
+      </div>
+
+      <div
+        class="pokemon-results__view-toggle"
+        role="group"
+        aria-label="View mode"
+      >
+        <button
+          type="button"
+          class="pokemon-results__view-button"
+          [class.is-active]="viewMode === 'grid'"
+          [attr.aria-pressed]="viewMode === 'grid'"
+          (click)="setViewMode('grid')"
+        >
+          <pdz-icon name="view_cozy"></pdz-icon>
+        </button>
+        <button
+          type="button"
+          class="pokemon-results__view-button"
+          [class.is-active]="viewMode === 'list'"
+          [attr.aria-pressed]="viewMode === 'list'"
+          (click)="setViewMode('list')"
+        >
+          <pdz-icon name="view_list"></pdz-icon>
+        </button>
+      </div>
     </div>
   </div>
 
@@ -47,6 +93,7 @@
           >
             <pdz-sprite
               flipped
+              size="4rem"
               [pokemon]="pokemon"
               class="pokemon-results__sprite"
             ></pdz-sprite>
@@ -57,33 +104,69 @@
     } @else {
       <div class="pokemon-results__list">
         @for (pokemon of results; track pokemon.id + "-" + $index) {
-          <div class="pokemon-results__list-row">
+          <button
+            type="button"
+            class="pokemon-results__list-row"
+            (click)="openSummary(pokemon)"
+          >
             <div class="pokemon-results__list-main">
-              <pdz-sprite
-                flipped
-                [pokemon]="pokemon"
-                size="3.5rem"
-              ></pdz-sprite>
-              <div class="pokemon-results__list-details">
+              <pdz-sprite flipped [pokemon]="pokemon" size="4rem"></pdz-sprite>
+              <div class="pokemon-results__list-info">
                 <p class="pokemon-results__list-name">{{ pokemon.name }}</p>
-                <p class="pokemon-results__list-meta">
-                  #{{ pokemon.num }} · {{ pokemon.types.join(" / ") }}
-                </p>
+                <div class="pokemon-results__list-types">
+                  @for (type of pokemon.types; track $index) {
+                    <pdz-pokemon-type
+                      display="both"
+                      [type]="type"
+                    ></pdz-pokemon-type>
+                  }
+                </div>
+                <div class="pokemon-results__list-abilities">
+                  @for (ability of pokemon.abilities; track $index) {
+                    <span class="pokemon-results__list-ability">{{
+                      ability
+                    }}</span>
+                  }
+                </div>
+                <div class="pokemon-results__list-stats">
+                  @for (stat of statList; track stat.key) {
+                    <div
+                      class="pokemon-results__stat-cube"
+                      [style.background-color]="
+                        statColor(pokemon.baseStats[stat.key])
+                      "
+                    >
+                      <span class="pokemon-results__stat-label">{{
+                        stat.label
+                      }}</span>
+                      <span class="pokemon-results__stat-value">{{
+                        pokemon.baseStats[stat.key]
+                      }}</span>
+                    </div>
+                  }
+                  <div
+                    class="pokemon-results__stat-cube pokemon-results__stat-cube--bst"
+                    [style.background-color]="bstColor(pokemon.bst)"
+                  >
+                    <span class="pokemon-results__stat-label">BST</span>
+                    <span class="pokemon-results__stat-value">{{
+                      pokemon.bst
+                    }}</span>
+                  </div>
+                </div>
               </div>
             </div>
-
-            <button
-              type="button"
-              class="pokemon-results__list-action"
-              (click)="openSummary(pokemon)"
-            >
-              Summary
-            </button>
-          </div>
+          </button>
         }
       </div>
     }
   } @else if (!isLoading) {
-    <p class="pokemon-results__empty">No Pokemon found.</p>
+    <div class="pokemon-results__empty">
+      <pdz-icon name="search_off"></pdz-icon>
+      <p class="pokemon-results__empty-title">No Pokémon found</p>
+      <p class="pokemon-results__empty-hint">
+        Try adjusting your search or filters
+      </p>
+    </div>
   }
 </div>

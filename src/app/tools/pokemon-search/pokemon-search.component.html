@@ -1,80 +1,97 @@
 <div class="pokemon-search">
-  <div class="pokemon-search__header">
-    <div class="pokemon-search__field">
-      <label for="format">Format</label>
-      <select [(ngModel)]="selectedFormat" id="format">
-        @for (format of formats; track format) {
-          <option value="{{ format }}">
-            {{ format }}
-          </option>
-        }
-      </select>
-    </div>
-
-    <div class="pokemon-search__field">
-      <label for="ruleset">Ruleset</label>
-      <select [(ngModel)]="selectedRuleset" id="ruleset">
-        @for (ruleset of rulesets; track ruleset) {
-          <option value="{{ ruleset }}">
-            {{ ruleset }}
-          </option>
-        }
-      </select>
-    </div>
+  <div class="toolbar">
+    <h2 class="toolbar__title">Pokémon Search</h2>
+    <div class="toolbar__spacer"></div>
+    <button
+      type="button"
+      class="toolbar__action"
+      [class.is-active]="bookmarksPanelOpen"
+      (click)="openBookmarksPanel()"
+      aria-label="Saved searches"
+    >
+      <pdz-icon name="bookmarks"></pdz-icon>
+    </button>
   </div>
-
   <div class="pokemon-search__search-panel">
-    <div class="pokemon-search__mode-toggle">
-      <button
-        type="button"
-        class="pokemon-search__mode-button"
-        [class.is-active]="searchMode === 'quick'"
-        (click)="setSearchMode('quick')"
-      >
-        Quick
-      </button>
-      <button
-        type="button"
-        class="pokemon-search__mode-button"
-        [class.is-active]="searchMode === 'advanced'"
-        (click)="setSearchMode('advanced')"
-      >
-        Advanced
-      </button>
-    </div>
+    <div class="pokemon-search__controls">
+      <div class="pokemon-search__field">
+        <label>Mode</label>
+        <div class="pokemon-search__mode-toggle">
+          <button
+            type="button"
+            class="pokemon-search__mode-button"
+            [class.is-active]="searchMode === 'quick'"
+            (click)="setSearchMode('quick')"
+          >
+            Quick
+          </button>
+          <button
+            type="button"
+            class="pokemon-search__mode-button"
+            [class.is-active]="searchMode === 'advanced'"
+            (click)="setSearchMode('advanced')"
+          >
+            Advanced
+          </button>
+        </div>
+      </div>
 
+      @if (searchMode === "advanced") {
+        <div class="pokemon-search__field">
+          <label>Match</label>
+          <div class="pokemon-search__mode-toggle">
+            <button
+              type="button"
+              class="pokemon-search__mode-button"
+              [class.is-active]="mode === 'and'"
+              (click)="setMode('and')"
+            >
+              All
+            </button>
+            <button
+              type="button"
+              class="pokemon-search__mode-button"
+              [class.is-active]="mode === 'or'"
+              (click)="setMode('or')"
+            >
+              Any
+            </button>
+          </div>
+        </div>
+      }
+
+      <!-- <div class="pokemon-search__field pokemon-search__field--end">
+        <pdz-format-select [(ngModel)]="selectedFormat"></pdz-format-select>
+      </div> -->
+
+      <div class="pokemon-search__field pokemon-search__field--end">
+        <pdz-ruleset-select
+          [(ngModel)]="selectedRuleset"
+          (ngModelChange)="onRulesetChange()"
+        ></pdz-ruleset-select>
+      </div>
+    </div>
     @if (searchMode === "quick") {
       <div class="pokemon-search__quick-search">
-        <label for="quickName">Quick Search</label>
         <div class="pokemon-search__quick-input-row">
           <input
             id="quickName"
             type="text"
             [(ngModel)]="quickName"
-            placeholder="e.g. Deoxys"
+            placeholder="Search by name, type, ability, or move"
             (keydown.enter)="quickSearch()"
           />
-          <button type="button" (click)="quickSearch()">Search Name</button>
+          <button
+            type="button"
+            class="pokemon-search__quick-search-btn"
+            (click)="quickSearch()"
+            aria-label="Search"
+          >
+            <pdz-icon name="search" size="sm"></pdz-icon>
+          </button>
         </div>
       </div>
     } @else if (searchMode === "advanced") {
-      <!-- AND/OR mode radio group -->
-      <div
-        class="pokemon-search__mode-group"
-        role="radiogroup"
-        aria-label="Match mode"
-      >
-        <span class="pokemon-search__mode-group-label">Match:</span>
-        <label class="pokemon-search__radio-label">
-          <input type="radio" name="matchMode" [(ngModel)]="mode" value="and" />
-          All
-        </label>
-        <label class="pokemon-search__radio-label">
-          <input type="radio" name="matchMode" [(ngModel)]="mode" value="or" />
-          Any
-        </label>
-      </div>
-
       <!-- Active filter pills -->
       <div class="pokemon-search__pill-bar" aria-label="Active filters">
         @for (filter of filters; track $index; let i = $index) {
@@ -101,40 +118,76 @@
           </button>
         }
 
-        <button
-          type="button"
-          class="pokemon-search__add-filter"
-          (click)="openAddDrawer()"
-          aria-label="Add filter"
-        >
-          + Add Filter
-        </button>
+        <div class="pokemon-search__add-filter-wrap">
+          @if (fieldMenuOpen) {
+            <div
+              class="pokemon-search__field-menu-backdrop"
+              (click)="closeFieldMenu()"
+              aria-hidden="true"
+            ></div>
+          }
+          <button
+            type="button"
+            class="pokemon-search__add-filter"
+            [class.is-open]="fieldMenuOpen"
+            (click)="openFieldMenu()"
+            aria-label="Add filter"
+            aria-haspopup="listbox"
+            [attr.aria-expanded]="fieldMenuOpen"
+          >
+            + Add Filter
+          </button>
+          @if (fieldMenuOpen) {
+            <div
+              class="pokemon-search__field-menu"
+              role="listbox"
+              aria-label="Select a filter field"
+            >
+              @for (cat of fieldCategories; track cat) {
+                <div class="pokemon-search__field-menu-category">
+                  <span class="pokemon-search__field-menu-cat-label">{{
+                    cat
+                  }}</span>
+                  <div class="pokemon-search__field-menu-options">
+                    @for (f of fieldsInCategory(cat); track f.key) {
+                      <button
+                        type="button"
+                        class="pokemon-search__field-menu-option"
+                        role="option"
+                        (click)="selectFieldForNewFilter(f.key)"
+                      >
+                        {{ f.label }}
+                      </button>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          }
+        </div>
+
+        @if (filters.length > 0) {
+          <button
+            type="button"
+            class="pokemon-search__clear-all"
+            (click)="resetFilters()"
+            aria-label="Clear all filters"
+          >
+            Clear all
+          </button>
+        }
       </div>
 
       <!-- Inline filter drawer -->
       @if (drawerOpen && draftFilter) {
         <pdz-filter-drawer
           [fields]="fields"
-          [moveFields]="moveFields"
-          [operatorLabels]="operatorLabels"
           [initialFilter]="draftFilter"
           [isEditing]="editingFilterIndex !== null"
           (apply)="applyDrawerFilter($event)"
           (cancel)="closeDrawer()"
         ></pdz-filter-drawer>
       }
-
-      <!-- Search / Reset actions -->
-      <div class="pokemon-search__actions">
-        <button
-          type="button"
-          class="pokemon-search__subtle"
-          (click)="resetFilters()"
-        >
-          Reset
-        </button>
-        <button type="button" (click)="runAdvancedSearch()">Search</button>
-      </div>
     }
   </div>
 
@@ -146,3 +199,79 @@
     [errorMessage]="errorMessage"
   ></pdz-pokemon-search-core>
 </div>
+
+@if (bookmarksPanelOpen) {
+  <div
+    class="bookmarks-backdrop"
+    (click)="closeBookmarksPanel()"
+    aria-hidden="true"
+  ></div>
+  <aside
+    class="bookmarks-panel"
+    role="dialog"
+    aria-label="Saved searches"
+    aria-modal="true"
+  >
+    <div class="bookmarks-panel__header">
+      <h3 class="bookmarks-panel__title">Saved Searches</h3>
+      <button
+        type="button"
+        class="bookmarks-panel__close"
+        (click)="closeBookmarksPanel()"
+        aria-label="Close saved searches"
+      >
+        <pdz-icon name="close"></pdz-icon>
+      </button>
+    </div>
+    <div class="bookmarks-panel__body">
+      @if (savedSearches.length === 0) {
+        <div class="bookmarks-panel__empty">
+          <pdz-icon name="bookmark_add"></pdz-icon>
+          <p>No saved searches yet.</p>
+          <p class="bookmarks-panel__empty-hint">
+            Use the bookmark button while viewing results to save a search.
+          </p>
+        </div>
+      } @else {
+        @for (search of savedSearches; track search.savedAt) {
+          <div>
+            <div class="bookmarks-panel__item-date">
+              {{ formatSavedDate(search.savedAt) }}
+            </div>
+            <div class="bookmarks-panel__item">
+              <button
+                type="button"
+                class="bookmarks-panel__load"
+                (click)="loadSavedSearch(search)"
+              >
+                @let label = getSearchLabel(search);
+                <div class="bookmarks-panel__item-filters">
+                  @for (chip of label.chips; track $index) {
+                    <span class="bookmarks-panel__filter-chip">{{ chip }}</span>
+                  }
+                  @if (label.remainder > 0) {
+                    <span
+                      class="bookmarks-panel__filter-chip bookmarks-panel__filter-chip--more"
+                      >+{{ label.remainder }} more</span
+                    >
+                  }
+                </div>
+                <span class="bookmarks-panel__item-meta">{{
+                  getSearchMeta(search)
+                }}</span>
+              </button>
+              <button
+                type="button"
+                class="bookmarks-panel__delete"
+                (click)="deleteSavedSearch(search)"
+                aria-label="Delete saved search"
+              >
+                <pdz-icon name="bookmark_remove"></pdz-icon>
+              </button>
+            </div>
+          </div>
+        }
+      }
+    </div>
+  </aside>
+}

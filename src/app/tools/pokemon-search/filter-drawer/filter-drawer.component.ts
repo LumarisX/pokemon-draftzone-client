@@ -1,6 +1,7 @@
 import {
   Component,
   EventEmitter,
+  HostListener,
   Input,
   OnChanges,
   Output,
@@ -8,12 +9,12 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TYPES } from '../../../data';
+import { IconComponent } from '../../../images/icon/icon.component';
 import { PokemonTypeComponent } from '../../../components/pokemon-type/pokemon-type.component';
 import {
   DraftFilter,
-  DraftMoveFilter,
   FieldDefinition,
-  MoveFieldDefinition,
+  OPERATOR_MAP,
   SearchFilter,
   SearchOperator,
 } from '../pokemon-search.types';
@@ -21,21 +22,18 @@ import {
 @Component({
   selector: 'pdz-filter-drawer',
   standalone: true,
-  imports: [FormsModule, PokemonTypeComponent],
+  imports: [FormsModule, IconComponent, PokemonTypeComponent],
   templateUrl: './filter-drawer.component.html',
   styleUrl: './filter-drawer.component.scss',
 })
 export class FilterDrawerComponent implements OnChanges {
   @Input() fields: FieldDefinition[] = [];
-  @Input() moveFields: MoveFieldDefinition[] = [];
-  @Input() operatorLabels: Record<SearchOperator, string> = {} as Record<
-    SearchOperator,
-    string
-  >;
   @Input() initialFilter: DraftFilter | null = null;
   @Input() isEditing = false;
   @Output() apply = new EventEmitter<SearchFilter>();
   @Output() cancel = new EventEmitter<void>();
+
+  readonly operatorMap = OPERATOR_MAP;
 
   readonly allTypes = TYPES;
 
@@ -73,11 +71,6 @@ export class FilterDrawerComponent implements OnChanges {
   }
 
   get isApplyEnabled(): boolean {
-    if (this.draft.field === 'learns') {
-      return this.draft.moveFilters.some((mf) =>
-        this.hasPrimitiveValue(mf.value),
-      );
-    }
     return this.hasPrimitiveValue(this.draft.value);
   }
 
@@ -85,49 +78,15 @@ export class FilterDrawerComponent implements OnChanges {
     return this.fields.filter((f) => (f.category ?? 'Other') === category);
   }
 
-  getMoveFieldDef(mf: DraftMoveFilter): MoveFieldDefinition {
-    return (
-      this.moveFields.find((f) => f.key === mf.field) ?? this.moveFields[0]
-    );
-  }
-
   onFieldChange(): void {
     const def = this.currentFieldDef;
     this.draft.operator = def.operators[0];
-    if (this.draft.field === 'learns') {
-      this.draft.value = undefined;
-      if (!this.draft.moveFilters.length) {
-        this.draft.moveFilters = [this.createDefaultMoveFilter()];
-      }
-    } else {
-      this.draft.moveFilters = [];
-      this.draft.value = this.defaultValueForType(def.type);
-    }
+    this.draft.moveFilters = [];
+    this.draft.value = this.defaultValueForType(def.type);
   }
 
   setOperator(op: SearchOperator): void {
     this.draft.operator = op;
-  }
-
-  addMoveFilter(): void {
-    this.draft.moveFilters.push(this.createDefaultMoveFilter());
-  }
-
-  removeMoveFilter(index: number): void {
-    this.draft.moveFilters.splice(index, 1);
-    if (!this.draft.moveFilters.length) {
-      this.draft.moveFilters.push(this.createDefaultMoveFilter());
-    }
-  }
-
-  onMoveFieldChange(mf: DraftMoveFilter): void {
-    const def = this.getMoveFieldDef(mf);
-    mf.operator = def.operators[0];
-    mf.value = this.defaultValueForType(def.type);
-  }
-
-  setMoveOperator(mf: DraftMoveFilter, op: SearchOperator): void {
-    mf.operator = op;
   }
 
   applyFilter(): void {
@@ -138,28 +97,20 @@ export class FilterDrawerComponent implements OnChanges {
     }
   }
 
+  @HostListener('keyup.enter', ['$event'])
+  onEnterKey(event: Event): void {
+    const target = event.target as HTMLElement;
+    // Selects use Enter to open/close; cancel button should not also apply
+    if (target.tagName === 'SELECT') return;
+    if (target.classList.contains('filter-drawer__close')) return;
+    this.applyFilter();
+  }
+
   cancelFilter(): void {
     this.cancel.emit();
   }
 
   private buildCommittedFilter(): SearchFilter | null {
-    if (this.draft.field === 'learns') {
-      const moveFilters = this.draft.moveFilters
-        .filter((mf) => this.hasPrimitiveValue(mf.value))
-        .map((mf) => ({
-          field: mf.field,
-          operator: mf.operator,
-          value: mf.value as string | number | boolean,
-        }));
-      if (!moveFilters.length) return null;
-      return {
-        field: 'learns',
-        operator: 'contains',
-        moveMode: this.draft.moveMode,
-        moveFilters,
-      };
-    }
-
     if (!this.hasPrimitiveValue(this.draft.value)) return null;
 
     const def = this.currentFieldDef;
@@ -190,24 +141,6 @@ export class FilterDrawerComponent implements OnChanges {
       value: this.defaultValueForType(field.type),
       moveMode: 'and',
       moveFilters: [],
-    };
-  }
-
-  private createDefaultMoveFilter(): DraftMoveFilter {
-    if (!this.moveFields.length) {
-      return {
-        id: crypto.randomUUID(),
-        field: 'name',
-        operator: 'contains',
-        value: '',
-      };
-    }
-    const field = this.moveFields[0];
-    return {
-      id: crypto.randomUUID(),
-      field: field.key,
-      operator: field.operators[0],
-      value: this.defaultValueForType(field.type),
     };
   }
 

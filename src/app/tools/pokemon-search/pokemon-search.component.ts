@@ -1,17 +1,24 @@
-import { Location } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { finalize } from 'rxjs/operators';
+import { IconComponent } from '../../images/icon/icon.component';
 import { DataService, PokemonFullData } from '../../services/data.service';
+import { RulesetSelectComponent } from '../../util/ruleset-select/ruleset.component';
+import { FilterDrawerComponent } from './filter-drawer/filter-drawer.component';
+import { PokemonSearchCoreComponent } from './pokemon-search-core/pokemon-search-core.component';
+import {
+  SaveSearchesServices,
+  SavedSearch,
+} from '../../services/save-searches.service';
 import {
   DraftFilter,
-  DraftMoveFilter,
+  FIELD_CATEGORIES,
   FIELD_DEFINITIONS,
+  FieldDefinition,
   LegacySearchPokemonRequest,
-  MOVE_FIELD_DEFINITIONS,
-  MoveField,
-  MoveFilter,
+  OPERATOR_MAP,
   SearchField,
   SearchFieldType,
   SearchFilter,
@@ -19,87 +26,90 @@ import {
   SearchOperator,
   SearchPokemonRequest,
 } from './pokemon-search.types';
-import { PokemonSearchCoreComponent } from './pokemon-search-core/pokemon-search-core.component';
-import { FilterDrawerComponent } from './filter-drawer/filter-drawer.component';
 
 @Component({
   selector: 'pdz-pokemon-search',
   templateUrl: './pokemon-search.component.html',
   styleUrl: './pokemon-search.component.scss',
   imports: [
+    CommonModule,
     RouterModule,
     FormsModule,
+    RulesetSelectComponent,
     PokemonSearchCoreComponent,
     FilterDrawerComponent,
+    IconComponent,
   ],
 })
 export class PokemonSearchComponent implements OnInit {
   private dataService = inject(DataService);
   private location = inject(Location);
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private bookmarkService = inject(SaveSearchesServices);
 
   readonly fields = FIELD_DEFINITIONS;
-  readonly moveFields = MOVE_FIELD_DEFINITIONS;
-  readonly operatorLabels: Record<SearchOperator, string> = {
-    eq: '=',
-    ne: '!=',
-    gt: '>',
-    gte: '>=',
-    lt: '<',
-    lte: '<=',
-    contains: 'contains',
-    notContains: 'not contains',
-    in: 'in',
-    nin: 'not in',
-  };
+  readonly operatorMap = OPERATOR_MAP;
 
-  formats: string[] = [];
-  rulesets: string[] = [];
   selectedFormat: string = 'Singles';
   selectedRuleset: string = 'Gen9 NatDex';
   searchMode: 'quick' | 'advanced' = 'quick';
   quickName = '';
-  mode: SearchLogicalMode = 'or';
+  mode: SearchLogicalMode = 'and';
   filters: SearchFilter[] = [];
   activeFilterCriteria: SearchFilter[] = [];
   allResults: PokemonFullData[] = [];
   isLoading = false;
   errorMessage = '';
 
+  bookmarksPanelOpen = false;
+  savedSearches: SavedSearch[] = [];
+
   drawerOpen = false;
   editingFilterIndex: number | null = null;
   draftFilter: DraftFilter | null = null;
+  fieldMenuOpen = false;
 
   private lastAppliedQuerySignature = '';
 
-  ngOnInit() {
-    this.dataService.getFormats().subscribe((formats) => {
-      this.formats = formats;
-    });
-    this.dataService.getRulesets().subscribe((rulesets) => {
-      this.rulesets = rulesets;
-    });
+  get fieldCategories() {
+    return FIELD_CATEGORIES;
+  }
 
+  fieldsInCategory(category: string): FieldDefinition[] {
+    return this.fields.filter((f) => (f.category ?? 'Other') === category);
+  }
+
+  ngOnInit() {
     this.route.queryParams.subscribe((params) => {
       if (params['format']) this.selectedFormat = params['format'];
       if (params['ruleset']) this.selectedRuleset = params['ruleset'];
 
-      const incomingQuery = params['query'];
-      if (!incomingQuery) {
+      const urlSearchMode = params['searchMode'];
+
+      if (urlSearchMode === 'quick') {
+        const q = (params['q'] ?? '').trim();
+        if (!q) return;
+        const sig = `quick:${q}`;
+        if (sig === this.lastAppliedQuerySignature) return;
+        this.lastAppliedQuerySignature = sig;
+        this.searchMode = 'quick';
+        this.quickName = q;
+        this.quickSearch();
         return;
       }
+
+      const incomingQuery = params['query'];
+      if (!incomingQuery) return;
 
       const parsed = this.parseIncomingQuery(incomingQuery);
-      if (!parsed) {
-        return;
-      }
+      if (!parsed) return;
 
       const parsedSignature = JSON.stringify(parsed);
-      if (parsedSignature === this.lastAppliedQuerySignature) {
-        return;
-      }
+      if (parsedSignature === this.lastAppliedQuerySignature) return;
 
       this.lastAppliedQuerySignature = parsedSignature;
+      this.searchMode = 'advanced';
       this.applyRequest(parsed);
       this.search();
     });
@@ -108,7 +118,7 @@ export class PokemonSearchComponent implements OnInit {
   quickSearch(): void {
     const value = this.quickName.trim();
     if (!value) {
-      this.errorMessage = 'Enter a Pokemon name to run quick search.';
+      this.errorMessage = 'Search value can not be empty.';
       return;
     }
 
@@ -117,19 +127,23 @@ export class PokemonSearchComponent implements OnInit {
       { field: 'name', operator: 'contains', value },
       { field: 'types', operator: 'contains', value },
       { field: 'abilities', operator: 'contains', value },
-      {
-        field: 'learns',
-        operator: 'contains',
-        moveMode: 'and',
-        moveFilters: [{ field: 'name', operator: 'contains', value }],
-      },
+      { field: 'learns', operator: 'contains', value },
     ];
 
     this.search();
   }
 
-  runAdvancedSearch(): void {
-    this.search();
+  onRulesetChange(): void {
+    if (this.activeFilterCriteria.length > 0) {
+      this.search();
+    }
+  }
+
+  setMode(mode: SearchLogicalMode): void {
+    this.mode = mode;
+    if (this.filters.length) {
+      this.search();
+    }
   }
 
   setSearchMode(mode: 'quick' | 'advanced'): void {
@@ -152,44 +166,16 @@ export class PokemonSearchComponent implements OnInit {
       this.activeFilterCriteria = [];
       this.allResults = [];
       this.errorMessage = '';
+      this.updateURLQuery({ mode: this.mode, searches: [] });
     }
   }
 
   onFilterFieldChange(filter: SearchFilter): void {
     const definition = this.getFieldDefinition(filter.field);
     filter.operator = definition.operators[0];
-    if (filter.field === 'learns') {
-      filter.moveMode = filter.moveMode ?? 'and';
-      filter.moveFilters = filter.moveFilters?.length
-        ? filter.moveFilters
-        : [this.createDefaultMoveFilter()];
-      delete filter.value;
-      return;
-    }
-
     delete filter.moveMode;
     delete filter.moveFilters;
     filter.value = this.getDefaultValueByType(definition.type);
-  }
-
-  addMoveFilter(filter: SearchFilter): void {
-    if (filter.field !== 'learns') return;
-    filter.moveFilters = filter.moveFilters ?? [];
-    filter.moveFilters.push(this.createDefaultMoveFilter());
-  }
-
-  removeMoveFilter(filter: SearchFilter, index: number): void {
-    if (filter.field !== 'learns' || !filter.moveFilters) return;
-    filter.moveFilters.splice(index, 1);
-    if (!filter.moveFilters.length) {
-      filter.moveFilters.push(this.createDefaultMoveFilter());
-    }
-  }
-
-  onMoveFieldChange(moveFilter: MoveFilter): void {
-    const definition = this.getMoveFieldDefinition(moveFilter.field);
-    moveFilter.operator = definition.operators[0];
-    moveFilter.value = this.getDefaultValueByType(definition.type);
   }
 
   resetFilters(): void {
@@ -199,6 +185,30 @@ export class PokemonSearchComponent implements OnInit {
     this.allResults = [];
     this.errorMessage = '';
     this.closeDrawer();
+    this.updateURLQuery({ mode: this.mode, searches: [] });
+  }
+
+  openFieldMenu(): void {
+    this.fieldMenuOpen = true;
+    this.closeDrawer();
+  }
+
+  closeFieldMenu(): void {
+    this.fieldMenuOpen = false;
+  }
+
+  selectFieldForNewFilter(fieldKey: SearchField): void {
+    this.fieldMenuOpen = false;
+    const field = this.getFieldDefinition(fieldKey);
+    this.draftFilter = {
+      field: field.key,
+      operator: field.operators[0],
+      value: this.getDefaultValueByType(field.type),
+      moveMode: 'and',
+      moveFilters: [],
+    };
+    this.editingFilterIndex = null;
+    this.drawerOpen = true;
   }
 
   openAddDrawer(): void {
@@ -240,11 +250,7 @@ export class PokemonSearchComponent implements OnInit {
 
   getPillLabel(filter: SearchFilter): string {
     const fieldDef = this.getFieldDefinition(filter.field);
-    if (filter.field === 'learns') {
-      const count = filter.moveFilters?.length ?? 0;
-      return `${fieldDef.label} (${count} condition${count !== 1 ? 's' : ''})`;
-    }
-    const op = this.operatorLabels[filter.operator];
+    const op = OPERATOR_MAP[filter.operator].symbol;
     return `${fieldDef.label} ${op} ${filter.value}`;
   }
 
@@ -252,12 +258,94 @@ export class PokemonSearchComponent implements OnInit {
     return `Filter ${index + 1}: ${this.getPillLabel(filter)}. Press Enter to edit.`;
   }
 
-  fieldOperators(field: SearchField): SearchOperator[] {
-    return this.getFieldDefinition(field).operators;
+  openBookmarksPanel(): void {
+    this.savedSearches = this.bookmarkService
+      .getSavedSearches()
+      .slice()
+      .reverse();
+    this.bookmarksPanelOpen = true;
   }
 
-  moveFieldOperators(field: MoveField): SearchOperator[] {
-    return this.getMoveFieldDefinition(field).operators;
+  closeBookmarksPanel(): void {
+    this.bookmarksPanelOpen = false;
+  }
+
+  loadSavedSearch(search: SavedSearch): void {
+    this.closeBookmarksPanel();
+    const url = new URL(search.href);
+    this.router.navigateByUrl(url.pathname + url.search);
+  }
+
+  deleteSavedSearch(search: SavedSearch): void {
+    this.bookmarkService.remove(search.params);
+    this.savedSearches = this.bookmarkService
+      .getSavedSearches()
+      .slice()
+      .reverse();
+  }
+
+  getSearchLabel(search: SavedSearch): { chips: string[]; remainder: number } {
+    const params = new URLSearchParams(search.params);
+    const q = params.get('q');
+    if (q) {
+      return { chips: [q], remainder: 0 };
+    }
+    const query = params.get('query');
+    if (query) {
+      try {
+        const parsed = JSON.parse(query) as {
+          mode?: string;
+          searches?: SearchFilter[];
+        };
+        const filters = parsed.searches ?? [];
+        const chips = filters.slice(0, 3).map((f) => {
+          const fieldDef = this.getFieldDefinition(f.field);
+          const op = OPERATOR_MAP[f.operator]?.symbol ?? f.operator;
+          return `${fieldDef.label} ${op} ${f.value ?? ''}`.trim();
+        });
+        return { chips, remainder: Math.max(0, filters.length - 3) };
+      } catch {}
+    }
+    return { chips: [], remainder: 0 };
+  }
+
+  getSearchFilterPreviews(search: SavedSearch): string[] {
+    const params = new URLSearchParams(search.params);
+    const query = params.get('query');
+    if (!query) return [];
+    try {
+      const parsed = JSON.parse(query) as { searches?: SearchFilter[] };
+      return (parsed.searches ?? []).slice(0, 2).map((f) => {
+        const fieldDef = this.getFieldDefinition(f.field);
+        const op = OPERATOR_MAP[f.operator]?.symbol ?? f.operator;
+        return `${fieldDef.label} ${op} ${f.value ?? ''}`.trim();
+      });
+    } catch {
+      return [];
+    }
+  }
+
+  getSearchMeta(search: SavedSearch): string {
+    const params = new URLSearchParams(search.params);
+    const ruleset = params.get('ruleset') ?? '';
+    const searchMode = params.get('searchMode') ?? 'quick';
+    const parts = [searchMode === 'quick' ? 'Quick' : 'Advanced'];
+    if (ruleset) parts.push(ruleset);
+    return parts.join(' · ');
+  }
+
+  formatSavedDate(isoString: string): string {
+    return new Date(isoString).toLocaleDateString(undefined, {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+    });
+  }
+
+  fieldOperators(field: SearchField): readonly SearchOperator[] {
+    return this.getFieldDefinition(field).operators;
   }
 
   search(): void {
@@ -297,14 +385,19 @@ export class PokemonSearchComponent implements OnInit {
 
   updateURLQuery(queryValue: SearchPokemonRequest) {
     const currentPath = this.location.path().split('?')[0];
-    const compactQuery = this.compactQueryForUrl(queryValue);
     const queryParts = [
       `format=${encodeURIComponent(this.selectedFormat)}`,
       `ruleset=${encodeURIComponent(this.selectedRuleset)}`,
+      `searchMode=${this.searchMode}`,
     ];
 
-    if (compactQuery) {
-      queryParts.push(`query=${encodeURIComponent(compactQuery)}`);
+    if (this.searchMode === 'quick') {
+      queryParts.push(`q=${encodeURIComponent(this.quickName.trim())}`);
+    } else if (queryValue.searches.length > 0) {
+      const compactQuery = this.compactQueryForUrl(queryValue);
+      if (compactQuery) {
+        queryParts.push(`query=${encodeURIComponent(compactQuery)}`);
+      }
     }
 
     const updatedUrl = `${currentPath}?${queryParts.join('&')}`;
@@ -358,41 +451,6 @@ export class PokemonSearchComponent implements OnInit {
       ? search.operator
       : fieldDefinition.operators[0];
 
-    if (search.field === 'learns') {
-      const moveFilters: MoveFilter[] = [];
-
-      for (const moveFilter of search.moveFilters ?? []) {
-        const moveDefinition = this.getMoveFieldDefinition(moveFilter.field);
-        const moveOperator = moveDefinition.operators.includes(
-          moveFilter.operator,
-        )
-          ? moveFilter.operator
-          : moveDefinition.operators[0];
-        const moveValue = this.coercePrimitive(
-          moveFilter.value,
-          moveDefinition.type,
-        );
-        if (!this.hasPrimitiveValue(moveValue)) {
-          continue;
-        }
-
-        moveFilters.push({
-          field: moveDefinition.key,
-          operator: moveOperator,
-          value: moveValue,
-        });
-      }
-
-      return {
-        field: 'learns',
-        operator: 'contains',
-        moveMode: search.moveMode === 'or' ? 'or' : 'and',
-        moveFilters: moveFilters.length
-          ? moveFilters
-          : [this.createDefaultMoveFilter()],
-      };
-    }
-
     const coercedValue = this.coercePrimitive(
       search.value,
       fieldDefinition.type,
@@ -410,21 +468,6 @@ export class PokemonSearchComponent implements OnInit {
     const output: SearchFilter[] = [];
 
     for (const filter of this.filters) {
-      if (filter.field === 'learns') {
-        const moveFilters = (filter.moveFilters ?? []).filter((moveFilter) =>
-          this.hasPrimitiveValue(moveFilter.value),
-        );
-        if (!moveFilters.length) continue;
-
-        output.push({
-          field: 'learns',
-          operator: 'contains',
-          moveMode: filter.moveMode ?? 'and',
-          moveFilters,
-        });
-        continue;
-      }
-
       if (!this.hasPrimitiveValue(filter.value)) continue;
 
       output.push({
@@ -438,22 +481,6 @@ export class PokemonSearchComponent implements OnInit {
   }
 
   private filterToDraft(filter: SearchFilter): DraftFilter {
-    if (filter.field === 'learns') {
-      return {
-        field: 'learns',
-        operator: 'contains',
-        value: undefined,
-        moveMode: filter.moveMode ?? 'and',
-        moveFilters: (filter.moveFilters ?? []).map(
-          (mf): DraftMoveFilter => ({
-            id: crypto.randomUUID(),
-            field: mf.field,
-            operator: mf.operator,
-            value: mf.value,
-          }),
-        ),
-      };
-    }
     return {
       field: filter.field,
       operator: filter.operator,
@@ -480,23 +507,8 @@ export class PokemonSearchComponent implements OnInit {
     };
   }
 
-  private createDefaultMoveFilter(): MoveFilter {
-    const field = this.moveFields[0];
-    return {
-      field: field.key,
-      operator: field.operators[0],
-      value: this.getDefaultValueByType(field.type),
-    };
-  }
-
   private getFieldDefinition(field: SearchField) {
     return this.fields.find((entry) => entry.key === field) ?? this.fields[0];
-  }
-
-  private getMoveFieldDefinition(field: MoveField) {
-    return (
-      this.moveFields.find((entry) => entry.key === field) ?? this.moveFields[0]
-    );
   }
 
   private getDefaultValueByType(
@@ -569,14 +581,6 @@ export class PokemonSearchComponent implements OnInit {
     pokemon: PokemonFullData,
     filter: SearchFilter,
   ): boolean {
-    if (filter.field === 'learns' && filter.moveFilters?.length) {
-      return this.matchesMoveFilters(
-        pokemon,
-        filter.moveFilters,
-        filter.moveMode ?? 'and',
-      );
-    }
-
     if (filter.value === undefined) {
       return false;
     }
@@ -661,6 +665,16 @@ export class PokemonSearchComponent implements OnInit {
         return pokemon.isPrimal;
       case 'isGigantamax':
         return pokemon.isGigantamax;
+      case 'mythical':
+        return pokemon.tags.includes('Mythical');
+      case 'restrictedLegendary':
+        return pokemon.tags.includes('Restricted Legendary');
+      case 'subLegendary':
+        return pokemon.tags.includes('Sub-Legendary');
+      case 'ultraBeast':
+        return pokemon.tags.includes('Ultra Beast');
+      case 'paradox':
+        return pokemon.tags.includes('Paradox');
       case 'prevo':
         return pokemon.prevo;
       case 'evos':
@@ -694,157 +708,6 @@ export class PokemonSearchComponent implements OnInit {
     }
 
     return pokemon.coverage;
-  }
-
-  private matchesMoveFilters(
-    pokemon: PokemonFullData,
-    moveFilters: MoveFilter[],
-    mode: SearchLogicalMode,
-  ): boolean {
-    const moves = this.resolvePokemonMoves(pokemon);
-    if (!moves.length) {
-      return false;
-    }
-
-    for (const move of moves) {
-      const passes =
-        mode === 'or'
-          ? moveFilters.some((filter) =>
-              this.matchesSingleMoveFilter(move, filter),
-            )
-          : moveFilters.every((filter) =>
-              this.matchesSingleMoveFilter(move, filter),
-            );
-
-      if (passes) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-  private resolvePokemonMoves(pokemon: PokemonFullData): Array<{
-    id: string;
-    name: string;
-    type?: string;
-    category?: string;
-    basePower?: number;
-    accuracy?: number | boolean;
-    pp?: number;
-    priority?: number;
-    target?: string;
-  }> {
-    const learns = pokemon.learns;
-    if (Array.isArray(learns) && learns.length > 0) {
-      if (typeof learns[0] === 'string') {
-        return (learns as string[]).map((name) => ({
-          id: this.toMoveId(name),
-          name,
-        }));
-      }
-
-      return (
-        learns as Array<{
-          id?: string;
-          name?: string;
-          type?: string;
-          category?: string;
-          basePower?: number;
-          accuracy?: number | boolean;
-          pp?: number;
-          priority?: number;
-          target?: string;
-        }>
-      ).map((move) => ({
-        id: move.id || this.toMoveId(move.name ?? ''),
-        name: move.name ?? move.id ?? '',
-        type: move.type,
-        category: move.category,
-        basePower: move.basePower,
-        accuracy: move.accuracy,
-        pp: move.pp,
-        priority: move.priority,
-        target: move.target,
-      }));
-    }
-
-    return (pokemon.coverage ?? []).map((name) => ({
-      id: this.toMoveId(name),
-      name,
-    }));
-  }
-
-  private toMoveId(value: string): string {
-    return value.toLowerCase().replace(/[^a-z0-9]+/g, '');
-  }
-
-  private matchesSingleMoveFilter(
-    move: {
-      id: string;
-      name: string;
-      type?: string;
-      category?: string;
-      basePower?: number;
-      accuracy?: number | boolean;
-      pp?: number;
-      priority?: number;
-      target?: string;
-    },
-    filter: MoveFilter,
-  ): boolean {
-    const fieldType = this.getMoveFieldDefinition(filter.field).type;
-    const fieldValue = this.resolveMoveFieldValue(move, filter.field);
-
-    if (fieldValue === undefined) {
-      return false;
-    }
-
-    return this.compareFilterValues(
-      fieldValue,
-      filter.operator,
-      filter.value,
-      fieldType,
-    );
-  }
-
-  private resolveMoveFieldValue(
-    move: {
-      id: string;
-      name: string;
-      type?: string;
-      category?: string;
-      basePower?: number;
-      accuracy?: number | boolean;
-      pp?: number;
-      priority?: number;
-      target?: string;
-    },
-    field: MoveField,
-  ): string | number | boolean | undefined {
-    switch (field) {
-      case 'name':
-        return move.name;
-      case 'type':
-        return move.type;
-      case 'category':
-        return move.category;
-      case 'basePower':
-        return move.basePower;
-      case 'accuracy':
-        if (typeof move.accuracy === 'boolean') {
-          return move.accuracy ? 101 : 0;
-        }
-        return move.accuracy;
-      case 'pp':
-        return move.pp;
-      case 'priority':
-        return move.priority;
-      case 'target':
-        return move.target;
-      default:
-        return undefined;
-    }
   }
 
   private compareFilterValues(
@@ -924,7 +787,7 @@ export class PokemonSearchComponent implements OnInit {
   ): boolean {
     if (Array.isArray(fieldValue)) {
       return fieldValue.some((value) =>
-        this.compareScalar(value, filterValue, fieldType),
+        this.compareContains(value, filterValue, fieldType),
       );
     }
 

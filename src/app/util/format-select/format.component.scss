@@ -1,6 +1,3 @@
-$height: 32px;
-.mat-mdc-option {
-  height: fit-content !important;
-  padding: 0.25rem 0.125rem;
-  min-height: 0 !important;
+:host {
+  display: block;
 }
