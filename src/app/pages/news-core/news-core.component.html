@@ -2,7 +2,7 @@
   @for (new of news; track new) {
     <div class="news-item">
       <div class="news-header">
-        <span class="news-date">{{ new.createdAt }}</span>
+        <span class="news-date">{{ formatDate(new.createdAt) }}</span>
         <span class="news-title">{{ new.title }}</span>
       </div>
       <div class="news-body indent">

@@ -14,11 +14,23 @@ import { MarkdownModule } from 'ngx-markdown';
 })
 export class NewsCoreComponent implements OnInit {
   private unreadService = inject(UnreadService);
+  private readonly laDateFormatter = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'America/Los_Angeles',
+    month: '2-digit',
+    day: '2-digit',
+    year: 'numeric',
+  });
 
   readonly news = NEWS;
 
   ngOnInit(): void {
     this.unreadService.newsCount.next('');
     localStorage.setItem('newsTime', Date.now().toString());
+  }
+
+  formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    if (Number.isNaN(date.getTime())) return dateString;
+    return this.laDateFormatter.format(date);
   }
 }

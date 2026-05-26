@@ -33,7 +33,7 @@ export const NEWS: News[] = [
   // },
   {
     title: 'Pokémon DraftZone Battle League (PDBL) Season 3',
-    createdAt: '02/07/2026',
+    createdAt: '2026-02-07T12:00:00-08:00',
     sections: [
       {
         type: 'images',
@@ -92,7 +92,7 @@ export const NEWS: News[] = [
   // },
   {
     title: 'Draftzone merch shop is here!',
-    createdAt: '10/17/2025',
+    createdAt: '2025-10-17T12:00:00-07:00',
     sections: [
       {
         type: 'images',
@@ -132,7 +132,7 @@ export const NEWS: News[] = [
   },
   {
     title: 'Pokémon DraftZone Battle League (PDBL) Season 2',
-    createdAt: '09/05/2025',
+    createdAt: '2025-09-05T12:00:00-07:00',
     sections: [
       {
         type: 'images',
