@@ -531,6 +531,7 @@ button:disabled {
     display: flex;
     flex-direction: column;
     justify-items: center;
+    width: 100%;
     align-items: center;
     gap: var(--pdz-space-xs);
     padding: var(--pdz-space-sm);
