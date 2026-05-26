@@ -21,8 +21,4 @@ export class NewsCoreComponent implements OnInit {
     this.unreadService.newsCount.next('');
     localStorage.setItem('newsTime', Date.now().toString());
   }
-
-  toDate(dateString: string) {
-    return new Date(dateString).toLocaleDateString();
-  }
 }

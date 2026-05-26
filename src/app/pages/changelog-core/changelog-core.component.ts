@@ -10,8 +10,4 @@ import { CHANGELOG, ChangelogEntry } from './changelog.data';
 })
 export class ChangelogCoreComponent {
   readonly changelog: ChangelogEntry[] = CHANGELOG;
-
-  toDate(dateString: string): string {
-    return new Date(dateString).toLocaleDateString();
-  }
 }

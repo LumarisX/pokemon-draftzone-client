@@ -11,56 +11,43 @@ export type ChangelogEntry = {
 };
 
 export const CHANGELOG: ChangelogEntry[] = [
-  // {
-  //   date: '2026-05-22',
-  //   title: 'Tier List Editor, Fern Theme & Playoffs',
-  //   description:
-  //     'The tier list editor has been overhauled with undo/redo, global sorting, keyboard shortcuts, and more. A new Fern theme has been added, playoffs now have bracket visuals and schedule management, and the Pokémon search tool has been improved with move searching and local search.',
-  //   categories: [
-  //     {
-  //       type: 'added',
-  //       items: [
-  //         'Fern theme',
-  //         'New SVG icons for Pokémon types',
-  //         'Move searching in the Pokémon search dialog',
-  //         'Global undo/redo buttons in the tier list editor',
-  //         'Global sorting and keyboard shortcuts in the tier list editor',
-  //         'Points and required draft count chips in the tier list editor',
-  //         'Playoff schedule management',
-  //         'Bracket visuals with matchup links for playoffs',
-  //         'Champions option for league advertisements',
-  //         'EVs used display in the Pokémon builder',
-  //         'Basic statistics page',
-  //         'Team scores on team pages',
-  //         'View submitted trades on the manage trades page',
-  //       ],
-  //     },
-  //     {
-  //       type: 'changed',
-  //       items: [
-  //         'Settings page replaced with a settings dialog',
-  //         'Tier list editor styling unified and improved',
-  //         'Pokémon search now performs local searches for faster results',
-  //         'Search types and operators refactored for consistency',
-  //         'League components updated to use dynamic league keys with updated routing',
-  //         'News restored to static data file',
-  //         'Replay analyzer updated to v2 path',
-  //       ],
-  //     },
-  //     {
-  //       type: 'fixed',
-  //       items: [
-  //         'Linking to team in matchup cards',
-  //         'Icons not showing on planner',
-  //         'Matchup card match scoring coloring',
-  //         'League components not handling forfeits correctly',
-  //         'Urshifu Rapid Strike Gmax sprite orientation',
-  //       ],
-  //     },
-  //   ],
-  // },
   {
-    date: '2026-03-10',
+    date: '05/26/2026',
+    title: 'Champions Support & Pokémon Search Refactor',
+    description:
+      'Pokémon Search has been fully refactored to be cleaner and more intuitive, with flexible result views and reusable saved searches. This release also introduces support for the Champions M-A ruleset.',
+    categories: [
+      {
+        type: 'added',
+        items: [
+          'Card view for quickly scanning Pokémon search results',
+          'Detailed list view for deeper Pokémon search comparisons',
+          'Bookmarked searches so you can quickly revisit queries later',
+          'Shareable links for sending Pokémon search queries to friends',
+          'Pokémon Champions option in league advertisements',
+          'Support for the Champions M-A ruleset',
+        ],
+      },
+      {
+        type: 'changed',
+        items: [
+          'Pokémon Search fully refactored for a cleaner, more intuitive flow',
+          'Pokémon type visuals unified for a more consistent look across the app',
+          'Homepage split to show DraftZone news and updates separately',
+        ],
+      },
+      {
+        type: 'fixed',
+        items: [
+          "Urshifu-Rapid-Strike Gmax's sprite showed incorrectly",
+          'Matchup coverage chart looks better on mobile',
+          'Basculegion Female, Meowstic Female added to Champions M-A ruleset',
+        ],
+      },
+    ],
+  },
+  {
+    date: '03/10/2026',
     title: 'Homepage & Replay Analyzer Update',
     description:
       'The homepage has been updated with easier access to important links, and the replay analyzer has been redesigned with a compact at-a-glance layout.',
@@ -76,7 +63,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     ],
   },
   {
-    date: '2026-01-25',
+    date: '01/25/2026',
     title: 'Teambuilder Saving and Opposite Day!',
     description:
       'Teambuilder progress now saves to your device. Also, something looks a bit off for Opposite Day...',
@@ -88,7 +75,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     ],
   },
   {
-    date: '2026-01-04',
+    date: '01/04/2026',
     title: 'Pokémon ZA DLC Pokémon',
     description:
       'DLC Pokémon from Pokémon ZA are now available on the site under the ZA National Dex ruleset, with placeholder sprites while official ones are pending.',
@@ -100,7 +87,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     ],
   },
   {
-    date: '2025-12-24',
+    date: '12/24/2025',
     title: 'Teambuilder in Matchup & CST',
     description:
       'A teambuilder panel has been added directly to the matchup page, and a new Competitive Stat Total (CST) metric has been added to the summary.',
@@ -117,7 +104,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     ],
   },
   {
-    date: '2025-12-15',
+    date: '12/15/2025',
     title: 'Find a League Returns & Matchup Notes',
     description:
       'Find a League is back with format and ruleset filters. Matchup notes with full Markdown support have also been added to every matchup.',
@@ -132,7 +119,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     ],
   },
   {
-    date: '2025-11-01',
+    date: '11/01/2025',
     title: 'ZA National Dex Format',
     description:
       'A new ZA National Dex format has been added, including all the new Mega Evolutions from Pokémon ZA.',
@@ -144,7 +131,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     ],
   },
   {
-    date: '2025-10-17',
+    date: '10/17/2025',
     title: 'Sunset Theme',
     description:
       'Themes are back and better than ever with a completely reworked theming system. Check out the new Sunset theme in your settings.',
@@ -162,7 +149,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     ],
   },
   {
-    date: '2025-10-03',
+    date: '10/03/2025',
     title: 'Homepage & My Drafts Redesign',
     description:
       'Both the homepage and the My Drafts page have received a fresh new look.',
@@ -174,7 +161,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     ],
   },
   {
-    date: '2025-06-26',
+    date: '06/26/2025',
     title: 'Matches Page Redesign',
     description:
       'The Matches page has been redesigned with a more compact layout, more matchup info at a glance, and draft statistics built right in.',
@@ -209,7 +196,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     ],
   },
   {
-    date: '2025-05-21',
+    date: '05/21/2025',
     title: 'Quick Draft',
     description:
       'Quickly generate a draft across multiple Showdown tiers, export to PokePaste, and jump straight into a Quick Matchup.',
@@ -228,7 +215,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     ],
   },
   {
-    date: '2025-04-17',
+    date: '04/17/2025',
     title: 'Web App (PWA)',
     description: 'DraftZone is now installable as a web app on any device.',
     categories: [
@@ -255,7 +242,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     ],
   },
   {
-    date: '2025-04-03',
+    date: '04/03/2025',
     title: 'Matchup Redesign',
     description:
       'Major matchup redesign with better data visibility, grouped speed tiers, and redesigned opponent/draft forms.',
@@ -278,7 +265,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     ],
   },
   {
-    date: '2025-03-05',
+    date: '03/05/2025',
     title: 'Planner Redesign',
     description:
       'The planner has been completely rebuilt tab by tab. Draft statistics, movechart, summary, typechart, and coverage all received new designs. Ruleset and format dropdowns are now grouped for clarity.',
@@ -302,7 +289,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     ],
   },
   {
-    date: '2025-02-11',
+    date: '02/11/2025',
     title: 'New League Notification Badge',
     description:
       'A badge icon now appears on the logo when new leagues have been posted.',
@@ -314,7 +301,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     ],
   },
   {
-    date: '2025-02-06',
+    date: '02/06/2025',
     title: 'Time Converter Redesign',
     description:
       'The time converter has been redesigned to be more intuitive, with a new slider for easier time selection.',
@@ -326,7 +313,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     ],
   },
   {
-    date: '2025-01-30',
+    date: '01/30/2025',
     title: 'Typechart Ability Toggle',
     description:
       'A toggle has been added to the typechart to turn abilities on or off when calculating type matchups.',
@@ -338,7 +325,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     ],
   },
   {
-    date: '2025-01-10',
+    date: '01/10/2025',
     title: 'Supporters Page',
     description:
       'A new Supporters page has been added to show appreciation to everyone who supports the site.',
@@ -350,7 +337,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     ],
   },
   {
-    date: '2024-12-18',
+    date: '12/18/2024',
     title: 'Theme System Rework',
     description:
       'The theming system has been completely reworked, making it much easier to create new themes. A Christmas theme was added to celebrate the season.',
@@ -368,7 +355,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     ],
   },
   {
-    date: '2024-12-13',
+    date: '12/13/2024',
     title: 'Random Draft Tool',
     description:
       'Instantly generate a random draft team across any generation. Add it directly to a new league or Quick Matchup with one click.',
@@ -383,7 +370,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     ],
   },
   {
-    date: '2024-12-12',
+    date: '12/12/2024',
     title: 'Quick Matchups',
     description:
       'Need a one-time matchup for a tournament or sub? The new Quick Matchup tool gives instant team vs. team breakdowns.',
@@ -398,7 +385,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     ],
   },
   {
-    date: '2024-11-30',
+    date: '11/30/2024',
     title: 'Replay Analyzer, Cache & UX Fixes',
     description:
       'Replay analyzer rewritten to handle more battle events, cache now clears immediately on edit, and several form and UI improvements.',
@@ -420,7 +407,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     ],
   },
   {
-    date: '2024-10-22',
+    date: '10/22/2024',
     title: 'New Dropdowns',
     description:
       'Dropdowns across the site have been replaced with a new component that is more mobile-friendly and easier to use.',
@@ -434,7 +421,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     ],
   },
   {
-    date: '2024-10-04',
+    date: '10/04/2024',
     title: 'Find A League',
     description:
       'Browse draft leagues and tournaments looking for participants. Filter by skill level and advertise your own league.',
@@ -449,7 +436,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     ],
   },
   {
-    date: '2024-08-29',
+    date: '08/29/2024',
     title: 'Pokémon Search Tool',
     description:
       'A Pokémon search tool is now available in the planner and as a standalone tool for finding the perfect pick.',
@@ -461,7 +448,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     ],
   },
   {
-    date: '2024-08-15',
+    date: '08/15/2024',
     title: 'Server Improvements',
     description:
       'Backend rewrite to improve matchup page generation speed following rapid growth in new members.',
@@ -473,7 +460,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     ],
   },
   {
-    date: '2024-07-08',
+    date: '07/08/2024',
     title: 'Customization Settings',
     description:
       'New settings menu accessible from your username. Includes dark mode, themes, and sprite set options.',
@@ -489,7 +476,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     ],
   },
   {
-    date: '2024-07-03',
+    date: '07/03/2024',
     title: 'Match Scoring Overhaul',
     description:
       'Match scoring rebuilt with VGC series support, replay analysis for quick stat input, and a new Other Tools tab.',
@@ -508,7 +495,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     ],
   },
   {
-    date: '2024-06-03',
+    date: '06/03/2024',
     title: 'Match Scheduler Beta',
     description:
       'Plan and compare match times across time zones, save your scheduled time, and see it on the matchup page.',
@@ -523,7 +510,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     ],
   },
   {
-    date: '2024-05-25',
+    date: '05/25/2024',
     title: 'Project Now Open Source',
     description:
       'Both the client and server code are now fully open source. Explore, report issues, and contribute!',
@@ -535,7 +522,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     ],
   },
   {
-    date: '2024-05-15',
+    date: '05/15/2024',
     title: 'Draft Planner',
     description:
       'Introducing the Draft Planner! View your team details quickly, swap Pokémon to compare options, and plan the perfect draft.',
@@ -547,7 +534,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     ],
   },
   {
-    date: '2024-04-01',
+    date: '04/01/2024',
     title: "April Fools' & Backend Updates",
     description:
       'Significant backend stability improvements. Pokémon can now be imported from clipboard for new drafts.',
@@ -563,7 +550,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     ],
   },
   {
-    date: '2024-03-12',
+    date: '03/12/2024',
     title: 'Mobile, Speedchart & Score Button',
     description:
       'Improved mobile layouts, overhauled speedchart, scoring with replays/pastes/stats, and several quality-of-life fixes.',
@@ -595,7 +582,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     ],
   },
   {
-    date: '2024-02-29',
+    date: '02/29/2024',
     title: 'Welcome to Pokémon DraftZone!',
     description:
       'The beta is live! Explore the site, share feedback, and report bugs to our Discord.',
