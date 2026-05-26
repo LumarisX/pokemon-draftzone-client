@@ -117,13 +117,12 @@
           }
           <mat-tab label="Find">
             <ng-template matTabContent>
-              <pdz-finder-core
+              <pdz-pokemon-search-core
                 class="finder"
                 [rulesetId]="
                   draftFormGroup.controls.ruleset.value || 'Gen9 NatDex'
                 "
-                [formatId]="draftFormGroup.controls.format.value || 'Singles'"
-              ></pdz-finder-core>
+              ></pdz-pokemon-search-core>
             </ng-template>
           </mat-tab>
         </mat-tab-group>

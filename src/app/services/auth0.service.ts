@@ -38,7 +38,6 @@ export class AuthService {
       ),
       catchError((error) => {
         console.error('Error getting access token silently:', error);
-        this.login();
         return of(undefined);
       }),
       shareReplay(1),

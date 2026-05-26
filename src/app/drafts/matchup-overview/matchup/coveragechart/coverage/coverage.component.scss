@@ -5,10 +5,19 @@
   height: fit-content;
   padding: var(--pdz-space-xs);
 
+  flex-wrap: wrap;
+
   .sprite-container {
     display: flex;
     flex-direction: column;
     align-items: center;
+
+    @media (max-width: 768px) {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    }
 
     .sprite-spacer {
       flex-grow: 1;
@@ -48,6 +57,10 @@
       font-size: 0.7rem;
       line-height: 1rem;
       font-weight: 600;
+
+      @media (max-width: 768px) {
+        min-height: 1.5rem;
+      }
     }
   }
 
@@ -76,6 +89,13 @@
         grid-template-columns: repeat(4, minmax(0, 1fr));
         gap: var(--pdz-space-xs);
         justify-items: start;
+
+        @media (max-width: 768px) {
+          grid-template-columns: repeat(6, minmax(0, 1fr));
+          gap: var(--pdz-space-2xs);
+
+          justify-items: center;
+        }
       }
     }
   }
@@ -86,6 +106,10 @@
     row-gap: 0.25rem;
     padding: var(--pdz-space-xs);
     align-self: center;
+
+    @media (max-width: 768px) {
+      align-self: stretch;
+    }
 
     .chart-wrapper {
       border-radius: var(--pdz-shape-corner-sm);
@@ -98,6 +122,11 @@
       gap: 0.25rem;
       align-items: center;
       grid-template-columns: repeat(4, minmax(0, 1fr));
+
+      @media (max-width: 768px) {
+        width: 100%;
+      }
+
       pdz-sprite {
         height: 2rem;
         width: 2rem;
@@ -110,6 +139,8 @@
 }
 
 .coverage-type-btn {
+  display: inline-flex;
+  justify-content: center;
   padding: 0;
   border: none;
   background: transparent;

@@ -39,7 +39,7 @@ import {
 import { LoadingComponent } from '../images/loading/loading.component';
 import { DraftPokemon } from '../interfaces/draft';
 import { PlannerService } from '../services/planner.service';
-import { FinderCoreComponent } from '../tools/finder/finder-core.component';
+import { PokemonSearchCoreComponent } from '../tools/pokemon-search/pokemon-search-core/pokemon-search-core.component';
 import { ensureNumber, ensureString } from '../util';
 import { PlannerCoverageComponent } from './coverage/coverage.component';
 import { MoveComponent } from './moves/moves.component';
@@ -82,11 +82,11 @@ export interface LSDraftData {
     MatTabsModule,
     MatIconModule,
     MatDialogModule,
-    FinderCoreComponent,
     PlannerCoverageComponent,
     PlannerSettingsComponent,
     PlannerTeamComponent,
     LoadingComponent,
+    PokemonSearchCoreComponent,
   ],
 })
 export class PlannerComponent implements OnInit, AfterViewInit {

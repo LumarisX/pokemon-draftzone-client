@@ -11,6 +11,54 @@ export type ChangelogEntry = {
 };
 
 export const CHANGELOG: ChangelogEntry[] = [
+  // {
+  //   date: '2026-05-22',
+  //   title: 'Tier List Editor, Fern Theme & Playoffs',
+  //   description:
+  //     'The tier list editor has been overhauled with undo/redo, global sorting, keyboard shortcuts, and more. A new Fern theme has been added, playoffs now have bracket visuals and schedule management, and the Pokémon search tool has been improved with move searching and local search.',
+  //   categories: [
+  //     {
+  //       type: 'added',
+  //       items: [
+  //         'Fern theme',
+  //         'New SVG icons for Pokémon types',
+  //         'Move searching in the Pokémon search dialog',
+  //         'Global undo/redo buttons in the tier list editor',
+  //         'Global sorting and keyboard shortcuts in the tier list editor',
+  //         'Points and required draft count chips in the tier list editor',
+  //         'Playoff schedule management',
+  //         'Bracket visuals with matchup links for playoffs',
+  //         'Champions option for league advertisements',
+  //         'EVs used display in the Pokémon builder',
+  //         'Basic statistics page',
+  //         'Team scores on team pages',
+  //         'View submitted trades on the manage trades page',
+  //       ],
+  //     },
+  //     {
+  //       type: 'changed',
+  //       items: [
+  //         'Settings page replaced with a settings dialog',
+  //         'Tier list editor styling unified and improved',
+  //         'Pokémon search now performs local searches for faster results',
+  //         'Search types and operators refactored for consistency',
+  //         'League components updated to use dynamic league keys with updated routing',
+  //         'News restored to static data file',
+  //         'Replay analyzer updated to v2 path',
+  //       ],
+  //     },
+  //     {
+  //       type: 'fixed',
+  //       items: [
+  //         'Linking to team in matchup cards',
+  //         'Icons not showing on planner',
+  //         'Matchup card match scoring coloring',
+  //         'League components not handling forfeits correctly',
+  //         'Urshifu Rapid Strike Gmax sprite orientation',
+  //       ],
+  //     },
+  //   ],
+  // },
   {
     date: '2026-03-10',
     title: 'Homepage & Replay Analyzer Update',

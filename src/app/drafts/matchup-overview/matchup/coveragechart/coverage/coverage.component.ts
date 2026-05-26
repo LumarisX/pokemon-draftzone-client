@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ExtendedType } from '../../../../../data';
 import { SpriteComponent } from '../../../../../images/sprite/sprite.component';
@@ -18,7 +18,14 @@ import { EffectivenessChartComponent } from './effectiveness-chart/effectiveness
     PokemonTypeComponent,
   ],
 })
-export class CoverageComponent implements OnInit {
+export class CoverageComponent implements OnInit, OnDestroy {
+  private readonly mobileBreakpoint = 768;
+  private readonly mediaQuery =
+    typeof window !== 'undefined'
+      ? window.matchMedia(`(max-width: ${this.mobileBreakpoint}px)`)
+      : null;
+  isMobile = this.mediaQuery?.matches ?? false;
+
   @Input({ required: true }) typechart!: TypeChart;
   coverage: {
     pokemon: DraftPokemon & {
@@ -53,8 +60,17 @@ export class CoverageComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.mediaQuery?.addEventListener('change', this.onMediaChange);
     this.resetRecommended();
   }
+
+  ngOnDestroy(): void {
+    this.mediaQuery?.removeEventListener('change', this.onMediaChange);
+  }
+
+  private readonly onMediaChange = (event: MediaQueryListEvent): void => {
+    this.isMobile = event.matches;
+  };
 
   updateCoverage() {
     const selectedMoves = [

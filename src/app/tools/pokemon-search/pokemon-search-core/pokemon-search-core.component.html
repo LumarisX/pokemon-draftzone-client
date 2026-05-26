@@ -1,3 +1,184 @@
+<div class="pokemon-search__search-panel">
+  <div class="pokemon-search__controls">
+    <div class="pokemon-search__field">
+      <label>Mode</label>
+      <div class="pokemon-search__mode-toggle">
+        <button
+          type="button"
+          class="pokemon-search__mode-button"
+          [class.is-active]="searchMode === 'quick'"
+          (click)="setSearchMode('quick')"
+        >
+          Quick
+        </button>
+        <button
+          type="button"
+          class="pokemon-search__mode-button"
+          [class.is-active]="searchMode === 'advanced'"
+          (click)="setSearchMode('advanced')"
+        >
+          Advanced
+        </button>
+      </div>
+    </div>
+
+    @if (searchMode === "advanced") {
+      <div class="pokemon-search__field">
+        <label>Match</label>
+        <div class="pokemon-search__mode-toggle">
+          <button
+            type="button"
+            class="pokemon-search__mode-button"
+            [class.is-active]="mode === 'and'"
+            (click)="setMode('and')"
+          >
+            All
+          </button>
+          <button
+            type="button"
+            class="pokemon-search__mode-button"
+            [class.is-active]="mode === 'or'"
+            (click)="setMode('or')"
+          >
+            Any
+          </button>
+        </div>
+      </div>
+    }
+
+    <!-- <div class="pokemon-search__field pokemon-search__field--end">
+        <pdz-format-select [(ngModel)]="selectedFormat"></pdz-format-select>
+      </div> -->
+
+    @if (!rulesetId) {
+      <div class="pokemon-search__field pokemon-search__field--end">
+        <pdz-ruleset-select
+          [(ngModel)]="selectedRuleset"
+          (ngModelChange)="onRulesetChange()"
+        ></pdz-ruleset-select>
+      </div>
+    }
+  </div>
+  @if (searchMode === "quick") {
+    <div class="pokemon-search__quick-search">
+      <div class="pokemon-search__quick-input-row">
+        <input
+          id="quickName"
+          type="text"
+          [(ngModel)]="quickName"
+          placeholder="Search by name, type, ability, or move"
+          (keydown.enter)="quickSearch()"
+        />
+        <button
+          type="button"
+          class="pokemon-search__quick-search-btn"
+          (click)="quickSearch()"
+          aria-label="Search"
+        >
+          <pdz-icon name="search" size="sm"></pdz-icon>
+        </button>
+      </div>
+    </div>
+  } @else if (searchMode === "advanced") {
+    <!-- Active filter pills -->
+    <div class="pokemon-search__pill-bar" aria-label="Active filters">
+      @for (filter of filters; track $index; let i = $index) {
+        <button
+          type="button"
+          class="pokemon-search__pill"
+          [class.is-editing]="drawerOpen && editingFilterIndex === i"
+          [attr.aria-label]="getPillAriaLabel(filter, i)"
+          (click)="openEditDrawer(i)"
+        >
+          <span class="pokemon-search__pill__label">{{
+            getPillLabel(filter)
+          }}</span>
+          <span
+            class="pokemon-search__pill__remove"
+            role="button"
+            tabindex="0"
+            aria-label="Remove filter"
+            (click)="$event.stopPropagation(); removeFilter(i)"
+            (keydown.enter)="$event.stopPropagation(); removeFilter(i)"
+            (keydown.space)="$event.stopPropagation(); removeFilter(i)"
+            >✕</span
+          >
+        </button>
+      }
+
+      <div class="pokemon-search__add-filter-wrap">
+        @if (fieldMenuOpen) {
+          <div
+            class="pokemon-search__field-menu-backdrop"
+            (click)="closeFieldMenu()"
+            aria-hidden="true"
+          ></div>
+        }
+        <button
+          type="button"
+          class="pokemon-search__add-filter"
+          [class.is-open]="fieldMenuOpen"
+          (click)="openFieldMenu()"
+          aria-label="Add filter"
+          aria-haspopup="listbox"
+          [attr.aria-expanded]="fieldMenuOpen"
+        >
+          + Add Filter
+        </button>
+        @if (fieldMenuOpen) {
+          <div
+            class="pokemon-search__field-menu"
+            role="listbox"
+            aria-label="Select a filter field"
+          >
+            @for (cat of fieldCategories; track cat) {
+              <div class="pokemon-search__field-menu-category">
+                <span class="pokemon-search__field-menu-cat-label">{{
+                  cat
+                }}</span>
+                <div class="pokemon-search__field-menu-options">
+                  @for (f of fieldsInCategory(cat); track f.key) {
+                    <button
+                      type="button"
+                      class="pokemon-search__field-menu-option"
+                      role="option"
+                      (click)="selectFieldForNewFilter(f.key)"
+                    >
+                      {{ f.label }}
+                    </button>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+
+      @if (filters.length > 0) {
+        <button
+          type="button"
+          class="pokemon-search__clear-all"
+          (click)="resetFilters()"
+          aria-label="Clear all filters"
+        >
+          Clear all
+        </button>
+      }
+    </div>
+
+    <!-- Inline filter drawer -->
+    @if (drawerOpen && draftFilter) {
+      <pdz-filter-drawer
+        [fields]="fields"
+        [initialFilter]="draftFilter"
+        [isEditing]="editingFilterIndex !== null"
+        (apply)="applyDrawerFilter($event)"
+        (cancel)="closeDrawer()"
+      ></pdz-filter-drawer>
+    }
+  }
+</div>
+
 <div class="pokemon-results">
   @if (errorMessage) {
     <p class="pokemon-results__error">{{ errorMessage }}</p>
@@ -111,48 +292,46 @@
           >
             <div class="pokemon-results__list-main">
               <pdz-sprite flipped [pokemon]="pokemon" size="4rem"></pdz-sprite>
-              <div class="pokemon-results__list-info">
-                <p class="pokemon-results__list-name">{{ pokemon.name }}</p>
-                <div class="pokemon-results__list-types">
-                  @for (type of pokemon.types; track $index) {
-                    <pdz-pokemon-type
-                      display="both"
-                      [type]="type"
-                    ></pdz-pokemon-type>
-                  }
-                </div>
-                <div class="pokemon-results__list-abilities">
-                  @for (ability of pokemon.abilities; track $index) {
-                    <span class="pokemon-results__list-ability">{{
-                      ability
-                    }}</span>
-                  }
-                </div>
-                <div class="pokemon-results__list-stats">
-                  @for (stat of statList; track stat.key) {
-                    <div
-                      class="pokemon-results__stat-cube"
-                      [style.background-color]="
-                        statColor(pokemon.baseStats[stat.key])
-                      "
-                    >
-                      <span class="pokemon-results__stat-label">{{
-                        stat.label
-                      }}</span>
-                      <span class="pokemon-results__stat-value">{{
-                        pokemon.baseStats[stat.key]
-                      }}</span>
-                    </div>
-                  }
+              <p class="pokemon-results__list-name">{{ pokemon.name }}</p>
+              <div class="pokemon-results__list-types">
+                @for (type of pokemon.types; track $index) {
+                  <pdz-pokemon-type
+                    display="both"
+                    [type]="type"
+                  ></pdz-pokemon-type>
+                }
+              </div>
+              <div class="pokemon-results__list-abilities">
+                @for (ability of pokemon.abilities; track $index) {
+                  <span class="pokemon-results__list-ability">{{
+                    ability
+                  }}</span>
+                }
+              </div>
+              <div class="pokemon-results__list-stats">
+                @for (stat of statList; track stat.key) {
                   <div
-                    class="pokemon-results__stat-cube pokemon-results__stat-cube--bst"
-                    [style.background-color]="bstColor(pokemon.bst)"
+                    class="pokemon-results__stat-cube"
+                    [style.background-color]="
+                      statColor(pokemon.baseStats[stat.key])
+                    "
                   >
-                    <span class="pokemon-results__stat-label">BST</span>
+                    <span class="pokemon-results__stat-label">{{
+                      stat.label
+                    }}</span>
                     <span class="pokemon-results__stat-value">{{
-                      pokemon.bst
+                      pokemon.baseStats[stat.key]
                     }}</span>
                   </div>
+                }
+                <div
+                  class="pokemon-results__stat-cube pokemon-results__stat-cube--bst"
+                  [style.background-color]="bstColor(pokemon.bst)"
+                >
+                  <span class="pokemon-results__stat-label">BST</span>
+                  <span class="pokemon-results__stat-value">{{
+                    pokemon.bst
+                  }}</span>
                 </div>
               </div>
             </div>

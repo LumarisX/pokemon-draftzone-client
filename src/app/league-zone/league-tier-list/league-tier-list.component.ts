@@ -76,6 +76,7 @@ export class LeagueTierListComponent implements OnInit, OnDestroy {
 
   drafted = signal<{ [division: string]: { pokemonId: string }[] }>({});
   tiers = signal<LeagueTier[] | undefined>(undefined);
+  ruleset = signal<string | undefined>(undefined);
   sortBy = signal<SortOption>('BST');
   selectedDivision = signal<string | undefined>(undefined);
   searchText = signal<string>('');
@@ -151,6 +152,7 @@ export class LeagueTierListComponent implements OnInit, OnDestroy {
       .subscribe((data) => {
         this.drafted.set(data.divisions);
         this.tiers.set(data.tierList);
+        this.ruleset.set(data.ruleset);
         const divisionNames = Object.keys(data.divisions);
         if (divisionNames.length > 0) {
           this.selectedDivision.set(divisionNames[0]);
@@ -328,6 +330,7 @@ export class LeagueTierListComponent implements OnInit, OnDestroy {
       tier: { name: tier.name, cost: tier.cost },
       isDrafted,
       buttons,
+      rulesetId: this.ruleset(),
     };
   }
 

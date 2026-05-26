@@ -26,7 +26,7 @@
             <pdz-pokemon-type
               [type]="move.type"
               [disabled]="!move.selected"
-              display="both"
+              [display]="isMobile ? 'icon' : 'both'"
             ></pdz-pokemon-type>
           </button>
         }
@@ -50,7 +50,7 @@
             <pdz-pokemon-type
               [type]="move.type"
               [disabled]="!move.selected"
-              display="both"
+              [display]="isMobile ? 'icon' : 'both'"
             ></pdz-pokemon-type>
           </button>
         }

@@ -194,6 +194,7 @@ export class LeagueZoneService {
     return this.apiService.get<{
       tierList: LeagueTier[];
       divisions: { [key: string]: { pokemonId: string; teamId: string }[] };
+      ruleset?: string;
     }>(`${ROOTPATH}/tournaments/${this.tournamentKey()}/tier-list`, {
       params,
     });

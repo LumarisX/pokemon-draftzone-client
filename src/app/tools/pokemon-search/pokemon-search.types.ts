@@ -128,13 +128,13 @@ export const FIELD_DEFINITIONS: FieldDefinition[] = [
     operators: CONTAINS_OPERATORS,
     category: 'Identity',
   },
-  {
-    key: 'baseSpecies',
-    label: 'Base Species',
-    type: 'string',
-    operators: CONTAINS_OPERATORS,
-    category: 'Identity',
-  },
+  // {
+  //   key: 'baseSpecies',
+  //   label: 'Base Species',
+  //   type: 'string',
+  //   operators: CONTAINS_OPERATORS,
+  //   category: 'Identity',
+  // },
   {
     key: 'num',
     label: 'Dex Number',
@@ -254,13 +254,13 @@ export const FIELD_DEFINITIONS: FieldDefinition[] = [
     operators: CONTAINS_OPERATORS,
     category: 'Abilities',
   },
-  {
-    key: 'requiredAbility',
-    label: 'Required Ability',
-    type: 'string',
-    operators: CONTAINS_OPERATORS,
-    category: 'Abilities',
-  },
+  // {
+  //   key: 'requiredAbility',
+  //   label: 'Required Ability',
+  //   type: 'string',
+  //   operators: CONTAINS_OPERATORS,
+  //   category: 'Abilities',
+  // },
   // Tier / Meta
   {
     key: 'tier',
@@ -283,13 +283,13 @@ export const FIELD_DEFINITIONS: FieldDefinition[] = [
     operators: EXACT_OPERATORS,
     category: 'Tier / Meta',
   },
-  {
-    key: 'isNonstandard',
-    label: 'Nonstandard',
-    type: 'string',
-    operators: EXACT_OPERATORS,
-    category: 'Tier / Meta',
-  },
+  // {
+  //   key: 'isNonstandard',
+  //   label: 'Nonstandard',
+  //   type: 'string',
+  //   operators: EXACT_OPERATORS,
+  //   category: 'Tier / Meta',
+  // },
   // {
   //   key: 'nfe',
   //   label: 'Not Fully Evolved',
