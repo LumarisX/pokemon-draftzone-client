@@ -28,6 +28,7 @@ import {
   TierDialogResult,
   TierEditDialogComponent,
 } from './tier-edit-dialog/tier-edit-dialog.component';
+import { TierListService } from '../../../services/tier-list.service';
 
 export type EditTierPokemon = TierPokemon;
 
@@ -67,7 +68,7 @@ interface EditableTier {
   styleUrls: ['./league-tier-list-form.component.scss'],
 })
 export class LeagueTierListFormComponent implements OnInit, OnDestroy {
-  private leagueService = inject(LeagueZoneService);
+  private tierListService = inject(TierListService);
   private dialog = inject(MatDialog);
   private snackBar = inject(MatSnackBar);
   private destroy$ = new Subject<void>();
@@ -119,7 +120,7 @@ export class LeagueTierListFormComponent implements OnInit, OnDestroy {
 
   private loadTierList(): void {
     this.isLoading.set(true);
-    this.leagueService
+    this.tierListService
       .getTierListEdit()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -723,7 +724,7 @@ export class LeagueTierListFormComponent implements OnInit, OnDestroy {
       }
     }
 
-    this.leagueService
+    this.tierListService
       .saveTierListEdit(tierData)
       .pipe(takeUntil(this.destroy$))
       .subscribe({

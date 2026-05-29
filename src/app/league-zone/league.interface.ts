@@ -191,6 +191,29 @@ export namespace League {
     divisions: { name: string; divisionKey: string }[];
     discord?: string;
   };
+
+  export type TournamentSummary = {
+    name: string;
+    tournamentKey: string;
+    description?: string;
+    format: string;
+    ruleset: string;
+    signUpDeadline: Date;
+    draftStart?: Date;
+    draftEnd?: Date;
+    seasonStart?: Date;
+    seasonEnd?: Date;
+    logo?: string;
+    discord?: string;
+  };
+
+  export type LeagueSummary = {
+    name: string;
+    leagueKey: string;
+    description?: string;
+    logo?: string;
+    tournaments: TournamentSummary[];
+  };
 }
 
 type TradeParticipant = {

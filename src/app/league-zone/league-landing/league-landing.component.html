@@ -1,15 +1,119 @@
-<div class="container">
-  <div class="header">PDBL Season 3</div>
-  <img
-    src="assets/images/battle-zone/pdbl.png"
-    alt="Battle PD BL League"
-    class="logo"
-  />
+@if (league) {
+  <div class="landing">
+    <!-- Hero Section -->
+    <div class="hero">
+      @if (league.logo) {
+        <div class="hero__logo-wrap">
+          <img
+            [src]="getLogoUrl(league.logo)"
+            [alt]="league.name + ' logo'"
+            class="hero__logo"
+          />
+        </div>
+      }
+      <div class="hero__info">
+        <h1 class="hero__title">{{ league.name }}</h1>
+        @if (league.description) {
+          <p class="hero__description">{{ league.description }}</p>
+        }
+      </div>
+    </div>
 
-  <div class="buttons">
-    <button class="action-button" routerLink="./tournaments/s3-singles">
-      Singles
-    </button>
-    <button class="action-button" routerLink="./tournaments/s3-vgc">VGC</button>
+    <!-- Tournaments Section -->
+    <div class="tournaments">
+      <h2 class="tournaments__heading">Tournaments</h2>
+      @if (league.tournaments.length === 0) {
+        <p class="tournaments__empty">No tournaments yet.</p>
+      } @else {
+        <div class="tournaments__list">
+          @for (tournament of league.tournaments; track tournament.tournamentKey) {
+            <a
+              [routerLink]="['tournaments', tournament.tournamentKey]"
+              class="tournament-card"
+              [class.tournament-card--active]="getTournamentStatus(tournament) === 'active'"
+              [class.tournament-card--completed]="getTournamentStatus(tournament) === 'completed'"
+            >
+              <div class="tournament-card__header">
+                @if (tournament.logo) {
+                  <img
+                    [src]="getLogoUrl(tournament.logo)"
+                    [alt]="tournament.name + ' logo'"
+                    class="tournament-card__logo"
+                  />
+                }
+                <div class="tournament-card__title-group">
+                  <h3 class="tournament-card__name">{{ tournament.name }}</h3>
+                  <span
+                    class="tournament-card__status"
+                    [class.tournament-card__status--active]="getTournamentStatus(tournament) === 'active'"
+                    [class.tournament-card__status--completed]="getTournamentStatus(tournament) === 'completed'"
+                    [class.tournament-card__status--upcoming]="getTournamentStatus(tournament) === 'upcoming'"
+                  >
+                    {{ getTournamentStatus(tournament) | titlecase }}
+                  </span>
+                </div>
+              </div>
+
+              @if (tournament.description) {
+                <p class="tournament-card__description">{{ tournament.description }}</p>
+              }
+
+              <div class="tournament-card__details">
+                <div class="tournament-card__detail">
+                  <span class="tournament-card__label">Format</span>
+                  <span class="tournament-card__value">{{ tournament.format }}</span>
+                </div>
+                <div class="tournament-card__detail">
+                  <span class="tournament-card__label">Ruleset</span>
+                  <span class="tournament-card__value">{{ tournament.ruleset }}</span>
+                </div>
+                @if (tournament.seasonStart) {
+                  <div class="tournament-card__detail">
+                    <span class="tournament-card__label">Season</span>
+                    <span class="tournament-card__value">
+                      {{ tournament.seasonStart | date: 'MMM d, y' }}
+                      @if (tournament.seasonEnd) {
+                        &ndash; {{ tournament.seasonEnd | date: 'MMM d, y' }}
+                      }
+                    </span>
+                  </div>
+                }
+                @if (!isSeasonOver(tournament)) {
+                  <div class="tournament-card__detail">
+                    <span class="tournament-card__label">Sign Up Deadline</span>
+                    <span class="tournament-card__value">
+                      {{ tournament.signUpDeadline | date: 'MMM d, y' }}
+                    </span>
+                  </div>
+                }
+              </div>
+
+              <div class="tournament-card__actions">
+                @if (isSignUpOpen(tournament)) {
+                  <span class="tournament-card__badge tournament-card__badge--signup">
+                    Sign Ups Open
+                  </span>
+                }
+                @if (tournament.discord) {
+                  <a
+                    [href]="'https://discord.gg/' + tournament.discord"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="tournament-card__discord"
+                    (click)="$event.stopPropagation()"
+                  >
+                    Discord
+                  </a>
+                }
+              </div>
+            </a>
+          }
+        </div>
+      }
+    </div>
   </div>
-</div>
+} @else {
+  <div class="loading-state">
+    <pdz-loading></pdz-loading>
+  </div>
+}

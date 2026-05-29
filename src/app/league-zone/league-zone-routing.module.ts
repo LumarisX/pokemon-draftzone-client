@@ -15,9 +15,9 @@ import { LeagueSignUpComponent } from './league-sign-up/league-sign-up.component
 import { LeagueStandingsComponent } from './league-standings/league-standings.component';
 import { LeagueTeamComponent } from './league-team/league-team.component';
 import { LeagueTeamsComponent } from './league-teams/league-teams.component';
-import { LeagueTierListFormComponent } from './league-tier-list/league-tier-list-form/league-tier-list-form.component';
-import { unsavedChangesGuard } from './league-tier-list/league-tier-list-form/unsaved-changes.guard';
-import { LeagueTierListComponent } from './league-tier-list/league-tier-list.component';
+import { LeagueTierListFormComponent } from '../tier-list/league-tier-list/league-tier-list-form/league-tier-list-form.component';
+import { unsavedChangesGuard } from '../tier-list/league-tier-list/league-tier-list-form/unsaved-changes.guard';
+import { LeagueTierListComponent } from '../tier-list/league-tier-list/league-tier-list.component';
 import { LeagueTradesComponent } from './league-trades/league-trades.component';
 import { TournamentLandingComponent } from './tournaments/tournament-landing/tournament-landing.component';
 import { LeagueLandingComponent } from './league-landing/league-landing.component';

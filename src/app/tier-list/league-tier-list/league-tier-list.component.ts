@@ -46,6 +46,7 @@ import {
   PokemonDialogData,
 } from '../../components/pokemon-dialog/pokemon-dialog.component';
 import { PokemonTypeComponent } from '../../components/pokemon-type/pokemon-type.component';
+import { TierListService } from '../../services/tier-list.service';
 
 @Component({
   selector: 'pdz-league-tier-list',
@@ -69,7 +70,8 @@ import { PokemonTypeComponent } from '../../components/pokemon-type/pokemon-type
   styleUrls: ['./league-tier-list.component.scss'],
 })
 export class LeagueTierListComponent implements OnInit, OnDestroy {
-  private leagueService = inject(LeagueZoneService);
+  // private leagueService = inject(LeagueZoneService);
+  private tierListService = inject(TierListService);
   private wsService = inject(WebSocketService);
   private dialog = inject(MatDialog);
   private destroy$ = new Subject<void>();
@@ -146,7 +148,7 @@ export class LeagueTierListComponent implements OnInit, OnDestroy {
   }
 
   private loadTierList(): void {
-    this.leagueService
+    this.tierListService
       .getTierList()
       .pipe(first())
       .subscribe((data) => {

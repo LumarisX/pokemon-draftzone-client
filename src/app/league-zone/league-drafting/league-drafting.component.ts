@@ -18,7 +18,7 @@ import { LeagueZoneService } from '../../services/leagues/league-zone.service';
 import { WebSocketService } from '../../services/ws.service';
 import { NumberSuffixPipe } from '../../util/pipes/number-suffix.pipe';
 import { LeagueNotificationsComponent } from '../league-notifications/league-notifications.component';
-import { LeagueTierListComponent } from '../league-tier-list/league-tier-list.component';
+import { LeagueTierListComponent } from '../../tier-list/league-tier-list/league-tier-list.component';
 import { League } from '../league.interface';
 import { IconComponent } from '../../images/icon/icon.component';
 

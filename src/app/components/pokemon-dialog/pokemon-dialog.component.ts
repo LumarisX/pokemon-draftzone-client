@@ -11,7 +11,7 @@ import { STATS, StatsTable, Type } from '../../data';
 import { IconComponent } from '../../images/icon/icon.component';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { TierPokemonAddon } from '../../interfaces/tier-pokemon.interface';
-import { makeBanString } from '../../league-zone/league-tier-list/tier-list.utils';
+import { makeBanString } from '../../tier-list/league-tier-list/tier-list.utils';
 import {
   DataService,
   PokemonSearchMoveData,

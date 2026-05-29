@@ -7,6 +7,7 @@ import { DebugPath } from '../debug/debug-routing.module';
 import { LeagueZonePath } from '../league-zone/league-zone-routing.module';
 import { ToolsPath } from '../tools/tools.router';
 import { StatisticsPath } from '../statistics/statistics-routing.module';
+import { TierListsPath } from '../tier-list/tier-list-routing.module';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -37,6 +38,11 @@ const routes: Routes = [
     path: StatisticsPath,
     loadChildren: () =>
       import('../statistics/statistics.module').then((m) => m.StatisticsModule),
+  },
+  {
+    path: TierListsPath,
+    loadChildren: () =>
+      import('../tier-list/tier-list.module').then((m) => m.TierListModule),
   },
   { path: '**', component: NotFoundComponent },
 ];

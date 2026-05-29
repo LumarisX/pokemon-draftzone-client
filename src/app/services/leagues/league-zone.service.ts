@@ -187,46 +187,46 @@ export class LeagueZoneService {
     );
   }
 
-  getTierList() {
-    const params: { [key: string]: string } = {};
-    const divisionKey = this.divisionKey();
-    if (divisionKey) params['division'] = divisionKey;
-    return this.apiService.get<{
-      tierList: LeagueTier[];
-      divisions: { [key: string]: { pokemonId: string; teamId: string }[] };
-      ruleset?: string;
-    }>(`${ROOTPATH}/tournaments/${this.tournamentKey()}/tier-list`, {
-      params,
-    });
-  }
+  // getTierList() {
+  //   const params: { [key: string]: string } = {};
+  //   const divisionKey = this.divisionKey();
+  //   if (divisionKey) params['division'] = divisionKey;
+  //   return this.apiService.get<{
+  //     tierList: LeagueTier[];
+  //     divisions: { [key: string]: { pokemonId: string; teamId: string }[] };
+  //     ruleset?: string;
+  //   }>(`${ROOTPATH}/tournaments/${this.tournamentKey()}/tier-list`, {
+  //     params,
+  //   });
+  // }
 
-  getTierListEdit() {
-    const params: { [key: string]: string } = {};
-    const divisionKey = this.divisionKey();
-    if (divisionKey) params['division'] = divisionKey;
-    return this.apiService.get<{
-      tierList: LeagueTier[];
-      divisions: { [key: string]: { pokemonId: string; teamId: string }[] };
-    }>(
-      `${ROOTPATH}/tournaments/${this.tournamentKey()}/tier-list/edit`,
+  // getTierListEdit() {
+  //   const params: { [key: string]: string } = {};
+  //   const divisionKey = this.divisionKey();
+  //   if (divisionKey) params['division'] = divisionKey;
+  //   return this.apiService.get<{
+  //     tierList: LeagueTier[];
+  //     divisions: { [key: string]: { pokemonId: string; teamId: string }[] };
+  //   }>(
+  //     `${ROOTPATH}/tournaments/${this.tournamentKey()}/tier-list/edit`,
 
-      { authenticated: true, params },
-    );
-  }
+  //     { authenticated: true, params },
+  //   );
+  // }
 
-  saveTierListEdit(
-    tiers: Array<{
-      name: string;
-      cost: number;
-      pokemon: Array<{ id: string; name: string; banned?: boolean }>;
-    }>,
-  ) {
-    return this.apiService.post<{ success: boolean; message: string }>(
-      `${ROOTPATH}/tournaments/${this.tournamentKey()}/tier-list/edit`,
-      { tiers },
-      { authenticated: true },
-    );
-  }
+  // saveTierListEdit(
+  //   tiers: Array<{
+  //     name: string;
+  //     cost: number;
+  //     pokemon: Array<{ id: string; name: string; banned?: boolean }>;
+  //   }>,
+  // ) {
+  //   return this.apiService.post<{ success: boolean; message: string }>(
+  //     `${ROOTPATH}/tournaments/${this.tournamentKey()}/tier-list/edit`,
+  //     { tiers },
+  //     { authenticated: true },
+  //   );
+  // }
 
   getSchedule(
     params?: { stage?: string },
@@ -342,6 +342,10 @@ export class LeagueZoneService {
     return this.apiService.get(
       `${ROOTPATH}/tournaments/${this.tournamentKey()}/info`,
     );
+  }
+
+  getLeague(): Observable<League.LeagueSummary> {
+    return this.apiService.get(`${ROOTPATH}/${this.leagueKey()}`);
   }
 
   getSignUps(): Observable<{

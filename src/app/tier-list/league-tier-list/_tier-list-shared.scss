@@ -219,6 +219,13 @@
     overflow-x: auto;
     overflow-y: hidden;
     padding: var(--pdz-space-sm);
+
+    &__empty {
+      @include apply-typography(body-md);
+      color: pdz-color(on-surface-variant);
+      margin: auto;
+      opacity: 0.6;
+    }
   }
 
   // ─── Tier column ──────────────────────────────────────────────────────────
