@@ -1,7 +1,7 @@
 <div class="tier-list">
   <!-- Toolbar -->
   <div class="toolbar">
-    <h2 class="toolbar__title">Tier List</h2>
+    <h2 class="toolbar__title">{{ tierListName() }}</h2>
     <div class="toolbar__spacer"></div>
 
     <div class="toolbar__search">
@@ -101,9 +101,17 @@
       </div>
     }
 
-    <label class="toggle-label">
-      <mat-checkbox [(ngModel)]="showDrafted">Show Drafted</mat-checkbox>
-    </label>
+    @if (divisionNames.length > 0) {
+      <button
+        class="action-button"
+        [class.action-button--active]="showDrafted"
+        (click)="showDrafted = !showDrafted"
+        matTooltip="{{ showDrafted ? 'Hide drafted' : 'Show drafted' }}"
+      >
+        <mat-icon>{{ showDrafted ? "visibility" : "visibility_off" }}</mat-icon>
+        Drafted
+      </button>
+    }
   </div>
 
   <!-- Tier List Main -->

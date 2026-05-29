@@ -1,12 +1,16 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from '@auth0/auth0-angular';
+import { MatchupOverviewComponent } from '../drafts/matchup-overview/matchup-overview.component';
+import { TierListFormComponent } from '../tier-lists/tier-list/tier-list-form/tier-list-form.component';
+import { unsavedChangesGuard } from '../tier-lists/tier-list/tier-list-form/unsaved-changes.guard';
+import { TierListComponent } from '../tier-lists/tier-list/tier-list.component';
 import { DivisionDashboardComponent } from './divisions/division-dashboard/division-dashboard.component';
 import { PowerRankingsComponent } from './divisions/power-rankings/power-rankings.component';
 import { LeagueBracketComponent } from './league-bracket/league-bracket.component';
 import { LeagueDraftComponent } from './league-drafting/league-drafting.component';
+import { LeagueLandingComponent } from './league-landing/league-landing.component';
 import { LeagueManagePath } from './league-manage/league-manage-routing.module';
-import { LeagueNewComponent } from './league-new/league-new.component';
 import { LeagueOverviewComponent } from './league-overview/league-overview.component';
 import { leagueRoleGuard } from './league-role.guard';
 import { LeagueRulesOverviewComponent } from './league-rules-overview/league-rules-overview.component';
@@ -15,13 +19,8 @@ import { LeagueSignUpComponent } from './league-sign-up/league-sign-up.component
 import { LeagueStandingsComponent } from './league-standings/league-standings.component';
 import { LeagueTeamComponent } from './league-team/league-team.component';
 import { LeagueTeamsComponent } from './league-teams/league-teams.component';
-import { LeagueTierListFormComponent } from '../tier-list/league-tier-list/league-tier-list-form/league-tier-list-form.component';
-import { unsavedChangesGuard } from '../tier-list/league-tier-list/league-tier-list-form/unsaved-changes.guard';
-import { LeagueTierListComponent } from '../tier-list/league-tier-list/league-tier-list.component';
 import { LeagueTradesComponent } from './league-trades/league-trades.component';
 import { TournamentLandingComponent } from './tournaments/tournament-landing/tournament-landing.component';
-import { LeagueLandingComponent } from './league-landing/league-landing.component';
-import { MatchupOverviewComponent } from '../drafts/matchup-overview/matchup-overview.component';
 
 export const LeagueZonePath = 'leagues';
 const routes: Routes = [
@@ -56,11 +55,11 @@ const routes: Routes = [
   },
   {
     path: ':leagueKey/tournaments/:tournamentKey/tier-list',
-    component: LeagueTierListComponent,
+    component: TierListComponent,
   },
   {
     path: ':leagueKey/tournaments/:tournamentKey/tier-list/edit',
-    component: LeagueTierListFormComponent,
+    component: TierListFormComponent,
     canDeactivate: [unsavedChangesGuard],
   },
   {
@@ -115,7 +114,7 @@ const routes: Routes = [
 
   {
     path: ':leagueKey/tournaments/:tournamentKey/divisions/:divisionKey/tier-list',
-    component: LeagueTierListComponent,
+    component: TierListComponent,
   },
   {
     path: ':leagueKey/tournaments/:tournamentKey/divisions/:divisionKey/trades',

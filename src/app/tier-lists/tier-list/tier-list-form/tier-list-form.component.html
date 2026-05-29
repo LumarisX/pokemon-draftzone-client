@@ -1,7 +1,14 @@
 <div class="tier-form">
   <!-- Toolbar -->
   <div class="toolbar">
-    <h2 class="toolbar__title">Edit Tier List</h2>
+    <button
+      class="action-button"
+      (click)="openSettings()"
+      aria-label="Settings"
+    >
+      <pdz-icon name="settings" size="sm"></pdz-icon>
+    </button>
+    <h2 class="toolbar__title">{{ tierListName() }}</h2>
 
     @if (hasUnsavedChanges()) {
       <div class="unsaved-indicator">
@@ -44,6 +51,7 @@
     <div class="toolbar__actions">
       <div class="sort-control">
         <mat-icon>sort</mat-icon>
+
         <select [ngModel]="sortBy()" (ngModelChange)="setSortOption($event)">
           @for (option of sortOptions; track option.value) {
             <option [value]="option.value">{{ option.label }}</option>
@@ -57,9 +65,28 @@
         (click)="saveTierList()"
         matTooltip="Save changes (Ctrl+S)"
       >
-        <mat-icon>save</mat-icon>
+        <pdz-icon name="save" size="sm"></pdz-icon>
+
         Save
       </button>
+
+      <div class="export-control">
+        <button
+          class="action-button"
+          (click)="showExportMenu.set(!showExportMenu())"
+          aria-label="Export"
+        >
+          <pdz-icon name="download" size="sm"></pdz-icon>
+        </button>
+        @if (showExportMenu()) {
+          <div class="export-dropdown">
+            <button class="export-dropdown__item" (click)="exportCsv()">
+              <pdz-icon name="table_view" [size]="16"></pdz-icon>
+              CSV
+            </button>
+          </div>
+        }
+      </div>
     </div>
   </div>
 

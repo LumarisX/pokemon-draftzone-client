@@ -1,0 +1,56 @@
+@use "../../../../styles/global.scss" as *;
+@use "../../../../styles/mixins" as *;
+
+.settings-dialog {
+  &__title {
+    display: flex;
+    align-items: center;
+    gap: var(--pdz-space-sm);
+    @include apply-typography(title-md);
+    font-family: var(--pdz-font-fancy);
+
+    mat-icon {
+      color: pdz-color(primary);
+    }
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--pdz-space-sm);
+    padding-top: var(--pdz-space-sm);
+    min-width: 22rem;
+  }
+
+  &__group-label {
+    @include apply-typography(label-sm);
+    color: pdz-color(on-surface-variant);
+    font-weight: 600;
+    margin-bottom: calc(var(--pdz-space-xs) * -1);
+  }
+
+  &__row {
+    display: flex;
+    gap: var(--pdz-space-sm);
+  }
+
+  &__error {
+    @include apply-typography(label-sm);
+    color: pdz-color(error);
+    margin: 0;
+  }
+
+  &__actions {
+    gap: var(--pdz-space-xs);
+  }
+}
+
+.field {
+  &--full {
+    width: 100%;
+  }
+
+  &--half {
+    flex: 1;
+  }
+}

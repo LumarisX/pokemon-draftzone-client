@@ -36,6 +36,12 @@
     padding: var(--pdz-space-2xs) var(--pdz-space-sm);
     @include apply-typography(label-sm);
   }
+
+  &--active {
+    background-color: pdz-color(primary-container);
+    color: pdz-color(on-primary-container);
+    border-color: pdz-color(primary);
+  }
 }
 
 // ─── Filter controls ──────────────────────────────────────────────────────
@@ -101,13 +107,6 @@
   &:hover {
     background-color: pdz-color(surface-container-highest);
   }
-}
-
-.toggle-label {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  white-space: nowrap;
 }
 
 // ─── Tier column (list-specific) ──────────────────────────────────────────

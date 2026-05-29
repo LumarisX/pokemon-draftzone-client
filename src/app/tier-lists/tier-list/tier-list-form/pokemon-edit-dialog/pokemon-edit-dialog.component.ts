@@ -18,7 +18,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { SpriteComponent } from '../../../../images/sprite/sprite.component';
 import { SlideToggleComponent } from '../../../../util/inputs/slide-toggle/slide-toggle.component';
-import { EditTierPokemon } from '../league-tier-list-form.component';
+import { EditTierPokemon } from '../tier-list-form.component';
 import { LeagueTier } from '../../../../interfaces/tier-pokemon.interface';
 
 export interface PokemonEditDialogData {

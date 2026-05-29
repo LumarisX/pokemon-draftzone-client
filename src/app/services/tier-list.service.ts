@@ -40,13 +40,37 @@ export class TierListService {
       tierList: LeagueTier[];
       divisions: { [key: string]: { pokemonId: string; teamId: string }[] };
       ruleset?: string;
+      name?: string;
+      description?: string;
     }>(`${ROOTPATH}/${this.tierListId()}`);
+  }
+
+  getSettings() {
+    return this.apiService.get<{
+      name: string;
+      description?: string;
+      pointTotal?: number;
+      draftCount: { min: number; max: number };
+    }>(`${ROOTPATH}/${this.tierListId()}/settings`, { authenticated: true });
+  }
+
+  updateSettings(settings: {
+    name?: string;
+    description?: string;
+    pointTotal?: number;
+    draftCount?: { min: number; max: number };
+  }) {
+    return this.apiService.patch<{ success: boolean }>(
+      `${ROOTPATH}/${this.tierListId()}/settings`,
+      settings,
+    );
   }
 
   getTierListEdit() {
     return this.apiService.get<{
       tierList: LeagueTier[];
       divisions: { [key: string]: { pokemonId: string; teamId: string }[] };
+      name?: string;
     }>(`${ROOTPATH}/${this.tierListId()}/edit`, { authenticated: true });
   }
 

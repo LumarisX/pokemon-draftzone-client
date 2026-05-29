@@ -1,18 +1,22 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { LeagueTierListFormComponent } from './league-tier-list/league-tier-list-form/league-tier-list-form.component';
-import { unsavedChangesGuard } from './league-tier-list/league-tier-list-form/unsaved-changes.guard';
-import { LeagueTierListComponent } from './league-tier-list/league-tier-list.component';
+import { TierListFormComponent } from './tier-list/tier-list-form/tier-list-form.component';
+import { unsavedChangesGuard } from './tier-list/tier-list-form/unsaved-changes.guard';
+import { TierListComponent } from './tier-list/tier-list.component';
 
 export const TierListsPath = 'tier-lists';
 const routes: Routes = [
   {
+    path: '',
+    component: TierListComponent,
+  },
+  {
     path: ':tierListId',
-    component: LeagueTierListComponent,
+    component: TierListComponent,
   },
   {
     path: ':tierListId/edit',
-    component: LeagueTierListFormComponent,
+    component: TierListFormComponent,
     canDeactivate: [unsavedChangesGuard],
   },
 ];

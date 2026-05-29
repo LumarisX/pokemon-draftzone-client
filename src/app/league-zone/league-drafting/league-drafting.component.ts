@@ -11,16 +11,16 @@ import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { interval, Subject, takeUntil } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
+import { IconComponent } from '../../images/icon/icon.component';
 import { LoadingComponent } from '../../images/loading/loading.component';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { LeagueNotificationService } from '../../services/league-notification.service';
 import { LeagueZoneService } from '../../services/leagues/league-zone.service';
 import { WebSocketService } from '../../services/ws.service';
+import { TierListComponent } from '../../tier-lists/tier-list/tier-list.component';
 import { NumberSuffixPipe } from '../../util/pipes/number-suffix.pipe';
 import { LeagueNotificationsComponent } from '../league-notifications/league-notifications.component';
-import { LeagueTierListComponent } from '../../tier-list/league-tier-list/league-tier-list.component';
 import { League } from '../league.interface';
-import { IconComponent } from '../../images/icon/icon.component';
 
 interface DraftAddedEvent {
   divisionId: string;
@@ -65,7 +65,7 @@ interface DraftSkipEvent {
   selector: 'pdz-league-drafting',
   imports: [
     CommonModule,
-    LeagueTierListComponent,
+    TierListComponent,
     SpriteComponent,
     MatIconModule,
     NumberSuffixPipe,

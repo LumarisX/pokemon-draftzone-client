@@ -1,0 +1,116 @@
+<h2 mat-dialog-title class="settings-dialog__title">
+  <mat-icon>settings</mat-icon>
+  Tier List Settings
+</h2>
+
+<form [formGroup]="form" (ngSubmit)="onSave()">
+  <div mat-dialog-content class="settings-dialog__content">
+    <mat-form-field appearance="outline" class="field--full">
+      <mat-label>Title</mat-label>
+      <input
+        matInput
+        formControlName="name"
+        placeholder="Enter tier list title"
+      />
+      @if (
+        form.get("name")?.hasError("required") && form.get("name")?.touched
+      ) {
+        <mat-error>Title is required</mat-error>
+      }
+      @if (form.get("name")?.hasError("maxlength")) {
+        <mat-error>Title must be 100 characters or fewer</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="field--full">
+      <mat-label>Description</mat-label>
+      <textarea
+        matInput
+        formControlName="description"
+        placeholder="Optional description for this tier list"
+        rows="3"
+      ></textarea>
+      @if (form.get("description")?.hasError("maxlength")) {
+        <mat-error>Description must be 500 characters or fewer</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="field--half">
+      <mat-label>Point Total</mat-label>
+      <input
+        matInput
+        type="number"
+        formControlName="pointTotal"
+        placeholder="e.g. 100"
+      />
+      @if (form.get("pointTotal")?.hasError("min")) {
+        <mat-error>Must be at least 1</mat-error>
+      }
+    </mat-form-field>
+
+    <div class="settings-dialog__group-label">Draft Count</div>
+    <div class="settings-dialog__row" formGroupName="draftCount">
+      <mat-form-field appearance="outline" class="field--half">
+        <mat-label>Min Picks</mat-label>
+        <input
+          matInput
+          type="number"
+          formControlName="min"
+          placeholder="e.g. 10"
+        />
+        @if (form.get("draftCount")?.get("min")?.hasError("min")) {
+          <mat-error>Must be 0 or more</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="field--half">
+        <mat-label>Max Picks</mat-label>
+        <input
+          matInput
+          type="number"
+          formControlName="max"
+          placeholder="e.g. 15"
+        />
+        @if (form.get("draftCount")?.get("max")?.hasError("min")) {
+          <mat-error>Must be at least 1</mat-error>
+        }
+      </mat-form-field>
+    </div>
+    @if (
+      form.get("draftCount")?.hasError("draftCountInvalid") &&
+      form.get("draftCount")?.touched
+    ) {
+      <p class="settings-dialog__error">Min picks cannot exceed max picks</p>
+    }
+
+    @if (saveError()) {
+      <p class="settings-dialog__error">{{ saveError() }}</p>
+    }
+  </div>
+
+  <div mat-dialog-actions align="end" class="settings-dialog__actions">
+    <button
+      mat-button
+      type="button"
+      (click)="onCancel()"
+      [disabled]="isSaving()"
+    >
+      Cancel
+    </button>
+    <button
+      mat-flat-button
+      color="primary"
+      type="submit"
+      [disabled]="form.invalid || isSaving()"
+    >
+      @if (isSaving()) {
+        <mat-progress-spinner
+          diameter="16"
+          mode="indeterminate"
+        ></mat-progress-spinner>
+      } @else {
+        Save
+      }
+    </button>
+  </div>
+</form>

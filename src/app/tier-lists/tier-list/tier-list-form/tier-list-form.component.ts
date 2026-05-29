@@ -14,7 +14,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { first, takeUntil } from 'rxjs/operators';
 import { LoadingComponent } from '../../../images/loading/loading.component';
 import { SpriteComponent } from '../../../images/sprite/sprite.component';
 import { TierPokemon } from '../../../interfaces/tier-pokemon.interface';
@@ -29,6 +29,12 @@ import {
   TierEditDialogComponent,
 } from './tier-edit-dialog/tier-edit-dialog.component';
 import { TierListService } from '../../../services/tier-list.service';
+import {
+  TierListSettingsDialogComponent,
+  TierListSettingsDialogData,
+} from '../tier-list-settings-dialog/tier-list-settings-dialog.component';
+import { IconComponent } from '../../../images/icon/icon.component';
+import { TooltipModule } from '../../../util/tooltip/tooltip.module';
 
 export type EditTierPokemon = TierPokemon;
 
@@ -51,7 +57,7 @@ interface EditableTier {
 }
 
 @Component({
-  selector: 'pdz-league-tier-list-form',
+  selector: 'pdz-tier-list-form',
   imports: [
     CommonModule,
     MatIconModule,
@@ -63,11 +69,13 @@ interface EditableTier {
     SpriteComponent,
     LoadingComponent,
     MatDialogModule,
+    IconComponent,
+    TooltipModule,
   ],
-  templateUrl: './league-tier-list-form.component.html',
-  styleUrls: ['./league-tier-list-form.component.scss'],
+  templateUrl: './tier-list-form.component.html',
+  styleUrls: ['./tier-list-form.component.scss'],
 })
-export class LeagueTierListFormComponent implements OnInit, OnDestroy {
+export class TierListFormComponent implements OnInit, OnDestroy {
   private tierListService = inject(TierListService);
   private dialog = inject(MatDialog);
   private snackBar = inject(MatSnackBar);
@@ -80,6 +88,8 @@ export class LeagueTierListFormComponent implements OnInit, OnDestroy {
   searchText = signal<string>('');
   isLoading = signal<boolean>(false);
   hasUnsavedChanges = signal<boolean>(false);
+  tierListName = signal<string>('Tier List');
+  showExportMenu = signal<boolean>(false);
 
   UNTIERED_TIER_NAME = 'Untiered';
   BANNED_TIER_NAME = 'Banned';
@@ -125,6 +135,7 @@ export class LeagueTierListFormComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (data) => {
+          if (data.name) this.tierListName.set(data.name);
           const flatTiers = [...data.tierList];
 
           const nullTierIndex = flatTiers.findIndex(
@@ -293,6 +304,14 @@ export class LeagueTierListFormComponent implements OnInit, OnDestroy {
     this.redoStack = [];
     this.canUndo.set(true);
     this.canRedo.set(false);
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.export-control')) {
+      this.showExportMenu.set(false);
+    }
   }
 
   @HostListener('window:keydown', ['$event'])
@@ -674,6 +693,69 @@ export class LeagueTierListFormComponent implements OnInit, OnDestroy {
     if (!tiers) return;
     tiers.forEach((tier) => tier.pokemon.sort(SORT_MAP[option]));
     this.tiers.set([...tiers]);
+  }
+
+  exportCsv(): void {
+    const tiers = this.tiers();
+    const banned = this.banned();
+    if (!tiers) return;
+    this.showExportMenu.set(false);
+
+    // Build ordered column list: Banned first, then regular tiers
+    const columns: { name: string; pokemon: EditTierPokemon[] }[] = [];
+    if (banned && banned.pokemon.length > 0) {
+      columns.push(banned);
+    }
+    columns.push(...tiers);
+
+    const maxRows = Math.max(...columns.map((c) => c.pokemon.length), 0);
+
+    const rows: string[] = [columns.map((c) => this.csvCell(c.name)).join(',')];
+
+    for (let i = 0; i < maxRows; i++) {
+      const row = columns.map((c) => {
+        const p = c.pokemon[i];
+        return p ? this.csvCell(p.name) : '';
+      });
+      rows.push(row.join(','));
+    }
+
+    const csv = rows.join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${this.tierListName()}-tier-list.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  private csvCell(value: string): string {
+    if (/[,"\n]/.test(value)) {
+      return `"${value.replace(/"/g, '""')}"`;
+    }
+    return value;
+  }
+
+  openSettings(): void {
+    this.tierListService
+      .getSettings()
+      .pipe(first())
+      .subscribe((settings) => {
+        const dialogRef = this.dialog.open(TierListSettingsDialogComponent, {
+          data: settings satisfies TierListSettingsDialogData,
+          width: '30rem',
+          maxWidth: '95vw',
+        });
+
+        dialogRef
+          .afterClosed()
+          .pipe(first())
+          .subscribe((result: TierListSettingsDialogData | undefined) => {
+            if (!result) return;
+            if (result.name) this.tierListName.set(result.name);
+          });
+      });
   }
 
   saveTierList(): void {

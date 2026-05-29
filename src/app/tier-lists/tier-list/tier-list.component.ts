@@ -49,9 +49,8 @@ import { PokemonTypeComponent } from '../../components/pokemon-type/pokemon-type
 import { TierListService } from '../../services/tier-list.service';
 
 @Component({
-  selector: 'pdz-league-tier-list',
-  standalone: true,
-  templateUrl: './league-tier-list.component.html',
+  selector: 'pdz-tier-list',
+  templateUrl: './tier-list.component.html',
   imports: [
     CommonModule,
     MatIconModule,
@@ -67,9 +66,9 @@ import { TierListService } from '../../services/tier-list.service';
     IconComponent,
     PokemonTypeComponent,
   ],
-  styleUrls: ['./league-tier-list.component.scss'],
+  styleUrls: ['./tier-list.component.scss'],
 })
-export class LeagueTierListComponent implements OnInit, OnDestroy {
+export class TierListComponent implements OnInit, OnDestroy {
   // private leagueService = inject(LeagueZoneService);
   private tierListService = inject(TierListService);
   private wsService = inject(WebSocketService);
@@ -79,6 +78,7 @@ export class LeagueTierListComponent implements OnInit, OnDestroy {
   drafted = signal<{ [division: string]: { pokemonId: string }[] }>({});
   tiers = signal<LeagueTier[] | undefined>(undefined);
   ruleset = signal<string | undefined>(undefined);
+  tierListName = signal<string>('Tier List');
   sortBy = signal<SortOption>('BST');
   selectedDivision = signal<string | undefined>(undefined);
   searchText = signal<string>('');
@@ -155,6 +155,7 @@ export class LeagueTierListComponent implements OnInit, OnDestroy {
         this.drafted.set(data.divisions);
         this.tiers.set(data.tierList);
         this.ruleset.set(data.ruleset);
+        if (data.name) this.tierListName.set(data.name);
         const divisionNames = Object.keys(data.divisions);
         if (divisionNames.length > 0) {
           this.selectedDivision.set(divisionNames[0]);

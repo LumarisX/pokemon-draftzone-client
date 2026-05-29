@@ -71,6 +71,58 @@
   }
 }
 
+// ─── Export dropdown ──────────────────────────────────────────────────────
+
+.export-control {
+  position: relative;
+
+  &__chevron {
+    font-size: 1rem;
+    width: 1rem;
+    height: 1rem;
+    margin-left: calc(var(--pdz-space-2xs) * -1);
+  }
+}
+
+.export-dropdown {
+  position: absolute;
+  top: calc(100% + var(--pdz-space-2xs));
+  right: 0;
+  background-color: pdz-color(surface-container);
+  border: 1px solid pdz-color(outline-variant);
+  border-radius: var(--pdz-shape-corner-sm);
+  box-shadow: var(--pdz-level-3);
+  z-index: 2100;
+  min-width: 9rem;
+  padding: var(--pdz-space-2xs);
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: var(--pdz-space-sm);
+    width: 100%;
+    padding: var(--pdz-space-xs) var(--pdz-space-sm);
+    border: none;
+    border-radius: var(--pdz-shape-corner-xs);
+    background: transparent;
+    color: pdz-color(on-surface);
+    cursor: pointer;
+    @include apply-typography(body-sm);
+    text-align: left;
+
+    mat-icon {
+      font-size: 1.1rem;
+      width: 1.1rem;
+      height: 1.1rem;
+      color: pdz-color(on-surface-variant);
+    }
+
+    &:hover {
+      background-color: pdz-color(surface-container-high);
+    }
+  }
+}
+
 // ─── Tier column (form-specific) ──────────────────────────────────────────
 
 .null-tier-container {

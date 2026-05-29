@@ -1,4 +1,4 @@
-// Shared styles between league-tier-list and league-tier-list-form.
+// Shared styles between tier-list and tier-list-form.
 // Include via: @include tier-list-shared()
 @use "../../../styles/global.scss" as *;
 @use "../../../styles/mixins" as *;
@@ -122,7 +122,7 @@
     display: inline-flex;
     align-items: center;
     gap: var(--pdz-space-xs);
-    padding: var(--pdz-space-xs) var(--pdz-space-md);
+    padding: var(--pdz-space-xs) var(--pdz-space-xs);
     border: 1px solid pdz-color(outline);
     background-color: pdz-color(surface);
     color: pdz-color(on-surface);
