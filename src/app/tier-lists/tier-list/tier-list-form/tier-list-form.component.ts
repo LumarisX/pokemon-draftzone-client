@@ -15,11 +15,17 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
+import { IconComponent } from '../../../images/icon/icon.component';
 import { LoadingComponent } from '../../../images/loading/loading.component';
 import { SpriteComponent } from '../../../images/sprite/sprite.component';
 import { TierPokemon } from '../../../interfaces/tier-pokemon.interface';
-import { LeagueZoneService } from '../../../services/leagues/league-zone.service';
-import { SORT_MAP, SortOption } from '../tier-list.utils';
+import { TierListService } from '../../../services/tier-list.service';
+import { TooltipModule } from '../../../util/tooltip/tooltip.module';
+import {
+  TierListSettingsDialogComponent,
+  TierListSettingsDialogData,
+} from '../tier-list-settings-dialog/tier-list-settings-dialog.component';
+import { matchesSearchText, SORT_MAP, SortOption } from '../tier-list.utils';
 import {
   PokemonEditDialogComponent,
   PokemonEditDialogData,
@@ -28,13 +34,11 @@ import {
   TierDialogResult,
   TierEditDialogComponent,
 } from './tier-edit-dialog/tier-edit-dialog.component';
-import { TierListService } from '../../../services/tier-list.service';
 import {
-  TierListSettingsDialogComponent,
-  TierListSettingsDialogData,
-} from '../tier-list-settings-dialog/tier-list-settings-dialog.component';
-import { IconComponent } from '../../../images/icon/icon.component';
-import { TooltipModule } from '../../../util/tooltip/tooltip.module';
+  ImportDialogComponent,
+  ImportDialogData,
+  ImportDialogResult,
+} from './import-dialog/import-dialog.component';
 
 export type EditTierPokemon = TierPokemon;
 
@@ -90,6 +94,7 @@ export class TierListFormComponent implements OnInit, OnDestroy {
   hasUnsavedChanges = signal<boolean>(false);
   tierListName = signal<string>('Tier List');
   showExportMenu = signal<boolean>(false);
+  showImportMenu = signal<boolean>(false);
 
   UNTIERED_TIER_NAME = 'Untiered';
   BANNED_TIER_NAME = 'Banned';
@@ -737,6 +742,211 @@ export class TierListFormComponent implements OnInit, OnDestroy {
     return value;
   }
 
+  importCsv(): void {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.csv,text/csv';
+    input.onchange = (event: Event) => {
+      const file = (event.target as HTMLInputElement).files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const text = e.target?.result as string;
+        this.openCsvImportDialog(text);
+      };
+      reader.readAsText(file);
+    };
+    input.click();
+    this.showImportMenu.set(false);
+  }
+
+  private openCsvImportDialog(csvText: string): void {
+    const tiers = this.tiers();
+    const untiered = this.untiered();
+    if (!tiers || !untiered) return;
+
+    const lines = csvText
+      .replace(/\r/g, '')
+      .split('\n')
+      .filter((l) => l.trim());
+    if (lines.length < 1) {
+      this.snackBar.open('CSV file is empty.', 'Close', { duration: 4000 });
+      return;
+    }
+
+    const headers = this.parseCsvRow(lines[0]).map((h) => h.trim());
+    const PREVIEW_COUNT = 999;
+    const columns = headers.map((header, col) => {
+      const preview: string[] = [];
+      for (
+        let row = 1;
+        row < lines.length && preview.length < PREVIEW_COUNT;
+        row++
+      ) {
+        const cells = this.parseCsvRow(lines[row]);
+        const val = (cells[col] ?? '').trim();
+        if (val) preview.push(val);
+      }
+      return { csvHeader: header, preview };
+    });
+
+    const dialogRef = this.dialog.open(ImportDialogComponent, {
+      data: {
+        columns,
+        availableTiers: tiers.map((t) => t.name),
+        untieredName: this.UNTIERED_TIER_NAME,
+        bannedName: this.BANNED_TIER_NAME,
+      } satisfies ImportDialogData,
+      width: '44rem',
+      maxWidth: '95vw',
+      maxHeight: '90vh',
+    });
+
+    dialogRef
+      .afterClosed()
+      .pipe(first())
+      .subscribe((result: ImportDialogResult | null) => {
+        if (!result) return;
+        this.applyCsvImport(csvText, headers, result);
+      });
+  }
+
+  private parseCsvRow(row: string): string[] {
+    const result: string[] = [];
+    let current = '';
+    let inQuotes = false;
+    for (let i = 0; i < row.length; i++) {
+      const ch = row[i];
+      if (inQuotes) {
+        if (ch === '"' && row[i + 1] === '"') {
+          current += '"';
+          i++;
+        } else if (ch === '"') {
+          inQuotes = false;
+        } else {
+          current += ch;
+        }
+      } else if (ch === '"') {
+        inQuotes = true;
+      } else if (ch === ',') {
+        result.push(current);
+        current = '';
+      } else {
+        current += ch;
+      }
+    }
+    result.push(current);
+    return result;
+  }
+
+  private applyCsvImport(
+    csvText: string,
+    headers: string[],
+    columnMapping: ImportDialogResult,
+  ): void {
+    const tiers = this.tiers();
+    const untiered = this.untiered();
+    const banned = this.banned();
+    if (!tiers || !untiered) return;
+
+    const NEW_TIER_PREFIX = '__NEW_TIER__';
+
+    const lines = csvText
+      .replace(/\r/g, '')
+      .split('\n')
+      .filter((l) => l.trim());
+
+    // Build a flat lookup map: lowercase name -> TierPokemon
+    const allPokemon = new Map<string, EditTierPokemon>();
+    const allTiers = [...tiers, untiered, ...(banned ? [banned] : [])];
+    for (const tier of allTiers) {
+      for (const p of tier.pokemon) {
+        allPokemon.set(p.name.toLowerCase(), p);
+      }
+    }
+
+    // Resolve column mappings: NEW_TIER__ prefixed values become actual tier names
+    const resolvedMapping: (string | null)[] = columnMapping.map((m) => {
+      if (m === null) return null;
+      if (m.startsWith(NEW_TIER_PREFIX)) return m.slice(NEW_TIER_PREFIX.length);
+      return m;
+    });
+
+    // Collect new tier names that need to be created (preserve insertion order)
+    const newTierNames: string[] = [];
+    columnMapping.forEach((m) => {
+      if (m !== null && m.startsWith(NEW_TIER_PREFIX)) {
+        const name = m.slice(NEW_TIER_PREFIX.length);
+        if (!newTierNames.includes(name)) newTierNames.push(name);
+      }
+    });
+
+    // Build new tier buckets using resolved mapping
+    const importedByTier = new Map<string, EditTierPokemon[]>();
+    const assignedIds = new Set<string>();
+    const unknownNames = new Set<string>();
+
+    for (let col = 0; col < headers.length; col++) {
+      const targetTier = resolvedMapping[col]; // null = excluded
+      if (targetTier === null) continue;
+
+      const bucket = importedByTier.get(targetTier) ?? [];
+      for (let row = 1; row < lines.length; row++) {
+        const cells = this.parseCsvRow(lines[row]);
+        const cellValue = (cells[col] ?? '').trim();
+        if (!cellValue) continue;
+        const p = allPokemon.get(cellValue.toLowerCase());
+        if (p && !assignedIds.has(p.id)) {
+          bucket.push(p);
+          assignedIds.add(p.id);
+        } else if (!p) {
+          unknownNames.add(cellValue);
+        }
+      }
+      importedByTier.set(targetTier, bucket);
+    }
+
+    // Reassign existing tiers and append newly created tiers at the end
+    const updatedTiers: EditableTier[] = tiers.map((tier) => ({
+      ...tier,
+      pokemon: importedByTier.get(tier.name) ?? [],
+    }));
+
+    for (const name of newTierNames) {
+      updatedTiers.push({ name, pokemon: importedByTier.get(name) ?? [] });
+    }
+
+    const importedBanned = importedByTier.get(this.BANNED_TIER_NAME) ?? [];
+    const importedUntiered = importedByTier.get(this.UNTIERED_TIER_NAME) ?? [];
+
+    // Any pokemon not assigned by the mapping goes back to untiered
+    const remainingPokemon = [
+      ...importedUntiered,
+      ...[...allPokemon.values()].filter((p) => !assignedIds.has(p.id)),
+    ];
+
+    const placedCount = assignedIds.size - importedUntiered.length;
+    const tieredCount = resolvedMapping.filter(
+      (t) => t !== null && t !== this.UNTIERED_TIER_NAME,
+    ).length;
+
+    this.tiers.set(updatedTiers);
+    this.untiered.set({ ...untiered, pokemon: remainingPokemon });
+    this.banned.set({ name: this.BANNED_TIER_NAME, pokemon: importedBanned });
+    this.hasUnsavedChanges.set(true);
+
+    const parts: string[] = [
+      `${placedCount} Pokémon placed across ${tieredCount} tier(s).`,
+    ];
+    if (newTierNames.length > 0) {
+      parts.push(`${newTierNames.length} new tier(s) created: ${newTierNames.join(', ')}.`);
+    }
+    if (unknownNames.size > 0) {
+      parts.push(`${unknownNames.size} unrecognized name(s) skipped.`);
+    }
+    this.snackBar.open(parts.join(' '), 'Close', { duration: 5000 });
+  }
+
   openSettings(): void {
     this.tierListService
       .getSettings()
@@ -849,8 +1059,6 @@ export class TierListFormComponent implements OnInit, OnDestroy {
   }
 
   filterPokemon(pokemon: EditTierPokemon): boolean {
-    const search = this.searchText().toLowerCase();
-    if (!search) return true;
-    return pokemon.name.toLowerCase().includes(search);
+    return matchesSearchText(pokemon, this.searchText());
   }
 }

@@ -18,7 +18,7 @@ export class UnreadService {
     const lastNewsTime = +(localStorage.getItem('newsTime') || 0);
 
     const newsUnread = NEWS.filter(
-      (n) => new Date(n.createdAt).getTime() > lastNewsTime,
+      (n) => new Date(n.date).getTime() > lastNewsTime,
     ).length;
     const changelogUnread = CHANGELOG.filter(
       (entry) => new Date(entry.date).getTime() > lastNewsTime,

@@ -1,1 +1,128 @@
-<p>league-coach works!</p>
+@if (isLoading) {
+  <pdz-loading></pdz-loading>
+} @else if (error || !profile) {
+  <div class="error-state">
+    <p>Could not load your coach profile. Make sure you've signed up for this tournament.</p>
+    <a [routerLink]="tournamentBase()" class="btn btn--secondary">Back to Tournament</a>
+  </div>
+} @else {
+  <div class="dashboard">
+
+    <div class="dashboard__header">
+      <img
+        class="dashboard__logo"
+        [src]="getLogoUrl(profile.logo)"
+        [alt]="profile.teamName + ' logo'"
+      />
+      <div class="dashboard__header-info">
+        <div class="dashboard__status-row">
+          <span
+            class="status-badge"
+            [class.status-badge--active]="profile.status === 'active'"
+            [class.status-badge--pending]="profile.status === 'pending'"
+          >
+            {{ profile.status === 'active' ? 'Active' : 'Pending Review' }}
+          </span>
+          @if (leagueInfo) {
+            <span class="dashboard__league-name">{{ leagueInfo.name }}</span>
+          }
+        </div>
+        <h1 class="dashboard__team-name">{{ profile.teamName }}</h1>
+        <p class="dashboard__coach-name">Coach: {{ profile.name }}</p>
+      </div>
+    </div>
+
+    <div class="dashboard__body">
+
+      <section class="info-card">
+        <h2 class="info-card__title">My Info</h2>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-item__label">Display Name</span>
+            <span class="info-item__value">{{ profile.name }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-item__label">Showdown Name</span>
+            <span class="info-item__value">{{ profile.gameName }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-item__label">Discord</span>
+            <span class="info-item__value">{{ profile.discordName }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-item__label">Time Zone</span>
+            <span class="info-item__value">{{ profile.timezone }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-item__label">Signed Up</span>
+            <span class="info-item__value">{{ profile.signedUpAt | date: 'mediumDate' }}</span>
+          </div>
+          @if (profile.division) {
+            <div class="info-item">
+              <span class="info-item__label">Division</span>
+              <span class="info-item__value">{{ profile.division.name }}</span>
+            </div>
+          }
+        </div>
+      </section>
+
+      <section class="nav-card">
+        <h2 class="nav-card__title">
+          @if (profile.division) { My League } @else { Quick Links }
+        </h2>
+
+        @if (!profile.division) {
+          <p class="nav-card__pending-msg">
+            You're all set — hang tight while the organizer reviews applications and assigns divisions.
+          </p>
+        }
+
+        <div class="nav-links">
+          @if (profile.division && profile.teamId) {
+            <a [routerLink]="teamLink" class="nav-link">
+              <span class="nav-link__icon">&#9733;</span>
+              <span class="nav-link__label">My Team</span>
+            </a>
+            <a [routerLink]="[...divisionBase, 'draft']" class="nav-link">
+              <span class="nav-link__icon">&#9670;</span>
+              <span class="nav-link__label">Draft</span>
+            </a>
+            <a [routerLink]="[...divisionBase, 'schedule']" class="nav-link">
+              <span class="nav-link__icon">&#128197;</span>
+              <span class="nav-link__label">Schedule</span>
+            </a>
+            <a [routerLink]="[...divisionBase, 'standings']" class="nav-link">
+              <span class="nav-link__icon">&#127942;</span>
+              <span class="nav-link__label">Standings</span>
+            </a>
+          }
+          <a [routerLink]="[...tournamentBase(), 'rules']" class="nav-link">
+            <span class="nav-link__icon">&#128221;</span>
+            <span class="nav-link__label">Rules</span>
+          </a>
+          <a [routerLink]="[...tournamentBase(), 'tier-list']" class="nav-link">
+            <span class="nav-link__icon">&#128202;</span>
+            <span class="nav-link__label">Tier List</span>
+          </a>
+          @if (leagueInfo?.discord) {
+            <a
+              [href]="'https://discord.gg/' + leagueInfo!.discord"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="nav-link nav-link--discord"
+            >
+              <img
+                src="assets/icons/media/discord-mark-blue.svg"
+                alt="Discord"
+                class="nav-link__discord-icon"
+              />
+              <span class="nav-link__label">Discord</span>
+            </a>
+          }
+        </div>
+      </section>
+
+    </div>
+
+  </div>
+}

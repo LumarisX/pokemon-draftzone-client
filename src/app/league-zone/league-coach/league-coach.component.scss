@@ -1,0 +1,243 @@
+@use "../../../styles/global.scss" as *;
+@use "../../../styles/mixins" as *;
+@use "../../../styles/mixins/buttons" as *;
+
+:host {
+  display: block;
+  padding: var(--pdz-space-md);
+}
+
+.dashboard {
+  max-width: 52rem;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--pdz-space-lg);
+
+  &__header {
+    display: flex;
+    gap: var(--pdz-space-lg);
+    align-items: center;
+    padding: var(--pdz-space-xl);
+    border-radius: var(--pdz-shape-corner-md);
+    background: pdz-color(primary-container);
+    border: 1px solid pdz-color(primary-border);
+    flex-wrap: wrap;
+  }
+
+  &__logo {
+    width: 5rem;
+    height: 5rem;
+    object-fit: contain;
+    border-radius: var(--pdz-shape-corner-sm);
+    flex-shrink: 0;
+  }
+
+  &__header-info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--pdz-space-xs);
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__status-row {
+    display: flex;
+    align-items: center;
+    gap: var(--pdz-space-sm);
+    flex-wrap: wrap;
+  }
+
+  &__league-name {
+    @include apply-typography(body-sm);
+    color: pdz-color(on-surface-variant);
+  }
+
+  &__team-name {
+    @include apply-typography(headline-md);
+    margin: 0;
+    color: pdz-color(on-primary-container);
+  }
+
+  &__coach-name {
+    @include apply-typography(body-md);
+    margin: 0;
+    color: pdz-color(on-surface-variant);
+  }
+
+  &__body {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--pdz-space-lg);
+
+    @include respond-above(medium) {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+}
+
+.status-badge {
+  @include apply-typography(label-sm);
+  display: inline-flex;
+  align-items: center;
+  padding: var(--pdz-space-xs) var(--pdz-space-sm);
+  border-radius: var(--pdz-shape-full);
+  font-weight: 700;
+
+  &--active {
+    background: pdz-color(success-container);
+    color: pdz-color(on-success-container);
+  }
+
+  &--pending {
+    background: pdz-color(warning-container);
+    color: pdz-color(on-warning-container);
+  }
+}
+
+// Info card
+.info-card {
+  padding: var(--pdz-space-lg);
+  border-radius: var(--pdz-shape-corner-sm);
+  border: 1px solid pdz-color(outline-variant);
+  background: pdz-color(surface);
+
+  &__title {
+    @include apply-typography(title-md);
+    margin: 0 0 var(--pdz-space-md);
+    color: pdz-color(on-surface);
+  }
+}
+
+.info-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pdz-space-sm);
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--pdz-space-sm);
+  border-radius: var(--pdz-shape-corner-xs);
+  background: pdz-color(surface-container-low);
+
+  &__label {
+    @include apply-typography(label-sm);
+    color: pdz-color(on-surface-variant);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  &__value {
+    @include apply-typography(body-md);
+    color: pdz-color(on-surface);
+  }
+}
+
+// Nav card
+.nav-card {
+  padding: var(--pdz-space-lg);
+  border-radius: var(--pdz-shape-corner-sm);
+  border: 1px solid pdz-color(outline-variant);
+  background: pdz-color(surface);
+
+  &__title {
+    @include apply-typography(title-md);
+    margin: 0 0 var(--pdz-space-md);
+    color: pdz-color(on-surface);
+  }
+
+  &__pending-msg {
+    @include apply-typography(body-sm);
+    color: pdz-color(on-surface-variant);
+    margin: 0 0 var(--pdz-space-md);
+    padding: var(--pdz-space-sm);
+    border-radius: var(--pdz-shape-corner-xs);
+    background: pdz-color(surface-container-low);
+    border-left: 3px solid pdz-color(warning);
+  }
+}
+
+.nav-links {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pdz-space-xs);
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: var(--pdz-space-sm);
+  padding: var(--pdz-space-sm) var(--pdz-space-md);
+  border-radius: var(--pdz-shape-corner-xs);
+  border: 1px solid pdz-color(outline-variant);
+  background: pdz-color(surface-container-low);
+  text-decoration: none;
+  color: pdz-color(on-surface);
+  transition: background 0.15s ease, border-color 0.15s ease;
+
+  &:hover {
+    background: pdz-color(primary-container-hover);
+    border-color: pdz-color(primary-border);
+    color: pdz-color(on-primary-container);
+  }
+
+  &__icon {
+    font-size: 1rem;
+    flex-shrink: 0;
+    width: 1.5rem;
+    text-align: center;
+  }
+
+  &__label {
+    @include apply-typography(body-md);
+    font-weight: 600;
+  }
+
+  &--discord {
+    border-color: #5865f2;
+
+    &:hover {
+      background: rgba(88, 101, 242, 0.1);
+      border-color: #5865f2;
+      color: pdz-color(on-surface);
+    }
+  }
+
+  &__discord-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    flex-shrink: 0;
+  }
+}
+
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--pdz-space-md);
+  padding: var(--pdz-space-xl);
+  text-align: center;
+
+  p {
+    @include apply-typography(body-md);
+    color: pdz-color(on-surface-variant);
+    margin: 0;
+  }
+}
+
+.btn {
+  padding: var(--pdz-space-md) var(--pdz-space-xl);
+  border-radius: var(--pdz-shape-corner-sm);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  font-weight: 600;
+
+  &--secondary {
+    @include flat-button-menu();
+  }
+}

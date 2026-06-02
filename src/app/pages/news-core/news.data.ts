@@ -1,39 +1,79 @@
 import { News } from '../../services/news.service';
 
 export const NEWS: News[] = [
-  // {
-  //   title: 'New designs just in time for summer!',
-  //   createdAt: '2026-05-22T19:09:00.000Z',
-  //   sections: [
-  //     {
-  //       type: 'images',
-  //       images: [
-  //         {
-  //           imageUrl: '../../../assets/images/battle-zone/merch2.png',
-  //           size: 'large',
-  //         },
-  //       ],
-  //     },
-  //     {
-  //       type: 'buttons',
-  //       buttons: [
-  //         {
-  //           text: 'Check out the Shop',
-  //           href: 'https://shop.pokemondraftzone.com',
-  //           newWindow: true,
-  //         },
-  //       ],
-  //     },
-  //     {
-  //       type: 'para',
-  //       description:
-  //         'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse venenatis molestie velit sit amet interdum. Aenean sit amet ultrices tortor. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Pellentesque porta magna sit amet risus suscipit condimentum. Proin accumsan ante sed aliquet posuere. Aliquam congue, dui eget rutrum scelerisque, nibh sapien posuere felis, non tempor arcu sem vitae nisl. Ut fermentum, nibh sit amet pulvinar condimentum, mi nisi varius quam, eu iaculis justo massa sit amet nibh. Nulla ullamcorper gravida augue nec pulvinar. Sed eget volutpat dui. Phasellus non erat sed lacus egestas placerat nec sed magna. Donec nec dui at tellus dapibus porttitor. In interdum neque ac iaculis rhoncus. Ut ac lectus tincidunt, faucibus sem at, ultricies velit. Maecenas sit amet lorem nisl. Nunc scelerisque justo aliquam augue rhoncus elementum. Sed elementum consectetur justo, id tempus velit porta vitae. Vivamus pretium, risus a fermentum lobortis, est justo gravida velit, eget venenatis sapien ante blandit tellus. ',
-  //     },
-  //   ],
-  // },
+  {
+    title: 'New designs just in time for summer!',
+    date: '2026-06-02T10:00:00-07:00',
+    sections: [
+      {
+        type: 'para',
+        description: `We are proud to announce that our second line of merch is now live! We hope you love these designs as much as we do. We wanted to make sure you get something awesome to show for your support.`,
+      },
+      {
+        type: 'images',
+        images: [
+          {
+            imageUrl: '../../../assets/images/battle-zone/merch2.png',
+            size: 'large',
+          },
+        ],
+      },
+      {
+        type: 'buttons',
+        buttons: [
+          {
+            text: 'Check out our Shop',
+            href: 'https://shop.pokemondraftzone.com',
+            newWindow: true,
+          },
+        ],
+      },
+      {
+        type: 'columns',
+        columns: [
+          [
+            {
+              type: 'para',
+              description: `If clothing isn't your thing but you still want to help out, please consider donating or becoming a member.`,
+            },
+            {
+              type: 'buttons',
+              buttons: [
+                {
+                  text: 'Donate or Become a Member',
+                  href: 'https://shop.pokemondraftzone.com/pages/join-support',
+                  newWindow: true,
+                },
+              ],
+            },
+          ],
+          [
+            {
+              type: 'para',
+              description: `As a bonus, we are also running a giveaway to win any classic/soft tee of your choice including member designs! Check the #announcments channel in our discord for more details! We'll pick a winner on June 9th.`,
+            },
+            {
+              type: 'buttons',
+              buttons: [
+                {
+                  text: 'Join the Giveaway',
+                  href: 'https://discord.gg/sQUEBW4UVx',
+                  newWindow: true,
+                },
+              ],
+            },
+          ],
+        ],
+      },
+      {
+        type: 'para',
+        description: `Thank you so much for all the continued support! We are so glad you all are enjoying the site and the designs as much as we do.`,
+      },
+    ],
+  },
   {
     title: 'Pokémon DraftZone Battle League (PDBL) Season 3',
-    createdAt: '2026-02-07T12:00:00-08:00',
+    date: '2026-02-07T12:00:00-08:00',
     sections: [
       {
         type: 'images',
@@ -92,7 +132,7 @@ export const NEWS: News[] = [
   // },
   {
     title: 'Draftzone merch shop is here!',
-    createdAt: '2025-10-17T12:00:00-07:00',
+    date: '2025-10-17T12:00:00-07:00',
     sections: [
       {
         type: 'images',
@@ -132,7 +172,7 @@ export const NEWS: News[] = [
   },
   {
     title: 'Pokémon DraftZone Battle League (PDBL) Season 2',
-    createdAt: '2025-09-05T12:00:00-07:00',
+    date: '2025-09-05T12:00:00-07:00',
     sections: [
       {
         type: 'images',

@@ -12,6 +12,27 @@ export type ChangelogEntry = {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    date: '2026-06-02T10:00:00-07:00',
+    title: 'Fern Theme',
+    description:
+      'Inspired by our new merch drop, a new theme has landed! Check out the Fern theme in your settings for a fresh palette of greens and blues.',
+    categories: [
+      {
+        type: 'added',
+        items: [
+          'Fern theme with new green and blue color palette',
+          'Scary Face and Toxic Thread added to the Speed Control category',
+        ],
+      },
+      {
+        type: 'fixed',
+        items: [
+          'Background authentication issue which caused users to need to sign out and back in',
+        ],
+      },
+    ],
+  },
+  {
     date: '2026-05-26T12:00:00-07:00',
     title: 'Champions Support & Pokémon Search Refactor',
     description:
@@ -594,4 +615,3 @@ export const CHANGELOG: ChangelogEntry[] = [
     ],
   },
 ];
-

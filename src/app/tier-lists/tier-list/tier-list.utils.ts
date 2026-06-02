@@ -45,27 +45,50 @@ function matchesStatFilter(
   }
 }
 
+// Matches: type=fire, type=fire/water (all listed types must be present)
+function parseTypeFilter(search: string): { types: string[] } | null {
+  const match = search.match(/^type=(.+)$/);
+  if (!match) return null;
+  return { types: match[1].split('/').filter(Boolean) };
+}
+
+/**
+ * Matches a pokemon against comma-separated search tokens (name, ability, stat filters, type= filters).
+ * Does NOT apply the type-panel filter — use filterBySearch for that.
+ */
+export function matchesSearchText(
+  pokemon: TierPokemon,
+  searchText: string = '',
+): boolean {
+  const normalizedSearch = searchText.split(',').map(normalizeText);
+  return normalizedSearch.every((search) => {
+    if (search === '') return true;
+    const statFilter = parseStatFilter(search);
+    if (statFilter) return matchesStatFilter(pokemon, statFilter);
+    const typeFilter = parseTypeFilter(search);
+    if (typeFilter) {
+      return typeFilter.types.every((t) =>
+        pokemon.types?.some((pt) => normalizeText(pt) === normalizeText(t)),
+      );
+    }
+    return (
+      pokemon.types?.some((type) => normalizeText(type).includes(search)) ||
+      pokemon.abilities?.some((ability) =>
+        normalizeText(ability).includes(search),
+      ) ||
+      normalizeText(pokemon.name).includes(search)
+    );
+  });
+}
+
 export function filterBySearch(
   pokemon: TierPokemon,
   filteredTypes: Type[],
   searchText: string = '',
 ): boolean {
-  const normalizedSearch = searchText.split(',').map(normalizeText);
   return (
     pokemon.types.some((type) => filteredTypes.includes(type)) &&
-    normalizedSearch.every((search) => {
-      if (search === '') return true;
-      const statFilter = parseStatFilter(search);
-      if (statFilter) return matchesStatFilter(pokemon, statFilter);
-
-      return (
-        pokemon.types.some((type) => normalizeText(type).includes(search)) ||
-        pokemon.abilities?.some((ability) =>
-          normalizeText(ability).includes(search),
-        ) ||
-        normalizeText(pokemon.name).includes(search)
-      );
-    })
+    matchesSearchText(pokemon, searchText)
   );
 }
 

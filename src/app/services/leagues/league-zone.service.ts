@@ -338,6 +338,13 @@ export class LeagueZoneService {
     );
   }
 
+  getMyCoachProfile(): Observable<League.CoachProfile> {
+    return this.apiService.get(
+      `${ROOTPATH}/tournaments/${this.tournamentKey()}/signup`,
+      { authenticated: true },
+    );
+  }
+
   getLeagueInfo(): Observable<League.LeagueInfo> {
     return this.apiService.get(
       `${ROOTPATH}/tournaments/${this.tournamentKey()}/info`,

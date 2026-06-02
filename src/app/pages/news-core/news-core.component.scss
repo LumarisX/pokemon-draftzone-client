@@ -46,6 +46,7 @@
 .news-body {
   display: flex;
   flex-direction: column;
+  row-gap: var(--pdz-space-xs);
 }
 
 .section {
@@ -109,4 +110,17 @@
   display: flex;
   column-gap: 0.5rem;
   justify-content: center;
+}
+
+.section-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 1rem;
+
+  .columns__col {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    row-gap: var(--pdz-space-xs);
+  }
 }

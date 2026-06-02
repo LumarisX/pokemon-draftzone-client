@@ -7,7 +7,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { HttpEventType, HttpResponse } from '@angular/common/http';
 import {
   catchError,
@@ -28,6 +28,7 @@ import { LoadingComponent } from '../../images/loading/loading.component';
 import { League } from '../league.interface';
 import { getLogoUrlOld } from '../league.util';
 
+
 @Component({
   selector: 'pdz-league-sign-up',
   templateUrl: './league-sign-up.component.html',
@@ -43,6 +44,7 @@ import { getLogoUrlOld } from '../league.util';
 export class LeagueSignUpComponent implements OnInit, OnDestroy {
   private fb = inject(FormBuilder);
   leagueService = inject(LeagueZoneService);
+  private router = inject(Router);
   private uploadService = inject(UploadService);
   private authService = inject(AuthService);
   private destroy$ = new Subject<void>();
@@ -152,6 +154,11 @@ export class LeagueSignUpComponent implements OnInit, OnDestroy {
           if (this.logoFile) {
             this.uploadLogo();
           }
+
+          const leagueKey = this.leagueService.leagueKey();
+          this.router.navigate([
+            '/leagues', leagueKey, 'tournaments', tournamentKey, 'coach',
+          ]);
         },
         error: (error) => {
           console.error('Sign up failed:', error);

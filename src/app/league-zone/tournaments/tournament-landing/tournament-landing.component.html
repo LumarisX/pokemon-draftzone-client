@@ -3,15 +3,13 @@
     <!-- Hero Section with Logo -->
     <div class="hero-section">
       <div class="logo-container">
-        <img
-          [src]="
-            leagueInfo.logo
-              ? getLogoUrl(leagueInfo.logo)
-              : '../../assets/images/battle-zone/pdbls2.png'
-          "
-          [alt]="leagueInfo.name + ' logo'"
-          class="league-logo"
-        />
+        @if (leagueInfo.logo) {
+          <img
+            [src]="getLogoUrl(leagueInfo.logo)"
+            [alt]="leagueInfo.name + ' logo'"
+            class="league-logo"
+          />
+        }
       </div>
 
       <div class="league-info">

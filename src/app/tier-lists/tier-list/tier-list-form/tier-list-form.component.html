@@ -73,7 +73,7 @@
       <div class="export-control">
         <button
           class="action-button"
-          (click)="showExportMenu.set(!showExportMenu())"
+          (click)="showExportMenu.set(!showExportMenu()); showImportMenu.set(false)"
           aria-label="Export"
         >
           <pdz-icon name="download" size="sm"></pdz-icon>
@@ -81,6 +81,25 @@
         @if (showExportMenu()) {
           <div class="export-dropdown">
             <button class="export-dropdown__item" (click)="exportCsv()">
+              <pdz-icon name="table_view" [size]="16"></pdz-icon>
+              CSV
+            </button>
+          </div>
+        }
+      </div>
+
+      <div class="export-control">
+        <button
+          class="action-button"
+          (click)="showImportMenu.set(!showImportMenu()); showExportMenu.set(false)"
+          aria-label="Import"
+          matTooltip="Import"
+        >
+          <pdz-icon name="upload" size="sm"></pdz-icon>
+        </button>
+        @if (showImportMenu()) {
+          <div class="export-dropdown">
+            <button class="export-dropdown__item" (click)="importCsv()">
               <pdz-icon name="table_view" [size]="16"></pdz-icon>
               CSV
             </button>

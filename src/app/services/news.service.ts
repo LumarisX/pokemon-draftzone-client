@@ -32,11 +32,15 @@ export type Section =
         imageUrl: string;
         size?: 'small' | 'medium' | 'large';
       }[];
+    }
+  | {
+      type: 'columns';
+      columns: Section[][];
     };
 export type News = {
   title: string;
   sections: Section[];
-  createdAt: string;
+  date: string;
 };
 @Injectable({
   providedIn: 'root',

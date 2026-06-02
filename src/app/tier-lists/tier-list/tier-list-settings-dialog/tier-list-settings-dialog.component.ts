@@ -73,7 +73,7 @@ export class TierListSettingsDialogComponent implements OnInit {
       description: [this.data.description ?? '', Validators.maxLength(500)],
       pointTotal: [
         this.data.pointTotal ?? null,
-        [Validators.min(1), Validators.max(9999)],
+        [Validators.min(0), Validators.max(9999)],
       ],
       draftCount: this.fb.group(
         {
@@ -83,7 +83,7 @@ export class TierListSettingsDialogComponent implements OnInit {
           ],
           max: [
             this.data.draftCount?.max ?? null,
-            [Validators.min(1), Validators.max(100)],
+            [Validators.min(0), Validators.max(100)],
           ],
         },
         { validators: draftCountValidator },

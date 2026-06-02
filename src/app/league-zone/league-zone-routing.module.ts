@@ -20,6 +20,7 @@ import { LeagueStandingsComponent } from './league-standings/league-standings.co
 import { LeagueTeamComponent } from './league-team/league-team.component';
 import { LeagueTeamsComponent } from './league-teams/league-teams.component';
 import { LeagueTradesComponent } from './league-trades/league-trades.component';
+import { LeagueCoachComponent } from './league-coach/league-coach.component';
 import { TournamentLandingComponent } from './tournaments/tournament-landing/tournament-landing.component';
 
 export const LeagueZonePath = 'leagues';
@@ -65,6 +66,11 @@ const routes: Routes = [
   {
     path: ':leagueKey/tournaments/:tournamentKey/sign-up',
     component: LeagueSignUpComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: ':leagueKey/tournaments/:tournamentKey/coach',
+    component: LeagueCoachComponent,
     canActivate: [AuthGuard],
   },
   {

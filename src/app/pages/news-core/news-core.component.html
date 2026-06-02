@@ -52,6 +52,40 @@
                   </a>
                 }
               }
+            } @else if (section.type === "columns") {
+              @for (col of section.columns; track $index) {
+                <div class="columns__col">
+                  @for (colSection of col; track $index) {
+                    <div [ngClass]="'section-' + colSection.type">
+                      @if (colSection.type === "para") {
+                        {{ colSection.description }}
+                      } @else if (colSection.type === "buttons") {
+                        @for (button of colSection.buttons; track $index) {
+                          @if (button.href) {
+                            <a
+                              [href]="button.href"
+                              [disabled]="button.disabled"
+                              [target]="button.newWindow ? '_blank' : undefined"
+                              mat-flat-button
+                            >
+                              {{ button.text }}
+                            </a>
+                          } @else {
+                            <a
+                              [routerLink]="button.link"
+                              [disabled]="button.disabled"
+                              [target]="button.newWindow ? '_blank' : undefined"
+                              mat-flat-button
+                            >
+                              {{ button.text }}
+                            </a>
+                          }
+                        }
+                      }
+                    </div>
+                  }
+                </div>
+              }
             }
           </div>
         }

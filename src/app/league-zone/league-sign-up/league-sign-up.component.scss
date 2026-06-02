@@ -8,18 +8,6 @@
   display: block;
 }
 
-.back-btn {
-  position: absolute;
-  top: var(--pdz-space-md);
-  left: var(--pdz-space-md);
-  @include flat-button-menu();
-
-  @include respond-above(medium) {
-    top: var(--pdz-space-xl);
-    left: var(--pdz-space-xl);
-  }
-}
-
 .sign-up {
   &__container {
     margin: 0 auto;
@@ -78,8 +66,8 @@
 
   &__header {
     padding: var(--pdz-space-sm) var(--pdz-space-md);
-    background: pdz-color(surface-container-high);
-    border-bottom: 1px solid pdz-color(outline-variant);
+    background: pdz-color(primary-container);
+    border-bottom: 1px solid pdz-color(primary-border);
   }
 
   &__title {
@@ -130,7 +118,7 @@
   padding: var(--pdz-space-xl);
   border-radius: var(--pdz-shape-corner-sm);
   border: 1px solid pdz-color(outline-variant);
-  background: pdz-color(surface-container-low);
+  background: pdz-color(surface);
   display: flex;
   flex-direction: column;
   gap: var(--pdz-space-md);

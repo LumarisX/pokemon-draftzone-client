@@ -1,4 +1,3 @@
-<button class="back-btn" routerLink=".." type="button">Back</button>
 @if (leagueInfo) {
   <form
     [formGroup]="signupForm"
@@ -44,38 +43,7 @@
       </div>
     </div>
 
-    @if (added) {
-      <div class="message-card">
-        <h2 class="message-card__title">
-          Thank you for signing up for the PDBL
-        </h2>
-        <p class="message-card__text">
-          Complete your registration by joining the PDBL Discord Server:
-        </p>
-        <a
-          target="_blank"
-          href="https://discord.gg/FsxXcWFaF6"
-          class="discord-btn"
-        >
-          <img
-            src="assets/icons/media/discord-mark-blue.svg"
-            alt="Discord"
-            class="discord-btn__icon"
-          />
-          Join PDBL Discord Server
-        </a>
-        <p class="message-card__text message-card__text--secondary">
-          Consider
-          <a
-            target="_blank"
-            href="https://pokemondraftzone.com/donate"
-            class="link"
-            >donating</a
-          >
-          to the winnings pot. (Leave a note that it's for the PBDL)
-        </p>
-      </div>
-    } @else if (closed && !wantsToSignUpAsSub) {
+    @if (closed && !wantsToSignUpAsSub) {
       <div class="message-card">
         <h2 class="message-card__title">The season has already started</h2>
         <p class="message-card__text">
@@ -92,17 +60,19 @@
           </button>
           <a routerLink=".." class="btn btn--secondary"> No, Thanks </a>
         </div>
-        <p class="message-card__text message-card__text--secondary">
-          Join the
-          <a
-            target="_blank"
-            href="https://discord.gg/FsxXcWFaF6"
-            class="link link--primary"
-          >
-            PDBL Discord Server
-          </a>
-          to get notified for the next season!
-        </p>
+        @if (leagueInfo.discord) {
+          <p class="message-card__text message-card__text--secondary">
+            Join the
+            <a
+              target="_blank"
+              [href]="'https://discord.gg/' + leagueInfo.discord"
+              class="link link--primary"
+            >
+              {{ leagueInfo.name }} Discord Server
+            </a>
+            to get notified for the next season!
+          </p>
+        }
       </div>
     } @else {
       <div class="form-row">

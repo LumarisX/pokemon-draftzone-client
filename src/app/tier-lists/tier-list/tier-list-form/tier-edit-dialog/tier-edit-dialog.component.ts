@@ -50,7 +50,7 @@ export class TierEditDialogComponent implements OnInit {
         this.data?.tier?.name ?? '',
         [Validators.required, Validators.maxLength(30)],
       ],
-      cost: [this.data?.tier?.cost ?? null, Validators.required],
+      cost: [this.data?.tier?.cost ?? 0, Validators.required],
       required: [this.data?.tier?.required ?? 0, Validators.required],
     });
 

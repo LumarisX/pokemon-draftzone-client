@@ -190,6 +190,7 @@ export namespace League {
     logo?: string;
     divisions: { name: string; divisionKey: string }[];
     discord?: string;
+    tierListId?: string;
   };
 
   export type TournamentSummary = {
@@ -213,6 +214,19 @@ export namespace League {
     description?: string;
     logo?: string;
     tournaments: TournamentSummary[];
+  };
+
+  export type CoachProfile = {
+    name: string;
+    gameName: string;
+    discordName: string;
+    timezone: string;
+    teamName: string;
+    status: string;
+    logo?: string;
+    signedUpAt: Date;
+    teamId?: string;
+    division?: { divisionKey: string; name: string };
   };
 }
 
