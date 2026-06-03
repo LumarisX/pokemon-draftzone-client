@@ -145,7 +145,8 @@ export class LeagueZoneService {
       rounds: number;
       points: number;
       teams: League.LeagueTeam[];
-      draftStyle: 'snake' | 'linear';
+      orderProgression: 'snake' | 'linear';
+      sequentialTurns: boolean;
       status: 'PRE_DRAFT' | 'IN_PROGRESS' | 'PAUSED' | 'COMPLETED';
       skipTime: Date;
       currentPick: {

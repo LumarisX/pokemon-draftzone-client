@@ -75,6 +75,7 @@ export class TierListComponent implements OnInit, OnDestroy {
   private dialog = inject(MatDialog);
   private destroy$ = new Subject<void>();
 
+  @Input() title?: string;
   drafted = signal<{ [division: string]: { pokemonId: string }[] }>({});
   tiers = signal<LeagueTier[] | undefined>(undefined);
   ruleset = signal<string | undefined>(undefined);

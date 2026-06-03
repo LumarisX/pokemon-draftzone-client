@@ -32,7 +32,7 @@
     flex-wrap: wrap;
 
     @include respond-above(medium) {
-      height: 6rem;
+      max-height: 6rem;
       flex-wrap: nowrap;
     }
   }

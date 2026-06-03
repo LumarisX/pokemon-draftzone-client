@@ -72,6 +72,25 @@
       </section>
 
       <section class="nav-card">
+        <h2 class="nav-card__title">Next Steps</h2>
+
+        <div class="next-steps-list">
+          <div class="step">
+            @if (profile.inDiscordServer) {
+              <pdz-icon name="check_box"></pdz-icon>
+              <span> <s> Join the discord</s> </span>
+            } @else {
+              <pdz-icon name="check_box_outline_blank"></pdz-icon>
+              <span> Join the discord </span>
+            }
+          </div>
+          <div class="step">
+            <pdz-icon name="check_box_outline_blank"></pdz-icon>
+            <span> Draft Team </span>
+          </div>
+        </div>
+      </section>
+      <section class="nav-card">
         <h2 class="nav-card__title">
           @if (profile.division) {
             My League

@@ -98,9 +98,11 @@
                           ></pdz-sprite>
                         </div>
                         <div class="pick-header">
-                          <div class="pick-text">
-                            {{ $index + 1 | numbersuffix }} Choice
-                          </div>
+                          @if (draftDetails.sequentialTurns) {
+                            <div class="pick-text">
+                              {{ $index + 1 | numbersuffix }} Choice
+                            </div>
+                          }
                           <div class="my-pokemon-name fancy-font">
                             {{ choice.name }}
                           </div>
@@ -113,13 +115,21 @@
                         <div class="my-pokemon-tier fancy-font">
                           {{ choice.cost }}
                         </div>
-                        <button (click)="deleteChoice(picks, $index)">
-                          <mat-icon>delete_forever</mat-icon>
+                        <button
+                          class="remove-button"
+                          (click)="deleteChoice(picks, $index)"
+                        >
+                          <pdz-icon name="close" size="sm"></pdz-icon>
                         </button>
                       </button>
                     </div>
                   } @empty {
-                    <button class="no-pick">Select Pick</button>
+                    <button
+                      class="no-pick"
+                      [class.selected-pick]="selectedPick === $index"
+                    >
+                      Select Pick
+                    </button>
                   }
                 </div>
               </li>
@@ -132,93 +142,96 @@
       </div>
     </div>
     <div class="main-draft">
-      <div class="draft-bar draft-section">
-        <div class="draft-section-title">Draft Order</div>
-        <div class="draft-rounds draft-section-body" #draftRoundsContainer>
-          @for (round of draftRounds; track $index; let roundIndex = $index) {
-            <div
-              class="draft-round-container"
-              [attr.data-round-index]="roundIndex"
-            >
-              <div class="round-label">
-                <span>Round {{ roundIndex + 1 }}</span>
-                <mat-icon>trending_flat</mat-icon>
-              </div>
-              <div class="card-container">
-                @for (position of round; track $index) {
-                  @let pokemon = position.draft[roundIndex];
-                  <div class="team-card" [class.alternate]="!pokemon">
-                    <div class="team-card-header">
-                      <span
-                        [class.selectedTeam]="
-                          position.name === selectedTeam.name
+      @if (draftDetails.sequentialTurns) {
+        <div class="draft-bar draft-section">
+          <div class="draft-section-title">Draft Order</div>
+          <div class="draft-rounds draft-section-body" #draftRoundsContainer>
+            @for (round of draftRounds; track $index; let roundIndex = $index) {
+              <div
+                class="draft-round-container"
+                [attr.data-round-index]="roundIndex"
+              >
+                <div class="round-label">
+                  <span>Round {{ roundIndex + 1 }}</span>
+                  <mat-icon>trending_flat</mat-icon>
+                </div>
+                <div class="card-container">
+                  @for (position of round; track $index) {
+                    @let pokemon = position.draft[roundIndex];
+                    <div class="team-card" [class.alternate]="!pokemon">
+                      <div class="team-card-header">
+                        <span
+                          [class.selectedTeam]="
+                            position.name === selectedTeam.name
+                          "
+                        >
+                          {{ position.name }}
+                        </span>
+                      </div>
+                      <div
+                        class="team-card-body"
+                        [class.picking]="
+                          currentPick &&
+                          currentPick.round === roundIndex &&
+                          currentPick.position === $index
                         "
                       >
-                        {{ position.name }}
-                      </span>
-                    </div>
-                    <div
-                      class="team-card-body"
-                      [class.picking]="
-                        currentPick &&
-                        currentPick.round === roundIndex &&
-                        currentPick.position === $index
-                      "
-                    >
-                      <div class="team-card-icon">
-                        @if (pokemon) {
-                          <pdz-sprite [pokemon]="pokemon"></pdz-sprite>
-                        } @else if (
-                          currentPick &&
-                          currentPick.round === roundIndex &&
-                          currentPick.position === $index
-                        ) {
-                          @if (this.draftDetails.status === "PAUSED") {
-                            <span class="pause-time">
-                              <mat-icon>pause</mat-icon>
-                            </span>
+                        <div class="team-card-icon">
+                          @if (pokemon) {
+                            <pdz-sprite [pokemon]="pokemon"></pdz-sprite>
+                          } @else if (
+                            currentPick &&
+                            currentPick.round === roundIndex &&
+                            currentPick.position === $index
+                          ) {
+                            @if (this.draftDetails.status === "PAUSED") {
+                              <span class="pause-time">
+                                <mat-icon>pause</mat-icon>
+                              </span>
+                            } @else {
+                              <span class="skip-time">
+                                {{ skipTimeDisplay }}
+                              </span>
+                            }
                           } @else {
-                            <span class="skip-time">
-                              {{ skipTimeDisplay }}
-                            </span>
+                            <mat-icon svgIcon="pokeball"></mat-icon>
                           }
-                        } @else {
-                          <mat-icon svgIcon="pokeball"></mat-icon>
-                        }
-                      </div>
-                      <div class="team-card-name">
-                        @if (pokemon) {
-                          {{ pokemon.name }}
-                        } @else if (
-                          currentPick &&
-                          currentPick.round === roundIndex &&
-                          currentPick.position === $index
-                        ) {
-                          Picking
-                        } @else if (
-                          currentPick &&
-                          (currentPick.round > roundIndex ||
-                            (currentPick.round === roundIndex &&
-                              currentPick.position > $index))
-                        ) {
-                          Skipped
-                        } @else {
-                          Upcoming
-                        }
+                        </div>
+                        <div class="team-card-name">
+                          @if (pokemon) {
+                            {{ pokemon.name }}
+                          } @else if (
+                            currentPick &&
+                            currentPick.round === roundIndex &&
+                            currentPick.position === $index
+                          ) {
+                            Picking
+                          } @else if (
+                            currentPick &&
+                            (currentPick.round > roundIndex ||
+                              (currentPick.round === roundIndex &&
+                                currentPick.position > $index))
+                          ) {
+                            Skipped
+                          } @else {
+                            Upcoming
+                          }
+                        </div>
                       </div>
                     </div>
-                  </div>
-                }
+                  }
+                </div>
               </div>
-            </div>
-          }
+            }
+          </div>
         </div>
-      </div>
+      }
       <div class="tier-wrapper">
         <pdz-tier-list
           [buttonText]="buttonText()"
           [altButtonText]="altButtonText()"
           (pokemonSelected)="pokemonSelected($event)"
+          title="Tier List"
         ></pdz-tier-list>
       </div>
     </div>

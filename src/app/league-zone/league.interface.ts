@@ -227,6 +227,7 @@ export namespace League {
     signedUpAt: Date;
     teamId?: string;
     division?: { divisionKey: string; name: string };
+    inDiscordServer: boolean;
   };
 }
 

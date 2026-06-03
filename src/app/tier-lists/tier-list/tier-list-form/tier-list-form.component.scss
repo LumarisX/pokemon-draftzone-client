@@ -144,14 +144,6 @@
   .tier--banned {
     min-height: 0;
   }
-
-  &.is-resizing {
-    user-select: none;
-
-    .null-tier-splitter {
-      background-color: pdz-color(primary-container-low);
-    }
-  }
 }
 
 .null-tier-splitter {
@@ -159,7 +151,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  flex: 0 0 12px;
+  flex: 0 0 8px;
   margin: var(--pdz-space-xs) 0;
   border-radius: var(--pdz-shape-corner-full);
   cursor: row-resize;
@@ -173,18 +165,6 @@
     right: var(--pdz-space-xs);
     height: 2px;
     border-radius: var(--pdz-shape-corner-full);
-    background-color: pdz-color(outline-variant);
-  }
-
-  &:hover,
-  &:focus-visible {
-    background-color: pdz-color(surface-container-high);
-    outline: none;
-
-    &::before,
-    .null-tier-splitter__grip {
-      background-color: pdz-color(primary);
-    }
   }
 
   &__grip {

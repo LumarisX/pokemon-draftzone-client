@@ -241,6 +241,7 @@
     border-radius: var(--pdz-shape-corner-md);
     border: 2px solid pdz-color(outline-variant);
     flex-shrink: 0;
+    overflow: hidden;
 
     &__header {
       display: flex;
@@ -324,6 +325,8 @@
       flex-direction: column;
       gap: var(--pdz-space-xs);
       overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--pdz-scrollbar-thumb-idle) transparent;
     }
   }
 }

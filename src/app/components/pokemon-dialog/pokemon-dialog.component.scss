@@ -431,7 +431,7 @@
   align-items: center;
   gap: var(--pdz-space-2xs);
   @include apply-typography(body-sm);
-  background-color: pdz-color(surface-container);
+  background-color: pdz-color(surface-container-low);
   border: 1px solid pdz-color(outline-variant);
   border-radius: var(--pdz-shape-corner-xs);
   padding: 2px var(--pdz-space-sm);

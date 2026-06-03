@@ -162,7 +162,7 @@
   user-select: none;
 
   &:hover:not(.is-drafted) {
-    background-color: pdz-color(surface-container-high);
+    background-color: pdz-color(primary-container-low);
     border-color: pdz-color(primary);
     box-shadow: var(--pdz-level-1);
     transform: translateY(-1px);

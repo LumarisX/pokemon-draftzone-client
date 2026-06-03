@@ -113,12 +113,14 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
   skipTimeDisplay: string | null = null;
 
   draftDetails: {
-    draftStyle: 'snake' | 'linear';
+    orderProgression: 'snake' | 'linear';
+    sequentialTurns: boolean;
     roundCount: number;
     teamOrder: string[];
     status: 'PRE_DRAFT' | 'IN_PROGRESS' | 'PAUSED' | 'COMPLETED';
   } = {
-    draftStyle: 'snake',
+    orderProgression: 'snake',
+    sequentialTurns: true,
     roundCount: 0,
     teamOrder: [],
     status: 'IN_PROGRESS',
@@ -148,7 +150,7 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
       .filter((team): team is League.LeagueTeam => team !== undefined);
     return Array.from({ length: this.draftDetails.roundCount }, (_, i) => {
       const round = [...orderedTeams];
-      if (this.draftDetails.draftStyle === 'snake' && i % 2 === 1) {
+      if (this.draftDetails.orderProgression === 'snake' && i % 2 === 1) {
         round.reverse();
       }
       return round;
@@ -167,7 +169,8 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
         this.currentPick = data.currentPick;
         this.canDraftTeams = data.canDraft;
         this.isLoading = false;
-        this.draftDetails.draftStyle = data.draftStyle;
+        this.draftDetails.orderProgression = data.orderProgression;
+        this.draftDetails.sequentialTurns = data.sequentialTurns;
         this.points = data.points;
         this.draftDetails.roundCount = data.rounds;
         this.draftDetails.teamOrder = data.teamOrder;
@@ -390,13 +393,30 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
     cost?: number;
   }): void {
     if (!pokemon.cost) return;
-    this.selectedTeam.picks[this.selectedPick].push({
-      name: pokemon.name,
-      id: pokemon.id,
-      tier: pokemon.tier,
-      cost: pokemon.cost,
-      addons: pokemon.addons,
-    });
+    if (!this.draftDetails.sequentialTurns) {
+      this.selectedTeam.picks[this.selectedPick] = [
+        {
+          name: pokemon.name,
+          id: pokemon.id,
+          tier: pokemon.tier,
+          cost: pokemon.cost,
+          addons: pokemon.addons,
+        },
+      ];
+      const nextEmpty = this.selectedTeam.picks.findIndex(
+        (pick) => pick.length === 0,
+      );
+      if (nextEmpty !== undefined) this.selectedPick = nextEmpty;
+    } else {
+      this.selectedTeam.picks[this.selectedPick].push({
+        name: pokemon.name,
+        id: pokemon.id,
+        tier: pokemon.tier,
+        cost: pokemon.cost,
+        addons: pokemon.addons,
+      });
+    }
+
     this.picksChanged$.next();
   }
 
