@@ -347,4 +347,13 @@ export class TierListComponent implements OnInit, OnDestroy {
   isPokemonDrafted(pokemon: Pokemon): boolean {
     return this.draftedPokemonIds().has(pokemon.id);
   }
+
+  makeWarningString(pokemon: TierPokemon) {
+    let warningString = makeBanString(pokemon.banned);
+    if (pokemon.notes) {
+      if (warningString) warningString += ' ';
+      warningString += `Note: ${pokemon.notes}`;
+    }
+    return warningString;
+  }
 }

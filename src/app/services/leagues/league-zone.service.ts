@@ -338,9 +338,21 @@ export class LeagueZoneService {
     );
   }
 
-  getMyCoachProfile(): Observable<League.CoachProfile> {
+  getCoachData(options?: {
+    suppressStatuses?: number[];
+  }): Observable<League.CoachProfile> {
     return this.apiService.get(
       `${ROOTPATH}/tournaments/${this.tournamentKey()}/signup`,
+      {
+        authenticated: true,
+        errorHandlingOptions: { suppressStatuses: options?.suppressStatuses },
+      },
+    );
+  }
+
+  getDiscordJoinedStatus(discordId: string): Observable<{ joined: boolean }> {
+    return this.apiService.get(
+      `${ROOTPATH}/leagues/${this.leagueKey()}tournaments/${this.tournamentKey()}/discord/joined/${discordId}`,
       { authenticated: true },
     );
   }

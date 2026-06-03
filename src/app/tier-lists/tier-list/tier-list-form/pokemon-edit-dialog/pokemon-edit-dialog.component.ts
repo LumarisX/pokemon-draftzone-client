@@ -32,6 +32,12 @@ export interface PokemonEditDialogData {
   tiers: LeagueTier[];
 }
 
+export interface PokemonEditDialogResult {
+  updatedTier: string | null;
+  updatedBanNotes: string;
+  updatedSelectedAbilities: string[];
+}
+
 @Component({
   selector: 'pdz-pokemon-edit-dialog',
   standalone: true,
@@ -69,7 +75,10 @@ export class PokemonEditDialogComponent implements OnInit {
 
   addAbilityControls(): void {
     const abilities = this.data.pokemon.abilities || [];
-    const initiallySelected = this.data.pokemon.selectedAbilities || [];
+    const bannedAbilities = this.data.pokemon.banned?.abilities || [];
+    const initiallySelected =
+      this.data.pokemon.selectedAbilities ||
+      abilities.filter((ability) => !bannedAbilities.includes(ability));
     const abilitiesGroup = this.editForm.get('selectedAbilities') as FormGroup;
 
     abilities.forEach((ability: string) => {
@@ -88,15 +97,12 @@ export class PokemonEditDialogComponent implements OnInit {
 
       const resultData = {
         updatedTier: formValues.currentTier,
-        updatedBanNotes: formValues.banNotes,
+        updatedBanNotes: formValues.notes,
         updatedSelectedAbilities: selectedAbilityNames,
       };
-
-      console.log('Data being returned:', resultData);
       this.dialogRef.close(resultData);
     } else {
       this.editForm.markAllAsTouched();
-      console.error('Form is invalid. Cannot save.');
     }
   }
 

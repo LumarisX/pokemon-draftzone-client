@@ -73,7 +73,9 @@
       <div class="export-control">
         <button
           class="action-button"
-          (click)="showExportMenu.set(!showExportMenu()); showImportMenu.set(false)"
+          (click)="
+            showExportMenu.set(!showExportMenu()); showImportMenu.set(false)
+          "
           aria-label="Export"
         >
           <pdz-icon name="download" size="sm"></pdz-icon>
@@ -91,7 +93,9 @@
       <div class="export-control">
         <button
           class="action-button"
-          (click)="showImportMenu.set(!showImportMenu()); showExportMenu.set(false)"
+          (click)="
+            showImportMenu.set(!showImportMenu()); showExportMenu.set(false)
+          "
           aria-label="Import"
           matTooltip="Import"
         >
@@ -114,6 +118,161 @@
     @if (isLoading()) {
       <pdz-loading></pdz-loading>
     } @else if (tiers()) {
+      <!-- Side Panel: Untiered + Banned (Fixed on Left) -->
+      <div
+        class="tier-container--null"
+        [class.is-resizing]="isResizingNullPanel()"
+      >
+        <!-- Untiered Section -->
+        @if (untiered()) {
+          <div class="tier tier--null" [style.flex]="untieredPanelFlex()">
+            <!-- Tier Header -->
+            <div class="tier__header tier__header--null">
+              <span class="tier__name">{{ untiered()!.name }}</span>
+            </div>
+
+            <!-- Pokemon List (Drop Zone) -->
+            <div
+              class="tier__pokemon-list"
+              (dragover)="onDragOver($event, untiered()!)"
+              (dragleave)="onDragLeave($event, untiered()!)"
+              (drop)="onDrop($event, untiered()!)"
+              [class.is-drag-over]="isTierDragOver(untiered()!)"
+              [class.tier__pokemon-list--empty]="
+                untiered()!.pokemon.length === 0
+              "
+            >
+              @if (untiered()!.pokemon.length > 0) {
+                <span class="tier__count"
+                  >{{ untiered()!.pokemon.length }} Pokémon</span
+                >
+              }
+              @if (untiered()!.pokemon.length === 0) {
+                <span>Drop Pokémon here to remove from tiers</span>
+              }
+
+              @for (pokemon of untiered()!.pokemon; track pokemon.id) {
+                @if (filterPokemon(pokemon)) {
+                  <div
+                    class="pokemon-entry"
+                    draggable="true"
+                    (dragstart)="onDragStart($event, pokemon, untiered()!)"
+                    (dragend)="onDragEnd()"
+                    (click)="onPokemonClick(pokemon, untiered()!, $event)"
+                    [class.pokemon-entry--selected]="isPokemonSelected(pokemon)"
+                    [class.pokemon-entry--flash]="isPokemonFlashing(pokemon)"
+                  >
+                    @if (isPokemonSelected(pokemon)) {
+                      <div class="pokemon-entry__select-indicator">
+                        <mat-icon>check_circle</mat-icon>
+                      </div>
+                    }
+
+                    <div class="pokemon-entry__sprite">
+                      <pdz-sprite [pokemon]="pokemon"></pdz-sprite>
+                    </div>
+
+                    <span class="pokemon-entry__name">
+                      {{ pokemon.name }}
+                    </span>
+
+                    <div class="pokemon-entry__actions">
+                      <button
+                        class="icon-button icon-button--edit"
+                        (click)="onEditPokemon(pokemon, untiered()!, $event)"
+                        matTooltip="Edit Pokemon"
+                      >
+                        <mat-icon>edit</mat-icon>
+                      </button>
+                    </div>
+                  </div>
+                }
+              }
+            </div>
+          </div>
+        }
+
+        @if (untiered() && banned()) {
+          <div
+            class="null-tier-splitter"
+            role="separator"
+            aria-orientation="horizontal"
+            aria-label="Resize untiered and banned sections"
+            tabindex="0"
+            (pointerdown)="onNullPanelResizeStart($event)"
+            (keydown)="onNullPanelSplitterKeyDown($event)"
+          >
+            <span class="null-tier-splitter__grip"></span>
+          </div>
+        }
+
+        <!-- Banned Section -->
+        @if (banned()) {
+          <div class="tier tier--banned" [style.flex]="bannedPanelFlex()">
+            <!-- Tier Header -->
+            <div class="tier__header tier__header--banned">
+              <span class="tier__name">{{ banned()!.name }}</span>
+            </div>
+
+            <!-- Pokemon List (Drop Zone) -->
+            <div
+              class="tier__pokemon-list"
+              (dragover)="onDragOver($event, banned()!)"
+              (dragleave)="onDragLeave($event, banned()!)"
+              (drop)="onDrop($event, banned()!)"
+              [class.is-drag-over]="isTierDragOver(banned()!)"
+              [class.tier__pokemon-list--empty]="banned()!.pokemon.length === 0"
+            >
+              @if (banned()!.pokemon.length > 0) {
+                <span class="tier__count"
+                  >{{ banned()!.pokemon.length }} Pokémon</span
+                >
+              }
+              @if (banned()!.pokemon.length === 0) {
+                <span>Drag Pokémon here to ban from draft</span>
+              }
+
+              @for (pokemon of banned()!.pokemon; track pokemon.id) {
+                @if (filterPokemon(pokemon)) {
+                  <div
+                    class="pokemon-entry"
+                    draggable="true"
+                    (dragstart)="onDragStart($event, pokemon, banned()!)"
+                    (dragend)="onDragEnd()"
+                    (click)="onPokemonClick(pokemon, banned()!, $event)"
+                    [class.pokemon-entry--selected]="isPokemonSelected(pokemon)"
+                    [class.pokemon-entry--flash]="isPokemonFlashing(pokemon)"
+                  >
+                    @if (isPokemonSelected(pokemon)) {
+                      <div class="pokemon-entry__select-indicator">
+                        <mat-icon>check_circle</mat-icon>
+                      </div>
+                    }
+
+                    <div class="pokemon-entry__sprite">
+                      <pdz-sprite [pokemon]="pokemon"></pdz-sprite>
+                    </div>
+
+                    <span class="pokemon-entry__name">
+                      {{ pokemon.name }}
+                    </span>
+
+                    <div class="pokemon-entry__actions">
+                      <button
+                        class="icon-button icon-button--edit"
+                        (click)="onEditPokemon(pokemon, banned()!, $event)"
+                        matTooltip="Edit Pokemon"
+                      >
+                        <mat-icon>edit</mat-icon>
+                      </button>
+                    </div>
+                  </div>
+                }
+              }
+            </div>
+          </div>
+        }
+      </div>
       <!-- Regular Tiers (scrollable) -->
       <div class="tiers-container">
         @for (tier of tiers(); track $index; let tierIndex = $index) {
@@ -243,145 +402,6 @@
         >
           <mat-icon>add</mat-icon>
         </div>
-      </div>
-
-      <!-- Side Panel: Banned + Untiered (Fixed on Right) -->
-      <div class="null-tier-container">
-        <!-- Untiered Section -->
-        @if (untiered()) {
-          <div class="tier tier--null">
-            <!-- Tier Header -->
-            <div class="tier__header tier__header--null">
-              <span class="tier__name">{{ untiered()!.name }}</span>
-            </div>
-
-            <!-- Pokemon List (Drop Zone) -->
-            <div
-              class="tier__pokemon-list"
-              (dragover)="onDragOver($event, untiered()!)"
-              (dragleave)="onDragLeave($event, untiered()!)"
-              (drop)="onDrop($event, untiered()!)"
-              [class.is-drag-over]="isTierDragOver(untiered()!)"
-              [class.tier__pokemon-list--empty]="
-                untiered()!.pokemon.length === 0
-              "
-            >
-              @if (untiered()!.pokemon.length > 0) {
-                <span class="tier__count"
-                  >{{ untiered()!.pokemon.length }} Pokémon</span
-                >
-              }
-              @if (untiered()!.pokemon.length === 0) {
-                <span>Drop Pokémon here to remove from tiers</span>
-              }
-
-              @for (pokemon of untiered()!.pokemon; track pokemon.id) {
-                @if (filterPokemon(pokemon)) {
-                  <div
-                    class="pokemon-entry"
-                    draggable="true"
-                    (dragstart)="onDragStart($event, pokemon, untiered()!)"
-                    (dragend)="onDragEnd()"
-                    (click)="onPokemonClick(pokemon, untiered()!, $event)"
-                    [class.pokemon-entry--selected]="isPokemonSelected(pokemon)"
-                    [class.pokemon-entry--flash]="isPokemonFlashing(pokemon)"
-                  >
-                    @if (isPokemonSelected(pokemon)) {
-                      <div class="pokemon-entry__select-indicator">
-                        <mat-icon>check_circle</mat-icon>
-                      </div>
-                    }
-
-                    <div class="pokemon-entry__sprite">
-                      <pdz-sprite [pokemon]="pokemon"></pdz-sprite>
-                    </div>
-
-                    <span class="pokemon-entry__name">
-                      {{ pokemon.name }}
-                    </span>
-
-                    <div class="pokemon-entry__actions">
-                      <button
-                        class="icon-button icon-button--edit"
-                        (click)="onEditPokemon(pokemon, untiered()!, $event)"
-                        matTooltip="Edit Pokemon"
-                      >
-                        <mat-icon>edit</mat-icon>
-                      </button>
-                    </div>
-                  </div>
-                }
-              }
-            </div>
-          </div>
-        }
-
-        <!-- Banned Section -->
-        @if (banned()) {
-          <div class="tier tier--banned">
-            <!-- Tier Header -->
-            <div class="tier__header tier__header--banned">
-              <span class="tier__name">{{ banned()!.name }}</span>
-            </div>
-
-            <!-- Pokemon List (Drop Zone) -->
-            <div
-              class="tier__pokemon-list"
-              (dragover)="onDragOver($event, banned()!)"
-              (dragleave)="onDragLeave($event, banned()!)"
-              (drop)="onDrop($event, banned()!)"
-              [class.is-drag-over]="isTierDragOver(banned()!)"
-              [class.tier__pokemon-list--empty]="banned()!.pokemon.length === 0"
-            >
-              @if (banned()!.pokemon.length > 0) {
-                <span class="tier__count"
-                  >{{ banned()!.pokemon.length }} Pokémon</span
-                >
-              }
-              @if (banned()!.pokemon.length === 0) {
-                <span>Drag Pokémon here to ban from draft</span>
-              }
-
-              @for (pokemon of banned()!.pokemon; track pokemon.id) {
-                @if (filterPokemon(pokemon)) {
-                  <div
-                    class="pokemon-entry"
-                    draggable="true"
-                    (dragstart)="onDragStart($event, pokemon, banned()!)"
-                    (dragend)="onDragEnd()"
-                    (click)="onPokemonClick(pokemon, banned()!, $event)"
-                    [class.pokemon-entry--selected]="isPokemonSelected(pokemon)"
-                    [class.pokemon-entry--flash]="isPokemonFlashing(pokemon)"
-                  >
-                    @if (isPokemonSelected(pokemon)) {
-                      <div class="pokemon-entry__select-indicator">
-                        <mat-icon>check_circle</mat-icon>
-                      </div>
-                    }
-
-                    <div class="pokemon-entry__sprite">
-                      <pdz-sprite [pokemon]="pokemon"></pdz-sprite>
-                    </div>
-
-                    <span class="pokemon-entry__name">
-                      {{ pokemon.name }}
-                    </span>
-
-                    <div class="pokemon-entry__actions">
-                      <button
-                        class="icon-button icon-button--edit"
-                        (click)="onEditPokemon(pokemon, banned()!, $event)"
-                        matTooltip="Edit Pokemon"
-                      >
-                        <mat-icon>edit</mat-icon>
-                      </button>
-                    </div>
-                  </div>
-                }
-              }
-            </div>
-          </div>
-        }
       </div>
     }
   </div>

@@ -95,11 +95,7 @@ export function filterBySearch(
 /**
  * Creates a ban string for Pokemon with restrictions
  */
-export function makeBanString(banned?: {
-  moves?: string[];
-  abilities?: string[];
-  tera?: true;
-}): string {
+export function makeBanString(banned?: TierPokemon['banned']): string {
   if (!banned) return '';
   const bans: string[] = [];
   if (banned.tera) bans.push('Terastalization');

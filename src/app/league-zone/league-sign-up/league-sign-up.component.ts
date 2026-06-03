@@ -8,18 +8,17 @@ import {
   Validators,
 } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
-import { HttpEventType, HttpResponse } from '@angular/common/http';
+import { HttpResponse } from '@angular/common/http';
 import {
   catchError,
-  finalize,
+  filter,
+  firstValueFrom,
   map,
   of,
   Subject,
   switchMap,
   take,
   takeUntil,
-  tap,
-  throwError,
 } from 'rxjs';
 import { AuthService } from '../../services/auth0.service';
 import { LeagueZoneService } from '../../services/leagues/league-zone.service';
@@ -27,7 +26,6 @@ import { UploadService } from '../../services/upload.service';
 import { LoadingComponent } from '../../images/loading/loading.component';
 import { League } from '../league.interface';
 import { getLogoUrlOld } from '../league.util';
-
 
 @Component({
   selector: 'pdz-league-sign-up',
@@ -58,13 +56,35 @@ export class LeagueSignUpComponent implements OnInit, OnDestroy {
   logoFile: File | null = null;
   logoFileName: string = '';
   isUploading = false;
+  isSubmitting = false;
   uploadError: string | null = null;
-  relatedEntityId: string | null = null;
-  tournamentId: string | null = null;
 
   leagueInfo: League.LeagueInfo | null = null;
+  isCheckingSignUp = true;
 
   ngOnInit(): void {
+    this.leagueService
+      .getCoachData({ suppressStatuses: [404] })
+      .pipe(
+        takeUntil(this.destroy$),
+        catchError(() => of(null)),
+      )
+      .subscribe((coachData) => {
+        if (coachData) {
+          const leagueKey = this.leagueService.leagueKey();
+          const tournamentKey = this.leagueService.tournamentKey();
+          this.router.navigate([
+            '/leagues',
+            leagueKey,
+            'tournaments',
+            tournamentKey,
+            'coach',
+          ]);
+        } else {
+          this.isCheckingSignUp = false;
+        }
+      });
+
     this.leagueService
       .getLeagueInfo()
       .pipe(takeUntil(this.destroy$))
@@ -138,35 +158,63 @@ export class LeagueSignUpComponent implements OnInit, OnDestroy {
       });
   }
 
-  onSubmit() {
+  async onSubmit() {
+    if (this.isSubmitting) return;
+
     const tournamentKey = this.leagueService.tournamentKey();
-    if (this.signupForm.valid && tournamentKey) {
-      this.leagueService.signUp(this.signupForm.value).subscribe({
-        next: (response: any) => {
-          this.added = true;
-          this.relatedEntityId = response.userId;
-          this.tournamentId = response.tournamentId;
-          localStorage.setItem(
-            tournamentKey,
-            this.signupForm.get('discordName')?.value ?? '',
-          );
-
-          if (this.logoFile) {
-            this.uploadLogo();
-          }
-
-          const leagueKey = this.leagueService.leagueKey();
-          this.router.navigate([
-            '/leagues', leagueKey, 'tournaments', tournamentKey, 'coach',
-          ]);
-        },
-        error: (error) => {
-          console.error('Sign up failed:', error);
-        },
-      });
-    } else {
+    if (!this.signupForm.valid || !tournamentKey) {
       console.error('Sign Up form is not valid: ', this.signupForm.errors);
+      return;
     }
+
+    try {
+      this.isSubmitting = true;
+      this.uploadError = null;
+      let logoFileKey: string | undefined;
+
+      if (this.logoFile) {
+        this.isUploading = true;
+        logoFileKey = await this.uploadLogoAndGetFileKey(this.logoFile);
+      }
+
+      const signupPayload = logoFileKey
+        ? { ...this.signupForm.value, logo: logoFileKey }
+        : this.signupForm.value;
+
+      const response: any = await firstValueFrom(
+        this.leagueService
+          .signUp(signupPayload)
+          .pipe(takeUntil(this.destroy$), take(1)),
+      );
+
+      this.added = true;
+      localStorage.setItem(
+        tournamentKey,
+        this.signupForm.get('discordName')?.value ?? '',
+      );
+      console.log('Sign up successful:', response);
+      this.navigateToCoach();
+    } catch (error: any) {
+      console.error('Sign up failed:', error);
+      if (this.logoFile && !this.uploadError) {
+        this.uploadError = error?.message || 'Upload failed. Please try again.';
+      }
+    } finally {
+      this.isUploading = false;
+      this.isSubmitting = false;
+    }
+  }
+
+  private navigateToCoach(): void {
+    const leagueKey = this.leagueService.leagueKey();
+    const tournamentKey = this.leagueService.tournamentKey();
+    this.router.navigate([
+      '/leagues',
+      leagueKey,
+      'tournaments',
+      tournamentKey,
+      'coach',
+    ]);
   }
 
   confirmSignUpAsSub(): void {
@@ -177,91 +225,48 @@ export class LeagueSignUpComponent implements OnInit, OnDestroy {
     this.wantsToSignUpAsSub = false;
   }
 
-  private uploadLogo(): void {
-    if (!this.logoFile) {
-      console.warn('uploadLogo called but no file selected');
-      return;
-    }
-
-    if (!this.relatedEntityId) {
-      this.uploadError = 'Cannot upload logo: User ID not available';
-      console.error('uploadLogo called but relatedEntityId is null');
-      return;
-    }
-
-    this.isUploading = true;
+  private async uploadLogoAndGetFileKey(originalFile: File): Promise<string> {
     this.uploadError = null;
 
-    const file = this.logoFile;
-    let uploadedFileKey: string | null = null;
+    const buffer = await originalFile.arrayBuffer();
+    const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
+    const hashHex = Array.from(new Uint8Array(hashBuffer))
+      .map((b) => b.toString(16).padStart(2, '0'))
+      .join('');
+    const ext = originalFile.name.includes('.')
+      ? originalFile.name.substring(originalFile.name.lastIndexOf('.'))
+      : '';
+    const file = new File([originalFile], `${hashHex}${ext}`, {
+      type: originalFile.type,
+    });
 
-    console.log(`Starting logo upload for user: ${this.relatedEntityId}`);
+    const presigned = await firstValueFrom(
+      this.leagueService
+        .getLeagueUploadPresignedUrl(file.name, file.type || 'image/png')
+        .pipe(takeUntil(this.destroy$), take(1)),
+    );
 
-    this.leagueService
-      .getLeagueUploadPresignedUrl(file.name, file.type || 'image/png')
-      .pipe(
-        tap((response) => {
-          console.log('Received presigned URL response:', {
-            hasUrl: !!response.url,
-            key: response.key,
-          });
-          uploadedFileKey = response.key;
-        }),
+    await firstValueFrom(
+      this.uploadService.uploadToS3(presigned.url, file).pipe(
+        filter((response) => response instanceof HttpResponse),
+        map((response) => response as HttpResponse<object>),
+        take(1),
         switchMap((response) => {
-          if (!response || !response.url) {
-            throw new Error('Failed to get pre-signed URL from server');
+          if (!response.ok) {
+            throw new Error(`S3 upload failed with status: ${response.status}`);
           }
-          console.log('Uploading to S3...');
-          return this.uploadService.uploadToS3(response.url, file);
-        }),
-        switchMap((s3Response) => {
-          if (s3Response.type === HttpEventType.UploadProgress) {
-            return of(null);
-          } else if (s3Response instanceof HttpResponse) {
-            if (s3Response.ok && uploadedFileKey) {
-              console.log('S3 upload successful, confirming with backend...');
-              return of(uploadedFileKey);
-            } else {
-              throw new Error(
-                `S3 upload failed with status: ${s3Response.status}`,
-              );
-            }
-          }
-          return of(null);
-        }),
-        switchMap((fileKey) => {
-          if (!fileKey) return of(null);
 
-          return this.leagueService.confirmUploadWithRelatedEntity(
-            fileKey,
+          return this.leagueService.confirmUpload(
+            presigned.key,
             file.size,
             file.type || 'image/png',
-            this.relatedEntityId!,
-            this.tournamentId!,
           );
         }),
-        catchError((error) => {
-          this.uploadError = error?.message || 'Upload failed';
-          console.error('Logo upload error:', error);
-          return throwError(() => error);
-        }),
-        finalize(() => {
-          this.isUploading = false;
-        }),
         takeUntil(this.destroy$),
-      )
-      .subscribe({
-        next: (response) => {
-          if (response) {
-            console.log('Logo uploaded and confirmed successfully:', response);
-          }
-        },
-        error: (error) => {
-          console.error('Upload process failed:', error);
-          this.uploadError =
-            error?.message || 'Upload failed. Please try again.';
-        },
-      });
+      ),
+    );
+
+    return presigned.key;
   }
 
   onLogoUpload(event: Event): void {

@@ -153,7 +153,13 @@ export class TierListService {
     tiers: Array<{
       name: string;
       cost: number;
-      pokemon: Array<{ id: string; name: string; banned?: boolean }>;
+      pokemon: Array<{
+        id: string;
+        name: string;
+        banned?: boolean;
+        notes?: string;
+        bannedAbilities?: string[];
+      }>;
     }>,
   ) {
     const tierListId = this.tierListId();

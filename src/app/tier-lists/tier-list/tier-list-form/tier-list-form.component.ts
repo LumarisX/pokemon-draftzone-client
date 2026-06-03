@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import {
+  computed,
   Component,
   HostListener,
   inject,
@@ -29,6 +30,7 @@ import { matchesSearchText, SORT_MAP, SortOption } from '../tier-list.utils';
 import {
   PokemonEditDialogComponent,
   PokemonEditDialogData,
+  PokemonEditDialogResult,
 } from './pokemon-edit-dialog/pokemon-edit-dialog.component';
 import {
   TierDialogResult,
@@ -99,6 +101,22 @@ export class TierListFormComponent implements OnInit, OnDestroy {
   UNTIERED_TIER_NAME = 'Untiered';
   BANNED_TIER_NAME = 'Banned';
   banned = signal<EditableTier | undefined>(undefined);
+  readonly DEFAULT_NULL_PANEL_RATIO = 2 / 3;
+  readonly MIN_NULL_PANEL_RATIO = 0.2;
+  readonly MAX_NULL_PANEL_RATIO = 0.8;
+  nullPanelRatio = signal<number>(this.DEFAULT_NULL_PANEL_RATIO);
+  untieredPanelFlex = computed(
+    () => `${this.nullPanelRatio().toFixed(4)} 1 0%`,
+  );
+  bannedPanelFlex = computed(
+    () => `${(1 - this.nullPanelRatio()).toFixed(4)} 1 0%`,
+  );
+  isResizingNullPanel = signal<boolean>(false);
+
+  private resizingPointerId: number | null = null;
+  private resizeStartY = 0;
+  private resizeStartRatio = this.DEFAULT_NULL_PANEL_RATIO;
+  private resizeContainerHeight = 1;
 
   // Undo/redo history
   private undoStack: HistoryEntry[] = [];
@@ -129,6 +147,7 @@ export class TierListFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.stopNullPanelResize();
     this.destroy$.next();
     this.destroy$.complete();
   }
@@ -216,6 +235,104 @@ export class TierListFormComponent implements OnInit, OnDestroy {
     this.dragOverTier.set(null);
     this.dragCount.set(0);
     setTimeout(() => this.isDragging.set(false), 100);
+  }
+
+  onNullPanelResizeStart(event: PointerEvent): void {
+    const splitter = event.currentTarget as HTMLElement | null;
+    const container = splitter?.closest(
+      '.tier-container--null',
+    ) as HTMLElement | null;
+    if (!splitter || !container) return;
+
+    event.preventDefault();
+    splitter.setPointerCapture(event.pointerId);
+
+    this.resizingPointerId = event.pointerId;
+    this.resizeStartY = event.clientY;
+    this.resizeStartRatio = this.nullPanelRatio();
+    this.resizeContainerHeight = Math.max(container.clientHeight, 1);
+    this.isResizingNullPanel.set(true);
+  }
+
+  onNullPanelSplitterKeyDown(event: KeyboardEvent): void {
+    const fineStep = 0.02;
+    const coarseStep = 0.05;
+    const step = event.shiftKey ? coarseStep : fineStep;
+
+    if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      this.nullPanelRatio.update((ratio) =>
+        this.clampNullPanelRatio(ratio - step),
+      );
+      return;
+    }
+
+    if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      this.nullPanelRatio.update((ratio) =>
+        this.clampNullPanelRatio(ratio + step),
+      );
+      return;
+    }
+
+    if (event.key === 'Home') {
+      event.preventDefault();
+      this.nullPanelRatio.set(this.DEFAULT_NULL_PANEL_RATIO);
+    }
+  }
+
+  @HostListener('document:pointermove', ['$event'])
+  onDocumentPointerMove(event: PointerEvent): void {
+    if (!this.isResizingNullPanel()) return;
+    if (
+      this.resizingPointerId !== null &&
+      event.pointerId !== this.resizingPointerId
+    ) {
+      return;
+    }
+
+    const deltaY = event.clientY - this.resizeStartY;
+    const nextRatio =
+      this.resizeStartRatio + deltaY / this.resizeContainerHeight;
+    this.nullPanelRatio.set(this.clampNullPanelRatio(nextRatio));
+  }
+
+  @HostListener('document:pointerup', ['$event'])
+  onDocumentPointerUp(event: PointerEvent): void {
+    if (!this.isResizingNullPanel()) return;
+    if (
+      this.resizingPointerId !== null &&
+      event.pointerId !== this.resizingPointerId
+    ) {
+      return;
+    }
+
+    this.stopNullPanelResize();
+  }
+
+  @HostListener('document:pointercancel', ['$event'])
+  onDocumentPointerCancel(event: PointerEvent): void {
+    if (!this.isResizingNullPanel()) return;
+    if (
+      this.resizingPointerId !== null &&
+      event.pointerId !== this.resizingPointerId
+    ) {
+      return;
+    }
+
+    this.stopNullPanelResize();
+  }
+
+  private stopNullPanelResize(): void {
+    this.resizingPointerId = null;
+    this.isResizingNullPanel.set(false);
+  }
+
+  private clampNullPanelRatio(value: number): number {
+    return Math.max(
+      this.MIN_NULL_PANEL_RATIO,
+      Math.min(this.MAX_NULL_PANEL_RATIO, value),
+    );
   }
 
   onDragOver(event: DragEvent, tier: EditableTier): void {
@@ -593,11 +710,53 @@ export class TierListFormComponent implements OnInit, OnDestroy {
     dialogRef
       .afterClosed()
       .pipe(takeUntil(this.destroy$))
-      .subscribe((result) => {
-        if (result) {
-          this.hasUnsavedChanges.set(true);
-          this.snackBar.open('Pokemon updated', undefined, { duration: 2000 });
+      .subscribe((result: PokemonEditDialogResult | undefined) => {
+        if (!result) return;
+
+        const allAbilities = pokemon.abilities ?? [];
+        const selectedAbilities = result.updatedSelectedAbilities ?? [];
+        const bannedAbilities = allAbilities.filter(
+          (ability) => !selectedAbilities.includes(ability),
+        );
+
+        pokemon.notes = result.updatedBanNotes?.trim() || undefined;
+
+        if (bannedAbilities.length > 0) {
+          pokemon.banned = {
+            ...(pokemon.banned ?? {}),
+            abilities: bannedAbilities,
+          };
+        } else if (pokemon.banned) {
+          const nextBanned = { ...pokemon.banned };
+          delete nextBanned.abilities;
+          pokemon.banned =
+            nextBanned.moves?.length || nextBanned.tera
+              ? nextBanned
+              : undefined;
         }
+
+        const targetTierName = result.updatedTier;
+        if (targetTierName !== tier.name) {
+          const targetTier =
+            targetTierName === null
+              ? this.untiered()
+              : this.tiers()?.find((t) => t.name === targetTierName);
+
+          if (targetTier) {
+            tier.pokemon = tier.pokemon.filter((p) => p.id !== pokemon.id);
+            targetTier.pokemon.push(pokemon);
+            targetTier.pokemon.sort(SORT_MAP[this.sortBy()]);
+          }
+        }
+
+        this.tiers.set([...(this.tiers() ?? [])]);
+        this.untiered.set(
+          this.untiered()
+            ? { ...(this.untiered() as EditableTier) }
+            : undefined,
+        );
+        this.hasUnsavedChanges.set(true);
+        this.snackBar.open('Pokemon updated', undefined, { duration: 2000 });
       });
   }
 
@@ -939,7 +1098,9 @@ export class TierListFormComponent implements OnInit, OnDestroy {
       `${placedCount} Pokémon placed across ${tieredCount} tier(s).`,
     ];
     if (newTierNames.length > 0) {
-      parts.push(`${newTierNames.length} new tier(s) created: ${newTierNames.join(', ')}.`);
+      parts.push(
+        `${newTierNames.length} new tier(s) created: ${newTierNames.join(', ')}.`,
+      );
     }
     if (unknownNames.size > 0) {
       parts.push(`${unknownNames.size} unrecognized name(s) skipped.`);
@@ -991,6 +1152,8 @@ export class TierListFormComponent implements OnInit, OnDestroy {
       pokemon: tier.pokemon.map((p) => ({
         id: p.id,
         name: p.name,
+        notes: p.notes,
+        bannedAbilities: p.banned?.abilities,
       })),
     }));
 
@@ -1003,6 +1166,8 @@ export class TierListFormComponent implements OnInit, OnDestroy {
       const bannedPayload = bannedTier.pokemon.map((p) => ({
         id: p.id,
         name: p.name,
+        notes: p.notes,
+        bannedAbilities: p.banned?.abilities,
         banned: true as const,
       }));
       if (untieredEntry) {

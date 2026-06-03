@@ -398,10 +398,29 @@
   @include flat-button-primary();
   width: 100%;
   margin-top: var(--pdz-space-md);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--pdz-space-sm);
 
   @include respond-above(medium) {
     width: auto;
     min-width: 12rem;
     align-self: flex-end;
+  }
+
+  &__spinner {
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: submit-spin 0.8s linear infinite;
+  }
+}
+
+@keyframes submit-spin {
+  to {
+    transform: rotate(360deg);
   }
 }

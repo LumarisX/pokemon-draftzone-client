@@ -202,10 +202,10 @@
                         <pdz-icon name="tera" [height]="16"></pdz-icon>
                       </div>
                     }
-                    @if (pokemon.banned) {
+                    @if (pokemon.banned || pokemon.notes) {
                       <mat-icon
                         class="pokemon-entry__ban-icon"
-                        [matTooltip]="makeBanString(pokemon.banned)"
+                        [matTooltip]="makeWarningString(pokemon)"
                         >warning</mat-icon
                       >
                     }

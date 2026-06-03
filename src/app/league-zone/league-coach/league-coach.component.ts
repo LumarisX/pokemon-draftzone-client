@@ -27,15 +27,26 @@ export class LeagueCoachComponent implements OnInit, OnDestroy {
     const { leagueKey, tournamentKey } = this;
     const divKey = this.profile?.division?.divisionKey;
     if (!leagueKey || !tournamentKey || !divKey) return [];
-    return ['/leagues', leagueKey, 'tournaments', tournamentKey, 'divisions', divKey];
+    return [
+      '/leagues',
+      leagueKey,
+      'tournaments',
+      tournamentKey,
+      'divisions',
+      divKey,
+    ];
   }
 
   get teamLink(): string[] {
     return [...this.divisionBase, 'teams', this.profile?.teamId ?? ''];
   }
 
-  private get leagueKey() { return this.leagueService.leagueKey(); }
-  private get tournamentKey() { return this.leagueService.tournamentKey(); }
+  private get leagueKey() {
+    return this.leagueService.leagueKey();
+  }
+  private get tournamentKey() {
+    return this.leagueService.tournamentKey();
+  }
 
   tournamentBase(): string[] {
     const { leagueKey, tournamentKey } = this;
@@ -45,7 +56,7 @@ export class LeagueCoachComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.leagueService
-      .getMyCoachProfile()
+      .getCoachData()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (profile) => {

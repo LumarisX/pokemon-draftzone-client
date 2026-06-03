@@ -198,10 +198,10 @@
     flex: 1;
     display: flex;
     overflow: hidden;
-    border-radius: var(--pdz-shape-corner-md);
-    background-color: pdz-color(surface);
-    box-shadow: var(--pdz-level-2);
     position: relative;
+    gap: var(--pdz-space-md);
+    margin: calc(-1 * var(--pdz-space-md));
+    padding: var(--pdz-space-md);
   }
 
   pdz-loading {
@@ -220,6 +220,9 @@
     overflow-y: hidden;
     padding: var(--pdz-space-sm);
 
+    border-radius: var(--pdz-shape-corner-md);
+    background-color: pdz-color(surface-container-low);
+    box-shadow: var(--pdz-level-2);
     &__empty {
       @include apply-typography(body-md);
       color: pdz-color(on-surface-variant);
@@ -234,7 +237,7 @@
     display: flex;
     flex-direction: column;
     max-height: 100%;
-    background-color: pdz-color(surface-container);
+    background-color: pdz-color(surface);
     border-radius: var(--pdz-shape-corner-md);
     border: 2px solid pdz-color(outline-variant);
     flex-shrink: 0;

@@ -43,7 +43,10 @@
             <h3>Legal Abilities</h3>
             <div class="abilities-checkbox-group">
               @for (ability of abilityNames; track ability) {
-                <mat-checkbox class="ability-checkbox">
+                <mat-checkbox
+                  class="ability-checkbox"
+                  [formControlName]="ability"
+                >
                   {{ ability }}
                 </mat-checkbox>
               }
@@ -53,11 +56,11 @@
           <p>No abilities listed for this Pokémon.</p>
         }
         <mat-form-field appearance="outline" class="form-field-full-width">
-          <mat-label>Other Ban Notes</mat-label>
+          <mat-label>Other Notes</mat-label>
           <input
             matInput
             formControlName="notes"
-            placeholder="Enter ban/restriction notes..."
+            placeholder="Enter notes..."
           />
         </mat-form-field>
       </div>

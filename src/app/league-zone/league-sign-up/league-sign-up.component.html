@@ -1,4 +1,6 @@
-@if (leagueInfo) {
+@if (isCheckingSignUp) {
+  <pdz-loading></pdz-loading>
+} @else if (leagueInfo) {
   <form
     [formGroup]="signupForm"
     (ngSubmit)="onSubmit()"
@@ -185,6 +187,7 @@
           <button
             type="button"
             class="form-field__input file-input-button"
+            [disabled]="isSubmitting"
             (click)="logoInput.click()"
           >
             {{ logoFileName || "Choose File" }}
@@ -290,8 +293,17 @@
         </label>
       </div>
 
-      <button class="submit-btn" type="submit" [disabled]="!signupForm.valid">
-        Submit
+      <button
+        class="submit-btn"
+        type="submit"
+        [disabled]="!signupForm.valid || isSubmitting"
+      >
+        @if (isSubmitting) {
+          <span class="submit-btn__spinner" aria-hidden="true"></span>
+          <span>Submitting...</span>
+        } @else {
+          <span>Submit</span>
+        }
       </button>
     }
   </form>

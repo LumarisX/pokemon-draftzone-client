@@ -2,12 +2,16 @@
   <pdz-loading></pdz-loading>
 } @else if (error || !profile) {
   <div class="error-state">
-    <p>Could not load your coach profile. Make sure you've signed up for this tournament.</p>
-    <a [routerLink]="tournamentBase()" class="btn btn--secondary">Back to Tournament</a>
+    <p>
+      Could not load your coach profile. Make sure you've signed up for this
+      tournament.
+    </p>
+    <a [routerLink]="tournamentBase()" class="btn btn--secondary"
+      >Back to Tournament</a
+    >
   </div>
 } @else {
   <div class="dashboard">
-
     <div class="dashboard__header">
       <img
         class="dashboard__logo"
@@ -21,7 +25,7 @@
             [class.status-badge--active]="profile.status === 'active'"
             [class.status-badge--pending]="profile.status === 'pending'"
           >
-            {{ profile.status === 'active' ? 'Active' : 'Pending Review' }}
+            {{ profile.status === "active" ? "Active" : "Pending Review" }}
           </span>
           @if (leagueInfo) {
             <span class="dashboard__league-name">{{ leagueInfo.name }}</span>
@@ -33,7 +37,6 @@
     </div>
 
     <div class="dashboard__body">
-
       <section class="info-card">
         <h2 class="info-card__title">My Info</h2>
         <div class="info-grid">
@@ -55,7 +58,9 @@
           </div>
           <div class="info-item">
             <span class="info-item__label">Signed Up</span>
-            <span class="info-item__value">{{ profile.signedUpAt | date: 'mediumDate' }}</span>
+            <span class="info-item__value">{{
+              profile.signedUpAt | date: "mediumDate"
+            }}</span>
           </div>
           @if (profile.division) {
             <div class="info-item">
@@ -68,12 +73,17 @@
 
       <section class="nav-card">
         <h2 class="nav-card__title">
-          @if (profile.division) { My League } @else { Quick Links }
+          @if (profile.division) {
+            My League
+          } @else {
+            Quick Links
+          }
         </h2>
 
         @if (!profile.division) {
           <p class="nav-card__pending-msg">
-            You're all set — hang tight while the organizer reviews applications and assigns divisions.
+            You're all set — hang tight while the organizer reviews applications
+            and assigns divisions.
           </p>
         }
 
@@ -121,8 +131,6 @@
           }
         </div>
       </section>
-
     </div>
-
   </div>
 }

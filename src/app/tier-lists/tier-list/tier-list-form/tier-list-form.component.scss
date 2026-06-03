@@ -125,25 +125,76 @@
 
 // ─── Tier column (form-specific) ──────────────────────────────────────────
 
-.null-tier-container {
+.tier-container--null {
   display: flex;
   flex-direction: column;
-  gap: var(--pdz-space-sm);
+  gap: 0;
   min-width: 280px;
   max-width: 320px;
   flex-shrink: 0;
   padding: var(--pdz-space-md);
-  padding-left: var(--pdz-space-sm);
-  border-left: 2px solid pdz-color(outline-variant);
 
+  border-radius: var(--pdz-shape-corner-md);
+  background-color: pdz-color(surface-container-low);
+  box-shadow: var(--pdz-level-2);
   .tier--null {
-    flex: 2;
     min-height: 0;
   }
 
   .tier--banned {
-    flex: 1;
     min-height: 0;
+  }
+
+  &.is-resizing {
+    user-select: none;
+
+    .null-tier-splitter {
+      background-color: pdz-color(primary-container-low);
+    }
+  }
+}
+
+.null-tier-splitter {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 12px;
+  margin: var(--pdz-space-xs) 0;
+  border-radius: var(--pdz-shape-corner-full);
+  cursor: row-resize;
+  touch-action: none;
+  transition: background-color 0.15s ease;
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: var(--pdz-space-xs);
+    right: var(--pdz-space-xs);
+    height: 2px;
+    border-radius: var(--pdz-shape-corner-full);
+    background-color: pdz-color(outline-variant);
+  }
+
+  &:hover,
+  &:focus-visible {
+    background-color: pdz-color(surface-container-high);
+    outline: none;
+
+    &::before,
+    .null-tier-splitter__grip {
+      background-color: pdz-color(primary);
+    }
+  }
+
+  &__grip {
+    position: relative;
+    width: 36px;
+    height: 4px;
+    border-radius: var(--pdz-shape-corner-full);
+    background-color: pdz-color(outline);
+    opacity: 0.7;
+    transition: background-color 0.15s ease;
   }
 }
 
@@ -270,7 +321,6 @@
 
   &--null {
     border: 2px solid pdz-color(secondary);
-    background-color: pdz-color(surface-container-low);
 
     .tier__pokemon-list {
       min-height: 150px;
@@ -279,7 +329,6 @@
 
   &--banned {
     border: 2px solid pdz-color(error);
-    background-color: pdz-color(surface-container-low);
 
     .tier__pokemon-list {
       min-height: 80px;
@@ -400,7 +449,7 @@
   justify-content: center;
   padding: var(--pdz-space-lg);
   min-width: 280px;
-  background-color: pdz-color(surface-container-low);
+  background-color: pdz-color(surface);
   border: 2px dashed pdz-color(outline);
   border-radius: var(--pdz-shape-corner-md);
   cursor: pointer;
