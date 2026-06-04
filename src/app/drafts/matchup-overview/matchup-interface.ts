@@ -1,6 +1,8 @@
 import { ExtendedType, StatsTable, Type } from '../../data';
 import { PokemonId } from '../../data/namedex';
 import { DraftPokemon } from '../../interfaces/draft';
+import { Pokemon } from '../../interfaces/pokemon';
+import { PokemonData } from './widgets/teambuilder/pokemon-builder/pokemon-builder.model';
 
 export type Speedtier = {
   pokemon: DraftPokemon;
@@ -85,7 +87,12 @@ export type TypeChart = {
   team: TypeChartPokemon[];
 };
 
-export type MoveChart = MoveCategory[];
+export type MoveChart = {
+  name: string;
+  type: string;
+  tags: string[];
+  pokemon: Pokemon[];
+}[];
 
 export type CoverageMove = {
   id: string;
