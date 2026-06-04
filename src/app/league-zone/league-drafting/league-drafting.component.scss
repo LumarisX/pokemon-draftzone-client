@@ -7,8 +7,8 @@
   height: 100%;
   width: 100%;
   max-height: 100%;
-  column-gap: 0.5rem;
-  padding: var(--pdz-space-sm);
+  padding: var(--pdz-space-md);
+  gap: var(--pdz-space-md);
 }
 .tier-wrapper {
   flex: 1 1 auto;
@@ -17,7 +17,6 @@
 }
 .main-draft {
   display: flex;
-
   flex-direction: column;
   row-gap: 0.5rem;
   flex-grow: 1;
@@ -163,6 +162,7 @@
     background-color: pdz-color(primary);
     color: pdz-color(on-primary);
     box-shadow: var(--pdz-level-2);
+    height: 1.5rem;
     cursor: pointer;
     &:active {
       box-shadow: var(--pdz-level-0);
@@ -251,42 +251,68 @@
   }
   .my-draft-main {
     flex-grow: 1;
-
+    display: flex;
+    flex-direction: column;
+    padding: var(--pdz-space-sm);
+    border-radius: var(--pdz-shape-corner-sm);
+    background-color: pdz-color(surface-container-low);
+    box-shadow: var(--pdz-level-2);
     .my-draft-title {
       display: flex;
       justify-content: space-between;
       width: 100%;
-      F span {
+      padding: var(--pdz-space-xs);
+      background-color: pdz-color(primary-container);
+      border-bottom: 2px solid pdz-color(primary);
+      span {
         flex-grow: 1;
       }
     }
 
-    .my-draft-content {
-      display: flex;
-      flex-direction: column;
-      flex-grow: 1;
-      justify-content: space-between;
-      font-family: var(--pdz-font-fancy);
-      min-height: 0;
-    }
-
     .my-draft-pokemons {
       flex-grow: 1;
-      padding: 0.5rem 0.5rem;
       height: calc(100% - 2rem);
-      overflow-y: scroll;
+      overflow-y: auto;
       list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: var(--pdz-space-xs);
+      padding: var(--pdz-space-xs);
+
       .my-draft-pokemon {
         counter-increment: item;
         display: flex;
         align-items: center;
-        padding: 0.125rem 0;
+        padding: var(--pdz-space-xs);
+        border: 1px solid pdz-color(outline-variant);
+        border-radius: var(--pdz-shape-corner-sm);
         column-gap: 0.25rem;
+
+        &:hover {
+          background-color: pdz-color(primary-container-low);
+          border-color: pdz-color(primary);
+          box-shadow: var(--pdz-level-2);
+          transform: translateY(-1px);
+        }
+
+        &.selected-pick {
+          background-color: pdz-color(primary-container);
+          border-color: pdz-color(primary);
+          box-shadow: var(--pdz-level-2);
+        }
+        transition:
+          background-color 0.15s ease,
+          border-color 0.15s ease,
+          box-shadow 0.15s ease,
+          transform 0.1s ease;
 
         .my-pokemon-sprite {
           border-radius: 2rem;
           min-width: 2.5rem;
+          width: 2.5rem;
           height: 2.5rem;
+          overflow: hidden;
+          flex-shrink: 0;
         }
         .remove-button {
           align-self: start;
@@ -296,22 +322,38 @@
           width: 1.5rem;
           min-width: 1.5rem;
           height: 1.5rem;
+          font-family: var(--pdz-font-fancy);
 
           border-radius: var(--pdz-shape-corner-lg);
           text-align: center;
           line-height: 1.5rem;
-          &.selected-pick {
-            background-color: pdz-color(primary);
-            color: pdz-color(on-primary);
-          }
+          flex-shrink: 0;
         }
-        .my-pokemon-name,
+        .my-pokemon-info {
+          flex: 1;
+          min-width: 0;
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
+        }
+        .my-pokemon-name {
+          font-weight: 600;
+          color: pdz-color(on-surface);
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
         .my-pokemon-tier {
           font-weight: 500;
           font-family: var(--pdz-font-fancy);
+          flex-shrink: 0;
+          width: 1.5rem;
+          text-align: center;
+          line-height: 1.5rem;
         }
-        .my-pokemon-name {
-          flex-grow: 1;
+        .pdz-types {
+          display: flex;
+          gap: 2px;
         }
       }
 
@@ -370,12 +412,12 @@
             color: pdz-color(primary);
             width: 1.25rem;
             text-align: center;
-            margin-left: -0.75rem;
           }
           .my-pokemon-name,
           .my-pokemon-tier {
             font-weight: 500;
             font-family: var(--pdz-font-fancy);
+            width: 1.5rem;
           }
           .my-pokemon-name {
             flex-grow: 1;
@@ -396,32 +438,22 @@
           align-self: center;
           font-weight: bold;
           min-height: 2.5rem;
-          border: 2px dashed pdz-color(primary);
-          border-radius: var(--pdz-shape-corner-sm);
-          margin: 0.125rem 0;
+
           width: 100%;
-
-          &:hover {
-            background-color: pdz-color(primary-container-low);
-          }
-
-          &.selected-pick {
-            background-color: pdz-color(primary-container);
-          }
         }
       }
     }
-
-    .points-container {
-      border: 2px solid pdz-color(primary-border);
-      border-radius: var(--pdz-shape-corner-sm);
-      padding: var(--pdz-space-xs);
-      text-align: right;
-      margin-top: 0.5rem;
-      font-weight: 600;
-      color: pdz-color(on-surface);
-    }
   }
+}
+
+.draft-footer {
+  display: flex;
+  justify-content: space-between;
+
+  padding: var(--pdz-space-xs);
+  margin-top: var(--pdz-space-sm);
+  font-weight: 600;
+  color: pdz-color(on-surface);
 }
 
 .my-pick {
@@ -458,18 +490,15 @@
   font-size: 0.85rem;
   font-family: var(--pdz-font-fancy);
   overflow: hidden;
+  display: flex;
+  align-items: center;
 }
 
 .custom-dropdown-container {
   position: relative;
   display: flex;
   width: 100%;
-  border-radius: var(--pdz-shape-corner-lg);
   margin-bottom: 2px;
-  &:hover {
-    background-color: pdz-color(surface);
-    box-shadow: var(--pdz-level-1);
-  }
 }
 
 .custom-dropdown-menu {
@@ -504,6 +533,10 @@
 .info-container {
   display: flex;
   flex-direction: column;
+  padding: var(--pdz-space-sm);
+  border-radius: var(--pdz-shape-corner-sm);
+  background-color: pdz-color(surface-container-low);
+  box-shadow: var(--pdz-level-2);
 }
 
 .info-details-container {
@@ -557,5 +590,23 @@
     pdz-tier-list {
       padding: 0;
     }
+  }
+}
+
+pdz-tier-list {
+  padding: 0;
+}
+
+.draft-section {
+  overflow: hidden;
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  border-radius: var(--pdz-shape-corner-sm);
+  border: 2px solid pdz-color(outline-variant);
+  background-color: pdz-color(surface);
+  .draft-section-title {
+    font-family: var(--pdz-font-fancy);
+    font-weight: bold;
   }
 }

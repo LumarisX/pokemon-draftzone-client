@@ -22,33 +22,37 @@
         </div>
       </div>
       <a class="planner-link fancy-font" target="_blank" routerLink="/planner">
-        Planner <mat-icon>open_in_new</mat-icon>
+        Planner
+        <pdz-icon name="open_in_new" size="sm"></pdz-icon>
       </a>
-      <div class="my-draft-main draft-section">
-        <div class="custom-dropdown-container">
-          <button
-            class="my-draft-title draft-section-title"
-            (click)="toggleDropdown()"
-          >
-            <span>{{ selectedTeam.name }} </span
-            ><mat-icon>{{
-              isDropdownOpen ? "arrow_drop_up" : "arrow_drop_down"
-            }}</mat-icon>
-          </button>
-          @if (isDropdownOpen) {
-            <div class="custom-dropdown-menu">
-              @for (team of teams; track team) {
-                <button
-                  class="custom-dropdown-item"
-                  (click)="selectTeamAndClose(team)"
-                >
-                  <span>{{ team.name }}</span>
-                </button>
+      <div class="my-draft-main">
+        <div class="draft-section">
+          <div class="custom-dropdown-container">
+            <button
+              class="my-draft-title draft-section-title"
+              [disabled]="draftDetails.visibility === 'SELF'"
+              (click)="toggleDropdown()"
+            >
+              <span>{{ selectedTeam.name }} </span>
+              @if (draftDetails.visibility !== "SELF") {
+                <pdz-icon
+                  [name]="isDropdownOpen ? 'arrow_drop_up' : 'arrow_drop_down'"
+                ></pdz-icon>
               }
-            </div>
-          }
-        </div>
-        <div class="my-draft-content">
+            </button>
+            @if (isDropdownOpen) {
+              <div class="custom-dropdown-menu">
+                @for (team of teams; track team) {
+                  <button
+                    class="custom-dropdown-item"
+                    (click)="selectTeamAndClose(team)"
+                  >
+                    <span>{{ team.name }}</span>
+                  </button>
+                }
+              </div>
+            }
+          </div>
           <ol class="my-draft-pokemons draft-section-body">
             @for (pokemon of selectedTeam.draft; track pokemon.id) {
               <li class="my-draft-pokemon">
@@ -56,8 +60,18 @@
                 <div class="my-pokemon-sprite">
                   <pdz-sprite [pokemon]="pokemon" flipped></pdz-sprite>
                 </div>
-                <div class="my-pokemon-name fancy-font">
-                  {{ pokemon.name }}
+                <div class="my-pokemon-info">
+                  <span class="my-pokemon-name">{{ pokemon.name }}</span>
+                  @if (pokemon.types?.length) {
+                    <div class="pdz-types">
+                      @for (type of pokemon.types; track $index) {
+                        <pdz-pokemon-type
+                          [type]="type"
+                          display="icon"
+                        ></pdz-pokemon-type>
+                      }
+                    </div>
+                  }
                 </div>
                 @if (pokemon.capt?.tera) {
                   <div class="my-pokemon-capt fancy-font">
@@ -71,11 +85,9 @@
               <li
                 class="my-draft-pokemon my-pick"
                 (click)="selectedPick = $index"
+                [class.selected-pick]="selectedPick === $index"
               >
-                <div
-                  class="my-pokemon-index"
-                  [class.selected-pick]="selectedPick === $index"
-                >
+                <div class="my-pokemon-index">
                   {{ $index + selectedTeam.draft.length + 1 }}
                 </div>
                 <div class="my-draft-picks">
@@ -135,9 +147,11 @@
               </li>
             }
           </ol>
-          <div class="points-container">
-            Points: {{ selectedTeam.pointTotal }}/{{ points }}
-          </div>
+        </div>
+
+        <div class="draft-footer">
+          <button>Save/Submit</button>
+          Points: {{ selectedTeam.pointTotal }}/{{ points }}
         </div>
       </div>
     </div>
@@ -231,7 +245,7 @@
           [buttonText]="buttonText()"
           [altButtonText]="altButtonText()"
           (pokemonSelected)="pokemonSelected($event)"
-          title="Tier List"
+          header="Tier List"
         ></pdz-tier-list>
       </div>
     </div>

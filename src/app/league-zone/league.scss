@@ -1,20 +1,3 @@
-.draft-section {
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  .draft-section-title {
-    font-family: var(--pdz-font-fancy);
-    padding: var(--pdz-space-xs);
-    margin: 0 0.25rem;
-    font-weight: bold;
-  }
-
-  .draft-section-body {
-    border: 2px solid var(--pdz-color-primary-border);
-    border-radius: var(--pdz-shape-corner-sm);
-  }
-}
-
 .league-section {
   overflow: hidden;
   display: flex;

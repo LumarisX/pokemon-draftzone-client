@@ -21,6 +21,7 @@ import { TierListComponent } from '../../tier-lists/tier-list/tier-list.componen
 import { NumberSuffixPipe } from '../../util/pipes/number-suffix.pipe';
 import { LeagueNotificationsComponent } from '../league-notifications/league-notifications.component';
 import { League } from '../league.interface';
+import { PokemonTypeComponent } from '../../components/pokemon-type/pokemon-type.component';
 
 interface DraftAddedEvent {
   divisionId: string;
@@ -73,6 +74,7 @@ interface DraftSkipEvent {
     RouterModule,
     LeagueNotificationsComponent,
     IconComponent,
+    PokemonTypeComponent,
   ],
   templateUrl: './league-drafting.component.html',
   styleUrls: ['./league-drafting.component.scss', '../league.scss'],
@@ -115,12 +117,14 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
   draftDetails: {
     orderProgression: 'snake' | 'linear';
     sequentialTurns: boolean;
+    visibility: 'ALL' | 'SELF';
     roundCount: number;
     teamOrder: string[];
     status: 'PRE_DRAFT' | 'IN_PROGRESS' | 'PAUSED' | 'COMPLETED';
   } = {
     orderProgression: 'snake',
     sequentialTurns: true,
+    visibility: 'SELF',
     roundCount: 0,
     teamOrder: [],
     status: 'IN_PROGRESS',
@@ -175,6 +179,7 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
         this.draftDetails.roundCount = data.rounds;
         this.draftDetails.teamOrder = data.teamOrder;
         this.draftDetails.status = data.status;
+        this.draftDetails.visibility = data.visibility;
         this.scheduleScrollToCurrentRoundOnLoad();
 
         this.picksChanged$
@@ -225,7 +230,7 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
 
           if (updatedSelectedTeam) {
             updatedSelectedTeam.pointTotal = data.team.draft.reduce(
-              (points, p) => points + p.cost,
+              (points, p) => points + (p.cost ?? 0),
               0,
             );
             Object.assign(this.selectedTeam, updatedSelectedTeam);

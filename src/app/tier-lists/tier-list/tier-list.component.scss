@@ -4,7 +4,7 @@
 
 @include tier-list-shared();
 
-.tier-list {
+:host {
   display: flex;
   flex-direction: column;
   height: 100%;

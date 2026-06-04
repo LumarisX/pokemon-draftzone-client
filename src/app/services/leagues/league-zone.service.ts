@@ -147,6 +147,8 @@ export class LeagueZoneService {
       teams: League.LeagueTeam[];
       orderProgression: 'snake' | 'linear';
       sequentialTurns: boolean;
+      visibility: 'ALL' | 'SELF';
+      allowRemovals: boolean;
       status: 'PRE_DRAFT' | 'IN_PROGRESS' | 'PAUSED' | 'COMPLETED';
       skipTime: Date;
       currentPick: {

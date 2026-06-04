@@ -6,6 +6,7 @@ import {
 } from '../drafts/matchup-overview/matchup-interface';
 import { DraftPokemon } from '../interfaces/draft';
 import { Pokemon } from '../interfaces/pokemon';
+import { Type } from '../data';
 
 export namespace League {
   export type Team = {
@@ -37,6 +38,7 @@ export namespace League {
   export type LeaguePokemon = DraftPokemon & {
     tier: string;
     cost: number;
+    types?: Type[];
     addons?: string[];
     record?: {
       deaths: number;
