@@ -1,11 +1,9 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { DraftPokemon as OldPokemon } from '../interfaces/draft';
+import { Stat, StatsTable, Type } from '../data';
 import { Pokemon } from '../interfaces/pokemon';
-import { StatsTable, Type } from '../data';
 import { ApiService } from './api.service';
-import { Stat } from '../data';
 
 export type PokemonSearchMoveData = {
   id?: string;
@@ -73,7 +71,7 @@ export class DataService {
     formats?: string[];
     rulesets?: string[];
     pokemonList: { [key: string]: PokemonFullData[] };
-    formes: { [key: string]: OldPokemon[] };
+    formes: { [key: string]: Pokemon[] };
   } = {
     pokemonList: {},
     formes: {},
@@ -198,12 +196,12 @@ export class DataService {
     );
   }
 
-  getFormes(ruleset: string, id: string): Observable<OldPokemon[]> {
+  getFormes(ruleset: string, id: string): Observable<Pokemon[]> {
     if (this.cache.formes[id]) return of(this.cache.formes[id]);
     return this.apiService
-      .get<OldPokemon[]>(`data/${ruleset}/${id}/formes`)
+      .get<Pokemon[]>(`data/${ruleset}/pokemon/${id}/formes`)
       .pipe(
-        tap((list: OldPokemon[]) => {
+        tap((list: Pokemon[]) => {
           this.cache.formes[id] = list;
         }),
       );

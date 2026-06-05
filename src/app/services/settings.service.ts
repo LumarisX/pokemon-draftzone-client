@@ -26,9 +26,9 @@ export class SettingsService {
     return this.settingsData$.asObservable();
   }
 
-  private readonly DEFAULT_THEME: string = 'classic-reverse';
+  private readonly DEFAULT_THEME: string = 'classic';
 
-  private themeOverride?: string = 'oppositeday26';
+  private themeOverride?: string = '6526';
 
   constructor() {
     try {
