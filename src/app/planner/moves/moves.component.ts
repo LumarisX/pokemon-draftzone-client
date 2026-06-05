@@ -11,5 +11,5 @@ import { MoveCoreComponent } from '../../util/matchup/movechart-core/moves.compo
 })
 export class MoveComponent {
   @Input()
-  movechart: MoveChart = [];
+  movechart?: MoveChart;
 }

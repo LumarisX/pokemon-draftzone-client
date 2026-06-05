@@ -1,10 +1,11 @@
 .movechart-wrapper {
-  max-width: 42rem;
+  max-width: 30rem;
   padding: var(--pdz-space-xs);
-  max-height: 50rem;
-  overflow-y: auto;
-  scrollbar-gutter: stable;
-  margin-right: -0.75rem;
+  display: flex;
+  flex-direction: column;
+  max-height: 48rem;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .widget-container {

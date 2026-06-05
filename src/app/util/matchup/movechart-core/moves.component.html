@@ -1,24 +1,68 @@
-@for (move of movechart; track $index) {
-  <div class="move-entry">
-    <div class="move-details">
-      <div class="move-name">{{ move.name }}</div>
-
-      <div>
-        <pdz-pokemon-type [type]="move.type"></pdz-pokemon-type>
-      </div>
+@if (movechart) {
+  <div class="movechart-toolbar">
+    <div class="search-wrapper">
+      <pdz-icon name="search" size="sm"></pdz-icon>
+      <input
+        class="search-input"
+        type="text"
+        placeholder="Search move or type..."
+        [(ngModel)]="searchQuery"
+      />
     </div>
-    <div class="move-tags">
-      @for (tag of move.tags; track $index) {
-        <div class="move-tag">
+    <div class="tag-filters">
+      @for (tag of movechart.tags; track tag) {
+        <button
+          class="tag-btn"
+          [class.selected]="selectedTag === tag"
+          (click)="toggleTag(tag)"
+        >
           {{ tag }}
-        </div>
+        </button>
       }
     </div>
+  </div>
 
-    <div class="pokemon-container">
-      @for (pokemon of move.pokemon; track $index) {
-        <pdz-sprite [pokemon]="pokemon" size="3rem"></pdz-sprite>
-      }
-    </div>
+  <div class="move-list">
+    @for (move of filteredMoves; track move.name) {
+      <button class="move-entry" (click)="toggleDescription(move.name)">
+        <div class="move-info">
+          <span class="move-name">{{ move.name }}</span>
+          <div class="move-details">
+            <img
+              class="move-category"
+              [src]="
+                '../../../../assets/icons/moves/move-' +
+                getCategory(move.category) +
+                '.png'
+              "
+            />
+            <pdz-pokemon-type [type]="move.type"></pdz-pokemon-type>
+
+            <div class="move-tags">
+              @for (tag of move.tags; track tag) {
+                <span class="move-tag">{{ tag }}</span>
+              }
+            </div>
+          </div>
+        </div>
+        @if (showDescription === move.name) {
+          <div class="move-desc">
+            {{ move.desc }}
+          </div>
+        } @else {
+          <div class="move-pokemon">
+            @for (pid of move.pokemon; track pid) {
+              @let pokemon = getPokemon(pid);
+              @if (pokemon) {
+                <pdz-sprite [pokemon]="pokemon" size="2.5rem"></pdz-sprite>
+              }
+            }
+          </div>
+        }
+      </button>
+    }
+    @if (filteredMoves.length === 0) {
+      <div class="no-results">No moves match the current filter.</div>
+    }
   </div>
 }
