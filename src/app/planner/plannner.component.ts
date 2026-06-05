@@ -114,7 +114,7 @@ export class PlannerComponent implements OnInit, AfterViewInit {
   summary?: Summary;
   coverage?: Coverage;
   selectedDraft = new BehaviorSubject<number>(0);
-  movechart: MoveChart = [];
+  movechart?: MoveChart;
   isLargeScreen = false;
 
   private isValidTeamData(team: any): team is LSTeamData {
@@ -315,7 +315,7 @@ export class PlannerComponent implements OnInit, AfterViewInit {
     if (team.length == 0) {
       this.typechart = { team: [] };
       this.summary = undefined;
-      this.movechart = [];
+      this.movechart = undefined;
       this.recommended = undefined;
       this.coverage = undefined;
     } else {
