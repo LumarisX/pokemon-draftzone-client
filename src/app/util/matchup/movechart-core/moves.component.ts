@@ -52,7 +52,8 @@ export class MoveCoreComponent {
       const matchesSearch =
         !query ||
         move.name.toLowerCase().includes(query) ||
-        move.type.toLowerCase().includes(query);
+        move.type.toLowerCase().includes(query) ||
+        move.category.toLowerCase().includes(query);
       return matchesTag && matchesSearch;
     });
   }
@@ -60,10 +61,6 @@ export class MoveCoreComponent {
   getPokemon(pid: string): Pokemon | undefined {
     if (!this.movechart) return undefined;
     return this.movechart.pokemon.find((p) => p.id === pid);
-  }
-
-  getCategory(category: string) {
-    return category.toLowerCase();
   }
 
   toggleDescription(name: string) {

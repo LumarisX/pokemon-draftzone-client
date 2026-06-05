@@ -105,9 +105,21 @@ export class IconComponent implements OnChanges {
       'type-rock': 'assets/icons/types/gen9icon/Rock.svg',
       'type-steel': 'assets/icons/types/gen9icon/Steel.svg',
       'type-water': 'assets/icons/types/gen9icon/Water.svg',
+      physical: 'assets/icons/moves/physical.svg',
+      special: 'assets/icons/moves/special.svg',
+      status: 'assets/icons/moves/status.svg',
     };
 
-  @Input({ required: true }) name!: string;
+  private _name!: string;
+  @Input({ required: true })
+  set name(value: string) {
+    this._name = value.toLowerCase();
+  }
+
+  get name(): string {
+    return this._name;
+  }
+
   @Input() size: number | 'sm' | 'md' | 'lg' | 'xl' = 24;
   @Input() width?: number | 'sm' | 'md' | 'lg' | 'xl';
   @Input() height?: number | 'sm' | 'md' | 'lg' | 'xl';

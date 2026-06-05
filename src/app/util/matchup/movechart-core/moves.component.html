@@ -28,14 +28,7 @@
         <div class="move-info">
           <span class="move-name">{{ move.name }}</span>
           <div class="move-details">
-            <img
-              class="move-category"
-              [src]="
-                '../../../../assets/icons/moves/move-' +
-                getCategory(move.category) +
-                '.png'
-              "
-            />
+            <pdz-icon [name]="move.category" [size]="16"></pdz-icon>
             <pdz-pokemon-type [type]="move.type"></pdz-pokemon-type>
 
             <div class="move-tags">
@@ -46,9 +39,17 @@
           </div>
         </div>
         @if (showDescription === move.name) {
+          <!-- <div>
+            <div>
+              <div class="move-basepower">
+                {{ move.basePower }}
+              </div>
+              <div class="move-accuracy">{{ move.accuracy }}</div>
+            </div> -->
           <div class="move-desc">
             {{ move.desc }}
           </div>
+          <!-- </div> -->
         } @else {
           <div class="move-pokemon">
             @for (pid of move.pokemon; track pid) {
