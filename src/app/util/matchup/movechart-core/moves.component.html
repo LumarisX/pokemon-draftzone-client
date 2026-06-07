@@ -13,7 +13,7 @@
       @for (tag of movechart.tags; track tag) {
         <button
           class="tag-btn"
-          [class.selected]="selectedTag === tag"
+          [class.selected]="selectedTags.has(tag)"
           (click)="toggleTag(tag)"
         >
           {{ tag }}

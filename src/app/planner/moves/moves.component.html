@@ -1,3 +1,5 @@
-<div class="main-container">
-  <pdz-moves-core [movechart]="movechart"></pdz-moves-core>
-</div>
+@if (movechart) {
+  <div class="main-container">
+    <pdz-moves-core [movechart]="movechart"></pdz-moves-core>
+  </div>
+}

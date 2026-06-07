@@ -23,7 +23,7 @@ export class MoveCoreComponent {
   @Input()
   movechart?: MoveChart;
 
-  selectedTag: string | null = null;
+  selectedTags = new Set<string>();
   showDescription: string | null = null;
 
   private _searchQuery: string = '';
@@ -34,11 +34,12 @@ export class MoveCoreComponent {
 
   set searchQuery(value: string) {
     this._searchQuery = value;
-    this.selectedTag = null;
+    this.selectedTags.clear();
   }
 
   toggleTag(tag: string): void {
-    this.selectedTag = this.selectedTag === tag ? null : tag;
+    if (this.selectedTags.has(tag)) this.selectedTags.delete(tag);
+    else this.selectedTags.add(tag);
     this._searchQuery = '';
   }
 
@@ -48,7 +49,8 @@ export class MoveCoreComponent {
 
     return this.movechart.moves.filter((move) => {
       const matchesTag =
-        !this.selectedTag || move.tags.includes(this.selectedTag);
+        this.selectedTags.size === 0 ||
+        move.tags.some((tag) => tag && this.selectedTags.has(tag));
       const matchesSearch =
         !query ||
         move.name.toLowerCase().includes(query) ||
