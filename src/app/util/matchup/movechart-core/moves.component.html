@@ -1,20 +1,43 @@
 @if (movechart) {
   <div class="movechart-toolbar">
-    <div class="search-wrapper">
-      <pdz-icon name="search" size="sm"></pdz-icon>
-      <input
-        class="search-input"
-        type="text"
-        placeholder="Search move or type..."
-        [(ngModel)]="searchQuery"
-      />
+    <div class="toolbar-search-row">
+      <div class="movechart-view-toggle" role="group" aria-label="View mode">
+        <button
+          type="button"
+          class="movechart-view-button"
+          [class.is-active]="view === 'cards'"
+          (click)="view = 'cards'"
+        >
+          <pdz-icon name="view_cozy" size="sm"></pdz-icon>
+        </button>
+        <button
+          type="button"
+          class="movechart-view-button"
+          [class.is-active]="view === 'list'"
+          [attr.aria-pressed]="view === 'list'"
+          (click)="view = 'list'"
+        >
+          <pdz-icon name="view_list" size="sm"></pdz-icon>
+        </button>
+      </div>
+      <div class="search-wrapper">
+        <pdz-icon name="search" size="sm"></pdz-icon>
+        <input
+          class="search-input"
+          type="text"
+          placeholder="Search move or type..."
+          [(ngModel)]="searchQuery"
+        />
+      </div>
     </div>
-    <div class="tag-filters">
+    <div class="tag-filters" (contextmenu)="$event.preventDefault()">
       @for (tag of movechart.tags; track tag) {
         <button
           class="tag-btn"
-          [class.selected]="selectedTags.has(tag)"
-          (click)="toggleTag(tag)"
+          [class.selected]="selectedTags.get(tag) === 'enable'"
+          [class.excluded]="selectedTags.get(tag) === 'disable'"
+          (click)="toggleTag(tag, 'enable')"
+          (contextmenu)="toggleTag(tag, 'disable')"
         >
           {{ tag }}
         </button>
@@ -22,48 +45,82 @@
     </div>
   </div>
 
-  <div class="move-list">
-    @for (move of filteredMoves; track move.name) {
-      <button class="move-entry" (click)="toggleDescription(move.name)">
-        <div class="move-info">
-          <span class="move-name">{{ move.name }}</span>
-          <div class="move-details">
-            <pdz-icon [name]="move.category" [size]="16"></pdz-icon>
-            <pdz-pokemon-type [type]="move.type"></pdz-pokemon-type>
+  @if (view === "list") {
+    <div class="move-list">
+      @for (move of filteredMoves; track move.name) {
+        <button class="move-entry" (click)="toggleDescription(move.name)">
+          <div class="move-info">
+            <span class="move-name">{{ move.name }}</span>
+            <div class="move-details">
+              <pdz-icon [name]="move.category" [size]="16"></pdz-icon>
+              <pdz-pokemon-type [type]="move.type"></pdz-pokemon-type>
 
-            <div class="move-tags">
-              @for (tag of move.tags; track tag) {
-                <span class="move-tag">{{ tag }}</span>
-              }
+              <div class="move-tags">
+                @for (tag of move.tags; track tag) {
+                  <span class="move-tag">{{ tag }}</span>
+                }
+              </div>
             </div>
           </div>
-        </div>
-        @if (showDescription === move.name) {
-          <!-- <div>
+          @if (showDescription === move.name) {
+            <!-- <div>
             <div>
               <div class="move-basepower">
                 {{ move.basePower }}
               </div>
               <div class="move-accuracy">{{ move.accuracy }}</div>
             </div> -->
-          <div class="move-desc">
-            {{ move.desc }}
+            <div class="move-desc">
+              {{ move.desc }}
+            </div>
+            <!-- </div> -->
+          } @else {
+            <div class="move-pokemon">
+              @for (pid of move.pokemon; track pid) {
+                @let pokemon = getPokemon(pid);
+                @if (pokemon) {
+                  <pdz-sprite [pokemon]="pokemon" size="2.5rem"></pdz-sprite>
+                }
+              }
+            </div>
+          }
+        </button>
+      }
+      @if (filteredMoves.length === 0) {
+        <div class="no-results">No moves match the current filter.</div>
+      }
+    </div>
+  } @else if (view === "cards") {
+    <div class="move-cards">
+      @for (move of filteredMoves; track move.name) {
+        <button class="card-entry" (click)="toggleDescription(move.name)">
+          <div class="card-info">
+            <span class="move-name">{{ move.name }}</span>
+            <pdz-icon [name]="move.category" [size]="16"></pdz-icon>
           </div>
-          <!-- </div> -->
-        } @else {
-          <div class="move-pokemon">
+          <div class="card-details">
+            <div class="card-tags">
+              @for (tag of move.tags; track tag) {
+                <span class="card-tag">{{ tag }}</span>
+              }
+            </div>
+          </div>
+          <div
+            class="type-divider"
+            [style.background-color]="typeColor(move.type)"
+          ></div>
+          <div class="card-pokemon">
             @for (pid of move.pokemon; track pid) {
               @let pokemon = getPokemon(pid);
               @if (pokemon) {
-                <pdz-sprite [pokemon]="pokemon" size="2.5rem"></pdz-sprite>
+                <pdz-sprite [pokemon]="pokemon" size="2rem"></pdz-sprite>
               }
             }
           </div>
-        }
-      </button>
-    }
-    @if (filteredMoves.length === 0) {
-      <div class="no-results">No moves match the current filter.</div>
-    }
-  </div>
+        </button>
+      } @empty {
+        <div class="no-results">No moves match the current filter.</div>
+      }
+    </div>
+  }
 }

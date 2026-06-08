@@ -15,29 +15,15 @@ import { Pokemon } from '../../../interfaces/pokemon';
     CommonModule,
     FormsModule,
     SpriteComponent,
-    IconComponent,
     PokemonTypeComponent,
+    IconComponent,
   ],
 })
 export class MoveCoreComponent {
   @Input()
   movechart?: MoveChart;
 
-  private static readonly VIEW_KEY = 'matchup_moves_view';
-
-  private _view: 'list' | 'cards' =
-    (localStorage.getItem(MoveCoreComponent.VIEW_KEY) as 'list' | 'cards') ??
-    'cards';
-
-  get view(): 'list' | 'cards' {
-    return this._view;
-  }
-  set view(value: 'list' | 'cards') {
-    this._view = value;
-    localStorage.setItem(MoveCoreComponent.VIEW_KEY, value);
-  }
-
-  selectedTags = new Map<string, 'enable' | 'disable'>();
+  selectedTags = new Set<string>();
   showDescription: string | null = null;
 
   private _searchQuery: string = '';
@@ -51,11 +37,9 @@ export class MoveCoreComponent {
     this.selectedTags.clear();
   }
 
-  typeColor = PokemonTypeComponent.typeColor;
-
-  toggleTag(tag: string, mode: 'enable' | 'disable'): void {
-    if (this.selectedTags.get(tag) === mode) this.selectedTags.delete(tag);
-    else this.selectedTags.set(tag, mode);
+  toggleTag(tag: string): void {
+    if (this.selectedTags.has(tag)) this.selectedTags.delete(tag);
+    else this.selectedTags.add(tag);
     this._searchQuery = '';
   }
 
@@ -66,12 +50,7 @@ export class MoveCoreComponent {
     return this.movechart.moves.filter((move) => {
       const matchesTag =
         this.selectedTags.size === 0 ||
-        (move.tags.some(
-          (tag) => tag && this.selectedTags.get(tag) === 'enable',
-        ) &&
-          !move.tags.some(
-            (tag) => tag && this.selectedTags.get(tag) === 'disable',
-          ));
+        move.tags.some((tag) => tag && this.selectedTags.has(tag));
       const matchesSearch =
         !query ||
         move.name.toLowerCase().includes(query) ||

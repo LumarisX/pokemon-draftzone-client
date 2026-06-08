@@ -1,6 +1,7 @@
 @use "tailwind-styles";
 @use "pdz-theming";
 @use "mat-styles";
+@use "global.scss" as *;
 @use "mixins/typography" as *;
 
 @font-face {
@@ -16,22 +17,22 @@
   --pdz-scrollbar-thumb-radius: 999px;
   --pdz-scrollbar-thumb-idle: color-mix(
     in srgb,
-    var(--pdz-color-on-surface) 22%,
+    pdz-color(on-surface) 22%,
     transparent
   );
   --pdz-scrollbar-thumb-hover: color-mix(
     in srgb,
-    var(--pdz-color-on-surface) 36%,
+    pdz-color(on-surface) 36%,
     transparent
   );
   --pdz-scrollbar-thumb-active: color-mix(
     in srgb,
-    var(--pdz-color-on-surface) 52%,
+    pdz-color(on-surface) 52%,
     transparent
   );
   --pdz-scrollbar-track: color-mix(
     in srgb,
-    var(--pdz-color-surface-container-high) 45%,
+    pdz-color(surface-container-high) 45%,
     transparent
   );
   --pdz-scrollbar-thumb-gap-idle: 0.125rem;
@@ -233,7 +234,7 @@ $screen-size-medium: 768px;
     flex-direction: column;
     align-items: center;
     z-index: 10000;
-    background-color: var(--pdz-color-surface-container);
+    background-color: pdz-color(surface-container);
     overflow-y: auto;
   }
 
@@ -250,8 +251,8 @@ $option-lineheight: 3rem;
 .pokemon-viewport {
   height: 15rem;
   width: 100%;
-  background-color: var(--pdz-color-surface-container-low);
-  color: var(--pdz-color-on-surface-container-low);
+  background-color: pdz-color(surface-container-low);
+  color: pdz-color(on-surface-container-low);
   border-radius: 0 0 0.25rem 0.25rem;
   box-shadow: var(--pdz-level-2);
 
@@ -267,8 +268,8 @@ $option-lineheight: 3rem;
 
       &:hover,
       &.highlighted-option {
-        background-color: var(--pdz-color-surface-container-highest);
-        color: var(--pdz-color-on-surface-container-highest);
+        background-color: pdz-color(surface-container-highest);
+        color: pdz-color(on-surface-container-highest);
         cursor: pointer;
       }
 
@@ -436,7 +437,7 @@ markdown {
   }
 
   code {
-    background: var(--pdz-color-surface-container-high);
+    background: pdz-color(surface-container-high);
     padding: 0.125rem 0.25rem;
     border-radius: var(--pdz-shape-corner-xs);
     font-family: monospace;
@@ -462,4 +463,8 @@ markdown {
   h4 {
     @include font-size(1rem);
   }
+}
+
+input[type="text"] {
+  background-color: pdz-color(surface);
 }

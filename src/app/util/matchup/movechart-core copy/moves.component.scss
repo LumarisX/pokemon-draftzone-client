@@ -43,9 +43,10 @@
     color 0.15s ease,
     box-shadow 0.15s ease;
 
-  &:hover:not(.selected):not(.excluded) {
+  &:hover:not(.selected) {
     background-color: var(--pdz-cmp-movechart-hover);
     color: pdz-color(on-primary-container);
+    translate: 0 -1px;
   }
 
   &.selected {
@@ -55,59 +56,13 @@
     box-shadow: var(--pdz-level-1);
     translate: 0 -1px;
   }
-
-  &.excluded {
-    background-color: var(--pdz-cmp-movechart-container);
-    border-color: var(--pdz-cmp-movechart-container);
-    color: pdz-color(on-primary-container);
-    box-shadow: var(--pdz-level-inset-1);
-    translate: 0 1px;
-  }
 }
 
 // ─── Search ───────────────────────────────────────────────────────────────────
 
-.toolbar-search-row {
-  display: flex;
-  align-items: center;
-  gap: var(--pdz-space-sm);
-  justify-content: space-between;
-  flex-shrink: 0;
-}
-
 .search-wrapper {
+  align-self: flex-end;
   flex-shrink: 0;
-}
-
-.movechart-view-toggle {
-  display: flex;
-  border: 1px solid pdz-color(outline-variant);
-  border-radius: var(--pdz-shape-corner-sm);
-  overflow: hidden;
-}
-
-.movechart-view-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--pdz-space-2xs) var(--pdz-space-xs);
-  color: pdz-color(on-surface-variant);
-  background: none;
-  border: none;
-  cursor: pointer;
-  transition:
-    background-color 0.15s ease,
-    color 0.15s ease;
-
-  &:hover:not(.is-active) {
-    background-color: var(--pdz-cmp-movechart-hover);
-    color: pdz-color(on-surface);
-  }
-
-  &.is-active {
-    background-color: var(--pdz-cmp-movechart-container);
-    color: pdz-color(on-primary-container);
-  }
 }
 
 .search-input {
@@ -130,133 +85,6 @@
   &:focus {
     border-color: pdz-color(primary-border);
   }
-}
-
-// ─── Move list ───────────────────────────────────────────────────────────────
-
-.move-cards {
-  display: grid;
-  grid-template-columns: repeat(
-    auto-fill,
-    minmax(calc(4 * (2rem + var(--pdz-space-2xs))), 1fr)
-  );
-  align-content: start;
-  overflow-y: auto;
-  scrollbar-gutter: stable;
-  flex: 1;
-  min-height: 0;
-  gap: var(--pdz-space-xs);
-  padding: var(--pdz-space-xs);
-}
-
-.card-entry {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: var(--pdz-space-xs);
-  background-color: pdz-color(surface);
-  border: 1px solid var(--pdz-cmp-movechart-border);
-  border-radius: var(--pdz-shape-corner-sm);
-  width: 100%;
-  transition:
-    background-color 0.15s ease,
-    border-color 0.15s ease,
-    color 0.15s ease,
-    box-shadow 0.15s ease;
-}
-
-.card-details {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--pdz-space-xs);
-  flex-shrink: 0;
-}
-
-// ─── Move info ────────────────────────────────────────────────────────────────
-
-.card-info {
-  display: flex;
-  gap: var(--pdz-space-xs);
-  width: fit-content;
-  max-width: 20rem;
-}
-
-.move-name {
-  @include apply-typography(body-sm);
-  font-family: var(--pdz-font-fancy);
-  color: pdz-color(on-surface);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  text-align: left;
-}
-
-.move-category {
-  width: 1rem;
-  height: 1rem;
-}
-
-// ─── Per-move tags ────────────────────────────────────────────────────────────
-
-.card-tags {
-  max-width: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 2px;
-  flex-shrink: 0;
-}
-
-.card-tag {
-  display: inline-flex;
-  align-items: center;
-  padding: 1px var(--pdz-space-xs);
-  background-color: var(--pdz-cmp-movechart-container);
-  border-radius: var(--pdz-shape-corner-xs);
-  white-space: nowrap;
-  width: fit-content;
-  @include apply-typography(label-2xs);
-}
-
-// ─── Pokemon sprites ─────────────────────────────────────────────────────────
-
-.card-pokemon {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--pdz-space-2xs);
-  justify-content: center;
-  align-items: center;
-  flex: 1;
-}
-
-.move-desc {
-  min-height: 2.5rem;
-  @include apply-typography(body-sm);
-  line-height: 1.25rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  flex-grow: 1;
-}
-
-// ─── Empty state ─────────────────────────────────────────────────────────────
-
-.no-results {
-  @include apply-typography(body-sm);
-  color: pdz-color(on-surface-variant);
-  font-style: italic;
-  padding: var(--pdz-space-lg) var(--pdz-space-xs);
-  text-align: center;
-}
-
-.type-divider {
-  background-color: var(--pdz-cmp-movechart-container);
-  height: 2px;
-  width: 100%;
-  border-radius: var(--pdz-shape-corner-full);
-  margin-top: 2px;
-  margin-bottom: 2px;
 }
 
 // ─── Move list ───────────────────────────────────────────────────────────────
@@ -304,6 +132,21 @@
   max-width: 20rem;
 }
 
+.move-name {
+  @include apply-typography(body-sm);
+  font-family: var(--pdz-font-fancy);
+  color: pdz-color(on-surface);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: left;
+}
+
+.move-category {
+  width: 1rem;
+  height: 1rem;
+}
+
 // ─── Per-move tags ────────────────────────────────────────────────────────────
 
 .move-tags {
@@ -342,4 +185,14 @@
   justify-content: center;
   text-align: center;
   flex-grow: 1;
+}
+
+// ─── Empty state ─────────────────────────────────────────────────────────────
+
+.no-results {
+  @include apply-typography(body-sm);
+  color: pdz-color(on-surface-variant);
+  font-style: italic;
+  padding: var(--pdz-space-lg) var(--pdz-space-xs);
+  text-align: center;
 }

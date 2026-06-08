@@ -84,6 +84,13 @@ $typography: (
     font-weight: 400,
     line-height: 0.9rem,
   ),
+  label-2xs: (
+    font-family: var(--pdz-font-regular),
+    font-size: 0.5rem,
+    font-weight: 500,
+    line-height: 0.65rem,
+    text-transform: uppercase,
+  ),
   label-xs: (
     font-family: var(--pdz-font-regular),
     font-size: 0.65rem,
