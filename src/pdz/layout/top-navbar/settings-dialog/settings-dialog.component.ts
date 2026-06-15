@@ -15,8 +15,8 @@ import {
   FormGroup,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { DraftPokemon } from '../../drafts/draft.model';
-import { Settings, SettingsService } from './settings.service';
+import { DraftPokemon } from '@pdz/features/drafts/draft.model';
+import { Settings, SettingsService } from '../settings.service';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 

@@ -10,7 +10,7 @@ import {
   TIER_LIST_PATH,
   TOOLS_PATH,
 } from '@pdz/core/route-paths';
-import { HomeComponent } from '@pdz/features/homepage/homepage.component';
+import { HomeComponent } from '@pdz/features/pages/homepage/homepage.component';
 import { NotFoundComponent } from '@pdz/features/pages/not-found/not-found.component';
 import { externalLinkBypassGuard } from './features/pages/external-link/external-link.guard';
 

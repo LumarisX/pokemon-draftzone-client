@@ -8,7 +8,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterModule } from '@angular/router';
 import { BehaviorSubject, combineLatest, map, of } from 'rxjs';
 import { DRAFT_OVERVIEW_PATH } from '@pdz/core/route-paths';
-import { UnreadService } from '@pdz/features/homepage/unread.service';
+import { UnreadService } from '@pdz/features/pages/homepage/unread.service';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LoginButtonComponent } from './login-button/login-button.component';
 

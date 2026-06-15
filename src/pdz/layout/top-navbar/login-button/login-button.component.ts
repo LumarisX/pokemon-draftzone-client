@@ -10,12 +10,11 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
+import { AuthService } from '@pdz/core/services/auth0.service';
 import { of } from 'rxjs';
 import { switchMap, take } from 'rxjs/operators';
-import { AuthService } from '@pdz/core/services/auth0.service';
-import { SettingApiService } from '@pdz/features/settings/settings-dialog/setting.service';
-import { SettingsService } from '@pdz/features/settings/settings-dialog/settings.service';
-import { SettingsDialogComponent } from '@pdz/features/settings/settings-dialog/settings-dialog.component';
+import { SettingsDialogComponent } from '../settings-dialog/settings-dialog.component';
+import { SettingsService } from '../settings.service';
 
 @Component({
   selector: 'pdz-login-button',
@@ -33,7 +32,6 @@ export class LoginButtonComponent implements OnInit {
   readonly auth = inject(AuthService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly settingsService = inject(SettingsService);
-  private readonly settingApi = inject(SettingApiService);
 
   @ViewChild('settingsDialog') settingsDialog!: SettingsDialogComponent;
 
@@ -55,7 +53,7 @@ export class LoginButtonComponent implements OnInit {
   }
 
   private loadSettings(): void {
-    this.settingApi
+    this.settingsService
       .getSettings()
       .pipe(
         take(1),

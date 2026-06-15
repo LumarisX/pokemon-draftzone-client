@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { of } from 'rxjs';
-import { NEWS } from '@pdz/features/homepage/news-core/news.data';
+import { NEWS } from '@pdz/features/pages/homepage/news-core/news.data';
 
 export const newsPath = 'news';
 

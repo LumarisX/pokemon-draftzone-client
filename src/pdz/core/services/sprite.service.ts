@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { DraftPokemon } from '@pdz/features/drafts/draft.model';
-import { SettingsService } from '@pdz/features/settings/settings-dialog/settings.service';
+import { SettingsService } from '@pdz/layout/top-navbar/settings.service';
 import {
   getPokemonData,
   SpriteSetKey,

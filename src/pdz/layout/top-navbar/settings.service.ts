@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { SettingApiService } from './setting.service';
+import { ApiService } from '@pdz/core/services/api.service';
 import { BehaviorSubject } from 'rxjs';
 
 export type Settings = {
@@ -16,7 +16,7 @@ export type Settings = {
   providedIn: 'root',
 })
 export class SettingsService {
-  private settingApiService = inject(SettingApiService);
+  private apiService = inject(ApiService);
 
   settingsData$ = new BehaviorSubject<Settings>({});
   get settingsData() {
@@ -104,10 +104,21 @@ export class SettingsService {
   }
 
   saveToServer() {
-    return this.settingApiService.updateSettings(this.settingsData);
+    return this.updateSettings(this.settingsData);
   }
 
   refreshFromServer() {
-    return this.settingApiService.getSettings();
+    return this.getSettings();
+  }
+
+  getSettings() {
+    return this.apiService.get<Settings | null>(`user/settings`, {
+      authenticated: true,
+    });
+  }
+
+  updateSettings(settingData: Partial<Settings>) {
+    console.log(settingData);
+    return this.apiService.patch(`user/settings`, settingData);
   }
 }

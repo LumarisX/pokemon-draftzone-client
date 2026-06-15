@@ -4,7 +4,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { DataService } from '@pdz/core/services/data.service';
 import { LeagueAd, LeagueAdsService } from './league-ads.service';
-import { UnreadService } from '../homepage/unread.service';
+import { UnreadService } from '@pdz/features/pages/homepage/unread.service';
 import { LeagueAdComponent } from './league-ad/league-ad.component';
 
 @Component({

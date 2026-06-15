@@ -1,8 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { ApiService } from '@pdz/core/services/api.service';
-import { CHANGELOG } from '@pdz/features/homepage/changelog-core/changelog.data';
-import { NEWS } from '@pdz/features/homepage/news-core/news.data';
+import { CHANGELOG } from '@pdz/features/pages/homepage/changelog-core/changelog.data';
+import { NEWS } from '@pdz/features/pages/homepage/news-core/news.data';
 
 @Injectable({
   providedIn: 'root',

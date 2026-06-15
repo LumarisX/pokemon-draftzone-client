@@ -1,6 +1,6 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Routes } from '@angular/router';
 import { AuthGuard } from '@auth0/auth0-angular';
+import { LEAGUE_ZONE_MANAGE_PATH } from '@pdz/core/route-paths';
 import { MatchupOverviewComponent } from '../drafts/matchup-overview/matchup-overview.component';
 import { TierListFormComponent } from '../tier-lists/tier-list/tier-list-form/tier-list-form.component';
 import { unsavedChangesGuard } from '../tier-lists/tier-list/tier-list-form/unsaved-changes.guard';
@@ -21,7 +21,6 @@ import { LeagueTeamComponent } from './league-team/league-team.component';
 import { LeagueTeamsComponent } from './league-teams/league-teams.component';
 import { LeagueTradesComponent } from './league-trades/league-trades.component';
 import { TournamentLandingComponent } from './tournaments/tournament-landing/tournament-landing.component';
-import { LEAGUE_ZONE_MANAGE_PATH } from '@pdz/core/route-paths';
 
 export const routes: Routes = [
   {
