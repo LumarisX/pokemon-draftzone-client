@@ -1,0 +1,152 @@
+@use "global.scss" as *;
+
+:host {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  padding-right: 2px;
+}
+
+td {
+  text-align: center;
+}
+
+.ability-cell {
+  font-size: small;
+  line-height: 1.2rem;
+}
+
+.type-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.cdk-footer-row {
+  td {
+    padding: 0;
+  }
+}
+
+.slider-cell {
+  border: 1.5px solid
+    var(--pdz-cmp-summary-border, var(--pdz-color-menu-border));
+  .slider-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+
+    .slider-label {
+      display: flex;
+      justify-content: space-evenly;
+      align-items: center;
+      width: 80%;
+      font-size: small;
+      .value-display {
+        font-weight: bold;
+      }
+    }
+
+    .slider-wrapper {
+      width: 80%;
+      display: flex;
+      justify-content: center;
+
+      mat-slider {
+        width: 100%;
+      }
+    }
+  }
+}
+
+th,
+td {
+  padding: 0 4px;
+  text-align: center;
+}
+
+th.cdk-header-cell {
+  border-bottom: 2px solid
+    var(--pdz-cmp-summary-border, var(--pdz-color-menu-border));
+}
+
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 4px;
+}
+
+$corner-radius: var(--pdz-shape-corner-md);
+
+.left-rounded {
+  border-top-left-radius: $corner-radius;
+  border-bottom-left-radius: $corner-radius;
+  overflow: hidden;
+}
+.right-rounded {
+  border-top-right-radius: $corner-radius;
+  border-bottom-right-radius: $corner-radius;
+  overflow: hidden;
+}
+
+.top-right-rounded {
+  border-top-right-radius: $corner-radius;
+  overflow: hidden;
+}
+
+.bottom-right-rounded {
+  border-bottom-right-radius: $corner-radius;
+  overflow: hidden;
+}
+
+.top-left-rounded {
+  border-top-left-radius: $corner-radius;
+  overflow: hidden;
+}
+
+.bottom-left-rounded {
+  border-bottom-left-radius: $corner-radius;
+  overflow: hidden;
+}
+
+.footer-label-cell {
+  font-weight: 600;
+}
+
+.pokemon-label {
+  font-weight: 600;
+}
+
+.cdk-footer-cell {
+  div {
+    min-height: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.pdz-types {
+  justify-content: center;
+}
+
+.border-top {
+  border-top: 1px solid
+    var(--pdz-cmp-summary-border, var(--pdz-color-menu-border));
+}
+
+.border-bottom {
+  border-bottom: 1px solid
+    var(--pdz-cmp-summary-border, var(--pdz-color-menu-border));
+}
+
+.border-right {
+  border-right: 1px solid
+    var(--pdz-cmp-summary-border, var(--pdz-color-menu-border));
+}
+
+.border-left {
+  border-left: 1px solid
+    var(--pdz-cmp-summary-border, var(--pdz-color-menu-border));
+}

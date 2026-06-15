@@ -42,10 +42,10 @@ testem.log
 Thumbs.db
 
 # Manual
-src/app/api/api.service.ts
-src/app/charts/
-src/app/pages/test/
-src/app/test/*
+src/pdz/api/api.service.ts
+src/pdz/charts/
+src/pdz/pages/test/
+src/pdz/test/*
 src/environments/
 
 # Start with dash

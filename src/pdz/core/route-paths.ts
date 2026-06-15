@@ -1,0 +1,10 @@
+export const DRAFT_OVERVIEW_PATH = 'drafts';
+export const PLANNER_PATH = 'planner';
+export const LEAGUE_ZONE_PATH = 'leagues';
+export const TOOLS_PATH = 'tools';
+export const DEBUG_PATH = 'debug';
+export const LEAGUE_ZONE_MANAGE_PATH = 'manage';
+export const EXTERNAL_LINK_PATH = 'external';
+export const STATISTICS_PATH = 'statistics';
+export const TIER_LIST_PATH = 'tier-lists';
+export const LEAGUE_ADS_PATH = 'league-list';

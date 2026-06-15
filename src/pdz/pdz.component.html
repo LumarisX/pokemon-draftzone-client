@@ -1,0 +1,33 @@
+<pdz-tooltip></pdz-tooltip>
+<div>
+  <pdz-top-navbar></pdz-top-navbar>
+  <main>
+    <router-outlet></router-outlet>
+    <pdz-error></pdz-error>
+  </main>
+</div>
+
+<svg width="0" height="0">
+  <defs>
+    <filter id="borderFilter">
+      <feMorphology
+        operator="dilate"
+        radius=".5"
+        in="SourceAlpha"
+        result="border"
+      />
+      <feFlood flood-color="#64748b" result="borderColor" />
+
+      <feComposite
+        in="borderColor"
+        in2="border"
+        operator="in"
+        result="coloredBorder"
+      />
+      <feMerge>
+        <feMergeNode in="coloredBorder" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+</svg>

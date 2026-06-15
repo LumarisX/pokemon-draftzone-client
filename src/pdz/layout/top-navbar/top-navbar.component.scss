@@ -1,0 +1,96 @@
+@use "@angular/material" as mat;
+@use "breakpoints" as *;
+@use "mixins" as *;
+@use "mixins/buttons" as *;
+
+// Material overrides
+mat-toolbar {
+  @include mat.toolbar-overrides(
+    (
+      container-background-color: var(--pdz-color-surface),
+      container-text-color: var(--pdz-color-on-surface),
+    )
+  );
+  @include mat.toolbar-density(-4);
+  @include mat.button-density(-1);
+  @include mat.button-overrides(
+    (
+      outlined-horizontal-padding: 0.75rem,
+    )
+  );
+}
+
+:host {
+  box-shadow: var(--pdz-level-2);
+  z-index: 5000;
+}
+
+.toolbar-spacer {
+  flex: 1 1 auto;
+}
+
+.menu-tab {
+  padding: var(--pdz-space-sm);
+  border-radius: var(--pdz-shape-corner-sm);
+  font-family: var(--pdz-font-fancy);
+  @include background-hover-effect(var(--pdz-color-surface-container));
+
+  &:hover {
+    color: var(--pdz-color-on-surface-container);
+  }
+}
+
+.home-btn {
+  @include flat-button(
+    (
+      padding: var(--pdz-space-2xs) var(--pdz-space-sm),
+      box-shadow-hover: var(--pdz-level-0),
+      background-hover: var(--pdz-color-surface-container),
+    )
+  );
+}
+
+// Store button - mobile first
+.store-button {
+  margin: 0 var(--pdz-space-xs);
+  @include flat-button(
+    (
+      font-family: var(--pdz-font-fancy),
+      padding: var(--pdz-space-2xs) var(--pdz-space-sm),
+      box-shadow-hover: var(--pdz-level-0),
+      background-hover: var(--pdz-color-surface-container),
+    )
+  );
+
+  &__text {
+    display: none;
+
+    @include respond-above(small) {
+      display: inline;
+    }
+  }
+}
+
+// Responsive navigation - mobile first
+.mobile-menu {
+  display: flex;
+}
+
+.desktop-tabs {
+  display: none;
+}
+
+@include respond-above(medium) {
+  .mobile-menu {
+    display: none;
+  }
+
+  .desktop-tabs {
+    display: flex;
+    gap: var(--pdz-space-2xs);
+  }
+
+  .store-button {
+    padding: var(--pdz-space-sm);
+  }
+}

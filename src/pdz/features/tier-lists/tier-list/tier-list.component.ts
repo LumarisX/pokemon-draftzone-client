@@ -1,0 +1,356 @@
+import { CommonModule } from '@angular/common';
+import {
+  Component,
+  computed,
+  effect,
+  EventEmitter,
+  inject,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  signal,
+} from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { RouterModule } from '@angular/router';
+import { Subject } from 'rxjs';
+import { first, takeUntil } from 'rxjs/operators';
+import { Type, TYPES } from '@pdz/shared/data';
+import { Pokemon } from '@pdz/core/utils/pokemon';
+import { LeagueTier, TierPokemon } from '../tier-list.model';
+import { TierListService } from '../tier-list.service';
+import { WebSocketService } from '@pdz/core/services/ws.service';
+import {
+  PokemonDialogButton,
+  PokemonDialogComponent,
+  PokemonDialogData,
+} from '@pdz/shared/dialogs/pokemon-dialog/pokemon-dialog.component';
+import { PokemonTypeComponent } from '@pdz/shared/dialogs/pokemon-type/pokemon-type.component';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
+import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
+import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
+import { typeColor } from '@pdz/core/utils/styling';
+import { League } from '../../league-zone/league.interface';
+import {
+  filterBySearch,
+  makeBanString,
+  SORT_MAP,
+  SORT_OPTIONS,
+  SortOption,
+} from './tier-list.utils';
+
+@Component({
+  selector: 'pdz-tier-list',
+  templateUrl: './tier-list.component.html',
+  imports: [
+    CommonModule,
+    MatIconModule,
+    MatButtonModule,
+    MatDialogModule,
+    RouterModule,
+    FormsModule,
+    MatCheckboxModule,
+    MatTooltipModule,
+    ReactiveFormsModule,
+    LoadingComponent,
+    SpriteComponent,
+    IconComponent,
+    PokemonTypeComponent,
+  ],
+  styleUrls: ['./tier-list.component.scss'],
+})
+export class TierListComponent implements OnInit, OnDestroy {
+  // private leagueService = inject(LeagueZoneService);
+  private tierListService = inject(TierListService);
+  private wsService = inject(WebSocketService);
+  private dialog = inject(MatDialog);
+  private destroy$ = new Subject<void>();
+
+  @Input() header?: string;
+  drafted = signal<{ [division: string]: { pokemonId: string }[] }>({});
+  tiers = signal<LeagueTier[] | undefined>(undefined);
+  ruleset = signal<string | undefined>(undefined);
+  tierListName = signal<string>('Tier List');
+  sortBy = signal<SortOption>('BST');
+  selectedDivision = signal<string | undefined>(undefined);
+  searchText = signal<string>('');
+  selectedTypes = signal<Type[]>([]);
+  filteredTypes = signal<Type[]>([...TYPES]);
+
+  readonly SortOptions = SORT_OPTIONS;
+  readonly types = TYPES;
+
+  compact: boolean = false;
+
+  readonly sortedTiers = computed(() => {
+    const sortBy = this.sortBy();
+    const tiers = this.tiers();
+    if (!tiers) return null;
+
+    return tiers.map((tier) => ({
+      ...tier,
+      pokemon: [...tier.pokemon].sort(SORT_MAP[sortBy]),
+    }));
+  });
+
+  readonly draftedPokemonIds = computed(() => {
+    const selectedDivision = this.selectedDivision();
+    if (!selectedDivision) return new Set<string>();
+    const drafted = this.drafted();
+    return new Set(drafted[selectedDivision]?.map((p) => p.pokemonId) || []);
+  });
+
+  _menu: 'sort' | 'filter' | 'division' | null = null;
+
+  set menu(value: 'sort' | 'filter' | 'division' | null) {
+    if (value === 'filter') {
+      this.selectedTypes.set([...this.filteredTypes()]);
+    }
+    this._menu = value;
+  }
+
+  get menu() {
+    return this._menu;
+  }
+
+  get divisionNames() {
+    return Object.keys(this.drafted());
+  }
+
+  typeInFilter = (pokemon: TierPokemon) =>
+    filterBySearch(pokemon, this.filteredTypes(), this.searchText());
+
+  makeBanString = makeBanString;
+
+  constructor() {
+    effect(() => {
+      this.selectedDivision();
+      this.menu = null;
+    });
+  }
+
+  ngOnInit(): void {
+    this.loadTierList();
+    this.subscribeToLiveUpdates();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  private loadTierList(): void {
+    this.tierListService
+      .getTierList()
+      .pipe(first())
+      .subscribe((data) => {
+        this.drafted.set(data.divisions);
+        this.tiers.set(data.tierList);
+        this.ruleset.set(data.ruleset);
+        if (data.name) this.tierListName.set(data.name);
+        const divisionNames = Object.keys(data.divisions);
+        if (divisionNames.length > 0) {
+          this.selectedDivision.set(divisionNames[0]);
+        }
+      });
+  }
+
+  private subscribeToLiveUpdates(): void {
+    this.wsService
+      .on<{
+        pick: {
+          division: string;
+          pokemon: League.LeaguePokemon;
+        };
+        team: {
+          id: string;
+          name: string;
+          draft: League.LeaguePokemon[];
+        };
+        canDraftTeams: string[];
+      }>('league.draft.added')
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((data) => {
+        const currentDrafted = this.drafted();
+        if (currentDrafted[data.pick.division]) {
+          const updatedDivisionDrafts = [
+            ...currentDrafted[data.pick.division],
+            { pokemonId: data.pick.pokemon.id },
+          ];
+
+          this.drafted.set({
+            ...currentDrafted,
+            [data.pick.division]: updatedDivisionDrafts,
+          });
+        }
+      });
+  }
+
+  updateFilter(selected: boolean, index?: number): void {
+    if (index === undefined) {
+      if (selected) {
+        this.selectedTypes.set([...this.types]);
+      } else {
+        this.selectedTypes.set([]);
+      }
+      return;
+    }
+    if (selected) {
+      this.selectedTypes.update((types) => [...types, this.types[index]]);
+    } else {
+      this.selectedTypes.update((types) =>
+        types.filter((type) => type !== this.types[index]),
+      );
+    }
+  }
+
+  applyFilter(): void {
+    this.filteredTypes.set([...this.selectedTypes()]);
+    this.menu = null;
+  }
+
+  @Input()
+  buttonText?: string;
+
+  @Input()
+  altButtonText?: string;
+
+  @Output() pokemonSelected = new EventEmitter<{
+    id: string;
+    name: string;
+    addons?: string[];
+    tier: string;
+    cost?: number;
+  }>();
+
+  showDrafted: boolean = true;
+  typeColor = typeColor;
+
+  openPokemonDetails(pokemon: TierPokemon, tier: LeagueTier): void {
+    const sortedTiers = this.sortedTiers();
+    if (!sortedTiers) return;
+
+    // Build flat list of all currently visible pokemon in display order
+    const flatList: { pokemon: TierPokemon; tier: LeagueTier }[] = [];
+    for (const t of sortedTiers) {
+      for (const p of this.getVisiblePokemon(t)) {
+        flatList.push({ pokemon: p, tier: t });
+      }
+    }
+
+    // Build dialog data for each entry and link as doubly-linked list
+    const dataList = flatList.map(({ pokemon: p, tier: t }) =>
+      this.buildPokemonDialogData(p, t),
+    );
+    dataList.forEach((d, i) => {
+      if (i > 0) d.prev = dataList[i - 1];
+      if (i < dataList.length - 1) d.next = dataList[i + 1];
+    });
+
+    const idx = flatList.findIndex((item) => item.pokemon.id === pokemon.id);
+    const dialogData =
+      idx >= 0 ? dataList[idx] : this.buildPokemonDialogData(pokemon, tier);
+
+    const dialogRef = this.dialog.open(PokemonDialogComponent, {
+      data: dialogData,
+      maxWidth: '30rem',
+      width: '92vw',
+      panelClass: 'pokemon-detail-panel',
+    });
+
+    dialogRef
+      .afterClosed()
+      .pipe(first())
+      .subscribe((result) => {
+        const r = result as
+          | {
+              action: string;
+              teraCapt: boolean;
+              pokemon: TierPokemon;
+              tier: LeagueTier;
+            }
+          | undefined;
+        if (!r || r.action !== 'draft') return;
+        const p = r.pokemon;
+        const t = r.tier;
+        const emit: {
+          id: string;
+          name: string;
+          addons?: string[];
+          tier: string;
+          cost?: number;
+        } = { id: p.id, name: p.name, tier: t.name, cost: t.cost };
+        if (r.teraCapt) {
+          emit.cost = p.addons![0].cost;
+          emit.addons = ['Tera Captain'];
+        }
+        this.pokemonSelected.emit(emit);
+      });
+  }
+
+  private buildPokemonDialogData(
+    pokemon: TierPokemon,
+    tier: LeagueTier,
+  ): PokemonDialogData {
+    const isDrafted = this.isPokemonDrafted(pokemon) || tier.name === 'Ban';
+    const buttons: PokemonDialogButton[] = [];
+    if (this.buttonText && tier.cost != null) {
+      buttons.push({
+        label: this.buttonText,
+        result: { action: 'draft', teraCapt: false, pokemon, tier },
+        variant: 'primary',
+        disabled: isDrafted,
+      });
+    }
+    if (this.altButtonText && pokemon.addons?.length) {
+      buttons.push({
+        label: this.altButtonText,
+        result: { action: 'draft', teraCapt: true, pokemon, tier },
+        variant: 'secondary',
+        disabled: isDrafted,
+      });
+    }
+    return {
+      pokemon: {
+        id: pokemon.id,
+        name: pokemon.name,
+        types: pokemon.types,
+        abilities: pokemon.abilities,
+        stats: pokemon.stats,
+        bst: pokemon.bst,
+        cst: pokemon.bst,
+        banned: pokemon.banned,
+        addons: pokemon.addons,
+      },
+      tier: { name: tier.name, cost: tier.cost },
+      isDrafted,
+      buttons,
+      rulesetId: this.ruleset(),
+    };
+  }
+
+  getVisiblePokemon(tier: LeagueTier): TierPokemon[] {
+    return tier.pokemon.filter(
+      (p) =>
+        this.typeInFilter(p) && (this.showDrafted || !this.isPokemonDrafted(p)),
+    );
+  }
+
+  isPokemonDrafted(pokemon: Pokemon): boolean {
+    return this.draftedPokemonIds().has(pokemon.id);
+  }
+
+  makeWarningString(pokemon: TierPokemon) {
+    let warningString = makeBanString(pokemon.banned);
+    if (pokemon.notes) {
+      if (warningString) warningString += ' ';
+      warningString += `Note: ${pokemon.notes}`;
+    }
+    return warningString;
+  }
+}

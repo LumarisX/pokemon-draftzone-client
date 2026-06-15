@@ -1,0 +1,32 @@
+@use "global.scss" as *;
+
+:host {
+  display: grid;
+  gap: var(--pdz-space-2xs);
+  min-width: 9rem;
+}
+
+.grouped-select {
+  &__label {
+    font-weight: 700;
+    font-size: 0.875rem;
+    color: var(--pdz-color-on-surface-variant);
+  }
+
+  &__select {
+    width: 100%;
+    padding: var(--pdz-space-xs) var(--pdz-space-sm);
+    border: 1px solid var(--pdz-color-outline);
+    border-radius: var(--pdz-shape-corner-sm);
+    background: var(--pdz-color-surface);
+    color: var(--pdz-color-on-surface);
+    font: inherit;
+    cursor: pointer;
+
+    &:focus {
+      outline: 2px solid var(--pdz-color-primary);
+      outline-offset: 1px;
+      border-color: var(--pdz-color-primary);
+    }
+  }
+}

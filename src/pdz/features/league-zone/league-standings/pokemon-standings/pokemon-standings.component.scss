@@ -1,0 +1,182 @@
+@use "global" as *;
+@use "../../league.mixins" as *;
+
+.standing-container {
+  border: 1px solid var(--pdz-color-primary-border);
+  border-radius: var(--pdz-shape-corner-sm);
+  overflow: hidden;
+  width: fit-content;
+  .standing-header {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    .standing-header-title {
+      font-family: var(--pdz-font-fancy);
+      padding: 0.25rem 0.5rem;
+      background-color: var(--pdz-color-primary);
+      color: var(--pdz-color-on-primary);
+    }
+  }
+
+  table {
+    border-collapse: separate;
+    border-spacing: 2px 0;
+    td {
+      padding: 0.125rem 0.5rem;
+    }
+    tr.cutoff-border {
+      td {
+        border-bottom: 2px dotted var(--pdz-color-primary-border);
+      }
+    }
+    thead {
+      th {
+        border-bottom: 2px solid var(--pdz-color-primary-border);
+
+        &.sortable-header {
+          cursor: pointer;
+          user-select: none;
+
+          &:focus-visible {
+            outline: 2px solid var(--pdz-color-primary);
+            outline-offset: 2px;
+          }
+          &:hover:not(.is-sorted) {
+            background-color: pdz-color(surface-container);
+          }
+
+          &.is-sorted {
+            background-color: pdz-color(primary-container);
+          }
+
+          &.is-sorted.is-reversed {
+            background-color: pdz-color(secondary-container);
+          }
+        }
+      }
+    }
+  }
+
+  .rank-cell {
+    display: flex;
+    align-items: center;
+    span {
+      width: 100%;
+      font-weight: 600;
+      font-size: 1.1rem;
+      text-align: center;
+    }
+    mat-icon {
+      height: fit-content;
+      overflow: hidden;
+      object-fit: contain;
+      font-size: 1.2rem;
+      font-weight: var(--pdz-font-weight-bold);
+      color: var(--pdz-color-primary);
+      &.positive {
+        color: lightgreen;
+      }
+      &.negative {
+        color: lightcoral;
+      }
+    }
+  }
+
+  .record-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+  }
+
+  .record-box {
+    @include pdz-league-record-box();
+  }
+
+  .logo-cell {
+    width: 3rem;
+    height: 3rem;
+
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .logo-cell img {
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+  .team-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .team-name {
+      line-height: 1rem;
+    }
+    .coach-names {
+      color: var(--pdz-color-secondary);
+      font-size: 0.8rem;
+      line-height: 1rem;
+    }
+  }
+
+  .results-container {
+    display: flex;
+    column-gap: 0.5rem;
+    user-select: none;
+
+    .result-box {
+      background-color: var(--pdz-color-surface-container);
+      color: var(--pdz-color-surface-container);
+      text-align: center;
+      font-weight: var(--pdz-font-weight-bold);
+      font-size: 0.8rem;
+      line-height: 1.5rem;
+      border-radius: var(--pdz-shape-corner-xs);
+      height: 1.5rem;
+      width: 1.5rem;
+      &.positive {
+        background-color: lightgreen;
+        color: white;
+        box-shadow: var(--pdz-level-1);
+      }
+
+      &.negative {
+        background-color: lightcoral;
+        color: white;
+        box-shadow: var(--pdz-level-1);
+      }
+
+      .hovered-content {
+        display: none;
+      }
+
+      &:hover {
+        .default-content {
+          display: none;
+        }
+
+        .hovered-content {
+          display: inline;
+        }
+      }
+    }
+
+    .result-header {
+      width: 1.5rem;
+      height: 0.75rem;
+      text-align: center;
+      font-weight: var(--pdz-font-weight-bold);
+      font-size: 0.7rem;
+    }
+
+    .streak {
+      width: 3rem;
+      display: flex;
+      justify-content: center;
+    }
+  }
+}

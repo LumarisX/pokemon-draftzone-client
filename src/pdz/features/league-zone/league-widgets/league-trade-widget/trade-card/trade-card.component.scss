@@ -1,0 +1,133 @@
+@use "global" as *;
+@use "mixins" as *;
+@use "../../../league.mixins" as *;
+
+$trade-item-spacing: 0.25rem;
+$trade-sprite-size: 2rem;
+.trade-details-content {
+  width: 100%;
+}
+
+.trade-columns {
+  display: flex;
+  gap: $trade-item-spacing * 2;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.trade-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: $trade-item-spacing;
+  min-width: 0;
+  &.to-column {
+    .pokemon-info {
+      flex-direction: row-reverse;
+    }
+    .pokemon-details {
+      align-items: end;
+    }
+  }
+}
+
+.trade-header {
+  font-weight: 600;
+  font-size: 0.8rem;
+  color: var(--pdz-color-on-surface-variant);
+  padding-bottom: $trade-item-spacing * 0.5;
+  border-bottom: 1px solid var(--pdz-color-primary-border-variant);
+  margin-bottom: $trade-item-spacing * 0.5;
+  text-align: center;
+}
+
+.trade-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $trade-item-spacing * 0.5;
+  border: 1px solid var(--pdz-color-primary-border-variant);
+  border-radius: var(--pdz-shape-corner-xs);
+  background-color: var(--pdz-color-surface);
+  gap: $trade-item-spacing * 0.5;
+}
+
+.pokemon-info {
+  display: flex;
+  align-items: center;
+  gap: $trade-item-spacing;
+  flex-grow: 1;
+  min-width: 0;
+}
+
+.sprite-wrapper.small {
+  width: $trade-sprite-size;
+  height: $trade-sprite-size;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  sprite {
+    max-width: 100%;
+    max-height: 100%;
+  }
+}
+
+.pokemon-details {
+  display: flex;
+  flex-grow: 1;
+  min-width: 0;
+
+  &.pokemon-details--right {
+    justify-content: end;
+  }
+}
+
+.pokemon-name {
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pokemon-tier {
+  @include pdz-league-record-box();
+}
+
+.trade-arrow-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: pdz-color(primary);
+  flex-shrink: 0;
+
+  &.pickup pdz-icon {
+    color: pdz-color(positive);
+  }
+  &.drop pdz-icon {
+    color: pdz-color(negative);
+  }
+}
+
+.no-trade-items {
+  text-align: center;
+  color: var(--pdz-color-on-surface-variant);
+  padding: $trade-item-spacing;
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+.trade-separator {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: gray;
+}
+
+.no-pokemon {
+  text-align: center;
+  color: #888;
+  padding: 0;
+  font-style: italic;
+}

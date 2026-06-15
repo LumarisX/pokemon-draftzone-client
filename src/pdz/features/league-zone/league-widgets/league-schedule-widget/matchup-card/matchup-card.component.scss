@@ -1,0 +1,414 @@
+@use "../../../league.mixins" as *;
+@use "global" as *;
+@use "mixins" as *;
+
+$container-padding: var(--pdz-space-xs);
+
+:host {
+  border-radius: var(--pdz-shape-corner-lg);
+  box-shadow: var(--pdz-level-2);
+}
+
+.matchup-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pdz-space-xs);
+  padding: $container-padding;
+  position: relative;
+  transition: all 0.3s ease-in-out;
+  width: 100%;
+  min-width: 0;
+
+  &--clickable {
+    cursor: pointer;
+  }
+}
+
+.matchup-card__header {
+  display: flex;
+  align-items: center;
+  gap: var(--pdz-space-sm);
+  min-width: 0;
+}
+
+.matchup-card__team-info-container {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: var(--pdz-space-sm);
+  padding: $container-padding;
+  border-radius: var(--pdz-shape-corner-lg);
+  transition: all 0.2s;
+  min-width: 0;
+  border: 2px solid transparent;
+
+  &:hover {
+    cursor: pointer;
+    background-color: pdz-color(surface-container);
+  }
+
+  &:active {
+    margin-top: 1px;
+    margin-bottom: -1px;
+    box-shadow: var(--pdz-level-inset-1);
+  }
+
+  &--right {
+    flex-direction: row-reverse;
+    text-align: right;
+  }
+
+  &--winner {
+    border: 2px solid pdz-color(positive);
+  }
+
+  &--loser {
+    border: 2px solid pdz-color(negative);
+  }
+}
+
+.matchup-card__team-logo {
+  @include pdz-league-logo(2rem);
+
+  @include respond-above(medium) {
+    @include pdz-league-logo(3rem);
+  }
+}
+
+.matchup-card__team-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.matchup-card__team-name {
+  font-weight: var(--pdz-font-weight-semibold);
+  @include apply-typography(body-sm);
+  margin: 0;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+}
+
+.matchup-card__coach-name {
+  @include apply-typography(body-xs);
+  color: pdz-color(on-surface-variant);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin: 0;
+}
+
+.matchup-card__center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--pdz-space-xs);
+  flex-shrink: 0;
+}
+
+.matchup-card__replay-button {
+  padding: var(--pdz-space-xs) var(--pdz-space-sm);
+  border-radius: var(--pdz-shape-corner-full);
+  font-size: 0.7rem;
+  line-height: 1;
+  border: 1px solid pdz-color(outline);
+  background: transparent;
+  color: pdz-color(on-surface-variant);
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &--active {
+    background-color: pdz-color(primary);
+    color: pdz-color(on-primary);
+    border-color: pdz-color(primary);
+    box-shadow: var(--pdz-level-1);
+
+    &:active {
+      box-shadow: var(--pdz-level-0);
+      transform: translateY(1px);
+    }
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}
+
+.matchup-card__matchup-button {
+  padding: var(--pdz-space-xs) var(--pdz-space-sm);
+  border-radius: var(--pdz-shape-corner-full);
+  font-size: 0.7rem;
+  line-height: 1;
+  border: 1px solid pdz-color(outline);
+  cursor: pointer;
+  transition: all 0.2s;
+  background-color: pdz-color(secondary);
+  color: pdz-color(on-secondary);
+  border-color: pdz-color(secondary);
+  box-shadow: var(--pdz-level-1);
+
+  &:active {
+    box-shadow: var(--pdz-level-0);
+    transform: translateY(1px);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}
+
+.matchup-card__versus {
+  font-weight: var(--pdz-font-weight-bold);
+  font-size: 0.65rem;
+  color: pdz-color(on-surface-variant);
+  user-select: none;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.matchup-card__toggle-icon {
+  position: absolute;
+  bottom: -0.25rem;
+  left: 50%;
+  transform: translateX(-50%);
+  color: pdz-color(outline);
+  font-size: 1.5rem;
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.matchup-card__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pdz-space-xs);
+  animation: fadeIn 0.3s ease-in-out;
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+.matchup-card__score-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--pdz-space-sm);
+}
+
+.matchup-card__score-box {
+  width: 1.5rem;
+  height: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  @include apply-typography(title-md);
+  border-radius: var(--pdz-shape-corner-sm);
+  box-shadow: var(--pdz-level-1);
+  background-color: pdz-color(surface-container-low);
+  color: pdz-color(on-surface);
+
+  &--winning {
+    background-color: pdz-color(positive);
+    color: pdz-color(on-primary);
+  }
+
+  &--losing {
+    background-color: pdz-color(negative);
+    color: pdz-color(on-primary);
+  }
+}
+
+.matchup-card__score-separator {
+  font-size: 1.2rem;
+  color: pdz-color(on-surface-variant);
+}
+
+.matchup-card__match-details {
+  display: flex;
+  align-items: center;
+  gap: var(--pdz-space-sm);
+}
+
+.matchup-card__pokemon-team {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--pdz-space-xs);
+  flex: 1;
+}
+
+.matchup-card__pokemon-slot {
+  aspect-ratio: 1;
+  border: 2px solid pdz-color(outline-variant);
+  border-radius: var(--pdz-shape-corner-sm);
+  box-shadow: var(--pdz-level-1);
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  pdz-sprite {
+    filter: grayscale(100%);
+    opacity: 0.6;
+  }
+
+  &--survived {
+    border-color: pdz-color(positive);
+
+    pdz-sprite {
+      filter: grayscale(0%);
+      opacity: 1;
+    }
+  }
+
+  &--fainted {
+    border-color: pdz-color(negative);
+    pdz-sprite {
+      filter: grayscale(0%);
+      opacity: 1;
+    }
+  }
+
+  &--fainted:hover {
+    background-color: pdz-color(negative);
+    pdz-sprite {
+      visibility: hidden;
+    }
+
+    .matchup-card__pokemon-kills {
+      display: flex;
+      color: pdz-color(on-menu);
+    }
+  }
+  &--survived:hover {
+    background-color: pdz-color(positive);
+    pdz-sprite {
+      visibility: hidden;
+    }
+
+    .matchup-card__pokemon-kills {
+      display: flex;
+      color: pdz-color(on-menu);
+    }
+  }
+}
+
+.matchup-card__pokemon-kills {
+  display: none;
+  position: absolute;
+  inset: 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: pdz-color(on-surface);
+}
+
+.matchup-card__pokemon-kills-value {
+  @include apply-typography(title-md);
+  line-height: 1;
+}
+
+.matchup-card__pokemon-kills-label {
+  @include apply-typography(label-xs);
+  line-height: 1;
+}
+
+.matchup-card__match-selector {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pdz-space-xs);
+  flex-shrink: 0;
+}
+
+.matchup-card__match-option {
+  display: flex;
+  align-items: center;
+  gap: var(--pdz-space-xs);
+  font-size: 0.7rem;
+}
+
+.matchup-card__match-score {
+  width: 1.5rem;
+  height: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  @include apply-typography(title-md);
+  border-radius: var(--pdz-shape-corner-sm);
+  box-shadow: var(--pdz-level-1);
+  background-color: pdz-color(surface-container-low);
+  color: pdz-color(on-surface);
+
+  &--winning {
+    background-color: pdz-color(positive);
+    color: pdz-color(on-primary);
+  }
+
+  &--losing {
+    background-color: pdz-color(negative);
+    color: pdz-color(on-primary);
+  }
+}
+
+.matchup-card__game-button {
+  padding: var(--pdz-space-xs) var(--pdz-space-sm);
+  border: 1px solid pdz-color(outline);
+  border-radius: var(--pdz-shape-corner-sm);
+  background: pdz-color(surface-container);
+  box-shadow: var(--pdz-level-1);
+  @include apply-typography(label-xs);
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+
+  &:hover:not(.matchup-card__game-button--selected) {
+    background: pdz-color(surface-container-high);
+  }
+
+  &--selected {
+    background-color: pdz-color(primary);
+    border-color: pdz-color(primary);
+    color: pdz-color(on-primary);
+    box-shadow: var(--pdz-level-0);
+    transform: translateY(1px);
+  }
+
+  &:active {
+    box-shadow: var(--pdz-level-0);
+    transform: translateY(1px);
+  }
+}
+
+.matchup-card__view-button {
+  width: 100%;
+  padding: var(--pdz-space-sm) var(--pdz-space-md);
+  border: 1px solid pdz-color(primary-border);
+  border-radius: var(--pdz-shape-corner-md);
+  background-color: pdz-color(primary-container);
+  color: pdz-color(on-primary-container);
+  font-weight: var(--pdz-font-weight-semibold);
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    background-color: pdz-color(primary);
+    color: pdz-color(on-primary);
+    box-shadow: var(--pdz-level-2);
+  }
+
+  &:active {
+    box-shadow: var(--pdz-level-1);
+    transform: translateY(1px);
+  }
+}

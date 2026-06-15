@@ -17,7 +17,15 @@
     "importHelpers": true,
     "target": "ES2022",
     "module": "ES2022",
-    "useDefineForClassFields": false
+    "useDefineForClassFields": false,
+    "paths": {
+      "@pdz/core/*": ["./src/pdz/core/*"],
+      "@pdz/shared/*": ["./src/pdz/shared/*"],
+      "@pdz/features/*": ["./src/pdz/features/*"],
+      "@pdz/layout/*": ["./src/pdz/layout/*"],
+      "@pdz/environments/*": ["./src/environments/*"],
+      "@pdz/*": ["./src/pdz/*"],
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

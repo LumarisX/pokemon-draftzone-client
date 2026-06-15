@@ -1,0 +1,59 @@
+import { Component, OnInit, OnDestroy, Input, inject } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { AuthService } from '@pdz/core/services/auth0.service';
+import { MarkdownModule } from 'ngx-markdown';
+import { ChatService } from '../../core/services/chat.service';
+
+@Component({
+  selector: 'pdz-chat',
+  templateUrl: './chat.component.html',
+  styleUrls: ['./chat.component.scss'],
+  imports: [FormsModule, CommonModule, MarkdownModule],
+})
+export class ChatComponent implements OnInit, OnDestroy {
+  private chatService = inject(ChatService);
+  private auth = inject(AuthService);
+
+  messages: { timestamp: Date; user: string; text: string }[] = [];
+  newMessage: string = '';
+  private messageSubscription!: Subscription;
+
+  @Input({ required: true }) roomId!: string;
+
+  ngOnInit(): void {
+    this.chatService.joinRoom(this.roomId);
+    this.messageSubscription = this.chatService.messages$.subscribe(
+      (message) => {
+        this.messages.push(message);
+      },
+    );
+  }
+
+  ngOnDestroy(): void {
+    if (this.messageSubscription) {
+      this.messageSubscription.unsubscribe();
+    }
+  }
+
+  handleKeydown(event: KeyboardEvent): void {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
+      this.sendMessage();
+    }
+  }
+
+  sendMessage(): void {
+    if (this.newMessage.trim()) {
+      this.auth.user$.subscribe((user) => {
+        this.chatService.sendMessage(
+          this.roomId,
+          this.newMessage,
+          user?.username,
+        );
+        this.newMessage = '';
+      });
+    }
+  }
+}

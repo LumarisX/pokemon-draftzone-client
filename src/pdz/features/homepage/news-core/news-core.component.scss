@@ -1,0 +1,126 @@
+@use "global.scss" as *;
+@use "mixins" as *;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.25rem;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.news-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding-bottom: var(--pdz-space-lg);
+}
+
+.news-header {
+  display: flex;
+  flex-direction: column;
+  font-family: var(--pdz-font-fancy);
+
+  .news-date {
+    color: pdz-color(primary);
+    font-weight: var(--pdz-font-weight-bold);
+    font-size: 1.2rem;
+  }
+  .news-title {
+    color: pdz-color(on-surface);
+    font-size: 1rem;
+  }
+}
+
+.indent {
+  padding-left: 0.5rem;
+}
+
+.news-item:not(:last-child) {
+  padding-bottom: 0.25rem;
+  margin-bottom: 0.25rem;
+  border-bottom: 1px solid var(--pdz-color-primary-border-variant);
+}
+
+.news-body {
+  display: flex;
+  flex-direction: column;
+  row-gap: var(--pdz-space-xs);
+}
+
+.section {
+  &:not(:last-child) {
+    padding-bottom: 0.125rem;
+  }
+}
+
+.section-images {
+  display: flex;
+  overflow-x: auto;
+  column-gap: 0.5rem;
+  max-width: 100%;
+  align-self: center;
+  .image-title {
+    padding-left: 0.25rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    font-family: var(--pdz-font-fancy);
+    color: var(--pdz-color-secondary);
+  }
+
+  .image-container {
+    flex-shrink: 0;
+    .size-large {
+      width: 24rem;
+      max-height: 24rem;
+    }
+    .size-medium {
+      width: 16rem;
+      max-height: 16rem;
+    }
+    .size-small {
+      width: 8rem;
+      max-height: 8rem;
+    }
+  }
+}
+
+.section-heading {
+  font-size: 1.1rem;
+  font-family: var(--pdz-font-fancy);
+  padding-bottom: 0rem !important;
+}
+
+.section-para {
+  font-size: 0.875rem;
+  color: pdz-color(on-surface-variant);
+  margin: 0.125rem 0 0;
+}
+
+.section-list {
+  font-size: 0.9rem;
+  ul {
+    padding-left: 1rem;
+    list-style-type: disc;
+  }
+}
+
+.section-buttons {
+  display: flex;
+  column-gap: 0.5rem;
+  justify-content: center;
+}
+
+.section-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 1rem;
+
+  .columns__col {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    row-gap: var(--pdz-space-xs);
+  }
+}

@@ -1,0 +1,24 @@
+import { Component, OnInit, inject } from '@angular/core';
+import {
+  FlexBracketData,
+  LeagueBracketFlexComponent,
+} from './league-bracket-flex/league-bracket-flex.component';
+import { LeagueZoneService } from '../league-zone.service';
+
+@Component({
+  selector: 'pdz-league-bracket',
+  imports: [LeagueBracketFlexComponent],
+  templateUrl: './league-bracket.component.html',
+  styleUrl: './league-bracket.component.scss',
+})
+export class LeagueBracketComponent implements OnInit {
+  private readonly leagueService = inject(LeagueZoneService);
+
+  bracketData?: FlexBracketData;
+
+  ngOnInit(): void {
+    this.leagueService.getBracket().subscribe((data) => {
+      this.bracketData = data;
+    });
+  }
+}
