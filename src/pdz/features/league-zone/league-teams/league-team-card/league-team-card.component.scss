@@ -1,4 +1,5 @@
 @use "../../league.mixins.scss" as *;
+@use "pdz-theming" as pdz;
 
 .logo {
   @include pdz-league-logo(4rem);
@@ -22,7 +23,7 @@
     gap: 0.75rem;
     margin-bottom: 0.5rem;
     padding-bottom: 0.5rem;
-    border-bottom: 1px solid var(--pdz-color-primary-border);
+    border-bottom: 1px solid pdz.color(primary-border);
     .team-info {
       flex-grow: 1;
 
@@ -36,7 +37,7 @@
       .team-coaches {
         .team-coach {
           text-align: center;
-          color: var(--pdz-color-primary);
+          color: pdz.color(primary);
           font-weight: 600;
           font-size: 0.8rem;
           margin: 0;
@@ -57,8 +58,8 @@
 
         &__wins {
           @include pdz-league-record-box();
-          background-color: var(--pdz-color-positive);
-          color: var(--pdz-color-on-positive);
+          background-color: pdz.color(positive);
+          color: pdz.color(on-positive);
           width: 1.25rem;
           height: 1.25rem;
           line-height: 1.25rem;
@@ -67,8 +68,8 @@
 
         &__losses {
           @include pdz-league-record-box();
-          background-color: var(--pdz-color-negative);
-          color: var(--pdz-color-on-negative);
+          background-color: pdz.color(negative);
+          color: pdz.color(on-negative);
           width: 1.25rem;
           height: 1.25rem;
           line-height: 1.25rem;
@@ -77,8 +78,8 @@
 
         &__diff {
           @include pdz-league-record-box();
-          background-color: var(--pdz-color-secondary-container);
-          color: var(--pdz-color-on-secondary-container);
+          background-color: pdz.color(secondary-container);
+          color: pdz.color(on-secondary-container);
           width: auto;
           min-width: 2.1rem;
           height: 1.35rem;
@@ -87,19 +88,19 @@
           font-size: 0.72rem;
 
           &--positive {
-            background-color: var(--pdz-color-positive-container);
-            color: var(--pdz-color-on-positive-container);
+            background-color: pdz.color(positive-container);
+            color: pdz.color(on-positive-container);
           }
 
           &--negative {
-            background-color: var(--pdz-color-negative-container);
-            color: var(--pdz-color-on-negative-container);
+            background-color: pdz.color(negative-container);
+            color: pdz.color(on-negative-container);
           }
         }
       }
 
       .team-timezone {
-        color: var(--pdz-color-secondary);
+        color: pdz.color(secondary);
         font-size: 0.8rem;
         font-weight: 600;
       }
@@ -113,10 +114,10 @@
       button {
         width: 1.5rem;
         height: 1.5rem;
-        color: var(--pdz-color-primary);
-        border-radius: var(--pdz-shape-corner-xs);
+        color: pdz.color(primary);
+        border-radius: pdz.shape(corner-xs);
         &:hover {
-          color: var(--pdz-color-secondary);
+          color: pdz.color(secondary);
         }
         &:not(.pressed) {
           box-shadow: var(--pdz-level-1);
@@ -132,8 +133,8 @@
     .table-wrapper {
       width: 100%;
       height: 100%;
-      border: 1px solid var(--pdz-color-primary);
-      border-radius: var(--pdz-shape-corner-lg);
+      border: 1px solid pdz.color(primary);
+      border-radius: pdz.shape(corner-lg);
       overflow: hidden;
       font-size: 0.8rem;
       display: flex;
@@ -171,15 +172,15 @@
           padding: 0.5rem 0.4rem;
           text-align: left;
           vertical-align: middle;
-          border-bottom: 1px solid var(--pdz-color-primary-border-variant);
+          border-bottom: 1px solid pdz.color(primary-border);
           overflow: hidden;
           text-overflow: ellipsis;
         }
 
         th {
           font-weight: 600;
-          background-color: var(--pdz-color-primary);
-          color: var(--pdz-color-on-primary);
+          background-color: pdz.color(primary);
+          color: pdz.color(on-primary);
           white-space: nowrap;
         }
 
@@ -195,7 +196,7 @@
           text-align: center;
           white-space: nowrap;
           mat-icon {
-            color: var(--pdz-color-primary);
+            color: pdz.color(primary);
           }
         }
 

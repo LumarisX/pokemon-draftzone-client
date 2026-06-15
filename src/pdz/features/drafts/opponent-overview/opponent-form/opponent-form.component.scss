@@ -1,3 +1,5 @@
+@use "pdz-theming" as pdz;
+
 .draft-container {
   display: flex;
   width: 100%;
@@ -5,7 +7,7 @@
 
   .form-content {
     width: 100%;
-    padding: var(--pdz-space-sm);
+    padding: pdz.space(sm);
     max-width: 70rem;
     display: flex;
     flex-direction: column;

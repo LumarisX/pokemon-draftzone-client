@@ -1,4 +1,4 @@
-@use "global.scss" as *;
+@use "pdz-theming" as pdz;
 @use "mixins" as *;
 
 :host {
@@ -7,25 +7,25 @@
 
 .pokemon-search {
   display: grid;
-  gap: var(--pdz-space-md);
-  padding: var(--pdz-space-md);
+  gap: pdz.space(md);
+  padding: pdz.space(md);
 }
 
 .toolbar {
   display: flex;
-  gap: var(--pdz-space-sm);
+  gap: pdz.space(sm);
   align-items: center;
   flex-wrap: wrap;
-  padding: var(--pdz-space-sm) var(--pdz-space-md);
-  background-color: pdz-color(surface-container-low);
-  border-radius: var(--pdz-shape-corner-md);
+  padding: pdz.space(sm) pdz.space(md);
+  background-color: pdz.color(surface-container-low);
+  border-radius: pdz.shape(corner-md);
   box-shadow: var(--pdz-level-1);
   flex-shrink: 0;
 
   &__title {
     @include apply-typography(headline-sm);
     font-family: var(--pdz-font-fancy);
-    color: pdz-color(on-surface);
+    color: pdz.color(on-surface);
     margin: 0;
   }
 
@@ -37,11 +37,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: var(--pdz-space-2xs) var(--pdz-space-xs);
-    border: 1px solid pdz-color(outline-variant);
-    border-radius: var(--pdz-shape-corner-sm);
+    padding: pdz.space(2xs) pdz.space(xs);
+    border: 1px solid pdz.color(outline-variant);
+    border-radius: pdz.shape(corner-sm);
     background: transparent;
-    color: pdz-color(on-surface-variant);
+    color: pdz.color(on-surface-variant);
     cursor: pointer;
     transition:
       background 120ms ease,
@@ -50,9 +50,9 @@
 
     &:hover,
     &.is-active {
-      background: pdz-color(primary-container);
-      border-color: pdz-color(primary-border);
-      color: pdz-color(on-primary-container);
+      background: pdz.color(primary-container);
+      border-color: pdz.color(primary-border);
+      color: pdz.color(on-primary-container);
     }
   }
 }
@@ -61,7 +61,7 @@
   position: fixed;
   inset: 0;
   z-index: 5500;
-  background: color-mix(in srgb, pdz-color(on-surface) 30%, transparent);
+  background: color-mix(in srgb, pdz.color(on-surface) 30%, transparent);
   animation: fadeIn 0.15s ease-out;
 }
 
@@ -70,7 +70,7 @@
   z-index: 5501;
   display: flex;
   flex-direction: column;
-  background: pdz-color(surface-container-low);
+  background: pdz.color(surface-container-low);
   box-shadow: var(--pdz-level-3);
 
   // Mobile: sheet from bottom
@@ -78,7 +78,7 @@
   left: 0;
   right: 0;
   max-height: 80vh;
-  border-radius: var(--pdz-shape-corner-lg) var(--pdz-shape-corner-lg) 0 0;
+  border-radius: pdz.shape(corner-lg) pdz.shape(corner-lg) 0 0;
   animation: slideUp 0.22s cubic-bezier(0.4, 0, 0.2, 1);
 
   @include respond-above(medium) {
@@ -97,55 +97,55 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: var(--pdz-space-sm);
-    padding: var(--pdz-space-md);
-    border-bottom: 1px solid pdz-color(outline-variant);
+    gap: pdz.space(sm);
+    padding: pdz.space(md);
+    border-bottom: 1px solid pdz.color(outline-variant);
     flex-shrink: 0;
   }
 
   &__title {
     margin: 0;
     @include apply-typography(title-md);
-    color: pdz-color(on-surface);
+    color: pdz.color(on-surface);
   }
 
   &__close {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: var(--pdz-space-2xs);
+    padding: pdz.space(2xs);
     border: 1px solid transparent;
-    border-radius: var(--pdz-shape-corner-sm);
+    border-radius: pdz.shape(corner-sm);
     background: transparent;
-    color: pdz-color(on-surface-variant);
+    color: pdz.color(on-surface-variant);
     cursor: pointer;
     transition:
       background 120ms ease,
       color 120ms ease;
 
     &:hover {
-      background: pdz-color(surface-container-high);
-      color: pdz-color(on-surface);
+      background: pdz.color(surface-container-high);
+      color: pdz.color(on-surface);
     }
   }
 
   &__body {
     flex: 1;
     overflow-y: auto;
-    padding: var(--pdz-space-sm);
+    padding: pdz.space(sm);
     display: flex;
     flex-direction: column;
-    gap: var(--pdz-space-xs);
+    gap: pdz.space(xs);
   }
 
   &__empty {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: var(--pdz-space-xs);
-    padding: var(--pdz-space-xl) var(--pdz-space-md);
+    gap: pdz.space(xs);
+    padding: pdz.space(xl) pdz.space(md);
     text-align: center;
-    color: pdz-color(on-surface-variant);
+    color: pdz.color(on-surface-variant);
 
     pdz-icon {
       opacity: 0.4;
@@ -164,15 +164,15 @@
   &__item {
     display: flex;
     align-items: stretch;
-    gap: var(--pdz-space-2xs);
-    border: 1px solid pdz-color(outline-variant);
-    border-radius: var(--pdz-shape-corner-sm);
-    background: pdz-color(surface);
+    gap: pdz.space(2xs);
+    border: 1px solid pdz.color(outline-variant);
+    border-radius: pdz.shape(corner-sm);
+    background: pdz.color(surface);
     overflow: hidden;
     transition: border-color 120ms ease;
 
     &:hover {
-      border-color: pdz-color(primary-border);
+      border-color: pdz.color(primary-border);
     }
   }
 
@@ -180,8 +180,8 @@
     flex: 1;
     min-width: 0;
     display: grid;
-    gap: var(--pdz-space-2xs);
-    padding: var(--pdz-space-sm);
+    gap: pdz.space(2xs);
+    padding: pdz.space(sm);
     border: none;
     background: transparent;
     text-align: left;
@@ -191,14 +191,14 @@
     transition: background 120ms ease;
 
     &:hover {
-      background: pdz-color(surface-container);
+      background: pdz.color(surface-container);
     }
   }
 
   &__item-label {
     @include apply-typography(body-md);
     font-weight: 700;
-    color: pdz-color(on-surface);
+    color: pdz.color(on-surface);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -207,16 +207,16 @@
   &__item-filters {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--pdz-space-2xs);
+    gap: pdz.space(2xs);
   }
 
   &__filter-chip {
     @include apply-typography(body-sm);
-    padding: 1px var(--pdz-space-xs);
-    border: 1px solid pdz-color(outline-variant);
-    border-radius: var(--pdz-shape-corner-sm);
-    background: pdz-color(surface-container);
-    color: pdz-color(on-surface-variant);
+    padding: 1px pdz.space(xs);
+    border: 1px solid pdz.color(outline-variant);
+    border-radius: pdz.shape(corner-sm);
+    background: pdz.color(surface-container);
+    color: pdz.color(on-surface-variant);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -225,7 +225,7 @@
     &--more {
       background: transparent;
       border-color: transparent;
-      color: pdz-color(primary);
+      color: pdz.color(primary);
       font-style: italic;
       max-width: none;
     }
@@ -233,12 +233,12 @@
 
   &__item-meta {
     @include apply-typography(body-sm);
-    color: pdz-color(primary);
+    color: pdz.color(primary);
   }
 
   &__item-date {
     @include apply-typography(body-xs);
-    color: pdz-color(on-surface-variant);
+    color: pdz.color(on-surface-variant);
     opacity: 0.7;
   }
 
@@ -246,12 +246,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: var(--pdz-space-xs);
+    padding: pdz.space(xs);
     border: none;
-    border-left: 1px solid pdz-color(outline-variant);
+    border-left: 1px solid pdz.color(outline-variant);
     border-radius: 0;
     background: transparent;
-    color: pdz-color(on-surface-variant);
+    color: pdz.color(on-surface-variant);
     cursor: pointer;
     transition:
       background 120ms ease,
@@ -259,8 +259,8 @@
     flex-shrink: 0;
 
     &:hover {
-      background: pdz-color(error-container);
-      color: pdz-color(on-error-container);
+      background: pdz.color(error-container);
+      color: pdz.color(on-error-container);
     }
   }
 }

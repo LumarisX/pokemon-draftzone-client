@@ -1,6 +1,8 @@
+@use "pdz-theming" as pdz;
+
 .movechart-wrapper {
   max-width: 30rem;
-  padding: var(--pdz-space-xs);
+  padding: pdz.space(xs);
   display: flex;
   flex-direction: column;
   max-height: 48rem;
@@ -9,16 +11,16 @@
 }
 
 .widget-container {
-  --pdz-cmp-movechart-color: var(--pdz-color-primary);
-  --pdz-cmp-movechart-on-container: var(--pdz-color-on-primary-container);
-  --pdz-cmp-movechart-container: var(--pdz-color-primary-container);
-  --pdz-cmp-movechart-hover: var(--pdz-color-primary-container-low);
-  --pdz-cmp-movechart-border: var(--pdz-color-primary-border);
+  --pdz-cmp-movechart-color: #{pdz.color(primary)};
+  --pdz-cmp-movechart-on-container: #{pdz.color(on-primary-container)};
+  --pdz-cmp-movechart-container: #{pdz.color(primary-container)};
+  --pdz-cmp-movechart-hover: #{pdz.color(primary-container-low)};
+  --pdz-cmp-movechart-border: #{pdz.color(primary-border)};
   &.alternate {
-    --pdz-cmp-movechart-color: var(--pdz-color-secondary);
-    --pdz-cmp-movechart-on-container: var(--pdz-color-on-secondary-container);
-    --pdz-cmp-movechart-container: var(--pdz-color-secondary-container);
-    --pdz-cmp-movechart-hover: var(--pdz-color-secondary-container-low);
-    --pdz-cmp-movechart-border: var(--pdz-color-secondary-border);
+    --pdz-cmp-movechart-color: #{pdz.color(secondary)};
+    --pdz-cmp-movechart-on-container: #{pdz.color(on-secondary-container)};
+    --pdz-cmp-movechart-container: #{pdz.color(secondary-container)};
+    --pdz-cmp-movechart-hover: #{pdz.color(secondary-container-low)};
+    --pdz-cmp-movechart-border: #{pdz.color(secondary-border)};
   }
 }

@@ -1,0 +1,12 @@
+@use "sass:map";
+@use "tokens/breakpoints" as bp-tokens;
+
+@mixin respond-above($breakpoint) {
+  @if map.has-key(bp-tokens.$breakpoints, $breakpoint) {
+    @media (min-width: #{map.get(bp-tokens.$breakpoints, $breakpoint)}) {
+      @content;
+    }
+  } @else {
+    @error "Breakpoint '#{$breakpoint}' not found. Available breakpoints: #{map.keys(bp-tokens.$breakpoints)}";
+  }
+}

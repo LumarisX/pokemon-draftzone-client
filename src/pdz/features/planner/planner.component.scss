@@ -1,3 +1,5 @@
+@use "pdz-theming" as pdz;
+
 .planner-form {
   height: 100%;
 
@@ -13,7 +15,7 @@
       height: 100%;
 
       > :not([hidden]) ~ :not([hidden]) {
-        border-left: 2px solid var(--pdz-color-outline);
+        border-left: 2px solid pdz.color(outline);
       }
     }
   }
@@ -28,7 +30,7 @@
 }
 
 .tab-bar {
-  padding: 0 var(--pdz-space-sm);
+  padding: 0 pdz.space(sm);
   max-width: 100%;
   height: fit-content;
   display: flex;
@@ -36,15 +38,15 @@
   overflow-y: clip;
   height: fit-content;
   border-width: 0 0 2px;
-  gap: var(--pdz-space-xs);
-  border-bottom: 2px solid var(--pdz-color-outline);
+  gap: pdz.space(xs);
+  border-bottom: 2px solid pdz.color(outline);
   align-items: end;
 
   .tab {
-    background-color: var(--pdz-color-secondary-container);
-    color: var(--pdz-color-on-secondary-container);
-    border-radius: var(--pdz-shape-corner-sm) var(--pdz-shape-corner-sm) 0 0;
-    padding: var(--pdz-space-xs) var(--pdz-space-xs) 0;
+    background-color: pdz.color(secondary-container);
+    color: pdz.color(on-secondary-container);
+    border-radius: pdz.shape(corner-sm) pdz.shape(corner-sm) 0 0;
+    padding: pdz.space(xs) pdz.space(xs) 0;
     font-size: var(--pdz-font-size-xs);
     height: fit-content;
     min-height: 1.5rem;
@@ -55,7 +57,7 @@
       font-size: 1.2rem;
       height: fit-content;
       width: fit-content;
-      border-radius: var(--pdz-shape-corner-full);
+      border-radius: pdz.shape(corner-full);
     }
     box-shadow: var(--pdz-level-1);
   }
@@ -65,7 +67,7 @@
 
     display: flex;
     overflow-x: auto;
-    gap: var(--pdz-space-xs);
+    gap: pdz.space(xs);
     align-items: end;
 
     .draft-tab {
@@ -83,7 +85,7 @@
         }
         width: 6rem;
         line-height: 1.25rem;
-        padding: 0px var(--pdz-space-xs);
+        padding: 0px pdz.space(xs);
         margin-bottom: 1px;
         background: inherit;
         text-overflow: ellipsis;
@@ -91,14 +93,14 @@
       }
 
       &.selected {
-        background-color: var(--pdz-color-primary-container);
-        color: var(--pdz-color-on-primary-container);
+        background-color: pdz.color(primary-container);
+        color: pdz.color(on-primary-container);
         box-shadow: var(--pdz-level-2);
         font-size: var(--pdz-font-size-sm);
         min-height: 2rem;
         mat-icon {
           &:hover {
-            color: var(--pdz-color-primary);
+            color: pdz.color(primary);
           }
         }
         input {
@@ -117,7 +119,7 @@
 }
 
 .tab-container {
-  padding: var(--pdz-space-lg);
+  padding: pdz.space(lg);
   width: 100%;
   height: 100%;
   overflow: auto;
@@ -156,7 +158,7 @@ mat-tab {
   height: 100%;
   min-width: 100%;
   overflow-y: auto;
-  padding: var(--pdz-space-md);
+  padding: pdz.space(md);
 }
 
 .coverage {

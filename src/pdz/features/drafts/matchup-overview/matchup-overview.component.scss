@@ -1,5 +1,5 @@
 @use "mixins/buttons" as *;
-@use "global.scss" as *;
+@use "pdz-theming" as pdz;
 
 $transition-duration: 0.2s;
 
@@ -21,7 +21,7 @@ $transition-duration: 0.2s;
     width: 0;
     min-width: 0;
     height: 100%;
-    background-color: pdz-color(surface);
+    background-color: pdz.color(surface);
     box-shadow: var(--pdz-level-2);
     transition: width $transition-duration ease-in-out;
     display: flex;
@@ -64,7 +64,7 @@ $transition-duration: 0.2s;
       transition: background-color 0.15s ease;
 
       &:hover {
-        background-color: pdz-color(outline);
+        background-color: pdz.color(outline);
       }
 
       &::before {
@@ -76,14 +76,14 @@ $transition-duration: 0.2s;
         width: 4px;
         height: 40px;
         border-radius: 2px;
-        background-color: pdz-color(outline-variant);
+        background-color: pdz.color(outline-variant);
         opacity: 0;
         transition: opacity 0.15s ease;
       }
 
       &:hover::before {
         opacity: 1;
-        background-color: pdz-color(on-primary);
+        background-color: pdz.color(on-primary);
       }
 
       @media (max-width: 767px) {
@@ -94,13 +94,13 @@ $transition-duration: 0.2s;
 
   button {
     &.teambuilder-button {
-      background-color: pdz-color(surface);
-      border: 1px solid pdz-color(menu-border);
+      background-color: pdz.color(surface);
+      border: 1px solid pdz.color(menu-border);
       border-right-width: 0px;
       border-radius: 1rem 0 0 1rem;
       position: absolute;
-      padding: var(--pdz-space-sm);
-      bottom: var(--pdz-space-lg);
+      padding: pdz.space(sm);
+      bottom: pdz.space(lg);
       right: 0.675rem;
       z-index: 10000;
       transition: all 0.2s ease-in-out;
@@ -114,7 +114,7 @@ $transition-duration: 0.2s;
       }
 
       &:hover {
-        padding-right: var(--pdz-space-md);
+        padding-right: pdz.space(md);
       }
     }
   }
@@ -125,17 +125,17 @@ $transition-duration: 0.2s;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--pdz-space-xl);
+  padding: pdz.space(xl);
   inset: 0;
   background-color: rgba(0, 0, 0, 0.5);
 
   .shared-container {
     max-width: 50rem;
     width: 100%;
-    background-color: pdz-color(surface);
+    background-color: pdz.color(surface);
     box-shadow: var(--pdz-level-4);
-    border-radius: var(--pdz-shape-corner-lg);
-    padding: var(--pdz-space-lg);
+    border-radius: pdz.shape(corner-lg);
+    padding: pdz.space(lg);
     position: relative;
 
     .share-header {
@@ -160,8 +160,8 @@ $transition-duration: 0.2s;
       flex-direction: column;
       row-gap: 1rem;
       .url-container {
-        border: 1px solid pdz-color(primary-border);
-        border-radius: var(--pdz-shape-corner-lg);
+        border: 1px solid pdz.color(primary-border);
+        border-radius: pdz.shape(corner-lg);
         padding: 0 0.5rem;
 
         width: 100%;
@@ -178,27 +178,27 @@ $transition-duration: 0.2s;
         }
       }
       .matchup-preview-container {
-        border: 1px solid pdz-color(primary-border);
-        border-radius: var(--pdz-shape-corner-lg);
+        border: 1px solid pdz.color(primary-border);
+        border-radius: pdz.shape(corner-lg);
         padding: 0 1rem;
         .details-container {
           display: flex;
           flex-wrap: wrap;
           justify-content: space-evenly;
-          border-bottom: 1px solid pdz-color(primary-border);
+          border-bottom: 1px solid pdz.color(primary-border);
         }
         .teams-container {
           display: flex;
           padding: 0.25rem 0;
           > :not(:last-child) {
-            border-right: 1px solid pdz-color(primary-border);
+            border-right: 1px solid pdz.color(primary-border);
           }
           .team-container {
             width: 50%;
             padding: 0 0.25rem;
 
             .name-container {
-              padding: var(--pdz-space-xs);
+              padding: pdz.space(xs);
               .name-text {
                 height: 1.2rem;
                 text-align: center;
@@ -226,11 +226,11 @@ $transition-duration: 0.2s;
                   position: absolute;
                   top: 0;
                   right: 0;
-                  background-color: pdz-color(primary);
-                  color: pdz-color(on-primary);
+                  background-color: pdz.color(primary);
+                  color: pdz.color(on-primary);
                   box-shadow: var(--pdz-level-2);
 
-                  border-radius: var(--pdz-shape-corner-lg);
+                  border-radius: pdz.shape(corner-lg);
                   mat-icon {
                     height: 1.5rem;
                     width: 1.5rem;
@@ -246,15 +246,15 @@ $transition-duration: 0.2s;
                   position: absolute;
                   bottom: 0;
                   font-weight: 600;
-                  background-color: pdz-color(surface);
+                  background-color: pdz.color(surface);
                   box-shadow: var(--pdz-level-2);
                   padding: 0 0.125rem;
-                  border-radius: var(--pdz-shape-corner-lg);
-                  color: pdz-color(primary);
+                  border-radius: pdz.shape(corner-lg);
+                  color: pdz.color(primary);
                   @media (max-width: 768px) {
                     font-size: 0.7rem;
                     line-height: 0.7rem;
-                    padding: var(--pdz-space-2xs);
+                    padding: pdz.space(2xs);
                   }
                 }
               }

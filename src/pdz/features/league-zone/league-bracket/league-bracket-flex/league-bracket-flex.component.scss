@@ -1,5 +1,4 @@
-@use "global.scss" as *;
-@use "mixins/typography.scss" as *;
+@use "pdz-theming" as pdz;
 
 :host {
   display: block;
@@ -8,14 +7,14 @@
 
   .bracket-container {
     width: 100%;
-    padding: var(--pdz-space-lg);
+    padding: pdz.space(lg);
 
     h2 {
-      @include pdz-font-size(1.25rem, 1.4);
+      @include pdz.font-size(1.25rem, 1.4);
       font-weight: 600;
       text-align: center;
-      color: pdz-color("on-surface");
-      margin: 0 0 var(--pdz-space-xl) 0;
+      color: pdz.color("on-surface");
+      margin: 0 0 pdz.space(xl) 0;
     }
   }
 
@@ -30,9 +29,9 @@
     position: relative;
     display: inline-flex;
     flex-direction: column;
-    gap: var(--pdz-space-2xl);
+    gap: pdz.space(2xl);
     min-width: max-content;
-    padding-bottom: var(--pdz-space-lg);
+    padding-bottom: pdz.space(lg);
   }
 
   // ─── SVG path overlay ────────────────────────────────────────────────────────
@@ -48,18 +47,18 @@
 
   .connector-path {
     fill: none;
-    stroke: pdz-color("outline-variant");
+    stroke: pdz.color("outline-variant");
     stroke-width: 2px;
     stroke-linecap: round;
     stroke-linejoin: round;
     transition: stroke 160ms ease;
 
     &--winner {
-      stroke: pdz-color("positive");
+      stroke: pdz.color("positive");
     }
 
     &--loser {
-      stroke: pdz-color("negative");
+      stroke: pdz.color("negative");
     }
   }
 
@@ -68,18 +67,18 @@
   .bracket-section {
     display: flex;
     flex-direction: column;
-    gap: var(--pdz-space-md);
+    gap: pdz.space(md);
     position: relative;
     z-index: 1;
   }
 
   .section-title {
-    @include pdz-font-size(0.95rem, 1.3);
+    @include pdz.font-size(0.95rem, 1.3);
     font-weight: 600;
-    color: pdz-color("on-surface-variant");
+    color: pdz.color("on-surface-variant");
     font-family: var(--pdz-font-fancy);
-    padding-bottom: var(--pdz-space-sm);
-    border-bottom: 1px solid pdz-color("outline-variant");
+    padding-bottom: pdz.space(sm);
+    border-bottom: 1px solid pdz.color("outline-variant");
     letter-spacing: 0.04em;
     text-transform: uppercase;
   }
@@ -102,15 +101,15 @@
   }
 
   .round-title {
-    @include pdz-font-size(0.9rem, 1.3);
+    @include pdz.font-size(0.9rem, 1.3);
     font-weight: 600;
     text-align: center;
-    color: pdz-color("on-surface-variant");
+    color: pdz.color("on-surface-variant");
     font-family: var(--pdz-font-fancy);
     white-space: nowrap;
     flex-shrink: 0;
     width: 240px;
-    padding-bottom: var(--pdz-space-sm);
+    padding-bottom: pdz.space(sm);
   }
 
   // The match cards are absolutely positioned within each round column
@@ -128,11 +127,11 @@
     width: 100%;
     display: flex;
     flex-direction: column;
-    background: pdz-color("surface-container-low");
-    border: 1px solid pdz-color("outline-variant");
-    border-radius: var(--pdz-shape-corner-md);
-    padding: var(--pdz-space-xs);
-    gap: var(--pdz-space-xs);
+    background: pdz.color("surface-container-low");
+    border: 1px solid pdz.color("outline-variant");
+    border-radius: pdz.shape(corner-md);
+    padding: pdz.space(xs);
+    gap: pdz.space(xs);
     box-shadow: var(--pdz-level-1);
     transition: box-shadow 160ms ease;
     z-index: 1;
@@ -145,26 +144,26 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: var(--pdz-space-xs);
-      padding: var(--pdz-space-xs) var(--pdz-space-xs);
+      gap: pdz.space(xs);
+      padding: pdz.space(xs) pdz.space(xs);
       flex-shrink: 0;
     }
 
     &__label-text {
-      @include pdz-font-size(0.85rem, 1.2);
-      color: pdz-color("on-surface-variant");
+      @include pdz.font-size(0.85rem, 1.2);
+      color: pdz.color("on-surface-variant");
       font-family: var(--pdz-font-fancy);
       font-weight: var(--pdz-font-weight-bold);
     }
 
     &__replay-btn {
-      padding: 2px var(--pdz-space-xs);
-      border-radius: var(--pdz-shape-corner-full);
+      padding: 2px pdz.space(xs);
+      border-radius: pdz.shape(corner-full);
       font-size: 0.7rem;
       line-height: 1.4;
-      border: 1px solid pdz-color("primary");
-      background-color: pdz-color("primary");
-      color: pdz-color("on-primary");
+      border: 1px solid pdz.color("primary");
+      background-color: pdz.color("primary");
+      color: pdz.color("on-primary");
       text-decoration: none;
       cursor: pointer;
       box-shadow: var(--pdz-level-1);
@@ -172,8 +171,8 @@
       flex-shrink: 0;
 
       &:hover {
-        background-color: pdz-color("primary-darker");
-        border-color: pdz-color("primary-darker");
+        background-color: pdz.color("primary-darker");
+        border-color: pdz.color("primary-darker");
       }
 
       &:active {
@@ -183,8 +182,8 @@
 
       &--disabled {
         background-color: transparent;
-        color: pdz-color("on-surface-variant");
-        border-color: pdz-color("outline");
+        color: pdz.color("on-surface-variant");
+        border-color: pdz.color("outline");
         box-shadow: none;
         cursor: not-allowed;
         opacity: 0.5;
@@ -192,13 +191,13 @@
     }
 
     &__matchup-btn {
-      padding: 2px var(--pdz-space-xs);
-      border-radius: var(--pdz-shape-corner-full);
+      padding: 2px pdz.space(xs);
+      border-radius: pdz.shape(corner-full);
       font-size: 0.7rem;
       line-height: 1.4;
-      border: 1px solid pdz-color("secondary");
-      background-color: pdz-color("secondary");
-      color: pdz-color("on-secondary");
+      border: 1px solid pdz.color("secondary");
+      background-color: pdz.color("secondary");
+      color: pdz.color("on-secondary");
       text-decoration: none;
       cursor: pointer;
       box-shadow: var(--pdz-level-1);
@@ -206,8 +205,8 @@
       flex-shrink: 0;
 
       &:hover {
-        background-color: pdz-color("secondary-darker");
-        border-color: pdz-color("secondary-darker");
+        background-color: pdz.color("secondary-darker");
+        border-color: pdz.color("secondary-darker");
       }
 
       &:active {
@@ -217,9 +216,9 @@
     }
 
     &__team {
-      background: pdz-color("surface");
+      background: pdz.color("surface");
       box-shadow: var(--pdz-level-inset-1);
-      border-radius: var(--pdz-shape-corner-sm);
+      border-radius: pdz.shape(corner-sm);
       overflow: hidden;
       flex-shrink: 0;
       transition:
@@ -227,15 +226,15 @@
         border-color 160ms ease;
 
       &[data-status="undecided"] {
-        background: pdz-color("surface-container");
+        background: pdz.color("surface-container");
       }
 
       &[data-status="winner"] {
-        background: pdz-color("positive-container");
+        background: pdz.color("positive-container");
       }
 
       &[data-status="loser"] {
-        background: pdz-color("negative-container");
+        background: pdz.color("negative-container");
       }
     }
   }
@@ -245,11 +244,11 @@
   .team-link {
     display: flex;
     align-items: center;
-    gap: var(--pdz-space-sm);
+    gap: pdz.space(sm);
     height: 3rem;
-    padding: var(--pdz-space-sm) var(--pdz-space-md);
+    padding: pdz.space(sm) pdz.space(md);
     text-decoration: none;
-    color: pdz-color("on-surface");
+    color: pdz.color("on-surface");
     transition: opacity 160ms ease;
 
     &:hover {
@@ -262,9 +261,9 @@
     align-items: center;
     justify-content: center;
     height: 3rem;
-    padding: var(--pdz-space-sm);
-    @include pdz-font-size(0.8rem, 1.2);
-    color: pdz-color("on-surface-variant");
+    padding: pdz.space(sm);
+    @include pdz.font-size(0.8rem, 1.2);
+    color: pdz.color("on-surface-variant");
     font-style: italic;
     font-family: var(--pdz-font-fancy);
     text-align: center;
@@ -295,9 +294,9 @@
   }
 
   .team-name {
-    @include pdz-font-size(0.92rem, 1.15);
+    @include pdz.font-size(0.92rem, 1.15);
     font-weight: var(--pdz-font-weight-bold);
-    color: pdz-color("on-surface");
+    color: pdz.color("on-surface");
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -306,20 +305,20 @@
   .team-meta {
     display: flex;
     align-items: center;
-    gap: var(--pdz-space-xs);
-    @include pdz-font-size(0.76rem, 1.2);
+    gap: pdz.space(xs);
+    @include pdz.font-size(0.76rem, 1.2);
     overflow: hidden;
   }
 
   .team-seed {
-    color: pdz-color("secondary");
+    color: pdz.color("secondary");
     font-family: var(--pdz-font-fancy);
     font-weight: var(--pdz-font-weight-bold);
     flex-shrink: 0;
   }
 
   .team-coach {
-    color: pdz-color("primary");
+    color: pdz.color("primary");
     font-weight: var(--pdz-font-weight-bold);
     overflow: hidden;
     text-overflow: ellipsis;

@@ -1,4 +1,4 @@
-@use "global.scss" as *;
+@use "pdz-theming" as pdz;
 
 :host {
   display: block;
@@ -6,13 +6,13 @@
 
 .settings {
   display: grid;
-  gap: var(--pdz-space-md);
-  padding: var(--pdz-space-md);
+  gap: pdz.space(md);
+  padding: pdz.space(md);
 
   &__row {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--pdz-space-sm);
+    gap: pdz.space(sm);
 
     pdz-format-select,
     pdz-ruleset-select {
@@ -22,7 +22,7 @@
 
   &__field {
     display: grid;
-    gap: var(--pdz-space-2xs);
+    gap: pdz.space(2xs);
     flex: 1;
     min-width: 8rem;
 
@@ -35,20 +35,20 @@
   &__segmented {
     display: inline-flex;
     align-items: center;
-    gap: var(--pdz-space-2xs);
-    padding: var(--pdz-space-2xs);
-    border: 1px solid var(--pdz-color-outline);
-    border-radius: var(--pdz-shape-corner-sm);
-    background: var(--pdz-color-surface);
+    gap: pdz.space(2xs);
+    padding: pdz.space(2xs);
+    border: 1px solid pdz.color(outline);
+    border-radius: pdz.shape(corner-sm);
+    background: pdz.color(surface);
   }
 
   &__seg-btn {
     flex: 1;
-    padding: var(--pdz-space-2xs) var(--pdz-space-sm);
+    padding: pdz.space(2xs) pdz.space(sm);
     border: 1px solid transparent;
-    border-radius: var(--pdz-shape-corner-xs);
+    border-radius: pdz.shape(corner-xs);
     background: transparent;
-    color: var(--pdz-color-on-surface-variant);
+    color: pdz.color(on-surface-variant);
     font: inherit;
     cursor: pointer;
     transition:
@@ -56,18 +56,18 @@
       color 0.1s;
 
     &.is-active {
-      border-color: var(--pdz-color-primary-border);
-      background: var(--pdz-color-primary-container);
-      color: var(--pdz-color-on-primary-container);
+      border-color: pdz.color(primary-border);
+      background: pdz.color(primary-container);
+      color: pdz.color(on-primary-container);
     }
 
     &:hover:not(.is-active) {
-      background: var(--pdz-color-surface-container);
+      background: pdz.color(surface-container);
     }
   }
 
   &__actions {
-    margin-top: var(--pdz-space-md);
+    margin-top: pdz.space(md);
     display: flex;
     justify-content: center;
   }
@@ -75,11 +75,11 @@
   &__save-button {
     display: inline-flex;
     align-items: center;
-    padding: var(--pdz-space-xs) var(--pdz-space-md);
-    border: 1px solid var(--pdz-color-primary-border);
-    border-radius: var(--pdz-shape-corner-sm);
-    background: var(--pdz-color-primary-container);
-    color: var(--pdz-color-on-primary-container);
+    padding: pdz.space(xs) pdz.space(md);
+    border: 1px solid pdz.color(primary-border);
+    border-radius: pdz.shape(corner-sm);
+    background: pdz.color(primary-container);
+    color: pdz.color(on-primary-container);
     text-decoration: none;
     font: inherit;
     font-weight: 700;
@@ -87,7 +87,7 @@
     transition: background 0.1s;
 
     &:hover {
-      background: var(--pdz-color-primary-container-hover);
+      background: pdz.color(primary-container-hover);
     }
   }
 }
@@ -95,22 +95,22 @@
 label {
   font-weight: 700;
   font-size: 0.875rem;
-  color: var(--pdz-color-on-surface-variant);
+  color: pdz.color(on-surface-variant);
 }
 
 input,
 select {
   width: 100%;
-  padding: var(--pdz-space-xs) var(--pdz-space-sm);
-  border: 1px solid var(--pdz-color-outline);
-  border-radius: var(--pdz-shape-corner-sm);
-  background: var(--pdz-color-surface);
-  color: var(--pdz-color-on-surface);
+  padding: pdz.space(xs) pdz.space(sm);
+  border: 1px solid pdz.color(outline);
+  border-radius: pdz.shape(corner-sm);
+  background: pdz.color(surface);
+  color: pdz.color(on-surface);
   font: inherit;
 
   &:focus {
-    outline: 2px solid var(--pdz-color-primary);
+    outline: 2px solid pdz.color(primary);
     outline-offset: 1px;
-    border-color: var(--pdz-color-primary);
+    border-color: pdz.color(primary);
   }
 }

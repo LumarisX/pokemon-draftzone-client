@@ -1,4 +1,4 @@
-@use "global.scss" as *;
+@use "pdz-theming" as pdz;
 @use "mixins" as *;
 
 :host {
@@ -14,7 +14,7 @@
   flex: 1 1 auto;
   min-height: 0;
   overflow-y: auto;
-  padding-bottom: var(--pdz-space-lg);
+  padding-bottom: pdz.space(lg);
 }
 
 .changelog-header {
@@ -24,26 +24,26 @@
 }
 
 .changelog-date {
-  color: pdz-color(primary);
+  color: pdz.color(primary);
   font-weight: var(--pdz-font-weight-bold);
   font-size: 1.2rem;
 }
 
 .changelog-title {
-  color: pdz-color(on-surface);
+  color: pdz.color(on-surface);
   font-size: 1rem;
 }
 
 .changelog-description {
   font-size: 0.875rem;
-  color: pdz-color(on-surface-variant);
+  color: pdz.color(on-surface-variant);
   margin: 0.125rem 0 0;
 }
 
 .changelog-item:not(:last-child) {
   padding-bottom: 0.25rem;
   margin-bottom: 0.25rem;
-  border-bottom: 1px solid var(--pdz-color-primary-border-variant);
+  border-bottom: 1px solid pdz.color(primary-border);
 }
 
 .changelog-body {
@@ -73,18 +73,18 @@
   }
 
   &--added .changelog-category__label {
-    color: pdz-color(success);
+    color: pdz.color(success);
   }
 
   &--changed .changelog-category__label {
-    color: pdz-color(info);
+    color: pdz.color(info);
   }
 
   &--fixed .changelog-category__label {
-    color: pdz-color(warning);
+    color: pdz.color(warning);
   }
 
   &--removed .changelog-category__label {
-    color: pdz-color(error);
+    color: pdz.color(error);
   }
 }

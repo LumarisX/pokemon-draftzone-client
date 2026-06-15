@@ -1,4 +1,4 @@
-@use "global.scss" as *;
+@use "pdz-theming" as pdz;
 
 :host {
   display: block;
@@ -29,8 +29,7 @@ td {
 }
 
 .slider-cell {
-  border: 1.5px solid
-    var(--pdz-cmp-summary-border, var(--pdz-color-menu-border));
+  border: 1.5px solid var(--pdz-cmp-summary-border, pdz.color(menu-border));
   .slider-container {
     display: flex;
     flex-direction: column;
@@ -67,8 +66,7 @@ td {
 }
 
 th.cdk-header-cell {
-  border-bottom: 2px solid
-    var(--pdz-cmp-summary-border, var(--pdz-color-menu-border));
+  border-bottom: 2px solid var(--pdz-cmp-summary-border, pdz.color(menu-border));
 }
 
 table {
@@ -77,7 +75,7 @@ table {
   border-spacing: 0 4px;
 }
 
-$corner-radius: var(--pdz-shape-corner-md);
+$corner-radius: pdz.shape(corner-md);
 
 .left-rounded {
   border-top-left-radius: $corner-radius;
@@ -132,21 +130,17 @@ $corner-radius: var(--pdz-shape-corner-md);
 }
 
 .border-top {
-  border-top: 1px solid
-    var(--pdz-cmp-summary-border, var(--pdz-color-menu-border));
+  border-top: 1px solid var(--pdz-cmp-summary-border, pdz.color(menu-border));
 }
 
 .border-bottom {
-  border-bottom: 1px solid
-    var(--pdz-cmp-summary-border, var(--pdz-color-menu-border));
+  border-bottom: 1px solid var(--pdz-cmp-summary-border, pdz.color(menu-border));
 }
 
 .border-right {
-  border-right: 1px solid
-    var(--pdz-cmp-summary-border, var(--pdz-color-menu-border));
+  border-right: 1px solid var(--pdz-cmp-summary-border, pdz.color(menu-border));
 }
 
 .border-left {
-  border-left: 1px solid
-    var(--pdz-cmp-summary-border, var(--pdz-color-menu-border));
+  border-left: 1px solid var(--pdz-cmp-summary-border, pdz.color(menu-border));
 }

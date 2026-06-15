@@ -1,0 +1,9 @@
+@use "sass:map";
+@use "tokens/spacing" as spacing-tokens;
+
+@function space($space-name) {
+  @if not map.has-key(spacing-tokens.$spacing, $space-name) {
+    @error "'#{$space-name}' is not a valid PDZ spacing token. Available tokens: #{map.keys(spacing-tokens.$spacing)}";
+  }
+  @return var(--pdz-space-#{$space-name});
+}

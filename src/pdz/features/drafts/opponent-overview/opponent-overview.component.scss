@@ -1,5 +1,5 @@
 @use "mixins/buttons" as *;
-@use "mixins/typography" as *;
+@use "pdz-theming" as pdz;
 
 .draft-header {
   display: flex;
@@ -8,10 +8,10 @@
   padding: 0 0.5rem;
   gap: 0.5rem;
   width: 100%;
-  border-top: 1px solid var(--pdz-color-primary-border);
+  border-top: 1px solid pdz.color(primary-border);
 
   margin-bottom: 0.5rem;
-  background-color: var(--pdz-color-surface);
+  background-color: pdz.color(surface);
   box-shadow: var(--pdz-level-2);
 
   .draft-flex {
@@ -32,20 +32,20 @@
 
 .team-info-container {
   padding-left: 0.5rem;
-  border-left: 2px solid var(--pdz-color-primary-border);
+  border-left: 2px solid pdz.color(primary-border);
   flex-shrink: 0;
 }
 
 h2 {
-  @include font-size(1.5rem);
+  @include pdz.font-size(1.5rem);
 }
 
 h3 {
-  @include font-size(1.25rem);
+  @include pdz.font-size(1.25rem);
 }
 
 h4 {
-  @include font-size(1rem);
+  @include pdz.font-size(1rem);
 }
 
 h2,
@@ -60,7 +60,6 @@ h4 {
 
 .stat {
   font-weight: bold;
-  color: var(--pdz-color-symbol-sub);
 }
 
 .opponent-main {
@@ -76,7 +75,7 @@ $draft-sprite-size: 4rem;
   flex-grow: 1;
   width: fit-content;
   justify-content: center;
-  padding: var(--pdz-space-2xs);
+  padding: pdz.space(2xs);
   overflow-x: auto;
   scrollbar-width: thin;
   scrollbar-color: rgba(0, 0, 0, 0.5) transparent;
@@ -123,7 +122,7 @@ $draft-sprite-size: 4rem;
 .draft-buttons {
   display: flex;
   gap: 0.5rem;
-  padding: var(--pdz-space-2xs) 0;
+  padding: pdz.space(2xs) 0;
   a,
   button {
     @include icon-button-primary();

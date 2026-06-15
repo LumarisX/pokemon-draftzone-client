@@ -1,37 +1,16 @@
-@use "sass:map";
-@use "typography" as *;
-@use "breakpoints" as *;
+// Legacy utility mixins (button-base, shadow-hover-effect,
+// background-hover-effect) are retained inline below because they reference
+// only CSS custom properties and need no imports.
 
-@mixin apply-typography($style-name) {
-  $style: map.get($typography, $style-name);
+@forward "tools/typography";
+@forward "tools/breakpoints";
+@forward "tools/theme" show apply-scheme;
+@use "pdz-theming" as pdz;
 
-  @if $style {
-    font-family: map.get($style, font-family);
-    font-size: map.get($style, font-size);
-    font-weight: map.get($style, font-weight);
-    line-height: map.get($style, line-height);
-
-    @if map.has-key($style, text-transform) {
-      text-transform: map.get($style, text-transform);
-    }
-
-    @if map.has-key($style, opacity) {
-      opacity: map.get($style, opacity);
-    }
-  } @else {
-    @warn "Typography style `#{$style-name}` not found.";
-  }
-}
-
-@mixin respond-above($breakpoint) {
-  @if map.has-key($breakpoints, $breakpoint) {
-    @media (min-width: #{map.get($breakpoints, $breakpoint)}) {
-      @content;
-    }
-  } @else {
-    @warn "Breakpoint `#{$breakpoint}` not found.";
-  }
-}
+// -----------------------------------------------------------------------------
+// Legacy utility mixins
+// These emit only CSS custom property references so require no Sass imports.
+// -----------------------------------------------------------------------------
 
 @mixin button-base($width: auto, $margin: 0.5rem, $padding: 0.25rem) {
   display: flex;
@@ -43,9 +22,9 @@
   text-align: center;
   box-shadow: var(--pdz-level-2);
   cursor: pointer;
-  background-color: var(--pdz-color-primary-container);
-  color: var(--pdz-color-on-primary-container);
-  border-radius: var(--pdz-shape-corner-md);
+  background-color: pdz.color(primary-container);
+  color: pdz.color(on-primary-container);
+  border-radius: pdz.shape(corner-md);
 
   &:hover {
     box-shadow: var(--pdz-level-1);
@@ -76,12 +55,4 @@
   &:hover {
     background-color: $hover-background;
   }
-}
-
-@mixin apply-scheme($scheme) {
-  --pdz-color-scheme: var(--pdz-color-#{$scheme});
-  --pdz-color-on-scheme: var(--pdz-color-on-#{$scheme});
-  --pdz-color-scheme-border: var(--pdz-color-#{$scheme}-border);
-  --pdz-color-scheme-container-low: var(--pdz-color-#{$scheme}-container-low);
-  --pdz-color-scheme-container: var(--pdz-color-#{$scheme}-container);
 }

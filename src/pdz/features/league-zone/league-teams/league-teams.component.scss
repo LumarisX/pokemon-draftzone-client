@@ -1,4 +1,4 @@
-@use "global.scss" as *;
+@use "pdz-theming" as pdz;
 @use "mixins" as *;
 @use "../league.mixins" as *;
 
@@ -28,19 +28,19 @@
 
   &__body {
     display: grid;
-    padding: var(--pdz-space-lg);
+    padding: pdz.space(lg);
     grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
     gap: 1rem;
   }
 
   &__empty {
     @include apply-typography(body-lg);
-    color: var(--pdz-color-on-surface-variant);
+    color: pdz.color(on-surface-variant);
   }
 }
 
 pdz-league-team-card {
   box-shadow: var(--pdz-level-2);
-  border-radius: var(--pdz-shape-corner-lg);
-  padding: var(--pdz-space-sm);
+  border-radius: pdz.shape(corner-lg);
+  padding: pdz.space(sm);
 }

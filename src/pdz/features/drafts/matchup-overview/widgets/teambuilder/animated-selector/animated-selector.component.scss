@@ -1,5 +1,4 @@
-@use "global.scss" as *;
-@use "mixins/typography" as *;
+@use "pdz-theming" as pdz;
 @use "mixins" as *;
 
 :host {
@@ -55,9 +54,9 @@
   position: absolute;
   left: 0.125rem;
   right: 0.125rem;
-  background: pdz-color(menu-container-low);
-  border: 1px solid pdz-color(menu-container);
-  border-radius: var(--pdz-shape-corner-sm);
+  background: pdz.color(menu-container-low);
+  border: 1px solid pdz.color(menu-container);
+  border-radius: pdz.shape(corner-sm);
   transition:
     transform 400ms cubic-bezier(0.4, 0, 0.2, 1),
     height 400ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -85,7 +84,7 @@
   justify-content: center;
   background: transparent;
   border: 1px solid transparent;
-  border-radius: var(--pdz-shape-corner-sm);
+  border-radius: pdz.shape(corner-sm);
   cursor: pointer;
   transition:
     background-color 200ms ease,
@@ -95,7 +94,7 @@
   user-select: none;
 
   &:hover:not(.selected) {
-    background: pdz-color(menu-container);
+    background: pdz.color(menu-container);
   }
 
   &:active:not(.selected) {
@@ -103,14 +102,14 @@
   }
 
   &:focus-visible {
-    outline: 2px solid pdz-color(menu);
+    outline: 2px solid pdz.color(menu);
     outline-offset: 2px;
   }
 
   &.selected {
     .selector-option__label {
       font-weight: 700;
-      color: pdz-color(on-menu-container);
+      color: pdz.color(on-menu-container);
     }
   }
 }
@@ -125,7 +124,7 @@
 .selector-option__label {
   font-size: 1rem;
   font-weight: 500;
-  color: pdz-color(on-surface);
+  color: pdz.color(on-surface);
   transition:
     color 200ms ease,
     font-weight 200ms ease;

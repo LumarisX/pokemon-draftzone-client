@@ -1,0 +1,9 @@
+@use "sass:map";
+@use "tokens/shape" as shape-tokens;
+
+@function shape($shape-name) {
+  @if not map.has-key(shape-tokens.$shape, $shape-name) {
+    @error "'#{$shape-name}' is not a valid PDZ shape token. Available tokens: #{map.keys(shape-tokens.$shape)}";
+  }
+  @return var(--pdz-shape-#{$shape-name});
+}

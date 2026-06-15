@@ -1,3 +1,5 @@
+@use "pdz-theming" as pdz;
+
 :host {
   display: flex;
   flex-direction: column;
@@ -42,18 +44,18 @@ h3 {
 
 .qd-option {
   box-shadow: var(--pdz-level-2);
-  border-radius: var(--pdz-shape-corner-lg);
-  border: 2px solid var(--pdz-color-primary-border-variant);
+  border-radius: pdz.shape(corner-lg);
+  border: 2px solid pdz.color(primary-border);
   margin: 4px;
   &.selected {
-    border: 6px solid var(--pdz-color-primary-border);
-    background-color: var(--pdz-color-surface);
-    color: var(--pdz-color-on-primary-container);
+    border: 6px solid pdz.color(primary-border);
+    background-color: pdz.color(surface);
+    color: pdz.color(on-primary-container);
     margin: 0px;
   }
 
   &:not(.selected):hover {
-    border: 2px solid var(--pdz-color-primary-border);
+    border: 2px solid pdz.color(primary-border);
   }
 }
 
@@ -74,7 +76,7 @@ h3 {
   font-size: 0.8rem;
   font-weight: 800;
   font-family: var(--pdz-font-regular);
-  color: var(--pdz-color-primary);
+  color: pdz.color(primary);
 }
 
 .qd-spacer {

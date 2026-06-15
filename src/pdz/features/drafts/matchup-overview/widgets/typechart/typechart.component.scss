@@ -1,10 +1,11 @@
-@use "global.scss" as *;
+@use "pdz-theming" as pdz;
+
 .widget-container {
-  --pdz-cmp-typechart-stat-hover: var(--pdz-color-primary-container);
-  --pdz-cmp-typechart-border-hover: var(--pdz-color-primary-border);
+  --pdz-cmp-typechart-stat-hover: #{pdz.color(primary-container)};
+  --pdz-cmp-typechart-border-hover: #{pdz.color(primary-border)};
 
   &.alternate {
-    --pdz-cmp-typechart-stat-hover: var(--pdz-color-secondary-container);
-    --pdz-cmp-typechart-border-hover: var(--pdz-color-secondary-border);
+    --pdz-cmp-typechart-stat-hover: #{pdz.color(secondary-container)};
+    --pdz-cmp-typechart-border-hover: #{pdz.color(secondary-border)};
   }
 }

@@ -1,4 +1,4 @@
-@use "global.scss" as *;
+@use "pdz-theming" as pdz;
 @use "mixins" as *;
 @use "../league.mixins" as *;
 
@@ -29,17 +29,17 @@
   &__body {
     display: flex;
     flex-wrap: wrap;
-    padding: var(--pdz-space-lg);
+    padding: pdz.space(lg);
     gap: 1rem;
   }
 
   &__empty {
     @include apply-typography(body-lg);
-    color: var(--pdz-color-on-surface-variant);
+    color: pdz.color(on-surface-variant);
     margin: 0;
 
     &--error {
-      color: var(--pdz-color-error);
+      color: pdz.color(error);
     }
   }
 

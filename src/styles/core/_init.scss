@@ -1,0 +1,74 @@
+@use "sass:map";
+@use "sass:color";
+@use "tokens/color" as color-tokens;
+@use "tokens/shape" as shape-tokens;
+@use "tokens/spacing" as spacing-tokens;
+@use "tokens/shadows" as shadow-tokens;
+@use "tokens/typography" as type-tokens;
+@use "tokens/breakpoints" as bp-tokens;
+@use "themes" as pdz-themes;
+@use "tools/typography" as *;
+@use "tools/theme" as *;
+
+@mixin init-tokens() {
+  :root {
+    --pdz-screen-size-medium: #{bp-tokens.$screen-size-medium};
+    --pdz-screen-size-large: #{bp-tokens.$screen-size-large};
+
+    // Core color palette
+    @each $token-name, $token-value in color-tokens.$core-tokens {
+      --pdz-color-#{$token-name}: #{$token-value};
+      --pdz-color-#{$token-name}-rgb:
+        #{color.channel($token-value, "red", $space: rgb)},
+        #{color.channel($token-value, "green", $space: rgb)},
+        #{color.channel($token-value, "blue", $space: rgb)};
+    }
+
+    // Elevation shadows
+    @each $level, $shadows in shadow-tokens.$shadows {
+      --pdz-level-#{$level}: #{$shadows};
+    }
+
+    // Shape (border-radius)
+    @each $name, $value in shape-tokens.$shape {
+      --pdz-shape-#{$name}: #{$value};
+    }
+
+    // Spacing
+    @each $name, $value in spacing-tokens.$spacing {
+      --pdz-space-#{$name}: #{$value};
+    }
+
+    // Typography
+    @each $name, $value in type-tokens.$fonts {
+      --pdz-font-#{$name}: #{$value};
+    }
+    @each $name, $value in type-tokens.$font-size {
+      --pdz-font-size-#{$name}: #{$value};
+    }
+    @each $name, $value in type-tokens.$font-weight {
+      --pdz-font-weight-#{$name}: #{$value};
+    }
+    @each $name, $value in type-tokens.$line-height {
+      --pdz-line-height-#{$name}: #{$value};
+    }
+
+    // Base typography style on :root
+    @include apply-typography(body-md);
+
+    // Default theme (classic light)
+    @include apply-theme(map.get(map.get(pdz-themes.$themes, classic), light));
+
+    // All theme / mode variants
+    @each $theme-name, $variations in pdz-themes.$themes {
+      @each $variation-name, $palette in $variations {
+        &[pdz-theme="#{$theme-name}"][pdz-theme-mode="#{$variation-name}"] {
+          @include apply-theme($palette);
+        }
+      }
+    }
+
+    // Default color scheme alias
+    @include apply-scheme("menu");
+  }
+}

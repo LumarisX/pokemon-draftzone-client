@@ -1,14 +1,14 @@
-@use "global.scss" as *;
+@use "pdz-theming" as pdz;
 @use "mixins/dropdown" as dropdown;
-@use "typography" as *;
-@use "breakpoints" as *;
+@use "tokens/typography" as *;
+@use "tokens/breakpoints" as *;
 @use "mixins" as *;
 
 $stat-field-size: 1.25rem;
 $stat-padding: 0.5rem;
 
-$input-background: pdz-color(surface);
-$input-border: pdz-color(menu-border);
+$input-background: pdz.color(surface);
+$input-border: pdz.color(menu-border);
 
 :host {
   display: flex;
@@ -20,7 +20,7 @@ $input-border: pdz-color(menu-border);
 pdz-animated-selector {
   background: $input-background;
   border: 1px solid $input-border;
-  border-radius: var(--pdz-shape-corner-md);
+  border-radius: pdz.shape(corner-md);
   padding: 0.25rem;
 }
 
@@ -53,13 +53,13 @@ input {
 
   .view-tab {
     padding: 0.375rem 0.75rem;
-    background: pdz-color(menu-container-low);
-    border-radius: var(--pdz-shape-corner-sm);
+    background: pdz.color(menu-container-low);
+    border-radius: pdz.shape(corner-sm);
     box-shadow: var(--pdz-level-0);
     cursor: pointer;
     user-select: none;
     font-weight: 600;
-    color: pdz-color(on-surface-variant);
+    color: pdz.color(on-surface-variant);
     transition:
       background-color 120ms ease,
       transform 120ms ease,
@@ -71,13 +71,13 @@ input {
     }
 
     &:focus {
-      outline: 2px solid pdz-color(menu);
+      outline: 2px solid pdz.color(menu);
       outline-offset: 2px;
     }
 
     &.active {
-      background: pdz-color(surface);
-      color: pdz-color(on-surface);
+      background: pdz.color(surface);
+      color: pdz.color(on-surface);
       box-shadow: var(--pdz-level-2);
       transform: translateY(-1px);
     }
@@ -147,7 +147,7 @@ input {
 .view {
   width: 100%;
   overflow-x: hidden;
-  padding-top: var(--pdz-space-md);
+  padding-top: pdz.space(md);
 }
 
 .view__section {
@@ -163,7 +163,7 @@ input {
       overflow-y: auto;
       scrollbar-gutter: stable;
       padding: 0.5rem;
-      border-radius: var(--pdz-shape-corner-md);
+      border-radius: pdz.shape(corner-md);
     }
 
     &__header {
@@ -184,9 +184,9 @@ input {
   .input-nickname {
     width: 100%;
     padding: 0.5rem 1rem;
-    border-radius: var(--pdz-shape-corner-sm);
-    border: 1px solid pdz-color(menu-border);
-    background: pdz-color(menu-container-low);
+    border-radius: pdz.shape(corner-sm);
+    border: 1px solid pdz.color(menu-border);
+    background: pdz.color(menu-container-low);
   }
 }
 
@@ -197,9 +197,9 @@ input {
   gap: 0;
   width: 100%;
   max-width: 16rem;
-  border: 1px solid pdz-color(menu-border);
-  border-radius: var(--pdz-shape-corner-sm);
-  background: pdz-color(surface);
+  border: 1px solid pdz.color(menu-border);
+  border-radius: pdz.shape(corner-sm);
+  background: pdz.color(surface);
   padding: 0.25rem 0.5rem;
   min-height: 2.5rem;
   overflow: hidden;
@@ -210,12 +210,12 @@ input {
   @include dropdown.autocomplete-dropdown(16rem, 1.25rem, true);
 
   &:hover {
-    border-color: pdz-color(menu);
+    border-color: pdz.color(menu);
   }
 
   &:focus-within {
-    border-color: pdz-color(menu);
-    box-shadow: 0 0 0 3px rgba(var(--pdz-color-menu-rgb), 0.1);
+    border-color: pdz.color(menu);
+    box-shadow: 0 0 0 3px pdz.color-rgba(menu, 0.1);
   }
 
   &__label {
@@ -231,13 +231,13 @@ input {
   &__input {
     border: none;
     background: transparent;
-    color: pdz-color(on-surface);
+    color: pdz.color(on-surface);
     @include apply-typography(body-sm);
     padding: 0 0.25rem;
     transition: color 120ms ease;
 
     &::placeholder {
-      color: pdz-color(on-surface-variant);
+      color: pdz.color(on-surface-variant);
     }
 
     &:focus {
@@ -255,9 +255,9 @@ input {
     display: flex;
     flex-direction: row;
     gap: 0.5rem;
-    border: 1px solid pdz-color(menu-border);
-    border-radius: var(--pdz-shape-corner-sm);
-    background: pdz-color(surface);
+    border: 1px solid pdz.color(menu-border);
+    border-radius: pdz.shape(corner-sm);
+    background: pdz.color(surface);
     padding: 0.25rem 0.5rem;
     min-height: 2.5rem;
     width: 7.75rem;
@@ -325,9 +325,9 @@ input {
       align-items: center;
       gap: 0.75rem;
       padding: 0.125rem 0.5rem;
-      background: pdz-color(surface);
-      border-radius: var(--pdz-shape-corner-sm);
-      border: 1px solid pdz-color(menu-border);
+      background: pdz.color(surface);
+      border-radius: pdz.shape(corner-sm);
+      border: 1px solid pdz.color(menu-border);
       transition:
         transform 120ms ease,
         box-shadow 120ms ease,
@@ -338,13 +338,13 @@ input {
       }
 
       &.aTeam {
-        background: pdz-color(primary-container);
-        border: 1px solid pdz-color(primary-border);
+        background: pdz.color(primary-container);
+        border: 1px solid pdz.color(primary-border);
       }
 
       &.bTeam {
-        background: pdz-color(secondary-container);
-        border: 1px solid pdz-color(secondary-border);
+        background: pdz.color(secondary-container);
+        border: 1px solid pdz.color(secondary-border);
       }
 
       &.draggable {
@@ -371,7 +371,7 @@ input {
       .speed {
         font-weight: 700;
         font-size: 1rem;
-        color: pdz-color(on-surface);
+        color: pdz.color(on-surface);
         text-align: center;
         font-variant-numeric: tabular-nums;
       }
@@ -385,26 +385,26 @@ input {
         .modifier {
           display: inline-block;
           padding: 0.125rem 0.375rem;
-          background: pdz-color(menu-container);
-          border-radius: var(--pdz-shape-corner-xs);
+          background: pdz.color(menu-container);
+          border-radius: pdz.shape(corner-xs);
           font-size: 0.75rem;
           font-weight: 500;
-          color: pdz-color(on-surface-variant);
+          color: pdz.color(on-surface-variant);
           white-space: nowrap;
-          border: 1px solid pdz-color(menu-border);
+          border: 1px solid pdz.color(menu-border);
         }
       }
     }
 
     .speedtier-placeholder {
-      border: 2px dashed pdz-color(primary) !important;
+      border: 2px dashed pdz.color(primary) !important;
       opacity: 0.6;
       animation: pulse 1s ease-in-out infinite;
       pointer-events: none;
       margin-bottom: 2px;
 
       .placeholder-content {
-        color: pdz-color(primary);
+        color: pdz.color(primary);
         font-weight: 600;
         font-size: 0.875rem;
       }
@@ -429,7 +429,7 @@ input {
     flex-direction: column;
     padding: $stat-padding $stat-padding;
     gap: $stat-padding;
-    border: 1px solid pdz-color(menu-border);
+    border: 1px solid pdz.color(menu-border);
     border-radius: $stat-padding;
 
     .stat-label {
@@ -445,7 +445,7 @@ input {
       }
 
       .base-value {
-        border-radius: var(--pdz-shape-corner-xs);
+        border-radius: pdz.shape(corner-xs);
 
         width: 2.5rem;
         height: $stat-field-size;
@@ -458,7 +458,7 @@ input {
 
     .slider-stat {
       flex: 1;
-      accent-color: pdz-color(neutral);
+      accent-color: pdz.color(neutral);
       height: 6px;
       cursor: pointer;
     }
@@ -486,15 +486,15 @@ input {
     .btn-reset {
       height: $stat-field-size;
       width: 3.5rem;
-      border-radius: var(--pdz-shape-corner-xs);
-      border: 1px solid pdz-color(menu-border);
-      background: pdz-color(menu-container-low);
+      border-radius: pdz.shape(corner-xs);
+      border: 1px solid pdz.color(menu-border);
+      background: pdz.color(menu-container-low);
       cursor: pointer;
       @include apply-typography(body-xs);
       text-transform: uppercase;
 
       &:hover {
-        background: pdz-color(menu-container);
+        background: pdz.color(menu-container);
       }
     }
 
@@ -504,7 +504,7 @@ input {
       margin-left: auto;
 
       .hp-star {
-        color: pdz-color(menu);
+        color: pdz.color(menu);
         font-size: 1.25rem;
         width: 1.25rem;
         height: 1.25rem;
@@ -522,22 +522,22 @@ input {
       .btn-nature {
         width: $stat-field-size;
         height: $stat-field-size;
-        border-radius: var(--pdz-shape-corner-xs);
+        border-radius: pdz.shape(corner-xs);
         cursor: pointer;
         font-weight: 600;
         font-size: 1rem;
-        background: pdz-color(neutral);
-        color: pdz-color(on-surface-variant);
+        background: pdz.color(neutral);
+        color: pdz.color(on-surface-variant);
 
         &.active {
           box-shadow: var(--pdz-level-inset-1);
 
           &.btn-positive {
-            background: pdz-color(scale-positive);
+            background: pdz.color(scale-positive);
           }
 
           &.btn-negative {
-            background: pdz-color(scale-negative);
+            background: pdz.color(scale-negative);
           }
         }
 
@@ -568,9 +568,9 @@ input {
   padding: 0.25rem 0.5rem;
   min-width: 10rem;
   cursor: pointer;
-  background-color: pdz-color(menu-container-low);
-  border-radius: var(--pdz-shape-corner-sm);
-  border: 1px solid pdz-color(menu-border);
+  background-color: pdz.color(menu-container-low);
+  border-radius: pdz.shape(corner-sm);
+  border: 1px solid pdz.color(menu-border);
   transition:
     transform 120ms ease,
     box-shadow 120ms ease,
@@ -596,7 +596,7 @@ input {
 
   .sprite-wrapper {
     padding: 0.125rem;
-    border-radius: var(--pdz-shape-corner-md);
+    border-radius: pdz.shape(corner-md);
   }
 }
 
@@ -610,7 +610,7 @@ input {
   flex-direction: column;
 
   &__search {
-    background: pdz-color(surface);
+    background: pdz.color(surface);
     z-index: 3;
     margin-bottom: 0;
     padding: 0.5rem 0.75rem;
@@ -618,8 +618,8 @@ input {
     width: 100%;
 
     border: none;
-    border-bottom: 1px solid pdz-color(menu-border);
-    border-radius: var(--pdz-shape-corner-sm) var(--pdz-shape-corner-sm) 0 0;
+    border-bottom: 1px solid pdz.color(menu-border);
+    border-radius: pdz.shape(corner-sm) pdz.shape(corner-sm) 0 0;
     font-size: inherit;
     font-family: inherit;
     outline: none;
@@ -633,7 +633,7 @@ input {
       outline: none;
 
       &::placeholder {
-        color: pdz-color(on-menu-container);
+        color: pdz.color(on-menu-container);
       }
     }
 
@@ -645,14 +645,14 @@ input {
   &__empty-state {
     padding: 2rem;
     text-align: center;
-    color: pdz-color(on-surface-variant);
+    color: pdz.color(on-surface-variant);
   }
 
   &__table-wrapper {
     width: 100%;
     overflow: auto;
     max-height: 30rem;
-    border-bottom: 1px solid pdz-color(menu-border);
+    border-bottom: 1px solid pdz.color(menu-border);
   }
 
   &__table {
@@ -667,8 +667,8 @@ input {
     align-items: center;
     gap: 0.5rem;
     padding: 0 0.75rem;
-    border-bottom: 1px solid pdz-color(menu-border);
-    background: pdz-color(surface);
+    border-bottom: 1px solid pdz.color(menu-border);
+    background: pdz.color(surface);
     width: 100%;
     font-weight: 600;
     font-size: 0.875rem;
@@ -700,15 +700,15 @@ input {
     transition: background-color 0.1s ease-in-out;
 
     &:hover {
-      background: rgba(pdz-color(menu-hover-rgb), 0.15);
+      background: pdz-color-rgba(menu-hover, 0.15);
     }
 
     &:active {
-      background: rgba(pdz-color(menu-hover-rgb), 0.3);
+      background: pdz-color-rgba(menu-hover, 0.3);
     }
 
     &--selected {
-      background: rgba(pdz-color(menu-rgb), 0.1);
+      background: pdz-color-rgba(menu, 0.1);
     }
 
     &--stab {
@@ -727,7 +727,7 @@ input {
 
   &__type-badge {
     padding: 0.125rem 0.5rem;
-    border-radius: var(--pdz-shape-corner-xs);
+    border-radius: pdz.shape(corner-xs);
     font-size: 0.75rem;
     font-weight: 600;
     text-align: center;
@@ -749,9 +749,9 @@ input {
     }
 
     &--sorted {
-      background-color: pdz-color(menu-container-low);
+      background-color: pdz.color(menu-container-low);
       font-weight: 600;
-      border-radius: var(--pdz-shape-corner-xs);
+      border-radius: pdz.shape(corner-xs);
     }
 
     &--type {
@@ -805,9 +805,9 @@ input {
 .input-stat {
   width: 2.5rem;
   height: $stat-field-size;
-  border-radius: var(--pdz-shape-corner-xs);
-  border: 1px solid pdz-color(menu-border);
-  background: pdz-color(menu-container-low);
+  border-radius: pdz.shape(corner-xs);
+  border: 1px solid pdz.color(menu-border);
+  background: pdz.color(menu-container-low);
   text-align: center;
   @include apply-typography(body-sm);
 }

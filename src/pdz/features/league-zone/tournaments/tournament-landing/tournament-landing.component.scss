@@ -1,24 +1,24 @@
-@use "global.scss" as *;
+@use "pdz-theming" as pdz;
 @use "mixins" as *;
 
 :host {
   display: block;
   width: 100%;
   min-height: 100%;
-  background: var(--pdz-color-background);
+  background: pdz.color(background);
 }
 
 .landing-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: var(--pdz-space-xl) var(--pdz-space-md);
+  padding: pdz.space(xl) pdz.space(md);
   display: flex;
   flex-direction: column;
-  gap: var(--pdz-space-2xl);
+  gap: pdz.space(2xl);
 
   @include respond-above(medium) {
-    padding: var(--pdz-space-2xl) var(--pdz-space-lg);
-    gap: var(--pdz-space-3xl);
+    padding: pdz.space(2xl) pdz.space(lg);
+    gap: pdz.space(3xl);
   }
 }
 
@@ -27,14 +27,14 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--pdz-space-xl);
+  gap: pdz.space(xl);
   text-align: center;
 
   @include respond-above(medium) {
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    gap: var(--pdz-space-3xl);
+    gap: pdz.space(3xl);
     text-align: left;
   }
 }
@@ -63,7 +63,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: var(--pdz-space-md);
+  gap: pdz.space(md);
 
   @include respond-above(medium) {
     align-items: flex-start;
@@ -72,7 +72,7 @@
 
 .league-title {
   @include apply-typography(title-lg);
-  color: var(--pdz-color-primary);
+  color: pdz.color(primary);
   margin: 0;
   font-weight: 700;
   letter-spacing: -0.02em;
@@ -83,14 +83,14 @@
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  gap: var(--pdz-space-md) var(--pdz-space-2xl);
+  gap: pdz.space(md) pdz.space(2xl);
 }
 
 .detail-item {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: var(--pdz-space-xs);
+  gap: pdz.space(xs);
 
   &--description {
     max-width: 260px;
@@ -99,7 +99,7 @@
 
 .detail-label {
   @include apply-typography(label-sm);
-  color: var(--pdz-color-on-surface-variant);
+  color: pdz.color(on-surface-variant);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   font-weight: 600;
@@ -107,7 +107,7 @@
 
 .detail-value {
   @include apply-typography(body-lg);
-  color: var(--pdz-color-on-surface);
+  color: pdz.color(on-surface);
   font-weight: 500;
 }
 
@@ -115,7 +115,7 @@
 .actions-section {
   display: grid;
   grid-template-columns: 1fr;
-  gap: var(--pdz-space-md);
+  gap: pdz.space(md);
   max-width: 600px;
   margin: 0 auto;
 
@@ -131,12 +131,12 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: var(--pdz-space-lg) var(--pdz-space-md);
-  border-radius: var(--pdz-shape-lg);
+  padding: pdz.space(lg) pdz.space(md);
+  border-radius: pdz.shape(corner-lg);
   box-shadow: var(--pdz-level-2);
   transition: all 0.2s ease;
   text-decoration: none;
-  gap: var(--pdz-space-xs);
+  gap: pdz.space(xs);
   min-height: 100px;
   position: relative;
   overflow: hidden;
@@ -158,10 +158,10 @@
   &--primary {
     background: linear-gradient(
       135deg,
-      pdz-color(primary) 0%,
-      pdz-color(primary-darker) 100%
+      pdz.color(primary) 0%,
+      pdz.color(primary-darker) 100%
     );
-    color: pdz-color(on-primary);
+    color: pdz.color(on-primary);
 
     &:hover:not(.is-disabled) {
       box-shadow: var(--pdz-level-3);
@@ -190,17 +190,17 @@
   }
 
   &--division {
-    background: pdz-color(surface-container);
+    background: pdz.color(surface-container);
     min-height: 80px;
-    color: var(--pdz-color-on-surface);
+    color: pdz.color(on-surface);
 
     &:hover {
-      background: pdz-color(primary);
+      background: pdz.color(primary);
       box-shadow: var(--pdz-level-2);
       transform: translateY(-2px);
 
       .button__text {
-        color: pdz-color(on-primary);
+        color: pdz.color(on-primary);
       }
     }
 
@@ -214,8 +214,8 @@
   &.is-disabled {
     opacity: 0.5;
     cursor: not-allowed;
-    background: pdz-color(surface-container);
-    color: pdz-color(on-surface-variant);
+    background: pdz.color(surface-container);
+    color: pdz.color(on-surface-variant);
   }
 }
 
@@ -223,11 +223,11 @@
 .divisions-section {
   display: flex;
   flex-direction: column;
-  gap: var(--pdz-space-lg);
+  gap: pdz.space(lg);
 
   &__title {
     @include apply-typography(headline-lg);
-    color: var(--pdz-color-on-surface);
+    color: pdz.color(on-surface);
     margin: 0;
     text-align: center;
     font-weight: 600;
@@ -240,7 +240,7 @@
   &__grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: var(--pdz-space-md);
+    gap: pdz.space(md);
 
     @include respond-above(medium) {
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -252,11 +252,11 @@
 .playoffs-section {
   display: flex;
   flex-direction: column;
-  gap: var(--pdz-space-lg);
+  gap: pdz.space(lg);
 
   &__title {
     @include apply-typography(headline-lg);
-    color: var(--pdz-color-on-surface);
+    color: pdz.color(on-surface);
     margin: 0;
     text-align: center;
     font-weight: 600;
@@ -269,7 +269,7 @@
   &__grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: var(--pdz-space-md);
+    gap: pdz.space(md);
 
     @include respond-above(medium) {
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));

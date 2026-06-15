@@ -1,3 +1,5 @@
+@use "pdz-theming" as pdz;
+
 .content-container {
   display: flex;
   width: 100%;
@@ -8,11 +10,11 @@
 }
 
 .table-wrapper {
-  padding: var(--pdz-space-lg);
+  padding: pdz.space(lg);
   min-width: fit-content;
   width: fit-content;
   height: fit-content;
-  border-radius: var(--pdz-shape-corner-lg);
-  background-color: var(--pdz-color-surface);
+  border-radius: pdz.shape(corner-lg);
+  background-color: pdz.color(surface);
   box-shadow: var(--pdz-level-3);
 }

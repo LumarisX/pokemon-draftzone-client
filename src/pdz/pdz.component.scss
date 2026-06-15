@@ -1,11 +1,13 @@
+@use "pdz-theming" as pdz;
+
 :host > div {
   display: flex;
   flex-direction: column;
   height: 100dvh;
   min-height: 0;
-  color: var(--pdz-color-on-surface);
+  color: pdz.color(on-surface);
   font-family: var(--pdz-font-regular);
-  background-color: var(--pdz-color-background);
+  background-color: pdz.color(background);
 }
 
 main {

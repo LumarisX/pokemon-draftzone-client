@@ -1,0 +1,13 @@
+@use "themes/classic" as classic;
+@use "themes/shiny" as shiny;
+@use "themes/sunset" as sunset;
+@use "themes/classic-reverse" as classicR;
+@use "themes/fern" as fern;
+
+$themes: (
+  classic: classic.$theme,
+  shiny: shiny.$theme,
+  sunset: sunset.$theme,
+  classic-reverse: classicR.$theme,
+  fern: fern.$theme,
+);

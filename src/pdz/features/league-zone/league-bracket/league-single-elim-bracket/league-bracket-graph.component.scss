@@ -1,4 +1,4 @@
-@use "global.scss" as *;
+@use "pdz-theming" as pdz;
 @use "mixins/typography.scss" as *;
 
 :host {
@@ -8,15 +8,15 @@
     width: 100%;
     overflow-x: auto;
     padding: 0.75rem 0.75rem 1rem;
-    border-radius: var(--pdz-shape-corner-lg);
-    background: pdz-color("surface-container-low");
+    border-radius: pdz.shape(corner-lg);
+    background: pdz.color("surface-container-low");
     box-shadow: var(--pdz-level-2);
 
     h2 {
-      @include pdz-font-size(1.25rem, 1.4);
+      @include pdz.font-size(1.25rem, 1.4);
       font-weight: 600;
       text-align: center;
-      color: pdz-color("on-surface");
+      color: pdz.color("on-surface");
       padding: 0.25rem 0 1rem;
       margin: 0;
     }
@@ -25,18 +25,18 @@
   ::ng-deep .node {
     .node-placeholder {
       font-style: italic;
-      @include pdz-font-size(0.72rem, 1.2);
+      @include pdz.font-size(0.72rem, 1.2);
       font-family: var(--pdz-font-fancy);
-      fill: pdz-color("on-surface-variant");
+      fill: pdz.color("on-surface-variant");
       text-anchor: middle;
       dominant-baseline: central;
       user-select: none;
     }
 
     rect {
-      fill: pdz-color("surface-container");
+      fill: pdz.color("surface-container");
       stroke-width: 2px;
-      stroke: pdz-color("outline-variant");
+      stroke: pdz.color("outline-variant");
       filter: drop-shadow(0 4px 10px rgba(15, 23, 42, 0.14));
       transition:
         fill 160ms ease,
@@ -44,31 +44,31 @@
         filter 160ms ease;
 
       &.undecided {
-        fill: pdz-color("primary-container-low");
-        stroke: pdz-color("primary-border");
+        fill: pdz.color("primary-container-low");
+        stroke: pdz.color("primary-border");
       }
 
       &.winner {
-        fill: pdz-color("positive-container");
-        stroke: pdz-color("positive");
+        fill: pdz.color("positive-container");
+        stroke: pdz.color("positive");
       }
 
       &.loser {
-        fill: pdz-color("negative-container");
-        stroke: pdz-color("negative");
+        fill: pdz.color("negative-container");
+        stroke: pdz.color("negative");
       }
     }
 
     .seed {
       font: 600 12px var(--pdz-font-fancy);
-      fill: pdz-color("secondary");
+      fill: pdz.color("secondary");
       text-anchor: middle;
       dominant-baseline: central;
     }
 
     .matchup-text {
-      fill: pdz-color("on-surface-variant");
-      @include pdz-font-size(0.8rem, 1.2);
+      fill: pdz.color("on-surface-variant");
+      @include pdz.font-size(0.8rem, 1.2);
       font-style: italic;
       text-anchor: middle;
       dominant-baseline: central;
@@ -90,11 +90,11 @@
       -webkit-font-smoothing: antialiased;
       text-rendering: optimizeLegibility;
       -moz-osx-font-smoothing: grayscale;
-      fill: pdz-color("secondary");
+      fill: pdz.color("secondary");
       cursor: pointer;
 
       &:hover {
-        fill: pdz-color("primary");
+        fill: pdz.color("primary");
       }
     }
   }
@@ -114,8 +114,8 @@
     display: flex;
     align-items: center;
     column-gap: 0.5rem;
-    border-radius: var(--pdz-shape-corner-sm);
-    color: pdz-color("on-surface");
+    border-radius: pdz.shape(corner-sm);
+    color: pdz.color("on-surface");
 
     .team-logo {
       flex-shrink: 0;
@@ -147,15 +147,15 @@
         display: flex;
         align-items: center;
         gap: 0.35rem;
-        @include pdz-font-size(0.76rem, 1.2);
-        color: pdz-color("primary");
+        @include pdz.font-size(0.76rem, 1.2);
+        color: pdz.color("primary");
         font-weight: var(--pdz-font-weight-bold);
         white-space: nowrap;
         overflow: hidden;
 
         .seed-number {
           flex-shrink: 0;
-          color: pdz-color("secondary");
+          color: pdz.color("secondary");
           font-family: var(--pdz-font-fancy);
         }
 
@@ -169,7 +169,7 @@
       .team-name {
         display: -webkit-box;
         overflow: hidden;
-        @include pdz-font-size(0.92rem, 1.15);
+        @include pdz.font-size(0.92rem, 1.15);
         font-weight: var(--pdz-font-weight-bold);
         text-overflow: ellipsis;
         white-space: normal;
@@ -183,9 +183,9 @@
     .team-score {
       padding-left: 0.35rem;
       flex-shrink: 0;
-      @include pdz-font-size(1.05rem, 1);
+      @include pdz.font-size(1.05rem, 1);
       font-weight: var(--pdz-font-weight-bold);
-      color: pdz-color("on-surface");
+      color: pdz.color("on-surface");
     }
   }
 }

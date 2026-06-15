@@ -1,8 +1,10 @@
 @use "tailwind-styles";
 @use "pdz-theming";
 @use "mat-styles";
-@use "global.scss" as *;
-@use "mixins/typography" as *;
+@use "pdz-theming" as pdz;
+@use "tokens/breakpoints";
+
+@include pdz-theming.init-tokens();
 
 @font-face {
   font-family: "Nasalization RG";
@@ -17,22 +19,22 @@
   --pdz-scrollbar-thumb-radius: 999px;
   --pdz-scrollbar-thumb-idle: color-mix(
     in srgb,
-    pdz-color(on-surface) 22%,
+    pdz.color(on-surface) 22%,
     transparent
   );
   --pdz-scrollbar-thumb-hover: color-mix(
     in srgb,
-    pdz-color(on-surface) 36%,
+    pdz.color(on-surface) 36%,
     transparent
   );
   --pdz-scrollbar-thumb-active: color-mix(
     in srgb,
-    pdz-color(on-surface) 52%,
+    pdz.color(on-surface) 52%,
     transparent
   );
   --pdz-scrollbar-track: color-mix(
     in srgb,
-    pdz-color(surface-container-high) 45%,
+    pdz.color(surface-container-high) 45%,
     transparent
   );
   --pdz-scrollbar-thumb-gap-idle: 0.125rem;
@@ -203,7 +205,7 @@
     background-color: #333;
     color: #fff;
     padding: 0.5rem 1rem;
-    border-radius: var(--pdz-shape-corner-xs);
+    border-radius: pdz.shape(corner-xs);
     font-size: 0.875rem;
     white-space: nowrap;
     opacity: 0;
@@ -219,10 +221,7 @@
   }
 }
 
-$screen-size-large: 1024px;
-$screen-size-medium: 768px;
-
-@media (max-width: $screen-size-medium) {
+@media (max-width: breakpoints.$screen-size-medium) {
   .full-screen-on-mobile {
     position: fixed;
     top: 0;
@@ -234,7 +233,7 @@ $screen-size-medium: 768px;
     flex-direction: column;
     align-items: center;
     z-index: 10000;
-    background-color: pdz-color(surface-container);
+    background-color: pdz.color(surface-container);
     overflow-y: auto;
   }
 
@@ -251,8 +250,8 @@ $option-lineheight: 3rem;
 .pokemon-viewport {
   height: 15rem;
   width: 100%;
-  background-color: pdz-color(surface-container-low);
-  color: pdz-color(on-surface-container-low);
+  background-color: pdz.color(surface-container-low);
+  color: pdz.color(on-surface);
   border-radius: 0 0 0.25rem 0.25rem;
   box-shadow: var(--pdz-level-2);
 
@@ -268,15 +267,15 @@ $option-lineheight: 3rem;
 
       &:hover,
       &.highlighted-option {
-        background-color: pdz-color(surface-container-highest);
-        color: pdz-color(on-surface-container-highest);
+        background-color: pdz.color(surface-container-highest);
+        color: pdz.color(on-surface);
         cursor: pointer;
       }
 
       .sprite-wrapper {
         height: $option-lineheight;
         width: $option-lineheight;
-        padding: var(--pdz-space-xs);
+        padding: pdz.space(xs);
         flex-shrink: 0;
       }
 
@@ -300,8 +299,8 @@ $option-lineheight: 3rem;
 
 //   .pdz-type {
 //     width: auto;
-//     padding: 0 var(--pdz-space-xs);
-//     gap: var(--pdz-space-2xs);
+//     padding: 0 pdz.space(xs);
+//     gap: pdz.space(2xs);
 //   }
 // }
 
@@ -309,9 +308,9 @@ $option-lineheight: 3rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--pdz-space-2xs);
+  gap: pdz.space(2xs);
   height: 1rem;
-  border-radius: var(--pdz-shape-corner-xs);
+  border-radius: pdz.shape(corner-xs);
   box-shadow: var(--pdz-level-1);
   overflow: hidden;
 
@@ -357,29 +356,29 @@ markdown {
   // Ordered lists
   ol {
     list-style: decimal;
-    padding-left: var(--pdz-space-xl);
+    padding-left: pdz.space(xl);
     margin: 0;
   }
 
   li ul {
-    margin-top: var(--pdz-space-xs);
+    margin-top: pdz.space(xs);
     margin-bottom: 0;
   }
 
   li ol {
-    margin-top: var(--pdz-space-xs);
+    margin-top: pdz.space(xs);
     margin-bottom: 0;
   }
 
   li {
-    padding: var(--pdz-space-xs) 0;
-    padding-left: var(--pdz-space-xl);
+    padding: pdz.space(xs) 0;
+    padding-left: pdz.space(xl);
     position: relative;
 
     &::before {
       content: "•";
       position: absolute;
-      left: var(--pdz-space-sm);
+      left: pdz.space(sm);
       font-weight: bold;
     }
   }
@@ -393,7 +392,7 @@ markdown {
 
   // Unordered lists nested in ordered lists
   ol li ul li {
-    padding-left: var(--pdz-space-xl);
+    padding-left: pdz.space(xl);
 
     &::before {
       content: "•";
@@ -403,7 +402,7 @@ markdown {
   }
 
   li ul li {
-    padding-left: var(--pdz-space-xl);
+    padding-left: pdz.space(xl);
 
     &::before {
       content: "◦";
@@ -419,7 +418,7 @@ markdown {
   }
 
   p {
-    margin: var(--pdz-space-sm) 0;
+    margin: pdz.space(sm) 0;
     line-height: 1.6;
   }
 
@@ -437,9 +436,9 @@ markdown {
   }
 
   code {
-    background: pdz-color(surface-container-high);
+    background: pdz.color(surface-container-high);
     padding: 0.125rem 0.25rem;
-    border-radius: var(--pdz-shape-corner-xs);
+    border-radius: pdz.shape(corner-xs);
     font-family: monospace;
     font-size: 0.875em;
   }
@@ -452,19 +451,19 @@ markdown {
   }
 
   h1 {
-    @include font-size(1.5rem);
+    @include pdz.font-size(1.5rem);
   }
   h2 {
-    @include font-size(1.3rem);
+    @include pdz.font-size(1.3rem);
   }
   h3 {
-    @include font-size(1.15rem);
+    @include pdz.font-size(1.15rem);
   }
   h4 {
-    @include font-size(1rem);
+    @include pdz.font-size(1rem);
   }
 }
 
 input[type="text"] {
-  background-color: pdz-color(surface);
+  background-color: pdz.color(surface);
 }

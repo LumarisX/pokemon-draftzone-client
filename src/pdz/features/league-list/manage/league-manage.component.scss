@@ -1,17 +1,17 @@
-@use "global.scss" as *;
+@use "pdz-theming" as pdz;
 @use "_mixins.scss" as *;
 @use "mixins/_buttons.scss" as *;
 
 :host {
   display: block;
-  padding: var(--pdz-space-lg);
+  padding: pdz.space(lg);
 }
 
 .page-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--pdz-space-lg);
+  margin-bottom: pdz.space(lg);
 
   &__title {
     @include apply-typography(headline-lg);
@@ -19,7 +19,7 @@
 
   &__actions {
     display: flex;
-    gap: var(--pdz-space-md);
+    gap: pdz.space(md);
     align-items: center;
   }
 
@@ -50,18 +50,18 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--pdz-space-lg);
+  margin-bottom: pdz.space(lg);
   flex-wrap: wrap;
-  gap: var(--pdz-space-md);
+  gap: pdz.space(md);
 
   &__results {
     @include apply-typography(body-md);
-    color: pdz-color(on-surface-variant);
+    color: pdz.color(on-surface-variant);
   }
 
   &__controls {
     display: flex;
-    gap: var(--pdz-space-sm);
+    gap: pdz.space(sm);
     align-items: center;
     flex-wrap: wrap;
   }
@@ -70,7 +70,7 @@
 .filter-btn {
   @include flat-button-menu(
     (
-      padding: var(--pdz-space-xs) var(--pdz-space-md),
+      padding: pdz.space(xs) pdz.space(md),
     )
   );
   font-size: 0.875rem;
@@ -79,32 +79,32 @@
   // }
 
   &.filter-pending {
-    background-color: pdz-color(warning-container);
-    color: pdz-color(on-warning-container);
+    background-color: pdz.color(warning-container);
+    color: pdz.color(on-warning-container);
 
     &:hover {
-      background-color: pdz-color(warning);
-      color: pdz-color(on-warning);
+      background-color: pdz.color(warning);
+      color: pdz.color(on-warning);
     }
   }
 
   &.filter-approved {
-    background-color: pdz-color(success-container);
-    color: pdz-color(on-success-container);
+    background-color: pdz.color(success-container);
+    color: pdz.color(on-success-container);
 
     &:hover {
-      background-color: pdz-color(success);
-      color: pdz-color(on-success);
+      background-color: pdz.color(success);
+      color: pdz.color(on-success);
     }
   }
 
   &.filter-denied {
-    background-color: pdz-color(error-container);
-    color: pdz-color(on-error-container);
+    background-color: pdz.color(error-container);
+    color: pdz.color(on-error-container);
 
     &:hover {
-      background-color: pdz-color(error);
-      color: pdz-color(on-error);
+      background-color: pdz.color(error);
+      color: pdz.color(on-error);
     }
   }
 }
@@ -112,7 +112,7 @@
 .leagues-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
-  gap: var(--pdz-space-lg);
+  gap: pdz.space(lg);
 
   @include respond-above(medium) {
     grid-template-columns: repeat(auto-fill, minmax(22rem, 1fr));
@@ -127,20 +127,20 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: var(--pdz-space-2xl) var(--pdz-space-lg);
+  padding: pdz.space(2xl) pdz.space(lg);
   text-align: center;
 
   &__message {
     @include apply-typography(body-lg);
-    color: pdz-color(on-surface-variant);
+    color: pdz.color(on-surface-variant);
   }
 
   &__link {
-    color: pdz-color(primary);
+    color: pdz.color(primary);
     text-decoration: underline;
 
     &:hover {
-      color: pdz-color(primary-hover);
+      color: pdz.color(primary-hover);
     }
   }
 }

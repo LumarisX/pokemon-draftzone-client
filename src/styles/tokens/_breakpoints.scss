@@ -1,0 +1,10 @@
+$breakpoints: (
+  small: 576px,
+  medium: 768px,
+  large: 1024px,
+  desktop: 1200px,
+);
+
+// Named aliases used in :root CSS custom properties and media queries
+$screen-size-medium: 768px;
+$screen-size-large: 1024px;

@@ -1,6 +1,4 @@
-@use "sass:map";
-@use "../base/tokens" as *;
-@use "defaults" as *;
+@use "tools/theme" as theme;
 
 $theme-overrides: (
   light: (
@@ -136,7 +134,4 @@ $theme-overrides: (
   ),
 );
 
-$theme: (
-  light: map.merge(map.get($defaults, light), map.get($theme-overrides, light)),
-  dark: map.merge(map.get($defaults, dark), map.get($theme-overrides, dark)),
-);
+$theme: theme.build-pdz-theme($theme-overrides);

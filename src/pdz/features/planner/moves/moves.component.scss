@@ -1,3 +1,5 @@
+@use "pdz-theming" as pdz;
+
 .main-container {
   display: flex;
   width: 100%;
@@ -8,17 +10,17 @@
 }
 
 pdz-moves-core {
-  padding: var(--pdz-space-lg);
+  padding: pdz.space(lg);
   width: fit-content;
   max-width: 50rem;
   height: 100%;
-  border-radius: var(--pdz-shape-corner-lg);
-  background-color: var(--pdz-color-surface);
+  border-radius: pdz.shape(corner-lg);
+  background-color: pdz.color(surface);
   box-shadow: var(--pdz-level-3);
 
-  --pdz-cmp-movechart-color: var(--pdz-color-primary);
-  --pdz-cmp-movechart-on-container: var(--pdz-color-on-primary-container);
-  --pdz-cmp-movechart-container: var(--pdz-color-primary-container);
-  --pdz-cmp-movechart-hover: var(--pdz-color-primary-container-low);
-  --pdz-cmp-movechart-border: var(--pdz-color-primary-border);
+  --pdz-cmp-movechart-color: #{pdz.color(primary)};
+  --pdz-cmp-movechart-on-container: #{pdz.color(on-primary-container)};
+  --pdz-cmp-movechart-container: #{pdz.color(primary-container)};
+  --pdz-cmp-movechart-hover: #{pdz.color(primary-container-low)};
+  --pdz-cmp-movechart-border: #{pdz.color(primary-border)};
 }

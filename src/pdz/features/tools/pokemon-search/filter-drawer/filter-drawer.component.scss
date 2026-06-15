@@ -1,13 +1,13 @@
-@use "global.scss" as *;
+@use "pdz-theming" as pdz;
 
 :host {
   display: block;
 }
 
 .filter-drawer {
-  border: 1px solid var(--pdz-color-outline-variant);
-  border-radius: var(--pdz-shape-corner-md);
-  background: var(--pdz-color-surface-container-low);
+  border: 1px solid pdz.color(outline-variant);
+  border-radius: pdz.shape(corner-md);
+  background: pdz.color(surface-container-low);
   animation: drawerSlideIn 0.15s ease-out;
   overflow: hidden;
 
@@ -15,31 +15,31 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: var(--pdz-space-xs) var(--pdz-space-sm);
-    background: var(--pdz-color-surface-container);
-    border-bottom: 1px solid var(--pdz-color-outline-variant);
+    padding: pdz.space(xs) pdz.space(sm);
+    background: pdz.color(surface-container);
+    border-bottom: 1px solid pdz.color(outline-variant);
   }
 
   &__field-info {
     display: flex;
     align-items: center;
-    gap: var(--pdz-space-xs);
+    gap: pdz.space(xs);
   }
 
   &__field-name {
     font-size: 0.875rem;
     font-weight: 700;
-    color: var(--pdz-color-on-surface);
+    color: pdz.color(on-surface);
   }
 
   &__edit-badge {
-    color: pdz-color(secondary);
+    color: pdz.color(secondary);
   }
 
   &__header-actions {
     display: flex;
     align-items: center;
-    gap: var(--pdz-space-2xs);
+    gap: pdz.space(2xs);
     flex-shrink: 0;
   }
 
@@ -50,16 +50,16 @@
     width: 1.5rem;
     height: 1.5rem;
     padding: 0;
-    border: 1px solid var(--pdz-color-primary-border);
-    border-radius: var(--pdz-shape-corner-xs);
-    background: var(--pdz-color-primary-container);
-    color: var(--pdz-color-on-primary-container);
+    border: 1px solid pdz.color(primary-border);
+    border-radius: pdz.shape(corner-xs);
+    background: pdz.color(primary-container);
+    color: pdz.color(on-primary-container);
     cursor: pointer;
     font-size: 0.875rem;
     line-height: 1;
 
     &:hover {
-      background: var(--pdz-color-primary-container-hover);
+      background: pdz.color(primary-container-hover);
     }
 
     &:disabled {
@@ -76,23 +76,23 @@
     height: 1.5rem;
     padding: 0;
     border: none;
-    border-radius: var(--pdz-shape-corner-xs);
+    border-radius: pdz.shape(corner-xs);
     background: transparent;
-    color: var(--pdz-color-on-surface-variant);
+    color: pdz.color(on-surface-variant);
     cursor: pointer;
     font-size: 0.75rem;
     line-height: 1;
 
     &:hover {
-      background: var(--pdz-color-surface-container-high);
-      color: var(--pdz-color-on-surface);
+      background: pdz.color(surface-container-high);
+      color: pdz.color(on-surface);
     }
   }
 
   &__body {
     display: grid;
-    gap: var(--pdz-space-sm);
-    padding: var(--pdz-space-sm);
+    gap: pdz.space(sm);
+    padding: pdz.space(sm);
   }
 
   // Operators + value on the same flex row, wraps on narrow widths
@@ -100,7 +100,7 @@
     display: flex;
     flex-wrap: wrap;
     align-items: flex-end;
-    gap: var(--pdz-space-sm);
+    gap: pdz.space(sm);
   }
 
   &__value-input {
@@ -113,16 +113,16 @@
   input[type="text"],
   input[type="number"] {
     width: 100%;
-    padding: var(--pdz-space-2xs) var(--pdz-space-xs);
-    border: 1px solid var(--pdz-color-outline);
-    border-radius: var(--pdz-shape-corner-sm);
-    background: var(--pdz-color-surface);
-    color: var(--pdz-color-on-surface);
+    padding: pdz.space(2xs) pdz.space(xs);
+    border: 1px solid pdz.color(outline);
+    border-radius: pdz.shape(corner-sm);
+    background: pdz.color(surface);
+    color: pdz.color(on-surface);
     font: inherit;
     font-size: 0.875rem;
 
     &:focus {
-      outline: 2px solid var(--pdz-color-primary);
+      outline: 2px solid pdz.color(primary);
       outline-offset: 1px;
     }
   }
@@ -131,33 +131,33 @@
   &__chips {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--pdz-space-2xs);
+    gap: pdz.space(2xs);
   }
 
   &__chip {
-    padding: var(--pdz-space-2xs) var(--pdz-space-sm);
-    border: 1px solid var(--pdz-color-outline-variant);
-    border-radius: var(--pdz-shape-corner-sm);
-    background: var(--pdz-color-surface-container);
-    color: var(--pdz-color-on-surface-variant);
+    padding: pdz.space(2xs) pdz.space(sm);
+    border: 1px solid pdz.color(outline-variant);
+    border-radius: pdz.shape(corner-sm);
+    background: pdz.color(surface-container);
+    color: pdz.color(on-surface-variant);
     font: inherit;
     font-size: 0.8125rem;
     cursor: pointer;
     white-space: nowrap;
 
     &:hover {
-      background: var(--pdz-color-surface-container-high);
-      color: var(--pdz-color-on-surface);
+      background: pdz.color(surface-container-high);
+      color: pdz.color(on-surface);
     }
 
     &.is-active {
-      border-color: var(--pdz-color-primary-border);
-      background: var(--pdz-color-primary-container);
-      color: var(--pdz-color-on-primary-container);
+      border-color: pdz.color(primary-border);
+      background: pdz.color(primary-container);
+      color: pdz.color(on-primary-container);
     }
 
     &--sm {
-      padding: 0.125rem var(--pdz-space-xs);
+      padding: 0.125rem pdz.space(xs);
       font-size: 0.75rem;
     }
 
@@ -171,14 +171,14 @@
   &__type-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(3.25rem, 1fr));
-    gap: var(--pdz-space-2xs);
+    gap: pdz.space(2xs);
     flex-basis: 100%;
   }
 
   &__type-btn {
     padding: 0;
     border: none;
-    border-radius: var(--pdz-shape-corner-xs);
+    border-radius: pdz.shape(corner-xs);
     background: transparent;
     cursor: pointer;
     display: flex;
@@ -189,17 +189,17 @@
   // Move filter rows — each row is a horizontal flex container
   &__move-list {
     display: grid;
-    gap: var(--pdz-space-xs);
+    gap: pdz.space(xs);
   }
 
   &__move-row {
     display: flex;
     align-items: center;
-    gap: var(--pdz-space-xs);
-    padding: var(--pdz-space-xs);
-    border: 1px solid var(--pdz-color-outline-variant);
-    border-radius: var(--pdz-shape-corner-sm);
-    background: var(--pdz-color-surface);
+    gap: pdz.space(xs);
+    padding: pdz.space(xs);
+    border: 1px solid pdz.color(outline-variant);
+    border-radius: pdz.shape(corner-sm);
+    background: pdz.color(surface);
 
     .filter-drawer__move-select {
       flex: 1.2;
@@ -224,10 +224,10 @@
     width: 1.5rem;
     height: 1.5rem;
     padding: 0;
-    border: 1px solid var(--pdz-color-error);
-    border-radius: var(--pdz-shape-corner-xs);
-    background: var(--pdz-color-error-container);
-    color: var(--pdz-color-on-error-container);
+    border: 1px solid pdz.color(error);
+    border-radius: pdz.shape(corner-xs);
+    background: pdz.color(error-container);
+    color: pdz.color(on-error-container);
     font: inherit;
     font-size: 0.7rem;
     cursor: pointer;
@@ -239,18 +239,18 @@
 
   &__add-move {
     justify-self: start;
-    padding: var(--pdz-space-2xs) var(--pdz-space-sm);
-    border: 1px dashed var(--pdz-color-outline);
-    border-radius: var(--pdz-shape-corner-sm);
+    padding: pdz.space(2xs) pdz.space(sm);
+    border: 1px dashed pdz.color(outline);
+    border-radius: pdz.shape(corner-sm);
     background: transparent;
-    color: var(--pdz-color-on-surface-variant);
+    color: pdz.color(on-surface-variant);
     font: inherit;
     font-size: 0.8125rem;
     cursor: pointer;
 
     &:hover {
-      background: var(--pdz-color-surface-container);
-      color: var(--pdz-color-on-surface);
+      background: pdz.color(surface-container);
+      color: pdz.color(on-surface);
       border-style: solid;
     }
   }

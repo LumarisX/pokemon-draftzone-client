@@ -1,3 +1,5 @@
+@use "pdz-theming" as pdz;
+
 .content-container {
   display: flex;
   flex-direction: column;
@@ -12,12 +14,12 @@
 }
 
 .table-wrapper {
-  padding: var(--pdz-space-md);
+  padding: pdz.space(md);
   min-width: fit-content;
   width: fit-content;
   height: fit-content;
-  border-radius: var(--pdz-shape-corner-lg);
-  background-color: var(--pdz-color-surface);
+  border-radius: pdz.shape(corner-lg);
+  background-color: pdz.color(surface);
   box-shadow: var(--pdz-level-3);
 }
 
@@ -26,7 +28,7 @@
   justify-content: space-between;
   width: 100%;
   padding: 0 1rem 0.5rem;
-  color: var(--pdz-color-primary);
+  color: pdz.color(primary);
   font-weight: var(--pdz-font-weight-bold);
 
   .table-label {

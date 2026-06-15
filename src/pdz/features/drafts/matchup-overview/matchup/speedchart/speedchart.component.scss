@@ -1,4 +1,5 @@
 @use "@angular/material" as mat;
+@use "pdz-theming" as pdz;
 
 .speed-main {
   display: flex;
@@ -14,35 +15,35 @@
     .speed-container {
       .speed-row {
         display: flex;
-        background-color: var(--pdz-color-primary-container);
-        border-radius: var(--pdz-shape-corner-sm);
-        border-bottom: 1px solid var(--pdz-color-primary-border);
+        background-color: pdz.color(primary-container);
+        border-radius: pdz.shape(corner-sm);
+        border-bottom: 1px solid pdz.color(primary-border);
         column-gap: 0.25rem;
         margin-bottom: 1px;
         cursor: pointer;
         &:hover {
-          background-color: var(--pdz-color-primary-container-hover);
+          background-color: pdz.color(primary-container-hover);
         }
         &.alternate,
         :host-context(.alternate) & {
-          background-color: var(--pdz-color-secondary-container);
-          border-bottom: 1px solid var(--pdz-color-secondary-border);
+          background-color: pdz.color(secondary-container);
+          border-bottom: 1px solid pdz.color(secondary-border);
           .speed-icon {
-            color: var(--pdz-color-on-secondary-container);
+            color: pdz.color(on-secondary-container);
           }
           .base-speed-label {
-            color: var(--pdz-color-on-secondary-container);
+            color: pdz.color(on-secondary-container);
           }
 
           &:hover {
-            background-color: var(--pdz-color-secondary-container-hover);
+            background-color: pdz.color(secondary-container-hover);
           }
         }
         &.alternate {
           flex-direction: row-reverse;
         }
         &.selected {
-          border-bottom: 1px solid var(--pdz-color-surface);
+          border-bottom: 1px solid pdz.color(surface);
           margin-bottom: 0px;
           margin-top: 2px;
         }
@@ -51,7 +52,7 @@
           justify-content: center;
           align-items: center;
           display: flex;
-          color: var(--pdz-color-on-primary-container);
+          color: pdz.color(on-primary-container);
         }
 
         div {
@@ -63,7 +64,7 @@
           text-align: center;
           line-height: 2rem;
           font-weight: var(--pdz-font-weight-bold);
-          color: var(--pdz-color-on-primary-container);
+          color: pdz.color(on-primary-container);
         }
       }
     }
@@ -85,43 +86,43 @@
       height: 100%;
       display: flex;
       flex-direction: column;
-      gap: var(--pdz-space-3xs);
+      gap: pdz.space(3xs);
       overflow: auto;
       scrollbar-gutter: stable;
       .tier-group {
-        background-color: var(--pdz-color-primary-container);
-        border-color: var(--pdz-color-primary-border);
+        background-color: pdz.color(primary-container);
+        border-color: pdz.color(primary-border);
         border-width: 1px;
-        border-radius: var(--pdz-shape-corner-sm);
-        padding: 0 var(--pdz-space-xs);
+        border-radius: pdz.shape(corner-sm);
+        padding: 0 pdz.space(xs);
         width: 40rem;
         max-width: 100%;
 
         &.alternate,
         :host-context(.alternate) & {
-          background-color: var(--pdz-color-secondary-container);
-          border-color: var(--pdz-color-secondary-border);
+          background-color: pdz.color(secondary-container);
+          border-color: pdz.color(secondary-border);
           .speed-spacer {
-            border-right: 2px solid var(--pdz-color-secondary-border) !important;
+            border-right: 2px solid pdz.color(secondary-border) !important;
           }
           > :not(:first-child) {
-            border-top: 1px solid var(--pdz-color-secondary-border);
+            border-top: 1px solid pdz.color(secondary-border);
           }
         }
 
         &.grouped {
           cursor: pointer;
           &:hover {
-            background-color: var(--pdz-color-primary-container-hover);
+            background-color: pdz.color(primary-container-hover);
             &.alternate,
             :host-context(.alternate) & {
-              background-color: var(--pdz-color-secondary-container-hover);
+              background-color: pdz.color(secondary-container-hover);
             }
           }
         }
 
         > :not(:first-child) {
-          border-top: 1px solid var(--pdz-color-primary-border);
+          border-top: 1px solid pdz.color(primary-border);
         }
 
         .speedtier-wrapper {
@@ -141,7 +142,7 @@
             height: 2rem;
           }
           .group-speeds {
-            color: var(--pdz-color-on-primary-container);
+            color: pdz.color(on-primary-container);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -153,8 +154,8 @@
               width: 0;
               display: flex;
               flex-grow: 1;
-              border-radius: var(--pdz-shape-corner-lg);
-              border-right: 2px solid var(--pdz-color-primary-border);
+              border-radius: pdz.shape(corner-lg);
+              border-right: 2px solid pdz.color(primary-border);
             }
             .top-speed,
             .bot-speed {
@@ -175,16 +176,16 @@
 .filter-main {
   box-shadow: var(--pdz-level-2);
   border-radius: 5px;
-  background-color: var(--pdz-color-surface);
+  background-color: pdz.color(surface);
   padding: 10px;
   margin: 0;
-  color: var(--pdz-color-on-surface);
+  color: pdz.color(on-surface);
   @include mat.checkbox-density(-3);
 
   .reset-button {
     text-align: center;
     font-weight: 600;
-    border-bottom: 1px solid var(--pdz-color-primary-border);
+    border-bottom: 1px solid pdz.color(primary-border);
     height: 1.5rem;
     cursor: pointer;
     &:hover {

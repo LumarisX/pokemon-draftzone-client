@@ -1,15 +1,16 @@
 @use "mixins/scales" as *;
+@use "pdz-theming" as pdz;
 
 :host {
   @include generate-bg-scale();
-  --bevel-radius: var(--pdz-shape-corner-sm, 0.5rem);
-  --bevel-padding: var(--pdz-space-2xs, 3px);
+  --bevel-radius: #{pdz.shape(corner-sm)};
+  --bevel-padding: #{pdz.space(2xs)};
 }
 
 .type-cell {
-  width: var(--pdz-space-3xl);
-  height: var(--pdz-space-3xl);
-  padding: var(--pdz-space-xs);
+  width: pdz.space(3xl);
+  height: pdz.space(3xl);
+  padding: pdz.space(xs);
   overflow: hidden;
 }
 
@@ -17,19 +18,19 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: var(--pdz-shape-corner-xs);
+  border-radius: pdz.shape(corner-xs);
   height: 2.5rem;
   width: 2.5rem;
   font-size: 0.75rem;
   font-weight: bold;
   overflow: hidden;
   &.type-colored {
-    color: var(--pdz-color-on-primary-fixed, white);
+    color: pdz.color(on-primary, white);
     box-shadow: var(--pdz-level-1);
   }
   &.type-empty {
     color: transparent;
-    background-color: var(--pdz-color-surface-variant);
+    background-color: pdz.color(surface-variant);
   }
 }
 
@@ -37,22 +38,22 @@ td,
 th {
   transition: opacity 0.1s ease-in-out;
   text-align: center;
-  color: var(--pdz-color-on-primary-fixed, white);
+  color: pdz.color(on-primary, white);
   &:first-child {
-    padding-left: var(--pdz-space-xs);
+    padding-left: pdz.space(xs);
   }
 
   &.column-hovered {
-    .type-wrapper {
+    .type-wrapper.type-empty,
+    .type-wrapper.pdz-scale-neutral {
       background-color: var(
         --pdz-cmp-typechart-stat-hover,
-        var(--pdz-color-menu-container)
+        pdz.color(menu-container)
       );
     }
   }
 }
 
-// Vertical icon+text pill used in typechart-core header — wraps a global .pdz-type
 .pdz-types {
   display: flex;
   align-items: center;
@@ -69,7 +70,6 @@ th {
     }
   }
 
-  // Override global .pdz-type sizing for the taller vertical layout
   .pdz-type {
     flex-direction: column;
     width: 2.5rem;
@@ -89,12 +89,12 @@ th {
     justify-content: center;
     align-items: center;
     flex-grow: 1;
-    width: var(--pdz-space-lg);
+    width: pdz.space(lg);
     overflow: hidden;
 
     .pdz-type__icon {
-      height: var(--pdz-space-lg);
-      width: var(--pdz-space-lg);
+      height: pdz.space(lg);
+      width: pdz.space(lg);
     }
   }
 }
@@ -104,13 +104,13 @@ th {
 .column-hovered {
   background-color: var(
     --pdz-cmp-typechart-border-hover,
-    var(--pdz-color-menu-border)
+    pdz.color(menu-border)
   );
 
   .pdz-scale-neutral {
     background-color: var(
       --pdz-cmp-typechart-stat-hover,
-      var(--pdz-color-menu-container)
+      pdz.color(menu-container)
     );
   }
 }
@@ -120,7 +120,7 @@ th {
     .pdz-scale-neutral {
       background-color: var(
         --pdz-cmp-typechart-stat-hover,
-        var(--pdz-color-menu-container)
+        pdz.color(menu-container)
       );
     }
   }
@@ -131,7 +131,7 @@ tbody {
     &:hover {
       background-color: var(
         --pdz-cmp-typechart-border-hover,
-        var(--pdz-color-menu-border)
+        pdz.color(menu-border)
       );
       td:not(.column-hovered),
       th:not(.column-hovered) {
@@ -147,7 +147,7 @@ tbody {
       .pdz-scale-neutral {
         background-color: var(
           --pdz-cmp-typechart-stat-hover,
-          var(--pdz-color-menu-container)
+          pdz.color(menu-container)
         );
       }
 
@@ -155,7 +155,7 @@ tbody {
         .type-wrapper {
           background-color: var(
             --pdz-cmp-typechart-stat-hover,
-            var(--pdz-color-menu-container)
+            pdz.color(menu-container)
           );
         }
       }
@@ -189,7 +189,7 @@ thead {
 
 thead {
   th {
-    padding: var(--pdz-space-xs);
+    padding: pdz.space(xs);
   }
 }
 
@@ -201,7 +201,7 @@ tbody {
       justify-content: center;
       cursor: help;
       user-select: none;
-      border-radius: var(--pdz-shape-corner-xs);
+      border-radius: pdz.shape(corner-xs);
       height: 1.5rem;
       width: 2.5rem;
       font-size: 0.65rem;
@@ -214,11 +214,11 @@ tbody {
 }
 
 .sprite-wrapper {
-  background-color: var(--pdz-color-surface);
+  background-color: pdz.color(surface);
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: var(--pdz-shape-corner-xs);
+  border-radius: pdz.shape(corner-xs);
   height: 2.5rem;
   width: 2.5rem;
   font-size: 0.75rem;
@@ -229,7 +229,7 @@ tbody {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: var(--pdz-shape-corner-xs);
+  border-radius: pdz.shape(corner-xs);
   height: 1.5rem;
   width: 2.5rem;
   font-size: 0.75rem;
@@ -241,6 +241,6 @@ tbody {
 .stat-cell {
   width: 3rem;
   height: 2rem;
-  padding: var(--pdz-space-xs);
+  padding: pdz.space(xs);
   overflow: hidden;
 }

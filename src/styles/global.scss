@@ -1,3 +1,8 @@
-@function pdz-color($color-name) {
-  @return var(--pdz-color-#{$color-name}, var(--pdz-color-debug));
-}
+// Forwards color tool functions with the legacy `pdz-` prefix so that all
+// existing component stylesheets using `@use "global.scss" as *` continue to
+// call pdz.color() and pdz-color-rgba() without any changes.
+//
+// New components should prefer `@use "pdz-theming"` and call
+// pdz-theming.color() / pdz-theming.color-rgba() directly.
+
+@forward "tools/color" as pdz-*;

@@ -1,4 +1,4 @@
-@use "global.scss" as *;
+@use "pdz-theming" as pdz;
 @use "mixins" as *;
 @use "../tier-list-shared" as *;
 
@@ -8,8 +8,8 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding: var(--pdz-space-md);
-  gap: var(--pdz-space-md);
+  padding: pdz.space(md);
+  gap: pdz.space(md);
 }
 
 // ─── Toolbar (form-specific) ──────────────────────────────────────────────
@@ -24,13 +24,13 @@
   &__actions {
     display: flex;
     align-items: center;
-    gap: var(--pdz-space-sm);
+    gap: pdz.space(sm);
   }
 }
 
 .toolbar__history {
   display: flex;
-  gap: var(--pdz-space-2xs);
+  gap: pdz.space(2xs);
   align-items: center;
 
   .icon-button {
@@ -49,11 +49,11 @@
 
 .icon-button {
   &--delete:hover mat-icon {
-    color: pdz-color(error);
+    color: pdz.color(error);
   }
 
   &--edit mat-icon {
-    color: pdz-color(primary);
+    color: pdz.color(primary);
   }
 }
 
@@ -61,12 +61,12 @@
 
 .action-button {
   &--secondary {
-    background-color: pdz-color(secondary);
-    color: pdz-color(on-secondary);
-    border-color: pdz-color(secondary);
+    background-color: pdz.color(secondary);
+    color: pdz.color(on-secondary);
+    border-color: pdz.color(secondary);
 
     &:hover {
-      background-color: pdz-color(secondary-darker);
+      background-color: pdz.color(secondary-darker);
     }
   }
 }
@@ -80,32 +80,32 @@
     font-size: 1rem;
     width: 1rem;
     height: 1rem;
-    margin-left: calc(var(--pdz-space-2xs) * -1);
+    margin-left: calc(pdz.space(2xs) * -1);
   }
 }
 
 .export-dropdown {
   position: absolute;
-  top: calc(100% + var(--pdz-space-2xs));
+  top: calc(100% + pdz.space(2xs));
   right: 0;
-  background-color: pdz-color(surface-container);
-  border: 1px solid pdz-color(outline-variant);
-  border-radius: var(--pdz-shape-corner-sm);
+  background-color: pdz.color(surface-container);
+  border: 1px solid pdz.color(outline-variant);
+  border-radius: pdz.shape(corner-sm);
   box-shadow: var(--pdz-level-3);
   z-index: 2100;
   min-width: 9rem;
-  padding: var(--pdz-space-2xs);
+  padding: pdz.space(2xs);
 
   &__item {
     display: flex;
     align-items: center;
-    gap: var(--pdz-space-sm);
+    gap: pdz.space(sm);
     width: 100%;
-    padding: var(--pdz-space-xs) var(--pdz-space-sm);
+    padding: pdz.space(xs) pdz.space(sm);
     border: none;
-    border-radius: var(--pdz-shape-corner-xs);
+    border-radius: pdz.shape(corner-xs);
     background: transparent;
-    color: pdz-color(on-surface);
+    color: pdz.color(on-surface);
     cursor: pointer;
     @include apply-typography(body-sm);
     text-align: left;
@@ -114,11 +114,11 @@
       font-size: 1.1rem;
       width: 1.1rem;
       height: 1.1rem;
-      color: pdz-color(on-surface-variant);
+      color: pdz.color(on-surface-variant);
     }
 
     &:hover {
-      background-color: pdz-color(surface-container-high);
+      background-color: pdz.color(surface-container-high);
     }
   }
 }
@@ -132,10 +132,10 @@
   min-width: 280px;
   max-width: 320px;
   flex-shrink: 0;
-  padding: var(--pdz-space-md);
+  padding: pdz.space(md);
 
-  border-radius: var(--pdz-shape-corner-md);
-  background-color: pdz-color(surface-container-low);
+  border-radius: pdz.shape(corner-md);
+  background-color: pdz.color(surface-container-low);
   box-shadow: var(--pdz-level-2);
   .tier--null {
     min-height: 0;
@@ -152,8 +152,8 @@
   align-items: center;
   justify-content: center;
   flex: 0 0 8px;
-  margin: var(--pdz-space-xs) 0;
-  border-radius: var(--pdz-shape-corner-full);
+  margin: pdz.space(xs) 0;
+  border-radius: pdz.shape(corner-full);
   cursor: row-resize;
   touch-action: none;
   transition: background-color 0.15s ease;
@@ -161,18 +161,18 @@
   &::before {
     content: "";
     position: absolute;
-    left: var(--pdz-space-xs);
-    right: var(--pdz-space-xs);
+    left: pdz.space(xs);
+    right: pdz.space(xs);
     height: 2px;
-    border-radius: var(--pdz-shape-corner-full);
+    border-radius: pdz.shape(corner-full);
   }
 
   &__grip {
     position: relative;
     width: 36px;
     height: 4px;
-    border-radius: var(--pdz-shape-corner-full);
-    background-color: pdz-color(outline);
+    border-radius: pdz.shape(corner-full);
+    background-color: pdz.color(outline);
     opacity: 0.7;
     transition: background-color 0.15s ease;
   }
@@ -183,20 +183,20 @@
 
   &__header {
     &--null {
-      background-color: pdz-color(secondary-container);
-      color: pdz-color(on-secondary-container);
-      border-bottom: 2px solid pdz-color(secondary);
+      background-color: pdz.color(secondary-container);
+      color: pdz.color(on-secondary-container);
+      border-bottom: 2px solid pdz.color(secondary);
     }
 
     &--banned {
-      background-color: pdz-color(error-container);
-      color: pdz-color(on-error-container);
-      border-bottom: 2px solid pdz-color(error);
+      background-color: pdz.color(error-container);
+      color: pdz.color(on-error-container);
+      border-bottom: 2px solid pdz.color(error);
     }
   }
 
   &__trash-icon {
-    margin-right: var(--pdz-space-xs);
+    margin-right: pdz.space(xs);
     font-size: 1.25rem;
     width: 1.25rem;
     height: 1.25rem;
@@ -204,11 +204,11 @@
 
   &__meta-chip {
     &--untiered {
-      border: 1px solid pdz-color(secondary-border);
+      border: 1px solid pdz.color(secondary-border);
     }
 
     &--banned {
-      border: 1px solid pdz-color(negative-border);
+      border: 1px solid pdz.color(negative);
     }
   }
 
@@ -260,32 +260,32 @@
       box-shadow 0.2s ease;
 
     &.is-drag-over {
-      background-color: pdz-color(primary-container-low);
-      box-shadow: inset 0 0 0 2px pdz-color(primary);
-      border-radius: var(--pdz-shape-corner-xs);
+      background-color: pdz.color(primary-container-low);
+      box-shadow: inset 0 0 0 2px pdz.color(primary);
+      border-radius: pdz.shape(corner-xs);
     }
 
     &--empty {
       display: flex;
       align-items: center;
       justify-content: center;
-      color: pdz-color(on-surface-variant);
+      color: pdz.color(on-surface-variant);
       @include apply-typography(body-sm);
       font-style: italic;
       min-height: 120px;
-      border: 2px dashed pdz-color(outline-variant);
-      border-radius: var(--pdz-shape-corner-xs);
-      margin: var(--pdz-space-2xs);
+      border: 2px dashed pdz.color(outline-variant);
+      border-radius: pdz.shape(corner-xs);
+      margin: pdz.space(2xs);
 
       span {
-        padding: var(--pdz-space-md);
+        padding: pdz.space(md);
         text-align: center;
       }
 
       &.is-drag-over {
-        border-color: pdz-color(primary);
+        border-color: pdz.color(primary);
         border-style: solid;
-        color: pdz-color(on-primary-container);
+        color: pdz.color(on-primary-container);
         font-weight: 500;
       }
     }
@@ -293,14 +293,14 @@
 
   &__count {
     @include apply-typography(label-xs);
-    color: pdz-color(on-surface-variant);
+    color: pdz.color(on-surface-variant);
     opacity: 0.6;
-    padding: var(--pdz-space-2xs) var(--pdz-space-xs);
+    padding: pdz.space(2xs) pdz.space(xs);
     text-align: right;
   }
 
   &--null {
-    border: 2px solid pdz-color(secondary);
+    border: 2px solid pdz.color(secondary);
 
     .tier__pokemon-list {
       min-height: 150px;
@@ -308,7 +308,7 @@
   }
 
   &--banned {
-    border: 2px solid pdz-color(error);
+    border: 2px solid pdz.color(error);
 
     .tier__pokemon-list {
       min-height: 80px;
@@ -320,24 +320,24 @@
 
 @keyframes pokemon-flash {
   0% {
-    background-color: pdz-color(surface);
+    background-color: pdz.color(surface);
   }
   30% {
-    background-color: pdz-color(primary-container);
+    background-color: pdz.color(primary-container);
   }
   100% {
-    background-color: pdz-color(surface);
+    background-color: pdz.color(surface);
   }
 }
 
 .pokemon-entry {
   display: flex;
   align-items: center;
-  gap: var(--pdz-space-xs);
-  padding: var(--pdz-space-xs);
-  background-color: pdz-color(surface);
-  border: 1px solid pdz-color(outline-variant);
-  border-radius: var(--pdz-shape-corner-xs);
+  gap: pdz.space(xs);
+  padding: pdz.space(xs);
+  background-color: pdz.color(surface);
+  border: 1px solid pdz.color(outline-variant);
+  border-radius: pdz.shape(corner-xs);
   cursor: grab;
   transition:
     background-color 0.2s ease,
@@ -353,8 +353,8 @@
   }
 
   &:hover {
-    background-color: pdz-color(surface-container-high);
-    border-color: pdz-color(primary);
+    background-color: pdz.color(surface-container-high);
+    border-color: pdz.color(primary);
     box-shadow: var(--pdz-level-1);
   }
 
@@ -365,8 +365,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: pdz-color(primary);
-    border-radius: var(--pdz-shape-corner-full);
+    background-color: pdz.color(primary);
+    border-radius: pdz.shape(corner-full);
     padding: 2px;
     box-shadow: var(--pdz-level-2);
     z-index: 1;
@@ -375,7 +375,7 @@
       font-size: 1rem;
       width: 1rem;
       height: 1rem;
-      color: pdz-color(on-primary);
+      color: pdz.color(on-primary);
     }
   }
 
@@ -388,12 +388,12 @@
   &__name {
     flex: 1;
     @include apply-typography(body-md);
-    color: pdz-color(on-surface);
+    color: pdz.color(on-surface);
   }
 
   &__actions {
     display: flex;
-    gap: var(--pdz-space-2xs);
+    gap: pdz.space(2xs);
     opacity: 0.7;
     transition: opacity 0.2s ease;
   }
@@ -403,12 +403,12 @@
   }
 
   &--selected {
-    background-color: pdz-color(primary-container);
-    border-color: pdz-color(primary);
+    background-color: pdz.color(primary-container);
+    border-color: pdz.color(primary);
     border-width: 1px;
 
     &:hover {
-      background-color: pdz-color(primary-container-high);
+      background-color: pdz.color(primary-container-high);
     }
 
     .pokemon-entry__actions {
@@ -427,14 +427,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--pdz-space-lg);
+  padding: pdz.space(lg);
   min-width: 280px;
-  background-color: pdz-color(surface);
-  border: 2px dashed pdz-color(outline);
-  border-radius: var(--pdz-shape-corner-md);
+  background-color: pdz.color(surface);
+  border: 2px dashed pdz.color(outline);
+  border-radius: pdz.shape(corner-md);
   cursor: pointer;
   transition: all 0.2s ease;
-  color: pdz-color(on-surface-variant);
+  color: pdz.color(on-surface-variant);
   flex-shrink: 0;
 
   mat-icon {
@@ -444,20 +444,20 @@
   }
 
   &:hover {
-    background-color: pdz-color(primary-container);
-    border-color: pdz-color(primary);
-    color: pdz-color(on-primary-container);
+    background-color: pdz.color(primary-container);
+    border-color: pdz.color(primary);
+    color: pdz.color(on-primary-container);
   }
 }
 
 .unsaved-indicator {
   display: inline-flex;
   align-items: center;
-  gap: var(--pdz-space-xs);
-  padding: var(--pdz-space-xs) var(--pdz-space-sm);
-  background-color: pdz-color(warning-container);
-  color: pdz-color(on-warning-container);
-  border-radius: var(--pdz-shape-corner-full);
+  gap: pdz.space(xs);
+  padding: pdz.space(xs) pdz.space(sm);
+  background-color: pdz.color(warning-container);
+  color: pdz.color(on-warning-container);
+  border-radius: pdz.shape(corner-full);
   @include apply-typography(label-sm);
 
   mat-icon {
@@ -470,11 +470,11 @@
 .drag-indicator {
   display: inline-flex;
   align-items: center;
-  gap: var(--pdz-space-xs);
-  padding: var(--pdz-space-xs) var(--pdz-space-sm);
-  background-color: pdz-color(secondary-container);
-  color: pdz-color(on-secondary-container);
-  border-radius: var(--pdz-shape-corner-full);
+  gap: pdz.space(xs);
+  padding: pdz.space(xs) pdz.space(sm);
+  background-color: pdz.color(secondary-container);
+  color: pdz.color(on-secondary-container);
+  border-radius: pdz.shape(corner-full);
   @include apply-typography(label-sm);
   font-weight: 600;
 
@@ -488,11 +488,11 @@
 .selection-indicator {
   display: inline-flex;
   align-items: center;
-  gap: var(--pdz-space-xs);
-  padding: var(--pdz-space-xs) var(--pdz-space-sm);
-  background-color: pdz-color(primary-container);
-  color: pdz-color(on-primary-container);
-  border-radius: var(--pdz-shape-corner-full);
+  gap: pdz.space(xs);
+  padding: pdz.space(xs) pdz.space(sm);
+  background-color: pdz.color(primary-container);
+  color: pdz.color(on-primary-container);
+  border-radius: pdz.shape(corner-full);
   @include apply-typography(label-sm);
   font-weight: 600;
 
@@ -505,7 +505,7 @@
   .icon-button {
     width: 1.5rem;
     height: 1.5rem;
-    margin-left: var(--pdz-space-xs);
+    margin-left: pdz.space(xs);
 
     mat-icon {
       font-size: 1rem;

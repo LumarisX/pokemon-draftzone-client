@@ -1,4 +1,4 @@
-@use "global.scss" as *;
+@use "pdz-theming" as pdz;
 @use "mixins" as *;
 @use "mixins/cards" as *;
 @use "mixins/buttons" as *;
@@ -31,7 +31,7 @@
       .tag-icons {
         display: flex;
         align-items: center;
-        gap: var(--pdz-space-2xs);
+        gap: pdz.space(2xs);
 
         .tag-icon {
           width: 1.5rem;
@@ -46,16 +46,16 @@
 
   .card-body {
     .description-section {
-      margin-bottom: var(--pdz-space-md);
+      margin-bottom: pdz.space(md);
 
       .meta-grid {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
-        gap: var(--pdz-space-sm);
-        margin-bottom: var(--pdz-space-lg);
-        padding: var(--pdz-space-md);
-        background-color: pdz-color(primary-container-low);
-        border-radius: var(--pdz-shape-corner-sm);
+        gap: pdz.space(sm);
+        margin-bottom: pdz.space(lg);
+        padding: pdz.space(md);
+        background-color: pdz.color(primary-container-low);
+        border-radius: pdz.shape(corner-sm);
 
         @include respond-above(medium) {
           grid-template-columns: repeat(4, 1fr);
@@ -64,17 +64,17 @@
         .meta-item {
           display: flex;
           flex-direction: column;
-          gap: var(--pdz-space-2xs);
+          gap: pdz.space(2xs);
 
           .meta-label {
             @include apply-typography(label-sm);
-            color: pdz-color(on-primary-container);
+            color: pdz.color(on-primary-container);
           }
 
           .meta-value {
             @include apply-typography(body-sm);
             font-weight: var(--pdz-font-weight-semibold);
-            color: pdz-color(on-primary-container);
+            color: pdz.color(on-primary-container);
           }
         }
       }
@@ -83,16 +83,16 @@
         .description-label {
           display: block;
           @include apply-typography(label-sm);
-          color: pdz-color(on-primary-container);
-          margin-bottom: var(--pdz-space-xs);
+          color: pdz.color(on-primary-container);
+          margin-bottom: pdz.space(xs);
         }
 
         .markdown-preview {
           @include apply-typography(body-md);
-          color: pdz-color(on-primary-container);
-          padding: var(--pdz-space-sm);
-          background-color: pdz-color(primary-container-low);
-          border-radius: var(--pdz-shape-corner-sm);
+          color: pdz.color(on-primary-container);
+          padding: pdz.space(sm);
+          background-color: pdz.color(primary-container-low);
+          border-radius: pdz.shape(corner-sm);
           max-height: 16rem;
           overflow-x: auto;
         }
@@ -102,17 +102,17 @@
     .league-details {
       .link-section {
         display: flex;
-        gap: var(--pdz-space-xs);
+        gap: pdz.space(xs);
         align-items: baseline;
         flex-wrap: wrap;
-        margin-bottom: var(--pdz-space-sm);
+        margin-bottom: pdz.space(sm);
 
         label {
           font-weight: var(--pdz-font-weight-semibold);
         }
 
         a {
-          color: pdz-color(primary);
+          color: pdz.color(primary);
           text-decoration: underline;
           overflow: hidden;
           white-space: nowrap;
@@ -126,17 +126,17 @@
 
       .host-link-section {
         display: flex;
-        gap: var(--pdz-space-xs);
+        gap: pdz.space(xs);
         align-items: baseline;
         flex-wrap: wrap;
-        margin-bottom: var(--pdz-space-md);
+        margin-bottom: pdz.space(md);
 
         label {
           font-weight: var(--pdz-font-weight-semibold);
         }
 
         a {
-          color: pdz-color(primary);
+          color: pdz.color(primary);
           text-decoration: underline;
           overflow: hidden;
           white-space: nowrap;
@@ -154,18 +154,18 @@
       }
 
       .divisions-section {
-        margin-top: var(--pdz-space-md);
+        margin-top: pdz.space(md);
 
         > strong {
           display: block;
-          margin-bottom: var(--pdz-space-sm);
+          margin-bottom: pdz.space(sm);
           font-weight: var(--pdz-font-weight-bold);
         }
 
         .divisions-grid {
           display: grid;
           grid-template-columns: 1fr;
-          gap: var(--pdz-space-md);
+          gap: pdz.space(md);
 
           @include respond-above(medium) {
             grid-template-columns: repeat(2, 1fr);
@@ -176,37 +176,37 @@
           }
 
           .division-card {
-            padding: var(--pdz-space-md);
-            border-radius: var(--pdz-shape-corner-sm);
+            padding: pdz.space(md);
+            border-radius: pdz.shape(corner-sm);
             box-shadow: var(--pdz-level-1);
 
             &.team-a {
-              background-color: pdz-color(primary-container-low);
+              background-color: pdz.color(primary-container-low);
             }
 
             &.team-b {
-              background-color: pdz-color(secondary-container-low);
+              background-color: pdz.color(secondary-container-low);
             }
 
             .division-name {
               font-weight: var(--pdz-font-weight-semibold);
-              margin-bottom: var(--pdz-space-2xs);
+              margin-bottom: pdz.space(2xs);
             }
 
             .division-description {
               @include apply-typography(body-sm);
               opacity: 0.8;
-              margin-bottom: var(--pdz-space-xs);
+              margin-bottom: pdz.space(xs);
             }
 
             .division-details {
               @include apply-typography(body-sm);
-              padding: 0 var(--pdz-space-sm);
+              padding: 0 pdz.space(sm);
 
               .division-field {
                 display: flex;
-                gap: var(--pdz-space-xs);
-                margin-bottom: var(--pdz-space-2xs);
+                gap: pdz.space(xs);
+                margin-bottom: pdz.space(2xs);
 
                 label {
                   font-weight: var(--pdz-font-weight-semibold);
@@ -219,7 +219,7 @@
                 &.prize-value {
                   display: flex;
                   align-items: center;
-                  gap: var(--pdz-space-xs);
+                  gap: pdz.space(xs);
 
                   .prize-icons {
                     display: flex;
@@ -230,13 +230,13 @@
                 &.skill-range {
                   display: flex;
                   align-items: center;
-                  gap: var(--pdz-space-xs);
+                  gap: pdz.space(xs);
 
                   .skill-icons {
                     display: flex;
                     align-items: center;
-                    gap: var(--pdz-space-2xs);
-                    margin-top: var(--pdz-space-2xs);
+                    gap: pdz.space(2xs);
+                    margin-top: pdz.space(2xs);
 
                     .skill-icon {
                       width: 1.5rem;
@@ -252,18 +252,18 @@
     }
 
     .league-info-section {
-      margin-top: var(--pdz-space-md);
-      padding-top: var(--pdz-space-md);
-      border-top: 1px solid pdz-color(primary-border);
+      margin-top: pdz.space(md);
+      padding-top: pdz.space(md);
+      border-top: 1px solid pdz.color(primary-border);
       display: flex;
       flex-direction: row;
       flex-wrap: wrap;
       justify-content: space-between;
-      gap: var(--pdz-space-sm);
+      gap: pdz.space(sm);
 
       .info-item {
         display: flex;
-        gap: var(--pdz-space-xs);
+        gap: pdz.space(xs);
         align-items: center;
 
         strong {
@@ -278,7 +278,7 @@
           .prize-icons {
             display: flex;
             align-items: center;
-            gap: var(--pdz-space-2xs);
+            gap: pdz.space(2xs);
 
             .prize-icon {
               width: 1rem;
@@ -292,7 +292,7 @@
 
   .card-footer {
     display: flex;
-    gap: var(--pdz-space-sm);
+    gap: pdz.space(sm);
 
     .signup-button {
       @include flat-button-primary();
@@ -305,15 +305,15 @@
     .delete-btn {
       @include flat-button-menu(
         (
-          padding: var(--pdz-space-xs) var(--pdz-space-md),
+          padding: pdz.space(xs) pdz.space(md),
         )
       );
-      background-color: pdz-color(error-container);
-      color: pdz-color(on-error-container);
+      background-color: pdz.color(error-container);
+      color: pdz.color(on-error-container);
 
       &:hover {
-        background-color: pdz-color(error);
-        color: pdz-color(on-error);
+        background-color: pdz.color(error);
+        color: pdz.color(on-error);
       }
     }
   }
@@ -322,8 +322,8 @@
 .status-badge {
   display: inline-flex;
   align-items: center;
-  padding: var(--pdz-space-2xs) var(--pdz-space-sm);
-  border-radius: var(--pdz-shape-corner-full);
+  padding: pdz.space(2xs) pdz.space(sm);
+  border-radius: pdz.shape(corner-full);
   box-shadow: var(--pdz-level-1);
   font-size: 0.75rem;
   font-weight: var(--pdz-font-weight-semibold);
@@ -331,18 +331,18 @@
   white-space: nowrap;
 
   &.status-pending {
-    background-color: pdz-color(warning-container);
-    color: pdz-color(on-warning-container);
+    background-color: pdz.color(warning-container);
+    color: pdz.color(on-warning-container);
   }
 
   &.status-approved {
-    background-color: pdz-color(success);
-    color: pdz-color(on-success);
+    background-color: pdz.color(success);
+    color: pdz.color(on-success);
   }
 
   &.status-denied {
-    background-color: pdz-color(error);
-    color: pdz-color(on-error);
+    background-color: pdz.color(error);
+    color: pdz.color(on-error);
   }
 }
 

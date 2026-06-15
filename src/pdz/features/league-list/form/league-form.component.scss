@@ -1,12 +1,12 @@
-@use "global.scss" as *;
+@use "pdz-theming" as pdz;
 @use "mixins" as *;
 @use "mixins/buttons" as *;
-@use "breakpoints" as *;
+@use "tokens/breakpoints" as *;
 @use "sass:map";
 
 :host {
   display: block;
-  padding: var(--pdz-space-lg);
+  padding: pdz.space(lg);
   min-height: 100vh;
 }
 
@@ -16,7 +16,7 @@
 }
 
 .form-header {
-  margin-bottom: var(--pdz-space-lg);
+  margin-bottom: pdz.space(lg);
   text-align: center;
 
   h1 {
@@ -29,21 +29,21 @@
 }
 
 .league-form {
-  background-color: pdz-color(surface);
-  border: 1px solid pdz-color(menu-border);
-  border-radius: var(--pdz-shape-corner-lg);
-  padding: var(--pdz-space-xl);
+  background-color: pdz.color(surface);
+  border: 1px solid pdz.color(menu-border);
+  border-radius: pdz.shape(corner-lg);
+  padding: pdz.space(xl);
   box-shadow: var(--pdz-level-2);
 
   @media (max-width: map.get($breakpoints, medium)) {
-    padding: var(--pdz-space-lg);
+    padding: pdz.space(lg);
   }
 }
 
 .form-field {
   display: flex;
   flex-direction: column;
-  margin-bottom: var(--pdz-space-lg);
+  margin-bottom: pdz.space(lg);
   &--inline {
     margin-bottom: 0;
   }
@@ -51,20 +51,20 @@
 
 .form-label {
   @include apply-typography(label-md);
-  color: pdz-color(on-surface);
-  margin-bottom: var(--pdz-space-xs);
+  color: pdz.color(on-surface);
+  margin-bottom: pdz.space(xs);
   font-weight: 500;
 
   .required {
-    color: pdz-color(error);
+    color: pdz.color(error);
     margin-left: 2px;
   }
 }
 
 .form-label-inline {
   @include apply-typography(label-sm);
-  color: pdz-color(on-surface);
-  margin-bottom: var(--pdz-space-xs);
+  color: pdz.color(on-surface);
+  margin-bottom: pdz.space(xs);
   font-weight: 500;
 }
 
@@ -73,39 +73,39 @@
 .form-select {
   @include apply-typography(body-md);
   width: 100%;
-  padding: var(--pdz-space-sm) var(--pdz-space-md);
-  background-color: pdz-color(menu-container);
-  color: pdz-color(on-menu-container);
-  border: 1px solid pdz-color(menu-border);
-  border-radius: var(--pdz-shape-corner-sm);
+  padding: pdz.space(sm) pdz.space(md);
+  background-color: pdz.color(menu-container);
+  color: pdz.color(on-menu-container);
+  border: 1px solid pdz.color(menu-border);
+  border-radius: pdz.shape(corner-sm);
   transition: all 0.2s ease-in-out;
 
   &:focus {
     outline: none;
-    border-color: pdz-color(menu);
-    box-shadow: 0 0 0 2px pdz-color(menu-container);
+    border-color: pdz.color(menu);
+    box-shadow: 0 0 0 2px pdz.color(menu-container);
   }
 
   &:hover:not(:disabled) {
-    border-color: pdz-color(menu-darker);
+    border-color: pdz.color(menu-darker);
   }
 
   &::placeholder {
-    color: pdz-color(on-surface-variant);
+    color: pdz.color(on-surface-variant);
     opacity: 0.7;
   }
 
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
-    background-color: pdz-color(menu-subtle);
+    background-color: pdz.color(menu-subtle);
   }
 
   &.is-invalid {
-    border-color: pdz-color(error);
+    border-color: pdz.color(error);
 
     &:focus {
-      box-shadow: 0 0 0 2px pdz-color(error-container);
+      box-shadow: 0 0 0 2px pdz.color(error-container);
     }
   }
 }
@@ -122,71 +122,71 @@
   appearance: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23808080' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right var(--pdz-space-sm) center;
-  padding-right: var(--pdz-space-xl);
+  background-position: right pdz.space(sm) center;
+  padding-right: pdz.space(xl);
 
   option {
-    background-color: pdz-color(menu);
-    color: pdz-color(on-menu);
+    background-color: pdz.color(menu);
+    color: pdz.color(on-menu);
   }
 }
 
 .checkbox-group {
   display: flex;
   flex-direction: column;
-  gap: var(--pdz-space-xs);
-  padding: var(--pdz-space-sm);
-  background-color: pdz-color(menu-container);
-  border: 1px solid pdz-color(menu-border);
-  border-radius: var(--pdz-shape-corner-sm);
+  gap: pdz.space(xs);
+  padding: pdz.space(sm);
+  background-color: pdz.color(menu-container);
+  border: 1px solid pdz.color(menu-border);
+  border-radius: pdz.shape(corner-sm);
   max-height: 8rem;
   overflow-y: auto;
 
   &.is-invalid {
-    border-color: pdz-color(error);
+    border-color: pdz.color(error);
   }
 }
 
 .checkbox-item {
   display: flex;
   align-items: center;
-  gap: var(--pdz-space-sm);
+  gap: pdz.space(sm);
   cursor: pointer;
-  padding: var(--pdz-space-xs) var(--pdz-space-sm);
-  border-radius: var(--pdz-shape-corner-xs);
+  padding: pdz.space(xs) pdz.space(sm);
+  border-radius: pdz.shape(corner-xs);
   transition: background-color 0.15s ease;
 
   &:hover {
-    background-color: pdz-color(menu-container-hover);
+    background-color: pdz.color(menu-container-hover);
   }
 
   input[type="checkbox"] {
     width: 1rem;
     height: 1rem;
-    accent-color: pdz-color(primary);
+    accent-color: pdz.color(primary);
     cursor: pointer;
     flex-shrink: 0;
   }
 
   .checkbox-label {
     @include apply-typography(body-sm);
-    color: pdz-color(on-menu-container);
+    color: pdz.color(on-menu-container);
     user-select: none;
   }
 }
 
 .error-message {
   @include apply-typography(body-sm);
-  color: pdz-color(error);
-  margin-top: var(--pdz-space-xs);
+  color: pdz.color(error);
+  margin-top: pdz.space(xs);
   display: block;
 }
 
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: var(--pdz-space-lg);
-  margin-bottom: var(--pdz-space-lg);
+  gap: pdz.space(lg);
+  margin-bottom: pdz.space(lg);
 
   @media (max-width: map.get($breakpoints, medium)) {
     grid-template-columns: 1fr;
@@ -205,18 +205,18 @@
     margin-bottom: 0;
 
     @media (max-width: map.get($breakpoints, medium)) {
-      margin-bottom: var(--pdz-space-lg);
+      margin-bottom: pdz.space(lg);
     }
   }
 }
 
 .form-actions {
   display: flex;
-  gap: var(--pdz-space-md);
+  gap: pdz.space(md);
   justify-content: flex-end;
-  margin-top: var(--pdz-space-xl);
-  padding-top: var(--pdz-space-lg);
-  border-top: 1px solid pdz-color(menu-border);
+  margin-top: pdz.space(xl);
+  padding-top: pdz.space(lg);
+  border-top: 1px solid pdz.color(menu-border);
 
   @media (max-width: map.get($breakpoints, medium)) {
     flex-direction: column-reverse;
@@ -226,8 +226,8 @@
 .form-button {
   @include base-button(
     (
-      padding: var(--pdz-space-sm) var(--pdz-space-xl),
-      border-radius: var(--pdz-shape-corner-sm),
+      padding: pdz.space(sm) pdz.space(xl),
+      border-radius: pdz.shape(corner-sm),
       font-weight: 500,
       min-width: 140px,
     )
@@ -238,17 +238,17 @@
   }
 
   &--menu {
-    background-color: pdz-color(menu);
-    color: pdz-color(on-menu);
-    border: 1px solid pdz-color(menu-border);
+    background-color: pdz.color(menu);
+    color: pdz.color(on-menu);
+    border: 1px solid pdz.color(menu-border);
 
     &:not(:disabled):hover {
-      background-color: pdz-color(menu-container-high);
+      background-color: pdz.color(menu-container-high);
       box-shadow: var(--pdz-level-2);
     }
 
     &:active {
-      background-color: pdz-color(menu-container-hover);
+      background-color: pdz.color(menu-container-hover);
     }
 
     &:disabled {
@@ -258,17 +258,17 @@
   }
 
   &--secondary {
-    background-color: pdz-color(menu);
-    color: pdz-color(on-menu);
-    border: 1px solid pdz-color(menu-border);
+    background-color: pdz.color(menu);
+    color: pdz.color(on-menu);
+    border: 1px solid pdz.color(menu-border);
 
     &:not(:disabled):hover {
-      background-color: pdz-color(menu-darker);
+      background-color: pdz.color(menu-darker);
       box-shadow: var(--pdz-level-1);
     }
 
     &:active {
-      background-color: pdz-color(menu-subtle);
+      background-color: pdz.color(menu-subtle);
     }
 
     &:disabled {

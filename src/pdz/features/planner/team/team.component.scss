@@ -1,4 +1,4 @@
-@use "global.scss" as *;
+@use "pdz-theming" as pdz;
 
 :host {
   display: flex;
@@ -9,7 +9,7 @@
 
 .points-container {
   flex-grow: 0;
-  border-top: 2px pdz-color(outline) solid;
+  border-top: 2px pdz.color(outline) solid;
   display: flex;
   flex-direction: column;
 
@@ -34,9 +34,9 @@ table {
   thead tr {
     top: 0px;
     z-index: 1100;
-    background-color: pdz-color(primary);
-    color: pdz-color(on-primary);
-    border-bottom: 2px pdz-color(primary-border) solid;
+    background-color: pdz.color(primary);
+    color: pdz.color(on-primary);
+    border-bottom: 2px pdz.color(primary-border) solid;
     position: sticky;
     font-size: var(--pdz-font-size-xs);
   }
@@ -56,7 +56,7 @@ table {
 }
 
 .team-item:not(:last-child) {
-  border-bottom: 1px pdz-color(primary-border) solid;
+  border-bottom: 1px pdz.color(primary-border) solid;
 }
 
 .value-input {
@@ -84,7 +84,7 @@ table {
 
 .drag-icon {
   cursor: move;
-  color: pdz-color(on-surface-variant);
+  color: pdz.color(on-surface-variant);
 }
 
 .value-input,
@@ -96,7 +96,7 @@ table {
   box-sizing: border-box;
   max-width: 6rem;
   object-fit: contain;
-  border-radius: var(--pdz-shape-corner-xs);
+  border-radius: pdz.shape(corner-xs);
   box-shadow:
     0 5px 5px -3px rgba(0, 0, 0, 0.2),
     0 8px 10px 1px rgba(0, 0, 0, 0.14),

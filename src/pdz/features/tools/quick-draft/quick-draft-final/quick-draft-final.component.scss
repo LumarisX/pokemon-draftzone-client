@@ -1,5 +1,7 @@
+@use "pdz-theming" as pdz;
+
 .draft-container-wrapper {
-  border: 2px solid var(--pdz-color-primary-border-variant);
+  border: 2px solid pdz.color(primary-border);
   height: 100%;
   width: 100%;
   max-height: 100%;
@@ -13,7 +15,7 @@
 .draft-container {
   display: flex;
   flex-wrap: wrap;
-  padding: var(--pdz-space-lg);
+  padding: pdz.space(lg);
   width: fit-content;
   align-items: center;
   justify-content: center;
@@ -34,7 +36,7 @@
 }
 
 h2 {
-  color: var(--pdz-color-primary);
+  color: pdz.color(primary);
 }
 
 :host {

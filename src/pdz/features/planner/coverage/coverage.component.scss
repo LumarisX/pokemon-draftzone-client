@@ -1,3 +1,5 @@
+@use "pdz-theming" as pdz;
+
 .chart-wrapper {
   height: 8rem;
   width: 8rem;
@@ -7,14 +9,14 @@
   display: flex;
 
   justify-content: center;
-  padding: var(--pdz-space-lg);
+  padding: pdz.space(lg);
 
   .outlined {
-    border-radius: var(--pdz-shape-corner-lg);
-    background-color: var(--pdz-color-surface);
-    color: var(--pdz-color-primary);
+    border-radius: pdz.shape(corner-lg);
+    background-color: pdz.color(surface);
+    color: pdz.color(primary);
     box-shadow: var(--pdz-level-3);
-    padding: var(--pdz-space-lg);
+    padding: pdz.space(lg);
   }
 
   .charts-container {
@@ -42,7 +44,7 @@
 
       .coverage-container {
         @media (min-width: 768px) {
-          border-right: 0.125rem solid var(--pdz-color-primary-border-variant);
+          border-right: 0.125rem solid pdz.color(primary-border);
         }
 
         .pokemon-charts-title {
@@ -52,7 +54,7 @@
         }
         .coverage-charts-wrapper {
           display: flex;
-          padding: var(--pdz-space-sm);
+          padding: pdz.space(sm);
           max-height: fit-content;
           overflow-x: auto;
           @media (min-width: 768px) {
@@ -96,7 +98,7 @@
       .team-options-container {
         display: flex;
         position: relative;
-        border-bottom: 3px solid var(--pdz-color-primary-border-variant);
+        border-bottom: 3px solid pdz.color(primary-border);
         .team-option {
           flex-grow: 1;
           justify-content: center;
@@ -121,7 +123,7 @@
           left: 0;
           width: calc(100% / 3);
           height: 2px;
-          background-color: var(--pdz-color-primary-border);
+          background-color: pdz.color(primary-border);
           transition: transform 0.3s ease-in-out;
         }
       }
@@ -147,8 +149,8 @@
 
 .chart-tooltip {
   position: fixed;
-  background-color: var(--pdz-color-secondary);
-  color: var(--pdz-color-on-secondary);
+  background-color: pdz.color(secondary);
+  color: pdz.color(on-secondary);
   padding: 5px 10px;
   border-radius: 5px;
   font-size: 12px;

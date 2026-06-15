@@ -1,5 +1,5 @@
 @use "mixins/buttons" as *;
-@use "global.scss" as *;
+@use "pdz-theming" as pdz;
 
 :host {
   display: flex;
@@ -15,10 +15,10 @@
   .user-icon {
     width: 1.5rem;
     height: 1.5rem;
-    border-radius: var(--pdz-shape-corner-full);
+    border-radius: pdz.shape(corner-full);
   }
   .username-text {
-    padding-left: var(--pdz-space-sm);
+    padding-left: pdz.space(sm);
     max-width: 4rem;
     text-overflow: clip;
     font-size: 0.9rem;
@@ -32,10 +32,10 @@
   @include flat-button(
     (
       box-shadow-hover: var(--pdz-level-0),
-      border-radius: var(--pdz-shape-corner-md),
-      padding: var(--pdz-space-2xs) var(--pdz-space-sm),
-      background-hover: pdz-color(surface-container),
-      border: 1px solid pdz-color(outline-variant),
+      border-radius: pdz.shape(corner-md),
+      padding: pdz.space(2xs) pdz.space(sm),
+      background-hover: pdz.color(surface-container),
+      border: 1px solid pdz.color(outline-variant),
     )
   );
 }

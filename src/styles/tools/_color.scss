@@ -1,0 +1,30 @@
+@use "sass:list";
+@use "sass:map";
+@use "themes/defaults" as defaults;
+
+@function color($color-name, $fallback: null) {
+  @if not list.index(defaults.$valid-tokens, $color-name) {
+    @error "'#{$color-name}' is not a valid PDZ semantic color token. Available tokens: #{defaults.$valid-tokens}";
+  }
+
+  @if $fallback {
+    @return var(--pdz-color-#{$color-name}, #{$fallback});
+  }
+
+  @return var(--pdz-color-#{$color-name}, var(--pdz-color-debug));
+}
+
+@function color-rgba($color-name, $color-opacity: 1, $fallback-rgb: null) {
+  @if not list.index(defaults.$valid-tokens, $color-name) {
+    @error "'#{$color-name}' is not a valid PDZ semantic color token. Available tokens: #{defaults.$valid-tokens}";
+  }
+
+  @if $fallback-rgb {
+    @return rgba(
+      var(--pdz-color-#{$color-name}-rgb, #{$fallback-rgb}),
+      $color-opacity
+    );
+  }
+
+  @return rgba(var(--pdz-color-#{$color-name}-rgb), $color-opacity);
+}

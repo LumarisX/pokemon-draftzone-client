@@ -1,4 +1,4 @@
-@use "global.scss" as *;
+@use "pdz-theming" as pdz;
 @use "mixins/buttons" as *;
 
 :host {
@@ -14,8 +14,8 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: var(--pdz-space-md);
-    border-bottom: 1px solid pdz-color(outline-variant);
+    padding: pdz.space(md);
+    border-bottom: 1px solid pdz.color(outline-variant);
     min-width: 100%;
   }
 
@@ -23,7 +23,7 @@
     font-family: var(--pdz-font-fancy);
     font-size: 1.25rem;
     font-weight: var(--pdz-font-weight-bold);
-    color: pdz-color(on-surface);
+    color: pdz.color(on-surface);
   }
 
   .close-button {
@@ -43,19 +43,19 @@
   &__tabs-container {
     display: flex;
     align-items: stretch;
-    border-bottom: 1px solid pdz-color(menu-border);
+    border-bottom: 1px solid pdz.color(menu-border);
     gap: 0.25rem;
-    padding-right: var(--pdz-shape-corner-lg);
+    padding-right: pdz.shape(corner-lg);
   }
 
   &__tabs {
     display: flex;
-    padding: 0 var(--pdz-shape-corner-lg);
+    padding: 0 pdz.shape(corner-lg);
     gap: 0.25rem;
     overflow-x: auto;
     overflow-y: hidden;
     scrollbar-width: thin;
-    scrollbar-color: pdz-color(outline-variant) pdz-color(menu-container-low);
+    scrollbar-color: pdz.color(outline-variant) pdz.color(menu-container-low);
     flex: 1;
 
     &::-webkit-scrollbar {
@@ -63,15 +63,15 @@
     }
 
     &::-webkit-scrollbar-track {
-      background: pdz-color(menu-container-low);
+      background: pdz.color(menu-container-low);
     }
 
     &::-webkit-scrollbar-thumb {
-      background: pdz-color(outline-variant);
+      background: pdz.color(outline-variant);
       border-radius: 3px;
 
       &:hover {
-        background: pdz-color(outline);
+        background: pdz.color(outline);
       }
     }
   }
@@ -88,13 +88,13 @@
     align-items: center;
     justify-content: center;
     position: relative;
-    background-color: pdz-color(menu-container-low);
-    color: pdz-color(on-surface-variant);
+    background-color: pdz.color(menu-container-low);
+    color: pdz.color(on-surface-variant);
     width: fit-content;
     min-width: 3.5rem;
     height: 3.5rem;
     box-shadow: var(--pdz-level-1);
-    padding: 0 var(--pdz-shape-corner-md);
+    padding: 0 pdz.shape(corner-md);
     cursor: pointer;
     user-select: none;
     transition:
@@ -109,8 +109,8 @@
     }
 
     &.is-active {
-      background-color: pdz-color(surface);
-      color: pdz-color(on-surface);
+      background-color: pdz.color(surface);
+      color: pdz.color(on-surface);
       border-bottom: 2px solid transparent;
     }
   }
@@ -125,8 +125,8 @@
     width: 1.25rem;
     height: 1.25rem;
     padding: 0;
-    background-color: pdz-color(error-container);
-    color: pdz-color(on-error-container);
+    background-color: pdz.color(error-container);
+    color: pdz.color(on-error-container);
     border: none;
     border-radius: 50%;
     cursor: pointer;
@@ -138,7 +138,7 @@
     z-index: 10;
 
     &:hover {
-      background-color: pdz-color(error);
+      background-color: pdz.color(error);
       transform: scale(1.1);
     }
 
@@ -153,10 +153,10 @@
 
   &__main {
     width: 100%;
-    background-color: pdz-color(surface);
+    background-color: pdz.color(surface);
     overflow: auto;
     flex-grow: 1;
-    padding: var(--pdz-space-md);
+    padding: pdz.space(md);
   }
 
   &__add-header {
@@ -165,7 +165,7 @@
     h2 {
       font-size: 1.25rem;
       font-weight: 600;
-      color: pdz-color(on-surface);
+      color: pdz.color(on-surface);
     }
   }
 
@@ -181,9 +181,9 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.75rem;
-    background: pdz-color(menu-container-low);
-    border: 2px solid pdz-color(menu-border);
-    border-radius: var(--pdz-shape-corner-md);
+    background: pdz.color(menu-container-low);
+    border: 2px solid pdz.color(menu-border);
+    border-radius: pdz.shape(corner-md);
     cursor: pointer;
     transition:
       transform 120ms ease,
@@ -194,8 +194,8 @@
     &:hover:not(:disabled) {
       transform: translateY(-2px);
       box-shadow: var(--pdz-level-2);
-      background: pdz-color(menu-container);
-      border-color: pdz-color(primary);
+      background: pdz.color(menu-container);
+      border-color: pdz.color(primary);
     }
 
     &:active:not(:disabled) {
@@ -206,19 +206,19 @@
     &:disabled {
       opacity: 0.5;
       cursor: not-allowed;
-      background: pdz-color(menu-container-low);
-      border-color: pdz-color(menu-border);
+      background: pdz.color(menu-container-low);
+      border-color: pdz.color(menu-border);
     }
 
     .teambuilder__pokemon-name {
       font-size: 0.875rem;
       font-weight: 600;
-      color: pdz-color(on-surface);
+      color: pdz.color(on-surface);
       text-align: center;
     }
 
     &:disabled .teambuilder__pokemon-name {
-      color: pdz-color(on-surface-variant);
+      color: pdz.color(on-surface-variant);
     }
   }
 
@@ -232,7 +232,7 @@
 }
 
 .export-area {
-  background-color: pdz-color(menu-container-low);
+  background-color: pdz.color(menu-container-low);
   padding: 0.5rem;
   border-radius: 0.5rem;
   height: 100%;

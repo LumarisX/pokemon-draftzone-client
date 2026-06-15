@@ -1,4 +1,4 @@
-@use "global.scss" as *;
+@use "pdz-theming" as pdz;
 @use "mixins" as *;
 @use "../league.mixins" as *;
 
@@ -9,10 +9,10 @@
   box-sizing: border-box;
 
   &__body {
-    padding: var(--pdz-space-lg);
+    padding: pdz.space(lg);
     display: flex;
     flex-direction: column;
-    gap: var(--pdz-space-md);
+    gap: pdz.space(md);
   }
 
   &__back {

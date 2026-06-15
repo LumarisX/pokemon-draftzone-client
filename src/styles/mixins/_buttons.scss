@@ -5,10 +5,10 @@
 // Provides base, flat, icon, and floating button variants with customization.
 //
 // @requires sass:map - For map manipulation and merging
-// @requires global - For pdz-color() function and theme access
+// @requires global - For pdz.color() function and theme access
 // ============================================================================
 
-@use "global.scss" as *;
+@use "pdz-theming" as pdz;
 @use "sass:map";
 
 // ----------------------------------------------------------------------------
@@ -24,12 +24,12 @@
 ///   $custom-theme: create-themed-button-map('secondary');
 @function create-themed-button-map($theme-color: "primary") {
   @return (
-    background: pdz-color("#{$theme-color}-container"),
-    background-hover: pdz-color("#{$theme-color}-container-hover"),
-    background-selected: pdz-color("#{$theme-color}-container-high"),
+    background: pdz.color("#{$theme-color}-container"),
+    background-hover: pdz.color("#{$theme-color}-container-hover"),
+    background-selected: pdz.color("#{$theme-color}-container-high"),
     border-width: 1px,
-    border-color: pdz-color("#{$theme-color}-border"),
-    color: pdz-color(on-surface)
+    border-color: pdz.color("#{$theme-color}-border"),
+    color: pdz.color(on-surface)
   );
 }
 
@@ -51,11 +51,11 @@ $button-menu-defaults: create-themed-button-map("menu") !default;
 $base-button-defaults: (
   padding: 0,
   font-size: 1rem,
-  gap: var(--pdz-space-xs),
+  gap: pdz.space(xs),
   background: transparent,
   border-width: 0px,
   border-style: solid,
-  border-color: pdz-color(outline),
+  border-color: pdz.color(outline),
   box-shadow-hover: var(--pdz-level-1),
   opacity-disabled: 0.6,
   cursor-disabled: not-allowed,
@@ -155,8 +155,8 @@ $base-button-defaults: (
 
 /// Flat button default configuration
 $flat-button-defaults: (
-  padding: var(--pdz-space-xs) var(--pdz-space-xl),
-  border-radius: var(--pdz-shape-corner-sm),
+  padding: pdz.space(xs) pdz.space(xl),
+  border-radius: pdz.shape(corner-sm),
   background: transparent,
   background-hover: none,
   border-color: transparent,
@@ -196,8 +196,8 @@ $flat-button-defaults: (
 
 /// Icon button default configuration - square buttons for icons only
 $icon-button-defaults: (
-  padding: var(--pdz-space-xs),
-  border-radius: var(--pdz-shape-corner-sm),
+  padding: pdz.space(xs),
+  border-radius: pdz.shape(corner-sm),
   width: 2.5rem,
   height: 2.5rem,
   background: transparent,
@@ -239,16 +239,16 @@ $icon-button-defaults: (
 
 /// Floating action button default configuration
 $float-button-defaults: (
-  background: pdz-color(menu-container),
-  background-hover: pdz-color(menu-container-hover),
-  background-disabled: pdz-color(surface-disabled),
-  padding: var(--pdz-space-md),
-  border-radius: var(--pdz-shape-corner-full),
+  background: pdz.color(menu-container),
+  background-hover: pdz.color(menu-container-hover),
+  background-disabled: pdz.color(surface-disabled),
+  padding: pdz.space(md),
+  border-radius: pdz.shape(corner-full),
   box-shadow: var(--pdz-level-3),
   box-shadow-hover: var(--pdz-level-4),
-  border: 1px solid pdz-color(menu-border),
-  color: pdz-color(on-menu-container),
-  color-disabled: pdz-color(on-surface-disabled),
+  border: 1px solid pdz.color(menu-border),
+  color: pdz.color(on-menu-container),
+  color-disabled: pdz.color(on-surface-disabled),
   transition: all 0.2s ease-in-out,
   icon-size: 2rem,
 ) !default;
@@ -294,8 +294,8 @@ $float-button-defaults: (
 /// Floating buttons container default configuration
 $float-buttons-defaults: (
   position: sticky,
-  bottom: var(--pdz-space-lg),
-  margin-right: var(--pdz-space-lg),
+  bottom: pdz.space(lg),
+  margin-right: pdz.space(lg),
   z-index: 10000,
   radial-radius: 6rem,
   icon-size: 2rem,
@@ -341,17 +341,17 @@ $float-buttons-defaults: (
 
   // All buttons in the radial menu
   button {
-    background-color: pdz-color(menu-container);
-    padding: var(--pdz-space-md);
-    border-radius: var(--pdz-shape-corner-full);
+    background-color: pdz.color(menu-container);
+    padding: pdz.space(md);
+    border-radius: pdz.shape(corner-full);
     box-shadow: var(--pdz-level-3);
-    border: 1px solid pdz-color(menu-container-low);
-    color: pdz-color(on-menu-container);
+    border: 1px solid pdz.color(menu-container-low);
+    color: pdz.color(on-menu-container);
 
     &:hover:not(:disabled) {
       box-shadow: var(--pdz-level-4);
-      background-color: pdz-color(menu-container-hover);
-      border: 1px solid pdz-color(menu-container);
+      background-color: pdz.color(menu-container-hover);
+      border: 1px solid pdz.color(menu-container);
     }
 
     // Main toggle button
@@ -379,8 +379,8 @@ $float-buttons-defaults: (
     }
 
     &:disabled {
-      background-color: pdz-color(surface-disabled);
-      color: pdz-color(on-surface-disabled);
+      background-color: pdz.color(surface-disabled);
+      color: pdz.color(on-surface-disabled);
       border-width: 0;
     }
   }

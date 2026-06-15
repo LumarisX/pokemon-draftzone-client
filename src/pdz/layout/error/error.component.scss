@@ -1,4 +1,4 @@
-@use "global.scss" as *;
+@use "pdz-theming" as pdz;
 @use "mixins" as *;
 
 :host {
@@ -14,8 +14,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--pdz-space-md);
-  padding: 0 var(--pdz-space-md);
+  gap: pdz.space(md);
+  padding: 0 pdz.space(md);
   pointer-events: none;
   max-height: calc(100vh - 8rem);
   overflow-y: auto;
@@ -26,7 +26,7 @@
   width: 100%;
   max-width: 24rem;
   min-height: 4rem;
-  background: pdz-color("error-container");
+  background: pdz.color("error-container");
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 0.5rem;
   box-shadow: var(--pdz-level-3);
@@ -43,24 +43,24 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: var(--pdz-space-sm) var(--pdz-space-md);
+    padding: pdz.space(sm) pdz.space(md);
     border-bottom: 1px solid rgba(0, 0, 0, 0.15);
   }
 
   &__title {
     display: flex;
     align-items: center;
-    gap: var(--pdz-space-sm);
+    gap: pdz.space(sm);
     font-weight: 600;
-    color: pdz-color("on-error-container");
+    color: pdz.color("on-error-container");
     @include apply-typography(body-md);
   }
 
   &__code {
-    padding: var(--pdz-space-xs) var(--pdz-space-sm);
-    background: pdz-color("error");
-    color: pdz-color("on-error");
-    border-radius: var(--pdz-shape-sm);
+    padding: pdz.space(xs) pdz.space(sm);
+    background: pdz.color("error");
+    color: pdz.color("on-error");
+    border-radius: pdz.shape(corner-sm);
     font-size: 0.75rem;
     font-weight: 500;
     font-family: monospace;
@@ -75,12 +75,12 @@
     padding: 0;
     border: none;
     background: transparent;
-    color: pdz-color("on-error-container");
+    color: pdz.color("on-error-container");
     cursor: pointer;
     transition: all 0.2s ease;
 
     &:hover {
-      color: pdz-color("error");
+      color: pdz.color("error");
       transform: scale(1.1);
     }
 
@@ -90,55 +90,55 @@
   }
 
   &__content {
-    padding: var(--pdz-space-md);
-    color: pdz-color("on-error-container");
+    padding: pdz.space(md);
+    color: pdz.color("on-error-container");
   }
 
   &__message {
-    margin-bottom: var(--pdz-space-sm);
+    margin-bottom: pdz.space(sm);
     line-height: 1.5;
     @include apply-typography(body-md);
   }
 
   &__url {
-    margin-top: var(--pdz-space-sm);
-    padding: var(--pdz-space-sm);
+    margin-top: pdz.space(sm);
+    padding: pdz.space(sm);
     background: rgba(0, 0, 0, 0.1);
-    border-radius: var(--pdz-shape-sm);
+    border-radius: pdz.shape(corner-sm);
     font-size: 0.875rem;
-    color: pdz-color("on-error-container");
+    color: pdz.color("on-error-container");
     word-break: break-all;
   }
 
   &__details-toggle {
-    margin-top: var(--pdz-space-sm);
-    padding: var(--pdz-space-xs) var(--pdz-space-sm);
-    border: 1px solid pdz-color("error");
+    margin-top: pdz.space(sm);
+    padding: pdz.space(xs) pdz.space(sm);
+    border: 1px solid pdz.color("error");
     background: transparent;
-    color: pdz-color("on-error-container");
-    border-radius: var(--pdz-shape-sm);
+    color: pdz.color("on-error-container");
+    border-radius: pdz.shape(corner-sm);
     font-size: 0.875rem;
     cursor: pointer;
     transition: all 0.2s ease;
 
     &:hover {
-      background: pdz-color("error");
-      color: pdz-color("on-error");
+      background: pdz.color("error");
+      color: pdz.color("on-error");
     }
   }
 
   &__details {
-    margin-top: var(--pdz-space-sm);
-    padding: var(--pdz-space-sm);
+    margin-top: pdz.space(sm);
+    padding: pdz.space(sm);
     background: rgba(0, 0, 0, 0.1);
-    border-radius: var(--pdz-shape-sm);
+    border-radius: pdz.shape(corner-sm);
     font-size: 0.875rem;
   }
 
   &__detail-item {
     display: flex;
-    gap: var(--pdz-space-xs);
-    margin-bottom: var(--pdz-space-xs);
+    gap: pdz.space(xs);
+    margin-bottom: pdz.space(xs);
     line-height: 1.4;
 
     &:last-child {
@@ -148,7 +148,7 @@
 
   &__detail-key {
     font-weight: 600;
-    color: pdz-color("error");
+    color: pdz.color("error");
   }
 
   &__detail-value {
@@ -161,10 +161,10 @@
   }
 
   &__stack-details {
-    padding: var(--pdz-space-sm) var(--pdz-space-md);
+    padding: pdz.space(sm) pdz.space(md);
 
     &[open] {
-      padding-bottom: var(--pdz-space-md);
+      padding-bottom: pdz.space(md);
     }
   }
 
@@ -172,22 +172,22 @@
     cursor: pointer;
     font-size: 0.875rem;
     font-weight: 600;
-    color: pdz-color("on-error-container");
+    color: pdz.color("on-error-container");
     user-select: none;
 
     &:hover {
-      color: pdz-color("error");
+      color: pdz.color("error");
     }
   }
 
   &__stack-trace {
-    margin-top: var(--pdz-space-sm);
-    padding: var(--pdz-space-sm);
+    margin-top: pdz.space(sm);
+    padding: pdz.space(sm);
     background: rgba(0, 0, 0, 0.1);
-    border-radius: var(--pdz-shape-sm);
+    border-radius: pdz.shape(corner-sm);
     font-size: 0.75rem;
     font-family: monospace;
-    color: pdz-color("on-error-container");
+    color: pdz.color("on-error-container");
     overflow-x: auto;
     white-space: pre-wrap;
     word-break: break-all;
@@ -195,9 +195,9 @@
   }
 
   &__request-id {
-    padding: var(--pdz-space-sm) var(--pdz-space-md);
+    padding: pdz.space(sm) pdz.space(md);
     font-size: 0.75rem;
-    color: pdz-color("on-error-container");
+    color: pdz.color("on-error-container");
     opacity: 0.7;
     font-family: monospace;
   }

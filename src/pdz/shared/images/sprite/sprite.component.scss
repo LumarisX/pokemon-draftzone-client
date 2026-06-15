@@ -1,3 +1,5 @@
+@use "pdz-theming" as pdz;
+
 :host {
   display: inline-flex;
 }
@@ -43,7 +45,7 @@
 
     &.pmd {
       border-radius: 0.75rem;
-      border: 1px solid var(--pdz-color-outline, currentColor);
+      border: 1px solid pdz.color(outline, currentColor);
     }
   }
 }

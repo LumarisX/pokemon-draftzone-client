@@ -1,3 +1,4 @@
+@use "pdz-theming" as pdz;
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -63,18 +64,18 @@
 }
 
 .bg-aTeam-200 {
-  background-color: var(--pdz-color-primary-container-high) !important;
+  background-color: pdz.color(primary-container-high) !important;
 }
 .bg-bTeam-200 {
-  background-color: var(--pdz-color-secondary-container-high) !important;
+  background-color: pdz.color(secondary-container-high) !important;
 }
 
 .bg-aTeam-300 {
-  background-color: var(--pdz-color-primary-container) !important;
+  background-color: pdz.color(primary-container) !important;
 }
 
 .bg-bTeam-300 {
-  background-color: var(--pdz-color-secondary-container) !important;
+  background-color: pdz.color(secondary-container) !important;
 }
 
 .shadow-inner {
@@ -86,39 +87,39 @@
 }
 
 .hover\:bg-aTeam-100:hover {
-  background-color: var(--pdz-color-primary-container-low) !important;
+  background-color: pdz.color(primary-container-low) !important;
 }
 
 .hover\:bg-bTeam-100:hover {
-  background-color: var(--pdz-color-secondary-container-low) !important;
+  background-color: pdz.color(secondary-container-low) !important;
 }
 
 .border-aTeam-400,
 .border-aTeam-300,
 .border-aTeam-200 {
-  border-color: var(--pdz-color-primary-border) !important;
+  border-color: pdz.color(primary-border) !important;
 }
 
 .border-bTeam-400,
 .border-bTeam-300,
 .border-bTeam-200 {
-  border-color: var(--pdz-color-secondary-border) !important;
+  border-color: pdz.color(secondary-border) !important;
 }
 
 .border-menu-500 {
-  border-color: var(--pdz-color-outline) !important;
+  border-color: pdz.color(outline) !important;
 }
 
 .bg-menu-100,
 .bg-menu-200 {
-  background-color: var(--pdz-color-surface-container) !important;
+  background-color: pdz.color(surface-container) !important;
 }
 
 .bg-menu-500 {
-  background-color: var(--pdz-color-menu) !important;
-  color: var(--pdz-color-on-menu) !important;
+  background-color: pdz.color(menu) !important;
+  color: pdz.color(on-menu) !important;
 }
 
 .hover\:bg-menu-700:hover {
-  background-color: var(--pdz-color-menu-hover) !important;
+  background-color: pdz.color(menu-hover) !important;
 }

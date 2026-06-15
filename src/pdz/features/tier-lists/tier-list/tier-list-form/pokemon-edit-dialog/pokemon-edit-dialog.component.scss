@@ -1,4 +1,5 @@
 @use "@angular/material" as mat;
+@use "pdz-theming" as pdz;
 
 .dialog-layout {
   display: flex;
@@ -46,7 +47,7 @@ h2 {
   margin-bottom: 16px;
   font-weight: 500;
   font-size: 1.2rem;
-  border-bottom: 1px solid var(--pdz-color-primary-border-variant);
+  border-bottom: 1px solid pdz.color(primary-border);
   padding-bottom: 8px;
 }
 
@@ -87,7 +88,7 @@ h2 {
     (
       subhead-weight: 700,
       subhead-font: var(--pdz-font-fancy),
-      subhead-color: var(--pdz-color-primary),
+      subhead-color: pdz.color(primary),
       subhead-size: 1.2em,
     )
   );

@@ -1,17 +1,17 @@
-@use "global.scss" as *;
+@use "pdz-theming" as pdz;
 @use "_mixins.scss" as *;
 @use "mixins/_buttons.scss" as *;
 
 :host {
   display: block;
-  padding: var(--pdz-space-lg);
+  padding: pdz.space(lg);
 }
 
 .page-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--pdz-space-lg);
+  margin-bottom: pdz.space(lg);
 
   &__title {
     @include apply-typography(headline-lg);
@@ -19,7 +19,7 @@
 
   &__actions {
     display: flex;
-    gap: var(--pdz-space-md);
+    gap: pdz.space(md);
     align-items: center;
   }
 }
@@ -36,7 +36,7 @@
 .manage-button {
   @include flat-button-menu(
     (
-      padding: var(--pdz-space-xs) var(--pdz-space-md),
+      padding: pdz.space(xs) pdz.space(md),
       height: 2.5rem,
     )
   );
@@ -48,15 +48,15 @@
   align-items: center;
   font-size: 0.875rem;
   font-weight: 600;
-  margin-bottom: var(--pdz-space-sm);
+  margin-bottom: pdz.space(sm);
 
   &__results {
-    color: pdz-color(on-surface);
+    color: pdz.color(on-surface);
   }
 
   &__controls {
     display: flex;
-    gap: var(--pdz-space-md);
+    gap: pdz.space(md);
     align-items: center;
   }
 }
@@ -72,41 +72,41 @@
   position: absolute;
   top: 1.75rem;
   right: 0;
-  background-color: pdz-color(menu-container-low);
-  border: 1px solid pdz-color(outline);
-  padding: var(--pdz-space-md);
+  background-color: pdz.color(menu-container-low);
+  border: 1px solid pdz.color(outline);
+  padding: pdz.space(md);
   box-shadow: var(--pdz-level-3);
-  border-radius: var(--pdz-shape-corner-md);
+  border-radius: pdz.shape(corner-md);
   width: 18rem;
   z-index: 100;
 
   &__title {
     @include apply-typography(headline-md);
-    margin-bottom: var(--pdz-space-md);
+    margin-bottom: pdz.space(md);
   }
 }
 
 .filter-group {
-  margin-bottom: var(--pdz-space-md);
+  margin-bottom: pdz.space(md);
 
   &__label {
     display: block;
     font-size: 0.875rem;
     font-weight: 700;
-    color: pdz-color(on-surface-variant);
-    margin-bottom: var(--pdz-space-2xs);
+    color: pdz.color(on-surface-variant);
+    margin-bottom: pdz.space(2xs);
   }
 
   &__select {
     width: 100%;
-    background-color: pdz-color(menu-container);
-    padding: var(--pdz-space-xs);
-    border: 1px solid pdz-color(outline);
-    border-radius: var(--pdz-shape-corner-sm);
-    color: pdz-color(on-surface);
+    background-color: pdz.color(menu-container);
+    padding: pdz.space(xs);
+    border: 1px solid pdz.color(outline);
+    border-radius: pdz.shape(corner-sm);
+    color: pdz.color(on-surface);
 
     &:focus {
-      outline: 2px solid pdz-color(primary);
+      outline: 2px solid pdz.color(primary);
       outline-offset: 1px;
     }
   }
@@ -115,13 +115,13 @@
 .dropdown-actions {
   display: flex;
   justify-content: flex-end;
-  gap: var(--pdz-space-sm);
+  gap: pdz.space(sm);
 }
 
 .apply-button {
   @include flat-button-primary(
     (
-      padding: var(--pdz-space-xs) var(--pdz-space-md),
+      padding: pdz.space(xs) pdz.space(md),
     )
   );
 }
@@ -129,25 +129,25 @@
 .clear-button {
   @include flat-button-secondary(
     (
-      padding: var(--pdz-space-xs) var(--pdz-space-md),
+      padding: pdz.space(xs) pdz.space(md),
     )
   );
 }
 
 .sort-select {
   width: 100%;
-  background-color: pdz-color(menu-container);
-  padding: var(--pdz-space-xs);
-  border: 1px solid pdz-color(outline);
-  border-radius: var(--pdz-shape-corner-sm);
-  color: pdz-color(on-surface);
+  background-color: pdz.color(menu-container);
+  padding: pdz.space(xs);
+  border: 1px solid pdz.color(outline);
+  border-radius: pdz.shape(corner-sm);
+  color: pdz.color(on-surface);
 }
 
 .league-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
-  gap: var(--pdz-space-lg);
-  padding: var(--pdz-space-sm);
+  gap: pdz.space(lg);
+  padding: pdz.space(sm);
 
   @include respond-above(medium) {
     grid-template-columns: repeat(auto-fill, minmax(22rem, 1fr));
@@ -162,11 +162,11 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: var(--pdz-space-2xl) var(--pdz-space-lg);
+  padding: pdz.space(2xl) pdz.space(lg);
   text-align: center;
 
   &__message {
     @include apply-typography(body-lg);
-    color: pdz-color(on-surface-variant);
+    color: pdz.color(on-surface-variant);
   }
 }

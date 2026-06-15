@@ -1,14 +1,15 @@
 @use "@angular/material" as mat;
-@use "breakpoints" as *;
+@use "tokens/breakpoints" as *;
 @use "mixins" as *;
 @use "mixins/buttons" as *;
+@use "pdz-theming" as pdz;
 
 // Material overrides
 mat-toolbar {
   @include mat.toolbar-overrides(
     (
-      container-background-color: var(--pdz-color-surface),
-      container-text-color: var(--pdz-color-on-surface),
+      container-background-color: pdz.color(surface),
+      container-text-color: pdz.color(on-surface),
     )
   );
   @include mat.toolbar-density(-4);
@@ -30,35 +31,35 @@ mat-toolbar {
 }
 
 .menu-tab {
-  padding: var(--pdz-space-sm);
-  border-radius: var(--pdz-shape-corner-sm);
+  padding: pdz.space(sm);
+  border-radius: pdz.shape(corner-sm);
   font-family: var(--pdz-font-fancy);
-  @include background-hover-effect(var(--pdz-color-surface-container));
+  @include background-hover-effect(pdz.color(surface-container));
 
   &:hover {
-    color: var(--pdz-color-on-surface-container);
+    color: pdz.color(on-surface);
   }
 }
 
 .home-btn {
   @include flat-button(
     (
-      padding: var(--pdz-space-2xs) var(--pdz-space-sm),
+      padding: pdz.space(2xs) pdz.space(sm),
       box-shadow-hover: var(--pdz-level-0),
-      background-hover: var(--pdz-color-surface-container),
+      background-hover: pdz.color(surface-container),
     )
   );
 }
 
 // Store button - mobile first
 .store-button {
-  margin: 0 var(--pdz-space-xs);
+  margin: 0 pdz.space(xs);
   @include flat-button(
     (
       font-family: var(--pdz-font-fancy),
-      padding: var(--pdz-space-2xs) var(--pdz-space-sm),
+      padding: pdz.space(2xs) pdz.space(sm),
       box-shadow-hover: var(--pdz-level-0),
-      background-hover: var(--pdz-color-surface-container),
+      background-hover: pdz.color(surface-container),
     )
   );
 
@@ -87,10 +88,10 @@ mat-toolbar {
 
   .desktop-tabs {
     display: flex;
-    gap: var(--pdz-space-2xs);
+    gap: pdz.space(2xs);
   }
 
   .store-button {
-    padding: var(--pdz-space-sm);
+    padding: pdz.space(sm);
   }
 }

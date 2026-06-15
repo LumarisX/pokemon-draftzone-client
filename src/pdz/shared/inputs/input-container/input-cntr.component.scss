@@ -1,3 +1,5 @@
+@use "pdz-theming" as pdz;
+
 .input-container {
   display: flex;
   flex-direction: column;
@@ -15,7 +17,7 @@
   top: 50%;
   left: 12px;
   transform: translateY(-50%);
-  color: var(--pdz-color-color-on-surface-variant);
+  color: pdz.color(color-on-surface-variant);
   transition: 0.2s ease all;
   pointer-events: none;
 }
@@ -24,26 +26,26 @@ input {
   width: 100%;
   padding: 12px;
   padding-left: 36px; // Adjust based on label position
-  border: 1px solid var(--pdz-color-color-outline);
-  border-radius: var(--pdz-shape-corner-xs);
-  background-color: var(--pdz-color-color-surface);
-  color: var(--pdz-color-color-on-surface);
-  font: var(--pdz-color-typescale-body-lg-font);
+  border: 1px solid pdz.color(color-outline);
+  border-radius: pdz.shape(corner-xs);
+  background-color: pdz.color(color-surface);
+  color: pdz.color(color-on-surface);
+  font: pdz.color(typescale-body-lg-font);
   transition: border-color 0.2s ease;
 
   &:focus {
-    border-color: var(--pdz-color-color-primary);
+    border-color: pdz.color(color-primary);
   }
 
   &:focus ~ .label,
   &:not(:placeholder-shown) ~ .label {
     top: 0;
     transform: translateY(-50%) scale(0.75);
-    color: var(--pdz-color-color-primary);
+    color: pdz.color(color-primary);
   }
 }
 
 .error-message {
-  color: var(--pdz-color-color-error);
-  font: var(--pdz-color-typescale-body-sm-font);
+  color: pdz.color(color-error);
+  font: pdz.color(typescale-body-sm-font);
 }

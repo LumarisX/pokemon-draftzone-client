@@ -5,13 +5,13 @@
 // Provides structured layouts for headers, bodies, footers, menus, and scores.
 //
 // @requires sass:map - For map manipulation and merging
-// @requires global - For pdz-color() function and theme access
+// @requires global - For pdz.color() function and theme access
 // @requires buttons - For integrated button styling
 // ============================================================================
 
 @use "./buttons" as *;
 @use "sass:map";
-@use "global.scss" as *;
+@use "pdz-theming" as pdz;
 
 // ----------------------------------------------------------------------------
 // Card Mixin
@@ -26,32 +26,32 @@
 /// @example scss
 ///   .my-card {
 ///     @include pdz-card('primary', (
-///       border-radius: var(--pdz-shape-corner-lg),
+///       border-radius: pdz.shape(corner-lg),
 ///       sprites-columns: 8
 ///     ));
 ///   }
 @mixin pdz-card($style: "menu", $overrides: ()) {
   // Dynamic defaults based on style parameter
   $card-defaults: (
-    background: pdz-color(#{$style}-container),
-    color: pdz-color(on-#{$style}-container),
-    border-color: pdz-color(#{$style}-border),
-    header: pdz-color(#{$style}-container-high),
-    menu: pdz-color(#{$style}-subtle),
-    on-menu: pdz-color(on-#{$style}-container),
-    menu-hover: pdz-color(#{$style}-container-hover),
-    border-radius: var(--pdz-shape-corner-md),
+    background: pdz.color(#{$style}-container),
+    color: pdz.color(on-#{$style}-container),
+    border-color: pdz.color(#{$style}-border),
+    header: pdz.color(#{$style}-container-high),
+    menu: pdz.color(#{$style}-subtle),
+    on-menu: pdz.color(on-#{$style}-container),
+    menu-hover: pdz.color(#{$style}-container-hover),
+    border-radius: pdz.shape(corner-md),
     border-width: 1px,
     border-style: solid,
-    header-padding: var(--pdz-space-sm) var(--pdz-space-sm),
-    body-padding: var(--pdz-space-sm) var(--pdz-space-md),
-    footer-padding: var(--pdz-space-xs) var(--pdz-space-md),
+    header-padding: pdz.space(sm) pdz.space(sm),
+    body-padding: pdz.space(sm) pdz.space(md),
+    footer-padding: pdz.space(xs) pdz.space(md),
     menu-item-font-size: 1rem,
-    menu-item-padding: var(--pdz-space-md),
+    menu-item-padding: pdz.space(md),
     menu-width: null,
     sprites-columns: 6,
     sprites-min-size: 36px,
-    sprites-gap: var(--pdz-space-sm),
+    sprites-gap: pdz.space(sm),
   );
 
   $config: map.merge($card-defaults, $overrides);
@@ -106,7 +106,7 @@
       align-self: stretch;
       display: flex;
       align-items: center;
-      border-radius: var(--pdz-shape-corner-sm);
+      border-radius: pdz.shape(corner-sm);
       font-size: 0.8rem;
       line-height: 0.9rem;
       font-weight: bold;
@@ -117,20 +117,20 @@
       flex-shrink: 0;
       // Score variants
       &.pdz-background-neg {
-        background-color: pdz-color(negative);
-        color: pdz-color(on-negative);
+        background-color: pdz.color(negative);
+        color: pdz.color(on-negative);
         box-shadow: var(--pdz-level-1);
       }
 
       &.pdz-background-pos {
-        background-color: pdz-color(positive);
-        color: pdz-color(on-positive);
+        background-color: pdz.color(positive);
+        color: pdz.color(on-positive);
         box-shadow: var(--pdz-level-1);
       }
 
       &.pdz-background-neut {
-        background-color: pdz-color(menu-container);
-        color: pdz-color(on-menu-container);
+        background-color: pdz.color(menu-container);
+        color: pdz.color(on-menu-container);
       }
     }
   }
@@ -148,18 +148,18 @@
       right: 0;
       background-color: map.get($config, "menu");
       color: map.get($config, "on-menu");
-      border-radius: var(--pdz-shape-corner-sm);
+      border-radius: pdz.shape(corner-sm);
       box-shadow: var(--pdz-level-2);
       z-index: 10;
       width: map.get($config, "menu-width");
-      padding: var(--pdz-space-sm) 0;
+      padding: pdz.space(sm) 0;
       display: flex;
       flex-direction: column;
 
       .menu-item {
         display: flex;
         align-items: center;
-        gap: var(--pdz-space-md);
+        gap: pdz.space(md);
         padding: map.get($config, "menu-item-padding");
         background: none;
         border: none;
@@ -193,8 +193,8 @@
 
     .body-header {
       font-size: var(--pdz-font-size-sm);
-      color: pdz-color(on-primary-container);
-      margin-bottom: var(--pdz-space-xs);
+      color: pdz.color(on-primary-container);
+      margin-bottom: pdz.space(xs);
     }
 
     // Sprite grid layout
@@ -219,14 +219,14 @@
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    gap: var(--pdz-space-2xs);
+    gap: pdz.space(2xs);
     flex-shrink: 0;
 
     .footer-link {
       @include flat-button(
         (
-          padding: var(--pdz-space-xs) var(--pdz-space-md),
-          border-radius: var(--pdz-shape-corner-sm),
+          padding: pdz.space(xs) pdz.space(md),
+          border-radius: pdz.shape(corner-sm),
           background-hover: map.get($config, "footer-link-hover"),
           border: none,
         )

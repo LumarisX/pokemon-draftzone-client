@@ -1,4 +1,4 @@
-@use "global" as *;
+@use "pdz-theming" as pdz;
 @use "mixins" as *;
 
 :host {
@@ -18,13 +18,13 @@
   .replay-chart__x-axis,
   .replay-chart__y-axis {
     text {
-      fill: pdz-color("on-surface");
+      fill: pdz.color("on-surface");
       @include apply-typography(body-sm);
     }
 
     path,
     line {
-      stroke: pdz-color("outline");
+      stroke: pdz.color("outline");
     }
   }
 }

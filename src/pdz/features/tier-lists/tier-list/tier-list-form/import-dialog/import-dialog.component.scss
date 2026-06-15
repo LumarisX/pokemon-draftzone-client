@@ -1,11 +1,12 @@
 @use "@angular/material" as mat;
+@use "pdz-theming" as pdz;
 
 :host {
   @include mat.dialog-overrides(
     (
       subhead-weight: 700,
       subhead-font: var(--pdz-font-fancy),
-      subhead-color: var(--pdz-color-primary),
+      subhead-color: pdz.color(primary),
       subhead-size: 1.2em,
     )
   );
@@ -13,7 +14,7 @@
 
 .import-intro {
   margin: 0 0 1rem;
-  color: var(--pdz-color-on-surface-variant);
+  color: pdz.color(on-surface-variant);
   font-size: 0.9rem;
 }
 
@@ -31,9 +32,9 @@
   row-gap: 0.25rem;
   align-items: start;
   padding: 0.75rem;
-  border-radius: var(--pdz-shape-sm);
-  background: var(--pdz-color-surface-container-low);
-  border: 1px solid var(--pdz-color-outline-variant);
+  border-radius: pdz.shape(corner-sm);
+  background: pdz.color(surface-container-low);
+  border: 1px solid pdz.color(outline-variant);
 }
 
 .column-header {
@@ -47,12 +48,12 @@
 .column-name {
   font-weight: 600;
   font-size: 1rem;
-  color: var(--pdz-color-on-surface);
+  color: pdz.color(on-surface);
 }
 
 .column-count {
   font-size: 0.8rem;
-  color: var(--pdz-color-on-surface-variant);
+  color: pdz.color(on-surface-variant);
 }
 
 .column-preview {
@@ -66,15 +67,15 @@
 .preview-chip {
   font-size: 0.75rem;
   padding: 0.1rem 0.4rem;
-  border-radius: var(--pdz-shape-xs);
-  background: var(--pdz-color-surface-container);
-  color: var(--pdz-color-on-surface-variant);
-  border: 1px solid var(--pdz-color-outline-variant);
+  border-radius: pdz.shape(corner-xs);
+  background: pdz.color(surface-container);
+  color: pdz.color(on-surface-variant);
+  border: 1px solid pdz.color(outline-variant);
 }
 
 .preview-empty {
   font-size: 0.75rem;
-  color: var(--pdz-color-on-surface-variant);
+  color: pdz.color(on-surface-variant);
   font-style: italic;
 }
 

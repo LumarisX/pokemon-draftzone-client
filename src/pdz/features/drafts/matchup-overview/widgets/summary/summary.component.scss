@@ -1,6 +1,8 @@
+@use "pdz-theming" as pdz;
+
 .widget-container {
-  --pdz-cmp-summary-border: var(--pdz-color-primary-border);
+  --pdz-cmp-summary-border: #{pdz.color(primary-border)};
   &.alternate {
-    --pdz-cmp-summary-border: var(--pdz-color-secondary-border);
+    --pdz-cmp-summary-border: #{pdz.color(secondary-border)};
   }
 }

@@ -1,10 +1,10 @@
 @use "mixins" as *;
-@use "global" as *;
+@use "pdz-theming" as pdz;
 
 .matchup-stage-list {
   display: flex;
   flex-direction: column;
-  gap: var(--pdz-space-sm);
+  gap: pdz.space(sm);
 }
 
 .matchup-stage {
@@ -13,12 +13,12 @@
   }
 
   &__cards {
-    border-left: 2px solid var(--pdz-color-primary);
-    padding: var(--pdz-space-md) 0 var(--pdz-space-md) var(--pdz-space-md);
+    border-left: 2px solid pdz.color(primary);
+    padding: pdz.space(md) 0 pdz.space(md) pdz.space(md);
 
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    gap: var(--pdz-space-md);
+    gap: pdz.space(md);
     width: 100%;
     box-sizing: border-box;
 
@@ -32,7 +32,7 @@
     pdz-matchup-card {
       width: 100%;
       max-width: 32rem;
-      background-color: pdz-color(surface);
+      background-color: pdz.color(surface);
     }
   }
 }

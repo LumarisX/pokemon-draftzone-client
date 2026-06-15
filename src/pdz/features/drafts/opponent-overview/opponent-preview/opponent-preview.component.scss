@@ -1,10 +1,10 @@
 @use "@angular/material" as mat;
-@use "breakpoints" as *;
+@use "tokens/breakpoints" as *;
 @use "mixins" as *;
-@use "mixins/typography" as *;
+@use "tools/typography" as *;
 @use "mixins/buttons" as *;
 @use "mixins/cards" as *;
-@use "global" as *;
+@use "pdz-theming" as pdz;
 
 :host {
   flex-grow: 1;
@@ -26,8 +26,8 @@
 }
 
 section {
-  border: 1px solid pdz-color(menu-border);
-  border-radius: var(--pdz-shape-corner-lg);
+  border: 1px solid pdz.color(menu-border);
+  border-radius: pdz.shape(corner-lg);
   width: fit-content;
   min-width: 33%;
   overflow-y: auto;
@@ -50,7 +50,7 @@ section {
 .matchups-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
-  gap: var(--pdz-space-lg);
+  gap: pdz.space(lg);
   padding: 0 0.5rem 0.5rem;
   align-items: start;
 }
@@ -61,7 +61,7 @@ section {
   .card-header {
     .matchup-stage {
       font-size: 0.8rem;
-      margin-right: var(--pdz-space-md);
+      margin-right: pdz.space(md);
     }
 
     .matchup-team-info-container {
@@ -141,7 +141,7 @@ section {
 .matchup-logo {
   flex-shrink: 0;
   overflow: hidden;
-  border-radius: var(--pdz-shape-corner-md);
+  border-radius: pdz.shape(corner-md);
   box-shadow: var(--pdz-level-1);
   height: 3rem;
   width: 3rem;
@@ -163,7 +163,7 @@ section {
 }
 
 .score-placeholder {
-  padding: var(--pdz-space-lg);
+  padding: pdz.space(lg);
 }
 
 .stats-section {
@@ -202,7 +202,7 @@ section {
   }
 
   th.cdk-header-cell {
-    border-bottom: 2px solid pdz-color(secondary-border);
+    border-bottom: 2px solid pdz.color(secondary-border);
     @include font-size(0.8rem);
   }
 
@@ -215,7 +215,7 @@ section {
 
   .title-bar {
     position: relative;
-    padding: var(--pdz-space-lg);
+    padding: pdz.space(lg);
   }
 
   .back-button {
@@ -228,7 +228,7 @@ section {
 
   tr.cdk-row {
     &:hover {
-      background-color: pdz-color(secondary-container);
+      background-color: pdz.color(secondary-container);
     }
   }
 

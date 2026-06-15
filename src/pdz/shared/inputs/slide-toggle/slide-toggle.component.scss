@@ -1,4 +1,5 @@
 @use "@angular/material" as mat;
+@use "pdz-theming" as pdz;
 
 .pdz-slide-toggle {
   display: flex;
@@ -14,9 +15,9 @@
 
   .toggle-track {
     width: 3.5rem;
-    border: 0.125em solid var(--pdz-color-primary);
+    border: 0.125em solid pdz.color(primary);
     height: 1rem;
-    background-color: var(--pdz-color-surface);
+    background-color: pdz.color(surface);
     border-radius: 1rem;
     position: relative;
     transition: background-color 0.3s ease;
@@ -25,8 +26,8 @@
   .toggle-thumb {
     width: 1.5rem;
     height: 1.5rem;
-    background-color: var(--pdz-color-primary-border);
-    color: var(--pdz-color-surface-variant);
+    background-color: pdz.color(primary-border);
+    color: pdz.color(surface-variant);
     border-radius: 50%;
     position: absolute;
     padding: 0.125rem;
@@ -40,19 +41,19 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 
     &:hover {
-      background-color: var(--pdz-color-on-surface-variant);
+      background-color: pdz.color(on-surface-variant);
     }
   }
 
   &.checked {
     .toggle-track {
-      background-color: var(--pdz-color-primary);
+      background-color: pdz.color(primary);
     }
 
     .toggle-thumb {
       transform: translate(2em, -50%);
-      background-color: var(--pdz-color-on-primary);
-      color: var(--pdz-color-primary-border);
+      background-color: pdz.color(on-primary);
+      color: pdz.color(primary-border);
     }
   }
 }

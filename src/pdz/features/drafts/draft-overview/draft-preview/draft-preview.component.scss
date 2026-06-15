@@ -1,6 +1,6 @@
 @use "mixins" as *;
 @use "mixins/buttons" as *;
-@use "global.scss" as *;
+@use "pdz-theming" as pdz;
 @use "mixins/cards" as *;
 
 :host {
@@ -10,7 +10,7 @@
 }
 
 .drafts-container {
-  padding: var(--pdz-space-md);
+  padding: pdz.space(md);
   width: 100%;
   box-sizing: border-box;
 }
@@ -19,7 +19,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--pdz-space-lg);
+  margin-bottom: pdz.space(lg);
   .title {
     font-family: var(--pdz-font-fancy);
     font-size: 2rem;
@@ -29,7 +29,7 @@
 
   .actions {
     display: flex;
-    gap: var(--pdz-space-sm);
+    gap: pdz.space(sm);
     button {
       @include icon-button-primary();
     }
@@ -39,7 +39,7 @@
 .drafts-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(20em, 1fr));
-  gap: var(--pdz-space-lg);
+  gap: pdz.space(lg);
 }
 
 .empty-state {
@@ -47,14 +47,14 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: var(--pdz-space-md);
-  padding: var(--pdz-space-xl) var(--pdz-space-lg);
+  gap: pdz.space(md);
+  padding: pdz.space(xl) pdz.space(lg);
   max-width: 52rem;
   margin: 0 auto;
 
   &__title {
     margin: 0;
-    color: var(--pdz-color-on-primary-container);
+    color: pdz.color(on-primary-container);
     font-family: var(--pdz-font-fancy);
     font-size: clamp(1.25rem, 2.5vw, 1.75rem);
     line-height: 1.2;
@@ -62,7 +62,7 @@
 
   &__text {
     margin: 0;
-    color: var(--pdz-color-on-primary-container);
+    color: pdz.color(on-primary-container);
     max-width: 38ch;
     opacity: 0.88;
   }
@@ -77,13 +77,13 @@
     @include flat-button-primary();
     display: inline-flex;
     align-items: center;
-    gap: var(--pdz-space-xs);
+    gap: pdz.space(xs);
   }
 }
 
 @include respond-above("medium") {
   .empty-state {
-    padding: var(--pdz-space-xxl) var(--pdz-space-xl);
+    padding: pdz.space(2xl) pdz.space(xl);
   }
 }
 
@@ -110,20 +110,20 @@
 
   .confirmation-buttons {
     display: flex;
-    gap: var(--pdz-space-sm);
+    gap: pdz.space(sm);
   }
 
   .btn {
     border: none;
-    padding: var(--pdz-space-sm) var(--pdz-space-md);
-    border-radius: var(--pdz-shape-corner-sm);
+    padding: pdz.space(sm) pdz.space(md);
+    border-radius: pdz.shape(corner-sm);
     cursor: pointer;
     font-weight: 500;
     transition: background-color 0.2s;
 
     &-confirm {
-      background-color: var(--pdz-color-error);
-      color: var(--pdz-color-on-error);
+      background-color: pdz.color(error);
+      color: pdz.color(on-error);
 
       &:hover {
         opacity: 0.8;
@@ -132,10 +132,10 @@
 
     &-cancel {
       background-color: transparent;
-      color: var(--pdz-color-on-primary-container);
+      color: pdz.color(on-primary-container);
 
       &:hover {
-        background-color: var(--pdz-color-primary-container-hover);
+        background-color: pdz.color(primary-container-hover);
       }
     }
   }

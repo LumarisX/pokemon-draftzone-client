@@ -1,4 +1,4 @@
-@use "global" as *;
+@use "pdz-theming" as pdz;
 
 .type {
   &__container {
@@ -8,7 +8,7 @@
     justify-content: center;
     gap: 1px;
     height: 1rem;
-    border-radius: var(--pdz-shape-corner-xs);
+    border-radius: pdz.shape(corner-xs);
     box-shadow: var(--pdz-level-1);
     overflow: hidden;
     padding: 1px 2px;
@@ -36,12 +36,12 @@
       height: auto;
       width: 2.75rem;
       aspect-ratio: 1;
-      gap: var(--pdz-space-xs);
-      padding: var(--pdz-space-xs);
+      gap: pdz.space(xs);
+      padding: pdz.space(xs);
     }
 
     &--disabled {
-      background: var(--pdz-color-surface);
+      background: pdz.color(surface);
       box-shadow: none;
       opacity: 0.75;
 

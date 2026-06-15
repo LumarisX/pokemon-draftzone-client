@@ -1,4 +1,4 @@
-@use "global" as *;
+@use "pdz-theming" as pdz;
 @use "mixins" as *;
 
 .stage {
@@ -7,16 +7,16 @@
   }
 
   &-body {
-    border-left: 2px solid var(--pdz-color-primary);
-    padding: var(--pdz-space-md) 0 var(--pdz-space-md) var(--pdz-space-md);
+    border-left: 2px solid pdz.color(primary);
+    padding: pdz.space(md) 0 pdz.space(md) pdz.space(md);
     display: flex;
     flex-direction: column;
     width: 100%;
-    gap: var(--pdz-space-sm);
+    gap: pdz.space(sm);
   }
 
   &__empty {
-    color: var(--pdz-color-on-surface);
+    color: pdz.color(on-surface);
     font-style: italic;
     padding: 0 var(pdz-space-md);
   }

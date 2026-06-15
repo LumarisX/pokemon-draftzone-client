@@ -1,4 +1,4 @@
-@use "global" as *;
+@use "pdz-theming" as pdz;
 @use "_mixins" as *;
 table {
   border-collapse: collapse;
@@ -47,26 +47,26 @@ h2 {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--pdz-space-md);
-  padding: var(--pdz-space-lg);
+  gap: pdz.space(md);
+  padding: pdz.space(lg);
 
   &__actions {
     display: flex;
-    gap: var(--pdz-space-sm);
+    gap: pdz.space(sm);
     flex-wrap: wrap;
   }
 
   &__button {
-    border: 1px solid pdz-color(primary-border);
-    border-radius: var(--pdz-shape-corner-sm);
-    background-color: pdz-color(primary-container);
-    color: pdz-color(on-primary-container);
+    border: 1px solid pdz.color(primary-border);
+    border-radius: pdz.shape(corner-sm);
+    background-color: pdz.color(primary-container);
+    color: pdz.color(on-primary-container);
     padding: 0.35rem 0.85rem;
     font-weight: 600;
     cursor: pointer;
 
     &:hover:not(:disabled) {
-      background-color: pdz-color(primary-container-hover);
+      background-color: pdz.color(primary-container-hover);
     }
 
     &:disabled {
@@ -75,11 +75,11 @@ h2 {
     }
 
     &--ghost {
-      background-color: pdz-color(surface-container);
-      color: pdz-color(on-surface);
+      background-color: pdz.color(surface-container);
+      color: pdz.color(on-surface);
 
       &:hover:not(:disabled) {
-        background-color: pdz-color(surface-container-low);
+        background-color: pdz.color(surface-container-low);
       }
     }
   }
@@ -122,22 +122,22 @@ img {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: pdz-color(primary-container);
+  background-color: pdz.color(primary-container);
   &:hover {
-    background-color: pdz-color(primary-hover);
+    background-color: pdz.color(primary-hover);
   }
 }
 
 .logo-error {
   margin-top: 0.35rem;
   font-size: 0.8rem;
-  color: pdz-color(error);
+  color: pdz.color(error);
 }
 
 .logo-uploading {
   margin-top: 0.35rem;
   font-size: 0.8rem;
-  color: pdz-color(on-surface-variant);
+  color: pdz.color(on-surface-variant);
 }
 
 .readonly-checkbox {
@@ -146,17 +146,17 @@ img {
 
 .division-header {
   display: flex;
-  gap: var(--pdz-space-md);
-  margin-bottom: var(--pdz-space-sm);
+  gap: pdz.space(md);
+  margin-bottom: pdz.space(sm);
 }
 
 .division-move-btn {
   box-shadow: var(--pdz-level-1);
-  border-radius: var(--pdz-shape-corner-sm);
-  padding: 0 var(--pdz-space-sm);
-  background-color: pdz-color(surface-container);
+  border-radius: pdz.shape(corner-sm);
+  padding: 0 pdz.space(sm);
+  background-color: pdz.color(surface-container);
   &:hover {
-    background-color: pdz-color(surface-container-low);
+    background-color: pdz.color(surface-container-low);
   }
 }
 
@@ -175,6 +175,6 @@ img {
 
   &__zone {
     font-size: 0.85rem;
-    color: pdz-color(on-surface-variant);
+    color: pdz.color(on-surface-variant);
   }
 }

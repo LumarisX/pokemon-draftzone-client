@@ -1,15 +1,17 @@
-$primary-color: var(--pdz-color-primary);
-$primary-hover-color: var(--pdz-color-secondary);
-$border-color: var(--pdz-color-primary-border-variant);
-$text-color: var(--pdz-color-on-surface);
-$timestamp-color: var(--pdz-color-primary);
-$background-color: var(--pdz-color-surface);
+@use "pdz-theming" as pdz;
+
+$primary-color: pdz.color(primary);
+$primary-hover-color: pdz.color(secondary);
+$border-color: pdz.color(primary-border);
+$text-color: pdz.color(on-surface);
+$timestamp-color: pdz.color(primary);
+$background-color: pdz.color(surface);
 .message-list {
   min-height: 4rem;
   max-height: 20rem;
   overflow-y: auto;
-  padding: var(--pdz-space-lg);
-  border-radius: var(--pdz-shape-corner-sm);
+  padding: pdz.space(lg);
+  border-radius: pdz.shape(corner-sm);
   border: 1px solid $border-color;
   background-color: $background-color;
   .message {
@@ -40,14 +42,14 @@ $background-color: var(--pdz-color-surface);
 
 .message-input {
   display: flex;
-  padding: var(--pdz-space-lg);
+  padding: pdz.space(lg);
   background-color: #fff;
 
   textarea {
     flex-grow: 1;
     border: 1px solid #ced4da;
     padding: 0.5rem 0.75rem;
-    border-radius: var(--pdz-shape-corner-xs);
+    border-radius: pdz.shape(corner-xs);
     font-size: 1rem;
     font-family: inherit;
     resize: none;
@@ -68,7 +70,7 @@ $background-color: var(--pdz-color-surface);
     color: white;
     padding: 0.5rem 1rem;
     margin-left: 0.5rem;
-    border-radius: var(--pdz-shape-corner-xs);
+    border-radius: pdz.shape(corner-xs);
     cursor: pointer;
     font-weight: 500;
     align-self: flex-end;

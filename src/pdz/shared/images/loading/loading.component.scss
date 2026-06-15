@@ -1,3 +1,5 @@
+@use "pdz-theming" as pdz;
+
 :host {
   display: flex;
   align-items: center;
@@ -51,20 +53,20 @@
     @keyframes wave-fill-secondary {
       0%,
       100% {
-        fill: var(--pdz-color-loading-secondary-low);
+        fill: pdz.color(loading-secondary-low);
       }
       50% {
-        fill: var(--pdz-color-loading-secondary-high);
+        fill: pdz.color(loading-secondary-high);
       }
     }
 
     @keyframes wave-fill-primary {
       0%,
       100% {
-        fill: var(--pdz-color-loading-primary-low);
+        fill: pdz.color(loading-primary-low);
       }
       50% {
-        fill: var(--pdz-color-loading-primary-high);
+        fill: pdz.color(loading-primary-high);
       }
     }
 

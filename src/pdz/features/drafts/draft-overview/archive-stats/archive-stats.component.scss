@@ -1,3 +1,5 @@
+@use "pdz-theming" as pdz;
+
 .sprite-wrapper {
   width: 4rem;
   max-width: 4rem;
@@ -15,10 +17,10 @@
 }
 
 .table-wrapper {
-  padding: var(--pdz-space-lg);
+  padding: pdz.space(lg);
   overflow-x: auto;
-  border-radius: var(--pdz-shape-corner-lg);
-  background-color: var(--pdz-color-surface);
+  border-radius: pdz.shape(corner-lg);
+  background-color: pdz.color(surface);
   box-shadow: var(--pdz-level-3);
 }
 th,
@@ -28,7 +30,7 @@ td {
 }
 
 th.cdk-header-cell {
-  border-bottom: 2px solid var(--pdz-color-primary-border);
+  border-bottom: 2px solid pdz.color(primary-border);
 }
 
 table {
@@ -39,7 +41,7 @@ table {
 
 .title-bar {
   position: relative;
-  padding: var(--pdz-space-lg);
+  padding: pdz.space(lg);
 }
 
 .back-button {
@@ -52,7 +54,7 @@ table {
 
 tr.cdk-row {
   &:hover {
-    background-color: var(--pdz-color-surface-variant);
+    background-color: pdz.color(surface-variant);
   }
 }
 

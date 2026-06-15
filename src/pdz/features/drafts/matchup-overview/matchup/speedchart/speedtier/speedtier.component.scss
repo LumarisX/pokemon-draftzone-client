@@ -1,3 +1,5 @@
+@use "pdz-theming" as pdz;
+
 .tier-row {
   display: flex;
   width: 100%;
@@ -10,7 +12,7 @@
   .speed-label {
     line-height: 2rem;
     font-weight: var(--pdz-font-weight-bold);
-    color: var(--pdz-color-on-primary-container);
+    color: pdz.color(on-primary-container);
   }
   .modifier-container {
     display: flex;
@@ -26,10 +28,10 @@
       padding: 0 0.25rem;
       font-weight: var(--pdz-font-weight-bold);
       font-size: 0.7rem;
-      border: 1px solid var(--pdz-color-on-primary-container);
-      background-color: var(--pdz-color-primary-subtle);
-      color: var(--pdz-color-on-primary-container);
-      border-radius: var(--pdz-shape-corner-lg);
+      border: 1px solid pdz.color(on-primary-container);
+      background-color: pdz.color(primary-subtle);
+      color: pdz.color(on-primary-container);
+      border-radius: pdz.shape(corner-lg);
       user-select: none;
     }
   }
@@ -37,13 +39,13 @@
   &.alternate,
   :host-context(.alternate) & {
     .speed-label {
-      color: var(--pdz-color-on-secondary-container);
+      color: pdz.color(on-secondary-container);
     }
     .modifier-container {
       .modifier {
-        border: 1px solid var(--pdz-color-on-secondary-container);
-        background-color: var(--pdz-color-secondary-subtle);
-        color: var(--pdz-color-on-secondary-container);
+        border: 1px solid pdz.color(on-secondary-container);
+        background-color: pdz.color(secondary-subtle);
+        color: pdz.color(on-secondary-container);
       }
     }
   }

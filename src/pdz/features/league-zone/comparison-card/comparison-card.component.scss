@@ -1,9 +1,10 @@
 @use "../league.mixins" as *;
+@use "pdz-theming" as pdz;
 
-$container-padding: var(--pdz-space-md);
+$container-padding: pdz.space(md);
 
 :host {
-  --card-border-radius: var(--pdz-shape-corner-lg);
+  --card-border-radius: #{pdz.shape(corner-lg)};
   --logo-size: 3.5rem;
   --logo-border-width: 2px;
 }
@@ -45,10 +46,10 @@ $container-padding: var(--pdz-space-md);
   @include pdz-league-logo(3rem);
 
   &.positive {
-    background-color: pdz-color(success);
+    background-color: pdz.color(success);
   }
   &.negative {
-    background-color: pdz-color(error);
+    background-color: pdz.color(error);
   }
 }
 
@@ -71,7 +72,7 @@ $container-padding: var(--pdz-space-md);
 
 .entity-secondary-name {
   font-size: 0.7rem;
-  color: var(--pdz-color-on-surface-variant);
+  color: pdz.color(on-surface-variant);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -96,7 +97,7 @@ $container-padding: var(--pdz-space-md);
   font-weight: var(--pdz-font-weight-bold);
   font-size: 0.6rem;
   max-width: 1rem;
-  color: var(--pdz-color-on-surface-variant);
+  color: pdz.color(on-surface-variant);
   text-align: center;
   line-height: 0.8rem;
   display: flex;
@@ -116,23 +117,23 @@ $container-padding: var(--pdz-space-md);
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
-  color: var(--pdz-color-primary-border);
+  color: pdz.color(primary-border);
   transition: transform 0.3s ease-in-out;
 }
 
 .status {
   border-radius: 2rem;
-  padding: var(--pdz-space-xs);
+  padding: pdz.space(xs);
   font-size: 0.7rem;
   user-select: none;
   line-height: 0.7rem;
   transition: transform 0.3s ease-in-out;
-  border: 1px solid var(--pdz-color-primary-border-variant);
+  border: 1px solid pdz.color(primary-border);
   color: gray;
   &.active {
     z-index: 100;
-    background-color: var(--pdz-color-primary);
-    color: var(--pdz-color-on-primary);
+    background-color: pdz.color(primary);
+    color: pdz.color(on-primary);
   }
 
   &.link {
@@ -150,7 +151,7 @@ $container-padding: var(--pdz-space-md);
 .comparison-content {
   padding-top: $container-padding;
   margin-top: 0.5rem;
-  border-top: 1px solid var(--pdz-color-primary-border);
+  border-top: 1px solid pdz.color(primary-border);
   animation: fadeIn 0.3s ease-in-out;
 }
 

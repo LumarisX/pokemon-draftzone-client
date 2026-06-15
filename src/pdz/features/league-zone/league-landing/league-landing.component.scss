@@ -1,11 +1,11 @@
-﻿@use "global.scss" as *;
+﻿@use "pdz-theming" as pdz;
 @use "mixins" as *;
 
 :host {
   display: block;
   width: 100%;
   min-height: 100%;
-  background: var(--pdz-color-background);
+  background: pdz.color(background);
 }
 
 .loading-state {
@@ -18,13 +18,13 @@
 .landing {
   max-width: 1100px;
   margin: 0 auto;
-  padding: var(--pdz-space-xl) var(--pdz-space-md);
+  padding: pdz.space(xl) pdz.space(md);
   display: flex;
   flex-direction: column;
-  gap: var(--pdz-space-3xl);
+  gap: pdz.space(3xl);
 
   @include respond-above(medium) {
-    padding: var(--pdz-space-2xl) var(--pdz-space-lg);
+    padding: pdz.space(2xl) pdz.space(lg);
   }
 }
 
@@ -32,13 +32,13 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--pdz-space-xl);
+  gap: pdz.space(xl);
   text-align: center;
 
   @include respond-above(medium) {
     flex-direction: row;
     align-items: center;
-    gap: var(--pdz-space-3xl);
+    gap: pdz.space(3xl);
     text-align: left;
   }
 
@@ -50,7 +50,7 @@
     width: 200px;
     height: 200px;
     object-fit: contain;
-    border-radius: var(--pdz-shape-lg);
+    border-radius: pdz.shape(corner-lg);
     filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.2));
 
     @include respond-above(medium) {
@@ -62,19 +62,19 @@
   &__info {
     display: flex;
     flex-direction: column;
-    gap: var(--pdz-space-sm);
+    gap: pdz.space(sm);
   }
 
   &__title {
     @include apply-typography(title-sm);
-    color: var(--pdz-color-primary);
+    color: pdz.color(primary);
     margin: 0;
     font-weight: 700;
   }
 
   &__description {
     @include apply-typography(body-lg);
-    color: var(--pdz-color-on-surface-variant);
+    color: pdz.color(on-surface-variant);
     margin: 0;
     max-width: 600px;
   }
@@ -83,34 +83,34 @@
 .tournaments {
   display: flex;
   flex-direction: column;
-  gap: var(--pdz-space-lg);
+  gap: pdz.space(lg);
 
   &__heading {
     @include apply-typography(title-lg);
-    color: var(--pdz-color-on-surface);
+    color: pdz.color(on-surface);
     margin: 0;
     font-weight: 700;
-    padding-bottom: var(--pdz-space-sm);
-    border-bottom: 2px solid var(--pdz-color-outline-variant);
+    padding-bottom: pdz.space(sm);
+    border-bottom: 2px solid pdz.color(outline-variant);
   }
 
   &__empty {
     @include apply-typography(body-lg);
-    color: var(--pdz-color-on-surface-variant);
+    color: pdz.color(on-surface-variant);
   }
 
   &__list {
     display: flex;
     flex-direction: column;
-    gap: var(--pdz-space-md);
+    gap: pdz.space(md);
   }
 }
 
 .tournament-card {
   display: block;
-  background: var(--pdz-color-surface-container);
-  border-radius: var(--pdz-shape-lg);
-  padding: var(--pdz-space-lg);
+  background: pdz.color(surface-container);
+  border-radius: pdz.shape(corner-lg);
+  padding: pdz.space(lg);
   box-shadow: var(--pdz-level-1);
   text-decoration: none;
   color: inherit;
@@ -125,38 +125,38 @@
   }
 
   &--active {
-    border-left-color: pdz-color(success);
+    border-left-color: pdz.color(success);
   }
 
   &--completed {
-    border-left-color: var(--pdz-color-outline);
+    border-left-color: pdz.color(outline);
     opacity: 0.85;
   }
 
   &__header {
     display: flex;
     align-items: center;
-    gap: var(--pdz-space-md);
-    margin-bottom: var(--pdz-space-md);
+    gap: pdz.space(md);
+    margin-bottom: pdz.space(md);
   }
 
   &__logo {
     width: 56px;
     height: 56px;
     object-fit: contain;
-    border-radius: var(--pdz-shape-sm);
+    border-radius: pdz.shape(corner-sm);
     flex-shrink: 0;
   }
 
   &__title-group {
     display: flex;
     flex-direction: column;
-    gap: var(--pdz-space-xs);
+    gap: pdz.space(xs);
   }
 
   &__name {
     @include apply-typography(title-md);
-    color: var(--pdz-color-on-surface);
+    color: pdz.color(on-surface);
     margin: 0;
     font-weight: 600;
   }
@@ -166,38 +166,38 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.06em;
-    padding: 2px var(--pdz-space-sm);
-    border-radius: var(--pdz-shape-full);
+    padding: 2px pdz.space(sm);
+    border-radius: pdz.shape(corner-full);
     display: inline-block;
     width: fit-content;
 
     &--active {
-      background: pdz-color(success-container);
-      color: pdz-color(on-success-container);
+      background: pdz.color(success-container);
+      color: pdz.color(on-success-container);
     }
 
     &--upcoming {
-      background: pdz-color(primary-container);
-      color: pdz-color(on-primary-container);
+      background: pdz.color(primary-container);
+      color: pdz.color(on-primary-container);
     }
 
     &--completed {
-      background: var(--pdz-color-surface-container-high);
-      color: var(--pdz-color-on-surface-variant);
+      background: pdz.color(surface-container-high);
+      color: pdz.color(on-surface-variant);
     }
   }
 
   &__description {
     @include apply-typography(body-md);
-    color: var(--pdz-color-on-surface-variant);
-    margin: 0 0 var(--pdz-space-md);
+    color: pdz.color(on-surface-variant);
+    margin: 0 0 pdz.space(md);
   }
 
   &__details {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--pdz-space-sm) var(--pdz-space-xl);
-    margin-bottom: var(--pdz-space-md);
+    gap: pdz.space(sm) pdz.space(xl);
+    margin-bottom: pdz.space(md);
   }
 
   &__detail {
@@ -208,7 +208,7 @@
 
   &__label {
     @include apply-typography(label-sm);
-    color: var(--pdz-color-on-surface-variant);
+    color: pdz.color(on-surface-variant);
     text-transform: uppercase;
     letter-spacing: 0.05em;
     font-weight: 600;
@@ -216,26 +216,26 @@
 
   &__value {
     @include apply-typography(body-md);
-    color: var(--pdz-color-on-surface);
+    color: pdz.color(on-surface);
     font-weight: 500;
   }
 
   &__actions {
     display: flex;
     align-items: center;
-    gap: var(--pdz-space-sm);
+    gap: pdz.space(sm);
     flex-wrap: wrap;
   }
 
   &__badge {
     @include apply-typography(label-sm);
     font-weight: 700;
-    padding: var(--pdz-space-xs) var(--pdz-space-md);
-    border-radius: var(--pdz-shape-full);
+    padding: pdz.space(xs) pdz.space(md);
+    border-radius: pdz.shape(corner-full);
 
     &--signup {
-      background: pdz-color(primary-container);
-      color: pdz-color(on-primary-container);
+      background: pdz.color(primary-container);
+      color: pdz.color(on-primary-container);
     }
   }
 
@@ -244,8 +244,8 @@
     font-weight: 700;
     color: #5865f2;
     background: rgba(88, 101, 242, 0.12);
-    padding: var(--pdz-space-xs) var(--pdz-space-md);
-    border-radius: var(--pdz-shape-full);
+    padding: pdz.space(xs) pdz.space(md);
+    border-radius: pdz.shape(corner-full);
     text-decoration: none;
     transition: background 0.15s ease;
 

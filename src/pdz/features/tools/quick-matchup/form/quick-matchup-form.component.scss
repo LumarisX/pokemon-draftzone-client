@@ -1,12 +1,14 @@
+@use "pdz-theming" as pdz;
+
 .pokemon-form-container {
-  background-color: var(--pdz-color-surface);
-  color: var(--pdz-color-on-surface);
-  border-radius: var(--pdz-shape-corner-lg);
+  background-color: pdz.color(surface);
+  color: pdz.color(on-surface);
+  border-radius: pdz.shape(corner-lg);
   box-shadow: var(--pdz-level-2);
 
   .details-title {
     padding: 0 0.5rem 0.5rem;
-    color: var(--pdz-color-on-surface-variant);
+    color: pdz.color(on-surface-variant);
     font-weight: 600;
   }
   .details-container {
@@ -20,7 +22,7 @@
     padding: 0.25rem 0;
     height: 100%;
     .team-title {
-      color: var(--pdz-color-primary);
+      color: pdz.color(primary);
       font-weight: 600;
       font-size: large;
     }

@@ -8,10 +8,9 @@
 // @requires _typography - For custom typography mixins
 // ============================================================================
 
-@use "../variables" as *;
-@use "typography" as *;
-@use "../global.scss" as *;
-@use "../mixins" as *;
+@use "themes" as *;
+@use "pdz-theming" as pdz;
+@use "mixins" as *;
 
 // ----------------------------------------------------------------------------
 // Container
@@ -26,9 +25,9 @@
   min-width: 10rem;
   cursor: pointer;
   overflow: visible;
-  border: 1px solid pdz-color(menu-border);
-  background-color: pdz-color(surface);
-  border-radius: var(--pdz-shape-corner-sm);
+  border: 1px solid pdz.color(menu-border);
+  background-color: pdz.color(surface);
+  border-radius: pdz.shape(corner-sm);
 }
 
 // ----------------------------------------------------------------------------
@@ -39,8 +38,8 @@
 /// @output Label styling positioned above dropdown
 @mixin dropdown-label-text {
   display: block;
-  @include pdz-font-size(0.875rem);
-  color: pdz-color(on-menu-container);
+  @include pdz.font-size(0.875rem);
+  color: pdz.color(on-menu-container);
   cursor: default;
 }
 
@@ -54,7 +53,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  border-radius: var(--pdz-shape-corner-sm);
+  border-radius: pdz.shape(corner-sm);
   padding: 0 0.25rem;
   @include apply-typography(body-sm);
 
@@ -63,11 +62,11 @@
   transition: border-color 0.15s ease-in-out;
 
   &:hover {
-    border-color: pdz-color(menu);
+    border-color: pdz.color(menu);
   }
 
   &:focus-within {
-    outline: 2px solid pdz-color(menu);
+    outline: 2px solid pdz.color(menu);
     outline-offset: 1px;
   }
 }
@@ -130,7 +129,7 @@
   display: inline-block;
   margin-left: 0.5rem;
   transition: transform 0.12s ease-in-out;
-  color: pdz-color(on-menu-container);
+  color: pdz.color(on-menu-container);
 
   .open & {
     transform: rotate(180deg);
@@ -148,8 +147,8 @@
   position: absolute;
   left: 0;
   top: calc(100% + 0.35rem);
-  background: pdz-color(surface);
-  border-radius: var(--pdz-shape-corner-sm);
+  background: pdz.color(surface);
+  border-radius: pdz.shape(corner-sm);
   box-shadow: var(--pdz-level-3);
   z-index: 9999;
   max-height: $max-height;
@@ -176,15 +175,15 @@
   transition: background-color 0.1s ease-in-out;
 
   &:hover {
-    background: rgba(pdz-color(menu-hover-rgb), 0.15);
+    background: pdz-color-rgba(menu-hover, 0.15);
   }
 
   &:active {
-    background: rgba(pdz-color(menu-hover-rgb), 0.3);
+    background: pdz-color-rgba(menu-hover, 0.3);
   }
 
   &.selected {
-    background: rgba(pdz-color(menu-rgb), 0.1);
+    background: pdz-color-rgba(menu, 0.1);
   }
 
   &:disabled,
@@ -206,8 +205,8 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0 0.75rem;
-  background: pdz-color(surface);
-  border-bottom: 1px solid pdz-color(menu-border);
+  background: pdz.color(surface);
+  border-bottom: 1px solid pdz.color(menu-border);
   font-weight: 600;
   font-size: 0.875rem;
   position: sticky;
@@ -233,15 +232,15 @@
   transition: background-color 0.1s ease-in-out;
 
   &:hover {
-    background: rgba(pdz-color(menu-hover-rgb), 0.15);
+    background: rgba(pdz.color(menu-hover-rgb), 0.15);
   }
 
   &:active {
-    background: rgba(pdz-color(menu-hover-rgb), 0.3);
+    background: rgba(pdz.color(menu-hover-rgb), 0.3);
   }
 
   &.selected {
-    background: rgba(pdz-color(menu-rgb), 0.1);
+    background: rgba(pdz.color(menu-rgb), 0.1);
   }
 
   &:disabled,
@@ -262,15 +261,15 @@
   width: 100%;
   padding: 0.5rem 0.75rem;
   border: none;
-  border-bottom: 1px solid pdz-color(menu-border);
-  border-radius: var(--pdz-shape-corner-sm) var(--pdz-shape-corner-sm) 0 0;
+  border-bottom: 1px solid pdz.color(menu-border);
+  border-radius: pdz.shape(corner-sm) pdz.shape(corner-sm) 0 0;
   background: transparent;
   font-size: inherit;
   font-family: inherit;
   outline: none;
 
   &::placeholder {
-    color: pdz-color(on-menu-container);
+    color: pdz.color(on-menu-container);
   }
 
   input {
@@ -287,7 +286,7 @@
 @mixin dropdown-empty-state {
   padding: 0.75rem;
   text-align: center;
-  color: pdz-color(on-menu-container);
+  color: pdz.color(on-menu-container);
   font-style: italic;
 }
 

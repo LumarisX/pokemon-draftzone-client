@@ -1,4 +1,5 @@
 @use "@angular/material" as mat;
+@use "pdz-theming" as pdz;
 
 button {
   mat-icon {
@@ -10,7 +11,7 @@ button {
   }
   @include mat.icon-button-overrides(
     (
-      icon-color: var(--pdz-color-primary),
+      icon-color: pdz.color(primary),
     )
   );
 }
