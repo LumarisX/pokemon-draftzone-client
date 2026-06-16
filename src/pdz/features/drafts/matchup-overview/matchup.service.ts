@@ -25,7 +25,7 @@ export class MatchupService {
 
   getSharedMatchup(matchupId: string) {
     return this.apiService.get<MatchupData>(
-      `${matchupPath}/${matchupId}@pdz/shared`,
+      `${matchupPath}/${matchupId}/shared`,
     );
   }
 

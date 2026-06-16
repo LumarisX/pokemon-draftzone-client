@@ -416,7 +416,7 @@ $sidebar-active-indicator-color: $sidebar-accent-color-teal; // Teal for active 
 /*
 // Ensure you have Angular Material theme and typography imported, typically in styles.scss
 // @use '@angular/material' as mat;
-// @include mat@pdz/core();
+// @include mat/core();
 // ... (your theme definition)
 // @include mat.all-component-themes($my-app-theme); // Or specific component themes
 
