@@ -7,9 +7,7 @@
           @if (matchupData) {
             <div class="detail-container">
               <p class="detail-title">League Name</p>
-              <p class="detail-text">
-                {{ matchupData.details.leagueName }}
-              </p>
+              <p class="detail-text">{{ matchupData.details.leagueName }}</p>
             </div>
             <div class="detail-container">
               <p class="detail-title">Stage</p>
@@ -33,161 +31,7 @@
         </div>
       </div>
       @if (matchupData) {
-        <button
-          (click)="shared = !shared"
-          cdkOverlayOrigin
-          #shareTrigger="cdkOverlayOrigin"
-        >
-          Share
-        </button>
-        <ng-template
-          cdkConnectedOverlay
-          [cdkConnectedOverlayOrigin]="shareTrigger"
-          [cdkConnectedOverlayOpen]="shared"
-          (overlayOutsideClick)="shared = false"
-          (detach)="shared = false"
-          [cdkConnectedOverlayFlexibleDimensions]="true"
-          [cdkConnectedOverlayPush]="true"
-        >
-          <div class="shared-backdrop">
-            <div class="shared-container">
-              <div class="share-header">
-                <div class="share-title">Share your matchup</div>
-
-                <button mat-icon-button (click)="shared = false">
-                  <mat-icon>close</mat-icon>
-                </button>
-              </div>
-              <div class="share-body">
-                <div class="url-container">
-                  <span class="url-text">
-                    {{ shareUrl }}
-                  </span>
-                  @if (copied) {
-                    <button mat-icon-button (click)="copyToClipboard()">
-                      <mat-icon>check</mat-icon>
-                    </button>
-                  } @else {
-                    <button mat-icon-button (click)="copyToClipboard()">
-                      <mat-icon>content_copy</mat-icon>
-                    </button>
-                  }
-                </div>
-                <div class="matchup-preview-container">
-                  <div class="details-container">
-                    <div class="detail-container">
-                      <p class="detail-title">League Name</p>
-                      <p class="detail-text">
-                        {{ matchupData.details.leagueName }}
-                      </p>
-                    </div>
-                    <div class="detail-container">
-                      <p class="detail-title">Stage</p>
-                      <p class="detail-text">{{ matchupData.details.stage }}</p>
-                    </div>
-                    <div class="detail-container">
-                      <p class="detail-title">Ruleset</p>
-                      <p class="detail-text">
-                        {{ matchupData.details.ruleset }}
-                      </p>
-                    </div>
-                    <div class="detail-container">
-                      <p class="detail-title">Format</p>
-                      <p class="detail-text">
-                        {{ matchupData.details.format }}
-                      </p>
-                    </div>
-                  </div>
-                  <div class="teams-container">
-                    <div class="team-container">
-                      <div class="name-container">
-                        <div class="name-text">
-                          {{ matchupData.summary[0].teamName }}
-                        </div>
-                        @if (
-                          matchupData.summary[0].coach ||
-                          matchupData.summary[1].coach
-                        ) {
-                          <div class="coach-text">
-                            {{ matchupData.summary[0].coach }}
-                          </div>
-                        }
-                      </div>
-                      <div class="sprite-container">
-                        @for (
-                          pokemon of matchupData.summary[0].team;
-                          track pokemon
-                        ) {
-                          <div class="sprite-wrapper">
-                            <pdz-sprite
-                              [pokemon]="pokemon"
-                              flipped
-                            ></pdz-sprite>
-                            <div class="capt-label">
-                              @if (pokemon.capt?.tera) {
-                                <mat-icon svgIcon="tera"></mat-icon>
-                              }
-                              @if (pokemon.capt?.z) {
-                                <mat-icon svgIcon="z"></mat-icon>
-                              }
-                              @if (pokemon.capt?.dmax) {
-                                <mat-icon svgIcon="dmax"></mat-icon>
-                              }
-                            </div>
-
-                            <div class="speed-label">
-                              {{ pokemon.baseStats.spe }}
-                            </div>
-                          </div>
-                        }
-                      </div>
-                    </div>
-                    <div class="team-container">
-                      <div class="name-container">
-                        <div class="name-text">
-                          {{ matchupData.summary[1].teamName }}
-                        </div>
-                        @if (
-                          matchupData.summary[0].coach ||
-                          matchupData.summary[1].coach
-                        ) {
-                          <div class="coach-text">
-                            {{ matchupData.summary[1].coach }}
-                          </div>
-                        }
-                      </div>
-                      <div class="sprite-container">
-                        @for (
-                          pokemon of matchupData.summary[1].team;
-                          track pokemon
-                        ) {
-                          <div class="sprite-wrapper">
-                            <pdz-sprite [pokemon]="pokemon"></pdz-sprite>
-                            <div class="capt-label">
-                              @if (pokemon.capt?.tera) {
-                                <mat-icon svgIcon="tera"></mat-icon>
-                              }
-                              @if (pokemon.capt?.z) {
-                                <mat-icon svgIcon="z"></mat-icon>
-                              }
-                              @if (pokemon.capt?.dmax) {
-                                <mat-icon svgIcon="dmax"></mat-icon>
-                              }
-                            </div>
-
-                            <div class="speed-label">
-                              {{ pokemon.baseStats.spe }}
-                            </div>
-                          </div>
-                        }
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </ng-template>
+        <button (click)="openShareDialog()">Share</button>
       }
     </div>
 
@@ -198,6 +42,7 @@
       ></pdz-matchup>
     </div>
   </div>
+
   <div
     class="matchup-teambuilder-panel"
     [class.is-open]="teambuilderPanelOpen"
@@ -215,7 +60,6 @@
   </div>
 
   <button
-    class=""
     class="teambuilder-button matchup-teambuilder-container"
     [class.is-hidden]="teambuilderPanelOpen"
     (click)="teambuilderPanelOpen = !teambuilderPanelOpen"

@@ -1,13 +1,6 @@
-import { OverlayModule } from '@angular/cdk/overlay';
-import {
-  Component,
-  ElementRef,
-  HostListener,
-  inject,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { Component, HostListener, inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { Meta } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -25,6 +18,7 @@ import { MatchupComponent } from './matchup/matchup.component';
 import { PokemonBuilder } from './widgets/teambuilder/pokemon-builder/pokemon-builder.model';
 import { MatchupTeambuilderComponent } from './widgets/teambuilder/teambuilder.component';
 import { ErrorService } from '@pdz/layout/error/error.service';
+import { ShareDialogComponent } from './share-dialog/share-dialog.component';
 
 dayjs.extend(duration);
 
@@ -37,9 +31,7 @@ dayjs.extend(duration);
     MatchupComponent,
     RouterModule,
     MatButtonModule,
-    OverlayModule,
     MatIconModule,
-    SpriteComponent,
     MatchupTeambuilderComponent,
     IconComponent,
   ],
@@ -50,14 +42,13 @@ export class MatchupOverviewComponent implements OnInit {
   private matchupService = inject(MatchupService);
   private errorService = inject(ErrorService);
   private meta = inject(Meta);
+  private dialog = inject(MatDialog);
 
   matchupData?: MatchupData;
   matchupId!: string;
-  shared: boolean = false;
   shareUrl?: string;
   tournamentId?: string;
   timeString?: string;
-  copied: boolean = false;
   draftPath = DRAFT_OVERVIEW_PATH;
 
   teambuilderPanelOpen: boolean = false;
@@ -66,8 +57,6 @@ export class MatchupOverviewComponent implements OnInit {
   private readonly MIN_WIDTH_PERCENT = 15;
   private readonly MAX_WIDTH_PERCENT = 70;
   isMobile: boolean = false;
-
-  @ViewChild('inputFieldRef') inputFieldRef!: ElementRef;
 
   startResize(event: MouseEvent): void {
     if (this.isMobile) return;
@@ -81,10 +70,8 @@ export class MatchupOverviewComponent implements OnInit {
 
     const containerWidth = window.innerWidth;
     const mouseX = event.clientX;
-    // Calculate width from right edge (panel is on the right)
     const newWidthPercent = ((containerWidth - mouseX) / containerWidth) * 100;
 
-    // Clamp between min and max
     this.panelWidthPercent = Math.min(
       this.MAX_WIDTH_PERCENT,
       Math.max(this.MIN_WIDTH_PERCENT, newWidthPercent),
@@ -112,9 +99,9 @@ export class MatchupOverviewComponent implements OnInit {
             if (gameTime.isValid()) {
               const currentTime = dayjs();
               if (!gameTime.isBefore(currentTime)) {
-                const duration = dayjs.duration(gameTime.diff(currentTime));
-                const days = Math.floor(Math.abs(duration.asDays()));
-                const hours = Math.abs(duration.hours());
+                const dur = dayjs.duration(gameTime.diff(currentTime));
+                const days = Math.floor(Math.abs(dur.asDays()));
+                const hours = Math.abs(dur.hours());
                 this.timeString =
                   days > 0 ? `${days} days ${hours} hours` : `${hours} hours`;
               } else {
@@ -142,7 +129,6 @@ export class MatchupOverviewComponent implements OnInit {
             this.router.navigate(['/' + matchupPath, this.matchupId]);
             return;
           }
-
           this.errorService.reportError(error);
         },
       });
@@ -150,20 +136,13 @@ export class MatchupOverviewComponent implements OnInit {
     this.loadTeam();
   }
 
-  copyToClipboard() {
-    if (!this.shareUrl) return;
-    navigator.clipboard
-      .writeText(this.shareUrl)
-      .then(() => {
-        console.log('URL copied to clipboard: ' + this.shareUrl);
-        this.copied = true;
-        setTimeout(() => {
-          this.copied = false;
-        }, 1000);
-      })
-      .catch((error) => {
-        console.error('Failed to copy URL to clipboard: ', error);
-      });
+  openShareDialog(): void {
+    if (!this.matchupData || !this.shareUrl) return;
+    this.dialog.open(ShareDialogComponent, {
+      data: { shareUrl: this.shareUrl, matchupData: this.matchupData },
+      maxWidth: '50rem',
+      width: '100%',
+    });
   }
 
   team: PokemonBuilder[] = [];
@@ -187,11 +166,7 @@ export class MatchupOverviewComponent implements OnInit {
         ...typechart,
         team: typechart.team.map((t) => {
           const p = this.team.find((p) => p.id === t.id);
-          return {
-            ...t,
-            ...p,
-            disabled: !p,
-          };
+          return { ...t, ...p, disabled: !p };
         }),
       },
     ];
@@ -222,6 +197,7 @@ export class MatchupOverviewComponent implements OnInit {
   private checkIfMobile(): void {
     this.isMobile = window.innerWidth < 768;
   }
+
   removePokemonFromTeam(pokemon: DraftPokemon) {
     this.team = this.team.filter((p) => p.id !== pokemon.id);
   }

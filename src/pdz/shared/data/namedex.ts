@@ -2815,10 +2815,10 @@ export const Namedex: {
   umbreon: {
     name: ['Umbreon'],
     sources: {
-      ps: {},
+      ps: { flip: true },
       serebii: { id: '197' },
       pmd: { id: '0197' },
-      psgh: { id: 's6304' },
+      psgh: { id: 's6304', flip: true },
     },
   },
   murkrow: {

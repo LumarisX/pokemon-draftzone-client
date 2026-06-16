@@ -1,0 +1,103 @@
+<div class="share-header" mat-dialog-title>
+  <span class="share-title">Share your matchup</span>
+  <button class="close-button" (click)="dialogRef.close()">
+    <pdz-icon name="close" size="md" />
+  </button>
+</div>
+
+<mat-dialog-content class="share-body">
+  <div class="url-container">
+    <span class="url-text">{{ data.shareUrl }}</span>
+    <button class="icon-button" (click)="copyToClipboard()">
+      <pdz-icon [name]="copied ? 'check' : 'content_copy'" size="md" />
+    </button>
+  </div>
+
+  <div class="details-container">
+    <div class="detail-container">
+      <p class="detail-title">League Name</p>
+      <p class="detail-text">{{ data.matchupData.details.leagueName }}</p>
+    </div>
+    <div class="detail-container">
+      <p class="detail-title">Stage</p>
+      <p class="detail-text">{{ data.matchupData.details.stage }}</p>
+    </div>
+    <div class="detail-container">
+      <p class="detail-title">Ruleset</p>
+      <p class="detail-text">{{ data.matchupData.details.ruleset }}</p>
+    </div>
+    <div class="detail-container">
+      <p class="detail-title">Format</p>
+      <p class="detail-text">{{ data.matchupData.details.format }}</p>
+    </div>
+  </div>
+
+  <div class="teams-container">
+    <div class="team-container">
+      <div class="team-header">
+        <div class="team-name-title">
+          {{ data.matchupData.summary[0].teamName }}
+        </div>
+        @if (
+          data.matchupData.summary[0].coach || data.matchupData.summary[1].coach
+        ) {
+          <div class="team-coach-title">
+            {{ data.matchupData.summary[0].coach }}
+          </div>
+        }
+      </div>
+      <div class="team-body">
+        @for (pokemon of data.matchupData.summary[0].team; track pokemon) {
+          <div class="sprite-wrapper">
+            <pdz-sprite [pokemon]="pokemon" flipped></pdz-sprite>
+            <div class="capt-label">
+              @if (pokemon.capt?.tera) {
+                <pdz-icon name="tera" size="sm" />
+              }
+              @if (pokemon.capt?.z) {
+                <pdz-icon name="z" size="sm" />
+              }
+              @if (pokemon.capt?.dmax) {
+                <pdz-icon name="dmax" size="sm" />
+              }
+            </div>
+            <div class="speed-label">{{ pokemon.baseStats.spe }}</div>
+          </div>
+        }
+      </div>
+    </div>
+    <div class="team-container alternate">
+      <div class="team-header">
+        <div class="team-name-title">
+          {{ data.matchupData.summary[1].teamName }}
+        </div>
+        @if (
+          data.matchupData.summary[0].coach || data.matchupData.summary[1].coach
+        ) {
+          <div class="team-coach-title">
+            {{ data.matchupData.summary[1].coach }}
+          </div>
+        }
+      </div>
+      <div class="team-body">
+        @for (pokemon of data.matchupData.summary[1].team; track pokemon) {
+          <div class="sprite-wrapper">
+            <pdz-sprite [pokemon]="pokemon"></pdz-sprite>
+            <div class="capt-label">
+              @if (pokemon.capt?.tera) {
+                <pdz-icon name="tera" size="sm" />
+              }
+              @if (pokemon.capt?.z) {
+                <pdz-icon name="z" size="sm" />
+              }
+              @if (pokemon.capt?.dmax) {
+                <pdz-icon name="dmax" size="sm" />
+              }
+            </div>
+            <div class="speed-label">{{ pokemon.baseStats.spe }}</div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</mat-dialog-content>

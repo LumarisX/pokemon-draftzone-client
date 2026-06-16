@@ -1,0 +1,190 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: contents;
+}
+
+.share-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 3rem;
+  margin-bottom: pdz.space(md);
+
+  .share-title {
+    flex: 1;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    font-family: var(--pdz-font-fancy);
+  }
+
+  .close-button {
+    flex-shrink: 0;
+    margin-left: auto;
+    position: absolute;
+    right: pdz.space(lg);
+  }
+}
+
+.share-body {
+  display: flex;
+  flex-direction: column;
+  row-gap: pdz.space(md);
+
+  .url-container {
+    border: 1px solid pdz.color(outline-variant);
+    border-radius: pdz.shape(corner-lg);
+    padding: 0 0.5rem;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .url-text {
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 100%;
+    }
+  }
+
+  .details-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    border: 1px solid pdz.color(outline-variant);
+    border-radius: pdz.shape(corner-lg);
+    padding: 0 1rem;
+
+    .detail-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .detail-title {
+      @include pdz.apply-typography(label-sm);
+    }
+    .detail-text {
+      @include pdz.apply-typography(body-sm);
+      font-weight: var(--pdz-font-weight-bold);
+    }
+  }
+
+  .teams-container {
+    display: flex;
+    gap: pdz.space(md);
+    > :not(:last-child) {
+      border-right: 1px solid pdz.color(primary-border);
+    }
+
+    .team-container {
+      --pdz-cmp-color-border: #{pdz.color(primary-border)};
+      --pdz-cmp-color-title: #{pdz.color(primary)};
+
+      &.alternate {
+        --pdz-cmp-color-border: #{pdz.color(secondary-border)};
+        --pdz-cmp-color-title: #{pdz.color(secondary)};
+      }
+      border-width: 1px;
+      border-radius: pdz.shape(corner-lg);
+      border-color: var(--pdz-cmp-color-border);
+      padding: pdz.space(xs);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      .team-header {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        border-width: 0 0 1px;
+        border-color: var(--pdz-cmp-color-border);
+        margin-bottom: 0.5rem;
+
+        .team-name-title,
+        .team-coach-title {
+          max-width: 100%;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          text-align: center;
+          font-weight: var(--pdz-font-weight-bold);
+          color: var(--pdz-cmp-color-title);
+          font-family: var(--pdz-font-fancy);
+        }
+
+        .team-coach-title {
+          font-size: 0.8rem;
+          height: 1.25rem;
+        }
+      }
+
+      .team-body {
+        display: grid;
+        gap: 0.5rem;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        .sprite-wrapper {
+          position: relative;
+
+          .capt-label {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            top: 0;
+            right: 0;
+            background-color: pdz.color(primary);
+            color: pdz.color(on-primary);
+            box-shadow: var(--pdz-level-2);
+            border-radius: pdz.shape(corner-lg);
+
+            // pdz-icon size="sm" = 20px; override for capt badges
+            pdz-icon {
+              --icon-size: 1.5rem;
+
+              @media (max-width: 768px) {
+                --icon-size: 1rem;
+              }
+            }
+          }
+
+          .speed-label {
+            position: absolute;
+            bottom: 0;
+            font-weight: 600;
+            background-color: pdz.color(surface);
+            padding: 0 pdz.space(xs);
+            border-radius: pdz.shape(corner-full);
+            color: var(--pdz-cmp-color-title);
+
+            @media (max-width: 768px) {
+              @include pdz.font-size(0.7rem);
+              padding: pdz.space(2xs);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.icon-button,
+.close-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: pdz.space(xs);
+  border-radius: pdz.shape(corner-full);
+  color: inherit;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background-color: pdz.color(surface-variant);
+  }
+}
