@@ -4,7 +4,7 @@ import { MatchupData } from '@pdz/features/drafts/matchup-overview/matchup-inter
 import { Observable, of } from 'rxjs';
 import { QuickFormData } from '@pdz/features/tools/quick-matchup/form/quick-matchup-form.component';
 
-export const matchupPath = 'matchup';
+export const matchupPath = 'external/matchups';
 
 @Injectable({
   providedIn: 'root',

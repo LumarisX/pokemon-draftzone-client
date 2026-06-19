@@ -31,7 +31,7 @@ export class UnreadService {
   }
 
   getUnreadCount(counts: { [key: string]: number }) {
-    return this.api.get<typeof counts>(['data', 'unread-counts'], {
+    return this.api.get<typeof counts>(['user', 'unread-counts'], {
       params: counts,
     });
   }

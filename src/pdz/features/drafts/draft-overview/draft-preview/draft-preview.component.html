@@ -71,8 +71,8 @@
           <div class="draft-card">
             <div class="card-header">
               @if (draft.score) {
-                <div class="card-score" [ngClass]="scoreClass(draft)">
-                  {{ scoreString(draft) }}
+                <div class="card-score" [ngClass]="scoreClass(draft.score)">
+                  {{ scoreString(draft.score) }}
                 </div>
               }
               <div class="card-title">

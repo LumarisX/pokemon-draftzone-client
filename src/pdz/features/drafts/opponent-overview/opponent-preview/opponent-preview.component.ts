@@ -172,7 +172,10 @@ export class OpponentTeamPreviewComponent implements OnInit, AfterViewInit {
       });
       return [aScore, bScore];
     } else if (matchup.matches.length > 0) {
-      return [matchup.matches[0].aTeam.score, matchup.matches[0].bTeam.score];
+      const match = matchup.matches[0];
+      const aScore = match.aTeam?.score ?? 0;
+      const bScore = match.bTeam?.score ?? 0;
+      return [aScore, bScore];
     } else {
       return null;
     }
