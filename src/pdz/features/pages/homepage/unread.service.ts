@@ -25,9 +25,9 @@ export class UnreadService {
     ).length;
     this.newsCount.next(this.capNumber(newsUnread + changelogUnread));
 
-    this.getUnreadCount({ leagueAd: lastLeagueTime }).subscribe((count) => {
-      this.leagueCount.next(this.capNumber(count['leagueAd']));
-    });
+    // this.getUnreadCount({ leagueAd: lastLeagueTime }).subscribe((count) => {
+    //   this.leagueCount.next(this.capNumber(count['leagueAd']));
+    // });
   }
 
   getUnreadCount(counts: { [key: string]: number }) {
