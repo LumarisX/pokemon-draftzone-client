@@ -39,7 +39,7 @@ export class LeagueManageService {
     },
   ) {
     return this.apiService.post(
-      `leagues/tournaments/${this.leagueZoneService.tournamentKey()}/manage/divisions/${this.leagueZoneService.divisionKey()}/schedule/${matchupId}`,
+      `league/${this.leagueZoneService.leagueKey()}/tournaments/${this.leagueZoneService.tournamentKey()}/divisions/${this.leagueZoneService.divisionKey()}/schedule/${matchupId}`,
       payload,
       { authenticated: true },
     );
@@ -55,22 +55,22 @@ export class LeagueManageService {
     },
   ) {
     return this.apiService.post(
-      `leagues/tournaments/${tournamentId}/manage/divisions/${this.leagueZoneService.divisionKey()}/setdraft`,
-      { pick: { pokemonId: pick.pokemonId }, teamId: pick.teamId },
+      `league/${this.leagueZoneService.leagueKey()}/tournaments/${tournamentId}/divisions/${this.leagueZoneService.divisionKey()}/teams/${pick.teamId}/draft`,
+      { pokemonId: pick.pokemonId },
       { authenticated: true },
     );
   }
 
   canManage(tournamentKey: string) {
     return this.apiService.get<string[]>(
-      `leagues/tournaments/${tournamentKey}/roles`,
+      `league/${this.leagueZoneService.leagueKey()}/tournaments/${tournamentKey}/roles`,
       { authenticated: true },
     );
   }
 
   setDivisionState(state: string) {
     return this.apiService.post(
-      `leagues/tournaments/${this.leagueZoneService.tournamentKey()}/manage/divisions/${this.leagueZoneService.divisionKey()}/state`,
+      `league/${this.leagueZoneService.leagueKey()}/tournaments/${this.leagueZoneService.tournamentKey()}/divisions/${this.leagueZoneService.divisionKey()}/state`,
       { state },
       { authenticated: true },
     );
@@ -78,7 +78,7 @@ export class LeagueManageService {
 
   skipCurrentPick() {
     return this.apiService.post(
-      `leagues/tournaments/${this.leagueZoneService.tournamentKey()}/manage/divisions/${this.leagueZoneService.divisionKey()}/skip`,
+      `league/${this.leagueZoneService.leagueKey()}/tournaments/${this.leagueZoneService.tournamentKey()}/divisions/${this.leagueZoneService.divisionKey()}/skip`,
       '',
       { authenticated: true },
     );
@@ -91,7 +91,7 @@ export class LeagueManageService {
         trades: TradeLog[];
       }[];
     }>(
-      `leagues/tournaments/${this.leagueZoneService.tournamentKey()}/manage/divisions/${this.leagueZoneService.divisionKey()}/trades`,
+      `league/${this.leagueZoneService.leagueKey()}/tournaments/${this.leagueZoneService.tournamentKey()}/divisions/${this.leagueZoneService.divisionKey()}/trades`,
       {
         authenticated: true,
       },
@@ -103,7 +103,7 @@ export class LeagueManageService {
       stages: League.Stage[];
       currentStage: number;
     }>(
-      `leagues/tournaments/${this.leagueZoneService.tournamentKey()}/manage/divisions/${this.leagueZoneService.divisionKey()}/schedule`,
+      `league/${this.leagueZoneService.leagueKey()}/tournaments/${this.leagueZoneService.tournamentKey()}/divisions/${this.leagueZoneService.divisionKey()}/schedule`,
       {
         authenticated: true,
       },
@@ -208,7 +208,7 @@ export class LeagueManageService {
       stages: string[];
       currentStage: number;
     }>(
-      `leagues/tournaments/${this.leagueZoneService.tournamentKey()}/manage/divisions/${this.leagueZoneService.divisionKey()}/pokemon-list`,
+      `league/${this.leagueZoneService.leagueKey()}/tournaments/${this.leagueZoneService.tournamentKey()}/divisions/${this.leagueZoneService.divisionKey()}/pokemon-list`,
       { authenticated: true },
     );
   }

@@ -44,27 +44,29 @@ export class WebSocketService {
   constructor() {}
 
   connect(): Observable<any> {
-    if (!this.socket$ || !this.socket$.connected) {
-      this.socket$ = io(this.serverUrl, { path: '/ws/' });
-      this.socket$.on(
-        'message',
-        (message: JsonRpcResponse | { event: string; data: any }) => {
-          this.handleMessage(message);
-        },
-      );
-      this.socket$.on('connect_error', (error: Error) =>
-        console.error('WebSocket Connection Error:', error),
-      );
-      this.socket$.on('disconnect', (reason: Socket.DisconnectReason) => {
-        console.warn('WebSocket Disconnected:', reason);
-        this.clearPendingRequests('WebSocket disconnected');
-      });
-      this.socket$.on('connect', () => console.log('WebSocket Connected.'));
-    }
-    return new Observable((observer) => {
-      this.socket$?.on('connect', () => observer.next(this.socket$));
-      this.socket$?.on('disconnect', () => observer.complete());
-    });
+    //TODO: update websocket logic to use better practices and nestjs websocket
+    // if (!this.socket$ || !this.socket$.connected) {
+    //   this.socket$ = io(this.serverUrl, { path: '/ws/' });
+    //   this.socket$.on(
+    //     'message',
+    //     (message: JsonRpcResponse | { event: string; data: any }) => {
+    //       this.handleMessage(message);
+    //     },
+    //   );
+    //   this.socket$.on('connect_error', (error: Error) =>
+    //     console.error('WebSocket Connection Error:', error),
+    //   );
+    //   this.socket$.on('disconnect', (reason: Socket.DisconnectReason) => {
+    //     console.warn('WebSocket Disconnected:', reason);
+    //     this.clearPendingRequests('WebSocket disconnected');
+    //   });
+    //   this.socket$.on('connect', () => console.log('WebSocket Connected.'));
+    // }
+    // return new Observable((observer) => {
+    //   this.socket$?.on('connect', () => observer.next(this.socket$));
+    //   this.socket$?.on('disconnect', () => observer.complete());
+    // });
+    return new Observable();
   }
 
   sendMessage<T>(method: string, params: any = {}): Observable<T> {

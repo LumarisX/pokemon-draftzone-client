@@ -77,34 +77,34 @@ export class DataService {
     formes: {},
   };
 
-  getFormats(): Observable<Format[]> {
+  getFormatsLegacy(): Observable<Format[]> {
     if (this.cache.formats) return of(this.cache.formats);
-    return this.apiService.get<string[]>('data/formats').pipe(
+    return this.apiService.get<string[]>('data/formats/legacy').pipe(
       tap((formats: string[]) => {
         this.cache.formats = formats;
       }),
     );
   }
 
-  getFormatsGrouped(): Observable<
+  getFormats(): Observable<
     [string, { name: string; id: string; desc?: string }[]][]
   > {
-    return this.apiService.get('data/formatsgrouped');
+    return this.apiService.get('data/formats');
   }
 
-  getRulesets(): Observable<Ruleset[]> {
+  getRulesetsLegacy(): Observable<Ruleset[]> {
     if (this.cache.rulesets) return of(this.cache.rulesets);
-    return this.apiService.get<string[]>('data/rulesets').pipe(
+    return this.apiService.get<string[]>('data/rulesets/legacy').pipe(
       tap((rulesets: string[]) => {
         this.cache.rulesets = rulesets;
       }),
     );
   }
 
-  getRulesetsGrouped(): Observable<
+  getRulesets(): Observable<
     [string, { name: string; id: string; desc?: string }[]][]
   > {
-    return this.apiService.get('data/rulesetsgrouped');
+    return this.apiService.get('data/rulesets');
   }
 
   getRandom(
@@ -136,9 +136,7 @@ export class DataService {
     if (this.cache.pokemonList[ruleset])
       return of(this.cache.pokemonList[ruleset]);
     return this.apiService
-      .get<
-        PokemonFullData[]
-      >('data/listpokemon', { params: { ruleset: ruleset } })
+      .get<PokemonFullData[]>('data/pokemon', { params: { ruleset: ruleset } })
       .pipe(
         tap((list) => {
           this.cache.pokemonList[ruleset] = list;

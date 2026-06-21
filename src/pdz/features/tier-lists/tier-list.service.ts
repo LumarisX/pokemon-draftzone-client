@@ -131,7 +131,10 @@ export class TierListService {
         tierList: LeagueTier[];
         divisions: { [key: string]: { pokemonId: string; teamId: string }[] };
         name?: string;
-      }>(`${ROOTPATH}/${tierListId}/edit`, { authenticated: true });
+      }>(`${ROOTPATH}/${tierListId}`, {
+        authenticated: true,
+        params: { edit: true },
+      });
     }
     return this.leagueZoneService.getLeagueInfo().pipe(
       switchMap((info) => {
@@ -144,7 +147,10 @@ export class TierListService {
           tierList: LeagueTier[];
           divisions: { [key: string]: { pokemonId: string; teamId: string }[] };
           name?: string;
-        }>(`${ROOTPATH}/${info.tierListId}/edit`, { authenticated: true });
+        }>(`${ROOTPATH}/${info.tierListId}`, {
+          authenticated: true,
+          params: { edit: true },
+        });
       }),
     );
   }
@@ -164,10 +170,9 @@ export class TierListService {
   ) {
     const tierListId = this.tierListId();
     if (tierListId) {
-      return this.apiService.post<{ success: boolean; message: string }>(
-        `${ROOTPATH}/${tierListId}/edit`,
+      return this.apiService.patch<{ success: boolean; message: string }>(
+        `${ROOTPATH}/${tierListId}`,
         { tiers },
-        { authenticated: true },
       );
     }
     return this.leagueZoneService.getLeagueInfo().pipe(
@@ -177,10 +182,9 @@ export class TierListService {
             () => new Error('No tier list connected to this tournament'),
           );
         }
-        return this.apiService.post<{ success: boolean; message: string }>(
-          `${ROOTPATH}/${info.tierListId}/edit`,
+        return this.apiService.patch<{ success: boolean; message: string }>(
+          `${ROOTPATH}/${info.tierListId}`,
           { tiers },
-          { authenticated: true },
         );
       }),
     );

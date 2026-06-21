@@ -123,7 +123,7 @@ export class LeagueFormComponent implements OnInit {
 
   private loadFormData(): void {
     this.dataService
-      .getFormats()
+      .getFormatsLegacy()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (formats) => {
@@ -136,7 +136,7 @@ export class LeagueFormComponent implements OnInit {
       });
 
     this.dataService
-      .getRulesets()
+      .getRulesetsLegacy()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (rulesets) => {

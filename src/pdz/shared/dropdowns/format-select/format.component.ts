@@ -38,7 +38,7 @@ export class FormatSelectComponent implements OnInit, ControlValueAccessor {
   }
 
   ngOnInit() {
-    this.dataService.getFormatsGrouped().subscribe((formats) => {
+    this.dataService.getFormats().subscribe((formats) => {
       this.formats = formats;
       if (!this.selectedFormat) {
         this.selectedFormat = this.formats[0][1][0].id;

@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from '@pdz/core/services/api.service';
 
-const ROOTPATH = 'tournament-ads/external';
+const ROOTPATH = 'external/tournament-ads';
 
 @Injectable({
   providedIn: 'root',
@@ -22,7 +22,7 @@ export class LeagueAdsService {
   }
 
   getMyAds(): Observable<LeagueAd[]> {
-    return this.apiService.get([ROOTPATH, 'my'], {
+    return this.apiService.get([ROOTPATH, 'me'], {
       authenticated: true,
     });
   }
