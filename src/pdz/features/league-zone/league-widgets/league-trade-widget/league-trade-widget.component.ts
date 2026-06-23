@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { LeagueZoneService } from '../../league-zone.service';
 import { TradeLog } from '../../league.interface';
@@ -14,16 +14,18 @@ export class LeagueTradeWidgetComponent implements OnInit, OnDestroy {
   leagueService = inject(LeagueZoneService);
   private readonly destroy$ = new Subject<void>();
 
-  tradeStages?: { name: string; trades: TradeLog[] }[];
+  @Input() stageId!: string;
+
+  tradeRounds?: { name: string; trades: TradeLog[] }[];
 
   ngOnInit(): void {
     this.leagueService
-      .getTrades()
+      .getTrades({ stageId: this.stageId })
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (data) => {
-          this.tradeStages = [...data.stages]
-            .filter((stage) => stage.trades.length)
+          this.tradeRounds = [...data.rounds]
+            .filter((round) => round.trades.length)
             .reverse();
         },
       });

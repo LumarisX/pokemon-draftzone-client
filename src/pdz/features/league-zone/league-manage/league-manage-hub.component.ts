@@ -18,6 +18,7 @@ export class LeagueManageHubComponent implements OnInit, OnDestroy {
   private leagueService = inject(LeagueZoneService);
 
   leagueInfo: League.LeagueInfo | null = null;
+  stages: League.StageSummary[] = [];
   isLoading = true;
   private destroy$ = new Subject<void>();
 
@@ -51,6 +52,18 @@ export class LeagueManageHubComponent implements OnInit, OnDestroy {
         error: (err) => {
           console.error('Error loading tournament info:', err);
           this.isLoading = false;
+        },
+      });
+
+    this.leagueService
+      .listStages()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (stages) => {
+          this.stages = stages;
+        },
+        error: (err) => {
+          console.error('Error loading stages:', err);
         },
       });
   }

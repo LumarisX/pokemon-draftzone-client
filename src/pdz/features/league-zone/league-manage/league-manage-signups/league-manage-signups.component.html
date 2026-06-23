@@ -29,13 +29,13 @@
     (change)="onLogoFileSelected($event)"
   />
 
-  @for (div of divisions; track div?.divisionKey) {
+  @for (draft of drafts; track draft?.draftKey) {
     <div class="table-container">
       <div class="division-header">
-        <div class="division-title">{{ div?.name ?? "No Division" }}</div>
+        <div class="division-title">{{ draft?.name ?? "No Draft" }}</div>
         <button
           class="division-move-btn"
-          (click)="moveToDivision(div?.divisionKey)"
+          (click)="moveToDraft(draft?.draftKey)"
         >
           Move Here
         </button>
@@ -57,10 +57,11 @@
             <th>Logo</th>
             <th>Joined</th>
             <th>Role</th>
+            <th>Team Page</th>
           </tr>
         </thead>
         <tbody>
-          @for (user of signUpInDivision(div?.divisionKey); track user) {
+          @for (user of signUpInDraft(draft?.draftKey); track user) {
             <tr>
               <td>
                 <input type="checkbox" [(ngModel)]="user.selected" />
@@ -123,6 +124,26 @@
                   tabindex="-1"
                   aria-readonly="true"
                 />
+              </td>
+              <td>
+                @if (getTeamLink(user); as teamLink) {
+                  <a
+                    [routerLink]="teamLink"
+                    target="_blank"
+                    rel="noopener"
+                    class="team-link"
+                    [attr.aria-label]="'View team ' + user.teamName + ' in a new tab'"
+                  >
+                    <pdz-icon name="open_in_new" size="sm"></pdz-icon>
+                  </a>
+                } @else {
+                  <span
+                    class="team-link--disabled"
+                    title="No team page available for this signup"
+                  >
+                    &mdash;
+                  </span>
+                }
               </td>
             </tr>
           }

@@ -9,7 +9,7 @@ export type TournamentDetails = {
   tournamentKey: string;
   leagueName: string;
   leagueKey: string;
-  divisionKey: string;
+  draftKey: string;
   teamId: string;
   draft: Pokemon[];
   format: string;

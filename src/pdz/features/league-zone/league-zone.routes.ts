@@ -47,6 +47,10 @@ export const routes: Routes = [
     component: TournamentLandingComponent,
   },
   {
+    path: ':leagueKey/tournaments/:tournamentKey/teams/:teamKey',
+    component: LeagueTeamComponent,
+  },
+  {
     path: ':leagueKey/tournaments/:tournamentKey/rules',
     component: LeagueRulesOverviewComponent,
   },
@@ -82,44 +86,44 @@ export const routes: Routes = [
     component: LeagueTradesComponent,
   },
   {
-    path: ':leagueKey/tournaments/:tournamentKey/divisions/:divisionKey',
+    path: ':leagueKey/tournaments/:tournamentKey/drafts/:draftKey',
     component: DivisionDashboardComponent,
   },
   {
-    path: ':leagueKey/tournaments/:tournamentKey/divisions/:divisionKey/schedule',
+    path: ':leagueKey/tournaments/:tournamentKey/stages/:stageId/schedule',
     component: LeagueScheduleComponent,
   },
   {
-    path: ':leagueKey/tournaments/:tournamentKey/divisions/:divisionKey/schedule/matchups/:matchupId',
+    path: ':leagueKey/tournaments/:tournamentKey/stages/:stageId/schedule/matchups/:matchupId',
     component: MatchupOverviewComponent,
   },
   {
-    path: ':leagueKey/tournaments/:tournamentKey/divisions/:divisionKey/standings',
+    path: ':leagueKey/tournaments/:tournamentKey/stages/:stageId/standings',
     component: LeagueStandingsComponent,
   },
   {
-    path: ':leagueKey/tournaments/:tournamentKey/divisions/:divisionKey/draft',
+    path: ':leagueKey/tournaments/:tournamentKey/drafts/:draftKey/draft',
     component: LeagueDraftComponent,
   },
   {
-    path: ':leagueKey/tournaments/:tournamentKey/divisions/:divisionKey/power-rankings',
+    path: ':leagueKey/tournaments/:tournamentKey/drafts/:draftKey/power-rankings',
     component: PowerRankingsComponent,
   },
   {
-    path: ':leagueKey/tournaments/:tournamentKey/divisions/:divisionKey/teams',
+    path: ':leagueKey/tournaments/:tournamentKey/drafts/:draftKey/teams',
     component: LeagueTeamsComponent,
   },
   {
-    path: ':leagueKey/tournaments/:tournamentKey/divisions/:divisionKey/teams/:teamKey',
+    path: ':leagueKey/tournaments/:tournamentKey/drafts/:draftKey/teams/:teamKey',
     component: LeagueTeamComponent,
   },
 
   {
-    path: ':leagueKey/tournaments/:tournamentKey/divisions/:divisionKey/tier-list',
+    path: ':leagueKey/tournaments/:tournamentKey/drafts/:draftKey/tier-list',
     component: TierListComponent,
   },
   {
-    path: ':leagueKey/tournaments/:tournamentKey/divisions/:divisionKey/trades',
+    path: ':leagueKey/tournaments/:tournamentKey/stages/:stageId/trades',
     component: LeagueTradesComponent,
   },
   // {

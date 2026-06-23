@@ -7,34 +7,41 @@ table {
 
 th,
 td {
-  border: 1px solid #ddd;
+  border: 1px solid pdz.color(outline-variant);
   padding: 8px;
   text-align: left;
   word-wrap: break-word;
 }
 
 th {
-  background-color: #f2f2f2;
+  background-color: pdz.color(surface-container);
+  color: pdz.color(on-surface);
 }
 
 tr:nth-child(even) {
-  background-color: #f9f9f9;
+  background-color: pdz.color(surface-container-lowest);
 }
 
 tr:hover {
-  background-color: #f1f1f1;
+  background-color: pdz.color(surface-container-low);
 }
 
 .table-container {
   padding: 16px;
-  overflow: auto;
   width: 100%;
+  border-radius: pdz.shape(corner-md);
+  box-shadow: var(--pdz-level-1);
+
   table {
     width: 100%;
-
     overflow: auto;
-
     max-height: 40rem;
+  }
+
+  thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
   }
 }
 
@@ -176,5 +183,24 @@ img {
   &__zone {
     font-size: 0.85rem;
     color: pdz.color(on-surface-variant);
+  }
+}
+
+.team-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: pdz.shape(corner-sm);
+  color: pdz.color(primary);
+
+  &:hover {
+    background-color: pdz.color(primary-container);
+  }
+
+  &--disabled {
+    color: pdz.color(on-surface-variant);
+    opacity: 0.6;
   }
 }

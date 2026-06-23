@@ -65,16 +65,6 @@
                             >Replay</span
                           >
                         }
-                      } @else {
-                        @if (getMatchupUrl(match); as matchupUrl) {
-                          <a
-                            [href]="matchupUrl"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            class="match-card__matchup-btn"
-                            >Matchup</a
-                          >
-                        }
                       }
                     </div>
 
@@ -85,10 +75,7 @@
                       [attr.data-status]="getTeamStatus(match, 0)"
                     >
                       @if (match.slotA.team) {
-                        <a
-                          [href]="getTeamUrl(match.slotA.team)"
-                          class="team-link"
-                        >
+                        <div class="team-link">
                           <div class="team-logo">
                             <img
                               [src]="getLogoUrl(match.slotA.team.logo)"
@@ -108,7 +95,7 @@
                               }}</span>
                             </div>
                           </div>
-                        </a>
+                        </div>
                       } @else {
                         <div class="team-placeholder">
                           {{ match.slotA.placeholder ?? "TBD" }}
@@ -123,10 +110,7 @@
                       [attr.data-status]="getTeamStatus(match, 1)"
                     >
                       @if (match.slotB.team) {
-                        <a
-                          [href]="getTeamUrl(match.slotB.team)"
-                          class="team-link"
-                        >
+                        <div class="team-link">
                           <div class="team-logo">
                             <img
                               [src]="getLogoUrl(match.slotB.team.logo)"
@@ -146,7 +130,7 @@
                               }}</span>
                             </div>
                           </div>
-                        </a>
+                        </div>
                       } @else {
                         <div class="team-placeholder">
                           {{ match.slotB.placeholder ?? "TBD" }}

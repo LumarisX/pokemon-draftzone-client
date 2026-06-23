@@ -6,7 +6,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import {
   distinctUntilChanged,
   finalize,
@@ -20,6 +20,7 @@ import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { TierPokemonAddon } from '../../../tier-lists/tier-list.model';
 import { LeagueManageService } from '../league-manage.service';
 import { LeagueZoneService } from '../../league-zone.service';
+import { StageSwitcherComponent } from '../../league-widgets/stage-switcher/stage-switcher.component';
 import { TradeLog } from '../../league.interface';
 
 interface TradeGroup {
@@ -64,6 +65,7 @@ export interface TradeData {
     FormsModule,
     LoadingComponent,
     RouterModule,
+    StageSwitcherComponent,
   ],
   templateUrl: './league-manage-trades.component.html',
   styleUrl: './league-manage-trades.component.scss',
@@ -72,6 +74,7 @@ export class LeagueManageTradesComponent implements OnInit, OnDestroy {
   private leagueService = inject(LeagueZoneService);
   private leagueManageService = inject(LeagueManageService);
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
   private fb = inject(FormBuilder);
   private readonly destroy$ = new Subject<void>();
 
@@ -94,6 +97,23 @@ export class LeagueManageTradesComponent implements OnInit, OnDestroy {
   stageOptions: string[] = [];
 
   stages?: TradeStage[];
+
+  get currentStageId(): string | null {
+    return this.leagueService.stageId();
+  }
+
+  onStageSelected(stageId: string): void {
+    this.router.navigate([
+      '/leagues',
+      this.leagueService.leagueKey(),
+      'tournaments',
+      this.leagueService.tournamentKey(),
+      'manage',
+      'stages',
+      stageId,
+      'trades',
+    ]);
+  }
 
   getGroupPokemon(side: 'side1' | 'side2'): TradePokemon[] {
     const groupId = this.tradeForm.get(`${side}Group`)?.value;
@@ -137,7 +157,7 @@ export class LeagueManageTradesComponent implements OnInit, OnDestroy {
 
     this.route.paramMap
       .pipe(
-        map((params) => params.get('divisionKey')),
+        map((params) => params.get('stageId')),
         distinctUntilChanged(),
         takeUntil(this.destroy$),
       )
@@ -188,7 +208,7 @@ export class LeagueManageTradesComponent implements OnInit, OnDestroy {
               : pokemonList.currentStage;
 
           stageControl.setValue(stageToApply);
-          this.stages = this.sortTradesWithinStages(trades.stages || []);
+          this.stages = this.sortTradesWithinStages(trades.rounds || []);
           this.loading = false;
         },
         error: (err) => {

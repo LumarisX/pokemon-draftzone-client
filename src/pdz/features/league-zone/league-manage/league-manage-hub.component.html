@@ -157,16 +157,16 @@
       </div>
     </section>
 
-    <!-- Divisions Section -->
-    @if (leagueInfo.divisions.length > 0) {
+    <!-- Drafts Section -->
+    @if (leagueInfo.drafts.length > 0) {
       <section class="hub__section">
-        <h2 class="hub__section-title">Divisions</h2>
-        @for (division of leagueInfo.divisions; track division.divisionKey) {
+        <h2 class="hub__section-title">Drafts</h2>
+        @for (draft of leagueInfo.drafts; track draft.draftKey) {
           <div class="division-block">
-            <h3 class="division-block__name">{{ division.name }}</h3>
+            <h3 class="division-block__name">{{ draft.name }}</h3>
             <div class="hub__grid hub__grid--compact">
               <a
-                [routerLink]="managePath + '/' + division.divisionKey"
+                [routerLink]="managePath + '/drafts/' + draft.draftKey"
                 class="nav-card nav-card--compact"
               >
                 <span class="nav-card__icon">
@@ -175,9 +175,7 @@
                 <span class="nav-card__title">Dashboard</span>
               </a>
               <a
-                [routerLink]="
-                  managePath + '/' + division.divisionKey + '/draft'
-                "
+                [routerLink]="managePath + '/drafts/' + draft.draftKey + '/draft'"
                 class="nav-card nav-card--compact"
               >
                 <span class="nav-card__icon">
@@ -185,27 +183,37 @@
                 </span>
                 <span class="nav-card__title">Draft</span>
               </a>
+            </div>
+          </div>
+        }
+      </section>
+    }
+
+    <!-- Stages Section -->
+    @if (stages.length > 0) {
+      <section class="hub__section">
+        <h2 class="hub__section-title">Stages</h2>
+        @for (stage of stages; track stage._id) {
+          <div class="division-block">
+            <h3 class="division-block__name">{{ stage.name }}</h3>
+            <div class="hub__grid hub__grid--compact">
               <a
-                [routerLink]="
-                  managePath + '/' + division.divisionKey + '/trades'
-                "
-                class="nav-card nav-card--compact"
-              >
-                <span class="nav-card__icon">
-                  <pdz-icon name="swap_horiz" [size]="24"></pdz-icon>
-                </span>
-                <span class="nav-card__title">Trades</span>
-              </a>
-              <a
-                [routerLink]="
-                  managePath + '/' + division.divisionKey + '/schedule'
-                "
+                [routerLink]="managePath + '/stages/' + stage._id + '/schedule'"
                 class="nav-card nav-card--compact"
               >
                 <span class="nav-card__icon">
                   <pdz-icon name="calendar_month" [size]="24"></pdz-icon>
                 </span>
                 <span class="nav-card__title">Schedule</span>
+              </a>
+              <a
+                [routerLink]="managePath + '/stages/' + stage._id + '/trades'"
+                class="nav-card nav-card--compact"
+              >
+                <span class="nav-card__icon">
+                  <pdz-icon name="swap_horiz" [size]="24"></pdz-icon>
+                </span>
+                <span class="nav-card__title">Trades</span>
               </a>
             </div>
           </div>

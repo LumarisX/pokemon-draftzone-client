@@ -34,10 +34,11 @@ export const leagueRoleGuard: CanActivateFn = (
     });
   }
 
+  const leagueKey = route.paramMap.get('leagueKey');
   const tournamentKey = route.paramMap.get('tournamentKey');
-  if (!tournamentKey) {
+  if (!leagueKey || !tournamentKey) {
     console.error(
-      'leagueRoleGuard: "tournamentKey" parameter is not defined in the route.',
+      'leagueRoleGuard: "leagueKey" or "tournamentKey" parameter is not defined in the route.',
     );
     router.navigate(['/forbidden']);
     return new Observable<boolean>((subscriber) => {
@@ -46,7 +47,7 @@ export const leagueRoleGuard: CanActivateFn = (
     });
   }
 
-  return leagueManageService.canManage(tournamentKey).pipe(
+  return leagueManageService.canManage(leagueKey, tournamentKey).pipe(
     take(1),
     map((roles) => {
       if (roles.includes(requiredRole)) {

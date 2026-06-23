@@ -24,7 +24,7 @@ import { League } from '../league.interface';
 import { PokemonTypeComponent } from '@pdz/shared/dialogs/pokemon-type/pokemon-type.component';
 
 interface DraftAddedEvent {
-  divisionId: string;
+  draftId: string;
   pick: {
     pokemon: League.LeaguePokemon;
   };
@@ -37,7 +37,7 @@ interface DraftAddedEvent {
 }
 
 interface DraftCounterEvent {
-  divisionId: string;
+  draftId: string;
   currentPick: {
     round: number;
     position: number;
@@ -48,7 +48,7 @@ interface DraftCounterEvent {
 }
 
 interface DraftStatusEvent {
-  divisionId: string;
+  draftId: string;
   status: 'PRE_DRAFT' | 'IN_PROGRESS' | 'PAUSED' | 'COMPLETED';
   currentPick?: {
     round: number;
@@ -58,7 +58,7 @@ interface DraftStatusEvent {
 }
 
 interface DraftSkipEvent {
-  divisionId: string;
+  draftId: string;
   teamName: string;
 }
 
@@ -99,7 +99,7 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
   selectedTeam!: League.LeagueTeam;
 
   leagueName: string = '';
-  divisionName: string = '';
+  draftName: string = '';
   points: number = 0;
 
   isLoading: boolean = true;
@@ -163,13 +163,13 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.leagueService
-      .getDivisionDetails()
+      .getDraftDetails()
       .pipe(takeUntil(this.destroy$))
       .subscribe((data) => {
         this.teams = data.teams;
         this.selectedTeam = this.teams[0];
         this.leagueName = data.leagueName;
-        this.divisionName = data.divisionName;
+        this.draftName = data.divisionName;
         this.currentPick = data.currentPick;
         this.canDraftTeams = data.canDraft;
         this.isLoading = false;
@@ -209,7 +209,7 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
       .on<DraftAddedEvent>('league.draft.added')
       .pipe(takeUntil(this.destroy$))
       .subscribe((data) => {
-        if (this.leagueService.divisionKey() !== data.divisionId) return;
+        if (this.leagueService.draftKey() !== data.draftId) return;
 
         this.teams = this.teams.map((team) => {
           const newTeam = { ...team };
@@ -248,7 +248,7 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
       .on<DraftCounterEvent>('league.draft.counter')
       .pipe(takeUntil(this.destroy$))
       .subscribe((data) => {
-        if (this.leagueService.divisionKey() !== data.divisionId) {
+        if (this.leagueService.draftKey() !== data.draftId) {
           return;
         }
         this.currentPick = data.currentPick;
@@ -264,7 +264,7 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
       .on<DraftStatusEvent>('league.draft.status')
       .pipe(takeUntil(this.destroy$))
       .subscribe((data) => {
-        if (this.leagueService.divisionKey() !== data.divisionId) {
+        if (this.leagueService.draftKey() !== data.draftId) {
           return;
         }
         this.draftDetails.status = data.status;
@@ -285,7 +285,7 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
       .on<DraftSkipEvent>('league.draft.skip')
       .pipe(takeUntil(this.destroy$))
       .subscribe((data) => {
-        if (this.leagueService.divisionKey() !== data.divisionId) {
+        if (this.leagueService.draftKey() !== data.draftId) {
           return;
         }
         this.notificationService.show(`${data.teamName} was skipped!`, 'info');
