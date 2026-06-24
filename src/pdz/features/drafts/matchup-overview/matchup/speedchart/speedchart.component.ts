@@ -215,6 +215,8 @@ export class SpeedchartComponent implements OnInit, OnDestroy, AfterViewInit {
     const defaultModifiers = [
       '252',
       '252+',
+      '32+',
+      '32',
       '0',
       '0- 0ivs',
       'Swift Swim',
