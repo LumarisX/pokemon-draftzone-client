@@ -158,20 +158,10 @@ export class LeagueManageSignupsComponent implements OnInit, OnDestroy {
           }
           if (s3Response instanceof HttpResponse) {
             if (s3Response.ok && uploadedFileKey) {
-              return this.leagueService
-                .confirmUpload(
-                  uploadedFileKey,
-                  file.size,
-                  file.type || 'image/png',
-                )
-                .pipe(
-                  switchMap(() =>
-                    this.leagueService.updateCoachLogo(
-                      signup.id,
-                      uploadedFileKey!,
-                    ),
-                  ),
-                );
+              return this.leagueService.updateCoachLogo(
+                signup.id,
+                uploadedFileKey,
+              );
             }
             throw new Error(
               `S3 upload failed with status: ${s3Response.status}`,

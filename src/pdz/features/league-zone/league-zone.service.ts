@@ -488,34 +488,10 @@ export class LeagueZoneService {
     filename: string,
     contentType: string,
   ): Observable<{ url: string; key: string }> {
-    return this.uploadService.getUploadLink(filename, contentType);
-  }
-
-  confirmUpload(fileKey: string, fileSize: number, contentType: string) {
-    return this.uploadService.confirmUploadWithBackend(
-      fileKey,
-      fileSize,
+    return this.uploadService.getPresignedUploadUrl(
+      filename,
       contentType,
-    );
-  }
-
-  confirmUploadWithRelatedEntity(
-    fileKey: string,
-    fileSize: number,
-    contentType: string,
-    relatedEntityId: string,
-    tournamentId?: string,
-  ) {
-    return this.apiService.post(
-      'file/confirm-upload',
-      {
-        fileKey,
-        fileSize,
-        contentType,
-        relatedEntityId,
-        tournamentId,
-      },
-      { authenticated: true },
+      'team-logos',
     );
   }
 

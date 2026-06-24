@@ -27,6 +27,18 @@ export class UploadService {
       },
     });
   }
+
+  getPresignedUploadUrl(
+    fileName: string,
+    contentType: string,
+    folder: string,
+  ): Observable<{ url: string; key: string; expiresIn: number }> {
+    return this.apiService.post(
+      'uploads/presigned-url',
+      { folder, fileName, contentType },
+      { authenticated: true },
+    );
+  }
   uploadToS3(presignedUrl: string, file: File) {
     const headers = new HttpHeaders({ 'Content-Type': file.type });
     console.log(
