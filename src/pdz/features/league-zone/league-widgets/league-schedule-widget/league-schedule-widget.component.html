@@ -1,6 +1,6 @@
-@if (scheduleStages) {
+@if (scheduleRounds) {
   <div class="matchup-stage-list">
-    @for (stage of scheduleStages; track stage._id) {
+    @for (stage of scheduleRounds; track stage._id) {
       <div class="matchup-stage">
         <h4 class="matchup-stage__title">{{ stage.name }}</h4>
         <div class="matchup-stage__cards">

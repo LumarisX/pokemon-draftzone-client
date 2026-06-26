@@ -4,13 +4,20 @@ import { RouterModule } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { LeagueZoneService } from '../league-zone.service';
+import { StageSwitcherComponent } from '../league-widgets/stage-switcher/stage-switcher.component';
 import { League } from '../league.interface';
 import { getLogoUrl } from '../league.util';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 
 @Component({
   selector: 'pdz-league-coach',
-  imports: [CommonModule, RouterModule, LoadingComponent, IconComponent],
+  imports: [
+    CommonModule,
+    RouterModule,
+    LoadingComponent,
+    IconComponent,
+    StageSwitcherComponent,
+  ],
   templateUrl: './league-coach.component.html',
   styleUrl: './league-coach.component.scss',
 })
@@ -24,22 +31,46 @@ export class LeagueCoachComponent implements OnInit, OnDestroy {
   error = false;
   getLogoUrl = getLogoUrl;
 
-  get divisionBase(): string[] {
+  stages: League.StageSummary[] = [];
+  selectedStageId: string | null = null;
+
+  get draftBase(): string[] {
     const { leagueKey, tournamentKey } = this;
-    const divKey = this.profile?.division?.divisionKey;
-    if (!leagueKey || !tournamentKey || !divKey) return [];
+    const draftKey = this.profile?.draft?.draftKey;
+    if (!leagueKey || !tournamentKey || !draftKey) return [];
     return [
       '/leagues',
       leagueKey,
       'tournaments',
       tournamentKey,
-      'divisions',
-      divKey,
+      'drafts',
+      draftKey,
+    ];
+  }
+
+  get stageBase(): string[] {
+    const { leagueKey, tournamentKey, selectedStageId } = this;
+    if (!leagueKey || !tournamentKey || !selectedStageId) return [];
+    return [
+      '/leagues',
+      leagueKey,
+      'tournaments',
+      tournamentKey,
+      'stages',
+      selectedStageId,
     ];
   }
 
   get teamLink(): string[] {
-    return [...this.divisionBase, 'teams', this.profile?.teamId ?? ''];
+    return [...this.draftBase, 'teams', this.profile?.teamId ?? ''];
+  }
+
+  get scheduleLink(): string[] {
+    return [...this.stageBase, 'schedule'];
+  }
+
+  get standingsLink(): string[] {
+    return [...this.stageBase, 'standings'];
   }
 
   private get leagueKey() {
@@ -77,6 +108,22 @@ export class LeagueCoachComponent implements OnInit, OnDestroy {
         next: (info) => (this.leagueInfo = info),
         error: () => {},
       });
+
+    this.leagueService
+      .listStages()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (stages) => {
+          this.stages = stages;
+          if (stages.length === 1) {
+            this.selectedStageId = stages[0]._id;
+          }
+        },
+      });
+  }
+
+  onStageSelected(stageId: string): void {
+    this.selectedStageId = stageId;
   }
 
   ngOnDestroy(): void {

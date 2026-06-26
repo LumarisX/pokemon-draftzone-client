@@ -57,10 +57,10 @@ export class LeagueAdListComponent implements OnInit {
       this.unreadService.leagueCount.next('');
       this.sortLeagues();
     });
-    this.dataService.getFormats().subscribe((formats) => {
+    this.dataService.getFormatsLegacy().subscribe((formats) => {
       this.formats = formats;
     });
-    this.dataService.getRulesets().subscribe((rulesets) => {
+    this.dataService.getRulesetsLegacy().subscribe((rulesets) => {
       this.rulesets = rulesets;
     });
   }

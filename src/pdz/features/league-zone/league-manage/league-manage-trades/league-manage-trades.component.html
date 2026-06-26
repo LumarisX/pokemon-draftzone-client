@@ -1,15 +1,8 @@
 <div class="division-header">
-  <div class="division-header__nav">
-    <button class="btn btn--secondary" routerLink="../../attack/trades">
-      Attack
-    </button>
-    <button class="btn btn--secondary" routerLink="../../speed/trades">
-      Speed
-    </button>
-    <button class="btn btn--secondary" routerLink="../../defense/trades">
-      Defense
-    </button>
-  </div>
+  <pdz-stage-switcher
+    [currentStageId]="currentStageId"
+    (stageSelected)="onStageSelected($event)"
+  ></pdz-stage-switcher>
 </div>
 <div class="trade-container">
   @if (loading) {

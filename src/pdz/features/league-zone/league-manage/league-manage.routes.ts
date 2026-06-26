@@ -27,24 +27,19 @@ export const routes: Routes = [
     component: LeagueRulesFormComponent,
   },
   {
-    path: ':divisionKey',
+    path: 'drafts/:draftKey',
     component: LeagueManageDashboardComponent,
   },
   {
-    path: ':divisionKey/draft',
+    path: 'drafts/:draftKey/draft',
     component: LeagueManageDraftComponent,
   },
   {
-    path: ':divisionKey/trades',
+    path: 'stages/:stageId/trades',
     component: LeagueManageTradesComponent,
   },
   {
-    path: 'playoffs/schedule',
-    component: LeagueManageScheduleComponent,
-    data: { mode: 'playoffs' },
-  },
-  {
-    path: ':divisionKey/schedule',
+    path: 'stages/:stageId/schedule',
     component: LeagueManageScheduleComponent,
   },
 ];

@@ -1,6 +1,6 @@
 @if (teamData) {
   <div class="team-header">
-    <button type="button" class="team-header__back" [routerLink]="['../']">
+    <button type="button" class="team-header__back" [routerLink]="backLink">
       <pdz-icon name="arrow_back" size="sm"></pdz-icon> Back
     </button>
     <div class="team-header__content">
@@ -38,7 +38,11 @@
         <h3>Schedule</h3>
       </div>
       <div class="section-body">
-        <pdz-league-schedule-widget></pdz-league-schedule-widget>
+        @if (stageId) {
+          <pdz-league-schedule-widget
+            [stageId]="stageId"
+          ></pdz-league-schedule-widget>
+        }
       </div>
     </div>
     <div class="section section--draft">
@@ -122,7 +126,11 @@
         <h3>Active Trades</h3>
       </div>
       <div class="section-body">
-        <pdz-league-trade-widget></pdz-league-trade-widget>
+        @if (stageId) {
+          <pdz-league-trade-widget
+            [stageId]="stageId"
+          ></pdz-league-trade-widget>
+        }
       </div>
     </div>
   </div>

@@ -39,7 +39,7 @@ export class LeagueManageService {
     },
   ) {
     return this.apiService.post(
-      `leagues/tournaments/${this.leagueZoneService.tournamentKey()}/manage/divisions/${this.leagueZoneService.divisionKey()}/schedule/${matchupId}`,
+      `leagues/${this.leagueZoneService.leagueKey()}/tournaments/${this.leagueZoneService.tournamentKey()}/stages/${this.leagueZoneService.stageId()}/matchups/${matchupId}`,
       payload,
       { authenticated: true },
     );
@@ -51,26 +51,26 @@ export class LeagueManageService {
       teamId: string;
       pokemonId: string;
       pickNumber: number;
-      divisionId: string;
+      draftId: string;
     },
   ) {
     return this.apiService.post(
-      `leagues/tournaments/${tournamentId}/manage/divisions/${this.leagueZoneService.divisionKey()}/setdraft`,
-      { pick: { pokemonId: pick.pokemonId }, teamId: pick.teamId },
+      `leagues/${this.leagueZoneService.leagueKey()}/tournaments/${tournamentId}/drafts/${this.leagueZoneService.draftKey()}/teams/${pick.teamId}/draft`,
+      { pokemonId: pick.pokemonId },
       { authenticated: true },
     );
   }
 
-  canManage(tournamentKey: string) {
+  canManage(leagueKey: string, tournamentKey: string) {
     return this.apiService.get<string[]>(
-      `leagues/tournaments/${tournamentKey}/roles`,
+      `leagues/${leagueKey}/tournaments/${tournamentKey}/roles`,
       { authenticated: true },
     );
   }
 
-  setDivisionState(state: string) {
+  setDraftState(state: string) {
     return this.apiService.post(
-      `leagues/tournaments/${this.leagueZoneService.tournamentKey()}/manage/divisions/${this.leagueZoneService.divisionKey()}/state`,
+      `leagues/${this.leagueZoneService.leagueKey()}/tournaments/${this.leagueZoneService.tournamentKey()}/drafts/${this.leagueZoneService.draftKey()}/state`,
       { state },
       { authenticated: true },
     );
@@ -78,7 +78,7 @@ export class LeagueManageService {
 
   skipCurrentPick() {
     return this.apiService.post(
-      `leagues/tournaments/${this.leagueZoneService.tournamentKey()}/manage/divisions/${this.leagueZoneService.divisionKey()}/skip`,
+      `leagues/${this.leagueZoneService.leagueKey()}/tournaments/${this.leagueZoneService.tournamentKey()}/drafts/${this.leagueZoneService.draftKey()}/skip`,
       '',
       { authenticated: true },
     );
@@ -86,12 +86,12 @@ export class LeagueManageService {
 
   getTrades() {
     return this.apiService.get<{
-      stages: {
+      rounds: {
         name: string;
         trades: TradeLog[];
       }[];
     }>(
-      `leagues/tournaments/${this.leagueZoneService.tournamentKey()}/manage/divisions/${this.leagueZoneService.divisionKey()}/trades`,
+      `leagues/${this.leagueZoneService.leagueKey()}/tournaments/${this.leagueZoneService.tournamentKey()}/stages/${this.leagueZoneService.stageId()}/trades`,
       {
         authenticated: true,
       },
@@ -100,59 +100,20 @@ export class LeagueManageService {
 
   getSchedule() {
     return this.apiService.get<{
-      stages: League.Stage[];
-      currentStage: number;
+      rounds: League.Stage[];
+      currentRoundIndex: number;
     }>(
-      `leagues/tournaments/${this.leagueZoneService.tournamentKey()}/manage/divisions/${this.leagueZoneService.divisionKey()}/schedule`,
+      `leagues/${this.leagueZoneService.leagueKey()}/tournaments/${this.leagueZoneService.tournamentKey()}/stages/${this.leagueZoneService.stageId()}/schedule`,
       {
         authenticated: true,
       },
     );
   }
 
-  getPlayoffSchedule() {
-    return this.apiService.get<{
-      stages: League.Stage[];
-      currentStage: number;
-    }>(
-      `leagues/tournaments/${this.leagueZoneService.tournamentKey()}/manage/playoffs/schedule`,
-      { authenticated: true },
-    );
-  }
-
-  updatePlayoffMatchup(
-    matchupId: string,
-    payload: {
-      score?: { team1: number; team2: number };
-      winner?:
-        | 'side1'
-        | 'side2'
-        | 'draw'
-        | 'side1ffw'
-        | 'side2ffw'
-        | 'dffl'
-        | null;
-      matches: Array<{
-        link?: string;
-        winner: 'side1' | 'side2' | 'draw';
-        team1: {
-          score: number;
-          pokemon: Record<string, League.MatchPokemonStats | { status: null }>;
-        };
-        team2: {
-          score: number;
-          pokemon: Record<string, League.MatchPokemonStats | { status: null }>;
-        };
-      }>;
-    },
-  ) {
-    return this.apiService.post(
-      `leagues/tournaments/${this.leagueZoneService.tournamentKey()}/manage/playoffs/schedule/${matchupId}`,
-      payload,
-      { authenticated: true },
-    );
-  }
-
+  // TODO: no "manage/settings" route exists server-side at all
+  // (HostedTournamentService has no settings get/update method), and this
+  // URL is also missing the :leagueKey segment every sibling call has.
+  // Currently 404s — used by league-settings.component.ts.
   getTournamentSettings() {
     return this.apiService.get<{
       name: string;
@@ -173,6 +134,8 @@ export class LeagueManageService {
     );
   }
 
+  // TODO: same missing route / missing :leagueKey segment as
+  // getTournamentSettings above — currently 404s.
   updateTournamentSettings(settings: {
     name: string;
     description?: string;
@@ -208,8 +171,11 @@ export class LeagueManageService {
       stages: string[];
       currentStage: number;
     }>(
-      `leagues/tournaments/${this.leagueZoneService.tournamentKey()}/manage/divisions/${this.leagueZoneService.divisionKey()}/pokemon-list`,
-      { authenticated: true },
+      `leagues/${this.leagueZoneService.leagueKey()}/tournaments/${this.leagueZoneService.tournamentKey()}/drafts/${this.leagueZoneService.draftKey()}/pokemon-list`,
+      {
+        authenticated: true,
+        params: { stageId: this.leagueZoneService.stageId() ?? '' },
+      },
     );
   }
 }

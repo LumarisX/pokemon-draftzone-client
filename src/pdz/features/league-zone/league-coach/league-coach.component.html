@@ -62,14 +62,24 @@
               profile.signedUpAt | date: "mediumDate"
             }}</span>
           </div>
-          @if (profile.division) {
+          @if (profile.draft) {
             <div class="info-item">
-              <span class="info-item__label">Division</span>
-              <span class="info-item__value">{{ profile.division.name }}</span>
+              <span class="info-item__label">Draft</span>
+              <span class="info-item__value">{{ profile.draft.name }}</span>
             </div>
           }
         </div>
       </section>
+
+      @if (profile.draft && stages.length > 1) {
+        <section class="nav-card">
+          <h2 class="nav-card__title">Stage</h2>
+          <pdz-stage-switcher
+            [currentStageId]="selectedStageId"
+            (stageSelected)="onStageSelected($event)"
+          ></pdz-stage-switcher>
+        </section>
+      }
 
       <section class="nav-card">
         <h2 class="nav-card__title">Next Steps</h2>
@@ -92,14 +102,14 @@
       </section>
       <section class="nav-card">
         <h2 class="nav-card__title">
-          @if (profile.division) {
+          @if (profile.draft) {
             My League
           } @else {
             Quick Links
           }
         </h2>
 
-        @if (!profile.division) {
+        @if (!profile.draft) {
           <p class="nav-card__pending-msg">
             You're all set — hang tight while the organizer reviews applications
             and assigns divisions.
@@ -107,23 +117,25 @@
         }
 
         <div class="nav-links">
-          @if (profile.division && profile.teamId) {
+          @if (profile.draft && profile.teamId) {
             <a [routerLink]="teamLink" class="nav-link">
               <span class="nav-link__icon">&#9733;</span>
               <span class="nav-link__label">My Team</span>
             </a>
-            <a [routerLink]="[...divisionBase, 'draft']" class="nav-link">
+            <a [routerLink]="[...draftBase, 'draft']" class="nav-link">
               <span class="nav-link__icon">&#9670;</span>
               <span class="nav-link__label">Draft</span>
             </a>
-            <a [routerLink]="[...divisionBase, 'schedule']" class="nav-link">
-              <span class="nav-link__icon">&#128197;</span>
-              <span class="nav-link__label">Schedule</span>
-            </a>
-            <a [routerLink]="[...divisionBase, 'standings']" class="nav-link">
-              <span class="nav-link__icon">&#127942;</span>
-              <span class="nav-link__label">Standings</span>
-            </a>
+            @if (selectedStageId) {
+              <a [routerLink]="scheduleLink" class="nav-link">
+                <span class="nav-link__icon">&#128197;</span>
+                <span class="nav-link__label">Schedule</span>
+              </a>
+              <a [routerLink]="standingsLink" class="nav-link">
+                <span class="nav-link__icon">&#127942;</span>
+                <span class="nav-link__label">Standings</span>
+              </a>
+            }
           }
           <a [routerLink]="[...tournamentBase(), 'rules']" class="nav-link">
             <span class="nav-link__icon">&#128221;</span>

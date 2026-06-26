@@ -39,14 +39,14 @@ export class LeagueManageDraftComponent implements OnInit {
   status: 'PRE_DRAFT' | 'IN_PROGRESS' | 'PAUSED' | 'COMPLETED' = 'IN_PROGRESS';
 
   ngOnInit(): void {
-    this.leagueZoneService.getDivisionDetails().subscribe((data) => {
+    this.leagueZoneService.getDraftDetails().subscribe((data) => {
       console.log(data);
       this.teams = data.teams;
     });
 
     this.webSocketService
       .on<{
-        divisionKey: string;
+        draftId: string;
         team: { id: string; name: string };
         pokemon: League.LeaguePokemon;
         canDraftTeams: string[];
@@ -71,7 +71,7 @@ export class LeagueManageDraftComponent implements OnInit {
   }
 
   setState(state: string): void {
-    this.leagueManageService.setDivisionState(state).subscribe((response) => {
+    this.leagueManageService.setDraftState(state).subscribe((response) => {
       console.log(response);
     });
   }
@@ -86,7 +86,7 @@ export class LeagueManageDraftComponent implements OnInit {
         teamId: team.id,
         pokemonId: team.selectedPokemon.id,
         pickNumber: team.draft.length,
-        divisionId: this.leagueZoneService.divisionKey()!,
+        draftId: this.leagueZoneService.draftKey()!,
       })
       .subscribe((response) => {
         team.selectedPokemon = null;

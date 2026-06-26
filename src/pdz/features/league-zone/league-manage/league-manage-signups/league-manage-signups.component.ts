@@ -8,7 +8,7 @@ import {
   ViewChild,
   inject,
 } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import {
   Subject,
   catchError,
@@ -30,7 +30,7 @@ import { UploadService } from '@pdz/core/services/upload.service';
   selector: 'pdz-league-manage-signups',
   templateUrl: './league-manage-signups.component.html',
   styleUrls: ['./league-manage-signups.component.scss'],
-  imports: [CommonModule, IconComponent, FormsModule],
+  imports: [CommonModule, IconComponent, FormsModule, RouterLink],
 })
 export class LeagueManageSignupsComponent implements OnInit, OnDestroy {
   tournamentId: string | null = null;
@@ -39,7 +39,7 @@ export class LeagueManageSignupsComponent implements OnInit, OnDestroy {
     modified?: boolean;
   })[] = [];
   originalSignUps: League.LeagueSignUp[] = [];
-  divisions: ({ name: string; divisionKey: string } | undefined)[] = [];
+  drafts: ({ name: string; draftKey: string } | undefined)[] = [];
   modified = false;
 
   @ViewChild('logoFileInput') logoFileInput!: ElementRef<HTMLInputElement>;
@@ -81,7 +81,7 @@ export class LeagueManageSignupsComponent implements OnInit, OnDestroy {
       next: (data) => {
         this.signUps = data.signups;
         this.originalSignUps = JSON.parse(JSON.stringify(data.signups));
-        this.divisions = [undefined, ...data.divisions];
+        this.drafts = [undefined, ...data.drafts];
         this.modified = false;
       },
       error: (error) => {
@@ -158,20 +158,10 @@ export class LeagueManageSignupsComponent implements OnInit, OnDestroy {
           }
           if (s3Response instanceof HttpResponse) {
             if (s3Response.ok && uploadedFileKey) {
-              return this.leagueService
-                .confirmUpload(
-                  uploadedFileKey,
-                  file.size,
-                  file.type || 'image/png',
-                )
-                .pipe(
-                  switchMap(() =>
-                    this.leagueService.updateCoachLogo(
-                      signup.id,
-                      uploadedFileKey!,
-                    ),
-                  ),
-                );
+              return this.leagueService.updateCoachLogo(
+                signup.id,
+                uploadedFileKey,
+              );
             }
             throw new Error(
               `S3 upload failed with status: ${s3Response.status}`,
@@ -234,14 +224,30 @@ export class LeagueManageSignupsComponent implements OnInit, OnDestroy {
     return { valid: true };
   }
 
-  signUpInDivision(divisionKey?: string) {
-    return this.signUps.filter((s) => s.division == divisionKey);
+  signUpInDraft(draftKey?: string) {
+    return this.signUps.filter((s) => s.draft == draftKey);
   }
 
-  moveToDivision(divisionKey?: string) {
+  getTeamLink(user: League.LeagueSignUp): string[] | null {
+    const leagueKey = this.leagueService.leagueKey();
+    const tournamentKey = this.leagueService.tournamentKey();
+    if (!leagueKey || !tournamentKey || !user.teamId) {
+      return null;
+    }
+    return [
+      '/leagues',
+      leagueKey,
+      'tournaments',
+      tournamentKey,
+      'teams',
+      user.teamId,
+    ];
+  }
+
+  moveToDraft(draftKey?: string) {
     for (const signUp of this.signUps) {
       if (signUp.selected) {
-        signUp.division = divisionKey;
+        signUp.draft = draftKey;
         signUp.selected = false;
         signUp.modified = true;
       }
@@ -254,7 +260,7 @@ export class LeagueManageSignupsComponent implements OnInit, OnDestroy {
       .updateSignUps(
         this.signUps
           .filter((s) => s.modified)
-          .map((s) => ({ id: s.id, division: s.division })),
+          .map((s) => ({ id: s.id, draft: s.draft })),
       )
       .subscribe({
         next: () => {

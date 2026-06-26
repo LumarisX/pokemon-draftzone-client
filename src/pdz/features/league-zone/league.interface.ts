@@ -115,6 +115,7 @@ export namespace League {
 
   export type LeagueSignUp = {
     id: string;
+    teamId?: string;
     name: string;
     gameName: string;
     discordName: string;
@@ -125,7 +126,7 @@ export namespace League {
     teamName: string;
     logo?: string;
     signedUpAt: Date;
-    division?: string;
+    draft?: string;
     hasDiscordRole?: boolean;
     inDiscordServer?: boolean;
   };
@@ -190,7 +191,7 @@ export namespace League {
     seasonStart?: Date;
     seasonEnd?: Date;
     logo?: string;
-    divisions: { name: string; divisionKey: string }[];
+    drafts: { name: string; draftKey: string }[];
     discord?: string;
     tierListId?: string;
   };
@@ -228,8 +229,16 @@ export namespace League {
     logo?: string;
     signedUpAt: Date;
     teamId?: string;
-    division?: { divisionKey: string; name: string };
+    draft?: { draftKey: string; name: string };
     inDiscordServer: boolean;
+  };
+
+  export type StageSummary = {
+    _id: string;
+    name: string;
+    type: string;
+    order: number;
+    currentRoundIndex: number;
   };
 }
 

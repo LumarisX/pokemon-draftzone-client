@@ -75,7 +75,7 @@ export class LeagueNewComponent implements OnInit {
 
   ngOnInit() {
     this._initForm();
-    this.dataService.getRulesetsGrouped().subscribe((rulesets) => {
+    this.dataService.getRulesets().subscribe((rulesets) => {
       this.rulesets = rulesets;
     });
   }

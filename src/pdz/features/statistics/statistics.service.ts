@@ -21,6 +21,8 @@ type PokemonDraftCount = {
 export class StatisticsService {
   private apiService = inject(ApiService);
 
+  // TODO: no "statistics" controller exists server-side at all. Currently
+  // 404s — used by statistics.component.ts.
   getDraftStats(options?: {
     format?: string;
     ruleset?: string;

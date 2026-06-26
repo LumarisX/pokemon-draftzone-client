@@ -108,52 +108,33 @@ export class LeagueManageScheduleComponent {
   private openMatchIndexState = new Map<string, number | null>();
   private matchupSummaryCollapsedState = new Map<string, boolean>();
 
-  isPlayoffMode = false;
   scheduleStages?: League.Stage[];
 
   ngOnInit(): void {
-    this.isPlayoffMode = this.route.snapshot.data['mode'] === 'playoffs';
-
-    if (this.isPlayoffMode) {
-      this.leagueManageService
-        .getPlayoffSchedule()
-        .pipe(takeUntil(this.destroy$))
-        .subscribe({
-          next: (data) => {
-            this.scheduleStages = data.stages;
-            this.buildMatchupForms(data.stages);
-            this.stageCollapsedState.set(
-              data.stages[data.currentStage]?._id,
-              true,
-            );
-          },
-        });
-    } else {
-      this.route.paramMap
-        .pipe(
-          map((params) => params.get('divisionKey')),
-          distinctUntilChanged(),
-          tap(() => {
-            this.scheduleStages = undefined;
-            this.matchupForms.clear();
-            this.stageCollapsedState.clear();
-            this.openMatchIndexState.clear();
-            this.matchupSummaryCollapsedState.clear();
-          }),
-          switchMap(() => this.leagueManageService.getSchedule()),
-          takeUntil(this.destroy$),
-        )
-        .subscribe({
-          next: (data) => {
-            this.scheduleStages = data.stages;
-            this.buildMatchupForms(data.stages);
-            this.stageCollapsedState.set(
-              data.stages[data.currentStage]?._id,
-              true,
-            );
-          },
-        });
-    }
+    this.route.paramMap
+      .pipe(
+        map((params) => params.get('stageId')),
+        distinctUntilChanged(),
+        tap(() => {
+          this.scheduleStages = undefined;
+          this.matchupForms.clear();
+          this.stageCollapsedState.clear();
+          this.openMatchIndexState.clear();
+          this.matchupSummaryCollapsedState.clear();
+        }),
+        switchMap(() => this.leagueManageService.getSchedule()),
+        takeUntil(this.destroy$),
+      )
+      .subscribe({
+        next: (data) => {
+          this.scheduleStages = data.rounds;
+          this.buildMatchupForms(data.rounds);
+          this.stageCollapsedState.set(
+            data.rounds[data.currentRoundIndex]?._id,
+            true,
+          );
+        },
+      });
   }
 
   ngOnDestroy(): void {
@@ -350,30 +331,30 @@ export class LeagueManageScheduleComponent {
     this.saveState.set(matchup.id, { loading: true, success: false });
 
     const payload = this.buildMatchupPayload(form);
-    const save$ = this.isPlayoffMode
-      ? this.leagueManageService.updatePlayoffMatchup(matchup.id, payload)
-      : this.leagueManageService.updateMatchupSchedule(matchup.id, payload);
-    save$.pipe(takeUntil(this.destroy$)).subscribe({
-      next: () => {
-        this.saveState.set(matchup.id, { loading: false, success: true });
-        // Reset success message after 2 seconds
-        setTimeout(() => {
-          if (this.saveState.get(matchup.id)?.success) {
-            this.saveState.set(matchup.id, {
-              loading: false,
-              success: false,
-            });
-          }
-        }, 2000);
-      },
-      error: (error) => {
-        this.saveState.set(matchup.id, {
-          loading: false,
-          success: false,
-          error: error?.message || 'Failed to save matchup.',
-        });
-      },
-    });
+    this.leagueManageService
+      .updateMatchupSchedule(matchup.id, payload)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.saveState.set(matchup.id, { loading: false, success: true });
+          // Reset success message after 2 seconds
+          setTimeout(() => {
+            if (this.saveState.get(matchup.id)?.success) {
+              this.saveState.set(matchup.id, {
+                loading: false,
+                success: false,
+              });
+            }
+          }, 2000);
+        },
+        error: (error) => {
+          this.saveState.set(matchup.id, {
+            loading: false,
+            success: false,
+            error: error?.message || 'Failed to save matchup.',
+          });
+        },
+      });
   }
 
   isAnalyzing(matchupId: string, matchIndex: number): boolean {

@@ -18,13 +18,17 @@ export class ReplayService {
     return this.apiService.get<{
       analysis: ReplayAnalysis;
       warnings: ReplayWarning[];
-    }>(`replay/analyze/${encodeURIComponent(replayURI.trim())}`);
+    }>(`replay/analyze`, {
+      params: { url: replayURI.trim() },
+    });
   }
 
   analyzeReplayV2(replayURI: string) {
     return this.apiService.get<{
       analysis: ReplayAnalysisV2;
       warnings: ReplayWarningV2[];
-    }>(`replay/analyze-v2/${encodeURIComponent(replayURI.trim())}`);
+    }>(`replay/analyze/v2`, {
+      params: { url: replayURI.trim() },
+    });
   }
 }

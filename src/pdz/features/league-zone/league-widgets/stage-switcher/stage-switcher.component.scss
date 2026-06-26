@@ -1,0 +1,21 @@
+@use "pdz-theming" as pdz;
+@use "mixins" as *;
+@use "mixins/buttons" as *;
+
+.stage-switcher {
+  display: flex;
+  flex-wrap: wrap;
+  gap: pdz.space(xs);
+
+  &__tab {
+    @include flat-button-primary();
+    padding: pdz.space(2xs) pdz.space(md);
+    border-radius: pdz.shape(corner-sm);
+    transition: all 0.2s ease;
+
+    &--active {
+      background-color: pdz.color(primary);
+      color: pdz.color(on-primary);
+    }
+  }
+}

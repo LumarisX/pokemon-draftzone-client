@@ -1,18 +1,3 @@
-@if (!isPlayoffMode) {
-  <div class="division-header">
-    <div class="division-header__nav">
-      <button class="btn btn--secondary" routerLink="../../attack/schedule">
-        Attack
-      </button>
-      <button class="btn btn--secondary" routerLink="../../speed/schedule">
-        Speed
-      </button>
-      <button class="btn btn--secondary" routerLink="../../defense/schedule">
-        Defense
-      </button>
-    </div>
-  </div>
-}
 @if (scheduleStages === undefined) {
   <pdz-loading></pdz-loading>
 } @else if (!scheduleStages.length) {

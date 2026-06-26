@@ -112,13 +112,13 @@ export class SettingsService {
   }
 
   getSettings() {
-    return this.apiService.get<Settings | null>(`user/settings`, {
+    return this.apiService.get<Settings | null>(`users/settings`, {
       authenticated: true,
     });
   }
 
   updateSettings(settingData: Partial<Settings>) {
     console.log(settingData);
-    return this.apiService.patch(`user/settings`, settingData);
+    return this.apiService.patch(`users/settings`, settingData);
   }
 }

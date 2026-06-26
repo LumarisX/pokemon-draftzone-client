@@ -33,10 +33,12 @@ export class LeagueTeamComponent implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
 
   teamData?: League.LeagueTeam;
-  scheduleStages!: League.Stage[];
-  tradeStages?: { name: string; trades: TradeLog[] }[];
+  scheduleRounds!: League.Stage[];
+  tradeRounds?: { name: string; trades: TradeLog[] }[];
   getLogoUrl = getLogoUrl;
   coachCurrentTime = '';
+
+  stageId: string | null = null;
 
   total = {
     cost: 0,
@@ -45,6 +47,24 @@ export class LeagueTeamComponent implements OnInit, OnDestroy {
   };
 
   private readonly destroy$ = new Subject<void>();
+  get backLink(): string[] {
+    const leagueKey = this.leagueService.leagueKey();
+    const tournamentKey = this.leagueService.tournamentKey();
+    const draftKey = this.leagueService.draftKey();
+    if (!leagueKey || !tournamentKey) return ['/'];
+    if (draftKey) {
+      return [
+        '/leagues',
+        leagueKey,
+        'tournaments',
+        tournamentKey,
+        'drafts',
+        draftKey,
+        'teams',
+      ];
+    }
+    return ['/leagues', leagueKey, 'tournaments', tournamentKey];
+  }
 
   getCurrentTimeInTimezone(timezone?: string): string {
     if (!timezone) return '';
@@ -65,19 +85,26 @@ export class LeagueTeamComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.startCoachClock();
 
-    this.route.paramMap
-      .pipe(
-        map((params) => params.get('teamKey')),
-        distinctUntilChanged(),
-        takeUntil(this.destroy$),
-      )
-      .subscribe(() => {
-        // Force child widgets to re-initialize after team route changes.
-        this.teamData = undefined;
+    this.leagueService
+      .listStages()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((stages) => {
+        this.stageId = stages[0]?._id ?? null;
 
-        this.loadTeam();
-        this.loadSchedule();
-        this.loadTrades();
+        this.route.paramMap
+          .pipe(
+            map((params) => params.get('teamKey')),
+            distinctUntilChanged(),
+            takeUntil(this.destroy$),
+          )
+          .subscribe(() => {
+            // Force child widgets to re-initialize after team route changes.
+            this.teamData = undefined;
+
+            this.loadTeam();
+            this.loadSchedule();
+            this.loadTrades();
+          });
       });
   }
 
@@ -97,7 +124,7 @@ export class LeagueTeamComponent implements OnInit, OnDestroy {
 
   private loadTeam(): void {
     this.leagueService
-      .getTeam()
+      .getTeam(this.stageId ?? undefined)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (data) => {
@@ -123,12 +150,13 @@ export class LeagueTeamComponent implements OnInit, OnDestroy {
   }
 
   private loadSchedule(): void {
+    if (!this.stageId) return;
     this.leagueService
-      .getSchedule()
+      .getSchedule({ stageId: this.stageId })
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (data) => {
-          this.scheduleStages = data;
+          this.scheduleRounds = data.rounds;
         },
         error: (error) => {
           console.error('Error loading schedule:', error);
@@ -137,12 +165,13 @@ export class LeagueTeamComponent implements OnInit, OnDestroy {
   }
 
   private loadTrades(): void {
+    if (!this.stageId) return;
     this.leagueService
-      .getTrades()
+      .getTrades({ stageId: this.stageId })
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (data) => {
-          this.tradeStages = data.stages;
+          this.tradeRounds = data.rounds;
         },
       });
   }

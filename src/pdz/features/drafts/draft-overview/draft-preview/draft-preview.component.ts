@@ -104,15 +104,15 @@ export class DraftPreviewComponent {
     this.openDropdown = null;
   }
 
-  scoreString(draft: { score: { wins: number; losses: number } }) {
-    if (draft.score) return `${draft.score.wins} - ${draft.score.losses}`;
+  scoreString(score: { wins: number; losses: number }) {
+    if (score) return `${score.wins} - ${score.losses}`;
     return `Unscored`;
   }
 
-  scoreClass(draft: { score: { wins: number; losses: number } }) {
-    if (!draft.score) return 'pdz-background-neut';
-    if (draft.score.wins > draft.score.losses) return 'pdz-background-pos';
-    if (draft.score.wins < draft.score.losses) return 'pdz-background-neg';
+  scoreClass(score: { wins: number; losses: number }) {
+    if (!score) return 'pdz-background-neut';
+    if (score.wins > score.losses) return 'pdz-background-pos';
+    if (score.wins < score.losses) return 'pdz-background-neg';
     return 'pdz-background-neut';
   }
 

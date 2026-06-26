@@ -1,0 +1,14 @@
+@if (stages.length) {
+  <nav class="stage-switcher">
+    @for (stage of stages; track stage._id) {
+      <button
+        type="button"
+        class="stage-switcher__tab"
+        [class.stage-switcher__tab--active]="stage._id === currentStageId"
+        (click)="selectStage(stage._id)"
+      >
+        {{ getStageLabel(stage) }}
+      </button>
+    }
+  </nav>
+}

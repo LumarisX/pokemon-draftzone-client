@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from '@pdz/core/services/api.service';
 
-const ROOTPATH = 'leagues';
+const ROOTPATH = 'external/tournament-ads';
 
 @Injectable({
   providedIn: 'root',
@@ -11,26 +11,35 @@ export class LeagueAdsService {
   private apiService = inject(ApiService);
 
   getLeagueAds(): Observable<LeagueAd[]> {
-    return this.apiService.get([ROOTPATH, 'ad-list']);
+    return this.apiService.get([ROOTPATH]);
   }
 
   newAd(data: Object) {
-    return this.apiService.post([ROOTPATH, 'ad-list/manage'], data, {
+    return this.apiService.post([ROOTPATH], data, {
       authenticated: true,
-      invalidateCache: [[ROOTPATH, 'ad-list/manage']],
+      invalidateCache: [[ROOTPATH]],
     });
   }
 
   getMyAds(): Observable<LeagueAd[]> {
-    return this.apiService.get([ROOTPATH, 'ad-list/manage'], {
+    return this.apiService.get([ROOTPATH, 'me'], {
       authenticated: true,
     });
   }
 
   deleteAd(_id: string) {
-    return this.apiService.delete([ROOTPATH, 'ad-list', 'manage', _id], {
-      invalidateCache: [[ROOTPATH, 'ad-list/manage']],
+    return this.apiService.delete([ROOTPATH, _id], {
+      invalidateCache: [[ROOTPATH]],
     });
+  }
+  //Currently Unused
+  getUnreadCount(counts: { [key: string]: number }) {
+    return this.apiService.get<{ [key: string]: number }>(
+      [ROOTPATH, 'unread'],
+      {
+        params: counts,
+      },
+    );
   }
 }
 

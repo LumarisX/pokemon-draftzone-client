@@ -26,8 +26,8 @@
         leagueService.leagueKey() +
         '/tournaments/' +
         leagueService.tournamentKey() +
-        '/divisions/' +
-        leagueService.divisionKey() +
+        '/drafts/' +
+        leagueService.draftKey() +
         '/teams/' +
         matchup.team1.id
       "
@@ -81,8 +81,8 @@
             leagueService.leagueKey(),
             'tournaments',
             leagueService.tournamentKey(),
-            'divisions',
-            leagueService.divisionKey(),
+            'stages',
+            leagueService.stageId(),
             'schedule',
             'matchups',
             matchup.id,
@@ -109,8 +109,8 @@
         leagueService.leagueKey() +
         '/tournaments/' +
         leagueService.tournamentKey() +
-        '/divisions/' +
-        leagueService.divisionKey() +
+        '/drafts/' +
+        leagueService.draftKey() +
         '/teams/' +
         matchup.team2.id
       "
