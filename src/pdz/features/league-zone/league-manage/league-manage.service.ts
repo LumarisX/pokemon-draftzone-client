@@ -110,6 +110,10 @@ export class LeagueManageService {
     );
   }
 
+  // TODO: no "manage/settings" route exists server-side at all
+  // (HostedTournamentService has no settings get/update method), and this
+  // URL is also missing the :leagueKey segment every sibling call has.
+  // Currently 404s — used by league-settings.component.ts.
   getTournamentSettings() {
     return this.apiService.get<{
       name: string;
@@ -130,6 +134,8 @@ export class LeagueManageService {
     );
   }
 
+  // TODO: same missing route / missing :leagueKey segment as
+  // getTournamentSettings above — currently 404s.
   updateTournamentSettings(settings: {
     name: string;
     description?: string;

@@ -30,6 +30,7 @@ export class UnreadService {
     // });
   }
 
+  //Currently Unused
   getUnreadCount(counts: { [key: string]: number }) {
     return this.api.get<typeof counts>(['user', 'unread-counts'], {
       params: counts,

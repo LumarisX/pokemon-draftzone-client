@@ -15,6 +15,7 @@ export class UploadService {
     environment.apiUrl
   }`;
 
+  //Currently Unused
   getUploadLink(
     fileName: string,
     contentType: string,
@@ -52,6 +53,7 @@ export class UploadService {
     });
   }
 
+  //Currently Unused
   confirmUploadWithBackend(
     fileKey: string,
     fileSize: number,

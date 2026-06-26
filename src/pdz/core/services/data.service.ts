@@ -144,6 +144,7 @@ export class DataService {
       );
   }
 
+  //Currently Unused
   advancesearch(query: string[], ruleset?: string, format?: string) {
     let encodedQuery = encodeURIComponent(query.join(''));
     let params: { [key: string]: string } = { query: encodedQuery };
@@ -153,6 +154,7 @@ export class DataService {
     });
   }
 
+  //Currently Unused
   pokemonSearch(
     query: string | string[] | Record<string, unknown>,
     ruleset?: string,
@@ -190,14 +192,15 @@ export class DataService {
     pokemonId: string,
   ): Observable<PokemonSearchMoveData[]> {
     return this.apiService.get<PokemonSearchMoveData[]>(
-      `data/${rulesetId}/pokemon/${pokemonId}/learnset`,
+      `data/pokemon/${pokemonId}/learnset`,
+      { params: { ruleset: rulesetId } },
     );
   }
 
   getFormes(ruleset: string, id: string): Observable<Pokemon[]> {
     if (this.cache.formes[id]) return of(this.cache.formes[id]);
     return this.apiService
-      .get<Pokemon[]>(`data/${ruleset}/pokemon/${id}/formes`)
+      .get<Pokemon[]>(`data/pokemon/${id}/formes`, { params: { ruleset } })
       .pipe(
         tap((list: Pokemon[]) => {
           this.cache.formes[id] = list;

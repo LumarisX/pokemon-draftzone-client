@@ -84,17 +84,7 @@ export class TeambuilderService implements OnDestroy {
     });
   }
 
-  getPatsList(): Observable<(Pokemon & { percent: number })[]> {
-    return this.apiService.get('teambuilder/pats-list');
-  }
-
-  getPatsMatchup(data: {
-    set: string;
-    opp: string;
-  }): Observable<{ link: string; results: [setCalcs, setCalcs] } | undefined> {
-    return this.apiService.get('teambuilder/pats-matchup', { params: data });
-  }
-
+  //Currently Unused
   getMoveCalculations(params: {
     attacker: PokemonSetData;
     target: PokemonSetData;

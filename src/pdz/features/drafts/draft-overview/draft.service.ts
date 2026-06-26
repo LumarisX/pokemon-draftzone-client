@@ -42,14 +42,15 @@ export class DraftService {
   }
 
   getMatchup(matchupId: string, teamId: string) {
-    return this.apiService.get<Matchup>(`${ROOTPATH}/${teamId}/${matchupId}`, {
-      authenticated: true,
-    });
+    return this.apiService.get<Matchup>(
+      `${ROOTPATH}/${teamId}/matchups/${matchupId}`,
+      { authenticated: true },
+    );
   }
 
   getOpponent(matchupId: string, teamId: string) {
     return this.apiService.get<Opponent>(
-      `${ROOTPATH}/${teamId}/${matchupId}/opponent`,
+      `${ROOTPATH}/${teamId}/matchups/${matchupId}/opponent`,
       { authenticated: true },
     );
   }
@@ -99,7 +100,7 @@ export class DraftService {
 
   editMatchup(matchupId: string, teamId: string, matchupData: Object) {
     return this.apiService.patch(
-      `${ROOTPATH}/${teamId}/${matchupId}/opponent`,
+      `${ROOTPATH}/${teamId}/matchups/${matchupId}/opponent`,
       matchupData,
       {
         invalidateCache: [`${ROOTPATH}/${teamId}/matchups`],
@@ -107,12 +108,18 @@ export class DraftService {
     );
   }
 
-  deleteMatchup(matchupId: string) {
+  // TODO: no server route exists for deleting a single external-tournament
+  // matchup yet (ExternalMatchupController has no @Delete). This call 404s
+  // until that endpoint is added.
+  deleteMatchup(matchupId: string, teamId: string) {
     return this.apiService.delete(`matchup/${matchupId}`, {
-      invalidateCache: ['tournaments/${teamName}/matchups'],
+      invalidateCache: [`${ROOTPATH}/${teamId}/matchups`],
     });
   }
 
+  // TODO: no server route exists for archiving an external tournament yet
+  // (ExternalTournamentController only has DELETE :tournamentKey, no
+  // "/archive" sub-route). This call 404s until that endpoint is added.
   archiveDraft(teamName: string) {
     return this.apiService.delete(`${ROOTPATH}/${teamName}/archive`, {
       invalidateCache: ['tournaments/teams', `tournaments/${teamName}`],
@@ -127,14 +134,14 @@ export class DraftService {
 
   scoreMatchup(matchupId: string, teamId: string, scoreData: Object) {
     return this.apiService.patch(
-      `${ROOTPATH}/${teamId}/${matchupId}/score`,
+      `${ROOTPATH}/${teamId}/matchups/${matchupId}/score`,
       scoreData,
     );
   }
   getGameTime(matchupId: string, teamId: string) {
     //TODO: remove any
     return this.apiService.get<any>(
-      `${ROOTPATH}/${teamId}/${matchupId}/schedule`,
+      `${ROOTPATH}/${teamId}/matchups/${matchupId}/schedule`,
       {
         authenticated: true,
       },
@@ -142,7 +149,7 @@ export class DraftService {
   }
   scheduleMatchup(matchupId: string, teamId: string, timeData: Object) {
     return this.apiService.patch(
-      `${ROOTPATH}/${teamId}/${matchupId}/schedule`,
+      `${ROOTPATH}/${teamId}/matchups/${matchupId}/schedule`,
       timeData,
     );
   }

@@ -16,6 +16,7 @@ export class PushNotificationService {
   private readonly VAPID_PUBLIC_KEY =
     'BF7k-hu06sdFW3xAFAdgn2xqgkunQeAhO7Z67Vf7PyN2NRLJ-HB45hMtGjFQflNrcUljP78l5zl1xO5foGBr4Hg';
 
+  //Currently Unused
   public subscribeToNotifications(): Observable<any> {
     if (!this.swPush.isEnabled) {
       console.warn('Service Worker not enabled for Push');

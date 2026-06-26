@@ -17,7 +17,6 @@ import {
   Subject,
   catchError,
   finalize,
-  of,
   switchMap,
   takeUntil,
   tap,
@@ -210,7 +209,7 @@ export class UploadImageComponent implements OnDestroy {
     this.confirmed = false;
     const file = this.selectedFile;
     this.uploadService
-      .getUploadLink(file.name, file.type)
+      .getPresignedUploadUrl(file.name, file.type, 'league-logos')
       .pipe(
         tap((response) =>
           console.log('Received pre-signed URL response:', response),
@@ -222,7 +221,7 @@ export class UploadImageComponent implements OnDestroy {
           this.uploadedFileKey = response.key;
           return this.uploadService.uploadToS3(response.url, file);
         }),
-        switchMap((s3Response) => {
+        tap((s3Response) => {
           if (
             s3Response.type === HttpEventType.UploadProgress &&
             s3Response.total
@@ -230,25 +229,19 @@ export class UploadImageComponent implements OnDestroy {
             this.uploadProgress = Math.round(
               (100 * s3Response.loaded) / s3Response.total,
             );
-            return of(null);
           } else if (s3Response instanceof HttpResponse) {
             if (s3Response.ok && this.uploadedFileKey) {
               this.uploadProgress = 100;
-              this.uploadMessage =
-                'Upload successful! Confirming with backend...';
+              this.uploadMessage = 'Upload successful!';
+              this.uploadError = false;
+              this.confirmed = true;
               console.log('S3 Upload Response Status:', s3Response.status);
-              return this.uploadService.confirmUploadWithBackend(
-                this.uploadedFileKey,
-                file.size,
-                file.type,
-              );
             } else if (!s3Response.ok) {
               throw new Error(
                 `S3 upload failed with status: ${s3Response.status}`,
               );
             }
           }
-          return of(null);
         }),
         catchError((error) => {
           console.error('Upload process error:', error);
@@ -267,16 +260,7 @@ export class UploadImageComponent implements OnDestroy {
         }),
         takeUntil(this.destroy$),
       )
-      .subscribe((confirmationResponse) => {
-        if (confirmationResponse) {
-          console.log('Backend confirmation response:', confirmationResponse);
-          this.uploadMessage =
-            (confirmationResponse as any).message ||
-            'Backend confirmation received.';
-          this.uploadError = false;
-          this.confirmed = true;
-        }
-      });
+      .subscribe();
   }
 
   cancelUpload(): void {

@@ -198,7 +198,7 @@ export class OpponentTeamPreviewComponent implements OnInit, AfterViewInit {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.draftService.deleteMatchup(matchupId).subscribe({
+        this.draftService.deleteMatchup(matchupId, this.teamId).subscribe({
           next: () => {
             this.reload();
           },
