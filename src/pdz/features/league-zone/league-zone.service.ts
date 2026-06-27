@@ -373,6 +373,7 @@ export class LeagueZoneService {
   getLeagueInfo(): Observable<League.LeagueInfo> {
     return this.apiService.get(
       `${ROOTPATH}/${this.leagueKey()}/tournaments/${this.tournamentKey()}/info`,
+      { authenticated: 'optional' },
     );
   }
 

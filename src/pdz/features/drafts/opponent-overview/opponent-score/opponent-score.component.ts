@@ -19,6 +19,14 @@ import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { ReplayAnalysis } from '../../../tools/replay_analyzer/replay.interface';
 
+type SideMonValue = {
+  pokemon: DraftPokemon;
+  kills: number;
+  fainted: number;
+  indirect: number;
+  brought: number;
+};
+
 @Component({
   selector: 'pdz-opponent-form',
   templateUrl: './opponent-score.component.html',
@@ -186,9 +194,65 @@ export class OpponentScoreComponent implements OnInit {
     return total;
   }
 
+  /**
+   * Converts the reactive form value into the shape the score endpoint
+   * expects (ScorePatchDto). The form stores each side as
+   * `{ team: [{ pokemon, kills, fainted, indirect, brought }] }`, but the API
+   * wants `{ stats: [[pokemonId, { kills, deaths, indirect, brought }]], score }`.
+   */
+  private buildScorePayload() {
+    const value = this.scoreForm.value as {
+      aTeamPaste?: string;
+      bTeamPaste?: string;
+      matches: Array<{
+        aTeam: { team: SideMonValue[] };
+        bTeam: { team: SideMonValue[] };
+        replay?: string;
+        winner?: 'a' | 'b' | '';
+      }>;
+    };
+
+    return {
+      aTeamPaste: value.aTeamPaste ?? '',
+      bTeamPaste: value.bTeamPaste ?? '',
+      matches: value.matches.map((match) => {
+        const replay = match.replay?.trim();
+        return {
+          aTeam: this.buildSideStats(match.aTeam.team),
+          bTeam: this.buildSideStats(match.bTeam.team),
+          // `replay` has a minLength(1) constraint and is optional server-side.
+          ...(replay ? { replay } : {}),
+          // `winner` only accepts 'a' | 'b'; omit when undecided.
+          ...(match.winner ? { winner: match.winner } : {}),
+        };
+      }),
+    };
+  }
+
+  private buildSideStats(team: SideMonValue[]): {
+    stats: [string, { kills: number; deaths: number; indirect: number; brought: number }][];
+    score: number;
+  } {
+    const broughtMons = team.filter((mon) => Number(mon.brought));
+    return {
+      stats: broughtMons.map((mon) => [
+        mon.pokemon.id,
+        {
+          kills: Number(mon.kills) || 0,
+          deaths: Number(mon.fainted) ? 1 : 0,
+          indirect: Number(mon.indirect) || 0,
+          brought: 1,
+        },
+      ]),
+      // Score is the number of Pokémon that were brought and did not faint,
+      // matching the server's alive-Pokémon count.
+      score: broughtMons.filter((mon) => !Number(mon.fainted)).length,
+    };
+  }
+
   submit() {
     this.draftService
-      .scoreMatchup(this.matchupId, this.teamId, this.scoreForm.value)
+      .scoreMatchup(this.matchupId, this.teamId, this.buildScorePayload())
       .subscribe({
         next: (response) => {
           console.log('Success!', response);

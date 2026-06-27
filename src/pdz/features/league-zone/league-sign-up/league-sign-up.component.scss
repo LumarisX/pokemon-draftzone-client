@@ -12,71 +12,87 @@
   &__container {
     margin: 0 auto;
     max-width: 48rem;
-    padding: pdz.space(lg);
-    border-radius: pdz.shape(corner-md);
-    box-shadow: var(--pdz-level-2);
     display: flex;
     flex-direction: column;
-    gap: pdz.space(lg);
-
-    @include respond-above(medium) {
-      padding: pdz.space(xl);
-    }
-  }
-
-  &__header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     gap: pdz.space(md);
-    flex-wrap: wrap;
-
-    @include respond-above(medium) {
-      max-height: 6rem;
-      flex-wrap: nowrap;
-    }
   }
+}
+
+// ─── Toolbar (matches tier-list toolbar) ──────────────────────────────────
+.toolbar {
+  display: flex;
+  gap: pdz.space(sm);
+  align-items: center;
+  flex-wrap: wrap;
+  padding: pdz.space(sm) pdz.space(md);
+  background-color: pdz.color(surface-container-low);
+  border-radius: pdz.shape(corner-md);
+  box-shadow: var(--pdz-level-1);
 
   &__title {
-    @include apply-typography(headline-md);
+    @include apply-typography(headline-sm);
+    font-family: var(--pdz-font-fancy);
+    color: pdz.color(on-surface);
+    margin: 0;
     flex: 1;
-    min-width: 200px;
+    min-width: 12rem;
+  }
+
+  &__spacer {
+    flex: 1;
   }
 
   &__logo {
     max-height: 4rem;
     height: auto;
     width: auto;
-    max-width: 8rem;
+    max-width: 10rem;
     object-fit: contain;
-
-    @include respond-above(medium) {
-      max-height: 100%;
-      max-width: 12rem;
-    }
   }
 }
 
-// Details Section
-.details-section {
-  border-radius: pdz.shape(corner-sm);
+// ─── Form section card (matches tier-list tier header) ────────────────────
+.form-section {
+  border-radius: pdz.shape(corner-md);
   overflow: hidden;
   border: 1px solid pdz.color(outline-variant);
   background: pdz.color(surface);
+  box-shadow: var(--pdz-level-1);
 
   &__header {
+    display: flex;
+    align-items: baseline;
+    gap: pdz.space(sm);
+    flex-wrap: wrap;
     padding: pdz.space(sm) pdz.space(md);
-    background: pdz.color(primary-container);
-    border-bottom: 1px solid pdz.color(primary-border);
+    background-color: pdz.color(primary-container);
+    color: pdz.color(on-primary-container);
+    border-bottom: 2px solid pdz.color(primary);
   }
 
   &__title {
     @include apply-typography(title-md);
+    font-family: var(--pdz-font-fancy);
+    font-weight: 700;
+    color: pdz.color(on-primary-container);
     margin: 0;
   }
 
-  &__content {
+  &__subtitle {
+    @include apply-typography(label-sm);
+    color: pdz.color(on-primary-container);
+    opacity: 0.75;
+  }
+
+  &__body {
     padding: pdz.space(md);
+    display: flex;
+    flex-direction: column;
+    gap: pdz.space(md);
+
+    @include respond-above(medium) {
+      padding: pdz.space(lg);
+    }
   }
 }
 
@@ -113,12 +129,13 @@
   }
 }
 
-// Message Card
+// ─── Message Card ─────────────────────────────────────────────────────────
 .message-card {
   padding: pdz.space(xl);
-  border-radius: pdz.shape(corner-sm);
+  border-radius: pdz.shape(corner-md);
   border: 1px solid pdz.color(outline-variant);
   background: pdz.color(surface);
+  box-shadow: var(--pdz-level-1);
   display: flex;
   flex-direction: column;
   gap: pdz.space(md);
@@ -126,6 +143,7 @@
 
   &__title {
     @include apply-typography(headline-sm);
+    font-family: var(--pdz-font-fancy);
     margin: 0;
     color: pdz.color(on-surface);
   }
@@ -140,34 +158,17 @@
       font-size: 0.9em;
     }
   }
-}
 
-.discord-btn {
-  @include flat-button-primary();
-  @include apply-typography(title-md);
-  margin: pdz.space(sm) auto;
-  min-width: 16rem;
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: pdz.space(sm);
+  &__actions {
+    display: flex;
+    flex-direction: column;
+    gap: pdz.space(md);
+    margin: pdz.space(md) 0;
 
-  &__icon {
-    width: 1.5rem;
-    height: 1.5rem;
-  }
-}
-
-.message-card__actions {
-  display: flex;
-  flex-direction: column;
-  gap: pdz.space(md);
-  margin: pdz.space(md) 0;
-
-  @include respond-above(medium) {
-    flex-direction: row;
-    justify-content: center;
+    @include respond-above(medium) {
+      flex-direction: row;
+      justify-content: center;
+    }
   }
 }
 
@@ -192,7 +193,7 @@
   }
 }
 
-// Form Styles
+// ─── Form Fields ──────────────────────────────────────────────────────────
 .form-row {
   display: grid;
   grid-template-columns: 1fr;
@@ -281,7 +282,7 @@
   color: pdz.color(error);
 }
 
-// Radio Group
+// ─── Radio Group ──────────────────────────────────────────────────────────
 .radio-group {
   display: flex;
   gap: pdz.space(lg);
@@ -332,7 +333,7 @@
   }
 }
 
-// Checkbox
+// ─── Checkbox ─────────────────────────────────────────────────────────────
 .checkbox-label {
   @include apply-typography(body-sm);
   display: flex;
@@ -340,6 +341,7 @@
   gap: pdz.space(sm);
   cursor: pointer;
   color: pdz.color(on-surface);
+  padding: pdz.space(sm) pdz.space(xs);
 }
 
 .checkbox-input {
@@ -377,7 +379,7 @@
   }
 }
 
-// Links
+// ─── Links ────────────────────────────────────────────────────────────────
 .link {
   color: pdz.color(primary);
   text-decoration: none;
@@ -393,11 +395,11 @@
   }
 }
 
-// Submit Button
+// ─── Submit Button ────────────────────────────────────────────────────────
 .submit-btn {
   @include flat-button-primary();
   width: 100%;
-  margin-top: pdz.space(md);
+  margin-top: pdz.space(xs);
   display: inline-flex;
   align-items: center;
   justify-content: center;

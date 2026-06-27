@@ -20,6 +20,8 @@ import { LeagueStandingsComponent } from './league-standings/league-standings.co
 import { LeagueTeamComponent } from './league-team/league-team.component';
 import { LeagueTeamsComponent } from './league-teams/league-teams.component';
 import { LeagueTradesComponent } from './league-trades/league-trades.component';
+import { TournamentDraftComponent } from './tournaments/tournament-draft/tournament-draft.component';
+import { TournamentDraftsComponent } from './tournaments/tournament-drafts/tournament-drafts.component';
 import { TournamentLandingComponent } from './tournaments/tournament-landing/tournament-landing.component';
 
 export const routes: Routes = [
@@ -84,6 +86,14 @@ export const routes: Routes = [
   {
     path: ':leagueKey/tournaments/:tournamentKey/trades',
     component: LeagueTradesComponent,
+  },
+  {
+    path: ':leagueKey/tournaments/:tournamentKey/draft',
+    component: TournamentDraftComponent,
+  },
+  {
+    path: ':leagueKey/tournaments/:tournamentKey/drafts',
+    component: TournamentDraftsComponent,
   },
   {
     path: ':leagueKey/tournaments/:tournamentKey/drafts/:draftKey',

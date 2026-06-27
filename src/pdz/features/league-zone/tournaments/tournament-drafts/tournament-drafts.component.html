@@ -1,0 +1,23 @@
+@if (leagueInfo) {
+  <div class="drafts-container">
+    <h1 class="drafts-container__title">{{ leagueInfo.name }} Drafts</h1>
+
+    @if (leagueInfo.drafts.length) {
+      <div class="drafts-container__grid">
+        @for (draft of leagueInfo.drafts; track draft.draftKey) {
+          <a [routerLink]="draft.draftKey" class="button button--division">
+            <span class="button__text">{{ draft.name }}</span>
+          </a>
+        }
+      </div>
+    } @else {
+      <p class="drafts-container__empty">
+        No drafts have been set up for this tournament yet.
+      </p>
+    }
+  </div>
+} @else {
+  <div class="loading-state">
+    <pdz-loading></pdz-loading>
+  </div>
+}

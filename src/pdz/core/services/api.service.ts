@@ -10,9 +10,11 @@ import {
   filter,
   finalize,
   Observable,
+  of,
   OperatorFunction,
   shareReplay,
   switchMap,
+  take,
   tap,
   throwError,
 } from 'rxjs';
@@ -53,7 +55,7 @@ export class ApiService {
   get<T>(
     path: string | string[],
     options: {
-      authenticated?: boolean;
+      authenticated?: 'required' | 'optional' | boolean;
       params?:
         | HttpParams
         | {
@@ -75,15 +77,20 @@ export class ApiService {
     const key = apiUrl + JSON.stringify(options.params);
     if (this.pendingRequests.has(key)) return this.pendingRequests.get(key)!;
     const request$ = (
-      options.authenticated
+      options.authenticated == true || options.authenticated == 'required'
         ? this.authenticatedRequest<T>('GET', apiUrl, {
             params: options.params,
             additionalHeaders: options.additionalHeaders,
           })
-        : this.http.get<T>(`${this.serverUrl}/${apiUrl}`, {
-            headers,
-            params: options.params,
-          })
+        : options.authenticated == 'optional'
+          ? this.optionalAuthRequest<T>(apiUrl, {
+              params: options.params,
+              additionalHeaders: options.additionalHeaders,
+            })
+          : this.http.get<T>(`${this.serverUrl}/${apiUrl}`, {
+              headers,
+              params: options.params,
+            })
     ).pipe(
       shareReplay({ bufferSize: 1, refCount: true }),
       this.handleError(options.errorHandlingOptions),
@@ -167,6 +174,48 @@ export class ApiService {
 
       return throwError(() => error);
     });
+  }
+
+  private optionalAuthRequest<T>(
+    path: string,
+    options: {
+      params?:
+        | HttpParams
+        | {
+            [param: string]:
+              | string
+              | number
+              | boolean
+              | ReadonlyArray<string | number | boolean>;
+          };
+      additionalHeaders?: { [key: string]: string };
+    } = {},
+  ): Observable<T> {
+    const { params, additionalHeaders } = options;
+
+    return this.auth.isAuthenticated$.pipe(
+      take(1),
+      switchMap((isAuthenticated) =>
+        isAuthenticated
+          ? this.auth.accessToken$.pipe(
+              filter((token: string | undefined): token is string => !!token),
+              take(1),
+            )
+          : of(undefined),
+      ),
+      switchMap((token) => {
+        const headers = new HttpHeaders({
+          'Content-Type': 'application/json',
+          ...(token ? { authorization: `Bearer ${token}` } : {}),
+          ...additionalHeaders,
+        });
+
+        return this.http.get<T>(`${this.serverUrl}/${path}`, {
+          headers,
+          params,
+        });
+      }),
+    );
   }
 
   private authenticatedRequest<T>(
