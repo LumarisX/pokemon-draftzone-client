@@ -53,6 +53,9 @@ export class LeagueAdListComponent implements OnInit {
     this.leagueService.getLeagueAds().subscribe((data) => {
       this.leagues = data;
       this.filteredLeagues = [...this.leagues];
+      // TODO: also persist this to the server (lastCheckedAdsAt) when logged
+      // in, so the "unread ads" badge survives across devices instead of
+      // relying solely on localStorage.
       localStorage.setItem('leagueTime', Date.now().toString());
       this.unreadService.leagueCount.next('');
       this.sortLeagues();

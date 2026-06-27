@@ -1,0 +1,179 @@
+@use "pdz-theming" as pdz;
+
+.admin-dashboard {
+  width: 100%;
+  padding: pdz.space(xl) pdz.space(xl) pdz.space(3xl);
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(xl);
+}
+
+.admin-header {
+  h1 {
+    margin: 0;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: pdz.color(on-surface);
+  }
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: pdz.space(md);
+}
+
+.summary-card {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(2xs);
+  padding: pdz.space(lg);
+  border-radius: pdz.shape(corner-lg);
+  background: pdz.color(surface-container);
+  border: 1px solid pdz.color(outline-variant);
+
+  .value {
+    font-size: 1.7rem;
+    font-weight: 700;
+    line-height: 1.1;
+    color: pdz.color(on-surface);
+  }
+
+  .label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: pdz.color(on-surface);
+  }
+
+  .hint {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: pdz.color(on-surface-variant);
+  }
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(md);
+
+  .controls-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: pdz.color(on-surface-variant);
+  }
+}
+
+.bucket-toggle {
+  display: inline-flex;
+  border: 1px solid pdz.color(outline-variant);
+  border-radius: pdz.shape(corner-sm);
+  overflow: hidden;
+
+  button {
+    appearance: none;
+    border: none;
+    background: transparent;
+    padding: pdz.space(sm) pdz.space(lg);
+    font-size: 0.85rem;
+    text-transform: capitalize;
+    cursor: pointer;
+    color: pdz.color(on-surface);
+    transition: background 0.15s ease;
+
+    &:not(:last-child) {
+      border-right: 1px solid pdz.color(outline-variant);
+    }
+
+    &:hover {
+      background: pdz.color(surface-container-high);
+    }
+
+    &.active {
+      background: pdz.color(primary);
+      color: pdz.color(on-primary);
+    }
+  }
+}
+
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  // Stretch cards so every card in a row shares the tallest height, and let
+  // smaller cards backfill the space beside a wide card.
+  align-items: stretch;
+  grid-auto-flow: row dense;
+  gap: pdz.space(xl);
+}
+
+.chart-card {
+  // Allow the chart SVGs to shrink with the grid track.
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  padding: pdz.space(lg) pdz.space(xl) pdz.space(xl);
+  border-radius: pdz.shape(corner-lg);
+  background: pdz.color(surface-container);
+  border: 1px solid pdz.color(outline-variant);
+
+  // Time-series charts take roughly twice the width of a distribution card so
+  // they read well, but stay capped and wrap beside each other when there's
+  // room rather than each hogging a full row.
+  &--wide {
+    grid-column: span 2;
+    max-width: 900px;
+  }
+
+  // Avoid a 2-track span overflowing when only one column fits.
+  @media (max-width: 680px) {
+    &--wide {
+      grid-column: auto;
+    }
+  }
+
+  .chart-card-head {
+    display: flex;
+    align-items: baseline;
+    gap: pdz.space(sm);
+    margin-bottom: pdz.space(sm);
+
+    h2 {
+      margin: 0;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: pdz.color(on-surface);
+    }
+
+    .chart-note {
+      font-size: 0.78rem;
+      color: pdz.color(on-surface-variant);
+    }
+  }
+
+  // Chart fills the remaining card height and stays vertically centred, so
+  // shorter charts (donuts/bars) don't leave a ragged gap beneath them.
+  pdz-time-series-chart,
+  pdz-pie-chart,
+  pdz-bar-chart,
+  .loading-block {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+}
+
+.loading-block {
+  display: flex;
+  justify-content: center;
+  padding: pdz.space(2xl) 0;
+}
+
+.error-block {
+  padding: pdz.space(lg);
+  border-radius: pdz.shape(corner-md);
+  background: pdz.color(error-container);
+  color: pdz.color(on-error-container);
+  font-size: 0.9rem;
+}

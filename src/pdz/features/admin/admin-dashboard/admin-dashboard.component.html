@@ -1,0 +1,149 @@
+<div class="admin-dashboard">
+  <header class="admin-header">
+    <h1>Admin · Users</h1>
+  </header>
+
+  <!-- Summary cards -->
+  <section class="summary">
+    @if (summaryLoading()) {
+      <div class="loading-block"><pdz-loading></pdz-loading></div>
+    } @else if (summaryError()) {
+      <div class="error-block">Failed to load summary.</div>
+    } @else {
+      <div class="summary-grid">
+        @for (card of summaryCards; track $index) {
+          <div class="summary-card">
+            <span class="value">{{ card.value | number }}</span>
+            <span class="label">{{ card.label }}</span>
+            <span class="hint">{{ card.hint }}</span>
+          </div>
+        }
+      </div>
+    }
+  </section>
+
+  <!-- Bucket selector -->
+  <section class="controls">
+    <span class="controls-label">Bucket</span>
+    <div class="bucket-toggle" role="group" aria-label="Bucket size">
+      @for (b of buckets; track b) {
+        <button
+          type="button"
+          [class.active]="bucket() === b"
+          (click)="setBucket(b)"
+        >
+          {{ b }}
+        </button>
+      }
+    </div>
+  </section>
+
+  <!-- Charts -->
+  <section class="charts-grid">
+    <!-- Time-series (share the bucket + one load state) -->
+    @if (seriesLoading()) {
+      <div class="chart-card chart-card--wide">
+        <div class="loading-block"><pdz-loading></pdz-loading></div>
+      </div>
+    } @else if (seriesError()) {
+      <div class="chart-card chart-card--wide">
+        <div class="error-block">Failed to load chart data.</div>
+      </div>
+    } @else if (series(); as data) {
+      <div class="chart-card chart-card--wide">
+        <div class="chart-card-head"><h2>Total Users</h2></div>
+        <pdz-time-series-chart
+          [data]="data.cumulative"
+          [bucket]="data.bucket"
+          type="line"
+          trend="polynomial"
+          [trendDegree]="3"
+          valueLabel="total"
+        ></pdz-time-series-chart>
+      </div>
+
+      <div class="chart-card chart-card--wide">
+        <div class="chart-card-head"><h2>New Users</h2></div>
+        <pdz-time-series-chart
+          [data]="data.joined"
+          [bucket]="data.bucket"
+          type="bar"
+          trend="movingAverage"
+          [trendWindow]="4"
+          valueLabel="joined"
+        ></pdz-time-series-chart>
+      </div>
+
+      <div class="chart-card chart-card--wide">
+        <div class="chart-card-head"><h2>Last Logins</h2></div>
+        <pdz-time-series-chart
+          [data]="data.lastLogin"
+          [bucket]="data.bucket"
+          type="bar"
+          valueLabel="users"
+        ></pdz-time-series-chart>
+      </div>
+    }
+
+    <!-- Distributions (independent of bucket) -->
+    <div class="chart-card">
+      <div class="chart-card-head"><h2>Login Types</h2></div>
+      @if (providers()) {
+        <pdz-pie-chart
+          [data]="providerData"
+          centerLabel="users"
+        ></pdz-pie-chart>
+      } @else {
+        <div class="loading-block"><pdz-loading></pdz-loading></div>
+      }
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-card-head"><h2>Engagement</h2></div>
+      @if (engagement()) {
+        <pdz-pie-chart
+          [data]="engagementData"
+          centerLabel="users"
+        ></pdz-pie-chart>
+      } @else {
+        <div class="loading-block"><pdz-loading></pdz-loading></div>
+      }
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-card-head"><h2>Account Age</h2></div>
+      @if (accountAge()) {
+        <pdz-bar-chart [data]="accountAgeData"></pdz-bar-chart>
+      } @else {
+        <div class="loading-block"><pdz-loading></pdz-loading></div>
+      }
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-card-head"><h2>Themes</h2></div>
+      @if (settings()) {
+        <pdz-bar-chart [data]="themeData"></pdz-bar-chart>
+      } @else {
+        <div class="loading-block"><pdz-loading></pdz-loading></div>
+      }
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-card-head"><h2>Sprite Sets</h2></div>
+      @if (settings()) {
+        <pdz-bar-chart [data]="spriteData"></pdz-bar-chart>
+      } @else {
+        <div class="loading-block"><pdz-loading></pdz-loading></div>
+      }
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-card-head"><h2>Shiny Sprites</h2></div>
+      @if (settings()) {
+        <pdz-pie-chart [data]="shinyData" centerLabel="users"></pdz-pie-chart>
+      } @else {
+        <div class="loading-block"><pdz-loading></pdz-loading></div>
+      }
+    </div>
+  </section>
+</div>

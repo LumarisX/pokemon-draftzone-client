@@ -26,6 +26,12 @@
       <button mat-menu-item [matMenuTriggerFor]="toolsMenu">
         <span>Other Tools</span>
       </button>
+      @if (isAdmin$ | async) {
+        <a mat-menu-item [routerLink]="adminPath">
+          <mat-icon>admin_panel_settings</mat-icon>
+          <span>Admin</span>
+        </a>
+      }
     </mat-menu>
 
     <!-- Shared tools submenu -->
@@ -66,6 +72,9 @@
       <button class="menu-tab" [matMenuTriggerFor]="toolsMenu">
         Other Tools
       </button>
+      @if (isAdmin$ | async) {
+        <a class="menu-tab" [routerLink]="adminPath">Admin</a>
+      }
     </nav>
 
     <span class="toolbar-spacer"></span>

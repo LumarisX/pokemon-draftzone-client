@@ -8,3 +8,4 @@ export const EXTERNAL_LINK_PATH = 'external';
 export const STATISTICS_PATH = 'statistics';
 export const TIER_LIST_PATH = 'tier-lists';
 export const LEAGUE_ADS_PATH = 'league-list';
+export const ADMIN_PATH = 'admin';

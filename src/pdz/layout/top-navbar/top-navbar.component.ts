@@ -7,7 +7,8 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterModule } from '@angular/router';
 import { BehaviorSubject, combineLatest, map, of } from 'rxjs';
-import { DRAFT_OVERVIEW_PATH } from '@pdz/core/route-paths';
+import { ADMIN_PATH, DRAFT_OVERVIEW_PATH } from '@pdz/core/route-paths';
+import { RoleService } from '@pdz/core/services/role.service';
 import { UnreadService } from '@pdz/features/pages/homepage/unread.service';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LoginButtonComponent } from './login-button/login-button.component';
@@ -42,6 +43,9 @@ interface NavTool {
 })
 export class TopNavbarComponent {
   private unreadService = inject(UnreadService);
+
+  readonly adminPath = `/${ADMIN_PATH}/users`;
+  readonly isAdmin$ = inject(RoleService).isAdmin$;
 
   readonly TABS: NavTab[] = [
     { title: 'My Drafts', route: DRAFT_OVERVIEW_PATH },

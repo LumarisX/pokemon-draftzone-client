@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import {
+  ADMIN_PATH,
   DEBUG_PATH,
   DRAFT_OVERVIEW_PATH,
   EXTERNAL_LINK_PATH,
@@ -10,6 +11,7 @@ import {
   TIER_LIST_PATH,
   TOOLS_PATH,
 } from '@pdz/core/route-paths';
+import { adminGuard } from '@pdz/core/guards/admin/admin.guard';
 import { HomeComponent } from '@pdz/features/pages/homepage/homepage.component';
 import { NotFoundComponent } from '@pdz/features/pages/not-found/not-found.component';
 import { externalLinkBypassGuard } from './features/pages/external-link/external-link.guard';
@@ -70,6 +72,12 @@ export const routes: Routes = [
       import('@pdz/features/league-list/league-list.routes').then(
         (m) => m.routes,
       ),
+  },
+  {
+    path: ADMIN_PATH,
+    canActivate: [adminGuard],
+    loadChildren: () =>
+      import('@pdz/features/admin/admin.routes').then((m) => m.routes),
   },
   {
     path: 'supporters',

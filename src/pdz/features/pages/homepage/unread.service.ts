@@ -14,6 +14,10 @@ export class UnreadService {
   newsCount = new BehaviorSubject<string>('');
 
   constructor() {
+    // TODO: if the user is logged in, check lastCheckedAdsAt from the server
+    // instead of/in addition to this, falling back to localStorage for
+    // logged-out users (lastCheckedAdsAt currently exists on the backend but
+    // is never updated or read for this purpose).
     const lastLeagueTime = +(localStorage.getItem('leagueTime') || 0);
     const lastNewsTime = +(localStorage.getItem('newsTime') || 0);
 

@@ -1,0 +1,82 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+.pie-host {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: pdz.space(xl);
+}
+
+.pie-chart {
+  flex: 0 0 auto;
+  width: 240px;
+  max-width: 100%;
+
+  svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+}
+
+.pie-center-value {
+  fill: pdz.color(on-surface);
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.pie-center-label {
+  fill: pdz.color(on-surface-variant);
+  font-size: 0.8rem;
+}
+
+.pie-slice {
+  transition: opacity 0.15s ease;
+  cursor: default;
+  stroke: pdz.color(surface);
+  stroke-width: 1;
+}
+
+.pie-legend {
+  flex: 0 1 auto;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  // One shared grid so swatches, labels and values line up in columns while
+  // staying close together (li uses `display: contents`).
+  display: grid;
+  grid-template-columns: auto auto auto;
+  align-items: center;
+  column-gap: pdz.space(md);
+  row-gap: pdz.space(sm);
+  width: max-content;
+  max-width: 100%;
+  font-size: 0.88rem;
+  color: pdz.color(on-surface);
+
+  li {
+    display: contents;
+  }
+
+  .swatch {
+    width: 0.8rem;
+    height: 0.8rem;
+    border-radius: pdz.shape(corner-xs);
+  }
+
+  .legend-label {
+    font-weight: 600;
+  }
+
+  .legend-value {
+    color: pdz.color(on-surface-variant);
+    white-space: nowrap;
+    justify-self: end;
+  }
+}

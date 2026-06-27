@@ -1,0 +1,62 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+.chart-host {
+  position: relative;
+  width: 100%;
+
+  svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+}
+
+.ts-axis {
+  color: pdz.color(on-surface-variant);
+
+  text {
+    font-size: 11px;
+    fill: pdz.color(on-surface-variant);
+  }
+
+  .domain,
+  .tick line {
+    stroke: pdz.color(outline-variant);
+  }
+}
+
+.ts-gridline {
+  stroke: pdz.color(outline-variant);
+  stroke-opacity: 0.4;
+}
+
+.ts-focus {
+  stroke: pdz.color(surface);
+  stroke-width: 2;
+}
+
+.ts-tooltip {
+  position: absolute;
+  transform: translate(-50%, calc(-100% - 10px));
+  pointer-events: none;
+  white-space: nowrap;
+  padding: pdz.space(sm) pdz.space(md);
+  border-radius: pdz.shape(corner-sm);
+  font-size: 12px;
+  line-height: 1.35;
+  background: pdz.color(surface-container-high);
+  color: pdz.color(on-surface);
+  border: 1px solid pdz.color(outline-variant);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  z-index: 5;
+
+  .ts-tooltip-date {
+    color: pdz.color(on-surface-variant);
+  }
+}

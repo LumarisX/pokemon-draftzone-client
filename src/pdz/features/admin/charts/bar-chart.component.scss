@@ -1,0 +1,28 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+.bar-host {
+  width: 100%;
+
+  svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+}
+
+.bar-labels text {
+  font-size: 12px;
+  font-weight: 600;
+  fill: pdz.color(on-surface);
+}
+
+.bar-values text {
+  font-size: 11px;
+  fill: pdz.color(on-surface-variant);
+}
