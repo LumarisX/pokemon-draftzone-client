@@ -29,7 +29,11 @@
         </div>
         <div class="draft-bar">
           @for (pokemon of draft.team; track $index) {
-            <pdz-sprite [pokemon]="pokemon"> </pdz-sprite>
+            <pdz-sprite
+              [pokemon]="pokemon"
+              [class.unresolved-sprite]="pokemon.unresolved"
+            >
+            </pdz-sprite>
           }
         </div>
       </div>

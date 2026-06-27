@@ -100,7 +100,10 @@
               </div>
               <div class="sprites">
                 @for (pokemon of matchup.team; track pokemon.name) {
-                  <pdz-sprite [pokemon]="pokemon"></pdz-sprite>
+                  <pdz-sprite
+                    [pokemon]="pokemon"
+                    [class.unresolved-sprite]="pokemon.unresolved"
+                  ></pdz-sprite>
                 }
               </div>
             </div>

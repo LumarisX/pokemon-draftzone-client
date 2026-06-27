@@ -97,6 +97,49 @@
   }
 }
 
+.title-row {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(xs);
+  min-width: 0;
+
+  .league-name {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.draft-warning {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  color: pdz.color(error);
+  text-decoration: none;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.unresolved-sprite {
+  opacity: 0.45;
+  filter: grayscale(1);
+}
+
+.load-error {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(sm);
+  margin-bottom: pdz.space(md);
+  padding: pdz.space(sm) pdz.space(md);
+  border-radius: pdz.shape(corner-sm);
+  background-color: pdz.color(error-container);
+  color: pdz.color(on-error-container);
+}
+
 .confirmation {
   width: 100%;
   display: flex;

@@ -11,6 +11,11 @@
   display: flex;
 }
 
+.unresolved-sprite {
+  opacity: 0.45;
+  filter: grayscale(1);
+}
+
 .preview-main {
   display: flex;
   width: 100%;

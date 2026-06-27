@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, HostListener, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { DRAFT_OVERVIEW_PATH } from '@pdz/core/route-paths';
 import { Draft } from '../../draft.model';
 import { TournamentDetails } from '../../../league-zone/league.model';
@@ -17,6 +18,7 @@ import { LSDraftData } from '../../../planner/plannner.component';
   imports: [
     CommonModule,
     RouterModule,
+    MatTooltipModule,
     SpriteComponent,
     IconComponent,
     LoadingComponent,
@@ -27,6 +29,7 @@ export class DraftPreviewComponent {
 
   drafts?: Draft[];
   tournaments?: TournamentDetails[];
+  loadError = false;
   draftPath = DRAFT_OVERVIEW_PATH;
   menuState: {
     [key: string]: '' | 'confirm-archive' | 'confirm-delete';
@@ -41,15 +44,24 @@ export class DraftPreviewComponent {
   loadDrafts() {
     console.log('Loading drafts...');
     this.drafts = undefined;
-    this.draftService.getDraftsList().subscribe((data) => {
-      this.drafts = data.drafts;
-      this.drafts.forEach((draft) => {
-        this.menuState[draft.tournamentId] = '';
-      });
-      this.tournaments = data.tournaments;
-      this.tournaments.forEach((tournament) => {
-        this.menuState[tournament.tournamentKey] = '';
-      });
+    this.loadError = false;
+    this.draftService.getDraftsList().subscribe({
+      next: (data) => {
+        this.drafts = data.drafts;
+        this.drafts.forEach((draft) => {
+          this.menuState[draft.tournamentId] = '';
+        });
+        this.tournaments = data.tournaments;
+        this.tournaments.forEach((tournament) => {
+          this.menuState[tournament.tournamentKey] = '';
+        });
+      },
+      error: (error) => {
+        console.error('Failed to load drafts', error);
+        this.drafts = [];
+        this.tournaments = [];
+        this.loadError = true;
+      },
     });
   }
 
@@ -118,5 +130,12 @@ export class DraftPreviewComponent {
 
   hasAnyDrafts(): boolean {
     return (this.drafts?.length ?? 0) + (this.tournaments?.length ?? 0) > 0;
+  }
+
+  unresolvedWarning(draft: Draft): string | null {
+    const count = draft.unresolvedPokemon?.length ?? 0;
+    if (count === 0) return null;
+    const names = draft.unresolvedPokemon!.join(', ');
+    return `Some Pokémon are not valid under ${draft.ruleset}`;
   }
 }

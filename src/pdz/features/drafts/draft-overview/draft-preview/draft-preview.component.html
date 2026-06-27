@@ -14,6 +14,15 @@
   @if (!drafts) {
     <pdz-loading></pdz-loading>
   } @else {
+    @if (loadError) {
+      <div class="load-error">
+        <pdz-icon name="error"></pdz-icon>
+        <span
+          >Something went wrong loading your drafts. Please refresh and try
+          again.</span
+        >
+      </div>
+    }
     @if (hasAnyDrafts()) {
       <div class="drafts-grid">
         <!-- @for (tournament of tournaments; track tournament.tournamentKey) {
@@ -76,7 +85,19 @@
                 </div>
               }
               <div class="card-title">
-                <h2 class="league-name">{{ draft.leagueName }}</h2>
+                <div class="title-row">
+                  <h2 class="league-name">{{ draft.leagueName }}</h2>
+                  @if (unresolvedWarning(draft); as warning) {
+                    <a
+                      class="draft-warning"
+                      [routerLink]="['edit']"
+                      [queryParams]="{ draft: draft.tournamentId | json }"
+                      [matTooltip]="warning"
+                    >
+                      <pdz-icon name="warning"></pdz-icon>
+                    </a>
+                  }
+                </div>
               </div>
               <div class="card-menu">
                 <button
@@ -130,7 +151,10 @@
               </div>
               <div class="sprites">
                 @for (pokemon of draft.team; track pokemon.name) {
-                  <pdz-sprite [pokemon]="pokemon"></pdz-sprite>
+                  <pdz-sprite
+                    [pokemon]="pokemon"
+                    [class.unresolved-sprite]="pokemon.unresolved"
+                  ></pdz-sprite>
                 }
               </div>
             </div>

@@ -1,6 +1,11 @@
 @use "mixins/buttons" as *;
 @use "pdz-theming" as pdz;
 
+.unresolved-sprite {
+  opacity: 0.45;
+  filter: grayscale(1);
+}
+
 .draft-header {
   display: flex;
   align-items: center;
