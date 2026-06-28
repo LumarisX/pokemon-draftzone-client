@@ -1,7 +1,13 @@
-import { HttpErrorResponse } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpHeaders,
+} from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
+import { AuthService } from '@pdz/core/services/auth0.service';
 import { RumService } from '@pdz/core/services/rum.service';
-import { BehaviorSubject } from 'rxjs';
+import { environment } from '@pdz/environments/environment';
+import { BehaviorSubject, Observable, of, switchMap, take } from 'rxjs';
 
 export interface PDZError {
   code: string;
@@ -35,9 +41,47 @@ export interface ClientError {
 })
 export class ErrorService {
   private rumService = inject(RumService);
+  private http = inject(HttpClient);
+  private auth = inject(AuthService);
   private readonly MAX_ERRORS = 5;
   private errorsSubject = new BehaviorSubject<ClientError[]>([]);
   private errorIdCounter = 0;
+
+  private serverUrl = `${environment.tls ? 'https' : 'http'}://${
+    environment.apiUrl
+  }`;
+
+  sendErrorReport(error: ClientError): Observable<{ delivered: boolean }> {
+    const payload = {
+      status: error.status,
+      code: error.error?.code,
+      message: error.error?.message ?? error.statusText ?? error.message,
+      url: error.url ?? undefined,
+      details: error.error?.details,
+      requestId: error.meta?.requestId,
+      stack: error.error?.stack,
+      pageUrl: window.location.href,
+      userAgent: navigator.userAgent,
+    };
+
+    return this.auth.isAuthenticated$.pipe(
+      take(1),
+      switchMap((isAuthenticated) =>
+        isAuthenticated ? this.auth.accessToken$.pipe(take(1)) : of(undefined),
+      ),
+      switchMap((token) => {
+        const headers = new HttpHeaders({
+          'Content-Type': 'application/json',
+          ...(token ? { authorization: `Bearer ${token}` } : {}),
+        });
+        return this.http.post<{ delivered: boolean }>(
+          `${this.serverUrl}/error-report`,
+          payload,
+          { headers },
+        );
+      }),
+    );
+  }
 
   getErrorsObservable() {
     return this.errorsSubject.asObservable();
