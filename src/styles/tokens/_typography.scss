@@ -123,7 +123,7 @@ $typography: (
 
 $fonts: (
   fancy: "Nasalization RG",
-  regular: "Nunito",
+  regular: ("Nunito Variable", "Nunito", sans-serif),
 );
 
 $font-size: (

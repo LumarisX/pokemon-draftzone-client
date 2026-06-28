@@ -20,7 +20,12 @@
             "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.app.json",
             "assets": ["src/manifest.webmanifest", "src/assets"],
-            "styles": ["src/styles/styles.scss"],
+            "styles": [
+              "node_modules/material-symbols/outlined.css",
+              "node_modules/@fontsource-variable/nunito/index.css",
+              "node_modules/@fontsource-variable/nunito/wght-italic.css",
+              "src/styles/styles.scss"
+            ],
             "stylePreprocessorOptions": {
               "includePaths": ["src/styles"]
             },
@@ -103,7 +108,12 @@
             "polyfills": ["zone.js", "zone.js/testing"],
             "tsConfig": "tsconfig.spec.json",
             "assets": ["src/13luken.ico", "src/assets"],
-            "styles": ["src/styles/styles.scss"],
+            "styles": [
+              "node_modules/material-symbols/outlined.css",
+              "node_modules/@fontsource-variable/nunito/index.css",
+              "node_modules/@fontsource-variable/nunito/wght-italic.css",
+              "src/styles/styles.scss"
+            ],
             "stylePreprocessorOptions": {
               "includePaths": ["src/styles"]
             },
