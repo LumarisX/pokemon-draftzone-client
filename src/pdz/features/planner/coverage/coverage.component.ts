@@ -10,7 +10,6 @@ import {
   Coverage,
   CoveragePokemon,
 } from '../../drafts/matchup-overview/matchup-interface';
-import { CoverageChartPreviewComponent } from './charts/coverage-chart-preview.component';
 import { CoverageChartComponent } from './charts/coverage-chart.component';
 import { CoverageTeamChartComponent } from './charts/coverage-team-chart.component';
 
@@ -24,7 +23,6 @@ import { CoverageTeamChartComponent } from './charts/coverage-team-chart.compone
     ReactiveFormsModule,
     CoverageChartComponent,
     CoverageTeamChartComponent,
-    CoverageChartPreviewComponent,
     MatSliderModule,
     MatTabsModule,
     MatIconModule,

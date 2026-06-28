@@ -1,7 +1,14 @@
-//@ts-nocheck
-import { Component, ElementRef, Input, OnDestroy, inject } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  Input,
+  OnChanges,
+  OnDestroy,
+  inject,
+} from '@angular/core';
 import * as d3 from 'd3';
 import { SpriteService } from '@pdz/core/services/sprite.service';
+import { typeColor } from '@pdz/core/utils/styling';
 import {
   CoveragePokemon,
   FullCoverageMove,
@@ -25,7 +32,7 @@ interface PositionData {
 }
 
 interface ExtendedNode<T> extends d3.HierarchyRectangularNode<T> {
-  current: ExtendedNode<T>;
+  current: PositionData;
   target: PositionData;
 }
 
@@ -34,26 +41,26 @@ interface ExtendedNode<T> extends d3.HierarchyRectangularNode<T> {
   template: '<svg></svg>',
   imports: [],
 })
-export class CoverageChartComponent implements OnDestroy {
+export class CoverageChartComponent implements OnChanges, OnDestroy {
   private el = inject(ElementRef);
   private spriteService = inject(SpriteService);
 
-  @Input()
-  set data(value: CoveragePokemon) {
-    this.updateChart(value);
-  }
+  @Input({ required: true }) data!: CoveragePokemon;
+  @Input() interactive = false;
+  @Input() strokeWidth?: number;
 
   chartData!: CoveragePokemon;
-  svg;
+  private svg!: d3.Selection<d3.BaseType, unknown, null, undefined>;
+
+  ngOnChanges(): void {
+    if (!this.data) return;
+    this.chartData = this.data;
+    this.destroyChart();
+    this.createSunburst();
+  }
 
   ngOnDestroy(): void {
     this.destroyChart();
-  }
-
-  updateChart(data: CoveragePokemon): void {
-    this.destroyChart();
-    this.chartData = data;
-    this.createSunburst();
   }
 
   destroyChart(): void {
@@ -65,6 +72,11 @@ export class CoverageChartComponent implements OnDestroy {
   }
 
   private createSunburst(): void {
+    const categoryName = (d: ExtendedNode<DataPoint>): string | null => {
+      let n = d;
+      while (n.depth > 1 && n.parent) n = n.parent as ExtendedNode<DataPoint>;
+      return n.depth === 1 ? n.data.name : null;
+    };
     const hierarchyData: DataPoint = {
       name: this.chartData.id,
       children: [
@@ -113,6 +125,8 @@ export class CoverageChartComponent implements OnDestroy {
     const width = 800;
     const height = width;
     const radius = width / 6;
+    const interactive = this.interactive;
+    const stroke = this.strokeWidth ?? (interactive ? 4 : 10);
 
     // Compute the layout.
     const hierarchy = d3.hierarchy(hierarchyData).sum((d) => d.value ?? 0);
@@ -128,13 +142,13 @@ export class CoverageChartComponent implements OnDestroy {
     });
     // Create the arc generator.
     const arc = d3
-      .arc<ExtendedNode<DataPoint>>()
+      .arc<PositionData>()
       .startAngle((d) => d.x0)
       .endAngle((d) => d.x1)
-      .padAngle((d) => Math.min((d.x1 - d.x0) / 2, 0.005))
+      .padAngle((d) => Math.min((d.x1 - d.x0) / 8, 0.015))
       .padRadius(radius * 1.5)
       .innerRadius((d) => d.y0 * radius)
-      .outerRadius((d) => Math.max(d.y0 * radius, d.y1 * radius - 1));
+      .outerRadius((d) => Math.max(d.y0 * radius, d.y1 * radius - 3));
 
     // Create the SVG container.
 
@@ -180,6 +194,12 @@ export class CoverageChartComponent implements OnDestroy {
       .attr('fill-opacity', (d: ExtendedNode<DataPoint>) =>
         arcVisible(d.current) ? 1 : 0,
       )
+      .attr('stroke', 'var(--pdz-color-surface)')
+      .attr('stroke-width', stroke)
+      .attr('stroke-linejoin', 'round')
+      .attr('stroke-opacity', (d: ExtendedNode<DataPoint>) =>
+        arcVisible(d.current) ? 1 : 0,
+      )
       .attr('pointer-events', (d: ExtendedNode<DataPoint>) =>
         arcVisible(d.current) ? 'auto' : 'none',
       )
@@ -192,11 +212,12 @@ export class CoverageChartComponent implements OnDestroy {
       unknown
     >;
 
-    // Make them clickable if they have children.
-    path
-      .filter((d) => !!d.children)
-      .style('cursor', 'pointer')
-      .on('click', clicked);
+    if (interactive) {
+      path
+        .filter((d) => !!d.children)
+        .style('cursor', 'pointer')
+        .on('click', clicked);
+    }
 
     path
       .on('mouseover', function (event, d) {
@@ -212,7 +233,7 @@ export class CoverageChartComponent implements OnDestroy {
                   </div>
                   <div class="icon-container">
                     <div class="category-wrapper"><img src=../../../../assets/icons/moves/move-${d.data.moveData.category.toLowerCase()}.png /></div>
-                    <div class="type-wrapper"><img src=../../../../assets/icons/types/gen9words/${d.data.moveData.type}.png /></div>
+                    <div class="type-wrapper"><img src=../../../../assets/icons/types/gen9icon/${d.data.moveData.type}.png /></div>
                   </div>
                 </div>
                 <div class="details-container">
@@ -239,12 +260,14 @@ export class CoverageChartComponent implements OnDestroy {
         }
       })
       .on('mousemove', function (event) {
+        if (!interactive) return;
         d3.select('.chart-tooltip')
           .style('left', `${event.pageX}px`)
           .style('top', `${event.pageY}px`);
       })
       .on('mouseout', function () {
-        d3.select(this).attr('fill-opacity', 1);
+        if (!interactive) return;
+        path.attr('fill-opacity', (o) => (arcVisible(o.current) ? 1 : 0));
         d3.select('.chart-tooltip').style('opacity', 0);
       });
 
@@ -294,23 +317,31 @@ export class CoverageChartComponent implements OnDestroy {
       }
     });
 
+    const spritePath =
+      this.spriteService.getSpriteData(this.chartData)?.path ??
+      this.spriteService.UNKNOWN_SPRITE_PATH;
+
     const parent = svg
       .append('image')
       .datum(root)
-      .attr('xlink:href', this.spriteService.getSpriteData(this.chartData).path)
+      .attr('xlink:href', spritePath)
       .attr('width', radius * 2)
       .attr('height', radius * 2)
       .attr('x', -radius)
       .attr('y', -radius)
-      .attr('clip-path', `circle(${radius}px at center)`)
-      .style('cursor', 'pointer')
-      .on('click', clicked)
-      .on('mouseover', function (event, d) {
-        d3.select(this).attr('opacity', 0.7);
-      })
-      .on('mouseout', function () {
-        d3.select(this).attr('opacity', 1);
-      });
+      .attr('clip-path', `circle(${radius}px at center)`);
+
+    if (interactive) {
+      parent
+        .style('cursor', 'pointer')
+        .on('click', clicked)
+        .on('mouseover', function () {
+          d3.select(this).attr('opacity', 0.7);
+        })
+        .on('mouseout', function () {
+          d3.select(this).attr('opacity', 1);
+        });
+    }
 
     // Handle zoom on click.
     function clicked(event: any, p: ExtendedNode<DataPoint>) {
@@ -345,12 +376,13 @@ export class CoverageChartComponent implements OnDestroy {
           return !!this.getAttribute('fill-opacity') || arcVisible(d.target);
         })
         .attr('fill-opacity', (d) => (arcVisible(d.target) ? 1 : 0))
+        .attr('stroke-opacity', (d) => (arcVisible(d.target) ? 1 : 0))
         .attr('pointer-events', (d) => (arcVisible(d.target) ? 'auto' : 'none'))
         .attrTween('d', (d) => () => arc(d.current!) ?? '');
 
       labels
-        .selectAll('image')
-        .filter(function (this: d3.BaseType, d: ExtendedNode<DataPoint>) {
+        .selectAll<SVGImageElement, ExtendedNode<DataPoint>>('image')
+        .filter(function (d) {
           return !!this.getAttribute('opacity') || iconVisible(d.target);
         })
         .transition(t)
@@ -363,9 +395,12 @@ export class CoverageChartComponent implements OnDestroy {
         );
 
       labels
-        .selectAll('text')
-        .filter(function (d: any) {
-          return +this.getAttribute('fill-opacity') || labelVisible(d.target);
+        .selectAll<SVGTextElement, ExtendedNode<DataPoint>>('text')
+        .filter(function (d) {
+          return (
+            !!+(this.getAttribute('fill-opacity') ?? 0) ||
+            labelVisible(d.target)
+          );
         })
         .transition(t)
         .attr('fill-opacity', (d: any) => +labelVisible(d.target))

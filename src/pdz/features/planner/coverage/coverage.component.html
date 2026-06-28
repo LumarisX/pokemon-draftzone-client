@@ -13,10 +13,10 @@
                 class="chart-wrapper"
                 [ngClass]="{ hidden: pokemon === selected }"
               >
-                <pdz-coverage-chart-preview
+                <pdz-coverage-chart
                   (click)="$event.stopPropagation(); selected = pokemon"
                   [data]="pokemon"
-                ></pdz-coverage-chart-preview>
+                ></pdz-coverage-chart>
               </div>
             }
           </div>
@@ -25,7 +25,10 @@
         <div class="selected-container">
           @if (selected) {
             <div class="selected-wrapper">
-              <pdz-coverage-chart [data]="selected"></pdz-coverage-chart>
+              <pdz-coverage-chart
+                [data]="selected"
+                [interactive]="true"
+              ></pdz-coverage-chart>
             </div>
           }
         </div>

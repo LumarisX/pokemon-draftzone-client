@@ -23,13 +23,11 @@ export class MatchupService {
     return this.apiService.post(`${matchupPath}/quick`, matchupData);
   }
 
-  // TODO: no server route exists for this yet (ExternalMatchupBreakdownController
-  // only has POST quick / GET :matchupId). This call 404s until a "shared"
-  // endpoint is added server-side.
+  // Shared (anonymous) view hits the same route as getMatchup, but without
+  // authentication. The server route is @OptionalAuth, so analyze(sub) runs
+  // with no sub and returns the unflipped matchup payload.
   getSharedMatchup(matchupId: string) {
-    return this.apiService.get<MatchupData>(
-      `${matchupPath}/${matchupId}/shared`,
-    );
+    return this.apiService.get<MatchupData>(`${matchupPath}/${matchupId}`);
   }
 
   //Currently Unused

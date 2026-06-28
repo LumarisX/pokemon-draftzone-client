@@ -5,6 +5,7 @@ import {
   CoverageMax,
   CoveragePokemon,
 } from '@pdz/features/drafts/matchup-overview/matchup-interface';
+import { typeColor } from '@pdz/core/utils/styling';
 import { Type, TYPES } from '@pdz/shared/data';
 
 type TeamData = {
@@ -165,31 +166,65 @@ export class CoverageTeamChartComponent implements OnDestroy {
       );
 
     // === ICONS ON X-AXIS ===
-    const images = this.chartGroup
+    // Mimic the pdz-type chip: a typeColor-filled rounded box with the
+    // (white) type icon centered on top, so the icons are legible.
+    const bw = this.xScale.bandwidth();
+    const iconY = 10; // Slightly below axis
+    const pad = bw * 0.15;
+    const radius = Math.min(4, bw * 0.2);
+
+    const icons = this.chartGroup
       .select('.x-axis')
-      .selectAll('image')
+      .selectAll('.type-icon')
       .data(filteredData, (d) => d.type); // Match icons to types
 
-    images.join(
-      (enter) =>
-        enter
-          .append('image')
+    icons.join(
+      (enter) => {
+        const group = enter.append('g').attr('class', 'type-icon');
+        group
+          .append('rect')
+          .attr('class', 'type-icon-bg')
           .attr('x', (d) => this.xScale(d.type)!)
-          .attr('y', 10) // Slightly below axis
-          .attr('width', this.xScale.bandwidth())
-          .attr('height', this.xScale.bandwidth())
+          .attr('y', iconY)
+          .attr('width', bw)
+          .attr('height', bw)
+          .attr('rx', radius)
+          .attr('ry', radius)
+          .attr('fill', (d) => typeColor(d.type) ?? 'var(--pdz-color-surface)');
+        group
+          .append('image')
+          .attr('class', 'type-icon-img')
+          .attr('x', (d) => this.xScale(d.type)! + pad)
+          .attr('y', iconY + pad)
+          .attr('width', bw - pad * 2)
+          .attr('height', bw - pad * 2)
           .attr(
             'href',
-            (d) => `../../../../assets/icons/types/gen9full/${d.type}.png`,
-          ),
+            (d) => `../../../../assets/icons/types/gen9icon/${d.type}.png`,
+          );
+        return group;
+      },
       (update) =>
-        update.call((update) =>
+        update.call((update) => {
           update
+            .select('.type-icon-bg')
             .transition()
             .duration(500)
             .attr('x', (d) => this.xScale(d.type)!)
-            .attr('y', 10),
-        ),
+            .attr('y', iconY)
+            .attr('width', bw)
+            .attr('height', bw)
+            .attr('fill', (d) => typeColor(d.type) ?? 'var(--pdz-color-surface)');
+          update
+            .select('.type-icon-img')
+            .transition()
+            .duration(500)
+            .attr('x', (d) => this.xScale(d.type)! + pad)
+            .attr('y', iconY + pad)
+            .attr('width', bw - pad * 2)
+            .attr('height', bw - pad * 2);
+          return update;
+        }),
     );
   }
 
