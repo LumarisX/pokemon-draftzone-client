@@ -1,47 +1,98 @@
-@use "@angular/material" as mat;
 @use "tokens/breakpoints" as *;
 @use "mixins" as *;
 @use "mixins/buttons" as *;
+@use "mixins/menu" as *;
 @use "pdz-theming" as pdz;
 
-// Material overrides
-mat-toolbar {
-  @include mat.toolbar-overrides(
-    (
-      container-background-color: pdz.color(surface),
-      container-text-color: pdz.color(on-surface),
-    )
-  );
-  @include mat.toolbar-density(-4);
-  @include mat.button-density(-1);
-  @include mat.button-overrides(
-    (
-      outlined-horizontal-padding: 0.75rem,
-    )
-  );
-}
-
 :host {
+  display: block;
   box-shadow: var(--pdz-level-2);
   z-index: 5000;
+}
+
+// ----------------------------------------------------------------------------
+// Bar
+// ----------------------------------------------------------------------------
+.navbar {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(2xs);
+  min-height: 3.5rem;
+  padding: 0 pdz.space(sm);
+  box-sizing: border-box;
+  background-color: pdz.color(surface);
+  color: pdz.color(on-surface);
 }
 
 .toolbar-spacer {
   flex: 1 1 auto;
 }
 
+// ----------------------------------------------------------------------------
+// Icon button (mobile menu trigger)
+// ----------------------------------------------------------------------------
+.icon-btn {
+  position: relative;
+  @include icon-button-menu(
+    (
+      background: transparent,
+      background-hover: pdz.color(surface-container),
+      box-shadow-hover: var(--pdz-level-0),
+      color: pdz.color(on-surface),
+    )
+  );
+}
+
+// ----------------------------------------------------------------------------
+// Tabs (desktop) — also used as the "Other Tools" trigger button
+// ----------------------------------------------------------------------------
 .menu-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: pdz.space(2xs);
+  position: relative;
   padding: pdz.space(sm);
+  border: none;
+  background-color: transparent;
   border-radius: pdz.shape(corner-sm);
   font-family: var(--pdz-font-fancy);
+  font-size: 1rem;
+  color: pdz.color(on-surface);
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
   @include background-hover-effect(pdz.color(surface-container));
 
   &:hover {
     color: pdz.color(on-surface);
   }
+
+  // Active (current route): keep normal text color, add a primary underline bar.
+  &.active {
+    color: pdz.color(on-surface);
+
+    &::after {
+      content: "";
+      position: absolute;
+      left: pdz.space(sm);
+      right: pdz.space(sm);
+      bottom: 0.15rem;
+      height: 0.125rem;
+      border-radius: pdz.shape(corner-full);
+      background-color: pdz.color(primary);
+    }
+  }
+
+  &__caret {
+    opacity: 0.7;
+  }
 }
 
+// ----------------------------------------------------------------------------
+// Home logo button
+// ----------------------------------------------------------------------------
 .home-btn {
+  position: relative;
   @include flat-button(
     (
       padding: pdz.space(2xs) pdz.space(sm),
@@ -51,7 +102,9 @@ mat-toolbar {
   );
 }
 
-// Store button - mobile first
+// ----------------------------------------------------------------------------
+// Store button — mobile first
+// ----------------------------------------------------------------------------
 .store-button {
   margin: 0 pdz.space(xs);
   @include flat-button(
@@ -72,9 +125,60 @@ mat-toolbar {
   }
 }
 
-// Responsive navigation - mobile first
+// ----------------------------------------------------------------------------
+// Dropdown panels (rendered via CDK overlay)
+// ----------------------------------------------------------------------------
+.menu-panel {
+  @include menu-panel;
+}
+
+.menu-item {
+  @include menu-item;
+}
+
+.menu-section-label {
+  @include menu-section-label;
+}
+
+.menu-divider {
+  @include menu-divider;
+}
+
+// ----------------------------------------------------------------------------
+// Badge
+// ----------------------------------------------------------------------------
+.nav-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.1rem;
+  height: 1.1rem;
+  padding: 0 0.3rem;
+  border-radius: pdz.shape(corner-full);
+  background-color: pdz.color(error);
+  color: pdz.color(on-error);
+  font-family: var(--pdz-font-regular);
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1;
+
+  &--dot {
+    position: absolute;
+    top: 0.35rem;
+    right: 0.35rem;
+    min-width: 0.55rem;
+    width: 0.55rem;
+    height: 0.55rem;
+    padding: 0;
+    border: 1.5px solid pdz.color(surface);
+  }
+}
+
+// ----------------------------------------------------------------------------
+// Responsive nav — mobile first
+// ----------------------------------------------------------------------------
 .mobile-menu {
-  display: flex;
+  display: inline-flex;
 }
 
 .desktop-tabs {
@@ -88,6 +192,7 @@ mat-toolbar {
 
   .desktop-tabs {
     display: flex;
+    align-items: center;
     gap: pdz.space(2xs);
   }
 

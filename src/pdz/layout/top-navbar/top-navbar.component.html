@@ -1,114 +1,149 @@
-<header>
-  <mat-toolbar>
-    <!-- Mobile menu button -->
-    <button
-      class="mobile-menu"
-      mat-icon-button
-      [matMenuTriggerFor]="mobileMenu"
-      aria-label="Open navigation menu"
-    >
-      <mat-icon
-        matBadge="1"
-        matBadgeSize="small"
-        matBadgeOverlap="false"
-        [matBadgeHidden]="!(anyBadge$ | async)"
-        >menu</mat-icon
-      >
-    </button>
+<header class="navbar">
+  <!-- Mobile menu button -->
+  <button
+    type="button"
+    class="icon-btn mobile-menu"
+    cdkOverlayOrigin
+    #mobileTrigger="cdkOverlayOrigin"
+    (click)="mobileMenuOpen = !mobileMenuOpen"
+    [attr.aria-expanded]="mobileMenuOpen"
+    aria-label="Open navigation menu"
+  >
+    <pdz-icon name="menu"></pdz-icon>
+    @if (anyBadge$ | async) {
+      <span class="nav-badge nav-badge--dot"></span>
+    }
+  </button>
 
-    <!-- Mobile navigation menu -->
-    <mat-menu #mobileMenu="matMenu">
+  <!-- Mobile navigation menu -->
+  <ng-template
+    cdkConnectedOverlay
+    [cdkConnectedOverlayOrigin]="mobileTrigger"
+    [cdkConnectedOverlayOpen]="mobileMenuOpen"
+    [cdkConnectedOverlayPositions]="menuPositions"
+    [cdkConnectedOverlayPush]="true"
+    (overlayOutsideClick)="mobileMenuOpen = false"
+    (overlayKeydown)="onOverlayKeydown($event)"
+    (detach)="mobileMenuOpen = false"
+  >
+    <nav class="menu-panel" aria-label="Navigation menu">
       @for (tab of TABS; track tab.route) {
-        <ng-container
-          *ngTemplateOutlet="tabMenuItem; context: { $implicit: tab }"
-        ></ng-container>
-      }
-      <button mat-menu-item [matMenuTriggerFor]="toolsMenu">
-        <span>Other Tools</span>
-      </button>
-      @if (isAdmin$ | async) {
-        <a mat-menu-item [routerLink]="adminPath">
-          <mat-icon>admin_panel_settings</mat-icon>
-          <span>Admin</span>
+        <a class="menu-item" [routerLink]="tab.route" (click)="closeMenus()">
+          <span class="menu-item__label">{{ tab.title }}</span>
+          @if (tab.badge | async; as count) {
+            @if (count) {
+              <span class="nav-badge">{{ count }}</span>
+            }
+          }
         </a>
       }
-    </mat-menu>
 
-    <!-- Shared tools submenu -->
-    <mat-menu #toolsMenu="matMenu">
+      <div class="menu-section-label">Other Tools</div>
       @for (tool of TOOLS; track tool.route) {
-        <a mat-menu-item [routerLink]="tool.route">
-          <mat-icon>{{ tool.icon }}</mat-icon>
-          <span>{{ tool.title }}</span>
+        <a class="menu-item" [routerLink]="tool.route" (click)="closeMenus()">
+          <pdz-icon [name]="tool.icon" [height]="20"></pdz-icon>
+          <span class="menu-item__label">{{ tool.title }}</span>
         </a>
       }
-    </mat-menu>
 
-    <!-- Home button with logo -->
-    <a
-      class="home-btn"
-      routerLink="/"
-      matBadge="1"
-      matBadgeSize="small"
-      matBadgeOverlap="false"
-      [matBadgeHidden]="!(newsBadge | async)"
-      aria-label="Go to home page"
-    >
-      <pdz-icon name="logo" [height]="36"></pdz-icon>
-    </a>
-
-    <!-- Desktop navigation tabs -->
-    <nav class="desktop-tabs" aria-label="Main navigation">
-      @for (tab of TABS; track tab.route) {
-        <a
-          class="menu-tab"
-          [routerLink]="tab.route"
-          [matBadge]="(tab.badge | async) ?? ''"
-          [matBadgeHidden]="!tab.badge || !(tab.badge | async)"
-        >
-          {{ tab.title }}
-        </a>
-      }
-      <button class="menu-tab" [matMenuTriggerFor]="toolsMenu">
-        Other Tools
-      </button>
       @if (isAdmin$ | async) {
-        <a class="menu-tab" [routerLink]="adminPath">Admin</a>
+        <div class="menu-divider"></div>
+        <a class="menu-item" [routerLink]="adminPath" (click)="closeMenus()">
+          <pdz-icon name="admin_panel_settings" [height]="20"></pdz-icon>
+          <span class="menu-item__label">Admin</span>
+        </a>
       }
     </nav>
+  </ng-template>
 
-    <span class="toolbar-spacer"></span>
-
-    <!-- Shop link -->
-    <a
-      href="https://shop.pokemondraftzone.com"
-      target="_blank"
-      rel="noopener noreferrer"
-      class="store-button"
-      aria-label="Visit the shop (opens in new tab)"
-    >
-      <span class="store-button__text">Shop</span>
-      <mat-icon
-        matBadge="1"
-        matBadgeSize="small"
-        matBadgeOverlap="false"
-        [matBadgeHidden]="true"
-        >apparel</mat-icon
-      >
-    </a>
-
-    <pdz-login-button></pdz-login-button>
-  </mat-toolbar>
-</header>
-
-<!-- Reusable template for tab menu items -->
-<ng-template #tabMenuItem let-tab>
+  <!-- Home button with logo -->
   <a
-    mat-menu-item
-    [routerLink]="tab.route"
-    [matBadge]="(tab.badge | async) ?? ''"
-    [matBadgeHidden]="!tab.badge || !(tab.badge | async)"
+    class="home-btn"
+    routerLink="/"
+    (click)="closeMenus()"
+    aria-label="Go to home page"
   >
-    <span>{{ tab.title }}</span>
+    <pdz-icon name="logo" [height]="36"></pdz-icon>
+    @if (newsBadge | async) {
+      <span class="nav-badge nav-badge--dot"></span>
+    }
   </a>
-</ng-template>
+
+  <!-- Desktop navigation tabs -->
+  <nav class="desktop-tabs" aria-label="Main navigation">
+    @for (tab of TABS; track tab.route) {
+      <a
+        class="menu-tab"
+        [routerLink]="tab.route"
+        routerLinkActive="active"
+        (click)="closeMenus()"
+      >
+        <span>{{ tab.title }}</span>
+        @if (tab.badge | async; as count) {
+          @if (count) {
+            <span class="nav-badge">{{ count }}</span>
+          }
+        }
+      </a>
+    }
+
+    <button
+      type="button"
+      class="menu-tab"
+      [class.active]="toolsActive$ | async"
+      cdkOverlayOrigin
+      #toolsTrigger="cdkOverlayOrigin"
+      (click)="toolsMenuOpen = !toolsMenuOpen"
+      [attr.aria-expanded]="toolsMenuOpen"
+    >
+      <span>Other Tools</span>
+    </button>
+
+    @if (isAdmin$ | async) {
+      <a
+        class="menu-tab"
+        [routerLink]="adminPath"
+        routerLinkActive="active"
+        (click)="closeMenus()"
+        >Admin</a
+      >
+    }
+  </nav>
+
+  <!-- Desktop "Other Tools" dropdown -->
+  <ng-template
+    cdkConnectedOverlay
+    [cdkConnectedOverlayOrigin]="toolsTrigger"
+    [cdkConnectedOverlayOpen]="toolsMenuOpen"
+    [cdkConnectedOverlayPositions]="menuPositions"
+    [cdkConnectedOverlayPush]="true"
+    (overlayOutsideClick)="toolsMenuOpen = false"
+    (overlayKeydown)="onOverlayKeydown($event)"
+    (detach)="toolsMenuOpen = false"
+  >
+    <nav class="menu-panel" aria-label="Other tools">
+      @for (tool of TOOLS; track tool.route) {
+        <a class="menu-item" [routerLink]="tool.route" (click)="closeMenus()">
+          <pdz-icon [name]="tool.icon" [height]="20"></pdz-icon>
+          <span class="menu-item__label">{{ tool.title }}</span>
+        </a>
+      }
+    </nav>
+  </ng-template>
+
+  <span class="toolbar-spacer"></span>
+
+  <!-- Shop link -->
+  <a
+    href="https://shop.pokemondraftzone.com"
+    target="_blank"
+    rel="noopener noreferrer"
+    class="store-button"
+    aria-label="Visit the shop (opens in new tab)"
+  >
+    <span class="store-button__text">Shop</span>
+    <pdz-icon name="apparel" [height]="24"></pdz-icon>
+  </a>
+
+  <pdz-login-button></pdz-login-button>
+</header>

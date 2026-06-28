@@ -1,0 +1,55 @@
+@use "pdz-theming" as pdz;
+@use "mixins" as *;
+
+@mixin menu-panel {
+  display: flex;
+  flex-direction: column;
+  min-width: 12rem;
+  max-width: min(20rem, 90vw);
+  padding: pdz.space(2xs);
+  background-color: pdz.color(surface);
+  color: pdz.color(on-surface);
+  border: 1px solid pdz.color(outline-variant);
+  border-radius: pdz.shape(corner-md);
+  box-shadow: var(--pdz-level-3);
+  overflow: hidden;
+}
+
+@mixin menu-item {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(xs);
+  width: 100%;
+  padding: pdz.space(xs) pdz.space(sm);
+  border: none;
+  border-radius: pdz.shape(corner-sm);
+  font-family: var(--pdz-font-fancy);
+  font-size: 1rem;
+  color: pdz.color(on-surface);
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+  @include background-hover-effect(
+    pdz.color(surface-container-high),
+    transparent
+  );
+
+  &__label {
+    flex: 1;
+  }
+}
+
+@mixin menu-section-label {
+  padding: pdz.space(xs) pdz.space(sm) pdz.space(2xs);
+  margin-top: pdz.space(2xs);
+  border-top: 1px solid pdz.color(outline-variant);
+  color: pdz.color(on-surface-variant);
+  @include apply-typography(label-sm);
+}
+
+@mixin menu-divider {
+  height: 1px;
+  margin: pdz.space(2xs) 0;
+  background-color: pdz.color(outline-variant);
+}

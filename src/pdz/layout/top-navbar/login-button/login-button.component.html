@@ -1,26 +1,57 @@
 @let user = auth.user$ | async;
 @if (authenticated && user) {
-  <button class="login-btn" [matMenuTriggerFor]="userMenu">
+  <button
+    type="button"
+    class="login-btn"
+    cdkOverlayOrigin
+    #userTrigger="cdkOverlayOrigin"
+    (click)="menuOpen = !menuOpen"
+    [attr.aria-expanded]="menuOpen"
+    aria-label="Open user menu"
+  >
     <div class="user-info-container">
-      <img class="user-icon" src="{{ user.picture }}" />
+      <img class="user-icon" [src]="user.picture" alt="" />
       @if (user.username && user.username !== "") {
         <span class="username-text">{{ user.username }}</span>
       }
     </div>
   </button>
-  <mat-menu #userMenu="matMenu">
-    <button mat-menu-item (click)="settingsDialog.openDialog()">
-      <mat-icon>settings</mat-icon>
-      <span>Settings</span>
-    </button>
-    <button mat-menu-item (click)="logout()">
-      <mat-icon>logout</mat-icon>
-      <span>Log Out</span>
-    </button>
-  </mat-menu>
+
+  <ng-template
+    cdkConnectedOverlay
+    [cdkConnectedOverlayOrigin]="userTrigger"
+    [cdkConnectedOverlayOpen]="menuOpen"
+    [cdkConnectedOverlayPositions]="menuPositions"
+    [cdkConnectedOverlayPush]="true"
+    (overlayOutsideClick)="menuOpen = false"
+    (overlayKeydown)="onOverlayKeydown($event)"
+    (detach)="menuOpen = false"
+  >
+    <div class="menu-panel" role="menu">
+      <button
+        type="button"
+        class="menu-item"
+        role="menuitem"
+        (click)="menuOpen = false; settingsDialog.openDialog()"
+      >
+        <pdz-icon name="settings" [height]="20"></pdz-icon>
+        <span class="menu-item__label">Settings</span>
+      </button>
+      <button
+        type="button"
+        class="menu-item"
+        role="menuitem"
+        (click)="menuOpen = false; logout()"
+      >
+        <pdz-icon name="logout" [height]="20"></pdz-icon>
+        <span class="menu-item__label">Log Out</span>
+      </button>
+    </div>
+  </ng-template>
 } @else {
-  <button class="login-btn" (click)="login()">
-    <span>Log in</span> <mat-icon>login</mat-icon>
+  <button type="button" class="login-btn" (click)="login()">
+    <span>Log in</span>
+    <pdz-icon name="login" [height]="20"></pdz-icon>
   </button>
 }
 

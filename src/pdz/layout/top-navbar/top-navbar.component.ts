@@ -1,12 +1,15 @@
-import { CommonModule } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
+import { ConnectedPosition, OverlayModule } from '@angular/cdk/overlay';
 import { Component, inject } from '@angular/core';
-import { MatBadgeModule } from '@angular/material/badge';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { RouterModule } from '@angular/router';
-import { BehaviorSubject, combineLatest, map, of } from 'rxjs';
+import { NavigationEnd, Router, RouterModule } from '@angular/router';
+import {
+  BehaviorSubject,
+  combineLatest,
+  filter,
+  map,
+  of,
+  startWith,
+} from 'rxjs';
 import { ADMIN_PATH, DRAFT_OVERVIEW_PATH } from '@pdz/core/route-paths';
 import { RoleService } from '@pdz/core/services/role.service';
 import { UnreadService } from '@pdz/features/pages/homepage/unread.service';
@@ -28,12 +31,8 @@ interface NavTool {
 @Component({
   selector: 'pdz-top-navbar',
   imports: [
-    CommonModule,
-    MatToolbarModule,
-    MatBadgeModule,
-    MatButtonModule,
-    MatIconModule,
-    MatMenuModule,
+    AsyncPipe,
+    OverlayModule,
     RouterModule,
     IconComponent,
     LoginButtonComponent,
@@ -43,9 +42,30 @@ interface NavTool {
 })
 export class TopNavbarComponent {
   private unreadService = inject(UnreadService);
+  private router = inject(Router);
 
   readonly adminPath = `/${ADMIN_PATH}/users`;
   readonly isAdmin$ = inject(RoleService).isAdmin$;
+
+  mobileMenuOpen = false;
+  toolsMenuOpen = false;
+
+  readonly menuPositions: ConnectedPosition[] = [
+    {
+      originX: 'start',
+      originY: 'bottom',
+      overlayX: 'start',
+      overlayY: 'top',
+      offsetY: 8,
+    },
+    {
+      originX: 'start',
+      originY: 'top',
+      overlayX: 'start',
+      overlayY: 'bottom',
+      offsetY: -8,
+    },
+  ];
 
   readonly TABS: NavTab[] = [
     { title: 'My Drafts', route: DRAFT_OVERVIEW_PATH },
@@ -79,4 +99,26 @@ export class TopNavbarComponent {
   readonly anyBadge$ = combineLatest(
     this.TABS.map((tab) => tab.badge ?? of('')),
   ).pipe(map((badges) => badges.some((badge) => badge !== '')));
+
+  readonly toolsActive$ = this.router.events.pipe(
+    filter((event) => event instanceof NavigationEnd),
+    startWith(null),
+    map(() => {
+      const url = this.router.url.split(/[?#]/)[0];
+      return this.TOOLS.some(
+        (tool) => url === tool.route || url.startsWith(`${tool.route}/`),
+      );
+    }),
+  );
+
+  closeMenus(): void {
+    this.mobileMenuOpen = false;
+    this.toolsMenuOpen = false;
+  }
+
+  onOverlayKeydown(event: KeyboardEvent): void {
+    if (event.key === 'Escape') {
+      this.closeMenus();
+    }
+  }
 }

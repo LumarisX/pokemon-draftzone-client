@@ -103,7 +103,7 @@
             "polyfills": ["zone.js", "zone.js/testing"],
             "tsConfig": "tsconfig.spec.json",
             "assets": ["src/13luken.ico", "src/assets"],
-            "styles": ["src/styles/styles.scss", "src/styles/app-theme.scss"],
+            "styles": ["src/styles/styles.scss"],
             "stylePreprocessorOptions": {
               "includePaths": ["src/styles"]
             },

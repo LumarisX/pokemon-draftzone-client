@@ -54,6 +54,23 @@
   );
 }
 
+html {
+  @include mat.theme(
+    (
+      color: (
+        theme-type: light,
+        primary: mat.$cyan-palette,
+        tertiary: mat.$orange-palette,
+      ),
+      typography: (
+        plain-family: var(--pdz-font-regular),
+        brand-family: var(--pdz-font-fancy),
+      ),
+      density: 0,
+    )
+  );
+}
+
 .cdk-overlay-container,
 :root {
   @include apply-pdz-mat-overrides();

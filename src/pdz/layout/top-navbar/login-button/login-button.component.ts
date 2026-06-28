@@ -1,4 +1,5 @@
-import { CommonModule } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
+import { ConnectedPosition, OverlayModule } from '@angular/cdk/overlay';
 import {
   Component,
   DestroyRef,
@@ -7,10 +8,8 @@ import {
   ViewChild,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
 import { AuthService } from '@pdz/core/services/auth0.service';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { of } from 'rxjs';
 import { switchMap, take } from 'rxjs/operators';
 import { SettingsDialogComponent } from '../settings-dialog/settings-dialog.component';
@@ -19,10 +18,9 @@ import { SettingsService } from '../settings.service';
 @Component({
   selector: 'pdz-login-button',
   imports: [
-    CommonModule,
-    MatMenuModule,
-    MatIconModule,
-    MatButtonModule,
+    AsyncPipe,
+    OverlayModule,
+    IconComponent,
     SettingsDialogComponent,
   ],
   templateUrl: './login-button.component.html',
@@ -36,6 +34,25 @@ export class LoginButtonComponent implements OnInit {
   @ViewChild('settingsDialog') settingsDialog!: SettingsDialogComponent;
 
   authenticated: boolean = false;
+  menuOpen = false;
+
+  /** Right-aligned so the user menu stays within the viewport edge. */
+  readonly menuPositions: ConnectedPosition[] = [
+    {
+      originX: 'end',
+      originY: 'bottom',
+      overlayX: 'end',
+      overlayY: 'top',
+      offsetY: 8,
+    },
+    {
+      originX: 'end',
+      originY: 'top',
+      overlayX: 'end',
+      overlayY: 'bottom',
+      offsetY: -8,
+    },
+  ];
 
   ngOnInit(): void {
     this.initAuthSubscription();
@@ -83,5 +100,11 @@ export class LoginButtonComponent implements OnInit {
 
   logout(): void {
     this.auth.logout();
+  }
+
+  onOverlayKeydown(event: KeyboardEvent): void {
+    if (event.key === 'Escape') {
+      this.menuOpen = false;
+    }
   }
 }
