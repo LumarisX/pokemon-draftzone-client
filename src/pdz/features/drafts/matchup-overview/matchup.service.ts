@@ -65,31 +65,24 @@ export class MatchupService {
     });
   }
 
-  // TODO: no "check-ownership" route exists server-side. OwnerGuard relies on
-  // this 404ing safely (catchError redirects to the shared view), but real
-  // owners can never reach the edit view until this endpoint is added.
-  getMatchupOwnership(userId: string, matchupId: string) {
+  getMatchupOwnership(matchupId: string) {
     return this.apiService.get<{ isOwner: boolean }>(
       `${matchupPath}/${matchupId}/check-ownership`,
-      { params: { userId } },
+      { authenticated: true },
     );
   }
 
-  // TODO: no "update-notes" route exists server-side yet, so this 404s.
-  // The underlying ExternalMatchup schema already has a `notes` field —
-  // this just needs a controller route + service method wired up.
   updateNotes(matchupId: string, notes: string) {
     const payload = notes.trim();
     if (!payload) {
       return of({ success: true, message: 'No notes to save' });
     }
-    console.log(matchupId);
     return this.apiService.post(
       `${matchupPath}/${matchupId}/update-notes`,
       { notes: payload },
       {
         authenticated: true,
-        invalidateCache: [`${matchupPath}/${matchupId}/notes`],
+        invalidateCache: [`${matchupPath}/${matchupId}`],
       },
     );
   }

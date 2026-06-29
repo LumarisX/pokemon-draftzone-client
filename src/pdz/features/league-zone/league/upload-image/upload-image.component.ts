@@ -22,7 +22,7 @@ import {
   tap,
   throwError,
 } from 'rxjs';
-import { UploadService } from '../../../../services/upload.service';
+import { UploadService } from '@pdz/core/services/upload.service';
 import { HostedImageComponent } from '@pdz/shared/images/hosted-image/hosted-image.componet';
 import {
   FILE_PREVIEW_DATA_TOKEN,

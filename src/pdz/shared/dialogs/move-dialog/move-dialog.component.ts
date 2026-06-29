@@ -9,7 +9,7 @@ import {
 import { finalize } from 'rxjs/operators';
 import { StatsTable, Type } from '@pdz/shared/data';
 import { IconComponent } from '../../images/icon/icon.component';
-import { SpriteComponent } from '../images/sprite/sprite.component';
+import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { TierPokemonAddon } from '@pdz/features/tier-lists/tier-list.model';
 import {
   DataService,

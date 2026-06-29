@@ -9,7 +9,7 @@ import {
 import { Observable, of } from 'rxjs';
 import { switchMap, map, catchError, take } from 'rxjs/operators';
 import { AuthService } from '@auth0/auth0-angular';
-import { OwnershipService } from '../services/ownership.service';
+import { OwnershipService } from './ownership.service';
 
 @Injectable({
   providedIn: 'root',
@@ -47,9 +47,8 @@ export class OwnerGuard implements CanActivate {
           console.error('OwnerGuard: User not authenticated.');
           return of(this.router.createUrlTree(['/login']));
         }
-        const userId = user.sub;
         return this.ownershipService
-          .checkMatchupOwnership(userId, matchupId)
+          .checkMatchupOwnership(matchupId)
           .pipe(
             map((isOwner) => {
               if (isOwner) {

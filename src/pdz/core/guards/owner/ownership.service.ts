@@ -10,17 +10,13 @@ export class OwnershipService {
   private matchupService = inject(MatchupService);
 
   /**
-   * Checks if the given user owns the specified matchup.
-   * @param userId The ID of the user trying to access the resource.
+   * Checks if the current authenticated user owns the specified matchup.
    * @param matchupId The matchup ID from the query params.
    * @returns Observable<boolean> indicating ownership status.
    */
-  checkMatchupOwnership(
-    userId: string,
-    matchupId: string,
-  ): Observable<boolean> {
+  checkMatchupOwnership(matchupId: string): Observable<boolean> {
     return this.matchupService
-      .getMatchupOwnership(userId, matchupId)
+      .getMatchupOwnership(matchupId)
       .pipe(map((response) => response.isOwner));
   }
 }

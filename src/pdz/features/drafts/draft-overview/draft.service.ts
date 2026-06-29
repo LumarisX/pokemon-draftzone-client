@@ -108,18 +108,15 @@ export class DraftService {
     );
   }
 
-  // TODO: no server route exists for deleting a single external-tournament
-  // matchup yet (ExternalMatchupController has no @Delete). This call 404s
-  // until that endpoint is added.
   deleteMatchup(matchupId: string, teamId: string) {
-    return this.apiService.delete(`matchup/${matchupId}`, {
-      invalidateCache: [`${ROOTPATH}/${teamId}/matchups`],
-    });
+    return this.apiService.delete(
+      `${ROOTPATH}/${teamId}/matchups/${matchupId}`,
+      {
+        invalidateCache: [`${ROOTPATH}/${teamId}/matchups`],
+      },
+    );
   }
 
-  // TODO: no server route exists for archiving an external tournament yet
-  // (ExternalTournamentController only has DELETE :tournamentKey, no
-  // "/archive" sub-route). This call 404s until that endpoint is added.
   archiveDraft(teamName: string) {
     return this.apiService.delete(`${ROOTPATH}/${teamName}/archive`, {
       invalidateCache: ['tournaments/teams', `tournaments/${teamName}`],
