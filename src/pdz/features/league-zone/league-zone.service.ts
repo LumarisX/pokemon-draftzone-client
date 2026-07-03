@@ -138,12 +138,13 @@ export class LeagueZoneService {
     );
   }
 
-  getDraftDetails() {
+  getDraftDetails(draftKey?: string) {
     return this.apiService.get<{
       leagueName: string;
       divisionName: string;
       teamOrder: string[];
       rounds: number;
+      minDraftCount: number;
       points: number;
       teams: League.LeagueTeam[];
       orderProgression: 'snake' | 'linear';
@@ -157,9 +158,10 @@ export class LeagueZoneService {
         position: number;
       };
       canDraft: string[];
+      canDraftCounts: Record<string, number>;
       logo: string;
     }>(
-      `${ROOTPATH}/${this.leagueKey()}/tournaments/${this.tournamentKey()}/drafts/${this.draftKey()}`,
+      `${ROOTPATH}/${this.leagueKey()}/tournaments/${this.tournamentKey()}/drafts/${draftKey ?? this.draftKey()}`,
       { authenticated: true },
     );
   }
@@ -269,11 +271,26 @@ export class LeagueZoneService {
     );
   }
 
-  draftPokemon(teamId: string, pick: { pokemonId: string; addons?: string[] }) {
-    return this.apiService.post(
+  draftPokemon(
+    teamId: string,
+    payload: {
+      add?: { pokemonId: string; addons?: string[] }[];
+      remove?: string[];
+      picks?: { pokemonId: string; addons?: string[] }[][];
+    },
+  ) {
+    return this.apiService.post<
+      ReturnType<LeagueZoneService['getDraftDetails']> extends import('rxjs').Observable<infer T> ? T : never
+    >(
       `${ROOTPATH}/${this.leagueKey()}/tournaments/${this.tournamentKey()}/drafts/${this.draftKey()}/teams/${teamId}/draft`,
-      pick,
+      payload,
       { authenticated: true },
+    );
+  }
+
+  removeDraftPokemon(teamId: string, pokemonId: string) {
+    return this.apiService.delete(
+      `${ROOTPATH}/${this.leagueKey()}/tournaments/${this.tournamentKey()}/drafts/${this.draftKey()}/teams/${teamId}/draft/${pokemonId}`,
     );
   }
 
@@ -470,14 +487,17 @@ export class LeagueZoneService {
     );
   }
 
-  getTeam(stageId?: string): Observable<
+  getTeam(
+    stageId?: string,
+    teamId?: string,
+  ): Observable<
     League.LeagueTeam & {
       pokemonStandings: League.PokemonStanding[];
       matchups: League.Matchup[];
     }
   > {
     return this.apiService.get(
-      `${ROOTPATH}/${this.leagueKey()}/tournaments/${this.tournamentKey()}/teams/${this.teamKey()}`,
+      `${ROOTPATH}/${this.leagueKey()}/tournaments/${this.tournamentKey()}/teams/${teamId ?? this.teamKey()}`,
       {
         authenticated: true,
         params: { stageId: stageId ?? this.stageId() ?? '' },

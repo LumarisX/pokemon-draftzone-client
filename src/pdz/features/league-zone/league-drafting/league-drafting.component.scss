@@ -146,7 +146,7 @@
 }
 
 .draft-panel {
-  min-width: 24rem;
+  min-width: 20rem;
   display: flex;
   flex-direction: column;
   row-gap: 0.5rem;
@@ -300,6 +300,10 @@
           border-color: pdz.color(primary);
           box-shadow: var(--pdz-level-2);
         }
+        &.pending-pick {
+          border-style: dashed;
+          border-color: pdz.color(secondary);
+        }
         transition:
           background-color 0.15s ease,
           border-color 0.15s ease,
@@ -314,8 +318,11 @@
           overflow: hidden;
           flex-shrink: 0;
         }
-        .remove-button {
-          align-self: start;
+        // Scoped to a direct child so it doesn't also re-align the nested
+        // .my-draft-pick remove button inside the queued-picks list below.
+        > .remove-button {
+          align-self: center;
+          margin-left: auto;
         }
         .my-pokemon-index {
           color: pdz.color(primary);
@@ -446,14 +453,64 @@
   }
 }
 
+// A pick round only renders in the primary color once the team can actually
+// draft into it right now (see draftableCount() in the component); rounds
+// queued for later turns are secondary instead.
+.my-draft-pokemon.my-pick:not(.ready) .my-draft-picks {
+  .my-draft-pick-container {
+    color: pdz.color(secondary);
+  }
+
+  .my-draft-pick {
+    border-color: pdz.color(secondary);
+
+    &:not(.backup) {
+      background-color: pdz.color(secondary);
+      color: pdz.color(on-secondary);
+    }
+
+    &.backup {
+      color: pdz.color(secondary);
+    }
+
+    .my-pokemon-index {
+      color: pdz.color(secondary);
+    }
+  }
+
+  .no-pick {
+    color: pdz.color(secondary);
+  }
+}
+
 .draft-footer {
   display: flex;
+  align-items: center;
   justify-content: space-between;
 
   padding: pdz.space(xs);
   margin-top: pdz.space(sm);
   font-weight: 600;
   color: pdz.color(on-surface);
+
+  .save-button {
+    @include button-base($padding: 0.5rem 1.5rem, $margin: 0);
+    background-color: pdz.color(primary);
+    color: pdz.color(on-primary);
+    font-weight: var(--pdz-font-weight-bold);
+    font-family: var(--pdz-font-fancy);
+
+    &:active:not(:disabled) {
+      box-shadow: var(--pdz-level-0);
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      background-color: pdz.color(outline-variant);
+      color: pdz.color(on-surface);
+      box-shadow: none;
+    }
+  }
 }
 
 .my-pick {

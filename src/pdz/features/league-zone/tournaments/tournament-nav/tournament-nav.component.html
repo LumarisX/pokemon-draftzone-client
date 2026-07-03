@@ -1,0 +1,95 @@
+@if (leagueInfo) {
+  <a
+    class="hero"
+    [routerLink]="tournamentBase()"
+    routerLinkActive="link-button--active"
+    [routerLinkActiveOptions]="{ exact: true }"
+  >
+    @if (leagueInfo.logo) {
+      <img
+        class="hero__logo"
+        [src]="getTournamentLogoUrl(leagueInfo.logo)"
+        [alt]="leagueInfo.name + ' logo'"
+      />
+    }
+    <h1 class="hero__title">{{ leagueInfo.name }}</h1>
+    @if (leagueInfo.description) {
+      <p class="hero__description">{{ leagueInfo.description }}</p>
+    }
+    <div class="hero__details">
+      <div class="detail">
+        <span class="detail__label">Format</span>
+        <span class="detail__value">{{ leagueInfo.format }}</span>
+      </div>
+      <div class="detail">
+        <span class="detail__label">Ruleset</span>
+        <span class="detail__value">{{ leagueInfo.ruleset }}</span>
+      </div>
+    </div>
+  </a>
+}
+<hr class="links__divider" />
+
+<nav class="links">
+  @if (profile && profile.draft && profile.teamId) {
+    <a
+      [routerLink]="teamLink"
+      routerLinkActive="link-button--active"
+      class="link-button"
+    >
+      <span>My Team</span>
+    </a>
+    <a
+      [routerLink]="[...draftBase, 'draft']"
+      routerLinkActive="link-button--active"
+      class="link-button"
+    >
+      <span>Draft</span>
+      @if (draftStatus) {
+        <span class="link-button__status">{{ draftStatus }}</span>
+      }
+    </a>
+    @if (selectedStageId) {
+      <a
+        [routerLink]="scheduleLink"
+        routerLinkActive="link-button--active"
+        class="link-button"
+      >
+        <span>Schedule</span>
+      </a>
+      <a
+        [routerLink]="standingsLink"
+        routerLinkActive="link-button--active"
+        class="link-button"
+      >
+        <span>Standings</span>
+      </a>
+    }
+    <hr class="links__divider" />
+  }
+
+  <a
+    [routerLink]="[...tournamentBase(), 'rules']"
+    routerLinkActive="link-button--active"
+    class="link-button"
+  >
+    <span>Rules</span>
+  </a>
+  <a
+    [routerLink]="[...tournamentBase(), 'tier-list']"
+    routerLinkActive="link-button--active"
+    class="link-button"
+  >
+    <span>Tier List</span>
+  </a>
+  @if (leagueInfo?.discord) {
+    <a
+      [href]="'https://discord.gg/' + leagueInfo!.discord"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="link-button link-button--discord"
+    >
+      <span>Discord</span>
+    </a>
+  }
+</nav>

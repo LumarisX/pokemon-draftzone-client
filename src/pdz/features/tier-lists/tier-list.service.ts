@@ -75,8 +75,6 @@ export class TierListService {
       return this.apiService.get<{
         name: string;
         description?: string;
-        pointTotal?: number;
-        draftCount: { min: number; max: number };
       }>(`${ROOTPATH}/${tierListId}/settings`, { authenticated: true });
     }
     return this.leagueZoneService.getLeagueInfo().pipe(
@@ -89,19 +87,12 @@ export class TierListService {
         return this.apiService.get<{
           name: string;
           description?: string;
-          pointTotal?: number;
-          draftCount: { min: number; max: number };
         }>(`${ROOTPATH}/${info.tierListId}/settings`, { authenticated: true });
       }),
     );
   }
 
-  updateSettings(settings: {
-    name?: string;
-    description?: string;
-    pointTotal?: number;
-    draftCount?: { min: number; max: number };
-  }) {
+  updateSettings(settings: { name?: string; description?: string }) {
     const tierListId = this.tierListId();
     if (tierListId) {
       return this.apiService.patch<{ success: boolean }>(

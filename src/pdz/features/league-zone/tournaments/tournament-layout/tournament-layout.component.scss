@@ -1,0 +1,149 @@
+@use "pdz-theming" as pdz;
+@use "mixins" as *;
+
+$navbar-height: 3.5rem;
+
+:host {
+  display: block;
+  padding: pdz.space(md);
+  height: 100%;
+}
+
+.layout {
+  width: 100%;
+  height: 100%;
+  margin: 0 auto;
+
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(sm);
+
+  @include respond-above(medium) {
+    display: grid;
+    grid-template-columns: minmax(10rem, 15rem) pdz.space(xs) 1fr;
+
+    grid-template-rows: minmax(0, 1fr);
+    align-items: stretch;
+  }
+
+  // ─── Mobile nav trigger ────────────────────────────────────────────────
+  &__nav-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: pdz.space(xs);
+    align-self: flex-start;
+    padding: pdz.space(xs) pdz.space(md);
+    border: 1px solid pdz.color(outline-variant);
+    border-radius: pdz.shape(corner-sm);
+    background: pdz.color(surface);
+    color: pdz.color(on-surface);
+    font-family: var(--pdz-font-fancy);
+    font-size: 1rem;
+    cursor: pointer;
+
+    @include respond-above(medium) {
+      display: none;
+    }
+  }
+
+  // ─── Nav (off-canvas drawer on mobile, in-grid sidebar on desktop) ──────
+  &__nav {
+    position: fixed;
+    inset-block: $navbar-height 0;
+    inset-inline-start: 0;
+    z-index: 50;
+    width: min(18rem, 85vw);
+    padding: pdz.space(md);
+    overflow-y: auto;
+    background: pdz.color(surface);
+    box-shadow: var(--pdz-level-3);
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+
+    @include respond-above(medium) {
+      position: static;
+      z-index: auto;
+      width: auto;
+      min-height: 0;
+      padding: 0;
+      background: transparent;
+      box-shadow: none;
+      transform: none;
+    }
+  }
+
+  &__nav-close {
+    position: fixed;
+    top: calc(#{$navbar-height} + #{pdz.space(xs)});
+    inset-inline-start: calc(min(18rem, 85vw) - 3rem);
+    z-index: 51;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: pdz.space(2xs);
+    border: none;
+    border-radius: pdz.shape(corner-full);
+    background: pdz.color(surface-container-high);
+    color: pdz.color(on-surface-variant);
+    cursor: pointer;
+  }
+
+  &__backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    background: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity 0.25s ease,
+      visibility 0.25s ease;
+
+    @include respond-above(medium) {
+      display: none;
+    }
+  }
+
+  // ─── Drawer open state (mobile only) ────────────────────────────────────
+  &--nav-open {
+    .layout__nav {
+      transform: translateX(0);
+    }
+
+    .layout__backdrop {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .layout__nav-close {
+      display: inline-flex;
+
+      @include respond-above(medium) {
+        display: none;
+      }
+    }
+  }
+
+  &__main {
+    min-width: 0;
+
+    // Overflowing routed content scrolls here, leaving the sidebar/divider put.
+    @include respond-above(medium) {
+      min-height: 0;
+      overflow-y: auto;
+    }
+  }
+
+  // Vertical separator beside the sidebar — desktop only.
+  &__divider {
+    display: none;
+
+    @include respond-above(medium) {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border-radius: pdz.shape(corner-sm);
+      background-color: pdz.color(primary-border);
+    }
+  }
+}

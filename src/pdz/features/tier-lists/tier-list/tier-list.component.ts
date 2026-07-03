@@ -5,6 +5,7 @@ import {
   effect,
   EventEmitter,
   inject,
+  input,
   Input,
   OnDestroy,
   OnInit,
@@ -72,6 +73,8 @@ export class TierListComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   @Input() header?: string;
+  /** Extra pokemon IDs to treat as drafted (e.g. local pending picks not yet saved). */
+  localDraftedIds = input<string[]>([]);
   drafted = signal<{ [division: string]: { pokemonId: string }[] }>({});
   tiers = signal<LeagueTier[] | undefined>(undefined);
   ruleset = signal<string | undefined>(undefined);
@@ -100,9 +103,11 @@ export class TierListComponent implements OnInit, OnDestroy {
 
   readonly draftedPokemonIds = computed(() => {
     const selectedDivision = this.selectedDivision();
-    if (!selectedDivision) return new Set<string>();
     const drafted = this.drafted();
-    return new Set(drafted[selectedDivision]?.map((p) => p.pokemonId) || []);
+    const serverIds = selectedDivision
+      ? (drafted[selectedDivision]?.map((p) => p.pokemonId) ?? [])
+      : [];
+    return new Set([...serverIds, ...this.localDraftedIds()]);
   });
 
   _menu: 'sort' | 'filter' | 'division' | null = null;

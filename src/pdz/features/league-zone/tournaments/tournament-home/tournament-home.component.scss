@@ -1,0 +1,363 @@
+@use "pdz-theming" as pdz;
+@use "mixins" as *;
+@use "mixins/buttons" as *;
+
+:host {
+  display: block;
+  min-width: 0;
+}
+
+.loading-state {
+  display: flex;
+  justify-content: center;
+  padding: pdz.space(xl);
+}
+
+// ─── Coach dashboard ─────────────────────────────────────────────────────
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(lg);
+
+  &__identity {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: pdz.space(lg);
+    align-items: start;
+
+    @include respond-above(medium) {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+}
+
+// ─── Info cards (team / coach) ─────────────────────────────────────────────
+.info-card {
+  position: relative;
+  padding: pdz.space(lg);
+  border-radius: pdz.shape(corner-md);
+  border: 1px solid pdz.color(outline-variant);
+  background: pdz.color(surface);
+  box-shadow: var(--pdz-level-1);
+
+  &__name {
+    @include apply-typography(headline-sm);
+    font-family: var(--pdz-font-fancy);
+    color: pdz.color(on-surface);
+    margin: 0;
+    min-width: 0;
+    word-break: break-word;
+  }
+
+  // Subtle edit affordance tucked into the top corner.
+  &__edit {
+    position: absolute;
+    top: pdz.space(xs);
+    inset-inline-end: pdz.space(xs);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: pdz.space(xs);
+    border: none;
+    border-radius: pdz.shape(corner-full);
+    background: transparent;
+    color: pdz.color(on-surface-variant);
+    opacity: 0.5;
+    cursor: pointer;
+    transition:
+      opacity 0.2s ease,
+      background 0.2s ease,
+      color 0.2s ease;
+
+    &:hover,
+    &:focus-visible {
+      opacity: 1;
+      color: pdz.color(on-surface);
+      background: pdz.color(surface-container-high);
+    }
+  }
+}
+
+.status-badge {
+  @include apply-typography(label-sm);
+  display: inline-flex;
+  align-items: center;
+  padding: pdz.space(xs) pdz.space(sm);
+  border-radius: pdz.shape(corner-full);
+  font-weight: 700;
+
+  &--active {
+    background: pdz.color(success-container);
+    color: pdz.color(on-success-container);
+  }
+
+  &--pending {
+    background: pdz.color(warning-container);
+    color: pdz.color(on-warning-container);
+  }
+}
+
+.team-info {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(md);
+  height: 100%;
+  &__logo {
+    width: 4.5rem;
+    height: 4.5rem;
+    object-fit: contain;
+    flex-shrink: 0;
+  }
+}
+
+.coach-info {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(md);
+  height: 100%;
+
+  &__details {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: pdz.space(md) pdz.space(xl);
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: pdz.space(2xs);
+    min-width: 0;
+  }
+
+  &__label {
+    @include apply-typography(label-sm);
+    color: pdz.color(on-surface-variant);
+    font-weight: 600;
+  }
+
+  &__value {
+    @include apply-typography(body-md);
+    color: pdz.color(on-surface);
+    word-break: break-word;
+  }
+
+  &__time {
+    @include apply-typography(body-sm);
+    display: inline-flex;
+    align-items: center;
+    gap: pdz.space(xs);
+    margin-inline-start: auto;
+    color: pdz.color(on-surface-variant);
+    cursor: default;
+  }
+}
+
+// ─── Draft roster ──────────────────────────────────────────────────────────
+.roster {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(sm);
+  max-width: 42rem;
+
+  &__header {
+    border-bottom: 2px solid pdz.color(primary);
+    padding: 0 pdz.space(xs) pdz.space(2xs);
+  }
+
+  &__title {
+    @include apply-typography(title-md);
+    font-family: var(--pdz-font-fancy);
+    color: pdz.color(on-surface);
+    margin: 0;
+  }
+}
+
+// ─── Empty roster prompt ─────────────────────────────────────────────────
+.no-roster {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: pdz.space(md);
+  max-width: 42rem;
+  padding: pdz.space(lg);
+  border-radius: pdz.shape(corner-md);
+  border: 1px dashed pdz.color(outline-variant);
+  background: pdz.color(surface-container-low);
+
+  &__text {
+    @include apply-typography(body-md);
+    color: pdz.color(on-surface-variant);
+    margin: 0;
+  }
+
+  &__cta {
+    @include flat-button-primary();
+    display: inline-flex;
+    align-items: center;
+    gap: pdz.space(xs);
+    text-decoration: none;
+  }
+}
+
+.stats-table-wrapper {
+  background: pdz.color(surface);
+  border-radius: pdz.shape(corner-lg);
+  box-shadow: var(--pdz-level-2);
+  overflow: auto;
+
+  .stats-table {
+    width: 100%;
+    border-collapse: collapse;
+
+    thead tr,
+    tfoot tr {
+      background: pdz.color(primary);
+      color: pdz.color(on-primary);
+
+      th {
+        @include apply-typography(label-sm);
+        padding: pdz.space(sm) pdz.space(md);
+        text-align: left;
+        white-space: nowrap;
+
+        &.col-sprite {
+          width: 5rem;
+          text-align: center;
+        }
+
+        &.col-stat {
+          width: 4rem;
+          text-align: center;
+        }
+      }
+    }
+
+    tbody tr {
+      transition: background-color 0.2s ease;
+
+      &:hover {
+        background: pdz.color(surface-container);
+      }
+
+      &:not(:last-child) {
+        border-bottom: 1px solid pdz.color(outline-variant);
+      }
+
+      td {
+        padding: pdz.space(sm) pdz.space(md);
+        vertical-align: middle;
+
+        &.cell-sprite {
+          text-align: center;
+          width: 5rem;
+
+          pdz-sprite {
+            display: inline-block;
+            width: 3rem;
+            height: 3rem;
+          }
+        }
+
+        &.cell-name .name-cell {
+          display: flex;
+          flex-direction: column;
+          gap: pdz.space(2xs);
+
+          .name {
+            @include apply-typography(body-md);
+            font-weight: 600;
+            color: pdz.color(on-surface);
+          }
+
+          .details {
+            display: flex;
+            align-items: center;
+            color: pdz.color(primary);
+            gap: pdz.space(2xs);
+          }
+
+          .cost {
+            @include apply-typography(label-md);
+            font-weight: 500;
+          }
+        }
+
+        &.cell-stat {
+          @include apply-typography(body-md);
+          text-align: center;
+          font-weight: 500;
+          color: pdz.color(on-surface-variant);
+        }
+      }
+    }
+  }
+}
+
+// ─── Cards ───────────────────────────────────────────────────────────────
+.card {
+  padding: pdz.space(lg);
+  border-radius: pdz.shape(corner-sm);
+  border: 1px solid pdz.color(outline-variant);
+  background: pdz.color(surface);
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: pdz.space(md);
+    flex-wrap: wrap;
+    margin-bottom: pdz.space(md);
+  }
+
+  &__title {
+    @include apply-typography(title-md);
+    margin: 0 0 pdz.space(md);
+    color: pdz.color(on-surface);
+  }
+
+  &__header &__title {
+    margin: 0;
+  }
+
+  &__note {
+    @include apply-typography(body-sm);
+    color: pdz.color(on-surface-variant);
+    margin: 0 0 pdz.space(md);
+    padding: pdz.space(sm);
+    border-radius: pdz.shape(corner-xs);
+    background: pdz.color(surface-container-low);
+    border-left: 3px solid pdz.color(warning);
+  }
+
+  &--standings {
+    overflow-x: auto;
+  }
+}
+
+.checklist {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(xs);
+  margin-bottom: pdz.space(md);
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: pdz.space(xs);
+    @include apply-typography(body-md);
+    color: pdz.color(on-surface);
+
+    &--done {
+      text-decoration: line-through;
+      color: pdz.color(on-surface-variant);
+    }
+  }
+}
+
+// ─── Sign up ─────────────────────────────────────────────────────────────
+.signup {
+  ::ng-deep pdz-league-sign-up {
+    padding: 0;
+  }
+}

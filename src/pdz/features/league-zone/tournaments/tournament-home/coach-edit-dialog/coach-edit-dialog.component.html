@@ -1,0 +1,83 @@
+<h1 mat-dialog-title>Edit Coach Info</h1>
+<form [formGroup]="form" (ngSubmit)="onSave()">
+  <div mat-dialog-content class="dialog-body">
+    <div class="form-field">
+      <label for="coach-name" class="form-field__label">
+        Display Name <span class="required">*</span>
+      </label>
+      <input
+        id="coach-name"
+        type="text"
+        class="form-field__input"
+        placeholder="Deoxys"
+        formControlName="name"
+      />
+      @if (form.get("name")?.hasError("required") && form.get("name")?.touched) {
+        <span class="form-field__error">Required</span>
+      }
+    </div>
+
+    <div class="form-field">
+      <label for="coach-gameName" class="form-field__label">
+        Showdown Name <span class="required">*</span>
+      </label>
+      <input
+        id="coach-gameName"
+        type="text"
+        class="form-field__input"
+        placeholder="Deoxys-II"
+        formControlName="gameName"
+      />
+      @if (
+        form.get("gameName")?.hasError("required") &&
+        form.get("gameName")?.touched
+      ) {
+        <span class="form-field__error">Required</span>
+      }
+    </div>
+
+    <div class="form-field">
+      <label for="coach-discordName" class="form-field__label">
+        Discord Username <span class="required">*</span>
+      </label>
+      <input
+        id="coach-discordName"
+        type="text"
+        class="form-field__input"
+        placeholder="Deoxys#0386"
+        formControlName="discordName"
+      />
+      @if (
+        form.get("discordName")?.hasError("required") &&
+        form.get("discordName")?.touched
+      ) {
+        <span class="form-field__error">Required</span>
+      }
+    </div>
+
+    <div class="form-field">
+      <label for="coach-timezone" class="form-field__label">
+        Time Zone <span class="required">*</span>
+      </label>
+      <select
+        id="coach-timezone"
+        class="form-field__input"
+        formControlName="timezone"
+      >
+        <option value="" disabled>Select a timezone</option>
+        @for (tz of timezones; track $index) {
+          <option [value]="tz">{{ tz }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  <div mat-dialog-actions align="end">
+    <button type="button" class="btn btn--secondary" (click)="closeDialog()">
+      Cancel
+    </button>
+    <button type="submit" class="btn btn--primary" [disabled]="form.invalid">
+      Save Changes
+    </button>
+  </div>
+</form>

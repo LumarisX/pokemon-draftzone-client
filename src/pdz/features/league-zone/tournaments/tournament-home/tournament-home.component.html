@@ -1,0 +1,139 @@
+@if (isCheckingSignUp) {
+  <div class="loading-state">
+    <pdz-loading></pdz-loading>
+  </div>
+} @else if (profile) {
+  <section class="dashboard">
+    <div class="dashboard__identity">
+      <!-- ── Team info ─────────────────────────────────────────────── -->
+      <article class="info-card team-info">
+        <button
+          type="button"
+          class="info-card__edit"
+          aria-label="Edit team info"
+          (click)="openTeamEdit()"
+        >
+          <pdz-icon name="edit" [size]="16"></pdz-icon>
+        </button>
+        <img
+          class="team-info__logo"
+          [src]="getTeamLogoUrl(profile.logo)"
+          alt=""
+        />
+        <div class="info-card__name">{{ profile.teamName }}</div>
+      </article>
+
+      <!-- ── Coach info ────────────────────────────────────────────── -->
+      <article class="info-card coach-info">
+        <button
+          type="button"
+          class="info-card__edit"
+          aria-label="Edit coach info"
+          (click)="openCoachEdit()"
+        >
+          <pdz-icon name="edit" [size]="16"></pdz-icon>
+        </button>
+        <div class="info-card__name">{{ profile.name }}</div>
+        <div class="coach-info__details">
+          <div class="coach-info__field">
+            <span class="coach-info__label">Showdown</span>
+            <span class="coach-info__value">{{ profile.gameName }}</span>
+          </div>
+          <div class="coach-info__field">
+            <span class="coach-info__label">Discord</span>
+            <span class="coach-info__value">{{ profile.discordName }}</span>
+          </div>
+          @if (currentTime) {
+            <div class="coach-info__time" [title]="profile.timezone">
+              <pdz-icon name="schedule" [size]="16"></pdz-icon>
+              <span>{{ currentTime }}</span>
+            </div>
+          }
+        </div>
+      </article>
+    </div>
+
+    @if (teamData && teamData.draft.length) {
+      <article class="roster">
+        <header class="roster__header">
+          <h2 class="roster__title">Draft Roster</h2>
+        </header>
+        <div class="stats-table-wrapper">
+          <table class="stats-table">
+            <thead>
+              <tr>
+                <th class="col-sprite"></th>
+                <th class="col-name">Pokémon</th>
+                <th class="col-stat">Brought</th>
+                <th class="col-stat">Kills</th>
+                <th class="col-stat">Deaths</th>
+                <th class="col-stat">K/D Ratio</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (pokemon of teamData.draft; track pokemon.id) {
+                <tr>
+                  <td class="cell-sprite">
+                    <pdz-sprite flipped [pokemon]="pokemon"></pdz-sprite>
+                  </td>
+                  <td class="cell-name">
+                    <div class="name-cell">
+                      <span class="name">{{ pokemon.name }}</span>
+                      <div class="details">
+                        <span class="cost">{{ pokemon.cost }}</span>
+                        @if (pokemon.capt && pokemon.capt.tera) {
+                          <pdz-icon name="tera" [size]="16"></pdz-icon>
+                        }
+                      </div>
+                    </div>
+                  </td>
+                  <td class="cell-stat">{{ pokemon.record?.brought ?? 0 }}</td>
+                  <td class="cell-stat">{{ pokemon.record?.kills ?? 0 }}</td>
+                  <td class="cell-stat">{{ pokemon.record?.deaths ?? 0 }}</td>
+                  <td class="cell-stat">
+                    @if (pokemon.record?.deaths) {
+                      {{
+                        (
+                          (pokemon.record?.kills ?? 0) /
+                          (pokemon.record?.deaths ?? 1)
+                        ).toFixed(1)
+                      }}
+                    } @else {
+                      {{
+                        (pokemon.record?.kills ?? 0) > 0
+                          ? pokemon.record?.kills
+                          : "—"
+                      }}
+                    }
+                  </td>
+                </tr>
+              }
+            </tbody>
+            <tfoot>
+              <tr>
+                <th class="col-sprite"></th>
+                <th class="col-name">{{ rosterTotal.cost }}</th>
+                <th class="col-stat"></th>
+                <th class="col-stat">{{ rosterTotal.kills }}</th>
+                <th class="col-stat">{{ rosterTotal.deaths }}</th>
+                <th class="col-stat"></th>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </article>
+    } @else if (profile.draft && !rosterLoading) {
+      <article class="no-roster">
+        <p class="no-roster__text">You haven't drafted your team yet.</p>
+        <a class="no-roster__cta" [routerLink]="draftLink">
+          <pdz-icon name="east" [size]="18"></pdz-icon>
+          <span>Go to the Draft</span>
+        </a>
+      </article>
+    }
+  </section>
+} @else {
+  <section class="signup">
+    <pdz-league-sign-up [embedded]="true"></pdz-league-sign-up>
+  </section>
+}

@@ -1,0 +1,132 @@
+@use "pdz-theming" as pdz;
+@use "mixins" as *;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(sm);
+}
+
+// ─── Hero ────────────────────────────────────────────────────────────────
+.hero {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(sm);
+
+  &__logo {
+    max-height: 8rem;
+    max-width: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    align-self: center;
+    margin-bottom: pdz.space(xs);
+  }
+
+  &__title {
+    @include apply-typography(headline-md);
+    font-family: var(--pdz-font-fancy);
+    margin: 0;
+    color: pdz.color(on-primary-container);
+  }
+
+  &__description {
+    @include apply-typography(body-md);
+    margin: 0;
+    color: pdz.color(on-surface-variant);
+  }
+
+  &__details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: pdz.space(lg);
+    margin-top: pdz.space(xs);
+  }
+}
+
+.detail {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  &__label {
+    @include apply-typography(label-sm);
+    color: pdz.color(on-surface-variant);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  &__value {
+    @include apply-typography(body-md);
+    color: pdz.color(on-primary-container);
+  }
+}
+
+// ─── Quick links ─────────────────────────────────────────────────────────
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: pdz.space(sm);
+
+  @include respond-above(medium) {
+    flex-direction: column;
+    flex-wrap: nowrap;
+  }
+
+  &__divider {
+    width: 100%;
+    height: 0;
+    margin: pdz.space(xs) 0;
+    border: 0;
+    border-top: 1px solid pdz.color(outline-variant);
+  }
+}
+
+.link-button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: pdz.space(2xs);
+  position: relative;
+  padding: pdz.space(sm);
+  border: none;
+  background-color: transparent;
+  border-radius: pdz.shape(corner-sm);
+  font-family: var(--pdz-font-fancy);
+  font-size: 1rem;
+  color: pdz.color(on-surface);
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+  @include background-hover-effect(pdz.color(surface-container));
+
+  &:hover {
+    color: pdz.color(on-surface);
+  }
+
+  // Ongoing-draft sublabel: wraps onto its own line beneath the link label.
+  &__status {
+    @include apply-typography(label-xs);
+    color: pdz.color(primary);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  // Active (current route): keep normal text color, add a primary underline bar.
+  &.active {
+    color: pdz.color(on-surface);
+
+    &::after {
+      content: "";
+      position: absolute;
+      left: pdz.space(sm);
+      right: pdz.space(sm);
+      bottom: 0.15rem;
+      height: 0.125rem;
+      border-radius: pdz.shape(corner-full);
+      background-color: pdz.color(primary);
+    }
+  }
+}

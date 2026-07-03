@@ -6,16 +6,13 @@ import {
   MatDialogModule,
   MatDialogRef,
 } from '@angular/material/dialog';
-import { finalize } from 'rxjs/operators';
-import { StatsTable, Type } from '@pdz/shared/data';
-import { IconComponent } from '../../images/icon/icon.component';
-import { SpriteComponent } from '../../images/sprite/sprite.component';
-import { TierPokemonAddon } from '@pdz/features/tier-lists/tier-list.model';
 import {
   DataService,
   PokemonSearchMoveData,
 } from '@pdz/core/services/data.service';
-import { PokemonTypeComponent } from '../pokemon-type/pokemon-type.component';
+import { TierPokemonAddon } from '@pdz/features/tier-lists/tier-list.model';
+import { StatsTable, Type } from '@pdz/shared/data';
+import { finalize } from 'rxjs/operators';
 
 export interface MoveDialogButton {
   label: string;
@@ -51,14 +48,7 @@ export type MoveDialogResult = unknown;
 
 @Component({
   selector: 'pdz-move-dialog',
-  imports: [
-    CommonModule,
-    FormsModule,
-    MatDialogModule,
-    SpriteComponent,
-    IconComponent,
-    PokemonTypeComponent,
-  ],
+  imports: [CommonModule, FormsModule, MatDialogModule],
   templateUrl: './move-dialog.component.html',
   styleUrls: ['./move-dialog.component.scss'],
 })

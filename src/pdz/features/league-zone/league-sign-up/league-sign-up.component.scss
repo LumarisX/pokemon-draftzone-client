@@ -25,12 +25,10 @@
   align-items: center;
   flex-wrap: wrap;
   padding: pdz.space(sm) pdz.space(md);
-  background-color: pdz.color(surface-container-low);
   border-radius: pdz.shape(corner-md);
-  box-shadow: var(--pdz-level-1);
 
   &__title {
-    @include apply-typography(headline-sm);
+    @include apply-typography(headline-md);
     font-family: var(--pdz-font-fancy);
     color: pdz.color(on-surface);
     margin: 0;

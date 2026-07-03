@@ -22,7 +22,8 @@ import { LeagueTeamsComponent } from './league-teams/league-teams.component';
 import { LeagueTradesComponent } from './league-trades/league-trades.component';
 import { TournamentDraftComponent } from './tournaments/tournament-draft/tournament-draft.component';
 import { TournamentDraftsComponent } from './tournaments/tournament-drafts/tournament-drafts.component';
-import { TournamentLandingComponent } from './tournaments/tournament-landing/tournament-landing.component';
+import { TournamentHomeComponent } from './tournaments/tournament-home/tournament-home.component';
+import { TournamentLayoutComponent } from './tournaments/tournament-layout/tournament-layout.component';
 
 export const routes: Routes = [
   {
@@ -44,97 +45,104 @@ export const routes: Routes = [
   //   path: 'new',
   //   component: LeagueNewComponent,
   // },
-  {
-    path: ':leagueKey/tournaments/:tournamentKey',
-    component: TournamentLandingComponent,
-  },
-  {
-    path: ':leagueKey/tournaments/:tournamentKey/teams/:teamKey',
-    component: LeagueTeamComponent,
-  },
-  {
-    path: ':leagueKey/tournaments/:tournamentKey/rules',
-    component: LeagueRulesOverviewComponent,
-  },
-  {
-    path: ':leagueKey/tournaments/:tournamentKey/tier-list',
-    component: TierListComponent,
-  },
-  {
-    path: ':leagueKey/tournaments/:tournamentKey/tier-list/edit',
-    component: TierListFormComponent,
-    canDeactivate: [unsavedChangesGuard],
-  },
-  {
-    path: ':leagueKey/tournaments/:tournamentKey/sign-up',
-    component: LeagueSignUpComponent,
-    canActivate: [AuthGuard],
-  },
-  {
-    path: ':leagueKey/tournaments/:tournamentKey/coach',
-    component: LeagueCoachComponent,
-    canActivate: [AuthGuard],
-  },
-  {
-    path: ':leagueKey/tournaments/:tournamentKey/bracket',
-    component: LeagueBracketComponent,
-  },
-  {
-    path: ':leagueKey/tournaments/:tournamentKey/playoffs/schedule',
-    component: LeagueBracketComponent,
-  },
-  {
-    path: ':leagueKey/tournaments/:tournamentKey/trades',
-    component: LeagueTradesComponent,
-  },
-  {
-    path: ':leagueKey/tournaments/:tournamentKey/draft',
-    component: TournamentDraftComponent,
-  },
-  {
-    path: ':leagueKey/tournaments/:tournamentKey/drafts',
-    component: TournamentDraftsComponent,
-  },
-  {
-    path: ':leagueKey/tournaments/:tournamentKey/drafts/:draftKey',
-    component: DivisionDashboardComponent,
-  },
-  {
-    path: ':leagueKey/tournaments/:tournamentKey/stages/:stageId/schedule',
-    component: LeagueScheduleComponent,
-  },
-  {
-    path: ':leagueKey/tournaments/:tournamentKey/stages/:stageId/schedule/matchups/:matchupId',
-    component: MatchupOverviewComponent,
-  },
-  {
-    path: ':leagueKey/tournaments/:tournamentKey/stages/:stageId/standings',
-    component: LeagueStandingsComponent,
-  },
-  {
-    path: ':leagueKey/tournaments/:tournamentKey/drafts/:draftKey/draft',
-    component: LeagueDraftComponent,
-  },
-  {
-    path: ':leagueKey/tournaments/:tournamentKey/drafts/:draftKey/power-rankings',
-    component: PowerRankingsComponent,
-  },
-  {
-    path: ':leagueKey/tournaments/:tournamentKey/drafts/:draftKey/teams',
-    component: LeagueTeamsComponent,
-  },
-  {
-    path: ':leagueKey/tournaments/:tournamentKey/drafts/:draftKey/teams/:teamKey',
-    component: LeagueTeamComponent,
-  },
 
   {
-    path: ':leagueKey/tournaments/:tournamentKey/drafts/:draftKey/tier-list',
-    component: TierListComponent,
-  },
-  {
-    path: ':leagueKey/tournaments/:tournamentKey/stages/:stageId/trades',
-    component: LeagueTradesComponent,
+    path: ':leagueKey/tournaments/:tournamentKey',
+    component: TournamentLayoutComponent,
+    children: [
+      {
+        path: '',
+        component: TournamentHomeComponent,
+      },
+      {
+        path: 'rules',
+        component: LeagueRulesOverviewComponent,
+      },
+      {
+        path: 'tier-list',
+        component: TierListComponent,
+      },
+      {
+        path: 'tier-list/edit',
+        component: TierListFormComponent,
+        canDeactivate: [unsavedChangesGuard],
+      },
+      {
+        path: 'teams/:teamKey',
+        component: LeagueTeamComponent,
+      },
+      {
+        path: 'sign-up',
+        component: LeagueSignUpComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'coach',
+        component: LeagueCoachComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'bracket',
+        component: LeagueBracketComponent,
+      },
+      {
+        path: 'playoffs/schedule',
+        component: LeagueBracketComponent,
+      },
+      {
+        path: 'trades',
+        component: LeagueTradesComponent,
+      },
+      {
+        path: 'draft',
+        component: TournamentDraftComponent,
+      },
+      {
+        path: 'drafts',
+        component: TournamentDraftsComponent,
+      },
+      {
+        path: 'drafts/:draftKey',
+        component: DivisionDashboardComponent,
+      },
+      {
+        path: 'stages/:stageId/schedule',
+        component: LeagueScheduleComponent,
+      },
+      {
+        path: 'stages/:stageId/schedule/matchups/:matchupId',
+        component: MatchupOverviewComponent,
+      },
+      {
+        path: 'stages/:stageId/standings',
+        component: LeagueStandingsComponent,
+      },
+      {
+        path: 'drafts/:draftKey/draft',
+        component: LeagueDraftComponent,
+      },
+      {
+        path: 'drafts/:draftKey/power-rankings',
+        component: PowerRankingsComponent,
+      },
+      {
+        path: 'drafts/:draftKey/teams',
+        component: LeagueTeamsComponent,
+      },
+      {
+        path: 'drafts/:draftKey/teams/:teamKey',
+        component: LeagueTeamComponent,
+      },
+
+      {
+        path: 'drafts/:draftKey/tier-list',
+        component: TierListComponent,
+      },
+      {
+        path: 'stages/:stageId/trades',
+        component: LeagueTradesComponent,
+      },
+    ],
   },
   // {
   //   path: 'view/:tournamentId/auction',

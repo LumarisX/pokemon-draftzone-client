@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpResponse } from '@angular/common/http';
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -46,6 +46,8 @@ export class LeagueSignUpComponent implements OnInit, OnDestroy {
   private uploadService = inject(UploadService);
   private authService = inject(AuthService);
   private destroy$ = new Subject<void>();
+
+  @Input() embedded = false;
 
   signupForm!: FormGroup;
   added = false;

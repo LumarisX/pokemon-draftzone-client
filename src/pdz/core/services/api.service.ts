@@ -239,6 +239,7 @@ export class ApiService {
 
     return this.auth.accessToken$.pipe(
       filter((token: string | undefined): token is string => !!token),
+      take(1),
       switchMap((token: string) => {
         const headers = new HttpHeaders({
           'Content-Type': 'application/json',

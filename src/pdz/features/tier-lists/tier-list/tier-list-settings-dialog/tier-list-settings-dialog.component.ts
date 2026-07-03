@@ -24,8 +24,6 @@ import { TierListService } from '../../tier-list.service';
 export interface TierListSettingsDialogData {
   name: string;
   description?: string;
-  pointTotal?: number;
-  draftCount?: { min: number; max: number };
 }
 
 function draftCountValidator(
@@ -70,23 +68,6 @@ export class TierListSettingsDialogComponent implements OnInit {
     this.form = this.fb.group({
       name: [this.data.name, [Validators.required, Validators.maxLength(100)]],
       description: [this.data.description ?? '', Validators.maxLength(500)],
-      pointTotal: [
-        this.data.pointTotal ?? null,
-        [Validators.min(0), Validators.max(9999)],
-      ],
-      draftCount: this.fb.group(
-        {
-          min: [
-            this.data.draftCount?.min ?? null,
-            [Validators.min(0), Validators.max(100)],
-          ],
-          max: [
-            this.data.draftCount?.max ?? null,
-            [Validators.min(0), Validators.max(100)],
-          ],
-        },
-        { validators: draftCountValidator },
-      ),
     });
   }
 
@@ -99,11 +80,6 @@ export class TierListSettingsDialogComponent implements OnInit {
     const payload: TierListSettingsDialogData = {
       name: raw.name.trim(),
       description: raw.description?.trim() || undefined,
-      pointTotal: raw.pointTotal ?? undefined,
-      draftCount:
-        raw.draftCount.min != null && raw.draftCount.max != null
-          ? { min: raw.draftCount.min, max: raw.draftCount.max }
-          : undefined,
     };
 
     this.tierListService

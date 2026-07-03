@@ -55,7 +55,10 @@
           </div>
           <ol class="my-draft-pokemons draft-section-body">
             @for (pokemon of selectedTeam.draft; track pokemon.id) {
-              <li class="my-draft-pokemon">
+              <li
+                class="my-draft-pokemon"
+                [class.pending-pick]="pendingPokemonIds.has(pokemon.id)"
+              >
                 <div class="my-pokemon-index">{{ $index + 1 }}</div>
                 <div class="my-pokemon-sprite">
                   <pdz-sprite [pokemon]="pokemon" flipped></pdz-sprite>
@@ -79,78 +82,127 @@
                   </div>
                 }
                 <div class="my-pokemon-tier fancy-font">{{ pokemon.cost }}</div>
+                @if (
+                  draftDetails.status === 'IN_PROGRESS' &&
+                  selectedTeam.isCoach &&
+                  (pendingPokemonIds.has(pokemon.id) ||
+                    !draftDetails.sequentialTurns)
+                ) {
+                  <button
+                    class="remove-button"
+                    [title]="
+                      pendingPokemonIds.has(pokemon.id)
+                        ? 'Undo this draft pick (not saved yet)'
+                        : 'Remove from draft'
+                    "
+                    (click)="removeDraftedPokemon(pokemon)"
+                  >
+                    <pdz-icon name="close" size="sm"></pdz-icon>
+                  </button>
+                }
               </li>
             }
-            @for (picks of selectedTeam.picks; track $index) {
-              <li
-                class="my-draft-pokemon my-pick"
-                (click)="selectedPick = $index"
-                [class.selected-pick]="selectedPick === $index"
-              >
-                <div class="my-pokemon-index">
-                  {{ $index + selectedTeam.draft.length + 1 }}
-                </div>
-                <div class="my-draft-picks">
-                  @for (choice of picks; track choice.id) {
-                    <div
-                      class="my-draft-pick-container"
-                      [class.backup]="$index > 0"
-                    >
-                      @if ($index) {
-                        <button (click)="moveUp(picks, $index)">
-                          <mat-icon>arrow_upward_alt</mat-icon>
-                        </button>
-                      }
-                      <button class="my-draft-pick" [class.backup]="$index > 0">
-                        <div class="my-pokemon-sprite">
-                          <pdz-sprite
-                            [pokemon]="choice"
-                            flipped
-                            size="2.5rem"
-                          ></pdz-sprite>
-                        </div>
-                        <div class="pick-header">
-                          @if (draftDetails.sequentialTurns) {
+            @if (draftDetails.status === 'IN_PROGRESS' && draftDetails.sequentialTurns) {
+              @for (
+                picks of selectedTeam.picks;
+                track $index;
+                let roundIndex = $index
+              ) {
+                <li
+                  class="my-draft-pokemon my-pick"
+                  (click)="selectedPick = roundIndex"
+                  [class.selected-pick]="selectedPick === roundIndex"
+                  [class.ready]="roundIndex < draftableCount()"
+                >
+                  <div class="my-pokemon-index">
+                    {{ roundIndex + selectedTeam.draft.length + 1 }}
+                  </div>
+                  <div class="my-draft-picks">
+                    @for (choice of picks; track choice.id) {
+                      <div
+                        class="my-draft-pick-container"
+                        [class.backup]="$index > 0"
+                      >
+                        @if ($index) {
+                          <button (click)="moveUp(picks, $index)">
+                            <mat-icon>arrow_upward_alt</mat-icon>
+                          </button>
+                        }
+                        <button
+                          class="my-draft-pick"
+                          [class.backup]="$index > 0"
+                        >
+                          <div class="my-pokemon-sprite">
+                            <pdz-sprite
+                              [pokemon]="choice"
+                              flipped
+                              size="2.5rem"
+                            ></pdz-sprite>
+                          </div>
+                          <div class="pick-header">
                             <div class="pick-text">
                               {{ $index + 1 | numbersuffix }} Choice
                             </div>
+                            <div class="my-pokemon-name fancy-font">
+                              {{ choice.name }}
+                            </div>
+                          </div>
+                          @if (choice.addons?.includes("Tera Captain")) {
+                            <div class="my-pokemon-capt fancy-font">
+                              <pdz-icon name="tera"></pdz-icon>
+                            </div>
                           }
-                          <div class="my-pokemon-name fancy-font">
-                            {{ choice.name }}
+                          <div class="my-pokemon-tier fancy-font">
+                            {{ choice.cost }}
                           </div>
-                        </div>
-                        @if (choice.addons?.includes("Tera Captain")) {
-                          <div class="my-pokemon-capt fancy-font">
-                            <pdz-icon name="tera"></pdz-icon>
-                          </div>
-                        }
-                        <div class="my-pokemon-tier fancy-font">
-                          {{ choice.cost }}
-                        </div>
-                        <button
-                          class="remove-button"
-                          (click)="deleteChoice(picks, $index)"
-                        >
-                          <pdz-icon name="close" size="sm"></pdz-icon>
+                          <button
+                            class="remove-button"
+                            (click)="deleteChoice(picks, $index)"
+                          >
+                            <pdz-icon name="close" size="sm"></pdz-icon>
+                          </button>
                         </button>
+                      </div>
+                    } @empty {
+                      <button
+                        class="no-pick"
+                        [class.selected-pick]="selectedPick === roundIndex"
+                      >
+                        Select Pokémon
                       </button>
-                    </div>
-                  } @empty {
-                    <button
-                      class="no-pick"
-                      [class.selected-pick]="selectedPick === $index"
-                    >
-                      Select Pick
-                    </button>
-                  }
-                </div>
-              </li>
+                    }
+                  </div>
+                </li>
+              }
+            } @else if (draftDetails.status === 'IN_PROGRESS') {
+              @for (
+                slot of selectedTeam.picks;
+                track $index;
+                let roundIndex = $index
+              ) {
+                <li class="my-draft-pokemon my-pick">
+                  <div class="my-pokemon-index">
+                    {{ roundIndex + selectedTeam.draft.length + 1 }}
+                  </div>
+                  <div class="my-draft-picks">
+                    <button class="no-pick">Add Pokémon</button>
+                  </div>
+                </li>
+              }
             }
           </ol>
         </div>
 
         <div class="draft-footer">
-          <button>Save/Submit</button>
+          @if (draftDetails.status === 'IN_PROGRESS') {
+            <button
+              class="save-button"
+              [disabled]="!canSave()"
+              (click)="saveDraft()"
+            >
+              {{ isSubmitting ? "Saving..." : "Save" }}
+            </button>
+          }
           Points: {{ selectedTeam.pointTotal }}/{{ points }}
         </div>
       </div>
@@ -244,6 +296,7 @@
         <pdz-tier-list
           [buttonText]="buttonText()"
           [altButtonText]="altButtonText()"
+          [localDraftedIds]="teamDraftedIds"
           (pokemonSelected)="pokemonSelected($event)"
           header="Tier List"
         ></pdz-tier-list>

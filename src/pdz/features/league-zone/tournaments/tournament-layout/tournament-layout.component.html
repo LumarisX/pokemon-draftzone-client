@@ -1,0 +1,30 @@
+<div class="layout" [class.layout--nav-open]="navOpen()">
+  <button
+    type="button"
+    class="layout__nav-toggle"
+    aria-label="Open navigation"
+    (click)="toggleNav()"
+  >
+    <pdz-icon name="menu" [size]="22"></pdz-icon>
+    <span>Menu</span>
+  </button>
+
+  <div class="layout__backdrop" (click)="closeNav()"></div>
+
+  <button
+    type="button"
+    class="layout__nav-close"
+    aria-label="Close navigation"
+    (click)="closeNav()"
+  >
+    <pdz-icon name="close" [size]="22"></pdz-icon>
+  </button>
+
+  <pdz-tournament-nav class="layout__nav"></pdz-tournament-nav>
+
+  <div class="layout__divider"></div>
+
+  <main class="layout__main">
+    <router-outlet></router-outlet>
+  </main>
+</div>

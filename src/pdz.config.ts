@@ -4,7 +4,7 @@ import {
   inject,
   provideAppInitializer,
 } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { provideRouter, withRouterConfig } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideServiceWorker } from '@angular/service-worker';
@@ -19,7 +19,10 @@ import { SwUpdateService } from '@pdz/core/services/sw-update.service';
 export const pdzConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(routes),
+    provideRouter(
+      routes,
+      withRouterConfig({ paramsInheritanceStrategy: 'always' }),
+    ),
     provideAnimations(),
 
     // Setup HTTP and the Auth0 Standalone Interceptor

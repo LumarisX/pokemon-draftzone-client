@@ -1,0 +1,135 @@
+@use "@angular/material" as mat;
+@use "pdz-theming" as pdz;
+@use "mixins" as *;
+@use "mixins/buttons" as *;
+
+:host {
+  display: block;
+
+  @include mat.dialog-overrides(
+    (
+      subhead-weight: 700,
+      subhead-font: var(--pdz-font-fancy),
+      subhead-color: pdz.color(primary),
+      subhead-size: 1.2em,
+    )
+  );
+}
+
+.dialog-body {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(md);
+}
+
+// ─── Form Fields (matches league sign-up) ─────────────────────────────────
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(xs);
+  min-width: 0;
+
+  &__label {
+    @include apply-typography(label-sm);
+    color: pdz.color(on-surface);
+    font-weight: 600;
+  }
+
+  &__input {
+    @include apply-typography(body-md);
+    padding: pdz.space(sm) pdz.space(md);
+    border: 1px solid pdz.color(outline);
+    border-radius: pdz.shape(corner-sm);
+    background: pdz.color(surface);
+    color: pdz.color(on-surface);
+    min-height: 2.75rem;
+    line-height: 1.5;
+    transition: border-color 0.2s ease;
+
+    &:focus {
+      outline: none;
+      border-color: pdz.color(primary);
+    }
+  }
+
+  &__error {
+    @include apply-typography(label-xs);
+    color: pdz.color(error);
+  }
+
+  &__hint {
+    @include apply-typography(label-xs);
+    color: pdz.color(on-surface-variant);
+  }
+}
+
+.required {
+  color: pdz.color(error);
+}
+
+// ─── Logo editor ──────────────────────────────────────────────────────────
+.logo-edit {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(md);
+
+  &__preview {
+    width: 4.5rem;
+    height: 4.5rem;
+    object-fit: contain;
+
+    flex-shrink: 0;
+  }
+
+  &__controls {
+    display: flex;
+    flex-direction: column;
+    gap: pdz.space(xs);
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+.file-input-hidden {
+  display: none;
+}
+
+.file-input-button {
+  cursor: pointer;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  &:hover {
+    background: pdz.color(surface-container-low);
+    border-color: pdz.color(outline-variant);
+  }
+}
+
+// ─── Actions ──────────────────────────────────────────────────────────────
+[mat-dialog-actions] {
+  gap: pdz.space(sm);
+}
+
+.btn {
+  padding: pdz.space(sm) pdz.space(lg);
+  border-radius: pdz.shape(corner-sm);
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease-in-out;
+
+  &--primary {
+    @include flat-button-primary();
+  }
+
+  &--secondary {
+    @include flat-button-menu();
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+}

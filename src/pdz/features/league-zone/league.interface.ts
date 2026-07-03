@@ -194,6 +194,8 @@ export namespace League {
     drafts: { name: string; draftKey: string }[];
     discord?: string;
     tierListId?: string;
+    draftCount?: { min: number; max: number };
+    pointTotal?: number;
   };
 
   export type TournamentSummary = {
