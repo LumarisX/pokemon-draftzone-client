@@ -15,6 +15,7 @@ import {
   FormControl,
   FormGroup,
   ReactiveFormsModule,
+  ValidationErrors,
   Validators,
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -143,6 +144,16 @@ export class DraftFormCoreComponent implements OnInit, OnDestroy {
   }
 }
 
+function sluggableCharacterValidator(
+  control: AbstractControl,
+): ValidationErrors | null {
+  const value = control.value as string | null;
+  if (!value || !/[\p{L}\p{N}]/u.test(value)) {
+    return { noSluggableCharacter: true };
+  }
+  return null;
+}
+
 export type DraftFormData = {
   leagueName: string;
   teamName: string;
@@ -170,7 +181,7 @@ export class DraftForm extends FormGroup<{
       details: new FormGroup({
         leagueName: new FormControl(params?.leagueName ?? '', {
           nonNullable: true,
-          validators: Validators.required,
+          validators: [Validators.required, sluggableCharacterValidator],
         }),
         teamName: new FormControl(params?.teamName ?? '', {
           nonNullable: true,
