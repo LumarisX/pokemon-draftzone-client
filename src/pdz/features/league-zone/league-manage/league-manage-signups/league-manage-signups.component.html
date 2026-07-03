@@ -158,6 +158,14 @@
                 >
                   Role
                 </span>
+                <span
+                  class="status-badge"
+                  [class.status-badge--yes]="signup.hasValidTeam"
+                  [class.status-badge--no]="!signup.hasValidTeam"
+                  title="Has a valid drafted team"
+                >
+                  Team
+                </span>
               </div>
               <div class="signup-card__meta">
                 <span class="signup-card__date">

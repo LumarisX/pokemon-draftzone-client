@@ -129,6 +129,7 @@ export namespace League {
     draft?: string;
     hasDiscordRole?: boolean;
     inDiscordServer?: boolean;
+    hasValidTeam?: boolean;
   };
 
   export type DraftPick = {
