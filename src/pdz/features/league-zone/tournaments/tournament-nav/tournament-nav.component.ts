@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { catchError, of, Subject, takeUntil } from 'rxjs';
+import { catchError, of, Subject, switchMap, takeUntil } from 'rxjs';
+import { AuthService } from '@pdz/core/services/auth0.service';
 import { LeagueZoneService } from '../../league-zone.service';
 import { League } from '../../league.interface';
 import { getLogoUrlOld } from '../../league.util';
@@ -14,12 +15,14 @@ import { getLogoUrlOld } from '../../league.util';
 })
 export class TournamentNavComponent implements OnInit, OnDestroy {
   readonly leagueService = inject(LeagueZoneService);
+  private readonly authService = inject(AuthService);
   private readonly destroy$ = new Subject<void>();
 
   leagueInfo: League.LeagueInfo | null = null;
   profile: League.CoachProfile | null = null;
   stages: League.StageSummary[] = [];
   selectedStageId: string | null = null;
+  profileLoaded = false;
 
   draftStatus: string | null = null;
 
@@ -34,14 +37,20 @@ export class TournamentNavComponent implements OnInit, OnDestroy {
         error: (error) => console.error('Error fetching league info:', error),
       });
 
-    this.leagueService
-      .getCoachData({ suppressStatuses: [404] })
+    this.authService.isAuthenticated$
       .pipe(
         takeUntil(this.destroy$),
-        catchError(() => of(null)),
+        switchMap((isAuthenticated) =>
+          isAuthenticated
+            ? this.leagueService
+                .getCoachData({ suppressStatuses: [404] })
+                .pipe(catchError(() => of(null)))
+            : of(null),
+        ),
       )
       .subscribe((profile) => {
         this.profile = profile;
+        this.profileLoaded = true;
         if (profile?.draft) {
           this.loadStages();
           this.loadDraftStatus(profile.draft.draftKey);
@@ -93,6 +102,10 @@ export class TournamentNavComponent implements OnInit, OnDestroy {
           }
         },
       });
+  }
+
+  get notJoinedDiscord(): boolean {
+    return this.profileLoaded && !!this.profile && !this.profile.inDiscordServer;
   }
 
   private get leagueKey() {

@@ -112,6 +112,10 @@
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
+
+    &--warn {
+      color: pdz.color(error);
+    }
   }
 
   // Active (current route): keep normal text color, add a primary underline bar.

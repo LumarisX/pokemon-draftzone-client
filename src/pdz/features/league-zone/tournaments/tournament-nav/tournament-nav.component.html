@@ -90,6 +90,9 @@
       class="link-button link-button--discord"
     >
       <span>Discord</span>
+      @if (notJoinedDiscord) {
+        <span class="link-button__status link-button__status--warn">Not Joined</span>
+      }
     </a>
   }
 </nav>
