@@ -47,24 +47,6 @@ export class LeagueTeamComponent implements OnInit, OnDestroy {
   };
 
   private readonly destroy$ = new Subject<void>();
-  get backLink(): string[] {
-    const leagueKey = this.leagueService.leagueKey();
-    const tournamentKey = this.leagueService.tournamentKey();
-    const draftKey = this.leagueService.draftKey();
-    if (!leagueKey || !tournamentKey) return ['/'];
-    if (draftKey) {
-      return [
-        '/leagues',
-        leagueKey,
-        'tournaments',
-        tournamentKey,
-        'drafts',
-        draftKey,
-        'teams',
-      ];
-    }
-    return ['/leagues', leagueKey, 'tournaments', tournamentKey];
-  }
 
   getCurrentTimeInTimezone(timezone?: string): string {
     if (!timezone) return '';

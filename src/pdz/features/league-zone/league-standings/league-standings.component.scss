@@ -18,10 +18,6 @@
     @include pdz-league-page-header();
   }
 
-  &__back {
-    @include pdz-league-page-back-button();
-  }
-
   &__title {
     @include pdz-league-page-title();
   }

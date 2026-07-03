@@ -53,11 +53,11 @@
       </article>
     </div>
 
-    @if (teamData && teamData.draft.length) {
-      <article class="roster">
-        <header class="roster__header">
-          <h2 class="roster__title">Draft Roster</h2>
-        </header>
+    <article class="roster">
+      <header class="roster__header">
+        <h2 class="roster__title">Draft Roster</h2>
+      </header>
+      @if (teamData && teamData.draft.length) {
         <div class="stats-table-wrapper">
           <table class="stats-table">
             <thead>
@@ -121,16 +121,15 @@
             </tfoot>
           </table>
         </div>
-      </article>
-    } @else if (profile.draft && !rosterLoading) {
-      <article class="no-roster">
-        <p class="no-roster__text">You haven't drafted your team yet.</p>
-        <a class="no-roster__cta" [routerLink]="draftLink">
-          <pdz-icon name="east" [size]="18"></pdz-icon>
-          <span>Go to the Draft</span>
-        </a>
-      </article>
-    }
+      } @else if (profile.draft && !rosterLoading) {
+        <article class="no-roster">
+          <p class="no-roster__text">You haven't drafted your team yet.</p>
+          <a class="no-roster__cta" [routerLink]="draftLink">
+            <span> Draft</span>
+          </a>
+        </article>
+      }
+    </article>
   </section>
 } @else {
   <section class="signup">

@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { catchError, of, Subject, switchMap, takeUntil } from 'rxjs';
 import { AuthService } from '@pdz/core/services/auth0.service';
 import { LeagueZoneService } from '../../league-zone.service';
+import { LeagueManageService } from '../../league-manage/league-manage.service';
 import { League } from '../../league.interface';
 import { getLogoUrlOld } from '../../league.util';
 
@@ -16,6 +17,7 @@ import { getLogoUrlOld } from '../../league.util';
 export class TournamentNavComponent implements OnInit, OnDestroy {
   readonly leagueService = inject(LeagueZoneService);
   private readonly authService = inject(AuthService);
+  private readonly manageService = inject(LeagueManageService);
   private readonly destroy$ = new Subject<void>();
 
   leagueInfo: League.LeagueInfo | null = null;
@@ -23,6 +25,7 @@ export class TournamentNavComponent implements OnInit, OnDestroy {
   stages: League.StageSummary[] = [];
   selectedStageId: string | null = null;
   profileLoaded = false;
+  canManage = false;
 
   draftStatus: string | null = null;
 
@@ -40,13 +43,16 @@ export class TournamentNavComponent implements OnInit, OnDestroy {
     this.authService.isAuthenticated$
       .pipe(
         takeUntil(this.destroy$),
-        switchMap((isAuthenticated) =>
-          isAuthenticated
-            ? this.leagueService
-                .getCoachData({ suppressStatuses: [404] })
-                .pipe(catchError(() => of(null)))
-            : of(null),
-        ),
+        switchMap((isAuthenticated) => {
+          if (!isAuthenticated) {
+            this.canManage = false;
+            return of(null);
+          }
+          this.loadManageRoles();
+          return this.leagueService
+            .getCoachData({ suppressStatuses: [404] })
+            .pipe(catchError(() => of(null)));
+        }),
       )
       .subscribe((profile) => {
         this.profile = profile;
@@ -55,6 +61,21 @@ export class TournamentNavComponent implements OnInit, OnDestroy {
           this.loadStages();
           this.loadDraftStatus(profile.draft.draftKey);
         }
+      });
+  }
+
+  private loadManageRoles(): void {
+    const leagueKey = this.leagueKey;
+    const tournamentKey = this.tournamentKey;
+    if (!leagueKey || !tournamentKey) return;
+    this.manageService
+      .canManage(leagueKey, tournamentKey)
+      .pipe(
+        takeUntil(this.destroy$),
+        catchError(() => of([] as string[])),
+      )
+      .subscribe((roles) => {
+        this.canManage = roles.includes('organizer');
       });
   }
 
@@ -120,6 +141,12 @@ export class TournamentNavComponent implements OnInit, OnDestroy {
     const { leagueKey, tournamentKey } = this;
     if (!leagueKey || !tournamentKey) return [];
     return ['/leagues', leagueKey, 'tournaments', tournamentKey];
+  }
+
+  get manageLink(): string[] {
+    const base = this.tournamentBase();
+    if (!base.length) return [];
+    return [...base, 'manage'];
   }
 
   get draftBase(): string[] {

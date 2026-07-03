@@ -1,25 +1,11 @@
 @use "pdz-theming" as pdz;
 @use "mixins" as *;
-@use "mixins/buttons" as *;
 
 :host {
   display: block;
   position: relative;
   min-height: 100vh;
   background: pdz.color(background);
-}
-
-.back-btn {
-  position: absolute;
-  top: pdz.space(md);
-  left: pdz.space(md);
-  z-index: 100;
-  @include flat-button-menu();
-
-  @include respond-above(medium) {
-    top: pdz.space(xl);
-    left: pdz.space(xl);
-  }
 }
 
 .rules-page {

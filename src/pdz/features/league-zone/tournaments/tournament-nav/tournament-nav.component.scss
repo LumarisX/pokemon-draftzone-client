@@ -118,19 +118,12 @@
     }
   }
 
-  // Active (current route): keep normal text color, add a primary underline bar.
+  // Active (current route): mark by coloring the label primary.
   &.active {
-    color: pdz.color(on-surface);
+    color: pdz.color(primary);
 
-    &::after {
-      content: "";
-      position: absolute;
-      left: pdz.space(sm);
-      right: pdz.space(sm);
-      bottom: 0.15rem;
-      height: 0.125rem;
-      border-radius: pdz.shape(corner-full);
-      background-color: pdz.color(primary);
+    &:hover {
+      color: pdz.color(primary);
     }
   }
 }

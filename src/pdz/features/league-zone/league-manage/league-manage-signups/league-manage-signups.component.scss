@@ -1,206 +1,386 @@
 @use "pdz-theming" as pdz;
-@use "_mixins" as *;
-table {
-  border-collapse: collapse;
-  table-layout: auto;
-}
+@use "mixins" as *;
+@use "mixins/buttons" as *;
 
-th,
-td {
-  border: 1px solid pdz.color(outline-variant);
-  padding: 8px;
-  text-align: left;
-  word-wrap: break-word;
-}
+:host {
+  display: block;
+  min-width: 0;
+  padding: pdz.space(lg);
+  max-width: 90rem;
+  margin: 0 auto;
 
-th {
-  background-color: pdz.color(surface-container);
-  color: pdz.color(on-surface);
-}
-
-tr:nth-child(even) {
-  background-color: pdz.color(surface-container-lowest);
-}
-
-tr:hover {
-  background-color: pdz.color(surface-container-low);
-}
-
-.table-container {
-  padding: 16px;
-  width: 100%;
-  border-radius: pdz.shape(corner-md);
-  box-shadow: var(--pdz-level-1);
-
-  table {
-    width: 100%;
-    overflow: auto;
-    max-height: 40rem;
-  }
-
-  thead th {
-    position: sticky;
-    top: 0;
-    z-index: 1;
+  @include respond-above(medium) {
+    padding: pdz.space(xl);
   }
 }
 
-h2 {
-  font-family: var(--pdz-font-fancy);
-  font-size: 1.5rem;
-}
+// ── Page header ───────────────────────────────────────────────────────────────
 
-.signups-header {
+.page-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: pdz.space(md);
-  padding: pdz.space(lg);
+  flex-wrap: wrap;
+  margin-bottom: pdz.space(xl);
+
+  &__title {
+    @include apply-typography(headline-sm);
+    font-family: var(--pdz-font-fancy);
+    color: pdz.color(on-surface);
+    margin: 0;
+  }
 
   &__actions {
     display: flex;
     gap: pdz.space(sm);
-    flex-wrap: wrap;
+  }
+}
+
+.btn {
+  @include flat-button-primary(
+    (
+      padding: pdz.space(xs) pdz.space(lg),
+      border-radius: pdz.shape(corner-sm),
+      font-weight: 600,
+    )
+  );
+
+  &--ghost {
+    @include flat-button(
+      (
+        padding: pdz.space(xs) pdz.space(lg),
+        border-radius: pdz.shape(corner-sm),
+        background: pdz.color(surface-container),
+        background-hover: pdz.color(surface-container-low),
+        color: pdz.color(on-surface),
+        font-weight: 600,
+      )
+    );
+  }
+}
+
+// ── Pool (draft division) ─────────────────────────────────────────────────────
+
+.pool {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(md);
+  margin-bottom: pdz.space(2xl);
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: pdz.space(sm);
+    padding-bottom: pdz.space(xs);
+    border-bottom: 2px solid pdz.color(primary);
   }
 
-  &__button {
-    border: 1px solid pdz.color(primary-border);
+  &__title {
+    @include apply-typography(title-md);
+    font-family: var(--pdz-font-fancy);
+    color: pdz.color(on-surface);
+    margin: 0;
+  }
+
+  &__count {
+    @include apply-typography(label-sm);
+    color: pdz.color(on-surface-variant);
+    background: pdz.color(surface-container);
+    border-radius: pdz.shape(corner-full);
+    padding: pdz.space(2xs) pdz.space(sm);
+    margin-right: auto;
+  }
+
+  &__move-btn {
+    @include flat-button-primary(
+      (
+        padding: pdz.space(xs) pdz.space(md),
+        border-radius: pdz.shape(corner-sm),
+        font-weight: 600,
+      )
+    );
+  }
+
+  &__cards {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: pdz.space(md);
+
+    @include respond-above(small) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @include respond-above(large) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+}
+
+// ── Signup card ───────────────────────────────────────────────────────────────
+
+.signup-card {
+  display: flex;
+  flex-direction: column;
+  border-radius: pdz.shape(corner-md);
+  border: 1px solid pdz.color(outline-variant);
+  background: pdz.color(surface);
+  box-shadow: var(--pdz-level-1);
+  overflow: hidden;
+  transition:
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+
+  &--selected {
+    border-color: pdz.color(primary);
+    box-shadow:
+      0 0 0 2px pdz.color(primary),
+      var(--pdz-level-1);
+  }
+
+  // ── Team row ──────────────────────────────────────────────────────────────
+
+  &__team {
+    display: flex;
+    align-items: center;
+    gap: pdz.space(md);
+    padding: pdz.space(md);
+    background: pdz.color(surface-container-low);
+    border-bottom: 1px solid pdz.color(outline-variant);
+  }
+
+  &__logo {
+    flex-shrink: 0;
+    width: 3.25rem;
+    height: 3.25rem;
+    border: none;
     border-radius: pdz.shape(corner-sm);
-    background-color: pdz.color(primary-container);
-    color: pdz.color(on-primary-container);
-    padding: 0.35rem 0.85rem;
-    font-weight: 600;
+    background: pdz.color(surface-container);
+    padding: 0;
     cursor: pointer;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.2s ease;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
 
     &:hover:not(:disabled) {
-      background-color: pdz.color(primary-container-hover);
+      opacity: 0.75;
     }
 
     &:disabled {
       cursor: not-allowed;
-      opacity: 0.6;
+      opacity: 0.5;
     }
+  }
 
-    &--ghost {
-      background-color: pdz.color(surface-container);
+  &__logo-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: pdz.color(on-surface-variant);
+    opacity: 0.6;
+  }
+
+  &__team-name-wrap {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: pdz.space(2xs);
+  }
+
+  &__team-name {
+    @include apply-typography(title-sm);
+    font-family: var(--pdz-font-fancy);
+    color: pdz.color(on-surface);
+    word-break: break-word;
+  }
+
+  &__upload-error {
+    @include apply-typography(label-sm);
+    color: pdz.color(error);
+  }
+
+  &__team-actions {
+    display: flex;
+    align-items: center;
+    gap: pdz.space(xs);
+    flex-shrink: 0;
+  }
+
+  &__checkbox-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  &__checkbox {
+    width: 1.1rem;
+    height: 1.1rem;
+    accent-color: pdz.color(primary);
+    cursor: pointer;
+  }
+
+  // ── Coach row ─────────────────────────────────────────────────────────────
+
+  &__coach {
+    display: flex;
+    align-items: flex-start;
+    gap: pdz.space(sm);
+    padding: pdz.space(md);
+    flex: 1;
+  }
+
+  &__coach-main {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: pdz.space(sm);
+  }
+
+  &__coach-name {
+    @include apply-typography(body-md);
+    font-weight: 600;
+    color: pdz.color(on-surface);
+  }
+
+  &__coach-fields {
+    display: flex;
+    flex-wrap: wrap;
+    gap: pdz.space(sm) pdz.space(lg);
+  }
+
+  // ── Shared edit button ────────────────────────────────────────────────────
+
+  &__edit-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: pdz.space(xs);
+    border: none;
+    border-radius: pdz.shape(corner-full);
+    background: transparent;
+    color: pdz.color(on-surface-variant);
+    opacity: 0.45;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition:
+      opacity 0.2s ease,
+      background 0.2s ease,
+      color 0.2s ease;
+
+    &:hover,
+    &:focus-visible {
+      opacity: 1;
       color: pdz.color(on-surface);
+      background: pdz.color(surface-container-high);
+    }
+  }
 
-      &:hover:not(:disabled) {
-        background-color: pdz.color(surface-container-low);
-      }
+  // ── Footer ────────────────────────────────────────────────────────────────
+
+  &__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: pdz.space(sm);
+    padding: pdz.space(sm) pdz.space(md);
+    border-top: 1px solid pdz.color(outline-variant);
+    background: pdz.color(surface-container-lowest);
+  }
+
+  &__badges {
+    display: flex;
+    gap: pdz.space(xs);
+  }
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    gap: pdz.space(xs);
+  }
+
+  &__date {
+    @include apply-typography(label-sm);
+    color: pdz.color(on-surface-variant);
+  }
+
+  &__team-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: pdz.shape(corner-xs);
+    color: pdz.color(primary);
+    text-decoration: none;
+
+    &:hover {
+      background: pdz.color(primary-container);
     }
   }
 }
 
-img {
-  height: 4rem;
-  width: 4rem;
+// ── Coach fields ──────────────────────────────────────────────────────────────
+
+.coach-field {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+
+  &__label {
+    @include apply-typography(label-sm);
+    color: pdz.color(on-surface-variant);
+    font-weight: 600;
+  }
+
+  &__value {
+    @include apply-typography(body-sm);
+    color: pdz.color(on-surface);
+    word-break: break-word;
+  }
 }
+
+// ── Status badges ─────────────────────────────────────────────────────────────
+
+.status-badge {
+  @include apply-typography(label-sm);
+  display: inline-flex;
+  align-items: center;
+  padding: pdz.space(2xs) pdz.space(xs);
+  border-radius: pdz.shape(corner-full);
+  font-weight: 600;
+  line-height: 1;
+
+  &--yes {
+    background: pdz.color(success-container);
+    color: pdz.color(on-success-container);
+  }
+
+  &--no {
+    background: pdz.color(surface-container);
+    color: pdz.color(on-surface-variant);
+    opacity: 0.6;
+  }
+}
+
+// ── Misc ──────────────────────────────────────────────────────────────────────
 
 .file-input-hidden {
   display: none;
 }
 
-.logo-cell {
-  vertical-align: top;
-}
-
-.logo-button {
-  border: none;
-  background: transparent;
-  padding: 0;
-  width: 4rem;
-  height: 4rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-
-  &:disabled {
-    cursor: not-allowed;
-    opacity: 0.6;
-  }
-}
-
-.add-logo-btn {
-  min-height: 4rem;
-  height: 100%;
-  width: 4rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: pdz.color(primary-container);
-  &:hover {
-    background-color: pdz.color(primary-hover);
-  }
-}
-
-.logo-error {
-  margin-top: 0.35rem;
-  font-size: 0.8rem;
-  color: pdz.color(error);
-}
-
-.logo-uploading {
-  margin-top: 0.35rem;
-  font-size: 0.8rem;
+.empty-state {
+  @include apply-typography(body-md);
   color: pdz.color(on-surface-variant);
-}
-
-.readonly-checkbox {
-  pointer-events: none;
-}
-
-.division-header {
-  display: flex;
-  gap: pdz.space(md);
-  margin-bottom: pdz.space(sm);
-}
-
-.division-move-btn {
-  box-shadow: var(--pdz-level-1);
-  border-radius: pdz.shape(corner-sm);
-  padding: 0 pdz.space(sm);
-  background-color: pdz.color(surface-container);
-  &:hover {
-    background-color: pdz.color(surface-container-low);
-  }
-}
-
-.division-title {
-  @include apply-typography(title-md);
-}
-
-.time-cell {
-  display: flex;
-  flex-direction: column;
-  gap: 0.1rem;
-
-  &__time {
-    font-weight: 600;
-  }
-
-  &__zone {
-    font-size: 0.85rem;
-    color: pdz.color(on-surface-variant);
-  }
-}
-
-.team-link {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 2rem;
-  height: 2rem;
-  border-radius: pdz.shape(corner-sm);
-  color: pdz.color(primary);
-
-  &:hover {
-    background-color: pdz.color(primary-container);
-  }
-
-  &--disabled {
-    color: pdz.color(on-surface-variant);
-    opacity: 0.6;
-  }
+  padding: pdz.space(xl);
+  text-align: center;
 }

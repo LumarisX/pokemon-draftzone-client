@@ -75,16 +75,6 @@
     }
   }
 
-  &__back {
-    @include pdz-league-page-back-button();
-    margin-bottom: pdz.space(2xs);
-
-    @include respond-above(medium) {
-      margin-bottom: 0;
-      align-self: flex-start;
-    }
-  }
-
   &__team-name {
     @include apply-typography(headline-md);
     color: pdz.color(primary);

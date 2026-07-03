@@ -176,15 +176,13 @@
 // ─── Empty roster prompt ─────────────────────────────────────────────────
 .no-roster {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  justify-content: space-between;
+  align-items: center;
   gap: pdz.space(md);
   max-width: 42rem;
   padding: pdz.space(lg);
   border-radius: pdz.shape(corner-md);
-  border: 1px dashed pdz.color(outline-variant);
-  background: pdz.color(surface-container-low);
-
+  box-shadow: var(--pdz-level-2);
   &__text {
     @include apply-typography(body-md);
     color: pdz.color(on-surface-variant);

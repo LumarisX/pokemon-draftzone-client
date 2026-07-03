@@ -15,10 +15,6 @@
     gap: pdz.space(md);
   }
 
-  &__back {
-    @include pdz-league-page-back-button();
-  }
-
   &__title {
     @include pdz-league-page-title();
   }

@@ -19,12 +19,25 @@ import {
   takeUntil,
   tap,
 } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LeagueZoneService } from '../../league-zone.service';
 import { League } from '../../league.interface';
-import { getLogoUrlOld } from '../../league.util';
 import { FormsModule } from '@angular/forms';
 import { UploadService } from '@pdz/core/services/upload.service';
+import {
+  CoachEditDialogComponent,
+  CoachEditDialogData,
+} from '../../tournaments/tournament-home/coach-edit-dialog/coach-edit-dialog.component';
+import {
+  TeamEditDialogComponent,
+  TeamEditDialogData,
+} from '../../tournaments/tournament-home/team-edit-dialog/team-edit-dialog.component';
+
+type SignUpEntry = League.LeagueSignUp & {
+  selected?: boolean;
+  modified?: boolean;
+};
 
 @Component({
   selector: 'pdz-league-manage-signups',
@@ -34,10 +47,7 @@ import { UploadService } from '@pdz/core/services/upload.service';
 })
 export class LeagueManageSignupsComponent implements OnInit, OnDestroy {
   tournamentId: string | null = null;
-  signUps: (League.LeagueSignUp & {
-    selected?: boolean;
-    modified?: boolean;
-  })[] = [];
+  signUps: SignUpEntry[] = [];
   originalSignUps: League.LeagueSignUp[] = [];
   drafts: ({ name: string; draftKey: string } | undefined)[] = [];
   modified = false;
@@ -47,10 +57,11 @@ export class LeagueManageSignupsComponent implements OnInit, OnDestroy {
   route = inject(ActivatedRoute);
   leagueService = inject(LeagueZoneService);
   uploadService = inject(UploadService);
+  private dialog = inject(MatDialog);
 
   uploadingForId: string | null = null;
   uploadErrorById: Record<string, string> = {};
-  private selectedSignup: League.LeagueSignUp | null = null;
+  private selectedSignup: SignUpEntry | null = null;
   private destroy$ = new Subject<void>();
   currentTime = new Date();
 
@@ -90,13 +101,8 @@ export class LeagueManageSignupsComponent implements OnInit, OnDestroy {
     });
   }
 
-  getLogoUrl = getLogoUrlOld('league-uploads');
-
   getCurrentTimeForTimezone(timezone?: string | null): string {
-    if (!timezone) {
-      return 'Unknown';
-    }
-
+    if (!timezone) return 'Unknown';
     try {
       return new Intl.DateTimeFormat('en-US', {
         timeStyle: 'short',
@@ -107,12 +113,8 @@ export class LeagueManageSignupsComponent implements OnInit, OnDestroy {
     }
   }
 
-  onLogoCellClick(signUp: League.LeagueSignUp): void {
-    if (!signUp.id) {
-      console.warn('Cannot upload logo: signup id missing');
-      return;
-    }
-
+  onLogoCellClick(signUp: SignUpEntry): void {
+    if (!signUp.id) return;
     this.selectedSignup = signUp;
     this.uploadErrorById[signUp.id] = '';
     this.logoFileInput?.nativeElement.click();
@@ -122,22 +124,23 @@ export class LeagueManageSignupsComponent implements OnInit, OnDestroy {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
     const signup = this.selectedSignup;
+    input.value = '';
+    this.selectedSignup = null;
+    if (!file || !signup) return;
+    this.uploadLogo(signup, file);
+  }
 
-    if (!file || !signup || !signup.id) {
-      input.value = '';
-      return;
-    }
+  private uploadLogo(signup: SignUpEntry, file: File): void {
+    if (!signup.id) return;
 
     const validation = this.validateFile(file);
     if (!validation.valid) {
       this.uploadErrorById[signup.id] = validation.error || 'Invalid file';
-      input.value = '';
       return;
     }
 
     this.uploadingForId = signup.id;
     this.uploadErrorById[signup.id] = '';
-
     let uploadedFileKey: string | null = null;
 
     this.leagueService
@@ -147,53 +150,32 @@ export class LeagueManageSignupsComponent implements OnInit, OnDestroy {
           uploadedFileKey = response.key;
         }),
         switchMap((response) => {
-          if (!response?.url) {
-            throw new Error('Failed to get pre-signed URL from server');
-          }
+          if (!response?.url) throw new Error('Failed to get pre-signed URL from server');
           return this.uploadService.uploadToS3(response.url, file);
         }),
         switchMap((s3Response) => {
-          if (s3Response.type === HttpEventType.UploadProgress) {
-            return of(null);
-          }
+          if (s3Response.type === HttpEventType.UploadProgress) return of(null);
           if (s3Response instanceof HttpResponse) {
             if (s3Response.ok && uploadedFileKey) {
-              return this.leagueService.updateCoachLogo(
-                signup.id,
-                uploadedFileKey,
-              );
+              return this.leagueService.updateCoachLogo(signup.id, uploadedFileKey);
             }
-            throw new Error(
-              `S3 upload failed with status: ${s3Response.status}`,
-            );
+            throw new Error(`S3 upload failed with status: ${s3Response.status}`);
           }
           return of(null);
         }),
         catchError((error) => {
-          const message = error?.message || 'Upload failed';
-          this.uploadErrorById[signup.id] = message;
+          this.uploadErrorById[signup.id] = error?.message || 'Upload failed';
           this.uploadingForId = null;
-          this.selectedSignup = null;
           return of(null);
         }),
         finalize(() => {
           this.uploadingForId = null;
-          input.value = '';
-          this.selectedSignup = null;
         }),
         takeUntil(this.destroy$),
       )
       .subscribe({
         next: (response) => {
-          if (response) {
-            this.uploadingForId = null;
-            this.selectedSignup = null;
-            this.getSignUps();
-          }
-        },
-        error: () => {
-          this.uploadingForId = null;
-          this.selectedSignup = null;
+          if (response) this.getSignUps();
         },
       });
   }
@@ -205,14 +187,12 @@ export class LeagueManageSignupsComponent implements OnInit, OnDestroy {
         error: `Invalid file type. Allowed: ${this.ALLOWED_TYPES.join(', ')}`,
       };
     }
-
     if (file.size > this.MAX_FILE_SIZE) {
       return {
         valid: false,
-        error: `File size exceeds maximum (${this.MAX_FILE_SIZE / 1024 / 1024}MB)`,
+        error: `File size exceeds ${this.MAX_FILE_SIZE / 1024 / 1024}MB`,
       };
     }
-
     if (
       file.name.includes('..') ||
       file.name.includes('/') ||
@@ -220,20 +200,21 @@ export class LeagueManageSignupsComponent implements OnInit, OnDestroy {
     ) {
       return { valid: false, error: 'Invalid file name' };
     }
-
     return { valid: true };
   }
 
-  signUpInDraft(draftKey?: string) {
+  signUpInDraft(draftKey?: string): SignUpEntry[] {
     return this.signUps.filter((s) => s.draft == draftKey);
+  }
+
+  anySelected(): boolean {
+    return this.signUps.some((s) => s.selected);
   }
 
   getTeamLink(user: League.LeagueSignUp): string[] | null {
     const leagueKey = this.leagueService.leagueKey();
     const tournamentKey = this.leagueService.tournamentKey();
-    if (!leagueKey || !tournamentKey || !user.teamId) {
-      return null;
-    }
+    if (!leagueKey || !tournamentKey || !user.teamId) return null;
     return [
       '/leagues',
       leagueKey,
@@ -244,7 +225,7 @@ export class LeagueManageSignupsComponent implements OnInit, OnDestroy {
     ];
   }
 
-  moveToDraft(draftKey?: string) {
+  moveToDraft(draftKey?: string): void {
     for (const signUp of this.signUps) {
       if (signUp.selected) {
         signUp.draft = draftKey;
@@ -276,5 +257,53 @@ export class LeagueManageSignupsComponent implements OnInit, OnDestroy {
   revertChanges(): void {
     this.signUps = JSON.parse(JSON.stringify(this.originalSignUps));
     this.modified = false;
+  }
+
+  openTeamEdit(signup: SignUpEntry): void {
+    const dialogRef = this.dialog.open(TeamEditDialogComponent, {
+      width: '32rem',
+      maxWidth: '95vw',
+      autoFocus: 'first-tabbable',
+      data: {
+        teamName: signup.teamName,
+        logoUrl: signup.logo || undefined,
+      } satisfies TeamEditDialogData,
+    });
+
+    dialogRef
+      .afterClosed()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((result) => {
+        if (!result) return;
+        signup.teamName = result.teamName;
+        if (result.logoFile) {
+          this.uploadLogo(signup, result.logoFile);
+        }
+      });
+  }
+
+  openCoachEdit(signup: SignUpEntry): void {
+    const dialogRef = this.dialog.open(CoachEditDialogComponent, {
+      width: '32rem',
+      maxWidth: '95vw',
+      autoFocus: 'first-tabbable',
+      data: {
+        name: signup.name,
+        gameName: signup.gameName,
+        discordName: signup.discordName,
+        timezone: signup.timezone,
+      } satisfies CoachEditDialogData,
+    });
+
+    dialogRef
+      .afterClosed()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((result) => {
+        if (!result) return;
+        signup.name = result.name;
+        signup.gameName = result.gameName;
+        signup.discordName = result.discordName;
+        signup.timezone = result.timezone;
+      });
   }
 }

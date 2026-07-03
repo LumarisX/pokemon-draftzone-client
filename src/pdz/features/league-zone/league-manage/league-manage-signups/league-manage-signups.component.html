@@ -1,9 +1,9 @@
-<div class="signups-header">
-  <h2>League Sign-Ups</h2>
-  <div class="signups-header__actions">
+<div class="page-header">
+  <h2 class="page-header__title">League Sign-Ups</h2>
+  <div class="page-header__actions">
     <button
       type="button"
-      class="signups-header__button"
+      class="btn btn--primary"
       (click)="saveChanges()"
       [disabled]="!modified"
     >
@@ -11,7 +11,7 @@
     </button>
     <button
       type="button"
-      class="signups-header__button signups-header__button--ghost"
+      class="btn btn--ghost"
       (click)="revertChanges()"
       [disabled]="!modified"
     >
@@ -30,127 +30,157 @@
   />
 
   @for (draft of drafts; track draft?.draftKey) {
-    <div class="table-container">
-      <div class="division-header">
-        <div class="division-title">{{ draft?.name ?? "No Draft" }}</div>
+    <section class="pool">
+      <header class="pool__header">
+        <h3 class="pool__title">{{ draft?.name ?? "No Draft" }}</h3>
+        <span class="pool__count">{{ signUpInDraft(draft?.draftKey).length }}</span>
         <button
-          class="division-move-btn"
+          type="button"
+          class="pool__move-btn"
           (click)="moveToDraft(draft?.draftKey)"
         >
           Move Here
         </button>
-      </div>
+      </header>
 
-      <table>
-        <thead>
-          <tr>
-            <th></th>
-            <th>#</th>
-            <th>Name</th>
-            <th>Showdown Name</th>
-            <th>Discord Name</th>
-            <th>Time</th>
-            <th>Experience</th>
-            <th>Dropped</th>
-            <th>Signed Up At</th>
-            <th>Team Name</th>
-            <th>Logo</th>
-            <th>Joined</th>
-            <th>Role</th>
-            <th>Team Page</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (user of signUpInDraft(draft?.draftKey); track user) {
-            <tr>
-              <td>
-                <input type="checkbox" [(ngModel)]="user.selected" />
-              </td>
-              <td>{{ $index + 1 }}</td>
-              <td>{{ user.name }}</td>
-              <td>{{ user.gameName }}</td>
-              <td>{{ user.discordName }}</td>
-              <td>
-                <div class="time-cell">
-                  <div class="time-cell__time">
-                    {{ getCurrentTimeForTimezone(user.timezone) }}
+      <div class="pool__cards">
+        @for (signup of signUpInDraft(draft?.draftKey); track signup.id) {
+          <article
+            class="signup-card"
+            [class.signup-card--selected]="signup.selected"
+          >
+            <!-- Team row -->
+            <div class="signup-card__team">
+              <button
+                type="button"
+                class="signup-card__logo"
+                (click)="onLogoCellClick(signup)"
+                [disabled]="!signup.id || uploadingForId === signup.id"
+                [attr.aria-label]="signup.logo ? 'Replace logo' : 'Upload logo'"
+              >
+                @if (signup.logo) {
+                  <img [src]="signup.logo" alt="" />
+                } @else if (uploadingForId === signup.id) {
+                  <div class="signup-card__logo-placeholder">
+                    <pdz-icon name="hourglass_empty" [size]="22"></pdz-icon>
                   </div>
-                  <div class="time-cell__zone">
-                    ({{ user.timezone || "Unknown" }})
+                } @else {
+                  <div class="signup-card__logo-placeholder">
+                    <pdz-icon name="add_photo_alternate" [size]="22"></pdz-icon>
                   </div>
-                </div>
-              </td>
-              <td>{{ user.experience }}</td>
-              <td>{{ user.dropped }}</td>
-              <td>{{ user.signedUpAt | date: "short" }}</td>
-              <td>{{ user.teamName }}</td>
-              <td class="logo-cell">
+                }
+              </button>
+
+              <div class="signup-card__team-name-wrap">
+                <span class="signup-card__team-name">{{ signup.teamName }}</span>
+                @if (signup.id && uploadErrorById[signup.id]) {
+                  <span class="signup-card__upload-error">
+                    {{ uploadErrorById[signup.id] }}
+                  </span>
+                }
+              </div>
+
+              <div class="signup-card__team-actions">
+                <label
+                  class="signup-card__checkbox-label"
+                  [attr.aria-label]="'Select ' + signup.teamName"
+                >
+                  <input
+                    type="checkbox"
+                    class="signup-card__checkbox"
+                    [(ngModel)]="signup.selected"
+                  />
+                </label>
                 <button
                   type="button"
-                  class="logo-button"
-                  (click)="onLogoCellClick(user)"
-                  [disabled]="!user.id || uploadingForId === user.id"
-                  [attr.aria-label]="user.logo ? 'Replace logo' : 'Add logo'"
+                  class="signup-card__edit-btn"
+                  (click)="openTeamEdit(signup)"
+                  aria-label="Edit team info"
                 >
-                  @if (user.logo) {
-                    <img [src]="user.logo" alt="" />
-                  } @else {
-                    <div class="add-logo-btn">
-                      <pdz-icon name="add"> </pdz-icon>
+                  <pdz-icon name="edit" [size]="16"></pdz-icon>
+                </button>
+              </div>
+            </div>
+
+            <!-- Coach row -->
+            <div class="signup-card__coach">
+              <div class="signup-card__coach-main">
+                <span class="signup-card__coach-name">{{ signup.name }}</span>
+                <div class="signup-card__coach-fields">
+                  <div class="coach-field">
+                    <span class="coach-field__label">Showdown</span>
+                    <span class="coach-field__value">{{ signup.gameName }}</span>
+                  </div>
+                  <div class="coach-field">
+                    <span class="coach-field__label">Discord</span>
+                    <span class="coach-field__value">{{ signup.discordName }}</span>
+                  </div>
+                  <div class="coach-field">
+                    <span class="coach-field__label">Local Time</span>
+                    <span class="coach-field__value" [title]="signup.timezone">
+                      {{ getCurrentTimeForTimezone(signup.timezone) }}
+                    </span>
+                  </div>
+                  @if (signup.experience) {
+                    <div class="coach-field">
+                      <span class="coach-field__label">Experience</span>
+                      <span class="coach-field__value">{{ signup.experience }}</span>
                     </div>
                   }
-                </button>
-                @if (user.id && uploadErrorById[user.id]) {
-                  <div class="logo-error">{{ uploadErrorById[user.id] }}</div>
-                }
-                @if (uploadingForId === user.id) {
-                  <div class="logo-uploading">Uploading...</div>
-                }
-              </td>
-              <td>
-                <input
-                  type="checkbox"
-                  class="readonly-checkbox"
-                  [checked]="user.inDiscordServer"
-                  tabindex="-1"
-                  aria-readonly="true"
-                />
-              </td>
-              <td>
-                <input
-                  type="checkbox"
-                  class="readonly-checkbox"
-                  [checked]="user.hasDiscordRole"
-                  tabindex="-1"
-                  aria-readonly="true"
-                />
-              </td>
-              <td>
-                @if (getTeamLink(user); as teamLink) {
+                </div>
+              </div>
+              <button
+                type="button"
+                class="signup-card__edit-btn"
+                (click)="openCoachEdit(signup)"
+                aria-label="Edit coach info"
+              >
+                <pdz-icon name="edit" [size]="16"></pdz-icon>
+              </button>
+            </div>
+
+            <!-- Footer -->
+            <footer class="signup-card__footer">
+              <div class="signup-card__badges">
+                <span
+                  class="status-badge"
+                  [class.status-badge--yes]="signup.inDiscordServer"
+                  [class.status-badge--no]="!signup.inDiscordServer"
+                  title="In Discord Server"
+                >
+                  Server
+                </span>
+                <span
+                  class="status-badge"
+                  [class.status-badge--yes]="signup.hasDiscordRole"
+                  [class.status-badge--no]="!signup.hasDiscordRole"
+                  title="Has Discord Role"
+                >
+                  Role
+                </span>
+              </div>
+              <div class="signup-card__meta">
+                <span class="signup-card__date">
+                  {{ signup.signedUpAt | date: "shortDate" }}
+                </span>
+                @if (getTeamLink(signup); as teamLink) {
                   <a
                     [routerLink]="teamLink"
                     target="_blank"
                     rel="noopener"
-                    class="team-link"
-                    [attr.aria-label]="'View team ' + user.teamName + ' in a new tab'"
+                    class="signup-card__team-link"
+                    [attr.aria-label]="'View team ' + signup.teamName + ' in a new tab'"
                   >
-                    <pdz-icon name="open_in_new" size="sm"></pdz-icon>
+                    <pdz-icon name="open_in_new" [size]="14"></pdz-icon>
                   </a>
-                } @else {
-                  <span
-                    class="team-link--disabled"
-                    title="No team page available for this signup"
-                  >
-                    &mdash;
-                  </span>
                 }
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+              </div>
+            </footer>
+          </article>
+        }
+      </div>
+    </section>
   }
 } @else {
-  <p>No sign-ups found for this league.</p>
+  <p class="empty-state">No sign-ups found for this league.</p>
 }
