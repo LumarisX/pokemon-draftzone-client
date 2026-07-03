@@ -2,6 +2,40 @@ import { News } from './news.service';
 
 export const NEWS: News[] = [
   {
+    title: 'New Champions M-B VGC Draft Tournament!',
+    date: '2026-07-03T15:00:00-07:00',
+    sections: [
+      {
+        type: 'para',
+        description: `We are hosting a Champions M-B draft tournament! In this tournament you will be able to register a team of Pokemon from our draft board without having to worry about other people sniping your choices. Just put together the best roster you can and compete head to head with other coaches in a double elimination bracket. Having Champions is completely optional so if you are looking to try drafting some fun combinations in M-B, this is the place to be!`,
+      },
+      {
+        type: 'images',
+        images: [
+          {
+            imageUrl: `https://pokemondraftzone-public.s3.us-east-2.amazonaws.com/league-uploads/Champions_MB_Open_Draft.png`,
+            size: 'large',
+          },
+        ],
+      },
+      {
+        type: 'buttons',
+        buttons: [
+          {
+            text: 'Sign up',
+            href: 'https://pokemondraftzone.com/leagues/dods/tournaments/cup-1',
+            newWindow: true,
+          },
+          {
+            text: 'Rules',
+            href: 'https://pokemondraftzone.com/leagues/dods/tournaments/cup-1/rules',
+            newWindow: true,
+          },
+        ],
+      },
+    ],
+  },
+  {
     title: 'New designs just in time for summer!',
     date: '2026-06-02T10:00:00-07:00',
     sections: [
