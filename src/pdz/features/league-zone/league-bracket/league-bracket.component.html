@@ -1,1 +1,24 @@
-<pdz-league-bracket-flex [bracketData]="bracketData"></pdz-league-bracket-flex>
+@if (bracketData?.seeding; as seeding) {
+  <div
+    class="seeding-badge"
+    [class.seeding-badge--certified]="seeding.method === 'certified-random'"
+    [title]="
+      seeding.method === 'certified-random'
+        ? 'Seeds were assigned by DraftZone\'s unbiased one-shot randomization — organizers cannot pick or re-roll placements.'
+        : 'Seed placements were set by the tournament organizers.'
+    "
+  >
+    @if (seeding.method === 'certified-random') {
+      <span class="seeding-badge__title">✓ Certified Random Seeding</span>
+      <span class="seeding-badge__detail">
+        Randomized by DraftZone · {{ seeding.seededAt | date: 'MMM d, y' }}
+        @if (seeding.timesSeeded > 1) {
+          · randomized {{ seeding.timesSeeded }} times
+        }
+      </span>
+    } @else {
+      <span class="seeding-badge__title">Seeded by organizers</span>
+    }
+  </div>
+}
+<pdz-league-bracket-canvas [bracketData]="bracketData"></pdz-league-bracket-canvas>

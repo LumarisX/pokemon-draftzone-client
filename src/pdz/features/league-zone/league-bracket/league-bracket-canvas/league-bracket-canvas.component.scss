@@ -1,0 +1,217 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+
+  .bracket-container {
+    width: 100%;
+    padding: pdz.space(lg);
+
+    h2 {
+      @include pdz.font-size(1.25rem, 1.4);
+      font-weight: 600;
+      text-align: center;
+      color: pdz.color("on-surface");
+      margin: 0 0 pdz.space(xl) 0;
+    }
+  }
+
+  .canvas-host {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    border: 1px solid pdz.color("outline-variant");
+    border-radius: pdz.shape(corner-md);
+    background: pdz.color("surface");
+
+    canvas {
+      display: block;
+      // We handle all panning/zooming; stop the browser from scrolling on touch.
+      touch-action: none;
+    }
+  }
+
+  .canvas-toolbar {
+    position: absolute;
+    top: pdz.space(sm);
+    right: pdz.space(sm);
+    display: flex;
+    gap: pdz.space(xs);
+    z-index: 6;
+  }
+
+  .toolbar-btn {
+    padding: pdz.space(2xs) pdz.space(sm);
+    border: 1px solid pdz.color("outline-variant");
+    border-radius: pdz.shape(corner-full);
+    background: pdz.color("surface-container-low");
+    color: pdz.color("on-surface-variant");
+    @include pdz.font-size(0.8rem, 1.2);
+    cursor: pointer;
+    box-shadow: var(--pdz-level-1);
+    transition: all 160ms ease;
+
+    &:hover {
+      border-color: pdz.color("primary");
+      color: pdz.color("primary");
+    }
+
+    &--danger:hover {
+      border-color: pdz.color("negative");
+      color: pdz.color("negative");
+    }
+
+    &--primary {
+      background: pdz.color("primary");
+      border-color: pdz.color("primary");
+      color: pdz.color("on-primary");
+
+      &:hover {
+        background: pdz.color("primary-darker");
+        border-color: pdz.color("primary-darker");
+        color: pdz.color("on-primary");
+      }
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        background: pdz.color("surface-container-low");
+        border-color: pdz.color("outline-variant");
+        color: pdz.color("on-surface-variant");
+      }
+    }
+  }
+
+  .section-prompt {
+    position: absolute;
+    top: calc(pdz.space(sm) + 2.2rem);
+    right: pdz.space(sm);
+    display: flex;
+    gap: pdz.space(xs);
+    padding: pdz.space(xs);
+    border: 1px solid pdz.color("outline-variant");
+    border-radius: pdz.shape(corner-sm);
+    background: pdz.color("surface-container");
+    box-shadow: var(--pdz-level-2);
+    z-index: 6;
+
+    input {
+      width: 220px;
+      padding: pdz.space(2xs) pdz.space(sm);
+      border: 1px solid pdz.color("outline-variant");
+      border-radius: pdz.shape(corner-sm);
+      background: pdz.color("surface");
+      color: pdz.color("on-surface");
+      @include pdz.font-size(0.85rem, 1.2);
+    }
+  }
+
+  .title-overlay {
+    position: absolute;
+    z-index: 5;
+    border: 1px solid pdz.color("primary");
+    border-radius: pdz.shape(corner-sm);
+    background: pdz.color("surface-container");
+    color: pdz.color("on-surface");
+    @include pdz.font-size(0.85rem, 1.2);
+    font-family: var(--pdz-font-fancy);
+    text-align: center;
+    padding: 0 pdz.space(xs);
+  }
+
+  .editor-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    z-index: 7;
+  }
+
+  .match-editor {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(360px, calc(100% - 2rem));
+    display: flex;
+    flex-direction: column;
+    gap: pdz.space(sm);
+    padding: pdz.space(lg);
+    border: 1px solid pdz.color("outline-variant");
+    border-radius: pdz.shape(corner-md);
+    background: pdz.color("surface-container");
+    box-shadow: var(--pdz-level-3);
+    z-index: 8;
+
+    &__title {
+      margin: 0;
+      @include pdz.font-size(1rem, 1.3);
+      font-family: var(--pdz-font-fancy);
+      color: pdz.color("on-surface");
+    }
+
+    &__field {
+      display: flex;
+      flex-direction: column;
+      gap: pdz.space(2xs);
+
+      span {
+        @include pdz.font-size(0.78rem, 1.2);
+        color: pdz.color("on-surface-variant");
+      }
+    }
+
+    &__slot {
+      display: flex;
+      flex-direction: column;
+      gap: pdz.space(xs);
+      padding: pdz.space(sm);
+      border: 1px solid pdz.color("outline-variant");
+      border-radius: pdz.shape(corner-sm);
+
+      legend {
+        @include pdz.font-size(0.78rem, 1.2);
+        color: pdz.color("on-surface-variant");
+        font-family: var(--pdz-font-fancy);
+        padding: 0 pdz.space(2xs);
+      }
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: pdz.space(2xs) pdz.space(sm);
+      border: 1px solid pdz.color("outline-variant");
+      border-radius: pdz.shape(corner-sm);
+      background: pdz.color("surface");
+      color: pdz.color("on-surface");
+      @include pdz.font-size(0.85rem, 1.3);
+
+      &:focus {
+        outline: none;
+        border-color: pdz.color("primary");
+      }
+    }
+
+    &__hint {
+      margin: 0;
+      @include pdz.font-size(0.78rem, 1.2);
+      color: pdz.color("on-surface-variant");
+      font-style: italic;
+    }
+
+    &__actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: pdz.space(xs);
+      margin-top: pdz.space(2xs);
+    }
+  }
+
+  .replay-overlay {
+    position: absolute;
+    z-index: 4;
+    // Invisible: the pill itself is drawn by the canvas underneath. This anchor
+    // exists so native link behaviors (middle-click, ctrl+click) keep working.
+    opacity: 0;
+  }
+}

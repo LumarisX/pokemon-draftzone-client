@@ -25,12 +25,15 @@
     }
     @if (hasAnyDrafts()) {
       <div class="drafts-grid">
-        <!-- @for (tournament of tournaments; track tournament.tournamentKey) {
+        @for (tournament of tournaments; track tournament.tournamentKey) {
           <div class="draft-card">
             <div class="card-header">
               @if (tournament.score) {
-                <div class="card-score" [ngClass]="scoreClass(tournament)">
-                  {{ scoreString(tournament) }}
+                <div
+                  class="card-score"
+                  [ngClass]="scoreClass(tournament.score)"
+                >
+                  {{ scoreString(tournament.score) }}
                 </div>
               }
               <div class="card-title">
@@ -59,23 +62,25 @@
                 ]"
                 >View Tournament</a
               >
-              <a
-                class="footer-link"
-                [routerLink]="[
-                  '/leagues',
-                  tournament.leagueKey,
-                  'tournaments',
-                  tournament.tournamentKey,
-                  'drafts',
-                  tournament.draftKey,
-                  'teams',
-                  tournament.teamId,
-                ]"
-                >View My Team</a
-              >
+              @if (tournament.draftKey) {
+                <a
+                  class="footer-link"
+                  [routerLink]="[
+                    '/leagues',
+                    tournament.leagueKey,
+                    'tournaments',
+                    tournament.tournamentKey,
+                    'drafts',
+                    tournament.draftKey,
+                    'teams',
+                    tournament.teamId,
+                  ]"
+                  >View My Team</a
+                >
+              }
             </div>
           </div>
-        } -->
+        }
         @for (draft of drafts; track draft.tournamentId) {
           <div class="draft-card">
             <div class="card-header">

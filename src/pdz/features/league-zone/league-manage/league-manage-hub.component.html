@@ -215,6 +215,21 @@
                 </span>
                 <span class="nav-card__title">Trades</span>
               </a>
+              @if (
+                stage.type === 'single-elimination' ||
+                stage.type === 'double-elimination' ||
+                stage.type === 'custom'
+              ) {
+                <a
+                  [routerLink]="managePath + '/stages/' + stage._id + '/bracket'"
+                  class="nav-card nav-card--compact"
+                >
+                  <span class="nav-card__icon">
+                    <pdz-icon name="emoji_events" [size]="24"></pdz-icon>
+                  </span>
+                  <span class="nav-card__title">Bracket</span>
+                </a>
+              }
             </div>
           </div>
         }

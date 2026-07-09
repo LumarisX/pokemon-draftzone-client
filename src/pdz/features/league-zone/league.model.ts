@@ -5,16 +5,16 @@ export type TournamentDetails = {
   teamName: string;
   tournamentName: string;
   logo?: string;
-  discord: string;
+  discord?: string;
   tournamentKey: string;
   leagueName: string;
   leagueKey: string;
-  draftKey: string;
+  draftKey?: string;
   teamId: string;
   draft: Pokemon[];
   format: string;
   ruleset: string;
-  score: {
+  score?: {
     wins: number;
     losses: number;
     diff: number;

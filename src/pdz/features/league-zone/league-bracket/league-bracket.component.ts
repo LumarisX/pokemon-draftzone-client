@@ -1,20 +1,21 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
+import { LeagueBracketCanvasComponent } from './league-bracket-canvas/league-bracket-canvas.component';
 import {
-  FlexBracketData,
-  LeagueBracketFlexComponent,
-} from './league-bracket-flex/league-bracket-flex.component';
-import { LeagueZoneService } from '../league-zone.service';
+  BracketWithSeeding,
+  LeagueZoneService,
+} from '../league-zone.service';
 
 @Component({
   selector: 'pdz-league-bracket',
-  imports: [LeagueBracketFlexComponent],
+  imports: [CommonModule, LeagueBracketCanvasComponent],
   templateUrl: './league-bracket.component.html',
   styleUrl: './league-bracket.component.scss',
 })
 export class LeagueBracketComponent implements OnInit {
   private readonly leagueService = inject(LeagueZoneService);
 
-  bracketData?: FlexBracketData;
+  bracketData?: BracketWithSeeding;
 
   ngOnInit(): void {
     this.leagueService.getBracket().subscribe((data) => {

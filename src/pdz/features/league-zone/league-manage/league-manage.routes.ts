@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { LeagueRulesFormComponent } from '../league-rules-overview/league-rules-form/league-rules-form.component';
 import { TournamentLayoutComponent } from '../tournaments/tournament-layout/tournament-layout.component';
+import { LeagueManageBracketComponent } from './league-manage-bracket/league-manage-bracket.component';
 import { LeagueManageDashboardComponent } from './league-manage-dashboard/league-manage-dashboard.component';
 import { LeagueManageDraftComponent } from './league-manage-draft/league-manage-draft.component';
 import { LeagueManageHubComponent } from './league-manage-hub.component';
@@ -46,6 +47,10 @@ export const routes: Routes = [
       {
         path: 'stages/:stageId/schedule',
         component: LeagueManageScheduleComponent,
+      },
+      {
+        path: 'stages/:stageId/bracket',
+        component: LeagueManageBracketComponent,
       },
     ],
   },

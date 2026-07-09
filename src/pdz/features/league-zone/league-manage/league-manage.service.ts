@@ -156,6 +156,48 @@ export class LeagueManageService {
     );
   }
 
+  generateBracket(
+    stageId: string,
+    payload: {
+      seedingMethod: 'certified-random' | 'manual';
+      teamIds: string[];
+      rounds: { name: string; bestOf?: number }[];
+      matches: {
+        key: string;
+        roundIndex: number;
+        section?: string;
+        bracketRound?: number;
+        position?: number;
+        label?: string;
+        a: { type: 'seed' | 'winner' | 'loser'; seed?: number; from?: string };
+        b: { type: 'seed' | 'winner' | 'loser'; seed?: number; from?: string };
+      }[];
+    },
+  ) {
+    return this.apiService.post<{
+      message: string;
+      seeding: {
+        method: 'certified-random' | 'manual';
+        seededAt: string;
+        inputTeamsHash: string | null;
+        algorithmVersion: string | null;
+        timesSeeded: number;
+      };
+      seedOrder: string[];
+      matchIds: Record<string, string>;
+    }>(
+      `leagues/${this.leagueZoneService.leagueKey()}/tournaments/${this.leagueZoneService.tournamentKey()}/stages/${stageId}/bracket`,
+      payload,
+      { authenticated: true },
+    );
+  }
+
+  deleteBracket(stageId: string) {
+    return this.apiService.delete<{ message: string }>(
+      `leagues/${this.leagueZoneService.leagueKey()}/tournaments/${this.leagueZoneService.tournamentKey()}/stages/${stageId}/bracket`,
+    );
+  }
+
   getPokemonList() {
     return this.apiService.get<{
       groups?: {

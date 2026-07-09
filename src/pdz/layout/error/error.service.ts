@@ -9,6 +9,20 @@ import { RumService } from '@pdz/core/services/rum.service';
 import { environment } from '@pdz/environments/environment';
 import { BehaviorSubject, Observable, of, switchMap, take } from 'rxjs';
 
+// Server error bodies should carry string messages, but a malformed one may
+// hold an object or array; render those as JSON instead of "[object Object]".
+function toMessageString(value: unknown): string {
+  if (typeof value === 'string') return value;
+  if (Array.isArray(value) && value.every((v) => typeof v === 'string')) {
+    return value.join('; ');
+  }
+  try {
+    return JSON.stringify(value) ?? String(value);
+  } catch {
+    return String(value);
+  }
+}
+
 export interface PDZError {
   code: string;
   message: string;
@@ -55,7 +69,10 @@ export class ErrorService {
     const payload = {
       status: error.status,
       code: error.error?.code,
-      message: error.error?.message ?? error.statusText ?? error.message,
+      // /error-report validates message as a string of max 2000 chars.
+      message: toMessageString(
+        error.error?.message ?? error.statusText ?? error.message,
+      ).slice(0, 2000),
       url: error.url ?? undefined,
       details: error.error?.details,
       requestId: error.meta?.requestId,
@@ -152,7 +169,9 @@ export class ErrorService {
       if (errorBody.error) {
         clientError.error = {
           code: errorBody.error.code || 'UNKNOWN_ERROR',
-          message: errorBody.error.message || httpError.statusText,
+          message: toMessageString(
+            errorBody.error.message || httpError.statusText,
+          ),
           details: errorBody.error.details,
           stack: errorBody.error.stack,
         };

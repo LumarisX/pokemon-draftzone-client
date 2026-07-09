@@ -1,10 +1,9 @@
 import { Injectable, inject } from '@angular/core';
+import { ApiService } from '@pdz/core/services/api.service';
 import { DraftFormData } from '@pdz/features/drafts/draft-overview/draft-form/draft-form-core/draft-form-core.component';
 import { Draft, DraftPokemon } from '../draft.model';
 import { Matchup } from '../matchup-overview/matchup.model';
 import { Opponent } from '../opponent-overview/opponent.model';
-import { ApiService } from '@pdz/core/services/api.service';
-import { TournamentDetails } from '../../league-zone/league.model';
 
 export type PokemonStat = {
   pokemon: DraftPokemon;
@@ -31,7 +30,6 @@ export class DraftService {
   getDraftsList() {
     return this.apiService.get<{
       drafts: Draft[];
-      tournaments: TournamentDetails[];
     }>(ROOTPATH, { authenticated: true });
   }
 

@@ -10,6 +10,7 @@ import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { LSDraftData } from '../../../planner/plannner.component';
+import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
 
 @Component({
   selector: 'pdz-draft-preview',
@@ -26,6 +27,7 @@ import { LSDraftData } from '../../../planner/plannner.component';
 })
 export class DraftPreviewComponent {
   private draftService = inject(DraftService);
+  private leagueService = inject(LeagueZoneService);
 
   drafts?: Draft[];
   tournaments?: TournamentDetails[];
@@ -39,6 +41,7 @@ export class DraftPreviewComponent {
 
   ngOnInit() {
     this.loadDrafts();
+    this.loadTournaments();
   }
 
   loadDrafts() {
@@ -51,16 +54,26 @@ export class DraftPreviewComponent {
         this.drafts.forEach((draft) => {
           this.menuState[draft.tournamentId] = '';
         });
-        this.tournaments = data.tournaments;
-        this.tournaments.forEach((tournament) => {
-          this.menuState[tournament.tournamentKey] = '';
-        });
       },
       error: (error) => {
         console.error('Failed to load drafts', error);
         this.drafts = [];
         this.tournaments = [];
         this.loadError = true;
+      },
+    });
+  }
+
+  loadTournaments() {
+    console.log('Loading tournaments...');
+    this.tournaments = undefined;
+    this.leagueService.getTournamentsList().subscribe({
+      next: (data) => {
+        this.tournaments = data.tournaments;
+      },
+      error: (error) => {
+        console.error('Failed to load tournaments', error);
+        this.tournaments = [];
       },
     });
   }

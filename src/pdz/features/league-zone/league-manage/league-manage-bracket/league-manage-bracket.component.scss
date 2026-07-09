@@ -1,0 +1,306 @@
+@use "pdz-theming" as pdz;
+@use "mixins" as *;
+
+:host {
+  display: block;
+}
+
+.loading-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+}
+
+.bracket-manage {
+  padding: pdz.space(lg);
+  max-width: 1100px;
+  margin: 0 auto;
+
+  &__header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: pdz.space(md);
+    margin-bottom: pdz.space(xl);
+  }
+
+  &__title {
+    @include apply-typography(headline-lg);
+    color: pdz.color("on-surface");
+    margin: 0;
+  }
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: pdz.space(lg);
+  }
+
+  &__empty {
+    @include apply-typography(body-md);
+    color: pdz.color("on-surface-variant");
+  }
+
+  &__error {
+    @include apply-typography(body-md);
+    color: pdz.color("error");
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: pdz.space(sm);
+    margin-top: pdz.space(lg);
+  }
+}
+
+.seeding-badge {
+  display: flex;
+  flex-direction: column;
+  padding: pdz.space(sm) pdz.space(md);
+  border-radius: pdz.shape(corner-md);
+  border: 1px solid pdz.color("outline-variant");
+  background: pdz.color("surface-container");
+
+  &--certified {
+    border-color: pdz.color("primary");
+  }
+
+  &__title {
+    @include apply-typography(label-md);
+    color: pdz.color("primary");
+  }
+
+  &__detail {
+    @include apply-typography(body-sm);
+    color: pdz.color("on-surface-variant");
+  }
+}
+
+.panel {
+  background: pdz.color("surface-container");
+  border: 1px solid pdz.color("outline-variant");
+  border-radius: pdz.shape(corner-lg);
+  padding: pdz.space(lg);
+
+  &__title {
+    @include apply-typography(title-md);
+    color: pdz.color("on-surface");
+    margin: 0 0 pdz.space(xs);
+  }
+
+  &__hint {
+    @include apply-typography(body-sm);
+    color: pdz.color("on-surface-variant");
+    margin: 0 0 pdz.space(md);
+  }
+
+  &--preview {
+    overflow-x: auto;
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: pdz.space(md);
+    margin-bottom: pdz.space(xs);
+
+    .panel__title {
+      margin: 0;
+    }
+  }
+}
+
+.team-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: pdz.space(xs);
+
+  &__label {
+    display: flex;
+    align-items: center;
+    gap: pdz.space(sm);
+    padding: pdz.space(xs) pdz.space(sm);
+    border-radius: pdz.shape(corner-sm);
+    cursor: pointer;
+
+    &:hover {
+      background: pdz.color("surface-container-high");
+    }
+  }
+
+  &__logo {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    border-radius: pdz.shape(corner-xs);
+  }
+
+  &__name {
+    @include apply-typography(body-md);
+    color: pdz.color("on-surface");
+  }
+
+  &__coach {
+    @include apply-typography(body-sm);
+    color: pdz.color("on-surface-variant");
+  }
+
+  &__picks {
+    @include apply-typography(label-sm);
+    color: pdz.color("on-surface-variant");
+    margin-left: auto;
+  }
+}
+
+.seeding-options {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(sm);
+
+  &__option {
+    display: flex;
+    align-items: flex-start;
+    gap: pdz.space(sm);
+    cursor: pointer;
+
+    input {
+      margin-top: 4px;
+    }
+  }
+
+  &__label {
+    @include apply-typography(body-md);
+    color: pdz.color("on-surface");
+  }
+}
+
+.seed-order {
+  list-style: none;
+  margin: pdz.space(md) 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(2xs);
+  max-width: 480px;
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: pdz.space(sm);
+    padding: pdz.space(2xs) pdz.space(sm);
+    border: 1px solid pdz.color("outline-variant");
+    border-radius: pdz.shape(corner-sm);
+    background: pdz.color("surface");
+  }
+
+  &__seed {
+    @include apply-typography(label-md);
+    color: pdz.color("primary");
+    width: 24px;
+    text-align: center;
+  }
+
+  &__name {
+    @include apply-typography(body-md);
+    color: pdz.color("on-surface");
+    flex: 1;
+  }
+
+  &__controls {
+    display: flex;
+    gap: pdz.space(2xs);
+  }
+}
+
+.preset-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: pdz.space(md);
+  margin-bottom: pdz.space(md);
+  padding: pdz.space(sm) pdz.space(md);
+  border: 1px solid pdz.color("outline-variant");
+  border-radius: pdz.shape(corner-md);
+  background: pdz.color("surface");
+
+  &__field {
+    display: flex;
+    align-items: center;
+    gap: pdz.space(sm);
+
+    select,
+    input {
+      @include apply-typography(body-md);
+      background: pdz.color("surface-container");
+      color: pdz.color("on-surface");
+      border: 1px solid pdz.color("outline-variant");
+      border-radius: pdz.shape(corner-sm);
+      padding: pdz.space(2xs) pdz.space(xs);
+    }
+
+    input[type="number"] {
+      width: 72px;
+    }
+  }
+
+  &__label {
+    @include apply-typography(label-md);
+    color: pdz.color("on-surface-variant");
+  }
+
+  &__check {
+    display: flex;
+    align-items: center;
+    gap: pdz.space(xs);
+    @include apply-typography(body-sm);
+    color: pdz.color("on-surface");
+    cursor: pointer;
+  }
+
+  .btn {
+    margin-left: auto;
+  }
+}
+
+.btn {
+  @include apply-typography(label-md);
+  border: 1px solid pdz.color("outline-variant");
+  border-radius: pdz.shape(corner-md);
+  background: pdz.color("surface-container-high");
+  color: pdz.color("on-surface");
+  padding: pdz.space(sm) pdz.space(lg);
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &--primary {
+    background: pdz.color("primary");
+    border-color: pdz.color("primary");
+    color: pdz.color("on-primary");
+  }
+
+  &--danger {
+    background: pdz.color("error");
+    border-color: pdz.color("error");
+    color: pdz.color("on-error");
+  }
+
+  &--icon {
+    padding: 0 pdz.space(xs);
+    line-height: 1.6;
+  }
+
+  &--icon-text {
+    padding: pdz.space(2xs) pdz.space(sm);
+    @include apply-typography(label-sm);
+  }
+}

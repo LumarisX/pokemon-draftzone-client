@@ -1,0 +1,185 @@
+<div class="bracket-container">
+  @if (componentTitle) {
+    <h2>{{ componentTitle }}</h2>
+  }
+
+  <div class="canvas-host" #host [style.height.px]="hostHeight">
+    <canvas #canvasEl></canvas>
+
+    <div class="canvas-toolbar">
+      @if (editable) {
+        <button
+          type="button"
+          class="toolbar-btn toolbar-btn--danger"
+          (click)="clearDraft()"
+          title="Remove every matchup, round, and section"
+        >
+          Clear
+        </button>
+        <button
+          type="button"
+          class="toolbar-btn"
+          (click)="toggleSectionPrompt()"
+          title="Add a new bracket section (e.g. losers bracket)"
+        >
+          + Section
+        </button>
+        <button
+          type="button"
+          class="toolbar-btn toolbar-btn--primary"
+          [disabled]="!canSave"
+          (click)="onSaveClick()"
+          title="Save the bracket"
+        >
+          Save
+        </button>
+      }
+      <button
+        type="button"
+        class="toolbar-btn"
+        (click)="resetView()"
+        title="Fit bracket to view"
+      >
+        ⤢ Fit
+      </button>
+    </div>
+
+    @if (sectionPromptOpen) {
+      <div class="section-prompt">
+        <input
+          #sectionInput
+          type="text"
+          placeholder="Section name (e.g. Losers Bracket)"
+          (keydown.enter)="commitAddSection(sectionInput.value)"
+          (keydown.escape)="cancelSectionPrompt()"
+        />
+        <button
+          type="button"
+          class="toolbar-btn toolbar-btn--primary"
+          (click)="commitAddSection(sectionInput.value)"
+        >
+          Add
+        </button>
+      </div>
+    }
+
+    @if (matchEditor; as ed) {
+      <div class="editor-backdrop" (click)="cancelMatchEditor()"></div>
+      <div
+        class="match-editor"
+        role="dialog"
+        aria-modal="true"
+        (keydown.escape)="cancelMatchEditor()"
+      >
+        <h3 class="match-editor__title">Edit {{ ed.autoLabel }}</h3>
+
+        <label class="match-editor__field">
+          <span>Label</span>
+          <input
+            #editorLabel
+            type="text"
+            [value]="ed.label"
+            [placeholder]="ed.autoLabel"
+          />
+        </label>
+
+        @for (slot of ed.slots; track $index) {
+          <fieldset class="match-editor__slot">
+            <legend>{{ $index === 0 ? 'Slot A' : 'Slot B' }}</legend>
+            <select
+              class="match-editor__mode"
+              (change)="onEditorModeChange($any($index), $any($event.target).value)"
+            >
+              <option value="empty" [selected]="slot.mode === 'empty'">
+                — TBD / Unassigned —
+              </option>
+              <option value="seed" [selected]="slot.mode === 'seed'">
+                Static seed
+              </option>
+              <option value="winner" [selected]="slot.mode === 'winner'">
+                Winner of a matchup
+              </option>
+              <option value="loser" [selected]="slot.mode === 'loser'">
+                Loser of a matchup
+              </option>
+            </select>
+
+            @if (slot.mode === 'seed') {
+              <select
+                class="match-editor__value"
+                (change)="onEditorSeedChange($any($index), $any($event.target).value)"
+              >
+                @for (opt of ed.seedOptions; track opt.seed) {
+                  <option [value]="opt.seed" [selected]="opt.seed === slot.seed">
+                    {{ opt.label }}
+                  </option>
+                }
+              </select>
+            } @else if (slot.mode === 'winner' || slot.mode === 'loser') {
+              @if (ed.matchOptions.length) {
+                <select
+                  class="match-editor__value"
+                  (change)="onEditorFromChange($any($index), $any($event.target).value)"
+                >
+                  @for (opt of ed.matchOptions; track opt.id) {
+                    <option [value]="opt.id" [selected]="opt.id === slot.from">
+                      {{ opt.label }}
+                    </option>
+                  }
+                </select>
+              } @else {
+                <p class="match-editor__hint">
+                  No other matchups exist yet — add one first.
+                </p>
+              }
+            }
+          </fieldset>
+        }
+
+        <div class="match-editor__actions">
+          <button type="button" class="toolbar-btn" (click)="cancelMatchEditor()">
+            Cancel
+          </button>
+          <button
+            type="button"
+            class="toolbar-btn toolbar-btn--primary"
+            (click)="applyMatchEditor(editorLabel.value)"
+          >
+            Apply
+          </button>
+        </div>
+      </div>
+    }
+
+    @if (titleOverlay; as t) {
+      <input
+        #titleInput
+        type="text"
+        class="title-overlay"
+        [value]="t.value"
+        [style.left.px]="t.x"
+        [style.top.px]="t.y"
+        [style.width.px]="t.w"
+        [style.height.px]="t.h"
+        (keydown.enter)="commitTitleOverlay(titleInput.value)"
+        (blur)="commitTitleOverlay(titleInput.value)"
+        (keydown.escape)="cancelTitleOverlay()"
+      />
+    }
+
+    @if (replayOverlay; as ro) {
+      <a
+        class="replay-overlay"
+        [href]="ro.href"
+        target="_blank"
+        rel="noopener noreferrer"
+        [style.left.px]="ro.x"
+        [style.top.px]="ro.y"
+        [style.width.px]="ro.w"
+        [style.height.px]="ro.h"
+        (mouseleave)="onReplayOverlayLeave()"
+        aria-label="Watch replay"
+      ></a>
+    }
+  </div>
+</div>

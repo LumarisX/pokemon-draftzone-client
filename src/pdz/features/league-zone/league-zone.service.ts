@@ -5,10 +5,11 @@ import {
   BracketTeamFlex,
   FlexBracketData,
   FlexBracketMatch,
-} from '@pdz/features/league-zone/league-bracket/league-bracket-flex/league-bracket-flex.component';
+} from '@pdz/features/league-zone/league-bracket/bracket.model';
 import { defenseData } from '@pdz/features/league-zone/league-ghost';
 import { TradeData } from '@pdz/features/league-zone/league-manage/league-manage-trades/league-manage-trades.component';
 import { League, TradeLog } from '@pdz/features/league-zone/league.interface';
+import { TournamentDetails } from '@pdz/features/league-zone/league.model';
 import { getRandomPokemon } from '@pdz/shared/data/namedex';
 import { Observable, of, throwError } from 'rxjs';
 import { filter, map, mergeMap } from 'rxjs/operators';
@@ -27,6 +28,10 @@ type RawBracketMatch = {
   _id: string;
   round: string;
   roundName: string;
+  section?: string | null;
+  bracketRound?: number | null;
+  position?: number | null;
+  label?: string | null;
   a: RawBracketSlot | null;
   b: RawBracketSlot | null;
   winner?: 0 | 1;
@@ -39,11 +44,24 @@ type RawBracketRound = {
   matchDeadline: string | null;
 };
 
+export type BracketSeedingInfo = {
+  method: 'certified-random' | 'manual';
+  seededAt: string;
+  inputTeamsHash: string | null;
+  algorithmVersion: string | null;
+  timesSeeded: number;
+};
+
 type RawBracketResponse = {
   format: string | null;
+  seeding?: BracketSeedingInfo | null;
   teams: BracketTeamFlex[];
   rounds: RawBracketRound[];
   matches: RawBracketMatch[];
+};
+
+export type BracketWithSeeding = FlexBracketData & {
+  seeding?: BracketSeedingInfo | null;
 };
 
 function mapBracketSlot(
@@ -51,6 +69,66 @@ function mapBracketSlot(
 ): BracketSlotFlex | null {
   if (!slot) return null;
   return slot as BracketSlotFlex;
+}
+
+function mapRawBracket(raw: RawBracketResponse): BracketWithSeeding {
+  const seeding = raw.seeding ?? null;
+  if (!raw.format || !raw.matches?.length) {
+    return { teams: raw.teams ?? [], matches: [], seeding };
+  }
+
+  const roundIndexMap = new Map<string, number>();
+  (raw.rounds ?? []).forEach((r, i) => roundIndexMap.set(r._id, i));
+
+  // Matches generated after the section/position fields existed carry their
+  // own layout; older brackets fall back to flat-round + insertion order.
+  const positionCounters = new Map<string, number>();
+
+  const matches: FlexBracketMatch[] = raw.matches.map((m) => {
+    const section = m.section ?? undefined;
+    const roundIdx = m.bracketRound ?? roundIndexMap.get(m.round) ?? 0;
+    const posKey = `${section ?? 'main'}:${roundIdx}`;
+    const fallbackPosition = positionCounters.get(posKey) ?? 0;
+    positionCounters.set(posKey, fallbackPosition + 1);
+
+    return {
+      id: m._id,
+      round: roundIdx,
+      position: m.position ?? fallbackPosition,
+      ...(section ? { section } : {}),
+      ...(m.label ? { label: m.label } : {}),
+      a: mapBracketSlot(m.a) ?? { type: 'seed', seed: 0 },
+      b: mapBracketSlot(m.b) ?? { type: 'seed', seed: 0 },
+      ...(m.winner !== undefined ? { winner: m.winner } : {}),
+      ...(m.replay ? { replay: m.replay } : {}),
+    };
+  });
+
+  const hasSections = matches.some((m) => m.section);
+  let sections: FlexBracketData['sections'];
+  if (hasSections) {
+    sections = [
+      { key: 'winners', order: 0 },
+      { key: 'losers', order: 1 },
+      { key: 'finals', order: 2 },
+      { key: 'main', order: 3 },
+    ].filter((s) => matches.some((m) => (m.section ?? 'main') === s.key));
+  } else {
+    const roundTitles: Record<number, string> = {};
+    (raw.rounds ?? []).forEach((r, i) => {
+      roundTitles[i] = r.name;
+    });
+    sections = [{ key: 'main', roundTitles }];
+  }
+
+  const format =
+    raw.format === 'single-elimination'
+      ? 'single-elim'
+      : raw.format === 'double-elimination'
+        ? 'double-elim'
+        : 'custom';
+
+  return { format, teams: raw.teams ?? [], matches, sections, seeding };
 }
 
 @Injectable({
@@ -113,6 +191,13 @@ export class LeagueZoneService {
         }
       });
     });
+  }
+
+  getTournamentsList() {
+    return this.apiService.get<{ tournaments: TournamentDetails[] }>(
+      ROOTPATH,
+      { authenticated: true },
+    );
   }
 
   getRules(): Observable<League.RuleSection[]> {
@@ -280,7 +365,11 @@ export class LeagueZoneService {
     },
   ) {
     return this.apiService.post<
-      ReturnType<LeagueZoneService['getDraftDetails']> extends import('rxjs').Observable<infer T> ? T : never
+      ReturnType<
+        LeagueZoneService['getDraftDetails']
+      > extends import('rxjs').Observable<infer T>
+        ? T
+        : never
     >(
       `${ROOTPATH}/${this.leagueKey()}/tournaments/${this.tournamentKey()}/drafts/${this.draftKey()}/teams/${teamId}/draft`,
       payload,
@@ -422,59 +511,37 @@ export class LeagueZoneService {
     );
   }
 
-  getBracket(): Observable<FlexBracketData> {
+  getBracket(): Observable<BracketWithSeeding> {
     return this.apiService
       .get<RawBracketResponse>(
         `${ROOTPATH}/${this.leagueKey()}/tournaments/${this.tournamentKey()}/bracket`,
         { authenticated: true },
       )
-      .pipe(
-        map((raw): FlexBracketData => {
-          if (!raw.format || !raw.matches?.length) {
-            return { teams: raw.teams ?? [], matches: [] };
-          }
+      .pipe(map(mapRawBracket));
+  }
 
-          const roundIndexMap = new Map<string, number>();
-          (raw.rounds ?? []).forEach((r, i) => roundIndexMap.set(r._id, i));
+  getStageBracket(stageId: string): Observable<BracketWithSeeding> {
+    return this.apiService
+      .get<RawBracketResponse>(
+        `${ROOTPATH}/${this.leagueKey()}/tournaments/${this.tournamentKey()}/stages/${stageId}/bracket`,
+        { authenticated: true },
+      )
+      .pipe(map(mapRawBracket));
+  }
 
-          const positionCounters = new Map<number, number>();
-
-          const matches: FlexBracketMatch[] = raw.matches.map((m) => {
-            const roundIdx = roundIndexMap.get(m.round) ?? 0;
-            const position = positionCounters.get(roundIdx) ?? 0;
-            positionCounters.set(roundIdx, position + 1);
-
-            return {
-              id: m._id,
-              round: roundIdx,
-              position,
-              a: mapBracketSlot(m.a) ?? { type: 'seed', seed: 0 },
-              b: mapBracketSlot(m.b) ?? { type: 'seed', seed: 0 },
-              ...(m.winner !== undefined ? { winner: m.winner } : {}),
-              ...(m.replay ? { replay: m.replay } : {}),
-            };
-          });
-
-          const roundTitles: Record<number, string> = {};
-          (raw.rounds ?? []).forEach((r, i) => {
-            roundTitles[i] = r.name;
-          });
-
-          const format =
-            raw.format === 'single-elimination'
-              ? 'single-elim'
-              : raw.format === 'double-elimination'
-                ? 'double-elim'
-                : 'custom';
-
-          return {
-            format,
-            teams: raw.teams ?? [],
-            matches,
-            sections: [{ key: 'main', roundTitles }],
-          };
-        }),
-      );
+  getTournamentTeams(): Observable<{
+    teams: {
+      id: string;
+      teamName: string;
+      coachName: string;
+      logo?: string;
+      pickCount: number;
+    }[];
+  }> {
+    return this.apiService.get(
+      `${ROOTPATH}/${this.leagueKey()}/tournaments/${this.tournamentKey()}/teams`,
+      { authenticated: true },
+    );
   }
 
   getStandings(stageId?: string): Observable<{
