@@ -29,6 +29,163 @@
     (change)="onLogoFileSelected($event)"
   />
 
+  <ng-template #signupCard let-signup="signup">
+    <article
+      class="signup-card"
+      [class.signup-card--selected]="signup.selected"
+      [class.signup-card--denied]="signup.status === 'denied'"
+    >
+      <!-- Team row -->
+      <div class="signup-card__team">
+        <button
+          type="button"
+          class="signup-card__logo"
+          (click)="onLogoCellClick(signup)"
+          [disabled]="!signup.id || uploadingForId === signup.id"
+          [attr.aria-label]="signup.logo ? 'Replace logo' : 'Upload logo'"
+        >
+          @if (signup.logo) {
+            <img [src]="signup.logo" alt="" />
+          } @else if (uploadingForId === signup.id) {
+            <div class="signup-card__logo-placeholder">
+              <pdz-icon name="hourglass_empty" [size]="22"></pdz-icon>
+            </div>
+          } @else {
+            <div class="signup-card__logo-placeholder">
+              <pdz-icon name="add_photo_alternate" [size]="22"></pdz-icon>
+            </div>
+          }
+        </button>
+
+        <div class="signup-card__team-name-wrap">
+          <span class="signup-card__team-name">{{ signup.teamName }}</span>
+          @if (signup.id && uploadErrorById[signup.id]) {
+            <span class="signup-card__upload-error">
+              {{ uploadErrorById[signup.id] }}
+            </span>
+          }
+        </div>
+
+        <div class="signup-card__team-actions">
+          <label
+            class="signup-card__checkbox-label"
+            [attr.aria-label]="'Select ' + signup.teamName"
+          >
+            <input
+              type="checkbox"
+              class="signup-card__checkbox"
+              [(ngModel)]="signup.selected"
+            />
+          </label>
+          <button
+            type="button"
+            class="signup-card__edit-btn"
+            (click)="openTeamEdit(signup)"
+            aria-label="Edit team info"
+          >
+            <pdz-icon name="edit" [size]="16"></pdz-icon>
+          </button>
+        </div>
+      </div>
+
+      <!-- Coach row -->
+      <div class="signup-card__coach">
+        <div class="signup-card__coach-main">
+          <span class="signup-card__coach-name">{{ signup.name }}</span>
+          <div class="signup-card__coach-fields">
+            <div class="coach-field">
+              <span class="coach-field__label">Showdown</span>
+              <span class="coach-field__value">{{ signup.gameName }}</span>
+            </div>
+            <div class="coach-field">
+              <span class="coach-field__label">Discord</span>
+              <span class="coach-field__value">{{ signup.discordName }}</span>
+            </div>
+            <div class="coach-field">
+              <span class="coach-field__label">Local Time</span>
+              <span class="coach-field__value" [title]="signup.timezone">
+                {{ getCurrentTimeForTimezone(signup.timezone) }}
+              </span>
+            </div>
+            @if (signup.experience) {
+              <div class="coach-field">
+                <span class="coach-field__label">Experience</span>
+                <span class="coach-field__value">{{ signup.experience }}</span>
+              </div>
+            }
+          </div>
+        </div>
+        <button
+          type="button"
+          class="signup-card__edit-btn"
+          (click)="openCoachEdit(signup)"
+          aria-label="Edit coach info"
+        >
+          <pdz-icon name="edit" [size]="16"></pdz-icon>
+        </button>
+      </div>
+
+      <!-- Footer -->
+      <footer class="signup-card__footer">
+        <div class="signup-card__badges">
+          <select
+            class="status-select"
+            [class.status-select--approved]="signup.status === 'approved'"
+            [class.status-select--pending]="signup.status === 'pending'"
+            [class.status-select--denied]="signup.status === 'denied'"
+            [ngModel]="signup.status"
+            (ngModelChange)="setStatus(signup, $event)"
+            [attr.aria-label]="'Sign-up status for ' + signup.teamName"
+          >
+            @for (option of statusOptions; track option.value) {
+              <option [value]="option.value">{{ option.label }}</option>
+            }
+          </select>
+          <span
+            class="status-badge"
+            [class.status-badge--yes]="signup.inDiscordServer"
+            [class.status-badge--no]="!signup.inDiscordServer"
+            title="In Discord Server"
+          >
+            Server
+          </span>
+          <span
+            class="status-badge"
+            [class.status-badge--yes]="signup.hasDiscordRole"
+            [class.status-badge--no]="!signup.hasDiscordRole"
+            title="Has Discord Role"
+          >
+            Role
+          </span>
+          <span
+            class="status-badge"
+            [class.status-badge--yes]="signup.hasValidTeam"
+            [class.status-badge--no]="!signup.hasValidTeam"
+            title="Has a valid drafted team"
+          >
+            Team
+          </span>
+        </div>
+        <div class="signup-card__meta">
+          <span class="signup-card__date">
+            {{ signup.signedUpAt | date: "shortDate" }}
+          </span>
+          @if (getTeamLink(signup); as teamLink) {
+            <a
+              [routerLink]="teamLink"
+              target="_blank"
+              rel="noopener"
+              class="signup-card__team-link"
+              [attr.aria-label]="'View team ' + signup.teamName + ' in a new tab'"
+            >
+              <pdz-icon name="open_in_new" [size]="14"></pdz-icon>
+            </a>
+          }
+        </div>
+      </footer>
+    </article>
+  </ng-template>
+
   @for (draft of drafts; track draft?.draftKey) {
     <section class="pool">
       <header class="pool__header">
@@ -45,148 +202,44 @@
 
       <div class="pool__cards">
         @for (signup of signUpInDraft(draft?.draftKey); track signup.id) {
-          <article
-            class="signup-card"
-            [class.signup-card--selected]="signup.selected"
-          >
-            <!-- Team row -->
-            <div class="signup-card__team">
-              <button
-                type="button"
-                class="signup-card__logo"
-                (click)="onLogoCellClick(signup)"
-                [disabled]="!signup.id || uploadingForId === signup.id"
-                [attr.aria-label]="signup.logo ? 'Replace logo' : 'Upload logo'"
-              >
-                @if (signup.logo) {
-                  <img [src]="signup.logo" alt="" />
-                } @else if (uploadingForId === signup.id) {
-                  <div class="signup-card__logo-placeholder">
-                    <pdz-icon name="hourglass_empty" [size]="22"></pdz-icon>
-                  </div>
-                } @else {
-                  <div class="signup-card__logo-placeholder">
-                    <pdz-icon name="add_photo_alternate" [size]="22"></pdz-icon>
-                  </div>
-                }
-              </button>
-
-              <div class="signup-card__team-name-wrap">
-                <span class="signup-card__team-name">{{ signup.teamName }}</span>
-                @if (signup.id && uploadErrorById[signup.id]) {
-                  <span class="signup-card__upload-error">
-                    {{ uploadErrorById[signup.id] }}
-                  </span>
-                }
-              </div>
-
-              <div class="signup-card__team-actions">
-                <label
-                  class="signup-card__checkbox-label"
-                  [attr.aria-label]="'Select ' + signup.teamName"
-                >
-                  <input
-                    type="checkbox"
-                    class="signup-card__checkbox"
-                    [(ngModel)]="signup.selected"
-                  />
-                </label>
-                <button
-                  type="button"
-                  class="signup-card__edit-btn"
-                  (click)="openTeamEdit(signup)"
-                  aria-label="Edit team info"
-                >
-                  <pdz-icon name="edit" [size]="16"></pdz-icon>
-                </button>
-              </div>
-            </div>
-
-            <!-- Coach row -->
-            <div class="signup-card__coach">
-              <div class="signup-card__coach-main">
-                <span class="signup-card__coach-name">{{ signup.name }}</span>
-                <div class="signup-card__coach-fields">
-                  <div class="coach-field">
-                    <span class="coach-field__label">Showdown</span>
-                    <span class="coach-field__value">{{ signup.gameName }}</span>
-                  </div>
-                  <div class="coach-field">
-                    <span class="coach-field__label">Discord</span>
-                    <span class="coach-field__value">{{ signup.discordName }}</span>
-                  </div>
-                  <div class="coach-field">
-                    <span class="coach-field__label">Local Time</span>
-                    <span class="coach-field__value" [title]="signup.timezone">
-                      {{ getCurrentTimeForTimezone(signup.timezone) }}
-                    </span>
-                  </div>
-                  @if (signup.experience) {
-                    <div class="coach-field">
-                      <span class="coach-field__label">Experience</span>
-                      <span class="coach-field__value">{{ signup.experience }}</span>
-                    </div>
-                  }
-                </div>
-              </div>
-              <button
-                type="button"
-                class="signup-card__edit-btn"
-                (click)="openCoachEdit(signup)"
-                aria-label="Edit coach info"
-              >
-                <pdz-icon name="edit" [size]="16"></pdz-icon>
-              </button>
-            </div>
-
-            <!-- Footer -->
-            <footer class="signup-card__footer">
-              <div class="signup-card__badges">
-                <span
-                  class="status-badge"
-                  [class.status-badge--yes]="signup.inDiscordServer"
-                  [class.status-badge--no]="!signup.inDiscordServer"
-                  title="In Discord Server"
-                >
-                  Server
-                </span>
-                <span
-                  class="status-badge"
-                  [class.status-badge--yes]="signup.hasDiscordRole"
-                  [class.status-badge--no]="!signup.hasDiscordRole"
-                  title="Has Discord Role"
-                >
-                  Role
-                </span>
-                <span
-                  class="status-badge"
-                  [class.status-badge--yes]="signup.hasValidTeam"
-                  [class.status-badge--no]="!signup.hasValidTeam"
-                  title="Has a valid drafted team"
-                >
-                  Team
-                </span>
-              </div>
-              <div class="signup-card__meta">
-                <span class="signup-card__date">
-                  {{ signup.signedUpAt | date: "shortDate" }}
-                </span>
-                @if (getTeamLink(signup); as teamLink) {
-                  <a
-                    [routerLink]="teamLink"
-                    target="_blank"
-                    rel="noopener"
-                    class="signup-card__team-link"
-                    [attr.aria-label]="'View team ' + signup.teamName + ' in a new tab'"
-                  >
-                    <pdz-icon name="open_in_new" [size]="14"></pdz-icon>
-                  </a>
-                }
-              </div>
-            </footer>
-          </article>
+          <ng-container
+            *ngTemplateOutlet="signupCard; context: { signup }"
+          ></ng-container>
         }
       </div>
+    </section>
+  }
+
+  @if (deniedSignUps().length > 0) {
+    <section class="pool pool--denied">
+      <header class="pool__header pool__header--denied">
+        <button
+          type="button"
+          class="pool__toggle"
+          (click)="deniedCollapsed = !deniedCollapsed"
+          [attr.aria-expanded]="!deniedCollapsed"
+          aria-controls="denied-signups"
+        >
+          <pdz-icon
+            name="expand_more"
+            [size]="20"
+            class="pool__toggle-icon"
+            [class.pool__toggle-icon--collapsed]="deniedCollapsed"
+          ></pdz-icon>
+          <h3 class="pool__title">Denied</h3>
+        </button>
+        <span class="pool__count">{{ deniedSignUps().length }}</span>
+      </header>
+
+      @if (!deniedCollapsed) {
+        <div class="pool__cards" id="denied-signups">
+          @for (signup of deniedSignUps(); track signup.id) {
+            <ng-container
+              *ngTemplateOutlet="signupCard; context: { signup }"
+            ></ng-container>
+          }
+        </div>
+      }
     </section>
   }
 } @else {

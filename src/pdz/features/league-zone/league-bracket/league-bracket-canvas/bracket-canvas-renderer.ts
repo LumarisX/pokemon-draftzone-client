@@ -38,6 +38,8 @@ export interface BracketInteractionState {
   hoveredSlotIndex?: 0 | 1 | null;
   /** `${section}::${round}` of the hovered add button. */
   hoveredButtonKey?: string | null;
+  /** Index into layout.connectors of the line under the pointer. */
+  hoveredConnectorIndex?: number | null;
   drag?: {
     matchId: string;
     /** World-space offset of the dragged ghost from the card's laid-out position. */
@@ -182,6 +184,42 @@ function traceConnector(
   ctx.lineTo(last.x, last.y);
 }
 
+// ─── Background grid ──────────────────────────────────────────────────────────
+
+const GRID_BASE_SPACING = 32;
+
+/** Subtle dot grid drawn in world space, so it pans and zooms with the
+ *  bracket. Spacing doubles as you zoom out so dot density (and draw cost)
+ *  stays roughly constant. */
+function drawDotGrid(ctx: CanvasRenderingContext2D, opts: RenderOptions): void {
+  const { theme, transform, viewWidth, viewHeight } = opts;
+  const k = transform.k;
+  if (!(k > 0)) return;
+
+  let spacing = GRID_BASE_SPACING;
+  while (spacing * k < 22) spacing *= 2;
+  while (spacing * k > 88) spacing /= 2;
+
+  // Visible world rect, snapped outward to the grid.
+  const x0 = Math.floor(-transform.x / k / spacing) * spacing;
+  const y0 = Math.floor(-transform.y / k / spacing) * spacing;
+  const x1 = (viewWidth - transform.x) / k;
+  const y1 = (viewHeight - transform.y) / k;
+
+  const r = 1.1 / k; // ~1px on screen regardless of zoom
+  ctx.save();
+  ctx.globalAlpha = 0.4;
+  ctx.fillStyle = theme.colors['outline-variant'];
+  ctx.beginPath();
+  for (let gx = x0; gx <= x1; gx += spacing) {
+    for (let gy = y0; gy <= y1; gy += spacing) {
+      ctx.rect(gx - r, gy - r, r * 2, r * 2);
+    }
+  }
+  ctx.fill();
+  ctx.restore();
+}
+
 // ─── Frame render ─────────────────────────────────────────────────────────────
 
 export function renderBracket(
@@ -203,13 +241,34 @@ export function renderBracket(
     dpr * transform.y,
   );
 
+  if (editable) drawDotGrid(ctx, opts);
+
   // 1. Connectors (behind everything). Winner lines are green, loser lines
-  // red; dashed until the source match is decided, then solid.
-  ctx.lineWidth = 2;
+  // red; dashed until the source match is decided, then solid. The hovered
+  // line is drawn last, thicker and with a soft halo, so it pops.
+  const hoveredConn = state.hoveredConnectorIndex ?? null;
   ctx.lineCap = 'round';
   ctx.lineJoin = 'round';
-  for (const conn of layout.connectors) {
+  ctx.lineWidth = 2;
+  for (let i = 0; i < layout.connectors.length; i++) {
+    if (i === hoveredConn) continue;
+    const conn = layout.connectors[i];
     ctx.strokeStyle = conn.cls === 'winner' ? c['positive'] : c['negative'];
+    ctx.setLineDash(conn.decided ? [] : [5, 5]);
+    traceConnector(ctx, conn.points);
+    ctx.stroke();
+  }
+  if (hoveredConn !== null && layout.connectors[hoveredConn]) {
+    const conn = layout.connectors[hoveredConn];
+    const color = conn.cls === 'winner' ? c['positive'] : c['negative'];
+    ctx.strokeStyle = color;
+    ctx.setLineDash([]);
+    ctx.globalAlpha = 0.25;
+    ctx.lineWidth = 8;
+    traceConnector(ctx, conn.points);
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+    ctx.lineWidth = 3;
     ctx.setLineDash(conn.decided ? [] : [5, 5]);
     traceConnector(ctx, conn.points);
     ctx.stroke();

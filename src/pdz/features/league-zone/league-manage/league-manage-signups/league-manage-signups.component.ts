@@ -51,6 +51,22 @@ export class LeagueManageSignupsComponent implements OnInit, OnDestroy {
   originalSignUps: League.LeagueSignUp[] = [];
   drafts: ({ name: string; draftKey: string } | undefined)[] = [];
   modified = false;
+  deniedCollapsed = true;
+
+  readonly statusOptions: {
+    value: League.SignUpStatus;
+    label: string;
+  }[] = [
+    { value: 'approved', label: 'Approved' },
+    { value: 'pending', label: 'Pending' },
+    { value: 'denied', label: 'Denied' },
+  ];
+
+  private readonly statusOrder: Record<League.SignUpStatus, number> = {
+    approved: 0,
+    pending: 1,
+    denied: 2,
+  };
 
   @ViewChild('logoFileInput') logoFileInput!: ElementRef<HTMLInputElement>;
 
@@ -204,7 +220,23 @@ export class LeagueManageSignupsComponent implements OnInit, OnDestroy {
   }
 
   signUpInDraft(draftKey?: string): SignUpEntry[] {
-    return this.signUps.filter((s) => s.draft == draftKey);
+    return this.signUps
+      .filter((s) => s.draft == draftKey && s.status !== 'denied')
+      .sort(
+        (a, b) =>
+          (this.statusOrder[a.status] ?? 1) - (this.statusOrder[b.status] ?? 1),
+      );
+  }
+
+  deniedSignUps(): SignUpEntry[] {
+    return this.signUps.filter((s) => s.status === 'denied');
+  }
+
+  setStatus(signUp: SignUpEntry, status: League.SignUpStatus): void {
+    if (signUp.status === status) return;
+    signUp.status = status;
+    signUp.modified = true;
+    this.modified = true;
   }
 
   anySelected(): boolean {
@@ -241,7 +273,7 @@ export class LeagueManageSignupsComponent implements OnInit, OnDestroy {
       .updateSignUps(
         this.signUps
           .filter((s) => s.modified)
-          .map((s) => ({ id: s.id, draft: s.draft })),
+          .map((s) => ({ id: s.id, draft: s.draft, status: s.status })),
       )
       .subscribe({
         next: () => {

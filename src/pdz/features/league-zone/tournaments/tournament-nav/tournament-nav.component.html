@@ -65,7 +65,6 @@
         <span>Standings</span>
       </a>
     }
-    <hr class="links__divider" />
   }
 
   <a
@@ -98,12 +97,42 @@
 
   @if (canManage) {
     <hr class="links__divider" />
+    <span class="links__group-title">Manage</span>
     <a
-      [routerLink]="manageLink"
+      [routerLink]="[...manageLink, 'settings']"
       routerLinkActive="active"
       class="link-button"
     >
-      <span>Manage</span>
+      <span>Settings</span>
+    </a>
+    <a
+      [routerLink]="[...manageLink, 'sign-ups']"
+      routerLinkActive="active"
+      class="link-button"
+    >
+      <span>Sign-Ups</span>
+    </a>
+    <a
+      [routerLink]="[...manageLink, 'rules']"
+      routerLinkActive="active"
+      class="link-button"
+    >
+      <span>Rules</span>
+    </a>
+    <a
+      [routerLink]="[...tournamentBase(), 'tier-list', 'edit']"
+      routerLinkActive="active"
+      class="link-button"
+    >
+      <span>Tier List</span>
+    </a>
+    <a
+      [routerLink]="manageLink"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+      class="link-button"
+    >
+      <span>Dashboard</span>
     </a>
   }
 </nav>

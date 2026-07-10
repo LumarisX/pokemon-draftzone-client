@@ -110,10 +110,6 @@ export class LeagueManageService {
     );
   }
 
-  // TODO: no "manage/settings" route exists server-side at all
-  // (HostedTournamentService has no settings get/update method), and this
-  // URL is also missing the :leagueKey segment every sibling call has.
-  // Currently 404s — used by league-settings.component.ts.
   getTournamentSettings() {
     return this.apiService.get<{
       name: string;
@@ -128,14 +124,16 @@ export class LeagueManageService {
       discord?: string;
       forfeit: { gameDiff: number; pokemonDiff: number };
       diffMode: 'pokemon' | 'game';
+      tierListId: string;
+      draftCount: { min: number; max: number };
+      pointTotal?: number;
+      tierRequirements: { tierName: string; required: number }[];
     }>(
-      `leagues/tournaments/${this.leagueZoneService.tournamentKey()}/manage/settings`,
+      `leagues/${this.leagueZoneService.leagueKey()}/tournaments/${this.leagueZoneService.tournamentKey()}/settings`,
       { authenticated: true },
     );
   }
 
-  // TODO: same missing route / missing :leagueKey segment as
-  // getTournamentSettings above — currently 404s.
   updateTournamentSettings(settings: {
     name: string;
     description?: string;
@@ -150,8 +148,8 @@ export class LeagueManageService {
     forfeit?: { gameDiff: number; pokemonDiff: number };
     diffMode?: 'pokemon' | 'game';
   }) {
-    return this.apiService.patch<{ message: string }>(
-      `leagues/tournaments/${this.leagueZoneService.tournamentKey()}/manage/settings`,
+    return this.apiService.patch<{ success: boolean }>(
+      `leagues/${this.leagueZoneService.leagueKey()}/tournaments/${this.leagueZoneService.tournamentKey()}/settings`,
       settings,
     );
   }

@@ -29,7 +29,6 @@ interface TeamOption {
   teamName: string;
   coachName: string;
   logo?: string;
-  pickCount: number;
 }
 
 export type BracketPreset = 'single-elim' | 'double-elim' | 'round-robin';
@@ -54,7 +53,6 @@ export class LeagueManageBracketComponent implements OnInit {
   bracket: BracketWithSeeding | null = null;
 
   teams: TeamOption[] = [];
-  selectedTeams: TeamOption[] = [];
 
   seedingMethod: 'certified-random' | 'manual' = 'certified-random';
   grandFinalsReset = true;
@@ -102,8 +100,7 @@ export class LeagueManageBracketComponent implements OnInit {
     this.loadBracket();
 
     this.leagueService.getTournamentTeams().subscribe(({ teams }) => {
-      this.teams = teams;
-      this.selectedTeams = [...teams];
+      this.teams = teams.filter((t) => t.status === 'approved');
       this.updateBuilderTeams();
       this.maybeInitTemplate();
     });
@@ -122,33 +119,20 @@ export class LeagueManageBracketComponent implements OnInit {
     });
   }
 
-  isSelected(team: TeamOption): boolean {
-    return this.selectedTeams.some((t) => t.id === team.id);
-  }
-
-  toggleTeam(team: TeamOption): void {
-    if (this.isSelected(team)) {
-      this.selectedTeams = this.selectedTeams.filter((t) => t.id !== team.id);
-    } else {
-      this.selectedTeams = [...this.selectedTeams, team];
-    }
-    this.updateBuilderTeams();
-  }
-
   moveTeam(index: number, delta: -1 | 1): void {
     const target = index + delta;
-    if (target < 0 || target >= this.selectedTeams.length) return;
-    const reordered = [...this.selectedTeams];
+    if (target < 0 || target >= this.teams.length) return;
+    const reordered = [...this.teams];
     [reordered[index], reordered[target]] = [
       reordered[target],
       reordered[index],
     ];
-    this.selectedTeams = reordered;
+    this.teams = reordered;
     this.updateBuilderTeams();
   }
 
-  setSeedingMethod(method: 'certified-random' | 'manual'): void {
-    this.seedingMethod = method;
+  setCertifiedRandom(checked: boolean): void {
+    this.seedingMethod = checked ? 'certified-random' : 'manual';
   }
 
   setGrandFinalsReset(value: boolean): void {
@@ -168,12 +152,12 @@ export class LeagueManageBracketComponent implements OnInit {
 
   private maybeInitTemplate(): void {
     if (!this.supportsGeneration || this.templateMatches) return;
-    if (this.selectedTeams.length < 2) return;
+    if (this.teams.length < 2) return;
     this.applyTemplate();
   }
 
   private applyTemplate(): void {
-    const teamCount = this.selectedTeams.length;
+    const teamCount = this.teams.length;
     const generated =
       this.preset === 'double-elim'
         ? generateDoubleElimination(teamCount, {
@@ -187,7 +171,7 @@ export class LeagueManageBracketComponent implements OnInit {
   }
 
   loadPreset(): void {
-    if (this.selectedTeams.length < 2) return;
+    if (this.teams.length < 2) return;
 
     if (
       !confirm(
@@ -217,10 +201,10 @@ export class LeagueManageBracketComponent implements OnInit {
   // ─── Bracket builder ───────────────────────────────────────────────────────
 
   private updateBuilderTeams(): void {
-    if (!this.roundRobinRoundsTouched && this.selectedTeams.length >= 2) {
-      this.roundRobinRounds = fullRoundRobinCycle(this.selectedTeams.length);
+    if (!this.roundRobinRoundsTouched && this.teams.length >= 2) {
+      this.roundRobinRounds = fullRoundRobinCycle(this.teams.length);
     }
-    this.builderTeams = this.selectedTeams.map((team, idx) => ({
+    this.builderTeams = this.teams.map((team, idx) => ({
       seed: idx + 1,
       teamName: team.teamName,
       coachName: team.coachName,
@@ -238,8 +222,8 @@ export class LeagueManageBracketComponent implements OnInit {
     if (!this.stageId || this.isGenerating) return;
     this.errorMessage = null;
 
-    if (this.selectedTeams.length < 2) {
-      this.errorMessage = 'Select at least 2 teams.';
+    if (this.teams.length < 2) {
+      this.errorMessage = 'At least 2 teams are required.';
       return;
     }
     if (bracket.matches.length === 0) {
@@ -266,7 +250,7 @@ export class LeagueManageBracketComponent implements OnInit {
     this.manageService
       .generateBracket(this.stageId, {
         seedingMethod: this.effectiveSeedingMethod,
-        teamIds: this.selectedTeams.map((t) => t.id),
+        teamIds: this.teams.map((t) => t.id),
         rounds: payload.rounds,
         matches: payload.matches,
       })

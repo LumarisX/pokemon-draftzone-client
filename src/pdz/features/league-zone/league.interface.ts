@@ -113,6 +113,8 @@ export namespace League {
     pokemon?: Pokemon;
   }[];
 
+  export type SignUpStatus = 'approved' | 'pending' | 'denied';
+
   export type LeagueSignUp = {
     id: string;
     teamId?: string;
@@ -122,7 +124,7 @@ export namespace League {
     timezone: string;
     experience: string;
     dropped?: string;
-    status: string;
+    status: SignUpStatus;
     teamName: string;
     logo?: string;
     signedUpAt: Date;

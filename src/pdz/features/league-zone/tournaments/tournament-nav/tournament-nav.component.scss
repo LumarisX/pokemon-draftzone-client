@@ -81,6 +81,16 @@
     border: 0;
     border-top: 1px solid pdz.color(outline-variant);
   }
+
+  &__group-title {
+    @include apply-typography(label-sm);
+    width: 100%;
+    padding: 0 pdz.space(sm);
+    color: pdz.color(on-surface-variant);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
 }
 
 .link-button {

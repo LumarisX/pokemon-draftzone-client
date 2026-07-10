@@ -498,7 +498,7 @@ export class LeagueZoneService {
   }
 
   updateSignUps(
-    signups: { id: string; draft?: string }[],
+    signups: { id: string; draft?: string; status?: League.SignUpStatus }[],
   ): Observable<{ message: string }> {
     return this.apiService.patch(
       `${ROOTPATH}/${this.leagueKey()}/tournaments/${this.tournamentKey()}/coaches`,
@@ -506,6 +506,7 @@ export class LeagueZoneService {
         assignments: signups.map((s) => ({
           coachId: s.id,
           divisionKey: s.draft || undefined,
+          status: s.status,
         })),
       },
     );
@@ -536,6 +537,7 @@ export class LeagueZoneService {
       coachName: string;
       logo?: string;
       pickCount: number;
+      status: League.SignUpStatus;
     }[];
   }> {
     return this.apiService.get(

@@ -14,8 +14,6 @@
 
 .bracket-manage {
   padding: pdz.space(lg);
-  max-width: 1100px;
-  margin: 0 auto;
 
   &__header {
     display: flex;
@@ -35,6 +33,20 @@
     display: flex;
     flex-direction: column;
     gap: pdz.space(lg);
+
+    // Side-by-side setup panels on wide screens; the builder always spans
+    // the full width so the canvas gets as much room as possible.
+    @include respond-above(medium) {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: start;
+
+      .panel--preview,
+      .panel--wide,
+      .bracket-manage__error {
+        grid-column: 1 / -1;
+      }
+    }
   }
 
   &__empty {
@@ -113,65 +125,15 @@
   }
 }
 
-.team-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: pdz.space(xs);
-
-  &__label {
-    display: flex;
-    align-items: center;
-    gap: pdz.space(sm);
-    padding: pdz.space(xs) pdz.space(sm);
-    border-radius: pdz.shape(corner-sm);
-    cursor: pointer;
-
-    &:hover {
-      background: pdz.color("surface-container-high");
-    }
-  }
-
-  &__logo {
-    width: 24px;
-    height: 24px;
-    object-fit: contain;
-    border-radius: pdz.shape(corner-xs);
-  }
-
-  &__name {
-    @include apply-typography(body-md);
-    color: pdz.color("on-surface");
-  }
-
-  &__coach {
-    @include apply-typography(body-sm);
-    color: pdz.color("on-surface-variant");
-  }
-
-  &__picks {
-    @include apply-typography(label-sm);
-    color: pdz.color("on-surface-variant");
-    margin-left: auto;
-  }
-}
-
-.seeding-options {
+.random-toggle {
   display: flex;
-  flex-direction: column;
+  align-items: flex-start;
   gap: pdz.space(sm);
+  cursor: pointer;
+  margin-bottom: pdz.space(md);
 
-  &__option {
-    display: flex;
-    align-items: flex-start;
-    gap: pdz.space(sm);
-    cursor: pointer;
-
-    input {
-      margin-top: 4px;
-    }
+  input {
+    margin-top: 4px;
   }
 
   &__label {
@@ -182,7 +144,7 @@
 
 .seed-order {
   list-style: none;
-  margin: pdz.space(md) 0 0;
+  margin: 0;
   padding: 0;
   display: flex;
   flex-direction: column;
@@ -206,10 +168,22 @@
     text-align: center;
   }
 
+  &__logo {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    border-radius: pdz.shape(corner-xs);
+  }
+
   &__name {
     @include apply-typography(body-md);
     color: pdz.color("on-surface");
     flex: 1;
+  }
+
+  &__coach {
+    @include apply-typography(body-sm);
+    color: pdz.color("on-surface-variant");
   }
 
   &__controls {

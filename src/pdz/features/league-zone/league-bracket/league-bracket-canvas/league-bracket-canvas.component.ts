@@ -39,6 +39,7 @@ import {
 import {
   HitRegion,
   buildHitRegions,
+  hitTestConnector,
   queryHitRegion,
 } from './bracket-hit-test';
 import {
@@ -298,7 +299,17 @@ export class LeagueBracketCanvasComponent
       ? computeBracketLayout(data, this.editable)
       : EMPTY_LAYOUT;
     this.hitRegions = buildHitRegions(this.layout, this.editable);
-    this.hostHeight = Math.max(320, Math.min(this.layout.height + 48, 720));
+    // Give the builder generous working room; both modes may grow with the
+    // bracket up to most of the viewport instead of a hard 720px cap.
+    const minHeight = this.editable ? 560 : 420;
+    const maxHeight = Math.max(
+      minHeight,
+      Math.round(window.innerHeight * 0.8),
+    );
+    this.hostHeight = Math.max(
+      minHeight,
+      Math.min(this.layout.height + 48, maxHeight),
+    );
     this.autoFitIfPending();
   }
 
@@ -636,6 +647,11 @@ export class LeagueBracketCanvasComponent
 
   private updateHover(wx: number, wy: number): void {
     const region = queryHitRegion(wx, wy, this.hitRegions);
+    // Cards and buttons take priority; only probe connector lines on empty
+    // canvas. Tolerance is ~7 screen px regardless of zoom.
+    const hoveredConnectorIndex = region
+      ? null
+      : hitTestConnector(wx, wy, this.layout.connectors, 7 / this.transform.k);
     const prev = this.state;
     const next: BracketInteractionState = {
       ...prev,
@@ -649,13 +665,15 @@ export class LeagueBracketCanvasComponent
           region.kind === 'round-title')
           ? `${region.section}::${region.round}`
           : null,
+      hoveredConnectorIndex,
     };
 
     const changed =
       prev.hoveredMatchId !== next.hoveredMatchId ||
       prev.hoveredKind !== next.hoveredKind ||
       prev.hoveredSlotIndex !== next.hoveredSlotIndex ||
-      prev.hoveredButtonKey !== next.hoveredButtonKey;
+      prev.hoveredButtonKey !== next.hoveredButtonKey ||
+      (prev.hoveredConnectorIndex ?? null) !== hoveredConnectorIndex;
     if (!changed) return;
 
     this.state = next;
@@ -665,13 +683,20 @@ export class LeagueBracketCanvasComponent
   }
 
   private clearHover(): void {
-    if (!this.state.hoveredKind && !this.state.hoveredMatchId) return;
+    if (
+      !this.state.hoveredKind &&
+      !this.state.hoveredMatchId &&
+      this.state.hoveredConnectorIndex == null
+    ) {
+      return;
+    }
     this.state = {
       ...this.state,
       hoveredMatchId: null,
       hoveredKind: null,
       hoveredSlotIndex: null,
       hoveredButtonKey: null,
+      hoveredConnectorIndex: null,
     };
     this.setCursor('');
     this.scheduleRender();

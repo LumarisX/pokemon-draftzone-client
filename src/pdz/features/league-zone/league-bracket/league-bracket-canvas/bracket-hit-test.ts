@@ -118,6 +118,57 @@ export function buildHitRegions(
   return regions;
 }
 
+/** Distance from a point to a line segment. */
+function segmentDistance(
+  px: number,
+  py: number,
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
+): number {
+  const dx = x2 - x1;
+  const dy = y2 - y1;
+  const lenSq = dx * dx + dy * dy;
+  const t = lenSq
+    ? Math.max(0, Math.min(1, ((px - x1) * dx + (py - y1) * dy) / lenSq))
+    : 0;
+  return Math.hypot(px - (x1 + t * dx), py - (y1 + t * dy));
+}
+
+/**
+ * Returns the index of the connector polyline closest to the world-space
+ * point, or null if none is within `tolerance` (world px). Rect regions
+ * don't fit connector lines, so they get their own proximity test.
+ */
+export function hitTestConnector(
+  wx: number,
+  wy: number,
+  connectors: readonly { points: { x: number; y: number }[] }[],
+  tolerance: number,
+): number | null {
+  let best: number | null = null;
+  let bestDist = tolerance;
+  for (let i = 0; i < connectors.length; i++) {
+    const pts = connectors[i].points;
+    for (let j = 0; j < pts.length - 1; j++) {
+      const d = segmentDistance(
+        wx,
+        wy,
+        pts[j].x,
+        pts[j].y,
+        pts[j + 1].x,
+        pts[j + 1].y,
+      );
+      if (d <= bestDist) {
+        bestDist = d;
+        best = i;
+      }
+    }
+  }
+  return best;
+}
+
 /**
  * Returns the topmost region containing the world-space point, mirroring DOM
  * event targeting: the list is in paint order, so query in reverse.

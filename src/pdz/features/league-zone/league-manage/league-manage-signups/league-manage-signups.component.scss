@@ -115,6 +115,31 @@
       grid-template-columns: repeat(3, 1fr);
     }
   }
+
+  &__header--denied {
+    border-bottom-color: pdz.color(error);
+  }
+
+  &__toggle {
+    display: flex;
+    align-items: center;
+    gap: pdz.space(xs);
+    border: none;
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+    color: pdz.color(on-surface);
+  }
+
+  &__toggle-icon {
+    display: inline-flex;
+    color: pdz.color(on-surface-variant);
+    transition: transform 0.2s ease;
+
+    &--collapsed {
+      transform: rotate(-90deg);
+    }
+  }
 }
 
 // ── Signup card ───────────────────────────────────────────────────────────────
@@ -136,6 +161,10 @@
     box-shadow:
       0 0 0 2px pdz.color(primary),
       var(--pdz-level-1);
+  }
+
+  &--denied {
+    opacity: 0.75;
   }
 
   // ── Team row ──────────────────────────────────────────────────────────────
@@ -346,6 +375,37 @@
     @include apply-typography(body-sm);
     color: pdz.color(on-surface);
     word-break: break-word;
+  }
+}
+
+// ── Sign-up status select ─────────────────────────────────────────────────────
+
+.status-select {
+  @include apply-typography(label-sm);
+  padding: pdz.space(2xs) pdz.space(xs);
+  border-radius: pdz.shape(corner-full);
+  border: 1px solid pdz.color(outline-variant);
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  background: pdz.color(surface-container);
+  color: pdz.color(on-surface-variant);
+
+  &--approved {
+    background: pdz.color(success-container);
+    color: pdz.color(on-success-container);
+    border-color: transparent;
+  }
+
+  &--pending {
+    background: pdz.color(surface-container);
+    color: pdz.color(on-surface-variant);
+  }
+
+  &--denied {
+    background: pdz.color(error-container);
+    color: pdz.color(on-error-container);
+    border-color: transparent;
   }
 }
 

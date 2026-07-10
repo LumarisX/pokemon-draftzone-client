@@ -6,17 +6,20 @@
   <div class="bracket-manage">
     <div class="bracket-manage__header">
       <h1 class="bracket-manage__title">
-        {{ stage?.name ?? 'Stage' }} — Bracket
+        {{ stage?.name ?? "Stage" }} — Bracket
       </h1>
       @if (bracket?.seeding; as seeding) {
         <div
           class="seeding-badge"
-          [class.seeding-badge--certified]="seeding.method === 'certified-random'"
+          [class.seeding-badge--certified]="
+            seeding.method === 'certified-random'
+          "
         >
-          @if (seeding.method === 'certified-random') {
+          @if (seeding.method === "certified-random") {
             <span class="seeding-badge__title">Certified Random Seeding</span>
             <span class="seeding-badge__detail">
-              Seeded by DraftZone on {{ seeding.seededAt | date: 'MMM d, y, h:mm a' }}
+              Seeded by DraftZone on
+              {{ seeding.seededAt | date: "MMM d, y, h:mm a" }}
               @if (seeding.timesSeeded > 1) {
                 · randomized {{ seeding.timesSeeded }} times
               }
@@ -24,7 +27,7 @@
           } @else {
             <span class="seeding-badge__title">Seeded by organizers</span>
             <span class="seeding-badge__detail">
-              {{ seeding.seededAt | date: 'MMM d, y, h:mm a' }}
+              {{ seeding.seededAt | date: "MMM d, y, h:mm a" }}
             </span>
           }
         </div>
@@ -44,37 +47,7 @@
       </div>
     } @else if (isCustomStage) {
       <div class="bracket-manage__form">
-        <section class="panel">
-          <h2 class="panel__title">Participants</h2>
-          <p class="panel__hint">
-            Teams available to wire into the bracket. Order here determines
-            each team's seed number in the slot pickers below (toggle a team
-            off and back on to move it to the end).
-          </p>
-          <ul class="team-list">
-            @for (team of teams; track team.id) {
-              <li class="team-list__item">
-                <label class="team-list__label">
-                  <input
-                    type="checkbox"
-                    [checked]="isSelected(team)"
-                    (change)="toggleTeam(team)"
-                  />
-                  @if (team.logo) {
-                    <img
-                      [src]="getLogoUrl(team.logo)"
-                      class="team-list__logo"
-                      alt=""
-                    />
-                  }
-                  <span class="team-list__name">{{ team.teamName }}</span>
-                  <span class="team-list__coach">{{ team.coachName }}</span>
-                  <span class="team-list__picks">{{ team.pickCount }} picks</span>
-                </label>
-              </li>
-            }
-          </ul>
-        </section>
+        <ng-container *ngTemplateOutlet="teamsPanel"></ng-container>
 
         <section class="panel panel--preview">
           <div class="panel__header">
@@ -104,112 +77,19 @@
       </div>
     } @else if (!supportsGeneration) {
       <p class="bracket-manage__empty">
-        This stage's type ({{ stage?.type }}) doesn't support generated
-        brackets yet. Bracket generation is available for single and double
-        elimination stages.
+        This stage's type ({{ stage?.type }}) doesn't support generated brackets
+        yet. Bracket generation is available for single and double elimination
+        stages.
       </p>
     } @else {
       <div class="bracket-manage__form">
-        <section class="panel">
-          <h2 class="panel__title">Participants</h2>
-          <p class="panel__hint">
-            Teams that have completed their draft. Uncheck any that aren't in
-            this bracket.
-          </p>
-          <ul class="team-list">
-            @for (team of teams; track team.id) {
-              <li class="team-list__item">
-                <label class="team-list__label">
-                  <input
-                    type="checkbox"
-                    [checked]="isSelected(team)"
-                    (change)="toggleTeam(team)"
-                  />
-                  @if (team.logo) {
-                    <img
-                      [src]="getLogoUrl(team.logo)"
-                      class="team-list__logo"
-                      alt=""
-                    />
-                  }
-                  <span class="team-list__name">{{ team.teamName }}</span>
-                  <span class="team-list__coach">{{ team.coachName }}</span>
-                  <span class="team-list__picks">{{ team.pickCount }} picks</span>
-                </label>
-              </li>
-            }
-          </ul>
-        </section>
-
-        <section class="panel">
-          <h2 class="panel__title">Seeding</h2>
-          <div class="seeding-options">
-            <label class="seeding-options__option">
-              <input
-                type="radio"
-                name="seedingMethod"
-                [checked]="seedingMethod === 'certified-random'"
-                (change)="setSeedingMethod('certified-random')"
-              />
-              <span class="seeding-options__label">
-                <strong>Certified random</strong> — DraftZone assigns seeds
-                with an unbiased one-shot shuffle. No re-rolls; the bracket
-                displays a certification badge participants can trust.
-              </span>
-            </label>
-            <label class="seeding-options__option">
-              <input
-                type="radio"
-                name="seedingMethod"
-                [checked]="seedingMethod === 'manual'"
-                (change)="setSeedingMethod('manual')"
-              />
-              <span class="seeding-options__label">
-                <strong>Manual</strong> — you set the seed order (e.g. from a
-                previous tournament's placements). The bracket is labeled as
-                seeded by the organizers.
-              </span>
-            </label>
-          </div>
-
-          @if (seedingMethod === 'manual') {
-            <ol class="seed-order">
-              @for (team of selectedTeams; track team.id; let i = $index) {
-                <li class="seed-order__item">
-                  <span class="seed-order__seed">{{ i + 1 }}</span>
-                  <span class="seed-order__name">{{ team.teamName }}</span>
-                  <span class="seed-order__controls">
-                    <button
-                      class="btn btn--icon"
-                      [disabled]="i === 0"
-                      (click)="moveTeam(i, -1)"
-                      aria-label="Move up"
-                    >
-                      ▲
-                    </button>
-                    <button
-                      class="btn btn--icon"
-                      [disabled]="i === selectedTeams.length - 1"
-                      (click)="moveTeam(i, 1)"
-                      aria-label="Move down"
-                    >
-                      ▼
-                    </button>
-                  </span>
-                </li>
-              }
-            </ol>
-          }
-
-        </section>
+        <ng-container *ngTemplateOutlet="teamsPanel"></ng-container>
 
         <section class="panel panel--preview">
           <div class="panel__header">
             <h2 class="panel__title">Bracket Builder</h2>
           </div>
-          <ng-container
-            *ngTemplateOutlet="presetBar"
-          ></ng-container>
+          <ng-container *ngTemplateOutlet="presetBar"></ng-container>
           <p class="panel__hint">
             The generated bracket below is a starting template — add or remove
             matchups and rounds, drag matches around, click a round title to
@@ -217,18 +97,12 @@
             to start over from a different format. Nothing is saved until you
             hit Save.
           </p>
-          @if (seedingMethod === 'certified-random') {
-            <p class="panel__hint">
-              Placements are shown as seed numbers — actual teams are assigned
-              by the server when you save, and revealed to everyone at the same
-              time.
-            </p>
-          }
-          @if (selectedTeams.length >= 2) {
+
+          @if (teams.length >= 2) {
             <pdz-league-bracket-canvas
               [editable]="true"
               [teams]="seedingMethod === 'manual' ? builderTeams : []"
-              [seedCount]="selectedTeams.length"
+              [seedCount]="teams.length"
               [initialMatches]="templateMatches"
               [initialSections]="templateSections"
               componentTitle=""
@@ -236,7 +110,7 @@
             ></pdz-league-bracket-canvas>
           } @else {
             <p class="bracket-manage__empty">
-              Select at least 2 teams to build the bracket.
+              At least 2 teams are required to build the bracket.
             </p>
           }
         </section>
@@ -247,6 +121,57 @@
       </div>
     }
   </div>
+
+  <ng-template #teamsPanel>
+    <section class="panel">
+      <h2 class="panel__title">Teams</h2>
+      @if (!isCustomStage) {
+        <label class="random-toggle">
+          <input
+            type="checkbox"
+            [checked]="seedingMethod === 'certified-random'"
+            (change)="setCertifiedRandom($any($event.target).checked)"
+          />
+          <span class="random-toggle__label"> Random seeding </span>
+        </label>
+      }
+
+      <ol class="seed-order">
+        @for (team of teams; track team.id; let i = $index) {
+          <li class="seed-order__item">
+            <span class="seed-order__seed">{{ i + 1 }}</span>
+            @if (team.logo) {
+              <img
+                [src]="getLogoUrl(team.logo)"
+                class="seed-order__logo"
+                alt=""
+              />
+            }
+            <span class="seed-order__name">{{ team.teamName }}</span>
+            <span class="seed-order__coach">{{ team.coachName }}</span>
+            <span class="seed-order__controls">
+              <button
+                class="btn btn--icon"
+                [disabled]="i === 0"
+                (click)="moveTeam(i, -1)"
+                aria-label="Move up"
+              >
+                ▲
+              </button>
+              <button
+                class="btn btn--icon"
+                [disabled]="i === teams.length - 1"
+                (click)="moveTeam(i, 1)"
+                aria-label="Move down"
+              >
+                ▼
+              </button>
+            </span>
+          </li>
+        }
+      </ol>
+    </section>
+  </ng-template>
 
   <ng-template #presetBar>
     <div class="preset-bar">
@@ -261,7 +186,7 @@
           <option value="round-robin">Round Robin</option>
         </select>
       </label>
-      @if (preset === 'round-robin') {
+      @if (preset === "round-robin") {
         <label class="preset-bar__field">
           <span class="preset-bar__label">Rounds</span>
           <input
@@ -272,7 +197,7 @@
           />
         </label>
       }
-      @if (preset === 'double-elim') {
+      @if (preset === "double-elim") {
         <label class="preset-bar__check">
           <input
             type="checkbox"
@@ -285,7 +210,7 @@
       <button
         type="button"
         class="btn btn--icon-text"
-        [disabled]="selectedTeams.length < 2"
+        [disabled]="teams.length < 2"
         (click)="loadPreset()"
       >
         ↺ Load preset

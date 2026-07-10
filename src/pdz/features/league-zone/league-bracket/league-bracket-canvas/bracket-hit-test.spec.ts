@@ -1,5 +1,9 @@
 import { FlexBracketData } from '../bracket.model';
-import { buildHitRegions, queryHitRegion } from './bracket-hit-test';
+import {
+  buildHitRegions,
+  hitTestConnector,
+  queryHitRegion,
+} from './bracket-hit-test';
 import { computeBracketLayout } from './bracket-layout';
 
 const data = (withReplay: boolean): FlexBracketData => ({
@@ -90,5 +94,32 @@ describe('buildHitRegions / queryHitRegion', () => {
     expect(
       queryHitRegion(replay!.x + 2, replay!.y + 2, regions)?.kind,
     ).toBe('replay-link');
+  });
+});
+
+describe('hitTestConnector', () => {
+  const connectors = [
+    { points: [{ x: 0, y: 0 }, { x: 100, y: 0 }] },
+    { points: [{ x: 0, y: 50 }, { x: 50, y: 50 }, { x: 50, y: 150 }] },
+  ];
+
+  it('returns the connector within tolerance of the point', () => {
+    expect(hitTestConnector(50, 3, connectors, 6)).toBe(0);
+    expect(hitTestConnector(53, 100, connectors, 6)).toBe(1);
+  });
+
+  it('tests every segment of a polyline, not just endpoints', () => {
+    // Midway down the vertical segment of connector 1.
+    expect(hitTestConnector(50, 100, connectors, 1)).toBe(1);
+  });
+
+  it('returns null when nothing is within tolerance', () => {
+    expect(hitTestConnector(50, 25, connectors, 6)).toBeNull();
+    expect(hitTestConnector(500, 500, connectors, 6)).toBeNull();
+  });
+
+  it('picks the closest connector when several are in tolerance', () => {
+    expect(hitTestConnector(10, 20, connectors, 100)).toBe(0);
+    expect(hitTestConnector(10, 40, connectors, 100)).toBe(1);
   });
 });
