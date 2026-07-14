@@ -1,8 +1,10 @@
 import { CommonModule } from '@angular/common';
 import {
+  afterRenderEffect,
   Component,
   computed,
   effect,
+  ElementRef,
   EventEmitter,
   inject,
   input,
@@ -11,6 +13,7 @@ import {
   OnInit,
   Output,
   signal,
+  viewChild,
 } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -85,6 +88,9 @@ export class TierListComponent implements OnInit, OnDestroy {
   selectedTypes = signal<Type[]>([]);
   filteredTypes = signal<Type[]>([...TYPES]);
 
+  private tiersContainer =
+    viewChild<ElementRef<HTMLElement>>('tiersContainer');
+
   readonly SortOptions = SORT_OPTIONS;
   readonly types = TYPES;
 
@@ -136,6 +142,51 @@ export class TierListComponent implements OnInit, OnDestroy {
     effect(() => {
       this.selectedDivision();
       this.menu = null;
+    });
+    afterRenderEffect(() => {
+      this.searchText();
+      this.filteredTypes();
+      this.snapToVisibleResult();
+    });
+  }
+
+  /**
+   * If the current search/filter left only empty tiers in the viewport,
+   * scroll the nearest tier that still has results into view.
+   */
+  private snapToVisibleResult(): void {
+    const container = this.tiersContainer()?.nativeElement;
+    if (!container) return;
+
+    const tiersWithResults = Array.from(
+      container.querySelectorAll<HTMLElement>('.tier'),
+    ).filter((tier) => tier.querySelector('.pokemon-entry'));
+    if (tiersWithResults.length === 0) return;
+
+    const containerRect = container.getBoundingClientRect();
+    const inView = tiersWithResults.some((tier) => {
+      const rect = tier.getBoundingClientRect();
+      return rect.left < containerRect.right && rect.right > containerRect.left;
+    });
+    if (inView) return;
+
+    let nearest = tiersWithResults[0];
+    let bestDistance = Infinity;
+    for (const tier of tiersWithResults) {
+      const rect = tier.getBoundingClientRect();
+      const distance =
+        rect.left >= containerRect.right
+          ? rect.left - containerRect.right
+          : containerRect.left - rect.right;
+      if (distance < bestDistance) {
+        bestDistance = distance;
+        nearest = tier;
+      }
+    }
+    nearest.scrollIntoView({
+      behavior: 'smooth',
+      inline: 'nearest',
+      block: 'nearest',
     });
   }
 

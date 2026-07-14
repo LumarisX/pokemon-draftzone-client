@@ -24,9 +24,29 @@ import { getLogoUrl } from '../../../league.util';
 })
 export class MatchupCardComponent implements OnInit {
   @Input({ required: true }) matchup!: League.Matchup;
+  // The stage the schedule was fetched for. Pages without :stageId in their
+  // route (team page, division dashboard) must pass it in — the route-derived
+  // service signal is null there.
+  @Input() stageId?: string | null;
   @Input() initiallyOpen: boolean = false;
 
   leagueService = inject(LeagueZoneService);
+
+  get matchupLink(): string[] {
+    const stageId = this.stageId ?? this.leagueService.stageId();
+    if (!stageId) return [];
+    return [
+      '/leagues',
+      this.leagueService.leagueKey() ?? '',
+      'tournaments',
+      this.leagueService.tournamentKey() ?? '',
+      'stages',
+      stageId,
+      'schedule',
+      'matchups',
+      this.matchup.id,
+    ];
+  }
 
   private _isOpen = signal<boolean>(false);
   isOpen = this._isOpen.asReadonly();

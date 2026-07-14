@@ -21,4 +21,35 @@
   &__header {
     @include pdz-league-page-header();
   }
+
+  &__loading {
+    display: flex;
+    justify-content: center;
+    padding: pdz.space(xl);
+  }
+}
+
+.seeding-badge {
+  display: inline-flex;
+  flex-direction: column;
+  align-self: flex-start;
+  margin: pdz.space(md) pdz.space(lg) 0;
+  padding: pdz.space(xs) pdz.space(md);
+  border-radius: pdz.shape(corner-md);
+  border: 1px solid pdz.color("outline-variant");
+  background: pdz.color("surface-container");
+
+  &--certified {
+    border-color: pdz.color("primary");
+  }
+
+  &__title {
+    @include apply-typography(label-md);
+    color: pdz.color("primary");
+  }
+
+  &__detail {
+    @include apply-typography(body-sm);
+    color: pdz.color("on-surface-variant");
+  }
 }

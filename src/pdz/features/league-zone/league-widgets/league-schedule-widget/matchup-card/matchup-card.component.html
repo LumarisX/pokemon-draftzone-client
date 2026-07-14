@@ -76,17 +76,7 @@
       } @else {
         <button
           class="matchup-card__matchup-button"
-          [routerLink]="[
-            '/leagues',
-            leagueService.leagueKey(),
-            'tournaments',
-            leagueService.tournamentKey(),
-            'stages',
-            leagueService.stageId(),
-            'schedule',
-            'matchups',
-            matchup.id,
-          ]"
+          [routerLink]="matchupLink"
           (click)="onReplayClick($event)"
         >
           Matchup

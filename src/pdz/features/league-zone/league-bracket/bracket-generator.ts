@@ -268,13 +268,20 @@ function roundName(
   roundCount: number,
 ): string {
   const isLast = roundIdx === roundCount - 1;
+  const isSecondToLast = roundIdx === roundCount - 2;
   switch (sectionKey) {
     case 'main':
-      return isLast ? 'Finals' : `Round ${roundIdx + 1}`;
+      if (isLast) return 'Finals';
+      if (isSecondToLast) return 'Semi-Finals';
+      return `Round ${roundIdx + 1}`;
     case 'winners':
-      return isLast ? 'Winners Finals' : `Winners Round ${roundIdx + 1}`;
+      if (isLast) return 'Winners Finals';
+      if (isSecondToLast) return 'Winners Semi-Finals';
+      return `Winners Round ${roundIdx + 1}`;
     case 'losers':
-      return isLast ? 'Losers Finals' : `Losers Round ${roundIdx + 1}`;
+      if (isLast) return 'Losers Finals';
+      if (isSecondToLast) return 'Losers Semi-Finals';
+      return `Losers Round ${roundIdx + 1}`;
     case 'finals':
       return roundIdx === 0 ? 'Grand Finals' : 'Bracket Reset';
     case 'rr':

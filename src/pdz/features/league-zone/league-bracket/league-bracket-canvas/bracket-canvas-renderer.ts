@@ -10,7 +10,6 @@ import {
   LABEL_H,
   ROW_GAP,
   SECTION_TITLE_H,
-  TEAM_H,
 } from './bracket-layout';
 import { BracketTheme } from './bracket-theme-colors';
 
@@ -101,7 +100,9 @@ export function slotRect(m: CanvasMatch, slotIndex: 0 | 1) {
     x: m.x + CARD_PAD,
     y: m.slotY[slotIndex],
     w: m.w - CARD_PAD * 2,
-    h: TEAM_H,
+    // Row height is layout-dependent (compact vs full team rows), so recover
+    // it from the gap between the two slot rows.
+    h: m.slotY[1] - m.slotY[0] - ROW_GAP,
   };
 }
 

@@ -89,9 +89,24 @@ export class MatchupOverviewComponent implements OnInit {
 
     this.route.params.subscribe((params) => {
       this.matchupId = params['matchupId'];
-      this.shareUrl = 'https://pokemondraftzone.com/matchup/' + this.matchupId;
       this.tournamentId = params['teamId'];
-      this.matchupService.getMatchup(this.matchupId!).subscribe({
+      // League schedule matchups (route provides leagueKey/tournamentKey/
+      // stageId via inherited params) are served by the stage endpoint;
+      // everything else is an external matchup.
+      const { leagueKey, tournamentKey, stageId } = params;
+      const isLeagueMatchup = !!(leagueKey && tournamentKey && stageId);
+      this.shareUrl = isLeagueMatchup
+        ? `https://pokemondraftzone.com/leagues/${leagueKey}/tournaments/${tournamentKey}/stages/${stageId}/schedule/matchups/${this.matchupId}`
+        : 'https://pokemondraftzone.com/matchup/' + this.matchupId;
+      const matchup$ = isLeagueMatchup
+        ? this.matchupService.getLeagueMatchup(
+            leagueKey,
+            tournamentKey,
+            stageId,
+            this.matchupId,
+          )
+        : this.matchupService.getMatchup(this.matchupId!);
+      matchup$.subscribe({
         next: (data) => {
           this.matchupData = <MatchupData>data;
           if ('gameTime' in this.matchupData) {
@@ -125,7 +140,10 @@ export class MatchupOverviewComponent implements OnInit {
           }
         },
         error: (error) => {
-          if (error?.status === 401 || error?.status === 403) {
+          if (
+            !isLeagueMatchup &&
+            (error?.status === 401 || error?.status === 403)
+          ) {
             this.router.navigate(['/' + matchupPath, this.matchupId]);
             return;
           }

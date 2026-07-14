@@ -8,7 +8,10 @@
             <p class="section-message">No matchups in this stage.</p>
           } @else {
             @for (matchup of stage.matchups; track matchup.id) {
-              <pdz-matchup-card [matchup]="matchup"></pdz-matchup-card>
+              <pdz-matchup-card
+                [matchup]="matchup"
+                [stageId]="stageId"
+              ></pdz-matchup-card>
             }
           }
         </div>

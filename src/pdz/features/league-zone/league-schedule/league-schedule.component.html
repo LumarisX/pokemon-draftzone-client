@@ -3,7 +3,43 @@
     <h1 class="schedule__title">Schedule</h1>
   </div>
 
-  <div class="schedule__body">
-    <pdz-league-schedule-widget></pdz-league-schedule-widget>
-  </div>
+  @if (isLoading) {
+    <div class="schedule__loading">
+      <pdz-loading></pdz-loading>
+    </div>
+  } @else if (hasBracket) {
+    @if (bracket?.seeding; as seeding) {
+      <div
+        class="seeding-badge"
+        [class.seeding-badge--certified]="
+          seeding.method === 'certified-random'
+        "
+        [title]="
+          seeding.method === 'certified-random'
+            ? 'Seeds were assigned by DraftZone\'s unbiased one-shot randomization — organizers cannot pick or re-roll placements.'
+            : 'Seed placements were set by the tournament organizers.'
+        "
+      >
+        @if (seeding.method === "certified-random") {
+          <span class="seeding-badge__title">✓ Certified Random Seeding</span>
+          <span class="seeding-badge__detail">
+            Randomized by DraftZone · {{ seeding.seededAt | date: "MMM d, y" }}
+            @if (seeding.timesSeeded > 1) {
+              · randomized {{ seeding.timesSeeded }} times
+            }
+          </span>
+        } @else {
+          <span class="seeding-badge__title">Seeded by organizers</span>
+        }
+      </div>
+    }
+    <pdz-league-bracket-canvas
+      [bracketData]="bracket!"
+      componentTitle=""
+    ></pdz-league-bracket-canvas>
+  } @else {
+    <div class="schedule__body">
+      <pdz-league-schedule-widget></pdz-league-schedule-widget>
+    </div>
+  }
 </div>

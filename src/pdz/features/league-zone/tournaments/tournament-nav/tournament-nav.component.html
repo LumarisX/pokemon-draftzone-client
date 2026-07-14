@@ -40,6 +40,14 @@
       <span>My Team</span>
     </a>
     <a
+      [routerLink]="teamsLink"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+      class="link-button"
+    >
+      <span>Teams</span>
+    </a>
+    <a
       [routerLink]="[...draftBase, 'draft']"
       routerLinkActive="active"
       class="link-button"

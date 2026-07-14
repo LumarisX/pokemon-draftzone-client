@@ -34,13 +34,6 @@ export const routes: Routes = [
     path: `:leagueKey`,
     component: LeagueLandingComponent,
   },
-  {
-    path: `:leagueKey/tournaments/:tournamentKey/${LEAGUE_ZONE_MANAGE_PATH}`,
-    loadChildren: () =>
-      import('./league-manage/league-manage.routes').then((m) => m.routes),
-    canActivate: [leagueRoleGuard],
-    data: { role: 'organizer' },
-  },
   // {
   //   path: 'new',
   //   component: LeagueNewComponent,
@@ -53,6 +46,13 @@ export const routes: Routes = [
       {
         path: '',
         component: TournamentHomeComponent,
+      },
+      {
+        path: LEAGUE_ZONE_MANAGE_PATH,
+        loadChildren: () =>
+          import('./league-manage/league-manage.routes').then((m) => m.routes),
+        canActivate: [leagueRoleGuard],
+        data: { role: 'organizer' },
       },
       {
         path: 'rules',

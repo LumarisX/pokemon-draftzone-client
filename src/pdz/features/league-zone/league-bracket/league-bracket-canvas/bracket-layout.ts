@@ -11,18 +11,22 @@ import {
 export const COL_W = 240;
 /** Horizontal lane between round columns that connector paths travel through. */
 export const COL_GAP = 80;
-/** Height of one match card. */
-export const MATCH_H = 140;
 /** Minimum vertical gap between leaf-round cards. */
 export const MATCH_GAP = 16;
 /** Vertical gap between stacked sections. */
 export const SECTION_GAP = 32;
 
-/** Card inner metrics: PAD + LABEL_H + ROW_GAP + TEAM_H + ROW_GAP + TEAM_H + PAD = MATCH_H. */
+// Card inner metrics. A card is: PAD, label row, gap, team row, gap, team row, PAD.
 export const CARD_PAD = 6;
 export const LABEL_H = 24;
 export const ROW_GAP = 4;
-export const TEAM_H = 48;
+/** Height of one placeholder slot row ("Seed 2", "Winner of Match 3", …). */
+export const TEAM_H_COMPACT = 24;
+/** Height of one team row when real teams are bound — fits logo + name + coach. */
+export const TEAM_H_FULL = 48;
+/** Height of one match card for a given team-row height. */
+export const matchHeight = (teamH: number): number =>
+  CARD_PAD * 2 + LABEL_H + ROW_GAP * 2 + teamH * 2;
 
 /** Spacing between parallel connector lanes in a corridor or band. */
 export const LANE_STEP = 10;
@@ -149,9 +153,10 @@ export interface CanvasLayout {
  */
 export function computeVerticalCenters(
   matches: FlexBracketMatch[],
+  matchH: number,
 ): Map<string, number> {
   const centers = new Map<string, number>();
-  const stride = MATCH_H + MATCH_GAP;
+  const stride = matchH + MATCH_GAP;
   const sectionById = new Map(matches.map((m) => [m.id, m.section ?? 'main']));
 
   const getInputIds = (m: FlexBracketMatch): string[] => {
@@ -180,7 +185,7 @@ export function computeVerticalCenters(
     const roundNums = [...rounds.keys()].sort((a, b) => a - b);
     for (const rn of roundNums) {
       const group = rounds.get(rn)!.sort((a, b) => a.position - b.position);
-      let cursor = MATCH_H / 2;
+      let cursor = matchH / 2;
       for (const m of group) {
         const resolved = getInputIds(m)
           .map((id) => centers.get(id))
@@ -202,7 +207,7 @@ export function computeVerticalCenters(
     for (const group of rounds.values()) {
       for (const m of group) sectionCenters.push(centers.get(m.id)!);
     }
-    const offset = Math.min(...sectionCenters) - MATCH_H / 2;
+    const offset = Math.min(...sectionCenters) - matchH / 2;
     if (offset !== 0) {
       for (const group of rounds.values()) {
         for (const m of group) centers.set(m.id, centers.get(m.id)! - offset);
@@ -223,6 +228,7 @@ export function resolveSlot(
   slot: BracketSlotFlex,
   teams: BracketTeamFlex[],
   allMatches: FlexBracketMatch[],
+  matchLabels?: Map<string, string>,
   depth = 0,
 ): { team: BracketTeamFlex | null; placeholder: string | null } {
   if (depth > 20) return { team: null, placeholder: 'TBD' };
@@ -236,18 +242,24 @@ export function resolveSlot(
     const src = allMatches.find((m) => m.id === slot.from);
     if (src?.winner !== undefined) {
       const advancingSlot = src.winner === 0 ? src.a : src.b;
-      return resolveSlot(advancingSlot, teams, allMatches, depth + 1);
+      return resolveSlot(advancingSlot, teams, allMatches, matchLabels, depth + 1);
     }
-    return { team: null, placeholder: `` };
+    return {
+      team: null,
+      placeholder: `Winner of ${matchLabels?.get(slot.from) ?? slot.from}`,
+    };
   }
 
   if (slot.type === 'loser') {
     const src = allMatches.find((m) => m.id === slot.from);
     if (src?.winner !== undefined) {
       const eliminatedSlot = src.winner === 0 ? src.b : src.a;
-      return resolveSlot(eliminatedSlot, teams, allMatches, depth + 1);
+      return resolveSlot(eliminatedSlot, teams, allMatches, matchLabels, depth + 1);
     }
-    return { team: null, placeholder: `L of ${slot.from}` };
+    return {
+      team: null,
+      placeholder: `Loser of ${matchLabels?.get(slot.from) ?? slot.from}`,
+    };
   }
 
   if (slot.type === 'empty') {
@@ -267,6 +279,7 @@ export function computeRoundTitles(
 ): string[] {
   const n = roundNums.length;
   const isWinners = sectionKey === 'main' || sectionKey === 'winners';
+  const isLosers = sectionKey === 'losers';
   const isFinals = sectionKey === 'finals' || sectionKey === 'grand-finals';
 
   return roundNums.map((rn, idx) => {
@@ -282,8 +295,16 @@ export function computeRoundTitles(
       if (fromEnd === 0) return 'Finals';
       if (fromEnd === 1) return 'Semi-Finals';
       if (fromEnd === 2) return 'Quarter-Finals';
-      const roundOf = Math.min(Math.pow(2, fromEnd + 1), totalTeams);
+      const slots = Math.pow(2, fromEnd + 1);
+      const roundOf = totalTeams > 0 ? Math.min(slots, totalTeams) : slots;
       return `Round of ${roundOf}`;
+    }
+    if (isLosers) {
+      // Losers rounds alternate sizes instead of halving, so earlier rounds
+      // stay numbered — only the last two get end-anchored names.
+      if (fromEnd === 0) return 'Finals';
+      if (fromEnd === 1) return 'Semi-Finals';
+      return `Round ${idx + 1}`;
     }
     return `Round ${idx + 1}`;
   });
@@ -320,7 +341,23 @@ export function computeBracketLayout(
   editable: boolean,
 ): CanvasLayout {
   const { teams, matches, sections: sectionCfgs } = data;
-  const verticalCenters = computeVerticalCenters(matches);
+  // Certified-random builder drafts (and read-only brackets served without a
+  // team list) have no teams bound, but the seeds wired into the matches still
+  // give the bracket size for "Round of N" titles.
+  const maxSlotSeed = matches.reduce((mx, m) => {
+    for (const slot of [m.a, m.b]) {
+      if (slot.type === 'seed' || slot.type === 'bye') {
+        mx = Math.max(mx, slot.seed);
+      }
+    }
+    return mx;
+  }, 0);
+  const totalTeams = Math.max(teams.length, maxSlotSeed);
+  // Rows grow to fit logo + coach when real teams are bound; placeholder-only
+  // brackets (builder drafts, unseeded) stay compact.
+  const teamH = teams.length > 0 ? TEAM_H_FULL : TEAM_H_COMPACT;
+  const matchH = matchHeight(teamH);
+  const verticalCenters = computeVerticalCenters(matches, matchH);
   const matchLabelById = new Map<string, string>();
 
   // Determine section keys and their ordering. In edit mode, sections
@@ -362,6 +399,21 @@ export function computeBracketLayout(
   }
   const sectionIdxByKey = new Map(sectionKeys.map((k, i) => [k, i] as const));
   const matchById = new Map(matches.map((m) => [m.id, m]));
+
+  // Labels must exist before slot resolution so a pending slot can render
+  // "Winner of <label>" even when its source match lays out later.
+  for (const sKey of sectionKeys) {
+    let matchNumber = 1;
+    for (const rn of roundNumsBySection.get(sKey)!) {
+      const roundMatches = matches
+        .filter((m) => (m.section ?? 'main') === sKey && m.round === rn)
+        .sort((a, b) => a.position - b.position);
+      for (const m of roundMatches) {
+        matchLabelById.set(m.id, m.label ?? `Match ${matchNumber++}`);
+      }
+    }
+  }
+
   const colIdxOf = (m: FlexBracketMatch): number =>
     roundNumsBySection.get(m.section ?? 'main')!.indexOf(m.round);
 
@@ -400,9 +452,9 @@ export function computeBracketLayout(
 
   /** Section-relative center y of a team row, from the section-relative match center. */
   const relRowCenter = (id: string, row: 0 | 1): number => {
-    const top = (verticalCenters.get(id) ?? MATCH_H / 2) - MATCH_H / 2;
+    const top = (verticalCenters.get(id) ?? matchH / 2) - matchH / 2;
     return (
-      top + CARD_PAD + LABEL_H + ROW_GAP + row * (TEAM_H + ROW_GAP) + TEAM_H / 2
+      top + CARD_PAD + LABEL_H + ROW_GAP + row * (teamH + ROW_GAP) + teamH / 2
     );
   };
 
@@ -568,7 +620,7 @@ export function computeBracketLayout(
     const roundTitles = computeRoundTitles(
       roundNums,
       sKey,
-      teams.length,
+      totalTeams,
       cfg?.roundTitles,
     );
 
@@ -584,8 +636,7 @@ export function computeBracketLayout(
     const cardsTop = yCursor;
 
     const columns: CanvasColumn[] = [];
-    let matchNumber = 1;
-    let maxCardBottom = cardsTop + MATCH_H; // sections render at least one card tall
+    let maxCardBottom = cardsTop + matchH; // sections render at least one card tall
 
     roundNums.forEach((rn, idx) => {
       const colXPos = colX(idx);
@@ -605,15 +656,14 @@ export function computeBracketLayout(
       let colBottom = cardsTop;
       for (const m of rawMatches) {
         const vc = verticalCenters.get(m.id) ?? 0;
-        const label = m.label ?? `Match ${matchNumber++}`;
-        matchLabelById.set(m.id, label);
+        const label = matchLabelById.get(m.id)!;
 
-        const y = cardsTop + vc - MATCH_H / 2;
+        const y = cardsTop + vc - matchH / 2;
         const slotAY = y + CARD_PAD + LABEL_H + ROW_GAP;
-        const slotBY = slotAY + TEAM_H + ROW_GAP;
+        const slotBY = slotAY + teamH + ROW_GAP;
 
-        const resolvedA = resolveSlot(m.a, teams, matches);
-        const resolvedB = resolveSlot(m.b, teams, matches);
+        const resolvedA = resolveSlot(m.a, teams, matches, matchLabelById);
+        const resolvedB = resolveSlot(m.b, teams, matches, matchLabelById);
 
         layoutMatches.push({
           id: m.id,
@@ -626,7 +676,7 @@ export function computeBracketLayout(
           x: colXPos,
           y,
           w: COL_W,
-          h: MATCH_H,
+          h: matchH,
           slotY: [slotAY, slotBY],
           slots: [
             { raw: m.a, ...resolvedA, status: slotStatus(m.winner, 0) },
@@ -634,8 +684,8 @@ export function computeBracketLayout(
           ],
         });
 
-        colBottom = Math.max(colBottom, y + MATCH_H);
-        maxCardBottom = Math.max(maxCardBottom, y + MATCH_H);
+        colBottom = Math.max(colBottom, y + matchH);
+        maxCardBottom = Math.max(maxCardBottom, y + matchH);
       }
 
       if (editable) {
@@ -674,7 +724,7 @@ export function computeBracketLayout(
     if (editable) {
       sectionBottom = Math.max(
         sectionBottom + MATCH_GAP + ADD_BTN_H,
-        cardsTop + MATCH_H,
+        cardsTop + matchH,
       );
     }
 
@@ -723,14 +773,14 @@ export function computeBracketLayout(
         r.cls === 'winner'
           ? sourceMatch.winner!
           : ((1 - sourceMatch.winner!) as 0 | 1);
-      y1 = src.slotY[rowIndex] + TEAM_H / 2;
+      y1 = src.slotY[rowIndex] + teamH / 2;
     }
 
     connectors.push({
       x1: src.x + src.w,
       y1,
       x2: dest.x,
-      y2: dest.slotY[r.slotIndex] + TEAM_H / 2,
+      y2: dest.slotY[r.slotIndex] + teamH / 2,
       midX: 0,
       cls: r.cls,
       decided: r.decided,
@@ -749,7 +799,7 @@ export function computeBracketLayout(
   for (const group of byOrigin.values()) {
     if (group.length < 2) continue;
     group.sort((a, b) => a.y2 - b.y2);
-    const spread = Math.min(12, TEAM_H / group.length);
+    const spread = Math.min(12, teamH / group.length);
     group.forEach((conn, i) => {
       conn.y1 += (i - (group.length - 1) / 2) * spread;
     });

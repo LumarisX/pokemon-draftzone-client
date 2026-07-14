@@ -19,6 +19,21 @@ export class MatchupService {
     });
   }
 
+  // League (stage) matchups live in a different collection than external
+  // matchups, so they have their own analysis endpoint. Auth is optional:
+  // a logged-in coach gets their own team shown first.
+  getLeagueMatchup(
+    leagueKey: string,
+    tournamentKey: string,
+    stageId: string,
+    matchupId: string,
+  ) {
+    return this.apiService.get<MatchupData>(
+      `leagues/${leagueKey}/tournaments/${tournamentKey}/stages/${stageId}/matchups/${matchupId}`,
+      { authenticated: 'optional' },
+    );
+  }
+
   getQuickMatchup(matchupData: QuickFormData): Observable<MatchupData> {
     return this.apiService.post(`${matchupPath}/quick`, matchupData);
   }

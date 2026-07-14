@@ -129,7 +129,7 @@
       }
     </div>
   } @else {
-    <div class="tiers-container">
+    <div class="tiers-container" #tiersContainer>
       @for (tier of sortedTiers()!; track $index) {
         @let visiblePokemon = getVisiblePokemon(tier);
         <div class="tier">

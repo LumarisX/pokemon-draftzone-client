@@ -47,7 +47,6 @@ import {
   COL_W,
   CanvasLayout,
   MATCH_GAP,
-  MATCH_H,
   computeBracketLayout,
 } from './bracket-layout';
 import { BracketTheme, resolveBracketTheme } from './bracket-theme-colors';
@@ -799,8 +798,8 @@ export class LeagueBracketCanvasComponent
           : index === 0
             ? cards[0].y - MATCH_GAP / 2
             : index === cards.length
-              ? cards[cards.length - 1].y + MATCH_H + MATCH_GAP / 2
-              : (cards[index - 1].y + MATCH_H + cards[index].y) / 2;
+              ? cards[cards.length - 1].y + cards[cards.length - 1].h + MATCH_GAP / 2
+              : (cards[index - 1].y + cards[index - 1].h + cards[index].y) / 2;
         return {
           section: col.section,
           round: col.round,

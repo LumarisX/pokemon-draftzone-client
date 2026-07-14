@@ -166,6 +166,10 @@ export class TournamentNavComponent implements OnInit, OnDestroy {
     return [...this.draftBase, 'teams', this.profile?.teamId ?? ''];
   }
 
+  get teamsLink(): string[] {
+    return [...this.draftBase, 'teams'];
+  }
+
   get scheduleLink(): string[] {
     return [...this.stageBase, 'schedule'];
   }
