@@ -126,15 +126,14 @@ $navbar-height: 3.5rem;
 
   &__main {
     min-width: 0;
+    isolation: isolate;
 
-    // Overflowing routed content scrolls here, leaving the sidebar/divider put.
     @include respond-above(medium) {
       min-height: 0;
       overflow-y: auto;
     }
   }
 
-  // Vertical separator beside the sidebar — desktop only.
   &__divider {
     display: none;
 

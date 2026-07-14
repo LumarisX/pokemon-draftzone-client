@@ -66,13 +66,11 @@
 // ─── Quick links ─────────────────────────────────────────────────────────
 .links {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
   gap: pdz.space(sm);
-
-  @include respond-above(medium) {
-    flex-direction: column;
-    flex-wrap: nowrap;
-  }
+  overflow-y: auto;
 
   &__divider {
     width: 100%;
