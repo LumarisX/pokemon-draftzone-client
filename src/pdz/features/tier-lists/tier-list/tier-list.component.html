@@ -117,7 +117,7 @@
   } @else if (compact) {
     <div class="compact-container">
       @for (tier of sortedTiers()!; track $index) {
-        <div class="tier--compact">
+        <div class="tier--compact" [class.tier--banned]="isBanTier(tier)">
           <div class="tier__label">{{ tier.name }}</div>
           @for (pokemon of tier.pokemon; track $index) {
             <pdz-sprite
@@ -132,7 +132,7 @@
     <div class="tiers-container" #tiersContainer>
       @for (tier of sortedTiers()!; track $index) {
         @let visiblePokemon = getVisiblePokemon(tier);
-        <div class="tier">
+        <div class="tier" [class.tier--banned]="isBanTier(tier)">
           <div class="tier__header">
             <div class="tier__info">
               <div class="tier__name-row">
@@ -168,9 +168,7 @@
             @for (pokemon of visiblePokemon; track pokemon.id) {
               <div
                 class="pokemon-entry"
-                [class.is-drafted]="
-                  isPokemonDrafted(pokemon) || tier.name === 'Ban'
-                "
+                [class.is-drafted]="isPokemonDrafted(pokemon)"
                 (click)="openPokemonDetails(pokemon, tier)"
               >
                 <div class="pokemon-entry__sprite">

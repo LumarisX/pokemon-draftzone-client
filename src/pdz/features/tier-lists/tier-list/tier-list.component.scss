@@ -114,6 +114,21 @@
 .tier {
   width: 14rem;
 
+  &--banned {
+    border-color: pdz.color(error);
+
+    .tier__header {
+      background-color: pdz.color(error-container);
+      color: pdz.color(on-error-container);
+      border-bottom-color: pdz.color(error);
+    }
+
+    .tier__name,
+    .tier__cost {
+      color: pdz.color(on-error-container);
+    }
+  }
+
   &__count {
     @include apply-typography(label-xs);
     color: pdz.color(on-surface-variant);
@@ -260,6 +275,15 @@
   border-radius: pdz.shape(corner-sm);
   border: 1px solid pdz.color(outline-variant);
   padding: pdz.space(2xs);
+
+  &.tier--banned {
+    border-color: pdz.color(error);
+
+    .tier__label {
+      background-color: pdz.color(error);
+      color: pdz.color(on-error);
+    }
+  }
 
   .tier__label {
     background-color: pdz.color(primary);

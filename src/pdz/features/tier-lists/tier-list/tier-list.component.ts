@@ -353,7 +353,7 @@ export class TierListComponent implements OnInit, OnDestroy {
     pokemon: TierPokemon,
     tier: LeagueTier,
   ): PokemonDialogData {
-    const isDrafted = this.isPokemonDrafted(pokemon) || tier.name === 'Ban';
+    const isDrafted = this.isPokemonDrafted(pokemon) || this.isBanTier(tier);
     const buttons: PokemonDialogButton[] = [];
     if (this.buttonText && tier.cost != null) {
       buttons.push({
@@ -399,6 +399,10 @@ export class TierListComponent implements OnInit, OnDestroy {
 
   isPokemonDrafted(pokemon: Pokemon): boolean {
     return this.draftedPokemonIds().has(pokemon.id);
+  }
+
+  isBanTier(tier: LeagueTier): boolean {
+    return tier.name === 'Ban' || tier.name === 'Banned';
   }
 
   makeWarningString(pokemon: TierPokemon) {
