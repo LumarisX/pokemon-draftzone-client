@@ -133,6 +133,12 @@ export class LeagueManageService {
       draftCount: { min: number; max: number };
       pointTotal?: number;
       tierRequirements: { tierName: string; required: number }[];
+      adSettings?: {
+        advertise: boolean;
+        skillLevelRange?: { from: string; to: string };
+        prizeValue?: string;
+        platforms?: string[];
+      };
     }>(
       `leagues/${this.leagueZoneService.leagueKey()}/tournaments/${this.leagueZoneService.tournamentKey()}/settings`,
       { authenticated: true },
@@ -157,6 +163,12 @@ export class LeagueManageService {
     };
     forfeit?: { gameDiff: number; pokemonDiff: number };
     diffMode?: 'pokemon' | 'game';
+    adSettings?: {
+      advertise: boolean;
+      skillLevelRange?: { from: string; to: string };
+      prizeValue?: string;
+      platforms?: string[];
+    };
   }) {
     return this.apiService.patch<{ success: boolean }>(
       `leagues/${this.leagueZoneService.leagueKey()}/tournaments/${this.leagueZoneService.tournamentKey()}/settings`,

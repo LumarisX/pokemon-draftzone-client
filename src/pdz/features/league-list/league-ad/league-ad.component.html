@@ -142,14 +142,20 @@
           View Details
         </a>
       }
-      <a
-        [href]="getExternalLinkUrl(league.signupLink)"
-        class="footer-link signup-button"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Sign Up
-      </a>
+      @if (league.hosted) {
+        <a [routerLink]="league.signupLink" class="footer-link signup-button">
+          Sign Up
+        </a>
+      } @else {
+        <a
+          [href]="getExternalLinkUrl(league.signupLink)"
+          class="footer-link signup-button"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Sign Up
+        </a>
+      }
     } @else {
       <button
         class="delete-btn"

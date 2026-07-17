@@ -272,6 +272,89 @@
         </div>
       </section>
 
+      <!-- Find a League Advertising -->
+      <section class="settings-section">
+        <h2 class="settings-section__title">Find a League</h2>
+        <div class="settings-section__body">
+          <div class="form-field">
+            <label class="checkbox-option">
+              <input type="checkbox" formControlName="adAdvertise" />
+              <span class="checkbox-option__label"
+                >Advertise this tournament on the Find a League page</span
+              >
+            </label>
+            <span class="form-field__hint"
+              >Shown publicly until the sign-up deadline passes</span
+            >
+          </div>
+
+          @if (form.get("adAdvertise")?.value) {
+            <div class="form-row">
+              <div class="form-field">
+                <label class="form-field__label" for="adSkillFrom"
+                  >Skill Level From</label
+                >
+                <select
+                  id="adSkillFrom"
+                  class="form-field__input"
+                  formControlName="adSkillFrom"
+                >
+                  <option value="0">Novice</option>
+                  <option value="1">Intermediate</option>
+                  <option value="2">Advanced</option>
+                  <option value="3">Expert</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <label class="form-field__label" for="adSkillTo"
+                  >Skill Level To</label
+                >
+                <select
+                  id="adSkillTo"
+                  class="form-field__input"
+                  formControlName="adSkillTo"
+                >
+                  <option value="0">Novice</option>
+                  <option value="1">Intermediate</option>
+                  <option value="2">Advanced</option>
+                  <option value="3">Expert</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-field">
+              <label class="form-field__label" for="adPrizeValue"
+                >Prize Value</label
+              >
+              <select
+                id="adPrizeValue"
+                class="form-field__input"
+                formControlName="adPrizeValue"
+              >
+                <option value="0">None</option>
+                <option value="1">Small (&lt; $25)</option>
+                <option value="2">Medium ($25-$100)</option>
+                <option value="3">Large (&gt; $100)</option>
+              </select>
+            </div>
+
+            <div class="form-field" formArrayName="adPlatforms">
+              <label class="form-field__label">Platforms</label>
+              @for (
+                platform of adPlatformOptions;
+                track platform;
+                let i = $index
+              ) {
+                <label class="checkbox-option">
+                  <input type="checkbox" [formControlName]="i" />
+                  <span class="checkbox-option__label">{{ platform }}</span>
+                </label>
+              }
+            </div>
+          }
+        </div>
+      </section>
+
       <!-- Actions -->
       <div class="settings-actions">
         @if (saveSuccess) {

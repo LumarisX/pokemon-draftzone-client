@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import { MarkdownModule } from 'ngx-markdown';
 import { EXTERNAL_LINK_PATH } from '@pdz/core/route-paths';
 import { LeagueAd } from '../league-ads.service';
@@ -16,7 +17,7 @@ export type LeagueAdMode = 'public' | 'manage';
   selector: 'pdz-league-ad',
   templateUrl: './league-ad.component.html',
   styleUrls: ['./league-ad.component.scss'],
-  imports: [CommonModule, MarkdownModule, BallSVG, CoinSVG],
+  imports: [CommonModule, RouterModule, MarkdownModule, BallSVG, CoinSVG],
 })
 export class LeagueAdComponent implements OnInit {
   @Input() league!: LeagueAd;

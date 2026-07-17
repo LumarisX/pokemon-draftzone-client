@@ -193,6 +193,41 @@
   }
 }
 
+.checkbox-option {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(sm);
+  padding: pdz.space(sm) pdz.space(md);
+  border: 1px solid pdz.color(outline-variant);
+  border-radius: pdz.shape(corner-sm);
+  cursor: pointer;
+  background: pdz.color(surface);
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+
+  &:has(input:checked) {
+    background: pdz.color(primary-container-low);
+    border-color: pdz.color(primary-border);
+  }
+
+  input[type="checkbox"] {
+    accent-color: pdz.color(primary);
+    width: 1rem;
+    height: 1rem;
+    flex-shrink: 0;
+  }
+
+  &__label {
+    @include apply-typography(label-md);
+    color: pdz.color(on-surface);
+  }
+}
+
+.checkbox-option + .checkbox-option {
+  margin-top: pdz.space(sm);
+}
+
 .settings-actions {
   display: flex;
   align-items: center;

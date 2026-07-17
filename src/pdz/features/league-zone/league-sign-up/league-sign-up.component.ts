@@ -73,15 +73,7 @@ export class LeagueSignUpComponent implements OnInit, OnDestroy {
       )
       .subscribe((coachData) => {
         if (coachData) {
-          const leagueKey = this.leagueService.leagueKey();
-          const tournamentKey = this.leagueService.tournamentKey();
-          this.router.navigate([
-            '/leagues',
-            leagueKey,
-            'tournaments',
-            tournamentKey,
-            'coach',
-          ]);
+          this.navigateToTournamentHome();
         } else {
           this.isCheckingSignUp = false;
         }
@@ -195,7 +187,7 @@ export class LeagueSignUpComponent implements OnInit, OnDestroy {
         this.signupForm.get('discordName')?.value ?? '',
       );
       console.log('Sign up successful:', response);
-      this.navigateToCoach();
+      this.navigateToTournamentHome();
     } catch (error: any) {
       console.error('Sign up failed:', error);
       if (this.logoFile && !this.uploadError) {
@@ -207,7 +199,7 @@ export class LeagueSignUpComponent implements OnInit, OnDestroy {
     }
   }
 
-  private navigateToCoach(): void {
+  private navigateToTournamentHome(): void {
     const leagueKey = this.leagueService.leagueKey();
     const tournamentKey = this.leagueService.tournamentKey();
     this.router.navigate([
@@ -215,7 +207,6 @@ export class LeagueSignUpComponent implements OnInit, OnDestroy {
       leagueKey,
       'tournaments',
       tournamentKey,
-      'coach',
     ]);
   }
 

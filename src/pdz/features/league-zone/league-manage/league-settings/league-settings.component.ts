@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import {
+  FormArray,
   FormBuilder,
+  FormControl,
   FormGroup,
   ReactiveFormsModule,
   Validators,
@@ -33,6 +35,12 @@ export class LeagueSettingsComponent implements OnInit, OnDestroy {
 
   form!: FormGroup;
   isLoading = true;
+
+  readonly adPlatformOptions = [
+    'Pokémon Showdown',
+    'Pokémon Champions',
+    'Scarlet/Violet',
+  ];
   isSaving = false;
   saveSuccess = false;
   saveError: string | null = null;
@@ -67,6 +75,18 @@ export class LeagueSettingsComponent implements OnInit, OnDestroy {
       diffMode: ['pokemon', Validators.required],
       forfeitGameDiff: [0, [Validators.required, Validators.min(0)]],
       forfeitPokemonDiff: [0, [Validators.required, Validators.min(0)]],
+      adAdvertise: [false],
+      adSkillFrom: ['0'],
+      adSkillTo: ['3'],
+      adPrizeValue: ['0'],
+      adPlatforms: this.fb.array<FormControl<boolean>>(
+        this.adPlatformOptions.map(
+          (platform) =>
+            new FormControl(platform === 'Pokémon Showdown', {
+              nonNullable: true,
+            }),
+        ),
+      ),
     });
 
     this.manageService
@@ -102,7 +122,18 @@ export class LeagueSettingsComponent implements OnInit, OnDestroy {
             diffMode: settings.diffMode ?? 'pokemon',
             forfeitGameDiff: settings.forfeit?.gameDiff ?? 0,
             forfeitPokemonDiff: settings.forfeit?.pokemonDiff ?? 0,
+            adAdvertise: settings.adSettings?.advertise ?? false,
+            adSkillFrom: settings.adSettings?.skillLevelRange?.from ?? '0',
+            adSkillTo: settings.adSettings?.skillLevelRange?.to ?? '3',
+            adPrizeValue: settings.adSettings?.prizeValue ?? '0',
           });
+          if (settings.adSettings?.platforms?.length) {
+            this.adPlatformsArray.setValue(
+              this.adPlatformOptions.map((platform) =>
+                settings.adSettings!.platforms!.includes(platform),
+              ),
+            );
+          }
           this.isLoading = false;
         },
         error: () => {
@@ -146,6 +177,12 @@ export class LeagueSettingsComponent implements OnInit, OnDestroy {
           pokemonDiff: v.forfeitPokemonDiff,
         },
         diffMode: v.diffMode,
+        adSettings: {
+          advertise: v.adAdvertise,
+          skillLevelRange: { from: v.adSkillFrom, to: v.adSkillTo },
+          prizeValue: v.adPrizeValue,
+          platforms: this.selectedAdPlatforms(),
+        },
       })
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -160,6 +197,16 @@ export class LeagueSettingsComponent implements OnInit, OnDestroy {
             err?.error?.message ?? 'Failed to save settings. Please try again.';
         },
       });
+  }
+
+  get adPlatformsArray(): FormArray {
+    return this.form.get('adPlatforms') as FormArray;
+  }
+
+  private selectedAdPlatforms(): string[] {
+    return this.adPlatformsArray.controls
+      .map((ctrl, index) => (ctrl.value ? this.adPlatformOptions[index] : null))
+      .filter((platform): platform is string => platform !== null);
   }
 
   cancel(): void {

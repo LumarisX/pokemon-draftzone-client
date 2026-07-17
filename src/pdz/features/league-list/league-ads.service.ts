@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { ApiService } from '@pdz/core/services/api.service';
 
 const ROOTPATH = 'external/tournament-ads';
+const HOSTED_ROOTPATH = 'hosted/tournament-ads';
 
 @Injectable({
   providedIn: 'root',
@@ -12,6 +13,10 @@ export class LeagueAdsService {
 
   getLeagueAds(): Observable<LeagueAd[]> {
     return this.apiService.get([ROOTPATH]);
+  }
+
+  getHostedLeagueAds(): Observable<LeagueAd[]> {
+    return this.apiService.get([HOSTED_ROOTPATH]);
   }
 
   newAd(data: Object) {
@@ -63,4 +68,5 @@ export interface LeagueAd {
   status: 'Pending' | 'Approved' | 'Denied';
   createdAt: string;
   tags: string[];
+  hosted?: boolean;
 }

@@ -1,4 +1,5 @@
 import { Component, HostListener, OnInit, inject } from '@angular/core';
+import { forkJoin } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
@@ -50,8 +51,11 @@ export class LeagueAdListComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.leagueService.getLeagueAds().subscribe((data) => {
-      this.leagues = data;
+    forkJoin([
+      this.leagueService.getLeagueAds(),
+      this.leagueService.getHostedLeagueAds(),
+    ]).subscribe(([external, hosted]) => {
+      this.leagues = [...hosted, ...external];
       this.filteredLeagues = [...this.leagues];
       // TODO: also persist this to the server (lastCheckedAdsAt) when logged
       // in, so the "unread ads" badge survives across devices instead of
