@@ -1,0 +1,14 @@
+<div class="sprite-container" [style.width]="size" [style.height]="size">
+  @if (pokemon.id) {
+    <img
+      [matTooltip]="tooltipPosition ? pokemonName : ''"
+      [matTooltipPosition]="tooltipPosition ?? 'above'"
+      [ngClass]="classes"
+      [src]="path"
+      [alt]="pokemonName + ' sprite'"
+      loading="lazy"
+      (error)="fallback()"
+      (load)="onSpriteLoaded()"
+    />
+  }
+</div>

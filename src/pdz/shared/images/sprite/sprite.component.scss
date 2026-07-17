@@ -1,51 +1,46 @@
-@use "pdz-theming" as pdz;
-
 :host {
   display: inline-flex;
 }
 
-.sprite-container {
+.forme-stack {
   position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
   min-width: 1.5rem;
   min-height: 1.5rem;
+  aspect-ratio: 1 / 1;
   overflow: hidden;
 
-  img {
+  &.interactive .forme-slot {
+    cursor: pointer;
+  }
+}
+
+.forme-slot {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition:
+    transform 0.35s ease,
+    filter 0.35s ease,
+    opacity 0.35s ease;
+
+  &.active {
+    position: relative;
     width: 100%;
     height: 100%;
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-    aspect-ratio: 1 / 1;
-    display: block;
-    user-select: none;
-    pointer-events: none;
-    transition: opacity 0.15s ease-in-out;
+  }
 
-    // Modifiers
-    &.flip {
-      transform: scaleX(-1);
-    }
+  &.silhouette {
+    position: absolute;
+    inset: 0;
+    filter: contrast(0) brightness(0.85);
+    opacity: 0.45;
 
-    &.disabled {
-      opacity: 0.4;
-      filter: grayscale(0.5);
-      &.sprite-border {
-        filter: grayscale(0.5) url(#borderFilter);
-      }
-    }
-
-    &.sprite-border {
-      filter: url(#borderFilter);
-      padding: 2px;
-    }
-
-    &.pmd {
-      border-radius: 0.75rem;
-      border: 1px solid pdz.color(outline, currentColor);
+    &:hover {
+      filter: contrast(0) brightness(0.95);
+      opacity: 0.7;
     }
   }
 }

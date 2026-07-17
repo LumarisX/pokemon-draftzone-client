@@ -1,14 +1,27 @@
-<div class="sprite-container" [style.width]="size" [style.height]="size">
-  @if (pokemon.id) {
-    <img
-      [matTooltip]="tooltipPosition ? pokemonName : ''"
-      [matTooltipPosition]="tooltipPosition ?? 'above'"
-      [ngClass]="classes"
-      [src]="path"
-      [alt]="pokemonName + ' sprite'"
-      loading="lazy"
-      (error)="fallback()"
-      (load)="onSpriteLoaded()"
-    />
+<div
+  class="forme-stack"
+  [class.interactive]="interactive() && slots().length > 1"
+  [style.width]="size()"
+  [style.height]="size()"
+>
+  @for (slot of slots(); track slot.pokemon.id) {
+    <div
+      class="forme-slot"
+      [class.active]="slot.isActive"
+      [class.silhouette]="!slot.isActive"
+      [style.transform]="slot.transform"
+      [style.zIndex]="slot.zIndex"
+      [title]="slot.isActive ? '' : slot.pokemon.name"
+      (click)="onSlotClick(slot)"
+    >
+      <pdz-sprite-image
+        [pokemon]="slot.pokemon"
+        size="100%"
+        [flipped]="flipped()"
+        [disabled]="disabled()"
+        [tooltipPosition]="slot.isActive ? tooltipPosition() : null"
+        (loadedEvent)="onSlotLoaded(slot)"
+      ></pdz-sprite-image>
+    </div>
   }
 </div>

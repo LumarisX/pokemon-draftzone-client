@@ -183,7 +183,6 @@ export class SettingsDialogComponent implements OnInit, OnDestroy {
     });
     form.valueChanges.subscribe((value: Settings) => {
       this.settingsService.setSettings(value, { source: 'local' });
-      this.example = { id: 'deoxysattack', name: 'Deoxys-Attack' };
     });
     form.get('ldMode')?.valueChanges.subscribe((value: string | null) => {
       if (value) this.settingsService.updateLDMode(value);
@@ -236,7 +235,22 @@ export class SettingsDialogComponent implements OnInit, OnDestroy {
   }
 
   openDialog() {
+    this.syncFormFromSettings();
     this.dialogEl.nativeElement.showModal();
+  }
+
+  private syncFormFromSettings() {
+    this.orgSettings = JSON.parse(
+      JSON.stringify(this.settingsService.settingsData || {}),
+    );
+    this.settingsForm.setValue(
+      {
+        theme: this.orgSettings.theme || 'classic',
+        ldMode: this.orgSettings.ldMode || 'device',
+        spriteSet: this.orgSettings.spriteSet || 'home',
+      },
+      { emitEvent: false },
+    );
   }
 
   onBackdropClick(event: MouseEvent) {
