@@ -56,6 +56,9 @@ export class LeagueSettingsComponent implements OnInit, OnDestroy {
       format: ['', Validators.required],
       ruleset: ['', Validators.required],
       discord: [''],
+      discordGuildId: [''],
+      discordCoachRoleId: [''],
+      discordSignUpChannelId: [''],
       signUpDeadline: ['', Validators.required],
       draftStart: [''],
       draftEnd: [''],
@@ -77,6 +80,10 @@ export class LeagueSettingsComponent implements OnInit, OnDestroy {
             format: settings.format,
             ruleset: settings.ruleset,
             discord: settings.discord ?? '',
+            discordGuildId: settings.discordSettings?.guildId ?? '',
+            discordCoachRoleId: settings.discordSettings?.coachRoleId ?? '',
+            discordSignUpChannelId:
+              settings.discordSettings?.signUpChannelId ?? '',
             signUpDeadline: settings.signUpDeadline
               ? this.toDateInput(settings.signUpDeadline)
               : '',
@@ -129,6 +136,11 @@ export class LeagueSettingsComponent implements OnInit, OnDestroy {
         seasonStart: v.seasonStart ? new Date(v.seasonStart) : undefined,
         seasonEnd: v.seasonEnd ? new Date(v.seasonEnd) : undefined,
         discord: v.discord || undefined,
+        discordSettings: {
+          guildId: v.discordGuildId || undefined,
+          coachRoleId: v.discordCoachRoleId || undefined,
+          signUpChannelId: v.discordSignUpChannelId || undefined,
+        },
         forfeit: {
           gameDiff: v.forfeitGameDiff,
           pokemonDiff: v.forfeitPokemonDiff,

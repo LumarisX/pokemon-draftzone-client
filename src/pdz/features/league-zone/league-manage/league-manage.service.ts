@@ -122,6 +122,11 @@ export class LeagueManageService {
       seasonStart?: string;
       seasonEnd?: string;
       discord?: string;
+      discordSettings?: {
+        guildId?: string;
+        coachRoleId?: string;
+        signUpChannelId?: string;
+      };
       forfeit: { gameDiff: number; pokemonDiff: number };
       diffMode: 'pokemon' | 'game';
       tierListId: string;
@@ -145,6 +150,11 @@ export class LeagueManageService {
     seasonStart?: Date;
     seasonEnd?: Date;
     discord?: string;
+    discordSettings?: {
+      guildId?: string;
+      coachRoleId?: string;
+      signUpChannelId?: string;
+    };
     forfeit?: { gameDiff: number; pokemonDiff: number };
     diffMode?: 'pokemon' | 'game';
   }) {

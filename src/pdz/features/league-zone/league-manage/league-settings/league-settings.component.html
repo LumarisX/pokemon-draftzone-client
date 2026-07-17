@@ -90,6 +90,55 @@
         </div>
       </section>
 
+      <!-- Discord Integration -->
+      <section class="settings-section">
+        <h2 class="settings-section__title">Discord Integration</h2>
+        <div class="settings-section__body">
+          <div class="form-field">
+            <label class="form-field__label" for="discordGuildId"
+              >Server ID</label
+            >
+            <input
+              id="discordGuildId"
+              class="form-field__input"
+              type="text"
+              formControlName="discordGuildId"
+              placeholder="e.g. 1183936734719922176"
+            />
+            <span class="form-field__hint"
+              >Used to check whether coaches have joined the server</span
+            >
+          </div>
+
+          <div class="form-row">
+            <div class="form-field">
+              <label class="form-field__label" for="discordCoachRoleId"
+                >Coach Role ID</label
+              >
+              <input
+                id="discordCoachRoleId"
+                class="form-field__input"
+                type="text"
+                formControlName="discordCoachRoleId"
+                placeholder="Role granted on sign-up"
+              />
+            </div>
+            <div class="form-field">
+              <label class="form-field__label" for="discordSignUpChannelId"
+                >Sign-up Channel ID</label
+              >
+              <input
+                id="discordSignUpChannelId"
+                class="form-field__input"
+                type="text"
+                formControlName="discordSignUpChannelId"
+                placeholder="Channel for sign-up announcements"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
       <!-- Schedule -->
       <section class="settings-section">
         <h2 class="settings-section__title">Schedule</h2>
