@@ -692,7 +692,7 @@ export const Namedex: {
     sources: {
       ps: { id: 'raichu-megax' },
       serebii: { id: '026' },
-      pmd: { id: '0026' },
+      pmd: { id: '0026/0002' },
       psgh: { id: 's832' },
     },
   },
@@ -701,7 +701,7 @@ export const Namedex: {
     sources: {
       ps: { id: 'raichu-megay' },
       serebii: { id: '026' },
-      pmd: { id: '0026' },
+      pmd: { id: '0026/0003' },
       psgh: { id: 's832' },
     },
   },
@@ -827,7 +827,7 @@ export const Namedex: {
     sources: {
       ps: {},
       serebii: { id: '036' },
-      pmd: { id: '0036' },
+      pmd: { id: '0036/0001' },
       psgh: { id: 's1152' },
     },
   },
@@ -1268,7 +1268,7 @@ export const Namedex: {
     sources: {
       ps: {},
       serebii: { id: '071' },
-      pmd: { id: '0071' },
+      pmd: { id: '0071/0001' },
       psgh: { id: 's2272' },
     },
   },
@@ -1916,7 +1916,7 @@ export const Namedex: {
     sources: {
       ps: {},
       serebii: { id: '121' },
-      pmd: { id: '0121' },
+      pmd: { id: '0121/0001' },
       psgh: { id: 's3872' },
     },
   },
@@ -2321,7 +2321,7 @@ export const Namedex: {
     sources: {
       ps: {},
       serebii: { id: '149' },
-      pmd: { id: '0149' },
+      pmd: { id: '0149/0001' },
       psgh: { id: 's4768' },
     },
   },
@@ -2393,7 +2393,7 @@ export const Namedex: {
     sources: {
       ps: {},
       serebii: { id: '154' },
-      pmd: { id: '0154' },
+      pmd: { id: '0154/0001' },
       psgh: { id: 's4928' },
     },
   },
@@ -2466,7 +2466,7 @@ export const Namedex: {
     sources: {
       ps: {},
       serebii: { id: '160' },
-      pmd: { id: '0160' },
+      pmd: { id: '0160/0001' },
       psgh: { id: 's5120' },
     },
   },
@@ -3159,7 +3159,7 @@ export const Namedex: {
     sources: {
       ps: {},
       serebii: { id: '227' },
-      pmd: { id: '0227' },
+      pmd: { id: '0227/0001' },
       psgh: { id: 's7264' },
     },
   },
@@ -4527,7 +4527,7 @@ export const Namedex: {
     sources: {
       ps: { id: 'chimecho-mega' },
       serebii: { id: '358' },
-      pmd: { id: '0358' },
+      pmd: { id: '0358/0001' },
       psgh: { id: 's11456' },
     },
   },
@@ -4554,7 +4554,7 @@ export const Namedex: {
     sources: {
       ps: { id: 'absol-megaz' },
       serebii: { id: '359-mz' },
-      pmd: { id: '0359/0001' },
+      pmd: { id: '0359/0002' },
       psgh: { id: 's11489' },
     },
   },
@@ -5013,7 +5013,7 @@ export const Namedex: {
     sources: {
       ps: { id: 'staraptor-mega' },
       serebii: { id: '398' },
-      pmd: { id: '0398' },
+      pmd: { id: '0398/0001' },
       psgh: { id: 's12736' },
     },
   },
@@ -5490,7 +5490,7 @@ export const Namedex: {
     sources: {
       ps: { id: 'garchomp-megaz' },
       serebii: { id: '445-m' },
-      pmd: { id: '0445/0001' },
+      pmd: { id: '0445/0002' },
       psgh: { id: 's14241' },
     },
   },
@@ -5535,7 +5535,7 @@ export const Namedex: {
     sources: {
       ps: { id: 'lucario-megaz', flip: true },
       serebii: { id: '448-m' },
-      pmd: { id: '0448/0001' },
+      pmd: { id: '0448/0002' },
       psgh: { id: 's14337', flip: true },
     },
   },
@@ -5832,7 +5832,7 @@ export const Namedex: {
     sources: {
       ps: {},
       serebii: { id: '478' },
-      pmd: { id: '0478' },
+      pmd: { id: '0478/0001' },
       psgh: { id: 's15296' },
     },
   },
@@ -5976,7 +5976,7 @@ export const Namedex: {
     sources: {
       ps: { id: 'heatran-mega' },
       serebii: { id: '485' },
-      pmd: { id: '0485' },
+      pmd: { id: '0485/0001' },
       psgh: { id: 's15520' },
     },
   },
@@ -6048,7 +6048,7 @@ export const Namedex: {
     sources: {
       ps: { id: 'darkrai-mega' },
       serebii: { id: '491' },
-      pmd: { id: '0491' },
+      pmd: { id: '0491/0001' },
       psgh: { id: 's15712' },
     },
   },
@@ -6300,7 +6300,7 @@ export const Namedex: {
     sources: {
       ps: {},
       serebii: { id: '500' },
-      pmd: { id: '0500' },
+      pmd: { id: '0500/0001' },
       psgh: { id: 's16000' },
     },
   },
@@ -6588,7 +6588,7 @@ export const Namedex: {
     sources: {
       ps: { flip: true },
       serebii: { id: '530' },
-      pmd: { id: '0530' },
+      pmd: { id: '0530/0001' },
       psgh: { id: 's16960', flip: true },
     },
   },
@@ -6741,7 +6741,7 @@ export const Namedex: {
     sources: {
       ps: {},
       serebii: { id: '545' },
-      pmd: { id: '0545' },
+      pmd: { id: '0545/0001' },
       psgh: { id: 's17440' },
     },
   },
@@ -6948,7 +6948,7 @@ export const Namedex: {
     sources: {
       ps: {},
       serebii: { id: '560' },
-      pmd: { id: '0560' },
+      pmd: { id: '0560/0001' },
       psgh: { id: 's17920' },
     },
   },
@@ -7398,7 +7398,7 @@ export const Namedex: {
     sources: {
       ps: {},
       serebii: { id: '604' },
-      pmd: { id: '0604' },
+      pmd: { id: '0604/0001' },
       psgh: { id: 's19328' },
     },
   },
@@ -7452,7 +7452,7 @@ export const Namedex: {
     sources: {
       ps: {},
       serebii: { id: '609' },
-      pmd: { id: '0609' },
+      pmd: { id: '0609/0001' },
       psgh: { id: 's19488' },
     },
   },
@@ -7596,7 +7596,7 @@ export const Namedex: {
     sources: {
       ps: { id: 'golurk-mega' },
       serebii: { id: '623' },
-      pmd: { id: '0623' },
+      pmd: { id: '0623/0001' },
       psgh: { id: 's19936' },
     },
   },
@@ -7974,7 +7974,7 @@ export const Namedex: {
     sources: {
       ps: {},
       serebii: { id: '652' },
-      pmd: { id: '0652' },
+      pmd: { id: '0652/0001' },
       psgh: { id: 's20864' },
     },
   },
@@ -8011,7 +8011,7 @@ export const Namedex: {
     sources: {
       ps: {},
       serebii: { id: '655' },
-      pmd: { id: '0655' },
+      pmd: { id: '0655/0001' },
       psgh: { id: 's20960' },
     },
   },
@@ -8048,7 +8048,7 @@ export const Namedex: {
     sources: {
       ps: { flip: true },
       serebii: { id: '658' },
-      pmd: { id: '0658' },
+      pmd: { id: '0658/0001' },
       psgh: { id: 's21056', flip: true },
     },
   },
@@ -8183,7 +8183,7 @@ export const Namedex: {
     sources: {
       ps: { flip: true },
       serebii: { id: '668' },
-      pmd: { id: '0668' },
+      pmd: { id: '0668/0001' },
       psgh: { id: 's21376', flip: true },
     },
   },
@@ -8219,7 +8219,7 @@ export const Namedex: {
     sources: {
       ps: { flip: true },
       serebii: { id: '670' },
-      pmd: { id: '0670' },
+      pmd: { id: '0670/0006' },
       psgh: { id: 's21440', flip: true },
     },
   },
@@ -8322,7 +8322,7 @@ export const Namedex: {
     sources: {
       ps: { id: 'meowstic-mega' },
       serebii: { id: '678' },
-      pmd: { id: '0678' },
+      pmd: { id: '0678/0001' },
       psgh: { id: 's21696' },
     },
   },
@@ -8336,7 +8336,7 @@ export const Namedex: {
     sources: {
       ps: { id: 'meowstic-f-mega' },
       serebii: { id: '678-f' },
-      pmd: { id: '0678/0000/0000/0002' },
+      pmd: { id: '0678/0001' },
       psgh: { id: 's21697' },
     },
   },
@@ -8435,7 +8435,7 @@ export const Namedex: {
     sources: {
       ps: {},
       serebii: { id: '687' },
-      pmd: { id: '0687' },
+      pmd: { id: '0687/0001' },
       psgh: { id: 's21984' },
     },
   },
@@ -8462,7 +8462,7 @@ export const Namedex: {
     sources: {
       ps: {},
       serebii: { id: '689' },
-      pmd: { id: '0689' },
+      pmd: { id: '0689/0001' },
       psgh: { id: 's22048' },
     },
   },
@@ -8489,7 +8489,7 @@ export const Namedex: {
     sources: {
       ps: {},
       serebii: { id: '691' },
-      pmd: { id: '0691' },
+      pmd: { id: '0691/0001' },
       psgh: { id: 's22112' },
     },
   },
@@ -8588,7 +8588,7 @@ export const Namedex: {
     sources: {
       ps: {},
       serebii: { id: '701' },
-      pmd: { id: '0701' },
+      pmd: { id: '0701/0001' },
       psgh: { id: 's22432' },
     },
   },
@@ -8858,7 +8858,7 @@ export const Namedex: {
     sources: {
       ps: {},
       serebii: { id: '718-c' },
-      pmd: { id: '0718/0002' },
+      pmd: { id: '0718/0005' },
       psgh: { id: 's22980' },
     },
   },
@@ -9092,7 +9092,7 @@ export const Namedex: {
     sources: {
       ps: { id: 'crabominable-mega' },
       serebii: { id: '740' },
-      pmd: { id: '0740' },
+      pmd: { id: '0740/0001' },
       psgh: { id: 's23680' },
     },
   },
@@ -9407,7 +9407,7 @@ export const Namedex: {
     sources: {
       ps: { id: 'golisopod-mega' },
       serebii: { id: '768' },
-      pmd: { id: '0768' },
+      pmd: { id: '0768/0001' },
       psgh: { id: 's24576' },
     },
   },
@@ -9695,7 +9695,7 @@ export const Namedex: {
     sources: {
       ps: {},
       serebii: { id: '780' },
-      pmd: { id: '0780' },
+      pmd: { id: '0780/0001' },
       psgh: { id: 's24960' },
     },
   },
@@ -9929,7 +9929,7 @@ export const Namedex: {
     sources: {
       ps: { id: 'magearna-mega' },
       serebii: { id: '801' },
-      pmd: { id: '0801' },
+      pmd: { id: '0801/0002' },
       psgh: { id: 's25632' },
     },
   },
@@ -9938,7 +9938,7 @@ export const Namedex: {
     sources: {
       ps: { id: 'magearna-original-mega' },
       serebii: { id: '801-o' },
-      pmd: { id: '0801/0001' },
+      pmd: { id: '0801/0003' },
       psgh: { id: 's25633' },
     },
   },
@@ -10001,7 +10001,7 @@ export const Namedex: {
     sources: {
       ps: { id: 'zeraora-mega' },
       serebii: { id: '807' },
-      pmd: { id: '0807' },
+      pmd: { id: '0807/0001' },
       psgh: { id: 's25824' },
     },
   },
@@ -11801,7 +11801,7 @@ export const Namedex: {
     sources: {
       ps: { id: 'scovillain-mega', flip: true },
       serebii: { id: '952' },
-      pmd: { id: '0952' },
+      pmd: { id: '0952/0001' },
       psgh: { id: 's30464', flip: true },
     },
   },
@@ -11981,7 +11981,7 @@ export const Namedex: {
     sources: {
       ps: { id: 'glimmora-mega', flip: true },
       serebii: { id: '970' },
-      pmd: { id: '0970' },
+      pmd: { id: '0970/0001' },
       psgh: { id: 's31040', flip: true },
     },
   },
@@ -12075,12 +12075,12 @@ export const Namedex: {
       psgh: { id: 's31298', flip: true },
     },
   },
-  tatsugirimega: {
+  tatsugiricurlymega: {
     name: ['Mega Tatsugiri', 'Tatsugiri-Mega'],
     sources: {
       ps: { id: 'tatsugiri-mega', flip: true },
       serebii: { id: '978' },
-      pmd: { id: '0978' },
+      pmd: { id: '0978/0003' },
       psgh: { id: 's31296', flip: true },
     },
   },
@@ -12278,7 +12278,7 @@ export const Namedex: {
     sources: {
       ps: { id: 'baxcalibur-mega' },
       serebii: { id: '998' },
-      pmd: { id: '0998' },
+      pmd: { id: '0998/0001' },
       psgh: { id: 's31936' },
     },
   },
