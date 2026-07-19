@@ -21,6 +21,7 @@ import { TierListComponent } from '../../tier-lists/tier-list/tier-list.componen
 import { NumberSuffixPipe } from '@pdz/shared/pipes/number-suffix.pipe';
 import { LeagueNotificationsComponent } from '../league-notifications/league-notifications.component';
 import { League } from '../league.interface';
+import { formatCountdown } from '../league.util';
 import { PokemonTypeComponent } from '@pdz/shared/dialogs/pokemon-type/pokemon-type.component';
 
 interface DraftAddedEvent {
@@ -124,6 +125,8 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
   selectedPick: number = 0;
   isDropdownOpen: boolean = false;
   skipTimeDisplay: string | null = null;
+  draftStart?: Date;
+  draftStartDisplay: string | null = null;
 
   draftDetails: {
     orderProgression: 'snake' | 'linear';
@@ -212,6 +215,16 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.leagueService
+      .getLeagueInfo()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((info) => {
+        this.draftStart = info.draftStart
+          ? new Date(info.draftStart)
+          : undefined;
+        this.updateDraftStartDisplay();
+      });
+
+    this.leagueService
       .getDraftDetails()
       .pipe(takeUntil(this.destroy$))
       .subscribe((data) => {
@@ -290,6 +303,7 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
         }
         this.draftDetails.status = data.status;
         this.currentPick = data.currentPick;
+        this.updateDraftStartDisplay();
         switch (data.status) {
           case 'PAUSED':
           case 'COMPLETED':
@@ -363,7 +377,24 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.countdownTick$))
       .subscribe(() => {
         this.skipTimeDisplay = this.timeUntil(this.currentPick?.skipTime);
+        this.updateDraftStartDisplay();
       });
+  }
+
+  /** Legacy drafts may carry statuses like NOT_STARTED, so treat anything not active/finished as pre-draft. */
+  get isPreDraft(): boolean {
+    return !['IN_PROGRESS', 'PAUSED', 'COMPLETED'].includes(
+      this.draftDetails.status,
+    );
+  }
+
+  private updateDraftStartDisplay(): void {
+    if (!this.isPreDraft || !this.draftStart) {
+      this.draftStartDisplay = null;
+      return;
+    }
+    const diffMs = this.draftStart.getTime() - Date.now();
+    this.draftStartDisplay = diffMs > 0 ? formatCountdown(diffMs) : null;
   }
 
   moveUp(picks: League.LeaguePokemon[], index: number): void {

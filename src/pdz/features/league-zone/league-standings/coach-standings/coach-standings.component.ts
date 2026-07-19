@@ -14,10 +14,6 @@ import { getLogoUrl, getLogoUrlOld } from '../../league.util';
 export class CoachStandingsComponent {
   @Input({ required: true }) standingData!: League.CoachStandingData;
 
-  get weekRange(): number[] {
-    return Array.from({ length: this.standingData.weeks }, (_, i) => i);
-  }
-
   getGradientStyle(index: number, total: number): { [klass: string]: any } {
     const midpointIndex = this.standingData.cutoff;
     let fromColor: string;

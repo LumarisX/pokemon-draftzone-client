@@ -27,9 +27,6 @@
           </td>
           <td>
             <div class="results-container">
-              @for (i of weekRange; track i) {
-                <div class="result-header">W{{ i + 1 }}</div>
-              }
               <div class="result-header streak">Streak</div>
             </div>
           </td>
@@ -101,8 +98,7 @@
             </td>
             <td>
               <div class="results-container">
-                @for (i of weekRange; track i) {
-                  @let result = team.results[i];
+                @for (result of team.results; track $index) {
                   @if (result) {
                     <div
                       class="result-box"

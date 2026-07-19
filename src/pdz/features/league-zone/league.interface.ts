@@ -165,7 +165,6 @@ export namespace League {
 
   export type CoachStandingData = {
     cutoff: number;
-    weeks: number;
     diffMode: 'game' | 'pokemon';
     teams: TeamStandingData[];
   };

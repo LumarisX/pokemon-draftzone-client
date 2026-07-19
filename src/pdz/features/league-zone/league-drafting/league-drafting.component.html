@@ -13,11 +13,15 @@
             [ngClass]="{
               'in-progress': draftDetails.status === 'IN_PROGRESS',
               paused: draftDetails.status === 'PAUSED',
-              'pre-draft': draftDetails.status === 'PRE_DRAFT',
+              'pre-draft': isPreDraft,
               completed: draftDetails.status === 'COMPLETED',
             }"
           >
-            {{ draftDetails.status.replace("_", " ") | titlecase }}
+            @if (draftStartDisplay) {
+              Starting in {{ draftStartDisplay }}
+            } @else {
+              {{ draftDetails.status.replace("_", " ") | titlecase }}
+            }
           </div>
         </div>
       </div>

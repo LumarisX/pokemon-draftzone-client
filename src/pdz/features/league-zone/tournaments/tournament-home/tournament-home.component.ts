@@ -9,7 +9,7 @@ import { catchError, of, Subject, takeUntil } from 'rxjs';
 import { LeagueSignUpComponent } from '../../league-sign-up/league-sign-up.component';
 import { LeagueZoneService } from '../../league-zone.service';
 import { League } from '../../league.interface';
-import { getLogoUrl } from '../../league.util';
+import { formatCountdown, getLogoUrl } from '../../league.util';
 import {
   CoachEditDialogComponent,
   CoachEditDialogData,
@@ -53,6 +53,11 @@ export class TournamentHomeComponent implements OnInit, OnDestroy {
   rosterTotal = { cost: 0, kills: 0, deaths: 0 };
   rosterLoading = false;
 
+  private draftStart?: Date;
+  private draftEnd?: Date;
+  draftCountdown: { phase: 'start' | 'end'; display: string } | null = null;
+  private countdownTimer?: ReturnType<typeof setInterval>;
+
   getTeamLogoUrl = getLogoUrl;
 
   get draftLink(): string[] {
@@ -72,6 +77,23 @@ export class TournamentHomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.leagueService
+      .getLeagueInfo()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((info) => {
+        this.draftStart = info.draftStart
+          ? new Date(info.draftStart)
+          : undefined;
+        this.draftEnd = info.draftEnd ? new Date(info.draftEnd) : undefined;
+        this.updateDraftCountdown();
+        if ((this.draftStart || this.draftEnd) && !this.countdownTimer) {
+          this.countdownTimer = setInterval(
+            () => this.updateDraftCountdown(),
+            1000,
+          );
+        }
+      });
+
     this.leagueService
       .getCoachData({ suppressStatuses: [404] })
       .pipe(
@@ -100,6 +122,26 @@ export class TournamentHomeComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
     if (this.clockTimer) {
       clearInterval(this.clockTimer);
+    }
+    if (this.countdownTimer) {
+      clearInterval(this.countdownTimer);
+    }
+  }
+
+  private updateDraftCountdown(): void {
+    const now = Date.now();
+    if (this.draftStart && this.draftStart.getTime() > now) {
+      this.draftCountdown = {
+        phase: 'start',
+        display: formatCountdown(this.draftStart.getTime() - now),
+      };
+    } else if (this.draftEnd && this.draftEnd.getTime() > now) {
+      this.draftCountdown = {
+        phase: 'end',
+        display: formatCountdown(this.draftEnd.getTime() - now),
+      };
+    } else {
+      this.draftCountdown = null;
     }
   }
 

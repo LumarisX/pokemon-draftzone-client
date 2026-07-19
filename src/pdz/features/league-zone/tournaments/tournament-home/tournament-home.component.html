@@ -123,10 +123,20 @@
         </div>
       } @else if (profile.draft && !rosterLoading) {
         <article class="no-roster">
-          <p class="no-roster__text">
-            Register your team before the deadline or you will not participate
-            in the tournament.
-          </p>
+          @if (draftCountdown; as countdown) {
+            <p class="no-roster__text">
+              @if (countdown.phase === "start") {
+                The draft will start in {{ countdown.display }}.
+              } @else {
+                The draft will end in {{ countdown.display }}.
+              }
+            </p>
+          } @else {
+            <p class="no-roster__text">
+              Register your team before the deadline or you will not participate
+              in the tournament.
+            </p>
+          }
           <a class="no-roster__cta" [routerLink]="draftLink">
             <span> Draft</span>
           </a>
