@@ -56,8 +56,12 @@
         .sprite-cell {
           width: 4rem;
           flex-shrink: 0;
+          padding: 1px;
           @media (max-width: 768px) {
             width: 2rem;
+          }
+          pdz-sprite {
+            width: 100%;
           }
         }
         .name-cell {

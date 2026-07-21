@@ -8139,7 +8139,7 @@ export const Namedex: {
       ps: {},
       serebii: { id: '666' },
       pmd: { id: '0666' },
-      psgh: { id: 's21312' },
+      psgh: { id: 's21318' },
     },
   },
   vivillonfancy: {

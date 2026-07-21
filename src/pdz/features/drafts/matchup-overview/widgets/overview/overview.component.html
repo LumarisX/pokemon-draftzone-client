@@ -37,7 +37,7 @@
       @for (pokemon of ($teams | async)![0]; track pokemon) {
         <div class="overview-row">
           <div class="sprite-cell">
-            <pdz-sprite [pokemon]="pokemon" flipped></pdz-sprite>
+            <pdz-sprite size="100%" [pokemon]="pokemon" flipped></pdz-sprite>
           </div>
           <div class="name-cell">
             <div class="name-label">{{ pokemon.name }}</div>
@@ -151,7 +151,7 @@
             </div>
           </div>
           <div class="sprite-cell">
-            <pdz-sprite [pokemon]="pokemon"></pdz-sprite>
+            <pdz-sprite size="100%" [pokemon]="pokemon"></pdz-sprite>
           </div>
         </div>
       }

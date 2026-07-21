@@ -50,34 +50,50 @@ export class SpeedchartComponent implements OnInit, OnDestroy, AfterViewInit {
   set speedchart(value: SpeedChart) {
     this.level = value.level;
     this.setModifiers(value.modifiers);
-    this.pokemons = value.teams
-      .flatMap((team, teamIndex) =>
-        team.map((pokemon) => ({
-          id: pokemon.id,
-          name: pokemon.name,
-          nickname: pokemon.nickname,
-          shiny: pokemon.shiny,
+    const entries = value.teams.flatMap((team, teamIndex) =>
+      team.flatMap((pokemon) => {
+        const base = {
+          pokemon: {
+            id: pokemon.id,
+            name: pokemon.name,
+            nickname: pokemon.nickname,
+            shiny: pokemon.shiny,
+          },
           spe: pokemon.spe,
+          tiers: pokemon.tiers,
           team: teamIndex,
-        })),
-      )
-      .sort((x, y) => y.spe - x.spe);
-    this.sortedTiers = value.teams
-      .flatMap((team, teamIndex) =>
-        team.flatMap((pokemon) =>
-          pokemon.tiers.flatMap((tier) => ({
-            modifiers: tier.modifiers,
-            speed: tier.speed,
+        };
+
+        const formes = (pokemon.draftFormes ?? [])
+          .filter((forme) => forme.spe !== undefined)
+          .map((forme) => ({
             pokemon: {
-              id: pokemon.id,
-              name: pokemon.name,
-              nickname: pokemon.nickname,
+              id: forme.id as DraftPokemon['id'],
+              name: forme.name,
+              nickname: undefined,
               shiny: pokemon.shiny,
-              spe: pokemon.spe,
             },
+            spe: forme.spe!,
+            tiers: forme.tiers ?? [],
             team: teamIndex,
-          })),
-        ),
+          }));
+
+        return [base, ...formes];
+      }),
+    );
+
+    this.pokemons = entries
+      .map((entry) => ({ ...entry.pokemon, spe: entry.spe, team: entry.team }))
+      .sort((x, y) => y.spe - x.spe);
+
+    this.sortedTiers = entries
+      .flatMap((entry) =>
+        entry.tiers.map((tier) => ({
+          modifiers: tier.modifiers,
+          speed: tier.speed,
+          pokemon: { ...entry.pokemon, spe: entry.spe },
+          team: entry.team,
+        })),
       )
       .sort((x, y) => y.speed - x.speed);
   }

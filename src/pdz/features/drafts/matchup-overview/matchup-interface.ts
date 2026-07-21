@@ -12,27 +12,51 @@ export type Speedtier = {
   stick?: boolean;
 };
 
+export type SpeedTier = {
+  modifiers: string[];
+  speed: number;
+};
+
+export type SpeedChartForme = {
+  id: string;
+  name: string;
+  spe?: number;
+  tiers?: SpeedTier[];
+};
+
 export type SpeedChart = {
-  teams: (DraftPokemon & {
+  teams: (Omit<DraftPokemon, 'draftFormes'> & {
     spe: number;
-    tiers: {
-      modifiers: string[];
-      speed: number;
-    }[];
+    tiers: SpeedTier[];
+    draftFormes?: SpeedChartForme[];
   })[][];
   level: number;
   modifiers: string[];
 };
 
+export type SummaryForme = {
+  id: string;
+  name: string;
+  types?: string[];
+  abilities?: string[];
+  baseStats?: StatsTable;
+  bst?: number;
+  cst?: number;
+};
+
+export type SummaryPokemon = Omit<DraftPokemon, 'draftFormes'> & {
+  abilities: string[];
+  index: number;
+  types: string[];
+  bst: number;
+  cst: number;
+  baseStats: StatsTable;
+  formeIndex?: number;
+  draftFormes?: SummaryForme[];
+};
+
 export type Summary = {
-  team: (DraftPokemon & {
-    abilities: string[];
-    index: number;
-    types: string[];
-    bst: number;
-    cst: number;
-    baseStats: StatsTable;
-  })[];
+  team: SummaryPokemon[];
   teamName: String;
   coach?: string;
   stats: {
@@ -69,18 +93,28 @@ export type Summary = {
   };
 };
 
-export type TypeChartPokemon = DraftPokemon & {
-  weak: [
-    {
-      [key in ExtendedType]: number;
-    },
-    {
-      [key in ExtendedType]: number;
-    },
-  ];
+export type TypeChartWeak = [
+  {
+    [key in ExtendedType]: number;
+  },
+  {
+    [key in ExtendedType]: number;
+  },
+];
 
+export type TypeChartForme = {
+  id: string;
+  name: string;
+  types?: string[];
+  weak?: TypeChartWeak;
+};
+
+export type TypeChartPokemon = Omit<DraftPokemon, 'draftFormes'> & {
+  weak: TypeChartWeak;
   types: string[];
   disabled?: boolean;
+  formeIndex?: number;
+  draftFormes?: TypeChartForme[];
 };
 
 export type TypeChart = {

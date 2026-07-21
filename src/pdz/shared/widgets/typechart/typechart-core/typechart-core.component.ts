@@ -123,20 +123,21 @@ export class TypechartCoreComponent implements OnInit, OnDestroy {
     this.sortedTeam.next(
       [...this.sortedTeam.value].sort((a, b) => {
         if (!sortBy) return 0;
-        if (sortBy in a.weak[this.abilityIndex]) {
-          return this.compare(
-            a.weak[this.abilityIndex][sortBy as Type],
-            b.weak[this.abilityIndex][sortBy as Type],
-          );
+        const aWeak = this.activeWeak(a);
+        const bWeak = this.activeWeak(b);
+        if (sortBy in aWeak) {
+          return this.compare(aWeak[sortBy as Type], bWeak[sortBy as Type]);
         }
         return 0;
       }),
     );
   }
 
-  toggleVisible(pokemon: TypeChartPokemon) {
-    pokemon.disabled = !pokemon.disabled;
-    this.togglePokemon.emit(pokemon);
+  activeWeak(pokemon: TypeChartPokemon) {
+    const formeIndex = pokemon.formeIndex ?? 0;
+    const forme =
+      formeIndex > 0 ? pokemon.draftFormes?.[formeIndex - 1] : undefined;
+    return (forme?.weak ?? pokemon.weak)[this.abilityIndex];
   }
 
   weaknessColor(weak: number, disabled: boolean): string {

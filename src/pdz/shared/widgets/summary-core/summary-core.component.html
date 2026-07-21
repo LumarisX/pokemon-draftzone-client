@@ -1,337 +1,110 @@
 @if (summary) {
-  <table
-    cdk-table
-    [dataSource]="(sortedTeam$ | async) || []"
-    matSort
-    matSortActive="spe"
-    matSortDirection="desc"
-    [matSortDisableClear]="true"
-    (matSortChange)="sort($event)"
-  >
-    <ng-container cdkColumnDef="sprite">
-      <th cdk-header-cell *cdkHeaderCellDef></th>
-      <td cdk-cell *cdkCellDef="let pokemon">
-        <pdz-sprite size="3rem" flipped [pokemon]="pokemon"></pdz-sprite>
-      </td>
-      <td
-        cdk-footer-cell
-        *cdkFooterCellDef
-        colspan="2"
-        class="slider-cell left-rounded right-rounded"
-      >
-        <div class="slider-container">
-          <div class="slider-wrapper">
-            <mat-slider min="20" max="140">
-              <input matSliderThumb [(ngModel)]="baseValue" />
-            </mat-slider>
-          </div>
-          <div class="slider-label">
-            <span>Neutral Value:</span>
-            <span class="value-display">{{ baseValue }}</span>
-          </div>
+  <div class="summary">
+    <div class="summary__head">
+      <div class="summary__row">
+        <div class="summary__header summary__header--sprite"></div>
+        <div
+          class="summary__header summary__header--name summary__header--sortable"
+          [class.summary__header--sorted]="currentSort.active === 'name'"
+          [class.summary__header--reversed]="
+            currentSort.active === 'name' && currentSort.direction === 'asc'
+          "
+          (click)="toggleSort('name')"
+        >
+          Name
         </div>
-      </td>
-    </ng-container>
+        <div class="summary__header summary__header--abilities">Abilities</div>
+        @for (col of statColumns; track col.key) {
+          <div
+            class="summary__header summary__header--stat summary__header--sortable"
+            [class.summary__header--sorted]="currentSort.active === col.key"
+            [class.summary__header--reversed]="
+              currentSort.active === col.key && currentSort.direction === 'asc'
+            "
+            (click)="toggleSort(col.key)"
+          >
+            {{ col.label }}
+          </div>
+        }
+      </div>
+    </div>
 
-    <ng-container cdkColumnDef="name">
-      <th mat-sort-header="name" cdk-header-cell *cdkHeaderCellDef>Name</th>
-      <td cdk-cell *cdkCellDef="let pokemon">
-        <div class="pokemon-label">
-          {{ pokemon.name }}
-        </div>
-        <div class="pdz-types">
-          @for (type of pokemon.types; track $index) {
-            <div class="pdz-type" [style.background-color]="typeColor(type)">
-              <div class="pdz-type__text">
-                {{ type }}
-              </div>
+    <div class="summary__body">
+      @for (pokemon of (sortedTeam$ | async) || []; track pokemon.index) {
+        @let forme = activeForme(pokemon);
+        <div class="summary__row">
+          <div class="summary__cell summary__cell--sprite">
+            <pdz-sprite
+              size="3rem"
+              flipped
+              interactive
+              [pokemon]="pokemon"
+              [formeIndex]="pokemon.formeIndex ?? 0"
+              (formeIndexChange)="setFormeIndex(pokemon, $event)"
+            ></pdz-sprite>
+          </div>
+          <div class="summary__cell summary__cell--name">
+            <div class="summary__pokemon-name">{{ forme.name }}</div>
+            <div class="pdz-types">
+              @for (type of forme.types; track $index) {
+                <div class="pdz-type" [style.background-color]="typeColor(type)">
+                  <div class="pdz-type__text">{{ type }}</div>
+                </div>
+              }
+            </div>
+          </div>
+          <div class="summary__cell summary__cell--abilities">
+            @for (ability of forme.abilities; track $index) {
+              <div class="summary__ability">{{ ability }}</div>
+            }
+          </div>
+          @for (col of statColumns; track col.key) {
+            <div
+              class="summary__cell summary__cell--stat"
+              [class.summary__cell--stat-start]="$first"
+              [class.summary__cell--stat-end]="$last"
+              [style.background-color]="statCellColor(forme, col.key)"
+            >
+              {{ statValue(forme, col.key) }}
             </div>
           }
         </div>
-      </td>
-      <td cdk-footer-cell *cdkFooterCellDef></td>
-    </ng-container>
+      }
+    </div>
 
-    <ng-container cdkColumnDef="abilities">
-      <th cdk-header-cell *cdkHeaderCellDef>Abilities</th>
-      <td cdk-cell *cdkCellDef="let pokemon" class="ability-cell">
-        @for (ability of pokemon.abilities; track $index) {
-          <div>
-            {{ ability }}
+    <div class="summary__foot">
+      <div class="summary__row">
+        <div class="summary__cell summary__cell--slider">
+          <div class="summary__slider-control">
+            <pdz-slider [min]="20" [max]="140" [(ngModel)]="baseValue" />
+          </div>
+          <div class="summary__slider-label">
+            <span>Neutral Value:</span>
+            <span class="summary__slider-value">{{ baseValue }}</span>
+          </div>
+        </div>
+        <div class="summary__cell summary__cell--aggregate-labels">
+          @for (row of aggregateRows; track row.key) {
+            <div class="summary__aggregate-label">{{ row.label }}</div>
+          }
+        </div>
+        @for (col of statColumns; track col.key) {
+          <div
+            class="summary__cell summary__cell--stat"
+            [class.summary__cell--stat-start]="$first"
+            [class.summary__cell--stat-end]="$last"
+          >
+            @for (row of aggregateRows; track row.key) {
+              <div
+                class="summary__aggregate"
+                [style.background-color]="aggregateColor(row.key, col.key)"
+              >
+                {{ aggregateValue(row.key, col.key) }}
+              </div>
+            }
           </div>
         }
-      </td>
-      <td cdk-footer-cell *cdkFooterCellDef class="footer-label-cell">
-        <div>Average</div>
-        <div>Median</div>
-        <div>Max</div>
-      </td>
-    </ng-container>
-
-    <ng-container cdkColumnDef="hp">
-      <th mat-sort-header="hp" start="desc" cdk-header-cell *cdkHeaderCellDef>
-        HP
-      </th>
-      <td
-        cdk-cell
-        *cdkCellDef="let pokemon"
-        class="left-rounded border-left border-top border-bottom stat-cell"
-        [style.background-color]="statColor(pokemon.baseStats.hp)"
-      >
-        {{ pokemon.baseStats.hp }}
-      </td>
-      <td cdk-footer-cell *cdkFooterCellDef>
-        <div
-          [style.background-color]="statColor(summary.stats.mean.hp)"
-          class="border-top border-left top-left-rounded"
-        >
-          {{ summary.stats.mean.hp }}
-        </div>
-        <div
-          [style.background-color]="statColor(summary.stats.median.hp)"
-          class="border-left"
-        >
-          {{ summary.stats.median.hp }}
-        </div>
-        <div
-          [style.background-color]="statColor(summary.stats.max.hp)"
-          class="border-bottom border-left bottom-left-rounded"
-        >
-          {{ summary.stats.max.hp }}
-        </div>
-      </td>
-    </ng-container>
-
-    <ng-container cdkColumnDef="atk">
-      <th mat-sort-header="atk" start="desc" cdk-header-cell *cdkHeaderCellDef>
-        ATK
-      </th>
-      <td
-        cdk-cell
-        *cdkCellDef="let pokemon"
-        class="border-top border-bottom"
-        [style.background-color]="statColor(pokemon.baseStats.atk)"
-      >
-        {{ pokemon.baseStats.atk }}
-      </td>
-      <td cdk-footer-cell *cdkFooterCellDef>
-        <div
-          [style.background-color]="statColor(summary.stats.mean.atk)"
-          class="border-top"
-        >
-          {{ summary.stats.mean.atk }}
-        </div>
-        <div [style.background-color]="statColor(summary.stats.median.atk)">
-          {{ summary.stats.median.atk }}
-        </div>
-        <div
-          [style.background-color]="statColor(summary.stats.max.atk)"
-          class="border-bottom"
-        >
-          {{ summary.stats.max.atk }}
-        </div>
-      </td>
-    </ng-container>
-
-    <ng-container cdkColumnDef="def">
-      <th mat-sort-header="def" start="desc" cdk-header-cell *cdkHeaderCellDef>
-        DEF
-      </th>
-      <td
-        cdk-cell
-        *cdkCellDef="let pokemon"
-        class="border-top border-bottom"
-        [style.background-color]="statColor(pokemon.baseStats.def)"
-      >
-        {{ pokemon.baseStats.def }}
-      </td>
-      <td cdk-footer-cell *cdkFooterCellDef>
-        <div
-          [style.background-color]="statColor(summary.stats.mean.def)"
-          class="border-top"
-        >
-          {{ summary.stats.mean.def }}
-        </div>
-        <div [style.background-color]="statColor(summary.stats.median.def)">
-          {{ summary.stats.median.def }}
-        </div>
-        <div
-          [style.background-color]="statColor(summary.stats.max.def)"
-          class="border-bottom"
-        >
-          {{ summary.stats.max.def }}
-        </div>
-      </td>
-    </ng-container>
-    <ng-container cdkColumnDef="spa">
-      <th mat-sort-header="spa" start="desc" cdk-header-cell *cdkHeaderCellDef>
-        SPA
-      </th>
-      <td
-        cdk-cell
-        *cdkCellDef="let pokemon"
-        class="border-top border-bottom"
-        [style.background-color]="statColor(pokemon.baseStats.spa)"
-      >
-        {{ pokemon.baseStats.spa }}
-      </td>
-      <td cdk-footer-cell *cdkFooterCellDef>
-        <div
-          [style.background-color]="statColor(summary.stats.mean.spa)"
-          class="border-top"
-        >
-          {{ summary.stats.mean.spa }}
-        </div>
-        <div [style.background-color]="statColor(summary.stats.median.spa)">
-          {{ summary.stats.median.spa }}
-        </div>
-        <div
-          [style.background-color]="statColor(summary.stats.max.spa)"
-          class="border-bottom"
-        >
-          {{ summary.stats.max.spa }}
-        </div>
-      </td>
-    </ng-container>
-    <ng-container cdkColumnDef="spd">
-      <th mat-sort-header="spd" start="desc" cdk-header-cell *cdkHeaderCellDef>
-        SPD
-      </th>
-      <td
-        cdk-cell
-        *cdkCellDef="let pokemon"
-        class="border-top border-bottom"
-        [style.background-color]="statColor(pokemon.baseStats.spd)"
-      >
-        {{ pokemon.baseStats.spd }}
-      </td>
-      <td cdk-footer-cell *cdkFooterCellDef>
-        <div
-          [style.background-color]="statColor(summary.stats.mean.spd)"
-          class="border-top"
-        >
-          {{ summary.stats.mean.spd }}
-        </div>
-        <div [style.background-color]="statColor(summary.stats.median.spd)">
-          {{ summary.stats.median.spd }}
-        </div>
-        <div
-          [style.background-color]="statColor(summary.stats.max.spd)"
-          class="border-bottom"
-        >
-          {{ summary.stats.max.spd }}
-        </div>
-      </td>
-    </ng-container>
-    <ng-container cdkColumnDef="spe">
-      <th mat-sort-header="spe" start="desc" cdk-header-cell *cdkHeaderCellDef>
-        SPE
-      </th>
-      <td
-        cdk-cell
-        *cdkCellDef="let pokemon"
-        class="border-top border-bottom"
-        [style.background-color]="statColor(pokemon.baseStats.spe)"
-      >
-        {{ pokemon.baseStats.spe }}
-      </td>
-      <td cdk-footer-cell *cdkFooterCellDef>
-        <div
-          [style.background-color]="statColor(summary.stats.mean.spe)"
-          class="border-top"
-        >
-          {{ summary.stats.mean.spe }}
-        </div>
-        <div [style.background-color]="statColor(summary.stats.median.spe)">
-          {{ summary.stats.median.spe }}
-        </div>
-        <div
-          [style.background-color]="statColor(summary.stats.max.spe)"
-          class="border-bottom"
-        >
-          {{ summary.stats.max.spe }}
-        </div>
-      </td>
-    </ng-container>
-    <ng-container cdkColumnDef="bst">
-      <th mat-sort-header="bst" start="desc" cdk-header-cell *cdkHeaderCellDef>
-        BST
-      </th>
-      <td
-        cdk-cell
-        *cdkCellDef="let pokemon"
-        [style.background-color]="bstColor(pokemon.bst)"
-        class="border-top border-bottom"
-      >
-        {{ pokemon.bst }}
-      </td>
-      <td cdk-footer-cell *cdkFooterCellDef>
-        <div
-          [style.background-color]="bstColor(summary.stats.mean.bst)"
-          class="border-top"
-        >
-          {{ summary.stats.mean.bst }}
-        </div>
-        <div [style.background-color]="bstColor(summary.stats.median.bst)">
-          {{ summary.stats.median.bst }}
-        </div>
-        <div
-          [style.background-color]="bstColor(summary.stats.max.bst)"
-          class="border-bottom"
-        >
-          {{ summary.stats.max.bst }}
-        </div>
-      </td>
-    </ng-container>
-    <ng-container cdkColumnDef="cst">
-      <th mat-sort-header="cst" start="desc" cdk-header-cell *cdkHeaderCellDef>
-        CST
-      </th>
-      <td
-        cdk-cell
-        *cdkCellDef="let pokemon"
-        [style.background-color]="bstColor(pokemon.cst)"
-        class="right-rounded border-top border-bottom border-right"
-      >
-        {{ pokemon.cst }}
-      </td>
-      <td cdk-footer-cell *cdkFooterCellDef>
-        <div
-          [style.background-color]="bstColor(summary.stats.mean.cst)"
-          class="border-top border-right top-right-rounded"
-        >
-          {{ summary.stats.mean.cst }}
-        </div>
-        <div
-          [style.background-color]="bstColor(summary.stats.median.cst)"
-          class="border-right"
-        >
-          {{ summary.stats.median.cst }}
-        </div>
-        <div
-          [style.background-color]="bstColor(summary.stats.max.cst)"
-          class="border-bottom border-right bottom-right-rounded"
-        >
-          {{ summary.stats.max.cst }}
-        </div>
-      </td>
-    </ng-container>
-    <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
-    <tr cdk-row *cdkRowDef="let row; columns: displayedColumns"></tr>
-    <tr
-      cdk-footer-row
-      *cdkFooterRowDef="[
-        'sprite',
-        'abilities',
-        'hp',
-        'atk',
-        'def',
-        'spa',
-        'spd',
-        'spe',
-        'bst',
-        'cst',
-      ]"
-    ></tr>
-  </table>
+      </div>
+    </div>
+  </div>
 }

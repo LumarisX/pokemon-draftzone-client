@@ -35,13 +35,19 @@
     <tbody>
       @for (pokemon of sortedTeam | async; track $index) {
         <tr [class.disabled]="pokemon.disabled">
-          <td class="action-cell" (click)="toggleVisible(pokemon)">
+          <td class="action-cell">
             <div class="sprite-wrapper">
               <pdz-sprite
                 size="3rem"
                 tooltipPosition="left"
                 flipped
+                cycleDisabled
                 [pokemon]="pokemon"
+                [disabled]="pokemon.disabled ?? false"
+                (disabledChange)="pokemon.disabled = $event"
+                [formeIndex]="pokemon.formeIndex ?? 0"
+                (formeIndexChange)="pokemon.formeIndex = $event"
+                (cycled)="togglePokemon.emit(pokemon)"
               ></pdz-sprite>
             </div>
           </td>
@@ -55,14 +61,11 @@
               <div
                 class="type-wrapper"
                 [ngClass]="
-                  weaknessColor(
-                    pokemon.weak[this.abilityIndex][type],
-                    pokemon.disabled!
-                  )
+                  weaknessColor(activeWeak(pokemon)[type], pokemon.disabled!)
                 "
               >
-                @if (pokemon.weak[this.abilityIndex][type] !== 1) {
-                  {{ pokemon.weak[this.abilityIndex][type] }}
+                @if (activeWeak(pokemon)[type] !== 1) {
+                  {{ activeWeak(pokemon)[type] }}
                 }
               </div>
             </td>

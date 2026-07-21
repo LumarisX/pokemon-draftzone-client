@@ -1,8 +1,9 @@
 <div
   class="forme-stack"
-  [class.interactive]="interactive() && slots().length > 1"
+  [class.interactive]="interactive() && stateCount() > 1"
   [style.width]="size()"
   [style.height]="size()"
+  (contextmenu)="onContextMenu($event)"
 >
   @for (slot of slots(); track slot.pokemon.id) {
     <div

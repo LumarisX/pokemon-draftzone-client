@@ -36,12 +36,14 @@ export class SpriteComponent {
   >(null);
   size = input<string>();
   flipped = input(false, { transform: booleanAttribute });
-  disabled = input(false, { transform: booleanAttribute });
-  showFormes = input(false, { transform: booleanAttribute });
-  interactive = input(false, { transform: booleanAttribute });
+  disabled = model(false);
+  showFormes = input(true, { transform: booleanAttribute });
+  interactive = input(true, { transform: booleanAttribute });
+  cycleDisabled = input(false, { transform: booleanAttribute });
   formeId = model<string | undefined>(undefined);
   formeIndex = model(0);
   loadedEvent = output<void>();
+  cycled = output<void>();
 
   private readonly FRONT_SCALE = 1;
   private readonly SILHOUETTE_SPAN_X = 6;
@@ -129,12 +131,38 @@ export class SpriteComponent {
     });
   }
 
+  protected readonly stateCount = computed(
+    () => this.formes().length + (this.cycleDisabled() ? 1 : 0),
+  );
+
   next(): void {
-    this.setActive(this.normalizedIndex() + 1);
+    this.step(1);
   }
 
   previous(): void {
-    this.setActive(this.normalizedIndex() - 1);
+    this.step(-1);
+  }
+
+  step(direction: 1 | -1 = 1): void {
+    const formeCount = this.formes().length;
+    const stateCount = this.stateCount();
+    if (stateCount < 2) return;
+
+    const position =
+      this.cycleDisabled() && this.disabled()
+        ? formeCount
+        : this.normalizedIndex();
+    const next =
+      (((position + direction) % stateCount) + stateCount) % stateCount;
+
+    if (this.cycleDisabled()) {
+      const nowDisabled = next === formeCount;
+      this.disabled.set(nowDisabled);
+      this.formeIndex.set(nowDisabled ? 0 : next);
+    } else {
+      this.formeIndex.set(next);
+    }
+    this.cycled.emit();
   }
 
   setActive(index: number): void {
@@ -144,12 +172,19 @@ export class SpriteComponent {
   }
 
   protected onSlotClick(slot: FormeSlot): void {
-    if (!this.interactive() || this.formes().length < 2) return;
+    if (!this.interactive()) return;
     if (slot.isActive) {
-      this.next();
+      this.step(1);
     } else {
       this.setActive(slot.index);
+      this.cycled.emit();
     }
+  }
+
+  protected onContextMenu(event: Event): void {
+    if (!this.interactive() || this.stateCount() < 2) return;
+    event.preventDefault();
+    this.step(-1);
   }
 
   protected onSlotLoaded(slot: FormeSlot): void {

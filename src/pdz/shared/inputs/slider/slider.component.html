@@ -1,0 +1,21 @@
+<div
+  class="slider"
+  [class.slider--disabled]="disabled"
+  [style.--pdz-slider-fill]="fillPercent + '%'"
+  [style.--pdz-slider-active]="color || null"
+>
+  @if (showValue) {
+    <div class="slider__bubble" aria-hidden="true">{{ value }}</div>
+  }
+  <input
+    class="slider__input"
+    type="range"
+    [min]="min"
+    [max]="max"
+    [step]="step"
+    [disabled]="disabled"
+    [value]="value"
+    (input)="onInput($event)"
+    (blur)="onBlur()"
+  />
+</div>
