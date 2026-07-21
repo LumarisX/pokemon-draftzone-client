@@ -1,7 +1,5 @@
 import { Component, Input, OnInit, inject } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DRAFT_OVERVIEW_PATH } from '@pdz/core/route-paths';
 import { Draft } from '../../draft.model';
 import { Opponent } from '../opponent.model';
@@ -14,13 +12,7 @@ import {
 
 @Component({
   selector: 'pdz-opponent-form',
-  imports: [
-    RouterModule,
-    OpponentFormCoreComponent,
-    ReactiveFormsModule,
-    MatButtonModule,
-    LoadingComponent,
-  ],
+  imports: [OpponentFormCoreComponent, LoadingComponent],
   styleUrl: './opponent-form.component.scss',
   templateUrl: './opponent-form.component.html',
 })
@@ -34,6 +26,7 @@ export class OpponentFormComponent implements OnInit {
   readonly draftPath = DRAFT_OVERVIEW_PATH;
   oppParams: Partial<Opponent> | null = null;
   title: string = '';
+  submitLabel: string = '';
   isEditMode = false;
 
   @Input() draft: Draft | undefined;
@@ -45,7 +38,9 @@ export class OpponentFormComponent implements OnInit {
       if ('matchup' in params) {
         this.isEditMode = true;
         this.title = 'Edit Opponent';
+        this.submitLabel = 'Save Changes';
         this.matchupId = params['matchup'];
+        this.oppParams = null;
         this.draftService
           .getOpponent(this.matchupId!, this.teamId)
           .subscribe((opponent) => {
@@ -54,6 +49,7 @@ export class OpponentFormComponent implements OnInit {
       } else {
         this.isEditMode = false;
         this.title = 'New Opponent';
+        this.submitLabel = 'Create Opponent';
         const stage = params['stage'];
         this.oppParams = { stage: stage };
       }

@@ -29,7 +29,7 @@ export const matchHeight = (teamH: number): number =>
   CARD_PAD * 2 + LABEL_H + ROW_GAP * 2 + teamH * 2;
 
 /** Spacing between parallel connector lanes in a corridor or band. */
-export const LANE_STEP = 10;
+export const LANE_STEP = 4;
 /** Padding between cards and the outermost connector lane in a corridor. */
 export const CORRIDOR_PAD = 14;
 /** Padding between section content and the outermost lane in a section-gap band. */
@@ -242,7 +242,13 @@ export function resolveSlot(
     const src = allMatches.find((m) => m.id === slot.from);
     if (src?.winner !== undefined) {
       const advancingSlot = src.winner === 0 ? src.a : src.b;
-      return resolveSlot(advancingSlot, teams, allMatches, matchLabels, depth + 1);
+      return resolveSlot(
+        advancingSlot,
+        teams,
+        allMatches,
+        matchLabels,
+        depth + 1,
+      );
     }
     return {
       team: null,
@@ -254,7 +260,13 @@ export function resolveSlot(
     const src = allMatches.find((m) => m.id === slot.from);
     if (src?.winner !== undefined) {
       const eliminatedSlot = src.winner === 0 ? src.b : src.a;
-      return resolveSlot(eliminatedSlot, teams, allMatches, matchLabels, depth + 1);
+      return resolveSlot(
+        eliminatedSlot,
+        teams,
+        allMatches,
+        matchLabels,
+        depth + 1,
+      );
     }
     return {
       team: null,

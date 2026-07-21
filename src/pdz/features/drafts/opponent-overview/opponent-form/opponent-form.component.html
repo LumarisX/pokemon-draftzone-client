@@ -1,24 +1,12 @@
-<div class="draft-container alternate">
-  <div class="form-content">
-    <div class="pb-4 relative">
-      <button
-        class="absolute top-2 left-2 md:top-4 md:left-4"
-        [routerLink]="['/', draftPath, teamId]"
-        mat-flat-button
-      >
-        Cancel
-      </button>
-      <div class="flex justify-center">
-        <h1 class="text-3xl font-bold text-center font-nasa">{{ title }}</h1>
-      </div>
-    </div>
-    @if (oppParams) {
-      <pdz-opponent-form-core
-        [params]="oppParams"
-        (formSubmitted)="saveOpponent($event)"
-      ></pdz-opponent-form-core>
-    } @else {
-      <pdz-loading></pdz-loading>
-    }
+@if (oppParams) {
+  <pdz-opponent-form-core
+    [title]="title"
+    [submitLabel]="submitLabel"
+    [params]="oppParams"
+    (formSubmitted)="saveOpponent($event)"
+  ></pdz-opponent-form-core>
+} @else {
+  <div class="opponent-form__loading">
+    <pdz-loading></pdz-loading>
   </div>
-</div>
+}

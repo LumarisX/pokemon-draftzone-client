@@ -321,12 +321,12 @@ export class PokemonFormGroup extends FormGroup<{
         asyncValidators: [pokemonAsyncValidator(pokemonList)],
       }),
       shiny: new FormControl<boolean | null>(!!pokemon.shiny),
-      nickname: new FormControl<string>('', {
+      nickname: new FormControl<string>(pokemon.nickname ?? '', {
         nonNullable: true,
       }),
       tera: new FormControl<string[] | null>(pokemon.capt?.tera ?? null),
       z: new FormControl<string[] | null>(pokemon.capt?.z ?? null),
-      dmax: new FormControl<boolean | null>(false),
+      dmax: new FormControl<boolean | null>(!!pokemon.capt?.dmax),
       formes: new FormControl<DraftPokemon[]>(pokemon.draftFormes ?? [], {
         nonNullable: true,
       }),

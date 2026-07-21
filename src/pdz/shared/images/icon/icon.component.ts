@@ -13,6 +13,46 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Observable, of, shareReplay } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 
+export const svgIconPaths: Readonly<Record<string, string>> = {
+  logo: 'assets/icons/logo.svg',
+  'logo-small': 'assets/icons/logo-small.svg',
+  unknown: 'assets/icons/unknown.svg',
+  tera: 'assets/icons/tera.svg',
+  z: 'assets/icons/z.svg',
+  shiny: 'assets/icons/shiny.svg',
+  capt: 'assets/icons/capt.svg',
+  dmax: 'assets/icons/dmax.svg',
+  pokeball: 'assets/icons/pokeball.svg',
+  xmark: 'assets/icons/xmark.svg',
+  'right-arrow': 'assets/icons/right-arrow.svg',
+  gear: 'assets/icons/gear.svg',
+  gearalt: 'assets/icons/gearalt.svg',
+  pdollar: 'assets/icons/pdollar.svg',
+  discord: 'assets/icons/media/discord-mark-blue.svg',
+  github: 'assets/icons/media/github-mark.svg',
+  'type-bug': 'assets/icons/types/gen9icon/Bug.svg',
+  'type-dark': 'assets/icons/types/gen9icon/Dark.svg',
+  'type-dragon': 'assets/icons/types/gen9icon/Dragon.svg',
+  'type-electric': 'assets/icons/types/gen9icon/Electric.svg',
+  'type-fairy': 'assets/icons/types/gen9icon/Fairy.svg',
+  'type-fighting': 'assets/icons/types/gen9icon/Fighting.svg',
+  'type-fire': 'assets/icons/types/gen9icon/Fire.svg',
+  'type-flying': 'assets/icons/types/gen9icon/Flying.svg',
+  'type-ghost': 'assets/icons/types/gen9icon/Ghost.svg',
+  'type-grass': 'assets/icons/types/gen9icon/Grass.svg',
+  'type-ground': 'assets/icons/types/gen9icon/Ground.svg',
+  'type-ice': 'assets/icons/types/gen9icon/Ice.svg',
+  'type-normal': 'assets/icons/types/gen9icon/Normal.svg',
+  'type-poison': 'assets/icons/types/gen9icon/Poison.svg',
+  'type-psychic': 'assets/icons/types/gen9icon/Psychic.svg',
+  'type-rock': 'assets/icons/types/gen9icon/Rock.svg',
+  'type-steel': 'assets/icons/types/gen9icon/Steel.svg',
+  'type-water': 'assets/icons/types/gen9icon/Water.svg',
+  physical: 'assets/icons/moves/physical.svg',
+  special: 'assets/icons/moves/special.svg',
+  status: 'assets/icons/moves/status.svg',
+};
+
 @Component({
   selector: 'pdz-icon',
   imports: [CommonModule],
@@ -78,36 +118,7 @@ import { map, catchError } from 'rxjs/operators';
 })
 export class IconComponent implements OnChanges {
   private static svgCache = new Map<string, Observable<string>>();
-  private static readonly localSvgIconPaths: Readonly<Record<string, string>> =
-    {
-      logo: 'assets/icons/logo.svg',
-      'logo-small': 'assets/icons/logo-small.svg',
-      unknown: 'assets/icons/unknown.svg',
-      tera: 'assets/icons/tera.svg',
-      discord: 'assets/icons/media/discord-mark-blue.svg',
-      github: 'assets/icons/media/github-mark.svg',
-      'type-bug': 'assets/icons/types/gen9icon/Bug.svg',
-      'type-dark': 'assets/icons/types/gen9icon/Dark.svg',
-      'type-dragon': 'assets/icons/types/gen9icon/Dragon.svg',
-      'type-electric': 'assets/icons/types/gen9icon/Electric.svg',
-      'type-fairy': 'assets/icons/types/gen9icon/Fairy.svg',
-      'type-fighting': 'assets/icons/types/gen9icon/Fighting.svg',
-      'type-fire': 'assets/icons/types/gen9icon/Fire.svg',
-      'type-flying': 'assets/icons/types/gen9icon/Flying.svg',
-      'type-ghost': 'assets/icons/types/gen9icon/Ghost.svg',
-      'type-grass': 'assets/icons/types/gen9icon/Grass.svg',
-      'type-ground': 'assets/icons/types/gen9icon/Ground.svg',
-      'type-ice': 'assets/icons/types/gen9icon/Ice.svg',
-      'type-normal': 'assets/icons/types/gen9icon/Normal.svg',
-      'type-poison': 'assets/icons/types/gen9icon/Poison.svg',
-      'type-psychic': 'assets/icons/types/gen9icon/Psychic.svg',
-      'type-rock': 'assets/icons/types/gen9icon/Rock.svg',
-      'type-steel': 'assets/icons/types/gen9icon/Steel.svg',
-      'type-water': 'assets/icons/types/gen9icon/Water.svg',
-      physical: 'assets/icons/moves/physical.svg',
-      special: 'assets/icons/moves/special.svg',
-      status: 'assets/icons/moves/status.svg',
-    };
+  private static readonly localSvgIconPaths = svgIconPaths;
 
   private _name!: string;
   @Input({ required: true })
@@ -245,27 +256,29 @@ export class IconComponent implements OnChanges {
     }
 
     this.svgIcon$ = svgSource$.pipe(
-      map((svg) => {
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(svg, 'image/svg+xml');
-        const svgElement = doc.querySelector('svg');
-
-        if (svgElement) {
-          if (this.computedWidth !== undefined) {
-            svgElement.setAttribute('width', `${this.computedWidth}`);
-          }
-          if (this.computedHeight !== undefined) {
-            svgElement.setAttribute('height', `${this.computedHeight}`);
-          }
-          svg = new XMLSerializer().serializeToString(svgElement);
-        }
-
-        return this.sanitizer.bypassSecurityTrustHtml(svg);
-      }),
+      map((svg) => this.applySize(svg)),
       catchError((err) => {
         console.error(`Could not load SVG icon: ${this.name}`, err);
         return of(this.sanitizer.bypassSecurityTrustHtml('<svg></svg>'));
       }),
     );
+  }
+
+  private applySize(svg: string): SafeHtml {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(svg, 'image/svg+xml');
+    const svgElement = doc.querySelector('svg');
+
+    if (svgElement) {
+      if (this.computedWidth !== undefined) {
+        svgElement.setAttribute('width', `${this.computedWidth}`);
+      }
+      if (this.computedHeight !== undefined) {
+        svgElement.setAttribute('height', `${this.computedHeight}`);
+      }
+      svg = new XMLSerializer().serializeToString(svgElement);
+    }
+
+    return this.sanitizer.bypassSecurityTrustHtml(svg);
   }
 }

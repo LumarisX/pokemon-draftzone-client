@@ -1,0 +1,30 @@
+<div class="chip-input">
+  @if (label) {
+    <span class="chip-input__label">{{ label }}</span>
+  }
+  <div class="chip-input__box" (click)="chipInput.focus()">
+    @for (chip of control.value; track $index) {
+      <span class="chip-input__chip">
+        <span class="chip-input__chip-text">{{ chip }}</span>
+        <button
+          type="button"
+          class="chip-input__chip-remove"
+          [attr.aria-label]="'Remove ' + chip"
+          (click)="remove($index); $event.stopPropagation()"
+        >
+          <pdz-icon name="close" [size]="14"></pdz-icon>
+        </button>
+      </span>
+    }
+    <input
+      #chipInput
+      class="chip-input__field"
+      type="text"
+      spellcheck="false"
+      autocomplete="off"
+      [placeholder]="control.value.length ? '' : placeholder"
+      (keydown)="handleKeydown($event, chipInput)"
+      (blur)="add(chipInput)"
+    />
+  </div>
+</div>

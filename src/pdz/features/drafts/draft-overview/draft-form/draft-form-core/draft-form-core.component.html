@@ -1,110 +1,115 @@
 @if (draftForm) {
-  <mat-stepper
-    #stepper
-    class="pokemon-form-container"
-    linear
-    orientation="vertical"
-  >
-    <mat-step
-      state="details"
-      [stepControl]="draftForm.controls.details"
-      errorMessage="Name is required."
-    >
-      <form [formGroup]="draftForm.controls.details">
-        <ng-template matStepLabel>Details</ng-template>
-        <ng-template matStepContent>
-          <div class="details-form-container">
-            <div class="league-container details-container">
-              <mat-form-field>
-                <mat-label>League Name</mat-label>
-                <input
-                  matInput
-                  formControlName="leagueName"
-                  spellcheck="false"
-                />
-                @if (
-                  draftForm.controls.details.controls.leagueName.hasError(
-                    "required"
-                  )
-                ) {
-                  <mat-error>League name is required</mat-error>
-                }
-                @if (
-                  draftForm.controls.details.controls.leagueName.hasError(
-                    "noSluggableCharacter"
-                  )
-                ) {
-                  <mat-error
-                    >League name must contain at least one letter or
-                    number</mat-error
-                  >
-                }
-              </mat-form-field>
-              <mat-form-field>
-                <mat-label>Team Name</mat-label>
-                <input matInput formControlName="teamName" spellcheck="false" />
-              </mat-form-field>
-              <pdz-format-select formControlName="format"></pdz-format-select>
-              <pdz-ruleset-select
-                formControlName="ruleset"
-              ></pdz-ruleset-select>
-              <mat-form-field class="md:col-span-2">
-                <mat-label>Document Link</mat-label>
-                <input
-                  matInput
-                  formControlName="doc"
-                  #docInput
-                  spellcheck="false"
-                />
+  <div class="draft-builder">
+    <header class="draft-builder__header">
+      <div class="draft-builder__header-inner">
+        <a
+          class="draft-builder__back"
+          [routerLink]="'/' + draftPath"
+          aria-label="Back to drafts"
+        >
+          <pdz-icon name="arrow_back" [size]="22"></pdz-icon>
+        </a>
+        <h1 class="draft-builder__title font-nasa">{{ title }}</h1>
+        <span class="draft-builder__spacer"></span>
+        <button
+          type="button"
+          class="draft-builder__submit"
+          [disabled]="isImporting"
+          (click)="onSubmit()"
+        >
+          {{ submitLabel }}
+        </button>
+      </div>
+    </header>
 
-                <button
-                  type="button"
-                  mat-icon-button
-                  matSuffix
-                  [disabled]="!docInput.value"
-                  (click)="openLink(docInput.value)"
-                >
-                  <mat-icon>open_in_new</mat-icon>
-                </button>
-              </mat-form-field>
+    <div class="draft-builder__body">
+      <aside class="draft-builder__panel draft-builder__panel--details">
+        <h2 class="draft-builder__panel-title">Draft Details</h2>
+        <form
+          class="draft-builder__form"
+          [formGroup]="draftForm.controls.details"
+          (ngSubmit)="onSubmit()"
+        >
+          <label class="form-field">
+            <span class="form-field__label">League Name</span>
+            <input
+              class="form-field__input"
+              type="text"
+              spellcheck="false"
+              formControlName="leagueName"
+              [class.form-field__input--invalid]="
+                showError(leagueNameControl, 'required') ||
+                showError(leagueNameControl, 'noSluggableCharacter')
+              "
+            />
+            @if (showError(leagueNameControl, "required")) {
+              <span class="form-field__error">League name is required</span>
+            } @else if (showError(leagueNameControl, "noSluggableCharacter")) {
+              <span class="form-field__error">
+                League name must contain at least one letter or number
+              </span>
+            }
+          </label>
+
+          <label class="form-field">
+            <span class="form-field__label">Team Name</span>
+            <input
+              class="form-field__input"
+              type="text"
+              spellcheck="false"
+              formControlName="teamName"
+              [class.form-field__input--invalid]="
+                showError(teamNameControl, 'required')
+              "
+            />
+            @if (showError(teamNameControl, "required")) {
+              <span class="form-field__error">Team name is required</span>
+            }
+          </label>
+
+          <pdz-format-select formControlName="format"></pdz-format-select>
+          <pdz-ruleset-select formControlName="ruleset"></pdz-ruleset-select>
+
+          <label class="form-field">
+            <span class="form-field__label">Document Link</span>
+            <div class="draft-builder__doc-row">
+              <input
+                class="form-field__input"
+                type="text"
+                spellcheck="false"
+                placeholder="docs.google.com/..."
+                formControlName="doc"
+                #docInput
+              />
+              <button
+                type="button"
+                class="draft-builder__doc-open"
+                aria-label="Open document link"
+                [disabled]="!docInput.value"
+                (click)="openLink(docInput.value)"
+              >
+                <pdz-icon name="open_in_new" [size]="20"></pdz-icon>
+              </button>
             </div>
-          </div>
-          <div class="button-bar">
-            <div class="button-spacer"></div>
-            <button type="button" mat-flat-button matStepperNext>Next</button>
-          </div>
-        </ng-template>
-      </form>
-    </mat-step>
-    <mat-step state="team">
-      <ng-template matStepLabel>Team</ng-template>
-      <ng-template matStepContent>
-        <div class="team-container">
-          <pdz-team-form
-            [pokemonList$]="pokemonList$"
-            [ruleset]="draftForm.controls.details.controls.ruleset.value"
-            [teamArray]="draftForm.controls.team"
-            (isImporting)="isImporting = $event"
-          ></pdz-team-form>
+          </label>
+        </form>
+      </aside>
+
+      <section class="draft-builder__panel draft-builder__panel--team">
+        <div class="draft-builder__panel-header">
+          <h2 class="draft-builder__panel-title">
+            Team
+            <span class="draft-builder__panel-count">{{ teamCount }}</span>
+          </h2>
         </div>
 
-        <div class="button-bar">
-          <button type="button" mat-flat-button matStepperPrevious>Back</button>
-          <div class="button-spacer"></div>
-          @if (!isImporting) {
-            <button type="submit" mat-flat-button (click)="onSubmit()">
-              Submit
-            </button>
-          }
-        </div>
-      </ng-template>
-    </mat-step>
-
-    <ng-template matStepperIcon="details">
-      <mat-icon>info</mat-icon>
-    </ng-template>
-    <ng-template matStepperIcon="team">
-      <mat-icon>workspaces</mat-icon>
-    </ng-template>
-  </mat-stepper>
+        <pdz-team-editor
+          [pokemonList$]="pokemonList$"
+          [ruleset]="draftForm.controls.details.controls.ruleset.value"
+          [teamArray]="draftForm.controls.team"
+          (isImporting)="isImporting = $event"
+        ></pdz-team-editor>
+      </section>
+    </div>
+  </div>
 }

@@ -1,0 +1,590 @@
+@use "pdz-theming" as pdz;
+@use "mixins/_buttons.scss" as *;
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+// ---------------------------------------------------------------------------
+// team-editor block
+// ---------------------------------------------------------------------------
+
+.team-editor {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(md);
+
+  &__btn {
+    &--primary {
+      @include flat-button-primary(
+        (
+          padding: pdz.space(xs) pdz.space(lg),
+          gap: pdz.space(xs),
+        )
+      );
+    }
+
+    &--ghost {
+      @include flat-button(
+        (
+          padding: pdz.space(xs) pdz.space(lg),
+          gap: pdz.space(xs),
+          border-width: 1px,
+          border-color: pdz.color(outline),
+          color: pdz.color(on-surface),
+          background-hover: pdz.color(surface-container-low),
+        )
+      );
+    }
+  }
+
+  // Toolbar -----------------------------------------------------------------
+
+  &__toolbar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: pdz.space(sm);
+  }
+
+  &__search {
+    flex: 1 1 16rem;
+    max-width: 28rem;
+    min-width: 12rem;
+  }
+
+  &__capt-group {
+    display: flex;
+    align-items: center;
+    gap: pdz.space(2xs);
+    padding: pdz.space(2xs);
+    border: 1px solid pdz.color(outline-variant);
+    border-radius: pdz.shape(corner-full);
+  }
+
+  &__capt-toggle {
+    @include flat-button(
+      (
+        padding: pdz.space(2xs) pdz.space(sm),
+        gap: pdz.space(2xs),
+        font-size: 0.8125rem,
+        border-radius: pdz.shape(corner-full),
+        color: pdz.color(on-surface-variant),
+        background-hover: pdz.color(surface-container-low),
+      )
+    );
+
+    &--on {
+      background: pdz.color(primary-container);
+      color: pdz.color(on-primary-container);
+    }
+
+    &--partial {
+      background: pdz.color(surface-container);
+      color: pdz.color(on-surface);
+    }
+  }
+
+  &__import-toggle {
+    margin-left: auto;
+  }
+
+  // Import panel ------------------------------------------------------------
+
+  &__import {
+    display: flex;
+    flex-direction: column;
+    gap: pdz.space(sm);
+    padding: pdz.space(md);
+    border: 1px dashed pdz.color(outline);
+    border-radius: pdz.shape(corner-md);
+    background: pdz.color(surface-container-low);
+  }
+
+  &__import-title {
+    margin: 0;
+    font-weight: 700;
+  }
+
+  &__import-hint {
+    margin: 0;
+    font-size: 0.875rem;
+    color: pdz.color(on-surface-variant);
+  }
+
+  &__import-textarea {
+    width: 100%;
+    resize: vertical;
+    min-height: 8rem;
+    padding: pdz.space(sm);
+    border: 1px solid pdz.color(outline);
+    border-radius: pdz.shape(corner-sm);
+    background: pdz.color(surface);
+    color: pdz.color(on-surface);
+    font: inherit;
+
+    &:focus {
+      outline: 2px solid pdz.color(primary);
+      outline-offset: 1px;
+      border-color: pdz.color(primary);
+    }
+  }
+
+  &__import-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: pdz.space(sm);
+  }
+
+  // Team list ---------------------------------------------------------------
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: pdz.space(sm);
+  }
+
+  &__drag-preview {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: pdz.shape(corner-md);
+    background: pdz.color(surface);
+    border: 1px solid pdz.color(outline-variant);
+    box-shadow: var(--pdz-level-3);
+  }
+
+  // Empty state -------------------------------------------------------------
+
+  &__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: pdz.space(xs);
+    padding: pdz.space(3xl) pdz.space(lg);
+    border: 1px dashed pdz.color(outline);
+    border-radius: pdz.shape(corner-md);
+    color: pdz.color(on-surface-variant);
+    text-align: center;
+  }
+
+  &__empty-title {
+    margin: 0;
+    font-weight: 700;
+    font-size: 1.125rem;
+    color: pdz.color(on-surface);
+  }
+
+  &__empty-hint {
+    margin: 0;
+    max-width: 28rem;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// pokemon-card block
+// ---------------------------------------------------------------------------
+
+.pokemon-card {
+  border: 1px solid pdz.color(outline-variant);
+  border-radius: pdz.shape(corner-md);
+  background: pdz.color(surface);
+  overflow: hidden;
+  transition:
+    border-color 0.15s ease-in-out,
+    box-shadow 0.15s ease-in-out;
+
+  &--expanded {
+    border-color: pdz.color(primary-border);
+    box-shadow: var(--pdz-level-1);
+  }
+
+  &--invalid {
+    border-color: pdz.color(error);
+  }
+
+  &.cdk-drag-dragging {
+    opacity: 0.6;
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: pdz.space(sm);
+    padding: pdz.space(xs) pdz.space(sm);
+    cursor: pointer;
+    user-select: none;
+
+    &:hover {
+      background: pdz.color(surface-container-low);
+    }
+  }
+
+  &__drag-handle {
+    display: inline-flex;
+    color: pdz.color(on-surface-variant);
+    cursor: grab;
+    touch-action: none;
+
+    &:active {
+      cursor: grabbing;
+    }
+  }
+
+  &__sprite {
+    width: 3rem;
+    height: 3rem;
+    flex-shrink: 0;
+  }
+
+  &__warning {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    color: pdz.color(error);
+    flex-shrink: 0;
+  }
+
+  &__names {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  &__name {
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__subname {
+    font-size: 0.75rem;
+    color: pdz.color(on-surface-variant);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__badges {
+    display: flex;
+    align-items: center;
+    gap: pdz.space(2xs);
+  }
+
+  &__badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: pdz.shape(corner-full);
+    background: pdz.color(primary-subtle);
+    color: pdz.color(on-primary-container);
+  }
+
+  &__spacer {
+    flex: 1;
+  }
+
+  &__invalid-label {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: pdz.color(error);
+    white-space: nowrap;
+  }
+
+  &__action {
+    @include icon-button(
+      (
+        width: 2.25rem,
+        height: 2.25rem,
+        color: pdz.color(on-surface-variant),
+        background-hover: pdz.color(surface-container-high),
+      )
+    );
+
+    &--expand pdz-icon {
+      transition: transform 0.2s ease-in-out;
+    }
+  }
+
+  &--expanded &__action--expand pdz-icon {
+    transform: rotate(180deg);
+  }
+
+  &__body {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    gap: pdz.space(lg);
+    padding: pdz.space(md) pdz.space(lg) pdz.space(lg);
+    border-top: 1px solid pdz.color(outline-variant);
+    background: pdz.color(surface-container-lowest);
+    animation: pokemon-card-expand 0.18s ease-out;
+  }
+
+  &__section {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: pdz.space(sm);
+    min-width: 0;
+
+    .pill-toggle {
+      align-self: flex-start;
+    }
+  }
+
+  &__section-title {
+    display: flex;
+    align-items: center;
+    gap: pdz.space(xs);
+    margin: 0;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: pdz.color(on-surface-variant);
+  }
+
+  &__toggle-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: pdz.space(xs);
+  }
+
+  &__formes {
+    display: grid;
+    gap: pdz.space(2xs);
+  }
+
+  &__forme-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: pdz.space(xs);
+  }
+}
+
+@keyframes pokemon-card-expand {
+  from {
+    opacity: 0;
+    transform: translateY(-0.25rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.cdk-drop-list-dragging .pokemon-card:not(.cdk-drag-dragging) {
+  transition: transform 0.2s ease-in-out;
+}
+
+// ---------------------------------------------------------------------------
+// pill-toggle block
+// ---------------------------------------------------------------------------
+
+.pill-toggle {
+  @include flat-button(
+    (
+      padding: pdz.space(xs) pdz.space(md),
+      gap: pdz.space(xs),
+      border-width: 1px,
+      border-color: pdz.color(outline),
+      border-radius: pdz.shape(corner-full),
+      color: pdz.color(on-surface-variant),
+      background-hover: pdz.color(surface-container-low),
+      font-size: 0.875rem,
+    )
+  );
+  justify-self: start;
+
+  &--on {
+    background: pdz.color(primary-container);
+    border-color: pdz.color(primary-border);
+    color: pdz.color(on-primary-container);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// type-picker block
+// ---------------------------------------------------------------------------
+
+.type-picker {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(xs);
+  padding: pdz.space(sm);
+  border: 1px solid pdz.color(outline-variant);
+  border-radius: pdz.shape(corner-sm);
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: pdz.space(xs);
+  }
+
+  &__title {
+    font-size: 0.8125rem;
+    font-weight: 600;
+  }
+
+  &__count {
+    font-size: 0.75rem;
+    color: pdz.color(on-surface-variant);
+  }
+
+  &__spacer {
+    flex: 1;
+  }
+
+  &__btn {
+    @include flat-button(
+      (
+        padding: pdz.space(2xs) pdz.space(sm),
+        font-size: 0.75rem,
+        border-width: 1px,
+        border-color: pdz.color(outline),
+        color: pdz.color(on-surface-variant),
+        background-hover: pdz.color(surface-container-low),
+      )
+    );
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(2.25rem, 1fr));
+    gap: pdz.space(2xs);
+  }
+
+  &__cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1;
+    padding: pdz.space(2xs);
+    border: 1px solid transparent;
+    border-radius: pdz.shape(corner-sm);
+    background: transparent;
+    cursor: pointer;
+    opacity: 0.45;
+    filter: grayscale(0.6);
+    transition:
+      opacity 0.1s ease-in-out,
+      filter 0.1s ease-in-out,
+      transform 0.1s ease-in-out;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    &:hover {
+      opacity: 0.8;
+      filter: grayscale(0.2);
+      transform: scale(1.05);
+    }
+
+    &--selected {
+      opacity: 1;
+      filter: none;
+      border-color: pdz.color(primary-border);
+      background: pdz.color(primary-subtle);
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// forme-chip block
+// ---------------------------------------------------------------------------
+
+.forme-chip {
+  @include flat-button(
+    (
+      padding: pdz.space(2xs) pdz.space(sm) pdz.space(2xs) pdz.space(2xs),
+      gap: pdz.space(2xs),
+      font-size: 0.875rem,
+      border-width: 1px,
+      border-color: pdz.color(outline),
+      border-radius: pdz.shape(corner-full),
+      color: pdz.color(on-surface-variant),
+      background-hover: pdz.color(surface-container-low),
+    )
+  );
+
+  pdz-sprite {
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+
+  &--selected {
+    background: pdz.color(primary-container);
+    border-color: pdz.color(primary-border);
+    color: pdz.color(on-primary-container);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// form-field block (nickname)
+// ---------------------------------------------------------------------------
+
+.form-field {
+  display: grid;
+  gap: pdz.space(2xs);
+
+  &__label {
+    font-weight: 700;
+    font-size: 0.875rem;
+    color: pdz.color(on-surface-variant);
+  }
+
+  &__input {
+    width: 100%;
+    padding: pdz.space(xs) pdz.space(sm);
+    border: 1px solid pdz.color(outline);
+    border-radius: pdz.shape(corner-sm);
+    background: pdz.color(surface);
+    color: pdz.color(on-surface);
+    font: inherit;
+
+    &:focus {
+      outline: 2px solid pdz.color(primary);
+      outline-offset: 1px;
+      border-color: pdz.color(primary);
+    }
+  }
+
+  &__hint {
+    justify-self: end;
+    font-size: 0.75rem;
+    color: pdz.color(on-surface-variant);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Responsive
+// ---------------------------------------------------------------------------
+
+@media (max-width: 640px) {
+  .team-editor__search {
+    flex-basis: 100%;
+    max-width: none;
+  }
+
+  .team-editor__import-toggle {
+    margin-left: 0;
+  }
+
+  .pokemon-card__header {
+    flex-wrap: wrap;
+  }
+
+  .pokemon-card__invalid-label {
+    white-space: normal;
+  }
+}

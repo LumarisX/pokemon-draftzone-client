@@ -1,5 +1,3 @@
-import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
-
 import {
   Component,
   EventEmitter,
@@ -18,49 +16,26 @@ import {
   ValidationErrors,
   Validators,
 } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDividerModule } from '@angular/material/divider';
-import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatStepperModule } from '@angular/material/stepper';
 import { RouterModule } from '@angular/router';
 import { BehaviorSubject, filter, Subject, takeUntil } from 'rxjs';
 import { Draft, DraftPokemon } from '../../../draft.model';
 import { DataService } from '@pdz/core/services/data.service';
+import { DRAFT_OVERVIEW_PATH } from '@pdz/core/route-paths';
 import { FormatSelectComponent } from '@pdz/shared/dropdowns/format-select/format.component';
 import { RulesetSelectComponent } from '@pdz/shared/dropdowns/ruleset-select/ruleset.component';
-import {
-  PokemonFormGroup,
-  TeamFormComponent,
-} from '@pdz/shared/forms/team-form/team-form.component';
+import { PokemonFormGroup } from '@pdz/shared/forms/team-form/team-form.component';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
+import { TeamEditorComponent } from '../components/team-editor/team-editor.component';
 
 @Component({
   selector: 'pdz-draft-form-core',
   imports: [
     RouterModule,
     ReactiveFormsModule,
-    MatInputModule,
-    MatButtonModule,
-    MatDividerModule,
-    MatStepperModule,
-    MatIconModule,
     FormatSelectComponent,
-    TeamFormComponent,
     RulesetSelectComponent,
-  ],
-  providers: [
-    {
-      provide: STEPPER_GLOBAL_OPTIONS,
-      useValue: {
-        displayDefaultIndicatorType: false,
-        useValue: { showError: true },
-      },
-    },
-    {
-      provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
-      useValue: { appearance: 'outline' },
-    },
+    IconComponent,
+    TeamEditorComponent,
   ],
   templateUrl: './draft-form-core.component.html',
   styleUrl: './draft-form-core.component.scss',
@@ -72,9 +47,13 @@ export class DraftFormCoreComponent implements OnInit, OnDestroy {
   pokemonList$ = new BehaviorSubject<DraftPokemon[]>([]);
   draftForm!: DraftForm;
   isImporting = false;
+  submitAttempted = false;
 
-  @Input()
-  params: Partial<Draft> = {};
+  readonly draftPath = DRAFT_OVERVIEW_PATH;
+
+  @Input() title = 'New Draft';
+  @Input() submitLabel = 'Save Draft';
+  @Input() params: Partial<Draft> = {};
   @Output() formSubmitted = new EventEmitter<DraftFormData>();
 
   ngOnInit(): void {
@@ -98,6 +77,18 @@ export class DraftFormCoreComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
+  get leagueNameControl(): FormControl<string> {
+    return this.draftForm.controls.details.controls.leagueName;
+  }
+
+  get teamNameControl(): FormControl<string> {
+    return this.draftForm.controls.details.controls.teamName;
+  }
+
+  get teamCount(): number {
+    return this.draftForm?.controls.team.length ?? 0;
+  }
+
   private loadPokemonList(ruleset: string): void {
     this.dataService.getPokemonList(ruleset).subscribe((list) => {
       this.pokemonList$.next(list);
@@ -116,22 +107,16 @@ export class DraftFormCoreComponent implements OnInit, OnDestroy {
     return null;
   }
 
+  showError(control: FormControl, error: string): boolean {
+    return control.hasError(error) && (control.touched || this.submitAttempted);
+  }
+
   onSubmit() {
+    this.submitAttempted = true;
     if (this.draftForm.valid) {
       this.formSubmitted.emit(this.draftForm.toValue());
-      console.log('Form is valid.');
-      console.log(this.draftForm.value);
-      console.log(this.draftForm.toValue());
     } else {
-      console.log('draft', this.draftForm.valid, this.draftForm.errors);
-      console.log(
-        'team',
-        this.draftForm.controls.team.valid,
-        this.draftForm.controls.team.errors,
-      );
-      this.draftForm.controls.team;
-
-      console.log('Form is invalid.');
+      this.draftForm.markAllAsTouched();
     }
   }
 

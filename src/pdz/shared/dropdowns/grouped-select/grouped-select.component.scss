@@ -13,7 +13,11 @@
     color: pdz.color(on-surface-variant);
   }
 
-  &__select {
+  &__trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: pdz.space(xs);
     width: 100%;
     padding: pdz.space(xs) pdz.space(sm);
     border: 1px solid pdz.color(outline);
@@ -21,12 +25,103 @@
     background: pdz.color(surface);
     color: pdz.color(on-surface);
     font: inherit;
+    text-align: left;
     cursor: pointer;
+    transition: border-color 0.15s ease-in-out;
 
-    &:focus {
+    &:focus-visible,
+    &--open {
       outline: 2px solid pdz.color(primary);
       outline-offset: 1px;
       border-color: pdz.color(primary);
     }
+
+    &--open .grouped-select__chevron {
+      transform: rotate(180deg);
+    }
+  }
+
+  &__value {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    &--placeholder {
+      color: pdz.color(on-surface-variant);
+    }
+  }
+
+  &__chevron {
+    flex-shrink: 0;
+    color: pdz.color(on-surface-variant);
+    transition: transform 0.2s ease-in-out;
+  }
+
+  &__panel {
+    width: 100%;
+    max-height: 20rem;
+    overflow: auto;
+    padding: pdz.space(xs) 0;
+    background: pdz.color(surface);
+    border: 1px solid pdz.color(outline-variant);
+    border-radius: pdz.shape(corner-sm);
+    box-shadow: var(--pdz-level-3);
+  }
+
+  &__group-label {
+    padding: pdz.space(xs) pdz.space(sm) pdz.space(2xs);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: pdz.color(on-surface-variant);
+
+    &:not(:first-child) {
+      margin-top: pdz.space(xs);
+      border-top: 1px solid pdz.color(outline-variant);
+      padding-top: pdz.space(sm);
+    }
+  }
+
+  &__option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: pdz.space(sm);
+    width: 100%;
+    padding: pdz.space(xs) pdz.space(sm);
+    border: none;
+    background: transparent;
+    color: pdz.color(on-surface);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.1s ease-in-out;
+
+    &:hover,
+    &--highlighted {
+      background: pdz.color(surface-container-low);
+    }
+
+    &--selected {
+      background: pdz.color(primary-subtle);
+      color: pdz.color(on-primary-container);
+      font-weight: 600;
+
+      &:hover,
+      &.grouped-select__option--highlighted {
+        background: pdz.color(primary-container);
+      }
+    }
+  }
+
+  &__option-name {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }

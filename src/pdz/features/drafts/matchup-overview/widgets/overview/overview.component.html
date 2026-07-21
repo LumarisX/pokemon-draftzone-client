@@ -41,6 +41,9 @@
           </div>
           <div class="name-cell">
             <div class="name-label">{{ pokemon.name }}</div>
+            @if (pokemon.nickname) {
+              <div class="nickname-label">{{ pokemon.nickname }}</div>
+            }
             <div class="capt-row">
               @if (pokemon.capt?.tera) {
                 <mat-icon
@@ -115,6 +118,9 @@
           <div class="speed-cell">{{ pokemon.baseStats.spe }}</div>
           <div class="name-cell">
             <div class="name-label">{{ pokemon.name }}</div>
+            @if (pokemon.nickname) {
+              <div class="nickname-label">{{ pokemon.nickname }}</div>
+            }
             <div class="capt-row">
               @if (pokemon.capt?.tera) {
                 <mat-icon

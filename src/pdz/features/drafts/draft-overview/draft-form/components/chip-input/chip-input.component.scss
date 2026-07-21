@@ -1,0 +1,86 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+.chip-input {
+  display: grid;
+  gap: pdz.space(2xs);
+
+  &__label {
+    font-weight: 700;
+    font-size: 0.875rem;
+    color: pdz.color(on-surface-variant);
+  }
+
+  &__box {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: pdz.space(xs);
+    min-height: 2.5rem;
+    padding: pdz.space(xs) pdz.space(sm);
+    border: 1px solid pdz.color(outline);
+    border-radius: pdz.shape(corner-sm);
+    background: pdz.color(surface);
+    cursor: text;
+    transition: border-color 0.15s ease-in-out;
+
+    &:focus-within {
+      outline: 2px solid pdz.color(primary);
+      outline-offset: 1px;
+      border-color: pdz.color(primary);
+    }
+  }
+
+  &__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: pdz.space(2xs);
+    max-width: 100%;
+    padding: 0.125rem pdz.space(xs) 0.125rem pdz.space(sm);
+    border-radius: pdz.shape(corner-full);
+    background: pdz.color(surface-container);
+    color: pdz.color(on-surface);
+    font-size: 0.875rem;
+  }
+
+  &__chip-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__chip-remove {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.125rem;
+    border: none;
+    border-radius: pdz.shape(corner-full);
+    background: transparent;
+    color: pdz.color(on-surface-variant);
+    cursor: pointer;
+
+    &:hover {
+      background: pdz.color(surface-container-highest);
+      color: pdz.color(on-surface);
+    }
+  }
+
+  &__field {
+    flex: 1;
+    min-width: 6rem;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: pdz.color(on-surface);
+    font: inherit;
+
+    &::placeholder {
+      color: pdz.color(on-surface-variant);
+    }
+  }
+}

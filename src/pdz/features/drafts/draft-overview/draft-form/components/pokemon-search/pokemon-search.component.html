@@ -1,0 +1,71 @@
+<div
+  class="pokemon-search__field"
+  cdkOverlayOrigin
+  #trigger="cdkOverlayOrigin"
+  #fieldEl
+>
+  <pdz-icon class="pokemon-search__icon" name="search" [size]="20"></pdz-icon>
+  <input
+    class="pokemon-search__input"
+    type="text"
+    spellcheck="false"
+    autocomplete="off"
+    [formControl]="query"
+    [placeholder]="placeholder"
+    (focus)="setOpen(true)"
+    (input)="setOpen(true)"
+    (blur)="onBlur()"
+    (keydown)="handleKeydown($event)"
+  />
+  @if (query.value) {
+    <button
+      type="button"
+      class="pokemon-search__clear"
+      aria-label="Clear search"
+      (mousedown)="$event.preventDefault()"
+      (click)="clear()"
+    >
+      <pdz-icon name="close" [size]="18"></pdz-icon>
+    </button>
+  }
+</div>
+
+<ng-template
+  cdkConnectedOverlay
+  [cdkConnectedOverlayOrigin]="trigger"
+  [cdkConnectedOverlayOpen]="isOpen"
+  [cdkConnectedOverlayWidth]="fieldEl.offsetWidth"
+  [cdkConnectedOverlayOffsetY]="4"
+  (detach)="setOpen(false)"
+>
+  <div class="pokemon-search__panel">
+    @if (filteredOptions.value.length) {
+      <cdk-virtual-scroll-viewport
+        [itemSize]="itemSize"
+        minBufferPx="220"
+        maxBufferPx="440"
+        class="pokemon-search__viewport"
+        [style.height]="listHeight"
+        #virtualScroll
+      >
+        <div
+          *cdkVirtualFor="
+            let option of filteredOptions;
+            let i = index;
+            trackBy: trackByFn
+          "
+          class="pokemon-search__option"
+          [class.pokemon-search__option--highlighted]="highlightedIndex === i"
+          [class.pokemon-search__option--taken]="isTaken(option)"
+          (mousedown)="$event.preventDefault()"
+          (click)="selectOption(option)"
+        >
+          <pdz-sprite flipped [pokemon]="option"></pdz-sprite>
+          <span class="pokemon-search__option-name">{{ option.name }}</span>
+        </div>
+      </cdk-virtual-scroll-viewport>
+    } @else {
+      <div class="pokemon-search__empty">No Pokémon found</div>
+    }
+  </div>
+</ng-template>

@@ -1,52 +1,238 @@
 @use "pdz-theming" as pdz;
+@use "mixins/_buttons.scss" as *;
 
-.pokemon-form-container {
-  background-color: pdz.color(surface);
-  color: pdz.color(on-surface);
-  border-radius: pdz.shape(corner-lg);
-  box-shadow: var(--pdz-level-2);
-
-  .details-title {
-    padding: 0 0.5rem 0.5rem;
-    color: pdz.color(on-surface-variant);
-    font-weight: 600;
-  }
-  .details-container {
-    padding: 0.5rem 0;
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.5rem;
-  }
-
-  .team-container {
-    padding: 0.25rem 0;
-    height: 100%;
-    .team-title {
-      color: pdz.color(primary);
-      font-weight: 600;
-      font-size: large;
-    }
-  }
-}
-
-.button-bar {
+:host {
   display: flex;
-  .button-spacer {
-    flex-grow: 1;
+  flex-direction: column;
+  flex: 1 1 auto;
+  width: 100%;
+}
+
+.draft-builder {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  width: 100%;
+
+  &__spacer {
+    flex: 1;
+  }
+
+  // -------------------------------------------------------------------------
+  // Header
+  // -------------------------------------------------------------------------
+
+  &__header {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    padding: pdz.space(sm) pdz.space(lg);
+    background: pdz.color(background);
+  }
+
+  &__header-inner {
+    display: flex;
+    align-items: center;
+    gap: pdz.space(md);
+    width: 100%;
+    max-width: 90rem;
+    margin: 0 auto;
+  }
+
+  &__back {
+    @include icon-button(
+      (
+        color: pdz.color(on-surface),
+        background-hover: pdz.color(surface-container-high),
+      )
+    );
+  }
+
+  &__title {
+    margin: 0;
+    font-size: 1.375rem;
+    font-weight: 700;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+
+  &__submit {
+    @include flat-button-primary(
+      (
+        padding: pdz.space(sm) pdz.space(xl),
+        font-weight: 600,
+      )
+    );
+  }
+
+  // -------------------------------------------------------------------------
+  // Body layout
+  // -------------------------------------------------------------------------
+
+  &__body {
+    flex: 1;
+    display: grid;
+    grid-template-columns: minmax(20rem, 26rem) minmax(0, 1fr);
+    align-items: stretch;
+    gap: pdz.space(lg);
+    padding: 0 pdz.space(lg) pdz.space(lg);
+    width: 100%;
+    max-width: 90rem;
+    margin: 0 auto;
+  }
+
+  &__panel {
+    background: pdz.color(surface);
+    border: 1px solid pdz.color(outline-variant);
+    border-radius: pdz.shape(corner-lg);
+    box-shadow: var(--pdz-level-1);
+    padding: pdz.space(lg);
+
+    &--team {
+      min-height: 24rem;
+    }
+  }
+
+  &__panel-title {
+    display: flex;
+    align-items: center;
+    gap: pdz.space(xs);
+    margin: 0 0 pdz.space(md);
+    font-size: 1rem;
+    font-weight: 700;
+    color: pdz.color(on-surface);
+
+    pdz-icon {
+      color: pdz.color(primary);
+    }
+  }
+
+  &__panel-count {
+    font-size: 0.75rem;
+    font-weight: 700;
+    min-width: 1.5rem;
+    text-align: center;
+    padding: 0.125rem pdz.space(xs);
+    border-radius: pdz.shape(corner-full);
+    background: pdz.color(primary-subtle);
+    color: pdz.color(on-primary-container);
+  }
+
+  &__form {
+    display: grid;
+    gap: pdz.space(md);
+  }
+
+  &__doc-row {
+    display: flex;
+    align-items: center;
+    gap: pdz.space(xs);
+
+    .form-field__input {
+      flex: 1;
+      min-width: 0;
+    }
+  }
+
+  &__doc-open {
+    @include icon-button(
+      (
+        width: 2.5rem,
+        height: 2.5rem,
+        color: pdz.color(on-surface-variant),
+        background-hover: pdz.color(surface-container-high),
+      )
+    );
   }
 }
 
-ruleset-select,
-format-select,
-mat-form-field {
-  margin-bottom: -1.5rem;
+// ---------------------------------------------------------------------------
+// Fields
+// ---------------------------------------------------------------------------
+
+.form-field {
+  display: grid;
+  gap: pdz.space(2xs);
+
+  &__label {
+    font-weight: 700;
+    font-size: 0.875rem;
+    color: pdz.color(on-surface-variant);
+  }
+
+  &__input {
+    width: 100%;
+    padding: pdz.space(xs) pdz.space(sm);
+    border: 1px solid pdz.color(outline);
+    border-radius: pdz.shape(corner-sm);
+    background: pdz.color(surface);
+    color: pdz.color(on-surface);
+    font: inherit;
+    transition: border-color 0.15s ease-in-out;
+
+    &::placeholder {
+      color: pdz.color(on-surface-variant);
+    }
+
+    &:focus {
+      outline: 2px solid pdz.color(primary);
+      outline-offset: 1px;
+      border-color: pdz.color(primary);
+    }
+
+    &--invalid {
+      border-color: pdz.color(error);
+
+      &:focus {
+        outline-color: pdz.color(error);
+      }
+    }
+  }
+
+  &__error {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: pdz.color(error);
+  }
 }
 
-@media (max-width: 768px) {
-  ::ng-deep .mat-vertical-content-container {
-    margin-left: 0.5rem !important;
-    .mat-vertical-content {
-      padding: 0 0.75rem 0.75rem !important;
-    }
+// ---------------------------------------------------------------------------
+// Responsive
+// ---------------------------------------------------------------------------
+
+@media (max-width: 960px) {
+  .draft-builder__body {
+    grid-template-columns: minmax(0, 1fr);
+    // Fit rows to their content instead of stretching panels to fill the
+    // leftover viewport height.
+    align-content: start;
+  }
+
+  .draft-builder__panel--team {
+    min-height: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .draft-builder__header {
+    padding: pdz.space(sm);
+  }
+
+  .draft-builder__header-inner {
+    flex-wrap: wrap;
+    gap: pdz.space(sm);
+  }
+
+  .draft-builder__submit {
+    margin-left: auto;
+  }
+
+  .draft-builder__body {
+    padding: pdz.space(sm);
+    gap: pdz.space(sm);
+  }
+
+  .draft-builder__panel {
+    padding: pdz.space(md);
   }
 }

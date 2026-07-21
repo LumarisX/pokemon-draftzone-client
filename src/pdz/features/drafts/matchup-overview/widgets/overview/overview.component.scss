@@ -72,6 +72,17 @@
             max-width: 8rem;
             font-weight: 600;
           }
+
+          .nickname-label {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            display: block;
+            max-width: 8rem;
+            font-size: 0.75rem;
+            font-style: italic;
+            opacity: 0.7;
+          }
         }
 
         .capt-row {

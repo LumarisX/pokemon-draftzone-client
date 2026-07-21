@@ -1,20 +1,12 @@
-@use "pdz-theming" as pdz;
-
-.draft-container {
+:host {
   display: flex;
+  flex-direction: column;
   width: 100%;
+  min-height: 100%;
+}
+
+.draft-form__loading {
+  display: flex;
   justify-content: center;
-
-  .form-content {
-    width: 100%;
-    padding: pdz.space(sm);
-    max-width: 70rem;
-    display: flex;
-    flex-direction: column;
-
-    .page-title {
-      display: flex;
-      align-items: center;
-    }
-  }
+  padding: 4rem 1rem;
 }

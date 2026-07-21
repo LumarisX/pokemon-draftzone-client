@@ -1,20 +1,6 @@
-<div class="draft-container">
-  <div class="form-content">
-    <div class="pb-4 relative">
-      <button
-        class="absolute top-2 left-2 md:top-4 md:left-4"
-        [routerLink]="'/' + draftPath"
-        mat-flat-button
-      >
-        Back
-      </button>
-      <div class="flex justify-center">
-        <h1 class="text-3xl font-bold text-center font-nasa">New Draft</h1>
-      </div>
-    </div>
-    <pdz-draft-form-core
-      [params]="params"
-      (formSubmitted)="newDraft($event)"
-    ></pdz-draft-form-core>
-  </div>
-</div>
+<pdz-draft-form-core
+  title="New Draft"
+  submitLabel="Create Draft"
+  [params]="params"
+  (formSubmitted)="newDraft($event)"
+></pdz-draft-form-core>

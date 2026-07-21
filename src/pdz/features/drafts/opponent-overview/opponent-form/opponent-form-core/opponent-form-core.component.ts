@@ -1,13 +1,4 @@
-import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
-
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output,
-  inject,
-} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
 import {
   AbstractControl,
   FormArray,
@@ -16,48 +7,20 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDividerModule } from '@angular/material/divider';
-import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatStepperModule } from '@angular/material/stepper';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import { BehaviorSubject, Observable, switchMap } from 'rxjs';
+import { DRAFT_OVERVIEW_PATH } from '@pdz/core/route-paths';
 import { DataService } from '@pdz/core/services/data.service';
+import { TeamEditorComponent } from '@pdz/features/drafts/draft-overview/draft-form/components/team-editor/team-editor.component';
+import { PokemonFormGroup } from '@pdz/shared/forms/team-form/team-form.component';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
+import { BehaviorSubject, Observable, switchMap } from 'rxjs';
+import { DraftService } from '../../../draft-overview/draft.service';
 import { Draft, DraftPokemon } from '../../../draft.model';
 import { Opponent } from '../../opponent.model';
-import {
-  PokemonFormGroup,
-  TeamFormComponent,
-} from '@pdz/shared/forms/team-form/team-form.component';
-import { DraftService } from '../../../draft-overview/draft.service';
 
 @Component({
   selector: 'pdz-opponent-form-core',
-  imports: [
-    RouterModule,
-    ReactiveFormsModule,
-    MatInputModule,
-    MatButtonModule,
-    MatDividerModule,
-    MatStepperModule,
-    MatIconModule,
-    TeamFormComponent,
-  ],
-  providers: [
-    {
-      provide: STEPPER_GLOBAL_OPTIONS,
-      useValue: {
-        displayDefaultIndicatorType: false,
-        useValue: { showError: true },
-      },
-    },
-    {
-      provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
-      useValue: { appearance: 'outline' },
-    },
-  ],
+  imports: [RouterModule, ReactiveFormsModule, IconComponent, TeamEditorComponent],
   templateUrl: './opponent-form-core.component.html',
   styleUrl: './opponent-form-core.component.scss',
 })
@@ -69,19 +32,24 @@ export class OpponentFormCoreComponent implements OnInit {
   pokemonList$ = new BehaviorSubject<DraftPokemon[]>([]);
   opponentForm!: OpponentForm;
   isImporting = false;
-  ruleset: string | null = null;
+  submitAttempted = false;
 
-  @Input()
-  params: Partial<Opponent> = {};
+  readonly draftPath = DRAFT_OVERVIEW_PATH;
+  teamId: string = '';
+
+  @Input() title = 'New Opponent';
+  @Input() submitLabel = 'Save Opponent';
+  @Input() params: Partial<Opponent> = {};
   @Output() formSubmitted = new EventEmitter<OpponentFormData>();
 
+  ruleset!: string;
   draft!: Observable<Draft>;
 
   ngOnInit(): void {
     this.draft = this.route.parent!.paramMap.pipe(
       switchMap((params) => {
-        const teamId = params.get('teamId')!;
-        return this.draftService.getDraft(teamId);
+        this.teamId = params.get('teamId')!;
+        return this.draftService.getDraft(this.teamId);
       }),
     );
     this.opponentForm = new OpponentForm(this.params, this.pokemonList$);
@@ -94,6 +62,22 @@ export class OpponentFormCoreComponent implements OnInit {
     this.opponentForm.setValidators(this.validateDraftForm);
   }
 
+  showError(control: FormControl, error: string): boolean {
+    return control.hasError(error) && (control.touched || this.submitAttempted);
+  }
+
+  get teamNameControl(): FormControl<string> {
+    return this.opponentForm.controls.details.controls.teamName;
+  }
+
+  get stageControl(): FormControl<string> {
+    return this.opponentForm.controls.details.controls.stage;
+  }
+
+  get teamCount(): number {
+    return this.opponentForm?.controls.team.length ?? 0;
+  }
+
   validateDraftForm(control: AbstractControl) {
     const formGroup = control as FormGroup;
     const teamArray = formGroup.get('team') as FormArray;
@@ -104,29 +88,12 @@ export class OpponentFormCoreComponent implements OnInit {
   }
 
   onSubmit() {
+    this.submitAttempted = true;
     if (this.opponentForm.valid) {
       this.formSubmitted.emit(this.opponentForm.toValue());
-      console.log('Form is valid.');
-      console.log(this.opponentForm.value);
-      console.log(this.opponentForm.toValue());
     } else {
-      console.log('draft', this.opponentForm.valid, this.opponentForm.errors);
-      console.log(
-        'team',
-        this.opponentForm.controls.team.valid,
-        this.opponentForm.controls.team.errors,
-      );
-      this.opponentForm.controls.team;
-      console.log('Form is invalid.');
+      this.opponentForm.markAllAsTouched();
     }
-  }
-
-  openLink(url: string) {
-    let trimmed = url.trim();
-    if (trimmed && !/^https?:\/\//i.test(trimmed)) {
-      trimmed = 'https://' + trimmed;
-    }
-    window.open(trimmed, '_blank');
   }
 }
 

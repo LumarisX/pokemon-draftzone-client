@@ -1,21 +1,64 @@
-<label class="grouped-select__label" [for]="selectId">{{ label }}</label>
-<select
-  class="grouped-select__select"
-  [id]="selectId"
-  [value]="value"
-  (change)="handleChange($event)"
+@if (label) {
+  <label class="grouped-select__label" [id]="selectId + '-label'">
+    {{ label }}
+  </label>
+}
+<button
+  type="button"
+  class="grouped-select__trigger"
+  [class.grouped-select__trigger--open]="isOpen"
+  role="combobox"
+  [attr.aria-expanded]="isOpen"
+  [attr.aria-labelledby]="selectId + '-label'"
+  cdkOverlayOrigin
+  #trigger="cdkOverlayOrigin"
+  #triggerEl
+  (click)="toggle()"
+  (keydown)="handleKeydown($event)"
 >
-  @for (group of groups; track group[0]) {
-    <optgroup [label]="group[0]">
+  <span
+    class="grouped-select__value"
+    [class.grouped-select__value--placeholder]="!selectedOption"
+  >
+    {{ selectedOption?.name ?? "Select..." }}
+  </span>
+  <pdz-icon
+    class="grouped-select__chevron"
+    name="expand_more"
+    [size]="20"
+  ></pdz-icon>
+</button>
+
+<ng-template
+  cdkConnectedOverlay
+  [cdkConnectedOverlayOrigin]="trigger"
+  [cdkConnectedOverlayOpen]="isOpen"
+  [cdkConnectedOverlayWidth]="triggerEl.offsetWidth"
+  [cdkConnectedOverlayOffsetY]="4"
+  [cdkConnectedOverlayHasBackdrop]="true"
+  cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
+  (backdropClick)="close()"
+  (detach)="close()"
+>
+  <div class="grouped-select__panel" role="listbox">
+    @for (group of groups; track group[0]) {
+      <div class="grouped-select__group-label">{{ group[0] }}</div>
       @for (option of group[1]; track option.id) {
-        <option
-          [value]="option.id"
-          [selected]="option.id === value"
+        <button
+          type="button"
+          class="grouped-select__option"
+          role="option"
+          [class.grouped-select__option--selected]="option.id === value"
+          [class.grouped-select__option--highlighted]="
+            option.id === highlightedId
+          "
+          [attr.aria-selected]="option.id === value"
           [title]="option.desc ?? ''"
+          (click)="select(option)"
         >
-          {{ option.name }}
-        </option>
+          <span class="grouped-select__option-name">{{ option.name }}</span>
+        </button>
       }
-    </optgroup>
-  }
-</select>
+    }
+  </div>
+</ng-template>

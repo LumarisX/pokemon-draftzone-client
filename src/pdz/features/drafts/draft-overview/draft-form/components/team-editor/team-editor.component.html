@@ -1,0 +1,454 @@
+<div class="team-editor">
+  @if (importing) {
+    <div class="team-editor__import">
+      <div class="team-editor__import-header">
+        <h3 class="team-editor__import-title">Bulk Import</h3>
+        <p class="team-editor__import-hint">
+          Paste Pokémon names separated by new lines or commas.
+        </p>
+      </div>
+      <textarea
+        class="team-editor__import-textarea"
+        rows="10"
+        spellcheck="false"
+        placeholder="Great Tusk&#10;Iron Valiant&#10;Zapdos..."
+        [(ngModel)]="importInput"
+      ></textarea>
+      <div class="team-editor__import-actions">
+        <button
+          type="button"
+          class="team-editor__btn team-editor__btn--ghost"
+          (click)="toggleImporting(false)"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          class="team-editor__btn team-editor__btn--primary"
+          [disabled]="!importInput.trim()"
+          (click)="confirmImport()"
+        >
+          <pdz-icon name="playlist_add" [size]="20"></pdz-icon>
+          Add to Team
+        </button>
+      </div>
+    </div>
+  } @else {
+    <div class="team-editor__toolbar">
+      <pdz-pokemon-search
+        class="team-editor__search"
+        [options$]="pokemonList$"
+        [takenIds]="takenIds"
+        (pokemonSelected)="addPokemon($event)"
+      ></pdz-pokemon-search>
+
+      @if (teamArray.length) {
+        <div
+          class="team-editor__capt-group"
+          role="group"
+          aria-label="Team-wide captain settings"
+        >
+          <button
+            type="button"
+            class="team-editor__capt-toggle"
+            [class.team-editor__capt-toggle--on]="captState('tera') === 'all'"
+            [class.team-editor__capt-toggle--partial]="
+              captState('tera') === 'some'
+            "
+            title="Toggle Tera for the whole team"
+            (click)="toggleTeamCapt('tera')"
+          >
+            <pdz-icon name="tera" [size]="16"></pdz-icon>
+            <span>Tera</span>
+          </button>
+          <button
+            type="button"
+            class="team-editor__capt-toggle"
+            [class.team-editor__capt-toggle--on]="captState('z') === 'all'"
+            [class.team-editor__capt-toggle--partial]="
+              captState('z') === 'some'
+            "
+            title="Toggle Z for the whole team"
+            (click)="toggleTeamCapt('z')"
+          >
+            <pdz-icon name="z" [size]="16"></pdz-icon>
+            <span>Z</span>
+          </button>
+          <button
+            type="button"
+            class="team-editor__capt-toggle"
+            [class.team-editor__capt-toggle--on]="captState('dmax') === 'all'"
+            [class.team-editor__capt-toggle--partial]="
+              captState('dmax') === 'some'
+            "
+            title="Toggle Dynamax for the whole team"
+            (click)="toggleTeamCapt('dmax')"
+          >
+            <pdz-icon name="dmax" [size]="16"></pdz-icon>
+            <span>Dmax</span>
+          </button>
+        </div>
+      }
+
+      <button
+        type="button"
+        class="team-editor__btn team-editor__btn--ghost team-editor__import-toggle"
+        (click)="toggleImporting(true)"
+      >
+        <pdz-icon name="playlist_add" [size]="20"></pdz-icon>
+        <span>Import</span>
+      </button>
+    </div>
+  }
+
+  @if (teamArray.length) {
+    <div
+      class="team-editor__list"
+      cdkDropList
+      (cdkDropListDropped)="drop($event)"
+    >
+      @for (
+        monGroup of teamArray.controls;
+        track monGroup;
+        let index = $index
+      ) {
+        <div
+          class="pokemon-card"
+          [class.pokemon-card--invalid]="isInvalid(monGroup)"
+          [class.pokemon-card--expanded]="isExpanded(monGroup)"
+          cdkDrag
+          cdkDragLockAxis="y"
+          cdkDragBoundary=".team-editor__list"
+        >
+          <div class="team-editor__drag-preview" *cdkDragPreview>
+            @if (!isInvalid(monGroup)) {
+              <pdz-sprite
+                flipped
+                [pokemon]="monGroup.controls.pokemon.value"
+              ></pdz-sprite>
+            } @else {
+              <pdz-icon name="warning" [size]="28"></pdz-icon>
+            }
+          </div>
+
+          <div class="pokemon-card__header" (click)="toggleExpand(monGroup)">
+            <span
+              class="pokemon-card__drag-handle"
+              cdkDragHandle
+              title="Drag to reorder"
+              (click)="$event.stopPropagation()"
+            >
+              <pdz-icon name="drag_indicator" [size]="20"></pdz-icon>
+            </span>
+
+            @if (!isInvalid(monGroup)) {
+              <pdz-sprite
+                class="pokemon-card__sprite"
+                flipped
+                [pokemon]="{
+                  id: monGroup.controls.pokemon.value.id,
+                  name: monGroup.controls.pokemon.value.name,
+                  shiny: !!monGroup.controls.shiny.value,
+                }"
+              ></pdz-sprite>
+            } @else {
+              <span
+                class="pokemon-card__warning"
+                title="Not legal in this ruleset"
+              >
+                <pdz-icon name="warning" [size]="26"></pdz-icon>
+              </span>
+            }
+
+            <div class="pokemon-card__names">
+              <span class="pokemon-card__name font-nasa">
+                {{
+                  monGroup.controls.nickname.value ||
+                    monGroup.controls.pokemon.value.name
+                }}
+              </span>
+              @if (monGroup.controls.nickname.value) {
+                <span class="pokemon-card__subname">
+                  {{ monGroup.controls.pokemon.value.name }}
+                </span>
+              }
+            </div>
+
+            <div class="pokemon-card__badges">
+              @if (monGroup.controls.tera.value) {
+                <span class="pokemon-card__badge" title="Tera Captain">
+                  <pdz-icon name="tera" [size]="16"></pdz-icon>
+                </span>
+              }
+              @if (monGroup.controls.z.value) {
+                <span class="pokemon-card__badge" title="Z Captain">
+                  <pdz-icon name="z" [size]="16"></pdz-icon>
+                </span>
+              }
+              @if (monGroup.controls.dmax.value) {
+                <span class="pokemon-card__badge" title="Dynamax Captain">
+                  <pdz-icon name="dmax" [size]="16"></pdz-icon>
+                </span>
+              }
+              @if (monGroup.controls.shiny.value) {
+                <span class="pokemon-card__badge" title="Shiny">
+                  <pdz-icon name="shiny" [size]="16"></pdz-icon>
+                </span>
+              }
+            </div>
+
+            <span class="pokemon-card__spacer"></span>
+
+            @if (isInvalid(monGroup)) {
+              <span class="pokemon-card__invalid-label">
+                Not legal in this ruleset
+              </span>
+            }
+
+            <button
+              type="button"
+              class="pokemon-card__action pokemon-card__action--expand"
+              [attr.aria-expanded]="isExpanded(monGroup)"
+              [attr.aria-label]="
+                isExpanded(monGroup) ? 'Collapse settings' : 'Expand settings'
+              "
+              (click)="toggleExpand(monGroup); $event.stopPropagation()"
+            >
+              <pdz-icon name="expand_more" [size]="24"></pdz-icon>
+            </button>
+            <button
+              type="button"
+              class="pokemon-card__action"
+              aria-label="Remove from team"
+              (click)="deletePokemon(index); $event.stopPropagation()"
+            >
+              <pdz-icon name="delete" [size]="20"></pdz-icon>
+            </button>
+          </div>
+
+          @if (isExpanded(monGroup)) {
+            <div class="pokemon-card__body">
+              <section class="pokemon-card__section">
+                <h4 class="pokemon-card__section-title">
+                  <pdz-icon name="capt" [size]="16"></pdz-icon>
+                  Captain
+                </h4>
+                <div class="pokemon-card__toggle-row">
+                  <button
+                    type="button"
+                    class="pill-toggle"
+                    [class.pill-toggle--on]="!!monGroup.controls.tera.value"
+                    (click)="toggleCapt(monGroup.controls.tera, teraTypes)"
+                  >
+                    <pdz-icon name="tera" [size]="16"></pdz-icon>
+                    Tera
+                  </button>
+                  <button
+                    type="button"
+                    class="pill-toggle"
+                    [class.pill-toggle--on]="!!monGroup.controls.z.value"
+                    (click)="toggleCapt(monGroup.controls.z, zTypes)"
+                  >
+                    <pdz-icon name="z" [size]="16"></pdz-icon>
+                    Z
+                  </button>
+                  <button
+                    type="button"
+                    class="pill-toggle"
+                    [class.pill-toggle--on]="!!monGroup.controls.dmax.value"
+                    (click)="
+                      monGroup.controls.dmax.setValue(
+                        !monGroup.controls.dmax.value
+                      )
+                    "
+                  >
+                    <pdz-icon name="dmax" [size]="16"></pdz-icon>
+                    Dynamax
+                  </button>
+                </div>
+
+                @if (monGroup.controls.tera.value) {
+                  <div class="type-picker">
+                    <div class="type-picker__header">
+                      <span class="type-picker__title">Tera Types</span>
+                      <span class="type-picker__count">
+                        {{ monGroup.controls.tera.value.length }}/{{
+                          teraTypes.length
+                        }}
+                      </span>
+                      <span class="type-picker__spacer"></span>
+                      <button
+                        type="button"
+                        class="type-picker__btn"
+                        [disabled]="
+                          monGroup.controls.tera.value.length ===
+                          teraTypes.length
+                        "
+                        (click)="
+                          setArrayControl(monGroup.controls.tera, teraTypes)
+                        "
+                      >
+                        All
+                      </button>
+                      <button
+                        type="button"
+                        class="type-picker__btn"
+                        [disabled]="!monGroup.controls.tera.value.length"
+                        (click)="setArrayControl(monGroup.controls.tera, [])"
+                      >
+                        None
+                      </button>
+                    </div>
+                    <div class="type-picker__grid">
+                      @for (type of teraTypes; track type) {
+                        <button
+                          type="button"
+                          class="type-picker__cell"
+                          [class.type-picker__cell--selected]="
+                            monGroup.controls.tera.value.includes(type)
+                          "
+                          [title]="type"
+                          (click)="toggleType(monGroup.controls.tera, type)"
+                        >
+                          <img [src]="teraIconPath(type)" [alt]="type" />
+                        </button>
+                      }
+                    </div>
+                  </div>
+                }
+
+                @if (monGroup.controls.z.value) {
+                  <div class="type-picker">
+                    <div class="type-picker__header">
+                      <span class="type-picker__title">Z Crystals</span>
+                      <span class="type-picker__count">
+                        {{ monGroup.controls.z.value.length }}/{{
+                          zTypes.length
+                        }}
+                      </span>
+                      <span class="type-picker__spacer"></span>
+                      <button
+                        type="button"
+                        class="type-picker__btn"
+                        [disabled]="
+                          monGroup.controls.z.value.length === zTypes.length
+                        "
+                        (click)="setArrayControl(monGroup.controls.z, zTypes)"
+                      >
+                        All
+                      </button>
+                      <button
+                        type="button"
+                        class="type-picker__btn"
+                        [disabled]="!monGroup.controls.z.value.length"
+                        (click)="setArrayControl(monGroup.controls.z, [])"
+                      >
+                        None
+                      </button>
+                    </div>
+                    <div class="type-picker__grid">
+                      @for (type of zTypes; track type) {
+                        <button
+                          type="button"
+                          class="type-picker__cell"
+                          [class.type-picker__cell--selected]="
+                            monGroup.controls.z.value.includes(type)
+                          "
+                          [title]="type"
+                          (click)="toggleType(monGroup.controls.z, type)"
+                        >
+                          <img [src]="zIconPath(type)" [alt]="type" />
+                        </button>
+                      }
+                    </div>
+                  </div>
+                }
+              </section>
+
+              <section class="pokemon-card__section">
+                <h4 class="pokemon-card__section-title">
+                  <pdz-icon name="shiny" [size]="16"></pdz-icon>
+                  Cosmetics
+                </h4>
+                <button
+                  type="button"
+                  class="pill-toggle"
+                  [class.pill-toggle--on]="!!monGroup.controls.shiny.value"
+                  (click)="
+                    monGroup.controls.shiny.setValue(
+                      !monGroup.controls.shiny.value
+                    )
+                  "
+                >
+                  <pdz-icon name="shiny" [size]="16"></pdz-icon>
+                  Shiny
+                </button>
+                <label class="form-field">
+                  <span class="form-field__label">Nickname</span>
+                  <input
+                    class="form-field__input"
+                    type="text"
+                    maxlength="18"
+                    spellcheck="false"
+                    [formControl]="monGroup.controls.nickname"
+                  />
+                  @if (monGroup.controls.nickname.value.length > 13) {
+                    <span class="form-field__hint">
+                      {{ monGroup.controls.nickname.value.length }}/18
+                    </span>
+                  }
+                </label>
+              </section>
+
+              <section class="pokemon-card__section">
+                <h4 class="pokemon-card__section-title">
+                  <pdz-icon name="construction" [size]="16"></pdz-icon>
+                  Advanced
+                </h4>
+                @if (monGroup.formeList && monGroup.formeList.length) {
+                  <div class="pokemon-card__formes">
+                    <span class="form-field__label">Usable Formes</span>
+                    <div class="pokemon-card__forme-options">
+                      @for (forme of monGroup.formeList; track forme.id) {
+                        <button
+                          type="button"
+                          class="forme-chip"
+                          [class.forme-chip--selected]="
+                            isFormeSelected(monGroup, forme)
+                          "
+                          (click)="toggleForme(monGroup, forme)"
+                        >
+                          <pdz-sprite flipped [pokemon]="forme"></pdz-sprite>
+                          <span>{{ forme.name }}</span>
+                        </button>
+                      }
+                    </div>
+                  </div>
+                }
+                <pdz-chip-input
+                  label="Additional Moves"
+                  placeholder="New move..."
+                  [control]="monGroup.controls.moves"
+                ></pdz-chip-input>
+                <pdz-chip-input
+                  label="Additional Abilities"
+                  placeholder="New ability..."
+                  [control]="monGroup.controls.abilities"
+                ></pdz-chip-input>
+              </section>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  } @else {
+    <div class="team-editor__empty">
+      <pdz-icon name="pokeball" [size]="48"></pdz-icon>
+      <p class="team-editor__empty-title">No Pokémon yet</p>
+      <p class="team-editor__empty-hint">
+        Search above to add Pokémon one at a time, or use Import to paste a
+        whole list.
+      </p>
+    </div>
+  }
+</div>

@@ -1,0 +1,125 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+.pokemon-search {
+  &__field {
+    display: flex;
+    align-items: center;
+    gap: pdz.space(xs);
+    width: 100%;
+    padding: pdz.space(xs) pdz.space(sm);
+    border: 1px solid pdz.color(outline);
+    border-radius: pdz.shape(corner-sm);
+    background: pdz.color(surface);
+    color: pdz.color(on-surface);
+    transition: border-color 0.15s ease-in-out;
+
+    &:focus-within {
+      outline: 2px solid pdz.color(primary);
+      outline-offset: 1px;
+      border-color: pdz.color(primary);
+    }
+  }
+
+  &__icon {
+    color: pdz.color(on-surface-variant);
+    flex-shrink: 0;
+  }
+
+  &__input {
+    flex: 1;
+    min-width: 0;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+
+    &::placeholder {
+      color: pdz.color(on-surface-variant);
+    }
+  }
+
+  &__clear {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.125rem;
+    border: none;
+    border-radius: pdz.shape(corner-full);
+    background: transparent;
+    color: pdz.color(on-surface-variant);
+    cursor: pointer;
+
+    &:hover {
+      background: pdz.color(surface-container-high);
+      color: pdz.color(on-surface);
+    }
+  }
+
+  &__panel {
+    // The overlay pane is a flex container; without an explicit width this
+    // panel shrink-wraps to 0 because the virtual-scroll content is
+    // absolutely positioned.
+    width: 100%;
+    background: pdz.color(surface);
+    border: 1px solid pdz.color(outline-variant);
+    border-radius: pdz.shape(corner-sm);
+    box-shadow: var(--pdz-level-3);
+    overflow: hidden;
+  }
+
+  &__viewport {
+    width: 100%;
+  }
+
+  &__option {
+    display: flex;
+    align-items: center;
+    gap: pdz.space(sm);
+    height: 44px;
+    padding: 0 pdz.space(sm);
+    cursor: pointer;
+    color: pdz.color(on-surface);
+    transition: background-color 0.1s ease-in-out;
+
+    pdz-sprite {
+      width: 40px;
+      height: 40px;
+      flex-shrink: 0;
+    }
+
+    &:hover,
+    &--highlighted {
+      background: pdz.color(surface-container-low);
+    }
+
+    &--taken {
+      cursor: default;
+      background: pdz.color(primary-subtle);
+      color: pdz.color(on-primary-container);
+
+      &:hover {
+        background: pdz.color(primary-subtle);
+      }
+    }
+  }
+
+  &__option-name {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__empty {
+    padding: pdz.space(md);
+    text-align: center;
+    font-style: italic;
+    color: pdz.color(on-surface-variant);
+  }
+}

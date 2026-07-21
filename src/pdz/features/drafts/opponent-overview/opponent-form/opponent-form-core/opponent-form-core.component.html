@@ -1,70 +1,94 @@
 @if (opponentForm) {
-  <mat-stepper
-    #stepper
-    class="pokemon-form-container alternate"
-    orientation="vertical"
-    linear
-  >
-    <mat-step
-      state="details"
-      [stepControl]="opponentForm.controls.details"
-      errorMessage="Name is required."
-    >
-      <form [formGroup]="opponentForm.controls.details">
-        <ng-template matStepLabel>Details</ng-template>
-        <ng-template matStepContent>
-          <div class="details-form-container">
-            <div class="league-container details-container">
-              <mat-form-field>
-                <mat-label>Team Name</mat-label>
-                <input matInput formControlName="teamName" spellcheck="false" />
-              </mat-form-field>
-              <mat-form-field>
-                <mat-label>Coach Name</mat-label>
-                <input matInput formControlName="coach" spellcheck="false" />
-              </mat-form-field>
-              <mat-form-field>
-                <mat-label>Stage</mat-label>
-                <input matInput formControlName="stage" spellcheck="false" />
-              </mat-form-field>
-            </div>
-          </div>
-          <div class="button-bar">
-            <div class="button-spacer"></div>
-            <button type="button" mat-flat-button matStepperNext>Next</button>
-          </div>
-        </ng-template>
-      </form>
-    </mat-step>
-    <mat-step state="team">
-      <ng-template matStepLabel>Team</ng-template>
-      <ng-template matStepContent>
-        <div class="team-container">
-          <pdz-team-form
-            [ruleset]="ruleset ?? 'Gen9 NatDex'"
-            [pokemonList$]="pokemonList$"
-            [teamArray]="opponentForm.controls.team"
-            (isImporting)="isImporting = $event"
-          ></pdz-team-form>
+  <div class="draft-builder">
+    <header class="draft-builder__header">
+      <div class="draft-builder__header-inner">
+        <a
+          class="draft-builder__back"
+          [routerLink]="['/', draftPath, teamId]"
+          aria-label="Back to draft"
+        >
+          <pdz-icon name="arrow_back" [size]="22"></pdz-icon>
+        </a>
+        <h1 class="draft-builder__title font-nasa">{{ title }}</h1>
+        <span class="draft-builder__spacer"></span>
+        <button
+          type="button"
+          class="draft-builder__submit"
+          [disabled]="isImporting"
+          (click)="onSubmit()"
+        >
+          {{ submitLabel }}
+        </button>
+      </div>
+    </header>
+
+    <div class="draft-builder__body">
+      <aside class="draft-builder__panel draft-builder__panel--details">
+        <h2 class="draft-builder__panel-title">Opponent Details</h2>
+        <form
+          class="draft-builder__form"
+          [formGroup]="opponentForm.controls.details"
+          (ngSubmit)="onSubmit()"
+        >
+          <label class="form-field">
+            <span class="form-field__label">Team Name</span>
+            <input
+              class="form-field__input"
+              type="text"
+              spellcheck="false"
+              formControlName="teamName"
+              [class.form-field__input--invalid]="
+                showError(teamNameControl, 'required')
+              "
+            />
+            @if (showError(teamNameControl, "required")) {
+              <span class="form-field__error">Team name is required</span>
+            }
+          </label>
+
+          <label class="form-field">
+            <span class="form-field__label">Coach Name</span>
+            <input
+              class="form-field__input"
+              type="text"
+              spellcheck="false"
+              formControlName="coach"
+            />
+          </label>
+
+          <label class="form-field">
+            <span class="form-field__label">Stage</span>
+            <input
+              class="form-field__input"
+              type="text"
+              spellcheck="false"
+              formControlName="stage"
+              [class.form-field__input--invalid]="
+                showError(stageControl, 'required')
+              "
+            />
+            @if (showError(stageControl, "required")) {
+              <span class="form-field__error">Stage is required</span>
+            }
+          </label>
+        </form>
+      </aside>
+
+      <section class="draft-builder__panel draft-builder__panel--team">
+        <div class="draft-builder__panel-header">
+          <h2 class="draft-builder__panel-title">
+            Team
+            <span class="draft-builder__panel-count">{{ teamCount }}</span>
+          </h2>
         </div>
 
-        <div class="button-bar">
-          <button type="button" mat-flat-button matStepperPrevious>Back</button>
-          <div class="button-spacer"></div>
-          @if (!isImporting) {
-            <button type="submit" mat-flat-button (click)="onSubmit()">
-              Submit
-            </button>
-          }
-        </div>
-      </ng-template>
-    </mat-step>
-
-    <ng-template matStepperIcon="details">
-      <mat-icon>info</mat-icon>
-    </ng-template>
-    <ng-template matStepperIcon="team">
-      <mat-icon>workspaces</mat-icon>
-    </ng-template>
-  </mat-stepper>
+        <pdz-team-editor
+          [pokemonList$]="pokemonList$"
+          [ruleset]="ruleset"
+          [teamArray]="opponentForm.controls.team"
+          (isImporting)="isImporting = $event"
+        ></pdz-team-editor>
+      </section>
+    </div>
+  </div>
 }
