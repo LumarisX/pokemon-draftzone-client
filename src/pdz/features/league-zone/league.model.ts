@@ -11,7 +11,7 @@ export type TournamentDetails = {
   leagueKey: string;
   draftKey?: string;
   teamId: string;
-  draft: Pokemon[];
+  draft: Pokemon<{ draftFormes?: { id: string; name: string }[] }>[];
   format: string;
   ruleset: string;
   score?: {
