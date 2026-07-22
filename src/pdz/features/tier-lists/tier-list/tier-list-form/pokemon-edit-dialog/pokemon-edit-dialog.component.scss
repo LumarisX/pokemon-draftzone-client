@@ -1,99 +1,150 @@
-@use "@angular/material" as mat;
 @use "pdz-theming" as pdz;
+@use "mixins/_buttons.scss" as *;
 
-.dialog-layout {
-  display: flex;
-  gap: 24px;
-  flex-wrap: wrap;
-}
-
-.left-column {
-  flex: 0 0 120px;
+.edit-dialog {
   display: flex;
   flex-direction: column;
-  row-gap: 1rem;
-  align-items: center;
-}
+  gap: pdz.space(md);
+  padding: pdz.space(lg);
 
-.right-column {
-  flex: 1;
-  min-width: 250px;
-}
-
-.details-container {
-  display: flex;
-  flex-direction: column;
-  row-gap: 0.5rem;
-}
-
-.sprite-container {
-  width: 100px;
-  height: 100px;
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  ::ng-deep sprite img,
-  ::ng-deep sprite > div {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-  }
-}
-
-h2 {
-  margin-top: 0;
-  margin-bottom: 16px;
-  font-weight: 500;
-  font-size: 1.2rem;
-  border-bottom: 1px solid pdz.color(primary-border);
-  padding-bottom: 8px;
-}
-
-.form-field-full-width {
-  width: 100%;
-  margin-bottom: 16px;
-}
-
-.toggle-section {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 20px;
-  label {
+  &__title {
     margin: 0;
-    font-size: 0.95rem;
-    color: rgba(0, 0, 0, 0.6);
+    padding-bottom: pdz.space(xs);
+    border-bottom: 1px solid pdz.color(primary-border);
+    font-family: var(--pdz-font-fancy);
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: pdz.color(primary);
+  }
+
+  &__body {
+    display: flex;
+    gap: pdz.space(lg);
+    flex-wrap: wrap;
+  }
+
+  &__aside {
+    flex: 0 0 120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: pdz.space(sm);
+  }
+
+  &__sprite {
+    width: 100px;
+    height: 100px;
+  }
+
+  &__original-tier {
+    margin: 0;
+    font-size: 0.8rem;
+    color: pdz.color(on-surface-variant);
+    text-align: center;
+  }
+
+  &__main {
+    flex: 1;
+    min-width: 250px;
+    display: flex;
+    flex-direction: column;
+    gap: pdz.space(md);
+  }
+
+  &__section {
+    display: grid;
+    gap: pdz.space(2xs);
+  }
+
+  &__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: pdz.space(2xs);
+  }
+
+  &__empty {
+    margin: 0;
+    font-size: 0.875rem;
+    color: pdz.color(on-surface-variant);
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: pdz.space(xs);
   }
 }
 
-.abilities-section {
-  h3 {
-    font-size: 1rem;
-    font-weight: 500;
-    margin-bottom: 8px;
-    color: rgba(0, 0, 0, 0.7);
-  }
-}
-
-.abilities-checkbox-group {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-:host {
-  @include mat.dialog-overrides(
+// Shared toggle chip for legal abilities and formes, matching the draft
+// team editor's forme chips.
+.toggle-chip {
+  @include flat-button(
     (
-      subhead-weight: 700,
-      subhead-font: var(--pdz-font-fancy),
-      subhead-color: pdz.color(primary),
-      subhead-size: 1.2em,
+      padding: pdz.space(2xs) pdz.space(sm) pdz.space(2xs) pdz.space(2xs),
+      gap: pdz.space(2xs),
+      font-size: 0.875rem,
+      border-width: 1px,
+      border-color: pdz.color(outline),
+      border-radius: pdz.shape(corner-full),
+      color: pdz.color(on-surface-variant),
+      background-hover: pdz.color(surface-container-low),
     )
   );
 
-  mat-form-field {
-    margin-bottom: -1rem;
+  pdz-sprite {
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+
+  &:not(:has(pdz-sprite)) {
+    padding-left: pdz.space(sm);
+  }
+
+  &--selected {
+    background: pdz.color(primary-container);
+    border-color: pdz.color(primary-border);
+    color: pdz.color(on-primary-container);
+  }
+}
+
+.form-field {
+  display: grid;
+  gap: pdz.space(2xs);
+
+  &__label {
+    font-weight: 700;
+    font-size: 0.875rem;
+    color: pdz.color(on-surface-variant);
+  }
+
+  &__input {
+    width: 100%;
+    padding: pdz.space(xs) pdz.space(sm);
+    border: 1px solid pdz.color(outline);
+    border-radius: pdz.shape(corner-sm);
+    background: pdz.color(surface);
+    color: pdz.color(on-surface);
+    font: inherit;
+
+    &:focus {
+      outline: 2px solid pdz.color(primary);
+      outline-offset: 1px;
+      border-color: pdz.color(primary);
+    }
+  }
+}
+
+.button {
+  @include flat-button(
+    (
+      padding: pdz.space(xs) pdz.space(md),
+      border-radius: pdz.shape(corner-sm),
+    )
+  );
+
+  &--primary {
+    background: pdz.color(primary-container);
+    border-color: pdz.color(primary-border);
+    color: pdz.color(on-primary-container);
   }
 }

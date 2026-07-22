@@ -1,80 +1,92 @@
-<h1 mat-dialog-title>Edit {{ data.pokemon.name }}</h1>
+<form class="edit-dialog" [formGroup]="editForm" (ngSubmit)="onSave()">
+  <h2 class="edit-dialog__title">Edit {{ data.pokemon.name }}</h2>
 
-<form [formGroup]="editForm" (ngSubmit)="onSave()">
-  <div mat-dialog-content class="dialog-layout">
-    <div class="left-column">
-      <div class="sprite-container">
-        <pdz-sprite [pokemon]="data.pokemon"></pdz-sprite>
+  <div class="edit-dialog__body">
+    <div class="edit-dialog__aside">
+      <div class="edit-dialog__sprite">
+        <pdz-sprite size="100%" [pokemon]="spritePokemon"></pdz-sprite>
       </div>
-      <div class="toggle-section">
-        <pdz-slide-toggle onSVG="tera" offSVG="tera"> Tera </pdz-slide-toggle>
-      </div>
+      <pdz-slide-toggle onSVG="tera" offSVG="tera">Tera</pdz-slide-toggle>
       @if (
         data.pokemon.originalTierName &&
         data.pokemon.originalTierName !== data.currentTier.name
       ) {
-        <p class="original-tier">
+        <p class="edit-dialog__original-tier">
           Original Tier: {{ data.pokemon.originalTierName }}
         </p>
       }
     </div>
 
-    <div class="right-column">
-      <h2>Details</h2>
-      <div class="details-container">
-        <mat-form-field appearance="outline" class="form-field-full-width">
-          <mat-label>Current Tier</mat-label>
-          <mat-select formControlName="currentTier">
-            <mat-option [value]="null">Untiered</mat-option>
-            @for (tier of data.tiers; track tier.name) {
-              <mat-option [value]="tier.name">{{ tier.name }}</mat-option>
-            }
-          </mat-select>
-          @if (
-            editForm.get("currentTier")?.hasError("required") &&
-            editForm.get("currentTier")?.touched
-          ) {
-            <mat-error>Tier selection is required.</mat-error>
+    <div class="edit-dialog__main">
+      <label class="form-field">
+        <span class="form-field__label">Current Tier</span>
+        <select class="form-field__input" formControlName="currentTier">
+          <option [ngValue]="null">Untiered</option>
+          @for (tier of data.tiers; track tier.name) {
+            <option [ngValue]="tier.name">{{ tier.name }}</option>
           }
-        </mat-form-field>
+        </select>
+      </label>
 
+      <section class="edit-dialog__section">
+        <span class="form-field__label">Legal Abilities</span>
         @if (abilityNames.length > 0) {
-          <div class="abilities-section" formGroupName="selectedAbilities">
-            <h3>Legal Abilities</h3>
-            <div class="abilities-checkbox-group">
-              @for (ability of abilityNames; track ability) {
-                <mat-checkbox
-                  class="ability-checkbox"
-                  [formControlName]="ability"
-                >
-                  {{ ability }}
-                </mat-checkbox>
-              }
-            </div>
+          <div class="edit-dialog__chips">
+            @for (ability of abilityNames; track ability) {
+              <button
+                type="button"
+                class="toggle-chip"
+                [class.toggle-chip--selected]="isAbilitySelected(ability)"
+                (click)="toggleAbility(ability)"
+              >
+                <span>{{ ability }}</span>
+              </button>
+            }
           </div>
         } @else {
-          <p>No abilities listed for this Pokémon.</p>
+          <p class="edit-dialog__empty">
+            No abilities listed for this Pokémon.
+          </p>
         }
-        <mat-form-field appearance="outline" class="form-field-full-width">
-          <mat-label>Other Notes</mat-label>
-          <input
-            matInput
-            formControlName="notes"
-            placeholder="Enter notes..."
-          />
-        </mat-form-field>
-      </div>
+      </section>
+
+      <section class="edit-dialog__section">
+        @if (formesLoading) {
+          <p class="edit-dialog__empty">Loading formes…</p>
+        } @else if (availableFormes.length > 0) {
+          <span class="form-field__label">Usable Formes</span>
+          <div class="edit-dialog__chips">
+            @for (forme of availableFormes; track forme.id) {
+              <button
+                type="button"
+                class="toggle-chip"
+                [class.toggle-chip--selected]="isFormeSelected(forme)"
+                (click)="toggleForme(forme)"
+              >
+                <pdz-sprite flipped [pokemon]="forme"></pdz-sprite>
+                <span>{{ forme.name }}</span>
+              </button>
+            }
+          </div>
+        }
+      </section>
+
+      <label class="form-field">
+        <span class="form-field__label">Other Notes</span>
+        <input
+          class="form-field__input"
+          type="text"
+          formControlName="notes"
+          placeholder="Enter notes..."
+        />
+      </label>
     </div>
   </div>
-  <div mat-dialog-actions align="end">
-    <button mat-button type="button" (click)="closeDialog()">Cancel</button>
-    <button
-      mat-raised-button
-      color="primary"
-      type="submit"
-      [disabled]="!editForm.valid && editForm.dirty"
-    >
-      Save Changes
+
+  <div class="edit-dialog__actions">
+    <button type="button" class="button button--text" (click)="closeDialog()">
+      Cancel
     </button>
+    <button type="submit" class="button button--primary">Save Changes</button>
   </div>
 </form>

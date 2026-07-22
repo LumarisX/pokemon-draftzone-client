@@ -94,6 +94,8 @@ export class TierListFormComponent implements OnInit, OnDestroy {
   isLoading = signal<boolean>(false);
   hasUnsavedChanges = signal<boolean>(false);
   tierListName = signal<string>('Tier List');
+  /** Needed to look up a species' formes when editing an entry. */
+  ruleset = signal<string | undefined>(undefined);
   showExportMenu = signal<boolean>(false);
   showImportMenu = signal<boolean>(false);
 
@@ -159,6 +161,7 @@ export class TierListFormComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (data) => {
           if (data.name) this.tierListName.set(data.name);
+          this.ruleset.set(data.ruleset);
           const flatTiers = [...data.tierList];
 
           const nullTierIndex = flatTiers.findIndex(
@@ -415,6 +418,24 @@ export class TierListFormComponent implements OnInit, OnDestroy {
 
   isPokemonFlashing(pokemon: EditTierPokemon): boolean {
     return this.flashedPokemonIds().has(pokemon.id);
+  }
+
+  private spriteCache = new WeakMap<
+    EditTierPokemon,
+    { formes: EditTierPokemon['formes']; ref: EditTierPokemon }
+  >();
+
+  /** The sprite reads `draftFormes`, but a tier entry stores its allowed
+   * formes in `formes`; expose a derived pokemon so the sprite renders the
+   * forme stack. Cached per entry (and invalidated when `formes` changes) so
+   * the OnPush sprite keeps a stable reference. */
+  spriteFor(pokemon: EditTierPokemon): EditTierPokemon {
+    if (!pokemon.formes?.length) return pokemon;
+    const cached = this.spriteCache.get(pokemon);
+    if (cached && cached.formes === pokemon.formes) return cached.ref;
+    const ref = { ...pokemon, draftFormes: pokemon.formes };
+    this.spriteCache.set(pokemon, { formes: pokemon.formes, ref });
+    return ref;
   }
 
   private pushHistory(entry: HistoryEntry): void {
@@ -697,6 +718,7 @@ export class TierListFormComponent implements OnInit, OnDestroy {
       pokemon: pokemon,
       currentTier: tier,
       tiers: this.tiers() ?? [],
+      ruleset: this.ruleset(),
     };
 
     const dialogRef = this.dialog.open(PokemonEditDialogComponent, {
@@ -719,6 +741,9 @@ export class TierListFormComponent implements OnInit, OnDestroy {
         );
 
         pokemon.notes = result.updatedBanNotes?.trim() || undefined;
+        pokemon.formes = result.updatedFormes?.length
+          ? result.updatedFormes
+          : undefined;
 
         if (bannedAbilities.length > 0) {
           pokemon.banned = {
@@ -1153,6 +1178,7 @@ export class TierListFormComponent implements OnInit, OnDestroy {
         name: p.name,
         notes: p.notes,
         bannedAbilities: p.banned?.abilities,
+        formes: p.formes?.map((forme) => forme.id),
       })),
     }));
 
@@ -1167,6 +1193,7 @@ export class TierListFormComponent implements OnInit, OnDestroy {
         name: p.name,
         notes: p.notes,
         bannedAbilities: p.banned?.abilities,
+        formes: p.formes?.map((forme) => forme.id),
         banned: true as const,
       }));
       if (untieredEntry) {

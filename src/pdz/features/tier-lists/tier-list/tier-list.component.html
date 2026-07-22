@@ -121,7 +121,7 @@
           <div class="tier__label">{{ tier.name }}</div>
           @for (pokemon of tier.pokemon; track $index) {
             <pdz-sprite
-              [pokemon]="pokemon"
+              [pokemon]="spriteFor(pokemon)"
               [tooltipPosition]="null"
             ></pdz-sprite>
           }
@@ -173,7 +173,7 @@
               >
                 <div class="pokemon-entry__sprite">
                   <pdz-sprite
-                    [pokemon]="pokemon"
+                    [pokemon]="spriteFor(pokemon)"
                     [tooltipPosition]="null"
                   ></pdz-sprite>
                 </div>

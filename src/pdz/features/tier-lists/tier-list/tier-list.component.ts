@@ -138,6 +138,24 @@ export class TierListComponent implements OnInit, OnDestroy {
 
   makeBanString = makeBanString;
 
+  private spriteCache = new WeakMap<
+    TierPokemon,
+    { formes: TierPokemon['formes']; ref: TierPokemon }
+  >();
+
+  /** The sprite renders its forme stack from `draftFormes`, but a tier entry
+   * stores its allowed formes in `formes`; expose a derived pokemon so the
+   * stack shows. Cached per entry (invalidated when `formes` changes) to keep
+   * a stable reference for the OnPush sprite. */
+  spriteFor(pokemon: TierPokemon): TierPokemon {
+    if (!pokemon.formes?.length) return pokemon;
+    const cached = this.spriteCache.get(pokemon);
+    if (cached && cached.formes === pokemon.formes) return cached.ref;
+    const ref = { ...pokemon, draftFormes: pokemon.formes };
+    this.spriteCache.set(pokemon, { formes: pokemon.formes, ref });
+    return ref;
+  }
+
   constructor() {
     effect(() => {
       this.selectedDivision();

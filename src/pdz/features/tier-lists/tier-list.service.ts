@@ -122,6 +122,7 @@ export class TierListService {
         tierList: LeagueTier[];
         divisions: { [key: string]: { pokemonId: string; teamId: string }[] };
         name?: string;
+        ruleset?: string;
       }>(`${ROOTPATH}/${tierListId}`, {
         authenticated: true,
         params: { edit: true },
@@ -138,6 +139,7 @@ export class TierListService {
           tierList: LeagueTier[];
           divisions: { [key: string]: { pokemonId: string; teamId: string }[] };
           name?: string;
+          ruleset?: string;
         }>(`${ROOTPATH}/${info.tierListId}`, {
           authenticated: true,
           params: { edit: true },
@@ -156,6 +158,7 @@ export class TierListService {
         banned?: boolean;
         notes?: string;
         bannedAbilities?: string[];
+        formes?: string[];
       }>;
     }>,
   ) {

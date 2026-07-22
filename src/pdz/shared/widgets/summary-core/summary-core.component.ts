@@ -134,8 +134,33 @@ export class SummaryCoreComponent {
     return this.isTotal(key) ? this.bstColor(value) : this.statColor(value);
   }
 
+  /** Computed over each Pokemon's active forme so the aggregates track forme
+   * rotation, rather than reading the server's base-team precomputation.
+   * Rounding mirrors the server so the initial (all base) render is identical. */
   aggregateValue(row: AggregateKey, key: StatKey): number | undefined {
-    return this.summary?.stats[row]?.[key];
+    const team = this.summary?.team;
+    if (!team?.length) return undefined;
+
+    const values = team
+      .map((pokemon) => this.statValue(this.activeForme(pokemon), key))
+      .filter((value): value is number => value !== undefined);
+    if (!values.length) return undefined;
+
+    switch (row) {
+      case 'mean':
+        return Math.round(
+          values.reduce((sum, value) => sum + value, 0) / values.length,
+        );
+      case 'median': {
+        const sorted = [...values].sort((a, b) => a - b);
+        const mid = Math.floor(sorted.length / 2);
+        return sorted.length % 2 === 0
+          ? Math.round((sorted[mid - 1] + sorted[mid]) / 2)
+          : sorted[mid];
+      }
+      case 'max':
+        return Math.max(...values);
+    }
   }
 
   aggregateColor(row: AggregateKey, key: StatKey): string | undefined {

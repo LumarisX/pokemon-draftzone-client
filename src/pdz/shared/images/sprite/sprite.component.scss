@@ -46,7 +46,7 @@
   &.silhouette {
     position: absolute;
     inset: 0;
-    filter: contrast(0) brightness(0.85);
-    opacity: 0.45;
+    filter: url(#silhouetteOutlineFilter);
+    opacity: 0.5;
   }
 }

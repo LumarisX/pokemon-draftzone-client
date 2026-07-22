@@ -29,5 +29,22 @@
         <feMergeNode in="SourceGraphic" />
       </feMerge>
     </filter>
+
+    <filter id="silhouetteOutlineFilter">
+      <feMorphology
+        operator="dilate"
+        radius="1"
+        in="SourceAlpha"
+        result="dilated"
+      />
+      <feComposite
+        operator="out"
+        in="dilated"
+        in2="SourceAlpha"
+        result="ring"
+      />
+      <feFlood flood-color="#64748b" result="color" />
+      <feComposite in="color" in2="ring" operator="in" />
+    </filter>
   </defs>
 </svg>
