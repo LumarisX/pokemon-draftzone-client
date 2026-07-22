@@ -12,6 +12,36 @@ export type ChangelogEntry = {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    date: '2026-07-21T12:00:00-07:00',
+    title: 'Learned Moves & Formes',
+    description:
+      'Regional formes and Mega Evolutions are now fully supported when drafting, plus a new personal dashboard and a faster-loading site.',
+    categories: [
+      {
+        type: 'added',
+        items: [
+          'Learned Moves chart now has better tagging and shows ALL moves learned so you will never be surprised in your match!',
+          'Formes are now better supported in drafts and matchups',
+        ],
+      },
+
+      {
+        type: 'fixed',
+        items: [
+          'Coverage chart not showing in the planner',
+          'Shared matchup links not opening correctly',
+          'My Drafts no longer fails entirely if a single draft is broken',
+          'Overlapping navbar and matchup page headers',
+          'Adding an Ad in Find A League works again',
+        ],
+      },
+      {
+        type: 'removed',
+        items: ['Archiving drafts was disabled for now'],
+      },
+    ],
+  },
+  {
     date: '2026-06-02T10:00:00-07:00',
     title: 'Fern Theme',
     description:
