@@ -5,7 +5,6 @@ import {
   CanvasLayout,
   CanvasMatch,
   CanvasSlot,
-  COL_W,
   HEADER_H,
   LABEL_H,
   ROW_GAP,
@@ -46,10 +45,10 @@ export interface BracketInteractionState {
     dy: number;
     targetSection?: string;
     targetRound?: number;
-    /** World-space y of the insertion indicator line, if a target is resolved. */
-    insertY?: number | null;
-    /** World-space x of the target column, for the indicator line. */
-    targetColX?: number | null;
+    /** World-space x of the insertion indicator line, if a target is resolved. */
+    insertX?: number | null;
+    /** World-space y of the target round row, for the indicator line. */
+    targetRowY?: number | null;
   } | null;
 }
 
@@ -283,35 +282,39 @@ export function renderBracket(
       ctx.fillStyle = c['on-surface-variant'];
       ctx.textBaseline = 'top';
       ctx.textAlign = 'left';
-      ctx.fillText(section.title.toUpperCase(), 0, section.titleY + 2);
+      ctx.fillText(section.title.toUpperCase(), section.x, section.titleY + 2);
       ctx.strokeStyle = c['outline-variant'];
       ctx.lineWidth = 1;
       ctx.beginPath();
-      ctx.moveTo(0, section.titleY + SECTION_TITLE_H - 0.5);
-      ctx.lineTo(section.width, section.titleY + SECTION_TITLE_H - 0.5);
+      ctx.moveTo(section.x, section.titleY + SECTION_TITLE_H - 0.5);
+      ctx.lineTo(
+        section.x + section.width,
+        section.titleY + SECTION_TITLE_H - 0.5,
+      );
       ctx.stroke();
     }
 
     ctx.font = `600 14px ${theme.fontFancy}`;
     ctx.textBaseline = 'top';
     ctx.textAlign = 'center';
+    const midX = section.x + section.width / 2;
     for (const col of section.columns) {
       const titleHovered =
         editable &&
         state.hoveredKind === 'round-title' &&
         state.hoveredButtonKey === `${col.section}::${col.round}`;
       ctx.fillStyle = titleHovered ? c['primary'] : c['on-surface-variant'];
-      const text = truncate(ctx, col.title, COL_W);
-      ctx.fillText(text, col.x + COL_W / 2, col.headerY + (HEADER_H - 14) / 2);
+      const text = truncate(ctx, col.title, section.width);
+      ctx.fillText(text, midX, col.headerY + (HEADER_H - 14) / 2);
       if (editable) {
         // Dashed underline hints that round titles are click-to-rename.
-        const tw = Math.min(ctx.measureText(text).width + 12, COL_W);
+        const tw = Math.min(ctx.measureText(text).width + 12, section.width);
         ctx.strokeStyle = titleHovered ? c['primary'] : c['outline-variant'];
         ctx.lineWidth = 1;
         ctx.setLineDash([3, 3]);
         ctx.beginPath();
-        ctx.moveTo(col.x + (COL_W - tw) / 2, col.headerY + HEADER_H - 3);
-        ctx.lineTo(col.x + (COL_W + tw) / 2, col.headerY + HEADER_H - 3);
+        ctx.moveTo(midX - tw / 2, col.headerY + HEADER_H - 3);
+        ctx.lineTo(midX + tw / 2, col.headerY + HEADER_H - 3);
         ctx.stroke();
         ctx.setLineDash([]);
       }
@@ -341,15 +344,15 @@ export function renderBracket(
     const match = layout.matches.find((m) => m.id === dragging.matchId);
     if (match) {
       if (
-        dragging.insertY != null &&
-        dragging.targetColX != null
+        dragging.insertX != null &&
+        dragging.targetRowY != null
       ) {
         ctx.strokeStyle = c['primary'];
         ctx.lineWidth = 2;
         ctx.setLineDash([6, 4]);
         ctx.beginPath();
-        ctx.moveTo(dragging.targetColX, dragging.insertY);
-        ctx.lineTo(dragging.targetColX + COL_W, dragging.insertY);
+        ctx.moveTo(dragging.insertX, dragging.targetRowY);
+        ctx.lineTo(dragging.insertX, dragging.targetRowY + match.h);
         ctx.stroke();
         ctx.setLineDash([]);
       }

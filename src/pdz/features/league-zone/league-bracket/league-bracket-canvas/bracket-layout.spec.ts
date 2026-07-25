@@ -5,14 +5,14 @@ import {
 } from '../bracket-generator';
 import {
   COL_GAP,
-  COL_W,
+  HEADER_H,
   MATCH_GAP,
   ROW_GAP,
   TEAM_H_COMPACT,
   TEAM_H_FULL,
   computeBracketLayout,
+  computePositionCenters,
   computeRoundTitles,
-  computeVerticalCenters,
   matchHeight,
   resolveSlot,
 } from './bracket-layout';
@@ -39,15 +39,15 @@ const fourTeamData = (): FlexBracketData => ({
   matches: fourTeamMatches(),
 });
 
-describe('computeVerticalCenters', () => {
+describe('computePositionCenters', () => {
   it('spaces leaf matches by position and stride', () => {
-    const centers = computeVerticalCenters(fourTeamMatches(), MATCH_H);
+    const centers = computePositionCenters(fourTeamMatches(), MATCH_H);
     expect(centers.get('s1')).toBe(MATCH_H / 2);
     expect(centers.get('s2')).toBe(MATCH_H + MATCH_GAP + MATCH_H / 2);
   });
 
   it('centers a match with two inputs at their average', () => {
-    const centers = computeVerticalCenters(fourTeamMatches(), MATCH_H);
+    const centers = computePositionCenters(fourTeamMatches(), MATCH_H);
     expect(centers.get('f')).toBe((centers.get('s1')! + centers.get('s2')!) / 2);
   });
 
@@ -56,16 +56,16 @@ describe('computeVerticalCenters', () => {
       { id: 's1', round: 0, position: 1, a: seed(1), b: seed(2) },
       { id: 'f', round: 1, position: 0, a: winnerOf('s1'), b: seed(3) },
     ];
-    const centers = computeVerticalCenters(matches, MATCH_H);
+    const centers = computePositionCenters(matches, MATCH_H);
     expect(centers.get('f')).toBe(centers.get('s1'));
   });
 
-  it('normalizes so the topmost card starts at top 0 for 1-indexed positions', () => {
+  it('normalizes so the first card starts at position 0 for 1-indexed positions', () => {
     const matches: FlexBracketMatch[] = [
       { id: 'a', round: 0, position: 1, a: seed(1), b: seed(2) },
       { id: 'b', round: 0, position: 2, a: seed(3), b: seed(4) },
     ];
-    const centers = computeVerticalCenters(matches, MATCH_H);
+    const centers = computePositionCenters(matches, MATCH_H);
     expect(centers.get('a')).toBe(MATCH_H / 2);
   });
 });
@@ -134,31 +134,39 @@ describe('computeRoundTitles', () => {
 });
 
 describe('computeBracketLayout', () => {
-  it('lays out columns left-to-right with the standard stride', () => {
+  it('lays out rounds top-to-bottom with the standard stride', () => {
     const layout = computeBracketLayout(fourTeamData(), false);
     const [section] = layout.sections;
     expect(layout.sections.length).toBe(1);
-    expect(section.columns.map((c) => c.x)).toEqual([0, COL_W + COL_GAP]);
+
+    const matchH = matchHeight(TEAM_H_FULL);
+    const round0Top = HEADER_H; // no section title, no lanes through the top margin
+    const round1Top = round0Top + matchH + COL_GAP + HEADER_H;
+    expect(section.columns.map((c) => c.cardsTop)).toEqual([
+      round0Top,
+      round1Top,
+    ]);
 
     const final = layout.matches.find((m) => m.id === 'f')!;
-    expect(final.x).toBe(COL_W + COL_GAP);
+    expect(final.y).toBe(round1Top);
     const s1 = layout.matches.find((m) => m.id === 's1')!;
     const s2 = layout.matches.find((m) => m.id === 's2')!;
-    expect(final.y + final.h / 2).toBe(
-      (s1.y + s1.h / 2 + (s2.y + s2.h / 2)) / 2,
+    expect(final.x + final.w / 2).toBe(
+      (s1.x + s1.w / 2 + (s2.x + s2.w / 2)) / 2,
     );
   });
 
-  it('creates one connector per winner/loser slot, ending at the slot row', () => {
+  it('creates one connector per winner/loser slot, ending at the slot port', () => {
     const layout = computeBracketLayout(fourTeamData(), false);
     expect(layout.connectors.length).toBe(2);
     const final = layout.matches.find((m) => m.id === 'f')!;
-    const targets = layout.connectors.map((c) => c.y2).sort((a, b) => a - b);
-    expect(targets[0]).toBeCloseTo(final.slotY[0] + TEAM_H_FULL / 2);
-    expect(targets[1]).toBeCloseTo(final.slotY[1] + TEAM_H_FULL / 2);
+    expect(layout.connectors.every((c) => c.y2 === final.y)).toBe(true);
+    const targets = layout.connectors.map((c) => c.x2).sort((a, b) => a - b);
+    expect(targets[0]).toBeCloseTo(final.portX[0]);
+    expect(targets[1]).toBeCloseTo(final.portX[1]);
   });
 
-  it('colors connectors by outcome type and anchors decided lines to the deciding row', () => {
+  it('colors connectors by outcome type and anchors decided lines to the deciding port', () => {
     const data = fourTeamData();
     data.matches[0].winner = 1; // s1 decided: slot B advances
     const layout = computeBracketLayout(data, false);
@@ -167,13 +175,17 @@ describe('computeBracketLayout', () => {
 
     expect(layout.connectors.every((c) => c.cls === 'winner')).toBe(true);
 
-    // Decided: solid line from the winning team's row (slot B).
-    const fromS1 = layout.connectors.find((c) => c.x1 === s1.x + s1.w && c.y1 !== s1.y + s1.h / 2)!;
+    // Decided: solid line from the winning team's port (slot B).
+    const fromS1 = layout.connectors.find(
+      (c) => c.y1 === s1.y + s1.h && c.x1 !== s1.x + s1.w / 2,
+    )!;
     expect(fromS1.decided).toBe(true);
-    expect(fromS1.y1).toBeCloseTo(s1.slotY[1] + TEAM_H_FULL / 2);
+    expect(fromS1.x1).toBeCloseTo(s1.portX[1]);
 
-    // Undecided: dashed line from the card's vertical center.
-    const fromS2 = layout.connectors.find((c) => c.y1 === s2.y + s2.h / 2)!;
+    // Undecided: dashed line from the card's horizontal center.
+    const fromS2 = layout.connectors.find(
+      (c) => c.x1 === s2.x + s2.w / 2,
+    )!;
     expect(fromS2.decided).toBe(false);
   });
 
@@ -203,8 +215,8 @@ describe('computeBracketLayout', () => {
     const m3 = layout.matches.find((m) => m.id === 'm3')!;
     const m4 = layout.matches.find((m) => m.id === 'm4')!;
     // m3 keeps the averaged center (lower position wins the tiebreak);
-    // m4 is pushed below it by at least the minimum gap.
-    expect(m4.y).toBeGreaterThanOrEqual(m3.y + m3.h + MATCH_GAP);
+    // m4 is pushed to its right by at least the minimum gap.
+    expect(m4.x).toBeGreaterThanOrEqual(m3.x + m3.w + MATCH_GAP);
     // Loser lines are red-classed, winner lines green-classed.
     expect(
       layout.connectors.filter((c) => c.cls === 'loser').length,
@@ -215,26 +227,28 @@ describe('computeBracketLayout', () => {
 
     // Lines leaving the same undecided card are fanned apart at the origin...
     const m1 = layout.matches.find((m) => m.id === 'm1')!;
-    const fromM1 = layout.connectors
-      .filter((c) => c.x1 === m1.x + m1.w && c.y2 < m4.y + m4.h + 100)
-      .filter((c) => Math.abs(c.y1 - (m1.y + m1.h / 2)) <= 12);
+    const fromM1 = layout.connectors.filter(
+      (c) => c.y1 === m1.y + m1.h && Math.abs(c.x1 - (m1.x + m1.w / 2)) <= 12,
+    );
     expect(fromM1.length).toBe(2);
-    expect(fromM1[0].y1).not.toBe(fromM1[1].y1);
+    expect(fromM1[0].x1).not.toBe(fromM1[1].x1);
 
-    // ...and vertical segments in the shared corridor never stack on one x.
-    const midXs = layout.connectors
-      .filter((c) => Math.abs(c.y2 - c.y1) >= 2)
-      .map((c) => c.midX);
-    expect(new Set(midXs).size).toBe(midXs.length);
+    // ...and horizontal segments in the shared corridor never stack on one y.
+    const laneCoords = layout.connectors
+      .filter((c) => Math.abs(c.x2 - c.x1) >= 2)
+      .map((c) => c.laneCoord);
+    expect(new Set(laneCoords).size).toBe(laneCoords.length);
   });
 
-  it('adds edit-mode buttons: one + Match per column and one + Round per section', () => {
+  it('adds edit-mode buttons: one + Match per round and one + Round per section', () => {
     const layout = computeBracketLayout(fourTeamData(), true);
     expect(layout.addMatchButtons.length).toBe(2);
     const addRound = layout.addRoundButtons;
     expect(addRound.length).toBe(1);
     expect(addRound[0].round).toBe(2); // past the last existing round
-    expect(addRound[0].x).toBe(2 * (COL_W + COL_GAP));
+    const lastColumn = layout.sections[0].columns[1];
+    expect(addRound[0].y).toBeGreaterThan(lastColumn.cardsTop);
+    expect(addRound[0].x).toBe(layout.sections[0].x);
   });
 
   it('renders configured-but-empty sections only in edit mode', () => {
@@ -249,7 +263,7 @@ describe('computeBracketLayout', () => {
     expect(editable.addRoundButtons[0].round).toBe(0);
   });
 
-  it('stacks double-elim sections vertically in configured order', () => {
+  it('stacks double-elim sections side-by-side in configured order', () => {
     const generated = generateDoubleElimination(8);
     const layout = computeBracketLayout(
       { teams: [], matches: generated.matches, sections: generated.sections },
@@ -261,9 +275,9 @@ describe('computeBracketLayout', () => {
       'finals',
     ]);
     const [winners, losers, finals] = layout.sections;
-    expect(losers.y).toBeGreaterThan(winners.bottom);
-    expect(finals.y).toBeGreaterThan(losers.bottom);
-    expect(layout.height).toBe(finals.bottom);
+    expect(losers.x).toBeGreaterThanOrEqual(winners.x + winners.width);
+    expect(finals.x).toBeGreaterThanOrEqual(losers.x + losers.width);
+    expect(layout.width).toBe(finals.x + finals.width);
   });
 
   it('sizes "Round of N" titles from wired seeds when no teams are bound (random seeding)', () => {

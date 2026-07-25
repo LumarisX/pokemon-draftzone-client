@@ -1,4 +1,4 @@
-@if (bracketData?.seeding; as seeding) {
+<!-- @if (bracketData?.seeding; as seeding) {
   <div
     class="seeding-badge"
     [class.seeding-badge--certified]="seeding.method === 'certified-random'"
@@ -20,5 +20,7 @@
       <span class="seeding-badge__title">Seeded by organizers</span>
     }
   </div>
-}
-<pdz-league-bracket-canvas [bracketData]="bracketData"></pdz-league-bracket-canvas>
+} -->
+<pdz-league-bracket-canvas
+  [bracketData]="bracketData"
+></pdz-league-bracket-canvas>

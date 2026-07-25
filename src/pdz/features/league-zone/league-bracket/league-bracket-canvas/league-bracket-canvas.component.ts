@@ -44,7 +44,6 @@ import {
 } from './bracket-hit-test';
 import {
   COL_GAP,
-  COL_W,
   CanvasLayout,
   MATCH_GAP,
   computeBracketLayout,
@@ -547,8 +546,8 @@ export class LeagueBracketCanvasComponent
             dy: w.y - session.startWorldY,
             targetSection: target?.section,
             targetRound: target?.round,
-            insertY: target?.insertY ?? null,
-            targetColX: target?.colX ?? null,
+            insertX: target?.insertX ?? null,
+            targetRowY: target?.targetRowY ?? null,
           },
         };
         this.scheduleRender();
@@ -767,15 +766,24 @@ export class LeagueBracketCanvasComponent
     section: string;
     round: number;
     index: number;
-    colX: number;
-    insertY: number;
+    insertX: number;
+    targetRowY: number;
   } | null {
+    // Every card shares the same height (it depends only on whether teams are
+    // bound, not on round), so any laid-out match gives the current row height.
+    const rowH = this.layout.matches[0]?.h ?? 0;
     for (const section of this.layout.sections) {
-      if (wy < section.y - MATCH_GAP || wy > section.bottom + MATCH_GAP) {
+      if (
+        wx < section.x - MATCH_GAP ||
+        wx > section.x + section.width + MATCH_GAP
+      ) {
         continue;
       }
       for (const col of section.columns) {
-        if (wx < col.x - COL_GAP / 2 || wx > col.x + COL_W + COL_GAP / 2) {
+        if (
+          wy < col.cardsTop - COL_GAP / 2 ||
+          wy > col.cardsTop + rowH + COL_GAP / 2
+        ) {
           continue;
         }
         const cards = this.layout.matches
@@ -785,27 +793,27 @@ export class LeagueBracketCanvasComponent
               m.round === col.round &&
               m.id !== excludeId,
           )
-          .sort((a, b) => a.y - b.y);
+          .sort((a, b) => a.x - b.x);
         let index = cards.length;
         for (let i = 0; i < cards.length; i++) {
-          if (wy < cards[i].y + cards[i].h / 2) {
+          if (wx < cards[i].x + cards[i].w / 2) {
             index = i;
             break;
           }
         }
-        const insertY = !cards.length
-          ? col.cardsTop
+        const insertX = !cards.length
+          ? col.x
           : index === 0
-            ? cards[0].y - MATCH_GAP / 2
+            ? cards[0].x - MATCH_GAP / 2
             : index === cards.length
-              ? cards[cards.length - 1].y + cards[cards.length - 1].h + MATCH_GAP / 2
-              : (cards[index - 1].y + cards[index - 1].h + cards[index].y) / 2;
+              ? cards[cards.length - 1].x + cards[cards.length - 1].w + MATCH_GAP / 2
+              : (cards[index - 1].x + cards[index - 1].w + cards[index].x) / 2;
         return {
           section: col.section,
           round: col.round,
           index,
-          colX: col.x,
-          insertY,
+          insertX,
+          targetRowY: col.cardsTop,
         };
       }
     }

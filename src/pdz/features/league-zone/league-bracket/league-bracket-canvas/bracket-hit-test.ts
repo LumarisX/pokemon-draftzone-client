@@ -5,7 +5,7 @@ import {
   replayButtonRect,
   slotRect,
 } from './bracket-canvas-renderer';
-import { COL_W, CanvasLayout, HEADER_H } from './bracket-layout';
+import { CanvasLayout, HEADER_H } from './bracket-layout';
 
 export interface HitRegion {
   kind: HitKind;
@@ -42,7 +42,7 @@ export function buildHitRegions(
           round: col.round,
           x: col.x,
           y: col.headerY,
-          w: COL_W,
+          w: section.width,
           h: HEADER_H,
         });
       }
