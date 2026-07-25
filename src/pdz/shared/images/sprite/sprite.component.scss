@@ -17,7 +17,7 @@
       cursor: pointer;
     }
 
-    &:hover .forme-slot.silhouette {
+    &:hover .forme-slot.silhouette:not(.hidden-slot) {
       opacity: 0.75;
     }
   }
@@ -48,5 +48,10 @@
     inset: 0;
     filter: url(#silhouetteOutlineFilter);
     opacity: 0.5;
+  }
+
+  &.hidden-slot {
+    opacity: 0;
+    pointer-events: none;
   }
 }

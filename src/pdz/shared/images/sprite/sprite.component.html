@@ -10,6 +10,7 @@
       class="forme-slot"
       [class.active]="slot.isActive"
       [class.silhouette]="!slot.isActive"
+      [class.hidden-slot]="!slot.visible"
       [style.transform]="slot.transform"
       [style.zIndex]="slot.zIndex"
       [title]="slot.isActive ? '' : slot.pokemon.name"

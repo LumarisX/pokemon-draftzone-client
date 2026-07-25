@@ -44,7 +44,22 @@
         result="ring"
       />
       <feFlood flood-color="#64748b" result="color" />
-      <feComposite in="color" in2="ring" operator="in" />
+      <feComposite in="color" in2="ring" operator="in" result="coloredRing" />
+
+      <feComposite
+        in="color"
+        in2="SourceAlpha"
+        operator="in"
+        result="coloredFill"
+      />
+      <feComponentTransfer in="coloredFill" result="subtleFill">
+        <feFuncA type="linear" slope="0.2" />
+      </feComponentTransfer>
+
+      <feMerge>
+        <feMergeNode in="subtleFill" />
+        <feMergeNode in="coloredRing" />
+      </feMerge>
     </filter>
   </defs>
 </svg>

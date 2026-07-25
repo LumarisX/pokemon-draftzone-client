@@ -20,6 +20,7 @@ type FormeSlot = {
   transform: string;
   zIndex: number;
   isActive: boolean;
+  visible: boolean;
 };
 
 @Component({
@@ -78,8 +79,6 @@ export class SpriteComponent {
     const active = this.normalizedIndex();
 
     const side = this.flipped() ? -1 : 1;
-    const spacingX = this.SILHOUETTE_SPAN_X / (count - 1 || 1);
-    const spacingY = this.SILHOUETTE_SPAN_Y / (count - 1 || 1);
     return formes.map((pokemon, index) => {
       const slot = (index - active + count) % count;
       if (slot === 0) {
@@ -89,17 +88,19 @@ export class SpriteComponent {
           transform: `translate(0, 0) scale(${this.FRONT_SCALE})`,
           zIndex: count,
           isActive: true,
+          visible: true,
         };
       }
       const depth = slot;
-      const x = side * depth * spacingX;
-      const y = -depth * spacingY;
+      const x = side * depth * this.SILHOUETTE_SPAN_X;
+      const y = -depth * this.SILHOUETTE_SPAN_Y;
       return {
         pokemon,
         index,
         transform: `translate(${x}%, ${y}%) scale(1)`,
         zIndex: count - depth,
         isActive: false,
+        visible: depth === 1,
       };
     });
   });
