@@ -94,6 +94,13 @@
     .league-name {
       font-size: 1.25rem;
     }
+
+    .card-title > .league-label {
+      display: block;
+      margin-bottom: pdz.space(2xs);
+      @include apply-typography(label-xs);
+      color: pdz.color(on-surface-variant);
+    }
   }
 }
 

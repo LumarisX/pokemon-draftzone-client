@@ -23,6 +23,11 @@
     margin-bottom: pdz.space(xs);
   }
 
+  &__league-name {
+    @include apply-typography(label-sm);
+    color: pdz.color(on-surface-variant);
+  }
+
   &__title {
     @include apply-typography(headline-md);
     font-family: var(--pdz-font-fancy);

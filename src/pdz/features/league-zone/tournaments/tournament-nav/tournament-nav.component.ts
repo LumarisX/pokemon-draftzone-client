@@ -21,6 +21,7 @@ export class TournamentNavComponent implements OnInit, OnDestroy {
   private readonly destroy$ = new Subject<void>();
 
   leagueInfo: League.LeagueInfo | null = null;
+  leagueName: string | null = null;
   profile: League.CoachProfile | null = null;
   stages: League.StageSummary[] = [];
   selectedStageId: string | null = null;
@@ -38,6 +39,14 @@ export class TournamentNavComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (info) => (this.leagueInfo = info),
         error: (error) => console.error('Error fetching league info:', error),
+      });
+
+    this.leagueService
+      .getLeague()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (league) => (this.leagueName = league.name),
+        error: (error) => console.error('Error fetching league:', error),
       });
 
     this.authService.isAuthenticated$

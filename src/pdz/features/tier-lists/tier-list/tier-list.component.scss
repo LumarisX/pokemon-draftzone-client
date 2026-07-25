@@ -112,7 +112,7 @@
 // ─── Tier column (list-specific) ──────────────────────────────────────────
 
 .tier {
-  width: 14rem;
+  flex: 1 0 14rem;
 
   &--banned {
     border-color: pdz.color(error);
@@ -135,10 +135,16 @@
     opacity: 0.6;
     padding: pdz.space(2xs) pdz.space(xs);
     text-align: right;
+    grid-column: 1 / -1;
   }
 
   &__pokemon-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(12.5rem, 1fr));
+    align-content: start;
+
     &--empty {
+      display: flex;
       align-items: center;
       justify-content: center;
       min-height: 5rem;

@@ -12,6 +12,9 @@
         [alt]="leagueInfo.name + ' logo'"
       />
     }
+    @if (leagueName) {
+      <span class="hero__league-name">{{ leagueName }}</span>
+    }
     <h1 class="hero__title">{{ leagueInfo.name }}</h1>
     @if (leagueInfo.description) {
       <p class="hero__description">{{ leagueInfo.description }}</p>
