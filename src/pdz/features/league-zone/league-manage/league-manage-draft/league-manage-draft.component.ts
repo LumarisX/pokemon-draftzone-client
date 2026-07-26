@@ -46,24 +46,28 @@ export class LeagueManageDraftComponent implements OnInit {
     this.webSocketService
       .on<{
         draftId: string;
-        team: { id: string; name: string };
-        pokemon: League.LeaguePokemon;
-        canDraftTeams: string[];
+        pick: { pokemon: League.LeaguePokemon };
+        team: { id: string; name: string; draft: League.LeaguePokemon[] };
       }>('league.draft.added')
       .subscribe((data) => {
+        if (this.leagueZoneService.draftKey() !== data.draftId) return;
+
         const team = this.teams.find((team) => team.id === data.team.id);
-        team?.draft.push(data.pokemon);
+        if (team) team.draft = data.team.draft;
         this.notificationService.show(
-          `${data.team.name} drafted ${data.pokemon.name}!`,
+          `${data.team.name} drafted ${data.pick.pokemon.name}!`,
           'success',
         );
       });
 
     this.webSocketService
       .on<{
+        draftId: string;
         status: 'PRE_DRAFT' | 'IN_PROGRESS' | 'PAUSED' | 'COMPLETED';
       }>('league.draft.status')
       .subscribe((data) => {
+        if (this.leagueZoneService.draftKey() !== data.draftId) return;
+
         this.status = data.status;
         this.notificationService.show(`Draft Status: ${data.status}`, 'info');
       });

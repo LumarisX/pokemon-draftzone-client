@@ -166,7 +166,9 @@
             <h3 class="division-block__name">{{ draft.name }}</h3>
             <div class="hub__grid hub__grid--compact">
               <a
-                [routerLink]="'../drafts/' + draft.draftKey + '/draft'"
+                [routerLink]="
+                  tournamentBasePath + '/drafts/' + draft.draftKey + '/draft'
+                "
                 class="nav-card nav-card--compact"
               >
                 <span class="nav-card__icon">
