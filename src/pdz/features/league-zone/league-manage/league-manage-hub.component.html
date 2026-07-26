@@ -166,22 +166,24 @@
             <h3 class="division-block__name">{{ draft.name }}</h3>
             <div class="hub__grid hub__grid--compact">
               <a
-                [routerLink]="managePath + '/drafts/' + draft.draftKey"
+                [routerLink]="'../drafts/' + draft.draftKey + '/draft'"
                 class="nav-card nav-card--compact"
               >
                 <span class="nav-card__icon">
                   <pdz-icon name="dashboard" [size]="24"></pdz-icon>
                 </span>
-                <span class="nav-card__title">Dashboard</span>
+                <span class="nav-card__title">Draft Page</span>
               </a>
               <a
-                [routerLink]="managePath + '/drafts/' + draft.draftKey + '/draft'"
+                [routerLink]="
+                  managePath + '/drafts/' + draft.draftKey + '/draft'
+                "
                 class="nav-card nav-card--compact"
               >
                 <span class="nav-card__icon">
                   <pdz-icon name="sports_esports" [size]="24"></pdz-icon>
                 </span>
-                <span class="nav-card__title">Draft</span>
+                <span class="nav-card__title">Draft Control</span>
               </a>
             </div>
           </div>
@@ -216,12 +218,14 @@
                 <span class="nav-card__title">Trades</span>
               </a>
               @if (
-                stage.type === 'single-elimination' ||
-                stage.type === 'double-elimination' ||
-                stage.type === 'custom'
+                stage.type === "single-elimination" ||
+                stage.type === "double-elimination" ||
+                stage.type === "custom"
               ) {
                 <a
-                  [routerLink]="managePath + '/stages/' + stage._id + '/bracket'"
+                  [routerLink]="
+                    managePath + '/stages/' + stage._id + '/bracket'
+                  "
                   class="nav-card nav-card--compact"
                 >
                   <span class="nav-card__icon">

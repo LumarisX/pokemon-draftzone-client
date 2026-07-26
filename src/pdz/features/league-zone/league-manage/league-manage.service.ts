@@ -50,13 +50,11 @@ export class LeagueManageService {
     pick: {
       teamId: string;
       pokemonId: string;
-      pickNumber: number;
-      draftId: string;
     },
   ) {
     return this.apiService.post(
       `leagues/${this.leagueZoneService.leagueKey()}/tournaments/${tournamentId}/drafts/${this.leagueZoneService.draftKey()}/teams/${pick.teamId}/draft`,
-      { pokemonId: pick.pokemonId },
+      { add: [{ pokemonId: pick.pokemonId }] },
       { authenticated: true },
     );
   }

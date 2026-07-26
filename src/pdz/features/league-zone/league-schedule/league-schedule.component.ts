@@ -1,6 +1,6 @@
-import { DatePipe } from '@angular/common';
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import {
   Subject,
   catchError,
@@ -10,18 +10,13 @@ import {
   switchMap,
   takeUntil,
 } from 'rxjs';
-import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { LeagueBracketCanvasComponent } from '../league-bracket/league-bracket-canvas/league-bracket-canvas.component';
 import { LeagueScheduleWidgetComponent } from '../league-widgets/league-schedule-widget/league-schedule-widget.component';
-import {
-  BracketWithSeeding,
-  LeagueZoneService,
-} from '../league-zone.service';
+import { BracketWithSeeding, LeagueZoneService } from '../league-zone.service';
 
 @Component({
   selector: 'pdz-league-schedule',
   imports: [
-    DatePipe,
     LoadingComponent,
     LeagueBracketCanvasComponent,
     LeagueScheduleWidgetComponent,

@@ -19,6 +19,8 @@
           >
             @if (draftStartDisplay) {
               Starting in {{ draftStartDisplay }}
+            } @else if (isPreDraft && draftStartOverdue) {
+              Awaiting organizer to start the draft
             } @else {
               {{ draftDetails.status.replace("_", " ") | titlecase }}
             }

@@ -1,29 +1,23 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
+import { BehaviorSubject } from 'rxjs';
+import { DataService } from '@pdz/core/services/data.service';
 import { DraftPokemon } from '../../../drafts/draft.model';
+import { PokemonSearchComponent } from '../../../drafts/draft-overview/draft-form/components/pokemon-search/pokemon-search.component';
 import { LeagueNotificationService } from '../../league-notification.service';
 import { LeagueManageService } from '../league-manage.service';
 import { LeagueZoneService } from '../../league-zone.service';
 import { WebSocketService } from '@pdz/core/services/ws.service';
-import { PokemonSelectComponent } from '@pdz/shared/dropdowns/pokemon-select/pokemon-select.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LeagueNotificationsComponent } from '../../league-notifications/league-notifications.component';
 import { League } from '../../league.interface';
-
-type TeamForDraft = League.LeagueTeam & {
-  selectedPokemon?: DraftPokemon | null;
-};
 
 @Component({
   selector: 'pdz-league-manage-draft',
   imports: [
-    PokemonSelectComponent,
-    FormsModule,
+    PokemonSearchComponent,
     SpriteComponent,
-    MatButtonModule,
-    MatIconModule,
+    IconComponent,
     LeagueNotificationsComponent,
   ],
   templateUrl: './league-manage-draft.component.html',
@@ -34,13 +28,18 @@ export class LeagueManageDraftComponent implements OnInit {
   leagueZoneService = inject(LeagueZoneService);
   webSocketService = inject(WebSocketService);
   private notificationService = inject(LeagueNotificationService);
-  private tournamentId: string | null = null;
-  teams: TeamForDraft[] = [];
+  private dataService = inject(DataService);
+
+  teams: League.LeagueTeam[] = [];
   status: 'PRE_DRAFT' | 'IN_PROGRESS' | 'PAUSED' | 'COMPLETED' = 'IN_PROGRESS';
+  pokemonList$ = new BehaviorSubject<DraftPokemon[]>([]);
 
   ngOnInit(): void {
+    this.dataService
+      .getPokemonList('Gen9 NatDex')
+      .subscribe((list) => this.pokemonList$.next(list));
+
     this.leagueZoneService.getDraftDetails().subscribe((data) => {
-      console.log(data);
       this.teams = data.teams;
     });
 
@@ -70,40 +69,24 @@ export class LeagueManageDraftComponent implements OnInit {
       });
   }
 
-  setState(state: string): void {
-    this.leagueManageService.setDraftState(state).subscribe((response) => {
-      console.log(response);
-    });
+  takenIds(team: League.LeagueTeam): string[] {
+    return team.draft.map((pokemon) => pokemon.id);
   }
 
-  addDraftPick(team: TeamForDraft) {
-    if (!team.selectedPokemon) {
-      return;
-    }
+  setState(state: string): void {
+    this.leagueManageService.setDraftState(state).subscribe();
+  }
 
+  addDraftPick(team: League.LeagueTeam, pokemon: DraftPokemon): void {
     this.leagueManageService
       .setPick(this.leagueZoneService.tournamentKey()!, {
         teamId: team.id,
-        pokemonId: team.selectedPokemon.id,
-        pickNumber: team.draft.length,
-        draftId: this.leagueZoneService.draftKey()!,
+        pokemonId: pokemon.id,
       })
-      .subscribe((response) => {
-        team.selectedPokemon = null;
-        console.log(response);
-      });
-  }
-
-  deleteDraftPick(team: TeamForDraft) {}
-  editDraftPick(team: TeamForDraft) {}
-
-  testNotification(): void {
-    this.notificationService.show('This is a test notification!', 'info');
+      .subscribe();
   }
 
   skipNext() {
-    this.leagueManageService.skipCurrentPick().subscribe((response) => {
-      console.log(response);
-    });
+    this.leagueManageService.skipCurrentPick().subscribe();
   }
 }

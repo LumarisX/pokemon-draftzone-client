@@ -127,6 +127,7 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
   skipTimeDisplay: string | null = null;
   draftStart?: Date;
   draftStartDisplay: string | null = null;
+  draftStartOverdue: boolean = false;
 
   draftDetails: {
     orderProgression: 'snake' | 'linear';
@@ -391,10 +392,12 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
   private updateDraftStartDisplay(): void {
     if (!this.isPreDraft || !this.draftStart) {
       this.draftStartDisplay = null;
+      this.draftStartOverdue = false;
       return;
     }
     const diffMs = this.draftStart.getTime() - Date.now();
     this.draftStartDisplay = diffMs > 0 ? formatCountdown(diffMs) : null;
+    this.draftStartOverdue = diffMs <= 0;
   }
 
   moveUp(picks: League.LeaguePokemon[], index: number): void {
