@@ -147,6 +147,10 @@
   &__hint {
     @include apply-typography(body-sm);
     color: pdz.color(on-surface-variant);
+
+    &--error {
+      color: pdz.color(error);
+    }
   }
 }
 

@@ -493,6 +493,19 @@
   font-weight: 600;
   color: pdz.color(on-surface);
 
+  .draft-footer-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: pdz.space(2xs);
+  }
+
+  .tier-requirements-warning {
+    font-size: 0.85em;
+    font-weight: 500;
+    color: pdz.color(error);
+  }
+
   .save-button {
     @include button-base($padding: 0.5rem 1.5rem, $margin: 0);
     background-color: pdz.color(primary);

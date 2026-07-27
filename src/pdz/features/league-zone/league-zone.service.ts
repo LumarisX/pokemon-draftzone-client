@@ -230,6 +230,7 @@ export class LeagueZoneService {
       teamOrder: string[];
       rounds: number;
       minDraftCount: number;
+      tierRequirements: { tierName: string; required: number }[];
       points: number;
       teams: League.LeagueTeam[];
       orderProgression: 'snake' | 'linear';
@@ -237,6 +238,7 @@ export class LeagueZoneService {
       visibility: 'ALL' | 'SELF';
       allowRemovals: boolean;
       status: 'PRE_DRAFT' | 'IN_PROGRESS' | 'PAUSED' | 'COMPLETED';
+      noTimer: boolean;
       skipTime: Date;
       currentPick: {
         round: number;

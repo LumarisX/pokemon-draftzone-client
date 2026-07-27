@@ -272,6 +272,101 @@
         </div>
       </section>
 
+      <!-- Draft Rules -->
+      <section class="settings-section">
+        <h2 class="settings-section__title">Draft Rules</h2>
+        <div class="settings-section__body">
+          <div class="form-row">
+            <div class="form-field">
+              <label class="form-field__label" for="draftCountMin"
+                >Min Roster Size *</label
+              >
+              <input
+                id="draftCountMin"
+                class="form-field__input form-field__input--number"
+                [class.form-field__input--invalid]="
+                  form.get('draftCountMin')?.invalid &&
+                  form.get('draftCountMin')?.touched
+                "
+                type="number"
+                formControlName="draftCountMin"
+                min="1"
+              />
+            </div>
+            <div class="form-field">
+              <label class="form-field__label" for="draftCountMax"
+                >Max Roster Size *</label
+              >
+              <input
+                id="draftCountMax"
+                class="form-field__input form-field__input--number"
+                [class.form-field__input--invalid]="
+                  form.get('draftCountMax')?.invalid &&
+                  form.get('draftCountMax')?.touched
+                "
+                type="number"
+                formControlName="draftCountMax"
+                min="1"
+              />
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label class="checkbox-option">
+              <input type="checkbox" formControlName="pointTotalEnabled" />
+              <span class="checkbox-option__label">Limit total draft points</span>
+            </label>
+            @if (form.get('pointTotalEnabled')?.value) {
+              <input
+                id="pointTotal"
+                class="form-field__input form-field__input--number"
+                type="number"
+                formControlName="pointTotal"
+                min="0"
+              />
+              <span class="form-field__hint"
+                >Teams cannot draft a roster exceeding this many points</span
+              >
+            }
+          </div>
+
+          @if (availableTierNames.length) {
+            <div class="form-field" formArrayName="tierRequirements">
+              <label class="form-field__label">Required Tier Picks</label>
+              <span class="form-field__hint"
+                >Minimum picks a team must draft from each tier</span
+              >
+              <div class="form-row">
+                @for (
+                  tierReq of tierRequirementsArray.controls;
+                  track tierReq.value.tierName;
+                  let i = $index
+                ) {
+                  <div class="form-field" [formGroupName]="i">
+                    <label class="form-field__label">{{
+                      tierReq.value.tierName
+                    }}</label>
+                    <input
+                      class="form-field__input form-field__input--number"
+                      type="number"
+                      formControlName="required"
+                      min="0"
+                    />
+                  </div>
+                }
+              </div>
+              <span
+                class="form-field__hint"
+                [class.form-field__hint--error]="tierRequirementsExceedMax"
+              >
+                Total required: {{ tierRequirementsTotal }} /
+                {{ form.get("draftCountMax")?.value }} max roster slots
+              </span>
+            </div>
+          }
+        </div>
+      </section>
+
       <!-- Find a League Advertising -->
       <section class="settings-section">
         <h2 class="settings-section__title">Find a League</h2>
@@ -380,7 +475,7 @@
         <button
           type="submit"
           class="btn btn--primary"
-          [disabled]="form.invalid || isSaving"
+          [disabled]="form.invalid || isSaving || tierRequirementsExceedMax"
         >
           @if (isSaving) {
             <pdz-icon name="progress_activity" [size]="18"></pdz-icon>

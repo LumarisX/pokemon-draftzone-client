@@ -209,7 +209,19 @@
               {{ isSubmitting ? "Saving..." : "Save" }}
             </button>
           }
-          Points: {{ selectedTeam.pointTotal }}/{{ points }}
+          <span class="draft-footer-info">
+            <span>Points: {{ selectedTeam.pointTotal }}/{{ points }}</span>
+            @if (unmetTierRequirements(); as unmet) {
+              @if (unmet.length) {
+                <span class="tier-requirements-warning">
+                  Needs:
+                  @for (req of unmet; track req.tierName) {
+                    {{ req.tierName }} {{ req.have }}/{{ req.required }}
+                  }
+                </span>
+              }
+            }
+          </span>
         </div>
       </div>
     </div>
@@ -259,6 +271,10 @@
                             @if (this.draftDetails.status === "PAUSED") {
                               <span class="pause-time">
                                 <mat-icon>pause</mat-icon>
+                              </span>
+                            } @else if (noTimer) {
+                              <span class="skip-time" title="No timer">
+                                <pdz-icon name="timer_off" size="sm"></pdz-icon>
                               </span>
                             } @else {
                               <span class="skip-time">

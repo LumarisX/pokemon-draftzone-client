@@ -9,11 +9,14 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { Subject, takeUntil } from 'rxjs';
+import { catchError, forkJoin, of, Subject, takeUntil } from 'rxjs';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { LeagueManageService } from '../league-manage.service';
 import { LeagueZoneService } from '../../league-zone.service';
+import { TierListService } from '@pdz/features/tier-lists/tier-list.service';
+
+const NON_DRAFTABLE_TIER_NAMES = new Set(['untiered', 'ban', 'banned']);
 
 @Component({
   selector: 'pdz-league-settings',
@@ -31,10 +34,12 @@ export class LeagueSettingsComponent implements OnInit, OnDestroy {
   private fb = inject(FormBuilder);
   private manageService = inject(LeagueManageService);
   private leagueService = inject(LeagueZoneService);
+  private tierListService = inject(TierListService);
   private router = inject(Router);
 
   form!: FormGroup;
   isLoading = true;
+  availableTierNames: string[] = [];
 
   readonly adPlatformOptions = [
     'Pokémon Showdown',
@@ -75,6 +80,13 @@ export class LeagueSettingsComponent implements OnInit, OnDestroy {
       diffMode: ['pokemon', Validators.required],
       forfeitGameDiff: [0, [Validators.required, Validators.min(0)]],
       forfeitPokemonDiff: [0, [Validators.required, Validators.min(0)]],
+      draftCountMin: [1, [Validators.required, Validators.min(1)]],
+      draftCountMax: [1, [Validators.required, Validators.min(1)]],
+      pointTotalEnabled: [false],
+      pointTotal: [0, Validators.min(0)],
+      tierRequirements: this.fb.array<
+        FormGroup<{ tierName: FormControl<string>; required: FormControl<number> }>
+      >([]),
       adAdvertise: [false],
       adSkillFrom: ['0'],
       adSkillTo: ['3'],
@@ -89,11 +101,15 @@ export class LeagueSettingsComponent implements OnInit, OnDestroy {
       ),
     });
 
-    this.manageService
-      .getTournamentSettings()
+    forkJoin({
+      settings: this.manageService.getTournamentSettings(),
+      tierList: this.tierListService
+        .getTierList()
+        .pipe(catchError(() => of({ tierList: [] as { name: string }[] }))),
+    })
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (settings) => {
+        next: ({ settings, tierList }) => {
           this.form.patchValue({
             name: settings.name,
             description: settings.description ?? '',
@@ -122,6 +138,10 @@ export class LeagueSettingsComponent implements OnInit, OnDestroy {
             diffMode: settings.diffMode ?? 'pokemon',
             forfeitGameDiff: settings.forfeit?.gameDiff ?? 0,
             forfeitPokemonDiff: settings.forfeit?.pokemonDiff ?? 0,
+            draftCountMin: settings.draftCount?.min ?? 1,
+            draftCountMax: settings.draftCount?.max ?? 1,
+            pointTotalEnabled: settings.pointTotal != null,
+            pointTotal: settings.pointTotal ?? 0,
             adAdvertise: settings.adSettings?.advertise ?? false,
             adSkillFrom: settings.adSettings?.skillLevelRange?.from ?? '0',
             adSkillTo: settings.adSettings?.skillLevelRange?.to ?? '3',
@@ -134,6 +154,31 @@ export class LeagueSettingsComponent implements OnInit, OnDestroy {
               ),
             );
           }
+
+          const requirementByTier = new Map(
+            settings.tierRequirements.map((req) => [
+              req.tierName,
+              req.required,
+            ]),
+          );
+          this.availableTierNames = tierList.tierList
+            .map((tier) => tier.name)
+            .filter(
+              (name) => !NON_DRAFTABLE_TIER_NAMES.has(name.trim().toLowerCase()),
+            );
+          this.tierRequirementsArray.clear();
+          for (const tierName of this.availableTierNames) {
+            this.tierRequirementsArray.push(
+              this.fb.group({
+                tierName: this.fb.nonNullable.control(tierName),
+                required: this.fb.nonNullable.control(
+                  requirementByTier.get(tierName) ?? 0,
+                  [Validators.required, Validators.min(0)],
+                ),
+              }),
+            );
+          }
+
           this.isLoading = false;
         },
         error: () => {
@@ -147,13 +192,35 @@ export class LeagueSettingsComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
+  /** Sum of required picks across all tiers. */
+  get tierRequirementsTotal(): number {
+    return this.tierRequirementsArray.controls.reduce(
+      (sum, ctrl) => sum + (Number(ctrl.get('required')?.value) || 0),
+      0,
+    );
+  }
+
+  get tierRequirementsExceedMax(): boolean {
+    const max = Number(this.form.get('draftCountMax')?.value ?? 0);
+    return this.tierRequirementsTotal > max;
+  }
+
   save(): void {
-    if (this.form.invalid || this.isSaving) return;
+    if (
+      this.form.invalid ||
+      this.isSaving ||
+      this.tierRequirementsExceedMax
+    )
+      return;
 
     const v = this.form.value;
     this.isSaving = true;
     this.saveSuccess = false;
     this.saveError = null;
+
+    const tierRequirements = (
+      v.tierRequirements as { tierName: string; required: number }[]
+    ).filter((req) => req.required > 0);
 
     this.manageService
       .updateTournamentSettings({
@@ -177,6 +244,9 @@ export class LeagueSettingsComponent implements OnInit, OnDestroy {
           pokemonDiff: v.forfeitPokemonDiff,
         },
         diffMode: v.diffMode,
+        draftCount: { min: v.draftCountMin, max: v.draftCountMax },
+        pointTotal: v.pointTotalEnabled ? v.pointTotal : undefined,
+        tierRequirements,
         adSettings: {
           advertise: v.adAdvertise,
           skillLevelRange: { from: v.adSkillFrom, to: v.adSkillTo },
@@ -201,6 +271,10 @@ export class LeagueSettingsComponent implements OnInit, OnDestroy {
 
   get adPlatformsArray(): FormArray {
     return this.form.get('adPlatforms') as FormArray;
+  }
+
+  get tierRequirementsArray(): FormArray {
+    return this.form.get('tierRequirements') as FormArray;
   }
 
   private selectedAdPlatforms(): string[] {

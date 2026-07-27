@@ -14,27 +14,15 @@
           <mat-error>Tier name cannot exceed 30 characters</mat-error>
         }
       </mat-form-field>
-      <div class="cost-container">
-        <mat-form-field appearance="outline" class="form-field-half-width">
-          <mat-label>Required Count</mat-label>
-          <input min="0" type="number" matInput formControlName="required" />
-          @if (
-            form.get("required")?.hasError("required") &&
-            form.get("required")?.touched
-          ) {
-            <mat-error>Required</mat-error>
-          }
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="form-field-half-width">
-          <mat-label>Cost (Points)</mat-label>
-          <input type="number" matInput formControlName="cost" />
-          @if (
-            form.get("cost")?.hasError("required") && form.get("cost")?.touched
-          ) {
-            <mat-error>Required</mat-error>
-          }
-        </mat-form-field>
-      </div>
+      <mat-form-field appearance="outline" class="form-field-full-width">
+        <mat-label>Cost (Points)</mat-label>
+        <input type="number" matInput formControlName="cost" />
+        @if (
+          form.get("cost")?.hasError("required") && form.get("cost")?.touched
+        ) {
+          <mat-error>Required</mat-error>
+        }
+      </mat-form-field>
     </div>
   </div>
   <div mat-dialog-actions align="end">

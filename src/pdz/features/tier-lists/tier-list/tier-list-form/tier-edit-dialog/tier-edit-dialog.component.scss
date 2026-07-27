@@ -14,16 +14,6 @@ h2 {
   width: 100%;
 }
 
-.cost-container {
-  display: flex;
-  column-gap: 0.5rem;
-  width: 100%;
-  justify-content: stretch;
-  mat-form-field {
-    width: 100%;
-  }
-}
-
 :host {
   @include mat.dialog-overrides(
     (

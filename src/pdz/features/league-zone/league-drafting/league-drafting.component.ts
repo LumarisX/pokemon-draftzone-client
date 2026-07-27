@@ -51,6 +51,7 @@ interface DraftCounterEvent {
 interface DraftStatusEvent {
   draftId: string;
   status: 'PRE_DRAFT' | 'IN_PROGRESS' | 'PAUSED' | 'COMPLETED';
+  noTimer?: boolean;
   currentPick?: {
     round: number;
     position: number;
@@ -113,6 +114,7 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
   draftName: string = '';
   points: number = 0;
   minDraftCount: number = 0;
+  tierRequirements: { tierName: string; required: number }[] = [];
 
   isLoading: boolean = true;
 
@@ -125,6 +127,7 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
   selectedPick: number = 0;
   isDropdownOpen: boolean = false;
   skipTimeDisplay: string | null = null;
+  noTimer: boolean = false;
   draftStart?: Date;
   draftStartDisplay: string | null = null;
   draftStartOverdue: boolean = false;
@@ -204,10 +207,12 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
     this.draftName = data.divisionName;
     this.currentPick = data.currentPick;
     this.canDraftCounts = data.canDraftCounts ?? {};
+    this.noTimer = data.noTimer;
     this.draftDetails.orderProgression = data.orderProgression;
     this.draftDetails.sequentialTurns = data.sequentialTurns;
     this.points = data.points;
     this.minDraftCount = data.minDraftCount;
+    this.tierRequirements = data.tierRequirements ?? [];
     this.draftDetails.roundCount = data.rounds;
     this.draftDetails.teamOrder = data.teamOrder;
     this.draftDetails.status = data.status;
@@ -304,6 +309,7 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
         }
         this.draftDetails.status = data.status;
         this.currentPick = data.currentPick;
+        if (data.noTimer !== undefined) this.noTimer = data.noTimer;
         this.updateDraftStartDisplay();
         switch (data.status) {
           case 'PAUSED':
@@ -437,7 +443,7 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
     tier: string;
     cost?: number;
   }): void {
-    if (!pokemon.cost) return;
+    if (pokemon.cost == null) return;
 
     this.selectedTeam.draft.push({
       id: pokemon.id,
@@ -475,7 +481,7 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
     tier: string;
     cost?: number;
   }): void {
-    if (!pokemon.cost) return;
+    if (pokemon.cost == null) return;
     if (!this.draftDetails.sequentialTurns) {
       this.selectedTeam.picks[this.selectedPick] = [
         {
@@ -503,10 +509,27 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
     this.picksChanged = true;
   }
 
+  /** Tier requirements not yet met by selectedTeam's currently staged draft. */
+  unmetTierRequirements(): { tierName: string; have: number; required: number }[] {
+    if (!this.tierRequirements.length) return [];
+    const counts = new Map<string, number>();
+    for (const pokemon of this.selectedTeam.draft) {
+      counts.set(pokemon.tier, (counts.get(pokemon.tier) ?? 0) + 1);
+    }
+    return this.tierRequirements
+      .map((req) => ({
+        tierName: req.tierName,
+        have: counts.get(req.tierName) ?? 0,
+        required: req.required,
+      }))
+      .filter((req) => req.have < req.required);
+  }
+
   isRosterValid(): boolean {
     return (
       this.selectedTeam.pointTotal <= this.points &&
-      this.selectedTeam.draft.length >= this.minDraftCount
+      this.selectedTeam.draft.length >= this.minDraftCount &&
+      this.unmetTierRequirements().length === 0
     );
   }
 

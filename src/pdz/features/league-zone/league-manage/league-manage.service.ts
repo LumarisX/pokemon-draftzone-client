@@ -74,6 +74,14 @@ export class LeagueManageService {
     );
   }
 
+  setNoTimer(noTimer: boolean) {
+    return this.apiService.post(
+      `leagues/${this.leagueZoneService.leagueKey()}/tournaments/${this.leagueZoneService.tournamentKey()}/drafts/${this.leagueZoneService.draftKey()}/timer`,
+      { noTimer },
+      { authenticated: true },
+    );
+  }
+
   skipCurrentPick() {
     return this.apiService.post(
       `leagues/${this.leagueZoneService.leagueKey()}/tournaments/${this.leagueZoneService.tournamentKey()}/drafts/${this.leagueZoneService.draftKey()}/skip`,
@@ -161,6 +169,9 @@ export class LeagueManageService {
     };
     forfeit?: { gameDiff: number; pokemonDiff: number };
     diffMode?: 'pokemon' | 'game';
+    draftCount?: { min: number; max: number };
+    pointTotal?: number;
+    tierRequirements?: { tierName: string; required: number }[];
     adSettings?: {
       advertise: boolean;
       skillLevelRange?: { from: string; to: string };

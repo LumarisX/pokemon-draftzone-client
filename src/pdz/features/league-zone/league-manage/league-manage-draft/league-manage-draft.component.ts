@@ -32,6 +32,7 @@ export class LeagueManageDraftComponent implements OnInit {
 
   teams: League.LeagueTeam[] = [];
   status: 'PRE_DRAFT' | 'IN_PROGRESS' | 'PAUSED' | 'COMPLETED' = 'IN_PROGRESS';
+  noTimer = false;
   pokemonList$ = new BehaviorSubject<DraftPokemon[]>([]);
 
   ngOnInit(): void {
@@ -41,6 +42,8 @@ export class LeagueManageDraftComponent implements OnInit {
 
     this.leagueZoneService.getDraftDetails().subscribe((data) => {
       this.teams = data.teams;
+      this.status = data.status;
+      this.noTimer = data.noTimer;
     });
 
     this.webSocketService
@@ -64,11 +67,13 @@ export class LeagueManageDraftComponent implements OnInit {
       .on<{
         draftId: string;
         status: 'PRE_DRAFT' | 'IN_PROGRESS' | 'PAUSED' | 'COMPLETED';
+        noTimer?: boolean;
       }>('league.draft.status')
       .subscribe((data) => {
         if (this.leagueZoneService.draftKey() !== data.draftId) return;
 
         this.status = data.status;
+        if (data.noTimer !== undefined) this.noTimer = data.noTimer;
         this.notificationService.show(`Draft Status: ${data.status}`, 'info');
       });
   }
@@ -79,6 +84,13 @@ export class LeagueManageDraftComponent implements OnInit {
 
   setState(state: string): void {
     this.leagueManageService.setDraftState(state).subscribe();
+  }
+
+  toggleNoTimer(): void {
+    const noTimer = !this.noTimer;
+    this.leagueManageService
+      .setNoTimer(noTimer)
+      .subscribe(() => (this.noTimer = noTimer));
   }
 
   addDraftPick(team: League.LeagueTeam, pokemon: DraftPokemon): void {

@@ -58,7 +58,6 @@ interface HistoryEntry {
 interface EditableTier {
   name: string;
   cost?: number;
-  required?: number;
   pokemon: EditTierPokemon[];
 }
 
@@ -813,7 +812,6 @@ export class TierListFormComponent implements OnInit, OnDestroy {
         tiers.push({
           name: result.name,
           cost: result.cost,
-          required: result.required,
           pokemon: [],
         });
 
@@ -840,7 +838,6 @@ export class TierListFormComponent implements OnInit, OnDestroy {
         if (!result) return;
         tier.name = result.name;
         tier.cost = result.cost;
-        tier.required = result.required;
         this.hasUnsavedChanges.set(true);
         this.snackBar.open('Tier updated', undefined, { duration: 2000 });
       });

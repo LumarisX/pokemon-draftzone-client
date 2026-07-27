@@ -30,6 +30,27 @@
     >
       <pdz-icon name="skip_next" size="md"></pdz-icon>
     </button>
+    @if (noTimer) {
+      <button
+        type="button"
+        class="icon-btn icon-btn--accent"
+        aria-label="Enable pick timer"
+        title="Timer disabled — click to re-enable"
+        (click)="toggleNoTimer()"
+      >
+        <pdz-icon name="timer_off" size="md"></pdz-icon>
+      </button>
+    } @else {
+      <button
+        type="button"
+        class="icon-btn"
+        aria-label="Disable pick timer"
+        title="Click to run the draft with no timer"
+        (click)="toggleNoTimer()"
+      >
+        <pdz-icon name="timer" size="md"></pdz-icon>
+      </button>
+    }
   </div>
 </div>
 

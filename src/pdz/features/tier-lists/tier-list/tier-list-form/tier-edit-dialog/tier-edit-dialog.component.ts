@@ -15,13 +15,12 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 
 export interface TierDialogData {
-  tier?: { name: string; cost?: number; required?: number };
+  tier?: { name: string; cost?: number };
 }
 
 export interface TierDialogResult {
   name: string;
   cost: number;
-  required: number;
 }
 
 @Component({
@@ -51,7 +50,6 @@ export class TierEditDialogComponent implements OnInit {
         [Validators.required, Validators.maxLength(30)],
       ],
       cost: [this.data?.tier?.cost ?? 0, Validators.required],
-      required: [this.data?.tier?.required ?? 0, Validators.required],
     });
 
     this.form.get('name')!.valueChanges.subscribe((value: string) => {
@@ -64,11 +62,10 @@ export class TierEditDialogComponent implements OnInit {
 
   onSave(): void {
     if (this.form.invalid) return;
-    const { name, cost, required } = this.form.value;
+    const { name, cost } = this.form.value;
     const result: TierDialogResult = {
       name: name.trim(),
       cost: Number(cost),
-      required: Number(required),
     };
     this.dialogRef.close(result);
   }
