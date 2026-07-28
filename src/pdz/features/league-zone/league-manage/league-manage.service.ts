@@ -170,7 +170,8 @@ export class LeagueManageService {
     forfeit?: { gameDiff: number; pokemonDiff: number };
     diffMode?: 'pokemon' | 'game';
     draftCount?: { min: number; max: number };
-    pointTotal?: number;
+    /** `null` clears an existing point cap; `undefined` leaves it untouched. */
+    pointTotal?: number | null;
     tierRequirements?: { tierName: string; required: number }[];
     adSettings?: {
       advertise: boolean;

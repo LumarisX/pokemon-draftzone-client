@@ -370,6 +370,8 @@
         flex-direction: column;
 
         .pick-header {
+          display: flex;
+          gap: pdz.space(xs);
           width: 100%;
           justify-content: space-between;
           align-items: center;

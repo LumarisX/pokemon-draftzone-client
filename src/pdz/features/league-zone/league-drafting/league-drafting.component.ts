@@ -525,12 +525,14 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
       .filter((req) => req.have < req.required);
   }
 
+  /**
+   * Only the actual drafted roster (not the queued picks) must stay within budget; roster
+   * completeness (min count, tier requirements) is only required once the draft is finished,
+   * not on every intermediate save. A falsy `points` means the tournament has no point budget
+   * (e.g. a BST-cap format), so there's nothing to enforce.
+   */
   isRosterValid(): boolean {
-    return (
-      this.selectedTeam.pointTotal <= this.points &&
-      this.selectedTeam.draft.length >= this.minDraftCount &&
-      this.unmetTierRequirements().length === 0
-    );
+    return !this.points || this.selectedTeam.pointTotal <= this.points;
   }
 
   canSave(): boolean {

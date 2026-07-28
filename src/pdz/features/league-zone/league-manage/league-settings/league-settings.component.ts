@@ -245,7 +245,7 @@ export class LeagueSettingsComponent implements OnInit, OnDestroy {
         },
         diffMode: v.diffMode,
         draftCount: { min: v.draftCountMin, max: v.draftCountMax },
-        pointTotal: v.pointTotalEnabled ? v.pointTotal : undefined,
+        pointTotal: v.pointTotalEnabled ? v.pointTotal : null,
         tierRequirements,
         adSettings: {
           advertise: v.adAdvertise,

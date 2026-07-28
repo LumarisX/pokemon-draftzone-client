@@ -89,7 +89,7 @@
                 }
                 <div class="my-pokemon-tier fancy-font">{{ pokemon.cost }}</div>
                 @if (
-                  draftDetails.status === 'IN_PROGRESS' &&
+                  draftDetails.status === "IN_PROGRESS" &&
                   selectedTeam.isCoach &&
                   (pendingPokemonIds.has(pokemon.id) ||
                     !draftDetails.sequentialTurns)
@@ -108,7 +108,10 @@
                 }
               </li>
             }
-            @if (draftDetails.status === 'IN_PROGRESS' && draftDetails.sequentialTurns) {
+            @if (
+              draftDetails.status === "IN_PROGRESS" &&
+              draftDetails.sequentialTurns
+            ) {
               @for (
                 picks of selectedTeam.picks;
                 track $index;
@@ -180,7 +183,7 @@
                   </div>
                 </li>
               }
-            } @else if (draftDetails.status === 'IN_PROGRESS') {
+            } @else if (draftDetails.status === "IN_PROGRESS") {
               @for (
                 slot of selectedTeam.picks;
                 track $index;
@@ -200,21 +203,22 @@
         </div>
 
         <div class="draft-footer">
-          @if (draftDetails.status === 'IN_PROGRESS') {
+          @if (draftDetails.status === "IN_PROGRESS") {
             <button
               class="save-button"
               [disabled]="!canSave()"
               (click)="saveDraft()"
             >
-              {{ isSubmitting ? "Saving..." : "Save" }}
+              {{ isSubmitting ? "Sending..." : "Send" }}
             </button>
           }
           <span class="draft-footer-info">
-            <span>Points: {{ selectedTeam.pointTotal }}/{{ points }}</span>
+            @if (points) {
+              <span>Points: {{ selectedTeam.pointTotal }}/{{ points }}</span>
+            }
             @if (unmetTierRequirements(); as unmet) {
               @if (unmet.length) {
-                <span class="tier-requirements-warning">
-                  Needs:
+                <span>
                   @for (req of unmet; track req.tierName) {
                     {{ req.tierName }} {{ req.have }}/{{ req.required }}
                   }
