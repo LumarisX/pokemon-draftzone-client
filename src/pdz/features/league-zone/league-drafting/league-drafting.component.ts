@@ -430,15 +430,6 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const requiredTier = this.requiredTierForSlot(this.selectedPick);
-    if (requiredTier && pokemon.tier !== requiredTier) {
-      this.notificationService.show(
-        `This pick requires a ${requiredTier} tier Pokémon.`,
-        'error',
-      );
-      return;
-    }
-
     if (this.canDraft() && !this.selectedPick) {
       this.draftPokemon(pokemon);
     } else {
@@ -533,31 +524,6 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
         required: req.required,
       }))
       .filter((req) => req.have < req.required);
-  }
-
-  /**
-   * Tier required for a future pick slot (0-based index into selectedTeam.picks), or null if
-   * it's a free "Point Pick" slot. The earliest slots are assigned to whichever required tiers
-   * are still unmet (in requirement order), so the roster fills the mandatory tiers first.
-   */
-  requiredTierForSlot(roundIndex: number): string | null {
-    let cursor = 0;
-    for (const req of this.unmetTierRequirements()) {
-      const shortfall = req.required - req.have;
-      if (roundIndex < cursor + shortfall) return req.tierName;
-      cursor += shortfall;
-    }
-    return null;
-  }
-
-  /**
-   * Badge shown in the tier-cost spot of an empty pick row: the required tier name, or
-   * "Point Pick" once all requirements are met. Null (no badge) when this tournament has
-   * no tier requirements at all.
-   */
-  pickSlotBadge(roundIndex: number): string | null {
-    if (!this.tierRequirements.length) return null;
-    return this.requiredTierForSlot(roundIndex) ?? 'Point Pick';
   }
 
   /**

@@ -195,6 +195,10 @@
     padding: pdz.space(sm) pdz.space(md);
     background: pdz.color(surface-container-low);
     border-bottom: 2px solid pdz.color(primary);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: pdz.space(xs);
   }
 
   &__name {
@@ -204,50 +208,11 @@
     margin: 0;
   }
 
-  &__picks {
-    list-style: none;
-    margin: 0;
-    padding: pdz.space(xs);
-    display: flex;
-    flex-direction: column;
-    gap: pdz.space(2xs);
-    flex-grow: 1;
-  }
-
-  &__pick {
-    display: flex;
-    align-items: center;
-    gap: pdz.space(xs);
-    padding: pdz.space(2xs) pdz.space(xs);
-    border-radius: pdz.shape(corner-sm);
-
-    &:hover {
-      background: pdz.color(surface-container-low);
-    }
-  }
-
-  &__pick-name {
-    @include apply-typography(body-sm);
-    flex: 1;
-    min-width: 0;
-    color: pdz.color(on-surface);
-    font-weight: 600;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  &__pick-tier {
+  &__round-count {
     @include apply-typography(label-sm);
     color: pdz.color(on-surface-variant);
     font-family: var(--pdz-font-fancy);
-  }
-
-  &__empty {
-    @include apply-typography(body-sm);
-    color: pdz.color(on-surface-variant);
-    text-align: center;
-    padding: pdz.space(md) 0;
+    white-space: nowrap;
   }
 
   &__add {

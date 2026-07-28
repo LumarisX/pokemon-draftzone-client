@@ -142,6 +142,10 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
     return team.draft.map((pokemon) => pokemon.id);
   }
 
+  roundsPicked(team: League.LeagueTeam): number {
+    return Math.min(team.draft.length, this.roundCount);
+  }
+
   setState(state: string): void {
     this.leagueManageService.setDraftState(state).subscribe();
   }

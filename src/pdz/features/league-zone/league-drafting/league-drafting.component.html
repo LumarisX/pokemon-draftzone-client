@@ -179,12 +179,7 @@
                         class="no-pick"
                         [class.selected-pick]="selectedPick === roundIndex"
                       >
-                        <span class="no-pick-text">Select Pokémon</span>
-                        @if (pickSlotBadge(roundIndex); as badge) {
-                          <span class="my-pokemon-tier fancy-font">{{
-                            badge
-                          }}</span>
-                        }
+                        Select Pokémon
                       </button>
                     }
                   </div>
@@ -201,14 +196,7 @@
                     {{ roundIndex + selectedTeam.draft.length + 1 }}
                   </div>
                   <div class="my-draft-picks">
-                    <button class="no-pick">
-                      <span class="no-pick-text">Add Pokémon</span>
-                      @if (pickSlotBadge(roundIndex); as badge) {
-                        <span class="my-pokemon-tier fancy-font">{{
-                          badge
-                        }}</span>
-                      }
-                    </button>
+                    <button class="no-pick">Add Pokémon</button>
                   </div>
                 </li>
               }
@@ -229,6 +217,16 @@
           <span class="draft-footer-info">
             @if (points) {
               <span>Points: {{ selectedTeam.pointTotal }}/{{ points }}</span>
+            }
+            @if (unmetTierRequirements(); as unmet) {
+              @if (unmet.length) {
+                <span class="tier-requirements-warning">
+                  Needs:
+                  @for (req of unmet; track req.tierName) {
+                    {{ req.tierName }} {{ req.have }}/{{ req.required }}
+                  }
+                </span>
+              }
             }
           </span>
         </div>

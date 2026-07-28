@@ -124,18 +124,10 @@
       <section class="team-card">
         <header class="team-card__header">
           <h3 class="team-card__name">{{ team.name }}</h3>
+          <span class="team-card__round-count">
+            {{ roundsPicked(team) }} / {{ roundCount }} rounds
+          </span>
         </header>
-        <ol class="team-card__picks">
-          @for (pokemon of team.draft; track pokemon.id) {
-            <li class="team-card__pick">
-              <pdz-sprite [pokemon]="pokemon" size="2.5rem" flipped></pdz-sprite>
-              <span class="team-card__pick-name">{{ pokemon.name }}</span>
-              <span class="team-card__pick-tier">{{ pokemon.tier }}</span>
-            </li>
-          } @empty {
-            <li class="team-card__empty">No picks made yet.</li>
-          }
-        </ol>
         <div class="team-card__add">
           <pdz-pokemon-search
             [options$]="pokemonList$"

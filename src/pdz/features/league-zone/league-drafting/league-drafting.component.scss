@@ -445,18 +445,14 @@
         }
 
         .no-pick {
-          display: flex;
-          align-items: center;
           color: pdz.color(primary);
-          padding: 0.125rem 0.5rem;
+          padding: 0.125rem 0;
+          text-align: center;
+          align-self: center;
+          font-weight: bold;
           min-height: 2.5rem;
-          width: 100%;
 
-          .no-pick-text {
-            flex-grow: 1;
-            text-align: center;
-            font-weight: bold;
-          }
+          width: 100%;
         }
       }
     }
