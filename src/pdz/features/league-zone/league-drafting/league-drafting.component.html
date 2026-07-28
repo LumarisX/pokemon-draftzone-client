@@ -87,7 +87,9 @@
                     <pdz-icon name="tera"></pdz-icon>
                   </div>
                 }
-                <div class="my-pokemon-tier fancy-font">{{ pokemon.cost }}</div>
+                <div class="my-pokemon-tier fancy-font">
+                  {{ pokemon.cost || pokemon.tier }}
+                </div>
                 @if (
                   draftDetails.status === "IN_PROGRESS" &&
                   selectedTeam.isCoach &&
@@ -177,7 +179,12 @@
                         class="no-pick"
                         [class.selected-pick]="selectedPick === roundIndex"
                       >
-                        Select Pokémon
+                        <span class="no-pick-text">Select Pokémon</span>
+                        @if (pickSlotBadge(roundIndex); as badge) {
+                          <span class="my-pokemon-tier fancy-font">{{
+                            badge
+                          }}</span>
+                        }
                       </button>
                     }
                   </div>
@@ -194,7 +201,14 @@
                     {{ roundIndex + selectedTeam.draft.length + 1 }}
                   </div>
                   <div class="my-draft-picks">
-                    <button class="no-pick">Add Pokémon</button>
+                    <button class="no-pick">
+                      <span class="no-pick-text">Add Pokémon</span>
+                      @if (pickSlotBadge(roundIndex); as badge) {
+                        <span class="my-pokemon-tier fancy-font">{{
+                          badge
+                        }}</span>
+                      }
+                    </button>
                   </div>
                 </li>
               }
@@ -215,15 +229,6 @@
           <span class="draft-footer-info">
             @if (points) {
               <span>Points: {{ selectedTeam.pointTotal }}/{{ points }}</span>
-            }
-            @if (unmetTierRequirements(); as unmet) {
-              @if (unmet.length) {
-                <span>
-                  @for (req of unmet; track req.tierName) {
-                    {{ req.tierName }} {{ req.have }}/{{ req.required }}
-                  }
-                </span>
-              }
             }
           </span>
         </div>

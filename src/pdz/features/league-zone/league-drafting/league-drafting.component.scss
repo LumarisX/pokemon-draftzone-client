@@ -23,6 +23,10 @@
   min-height: 0;
   overflow: hidden;
   .draft-bar {
+    // .draft-section (its other class) sets flex-grow: 1 - override it so this
+    // box sizes to its content instead of stretching to fill leftover height
+    // and leaving a big empty gap above the tier list.
+    flex-grow: 0;
     flex-shrink: 0;
 
     .draft-rounds {
@@ -441,14 +445,18 @@
         }
 
         .no-pick {
+          display: flex;
+          align-items: center;
           color: pdz.color(primary);
-          padding: 0.125rem 0;
-          text-align: center;
-          align-self: center;
-          font-weight: bold;
+          padding: 0.125rem 0.5rem;
           min-height: 2.5rem;
-
           width: 100%;
+
+          .no-pick-text {
+            flex-grow: 1;
+            text-align: center;
+            font-weight: bold;
+          }
         }
       }
     }

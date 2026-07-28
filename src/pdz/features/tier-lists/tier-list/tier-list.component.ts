@@ -87,6 +87,8 @@ export class TierListComponent implements OnInit, OnDestroy {
   searchText = signal<string>('');
   selectedTypes = signal<Type[]>([]);
   filteredTypes = signal<Type[]>([...TYPES]);
+  /** The tier currently expanded to fill the whole width (hiding the others), if any. */
+  expandedTierName = signal<string | null>(null);
 
   private tiersContainer =
     viewChild<ElementRef<HTMLElement>>('tiersContainer');
@@ -105,6 +107,16 @@ export class TierListComponent implements OnInit, OnDestroy {
       ...tier,
       pokemon: [...tier.pokemon].sort(SORT_MAP[sortBy]),
     }));
+  });
+
+  /** sortedTiers, narrowed to just the expanded tier (if any) so the others are hidden. */
+  readonly displayedTiers = computed(() => {
+    const tiers = this.sortedTiers();
+    if (!tiers) return null;
+
+    const expanded = this.expandedTierName();
+    if (!expanded) return tiers;
+    return tiers.filter((tier) => tier.name === expanded);
   });
 
   readonly draftedPokemonIds = computed(() => {
@@ -306,12 +318,12 @@ export class TierListComponent implements OnInit, OnDestroy {
   typeColor = typeColor;
 
   openPokemonDetails(pokemon: TierPokemon, tier: LeagueTier): void {
-    const sortedTiers = this.sortedTiers();
-    if (!sortedTiers) return;
+    const displayedTiers = this.displayedTiers();
+    if (!displayedTiers) return;
 
     // Build flat list of all currently visible pokemon in display order
     const flatList: { pokemon: TierPokemon; tier: LeagueTier }[] = [];
-    for (const t of sortedTiers) {
+    for (const t of displayedTiers) {
       for (const p of this.getVisiblePokemon(t)) {
         flatList.push({ pokemon: p, tier: t });
       }
@@ -421,6 +433,14 @@ export class TierListComponent implements OnInit, OnDestroy {
 
   isBanTier(tier: LeagueTier): boolean {
     return tier.name === 'Ban' || tier.name === 'Banned';
+  }
+
+  isTierExpanded(tier: LeagueTier): boolean {
+    return this.expandedTierName() === tier.name;
+  }
+
+  toggleTierExpanded(tier: LeagueTier): void {
+    this.expandedTierName.update((name) => (name === tier.name ? null : tier.name));
   }
 
   makeWarningString(pokemon: TierPokemon) {

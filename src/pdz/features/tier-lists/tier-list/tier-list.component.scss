@@ -114,6 +114,10 @@
 .tier {
   flex: 1 0 14rem;
 
+  &--expanded {
+    flex-basis: 100%;
+  }
+
   &--banned {
     border-color: pdz.color(error);
 
@@ -126,6 +130,19 @@
     .tier__name,
     .tier__cost {
       color: pdz.color(on-error-container);
+    }
+  }
+
+  &__expand-button {
+    flex-shrink: 0;
+    width: 1.5rem;
+    height: 1.5rem;
+    opacity: 0.7;
+    color: inherit;
+
+    &:hover {
+      opacity: 1;
+      background-color: rgba(0, 0, 0, 0.08);
     }
   }
 

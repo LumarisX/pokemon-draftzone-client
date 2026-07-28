@@ -130,9 +130,13 @@
     </div>
   } @else {
     <div class="tiers-container" #tiersContainer>
-      @for (tier of sortedTiers()!; track $index) {
+      @for (tier of displayedTiers()!; track $index) {
         @let visiblePokemon = getVisiblePokemon(tier);
-        <div class="tier" [class.tier--banned]="isBanTier(tier)">
+        <div
+          class="tier"
+          [class.tier--banned]="isBanTier(tier)"
+          [class.tier--expanded]="isTierExpanded(tier)"
+        >
           <div class="tier__header">
             <div class="tier__info">
               <div class="tier__name-row">
@@ -144,6 +148,18 @@
                 }
               </div>
             </div>
+            <button
+              class="icon-button tier__expand-button"
+              type="button"
+              (click)="toggleTierExpanded(tier)"
+            >
+              <pdz-icon
+                [name]="
+                  isTierExpanded(tier) ? 'close_fullscreen' : 'open_in_full'
+                "
+                [size]="12"
+              ></pdz-icon>
+            </button>
           </div>
 
           <div
