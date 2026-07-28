@@ -54,6 +54,70 @@
   </div>
 </div>
 
+@if (sequentialTurns) {
+  <div class="draft-order">
+    <h3 class="draft-order__title">Draft Order</h3>
+    <div class="draft-order__rounds">
+      @for (round of draftRounds; track $index; let roundIndex = $index) {
+        <div class="draft-order__round">
+          <div class="draft-order__round-label">
+            <span>Round {{ roundIndex + 1 }}</span>
+            <pdz-icon name="trending_flat" size="sm"></pdz-icon>
+          </div>
+          <div class="draft-order__cards">
+            @for (position of round; track $index) {
+              @let pokemon = position.draft[roundIndex];
+              <div
+                class="draft-order-card"
+                [class.picking]="
+                  currentPick &&
+                  currentPick.round === roundIndex &&
+                  currentPick.position === $index
+                "
+              >
+                <div class="draft-order-card__name">{{ position.name }}</div>
+                <div class="draft-order-card__icon">
+                  @if (pokemon) {
+                    <pdz-sprite [pokemon]="pokemon"></pdz-sprite>
+                  } @else if (
+                    currentPick &&
+                    currentPick.round === roundIndex &&
+                    currentPick.position === $index
+                  ) {
+                    <pdz-icon name="hourglass_top" size="md"></pdz-icon>
+                  } @else {
+                    <pdz-icon name="pokeball" size="md"></pdz-icon>
+                  }
+                </div>
+                <div class="draft-order-card__status">
+                  @if (pokemon) {
+                    {{ pokemon.name }}
+                  } @else if (
+                    currentPick &&
+                    currentPick.round === roundIndex &&
+                    currentPick.position === $index
+                  ) {
+                    Picking
+                  } @else if (
+                    currentPick &&
+                    (currentPick.round > roundIndex ||
+                      (currentPick.round === roundIndex &&
+                        currentPick.position > $index))
+                  ) {
+                    Skipped
+                  } @else {
+                    Upcoming
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+}
+
 @if (teams.length) {
   <div class="team-grid">
     @for (team of teams; track team.name) {
