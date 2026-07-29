@@ -25,7 +25,7 @@
     }
     @if (hasAnyDrafts()) {
       <div class="drafts-grid">
-        @for (tournament of tournaments; track tournament.tournamentKey) {
+        @for (tournament of tournaments; track tournament.tournamentSlug) {
           <div class="draft-card">
             <div class="card-header">
               @if (tournament.score) {
@@ -57,22 +57,22 @@
                 class="footer-link"
                 [routerLink]="[
                   '/leagues',
-                  tournament.leagueKey,
+                  tournament.leagueSlug,
                   'tournaments',
-                  tournament.tournamentKey,
+                  tournament.tournamentSlug,
                 ]"
                 >View Tournament</a
               >
-              @if (tournament.draftKey) {
+              @if (tournament.draftSlug) {
                 <a
                   class="footer-link"
                   [routerLink]="[
                     '/leagues',
-                    tournament.leagueKey,
+                    tournament.leagueSlug,
                     'tournaments',
-                    tournament.tournamentKey,
+                    tournament.tournamentSlug,
                     'drafts',
-                    tournament.draftKey,
+                    tournament.draftSlug,
                     'teams',
                     tournament.teamId,
                   ]"
@@ -82,7 +82,7 @@
             </div>
           </div>
         }
-        @for (draft of drafts; track draft.tournamentId) {
+        @for (draft of drafts; track draft.slug) {
           <div class="draft-card">
             <div class="card-header">
               @if (draft.score) {
@@ -97,7 +97,7 @@
                     <a
                       class="draft-warning"
                       [routerLink]="['edit']"
-                      [queryParams]="{ draft: draft.tournamentId | json }"
+                      [queryParams]="{ draft: draft.slug | json }"
                       [matTooltip]="warning"
                     >
                       <pdz-icon name="warning"></pdz-icon>
@@ -108,17 +108,17 @@
               <div class="card-menu">
                 <button
                   class="more-btn"
-                  (click)="toggleMenu(draft.tournamentId, $event)"
+                  (click)="toggleMenu(draft.slug, $event)"
                 >
                   <pdz-icon name="more_vert"></pdz-icon>
                 </button>
 
-                @if (openDropdown === draft.tournamentId) {
+                @if (openDropdown === draft.slug) {
                   <div class="menu-dropdown">
                     <button
                       class="menu-item"
                       [routerLink]="['edit']"
-                      [queryParams]="{ draft: draft.tournamentId | json }"
+                      [queryParams]="{ draft: draft.slug | json }"
                     >
                       <pdz-icon name="edit_document"></pdz-icon> Edit Team
                     </button>
@@ -133,7 +133,7 @@
                       class="menu-item"
                       disabled
                       (click)="
-                        setMenuState(draft.tournamentId, 'confirm-archive')
+                        setMenuState(draft.slug, 'confirm-archive')
                       "
                     >
                       <pdz-icon name="archive"></pdz-icon> Archive
@@ -141,7 +141,7 @@
                     <button
                       class="menu-item"
                       (click)="
-                        setMenuState(draft.tournamentId, 'confirm-delete')
+                        setMenuState(draft.slug, 'confirm-delete')
                       "
                     >
                       <pdz-icon name="delete_forever"></pdz-icon>
@@ -165,37 +165,37 @@
               </div>
             </div>
             <div class="card-footer">
-              @if (menuState[draft.tournamentId] === "confirm-archive") {
+              @if (menuState[draft.slug] === "confirm-archive") {
                 <div class="confirmation">
                   <p>Archive draft?</p>
                   <div class="confirmation-buttons">
                     <button
                       class="btn btn-confirm"
-                      (click)="archive(draft.tournamentId)"
+                      (click)="archive(draft.slug)"
                     >
                       Yes
                     </button>
                     <button
                       class="btn btn-cancel"
-                      (click)="setMenuState(draft.tournamentId, '')"
+                      (click)="setMenuState(draft.slug, '')"
                     >
                       No
                     </button>
                   </div>
                 </div>
-              } @else if (menuState[draft.tournamentId] === "confirm-delete") {
+              } @else if (menuState[draft.slug] === "confirm-delete") {
                 <div class="confirmation">
                   <p>Delete draft?</p>
                   <div class="confirmation-buttons">
                     <button
                       class="btn btn-confirm"
-                      (click)="delete(draft.tournamentId)"
+                      (click)="delete(draft.slug)"
                     >
                       Yes
                     </button>
                     <button
                       class="btn btn-cancel"
-                      (click)="setMenuState(draft.tournamentId, '')"
+                      (click)="setMenuState(draft.slug, '')"
                     >
                       No
                     </button>
@@ -204,12 +204,12 @@
               } @else {
                 <a
                   class="footer-link"
-                  [routerLink]="['/', draftPath, draft.tournamentId]"
+                  [routerLink]="['/', draftPath, draft.slug]"
                   >Matches</a
                 >
                 <a
                   class="footer-link"
-                  [routerLink]="[draft.tournamentId, 'stats']"
+                  [routerLink]="[draft.slug, 'stats']"
                   >Stats</a
                 >
               }

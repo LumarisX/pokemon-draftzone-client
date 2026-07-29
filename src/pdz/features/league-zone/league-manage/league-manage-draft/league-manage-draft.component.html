@@ -54,90 +54,142 @@
   </div>
 </div>
 
-@if (sequentialTurns) {
-  <div class="draft-order">
-    <h3 class="draft-order__title">Draft Order</h3>
-    <div class="draft-order__rounds">
-      @for (round of draftRounds; track $index; let roundIndex = $index) {
-        <div class="draft-order__round">
-          <div class="draft-order__round-label">
-            <span>Round {{ roundIndex + 1 }}</span>
-            <pdz-icon name="trending_flat" size="sm"></pdz-icon>
-          </div>
-          <div class="draft-order__cards">
-            @for (position of round; track $index) {
-              @let pokemon = position.draft[roundIndex];
-              <div
-                class="draft-order-card"
-                [class.picking]="
-                  currentPick &&
-                  currentPick.round === roundIndex &&
-                  currentPick.position === $index
-                "
-              >
-                <div class="draft-order-card__name">{{ position.name }}</div>
-                <div class="draft-order-card__icon">
-                  @if (pokemon) {
-                    <pdz-sprite [pokemon]="pokemon"></pdz-sprite>
-                  } @else if (
-                    currentPick &&
-                    currentPick.round === roundIndex &&
-                    currentPick.position === $index
-                  ) {
-                    <pdz-icon name="hourglass_top" size="md"></pdz-icon>
-                  } @else {
-                    <pdz-icon name="pokeball" size="md"></pdz-icon>
-                  }
-                </div>
-                <div class="draft-order-card__status">
-                  @if (pokemon) {
-                    {{ pokemon.name }}
-                  } @else if (
-                    currentPick &&
-                    currentPick.round === roundIndex &&
-                    currentPick.position === $index
-                  ) {
-                    Picking
-                  } @else if (
-                    currentPick &&
-                    (currentPick.round > roundIndex ||
-                      (currentPick.round === roundIndex &&
-                        currentPick.position > $index))
-                  ) {
-                    Skipped
-                  } @else {
-                    Upcoming
-                  }
-                </div>
-              </div>
-            }
-          </div>
-        </div>
-      }
-    </div>
-  </div>
-}
-
-@if (teams.length) {
-  <div class="team-grid">
-    @for (team of teams; track team.name) {
-      <section class="team-card">
-        <header class="team-card__header">
-          <h3 class="team-card__name">{{ team.name }}</h3>
-          <span class="team-card__round-count">
-            {{ roundsPicked(team) }} / {{ roundCount }} rounds
+@if (rounds.length) {
+  <div class="rounds">
+    @for (round of rounds; track round.round) {
+      <section class="round">
+        <header class="round__header">
+          <h3 class="round__title">Round {{ round.round + 1 }}</h3>
+          <span class="round__count">
+            {{ roundPickedCount(round) }} / {{ round.turns.length }} picked
           </span>
+          <pdz-icon
+            class="round__direction"
+            name="trending_flat"
+            size="sm"
+          ></pdz-icon>
         </header>
-        <div class="team-card__add">
-          <pdz-pokemon-search
-            [options$]="pokemonList$"
-            [takenIds]="takenIds(team)"
-            (pokemonSelected)="addDraftPick(team, $event)"
-          ></pdz-pokemon-search>
+
+        <div class="round__turns">
+          @for (turn of round.turns; track turn.key) {
+            <article
+              class="turn"
+              [class.turn--picked]="turn.state === 'picked'"
+              [class.turn--current]="turn.state === 'current'"
+              [class.turn--skipped]="turn.state === 'skipped'"
+              [class.turn--editing]="isEditing(turn)"
+              [class.turn--pending]="isPending(turn)"
+            >
+              <header class="turn__header">
+                <span class="turn__position">{{ turn.position + 1 }}</span>
+                <div class="turn__who">
+                  <span class="turn__team" [title]="turn.team.name">
+                    {{ turn.team.name }}
+                  </span>
+                  <span class="turn__coach" [title]="turnCoach(turn)">
+                    <pdz-icon
+                      [name]="turn.pokemon ? 'how_to_reg' : 'person'"
+                      [size]="14"
+                    ></pdz-icon>
+                    <span class="turn__coach-name">{{ turnCoach(turn) }}</span>
+                  </span>
+                </div>
+              </header>
+
+              <div class="turn__pick">
+                @if (turn.pokemon) {
+                  <pdz-sprite size="3rem" [pokemon]="turn.pokemon"></pdz-sprite>
+                  <div class="turn__pick-info">
+                    <span class="turn__pokemon" [title]="turn.pokemon.name">
+                      {{ turn.pokemon.name }}
+                    </span>
+                    <span class="turn__meta">
+                      <span class="turn__tier">
+                        {{ turn.pokemon.tier || "Untiered" }}
+                      </span>
+                      <span class="turn__cost">{{ turn.pokemon.cost }} pts</span>
+                    </span>
+                  </div>
+                } @else {
+                  <div class="turn__empty">
+                    <pdz-icon
+                      [name]="
+                        turn.state === 'current' ? 'hourglass_top' : 'pokeball'
+                      "
+                      size="md"
+                    ></pdz-icon>
+                    <span>
+                      @switch (turn.state) {
+                        @case ("current") {
+                          On the clock
+                        }
+                        @case ("skipped") {
+                          Skipped
+                        }
+                        @default {
+                          Upcoming
+                        }
+                      }
+                    </span>
+                  </div>
+                }
+              </div>
+
+              <footer class="turn__actions">
+                @if (isEditing(turn)) {
+                  <pdz-pokemon-search
+                    class="turn__search"
+                    [options$]="pokemonList$"
+                    [takenIds]="draftedIds"
+                    placeholder="Set pick..."
+                    (pokemonSelected)="setTurnPick(turn, $event)"
+                  ></pdz-pokemon-search>
+                  <button
+                    type="button"
+                    class="turn__btn turn__btn--icon"
+                    aria-label="Cancel"
+                    (click)="cancelEdit()"
+                  >
+                    <pdz-icon name="close" size="sm"></pdz-icon>
+                  </button>
+                } @else {
+                  <button
+                    type="button"
+                    class="turn__btn turn__btn--set"
+                    [disabled]="!canSetTurn(turn) || isPending(turn)"
+                    [title]="
+                      canSetTurn(turn)
+                        ? ''
+                        : 'Fill this team\'s earlier rounds first'
+                    "
+                    (click)="startEdit(turn)"
+                  >
+                    <pdz-icon
+                      [name]="turn.pokemon ? 'edit' : 'add'"
+                      size="sm"
+                    ></pdz-icon>
+                    {{ turn.pokemon ? "Change" : "Set pick" }}
+                  </button>
+                  @if (turn.pokemon) {
+                    <button
+                      type="button"
+                      class="turn__btn turn__btn--icon turn__btn--clear"
+                      aria-label="Clear pick"
+                      title="Clear pick"
+                      [disabled]="isPending(turn)"
+                      (click)="clearTurnPick(turn)"
+                    >
+                      <pdz-icon name="delete" size="sm"></pdz-icon>
+                    </button>
+                  }
+                }
+              </footer>
+            </article>
+          }
         </div>
       </section>
     }
   </div>
 } @else {
-  <p class="empty-state">There are no teams or picks to display.</p>
+  <p class="empty-state">There are no draft turns to display.</p>
 }

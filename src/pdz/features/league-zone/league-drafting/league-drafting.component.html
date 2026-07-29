@@ -220,12 +220,13 @@
             }
             @if (unmetTierRequirements(); as unmet) {
               @if (unmet.length) {
-                <span class="tier-requirements-warning">
-                  Needs:
+                <div class="tier-requirements-warning-container">
                   @for (req of unmet; track req.tierName) {
-                    {{ req.tierName }} {{ req.have }}/{{ req.required }}
+                    <span class="tier-requirements-warning">
+                      {{ req.tierName }} {{ req.have }}/{{ req.required }}
+                    </span>
                   }
-                </span>
+                </div>
               }
             }
           </span>
@@ -325,7 +326,7 @@
         <pdz-tier-list
           [buttonText]="buttonText()"
           [altButtonText]="altButtonText()"
-          [localDraftedIds]="teamDraftedIds"
+          [localDraftedIds]="draftedIds"
           (pokemonSelected)="pokemonSelected($event)"
           header="Tier List"
         ></pdz-tier-list>

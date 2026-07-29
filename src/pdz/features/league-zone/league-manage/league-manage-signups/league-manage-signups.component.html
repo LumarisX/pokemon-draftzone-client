@@ -186,22 +186,22 @@
     </article>
   </ng-template>
 
-  @for (draft of drafts; track draft?.draftKey) {
+  @for (draft of drafts; track draft?.draftSlug) {
     <section class="pool">
       <header class="pool__header">
         <h3 class="pool__title">{{ draft?.name ?? "No Draft" }}</h3>
-        <span class="pool__count">{{ signUpInDraft(draft?.draftKey).length }}</span>
+        <span class="pool__count">{{ signUpInDraft(draft?.draftSlug).length }}</span>
         <button
           type="button"
           class="pool__move-btn"
-          (click)="moveToDraft(draft?.draftKey)"
+          (click)="moveToDraft(draft?.draftSlug)"
         >
           Move Here
         </button>
       </header>
 
       <div class="pool__cards">
-        @for (signup of signUpInDraft(draft?.draftKey); track signup.id) {
+        @for (signup of signUpInDraft(draft?.draftSlug); track signup.id) {
           <ng-container
             *ngTemplateOutlet="signupCard; context: { signup }"
           ></ng-container>

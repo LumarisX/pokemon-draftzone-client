@@ -78,9 +78,9 @@
       <div class="divisions-section">
         <h2 class="divisions-section__title">Drafts</h2>
         <div class="divisions-section__grid">
-          @for (draft of leagueInfo.drafts; track draft.draftKey) {
+          @for (draft of leagueInfo.drafts; track draft.draftSlug) {
             <button
-              [routerLink]="'./drafts/' + draft.draftKey"
+              [routerLink]="'./drafts/' + draft.draftSlug"
               class="button button--division"
             >
               <span class="button__text">{{ draft.name }}</span>

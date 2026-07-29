@@ -31,7 +31,7 @@ export const routes: Routes = [
     component: LeagueOverviewComponent,
   },
   {
-    path: `:leagueKey`,
+    path: `:leagueSlug`,
     component: LeagueLandingComponent,
   },
   // {
@@ -40,7 +40,7 @@ export const routes: Routes = [
   // },
 
   {
-    path: ':leagueKey/tournaments/:tournamentKey',
+    path: ':leagueSlug/tournaments/:tournamentSlug',
     component: TournamentLayoutComponent,
     children: [
       {
@@ -102,7 +102,7 @@ export const routes: Routes = [
         component: TournamentDraftsComponent,
       },
       {
-        path: 'drafts/:draftKey',
+        path: 'drafts/:draftSlug',
         component: DivisionDashboardComponent,
       },
       {
@@ -118,24 +118,24 @@ export const routes: Routes = [
         component: LeagueStandingsComponent,
       },
       {
-        path: 'drafts/:draftKey/draft',
+        path: 'drafts/:draftSlug/draft',
         component: LeagueDraftComponent,
       },
       {
-        path: 'drafts/:draftKey/power-rankings',
+        path: 'drafts/:draftSlug/power-rankings',
         component: PowerRankingsComponent,
       },
       {
-        path: 'drafts/:draftKey/teams',
+        path: 'drafts/:draftSlug/teams',
         component: LeagueTeamsComponent,
       },
       {
-        path: 'drafts/:draftKey/teams/:teamKey',
+        path: 'drafts/:draftSlug/teams/:teamKey',
         component: LeagueTeamComponent,
       },
 
       {
-        path: 'drafts/:draftKey/tier-list',
+        path: 'drafts/:draftSlug/tier-list',
         component: TierListComponent,
       },
       {

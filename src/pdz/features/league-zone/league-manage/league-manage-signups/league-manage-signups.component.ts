@@ -46,10 +46,10 @@ type SignUpEntry = League.LeagueSignUp & {
   imports: [CommonModule, IconComponent, FormsModule, RouterLink],
 })
 export class LeagueManageSignupsComponent implements OnInit, OnDestroy {
-  tournamentId: string | null = null;
+  tournamentSlug: string | null = null;
   signUps: SignUpEntry[] = [];
   originalSignUps: League.LeagueSignUp[] = [];
-  drafts: ({ name: string; draftKey: string } | undefined)[] = [];
+  drafts: ({ name: string; draftSlug: string } | undefined)[] = [];
   modified = false;
   deniedCollapsed = true;
 
@@ -219,9 +219,9 @@ export class LeagueManageSignupsComponent implements OnInit, OnDestroy {
     return { valid: true };
   }
 
-  signUpInDraft(draftKey?: string): SignUpEntry[] {
+  signUpInDraft(draftSlug?: string): SignUpEntry[] {
     return this.signUps
-      .filter((s) => s.draft == draftKey && s.status !== 'denied')
+      .filter((s) => s.draft == draftSlug && s.status !== 'denied')
       .sort(
         (a, b) =>
           (this.statusOrder[a.status] ?? 1) - (this.statusOrder[b.status] ?? 1),
@@ -244,23 +244,23 @@ export class LeagueManageSignupsComponent implements OnInit, OnDestroy {
   }
 
   getTeamLink(user: League.LeagueSignUp): string[] | null {
-    const leagueKey = this.leagueService.leagueKey();
-    const tournamentKey = this.leagueService.tournamentKey();
-    if (!leagueKey || !tournamentKey || !user.teamId) return null;
+    const leagueSlug = this.leagueService.leagueSlug();
+    const tournamentSlug = this.leagueService.tournamentSlug();
+    if (!leagueSlug || !tournamentSlug || !user.teamId) return null;
     return [
       '/leagues',
-      leagueKey,
+      leagueSlug,
       'tournaments',
-      tournamentKey,
+      tournamentSlug,
       'teams',
       user.teamId,
     ];
   }
 
-  moveToDraft(draftKey?: string): void {
+  moveToDraft(draftSlug?: string): void {
     for (const signUp of this.signUps) {
       if (signUp.selected) {
-        signUp.draft = draftKey;
+        signUp.draft = draftSlug;
         signUp.selected = false;
         signUp.modified = true;
       }

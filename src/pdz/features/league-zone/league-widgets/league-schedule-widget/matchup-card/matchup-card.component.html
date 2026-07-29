@@ -23,11 +23,11 @@
       "
       [routerLink]="
         '/leagues/' +
-        leagueService.leagueKey() +
+        leagueService.leagueSlug() +
         '/tournaments/' +
-        leagueService.tournamentKey() +
+        leagueService.tournamentSlug() +
         '/drafts/' +
-        leagueService.draftKey() +
+        leagueService.draftSlug() +
         '/teams/' +
         matchup.team1.id
       "
@@ -96,11 +96,11 @@
       "
       [routerLink]="
         '/leagues/' +
-        leagueService.leagueKey() +
+        leagueService.leagueSlug() +
         '/tournaments/' +
-        leagueService.tournamentKey() +
+        leagueService.tournamentSlug() +
         '/drafts/' +
-        leagueService.draftKey() +
+        leagueService.draftSlug() +
         '/teams/' +
         matchup.team2.id
       "

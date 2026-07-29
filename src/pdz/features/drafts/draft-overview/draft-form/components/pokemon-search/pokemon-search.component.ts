@@ -5,6 +5,7 @@ import {
 } from '@angular/cdk/scrolling';
 import {
   Component,
+  ElementRef,
   EventEmitter,
   Input,
   OnDestroy,
@@ -54,8 +55,18 @@ export class PokemonSearchComponent implements OnInit, OnDestroy {
   filteredOptions = new BehaviorSubject<DraftPokemon[]>([]);
   highlightedIndex = 0;
   isOpen = false;
+  /**
+   * Field width captured when the panel opens. Measured on open rather than
+   * bound to `offsetWidth` directly, so a field rendered into a layout that is
+   * still settling doesn't report two different widths across change-detection
+   * passes (NG0100).
+   */
+  panelWidth = 0;
 
   readonly itemSize = ITEM_SIZE;
+
+  @ViewChild('fieldEl', { static: true })
+  fieldEl?: ElementRef<HTMLElement>;
 
   @ViewChild('virtualScroll', { static: false })
   virtualScroll?: CdkVirtualScrollViewport;
@@ -108,6 +119,8 @@ export class PokemonSearchComponent implements OnInit, OnDestroy {
   }
 
   setOpen(value: boolean): void {
+    if (value && this.fieldEl)
+      this.panelWidth = this.fieldEl.nativeElement.offsetWidth;
     this.isOpen = value;
   }
 

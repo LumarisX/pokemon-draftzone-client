@@ -37,9 +37,9 @@ export class MatchupCardComponent implements OnInit {
     if (!stageId) return [];
     return [
       '/leagues',
-      this.leagueService.leagueKey() ?? '',
+      this.leagueService.leagueSlug() ?? '',
       'tournaments',
-      this.leagueService.tournamentKey() ?? '',
+      this.leagueService.tournamentSlug() ?? '',
       'stages',
       stageId,
       'schedule',

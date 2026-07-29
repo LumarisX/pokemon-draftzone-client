@@ -6,10 +6,10 @@ export type TournamentDetails = {
   tournamentName: string;
   logo?: string;
   discord?: string;
-  tournamentKey: string;
+  tournamentSlug: string;
   leagueName: string;
-  leagueKey: string;
-  draftKey?: string;
+  leagueSlug: string;
+  draftSlug?: string;
   teamId: string;
   draft: Pokemon<{ draftFormes?: { id: string; name: string }[] }>[];
   format: string;

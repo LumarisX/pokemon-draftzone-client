@@ -40,6 +40,9 @@ export namespace League {
     cost: number;
     types?: Type[];
     addons?: string[];
+    /** Coach who made the pick; absent on legacy picks with an unresolvable picker. */
+    picker?: string;
+    timestamp?: Date;
     record?: {
       deaths: number;
       kills: number;
@@ -183,7 +186,7 @@ export namespace League {
 
   export type LeagueInfo = {
     name: string;
-    tournamentKey: string;
+    tournamentSlug: string;
     description?: string;
     format: string;
     ruleset: string;
@@ -193,7 +196,7 @@ export namespace League {
     seasonStart?: Date;
     seasonEnd?: Date;
     logo?: string;
-    drafts: { name: string; draftKey: string }[];
+    drafts: { name: string; draftSlug: string }[];
     discord?: string;
     tierListId?: string;
     draftCount?: { min: number; max: number };
@@ -202,7 +205,7 @@ export namespace League {
 
   export type TournamentSummary = {
     name: string;
-    tournamentKey: string;
+    tournamentSlug: string;
     description?: string;
     format: string;
     ruleset: string;
@@ -217,7 +220,7 @@ export namespace League {
 
   export type LeagueSummary = {
     name: string;
-    leagueKey: string;
+    leagueSlug: string;
     description?: string;
     logo?: string;
     tournaments: TournamentSummary[];
@@ -233,7 +236,7 @@ export namespace League {
     logo?: string;
     signedUpAt: Date;
     teamId?: string;
-    draft?: { draftKey: string; name: string };
+    draft?: { draftSlug: string; name: string };
     inDiscordServer: boolean;
   };
 

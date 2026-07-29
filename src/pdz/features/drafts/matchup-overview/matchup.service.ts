@@ -23,13 +23,13 @@ export class MatchupService {
   // matchups, so they have their own analysis endpoint. Auth is optional:
   // a logged-in coach gets their own team shown first.
   getLeagueMatchup(
-    leagueKey: string,
-    tournamentKey: string,
+    leagueSlug: string,
+    tournamentSlug: string,
     stageId: string,
     matchupId: string,
   ) {
     return this.apiService.get<MatchupData>(
-      `leagues/${leagueKey}/tournaments/${tournamentKey}/stages/${stageId}/matchups/${matchupId}`,
+      `leagues/${leagueSlug}/tournaments/${tournamentSlug}/stages/${stageId}/matchups/${matchupId}`,
       { authenticated: 'optional' },
     );
   }

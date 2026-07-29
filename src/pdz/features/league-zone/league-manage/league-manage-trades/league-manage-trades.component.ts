@@ -105,9 +105,9 @@ export class LeagueManageTradesComponent implements OnInit, OnDestroy {
   onStageSelected(stageId: string): void {
     this.router.navigate([
       '/leagues',
-      this.leagueService.leagueKey(),
+      this.leagueService.leagueSlug(),
       'tournaments',
-      this.leagueService.tournamentKey(),
+      this.leagueService.tournamentSlug(),
       'manage',
       'stages',
       stageId,

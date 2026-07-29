@@ -40,7 +40,7 @@
       <div class="draft-buttons">
         <button
           routerLink="../edit"
-          [queryParams]="{ draft: draft.tournamentId | json }"
+          [queryParams]="{ draft: draft.slug | json }"
         >
           <mat-icon>edit</mat-icon>
         </button>

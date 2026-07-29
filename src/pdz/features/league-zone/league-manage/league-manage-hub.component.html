@@ -161,13 +161,13 @@
     @if (leagueInfo.drafts.length > 0) {
       <section class="hub__section">
         <h2 class="hub__section-title">Drafts</h2>
-        @for (draft of leagueInfo.drafts; track draft.draftKey) {
+        @for (draft of leagueInfo.drafts; track draft.draftSlug) {
           <div class="division-block">
             <h3 class="division-block__name">{{ draft.name }}</h3>
             <div class="hub__grid hub__grid--compact">
               <a
                 [routerLink]="
-                  tournamentBasePath + '/drafts/' + draft.draftKey + '/draft'
+                  tournamentBasePath + '/drafts/' + draft.draftSlug + '/draft'
                 "
                 class="nav-card nav-card--compact"
               >
@@ -178,7 +178,7 @@
               </a>
               <a
                 [routerLink]="
-                  managePath + '/drafts/' + draft.draftKey + '/draft'
+                  managePath + '/drafts/' + draft.draftSlug + '/draft'
                 "
                 class="nav-card nav-card--compact"
               >

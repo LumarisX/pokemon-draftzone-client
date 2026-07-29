@@ -42,17 +42,17 @@ export class TournamentDraftComponent implements OnInit, OnDestroy {
   }
 
   private redirect(coachData: League.CoachProfile | null): void {
-    const leagueKey = this.leagueService.leagueKey();
-    const tournamentKey = this.leagueService.tournamentKey();
+    const leagueSlug = this.leagueService.leagueSlug();
+    const tournamentSlug = this.leagueService.tournamentSlug();
     const draftsList = [
       '/leagues',
-      leagueKey,
+      leagueSlug,
       'tournaments',
-      tournamentKey,
+      tournamentSlug,
       'drafts',
     ];
     const destination = coachData?.draft
-      ? [...draftsList, coachData.draft.draftKey]
+      ? [...draftsList, coachData.draft.draftSlug]
       : draftsList;
     this.router.navigate(destination, { replaceUrl: true });
   }

@@ -25,7 +25,7 @@ import { formatCountdown } from '../league.util';
 import { PokemonTypeComponent } from '@pdz/shared/dialogs/pokemon-type/pokemon-type.component';
 
 interface DraftAddedEvent {
-  draftId: string;
+  draftSlug: string;
   pick: {
     pokemon: League.LeaguePokemon;
   };
@@ -38,7 +38,7 @@ interface DraftAddedEvent {
 }
 
 interface DraftCounterEvent {
-  draftId: string;
+  draftSlug: string;
   currentPick: {
     round: number;
     position: number;
@@ -49,7 +49,7 @@ interface DraftCounterEvent {
 }
 
 interface DraftStatusEvent {
-  draftId: string;
+  draftSlug: string;
   status: 'PRE_DRAFT' | 'IN_PROGRESS' | 'PAUSED' | 'COMPLETED';
   noTimer?: boolean;
   currentPick?: {
@@ -60,7 +60,7 @@ interface DraftStatusEvent {
 }
 
 interface DraftSkipEvent {
-  draftId: string;
+  draftSlug: string;
   teamName: string;
 }
 
@@ -184,8 +184,15 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
     );
   }
 
-  get teamDraftedIds(): string[] {
-    return this.selectedTeam?.draft.map((p) => p.id) ?? [];
+  /** Every Pokemon already taken in this draft, across all teams (plus the selected
+   * team's locally staged picks), so the tier list grays out anything unavailable. */
+  get draftedIds(): string[] {
+    return this.teams.flatMap((team) =>
+      (team.id === this.selectedTeam?.id
+        ? this.selectedTeam.draft
+        : team.draft
+      ).map((p) => p.id),
+    );
   }
 
   get draftRounds(): League.LeagueTeam[][] {
@@ -249,7 +256,7 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
       .on<DraftAddedEvent>('league.draft.added')
       .pipe(takeUntil(this.destroy$))
       .subscribe((data) => {
-        if (this.leagueService.draftKey() !== data.draftId) return;
+        if (this.leagueService.draftSlug() !== data.draftSlug) return;
 
         this.teams = this.teams.map((team) => {
           const newTeam = { ...team };
@@ -288,7 +295,7 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
       .on<DraftCounterEvent>('league.draft.counter')
       .pipe(takeUntil(this.destroy$))
       .subscribe((data) => {
-        if (this.leagueService.draftKey() !== data.draftId) {
+        if (this.leagueService.draftSlug() !== data.draftSlug) {
           return;
         }
         this.currentPick = data.currentPick;
@@ -304,7 +311,7 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
       .on<DraftStatusEvent>('league.draft.status')
       .pipe(takeUntil(this.destroy$))
       .subscribe((data) => {
-        if (this.leagueService.draftKey() !== data.draftId) {
+        if (this.leagueService.draftSlug() !== data.draftSlug) {
           return;
         }
         this.draftDetails.status = data.status;
@@ -327,7 +334,7 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
       .on<DraftSkipEvent>('league.draft.skip')
       .pipe(takeUntil(this.destroy$))
       .subscribe((data) => {
-        if (this.leagueService.draftKey() !== data.draftId) {
+        if (this.leagueService.draftSlug() !== data.draftSlug) {
           return;
         }
         this.notificationService.show(`${data.teamName} was skipped!`, 'info');
@@ -511,7 +518,11 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
   }
 
   /** Tier requirements not yet met by selectedTeam's currently staged draft. */
-  unmetTierRequirements(): { tierName: string; have: number; required: number }[] {
+  unmetTierRequirements(): {
+    tierName: string;
+    have: number;
+    required: number;
+  }[] {
     if (!this.tierRequirements.length) return [];
     const counts = new Map<string, number>();
     for (const pokemon of this.selectedTeam.draft) {

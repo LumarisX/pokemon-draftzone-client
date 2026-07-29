@@ -506,10 +506,14 @@
     gap: pdz.space(2xs);
   }
 
+  .tier-requirements-warning-container {
+    display: flex;
+    flex-direction: column;
+  }
+
   .tier-requirements-warning {
-    font-size: 0.85em;
+    @include pdz.apply-typography(label-sm);
     font-weight: 500;
-    color: pdz.color(error);
   }
 
   .save-button {

@@ -24,20 +24,20 @@ export class LeagueManageHubComponent implements OnInit, OnDestroy {
 
   getLogoUrl = getLogoUrlOld('league-uploads');
 
-  get leagueKey() {
-    return this.leagueService.leagueKey();
+  get leagueSlug() {
+    return this.leagueService.leagueSlug();
   }
 
-  get tournamentKey() {
-    return this.leagueService.tournamentKey();
+  get tournamentSlug() {
+    return this.leagueService.tournamentSlug();
   }
 
   get managePath() {
-    return `/leagues/${this.leagueKey}/tournaments/${this.tournamentKey}/manage`;
+    return `/leagues/${this.leagueSlug}/tournaments/${this.tournamentSlug}/manage`;
   }
 
   get tournamentBasePath() {
-    return `/leagues/${this.leagueKey}/tournaments/${this.tournamentKey}`;
+    return `/leagues/${this.leagueSlug}/tournaments/${this.tournamentSlug}`;
   }
 
   ngOnInit(): void {

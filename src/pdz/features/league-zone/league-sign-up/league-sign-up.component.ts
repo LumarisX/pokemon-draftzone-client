@@ -155,8 +155,8 @@ export class LeagueSignUpComponent implements OnInit, OnDestroy {
   async onSubmit() {
     if (this.isSubmitting) return;
 
-    const tournamentKey = this.leagueService.tournamentKey();
-    if (!this.signupForm.valid || !tournamentKey) {
+    const tournamentSlug = this.leagueService.tournamentSlug();
+    if (!this.signupForm.valid || !tournamentSlug) {
       console.error('Sign Up form is not valid: ', this.signupForm.errors);
       return;
     }
@@ -183,7 +183,7 @@ export class LeagueSignUpComponent implements OnInit, OnDestroy {
 
       this.added = true;
       localStorage.setItem(
-        tournamentKey,
+        tournamentSlug,
         this.signupForm.get('discordName')?.value ?? '',
       );
       console.log('Sign up successful:', response);
@@ -200,13 +200,13 @@ export class LeagueSignUpComponent implements OnInit, OnDestroy {
   }
 
   private navigateToTournamentHome(): void {
-    const leagueKey = this.leagueService.leagueKey();
-    const tournamentKey = this.leagueService.tournamentKey();
+    const leagueSlug = this.leagueService.leagueSlug();
+    const tournamentSlug = this.leagueService.tournamentSlug();
     this.router.navigate([
       '/leagues',
-      leagueKey,
+      leagueSlug,
       'tournaments',
-      tournamentKey,
+      tournamentSlug,
     ]);
   }
 

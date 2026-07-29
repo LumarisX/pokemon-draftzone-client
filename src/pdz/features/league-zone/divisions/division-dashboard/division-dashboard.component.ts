@@ -28,13 +28,12 @@ export class DivisionDashboardComponent implements OnInit, OnDestroy {
 
   team?: League.LeagueTeam;
   matchups: League.Matchup[] = [];
-  tournamentId?: string;
   leagueName = '';
   divisionName = '';
   logo?: string;
   matchupStage?: League.Stage = undefined;
 
-  // This page is draft-scoped (drafts/:draftKey), not stage-scoped, so
+  // This page is draft-scoped (drafts/:draftSlug), not stage-scoped, so
   // leagueZoneService.stageId() (route-derived) is always null here. Resolve
   // a real default — the tournament's first stage — for the embedded
   // schedule/trade widgets and the switcher's initial selection.
@@ -60,12 +59,12 @@ export class DivisionDashboardComponent implements OnInit, OnDestroy {
 
   getLogoUrl = getLogoUrlOld('league-uploads');
 
-  get tournamentKey(): string {
-    return this.leagueZoneService.tournamentKey() || '';
+  get tournamentSlug(): string {
+    return this.leagueZoneService.tournamentSlug() || '';
   }
 
-  get draftKey(): string {
-    return this.leagueZoneService.draftKey() || '';
+  get draftSlug(): string {
+    return this.leagueZoneService.draftSlug() || '';
   }
 
   get stageId(): string | null {
@@ -76,9 +75,9 @@ export class DivisionDashboardComponent implements OnInit, OnDestroy {
     this.selectedStageId.set(stageId);
     this.router.navigate([
       '/leagues',
-      this.leagueZoneService.leagueKey(),
+      this.leagueZoneService.leagueSlug(),
       'tournaments',
-      this.tournamentKey,
+      this.tournamentSlug,
       'stages',
       stageId,
       'schedule',

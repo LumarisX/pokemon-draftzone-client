@@ -4,7 +4,7 @@ export type Draft = {
   _id: string;
   leagueName: string;
   teamName: string;
-  tournamentId: string;
+  slug: string;
   format: string;
   ruleset: string;
   doc: string;

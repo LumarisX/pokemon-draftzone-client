@@ -26,9 +26,9 @@
         <p class="tournaments__empty">No tournaments yet.</p>
       } @else {
         <div class="tournaments__list">
-          @for (tournament of league.tournaments; track tournament.tournamentKey) {
+          @for (tournament of league.tournaments; track tournament.tournamentSlug) {
             <a
-              [routerLink]="['tournaments', tournament.tournamentKey]"
+              [routerLink]="['tournaments', tournament.tournamentSlug]"
               class="tournament-card"
               [class.tournament-card--active]="getTournamentStatus(tournament) === 'active'"
               [class.tournament-card--completed]="getTournamentStatus(tournament) === 'completed'"

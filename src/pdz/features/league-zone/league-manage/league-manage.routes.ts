@@ -28,11 +28,11 @@ export const routes: Routes = [
     component: LeagueRulesFormComponent,
   },
   {
-    path: 'drafts/:draftKey',
+    path: 'drafts/:draftSlug',
     component: LeagueManageDashboardComponent,
   },
   {
-    path: 'drafts/:draftKey/draft',
+    path: 'drafts/:draftSlug/draft',
     component: LeagueManageDraftComponent,
   },
   {

@@ -140,9 +140,9 @@ export class LeagueZoneService {
   private router = inject(Router);
   private webSocketService = inject(WebSocketService);
 
-  leagueKey = signal<string | null>(null);
-  tournamentKey = signal<string | null>(null);
-  draftKey = signal<string | null>(null);
+  leagueSlug = signal<string | null>(null);
+  tournamentSlug = signal<string | null>(null);
+  draftSlug = signal<string | null>(null);
   stageId = signal<string | null>(null);
   teamKey = signal<string | null>(null);
 
@@ -163,12 +163,12 @@ export class LeagueZoneService {
         mergeMap((route) => route.paramMap),
       )
       .subscribe((paramMap) => {
-        const leagueKey = paramMap.get('leagueKey');
-        this.leagueKey.set(leagueKey);
-        const tournamentKey = paramMap.get('tournamentKey');
-        this.tournamentKey.set(tournamentKey);
-        const draftKey = paramMap.get('draftKey');
-        this.draftKey.set(draftKey);
+        const leagueSlug = paramMap.get('leagueSlug');
+        this.leagueSlug.set(leagueSlug);
+        const tournamentSlug = paramMap.get('tournamentSlug');
+        this.tournamentSlug.set(tournamentSlug);
+        const draftSlug = paramMap.get('draftSlug');
+        this.draftSlug.set(draftSlug);
         const stageId = paramMap.get('stageId');
         this.stageId.set(stageId);
         const teamKey = paramMap.get('teamKey');
@@ -176,17 +176,17 @@ export class LeagueZoneService {
       });
 
     effect((onCleanup) => {
-      const tournamentKey = this.tournamentKey();
-      if (tournamentKey) {
+      const tournamentSlug = this.tournamentSlug();
+      if (tournamentSlug) {
         this.webSocketService
-          .sendMessage('league.subscribe', { tournamentKey })
+          .sendMessage('league.subscribe', { tournamentSlug })
           .subscribe();
       }
 
       onCleanup(() => {
-        if (tournamentKey) {
+        if (tournamentSlug) {
           this.webSocketService
-            .sendMessage('league.unsubscribe', { tournamentKey })
+            .sendMessage('league.unsubscribe', { tournamentSlug })
             .subscribe();
         }
       });
@@ -202,7 +202,7 @@ export class LeagueZoneService {
 
   getRules(): Observable<League.RuleSection[]> {
     return this.apiService.get<League.RuleSection[]>(
-      `${ROOTPATH}/${this.leagueKey()}/tournaments/${this.tournamentKey()}/rules`,
+      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/rules`,
     );
   }
 
@@ -210,7 +210,7 @@ export class LeagueZoneService {
     ruleSections: League.RuleSection[],
   ): Observable<{ success: boolean; message: string }> {
     return this.apiService.post<{ success: boolean; message: string }>(
-      `${ROOTPATH}/${this.leagueKey()}/tournaments/${this.tournamentKey()}/rules`,
+      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/rules`,
       { ruleSections },
       { authenticated: true },
     );
@@ -218,12 +218,12 @@ export class LeagueZoneService {
 
   powerRankingDetails() {
     return this.apiService.get<League.PowerRankingTeam[]>(
-      `${ROOTPATH}/${this.leagueKey()}/tournaments/${this.tournamentKey()}/drafts/${this.draftKey()}/power-rankings`,
+      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/drafts/${this.draftSlug()}/power-rankings`,
       { authenticated: true },
     );
   }
 
-  getDraftDetails(draftKey?: string) {
+  getDraftDetails(draftSlug?: string) {
     return this.apiService.get<{
       leagueName: string;
       divisionName: string;
@@ -248,7 +248,7 @@ export class LeagueZoneService {
       canDraftCounts: Record<string, number>;
       logo: string;
     }>(
-      `${ROOTPATH}/${this.leagueKey()}/tournaments/${this.tournamentKey()}/drafts/${draftKey ?? this.draftKey()}`,
+      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/drafts/${draftSlug ?? this.draftSlug()}`,
       { authenticated: true },
     );
   }
@@ -262,7 +262,7 @@ export class LeagueZoneService {
         trades: TradeLog[];
       }[];
     }>(
-      `${ROOTPATH}/${this.leagueKey()}/tournaments/${this.tournamentKey()}/stages/${stageId}/trades`,
+      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/stages/${stageId}/trades`,
       {
         authenticated: true,
         params: {
@@ -274,7 +274,7 @@ export class LeagueZoneService {
 
   sendTrade(tradeData: TradeData, stageId?: string) {
     return this.apiService.post(
-      `${ROOTPATH}/${this.leagueKey()}/tournaments/${this.tournamentKey()}/stages/${stageId ?? this.stageId()}/trades`,
+      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/stages/${stageId ?? this.stageId()}/trades`,
       tradeData,
       { authenticated: true },
     );
@@ -288,7 +288,7 @@ export class LeagueZoneService {
   //     tierList: LeagueTier[];
   //     divisions: { [key: string]: { pokemonId: string; teamId: string }[] };
   //     ruleset?: string;
-  //   }>(`${ROOTPATH}/${this.leagueKey()}/tournaments/${this.tournamentKey()}/tier-list`, {
+  //   }>(`${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/tier-list`, {
   //     params,
   //   });
   // }
@@ -301,7 +301,7 @@ export class LeagueZoneService {
   //     tierList: LeagueTier[];
   //     divisions: { [key: string]: { pokemonId: string; teamId: string }[] };
   //   }>(
-  //     `${ROOTPATH}/${this.leagueKey()}/tournaments/${this.tournamentKey()}/tier-list/edit`,
+  //     `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/tier-list/edit`,
 
   //     { authenticated: true, params },
   //   );
@@ -315,7 +315,7 @@ export class LeagueZoneService {
   //   }>,
   // ) {
   //   return this.apiService.post<{ success: boolean; message: string }>(
-  //     `${ROOTPATH}/${this.leagueKey()}/tournaments/${this.tournamentKey()}/tier-list/edit`,
+  //     `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/tier-list/edit`,
   //     { tiers },
   //     { authenticated: true },
   //   );
@@ -328,7 +328,7 @@ export class LeagueZoneService {
       rounds: League.Stage[];
       currentRoundIndex: number;
     }>(
-      `${ROOTPATH}/${this.leagueKey()}/tournaments/${this.tournamentKey()}/stages/${stageId}/schedule`,
+      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/stages/${stageId}/schedule`,
       {
         authenticated: true,
 
@@ -342,7 +342,7 @@ export class LeagueZoneService {
 
   getPicks() {
     return this.apiService.get<League.DraftTeam[]>(
-      `${ROOTPATH}/${this.leagueKey()}/tournaments/${this.tournamentKey()}/drafts/${this.draftKey()}/picks`,
+      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/drafts/${this.draftSlug()}/picks`,
       { authenticated: true },
     );
   }
@@ -352,7 +352,7 @@ export class LeagueZoneService {
     picks: { pokemonId: string; addons?: string[] }[][],
   ) {
     return this.apiService.post(
-      `${ROOTPATH}/${this.leagueKey()}/tournaments/${this.tournamentKey()}/drafts/${this.draftKey()}/teams/${teamId}/picks`,
+      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/drafts/${this.draftSlug()}/teams/${teamId}/picks`,
       { picks },
       { authenticated: true },
     );
@@ -373,7 +373,7 @@ export class LeagueZoneService {
         ? T
         : never
     >(
-      `${ROOTPATH}/${this.leagueKey()}/tournaments/${this.tournamentKey()}/drafts/${this.draftKey()}/teams/${teamId}/draft`,
+      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/drafts/${this.draftSlug()}/teams/${teamId}/draft`,
       payload,
       { authenticated: true },
     );
@@ -381,13 +381,13 @@ export class LeagueZoneService {
 
   removeDraftPokemon(teamId: string, pokemonId: string) {
     return this.apiService.delete(
-      `${ROOTPATH}/${this.leagueKey()}/tournaments/${this.tournamentKey()}/drafts/${this.draftKey()}/teams/${teamId}/draft/${pokemonId}`,
+      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/drafts/${this.draftSlug()}/teams/${teamId}/draft/${pokemonId}`,
     );
   }
 
   getTeams(stageId?: string): Observable<{ teams: League.LeagueTeam[] }> {
     return this.apiService.get(
-      `${ROOTPATH}/${this.leagueKey()}/tournaments/${this.tournamentKey()}/drafts/${this.draftKey()}/teams`,
+      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/drafts/${this.draftSlug()}/teams`,
       {
         authenticated: true,
         params: { stageId: stageId ?? this.stageId() ?? '' },
@@ -439,21 +439,21 @@ export class LeagueZoneService {
     });
   }
 
-  getDraftOrder(draftKey: string) {
+  getDraftOrder(draftSlug: string) {
     return this.apiService.get<League.DraftRound[]>(
-      `${ROOTPATH}/${this.leagueKey()}/tournaments/${this.tournamentKey()}/drafts/${draftKey}/order`,
+      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/drafts/${draftSlug}/order`,
     );
   }
 
   listStages(): Observable<League.StageSummary[]> {
     return this.apiService.get(
-      `${ROOTPATH}/${this.leagueKey()}/tournaments/${this.tournamentKey()}/stages`,
+      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/stages`,
     );
   }
 
   signUp(signupData: object) {
     return this.apiService.post(
-      `${ROOTPATH}/${this.leagueKey()}/tournaments/${this.tournamentKey()}/signup`,
+      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/signup`,
       signupData,
       { authenticated: true },
     );
@@ -463,7 +463,7 @@ export class LeagueZoneService {
     suppressStatuses?: number[];
   }): Observable<League.CoachProfile> {
     return this.apiService.get(
-      `${ROOTPATH}/${this.leagueKey()}/tournaments/${this.tournamentKey()}/signup`,
+      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/signup`,
       {
         authenticated: true,
         errorHandlingOptions: { suppressStatuses: options?.suppressStatuses },
@@ -473,28 +473,28 @@ export class LeagueZoneService {
 
   getDiscordJoinedStatus(discordId: string): Observable<{ joined: boolean }> {
     return this.apiService.get(
-      `${ROOTPATH}/${this.leagueKey()}/tournaments/${this.tournamentKey()}/discord/joined/${discordId}`,
+      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/discord/joined/${discordId}`,
       { authenticated: true },
     );
   }
 
   getLeagueInfo(): Observable<League.LeagueInfo> {
     return this.apiService.get(
-      `${ROOTPATH}/${this.leagueKey()}/tournaments/${this.tournamentKey()}/info`,
+      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/info`,
       { authenticated: 'optional' },
     );
   }
 
   getLeague(): Observable<League.LeagueSummary> {
-    return this.apiService.get(`${ROOTPATH}/${this.leagueKey()}`);
+    return this.apiService.get(`${ROOTPATH}/${this.leagueSlug()}`);
   }
 
   getSignUps(): Observable<{
     signups: League.LeagueSignUp[];
-    drafts: { name: string; draftKey: string }[];
+    drafts: { name: string; draftSlug: string }[];
   }> {
     return this.apiService.get(
-      `${ROOTPATH}/${this.leagueKey()}/tournaments/${this.tournamentKey()}/coaches`,
+      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/coaches`,
       { authenticated: true },
     );
   }
@@ -503,7 +503,7 @@ export class LeagueZoneService {
     signups: { id: string; draft?: string; status?: League.SignUpStatus }[],
   ): Observable<{ message: string }> {
     return this.apiService.patch(
-      `${ROOTPATH}/${this.leagueKey()}/tournaments/${this.tournamentKey()}/coaches`,
+      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/coaches`,
       {
         assignments: signups.map((s) => ({
           coachId: s.id,
@@ -517,7 +517,7 @@ export class LeagueZoneService {
   getBracket(): Observable<BracketWithSeeding> {
     return this.apiService
       .get<RawBracketResponse>(
-        `${ROOTPATH}/${this.leagueKey()}/tournaments/${this.tournamentKey()}/bracket`,
+        `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/bracket`,
         { authenticated: true },
       )
       .pipe(map(mapRawBracket));
@@ -526,7 +526,7 @@ export class LeagueZoneService {
   getStageBracket(stageId: string): Observable<BracketWithSeeding> {
     return this.apiService
       .get<RawBracketResponse>(
-        `${ROOTPATH}/${this.leagueKey()}/tournaments/${this.tournamentKey()}/stages/${stageId}/bracket`,
+        `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/stages/${stageId}/bracket`,
         { authenticated: true },
       )
       .pipe(map(mapRawBracket));
@@ -543,7 +543,7 @@ export class LeagueZoneService {
     }[];
   }> {
     return this.apiService.get(
-      `${ROOTPATH}/${this.leagueKey()}/tournaments/${this.tournamentKey()}/teams`,
+      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/teams`,
       { authenticated: true },
     );
   }
@@ -553,7 +553,7 @@ export class LeagueZoneService {
     pokemonStandings: League.PokemonStanding[];
   }> {
     return this.apiService.get(
-      `${ROOTPATH}/${this.leagueKey()}/tournaments/${this.tournamentKey()}/stages/${stageId ?? this.stageId()}/standings`,
+      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/stages/${stageId ?? this.stageId()}/standings`,
       { authenticated: true },
     );
   }
@@ -568,7 +568,7 @@ export class LeagueZoneService {
     }
   > {
     return this.apiService.get(
-      `${ROOTPATH}/${this.leagueKey()}/tournaments/${this.tournamentKey()}/teams/${teamId ?? this.teamKey()}`,
+      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/teams/${teamId ?? this.teamKey()}`,
       {
         authenticated: true,
         params: { stageId: stageId ?? this.stageId() ?? '' },
@@ -588,16 +588,16 @@ export class LeagueZoneService {
   }
 
   updateCoachLogo(coachId: string, fileKey: string) {
-    const tournamentKey = this.tournamentKey();
-    if (!tournamentKey)
+    const tournamentSlug = this.tournamentSlug();
+    if (!tournamentSlug)
       return throwError(() => new Error('Tournament key not available'));
 
     return this.apiService.patch(
-      `${ROOTPATH}/${this.leagueKey()}/tournaments/${tournamentKey}/coaches/${coachId}/logo`,
+      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${tournamentSlug}/coaches/${coachId}/logo`,
       { fileKey },
       {
         invalidateCache: [
-          `${ROOTPATH}/${this.leagueKey()}/tournaments/${tournamentKey}/signup`,
+          `${ROOTPATH}/${this.leagueSlug()}/tournaments/${tournamentSlug}/signup`,
         ],
       },
     );

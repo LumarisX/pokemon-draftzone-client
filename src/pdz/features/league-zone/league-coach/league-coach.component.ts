@@ -35,27 +35,27 @@ export class LeagueCoachComponent implements OnInit, OnDestroy {
   selectedStageId: string | null = null;
 
   get draftBase(): string[] {
-    const { leagueKey, tournamentKey } = this;
-    const draftKey = this.profile?.draft?.draftKey;
-    if (!leagueKey || !tournamentKey || !draftKey) return [];
+    const { leagueSlug, tournamentSlug } = this;
+    const draftSlug = this.profile?.draft?.draftSlug;
+    if (!leagueSlug || !tournamentSlug || !draftSlug) return [];
     return [
       '/leagues',
-      leagueKey,
+      leagueSlug,
       'tournaments',
-      tournamentKey,
+      tournamentSlug,
       'drafts',
-      draftKey,
+      draftSlug,
     ];
   }
 
   get stageBase(): string[] {
-    const { leagueKey, tournamentKey, selectedStageId } = this;
-    if (!leagueKey || !tournamentKey || !selectedStageId) return [];
+    const { leagueSlug, tournamentSlug, selectedStageId } = this;
+    if (!leagueSlug || !tournamentSlug || !selectedStageId) return [];
     return [
       '/leagues',
-      leagueKey,
+      leagueSlug,
       'tournaments',
-      tournamentKey,
+      tournamentSlug,
       'stages',
       selectedStageId,
     ];
@@ -73,17 +73,17 @@ export class LeagueCoachComponent implements OnInit, OnDestroy {
     return [...this.stageBase, 'standings'];
   }
 
-  private get leagueKey() {
-    return this.leagueService.leagueKey();
+  private get leagueSlug() {
+    return this.leagueService.leagueSlug();
   }
-  private get tournamentKey() {
-    return this.leagueService.tournamentKey();
+  private get tournamentSlug() {
+    return this.leagueService.tournamentSlug();
   }
 
   tournamentBase(): string[] {
-    const { leagueKey, tournamentKey } = this;
-    if (!leagueKey || !tournamentKey) return [];
-    return ['/leagues', leagueKey, 'tournaments', tournamentKey];
+    const { leagueSlug, tournamentSlug } = this;
+    if (!leagueSlug || !tournamentSlug) return [];
+    return ['/leagues', leagueSlug, 'tournaments', tournamentSlug];
   }
 
   ngOnInit(): void {

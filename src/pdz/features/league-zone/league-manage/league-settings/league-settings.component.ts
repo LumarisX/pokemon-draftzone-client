@@ -52,14 +52,14 @@ export class LeagueSettingsComponent implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
 
-  get leagueKey() {
-    return this.leagueService.leagueKey();
+  get leagueSlug() {
+    return this.leagueService.leagueSlug();
   }
-  get tournamentKey() {
-    return this.leagueService.tournamentKey();
+  get tournamentSlug() {
+    return this.leagueService.tournamentSlug();
   }
   get managePath() {
-    return `/leagues/${this.leagueKey}/tournaments/${this.tournamentKey}/manage`;
+    return `/leagues/${this.leagueSlug}/tournaments/${this.tournamentSlug}/manage`;
   }
 
   ngOnInit(): void {

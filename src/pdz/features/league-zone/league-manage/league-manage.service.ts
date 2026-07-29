@@ -1,8 +1,15 @@
 import { Injectable, inject } from '@angular/core';
+import { Observable } from 'rxjs';
 import { TierPokemonAddon } from '../../tier-lists/tier-list.model';
 import { League, TradeLog } from '@pdz/features/league-zone/league.interface';
 import { ApiService } from '@pdz/core/services/api.service';
 import { LeagueZoneService } from '../league-zone.service';
+
+/** Payload every draft-mutating organizer endpoint echoes back. */
+export type DraftDetails =
+  ReturnType<LeagueZoneService['getDraftDetails']> extends Observable<infer T>
+    ? T
+    : never;
 
 @Injectable({
   providedIn: 'root',
@@ -39,36 +46,64 @@ export class LeagueManageService {
     },
   ) {
     return this.apiService.post(
-      `leagues/${this.leagueZoneService.leagueKey()}/tournaments/${this.leagueZoneService.tournamentKey()}/stages/${this.leagueZoneService.stageId()}/matchups/${matchupId}`,
+      `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/stages/${this.leagueZoneService.stageId()}/matchups/${matchupId}`,
       payload,
       { authenticated: true },
     );
   }
 
   setPick(
-    tournamentId: string,
+    tournamentSlug: string,
     pick: {
       teamId: string;
       pokemonId: string;
     },
   ) {
     return this.apiService.post(
-      `leagues/${this.leagueZoneService.leagueKey()}/tournaments/${tournamentId}/drafts/${this.leagueZoneService.draftKey()}/teams/${pick.teamId}/draft`,
+      `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${tournamentSlug}/drafts/${this.leagueZoneService.draftSlug()}/teams/${pick.teamId}/draft`,
       { add: [{ pokemonId: pick.pokemonId }] },
       { authenticated: true },
     );
   }
 
-  canManage(leagueKey: string, tournamentKey: string) {
+  /**
+   * Organizer edit of a single draft turn: writes the pick into that team's
+   * round slot rather than appending it, so correcting an earlier round doesn't
+   * land the Pokemon at the end of their roster. Returns fresh draft details.
+   */
+  setRoundPick(
+    teamId: string,
+    round: number,
+    pick: { pokemonId: string; addons?: string[] },
+  ) {
+    return this.apiService.post<DraftDetails>(
+      `${this.draftPath()}/teams/${teamId}/draft/rounds/${round}`,
+      pick,
+      { authenticated: true },
+    );
+  }
+
+  /** Organizer removal of a drafted Pokemon. Returns fresh draft details. */
+  clearPick(teamId: string, pokemonId: string) {
+    return this.apiService.delete<DraftDetails>(
+      `${this.draftPath()}/teams/${teamId}/draft/${pokemonId}`,
+    );
+  }
+
+  private draftPath(): string {
+    return `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/drafts/${this.leagueZoneService.draftSlug()}`;
+  }
+
+  canManage(leagueSlug: string, tournamentSlug: string) {
     return this.apiService.get<string[]>(
-      `leagues/${leagueKey}/tournaments/${tournamentKey}/roles`,
+      `leagues/${leagueSlug}/tournaments/${tournamentSlug}/roles`,
       { authenticated: true },
     );
   }
 
   setDraftState(state: string) {
     return this.apiService.post(
-      `leagues/${this.leagueZoneService.leagueKey()}/tournaments/${this.leagueZoneService.tournamentKey()}/drafts/${this.leagueZoneService.draftKey()}/state`,
+      `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/drafts/${this.leagueZoneService.draftSlug()}/state`,
       { state },
       { authenticated: true },
     );
@@ -76,7 +111,7 @@ export class LeagueManageService {
 
   setNoTimer(noTimer: boolean) {
     return this.apiService.post(
-      `leagues/${this.leagueZoneService.leagueKey()}/tournaments/${this.leagueZoneService.tournamentKey()}/drafts/${this.leagueZoneService.draftKey()}/timer`,
+      `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/drafts/${this.leagueZoneService.draftSlug()}/timer`,
       { noTimer },
       { authenticated: true },
     );
@@ -84,7 +119,7 @@ export class LeagueManageService {
 
   skipCurrentPick() {
     return this.apiService.post(
-      `leagues/${this.leagueZoneService.leagueKey()}/tournaments/${this.leagueZoneService.tournamentKey()}/drafts/${this.leagueZoneService.draftKey()}/skip`,
+      `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/drafts/${this.leagueZoneService.draftSlug()}/skip`,
       '',
       { authenticated: true },
     );
@@ -97,7 +132,7 @@ export class LeagueManageService {
         trades: TradeLog[];
       }[];
     }>(
-      `leagues/${this.leagueZoneService.leagueKey()}/tournaments/${this.leagueZoneService.tournamentKey()}/stages/${this.leagueZoneService.stageId()}/trades`,
+      `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/stages/${this.leagueZoneService.stageId()}/trades`,
       {
         authenticated: true,
       },
@@ -109,7 +144,7 @@ export class LeagueManageService {
       rounds: League.Stage[];
       currentRoundIndex: number;
     }>(
-      `leagues/${this.leagueZoneService.leagueKey()}/tournaments/${this.leagueZoneService.tournamentKey()}/stages/${this.leagueZoneService.stageId()}/schedule`,
+      `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/stages/${this.leagueZoneService.stageId()}/schedule`,
       {
         authenticated: true,
       },
@@ -146,7 +181,7 @@ export class LeagueManageService {
         platforms?: string[];
       };
     }>(
-      `leagues/${this.leagueZoneService.leagueKey()}/tournaments/${this.leagueZoneService.tournamentKey()}/settings`,
+      `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/settings`,
       { authenticated: true },
     );
   }
@@ -181,7 +216,7 @@ export class LeagueManageService {
     };
   }) {
     return this.apiService.patch<{ success: boolean }>(
-      `leagues/${this.leagueZoneService.leagueKey()}/tournaments/${this.leagueZoneService.tournamentKey()}/settings`,
+      `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/settings`,
       settings,
     );
   }
@@ -216,7 +251,7 @@ export class LeagueManageService {
       seedOrder: string[];
       matchIds: Record<string, string>;
     }>(
-      `leagues/${this.leagueZoneService.leagueKey()}/tournaments/${this.leagueZoneService.tournamentKey()}/stages/${stageId}/bracket`,
+      `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/stages/${stageId}/bracket`,
       payload,
       { authenticated: true },
     );
@@ -224,7 +259,7 @@ export class LeagueManageService {
 
   deleteBracket(stageId: string) {
     return this.apiService.delete<{ message: string }>(
-      `leagues/${this.leagueZoneService.leagueKey()}/tournaments/${this.leagueZoneService.tournamentKey()}/stages/${stageId}/bracket`,
+      `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/stages/${stageId}/bracket`,
     );
   }
 
@@ -243,7 +278,7 @@ export class LeagueManageService {
       stages: string[];
       currentStage: number;
     }>(
-      `leagues/${this.leagueZoneService.leagueKey()}/tournaments/${this.leagueZoneService.tournamentKey()}/drafts/${this.leagueZoneService.draftKey()}/pokemon-list`,
+      `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/drafts/${this.leagueZoneService.draftSlug()}/pokemon-list`,
       {
         authenticated: true,
         params: { stageId: this.leagueZoneService.stageId() ?? '' },

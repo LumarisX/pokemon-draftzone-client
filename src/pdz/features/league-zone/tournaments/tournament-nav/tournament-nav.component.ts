@@ -68,17 +68,17 @@ export class TournamentNavComponent implements OnInit, OnDestroy {
         this.profileLoaded = true;
         if (profile?.draft) {
           this.loadStages();
-          this.loadDraftStatus(profile.draft.draftKey);
+          this.loadDraftStatus(profile.draft.draftSlug);
         }
       });
   }
 
   private loadManageRoles(): void {
-    const leagueKey = this.leagueKey;
-    const tournamentKey = this.tournamentKey;
-    if (!leagueKey || !tournamentKey) return;
+    const leagueSlug = this.leagueSlug;
+    const tournamentSlug = this.tournamentSlug;
+    if (!leagueSlug || !tournamentSlug) return;
     this.manageService
-      .canManage(leagueKey, tournamentKey)
+      .canManage(leagueSlug, tournamentSlug)
       .pipe(
         takeUntil(this.destroy$),
         catchError(() => of([] as string[])),
@@ -93,9 +93,9 @@ export class TournamentNavComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  private loadDraftStatus(draftKey: string): void {
+  private loadDraftStatus(draftSlug: string): void {
     this.leagueService
-      .getDraftDetails(draftKey)
+      .getDraftDetails(draftSlug)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (details) => {
@@ -138,18 +138,18 @@ export class TournamentNavComponent implements OnInit, OnDestroy {
     return this.profileLoaded && !!this.profile && !this.profile.inDiscordServer;
   }
 
-  private get leagueKey() {
-    return this.leagueService.leagueKey();
+  private get leagueSlug() {
+    return this.leagueService.leagueSlug();
   }
 
-  private get tournamentKey() {
-    return this.leagueService.tournamentKey();
+  private get tournamentSlug() {
+    return this.leagueService.tournamentSlug();
   }
 
   tournamentBase(): string[] {
-    const { leagueKey, tournamentKey } = this;
-    if (!leagueKey || !tournamentKey) return [];
-    return ['/leagues', leagueKey, 'tournaments', tournamentKey];
+    const { leagueSlug, tournamentSlug } = this;
+    if (!leagueSlug || !tournamentSlug) return [];
+    return ['/leagues', leagueSlug, 'tournaments', tournamentSlug];
   }
 
   get manageLink(): string[] {
@@ -159,10 +159,10 @@ export class TournamentNavComponent implements OnInit, OnDestroy {
   }
 
   get draftBase(): string[] {
-    const draftKey = this.profile?.draft?.draftKey;
+    const draftSlug = this.profile?.draft?.draftSlug;
     const base = this.tournamentBase();
-    if (!base.length || !draftKey) return [];
-    return [...base, 'drafts', draftKey];
+    if (!base.length || !draftSlug) return [];
+    return [...base, 'drafts', draftSlug];
   }
 
   get stageBase(): string[] {

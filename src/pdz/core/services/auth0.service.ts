@@ -6,7 +6,7 @@ import { catchError, map, Observable, of, shareReplay, switchMap } from 'rxjs';
 export type LeagueRole = 'owner' | 'coach' | 'helper' | 'player' | 'spectator';
 
 export type LeagueRoles = {
-  [tournamentId: string]: LeagueRole;
+  [tournamentSlug: string]: LeagueRole;
 };
 
 type AppUser = User & {

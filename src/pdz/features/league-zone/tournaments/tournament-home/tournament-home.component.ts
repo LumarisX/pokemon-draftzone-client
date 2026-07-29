@@ -61,17 +61,17 @@ export class TournamentHomeComponent implements OnInit, OnDestroy {
   getTeamLogoUrl = getLogoUrl;
 
   get draftLink(): string[] {
-    const leagueKey = this.leagueService.leagueKey();
-    const tournamentKey = this.leagueService.tournamentKey();
-    const draftKey = this.profile?.draft?.draftKey;
-    if (!leagueKey || !tournamentKey || !draftKey) return [];
+    const leagueSlug = this.leagueService.leagueSlug();
+    const tournamentSlug = this.leagueService.tournamentSlug();
+    const draftSlug = this.profile?.draft?.draftSlug;
+    if (!leagueSlug || !tournamentSlug || !draftSlug) return [];
     return [
       '/leagues',
-      leagueKey,
+      leagueSlug,
       'tournaments',
-      tournamentKey,
+      tournamentSlug,
       'drafts',
-      draftKey,
+      draftSlug,
       'draft',
     ];
   }

@@ -52,7 +52,7 @@ export class DraftPreviewComponent {
       next: (data) => {
         this.drafts = data.drafts;
         this.drafts.forEach((draft) => {
-          this.menuState[draft.tournamentId] = '';
+          this.menuState[draft.slug] = '';
         });
       },
       error: (error) => {
@@ -92,16 +92,16 @@ export class DraftPreviewComponent {
   }
 
   setMenuState(
-    tournamentId: string,
+    slug: string,
     state: '' | 'confirm-archive' | 'confirm-delete',
   ) {
-    this.menuState[tournamentId] = state;
+    this.menuState[slug] = state;
   }
 
-  toggleMenu(tournamentId: string, event: MouseEvent) {
+  toggleMenu(slug: string, event: MouseEvent) {
     event.stopPropagation();
     this.openDropdown =
-      this.openDropdown === tournamentId ? null : tournamentId;
+      this.openDropdown === slug ? null : slug;
   }
 
   toPlanner(draft: Draft): string {
