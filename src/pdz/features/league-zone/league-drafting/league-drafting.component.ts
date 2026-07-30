@@ -48,6 +48,21 @@ interface DraftCounterEvent {
   nextTeam: string;
 }
 
+/** An organizer edited a roster slot out of band — set, swapped, or cleared. */
+interface DraftPickUpdatedEvent {
+  draftSlug: string;
+  round?: number;
+  /** Absent when the slot was cleared rather than set. */
+  pokemon?: League.LeaguePokemon;
+  previous?: League.LeaguePokemon;
+  team: {
+    id: string;
+    name: string;
+    draft: League.LeaguePokemon[];
+  };
+  canDraftCounts: Record<string, number>;
+}
+
 interface DraftStatusEvent {
   draftSlug: string;
   status: 'PRE_DRAFT' | 'IN_PROGRESS' | 'PAUSED' | 'COMPLETED';
@@ -211,7 +226,7 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
   private applyDraftDetails(data: DraftDetailsResponse): void {
     this.teams = data.teams;
     this.leagueName = data.leagueName;
-    this.draftName = data.divisionName;
+    this.draftName = data.draftName;
     this.currentPick = data.currentPick;
     this.canDraftCounts = data.canDraftCounts ?? {};
     this.noTimer = data.noTimer;
@@ -292,6 +307,53 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
       });
 
     this.webSocketService
+      .on<DraftPickUpdatedEvent>('league.draft.updated')
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((data) => {
+        if (this.leagueService.draftSlug() !== data.draftSlug) return;
+
+        const isViewedTeam = this.selectedTeam?.id === data.team.id;
+        const droppedStagedPicks =
+          isViewedTeam && this.pendingPokemonIds.size > 0;
+
+        this.teams = this.teams.map((team) => {
+          const newTeam = { ...team };
+          if (team.id === data.team.id) newTeam.draft = data.team.draft;
+          // A slot the organizer just filled is off the board for everyone.
+          if (data.pokemon)
+            newTeam.picks = newTeam.picks.map((round) =>
+              round.filter((pick) => pick.id !== data.pokemon!.id),
+            );
+          return newTeam;
+        });
+
+        const updatedSelectedTeam = this.teams.find(
+          (team) => team.id === this.selectedTeam?.id,
+        );
+        if (updatedSelectedTeam) {
+          updatedSelectedTeam.pointTotal = updatedSelectedTeam.draft.reduce(
+            (points, pokemon) => points + (pokemon.cost ?? 0),
+            0,
+          );
+          Object.assign(this.selectedTeam, updatedSelectedTeam);
+          // The organizer's roster is the new baseline — diffing against the
+          // old one would send a save that undoes their edit.
+          if (isViewedTeam) this.originalDraft = [...data.team.draft];
+        }
+
+        this.canDraftCounts = data.canDraftCounts ?? {};
+        this.notificationService.show(
+          this.pickUpdateMessage(data),
+          data.pokemon ? 'info' : 'warning',
+        );
+        if (droppedStagedPicks)
+          this.notificationService.show(
+            'An organizer changed this roster, so your unsaved picks were reset.',
+            'warning',
+          );
+      });
+
+    this.webSocketService
       .on<DraftCounterEvent>('league.draft.counter')
       .pipe(takeUntil(this.destroy$))
       .subscribe((data) => {
@@ -346,6 +408,20 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
     this.countdownTick$.next();
     this.countdownTick$.complete();
+  }
+
+  /** Phrases an organizer's out-of-band roster edit for the notification feed. */
+  private pickUpdateMessage(data: DraftPickUpdatedEvent): string {
+    const slot =
+      data.round === undefined
+        ? `${data.team.name}'s roster`
+        : `${data.team.name}'s round ${data.round + 1} pick`;
+
+    if (data.pokemon && data.previous)
+      return `An organizer changed ${slot} from ${data.previous.name} to ${data.pokemon.name}.`;
+    if (data.pokemon)
+      return `An organizer set ${slot} to ${data.pokemon.name}.`;
+    return `An organizer cleared ${data.previous?.name ?? 'a pick'} from ${slot}.`;
   }
 
   private scrollToCurrentRoundOnLoad(): void {

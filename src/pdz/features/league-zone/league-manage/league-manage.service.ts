@@ -90,6 +90,56 @@ export class LeagueManageService {
     );
   }
 
+  /**
+   * Points the draft back at a specific turn and hands that team a fresh clock.
+   * Both indices are zero-based. Returns fresh draft details.
+   */
+  setCurrentPick(round: number, position: number) {
+    return this.apiService.post<DraftDetails>(
+      `${this.draftPath()}/current-pick`,
+      { round, position },
+      { authenticated: true },
+    );
+  }
+
+  /** Organizer-only, PRE_DRAFT-only: switch seeding mode and/or write a manual order. */
+  setDraftOrder(payload: { useRandomSeeding: boolean; order?: string[] }) {
+    return this.apiService.post<DraftDetails>(
+      `${this.draftPath()}/order`,
+      payload,
+      { authenticated: true },
+    );
+  }
+
+  /**
+   * Organizer-only. `channelId: null` clears it; omitted fields are left
+   * untouched. `orderProgression`/`sequentialTurns` are PRE_DRAFT-only
+   * server-side, same restriction as `setDraftOrder`.
+   */
+  updateDraftSettings(payload: {
+    name?: string;
+    channelId?: string | null;
+    orderProgression?: 'snake' | 'linear';
+    sequentialTurns?: boolean;
+    visibility?: 'ALL' | 'SELF';
+    allowRemovals?: boolean;
+  }) {
+    return this.apiService.post<DraftDetails>(
+      `${this.draftPath()}/settings`,
+      payload,
+      { authenticated: true },
+    );
+  }
+
+  /** Organizer-only: sends a test message to the draft's saved channelId. */
+  sendTestMessage() {
+    return this.apiService.post<{ success: boolean }>(
+      `${this.draftPath()}/settings/test-message`,
+      '',
+      { authenticated: true },
+    );
+  }
+
   private draftPath(): string {
     return `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/drafts/${this.leagueZoneService.draftSlug()}`;
   }

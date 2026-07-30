@@ -226,8 +226,10 @@ export class LeagueZoneService {
   getDraftDetails(draftSlug?: string) {
     return this.apiService.get<{
       leagueName: string;
-      divisionName: string;
+      draftName: string;
       teamOrder: string[];
+      useRandomSeeding: boolean;
+      channelId?: string;
       rounds: number;
       minDraftCount: number;
       tierRequirements: { tierName: string; required: number }[];

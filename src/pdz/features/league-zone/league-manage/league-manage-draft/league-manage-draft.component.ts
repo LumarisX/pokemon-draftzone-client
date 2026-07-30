@@ -1,3 +1,10 @@
+import {
+  CdkDrag,
+  CdkDragDrop,
+  CdkDragHandle,
+  CdkDropList,
+  moveItemInArray,
+} from '@angular/cdk/drag-drop';
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import { finalize } from 'rxjs/operators';
@@ -23,6 +30,16 @@ interface DraftCounterEvent {
   nextTeam: string;
 }
 
+/** An organizer edited a roster slot out of band — set, swapped, or cleared. */
+interface DraftPickUpdatedEvent {
+  draftSlug: string;
+  round?: number;
+  /** Absent when the slot was cleared rather than set. */
+  pokemon?: League.LeaguePokemon;
+  previous?: League.LeaguePokemon;
+  team: { id: string; name: string; draft: League.LeaguePokemon[] };
+}
+
 /** One team's slot in one round — the unit this page is built out of. */
 export interface DraftTurn {
   /** Stable identity for `track`, and the key the inline editor opens against. */
@@ -46,6 +63,9 @@ export interface DraftTurnRound {
     SpriteComponent,
     IconComponent,
     LeagueNotificationsComponent,
+    CdkDropList,
+    CdkDrag,
+    CdkDragHandle,
   ],
   templateUrl: './league-manage-draft.component.html',
   styleUrl: './league-manage-draft.component.scss',
@@ -70,6 +90,29 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
   teamOrder: string[] = [];
   currentPick?: { round: number; position: number };
 
+  /** Last-saved seeding config, from the server. */
+  useRandomSeeding = true;
+  /** Organizer's in-progress edit, staged until Save is pressed. */
+  pendingUseRandomSeeding = true;
+  pendingOrder: string[] = [];
+  orderSaving = false;
+
+  /** Last-saved draft metadata, from the server. */
+  draftName = '';
+  channelId?: string;
+  visibility: 'ALL' | 'SELF' = 'ALL';
+  allowRemovals = false;
+
+  /** Organizer's in-progress settings edit, staged until Save is pressed. */
+  pendingDraftName = '';
+  pendingChannelId = '';
+  pendingOrderProgression: 'snake' | 'linear' = 'snake';
+  pendingSequentialTurns = false;
+  pendingVisibility: 'ALL' | 'SELF' = 'ALL';
+  pendingAllowRemovals = false;
+  settingsSaving = false;
+  testingMessage = false;
+
   /** `DraftTurn.key` of the turn whose pick editor is open, if any. */
   editingKey: string | null = null;
   /** `DraftTurn.key` of the turn with an in-flight set/clear request. */
@@ -81,7 +124,9 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
 
   /** Every Pokemon already off the board, so the search can't offer a duplicate. */
   get draftedIds(): string[] {
-    return this.teams.flatMap((team) => team.draft.map((pokemon) => pokemon.id));
+    return this.teams.flatMap((team) =>
+      team.draft.map((pokemon) => pokemon.id),
+    );
   }
 
   private get orderedTeams(): League.LeagueTeam[] {
@@ -90,6 +135,49 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
       .filter((team): team is League.LeagueTeam => team !== undefined);
     // Drafts seeded before teamOrder existed still have teams to lay out.
     return ordered.length ? ordered : this.teams;
+  }
+
+  /**
+   * Reordering is only safe before any picks exist. Legacy drafts may carry
+   * statuses like NOT_STARTED, so treat anything not active/finished as
+   * pre-draft rather than checking for the literal 'PRE_DRAFT' string.
+   */
+  get canEditOrder(): boolean {
+    return !['IN_PROGRESS', 'PAUSED', 'COMPLETED'].includes(this.status);
+  }
+
+  get canReorderTeams(): boolean {
+    return this.canEditOrder && !this.pendingUseRandomSeeding;
+  }
+
+  /** The list the order panel renders: staged edits while editing manually, else the saved order. */
+  get orderPreview(): League.LeagueTeam[] {
+    const ids = this.pendingUseRandomSeeding ? this.teamOrder : this.pendingOrder;
+    const ordered = ids
+      .map((teamId) => this.teamsMap.get(teamId))
+      .filter((team): team is League.LeagueTeam => team !== undefined);
+    return ordered.length ? ordered : this.teams;
+  }
+
+  get isOrderDirty(): boolean {
+    if (this.pendingUseRandomSeeding !== this.useRandomSeeding) return true;
+    if (this.pendingUseRandomSeeding) return false;
+    return !this.sameOrder(this.pendingOrder, this.teamOrder);
+  }
+
+  private sameOrder(a: string[], b: string[]): boolean {
+    return a.length === b.length && a.every((id, i) => id === b[i]);
+  }
+
+  get isSettingsDirty(): boolean {
+    return (
+      this.pendingDraftName !== this.draftName ||
+      this.pendingChannelId !== (this.channelId ?? '') ||
+      this.pendingOrderProgression !== this.orderProgression ||
+      this.pendingSequentialTurns !== this.sequentialTurns ||
+      this.pendingVisibility !== this.visibility ||
+      this.pendingAllowRemovals !== this.allowRemovals
+    );
   }
 
   get rounds(): DraftTurnRound[] {
@@ -123,7 +211,8 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
     if (!this.sequentialTurns || !this.currentPick) return 'upcoming';
 
     const { round: currentRound, position: currentPosition } = this.currentPick;
-    if (currentRound === round && currentPosition === position) return 'current';
+    if (currentRound === round && currentPosition === position)
+      return 'current';
     return currentRound > round ||
       (currentRound === round && currentPosition > position)
       ? 'skipped'
@@ -176,6 +265,18 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
         );
       });
 
+    // The acting organizer already gets a toast off their own request, so this
+    // only keeps a second organizer's board in sync.
+    this.webSocketService
+      .on<DraftPickUpdatedEvent>('league.draft.updated')
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((data) => {
+        if (this.leagueZoneService.draftSlug() !== data.draftSlug) return;
+
+        const team = this.teams.find((team) => team.id === data.team.id);
+        if (team) team.draft = data.team.draft;
+      });
+
     this.webSocketService
       .on<DraftCounterEvent>('league.draft.counter')
       .pipe(takeUntil(this.destroy$))
@@ -217,6 +318,22 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
     this.roundCount = data.rounds;
     this.teamOrder = data.teamOrder;
     this.currentPick = data.currentPick;
+
+    this.useRandomSeeding = data.useRandomSeeding;
+    this.pendingUseRandomSeeding = data.useRandomSeeding;
+    this.pendingOrder = [...data.teamOrder];
+
+    this.draftName = data.draftName;
+    this.channelId = data.channelId;
+    this.visibility = data.visibility;
+    this.allowRemovals = data.allowRemovals;
+
+    this.pendingDraftName = data.draftName;
+    this.pendingChannelId = data.channelId ?? '';
+    this.pendingOrderProgression = data.orderProgression;
+    this.pendingSequentialTurns = data.sequentialTurns;
+    this.pendingVisibility = data.visibility;
+    this.pendingAllowRemovals = data.allowRemovals;
   }
 
   /** Who to credit on a turn: the coach who owes the pick, or whoever made it. */
@@ -308,6 +425,42 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
       });
   }
 
+  /**
+   * Only an empty slot can be handed back to its team — a turn that already has
+   * a pick has nothing left to do, and the current turn is already there.
+   */
+  canMakeCurrent(turn: DraftTurn): boolean {
+    return this.sequentialTurns && !turn.pokemon && turn.state !== 'current';
+  }
+
+  /** Rewinds (or jumps) the draft to this turn and restarts its clock. */
+  makeCurrentTurn(turn: DraftTurn): void {
+    if (!this.canMakeCurrent(turn) || this.pendingKey) return;
+    this.pendingKey = turn.key;
+
+    this.leagueManageService
+      .setCurrentPick(turn.round, turn.position)
+      .pipe(
+        takeUntil(this.destroy$),
+        finalize(() => (this.pendingKey = null)),
+      )
+      .subscribe({
+        next: (data) => {
+          this.applyDraftDetails(data);
+          this.editingKey = null;
+          this.notificationService.show(
+            `Draft moved to round ${turn.round + 1}, pick ${turn.position + 1} (${turn.team.name}).`,
+            'success',
+          );
+        },
+        error: (error) =>
+          this.notificationService.show(
+            `Could not move the draft to ${turn.team.name}'s turn. ${this.errorReason(error) ?? ''}`.trim(),
+            'error',
+          ),
+      });
+  }
+
   /** Pulls the server's human-readable rejection reason out of a PDZError body. */
   private errorReason(error: unknown): string | undefined {
     const reason = (
@@ -329,5 +482,106 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
 
   skipNext() {
     this.leagueManageService.skipCurrentPick().subscribe();
+  }
+
+  toggleRandomSeeding(): void {
+    if (!this.canEditOrder) return;
+    this.pendingUseRandomSeeding = !this.pendingUseRandomSeeding;
+    if (!this.pendingUseRandomSeeding && !this.pendingOrder.length) {
+      // Seed the manual list from whatever's currently on screen (falls back
+      // to team-join order when there's no saved teamOrder yet), so the
+      // organizer edits from somewhere sensible rather than an empty list.
+      this.pendingOrder = this.orderedTeams.map((team) => team.id);
+    }
+  }
+
+  dropTeam(event: CdkDragDrop<League.LeagueTeam[]>): void {
+    if (!this.canReorderTeams) return;
+    moveItemInArray(this.pendingOrder, event.previousIndex, event.currentIndex);
+  }
+
+  saveOrder(): void {
+    if (!this.isOrderDirty || this.orderSaving) return;
+    this.orderSaving = true;
+
+    this.leagueManageService
+      .setDraftOrder({
+        useRandomSeeding: this.pendingUseRandomSeeding,
+        order: this.pendingUseRandomSeeding ? undefined : this.pendingOrder,
+      })
+      .pipe(
+        takeUntil(this.destroy$),
+        finalize(() => (this.orderSaving = false)),
+      )
+      .subscribe({
+        next: (data) => {
+          this.applyDraftDetails(data);
+          this.notificationService.show('Draft order saved.', 'success');
+        },
+        error: (error) =>
+          this.notificationService.show(
+            `Could not save draft order. ${this.errorReason(error) ?? ''}`.trim(),
+            'error',
+          ),
+      });
+  }
+
+  saveSettings(): void {
+    if (!this.isSettingsDirty || this.settingsSaving) return;
+    this.settingsSaving = true;
+
+    this.leagueManageService
+      .updateDraftSettings({
+        name: this.pendingDraftName,
+        channelId: this.pendingChannelId.trim()
+          ? this.pendingChannelId.trim()
+          : null,
+        orderProgression: this.pendingOrderProgression,
+        sequentialTurns: this.pendingSequentialTurns,
+        visibility: this.pendingVisibility,
+        allowRemovals: this.pendingAllowRemovals,
+      })
+      .pipe(
+        takeUntil(this.destroy$),
+        finalize(() => (this.settingsSaving = false)),
+      )
+      .subscribe({
+        next: (data) => {
+          this.applyDraftDetails(data);
+          this.notificationService.show('Draft settings saved.', 'success');
+        },
+        error: (error) =>
+          this.notificationService.show(
+            `Could not save draft settings. ${this.errorReason(error) ?? ''}`.trim(),
+            'error',
+          ),
+      });
+  }
+
+  /** Tests the *saved* channelId — save settings first if you just changed it. */
+  sendTestMessage(): void {
+    if (!this.channelId || this.testingMessage) return;
+    this.testingMessage = true;
+
+    this.leagueManageService
+      .sendTestMessage()
+      .pipe(
+        takeUntil(this.destroy$),
+        finalize(() => (this.testingMessage = false)),
+      )
+      .subscribe({
+        next: (data) =>
+          this.notificationService.show(
+            data.success
+              ? 'Test message sent — check the channel.'
+              : "Couldn't deliver a test message. Check the channel ID and bot permissions.",
+            data.success ? 'success' : 'error',
+          ),
+        error: (error) =>
+          this.notificationService.show(
+            `Could not send a test message. ${this.errorReason(error) ?? ''}`.trim(),
+            'error',
+          ),
+      });
   }
 }

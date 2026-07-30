@@ -45,7 +45,7 @@ export class DivisionDashboardComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe((details) => {
         this.leagueName = details.leagueName;
-        this.divisionName = details.divisionName;
+        this.divisionName = details.draftName;
         this.logo = details.logo;
       });
 

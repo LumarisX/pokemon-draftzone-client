@@ -55,6 +55,291 @@
   }
 }
 
+// ── Settings / order panel layout ────────────────────────────────────────────
+// Stacked on mobile; side by side (equal width, equal height) from `large` up.
+
+.control-panels {
+  display: flex;
+  flex-direction: column;
+  row-gap: pdz.space(lg);
+  margin-bottom: pdz.space(xl);
+
+  @include respond-above(large) {
+    flex-direction: row;
+    align-items: stretch;
+    column-gap: pdz.space(lg);
+
+    > .settings-panel,
+    > .order-panel {
+      flex: 1 1 0;
+      min-width: 0;
+    }
+  }
+}
+
+// ── Draft settings panel ─────────────────────────────────────────────────────
+
+.settings-panel {
+  display: flex;
+  flex-direction: column;
+  row-gap: pdz.space(md);
+  padding: pdz.space(sm) pdz.space(md);
+  border: 2px solid pdz.color(outline-variant);
+  border-radius: pdz.shape(corner-sm);
+  background: pdz.color(surface);
+  box-shadow: var(--pdz-level-1);
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__title {
+    @include apply-typography(title-sm);
+    font-family: var(--pdz-font-fancy);
+    color: pdz.color(primary);
+    margin: 0;
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    row-gap: pdz.space(md);
+  }
+
+  &__channel-row {
+    display: flex;
+    column-gap: pdz.space(sm);
+
+    .form-field__input {
+      flex: 1 1 auto;
+    }
+
+    .turn__btn {
+      flex: 0 0 auto;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    column-gap: pdz.space(sm);
+  }
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  row-gap: pdz.space(xs);
+
+  &__label {
+    @include apply-typography(label-md);
+    color: pdz.color(on-surface-variant);
+  }
+
+  &__input {
+    background: pdz.color(surface);
+    border: 1px solid pdz.color(outline-variant);
+    border-radius: pdz.shape(corner-sm);
+    color: pdz.color(on-surface);
+    @include apply-typography(body-md);
+    padding: pdz.space(sm) pdz.space(md);
+    transition: border-color 0.15s ease;
+    width: 100%;
+    box-sizing: border-box;
+
+    &:focus {
+      outline: none;
+      border-color: pdz.color(primary);
+      box-shadow: 0 0 0 2px pdz.color(primary-subtle);
+    }
+  }
+
+  &__hint {
+    @include apply-typography(body-sm);
+    color: pdz.color(on-surface-variant);
+  }
+}
+
+.radio-group {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: pdz.space(sm);
+  row-gap: pdz.space(sm);
+}
+
+.radio-option,
+.checkbox-option {
+  display: flex;
+  align-items: center;
+  column-gap: pdz.space(sm);
+  padding: pdz.space(sm) pdz.space(md);
+  border: 1px solid pdz.color(outline-variant);
+  border-radius: pdz.shape(corner-sm);
+  cursor: pointer;
+  background: pdz.color(surface);
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+
+  &:has(input:checked) {
+    background: pdz.color(primary-container-low);
+    border-color: pdz.color(primary-border);
+  }
+
+  input {
+    accent-color: pdz.color(primary);
+    width: 1rem;
+    height: 1rem;
+    flex-shrink: 0;
+  }
+
+  &__label {
+    @include apply-typography(label-md);
+    color: pdz.color(on-surface);
+  }
+}
+
+// ── Draft order panel ────────────────────────────────────────────────────────
+
+.order-panel {
+  display: flex;
+  flex-direction: column;
+  row-gap: pdz.space(sm);
+  padding: pdz.space(sm) pdz.space(md);
+  border: 2px solid pdz.color(outline-variant);
+  border-radius: pdz.shape(corner-sm);
+  background: pdz.color(surface);
+  box-shadow: var(--pdz-level-1);
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    column-gap: pdz.space(sm);
+    flex-wrap: wrap;
+  }
+
+  &__title {
+    @include apply-typography(title-sm);
+    font-family: var(--pdz-font-fancy);
+    color: pdz.color(primary);
+    margin: 0;
+  }
+
+  &__toggle {
+    @include apply-typography(label-md);
+    display: flex;
+    align-items: center;
+    column-gap: pdz.space(2xs);
+    color: pdz.color(on-surface-variant);
+    cursor: pointer;
+
+    input {
+      accent-color: pdz.color(primary);
+    }
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    row-gap: pdz.space(2xs);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__row {
+    display: flex;
+    align-items: center;
+    column-gap: pdz.space(xs);
+    padding: pdz.space(2xs) pdz.space(xs);
+    border: 1px solid pdz.color(outline-variant);
+    border-radius: pdz.shape(corner-xs);
+    background: pdz.color(surface-container-lowest);
+
+    &--static {
+      padding-inline-start: pdz.space(sm);
+    }
+
+    &.cdk-drag-dragging {
+      opacity: 0.6;
+    }
+  }
+
+  &__handle {
+    display: inline-flex;
+    color: pdz.color(on-surface-variant);
+    cursor: grab;
+    touch-action: none;
+
+    &:active {
+      cursor: grabbing;
+    }
+  }
+
+  &__position {
+    @include apply-typography(label-sm);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 50%;
+    background: pdz.color(surface-container-low);
+    color: pdz.color(on-surface-variant);
+    font-family: var(--pdz-font-fancy);
+  }
+
+  &__who {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  &__team {
+    @include apply-typography(label-md);
+    font-weight: 650;
+    color: pdz.color(on-surface);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__coach {
+    @include apply-typography(label-sm);
+    color: pdz.color(on-surface-variant);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    column-gap: pdz.space(sm);
+  }
+
+  &__dirty {
+    @include apply-typography(label-sm);
+    color: pdz.color(primary);
+  }
+
+  &__locked {
+    @include apply-typography(label-sm);
+    color: pdz.color(on-surface-variant);
+    margin: 0;
+  }
+}
+
+.cdk-drop-list-dragging .order-panel__row:not(.cdk-drag-dragging) {
+  transition: transform 0.2s ease-in-out;
+}
+
 // ── Rounds ────────────────────────────────────────────────────────────────────
 
 .rounds {
@@ -320,6 +605,11 @@
   &__btn--clear:hover:not(:disabled) {
     border-color: pdz.color(error);
     color: pdz.color(error);
+  }
+
+  &__btn--rewind:hover:not(:disabled) {
+    border-color: pdz.color(secondary);
+    color: pdz.color(secondary);
   }
 }
 

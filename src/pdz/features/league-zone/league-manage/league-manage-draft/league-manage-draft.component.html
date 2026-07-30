@@ -54,6 +54,215 @@
   </div>
 </div>
 
+<div class="control-panels">
+<section class="settings-panel">
+  <header class="settings-panel__header">
+    <h3 class="settings-panel__title">Draft Settings</h3>
+  </header>
+
+  <div class="settings-panel__body">
+    <div class="form-field">
+      <label class="form-field__label" for="draft-name">Draft name</label>
+      <input
+        id="draft-name"
+        class="form-field__input"
+        type="text"
+        [value]="pendingDraftName"
+        (input)="pendingDraftName = $any($event.target).value"
+      />
+    </div>
+
+    <div class="form-field">
+      <label class="form-field__label" for="draft-channel-id"
+        >Discord channel ID</label
+      >
+      <div class="settings-panel__channel-row">
+        <input
+          id="draft-channel-id"
+          class="form-field__input"
+          type="text"
+          placeholder="e.g. 123456789012345678"
+          [value]="pendingChannelId"
+          (input)="pendingChannelId = $any($event.target).value"
+        />
+        <button
+          type="button"
+          class="turn__btn"
+          [disabled]="!channelId || testingMessage"
+          [title]="
+            channelId
+              ? 'Send a test message to the saved channel ID'
+              : 'Save a channel ID first'
+          "
+          (click)="sendTestMessage()"
+        >
+          Send test message
+        </button>
+      </div>
+      <span class="form-field__hint">
+        Test sends to the last <strong>saved</strong> channel ID — save
+        settings first if you just changed it.
+      </span>
+    </div>
+
+    <div class="form-field">
+      <span class="form-field__label">Turn order</span>
+      <div class="radio-group">
+        <label class="radio-option">
+          <input
+            type="radio"
+            name="order-progression"
+            value="snake"
+            [checked]="pendingOrderProgression === 'snake'"
+            [disabled]="!canEditOrder"
+            (change)="pendingOrderProgression = 'snake'"
+          />
+          <span class="radio-option__label">Snake</span>
+        </label>
+        <label class="radio-option">
+          <input
+            type="radio"
+            name="order-progression"
+            value="linear"
+            [checked]="pendingOrderProgression === 'linear'"
+            [disabled]="!canEditOrder"
+            (change)="pendingOrderProgression = 'linear'"
+          />
+          <span class="radio-option__label">Linear</span>
+        </label>
+      </div>
+      @if (!canEditOrder) {
+        <span class="form-field__hint"
+          >Turn order can only be changed before the draft starts.</span
+        >
+      }
+    </div>
+
+    <label class="checkbox-option">
+      <input
+        type="checkbox"
+        [checked]="pendingSequentialTurns"
+        [disabled]="!canEditOrder"
+        (change)="pendingSequentialTurns = !pendingSequentialTurns"
+      />
+      <span class="checkbox-option__label">Sequential turns</span>
+    </label>
+
+    <div class="form-field">
+      <span class="form-field__label">Visibility</span>
+      <div class="radio-group">
+        <label class="radio-option">
+          <input
+            type="radio"
+            name="visibility"
+            value="ALL"
+            [checked]="pendingVisibility === 'ALL'"
+            (change)="pendingVisibility = 'ALL'"
+          />
+          <span class="radio-option__label">Everyone</span>
+        </label>
+        <label class="radio-option">
+          <input
+            type="radio"
+            name="visibility"
+            value="SELF"
+            [checked]="pendingVisibility === 'SELF'"
+            (change)="pendingVisibility = 'SELF'"
+          />
+          <span class="radio-option__label">Coach only</span>
+        </label>
+      </div>
+    </div>
+
+    <label class="checkbox-option">
+      <input
+        type="checkbox"
+        [checked]="pendingAllowRemovals"
+        (change)="pendingAllowRemovals = !pendingAllowRemovals"
+      />
+      <span class="checkbox-option__label">Allow pick removals</span>
+    </label>
+  </div>
+
+  <div class="settings-panel__actions">
+    @if (isSettingsDirty) {
+      <span class="order-panel__dirty">Unsaved changes</span>
+    }
+    <button
+      type="button"
+      class="turn__btn"
+      [disabled]="!isSettingsDirty || settingsSaving"
+      (click)="saveSettings()"
+    >
+      Save settings
+    </button>
+  </div>
+</section>
+
+<section class="order-panel">
+  <header class="order-panel__header">
+    <h3 class="order-panel__title">Draft Order</h3>
+    <label class="order-panel__toggle">
+      <input
+        type="checkbox"
+        [checked]="pendingUseRandomSeeding"
+        [disabled]="!canEditOrder"
+        (change)="toggleRandomSeeding()"
+      />
+      Random seeding
+    </label>
+  </header>
+
+  <ol
+    class="order-panel__list"
+    [cdkDropListDisabled]="!canReorderTeams"
+    cdkDropList
+    (cdkDropListDropped)="dropTeam($event)"
+  >
+    @for (team of orderPreview; track team.id) {
+      <li
+        class="order-panel__row"
+        [class.order-panel__row--static]="!canReorderTeams"
+        cdkDrag
+        cdkDragLockAxis="y"
+        cdkDragBoundary=".order-panel__list"
+      >
+        @if (canReorderTeams) {
+          <span class="order-panel__handle" cdkDragHandle title="Drag to reorder">
+            <pdz-icon name="drag_indicator" [size]="18"></pdz-icon>
+          </span>
+        }
+        <span class="order-panel__position">{{ $index + 1 }}</span>
+        <div class="order-panel__who">
+          <span class="order-panel__team">{{ team.name }}</span>
+          <span class="order-panel__coach">{{ team.coach }}</span>
+        </div>
+      </li>
+    }
+  </ol>
+
+  @if (canEditOrder) {
+    <div class="order-panel__actions">
+      @if (isOrderDirty) {
+        <span class="order-panel__dirty">Unsaved changes</span>
+      }
+      <button
+        type="button"
+        class="turn__btn"
+        [disabled]="!isOrderDirty || orderSaving"
+        (click)="saveOrder()"
+      >
+        Save order
+      </button>
+    </div>
+  } @else {
+    <p class="order-panel__locked">
+      Order can only be changed before the draft starts.
+    </p>
+  }
+</section>
+</div>
+
 @if (rounds.length) {
   <div class="rounds">
     @for (round of rounds; track round.round) {
@@ -107,7 +316,9 @@
                       <span class="turn__tier">
                         {{ turn.pokemon.tier || "Untiered" }}
                       </span>
-                      <span class="turn__cost">{{ turn.pokemon.cost }} pts</span>
+                      <span class="turn__cost"
+                        >{{ turn.pokemon.cost }} pts</span
+                      >
                     </span>
                   </div>
                 } @else {
@@ -180,6 +391,17 @@
                       (click)="clearTurnPick(turn)"
                     >
                       <pdz-icon name="delete" size="sm"></pdz-icon>
+                    </button>
+                  } @else if (canMakeCurrent(turn)) {
+                    <button
+                      type="button"
+                      class="turn__btn turn__btn--icon turn__btn--rewind"
+                      aria-label="Put this turn back on the clock"
+                      title="Put this turn back on the clock and restart the timer"
+                      [disabled]="isPending(turn)"
+                      (click)="makeCurrentTurn(turn)"
+                    >
+                      <pdz-icon name="restart_alt" size="sm"></pdz-icon>
                     </button>
                   }
                 }
