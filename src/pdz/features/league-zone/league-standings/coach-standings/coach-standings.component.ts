@@ -3,7 +3,7 @@ import { Component, Input } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { PlusSignPipe } from '@pdz/shared/pipes/plus-sign.pipe';
 import { League } from '../../league.interface';
-import { getLogoUrl, getLogoUrlOld } from '../../league.util';
+import { getLogoUrl } from '../../league.util';
 
 @Component({
   selector: 'pdz-coach-standings',

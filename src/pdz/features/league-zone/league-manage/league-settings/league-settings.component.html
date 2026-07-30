@@ -18,6 +18,66 @@
         <h2 class="settings-section__title">Tournament Info</h2>
         <div class="settings-section__body">
           <div class="form-field">
+            <label class="form-field__label">Tournament Logo</label>
+            <div class="logo-upload">
+              <div class="logo-upload__preview">
+                @if (displayedLogoUrl) {
+                  <img
+                    class="logo-upload__image"
+                    [src]="displayedLogoUrl"
+                    alt="Tournament logo"
+                  />
+                } @else {
+                  <pdz-icon
+                    name="image"
+                    [size]="32"
+                    class="logo-upload__placeholder-icon"
+                  ></pdz-icon>
+                }
+              </div>
+              <div class="logo-upload__controls">
+                <input
+                  #logoInput
+                  type="file"
+                  hidden
+                  accept="image/*"
+                  (change)="onLogoFileSelected($event)"
+                />
+                <button
+                  type="button"
+                  class="btn btn--secondary"
+                  (click)="openLogoInput()"
+                  [disabled]="isUploadingLogo"
+                >
+                  <pdz-icon name="upload" [size]="18"></pdz-icon>
+                  {{ displayedLogoKey ? "Change Logo" : "Upload Logo" }}
+                </button>
+                @if (displayedLogoKey) {
+                  <button
+                    type="button"
+                    class="btn btn--secondary"
+                    (click)="removeLogo()"
+                    [disabled]="isUploadingLogo"
+                  >
+                    <pdz-icon name="delete" [size]="18"></pdz-icon>
+                    Remove
+                  </button>
+                }
+                @if (isUploadingLogo) {
+                  <span class="form-field__hint"
+                    >Uploading… {{ logoUploadProgress }}%</span
+                  >
+                }
+                @if (logoUploadError) {
+                  <span class="form-field__hint form-field__hint--error">{{
+                    logoUploadError
+                  }}</span>
+                }
+              </div>
+            </div>
+          </div>
+
+          <div class="form-field">
             <label class="form-field__label" for="name"
               >Tournament Name *</label
             >

@@ -5,7 +5,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { LeagueZoneService } from '../league-zone.service';
 import { League } from '../league.interface';
-import { getLogoUrlOld } from '../league.util';
+import { getLeagueLogoUrl } from '../league.util';
 
 @Component({
   selector: 'pdz-league-landing',
@@ -19,7 +19,7 @@ export class LeagueLandingComponent implements OnInit, OnDestroy {
 
   league: League.LeagueSummary | null = null;
 
-  getLogoUrl = getLogoUrlOld('league-uploads');
+  getLogoUrl = getLeagueLogoUrl;
 
   ngOnInit(): void {
     this.leagueService

@@ -7,7 +7,7 @@ import { LeagueScheduleWidgetComponent } from '../../league-widgets/league-sched
 import { LeagueTradeWidgetComponent } from '../../league-widgets/league-trade-widget/league-trade-widget.component';
 import { StageSwitcherComponent } from '../../league-widgets/stage-switcher/stage-switcher.component';
 import { League } from '../../league.interface';
-import { getLogoUrlOld } from '../../league.util';
+import { getLeagueLogoUrl } from '../../league.util';
 
 @Component({
   selector: 'pdz-division-dashboard',
@@ -57,7 +57,7 @@ export class DivisionDashboardComponent implements OnInit, OnDestroy {
       });
   }
 
-  getLogoUrl = getLogoUrlOld('league-uploads');
+  getLogoUrl = getLeagueLogoUrl;
 
   get tournamentSlug(): string {
     return this.leagueZoneService.tournamentSlug() || '';

@@ -1,5 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { HttpEventType, HttpResponse } from '@angular/common/http';
+import {
+  Component,
+  ElementRef,
+  inject,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import {
   FormArray,
   FormBuilder,
@@ -9,14 +17,27 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { catchError, forkJoin, of, Subject, takeUntil } from 'rxjs';
+import {
+  catchError,
+  forkJoin,
+  of,
+  Subject,
+  switchMap,
+  takeUntil,
+  tap,
+} from 'rxjs';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
+import { UploadService } from '@pdz/core/services/upload.service';
 import { LeagueManageService } from '../league-manage.service';
 import { LeagueZoneService } from '../../league-zone.service';
+import { getLeagueLogoUrl } from '../../league.util';
 import { TierListService } from '@pdz/features/tier-lists/tier-list.service';
 
 const NON_DRAFTABLE_TIER_NAMES = new Set(['untiered', 'ban', 'banned']);
+
+const MAX_LOGO_SIZE = 5 * 1024 * 1024; // 5MB
+const ALLOWED_LOGO_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
 
 @Component({
   selector: 'pdz-league-settings',
@@ -35,11 +56,30 @@ export class LeagueSettingsComponent implements OnInit, OnDestroy {
   private manageService = inject(LeagueManageService);
   private leagueService = inject(LeagueZoneService);
   private tierListService = inject(TierListService);
+  private uploadService = inject(UploadService);
   private router = inject(Router);
+
+  @ViewChild('logoInput') logoInputRef!: ElementRef<HTMLInputElement>;
 
   form!: FormGroup;
   isLoading = true;
   availableTierNames: string[] = [];
+
+  /** Currently persisted logo key, `null` if none is set. */
+  currentLogoKey: string | null = null;
+  /** `undefined` = no change staged; `null` = staged removal; string = newly uploaded key. */
+  pendingLogo: string | null | undefined = undefined;
+  isUploadingLogo = false;
+  logoUploadProgress = 0;
+  logoUploadError: string | null = null;
+
+  get displayedLogoKey(): string | null {
+    return this.pendingLogo !== undefined ? this.pendingLogo : this.currentLogoKey;
+  }
+
+  get displayedLogoUrl(): string | undefined {
+    return getLeagueLogoUrl(this.displayedLogoKey ?? undefined);
+  }
 
   readonly adPlatformOptions = [
     'Pokémon Showdown',
@@ -110,6 +150,8 @@ export class LeagueSettingsComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: ({ settings, tierList }) => {
+          this.currentLogoKey = settings.logo ?? null;
+          this.pendingLogo = undefined;
           this.form.patchValue({
             name: settings.name,
             description: settings.description ?? '',
@@ -234,6 +276,7 @@ export class LeagueSettingsComponent implements OnInit, OnDestroy {
         seasonStart: v.seasonStart ? new Date(v.seasonStart) : undefined,
         seasonEnd: v.seasonEnd ? new Date(v.seasonEnd) : undefined,
         discord: v.discord || undefined,
+        logo: this.pendingLogo,
         discordSettings: {
           guildId: v.discordGuildId || undefined,
           coachRoleId: v.discordCoachRoleId || undefined,
@@ -259,6 +302,10 @@ export class LeagueSettingsComponent implements OnInit, OnDestroy {
         next: () => {
           this.isSaving = false;
           this.saveSuccess = true;
+          if (this.pendingLogo !== undefined) {
+            this.currentLogoKey = this.pendingLogo;
+            this.pendingLogo = undefined;
+          }
           setTimeout(() => (this.saveSuccess = false), 3000);
         },
         error: (err) => {
@@ -267,6 +314,68 @@ export class LeagueSettingsComponent implements OnInit, OnDestroy {
             err?.error?.message ?? 'Failed to save settings. Please try again.';
         },
       });
+  }
+
+  openLogoInput(): void {
+    this.logoInputRef.nativeElement.click();
+  }
+
+  onLogoFileSelected(event: Event): void {
+    const element = event.currentTarget as HTMLInputElement;
+    const file = element.files?.[0];
+    element.value = '';
+    if (!file) return;
+
+    if (!ALLOWED_LOGO_TYPES.includes(file.type)) {
+      this.logoUploadError = `Invalid file type. Allowed: ${ALLOWED_LOGO_TYPES.join(', ')}`;
+      return;
+    }
+    if (file.size > MAX_LOGO_SIZE) {
+      this.logoUploadError = `File size exceeds maximum (${MAX_LOGO_SIZE / 1024 / 1024}MB)`;
+      return;
+    }
+
+    this.logoUploadError = null;
+    this.isUploadingLogo = true;
+    this.logoUploadProgress = 0;
+
+    this.uploadService
+      .getPresignedUploadUrl(file.name, file.type, 'tournament-logos')
+      .pipe(
+        switchMap((res) => {
+          const key = res.key;
+          return this.uploadService.uploadToS3(res.url, file).pipe(
+            tap((event) => {
+              if (
+                event.type === HttpEventType.UploadProgress &&
+                event.total
+              ) {
+                this.logoUploadProgress = Math.round(
+                  (100 * event.loaded) / event.total,
+                );
+              } else if (event instanceof HttpResponse && event.ok) {
+                this.pendingLogo = key;
+              }
+            }),
+          );
+        }),
+        catchError((err) => {
+          this.logoUploadError =
+            err?.error?.message ?? 'Failed to upload logo. Please try again.';
+          return of(null);
+        }),
+        takeUntil(this.destroy$),
+      )
+      .subscribe({
+        complete: () => {
+          this.isUploadingLogo = false;
+        },
+      });
+  }
+
+  removeLogo(): void {
+    this.pendingLogo = null;
+    this.logoUploadError = null;
   }
 
   get adPlatformsArray(): FormArray {

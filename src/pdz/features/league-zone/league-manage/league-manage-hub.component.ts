@@ -6,7 +6,7 @@ import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { LeagueZoneService } from '../league-zone.service';
 import { League } from '../league.interface';
-import { getLogoUrlOld } from '../league.util';
+import { getLeagueLogoUrl } from '../league.util';
 
 @Component({
   selector: 'pdz-league-manage-hub',
@@ -22,7 +22,7 @@ export class LeagueManageHubComponent implements OnInit, OnDestroy {
   isLoading = true;
   private destroy$ = new Subject<void>();
 
-  getLogoUrl = getLogoUrlOld('league-uploads');
+  getLogoUrl = getLeagueLogoUrl;
 
   get leagueSlug() {
     return this.leagueService.leagueSlug();

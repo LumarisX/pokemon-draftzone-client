@@ -6,7 +6,7 @@ import { AuthService } from '@pdz/core/services/auth0.service';
 import { LeagueZoneService } from '../../league-zone.service';
 import { LeagueManageService } from '../../league-manage/league-manage.service';
 import { League } from '../../league.interface';
-import { getLogoUrlOld } from '../../league.util';
+import { getLeagueLogoUrl } from '../../league.util';
 
 @Component({
   selector: 'pdz-tournament-nav',
@@ -30,7 +30,7 @@ export class TournamentNavComponent implements OnInit, OnDestroy {
 
   draftStatus: string | null = null;
 
-  getTournamentLogoUrl = getLogoUrlOld('league-uploads');
+  getTournamentLogoUrl = getLeagueLogoUrl;
 
   ngOnInit(): void {
     this.leagueService

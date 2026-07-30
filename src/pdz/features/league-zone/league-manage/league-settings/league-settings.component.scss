@@ -154,6 +154,42 @@
   }
 }
 
+.logo-upload {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(md);
+
+  &__preview {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 72px;
+    height: 72px;
+    flex-shrink: 0;
+    background: pdz.color(surface);
+    border: 1px solid pdz.color(outline-variant);
+    border-radius: pdz.shape(corner-sm);
+    overflow: hidden;
+  }
+
+  &__image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  &__placeholder-icon {
+    color: pdz.color(on-surface-variant);
+  }
+
+  &__controls {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: pdz.space(sm);
+  }
+}
+
 .radio-group {
   display: flex;
   flex-direction: column;

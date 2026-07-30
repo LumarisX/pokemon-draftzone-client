@@ -212,6 +212,7 @@ export class LeagueManageService {
       draftEnd?: string;
       seasonStart?: string;
       seasonEnd?: string;
+      logo?: string;
       discord?: string;
       discordSettings?: {
         guildId?: string;
@@ -247,6 +248,8 @@ export class LeagueManageService {
     seasonStart?: Date;
     seasonEnd?: Date;
     discord?: string;
+    /** `null` clears the existing logo; `undefined` leaves it untouched. */
+    logo?: string | null;
     discordSettings?: {
       guildId?: string;
       coachRoleId?: string;
