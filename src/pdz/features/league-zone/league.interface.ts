@@ -24,6 +24,11 @@ export namespace League {
     picks: LeaguePokemon[][];
     isCoach: boolean;
     coach: string;
+    /** Id of the coach who owns the team; needed to edit their profile. */
+    coachId?: string;
+    /** Contact handles are only returned to the team's own coach. */
+    gameName?: string;
+    discordName?: string;
     pointTotal: number;
     record?: {
       wins: number;
@@ -240,24 +245,41 @@ export namespace League {
     inDiscordServer: boolean;
   };
 
+  /** Mirrors the server's STAGE_TYPES enum. */
+  export type StageType =
+    | 'round-robin'
+    | 'single-elimination'
+    | 'double-elimination'
+    | 'swiss'
+    | 'custom';
+
   export type StageSummary = {
     _id: string;
     name: string;
     type: string;
     order: number;
     currentRoundIndex: number;
+    /** Hidden stages are only listed for organizers. */
+    public: boolean;
   };
 }
 
 type TradeParticipant = {
   team?: League.Team;
   pokemon: League.TieredPokemon[];
+  /** Trade points charged to this side's team; 0 for free agency. */
+  tradePoints?: number;
 };
 
+export type TradeStatus = 'PENDING' | 'APPROVED' | 'REJECTED';
+
 export type TradeLog = {
-  activeStage: number;
+  /** Absent on trades predating the trade-id backfill. */
+  id?: string;
+  /** Index of the round the trade takes effect in. */
+  activeRound: number;
   side1: TradeParticipant;
   side2: TradeParticipant;
   timestamp: Date;
-  status: 'PENDING' | 'APPROVED' | 'REJECTED';
+  status: TradeStatus;
 };

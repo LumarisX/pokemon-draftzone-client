@@ -1,0 +1,135 @@
+<h1 mat-dialog-title>New Trade</h1>
+
+<div mat-dialog-content class="dialog-body">
+  @if (loading) {
+    <div class="trade-form__loading"><pdz-loading></pdz-loading></div>
+  } @else if (loadError) {
+    <p class="trade-form__error">{{ loadError }}</p>
+  } @else {
+    <div class="trade-form">
+      <section class="trade-side">
+        <header class="trade-side__header">
+          <h2 class="trade-side__title">{{ data.teamName }} sends</h2>
+          <span class="trade-side__cost">{{ sendCost }}</span>
+        </header>
+
+        <pdz-pokemon-search
+          [options$]="sendOptions$"
+          placeholder="Search your roster..."
+          (pokemonSelected)="addSend($event)"
+        ></pdz-pokemon-search>
+
+        <ul class="pick-list">
+          @for (pokemon of send; track pokemon.id) {
+            <li class="pick">
+              <span class="pick__cost">{{ pokemon.cost }}</span>
+              <pdz-sprite class="pick__sprite" flipped [pokemon]="pokemon" />
+              <span class="pick__name">{{ pokemon.name }}</span>
+              <span class="pick__tier">{{ pokemon.tier }}</span>
+              <button
+                type="button"
+                class="pick__remove"
+                [attr.aria-label]="'Remove ' + pokemon.name"
+                (click)="removeSend(pokemon.id)"
+              >
+                <pdz-icon name="close" [size]="16"></pdz-icon>
+              </button>
+            </li>
+          } @empty {
+            <li class="pick-list__empty">Nothing selected.</li>
+          }
+        </ul>
+      </section>
+
+      <div class="trade-form__swap" aria-hidden="true">
+        <pdz-icon name="swap_horiz" [size]="24"></pdz-icon>
+      </div>
+
+      <section class="trade-side">
+        <header class="trade-side__header">
+          <h2 class="trade-side__title">Free agency sends</h2>
+          <span class="trade-side__cost">{{ receiveCost }}</span>
+        </header>
+
+        <pdz-pokemon-search
+          [options$]="receiveOptions$"
+          placeholder="Search available Pokémon..."
+          (pokemonSelected)="addReceive($event)"
+        ></pdz-pokemon-search>
+
+        <ul class="pick-list">
+          @for (pokemon of receive; track pokemon.id) {
+            <li class="pick">
+              <span class="pick__cost pick__cost--receive">{{
+                pokemon.cost
+              }}</span>
+              <pdz-sprite class="pick__sprite" [pokemon]="pokemon" />
+              <span class="pick__name">{{ pokemon.name }}</span>
+              <span class="pick__tier">{{ pokemon.tier }}</span>
+              <button
+                type="button"
+                class="pick__remove"
+                [attr.aria-label]="'Remove ' + pokemon.name"
+                (click)="removeReceive(pokemon.id)"
+              >
+                <pdz-icon name="close" [size]="16"></pdz-icon>
+              </button>
+            </li>
+          } @empty {
+            <li class="pick-list__empty">Nothing selected.</li>
+          }
+        </ul>
+      </section>
+    </div>
+
+    <footer class="trade-summary">
+      <div class="trade-summary__row">
+        <span>Point change</span>
+        <span
+          class="trade-summary__delta"
+          [class.trade-summary__delta--over]="costDelta > 0"
+          [class.trade-summary__delta--under]="costDelta < 0"
+        >
+          {{ costDelta > 0 ? "+" : "" }}{{ costDelta }}
+        </span>
+      </div>
+      @if (data.roundName) {
+        <p class="trade-summary__note">
+          Takes effect in {{ data.roundName }} once an organizer approves it.
+        </p>
+      } @else {
+        <p class="trade-summary__note">
+          Takes effect once an organizer approves it.
+        </p>
+      }
+      @if (data.pointTotal !== undefined) {
+        <div class="trade-summary__row">
+          <span>Roster total</span>
+          <span [class.trade-summary__delta--over]="overBudget">
+            {{ newRosterCost }} / {{ data.pointTotal }}
+          </span>
+        </div>
+      }
+      @if (overBudget) {
+        <p class="trade-summary__warning">
+          This puts you {{ newRosterCost - (data.pointTotal ?? 0) }} points over
+          the limit. An organizer is likely to reject it.
+        </p>
+      }
+    </footer>
+  }
+</div>
+
+<div mat-dialog-actions align="end">
+  <button type="button" class="btn btn--secondary" (click)="closeDialog()">
+    Cancel
+  </button>
+  <button
+    type="button"
+    class="btn btn--primary"
+    [disabled]="!canSubmit"
+    (click)="onSubmit()"
+  >
+    Submit Trade
+  </button>
+</div>

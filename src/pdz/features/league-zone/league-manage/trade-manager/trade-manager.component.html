@@ -1,0 +1,269 @@
+<div class="trade-manager">
+  <header class="trade-manager__header">
+    <h1 class="trade-manager__title">Trades</h1>
+    <pdz-stage-switcher
+      [currentStageId]="stageId"
+      (stageSelected)="onStageSelected($event)"
+    ></pdz-stage-switcher>
+  </header>
+
+  @if (loading) {
+    <div class="trade-manager__loading"><pdz-loading></pdz-loading></div>
+  } @else if (noStages) {
+    <section class="panel">
+      <p class="panel__empty">
+        This tournament has no stages yet. Add one before recording trades.
+      </p>
+      <a class="btn btn--primary trade-manager__cta" [routerLink]="stagesPath">
+        Add a Stage
+      </a>
+    </section>
+  } @else {
+    <!-- ── Compose ────────────────────────────────────────────────────── -->
+    <section class="panel">
+      <h2 class="panel__title">Send a Trade</h2>
+
+      <div class="compose">
+        @for (key of ["side1", "side2"]; track key) {
+          <div class="side">
+            <label class="field">
+              <span class="field__label">Side {{ $index + 1 }}</span>
+              <select
+                class="field__input"
+                [value]="side($any(key)).teamId"
+                (change)="onTeamChange($any(key), $any($event.target).value)"
+              >
+                <option value="">Select a team…</option>
+                <option [value]="freeAgency">Free Agency</option>
+                @for (team of teams; track team.id) {
+                  <option [value]="team.id">
+                    {{ team.name }} — {{ team.coachName }}
+                  </option>
+                }
+              </select>
+            </label>
+
+            @if (side($any(key)).teamId) {
+              <pdz-pokemon-search
+                [options$]="side($any(key)).options$"
+                placeholder="Add Pokémon…"
+                (pokemonSelected)="addPick($any(key), $event)"
+              ></pdz-pokemon-search>
+
+              <ul class="pick-list">
+                @for (pokemon of side($any(key)).picks; track pokemon.id) {
+                  <li class="pick">
+                    <span class="pick__cost">{{ pokemon.cost }}</span>
+                    <pdz-sprite class="pick__sprite" [pokemon]="pokemon" />
+                    <span class="pick__name">{{ pokemon.name }}</span>
+                    <span class="pick__tier">{{ pokemon.tier }}</span>
+                    <button
+                      type="button"
+                      class="pick__remove"
+                      [attr.aria-label]="'Remove ' + pokemon.name"
+                      (click)="removePick($any(key), pokemon.id)"
+                    >
+                      <pdz-icon name="close" [size]="16"></pdz-icon>
+                    </button>
+                  </li>
+                } @empty {
+                  <li class="pick-list__empty">Nothing selected.</li>
+                }
+              </ul>
+
+              <div class="side__footer">
+                <span class="side__cost"
+                  >Roster cost {{ sideCost($any(key)) }}</span
+                >
+
+                @if (side($any(key)).teamId !== freeAgency) {
+                  <label class="field field--inline">
+                    <span class="field__label">Trade points</span>
+                    <input
+                      class="field__input field__input--number"
+                      type="number"
+                      min="0"
+                      step="1"
+                      [value]="side($any(key)).tradePoints"
+                      (input)="
+                        onTradePointsChange(
+                          $any(key),
+                          $any($event.target).value
+                        )
+                      "
+                    />
+                  </label>
+                }
+              </div>
+
+              @if (projectedFor($any(key)) !== null) {
+                <p
+                  class="side__spend"
+                  [class.side__spend--over]="overLimit($any(key))"
+                >
+                  Spend after this trade: {{ projectedFor($any(key)) }}
+                  @if (tradePointLimit !== null) {
+                    / {{ tradePointLimit }}
+                  }
+                  @if (overLimit($any(key))) {
+                    <span class="side__spend-flag">over limit</span>
+                  }
+                </p>
+              }
+            }
+          </div>
+        }
+      </div>
+
+      <div class="compose__actions">
+        <label class="field field--inline">
+          <span class="field__label">Takes effect in</span>
+          <select
+            class="field__input"
+            [value]="roundIndex"
+            (change)="roundIndex = +$any($event.target).value"
+          >
+            @for (name of roundNames; track $index) {
+              <option [value]="$index">{{ name }}</option>
+            }
+          </select>
+        </label>
+
+        <button
+          type="button"
+          class="btn btn--primary"
+          [disabled]="!canSubmit"
+          (click)="submitTrade()"
+        >
+          {{ submitting ? "Sending…" : "Send Trade" }}
+        </button>
+      </div>
+
+      @if (submitError) {
+        <p class="panel__error">{{ submitError }}</p>
+      }
+    </section>
+
+    <!-- ── Trade point ledger ─────────────────────────────────────────── -->
+    @if (spentByTeam.length) {
+      <section class="panel">
+        <h2 class="panel__title">
+          Trade Points
+          @if (tradePointLimit !== null) {
+            <span class="panel__hint"
+              >Limit {{ tradePointLimit }} per team</span
+            >
+          } @else {
+            <span class="panel__hint">No limit set</span>
+          }
+        </h2>
+        <ul class="ledger">
+          @for (entry of spentByTeam; track entry.teamId) {
+            <li class="ledger__row">
+              <span class="ledger__team">{{ entry.teamName }}</span>
+              <span
+                class="ledger__spent"
+                [class.ledger__spent--over]="
+                  tradePointLimit !== null && entry.spent > tradePointLimit
+                "
+              >
+                {{ entry.spent }}
+                @if (tradePointLimit !== null) {
+                  / {{ tradePointLimit }}
+                }
+              </span>
+            </li>
+          }
+        </ul>
+      </section>
+    }
+
+    <!-- ── Existing trades ────────────────────────────────────────────── -->
+    <section class="panel">
+      <h2 class="panel__title">Submitted Trades</h2>
+
+      @for (round of rounds; track round.name) {
+        <div class="round">
+          <h3 class="round__name">{{ round.name }}</h3>
+          @for (trade of round.trades; track trade.id ?? $index) {
+            <article
+              class="trade"
+              [class.trade--pending]="trade.status === 'PENDING'"
+            >
+              <div class="trade__header">
+                <span
+                  class="trade__status"
+                  [class.trade__status--pending]="trade.status === 'PENDING'"
+                  [class.trade__status--approved]="trade.status === 'APPROVED'"
+                  [class.trade__status--rejected]="trade.status === 'REJECTED'"
+                >
+                  {{ trade.status }}
+                </span>
+                <span class="trade__time">{{
+                  trade.timestamp | date: "medium"
+                }}</span>
+
+                @if (trade.status === "PENDING" && trade.id) {
+                  <span class="trade__actions">
+                    <button
+                      type="button"
+                      class="trade__action trade__action--approve"
+                      [disabled]="resolvingTradeId === trade.id"
+                      (click)="resolveTrade(trade, 'APPROVED')"
+                    >
+                      Approve
+                    </button>
+                    <button
+                      type="button"
+                      class="trade__action trade__action--reject"
+                      [disabled]="resolvingTradeId === trade.id"
+                      (click)="resolveTrade(trade, 'REJECTED')"
+                    >
+                      Reject
+                    </button>
+                  </span>
+                }
+              </div>
+
+              <div class="trade__body">
+                @for (side of [trade.side1, trade.side2]; track $index) {
+                  <div class="trade__side">
+                    <p class="trade__team">
+                      {{ side.team?.name || "Free Agency" }}
+                      @if (side.team && side.tradePoints) {
+                        <span class="trade__points"
+                          >{{ side.tradePoints }} tp</span
+                        >
+                      }
+                    </p>
+                    <div class="trade__mons">
+                      @for (pokemon of side.pokemon; track pokemon.id) {
+                        <span class="trade__mon">
+                          <pdz-sprite
+                            class="trade__mon-sprite"
+                            [pokemon]="pokemon"
+                          />
+                          {{ pokemon.name }}
+                        </span>
+                      } @empty {
+                        <span class="trade__mons-empty">—</span>
+                      }
+                    </div>
+                  </div>
+                }
+              </div>
+
+              @if (resolveErrorById[trade.id ?? ""]) {
+                <p class="panel__error">
+                  {{ resolveErrorById[trade.id ?? ""] }}
+                </p>
+              }
+            </article>
+          }
+        </div>
+      } @empty {
+        <p class="panel__empty">No trades yet.</p>
+      }
+    </section>
+  }
+</div>

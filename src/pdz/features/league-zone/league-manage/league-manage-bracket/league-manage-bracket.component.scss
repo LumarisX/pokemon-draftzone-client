@@ -102,6 +102,13 @@
     margin: 0 0 pdz.space(xs);
   }
 
+  &__count {
+    @include apply-typography(label-sm);
+    color: pdz.color("on-surface-variant");
+    margin-inline-start: pdz.space(sm);
+    font-weight: 500;
+  }
+
   &__hint {
     @include apply-typography(body-sm);
     color: pdz.color("on-surface-variant");
@@ -110,6 +117,10 @@
 
   &--preview {
     overflow-x: auto;
+  }
+
+  &--form {
+    border-color: pdz.color("primary");
   }
 
   &__header {
@@ -123,22 +134,134 @@
       margin: 0;
     }
   }
+
+  &__subtitle {
+    @include apply-typography(title-sm);
+    color: pdz.color("on-surface");
+    margin: pdz.space(md) 0 pdz.space(xs);
+  }
+
+  &__actions {
+    display: flex;
+    gap: pdz.space(sm);
+    margin-top: pdz.space(lg);
+  }
 }
 
-.random-toggle {
-  display: flex;
-  align-items: flex-start;
-  gap: pdz.space(sm);
-  cursor: pointer;
-  margin-bottom: pdz.space(md);
+// ─── Configured sections ─────────────────────────────────────────────────────
 
-  input {
-    margin-top: 4px;
+.section-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(sm);
+
+  &__item {
+    display: grid;
+    grid-template-columns: 1fr auto auto auto;
+    align-items: center;
+    gap: pdz.space(xs) pdz.space(sm);
+    padding: pdz.space(sm) pdz.space(md);
+    border: 1px solid pdz.color("outline-variant");
+    border-radius: pdz.shape(corner-md);
+    background: pdz.color("surface");
+  }
+
+  &__name {
+    @include apply-typography(title-sm);
+    color: pdz.color("on-surface");
+  }
+
+  &__format,
+  &__count {
+    @include apply-typography(label-sm);
+    color: pdz.color("on-surface-variant");
+    white-space: nowrap;
+  }
+
+  &__seeding {
+    @include apply-typography(label-xs);
+    padding: 0 pdz.space(xs);
+    border-radius: pdz.shape(corner-full);
+    border: 1px dashed pdz.color("outline-variant");
+    color: pdz.color("on-surface-variant");
+    font-weight: 500;
+    white-space: nowrap;
+
+    &--random {
+      border-style: solid;
+      border-color: transparent;
+      background: pdz.color("primary-subtle");
+      color: pdz.color("on-primary-container");
+      font-weight: 700;
+    }
+  }
+
+  &__teams {
+    grid-column: 1 / -1;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: pdz.space(2xs) pdz.space(xs);
+  }
+
+  &__team {
+    @include apply-typography(body-sm);
+    display: flex;
+    align-items: center;
+    gap: pdz.space(2xs);
+    color: pdz.color("on-surface-variant");
+    padding: 0 pdz.space(xs);
+    border-radius: pdz.shape(corner-sm);
+    background: pdz.color("surface-container-low");
+  }
+
+  &__seed {
+    @include apply-typography(label-xs);
+    color: pdz.color("primary");
+    font-weight: 700;
+  }
+}
+
+// ─── New-section form ────────────────────────────────────────────────────────
+
+.field {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(sm);
+  margin-bottom: pdz.space(sm);
+
+  &--check {
+    cursor: pointer;
   }
 
   &__label {
+    @include apply-typography(label-md);
+    color: pdz.color("on-surface-variant");
+    min-width: 72px;
+  }
+
+  &__input {
     @include apply-typography(body-md);
+    flex: 1;
+    max-width: 320px;
+    background: pdz.color("surface");
     color: pdz.color("on-surface");
+    border: 1px solid pdz.color("outline-variant");
+    border-radius: pdz.shape(corner-sm);
+    padding: pdz.space(2xs) pdz.space(xs);
+  }
+
+  &--check &__label {
+    min-width: 0;
+  }
+
+  input[type="number"].field__input {
+    max-width: 96px;
   }
 }
 
@@ -159,6 +282,26 @@
     border: 1px solid pdz.color("outline-variant");
     border-radius: pdz.shape(corner-sm);
     background: pdz.color("surface");
+
+    &--excluded {
+      background: pdz.color("surface-container-low");
+      border-style: dashed;
+
+      .seed-order__name,
+      .seed-order__coach {
+        color: pdz.color("on-surface-variant");
+        text-decoration: line-through;
+      }
+
+      .seed-order__logo {
+        opacity: 0.5;
+      }
+    }
+  }
+
+  &__include {
+    flex-shrink: 0;
+    cursor: pointer;
   }
 
   &__seed {
@@ -166,6 +309,24 @@
     color: pdz.color("primary");
     width: 24px;
     text-align: center;
+  }
+
+  &__pool {
+    @include apply-typography(label-xs);
+    padding: 0 pdz.space(xs);
+    border-radius: pdz.shape(corner-full);
+    background: pdz.color("primary-subtle");
+    color: pdz.color("on-primary-container");
+    font-weight: 700;
+    white-space: nowrap;
+    flex-shrink: 0;
+
+    &--none {
+      background: transparent;
+      border: 1px dashed pdz.color("outline-variant");
+      color: pdz.color("on-surface-variant");
+      font-weight: 500;
+    }
   }
 
   &__logo {
@@ -189,56 +350,6 @@
   &__controls {
     display: flex;
     gap: pdz.space(2xs);
-  }
-}
-
-.preset-bar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: pdz.space(md);
-  margin-bottom: pdz.space(md);
-  padding: pdz.space(sm) pdz.space(md);
-  border: 1px solid pdz.color("outline-variant");
-  border-radius: pdz.shape(corner-md);
-  background: pdz.color("surface");
-
-  &__field {
-    display: flex;
-    align-items: center;
-    gap: pdz.space(sm);
-
-    select,
-    input {
-      @include apply-typography(body-md);
-      background: pdz.color("surface-container");
-      color: pdz.color("on-surface");
-      border: 1px solid pdz.color("outline-variant");
-      border-radius: pdz.shape(corner-sm);
-      padding: pdz.space(2xs) pdz.space(xs);
-    }
-
-    input[type="number"] {
-      width: 72px;
-    }
-  }
-
-  &__label {
-    @include apply-typography(label-md);
-    color: pdz.color("on-surface-variant");
-  }
-
-  &__check {
-    display: flex;
-    align-items: center;
-    gap: pdz.space(xs);
-    @include apply-typography(body-sm);
-    color: pdz.color("on-surface");
-    cursor: pointer;
-  }
-
-  .btn {
-    margin-left: auto;
   }
 }
 

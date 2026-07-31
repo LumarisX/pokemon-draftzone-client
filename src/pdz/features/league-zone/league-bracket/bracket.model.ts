@@ -33,10 +33,36 @@ export interface FlexBracketMatch {
   label?: string;
 }
 
+/**
+ * What a section is structurally, independent of its key. A bracket may hold
+ * several independently-configured blocks, so keys get prefixed to stay unique
+ * (`playoffs-winners`, `wildcard-winners`, …) — `kind` is what auto titles and
+ * the server's round naming key off, so those keep working after prefixing.
+ */
+export type BracketSectionKind =
+  | 'main'
+  | 'winners'
+  | 'losers'
+  | 'finals'
+  | 'round-robin';
+
 export interface FlexBracketSectionConfig {
   key: string;
   /** Display title above the section. Omit or leave empty to hide. */
   title?: string;
+  /** Structural role. Falls back to `key` when absent (pre-prefix brackets). */
+  kind?: BracketSectionKind;
+  /**
+   * Name of the configured block this section came from. Disambiguates round
+   * names in the stage's flat round list, where several blocks would otherwise
+   * each contribute a "Round 1".
+   */
+  label?: string;
+  /**
+   * Teams entering this section, used for "Round of N" titles. Seed numbers
+   * are global to the bracket, so they can't be counted per section.
+   */
+  teamCount?: number;
   /** Controls vertical ordering of sections. Lower = higher. */
   order?: number;
   /** Per-round title overrides keyed by round number. */

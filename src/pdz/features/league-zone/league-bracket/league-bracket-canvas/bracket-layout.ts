@@ -288,16 +288,21 @@ export function resolveSlot(
 
 // ─── Titles ──────────────────────────
 
+/**
+ * `kind` is the section's structural role — for a bracket composed of several
+ * configured blocks, section keys are namespaced (`playoffs--winners`) and
+ * only `kind` still says what the section is.
+ */
 export function computeRoundTitles(
   roundNums: number[],
-  sectionKey: string,
+  kind: string,
   totalTeams: number,
   overrides?: Record<number, string>,
 ): string[] {
   const n = roundNums.length;
-  const isWinners = sectionKey === 'main' || sectionKey === 'winners';
-  const isLosers = sectionKey === 'losers';
-  const isFinals = sectionKey === 'finals' || sectionKey === 'grand-finals';
+  const isWinners = kind === 'main' || kind === 'winners';
+  const isLosers = kind === 'losers';
+  const isFinals = kind === 'finals' || kind === 'grand-finals';
 
   return roundNums.map((rn, idx) => {
     if (overrides?.[rn]) return overrides[rn];
@@ -327,15 +332,16 @@ export function computeRoundTitles(
   });
 }
 
-export function autoSectionTitle(key: string): string {
+export function autoSectionTitle(kind: string): string {
   const titles: Record<string, string> = {
     main: '',
+    'round-robin': '',
     winners: 'Winners Bracket',
     losers: 'Losers Bracket',
     finals: 'Grand Finals',
     'grand-finals': 'Grand Finals',
   };
-  return titles[key] ?? key.charAt(0).toUpperCase() + key.slice(1);
+  return titles[kind] ?? kind.charAt(0).toUpperCase() + kind.slice(1);
 }
 
 // ─── Full layout computation ──────────────────────────────────────────────────
@@ -577,8 +583,11 @@ export function computeBracketLayout(
   // reserved above round 0 for every section — the round axis (y) must stay
   // aligned across sections for cross-section bus routing, so this space
   // can't vary per section even when only some sections show title text.
+  const kindOf = (sKey: string): string =>
+    sectionCfgs?.find((s) => s.key === sKey)?.kind ?? sKey;
   const sectionTitleOf = (sKey: string): string =>
-    sectionCfgs?.find((s) => s.key === sKey)?.title ?? autoSectionTitle(sKey);
+    sectionCfgs?.find((s) => s.key === sKey)?.title ??
+    autoSectionTitle(kindOf(sKey));
   const hasAnyTitle = sectionKeys.some((sKey) => !!sectionTitleOf(sKey));
   const titleBandH = hasAnyTitle ? SECTION_TITLE_H + SECTION_TITLE_GAP : 0;
 
@@ -658,12 +667,15 @@ export function computeBracketLayout(
     const roundNums = roundNumsBySection.get(sKey)!;
     const roundTitles = computeRoundTitles(
       roundNums,
-      sKey,
-      totalTeams,
+      cfg?.kind ?? sKey,
+      // Seeds are numbered across the whole bracket, so a composed section's
+      // size can only come from its own config; the global count is the
+      // fallback for single-block brackets that predate it.
+      cfg?.teamCount ?? totalTeams,
       cfg?.roundTitles,
     );
 
-    const title = cfg?.title ?? autoSectionTitle(sKey);
+    const title = cfg?.title ?? autoSectionTitle(cfg?.kind ?? sKey);
     const sectionX = xCursor;
     const titleY: number | null = title ? 0 : null;
 

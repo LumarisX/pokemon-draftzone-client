@@ -1,0 +1,248 @@
+@use "@angular/material" as mat;
+@use "pdz-theming" as pdz;
+@use "mixins" as *;
+@use "mixins/buttons" as *;
+
+:host {
+  display: block;
+
+  @include mat.dialog-overrides(
+    (
+      subhead-weight: 700,
+      subhead-font: var(--pdz-font-fancy),
+      subhead-color: pdz.color(primary),
+      subhead-size: 1.2em,
+    )
+  );
+}
+
+.dialog-body {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(md);
+}
+
+.trade-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: pdz.space(md);
+  align-items: start;
+
+  @include respond-above(medium) {
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  }
+
+  &__swap {
+    display: none;
+    color: pdz.color(on-surface-variant);
+
+    @include respond-above(medium) {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-top: pdz.space(xl);
+    }
+  }
+
+  &__loading {
+    display: flex;
+    justify-content: center;
+    padding: pdz.space(xl);
+  }
+
+  &__error {
+    @include apply-typography(body-md);
+    color: pdz.color(error);
+    margin: 0;
+  }
+}
+
+.trade-side {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(sm);
+  min-width: 0;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: pdz.space(sm);
+    border-bottom: 2px solid pdz.color(primary);
+    padding-bottom: pdz.space(2xs);
+  }
+
+  &__title {
+    @include apply-typography(label-md);
+    color: pdz.color(on-surface);
+    font-weight: 600;
+    margin: 0;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__cost {
+    @include apply-typography(label-md);
+    color: pdz.color(primary);
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+}
+
+.pick-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(2xs);
+  min-height: 3rem;
+
+  &__empty {
+    @include apply-typography(body-sm);
+    color: pdz.color(on-surface-variant);
+    font-style: italic;
+    padding: pdz.space(sm) pdz.space(xs);
+  }
+}
+
+.pick {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(xs);
+  padding: pdz.space(2xs) pdz.space(xs);
+  border: 1px solid pdz.color(outline-variant);
+  border-radius: pdz.shape(corner-sm);
+  background: pdz.color(surface);
+  min-width: 0;
+
+  &__cost {
+    @include apply-typography(label-sm);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.5rem;
+    height: 1.5rem;
+    border-radius: pdz.shape(corner-xs);
+    background: pdz.color(primary);
+    color: pdz.color(on-primary);
+    font-weight: 700;
+    flex-shrink: 0;
+
+    &--receive {
+      background: pdz.color(secondary);
+      color: pdz.color(on-secondary);
+    }
+  }
+
+  &__sprite {
+    width: 2rem;
+    height: 2rem;
+    flex-shrink: 0;
+  }
+
+  &__name {
+    @include apply-typography(body-sm);
+    color: pdz.color(on-surface);
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__tier {
+    @include apply-typography(label-xs);
+    color: pdz.color(on-surface-variant);
+    flex-shrink: 0;
+  }
+
+  &__remove {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: pdz.space(2xs);
+    border: none;
+    border-radius: pdz.shape(corner-full);
+    background: transparent;
+    color: pdz.color(on-surface-variant);
+    cursor: pointer;
+    flex-shrink: 0;
+
+    &:hover,
+    &:focus-visible {
+      background: pdz.color(surface-container-high);
+      color: pdz.color(error);
+    }
+  }
+}
+
+.trade-summary {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(xs);
+  padding-top: pdz.space(sm);
+  border-top: 1px solid pdz.color(outline-variant);
+
+  &__row {
+    @include apply-typography(label-md);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: pdz.color(on-surface);
+    font-weight: 600;
+  }
+
+  &__delta {
+    font-weight: 700;
+    color: pdz.color(on-surface-variant);
+
+    &--over {
+      color: pdz.color(error);
+    }
+
+    &--under {
+      color: pdz.color(positive);
+    }
+  }
+
+  &__note {
+    @include apply-typography(body-sm);
+    color: pdz.color(on-surface-variant);
+    margin: 0;
+  }
+
+  &__warning {
+    @include apply-typography(body-sm);
+    color: pdz.color(error);
+    margin: 0;
+  }
+}
+
+[mat-dialog-actions] {
+  gap: pdz.space(sm);
+}
+
+.btn {
+  padding: pdz.space(sm) pdz.space(lg);
+  border-radius: pdz.shape(corner-sm);
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease-in-out;
+
+  &--primary {
+    @include flat-button-primary();
+  }
+
+  &--secondary {
+    @include flat-button-menu();
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+}

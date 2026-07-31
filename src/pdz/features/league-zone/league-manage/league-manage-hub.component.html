@@ -194,53 +194,68 @@
     }
 
     <!-- Stages Section -->
-    @if (stages.length > 0) {
-      <section class="hub__section">
-        <h2 class="hub__section-title">Stages</h2>
-        @for (stage of stages; track stage._id) {
-          <div class="division-block">
-            <h3 class="division-block__name">{{ stage.name }}</h3>
-            <div class="hub__grid hub__grid--compact">
-              <a
-                [routerLink]="managePath + '/stages/' + stage._id + '/schedule'"
-                class="nav-card nav-card--compact"
-              >
-                <span class="nav-card__icon">
-                  <pdz-icon name="calendar_month" [size]="24"></pdz-icon>
-                </span>
-                <span class="nav-card__title">Schedule</span>
-              </a>
-              <a
-                [routerLink]="managePath + '/stages/' + stage._id + '/trades'"
-                class="nav-card nav-card--compact"
-              >
-                <span class="nav-card__icon">
-                  <pdz-icon name="swap_horiz" [size]="24"></pdz-icon>
-                </span>
-                <span class="nav-card__title">Trades</span>
-              </a>
-              @if (
-                stage.type === "single-elimination" ||
-                stage.type === "double-elimination" ||
-                stage.type === "custom"
-              ) {
-                <a
-                  [routerLink]="
-                    managePath + '/stages/' + stage._id + '/bracket'
-                  "
-                  class="nav-card nav-card--compact"
-                >
-                  <span class="nav-card__icon">
-                    <pdz-icon name="emoji_events" [size]="24"></pdz-icon>
-                  </span>
-                  <span class="nav-card__title">Bracket</span>
-                </a>
-              }
-            </div>
+    <section class="hub__section">
+      <h2 class="hub__section-title">Stages</h2>
+      <div class="hub__grid">
+        <a [routerLink]="managePath + '/stages'" class="nav-card">
+          <span class="nav-card__icon">
+            <pdz-icon name="format_list_numbered" [size]="28"></pdz-icon>
+          </span>
+          <div class="nav-card__body">
+            <span class="nav-card__title">Stages</span>
+            <span class="nav-card__desc"
+              >Add stages &amp; build their matchups</span
+            >
           </div>
-        }
-      </section>
-    }
+          <pdz-icon
+            name="chevron_right"
+            [size]="20"
+            class="nav-card__arrow"
+          ></pdz-icon>
+        </a>
+      </div>
+
+      @for (stage of stages; track stage._id) {
+        <div class="division-block">
+          <h3 class="division-block__name">{{ stage.name }}</h3>
+          <div class="hub__grid hub__grid--compact">
+            <a
+              [routerLink]="managePath + '/stages/' + stage._id + '/schedule'"
+              class="nav-card nav-card--compact"
+            >
+              <span class="nav-card__icon">
+                <pdz-icon name="calendar_month" [size]="24"></pdz-icon>
+              </span>
+              <span class="nav-card__title">Schedule</span>
+            </a>
+            <a
+              [routerLink]="managePath + '/stages/' + stage._id + '/trades'"
+              class="nav-card nav-card--compact"
+            >
+              <span class="nav-card__icon">
+                <pdz-icon name="swap_horiz" [size]="24"></pdz-icon>
+              </span>
+              <span class="nav-card__title">Trades</span>
+            </a>
+            @if (
+              stage.type === "single-elimination" ||
+              stage.type === "double-elimination" ||
+              stage.type === "custom"
+            ) {
+              <a
+                [routerLink]="managePath + '/stages/' + stage._id + '/bracket'"
+                class="nav-card nav-card--compact"
+              >
+                <span class="nav-card__icon">
+                  <pdz-icon name="emoji_events" [size]="24"></pdz-icon>
+                </span>
+                <span class="nav-card__title">Bracket</span>
+              </a>
+            }
+          </div>
+        </div>
+      }
+    </section>
 
     <!-- Playoffs Section -->
     <!-- <section class="hub__section">

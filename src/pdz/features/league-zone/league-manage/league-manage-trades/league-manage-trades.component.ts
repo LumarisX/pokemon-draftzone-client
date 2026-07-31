@@ -49,12 +49,14 @@ export interface TradeData {
   side1: {
     team?: string;
     pokemon: SelectedTradePokemon[];
+    tradePoints?: number;
   };
   side2: {
     team?: string;
     pokemon: SelectedTradePokemon[];
+    tradePoints?: number;
   };
-  stage: number;
+  roundIndex: number;
 }
 
 @Component({
@@ -80,6 +82,8 @@ export class LeagueManageTradesComponent implements OnInit, OnDestroy {
 
   loading = true;
   submitting = false;
+  resolvingTradeId: string | null = null;
+  resolveErrorById: Record<string, string> = {};
   groups = signal<TradeGroup[]>([]);
   private pokemonByGroup = signal(new Map<string, TradePokemon[]>());
 
@@ -471,7 +475,7 @@ export class LeagueManageTradesComponent implements OnInit, OnDestroy {
             : undefined,
         pokemon: this.getSelectedControlValue('side2'),
       },
-      stage: Number(this.tradeForm.get('stage')?.value ?? -1),
+      roundIndex: Number(this.tradeForm.get('stage')?.value ?? -1),
     };
 
     this.submitting = true;
@@ -492,6 +496,31 @@ export class LeagueManageTradesComponent implements OnInit, OnDestroy {
         },
         error: (err) => {
           console.error('Error submitting trade:', err);
+        },
+      });
+  }
+
+  resolveTrade(trade: TradeLog, status: 'APPROVED' | 'REJECTED'): void {
+    if (!trade.id || this.resolvingTradeId) return;
+
+    const tradeId = trade.id;
+    this.resolvingTradeId = tradeId;
+    this.resolveErrorById[tradeId] = '';
+
+    this.leagueService
+      .setTradeStatus(tradeId, status)
+      .pipe(
+        take(1),
+        finalize(() => {
+          this.resolvingTradeId = null;
+        }),
+        takeUntil(this.destroy$),
+      )
+      .subscribe({
+        next: () => this.refreshTradeData(),
+        error: (err) => {
+          this.resolveErrorById[tradeId] =
+            err?.message || `Could not ${status.toLowerCase()} the trade.`;
         },
       });
   }

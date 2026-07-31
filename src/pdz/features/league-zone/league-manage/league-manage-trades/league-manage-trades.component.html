@@ -269,7 +269,32 @@
                     <span class="trade-entry__timestamp">
                       {{ trade.timestamp | date: "medium" }}
                     </span>
+                    @if (trade.status === "PENDING" && trade.id) {
+                      <span class="trade-entry__actions">
+                        <button
+                          type="button"
+                          class="trade-entry__action trade-entry__action--approve"
+                          [disabled]="resolvingTradeId === trade.id"
+                          (click)="resolveTrade(trade, 'APPROVED')"
+                        >
+                          Approve
+                        </button>
+                        <button
+                          type="button"
+                          class="trade-entry__action trade-entry__action--reject"
+                          [disabled]="resolvingTradeId === trade.id"
+                          (click)="resolveTrade(trade, 'REJECTED')"
+                        >
+                          Reject
+                        </button>
+                      </span>
+                    }
                   </div>
+                  @if (resolveErrorById[trade.id ?? ""]) {
+                    <p class="trade-entry__error">
+                      {{ resolveErrorById[trade.id ?? ""] }}
+                    </p>
+                  }
 
                   <div class="trade-entry__body">
                     <div class="trade-entry__side">

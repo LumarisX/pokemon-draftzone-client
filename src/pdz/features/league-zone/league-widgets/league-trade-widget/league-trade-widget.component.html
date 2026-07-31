@@ -4,7 +4,10 @@
       <div class="stage-header">{{ stage.name }}</div>
       <div class="stage-body">
         @for (tradeLog of stage.trades; track tradeLog) {
-          <pdz-trade-card [tradeLog]="tradeLog"></pdz-trade-card>
+          <pdz-trade-card
+            [tradeLog]="tradeLog"
+            [currentRoundIndex]="currentRoundIndex"
+          ></pdz-trade-card>
         }
       </div>
     </div>

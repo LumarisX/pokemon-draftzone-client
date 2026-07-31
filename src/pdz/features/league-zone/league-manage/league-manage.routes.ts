@@ -8,6 +8,8 @@ import { LeagueManageScheduleComponent } from './league-manage-schedule/league-m
 import { LeagueManageSignupsComponent } from './league-manage-signups/league-manage-signups.component';
 import { LeagueManageTradesComponent } from './league-manage-trades/league-manage-trades.component';
 import { LeagueSettingsComponent } from './league-settings/league-settings.component';
+import { StageManagerComponent } from './stage-manager/stage-manager.component';
+import { TradeManagerComponent } from './trade-manager/trade-manager.component';
 
 export const routes: Routes = [
   {
@@ -36,7 +38,19 @@ export const routes: Routes = [
     component: LeagueManageDraftComponent,
   },
   {
+    path: 'trades',
+    component: TradeManagerComponent,
+  },
+  {
+    path: 'stages',
+    component: StageManagerComponent,
+  },
+  {
     path: 'stages/:stageId/trades',
+    component: TradeManagerComponent,
+  },
+  {
+    path: 'stages/:stageId/trades/legacy',
     component: LeagueManageTradesComponent,
   },
   {

@@ -390,6 +390,26 @@
             }
           </div>
 
+          <div class="form-field">
+            <label class="checkbox-option">
+              <input type="checkbox" formControlName="tradePointLimitEnabled" />
+              <span class="checkbox-option__label">Limit trade points</span>
+            </label>
+            @if (form.get('tradePointLimitEnabled')?.value) {
+              <input
+                id="tradePointLimit"
+                class="form-field__input form-field__input--number"
+                type="number"
+                formControlName="tradePointLimit"
+                min="0"
+              />
+              <span class="form-field__hint"
+                >Trade points a team may spend across a stage. Approving a trade
+                that would exceed this is blocked.</span
+              >
+            }
+          </div>
+
           @if (availableTierNames.length) {
             <div class="form-field" formArrayName="tierRequirements">
               <label class="form-field__label">Required Tier Picks</label>

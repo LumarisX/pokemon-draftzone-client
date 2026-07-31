@@ -160,6 +160,12 @@ export class LeagueBracketCanvasComponent
 
   /** Emits the complete draft (matches + sections) when the user hits Save. */
   @Output() saveRequested = new EventEmitter<GeneratedBracket>();
+  /**
+   * Emits after every draft mutation. Lets the host track hand edits so it can
+   * append to the live draft (rather than clobber it) when it pushes new
+   * `initialMatches`.
+   */
+  @Output() draftChanged = new EventEmitter<GeneratedBracket>();
 
   @ViewChild('host') private hostRef!: ElementRef<HTMLElement>;
   @ViewChild('canvasEl') private canvasRef!: ElementRef<HTMLCanvasElement>;
@@ -255,9 +261,17 @@ export class LeagueBracketCanvasComponent
     this.ngZone.run(() => {
       mutate();
       this.recomputeLayout();
+      this.emitDraft();
       this.cdr.markForCheck();
     });
     this.scheduleRender();
+  }
+
+  private emitDraft(): void {
+    this.draftChanged.emit({
+      matches: this.draftMatches,
+      sections: this.draftSections,
+    });
   }
 
   get canSave(): boolean {
@@ -286,6 +300,7 @@ export class LeagueBracketCanvasComponent
     this.draftMatches = [];
     this.draftSections = [{ key: 'main', order: 0 }];
     this.recomputeLayout();
+    this.emitDraft();
     this.scheduleRender();
   }
 
@@ -602,6 +617,7 @@ export class LeagueBracketCanvasComponent
           }
           this.draftMatches = deleteMatch(this.draftMatches, matchId);
           this.recomputeLayout();
+          this.emitDraft();
           this.cdr.markForCheck();
         });
         this.scheduleRender();
@@ -927,6 +943,7 @@ export class LeagueBracketCanvasComponent
 
     this.draftMatches = matches;
     this.recomputeLayout();
+    this.emitDraft();
     this.scheduleRender();
   }
 
@@ -990,6 +1007,7 @@ export class LeagueBracketCanvasComponent
     this.draftSections = sections;
 
     this.recomputeLayout();
+    this.emitDraft();
     this.scheduleRender();
   }
 
@@ -1028,6 +1046,7 @@ export class LeagueBracketCanvasComponent
     ];
     this.sectionPromptOpen = false;
     this.recomputeLayout();
+    this.emitDraft();
     this.scheduleRender();
   }
 

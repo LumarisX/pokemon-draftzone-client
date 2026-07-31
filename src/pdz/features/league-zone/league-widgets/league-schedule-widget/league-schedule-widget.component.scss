@@ -1,5 +1,10 @@
 @use "mixins" as *;
 @use "pdz-theming" as pdz;
+@use "../../league.mixins" as *;
+
+.section-message {
+  @include pdz-league-section-message();
+}
 
 .matchup-stage-list {
   display: flex;

@@ -4,8 +4,37 @@
       <div class="team-header__meta">
         <div class="team-header__info">
           <div class="team-header__identity">
-            <h1 class="team-header__team-name">{{ teamData.name }}</h1>
-            <h2 class="team-header__coach-name">{{ teamData.coach }}</h2>
+            <div class="team-header__titled">
+              <h1 class="team-header__team-name">{{ teamData.name }}</h1>
+              @if (teamData.isCoach) {
+                <button
+                  type="button"
+                  class="team-header__edit"
+                  aria-label="Edit team info"
+                  [disabled]="saving"
+                  (click)="openTeamEdit()"
+                >
+                  <pdz-icon name="edit" [size]="16"></pdz-icon>
+                </button>
+              }
+            </div>
+            <div class="team-header__titled">
+              <h2 class="team-header__coach-name">{{ teamData.coach }}</h2>
+              @if (teamData.isCoach) {
+                <button
+                  type="button"
+                  class="team-header__edit"
+                  aria-label="Edit coach info"
+                  [disabled]="saving"
+                  (click)="openCoachEdit()"
+                >
+                  <pdz-icon name="edit" [size]="16"></pdz-icon>
+                </button>
+              }
+            </div>
+            @if (saveError) {
+              <p class="team-header__error">{{ saveError }}</p>
+            }
           </div>
           <div class="team-header__details">
             <p class="team-header__record">
@@ -39,6 +68,8 @@
           <pdz-league-schedule-widget
             [stageId]="stageId"
           ></pdz-league-schedule-widget>
+        } @else {
+          <p class="section-message">No schedule yet.</p>
         }
       </div>
     </div>
@@ -47,9 +78,10 @@
         <h3>Draft Roster</h3>
       </div>
       <div class="section-body">
-        <div class="stats-table-wrapper">
-          <table class="stats-table">
-            <thead>
+        @if (teamData.draft.length) {
+          <div class="stats-table-wrapper">
+            <table class="stats-table">
+              <thead>
               <tr>
                 <th class="col-sprite"></th>
                 <th class="col-name">Pokémon</th>
@@ -116,17 +148,32 @@
             </tfoot>
           </table>
         </div>
+        } @else {
+          <p class="section-message">No Pokémon drafted yet.</p>
+        }
       </div>
     </div>
     <div class="section section--trades">
-      <div class="section-header">
-        <h3>Active Trades</h3>
+      <div class="section-header section-header--actionable">
+        <h3>Trades</h3>
+        @if (teamData.isCoach) {
+          <button
+            type="button"
+            class="section-header__action"
+            (click)="openTradePropose()"
+          >
+            <pdz-icon name="add" [size]="16"></pdz-icon>
+            <span>New Trade</span>
+          </button>
+        }
       </div>
       <div class="section-body">
         @if (stageId) {
           <pdz-league-trade-widget
             [stageId]="stageId"
           ></pdz-league-trade-widget>
+        } @else {
+          <p class="section-message">No trades yet.</p>
         }
       </div>
     </div>

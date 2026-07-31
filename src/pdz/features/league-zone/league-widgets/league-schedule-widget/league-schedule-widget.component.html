@@ -1,4 +1,4 @@
-@if (scheduleRounds) {
+@if (scheduleRounds?.length) {
   <div class="matchup-stage-list">
     @for (stage of scheduleRounds; track stage._id) {
       <div class="matchup-stage">

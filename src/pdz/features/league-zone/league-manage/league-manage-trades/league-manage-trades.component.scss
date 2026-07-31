@@ -407,6 +407,51 @@
     color: pdz.color(on-surface-variant);
   }
 
+  &__actions {
+    display: inline-flex;
+    gap: pdz.space(xs);
+    margin-inline-start: auto;
+  }
+
+  &__action {
+    @include apply-typography("label-sm");
+    padding: pdz.space(2xs) pdz.space(sm);
+    border-radius: pdz.shape(corner-sm);
+    border: 1px solid pdz.color(outline-variant);
+    background: transparent;
+    font-weight: 600;
+    cursor: pointer;
+
+    &--approve {
+      color: pdz.color(success);
+
+      &:hover:not(:disabled) {
+        background: pdz.color(success-container);
+        border-color: pdz.color(success);
+      }
+    }
+
+    &--reject {
+      color: pdz.color(error);
+
+      &:hover:not(:disabled) {
+        background: pdz.color(error-container);
+        border-color: pdz.color(error);
+      }
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  &__error {
+    @include apply-typography("body-sm");
+    color: pdz.color(error);
+    margin: pdz.space(2xs) 0 0;
+  }
+
   &__body {
     display: grid;
     grid-template-columns: 1fr auto 1fr;

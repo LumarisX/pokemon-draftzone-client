@@ -77,6 +77,23 @@
   font-weight: $weight;
 }
 
+/**
+ * Placeholder copy for a section with nothing to show. Gives the section body
+ * enough height that an empty panel reads as deliberate rather than clipped.
+ */
+@mixin pdz-league-section-message() {
+  @include apply-typography(body-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 4rem;
+  padding: pdz.space(md) pdz.space(sm);
+  margin: 0;
+  color: pdz.color(on-surface-variant);
+  font-style: italic;
+  text-align: center;
+}
+
 @mixin pdz-league-record-box() {
   background-color: pdz.color(surface-container);
   color: pdz.color(surface-container);

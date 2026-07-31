@@ -75,6 +75,25 @@
 
   &__viewport {
     width: 100%;
+    // The panel is a detached overlay, so the input's focus never triggers the
+    // global :focus-within scrollbar reveal. Keep it on and reserve its gutter.
+    scrollbar-width: thin;
+    scrollbar-color: var(--pdz-scrollbar-thumb-idle) transparent;
+    scrollbar-gutter: stable;
+
+    &::-webkit-scrollbar {
+      width: var(--pdz-scrollbar-size-thin);
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: var(--pdz-scrollbar-thumb-idle);
+      background-clip: content-box;
+      border-radius: var(--pdz-scrollbar-thumb-radius);
+
+      &:hover {
+        background-color: var(--pdz-scrollbar-thumb-hover);
+      }
+    }
   }
 
   &__option {
@@ -114,6 +133,28 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+
+  &__option-cost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.75rem;
+    height: 1.5rem;
+    padding: 0 0.25rem;
+    border-radius: pdz.shape(corner-xs);
+    background: pdz.color(primary);
+    color: pdz.color(on-primary);
+    font-size: 0.75rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  &__option-tier {
+    color: pdz.color(on-surface-variant);
+    font-size: 0.7rem;
+    font-weight: 600;
+    flex-shrink: 0;
   }
 
   &__empty {

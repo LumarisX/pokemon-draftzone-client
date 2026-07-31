@@ -1,5 +1,6 @@
 @use "pdz-theming" as pdz;
 @use "mixins" as *;
+@use "../../league.mixins" as *;
 
 .stage {
   &-header {
@@ -16,8 +17,6 @@
   }
 
   &__empty {
-    color: pdz.color(on-surface);
-    font-style: italic;
-    padding: 0 var(pdz-space-md);
+    @include pdz-league-section-message();
   }
 }

@@ -29,6 +29,12 @@ import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 const ITEM_SIZE = 44;
 const MAX_LIST_HEIGHT = 308;
 
+/** Options may carry draft pricing; the row shows it when they do. */
+export type PokemonSearchOption = DraftPokemon & {
+  cost?: number;
+  tier?: string;
+};
+
 @Component({
   selector: 'pdz-pokemon-search',
   imports: [
@@ -116,6 +122,14 @@ export class PokemonSearchComponent implements OnInit, OnDestroy {
 
   isTaken(option: DraftPokemon): boolean {
     return this.takenIds.includes(option.id);
+  }
+
+  costOf(option: DraftPokemon): number | undefined {
+    return (option as PokemonSearchOption).cost;
+  }
+
+  tierOf(option: DraftPokemon): string | undefined {
+    return (option as PokemonSearchOption).tier;
   }
 
   setOpen(value: boolean): void {

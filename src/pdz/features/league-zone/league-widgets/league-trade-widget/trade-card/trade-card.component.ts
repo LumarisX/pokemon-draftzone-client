@@ -5,6 +5,7 @@ import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import {
   ComparisonCardComponent,
   ComparisonEntity,
+  StatusEntity,
 } from '../../../comparison-card/comparison-card.component'; // Adjust path
 import { TradeLog } from '../../../league.interface';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
@@ -25,6 +26,11 @@ import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 })
 export class TradeCardComponent implements OnChanges {
   @Input({ required: true }) tradeLog!: TradeLog;
+  /**
+   * Index of the stage's current round. A trade only counts as active once
+   * this reaches its `activeRound`; -1 means no round has been played yet.
+   */
+  @Input() currentRoundIndex = -1;
 
   private readonly DRAFT_POOL_NAME = 'Draft Pool';
 
@@ -35,6 +41,8 @@ export class TradeCardComponent implements OnChanges {
   rightEntity: ComparisonEntity = {
     primaryName: this.DRAFT_POOL_NAME,
   };
+
+  status: StatusEntity = { label: 'Pending' };
 
   ngOnChanges(): void {
     const from = this.tradeLog.side1;
@@ -51,5 +59,19 @@ export class TradeCardComponent implements OnChanges {
       primaryName: to.team?.name || this.DRAFT_POOL_NAME,
       secondaryName: to.team?.coach,
     };
+
+    this.status = this.resolveStatus();
+  }
+
+  /**
+   * Mirrors the server's roster walk (getRosterByRound): a trade is only in
+   * effect once it has been approved *and* its round has come around.
+   */
+  private resolveStatus(): StatusEntity {
+    if (this.tradeLog.status === 'REJECTED') return { label: 'Rejected' };
+    if (this.tradeLog.status === 'PENDING') return { label: 'Pending' };
+    return this.tradeLog.activeRound <= this.currentRoundIndex
+      ? { label: 'Active', active: true }
+      : { label: 'Upcoming' };
   }
 }

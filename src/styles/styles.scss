@@ -17,26 +17,28 @@
   --pdz-scrollbar-size-thin: 0.375rem;
   --pdz-scrollbar-size-expanded: 0.375rem;
   --pdz-scrollbar-thumb-radius: 999px;
-  --pdz-scrollbar-thumb-idle: color-mix(
-    in srgb,
-    pdz.color(on-surface) 22%,
-    transparent
-  );
-  --pdz-scrollbar-thumb-hover: color-mix(
-    in srgb,
-    pdz.color(on-surface) 36%,
-    transparent
-  );
-  --pdz-scrollbar-thumb-active: color-mix(
-    in srgb,
-    pdz.color(on-surface) 52%,
-    transparent
-  );
-  --pdz-scrollbar-track: color-mix(
-    in srgb,
-    pdz.color(surface-container-high) 45%,
-    transparent
-  );
+  // Interpolated: Sass passes custom-property values through verbatim, so an
+  // un-#{}'d pdz.color() would reach the browser as literal text.
+  --pdz-scrollbar-thumb-idle: #{color-mix(
+      in srgb,
+      pdz.color(on-surface) 22%,
+      transparent
+    )};
+  --pdz-scrollbar-thumb-hover: #{color-mix(
+      in srgb,
+      pdz.color(on-surface) 36%,
+      transparent
+    )};
+  --pdz-scrollbar-thumb-active: #{color-mix(
+      in srgb,
+      pdz.color(on-surface) 52%,
+      transparent
+    )};
+  --pdz-scrollbar-track: #{color-mix(
+      in srgb,
+      pdz.color(surface-container-high) 45%,
+      transparent
+    )};
   --pdz-scrollbar-thumb-gap-idle: 0.125rem;
   --pdz-scrollbar-thumb-gap-hover: 0.0625rem;
   --pdz-scrollbar-thumb-gap-active: 0.03125rem;

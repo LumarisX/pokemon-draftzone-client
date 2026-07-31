@@ -124,6 +124,8 @@ export class LeagueSettingsComponent implements OnInit, OnDestroy {
       draftCountMax: [1, [Validators.required, Validators.min(1)]],
       pointTotalEnabled: [false],
       pointTotal: [0, Validators.min(0)],
+      tradePointLimitEnabled: [false],
+      tradePointLimit: [0, Validators.min(0)],
       tierRequirements: this.fb.array<
         FormGroup<{ tierName: FormControl<string>; required: FormControl<number> }>
       >([]),
@@ -184,6 +186,8 @@ export class LeagueSettingsComponent implements OnInit, OnDestroy {
             draftCountMax: settings.draftCount?.max ?? 1,
             pointTotalEnabled: settings.pointTotal != null,
             pointTotal: settings.pointTotal ?? 0,
+            tradePointLimitEnabled: settings.tradePointLimit != null,
+            tradePointLimit: settings.tradePointLimit ?? 0,
             adAdvertise: settings.adSettings?.advertise ?? false,
             adSkillFrom: settings.adSettings?.skillLevelRange?.from ?? '0',
             adSkillTo: settings.adSettings?.skillLevelRange?.to ?? '3',
@@ -289,6 +293,7 @@ export class LeagueSettingsComponent implements OnInit, OnDestroy {
         diffMode: v.diffMode,
         draftCount: { min: v.draftCountMin, max: v.draftCountMax },
         pointTotal: v.pointTotalEnabled ? v.pointTotal : null,
+        tradePointLimit: v.tradePointLimitEnabled ? v.tradePointLimit : null,
         tierRequirements,
         adSettings: {
           advertise: v.adAdvertise,

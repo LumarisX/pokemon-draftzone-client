@@ -6,8 +6,10 @@ import {
   generateRoundRobin,
   generateSingleElimination,
   moveMatch,
+  offsetBracket,
   setMatchSlot,
   standardSeedOrder,
+  toBracketPayload,
   validateBracketWiring,
 } from './bracket-generator';
 import { FlexBracketMatch } from './bracket.model';
@@ -42,7 +44,7 @@ describe('generateSingleElimination', () => {
   it('builds a full 8-team bracket', () => {
     const { matches, sections } = generateSingleElimination(8);
 
-    expect(sections).toEqual([{ key: 'main' }]);
+    expect(sections).toEqual([{ key: 'main', kind: 'main', teamCount: 8 }]);
     expect(matches.length).toBe(7);
     expect(matches.filter((m) => m.round === 0).length).toBe(4);
     expect(matches.filter((m) => m.round === 1).length).toBe(2);
@@ -217,7 +219,9 @@ describe('generateRoundRobin', () => {
   it('plays every pair exactly once over a full cycle (even field)', () => {
     const { matches, sections } = generateRoundRobin(6, fullRoundRobinCycle(6));
 
-    expect(sections).toEqual([{ key: 'rr', title: '' }]);
+    expect(sections).toEqual([
+      { key: 'rr', kind: 'round-robin', title: '', teamCount: 6 },
+    ]);
     expect(matches.length).toBe(15); // C(6,2)
     for (let r = 0; r < 5; r++) {
       expect(matches.filter((m) => m.round === r).length).toBe(3);
@@ -425,5 +429,172 @@ describe('custom bracket editing helpers', () => {
       expect(result[0].b).toEqual({ type: 'winner', from: 'm0' });
       expect(base[0].b).toEqual(seed(2));
     });
+  });
+});
+
+describe('offsetBracket', () => {
+  it('namespaces ids and section keys so two blocks never collide', () => {
+    const a = offsetBracket(generateSingleElimination(4), {
+      prefix: 'groups',
+      seedOffset: 0,
+      title: 'Groups',
+    });
+    const b = offsetBracket(generateSingleElimination(4), {
+      prefix: 'playoffs',
+      seedOffset: 4,
+      title: 'Playoffs',
+    });
+
+    const ids = [...a.matches, ...b.matches].map((m) => m.id);
+    expect(new Set(ids).size).toBe(ids.length);
+    expect(ids.every((id) => /^(groups|playoffs)--/.test(id))).toBe(true);
+
+    const keys = [...a.sections, ...b.sections].map((s) => s.key);
+    expect(new Set(keys).size).toBe(keys.length);
+  });
+
+  it('shifts seeds onto the block\'s slice of the global numbering', () => {
+    const block = offsetBracket(generateSingleElimination(4), {
+      prefix: 'playoffs',
+      seedOffset: 8,
+      title: 'Playoffs',
+    });
+
+    const seeds = block.matches
+      .flatMap((m) => [m.a, m.b])
+      .filter((slot) => slot.type === 'seed' || slot.type === 'bye')
+      .map((slot) => (slot as { seed: number }).seed)
+      .sort((x, y) => x - y);
+    expect(seeds).toEqual([9, 10, 11, 12]);
+  });
+
+  it('rewrites winner/loser references to the namespaced ids', () => {
+    const block = offsetBracket(generateDoubleElimination(4), {
+      prefix: 'p',
+      seedOffset: 0,
+      title: 'Playoffs',
+    });
+    const ids = new Set(block.matches.map((m) => m.id));
+
+    for (const match of block.matches) {
+      for (const slot of [match.a, match.b]) {
+        if (slot.type === 'winner' || slot.type === 'loser') {
+          expect(ids.has(slot.from)).toBe(true);
+        }
+      }
+    }
+    // Wiring survives the rename intact.
+    expect(validateBracketWiring(block.matches)).toEqual([]);
+  });
+
+  it('keeps the structural kind so titles survive the key rename', () => {
+    const block = offsetBracket(generateDoubleElimination(4), {
+      prefix: 'p',
+      seedOffset: 0,
+      title: 'Playoffs',
+    });
+    expect(block.sections.map((s) => s.kind)).toEqual([
+      'winners',
+      'losers',
+      'finals',
+    ]);
+    expect(block.sections.map((s) => s.title)).toEqual([
+      'Playoffs — Winners Bracket',
+      'Playoffs — Losers Bracket',
+      'Playoffs — Grand Finals',
+    ]);
+  });
+});
+
+describe('toBracketPayload with composed sections', () => {
+  const composed = () => {
+    const a = offsetBracket(generateRoundRobin(4, 1), {
+      prefix: 'groups',
+      seedOffset: 0,
+      title: 'Groups',
+      orderBase: 0,
+    });
+    const b = offsetBracket(generateSingleElimination(4), {
+      prefix: 'playoffs',
+      seedOffset: 4,
+      title: 'Playoffs',
+      orderBase: 1,
+    });
+    return {
+      matches: [...a.matches, ...b.matches],
+      sections: [...a.sections, ...b.sections],
+    };
+  };
+
+  it('names rounds from the section kind, prefixed by the block', () => {
+    const payload = toBracketPayload(composed());
+    // Playoffs is single-elim (kind "main"), so its last round is the Finals —
+    // the namespaced key would otherwise have fallen through to a generic name.
+    expect(payload.rounds.map((r) => r.name)).toContain('Playoffs — Finals');
+    expect(payload.rounds.map((r) => r.name)).toContain('Groups — Round 1');
+  });
+
+  it('gives every match a valid index into the flat round list', () => {
+    const payload = toBracketPayload(composed());
+    for (const match of payload.matches) {
+      expect(match.roundIndex).toBeGreaterThanOrEqual(0);
+      expect(match.roundIndex).toBeLessThan(payload.rounds.length);
+    }
+  });
+
+  it('emits section metadata for every section holding matches', () => {
+    const payload = toBracketPayload(composed());
+    const keys = payload.sections.map((s) => s.key);
+    expect(keys).toEqual(['groups--rr', 'playoffs--main']);
+    expect(payload.sections.map((s) => s.teamCount)).toEqual([4, 4]);
+    expect(payload.sections.map((s) => s.label)).toEqual([
+      'Groups',
+      'Playoffs',
+    ]);
+  });
+});
+
+describe('validateBracketWiring seed reuse', () => {
+  it('accepts a round-robin section replaying its seeds', () => {
+    const { matches, sections } = generateRoundRobin(4, 3);
+    expect(validateBracketWiring(matches, sections)).toEqual([]);
+  });
+
+  it('accepts a round-robin section that has been namespaced', () => {
+    const block = offsetBracket(generateRoundRobin(4, 3), {
+      prefix: 'groups',
+      seedOffset: 0,
+      title: 'Groups',
+    });
+    expect(validateBracketWiring(block.matches, block.sections)).toEqual([]);
+  });
+
+  it('flags a seed used twice inside one knockout section', () => {
+    const { matches, sections } = generateSingleElimination(4);
+    const doubled = matches.map((m) =>
+      m.id === 'w1-1' ? { ...m, a: { type: 'seed' as const, seed: 1 } } : m,
+    );
+    expect(validateBracketWiring(doubled, sections).join(' ')).toContain(
+      'Seed 1 enters "main" more than once',
+    );
+  });
+
+  it('allows the same seed in two different sections', () => {
+    const a = offsetBracket(generateSingleElimination(2), {
+      prefix: 'groups',
+      seedOffset: 0,
+      title: 'Groups',
+    });
+    const b = offsetBracket(generateSingleElimination(2), {
+      prefix: 'playoffs',
+      seedOffset: 0,
+      title: 'Playoffs',
+    });
+    expect(
+      validateBracketWiring(
+        [...a.matches, ...b.matches],
+        [...a.sections, ...b.sections],
+      ),
+    ).toEqual([]);
   });
 });

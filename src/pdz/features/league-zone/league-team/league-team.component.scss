@@ -75,6 +75,49 @@
     }
   }
 
+  // Pairs a heading with its edit affordance, shown only to the team's coach.
+  &__titled {
+    display: flex;
+    align-items: center;
+    gap: pdz.space(xs);
+    min-width: 0;
+  }
+
+  &__edit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: pdz.space(2xs);
+    border: none;
+    border-radius: pdz.shape(corner-full);
+    background: transparent;
+    color: pdz.color(on-surface-variant);
+    opacity: 0.5;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition:
+      opacity 0.2s ease,
+      background 0.2s ease,
+      color 0.2s ease;
+
+    &:hover:not(:disabled),
+    &:focus-visible {
+      opacity: 1;
+      color: pdz.color(on-surface);
+      background: pdz.color(surface-container-high);
+    }
+
+    &:disabled {
+      cursor: progress;
+    }
+  }
+
+  &__error {
+    @include apply-typography(body-sm);
+    color: pdz.color(error);
+    margin: 0;
+  }
+
   &__team-name {
     @include apply-typography(headline-md);
     color: pdz.color(primary);
@@ -166,17 +209,19 @@
   height: fit-content;
   box-shadow: var(--pdz-level-1);
   max-width: 100%;
+  // Without a floor, a section holding only a placeholder shrinks to the
+  // width of its own title and the row reads as a set of stray chips.
+  min-width: min(20rem, 100%);
   &--matchups {
     width: fit-content;
   }
 
   &-message {
-    @include apply-typography(body-md);
-    color: pdz.color(on-surface-variant);
-    margin: 0;
+    @include pdz-league-section-message();
 
     &--error {
       color: pdz.color(error);
+      font-style: normal;
     }
   }
 
@@ -184,6 +229,38 @@
     @include apply-typography(title-md);
     border-bottom: 2px solid pdz.color(primary);
     padding: 0 pdz.space(xs);
+
+    // Keeps a header's trailing action on the same baseline as its title.
+    &--actionable {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: pdz.space(sm);
+    }
+
+    &__action {
+      @include apply-typography(label-sm);
+      display: inline-flex;
+      align-items: center;
+      gap: pdz.space(2xs);
+      padding: pdz.space(2xs) pdz.space(sm);
+      border: 1px solid pdz.color(outline-variant);
+      border-radius: pdz.shape(corner-full);
+      background: transparent;
+      color: pdz.color(primary);
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition:
+        background 0.2s ease,
+        border-color 0.2s ease;
+
+      &:hover,
+      &:focus-visible {
+        background: pdz.color(surface-container-high);
+        border-color: pdz.color(primary);
+      }
+    }
   }
 
   &-body {

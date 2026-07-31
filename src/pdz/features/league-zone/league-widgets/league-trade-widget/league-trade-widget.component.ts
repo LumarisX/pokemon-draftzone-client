@@ -17,13 +17,19 @@ export class LeagueTradeWidgetComponent implements OnInit, OnDestroy {
   @Input() stageId!: string;
 
   tradeRounds?: { name: string; trades: TradeLog[] }[];
+  currentRoundIndex = -1;
 
   ngOnInit(): void {
+    this.reload();
+  }
+
+  reload(): void {
     this.leagueService
       .getTrades({ stageId: this.stageId })
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (data) => {
+          this.currentRoundIndex = data.currentRoundIndex ?? -1;
           this.tradeRounds = [...data.rounds]
             .filter((round) => round.trades.length)
             .reverse();

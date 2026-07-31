@@ -138,6 +138,13 @@
       <span>Tier List</span>
     </a>
     <a
+      [routerLink]="[...manageLink, 'trades']"
+      routerLinkActive="active"
+      class="link-button"
+    >
+      <span>Trades</span>
+    </a>
+    <a
       [routerLink]="manageLink"
       routerLinkActive="active"
       [routerLinkActiveOptions]="{ exact: true }"

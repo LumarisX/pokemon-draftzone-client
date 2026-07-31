@@ -112,7 +112,7 @@ export function generateSingleElimination(teamCount: number): GeneratedBracket {
   assertTeamCount(teamCount);
   return {
     matches: compactByes(buildWinnersMatches(teamCount, 'main')),
-    sections: [{ key: 'main' }],
+    sections: [{ key: 'main', kind: 'main', teamCount }],
   };
 }
 
@@ -187,9 +187,27 @@ export function generateDoubleElimination(
   return {
     matches: compactByes(matches),
     sections: [
-      { key: 'winners', title: 'Winners Bracket', order: 0 },
-      { key: 'losers', title: 'Losers Bracket', order: 1 },
-      { key: 'finals', title: 'Grand Finals', order: 2 },
+      {
+        key: 'winners',
+        kind: 'winners',
+        title: 'Winners Bracket',
+        order: 0,
+        teamCount,
+      },
+      {
+        key: 'losers',
+        kind: 'losers',
+        title: 'Losers Bracket',
+        order: 1,
+        teamCount,
+      },
+      {
+        key: 'finals',
+        kind: 'finals',
+        title: 'Grand Finals',
+        order: 2,
+        teamCount,
+      },
     ],
   };
 }
@@ -240,7 +258,74 @@ export function generateRoundRobin(
 
   return {
     matches,
-    sections: [{ key: 'rr', title: '' }],
+    sections: [{ key: 'rr', kind: 'round-robin', title: '', teamCount }],
+  };
+}
+
+// ─── Composing several generated blocks into one bracket ─────────────────────
+
+export interface OffsetOptions {
+  /** Prepended to every match id and section key so blocks never collide. */
+  prefix: string;
+  /** Added to every seed number, mapping block-local seeds onto global ones. */
+  seedOffset: number;
+  /** Section title. Applied to the block's first section only; the rest keep theirs. */
+  title?: string;
+  /** Starting `order` for this block's sections. */
+  orderBase?: number;
+}
+
+/**
+ * Rewrites a freshly generated block so it can sit alongside others in one
+ * bracket: ids and section keys are namespaced, and block-local seeds 1..n
+ * become global seeds `seedOffset+1 .. seedOffset+n`.
+ *
+ * Titles survive the key rename because sections carry `kind` — the layout and
+ * the payload builder read that, not the key.
+ */
+export function offsetBracket(
+  bracket: GeneratedBracket,
+  options: OffsetOptions,
+): GeneratedBracket {
+  const { prefix, seedOffset, title, orderBase = 0 } = options;
+  const id = (raw: string) => `${prefix}--${raw}`;
+  const sectionKey = (raw: string) => `${prefix}--${raw}`;
+
+  const shift = (slot: BracketSlotFlex): BracketSlotFlex => {
+    switch (slot.type) {
+      case 'seed':
+      case 'bye':
+        return { type: slot.type, seed: slot.seed + seedOffset };
+      case 'winner':
+      case 'loser':
+        return { type: slot.type, from: id(slot.from) };
+      default:
+        return slot;
+    }
+  };
+
+  return {
+    matches: bracket.matches.map((match) => ({
+      ...match,
+      id: id(match.id),
+      section: sectionKey(match.section ?? 'main'),
+      a: shift(match.a),
+      b: shift(match.b),
+    })),
+    sections: bracket.sections.map((section, idx) => ({
+      ...section,
+      key: sectionKey(section.key),
+      kind: section.kind ?? (section.key as FlexBracketSectionConfig['kind']),
+      label: title,
+      // The block's name prefixes each section title so the canvas reads
+      // "Playoffs — Losers Bracket" rather than a bare namespaced key.
+      title: title
+        ? section.title
+          ? `${title} — ${section.title}`
+          : title
+        : section.title,
+      order: orderBase + (section.order ?? idx),
+    })),
   };
 }
 
@@ -257,19 +342,30 @@ export interface BracketPayloadMatch {
   b: { type: 'seed' | 'winner' | 'loser'; seed?: number; from?: string };
 }
 
+export interface BracketPayloadSection {
+  key: string;
+  title?: string;
+  kind?: string;
+  label?: string;
+  order?: number;
+  teamCount?: number;
+  roundTitles?: Record<number, string>;
+}
+
 export interface BracketPayload {
   rounds: { name: string }[];
+  sections: BracketPayloadSection[];
   matches: BracketPayloadMatch[];
 }
 
 function roundName(
-  sectionKey: string,
+  kind: string,
   roundIdx: number,
   roundCount: number,
 ): string {
   const isLast = roundIdx === roundCount - 1;
   const isSecondToLast = roundIdx === roundCount - 2;
-  switch (sectionKey) {
+  switch (kind) {
     case 'main':
       if (isLast) return 'Finals';
       if (isSecondToLast) return 'Semi-Finals';
@@ -285,9 +381,10 @@ function roundName(
     case 'finals':
       return roundIdx === 0 ? 'Grand Finals' : 'Bracket Reset';
     case 'rr':
+    case 'round-robin':
       return `Round ${roundIdx + 1}`;
     default:
-      return `${sectionKey} Round ${roundIdx + 1}`;
+      return `${kind} Round ${roundIdx + 1}`;
   }
 }
 
@@ -297,11 +394,24 @@ function roundName(
  * them) and matches carrying an index into it.
  */
 export function toBracketPayload(bracket: GeneratedBracket): BracketPayload {
-  const sectionKeys = bracket.sections.map((s) => s.key);
+  // Sections the matches actually live in, ordered by config. A match may sit
+  // in a section that was never configured (added on the canvas), so the union
+  // — not just the config list — determines the round list.
+  const configByKey = new Map(bracket.sections.map((s) => [s.key, s]));
+  const orderOf = (key: string) =>
+    configByKey.get(key)?.order ?? 1000 + [...configByKey.keys()].length;
+  const sectionKeys = [
+    ...new Set([
+      ...bracket.sections.map((s) => s.key),
+      ...bracket.matches.map((m) => m.section ?? 'main'),
+    ]),
+  ].sort((a, b) => orderOf(a) - orderOf(b));
+
   const rounds: { name: string }[] = [];
   const roundIndexBySectionRound = new Map<string, number>();
 
   for (const sectionKey of sectionKeys) {
+    const cfg = configByKey.get(sectionKey);
     const roundNums = [
       ...new Set(
         bracket.matches
@@ -311,7 +421,12 @@ export function toBracketPayload(bracket: GeneratedBracket): BracketPayload {
     ].sort((a, b) => a - b);
     roundNums.forEach((rn, idx) => {
       roundIndexBySectionRound.set(`${sectionKey}:${rn}`, rounds.length);
-      rounds.push({ name: roundName(sectionKey, idx, roundNums.length) });
+      const auto =
+        cfg?.roundTitles?.[rn] ??
+        roundName(cfg?.kind ?? sectionKey, idx, roundNums.length);
+      rounds.push({
+        name: cfg?.label ? `${cfg.label} — ${auto}` : auto,
+      });
     });
   }
 
@@ -339,7 +454,20 @@ export function toBracketPayload(bracket: GeneratedBracket): BracketPayload {
     };
   });
 
-  return { rounds, matches };
+  const sections: BracketPayloadSection[] = sectionKeys.map((key, idx) => {
+    const cfg = configByKey.get(key);
+    return {
+      key,
+      title: cfg?.title,
+      kind: cfg?.kind,
+      label: cfg?.label,
+      order: cfg?.order ?? idx,
+      teamCount: cfg?.teamCount,
+      roundTitles: cfg?.roundTitles,
+    };
+  });
+
+  return { rounds, sections, matches };
 }
 
 // ─── Custom bracket editing (add/delete/move/rewire matches) ─────────────────
@@ -462,9 +590,19 @@ export function setMatchSlot(
   );
 }
 
-export function validateBracketWiring(matches: FlexBracketMatch[]): string[] {
+/**
+ * `sections` is only needed to police seed reuse: a knockout section may use a
+ * seed once, but a round-robin section replays the same teams every round.
+ */
+export function validateBracketWiring(
+  matches: FlexBracketMatch[],
+  sections?: FlexBracketSectionConfig[],
+): string[] {
   const errors: string[] = [];
   const byId = new Map<string, FlexBracketMatch>();
+  const kindByKey = new Map(
+    (sections ?? []).map((s) => [s.key, s.kind ?? s.key]),
+  );
 
   for (const match of matches) {
     if (byId.has(match.id)) errors.push(`Duplicate match id "${match.id}"`);
@@ -472,12 +610,28 @@ export function validateBracketWiring(matches: FlexBracketMatch[]): string[] {
   }
 
   const consumed = new Set<string>();
+  const seenSeeds = new Set<string>();
   for (const match of matches) {
+    const section = match.section ?? 'main';
+    const kind = kindByKey.get(section) ?? section;
     for (const [slotIndex, slot] of [match.a, match.b].entries()) {
       if (slot.type === 'empty') {
         errors.push(
           `Match "${match.id}" has an unassigned slot ${slotIndex === 0 ? 'A' : 'B'}`,
         );
+        continue;
+      }
+      if (slot.type === 'seed' || slot.type === 'bye') {
+        // In a knockout section a team enters once and advances by reference;
+        // a round-robin section deliberately re-uses every seed each round.
+        if (kind === 'round-robin' || kind === 'rr') continue;
+        const key = `${section}:${slot.seed}`;
+        if (seenSeeds.has(key)) {
+          errors.push(
+            `Seed ${slot.seed} enters "${section}" more than once (match "${match.id}")`,
+          );
+        }
+        seenSeeds.add(key);
         continue;
       }
       if (slot.type !== 'winner' && slot.type !== 'loser') continue;

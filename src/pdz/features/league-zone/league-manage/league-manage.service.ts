@@ -224,6 +224,7 @@ export class LeagueManageService {
       tierListId: string;
       draftCount: { min: number; max: number };
       pointTotal?: number;
+      tradePointLimit?: number;
       tierRequirements: { tierName: string; required: number }[];
       adSettings?: {
         advertise: boolean;
@@ -260,6 +261,7 @@ export class LeagueManageService {
     draftCount?: { min: number; max: number };
     /** `null` clears an existing point cap; `undefined` leaves it untouched. */
     pointTotal?: number | null;
+    tradePointLimit?: number | null;
     tierRequirements?: { tierName: string; required: number }[];
     adSettings?: {
       advertise: boolean;
@@ -277,9 +279,27 @@ export class LeagueManageService {
   generateBracket(
     stageId: string,
     payload: {
-      seedingMethod: 'certified-random' | 'manual';
-      teamIds: string[];
+      /**
+       * One entry per configured bracket section, in seed order: group i owns
+       * the seeds immediately after group i-1. The server resolves each group
+       * independently, so a "certified-random" group is shuffled only among
+       * its own teams and never across section boundaries.
+       */
+      seedGroups: {
+        teamIds: string[];
+        method: 'certified-random' | 'manual';
+        label?: string;
+      }[];
       rounds: { name: string; bestOf?: number }[];
+      sections?: {
+        key: string;
+        title?: string;
+        kind?: string;
+        label?: string;
+        order?: number;
+        teamCount?: number;
+        roundTitles?: Record<number, string>;
+      }[];
       matches: {
         key: string;
         roundIndex: number;

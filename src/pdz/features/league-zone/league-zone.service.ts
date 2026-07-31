@@ -5,10 +5,15 @@ import {
   BracketTeamFlex,
   FlexBracketData,
   FlexBracketMatch,
+  FlexBracketSectionConfig,
 } from '@pdz/features/league-zone/league-bracket/bracket.model';
 import { defenseData } from '@pdz/features/league-zone/league-ghost';
 import { TradeData } from '@pdz/features/league-zone/league-manage/league-manage-trades/league-manage-trades.component';
-import { League, TradeLog } from '@pdz/features/league-zone/league.interface';
+import {
+  League,
+  TradeLog,
+  TradeStatus,
+} from '@pdz/features/league-zone/league.interface';
 import { TournamentDetails } from '@pdz/features/league-zone/league.model';
 import { getRandomPokemon } from '@pdz/shared/data/namedex';
 import { Observable, of, throwError } from 'rxjs';
@@ -44,12 +49,35 @@ type RawBracketRound = {
   matchDeadline: string | null;
 };
 
-export type BracketSeedingInfo = {
+/** Seeding of one bracket section. Whole-stage seedings report a single group. */
+export type BracketSeedingGroup = {
   method: 'certified-random' | 'manual';
+  label: string | null;
+  seedFrom: number | null;
+  seedTo: number | null;
+  inputTeamsHash: string | null;
+  algorithmVersion: string | null;
+};
+
+export type BracketSeedingInfo = {
+  /** "mixed" when the bracket's sections don't share one seeding method. */
+  method: 'certified-random' | 'manual' | 'mixed';
   seededAt: string;
   inputTeamsHash: string | null;
   algorithmVersion: string | null;
+  /** Generations, not sections — one save seeds every section at once. */
   timesSeeded: number;
+  groups?: BracketSeedingGroup[];
+};
+
+type RawBracketSection = {
+  key: string;
+  title: string | null;
+  kind: string | null;
+  label: string | null;
+  order: number;
+  teamCount: number | null;
+  roundTitles: Record<number, string> | null;
 };
 
 type RawBracketResponse = {
@@ -57,6 +85,7 @@ type RawBracketResponse = {
   seeding?: BracketSeedingInfo | null;
   teams: BracketTeamFlex[];
   rounds: RawBracketRound[];
+  sections?: RawBracketSection[] | null;
   matches: RawBracketMatch[];
 };
 
@@ -106,12 +135,32 @@ function mapRawBracket(raw: RawBracketResponse): BracketWithSeeding {
 
   const hasSections = matches.some((m) => m.section);
   let sections: FlexBracketData['sections'];
-  if (hasSections) {
+  if (raw.sections?.length) {
+    // Brackets saved with configured sections carry their own metadata —
+    // titles, structural kind, and per-section team counts. Section keys may
+    // be namespaced per block, so nothing here can be inferred from the key.
+    sections = [...raw.sections]
+      .sort((a, b) => a.order - b.order)
+      .map((section) => ({
+        key: section.key,
+        ...(section.title !== null ? { title: section.title } : {}),
+        ...(section.kind
+          ? { kind: section.kind as FlexBracketSectionConfig['kind'] }
+          : {}),
+        ...(section.label !== null ? { label: section.label } : {}),
+        ...(section.teamCount !== null
+          ? { teamCount: section.teamCount }
+          : {}),
+        ...(section.roundTitles ? { roundTitles: section.roundTitles } : {}),
+        order: section.order,
+      }));
+  } else if (hasSections) {
+    // Pre-sections brackets: winners/losers/finals were the only keys emitted.
     sections = [
-      { key: 'winners', order: 0 },
-      { key: 'losers', order: 1 },
-      { key: 'finals', order: 2 },
-      { key: 'main', order: 3 },
+      { key: 'winners', kind: 'winners' as const, order: 0 },
+      { key: 'losers', kind: 'losers' as const, order: 1 },
+      { key: 'finals', kind: 'finals' as const, order: 2 },
+      { key: 'main', kind: 'main' as const, order: 3 },
     ].filter((s) => matches.some((m) => (m.section ?? 'main') === s.key));
   } else {
     const roundTitles: Record<number, string> = {};
@@ -194,10 +243,9 @@ export class LeagueZoneService {
   }
 
   getTournamentsList() {
-    return this.apiService.get<{ tournaments: TournamentDetails[] }>(
-      ROOTPATH,
-      { authenticated: true },
-    );
+    return this.apiService.get<{ tournaments: TournamentDetails[] }>(ROOTPATH, {
+      authenticated: true,
+    });
   }
 
   getRules(): Observable<League.RuleSection[]> {
@@ -263,6 +311,12 @@ export class LeagueZoneService {
         name: string;
         trades: TradeLog[];
       }[];
+      /** Rounds at or before this index have already been played. */
+      currentRoundIndex: number;
+      tradePoints: {
+        limit: number | null;
+        byTeam: { teamId: string; teamName: string; spent: number }[];
+      };
     }>(
       `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/stages/${stageId}/trades`,
       {
@@ -275,10 +329,23 @@ export class LeagueZoneService {
   }
 
   sendTrade(tradeData: TradeData, stageId?: string) {
-    return this.apiService.post(
+    return this.apiService.post<{ message: string; status: TradeStatus }>(
       `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/stages/${stageId ?? this.stageId()}/trades`,
       tradeData,
       { authenticated: true },
+    );
+  }
+
+  /** Organizer resolution of a coach-submitted trade. */
+  setTradeStatus(
+    tradeId: string,
+    status: 'APPROVED' | 'REJECTED',
+    stageId?: string,
+  ) {
+    const stage = stageId ?? this.stageId();
+    return this.apiService.patch<{ message: string; status: TradeStatus }>(
+      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/stages/${stage}/trades/${tradeId}`,
+      { status },
     );
   }
 
@@ -450,6 +517,34 @@ export class LeagueZoneService {
   listStages(): Observable<League.StageSummary[]> {
     return this.apiService.get(
       `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/stages`,
+      { authenticated: 'optional' },
+    );
+  }
+
+  setStageVisibility(
+    stageId: string,
+    isPublic: boolean,
+  ): Observable<{ message: string }> {
+    return this.apiService.patch(
+      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/stages/${stageId}`,
+      { public: isPublic },
+    );
+  }
+
+  /**
+   * Rounds are deliberately absent: the bracket builder overwrites a stage's
+   * rounds wholesale when it saves, so they are set there rather than here.
+   */
+  createStage(stage: {
+    name: string;
+    type: League.StageType;
+    order: number;
+    public: boolean;
+  }): Observable<{ _id: string }> {
+    return this.apiService.post(
+      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/stages`,
+      stage,
+      { authenticated: true },
     );
   }
 
@@ -542,6 +637,8 @@ export class LeagueZoneService {
       logo?: string;
       pickCount: number;
       status: League.SignUpStatus;
+      /** Draft pool the team drafted in; null if it was never assigned one. */
+      draft: { draftSlug: string; name: string } | null;
     }[];
   }> {
     return this.apiService.get(
@@ -576,6 +673,43 @@ export class LeagueZoneService {
         params: { stageId: stageId ?? this.stageId() ?? '' },
       },
     );
+  }
+
+  /** Self-service team rename. The API authorises the team's own coach and organizers. */
+  updateTeamInfo(
+    teamId: string,
+    changes: { teamName?: string; logo?: string },
+  ) {
+    return this.apiService.patch<{ _id: string; teamName: string }>(
+      `teams/${teamId}`,
+      changes,
+      { invalidateCache: [this.teamPath(teamId)] },
+    );
+  }
+
+  /** Self-service coach-profile edit. The API authorises the coach themself and organizers. */
+  updateCoachProfile(
+    coachId: string,
+    changes: {
+      name?: string;
+      gameName?: string;
+      discordName?: string;
+      timezone?: string;
+    },
+  ) {
+    return this.apiService.patch<{ _id: string }>(
+      `coaches/${coachId}`,
+      changes,
+      {
+        invalidateCache: [
+          `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/signup`,
+        ],
+      },
+    );
+  }
+
+  private teamPath(teamId: string): string {
+    return `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/teams/${teamId}`;
   }
 
   getLeagueUploadPresignedUrl(
