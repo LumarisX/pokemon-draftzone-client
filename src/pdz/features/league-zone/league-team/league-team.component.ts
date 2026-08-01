@@ -118,7 +118,6 @@ export class LeagueTeamComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe((stages) => {
         this.stageId = stages[0]?._id ?? null;
-        this.currentRoundIndex = Math.max(stages[0]?.currentRoundIndex ?? 0, 0);
 
         this.route.paramMap
           .pipe(
@@ -153,7 +152,7 @@ export class LeagueTeamComponent implements OnInit, OnDestroy {
 
   private loadTeam(): void {
     this.leagueService
-      .getTeam(this.stageId ?? undefined)
+      .getTeam()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (data) => {
@@ -393,6 +392,10 @@ export class LeagueTeamComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (data) => {
           this.scheduleRounds = data.rounds;
+          // The tournament's current round, not a stage's. A coach files a
+          // trade against this index, so reading it off a stage would date the
+          // trade to the wrong week.
+          this.currentRoundIndex = Math.max(data.currentRoundIndex, 0);
         },
         error: (error) => {
           console.error('Error loading schedule:', error);

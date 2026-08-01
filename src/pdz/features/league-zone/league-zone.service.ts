@@ -511,8 +511,12 @@ export class LeagueZoneService {
     );
   }
 
+  /**
+   * A team's page is tournament-scoped: its roster comes from the tournament's
+   * trades and its record spans every stage it plays in, so there is no stage
+   * to pass.
+   */
   getTeam(
-    stageId?: string,
     teamId?: string,
   ): Observable<
     League.LeagueTeam & {
@@ -522,10 +526,7 @@ export class LeagueZoneService {
   > {
     return this.apiService.get(
       `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/teams/${teamId ?? this.teamKey()}`,
-      {
-        authenticated: true,
-        params: { stageId: stageId ?? this.stageId() ?? '' },
-      },
+      { authenticated: true },
     );
   }
 

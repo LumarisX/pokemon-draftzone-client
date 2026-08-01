@@ -172,7 +172,7 @@ export class TournamentHomeComponent implements OnInit, OnDestroy {
     const teamId = this.profile?.teamId;
     if (!teamId) return;
     this.leagueService
-      .getTeam(this.selectedStageId ?? undefined, teamId)
+      .getTeam(teamId)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (data) => {

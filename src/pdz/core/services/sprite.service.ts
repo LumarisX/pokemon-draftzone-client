@@ -51,8 +51,6 @@ export class SpriteService {
     const fallbackPath = config.fallback
       ? config.fallback(pathId, pokemon.shiny)
       : undefined;
-    if (pokemon.id === 'crucibellemega')
-      console.log({ pokemonData, config, props, path, fallbackPath });
     const classes = [...config.classes];
     const flip = !!(config.flip || props.flip);
 
