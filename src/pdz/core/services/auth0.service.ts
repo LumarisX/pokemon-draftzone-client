@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { AuthService as Auth0Service, User } from '@auth0/auth0-angular';
 import { Settings } from '@pdz/layout/top-navbar/settings.service';
-import { catchError, map, Observable, of, shareReplay, switchMap } from 'rxjs';
+import { map, Observable, of, shareReplay } from 'rxjs';
 
 export type LeagueRole = 'owner' | 'coach' | 'helper' | 'player' | 'spectator';
 
@@ -20,30 +20,13 @@ type AppUser = User & {
 export class AuthService {
   private auth0 = inject<Auth0Service<AppUser>>(Auth0Service);
 
-  public readonly user$: Observable<AppUser | null>;
-  public readonly isAuthenticated$: Observable<boolean>;
-  public readonly accessToken$: Observable<string | undefined>;
-
-  constructor() {
-    this.isAuthenticated$ = this.auth0.isAuthenticated$.pipe(shareReplay(1));
-
-    this.user$ = this.auth0.user$.pipe(
-      map((user) => (user as AppUser) || null),
-      shareReplay(1),
-    );
-
-    this.accessToken$ = this.isAuthenticated$.pipe(
-      switchMap((isAuthenticated) =>
-        isAuthenticated ? this.auth0.getAccessTokenSilently() : of(undefined),
-      ),
-      catchError((error) => {
-        console.error('Error getting access token silently:', error);
-        this.login();
-        return of(undefined);
-      }),
-      shareReplay(1),
-    );
-  }
+  public readonly user$ = this.auth0.user$.pipe(
+    map((user) => (user as AppUser) || null),
+    shareReplay(1),
+  );
+  public readonly isAuthenticated$ = this.auth0.isAuthenticated$.pipe(
+    shareReplay(1),
+  );
 
   public login(): void {
     this.auth0.loginWithRedirect();

@@ -7,20 +7,15 @@ import {
 import { Injectable, inject } from '@angular/core';
 import {
   catchError,
-  filter,
   finalize,
   Observable,
-  of,
   OperatorFunction,
   shareReplay,
-  switchMap,
-  take,
   tap,
   throwError,
 } from 'rxjs';
 import { ErrorService } from '@pdz/layout/error/error.service';
 import { environment } from '@pdz/environments/environment';
-import { AuthService } from './auth0.service';
 
 interface ErrorHandlingOptions {
   suppressErrorReporting?: boolean;
@@ -32,7 +27,6 @@ interface ErrorHandlingOptions {
 })
 export class ApiService {
   private http = inject(HttpClient);
-  private auth = inject(AuthService);
   private errorService = inject(ErrorService);
 
   private serverUrl = `${environment.tls ? 'https' : 'http'}://${
@@ -69,35 +63,25 @@ export class ApiService {
       errorHandlingOptions?: ErrorHandlingOptions;
     } = {},
   ): Observable<T> {
-    let headers = new HttpHeaders({
+    const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       ...options.additionalHeaders,
     });
     const apiUrl = Array.isArray(path) ? path.join('/') : path;
     const key = apiUrl + JSON.stringify(options.params);
     if (this.pendingRequests.has(key)) return this.pendingRequests.get(key)!;
-    const request$ = (
-      options.authenticated == true || options.authenticated == 'required'
-        ? this.authenticatedRequest<T>('GET', apiUrl, {
-            params: options.params,
-            additionalHeaders: options.additionalHeaders,
-          })
-        : options.authenticated == 'optional'
-          ? this.optionalAuthRequest<T>(apiUrl, {
-              params: options.params,
-              additionalHeaders: options.additionalHeaders,
-            })
-          : this.http.get<T>(`${this.serverUrl}/${apiUrl}`, {
-              headers,
-              params: options.params,
-            })
-    ).pipe(
-      shareReplay({ bufferSize: 1, refCount: true }),
-      this.handleError(options.errorHandlingOptions),
-      finalize(() => {
-        this.pendingRequests.delete(key);
-      }),
-    );
+    const request$ = this.http
+      .get<T>(`${this.serverUrl}/${apiUrl}`, {
+        headers,
+        params: options.params,
+      })
+      .pipe(
+        shareReplay({ bufferSize: 1, refCount: true }),
+        this.handleError(options.errorHandlingOptions),
+        finalize(() => {
+          this.pendingRequests.delete(key);
+        }),
+      );
     this.pendingRequests.set(key, request$);
     return request$;
   }
@@ -111,19 +95,16 @@ export class ApiService {
     } = {},
   ): Observable<T> {
     const apiUrl = Array.isArray(path) ? path.join('/') : path;
-    const request$ = (
-      options.authenticated
-        ? this.authenticatedRequest<T>('POST', apiUrl, { data })
-        : this.http.post<T>(`${this.serverUrl}/${apiUrl}`, data, {
-            headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
-          })
-    ).pipe(
-      tap(() => {
-        if (options?.invalidateCache)
-          this.invalidateCachePaths(options.invalidateCache);
-      }),
-      this.handleError(),
-    );
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const request$ = this.http
+      .post<T>(`${this.serverUrl}/${apiUrl}`, data, { headers })
+      .pipe(
+        tap(() => {
+          if (options?.invalidateCache)
+            this.invalidateCachePaths(options.invalidateCache);
+        }),
+        this.handleError(),
+      );
     return request$;
   }
 
@@ -133,15 +114,16 @@ export class ApiService {
     options?: { invalidateCache?: (string | string[])[] },
   ): Observable<T> {
     const apiUrl = Array.isArray(path) ? path.join('/') : path;
-    const request$ = this.authenticatedRequest<T>('PATCH', apiUrl, {
-      data,
-    }).pipe(
-      tap(() => {
-        if (options?.invalidateCache)
-          this.invalidateCachePaths(options.invalidateCache);
-      }),
-      this.handleError(),
-    );
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const request$ = this.http
+      .patch<T>(`${this.serverUrl}/${apiUrl}`, data, { headers })
+      .pipe(
+        tap(() => {
+          if (options?.invalidateCache)
+            this.invalidateCachePaths(options.invalidateCache);
+        }),
+        this.handleError(),
+      );
     return request$;
   }
 
@@ -150,13 +132,16 @@ export class ApiService {
     options?: { invalidateCache?: (string | string[])[] },
   ): Observable<T> {
     const apiUrl = Array.isArray(path) ? path.join('/') : path;
-    const request$ = this.authenticatedRequest<T>('DELETE', apiUrl).pipe(
-      tap(() => {
-        if (options?.invalidateCache)
-          this.invalidateCachePaths(options.invalidateCache);
-      }),
-      this.handleError(),
-    );
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const request$ = this.http
+      .delete<T>(`${this.serverUrl}/${apiUrl}`, { headers })
+      .pipe(
+        tap(() => {
+          if (options?.invalidateCache)
+            this.invalidateCachePaths(options.invalidateCache);
+        }),
+        this.handleError(),
+      );
     return request$;
   }
 
@@ -174,92 +159,5 @@ export class ApiService {
 
       return throwError(() => error);
     });
-  }
-
-  private optionalAuthRequest<T>(
-    path: string,
-    options: {
-      params?:
-        | HttpParams
-        | {
-            [param: string]:
-              | string
-              | number
-              | boolean
-              | ReadonlyArray<string | number | boolean>;
-          };
-      additionalHeaders?: { [key: string]: string };
-    } = {},
-  ): Observable<T> {
-    const { params, additionalHeaders } = options;
-
-    return this.auth.isAuthenticated$.pipe(
-      take(1),
-      switchMap((isAuthenticated) =>
-        isAuthenticated
-          ? this.auth.accessToken$.pipe(
-              filter((token: string | undefined): token is string => !!token),
-              take(1),
-            )
-          : of(undefined),
-      ),
-      switchMap((token) => {
-        const headers = new HttpHeaders({
-          'Content-Type': 'application/json',
-          ...(token ? { authorization: `Bearer ${token}` } : {}),
-          ...additionalHeaders,
-        });
-
-        return this.http.get<T>(`${this.serverUrl}/${path}`, {
-          headers,
-          params,
-        });
-      }),
-    );
-  }
-
-  private authenticatedRequest<T>(
-    method: 'GET' | 'POST' | 'PATCH' | 'DELETE',
-    path: string,
-    options: {
-      data?: any;
-      params?:
-        | HttpParams
-        | {
-            [param: string]:
-              | string
-              | number
-              | boolean
-              | ReadonlyArray<string | number | boolean>;
-          };
-      additionalHeaders?: { [key: string]: string };
-    } = {},
-  ): Observable<T> {
-    const { data, params, additionalHeaders } = options;
-
-    return this.auth.accessToken$.pipe(
-      filter((token: string | undefined): token is string => !!token),
-      take(1),
-      switchMap((token: string) => {
-        const headers = new HttpHeaders({
-          'Content-Type': 'application/json',
-          authorization: `Bearer ${token}`,
-          ...additionalHeaders,
-        });
-
-        const url = `${this.serverUrl}/${path}`;
-
-        switch (method) {
-          case 'GET':
-            return this.http.get<T>(url, { headers, params });
-          case 'POST':
-            return this.http.post<T>(url, data, { headers, params });
-          case 'PATCH':
-            return this.http.patch<T>(url, data, { headers });
-          case 'DELETE':
-            return this.http.delete<T>(url, { headers, params });
-        }
-      }),
-    );
   }
 }

@@ -42,7 +42,8 @@ export const pdzConfig: ApplicationConfig = {
       httpInterceptor: {
         allowedList: [
           {
-            uri: `${environment.auth.audience}*`,
+            uri: `${environment.tls ? 'https' : 'http'}://${environment.apiUrl}/*`,
+            allowAnonymous: true,
             tokenOptions: {
               authorizationParams: {
                 audience: environment.auth.audience,

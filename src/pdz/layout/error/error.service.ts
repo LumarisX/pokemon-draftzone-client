@@ -4,10 +4,9 @@ import {
   HttpHeaders,
 } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { AuthService } from '@pdz/core/services/auth0.service';
 import { RumService } from '@pdz/core/services/rum.service';
 import { environment } from '@pdz/environments/environment';
-import { BehaviorSubject, Observable, of, switchMap, take } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 // Server error bodies should carry string messages, but a malformed one may
 // hold an object or array; render those as JSON instead of "[object Object]".
@@ -56,7 +55,6 @@ export interface ClientError {
 export class ErrorService {
   private rumService = inject(RumService);
   private http = inject(HttpClient);
-  private auth = inject(AuthService);
   private readonly MAX_ERRORS = 5;
   private errorsSubject = new BehaviorSubject<ClientError[]>([]);
   private errorIdCounter = 0;
@@ -81,22 +79,11 @@ export class ErrorService {
       userAgent: navigator.userAgent,
     };
 
-    return this.auth.isAuthenticated$.pipe(
-      take(1),
-      switchMap((isAuthenticated) =>
-        isAuthenticated ? this.auth.accessToken$.pipe(take(1)) : of(undefined),
-      ),
-      switchMap((token) => {
-        const headers = new HttpHeaders({
-          'Content-Type': 'application/json',
-          ...(token ? { authorization: `Bearer ${token}` } : {}),
-        });
-        return this.http.post<{ delivered: boolean }>(
-          `${this.serverUrl}/error-report`,
-          payload,
-          { headers },
-        );
-      }),
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.post<{ delivered: boolean }>(
+      `${this.serverUrl}/error-report`,
+      payload,
+      { headers },
     );
   }
 
