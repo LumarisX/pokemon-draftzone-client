@@ -6,7 +6,7 @@ import {
   moveItemInArray,
 } from '@angular/cdk/drag-drop';
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
+import { BehaviorSubject, interval, Subject, takeUntil } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { DraftPokemon } from '../../../drafts/draft.model';
 import { PokemonSearchComponent } from '../../../drafts/draft-overview/draft-form/components/pokemon-search/pokemon-search.component';
@@ -20,12 +20,14 @@ import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LeagueNotificationsComponent } from '../../league-notifications/league-notifications.component';
 import { League } from '../../league.interface';
+import { formatCountdown } from '../../league.util';
 
 interface DraftCounterEvent {
   draftSlug: string;
   currentPick: {
     round: number;
     position: number;
+    skipTime?: Date;
   };
   nextTeam: string;
 }
@@ -78,6 +80,8 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
   private tierListService = inject(TierListService);
 
   private destroy$ = new Subject<void>();
+  private countdownTick$ = new Subject<void>();
+  private readonly COUNTDOWN_TICK_MS = 1000;
 
   teams: League.LeagueTeam[] = [];
   status: 'PRE_DRAFT' | 'IN_PROGRESS' | 'PAUSED' | 'COMPLETED' = 'IN_PROGRESS';
@@ -88,7 +92,9 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
   orderProgression: 'snake' | 'linear' = 'snake';
   roundCount = 0;
   teamOrder: string[] = [];
-  currentPick?: { round: number; position: number };
+  currentPick?: { round: number; position: number; skipTime?: Date };
+  /** Live "time left on the clock" text for currentPick, ticking every second. */
+  pickTimeDisplay: string | null = null;
 
   /** Last-saved seeding config, from the server. */
   useRandomSeeding = true;
@@ -202,6 +208,28 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
     });
   }
 
+  /** The turn currently on the clock, if any — drives the header's status line. */
+  get currentTurn(): DraftTurn | undefined {
+    if (!this.currentPick) return undefined;
+    return this.rounds[this.currentPick.round]?.turns.find(
+      (turn) => turn.position === this.currentPick!.position,
+    );
+  }
+
+  /** Short, human-readable summary of what the draft is doing right now. */
+  get statusLabel(): string {
+    switch (this.status) {
+      case 'COMPLETED':
+        return 'Draft complete';
+      case 'PAUSED':
+        return 'Paused';
+      case 'IN_PROGRESS':
+        return 'In progress';
+      default:
+        return 'Not started';
+    }
+  }
+
   private turnState(
     round: number,
     position: number,
@@ -245,7 +273,10 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
     this.leagueZoneService
       .getDraftDetails()
       .pipe(takeUntil(this.destroy$))
-      .subscribe((data) => this.applyDraftDetails(data));
+      .subscribe((data) => {
+        this.applyDraftDetails(data);
+        this.startCountdown();
+      });
 
     this.webSocketService
       .on<{
@@ -284,6 +315,7 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
         if (this.leagueZoneService.draftSlug() !== data.draftSlug) return;
 
         this.currentPick = data.currentPick;
+        this.startCountdown();
       });
 
     this.webSocketService
@@ -291,7 +323,7 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
         draftSlug: string;
         status: 'PRE_DRAFT' | 'IN_PROGRESS' | 'PAUSED' | 'COMPLETED';
         noTimer?: boolean;
-        currentPick?: { round: number; position: number };
+        currentPick?: { round: number; position: number; skipTime?: Date };
       }>('league.draft.status')
       .pipe(takeUntil(this.destroy$))
       .subscribe((data) => {
@@ -300,6 +332,7 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
         this.status = data.status;
         if (data.noTimer !== undefined) this.noTimer = data.noTimer;
         if (data.currentPick) this.currentPick = data.currentPick;
+        this.startCountdown();
         this.notificationService.show(`Draft Status: ${data.status}`, 'info');
       });
   }
@@ -307,6 +340,29 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+    this.countdownTick$.next();
+    this.countdownTick$.complete();
+  }
+
+  /** Restarts the 1s ticker so `pickTimeDisplay` tracks the latest `currentPick.skipTime`. */
+  private startCountdown(): void {
+    this.countdownTick$.next();
+    this.updatePickTimeDisplay();
+    if (!this.currentPick?.skipTime) return;
+
+    interval(this.COUNTDOWN_TICK_MS)
+      .pipe(takeUntil(this.countdownTick$), takeUntil(this.destroy$))
+      .subscribe(() => this.updatePickTimeDisplay());
+  }
+
+  private updatePickTimeDisplay(): void {
+    const skipTime = this.currentPick?.skipTime;
+    if (!skipTime) {
+      this.pickTimeDisplay = null;
+      return;
+    }
+    const diffMs = new Date(skipTime).getTime() - Date.now();
+    this.pickTimeDisplay = diffMs > 0 ? formatCountdown(diffMs) : '0s';
   }
 
   private applyDraftDetails(data: DraftDetails): void {

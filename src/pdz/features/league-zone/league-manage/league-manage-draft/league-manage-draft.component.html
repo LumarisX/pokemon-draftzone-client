@@ -1,7 +1,36 @@
 <pdz-league-notifications></pdz-league-notifications>
 
 <div class="page-header">
-  <h2 class="page-header__title">Draft Control</h2>
+  <div class="page-header__heading">
+    <h2 class="page-header__title">Draft Control</h2>
+    <p class="page-header__status">
+      <span
+        class="page-header__status-badge"
+        [class.page-header__status-badge--in-progress]="
+          status === 'IN_PROGRESS'
+        "
+        [class.page-header__status-badge--paused]="status === 'PAUSED'"
+        [class.page-header__status-badge--completed]="
+          status === 'COMPLETED'
+        "
+        >{{ statusLabel }}</span
+      >
+      @if (status === "IN_PROGRESS" && currentTurn) {
+        <span class="page-header__status-detail">
+          {{ currentTurn.team.name }} is on the clock
+          @if (noTimer) {
+            · timer disabled
+          } @else if (pickTimeDisplay) {
+            · {{ pickTimeDisplay }} left
+          }
+        </span>
+      } @else if (status === "PAUSED") {
+        <span class="page-header__status-detail"
+          >Clock is stopped — press play to resume</span
+        >
+      }
+    </p>
+  </div>
   <div class="page-header__actions">
     @if (status === "IN_PROGRESS") {
       <button

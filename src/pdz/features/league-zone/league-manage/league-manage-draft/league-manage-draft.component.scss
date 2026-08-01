@@ -24,11 +24,57 @@
   flex-wrap: wrap;
   margin-bottom: pdz.space(xl);
 
+  &__heading {
+    display: flex;
+    flex-direction: column;
+    row-gap: pdz.space(2xs);
+    min-width: 0;
+  }
+
   &__title {
     @include apply-typography(headline-sm);
     font-family: var(--pdz-font-fancy);
     color: pdz.color(on-surface);
     margin: 0;
+  }
+
+  &__status {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    column-gap: pdz.space(xs);
+    margin: 0;
+  }
+
+  &__status-badge {
+    @include apply-typography(label-sm);
+    display: inline-flex;
+    align-items: center;
+    padding: pdz.space(2xs) pdz.space(xs);
+    border-radius: pdz.shape(corner-xs);
+    font-weight: 650;
+    background: pdz.color(surface-container-low);
+    color: pdz.color(on-surface-variant);
+
+    &--in-progress {
+      background: pdz.color(primary-container);
+      color: pdz.color(on-primary-container);
+    }
+
+    &--paused {
+      background: pdz.color(surface-container-high);
+      color: pdz.color(on-surface);
+    }
+
+    &--completed {
+      background: pdz.color(primary-container-low);
+      color: pdz.color(primary);
+    }
+  }
+
+  &__status-detail {
+    @include apply-typography(body-sm);
+    color: pdz.color(on-surface-variant);
   }
 
   &__actions {

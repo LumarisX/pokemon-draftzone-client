@@ -143,6 +143,7 @@ export class LeagueZoneService {
       currentPick: {
         round: number;
         position: number;
+        skipTime?: Date;
       };
       canDraft: string[];
       canDraftCounts: Record<string, number>;
