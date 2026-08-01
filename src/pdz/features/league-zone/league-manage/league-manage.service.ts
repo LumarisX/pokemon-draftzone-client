@@ -1,6 +1,13 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { TierPokemonAddon } from '../../tier-lists/tier-list.model';
+import { BracketSeedingInfo } from '@pdz/features/league-zone/league-bracket/bracket-mapping';
+import { BracketRoundMeta } from '@pdz/features/league-zone/league-bracket/bracket.model';
+import {
+  TournamentBracket,
+  UpdateTournamentBracketPayload,
+  UpdateTournamentBracketResult,
+} from '@pdz/features/league-zone/league-bracket/tournament-bracket.model';
 import { League, TradeLog } from '@pdz/features/league-zone/league.interface';
 import { ApiService } from '@pdz/core/services/api.service';
 import { LeagueZoneService } from '../league-zone.service';
@@ -182,7 +189,7 @@ export class LeagueManageService {
         trades: TradeLog[];
       }[];
     }>(
-      `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/stages/${this.leagueZoneService.stageId()}/trades`,
+      `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/trades`,
       {
         authenticated: true,
       },
@@ -191,10 +198,10 @@ export class LeagueManageService {
 
   getSchedule() {
     return this.apiService.get<{
-      rounds: League.Stage[];
+      rounds: League.ScheduleRound[];
       currentRoundIndex: number;
     }>(
-      `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/stages/${this.leagueZoneService.stageId()}/schedule`,
+      `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/schedule`,
       {
         authenticated: true,
       },
@@ -290,7 +297,7 @@ export class LeagueManageService {
         method: 'certified-random' | 'manual';
         label?: string;
       }[];
-      rounds: { name: string; bestOf?: number }[];
+      rounds: BracketRoundMeta[];
       sections?: {
         key: string;
         title?: string;
@@ -330,10 +337,99 @@ export class LeagueManageService {
     );
   }
 
+  /**
+   * Applies an edited bracket to a stage that may already be under way.
+   *
+   * Rounds and matches carrying an `_id` are updated in place, so recorded
+   * results survive the edit; anything the payload omits is removed. Send
+   * `seedGroups` only to seed a stage for the first time or to append teams —
+   * the server refuses a payload that would re-draw an existing seeding.
+   */
+  updateBracket(
+    stageId: string,
+    payload: {
+      rounds: (BracketRoundMeta & { _id?: string })[];
+      sections?: {
+        key: string;
+        title?: string;
+        kind?: string;
+        label?: string;
+        order?: number;
+        teamCount?: number;
+        poolKey?: string;
+        roundTitles?: Record<number, string>;
+      }[];
+      matches: {
+        _id?: string;
+        key: string;
+        roundIndex: number;
+        section?: string;
+        bracketRound?: number;
+        position?: number;
+        label?: string;
+        a: { type: 'seed' | 'winner' | 'loser'; seed?: number; from?: string };
+        b: { type: 'seed' | 'winner' | 'loser'; seed?: number; from?: string };
+      }[];
+      seedGroups?: {
+        teamIds: string[];
+        method: 'certified-random' | 'manual';
+        label?: string;
+      }[];
+    },
+  ) {
+    return this.apiService.patch<{
+      message: string;
+      seeding: BracketSeedingInfo;
+      seedOrder: string[];
+      matchIds: Record<string, string>;
+    }>(
+      // `patch` authenticates every request, so there is no flag to pass.
+      `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/stages/${stageId}/bracket`,
+      payload,
+    );
+  }
+
   deleteBracket(stageId: string) {
     return this.apiService.delete<{ message: string }>(
       `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/stages/${stageId}/bracket`,
     );
+  }
+
+  // ─── Tournament-level bracket ──────────────────────────────────────────────
+  //
+  // Rounds belong to the tournament, so every stage shares them and the whole
+  // bracket is edited as one unit. The per-stage endpoints above stay for
+  // tournaments the sections-to-stages migration has not reached; they return
+  // STG-007 once a tournament owns its rounds.
+
+  private get tournamentBracketUrl(): string {
+    return `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/bracket`;
+  }
+
+  getTournamentBracket() {
+    return this.apiService.get<TournamentBracket>(this.tournamentBracketUrl);
+  }
+
+  /**
+   * Applies an edited bracket to a tournament that may already be under way.
+   *
+   * Rounds, stages and matches carrying an `_id` are updated in place, so
+   * recorded results survive the edit; anything the payload omits is removed.
+   * Send a stage's `seedGroups` only to seed it for the first time or to append
+   * teams — the server refuses a payload that would re-draw an existing draw.
+   */
+  updateTournamentBracket(payload: UpdateTournamentBracketPayload) {
+    return this.apiService.patch<UpdateTournamentBracketResult>(
+      this.tournamentBracketUrl,
+      payload,
+    );
+  }
+
+  setTournamentCurrentRound(currentRoundIndex: number) {
+    return this.apiService.patch<{
+      message: string;
+      currentRoundIndex: number;
+    }>(`${this.tournamentBracketUrl}/current-round`, { currentRoundIndex });
   }
 
   getPokemonList() {

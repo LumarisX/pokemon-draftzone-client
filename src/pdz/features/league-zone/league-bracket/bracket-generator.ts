@@ -1,4 +1,5 @@
 import {
+  BracketRoundMeta,
   BracketSlotFlex,
   FlexBracketMatch,
   FlexBracketSectionConfig,
@@ -185,7 +186,10 @@ export function generateDoubleElimination(
   }
 
   return {
-    matches: compactByes(matches),
+    // The losers and finals sections are numbered from 0 above, as if each ran
+    // on its own axis. On the stage's shared axis they have to sit after the
+    // winners rounds that feed them, which the wiring already says.
+    matches: assignGlobalRounds(compactByes(matches)),
     sections: [
       {
         key: 'winners',
@@ -269,6 +273,11 @@ export interface OffsetOptions {
   prefix: string;
   /** Added to every seed number, mapping block-local seeds onto global ones. */
   seedOffset: number;
+  /**
+   * Added to every round, placing the block further down the stage's global
+   * round axis — a playoff bracket that starts after a group stage has run.
+   */
+  roundOffset?: number;
   /** Section title. Applied to the block's first section only; the rest keep theirs. */
   title?: string;
   /** Starting `order` for this block's sections. */
@@ -287,7 +296,7 @@ export function offsetBracket(
   bracket: GeneratedBracket,
   options: OffsetOptions,
 ): GeneratedBracket {
-  const { prefix, seedOffset, title, orderBase = 0 } = options;
+  const { prefix, seedOffset, roundOffset = 0, title, orderBase = 0 } = options;
   const id = (raw: string) => `${prefix}--${raw}`;
   const sectionKey = (raw: string) => `${prefix}--${raw}`;
 
@@ -309,6 +318,7 @@ export function offsetBracket(
       ...match,
       id: id(match.id),
       section: sectionKey(match.section ?? 'main'),
+      round: match.round + roundOffset,
       a: shift(match.a),
       b: shift(match.b),
     })),
@@ -325,8 +335,83 @@ export function offsetBracket(
           : title
         : section.title,
       order: orderBase + (section.order ?? idx),
+      // Keyed by global round, so they move with the block.
+      ...(section.roundTitles
+        ? {
+            roundTitles: Object.fromEntries(
+              Object.entries(section.roundTitles).map(([rn, t]) => [
+                Number(rn) + roundOffset,
+                t,
+              ]),
+            ),
+          }
+        : {}),
     })),
   };
+}
+
+// ─── Global round axis ────────────────────────────────────────────────────────
+
+/**
+ * Places every match on the stage's global round axis.
+ *
+ * Each generator numbers its own block's rounds from 0, which is right for a
+ * block in isolation but wrong once blocks share one schedule: a losers-bracket
+ * round 1 cannot run in the same week as the winners round 1 that feeds it. The
+ * global round is therefore derived from the wiring — a match sits one round
+ * past the latest match it consumes — with its own round number as a floor, so
+ * an unwired block (a round robin, where nothing feeds anything) keeps the
+ * spacing its generator gave it.
+ *
+ * Cycles are left alone rather than throwing; `validateBracketWiring` is what
+ * reports them, and this must stay safe to call on a half-wired draft.
+ */
+export function assignGlobalRounds(
+  matches: FlexBracketMatch[],
+): FlexBracketMatch[] {
+  const byId = new Map(matches.map((m) => [m.id, m]));
+  const resolved = new Map<string, number>();
+  const visiting = new Set<string>();
+
+  const roundOf = (match: FlexBracketMatch): number => {
+    const cached = resolved.get(match.id);
+    if (cached !== undefined) return cached;
+    // A cycle would recurse forever; fall back to the authored round and let
+    // validation surface the real problem.
+    if (visiting.has(match.id)) return match.round;
+    visiting.add(match.id);
+
+    let round = match.round;
+    for (const slot of [match.a, match.b]) {
+      if (slot.type !== 'winner' && slot.type !== 'loser') continue;
+      const source = byId.get(slot.from);
+      if (!source) continue;
+      round = Math.max(round, roundOf(source) + 1);
+    }
+
+    visiting.delete(match.id);
+    resolved.set(match.id, round);
+    return round;
+  };
+
+  return matches.map((m) => {
+    const round = roundOf(m);
+    return round === m.round ? m : { ...m, round };
+  });
+}
+
+/** Global rounds a section occupies, ascending. */
+function sectionRounds(
+  matches: FlexBracketMatch[],
+  sectionKey: string,
+): number[] {
+  return [
+    ...new Set(
+      matches
+        .filter((m) => (m.section ?? 'main') === sectionKey)
+        .map((m) => m.round),
+    ),
+  ].sort((a, b) => a - b);
 }
 
 // ─── Server payload ───────────────────────────────────────────────────────────
@@ -353,7 +438,7 @@ export interface BracketPayloadSection {
 }
 
 export interface BracketPayload {
-  rounds: { name: string }[];
+  rounds: BracketRoundMeta[];
   sections: BracketPayloadSection[];
   matches: BracketPayloadMatch[];
 }
@@ -389,14 +474,20 @@ function roundName(
 }
 
 /**
- * Flattens a generated bracket into the server's generate-bracket DTO shape:
- * one flat, ordered rounds list (sections in display order, rounds within
- * them) and matches carrying an index into it.
+ * Flattens a bracket into the server's bracket DTO shape.
+ *
+ * The rounds list is the stage's global round axis, one entry per row, and a
+ * match's `roundIndex` is simply its global round — sections no longer each
+ * contribute their own rounds. Pass `authoredRounds` to keep the organizer's
+ * names and deadlines; without it, names are synthesized from whichever
+ * sections occupy each row.
  */
-export function toBracketPayload(bracket: GeneratedBracket): BracketPayload {
-  // Sections the matches actually live in, ordered by config. A match may sit
-  // in a section that was never configured (added on the canvas), so the union
-  // — not just the config list — determines the round list.
+export function toBracketPayload(
+  bracket: GeneratedBracket,
+  authoredRounds?: BracketRoundMeta[],
+): BracketPayload {
+  // A match may sit in a section that was never configured (added by hand on
+  // the builder), so the union — not just the config list — is what counts.
   const configByKey = new Map(bracket.sections.map((s) => [s.key, s]));
   const orderOf = (key: string) =>
     configByKey.get(key)?.order ?? 1000 + [...configByKey.keys()].length;
@@ -407,28 +498,52 @@ export function toBracketPayload(bracket: GeneratedBracket): BracketPayload {
     ]),
   ].sort((a, b) => orderOf(a) - orderOf(b));
 
-  const rounds: { name: string }[] = [];
-  const roundIndexBySectionRound = new Map<string, number>();
+  const roundCount = bracket.matches.reduce(
+    (max, m) => Math.max(max, m.round + 1),
+    0,
+  );
 
-  for (const sectionKey of sectionKeys) {
-    const cfg = configByKey.get(sectionKey);
-    const roundNums = [
-      ...new Set(
-        bracket.matches
-          .filter((m) => (m.section ?? 'main') === sectionKey)
-          .map((m) => m.round),
+  /**
+   * Auto name for a row: when exactly one section occupies it, that section's
+   * own naming still applies ("Winners Semi-Finals"). When several do, no one
+   * section owns the row, so it gets a plain number.
+   */
+  const synthesizeRoundName = (globalRound: number): string => {
+    const occupants = sectionKeys.filter((key) =>
+      bracket.matches.some(
+        (m) => (m.section ?? 'main') === key && m.round === globalRound,
       ),
-    ].sort((a, b) => a - b);
-    roundNums.forEach((rn, idx) => {
-      roundIndexBySectionRound.set(`${sectionKey}:${rn}`, rounds.length);
-      const auto =
-        cfg?.roundTitles?.[rn] ??
-        roundName(cfg?.kind ?? sectionKey, idx, roundNums.length);
-      rounds.push({
-        name: cfg?.label ? `${cfg.label} — ${auto}` : auto,
-      });
-    });
-  }
+    );
+    const override = occupants
+      .map((key) => configByKey.get(key)?.roundTitles?.[globalRound])
+      .find((title): title is string => !!title);
+    if (override) return override;
+    if (occupants.length !== 1) return `Round ${globalRound + 1}`;
+
+    const key = occupants[0];
+    const cfg = configByKey.get(key);
+    const rounds = sectionRounds(bracket.matches, key);
+    const auto = roundName(
+      cfg?.kind ?? key,
+      rounds.indexOf(globalRound),
+      rounds.length,
+    );
+    return cfg?.label ? `${cfg.label} — ${auto}` : auto;
+  };
+
+  const rounds: BracketRoundMeta[] = Array.from(
+    { length: roundCount },
+    (_, i) => authoredRounds?.[i] ?? { name: synthesizeRoundName(i) },
+  );
+
+  // `bracketRound` stays section-relative for readers that still expect a
+  // per-section column index; it is derived, never authored.
+  const sectionStart = new Map(
+    sectionKeys.map((key) => {
+      const rounds = sectionRounds(bracket.matches, key);
+      return [key, rounds.length ? rounds[0] : 0] as const;
+    }),
+  );
 
   const matches: BracketPayloadMatch[] = bracket.matches.map((m) => {
     const toSlot = (slot: BracketSlotFlex) => {
@@ -440,13 +555,12 @@ export function toBracketPayload(bracket: GeneratedBracket): BracketPayload {
         `Cannot build payload: match "${m.id}" has an unassigned slot`,
       );
     };
+    const section = m.section ?? 'main';
     return {
       key: m.id,
-      roundIndex: roundIndexBySectionRound.get(
-        `${m.section ?? 'main'}:${m.round}`,
-      )!,
+      roundIndex: m.round,
       section: m.section,
-      bracketRound: m.round,
+      bracketRound: m.round - (sectionStart.get(section) ?? 0),
       position: m.position,
       label: m.label,
       a: toSlot(m.a),

@@ -1,5 +1,6 @@
 import {
   addMatchToRound,
+  assignGlobalRounds,
   deleteMatch,
   fullRoundRobinCycle,
   generateDoubleElimination,
@@ -506,7 +507,77 @@ describe('offsetBracket', () => {
   });
 });
 
+describe('assignGlobalRounds', () => {
+  const match = (
+    id: string,
+    round: number,
+    inputs: string[] = [],
+  ): FlexBracketMatch => ({
+    id,
+    round,
+    position: 0,
+    a: inputs[0]
+      ? { type: 'winner', from: inputs[0] }
+      : { type: 'seed', seed: 1 },
+    b: inputs[1]
+      ? { type: 'winner', from: inputs[1] }
+      : { type: 'seed', seed: 2 },
+  });
+
+  it('pushes a match past every match it consumes', () => {
+    const placed = assignGlobalRounds([
+      match('final', 0, ['semi-a', 'semi-b']),
+      match('semi-a', 0),
+      match('semi-b', 0),
+    ]);
+    expect(byId(placed, 'semi-a').round).toBe(0);
+    expect(byId(placed, 'final').round).toBe(1);
+  });
+
+  it('leaves an unwired block on the rounds its generator gave it', () => {
+    // A round robin has no winner/loser edges at all — nothing may collapse.
+    const rr = generateRoundRobin(4, 3);
+    const placed = assignGlobalRounds(rr.matches);
+    expect(placed.map((m) => m.round)).toEqual(rr.matches.map((m) => m.round));
+  });
+
+  it('staggers a double-elimination losers bracket behind the winners', () => {
+    const { matches } = generateDoubleElimination(8, {
+      grandFinalsReset: false,
+    });
+    const roundOf = (id: string) => byId(matches, id).round;
+    // Losers round 1 consumes the losers of winners round 1, so it cannot
+    // share that row — it has to sit one round later.
+    expect(roundOf('l1-0')).toBeGreaterThan(roundOf('w1-0'));
+    // The grand final is last of all.
+    const maxRound = Math.max(...matches.map((m) => m.round));
+    expect(roundOf('gf')).toBe(maxRound);
+  });
+
+  it('never places a match before one of its inputs', () => {
+    const { matches } = generateDoubleElimination(16);
+    const roundById = new Map(matches.map((m) => [m.id, m.round]));
+    for (const m of matches) {
+      for (const slot of [m.a, m.b]) {
+        if (slot.type !== 'winner' && slot.type !== 'loser') continue;
+        expect(m.round).toBeGreaterThan(roundById.get(slot.from)!);
+      }
+    }
+  });
+
+  it('returns the authored rounds rather than hanging on a cycle', () => {
+    const cyclic: FlexBracketMatch[] = [
+      match('x', 2, ['y']),
+      match('y', 1, ['x']),
+    ];
+    const placed = assignGlobalRounds(cyclic);
+    expect(placed.length).toBe(2);
+    expect(placed.every((m) => Number.isFinite(m.round))).toBe(true);
+  });
+});
+
 describe('toBracketPayload with composed sections', () => {
+  /** Groups in round 0, playoffs in rounds 1-2 — blocks share one round axis. */
   const composed = () => {
     const a = offsetBracket(generateRoundRobin(4, 1), {
       prefix: 'groups',
@@ -517,6 +588,7 @@ describe('toBracketPayload with composed sections', () => {
     const b = offsetBracket(generateSingleElimination(4), {
       prefix: 'playoffs',
       seedOffset: 4,
+      roundOffset: 1,
       title: 'Playoffs',
       orderBase: 1,
     });
@@ -532,6 +604,57 @@ describe('toBracketPayload with composed sections', () => {
     // the namespaced key would otherwise have fallen through to a generic name.
     expect(payload.rounds.map((r) => r.name)).toContain('Playoffs — Finals');
     expect(payload.rounds.map((r) => r.name)).toContain('Groups — Round 1');
+  });
+
+  it('emits one round per row of the global axis, not per section', () => {
+    const payload = toBracketPayload(composed());
+    // Groups round 0, playoffs rounds 1 and 2 — three rows, not "1 + 2 blocks".
+    expect(payload.rounds.length).toBe(3);
+    const groupsRounds = payload.matches
+      .filter((m) => m.section === 'groups--rr')
+      .map((m) => m.roundIndex);
+    expect([...new Set(groupsRounds)]).toEqual([0]);
+  });
+
+  it('numbers a row generically when several sections share it', () => {
+    // No roundOffset: both blocks start at round 0, so row 0 belongs to
+    // neither section and cannot take either one's name.
+    const a = offsetBracket(generateRoundRobin(4, 1), {
+      prefix: 'groups',
+      seedOffset: 0,
+      title: 'Groups',
+    });
+    const b = offsetBracket(generateSingleElimination(4), {
+      prefix: 'playoffs',
+      seedOffset: 4,
+      title: 'Playoffs',
+      orderBase: 1,
+    });
+    const payload = toBracketPayload({
+      matches: [...a.matches, ...b.matches],
+      sections: [...a.sections, ...b.sections],
+    });
+    expect(payload.rounds[0].name).toBe('Round 1');
+    // Row 1 is playoffs alone, so it keeps the block's own naming.
+    expect(payload.rounds[1].name).toBe('Playoffs — Finals');
+  });
+
+  it('keeps organizer-authored round names and deadlines', () => {
+    const authored = [
+      { name: 'Week 1', matchDeadline: '2026-08-07T00:00:00.000Z' },
+      { name: 'Week 2', matchDeadline: null, bestOf: 3 },
+      { name: 'Championship', matchDeadline: null },
+    ];
+    const payload = toBracketPayload(composed(), authored);
+    expect(payload.rounds).toEqual(authored);
+  });
+
+  it('reports bracketRound relative to the section start', () => {
+    const payload = toBracketPayload(composed());
+    const finals = payload.matches.find((m) => m.roundIndex === 2)!;
+    // Global round 2, but the playoffs section began at global round 1.
+    expect(finals.section).toBe('playoffs--main');
+    expect(finals.bracketRound).toBe(1);
   });
 
   it('gives every match a valid index into the flat round list', () => {

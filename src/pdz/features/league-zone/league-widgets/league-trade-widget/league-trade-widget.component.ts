@@ -25,7 +25,7 @@ export class LeagueTradeWidgetComponent implements OnInit, OnDestroy {
 
   reload(): void {
     this.leagueService
-      .getTrades({ stageId: this.stageId })
+      .getTrades()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (data) => {

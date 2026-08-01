@@ -1,0 +1,57 @@
+<div class="card" [class.card--decided]="match.winner !== undefined">
+  <div class="card__header">
+    <span class="card__label">{{ label }}</span>
+
+    @if (editable) {
+      <span class="card__actions">
+        <button
+          type="button"
+          class="card__action"
+          aria-label="Edit match"
+          (click)="edit.emit(match.id)"
+        >
+          <pdz-icon name="edit" size="sm"></pdz-icon>
+        </button>
+        <button
+          type="button"
+          class="card__action card__action--danger"
+          aria-label="Delete match"
+          (click)="remove.emit(match.id)"
+        >
+          <pdz-icon name="close" size="sm"></pdz-icon>
+        </button>
+      </span>
+    }
+  </div>
+
+  @for (slot of slots; track $index) {
+    <div class="card__slot" [class]="'card__slot--' + slot.status">
+      @if (slot.team) {
+        @if (slot.team.logo) {
+          <img
+            class="card__logo"
+            [src]="getLogoUrl(slot.team.logo)"
+            alt=""
+            loading="lazy"
+          />
+        } @else {
+          <span class="card__logo card__logo--empty" aria-hidden="true"></span>
+        }
+        <span class="card__names">
+          <span class="card__team">{{ slot.team.teamName }}</span>
+          <span class="card__coach">{{ slot.team.coachName }}</span>
+        </span>
+        @if (slot.status === "winner") {
+          <pdz-icon
+            class="card__winner"
+            name="check"
+            size="sm"
+            aria-label="Winner"
+          ></pdz-icon>
+        }
+      } @else {
+        <span class="card__placeholder">{{ slot.placeholder }}</span>
+      }
+    </div>
+  }
+</div>

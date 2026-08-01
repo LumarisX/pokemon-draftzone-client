@@ -375,10 +375,10 @@
 
         .pick-header {
           display: flex;
+          flex-direction: column;
           gap: pdz.space(xs);
           width: 100%;
-          justify-content: space-between;
-          align-items: center;
+          flex-grow: 1;
         }
 
         .pick-text {
@@ -430,7 +430,7 @@
           .my-pokemon-tier {
             font-weight: 500;
             font-family: var(--pdz-font-fancy);
-            width: 1.5rem;
+            max-width: 100%;
           }
           .my-pokemon-name {
             flex-grow: 1;

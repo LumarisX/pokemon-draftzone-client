@@ -108,7 +108,11 @@ export class LeagueManageScheduleComponent {
   private openMatchIndexState = new Map<string, number | null>();
   private matchupSummaryCollapsedState = new Map<string, boolean>();
 
-  scheduleStages?: League.Stage[];
+  /**
+   * Named "stages" historically; these are the tournament's rounds, each
+   * carrying its matches grouped by the stage they belong to.
+   */
+  scheduleStages?: League.ScheduleRound[];
 
   ngOnInit(): void {
     this.route.paramMap
@@ -473,17 +477,19 @@ export class LeagueManageScheduleComponent {
     return warnings;
   }
 
-  private buildMatchupForms(stages: League.Stage[]): void {
+  private buildMatchupForms(rounds: League.ScheduleRound[]): void {
     this.matchupForms.clear();
     this.openMatchIndexState.clear();
     this.matchupSummaryCollapsedState.clear();
-    stages.forEach((stage) => {
-      stage.matchups.forEach((matchup) => {
-        this.matchupForms.set(matchup.id, this.buildMatchupForm(matchup));
-        this.openMatchIndexState.set(matchup.id, null);
-        this.matchupSummaryCollapsedState.set(matchup.id, true);
-      });
-    });
+    for (const round of rounds) {
+      for (const stage of round.stages) {
+        for (const matchup of stage.matchups) {
+          this.matchupForms.set(matchup.id, this.buildMatchupForm(matchup));
+          this.openMatchIndexState.set(matchup.id, null);
+          this.matchupSummaryCollapsedState.set(matchup.id, true);
+        }
+      }
+    }
   }
 
   private buildMatchupForm(matchup: League.Matchup): MatchupForm {

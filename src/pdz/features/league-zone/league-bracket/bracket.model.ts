@@ -17,11 +17,30 @@ export interface BracketTeamFlex {
   teamId?: string;
 }
 
+/**
+ * One row of the stage's global round axis. Rounds are stage-level: every
+ * section that has matches in round `i` shares that round's name and deadlines,
+ * because a round is a slice of the schedule, not a column of one bracket.
+ */
+export interface BracketRoundMeta {
+  /** Server subdocument id (`StageEntity.rounds[]._id`). Absent until saved. */
+  id?: string;
+  name: string;
+  matchDeadline?: string | null;
+  tradeDeadline?: string | null;
+  bestOf?: number | null;
+}
+
 export interface FlexBracketMatch {
   id: string;
-  /** Column index (left = earlier rounds). Within a section, rounds are numbered independently. */
+  /**
+   * Index into the stage's global round list — the same axis for every section,
+   * so a section that starts later simply has no matches in the earlier rounds.
+   * (This was once numbered independently per section; `assignGlobalRounds`
+   * derives the global value from the wiring for freshly generated blocks.)
+   */
   round: number;
-  /** Row index within the round. 0-indexed, used to determine vertical ordering of leaf matches. */
+  /** Index within the (section, round) cell. Determines left-to-right ordering. */
   position: number;
   /** Groups matches into visual sections (e.g. 'winners', 'losers', 'finals'). Defaults to 'main'. */
   section?: string;
@@ -65,7 +84,7 @@ export interface FlexBracketSectionConfig {
   teamCount?: number;
   /** Controls vertical ordering of sections. Lower = higher. */
   order?: number;
-  /** Per-round title overrides keyed by round number. */
+  /** Per-round title overrides keyed by global round number. */
   roundTitles?: Record<number, string>;
 }
 

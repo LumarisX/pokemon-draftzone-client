@@ -14,17 +14,13 @@ export class LeagueScheduleWidgetComponent implements OnInit, OnDestroy {
   leagueService = inject(LeagueZoneService);
   private readonly destroy$ = new Subject<void>();
 
-  scheduleRounds?: League.Stage[];
+  scheduleRounds?: League.ScheduleRound[];
 
-  @Input() stageId!: string;
   @Input() roundFilter?: 'current' | 'past';
 
   ngOnInit(): void {
     this.leagueService
-      .getSchedule({
-        round: this.roundFilter,
-        stageId: this.stageId,
-      })
+      .getSchedule({ round: this.roundFilter })
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (data) => {

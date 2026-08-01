@@ -67,7 +67,7 @@ export class LeagueTeamComponent implements OnInit, OnDestroy {
   private readonly uploadService = inject(UploadService);
 
   teamData?: League.LeagueTeam;
-  scheduleRounds!: League.Stage[];
+  scheduleRounds!: League.ScheduleRound[];
   tradeRounds?: { name: string; trades: TradeLog[] }[];
   getLogoUrl = getLogoUrl;
   coachCurrentTime = '';
@@ -253,14 +253,11 @@ export class LeagueTeamComponent implements OnInit, OnDestroy {
     this.saveError = '';
 
     this.leagueService
-      .sendTrade(
-        {
-          side1: { team: teamId, pokemon: result.send },
-          side2: { pokemon: result.receive },
-          roundIndex: result.roundIndex,
-        },
-        this.stageId ?? undefined,
-      )
+      .sendTrade({
+        side1: { team: teamId, pokemon: result.send },
+        side2: { pokemon: result.receive },
+        roundIndex: result.roundIndex,
+      })
       .pipe(
         finalize(() => {
           this.saving = false;
@@ -390,9 +387,8 @@ export class LeagueTeamComponent implements OnInit, OnDestroy {
   }
 
   private loadSchedule(): void {
-    if (!this.stageId) return;
     this.leagueService
-      .getSchedule({ stageId: this.stageId })
+      .getSchedule()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (data) => {
@@ -407,7 +403,7 @@ export class LeagueTeamComponent implements OnInit, OnDestroy {
   private loadTrades(): void {
     if (!this.stageId) return;
     this.leagueService
-      .getTrades({ stageId: this.stageId })
+      .getTrades()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (data) => {

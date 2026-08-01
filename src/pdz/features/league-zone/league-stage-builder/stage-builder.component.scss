@@ -1,0 +1,310 @@
+@use "pdz-theming" as pdz;
+@use "mixins" as *;
+
+:host {
+  display: block;
+}
+
+.builder {
+  overflow: auto;
+  // The top gap has to clear a stage title, which hangs above its first row.
+  padding: pdz.space(3xl) pdz.space(lg) pdz.space(lg);
+
+  &__grid {
+    position: relative;
+    display: grid;
+    // Column 1 is the round gutter; each stage then contributes a narrow
+    // band (empty space the wires route through) and its own content column.
+    grid-template-columns:
+      minmax(11rem, max-content)
+      repeat(var(--stage-count, 1), 2.5rem max-content);
+    align-items: stretch;
+    // The row gap must stay wider than the stage frame's upward pull, or a
+    // stage starting mid-grid overlaps the box that ends above it.
+    gap: pdz.space(3xl) 0;
+    width: max-content;
+    min-width: 100%;
+  }
+}
+
+// ─── Round gutter ────────────────────────────────────────────────────────────
+
+.gutter {
+  grid-column: 1;
+  display: flex;
+  align-items: center;
+  padding-right: pdz.space(lg);
+  // The row divider runs the full width of the grid behind everything else.
+  border-top: 1px solid pdz.color("outline-variant");
+
+  &__row {
+    display: flex;
+    flex-direction: column;
+    gap: pdz.space(2xs);
+    width: 100%;
+    padding: pdz.space(sm) 0;
+  }
+
+  &__name {
+    @include apply-typography(title-sm);
+    color: pdz.color("on-surface");
+    background: none;
+    border: 1px solid transparent;
+    border-radius: pdz.shape("corner-xs");
+    padding: pdz.space(3xs) pdz.space(2xs);
+    width: 100%;
+
+    &:hover,
+    &:focus {
+      border-color: pdz.color("outline-variant");
+      background: pdz.color("surface-container-low");
+    }
+
+    &--static {
+      border-color: transparent;
+      background: none;
+    }
+  }
+
+  &__deadline {
+    @include apply-typography(label-sm);
+    color: pdz.color("on-surface-variant");
+    background: none;
+    border: 1px solid transparent;
+    border-radius: pdz.shape("corner-xs");
+    padding: pdz.space(3xs) pdz.space(2xs);
+    width: 100%;
+    color-scheme: light dark;
+
+    &:hover,
+    &:focus {
+      border-color: pdz.color("outline-variant");
+      background: pdz.color("surface-container-low");
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: pdz.space(3xs);
+    opacity: 0;
+    transition: opacity 120ms ease;
+  }
+
+  &:hover &__actions,
+  &:focus-within &__actions {
+    opacity: 1;
+  }
+
+  &__action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: pdz.space(3xs);
+    border: none;
+    background: none;
+    border-radius: pdz.shape("corner-xs");
+    color: pdz.color("on-surface-variant");
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+      background: pdz.color("primary-container-hover");
+      color: pdz.color("on-primary-container");
+    }
+
+    &--danger:hover:not(:disabled) {
+      background: pdz.color("error-container");
+      color: pdz.color("on-error-container");
+    }
+
+    &:disabled {
+      color: pdz.color("on-surface-disabled");
+      cursor: default;
+    }
+  }
+}
+
+// ─── Wire bands ──────────────────────────────────────────────────────────────
+
+// Deliberately empty: this column exists so vertical wire runs have somewhere
+// to travel that no card occupies.
+.band {
+  pointer-events: none;
+}
+
+// ─── Stage boxes ─────────────────────────────────────────────────────────────
+
+// Purely a frame: the cells it appears to contain are siblings placed on the
+// same grid cells, so the box must not intercept drags aimed at them.
+.stage {
+  position: relative;
+  pointer-events: none;
+  border: 1px solid pdz.color("outline");
+  border-radius: pdz.shape("corner-lg");
+  background: pdz.color-rgba("surface-container-lowest", 0.6);
+  // Pulled up into the row gap so the title sits above the first row of cards
+  // instead of on top of them.
+  margin: -1.75rem calc(-1 * #{pdz.space(md)}) 0;
+  padding-top: 1.75rem;
+
+  &__header {
+    position: absolute;
+    top: pdz.space(2xs);
+    left: pdz.space(md);
+    right: pdz.space(md);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: pdz.space(sm);
+    pointer-events: auto;
+  }
+
+  &__title {
+    @include apply-typography(label-lg);
+    color: pdz.color("on-surface-variant");
+    margin: 0;
+  }
+
+  &__actions {
+    display: flex;
+    gap: pdz.space(3xs);
+    // The frame itself takes no pointer events, so its own :hover can never
+    // fire — the header is the only part of the box that can reveal these.
+    opacity: 0;
+    transition: opacity 120ms ease;
+  }
+
+  &__header:hover &__actions,
+  &__header:focus-within &__actions {
+    opacity: 1;
+  }
+
+  &__action {
+    display: inline-flex;
+    padding: pdz.space(3xs);
+    border: none;
+    background: none;
+    border-radius: pdz.shape("corner-xs");
+    color: pdz.color("on-surface-variant");
+    cursor: pointer;
+
+    &:hover {
+      background: pdz.color("primary-container-hover");
+      color: pdz.color("on-primary-container");
+    }
+  }
+}
+
+// ─── Cells ───────────────────────────────────────────────────────────────────
+
+.cell {
+  // Sits on the same grid cell as its stage frame, one layer above it.
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: flex-start;
+  gap: pdz.space(sm);
+  min-height: 5rem;
+  padding: pdz.space(xs) pdz.space(md);
+  border-radius: pdz.shape("corner-sm");
+
+  &.cdk-drop-list-dragging,
+  &.cdk-drop-list-receiving {
+    background: pdz.color-rgba("primary-container", 0.25);
+    outline: 1px dashed pdz.color("primary-border");
+  }
+
+  &__item {
+    width: 14rem;
+    flex: none;
+
+    &.cdk-drag-preview {
+      box-shadow: 0 8px 24px pdz.color-rgba("shadow", 0.3);
+      border-radius: pdz.shape("corner-sm");
+    }
+
+    &.cdk-drag-placeholder {
+      opacity: 0;
+    }
+  }
+
+  &__placeholder {
+    width: 14rem;
+    height: 100%;
+    border: 1px dashed pdz.color("primary-border");
+    border-radius: pdz.shape("corner-sm");
+    background: pdz.color-rgba("primary-container", 0.35);
+  }
+
+  &__add {
+    display: inline-flex;
+    align-items: center;
+    gap: pdz.space(2xs);
+    align-self: center;
+    padding: pdz.space(xs) pdz.space(sm);
+    border: 1px dashed pdz.color("outline-variant");
+    border-radius: pdz.shape("corner-sm");
+    background: none;
+    color: pdz.color("on-surface-variant");
+    cursor: pointer;
+    @include apply-typography(label-sm);
+    // Kept quiet until the organizer looks at the row it belongs to.
+    opacity: 0;
+    transition: opacity 120ms ease;
+
+    &:hover {
+      border-color: pdz.color("primary-border");
+      color: pdz.color("primary");
+    }
+  }
+
+  &:hover &__add,
+  &:focus-within &__add {
+    opacity: 1;
+  }
+}
+
+// Per-round stage starter, in the column past every stage.
+.add-stage {
+  display: inline-flex;
+  align-items: center;
+  gap: pdz.space(2xs);
+  align-self: center;
+  justify-self: start;
+  margin-left: pdz.space(lg);
+  padding: pdz.space(xs) pdz.space(sm);
+  border: 1px dashed pdz.color("outline-variant");
+  border-radius: pdz.shape("corner-sm");
+  background: none;
+  color: pdz.color("on-surface-variant");
+  white-space: nowrap;
+  cursor: pointer;
+  @include apply-typography(label-sm);
+  // Quiet until the organizer looks at the row, like a cell's "+ Match".
+  opacity: 0;
+  transition: opacity 120ms ease;
+
+  &:hover,
+  &:focus-visible {
+    opacity: 1;
+    border-color: pdz.color("primary-border");
+    color: pdz.color("primary");
+  }
+}
+
+// Both affordances stay faint while the grid is in use and solidify on
+// approach, so neither is invisible until you happen to land on it.
+.builder__grid:hover .add-stage,
+.builder__grid:hover .stage__actions {
+  opacity: 0.55;
+}
+
+.builder__grid:hover .add-stage:hover,
+.builder__grid:hover .add-stage:focus-visible,
+.builder__grid:hover .stage__header:hover .stage__actions {
+  opacity: 1;
+}
+
+.cdk-drag-animating,
+.cell.cdk-drop-list-dragging .cell__item:not(.cdk-drag-placeholder) {
+  transition: transform 180ms cubic-bezier(0, 0, 0.2, 1);
+}

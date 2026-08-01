@@ -1,0 +1,203 @@
+<div class="builder">
+  <div
+    #grid
+    class="builder__grid"
+    cdkDropListGroup
+    [style.--stage-count]="columnCount"
+  >
+    <!-- Round gutter: the stage's schedule, one row per round. -->
+    @for (round of rounds; track trackRound($index, round)) {
+      <div class="gutter" [style.grid-row]="$index + 1">
+        <div class="gutter__row" [attr.data-round]="$index">
+          @if (editable) {
+            <input
+              class="gutter__name"
+              type="text"
+              [value]="round.name"
+              aria-label="Round name"
+              (change)="onRenameRound($index, $any($event.target).value)"
+            />
+            <input
+              class="gutter__deadline"
+              type="datetime-local"
+              [value]="deadlineValue(round)"
+              aria-label="Match deadline"
+              (change)="onRoundDeadline($index, $any($event.target).value)"
+            />
+
+            <div class="gutter__actions">
+              <button
+                type="button"
+                class="gutter__action"
+                aria-label="Move round up"
+                [disabled]="$index === 0"
+                (click)="onMoveRound($index, -1)"
+              >
+                <pdz-icon name="arrow_upward" size="sm"></pdz-icon>
+              </button>
+              <button
+                type="button"
+                class="gutter__action"
+                aria-label="Move round down"
+                [disabled]="$index === rounds.length - 1"
+                (click)="onMoveRound($index, 1)"
+              >
+                <pdz-icon name="arrow_downward" size="sm"></pdz-icon>
+              </button>
+              <button
+                type="button"
+                class="gutter__action"
+                aria-label="Insert round below"
+                (click)="onInsertRound($index + 1)"
+              >
+                <pdz-icon name="add" size="sm"></pdz-icon>
+              </button>
+              <button
+                type="button"
+                class="gutter__action gutter__action--danger"
+                aria-label="Delete round"
+                [disabled]="!canRemoveRound($index)"
+                [title]="
+                  canRemoveRound($index)
+                    ? 'Delete this round'
+                    : 'Only an empty round can be deleted'
+                "
+                (click)="onRemoveRound($index)"
+              >
+                <pdz-icon name="delete" size="sm"></pdz-icon>
+              </button>
+            </div>
+          } @else {
+            <span class="gutter__name gutter__name--static">{{
+              round.name
+            }}</span>
+            @if (round.matchDeadline) {
+              <span class="gutter__deadline gutter__deadline--static">
+                {{ round.matchDeadline | date: "MMM d, h:mm a" }}
+              </span>
+            }
+          }
+        </div>
+      </div>
+    }
+
+    <!-- Stage boxes, each spanning the rounds it covers. -->
+    @for (stage of stages; track trackStage($index, stage)) {
+      <!-- The empty strip left of a stage: wires route vertically through it. -->
+      <div
+        class="band"
+        [attr.data-band]="stage.key"
+        [style.grid-row]="stage.rowStart + ' / ' + stage.rowEnd"
+        [style.grid-column]="stage.column - 1"
+        aria-hidden="true"
+      ></div>
+
+      <!--
+        The stage frame is decorative and sits behind its cells. The cells
+        are placed on the grid individually, so every round row lines up
+        across the gutter and every stage — nesting them inside the frame
+        would leave that alignment to chance.
+      -->
+      <div
+        class="stage"
+        [style.grid-row]="stage.rowStart + ' / ' + stage.rowEnd"
+        [style.grid-column]="stage.column"
+      >
+        <header class="stage__header">
+          <h3 class="stage__title">{{ stage.title }}</h3>
+          @if (editable) {
+            <div class="stage__actions">
+              <button
+                type="button"
+                class="stage__action"
+                aria-label="Move this stage a round earlier"
+                [disabled]="!canMoveStage(stage, -1)"
+                (click)="onMoveStage(stage.key, -1)"
+              >
+                <pdz-icon name="arrow_upward" size="sm"></pdz-icon>
+              </button>
+              <button
+                type="button"
+                class="stage__action"
+                aria-label="Move this stage a round later"
+                (click)="onMoveStage(stage.key, 1)"
+              >
+                <pdz-icon name="arrow_downward" size="sm"></pdz-icon>
+              </button>
+            </div>
+          }
+        </header>
+      </div>
+
+      @for (cell of stage.cells; track trackCell($index, cell)) {
+        <div
+          class="cell"
+          cdkDropList
+          cdkDropListOrientation="horizontal"
+          [id]="cell.id"
+          [cdkDropListData]="cell"
+          [cdkDropListConnectedTo]="cellIds"
+          [cdkDropListDisabled]="!editable"
+          [style.grid-row]="cell.round + 1"
+          [style.grid-column]="stage.column"
+          (cdkDropListDropped)="onDrop($event)"
+        >
+          @for (match of cell.matches; track trackMatch($index, match)) {
+            <div
+              class="cell__item"
+              cdkDrag
+              [cdkDragData]="match.id"
+              [attr.data-match-id]="match.id"
+            >
+              <pdz-match-card
+                [match]="match"
+                [allMatches]="draft.matches"
+                [teams]="teamsFor(stage.key)"
+                [labels]="labels"
+                [editable]="editable"
+                (edit)="editMatch.emit($event)"
+                (remove)="onRemoveMatch($event)"
+              ></pdz-match-card>
+
+              <div class="cell__placeholder" *cdkDragPlaceholder></div>
+            </div>
+          }
+
+          @if (editable) {
+            <button type="button" class="cell__add" (click)="onAddMatch(cell)">
+              <pdz-icon name="add" size="sm"></pdz-icon>
+              <span>Match</span>
+            </button>
+          }
+        </div>
+      }
+    }
+
+    <!--
+      One per round, in the column past every stage: starts a new stage
+      whose first match lands in that round — the stage-level counterpart of
+      a cell's "+ Match".
+    -->
+    @if (editable) {
+      @for (round of rounds; track trackRound($index, round)) {
+        <button
+          type="button"
+          class="add-stage"
+          [style.grid-row]="$index + 1"
+          [style.grid-column]="columnCount * 2 + 2"
+          [attr.aria-label]="'Add a stage starting in ' + round.name"
+          (click)="addStage.emit($index)"
+        >
+          <pdz-icon name="add" size="sm"></pdz-icon>
+          <span>Stage</span>
+        </button>
+      }
+    }
+
+    <pdz-stage-wires
+      [wires]="wires"
+      [width]="gridWidth"
+      [height]="gridHeight"
+    ></pdz-stage-wires>
+  </div>
+</div>

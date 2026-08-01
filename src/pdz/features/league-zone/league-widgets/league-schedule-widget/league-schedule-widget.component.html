@@ -1,17 +1,27 @@
 @if (scheduleRounds?.length) {
   <div class="matchup-stage-list">
-    @for (stage of scheduleRounds; track stage._id) {
+    @for (round of scheduleRounds; track round._id) {
       <div class="matchup-stage">
-        <h4 class="matchup-stage__title">{{ stage.name }}</h4>
+        <h4 class="matchup-stage__title">{{ round.name }}</h4>
         <div class="matchup-stage__cards">
-          @if (stage.matchups.length === 0) {
-            <p class="section-message">No matchups in this stage.</p>
+          @if (!round.stages.length) {
+            <p class="section-message">No matchups in this round.</p>
           } @else {
-            @for (matchup of stage.matchups; track matchup.id) {
-              <pdz-matchup-card
-                [matchup]="matchup"
-                [stageId]="stageId"
-              ></pdz-matchup-card>
+            @for (stage of round.stages; track stage._id) {
+              <!--
+                The stage label only appears when a round holds more than one,
+                which is the case that would otherwise be ambiguous — a group
+                match and a playoff match sitting side by side.
+              -->
+              @if (round.stages.length > 1) {
+                <h5 class="matchup-stage__group">{{ stage.name }}</h5>
+              }
+              @for (matchup of stage.matchups; track matchup.id) {
+                <pdz-matchup-card
+                  [matchup]="matchup"
+                  [stageId]="stage._id"
+                ></pdz-matchup-card>
+              }
             }
           }
         </div>

@@ -164,7 +164,7 @@ export class TradeManagerComponent implements OnInit, OnDestroy {
         catchError(() => of({ teams: [] })),
       ),
       trades: this.leagueService
-        .getTrades({ stageId: this.stageId ?? undefined })
+        .getTrades()
         .pipe(take(1)),
     })
       .pipe(takeUntil(this.destroy$))
@@ -361,14 +361,11 @@ export class TradeManagerComponent implements OnInit, OnDestroy {
     this.submitError = '';
 
     this.leagueService
-      .sendTrade(
-        {
-          side1: this.payloadFor('side1'),
-          side2: this.payloadFor('side2'),
-          roundIndex: this.roundIndex,
-        },
-        this.stageId ?? undefined,
-      )
+      .sendTrade({
+        side1: this.payloadFor('side1'),
+        side2: this.payloadFor('side2'),
+        roundIndex: this.roundIndex,
+      })
       .pipe(
         take(1),
         finalize(() => {
@@ -405,7 +402,7 @@ export class TradeManagerComponent implements OnInit, OnDestroy {
     this.resolveErrorById[tradeId] = '';
 
     this.leagueService
-      .setTradeStatus(tradeId, status, this.stageId ?? undefined)
+      .setTradeStatus(tradeId, status)
       .pipe(
         take(1),
         finalize(() => {
@@ -424,7 +421,7 @@ export class TradeManagerComponent implements OnInit, OnDestroy {
 
   private refreshTrades(): void {
     this.leagueService
-      .getTrades({ stageId: this.stageId ?? undefined })
+      .getTrades()
       .pipe(take(1), takeUntil(this.destroy$))
       .subscribe((trades) => this.applyTradesResponse(trades));
   }

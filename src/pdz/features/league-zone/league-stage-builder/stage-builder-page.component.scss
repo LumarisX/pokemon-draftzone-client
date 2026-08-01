@@ -1,0 +1,226 @@
+@use "pdz-theming" as pdz;
+@use "mixins" as *;
+
+:host {
+  display: block;
+}
+
+.loading-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+}
+
+.page {
+  padding: pdz.space(lg);
+
+  &__header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: pdz.space(md);
+    margin-bottom: pdz.space(lg);
+  }
+
+  &__title {
+    @include apply-typography(headline-lg);
+    color: pdz.color("on-surface");
+    margin: 0;
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: pdz.space(sm);
+  }
+
+  &__error,
+  &__status,
+  &__seeding {
+    @include apply-typography(body-sm);
+    border-radius: pdz.shape("corner-sm");
+    padding: pdz.space(sm) pdz.space(md);
+    margin: 0 0 pdz.space(md);
+  }
+
+  &__error {
+    background: pdz.color("error-container");
+    color: pdz.color("on-error-container");
+  }
+
+  &__status {
+    background: pdz.color("success-container");
+    color: pdz.color("on-success-container");
+  }
+
+  &__seeding {
+    background: pdz.color("surface-container");
+    color: pdz.color("on-surface-variant");
+  }
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: pdz.space(2xs);
+  padding: pdz.space(sm) pdz.space(md);
+  border: 1px solid pdz.color("outline");
+  border-radius: pdz.shape("corner-sm");
+  background: pdz.color("surface-container");
+  color: pdz.color("on-surface");
+  cursor: pointer;
+  @include apply-typography(label-md);
+
+  &:hover:not(:disabled) {
+    background: pdz.color("surface-container-high");
+  }
+
+  &:disabled {
+    color: pdz.color("on-surface-disabled");
+    cursor: default;
+  }
+
+  &--primary {
+    background: pdz.color("primary");
+    border-color: pdz.color("primary");
+    color: pdz.color("on-primary");
+
+    &:hover:not(:disabled) {
+      background: pdz.color("primary-darker");
+    }
+  }
+
+  &--danger {
+    border-color: pdz.color("error-border");
+    color: pdz.color("error");
+
+    &:hover:not(:disabled) {
+      background: pdz.color("error-container");
+      color: pdz.color("on-error-container");
+    }
+  }
+}
+
+.panel {
+  border: 1px solid pdz.color("outline-variant");
+  border-radius: pdz.shape("corner-lg");
+  background: pdz.color("surface-container-low");
+  padding: pdz.space(lg);
+  margin-bottom: pdz.space(lg);
+  max-width: 40rem;
+
+  &__title {
+    @include apply-typography(title-md);
+    display: flex;
+    align-items: baseline;
+    gap: pdz.space(sm);
+    margin: 0 0 pdz.space(xs);
+  }
+
+  &__count {
+    @include apply-typography(label-sm);
+    color: pdz.color("on-surface-variant");
+  }
+
+  &__hint {
+    @include apply-typography(body-sm);
+    color: pdz.color("on-surface-variant");
+    margin: 0 0 pdz.space(md);
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: pdz.space(sm);
+    margin-top: pdz.space(lg);
+  }
+}
+
+.field {
+  display: block;
+  margin-bottom: pdz.space(md);
+
+  &__label {
+    @include apply-typography(label-sm);
+    display: block;
+    color: pdz.color("on-surface-variant");
+    margin-bottom: pdz.space(2xs);
+  }
+
+  &__input {
+    width: 100%;
+    padding: pdz.space(sm);
+    border: 1px solid pdz.color("outline-variant");
+    border-radius: pdz.shape("corner-sm");
+    background: pdz.color("surface");
+    color: pdz.color("on-surface");
+  }
+
+  &--check {
+    display: flex;
+    align-items: center;
+    gap: pdz.space(sm);
+    @include apply-typography(body-sm);
+  }
+}
+
+.teams {
+  &__list {
+    list-style: none;
+    margin: pdz.space(2xs) 0 0;
+    padding: 0;
+    max-height: 16rem;
+    overflow-y: auto;
+    border: 1px solid pdz.color("outline-variant");
+    border-radius: pdz.shape("corner-sm");
+  }
+
+  &__row label {
+    display: flex;
+    align-items: center;
+    gap: pdz.space(sm);
+    padding: pdz.space(xs) pdz.space(sm);
+    cursor: pointer;
+
+    &:hover {
+      background: pdz.color("surface-container-high");
+    }
+  }
+
+  &__name {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__pool {
+    @include apply-typography(label-sm);
+    color: pdz.color("on-surface-variant");
+    background: pdz.color("surface-container-high");
+    border-radius: pdz.shape("corner-full");
+    padding: pdz.space(3xs) pdz.space(sm);
+    white-space: nowrap;
+  }
+
+  &__coach {
+    @include apply-typography(label-sm);
+    color: pdz.color("on-surface-variant");
+    white-space: nowrap;
+  }
+
+  &__placed {
+    @include apply-typography(label-sm);
+    color: pdz.color("on-primary-container");
+    background: pdz.color("primary-container");
+    border-radius: pdz.shape("corner-full");
+    padding: pdz.space(3xs) pdz.space(sm);
+    white-space: nowrap;
+  }
+
+  &__empty {
+    @include apply-typography(body-sm);
+    color: pdz.color("on-surface-variant");
+    padding: pdz.space(sm);
+  }
+}

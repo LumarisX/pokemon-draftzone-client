@@ -3,6 +3,7 @@ import { DebugComponentsComponent } from './components/debug-components.componen
 import { DebugComponent } from './debug.component';
 import { DebugLoadingComponent } from './loading/debug-loading.component';
 import { DebugSpritesComponent } from './sprites/debug-sprites.component';
+import { DebugStageBuilderComponent } from './stage-builder/debug-stage-builder.component';
 import { DebugThemesComponent } from './themes/debug-themes.component';
 
 export const routes: Routes = [
@@ -25,5 +26,9 @@ export const routes: Routes = [
   {
     path: 'loading',
     component: DebugLoadingComponent,
+  },
+  {
+    path: 'stage-builder',
+    component: DebugStageBuilderComponent,
   },
 ];

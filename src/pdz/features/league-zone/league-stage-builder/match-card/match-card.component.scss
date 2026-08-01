@@ -1,0 +1,142 @@
+@use "pdz-theming" as pdz;
+@use "mixins" as *;
+
+:host {
+  display: block;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  background: pdz.color("surface-container");
+  border: 1px solid pdz.color("outline-variant");
+  border-radius: pdz.shape("corner-sm");
+  overflow: hidden;
+
+  &--decided {
+    border-color: pdz.color("outline");
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: pdz.space(xs);
+    padding: pdz.space(xs) pdz.space(sm);
+    background: pdz.color("surface-container-high");
+    border-bottom: 1px solid pdz.color("outline-variant");
+  }
+
+  &__label {
+    @include apply-typography(label-sm);
+    color: pdz.color("on-surface-variant");
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: pdz.space(3xs);
+    // Actions stay out of the way until the card is worth acting on.
+    opacity: 0;
+    transition: opacity 120ms ease;
+  }
+
+  &:hover &__actions,
+  &:focus-within &__actions {
+    opacity: 1;
+  }
+
+  &__action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: pdz.space(3xs);
+    border: none;
+    background: none;
+    border-radius: pdz.shape("corner-xs");
+    color: pdz.color("on-surface-variant");
+    cursor: pointer;
+
+    &:hover {
+      background: pdz.color("primary-container-hover");
+      color: pdz.color("on-primary-container");
+    }
+
+    &--danger:hover {
+      background: pdz.color("error-container");
+      color: pdz.color("on-error-container");
+    }
+  }
+
+  &__slot {
+    display: flex;
+    align-items: center;
+    gap: pdz.space(sm);
+    padding: pdz.space(xs) pdz.space(sm);
+    min-height: 2.5rem;
+
+    & + & {
+      border-top: 1px solid pdz.color("outline-variant");
+    }
+
+    &--winner {
+      background: pdz.color("positive-container");
+      color: pdz.color("on-positive-container");
+    }
+
+    &--loser {
+      color: pdz.color("on-surface-disabled");
+    }
+  }
+
+  &__logo {
+    width: 1.5rem;
+    height: 1.5rem;
+    object-fit: contain;
+    flex: none;
+
+    &--empty {
+      border-radius: pdz.shape("corner-full");
+      background: pdz.color("surface-variant");
+    }
+  }
+
+  &__names {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    flex: 1;
+  }
+
+  &__team {
+    @include apply-typography(label-md);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__coach {
+    @include apply-typography(label-sm);
+    color: pdz.color("on-surface-variant");
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__placeholder {
+    @include apply-typography(label-md);
+    color: pdz.color("on-surface-variant");
+    font-style: italic;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__winner {
+    color: pdz.color("positive");
+    flex: none;
+  }
+}

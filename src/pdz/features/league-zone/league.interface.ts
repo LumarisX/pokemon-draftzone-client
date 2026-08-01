@@ -101,6 +101,21 @@ export namespace League {
     name: string;
     matchups: Matchup[];
   };
+
+  /**
+   * One round of the tournament's schedule, with its matches grouped by the
+   * stage they belong to.
+   *
+   * Rounds are tournament-wide, so a coach may have a group-phase match and a
+   * playoff match in the same week; flattening them into one list would lose
+   * which competition each belongs to.
+   */
+  export type ScheduleRound = {
+    _id: string;
+    name: string;
+    matchDeadline?: string | null;
+    stages: { _id: string; name: string; type: string; matchups: Matchup[] }[];
+  };
   export type RuleSection = {
     title: string;
     body: string;

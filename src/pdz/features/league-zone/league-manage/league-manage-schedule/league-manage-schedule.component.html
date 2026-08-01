@@ -24,8 +24,17 @@
         </button>
         @if (isStageOpen(stage._id)) {
           <div class="stage__matchups">
+            @for (phase of stage.stages; track phase._id) {
+            <!--
+              The stage heading only appears when a round holds more than one,
+              which is the case that would otherwise be ambiguous � a group
+              match and a playoff match sitting side by side.
+            -->
+            @if (stage.stages.length > 1) {
+              <h3 class="stage__phase">{{ phase.name }}</h3>
+            }
             @for (
-              matchup of getSortedMatchups(stage.matchups);
+              matchup of getSortedMatchups(phase.matchups);
               track matchup.id
             ) {
               @if (getMatchupForm(matchup.id); as matchupForm) {
@@ -452,6 +461,9 @@
                   </div>
                 </form>
               }
+            }
+            } @empty {
+              <p class="stage__empty">No matches scheduled in this round.</p>
             }
           </div>
         }

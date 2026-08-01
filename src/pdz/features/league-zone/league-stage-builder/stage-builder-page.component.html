@@ -1,0 +1,171 @@
+@if (isLoading) {
+  <div class="loading-state"><pdz-loading></pdz-loading></div>
+} @else {
+  <div class="page">
+    <header class="page__header">
+      <h1 class="page__title">Matches</h1>
+
+      <div class="page__actions">
+        @if (!formOpen) {
+          <button type="button" class="btn" (click)="openForm()">
+            <pdz-icon name="add" size="sm"></pdz-icon> Add stage
+          </button>
+        }
+        <button
+          type="button"
+          class="btn btn--primary"
+          [disabled]="isSaving"
+          (click)="save()"
+        >
+          {{ isSaving ? "Saving…" : "Save" }}
+        </button>
+        @if (hasBracket) {
+          <button type="button" class="btn btn--danger" (click)="clearBracket()">
+            Delete matchups
+          </button>
+        }
+      </div>
+    </header>
+
+    @if (errorMessage) {
+      <p class="page__error">{{ errorMessage }}</p>
+    }
+    @if (statusMessage) {
+      <p class="page__status">{{ statusMessage }}</p>
+    }
+
+    @for (drawn of seededStages; track drawn.name) {
+      <p class="page__seeding">
+        <strong>{{ drawn.name }}</strong> seeded {{ drawn.method }} on
+        {{ drawn.seededAt | date: "medium" }}
+        @if (drawn.timesSeeded > 1) {
+          — randomized {{ drawn.timesSeeded }} times
+        }
+      </p>
+    }
+
+    @if (formOpen) {
+      <section class="panel">
+        <h2 class="panel__title">
+          Add stage
+          @if (draft.rounds[formStartRound]; as startRound) {
+            <span class="panel__count">starting in {{ startRound.name }}</span>
+          }
+        </h2>
+        <p class="panel__hint">
+          A stage is one block of the tournament — a group phase, a playoff
+          bracket. It picks its own format and teams, decides on its own
+          whether seeding is random, and gets its own standings table. A team
+          may be in more than one stage.
+        </p>
+
+        <label class="field">
+          <span class="field__label">Name</span>
+          <input
+            class="field__input"
+            type="text"
+            [(ngModel)]="formName"
+            placeholder="Group A"
+          />
+        </label>
+
+        <label class="field">
+          <span class="field__label">Format</span>
+          <select
+            class="field__input"
+            [value]="formFormat"
+            (change)="setFormFormat($any($event.target).value)"
+          >
+            @for (format of formats; track format) {
+              <option [value]="format">{{ formatLabels[format] }}</option>
+            }
+          </select>
+        </label>
+
+        @if (formFormat === "round-robin") {
+          <label class="field">
+            <span class="field__label">Rounds</span>
+            <input
+              class="field__input"
+              type="number"
+              min="1"
+              [value]="formRounds"
+              (change)="setFormRounds($any($event.target).value)"
+            />
+          </label>
+        }
+
+        @if (formFormat === "double-elim") {
+          <label class="field field--check">
+            <input type="checkbox" [(ngModel)]="formGrandFinalsReset" />
+            <span>Include a grand finals reset</span>
+          </label>
+        }
+
+        <label class="field field--check">
+          <input type="checkbox" [(ngModel)]="formRandom" />
+          <span>
+            Seed randomly (drawn once by DraftZone when you save — no re-rolls)
+          </span>
+        </label>
+
+        <div class="teams">
+          <span class="field__label">
+            Teams ({{ formSelectedIds.length }} selected)
+          </span>
+          <ul class="teams__list">
+            @for (row of formTeamRows; track row.team.id) {
+              <li class="teams__row">
+                <label>
+                  <input
+                    type="checkbox"
+                    [checked]="row.selected"
+                    (change)="toggleFormTeam(row.team.id)"
+                  />
+                  <span class="teams__name">{{ row.team.teamName }}</span>
+                  <span class="teams__pool">
+                    {{ row.team.draft?.name ?? "No draft pool" }}
+                  </span>
+                  <span class="teams__coach">{{ row.team.coachName }}</span>
+                  @if (stageCountByTeam.get(row.team.id); as placed) {
+                    <span
+                      class="teams__placed"
+                      [title]="
+                        'Already in ' +
+                        placed +
+                        (placed === 1 ? ' stage' : ' stages')
+                      "
+                      >in {{ placed }}</span
+                    >
+                  }
+                </label>
+              </li>
+            } @empty {
+              <li class="teams__empty">No approved teams yet.</li>
+            }
+          </ul>
+        </div>
+
+        <div class="panel__actions">
+          <button type="button" class="btn" (click)="closeForm()">Cancel</button>
+          <button
+            type="button"
+            class="btn btn--primary"
+            [disabled]="!canAddStage"
+            (click)="addStage()"
+          >
+            Add stage
+          </button>
+        </div>
+      </section>
+    }
+
+    <pdz-stage-builder
+      [draft]="draft"
+      [teamsByStage]="teamsByStage"
+      [editable]="true"
+      (draftChange)="onDraftChange($event)"
+      (addStage)="openForm($event)"
+    ></pdz-stage-builder>
+  </div>
+}
