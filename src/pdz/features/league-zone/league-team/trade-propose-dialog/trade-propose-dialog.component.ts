@@ -14,8 +14,9 @@ import { TierListService } from '@pdz/features/tier-lists/tier-list.service';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
-import { BehaviorSubject, catchError, of } from 'rxjs';
+import { BehaviorSubject, catchError, forkJoin, of, take } from 'rxjs';
 import { League } from '../../league.interface';
+import { LeagueZoneService } from '../../league-zone.service';
 
 export interface TradeProposeDialogData {
   teamId: string;
@@ -51,6 +52,7 @@ type TradeOption = PokemonSearchOption & { cost: number; tier: string };
 })
 export class TradeProposeDialogComponent implements OnInit {
   private readonly tierListService = inject(TierListService);
+  private readonly leagueService = inject(LeagueZoneService);
   dialogRef =
     inject<
       MatDialogRef<TradeProposeDialogComponent, TradeProposeDialogResult | null>
@@ -72,51 +74,55 @@ export class TradeProposeDialogComponent implements OnInit {
   private freeAgents: TradeOption[] = [];
 
   ngOnInit(): void {
-    this.tierListService
-      .getTierList()
-      .pipe(catchError(() => of(null)))
-      .subscribe((data) => {
-        if (!data) {
-          this.loadError = 'Could not load the tier list.';
-          this.loading = false;
-          return;
-        }
-
-        const costById = new Map<string, { cost: number; tier: string }>();
-        const drafted = new Set(
-          Object.values(data.divisions ?? {})
-            .flat()
-            .map((entry) => entry.pokemonId),
-        );
-
-        const freeAgents: TradeOption[] = [];
-        for (const tier of data.tierList) {
-          if (tier.cost === undefined) continue;
-          for (const pokemon of tier.pokemon) {
-            costById.set(pokemon.id, { cost: tier.cost, tier: tier.name });
-            if (pokemon.draftBanned || drafted.has(pokemon.id)) continue;
-            freeAgents.push({
-              id: pokemon.id,
-              name: pokemon.name,
-              cost: tier.cost,
-              tier: tier.name,
-            });
-          }
-        }
-
-        this.roster = this.data.roster.map((pokemon) => ({
-          id: pokemon.id,
-          name: pokemon.name,
-          cost: costById.get(pokemon.id)?.cost ?? pokemon.cost ?? 0,
-          tier: costById.get(pokemon.id)?.tier ?? pokemon.tier ?? '—',
-        }));
-        this.freeAgents = freeAgents.sort((a, b) =>
-          a.name.localeCompare(b.name),
-        );
-
-        this.refreshOptions();
+    forkJoin({
+      // Which Pokémon are still free is a tournament question, not a tier-list
+      // one — the tier list is shared and says nothing about who holds what.
+      tierList: this.tierListService.getTierList().pipe(
+        take(1),
+        catchError(() => of(null)),
+      ),
+      teams: this.leagueService.getTournamentTeams().pipe(
+        take(1),
+        catchError(() => of({ teams: [] })),
+      ),
+    }).subscribe(({ tierList: data, teams }) => {
+      if (!data) {
+        this.loadError = 'Could not load the tier list.';
         this.loading = false;
-      });
+        return;
+      }
+
+      const costById = new Map<string, { cost: number; tier: string }>();
+      const drafted = new Set(
+        teams.teams.flatMap((team) => team.roster.map((p) => p.id)),
+      );
+
+      const freeAgents: TradeOption[] = [];
+      for (const tier of data.tierList) {
+        if (tier.cost === undefined) continue;
+        for (const pokemon of tier.pokemon) {
+          costById.set(pokemon.id, { cost: tier.cost, tier: tier.name });
+          if (pokemon.draftBanned || drafted.has(pokemon.id)) continue;
+          freeAgents.push({
+            id: pokemon.id,
+            name: pokemon.name,
+            cost: tier.cost,
+            tier: tier.name,
+          });
+        }
+      }
+
+      this.roster = this.data.roster.map((pokemon) => ({
+        id: pokemon.id,
+        name: pokemon.name,
+        cost: costById.get(pokemon.id)?.cost ?? pokemon.cost ?? 0,
+        tier: costById.get(pokemon.id)?.tier ?? pokemon.tier ?? '—',
+      }));
+      this.freeAgents = freeAgents.sort((a, b) => a.name.localeCompare(b.name));
+
+      this.refreshOptions();
+      this.loading = false;
+    });
   }
 
   get sendCost(): number {

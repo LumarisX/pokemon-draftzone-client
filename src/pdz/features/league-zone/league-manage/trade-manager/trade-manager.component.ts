@@ -172,21 +172,34 @@ export class TradeManagerComponent implements OnInit, OnDestroy {
         next: ({ tierList, teams, trades }) => {
           this.applyTradesResponse(trades);
 
-          const costById = new Map<string, { cost: number; tier: string }>();
-          const draftedBy = new Map<string, string>();
+          // Rosters come from the tournament, not the tier list: who holds what
+          // depends on this tournament's approved trades, and the same tier
+          // list can back several tournaments.
+          this.teams = teams.teams
+            .map((team) => ({
+              id: team.id,
+              name: team.teamName,
+              coachName: team.coachName,
+              roster: team.roster
+                .map((pokemon) => ({
+                  id: pokemon.id,
+                  name: pokemon.name,
+                  cost: pokemon.cost ?? 0,
+                  tier: pokemon.tier ?? '—',
+                }))
+                .sort((a, b) => a.name.localeCompare(b.name)),
+            }))
+            .sort((a, b) => a.name.localeCompare(b.name));
+
+          const drafted = new Set(
+            teams.teams.flatMap((team) => team.roster.map((p) => p.id)),
+          );
+
           const freeAgents: TradeOption[] = [];
-
-          for (const [, entries] of Object.entries(
-            tierList?.divisions ?? {},
-          )) {
-            for (const entry of entries) draftedBy.set(entry.pokemonId, entry.teamId);
-          }
-
           for (const tier of tierList?.tierList ?? []) {
             if (tier.cost === undefined) continue;
             for (const pokemon of tier.pokemon) {
-              costById.set(pokemon.id, { cost: tier.cost, tier: tier.name });
-              if (pokemon.draftBanned || draftedBy.has(pokemon.id)) continue;
+              if (pokemon.draftBanned || drafted.has(pokemon.id)) continue;
               freeAgents.push({
                 id: pokemon.id,
                 name: pokemon.name,
@@ -199,30 +212,6 @@ export class TradeManagerComponent implements OnInit, OnDestroy {
             a.name.localeCompare(b.name),
           );
 
-          const rosterByTeam = new Map<string, TradeOption[]>();
-          for (const [pokemonId, teamId] of draftedBy) {
-            const priced = costById.get(pokemonId);
-            const list = rosterByTeam.get(teamId) ?? [];
-            list.push({
-              id: pokemonId,
-              name: priced ? this.nameOf(tierList, pokemonId) : pokemonId,
-              cost: priced?.cost ?? 0,
-              tier: priced?.tier ?? '—',
-            });
-            rosterByTeam.set(teamId, list);
-          }
-
-          this.teams = teams.teams
-            .map((team) => ({
-              id: team.id,
-              name: team.teamName,
-              coachName: team.coachName,
-              roster: (rosterByTeam.get(team.id) ?? []).sort((a, b) =>
-                a.name.localeCompare(b.name),
-              ),
-            }))
-            .sort((a, b) => a.name.localeCompare(b.name));
-
           this.refreshOptions('side1');
           this.refreshOptions('side2');
           this.loading = false;
@@ -231,17 +220,6 @@ export class TradeManagerComponent implements OnInit, OnDestroy {
           this.loading = false;
         },
       });
-  }
-
-  private nameOf(
-    tierList: { tierList: { pokemon: { id: string; name: string }[] }[] } | null,
-    id: string,
-  ): string {
-    for (const tier of tierList?.tierList ?? []) {
-      const hit = tier.pokemon.find((p) => p.id === id);
-      if (hit) return hit.name;
-    }
-    return id;
   }
 
   private applyTradesResponse(trades: {

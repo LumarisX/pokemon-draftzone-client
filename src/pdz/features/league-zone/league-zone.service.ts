@@ -493,6 +493,12 @@ export class LeagueZoneService {
       status: League.SignUpStatus;
       /** Draft pool the team drafted in; null if it was never assigned one. */
       draft: { draftSlug: string; name: string } | null;
+      /**
+       * What the team holds right now — the pick log with every approved trade
+       * up to the current round applied. `cost`/`tier` are absent for a Pokémon
+       * the tournament's tier list no longer carries.
+       */
+      roster: { id: string; name: string; cost?: number; tier?: string }[];
     }[];
   }> {
     return this.apiService.get(
