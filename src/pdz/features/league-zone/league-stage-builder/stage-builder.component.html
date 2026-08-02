@@ -1,4 +1,9 @@
-<div class="builder">
+<!--
+  The grid scrolls in its own bounded pane so both scrollbars stay pinned to the
+  edge of the viewport. `pdz-scrollbar-visible` keeps them drawn rather than
+  fading out — they are the only cue that the schedule continues past the edge.
+-->
+<div class="builder pdz-scrollbar-visible" cdkScrollable>
   <div
     #grid
     class="builder__grid"
@@ -130,8 +135,14 @@
       </div>
 
       @for (cell of stage.cells; track trackCell($index, cell)) {
+        <!--
+          A cell outside the stage's span is an invisible landing strip: drop a
+          card on it and the span, which is derived from where the matches are,
+          grows to take the round in.
+        -->
         <div
           class="cell"
+          [class.cell--outside]="!cell.inSpan"
           cdkDropList
           cdkDropListOrientation="horizontal"
           [id]="cell.id"
@@ -163,7 +174,9 @@
             </div>
           }
 
-          @if (editable) {
+          <!-- Only inside the box: a "+ Match" floating in a round the stage
+               does not cover reads as belonging to no stage at all. -->
+          @if (editable && cell.inSpan) {
             <button type="button" class="cell__add" (click)="onAddMatch(cell)">
               <pdz-icon name="add" size="sm"></pdz-icon>
               <span>Match</span>

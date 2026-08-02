@@ -180,7 +180,7 @@ export class TournamentNavComponent implements OnInit, OnDestroy {
   }
 
   get scheduleLink(): string[] {
-    return [...this.stageBase, 'schedule'];
+    return [...this.tournamentBase(), 'schedule'];
   }
 
   get standingsLink(): string[] {

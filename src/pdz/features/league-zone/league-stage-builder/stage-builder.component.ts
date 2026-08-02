@@ -5,6 +5,7 @@ import {
   CdkDropList,
   CdkDropListGroup,
 } from '@angular/cdk/drag-drop';
+import { CdkScrollable } from '@angular/cdk/scrolling';
 import { CommonModule } from '@angular/common';
 import {
   AfterViewChecked,
@@ -92,6 +93,12 @@ interface BuilderCell {
   id: string;
   stageKey: string;
   round: number;
+  /**
+   * False for a round the stage does not reach yet. Such a cell holds nothing
+   * and draws nothing until a card is picked up — it exists so a match has
+   * somewhere to land outside its stage's current rows.
+   */
+  inSpan: boolean;
   matches: FlexBracketMatch[];
 }
 
@@ -116,6 +123,9 @@ interface StageBox {
     CdkDragPlaceholder,
     CdkDropList,
     CdkDropListGroup,
+    // The grid scrolls inside its own pane, so the drag auto-scroller has to be
+    // told about it — it only follows scroll containers the CDK knows.
+    CdkScrollable,
     IconComponent,
     MatchCardComponent,
     StageWiresComponent,
@@ -196,9 +206,7 @@ export class StageBuilderComponent
   protected trackMatch = (_: number, match: FlexBracketMatch) => match.id;
 
   /** Every cell id, so each drop list accepts drags from all the others. */
-  protected get cellIds(): string[] {
-    return this.stages.flatMap((s) => s.cells.map((c) => c.id));
-  }
+  protected cellIds: string[] = [];
 
   protected labels = new Map<string, string>();
 
@@ -215,34 +223,87 @@ export class StageBuilderComponent
       this.draft.stages.find((s) => s.key === key)?.name ?? key;
     const columnOf = assignColumns(spans);
     this.columnCount = Math.max(1, new Set(columnOf.values()).size);
+    const reachable = this.reachableRounds(spans, columnOf);
 
-    this.stages = spans.map((span) => ({
-      key: span.key,
-      title: titleOf(span.key),
-      span,
-      rowStart: span.firstRound + 1,
-      rowEnd: span.lastRound + 2,
-      // Column 1 is the round gutter; each column then owns a pair — its wire
-      // band, then its content — so column n's content line is 3 + 2n.
-      column: 3 + (columnOf.get(span.key) ?? 0) * 2,
-      cells: Array.from(
-        { length: span.lastRound - span.firstRound + 1 },
-        (_, offset) => {
-          const round = span.firstRound + offset;
-          return {
-            // Becomes a DOM id, so it has to stay a valid CSS selector —
-            // stage keys are slugs, but a separator like ":" would not be.
-            id: `cell_${span.key}_${round}`,
-            stageKey: span.key,
-            round,
-            matches: cellMatches(this.draft.matches, span.key, round),
-          };
-        },
-      ),
-    }));
+    this.stages = spans.map((span) => {
+      const rounds = [
+        ...Array.from(
+          { length: span.lastRound - span.firstRound + 1 },
+          (_, offset) => span.firstRound + offset,
+        ),
+        ...(reachable.get(span.key) ?? []),
+      ].sort((a, b) => a - b);
+
+      return {
+        key: span.key,
+        title: titleOf(span.key),
+        span,
+        rowStart: span.firstRound + 1,
+        rowEnd: span.lastRound + 2,
+        // Column 1 is the round gutter; each column then owns a pair — its wire
+        // band, then its content — so column n's content line is 3 + 2n.
+        column: 3 + (columnOf.get(span.key) ?? 0) * 2,
+        cells: rounds.map((round) => ({
+          // Becomes a DOM id, so it has to stay a valid CSS selector —
+          // stage keys are slugs, but a separator like ":" would not be.
+          id: `cell_${span.key}_${round}`,
+          stageKey: span.key,
+          round,
+          inSpan: round >= span.firstRound && round <= span.lastRound,
+          matches: cellMatches(this.draft.matches, span.key, round),
+        })),
+      };
+    });
 
     this.labels = this.buildLabels();
+    // Recomputed with the cells rather than read per binding: every cell lists
+    // every other, so a getter here would be quadratic on each check.
+    this.cellIds = this.stages.flatMap((s) => s.cells.map((c) => c.id));
     this.corridorHeights = this.computeCorridorHeights();
+  }
+
+  /**
+   * Hands each stage the rounds outside its span that it may still be dropped
+   * into — the drop targets that let a match leave the rows its stage occupies.
+   *
+   * A span is derived from where a stage's matches sit, so a card dropped on one
+   * of these simply makes the box taller; nothing has to resize the stage
+   * explicitly. Rounds another stage already occupies in the same column are
+   * left alone, since the two would land on the same grid cell.
+   */
+  private reachableRounds(
+    spans: StageSpan[],
+    columnOf: Map<string, number>,
+  ): Map<string, number[]> {
+    const reachable = new Map<string, number[]>(spans.map((s) => [s.key, []]));
+
+    const byColumn = new Map<number, StageSpan[]>();
+    for (const span of spans) {
+      const column = columnOf.get(span.key) ?? 0;
+      byColumn.set(column, [...(byColumn.get(column) ?? []), span]);
+    }
+
+    const distance = (span: StageSpan, round: number) =>
+      round < span.firstRound ? span.firstRound - round : round - span.lastRound;
+
+    for (const column of byColumn.values()) {
+      // Sorted so that a gap equidistant from the stages either side of it goes
+      // to the upper one, rather than to whichever the draft happened to list
+      // first.
+      const stacked = [...column].sort((a, b) => a.firstRound - b.firstRound);
+
+      for (let round = 0; round < this.rounds.length; round++) {
+        const taken = stacked.some(
+          (s) => round >= s.firstRound && round <= s.lastRound,
+        );
+        if (taken) continue;
+        const owner = stacked.reduce((best, s) =>
+          distance(s, round) < distance(best, round) ? s : best,
+        );
+        reachable.get(owner.key)!.push(round);
+      }
+    }
+    return reachable;
   }
 
   /** "Match 1", "Match 2", … per stage, so a slot can say what it waits on. */

@@ -6,11 +6,6 @@
       <h1 class="page__title">Matches</h1>
 
       <div class="page__actions">
-        @if (!formOpen) {
-          <button type="button" class="btn" (click)="openForm()">
-            <pdz-icon name="add" size="sm"></pdz-icon> Add stage
-          </button>
-        }
         <button
           type="button"
           class="btn btn--primary"
@@ -20,7 +15,11 @@
           {{ isSaving ? "Saving…" : "Save" }}
         </button>
         @if (hasBracket) {
-          <button type="button" class="btn btn--danger" (click)="clearBracket()">
+          <button
+            type="button"
+            class="btn btn--danger"
+            (click)="clearBracket()"
+          >
             Delete matchups
           </button>
         }
@@ -34,16 +33,6 @@
       <p class="page__status">{{ statusMessage }}</p>
     }
 
-    @for (drawn of seededStages; track drawn.name) {
-      <p class="page__seeding">
-        <strong>{{ drawn.name }}</strong> seeded {{ drawn.method }} on
-        {{ drawn.seededAt | date: "medium" }}
-        @if (drawn.timesSeeded > 1) {
-          — randomized {{ drawn.timesSeeded }} times
-        }
-      </p>
-    }
-
     @if (formOpen) {
       <section class="panel">
         <h2 class="panel__title">
@@ -54,9 +43,9 @@
         </h2>
         <p class="panel__hint">
           A stage is one block of the tournament — a group phase, a playoff
-          bracket. It picks its own format and teams, decides on its own
-          whether seeding is random, and gets its own standings table. A team
-          may be in more than one stage.
+          bracket. It picks its own format and teams, decides on its own whether
+          seeding is random, and gets its own standings table. A team may be in
+          more than one stage.
         </p>
 
         <label class="field">
@@ -147,7 +136,9 @@
         </div>
 
         <div class="panel__actions">
-          <button type="button" class="btn" (click)="closeForm()">Cancel</button>
+          <button type="button" class="btn" (click)="closeForm()">
+            Cancel
+          </button>
           <button
             type="button"
             class="btn btn--primary"

@@ -14,7 +14,6 @@ import { LeagueLandingComponent } from './league-landing/league-landing.componen
 import { LeagueOverviewComponent } from './league-overview/league-overview.component';
 import { leagueRoleGuard } from './league-role.guard';
 import { LeagueRulesOverviewComponent } from './league-rules-overview/league-rules-overview.component';
-import { LeagueScheduleComponent } from './league-schedule/league-schedule.component';
 import { LeagueSignUpComponent } from './league-sign-up/league-sign-up.component';
 import { LeagueStandingsComponent } from './league-standings/league-standings.component';
 import { LeagueTeamComponent } from './league-team/league-team.component';
@@ -82,11 +81,7 @@ export const routes: Routes = [
         canActivate: [AuthGuard],
       },
       {
-        path: 'bracket',
-        component: LeagueBracketComponent,
-      },
-      {
-        path: 'playoffs/schedule',
+        path: 'schedule',
         component: LeagueBracketComponent,
       },
       {
@@ -104,10 +99,6 @@ export const routes: Routes = [
       {
         path: 'drafts/:draftSlug',
         component: DivisionDashboardComponent,
-      },
-      {
-        path: 'stages/:stageId/schedule',
-        component: LeagueScheduleComponent,
       },
       {
         path: 'stages/:stageId/schedule/matchups/:matchupId',

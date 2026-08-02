@@ -7,6 +7,11 @@
 
 .builder {
   overflow: auto;
+  // The grid outgrows the page in both directions, so it scrolls as its own
+  // pane. Left unbounded it would instead be as tall as the whole schedule and
+  // put its horizontal scrollbar at the foot of the last round — the control
+  // that scrolls sideways would only be reachable by scrolling down first.
+  max-height: calc(100dvh - 8rem);
   // The top gap has to clear a stage title, which hangs above its first row.
   padding: pdz.space(3xl) pdz.space(lg) pdz.space(lg);
 
@@ -211,6 +216,13 @@
   &.cdk-drop-list-receiving {
     background: pdz.color-rgba("primary-container", 0.25);
     outline: 1px dashed pdz.color("primary-border");
+  }
+
+  // A round the stage does not reach. It is stretched to its grid row like any
+  // other cell, so it is a full-size drop target, but it contributes no height
+  // of its own and stays invisible until a drag lights the drop lists up.
+  &--outside {
+    min-height: 0;
   }
 
   &__item {

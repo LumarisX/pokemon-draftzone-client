@@ -108,6 +108,7 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
   private countdownTick$ = new Subject<void>();
+  private halfwayReminderTimer?: ReturnType<typeof setTimeout>;
   private hasAutoScrolledToCurrentRound = false;
   private readonly SCROLL_RETRY_DELAY_MS = 50;
   private readonly SCROLL_MAX_ATTEMPTS = 10;
@@ -363,8 +364,9 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
         this.currentPick = data.currentPick;
         this.canDraftCounts = data.canDraftCounts ?? {};
         this.startCountdown();
+        const teamName = this.teamsMap.get(data.nextTeam)?.name ?? 'Unknown team';
         this.notificationService.show(
-          `Now drafting: ${this.teamsMap.get(data.nextTeam)?.name}`,
+          `Now drafting: ${teamName}${this.pickTimeSuffix()}`,
           'info',
         );
       });
@@ -384,6 +386,7 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
           case 'PAUSED':
           case 'COMPLETED':
             this.countdownTick$.next();
+            this.clearHalfwayReminder();
             break;
           case 'IN_PROGRESS':
             this.startCountdown();
@@ -408,6 +411,7 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
     this.countdownTick$.next();
     this.countdownTick$.complete();
+    this.clearHalfwayReminder();
   }
 
   /** Phrases an organizer's out-of-band roster edit for the notification feed. */
@@ -469,6 +473,58 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
         this.skipTimeDisplay = this.timeUntil(this.currentPick?.skipTime);
         this.updateDraftStartDisplay();
       });
+    this.scheduleHalfwayReminder();
+  }
+
+  /** The current picking team, derived the same way the round table highlights it. */
+  private currentPickingTeam(): League.LeagueTeam | undefined {
+    if (!this.currentPick) return undefined;
+    return this.draftRounds[this.currentPick.round]?.[this.currentPick.position];
+  }
+
+  /** " — Xm to pick" suffix for turn-change notifications; empty when there's no active clock. */
+  private pickTimeSuffix(): string {
+    if (this.noTimer || !this.currentPick?.skipTime) return '';
+    const msRemaining =
+      new Date(this.currentPick.skipTime).getTime() - Date.now();
+    if (msRemaining <= 0) return '';
+    return ` (${formatCountdown(msRemaining)} to pick)`;
+  }
+
+  private clearHalfwayReminder(): void {
+    if (this.halfwayReminderTimer !== undefined) {
+      clearTimeout(this.halfwayReminderTimer);
+      this.halfwayReminderTimer = undefined;
+    }
+  }
+
+  /** Fires a single notification at the midpoint of the current team's clock. */
+  private scheduleHalfwayReminder(): void {
+    this.clearHalfwayReminder();
+    if (this.noTimer || !this.currentPick?.skipTime) return;
+
+    const msRemaining =
+      new Date(this.currentPick.skipTime).getTime() - Date.now();
+    const msUntilHalfway = msRemaining / 2;
+    if (msUntilHalfway <= 0) return;
+
+    const round = this.currentPick.round;
+    const position = this.currentPick.position;
+    this.halfwayReminderTimer = setTimeout(() => {
+      // Bail if the turn has already moved on since this was scheduled.
+      if (
+        !this.currentPick ||
+        this.currentPick.round !== round ||
+        this.currentPick.position !== position
+      )
+        return;
+
+      const teamName = this.currentPickingTeam()?.name ?? 'The current team';
+      this.notificationService.show(
+        `${teamName} is halfway through their pick timer${this.pickTimeSuffix()}!`,
+        'warning',
+      );
+    }, msUntilHalfway);
   }
 
   /** Legacy drafts may carry statuses like NOT_STARTED, so treat anything not active/finished as pre-draft. */

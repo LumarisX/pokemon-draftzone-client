@@ -12,6 +12,7 @@ import {
   TradeLog,
   TradeStatus,
 } from '@pdz/features/league-zone/league.interface';
+import { TournamentBracket } from '@pdz/features/league-zone/league-bracket/tournament-bracket.model';
 import { TournamentDetails } from '@pdz/features/league-zone/league.model';
 import { getRandomPokemon } from '@pdz/shared/data/namedex';
 import { Observable, of, throwError } from 'rxjs';
@@ -466,13 +467,11 @@ export class LeagueZoneService {
     );
   }
 
-  getBracket(): Observable<BracketWithSeeding> {
-    return this.apiService
-      .get<RawBracketResponse>(
-        `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/bracket`,
-        { authenticated: true },
-      )
-      .pipe(map(mapRawBracket));
+  /** Public read — the server allows this without a session, so anyone can view the schedule. */
+  getTournamentBracket(): Observable<TournamentBracket> {
+    return this.apiService.get<TournamentBracket>(
+      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/bracket`,
+    );
   }
 
   getStageBracket(stageId: string): Observable<BracketWithSeeding> {

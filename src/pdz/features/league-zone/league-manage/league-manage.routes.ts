@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { LeagueRulesFormComponent } from '../league-rules-overview/league-rules-form/league-rules-form.component';
-import { StageBuilderPageComponent } from '../league-stage-builder/stage-builder-page.component';
+import { LeagueScheduleComponent } from '../league-stage-builder/stage-builder-page.component';
 import { LeagueManageDashboardComponent } from './league-manage-dashboard/league-manage-dashboard.component';
 import { LeagueManageDraftComponent } from './league-manage-draft/league-manage-draft.component';
 import { LeagueManageHubComponent } from './league-manage-hub.component';
@@ -53,20 +53,9 @@ export const routes: Routes = [
     path: 'stages/:stageId/trades/legacy',
     component: LeagueManageTradesComponent,
   },
+
   {
-    path: 'stages/:stageId/schedule',
-    component: LeagueManageScheduleComponent,
-  },
-  {
-    // Tournament-scoped, not stage-scoped: the builder edits the shared round
-    // axis and every stage laid across it, which no single stage owns.
-    path: 'bracket',
-    component: StageBuilderPageComponent,
-  },
-  {
-    // Where the per-stage builder used to live. Kept as a redirect so bookmarks
-    // and in-app links from before the move still land somewhere useful.
-    path: 'stages/:stageId/bracket',
-    redirectTo: 'bracket',
+    path: 'schedule',
+    component: LeagueScheduleComponent,
   },
 ];

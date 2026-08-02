@@ -38,7 +38,6 @@ const FORMAT_LABELS: Record<StageFormat, string> = {
   blank: 'Blank (build by hand)',
 };
 
-/** What the generated block's shape means as a stored stage type. */
 const FORMAT_STAGE_TYPES: Record<StageFormat, BuilderStageType> = {
   'single-elim': 'single-elimination',
   'double-elim': 'double-elimination',
@@ -51,22 +50,9 @@ interface TeamOption {
   teamName: string;
   coachName: string;
   logo?: string;
-  /** Draft pool the team drafted in; null if it was never assigned one. */
   draft: { draftSlug: string; name: string } | null;
 }
 
-/**
- * Organizer page for a tournament's matchups.
- *
- * Stages are added a block at a time — a group phase, a playoff bracket — and
- * each owns its own seed numbering, so a random block is drawn among only its
- * own teams. Rounds are shared by every stage, which is why this edits the
- * tournament rather than one stage: changing the axis from inside a stage would
- * renumber every other stage's rounds.
- *
- * Once saved, edits go through the diff endpoint so results already recorded
- * are kept.
- */
 @Component({
   selector: 'pdz-stage-builder-page',
   imports: [
@@ -79,7 +65,7 @@ interface TeamOption {
   templateUrl: './stage-builder-page.component.html',
   styleUrl: './stage-builder-page.component.scss',
 })
-export class StageBuilderPageComponent implements OnInit {
+export class LeagueScheduleComponent implements OnInit {
   private readonly leagueService = inject(LeagueZoneService);
   private readonly manageService = inject(LeagueManageService);
 
@@ -95,10 +81,8 @@ export class StageBuilderPageComponent implements OnInit {
   draft: BuilderDraft = { rounds: [], stages: [], matches: [] };
   teams: TeamOption[] = [];
 
-  /** Ids the server assigned, so a save updates rather than recreates. */
   private saved = new Set<string>();
 
-  // Add-stage form.
   formOpen = false;
   formName = '';
   formFormat: StageFormat = 'round-robin';
@@ -107,20 +91,12 @@ export class StageBuilderPageComponent implements OnInit {
   private formRoundsTouched = false;
   formGrandFinalsReset = true;
   formTeamRows: { team: TeamOption; selected: boolean }[] = [];
-  /** Round the new stage's first matches land in. */
   formStartRound = 0;
 
   get hasBracket(): boolean {
     return (this.bracket?.matches?.length ?? 0) > 0;
   }
 
-  /**
-   * Stages whose draw has happened, for the seeding record shown on the page.
-   *
-   * One line per stage rather than one for the tournament: each stage draws its
-   * own teams, so "seeded certified-random, twice" is only ever true of a
-   * particular stage.
-   */
   get seededStages(): {
     name: string;
     method: string;
@@ -137,16 +113,6 @@ export class StageBuilderPageComponent implements OnInit {
       }));
   }
 
-  /**
-   * Teams for the match cards, per stage.
-   *
-   * Seeds are numbered inside a stage, so there is no tournament-wide list to
-   * resolve a slot against — one flat list would show whichever stage's seed 1
-   * it happened to see first in every stage.
-   *
-   * Stages added in this session have no seeded teams yet: their draw happens
-   * server-side on save, so their cards show seed numbers until then.
-   */
   get teamsByStage(): Map<string, BracketTeamFlex[]> {
     const byStage = new Map<string, BracketTeamFlex[]>();
     for (const stage of this.bracket?.stages ?? []) {
@@ -162,8 +128,6 @@ export class StageBuilderPageComponent implements OnInit {
       );
     }
 
-    // A stage the organizer just added is not on the server yet, but its teams
-    // are already chosen — show them rather than bare seed numbers.
     const byId = new Map(this.teams.map((team) => [team.id, team]));
     for (const stage of this.draft.stages) {
       if (byStage.has(stage.key)) continue;
@@ -220,13 +184,6 @@ export class StageBuilderPageComponent implements OnInit {
     this.statusMessage = null;
   }
 
-  // ─── Add-stage form ────────────────────────────────────────────────────────
-
-  /**
-   * How many stages each team is already in. A team may enter as many as the
-   * organizer wants — a group stage feeding a playoff bracket puts the same
-   * team in both — so this is shown as context, never used to filter.
-   */
   get stageCountByTeam(): Map<string, number> {
     const counts = new Map<string, number>();
     for (const stage of this.draft.stages) {
@@ -251,8 +208,6 @@ export class StageBuilderPageComponent implements OnInit {
   }
 
   private resetFormTeams(): void {
-    // Every team is offered every time; the ones already placed simply start
-    // unselected so the common case is still "everyone who is free".
     const placed = this.stageCountByTeam;
     this.formTeamRows = this.teams.map((team) => ({
       team,
@@ -302,16 +257,13 @@ export class StageBuilderPageComponent implements OnInit {
     const teamIds = this.formSelectedIds;
     const name = this.formName.trim();
     const prefix = this.uniqueStageKey(name);
-    // The stage starts in the round its "+ Stage" button belonged to.
     const roundOffset = Math.max(0, this.formStartRound);
 
     const block = offsetBracket(
       this.generateFor(this.formFormat, teamIds.length),
       {
         prefix,
-        // Seeds are numbered within a stage, so a new block always starts at 1.
-        // They used to continue the tournament's running total, which is what
-        // made a deleted block leave gaps the server then rejected.
+
         seedOffset: 0,
         roundOffset,
         title: name,
@@ -319,10 +271,6 @@ export class StageBuilderPageComponent implements OnInit {
       },
     );
 
-    // A double-elimination block yields winners/losers/finals, and each is now
-    // its own stage. Only the entry block seeds directly; the rest are reached
-    // by advancing, so they inherit the same roster in the same order rather
-    // than being drawn again.
     const entryKey = this.entryBlockKey(block);
     const stages: BuilderStage[] = block.sections.map((section, index) => ({
       key: section.key,
@@ -334,7 +282,6 @@ export class StageBuilderPageComponent implements OnInit {
       ...(section.roundTitles ? { roundTitles: section.roundTitles } : {}),
     }));
 
-    // A block starting in a late round may run past the end of the axis.
     this.draft = padRounds({
       rounds: this.draft.rounds,
       stages: [...this.draft.stages, ...stages],
@@ -343,7 +290,6 @@ export class StageBuilderPageComponent implements OnInit {
     this.formOpen = false;
   }
 
-  /** The block's section that teams actually enter through, by seed. */
   private entryBlockKey(block: GeneratedBracket): string | undefined {
     for (const match of block.matches) {
       for (const slot of [match.a, match.b]) {
@@ -392,8 +338,6 @@ export class StageBuilderPageComponent implements OnInit {
     return unique;
   }
 
-  // ─── Save ──────────────────────────────────────────────────────────────────
-
   save(): void {
     if (this.isSaving) return;
     this.errorMessage = null;
@@ -405,9 +349,7 @@ export class StageBuilderPageComponent implements OnInit {
     }
     const errors = validateBracketWiring(
       this.draft.matches,
-      // `kind` is only consulted for the seed-reuse rule, and the stage type is
-      // what now decides it: a round-robin or swiss stage replays its teams
-      // every round, a knockout enters each of them once.
+
       this.draft.stages.map((stage) => ({
         key: stage.key,
         kind:
@@ -432,8 +374,7 @@ export class StageBuilderPageComponent implements OnInit {
         ),
     );
     if (unseeded.length > 0) {
-      this.errorMessage =
-        `${unseeded.map((s) => s.name).join(', ')} needs at least 2 teams.`;
+      this.errorMessage = `${unseeded.map((s) => s.name).join(', ')} needs at least 2 teams.`;
       return;
     }
 
@@ -474,13 +415,6 @@ export class StageBuilderPageComponent implements OnInit {
     });
   }
 
-  /**
-   * Clears the whole bracket by saving an empty one.
-   *
-   * There is no separate delete endpoint at tournament level: the PATCH is
-   * already a replace-with, and routing this through it means the same refusal
-   * protects recorded results here as anywhere else.
-   */
   clearBracket(): void {
     if (!this.hasBracket || this.isSaving) return;
     const certified = (this.bracket?.stages ?? []).some(

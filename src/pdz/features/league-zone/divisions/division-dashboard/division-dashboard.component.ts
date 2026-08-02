@@ -78,8 +78,6 @@ export class DivisionDashboardComponent implements OnInit, OnDestroy {
       this.leagueZoneService.leagueSlug(),
       'tournaments',
       this.tournamentSlug,
-      'stages',
-      stageId,
       'schedule',
     ]);
   }

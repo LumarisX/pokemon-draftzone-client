@@ -126,11 +126,11 @@
               <span class="nav-link__icon">&#9670;</span>
               <span class="nav-link__label">Draft</span>
             </a>
+            <a [routerLink]="scheduleLink" class="nav-link">
+              <span class="nav-link__icon">&#128197;</span>
+              <span class="nav-link__label">Schedule</span>
+            </a>
             @if (selectedStageId) {
-              <a [routerLink]="scheduleLink" class="nav-link">
-                <span class="nav-link__icon">&#128197;</span>
-                <span class="nav-link__label">Schedule</span>
-              </a>
               <a [routerLink]="standingsLink" class="nav-link">
                 <span class="nav-link__icon">&#127942;</span>
                 <span class="nav-link__label">Standings</span>

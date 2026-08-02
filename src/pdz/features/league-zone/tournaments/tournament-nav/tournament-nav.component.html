@@ -62,13 +62,6 @@
     </a>
     @if (selectedStageId) {
       <a
-        [routerLink]="scheduleLink"
-        routerLinkActive="active"
-        class="link-button"
-      >
-        <span>Schedule</span>
-      </a>
-      <a
         [routerLink]="standingsLink"
         routerLinkActive="active"
         class="link-button"
@@ -78,6 +71,13 @@
     }
   }
 
+  <a
+    [routerLink]="scheduleLink"
+    routerLinkActive="active"
+    class="link-button"
+  >
+    <span>Schedule</span>
+  </a>
   <a
     [routerLink]="[...tournamentBase(), 'rules']"
     routerLinkActive="active"
