@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { PokemonSearchComponent } from '@pdz/features/drafts/draft-overview/draft-form/components/pokemon-search/pokemon-search.component';
+import { PokemonSearchComponent } from '@pdz/shared/dropdowns/pokemon-search/pokemon-search.component';
 import { DraftPokemon } from '@pdz/features/drafts/draft.model';
 import { TierListService } from '@pdz/features/tier-lists/tier-list.service';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';

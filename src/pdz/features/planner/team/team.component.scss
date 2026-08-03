@@ -1,121 +1,269 @@
 @use "pdz-theming" as pdz;
+@use "mixins/buttons" as *;
+@use "mixins/widgets" as *;
 
 :host {
   display: flex;
   flex-direction: column;
   max-width: 100%;
-  height: 100%;
+  min-height: 0;
 }
 
-.points-container {
-  flex-grow: 0;
-  border-top: 2px pdz.color(outline) solid;
+.planner-team {
+  @include widget-card();
   display: flex;
+  flex: 1 1 auto;
   flex-direction: column;
+  min-height: 0;
+  width: 100%;
 
-  th {
-    text-align: end;
+  // Compact draft-shape controls, kept beside the roster they govern.
+  &__controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: pdz.space(xs) pdz.space(md);
+    flex-shrink: 0;
+    padding: 0 pdz.space(sm) pdz.space(xs);
   }
 
-  td,
-  th {
-    padding: 0rem 0.5rem;
+  &__control {
+    display: flex;
+    align-items: center;
+    gap: pdz.space(xs);
   }
-}
 
-.table-container {
-  flex-grow: 1;
-  overflow-y: auto;
-}
-
-table {
-  table-layout: fixed;
-
-  thead tr {
-    top: 0px;
-    z-index: 1100;
-    background-color: pdz.color(primary);
-    color: pdz.color(on-primary);
-    border-bottom: 2px pdz.color(primary-border) solid;
-    position: sticky;
-    font-size: var(--pdz-font-size-xs);
+  &__control-label {
+    color: pdz.color(on-surface-variant);
+    font-weight: var(--pdz-font-weight-bold);
+    @include pdz.apply-typography(label-2xs);
   }
-  tbody {
-    td {
-      text-align: center;
-      padding: 0.25rem 0 0.25rem 0.5rem;
-      width: fit-content;
-      &:last-child {
-        padding-right: 0.5rem;
-      }
-    }
-  }
-}
-.preview-sprite {
-  height: 4rem;
-}
 
-.team-item:not(:last-child) {
-  border-bottom: 1px pdz.color(primary-border) solid;
-}
-
-.value-input {
-  width: 5rem;
-
-  input {
+  &__control-input {
+    width: 2.75rem;
+    padding: pdz.space(3xs) pdz.space(2xs);
+    border: 1px solid pdz.color(outline);
+    border-radius: pdz.shape(corner-xs);
+    background: pdz.color(surface);
+    color: pdz.color(on-surface);
+    font: inherit;
     text-align: center;
+    appearance: textfield;
+    @include pdz.apply-typography(body-sm);
+
     &::-webkit-inner-spin-button,
     &::-webkit-outer-spin-button {
       appearance: none;
       margin: 0;
     }
-    &::-moz-number-spin-box,
-    &::-moz-number-spin-buttons {
-      display: none;
+
+    &:focus {
+      outline: 2px solid pdz.color(primary);
+      outline-offset: 1px;
+      border-color: pdz.color(primary);
     }
-    -moz-appearance: textfield;
-    appearance: textfield;
+
+    &--wide {
+      width: 3.75rem;
+    }
   }
-}
 
-.pokemon-input {
-  width: 12rem;
-}
+  &__range {
+    display: flex;
+    align-items: center;
+    gap: pdz.space(3xs);
+  }
 
-.drag-icon {
-  cursor: move;
-  color: pdz.color(on-surface-variant);
-}
+  &__range-sep {
+    color: pdz.color(on-surface-variant);
+  }
 
-.value-input,
-.pokemon-input {
-  margin-bottom: -1.5rem;
-}
+  &__segmented {
+    display: inline-flex;
+    align-items: center;
+    gap: pdz.space(3xs);
+    padding: pdz.space(3xs);
+    border: 1px solid pdz.color(outline);
+    border-radius: pdz.shape(corner-xs);
+    background: pdz.color(surface);
+  }
 
-.cdk-drag-preview {
-  box-sizing: border-box;
-  max-width: 6rem;
-  object-fit: contain;
-  border-radius: pdz.shape(corner-xs);
-  box-shadow:
-    0 5px 5px -3px rgba(0, 0, 0, 0.2),
-    0 8px 10px 1px rgba(0, 0, 0, 0.14),
-    0 3px 14px 2px rgba(0, 0, 0, 0.12);
-}
+  &__segment {
+    @include flat-button(
+      (
+        padding: pdz.space(3xs) pdz.space(xs),
+        border-radius: pdz.shape(corner-xs),
+        color: pdz.color(on-surface-variant),
+        background-hover: pdz.color(surface-container),
+        box-shadow-hover: none,
+      )
+    );
+    @include pdz.apply-typography(label-xs);
 
-.cdk-drag-animating {
-  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
-}
+    &--active {
+      border-color: pdz.color(primary-border);
+      background: pdz.color(primary-container);
+      color: pdz.color(on-primary-container);
 
-.team-list.cdk-drop-list-dragging .team-item:not(.cdk-drag-placeholder) {
-  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
-}
+      &:not(:disabled):not(.disabled):hover {
+        background: pdz.color(primary-container-hover);
+      }
+    }
+  }
 
-.cdk-drag-placeholder {
-  opacity: 0;
-}
+  &__list {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    padding: pdz.space(sm);
+    display: flex;
+    flex-direction: column;
+    gap: pdz.space(xs);
+  }
 
-.sprite-wrapper {
-  width: 4rem;
-  height: 4rem;
+  &__row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: pdz.space(sm);
+    padding: pdz.space(xs) pdz.space(sm);
+    border: 1px solid pdz.color(outline-variant);
+    border-radius: pdz.shape(corner-sm);
+    background: pdz.color(surface-container-lowest);
+
+    &--reserve {
+      background: pdz.color(surface-container-low);
+      border-style: dashed;
+    }
+
+    &.cdk-drag-placeholder {
+      opacity: 0;
+    }
+
+    &.cdk-drag-animating {
+      transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+    }
+  }
+
+  &__list.cdk-drop-list-dragging &__row:not(.cdk-drag-placeholder) {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+  }
+
+  &__handle {
+    @include icon-button(
+      (
+        width: 1.5rem,
+        height: 1.5rem,
+        padding: 0,
+        background-hover: pdz.color(surface-container-high),
+      )
+    );
+    flex-shrink: 0;
+    color: pdz.color(on-surface-variant);
+    cursor: move;
+  }
+
+  &__pokemon {
+    flex: 1 1 10rem;
+    min-width: 0;
+  }
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    gap: pdz.space(sm);
+    margin-left: auto;
+  }
+
+  &__value {
+    display: flex;
+    flex-direction: column;
+    gap: pdz.space(3xs);
+    width: 4.5rem;
+  }
+
+  &__value-label {
+    color: pdz.color(on-surface-variant);
+    @include pdz.apply-typography(label-2xs);
+  }
+
+  &__value-input {
+    width: 100%;
+    padding: pdz.space(2xs) pdz.space(xs);
+    border: 1px solid pdz.color(outline);
+    border-radius: pdz.shape(corner-xs);
+    background: pdz.color(surface);
+    color: pdz.color(on-surface);
+    font: inherit;
+    text-align: center;
+    appearance: textfield;
+
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+      appearance: none;
+      margin: 0;
+    }
+
+    &:focus {
+      outline: 2px solid pdz.color(primary);
+      outline-offset: 1px;
+      border-color: pdz.color(primary);
+    }
+  }
+
+  &__flag {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: pdz.space(3xs);
+    cursor: pointer;
+
+    input[type="checkbox"] {
+      width: 1rem;
+      height: 1rem;
+      accent-color: pdz.color(primary);
+      cursor: pointer;
+    }
+  }
+
+  &__flag-label {
+    color: pdz.color(on-surface-variant);
+    @include pdz.apply-typography(label-2xs);
+  }
+
+  &__totals {
+    flex-shrink: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: pdz.space(sm) pdz.space(lg);
+    margin: pdz.space(sm) pdz.space(2xs) 0;
+    padding: pdz.space(sm) pdz.space(md);
+    border: 1px solid pdz.color(outline-variant);
+    border-radius: pdz.shape(corner-sm);
+    background: pdz.color(surface-container-low);
+  }
+
+  &__total {
+    display: flex;
+    align-items: baseline;
+    gap: pdz.space(xs);
+
+    dt {
+      color: pdz.color(on-surface-variant);
+      font-weight: var(--pdz-font-weight-bold);
+      @include pdz.apply-typography(label-sm);
+    }
+
+    dd {
+      margin: 0;
+      @include pdz.apply-typography(body-sm);
+    }
+  }
+
+  &__drag-preview {
+    width: 4rem;
+    height: 4rem;
+    border-radius: pdz.shape(corner-xs);
+    box-shadow: var(--pdz-level-3);
+  }
 }

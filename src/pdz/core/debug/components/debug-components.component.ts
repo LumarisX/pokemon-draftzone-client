@@ -34,7 +34,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSliderModule } from '@angular/material/slider';
-import { PokemonSelectComponent } from '@pdz/shared/dropdowns/pokemon-select/pokemon-select.component';
+import { PokemonSearchComponent } from '@pdz/shared/dropdowns/pokemon-search/pokemon-search.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
 
@@ -85,7 +85,7 @@ export interface Task {
     CdkDragHandle,
     MatDatepickerModule,
     MatExpansionModule,
-    PokemonSelectComponent,
+    PokemonSearchComponent,
     ReactiveFormsModule,
     LoadingComponent,
   ],

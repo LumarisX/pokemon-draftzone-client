@@ -1,87 +1,92 @@
-<div class="coverage-main">
-  @if (coverage) {
-    <div class="chart-tooltip"></div>
-    <div class="charts-container">
-      <div class="pokemon-charts-container outlined">
-        <div class="coverage-container">
-          <div class="pokemon-charts-title font-nasa">
-            Pokémon Move Coverage
+@if (coverage) {
+  <pdz-planner-widget widgetId="coverage" label="Coverage" #widget>
+    @if (!widget.collapsed()) {
+      <div class="chart-tooltip"></div>
+      <div class="charts-container">
+        <div class="pokemon-charts-container">
+          <div class="coverage-container">
+            <div class="section-title font-nasa">Pokémon Move Coverage</div>
+            <div class="coverage-charts-wrapper">
+              @for (pokemon of coverage.team; track $index) {
+                <div
+                  class="chart-wrapper"
+                  [ngClass]="{ hidden: pokemon === selected }"
+                >
+                  <pdz-coverage-chart
+                    (click)="$event.stopPropagation(); selected = pokemon"
+                    [data]="pokemon"
+                  ></pdz-coverage-chart>
+                </div>
+              }
+            </div>
           </div>
-          <div class="coverage-charts-wrapper">
-            @for (pokemon of coverage.team; track $index) {
-              <div
-                class="chart-wrapper"
-                [ngClass]="{ hidden: pokemon === selected }"
-              >
+
+          <div class="selected-container">
+            @if (selected) {
+              <div class="selected-wrapper">
                 <pdz-coverage-chart
-                  (click)="$event.stopPropagation(); selected = pokemon"
-                  [data]="pokemon"
+                  [data]="selected"
+                  [interactive]="true"
                 ></pdz-coverage-chart>
               </div>
             }
           </div>
         </div>
 
-        <div class="selected-container">
-          @if (selected) {
-            <div class="selected-wrapper">
-              <pdz-coverage-chart
-                [data]="selected"
-                [interactive]="true"
-              ></pdz-coverage-chart>
+        <div class="team-chart-container">
+          <div class="section-title font-nasa">Team Coverage</div>
+          <div
+            class="team-options-container"
+            [attr.data-selected]="category.value"
+          >
+            <div
+              class="team-option"
+              (click)="category.next('physical')"
+              [ngClass]="{
+                'team-selected': category.value === 'physical',
+              }"
+            >
+              <img src="../../../assets/icons/moves/move-physical.png" />
+              Physical
             </div>
-          }
+            <div
+              class="team-option"
+              (click)="category.next('mixed')"
+              [ngClass]="{
+                'team-selected': category.value === 'mixed',
+              }"
+            >
+              <img src="../../../assets/icons/moves/move-physical.png" />
+              Mixed
+              <img src="../../../assets/icons/moves/move-special.png" />
+            </div>
+            <div
+              class="team-option"
+              (click)="category.next('special')"
+              [ngClass]="{
+                'team-selected': category.value === 'special',
+              }"
+            >
+              Special
+              <img src="../../../assets/icons/moves/move-special.png" />
+            </div>
+          </div>
+          <pdz-coverage-team-chart [data]="teamData"></pdz-coverage-team-chart>
+          <label class="slider-container">
+            <span>Minimum Move BP</span>
+            <pdz-slider
+              [min]="20"
+              [max]="120"
+              [step]="10"
+              [showValue]="true"
+              [formControl]="sliderControl"
+            ></pdz-slider>
+          </label>
         </div>
       </div>
-      <div class="team-chart-container outlined">
-        <div class="team-chart-title font-nasa">Team Coverage</div>
-        <div
-          class="team-options-container"
-          [attr.data-selected]="category.value"
-        >
-          <div
-            class="team-option"
-            (click)="category.next('physical')"
-            [ngClass]="{
-              'team-selected': category.value === 'physical',
-            }"
-          >
-            <img src="../../../assets/icons/moves/move-physical.png" />
-            Physical
-          </div>
-          <div
-            class="team-option"
-            (click)="category.next('mixed')"
-            [ngClass]="{
-              'team-selected': category.value === 'mixed',
-            }"
-          >
-            <img src="../../../assets/icons/moves/move-physical.png" />
-            Mixed
-            <img src="../../../assets/icons/moves/move-special.png" />
-          </div>
-          <div
-            class="team-option"
-            (click)="category.next('special')"
-            [ngClass]="{
-              'team-selected': category.value === 'special',
-            }"
-          >
-            Special
-            <img src="../../../assets/icons/moves/move-special.png" />
-          </div>
-        </div>
-        <pdz-coverage-team-chart [data]="teamData"></pdz-coverage-team-chart>
-        <div class="slider-container">
-          <span>Minimum Move BP</span>
-          <mat-slider min="20" max="120" step="10" showTickMarks discrete>
-            <input [formControl]="sliderControl" matSliderThumb />
-          </mat-slider>
-        </div>
-      </div>
-    </div>
-  }
-</div>
+    }
+  </pdz-planner-widget>
+}
 <svg xmlns="http://www.w3.org/2000/svg" width="0" height="0">
   <defs>
     <filter id="background-shadow" x="-50%" y="-50%" width="200%" height="200%">

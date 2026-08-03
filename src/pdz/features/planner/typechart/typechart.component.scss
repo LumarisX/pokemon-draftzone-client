@@ -1,38 +1,9 @@
 @use "pdz-theming" as pdz;
 
-.content-container {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  min-width: fit-content;
-  height: 100%;
-  min-height: fit-content;
-  align-items: center;
-  > :not([hidden]) ~ :not([hidden]) {
-    margin-top: 1rem;
-  }
-}
+:host {
+  display: block;
+  max-width: 100%;
 
-.table-wrapper {
-  padding: pdz.space(md);
-  min-width: fit-content;
-  width: fit-content;
-  height: fit-content;
-  border-radius: pdz.shape(corner-lg);
-  background-color: pdz.color(surface);
-  box-shadow: var(--pdz-level-3);
-}
-
-.title-container {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  padding: 0 1rem 0.5rem;
-  color: pdz.color(primary);
-  font-weight: var(--pdz-font-weight-bold);
-
-  .table-label {
-    font-size: 1.2rem;
-    font-family: var(--pdz-font-fancy);
-  }
+  --pdz-cmp-typechart-stat-hover: #{pdz.color(primary-container)};
+  --pdz-cmp-typechart-border-hover: #{pdz.color(primary-border)};
 }

@@ -1,136 +1,153 @@
 @if (plannerForm) {
-  <form
-    [formGroup]="plannerForm"
-    class="planner-form"
-    (keydown.enter)="$event.preventDefault()"
-  >
-    <div formArrayName="drafts" class="planner-container">
-      <div class="tab-bar">
-        <div class="tab-wrapper scrollbar-hidden">
-          @for (
-            draftCtrl of draftArray.controls;
-            track draftCtrl.controls.draftName
-          ) {
-            <div
-              [class.selected]="$index === selectedDraft.value"
-              class="draft-tab tab"
-              [formGroupName]="$index"
-              (click)="selectedDraft.next($index)"
+  <div class="planner" (keydown.enter)="$event.preventDefault()">
+    <div class="planner__drafts">
+      <div class="planner__draft-list scrollbar-hidden">
+        @for (draftCtrl of draftArray.controls; track draftCtrl) {
+          <div
+            class="planner__draft"
+            [class.planner__draft--active]="$index === selectedDraft()"
+            (click)="selectDraft($index)"
+          >
+            <input
+              class="planner__draft-name"
+              type="text"
+              spellcheck="false"
+              aria-label="Draft plan name"
+              [formControl]="draftCtrl.controls.draftName"
+            />
+            <button
+              type="button"
+              class="planner__draft-action"
+              aria-label="Duplicate draft plan"
+              [disabled]="isAtDraftLimit"
+              (click)="copyToNew($index); $event.stopPropagation()"
             >
-              <input formControlName="draftName" />
-
-              <mat-icon (click)="copyToNew($index)">content_copy</mat-icon>
-              @if (draftArray.controls.length > 1) {
-                <mat-icon (click)="deletePlan($index)">delete_forever</mat-icon>
-              }
-            </div>
-          }
-        </div>
-        <button
-          (click)="addDraft(this.createDraftFormGroup({}))"
-          class="add-tab tab"
-        >
-          <mat-icon>add</mat-icon>
-        </button>
-      </div>
-      <div [formGroup]="draftFormGroup" class="widget-container">
-        @if (isLargeScreen) {
-          <mat-tab-group mat-stretch-tabs="false" class="tab-group-compact">
-            <mat-tab label="Team">
-              <pdz-planner-team
-                [draftFormGroup]="draftFormGroup"
-              ></pdz-planner-team>
-            </mat-tab>
-            <mat-tab label="Settings">
-              <pdz-planner-settings
-                [draftFormGroup]="draftFormGroup"
-              ></pdz-planner-settings>
-            </mat-tab>
-          </mat-tab-group>
+              <pdz-icon name="content_copy" [size]="18"></pdz-icon>
+            </button>
+            @if (draftArray.controls.length > 1) {
+              <button
+                type="button"
+                class="planner__draft-action planner__draft-action--danger"
+                aria-label="Delete draft plan"
+                (click)="deletePlan($index); $event.stopPropagation()"
+              >
+                <pdz-icon name="delete_forever" [size]="18"></pdz-icon>
+              </button>
+            }
+          </div>
         }
-        <mat-tab-group
-          mat-stretch-tabs="false"
-          [(selectedIndex)]="tabIndex"
-          class="tab-group-grow"
-          mat-align-tabs="start"
+      </div>
+      <button
+        type="button"
+        class="planner__add"
+        aria-label="Add draft plan"
+        [disabled]="isAtDraftLimit"
+        [title]="
+          isAtDraftLimit
+            ? 'Delete a draft plan before adding another'
+            : 'Add draft plan'
+        "
+        (click)="addDraft()"
+      >
+        <pdz-icon name="add" [size]="20"></pdz-icon>
+      </button>
+
+      <p class="planner__save-state" role="status" aria-live="polite">
+        @if (hasUnsavedEdits()) {
+          <pdz-icon name="sync" [size]="16"></pdz-icon>
+          Saving…
+        } @else {
+          <pdz-icon name="check" [size]="16"></pdz-icon>
+          Saved
+        }
+      </p>
+    </div>
+
+    <div class="planner__body">
+      @if (isLargeScreen()) {
+        <section
+          class="planner__panel"
+          [style.flex]="panelFlex()"
+          aria-label="Draft plan editor"
         >
-          @if (!isLargeScreen) {
-            <mat-tab label="Team">
-              <ng-template matTabContent>
-                <pdz-planner-team
-                  [draftFormGroup]="draftFormGroup"
-                ></pdz-planner-team>
-              </ng-template>
-            </mat-tab>
-            <mat-tab label="Settings">
-              <ng-template matTabContent>
-                <pdz-planner-settings
-                  [draftFormGroup]="draftFormGroup"
-                ></pdz-planner-settings>
-              </ng-template>
-            </mat-tab>
+          <div class="planner__panel-content">
+            <pdz-planner-settings
+              [draftFormGroup]="draftFormGroup"
+            ></pdz-planner-settings>
+            <pdz-planner-team
+              [draftFormGroup]="draftFormGroup"
+            ></pdz-planner-team>
+          </div>
+        </section>
+
+        <div
+          class="planner__splitter"
+          [class.planner__splitter--resizing]="isResizing()"
+          role="separator"
+          aria-orientation="vertical"
+          aria-label="Resize draft plan editor"
+          tabindex="0"
+          (pointerdown)="onPanelResizeStart($event)"
+          (keydown)="onPanelSplitterKeyDown($event)"
+        >
+          <span class="planner__splitter-grip"></span>
+        </div>
+      }
+
+      <section class="planner__main" aria-label="Draft analysis">
+        <div class="planner__board">
+          @if (!isLargeScreen()) {
+            <pdz-planner-settings
+              [draftFormGroup]="draftFormGroup"
+            ></pdz-planner-settings>
+            <pdz-planner-team
+              [draftFormGroup]="draftFormGroup"
+            ></pdz-planner-team>
           }
-          @if (summary) {
-            <mat-tab label="Summary" [tabIndex]="0">
-              <ng-template matTabContent>
-                <div class="tab-container">
-                  <pdz-planner-summary
-                    [summary]="summary"
-                  ></pdz-planner-summary>
-                </div>
-              </ng-template>
-            </mat-tab>
+
+          @if (summary(); as summaryData) {
+            <pdz-planner-summary [summary]="summaryData"></pdz-planner-summary>
           }
-          @if (typechart) {
-            <mat-tab label="Typechart">
-              <ng-template matTabContent>
-                <div class="tab-container">
-                  <pdz-planner-typechart
-                    [typechart]="typechart"
-                  ></pdz-planner-typechart>
-                </div>
-              </ng-template>
-            </mat-tab>
+          @if (typechart().team.length) {
+            <pdz-planner-typechart
+              [typechart]="typechart()"
+            ></pdz-planner-typechart>
           }
-          @if (movechart) {
-            <mat-tab label="Moves">
-              <ng-template matTabContent>
-                <div class="tab-container">
-                  <pdz-planner-moves
-                    [movechart]="movechart"
-                  ></pdz-planner-moves>
-                </div>
-              </ng-template>
-            </mat-tab>
+          @if (movechart(); as movechartData) {
+            <pdz-planner-moves [movechart]="movechartData"></pdz-planner-moves>
           }
-          @if (coverage) {
-            <mat-tab label="Coverage">
-              <ng-template matTabContent>
-                <div class="coverage-container">
-                  <pdz-planner-coverage
-                    class="coverage"
-                    [coverage]="coverage"
-                  ></pdz-planner-coverage>
-                </div>
-              </ng-template>
-            </mat-tab>
+          @if (coverage(); as coverageData) {
+            <pdz-planner-coverage
+              [coverage]="coverageData"
+            ></pdz-planner-coverage>
           }
-          <mat-tab label="Find">
-            <ng-template matTabContent>
+
+          <pdz-planner-widget
+            class="planner__finder"
+            widgetId="find"
+            label="Find Pokémon"
+            [fill]="true"
+            #finder
+          >
+            @if (!finder.collapsed()) {
               <pdz-pokemon-search-core
-                class="finder"
                 [rulesetId]="
                   draftFormGroup.controls.ruleset.value || 'Gen9 NatDex'
                 "
               ></pdz-pokemon-search-core>
-            </ng-template>
-          </mat-tab>
-        </mat-tab-group>
-      </div>
+            }
+          </pdz-planner-widget>
+
+          @if (!hasAnalysis()) {
+            <p class="planner__empty">
+              Add Pokémon to your team to see summary, typing, move and coverage
+              breakdowns here.
+            </p>
+          }
+        </div>
+      </section>
     </div>
-  </form>
+  </div>
 } @else {
   <pdz-loading></pdz-loading>
 }
-
-<!-- {{ plannerForm.value | json }} {{ tabSelected | json }} -->

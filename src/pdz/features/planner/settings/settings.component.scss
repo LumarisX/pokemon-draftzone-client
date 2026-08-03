@@ -1,13 +1,15 @@
 @use "pdz-theming" as pdz;
+@use "mixins/buttons" as *;
 
 :host {
   display: block;
+  max-width: 100%;
 }
 
-.settings {
+.planner-settings {
   display: grid;
   gap: pdz.space(md);
-  padding: pdz.space(md);
+  width: 100%;
 
   &__row {
     display: flex;
@@ -16,101 +18,26 @@
 
     pdz-format-select,
     pdz-ruleset-select {
-      flex: 1;
-    }
-  }
-
-  &__field {
-    display: grid;
-    gap: pdz.space(2xs);
-    flex: 1;
-    min-width: 8rem;
-
-    &.is-hidden {
-      visibility: hidden;
-      pointer-events: none;
-    }
-  }
-
-  &__segmented {
-    display: inline-flex;
-    align-items: center;
-    gap: pdz.space(2xs);
-    padding: pdz.space(2xs);
-    border: 1px solid pdz.color(outline);
-    border-radius: pdz.shape(corner-sm);
-    background: pdz.color(surface);
-  }
-
-  &__seg-btn {
-    flex: 1;
-    padding: pdz.space(2xs) pdz.space(sm);
-    border: 1px solid transparent;
-    border-radius: pdz.shape(corner-xs);
-    background: transparent;
-    color: pdz.color(on-surface-variant);
-    font: inherit;
-    cursor: pointer;
-    transition:
-      background 0.1s,
-      color 0.1s;
-
-    &.is-active {
-      border-color: pdz.color(primary-border);
-      background: pdz.color(primary-container);
-      color: pdz.color(on-primary-container);
-    }
-
-    &:hover:not(.is-active) {
-      background: pdz.color(surface-container);
+      flex: 1 1 8rem;
     }
   }
 
   &__actions {
-    margin-top: pdz.space(md);
     display: flex;
     justify-content: center;
+    margin-top: pdz.space(xs);
   }
 
-  &__save-button {
-    display: inline-flex;
-    align-items: center;
-    padding: pdz.space(xs) pdz.space(md);
-    border: 1px solid pdz.color(primary-border);
-    border-radius: pdz.shape(corner-sm);
-    background: pdz.color(primary-container);
-    color: pdz.color(on-primary-container);
-    text-decoration: none;
-    font: inherit;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background 0.1s;
-
-    &:hover {
-      background: pdz.color(primary-container-hover);
-    }
-  }
-}
-
-label {
-  font-weight: 700;
-  font-size: 0.875rem;
-  color: pdz.color(on-surface-variant);
-}
-
-input,
-select {
-  width: 100%;
-  padding: pdz.space(xs) pdz.space(sm);
-  border: 1px solid pdz.color(outline);
-  border-radius: pdz.shape(corner-sm);
-  background: pdz.color(surface);
-  color: pdz.color(on-surface);
-  font: inherit;
-
-  &:focus {
-    outline: 2px solid pdz.color(primary);
-    outline-offset: 1px;
-    border-color: pdz.color(primary);
+  &__save {
+    @include flat-button-primary(
+      (
+        padding: pdz.space(xs) pdz.space(md),
+        border-width: 1px,
+        border-color: pdz.color(primary-border),
+        background: pdz.color(primary-container),
+        color: pdz.color(on-primary-container),
+        font-weight: 700,
+      )
+    );
   }
 }

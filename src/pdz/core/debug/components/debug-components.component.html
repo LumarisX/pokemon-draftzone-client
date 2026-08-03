@@ -43,7 +43,12 @@
             <mat-label>Number Input</mat-label>
             <input matInput type="number" />
           </mat-form-field>
-          <pdz-pokemon-select ruleset="Gen9 NatDex"></pdz-pokemon-select>
+          <pdz-pokemon-search ruleset="Gen9 NatDex"></pdz-pokemon-search>
+          <pdz-pokemon-search
+            mode="select"
+            ruleset="Gen9 NatDex"
+            placeholder="Select Pokémon..."
+          ></pdz-pokemon-search>
           <mat-form-field>
             <mat-label>Select</mat-label>
             <mat-select>

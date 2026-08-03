@@ -1,167 +1,273 @@
 @use "pdz-theming" as pdz;
+@use "mixins/buttons" as *;
+@use "mixins/widgets" as *;
 
-.planner-form {
+:host {
+  display: block;
   height: 100%;
+}
 
-  .planner-container {
+.planner {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+
+  &__drafts {
     display: flex;
-    flex-direction: column;
-    height: 100%;
+    flex-shrink: 0;
+    align-items: flex-end;
+    gap: pdz.space(xs);
+    padding: 0 pdz.space(sm);
+    max-width: 100%;
+    overflow-y: clip;
+    border-bottom: 2px solid pdz.color(outline);
+  }
 
-    .widget-container {
-      display: flex;
-      min-width: 0;
-      overflow: auto;
-      height: 100%;
+  &__draft-list {
+    display: flex;
+    align-items: flex-end;
+    gap: pdz.space(xs);
+    height: 2.5rem;
+    overflow-x: auto;
+  }
 
-      > :not([hidden]) ~ :not([hidden]) {
-        border-left: 2px solid pdz.color(outline);
+  &__draft {
+    display: flex;
+    align-items: center;
+    gap: pdz.space(2xs);
+    min-height: 1.5rem;
+    padding: pdz.space(xs) pdz.space(xs) 0;
+    border-radius: pdz.shape(corner-sm) pdz.shape(corner-sm) 0 0;
+    background-color: pdz.color(secondary-container);
+    color: pdz.color(on-secondary-container);
+    box-shadow: var(--pdz-level-1);
+    cursor: pointer;
+    @include pdz.apply-typography(label-xs);
+    transition:
+      min-height 0.2s ease,
+      box-shadow 0.2s ease,
+      color 0.2s ease,
+      background-color 0.2s ease,
+      font-size 0.2s ease;
+
+    &--active {
+      min-height: 2rem;
+      background-color: pdz.color(primary-container);
+      color: pdz.color(on-primary-container);
+      box-shadow: var(--pdz-level-2);
+      @include pdz.apply-typography(label-sm);
+
+      .planner__draft-name:focus {
+        margin-bottom: 0;
+        border-bottom: 1px solid currentcolor;
       }
     }
   }
-}
 
-.hide-on-big {
-  display: block;
+  &__draft-name {
+    width: 6rem;
+    padding: 0 pdz.space(xs);
+    margin-bottom: 1px;
+    border: none;
+    background: transparent;
+    color: inherit;
+    font-family: var(--pdz-font-fancy);
+    font-size: inherit;
+    line-height: 1.25rem;
+    text-overflow: ellipsis;
 
-  @media (min-width: 768px) {
-    display: none;
-  }
-}
-
-.tab-bar {
-  padding: 0 pdz.space(sm);
-  max-width: 100%;
-  height: fit-content;
-  display: flex;
-  flex-shrink: 0;
-  overflow-y: clip;
-  height: fit-content;
-  border-width: 0 0 2px;
-  gap: pdz.space(xs);
-  border-bottom: 2px solid pdz.color(outline);
-  align-items: end;
-
-  .tab {
-    background-color: pdz.color(secondary-container);
-    color: pdz.color(on-secondary-container);
-    border-radius: pdz.shape(corner-sm) pdz.shape(corner-sm) 0 0;
-    padding: pdz.space(xs) pdz.space(xs) 0;
-    font-size: var(--pdz-font-size-xs);
-    height: fit-content;
-    min-height: 1.5rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    mat-icon {
-      font-size: 1.2rem;
-      height: fit-content;
-      width: fit-content;
-      border-radius: pdz.shape(corner-full);
+    &:focus {
+      outline: none;
     }
+  }
+
+  &__draft-action {
+    @include icon-button(
+      (
+        width: 1.5rem,
+        height: 1.5rem,
+        padding: 0,
+        border-radius: pdz.shape(corner-full),
+        background-hover: pdz.color(surface-container-high),
+      )
+    );
+    color: inherit;
+
+    &:not(:disabled):hover {
+      color: pdz.color(primary);
+    }
+
+    &--danger:not(:disabled):hover {
+      color: pdz.color(error);
+    }
+  }
+
+  &__save-state {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: pdz.space(3xs);
+    margin: 0 0 pdz.space(2xs) auto;
+    padding-left: pdz.space(sm);
+    color: pdz.color(on-surface-variant);
+    white-space: nowrap;
+    @include pdz.apply-typography(label-2xs);
+  }
+
+  &__add {
+    @include icon-button-secondary(
+      (
+        width: 2rem,
+        height: 1.75rem,
+        padding: 0,
+        border-radius: pdz.shape(corner-sm) pdz.shape(corner-sm) 0 0,
+        box-shadow-hover: var(--pdz-level-2),
+      )
+    );
+    flex-shrink: 0;
     box-shadow: var(--pdz-level-1);
   }
 
-  .tab-wrapper {
-    height: 2.5rem;
-
+  &__body {
     display: flex;
-    overflow-x: auto;
-    gap: pdz.space(xs);
-    align-items: end;
+    flex: 1 1 auto;
+    min-width: 0;
+    min-height: 0;
+  }
 
-    .draft-tab {
-      transition:
-        height 0.2s ease,
-        min-height 0.2s ease,
-        box-shadow 0.2s ease,
-        color 0.2s ease,
-        border-color 0.2s ease,
-        background-color 0.2s ease,
-        font-size 0.2s ease;
-      input {
-        &:focus {
-          outline: none;
-        }
-        width: 6rem;
-        line-height: 1.25rem;
-        padding: 0px pdz.space(xs);
-        margin-bottom: 1px;
-        background: inherit;
-        text-overflow: ellipsis;
-        font-family: var(--pdz-font-fancy);
-      }
+  &__panel {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+  }
 
-      &.selected {
-        background-color: pdz.color(primary-container);
-        color: pdz.color(on-primary-container);
-        box-shadow: var(--pdz-level-2);
-        font-size: var(--pdz-font-size-sm);
-        min-height: 2rem;
-        mat-icon {
-          &:hover {
-            color: pdz.color(primary);
-          }
-        }
-        input {
-          &:focus {
-            margin-bottom: 0px;
-            border-bottom: 1px solid;
-          }
-        }
+  &__main {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+    overflow-y: auto;
+  }
+
+  // The editor column: settings sits on top, the team list takes the rest and
+  // scrolls on its own so the panel itself never scrolls.
+  &__panel-content {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: pdz.space(md);
+    min-height: 0;
+    padding: pdz.space(md);
+    overflow: hidden;
+
+    > * {
+      width: 100%;
+      padding: pdz.space(md);
+      border-radius: pdz.shape(corner-lg);
+      background-color: pdz.color(surface);
+      box-shadow: var(--pdz-level-3);
+    }
+
+    pdz-planner-settings {
+      flex: 0 0 auto;
+    }
+
+    pdz-planner-team {
+      flex: 1 1 auto;
+      min-height: 0;
+    }
+  }
+
+  // The analysis board: every widget rendered at once, wrapping to fill.
+  &__board {
+    @include widget-container();
+    padding: pdz.space(lg) pdz.space(sm);
+
+    @media (max-width: 768px) {
+      padding: pdz.space(sm);
+    }
+
+    // Only rendered here below the panel breakpoint, where they should span
+    // the board rather than shrink to their content.
+    pdz-planner-settings,
+    pdz-planner-team {
+      width: 100%;
+      max-width: 32rem;
+    }
+
+    // Nested so it outranks the card chrome `widget-container()` puts on `> *`.
+    .planner__empty {
+      flex-basis: 100%;
+      width: auto;
+      margin: 0;
+      padding: pdz.space(lg);
+      color: pdz.color(on-surface-variant);
+      text-align: center;
+      background: none;
+      box-shadow: none;
+      @include pdz.apply-typography(body-sm);
+    }
+
+    .planner__finder {
+      @include widget-card();
+      width: 44rem;
+      max-width: 100%;
+
+      .widget-body {
+        min-height: 28rem;
+        overflow-x: visible;
       }
     }
   }
-}
 
-.coverage-container {
-  height: fit-content;
-}
+  &__splitter {
+    position: relative;
+    display: flex;
+    flex: 0 0 8px;
+    align-items: center;
+    justify-content: center;
+    margin: pdz.space(xs) 0;
+    border-radius: pdz.shape(corner-full);
+    cursor: col-resize;
+    touch-action: none;
+    transition: background-color 0.15s ease;
 
-.tab-container {
-  padding: pdz.space(lg);
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-}
-
-mat-tab {
-  height: fit-content;
-}
-
-.tab-group-compact {
-  width: auto;
-  height: 100%;
-  flex-grow: 0;
-}
-
-.tab-group-grow {
-  flex: 1 1 auto;
-  height: 100%;
-  overflow: auto;
-  min-width: 0;
-
-  ::ng-deep {
-    .mat-mdc-tab-body-wrapper {
-      flex: 1;
-      height: 100%;
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background-color: pdz.color(outline-variant);
     }
 
-    .mat-mdc-tab-body,
-    .mat-mdc-tab-body-content {
-      height: 100%;
+    &:hover,
+    &--resizing {
+      background-color: pdz.color(primary-subtle);
+    }
+
+    &:focus-visible {
+      outline: 2px solid pdz.color(primary);
+      outline-offset: 2px;
     }
   }
-}
 
-.finder {
-  height: 100%;
-  min-width: 100%;
-  overflow-y: auto;
-  padding: pdz.space(md);
-}
+  &__splitter-grip {
+    width: 4px;
+    height: 36px;
+    border-radius: pdz.shape(corner-full);
+    background-color: pdz.color(outline);
+    opacity: 0.7;
+    transition: background-color 0.15s ease;
 
-.coverage {
-  width: 100%;
-  overflow-y: auto;
+    .planner__splitter:hover &,
+    .planner__splitter--resizing & {
+      background-color: pdz.color(primary);
+      opacity: 1;
+    }
+  }
 }

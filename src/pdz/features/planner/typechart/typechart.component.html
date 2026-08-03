@@ -1,26 +1,18 @@
-<div class="content-container">
-  <div class="table-wrapper">
-    <div class="title-container">
-      <div class="table-label">Defensive Type Chart</div>
-      <div>
-        <mat-slide-toggle [(ngModel)]="abilities"></mat-slide-toggle>
-        Abilities
-      </div>
-    </div>
+<pdz-planner-widget widgetId="typechart" label="Defensive Type Chart" #widget>
+  <pdz-slide-toggle widget-options [(ngModel)]="abilities">
+    Abilities
+  </pdz-slide-toggle>
+
+  @if (!widget.collapsed()) {
     <pdz-typechart-core
       [typechart]="typechart"
       [abilities]="abilities"
       (togglePokemon)="typestats.summarize()"
     ></pdz-typechart-core>
-  </div>
-  <div class="table-wrapper">
-    <div class="title-container">
-      <div class="table-label">Team Typing Statistics</div>
-    </div>
     <pdz-typestats-core
       #typestats
       [typechart]="typechart"
       [abilities]="abilities"
     ></pdz-typestats-core>
-  </div>
-</div>
+  }
+</pdz-planner-widget>

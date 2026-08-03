@@ -11,11 +11,11 @@ import {
   inject,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { MatIconModule } from '@angular/material/icon';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 
 @Component({
   selector: 'pdz-slide-toggle',
-  imports: [MatIconModule],
+  imports: [IconComponent],
   templateUrl: './slide-toggle.component.html',
   styleUrls: ['./slide-toggle.component.scss'],
   providers: [
@@ -45,6 +45,12 @@ export class SlideToggleComponent implements ControlValueAccessor {
 
   private onChange = (value: boolean) => {};
   private onTouched = () => {};
+
+  get iconName(): string {
+    return this.checkedState
+      ? (this.onSVG ?? this.onIcon)
+      : (this.offSVG ?? this.offIcon);
+  }
 
   writeValue(value: boolean): void {
     this.checkedState = value;

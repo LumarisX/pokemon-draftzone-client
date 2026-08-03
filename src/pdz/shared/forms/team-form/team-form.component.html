@@ -43,15 +43,11 @@
     } @else {
       <div class="add-bar">
         <div>
-          <pdz-pokemon-select
-            #pokemonInput
+          <pdz-pokemon-search
             [ruleset]="ruleset"
-            (pokemonSelected)="
-              addPokemon($event); pokemonInput.clearSelection()
-            "
-            appearance="outline"
-            label="Add Pokemon"
-          ></pdz-pokemon-select>
+            placeholder="Add Pokémon..."
+            (pokemonSelected)="addPokemon($event)"
+          ></pdz-pokemon-search>
 
           <button
             mat-icon-button

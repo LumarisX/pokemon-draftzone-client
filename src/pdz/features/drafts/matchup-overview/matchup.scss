@@ -1,34 +1,10 @@
+@forward "mixins/widgets";
 @use "mixins/buttons" as *;
+@use "mixins/widgets" as *;
 @use "pdz-theming" as pdz;
 
 .widget-container {
-  width: fit-content;
-  max-width: 100%;
-  .widget-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-
-    padding: 0 1rem 0.5rem;
-    font-weight: var(--pdz-font-weight-bold);
-    .widget-label {
-      font-size: 1.2rem;
-      font-family: var(--pdz-font-fancy);
-    }
-
-    .widget-options {
-      display: flex;
-      align-items: center;
-      column-gap: 0.5rem;
-    }
-  }
-
-  .widget-body {
-    max-width: 100%;
-    width: 100%;
-    overflow-x: auto;
-  }
+  @include widget-card();
 }
 
 .matchup-main {
@@ -120,26 +96,5 @@
     font-size: 1rem;
     line-height: 1rem;
     color: pdz.color(on-surface);
-  }
-}
-
-@mixin widget-container() {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  max-height: fit-content;
-  height: fit-content;
-  align-items: start;
-  width: 100%;
-  gap: 1rem;
-  padding: 0 pdz.space(sm);
-
-  > * {
-    padding: pdz.space(md);
-    max-width: 100%;
-    width: fit-content;
-    border-radius: pdz.shape(corner-lg);
-    background-color: pdz.color(surface);
-    box-shadow: var(--pdz-level-3);
   }
 }

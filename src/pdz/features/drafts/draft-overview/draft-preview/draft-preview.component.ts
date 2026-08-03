@@ -9,7 +9,7 @@ import { DraftService } from '../draft.service';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
-import { LSDraftData } from '../../../planner/plannner.component';
+import { LSDraftData } from '../../../planner/planner.component';
 import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
 
 @Component({

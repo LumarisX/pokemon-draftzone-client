@@ -46,7 +46,7 @@ import { TERATYPES, TYPES } from '@pdz/shared/data';
 import { getPidByName } from '@pdz/shared/data/namedex';
 import { DraftPokemon } from '@pdz/features/drafts/draft.model';
 import { DataService } from '@pdz/core/services/data.service';
-import { PokemonSelectComponent } from '../../dropdowns/pokemon-select/pokemon-select.component';
+import { PokemonSearchComponent } from '../../dropdowns/pokemon-search/pokemon-search.component';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { SlideToggleComponent } from '../../inputs/slide-toggle/slide-toggle.component';
 
@@ -73,7 +73,7 @@ import { SlideToggleComponent } from '../../inputs/slide-toggle/slide-toggle.com
     CdkDropList,
     CdkDragHandle,
     CdkDragPreview,
-    PokemonSelectComponent,
+    PokemonSearchComponent,
   ],
   templateUrl: './team-form.component.html',
   styleUrl: './team-form.component.scss',

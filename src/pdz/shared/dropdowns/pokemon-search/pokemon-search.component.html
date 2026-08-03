@@ -1,32 +1,59 @@
 <div
   class="pokemon-search__field"
+  [class.pokemon-search__field--disabled]="disabled"
   cdkOverlayOrigin
   #trigger="cdkOverlayOrigin"
   #fieldEl
 >
-  <pdz-icon class="pokemon-search__icon" name="search" [size]="20"></pdz-icon>
-  <input
-    class="pokemon-search__input"
-    type="text"
-    spellcheck="false"
-    autocomplete="off"
-    [formControl]="query"
-    [placeholder]="placeholder"
-    (focus)="setOpen(true)"
-    (input)="setOpen(true)"
-    (blur)="onBlur()"
-    (keydown)="handleKeydown($event)"
-  />
-  @if (query.value) {
+  @if (showsSelection) {
+    <button
+      type="button"
+      class="pokemon-search__selection"
+      [disabled]="disabled"
+      (click)="beginEdit()"
+    >
+      <pdz-sprite
+        class="pokemon-search__selection-sprite"
+        flipped
+        [pokemon]="value!"
+      ></pdz-sprite>
+      <span class="pokemon-search__selection-name">{{ value!.name }}</span>
+    </button>
     <button
       type="button"
       class="pokemon-search__clear"
-      aria-label="Clear search"
-      (mousedown)="$event.preventDefault()"
-      (click)="clear()"
+      aria-label="Clear selection"
+      [disabled]="disabled"
+      (click)="clearSelection($event)"
     >
       <pdz-icon name="close" [size]="18"></pdz-icon>
     </button>
+  } @else {
+    <pdz-icon class="pokemon-search__icon" name="search" [size]="20"></pdz-icon>
+    <input
+      #inputEl
+      class="pokemon-search__input"
+      type="text"
+      spellcheck="false"
+      autocomplete="off"
+      [formControl]="query"
+      [placeholder]="placeholder"
+      (focus)="setOpen(true)"
+      (input)="setOpen(true)"
+      (blur)="onBlur()"
+      (keydown)="handleKeydown($event)"
+    />
+    @if (query.value) {
+      <button
+        type="button"
+        class="pokemon-search__clear"
+        aria-label="Clear search"
+        (mousedown)="$event.preventDefault()"
+        (click)="clear()"
+      >
+        <pdz-icon name="close" [size]="18"></pdz-icon>
+      </button>
+    }
   }
 </div>
 
@@ -61,12 +88,16 @@
           (click)="selectOption(option)"
         >
           @if (costOf(option) !== undefined) {
-            <span class="pokemon-search__option-cost">{{ costOf(option) }}</span>
+            <span class="pokemon-search__option-cost">{{
+              costOf(option)
+            }}</span>
           }
           <pdz-sprite flipped [pokemon]="option"></pdz-sprite>
           <span class="pokemon-search__option-name">{{ option.name }}</span>
           @if (tierOf(option)) {
-            <span class="pokemon-search__option-tier">{{ tierOf(option) }}</span>
+            <span class="pokemon-search__option-tier">{{
+              tierOf(option)
+            }}</span>
           }
         </div>
       </cdk-virtual-scroll-viewport>

@@ -1,5 +1,9 @@
 @if (movechart) {
-  <div class="main-container">
-    <pdz-moves-core [movechart]="movechart"></pdz-moves-core>
-  </div>
+  <pdz-planner-widget widgetId="moves" label="Move Pool" #widget>
+    @if (!widget.collapsed()) {
+      <div class="movechart-wrapper">
+        <pdz-moves-core [movechart]="movechart"></pdz-moves-core>
+      </div>
+    }
+  </pdz-planner-widget>
 }

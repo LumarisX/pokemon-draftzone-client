@@ -7,24 +7,33 @@ import {
   Component,
   ElementRef,
   EventEmitter,
+  forwardRef,
   Input,
   OnDestroy,
   OnInit,
   Output,
   ViewChild,
+  inject,
 } from '@angular/core';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { BehaviorSubject, Subject, combineLatest } from 'rxjs';
+import {
+  ControlValueAccessor,
+  FormControl,
+  NG_VALUE_ACCESSOR,
+  ReactiveFormsModule,
+} from '@angular/forms';
+import { DataService } from '@pdz/core/services/data.service';
+import { DraftPokemon } from '@pdz/features/drafts/draft.model';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
+import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
+import { BehaviorSubject, Observable, Subject, combineLatest, of } from 'rxjs';
 import {
   debounceTime,
   distinctUntilChanged,
   map,
   startWith,
+  switchMap,
   takeUntil,
 } from 'rxjs/operators';
-import { DraftPokemon } from '@pdz/features/drafts/draft.model';
-import { IconComponent } from '@pdz/shared/images/icon/icon.component';
-import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 
 const ITEM_SIZE = 44;
 const MAX_LIST_HEIGHT = 308;
@@ -46,21 +55,47 @@ export type PokemonSearchOption = DraftPokemon & {
   ],
   templateUrl: './pokemon-search.component.html',
   styleUrl: './pokemon-search.component.scss',
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => PokemonSearchComponent),
+      multi: true,
+    },
+  ],
 })
-export class PokemonSearchComponent implements OnInit, OnDestroy {
-  private destroy$ = new Subject<void>();
+export class PokemonSearchComponent
+  implements ControlValueAccessor, OnInit, OnDestroy
+{
+  private readonly dataService = inject(DataService);
+  private readonly destroy$ = new Subject<void>();
+  private readonly ruleset$ = new BehaviorSubject<string | null>(null);
   private blurTimeout?: ReturnType<typeof setTimeout>;
 
-  @Input({ required: true }) options$!: BehaviorSubject<DraftPokemon[]>;
+  /** Supply either an explicit option stream or a `ruleset` to load one from. */
+  @Input() options$?: BehaviorSubject<DraftPokemon[]>;
+  @Input() set ruleset(value: string | null) {
+    this.ruleset$.next(value);
+  }
+
+  /**
+   * `search` clears the field after every pick, for repeated adds.
+   * `select` keeps the pick visible as the field's value, for form controls.
+   */
+  @Input() mode: 'search' | 'select' = 'search';
   @Input() placeholder = 'Search Pokémon...';
   @Input() takenIds: (string | null | undefined)[] = [];
 
   @Output() pokemonSelected = new EventEmitter<DraftPokemon>();
+  @Output() selectionCleared = new EventEmitter<void>();
 
   query = new FormControl<string>('', { nonNullable: true });
   filteredOptions = new BehaviorSubject<DraftPokemon[]>([]);
   highlightedIndex = 0;
   isOpen = false;
+  isEditing = false;
+  disabled = false;
+  value: DraftPokemon | null = null;
+
   /**
    * Field width captured when the panel opens. Measured on open rather than
    * bound to `offsetWidth` directly, so a field rendered into a layout that is
@@ -74,12 +109,18 @@ export class PokemonSearchComponent implements OnInit, OnDestroy {
   @ViewChild('fieldEl', { static: true })
   fieldEl?: ElementRef<HTMLElement>;
 
+  @ViewChild('inputEl')
+  inputEl?: ElementRef<HTMLInputElement>;
+
   @ViewChild('virtualScroll', { static: false })
   virtualScroll?: CdkVirtualScrollViewport;
 
+  private onChange: (value: DraftPokemon | null) => void = () => {};
+  private onTouched: () => void = () => {};
+
   ngOnInit(): void {
     combineLatest([
-      this.options$,
+      this.optionSource(),
       this.query.valueChanges.pipe(
         startWith(''),
         debounceTime(100),
@@ -103,21 +144,32 @@ export class PokemonSearchComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
+  writeValue(value: DraftPokemon | null): void {
+    this.value = value;
+    this.isEditing = false;
+  }
+
+  registerOnChange(fn: (value: DraftPokemon | null) => void): void {
+    this.onChange = fn;
+  }
+
+  registerOnTouched(fn: () => void): void {
+    this.onTouched = fn;
+  }
+
+  setDisabledState(isDisabled: boolean): void {
+    this.disabled = isDisabled;
+    if (isDisabled) this.query.disable({ emitEvent: false });
+    else this.query.enable({ emitEvent: false });
+  }
+
+  get showsSelection(): boolean {
+    return this.mode === 'select' && !!this.value && !this.isEditing;
+  }
+
   get listHeight(): string {
     const count = Math.max(this.filteredOptions.value.length, 1);
     return `${Math.min(count * ITEM_SIZE, MAX_LIST_HEIGHT)}px`;
-  }
-
-  private filter(options: DraftPokemon[], value: string): DraftPokemon[] {
-    const filterValue = value.trim().toLowerCase();
-    if (!filterValue) return options;
-    return options
-      .filter((option) => option.name.toLowerCase().includes(filterValue))
-      .sort((a, b) => {
-        const aStartsWith = a.name.toLowerCase().startsWith(filterValue);
-        const bStartsWith = b.name.toLowerCase().startsWith(filterValue);
-        return aStartsWith === bStartsWith ? 0 : aStartsWith ? -1 : 1;
-      });
   }
 
   isTaken(option: DraftPokemon): boolean {
@@ -139,18 +191,49 @@ export class PokemonSearchComponent implements OnInit, OnDestroy {
   }
 
   onBlur(): void {
-    this.blurTimeout = setTimeout(() => this.setOpen(false), 200);
+    this.blurTimeout = setTimeout(() => {
+      this.setOpen(false);
+      this.isEditing = false;
+      this.onTouched();
+    }, 200);
+  }
+
+  beginEdit(): void {
+    if (this.disabled) return;
+    this.isEditing = true;
+    this.query.setValue('');
+    setTimeout(() => {
+      this.inputEl?.nativeElement.focus();
+      this.setOpen(true);
+    });
   }
 
   clear(): void {
     this.query.setValue('');
+    this.inputEl?.nativeElement.focus();
+  }
+
+  clearSelection(event?: Event): void {
+    event?.stopPropagation();
+    clearTimeout(this.blurTimeout);
+    this.value = null;
+    this.isEditing = false;
+    this.query.setValue('');
+    this.onChange(null);
+    this.onTouched();
+    this.selectionCleared.emit();
   }
 
   selectOption(option: DraftPokemon): void {
     if (this.isTaken(option)) return;
     clearTimeout(this.blurTimeout);
-    this.pokemonSelected.emit(option);
+    this.value = option;
+    this.isEditing = false;
+    this.isOpen = false;
     this.query.setValue('');
+    this.onChange(option);
+    this.onTouched();
+    this.pokemonSelected.emit(option);
   }
 
   handleKeydown(event: KeyboardEvent): void {
@@ -158,6 +241,12 @@ export class PokemonSearchComponent implements OnInit, OnDestroy {
       if (event.key === 'ArrowDown' || event.key === 'Enter') {
         this.setOpen(true);
       }
+      return;
+    }
+
+    if (event.key === 'Escape') {
+      this.setOpen(false);
+      this.isEditing = false;
       return;
     }
 
@@ -180,14 +269,34 @@ export class PokemonSearchComponent implements OnInit, OnDestroy {
         this.selectOption(options[this.highlightedIndex]);
         event.preventDefault();
         break;
-      case 'Escape':
-        this.setOpen(false);
-        break;
     }
   }
 
   trackByFn(index: number, item: DraftPokemon): string {
     return item.id;
+  }
+
+  private optionSource(): Observable<DraftPokemon[]> {
+    return (
+      this.options$ ??
+      this.ruleset$.pipe(
+        switchMap((ruleset) =>
+          ruleset ? this.dataService.getPokemonList(ruleset) : of([]),
+        ),
+      )
+    );
+  }
+
+  private filter(options: DraftPokemon[], value: string): DraftPokemon[] {
+    const filterValue = value.trim().toLowerCase();
+    if (!filterValue) return options;
+    return options
+      .filter((option) => option.name.toLowerCase().includes(filterValue))
+      .sort((a, b) => {
+        const aStartsWith = a.name.toLowerCase().startsWith(filterValue);
+        const bStartsWith = b.name.toLowerCase().startsWith(filterValue);
+        return aStartsWith === bStartsWith ? 0 : aStartsWith ? -1 : 1;
+      });
   }
 
   private scrollToHighlighted(): void {

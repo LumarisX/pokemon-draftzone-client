@@ -22,7 +22,7 @@ import { PokemonFormGroup } from '@pdz/shared/forms/team-form/team-form.componen
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { ChipInputComponent } from '../chip-input/chip-input.component';
-import { PokemonSearchComponent } from '../pokemon-search/pokemon-search.component';
+import { PokemonSearchComponent } from '@pdz/shared/dropdowns/pokemon-search/pokemon-search.component';
 
 type CaptKind = 'tera' | 'z' | 'dmax';
 
