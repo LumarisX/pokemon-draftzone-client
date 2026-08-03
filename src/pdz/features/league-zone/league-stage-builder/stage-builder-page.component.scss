@@ -3,6 +3,12 @@
 
 :host {
   display: block;
+  // The page claims exactly the room its container has and hands what is left
+  // to the grid, which is the only thing here that scrolls. Anything short of a
+  // definite height leaves the grid unbounded, and then the layout's own
+  // scroller takes over — two vertical scrollbars, and the grid's horizontal
+  // one parked below the fold.
+  height: 100%;
 }
 
 .loading-state {
@@ -13,9 +19,20 @@
 }
 
 .page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
   padding: pdz.space(lg);
 
+  // Everything above the grid keeps its natural height; the grid takes the rest.
+  > pdz-stage-builder {
+    flex: 1 1 auto;
+    min-height: 14rem;
+  }
+
   &__header {
+    flex: 0 0 auto;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -39,6 +56,7 @@
   &__error,
   &__status,
   &__seeding {
+    flex: 0 0 auto;
     @include apply-typography(body-sm);
     border-radius: pdz.shape("corner-sm");
     padding: pdz.space(sm) pdz.space(md);
@@ -104,6 +122,11 @@
 }
 
 .panel {
+  // Yields to the grid rather than crushing it: on a short viewport the form
+  // scrolls inside itself instead of leaving nothing to drop matches onto.
+  flex: 0 1 auto;
+  min-height: 0;
+  overflow-y: auto;
   border: 1px solid pdz.color("outline-variant");
   border-radius: pdz.shape("corner-lg");
   background: pdz.color("surface-container-low");

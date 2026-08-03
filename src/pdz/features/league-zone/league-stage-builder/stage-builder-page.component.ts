@@ -87,6 +87,8 @@ export class LeagueScheduleComponent implements OnInit {
   formName = '';
   formFormat: StageFormat = 'round-robin';
   formRandom = true;
+  /** New stages start hidden so the bracket can be built before it goes live. */
+  formPublic = false;
   formRounds = 1;
   private formRoundsTouched = false;
   formGrandFinalsReset = true;
@@ -198,6 +200,7 @@ export class LeagueScheduleComponent implements OnInit {
     this.formStartRound = startRound;
     this.formName = '';
     this.formRandom = true;
+    this.formPublic = false;
     this.formRoundsTouched = false;
     this.formGrandFinalsReset = true;
     this.resetFormTeams();
@@ -277,6 +280,7 @@ export class LeagueScheduleComponent implements OnInit {
       name: block.sections.length > 1 ? `${name} — ${section.key}` : name,
       type: FORMAT_STAGE_TYPES[this.formFormat],
       teamIds,
+      public: this.formPublic,
       random: section.key === entryKey ? this.formRandom : false,
       order: section.order ?? this.draft.stages.length + index,
       ...(section.roundTitles ? { roundTitles: section.roundTitles } : {}),

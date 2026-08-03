@@ -98,6 +98,14 @@
           </span>
         </label>
 
+        <label class="field field--check">
+          <input type="checkbox" [(ngModel)]="formPublic" />
+          <span>
+            Visible to everyone (leave off to build it first — hidden stages are
+            organizer-only, and the eye on a stage flips this later)
+          </span>
+        </label>
+
         <div class="teams">
           <span class="field__label">
             Teams ({{ formSelectedIds.length }} selected)

@@ -111,6 +111,35 @@
         <header class="stage__header">
           <h3 class="stage__title">{{ stage.title }}</h3>
           @if (editable) {
+            <!--
+              Outside stage__actions: those fade in on hover, and whether a
+              stage is published is the one thing about it the grid cannot
+              otherwise show, so a hidden one has to say so unprompted.
+            -->
+            <button
+              type="button"
+              class="stage__visibility"
+              [class.stage__visibility--hidden]="!stage.public"
+              [attr.aria-pressed]="stage.public"
+              [attr.aria-label]="
+                stage.public ? 'Hide this stage' : 'Publish this stage'
+              "
+              [title]="
+                stage.public
+                  ? 'Visible to everyone — click to hide'
+                  : 'Organizers only — click to publish'
+              "
+              (click)="onToggleStageVisibility(stage.key)"
+            >
+              <pdz-icon
+                [name]="stage.public ? 'visibility' : 'visibility_off'"
+                size="sm"
+              ></pdz-icon>
+              @if (!stage.public) {
+                <span>Hidden</span>
+              }
+            </button>
+
             <div class="stage__actions">
               <button
                 type="button"

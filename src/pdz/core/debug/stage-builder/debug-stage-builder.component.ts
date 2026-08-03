@@ -62,10 +62,18 @@ const TEAM_NAMES = [
       }
 
       .wrap__header {
+        flex: 0 0 auto;
         display: flex;
         align-items: center;
         gap: 1rem;
         padding: 1rem;
+      }
+
+      /* Same sizing the real builder page gives it, so this harness exercises
+         the grid's scroll containment rather than a looser version of it. */
+      .wrap pdz-stage-builder {
+        flex: 1 1 auto;
+        min-height: 14rem;
       }
 
       .wrap__toggle {

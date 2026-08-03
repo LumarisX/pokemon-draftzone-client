@@ -1,0 +1,16 @@
+@if (drafts.length) {
+  <nav class="draft-switcher">
+    @for (draft of drafts; track draft.draftSlug) {
+      <button
+        type="button"
+        class="draft-switcher__tab"
+        [class.draft-switcher__tab--active]="
+          draft.draftSlug === currentDraftSlug
+        "
+        (click)="selectDraft(draft.draftSlug)"
+      >
+        {{ draft.name }}
+      </button>
+    }
+  </nav>
+}

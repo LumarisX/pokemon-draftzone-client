@@ -106,6 +106,8 @@ interface BuilderCell {
 interface StageBox {
   key: string;
   title: string;
+  /** Hidden stages are organizer-only. A stage with no setting yet is visible. */
+  public: boolean;
   span: StageSpan;
   /** 1-based CSS grid lines. */
   rowStart: number;
@@ -219,8 +221,8 @@ export class StageBuilderComponent
     if (!this.draft) return;
 
     const spans = stageSpans(this.draft, this.emptyStageRounds);
-    const titleOf = (key: string) =>
-      this.draft.stages.find((s) => s.key === key)?.name ?? key;
+    const stageOf = (key: string) =>
+      this.draft.stages.find((s) => s.key === key);
     const columnOf = assignColumns(spans);
     this.columnCount = Math.max(1, new Set(columnOf.values()).size);
     const reachable = this.reachableRounds(spans, columnOf);
@@ -234,9 +236,11 @@ export class StageBuilderComponent
         ...(reachable.get(span.key) ?? []),
       ].sort((a, b) => a - b);
 
+      const stage = stageOf(span.key);
       return {
         key: span.key,
-        title: titleOf(span.key),
+        title: stage?.name ?? span.key,
+        public: stage?.public !== false,
         span,
         rowStart: span.firstRound + 1,
         rowEnd: span.lastRound + 2,
@@ -508,5 +512,21 @@ export class StageBuilderComponent
 
   protected canMoveStage(stage: StageBox, delta: -1 | 1): boolean {
     return delta === 1 || stage.span.firstRound > 0;
+  }
+
+  /**
+   * Publishes or hides a stage. Like every other edit here this only moves the
+   * draft — it reaches the server when the organizer saves, so a stage can be
+   * built and made visible in one pass rather than two round trips.
+   */
+  protected onToggleStageVisibility(stageKey: string): void {
+    this.commit({
+      ...this.draft,
+      stages: this.draft.stages.map((stage) =>
+        stage.key === stageKey
+          ? { ...stage, public: stage.public === false }
+          : stage,
+      ),
+    });
   }
 }

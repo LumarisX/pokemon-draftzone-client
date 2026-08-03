@@ -377,33 +377,6 @@ export class LeagueZoneService {
     );
   }
 
-  setStageVisibility(
-    stageId: string,
-    isPublic: boolean,
-  ): Observable<{ message: string }> {
-    return this.apiService.patch(
-      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/stages/${stageId}`,
-      { public: isPublic },
-    );
-  }
-
-  /**
-   * Rounds are deliberately absent: the bracket builder overwrites a stage's
-   * rounds wholesale when it saves, so they are set there rather than here.
-   */
-  createStage(stage: {
-    name: string;
-    type: League.StageType;
-    order: number;
-    public: boolean;
-  }): Observable<{ _id: string }> {
-    return this.apiService.post(
-      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/stages`,
-      stage,
-      { authenticated: true },
-    );
-  }
-
   signUp(signupData: object) {
     return this.apiService.post(
       `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/signup`,

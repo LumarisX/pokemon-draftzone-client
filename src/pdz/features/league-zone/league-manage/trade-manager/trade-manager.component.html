@@ -1,21 +1,22 @@
 <div class="trade-manager">
   <header class="trade-manager__header">
     <h1 class="trade-manager__title">Trades</h1>
-    <pdz-stage-switcher
-      [currentStageId]="stageId"
-      (stageSelected)="onStageSelected($event)"
-    ></pdz-stage-switcher>
+    <pdz-draft-switcher
+      [currentDraftSlug]="draftSlug"
+      (draftSelected)="onDraftSelected($event)"
+    ></pdz-draft-switcher>
   </header>
 
   @if (loading) {
     <div class="trade-manager__loading"><pdz-loading></pdz-loading></div>
-  } @else if (noStages) {
+  } @else if (noDrafts) {
     <section class="panel">
       <p class="panel__empty">
-        This tournament has no stages yet. Add one before recording trades.
+        This tournament has no drafts yet. Assign coaches to one before
+        recording trades.
       </p>
-      <a class="btn btn--primary trade-manager__cta" [routerLink]="stagesPath">
-        Add a Stage
+      <a class="btn btn--primary trade-manager__cta" [routerLink]="signUpsPath">
+        Go to Sign-ups
       </a>
     </section>
   } @else {

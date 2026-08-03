@@ -3,6 +3,10 @@
 
 :host {
   display: block;
+  // A flex item by default in the builder page, which sizes this to whatever
+  // room is left below the header. Without it the host refuses to shrink past
+  // its content and the grid pushes the page itself into scrolling.
+  min-height: 0;
 }
 
 .builder {
@@ -11,7 +15,12 @@
   // pane. Left unbounded it would instead be as tall as the whole schedule and
   // put its horizontal scrollbar at the foot of the last round — the control
   // that scrolls sideways would only be reachable by scrolling down first.
-  max-height: calc(100dvh - 8rem);
+  //
+  // `height` is what does that wherever the host is given a definite size; the
+  // `max-height` only bites on narrow layouts, where the page is a plain
+  // document flow and 100% would resolve to auto.
+  height: 100%;
+  max-height: 100dvh;
   // The top gap has to clear a stage title, which hangs above its first row.
   padding: pdz.space(3xl) pdz.space(lg) pdz.space(lg);
 
@@ -167,6 +176,41 @@
     @include apply-typography(label-lg);
     color: pdz.color("on-surface-variant");
     margin: 0;
+    // Keeps the visibility toggle next to the actions rather than stranded
+    // between them and the title.
+    margin-inline-end: auto;
+  }
+
+  &__visibility {
+    display: inline-flex;
+    align-items: center;
+    gap: pdz.space(3xs);
+    padding: pdz.space(3xs) pdz.space(2xs);
+    border: none;
+    background: none;
+    border-radius: pdz.shape("corner-xs");
+    color: pdz.color("on-surface-variant");
+    cursor: pointer;
+    // A published stage says nothing until asked; it is the unremarkable case.
+    opacity: 0;
+    transition: opacity 120ms ease;
+
+    &:hover {
+      background: pdz.color("primary-container-hover");
+      color: pdz.color("on-primary-container");
+    }
+
+    &--hidden {
+      @include apply-typography(label-sm);
+      opacity: 1;
+      background: pdz.color("warning-container");
+      color: pdz.color("on-warning-container");
+    }
+  }
+
+  &__header:hover &__visibility,
+  &__header:focus-within &__visibility {
+    opacity: 1;
   }
 
   &__actions {
