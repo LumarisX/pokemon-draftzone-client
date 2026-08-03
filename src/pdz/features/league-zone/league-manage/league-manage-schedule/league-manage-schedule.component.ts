@@ -114,6 +114,17 @@ export class LeagueManageScheduleComponent {
    */
   scheduleStages?: League.ScheduleRound[];
 
+  /**
+   * Index into {@link scheduleStages} of the round the tournament is on, or -1
+   * before the first. The organizer view is unfiltered, so its positions are
+   * the same axis positions the server indexes.
+   */
+  currentRoundIndex = -1;
+
+  /** The round index being written, so only its chip shows the pending state. */
+  savingRoundIndex: number | null = null;
+  roundError?: string;
+
   ngOnInit(): void {
     this.route.paramMap
       .pipe(
@@ -121,6 +132,8 @@ export class LeagueManageScheduleComponent {
         distinctUntilChanged(),
         tap(() => {
           this.scheduleStages = undefined;
+          this.roundError = undefined;
+          this.savingRoundIndex = null;
           this.matchupForms.clear();
           this.stageCollapsedState.clear();
           this.openMatchIndexState.clear();
@@ -132,6 +145,7 @@ export class LeagueManageScheduleComponent {
       .subscribe({
         next: (data) => {
           this.scheduleStages = data.rounds;
+          this.currentRoundIndex = data.currentRoundIndex ?? -1;
           this.buildMatchupForms(data.rounds);
           this.stageCollapsedState.set(
             data.rounds[data.currentRoundIndex]?._id,
@@ -144,6 +158,47 @@ export class LeagueManageScheduleComponent {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  /** Name of the round the tournament is on, for the header line. */
+  get currentRoundName(): string {
+    return this.scheduleStages?.[this.currentRoundIndex]?.name ?? 'Not started';
+  }
+
+  isCurrentRound(roundIndex: number): boolean {
+    return this.currentRoundIndex === roundIndex;
+  }
+
+  /**
+   * Moves the tournament to a round. `-1` puts it back before the first, which
+   * is what the season looks like until the organizer starts it.
+   *
+   * Only the index is sent: the schedule endpoint is separate from the bracket
+   * PATCH precisely so advancing a week doesn't resend every stage and match.
+   */
+  setCurrentRound(roundIndex: number): void {
+    if (this.savingRoundIndex !== null || roundIndex === this.currentRoundIndex)
+      return;
+
+    this.savingRoundIndex = roundIndex;
+    this.roundError = undefined;
+
+    this.leagueManageService
+      .setTournamentCurrentRound(roundIndex)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (result) => {
+          this.currentRoundIndex = result.currentRoundIndex;
+          this.savingRoundIndex = null;
+          // Open the round that just went live, the way the initial load does.
+          const roundId = this.scheduleStages?.[result.currentRoundIndex]?._id;
+          if (roundId) this.stageCollapsedState.set(roundId, true);
+        },
+        error: (error) => {
+          this.savingRoundIndex = null;
+          this.roundError = error?.message || 'Failed to set the active round.';
+        },
+      });
   }
 
   getMatchupForm(matchupId: string): MatchupForm | undefined {
