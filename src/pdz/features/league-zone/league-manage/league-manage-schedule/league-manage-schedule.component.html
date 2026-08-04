@@ -90,7 +90,7 @@
                       <button
                         type="button"
                         class="btn-primary"
-                        (click)="saveMatchup(matchup)"
+                        (click)="saveMatchup(matchup, phase._id)"
                         [disabled]="isSaving(matchup.id)"
                         [class.btn-success]="getSaveSuccess(matchup.id)"
                         [class.btn-error]="getSaveError(matchup.id)"

@@ -25,7 +25,13 @@ export class LeagueManageService {
   private apiService = inject(ApiService);
   leagueZoneService = inject(LeagueZoneService);
 
+  /**
+   * `stageId` is passed in rather than read off {@link LeagueZoneService}: the
+   * results editor is tournament-scoped, so no `:stageId` route param exists to
+   * populate that signal, and a round can hold matchups from several stages.
+   */
   updateMatchupSchedule(
+    stageId: string,
     matchupId: string,
     payload: {
       score?: { team1: number; team2: number };
@@ -53,7 +59,7 @@ export class LeagueManageService {
     },
   ) {
     return this.apiService.post(
-      `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/stages/${this.leagueZoneService.stageId()}/matchups/${matchupId}`,
+      `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/stages/${stageId}/matchups/${matchupId}`,
       payload,
       { authenticated: true },
     );

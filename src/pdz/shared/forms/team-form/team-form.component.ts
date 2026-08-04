@@ -284,6 +284,7 @@ export class TeamFormComponent {
   }
 
   checkFormes(group: PokemonFormGroup) {
+    if (group.controls.pokemon.invalid) return;
     if (group.formeList === undefined) {
       this.dataService
         .getFormes(this.ruleset, group.controls.pokemon.value.id)

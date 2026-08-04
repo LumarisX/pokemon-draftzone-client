@@ -125,6 +125,7 @@ export class TeamEditorComponent {
   }
 
   checkFormes(group: PokemonFormGroup): void {
+    if (group.controls.pokemon.invalid) return;
     if (group.formeList === undefined && group.controls.pokemon.value?.id) {
       this.dataService
         .getFormes(this.ruleset, group.controls.pokemon.value.id)

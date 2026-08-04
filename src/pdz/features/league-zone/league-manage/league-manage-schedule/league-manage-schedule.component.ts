@@ -7,15 +7,8 @@ import {
   FormGroup,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { ActivatedRoute, RouterModule } from '@angular/router';
-import {
-  distinctUntilChanged,
-  map,
-  Subject,
-  switchMap,
-  takeUntil,
-  tap,
-} from 'rxjs';
+import { RouterModule } from '@angular/router';
+import { Subject, takeUntil } from 'rxjs';
 import { getNameByPid, PokemonId } from '@pdz/shared/data/namedex';
 import { LeagueManageService } from '../league-manage.service';
 import { ReplayService } from '../../../tools/replay_analyzer/replay.service';
@@ -92,7 +85,6 @@ type MatchupPokemonSummary = {
 export class LeagueManageScheduleComponent {
   private leagueManageService = inject(LeagueManageService);
   private replayService = inject(ReplayService);
-  private route = inject(ActivatedRoute);
   private fb = inject(FormBuilder);
   private readonly destroy$ = new Subject<void>();
   private matchupForms = new Map<string, MatchupForm>();
@@ -126,22 +118,11 @@ export class LeagueManageScheduleComponent {
   roundError?: string;
 
   ngOnInit(): void {
-    this.route.paramMap
-      .pipe(
-        map((params) => params.get('stageId')),
-        distinctUntilChanged(),
-        tap(() => {
-          this.scheduleStages = undefined;
-          this.roundError = undefined;
-          this.savingRoundIndex = null;
-          this.matchupForms.clear();
-          this.stageCollapsedState.clear();
-          this.openMatchIndexState.clear();
-          this.matchupSummaryCollapsedState.clear();
-        }),
-        switchMap(() => this.leagueManageService.getSchedule()),
-        takeUntil(this.destroy$),
-      )
+    // One load: the page is tournament-scoped, so there is no stage param to
+    // re-key off the way the old per-stage results editor did.
+    this.leagueManageService
+      .getSchedule()
+      .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (data) => {
           this.scheduleStages = data.rounds;
@@ -383,7 +364,12 @@ export class LeagueManageScheduleComponent {
       });
   }
 
-  saveMatchup(matchup: League.Matchup): void {
+  /**
+   * `stageId` comes from the stage the matchup is listed under, not the route:
+   * this page shows every round of the tournament, and one round can carry
+   * matchups from more than one stage.
+   */
+  saveMatchup(matchup: League.Matchup, stageId: string): void {
     const form = this.getMatchupForm(matchup.id);
     if (!form) return;
 
@@ -391,7 +377,7 @@ export class LeagueManageScheduleComponent {
 
     const payload = this.buildMatchupPayload(form);
     this.leagueManageService
-      .updateMatchupSchedule(matchup.id, payload)
+      .updateMatchupSchedule(stageId, matchup.id, payload)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: () => {

@@ -24,17 +24,20 @@ export function getPokemonData(pokemonId: string) {
   return Namedex[pokemonId];
 }
 
+export function toPokemonId(value: string): PokemonId {
+  return value.toLowerCase().replace(/[^a-z0-9]+/g, '');
+}
+
 export function getPidByName(name: string): PokemonId {
-  name = name.toLowerCase();
+  const id = toPokemonId(name);
+  if (Namedex[id]) return id;
   for (const key in Namedex) {
     const pokemonNames = Namedex[key].name;
-    if (
-      pokemonNames.some((pokemonName) => pokemonName.toLowerCase() === name)
-    ) {
+    if (pokemonNames.some((pokemonName) => toPokemonId(pokemonName) === id)) {
       return key;
     }
   }
-  return name;
+  return id;
 }
 
 export function getNameByPid(id: PokemonId): string {
