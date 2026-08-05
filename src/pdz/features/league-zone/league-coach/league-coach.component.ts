@@ -62,7 +62,7 @@ export class LeagueCoachComponent implements OnInit, OnDestroy {
   }
 
   get teamLink(): string[] {
-    return [...this.draftBase, 'teams', this.profile?.teamId ?? ''];
+    return [...this.tournamentBase(), 'teams', this.profile?.teamId ?? ''];
   }
 
   get scheduleLink(): string[] {

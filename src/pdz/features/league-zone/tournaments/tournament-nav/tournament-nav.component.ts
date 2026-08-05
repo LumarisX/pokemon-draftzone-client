@@ -172,11 +172,12 @@ export class TournamentNavComponent implements OnInit, OnDestroy {
   }
 
   get teamLink(): string[] {
-    return [...this.draftBase, 'teams', this.profile?.teamId ?? ''];
+    return [...this.tournamentBase(), 'teams', this.profile?.teamId ?? ''];
   }
 
+  /** Public: every pool's teams on one page, no sign-up needed. */
   get teamsLink(): string[] {
-    return [...this.draftBase, 'teams'];
+    return [...this.tournamentBase(), 'teams'];
   }
 
   get scheduleLink(): string[] {

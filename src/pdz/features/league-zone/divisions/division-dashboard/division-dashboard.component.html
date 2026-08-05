@@ -21,7 +21,11 @@
 </div>
 
 <nav class="navigation-tabs">
-  <button class="navigation-tabs__tab" routerLink="./teams" type="button">
+  <button
+    class="navigation-tabs__tab"
+    [routerLink]="['../../teams']"
+    type="button"
+  >
     Teams
   </button>
   <button class="navigation-tabs__tab" routerLink="./tier-list" type="button">

@@ -310,13 +310,21 @@ export class LeagueZoneService {
     );
   }
 
-  getTeams(stageId?: string): Observable<{ teams: League.LeagueTeam[] }> {
+  /**
+   * Every team in the tournament, grouped by draft pool. Public — the teams
+   * page is readable without a session or a sign-up.
+   */
+  getTeamsByDraft(): Observable<{
+    drafts: {
+      /** null for teams whose pool was removed or never assigned. */
+      draftSlug: string | null;
+      name: string;
+      teams: League.LeagueTeam[];
+    }[];
+  }> {
     return this.apiService.get(
-      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/drafts/${this.draftSlug()}/teams`,
-      {
-        authenticated: true,
-        params: { stageId: stageId ?? this.stageId() ?? '' },
-      },
+      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/teams/by-draft`,
+      { authenticated: 'optional' },
     );
   }
 

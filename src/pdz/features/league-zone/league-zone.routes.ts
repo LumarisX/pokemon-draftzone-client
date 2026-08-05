@@ -66,6 +66,12 @@ export const routes: Routes = [
         component: TierListFormComponent,
         canDeactivate: [unsavedChangesGuard],
       },
+      // Teams are tournament-wide and public: one page lists every pool's
+      // teams, so there is no draft-scoped variant to log in for.
+      {
+        path: 'teams',
+        component: LeagueTeamsComponent,
+      },
       {
         path: 'teams/:teamKey',
         component: LeagueTeamComponent,
@@ -116,13 +122,17 @@ export const routes: Routes = [
         path: 'drafts/:draftSlug/power-rankings',
         component: PowerRankingsComponent,
       },
+      // The draft-scoped team pages moved up to the tournament; keep the old
+      // links working.
       {
         path: 'drafts/:draftSlug/teams',
-        component: LeagueTeamsComponent,
+        redirectTo: 'teams',
+        pathMatch: 'full',
       },
       {
         path: 'drafts/:draftSlug/teams/:teamKey',
-        component: LeagueTeamComponent,
+        redirectTo: 'teams/:teamKey',
+        pathMatch: 'full',
       },
 
       {
