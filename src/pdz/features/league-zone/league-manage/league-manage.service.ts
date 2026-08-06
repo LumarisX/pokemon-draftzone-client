@@ -61,7 +61,6 @@ export class LeagueManageService {
     return this.apiService.post(
       `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/stages/${stageId}/matchups/${matchupId}`,
       payload,
-      { authenticated: true },
     );
   }
 
@@ -75,7 +74,6 @@ export class LeagueManageService {
     return this.apiService.post(
       `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${tournamentSlug}/drafts/${this.leagueZoneService.draftSlug()}/teams/${pick.teamId}/draft`,
       { add: [{ pokemonId: pick.pokemonId }] },
-      { authenticated: true },
     );
   }
 
@@ -92,7 +90,6 @@ export class LeagueManageService {
     return this.apiService.post<DraftDetails>(
       `${this.draftPath()}/teams/${teamId}/draft/rounds/${round}`,
       pick,
-      { authenticated: true },
     );
   }
 
@@ -111,7 +108,6 @@ export class LeagueManageService {
     return this.apiService.post<DraftDetails>(
       `${this.draftPath()}/current-pick`,
       { round, position },
-      { authenticated: true },
     );
   }
 
@@ -120,7 +116,6 @@ export class LeagueManageService {
     return this.apiService.post<DraftDetails>(
       `${this.draftPath()}/order`,
       payload,
-      { authenticated: true },
     );
   }
 
@@ -140,7 +135,6 @@ export class LeagueManageService {
     return this.apiService.post<DraftDetails>(
       `${this.draftPath()}/settings`,
       payload,
-      { authenticated: true },
     );
   }
 
@@ -149,7 +143,6 @@ export class LeagueManageService {
     return this.apiService.post<{ success: boolean }>(
       `${this.draftPath()}/settings/test-message`,
       '',
-      { authenticated: true },
     );
   }
 
@@ -160,7 +153,6 @@ export class LeagueManageService {
   canManage(leagueSlug: string, tournamentSlug: string) {
     return this.apiService.get<string[]>(
       `leagues/${leagueSlug}/tournaments/${tournamentSlug}/roles`,
-      { authenticated: true },
     );
   }
 
@@ -168,7 +160,6 @@ export class LeagueManageService {
     return this.apiService.post(
       `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/drafts/${this.leagueZoneService.draftSlug()}/state`,
       { state },
-      { authenticated: true },
     );
   }
 
@@ -176,7 +167,6 @@ export class LeagueManageService {
     return this.apiService.post(
       `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/drafts/${this.leagueZoneService.draftSlug()}/timer`,
       { noTimer },
-      { authenticated: true },
     );
   }
 
@@ -184,7 +174,6 @@ export class LeagueManageService {
     return this.apiService.post(
       `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/drafts/${this.leagueZoneService.draftSlug()}/skip`,
       '',
-      { authenticated: true },
     );
   }
 
@@ -196,9 +185,6 @@ export class LeagueManageService {
       }[];
     }>(
       `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/trades`,
-      {
-        authenticated: true,
-      },
     );
   }
 
@@ -208,9 +194,6 @@ export class LeagueManageService {
       currentRoundIndex: number;
     }>(
       `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/schedule`,
-      {
-        authenticated: true,
-      },
     );
   }
 
@@ -247,7 +230,6 @@ export class LeagueManageService {
       };
     }>(
       `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/settings`,
-      { authenticated: true },
     );
   }
 
@@ -339,7 +321,6 @@ export class LeagueManageService {
     }>(
       `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/stages/${stageId}/bracket`,
       payload,
-      { authenticated: true },
     );
   }
 
@@ -455,7 +436,6 @@ export class LeagueManageService {
     }>(
       `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/drafts/${this.leagueZoneService.draftSlug()}/pokemon-list`,
       {
-        authenticated: true,
         params: { stageId: this.leagueZoneService.stageId() ?? '' },
       },
     );

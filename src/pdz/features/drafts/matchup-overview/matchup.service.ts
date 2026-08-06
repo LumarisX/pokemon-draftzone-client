@@ -14,14 +14,10 @@ export class MatchupService {
 
   getMatchup(matchupId: string) {
     return this.apiService.get<MatchupData>(`${matchupPath}/${matchupId}`, {
-      authenticated: true,
       errorHandlingOptions: { suppressErrorReporting: true },
     });
   }
 
-  // League (stage) matchups live in a different collection than external
-  // matchups, so they have their own analysis endpoint. Auth is optional:
-  // a logged-in coach gets their own team shown first.
   getLeagueMatchup(
     leagueSlug: string,
     tournamentSlug: string,
@@ -30,7 +26,6 @@ export class MatchupService {
   ) {
     return this.apiService.get<MatchupData>(
       `leagues/${leagueSlug}/tournaments/${tournamentSlug}/stages/${stageId}/matchups/${matchupId}`,
-      { authenticated: 'optional' },
     );
   }
 
@@ -38,52 +33,38 @@ export class MatchupService {
     return this.apiService.post(`${matchupPath}/quick`, matchupData);
   }
 
-  // Shared (anonymous) view hits the same route as getMatchup, but without
-  // authentication. The server route is @OptionalAuth, so analyze(sub) runs
-  // with no sub and returns the unflipped matchup payload.
   getSharedMatchup(matchupId: string) {
     return this.apiService.get<MatchupData>(`${matchupPath}/${matchupId}`);
   }
 
   //Currently Unused
   getSpeedchart(matchupId: string) {
-    return this.apiService.get(`${matchupPath}/${matchupId}/speedchart`, {
-      authenticated: true,
-    });
+    return this.apiService.get(`${matchupPath}/${matchupId}/speedchart`);
   }
 
   //Currently Unused
   getsummary(matchupId: string) {
-    return this.apiService.get(`${matchupPath}/${matchupId}/summary`, {
-      authenticated: true,
-    });
+    return this.apiService.get(`${matchupPath}/${matchupId}/summary`);
   }
 
   //Currently Unused
   getTypechart(matchupId: string) {
-    return this.apiService.get(`${matchupPath}/${matchupId}/typechart`, {
-      authenticated: true,
-    });
+    return this.apiService.get(`${matchupPath}/${matchupId}/typechart`);
   }
 
   //Currently Unused
   getMovechart(matchupId: string) {
-    return this.apiService.get(`${matchupPath}/${matchupId}/movechart`, {
-      authenticated: true,
-    });
+    return this.apiService.get(`${matchupPath}/${matchupId}/movechart`);
   }
 
   //Currently Unused
   getCoveragechart(matchupId: string) {
-    return this.apiService.get(`${matchupPath}/${matchupId}/coveragechart`, {
-      authenticated: true,
-    });
+    return this.apiService.get(`${matchupPath}/${matchupId}/coveragechart`);
   }
 
   getMatchupOwnership(matchupId: string) {
     return this.apiService.get<{ isOwner: boolean }>(
       `${matchupPath}/${matchupId}/check-ownership`,
-      { authenticated: true },
     );
   }
 
@@ -96,7 +77,6 @@ export class MatchupService {
       `${matchupPath}/${matchupId}/update-notes`,
       { notes: payload },
       {
-        authenticated: true,
         invalidateCache: [`${matchupPath}/${matchupId}`],
       },
     );

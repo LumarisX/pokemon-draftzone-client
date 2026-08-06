@@ -13,25 +13,16 @@ export interface Me {
   lastLogin: string;
 }
 
-/**
- * Exposes the current user's roles (from the authoritative `users` collection
- * via `GET /users/me`). The result is cached for the session.
- *
- * Note: this is for UX only (showing/hiding admin UI). All admin endpoints are
- * independently enforced on the server, so a forged client role grants nothing.
- */
 @Injectable({ providedIn: 'root' })
 export class RoleService {
   private readonly apiService = inject(ApiService);
   private readonly auth = inject(AuthService);
 
-  /** The current user, or null when signed out / unavailable. */
   readonly me$: Observable<Me | null> = this.auth.isAuthenticated$.pipe(
     switchMap((isAuthenticated) =>
       isAuthenticated
         ? this.apiService
             .get<Me>('users/me', {
-              authenticated: true,
               errorHandlingOptions: { suppressErrorReporting: true },
             })
             .pipe(catchError(() => of(null)))

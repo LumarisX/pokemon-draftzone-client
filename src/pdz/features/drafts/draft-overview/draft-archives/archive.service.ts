@@ -9,35 +9,27 @@ export class ArchiveService {
   private apiService = inject(ApiService);
 
   getDraftsList() {
-    return this.apiService.get<Archive[]>('archive/teams', {
-      authenticated: true,
-    });
+    return this.apiService.get<Archive[]>('archive/teams');
   }
 
   //Currently Unused
   getDraft(teamName: string) {
-    return this.apiService.get(`archive/${teamName}`, { authenticated: true });
+    return this.apiService.get(`archive/${teamName}`);
   }
 
   //Currently Unused
   getMatchup(matchupId: string, teamId: string) {
-    return this.apiService.get(`archive/${teamId}/${matchupId}`, {
-      authenticated: true,
-    });
+    return this.apiService.get(`archive/${teamId}/${matchupId}`);
   }
 
   //Currently Unused
   getStats(teamName: string) {
-    return this.apiService.get(`archive/${teamName}/stats`, {
-      authenticated: true,
-    });
+    return this.apiService.get(`archive/${teamName}/stats`);
   }
 
   //Currently Unused
   newDraft(draftData: Object) {
-    return this.apiService.post(`archive/teams`, draftData, {
-      authenticated: true,
-    });
+    return this.apiService.post(`archive/teams`, draftData);
   }
 
   //Currently Unused
@@ -47,16 +39,12 @@ export class ArchiveService {
 
   //Currently Unused
   getMatchupList(teamName: string) {
-    return this.apiService.get(`archive/${teamName}/matchups`, {
-      authenticated: true,
-    });
+    return this.apiService.get(`archive/${teamName}/matchups`);
   }
 
   //Currently Unused
   newMatchup(teamName: string, matchupData: Object) {
-    return this.apiService.post(`archive/${teamName}/matchups`, matchupData, {
-      authenticated: true,
-    });
+    return this.apiService.post(`archive/${teamName}/matchups`, matchupData);
   }
 
   //Currently Unused
@@ -88,9 +76,7 @@ export class ArchiveService {
 
   //Currently Unused
   getGameTime(matchupId: string, teamId: string) {
-    return this.apiService.get(`archive/${teamId}/${matchupId}/schedule`, {
-      authenticated: true,
-    });
+    return this.apiService.get(`archive/${teamId}/${matchupId}/schedule`);
   }
 
   //Currently Unused

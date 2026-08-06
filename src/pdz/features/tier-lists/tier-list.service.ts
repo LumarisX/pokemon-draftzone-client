@@ -75,7 +75,7 @@ export class TierListService {
       return this.apiService.get<{
         name: string;
         description?: string;
-      }>(`${ROOTPATH}/${tierListId}/settings`, { authenticated: true });
+      }>(`${ROOTPATH}/${tierListId}/settings`);
     }
     return this.leagueZoneService.getLeagueInfo().pipe(
       switchMap((info) => {
@@ -87,7 +87,7 @@ export class TierListService {
         return this.apiService.get<{
           name: string;
           description?: string;
-        }>(`${ROOTPATH}/${info.tierListId}/settings`, { authenticated: true });
+        }>(`${ROOTPATH}/${info.tierListId}/settings`);
       }),
     );
   }
@@ -124,7 +124,6 @@ export class TierListService {
         name?: string;
         ruleset?: string;
       }>(`${ROOTPATH}/${tierListId}`, {
-        authenticated: true,
         params: { edit: true },
       });
     }
@@ -141,7 +140,6 @@ export class TierListService {
           name?: string;
           ruleset?: string;
         }>(`${ROOTPATH}/${info.tierListId}`, {
-          authenticated: true,
           params: { edit: true },
         });
       }),

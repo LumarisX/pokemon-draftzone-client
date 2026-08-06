@@ -21,15 +21,12 @@ export class LeagueAdsService {
 
   newAd(data: Object) {
     return this.apiService.post([ROOTPATH], data, {
-      authenticated: true,
       invalidateCache: [[ROOTPATH]],
     });
   }
 
   getMyAds(): Observable<LeagueAd[]> {
-    return this.apiService.get([ROOTPATH, 'me'], {
-      authenticated: true,
-    });
+    return this.apiService.get([ROOTPATH, 'me']);
   }
 
   deleteAd(_id: string) {

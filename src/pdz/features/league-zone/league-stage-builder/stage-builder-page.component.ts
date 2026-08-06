@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import {
   GeneratedBracket,
@@ -55,13 +54,7 @@ interface TeamOption {
 
 @Component({
   selector: 'pdz-stage-builder-page',
-  imports: [
-    CommonModule,
-    FormsModule,
-    IconComponent,
-    LoadingComponent,
-    StageBuilderComponent,
-  ],
+  imports: [CommonModule, FormsModule, LoadingComponent, StageBuilderComponent],
   templateUrl: './stage-builder-page.component.html',
   styleUrl: './stage-builder-page.component.scss',
 })
