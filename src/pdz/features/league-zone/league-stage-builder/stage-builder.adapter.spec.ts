@@ -27,6 +27,7 @@ const stage = (
   type = 'round-robin',
 ) => ({
   _id: id,
+  slug: `${id}-slug`,
   name,
   type,
   order: 0,
@@ -35,6 +36,7 @@ const stage = (
   teams: teamIds.map((teamId, index) => ({
     seed: index + 1,
     teamId,
+    teamSlug: `${teamId}-slug`,
     teamName: `Team ${index + 1}`,
     coachName: `Coach ${index + 1}`,
   })),
@@ -69,6 +71,7 @@ describe('toBuilderDraft', () => {
         matches: [
           {
             _id: 'm1',
+            slug: 'm1-slug',
             stage: 's1',
             round: 'r2',
             position: 0,
@@ -94,8 +97,20 @@ describe('toBuilderDraft', () => {
           {
             ...stage('s1', 'Group A'),
             teams: [
-              { seed: 2, teamId: 't2', teamName: 'B', coachName: 'b' },
-              { seed: 1, teamId: 't1', teamName: 'A', coachName: 'a' },
+              {
+                seed: 2,
+                teamId: 't2',
+                teamSlug: 't2-slug',
+                teamName: 'B',
+                coachName: 'b',
+              },
+              {
+                seed: 1,
+                teamId: 't1',
+                teamSlug: 't1-slug',
+                teamName: 'A',
+                coachName: 'a',
+              },
             ],
           },
         ],
@@ -340,6 +355,7 @@ describe('savedMatchIds', () => {
         matches: [
           {
             _id: 'm1',
+            slug: 'm1-slug',
             stage: 's1',
             round: 'r1',
             position: 0,

@@ -57,13 +57,11 @@ export class LeagueMatchupComponent implements OnDestroy {
   reviewError = signal<string | null>(null);
   copiedHandle = signal<string | null>(null);
 
-  private stageId = '';
-  private matchupId = '';
+  private matchupSlug = '';
 
   constructor() {
     this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
-      this.stageId = params['stageId'];
-      this.matchupId = params['matchupId'];
+      this.matchupSlug = params['matchupSlug'];
       this.load();
     });
 
@@ -84,31 +82,27 @@ export class LeagueMatchupComponent implements OnDestroy {
     'schedule',
   ]);
 
-  teamPath(teamId: string): string[] {
+  teamPath(teamSlug: string): string[] {
     return [
       '/leagues',
       this.leagueService.leagueSlug() ?? '',
       'tournaments',
       this.leagueService.tournamentSlug() ?? '',
       'teams',
-      teamId,
+      teamSlug,
     ];
   }
 
-  get stage(): string {
-    return this.stageId;
-  }
-
   get matchupKey(): string {
-    return this.matchupId;
+    return this.matchupSlug;
   }
 
   load(): void {
-    if (!this.stageId || !this.matchupId) return;
+    if (!this.matchupSlug) return;
     this.loading.set(true);
     this.loadError.set(null);
     this.leagueService
-      .getMatchupDetail(this.stageId, this.matchupId)
+      .getMatchupDetail(this.matchupSlug)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (detail) => {
@@ -235,7 +229,7 @@ export class LeagueMatchupComponent implements OnDestroy {
     this.reviewing.set(true);
     this.reviewError.set(null);
     this.leagueService
-      .reviewMatchupReport(this.stageId, this.matchupId, decision)
+      .reviewMatchupReport(this.matchupSlug, decision)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: () => {

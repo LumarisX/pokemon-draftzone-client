@@ -74,7 +74,7 @@ export const routes: Routes = [
         component: LeagueTeamsComponent,
       },
       {
-        path: 'teams/:teamKey',
+        path: 'teams/:teamSlug',
         component: LeagueTeamComponent,
       },
       {
@@ -107,16 +107,19 @@ export const routes: Routes = [
         path: 'drafts/:draftSlug',
         component: DivisionDashboardComponent,
       },
+      // A matchup is addressed at tournament level. The stage segment these
+      // used to carry never disambiguated anything: the slug is unique, and
+      // the stage is something the server reads off the matchup.
       {
-        path: 'stages/:stageId/schedule/matchups/:matchupId',
+        path: 'matchups/:matchupSlug',
         component: LeagueMatchupComponent,
       },
       {
-        path: 'stages/:stageId/schedule/matchups/:matchupId/analysis',
+        path: 'matchups/:matchupSlug/analysis',
         component: MatchupOverviewComponent,
       },
       {
-        path: 'stages/:stageId/standings',
+        path: 'stages/:stageSlug/standings',
         component: LeagueStandingsComponent,
       },
       {
@@ -135,8 +138,8 @@ export const routes: Routes = [
         pathMatch: 'full',
       },
       {
-        path: 'drafts/:draftSlug/teams/:teamKey',
-        redirectTo: 'teams/:teamKey',
+        path: 'drafts/:draftSlug/teams/:teamSlug',
+        redirectTo: 'teams/:teamSlug',
         pathMatch: 'full',
       },
 
@@ -145,7 +148,7 @@ export const routes: Routes = [
         component: TierListComponent,
       },
       {
-        path: 'stages/:stageId/trades',
+        path: 'stages/:stageSlug/trades',
         component: LeagueTradesComponent,
       },
     ],

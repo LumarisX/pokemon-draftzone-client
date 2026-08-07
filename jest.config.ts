@@ -1,5 +1,7 @@
 module.exports = {
   preset: 'jest-preset-angular',
+  maxWorkers: 4,
+  workerIdleMemoryLimit: '1GB',
   setupFilesAfterEnv: ['<rootDir>/setup-jest.ts'],
   moduleNameMapper: {
     '^@pdz/core/(.*)$': '<rootDir>/src/pdz/core/$1',

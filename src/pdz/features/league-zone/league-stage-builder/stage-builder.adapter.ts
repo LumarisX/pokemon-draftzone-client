@@ -59,6 +59,7 @@ export function toBuilderDraft(bracket: TournamentBracket): BuilderDraft {
 
   const matches: FlexBracketMatch[] = (bracket.matches ?? []).map((match) => ({
     id: match._id,
+    slug: match.slug,
     round: match.round ? (roundIndexById.get(match.round) ?? 0) : 0,
     position: match.position ?? 0,
     section: match.stage ?? 'main',

@@ -4,7 +4,7 @@
     [class.scoreboard__side--winner]="isWinner(m, key)"
     [class.scoreboard__side--right]="key === 'side2'"
   >
-    <a class="scoreboard__identity" [routerLink]="teamPath(side.id)">
+    <a class="scoreboard__identity" [routerLink]="teamPath(side.slug)">
       <img class="scoreboard__logo" [src]="getLogoUrl(side.logo)" alt="" />
       <span class="scoreboard__names">
         <span class="scoreboard__team">{{ side.name }}</span>
@@ -185,8 +185,7 @@
       @if (reportOpen()) {
         <pdz-matchup-report
           [matchup]="m"
-          [stageId]="stage"
-          [matchupId]="matchupKey"
+          [matchupSlug]="matchupKey"
           (submitted)="onReported()"
         ></pdz-matchup-report>
       }
@@ -280,7 +279,7 @@
       <pdz-league-chat
         class="matchup__chat"
         channel="matchup"
-        [target]="matchupKey"
+        [target]="m.id"
         heading="Match chat"
         placeholder="Message the other team…"
         [ownTeamIds]="ownTeamIds(m)"

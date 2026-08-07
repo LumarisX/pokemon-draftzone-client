@@ -34,7 +34,7 @@
 <hr class="links__divider" />
 
 <nav class="links">
-  @if (profile && profile.draft && profile.teamId) {
+  @if (profile && profile.draft && profile.teamSlug) {
     <a
       [routerLink]="teamLink"
       routerLinkActive="active"
@@ -52,7 +52,7 @@
         <span class="link-button__status">{{ draftStatus }}</span>
       }
     </a>
-    @if (selectedStageId) {
+    @if (selectedStageSlug) {
       <a
         [routerLink]="standingsLink"
         routerLinkActive="active"

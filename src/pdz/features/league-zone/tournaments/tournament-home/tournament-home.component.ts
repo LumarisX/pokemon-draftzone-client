@@ -45,7 +45,7 @@ export class TournamentHomeComponent implements OnInit, OnDestroy {
   isCheckingSignUp = true;
 
   stages: League.StageSummary[] = [];
-  selectedStageId: string | null = null;
+  selectedStageSlug: string | null = null;
   coachStandings: League.CoachStandingData | null = null;
   standingsLoading = false;
 
@@ -110,7 +110,7 @@ export class TournamentHomeComponent implements OnInit, OnDestroy {
         if (profile?.draft) {
           this.rosterLoading = true;
           this.loadStages();
-        } else if (profile?.teamId) {
+        } else if (profile?.teamSlug) {
           this.rosterLoading = true;
           this.loadRoster();
         }
@@ -169,10 +169,12 @@ export class TournamentHomeComponent implements OnInit, OnDestroy {
   }
 
   private loadRoster(): void {
-    const teamId = this.profile?.teamId;
-    if (!teamId) return;
+    // The team endpoint is keyed by slug, not by the ObjectId the profile also
+    // carries — `teamId` is there for payload joins, not for URLs.
+    const teamSlug = this.profile?.teamSlug;
+    if (!teamSlug) return;
     this.leagueService
-      .getTeam(teamId)
+      .getTeam(teamSlug)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (data) => {
@@ -202,7 +204,7 @@ export class TournamentHomeComponent implements OnInit, OnDestroy {
         next: (stages) => {
           this.stages = stages;
           if (stages.length) {
-            this.selectStage(stages[0]._id);
+            this.selectStage(stages[0].slug);
           } else {
             this.loadRoster();
           }
@@ -210,8 +212,8 @@ export class TournamentHomeComponent implements OnInit, OnDestroy {
       });
   }
 
-  onStageSelected(stageId: string): void {
-    this.selectStage(stageId);
+  onStageSelected(stageSlug: string): void {
+    this.selectStage(stageSlug);
   }
 
   openCoachEdit(): void {
@@ -263,14 +265,14 @@ export class TournamentHomeComponent implements OnInit, OnDestroy {
       });
   }
 
-  private selectStage(stageId: string): void {
-    if (stageId === this.selectedStageId) return;
-    this.selectedStageId = stageId;
+  private selectStage(stageSlug: string): void {
+    if (stageSlug === this.selectedStageSlug) return;
+    this.selectedStageSlug = stageSlug;
     this.loadRoster();
     this.standingsLoading = true;
     this.coachStandings = null;
     this.leagueService
-      .getStandings(stageId)
+      .getStandings(stageSlug)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (data) => {

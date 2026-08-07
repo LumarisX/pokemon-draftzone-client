@@ -47,7 +47,7 @@ export const routes: Routes = [
     component: TradeManagerComponent,
   },
   {
-    path: 'stages/:stageId/trades/legacy',
+    path: 'stages/:stageSlug/trades/legacy',
     component: LeagueManageTradesComponent,
   },
 
@@ -64,7 +64,7 @@ export const routes: Routes = [
   {
     // Where the per-stage results editor used to live. Kept as a redirect so the
     // hub's per-stage links and old bookmarks still land somewhere useful.
-    path: 'stages/:stageId/schedule',
+    path: 'stages/:stageSlug/schedule',
     redirectTo: 'results',
   },
   {

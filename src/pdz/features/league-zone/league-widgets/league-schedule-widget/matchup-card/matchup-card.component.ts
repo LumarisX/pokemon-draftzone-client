@@ -24,27 +24,22 @@ import { getLogoUrl } from '../../../league.util';
 })
 export class MatchupCardComponent implements OnInit {
   @Input({ required: true }) matchup!: League.Matchup;
-  // The stage the schedule was fetched for. Pages without :stageId in their
-  // route (team page, division dashboard) must pass it in — the route-derived
-  // service signal is null there.
-  @Input() stageId?: string | null;
   @Input() initiallyOpen: boolean = false;
 
   leagueService = inject(LeagueZoneService);
 
+  // No stage segment, and so nothing for the caller to pass in: a matchup slug
+  // is unique, so the tournament is all the link needs. Pages without a
+  // `:stageSlug` in their route (team page, division dashboard) used to have to
+  // supply the stage themselves purely to build this.
   get matchupLink(): string[] {
-    const stageId = this.stageId ?? this.leagueService.stageId();
-    if (!stageId) return [];
     return [
       '/leagues',
       this.leagueService.leagueSlug() ?? '',
       'tournaments',
       this.leagueService.tournamentSlug() ?? '',
-      'stages',
-      stageId,
-      'schedule',
       'matchups',
-      this.matchup.id,
+      this.matchup.slug,
     ];
   }
 

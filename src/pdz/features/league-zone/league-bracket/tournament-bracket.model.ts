@@ -36,6 +36,8 @@ export interface TournamentBracketTeam {
   /** Position in this stage's own seed order, 1-based. */
   seed: number;
   teamId: string;
+  /** URL identifier for the team's page. */
+  teamSlug: string;
   teamName: string;
   coachName: string;
   logo?: string;
@@ -43,6 +45,8 @@ export interface TournamentBracketTeam {
 
 export interface TournamentBracketStage {
   _id: string;
+  /** URL identifier for the stage's pages and endpoints. */
+  slug: string;
   name: string;
   type: string;
   order: number;
@@ -53,7 +57,10 @@ export interface TournamentBracketStage {
 }
 
 export interface TournamentBracketMatch {
+  /** Slots reference their upstream match by this, so it stays the ObjectId. */
   _id: string;
+  /** URL identifier for the matchup page. */
+  slug: string;
   /** Owning stage's `_id`. */
   stage: string | null;
   /** Round subdocument `_id` on the tournament. */

@@ -64,6 +64,7 @@ export class LeagueBracketComponent implements OnInit {
               coachName: team.coachName,
               logo: team.logo,
               teamId: team.teamId,
+              teamSlug: team.teamSlug,
             })),
         ]),
       );

@@ -24,7 +24,7 @@ export class TournamentNavComponent implements OnInit, OnDestroy {
   leagueName: string | null = null;
   profile: League.CoachProfile | null = null;
   stages: League.StageSummary[] = [];
-  selectedStageId: string | null = null;
+  selectedStageSlug: string | null = null;
   profileLoaded = false;
   canManage = false;
 
@@ -128,7 +128,7 @@ export class TournamentNavComponent implements OnInit, OnDestroy {
         next: (stages) => {
           this.stages = stages;
           if (stages.length) {
-            this.selectedStageId = stages[0]._id;
+            this.selectedStageSlug = stages[0].slug;
           }
         },
       });
@@ -167,12 +167,12 @@ export class TournamentNavComponent implements OnInit, OnDestroy {
 
   get stageBase(): string[] {
     const base = this.tournamentBase();
-    if (!base.length || !this.selectedStageId) return [];
-    return [...base, 'stages', this.selectedStageId];
+    if (!base.length || !this.selectedStageSlug) return [];
+    return [...base, 'stages', this.selectedStageSlug];
   }
 
   get teamLink(): string[] {
-    return [...this.tournamentBase(), 'teams', this.profile?.teamId ?? ''];
+    return [...this.tournamentBase(), 'teams', this.profile?.teamSlug ?? ''];
   }
 
   /** Public: every pool's teams on one page, no sign-up needed. */

@@ -36,7 +36,7 @@
   </button>
 </nav>
 <pdz-stage-switcher
-  [currentStageId]="stageId"
+  [currentStageSlug]="stageSlug"
   (stageSelected)="onStageSelected($event)"
 ></pdz-stage-switcher>
 <div class="division-body">
@@ -45,7 +45,7 @@
       <h3>Matchups</h3>
     </div>
     <div class="section-body">
-      @if (stageId) {
+      @if (stageSlug) {
         <pdz-league-schedule-widget></pdz-league-schedule-widget>
       }
     </div>
@@ -55,9 +55,9 @@
       <h3>Active Trades</h3>
     </div>
     <div class="section-body">
-      @if (stageId) {
+      @if (stageSlug) {
         <pdz-league-trade-widget
-          [stageId]="stageId"
+          [stageSlug]="stageSlug"
         ></pdz-league-trade-widget>
       }
     </div>

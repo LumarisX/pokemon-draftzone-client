@@ -102,11 +102,11 @@ export class LeagueManageTradesComponent implements OnInit, OnDestroy {
 
   stages?: TradeStage[];
 
-  get currentStageId(): string | null {
-    return this.leagueService.stageId();
+  get currentStageSlug(): string | null {
+    return this.leagueService.stageSlug();
   }
 
-  onStageSelected(stageId: string): void {
+  onStageSelected(stageSlug: string): void {
     this.router.navigate([
       '/leagues',
       this.leagueService.leagueSlug(),
@@ -114,7 +114,7 @@ export class LeagueManageTradesComponent implements OnInit, OnDestroy {
       this.leagueService.tournamentSlug(),
       'manage',
       'stages',
-      stageId,
+      stageSlug,
       'trades',
     ]);
   }
@@ -161,7 +161,7 @@ export class LeagueManageTradesComponent implements OnInit, OnDestroy {
 
     this.route.paramMap
       .pipe(
-        map((params) => params.get('stageId')),
+        map((params) => params.get('stageSlug')),
         distinctUntilChanged(),
         takeUntil(this.destroy$),
       )

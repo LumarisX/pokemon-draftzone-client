@@ -75,7 +75,7 @@
         <section class="nav-card">
           <h2 class="nav-card__title">Stage</h2>
           <pdz-stage-switcher
-            [currentStageId]="selectedStageId"
+            [currentStageSlug]="selectedStageSlug"
             (stageSelected)="onStageSelected($event)"
           ></pdz-stage-switcher>
         </section>
@@ -117,7 +117,7 @@
         }
 
         <div class="nav-links">
-          @if (profile.draft && profile.teamId) {
+          @if (profile.draft && profile.teamSlug) {
             <a [routerLink]="teamLink" class="nav-link">
               <span class="nav-link__icon">&#9733;</span>
               <span class="nav-link__label">My Team</span>
@@ -130,7 +130,7 @@
               <span class="nav-link__icon">&#128197;</span>
               <span class="nav-link__label">Schedule</span>
             </a>
-            @if (selectedStageId) {
+            @if (selectedStageSlug) {
               <a [routerLink]="standingsLink" class="nav-link">
                 <span class="nav-link__icon">&#127942;</span>
                 <span class="nav-link__label">Standings</span>

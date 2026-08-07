@@ -1,7 +1,7 @@
 @if (matchupId && matchupData) {
   <div class="matchup-main">
     <div class="matchup-header">
-      <button routerLink="../../">Back</button>
+      <button [routerLink]="backLink">Back</button>
       <div class="details-spacer">
         <div class="details-container">
           @if (matchupData) {

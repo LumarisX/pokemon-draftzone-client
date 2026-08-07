@@ -26,13 +26,13 @@ export class LeagueManageService {
   leagueZoneService = inject(LeagueZoneService);
 
   /**
-   * `stageId` is passed in rather than read off {@link LeagueZoneService}: the
-   * results editor is tournament-scoped, so no `:stageId` route param exists to
-   * populate that signal, and a round can hold matchups from several stages.
+   * A matchup is addressed at tournament level: its slug is unique, so the
+   * stage it belongs to is not part of the route. This matters for the results
+   * editor in particular, which is tournament-scoped and shows a round holding
+   * matchups from several stages at once.
    */
   updateMatchupSchedule(
-    stageId: string,
-    matchupId: string,
+    matchupSlug: string,
     payload: {
       score?: { team1: number; team2: number };
       winner?:
@@ -59,7 +59,7 @@ export class LeagueManageService {
     },
   ) {
     return this.apiService.post(
-      `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/stages/${stageId}/matchups/${matchupId}`,
+      `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/matchups/${matchupSlug}`,
       payload,
     );
   }
@@ -274,7 +274,7 @@ export class LeagueManageService {
   }
 
   generateBracket(
-    stageId: string,
+    stageSlug: string,
     payload: {
       /**
        * One entry per configured bracket section, in seed order: group i owns
@@ -321,7 +321,7 @@ export class LeagueManageService {
       seedOrder: string[];
       matchIds: Record<string, string>;
     }>(
-      `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/stages/${stageId}/bracket`,
+      `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/stages/${stageSlug}/bracket`,
       payload,
     );
   }
@@ -335,7 +335,7 @@ export class LeagueManageService {
    * the server refuses a payload that would re-draw an existing seeding.
    */
   updateBracket(
-    stageId: string,
+    stageSlug: string,
     payload: {
       rounds: (BracketRoundMeta & { _id?: string })[];
       sections?: {
@@ -373,14 +373,14 @@ export class LeagueManageService {
       matchIds: Record<string, string>;
     }>(
       // `patch` authenticates every request, so there is no flag to pass.
-      `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/stages/${stageId}/bracket`,
+      `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/stages/${stageSlug}/bracket`,
       payload,
     );
   }
 
-  deleteBracket(stageId: string) {
+  deleteBracket(stageSlug: string) {
     return this.apiService.delete<{ message: string }>(
-      `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/stages/${stageId}/bracket`,
+      `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/stages/${stageSlug}/bracket`,
     );
   }
 
@@ -438,7 +438,7 @@ export class LeagueManageService {
     }>(
       `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/drafts/${this.leagueZoneService.draftSlug()}/pokemon-list`,
       {
-        params: { stageId: this.leagueZoneService.stageId() ?? '' },
+        params: { stageSlug: this.leagueZoneService.stageSlug() ?? '' },
       },
     );
   }

@@ -47,8 +47,6 @@ export class MatchCardComponent {
    * left unset so a click never navigates mid-edit.
    */
   @Input() matchupLinkBase?: string[] | null;
-  /** Owning stage's id, the `:stageId` segment of the matchup route. */
-  @Input() stageId?: string | null;
 
   @Output() edit = new EventEmitter<string>();
   @Output() remove = new EventEmitter<string>();
@@ -71,26 +69,20 @@ export class MatchCardComponent {
    * Where this match's page lives, or null when there is nowhere useful to go.
    *
    * A match whose sides are still "winner of …" has no rosters to compare, so
-   * it links nowhere until the bracket feeds it two real teams.
+   * it links nowhere until the bracket feeds it two real teams. Nor does one
+   * that exists only in the builder: with no slug it has no page yet.
    */
   get matchupLink(): string[] | null {
-    if (!this.matchupLinkBase?.length || !this.stageId) return null;
+    if (!this.matchupLinkBase?.length || !this.match.slug) return null;
     const [side1, side2] = this.slots;
     if (!side1.team || !side2.team) return null;
-    return [
-      ...this.matchupLinkBase,
-      'stages',
-      this.stageId,
-      'schedule',
-      'matchups',
-      this.match.id,
-    ];
+    return [...this.matchupLinkBase, 'matchups', this.match.slug];
   }
 
   /** A resolved team's own page, or null when the slot must not navigate. */
   teamLink(slot: CardSlot): string[] | null {
-    if (!this.matchupLinkBase?.length || !slot.team?.teamId) return null;
-    return [...this.matchupLinkBase, 'teams', slot.team.teamId];
+    if (!this.matchupLinkBase?.length || !slot.team?.teamSlug) return null;
+    return [...this.matchupLinkBase, 'teams', slot.team.teamSlug];
   }
 
   /** Replay links in game order, empty when nothing has been recorded. */

@@ -9,7 +9,8 @@
     "local-dev-broadcast": "ng serve --configuration=broadcast --ssl --host 0.0.0.0",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:ci": "test --runInBand"
+    "test:ci": "jest --runInBand",
+    "test:safe": "jest --runInBand --silent"
   },
   "private": true,
   "dependencies": {

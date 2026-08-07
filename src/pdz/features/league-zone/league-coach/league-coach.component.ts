@@ -32,7 +32,7 @@ export class LeagueCoachComponent implements OnInit, OnDestroy {
   getLogoUrl = getLogoUrl;
 
   stages: League.StageSummary[] = [];
-  selectedStageId: string | null = null;
+  selectedStageSlug: string | null = null;
 
   get draftBase(): string[] {
     const { leagueSlug, tournamentSlug } = this;
@@ -49,20 +49,20 @@ export class LeagueCoachComponent implements OnInit, OnDestroy {
   }
 
   get stageBase(): string[] {
-    const { leagueSlug, tournamentSlug, selectedStageId } = this;
-    if (!leagueSlug || !tournamentSlug || !selectedStageId) return [];
+    const { leagueSlug, tournamentSlug, selectedStageSlug } = this;
+    if (!leagueSlug || !tournamentSlug || !selectedStageSlug) return [];
     return [
       '/leagues',
       leagueSlug,
       'tournaments',
       tournamentSlug,
       'stages',
-      selectedStageId,
+      selectedStageSlug,
     ];
   }
 
   get teamLink(): string[] {
-    return [...this.tournamentBase(), 'teams', this.profile?.teamId ?? ''];
+    return [...this.tournamentBase(), 'teams', this.profile?.teamSlug ?? ''];
   }
 
   get scheduleLink(): string[] {
@@ -116,14 +116,14 @@ export class LeagueCoachComponent implements OnInit, OnDestroy {
         next: (stages) => {
           this.stages = stages;
           if (stages.length === 1) {
-            this.selectedStageId = stages[0]._id;
+            this.selectedStageSlug = stages[0].slug;
           }
         },
       });
   }
 
-  onStageSelected(stageId: string): void {
-    this.selectedStageId = stageId;
+  onStageSelected(stageSlug: string): void {
+    this.selectedStageSlug = stageSlug;
   }
 
   ngOnDestroy(): void {

@@ -364,12 +364,7 @@ export class LeagueManageScheduleComponent {
       });
   }
 
-  /**
-   * `stageId` comes from the stage the matchup is listed under, not the route:
-   * this page shows every round of the tournament, and one round can carry
-   * matchups from more than one stage.
-   */
-  saveMatchup(matchup: League.Matchup, stageId: string): void {
+  saveMatchup(matchup: League.Matchup): void {
     const form = this.getMatchupForm(matchup.id);
     if (!form) return;
 
@@ -377,7 +372,7 @@ export class LeagueManageScheduleComponent {
 
     const payload = this.buildMatchupPayload(form);
     this.leagueManageService
-      .updateMatchupSchedule(stageId, matchup.id, payload)
+      .updateMatchupSchedule(matchup.slug, payload)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: () => {
@@ -426,6 +421,7 @@ export class LeagueManageScheduleComponent {
     return this.saveState.get(matchupId)?.error;
   }
 
+  // Keyed by stage `_id` — purely local collapse state, never a URL.
   toggleStage(stageId: string): void {
     this.stageCollapsedState.set(
       stageId,

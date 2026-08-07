@@ -57,8 +57,7 @@ type GameForm = FormGroup<{
 })
 export class MatchupReportComponent implements OnInit, OnDestroy {
   @Input({ required: true }) matchup!: MatchupDetail;
-  @Input({ required: true }) stageId!: string;
-  @Input({ required: true }) matchupId!: string;
+  @Input({ required: true }) matchupSlug!: string;
 
   @Output() submitted = new EventEmitter<void>();
 
@@ -224,7 +223,7 @@ export class MatchupReportComponent implements OnInit, OnDestroy {
     this.saveError.set(null);
 
     this.leagueService
-      .submitMatchupReport(this.stageId, this.matchupId, this.buildPayload())
+      .submitMatchupReport(this.matchupSlug, this.buildPayload())
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: () => {

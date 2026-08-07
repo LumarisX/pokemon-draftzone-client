@@ -15,6 +15,8 @@ export interface BracketTeamFlex {
   seed: number;
   logo?: string;
   teamId?: string;
+  /** URL identifier for the team's page. Absent on a locally-built bracket. */
+  teamSlug?: string;
 }
 
 /**
@@ -32,7 +34,13 @@ export interface BracketRoundMeta {
 }
 
 export interface FlexBracketMatch {
+  /** Local identity; slots wire to each other by it. */
   id: string;
+  /**
+   * URL identifier for the matchup page. Absent for a match that only exists
+   * in the builder — it has no page until it has been saved.
+   */
+  slug?: string;
   /**
    * Index into the stage's global round list — the same axis for every section,
    * so a section that starts later simply has no matches in the earlier rounds.

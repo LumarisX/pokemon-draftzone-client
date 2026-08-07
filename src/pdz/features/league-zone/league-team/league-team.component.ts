@@ -76,7 +76,7 @@ export class LeagueTeamComponent implements OnInit, OnDestroy {
   saving = false;
   saveError = '';
 
-  stageId: string | null = null;
+  stageSlug: string | null = null;
   currentRoundIndex = 0;
 
   @ViewChild(LeagueTradeWidgetComponent)
@@ -117,11 +117,11 @@ export class LeagueTeamComponent implements OnInit, OnDestroy {
       .listStages()
       .pipe(takeUntil(this.destroy$))
       .subscribe((stages) => {
-        this.stageId = stages[0]?._id ?? null;
+        this.stageSlug = stages[0]?.slug ?? null;
 
         this.route.paramMap
           .pipe(
-            map((params) => params.get('teamKey')),
+            map((params) => params.get('teamSlug')),
             distinctUntilChanged(),
             takeUntil(this.destroy$),
           )
@@ -290,7 +290,7 @@ export class LeagueTeamComponent implements OnInit, OnDestroy {
     this.saveError = '';
 
     const rename$: Observable<unknown> = renamed
-      ? this.leagueService.updateTeamInfo(team.id, {
+      ? this.leagueService.updateTeamInfo(team.id, team.slug, {
           teamName: result.teamName,
         })
       : of(null);
@@ -404,7 +404,7 @@ export class LeagueTeamComponent implements OnInit, OnDestroy {
   }
 
   private loadTrades(): void {
-    if (!this.stageId) return;
+    if (!this.stageSlug) return;
     this.leagueService
       .getTrades()
       .pipe(takeUntil(this.destroy$))

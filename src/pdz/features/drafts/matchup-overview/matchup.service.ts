@@ -21,11 +21,10 @@ export class MatchupService {
   getLeagueMatchup(
     leagueSlug: string,
     tournamentSlug: string,
-    stageId: string,
-    matchupId: string,
+    matchupSlug: string,
   ) {
     return this.apiService.get<MatchupData>(
-      `leagues/${leagueSlug}/tournaments/${tournamentSlug}/stages/${stageId}/matchups/${matchupId}/analysis`,
+      `leagues/${leagueSlug}/tournaments/${tournamentSlug}/matchups/${matchupSlug}/analysis`,
     );
   }
 

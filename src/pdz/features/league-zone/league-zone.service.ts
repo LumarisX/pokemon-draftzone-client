@@ -52,8 +52,8 @@ export class LeagueZoneService {
   leagueSlug = signal<string | null>(null);
   tournamentSlug = signal<string | null>(null);
   draftSlug = signal<string | null>(null);
-  stageId = signal<string | null>(null);
-  teamKey = signal<string | null>(null);
+  stageSlug = signal<string | null>(null);
+  teamSlug = signal<string | null>(null);
 
   constructor() {
     this.webSocketService.connect();
@@ -78,10 +78,10 @@ export class LeagueZoneService {
         this.tournamentSlug.set(tournamentSlug);
         const draftSlug = paramMap.get('draftSlug');
         this.draftSlug.set(draftSlug);
-        const stageId = paramMap.get('stageId');
-        this.stageId.set(stageId);
-        const teamKey = paramMap.get('teamKey');
-        this.teamKey.set(teamKey);
+        const stageSlug = paramMap.get('stageSlug');
+        this.stageSlug.set(stageSlug);
+        const teamSlug = paramMap.get('teamSlug');
+        this.teamSlug.set(teamSlug);
       });
 
     effect((onCleanup) => {
@@ -165,7 +165,7 @@ export class LeagueZoneService {
    * holds when the playoffs start.
    */
   getTrades() {
-    const teamKey = this.teamKey();
+    const teamSlug = this.teamSlug();
     return this.apiService.get<{
       rounds: {
         name: string;
@@ -181,7 +181,7 @@ export class LeagueZoneService {
       `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/trades`,
       {
         params: {
-          ...(teamKey ? { teamId: teamKey } : undefined),
+          ...(teamSlug ? { teamSlug } : undefined),
         },
       },
     );
@@ -250,7 +250,7 @@ export class LeagueZoneService {
    * may contain matches from more than one stage at once.
    */
   getSchedule(params?: { round?: string }) {
-    const teamKey = this.teamKey();
+    const teamSlug = this.teamSlug();
     return this.apiService.get<{
       rounds: League.ScheduleRound[];
       currentRoundIndex: number;
@@ -259,7 +259,7 @@ export class LeagueZoneService {
       {
         params: {
           ...(params?.round ? { round: params.round } : undefined),
-          ...(teamKey ? { teamId: teamKey } : undefined),
+          ...(teamSlug ? { teamSlug } : undefined),
         },
       },
     );
@@ -445,10 +445,10 @@ export class LeagueZoneService {
     );
   }
 
-  getStageBracket(stageId: string): Observable<BracketWithSeeding> {
+  getStageBracket(stageSlug: string): Observable<BracketWithSeeding> {
     return this.apiService
       .get<RawBracketResponse>(
-        `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/stages/${stageId}/bracket`,
+        `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/stages/${stageSlug}/bracket`,
       )
       .pipe(map(mapRawBracket));
   }
@@ -476,12 +476,12 @@ export class LeagueZoneService {
     );
   }
 
-  getStandings(stageId?: string): Observable<{
+  getStandings(stageSlug?: string): Observable<{
     coachStandings: League.CoachStandingData;
     pokemonStandings: League.PokemonStanding[];
   }> {
     return this.apiService.get(
-      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/stages/${stageId ?? this.stageId()}/standings`,
+      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/stages/${stageSlug ?? this.stageSlug()}/standings`,
     );
   }
 
@@ -490,26 +490,33 @@ export class LeagueZoneService {
    * trades and its record spans every stage it plays in, so there is no stage
    * to pass.
    */
-  getTeam(teamId?: string): Observable<
+  getTeam(teamSlug?: string): Observable<
     League.LeagueTeam & {
       pokemonStandings: League.PokemonStanding[];
       matchups: League.Matchup[];
     }
   > {
     return this.apiService.get(
-      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/teams/${teamId ?? this.teamKey()}`,
+      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/teams/${teamSlug ?? this.teamSlug()}`,
     );
   }
 
-  /** Self-service team rename. The API authorises the team's own coach and organizers. */
+  /**
+   * Self-service team rename. The API authorises the team's own coach and
+   * organizers.
+   *
+   * Takes both identifiers: the CRUD endpoint is keyed by ObjectId, while the
+   * team page it invalidates is addressed by slug.
+   */
   updateTeamInfo(
     teamId: string,
+    teamSlug: string,
     changes: { teamName?: string; logo?: string },
   ) {
     return this.apiService.patch<{ _id: string; teamName: string }>(
       `teams/${teamId}`,
       changes,
-      { invalidateCache: [this.teamPath(teamId)] },
+      { invalidateCache: [this.teamPath(teamSlug)] },
     );
   }
 
@@ -534,40 +541,37 @@ export class LeagueZoneService {
     );
   }
 
-  private matchupPath(stageId: string, matchupId: string): string {
-    return `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/stages/${stageId}/matchups/${matchupId}`;
+  /**
+   * A matchup is addressed at tournament level: its slug is unique, and the
+   * stage it sits in is something the server reads off the matchup itself.
+   */
+  private matchupPath(matchupSlug: string): string {
+    return `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/matchups/${matchupSlug}`;
   }
 
-  getMatchupDetail(
-    stageId: string,
-    matchupId: string,
-  ): Observable<MatchupDetail> {
-    return this.apiService.get<MatchupDetail>(
-      this.matchupPath(stageId, matchupId),
-    );
+  getMatchupDetail(matchupSlug: string): Observable<MatchupDetail> {
+    return this.apiService.get<MatchupDetail>(this.matchupPath(matchupSlug));
   }
 
   submitMatchupReport(
-    stageId: string,
-    matchupId: string,
+    matchupSlug: string,
     payload: MatchupReportPayload,
   ): Observable<{ message: string; status: 'pending' | 'approved' }> {
     return this.apiService.post(
-      `${this.matchupPath(stageId, matchupId)}/report`,
+      `${this.matchupPath(matchupSlug)}/report`,
       payload,
-      { invalidateCache: [this.matchupPath(stageId, matchupId)] },
+      { invalidateCache: [this.matchupPath(matchupSlug)] },
     );
   }
 
   reviewMatchupReport(
-    stageId: string,
-    matchupId: string,
+    matchupSlug: string,
     decision: 'approve' | 'reject',
   ): Observable<{ message: string; status: string }> {
     return this.apiService.post(
-      `${this.matchupPath(stageId, matchupId)}/report/${decision}`,
+      `${this.matchupPath(matchupSlug)}/report/${decision}`,
       {},
-      { invalidateCache: [this.matchupPath(stageId, matchupId)] },
+      { invalidateCache: [this.matchupPath(matchupSlug)] },
     );
   }
 
@@ -600,8 +604,8 @@ export class LeagueZoneService {
     );
   }
 
-  private teamPath(teamId: string): string {
-    return `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/teams/${teamId}`;
+  private teamPath(teamSlug: string): string {
+    return `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/teams/${teamSlug}`;
   }
 
   getLeagueUploadPresignedUrl(

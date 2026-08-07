@@ -17,10 +17,7 @@
                 <h5 class="matchup-stage__group">{{ stage.name }}</h5>
               }
               @for (matchup of stage.matchups; track matchup.id) {
-                <pdz-matchup-card
-                  [matchup]="matchup"
-                  [stageId]="stage._id"
-                ></pdz-matchup-card>
+                <pdz-matchup-card [matchup]="matchup"></pdz-matchup-card>
               }
             }
           }

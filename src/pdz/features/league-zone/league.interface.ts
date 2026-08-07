@@ -11,6 +11,8 @@ import { Type } from '@pdz/shared/data';
 export namespace League {
   export type Team = {
     id: string;
+    /** URL identifier for the team's page; `id` is what payloads join on. */
+    slug: string;
     name: string;
     coach: string;
     logo?: string;
@@ -19,6 +21,7 @@ export namespace League {
   export type LeagueTeam = {
     name: string;
     id: string;
+    slug: string;
     logo?: string;
     draft: LeaguePokemon[];
     picks: LeaguePokemon[][];
@@ -76,6 +79,8 @@ export namespace League {
 
   export type Matchup = {
     id: string;
+    /** URL identifier for the matchup page. Unique tournament-wide. */
+    slug: string;
     team1: Team & { score: number; draft: DraftPokemon[] };
     team2: Team & { score: number; draft: DraftPokemon[] };
     matches: {
@@ -98,6 +103,7 @@ export namespace League {
 
   export type Stage = {
     _id: string;
+    slug: string;
     name: string;
     matchups: Matchup[];
   };
@@ -114,7 +120,13 @@ export namespace League {
     _id: string;
     name: string;
     matchDeadline?: string | null;
-    stages: { _id: string; name: string; type: string; matchups: Matchup[] }[];
+    stages: {
+      _id: string;
+      slug: string;
+      name: string;
+      type: string;
+      matchups: Matchup[];
+    }[];
   };
   export type RuleSection = {
     title: string;
@@ -141,6 +153,8 @@ export namespace League {
   export type LeagueSignUp = {
     id: string;
     teamId?: string;
+    /** URL identifier for the team's page. */
+    teamSlug?: string;
     name: string;
     gameName: string;
     discordName: string;
@@ -184,6 +198,9 @@ export namespace League {
     gameDiff: number;
     pokemonDiff: number;
     logo?: string;
+    teamId: string;
+    /** URL identifier for the team's page. */
+    teamSlug: string;
   };
 
   export type CoachStandingData = {
@@ -256,6 +273,8 @@ export namespace League {
     logo?: string;
     signedUpAt: Date;
     teamId?: string;
+    /** URL identifier for the team's page. */
+    teamSlug?: string;
     draft?: { draftSlug: string; name: string };
     inDiscordServer: boolean;
   };
@@ -270,6 +289,8 @@ export namespace League {
 
   export type StageSummary = {
     _id: string;
+    /** URL identifier for the stage's pages and endpoints. */
+    slug: string;
     name: string;
     type: string;
     order: number;
