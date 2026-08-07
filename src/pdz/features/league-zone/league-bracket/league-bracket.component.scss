@@ -4,15 +4,78 @@
 
 :host {
   display: block;
+  width: 100%;
+  height: 100%;
 }
 
-.loading-state {
+.schedule {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 400px;
-}
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
 
-.empty-state {
-  @include pdz-league-section-message();
+  &__header {
+    @include pdz-league-page-header();
+    // The meta chips wrap under the title on a narrow pane rather than
+    // squeezing it.
+    flex-wrap: wrap;
+    flex: none;
+  }
+
+  &__title {
+    @include pdz-league-page-title();
+    margin-inline-end: auto;
+  }
+
+  &__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: pdz.space(xs);
+  }
+
+  &__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: pdz.space(3xs);
+    padding: pdz.space(3xs) pdz.space(sm);
+    border: 1px solid pdz.color(outline-variant);
+    border-radius: pdz.shape(corner-full);
+    background: pdz.color(surface-container-lowest);
+    color: pdz.color(on-surface-variant);
+    white-space: nowrap;
+    @include apply-typography(label-sm);
+
+    &--current {
+      border-color: pdz.color(primary-border);
+      background: pdz.color(primary-subtle);
+      color: pdz.color(on-primary-container);
+      font-weight: var(--pdz-font-weight-semibold);
+    }
+  }
+
+  // The grid scrolls in its own bounded pane, so this only has to hand it a
+  // definite height — see the note on the builder's own `height`.
+  &__body {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+
+    > pdz-stage-builder {
+      flex: 1 1 auto;
+      min-height: 14rem;
+    }
+  }
+
+  &__loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 25rem;
+  }
+
+  &__empty {
+    @include pdz-league-section-message();
+  }
 }

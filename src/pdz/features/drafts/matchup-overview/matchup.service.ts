@@ -25,7 +25,7 @@ export class MatchupService {
     matchupId: string,
   ) {
     return this.apiService.get<MatchupData>(
-      `leagues/${leagueSlug}/tournaments/${tournamentSlug}/stages/${stageId}/matchups/${matchupId}`,
+      `leagues/${leagueSlug}/tournaments/${tournamentSlug}/stages/${stageId}/matchups/${matchupId}/analysis`,
     );
   }
 

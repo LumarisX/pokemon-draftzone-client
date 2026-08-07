@@ -57,7 +57,6 @@ import {
   WireRect,
   computeWires,
   requiredCorridorHeight,
-  planRoutes,
 } from './wire-routing';
 
 /**
@@ -106,6 +105,11 @@ interface BuilderCell {
 interface StageBox {
   key: string;
   title: string;
+  /** Human-readable format, e.g. "Round Robin". Empty for an unknown type. */
+  typeLabel: string;
+  typeIcon: string;
+  /** Matches the stage holds, shown next to its name. */
+  matchCount: number;
   /** Hidden stages are organizer-only. A stage with no setting yet is visible. */
   public: boolean;
   span: StageSpan;
@@ -115,6 +119,15 @@ interface StageBox {
   column: number;
   cells: BuilderCell[];
 }
+
+/** How each stage format introduces itself in its header. */
+const STAGE_TYPES: Record<string, { label: string; icon: string }> = {
+  'round-robin': { label: 'Round Robin', icon: 'grid_view' },
+  'single-elimination': { label: 'Single Elim', icon: 'account_tree' },
+  'double-elimination': { label: 'Double Elim', icon: 'account_tree' },
+  swiss: { label: 'Swiss', icon: 'swap_horiz' },
+  custom: { label: 'Custom', icon: 'dashboard' },
+};
 
 @Component({
   selector: 'pdz-stage-builder',
@@ -153,6 +166,14 @@ export class StageBuilderComponent
    */
   @Input() teamsByStage = new Map<string, BracketTeamFlex[]>();
   @Input() editable = false;
+  /**
+   * Route prefix the match cards link against, as
+   * `['/leagues', leagueSlug, 'tournaments', tournamentSlug]`. Left unset in
+   * the organizer's editor, where the cards are dragged rather than followed.
+   */
+  @Input() matchupLinkBase?: string[] | null;
+  /** The round currently being played, or -1 before the tournament starts. */
+  @Input() currentRoundIndex = -1;
 
   @Output() draftChange = new EventEmitter<BuilderDraft>();
   @Output() editMatch = new EventEmitter<string>();
@@ -167,8 +188,15 @@ export class StageBuilderComponent
   protected wires: Wire[] = [];
   protected gridWidth = 0;
   protected gridHeight = 0;
-  /** Minimum height of the gap above each row, sized to the wires crossing it. */
-  protected corridorHeights: number[] = [];
+  /**
+   * Floor for the gap between rows, as a CSS length, sized to the busiest
+   * corridor the wires will need.
+   *
+   * One figure rather than one per row because a CSS grid has a single
+   * `row-gap` — there is no per-track version of it — and a corridor that is
+   * too short does not clip its lines, it puts them on the cards either side.
+   */
+  protected corridorGap = '0px';
 
   /** Where to park a stage that has no matches to measure yet. */
   private emptyStageRounds = new Map<string, number>();
@@ -237,9 +265,15 @@ export class StageBuilderComponent
       ].sort((a, b) => a - b);
 
       const stage = stageOf(span.key);
+      const type = stage ? STAGE_TYPES[stage.type] : undefined;
       return {
         key: span.key,
         title: stage?.name ?? span.key,
+        typeLabel: type?.label ?? '',
+        typeIcon: type?.icon ?? 'dashboard',
+        matchCount: this.draft.matches.filter(
+          (match) => stageKeyOf(match) === span.key,
+        ).length,
         public: stage?.public !== false,
         span,
         rowStart: span.firstRound + 1,
@@ -263,7 +297,6 @@ export class StageBuilderComponent
     // Recomputed with the cells rather than read per binding: every cell lists
     // every other, so a getter here would be quadratic on each check.
     this.cellIds = this.stages.flatMap((s) => s.cells.map((c) => c.id));
-    this.corridorHeights = this.computeCorridorHeights();
   }
 
   /**
@@ -324,18 +357,6 @@ export class StageBuilderComponent
     return labels;
   }
 
-  /**
-   * How much clear space each row needs above it. The wires are routed through
-   * these gaps, so the gaps have to be tall enough before anything is drawn —
-   * which means asking the router for its lane counts up front.
-   */
-  private computeCorridorHeights(): number[] {
-    const { corridorLanes } = planRoutes(this.draft.matches);
-    return Array.from({ length: this.rounds.length + 1 }, (_, i) =>
-      requiredCorridorHeight(corridorLanes.get(i) ?? 0),
-    );
-  }
-
   // ─── Measurement ───────────────────────────────────────────────────────────
 
   private observeGrid(): void {
@@ -389,10 +410,20 @@ export class StageBuilderComponent
     });
 
     const geometry: WireGeometry = { rects, rows, bands };
-    const wires = computeWires(this.draft.matches, geometry);
+    const { wires, corridorLanes } = computeWires(this.draft.matches, geometry);
+    // Sized from the measurement rather than ahead of it, because how many
+    // lanes a corridor needs now depends on where the cards actually sit —
+    // runs that never pass each other share one. Widening the gap moves the
+    // rows but not their x, so the lane counts the next pass finds are the same
+    // ones and the loop settles immediately.
+    const gap = Math.max(
+      0,
+      ...[...corridorLanes.values()].map(requiredCorridorHeight),
+    );
 
     this.zone.run(() => {
       this.wires = wires;
+      this.corridorGap = `${gap}px`;
       this.gridWidth = origin.width;
       this.gridHeight = origin.height;
       this.cdr.markForCheck();

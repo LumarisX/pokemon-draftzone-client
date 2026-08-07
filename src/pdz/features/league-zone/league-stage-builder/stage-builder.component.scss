@@ -1,6 +1,13 @@
 @use "pdz-theming" as pdz;
 @use "mixins" as *;
 
+// The round gutter's track, published as a custom property because the stage
+// headers stick sideways to just clear it — the gutter is frozen at the pane's
+// left edge, so anything pinned further left would slide underneath it. On a
+// phone the axis gives up most of that width; there is only room for one card
+// beside it as it is.
+$gutter-width: var(--gutter-width, 11rem);
+
 :host {
   display: block;
   // A flex item by default in the builder page, which sizes this to whatever
@@ -11,6 +18,9 @@
 
 .builder {
   overflow: auto;
+  // Sticky headers slide over the cards, so the pane needs a solid backdrop of
+  // its own rather than whatever the page happens to put behind it.
+  background: pdz.color("background");
   // The grid outgrows the page in both directions, so it scrolls as its own
   // pane. Left unbounded it would instead be as tall as the whole schedule and
   // put its horizontal scrollbar at the foot of the last round — the control
@@ -21,21 +31,44 @@
   // document flow and 100% would resolve to auto.
   height: 100%;
   max-height: 100dvh;
-  // The top gap has to clear a stage title, which hangs above its first row.
-  padding: pdz.space(3xl) pdz.space(lg) pdz.space(lg);
+
+  // Nothing is dragged here, so a card can afford the width that stops team
+  // names being truncated — which is most of what the reader came for.
+  &--readonly {
+    @include respond-above(medium) {
+      --card-width: 16rem;
+    }
+  }
 
   &__grid {
+    --gutter-width: 6.5rem;
+
+    @include respond-above(medium) {
+      --gutter-width: 11rem;
+    }
+
     position: relative;
     display: grid;
+    // The margin belongs to the grid rather than to the pane around it: as
+    // padding on a scroll container it would be a strip the content slides
+    // under, and every frozen edge here would have cards bleeding past it.
+    // The top gap has to clear a stage header, which hangs above its first row.
+    padding: pdz.space(3xl) pdz.space(lg) pdz.space(lg);
+    box-sizing: border-box;
     // Column 1 is the round gutter; each stage then contributes a narrow
     // band (empty space the wires route through) and its own content column.
     grid-template-columns:
-      minmax(11rem, max-content)
+      minmax($gutter-width, max-content)
       repeat(var(--stage-count, 1), 2.5rem max-content);
     align-items: stretch;
-    // The row gap must stay wider than the stage frame's upward pull, or a
-    // stage starting mid-grid overlaps the box that ends above it.
-    gap: pdz.space(3xl) 0;
+    // Every wire between two rounds is drawn in this gap, so it has to be tall
+    // enough for the lanes crossing the busiest one — `--wire-corridor` is the
+    // router's own answer to that, fed back in before anything is measured.
+    //
+    // The floor is not just a minimum for looks: the row gap must stay wider
+    // than the stage frame's upward pull, or a stage starting mid-grid overlaps
+    // the box that ends above it.
+    gap: max(#{pdz.space(3xl)}, var(--wire-corridor, 0px)) 0;
     width: max-content;
     min-width: 100%;
   }
@@ -43,46 +76,125 @@
 
 // ─── Round gutter ────────────────────────────────────────────────────────────
 
+// The frozen column's backing, one unbroken strip behind every round. It also
+// owns the rail, which as a per-row border came out dashed — one segment per
+// round, with a gap wherever the rows were spaced apart.
+.rail {
+  grid-column: 1;
+  position: sticky;
+  left: 0;
+  // Over the stage headers, under the rounds themselves.
+  z-index: 3;
+  pointer-events: none;
+  background: pdz.color("background");
+  border-right: 1px solid pdz.color("outline-variant");
+  // Reaches into the grid's own padding at both ends: the stage headers pin
+  // above the first round, which no row covers.
+  margin-top: calc(-1 * #{pdz.space(3xl)});
+  margin-bottom: calc(-1 * #{pdz.space(lg)});
+}
+
 .gutter {
   grid-column: 1;
   display: flex;
-  align-items: center;
+  // Top-aligned, so a round's name heads its row the way a card's label heads
+  // its card. Centred, it floated in the middle of however tall the fullest
+  // stage made the row and lined up with nothing.
+  align-items: flex-start;
   padding-right: pdz.space(lg);
-  // The row divider runs the full width of the grid behind everything else.
-  border-top: 1px solid pdz.color("outline-variant");
+  // The grid is wider than the pane whenever a tournament has more than a
+  // couple of stages, and a match card means nothing without the round it sits
+  // in — so the round axis rides along instead of scrolling out of reach.
+  position: sticky;
+  left: 0;
+  // Above the rail it rides on, so a round stays legible over its own backing.
+  z-index: 4;
+  background: pdz.color("background");
 
+  // Every round gets a band, so the axis reads as a stack of rows rather than
+  // labels adrift in a column of white. It wraps the label alone: a grid row is
+  // as tall as its fullest stage, and a block of colour that size would read as
+  // a selection rather than a marker.
+  //
+  // Left padding only — the marker below is positioned off this row's right
+  // edge to land on the rail, and padding that side would drag it off the line.
   &__row {
     display: flex;
     flex-direction: column;
     gap: pdz.space(2xs);
     width: 100%;
-    padding: pdz.space(sm) 0;
+    padding: pdz.space(sm) 0 pdz.space(sm) pdz.space(sm);
+    border-radius: pdz.shape("corner-md");
+    // `menu-subtle` collapses into the page in dark, where it and the
+    // background are both the same near-black.
+    background: pdz.color("menu-container");
+    color: pdz.color("on-menu-container");
+  }
+
+  // The live round is the only one in the accent, which is what makes it read
+  // as the live one at a glance.
+  &--current &__row {
+    background: pdz.color("primary-subtle");
+    color: pdz.color("on-primary-container");
+  }
+
+  &__heading {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: pdz.space(sm);
+
+    // Pins the round to the rail. Sized and offset to straddle the gutter's
+    // right border, with a halo punching a gap in it.
+    &::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      right: calc(-1 * #{pdz.space(lg)} - 0.25rem);
+      width: 0.5rem;
+      height: 0.5rem;
+      margin-top: -0.25rem;
+      border-radius: pdz.shape("corner-full");
+      background: pdz.color("menu-border");
+      box-shadow: 0 0 0 3px pdz.color("background");
+    }
+  }
+
+  &--current &__heading::after {
+    background: pdz.color("primary");
+  }
+
+  &__badge {
+    @include apply-typography(label-xs);
+    flex: none;
+    padding: pdz.space(2xs) pdz.space(sm);
+    border-radius: pdz.shape("corner-full");
+    background: pdz.color("primary");
+    color: pdz.color("on-primary");
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
   }
 
   &__name {
     @include apply-typography(title-sm);
-    color: pdz.color("on-surface");
+    color: inherit;
     background: none;
     border: 1px solid transparent;
     border-radius: pdz.shape("corner-xs");
     padding: pdz.space(3xs) pdz.space(2xs);
     width: 100%;
 
-    &:hover,
-    &:focus {
-      border-color: pdz.color("outline-variant");
-      background: pdz.color("surface-container-low");
-    }
-
     &--static {
-      border-color: transparent;
-      background: none;
+      padding-inline: 0;
+      width: auto;
+      white-space: nowrap;
     }
   }
 
   &__deadline {
     @include apply-typography(label-sm);
-    color: pdz.color("on-surface-variant");
+    color: inherit;
+    opacity: 0.75;
     background: none;
     border: 1px solid transparent;
     border-radius: pdz.shape("corner-xs");
@@ -90,10 +202,24 @@
     width: 100%;
     color-scheme: light dark;
 
+    &--static {
+      display: inline-flex;
+      align-items: center;
+      gap: pdz.space(3xs);
+      padding-inline: 0;
+      width: auto;
+    }
+  }
+
+  // Only the organizer's fields react to being pointed at. The read-only
+  // labels carry the same classes but are spans, and were lighting up a text
+  // box around themselves on hover.
+  input#{&}__name,
+  input#{&}__deadline {
     &:hover,
     &:focus {
       border-color: pdz.color("outline-variant");
-      background: pdz.color("surface-container-low");
+      background: pdz.color("surface-container-lowest");
     }
   }
 
@@ -149,36 +275,80 @@
 
 // Purely a frame: the cells it appears to contain are siblings placed on the
 // same grid cells, so the box must not intercept drags aimed at them.
+$stage-header-height: 2.25rem;
+
 .stage {
   position: relative;
   pointer-events: none;
-  border: 1px solid pdz.color("outline");
+  border: 1px solid pdz.color("outline-variant");
   border-radius: pdz.shape("corner-lg");
   background: pdz.color-rgba("surface-container-lowest", 0.6);
-  // Pulled up into the row gap so the title sits above the first row of cards
-  // instead of on top of them.
-  margin: -1.75rem calc(-1 * #{pdz.space(md)}) 0;
-  padding-top: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  // Pulled up into the row gap so the header sits above the first row of cards
+  // instead of on top of them. The header is exactly as tall as the overhang,
+  // so every cell still lines up with its round.
+  margin: (-$stage-header-height) calc(-1 * #{pdz.space(md)}) 0;
 
   &__header {
-    position: absolute;
-    top: pdz.space(2xs);
-    left: pdz.space(md);
-    right: pdz.space(md);
+    // Rides the vertical scroll: a schedule is many rounds tall, and which
+    // section a column of cards belongs to is the first thing lost on the way
+    // down. Sticks inside its own box, so it leaves with its stage.
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    box-sizing: border-box;
+    height: $stage-header-height;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: pdz.space(sm);
+    gap: pdz.space(2xs);
+    padding: 0 pdz.space(md);
+    border-radius: pdz.shape("corner-lg") pdz.shape("corner-lg") 0 0;
+    background: pdz.color("primary-subtle");
+    border-bottom: 1px solid pdz.color("primary-border");
     pointer-events: auto;
   }
 
-  &__title {
-    @include apply-typography(label-lg);
-    color: pdz.color("on-surface-variant");
-    margin: 0;
-    // Keeps the visibility toggle next to the actions rather than stranded
-    // between them and the title.
+  &__identity {
+    display: flex;
+    align-items: center;
+    gap: pdz.space(sm);
+    min-width: 0;
+    // Keeps the organizer's controls at the far end of the band rather than
+    // stranded next to the name.
     margin-inline-end: auto;
+  }
+
+  &__icon {
+    flex: none;
+    color: pdz.color("primary");
+  }
+
+  &__title {
+    @include apply-typography(title-sm);
+    color: pdz.color("on-primary-container");
+    margin: 0;
+    white-space: nowrap;
+  }
+
+  &__type {
+    @include apply-typography(label-xs);
+    flex: none;
+    color: pdz.color("on-surface-variant");
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+
+  &__count {
+    @include apply-typography(label-sm);
+    flex: none;
+    min-width: 1.25rem;
+    padding: pdz.space(2xs) pdz.space(xs);
+    text-align: center;
+    border-radius: pdz.shape("corner-full");
+    background: pdz.color("surface-container-lowest");
+    color: pdz.color("on-surface-variant");
   }
 
   &__visibility {
@@ -270,7 +440,7 @@
   }
 
   &__item {
-    width: 14rem;
+    width: var(--card-width, 14rem);
     flex: none;
 
     &.cdk-drag-preview {
@@ -284,7 +454,7 @@
   }
 
   &__placeholder {
-    width: 14rem;
+    width: var(--card-width, 14rem);
     height: 100%;
     border: 1px dashed pdz.color("primary-border");
     border-radius: pdz.shape("corner-sm");
@@ -345,6 +515,15 @@
     border-color: pdz.color("primary-border");
     color: pdz.color("primary");
   }
+}
+
+// A stage names itself for as long as any of it is on screen, not only while
+// its left edge is. Read-only only: the organizer's gutter holds a date picker
+// whose width the browser decides, so there is no offset here that reliably
+// clears it.
+.builder--readonly .stage__identity {
+  position: sticky;
+  left: $gutter-width;
 }
 
 // Both affordances stay faint while the grid is in use and solidify on

@@ -1,0 +1,290 @@
+<ng-template #sideTpl let-side let-key="key" let-m="matchup">
+  <div
+    class="scoreboard__side"
+    [class.scoreboard__side--winner]="isWinner(m, key)"
+    [class.scoreboard__side--right]="key === 'side2'"
+  >
+    <a class="scoreboard__identity" [routerLink]="teamPath(side.id)">
+      <img class="scoreboard__logo" [src]="getLogoUrl(side.logo)" alt="" />
+      <span class="scoreboard__names">
+        <span class="scoreboard__team">{{ side.name }}</span>
+        <span class="scoreboard__coach">{{ side.coach }}</span>
+      </span>
+    </a>
+
+    <div class="scoreboard__contact">
+      @if (handleFor(side); as handle) {
+        <button
+          type="button"
+          class="scoreboard__discord"
+          [class.scoreboard__discord--copied]="copiedHandle() === handle"
+          [attr.aria-label]="'Copy ' + handle"
+          (click)="copyHandle(side)"
+        >
+          <pdz-icon name="discord" [size]="14"></pdz-icon>
+          <span class="scoreboard__handle">{{ handle }}</span>
+          <pdz-icon
+            class="scoreboard__copy"
+            [name]="copiedHandle() === handle ? 'check' : 'content_copy'"
+            [size]="14"
+          ></pdz-icon>
+        </button>
+      }
+
+      @if (localTime(side); as time) {
+        <span class="scoreboard__time">
+          <pdz-icon name="schedule" [size]="14"></pdz-icon>
+          <span>{{ time }}</span>
+        </span>
+      }
+    </div>
+  </div>
+</ng-template>
+
+@if (loading()) {
+  <div class="matchup__loading"><pdz-loading></pdz-loading></div>
+} @else if (loadError()) {
+  <p class="matchup__message matchup__message--error">{{ loadError() }}</p>
+} @else if (matchup(); as m) {
+  <div class="matchup">
+    <header class="matchup__header">
+      <a class="matchup__back" [routerLink]="schedulePath()">
+        <pdz-icon name="arrow_back" [size]="16"></pdz-icon>
+        <span>Schedule</span>
+      </a>
+      <h1 class="matchup__title">{{ headline(m) }}</h1>
+      <span
+        class="matchup__status"
+        [class.matchup__status--final]="!!m.winner"
+        [class.matchup__status--pending]="!m.winner && m.status === 'pending'"
+        [class.matchup__status--forfeit]="m.forfeit"
+        >{{ statusLabel(m) }}</span
+      >
+      <a class="matchup__analysis" [routerLink]="['analysis']">
+        <pdz-icon name="compare_arrows" [size]="16"></pdz-icon>
+        <span>Analysis</span>
+      </a>
+    </header>
+
+    <section class="scoreboard">
+      <ng-container
+        [ngTemplateOutlet]="sideTpl"
+        [ngTemplateOutletContext]="{
+          $implicit: m.team1,
+          key: 'side1',
+          matchup: m,
+        }"
+      ></ng-container>
+
+      <div class="scoreboard__center">
+        <div class="scoreboard__score">
+          <span
+            class="scoreboard__points"
+            [class.scoreboard__points--winner]="isWinner(m, 'side1')"
+            >{{ m.score.team1 }}</span
+          >
+          <span class="scoreboard__dash">–</span>
+          <span
+            class="scoreboard__points"
+            [class.scoreboard__points--winner]="isWinner(m, 'side2')"
+            >{{ m.score.team2 }}</span
+          >
+        </div>
+
+        @if (m.round?.bestOf) {
+          <span class="scoreboard__format">Best of {{ m.round!.bestOf }}</span>
+        }
+
+        @if (scheduledLabel(m); as when) {
+          <span class="scoreboard__when">
+            <pdz-icon name="event" [size]="14"></pdz-icon>
+            <span>{{ scheduledIsDeadline(m) ? "Due " : "" }}{{ when }}</span>
+          </span>
+        }
+      </div>
+
+      <ng-container
+        [ngTemplateOutlet]="sideTpl"
+        [ngTemplateOutletContext]="{
+          $implicit: m.team2,
+          key: 'side2',
+          matchup: m,
+        }"
+      ></ng-container>
+    </section>
+
+    @if (m.notes) {
+      <p class="matchup__notes">{{ m.notes }}</p>
+    }
+
+    @if (m.report && m.viewer.canReview) {
+      <section class="review">
+        <div class="review__body">
+          <pdz-icon name="pending_actions" [size]="18"></pdz-icon>
+          <div class="review__text">
+            <span class="review__title">Result awaiting review</span>
+            <span class="review__summary">{{ reportSummary(m) }}</span>
+            @if (m.report.notes) {
+              <span class="review__note">“{{ m.report.notes }}”</span>
+            }
+          </div>
+        </div>
+        <div class="review__actions">
+          <button
+            type="button"
+            class="review__action review__action--approve"
+            [disabled]="reviewing()"
+            (click)="review('approve')"
+          >
+            Approve
+          </button>
+          <button
+            type="button"
+            class="review__action"
+            [disabled]="reviewing()"
+            (click)="review('reject')"
+          >
+            Reject
+          </button>
+        </div>
+        @if (reviewError()) {
+          <p class="review__error">{{ reviewError() }}</p>
+        }
+      </section>
+    } @else if (m.report && m.viewer.side) {
+      <section class="review review--waiting">
+        <div class="review__body">
+          <pdz-icon name="hourglass_top" [size]="18"></pdz-icon>
+          <div class="review__text">
+            <span class="review__title">Submitted for review</span>
+            <span class="review__summary">{{ reportSummary(m) }}</span>
+          </div>
+        </div>
+      </section>
+    }
+
+    <section class="games">
+      <div class="games__header">
+        <h2 class="games__title">Games</h2>
+        @if (m.viewer.canReport) {
+          <button
+            type="button"
+            class="games__report-toggle"
+            [class.games__report-toggle--open]="reportOpen()"
+            (click)="toggleReport()"
+          >
+            <pdz-icon
+              [name]="reportOpen() ? 'close' : 'edit_note'"
+              [size]="16"
+            ></pdz-icon>
+            <span>{{ reportOpen() ? "Cancel" : "Report result" }}</span>
+          </button>
+        }
+      </div>
+
+      @if (reportOpen()) {
+        <pdz-matchup-report
+          [matchup]="m"
+          [stageId]="stage"
+          [matchupId]="matchupKey"
+          (submitted)="onReported()"
+        ></pdz-matchup-report>
+      }
+
+      @if (m.matches.length) {
+        <div class="games__tabs">
+          @for (game of m.matches; track $index) {
+            <button
+              type="button"
+              class="games__tab"
+              [class.games__tab--selected]="selectedGame() === $index"
+              (click)="selectGame($index)"
+            >
+              <span class="games__tab-label">Game {{ $index + 1 }}</span>
+              <span class="games__tab-score"
+                >{{ game.team1.score }}–{{ game.team2.score }}</span
+              >
+            </button>
+          }
+        </div>
+
+        @if (m.matches[selectedGame()]; as game) {
+          <div class="games__body">
+            <div class="games__team">
+              <div class="games__team-header">
+                <span class="games__team-name">{{ m.team1.name }}</span>
+                @if (game.team1.winner) {
+                  <span class="games__won">Won</span>
+                }
+              </div>
+              <div class="games__roster">
+                @for (slot of gameSlots(game.team1.team); track slot.id) {
+                  <div
+                    class="games__slot"
+                    [class.games__slot--survived]="slot.status === 'survived'"
+                    [class.games__slot--fainted]="slot.status === 'fainted'"
+                  >
+                    <pdz-sprite [pokemon]="slot" flipped></pdz-sprite>
+                    <span class="games__kills">
+                      {{ slot.kills }}
+                      <span class="games__kills-label">KO</span>
+                    </span>
+                  </div>
+                }
+              </div>
+            </div>
+
+            <div class="games__team games__team--right">
+              <div class="games__team-header">
+                <span class="games__team-name">{{ m.team2.name }}</span>
+                @if (game.team2.winner) {
+                  <span class="games__won">Won</span>
+                }
+              </div>
+              <div class="games__roster">
+                @for (slot of gameSlots(game.team2.team); track slot.id) {
+                  <div
+                    class="games__slot"
+                    [class.games__slot--survived]="slot.status === 'survived'"
+                    [class.games__slot--fainted]="slot.status === 'fainted'"
+                  >
+                    <pdz-sprite [pokemon]="slot"></pdz-sprite>
+                    <span class="games__kills">
+                      {{ slot.kills }}
+                      <span class="games__kills-label">KO</span>
+                    </span>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+
+          @if (replayOf(game); as replay) {
+            <a
+              class="games__replay"
+              [href]="replay"
+              target="_blank"
+              rel="noopener"
+            >
+              <pdz-icon name="play_circle" [size]="16"></pdz-icon>
+              <span>Watch game {{ selectedGame() + 1 }}</span>
+            </a>
+          }
+        }
+      } @else {
+        <p class="games__empty">No games have been recorded yet.</p>
+      }
+    </section>
+
+    @if (m.viewer.canChat) {
+      <pdz-league-chat
+        class="matchup__chat"
+        channel="matchup"
+        [target]="matchupKey"
+        heading="Match chat"
+        placeholder="Message the other team…"
+        [ownTeamIds]="ownTeamIds(m)"
+      ></pdz-league-chat>
+    }
+  </div>
+}

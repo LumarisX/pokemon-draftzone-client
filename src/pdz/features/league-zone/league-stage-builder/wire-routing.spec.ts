@@ -2,6 +2,7 @@ import { FlexBracketMatch } from '../league-bracket/bracket.model';
 import {
   computeWires,
   LANE_STEP,
+  PORT_SPREAD,
   planRoutes,
   requiredCorridorHeight,
   WireGeometry,
@@ -87,7 +88,7 @@ function crossesRect(
 }
 
 describe('planRoutes', () => {
-  it('routes an adjacent same-section edge as an elbow', () => {
+  it('turns every edge in the corridor above its destination', () => {
     const matches = [
       match('semi-a', 0, 0),
       match('semi-b', 0, 1),
@@ -96,14 +97,12 @@ describe('planRoutes', () => {
         b: { type: 'winner', from: 'semi-b' },
       }),
     ];
-    const { routes } = planRoutes(matches);
+    const routes = planRoutes(matches);
     expect(routes.length).toBe(2);
-    expect(routes.every((r) => r.kind === 'elbow')).toBe(true);
-    // Both enter the corridor above round 1.
-    expect(routes.every((r) => r.corrOut === 1)).toBe(true);
+    expect(routes.every((r) => r.corridor === 1)).toBe(true);
   });
 
-  it('routes a cross-section drop as a bus', () => {
+  it('carries the destination section as the band it would detour through', () => {
     const matches = [
       match('w1', 0, 0, { section: 'winners' }),
       match('l1', 2, 0, {
@@ -111,35 +110,16 @@ describe('planRoutes', () => {
         a: { type: 'loser', from: 'w1' },
       }),
     ];
-    const { routes } = planRoutes(matches);
-    expect(routes[0].kind).toBe('bus');
-    expect(routes[0].corrOut).toBe(1);
-    expect(routes[0].corrIn).toBe(2);
+    const [route] = planRoutes(matches);
+    expect(route.bandKey).toBe('losers');
+    expect(route.srcRound).toBe(0);
+    expect(route.exitCorridor).toBe(1);
+    expect(route.corridor).toBe(2);
   });
 
-  it('gives every line sharing a corridor its own lane', () => {
-    const matches = [
-      match('a', 0, 0),
-      match('b', 0, 1),
-      match('c', 1, 0, { a: { type: 'winner', from: 'a' } }),
-      match('d', 1, 1, { a: { type: 'winner', from: 'b' } }),
-    ];
-    const { routes, corridorLanes } = planRoutes(matches);
-    const lanes = routes.map((r) => r.laneOut);
-    expect(new Set(lanes).size).toBe(routes.length);
-    expect(corridorLanes.get(1)).toBe(2);
-  });
-
-  it('lets separate sections reuse elbow lanes', () => {
-    const matches = [
-      match('a1', 0, 0, { section: 'x' }),
-      match('a2', 1, 0, { section: 'x', a: { type: 'winner', from: 'a1' } }),
-      match('b1', 0, 0, { section: 'y' }),
-      match('b2', 1, 0, { section: 'y', a: { type: 'winner', from: 'b1' } }),
-    ];
-    const { corridorLanes } = planRoutes(matches);
-    // Two elbows, but they can't collide — one lane is enough for both.
-    expect(corridorLanes.get(1)).toBe(1);
+  it('ignores a slot fed by a match that is not in the draft', () => {
+    const matches = [match('a', 1, 0, { a: { type: 'winner', from: 'gone' } })];
+    expect(planRoutes(matches)).toEqual([]);
   });
 
   it('sizes a corridor to the lines it carries', () => {
@@ -160,11 +140,11 @@ describe('computeWires', () => {
     const srcRect = geometry.rects.get('src')!;
     geometry.rects.set('src', {
       ...srcRect,
-      x: destRect.x + destRect.w * 0.3 - srcRect.w / 2,
+      x: destRect.x + destRect.w / 2 - PORT_SPREAD / 2 - srcRect.w / 2,
     });
 
-    const [wire] = computeWires(matches, geometry);
-    expect(wire.points.length).toBe(2);
+    const { wires } = computeWires(matches, geometry);
+    expect(wires[0].points.length).toBe(2);
   });
 
   it('elbows through the corridor between the two rows', () => {
@@ -172,7 +152,8 @@ describe('computeWires', () => {
       match('src', 0, 1),
       match('dest', 1, 0, { a: { type: 'winner', from: 'src' } }),
     ];
-    const [wire] = computeWires(matches, layout(matches));
+    const { wires } = computeWires(matches, layout(matches));
+    const [wire] = wires;
     expect(wire.points.length).toBe(4);
     const corridorY = wire.points[1].y;
     // The horizontal run sits in the gap, clear of both rows.
@@ -181,30 +162,148 @@ describe('computeWires', () => {
     expect(wire.points[2].y).toBe(corridorY);
   });
 
-  it('anchors a decided line to the team it carries', () => {
+  it('leaves the middle of the card whether or not the match is decided', () => {
     const matches = [
       match('src', 0, 0, { winner: 1 }),
       match('dest', 1, 0, { a: { type: 'winner', from: 'src' } }),
       match('drop', 1, 1, { a: { type: 'loser', from: 'src' } }),
     ];
-    const wires = computeWires(matches, layout(matches));
+    const { wires } = computeWires(matches, layout(matches));
     const srcRect = layout(matches).rects.get('src')!;
-    const winnerWire = wires.find((w) => w.cls === 'winner')!;
-    const loserWire = wires.find((w) => w.cls === 'loser')!;
+    const middle = srcRect.x + srcRect.w / 2;
 
-    // Winner came from row 1, the loser therefore from row 0.
-    expect(winnerWire.points[0].x).toBeCloseTo(srcRect.x + srcRect.w * 0.7, 0);
-    expect(loserWire.points[0].x).toBeCloseTo(srcRect.x + srcRect.w * 0.3, 0);
+    // A result no longer moves the exit onto the winning team's row: both lines
+    // straddle the middle, far enough apart only to stay distinguishable.
+    expect(wires.map((w) => w.points[0].x).sort((a, b) => a - b)).toEqual([
+      middle - PORT_SPREAD / 2,
+      middle + PORT_SPREAD / 2,
+    ]);
   });
 
-  it('fans apart two undecided lines leaving the same card', () => {
+  it('arrives at the middle of the destination, one port per slot', () => {
+    const matches = [
+      match('semi-a', 0, 0),
+      match('semi-b', 0, 1),
+      match('final', 1, 0, {
+        a: { type: 'winner', from: 'semi-a' },
+        b: { type: 'winner', from: 'semi-b' },
+      }),
+    ];
+    const { wires } = computeWires(matches, layout(matches));
+    const destRect = layout(matches).rects.get('final')!;
+    const middle = destRect.x + destRect.w / 2;
+
+    const arrivals = wires.map((w) => w.points[w.points.length - 1].x);
+    expect(arrivals.sort((a, b) => a - b)).toEqual([
+      middle - PORT_SPREAD / 2,
+      middle + PORT_SPREAD / 2,
+    ]);
+    // Each drops in vertically rather than running sideways into the edge.
+    for (const wire of wires) {
+      const last = wire.points[wire.points.length - 1];
+      expect(wire.points[wire.points.length - 2].x).toBe(last.x);
+    }
+  });
+
+  it('fans apart two lines leaving the same card', () => {
     const matches = [
       match('src', 0, 0),
       match('up', 1, 0, { a: { type: 'winner', from: 'src' } }),
       match('down', 1, 1, { a: { type: 'loser', from: 'src' } }),
     ];
-    const wires = computeWires(matches, layout(matches));
+    const { wires } = computeWires(matches, layout(matches));
     expect(wires[0].points[0].x).not.toBe(wires[1].points[0].x);
+    // The fan is applied before tracing, so a shifted line still starts on the
+    // vertical run it goes on to make.
+    for (const wire of wires) {
+      expect(wire.points[1].x).toBe(wire.points[0].x);
+    }
+  });
+
+  it('falls straight past rounds that are empty in its own column', () => {
+    // Two rounds between source and destination, both empty where the wire
+    // would fall. There is nothing to route around, so it should not.
+    const matches = [
+      match('src', 0, 0),
+      match('dest', 3, 0, { a: { type: 'winner', from: 'src' } }),
+      // Far enough right that it is nowhere near the drop.
+      match('elsewhere', 1, 4),
+    ];
+    const { wires } = computeWires(matches, layout(matches));
+    const [wire] = wires.filter((w) => w.fromId === 'src');
+
+    expect(wire.points.length).toBe(2);
+    expect(wire.points[0].x).toBe(wire.points[1].x);
+  });
+
+  it('detours to the band only when a card really is in the way', () => {
+    // Same shape, but now a card sits directly under the source.
+    const matches = [
+      match('src', 0, 0),
+      match('dest', 3, 0, { a: { type: 'winner', from: 'src' } }),
+      match('blocker', 1, 0),
+    ];
+    const geometry = layout(matches);
+    const { wires } = computeWires(matches, geometry);
+    const [wire] = wires.filter((w) => w.fromId === 'src');
+
+    expect(wire.points.length).toBe(6);
+    const band = geometry.bands.find((b) => b.key === 'main')!;
+    // The vertical run is the third and fourth points of a full detour.
+    expect(wire.points[2].x).toBe(wire.points[3].x);
+    expect(wire.points[2].x).toBeGreaterThanOrEqual(band.left);
+    expect(wire.points[2].x).toBeLessThanOrEqual(band.right);
+  });
+
+  it('runs down the destination section’s own band, not the one at its index', () => {
+    // The grid stacks its stages by `stage.order`, so the measured bands come
+    // in that order — which is not the order the matches arrive in. Here the
+    // two disagree: 'late' is seen first in the match list but measured second.
+    const matches = [
+      match('src', 0, 0, { section: 'early' }),
+      match('block', 1, 0, { section: 'early' }),
+      match('drop', 2, 0, {
+        section: 'late',
+        a: { type: 'loser', from: 'src' },
+      }),
+    ];
+    const geometry = layout(matches);
+    geometry.bands = [...geometry.bands].reverse();
+
+    const { wires } = computeWires(matches, geometry);
+    const [wire] = wires;
+    const lateBand = geometry.bands.find((b) => b.key === 'late')!;
+
+    expect(wire.points.length).toBe(6);
+    expect(wire.points[2].x).toBe(wire.points[3].x);
+    expect(wire.points[2].x).toBeGreaterThanOrEqual(lateBand.left);
+    expect(wire.points[2].x).toBeLessThanOrEqual(lateBand.right);
+  });
+
+  it('shares one lane between runs that never pass each other', () => {
+    // Two elbows into the same corridor, far apart horizontally. They cannot
+    // collide, so widening the gap for a second lane would be wasted.
+    const matches = [
+      match('a1', 0, 0),
+      match('a2', 1, 0, { a: { type: 'winner', from: 'a1' } }),
+      match('b1', 0, 4),
+      match('b2', 1, 5, { a: { type: 'winner', from: 'b1' } }),
+    ];
+    const { corridorLanes } = computeWires(matches, layout(matches));
+    expect(corridorLanes.get(1)).toBe(1);
+  });
+
+  it('gives overlapping runs in one corridor their own lanes', () => {
+    const matches = [
+      match('a1', 0, 0),
+      match('a2', 1, 3, { a: { type: 'winner', from: 'a1' } }),
+      match('b1', 0, 1),
+      match('b2', 1, 4, { a: { type: 'winner', from: 'b1' } }),
+    ];
+    const { wires, corridorLanes } = computeWires(matches, layout(matches));
+    expect(corridorLanes.get(1)).toBe(2);
+    // Two lanes means two distinct heights for the horizontal runs.
+    expect(new Set(wires.map((w) => w.points[1].y)).size).toBe(2);
   });
 
   it('skips a wire whose card was never measured', () => {
@@ -214,7 +313,7 @@ describe('computeWires', () => {
     ];
     const geometry = layout(matches);
     geometry.rects.delete('src');
-    expect(computeWires(matches, geometry)).toEqual([]);
+    expect(computeWires(matches, geometry).wires).toEqual([]);
   });
 
   it('never draws through a card', () => {
@@ -246,11 +345,8 @@ describe('computeWires', () => {
     ];
 
     const geometry = layout(matches);
-    const wires = computeWires(matches, geometry);
+    const { wires } = computeWires(matches, geometry);
     expect(wires.length).toBe(8);
-    // Guards the assertion below against passing trivially: if every wire were
-    // a straight drop there would be nothing for a card to get in the way of.
-    expect(wires.some((w) => w.points.length === 6)).toBe(true);
 
     for (const wire of wires) {
       for (const { a, b } of segments(wire.points)) {

@@ -13,6 +13,15 @@ import {
   TradeStatus,
 } from '@pdz/features/league-zone/league.interface';
 import { TournamentBracket } from '@pdz/features/league-zone/league-bracket/tournament-bracket.model';
+import {
+  ChatChannel,
+  ChatMessage,
+  ChatRoom,
+} from '@pdz/features/league-zone/league-chat/league-chat.model';
+import {
+  MatchupDetail,
+  MatchupReportPayload,
+} from '@pdz/features/league-zone/league-matchup/league-matchup.model';
 import { TournamentDetails } from '@pdz/features/league-zone/league.model';
 import { getRandomPokemon } from '@pdz/shared/data/namedex';
 import { Observable, of, throwError } from 'rxjs';
@@ -522,6 +531,72 @@ export class LeagueZoneService {
           `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/signup`,
         ],
       },
+    );
+  }
+
+  private matchupPath(stageId: string, matchupId: string): string {
+    return `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/stages/${stageId}/matchups/${matchupId}`;
+  }
+
+  getMatchupDetail(
+    stageId: string,
+    matchupId: string,
+  ): Observable<MatchupDetail> {
+    return this.apiService.get<MatchupDetail>(
+      this.matchupPath(stageId, matchupId),
+    );
+  }
+
+  submitMatchupReport(
+    stageId: string,
+    matchupId: string,
+    payload: MatchupReportPayload,
+  ): Observable<{ message: string; status: 'pending' | 'approved' }> {
+    return this.apiService.post(
+      `${this.matchupPath(stageId, matchupId)}/report`,
+      payload,
+      { invalidateCache: [this.matchupPath(stageId, matchupId)] },
+    );
+  }
+
+  reviewMatchupReport(
+    stageId: string,
+    matchupId: string,
+    decision: 'approve' | 'reject',
+  ): Observable<{ message: string; status: string }> {
+    return this.apiService.post(
+      `${this.matchupPath(stageId, matchupId)}/report/${decision}`,
+      {},
+      { invalidateCache: [this.matchupPath(stageId, matchupId)] },
+    );
+  }
+
+  private chatPath(): string {
+    return `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/chat`;
+  }
+
+  getChatMessages(channel: ChatChannel, target?: string): Observable<ChatRoom> {
+    return this.apiService.get<ChatRoom>(`${this.chatPath()}/${channel}`, {
+      params: target ? { target } : {},
+    });
+  }
+
+  sendChatMessage(
+    channel: ChatChannel,
+    text: string,
+    target?: string,
+  ): Observable<{ message: ChatMessage }> {
+    return this.apiService.post<{ message: ChatMessage }>(
+      `${this.chatPath()}/${channel}`,
+      { text, ...(target ? { target } : {}) },
+      { invalidateCache: [`${this.chatPath()}/${channel}`] },
+    );
+  }
+
+  deleteChatMessage(messageId: string): Observable<{ message: string }> {
+    return this.apiService.delete<{ message: string }>(
+      `${this.chatPath()}/messages/${messageId}`,
+      { invalidateCache: [this.chatPath()] },
     );
   }
 

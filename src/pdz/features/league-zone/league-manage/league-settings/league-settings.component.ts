@@ -120,6 +120,8 @@ export class LeagueSettingsComponent implements OnInit, OnDestroy {
       diffMode: ['pokemon', Validators.required],
       forfeitGameDiff: [0, [Validators.required, Validators.min(0)]],
       forfeitPokemonDiff: [0, [Validators.required, Validators.min(0)]],
+      matchupChat: [true],
+      coachReporting: [true],
       draftCountMin: [1, [Validators.required, Validators.min(1)]],
       draftCountMax: [1, [Validators.required, Validators.min(1)]],
       pointTotalEnabled: [false],
@@ -182,6 +184,8 @@ export class LeagueSettingsComponent implements OnInit, OnDestroy {
             diffMode: settings.diffMode ?? 'pokemon',
             forfeitGameDiff: settings.forfeit?.gameDiff ?? 0,
             forfeitPokemonDiff: settings.forfeit?.pokemonDiff ?? 0,
+            matchupChat: settings.matchSettings?.chat !== false,
+            coachReporting: settings.matchSettings?.coachReporting !== false,
             draftCountMin: settings.draftCount?.min ?? 1,
             draftCountMax: settings.draftCount?.max ?? 1,
             pointTotalEnabled: settings.pointTotal != null,
@@ -300,6 +304,10 @@ export class LeagueSettingsComponent implements OnInit, OnDestroy {
           skillLevelRange: { from: v.adSkillFrom, to: v.adSkillTo },
           prizeValue: v.adPrizeValue,
           platforms: this.selectedAdPlatforms(),
+        },
+        matchSettings: {
+          chat: v.matchupChat,
+          coachReporting: v.coachReporting,
         },
       })
       .pipe(takeUntil(this.destroy$))

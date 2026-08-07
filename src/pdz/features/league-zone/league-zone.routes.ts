@@ -11,6 +11,7 @@ import { LeagueBracketComponent } from './league-bracket/league-bracket.componen
 import { LeagueCoachComponent } from './league-coach/league-coach.component';
 import { LeagueDraftComponent } from './league-drafting/league-drafting.component';
 import { LeagueLandingComponent } from './league-landing/league-landing.component';
+import { LeagueMatchupComponent } from './league-matchup/league-matchup.component';
 import { LeagueOverviewComponent } from './league-overview/league-overview.component';
 import { leagueRoleGuard } from './league-role.guard';
 import { LeagueRulesOverviewComponent } from './league-rules-overview/league-rules-overview.component';
@@ -108,6 +109,10 @@ export const routes: Routes = [
       },
       {
         path: 'stages/:stageId/schedule/matchups/:matchupId',
+        component: LeagueMatchupComponent,
+      },
+      {
+        path: 'stages/:stageId/schedule/matchups/:matchupId/analysis',
         component: MatchupOverviewComponent,
       },
       {

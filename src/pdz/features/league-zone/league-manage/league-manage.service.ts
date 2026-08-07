@@ -228,6 +228,7 @@ export class LeagueManageService {
         prizeValue?: string;
         platforms?: string[];
       };
+      matchSettings?: { chat: boolean; coachReporting: boolean };
     }>(
       `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/settings`,
     );
@@ -264,6 +265,7 @@ export class LeagueManageService {
       prizeValue?: string;
       platforms?: string[];
     };
+    matchSettings?: { chat: boolean; coachReporting: boolean };
   }) {
     return this.apiService.patch<{ success: boolean }>(
       `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/settings`,

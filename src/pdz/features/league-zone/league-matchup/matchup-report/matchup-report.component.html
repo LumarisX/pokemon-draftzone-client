@@ -1,0 +1,171 @@
+<ng-template #rosterTpl let-game let-side="side">
+  <div class="report__roster">
+    <div class="report__roster-header">
+      <span class="report__roster-team">{{ teamName(side) }}</span>
+      <span class="report__roster-alive">
+        {{ survivors(game, side) }} left
+      </span>
+    </div>
+
+    @for (control of rosterControls(game, side); track control.controls.id.value) {
+      <div
+        class="report__mon"
+        [class.report__mon--survived]="control.controls.status.value === 'survived'"
+        [class.report__mon--fainted]="control.controls.status.value === 'fainted'"
+      >
+        <pdz-sprite
+          class="report__mon-sprite"
+          [pokemon]="spriteFor(control)"
+          [interactive]="false"
+        ></pdz-sprite>
+        <span class="report__mon-name">{{
+          nameOf(control.controls.id.value)
+        }}</span>
+
+        <span class="report__status">
+          @for (option of statuses; track option.label) {
+            <button
+              type="button"
+              class="report__status-option"
+              [class.report__status-option--selected]="
+                control.controls.status.value === option.value
+              "
+              (click)="setStatus(control, option.value)"
+            >
+              {{ option.label }}
+            </button>
+          }
+        </span>
+
+        <span class="report__kills">
+          <button
+            type="button"
+            class="report__step"
+            [disabled]="control.controls.direct.value === 0"
+            (click)="adjustKills(control, -1)"
+          >
+            <pdz-icon name="remove" [size]="14"></pdz-icon>
+          </button>
+          <span class="report__kills-value">{{ killsOf(control) }}</span>
+          <button
+            type="button"
+            class="report__step"
+            (click)="adjustKills(control, 1)"
+          >
+            <pdz-icon name="add" [size]="14"></pdz-icon>
+          </button>
+          <span class="report__kills-label">KOs</span>
+        </span>
+      </div>
+    }
+  </div>
+</ng-template>
+
+<form class="report" [formGroup]="form" (ngSubmit)="submit()">
+  <p class="report__intro">
+    Fill in each game, then send it to the organizers. Paste a replay link and
+    hit analyze to fill the stats in for you.
+  </p>
+
+  <div formArrayName="games">
+    @for (game of gameControls; track $index) {
+    <div class="report__game" [formGroupName]="$index">
+      <div class="report__game-header">
+        <span class="report__game-title">Game {{ $index + 1 }}</span>
+        <button
+          type="button"
+          class="report__remove"
+          aria-label="Remove game"
+          (click)="removeGame($index)"
+        >
+          <pdz-icon name="close" [size]="16"></pdz-icon>
+        </button>
+      </div>
+
+      <div class="report__replay">
+        <input
+          class="report__input"
+          type="url"
+          formControlName="link"
+          placeholder="https://replay.pokemonshowdown.com/…"
+        />
+        <button
+          type="button"
+          class="report__analyze"
+          [disabled]="!game.controls.link.value || analyzingIndex() !== null"
+          (click)="analyze($index)"
+        >
+          <pdz-icon name="auto_fix_high" [size]="16"></pdz-icon>
+          <span>{{ analyzingIndex() === $index ? "Reading…" : "Analyze" }}</span>
+        </button>
+      </div>
+
+      <div class="report__winner">
+        <span class="report__winner-label">Winner</span>
+        <button
+          type="button"
+          class="report__winner-option"
+          [class.report__winner-option--selected]="
+            game.controls.winner.value === 'side1'
+          "
+          (click)="setWinner(game, 'side1')"
+        >
+          {{ teamName("side1") }}
+        </button>
+        <button
+          type="button"
+          class="report__winner-option"
+          [class.report__winner-option--selected]="
+            game.controls.winner.value === 'side2'
+          "
+          (click)="setWinner(game, 'side2')"
+        >
+          {{ teamName("side2") }}
+        </button>
+      </div>
+
+      <div class="report__rosters">
+        <ng-container
+          [ngTemplateOutlet]="rosterTpl"
+          [ngTemplateOutletContext]="{ $implicit: game, side: 'side1' }"
+        ></ng-container>
+        <ng-container
+          [ngTemplateOutlet]="rosterTpl"
+          [ngTemplateOutletContext]="{ $implicit: game, side: 'side2' }"
+        ></ng-container>
+      </div>
+    </div>
+    }
+  </div>
+
+  @if (analysisError()) {
+    <p class="report__error">{{ analysisError() }}</p>
+  }
+
+  <div class="report__footer">
+    <button type="button" class="report__add" (click)="addGame()">
+      <pdz-icon name="add" [size]="16"></pdz-icon>
+      <span>Add game</span>
+    </button>
+
+    <span class="report__series">
+      {{ teamName("side1") }} {{ seriesScore("side1") }} –
+      {{ seriesScore("side2") }} {{ teamName("side2") }}
+    </span>
+
+    <button class="report__submit" type="submit" [disabled]="!canSubmit">
+      {{ saving() ? "Sending…" : "Submit for review" }}
+    </button>
+  </div>
+
+  @if (incompleteGames.length) {
+    <p class="report__hint">
+      Pick a winner for game{{ incompleteGames.length > 1 ? "s" : "" }}
+      {{ incompleteGames.join(", ") }}.
+    </p>
+  }
+
+  @if (saveError()) {
+    <p class="report__error">{{ saveError() }}</p>
+  }
+</form>

@@ -5,7 +5,10 @@ import {
   generateSingleElimination,
   offsetBracket,
 } from '@pdz/features/league-zone/league-bracket/bracket-generator';
-import { BracketTeamFlex } from '@pdz/features/league-zone/league-bracket/bracket.model';
+import {
+  BracketTeamFlex,
+  FlexBracketMatch,
+} from '@pdz/features/league-zone/league-bracket/bracket.model';
 import { StageBuilderComponent } from '@pdz/features/league-zone/league-stage-builder/stage-builder.component';
 import {
   BuilderDraft,
@@ -48,6 +51,8 @@ const TEAM_NAMES = [
         [draft]="draft"
         [teamsByStage]="teamsByStage"
         [editable]="editable"
+        [currentRoundIndex]="1"
+        [matchupLinkBase]="editable ? null : matchupLinkBase"
         (draftChange)="draft = $event"
         (addStage)="onAddStage($event)"
       ></pdz-stage-builder>
@@ -103,6 +108,8 @@ export class DebugStageBuilderComponent {
   draft: BuilderDraft = buildFixture();
   /** Which round the last "+ Stage" click asked for. */
   addStageLog = '';
+  /** Goes nowhere real; it is here so the read-only card's footer renders. */
+  matchupLinkBase = ['/debug', 'stage-builder', 'tournaments', 'demo'];
 
   toggle(): void {
     this.editable = !this.editable;
@@ -120,6 +127,35 @@ function seedList(offset: number): BracketTeamFlex[] {
     coachName: `Coach ${offset + index + 1}`,
     seed: index + 1,
   }));
+}
+
+/**
+ * Plays out the first round so the card's finished states are on screen: a
+ * single game, a series with a replay per game, and a forfeit — each of which
+ * the card renders differently.
+ */
+function withResults(matches: FlexBracketMatch[]): FlexBracketMatch[] {
+  const played: Partial<FlexBracketMatch>[] = [
+    {
+      winner: 0,
+      score: [1, 0],
+      replays: ['https://replay.pokemonshowdown.com/1'],
+    },
+    {
+      winner: 1,
+      score: [1, 2],
+      replays: [
+        'https://replay.pokemonshowdown.com/2',
+        'https://replay.pokemonshowdown.com/3',
+        'https://replay.pokemonshowdown.com/4',
+      ],
+    },
+    { winner: 0, score: [2, 0], forfeit: true },
+  ];
+
+  return matches.map((match, index) =>
+    index < played.length ? { ...match, ...played[index] } : match,
+  );
 }
 
 function buildFixture(): BuilderDraft {
@@ -145,7 +181,11 @@ function buildFixture(): BuilderDraft {
     orderBase: 2,
   });
 
-  const matches = [...groupA.matches, ...groupB.matches, ...playoffs.matches];
+  const matches = withResults([
+    ...groupA.matches,
+    ...groupB.matches,
+    ...playoffs.matches,
+  ]);
   const stages: BuilderStage[] = [
     ...groupA.sections.map((s) => ({ ...s, type: 'round-robin' as const })),
     ...groupB.sections.map((s) => ({ ...s, type: 'round-robin' as const })),

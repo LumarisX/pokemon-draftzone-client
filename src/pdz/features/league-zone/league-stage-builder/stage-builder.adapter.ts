@@ -66,6 +66,9 @@ export function toBuilderDraft(bracket: TournamentBracket): BuilderDraft {
     b: toSlot(match.b),
     ...(match.winner !== undefined ? { winner: match.winner } : {}),
     ...(match.replay ? { replay: match.replay } : {}),
+    ...(match.replays?.length ? { replays: match.replays } : {}),
+    ...(match.score ? { score: match.score } : {}),
+    ...(match.forfeit ? { forfeit: match.forfeit } : {}),
     ...(match.label ? { label: match.label } : {}),
   }));
 

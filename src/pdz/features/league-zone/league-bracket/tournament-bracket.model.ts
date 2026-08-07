@@ -63,7 +63,15 @@ export interface TournamentBracketMatch {
   a: { type: string; seed?: number; from?: string } | null;
   b: { type: string; seed?: number; from?: string } | null;
   winner?: 0 | 1;
+  /** A forfeit: the score below is the configured game difference, not a result. */
+  forfeit?: boolean;
+  /** Games won, `[side1, side2]`. */
+  score?: [number, number];
+  scheduledDate?: string | null;
+  /** Game 1's replay. Superseded by `replays`; kept for older callers. */
   replay?: string;
+  /** Every recorded game's replay link, in game order. */
+  replays?: string[];
 }
 
 export interface TournamentBracket {

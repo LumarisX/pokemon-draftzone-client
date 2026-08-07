@@ -1,0 +1,78 @@
+<section class="chat">
+  <header class="chat__header">
+    <h2 class="chat__title">
+      <pdz-icon name="forum" [size]="18"></pdz-icon>
+      <span>{{ heading }}</span>
+    </h2>
+  </header>
+
+  <div #log class="chat__log" (scroll)="onScroll()">
+    @if (loading()) {
+      <p class="chat__empty">Loading…</p>
+    } @else if (!messages().length) {
+      <p class="chat__empty">No messages yet.</p>
+    } @else {
+      @for (message of messages(); track message.id) {
+        <div
+          class="chat__message"
+          [class.chat__message--mine]="isOwnSide(message)"
+          [class.chat__message--organizer]="message.role === 'organizer'"
+        >
+          <div class="chat__meta">
+            <span class="chat__author">{{ message.author }}</span>
+            @if (showsRole(message)) {
+              <span
+                class="chat__badge"
+                [class.chat__badge--participant]="message.role === 'coach'"
+                [title]="roleLabel(message)"
+              >
+                <pdz-icon [name]="roleIcon(message)" [size]="12"></pdz-icon>
+                <span>{{ roleLabel(message) }}</span>
+              </span>
+            }
+            <span class="chat__time">{{ timeOf(message) }}</span>
+            @if (message.canDelete) {
+              <button
+                type="button"
+                class="chat__remove"
+                aria-label="Delete message"
+                (click)="remove(message)"
+              >
+                <pdz-icon name="close" [size]="12"></pdz-icon>
+              </button>
+            }
+          </div>
+          <p class="chat__text">{{ message.text }}</p>
+        </div>
+      }
+    }
+  </div>
+
+  @if (canPost()) {
+    <div class="chat__composer">
+      <textarea
+        class="chat__input"
+        rows="2"
+        maxlength="1000"
+        [placeholder]="placeholder"
+        [(ngModel)]="draft"
+        (keydown)="onKeydown($event)"
+      ></textarea>
+      <button
+        type="button"
+        class="chat__send"
+        [disabled]="!draft.trim() || sending()"
+        (click)="send()"
+      >
+        <pdz-icon name="send" [size]="16"></pdz-icon>
+        <span>{{ sending() ? "Sending…" : "Send" }}</span>
+      </button>
+    </div>
+  } @else if (!loading()) {
+    <p class="chat__readonly">Sign in as a participant to join this chat.</p>
+  }
+
+  @if (error()) {
+    <p class="chat__error">{{ error() }}</p>
+  }
+</section>

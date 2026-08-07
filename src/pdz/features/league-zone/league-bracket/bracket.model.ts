@@ -48,6 +48,12 @@ export interface FlexBracketMatch {
   b: BracketSlotFlex;
   winner?: 0 | 1;
   replay?: string;
+  /** Every recorded game's replay link, in game order. */
+  replays?: string[];
+  /** Games won, `[side1, side2]`. Only meaningful once a winner is set. */
+  score?: [number, number];
+  /** A forfeit — the score is the configured game difference, not a result. */
+  forfeit?: boolean;
   /** Override the auto-generated match label. */
   label?: string;
 }

@@ -182,10 +182,6 @@ export class LeagueSignUpComponent implements OnInit, OnDestroy {
       );
 
       this.added = true;
-      localStorage.setItem(
-        tournamentSlug,
-        this.signupForm.get('discordName')?.value ?? '',
-      );
       console.log('Sign up successful:', response);
       this.navigateToTournamentHome();
     } catch (error: any) {

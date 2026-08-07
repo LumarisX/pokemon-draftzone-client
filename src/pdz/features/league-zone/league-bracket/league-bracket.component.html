@@ -1,11 +1,40 @@
-@if (isLoading) {
-  <div class="loading-state"><pdz-loading></pdz-loading></div>
-} @else if (hasBracket) {
-  <pdz-stage-builder
-    [draft]="draft"
-    [teamsByStage]="teamsByStage"
-    [editable]="false"
-  ></pdz-stage-builder>
-} @else {
-  <p class="empty-state">No matches scheduled yet.</p>
-}
+<div class="schedule">
+  <div class="schedule__header">
+    <h1 class="schedule__title">Schedule</h1>
+
+    @if (!isLoading && hasBracket) {
+      <div class="schedule__meta">
+        @if (currentRoundName; as roundName) {
+          <span class="schedule__chip schedule__chip--current">
+            <pdz-icon name="play_arrow" [size]="16"></pdz-icon>
+            {{ roundName }}
+          </span>
+        }
+        <span class="schedule__chip">
+          <pdz-icon name="calendar_month" [size]="16"></pdz-icon>
+          {{ draft.rounds.length }} rounds
+        </span>
+        <span class="schedule__chip">
+          <pdz-icon name="scoreboard" [size]="16"></pdz-icon>
+          {{ playedCount }} / {{ draft.matches.length }} played
+        </span>
+      </div>
+    }
+  </div>
+
+  <div class="schedule__body">
+    @if (isLoading) {
+      <div class="schedule__loading"><pdz-loading></pdz-loading></div>
+    } @else if (hasBracket) {
+      <pdz-stage-builder
+        [draft]="draft"
+        [teamsByStage]="teamsByStage"
+        [editable]="false"
+        [matchupLinkBase]="matchupLinkBase()"
+        [currentRoundIndex]="currentRoundIndex"
+      ></pdz-stage-builder>
+    } @else {
+      <p class="schedule__empty">No matches scheduled yet.</p>
+    }
+  </div>
+</div>
