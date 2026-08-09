@@ -14,31 +14,6 @@ import { getLogoUrl } from '../../league.util';
 export class TeamStandingsComponent {
   @Input({ required: true }) standingData!: League.TeamStandingsTable;
 
-  getGradientStyle(index: number, total: number): { [klass: string]: any } {
-    const midpointIndex = this.standingData.cutoff;
-    let fromColor: string;
-    let toColor: string;
-    let toPercent: number;
-
-    if (index <= midpointIndex) {
-      fromColor = 'var(--pdz-color-positive)';
-      toColor = 'var(--pdz-color-surface)';
-      toPercent = midpointIndex > 0 ? (index / midpointIndex) * 100 : 0;
-    } else {
-      const denominator = Math.max(total - 1 - midpointIndex, 1);
-      fromColor = 'var(--pdz-color-surface)';
-      toColor = 'var(--pdz-color-negative)';
-      toPercent = ((index - midpointIndex) / denominator) * 100;
-    }
-
-    const clampedToPercent = Math.max(0, Math.min(100, Math.round(toPercent)));
-    const fromPercent = 100 - clampedToPercent;
-
-    return {
-      'background-color': `color-mix(in srgb, ${fromColor} ${fromPercent}%, ${toColor} ${clampedToPercent}%)`,
-    };
-  }
-
   getDiffValue(team: League.TeamStandingData): number {
     return this.standingData.diffMode === 'game'
       ? team.gameDiff

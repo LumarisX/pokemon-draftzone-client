@@ -13,7 +13,7 @@ describe('TeamStandingsComponent', () => {
 
     fixture = TestBed.createComponent(TeamStandingsComponent);
     component = fixture.componentInstance;
-    component.standingData = { cutoff: 8, diffMode: 'game', teams: [] };
+    component.standingData = { diffMode: 'game', teams: [] };
     fixture.detectChanges();
   });
 

@@ -215,7 +215,6 @@ export namespace League {
   };
 
   export type TeamStandingsTable = {
-    cutoff: number;
     diffMode: 'game' | 'pokemon';
     teams: TeamStandingData[];
   };

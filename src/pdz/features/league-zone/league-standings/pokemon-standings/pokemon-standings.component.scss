@@ -1,58 +1,114 @@
 @use "pdz-theming" as pdz;
 @use "../../league.mixins" as *;
 
+:host {
+  display: block;
+  min-width: 0;
+  max-width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
 .standing-container {
   border: 1px solid pdz.color(primary-border);
   border-radius: pdz.shape(corner-sm);
   overflow: hidden;
   width: fit-content;
+  max-width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
   .standing-header {
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    flex-shrink: 0;
     .standing-header-title {
       font-family: var(--pdz-font-fancy);
       padding: 0.25rem 0.5rem;
       background-color: pdz.color(primary);
       color: pdz.color(on-primary);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
     }
   }
 
-  table {
-    border-collapse: separate;
-    border-spacing: 2px 0;
-    td {
-      padding: 0.125rem 0.5rem;
+  .combine-toggle {
+    font-family: var(--pdz-font-regular);
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.15rem 0.5rem;
+    border-radius: pdz.shape(corner-xs);
+    border: 1px solid pdz.color(on-primary);
+    background: transparent;
+    color: pdz.color(on-primary);
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+
+    &:hover {
+      background-color: color-mix(in srgb, pdz.color(on-primary) 20%, transparent);
     }
-    tr.cutoff-border {
-      td {
-        border-bottom: 2px dotted pdz.color(primary-border);
+
+    &--on {
+      background-color: pdz.color(on-primary);
+      color: pdz.color(primary);
+    }
+  }
+
+  .standing-table-wrapper {
+    flex: 1 1 auto;
+    min-height: 16rem;
+    overflow: auto;
+    background-color: pdz.color(surface);
+  }
+
+  .standing-table {
+    display: grid;
+    grid-template-columns: auto auto minmax(8rem, auto) repeat(4, auto);
+    column-gap: 2px;
+    width: max-content;
+    max-width: 100%;
+  }
+
+  .standing-table__row {
+    display: contents;
+  }
+
+  .standing-table__cell {
+    padding: 0.125rem 0.5rem;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  .standing-table__cell--head {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    justify-content: center;
+    background-color: pdz.color(surface);
+    border-bottom: 2px solid pdz.color(primary-border);
+
+    &.sortable-header {
+      cursor: pointer;
+      user-select: none;
+
+      &:focus-visible {
+        outline: 2px solid pdz.color(primary);
+        outline-offset: 2px;
       }
-    }
-    thead {
-      th {
-        border-bottom: 2px solid pdz.color(primary-border);
+      &:hover:not(.is-sorted) {
+        background-color: pdz.color(surface-container);
+      }
 
-        &.sortable-header {
-          cursor: pointer;
-          user-select: none;
+      &.is-sorted {
+        background-color: pdz.color(primary-container);
+      }
 
-          &:focus-visible {
-            outline: 2px solid pdz.color(primary);
-            outline-offset: 2px;
-          }
-          &:hover:not(.is-sorted) {
-            background-color: pdz.color(surface-container);
-          }
-
-          &.is-sorted {
-            background-color: pdz.color(primary-container);
-          }
-
-          &.is-sorted.is-reversed {
-            background-color: pdz.color(secondary-container);
-          }
-        }
+      &.is-sorted.is-reversed {
+        background-color: pdz.color(secondary-container);
       }
     }
   }
@@ -60,6 +116,7 @@
   .rank-cell {
     display: flex;
     align-items: center;
+    width: 100%;
     span {
       width: 100%;
       font-weight: 600;
@@ -112,6 +169,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 100%;
 
     .team-name {
       line-height: 1rem;
