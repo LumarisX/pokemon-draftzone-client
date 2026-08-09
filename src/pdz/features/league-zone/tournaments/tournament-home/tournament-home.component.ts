@@ -44,11 +44,6 @@ export class TournamentHomeComponent implements OnInit, OnDestroy {
 
   isCheckingSignUp = true;
 
-  stages: League.StageSummary[] = [];
-  selectedStageSlug: string | null = null;
-  coachStandings: League.CoachStandingData | null = null;
-  standingsLoading = false;
-
   teamData: League.LeagueTeam | null = null;
   rosterTotal = { cost: 0, kills: 0, deaths: 0 };
   rosterLoading = false;
@@ -107,10 +102,7 @@ export class TournamentHomeComponent implements OnInit, OnDestroy {
           this.startClock();
         }
 
-        if (profile?.draft) {
-          this.rosterLoading = true;
-          this.loadStages();
-        } else if (profile?.teamSlug) {
+        if (profile?.teamSlug) {
           this.rosterLoading = true;
           this.loadRoster();
         }
@@ -196,26 +188,6 @@ export class TournamentHomeComponent implements OnInit, OnDestroy {
       });
   }
 
-  private loadStages(): void {
-    this.leagueService
-      .listStages()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (stages) => {
-          this.stages = stages;
-          if (stages.length) {
-            this.selectStage(stages[0].slug);
-          } else {
-            this.loadRoster();
-          }
-        },
-      });
-  }
-
-  onStageSelected(stageSlug: string): void {
-    this.selectStage(stageSlug);
-  }
-
   openCoachEdit(): void {
     if (!this.profile) return;
     const dialogRef = this.dialog.open(CoachEditDialogComponent, {
@@ -262,26 +234,6 @@ export class TournamentHomeComponent implements OnInit, OnDestroy {
         // TODO: persist the team name and upload the new logo once the backend
         // endpoint exists. For now we only reflect the name in the local UI.
         this.profile = { ...this.profile, teamName: result.teamName };
-      });
-  }
-
-  private selectStage(stageSlug: string): void {
-    if (stageSlug === this.selectedStageSlug) return;
-    this.selectedStageSlug = stageSlug;
-    this.loadRoster();
-    this.standingsLoading = true;
-    this.coachStandings = null;
-    this.leagueService
-      .getStandings(stageSlug)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (data) => {
-          this.coachStandings = data.coachStandings;
-          this.standingsLoading = false;
-        },
-        error: () => {
-          this.standingsLoading = false;
-        },
       });
   }
 }

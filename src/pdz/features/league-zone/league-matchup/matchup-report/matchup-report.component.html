@@ -2,163 +2,375 @@
   <div class="report__roster">
     <div class="report__roster-header">
       <span class="report__roster-team">{{ teamName(side) }}</span>
-      <span class="report__roster-alive">
-        {{ survivors(game, side) }} left
-      </span>
+      <span class="report__roster-alive">{{ survivors(game, side) }} left</span>
     </div>
 
-    @for (control of rosterControls(game, side); track control.controls.id.value) {
-      <div
-        class="report__mon"
-        [class.report__mon--survived]="control.controls.status.value === 'survived'"
-        [class.report__mon--fainted]="control.controls.status.value === 'fainted'"
-      >
-        <pdz-sprite
-          class="report__mon-sprite"
-          [pokemon]="spriteFor(control)"
-          [interactive]="false"
-        ></pdz-sprite>
-        <span class="report__mon-name">{{
-          nameOf(control.controls.id.value)
-        }}</span>
+    <div class="report__roster-list">
+      @for (
+        control of rosterControls(game, side);
+        track control.controls.id.value
+      ) {
+        <div
+          class="report__mon"
+          [class.report__mon--survived]="
+            control.controls.status.value === 'survived'
+          "
+          [class.report__mon--fainted]="
+            control.controls.status.value === 'fainted'
+          "
+        >
+          <div class="report__mon-top">
+            <span class="report__mon-name">{{
+              nameOf(control.controls.id.value)
+            }}</span>
 
-        <span class="report__status">
-          @for (option of statuses; track option.label) {
-            <button
-              type="button"
-              class="report__status-option"
-              [class.report__status-option--selected]="
-                control.controls.status.value === option.value
-              "
-              (click)="setStatus(control, option.value)"
-            >
-              {{ option.label }}
-            </button>
-          }
-        </span>
+            <div class="report__status">
+              @for (option of statuses; track option.label) {
+                <button
+                  type="button"
+                  class="report__status-option"
+                  [class.report__status-option--selected]="
+                    control.controls.status.value === option.value
+                  "
+                  (click)="setStatus(control, option.value, game, side)"
+                >
+                  {{ option.label }}
+                </button>
+              }
+            </div>
+          </div>
 
-        <span class="report__kills">
-          <button
-            type="button"
-            class="report__step"
-            [disabled]="control.controls.direct.value === 0"
-            (click)="adjustKills(control, -1)"
-          >
-            <pdz-icon name="remove" [size]="14"></pdz-icon>
-          </button>
-          <span class="report__kills-value">{{ killsOf(control) }}</span>
-          <button
-            type="button"
-            class="report__step"
-            (click)="adjustKills(control, 1)"
-          >
-            <pdz-icon name="add" [size]="14"></pdz-icon>
-          </button>
-          <span class="report__kills-label">KOs</span>
-        </span>
-      </div>
-    }
+          <div class="report__mon-bottom">
+            <pdz-sprite
+              class="report__mon-sprite"
+              [pokemon]="spriteFor(control)"
+              [interactive]="false"
+            ></pdz-sprite>
+
+            <div class="report__kills-group">
+              @for (kill of killFields; track kill.field) {
+                <span class="report__kills" [title]="kill.label + ' KOs'">
+                  <span class="report__kills-controls">
+                    <button
+                      type="button"
+                      class="report__step"
+                      [disabled]="control.controls[kill.field].value === 0"
+                      (click)="adjustKills(control, kill.field, -1, game, side)"
+                    >
+                      <pdz-icon name="remove" [size]="14"></pdz-icon>
+                    </button>
+                    <span class="report__kills-value">{{
+                      control.controls[kill.field].value
+                    }}</span>
+                    <button
+                      type="button"
+                      class="report__step"
+                      (click)="adjustKills(control, kill.field, 1, game, side)"
+                    >
+                      <pdz-icon name="add" [size]="14"></pdz-icon>
+                    </button>
+                  </span>
+                  <span class="report__kills-label">{{ kill.label }}</span>
+                </span>
+              }
+            </div>
+          </div>
+        </div>
+      }
+    </div>
   </div>
 </ng-template>
 
 <form class="report" [formGroup]="form" (ngSubmit)="submit()">
-  <p class="report__intro">
-    Fill in each game, then send it to the organizers. Paste a replay link and
-    hit analyze to fill the stats in for you.
-  </p>
+  <div class="report__mode">
+    <button
+      type="button"
+      class="report__mode-option"
+      [class.report__mode-option--selected]="mode() === 'games'"
+      (click)="setMode('games')"
+    >
+      <pdz-icon name="stadia_controller" [size]="16"></pdz-icon>
+      <span>Games</span>
+    </button>
+    <button
+      type="button"
+      class="report__mode-option"
+      [class.report__mode-option--selected]="mode() === 'forfeit'"
+      (click)="setMode('forfeit')"
+    >
+      <pdz-icon name="flag" [size]="16"></pdz-icon>
+      <span>Forfeit</span>
+    </button>
+    <button
+      type="button"
+      class="report__mode-option"
+      [class.report__mode-option--selected]="mode() === 'score'"
+      (click)="setMode('score')"
+    >
+      <pdz-icon name="edit" [size]="16"></pdz-icon>
+      <span>Score</span>
+    </button>
+  </div>
 
-  <div formArrayName="games">
-    @for (game of gameControls; track $index) {
-    <div class="report__game" [formGroupName]="$index">
-      <div class="report__game-header">
-        <span class="report__game-title">Game {{ $index + 1 }}</span>
+  @if (mode() === "forfeit") {
+    <div class="report__panel">
+      <p class="report__intro">Pick which team wins by forfeit.</p>
+      <div class="report__forfeit">
         <button
           type="button"
-          class="report__remove"
-          aria-label="Remove game"
-          (click)="removeGame($index)"
-        >
-          <pdz-icon name="close" [size]="16"></pdz-icon>
-        </button>
-      </div>
-
-      <div class="report__replay">
-        <input
-          class="report__input"
-          type="url"
-          formControlName="link"
-          placeholder="https://replay.pokemonshowdown.com/…"
-        />
-        <button
-          type="button"
-          class="report__analyze"
-          [disabled]="!game.controls.link.value || analyzingIndex() !== null"
-          (click)="analyze($index)"
-        >
-          <pdz-icon name="auto_fix_high" [size]="16"></pdz-icon>
-          <span>{{ analyzingIndex() === $index ? "Reading…" : "Analyze" }}</span>
-        </button>
-      </div>
-
-      <div class="report__winner">
-        <span class="report__winner-label">Winner</span>
-        <button
-          type="button"
-          class="report__winner-option"
+          class="report__winner-option report__winner-option--block"
           [class.report__winner-option--selected]="
-            game.controls.winner.value === 'side1'
+            form.controls.forfeitWinner.value === 'side1'
           "
-          (click)="setWinner(game, 'side1')"
+          (click)="setForfeitWinner('side1')"
         >
-          {{ teamName("side1") }}
+          Forfeit win: {{ teamName("side1") }}
         </button>
         <button
           type="button"
-          class="report__winner-option"
+          class="report__winner-option report__winner-option--block"
           [class.report__winner-option--selected]="
-            game.controls.winner.value === 'side2'
+            form.controls.forfeitWinner.value === 'side2'
           "
-          (click)="setWinner(game, 'side2')"
+          (click)="setForfeitWinner('side2')"
         >
-          {{ teamName("side2") }}
+          Forfeit win: {{ teamName("side2") }}
         </button>
-      </div>
-
-      <div class="report__rosters">
-        <ng-container
-          [ngTemplateOutlet]="rosterTpl"
-          [ngTemplateOutletContext]="{ $implicit: game, side: 'side1' }"
-        ></ng-container>
-        <ng-container
-          [ngTemplateOutlet]="rosterTpl"
-          [ngTemplateOutletContext]="{ $implicit: game, side: 'side2' }"
-        ></ng-container>
       </div>
     </div>
-    }
-  </div>
-
-  @if (analysisError()) {
-    <p class="report__error">{{ analysisError() }}</p>
   }
 
-  <div class="report__footer">
-    <button type="button" class="report__add" (click)="addGame()">
-      <pdz-icon name="add" [size]="16"></pdz-icon>
-      <span>Add game</span>
-    </button>
+  @if (mode() === "score") {
+    <div class="report__panel">
+      <p class="report__intro">
+        Enter the final series score directly, without a game-by-game breakdown.
+      </p>
+      <div class="report__manual-score-fields">
+        <label class="report__manual-score-field">
+          <span>{{ teamName("side1") }}</span>
+          <input
+            type="number"
+            min="0"
+            class="report__input"
+            formControlName="manualScoreTeam1"
+          />
+        </label>
+        <label class="report__manual-score-field">
+          <span>{{ teamName("side2") }}</span>
+          <input
+            type="number"
+            min="0"
+            class="report__input"
+            formControlName="manualScoreTeam2"
+          />
+        </label>
+      </div>
+    </div>
+  }
 
-    <span class="report__series">
-      {{ teamName("side1") }} {{ seriesScore("side1") }} –
-      {{ seriesScore("side2") }} {{ teamName("side2") }}
-    </span>
+  @if (mode() === "games") {
+    <p class="report__intro">
+      Fill in each game, then send it to the organizers. Paste a replay link and
+      hit analyze to fill the stats in for you.
+    </p>
 
-    <button class="report__submit" type="submit" [disabled]="!canSubmit">
-      {{ saving() ? "Sending…" : "Submit for review" }}
-    </button>
-  </div>
+    <div class="report__games" formArrayName="games">
+      @for (game of gameControls; track $index) {
+        <div class="report__game" [formGroupName]="$index">
+          <div class="report__game-header">
+            <span class="report__game-title">Game {{ $index + 1 }}</span>
+            <button
+              type="button"
+              class="report__remove"
+              aria-label="Remove game"
+              (click)="removeGame($index)"
+            >
+              <pdz-icon name="close" [size]="16"></pdz-icon>
+            </button>
+          </div>
 
-  @if (incompleteGames.length) {
+          <div class="report__replay">
+            <input
+              class="report__input report__input--grow"
+              type="url"
+              formControlName="link"
+              placeholder="Replay link"
+            />
+            <button
+              type="button"
+              class="report__analyze"
+              [disabled]="
+                !isReplayUrl(game.controls.link.value) ||
+                analyzingIndex() !== null
+              "
+              (click)="analyze($index)"
+            >
+              <pdz-icon name="auto_fix_high" [size]="16"></pdz-icon>
+              <span>{{
+                analyzingIndex() === $index ? "Reading…" : "Analyze"
+              }}</span>
+            </button>
+          </div>
+
+          <div class="report__result">
+            <div class="report__result-group">
+              <span class="report__result-label">Winner</span>
+              <div class="report__result-controls">
+                <button
+                  type="button"
+                  class="report__winner-option"
+                  [class.report__winner-option--selected]="
+                    game.controls.winner.value === 'side1'
+                  "
+                  (click)="setWinner(game, 'side1')"
+                >
+                  {{ teamName("side1") }}
+                </button>
+                <button
+                  type="button"
+                  class="report__winner-option"
+                  [class.report__winner-option--selected]="
+                    game.controls.winner.value === 'side2'
+                  "
+                  (click)="setWinner(game, 'side2')"
+                >
+                  {{ teamName("side2") }}
+                </button>
+              </div>
+            </div>
+
+            <div class="report__result-group">
+              <span class="report__result-label">Score</span>
+              <div class="report__result-controls">
+                <div class="report__score-field">
+                  <input
+                    type="number"
+                    min="0"
+                    class="report__input report__input--score"
+                    formControlName="team1Score"
+                    [attr.aria-label]="teamName('side1') + ' score'"
+                    (input)="lockScore(game, 'side1')"
+                  />
+                  @if (game.controls.team1ScoreLocked.value) {
+                    <button
+                      type="button"
+                      class="report__score-reset"
+                      title="Go back to counting survivors"
+                      (click)="resetScore(game, 'side1')"
+                    >
+                      <pdz-icon name="restart_alt" [size]="13"></pdz-icon>
+                    </button>
+                  }
+                </div>
+                <span class="report__result-dash">–</span>
+                <div class="report__score-field">
+                  <input
+                    type="number"
+                    min="0"
+                    class="report__input report__input--score"
+                    formControlName="team2Score"
+                    [attr.aria-label]="teamName('side2') + ' score'"
+                    (input)="lockScore(game, 'side2')"
+                  />
+                  @if (game.controls.team2ScoreLocked.value) {
+                    <button
+                      type="button"
+                      class="report__score-reset"
+                      title="Go back to counting survivors"
+                      (click)="resetScore(game, 'side2')"
+                    >
+                      <pdz-icon name="restart_alt" [size]="13"></pdz-icon>
+                    </button>
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+
+          @if (gameValidationWarnings(game); as warnings) {
+            @if (warnings.length) {
+              <div class="report__warnings">
+                <pdz-icon name="warning" [size]="14"></pdz-icon>
+                <div class="report__warnings-list">
+                  @for (warning of warnings; track warning) {
+                    <span class="report__warning">{{ warning }}</span>
+                  }
+                </div>
+              </div>
+            }
+          }
+
+          <div class="report__rosters">
+            <ng-container
+              [ngTemplateOutlet]="rosterTpl"
+              [ngTemplateOutletContext]="{ $implicit: game, side: 'side1' }"
+            ></ng-container>
+            <ng-container
+              [ngTemplateOutlet]="rosterTpl"
+              [ngTemplateOutletContext]="{ $implicit: game, side: 'side2' }"
+            ></ng-container>
+          </div>
+        </div>
+      }
+    </div>
+
+    @if (analysisError()) {
+      <p class="report__error">{{ analysisError() }}</p>
+    }
+
+    <div class="report__summary">
+      <button
+        type="button"
+        class="report__summary-header"
+        (click)="toggleSummary()"
+      >
+        <pdz-icon
+          [name]="
+            summaryOpen() ? 'keyboard_arrow_down' : 'keyboard_arrow_right'
+          "
+          [size]="18"
+        ></pdz-icon>
+        <span>Pokemon totals</span>
+      </button>
+
+      @if (summaryOpen()) {
+        <div class="report__summary-content">
+          @for (side of sides; track side) {
+            <div class="report__summary-team">
+              <div class="report__summary-team-title">{{ teamName(side) }}</div>
+              <div class="report__summary-row report__summary-row--header">
+                <span>Pokemon</span>
+                <span>Kills</span>
+                <span>Deaths</span>
+              </div>
+              @for (summary of getPokemonSummary(side); track summary.key) {
+                <div class="report__summary-row">
+                  <span>{{ summary.name }}</span>
+                  <span>{{ summary.kills }}</span>
+                  <span>{{ summary.deaths }}</span>
+                </div>
+              } @empty {
+                <p class="report__summary-empty">No Pokemon reported yet.</p>
+              }
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
+
+  <label class="report__notes">
+    <span class="report__notes-label">Notes for the organizers (optional)</span>
+    <textarea
+      class="report__notes-input"
+      formControlName="notes"
+      rows="2"
+      maxlength="500"
+      placeholder="Anything the organizers should know…"
+    ></textarea>
+  </label>
+
+  @if (mode() === "games" && incompleteGames.length) {
     <p class="report__hint">
       Pick a winner for game{{ incompleteGames.length > 1 ? "s" : "" }}
       {{ incompleteGames.join(", ") }}.
@@ -168,4 +380,22 @@
   @if (saveError()) {
     <p class="report__error">{{ saveError() }}</p>
   }
+
+  <div class="report__footer">
+    @if (mode() === "games") {
+      <button type="button" class="report__add" (click)="addGame()">
+        <pdz-icon name="add" [size]="16"></pdz-icon>
+        <span>Add game</span>
+      </button>
+
+      <span class="report__series">
+        {{ teamName("side1") }} {{ seriesScore("side1") }} –
+        {{ seriesScore("side2") }} {{ teamName("side2") }}
+      </span>
+    }
+
+    <button class="report__submit" type="submit" [disabled]="!canSubmit">
+      {{ saving() ? "Sending…" : "Submit for review" }}
+    </button>
+  </div>
 </form>

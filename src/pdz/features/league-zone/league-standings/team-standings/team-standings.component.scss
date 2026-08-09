@@ -150,38 +150,6 @@
     width: 100%;
 
     .record-box {
-      // display: inline-flex;
-      // align-items: center;
-      // justify-content: center;
-      // text-align: center;
-      // @include apply-typography(body-xs);
-      // line-height: 1.5rem;
-      // font-weight: var(--pdz-font-weight-bold);
-      // border-radius: pdz.shape(corner-xs);
-      // background-color: pdz.color(surface-container);
-      // color: pdz.color(on-surface);
-      // padding: pdz.space(2xs);
-      // height: 1.5rem;
-      // min-width: 1.5rem;
-
-      // &--record {
-      //   @include apply-typography(body-sm);
-      //   line-height: 1.5rem;
-      //   font-weight: var(--pdz-font-weight-bold);
-      // }
-
-      // &--positive {
-      //   background-color: pdz.color(positive);
-      //   box-shadow: var(--pdz-level-1);
-      //   color: pdz.color(on-menu);
-      // }
-
-      // &--negative {
-      //   background-color: pdz.color(negative);
-      //   box-shadow: var(--pdz-level-1);
-      //   color: pdz.color(on-menu);
-      // }
-
       @include pdz-league-record-box();
 
       &--big {

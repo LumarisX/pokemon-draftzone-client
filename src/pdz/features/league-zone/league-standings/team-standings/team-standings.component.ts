@@ -6,13 +6,13 @@ import { League } from '../../league.interface';
 import { getLogoUrl } from '../../league.util';
 
 @Component({
-  selector: 'pdz-coach-standings',
+  selector: 'pdz-team-standings',
   imports: [CommonModule, MatIconModule, PlusSignPipe],
-  templateUrl: './coach-standings.component.html',
-  styleUrls: ['./coach-standings.component.scss'],
+  templateUrl: './team-standings.component.html',
+  styleUrls: ['./team-standings.component.scss'],
 })
-export class CoachStandingsComponent {
-  @Input({ required: true }) standingData!: League.CoachStandingData;
+export class TeamStandingsComponent {
+  @Input({ required: true }) standingData!: League.TeamStandingsTable;
 
   getGradientStyle(index: number, total: number): { [klass: string]: any } {
     const midpointIndex = this.standingData.cutoff;

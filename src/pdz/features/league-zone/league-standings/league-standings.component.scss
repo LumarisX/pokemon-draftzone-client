@@ -40,6 +40,9 @@
   }
 
   &__table {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
     max-height: 100vh;
     overflow-y: auto;
   }

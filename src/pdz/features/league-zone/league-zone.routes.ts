@@ -119,7 +119,7 @@ export const routes: Routes = [
         component: MatchupOverviewComponent,
       },
       {
-        path: 'stages/:stageSlug/standings',
+        path: 'standings',
         component: LeagueStandingsComponent,
       },
       {

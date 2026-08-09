@@ -255,6 +255,7 @@ export class LeagueMatchupComponent implements OnDestroy {
           month: 'short',
           day: 'numeric',
         })}`;
-    return `${report.submittedByName} reported ${report.score.team1}–${report.score.team2}${when}`;
+    const forfeit = report.forfeit ? ' (forfeit)' : '';
+    return `${report.submittedByName} reported ${report.score.team1}–${report.score.team2}${forfeit}${when}`;
   }
 }

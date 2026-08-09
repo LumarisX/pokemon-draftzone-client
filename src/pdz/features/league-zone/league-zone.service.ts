@@ -476,12 +476,12 @@ export class LeagueZoneService {
     );
   }
 
-  getStandings(stageSlug?: string): Observable<{
-    coachStandings: League.CoachStandingData;
-    pokemonStandings: League.PokemonStanding[];
+  getStandings(): Observable<{
+    filters: League.StandingsFilter[];
+    views: Record<string, League.StandingsView>;
   }> {
     return this.apiService.get(
-      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/stages/${stageSlug ?? this.stageSlug()}/standings`,
+      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/standings`,
     );
   }
 

@@ -32,7 +32,13 @@ import {
   MatchupSideKey,
 } from '../league-matchup.model';
 
+// Mirrors the server's REPLAY_URL_PATTERN (replay-analysis.controller.ts) so
+// the button never enables for a link the server would reject anyway.
+const REPLAY_URL_PATTERN = /^replay\.pokemonshowdown\.com\/.+$/i;
+
 type PokemonStatus = 'brought' | 'survived' | 'fainted' | null;
+
+type ReportMode = 'games' | 'forfeit' | 'score';
 
 type PokemonStatsForm = FormGroup<{
   id: FormControl<PokemonId>;
@@ -45,9 +51,22 @@ type PokemonStatsForm = FormGroup<{
 type GameForm = FormGroup<{
   link: FormControl<string>;
   winner: FormControl<MatchupSideKey | null>;
+  team1Score: FormControl<number>;
+  team2Score: FormControl<number>;
+  /** True once the coach has typed into the score field directly, so status
+   *  clicks stop overwriting it. */
+  team1ScoreLocked: FormControl<boolean>;
+  team2ScoreLocked: FormControl<boolean>;
   team1: FormArray<PokemonStatsForm>;
   team2: FormArray<PokemonStatsForm>;
 }>;
+
+type MatchupPokemonSummary = {
+  key: string;
+  name: string;
+  kills: number;
+  deaths: number;
+};
 
 @Component({
   selector: 'pdz-matchup-report',
@@ -66,17 +85,41 @@ export class MatchupReportComponent implements OnInit, OnDestroy {
   private replayService = inject(ReplayService);
   private readonly destroy$ = new Subject<void>();
 
-  form!: FormGroup<{ games: FormArray<GameForm> }>;
+  form!: FormGroup<{
+    games: FormArray<GameForm>;
+    forfeitWinner: FormControl<MatchupSideKey | null>;
+    manualScoreTeam1: FormControl<number>;
+    manualScoreTeam2: FormControl<number>;
+    notes: FormControl<string>;
+  }>;
 
   saving = signal(false);
   saveError = signal<string | null>(null);
   analyzingIndex = signal<number | null>(null);
   analysisError = signal<string | null>(null);
+  mode = signal<ReportMode>('games');
+  summaryOpen = signal(false);
+
+  toggleSummary(): void {
+    this.summaryOpen.update((open) => !open);
+  }
 
   readonly statuses: { value: PokemonStatus; label: string }[] = [
-    { value: null, label: 'Benched' },
+    { value: null, label: 'Bench' },
+    { value: 'brought', label: 'Brought' },
     { value: 'survived', label: 'Survived' },
     { value: 'fainted', label: 'Fainted' },
+  ];
+
+  readonly sides: MatchupSideKey[] = ['side1', 'side2'];
+
+  readonly killFields: {
+    field: 'direct' | 'indirect' | 'teammate';
+    label: string;
+  }[] = [
+    { field: 'direct', label: 'Direct' },
+    { field: 'indirect', label: 'Indirect' },
+    { field: 'teammate', label: 'Team' },
   ];
 
   ngOnInit(): void {
@@ -94,13 +137,31 @@ export class MatchupReportComponent implements OnInit, OnDestroy {
                   : game.team2.winner
                     ? 'side2'
                     : null,
+                team1Score: game.team1.score,
+                team2Score: game.team2.score,
                 team1: game.team1.team,
                 team2: game.team2.team,
               }),
             )
           : [this.buildGame()],
       ),
+      forfeitWinner: this.fb.control<MatchupSideKey | null>(null),
+      manualScoreTeam1: this.fb.control(0, { nonNullable: true }),
+      manualScoreTeam2: this.fb.control(0, { nonNullable: true }),
+      notes: this.fb.control(this.matchup.report?.notes ?? '', {
+        nonNullable: true,
+      }),
     });
+  }
+
+  setMode(mode: ReportMode): void {
+    this.mode.set(mode);
+  }
+
+  setForfeitWinner(side: MatchupSideKey): void {
+    this.form.controls.forfeitWinner.setValue(
+      this.form.controls.forfeitWinner.value === side ? null : side,
+    );
   }
 
   get games(): FormArray<GameForm> {
@@ -142,25 +203,66 @@ export class MatchupReportComponent implements OnInit, OnDestroy {
     if (!this.games.length) this.games.push(this.buildGame());
   }
 
-  setStatus(control: PokemonStatsForm, status: PokemonStatus): void {
+  setStatus(
+    control: PokemonStatsForm,
+    status: PokemonStatus,
+    game: GameForm,
+    side: MatchupSideKey,
+  ): void {
     control.controls.status.setValue(status);
     if (status === null) {
       control.controls.direct.setValue(0);
       control.controls.indirect.setValue(0);
       control.controls.teammate.setValue(0);
     }
+    this.syncScore(game, side);
   }
 
-  adjustKills(control: PokemonStatsForm, delta: number): void {
-    const next = Math.max(0, control.controls.direct.value + delta);
-    control.controls.direct.setValue(next);
-    if (next > 0 && control.controls.status.value === null) {
+  adjustKills(
+    control: PokemonStatsForm,
+    field: 'direct' | 'indirect' | 'teammate',
+    delta: number,
+    game: GameForm,
+    side: MatchupSideKey,
+  ): void {
+    const next = Math.max(0, control.controls[field].value + delta);
+    control.controls[field].setValue(next);
+    const status = control.controls.status.value;
+    if (next > 0 && (status === null || status === 'brought')) {
       control.controls.status.setValue('survived');
+      this.syncScore(game, side);
     }
   }
 
-  killsOf(control: PokemonStatsForm): number {
-    return control.controls.direct.value + control.controls.indirect.value;
+  /** Recomputes a side's score from survivors, unless the coach has typed a
+   *  manual value into that field directly. */
+  private syncScore(game: GameForm, side: MatchupSideKey): void {
+    const scoreControl =
+      side === 'side1' ? game.controls.team1Score : game.controls.team2Score;
+    const lockedControl =
+      side === 'side1'
+        ? game.controls.team1ScoreLocked
+        : game.controls.team2ScoreLocked;
+    if (lockedControl.value) return;
+    scoreControl.setValue(this.survivors(game, side));
+  }
+
+  lockScore(game: GameForm, side: MatchupSideKey): void {
+    const lockedControl =
+      side === 'side1'
+        ? game.controls.team1ScoreLocked
+        : game.controls.team2ScoreLocked;
+    lockedControl.setValue(true);
+  }
+
+  /** Clears a manual override and goes back to counting survivors. */
+  resetScore(game: GameForm, side: MatchupSideKey): void {
+    const lockedControl =
+      side === 'side1'
+        ? game.controls.team1ScoreLocked
+        : game.controls.team2ScoreLocked;
+    lockedControl.setValue(false);
+    this.syncScore(game, side);
   }
 
   setWinner(game: GameForm, side: MatchupSideKey): void {
@@ -181,6 +283,94 @@ export class MatchupReportComponent implements OnInit, OnDestroy {
     ).length;
   }
 
+  gameValidationWarnings(game: GameForm): string[] {
+    const warnings: string[] = [];
+
+    const team1 = game.controls.team1.controls;
+    const team2 = game.controls.team2.controls;
+    const brought = (roster: PokemonStatsForm[]) =>
+      roster.filter((control) => control.controls.status.value !== null)
+        .length;
+    const kills = (roster: PokemonStatsForm[]) =>
+      roster.reduce(
+        (sum, control) =>
+          sum + control.controls.direct.value + control.controls.indirect.value,
+        0,
+      );
+    const teamKills = (roster: PokemonStatsForm[]) =>
+      roster.reduce((sum, control) => sum + control.controls.teammate.value, 0);
+    const deaths = (roster: PokemonStatsForm[]) =>
+      roster.reduce(
+        (sum, control) =>
+          sum + (control.controls.status.value === 'fainted' ? 1 : 0),
+        0,
+      );
+
+    const team1Brought = brought(team1);
+    const team2Brought = brought(team2);
+    if (team1Brought !== 6) {
+      warnings.push(`${this.teamName('side1')} has ${team1Brought} Pokémon`);
+    }
+    if (team2Brought !== 6) {
+      warnings.push(`${this.teamName('side2')} has ${team2Brought} Pokémon`);
+    }
+
+    const team1Kills = kills(team1);
+    const team2Kills = kills(team2);
+    const team1Deaths = deaths(team1);
+    const team2Deaths = deaths(team2);
+    const team1TeamKills = teamKills(team1);
+    const team2TeamKills = teamKills(team2);
+
+    if (team1Kills !== team2Deaths - team2TeamKills) {
+      warnings.push(
+        `${this.teamName('side1')} kills (${team1Kills}) ≠ ${this.teamName('side2')} deaths (${team2Deaths - team2TeamKills})`,
+      );
+    }
+    if (team2Kills !== team1Deaths - team1TeamKills) {
+      warnings.push(
+        `${this.teamName('side2')} kills (${team2Kills}) ≠ ${this.teamName('side1')} deaths (${team1Deaths - team1TeamKills})`,
+      );
+    }
+
+    return warnings;
+  }
+
+  getPokemonSummary(side: MatchupSideKey): MatchupPokemonSummary[] {
+    const totals = new Map<
+      string,
+      MatchupPokemonSummary & { hadStatus: boolean }
+    >();
+
+    this.gameControls.forEach((game) => {
+      this.rosterControls(game, side).forEach((control) => {
+        const id = control.controls.id.value;
+        const status = control.controls.status.value;
+        const existing = totals.get(id) ?? {
+          key: id,
+          name: this.nameOf(id),
+          kills: 0,
+          deaths: 0,
+          hadStatus: false,
+        };
+        existing.kills +=
+          control.controls.direct.value + control.controls.indirect.value;
+        existing.deaths += status === 'fainted' ? 1 : 0;
+        existing.hadStatus ||= status !== null;
+        totals.set(id, existing);
+      });
+    });
+
+    return [...totals.values()]
+      .filter((summary) => summary.hadStatus)
+      .map(({ key, name, kills, deaths }) => ({ key, name, kills, deaths }))
+      .sort((a, b) => {
+        if (b.kills !== a.kills) return b.kills - a.kills;
+        if (a.deaths !== b.deaths) return a.deaths - b.deaths;
+        return a.name.localeCompare(b.name);
+      });
+  }
+
   get incompleteGames(): number[] {
     return this.gameControls
       .map((game, index) => (game.controls.winner.value ? -1 : index + 1))
@@ -188,13 +378,26 @@ export class MatchupReportComponent implements OnInit, OnDestroy {
   }
 
   get canSubmit(): boolean {
-    return !this.saving() && this.incompleteGames.length === 0;
+    if (this.saving()) return false;
+    switch (this.mode()) {
+      case 'forfeit':
+        return this.form.controls.forfeitWinner.value !== null;
+      case 'score':
+        return true;
+      default:
+        return this.incompleteGames.length === 0;
+    }
+  }
+
+  isReplayUrl(url: string): boolean {
+    const decoded = url.trim().replace(/^https?:\/\//i, '');
+    return REPLAY_URL_PATTERN.test(decoded);
   }
 
   analyze(index: number): void {
     const game = this.gameControls[index];
     const url = game.controls.link.value.trim();
-    if (!url || this.analyzingIndex() !== null) return;
+    if (!this.isReplayUrl(url) || this.analyzingIndex() !== null) return;
 
     this.analyzingIndex.set(index);
     this.analysisError.set(null);
@@ -238,15 +441,40 @@ export class MatchupReportComponent implements OnInit, OnDestroy {
   }
 
   private buildPayload(): MatchupReportPayload {
+    const notes = this.form.controls.notes.value.trim() || undefined;
+
+    if (this.mode() === 'forfeit') {
+      const winner = this.form.controls.forfeitWinner.value as MatchupSideKey;
+      return { winner, forfeit: true, matches: [], notes };
+    }
+
+    if (this.mode() === 'score') {
+      const score = {
+        team1: this.form.controls.manualScoreTeam1.value,
+        team2: this.form.controls.manualScoreTeam2.value,
+      };
+      return {
+        score,
+        winner:
+          score.team1 > score.team2
+            ? 'side1'
+            : score.team2 > score.team1
+              ? 'side2'
+              : 'draw',
+        matches: [],
+        notes,
+      };
+    }
+
     const matches = this.gameControls.map((game) => ({
       link: game.controls.link.value.trim() || undefined,
       winner: game.controls.winner.value as MatchupSideKey,
       team1: {
-        score: this.survivors(game, 'side1'),
+        score: game.controls.team1Score.value,
         pokemon: this.rosterPayload(game, 'side1'),
       },
       team2: {
-        score: this.survivors(game, 'side2'),
+        score: game.controls.team2Score.value,
         pokemon: this.rosterPayload(game, 'side2'),
       },
     }));
@@ -265,6 +493,7 @@ export class MatchupReportComponent implements OnInit, OnDestroy {
             ? 'side2'
             : 'draw',
       matches,
+      notes,
     };
   }
 
@@ -281,22 +510,38 @@ export class MatchupReportComponent implements OnInit, OnDestroy {
   private buildGame(seed?: {
     link?: string;
     winner: MatchupSideKey | null;
+    team1Score?: number;
+    team2Score?: number;
     team1: Record<string, { kills?: { direct?: number; indirect?: number; teammate?: number }; status: 'brought' | 'survived' | 'fainted' }>;
     team2: Record<string, { kills?: { direct?: number; indirect?: number; teammate?: number }; status: 'brought' | 'survived' | 'fainted' }>;
   }): GameForm {
+    const team1 = this.matchup.team1.draft.map((pokemon) =>
+      this.buildPokemon(pokemon.id, seed?.team1?.[pokemon.id]),
+    );
+    const team2 = this.matchup.team2.draft.map((pokemon) =>
+      this.buildPokemon(pokemon.id, seed?.team2?.[pokemon.id]),
+    );
+    const survivorsOf = (roster: PokemonStatsForm[]) =>
+      roster.filter((control) => control.controls.status.value === 'survived')
+        .length;
+
     return this.fb.group({
       link: this.fb.control(seed?.link ?? '', { nonNullable: true }),
       winner: this.fb.control<MatchupSideKey | null>(seed?.winner ?? null),
-      team1: this.fb.array(
-        this.matchup.team1.draft.map((pokemon) =>
-          this.buildPokemon(pokemon.id, seed?.team1?.[pokemon.id]),
-        ),
-      ),
-      team2: this.fb.array(
-        this.matchup.team2.draft.map((pokemon) =>
-          this.buildPokemon(pokemon.id, seed?.team2?.[pokemon.id]),
-        ),
-      ),
+      team1Score: this.fb.control(seed?.team1Score ?? survivorsOf(team1), {
+        nonNullable: true,
+      }),
+      team2Score: this.fb.control(seed?.team2Score ?? survivorsOf(team2), {
+        nonNullable: true,
+      }),
+      team1ScoreLocked: this.fb.control(seed?.team1Score !== undefined, {
+        nonNullable: true,
+      }),
+      team2ScoreLocked: this.fb.control(seed?.team2Score !== undefined, {
+        nonNullable: true,
+      }),
+      team1: this.fb.array(team1),
+      team2: this.fb.array(team2),
     });
   }
 
@@ -338,6 +583,12 @@ export class MatchupReportComponent implements OnInit, OnDestroy {
 
     this.applyPlayer(game.controls.team1, side1Player);
     this.applyPlayer(game.controls.team2, side2Player);
+
+    // Replay data is authoritative, so it overrides any manual score entry.
+    game.controls.team1ScoreLocked.setValue(false);
+    game.controls.team2ScoreLocked.setValue(false);
+    game.controls.team1Score.setValue(this.survivors(game, 'side1'));
+    game.controls.team2Score.setValue(this.survivors(game, 'side2'));
 
     game.controls.winner.setValue(
       side1Player.win ? 'side1' : side2Player.win ? 'side2' : null,

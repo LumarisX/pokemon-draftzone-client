@@ -52,15 +52,13 @@
         <span class="link-button__status">{{ draftStatus }}</span>
       }
     </a>
-    @if (selectedStageSlug) {
-      <a
-        [routerLink]="standingsLink"
-        routerLinkActive="active"
-        class="link-button"
-      >
-        <span>Standings</span>
-      </a>
-    }
+    <a
+      [routerLink]="standingsLink"
+      routerLinkActive="active"
+      class="link-button"
+    >
+      <span>Standings</span>
+    </a>
   }
 
   <a

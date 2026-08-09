@@ -47,6 +47,7 @@ export type MatchupReport = {
   teamId?: string;
   score: { team1: number; team2: number };
   winner?: MatchupSideKey | 'draw';
+  forfeit?: boolean;
   notes?: string;
   matches: MatchupGame[];
 };
@@ -75,6 +76,7 @@ export type MatchupDetail = {
 export type MatchupReportPayload = {
   score?: { team1: number; team2: number };
   winner?: MatchupSideKey | 'draw';
+  forfeit?: boolean;
   notes?: string;
   matches: {
     link?: string;

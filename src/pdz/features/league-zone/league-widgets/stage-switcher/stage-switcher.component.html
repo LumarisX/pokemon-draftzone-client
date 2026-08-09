@@ -1,5 +1,15 @@
-@if (stages.length) {
+@if (stages.length || allStagesLabel) {
   <nav class="stage-switcher">
+    @if (allStagesLabel) {
+      <button
+        type="button"
+        class="stage-switcher__tab"
+        [class.stage-switcher__tab--active]="currentStageSlug === 'all'"
+        (click)="selectStage('all')"
+      >
+        {{ allStagesLabel }}
+      </button>
+    }
     @for (stage of stages; track stage.slug) {
       <button
         type="button"

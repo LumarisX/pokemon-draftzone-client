@@ -11,6 +11,7 @@ import { RouterModule } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { getNameByPid, PokemonId } from '@pdz/shared/data/namedex';
 import { LeagueManageService } from '../league-manage.service';
+import { LeagueZoneService } from '../../league-zone.service';
 import { ReplayService } from '../../../tools/replay_analyzer/replay.service';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
@@ -84,6 +85,7 @@ type MatchupPokemonSummary = {
 })
 export class LeagueManageScheduleComponent {
   private leagueManageService = inject(LeagueManageService);
+  private leagueZoneService = inject(LeagueZoneService);
   private replayService = inject(ReplayService);
   private fb = inject(FormBuilder);
   private readonly destroy$ = new Subject<void>();
@@ -99,6 +101,10 @@ export class LeagueManageScheduleComponent {
   private stageCollapsedState = new Map<string, boolean>();
   private openMatchIndexState = new Map<string, number | null>();
   private matchupSummaryCollapsedState = new Map<string, boolean>();
+  private reviewState = new Map<
+    string,
+    { loading: boolean; error?: string }
+  >();
 
   /**
    * Named "stages" historically; these are the tournament's rounds, each
@@ -120,6 +126,10 @@ export class LeagueManageScheduleComponent {
   ngOnInit(): void {
     // One load: the page is tournament-scoped, so there is no stage param to
     // re-key off the way the old per-stage results editor did.
+    this.loadSchedule();
+  }
+
+  private loadSchedule(): void {
     this.leagueManageService
       .getSchedule()
       .pipe(takeUntil(this.destroy$))
@@ -395,6 +405,50 @@ export class LeagueManageScheduleComponent {
           });
         },
       });
+  }
+
+  reviewReport(matchup: League.Matchup, decision: 'approve' | 'reject'): void {
+    if (this.reviewState.get(matchup.id)?.loading) return;
+
+    this.reviewState.set(matchup.id, { loading: true });
+
+    this.leagueZoneService
+      .reviewMatchupReport(matchup.slug, decision)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.reviewState.delete(matchup.id);
+          this.loadSchedule();
+        },
+        error: (error) => {
+          this.reviewState.set(matchup.id, {
+            loading: false,
+            error: error?.message || 'Failed to review the report.',
+          });
+        },
+      });
+  }
+
+  isReviewing(matchupId: string): boolean {
+    return this.reviewState.get(matchupId)?.loading ?? false;
+  }
+
+  getReviewError(matchupId: string): string | undefined {
+    return this.reviewState.get(matchupId)?.error;
+  }
+
+  reportSummary(matchup: League.Matchup): string {
+    const report = matchup.report;
+    if (!report) return '';
+    const submitted = new Date(report.submittedAt);
+    const when = Number.isNaN(submitted.getTime())
+      ? ''
+      : ` on ${submitted.toLocaleDateString('en-US', {
+          month: 'short',
+          day: 'numeric',
+        })}`;
+    const forfeit = report.forfeit ? ' (forfeit)' : '';
+    return `${report.submittedByName} reported ${report.score.team1}–${report.score.team2}${forfeit}${when}`;
   }
 
   isAnalyzing(matchupId: string, matchIndex: number): boolean {

@@ -23,6 +23,12 @@ export class StageSwitcherComponent implements OnInit, OnDestroy {
   private readonly destroy$ = new Subject<void>();
 
   @Input() currentStageSlug: string | null = null;
+  /**
+   * When set, prepends a leading pill (slug `'all'`) with this label, for
+   * callers that combine every stage's data into one view instead of
+   * picking a single stage.
+   */
+  @Input() allStagesLabel: string | null = null;
   @Output() stageSelected = new EventEmitter<string>();
 
   stages: League.StageSummary[] = [];

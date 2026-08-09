@@ -23,8 +23,6 @@ export class TournamentNavComponent implements OnInit, OnDestroy {
   leagueInfo: League.LeagueInfo | null = null;
   leagueName: string | null = null;
   profile: League.CoachProfile | null = null;
-  stages: League.StageSummary[] = [];
-  selectedStageSlug: string | null = null;
   profileLoaded = false;
   canManage = false;
 
@@ -67,7 +65,6 @@ export class TournamentNavComponent implements OnInit, OnDestroy {
         this.profile = profile;
         this.profileLoaded = true;
         if (profile?.draft) {
-          this.loadStages();
           this.loadDraftStatus(profile.draft.draftSlug);
         }
       });
@@ -120,20 +117,6 @@ export class TournamentNavComponent implements OnInit, OnDestroy {
     }
   }
 
-  private loadStages(): void {
-    this.leagueService
-      .listStages()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (stages) => {
-          this.stages = stages;
-          if (stages.length) {
-            this.selectedStageSlug = stages[0].slug;
-          }
-        },
-      });
-  }
-
   get notJoinedDiscord(): boolean {
     return this.profileLoaded && !!this.profile && !this.profile.inDiscordServer;
   }
@@ -165,12 +148,6 @@ export class TournamentNavComponent implements OnInit, OnDestroy {
     return [...base, 'drafts', draftSlug];
   }
 
-  get stageBase(): string[] {
-    const base = this.tournamentBase();
-    if (!base.length || !this.selectedStageSlug) return [];
-    return [...base, 'stages', this.selectedStageSlug];
-  }
-
   get teamLink(): string[] {
     return [...this.tournamentBase(), 'teams', this.profile?.teamSlug ?? ''];
   }
@@ -185,6 +162,6 @@ export class TournamentNavComponent implements OnInit, OnDestroy {
   }
 
   get standingsLink(): string[] {
-    return [...this.stageBase, 'standings'];
+    return [...this.tournamentBase(), 'standings'];
   }
 }

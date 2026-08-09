@@ -1,6 +1,6 @@
 <div class="standing-container">
   <div class="standing-header">
-    <div class="standing-header-title">Coach Standings</div>
+    <div class="standing-header-title">Team Standings</div>
   </div>
   <div class="standing-table-wrapper">
     <table>
@@ -132,69 +132,4 @@
       </tbody>
     </table>
   </div>
-  <!-- <div class="standing-table">
-      <div class="standing-table-column">
-        <div class="column-header">Rank</div>
-        <div class="column-subheader"></div>
-        <div class="column-body">
-          @for (team of standingData.teams; track team) {
-            <div class="body-cell">
-              {{ team.rank }}
-            </div>
-          }
-        </div>
-      </div>
-      <div class="standing-table-column">
-        <div class="column-header">Logo</div>
-        <div class="column-subheader"></div>
-        <div class="column-body">
-          @for (team of standingData.teams; track team) {
-            <div class="body-cell"></div>
-          }
-        </div>
-      </div>
-      <div class="standing-table-column">
-        <div class="column-header">Name</div>
-        <div class="column-subheader"></div>
-        <div class="column-body">
-          @for (team of standingData.teams; track team) {
-            <div class="body-cell">
-              <div class="team-name">
-                {{ team.name }}
-              </div>
-              <div class="coach-names">
-                @for (coach of team.coaches; track coach) {
-                  <div>{{ coach }}</div>
-                }
-              </div>
-            </div>
-          }
-        </div>
-      </div>
-    </div> -->
-  <!-- <div class="standing-table-2">
-      <cdk-table [dataSource]="dataSource">
-        <ng-container cdkColumnDef="position">
-          <cdk-header-cell *cdkHeaderCellDef> No. </cdk-header-cell>
-          <cdk-cell *cdkCellDef="let element">
-            {{ element.position }}
-          </cdk-cell>
-        </ng-container>
-        <ng-container cdkColumnDef="name">
-          <cdk-header-cell *cdkHeaderCellDef> Name </cdk-header-cell>
-          <cdk-cell *cdkCellDef="let element"> {{ element.name }} </cdk-cell>
-        </ng-container>
-        <ng-container cdkColumnDef="weight">
-          <cdk-header-cell *cdkHeaderCellDef> Weight </cdk-header-cell>
-          <cdk-cell *cdkCellDef="let element"> {{ element.weight }} </cdk-cell>
-        </ng-container>
-        <ng-container cdkColumnDef="symbol">
-          <cdk-header-cell *cdkHeaderCellDef> Symbol </cdk-header-cell>
-          <cdk-cell *cdkCellDef="let element"> {{ element.symbol }} </cdk-cell>
-        </ng-container>
-
-        <cdk-header-row *cdkHeaderRowDef="displayedColumns"></cdk-header-row>
-        <cdk-row *cdkRowDef="let row; columns: displayedColumns"></cdk-row>
-      </cdk-table>
-    </div> -->
 </div>

@@ -99,6 +99,17 @@ export namespace League {
     scheduledDate?: Date;
     notes?: string;
     winner?: 'side1' | 'side2' | 'draw';
+    /** Organizer-only: present when the schedule was fetched by an organizer. */
+    status?: 'pending' | 'approved';
+    /** Organizer-only: a coach-submitted result awaiting approve/reject. */
+    report?: {
+      submittedByName: string;
+      submittedAt: string;
+      score: { team1: number; team2: number };
+      winner?: 'side1' | 'side2' | 'draw';
+      forfeit?: boolean;
+      notes?: string;
+    };
   };
 
   export type Stage = {
@@ -203,7 +214,7 @@ export namespace League {
     teamSlug: string;
   };
 
-  export type CoachStandingData = {
+  export type TeamStandingsTable = {
     cutoff: number;
     diffMode: 'game' | 'pokemon';
     teams: TeamStandingData[];
@@ -220,6 +231,13 @@ export namespace League {
       diff: number;
     };
   }>;
+
+  export type StandingsFilter = { value: string; label: string };
+
+  export type StandingsView = {
+    teamStandings: TeamStandingsTable;
+    pokemonStandings: PokemonStanding[];
+  };
 
   export type LeagueInfo = {
     name: string;
