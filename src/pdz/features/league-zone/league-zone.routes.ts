@@ -115,7 +115,7 @@ export const routes: Routes = [
         component: LeagueMatchupComponent,
       },
       {
-        path: 'matchups/:matchupSlug/analysis',
+        path: 'matchups/:matchupSlug/breakdown',
         component: MatchupOverviewComponent,
       },
       {

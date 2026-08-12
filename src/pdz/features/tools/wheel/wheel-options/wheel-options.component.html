@@ -1,0 +1,123 @@
+<dialog #dialog class="options" (click)="onBackdropClick($event)">
+  <div class="options__panel">
+    <header class="options__header">
+      <h2 class="options__title">Wheel options</h2>
+      <button
+        type="button"
+        class="options__close"
+        aria-label="Close options"
+        (click)="close()"
+      >
+        <pdz-icon name="close" [size]="20"></pdz-icon>
+      </button>
+    </header>
+
+    <section class="options__group">
+      <div class="field">
+        <label class="field__label" for="wheel-spin-seconds">
+          Spin time
+          <span class="field__value">{{ options.spinSeconds }}s</span>
+        </label>
+        <input
+          id="wheel-spin-seconds"
+          class="field__range"
+          type="range"
+          [min]="minSeconds"
+          [max]="maxSeconds"
+          step="0.5"
+          [value]="options.spinSeconds"
+          (input)="setSpinSeconds($any($event.target).value)"
+        />
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="wheel-turns">
+          Minimum turns
+          <span class="field__value">{{ options.minTurns }}</span>
+        </label>
+        <input
+          id="wheel-turns"
+          class="field__range"
+          type="range"
+          [min]="minTurns"
+          [max]="maxTurns"
+          step="1"
+          [value]="options.minTurns"
+          (input)="setTurns($any($event.target).value)"
+        />
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="wheel-rim-arc">
+          Rim view
+          <span class="field__value">{{ options.rimArc }}&deg;</span>
+        </label>
+        <input
+          id="wheel-rim-arc"
+          class="field__range"
+          type="range"
+          [min]="minRimArc"
+          [max]="maxRimArc"
+          step="2"
+          [value]="options.rimArc"
+          (input)="setRimArc($any($event.target).value)"
+        />
+      </div>
+    </section>
+
+    <section class="options__group">
+      <div class="options__group-head">
+        <h3 class="options__subtitle">Items</h3>
+        <button type="button" class="options__link" (click)="refreshJson()">
+          Reset to current
+        </button>
+      </div>
+
+      <p class="options__hint">
+        Supports a JSON array of
+        <code>{{ "{" }} "label", "weight" {{ "}" }}</code>
+        objects, a plain array of names, or simply labels separated by new
+        lines, commas, or semicolons.
+      </p>
+
+      <textarea
+        class="options__json"
+        rows="8"
+        spellcheck="false"
+        aria-label="Items as JSON"
+        [value]="json()"
+        (input)="json.set($any($event.target).value)"
+      ></textarea>
+
+      @if (error()) {
+        <p class="options__error" role="alert">{{ error() }}</p>
+      } @else if (notice()) {
+        <p class="options__notice" role="status">{{ notice() }}</p>
+      }
+
+      <div class="options__actions">
+        <button type="button" class="options__button" (click)="applyJson()">
+          <pdz-icon name="download" [size]="16"></pdz-icon>
+          <span>Import</span>
+        </button>
+        <button type="button" class="options__button" (click)="copyJson()">
+          <pdz-icon name="content_copy" [size]="16"></pdz-icon>
+          <span>Copy</span>
+        </button>
+        <button type="button" class="options__button" (click)="download()">
+          <pdz-icon name="save" [size]="16"></pdz-icon>
+          <span>Export file</span>
+        </button>
+        <label class="options__button options__button--file">
+          <pdz-icon name="upload_file" [size]="16"></pdz-icon>
+          <span>Load file</span>
+          <input
+            type="file"
+            accept="application/json,.json"
+            (change)="upload($event)"
+          />
+        </label>
+      </div>
+    </section>
+  </div>
+</dialog>

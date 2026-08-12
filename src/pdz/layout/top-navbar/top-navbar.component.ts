@@ -92,6 +92,7 @@ export class TopNavbarComponent {
       icon: 'calendar_clock',
     },
     { title: 'Pokemon Search', route: '/tools/pokemon-search', icon: 'search' },
+    { title: 'Wheel Randomizer', route: '/tools/wheel', icon: 'casino' },
   ];
 
   readonly newsBadge = this.unreadService.newsCount;

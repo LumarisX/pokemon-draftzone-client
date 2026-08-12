@@ -74,26 +74,6 @@
     }
   }
 
-  &__analysis {
-    display: inline-flex;
-    align-items: center;
-    gap: pdz.space(3xs);
-    padding: pdz.space(3xs) pdz.space(sm);
-    border: 1px solid pdz.color("outline-variant");
-    border-radius: pdz.shape("corner-full");
-    background: pdz.color("surface-container-lowest");
-    color: pdz.color("on-surface-variant");
-    text-decoration: none;
-    @include apply-typography(label-sm);
-    transition: all 120ms ease;
-
-    &:hover {
-      background: pdz.color("primary");
-      border-color: pdz.color("primary");
-      color: pdz.color("on-primary");
-    }
-  }
-
   &__chat {
     margin: 0 pdz.space(lg) pdz.space(lg);
   }
@@ -104,6 +84,71 @@
     padding: 0 pdz.space(lg) pdz.space(sm);
     color: pdz.color("on-surface-variant");
     font-style: italic;
+  }
+}
+
+.breakdown-cta {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(sm);
+  margin: pdz.space(md) pdz.space(lg) 0;
+  padding: pdz.space(sm) pdz.space(md);
+  border: none;
+  border-radius: pdz.shape("corner-md");
+  background: pdz.color("primary-gradient");
+  color: pdz.color("on-primary");
+  text-decoration: none;
+  box-shadow: var(--pdz-level-2);
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease;
+
+  &:hover {
+    box-shadow: var(--pdz-level-3);
+  }
+
+  &:active {
+    transform: scale(0.99);
+  }
+
+  &__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: pdz.shape("corner-full");
+    background: rgb(255 255 255 / 18%);
+  }
+
+  &__text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    flex: 1;
+  }
+
+  &__title {
+    @include apply-typography(title-md);
+    font-weight: var(--pdz-font-weight-bold);
+  }
+
+  &__subtitle {
+    @include apply-typography(label-sm);
+    color: rgb(255 255 255 / 85%);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__arrow {
+    flex: none;
+    transition: transform 120ms ease;
+  }
+
+  &:hover &__arrow {
+    transform: translateX(0.25rem);
   }
 }
 

@@ -60,11 +60,24 @@
         [class.matchup__status--forfeit]="m.forfeit"
         >{{ statusLabel(m) }}</span
       >
-      <a class="matchup__analysis" [routerLink]="['analysis']">
-        <pdz-icon name="compare_arrows" [size]="16"></pdz-icon>
-        <span>Analysis</span>
-      </a>
     </header>
+
+    <a class="breakdown-cta" [routerLink]="['breakdown']">
+      <span class="breakdown-cta__icon">
+        <pdz-icon name="compare_arrows" [size]="24"></pdz-icon>
+      </span>
+      <span class="breakdown-cta__text">
+        <span class="breakdown-cta__title">View Breakdown</span>
+        <span class="breakdown-cta__subtitle"
+          >Team comparisons, type coverage &amp; speed tiers</span
+        >
+      </span>
+      <pdz-icon
+        class="breakdown-cta__arrow"
+        name="arrow_forward"
+        [size]="20"
+      ></pdz-icon>
+    </a>
 
     <section class="scoreboard">
       <ng-container
@@ -81,13 +94,13 @@
           <span
             class="scoreboard__points"
             [class.scoreboard__points--winner]="isWinner(m, 'side1')"
-            >{{ m.score.team1 }}</span
+            >{{ m.team1.score }}</span
           >
           <span class="scoreboard__dash">–</span>
           <span
             class="scoreboard__points"
             [class.scoreboard__points--winner]="isWinner(m, 'side2')"
-            >{{ m.score.team2 }}</span
+            >{{ m.team2.score }}</span
           >
         </div>
 
