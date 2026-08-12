@@ -416,12 +416,30 @@
     }
   }
 
+  &.cdk-drag-dragging {
+    box-shadow: var(--pdz-level-3);
+  }
+
+  &.cdk-drag-placeholder {
+    opacity: 0.4;
+  }
+
   &__swatch {
     flex: none;
     width: 0.75rem;
     height: 0.75rem;
     border-radius: pdz.shape(corner-full);
     border: 1px solid pdz.color(outline-variant);
+    cursor: grab;
+    touch-action: none;
+
+    &:active {
+      cursor: grabbing;
+    }
+
+    &--disabled {
+      cursor: default;
+    }
   }
 
   &__label {
@@ -501,6 +519,10 @@
       color: pdz.color(on-error-container);
     }
   }
+}
+
+.item-editor__list.cdk-drop-list-dragging .item-row:not(.cdk-drag-dragging) {
+  transition: transform 0.2s ease-in-out;
 }
 
 .history {

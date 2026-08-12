@@ -179,15 +179,29 @@
           </span>
         </header>
 
-        <ul class="item-editor__list">
+        <ul
+          class="item-editor__list"
+          cdkDropList
+          [cdkDropListDisabled]="spinning() || filtering()"
+          (cdkDropListDropped)="dropItem($event)"
+        >
           @for (slice of visibleSlices(); track slice.id) {
             <li
               class="item-row"
               [class.item-row--duplicate]="duplicate()?.id === slice.id"
+              cdkDrag
+              cdkDragLockAxis="y"
+              cdkDragBoundary=".item-editor__list"
+              [cdkDragDisabled]="spinning() || filtering()"
             >
               <span
                 class="item-row__swatch"
+                cdkDragHandle
+                [class.item-row__swatch--disabled]="
+                  spinning() || filtering()
+                "
                 [style.background]="slice.color"
+                title="Drag to reorder"
               ></span>
               <input
                 class="item-row__label"

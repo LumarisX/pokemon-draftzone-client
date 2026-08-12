@@ -1,4 +1,11 @@
 import {
+  CdkDrag,
+  CdkDragDrop,
+  CdkDragHandle,
+  CdkDropList,
+  moveItemInArray,
+} from '@angular/cdk/drag-drop';
+import {
   Component,
   computed,
   effect,
@@ -150,7 +157,13 @@ function drumSqueeze(angle: number, shape: DrumShape): number {
 
 @Component({
   selector: 'pdz-wheel',
-  imports: [IconComponent, WheelOptionsComponent],
+  imports: [
+    CdkDrag,
+    CdkDragHandle,
+    CdkDropList,
+    IconComponent,
+    WheelOptionsComponent,
+  ],
   templateUrl: './wheel.component.html',
   styleUrl: './wheel.component.scss',
 })
@@ -390,6 +403,17 @@ export class WheelComponent implements OnDestroy {
 
     this.items.update((items) => items.filter((item) => item.id !== id));
     if (this.winnerId() === id) this.winnerId.set(null);
+  }
+
+  dropItem(event: CdkDragDrop<WheelItem[]>): void {
+    if (this.spinning() || this.filtering()) return;
+    if (event.previousIndex === event.currentIndex) return;
+
+    this.items.update((items) => {
+      const next = [...items];
+      moveItemInArray(next, event.previousIndex, event.currentIndex);
+      return next;
+    });
   }
 
   decreaseWinner(): void {
