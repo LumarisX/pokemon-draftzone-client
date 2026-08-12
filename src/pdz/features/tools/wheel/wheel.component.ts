@@ -54,6 +54,7 @@ type DrumBand = {
   top: number;
   height: number;
   labelTop: number;
+  labelSize: string;
   transform: string;
   showLabel: boolean;
   active: boolean;
@@ -68,9 +69,6 @@ const POINTER_ANGLE = 90;
 
 const DRUM_DEPTH = 0.32;
 
-// A barrel in perspective can only ever show the arc in front of its silhouette
-// (at acos(depth)), so the curve has to relax as the rim opens up: past
-// FLAT_END the drum is a straight ribbon and any arc up to a full turn fits.
 const FLAT_START = 60;
 const FLAT_END = 90;
 const DRUM_BLEED = 0.15;
@@ -80,7 +78,8 @@ type DrumShape = {
   flat: number;
 };
 
-const MIN_BAND_LABEL_PERCENT = 3.5;
+const MIN_BAND_LABEL_PERCENT = 2.5;
+const BAND_LABEL_LINE = 1.25;
 
 const MIN_LABEL_SWEEP = 10;
 const MAX_WHEEL_LABEL = 16;
@@ -277,6 +276,9 @@ export class WheelComponent implements OnDestroy {
     for (const slice of this.slices()) {
       const origin = signedAngle(slice.start + rotation - POINTER_ANGLE);
 
+      const reach = Math.min(slice.sweep / 2, halfArc);
+      const rest = 2 * drumProject(reach, halfArc, shape) - 100;
+
       for (const turn of [-360, 0, 360]) {
         const from = Math.max(origin + turn, -halfArc);
         const to = Math.min(origin + turn + slice.sweep, halfArc);
@@ -296,8 +298,9 @@ export class WheelComponent implements OnDestroy {
           top: round(top),
           height: round(height + DRUM_BLEED),
           labelTop: round((((seenFrom + seenTo) / 2 - top) / height) * 100),
+          labelSize: `${round(rest / BAND_LABEL_LINE, 4)}cqh`,
           transform: `translate(-50%, -50%) scaleX(${round(drumPerspective(middle, shape), 4)}) scaleY(${round(drumSqueeze(middle, shape), 4)})`,
-          showLabel: height >= MIN_BAND_LABEL_PERCENT,
+          showLabel: rest >= MIN_BAND_LABEL_PERCENT,
           active: slice.id === activeId,
         });
       }
@@ -517,7 +520,8 @@ export class WheelComponent implements OnDestroy {
 
   private restoreHistory(): WheelHistoryEntry[] {
     const entries = this.storage.loadHistory();
-    this.nextHistoryId = entries.reduce((max, entry) => Math.max(max, entry.id), 0) + 1;
+    this.nextHistoryId =
+      entries.reduce((max, entry) => Math.max(max, entry.id), 0) + 1;
     return entries;
   }
 

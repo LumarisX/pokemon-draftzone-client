@@ -662,6 +662,7 @@
   &__stage {
     position: absolute;
     inset: 0;
+    container-type: size;
     mask-image: linear-gradient(
       180deg,
       transparent 0%,
@@ -685,6 +686,8 @@
 
   &__name {
     @include apply-typography(body-sm);
+    font-size: min(0.9rem, var(--drum-name-fit, 0.9rem));
+    line-height: 1.25;
     position: absolute;
     left: 50%;
     max-width: 96%;
