@@ -200,7 +200,7 @@ export const SpriteSets: {
     getPath: function (id: string, shiny?: boolean) {
       return `https://${Sources[this.source]}/${shiny ? 'shiny/' : ''}${id}.png`;
     },
-    classes: [''],
+    classes: ['sprite-border'],
     source: 'pokeapi',
     fallback: function (id: string) {
       return `https://${Sources.pokeapi}/${id}.png`;
