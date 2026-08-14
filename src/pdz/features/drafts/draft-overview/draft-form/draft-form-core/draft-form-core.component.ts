@@ -145,6 +145,7 @@ export type DraftFormData = {
   format: string;
   ruleset: string;
   doc: string | undefined;
+  coach: string | undefined;
   team: DraftPokemon[];
 };
 
@@ -155,6 +156,7 @@ export class DraftForm extends FormGroup<{
     format: FormControl<string>;
     ruleset: FormControl<string>;
     doc: FormControl<string>;
+    coach: FormControl<string>;
   }>;
   team: FormArray<PokemonFormGroup>;
 }> {
@@ -183,6 +185,9 @@ export class DraftForm extends FormGroup<{
         doc: new FormControl(params?.doc ?? '', {
           nonNullable: true,
         }),
+        coach: new FormControl(params?.coach ?? '', {
+          nonNullable: true,
+        }),
       }),
       team: new FormArray(
         params.team
@@ -201,6 +206,7 @@ export class DraftForm extends FormGroup<{
       format: this.controls.details.controls.format.value,
       ruleset: this.controls.details.controls.ruleset.value,
       doc: this.controls.details.controls.doc.value || undefined,
+      coach: this.controls.details.controls.coach.value.trim() || undefined,
       team: this.controls.team.controls.map((pokemonGroup) =>
         pokemonGroup.toPokemon(),
       ),

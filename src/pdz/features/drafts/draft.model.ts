@@ -8,6 +8,7 @@ export type Draft = {
   format: string;
   ruleset: string;
   doc: string;
+  coach?: string;
   score: {
     wins: number;
     losses: number;
