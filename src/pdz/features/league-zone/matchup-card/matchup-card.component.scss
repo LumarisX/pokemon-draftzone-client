@@ -1,6 +1,9 @@
 @use "pdz-theming" as pdz;
 @use "mixins" as *;
 
+$row-height: 3rem;
+$mark-width: 3px;
+
 :host {
   display: block;
 }
@@ -8,11 +11,11 @@
 .card {
   display: flex;
   flex-direction: column;
-  background: pdz.color("surface-container-lowest");
-  border: 1px solid pdz.color("outline-variant");
-  border-radius: pdz.shape("corner-md");
-  box-shadow: var(--pdz-level-1);
   overflow: hidden;
+  border: 1px solid pdz.color("outline-variant");
+  border-radius: pdz.shape("corner-lg");
+  background: pdz.color("surface-container-lowest");
+  box-shadow: var(--pdz-level-1);
   transition:
     box-shadow 150ms ease,
     border-color 150ms ease;
@@ -22,13 +25,6 @@
     border-color: pdz.color("primary-border");
   }
 
-  // A finished match is marked by the tinted winner row and the score, which is
-  // plenty — a darker frame on top of that only made one card in the grid look
-  // like it had been selected.
-
-  // Kept neutral on purpose. There is one of these per match, and a schedule
-  // is nothing but matches — tinting them all leaves the accent colour
-  // meaning "card" rather than "look here".
   &__header {
     display: flex;
     align-items: center;
@@ -41,10 +37,9 @@
   }
 
   &__label {
-    @include apply-typography(label-sm);
+    @include apply-typography(label-xs);
     font-weight: var(--pdz-font-weight-semibold);
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
+    letter-spacing: 0.06em;
     color: pdz.color("on-surface-variant");
     white-space: nowrap;
     overflow: hidden;
@@ -52,26 +47,21 @@
   }
 
   &__status {
-    @include apply-typography(label-xs);
+    @include apply-typography(label-2xs);
     flex: none;
-    padding: pdz.space(2xs) pdz.space(sm);
+    padding: pdz.space(xs) pdz.space(sm);
+    line-height: 1;
     border-radius: pdz.shape("corner-full");
-    background: pdz.color("surface-container-highest");
-    color: pdz.color("on-surface-variant");
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-
-    &--forfeit {
-      background: pdz.color("warning-container");
-      color: pdz.color("on-warning-container");
-    }
+    background: pdz.color("warning-container");
+    color: pdz.color("on-warning-container");
+    letter-spacing: 0.08em;
+    white-space: nowrap;
   }
 
   &__actions {
     display: flex;
     align-items: center;
     gap: pdz.space(3xs);
-    // Actions stay out of the way until the card is worth acting on.
     opacity: 0;
     transition: opacity 120ms ease;
   }
@@ -104,13 +94,21 @@
   }
 
   &__slot {
+    position: relative;
     display: flex;
     align-items: center;
     gap: pdz.space(sm);
-    padding: pdz.space(2xs) pdz.space(sm);
-    min-height: 2.75rem;
+    width: 100%;
+    height: $row-height;
+    padding: 0 pdz.space(sm) 0 calc(#{pdz.space(sm)} + #{$mark-width});
+    border: none;
+    background: none;
+    font: inherit;
+    text-align: left;
     color: pdz.color("on-surface");
     text-decoration: none;
+    box-sizing: border-box;
+    transition: background-color 120ms ease;
 
     & + & {
       border-top: 1px solid pdz.color("outline-variant");
@@ -118,23 +116,25 @@
 
     &--linked {
       cursor: pointer;
-      transition: background-color 120ms ease;
 
       &:hover {
-        background: pdz.color("primary-subtle");
+        background: pdz.color("surface-container");
       }
     }
 
-    // The winner keeps a full-width tint; the bar on the leading edge is what
-    // survives at a glance when a column of cards is scanned rather than read.
     &--winner {
-      background: pdz.color("positive-container");
-      color: pdz.color("on-positive-container");
-      box-shadow: inset 3px 0 0 pdz.color("positive");
+      background: pdz.color-rgba("positive-container", 0.4);
 
       &.card__slot--linked:hover {
-        background: pdz.color("positive-container");
-        filter: brightness(0.97);
+        background: pdz.color-rgba("positive-container", 0.65);
+      }
+
+      &::before {
+        content: "";
+        position: absolute;
+        inset: 0 auto 0 0;
+        width: $mark-width;
+        background: pdz.color("positive");
       }
     }
 
@@ -148,37 +148,49 @@
   }
 
   &__logo {
-    width: 1.75rem;
-    height: 1.75rem;
-    object-fit: contain;
     flex: none;
-  }
+    width: 2rem;
+    height: 2rem;
+    object-fit: contain;
 
-  // Only ever seen by a slot with no team yet — a real team always falls back
-  // to the shared default logo instead.
-  &__logo--empty {
-    border-radius: pdz.shape("corner-full");
-    background: pdz.color("surface-variant");
-    opacity: 0.5;
+    &--empty {
+      border: 1px dashed pdz.color("outline-variant");
+      border-radius: pdz.shape("corner-full");
+    }
   }
 
   &__names {
     display: flex;
     flex-direction: column;
-    min-width: 0;
+    justify-content: center;
     flex: 1;
+    min-width: 0;
   }
 
   &__team {
-    @include apply-typography(label-md);
-    font-weight: var(--pdz-font-weight-semibold);
+    @include apply-typography(body-sm);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
+  &__slot--winner &__team {
+    font-weight: var(--pdz-font-weight-semibold);
+  }
+
+  &__slot--pending {
+    .card__team {
+      font-style: italic;
+      color: pdz.color("on-surface-variant");
+    }
+
+    &.card__slot--linked .card__team {
+      color: pdz.color("primary");
+    }
+  }
+
   &__coach {
-    @include apply-typography(label-sm);
+    @include apply-typography(body-xs);
     color: pdz.color("on-surface-variant");
     white-space: nowrap;
     overflow: hidden;
@@ -189,28 +201,17 @@
     color: pdz.color("on-surface-disabled");
   }
 
-  &__placeholder {
-    @include apply-typography(label-md);
-    flex: 1;
-    min-width: 0;
-    color: pdz.color("on-surface-variant");
-    font-style: italic;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
   &__score {
     @include apply-typography(title-sm);
     flex: none;
-    min-width: 1.5rem;
-    text-align: center;
+    min-width: 1.25rem;
+    text-align: right;
     font-variant-numeric: tabular-nums;
-    color: pdz.color("on-surface-variant");
+    color: inherit;
+  }
 
-    &--winner {
-      color: pdz.color("on-positive-container");
-    }
+  &__slot--winner &__score {
+    font-weight: var(--pdz-font-weight-semibold);
   }
 
   &__footer {
@@ -223,30 +224,44 @@
     background: pdz.color("surface-container-low");
   }
 
-  // Quiet until approached: the accent belongs to the one card being acted on,
-  // not to every card that could be.
   &__link {
     display: inline-flex;
     align-items: center;
     gap: pdz.space(3xs);
-    padding: pdz.space(3xs) pdz.space(xs);
+    height: 1.4rem;
+    padding: 0 pdz.space(sm);
     border: 1px solid pdz.color("outline-variant");
     border-radius: pdz.shape("corner-full");
     background: pdz.color("surface-container-lowest");
     color: pdz.color("on-surface-variant");
+    @include apply-typography(label-xs);
+    font-weight: var(--pdz-font-weight-semibold);
+    letter-spacing: 0.06em;
     text-decoration: none;
+    white-space: nowrap;
     cursor: pointer;
-    @include apply-typography(label-sm);
-    transition: all 120ms ease;
+    transition:
+      background-color 120ms ease,
+      border-color 120ms ease,
+      color 120ms ease;
 
     &:hover {
-      background: pdz.color("primary");
-      border-color: pdz.color("primary");
-      color: pdz.color("on-primary");
+      border-color: pdz.color("primary-border");
+      color: pdz.color("primary");
     }
 
-    // The replay is the one thing on a finished card worth going to, so it
-    // keeps its colour without being hovered.
+    &--primary {
+      border-color: pdz.color("primary-border");
+      background: pdz.color("primary-container");
+      color: pdz.color("on-primary-container");
+
+      &:hover {
+        background: pdz.color("primary");
+        border-color: pdz.color("primary");
+        color: pdz.color("on-primary");
+      }
+    }
+
     &--replay {
       border-color: pdz.color("secondary-border");
       color: pdz.color("on-secondary-container");
@@ -259,13 +274,12 @@
     }
   }
 
-  // A series: one pill per game, numbered, so every replay is one click away
-  // rather than hidden behind a control that has to be cycled.
   &__replays {
     display: inline-flex;
     align-items: center;
     gap: pdz.space(3xs);
-    padding: pdz.space(3xs) pdz.space(2xs);
+    height: 1.4rem;
+    padding: 0 pdz.space(2xs);
     border: 1px solid pdz.color("secondary-border");
     border-radius: pdz.shape("corner-full");
     background: pdz.color("surface-container-lowest");
@@ -276,14 +290,16 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 1.25rem;
-    height: 1.25rem;
+    min-width: 1.1rem;
+    height: 1.1rem;
     border-radius: pdz.shape("corner-full");
     background: pdz.color("secondary-container");
     color: pdz.color("on-secondary-container");
     text-decoration: none;
-    @include apply-typography(label-sm);
-    transition: all 120ms ease;
+    @include apply-typography(label-xs);
+    transition:
+      background-color 120ms ease,
+      color 120ms ease;
 
     &:hover {
       background: pdz.color("secondary");

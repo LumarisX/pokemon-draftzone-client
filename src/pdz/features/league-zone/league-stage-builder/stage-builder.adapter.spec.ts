@@ -58,8 +58,6 @@ describe('toBuilderDraft', () => {
 
     expect(draft.rounds.map((r) => r.name)).toEqual(['Week 1', 'Week 2']);
     expect(draft.rounds.map((r) => r.id)).toEqual(['r1', 'r2']);
-    // The round id doubles as the grid key, so a reorder does not look like a
-    // row being destroyed and rebuilt.
     expect(draft.rounds.map((r) => r.key)).toEqual(['r1', 'r2']);
   });
 
@@ -89,8 +87,6 @@ describe('toBuilderDraft', () => {
   });
 
   it("reads each stage's teams in seed order", () => {
-    // Deliberately out of order: seed position is what defines the list, and
-    // the server may return the teams in any order.
     const draft = toBuilderDraft(
       buildBracket({
         stages: [
@@ -231,7 +227,6 @@ describe('toUpdatePayload', () => {
       new Set(['m1']),
     );
 
-    // Resending a completed draw could only be a no-op or a rejected re-draw.
     expect(payload.stages[0].seedGroups).toBeUndefined();
     expect(payload.stages[1].seedGroups).toEqual([
       { teamIds: ['t3', 't4'], method: 'certified-random', label: 'Fresh' },
@@ -258,8 +253,6 @@ describe('toUpdatePayload', () => {
   });
 
   it('does not renumber seeds — each stage owns its own numbering', () => {
-    // Two stages both using seeds 1 and 2 is normal now, and used to be the
-    // thing the client had to compact away before saving.
     const payload = toUpdatePayload(
       draft({
         stages: [

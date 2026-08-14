@@ -4,7 +4,6 @@ import { FlexBracketMatch } from '../league-bracket/bracket.model';
 import { StageBuilderComponent } from './stage-builder.component';
 import { BuilderDraft, BuilderStage, nextRoundKey } from './stage-builder.model';
 
-/** A match with both slots unassigned — only its cell placement matters here. */
 function match(
   id: string,
   section: string,
@@ -50,9 +49,6 @@ function draftOf(
 describe('StageBuilderComponent drop targets', () => {
   let fixture: ComponentFixture<StageBuilderComponent>;
 
-  // jsdom has no ResizeObserver, and both the grid and the wire canvas watch
-  // themselves with one. Nothing here depends on it firing — these tests read
-  // the rendered drop lists, not the measured wire geometry.
   const realResizeObserver = globalThis.ResizeObserver;
 
   beforeAll(() => {
@@ -63,8 +59,6 @@ describe('StageBuilderComponent drop targets', () => {
     } as unknown as typeof ResizeObserver;
   });
 
-  // Jest reuses a worker's globals across spec files, so leaving the stub in
-  // place would quietly decide whether unrelated suites pass.
   afterAll(() => {
     globalThis.ResizeObserver = realResizeObserver;
   });
@@ -78,10 +72,8 @@ describe('StageBuilderComponent drop targets', () => {
     fixture.componentInstance.editable = true;
   });
 
-  /** `fixture.nativeElement` is `any`, which loses every query's result type. */
   const host = (): HTMLElement => fixture.nativeElement;
 
-  /** Ids of every drop list the grid rendered, which is every drop target. */
   function dropListIds(): string[] {
     return Array.from(host().querySelectorAll<HTMLElement>('.cell')).map(
       (cell) => cell.id,
@@ -95,7 +87,6 @@ describe('StageBuilderComponent drop targets', () => {
   }
 
   it('offers a drop target in every round a lone stage does not yet cover', () => {
-    // One stage holding a single match in the middle of a five-round schedule.
     render(draftOf(5, [stage('groups', 0)], [match('m1', 'groups', 2)]));
 
     expect(dropListIds()).toEqual([
@@ -118,8 +109,6 @@ describe('StageBuilderComponent drop targets', () => {
   });
 
   it('never puts two stages sharing a column on the same round', () => {
-    // Sequential stages are packed into one column, so the rounds between and
-    // around them can only belong to one of the two.
     render(
       draftOf(
         6,
@@ -137,8 +126,6 @@ describe('StageBuilderComponent drop targets', () => {
   });
 
   it('gives a gap between two stacked stages to the nearer one', () => {
-    // groups holds round 0, playoffs round 4: rounds 1 and 2 are nearer groups,
-    // round 3 nearer playoffs.
     render(
       draftOf(
         5,
@@ -159,7 +146,6 @@ describe('StageBuilderComponent drop targets', () => {
   });
 
   it('lets stages in separate columns both reach the same round', () => {
-    // Overlapping stages cannot share a column, so neither constrains the other.
     render(
       draftOf(
         3,
@@ -187,21 +173,15 @@ describe('StageBuilderComponent drop targets', () => {
     const emitted: BuilderDraft[] = [];
     fixture.componentInstance.draftChange.subscribe((d) => emitted.push(d));
 
-    // Exactly what a drop on the round-3 cell does. Called directly rather than
-    // through a simulated drag, so the view has to be marked dirty by hand —
-    // in the app the `cdkDropListDropped` binding does that.
     fixture.componentInstance['onDrop']({
       item: { data: 'm1' },
       container: { data: { stageKey: 'groups', round: 3 } },
       currentIndex: 0,
     } as never);
-    // `fixture.changeDetectorRef` is the host view's, which leaves an OnPush
-    // component clean; the component's own ref comes off its injector.
     fixture.debugElement.injector.get(ChangeDetectorRef).markForCheck();
     fixture.detectChanges();
 
     expect(emitted[0].matches[0].round).toBe(3);
-    // The box now covers round 3 — its span is read back off the matches.
     expect(dropListIds()).toContain('cell_groups_3');
     expect(
       Array.from(

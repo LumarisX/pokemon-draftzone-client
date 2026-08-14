@@ -45,10 +45,8 @@ export const ADD_BTN_H = 34;
 
 // ─── Layout output model ──────────────────────────────────────────────────────
 
-export interface CanvasSlot {
+export interface CanvasSlot extends ResolvedSlot {
   raw: BracketSlotFlex;
-  team: BracketTeamFlex | null;
-  placeholder: string | null;
   status: 'winner' | 'loser' | 'undecided';
 }
 
@@ -225,6 +223,18 @@ export function computePositionCenters(
 
 // ─── Slot resolution ─────────────────
 
+/** A slot's team, or what it is still waiting on. */
+export interface ResolvedSlot {
+  team: BracketTeamFlex | null;
+  placeholder: string | null;
+  /**
+   * The match the placeholder names, when it names one — the id behind
+   * "Winner of Match 4". Null for anything that is not waiting on a result,
+   * so a reader can be offered the source only where there is one to show.
+   */
+  sourceId: string | null;
+}
+
 /**
  * Resolves a slot to its actual team by recursively following winner/loser chains.
  * Returns a placeholder when the source match has not yet been played.
@@ -235,12 +245,16 @@ export function resolveSlot(
   allMatches: FlexBracketMatch[],
   matchLabels?: Map<string, string>,
   depth = 0,
-): { team: BracketTeamFlex | null; placeholder: string | null } {
-  if (depth > 20) return { team: null, placeholder: 'TBD' };
+): ResolvedSlot {
+  if (depth > 20) return { team: null, placeholder: 'TBD', sourceId: null };
 
   if (slot.type === 'seed' || slot.type === 'bye') {
     const team = teams.find((t) => t.seed === slot.seed) ?? null;
-    return { team, placeholder: team ? null : `Seed ${slot.seed}` };
+    return {
+      team,
+      placeholder: team ? null : `Seed ${slot.seed}`,
+      sourceId: null,
+    };
   }
 
   if (slot.type === 'winner') {
@@ -258,6 +272,7 @@ export function resolveSlot(
     return {
       team: null,
       placeholder: `Winner of ${matchLabels?.get(slot.from) ?? slot.from}`,
+      sourceId: slot.from,
     };
   }
 
@@ -276,14 +291,15 @@ export function resolveSlot(
     return {
       team: null,
       placeholder: `Loser of ${matchLabels?.get(slot.from) ?? slot.from}`,
+      sourceId: slot.from,
     };
   }
 
   if (slot.type === 'empty') {
-    return { team: null, placeholder: 'Unassigned' };
+    return { team: null, placeholder: 'Unassigned', sourceId: null };
   }
 
-  return { team: null, placeholder: null };
+  return { team: null, placeholder: null, sourceId: null };
 }
 
 // ─── Titles ──────────────────────────

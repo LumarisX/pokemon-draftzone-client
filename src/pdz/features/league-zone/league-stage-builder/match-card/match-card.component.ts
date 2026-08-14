@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -6,107 +5,104 @@ import {
   Input,
   Output,
 } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import {
   BracketTeamFlex,
   FlexBracketMatch,
 } from '../../league-bracket/bracket.model';
 import { resolveSlot } from '../../league-bracket/league-bracket-canvas/bracket-layout';
-import { getLogoUrl } from '../../league.util';
-
-/** One resolved side of a match, ready to render. */
-export interface CardSlot {
-  team: BracketTeamFlex | null;
-  placeholder: string | null;
-  status: 'winner' | 'loser' | 'undecided';
-  /** Games won. Only shown once the match has a winner. */
-  score: number | null;
-}
+import { MatchupCardComponent } from '../../matchup-card/matchup-card.component';
+import {
+  MatchupCard,
+  MatchupCardSlot,
+} from '../../matchup-card/matchup-card.model';
 
 @Component({
   selector: 'pdz-match-card',
-  imports: [CommonModule, IconComponent, RouterModule],
+  imports: [MatchupCardComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './match-card.component.html',
-  styleUrl: './match-card.component.scss',
+  template: `
+    <pdz-matchup-card
+      [card]="card"
+      [editable]="editable"
+      (edit)="edit.emit($event)"
+      (remove)="remove.emit($event)"
+      (focusSource)="focusMatch.emit($event)"
+    ></pdz-matchup-card>
+  `,
+  styles: `
+    :host {
+      display: block;
+    }
+  `,
 })
 export class MatchCardComponent {
   @Input({ required: true }) match!: FlexBracketMatch;
-  /** Every match in the draft — a slot resolves by following winner/loser chains. */
   @Input({ required: true }) allMatches: FlexBracketMatch[] = [];
   @Input() teams: BracketTeamFlex[] = [];
-  /** Display labels by match id, so a pending slot can name its source. */
   @Input() labels = new Map<string, string>();
   @Input() editable = false;
-  /**
-   * Route prefix for the matchup page, as
-   * `['/leagues', leagueSlug, 'tournaments', tournamentSlug]`. Passed in rather
-   * than read off the league service so the card stays usable anywhere the
-   * builder is — including the organizer's editor, where it is deliberately
-   * left unset so a click never navigates mid-edit.
-   */
   @Input() matchupLinkBase?: string[] | null;
 
   @Output() edit = new EventEmitter<string>();
   @Output() remove = new EventEmitter<string>();
+  @Output() focusMatch = new EventEmitter<string>();
 
-  protected readonly getLogoUrl = getLogoUrl;
+  get card(): MatchupCard {
+    const slots: [MatchupCardSlot, MatchupCardSlot] = [
+      this.slotAt(0),
+      this.slotAt(1),
+    ];
+    const viewLink = this.viewLink(slots);
 
-  get label(): string {
+    return {
+      id: this.match.id,
+      label: this.label,
+      decided: this.decided,
+      forfeit: !!this.match.forfeit,
+      slots,
+      viewLink,
+      breakdownLink:
+        viewLink && !this.decided ? [...viewLink, 'breakdown'] : null,
+      replays: this.editable ? [] : this.replays,
+    };
+  }
+
+  private get label(): string {
     return this.match.label ?? this.labels.get(this.match.id) ?? 'Match';
   }
 
-  get decided(): boolean {
+  private get decided(): boolean {
     return this.match.winner !== undefined;
   }
 
-  get slots(): [CardSlot, CardSlot] {
-    return [this.slotAt(0), this.slotAt(1)];
-  }
-
-  /**
-   * Where this match's page lives, or null when there is nowhere useful to go.
-   *
-   * A match whose sides are still "winner of …" has no rosters to compare, so
-   * it links nowhere until the bracket feeds it two real teams. Nor does one
-   * that exists only in the builder: with no slug it has no page yet.
-   */
-  get matchupLink(): string[] | null {
-    if (!this.matchupLinkBase?.length || !this.match.slug) return null;
-    const [side1, side2] = this.slots;
-    if (!side1.team || !side2.team) return null;
-    return [...this.matchupLinkBase, 'matchups', this.match.slug];
-  }
-
-  /** A resolved team's own page, or null when the slot must not navigate. */
-  teamLink(slot: CardSlot): string[] | null {
-    if (!this.matchupLinkBase?.length || !slot.team?.teamSlug) return null;
-    return [...this.matchupLinkBase, 'teams', slot.team.teamSlug];
-  }
-
-  /** Replay links in game order, empty when nothing has been recorded. */
-  get replays(): string[] {
+  private get replays(): string[] {
     if (this.match.replays?.length) return this.match.replays;
     return this.match.replay ? [this.match.replay] : [];
   }
 
-  /** True when the footer has anything to put in it. */
-  get hasActions(): boolean {
-    return !this.editable && (!!this.matchupLink || this.replays.length > 0);
+  private viewLink(
+    slots: [MatchupCardSlot, MatchupCardSlot],
+  ): string[] | null {
+    if (this.editable) return null;
+    if (!this.matchupLinkBase?.length || !this.match.slug) return null;
+    if (slots.some((slot) => slot.pending)) return null;
+    return [...this.matchupLinkBase, 'matchups', this.match.slug];
   }
 
-  private slotAt(index: 0 | 1): CardSlot {
+  private slotAt(index: 0 | 1): MatchupCardSlot {
     const raw = index === 0 ? this.match.a : this.match.b;
-    const { team, placeholder } = resolveSlot(
+    const { team, placeholder, sourceId } = resolveSlot(
       raw,
       this.teams,
       this.allMatches,
       this.labels,
     );
+
     return {
-      team,
-      placeholder,
+      name: team?.teamName ?? placeholder ?? 'TBD',
+      coach: team?.coachName ?? null,
+      logo: team?.logo,
+      pending: !team,
       status:
         this.match.winner === undefined
           ? 'undecided'
@@ -114,6 +110,11 @@ export class MatchCardComponent {
             ? 'winner'
             : 'loser',
       score: this.decided ? (this.match.score?.[index] ?? null) : null,
+      link:
+        team?.teamSlug && this.matchupLinkBase?.length
+          ? [...this.matchupLinkBase, 'teams', team.teamSlug]
+          : null,
+      sourceId: team ? null : sourceId,
     };
   }
 }

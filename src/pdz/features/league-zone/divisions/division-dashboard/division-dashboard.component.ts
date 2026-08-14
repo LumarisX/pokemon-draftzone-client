@@ -27,7 +27,6 @@ export class DivisionDashboardComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   team?: League.LeagueTeam;
-  matchups: League.Matchup[] = [];
   leagueName = '';
   divisionName = '';
   logo?: string;

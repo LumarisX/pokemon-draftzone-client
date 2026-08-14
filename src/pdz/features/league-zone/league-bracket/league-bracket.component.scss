@@ -16,8 +16,6 @@
 
   &__header {
     @include pdz-league-page-header();
-    // The meta chips wrap under the title on a narrow pane rather than
-    // squeezing it.
     flex-wrap: wrap;
     flex: none;
   }
@@ -54,8 +52,6 @@
     }
   }
 
-  // The grid scrolls in its own bounded pane, so this only has to hand it a
-  // definite height — see the note on the builder's own `height`.
   &__body {
     display: flex;
     flex-direction: column;

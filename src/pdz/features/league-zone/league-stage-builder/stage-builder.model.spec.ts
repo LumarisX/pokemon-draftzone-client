@@ -111,7 +111,6 @@ describe('stageSpans', () => {
         order: 0,
       },
     ]);
-    // The axis has 6 rounds, but the section holds exactly one.
     expect(stageSpans(draft)).toEqual([
       { key: 'playoffs', firstRound: 3, lastRound: 3 },
     ]);
@@ -193,7 +192,6 @@ describe('moveStage', () => {
 
     expect(roundOf('p1')).toBe(3);
     expect(roundOf('p2')).toBe(4);
-    // The other section stays where it was.
     expect(roundOf('g1')).toBe(0);
     expect(roundOf('g2')).toBe(1);
   });
@@ -201,7 +199,6 @@ describe('moveStage', () => {
   it('keeps the section´s shape when moving', () => {
     const next = moveStage(twoSections(), 'playoffs', -2);
     const span = stageSpans(next).find((s) => s.key === 'playoffs')!;
-    // Two rounds before, two rounds after — a move, not a squash.
     expect(span.lastRound - span.firstRound).toBe(1);
     expect(span.firstRound).toBe(0);
   });
@@ -283,7 +280,6 @@ describe('removeRound', () => {
 describe('reorderRounds', () => {
   it('carries each round´s matches to its new position', () => {
     const draft = draftOf([match('a', 0), match('b', 1), match('c', 2)]);
-    // Move the last round to the front.
     const next = reorderRounds(draft, 2, 0);
 
     expect(next.rounds.map((r) => r.key)).toEqual(['k2', 'k0', 'k1']);
@@ -325,7 +321,6 @@ describe('padRounds', () => {
 
 describe('trimAutoRounds', () => {
   it('reclaims trailing auto rounds the matches no longer need', () => {
-    // A section moved down then back up: rounds 2-3 were auto-added.
     const grown = padRounds(draftOf([match('a', 3)], 2));
     const movedBack = { ...grown, matches: [match('a', 0)] };
     expect(trimAutoRounds(movedBack).rounds.length).toBe(2);

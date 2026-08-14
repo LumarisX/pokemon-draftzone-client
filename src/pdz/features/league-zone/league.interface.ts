@@ -77,12 +77,34 @@ export namespace League {
     [key: string]: MatchPokemonStats;
   };
 
+  /**
+   * A forfeited match reports a distinct marker rather than a plain side, so a
+   * reader can tell a walkover from a played result.
+   */
+  export type MatchupWinner =
+    | 'side1'
+    | 'side2'
+    | 'draw'
+    | 'side1ffw'
+    | 'side2ffw'
+    | 'dffl';
+
+  export type MatchupSide = Omit<Team, 'id' | 'slug'> & {
+    id: string | null;
+    slug: string | null;
+    from: { slug: string; label: string } | null;
+    score: number;
+    draft: DraftPokemon[];
+  };
+
   export type Matchup = {
     id: string;
     /** URL identifier for the matchup page. Unique tournament-wide. */
     slug: string;
-    team1: Team & { score: number; draft: DraftPokemon[] };
-    team2: Team & { score: number; draft: DraftPokemon[] };
+    /** The bracket's name for this match, e.g. "Match 3". */
+    label?: string;
+    team1: MatchupSide;
+    team2: MatchupSide;
     matches: {
       link: string;
       team1: {
@@ -98,7 +120,7 @@ export namespace League {
     }[];
     scheduledDate?: Date;
     notes?: string;
-    winner?: 'side1' | 'side2' | 'draw';
+    winner?: MatchupWinner;
     /** Organizer-only: present when the schedule was fetched by an organizer. */
     status?: 'pending' | 'approved';
     /** Organizer-only: a coach-submitted result awaiting approve/reject. */

@@ -1,8 +1,3 @@
-<!--
-  The grid scrolls in its own bounded pane so both scrollbars stay pinned to the
-  edge of the viewport. `pdz-scrollbar-visible` keeps them drawn rather than
-  fading out — they are the only cue that the schedule continues past the edge.
--->
 <div
   class="builder pdz-scrollbar-visible"
   [class.builder--readonly]="!editable"
@@ -13,32 +8,24 @@
     class="builder__grid"
     cdkDropListGroup
     [style.--stage-count]="columnCount"
-    [style.--wire-corridor]="corridorGap"
   >
-    <!--
-      Opaque backing for the frozen round column. The gutter rows below only
-      exist where a round does, so on their own they leave the pane's top
-      padding and every gap between rounds transparent — and the stage headers,
-      which pin to the top of the pane, show through exactly there.
-    -->
     <div
       class="rail"
       aria-hidden="true"
       [style.grid-row]="'1 / ' + (rounds.length + 1)"
     ></div>
 
-    <!-- Round gutter: the stage's schedule, one row per round. -->
     @for (round of rounds; track trackRound($index, round)) {
-      <!--
-        `data-round` marks the round's *row*, which is what the wire router
-        treats as solid — the corridors it draws in are the gaps between these.
-        It has to sit on the grid item, which stretches to the full row: on the
-        label inside it the router measured only as far as the round's name and
-        ran its lines through the cards below it.
-      -->
+      @if ($index > 0) {
+        <div
+          class="round-rule"
+          aria-hidden="true"
+          [style.grid-row]="$index + 1"
+        ></div>
+      }
+
       <div
         class="gutter"
-        [attr.data-round]="$index"
         [class.gutter--current]="$index === currentRoundIndex"
         [style.grid-row]="$index + 1"
       >
@@ -121,34 +108,13 @@
       </div>
     }
 
-    <!-- Stage boxes, each spanning the rounds it covers. -->
     @for (stage of stages; track trackStage($index, stage)) {
-      <!-- The empty strip left of a stage: wires route vertically through it. -->
-      <div
-        class="band"
-        [attr.data-band]="stage.key"
-        [style.grid-row]="stage.rowStart + ' / ' + stage.rowEnd"
-        [style.grid-column]="stage.column - 1"
-        aria-hidden="true"
-      ></div>
-
-      <!--
-        The stage frame is decorative and sits behind its cells. The cells
-        are placed on the grid individually, so every round row lines up
-        across the gutter and every stage — nesting them inside the frame
-        would leave that alignment to chance.
-      -->
       <div
         class="stage"
         [style.grid-row]="stage.rowStart + ' / ' + stage.rowEnd"
         [style.grid-column]="stage.column"
       >
         <header class="stage__header">
-          <!--
-            Sticks sideways within the band so the stage still names itself
-            once its left edge has been scrolled past — a bare coloured strip
-            says only that the cards under it belong together, not to what.
-          -->
           <span class="stage__identity">
             <pdz-icon
               class="stage__icon"
@@ -163,11 +129,6 @@
           </span>
 
           @if (editable) {
-            <!--
-              Outside stage__actions: those fade in on hover, and whether a
-              stage is published is the one thing about it the grid cannot
-              otherwise show, so a hidden one has to say so unprompted.
-            -->
             <button
               type="button"
               class="stage__visibility"
@@ -216,11 +177,6 @@
       </div>
 
       @for (cell of stage.cells; track trackCell($index, cell)) {
-        <!--
-          A cell outside the stage's span is an invisible landing strip: drop a
-          card on it and the span, which is derived from where the matches are,
-          grows to take the round in.
-        -->
         <div
           class="cell"
           [class.cell--outside]="!cell.inSpan"
@@ -250,14 +206,13 @@
                 [matchupLinkBase]="matchupLinkBase"
                 (edit)="editMatch.emit($event)"
                 (remove)="onRemoveMatch($event)"
+                (focusMatch)="onFocusMatch($event)"
               ></pdz-match-card>
 
               <div class="cell__placeholder" *cdkDragPlaceholder></div>
             </div>
           }
 
-          <!-- Only inside the box: a "+ Match" floating in a round the stage
-               does not cover reads as belonging to no stage at all. -->
           @if (editable && cell.inSpan) {
             <button type="button" class="cell__add" (click)="onAddMatch(cell)">
               <pdz-icon name="add" size="sm"></pdz-icon>
@@ -268,18 +223,13 @@
       }
     }
 
-    <!--
-      One per round, in the column past every stage: starts a new stage
-      whose first match lands in that round — the stage-level counterpart of
-      a cell's "+ Match".
-    -->
     @if (editable) {
       @for (round of rounds; track trackRound($index, round)) {
         <button
           type="button"
           class="add-stage"
           [style.grid-row]="$index + 1"
-          [style.grid-column]="columnCount * 2 + 2"
+          [style.grid-column]="columnCount + 2"
           [attr.aria-label]="'Add a stage starting in ' + round.name"
           (click)="addStage.emit($index)"
         >
@@ -288,11 +238,5 @@
         </button>
       }
     }
-
-    <pdz-stage-wires
-      [wires]="wires"
-      [width]="gridWidth"
-      [height]="gridHeight"
-    ></pdz-stage-wires>
   </div>
 </div>

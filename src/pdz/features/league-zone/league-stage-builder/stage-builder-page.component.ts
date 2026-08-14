@@ -80,7 +80,6 @@ export class LeagueScheduleComponent implements OnInit {
   formName = '';
   formFormat: StageFormat = 'round-robin';
   formRandom = true;
-  /** New stages start hidden so the bracket can be built before it goes live. */
   formPublic = false;
   formRounds = 1;
   private formRoundsTouched = false;

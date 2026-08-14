@@ -1,8 +1,21 @@
 import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { LeagueZoneService } from '../../league-zone.service';
-import { League } from '../../league.interface';
-import { MatchupCardComponent } from './matchup-card/matchup-card.component';
+import { MatchupCardComponent } from '../../matchup-card/matchup-card.component';
+import { MatchupCard } from '../../matchup-card/matchup-card.model';
+import { scheduleMatchupToCard } from '../../matchup-card/schedule-matchup.adapter';
+
+interface ScheduleStageView {
+  id: string;
+  name: string;
+  cards: MatchupCard[];
+}
+
+interface ScheduleRoundView {
+  id: string;
+  name: string;
+  stages: ScheduleStageView[];
+}
 
 @Component({
   selector: 'pdz-league-schedule-widget',
@@ -14,7 +27,7 @@ export class LeagueScheduleWidgetComponent implements OnInit, OnDestroy {
   leagueService = inject(LeagueZoneService);
   private readonly destroy$ = new Subject<void>();
 
-  scheduleRounds?: League.ScheduleRound[];
+  scheduleRounds?: ScheduleRoundView[];
 
   @Input() roundFilter?: 'current' | 'past';
 
@@ -24,7 +37,23 @@ export class LeagueScheduleWidgetComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (data) => {
-          this.scheduleRounds = data.rounds;
+          const base = [
+            '/leagues',
+            this.leagueService.leagueSlug() ?? '',
+            'tournaments',
+            this.leagueService.tournamentSlug() ?? '',
+          ];
+          this.scheduleRounds = data.rounds.map((round) => ({
+            id: round._id,
+            name: round.name,
+            stages: round.stages.map((stage) => ({
+              id: stage._id,
+              name: stage.name,
+              cards: stage.matchups.map((matchup) =>
+                scheduleMatchupToCard(matchup, base),
+              ),
+            })),
+          }));
         },
       });
   }

@@ -20,14 +20,12 @@ export class LeagueBracketComponent implements OnInit {
   isLoading = true;
   draft: BuilderDraft = { rounds: [], stages: [], matches: [] };
   teamsByStage = new Map<string, BracketTeamFlex[]>();
-  /** The round being played right now, or -1 before the tournament starts. */
   currentRoundIndex = -1;
 
   get hasBracket(): boolean {
     return this.draft.matches.length > 0;
   }
 
-  /** Name of the live round, for the header. */
   get currentRoundName(): string | null {
     return this.draft.rounds[this.currentRoundIndex]?.name ?? null;
   }
@@ -37,10 +35,6 @@ export class LeagueBracketComponent implements OnInit {
       .length;
   }
 
-  /**
-   * Where the match cards link. Read here rather than in the cards so the
-   * builder stays usable from the organizer's editor, which passes nothing.
-   */
   readonly matchupLinkBase = computed(() => {
     const league = this.leagueService.leagueSlug();
     const tournament = this.leagueService.tournamentSlug();
