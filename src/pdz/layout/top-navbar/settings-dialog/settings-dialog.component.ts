@@ -156,6 +156,11 @@ export class SettingsDialogComponent implements OnInit, OnDestroy {
       id: 'pmd',
       creditLink: 'https://sprites.pmdcollab.org/#/Contributors',
     },
+    {
+      name: 'PokeAPI - Official Artwork',
+      id: 'pokeapi',
+      creditLink: 'https://github.com/PokeAPI/sprites',
+    },
   ];
 
   settingsForm!: FormGroup<{
