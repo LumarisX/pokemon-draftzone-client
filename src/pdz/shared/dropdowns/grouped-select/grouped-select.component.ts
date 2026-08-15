@@ -45,6 +45,20 @@ export class GroupedSelectComponent {
     return this.flatOptions.find((option) => option.id === this.value);
   }
 
+  get selectedGroupName(): string | undefined {
+    return this.groups.find((group) =>
+      group[1].some((option) => option.id === this.value),
+    )?.[0];
+  }
+
+  get selectedLabel(): string | undefined {
+    const option = this.selectedOption;
+    if (!option) return undefined;
+    return this.selectedGroupName
+      ? `${this.selectedGroupName} · ${option.name}`
+      : option.name;
+  }
+
   toggle(): void {
     this.isOpen ? this.close() : this.open();
   }
