@@ -20,7 +20,7 @@
     class="grouped-select__value"
     [class.grouped-select__value--placeholder]="!selectedOption"
   >
-    {{ selectedOption?.name ?? "Select..." }}
+    {{ selectedLabel ?? "Select..." }}
   </span>
   <pdz-icon
     class="grouped-select__chevron"
