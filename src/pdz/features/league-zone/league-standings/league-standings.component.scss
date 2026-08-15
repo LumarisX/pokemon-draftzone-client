@@ -24,7 +24,9 @@
 
   &__body {
     display: flex;
+    flex: 1 1 auto;
     flex-wrap: wrap;
+    min-height: 0;
     padding: pdz.space(lg);
     gap: 1rem;
   }
@@ -40,7 +42,16 @@
   }
 
   &__table {
-    max-height: 100vh;
-    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    height: 100%;
+    min-height: 0;
+
+    > pdz-team-standings,
+    > pdz-pokemon-standings {
+      flex: 1 1 auto;
+      min-height: 0;
+    }
   }
 }

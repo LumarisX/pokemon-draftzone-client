@@ -30,44 +30,35 @@ export class DraftService {
   getDraftsList() {
     return this.apiService.get<{
       drafts: Draft[];
-    }>(ROOTPATH, { authenticated: true });
+    }>(ROOTPATH);
   }
 
   getDraft(teamName: string) {
-    return this.apiService.get<Draft>(`${ROOTPATH}/${teamName}`, {
-      authenticated: true,
-    });
+    return this.apiService.get<Draft>(`${ROOTPATH}/${teamName}`);
   }
 
   getMatchup(matchupId: string, teamId: string) {
     return this.apiService.get<Matchup>(
       `${ROOTPATH}/${teamId}/matchups/${matchupId}`,
-      { authenticated: true },
     );
   }
 
   getOpponent(matchupId: string, teamId: string) {
     return this.apiService.get<Opponent>(
       `${ROOTPATH}/${teamId}/matchups/${matchupId}/opponent`,
-      { authenticated: true },
     );
   }
 
   getStats(teamName: string) {
-    return this.apiService.get<Stats>(`${ROOTPATH}/${teamName}/stats`, {
-      authenticated: true,
-    });
+    return this.apiService.get<Stats>(`${ROOTPATH}/${teamName}/stats`);
   }
 
   getArchiveStats(teamName: string) {
-    return this.apiService.get<Stats>(`archive/${teamName}/stats`, {
-      authenticated: true,
-    });
+    return this.apiService.get<Stats>(`archive/${teamName}/stats`);
   }
 
   newDraft(draftData: Object) {
     return this.apiService.post(`${ROOTPATH}`, draftData, {
-      authenticated: true,
       invalidateCache: [ROOTPATH],
     });
   }
@@ -79,9 +70,7 @@ export class DraftService {
   }
 
   getMatchupList(teamName: string) {
-    return this.apiService.get<Opponent[]>(`${ROOTPATH}/${teamName}/matchups`, {
-      authenticated: true,
-    });
+    return this.apiService.get<Opponent[]>(`${ROOTPATH}/${teamName}/matchups`);
   }
 
   newMatchup(teamName: string, matchupData: Object) {
@@ -89,8 +78,6 @@ export class DraftService {
       `${ROOTPATH}/${teamName}/matchups`,
       matchupData,
       {
-        authenticated: true,
-
         invalidateCache: [`${ROOTPATH}/${teamName}/matchups`],
       },
     );
@@ -137,9 +124,6 @@ export class DraftService {
     //TODO: remove any
     return this.apiService.get<any>(
       `${ROOTPATH}/${teamId}/matchups/${matchupId}/schedule`,
-      {
-        authenticated: true,
-      },
     );
   }
   scheduleMatchup(matchupId: string, teamId: string, timeData: Object) {

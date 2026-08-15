@@ -246,14 +246,14 @@ export class LeagueManageSignupsComponent implements OnInit, OnDestroy {
   getTeamLink(user: League.LeagueSignUp): string[] | null {
     const leagueSlug = this.leagueService.leagueSlug();
     const tournamentSlug = this.leagueService.tournamentSlug();
-    if (!leagueSlug || !tournamentSlug || !user.teamId) return null;
+    if (!leagueSlug || !tournamentSlug || !user.teamSlug) return null;
     return [
       '/leagues',
       leagueSlug,
       'tournaments',
       tournamentSlug,
       'teams',
-      user.teamId,
+      user.teamSlug,
     ];
   }
 

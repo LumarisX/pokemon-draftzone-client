@@ -2,15 +2,28 @@
 @use "pdz-theming" as pdz;
 @use "mixins" as *;
 
+:host {
+  display: block;
+  min-width: 0;
+  max-width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
 .standing-container {
   border: 1px solid pdz.color(primary-border);
   border-radius: pdz.shape(corner-sm);
   overflow: hidden;
   width: fit-content;
+  max-width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
   .standing-header {
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    flex-shrink: 0;
     .standing-header-title {
       font-family: var(--pdz-font-fancy);
       padding: 0.25rem 0.5rem;
@@ -19,27 +32,45 @@
     }
   }
 
-  table {
-    border-collapse: separate;
-    border-spacing: 2px 0;
-    td {
-      padding: 0.125rem 0.5rem;
-    }
-    tr.cutoff-border {
-      td {
-        border-bottom: 2px dotted pdz.color(primary-border);
-      }
-    }
-    thead {
-      th {
-        border-bottom: 2px solid pdz.color(primary-border);
-      }
-    }
+  .standing-table-wrapper {
+    flex: 1 1 auto;
+    min-height: 16rem;
+    overflow: auto;
+    background-color: pdz.color(surface);
+  }
+
+  .standing-table {
+    display: grid;
+    grid-template-columns: repeat(5, auto);
+    column-gap: 2px;
+    width: max-content;
+    max-width: 100%;
+  }
+
+  .standing-table__row {
+    display: contents;
+  }
+
+  .standing-table__cell {
+    padding: 0.125rem 0.5rem;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  .standing-table__cell--head {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    justify-content: center;
+    background-color: pdz.color(surface);
+    border-bottom: 2px solid pdz.color(primary-border);
   }
 
   .rank-cell {
     display: flex;
     align-items: center;
+    width: 100%;
     span {
       width: 100%;
       font-weight: 600;
@@ -71,6 +102,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 100%;
 
     .team-name {
       line-height: 1rem;
@@ -106,20 +138,6 @@
       }
     }
 
-    .result-header {
-      width: 1.5rem;
-      height: 0.75rem;
-      text-align: center;
-      font-weight: var(--pdz-font-weight-bold);
-      font-size: 0.7rem;
-    }
-
-    .streak {
-      width: 3rem;
-      display: flex;
-      justify-content: center;
-      margin-left: auto;
-    }
   }
 
   .records-container {
@@ -146,42 +164,9 @@
     align-items: center;
     justify-content: center;
     gap: 0.25rem;
-    flex-wrap: wrap;
     width: 100%;
 
     .record-box {
-      // display: inline-flex;
-      // align-items: center;
-      // justify-content: center;
-      // text-align: center;
-      // @include apply-typography(body-xs);
-      // line-height: 1.5rem;
-      // font-weight: var(--pdz-font-weight-bold);
-      // border-radius: pdz.shape(corner-xs);
-      // background-color: pdz.color(surface-container);
-      // color: pdz.color(on-surface);
-      // padding: pdz.space(2xs);
-      // height: 1.5rem;
-      // min-width: 1.5rem;
-
-      // &--record {
-      //   @include apply-typography(body-sm);
-      //   line-height: 1.5rem;
-      //   font-weight: var(--pdz-font-weight-bold);
-      // }
-
-      // &--positive {
-      //   background-color: pdz.color(positive);
-      //   box-shadow: var(--pdz-level-1);
-      //   color: pdz.color(on-menu);
-      // }
-
-      // &--negative {
-      //   background-color: pdz.color(negative);
-      //   box-shadow: var(--pdz-level-1);
-      //   color: pdz.color(on-menu);
-      // }
-
       @include pdz-league-record-box();
 
       &--big {

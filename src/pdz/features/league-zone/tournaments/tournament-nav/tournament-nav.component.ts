@@ -23,8 +23,6 @@ export class TournamentNavComponent implements OnInit, OnDestroy {
   leagueInfo: League.LeagueInfo | null = null;
   leagueName: string | null = null;
   profile: League.CoachProfile | null = null;
-  stages: League.StageSummary[] = [];
-  selectedStageId: string | null = null;
   profileLoaded = false;
   canManage = false;
 
@@ -67,7 +65,6 @@ export class TournamentNavComponent implements OnInit, OnDestroy {
         this.profile = profile;
         this.profileLoaded = true;
         if (profile?.draft) {
-          this.loadStages();
           this.loadDraftStatus(profile.draft.draftSlug);
         }
       });
@@ -120,20 +117,6 @@ export class TournamentNavComponent implements OnInit, OnDestroy {
     }
   }
 
-  private loadStages(): void {
-    this.leagueService
-      .listStages()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (stages) => {
-          this.stages = stages;
-          if (stages.length) {
-            this.selectedStageId = stages[0]._id;
-          }
-        },
-      });
-  }
-
   get notJoinedDiscord(): boolean {
     return this.profileLoaded && !!this.profile && !this.profile.inDiscordServer;
   }
@@ -165,18 +148,13 @@ export class TournamentNavComponent implements OnInit, OnDestroy {
     return [...base, 'drafts', draftSlug];
   }
 
-  get stageBase(): string[] {
-    const base = this.tournamentBase();
-    if (!base.length || !this.selectedStageId) return [];
-    return [...base, 'stages', this.selectedStageId];
-  }
-
   get teamLink(): string[] {
-    return [...this.draftBase, 'teams', this.profile?.teamId ?? ''];
+    return [...this.tournamentBase(), 'teams', this.profile?.teamSlug ?? ''];
   }
 
+  /** Public: every pool's teams on one page, no sign-up needed. */
   get teamsLink(): string[] {
-    return [...this.draftBase, 'teams'];
+    return [...this.tournamentBase(), 'teams'];
   }
 
   get scheduleLink(): string[] {
@@ -184,6 +162,6 @@ export class TournamentNavComponent implements OnInit, OnDestroy {
   }
 
   get standingsLink(): string[] {
-    return [...this.stageBase, 'standings'];
+    return [...this.tournamentBase(), 'standings'];
   }
 }

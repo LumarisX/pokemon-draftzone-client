@@ -18,6 +18,7 @@ export class PokemonStandingsComponent implements OnChanges {
   @Input() showCount: number = 100;
   activeSort: SortKey = 'diff';
   isSortDescending: boolean = true;
+  combineTeams = false;
 
   ngOnChanges(changes: SimpleChanges) {
     if (
@@ -39,8 +40,15 @@ export class PokemonStandingsComponent implements OnChanges {
     this.applySort();
   }
 
+  toggleCombineTeams() {
+    this.combineTeams = !this.combineTeams;
+    this.applySort();
+  }
+
   private applySort() {
-    const data = this.standingData.slice();
+    const data = this.combineTeams
+      ? combineByPokemon(this.standingData)
+      : this.standingData.slice();
 
     this.sortedData = data
       .sort((a, b) => {
@@ -71,6 +79,37 @@ export class PokemonStandingsComponent implements OnChanges {
       })
       .slice(0, this.showCount);
   }
+}
+
+function combineByPokemon(
+  standingData: League.PokemonStanding[],
+): League.PokemonStanding[] {
+  const groups = new Map<string, League.PokemonStanding[]>();
+  for (const pokemon of standingData) {
+    const group = groups.get(pokemon.id);
+    if (group) {
+      group.push(pokemon);
+    } else {
+      groups.set(pokemon.id, [pokemon]);
+    }
+  }
+
+  return Array.from(groups.values()).map((group) => {
+    const [first] = group;
+    const brought = group.reduce((sum, p) => sum + p.record.brought, 0);
+    const kills = group.reduce((sum, p) => sum + p.record.kills, 0);
+    const deaths = group.reduce((sum, p) => sum + p.record.deaths, 0);
+    const teamNames = [...new Set(group.map((p) => p.teamName))];
+
+    return {
+      ...first,
+      direction: undefined,
+      teamName:
+        teamNames.length > 1 ? `${teamNames.length} Teams` : teamNames[0],
+      coach: teamNames.join(', '),
+      record: { brought, kills, deaths, diff: kills - deaths },
+    };
+  });
 }
 
 function compare(

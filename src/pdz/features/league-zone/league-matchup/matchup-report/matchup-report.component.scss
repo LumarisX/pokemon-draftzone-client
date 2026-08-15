@@ -1,0 +1,664 @@
+@use "pdz-theming" as pdz;
+@use "mixins" as *;
+
+:host {
+  display: block;
+}
+
+.report {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(md);
+  padding: pdz.space(lg);
+  border: 1px solid pdz.color("primary-border");
+  border-radius: pdz.shape("corner-md");
+  background: pdz.color("surface-container-low");
+
+  &__intro {
+    @include apply-typography(body-sm);
+    margin: 0;
+    color: pdz.color("on-surface-variant");
+  }
+
+  // ─── Mode switch ──────────────────────────────────────────────────────
+
+  &__mode {
+    display: flex;
+    gap: pdz.space(3xs);
+    padding: pdz.space(3xs);
+    border: 1px solid pdz.color("outline-variant");
+    border-radius: pdz.shape("corner-full");
+    background: pdz.color("surface-container-lowest");
+  }
+
+  &__mode-option {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: pdz.space(3xs);
+    min-width: 0;
+    padding: pdz.space(xs) pdz.space(sm);
+    border: none;
+    border-radius: pdz.shape("corner-full");
+    background: transparent;
+    color: pdz.color("on-surface-variant");
+    cursor: pointer;
+    overflow: hidden;
+    white-space: nowrap;
+    @include apply-typography(label-sm);
+    font-weight: var(--pdz-font-weight-semibold);
+
+    span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    &--selected {
+      background: pdz.color("primary");
+      color: pdz.color("on-primary");
+    }
+  }
+
+  // ─── Forfeit / manual-score panel ────────────────────────────────────
+
+  &__panel {
+    display: flex;
+    flex-direction: column;
+    gap: pdz.space(sm);
+    padding: pdz.space(md);
+    border: 1px solid pdz.color("outline-variant");
+    border-radius: pdz.shape("corner-md");
+    background: pdz.color("surface-container-lowest");
+
+    .report__intro {
+      color: pdz.color("on-surface");
+    }
+  }
+
+  &__forfeit {
+    display: flex;
+    flex-direction: column;
+    gap: pdz.space(2xs);
+
+    @include respond-above(medium) {
+      flex-direction: row;
+    }
+  }
+
+  &__manual-score-fields {
+    display: flex;
+    flex-wrap: wrap;
+    gap: pdz.space(lg);
+  }
+
+  &__manual-score-field {
+    display: flex;
+    flex-direction: column;
+    gap: pdz.space(3xs);
+    @include apply-typography(label-sm);
+    color: pdz.color("on-surface-variant");
+
+    .report__input {
+      width: 6rem;
+    }
+  }
+
+  // ─── Game cards ───────────────────────────────────────────────────────
+
+  &__games {
+    display: flex;
+    flex-direction: column;
+    gap: pdz.space(md);
+  }
+
+  &__game {
+    display: flex;
+    flex-direction: column;
+    gap: pdz.space(md);
+    padding: pdz.space(md);
+    border: 1px solid pdz.color("outline-variant");
+    border-radius: pdz.shape("corner-md");
+    background: pdz.color("surface-container-lowest");
+  }
+
+  &__game-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__game-title {
+    @include apply-typography(label-md);
+    font-weight: var(--pdz-font-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: pdz.color("on-surface-variant");
+  }
+
+  &__remove {
+    display: inline-flex;
+    padding: pdz.space(3xs);
+    border: none;
+    border-radius: pdz.shape("corner-xs");
+    background: none;
+    color: pdz.color("on-surface-variant");
+    cursor: pointer;
+
+    &:hover {
+      background: pdz.color("error-container");
+      color: pdz.color("on-error-container");
+    }
+  }
+
+  &__replay {
+    display: flex;
+    flex-wrap: wrap;
+    gap: pdz.space(2xs);
+  }
+
+  &__input {
+    padding: pdz.space(2xs) pdz.space(sm);
+    border: 1px solid pdz.color("outline-variant");
+    border-radius: pdz.shape("corner-sm");
+    background: pdz.color("surface");
+    color: pdz.color("on-surface");
+    @include apply-typography(body-sm);
+
+    &:focus {
+      outline: none;
+      border-color: pdz.color("primary");
+    }
+
+    &--grow {
+      flex: 1;
+      min-width: 12rem;
+    }
+
+    &--score {
+      width: 4rem;
+      text-align: center;
+    }
+  }
+
+  &__analyze {
+    display: inline-flex;
+    align-items: center;
+    gap: pdz.space(3xs);
+    padding: pdz.space(2xs) pdz.space(md);
+    border: 1px solid pdz.color("secondary-border");
+    border-radius: pdz.shape("corner-sm");
+    background: pdz.color("surface-container-lowest");
+    color: pdz.color("on-secondary-container");
+    cursor: pointer;
+    @include apply-typography(label-sm);
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+  }
+
+  // ─── Result row: winner + score, grouped ──────────────────────────────
+
+  &__result {
+    display: flex;
+    flex-wrap: wrap;
+    gap: pdz.space(lg);
+    padding: pdz.space(sm) pdz.space(md);
+    border-radius: pdz.shape("corner-sm");
+    background: pdz.color("surface-container-low");
+  }
+
+  &__result-group {
+    display: flex;
+    flex-direction: column;
+    gap: pdz.space(3xs);
+  }
+
+  &__result-label {
+    @include apply-typography(label-xs);
+    color: pdz.color("on-surface-variant");
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  &__result-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: pdz.space(2xs);
+  }
+
+  &__result-dash {
+    color: pdz.color("on-surface-variant");
+  }
+
+  &__winner-option {
+    max-width: 100%;
+    padding: pdz.space(2xs) pdz.space(md);
+    border: 1px solid pdz.color("outline-variant");
+    border-radius: pdz.shape("corner-full");
+    background: pdz.color("surface-container-low");
+    color: pdz.color("on-surface-variant");
+    cursor: pointer;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    @include apply-typography(label-sm);
+
+    &--selected {
+      border-color: pdz.color("positive");
+      background: pdz.color("positive-container");
+      color: pdz.color("on-positive-container");
+      font-weight: var(--pdz-font-weight-semibold);
+    }
+
+    &--block {
+      flex: 1;
+      text-align: center;
+      padding: pdz.space(sm) pdz.space(md);
+    }
+  }
+
+  &__score-field {
+    display: inline-flex;
+    align-items: center;
+    gap: pdz.space(3xs);
+  }
+
+  &__score-reset {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    border: 1px solid pdz.color("outline-variant");
+    border-radius: pdz.shape("corner-full");
+    background: pdz.color("surface-container-lowest");
+    color: pdz.color("on-surface-variant");
+    cursor: pointer;
+  }
+
+  // ─── Validation warnings ───────────────────────────────────────────────
+
+  &__warnings {
+    display: flex;
+    gap: pdz.space(2xs);
+    padding: pdz.space(2xs) pdz.space(sm);
+    background: pdz.color("warning-container");
+    border-radius: pdz.shape("corner-sm");
+    border-left: 3px solid pdz.color("warning");
+    color: pdz.color("on-warning-container");
+  }
+
+  &__warnings-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  &__warning {
+    @include apply-typography(label-xs);
+  }
+
+  // ─── Rosters ────────────────────────────────────────────────────────────
+
+  &__rosters {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: pdz.space(md);
+
+    @include respond-above(large) {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  &__roster {
+    display: flex;
+    flex-direction: column;
+    gap: pdz.space(2xs);
+    min-width: 0;
+    padding: pdz.space(sm);
+    border: 1px solid pdz.color("outline-variant");
+    border-radius: pdz.shape("corner-md");
+    background: pdz.color("surface-container-low");
+  }
+
+  &__roster-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: pdz.space(2xs);
+    padding-bottom: pdz.space(3xs);
+    border-bottom: 1px solid pdz.color("outline-variant");
+  }
+
+  &__roster-team {
+    @include apply-typography(label-md);
+    font-weight: var(--pdz-font-weight-semibold);
+    color: pdz.color("on-surface");
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__roster-alive {
+    @include apply-typography(label-sm);
+    color: pdz.color("on-surface-variant");
+    white-space: nowrap;
+  }
+
+  &__roster-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+    gap: pdz.space(2xs);
+  }
+
+  &__mon {
+    display: flex;
+    flex-direction: column;
+    gap: pdz.space(2xs);
+    padding: pdz.space(sm);
+    border-radius: pdz.shape("corner-sm");
+    background: pdz.color("surface-container-lowest");
+
+    &--survived {
+      background: pdz.color("positive-container");
+    }
+
+    &--fainted {
+      background: pdz.color("negative-container");
+      opacity: 0.85;
+    }
+  }
+
+  &__mon-sprite {
+    flex: none;
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  &__mon-top {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: pdz.space(sm);
+  }
+
+  &__mon-bottom {
+    display: flex;
+    align-items: center;
+    gap: pdz.space(sm);
+  }
+
+  &__mon-name {
+    @include apply-typography(label-lg);
+    text-transform: none;
+    flex: none;
+    max-width: 8rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: pdz.color("on-surface");
+    font-weight: var(--pdz-font-weight-semibold);
+  }
+
+  &__status {
+    flex: 1 1 11rem;
+    max-width: 16rem;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border: 1px solid pdz.color("outline-variant");
+    border-radius: pdz.shape("corner-sm");
+    overflow: hidden;
+  }
+
+  &__status-option {
+    padding: pdz.space(2xs) pdz.space(3xs);
+    border: none;
+    border-left: 1px solid pdz.color("outline-variant");
+    background: pdz.color("surface");
+    color: pdz.color("on-surface-variant");
+    cursor: pointer;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    @include apply-typography(label-xs);
+
+    &:first-child {
+      border-left: none;
+    }
+
+    &--selected {
+      background: pdz.color("primary-subtle");
+      color: pdz.color("on-primary-container");
+      font-weight: var(--pdz-font-weight-semibold);
+    }
+  }
+
+  &__kills-group {
+    flex: 1;
+    display: flex;
+    align-items: stretch;
+    gap: pdz.space(3xs);
+  }
+
+  &__kills {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: pdz.space(3xs) pdz.space(2xs);
+    border-radius: pdz.shape("corner-sm");
+    background: pdz.color("surface");
+  }
+
+  &__kills-controls {
+    display: inline-flex;
+    align-items: center;
+    gap: pdz.space(3xs);
+  }
+
+  &__step {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    border: 1px solid pdz.color("outline-variant");
+    border-radius: pdz.shape("corner-full");
+    background: pdz.color("surface-container-lowest");
+    color: pdz.color("on-surface-variant");
+    cursor: pointer;
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: default;
+    }
+  }
+
+  &__kills-value {
+    @include apply-typography(label-sm);
+    min-width: 1rem;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+    color: pdz.color("on-surface");
+  }
+
+  &__kills-label {
+    @include apply-typography(label-xs);
+    color: pdz.color("on-surface-variant");
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  // ─── Pokemon totals summary ─────────────────────────────────────────────
+
+  &__summary {
+    border: 1px solid pdz.color("outline-variant");
+    border-radius: pdz.shape("corner-md");
+    background: pdz.color("surface-container-lowest");
+  }
+
+  &__summary-header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: pdz.space(3xs);
+    padding: pdz.space(sm) pdz.space(md);
+    border: none;
+    background: transparent;
+    color: pdz.color("on-surface");
+    cursor: pointer;
+    text-align: left;
+    @include apply-typography(label-md);
+    font-weight: var(--pdz-font-weight-semibold);
+  }
+
+  &__summary-content {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: pdz.space(md);
+    padding: 0 pdz.space(md) pdz.space(md);
+    border-top: 1px solid pdz.color("outline-variant");
+
+    @include respond-above(large) {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  &__summary-team {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding-top: pdz.space(sm);
+  }
+
+  &__summary-team-title {
+    @include apply-typography(label-md);
+    font-weight: var(--pdz-font-weight-semibold);
+    color: pdz.color("on-surface");
+    margin-bottom: pdz.space(3xs);
+  }
+
+  &__summary-row {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr 1fr;
+    gap: pdz.space(sm);
+    @include apply-typography(label-sm);
+    color: pdz.color("on-surface-variant");
+
+    > span:first-child {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    &--header {
+      @include apply-typography(label-xs);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      border-bottom: 1px solid pdz.color("outline-variant");
+      padding-bottom: pdz.space(3xs);
+      margin-bottom: pdz.space(3xs);
+    }
+  }
+
+  &__summary-empty {
+    @include apply-typography(label-sm);
+    margin: 0;
+    color: pdz.color("on-surface-variant");
+  }
+
+  // ─── Notes ────────────────────────────────────────────────────────────
+
+  &__notes {
+    display: flex;
+    flex-direction: column;
+    gap: pdz.space(3xs);
+  }
+
+  &__notes-label {
+    @include apply-typography(label-sm);
+    color: pdz.color("on-surface-variant");
+  }
+
+  &__notes-input {
+    resize: vertical;
+    min-height: 2.5rem;
+    padding: pdz.space(2xs) pdz.space(sm);
+    border: 1px solid pdz.color("outline-variant");
+    border-radius: pdz.shape("corner-sm");
+    background: pdz.color("surface-container-lowest");
+    color: pdz.color("on-surface");
+    @include apply-typography(body-sm);
+
+    &:focus {
+      outline: none;
+      border-color: pdz.color("primary");
+    }
+  }
+
+  // ─── Footer ─────────────────────────────────────────────────────────────
+
+  &__footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: pdz.space(sm);
+    padding-top: pdz.space(md);
+    border-top: 1px solid pdz.color("outline-variant");
+  }
+
+  &__add {
+    display: inline-flex;
+    align-items: center;
+    gap: pdz.space(3xs);
+    padding: pdz.space(3xs) pdz.space(md);
+    border: 1px dashed pdz.color("outline");
+    border-radius: pdz.shape("corner-full");
+    background: none;
+    color: pdz.color("on-surface-variant");
+    cursor: pointer;
+    @include apply-typography(label-sm);
+  }
+
+  &__series {
+    @include apply-typography(label-md);
+    font-variant-numeric: tabular-nums;
+    color: pdz.color("on-surface-variant");
+  }
+
+  &__submit {
+    padding: pdz.space(2xs) pdz.space(lg);
+    border: none;
+    border-radius: pdz.shape("corner-full");
+    background: pdz.color("primary");
+    color: pdz.color("on-primary");
+    cursor: pointer;
+    @include apply-typography(label-md);
+    font-weight: var(--pdz-font-weight-semibold);
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+  }
+
+  &__hint {
+    @include apply-typography(label-sm);
+    margin: 0;
+    color: pdz.color("on-surface-variant");
+  }
+
+  &__error {
+    @include apply-typography(label-sm);
+    margin: 0;
+    color: pdz.color("error");
+  }
+}

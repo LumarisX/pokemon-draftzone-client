@@ -6,6 +6,7 @@ import { ReplayComponent as ReplayNewComponent } from './replay_analyzer-new/rep
 import { ReplayComponent } from './replay_analyzer/replay.component';
 import { TimeConverterComponent } from './time_converter/time_converter.component';
 import { ToolsComponent } from './tools.component';
+import { WheelComponent } from './wheel/wheel.component';
 
 export const routes: Routes = [
   {
@@ -44,5 +45,9 @@ export const routes: Routes = [
     path: 'quick-draft',
     loadChildren: () =>
       import('./quick-draft/quick-draft.routes').then((m) => m.routes),
+  },
+  {
+    path: 'wheel',
+    component: WheelComponent,
   },
 ];

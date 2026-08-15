@@ -28,6 +28,10 @@ export class ToolsComponent {
       title: 'Random Draft',
       link: 'random-draft',
     },
+    {
+      title: 'Wheel Randomizer',
+      link: 'wheel',
+    },
   ];
 
   constructor() {}

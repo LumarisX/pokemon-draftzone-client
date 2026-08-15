@@ -8,7 +8,7 @@ import {
 } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { switchMap, map, catchError, take } from 'rxjs/operators';
-import { AuthService } from '@auth0/auth0-angular';
+import { AuthService } from '@pdz/core/services/auth0.service';
 import { OwnershipService } from './ownership.service';
 
 @Injectable({
@@ -44,31 +44,29 @@ export class OwnerGuard implements CanActivate {
       take(1),
       switchMap((user) => {
         if (!user || !user.sub) {
-          console.error('OwnerGuard: User not authenticated.');
-          return of(this.router.createUrlTree(['/login']));
+          this.auth.login(state.url);
+          return of(false);
         }
-        return this.ownershipService
-          .checkMatchupOwnership(matchupId)
-          .pipe(
-            map((isOwner) => {
-              if (isOwner) {
-                return true;
-              } else {
-                console.log(
-                  `User not owner of matchup ${matchupId}. Redirecting to shared view.`,
-                );
-                return this.router.createUrlTree(['/matchup', matchupId]);
-              }
-            }),
-            catchError((error) => {
-              console.error('Error checking ownership:', error);
-              return of(this.router.createUrlTree(['/matchup', matchupId]));
-            }),
-          );
+        return this.ownershipService.checkMatchupOwnership(matchupId).pipe(
+          map((isOwner) => {
+            if (isOwner) {
+              return true;
+            } else {
+              console.log(
+                `User not owner of matchup ${matchupId}. Redirecting to shared view.`,
+              );
+              return this.router.createUrlTree(['/matchup', matchupId]);
+            }
+          }),
+          catchError((error) => {
+            console.error('Error checking ownership:', error);
+            return of(this.router.createUrlTree(['/matchup', matchupId]));
+          }),
+        );
       }),
       catchError((error) => {
         console.error('OwnerGuard: Error retrieving user:', error);
-        return of(this.router.createUrlTree(['/login']));
+        return of(this.router.createUrlTree(['/']));
       }),
     );
   }

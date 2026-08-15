@@ -11,6 +11,7 @@ import { LeagueBracketComponent } from './league-bracket/league-bracket.componen
 import { LeagueCoachComponent } from './league-coach/league-coach.component';
 import { LeagueDraftComponent } from './league-drafting/league-drafting.component';
 import { LeagueLandingComponent } from './league-landing/league-landing.component';
+import { LeagueMatchupComponent } from './league-matchup/league-matchup.component';
 import { LeagueOverviewComponent } from './league-overview/league-overview.component';
 import { leagueRoleGuard } from './league-role.guard';
 import { LeagueRulesOverviewComponent } from './league-rules-overview/league-rules-overview.component';
@@ -66,8 +67,14 @@ export const routes: Routes = [
         component: TierListFormComponent,
         canDeactivate: [unsavedChangesGuard],
       },
+      // Teams are tournament-wide and public: one page lists every pool's
+      // teams, so there is no draft-scoped variant to log in for.
       {
-        path: 'teams/:teamKey',
+        path: 'teams',
+        component: LeagueTeamsComponent,
+      },
+      {
+        path: 'teams/:teamSlug',
         component: LeagueTeamComponent,
       },
       {
@@ -100,12 +107,19 @@ export const routes: Routes = [
         path: 'drafts/:draftSlug',
         component: DivisionDashboardComponent,
       },
+      // A matchup is addressed at tournament level. The stage segment these
+      // used to carry never disambiguated anything: the slug is unique, and
+      // the stage is something the server reads off the matchup.
       {
-        path: 'stages/:stageId/schedule/matchups/:matchupId',
+        path: 'matchups/:matchupSlug',
+        component: LeagueMatchupComponent,
+      },
+      {
+        path: 'matchups/:matchupSlug/breakdown',
         component: MatchupOverviewComponent,
       },
       {
-        path: 'stages/:stageId/standings',
+        path: 'standings',
         component: LeagueStandingsComponent,
       },
       {
@@ -116,13 +130,17 @@ export const routes: Routes = [
         path: 'drafts/:draftSlug/power-rankings',
         component: PowerRankingsComponent,
       },
+      // The draft-scoped team pages moved up to the tournament; keep the old
+      // links working.
       {
         path: 'drafts/:draftSlug/teams',
-        component: LeagueTeamsComponent,
+        redirectTo: 'teams',
+        pathMatch: 'full',
       },
       {
-        path: 'drafts/:draftSlug/teams/:teamKey',
-        component: LeagueTeamComponent,
+        path: 'drafts/:draftSlug/teams/:teamSlug',
+        redirectTo: 'teams/:teamSlug',
+        pathMatch: 'full',
       },
 
       {
@@ -130,7 +148,7 @@ export const routes: Routes = [
         component: TierListComponent,
       },
       {
-        path: 'stages/:stageId/trades',
+        path: 'stages/:stageSlug/trades',
         component: LeagueTradesComponent,
       },
     ],

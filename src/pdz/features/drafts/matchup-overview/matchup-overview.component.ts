@@ -6,7 +6,7 @@ import { Meta } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
-import { DRAFT_OVERVIEW_PATH } from '@pdz/core/route-paths';
+import { DRAFT_OVERVIEW_PATH, LEAGUE_ZONE_PATH } from '@pdz/core/route-paths';
 import { DraftPokemon } from '../draft.model';
 import { matchupPath, MatchupService } from './matchup.service';
 import { TeambuilderService } from './widgets/teambuilder/teambuilder.service';
@@ -50,6 +50,7 @@ export class MatchupOverviewComponent implements OnInit {
   tournamentId?: string;
   timeString?: string;
   draftPath = DRAFT_OVERVIEW_PATH;
+  backLink: unknown[] = ['/' + DRAFT_OVERVIEW_PATH];
 
   teambuilderPanelOpen: boolean = false;
   isResizing: boolean = false;
@@ -88,22 +89,35 @@ export class MatchupOverviewComponent implements OnInit {
     window.addEventListener('resize', () => this.checkIfMobile());
 
     this.route.params.subscribe((params) => {
-      this.matchupId = params['matchupId'];
+      // A league matchup carries its own slug; an external one is addressed
+      // by id. The route tells them apart by which params it inherited.
+      const { leagueSlug, tournamentSlug, matchupSlug } = params;
+      const isLeagueMatchup = !!(leagueSlug && tournamentSlug && matchupSlug);
+      this.matchupId = matchupSlug ?? params['matchupId'];
       this.tournamentId = params['teamId'];
-      // League schedule matchups (route provides leagueSlug/tournamentSlug/
-      // stageId via inherited params) are served by the stage endpoint;
-      // everything else is an external matchup.
-      const { leagueSlug, tournamentSlug, stageId } = params;
-      const isLeagueMatchup = !!(leagueSlug && tournamentSlug && stageId);
       this.shareUrl = isLeagueMatchup
-        ? `https://pokemondraftzone.com/leagues/${leagueSlug}/tournaments/${tournamentSlug}/stages/${stageId}/schedule/matchups/${this.matchupId}`
+        ? `https://pokemondraftzone.com/leagues/${leagueSlug}/tournaments/${tournamentSlug}/matchups/${matchupSlug}`
         : 'https://pokemondraftzone.com/matchup/' + this.matchupId;
+      // The two mounts sit at different depths -- the league analysis page is
+      // one segment below its matchup page, the draft one is two below the team
+      // overview -- so a single relative link can't serve both.
+      this.backLink = isLeagueMatchup
+        ? [
+            '/' + LEAGUE_ZONE_PATH,
+            leagueSlug,
+            'tournaments',
+            tournamentSlug,
+            'matchups',
+            matchupSlug,
+          ]
+        : this.tournamentId
+          ? ['/' + DRAFT_OVERVIEW_PATH, this.tournamentId]
+          : ['/' + DRAFT_OVERVIEW_PATH];
       const matchup$ = isLeagueMatchup
         ? this.matchupService.getLeagueMatchup(
             leagueSlug,
             tournamentSlug,
-            stageId,
-            this.matchupId,
+            matchupSlug,
           )
         : this.matchupService.getMatchup(this.matchupId!);
       matchup$.subscribe({

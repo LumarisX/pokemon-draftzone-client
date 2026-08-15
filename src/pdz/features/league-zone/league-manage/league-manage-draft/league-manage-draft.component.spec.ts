@@ -13,6 +13,7 @@ import { League } from '../../league.interface';
 function makeTeam(id: string, name: string): League.LeagueTeam {
   return {
     id,
+    slug: `${id}-slug`,
     name,
     coach: `${name} coach`,
     draft: [],

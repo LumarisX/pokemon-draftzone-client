@@ -1,0 +1,133 @@
+<ng-template #slotBody let-slot>
+  @if (slot.pending) {
+    <span class="card__logo card__logo--empty" aria-hidden="true"></span>
+  } @else {
+    <img
+      class="card__logo"
+      [src]="getLogoUrl(slot.logo)"
+      alt=""
+      loading="lazy"
+    />
+  }
+
+  <span class="card__names">
+    <span class="card__team" [title]="slot.name">{{ slot.name }}</span>
+    @if (slot.coach) {
+      <span class="card__coach">{{ slot.coach }}</span>
+    }
+  </span>
+
+  @if (slot.score !== null) {
+    <span class="card__score">{{ slot.score }}</span>
+  }
+</ng-template>
+
+<div class="card">
+  @if (hasHeader) {
+    <div class="card__header">
+      <span class="card__label">{{ card.label }}</span>
+
+      @if (editable) {
+        <span class="card__actions">
+          <button
+            type="button"
+            class="card__action"
+            aria-label="Edit match"
+            (click)="edit.emit(card.id)"
+          >
+            <pdz-icon name="edit" size="sm"></pdz-icon>
+          </button>
+          <button
+            type="button"
+            class="card__action card__action--danger"
+            aria-label="Delete match"
+            (click)="remove.emit(card.id)"
+          >
+            <pdz-icon name="close" size="sm"></pdz-icon>
+          </button>
+        </span>
+      } @else if (card.forfeit) {
+        <span class="card__status">Forfeit</span>
+      }
+    </div>
+  }
+
+  @for (slot of card.slots; track $index) {
+    @if (slot.link) {
+      <a
+        class="card__slot card__slot--linked"
+        [class]="'card__slot--' + slot.status"
+        [class.card__slot--pending]="slot.pending"
+        [routerLink]="slot.link"
+      >
+        <ng-container
+          [ngTemplateOutlet]="slotBody"
+          [ngTemplateOutletContext]="{ $implicit: slot }"
+        ></ng-container>
+      </a>
+    } @else if (slot.sourceId) {
+      <button
+        type="button"
+        class="card__slot card__slot--linked"
+        [class]="'card__slot--' + slot.status"
+        [class.card__slot--pending]="slot.pending"
+        [attr.aria-label]="'Show ' + slot.name"
+        (click)="focusSource.emit(slot.sourceId)"
+      >
+        <ng-container
+          [ngTemplateOutlet]="slotBody"
+          [ngTemplateOutletContext]="{ $implicit: slot }"
+        ></ng-container>
+      </button>
+    } @else {
+      <div
+        class="card__slot"
+        [class]="'card__slot--' + slot.status"
+        [class.card__slot--pending]="slot.pending"
+      >
+        <ng-container
+          [ngTemplateOutlet]="slotBody"
+          [ngTemplateOutletContext]="{ $implicit: slot }"
+        ></ng-container>
+      </div>
+    }
+  }
+
+  @if (hasFooter) {
+    <div class="card__footer">
+      @if (card.viewLink; as link) {
+        <a class="card__link card__link--primary" [routerLink]="link">View</a>
+      }
+
+      @if (card.breakdownLink; as link) {
+        <a class="card__link" [routerLink]="link">Breakdown</a>
+      }
+
+      @if (card.replays.length === 1) {
+        <a
+          class="card__link card__link--replay"
+          [href]="card.replays[0]"
+          target="_blank"
+          rel="noopener"
+        >
+          <pdz-icon name="play_circle" [size]="14"></pdz-icon>
+          <span>Replay</span>
+        </a>
+      } @else if (card.replays.length > 1) {
+        <span class="card__replays">
+          <pdz-icon name="play_circle" [size]="14"></pdz-icon>
+          @for (replay of card.replays; track $index) {
+            <a
+              class="card__replay"
+              [href]="replay"
+              target="_blank"
+              rel="noopener"
+              [attr.aria-label]="'Replay for game ' + ($index + 1)"
+              >{{ $index + 1 }}</a
+            >
+          }
+        </span>
+      }
+    </div>
+  }
+</div>

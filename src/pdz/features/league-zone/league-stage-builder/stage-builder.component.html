@@ -1,19 +1,35 @@
-<!--
-  The grid scrolls in its own bounded pane so both scrollbars stay pinned to the
-  edge of the viewport. `pdz-scrollbar-visible` keeps them drawn rather than
-  fading out — they are the only cue that the schedule continues past the edge.
--->
-<div class="builder pdz-scrollbar-visible" cdkScrollable>
+<div
+  class="builder pdz-scrollbar-visible"
+  [class.builder--readonly]="!editable"
+  cdkScrollable
+>
   <div
     #grid
     class="builder__grid"
     cdkDropListGroup
     [style.--stage-count]="columnCount"
   >
-    <!-- Round gutter: the stage's schedule, one row per round. -->
+    <div
+      class="rail"
+      aria-hidden="true"
+      [style.grid-row]="'1 / ' + (rounds.length + 1)"
+    ></div>
+
     @for (round of rounds; track trackRound($index, round)) {
-      <div class="gutter" [style.grid-row]="$index + 1">
-        <div class="gutter__row" [attr.data-round]="$index">
+      @if ($index > 0) {
+        <div
+          class="round-rule"
+          aria-hidden="true"
+          [style.grid-row]="$index + 1"
+        ></div>
+      }
+
+      <div
+        class="gutter"
+        [class.gutter--current]="$index === currentRoundIndex"
+        [style.grid-row]="$index + 1"
+      >
+        <div class="gutter__row">
           @if (editable) {
             <input
               class="gutter__name"
@@ -73,11 +89,17 @@
               </button>
             </div>
           } @else {
-            <span class="gutter__name gutter__name--static">{{
-              round.name
-            }}</span>
+            <span class="gutter__heading">
+              <span class="gutter__name gutter__name--static">{{
+                round.name
+              }}</span>
+              @if ($index === currentRoundIndex) {
+                <span class="gutter__badge">Live</span>
+              }
+            </span>
             @if (round.matchDeadline) {
               <span class="gutter__deadline gutter__deadline--static">
+                <pdz-icon name="schedule" [size]="14"></pdz-icon>
                 {{ round.matchDeadline | date: "MMM d, h:mm a" }}
               </span>
             }
@@ -86,36 +108,27 @@
       </div>
     }
 
-    <!-- Stage boxes, each spanning the rounds it covers. -->
     @for (stage of stages; track trackStage($index, stage)) {
-      <!-- The empty strip left of a stage: wires route vertically through it. -->
-      <div
-        class="band"
-        [attr.data-band]="stage.key"
-        [style.grid-row]="stage.rowStart + ' / ' + stage.rowEnd"
-        [style.grid-column]="stage.column - 1"
-        aria-hidden="true"
-      ></div>
-
-      <!--
-        The stage frame is decorative and sits behind its cells. The cells
-        are placed on the grid individually, so every round row lines up
-        across the gutter and every stage — nesting them inside the frame
-        would leave that alignment to chance.
-      -->
       <div
         class="stage"
         [style.grid-row]="stage.rowStart + ' / ' + stage.rowEnd"
         [style.grid-column]="stage.column"
       >
         <header class="stage__header">
-          <h3 class="stage__title">{{ stage.title }}</h3>
+          <span class="stage__identity">
+            <pdz-icon
+              class="stage__icon"
+              [name]="stage.typeIcon"
+              size="sm"
+            ></pdz-icon>
+            <h3 class="stage__title">{{ stage.title }}</h3>
+            @if (stage.typeLabel) {
+              <span class="stage__type">{{ stage.typeLabel }}</span>
+            }
+            <span class="stage__count">{{ stage.matchCount }}</span>
+          </span>
+
           @if (editable) {
-            <!--
-              Outside stage__actions: those fade in on hover, and whether a
-              stage is published is the one thing about it the grid cannot
-              otherwise show, so a hidden one has to say so unprompted.
-            -->
             <button
               type="button"
               class="stage__visibility"
@@ -164,11 +177,6 @@
       </div>
 
       @for (cell of stage.cells; track trackCell($index, cell)) {
-        <!--
-          A cell outside the stage's span is an invisible landing strip: drop a
-          card on it and the span, which is derived from where the matches are,
-          grows to take the round in.
-        -->
         <div
           class="cell"
           [class.cell--outside]="!cell.inSpan"
@@ -195,16 +203,16 @@
                 [teams]="teamsFor(stage.key)"
                 [labels]="labels"
                 [editable]="editable"
+                [matchupLinkBase]="matchupLinkBase"
                 (edit)="editMatch.emit($event)"
                 (remove)="onRemoveMatch($event)"
+                (focusMatch)="onFocusMatch($event)"
               ></pdz-match-card>
 
               <div class="cell__placeholder" *cdkDragPlaceholder></div>
             </div>
           }
 
-          <!-- Only inside the box: a "+ Match" floating in a round the stage
-               does not cover reads as belonging to no stage at all. -->
           @if (editable && cell.inSpan) {
             <button type="button" class="cell__add" (click)="onAddMatch(cell)">
               <pdz-icon name="add" size="sm"></pdz-icon>
@@ -215,18 +223,13 @@
       }
     }
 
-    <!--
-      One per round, in the column past every stage: starts a new stage
-      whose first match lands in that round — the stage-level counterpart of
-      a cell's "+ Match".
-    -->
     @if (editable) {
       @for (round of rounds; track trackRound($index, round)) {
         <button
           type="button"
           class="add-stage"
           [style.grid-row]="$index + 1"
-          [style.grid-column]="columnCount * 2 + 2"
+          [style.grid-column]="columnCount + 2"
           [attr.aria-label]="'Add a stage starting in ' + round.name"
           (click)="addStage.emit($index)"
         >
@@ -235,11 +238,5 @@
         </button>
       }
     }
-
-    <pdz-stage-wires
-      [wires]="wires"
-      [width]="gridWidth"
-      [height]="gridHeight"
-    ></pdz-stage-wires>
   </div>
 </div>

@@ -57,42 +57,34 @@ export class AdminService {
   private readonly apiService = inject(ApiService);
 
   getSummary(): Observable<UserStatsSummary> {
-    return this.apiService.get<UserStatsSummary>('admin/users/summary', {
-      authenticated: true,
-    });
+    return this.apiService.get<UserStatsSummary>('admin/users/summary');
   }
 
   getUserTimeSeries(bucket: BucketUnit): Observable<UserTimeSeries> {
     return this.apiService.get<UserTimeSeries>('admin/users/time-series', {
-      authenticated: true,
       params: { bucket },
     });
   }
 
   getLoginProviders(): Observable<ProviderCount[]> {
-    return this.apiService.get<ProviderCount[]>('admin/users/login-providers', {
-      authenticated: true,
-    });
+    return this.apiService.get<ProviderCount[]>('admin/users/login-providers');
   }
 
   getEngagement(): Observable<KeyedCount<EngagementSegment>[]> {
     return this.apiService.get<KeyedCount<EngagementSegment>[]>(
       'admin/users/engagement',
-      { authenticated: true },
     );
   }
 
   getAccountAge(): Observable<KeyedCount<AgeSegment>[]> {
     return this.apiService.get<KeyedCount<AgeSegment>[]>(
       'admin/users/account-age',
-      { authenticated: true },
     );
   }
 
   getSettingsDistributions(): Observable<SettingsDistributions> {
     return this.apiService.get<SettingsDistributions>(
       'admin/users/settings-distribution',
-      { authenticated: true },
     );
   }
 }

@@ -25,8 +25,14 @@ export class LeagueManageService {
   private apiService = inject(ApiService);
   leagueZoneService = inject(LeagueZoneService);
 
+  /**
+   * A matchup is addressed at tournament level: its slug is unique, so the
+   * stage it belongs to is not part of the route. This matters for the results
+   * editor in particular, which is tournament-scoped and shows a round holding
+   * matchups from several stages at once.
+   */
   updateMatchupSchedule(
-    matchupId: string,
+    matchupSlug: string,
     payload: {
       score?: { team1: number; team2: number };
       winner?:
@@ -53,9 +59,8 @@ export class LeagueManageService {
     },
   ) {
     return this.apiService.post(
-      `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/stages/${this.leagueZoneService.stageId()}/matchups/${matchupId}`,
+      `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/matchups/${matchupSlug}`,
       payload,
-      { authenticated: true },
     );
   }
 
@@ -69,7 +74,6 @@ export class LeagueManageService {
     return this.apiService.post(
       `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${tournamentSlug}/drafts/${this.leagueZoneService.draftSlug()}/teams/${pick.teamId}/draft`,
       { add: [{ pokemonId: pick.pokemonId }] },
-      { authenticated: true },
     );
   }
 
@@ -86,7 +90,6 @@ export class LeagueManageService {
     return this.apiService.post<DraftDetails>(
       `${this.draftPath()}/teams/${teamId}/draft/rounds/${round}`,
       pick,
-      { authenticated: true },
     );
   }
 
@@ -105,7 +108,6 @@ export class LeagueManageService {
     return this.apiService.post<DraftDetails>(
       `${this.draftPath()}/current-pick`,
       { round, position },
-      { authenticated: true },
     );
   }
 
@@ -114,7 +116,6 @@ export class LeagueManageService {
     return this.apiService.post<DraftDetails>(
       `${this.draftPath()}/order`,
       payload,
-      { authenticated: true },
     );
   }
 
@@ -134,7 +135,6 @@ export class LeagueManageService {
     return this.apiService.post<DraftDetails>(
       `${this.draftPath()}/settings`,
       payload,
-      { authenticated: true },
     );
   }
 
@@ -143,7 +143,6 @@ export class LeagueManageService {
     return this.apiService.post<{ success: boolean }>(
       `${this.draftPath()}/settings/test-message`,
       '',
-      { authenticated: true },
     );
   }
 
@@ -154,7 +153,6 @@ export class LeagueManageService {
   canManage(leagueSlug: string, tournamentSlug: string) {
     return this.apiService.get<string[]>(
       `leagues/${leagueSlug}/tournaments/${tournamentSlug}/roles`,
-      { authenticated: true },
     );
   }
 
@@ -162,7 +160,6 @@ export class LeagueManageService {
     return this.apiService.post(
       `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/drafts/${this.leagueZoneService.draftSlug()}/state`,
       { state },
-      { authenticated: true },
     );
   }
 
@@ -170,7 +167,6 @@ export class LeagueManageService {
     return this.apiService.post(
       `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/drafts/${this.leagueZoneService.draftSlug()}/timer`,
       { noTimer },
-      { authenticated: true },
     );
   }
 
@@ -178,7 +174,6 @@ export class LeagueManageService {
     return this.apiService.post(
       `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/drafts/${this.leagueZoneService.draftSlug()}/skip`,
       '',
-      { authenticated: true },
     );
   }
 
@@ -190,9 +185,6 @@ export class LeagueManageService {
       }[];
     }>(
       `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/trades`,
-      {
-        authenticated: true,
-      },
     );
   }
 
@@ -202,9 +194,6 @@ export class LeagueManageService {
       currentRoundIndex: number;
     }>(
       `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/schedule`,
-      {
-        authenticated: true,
-      },
     );
   }
 
@@ -239,9 +228,9 @@ export class LeagueManageService {
         prizeValue?: string;
         platforms?: string[];
       };
+      matchSettings?: { chat: boolean; coachReporting: boolean };
     }>(
       `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/settings`,
-      { authenticated: true },
     );
   }
 
@@ -276,6 +265,7 @@ export class LeagueManageService {
       prizeValue?: string;
       platforms?: string[];
     };
+    matchSettings?: { chat: boolean; coachReporting: boolean };
   }) {
     return this.apiService.patch<{ success: boolean }>(
       `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/settings`,
@@ -284,7 +274,7 @@ export class LeagueManageService {
   }
 
   generateBracket(
-    stageId: string,
+    stageSlug: string,
     payload: {
       /**
        * One entry per configured bracket section, in seed order: group i owns
@@ -331,9 +321,8 @@ export class LeagueManageService {
       seedOrder: string[];
       matchIds: Record<string, string>;
     }>(
-      `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/stages/${stageId}/bracket`,
+      `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/stages/${stageSlug}/bracket`,
       payload,
-      { authenticated: true },
     );
   }
 
@@ -346,7 +335,7 @@ export class LeagueManageService {
    * the server refuses a payload that would re-draw an existing seeding.
    */
   updateBracket(
-    stageId: string,
+    stageSlug: string,
     payload: {
       rounds: (BracketRoundMeta & { _id?: string })[];
       sections?: {
@@ -384,14 +373,14 @@ export class LeagueManageService {
       matchIds: Record<string, string>;
     }>(
       // `patch` authenticates every request, so there is no flag to pass.
-      `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/stages/${stageId}/bracket`,
+      `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/stages/${stageSlug}/bracket`,
       payload,
     );
   }
 
-  deleteBracket(stageId: string) {
+  deleteBracket(stageSlug: string) {
     return this.apiService.delete<{ message: string }>(
-      `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/stages/${stageId}/bracket`,
+      `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/stages/${stageSlug}/bracket`,
     );
   }
 
@@ -449,8 +438,7 @@ export class LeagueManageService {
     }>(
       `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/drafts/${this.leagueZoneService.draftSlug()}/pokemon-list`,
       {
-        authenticated: true,
-        params: { stageId: this.leagueZoneService.stageId() ?? '' },
+        params: { stageSlug: this.leagueZoneService.stageSlug() ?? '' },
       },
     );
   }

@@ -9,21 +9,35 @@
     } @else if (error) {
       <p class="standings__empty standings__empty--error">{{ error }}</p>
     } @else {
-      @if (coachStandings) {
-        <pdz-coach-standings
-          class="standings__table"
-          [standingData]="coachStandings"
-        ></pdz-coach-standings>
-      }
+      <div class="standings__table">
+        @if (filters.length > 1) {
+          <pdz-stage-switcher
+            allStagesLabel="All Stages"
+            [currentStageSlug]="teamFilter"
+            (stageSelected)="teamFilter = $event"
+          ></pdz-stage-switcher>
+        }
+        @if (teamStandings) {
+          <pdz-team-standings [standingData]="teamStandings"></pdz-team-standings>
+        }
+      </div>
 
-      @if (pokemonStandings.length) {
-        <pdz-pokemon-standings
-          class="standings__table"
-          [standingData]="pokemonStandings"
-        ></pdz-pokemon-standings>
-      } @else {
-        <p class="standings__empty">No pokemon standings available.</p>
-      }
+      <div class="standings__table">
+        @if (filters.length > 1) {
+          <pdz-stage-switcher
+            allStagesLabel="All Stages"
+            [currentStageSlug]="pokemonFilter"
+            (stageSelected)="pokemonFilter = $event"
+          ></pdz-stage-switcher>
+        }
+        @if (pokemonStandings.length) {
+          <pdz-pokemon-standings
+            [standingData]="pokemonStandings"
+          ></pdz-pokemon-standings>
+        } @else {
+          <p class="standings__empty">No pokemon standings available.</p>
+        }
+      </div>
     }
   </div>
 </div>

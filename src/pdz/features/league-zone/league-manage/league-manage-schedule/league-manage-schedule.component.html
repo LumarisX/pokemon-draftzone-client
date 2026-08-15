@@ -109,6 +109,47 @@
                     </div>
                   </div>
 
+                  @if (matchup.status === 'pending' && matchup.report) {
+                    <div class="pending-report">
+                      <div class="pending-report__text">
+                        <span class="pending-report__title"
+                          >Result awaiting review</span
+                        >
+                        <span class="pending-report__summary">{{
+                          reportSummary(matchup)
+                        }}</span>
+                        @if (matchup.report.notes) {
+                          <span class="pending-report__note"
+                            >&ldquo;{{ matchup.report.notes }}&rdquo;</span
+                          >
+                        }
+                      </div>
+                      <div class="pending-report__actions">
+                        <button
+                          type="button"
+                          class="btn-primary"
+                          [disabled]="isReviewing(matchup.id)"
+                          (click)="reviewReport(matchup, 'approve')"
+                        >
+                          Approve
+                        </button>
+                        <button
+                          type="button"
+                          class="btn-secondary"
+                          [disabled]="isReviewing(matchup.id)"
+                          (click)="reviewReport(matchup, 'reject')"
+                        >
+                          Reject
+                        </button>
+                      </div>
+                      @if (getReviewError(matchup.id); as reviewErrorMsg) {
+                        <div class="pending-report__error">
+                          {{ reviewErrorMsg }}
+                        </div>
+                      }
+                    </div>
+                  }
+
                   <div class="score-grid">
                     <div class="field">
                       <label>Matchup {{ matchup.team1.name }} Score</label>

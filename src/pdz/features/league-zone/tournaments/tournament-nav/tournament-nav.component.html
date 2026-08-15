@@ -34,21 +34,13 @@
 <hr class="links__divider" />
 
 <nav class="links">
-  @if (profile && profile.draft && profile.teamId) {
+  @if (profile && profile.draft && profile.teamSlug) {
     <a
       [routerLink]="teamLink"
       routerLinkActive="active"
       class="link-button"
     >
       <span>My Team</span>
-    </a>
-    <a
-      [routerLink]="teamsLink"
-      routerLinkActive="active"
-      [routerLinkActiveOptions]="{ exact: true }"
-      class="link-button"
-    >
-      <span>Teams</span>
     </a>
     <a
       [routerLink]="[...draftBase, 'draft']"
@@ -60,17 +52,23 @@
         <span class="link-button__status">{{ draftStatus }}</span>
       }
     </a>
-    @if (selectedStageId) {
-      <a
-        [routerLink]="standingsLink"
-        routerLinkActive="active"
-        class="link-button"
-      >
-        <span>Standings</span>
-      </a>
-    }
   }
 
+  <a
+    [routerLink]="standingsLink"
+    routerLinkActive="active"
+    class="link-button"
+  >
+    <span>Standings</span>
+  </a>
+  <a
+    [routerLink]="teamsLink"
+    routerLinkActive="active"
+    [routerLinkActiveOptions]="{ exact: true }"
+    class="link-button"
+  >
+    <span>Teams</span>
+  </a>
   <a
     [routerLink]="scheduleLink"
     routerLinkActive="active"

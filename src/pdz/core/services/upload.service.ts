@@ -21,7 +21,6 @@ export class UploadService {
     contentType: string,
   ): Observable<{ url: string; key: string }> {
     return this.apiService.get(`file/league-upload`, {
-      authenticated: true,
       params: {
         fileName,
         contentType,
@@ -34,11 +33,11 @@ export class UploadService {
     contentType: string,
     folder: string,
   ): Observable<{ url: string; key: string; expiresIn: number }> {
-    return this.apiService.post(
-      'uploads/presigned-url',
-      { folder, fileName, contentType },
-      { authenticated: true },
-    );
+    return this.apiService.post('uploads/presigned-url', {
+      folder,
+      fileName,
+      contentType,
+    });
   }
   uploadToS3(presignedUrl: string, file: File) {
     const headers = new HttpHeaders({ 'Content-Type': file.type });
@@ -59,14 +58,10 @@ export class UploadService {
     fileSize: number,
     fileType: string,
   ) {
-    return this.apiService.post(
-      'file/confirm-upload',
-      {
-        fileKey,
-        fileSize,
-        fileType,
-      },
-      { authenticated: true },
-    );
+    return this.apiService.post('file/confirm-upload', {
+      fileKey,
+      fileSize,
+      fileType,
+    });
   }
 }

@@ -27,6 +27,7 @@ const stage = (
   type = 'round-robin',
 ) => ({
   _id: id,
+  slug: `${id}-slug`,
   name,
   type,
   order: 0,
@@ -35,6 +36,7 @@ const stage = (
   teams: teamIds.map((teamId, index) => ({
     seed: index + 1,
     teamId,
+    teamSlug: `${teamId}-slug`,
     teamName: `Team ${index + 1}`,
     coachName: `Coach ${index + 1}`,
   })),
@@ -56,8 +58,6 @@ describe('toBuilderDraft', () => {
 
     expect(draft.rounds.map((r) => r.name)).toEqual(['Week 1', 'Week 2']);
     expect(draft.rounds.map((r) => r.id)).toEqual(['r1', 'r2']);
-    // The round id doubles as the grid key, so a reorder does not look like a
-    // row being destroyed and rebuilt.
     expect(draft.rounds.map((r) => r.key)).toEqual(['r1', 'r2']);
   });
 
@@ -69,6 +69,7 @@ describe('toBuilderDraft', () => {
         matches: [
           {
             _id: 'm1',
+            slug: 'm1-slug',
             stage: 's1',
             round: 'r2',
             position: 0,
@@ -86,16 +87,26 @@ describe('toBuilderDraft', () => {
   });
 
   it("reads each stage's teams in seed order", () => {
-    // Deliberately out of order: seed position is what defines the list, and
-    // the server may return the teams in any order.
     const draft = toBuilderDraft(
       buildBracket({
         stages: [
           {
             ...stage('s1', 'Group A'),
             teams: [
-              { seed: 2, teamId: 't2', teamName: 'B', coachName: 'b' },
-              { seed: 1, teamId: 't1', teamName: 'A', coachName: 'a' },
+              {
+                seed: 2,
+                teamId: 't2',
+                teamSlug: 't2-slug',
+                teamName: 'B',
+                coachName: 'b',
+              },
+              {
+                seed: 1,
+                teamId: 't1',
+                teamSlug: 't1-slug',
+                teamName: 'A',
+                coachName: 'a',
+              },
             ],
           },
         ],
@@ -216,7 +227,6 @@ describe('toUpdatePayload', () => {
       new Set(['m1']),
     );
 
-    // Resending a completed draw could only be a no-op or a rejected re-draw.
     expect(payload.stages[0].seedGroups).toBeUndefined();
     expect(payload.stages[1].seedGroups).toEqual([
       { teamIds: ['t3', 't4'], method: 'certified-random', label: 'Fresh' },
@@ -243,8 +253,6 @@ describe('toUpdatePayload', () => {
   });
 
   it('does not renumber seeds — each stage owns its own numbering', () => {
-    // Two stages both using seeds 1 and 2 is normal now, and used to be the
-    // thing the client had to compact away before saving.
     const payload = toUpdatePayload(
       draft({
         stages: [
@@ -340,6 +348,7 @@ describe('savedMatchIds', () => {
         matches: [
           {
             _id: 'm1',
+            slug: 'm1-slug',
             stage: 's1',
             round: 'r1',
             position: 0,

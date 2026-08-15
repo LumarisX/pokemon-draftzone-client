@@ -49,7 +49,6 @@ export class ApiService {
   get<T>(
     path: string | string[],
     options: {
-      authenticated?: 'required' | 'optional' | boolean;
       params?:
         | HttpParams
         | {
@@ -90,7 +89,6 @@ export class ApiService {
     path: string | string[],
     data: Object,
     options: {
-      authenticated?: boolean;
       invalidateCache?: (string | string[])[];
     } = {},
   ): Observable<T> {

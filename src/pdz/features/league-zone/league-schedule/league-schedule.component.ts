@@ -39,13 +39,13 @@ export class LeagueScheduleComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.route.paramMap
       .pipe(
-        map((params) => params.get('stageId')),
+        map((params) => params.get('stageSlug')),
         distinctUntilChanged(),
-        switchMap((stageId) => {
+        switchMap((stageSlug) => {
           this.isLoading = true;
           this.bracket = null;
           return this.leagueService
-            .getStageBracket(stageId ?? '')
+            .getStageBracket(stageSlug ?? '')
             .pipe(catchError(() => of(null)));
         }),
         takeUntil(this.destroy$),

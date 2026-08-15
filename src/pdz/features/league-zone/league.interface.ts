@@ -11,6 +11,8 @@ import { Type } from '@pdz/shared/data';
 export namespace League {
   export type Team = {
     id: string;
+    /** URL identifier for the team's page; `id` is what payloads join on. */
+    slug: string;
     name: string;
     coach: string;
     logo?: string;
@@ -19,6 +21,7 @@ export namespace League {
   export type LeagueTeam = {
     name: string;
     id: string;
+    slug: string;
     logo?: string;
     draft: LeaguePokemon[];
     picks: LeaguePokemon[][];
@@ -74,10 +77,34 @@ export namespace League {
     [key: string]: MatchPokemonStats;
   };
 
+  /**
+   * A forfeited match reports a distinct marker rather than a plain side, so a
+   * reader can tell a walkover from a played result.
+   */
+  export type MatchupWinner =
+    | 'side1'
+    | 'side2'
+    | 'draw'
+    | 'side1ffw'
+    | 'side2ffw'
+    | 'dffl';
+
+  export type MatchupSide = Omit<Team, 'id' | 'slug'> & {
+    id: string | null;
+    slug: string | null;
+    from: { slug: string; label: string } | null;
+    score: number;
+    draft: DraftPokemon[];
+  };
+
   export type Matchup = {
     id: string;
-    team1: Team & { score: number; draft: DraftPokemon[] };
-    team2: Team & { score: number; draft: DraftPokemon[] };
+    /** URL identifier for the matchup page. Unique tournament-wide. */
+    slug: string;
+    /** The bracket's name for this match, e.g. "Match 3". */
+    label?: string;
+    team1: MatchupSide;
+    team2: MatchupSide;
     matches: {
       link: string;
       team1: {
@@ -93,11 +120,23 @@ export namespace League {
     }[];
     scheduledDate?: Date;
     notes?: string;
-    winner?: 'side1' | 'side2' | 'draw';
+    winner?: MatchupWinner;
+    /** Organizer-only: present when the schedule was fetched by an organizer. */
+    status?: 'pending' | 'approved';
+    /** Organizer-only: a coach-submitted result awaiting approve/reject. */
+    report?: {
+      submittedByName: string;
+      submittedAt: string;
+      score: { team1: number; team2: number };
+      winner?: 'side1' | 'side2' | 'draw';
+      forfeit?: boolean;
+      notes?: string;
+    };
   };
 
   export type Stage = {
     _id: string;
+    slug: string;
     name: string;
     matchups: Matchup[];
   };
@@ -114,7 +153,13 @@ export namespace League {
     _id: string;
     name: string;
     matchDeadline?: string | null;
-    stages: { _id: string; name: string; type: string; matchups: Matchup[] }[];
+    stages: {
+      _id: string;
+      slug: string;
+      name: string;
+      type: string;
+      matchups: Matchup[];
+    }[];
   };
   export type RuleSection = {
     title: string;
@@ -141,6 +186,8 @@ export namespace League {
   export type LeagueSignUp = {
     id: string;
     teamId?: string;
+    /** URL identifier for the team's page. */
+    teamSlug?: string;
     name: string;
     gameName: string;
     discordName: string;
@@ -184,10 +231,12 @@ export namespace League {
     gameDiff: number;
     pokemonDiff: number;
     logo?: string;
+    teamId: string;
+    /** URL identifier for the team's page. */
+    teamSlug: string;
   };
 
-  export type CoachStandingData = {
-    cutoff: number;
+  export type TeamStandingsTable = {
     diffMode: 'game' | 'pokemon';
     teams: TeamStandingData[];
   };
@@ -203,6 +252,13 @@ export namespace League {
       diff: number;
     };
   }>;
+
+  export type StandingsFilter = { value: string; label: string };
+
+  export type StandingsView = {
+    teamStandings: TeamStandingsTable;
+    pokemonStandings: PokemonStanding[];
+  };
 
   export type LeagueInfo = {
     name: string;
@@ -256,6 +312,8 @@ export namespace League {
     logo?: string;
     signedUpAt: Date;
     teamId?: string;
+    /** URL identifier for the team's page. */
+    teamSlug?: string;
     draft?: { draftSlug: string; name: string };
     inDiscordServer: boolean;
   };
@@ -270,6 +328,8 @@ export namespace League {
 
   export type StageSummary = {
     _id: string;
+    /** URL identifier for the stage's pages and endpoints. */
+    slug: string;
     name: string;
     type: string;
     order: number;

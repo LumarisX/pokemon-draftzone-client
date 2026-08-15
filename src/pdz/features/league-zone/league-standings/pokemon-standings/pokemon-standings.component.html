@@ -1,135 +1,183 @@
 <div class="standing-container">
   <div class="standing-header">
-    <div class="standing-header-title">Pokemon Standings</div>
+    <div class="standing-header-title">
+      <span>Pokemon Standings</span>
+      <button
+        type="button"
+        class="combine-toggle"
+        [class.combine-toggle--on]="combineTeams"
+        [attr.aria-pressed]="combineTeams"
+        (click)="toggleCombineTeams()"
+      >
+        Combine Teams
+      </button>
+    </div>
   </div>
   <div class="standing-table-wrapper">
-    <table>
-      <thead>
-        <tr>
-          <th>Rank</th>
-          <th>Pokemon</th>
-          <th>Team</th>
-          <th
-            class="sortable-header"
-            [class.is-sorted]="activeSort === 'brought'"
-            [class.is-reversed]="activeSort === 'brought' && !isSortDescending"
-            tabindex="0"
-            (click)="sortData('brought')"
-            (keydown.enter)="sortData('brought')"
-            (keydown.space)="sortData('brought'); $event.preventDefault()"
-          >
-            Brought
-          </th>
-          <th
-            class="sortable-header"
-            [class.is-sorted]="activeSort === 'kills'"
-            [class.is-reversed]="activeSort === 'kills' && !isSortDescending"
-            tabindex="0"
-            (click)="sortData('kills')"
-            (keydown.enter)="sortData('kills')"
-            (keydown.space)="sortData('kills'); $event.preventDefault()"
-          >
-            Kills
-          </th>
-          <th
-            class="sortable-header"
-            [class.is-sorted]="activeSort === 'deaths'"
-            [class.is-reversed]="activeSort === 'deaths' && !isSortDescending"
-            tabindex="0"
-            (click)="sortData('deaths')"
-            (keydown.enter)="sortData('deaths')"
-            (keydown.space)="sortData('deaths'); $event.preventDefault()"
-          >
-            Deaths
-          </th>
-          <th
-            class="sortable-header"
-            [class.is-sorted]="activeSort === 'diff'"
-            [class.is-reversed]="activeSort === 'diff' && !isSortDescending"
-            tabindex="0"
-            (click)="sortData('diff')"
-            (keydown.enter)="sortData('diff')"
-            (keydown.space)="sortData('diff'); $event.preventDefault()"
-          >
-            K/D
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (pokemon of sortedData; track pokemon) {
-          <tr>
-            <td>
-              <div class="rank-cell">
-                @if (pokemon.direction !== undefined) {
-                  @if (pokemon.direction > 0) {
-                    <mat-icon class="positive">arrow_upward</mat-icon>
-                  } @else if (pokemon.direction < 0) {
-                    <mat-icon class="negative">arrow_downward</mat-icon>
-                  } @else {
-                    <mat-icon>remove</mat-icon>
-                  }
+    <div class="standing-table" role="table" aria-label="Pokemon standings">
+      <div class="standing-table__row standing-table__row--head" role="row">
+        <div class="standing-table__cell standing-table__cell--head" role="columnheader">
+          Rank
+        </div>
+        <div class="standing-table__cell standing-table__cell--head" role="columnheader">
+          Pokemon
+        </div>
+        <div class="standing-table__cell standing-table__cell--head" role="columnheader">
+          Team
+        </div>
+        <div
+          class="standing-table__cell standing-table__cell--head sortable-header"
+          role="columnheader"
+          [class.is-sorted]="activeSort === 'brought'"
+          [class.is-reversed]="activeSort === 'brought' && !isSortDescending"
+          [attr.aria-sort]="
+            activeSort === 'brought'
+              ? isSortDescending
+                ? 'descending'
+                : 'ascending'
+              : null
+          "
+          tabindex="0"
+          (click)="sortData('brought')"
+          (keydown.enter)="sortData('brought')"
+          (keydown.space)="sortData('brought'); $event.preventDefault()"
+        >
+          Brought
+        </div>
+        <div
+          class="standing-table__cell standing-table__cell--head sortable-header"
+          role="columnheader"
+          [class.is-sorted]="activeSort === 'kills'"
+          [class.is-reversed]="activeSort === 'kills' && !isSortDescending"
+          [attr.aria-sort]="
+            activeSort === 'kills'
+              ? isSortDescending
+                ? 'descending'
+                : 'ascending'
+              : null
+          "
+          tabindex="0"
+          (click)="sortData('kills')"
+          (keydown.enter)="sortData('kills')"
+          (keydown.space)="sortData('kills'); $event.preventDefault()"
+        >
+          Kills
+        </div>
+        <div
+          class="standing-table__cell standing-table__cell--head sortable-header"
+          role="columnheader"
+          [class.is-sorted]="activeSort === 'deaths'"
+          [class.is-reversed]="activeSort === 'deaths' && !isSortDescending"
+          [attr.aria-sort]="
+            activeSort === 'deaths'
+              ? isSortDescending
+                ? 'descending'
+                : 'ascending'
+              : null
+          "
+          tabindex="0"
+          (click)="sortData('deaths')"
+          (keydown.enter)="sortData('deaths')"
+          (keydown.space)="sortData('deaths'); $event.preventDefault()"
+        >
+          Deaths
+        </div>
+        <div
+          class="standing-table__cell standing-table__cell--head sortable-header"
+          role="columnheader"
+          [class.is-sorted]="activeSort === 'diff'"
+          [class.is-reversed]="activeSort === 'diff' && !isSortDescending"
+          [attr.aria-sort]="
+            activeSort === 'diff'
+              ? isSortDescending
+                ? 'descending'
+                : 'ascending'
+              : null
+          "
+          tabindex="0"
+          (click)="sortData('diff')"
+          (keydown.enter)="sortData('diff')"
+          (keydown.space)="sortData('diff'); $event.preventDefault()"
+        >
+          K/D
+        </div>
+      </div>
+      @for (pokemon of sortedData; track pokemon) {
+        <div class="standing-table__row" role="row">
+          <div class="standing-table__cell" role="cell">
+            <div class="rank-cell">
+              @if (pokemon.direction !== undefined) {
+                @if (pokemon.direction > 0) {
+                  <mat-icon class="positive">arrow_upward</mat-icon>
+                } @else if (pokemon.direction < 0) {
+                  <mat-icon class="negative">arrow_downward</mat-icon>
+                } @else {
+                  <mat-icon>remove</mat-icon>
                 }
-                <span>
-                  {{ $index + 1 }}
-                </span>
+              }
+              <span>
+                {{ $index + 1 }}
+              </span>
+            </div>
+          </div>
+          <div class="standing-table__cell" role="cell">
+            <div class="logo-cell">
+              <pdz-sprite size="3rem" flipped [pokemon]="pokemon"></pdz-sprite>
+            </div>
+          </div>
+          <div class="standing-table__cell" role="cell">
+            <div class="team-cell">
+              <div class="team-name">
+                {{ pokemon.name }}
               </div>
-            </td>
-            <td>
-              <div class="logo-cell">
-                <pdz-sprite flipped [pokemon]="pokemon"></pdz-sprite>
+              <div class="coach-names">
+                {{ pokemon.teamName }}
               </div>
-            </td>
-            <td>
-              <div class="team-cell">
-                <div class="team-name">
-                  {{ pokemon.name }}
-                </div>
-                <div class="coach-names">
-                  {{ pokemon.teamName }}
-                </div>
+            </div>
+          </div>
+          <div class="standing-table__cell" role="cell">
+            <div class="record-cell">
+              <div class="record-box neutral">
+                {{ pokemon.record.brought }}
               </div>
-            </td>
-            <td>
-              <div class="record-cell">
-                <div class="record-box neutral">
-                  {{ pokemon.record.brought }}
-                </div>
+            </div>
+          </div>
+          <div class="standing-table__cell" role="cell">
+            <div class="record-cell">
+              <div
+                class="record-box"
+                [class.positive]="pokemon.record.kills > 0"
+                [class.neutral]="pokemon.record.kills === 0"
+              >
+                {{ pokemon.record.kills }}
               </div>
-            </td>
-            <td>
-              <div class="record-cell">
-                <div
-                  class="record-box"
-                  [class.positive]="pokemon.record.kills > 0"
-                >
-                  {{ pokemon.record.kills }}
-                </div>
+            </div>
+          </div>
+          <div class="standing-table__cell" role="cell">
+            <div class="record-cell">
+              <div
+                class="record-box"
+                [class.negative]="pokemon.record.deaths > 0"
+                [class.neutral]="pokemon.record.deaths === 0"
+              >
+                {{ pokemon.record.deaths }}
               </div>
-            </td>
-            <td>
-              <div class="record-cell">
-                <div
-                  class="record-box"
-                  [class.negative]="pokemon.record.deaths > 0"
-                >
-                  {{ pokemon.record.deaths }}
-                </div>
+            </div>
+          </div>
+          <div class="standing-table__cell" role="cell">
+            <div class="record-cell">
+              <div
+                class="record-box"
+                [class.positive]="pokemon.record.diff > 0"
+                [class.negative]="pokemon.record.diff < 0"
+                [class.neutral]="pokemon.record.diff === 0"
+              >
+                {{ pokemon.record.diff | plusSign }}
               </div>
-            </td>
-            <td>
-              <div class="record-cell">
-                <div
-                  class="record-box"
-                  [class.positive]="pokemon.record.diff > 0"
-                  [class.negative]="pokemon.record.diff < 0"
-                >
-                  {{ pokemon.record.diff | plusSign }}
-                </div>
-              </div>
-            </td>
-          </tr>
-        }
-      </tbody>
-    </table>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
   </div>
 </div>

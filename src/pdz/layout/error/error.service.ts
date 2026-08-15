@@ -39,6 +39,15 @@ export interface PDZErrorResponse {
   meta?: PDZErrorMeta;
 }
 
+function isClientError(value: unknown): value is ClientError {
+  return (
+    !!value &&
+    typeof value === 'object' &&
+    'id' in value &&
+    typeof (value as ClientError).message === 'string'
+  );
+}
+
 export interface ClientError {
   id: string;
   message: string;
@@ -91,13 +100,8 @@ export class ErrorService {
     return this.errorsSubject.asObservable();
   }
 
-  reportError(error: HttpErrorResponse | ClientError): void {
-    const clientError =
-      error instanceof HttpErrorResponse ? this.parseHttpError(error) : error;
-
-    if (!clientError.id) {
-      clientError.id = `error-${++this.errorIdCounter}-${Date.now()}`;
-    }
+  reportError(error: unknown): void {
+    const clientError = this.toClientError(error);
 
     const currentErrors = this.errorsSubject.value;
 
@@ -141,9 +145,35 @@ export class ErrorService {
     this.errorsSubject.next([]);
   }
 
+  private nextErrorId(): string {
+    return `error-${++this.errorIdCounter}-${Date.now()}`;
+  }
+
+  /**
+   * Anything that reaches an HTTP error callback lands here, and not all of it
+   * is an `HttpErrorResponse` — the Auth0 interceptor throws its own SDK errors
+   * while fetching a token, before a request is ever sent. Those only reliably
+   * carry a message, so normalise rather than casting and reading fields that
+   * are not there.
+   */
+  private toClientError(error: unknown): ClientError {
+    if (error instanceof HttpErrorResponse) return this.parseHttpError(error);
+
+    if (isClientError(error)) {
+      return { ...error, id: error.id || this.nextErrorId() };
+    }
+
+    return {
+      id: this.nextErrorId(),
+      message: toMessageString(
+        (error as { message?: unknown } | null)?.message ?? error,
+      ),
+    };
+  }
+
   private parseHttpError(httpError: HttpErrorResponse): ClientError {
     const clientError: ClientError = {
-      id: `error-${++this.errorIdCounter}-${Date.now()}`,
+      id: this.nextErrorId(),
       message: httpError.message,
       status: httpError.status,
       statusText: httpError.statusText,

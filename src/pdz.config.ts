@@ -13,6 +13,8 @@ import { MARKED_OPTIONS, provideMarkdown } from 'ngx-markdown';
 
 import { routes } from '@pdz/pdz.routes';
 import { environment } from '@pdz/environments/environment';
+import { authRecoveryInterceptor } from '@pdz/core/interceptors/auth-recovery.interceptor';
+import { AuthRecoveryService } from '@pdz/core/services/auth-recovery.service';
 import { RumService } from '@pdz/core/services/rum.service';
 import { SwUpdateService } from '@pdz/core/services/sw-update.service';
 
@@ -25,8 +27,9 @@ export const pdzConfig: ApplicationConfig = {
     ),
     provideAnimations(),
 
-    // Setup HTTP and the Auth0 Standalone Interceptor
-    provideHttpClient(withInterceptors([authHttpInterceptorFn])),
+    provideHttpClient(
+      withInterceptors([authRecoveryInterceptor, authHttpInterceptorFn]),
+    ),
 
     // Standalone Auth0 Provider
     provideAuth0({
@@ -47,7 +50,7 @@ export const pdzConfig: ApplicationConfig = {
             tokenOptions: {
               authorizationParams: {
                 audience: environment.auth.audience,
-                scope: environment.auth.interceptorScope,
+                scope: environment.auth.scope,
               },
             },
           },
@@ -70,6 +73,9 @@ export const pdzConfig: ApplicationConfig = {
     }),
 
     // App Initializers
+    provideAppInitializer(() =>
+      inject(AuthRecoveryService).validateSessionOnStartup(),
+    ),
     provideAppInitializer(() => inject(RumService).init()),
     provideAppInitializer(() => inject(SwUpdateService).init()),
   ],

@@ -22,7 +22,13 @@ export class StageSwitcherComponent implements OnInit, OnDestroy {
   private leagueService = inject(LeagueZoneService);
   private readonly destroy$ = new Subject<void>();
 
-  @Input() currentStageId: string | null = null;
+  @Input() currentStageSlug: string | null = null;
+  /**
+   * When set, prepends a leading pill (slug `'all'`) with this label, for
+   * callers that combine every stage's data into one view instead of
+   * picking a single stage.
+   */
+  @Input() allStagesLabel: string | null = null;
   @Output() stageSelected = new EventEmitter<string>();
 
   stages: League.StageSummary[] = [];
@@ -43,9 +49,9 @@ export class StageSwitcherComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  selectStage(stageId: string): void {
-    if (stageId === this.currentStageId) return;
-    this.stageSelected.emit(stageId);
+  selectStage(stageSlug: string): void {
+    if (stageSlug === this.currentStageSlug) return;
+    this.stageSelected.emit(stageSlug);
   }
 
   getStageLabel(stage: League.StageSummary): string {

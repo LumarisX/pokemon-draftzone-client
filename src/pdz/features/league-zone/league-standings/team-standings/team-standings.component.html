@@ -1,0 +1,138 @@
+<div class="standing-container">
+  <div class="standing-header">
+    <div class="standing-header-title">Team Standings</div>
+  </div>
+  <div class="standing-table-wrapper">
+    <div class="standing-table" role="table" aria-label="Team standings">
+      <div class="standing-table__row standing-table__row--head" role="row">
+        <div
+          class="standing-table__cell standing-table__cell--head"
+          role="columnheader"
+        >
+          Rank
+        </div>
+        <div
+          class="standing-table__cell standing-table__cell--head"
+          role="columnheader"
+        >
+          Logo
+        </div>
+        <div
+          class="standing-table__cell standing-table__cell--head"
+          role="columnheader"
+        >
+          Team
+        </div>
+        <div
+          class="standing-table__cell standing-table__cell--head"
+          role="columnheader"
+        >
+          Record
+        </div>
+        <div
+          class="standing-table__cell standing-table__cell--head"
+          role="columnheader"
+        >
+          Match Results
+        </div>
+      </div>
+      <div class="standing-table__row" role="row">
+        <div class="standing-table__cell" role="cell"></div>
+        <div class="standing-table__cell" role="cell"></div>
+        <div class="standing-table__cell" role="cell"></div>
+        <div class="standing-table__cell" role="cell">
+          <div class="records-container">
+            <div class="record-header record-header--big">W/L</div>
+            <div class="record-header">GD</div>
+            <div class="record-header">PD</div>
+          </div>
+        </div>
+        <div class="standing-table__cell" role="cell"></div>
+      </div>
+      @for (team of standingData.teams; track team) {
+        <div class="standing-table__row" role="row">
+          <div class="standing-table__cell" role="cell">
+            <div class="rank-cell">
+              @if (team.direction !== undefined) {
+                @if (team.direction > 0) {
+                  <mat-icon class="positive">arrow_upward</mat-icon>
+                } @else if (team.direction < 0) {
+                  <mat-icon class="negative">arrow_downward</mat-icon>
+                } @else {
+                  <mat-icon>remove</mat-icon>
+                }
+              }
+              <span>
+                {{ $index + 1 }}
+              </span>
+            </div>
+          </div>
+          <div class="standing-table__cell" role="cell">
+            <div class="logo-cell">
+              <img [src]="getLogoUrl(team.logo)" />
+            </div>
+          </div>
+          <div class="standing-table__cell" role="cell">
+            <div class="team-cell">
+              <div class="team-name">
+                {{ team.name }}
+              </div>
+              <div class="coach-names">
+                {{ team.coach }}
+              </div>
+            </div>
+          </div>
+          <div class="standing-table__cell" role="cell">
+            <div class="record-cell">
+              <span
+                class="record-box record-box--big"
+                [class.positive]="team.wins > team.losses"
+                [class.negative]="team.wins < team.losses"
+                [class.neutral]="team.wins === team.losses"
+                >{{ team.wins }}-{{ team.losses }}</span
+              >
+              <span
+                class="record-box"
+                [class.positive]="team.gameDiff > 0"
+                [class.negative]="team.gameDiff < 0"
+                [class.neutral]="team.gameDiff === 0"
+              >
+                {{ team.gameDiff | plusSign }}
+              </span>
+              <span
+                class="record-box"
+                [class.positive]="team.pokemonDiff > 0"
+                [class.negative]="team.pokemonDiff < 0"
+                [class.neutral]="team.pokemonDiff === 0"
+              >
+                {{ team.pokemonDiff | plusSign }}
+              </span>
+            </div>
+          </div>
+          <div class="standing-table__cell" role="cell">
+            <div class="results-container">
+              @for (result of team.results; track $index) {
+                @if (result) {
+                  <div
+                    class="result-box"
+                    [class.positive]="result.outcome === 'w'"
+                    [class.negative]="
+                      result.outcome === 'l' || result.outcome === 'ff'
+                    "
+                  >
+                    <span class="default-content">
+                      {{ result.outcome | uppercase }}
+                    </span>
+                    <span class="hovered-content">
+                      {{ result.score | plusSign }}</span
+                    >
+                  </div>
+                }
+              }
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>

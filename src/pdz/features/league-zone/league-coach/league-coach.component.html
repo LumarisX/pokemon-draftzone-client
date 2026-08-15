@@ -71,16 +71,6 @@
         </div>
       </section>
 
-      @if (profile.draft && stages.length > 1) {
-        <section class="nav-card">
-          <h2 class="nav-card__title">Stage</h2>
-          <pdz-stage-switcher
-            [currentStageId]="selectedStageId"
-            (stageSelected)="onStageSelected($event)"
-          ></pdz-stage-switcher>
-        </section>
-      }
-
       <section class="nav-card">
         <h2 class="nav-card__title">Next Steps</h2>
 
@@ -117,7 +107,7 @@
         }
 
         <div class="nav-links">
-          @if (profile.draft && profile.teamId) {
+          @if (profile.draft && profile.teamSlug) {
             <a [routerLink]="teamLink" class="nav-link">
               <span class="nav-link__icon">&#9733;</span>
               <span class="nav-link__label">My Team</span>
@@ -130,12 +120,10 @@
               <span class="nav-link__icon">&#128197;</span>
               <span class="nav-link__label">Schedule</span>
             </a>
-            @if (selectedStageId) {
-              <a [routerLink]="standingsLink" class="nav-link">
-                <span class="nav-link__icon">&#127942;</span>
-                <span class="nav-link__label">Standings</span>
-              </a>
-            }
+            <a [routerLink]="standingsLink" class="nav-link">
+              <span class="nav-link__icon">&#127942;</span>
+              <span class="nav-link__label">Standings</span>
+            </a>
           }
           <a [routerLink]="[...tournamentBase(), 'rules']" class="nav-link">
             <span class="nav-link__icon">&#128221;</span>

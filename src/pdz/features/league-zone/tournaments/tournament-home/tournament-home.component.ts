@@ -44,11 +44,6 @@ export class TournamentHomeComponent implements OnInit, OnDestroy {
 
   isCheckingSignUp = true;
 
-  stages: League.StageSummary[] = [];
-  selectedStageId: string | null = null;
-  coachStandings: League.CoachStandingData | null = null;
-  standingsLoading = false;
-
   teamData: League.LeagueTeam | null = null;
   rosterTotal = { cost: 0, kills: 0, deaths: 0 };
   rosterLoading = false;
@@ -107,10 +102,7 @@ export class TournamentHomeComponent implements OnInit, OnDestroy {
           this.startClock();
         }
 
-        if (profile?.draft) {
-          this.rosterLoading = true;
-          this.loadStages();
-        } else if (profile?.teamId) {
+        if (profile?.teamSlug) {
           this.rosterLoading = true;
           this.loadRoster();
         }
@@ -169,10 +161,12 @@ export class TournamentHomeComponent implements OnInit, OnDestroy {
   }
 
   private loadRoster(): void {
-    const teamId = this.profile?.teamId;
-    if (!teamId) return;
+    // The team endpoint is keyed by slug, not by the ObjectId the profile also
+    // carries — `teamId` is there for payload joins, not for URLs.
+    const teamSlug = this.profile?.teamSlug;
+    if (!teamSlug) return;
     this.leagueService
-      .getTeam(teamId)
+      .getTeam(teamSlug)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (data) => {
@@ -192,26 +186,6 @@ export class TournamentHomeComponent implements OnInit, OnDestroy {
           this.rosterLoading = false;
         },
       });
-  }
-
-  private loadStages(): void {
-    this.leagueService
-      .listStages()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (stages) => {
-          this.stages = stages;
-          if (stages.length) {
-            this.selectStage(stages[0]._id);
-          } else {
-            this.loadRoster();
-          }
-        },
-      });
-  }
-
-  onStageSelected(stageId: string): void {
-    this.selectStage(stageId);
   }
 
   openCoachEdit(): void {
@@ -260,26 +234,6 @@ export class TournamentHomeComponent implements OnInit, OnDestroy {
         // TODO: persist the team name and upload the new logo once the backend
         // endpoint exists. For now we only reflect the name in the local UI.
         this.profile = { ...this.profile, teamName: result.teamName };
-      });
-  }
-
-  private selectStage(stageId: string): void {
-    if (stageId === this.selectedStageId) return;
-    this.selectedStageId = stageId;
-    this.loadRoster();
-    this.standingsLoading = true;
-    this.coachStandings = null;
-    this.leagueService
-      .getStandings(stageId)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (data) => {
-          this.coachStandings = data.coachStandings;
-          this.standingsLoading = false;
-        },
-        error: () => {
-          this.standingsLoading = false;
-        },
       });
   }
 }

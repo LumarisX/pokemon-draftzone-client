@@ -9,7 +9,6 @@ export type Environment = {
     clientId: string;
     audience: string;
     scope: string;
-    interceptorScope: string;
   };
   rum?: {
     enabled: boolean;

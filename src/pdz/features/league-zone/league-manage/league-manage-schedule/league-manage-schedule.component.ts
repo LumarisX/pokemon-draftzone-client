@@ -7,17 +7,11 @@ import {
   FormGroup,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { ActivatedRoute, RouterModule } from '@angular/router';
-import {
-  distinctUntilChanged,
-  map,
-  Subject,
-  switchMap,
-  takeUntil,
-  tap,
-} from 'rxjs';
+import { RouterModule } from '@angular/router';
+import { Subject, takeUntil } from 'rxjs';
 import { getNameByPid, PokemonId } from '@pdz/shared/data/namedex';
 import { LeagueManageService } from '../league-manage.service';
+import { LeagueZoneService } from '../../league-zone.service';
 import { ReplayService } from '../../../tools/replay_analyzer/replay.service';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
@@ -91,8 +85,8 @@ type MatchupPokemonSummary = {
 })
 export class LeagueManageScheduleComponent {
   private leagueManageService = inject(LeagueManageService);
+  private leagueZoneService = inject(LeagueZoneService);
   private replayService = inject(ReplayService);
-  private route = inject(ActivatedRoute);
   private fb = inject(FormBuilder);
   private readonly destroy$ = new Subject<void>();
   private matchupForms = new Map<string, MatchupForm>();
@@ -107,6 +101,10 @@ export class LeagueManageScheduleComponent {
   private stageCollapsedState = new Map<string, boolean>();
   private openMatchIndexState = new Map<string, number | null>();
   private matchupSummaryCollapsedState = new Map<string, boolean>();
+  private reviewState = new Map<
+    string,
+    { loading: boolean; error?: string }
+  >();
 
   /**
    * Named "stages" historically; these are the tournament's rounds, each
@@ -126,22 +124,15 @@ export class LeagueManageScheduleComponent {
   roundError?: string;
 
   ngOnInit(): void {
-    this.route.paramMap
-      .pipe(
-        map((params) => params.get('stageId')),
-        distinctUntilChanged(),
-        tap(() => {
-          this.scheduleStages = undefined;
-          this.roundError = undefined;
-          this.savingRoundIndex = null;
-          this.matchupForms.clear();
-          this.stageCollapsedState.clear();
-          this.openMatchIndexState.clear();
-          this.matchupSummaryCollapsedState.clear();
-        }),
-        switchMap(() => this.leagueManageService.getSchedule()),
-        takeUntil(this.destroy$),
-      )
+    // One load: the page is tournament-scoped, so there is no stage param to
+    // re-key off the way the old per-stage results editor did.
+    this.loadSchedule();
+  }
+
+  private loadSchedule(): void {
+    this.leagueManageService
+      .getSchedule()
+      .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (data) => {
           this.scheduleStages = data.rounds;
@@ -391,7 +382,7 @@ export class LeagueManageScheduleComponent {
 
     const payload = this.buildMatchupPayload(form);
     this.leagueManageService
-      .updateMatchupSchedule(matchup.id, payload)
+      .updateMatchupSchedule(matchup.slug, payload)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: () => {
@@ -414,6 +405,50 @@ export class LeagueManageScheduleComponent {
           });
         },
       });
+  }
+
+  reviewReport(matchup: League.Matchup, decision: 'approve' | 'reject'): void {
+    if (this.reviewState.get(matchup.id)?.loading) return;
+
+    this.reviewState.set(matchup.id, { loading: true });
+
+    this.leagueZoneService
+      .reviewMatchupReport(matchup.slug, decision)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.reviewState.delete(matchup.id);
+          this.loadSchedule();
+        },
+        error: (error) => {
+          this.reviewState.set(matchup.id, {
+            loading: false,
+            error: error?.message || 'Failed to review the report.',
+          });
+        },
+      });
+  }
+
+  isReviewing(matchupId: string): boolean {
+    return this.reviewState.get(matchupId)?.loading ?? false;
+  }
+
+  getReviewError(matchupId: string): string | undefined {
+    return this.reviewState.get(matchupId)?.error;
+  }
+
+  reportSummary(matchup: League.Matchup): string {
+    const report = matchup.report;
+    if (!report) return '';
+    const submitted = new Date(report.submittedAt);
+    const when = Number.isNaN(submitted.getTime())
+      ? ''
+      : ` on ${submitted.toLocaleDateString('en-US', {
+          month: 'short',
+          day: 'numeric',
+        })}`;
+    const forfeit = report.forfeit ? ' (forfeit)' : '';
+    return `${report.submittedByName} reported ${report.score.team1}–${report.score.team2}${forfeit}${when}`;
   }
 
   isAnalyzing(matchupId: string, matchIndex: number): boolean {
@@ -440,6 +475,7 @@ export class LeagueManageScheduleComponent {
     return this.saveState.get(matchupId)?.error;
   }
 
+  // Keyed by stage `_id` — purely local collapse state, never a URL.
   toggleStage(stageId: string): void {
     this.stageCollapsedState.set(
       stageId,

@@ -27,17 +27,16 @@ export class DivisionDashboardComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   team?: League.LeagueTeam;
-  matchups: League.Matchup[] = [];
   leagueName = '';
   divisionName = '';
   logo?: string;
   matchupStage?: League.Stage = undefined;
 
   // This page is draft-scoped (drafts/:draftSlug), not stage-scoped, so
-  // leagueZoneService.stageId() (route-derived) is always null here. Resolve
+  // leagueZoneService.stageSlug() (route-derived) is always null here. Resolve
   // a real default — the tournament's first stage — for the embedded
   // schedule/trade widgets and the switcher's initial selection.
-  private readonly selectedStageId = signal<string | null>(null);
+  private readonly selectedStageSlug = signal<string | null>(null);
 
   ngOnInit(): void {
     this.leagueZoneService
@@ -53,7 +52,7 @@ export class DivisionDashboardComponent implements OnInit, OnDestroy {
       .listStages()
       .pipe(takeUntil(this.destroy$))
       .subscribe((stages) => {
-        this.selectedStageId.set(stages[0]?._id ?? null);
+        this.selectedStageSlug.set(stages[0]?.slug ?? null);
       });
   }
 
@@ -67,12 +66,12 @@ export class DivisionDashboardComponent implements OnInit, OnDestroy {
     return this.leagueZoneService.draftSlug() || '';
   }
 
-  get stageId(): string | null {
-    return this.selectedStageId();
+  get stageSlug(): string | null {
+    return this.selectedStageSlug();
   }
 
-  onStageSelected(stageId: string): void {
-    this.selectedStageId.set(stageId);
+  onStageSelected(stageSlug: string): void {
+    this.selectedStageSlug.set(stageSlug);
     this.router.navigate([
       '/leagues',
       this.leagueZoneService.leagueSlug(),

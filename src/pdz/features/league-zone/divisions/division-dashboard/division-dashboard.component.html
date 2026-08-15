@@ -21,7 +21,11 @@
 </div>
 
 <nav class="navigation-tabs">
-  <button class="navigation-tabs__tab" routerLink="./teams" type="button">
+  <button
+    class="navigation-tabs__tab"
+    [routerLink]="['../../teams']"
+    type="button"
+  >
     Teams
   </button>
   <button class="navigation-tabs__tab" routerLink="./tier-list" type="button">
@@ -32,7 +36,7 @@
   </button>
 </nav>
 <pdz-stage-switcher
-  [currentStageId]="stageId"
+  [currentStageSlug]="stageSlug"
   (stageSelected)="onStageSelected($event)"
 ></pdz-stage-switcher>
 <div class="division-body">
@@ -41,7 +45,7 @@
       <h3>Matchups</h3>
     </div>
     <div class="section-body">
-      @if (stageId) {
+      @if (stageSlug) {
         <pdz-league-schedule-widget></pdz-league-schedule-widget>
       }
     </div>
@@ -51,9 +55,9 @@
       <h3>Active Trades</h3>
     </div>
     <div class="section-body">
-      @if (stageId) {
+      @if (stageSlug) {
         <pdz-league-trade-widget
-          [stageId]="stageId"
+          [stageSlug]="stageSlug"
         ></pdz-league-trade-widget>
       }
     </div>
@@ -83,11 +87,7 @@
   </div>
   <div class="widget">
     <div class="widget-title">Matches</div>
-    <div class="widget-body">
-      @for (matchup of matchups; track matchup) {
-        <pdz-matchup-card [matchup]="matchup"></pdz-matchup-card>
-      }
-    </div>
+    <div class="widget-body"></div>
   </div>
   <div class="widget">
     <div class="widget-title">League Chat</div>
