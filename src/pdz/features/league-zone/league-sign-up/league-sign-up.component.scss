@@ -65,7 +65,7 @@
     padding: pdz.space(sm) pdz.space(md);
     background-color: pdz.color(primary-container);
     color: pdz.color(on-primary-container);
-    border-bottom: 2px solid pdz.color(primary);
+    border-bottom: 2px solid pdz.color(primary-accent);
   }
 
   &__title {
@@ -227,7 +227,7 @@
 
     &:focus {
       outline: none;
-      border-color: pdz.color(primary);
+      border-color: pdz.color(primary-accent);
     }
 
     &:disabled {
@@ -295,7 +295,7 @@
   color: pdz.color(on-surface);
 
   &:hover .radio-input {
-    border-color: pdz.color(primary);
+    border-color: pdz.color(primary-accent);
   }
 }
 
@@ -310,7 +310,7 @@
   transition: border-color 0.2s ease;
 
   &:checked {
-    border-color: pdz.color(primary);
+    border-color: pdz.color(primary-accent);
 
     &::after {
       content: "";
@@ -356,7 +356,7 @@
 
   &:checked {
     background: pdz.color(primary);
-    border-color: pdz.color(primary);
+    border-color: pdz.color(primary-accent);
 
     &::after {
       content: "";
@@ -379,7 +379,7 @@
 
 // ─── Links ────────────────────────────────────────────────────────────────
 .link {
-  color: pdz.color(primary);
+  color: pdz.color(primary-accent);
   text-decoration: none;
   transition: color 0.2s ease;
 

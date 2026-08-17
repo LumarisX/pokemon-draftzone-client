@@ -5,15 +5,16 @@ $theme-overrides: (
     // Surface Colors (Orange-tinted)
     surface: "orange-50",
     surface-variant: "orange-300",
-    surface-container-low: "orange-50",
-    surface-container: "orange-100",
+    surface-container-low: "orange-100",
+    surface-container: "orange-150",
     surface-container-high: "orange-200",
     surface-container-highest: "orange-300",
     on-surface: "orange-950",
     on-surface-variant: "orange-900",
 
     // Primary Theme (Purple)
-    primary: "purple-500",
+    primary: "purple-600",
+    primary-accent: "purple-600",
     primary-lighter: "purple-400",
     primary-darker: "purple-600",
     on-primary: "white",
@@ -31,7 +32,8 @@ $theme-overrides: (
         var(--pdz-color-purple-300)
       ),
     // Secondary Theme (Pink)
-    secondary: "pink-500",
+    secondary: "pink-600",
+    secondary-accent: "pink-650",
     secondary-lighter: "pink-400",
     secondary-darker: "pink-600",
     on-secondary: "white",
@@ -49,8 +51,8 @@ $theme-overrides: (
         var(--pdz-color-pink-300)
       ),
     // Menu Theme (Orange)
-    menu: "orange-500",
-    menu-lighter: "orange-400",
+    menu: "orange-600",
+    menu-lighter: "orange-500",
     menu-darker: "orange-600",
     menu-container: "orange-150",
     menu-container-low: "orange-100",
@@ -110,13 +112,14 @@ $theme-overrides: (
   ),
   dark: (
     // Primary Theme (Purple)
-    primary: "purple-500",
-    primary-lighter: "purple-400",
-    primary-darker: "purple-600",
+    primary: "purple-350",
+    primary-accent: "purple-250",
+    primary-lighter: "purple-300",
+    primary-darker: "purple-400",
     on-primary: "purple-950",
     primary-container: "purple-900",
-    primary-container-low: "purple-850",
-    primary-container-high: "purple-950",
+    primary-container-low: "purple-950",
+    primary-container-high: "purple-850",
     primary-container-hover: "purple-800",
     on-primary-container: "purple-200",
     primary-hover: "purple-550",
@@ -128,13 +131,14 @@ $theme-overrides: (
         var(--pdz-color-purple-300)
       ),
     // Secondary Theme (Pink)
-    secondary: "pink-500",
-    secondary-lighter: "pink-400",
-    secondary-darker: "pink-600",
+    secondary: "pink-450",
+    secondary-accent: "pink-350",
+    secondary-lighter: "pink-350",
+    secondary-darker: "pink-550",
     on-secondary: "pink-950",
     secondary-container: "pink-900",
-    secondary-container-low: "pink-850",
-    secondary-container-high: "pink-950",
+    secondary-container-low: "pink-950",
+    secondary-container-high: "pink-850",
     secondary-container-hover: "pink-800",
     on-secondary-container: "pink-200",
     secondary-hover: "pink-550",

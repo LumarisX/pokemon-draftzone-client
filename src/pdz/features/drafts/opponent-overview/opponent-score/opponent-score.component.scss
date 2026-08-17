@@ -100,7 +100,7 @@ $xl: 1280px;
   }
 
   &:focus-visible {
-    outline: 2px solid pdz.color(primary);
+    outline: 2px solid pdz.color(primary-accent);
     outline-offset: 1px;
   }
 }
@@ -321,7 +321,7 @@ $xl: 1280px;
     --side-high: #{pdz.color(primary-container-high)};
     --side-low: #{pdz.color(primary-container-low)};
     --side-border: #{pdz.color(primary-border)};
-    --side-accent: #{pdz.color(primary)};
+    --side-accent: #{pdz.color(primary-accent)};
   }
 
   &--b {
@@ -329,7 +329,7 @@ $xl: 1280px;
     --side-high: #{pdz.color(secondary-container-high)};
     --side-low: #{pdz.color(secondary-container-low)};
     --side-border: #{pdz.color(secondary-border)};
-    --side-accent: #{pdz.color(secondary)};
+    --side-accent: #{pdz.color(secondary-accent)};
   }
 
   background: var(--side-container);

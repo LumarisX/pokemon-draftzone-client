@@ -14,7 +14,7 @@
   .outlined {
     border-radius: pdz.shape(corner-lg);
     background-color: pdz.color(surface);
-    color: pdz.color(primary);
+    color: pdz.color(primary-accent);
     box-shadow: var(--pdz-level-3);
     padding: pdz.space(lg);
   }

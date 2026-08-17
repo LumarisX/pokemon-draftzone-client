@@ -73,7 +73,7 @@
     align-items: center;
     gap: pdz.space(sm);
     padding-bottom: pdz.space(xs);
-    border-bottom: 2px solid pdz.color(primary);
+    border-bottom: 2px solid pdz.color(primary-accent);
   }
 
   &__title {
@@ -157,7 +157,7 @@
     border-color 0.2s ease;
 
   &--selected {
-    border-color: pdz.color(primary);
+    border-color: pdz.color(primary-accent);
     box-shadow:
       0 0 0 2px pdz.color(primary),
       var(--pdz-level-1);
@@ -253,7 +253,7 @@
   &__checkbox {
     width: 1.1rem;
     height: 1.1rem;
-    accent-color: pdz.color(primary);
+    accent-color: pdz.color(primary-accent);
     cursor: pointer;
   }
 
@@ -349,7 +349,7 @@
     width: 1.5rem;
     height: 1.5rem;
     border-radius: pdz.shape(corner-xs);
-    color: pdz.color(primary);
+    color: pdz.color(primary-accent);
     text-decoration: none;
 
     &:hover {

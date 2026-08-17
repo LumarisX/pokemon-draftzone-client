@@ -397,14 +397,14 @@ input {
     }
 
     .speedtier-placeholder {
-      border: 2px dashed pdz.color(primary) !important;
+      border: 2px dashed pdz.color(primary-accent) !important;
       opacity: 0.6;
       animation: pulse 1s ease-in-out infinite;
       pointer-events: none;
       margin-bottom: 2px;
 
       .placeholder-content {
-        color: pdz.color(primary);
+        color: pdz.color(primary-accent);
         font-weight: 600;
         font-size: 0.875rem;
       }

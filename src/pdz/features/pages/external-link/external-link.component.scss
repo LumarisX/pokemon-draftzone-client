@@ -79,7 +79,7 @@
   &__url {
     @include apply-typography("body-md");
     word-break: break-all;
-    color: pdz.color(primary);
+    color: pdz.color(primary-accent);
     background: none;
     padding: 0;
   }

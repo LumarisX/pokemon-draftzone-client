@@ -120,7 +120,7 @@
 
   &__team-name {
     @include apply-typography(headline-md);
-    color: pdz.color(primary);
+    color: pdz.color(primary-accent);
     margin: 0;
 
     @include respond-above(medium) {
@@ -140,7 +140,7 @@
 
   &__time {
     @include apply-typography(body-lg);
-    color: pdz.color(secondary);
+    color: pdz.color(secondary-accent);
     margin: 0;
   }
 
@@ -227,7 +227,7 @@
 
   &-header {
     @include apply-typography(title-md);
-    border-bottom: 2px solid pdz.color(primary);
+    border-bottom: 2px solid pdz.color(primary-accent);
     padding: 0 pdz.space(xs);
 
     // Keeps a header's trailing action on the same baseline as its title.
@@ -247,7 +247,7 @@
       border: 1px solid pdz.color(outline-variant);
       border-radius: pdz.shape(corner-full);
       background: transparent;
-      color: pdz.color(primary);
+      color: pdz.color(primary-accent);
       font-weight: 600;
       cursor: pointer;
       white-space: nowrap;
@@ -258,7 +258,7 @@
       &:hover,
       &:focus-visible {
         background: pdz.color(surface-container-high);
-        border-color: pdz.color(primary);
+        border-color: pdz.color(primary-accent);
       }
     }
   }
@@ -351,7 +351,7 @@
               .details {
                 display: flex;
                 align-items: center;
-                color: pdz.color(primary);
+                color: pdz.color(primary-accent);
                 gap: pdz.space(2xs);
               }
 

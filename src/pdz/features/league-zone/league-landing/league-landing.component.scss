@@ -67,7 +67,7 @@
 
   &__title {
     @include apply-typography(title-sm);
-    color: pdz.color(primary);
+    color: pdz.color(primary-accent);
     margin: 0;
     font-weight: 700;
   }

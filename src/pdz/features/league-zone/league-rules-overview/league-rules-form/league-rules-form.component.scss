@@ -173,7 +173,7 @@
 
   &:focus {
     outline: none;
-    border-color: pdz.color(primary);
+    border-color: pdz.color(primary-accent);
     box-shadow: 0 0 0 3px pdz.color(primary-container-low);
   }
 
@@ -199,7 +199,7 @@
 
   &:focus {
     outline: none;
-    border-color: pdz.color(primary);
+    border-color: pdz.color(primary-accent);
     box-shadow: 0 0 0 3px pdz.color(primary-container-low);
   }
 

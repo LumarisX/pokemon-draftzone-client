@@ -69,7 +69,7 @@
     padding: pdz.space(sm);
     background: pdz.color(primary-container);
     border-radius: pdz.shape(corner-sm);
-    border-left: 3px solid pdz.color(primary);
+    border-left: 3px solid pdz.color(primary-accent);
   }
 }
 
@@ -96,7 +96,7 @@
 
   &:focus {
     outline: none;
-    border-color: pdz.color(primary);
+    border-color: pdz.color(primary-accent);
     // box-shadow: 0 0 0 3px rgba(--pdz-color-primary, 0.1);
   }
 
@@ -133,7 +133,7 @@
 
   &:focus {
     outline: none;
-    border-color: pdz.color(primary);
+    border-color: pdz.color(primary-accent);
   }
 
   &::placeholder {
@@ -171,12 +171,12 @@
   user-select: none;
 
   &:hover {
-    border-color: pdz.color(primary);
+    border-color: pdz.color(primary-accent);
     background: pdz.color(surface-container-low);
   }
 
   &--selected {
-    border-color: pdz.color(primary);
+    border-color: pdz.color(primary-accent);
     background: pdz.color(primary-container);
 
     .pokemon-label {
@@ -184,14 +184,14 @@
     }
 
     &:hover {
-      border-color: pdz.color(primary);
+      border-color: pdz.color(primary-accent);
       background: pdz.color(primary-container-low);
     }
   }
 }
 
 .pokemon-tera {
-  border-left: 2px solid pdz.color(primary);
+  border-left: 2px solid pdz.color(primary-accent);
   padding-left: pdz.space(xs);
   display: flex;
   gap: pdz.space(sm);
@@ -201,7 +201,7 @@
   width: 16px;
   height: 16px;
   cursor: pointer;
-  accent-color: pdz.color(primary);
+  accent-color: pdz.color(primary-accent);
 }
 
 .pokemon-label {
@@ -249,7 +249,7 @@
 
 .divider-arrow {
   font-size: 2rem;
-  color: pdz.color(primary);
+  color: pdz.color(primary-accent);
   opacity: 0.6;
 }
 
@@ -488,7 +488,7 @@
 
   &__swap {
     align-self: center;
-    color: pdz.color(primary);
+    color: pdz.color(primary-accent);
     @include apply-typography("label-lg");
 
     @media (max-width: 768px) {

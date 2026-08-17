@@ -27,7 +27,7 @@
   }
 
   &:focus-within {
-    outline: 2px solid pdz.color(primary);
+    outline: 2px solid pdz.color(primary-accent);
     outline-offset: 2px;
   }
 }
@@ -59,11 +59,11 @@
 
   &:hover {
     background: pdz.color(menu-container-hover);
-    border-color: pdz.color(primary);
+    border-color: pdz.color(primary-accent);
   }
 
   &:focus-visible {
-    outline: 2px solid pdz.color(primary);
+    outline: 2px solid pdz.color(primary-accent);
     outline-offset: 2px;
   }
 }
@@ -79,6 +79,11 @@
   grid-template-columns: repeat(4, minmax(0, 1fr));
   width: 100%;
   max-width: 28rem;
+  padding: pdz.space(sm);
+  background: pdz.color(surface-container-low);
+  border: 1px solid pdz.color(outline-variant);
+  border-radius: pdz.shape(corner-md);
+  box-shadow: var(--pdz-level-1);
 }
 
 .random-actions {
@@ -102,11 +107,11 @@
 
   &:hover {
     background: pdz.color(menu-container-hover);
-    border-color: pdz.color(primary);
+    border-color: pdz.color(primary-accent);
   }
 
   &:focus-visible {
-    outline: 2px solid pdz.color(primary);
+    outline: 2px solid pdz.color(primary-accent);
     outline-offset: 2px;
   }
 }

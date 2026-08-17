@@ -10,7 +10,7 @@
     (
       subhead-weight: 700,
       subhead-font: var(--pdz-font-fancy),
-      subhead-color: pdz.color(primary),
+      subhead-color: pdz.color(primary-accent),
       subhead-size: 1.2em,
     )
   );
@@ -68,7 +68,7 @@
     align-items: center;
     justify-content: space-between;
     gap: pdz.space(sm);
-    border-bottom: 2px solid pdz.color(primary);
+    border-bottom: 2px solid pdz.color(primary-accent);
     padding-bottom: pdz.space(2xs);
   }
 
@@ -85,7 +85,7 @@
 
   &__cost {
     @include apply-typography(label-md);
-    color: pdz.color(primary);
+    color: pdz.color(primary-accent);
     font-weight: 700;
     flex-shrink: 0;
   }

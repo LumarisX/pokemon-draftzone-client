@@ -33,7 +33,7 @@
   }
 
   &__edit-badge {
-    color: pdz.color(secondary);
+    color: pdz.color(secondary-accent);
   }
 
   &__header-actions {
@@ -122,7 +122,7 @@
     font-size: 0.875rem;
 
     &:focus {
-      outline: 2px solid pdz.color(primary);
+      outline: 2px solid pdz.color(primary-accent);
       outline-offset: 1px;
     }
   }

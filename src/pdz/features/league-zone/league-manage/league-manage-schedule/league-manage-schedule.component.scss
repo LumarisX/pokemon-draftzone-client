@@ -127,7 +127,7 @@
 
   &--active {
     background: pdz.color(primary-subtle);
-    border-color: pdz.color(primary);
+    border-color: pdz.color(primary-accent);
     color: pdz.color(on-primary-container);
     cursor: default;
   }
@@ -460,7 +460,7 @@
   &--active {
     background: pdz.color(primary-container);
     color: pdz.color(on-primary-container);
-    border-color: pdz.color(primary);
+    border-color: pdz.color(primary-accent);
     font-weight: 600;
 
     &:hover {
@@ -469,7 +469,7 @@
   }
 
   &:focus {
-    outline: 2px solid pdz.color(primary);
+    outline: 2px solid pdz.color(primary-accent);
     outline-offset: 2px;
   }
 }

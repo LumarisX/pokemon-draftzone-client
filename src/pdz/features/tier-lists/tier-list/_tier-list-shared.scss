@@ -51,9 +51,9 @@
         transition: border-color 0.15s ease;
 
         &:focus {
-          outline: 2px solid pdz.color(primary);
+          outline: 2px solid pdz.color(primary-accent);
           outline-offset: 1px;
-          border-color: pdz.color(primary);
+          border-color: pdz.color(primary-accent);
         }
 
         &::placeholder {
@@ -106,12 +106,12 @@
       transition: border-color 0.15s ease;
 
       &:focus {
-        outline: 2px solid pdz.color(primary);
+        outline: 2px solid pdz.color(primary-accent);
         outline-offset: 1px;
       }
 
       &:hover {
-        border-color: pdz.color(primary);
+        border-color: pdz.color(primary-accent);
       }
     }
   }
@@ -141,13 +141,13 @@
     &:hover {
       background-color: pdz.color(primary);
       color: pdz.color(on-primary);
-      border-color: pdz.color(primary);
+      border-color: pdz.color(primary-accent);
     }
 
     &--primary {
       background-color: pdz.color(primary);
       color: pdz.color(on-primary);
-      border-color: pdz.color(primary);
+      border-color: pdz.color(primary-accent);
 
       &:hover {
         background-color: pdz.color(primary-darker);
@@ -187,7 +187,7 @@
       background-color: pdz.color(surface-container-highest);
 
       mat-icon {
-        color: pdz.color(primary);
+        color: pdz.color(primary-accent);
       }
     }
   }
@@ -251,7 +251,7 @@
       background-color: pdz.color(primary-container);
       color: pdz.color(on-primary-container);
       border-radius: pdz.shape(corner-md) pdz.shape(corner-md) 0 0;
-      border-bottom: 2px solid pdz.color(primary);
+      border-bottom: 2px solid pdz.color(primary-accent);
       position: sticky;
       top: 0;
       z-index: 10;

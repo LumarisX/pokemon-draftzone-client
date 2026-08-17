@@ -154,7 +154,7 @@
     }
 
     &:focus-visible {
-      outline: 2px solid pdz.color(primary);
+      outline: 2px solid pdz.color(primary-accent);
       outline-offset: 4px;
       border-radius: pdz.shape(corner-full);
     }
@@ -375,7 +375,7 @@
     color: pdz.color(on-surface);
 
     &:focus-visible {
-      outline: 2px solid pdz.color(primary);
+      outline: 2px solid pdz.color(primary-accent);
       outline-offset: -1px;
     }
   }
@@ -458,7 +458,7 @@
 
     &:focus-visible {
       outline: none;
-      border-color: pdz.color(primary);
+      border-color: pdz.color(primary-accent);
       background: pdz.color(surface-container-lowest);
     }
   }
@@ -498,7 +498,7 @@
 
     &:focus-visible {
       outline: none;
-      border-color: pdz.color(primary);
+      border-color: pdz.color(primary-accent);
       background: pdz.color(surface-container-lowest);
     }
   }

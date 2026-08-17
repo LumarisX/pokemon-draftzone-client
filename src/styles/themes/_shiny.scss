@@ -3,7 +3,8 @@
 $theme-overrides: (
   light: (
     // Primary Theme (Mint)
-    primary: "mint-500",
+    primary: "mint-800",
+    primary-accent: "mint-850",
     primary-lighter: "mint-400",
     primary-darker: "mint-600",
     on-primary: "white",
@@ -21,7 +22,8 @@ $theme-overrides: (
         var(--pdz-color-mint-300)
       ),
     // Secondary Theme (Yellow)
-    secondary: "yellow-500",
+    secondary: "yellow-850",
+    secondary-accent: "yellow-850",
     secondary-lighter: "yellow-400",
     secondary-darker: "yellow-600",
     on-secondary: "white",
@@ -63,7 +65,7 @@ $theme-overrides: (
     loading-secondary-low: "yellow-400",
 
     // Semantic Data Colors (Shiny uses green instead of mint)
-    positive: "green-700",
+    positive: "green-800",
     on-positive: "white",
     positive-container: "green-100",
     on-positive-container: "green-950",
@@ -99,12 +101,13 @@ $theme-overrides: (
   dark: (
     // Primary Theme (Mint)
     primary: "mint-500",
+    primary-accent: "mint-400",
     primary-lighter: "mint-400",
     primary-darker: "mint-600",
     on-primary: "mint-950",
     primary-container: "mint-900",
-    primary-container-low: "mint-850",
-    primary-container-high: "mint-950",
+    primary-container-low: "mint-950",
+    primary-container-high: "mint-850",
     primary-container-hover: "mint-800",
     on-primary-container: "mint-200",
     primary-hover: "mint-550",
@@ -117,12 +120,13 @@ $theme-overrides: (
       ),
     // Secondary Theme (Yellow)
     secondary: "yellow-500",
+    secondary-accent: "yellow-400",
     secondary-lighter: "yellow-400",
     secondary-darker: "yellow-600",
     on-secondary: "yellow-950",
     secondary-container: "yellow-900",
-    secondary-container-low: "yellow-850",
-    secondary-container-high: "yellow-950",
+    secondary-container-low: "yellow-950",
+    secondary-container-high: "yellow-850",
     secondary-container-hover: "yellow-800",
     on-secondary-container: "yellow-200",
     secondary-hover: "yellow-550",

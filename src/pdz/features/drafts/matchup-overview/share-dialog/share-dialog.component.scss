@@ -81,11 +81,11 @@
 
     .team-container {
       --pdz-cmp-color-border: #{pdz.color(primary-border)};
-      --pdz-cmp-color-title: #{pdz.color(primary)};
+      --pdz-cmp-color-title: #{pdz.color(primary-accent)};
 
       &.alternate {
         --pdz-cmp-color-border: #{pdz.color(secondary-border)};
-        --pdz-cmp-color-title: #{pdz.color(secondary)};
+        --pdz-cmp-color-title: #{pdz.color(secondary-accent)};
       }
       border-width: 1px;
       border-radius: pdz.shape(corner-lg);

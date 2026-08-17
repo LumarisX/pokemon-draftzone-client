@@ -59,7 +59,7 @@
 
   &__league-name {
     @include apply-typography(headline-md);
-    color: pdz.color(primary);
+    color: pdz.color(primary-accent);
     margin: 0;
 
     @include respond-above(medium) {
@@ -155,7 +155,7 @@
 
   &-header {
     @include apply-typography(title-md);
-    border-bottom: 2px solid pdz.color(primary);
+    border-bottom: 2px solid pdz.color(primary-accent);
     padding: 0 pdz.space(xs);
   }
 
@@ -182,7 +182,7 @@
   }
 
   &__cards {
-    border-left: 2px solid pdz.color(primary);
+    border-left: 2px solid pdz.color(primary-accent);
     padding: pdz.space(md) 0 pdz.space(md) pdz.space(md);
     display: flex;
     flex-direction: column;

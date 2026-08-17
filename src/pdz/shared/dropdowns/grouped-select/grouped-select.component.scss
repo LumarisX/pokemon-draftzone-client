@@ -31,9 +31,9 @@
 
     &:focus-visible,
     &--open {
-      outline: 2px solid pdz.color(primary);
+      outline: 2px solid pdz.color(primary-accent);
       outline-offset: 1px;
-      border-color: pdz.color(primary);
+      border-color: pdz.color(primary-accent);
     }
 
     &--open .grouped-select__chevron {

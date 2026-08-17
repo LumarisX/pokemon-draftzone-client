@@ -53,6 +53,14 @@
   }
 }
 
+.about-section {
+  padding: pdz.space(lg);
+  background: pdz.color(surface-container-low);
+  border: 1px solid pdz.color(outline-variant);
+  border-radius: pdz.shape(corner-md);
+  box-shadow: var(--pdz-level-1);
+}
+
 .about-section__heading {
   margin-bottom: pdz.space(sm);
   font-size: 1.25rem;
@@ -90,7 +98,7 @@
 }
 
 .about-link {
-  color: pdz.color(primary);
+  color: pdz.color(primary-accent);
 
   &:hover {
     cursor: pointer;

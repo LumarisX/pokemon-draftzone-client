@@ -40,7 +40,7 @@
   &--active {
     background-color: pdz.color(primary-container);
     color: pdz.color(on-primary-container);
-    border-color: pdz.color(primary);
+    border-color: pdz.color(primary-accent);
   }
 }
 
@@ -201,7 +201,7 @@
 
   &:hover:not(.is-drafted) {
     background-color: pdz.color(primary-container-low);
-    border-color: pdz.color(primary);
+    border-color: pdz.color(primary-accent);
     box-shadow: var(--pdz-level-1);
     transform: translateY(-1px);
   }

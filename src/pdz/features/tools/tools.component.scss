@@ -41,11 +41,11 @@
 
   &:hover {
     background: pdz.color(menu-container-hover);
-    border-color: pdz.color(primary);
+    border-color: pdz.color(primary-accent);
   }
 
   &:focus-visible {
-    outline: 2px solid pdz.color(primary);
+    outline: 2px solid pdz.color(primary-accent);
     outline-offset: 2px;
   }
 }

@@ -72,7 +72,7 @@
 }
 
 .credit-link {
-  color: pdz.color(primary);
+  color: pdz.color(primary-accent);
   text-decoration: underline;
 }
 
@@ -108,7 +108,7 @@
 
 .theme-option {
   font-weight: 600;
-  color: pdz.color(primary);
+  color: pdz.color(primary-accent);
   display: flex;
   align-items: center;
   justify-content: space-between;
