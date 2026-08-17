@@ -1,226 +1,149 @@
 import { ClipboardModule } from '@angular/cdk/clipboard';
-
-import { Component, OnInit } from '@angular/core';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatCardModule } from '@angular/material/card';
-import { provideNativeDateAdapter } from '@angular/material/core';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatSliderModule } from '@angular/material/slider';
-import { MatTimepickerModule } from '@angular/material/timepicker';
+import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
+import { SliderComponent } from '@pdz/shared/inputs/slider/slider.component';
 import dayjs from 'dayjs';
 import advancedFormat from 'dayjs/plugin/advancedFormat';
 import duration from 'dayjs/plugin/duration';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
+import {
+  TimeZone,
+  TimezoneSelectComponent,
+} from './timezone-select/timezone-select.component';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.extend(duration);
 dayjs.extend(advancedFormat);
 
-type TimeZone = {
-  short?: string;
-  name: string;
-  utc: string;
-  offset: number;
-};
+type Side = 'local' | 'opponent';
 
 @Component({
   selector: 'pdz-time-converter',
   templateUrl: './time_converter.component.html',
   styleUrl: './time_converter.component.scss',
-  providers: [provideNativeDateAdapter()],
-
   imports: [
     RouterModule,
     FormsModule,
-    ReactiveFormsModule,
-    MatTimepickerModule,
-    MatDatepickerModule,
-    MatInputModule,
-    MatSelectModule,
-    MatCardModule,
     ClipboardModule,
-    MatAutocompleteModule,
-    MatFormFieldModule,
-    MatSliderModule,
-    MatIconModule,
+    IconComponent,
+    SliderComponent,
+    TimezoneSelectComponent,
   ],
 })
-export class TimeConverterComponent implements OnInit {
+export class TimeConverterComponent {
   timeZones: TimeZone[] = Intl.supportedValuesOf('timeZone')
-    .map((tz) => {
-      const date = new Date();
-      const short = new Intl.DateTimeFormat('en-US', {
-        timeZone: tz,
-        timeZoneName: 'short',
-      })
-        .formatToParts(date)
-        .find((part) => part.type === 'timeZoneName')?.value;
-      const offset = dayjs().tz(tz).utcOffset();
-      return {
-        short: short,
-        name: tz,
-        offset: offset,
-        utc: dayjs().tz(tz).format('UTCZ'),
-      };
-    })
+    .map((tz) => this.describeZone(tz))
     .sort((a, b) => a.offset - b.offset);
-  filteredTZ: TimeZone[] = [...this.timeZones];
+
   timeZonesShort: TimeZone[] = this.timeZones.reduce((acc, tz) => {
-    if (!acc.find((t) => t.short === tz.short)) {
+    if (tz.short && !acc.find((t) => t.short === tz.short)) {
       acc.push(tz);
     }
     return acc;
   }, [] as TimeZone[]);
-  filteredTZShort: TimeZone[] = [...this.timeZonesShort];
-  baseTimeZone: TimeZone = (() => {
-    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    const date = new Date();
+
+  localZone: TimeZone = this.describeZone(
+    Intl.DateTimeFormat().resolvedOptions().timeZone,
+  );
+  opponentZone: TimeZone = this.localZone;
+
+  localDate = dayjs().format('YYYY-MM-DD');
+  localTime = dayjs().format('HH:mm');
+  opponentDate = this.localDate;
+  opponentTime = this.localTime;
+
+  copied = false;
+
+  private describeZone(name: string): TimeZone {
     const short = new Intl.DateTimeFormat('en-US', {
-      timeZone: tz,
+      timeZone: name,
       timeZoneName: 'short',
     })
-      .formatToParts(date)
+      .formatToParts(new Date())
       .find((part) => part.type === 'timeZoneName')?.value;
-    const utc = dayjs().tz(tz).format('UTCZ');
-    const offset = dayjs().tz(tz).utcOffset();
-    return { short: short, name: tz, utc: utc, offset };
-  })();
-  localTimeZone: TimeZone = this.baseTimeZone;
-  localInput = new FormControl(this.baseTimeZone);
-  opponentInput = new FormControl(this.baseTimeZone);
-  opponentTimeZone: TimeZone = this.baseTimeZone;
-  localDateTime: Date = dayjs().toDate();
-  opponentDateTime: Date = dayjs().toDate();
+    return {
+      short,
+      name,
+      offset: dayjs().tz(name).utcOffset(),
+      utc: dayjs().tz(name).format('UTCZ'),
+    };
+  }
 
-  set localTime(value: number) {
+  get localMinutes(): number {
+    return this.toMinutes(this.localTime);
+  }
+
+  set localMinutes(value: number) {
+    this.localTime = this.fromMinutes(value);
+    this.sync('local');
+  }
+
+  get opponentMinutes(): number {
+    return this.toMinutes(this.opponentTime);
+  }
+
+  set opponentMinutes(value: number) {
+    this.opponentTime = this.fromMinutes(value);
+    this.sync('opponent');
+  }
+
+  private toMinutes(time: string): number {
+    const [hours, minutes] = time.split(':').map(Number);
+    return hours * 60 + minutes;
+  }
+
+  private fromMinutes(value: number): string {
     const hours = Math.floor(value / 60);
     const minutes = value % 60;
-    this.updateTime(
-      'local',
-      dayjs(this.localDateTime)
-        .set('minutes', minutes)
-        .set('hours', hours)
-        .toDate(),
-    );
+    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
   }
 
-  get localTime() {
-    return this.localDateTime.getHours() * 60 + this.localDateTime.getMinutes();
+  private instant(side: Side) {
+    const date = side === 'local' ? this.localDate : this.opponentDate;
+    const time = side === 'local' ? this.localTime : this.opponentTime;
+    const zone = side === 'local' ? this.localZone : this.opponentZone;
+    return dayjs.tz(`${date}T${time}:00`, zone.name);
   }
 
-  set opponentTime(value: number) {
-    const hours = Math.floor(value / 60);
-    const minutes = value % 60;
-    this.updateTime(
-      'opponent',
-      dayjs(this.opponentDateTime)
-        .set('minutes', minutes)
-        .set('hours', hours)
-        .toDate(),
-    );
+  sync(from: Side): void {
+    const target = from === 'local' ? this.opponentZone : this.localZone;
+    const converted = this.instant(from).tz(target.name);
+    if (from === 'local') {
+      this.opponentDate = converted.format('YYYY-MM-DD');
+      this.opponentTime = converted.format('HH:mm');
+    } else {
+      this.localDate = converted.format('YYYY-MM-DD');
+      this.localTime = converted.format('HH:mm');
+    }
   }
 
-  get opponentTime() {
-    return (
-      this.opponentDateTime.getHours() * 60 + this.opponentDateTime.getMinutes()
-    );
+  setZone(side: Side, zone: TimeZone): void {
+    if (side === 'local') {
+      this.localZone = zone;
+    } else {
+      this.opponentZone = zone;
+    }
+    this.sync('local');
   }
 
-  ngOnInit() {
-    this.localInput.valueChanges.subscribe((value) => {
-      if (typeof value === 'string') {
-        this._filter(value);
-      } else {
-        this.localTimeZone = value || this.baseTimeZone;
-      }
-    });
-    this.opponentInput.valueChanges.subscribe((value) => {
-      if (typeof value === 'string') {
-        this._filter(value);
-      } else {
-        this.opponentTimeZone = value || this.baseTimeZone;
-      }
-    });
+  formatDisplay(side: Side): string {
+    const date = side === 'local' ? this.localDate : this.opponentDate;
+    const time = side === 'local' ? this.localTime : this.opponentTime;
+    return dayjs(`${date}T${time}`).format('dddd, MMMM D, YYYY hh:mm A');
   }
 
-  sliderFn() {
-    return '';
+  get discordTimestamp(): string {
+    return `<t:${this.instant('local').format('X')}:f>`;
   }
 
-  get discordTimestamp() {
-    return `<t:${dayjs(this.localDateTime).format('X')}:f>`;
-  }
-
-  copied: boolean = false;
-  copy() {
+  copy(): void {
     this.copied = true;
     setTimeout(() => {
       this.copied = false;
     }, 1500);
-  }
-
-  shortFn(value: string | TimeZone): string {
-    if (typeof value === 'string') return value;
-    return value.short || value.utc;
-  }
-
-  private _filter(value: string | null) {
-    if (value === '' || value === null) {
-      this.filteredTZ = [...this.timeZones];
-      this.filteredTZShort = [...this.timeZonesShort];
-    } else {
-      const lower = value.trim().toLowerCase();
-      this.filteredTZ = this.timeZones.filter(
-        (tz) =>
-          tz.name
-            .toLowerCase()
-            .split(/\W+/)
-            .some((word) => word.startsWith(lower)) ||
-          tz.short?.toLowerCase().includes(lower),
-      );
-      this.filteredTZShort = this.timeZonesShort.filter((tz) =>
-        tz.short?.toLowerCase().includes(lower),
-      );
-    }
-  }
-
-  updateTZ(zone: 'local' | 'opponent') {
-    this.updateTime(
-      zone,
-      zone === 'local' ? this.localDateTime : this.opponentDateTime,
-    );
-  }
-
-  updateTime(zone: 'local' | 'opponent', dateTime: Date | null | undefined) {
-    if (!dateTime) return;
-    if (zone === 'opponent') {
-      this.localDateTime = dayjs(dateTime)
-        .add(
-          this.localTimeZone.offset - this.opponentTimeZone.offset,
-          'minutes',
-        )
-        .toDate();
-      this.opponentDateTime = dateTime;
-    } else {
-      this.localDateTime = dateTime;
-      this.opponentDateTime = dayjs(dateTime)
-        .add(
-          this.opponentTimeZone.offset - this.localTimeZone.offset,
-          'minutes',
-        )
-        .toDate();
-    }
-  }
-
-  formatDate(date: Date): string {
-    return dayjs(date).format('dddd, MMMM D, YYYY hh:mm A');
   }
 }
