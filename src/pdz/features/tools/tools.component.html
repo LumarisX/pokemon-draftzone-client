@@ -1,17 +1,10 @@
-<div
-  class="flex flex-col items-center w-full h-full overflow-y-auto px-4 py-8 space-y-8"
->
-  <h1 class="w-full text-4xl text-center font-nasa">Tools</h1>
-  <div class="w-full space-y-8 max-w-128">
-    @for (tool of tools; track $index) {
-      <div
-        class="p-3 border rounded-full hover:cursor-pointer hover:bg-menu-200 bg-menu-300 border-menu-400"
-        [routerLink]="tool.link"
-      >
-        <h2 class="w-full text-2xl text-center font-nasa">
-          {{ tool.title }}
-        </h2>
-      </div>
+<div class="tools-page">
+  <h1 class="tools-page__title">Tools</h1>
+  <nav class="tools-list">
+    @for (tool of tools; track tool.link) {
+      <a class="tools-list__item" [routerLink]="tool.link">
+        <h2 class="tools-list__label">{{ tool.title }}</h2>
+      </a>
     }
-  </div>
+  </nav>
 </div>

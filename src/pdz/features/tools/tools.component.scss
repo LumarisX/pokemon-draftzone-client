@@ -1,0 +1,58 @@
+@use "pdz-theming" as pdz;
+
+.tools-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: pdz.space(2xl);
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  padding: pdz.space(2xl) pdz.space(lg);
+}
+
+.tools-page__title {
+  width: 100%;
+  text-align: center;
+  font-family: var(--pdz-font-fancy);
+  font-size: 2.25rem;
+}
+
+.tools-list {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(2xl);
+  width: 100%;
+  max-width: 32rem;
+}
+
+.tools-list__item {
+  display: block;
+  padding: pdz.space(md);
+  background: pdz.color(menu-container);
+  color: pdz.color(on-menu-container);
+  border: 1px solid pdz.color(menu-border);
+  border-radius: pdz.shape(corner-full);
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out;
+
+  &:hover {
+    background: pdz.color(menu-container-hover);
+    border-color: pdz.color(primary);
+  }
+
+  &:focus-visible {
+    outline: 2px solid pdz.color(primary);
+    outline-offset: 2px;
+  }
+}
+
+.tools-list__label {
+  width: 100%;
+  text-align: center;
+  font-family: var(--pdz-font-fancy);
+  font-size: 1.5rem;
+}

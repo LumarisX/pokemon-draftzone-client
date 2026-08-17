@@ -12,6 +12,7 @@ import {
   selector: 'pdz-quick-matchup-base',
   imports: [QuickMatchupFormComponent, MatchupComponent, LoadingComponent],
   templateUrl: './quick-matchup-base.component.html',
+  styleUrl: './quick-matchup-base.component.scss',
 })
 export class QuickMatchupBaseComponent implements OnInit {
   private matchupService = inject(MatchupService);

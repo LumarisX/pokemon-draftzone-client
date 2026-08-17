@@ -3,7 +3,8 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'pdz-coin-svg',
   template: `<svg
-    class="stroke-symbolColor-main fill-symbolColor-main"
+    stroke="currentColor"
+    fill="currentColor"
     viewBox="0 0 24 24"
     xmlns="http://www.w3.org/2000/svg"
   >

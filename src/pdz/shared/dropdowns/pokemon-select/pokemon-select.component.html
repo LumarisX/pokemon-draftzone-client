@@ -4,7 +4,7 @@
   #trigger="cdkOverlayOrigin"
   #pokemonForm
 >
-  <mat-form-field class="w-full" [appearance]="appearance">
+  <mat-form-field class="pokemon-select__field" [appearance]="appearance">
     @if (showSprite !== null && setPokemon) {
       <div matPrefix class="selected-sprite">
         <pdz-sprite flipped [pokemon]="setPokemon"></pdz-sprite>

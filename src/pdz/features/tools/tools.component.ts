@@ -5,6 +5,7 @@ import { RouterModule } from '@angular/router';
   selector: 'pdz-tools',
   imports: [RouterModule],
   templateUrl: './tools.component.html',
+  styleUrl: './tools.component.scss',
 })
 export class ToolsComponent {
   tools: { title: string; link: string }[] = [

@@ -48,6 +48,7 @@
         }
 
         .pokemon-charts-title {
+          font-family: var(--pdz-font-fancy);
           font-size: large;
           font-weight: 600;
           padding: 0 1rem 0 0;
@@ -90,6 +91,7 @@
       max-width: fit-content;
 
       .team-chart-title {
+        font-family: var(--pdz-font-fancy);
         font-size: large;
         width: 100%;
         text-align: center;

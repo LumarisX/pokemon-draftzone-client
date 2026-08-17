@@ -1,13 +1,9 @@
 @if (editing) {
-  <div class="flex items-center justify-between p-2">
-    <div
-      class="flex-grow text-2xl text-center md:text-3xl lg:text-4xl font-nasa"
-    >
-      Quick Matchup
-    </div>
+  <div class="quick-header">
+    <div class="quick-header__title">Quick Matchup</div>
   </div>
-  <div class="flex justify-center w-full">
-    <div class="w-full max-w-400">
+  <div class="quick-form-row">
+    <div class="quick-form-row__inner">
       <pdz-quick-matchup-form
         [quickForm]="formData"
         (formSubmitted)="getMatchupData($event)"
@@ -15,46 +11,33 @@
     </div>
   </div>
 } @else {
-  <div
-    class="min-h-full bg-gradient-to-r from-aTeam-100 via-menu-100 to-bTeam-100"
-  >
-    <div class="flex items-center justify-between p-4">
-      @if (!editing) {
-        <div class="w-1/8">
-          <button
-            (click)="editing = true"
-            class="px-3 py-2 m-2 text-sm rounded-md text-symbolColor-inverted bg-menu-500 hover:bg-menu-600 focus:outline-none focus:bg-menu-600"
-          >
-            Edit
-          </button>
-        </div>
-      }
-
-      <div
-        class="flex-grow text-2xl text-center md:text-3xl lg:text-4xl font-nasa"
-      >
-        Quick Matchup
+  <div class="quick-result">
+    <div class="quick-header quick-header--result">
+      <div class="quick-header__side">
+        <button
+          type="button"
+          class="quick-header__edit"
+          (click)="editing = true"
+        >
+          Edit
+        </button>
       </div>
 
-      @if (!editing) {
-        <div class="w-1/8"></div>
-      }
-    </div>
-    <div class="flex justify-center w-full">
-      @if (matchupData) {
-        <div class="flex flex-wrap justify-between gap-x-8">
-          <div class="w-full text-center sm:w-auto">
-            <p class="text-sm font-semibold text-menu-500">Ruleset</p>
-            <p class="text-xl font-bold">{{ matchupData.details.ruleset }}</p>
-          </div>
-          <div class="w-full text-center sm:w-auto">
-            <p class="text-sm font-semibold text-menu-500">Format</p>
-            <p class="text-xl font-bold">{{ matchupData.details.format }}</p>
-          </div>
-        </div>
-      }
+      <div class="quick-header__title">Quick Matchup</div>
+
+      <div class="quick-header__side"></div>
     </div>
     @if (matchupData) {
+      <div class="quick-details">
+        <div class="quick-details__item">
+          <p class="quick-details__label">Ruleset</p>
+          <p class="quick-details__value">{{ matchupData.details.ruleset }}</p>
+        </div>
+        <div class="quick-details__item">
+          <p class="quick-details__label">Format</p>
+          <p class="quick-details__value">{{ matchupData.details.format }}</p>
+        </div>
+      </div>
       <pdz-matchup [matchupData]="matchupData"></pdz-matchup>
     } @else {
       <pdz-loading />

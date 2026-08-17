@@ -191,3 +191,11 @@
 
   }
 }
+
+.widget--span-2 {
+  grid-row: span 2 / span 2;
+}
+
+.widget--span-3 {
+  grid-row: span 3 / span 3;
+}
