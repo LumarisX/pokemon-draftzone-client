@@ -33,7 +33,6 @@
     font-size: 3rem;
   }
   .info-card {
-    box-shadow: var(--pdz-level-1);
     background-color: var(--mat-sys-primary-container);
     color: var(--mat-sys-on-primary-container);
     padding: 0.5rem;
@@ -118,7 +117,6 @@ input {
 .power-rankings-table {
   width: fit-content;
   border-collapse: collapse;
-  box-shadow: var(--pdz-level-1);
   border-radius: 0.5rem;
   overflow: hidden;
 

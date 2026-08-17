@@ -9,7 +9,6 @@
 
 .league-ad-card {
   transition: box-shadow 0.2s ease;
-  box-shadow: var(--pdz-level-1);
 
   &.team-a {
     @include pdz-card("primary");

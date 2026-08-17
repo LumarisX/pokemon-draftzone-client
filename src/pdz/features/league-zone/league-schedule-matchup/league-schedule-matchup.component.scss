@@ -38,7 +38,6 @@
       flex-shrink: 0;
       overflow: hidden;
       border-color: pdz.color(primary-border);
-      box-shadow: var(--pdz-level-1);
       &.positive {
         border-color: lightgreen;
       }
@@ -180,7 +179,6 @@
       .match-button {
         border: 1px solid pdz.color(primary-border);
         padding: 0.0675rem 0.125rem;
-        box-shadow: var(--pdz-level-1);
         border-radius: pdz.shape(corner-sm);
         &.selected {
           background-color: pdz.color(primary);
@@ -205,7 +203,6 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
     .pokemon-box {
       height: 3rem;
-      box-shadow: var(--pdz-level-1);
       border-radius: pdz.shape(corner-sm);
       width: 3rem;
       border-width: 2px;

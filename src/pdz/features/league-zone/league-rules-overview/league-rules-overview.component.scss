@@ -93,7 +93,6 @@
   border-radius: pdz.shape(corner-md);
   padding: pdz.space(lg);
   margin-bottom: pdz.space(lg);
-  box-shadow: var(--pdz-level-1);
   scroll-margin-top: pdz.space(xl);
 
   @include respond-above(medium) {

@@ -46,7 +46,6 @@ $font-nasa: var(--pdz-font-display);
   border-radius: $border-radius-lg;
   background-color: pdz.color(surface-container);
   border: 1px solid pdz.color(primary-border);
-  box-shadow: var(--pdz-level-2);
   &__name {
     font-size: pdz.font-size(lg);
     font-weight: 500;
@@ -71,7 +70,6 @@ $font-nasa: var(--pdz-font-display);
   border-radius: $border-radius-md;
   background-color: pdz.color(surface-container-low);
   border: 1px solid transparent;
-  box-shadow: var(--pdz-level-1);
   transition:
     background-color 0.2s ease-in-out,
     border-color 0.2s ease-in-out,

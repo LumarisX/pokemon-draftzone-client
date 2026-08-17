@@ -15,7 +15,6 @@ $mark-width: 3px;
   border: 1px solid pdz.color("outline-variant");
   border-radius: pdz.shape("corner-lg");
   background: pdz.color("surface-container-lowest");
-  box-shadow: var(--pdz-level-1);
   transition:
     box-shadow 150ms ease,
     border-color 150ms ease;

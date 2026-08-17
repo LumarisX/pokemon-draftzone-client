@@ -536,7 +536,6 @@ button:disabled {
     padding: pdz.space(sm);
     border-radius: pdz.shape(corner-md);
     border: 1px solid pdz.color(outline-variant);
-    box-shadow: var(--pdz-level-1);
     background: pdz.color(surface-container-low);
     color: pdz.color(on-surface);
     cursor: pointer;
@@ -587,7 +586,6 @@ button:disabled {
     border: 1px solid pdz.color(outline-variant);
     border-radius: pdz.shape(corner-md);
     background: pdz.color(surface-container-low);
-    box-shadow: var(--pdz-level-1);
     width: fit-content;
     color: inherit;
     cursor: pointer;

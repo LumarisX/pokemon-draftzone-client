@@ -64,7 +64,6 @@
     border-radius: pdz.shape(corner-xl);
     background-color: pdz.color("menu-container");
     color: pdz.color("on-surface");
-    box-shadow: var(--pdz-level-1);
     padding: pdz.space(xs) pdz.space(md);
     cursor: pointer;
     @include text(label);
@@ -428,7 +427,6 @@
     @include text(label);
     font-weight: var(--pdz-font-weight-bold);
     color: pdz.color("on-surface");
-    box-shadow: var(--pdz-level-1);
 
     &--fainted {
       background-color: pdz.color("negative");
@@ -525,7 +523,6 @@
     background-color: pdz.color("surface-container-low");
     color: pdz.color("on-surface");
     border: 1px solid pdz.color("outline-variant");
-    box-shadow: var(--pdz-level-1);
   }
 
   &__warning {

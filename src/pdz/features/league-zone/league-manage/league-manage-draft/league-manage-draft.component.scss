@@ -452,7 +452,6 @@
   border: 2px solid pdz.color(outline-variant);
   border-radius: pdz.shape(corner-sm);
   background: pdz.color(surface);
-  box-shadow: var(--pdz-level-1);
   transition: border-color 120ms ease;
 
   &--picked {

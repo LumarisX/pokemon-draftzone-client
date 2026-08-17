@@ -20,7 +20,6 @@
   color: pdz.color(on-surface);
   border: 1px solid pdz.color(outline-variant);
   border-radius: pdz.shape(corner-md);
-  box-shadow: var(--pdz-level-2);
 }
 
 .converter-summary__title {
@@ -98,7 +97,6 @@
   background: pdz.color(surface-container-low);
   border: 1px solid pdz.color(outline-variant);
   border-radius: pdz.shape(corner-md);
-  box-shadow: var(--pdz-level-2);
 }
 
 .converter-side__title {

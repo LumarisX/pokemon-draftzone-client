@@ -42,7 +42,6 @@ $xl: 1280px;
   color: pdz.color(on-menu);
   border: none;
   border-radius: 0.375rem;
-  box-shadow: var(--pdz-level-1);
   cursor: pointer;
   transition: background-color 0.15s ease-in-out;
 
@@ -114,7 +113,6 @@ $xl: 1280px;
   border-width: 2px;
   border-style: solid;
   border-radius: pdz.shape(corner-xs);
-  box-shadow: var(--pdz-level-1);
 
   &--a {
     background: pdz.color(primary-container-high);
@@ -280,7 +278,6 @@ $xl: 1280px;
   color: pdz.color(on-surface);
   border: none;
   border-radius: pdz.shape(corner-full);
-  box-shadow: var(--pdz-level-1);
   cursor: pointer;
   transition: background-color 0.15s ease-in-out;
 

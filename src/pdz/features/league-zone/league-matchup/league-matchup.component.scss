@@ -98,7 +98,6 @@
   background: pdz.color("primary-gradient");
   color: pdz.color("on-primary");
   text-decoration: none;
-  box-shadow: var(--pdz-level-2);
   transition:
     transform 120ms ease,
     box-shadow 120ms ease;
@@ -172,7 +171,6 @@
     border: 1px solid pdz.color("outline-variant");
     border-radius: pdz.shape("corner-md");
     background: pdz.color("surface-container-lowest");
-    box-shadow: var(--pdz-level-1);
 
     &--winner {
       border-color: pdz.color("positive");

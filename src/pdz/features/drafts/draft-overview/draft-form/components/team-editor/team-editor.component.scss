@@ -154,7 +154,6 @@
     border-radius: pdz.shape(corner-md);
     background: pdz.color(surface);
     border: 1px solid pdz.color(outline-variant);
-    box-shadow: var(--pdz-level-3);
   }
 
   // Empty state -------------------------------------------------------------
@@ -199,7 +198,6 @@
 
   &--expanded {
     border-color: pdz.color(primary-border);
-    box-shadow: var(--pdz-level-1);
   }
 
   &--invalid {

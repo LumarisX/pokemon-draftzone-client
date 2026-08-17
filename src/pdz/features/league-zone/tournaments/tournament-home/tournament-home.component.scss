@@ -38,7 +38,6 @@
   border-radius: pdz.shape(corner-md);
   border: 1px solid pdz.color(outline-variant);
   background: pdz.color(surface);
-  box-shadow: var(--pdz-level-1);
 
   &__name {
     @include text(subtitle);
@@ -201,7 +200,6 @@
 .stats-table-wrapper {
   background: pdz.color(surface);
   border-radius: pdz.shape(corner-lg);
-  box-shadow: var(--pdz-level-2);
   overflow: auto;
 
   .stats-table {

@@ -150,7 +150,6 @@
   border-radius: pdz.shape(corner-md);
   border: 1px solid pdz.color(outline-variant);
   background: pdz.color(surface);
-  box-shadow: var(--pdz-level-1);
   overflow: hidden;
   transition:
     box-shadow 0.2s ease,

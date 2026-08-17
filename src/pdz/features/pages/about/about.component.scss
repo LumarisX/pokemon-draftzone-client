@@ -58,7 +58,6 @@
   background: pdz.color(surface-container-low);
   border: 1px solid pdz.color(outline-variant);
   border-radius: pdz.shape(corner-md);
-  box-shadow: var(--pdz-level-1);
 }
 
 .about-section__heading {
@@ -83,7 +82,6 @@
   max-height: 20rem;
   border: 1px solid pdz.color(outline-variant);
   border-radius: pdz.shape(corner-sm);
-  box-shadow: var(--pdz-level-1);
 }
 
 .about-shot--unbounded {

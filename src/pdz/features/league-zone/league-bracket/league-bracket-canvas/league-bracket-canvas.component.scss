@@ -50,7 +50,6 @@
     font-size: pdz.font-size(xs);
     line-height: pdz.leading(tight);
     cursor: pointer;
-    box-shadow: var(--pdz-level-1);
     transition: all 160ms ease;
 
     &:hover {
@@ -94,7 +93,6 @@
     border: 1px solid pdz.color("outline-variant");
     border-radius: pdz.shape(corner-sm);
     background: pdz.color("surface-container");
-    box-shadow: var(--pdz-level-2);
     z-index: 6;
 
     input {
@@ -143,7 +141,6 @@
     border: 1px solid pdz.color("outline-variant");
     border-radius: pdz.shape(corner-md);
     background: pdz.color("surface-container");
-    box-shadow: var(--pdz-level-3);
     z-index: 8;
 
     &__title {

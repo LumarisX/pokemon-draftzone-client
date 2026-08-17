@@ -207,7 +207,6 @@
   flex-direction: column;
   gap: pdz.space(sm);
   height: fit-content;
-  box-shadow: var(--pdz-level-1);
   max-width: 100%;
   // Without a floor, a section holding only a placeholder shrinks to the
   // width of its own title and the row reads as a set of stray chips.
@@ -278,7 +277,6 @@
 .stats-table-wrapper {
   background: pdz.color(surface);
   border-radius: pdz.shape(corner-lg);
-  box-shadow: var(--pdz-level-2);
   overflow: auto;
 
   .stats-table {
