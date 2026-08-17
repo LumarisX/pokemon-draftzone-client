@@ -120,16 +120,4 @@ export class DraftService {
       scoreData,
     );
   }
-  getGameTime(matchupId: string, teamId: string) {
-    //TODO: remove any
-    return this.apiService.get<any>(
-      `${ROOTPATH}/${teamId}/matchups/${matchupId}/schedule`,
-    );
-  }
-  scheduleMatchup(matchupId: string, teamId: string, timeData: Object) {
-    return this.apiService.patch(
-      `${ROOTPATH}/${teamId}/matchups/${matchupId}/schedule`,
-      timeData,
-    );
-  }
 }

@@ -4,11 +4,8 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { MatchupService } from './matchup.service';
 import { MatchupData, Summary } from './matchup-interface';
 import { MatchupComponent } from './matchup/matchup.component';
-import duration from 'dayjs/plugin/duration';
-import dayjs from 'dayjs';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 
-dayjs.extend(duration);
 
 @Component({
   selector: 'pdz-matchup-shared',
@@ -23,7 +20,6 @@ export class MatchupSharedComponent implements AfterViewInit {
 
   matchupId = '';
   matchupData: MatchupData | null = null;
-  timeString: string | null = null;
 
   ngAfterViewInit(): void {
     this.meta.updateTag({
@@ -51,21 +47,6 @@ export class MatchupSharedComponent implements AfterViewInit {
         this.matchupData.summary = <Summary[]>(
           JSON.parse(JSON.stringify(this.matchupData.summary))
         );
-        if ('gameTime' in this.matchupData) {
-          let gameTime = dayjs(this.matchupData.details.gameTime);
-          if (gameTime.isValid()) {
-            const currentTime = dayjs();
-            if (!gameTime.isBefore(currentTime)) {
-              const duration = dayjs.duration(gameTime.diff(currentTime));
-              const days = Math.floor(Math.abs(duration.asDays()));
-              const hours = Math.abs(duration.hours());
-              this.timeString =
-                days > 0 ? `${days} days ${hours} hours` : `${hours} hours`;
-            } else {
-              this.timeString = 'Already past';
-            }
-          }
-        }
         if (this.matchupData) {
           this.meta.updateTag({
             name: 'og:title',
