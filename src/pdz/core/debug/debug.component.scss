@@ -1,0 +1,79 @@
+@use "pdz-theming" as pdz;
+@use "mixins/buttons" as *;
+
+.debug-page {
+  padding: pdz.space(sm);
+
+  @media (min-width: 768px) {
+    padding: pdz.space(lg);
+  }
+}
+
+.debug-panel {
+  width: 100%;
+  max-width: 32rem;
+  margin: 0 auto;
+  padding: pdz.space(lg);
+  background-color: pdz.color(surface-container-low);
+  color: pdz.color(on-surface);
+  border: 1px solid pdz.color(outline-variant);
+  border-radius: pdz.shape(corner-md);
+  box-shadow: var(--pdz-level-2);
+  overflow: auto;
+}
+
+.debug-panel__title {
+  @include pdz.apply-typography(headline-md);
+  margin-bottom: pdz.space(lg);
+}
+
+.debug-field {
+  margin-bottom: pdz.space(sm);
+}
+
+.debug-field__label {
+  font-weight: 600;
+  color: pdz.color(on-surface);
+}
+
+.debug-field__list {
+  list-style: disc;
+  padding-left: pdz.space(xl);
+  margin-top: pdz.space(2xs);
+  color: pdz.color(on-surface-variant);
+}
+
+.debug-field--block {
+  margin-bottom: pdz.space(lg);
+}
+
+.debug-field__blob {
+  margin-top: pdz.space(2xs);
+  padding: pdz.space(sm);
+  max-height: 8rem;
+  max-width: 100%;
+  overflow-y: auto;
+  overflow-wrap: anywhere;
+  background-color: pdz.color(surface-container-lowest);
+  color: pdz.color(on-surface-variant);
+  border: 1px solid pdz.color(outline-variant);
+  border-radius: pdz.shape(corner-sm);
+  box-shadow: var(--pdz-level-inset-1);
+  font-family: monospace;
+  @include pdz.font-size(0.8rem);
+}
+
+.debug-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: pdz.space(sm);
+  margin-top: pdz.space(lg);
+}
+
+.debug-actions__copy {
+  @include flat-button-primary();
+}
+
+.debug-actions__download {
+  @include flat-button-secondary();
+}

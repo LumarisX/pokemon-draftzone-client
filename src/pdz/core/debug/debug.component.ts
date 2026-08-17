@@ -5,6 +5,7 @@ import { AuthService } from '../services/auth0.service';
   selector: 'pdz-debug',
   imports: [],
   templateUrl: './debug.component.html',
+  styleUrl: './debug.component.scss',
 })
 export class DebugComponent implements OnInit {
   private authService = inject(AuthService);
