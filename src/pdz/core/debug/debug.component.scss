@@ -59,7 +59,7 @@
   border: 1px solid pdz.color(outline-variant);
   border-radius: pdz.shape(corner-sm);
   box-shadow: var(--pdz-level-inset-1);
-  font-family: monospace;
+  font-family: var(--pdz-font-mono);
   @include pdz.font-size(0.8rem);
 }
 

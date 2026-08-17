@@ -38,7 +38,6 @@
     "ngx-markdown": "^21.1.0",
     "rxjs": "~7.8.0",
     "socket.io-client": "^4.8.1",
-    "tailwindcss": "^3.4.1",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"
   },
@@ -46,8 +45,6 @@
     "@angular/build": "^21.0.6",
     "@angular/cli": "^21.0.6",
     "@angular/compiler-cli": "^21.0.6",
-    "@k-vyn/coloralgorithm": "^1.2.0",
-    "@tailwindcss/typography": "^0.5.16",
     "@types/auth0-lock": "^11.27.9",
     "@types/d3": "^7.4.3",
     "@types/jasmine": "~5.1.0",
@@ -62,7 +59,6 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "prettier": "^3.4.1",
-    "prettier-plugin-tailwindcss": "^0.6.9",
     "sass": "^1.83.4",
     "ts-node": "^10.9.2",
     "typescript": "~5.9.2"

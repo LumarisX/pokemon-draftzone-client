@@ -1,0 +1,112 @@
+@use "pdz-theming" as pdz;
+
+.random-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: pdz.space(lg);
+  width: 100%;
+  padding: pdz.space(lg);
+}
+
+.count-box {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(xs);
+  width: fit-content;
+  padding: pdz.space(xs) pdz.space(sm);
+  font-family: var(--pdz-font-fancy);
+  background: pdz.color(menu-container);
+  color: pdz.color(on-menu-container);
+  border: 1px solid pdz.color(menu-border);
+  border-radius: pdz.shape(corner-xxs);
+  transition: background-color 0.15s ease-in-out;
+
+  &:hover {
+    background: pdz.color(menu-container-hover);
+  }
+
+  &:focus-within {
+    outline: 2px solid pdz.color(primary);
+    outline-offset: 2px;
+  }
+}
+
+.count-box__input {
+  width: 3rem;
+  text-align: right;
+  background: transparent;
+  border: none;
+  color: inherit;
+  font: inherit;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.random-btn {
+  width: fit-content;
+  padding: pdz.space(xs) pdz.space(sm);
+  background: pdz.color(menu-container);
+  color: pdz.color(on-menu-container);
+  border: 1px solid pdz.color(menu-border);
+  border-radius: pdz.shape(corner-full);
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out;
+
+  &:hover {
+    background: pdz.color(menu-container-hover);
+    border-color: pdz.color(primary);
+  }
+
+  &:focus-visible {
+    outline: 2px solid pdz.color(primary);
+    outline-offset: 2px;
+  }
+}
+
+.random-btn__label {
+  width: 8rem;
+  text-align: center;
+  font-family: var(--pdz-font-fancy);
+}
+
+.random-team {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  width: 100%;
+  max-width: 28rem;
+}
+
+.random-actions {
+  display: flex;
+  gap: pdz.space(sm);
+}
+
+.random-actions__btn {
+  padding: 0.125rem;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  background: pdz.color(menu-container);
+  color: pdz.color(on-menu-container);
+  border: 2px solid pdz.color(menu-border);
+  border-radius: pdz.shape(corner-xxs);
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out;
+
+  &:hover {
+    background: pdz.color(menu-container-hover);
+    border-color: pdz.color(primary);
+  }
+
+  &:focus-visible {
+    outline: 2px solid pdz.color(primary);
+    outline-offset: 2px;
+  }
+}

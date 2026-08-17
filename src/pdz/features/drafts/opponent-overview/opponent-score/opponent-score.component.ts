@@ -52,9 +52,9 @@ export class OpponentScoreComponent implements OnInit {
   title: string = 'New Matchup';
   matchup!: Matchup;
   scoreForm!: FormGroup;
-  matchSize = 1;
   selectedMatch = 0;
   readonly draftPath = DRAFT_OVERVIEW_PATH;
+  readonly sides: ('a' | 'b')[] = ['a', 'b'];
 
   ngOnInit(): void {
     this.teamId = this.route.parent!.snapshot.paramMap.get('teamId') || '';
@@ -277,24 +277,42 @@ export class OpponentScoreComponent implements OnInit {
         matchGroup.patchValue({ analyzed: false });
       }
     });
-    this.matchSize++;
     this.matchesFormArray.push(matchGroup);
-    this.selectedMatch = this.matchSize - 1;
-    return;
+    this.selectedMatch = this.matchesFormArray.length - 1;
   }
 
-  deleteMatch(index: number) {
+  deleteMatch(index: number, event?: Event) {
+    event?.stopPropagation();
     this.matchesFormArray.removeAt(index);
-    this.matchSize--;
-    this.selectedMatch = 0;
+    if (this.selectedMatch >= this.matchesFormArray.length) {
+      this.selectedMatch = this.matchesFormArray.length - 1;
+    }
   }
 
-  spriteBrought(pokemonForm: AbstractControl<any, any>) {
-    return pokemonForm.value.brought ? '' : 'opacity-40';
+  isBrought(pokemonForm: AbstractControl<any, any>): boolean {
+    return !!pokemonForm.value.brought;
   }
 
   switchMatch(index: number) {
     this.selectedMatch = index;
+  }
+
+  teamArray(side: 'a' | 'b'): FormArray {
+    return side === 'a' ? this.aTeamArray : this.bTeamArray;
+  }
+
+  teamName(side: 'a' | 'b'): string {
+    return side === 'a'
+      ? this.matchup.aTeam.teamName
+      : this.matchup.bTeam.teamName;
+  }
+
+  killCaution(side: 'a' | 'b'): boolean {
+    return side === 'a' ? this.aKillCaution() : this.bKillCaution();
+  }
+
+  deathCaution(side: 'a' | 'b'): boolean {
+    return side === 'a' ? this.bKillCaution() : this.aKillCaution();
   }
 
   analyzeReplay() {
@@ -487,22 +505,16 @@ export class OpponentScoreComponent implements OnInit {
     }
   }
 
-  winnerClass(player: 'a' | 'b') {
-    return this.selectedMatchForm.get('winner')?.value == player
-      ? `shadow `
-      : `shadow-inner text-symbolColor-disabled`;
+  isWinner(player: 'a' | 'b'): boolean {
+    return this.selectedMatchForm.get('winner')?.value == player;
   }
 
-  gameClass(i: number) {
-    return this.selectedMatch == i
-      ? 'bg-menu-100'
-      : 'bg-menu-250 hover:bg-menu-200';
+  isSelectedMatch(index: number): boolean {
+    return this.selectedMatch === index;
   }
 
-  analyzeClass() {
-    return this.selectedMatchForm.get('analyzed')?.value
-      ? 'shadow-none opacity-50'
-      : 'hover:bg-menu-250 shadow';
+  isAnalyzed(): boolean {
+    return !!this.selectedMatchForm.get('analyzed')?.value;
   }
 
   broughtCaution() {

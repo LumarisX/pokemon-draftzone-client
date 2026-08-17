@@ -13,7 +13,6 @@ const config: Options = {
   endOfLine: 'lf',
   proseWrap: 'never',
   htmlWhitespaceSensitivity: 'css',
-  plugins: ['prettier-plugin-tailwindcss'],
 };
 
 export default config;

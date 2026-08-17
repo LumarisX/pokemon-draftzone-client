@@ -1,4 +1,4 @@
-@use "tailwind-styles";
+@use "core/reset";
 @use "pdz-theming";
 @use "mat-styles";
 @use "pdz-theming" as pdz;
@@ -189,37 +189,6 @@
   :where(*):not(input):not(select):not(progress)::-webkit-scrollbar-thumb {
     background-color: CanvasText;
     border-color: transparent;
-  }
-}
-
-@layer utilities {
-  .tooltip {
-    position: relative;
-    cursor: pointer;
-  }
-
-  .tooltip::after {
-    content: attr(data-title);
-    position: absolute;
-    bottom: 125%;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #333;
-    color: #fff;
-    padding: 0.5rem 1rem;
-    border-radius: pdz.shape(corner-xs);
-    font-size: 0.875rem;
-    white-space: nowrap;
-    opacity: 0;
-    pointer-events: none;
-    transition:
-      opacity 0.2s,
-      transform 0.2s;
-  }
-
-  .tooltip:hover::after {
-    opacity: 1;
-    transform: translateX(-50%) translateY(-0.5rem);
   }
 }
 
@@ -441,7 +410,7 @@ markdown {
     background: pdz.color(surface-container-high);
     padding: 0.125rem 0.25rem;
     border-radius: pdz.shape(corner-xs);
-    font-family: monospace;
+    font-family: var(--pdz-font-mono);
     font-size: 0.875em;
   }
 

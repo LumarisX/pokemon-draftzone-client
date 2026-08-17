@@ -124,6 +124,16 @@ $typography: (
 $fonts: (
   fancy: "Nasalization RG",
   regular: ("Nunito Variable", "Nunito", sans-serif),
+  mono: (
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Monaco,
+    Consolas,
+    "Liberation Mono",
+    "Courier New",
+    monospace,
+  ),
 );
 
 $font-size: (

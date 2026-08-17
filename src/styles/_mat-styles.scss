@@ -186,3 +186,7 @@ body {
 .cdk-overlay-container {
   z-index: 6000 !important;
 }
+
+.mdc-notched-outline__notch {
+  border-right: none;
+}
