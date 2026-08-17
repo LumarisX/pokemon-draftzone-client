@@ -52,9 +52,9 @@ export function resolveBracketTheme(
 
   return {
     colors,
-    fontFancy: read('--pdz-font-fancy', 'sans-serif'),
+    fontFancy: read('--pdz-font-display', 'sans-serif'),
     fontRegular: read(
-      '--pdz-font-regular',
+      '--pdz-font-body',
       getComputedStyle(document.body).fontFamily || 'sans-serif',
     ),
     fontWeightBold: read('--pdz-font-weight-bold', '700'),

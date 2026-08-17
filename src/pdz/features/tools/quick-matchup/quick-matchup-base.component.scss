@@ -14,15 +14,15 @@
 .quick-header__title {
   flex-grow: 1;
   text-align: center;
-  font-family: var(--pdz-font-fancy);
-  font-size: 1.5rem;
+  font-family: var(--pdz-font-display);
+  font-size: pdz.font-size(xl);
 
   @include pdz.respond-above(medium) {
-    font-size: 1.875rem;
+    font-size: pdz.font-size(2xl);
   }
 
   @include pdz.respond-above(large) {
-    font-size: 2.25rem;
+    font-size: pdz.font-size(2xl);
   }
 }
 
@@ -39,7 +39,7 @@
   border: none;
   border-radius: pdz.shape(corner-sm);
   font: inherit;
-  font-size: 0.875rem;
+  font-size: pdz.font-size(sm);
   cursor: pointer;
   transition: background-color 0.15s ease-in-out;
 
@@ -92,11 +92,11 @@
 }
 
 .quick-details__label {
-  @include pdz.apply-typography(label-sm);
+  @include pdz.text(label);
   color: pdz.color(on-surface-variant);
 }
 
 .quick-details__value {
-  font-size: 1.25rem;
+  font-size: pdz.font-size(lg);
   font-weight: 700;
 }

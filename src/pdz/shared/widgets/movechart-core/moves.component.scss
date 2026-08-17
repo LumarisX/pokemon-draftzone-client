@@ -35,7 +35,7 @@
   border-radius: pdz.shape(corner-full);
   border: 1px solid var(--pdz-cmp-movechart-border);
   color: pdz.color(on-surface-variant);
-  @include apply-typography(label-xs);
+  @include text(label);
   cursor: pointer;
   transition:
     background-color 0.15s ease,
@@ -114,7 +114,7 @@
   border: 1px solid pdz.color(outline-variant);
   border-radius: pdz.shape(corner-sm);
   color: pdz.color(on-surface);
-  font-size: 0.875rem;
+  font-size: pdz.font-size(sm);
   outline: none;
   padding: pdz.space(2xs) pdz.space(sm);
   transition:
@@ -182,8 +182,8 @@
 }
 
 .move-name {
-  @include apply-typography(body-sm);
-  font-family: var(--pdz-font-fancy);
+  @include text(body-sm);
+  font-family: var(--pdz-font-display);
   color: pdz.color(on-surface);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -215,7 +215,7 @@
   border-radius: pdz.shape(corner-xs);
   white-space: nowrap;
   width: fit-content;
-  @include apply-typography(label-2xs);
+  @include text(label);
 }
 
 // ─── Pokemon sprites ─────────────────────────────────────────────────────────
@@ -231,7 +231,7 @@
 
 .move-desc {
   min-height: 2.5rem;
-  @include apply-typography(body-sm);
+  @include text(body-sm);
   line-height: 1.25rem;
   display: flex;
   align-items: center;
@@ -243,7 +243,7 @@
 // ─── Empty state ─────────────────────────────────────────────────────────────
 
 .no-results {
-  @include apply-typography(body-sm);
+  @include text(body-sm);
   color: pdz.color(on-surface-variant);
   font-style: italic;
   padding: pdz.space(lg) pdz.space(xs);
@@ -320,7 +320,7 @@
   border-radius: pdz.shape(corner-xs);
   white-space: nowrap;
   width: fit-content;
-  @include apply-typography(label-xs);
+  @include text(label);
 }
 
 // ─── Pokemon sprites ─────────────────────────────────────────────────────────
@@ -335,7 +335,7 @@
 
 .move-desc {
   min-height: 2.5rem;
-  @include apply-typography(body-sm);
+  @include text(body-sm);
   line-height: 1.25rem;
   display: flex;
   align-items: center;

@@ -12,7 +12,7 @@
 
   &__title {
     padding: pdz.space(xs);
-    font-family: var(--pdz-font-fancy);
+    font-family: var(--pdz-font-display);
     background-color: pdz.color(primary);
     color: pdz.color(on-primary);
     text-align: center;
@@ -58,22 +58,22 @@
   }
 
   &__league-name {
-    @include apply-typography(headline-md);
+    @include text(title);
     color: pdz.color(primary-accent);
     margin: 0;
 
     @include respond-above(medium) {
-      @include apply-typography(headline-lg);
+      @include text(headline);
     }
   }
 
   &__division-name {
-    @include apply-typography(title-md);
+    @include text(title);
     color: pdz.color(on-surface);
     margin: 0;
 
     @include respond-above(medium) {
-      @include apply-typography(title-lg);
+      @include text(headline);
     }
   }
 
@@ -144,7 +144,7 @@
   }
 
   &-message {
-    @include apply-typography(body-md);
+    @include text(body);
     color: pdz.color(on-surface-variant);
     margin: 0;
 
@@ -154,7 +154,7 @@
   }
 
   &-header {
-    @include apply-typography(title-md);
+    @include text(title);
     border-bottom: 2px solid pdz.color(primary-accent);
     padding: 0 pdz.space(xs);
   }
@@ -178,7 +178,7 @@
 
 .matchup-stage {
   &__title {
-    @include apply-typography(title-sm);
+    @include text(subtitle);
   }
 
   &__cards {

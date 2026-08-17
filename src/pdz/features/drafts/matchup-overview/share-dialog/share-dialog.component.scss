@@ -14,9 +14,9 @@
   .share-title {
     flex: 1;
     text-align: center;
-    font-size: 1.5rem;
+    font-size: pdz.font-size(xl);
     font-weight: bold;
-    font-family: var(--pdz-font-fancy);
+    font-family: var(--pdz-font-display);
   }
 
   .close-button {
@@ -64,10 +64,10 @@
       align-items: center;
     }
     .detail-title {
-      @include pdz.apply-typography(label-sm);
+      @include pdz.text(label);
     }
     .detail-text {
-      @include pdz.apply-typography(body-sm);
+      @include pdz.text(body-sm);
       font-weight: var(--pdz-font-weight-bold);
     }
   }
@@ -112,11 +112,11 @@
           text-align: center;
           font-weight: var(--pdz-font-weight-bold);
           color: var(--pdz-cmp-color-title);
-          font-family: var(--pdz-font-fancy);
+          font-family: var(--pdz-font-display);
         }
 
         .team-coach-title {
-          font-size: 0.8rem;
+          font-size: pdz.font-size(sm);
           height: 1.25rem;
         }
       }
@@ -161,7 +161,8 @@
             color: var(--pdz-cmp-color-title);
 
             @media (max-width: 768px) {
-              @include pdz.font-size(0.7rem);
+              font-size: pdz.font-size(xs);
+              line-height: pdz.leading(tight);
               padding: pdz.space(2xs);
             }
           }

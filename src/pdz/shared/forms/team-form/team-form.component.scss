@@ -70,7 +70,7 @@
             column-gap: 0.25rem;
 
             .name-title {
-              font-family: var(--pdz-font-fancy);
+              font-family: var(--pdz-font-display);
               flex-shrink: 1;
               min-width: 0;
 
@@ -252,7 +252,7 @@
         justify-content: center;
         border-radius: 4rem;
         overflow: hidden;
-        font-size: 0.8rem;
+        font-size: pdz.font-size(sm);
         line-height: 0.8rem;
 
         mat-icon {

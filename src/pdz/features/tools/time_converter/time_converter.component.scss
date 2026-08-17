@@ -24,7 +24,7 @@
 }
 
 .converter-summary__title {
-  @include pdz.apply-typography(headline-md);
+  @include pdz.text(title);
   text-align: center;
 }
 
@@ -41,7 +41,7 @@
 }
 
 .converter-summary__label {
-  @include pdz.apply-typography(label-sm);
+  @include pdz.text(label);
   color: pdz.color(on-surface-variant);
 }
 
@@ -66,7 +66,8 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   font-family: var(--pdz-font-mono);
-  @include pdz.font-size(0.85rem);
+  font-size: pdz.font-size(sm);
+  line-height: pdz.leading(tight);
 }
 
 .converter-stamp__copy {
@@ -101,7 +102,7 @@
 }
 
 .converter-side__title {
-  @include pdz.apply-typography(headline-sm);
+  @include pdz.text(subtitle);
   color: pdz.color(on-surface-variant);
 }
 
@@ -112,7 +113,7 @@
 
 .converter-field__label {
   font-weight: 700;
-  font-size: 0.875rem;
+  font-size: pdz.font-size(sm);
   color: pdz.color(on-surface-variant);
 }
 

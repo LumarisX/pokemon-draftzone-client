@@ -24,7 +24,7 @@
     flex-direction: column;
     flex-shrink: 0;
     .standing-header-title {
-      font-family: var(--pdz-font-fancy);
+      font-family: var(--pdz-font-display);
       padding: 0.25rem 0.5rem;
       background-color: pdz.color(primary);
       color: pdz.color(on-primary);
@@ -36,8 +36,8 @@
   }
 
   .combine-toggle {
-    font-family: var(--pdz-font-regular);
-    font-size: 0.75rem;
+    font-family: var(--pdz-font-body);
+    font-size: pdz.font-size(xs);
     font-weight: 600;
     padding: 0.15rem 0.5rem;
     border-radius: pdz.shape(corner-xs);
@@ -120,7 +120,7 @@
     span {
       width: 100%;
       font-weight: 600;
-      font-size: 1.1rem;
+      font-size: pdz.font-size(md);
       text-align: center;
     }
     mat-icon {
@@ -176,7 +176,7 @@
     }
     .coach-names {
       color: pdz.color(secondary-accent);
-      font-size: 0.8rem;
+      font-size: pdz.font-size(sm);
       line-height: 1rem;
     }
   }
@@ -191,7 +191,7 @@
       color: pdz.color(surface-container);
       text-align: center;
       font-weight: var(--pdz-font-weight-bold);
-      font-size: 0.8rem;
+      font-size: pdz.font-size(sm);
       line-height: 1.5rem;
       border-radius: pdz.shape(corner-xs);
       height: 1.5rem;
@@ -228,7 +228,7 @@
       height: 0.75rem;
       text-align: center;
       font-weight: var(--pdz-font-weight-bold);
-      font-size: 0.7rem;
+      font-size: pdz.font-size(xs);
     }
 
     .streak {

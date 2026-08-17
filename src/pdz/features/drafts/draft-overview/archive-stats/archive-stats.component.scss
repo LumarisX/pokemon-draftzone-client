@@ -73,8 +73,8 @@ tr td:last-child {
 }
 
 .stats-title {
-  font-family: var(--pdz-font-fancy);
-  font-size: 1.875rem;
+  font-family: var(--pdz-font-display);
+  font-size: pdz.font-size(2xl);
   font-weight: 700;
   text-align: center;
 }

@@ -109,7 +109,7 @@
 
   &__import-hint {
     margin: 0;
-    font-size: 0.875rem;
+    font-size: pdz.font-size(sm);
     color: pdz.color(on-surface-variant);
   }
 
@@ -174,7 +174,7 @@
   &__empty-title {
     margin: 0;
     font-weight: 700;
-    font-size: 1.125rem;
+    font-size: pdz.font-size(md);
     color: pdz.color(on-surface);
   }
 
@@ -263,7 +263,7 @@
   }
 
   &__subname {
-    font-size: 0.75rem;
+    font-size: pdz.font-size(xs);
     color: pdz.color(on-surface-variant);
     overflow: hidden;
     text-overflow: ellipsis;
@@ -292,7 +292,7 @@
   }
 
   &__invalid-label {
-    font-size: 0.8125rem;
+    font-size: pdz.font-size(sm);
     font-weight: 600;
     color: pdz.color(error);
     white-space: nowrap;
@@ -344,7 +344,7 @@
     align-items: center;
     gap: pdz.space(xs);
     margin: 0;
-    font-size: 0.8125rem;
+    font-size: pdz.font-size(sm);
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -429,12 +429,12 @@
   }
 
   &__title {
-    font-size: 0.8125rem;
+    font-size: pdz.font-size(sm);
     font-weight: 600;
   }
 
   &__count {
-    font-size: 0.75rem;
+    font-size: pdz.font-size(xs);
     color: pdz.color(on-surface-variant);
   }
 
@@ -539,7 +539,7 @@
 
   &__label {
     font-weight: 700;
-    font-size: 0.875rem;
+    font-size: pdz.font-size(sm);
     color: pdz.color(on-surface-variant);
   }
 
@@ -561,7 +561,7 @@
 
   &__hint {
     justify-self: end;
-    font-size: 0.75rem;
+    font-size: pdz.font-size(xs);
     color: pdz.color(on-surface-variant);
   }
 }
@@ -590,5 +590,5 @@
 }
 
 .pokemon-card__name {
-  font-family: var(--pdz-font-fancy);
+  font-family: var(--pdz-font-display);
 }

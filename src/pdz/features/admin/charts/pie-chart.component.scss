@@ -27,13 +27,13 @@
 
 .pie-center-value {
   fill: pdz.color(on-surface);
-  font-size: 1.6rem;
+  font-size: pdz.font-size(xl);
   font-weight: 700;
 }
 
 .pie-center-label {
   fill: pdz.color(on-surface-variant);
-  font-size: 0.8rem;
+  font-size: pdz.font-size(sm);
 }
 
 .pie-slice {
@@ -57,7 +57,7 @@
   row-gap: pdz.space(sm);
   width: max-content;
   max-width: 100%;
-  font-size: 0.88rem;
+  font-size: pdz.font-size(sm);
   color: pdz.color(on-surface);
 
   li {

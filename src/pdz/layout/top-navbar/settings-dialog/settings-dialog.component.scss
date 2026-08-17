@@ -16,8 +16,8 @@
   }
 
   &__title {
-    font-family: var(--pdz-font-fancy);
-    font-size: 1.75rem;
+    font-family: var(--pdz-font-display);
+    font-size: pdz.font-size(xl);
     color: pdz.color(on-surface);
   }
 
@@ -53,7 +53,7 @@
 .label {
   display: block;
   margin-bottom: 0.25rem;
-  font-size: 0.875rem;
+  font-size: pdz.font-size(sm);
   color: pdz.color(on-surface-variant, pdz.color(on-surface));
 }
 

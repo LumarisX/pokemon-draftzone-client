@@ -42,7 +42,7 @@ input {
   align-items: center;
 
   &__title {
-    @include apply-typography(headline-md);
+    @include text(title);
   }
 }
 
@@ -167,7 +167,7 @@ input {
     }
 
     &__header {
-      @include apply-typography(title-sm);
+      @include text(subtitle);
     }
   }
 }
@@ -219,7 +219,7 @@ input {
   }
 
   &__label {
-    @include apply-typography(label-sm);
+    @include text(label);
   }
 
   &__container {
@@ -232,7 +232,7 @@ input {
     border: none;
     background: transparent;
     color: pdz.color(on-surface);
-    @include apply-typography(body-sm);
+    @include text(body-sm);
     padding: 0 0.25rem;
     transition: color 120ms ease;
 
@@ -370,7 +370,7 @@ input {
 
       .speed {
         font-weight: 700;
-        font-size: 1rem;
+        font-size: pdz.font-size(md);
         color: pdz.color(on-surface);
         text-align: center;
         font-variant-numeric: tabular-nums;
@@ -387,7 +387,7 @@ input {
           padding: 0.125rem 0.375rem;
           background: pdz.color(menu-container);
           border-radius: pdz.shape(corner-xs);
-          font-size: 0.75rem;
+          font-size: pdz.font-size(xs);
           font-weight: 500;
           color: pdz.color(on-surface-variant);
           white-space: nowrap;
@@ -406,7 +406,7 @@ input {
       .placeholder-content {
         color: pdz.color(primary-accent);
         font-weight: 600;
-        font-size: 0.875rem;
+        font-size: pdz.font-size(sm);
       }
     }
 
@@ -433,7 +433,7 @@ input {
     border-radius: $stat-padding;
 
     .stat-label {
-      @include apply-typography(title-sm);
+      @include text(subtitle);
     }
 
     .stat-base {
@@ -441,7 +441,7 @@ input {
       align-items: center;
       gap: $stat-padding;
       .base-label {
-        @include apply-typography(label-md);
+        @include text(label);
       }
 
       .base-value {
@@ -452,7 +452,7 @@ input {
         display: flex;
         align-items: center;
         justify-content: center;
-        @include apply-typography(body-sm);
+        @include text(body-sm);
       }
     }
 
@@ -490,7 +490,7 @@ input {
       border: 1px solid pdz.color(menu-border);
       background: pdz.color(menu-container-low);
       cursor: pointer;
-      @include apply-typography(body-xs);
+      @include text(body-sm);
       text-transform: uppercase;
 
       &:hover {
@@ -505,7 +505,7 @@ input {
 
       .hp-star {
         color: pdz.color(menu);
-        font-size: 1.25rem;
+        font-size: pdz.font-size(lg);
         width: 1.25rem;
         height: 1.25rem;
 
@@ -525,7 +525,7 @@ input {
         border-radius: pdz.shape(corner-xs);
         cursor: pointer;
         font-weight: 600;
-        font-size: 1rem;
+        font-size: pdz.font-size(md);
         background: pdz.color(neutral);
         color: pdz.color(on-surface-variant);
 
@@ -671,7 +671,7 @@ input {
     background: pdz.color(surface);
     width: 100%;
     font-weight: 600;
-    font-size: 0.875rem;
+    font-size: pdz.font-size(sm);
     position: sticky;
     text-align: center;
     white-space: nowrap;
@@ -728,7 +728,7 @@ input {
   &__type-badge {
     padding: 0.125rem 0.5rem;
     border-radius: pdz.shape(corner-xs);
-    font-size: 0.75rem;
+    font-size: pdz.font-size(xs);
     font-weight: 600;
     text-align: center;
     color: white;
@@ -809,11 +809,11 @@ input {
   border: 1px solid pdz.color(menu-border);
   background: pdz.color(menu-container-low);
   text-align: center;
-  @include apply-typography(body-sm);
+  @include text(body-sm);
 }
 
 textarea {
   background-color: inherit;
-  @include apply-typography(body-sm);
+  @include text(body-sm);
   min-height: 8rem;
 }

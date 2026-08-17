@@ -21,8 +21,8 @@
   align-items: center;
   margin-bottom: pdz.space(lg);
   .title {
-    font-family: var(--pdz-font-fancy);
-    font-size: 2rem;
+    font-family: var(--pdz-font-display);
+    font-size: pdz.font-size(2xl);
     font-weight: 600;
     margin: 0;
   }
@@ -55,7 +55,7 @@
   &__title {
     margin: 0;
     color: pdz.color(on-primary-container);
-    font-family: var(--pdz-font-fancy);
+    font-family: var(--pdz-font-display);
     font-size: clamp(1.25rem, 2.5vw, 1.75rem);
     line-height: 1.2;
   }
@@ -92,13 +92,13 @@
   @include pdz-card("primary");
   .card-header {
     .league-name {
-      font-size: 1.25rem;
+      @include text(subtitle);
     }
 
     .card-title > .league-label {
       display: block;
       margin-bottom: pdz.space(2xs);
-      @include apply-typography(label-xs);
+      @include text(label);
       color: pdz.color(on-surface-variant);
     }
   }

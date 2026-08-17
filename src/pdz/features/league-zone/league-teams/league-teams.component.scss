@@ -34,7 +34,7 @@
   }
 
   &__empty {
-    @include apply-typography(body-lg);
+    @include text(title);
     color: pdz.color(on-surface-variant);
   }
 }
@@ -72,14 +72,14 @@
   }
 
   &__title {
-    @include apply-typography(title-md);
+    @include text(title);
     margin: 0;
     color: pdz.color(on-surface);
     text-align: left;
   }
 
   &__count {
-    @include apply-typography(label-md);
+    @include text(label);
     padding: 0 pdz.space(sm);
     border-radius: pdz.shape(corner-full);
     background: pdz.color(surface-container-high);

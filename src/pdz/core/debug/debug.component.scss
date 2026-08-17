@@ -23,7 +23,7 @@
 }
 
 .debug-panel__title {
-  @include pdz.apply-typography(headline-md);
+  @include pdz.text(title);
   margin-bottom: pdz.space(lg);
 }
 
@@ -60,7 +60,8 @@
   border-radius: pdz.shape(corner-sm);
   box-shadow: var(--pdz-level-inset-1);
   font-family: var(--pdz-font-mono);
-  @include pdz.font-size(0.8rem);
+  font-size: pdz.font-size(xs);
+  line-height: pdz.leading(tight);
 }
 
 .debug-actions {

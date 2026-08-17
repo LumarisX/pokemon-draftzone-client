@@ -21,7 +21,7 @@
   }
 }
 .btn {
-  @include apply-typography("label-lg");
+  @include text(label);
   padding: pdz.space(md) pdz.space(lg);
   border: none;
   border-radius: pdz.shape(corner-md);
@@ -110,7 +110,7 @@
 .round-chip {
   // Body rather than a label style: the label scale uppercases, and round
   // names are the organizer's own text ("Week 1", "Quarterfinals").
-  @include apply-typography("body-md");
+  @include text(body);
   font-weight: 600;
   padding: pdz.space(sm) pdz.space(md);
   border-radius: pdz.shape(corner-md);
@@ -187,7 +187,7 @@
   }
 
   &__current-badge {
-    @include apply-typography("label-sm");
+    @include text(label);
     padding: 2px pdz.space(sm);
     border-radius: pdz.shape(corner-full);
     background: pdz.color(primary-subtle);

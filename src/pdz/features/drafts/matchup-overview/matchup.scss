@@ -13,8 +13,8 @@
     padding: 0 1rem 0.5rem;
     font-weight: var(--pdz-font-weight-bold);
     .widget-label {
-      font-size: 1.2rem;
-      font-family: var(--pdz-font-fancy);
+      font-size: pdz.font-size(lg);
+      font-family: var(--pdz-font-display);
     }
 
     .widget-options {
@@ -111,13 +111,13 @@
   text-align: center;
   .detail-title {
     font-weight: var(--pdz-font-weight-bold);
-    font-size: 0.8rem;
+    font-size: pdz.font-size(sm);
     line-height: 0.8rem;
     color: pdz.color(primary-accent);
   }
   .detail-text {
     font-weight: var(--pdz-font-weight-bold);
-    font-size: 1rem;
+    font-size: pdz.font-size(md);
     line-height: 1rem;
     color: pdz.color(on-surface);
   }

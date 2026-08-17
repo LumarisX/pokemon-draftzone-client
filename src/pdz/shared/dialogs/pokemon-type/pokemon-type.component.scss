@@ -26,7 +26,7 @@
       height: 1.5rem;
 
       .type__text {
-        font-size: 0.8rem;
+        font-size: pdz.font-size(sm);
         width: 3.5rem;
       }
     }
@@ -63,7 +63,7 @@
     line-height: 1;
     position: relative;
     user-select: none;
-    font-family: var(--pdz-font-regular);
+    font-family: var(--pdz-font-body);
     font-weight: 700;
     width: 2.5rem;
     text-align: center;

@@ -42,7 +42,7 @@
     background: pdz.color(surface-container-lowest);
     color: pdz.color(on-surface-variant);
     white-space: nowrap;
-    @include apply-typography(label-sm);
+    @include text(label);
 
     &--current {
       border-color: pdz.color(primary-border);

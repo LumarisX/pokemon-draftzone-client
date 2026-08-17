@@ -48,7 +48,7 @@
   height: 100%;
 
   &__heading {
-    @include apply-typography("label-lg");
+    @include text(label);
     color: pdz.color(on-surface);
     margin: 0;
   }
@@ -74,7 +74,7 @@
 }
 
 .trade-label {
-  @include apply-typography("label-md");
+  @include text(label);
   color: pdz.color(on-surface);
   font-weight: 600;
 }
@@ -85,7 +85,7 @@
   border-radius: pdz.shape(corner-sm);
   background: pdz.color(surface);
   color: pdz.color(on-surface);
-  @include apply-typography("body-md");
+  @include text(body);
   cursor: pointer;
   transition: all 0.2s ease;
 
@@ -128,7 +128,7 @@
   border-radius: pdz.shape(corner-sm);
   background: pdz.color(surface);
   color: pdz.color(on-surface);
-  @include apply-typography("body-md");
+  @include text(body);
   transition: all 0.2s ease;
 
   &:focus {
@@ -150,7 +150,7 @@
   padding: pdz.space(xl);
   text-align: center;
   color: pdz.color(on-surface-variant);
-  @include apply-typography("body-md");
+  @include text(body);
   font-style: italic;
   min-height: 150px;
 
@@ -205,7 +205,7 @@
 }
 
 .pokemon-label {
-  @include apply-typography("label-md");
+  @include text(label);
   color: pdz.color(on-surface);
   cursor: pointer;
   user-select: none;
@@ -219,7 +219,7 @@
 }
 
 .pokemon-cost {
-  @include apply-typography("label-sm");
+  @include text(label);
   color: pdz.color(on-surface-variant);
   border-radius: pdz.shape(corner-sm);
   padding: 0 pdz.space(xs);
@@ -228,7 +228,7 @@
 }
 
 .summary-text {
-  @include apply-typography("label-sm");
+  @include text(label);
   color: pdz.color(on-primary-container);
   margin: 0;
 }
@@ -248,7 +248,7 @@
 }
 
 .divider-arrow {
-  font-size: 2rem;
+  font-size: pdz.font-size(2xl);
   color: pdz.color(primary-accent);
   opacity: 0.6;
 }
@@ -285,7 +285,7 @@
   gap: pdz.space(md);
 
   &__heading {
-    @include apply-typography("title-md");
+    @include text(title);
     margin: 0;
     color: pdz.color(on-surface);
   }
@@ -293,7 +293,7 @@
   &__empty {
     margin: 0;
     color: pdz.color(on-surface-variant);
-    @include apply-typography("body-md");
+    @include text(body);
   }
 }
 
@@ -335,13 +335,13 @@
   }
 
   &__heading {
-    @include apply-typography("label-lg");
+    @include text(label);
     color: pdz.color(on-surface);
     margin: 0;
   }
 
   &__count {
-    @include apply-typography("body-sm");
+    @include text(body-sm);
     color: pdz.color(on-surface-variant);
     margin-right: pdz.space(md);
   }
@@ -354,7 +354,7 @@
 
   &__empty {
     margin: 0;
-    @include apply-typography("body-sm");
+    @include text(body-sm);
     color: pdz.color(on-surface-variant);
   }
 }
@@ -377,7 +377,7 @@
   }
 
   &__status {
-    @include apply-typography("label-sm");
+    @include text(label);
     border-radius: pdz.shape(corner-sm);
     padding: pdz.space(2xs) pdz.space(xs);
     font-weight: 600;
@@ -403,7 +403,7 @@
   }
 
   &__timestamp {
-    @include apply-typography("body-sm");
+    @include text(body-sm);
     color: pdz.color(on-surface-variant);
   }
 
@@ -414,7 +414,7 @@
   }
 
   &__action {
-    @include apply-typography("label-sm");
+    @include text(label);
     padding: pdz.space(2xs) pdz.space(sm);
     border-radius: pdz.shape(corner-sm);
     border: 1px solid pdz.color(outline-variant);
@@ -447,7 +447,7 @@
   }
 
   &__error {
-    @include apply-typography("body-sm");
+    @include text(body-sm);
     color: pdz.color(error);
     margin: pdz.space(2xs) 0 0;
   }
@@ -471,7 +471,7 @@
   }
 
   &__team {
-    @include apply-typography("label-md");
+    @include text(label);
     color: pdz.color(on-surface);
     margin: 0 0 pdz.space(2xs) 0;
     font-weight: 600;
@@ -482,14 +482,14 @@
     display: flex;
     flex-wrap: wrap;
     gap: pdz.space(2xs) pdz.space(xs);
-    @include apply-typography("body-sm");
+    @include text(body-sm);
     color: pdz.color(on-surface-variant);
   }
 
   &__swap {
     align-self: center;
     color: pdz.color(primary-accent);
-    @include apply-typography("label-lg");
+    @include text(label);
 
     @media (max-width: 768px) {
       transform: rotate(90deg);
@@ -512,7 +512,7 @@
 }
 
 .btn {
-  @include apply-typography("label-lg");
+  @include text(label);
   padding: pdz.space(md) pdz.space(lg);
   border: none;
   border-radius: pdz.shape(corner-md);

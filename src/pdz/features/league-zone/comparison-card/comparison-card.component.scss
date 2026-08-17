@@ -62,16 +62,16 @@ $container-padding: pdz.space(md);
 }
 
 .entity-primary-name {
-  font-size: 0.9rem;
+  font-size: pdz.font-size(sm);
   overflow: hidden;
   line-height: 1rem;
   max-height: 2rem;
-  font-family: var(--pdz-font-fancy);
+  font-family: var(--pdz-font-display);
   text-overflow: ellipsis;
 }
 
 .entity-secondary-name {
-  font-size: 0.7rem;
+  font-size: pdz.font-size(xs);
   color: pdz.color(on-surface-variant);
   white-space: nowrap;
   overflow: hidden;
@@ -124,7 +124,7 @@ $container-padding: pdz.space(md);
 .status {
   border-radius: 2rem;
   padding: pdz.space(xs);
-  font-size: 0.7rem;
+  font-size: pdz.font-size(xs);
   user-select: none;
   line-height: 0.7rem;
   transition: transform 0.3s ease-in-out;

@@ -37,8 +37,8 @@ $navbar-height: 3.5rem;
     border-radius: pdz.shape(corner-sm);
     background: pdz.color(surface);
     color: pdz.color(on-surface);
-    font-family: var(--pdz-font-fancy);
-    font-size: 1rem;
+    font-family: var(--pdz-font-display);
+    font-size: pdz.font-size(md);
     cursor: pointer;
 
     @include respond-above(medium) {

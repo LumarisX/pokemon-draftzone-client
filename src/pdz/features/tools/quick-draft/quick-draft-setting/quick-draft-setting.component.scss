@@ -16,15 +16,15 @@
 
 h1,
 h2 {
-  font-family: var(--pdz-font-fancy);
+  font-family: var(--pdz-font-display);
 }
 
 h2 {
-  font-size: 1.5rem;
+  font-size: pdz.font-size(xl);
 }
 
 .qd-template {
-  font-family: var(--pdz-font-fancy);
+  font-family: var(--pdz-font-display);
   width: 15rem;
   min-height: 12rem;
   padding: pdz.space(lg);
@@ -34,7 +34,7 @@ h2 {
   row-gap: 0.5rem;
 
   .qd-header {
-    font-size: 1.25rem;
+    font-size: pdz.font-size(lg);
     text-align: center;
     width: 100%;
     border-bottom: 2px solid pdz.color(primary-border);
@@ -45,7 +45,7 @@ h2 {
     min-height: 0;
     height: fit-content;
     .qd-header {
-      font-size: 1.15rem;
+      font-size: pdz.font-size(md);
     }
   }
 }
@@ -88,7 +88,7 @@ h2 {
     }
 
     .option-label {
-      font-size: 0.8rem;
+      font-size: pdz.font-size(sm);
     }
     .custom-tier-options {
       display: grid;

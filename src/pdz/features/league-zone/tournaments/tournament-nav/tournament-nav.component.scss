@@ -24,19 +24,19 @@
   }
 
   &__league-name {
-    @include apply-typography(label-sm);
+    @include text(label);
     color: pdz.color(on-surface-variant);
   }
 
   &__title {
-    @include apply-typography(headline-md);
-    font-family: var(--pdz-font-fancy);
+    @include text(title);
+    font-family: var(--pdz-font-display);
     margin: 0;
     color: pdz.color(on-primary-container);
   }
 
   &__description {
-    @include apply-typography(body-md);
+    @include text(body);
     margin: 0;
     color: pdz.color(on-surface-variant);
   }
@@ -55,7 +55,7 @@
   gap: 2px;
 
   &__label {
-    @include apply-typography(label-sm);
+    @include text(label);
     color: pdz.color(on-surface-variant);
     font-weight: 600;
     text-transform: uppercase;
@@ -63,7 +63,7 @@
   }
 
   &__value {
-    @include apply-typography(body-md);
+    @include text(body);
     color: pdz.color(on-primary-container);
   }
 }
@@ -86,7 +86,7 @@
   }
 
   &__group-title {
-    @include apply-typography(label-sm);
+    @include text(label);
     width: 100%;
     padding: 0 pdz.space(sm);
     color: pdz.color(on-surface-variant);
@@ -106,8 +106,8 @@
   border: none;
   background-color: transparent;
   border-radius: pdz.shape(corner-sm);
-  font-family: var(--pdz-font-fancy);
-  font-size: 1rem;
+  font-family: var(--pdz-font-display);
+  font-size: pdz.font-size(md);
   color: pdz.color(on-surface);
   text-decoration: none;
   cursor: pointer;
@@ -120,7 +120,7 @@
 
   // Ongoing-draft sublabel: wraps onto its own line beneath the link label.
   &__status {
-    @include apply-typography(label-xs);
+    @include text(label);
     color: pdz.color(primary-accent);
     font-weight: 600;
     text-transform: uppercase;

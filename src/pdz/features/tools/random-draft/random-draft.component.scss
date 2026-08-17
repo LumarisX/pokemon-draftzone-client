@@ -15,7 +15,7 @@
   gap: pdz.space(xs);
   width: fit-content;
   padding: pdz.space(xs) pdz.space(sm);
-  font-family: var(--pdz-font-fancy);
+  font-family: var(--pdz-font-display);
   background: pdz.color(menu-container);
   color: pdz.color(on-menu-container);
   border: 1px solid pdz.color(menu-border);
@@ -71,7 +71,7 @@
 .random-btn__label {
   width: 8rem;
   text-align: center;
-  font-family: var(--pdz-font-fancy);
+  font-family: var(--pdz-font-display);
 }
 
 .random-team {
@@ -94,7 +94,7 @@
 .random-actions__btn {
   padding: 0.125rem;
   font: inherit;
-  font-size: 0.875rem;
+  font-size: pdz.font-size(sm);
   font-weight: 600;
   background: pdz.color(menu-container);
   color: pdz.color(on-menu-container);

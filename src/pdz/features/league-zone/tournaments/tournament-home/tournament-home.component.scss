@@ -41,8 +41,8 @@
   box-shadow: var(--pdz-level-1);
 
   &__name {
-    @include apply-typography(headline-sm);
-    font-family: var(--pdz-font-fancy);
+    @include text(subtitle);
+    font-family: var(--pdz-font-display);
     color: pdz.color(on-surface);
     margin: 0;
     min-width: 0;
@@ -79,7 +79,7 @@
 }
 
 .status-badge {
-  @include apply-typography(label-sm);
+  @include text(label);
   display: inline-flex;
   align-items: center;
   padding: pdz.space(xs) pdz.space(sm);
@@ -131,19 +131,19 @@
   }
 
   &__label {
-    @include apply-typography(label-sm);
+    @include text(label);
     color: pdz.color(on-surface-variant);
     font-weight: 600;
   }
 
   &__value {
-    @include apply-typography(body-md);
+    @include text(body);
     color: pdz.color(on-surface);
     word-break: break-word;
   }
 
   &__time {
-    @include apply-typography(body-sm);
+    @include text(body-sm);
     display: inline-flex;
     align-items: center;
     gap: pdz.space(xs);
@@ -166,8 +166,8 @@
   }
 
   &__title {
-    @include apply-typography(title-md);
-    font-family: var(--pdz-font-fancy);
+    @include text(title);
+    font-family: var(--pdz-font-display);
     color: pdz.color(on-surface);
     margin: 0;
   }
@@ -184,7 +184,7 @@
   border-radius: pdz.shape(corner-md);
   box-shadow: var(--pdz-level-2);
   &__text {
-    @include apply-typography(body-md);
+    @include text(body);
     color: pdz.color(on-surface-variant);
     margin: 0;
   }
@@ -214,7 +214,7 @@
       color: pdz.color(on-primary);
 
       th {
-        @include apply-typography(label-sm);
+        @include text(label);
         padding: pdz.space(sm) pdz.space(md);
         text-align: left;
         white-space: nowrap;
@@ -263,7 +263,7 @@
           gap: pdz.space(2xs);
 
           .name {
-            @include apply-typography(body-md);
+            @include text(body);
             font-weight: 600;
             color: pdz.color(on-surface);
           }
@@ -276,13 +276,13 @@
           }
 
           .cost {
-            @include apply-typography(label-md);
+            @include text(label);
             font-weight: 500;
           }
         }
 
         &.cell-stat {
-          @include apply-typography(body-md);
+          @include text(body);
           text-align: center;
           font-weight: 500;
           color: pdz.color(on-surface-variant);
@@ -309,7 +309,7 @@
   }
 
   &__title {
-    @include apply-typography(title-md);
+    @include text(title);
     margin: 0 0 pdz.space(md);
     color: pdz.color(on-surface);
   }
@@ -319,7 +319,7 @@
   }
 
   &__note {
-    @include apply-typography(body-sm);
+    @include text(body-sm);
     color: pdz.color(on-surface-variant);
     margin: 0 0 pdz.space(md);
     padding: pdz.space(sm);
@@ -343,7 +343,7 @@
     display: flex;
     align-items: center;
     gap: pdz.space(xs);
-    @include apply-typography(body-md);
+    @include text(body);
     color: pdz.color(on-surface);
 
     &--done {

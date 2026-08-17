@@ -22,7 +22,7 @@
   margin-bottom: pdz.space(lg);
   min-height: 40px;
   .title {
-    font-size: 2rem;
+    font-size: pdz.font-size(2xl);
     font-weight: 600;
     margin: 0;
   }
@@ -51,7 +51,7 @@
   @include pdz-card("primary");
   .card-header {
     .league-name {
-      font-size: 1.25rem;
+      font-size: pdz.font-size(lg);
     }
   }
 }

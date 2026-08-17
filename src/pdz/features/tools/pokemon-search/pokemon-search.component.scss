@@ -23,8 +23,8 @@
   flex-shrink: 0;
 
   &__title {
-    @include apply-typography(headline-sm);
-    font-family: var(--pdz-font-fancy);
+    @include text(subtitle);
+    font-family: var(--pdz-font-display);
     color: pdz.color(on-surface);
     margin: 0;
   }
@@ -105,7 +105,7 @@
 
   &__title {
     margin: 0;
-    @include apply-typography(title-md);
+    @include text(title);
     color: pdz.color(on-surface);
   }
 
@@ -157,7 +157,7 @@
   }
 
   &__empty-hint {
-    @include apply-typography(body-sm);
+    @include text(body-sm);
     opacity: 0.7;
   }
 
@@ -196,7 +196,7 @@
   }
 
   &__item-label {
-    @include apply-typography(body-md);
+    @include text(body);
     font-weight: 700;
     color: pdz.color(on-surface);
     overflow: hidden;
@@ -211,7 +211,7 @@
   }
 
   &__filter-chip {
-    @include apply-typography(body-sm);
+    @include text(body-sm);
     padding: 1px pdz.space(xs);
     border: 1px solid pdz.color(outline-variant);
     border-radius: pdz.shape(corner-sm);
@@ -232,12 +232,12 @@
   }
 
   &__item-meta {
-    @include apply-typography(body-sm);
+    @include text(body-sm);
     color: pdz.color(primary-accent);
   }
 
   &__item-date {
-    @include apply-typography(body-xs);
+    @include text(body-sm);
     color: pdz.color(on-surface-variant);
     opacity: 0.7;
   }

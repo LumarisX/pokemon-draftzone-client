@@ -25,8 +25,8 @@
   margin-bottom: pdz.space(xl);
 
   &__title {
-    @include apply-typography(headline-sm);
-    font-family: var(--pdz-font-fancy);
+    @include text(subtitle);
+    font-family: var(--pdz-font-display);
     color: pdz.color(on-surface);
     margin: 0;
   }
@@ -77,14 +77,14 @@
   }
 
   &__title {
-    @include apply-typography(title-md);
-    font-family: var(--pdz-font-fancy);
+    @include text(title);
+    font-family: var(--pdz-font-display);
     color: pdz.color(on-surface);
     margin: 0;
   }
 
   &__count {
-    @include apply-typography(label-sm);
+    @include text(label);
     color: pdz.color(on-surface-variant);
     background: pdz.color(surface-container);
     border-radius: pdz.shape(corner-full);
@@ -226,14 +226,14 @@
   }
 
   &__team-name {
-    @include apply-typography(title-sm);
-    font-family: var(--pdz-font-fancy);
+    @include text(subtitle);
+    font-family: var(--pdz-font-display);
     color: pdz.color(on-surface);
     word-break: break-word;
   }
 
   &__upload-error {
-    @include apply-typography(label-sm);
+    @include text(label);
     color: pdz.color(error);
   }
 
@@ -276,7 +276,7 @@
   }
 
   &__coach-name {
-    @include apply-typography(body-md);
+    @include text(body);
     font-weight: 600;
     color: pdz.color(on-surface);
   }
@@ -338,7 +338,7 @@
   }
 
   &__date {
-    @include apply-typography(label-sm);
+    @include text(label);
     color: pdz.color(on-surface-variant);
   }
 
@@ -366,13 +366,13 @@
   min-width: 0;
 
   &__label {
-    @include apply-typography(label-sm);
+    @include text(label);
     color: pdz.color(on-surface-variant);
     font-weight: 600;
   }
 
   &__value {
-    @include apply-typography(body-sm);
+    @include text(body-sm);
     color: pdz.color(on-surface);
     word-break: break-word;
   }
@@ -381,7 +381,7 @@
 // ── Sign-up status select ─────────────────────────────────────────────────────
 
 .status-select {
-  @include apply-typography(label-sm);
+  @include text(label);
   padding: pdz.space(2xs) pdz.space(xs);
   border-radius: pdz.shape(corner-full);
   border: 1px solid pdz.color(outline-variant);
@@ -412,7 +412,7 @@
 // ── Status badges ─────────────────────────────────────────────────────────────
 
 .status-badge {
-  @include apply-typography(label-sm);
+  @include text(label);
   display: inline-flex;
   align-items: center;
   padding: pdz.space(2xs) pdz.space(xs);
@@ -439,7 +439,7 @@
 }
 
 .empty-state {
-  @include apply-typography(body-md);
+  @include text(body);
   color: pdz.color(on-surface-variant);
   padding: pdz.space(xl);
   text-align: center;

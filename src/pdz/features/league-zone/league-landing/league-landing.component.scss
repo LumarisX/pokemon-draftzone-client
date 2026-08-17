@@ -66,14 +66,14 @@
   }
 
   &__title {
-    @include apply-typography(title-sm);
+    @include text(subtitle);
     color: pdz.color(primary-accent);
     margin: 0;
     font-weight: 700;
   }
 
   &__description {
-    @include apply-typography(body-lg);
+    @include text(title);
     color: pdz.color(on-surface-variant);
     margin: 0;
     max-width: 600px;
@@ -86,7 +86,7 @@
   gap: pdz.space(lg);
 
   &__heading {
-    @include apply-typography(title-lg);
+    @include text(headline);
     color: pdz.color(on-surface);
     margin: 0;
     font-weight: 700;
@@ -95,7 +95,7 @@
   }
 
   &__empty {
-    @include apply-typography(body-lg);
+    @include text(title);
     color: pdz.color(on-surface-variant);
   }
 
@@ -155,14 +155,14 @@
   }
 
   &__name {
-    @include apply-typography(title-md);
+    @include text(title);
     color: pdz.color(on-surface);
     margin: 0;
     font-weight: 600;
   }
 
   &__status {
-    @include apply-typography(label-sm);
+    @include text(label);
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.06em;
@@ -188,7 +188,7 @@
   }
 
   &__description {
-    @include apply-typography(body-md);
+    @include text(body);
     color: pdz.color(on-surface-variant);
     margin: 0 0 pdz.space(md);
   }
@@ -207,7 +207,7 @@
   }
 
   &__label {
-    @include apply-typography(label-sm);
+    @include text(label);
     color: pdz.color(on-surface-variant);
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -215,7 +215,7 @@
   }
 
   &__value {
-    @include apply-typography(body-md);
+    @include text(body);
     color: pdz.color(on-surface);
     font-weight: 500;
   }
@@ -228,7 +228,7 @@
   }
 
   &__badge {
-    @include apply-typography(label-sm);
+    @include text(label);
     font-weight: 700;
     padding: pdz.space(xs) pdz.space(md);
     border-radius: pdz.shape(corner-full);
@@ -240,7 +240,7 @@
   }
 
   &__discord {
-    @include apply-typography(label-sm);
+    @include text(label);
     font-weight: 700;
     color: #5865f2;
     background: rgba(88, 101, 242, 0.12);

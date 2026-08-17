@@ -27,7 +27,7 @@
   }
 
   &__field-name {
-    font-size: 0.875rem;
+    font-size: pdz.font-size(sm);
     font-weight: 700;
     color: pdz.color(on-surface);
   }
@@ -55,7 +55,7 @@
     background: pdz.color(primary-container);
     color: pdz.color(on-primary-container);
     cursor: pointer;
-    font-size: 0.875rem;
+    font-size: pdz.font-size(sm);
     line-height: 1;
 
     &:hover {
@@ -80,7 +80,7 @@
     background: transparent;
     color: pdz.color(on-surface-variant);
     cursor: pointer;
-    font-size: 0.75rem;
+    font-size: pdz.font-size(xs);
     line-height: 1;
 
     &:hover {
@@ -119,7 +119,7 @@
     background: pdz.color(surface);
     color: pdz.color(on-surface);
     font: inherit;
-    font-size: 0.875rem;
+    font-size: pdz.font-size(sm);
 
     &:focus {
       outline: 2px solid pdz.color(primary-accent);
@@ -141,7 +141,7 @@
     background: pdz.color(surface-container);
     color: pdz.color(on-surface-variant);
     font: inherit;
-    font-size: 0.8125rem;
+    font-size: pdz.font-size(sm);
     cursor: pointer;
     white-space: nowrap;
 
@@ -158,7 +158,7 @@
 
     &--sm {
       padding: 0.125rem pdz.space(xs);
-      font-size: 0.75rem;
+      font-size: pdz.font-size(xs);
     }
 
     &--wide {
@@ -229,7 +229,7 @@
     background: pdz.color(error-container);
     color: pdz.color(on-error-container);
     font: inherit;
-    font-size: 0.7rem;
+    font-size: pdz.font-size(xs);
     cursor: pointer;
 
     &:hover {
@@ -245,7 +245,7 @@
     background: transparent;
     color: pdz.color(on-surface-variant);
     font: inherit;
-    font-size: 0.8125rem;
+    font-size: pdz.font-size(sm);
     cursor: pointer;
 
     &:hover {

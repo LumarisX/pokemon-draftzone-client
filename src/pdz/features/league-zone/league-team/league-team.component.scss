@@ -113,33 +113,33 @@
   }
 
   &__error {
-    @include apply-typography(body-sm);
+    @include text(body-sm);
     color: pdz.color(error);
     margin: 0;
   }
 
   &__team-name {
-    @include apply-typography(headline-md);
+    @include text(title);
     color: pdz.color(primary-accent);
     margin: 0;
 
     @include respond-above(medium) {
-      @include apply-typography(headline-lg);
+      @include text(headline);
     }
   }
 
   &__coach-name {
-    @include apply-typography(title-md);
+    @include text(title);
     color: pdz.color(on-surface);
     margin: 0;
 
     @include respond-above(medium) {
-      @include apply-typography(title-lg);
+      @include text(headline);
     }
   }
 
   &__time {
-    @include apply-typography(body-lg);
+    @include text(title);
     color: pdz.color(secondary-accent);
     margin: 0;
   }
@@ -154,7 +154,7 @@
 
   &__wins {
     @include pdz-league-record-box();
-    font-size: 1.2rem;
+    font-size: pdz.font-size(lg);
     background-color: pdz.color(positive);
     color: pdz.color(on-positive);
     line-height: 2rem;
@@ -165,7 +165,7 @@
   &__losses {
     @include pdz-league-record-box();
     background-color: pdz.color(negative);
-    font-size: 1.2rem;
+    font-size: pdz.font-size(lg);
     color: pdz.color(on-negative);
     line-height: 2rem;
     width: 2rem;
@@ -226,7 +226,7 @@
   }
 
   &-header {
-    @include apply-typography(title-md);
+    @include text(title);
     border-bottom: 2px solid pdz.color(primary-accent);
     padding: 0 pdz.space(xs);
 
@@ -239,7 +239,7 @@
     }
 
     &__action {
-      @include apply-typography(label-sm);
+      @include text(label);
       display: inline-flex;
       align-items: center;
       gap: pdz.space(2xs);
@@ -291,7 +291,7 @@
         color: pdz.color(on-primary);
 
         th {
-          @include apply-typography(label-sm);
+          @include text(label);
           padding: pdz.space(sm) pdz.space(md);
           text-align: left;
           white-space: nowrap;
@@ -343,7 +343,7 @@
               gap: pdz.space(2xs);
 
               .name {
-                @include apply-typography(body-md);
+                @include text(body);
                 font-weight: 600;
                 color: pdz.color(on-surface);
               }
@@ -356,14 +356,14 @@
               }
 
               .cost {
-                @include apply-typography(label-md);
+                @include text(label);
                 font-weight: 500;
               }
             }
           }
 
           &.cell-stat {
-            @include apply-typography(body-md);
+            @include text(body);
             text-align: center;
             font-weight: 500;
             color: pdz.color(on-surface-variant);
@@ -378,7 +378,7 @@
         color: pdz.color(on-primary);
 
         th {
-          @include apply-typography(label-sm);
+          @include text(label);
           padding: pdz.space(sm) pdz.space(md);
           text-align: left;
           white-space: nowrap;

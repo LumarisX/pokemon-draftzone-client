@@ -1,29 +1,62 @@
 @use "sass:map";
 @use "../tokens/typography" as type-tokens;
-@use "../tokens/breakpoints" as bp-tokens;
 
-@mixin apply-typography($style-name) {
-  $style: map.get(type-tokens.$typography, $style-name);
+@mixin text($role, $family: true, $leading: null) {
+  @if not map.has-key(type-tokens.$text, $role) {
+    @error "'#{$role}' is not a valid PDZ text role. Available roles: #{map.keys(type-tokens.$text)}";
+  }
+  $style: map.get(type-tokens.$text, $role);
 
-  @if $style {
+  @if $family {
     font-family: map.get($style, font-family);
-    font-size: map.get($style, font-size);
-    font-weight: map.get($style, font-weight);
+  }
+  font-size: map.get($style, font-size);
+  font-weight: map.get($style, font-weight);
+
+  @if $leading == null {
     line-height: map.get($style, line-height);
-
-    @if map.has-key($style, text-transform) {
-      text-transform: map.get($style, text-transform);
-    }
-
-    @if map.has-key($style, opacity) {
-      opacity: map.get($style, opacity);
-    }
+  } @else if map.has-key(type-tokens.$line-height, $leading) {
+    line-height: map.get(type-tokens.$line-height, $leading);
   } @else {
-    @error "Typography style '#{$style-name}' not found. Available styles: #{map.keys(type-tokens.$typography)}";
+    line-height: $leading;
+  }
+
+  @if map.has-key($style, letter-spacing) {
+    letter-spacing: map.get($style, letter-spacing);
+  } @else {
+    letter-spacing: normal;
   }
 }
 
-@mixin font-size($font-size: 1rem, $multiplier: 1.2) {
-  font-size: $font-size;
-  line-height: $font-size * $multiplier;
+@mixin caps {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+@function font($family-name) {
+  @if not map.has-key(type-tokens.$fonts, $family-name) {
+    @error "'#{$family-name}' is not a valid PDZ font family token. Available tokens: #{map.keys(type-tokens.$fonts)}";
+  }
+  @return var(--pdz-font-#{$family-name});
+}
+
+@function font-size($size-name) {
+  @if not map.has-key(type-tokens.$font-size, $size-name) {
+    @error "'#{$size-name}' is not a valid PDZ font size token. Available tokens: #{map.keys(type-tokens.$font-size)}";
+  }
+  @return var(--pdz-font-size-#{$size-name});
+}
+
+@function font-weight($weight-name) {
+  @if not map.has-key(type-tokens.$font-weight, $weight-name) {
+    @error "'#{$weight-name}' is not a valid PDZ font weight token. Available tokens: #{map.keys(type-tokens.$font-weight)}";
+  }
+  @return var(--pdz-font-weight-#{$weight-name});
+}
+
+@function leading($line-height-name) {
+  @if not map.has-key(type-tokens.$line-height, $line-height-name) {
+    @error "'#{$line-height-name}' is not a valid PDZ line height token. Available tokens: #{map.keys(type-tokens.$line-height)}";
+  }
+  @return var(--pdz-line-height-#{$line-height-name});
 }

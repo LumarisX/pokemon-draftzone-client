@@ -34,7 +34,7 @@
 .action-button {
   &--sm {
     padding: pdz.space(2xs) pdz.space(sm);
-    @include apply-typography(label-sm);
+    @include text(label);
   }
 
   &--active {
@@ -53,7 +53,7 @@
   background-color: pdz.color(warning-container);
   color: pdz.color(on-warning-container);
   border-radius: pdz.shape(corner-full);
-  @include apply-typography(label-xs);
+  @include text(label);
   font-weight: 600;
 }
 
@@ -147,7 +147,7 @@
   }
 
   &__count {
-    @include apply-typography(label-xs);
+    @include text(label);
     color: pdz.color(on-surface-variant);
     opacity: 0.6;
     padding: pdz.space(2xs) pdz.space(xs);
@@ -169,7 +169,7 @@
       border-radius: pdz.shape(corner-xs);
       margin: pdz.space(2xs);
       color: pdz.color(on-surface-variant);
-      @include apply-typography(body-sm);
+      @include text(body-sm);
       font-style: italic;
 
       span {
@@ -236,7 +236,7 @@
   }
 
   &__name {
-    @include apply-typography(body-sm);
+    @include text(body-sm);
     font-weight: 600;
     color: pdz.color(on-surface);
     word-break: break-word;
@@ -254,7 +254,7 @@
     display: flex;
     align-items: center;
     gap: 2px;
-    @include apply-typography(label-xs);
+    @include text(label);
     color: pdz.color(on-surface-variant);
   }
 
@@ -311,9 +311,9 @@
   .tier__label {
     background-color: pdz.color(primary);
     color: pdz.color(on-primary);
-    font-family: var(--pdz-font-fancy);
+    font-family: var(--pdz-font-display);
     font-weight: 700;
-    @include apply-typography(label-sm);
+    @include text(label);
     padding: pdz.space(2xs) pdz.space(sm);
     border-radius: pdz.shape(corner-xs);
     min-width: 3.5rem;

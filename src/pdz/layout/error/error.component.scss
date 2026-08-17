@@ -72,7 +72,7 @@
 
   &__title {
     font-weight: 600;
-    @include apply-typography(title-xs);
+    @include text(label);
   }
 
   &__code {
@@ -81,7 +81,7 @@
     color: pdz.color("on-surface-variant");
     border-radius: pdz.shape(corner-sm);
     font-family: var(--pdz-font-mono);
-    font-size: 0.6875rem;
+    font-size: pdz.font-size(xs);
     letter-spacing: 0.02em;
     white-space: nowrap;
   }
@@ -109,13 +109,13 @@
   // ---- Body ---------------------------------------------------------------
   &__message {
     color: pdz.color("on-surface");
-    @include apply-typography(body-md);
+    @include text(body);
   }
 
   &__uri {
     color: pdz.color("on-surface-variant");
     font-family: var(--pdz-font-mono);
-    font-size: 0.75rem;
+    font-size: pdz.font-size(xs);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -132,7 +132,7 @@
     background: transparent;
     color: pdz.color("on-surface-variant");
     cursor: pointer;
-    @include apply-typography(label-sm);
+    @include text(label);
 
     &:hover {
       color: pdz.color("on-surface");
@@ -154,7 +154,7 @@
     padding: pdz.space(sm);
     background: pdz.color("surface-container-low");
     border-radius: pdz.shape(corner-sm);
-    font-size: 0.8125rem;
+    font-size: pdz.font-size(sm);
   }
 
   &__detail-list {
@@ -192,7 +192,7 @@
     background: pdz.color("surface-container-highest");
     border-radius: pdz.shape(corner-sm);
     font-family: var(--pdz-font-mono);
-    font-size: 0.6875rem;
+    font-size: pdz.font-size(xs);
     line-height: 1.45;
     white-space: pre-wrap;
     word-break: break-word;
@@ -216,7 +216,7 @@
     background: transparent;
     color: pdz.color("on-surface-variant");
     cursor: pointer;
-    @include apply-typography(label-xs);
+    @include text(label);
     transition:
       background 0.15s ease,
       color 0.15s ease,

@@ -17,28 +17,28 @@
 h1,
 h2,
 h3 {
-  font-family: var(--pdz-font-fancy);
+  font-family: var(--pdz-font-display);
 }
 
 h1 {
-  font-size: 2rem;
+  font-size: pdz.font-size(2xl);
   @media (max-width: 768px) {
-    font-size: 1.75rem;
+    font-size: pdz.font-size(xl);
   }
 }
 
 h2 {
-  font-size: 1.5rem;
+  font-size: pdz.font-size(xl);
   text-align: center;
   @media (max-width: 768px) {
-    font-size: 1.25rem;
+    font-size: pdz.font-size(lg);
   }
 }
 
 h3 {
-  font-size: 1.25rem;
+  font-size: pdz.font-size(lg);
   @media (max-width: 768px) {
-    font-size: 1.15rem;
+    font-size: pdz.font-size(md);
   }
 }
 
@@ -73,9 +73,9 @@ h3 {
 }
 
 .option-tier {
-  font-size: 0.8rem;
+  font-size: pdz.font-size(sm);
   font-weight: 800;
-  font-family: var(--pdz-font-regular);
+  font-family: var(--pdz-font-body);
   color: pdz.color(primary-accent);
 }
 

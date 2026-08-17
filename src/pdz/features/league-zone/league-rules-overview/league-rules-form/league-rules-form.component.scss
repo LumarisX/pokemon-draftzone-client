@@ -22,7 +22,7 @@
   gap: pdz.space(md);
 
   h2 {
-    @include apply-typography("headline-lg");
+    @include text(headline);
     color: pdz.color(on-surface);
     margin: 0;
   }
@@ -94,7 +94,7 @@
 
   p {
     margin: 0;
-    @include apply-typography("body-lg");
+    @include text(title);
   }
 }
 
@@ -127,7 +127,7 @@
   cursor: pointer;
   font-weight: 600;
   transition: all 0.2s ease;
-  font-size: 0.9rem;
+  font-size: pdz.font-size(sm);
 
   &:hover:not(:disabled) {
     background: pdz.color(menu-darker);
@@ -154,7 +154,7 @@
 }
 
 .label {
-  @include apply-typography("label-lg");
+  @include text(label);
   color: pdz.color(on-surface);
   font-weight: 600;
   display: block;
@@ -167,7 +167,7 @@
   border-radius: pdz.shape(corner-sm);
   background: pdz.color(surface);
   color: pdz.color(on-surface);
-  font-size: 1rem;
+  font-size: pdz.font-size(md);
   transition: all 0.2s ease;
   box-sizing: border-box;
 
@@ -191,7 +191,7 @@
   background: pdz.color(surface);
   color: pdz.color(on-surface);
   font-family: "Courier New", monospace;
-  font-size: 0.9rem;
+  font-size: pdz.font-size(sm);
   resize: vertical;
   transition: all 0.2s ease;
   box-sizing: border-box;
@@ -225,7 +225,7 @@
   border-radius: pdz.shape(corner-md);
   cursor: pointer;
   font-weight: 600;
-  font-size: 1rem;
+  font-size: pdz.font-size(md);
   transition: all 0.2s ease;
 
   &:hover:not(:disabled) {
@@ -241,7 +241,7 @@
 }
 
 .unsaved-indicator {
-  @include apply-typography("label-md");
+  @include text(label);
   color: pdz.color(warning);
   display: flex;
   align-items: center;

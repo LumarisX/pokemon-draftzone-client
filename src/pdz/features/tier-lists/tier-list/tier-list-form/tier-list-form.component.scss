@@ -77,7 +77,7 @@
   position: relative;
 
   &__chevron {
-    font-size: 1rem;
+    font-size: pdz.font-size(md);
     width: 1rem;
     height: 1rem;
     margin-left: calc(pdz.space(2xs) * -1);
@@ -107,7 +107,7 @@
     background: transparent;
     color: pdz.color(on-surface);
     cursor: pointer;
-    @include apply-typography(body-sm);
+    @include text(body-sm);
     text-align: left;
 
     mat-icon {
@@ -270,7 +270,7 @@
       align-items: center;
       justify-content: center;
       color: pdz.color(on-surface-variant);
-      @include apply-typography(body-sm);
+      @include text(body-sm);
       font-style: italic;
       min-height: 120px;
       border: 2px dashed pdz.color(outline-variant);
@@ -292,7 +292,7 @@
   }
 
   &__count {
-    @include apply-typography(label-xs);
+    @include text(label);
     color: pdz.color(on-surface-variant);
     opacity: 0.6;
     padding: pdz.space(2xs) pdz.space(xs);
@@ -387,7 +387,7 @@
 
   &__name {
     flex: 1;
-    @include apply-typography(body-md);
+    @include text(body);
     color: pdz.color(on-surface);
   }
 
@@ -458,7 +458,7 @@
   background-color: pdz.color(warning-container);
   color: pdz.color(on-warning-container);
   border-radius: pdz.shape(corner-full);
-  @include apply-typography(label-sm);
+  @include text(label);
 
   mat-icon {
     font-size: 1rem;
@@ -475,7 +475,7 @@
   background-color: pdz.color(secondary-container);
   color: pdz.color(on-secondary-container);
   border-radius: pdz.shape(corner-full);
-  @include apply-typography(label-sm);
+  @include text(label);
   font-weight: 600;
 
   mat-icon {
@@ -493,7 +493,7 @@
   background-color: pdz.color(primary-container);
   color: pdz.color(on-primary-container);
   border-radius: pdz.shape(corner-full);
-  @include apply-typography(label-sm);
+  @include text(label);
   font-weight: 600;
 
   mat-icon {

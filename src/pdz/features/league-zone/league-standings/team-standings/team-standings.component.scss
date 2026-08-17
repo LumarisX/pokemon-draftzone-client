@@ -25,7 +25,7 @@
     flex-direction: column;
     flex-shrink: 0;
     .standing-header-title {
-      font-family: var(--pdz-font-fancy);
+      font-family: var(--pdz-font-display);
       padding: 0.25rem 0.5rem;
       background-color: pdz.color(primary);
       color: pdz.color(on-primary);
@@ -74,7 +74,7 @@
     span {
       width: 100%;
       font-weight: 600;
-      font-size: 1.1rem;
+      font-size: pdz.font-size(md);
       text-align: center;
     }
     mat-icon {
@@ -109,7 +109,7 @@
     }
     .coach-names {
       color: pdz.color(secondary-accent);
-      font-size: 0.8rem;
+      font-size: pdz.font-size(sm);
       line-height: 1rem;
     }
   }
@@ -152,7 +152,7 @@
       height: 0.75rem;
       text-align: center;
       font-weight: var(--pdz-font-weight-bold);
-      font-size: 0.7rem;
+      font-size: pdz.font-size(xs);
       &--big {
         width: 2.5rem;
       }

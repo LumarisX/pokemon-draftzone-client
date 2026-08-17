@@ -36,7 +36,7 @@
   }
 
   &__title {
-    @include apply-typography(title-sm);
+    @include text(subtitle);
     color: pdz.color(on-surface-variant);
     margin: 0 0 pdz.space(md) 0;
     padding: 0 pdz.space(sm);
@@ -49,7 +49,7 @@
   }
 
   &__item {
-    @include apply-typography(body-sm);
+    @include text(body-sm);
     display: block;
     padding: pdz.space(sm) pdz.space(md);
     color: pdz.color(on-surface-variant);
@@ -82,7 +82,7 @@
   margin-bottom: pdz.space(xl);
 
   &__title {
-    @include apply-typography(headline-lg);
+    @include text(headline);
     color: pdz.color(on-surface);
     margin: 0;
   }
@@ -101,7 +101,7 @@
   }
 
   &__title {
-    @include apply-typography(headline-sm);
+    @include text(subtitle);
     color: pdz.color(on-surface);
     margin: 0 0 pdz.space(md) 0;
     padding-bottom: pdz.space(sm);
@@ -109,7 +109,7 @@
   }
 
   &__content {
-    @include apply-typography(body-md);
+    @include text(body);
     color: pdz.color(on-surface-variant);
   }
 }

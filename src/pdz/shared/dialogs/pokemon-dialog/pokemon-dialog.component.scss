@@ -8,7 +8,7 @@
 }
 
 .dialog__tab {
-  @include apply-typography(label-md);
+  @include text(label);
   padding: pdz.space(xs) pdz.space(sm);
   border: none;
   background: transparent;
@@ -34,7 +34,7 @@
   }
 
   &-badge {
-    @include apply-typography(label-sm);
+    @include text(label);
     background-color: pdz.color(surface-container-high);
     border-radius: pdz.shape(corner-full);
     padding: 0 pdz.space(2xs);
@@ -64,7 +64,7 @@
       border: none;
       background: transparent;
       color: pdz.color(on-surface);
-      @include apply-typography(body-sm);
+      @include text(body-sm);
       outline: none;
 
       &::placeholder {
@@ -88,7 +88,7 @@
   }
 
   &__empty-state {
-    @include apply-typography(body-sm);
+    @include text(body-sm);
     color: pdz.color(on-surface-variant);
     text-align: center;
     padding: pdz.space(lg);
@@ -116,7 +116,7 @@
     position: sticky;
     top: 0;
     z-index: 2;
-    @include apply-typography(label-sm);
+    @include text(label);
     font-weight: 600;
     color: pdz.color(on-surface-variant);
     text-transform: uppercase;
@@ -136,7 +136,7 @@
     align-items: center;
     gap: pdz.space(xs);
     padding: pdz.space(2xs) pdz.space(sm);
-    @include apply-typography(body-sm);
+    @include text(body-sm);
     white-space: nowrap;
     transition: background-color 0.1s ease;
     border-top: 1px solid pdz.color(outline-variant);
@@ -155,8 +155,8 @@
   &__type-badge {
     padding: 1px pdz.space(xs);
     border-radius: pdz.shape(corner-xs);
-    @include apply-typography(label-sm);
-    font-size: 0.65rem;
+    @include text(label);
+    font-size: pdz.font-size(2xs);
     font-weight: 700;
     color: white;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
@@ -212,7 +212,7 @@
 }
 
 .move-empty {
-  @include apply-typography(body-sm);
+  @include text(body-sm);
   color: pdz.color(on-surface-variant);
   text-align: center;
   padding: pdz.space(lg);
@@ -244,7 +244,7 @@
 }
 
 .dialog__title {
-  @include apply-typography(headline-lg);
+  @include text(headline);
   flex: 1;
   min-width: 0;
   overflow: hidden;
@@ -361,14 +361,14 @@
   gap: pdz.space(2xs);
   padding: 2px pdz.space(sm);
   border-radius: pdz.shape(corner-full);
-  @include apply-typography(label-sm);
+  @include text(label);
   font-weight: 600;
   line-height: 1.6;
 
   &--tier {
     background-color: pdz.color(primary);
     color: pdz.color(on-primary);
-    font-family: var(--pdz-font-fancy);
+    font-family: var(--pdz-font-display);
   }
 
   &--cost {
@@ -413,7 +413,7 @@
   }
 
   &__title {
-    @include apply-typography(title-md);
+    @include text(title);
     color: pdz.color(on-surface-variant);
   }
 }
@@ -430,7 +430,7 @@
   display: inline-flex;
   align-items: center;
   gap: pdz.space(2xs);
-  @include apply-typography(body-sm);
+  @include text(body-sm);
   background-color: pdz.color(surface-container-low);
   border: 1px solid pdz.color(outline-variant);
   border-radius: pdz.shape(corner-xs);
@@ -462,7 +462,7 @@
   gap: pdz.space(xs);
 
   &__label {
-    @include apply-typography(label-sm);
+    @include text(label);
     color: pdz.color(on-surface-variant);
     text-align: right;
     cursor: default;
@@ -485,7 +485,7 @@
   }
 
   &__value {
-    @include apply-typography(body-sm);
+    @include text(body-sm);
     font-weight: 600;
     text-align: left;
   }
@@ -508,13 +508,13 @@
   padding: pdz.space(2xs) pdz.space(xs);
 
   &__label {
-    @include apply-typography(label-sm);
+    @include text(label);
     color: pdz.color(on-surface-variant);
     text-transform: uppercase;
   }
 
   &__value {
-    @include apply-typography(body-sm);
+    @include text(body-sm);
   }
 }
 
@@ -526,7 +526,7 @@
   gap: pdz.space(sm);
   padding: pdz.space(xs) pdz.space(sm);
   border-radius: pdz.shape(corner-sm);
-  @include apply-typography(body-sm);
+  @include text(body-sm);
 
   pdz-icon {
     flex-shrink: 0;
@@ -556,7 +556,7 @@
   padding: pdz.space(sm) pdz.space(md);
   border: none;
   border-radius: pdz.shape(corner-sm);
-  @include apply-typography(label-lg);
+  @include text(label);
   font-weight: 600;
   cursor: pointer;
   transition:

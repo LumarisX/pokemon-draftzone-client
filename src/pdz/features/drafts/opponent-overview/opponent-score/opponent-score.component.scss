@@ -30,7 +30,7 @@ $xl: 1280px;
 .score-bar__title {
   flex-grow: 1;
   font-weight: 700;
-  font-size: 1.5rem;
+  font-size: pdz.font-size(xl);
   text-align: center;
 }
 
@@ -128,7 +128,7 @@ $xl: 1280px;
 }
 
 .wins-box__value {
-  font-size: 2.25rem;
+  font-size: pdz.font-size(2xl);
 }
 
 .controls-row {
@@ -353,7 +353,7 @@ $xl: 1280px;
   white-space: nowrap;
   padding: 0 pdz.space(sm);
   font-weight: 600;
-  font-size: 1.25rem;
+  font-size: pdz.font-size(lg);
 
   &--end {
     text-align: right;
@@ -399,7 +399,7 @@ $xl: 1280px;
   width: 100%;
   padding-bottom: pdz.space(xs);
   column-gap: pdz.space(lg);
-  font-size: 0.875rem;
+  font-size: pdz.font-size(sm);
 
   @media (min-width: $md) {
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -464,7 +464,7 @@ $xl: 1280px;
 
 .mon__kills-title {
   width: 100%;
-  font-size: 0.75rem;
+  font-size: pdz.font-size(xs);
   font-weight: 600;
   text-align: center;
 }
@@ -480,7 +480,7 @@ $xl: 1280px;
 }
 
 .mon__kill-label {
-  font-size: 0.75rem;
+  font-size: pdz.font-size(xs);
   text-align: center;
 }
 
@@ -492,7 +492,7 @@ $xl: 1280px;
   width: 100%;
   padding: 0.125rem;
   font: inherit;
-  font-size: 0.875rem;
+  font-size: pdz.font-size(sm);
   text-align: center;
   color: pdz.color(on-surface);
   background: var(--side-high);
@@ -519,7 +519,7 @@ $xl: 1280px;
 }
 
 .mon__flag-label {
-  font-size: 0.75rem;
+  font-size: pdz.font-size(xs);
 }
 
 .mon__flag-input {

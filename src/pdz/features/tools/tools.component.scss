@@ -14,8 +14,8 @@
 .tools-page__title {
   width: 100%;
   text-align: center;
-  font-family: var(--pdz-font-fancy);
-  font-size: 2.25rem;
+  font-family: var(--pdz-font-display);
+  font-size: pdz.font-size(2xl);
 }
 
 .tools-list {
@@ -53,6 +53,6 @@
 .tools-list__label {
   width: 100%;
   text-align: center;
-  font-family: var(--pdz-font-fancy);
-  font-size: 1.5rem;
+  font-family: var(--pdz-font-display);
+  font-size: pdz.font-size(xl);
 }

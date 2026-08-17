@@ -37,11 +37,11 @@
         text-align: center;
         font-weight: var(--pdz-font-weight-bold);
         color: var(--pdz-cmp-color-title);
-        font-family: var(--pdz-font-fancy);
+        font-family: var(--pdz-font-display);
       }
 
       .team-coach-title {
-        font-size: 0.8rem;
+        font-size: pdz.font-size(sm);
         height: 1.25rem;
       }
     }
@@ -83,7 +83,7 @@
             white-space: nowrap;
             display: block;
             max-width: 8rem;
-            font-size: 0.75rem;
+            font-size: pdz.font-size(xs);
             font-style: italic;
             opacity: 0.7;
           }
@@ -113,7 +113,7 @@
         }
         &.header {
           > div {
-            font-size: 0.8rem;
+            font-size: pdz.font-size(sm);
             font-weight: var(--pdz-font-weight-bold);
           }
 

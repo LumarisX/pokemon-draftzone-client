@@ -72,7 +72,7 @@ $border: 1px solid $border-color;
   }
 
   &__ability {
-    @include pdz.apply-typography(body-xs);
+    @include pdz.text(body-sm);
   }
 
   &__body {

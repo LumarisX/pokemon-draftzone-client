@@ -49,7 +49,7 @@
   }
 
   &__status {
-    @include apply-typography(label-xs);
+    @include text(label);
     padding: pdz.space(2xs) pdz.space(sm);
     border-radius: pdz.shape("corner-full");
     background: pdz.color("surface-container-highest");
@@ -79,7 +79,7 @@
   }
 
   &__notes {
-    @include apply-typography(body-sm);
+    @include text(body-sm);
     margin: 0;
     padding: 0 pdz.space(lg) pdz.space(sm);
     color: pdz.color("on-surface-variant");
@@ -130,12 +130,12 @@
   }
 
   &__title {
-    @include apply-typography(title-md);
+    @include text(title);
     font-weight: var(--pdz-font-weight-bold);
   }
 
   &__subtitle {
-    @include apply-typography(label-sm);
+    @include text(label);
     color: rgb(255 255 255 / 85%);
     overflow: hidden;
     text-overflow: ellipsis;
@@ -217,14 +217,14 @@
   }
 
   &__team {
-    @include apply-typography(title-sm);
+    @include text(subtitle);
     font-weight: var(--pdz-font-weight-semibold);
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
   &__coach {
-    @include apply-typography(label-md);
+    @include text(label);
     color: pdz.color("on-surface-variant");
   }
 
@@ -249,7 +249,7 @@
     background: pdz.color("surface-container-low");
     color: pdz.color("on-surface-variant");
     cursor: pointer;
-    @include apply-typography(label-sm);
+    @include text(label);
     transition: all 120ms ease;
 
     &:hover {
@@ -281,7 +281,7 @@
     display: inline-flex;
     align-items: center;
     gap: pdz.space(3xs);
-    @include apply-typography(label-sm);
+    @include text(label);
     color: pdz.color("on-surface-variant");
   }
 
@@ -303,7 +303,7 @@
   }
 
   &__points {
-    @include apply-typography(headline-md);
+    @include text(title);
     font-variant-numeric: tabular-nums;
     font-weight: var(--pdz-font-weight-bold);
     color: pdz.color("on-surface-variant");
@@ -314,7 +314,7 @@
   }
 
   &__dash {
-    @include apply-typography(title-lg);
+    @include text(headline);
     color: pdz.color("on-surface-disabled");
   }
 
@@ -323,7 +323,7 @@
     display: inline-flex;
     align-items: center;
     gap: pdz.space(3xs);
-    @include apply-typography(label-sm);
+    @include text(label);
     color: pdz.color("on-surface-variant");
   }
 }
@@ -361,16 +361,16 @@
   }
 
   &__title {
-    @include apply-typography(label-md);
+    @include text(label);
     font-weight: var(--pdz-font-weight-semibold);
   }
 
   &__summary {
-    @include apply-typography(label-sm);
+    @include text(label);
   }
 
   &__note {
-    @include apply-typography(label-sm);
+    @include text(label);
     font-style: italic;
   }
 
@@ -386,7 +386,7 @@
     background: pdz.color("surface-container-lowest");
     color: pdz.color("on-surface");
     cursor: pointer;
-    @include apply-typography(label-sm);
+    @include text(label);
 
     &:disabled {
       opacity: 0.6;
@@ -401,7 +401,7 @@
   }
 
   &__error {
-    @include apply-typography(label-sm);
+    @include text(label);
     flex-basis: 100%;
     margin: 0;
     color: pdz.color("error");
@@ -426,7 +426,7 @@
   }
 
   &__title {
-    @include apply-typography(title-sm);
+    @include text(subtitle);
     margin: 0;
     color: pdz.color("on-surface");
   }
@@ -441,7 +441,7 @@
     background: pdz.color("primary-subtle");
     color: pdz.color("on-primary-container");
     cursor: pointer;
-    @include apply-typography(label-sm);
+    @include text(label);
 
     &--open {
       border-color: pdz.color("outline-variant");
@@ -466,7 +466,7 @@
     background: pdz.color("surface-container-low");
     color: pdz.color("on-surface-variant");
     cursor: pointer;
-    @include apply-typography(label-sm);
+    @include text(label);
 
     &--selected {
       border-color: pdz.color("primary-border");
@@ -510,7 +510,7 @@
   }
 
   &__team-name {
-    @include apply-typography(label-md);
+    @include text(label);
     font-weight: var(--pdz-font-weight-semibold);
     color: pdz.color("on-surface");
     overflow: hidden;
@@ -519,7 +519,7 @@
   }
 
   &__won {
-    @include apply-typography(label-xs);
+    @include text(label);
     padding: 0 pdz.space(2xs);
     border-radius: pdz.shape("corner-full");
     background: pdz.color("positive-container");
@@ -572,13 +572,13 @@
     display: inline-flex;
     align-items: baseline;
     gap: 0.15rem;
-    @include apply-typography(label-sm);
+    @include text(label);
     font-variant-numeric: tabular-nums;
     color: pdz.color("on-surface-variant");
   }
 
   &__kills-label {
-    @include apply-typography(label-2xs);
+    @include text(label);
     color: pdz.color("on-surface-disabled");
   }
 
@@ -593,7 +593,7 @@
     background: pdz.color("surface-container-lowest");
     color: pdz.color("on-secondary-container");
     text-decoration: none;
-    @include apply-typography(label-sm);
+    @include text(label);
 
     &:hover {
       background: pdz.color("secondary");

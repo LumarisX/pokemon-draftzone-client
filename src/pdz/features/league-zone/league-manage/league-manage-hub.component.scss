@@ -45,7 +45,7 @@
   }
 
   &__eyebrow {
-    @include apply-typography(label-sm);
+    @include text(label);
     color: pdz.color("primary");
     letter-spacing: 0.08em;
     display: block;
@@ -53,7 +53,7 @@
   }
 
   &__title {
-    @include apply-typography(headline-lg);
+    @include text(headline);
     color: pdz.color("on-surface");
     margin: 0 0 pdz.space(xs);
   }
@@ -67,7 +67,7 @@
   }
 
   &__meta-item {
-    @include apply-typography(body-sm);
+    @include text(body-sm);
     color: pdz.color("on-surface-variant");
   }
 
@@ -94,7 +94,7 @@
   }
 
   &__section-title {
-    @include apply-typography(label-md);
+    @include text(label);
     color: pdz.color("on-surface-variant");
     letter-spacing: 0.1em;
     margin-bottom: pdz.space(md);
@@ -115,7 +115,7 @@
 
 // Status chips
 .chip {
-  @include apply-typography(label-sm);
+  @include text(label);
   display: inline-block;
   padding: 2px pdz.space(sm);
   border-radius: pdz.shape(corner-full);
@@ -148,12 +148,12 @@
   gap: 2px;
 
   &__label {
-    @include apply-typography(label-sm);
+    @include text(label);
     color: pdz.color("on-surface-variant");
   }
 
   &__value {
-    @include apply-typography(body-sm);
+    @include text(body-sm);
     color: pdz.color("on-surface");
     font-weight: 600;
   }
@@ -164,7 +164,7 @@
   margin-bottom: pdz.space(lg);
 
   &__name {
-    @include apply-typography(title-sm);
+    @include text(subtitle);
     color: pdz.color("primary");
     margin: 0 0 pdz.space(sm);
   }
@@ -216,12 +216,12 @@
   }
 
   &__title {
-    @include apply-typography(title-sm);
+    @include text(subtitle);
     color: pdz.color("on-surface");
   }
 
   &__desc {
-    @include apply-typography(body-sm);
+    @include text(body-sm);
     color: pdz.color("on-surface-variant");
   }
 
@@ -245,7 +245,7 @@
     }
 
     .nav-card__title {
-      @include apply-typography(label-md);
+      @include text(label);
       color: pdz.color("on-surface");
     }
 

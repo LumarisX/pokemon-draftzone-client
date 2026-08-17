@@ -33,7 +33,7 @@ $trade-sprite-size: 2rem;
 
 .trade-header {
   font-weight: 600;
-  font-size: 0.8rem;
+  font-size: pdz.font-size(sm);
   color: pdz.color(on-surface-variant);
   padding-bottom: $trade-item-spacing * 0.5;
   border-bottom: 1px solid pdz.color(primary-border);
@@ -85,7 +85,7 @@ $trade-sprite-size: 2rem;
 }
 
 .pokemon-name {
-  font-size: 0.9rem;
+  font-size: pdz.font-size(sm);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -115,7 +115,7 @@ $trade-sprite-size: 2rem;
   color: pdz.color(on-surface-variant);
   padding: $trade-item-spacing;
   font-style: italic;
-  font-size: 0.9rem;
+  font-size: pdz.font-size(sm);
 }
 
 .trade-separator {

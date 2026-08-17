@@ -55,8 +55,8 @@
   border: none;
   background-color: transparent;
   border-radius: pdz.shape(corner-sm);
-  font-family: var(--pdz-font-fancy);
-  font-size: 1rem;
+  font-family: var(--pdz-font-display);
+  font-size: pdz.font-size(md);
   color: pdz.color(on-surface);
   text-decoration: none;
   cursor: pointer;
@@ -109,7 +109,7 @@
   margin: 0 pdz.space(xs);
   @include flat-button(
     (
-      font-family: var(--pdz-font-fancy),
+      font-family: var(--pdz-font-display),
       padding: pdz.space(2xs) pdz.space(sm),
       box-shadow-hover: var(--pdz-level-0),
       background-hover: pdz.color(surface-container),
@@ -157,8 +157,8 @@
   border-radius: pdz.shape(corner-full);
   background-color: pdz.color(error);
   color: pdz.color(on-error);
-  font-family: var(--pdz-font-regular);
-  font-size: 0.7rem;
+  font-family: var(--pdz-font-body);
+  font-size: pdz.font-size(xs);
   font-weight: 700;
   line-height: 1;
 

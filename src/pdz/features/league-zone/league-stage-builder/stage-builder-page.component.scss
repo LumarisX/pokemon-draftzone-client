@@ -36,7 +36,7 @@
   }
 
   &__title {
-    @include apply-typography(headline-lg);
+    @include text(headline);
     color: pdz.color("on-surface");
     margin: 0;
   }
@@ -51,7 +51,7 @@
   &__status,
   &__seeding {
     flex: 0 0 auto;
-    @include apply-typography(body-sm);
+    @include text(body-sm);
     border-radius: pdz.shape("corner-sm");
     padding: pdz.space(sm) pdz.space(md);
     margin: 0 0 pdz.space(md);
@@ -83,7 +83,7 @@
   background: pdz.color("surface-container");
   color: pdz.color("on-surface");
   cursor: pointer;
-  @include apply-typography(label-md);
+  @include text(label);
 
   &:hover:not(:disabled) {
     background: pdz.color("surface-container-high");
@@ -127,7 +127,7 @@
   max-width: 40rem;
 
   &__title {
-    @include apply-typography(title-md);
+    @include text(title);
     display: flex;
     align-items: baseline;
     gap: pdz.space(sm);
@@ -135,12 +135,12 @@
   }
 
   &__count {
-    @include apply-typography(label-sm);
+    @include text(label);
     color: pdz.color("on-surface-variant");
   }
 
   &__hint {
-    @include apply-typography(body-sm);
+    @include text(body-sm);
     color: pdz.color("on-surface-variant");
     margin: 0 0 pdz.space(md);
   }
@@ -158,7 +158,7 @@
   margin-bottom: pdz.space(md);
 
   &__label {
-    @include apply-typography(label-sm);
+    @include text(label);
     display: block;
     color: pdz.color("on-surface-variant");
     margin-bottom: pdz.space(2xs);
@@ -177,7 +177,7 @@
     display: flex;
     align-items: center;
     gap: pdz.space(sm);
-    @include apply-typography(body-sm);
+    @include text(body-sm);
   }
 }
 
@@ -210,7 +210,7 @@
   }
 
   &__pool {
-    @include apply-typography(label-sm);
+    @include text(label);
     color: pdz.color("on-surface-variant");
     background: pdz.color("surface-container-high");
     border-radius: pdz.shape("corner-full");
@@ -219,13 +219,13 @@
   }
 
   &__coach {
-    @include apply-typography(label-sm);
+    @include text(label);
     color: pdz.color("on-surface-variant");
     white-space: nowrap;
   }
 
   &__placed {
-    @include apply-typography(label-sm);
+    @include text(label);
     color: pdz.color("on-primary-container");
     background: pdz.color("primary-container");
     border-radius: pdz.shape("corner-full");
@@ -234,7 +234,7 @@
   }
 
   &__empty {
-    @include apply-typography(body-sm);
+    @include text(body-sm);
     color: pdz.color("on-surface-variant");
     padding: pdz.space(sm);
   }

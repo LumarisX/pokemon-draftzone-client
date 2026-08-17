@@ -42,7 +42,7 @@
   gap: pdz.space(md);
 
   &__title {
-    @include apply-typography(title-md);
+    @include text(title);
     display: flex;
     align-items: baseline;
     justify-content: space-between;
@@ -53,13 +53,13 @@
   }
 
   &__hint {
-    @include apply-typography(label-sm);
+    @include text(label);
     color: pdz.color(on-surface-variant);
     font-weight: 500;
   }
 
   &__error {
-    @include apply-typography(body-sm);
+    @include text(body-sm);
     color: pdz.color(error);
     margin: 0;
   }
@@ -106,13 +106,13 @@
   }
 
   &__cost {
-    @include apply-typography(label-sm);
+    @include text(label);
     color: pdz.color(on-surface-variant);
     font-weight: 600;
   }
 
   &__spend {
-    @include apply-typography(label-sm);
+    @include text(label);
     color: pdz.color(on-surface-variant);
     margin: 0;
 
@@ -141,13 +141,13 @@
   }
 
   &__label {
-    @include apply-typography(label-sm);
+    @include text(label);
     color: pdz.color(on-surface);
     font-weight: 600;
   }
 
   &__input {
-    @include apply-typography(body-md);
+    @include text(body);
     padding: pdz.space(xs) pdz.space(sm);
     border: 1px solid pdz.color(outline);
     border-radius: pdz.shape(corner-sm);
@@ -175,7 +175,7 @@
   gap: pdz.space(2xs);
 
   &__empty {
-    @include apply-typography(body-sm);
+    @include text(body-sm);
     color: pdz.color(on-surface-variant);
     font-style: italic;
     padding: pdz.space(xs);
@@ -192,7 +192,7 @@
   min-width: 0;
 
   &__cost {
-    @include apply-typography(label-sm);
+    @include text(label);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -212,7 +212,7 @@
   }
 
   &__name {
-    @include apply-typography(body-sm);
+    @include text(body-sm);
     flex: 1 1 auto;
     min-width: 0;
     overflow: hidden;
@@ -221,7 +221,7 @@
   }
 
   &__tier {
-    @include apply-typography(label-xs);
+    @include text(label);
     color: pdz.color(on-surface-variant);
     flex-shrink: 0;
   }
@@ -269,14 +269,14 @@
   }
 
   &__team {
-    @include apply-typography(body-sm);
+    @include text(body-sm);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
   &__spent {
-    @include apply-typography(label-md);
+    @include text(label);
     font-weight: 700;
     color: pdz.color(on-surface-variant);
     flex-shrink: 0;
@@ -293,7 +293,7 @@
   gap: pdz.space(sm);
 
   &__name {
-    @include apply-typography(title-sm);
+    @include text(subtitle);
     margin: 0;
   }
 }
@@ -319,7 +319,7 @@
   }
 
   &__status {
-    @include apply-typography(label-sm);
+    @include text(label);
     border-radius: pdz.shape(corner-sm);
     padding: pdz.space(2xs) pdz.space(xs);
     font-weight: 700;
@@ -345,7 +345,7 @@
   }
 
   &__time {
-    @include apply-typography(body-sm);
+    @include text(body-sm);
     color: pdz.color(on-surface-variant);
   }
 
@@ -356,7 +356,7 @@
   }
 
   &__action {
-    @include apply-typography(label-sm);
+    @include text(label);
     padding: pdz.space(2xs) pdz.space(sm);
     border-radius: pdz.shape(corner-sm);
     border: 1px solid pdz.color(outline-variant);
@@ -403,7 +403,7 @@
   }
 
   &__team {
-    @include apply-typography(label-md);
+    @include text(label);
     font-weight: 600;
     margin: 0 0 pdz.space(2xs);
     display: flex;
@@ -412,7 +412,7 @@
   }
 
   &__points {
-    @include apply-typography(label-xs);
+    @include text(label);
     padding: 0 pdz.space(2xs);
     border-radius: pdz.shape(corner-xs);
     background: pdz.color(primary-subtle);
@@ -427,7 +427,7 @@
   }
 
   &__mon {
-    @include apply-typography(body-sm);
+    @include text(body-sm);
     display: inline-flex;
     align-items: center;
     gap: pdz.space(2xs);

@@ -14,7 +14,7 @@
   margin-bottom: pdz.space(lg);
 
   &__title {
-    @include apply-typography(headline-lg);
+    @include text(headline);
   }
 
   &__actions {
@@ -46,7 +46,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 0.875rem;
+  font-size: pdz.font-size(sm);
   font-weight: 600;
   margin-bottom: pdz.space(sm);
 
@@ -81,7 +81,7 @@
   z-index: 100;
 
   &__title {
-    @include apply-typography(headline-md);
+    @include text(title);
     margin-bottom: pdz.space(md);
   }
 }
@@ -91,7 +91,7 @@
 
   &__label {
     display: block;
-    font-size: 0.875rem;
+    font-size: pdz.font-size(sm);
     font-weight: 700;
     color: pdz.color(on-surface-variant);
     margin-bottom: pdz.space(2xs);
@@ -166,7 +166,7 @@
   text-align: center;
 
   &__message {
-    @include apply-typography(body-lg);
+    @include text(title);
     color: pdz.color(on-surface-variant);
   }
 }

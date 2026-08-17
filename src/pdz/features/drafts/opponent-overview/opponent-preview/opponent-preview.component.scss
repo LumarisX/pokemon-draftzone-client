@@ -65,12 +65,12 @@ section {
   @include pdz-card("secondary");
   .card-header {
     .matchup-stage {
-      font-size: 0.8rem;
+      font-size: pdz.font-size(sm);
       margin-right: pdz.space(md);
     }
 
     .matchup-team-info-container {
-      font-family: var(--pdz-font-fancy);
+      font-family: var(--pdz-font-display);
       display: flex;
       gap: 0.25rem;
       align-items: center;
@@ -139,7 +139,7 @@ section {
     overflow: hidden;
   }
   .coach-name {
-    font-size: 0.8rem;
+    font-size: pdz.font-size(sm);
     line-height: 0.9rem;
   }
 }
@@ -159,10 +159,10 @@ section {
 .section-header {
   display: flex;
   width: 100%;
-  font-size: 1.25rem;
+  font-size: pdz.font-size(lg);
   align-items: center;
   justify-content: space-between;
-  font-family: var(--pdz-font-fancy);
+  font-family: var(--pdz-font-display);
   padding: 0.5rem 1rem;
   flex-shrink: 0;
 }
@@ -208,7 +208,8 @@ section {
 
   th.cdk-header-cell {
     border-bottom: 2px solid pdz.color(secondary-border);
-    @include font-size(0.8rem);
+    font-size: font-size(xs);
+    line-height: leading(tight);
   }
 
   table {

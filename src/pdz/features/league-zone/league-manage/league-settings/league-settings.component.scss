@@ -28,7 +28,7 @@
     gap: pdz.space(xs);
     color: pdz.color(primary-accent);
     text-decoration: none;
-    @include apply-typography(label-md);
+    @include text(label);
     margin-bottom: pdz.space(sm);
 
     &:hover {
@@ -37,7 +37,7 @@
   }
 
   &__title {
-    @include apply-typography(headline-md);
+    @include text(title);
     color: pdz.color(on-surface);
     margin: 0;
   }
@@ -56,7 +56,7 @@
   overflow: hidden;
 
   &__title {
-    @include apply-typography(title-sm);
+    @include text(subtitle);
     color: pdz.color(on-surface-variant);
     background: pdz.color(surface-container);
     border-bottom: 1px solid pdz.color(outline-variant);
@@ -64,7 +64,7 @@
     padding: pdz.space(sm) pdz.space(lg);
     letter-spacing: 0.05em;
     text-transform: uppercase;
-    font-size: 0.75rem;
+    font-size: pdz.font-size(xs);
   }
 
   &__body {
@@ -91,7 +91,7 @@
   gap: pdz.space(xs);
 
   &__label {
-    @include apply-typography(label-md);
+    @include text(label);
     color: pdz.color(on-surface-variant);
   }
 
@@ -100,7 +100,7 @@
     border: 1px solid pdz.color(outline-variant);
     border-radius: pdz.shape(corner-sm);
     color: pdz.color(on-surface);
-    @include apply-typography(body-md);
+    @include text(body);
     padding: pdz.space(sm) pdz.space(md);
     transition: border-color 0.15s ease;
     width: 100%;
@@ -130,7 +130,7 @@
     border: 1px solid pdz.color(outline-variant);
     border-radius: pdz.shape(corner-sm);
     color: pdz.color(on-surface);
-    @include apply-typography(body-md);
+    @include text(body);
     padding: pdz.space(sm) pdz.space(md);
     resize: vertical;
     transition: border-color 0.15s ease;
@@ -145,7 +145,7 @@
   }
 
   &__hint {
-    @include apply-typography(body-sm);
+    @include text(body-sm);
     color: pdz.color(on-surface-variant);
 
     &--error {
@@ -222,12 +222,12 @@
   }
 
   &__label {
-    @include apply-typography(label-md);
+    @include text(label);
     color: pdz.color(on-surface);
   }
 
   &__hint {
-    @include apply-typography(body-sm);
+    @include text(body-sm);
     color: pdz.color(on-surface-variant);
     margin-left: auto;
   }
@@ -259,7 +259,7 @@
   }
 
   &__label {
-    @include apply-typography(label-md);
+    @include text(label);
     color: pdz.color(on-surface);
   }
 }
@@ -279,7 +279,7 @@
     display: flex;
     align-items: center;
     gap: pdz.space(xs);
-    @include apply-typography(label-md);
+    @include text(label);
     color: pdz.color(success);
     margin-right: auto;
   }
@@ -288,7 +288,7 @@
     display: flex;
     align-items: center;
     gap: pdz.space(xs);
-    @include apply-typography(label-md);
+    @include text(label);
     color: pdz.color(error);
     margin-right: auto;
   }
@@ -302,7 +302,7 @@
   border-radius: pdz.shape(corner-sm);
   border: none;
   cursor: pointer;
-  @include apply-typography(label-lg);
+  @include text(label);
   transition:
     background 0.15s ease,
     opacity 0.15s ease;

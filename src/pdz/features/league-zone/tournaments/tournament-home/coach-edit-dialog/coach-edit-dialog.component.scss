@@ -9,7 +9,7 @@
   @include mat.dialog-overrides(
     (
       subhead-weight: 700,
-      subhead-font: var(--pdz-font-fancy),
+      subhead-font: var(--pdz-font-display),
       subhead-color: pdz.color(primary-accent),
       subhead-size: 1.2em,
     )
@@ -30,13 +30,13 @@
   min-width: 0;
 
   &__label {
-    @include apply-typography(label-sm);
+    @include text(label);
     color: pdz.color(on-surface);
     font-weight: 600;
   }
 
   &__input {
-    @include apply-typography(body-md);
+    @include text(body);
     padding: pdz.space(sm) pdz.space(md);
     border: 1px solid pdz.color(outline);
     border-radius: pdz.shape(corner-sm);
@@ -53,7 +53,7 @@
   }
 
   &__error {
-    @include apply-typography(label-xs);
+    @include text(label);
     color: pdz.color(error);
   }
 }

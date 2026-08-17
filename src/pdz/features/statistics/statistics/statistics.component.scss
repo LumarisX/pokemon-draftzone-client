@@ -20,13 +20,13 @@
 
 .statistics__title {
   margin: 0;
-  @include apply-typography("headline-lg");
+  @include text(headline);
   color: pdz.color(on-surface);
 }
 
 .statistics__subtitle {
   margin: 0;
-  @include apply-typography("body-md");
+  @include text(body);
   color: pdz.color(on-surface-variant);
 }
 
@@ -48,7 +48,7 @@
 
 .format-panel__header h2 {
   margin: 0;
-  @include apply-typography("headline-sm");
+  @include text(subtitle);
   color: pdz.color(on-menu-container);
 }
 
@@ -58,7 +58,7 @@
   background: pdz.color(menu-container-low);
   border: 1px dashed pdz.color(menu-border);
   color: pdz.color(on-menu-container);
-  @include apply-typography("body-md");
+  @include text(body);
 }
 
 .bucket-card {
@@ -79,20 +79,20 @@
 
 .bucket-card__title {
   margin: 0;
-  @include apply-typography("title-lg");
+  @include text(headline);
   color: pdz.color(on-menu-container);
 }
 
 .bucket-card__top-pick {
   margin: pdz.space(2xs) 0 0;
-  @include apply-typography("body-sm");
+  @include text(body-sm);
   color: pdz.color(on-menu-container);
 }
 
 .bucket-card__totals {
   display: grid;
   gap: pdz.space(2xs);
-  @include apply-typography("label-md");
+  @include text(label);
   color: pdz.color(on-menu-container);
   text-align: right;
 }
@@ -123,12 +123,12 @@
 .usage-chart__rank {
   width: 2ch;
   text-align: right;
-  @include apply-typography("label-sm");
+  @include text(label);
   color: pdz.color(on-menu-container);
 }
 
 .usage-chart__name {
-  @include apply-typography("body-sm");
+  @include text(body-sm);
   color: pdz.color(on-menu-container);
   white-space: nowrap;
   overflow: hidden;
@@ -168,7 +168,7 @@
 }
 
 .usage-chart__count {
-  @include apply-typography("label-md");
+  @include text(label);
   color: pdz.color(on-menu-container);
 }
 
@@ -181,7 +181,7 @@
 }
 
 .table-controls__label {
-  @include apply-typography("body-sm");
+  @include text(body-sm);
   color: pdz.color(on-menu-container);
 }
 
@@ -192,7 +192,7 @@
   background: pdz.color(menu-container);
   color: pdz.color(on-menu-container);
   cursor: pointer;
-  @include apply-typography("label-md");
+  @include text(label);
 
   &:hover {
     background: pdz.color(menu-container-high);
@@ -221,13 +221,13 @@
     position: sticky;
     top: 0;
     background: pdz.color(menu-container);
-    @include apply-typography("label-md");
+    @include text(label);
     color: pdz.color(on-menu-container);
     z-index: 1;
   }
 
   td {
-    @include apply-typography("body-sm");
+    @include text(body-sm);
     color: pdz.color(on-menu-container);
   }
 
@@ -259,13 +259,13 @@
 }
 
 .split-breakdown__label {
-  @include apply-typography("label-sm");
+  @include text(label);
   color: pdz.color(on-menu-container);
   white-space: nowrap;
 }
 
 .split-breakdown__value {
-  @include apply-typography("label-sm");
+  @include text(label);
   color: pdz.color(on-surface-variant);
   white-space: nowrap;
   text-align: right;
@@ -287,7 +287,7 @@
 }
 
 .split-breakdown__empty {
-  @include apply-typography("body-sm");
+  @include text(body-sm);
   color: pdz.color(on-surface-variant);
 }
 

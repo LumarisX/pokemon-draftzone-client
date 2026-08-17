@@ -50,7 +50,7 @@
 
   &__title {
     margin: 0;
-    font-size: 1.375rem;
+    font-size: pdz.font-size(lg);
     font-weight: 700;
     line-height: 1.2;
     white-space: nowrap;
@@ -98,7 +98,7 @@
     align-items: center;
     gap: pdz.space(xs);
     margin: 0 0 pdz.space(md);
-    font-size: 1rem;
+    font-size: pdz.font-size(md);
     font-weight: 700;
     color: pdz.color(on-surface);
 
@@ -108,7 +108,7 @@
   }
 
   &__panel-count {
-    font-size: 0.75rem;
+    font-size: pdz.font-size(xs);
     font-weight: 700;
     min-width: 1.5rem;
     text-align: center;
@@ -156,7 +156,7 @@
 
   &__label {
     font-weight: 700;
-    font-size: 0.875rem;
+    font-size: pdz.font-size(sm);
     color: pdz.color(on-surface-variant);
   }
 
@@ -190,7 +190,7 @@
   }
 
   &__error {
-    font-size: 0.75rem;
+    font-size: pdz.font-size(xs);
     font-weight: 600;
     color: pdz.color(error);
   }
@@ -238,5 +238,5 @@
 }
 
 .draft-builder__title {
-  font-family: var(--pdz-font-fancy);
+  font-family: var(--pdz-font-display);
 }

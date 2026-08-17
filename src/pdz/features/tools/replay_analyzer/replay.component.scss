@@ -17,8 +17,8 @@
   &__title {
     margin: 0;
     text-align: center;
-    @include apply-typography(headline-md);
-    font-family: var(--pdz-font-fancy);
+    @include text(title);
+    font-family: var(--pdz-font-display);
   }
 
   &__content {
@@ -43,7 +43,7 @@
   }
 
   &__input-label {
-    @include apply-typography(label-lg);
+    @include text(label);
     font-weight: var(--pdz-font-weight-bold);
     white-space: nowrap;
   }
@@ -56,7 +56,7 @@
     border-radius: pdz.shape(corner-lg);
     //background-color: pdz.color("surface");
     color: pdz.color("on-surface");
-    @include apply-typography(body-md);
+    @include text(body);
   }
 
   &__analyze-button {
@@ -67,7 +67,7 @@
     box-shadow: var(--pdz-level-1);
     padding: pdz.space(xs) pdz.space(md);
     cursor: pointer;
-    @include apply-typography(label-lg);
+    @include text(label);
     font-weight: var(--pdz-font-weight-bold);
 
     &--disabled {
@@ -88,7 +88,7 @@
     text-align: center;
     border-radius: pdz.shape(corner-full);
     background-color: pdz.color("warning-container");
-    @include apply-typography(body-md);
+    @include text(body);
     font-weight: var(--pdz-font-weight-bold);
   }
 
@@ -159,7 +159,7 @@
     cursor: pointer;
     white-space: nowrap;
     text-decoration: none;
-    @include apply-typography(label-md);
+    @include text(label);
     font-weight: var(--pdz-font-weight-bold);
 
     &:hover {
@@ -190,7 +190,7 @@
   }
 
   &__summary-label {
-    @include apply-typography(label-lg);
+    @include text(label);
     color: pdz.color("on-surface-variant");
     font-weight: var(--pdz-font-weight-bold);
   }
@@ -246,7 +246,7 @@
   }
 
   &__player-name {
-    @include apply-typography(title-lg);
+    @include text(headline);
     font-weight: var(--pdz-font-weight-bold);
   }
 
@@ -278,20 +278,20 @@
   }
 
   &__stat-label {
-    @include apply-typography(label-sm);
+    @include text(label);
     color: pdz.color("on-surface-variant");
     text-transform: uppercase;
     letter-spacing: 0.04em;
     &--headline {
-      @include apply-typography(label-md);
+      @include text(label);
     }
   }
 
   &__stat-value {
-    @include apply-typography(body-md);
+    @include text(body);
     line-height: 1;
     &--headline {
-      @include apply-typography(title-lg);
+      @include text(headline);
     }
   }
 
@@ -326,7 +326,7 @@
   }
 
   &__stat-row {
-    @include apply-typography(body-md);
+    @include text(body);
     display: flex;
     justify-content: space-between;
     gap: pdz.space(sm);
@@ -340,7 +340,7 @@
   }
 
   &__stat-detail-label {
-    @include apply-typography(label-md);
+    @include text(label);
     font-weight: var(--pdz-font-weight-bold);
     display: block;
     margin-bottom: pdz.space(xs);
@@ -351,7 +351,7 @@
   }
 
   &__turn-label {
-    @include apply-typography(label-md);
+    @include text(label);
     font-weight: var(--pdz-font-weight-bold);
   }
 
@@ -359,7 +359,7 @@
     width: fit-content;
     padding: pdz.space(2xs) pdz.space(sm);
     border-radius: pdz.shape(corner-full);
-    @include apply-typography(label-lg);
+    @include text(label);
     font-weight: var(--pdz-font-weight-bold);
     box-shadow: var(--pdz-level-2);
     &--winner {
@@ -425,7 +425,7 @@
     border: 1px solid pdz.color("outline-variant");
     border-radius: pdz.shape(corner-md);
     text-align: center;
-    @include apply-typography(label-md);
+    @include text(label);
     font-weight: var(--pdz-font-weight-bold);
     color: pdz.color("on-surface");
     box-shadow: var(--pdz-level-1);
@@ -468,7 +468,7 @@
   &__panel-title {
     width: 100%;
     margin-right: 0;
-    @include apply-typography(body-sm);
+    @include text(body-sm);
   }
 
   &__panel-content {
@@ -477,7 +477,7 @@
     display: flex;
     flex-direction: column;
     gap: pdz.space(2xs);
-    @include apply-typography(body-xs);
+    @include text(body-sm);
   }
 
   &__events {
@@ -488,7 +488,7 @@
   &__section-title {
     margin: 0;
     padding-bottom: pdz.space(sm);
-    @include apply-typography(title-lg);
+    @include text(headline);
     font-weight: var(--pdz-font-weight-bold);
   }
 
@@ -503,7 +503,7 @@
     border-radius: pdz.shape(corner-lg);
     display: flex;
     gap: pdz.space(sm);
-    @include apply-typography(body-sm);
+    @include text(body-sm);
     &.replay-analyzer__player--team-b {
       flex-direction: row-reverse;
     }

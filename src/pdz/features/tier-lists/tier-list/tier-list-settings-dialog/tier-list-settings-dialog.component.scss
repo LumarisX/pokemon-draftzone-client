@@ -6,8 +6,8 @@
     display: flex;
     align-items: center;
     gap: pdz.space(sm);
-    @include apply-typography(title-md);
-    font-family: var(--pdz-font-fancy);
+    @include text(title);
+    font-family: var(--pdz-font-display);
 
     mat-icon {
       color: pdz.color(primary-accent);
@@ -23,7 +23,7 @@
   }
 
   &__group-label {
-    @include apply-typography(label-sm);
+    @include text(label);
     color: pdz.color(on-surface-variant);
     font-weight: 600;
     margin-bottom: calc(pdz.space(xs) * -1);
@@ -35,7 +35,7 @@
   }
 
   &__error {
-    @include apply-typography(label-sm);
+    @include text(label);
     color: pdz.color(error);
     margin: 0;
   }

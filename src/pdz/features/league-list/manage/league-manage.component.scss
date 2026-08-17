@@ -14,7 +14,7 @@
   margin-bottom: pdz.space(lg);
 
   &__title {
-    @include apply-typography(headline-lg);
+    @include text(headline);
   }
 
   &__actions {
@@ -55,7 +55,7 @@
   gap: pdz.space(md);
 
   &__results {
-    @include apply-typography(body-md);
+    @include text(body);
     color: pdz.color(on-surface-variant);
   }
 
@@ -73,7 +73,7 @@
       padding: pdz.space(xs) pdz.space(md),
     )
   );
-  font-size: 0.875rem;
+  font-size: pdz.font-size(sm);
 
   // &.selected {
   // }
@@ -131,7 +131,7 @@
   text-align: center;
 
   &__message {
-    @include apply-typography(body-lg);
+    @include text(title);
     color: pdz.color(on-surface-variant);
   }
 

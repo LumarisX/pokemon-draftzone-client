@@ -54,7 +54,7 @@
     }
 
     // Base typography style on :root
-    @include apply-typography(body-md);
+    @include text(body, $leading: snug);
 
     // Default theme (classic light)
     @include apply-theme(map.get(map.get(pdz-themes.$themes, classic), light));

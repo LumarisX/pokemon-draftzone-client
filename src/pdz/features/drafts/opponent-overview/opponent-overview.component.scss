@@ -42,21 +42,24 @@
 }
 
 h2 {
-  @include pdz.font-size(1.5rem);
+  font-size: pdz.font-size(xl);
+  line-height: pdz.leading(tight);
 }
 
 h3 {
-  @include pdz.font-size(1.25rem);
+  font-size: pdz.font-size(lg);
+  line-height: pdz.leading(tight);
 }
 
 h4 {
-  @include pdz.font-size(1rem);
+  font-size: pdz.font-size(md);
+  line-height: pdz.leading(tight);
 }
 
 h2,
 h3,
 h4 {
-  font-family: var(--pdz-font-fancy);
+  font-family: var(--pdz-font-display);
 
   @media (max-width: 768px) {
     font-size: var(--pdz-font-size-sm) !important;

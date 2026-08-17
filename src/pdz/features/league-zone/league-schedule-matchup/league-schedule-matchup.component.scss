@@ -53,10 +53,10 @@
         text-align: end;
       }
       .team-name {
-        font-size: 0.7rem;
+        font-size: pdz.font-size(xs);
       }
       .coach-name {
-        font-size: 0.9rem;
+        font-size: pdz.font-size(sm);
         font-weight: 600;
       }
     }
@@ -75,7 +75,7 @@
       left: 50%;
       transform: translate(-50%, -50%);
       font-weight: var(--pdz-font-weight-bold);
-      font-size: 0.8rem;
+      font-size: pdz.font-size(sm);
     }
     mat-icon {
       position: absolute;
@@ -94,7 +94,7 @@
     color: pdz.color(primary-accent);
     padding: 0 0.25rem;
     border-radius: pdz.shape(corner-sm);
-    font-size: 0.6rem;
+    font-size: pdz.font-size(2xs);
     &.enabled {
       box-shadow: var(--pdz-level-1);
       background-color: pdz.color(primary);
@@ -126,7 +126,7 @@
         line-height: 1.25rem;
         text-align: center;
         font-weight: var(--pdz-font-weight-bold);
-        font-size: 1rem;
+        font-size: pdz.font-size(md);
         height: 1.25rem;
         border-radius: pdz.shape(corner-xs);
         box-shadow: var(--pdz-level-1);
@@ -160,14 +160,14 @@
     flex-direction: column;
     row-gap: 0.25rem;
     .match-option {
-      font-size: 0.6rem;
+      font-size: pdz.font-size(2xs);
       color: pdz.color(primary-accent);
       display: flex;
       column-gap: 0.25rem;
       align-items: center;
       .match-score {
         font-weight: 600;
-        font-size: 1.2rem;
+        font-size: pdz.font-size(lg);
 
         text-align: center;
         &.positive {

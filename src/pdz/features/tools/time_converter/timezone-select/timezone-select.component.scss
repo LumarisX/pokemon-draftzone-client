@@ -9,7 +9,7 @@
 .timezone-select {
   &__label {
     font-weight: 700;
-    font-size: 0.875rem;
+    font-size: pdz.font-size(sm);
     color: pdz.color(on-surface-variant);
   }
 
@@ -107,7 +107,7 @@
 
   &__group-label {
     padding: pdz.space(xs) pdz.space(sm) pdz.space(2xs);
-    font-size: 0.75rem;
+    font-size: pdz.font-size(xs);
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -162,7 +162,7 @@
 
   &__option-meta {
     flex-shrink: 0;
-    font-size: 0.75rem;
+    font-size: pdz.font-size(xs);
     color: pdz.color(on-surface-variant);
   }
 

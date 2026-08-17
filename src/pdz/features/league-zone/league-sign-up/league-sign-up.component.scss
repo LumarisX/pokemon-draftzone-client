@@ -28,8 +28,8 @@
   border-radius: pdz.shape(corner-md);
 
   &__title {
-    @include apply-typography(headline-md);
-    font-family: var(--pdz-font-fancy);
+    @include text(title);
+    font-family: var(--pdz-font-display);
     color: pdz.color(on-surface);
     margin: 0;
     flex: 1;
@@ -69,15 +69,15 @@
   }
 
   &__title {
-    @include apply-typography(title-md);
-    font-family: var(--pdz-font-fancy);
+    @include text(title);
+    font-family: var(--pdz-font-display);
     font-weight: 700;
     color: pdz.color(on-primary-container);
     margin: 0;
   }
 
   &__subtitle {
-    @include apply-typography(label-sm);
+    @include text(label);
     color: pdz.color(on-primary-container);
     opacity: 0.75;
   }
@@ -99,7 +99,7 @@
   border-collapse: collapse;
 
   th {
-    @include apply-typography(label-md);
+    @include text(label);
     padding: pdz.space(xs);
     text-align: start;
     color: pdz.color(on-surface-variant);
@@ -109,7 +109,7 @@
   }
 
   td {
-    @include apply-typography(body-md);
+    @include text(body);
     padding: pdz.space(xs);
     color: pdz.color(on-surface);
   }
@@ -140,14 +140,14 @@
   text-align: center;
 
   &__title {
-    @include apply-typography(headline-sm);
-    font-family: var(--pdz-font-fancy);
+    @include text(subtitle);
+    font-family: var(--pdz-font-display);
     margin: 0;
     color: pdz.color(on-surface);
   }
 
   &__text {
-    @include apply-typography(body-md);
+    @include text(body);
     margin: 0;
     color: pdz.color(on-surface-variant);
 
@@ -209,13 +209,13 @@
   min-width: 0;
 
   &__label {
-    @include apply-typography(label-sm);
+    @include text(label);
     color: pdz.color(on-surface);
     font-weight: 600;
   }
 
   &__input {
-    @include apply-typography(body-md);
+    @include text(body);
     padding: pdz.space(sm) pdz.space(md);
     border: 1px solid pdz.color(outline);
     border-radius: pdz.shape(corner-sm);
@@ -249,12 +249,12 @@
   }
 
   &__error {
-    @include apply-typography(label-xs);
+    @include text(label);
     color: pdz.color(error);
   }
 
   &__hint {
-    @include apply-typography(label-xs);
+    @include text(label);
     color: pdz.color(on-surface-variant);
   }
 }
@@ -287,7 +287,7 @@
 }
 
 .radio-label {
-  @include apply-typography(body-md);
+  @include text(body);
   display: flex;
   align-items: center;
   gap: pdz.space(xs);
@@ -333,7 +333,7 @@
 
 // ─── Checkbox ─────────────────────────────────────────────────────────────
 .checkbox-label {
-  @include apply-typography(body-sm);
+  @include text(body-sm);
   display: flex;
   align-items: flex-start;
   gap: pdz.space(sm);

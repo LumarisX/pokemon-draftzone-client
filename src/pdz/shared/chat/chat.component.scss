@@ -26,7 +26,7 @@ $background-color: pdz.color(surface);
     }
 
     .timestamp {
-      font-size: 0.75rem;
+      font-size: pdz.font-size(xs);
       color: $timestamp-color;
     }
 
@@ -50,7 +50,7 @@ $background-color: pdz.color(surface);
     border: 1px solid #ced4da;
     padding: 0.5rem 0.75rem;
     border-radius: pdz.shape(corner-xs);
-    font-size: 1rem;
+    font-size: pdz.font-size(md);
     font-family: inherit;
     resize: none;
     transition:

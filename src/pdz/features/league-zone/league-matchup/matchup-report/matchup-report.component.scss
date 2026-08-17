@@ -15,7 +15,7 @@
   background: pdz.color("surface-container-low");
 
   &__intro {
-    @include apply-typography(body-sm);
+    @include text(body-sm);
     margin: 0;
     color: pdz.color("on-surface-variant");
   }
@@ -46,7 +46,7 @@
     cursor: pointer;
     overflow: hidden;
     white-space: nowrap;
-    @include apply-typography(label-sm);
+    @include text(label);
     font-weight: var(--pdz-font-weight-semibold);
 
     span {
@@ -96,7 +96,7 @@
     display: flex;
     flex-direction: column;
     gap: pdz.space(3xs);
-    @include apply-typography(label-sm);
+    @include text(label);
     color: pdz.color("on-surface-variant");
 
     .report__input {
@@ -129,7 +129,7 @@
   }
 
   &__game-title {
-    @include apply-typography(label-md);
+    @include text(label);
     font-weight: var(--pdz-font-weight-semibold);
     text-transform: uppercase;
     letter-spacing: 0.04em;
@@ -163,7 +163,7 @@
     border-radius: pdz.shape("corner-sm");
     background: pdz.color("surface");
     color: pdz.color("on-surface");
-    @include apply-typography(body-sm);
+    @include text(body-sm);
 
     &:focus {
       outline: none;
@@ -191,7 +191,7 @@
     background: pdz.color("surface-container-lowest");
     color: pdz.color("on-secondary-container");
     cursor: pointer;
-    @include apply-typography(label-sm);
+    @include text(label);
 
     &:disabled {
       opacity: 0.5;
@@ -217,7 +217,7 @@
   }
 
   &__result-label {
-    @include apply-typography(label-xs);
+    @include text(label);
     color: pdz.color("on-surface-variant");
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -245,7 +245,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    @include apply-typography(label-sm);
+    @include text(label);
 
     &--selected {
       border-color: pdz.color("positive");
@@ -299,7 +299,7 @@
   }
 
   &__warning {
-    @include apply-typography(label-xs);
+    @include text(label);
   }
 
   // ─── Rosters ────────────────────────────────────────────────────────────
@@ -335,7 +335,7 @@
   }
 
   &__roster-team {
-    @include apply-typography(label-md);
+    @include text(label);
     font-weight: var(--pdz-font-weight-semibold);
     color: pdz.color("on-surface");
     overflow: hidden;
@@ -344,7 +344,7 @@
   }
 
   &__roster-alive {
-    @include apply-typography(label-sm);
+    @include text(label);
     color: pdz.color("on-surface-variant");
     white-space: nowrap;
   }
@@ -394,7 +394,7 @@
   }
 
   &__mon-name {
-    @include apply-typography(label-lg);
+    @include text(label);
     text-transform: none;
     flex: none;
     max-width: 8rem;
@@ -426,7 +426,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    @include apply-typography(label-xs);
+    @include text(label);
 
     &:first-child {
       border-left: none;
@@ -482,7 +482,7 @@
   }
 
   &__kills-value {
-    @include apply-typography(label-sm);
+    @include text(label);
     min-width: 1rem;
     text-align: center;
     font-variant-numeric: tabular-nums;
@@ -490,7 +490,7 @@
   }
 
   &__kills-label {
-    @include apply-typography(label-xs);
+    @include text(label);
     color: pdz.color("on-surface-variant");
     text-transform: uppercase;
     letter-spacing: 0.03em;
@@ -515,7 +515,7 @@
     color: pdz.color("on-surface");
     cursor: pointer;
     text-align: left;
-    @include apply-typography(label-md);
+    @include text(label);
     font-weight: var(--pdz-font-weight-semibold);
   }
 
@@ -539,7 +539,7 @@
   }
 
   &__summary-team-title {
-    @include apply-typography(label-md);
+    @include text(label);
     font-weight: var(--pdz-font-weight-semibold);
     color: pdz.color("on-surface");
     margin-bottom: pdz.space(3xs);
@@ -549,7 +549,7 @@
     display: grid;
     grid-template-columns: 1.6fr 1fr 1fr;
     gap: pdz.space(sm);
-    @include apply-typography(label-sm);
+    @include text(label);
     color: pdz.color("on-surface-variant");
 
     > span:first-child {
@@ -559,7 +559,7 @@
     }
 
     &--header {
-      @include apply-typography(label-xs);
+      @include text(label);
       text-transform: uppercase;
       letter-spacing: 0.04em;
       border-bottom: 1px solid pdz.color("outline-variant");
@@ -569,7 +569,7 @@
   }
 
   &__summary-empty {
-    @include apply-typography(label-sm);
+    @include text(label);
     margin: 0;
     color: pdz.color("on-surface-variant");
   }
@@ -583,7 +583,7 @@
   }
 
   &__notes-label {
-    @include apply-typography(label-sm);
+    @include text(label);
     color: pdz.color("on-surface-variant");
   }
 
@@ -595,7 +595,7 @@
     border-radius: pdz.shape("corner-sm");
     background: pdz.color("surface-container-lowest");
     color: pdz.color("on-surface");
-    @include apply-typography(body-sm);
+    @include text(body-sm);
 
     &:focus {
       outline: none;
@@ -625,11 +625,11 @@
     background: none;
     color: pdz.color("on-surface-variant");
     cursor: pointer;
-    @include apply-typography(label-sm);
+    @include text(label);
   }
 
   &__series {
-    @include apply-typography(label-md);
+    @include text(label);
     font-variant-numeric: tabular-nums;
     color: pdz.color("on-surface-variant");
   }
@@ -641,7 +641,7 @@
     background: pdz.color("primary");
     color: pdz.color("on-primary");
     cursor: pointer;
-    @include apply-typography(label-md);
+    @include text(label);
     font-weight: var(--pdz-font-weight-semibold);
 
     &:disabled {
@@ -651,13 +651,13 @@
   }
 
   &__hint {
-    @include apply-typography(label-sm);
+    @include text(label);
     margin: 0;
     color: pdz.color("on-surface-variant");
   }
 
   &__error {
-    @include apply-typography(label-sm);
+    @include text(label);
     margin: 0;
     color: pdz.color("error");
   }

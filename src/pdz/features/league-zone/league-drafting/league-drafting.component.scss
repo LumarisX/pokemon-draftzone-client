@@ -57,8 +57,8 @@
           padding: 0 0.125rem;
           position: sticky;
           left: 0;
-          font-size: 0.8rem;
-          font-family: var(--pdz-font-fancy);
+          font-size: pdz.font-size(sm);
+          font-family: var(--pdz-font-display);
 
           mat-icon {
             color: pdz.color(primary-border);
@@ -94,7 +94,7 @@
     padding: pdz.space(2xs);
     display: flex;
     align-items: end;
-    font-size: 0.75rem;
+    font-size: pdz.font-size(xs);
     font-weight: 650;
     line-height: 0.75rem;
     overflow: hidden;
@@ -138,7 +138,7 @@
       }
     }
     .team-card-name {
-      font-size: 0.8rem;
+      font-size: pdz.font-size(sm);
       font-weight: 600;
       line-height: 0.8rem;
       max-width: 100%;
@@ -174,7 +174,7 @@
       margin-bottom: -1px;
     }
     font-weight: var(--pdz-font-weight-bold);
-    font-size: 1.5rem;
+    font-size: pdz.font-size(xl);
     display: flex;
     align-items: center;
     column-gap: 0.5rem;
@@ -198,7 +198,7 @@
       .pick-label {
         color: pdz.color(primary-accent);
         line-height: 0.8rem;
-        font-size: 0.8rem;
+        font-size: pdz.font-size(sm);
         font-weight: 600;
       }
       .choice-container {
@@ -220,7 +220,7 @@
           column-gap: 0.125rem;
           padding: 0 0.25rem;
           font-weight: 500;
-          font-size: 0.8rem;
+          font-size: pdz.font-size(sm);
           border-radius: pdz.shape(corner-sm);
           box-shadow: var(--pdz-level-1);
           mat-icon {
@@ -241,7 +241,7 @@
           column-gap: 0.125rem;
           padding: 0 0.25rem;
           font-weight: 500;
-          font-size: 0.8rem;
+          font-size: pdz.font-size(sm);
           border-radius: pdz.shape(corner-sm);
           box-shadow: var(--pdz-level-1);
           mat-icon {
@@ -333,7 +333,7 @@
           width: 1.5rem;
           min-width: 1.5rem;
           height: 1.5rem;
-          font-family: var(--pdz-font-fancy);
+          font-family: var(--pdz-font-display);
 
           border-radius: pdz.shape(corner-lg);
           text-align: center;
@@ -356,7 +356,7 @@
         }
         .my-pokemon-tier {
           font-weight: 500;
-          font-family: var(--pdz-font-fancy);
+          font-family: var(--pdz-font-display);
           flex-shrink: 0;
           width: 1.5rem;
           text-align: center;
@@ -382,7 +382,7 @@
         }
 
         .pick-text {
-          font-size: 0.75rem;
+          font-size: pdz.font-size(xs);
           font-weight: var(--pdz-font-weight-bold);
           line-height: 0.75rem;
         }
@@ -429,7 +429,7 @@
           .my-pokemon-name,
           .my-pokemon-tier {
             font-weight: 500;
-            font-family: var(--pdz-font-fancy);
+            font-family: var(--pdz-font-display);
             max-width: 100%;
           }
           .my-pokemon-name {
@@ -512,7 +512,7 @@
   }
 
   .tier-requirements-warning {
-    @include pdz.apply-typography(label-sm);
+    @include pdz.text(label);
     font-weight: 500;
   }
 
@@ -521,7 +521,7 @@
     background-color: pdz.color(primary);
     color: pdz.color(on-primary);
     font-weight: var(--pdz-font-weight-bold);
-    font-family: var(--pdz-font-fancy);
+    font-family: var(--pdz-font-display);
 
     &:active:not(:disabled) {
       box-shadow: var(--pdz-level-0);
@@ -541,8 +541,8 @@
 }
 
 .skip-time {
-  font-size: 1.5rem;
-  font-family: var(--pdz-font-fancy);
+  font-size: pdz.font-size(xl);
+  font-family: var(--pdz-font-display);
   font-weight: bold;
 }
 
@@ -561,14 +561,14 @@
 }
 
 .league-name {
-  font-size: 1.1rem;
-  font-family: var(--pdz-font-fancy);
+  font-size: pdz.font-size(md);
+  font-family: var(--pdz-font-display);
   font-weight: bold;
   overflow: hidden;
 }
 .division-name {
-  font-size: 0.85rem;
-  font-family: var(--pdz-font-fancy);
+  font-size: pdz.font-size(sm);
+  font-family: var(--pdz-font-display);
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -627,8 +627,8 @@
 }
 
 .draft-status {
-  font-size: 0.85rem;
-  font-family: var(--pdz-font-fancy);
+  font-size: pdz.font-size(sm);
+  font-family: var(--pdz-font-display);
   overflow: hidden;
   padding: 0.125rem 0.5rem;
   border-radius: pdz.shape(corner-sm);
@@ -686,7 +686,7 @@ pdz-tier-list {
   border: 2px solid pdz.color(outline-variant);
   background-color: pdz.color(surface);
   .draft-section-title {
-    font-family: var(--pdz-font-fancy);
+    font-family: var(--pdz-font-display);
     font-weight: bold;
   }
 }

@@ -30,7 +30,7 @@
       .team-name {
         text-align: center;
         font-weight: 600;
-        font-size: 1.1rem;
+        font-size: pdz.font-size(md);
         margin: 0 0 0.2em 0;
       }
 
@@ -39,7 +39,7 @@
           text-align: center;
           color: pdz.color(primary-accent);
           font-weight: 600;
-          font-size: 0.8rem;
+          font-size: pdz.font-size(sm);
           margin: 0;
         }
       }
@@ -63,7 +63,7 @@
           width: 1.25rem;
           height: 1.25rem;
           line-height: 1.25rem;
-          font-size: 0.75rem;
+          font-size: pdz.font-size(xs);
         }
 
         &__losses {
@@ -73,7 +73,7 @@
           width: 1.25rem;
           height: 1.25rem;
           line-height: 1.25rem;
-          font-size: 0.75rem;
+          font-size: pdz.font-size(xs);
         }
 
         &__diff {
@@ -85,7 +85,7 @@
           height: 1.35rem;
           line-height: 1.35rem;
           padding: 0 0.35rem;
-          font-size: 0.72rem;
+          font-size: pdz.font-size(xs);
 
           &--positive {
             background-color: pdz.color(positive-container);
@@ -101,7 +101,7 @@
 
       .team-timezone {
         color: pdz.color(secondary-accent);
-        font-size: 0.8rem;
+        font-size: pdz.font-size(sm);
         font-weight: 600;
       }
     }
@@ -136,7 +136,7 @@
       border: 1px solid pdz.color(primary-accent);
       border-radius: pdz.shape(corner-lg);
       overflow: hidden;
-      font-size: 0.8rem;
+      font-size: pdz.font-size(sm);
       display: flex;
       flex-direction: column;
       .roster-table {

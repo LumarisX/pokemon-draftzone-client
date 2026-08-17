@@ -303,7 +303,7 @@ $option-lineheight: 3rem;
     //   0 -1px 0 rgba(0, 0, 0, 0.4),
     //   0 1px 0 rgba(255, 255, 255, 0.2);
     user-select: none;
-    font-family: var(--pdz-font-regular);
+    font-family: var(--pdz-font-body);
     font-weight: 700;
     width: 2.5rem;
     text-align: center;
@@ -314,6 +314,10 @@ $option-lineheight: 3rem;
   @media (max-width: 768px) {
     display: none;
   }
+}
+
+.pdz-caps {
+  @include pdz.caps;
 }
 
 markdown {
@@ -414,24 +418,18 @@ markdown {
     font-size: 0.875em;
   }
 
-  h1,
-  h2,
-  h3,
-  h4 {
-    font-family: var(--pdz-font-fancy);
-  }
-
   h1 {
-    @include pdz.font-size(1.5rem);
+    @include pdz.text(headline);
   }
   h2 {
-    @include pdz.font-size(1.3rem);
+    @include pdz.text(title);
   }
   h3 {
-    @include pdz.font-size(1.15rem);
+    @include pdz.text(subtitle);
   }
   h4 {
-    @include pdz.font-size(1rem);
+    @include pdz.text(body);
+    font-weight: pdz.font-weight(semibold);
   }
 }
 

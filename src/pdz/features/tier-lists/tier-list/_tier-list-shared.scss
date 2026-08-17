@@ -24,8 +24,8 @@
     flex-shrink: 0;
 
     &__title {
-      @include apply-typography(headline-sm);
-      font-family: var(--pdz-font-fancy);
+      @include text(subtitle);
+      font-family: var(--pdz-font-display);
       color: pdz.color(on-surface);
       margin: 0;
     }
@@ -46,7 +46,7 @@
         border-radius: pdz.shape(corner-full);
         background-color: pdz.color(surface);
         color: pdz.color(on-surface);
-        @include apply-typography(body-sm);
+        @include text(body-sm);
         min-width: 180px;
         transition: border-color 0.15s ease;
 
@@ -97,7 +97,7 @@
       border-radius: pdz.shape(corner-full);
       background-color: pdz.color(surface);
       color: pdz.color(on-surface);
-      @include apply-typography(label-md);
+      @include text(label);
       cursor: pointer;
       appearance: none;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23888'/%3E%3C/svg%3E");
@@ -128,7 +128,7 @@
     color: pdz.color(on-surface);
     border-radius: pdz.shape(corner-full);
     cursor: pointer;
-    @include apply-typography(label-md);
+    @include text(label);
     transition: all 0.2s ease;
     white-space: nowrap;
 
@@ -224,7 +224,7 @@
     background-color: pdz.color(surface-container-low);
     box-shadow: var(--pdz-level-2);
     &__empty {
-      @include apply-typography(body-md);
+      @include text(body);
       color: pdz.color(on-surface-variant);
       margin: auto;
       opacity: 0.6;
@@ -276,7 +276,7 @@
       display: inline-flex;
       align-items: center;
       gap: 2px;
-      @include apply-typography(label-sm);
+      @include text(label);
       color: pdz.color(on-primary-container);
       opacity: 0.7;
 
@@ -288,8 +288,8 @@
     }
 
     &__name {
-      @include apply-typography(title-md);
-      font-family: var(--pdz-font-fancy);
+      @include text(title);
+      font-family: var(--pdz-font-display);
       font-weight: 700;
       color: pdz.color(on-primary-container);
     }
@@ -304,7 +304,7 @@
       display: inline-flex;
       align-items: center;
       gap: 2px;
-      @include apply-typography(label-sm);
+      @include text(label);
       border: 1px solid pdz.color(primary-border);
       border-radius: pdz.shape(corner-full);
       padding: 0 pdz.space(xs);

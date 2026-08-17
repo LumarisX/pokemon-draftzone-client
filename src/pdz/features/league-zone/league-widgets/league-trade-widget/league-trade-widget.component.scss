@@ -4,7 +4,7 @@
 
 .stage {
   &-header {
-    @include apply-typography(title-sm);
+    @include text(subtitle);
   }
 
   &-body {

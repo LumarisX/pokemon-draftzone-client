@@ -21,7 +21,7 @@
   }
 
   &__title {
-    @include apply-typography(headline-lg);
+    @include text(headline);
     color: pdz.color(on-surface);
     margin: 0;
     text-align: center;
@@ -43,7 +43,7 @@
   }
 
   &__empty {
-    @include apply-typography(body-lg);
+    @include text(title);
     color: pdz.color(on-surface-variant);
     text-align: center;
   }
@@ -64,7 +64,7 @@
   cursor: pointer;
 
   &__text {
-    @include apply-typography(title-lg);
+    @include text(headline);
     font-weight: 600;
   }
 

@@ -34,11 +34,11 @@
   }
 
   &__title {
-    @include apply-typography(headline-md);
+    @include text(title);
   }
 
   &__subtitle {
-    @include apply-typography(headline-sm);
+    @include text(subtitle);
   }
 
   &__close {
@@ -82,7 +82,7 @@
   }
 
   &__hint {
-    @include apply-typography(body-xs);
+    @include text(body-sm);
     color: pdz.color(on-surface-variant);
 
     code {
@@ -93,7 +93,7 @@
   }
 
   &__json {
-    @include apply-typography(body-xs);
+    @include text(body-sm);
     width: 100%;
     padding: pdz.space(sm);
     border: 1px solid pdz.color(outline-variant);
@@ -111,7 +111,7 @@
 
   &__error,
   &__notice {
-    @include apply-typography(body-xs);
+    @include text(body-sm);
   }
 
   &__error {
@@ -153,7 +153,7 @@
   gap: pdz.space(xs);
 
   &__label {
-    @include apply-typography(label-sm);
+    @include text(label);
     display: flex;
     align-items: baseline;
     justify-content: space-between;
@@ -162,7 +162,7 @@
   }
 
   &__value {
-    @include apply-typography(body-sm);
+    @include text(body-sm);
     color: pdz.color(primary-accent);
     font-variant-numeric: tabular-nums;
     text-transform: none;
@@ -174,7 +174,7 @@
   }
 
   &__hint {
-    @include apply-typography(body-xs);
+    @include text(body-sm);
     color: pdz.color(on-surface-variant);
   }
 }

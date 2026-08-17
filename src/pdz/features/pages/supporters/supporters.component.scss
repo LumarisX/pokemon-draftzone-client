@@ -14,7 +14,7 @@ $card-max-width: 32rem;
 $border-radius-sm: pdz.shape(corner-sm);
 $border-radius-md: pdz.shape(corner-md);
 $border-radius-lg: pdz.shape(corner-lg);
-$font-nasa: var(--pdz-font-fancy);
+$font-nasa: var(--pdz-font-display);
 .support-page {
   display: flex;
   flex-direction: column;
@@ -27,7 +27,7 @@ $font-nasa: var(--pdz-font-fancy);
 
   &__title {
     font-family: $font-nasa;
-    font-size: 1.75rem;
+    font-size: pdz.font-size(xl);
     font-weight: 500;
     color: pdz.color(on-surface);
     text-align: center;
@@ -48,7 +48,7 @@ $font-nasa: var(--pdz-font-fancy);
   border: 1px solid pdz.color(primary-border);
   box-shadow: var(--pdz-level-2);
   &__name {
-    font-size: 1.25rem;
+    font-size: pdz.font-size(lg);
     font-weight: 500;
     color: pdz.color(on-surface-variant);
     margin: 0;

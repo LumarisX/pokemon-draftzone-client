@@ -44,12 +44,12 @@
   }
 
   &__title {
-    @include apply-typography(label-md);
+    @include text(label);
     color: pdz.color("primary");
   }
 
   &__detail {
-    @include apply-typography(body-sm);
+    @include text(body-sm);
     color: pdz.color("on-surface-variant");
   }
 }

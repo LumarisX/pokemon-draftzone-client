@@ -21,7 +21,7 @@
   border-radius: pdz.shape(corner-xs);
   height: 2.5rem;
   width: 2.5rem;
-  font-size: 0.75rem;
+  font-size: pdz.font-size(xs);
   font-weight: bold;
   overflow: hidden;
   &.type-colored {
@@ -204,7 +204,7 @@ tbody {
       border-radius: pdz.shape(corner-xs);
       height: 1.5rem;
       width: 2.5rem;
-      font-size: 0.65rem;
+      font-size: pdz.font-size(2xs);
       line-height: 0.7rem;
       font-weight: bold;
       overflow: hidden;
@@ -232,7 +232,7 @@ tbody {
   border-radius: pdz.shape(corner-xs);
   height: 1.5rem;
   width: 2.5rem;
-  font-size: 0.75rem;
+  font-size: pdz.font-size(xs);
   font-weight: bold;
   overflow: hidden;
   box-shadow: var(--pdz-level-1);

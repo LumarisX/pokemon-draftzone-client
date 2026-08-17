@@ -19,7 +19,7 @@
   .replay-chart__y-axis {
     text {
       fill: pdz.color("on-surface");
-      @include apply-typography(body-sm);
+      @include text(body-sm);
     }
 
     path,

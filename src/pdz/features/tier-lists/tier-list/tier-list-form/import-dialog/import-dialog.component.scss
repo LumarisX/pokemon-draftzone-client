@@ -5,7 +5,7 @@
   @include mat.dialog-overrides(
     (
       subhead-weight: 700,
-      subhead-font: var(--pdz-font-fancy),
+      subhead-font: var(--pdz-font-display),
       subhead-color: pdz.color(primary-accent),
       subhead-size: 1.2em,
     )
@@ -15,7 +15,7 @@
 .import-intro {
   margin: 0 0 1rem;
   color: pdz.color(on-surface-variant);
-  font-size: 0.9rem;
+  font-size: pdz.font-size(sm);
 }
 
 .columns-list {
@@ -47,12 +47,12 @@
 
 .column-name {
   font-weight: 600;
-  font-size: 1rem;
+  font-size: pdz.font-size(md);
   color: pdz.color(on-surface);
 }
 
 .column-count {
-  font-size: 0.8rem;
+  font-size: pdz.font-size(sm);
   color: pdz.color(on-surface-variant);
 }
 
@@ -65,7 +65,7 @@
 }
 
 .preview-chip {
-  font-size: 0.75rem;
+  font-size: pdz.font-size(xs);
   padding: 0.1rem 0.4rem;
   border-radius: pdz.shape(corner-xs);
   background: pdz.color(surface-container);
@@ -74,7 +74,7 @@
 }
 
 .preview-empty {
-  font-size: 0.75rem;
+  font-size: pdz.font-size(xs);
   color: pdz.color(on-surface-variant);
   font-style: italic;
 }

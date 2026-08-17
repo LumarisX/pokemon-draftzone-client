@@ -21,7 +21,7 @@
   justify-content: center;
   overflow-y: auto;
 
-  font-family: var(--pdz-font-fancy);
+  font-family: var(--pdz-font-display);
   .draft-pokemon {
     display: flex;
     flex-direction: column;
@@ -52,7 +52,7 @@ h2 {
   height: 1.5rem;
 
   .pdz-type__text {
-    font-size: 0.8rem;
+    font-size: pdz.font-size(sm);
     line-height: 1.5rem;
   }
 }

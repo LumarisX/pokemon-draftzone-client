@@ -20,22 +20,22 @@
 .changelog-header {
   display: flex;
   flex-direction: column;
-  font-family: var(--pdz-font-fancy);
+  font-family: var(--pdz-font-display);
 }
 
 .changelog-date {
   color: pdz.color(primary-accent);
   font-weight: var(--pdz-font-weight-bold);
-  font-size: 1.2rem;
+  font-size: pdz.font-size(lg);
 }
 
 .changelog-title {
   color: pdz.color(on-surface);
-  font-size: 1rem;
+  font-size: pdz.font-size(md);
 }
 
 .changelog-description {
-  font-size: 0.875rem;
+  font-size: pdz.font-size(sm);
   color: pdz.color(on-surface-variant);
   margin: 0.125rem 0 0;
 }
@@ -58,15 +58,15 @@
 
 .changelog-category {
   &__label {
-    font-size: 0.8rem;
+    font-size: pdz.font-size(sm);
     font-weight: var(--pdz-font-weight-bold);
-    font-family: var(--pdz-font-fancy);
+    font-family: var(--pdz-font-display);
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
 
   &__list {
-    font-size: 0.9rem;
+    font-size: pdz.font-size(sm);
     padding-left: 1rem;
     margin: 0.125rem 0 0;
     list-style-type: disc;

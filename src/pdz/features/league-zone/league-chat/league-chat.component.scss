@@ -29,12 +29,12 @@
     align-items: center;
     gap: pdz.space(2xs);
     margin: 0;
-    @include apply-typography(title-sm);
+    @include text(subtitle);
     color: pdz.color("on-surface");
   }
 
   &__privacy {
-    @include apply-typography(label-xs);
+    @include text(label);
     color: pdz.color("on-surface-variant");
     text-transform: uppercase;
     letter-spacing: 0.04em;
@@ -51,7 +51,7 @@
   }
 
   &__empty {
-    @include apply-typography(body-sm);
+    @include text(body-sm);
     margin: auto;
     color: pdz.color("on-surface-variant");
     font-style: italic;
@@ -88,7 +88,7 @@
   }
 
   &__author {
-    @include apply-typography(label-sm);
+    @include text(label);
     text-transform: none;
     font-weight: var(--pdz-font-weight-semibold);
   }
@@ -101,7 +101,7 @@
     border-radius: pdz.shape("corner-full");
     background: pdz.color("info");
     color: pdz.color("on-info");
-    @include apply-typography(label-2xs);
+    @include text(label);
     text-transform: uppercase;
 
     &--participant {
@@ -111,7 +111,7 @@
   }
 
   &__time {
-    @include apply-typography(label-xs);
+    @include text(label);
     color: pdz.color("on-surface-variant");
   }
 
@@ -135,7 +135,7 @@
   }
 
   &__text {
-    @include apply-typography(body-sm);
+    @include text(body-sm);
     margin: 0;
     white-space: pre-wrap;
     overflow-wrap: anywhere;
@@ -159,7 +159,7 @@
     background: pdz.color("surface-container-lowest");
     color: pdz.color("on-surface");
     font-family: inherit;
-    @include apply-typography(body-sm);
+    @include text(body-sm);
 
     &:focus {
       outline: none;
@@ -177,7 +177,7 @@
     background: pdz.color("primary");
     color: pdz.color("on-primary");
     cursor: pointer;
-    @include apply-typography(label-md);
+    @include text(label);
 
     &:disabled {
       opacity: 0.5;
@@ -186,7 +186,7 @@
   }
 
   &__readonly {
-    @include apply-typography(label-sm);
+    @include text(label);
     margin: 0;
     padding: pdz.space(2xs) pdz.space(md) pdz.space(sm);
     border-top: 1px solid pdz.color("outline-variant");
@@ -195,7 +195,7 @@
   }
 
   &__error {
-    @include apply-typography(label-sm);
+    @include text(label);
     margin: 0;
     padding: 0 pdz.space(md) pdz.space(sm);
     color: pdz.color("error");

@@ -20,8 +20,8 @@
   }
 
   &__title {
-    font-family: var(--pdz-font-fancy);
-    font-size: 1.25rem;
+    font-family: var(--pdz-font-display);
+    font-size: pdz.font-size(lg);
     font-weight: var(--pdz-font-weight-bold);
     color: pdz.color(on-surface);
   }
@@ -105,7 +105,7 @@
 
     &--add {
       font-weight: 700;
-      font-size: 1.25rem;
+      font-size: pdz.font-size(lg);
     }
 
     &.is-active {
@@ -163,7 +163,7 @@
     margin-bottom: 1rem;
 
     h2 {
-      font-size: 1.25rem;
+      font-size: pdz.font-size(lg);
       font-weight: 600;
       color: pdz.color(on-surface);
     }
@@ -211,7 +211,7 @@
     }
 
     .teambuilder__pokemon-name {
-      font-size: 0.875rem;
+      font-size: pdz.font-size(sm);
       font-weight: 600;
       color: pdz.color(on-surface);
       text-align: center;

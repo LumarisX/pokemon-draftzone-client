@@ -168,8 +168,8 @@
     }
   }
   .section-title {
-    font-size: 0.9rem;
-    font-family: var(--pdz-font-fancy);
+    font-size: pdz.font-size(sm);
+    font-family: var(--pdz-font-display);
   }
 }
 
@@ -189,7 +189,7 @@
     height: 1.5rem;
     cursor: pointer;
     &:hover {
-      font-size: 1.05rem;
+      font-size: pdz.font-size(md);
     }
   }
   .filter-label {

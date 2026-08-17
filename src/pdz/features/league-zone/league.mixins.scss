@@ -67,11 +67,11 @@
       height: $height,
     )
   );
-  @include apply-typography(label-md);
+  @include text(label);
 }
 
 @mixin pdz-league-page-title($color: pdz.color(primary), $weight: 700) {
-  @include apply-typography(title-lg);
+  @include text(headline);
   color: $color;
   margin: 0;
   font-weight: $weight;
@@ -82,7 +82,7 @@
  * enough height that an empty panel reads as deliberate rather than clipped.
  */
 @mixin pdz-league-section-message() {
-  @include apply-typography(body-md);
+  @include text(body);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -98,7 +98,7 @@
   background-color: pdz.color(surface-container);
   color: pdz.color(surface-container);
   text-align: center;
-  font-size: 0.9rem;
+  font-size: pdz.font-size(sm);
   line-height: 1.75rem;
   font-weight: var(--pdz-font-weight-bold);
   border-radius: pdz.shape(corner-xs);

@@ -32,7 +32,7 @@
   font-weight: var(--pdz-font-weight-bold);
 
   .table-label {
-    font-size: 1.2rem;
-    font-family: var(--pdz-font-fancy);
+    font-size: pdz.font-size(lg);
+    font-family: var(--pdz-font-display);
   }
 }

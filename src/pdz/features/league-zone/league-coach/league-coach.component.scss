@@ -49,18 +49,18 @@
   }
 
   &__league-name {
-    @include apply-typography(body-sm);
+    @include text(body-sm);
     color: pdz.color(on-surface-variant);
   }
 
   &__team-name {
-    @include apply-typography(headline-md);
+    @include text(title);
     margin: 0;
     color: pdz.color(on-primary-container);
   }
 
   &__coach-name {
-    @include apply-typography(body-md);
+    @include text(body);
     margin: 0;
     color: pdz.color(on-surface-variant);
   }
@@ -77,7 +77,7 @@
 }
 
 .status-badge {
-  @include apply-typography(label-sm);
+  @include text(label);
   display: inline-flex;
   align-items: center;
   padding: pdz.space(xs) pdz.space(sm);
@@ -103,7 +103,7 @@
   background: pdz.color(surface);
 
   &__title {
-    @include apply-typography(title-md);
+    @include text(title);
     margin: 0 0 pdz.space(md);
     color: pdz.color(on-surface);
   }
@@ -124,7 +124,7 @@
   background: pdz.color(surface-container-low);
 
   &__label {
-    @include apply-typography(label-sm);
+    @include text(label);
     color: pdz.color(on-surface-variant);
     font-weight: 600;
     text-transform: uppercase;
@@ -132,7 +132,7 @@
   }
 
   &__value {
-    @include apply-typography(body-md);
+    @include text(body);
     color: pdz.color(on-surface);
   }
 }
@@ -145,13 +145,13 @@
   background: pdz.color(surface);
 
   &__title {
-    @include apply-typography(title-md);
+    @include text(title);
     margin: 0 0 pdz.space(md);
     color: pdz.color(on-surface);
   }
 
   &__pending-msg {
-    @include apply-typography(body-sm);
+    @include text(body-sm);
     color: pdz.color(on-surface-variant);
     margin: 0 0 pdz.space(md);
     padding: pdz.space(sm);
@@ -195,7 +195,7 @@
   }
 
   &__label {
-    @include apply-typography(body-md);
+    @include text(body);
     font-weight: 600;
   }
 
@@ -225,7 +225,7 @@
   text-align: center;
 
   p {
-    @include apply-typography(body-md);
+    @include text(body);
     color: pdz.color(on-surface-variant);
     margin: 0;
   }

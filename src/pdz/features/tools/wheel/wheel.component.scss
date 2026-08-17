@@ -48,12 +48,12 @@
   }
 
   &__title {
-    @include apply-typography(headline-xl);
+    @include text(display);
     color: pdz.color(on-surface);
   }
 
   &__subtitle {
-    @include apply-typography(body-sm);
+    @include text(body-sm);
     color: pdz.color(on-surface-variant);
   }
 
@@ -161,7 +161,7 @@
   }
 
   &__empty {
-    @include apply-typography(body-sm);
+    @include text(body-sm);
     position: absolute;
     inset: 0;
     display: flex;
@@ -181,7 +181,7 @@
   width: 100%;
 
   &__pending {
-    @include apply-typography(title-md);
+    @include text(title);
     color: pdz.color(on-surface-variant);
   }
 
@@ -195,7 +195,7 @@
   }
 
   &__label {
-    @include apply-typography(label-xs);
+    @include text(label);
     padding: pdz.space(2xs) pdz.space(sm);
     border-radius: pdz.shape(corner-full);
     background: pdz.color(primary-container);
@@ -204,7 +204,7 @@
   }
 
   &__name {
-    @include apply-typography(headline-xl);
+    @include text(display);
     font-size: clamp(1.75rem, 6vw, 3rem);
     line-height: 1.15;
     text-align: center;
@@ -223,7 +223,7 @@
   }
 
   &__copied {
-    @include apply-typography(label-xs);
+    @include text(label);
     position: absolute;
     top: 0;
     left: 50%;
@@ -264,7 +264,7 @@
   }
 
   &__action-text {
-    @include apply-typography(label-2xs);
+    @include text(label);
     letter-spacing: 0.04em;
   }
 }
@@ -280,7 +280,7 @@
   }
 
   &__label {
-    @include apply-typography(body-xs);
+    @include text(body-sm);
     font-size: 7px;
     font-weight: 600;
     fill: var(--wheel-slice-ink);
@@ -332,12 +332,12 @@
   }
 
   &__title {
-    @include apply-typography(headline-sm);
+    @include text(subtitle);
     color: pdz.color(on-surface);
   }
 
   &__count {
-    @include apply-typography(label-xs);
+    @include text(label);
     color: pdz.color(on-surface-variant);
   }
 
@@ -353,7 +353,7 @@
   }
 
   &__placeholder {
-    @include apply-typography(body-sm);
+    @include text(body-sm);
     padding: pdz.space(md) 0;
     text-align: center;
     color: pdz.color(on-surface-variant);
@@ -365,7 +365,7 @@
   }
 
   &__input {
-    @include apply-typography(body-sm);
+    @include text(body-sm);
     flex: 1;
     min-width: 0;
     padding: pdz.space(sm) pdz.space(md);
@@ -390,7 +390,7 @@
   }
 
   &__duplicate {
-    @include apply-typography(body-xs);
+    @include text(body-sm);
     display: flex;
     align-items: center;
     gap: pdz.space(xs);
@@ -443,7 +443,7 @@
   }
 
   &__label {
-    @include apply-typography(body-sm);
+    @include text(body-sm);
     flex: 1;
     min-width: 0;
     padding: pdz.space(2xs) pdz.space(xs);
@@ -482,7 +482,7 @@
   }
 
   &__value {
-    @include apply-typography(body-sm);
+    @include text(body-sm);
     width: 2.75rem;
     padding: pdz.space(2xs) 0;
     border: 1px solid transparent;
@@ -542,7 +542,7 @@
   }
 
   &__title {
-    @include apply-typography(headline-sm);
+    @include text(subtitle);
     color: pdz.color(on-surface);
   }
 
@@ -585,7 +585,7 @@
   }
 
   &__index {
-    @include apply-typography(body-2xs);
+    @include text(body-sm);
     flex: none;
     min-width: 1.5rem;
     color: pdz.color(on-surface-variant);
@@ -601,7 +601,7 @@
   }
 
   &__label {
-    @include apply-typography(body-sm);
+    @include text(body-sm);
     flex: 1;
     min-width: 0;
     color: pdz.color(on-surface);
@@ -611,14 +611,14 @@
   }
 
   &__time {
-    @include apply-typography(body-2xs);
+    @include text(body-sm);
     flex: none;
     color: pdz.color(on-surface-variant);
     font-variant-numeric: tabular-nums;
   }
 
   &__placeholder {
-    @include apply-typography(body-sm);
+    @include text(body-sm);
     padding: pdz.space(md) 0;
     text-align: center;
     color: pdz.color(on-surface-variant);
@@ -685,7 +685,7 @@
   }
 
   &__name {
-    @include apply-typography(body-sm);
+    @include text(body-sm);
     font-size: min(0.9rem, var(--drum-name-fit, 0.9rem));
     line-height: 1.25;
     position: absolute;
@@ -722,7 +722,7 @@
   }
 
   &__pin {
-    @include apply-typography(label-xs);
+    @include text(label);
     position: absolute;
     left: pdz.space(lg);
     right: pdz.space(lg);

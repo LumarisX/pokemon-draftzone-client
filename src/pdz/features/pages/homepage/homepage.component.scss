@@ -61,7 +61,7 @@
   &__title-text {
     font-size: 3rem;
     font-weight: var(--pdz-font-weight-bold);
-    font-family: var(--pdz-font-fancy);
+    font-family: var(--pdz-font-display);
     line-height: 1;
     min-width: 0;
 
@@ -87,7 +87,7 @@
   }
 
   &__subtitle {
-    font-size: 1.25rem;
+    font-size: pdz.font-size(lg);
     max-width: 600px;
   }
 
@@ -99,7 +99,7 @@
   }
 
   &__cta-button {
-    font-size: 1rem;
+    font-size: pdz.font-size(md);
     width: 100%;
     display: inline-flex;
     align-items: center;
@@ -155,7 +155,7 @@
   }
 
   &__secondary-action-title {
-    @include apply-typography(title-xs);
+    @include text(label);
   }
 
   &__info {
@@ -182,9 +182,9 @@
   }
 
   &__panel-title {
-    font-size: 1.75rem;
+    font-size: pdz.font-size(xl);
     text-align: center;
-    font-family: var(--pdz-font-fancy);
+    font-family: var(--pdz-font-display);
     color: pdz.color(primary-accent);
     border-bottom: 2px solid pdz.color(primary-border);
     padding-bottom: 0.5rem;
@@ -226,7 +226,7 @@
     }
 
     &__title-text {
-      font-size: 2rem;
+      font-size: pdz.font-size(2xl);
       text-align: left;
 
       &:first-child,
@@ -248,7 +248,7 @@
     }
 
     &__subtitle {
-      font-size: 0.9rem;
+      font-size: pdz.font-size(sm);
     }
 
     &__cta-buttons {

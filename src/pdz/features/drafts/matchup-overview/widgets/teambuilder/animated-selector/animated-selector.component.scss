@@ -9,7 +9,7 @@
 }
 
 .animated-selector__label {
-  @include apply-typography(label-sm);
+  @include text(label);
   display: block;
 }
 
@@ -122,7 +122,7 @@
 }
 
 .selector-option__label {
-  font-size: 1rem;
+  font-size: pdz.font-size(md);
   font-weight: 500;
   color: pdz.color(on-surface);
   transition:

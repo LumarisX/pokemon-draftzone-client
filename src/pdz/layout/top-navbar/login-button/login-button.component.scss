@@ -22,7 +22,7 @@
     padding-left: pdz.space(sm);
     max-width: 4rem;
     text-overflow: clip;
-    font-size: 0.9rem;
+    font-size: pdz.font-size(sm);
     line-height: 0.9rem;
     overflow: hidden;
   }

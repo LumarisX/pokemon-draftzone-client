@@ -1,129 +1,55 @@
-$typography: (
-  headline-xl: (
-    font-family: var(--pdz-font-fancy),
+$text: (
+  display: (
+    font-family: var(--pdz-font-display),
+    font-size: 2.5rem,
+    font-weight: 700,
+    line-height: 1.1,
+    letter-spacing: -0.02em,
+  ),
+  headline: (
+    font-family: var(--pdz-font-display),
     font-size: 2rem,
-    font-weight: var(--pdz-font-weight-bold),
-    line-height: 2.5rem,
+    font-weight: 700,
+    line-height: 1.15,
+    letter-spacing: -0.01em,
   ),
-  headline-lg: (
-    font-family: var(--pdz-font-fancy),
-    font-size: 1.75rem,
-    font-weight: var(--pdz-font-weight-bold),
-    line-height: 2rem,
+  title: (
+    font-family: var(--pdz-font-body),
+    font-size: 1.5rem,
+    font-weight: 700,
+    line-height: 1.2,
+    letter-spacing: -0.005em,
   ),
-  headline-md: (
-    font-family: var(--pdz-font-fancy),
-    font-size: 1.2rem,
-    font-weight: var(--pdz-font-weight-bold),
-    line-height: 1.5rem,
+  subtitle: (
+    font-family: var(--pdz-font-body),
+    font-size: 1.25rem,
+    font-weight: 600,
+    line-height: 1.25,
   ),
-  headline-sm: (
-    font-family: var(--pdz-font-fancy),
-    font-size: 1rem,
-    font-weight: var(--pdz-font-weight-bold),
-    line-height: 1.2rem,
-  ),
-  headline-xs: (
-    font-family: var(--pdz-font-fancy),
-    font-size: 0.8rem,
-    font-weight: var(--pdz-font-weight-bold),
-    line-height: 1rem,
-  ),
-  title-xl: (
-    font-family: var(--pdz-font-fancy),
-    font-size: 2rem,
-    line-height: 2.5rem,
-  ),
-  title-lg: (
-    font-family: var(--pdz-font-fancy),
-    font-size: 1.75rem,
-    line-height: 2rem,
-  ),
-  title-md: (
-    font-family: var(--pdz-font-fancy),
-    font-size: 1.2rem,
-    line-height: 1.5rem,
-  ),
-  title-sm: (
-    font-family: var(--pdz-font-fancy),
-    font-size: 1rem,
-    line-height: 1.2rem,
-  ),
-  title-xs: (
-    font-family: var(--pdz-font-fancy),
-    font-size: 0.8rem,
-    line-height: 1rem,
-  ),
-  body-lg: (
-    font-family: var(--pdz-font-regular),
-    font-size: 1.2rem,
-    font-weight: 400,
-    line-height: 1.5rem,
-  ),
-  body-md: (
-    font-family: var(--pdz-font-regular),
+  body: (
+    font-family: var(--pdz-font-body),
     font-size: 1rem,
     font-weight: 400,
-    line-height: 1.2rem,
+    line-height: 1.55,
   ),
   body-sm: (
-    font-family: var(--pdz-font-regular),
-    font-size: 0.9rem,
+    font-family: var(--pdz-font-body),
+    font-size: 0.875rem,
     font-weight: 400,
-    line-height: 1.1rem,
+    line-height: 1.4,
   ),
-  body-xs: (
-    font-family: var(--pdz-font-regular),
-    font-size: 0.8rem,
-    font-weight: 400,
-    line-height: 1rem,
-  ),
-  body-2xs: (
-    font-family: var(--pdz-font-regular),
-    font-size: 0.7rem,
-    font-weight: 400,
-    line-height: 0.9rem,
-  ),
-  label-2xs: (
-    font-family: var(--pdz-font-regular),
-    font-size: 0.5rem,
-    font-weight: 500,
-    line-height: 0.65rem,
-    text-transform: uppercase,
-  ),
-  label-xs: (
-    font-family: var(--pdz-font-regular),
-    font-size: 0.65rem,
-    font-weight: 500,
-    line-height: 0.75rem,
-    text-transform: uppercase,
-  ),
-  label-sm: (
-    font-family: var(--pdz-font-regular),
+  label: (
+    font-family: var(--pdz-font-body),
     font-size: 0.75rem,
-    font-weight: 500,
-    line-height: 0.9rem,
-    text-transform: uppercase,
-  ),
-  label-md: (
-    font-family: var(--pdz-font-regular),
-    font-size: 0.9rem,
-    font-weight: 500,
-    line-height: 1rem,
-    text-transform: uppercase,
-  ),
-  label-lg: (
-    font-family: var(--pdz-font-regular),
-    font-size: 1rem,
-    font-weight: 500,
-    line-height: 1.2rem,
-    text-transform: uppercase,
+    font-weight: 600,
+    line-height: 1.2,
+    letter-spacing: 0.01em,
   ),
 );
 
 $fonts: (
-  fancy: "Nasalization RG",
-  regular: ("Nunito Variable", "Nunito", sans-serif),
+  display: "Nasalization RG",
+  body: ("Nunito Variable", "Nunito", sans-serif),
   mono: (
     ui-monospace,
     SFMono-Regular,
@@ -137,25 +63,27 @@ $fonts: (
 );
 
 $font-size: (
-  2xs: 0.5rem,
+  2xs: 0.6875rem,
   xs: 0.75rem,
-  sm: 0.9rem,
+  sm: 0.875rem,
   md: 1rem,
-  lg: 1.2rem,
+  lg: 1.25rem,
   xl: 1.5rem,
   2xl: 2rem,
+  3xl: 2.5rem,
 );
 
 $font-weight: (
+  regular: 400,
+  medium: 500,
+  semibold: 600,
   bold: 700,
 );
 
 $line-height: (
-  2xs: 0.5rem,
-  xs: 0.75rem,
-  sm: 0.9rem,
-  md: 1rem,
-  lg: 1.2rem,
-  xl: 1.5rem,
-  2xl: 2rem,
+  none: 1,
+  tight: 1.15,
+  snug: 1.3,
+  normal: 1.55,
+  relaxed: 1.7,
 );

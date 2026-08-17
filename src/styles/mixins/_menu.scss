@@ -23,8 +23,8 @@
   padding: pdz.space(xs) pdz.space(sm);
   border: none;
   border-radius: pdz.shape(corner-sm);
-  font-family: var(--pdz-font-fancy);
-  font-size: 1rem;
+  font-family: var(--pdz-font-display);
+  font-size: pdz.font-size(md);
   color: pdz.color(on-surface);
   text-align: left;
   text-decoration: none;
@@ -45,7 +45,7 @@
   margin-top: pdz.space(2xs);
   border-top: 1px solid pdz.color(outline-variant);
   color: pdz.color(on-surface-variant);
-  @include apply-typography(label-sm);
+  @include text(label);
 }
 
 @mixin menu-divider {

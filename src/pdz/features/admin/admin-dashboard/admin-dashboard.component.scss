@@ -11,7 +11,7 @@
 .admin-header {
   h1 {
     margin: 0;
-    font-size: 1.6rem;
+    font-size: pdz.font-size(xl);
     font-weight: 700;
     color: pdz.color(on-surface);
   }
@@ -33,20 +33,20 @@
   border: 1px solid pdz.color(outline-variant);
 
   .value {
-    font-size: 1.7rem;
+    font-size: pdz.font-size(xl);
     font-weight: 700;
     line-height: 1.1;
     color: pdz.color(on-surface);
   }
 
   .label {
-    font-size: 0.85rem;
+    font-size: pdz.font-size(sm);
     font-weight: 600;
     color: pdz.color(on-surface);
   }
 
   .hint {
-    font-size: 0.72rem;
+    font-size: pdz.font-size(xs);
     text-transform: uppercase;
     letter-spacing: 0.04em;
     color: pdz.color(on-surface-variant);
@@ -59,7 +59,7 @@
   gap: pdz.space(md);
 
   .controls-label {
-    font-size: 0.85rem;
+    font-size: pdz.font-size(sm);
     font-weight: 600;
     color: pdz.color(on-surface-variant);
   }
@@ -76,7 +76,7 @@
     border: none;
     background: transparent;
     padding: pdz.space(sm) pdz.space(lg);
-    font-size: 0.85rem;
+    font-size: pdz.font-size(sm);
     text-transform: capitalize;
     cursor: pointer;
     color: pdz.color(on-surface);
@@ -140,13 +140,13 @@
 
     h2 {
       margin: 0;
-      font-size: 1.05rem;
+      font-size: pdz.font-size(md);
       font-weight: 600;
       color: pdz.color(on-surface);
     }
 
     .chart-note {
-      font-size: 0.78rem;
+      font-size: pdz.font-size(xs);
       color: pdz.color(on-surface-variant);
     }
   }
@@ -175,5 +175,5 @@
   border-radius: pdz.shape(corner-md);
   background: pdz.color(error-container);
   color: pdz.color(on-error-container);
-  font-size: 0.9rem;
+  font-size: pdz.font-size(sm);
 }
