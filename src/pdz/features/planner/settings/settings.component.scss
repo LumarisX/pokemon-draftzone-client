@@ -7,37 +7,37 @@
 }
 
 .planner-settings {
-  display: grid;
-  gap: pdz.space(md);
+  display: flex;
+  align-items: flex-end;
+  column-gap: pdz.space(md);
   width: 100%;
 
   &__row {
     display: flex;
-    flex-wrap: wrap;
+    align-items: flex-end;
     gap: pdz.space(sm);
-
+    min-width: 0;
+    flex-grow: 1;
+    flex-wrap: wrap;
     pdz-format-select,
     pdz-ruleset-select {
-      flex: 1 1 8rem;
+      flex: 1 1 0;
     }
   }
 
-  &__actions {
-    display: flex;
-    justify-content: center;
-    margin-top: pdz.space(xs);
-  }
-
   &__save {
-    @include flat-button-primary(
+    @include icon-button-primary(
       (
-        padding: pdz.space(xs) pdz.space(md),
+        width: 2.375rem,
+        height: 2.375rem,
+        padding: pdz.space(xs),
         border-width: 1px,
         border-color: pdz.color(primary-border),
         background: pdz.color(primary-container),
         color: pdz.color(on-primary-container),
-        font-weight: 700,
       )
     );
+
+    flex: 0 0 auto;
   }
 }

@@ -1,35 +1,25 @@
 @if (draftFormGroup) {
-  <pdz-planner-widget
-    widgetId="settings"
-    label="Settings"
-    [fill]="true"
-    #widget
-  >
-    @if (!widget.collapsed()) {
-      <div class="planner-settings">
-        <div class="planner-settings__row">
-          <pdz-format-select
-            [formControl]="draftFormGroup.controls.format"
-          ></pdz-format-select>
-          <pdz-ruleset-select
-            [formControl]="draftFormGroup.controls.ruleset"
-          ></pdz-ruleset-select>
-        </div>
-
-        <div class="planner-settings__actions">
-          <a
-            class="planner-settings__save"
-            [routerLink]="['/', draftPath, 'new']"
-            [queryParams]="{
-              team: teamIds,
-              format: draftFormGroup.controls.format.value,
-              ruleset: draftFormGroup.controls.ruleset.value,
-            }"
-          >
-            Save to New League
-          </a>
-        </div>
-      </div>
-    }
-  </pdz-planner-widget>
+  <div class="planner-settings">
+    <div class="planner-settings__row">
+      <pdz-format-select
+        [formControl]="draftFormGroup.controls.format"
+      ></pdz-format-select>
+      <pdz-ruleset-select
+        [formControl]="draftFormGroup.controls.ruleset"
+      ></pdz-ruleset-select>
+    </div>
+    <a
+      class="planner-settings__save"
+      [routerLink]="['/', draftPath, 'new']"
+      [queryParams]="{
+        team: teamIds,
+        format: draftFormGroup.controls.format.value,
+        ruleset: draftFormGroup.controls.ruleset.value,
+      }"
+      title="Save to New League"
+      aria-label="Save to New League"
+    >
+      <pdz-icon name="save" [size]="20" ariaLabel="Save"></pdz-icon>
+    </a>
+  </div>
 }

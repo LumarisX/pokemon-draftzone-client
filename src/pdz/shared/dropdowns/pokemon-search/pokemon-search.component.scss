@@ -29,6 +29,21 @@
       background: pdz.color(surface-disabled);
       color: pdz.color(on-surface-disabled);
     }
+
+    &--compact {
+      min-height: 3rem;
+      padding: 0 pdz.space(xs);
+      gap: pdz.space(xs);
+
+      .pokemon-search__selection {
+        gap: pdz.space(xs);
+      }
+
+      .pokemon-search__selection-sprite {
+        width: 2.75rem;
+        height: 2.75rem;
+      }
+    }
   }
 
   &__icon {

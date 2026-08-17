@@ -1,22 +1,6 @@
-<div
-  class="widget-container"
-  [class.widget-container--collapsed]="collapsed()"
-  [class.widget-container--fill]="fill() && !collapsed()"
->
+<div class="widget-container" [class.widget-container--fill]="fill()">
   <div class="widget-header">
-    <button
-      type="button"
-      class="widget-toggle"
-      [attr.aria-expanded]="!collapsed()"
-      [attr.aria-label]="(collapsed() ? 'Expand ' : 'Collapse ') + label()"
-      (click)="toggle()"
-    >
-      <pdz-icon
-        [name]="collapsed() ? 'chevron_right' : 'expand_more'"
-        [size]="20"
-      ></pdz-icon>
-      <span class="widget-label">{{ label() }}</span>
-    </button>
+    <span class="widget-label">{{ label() }}</span>
     <div class="widget-options">
       <ng-content select="[widget-options]"></ng-content>
     </div>

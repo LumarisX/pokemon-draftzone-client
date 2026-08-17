@@ -4,6 +4,7 @@ import {
   ScrollingModule,
 } from '@angular/cdk/scrolling';
 import {
+  booleanAttribute,
   Component,
   ElementRef,
   EventEmitter,
@@ -83,6 +84,16 @@ export class PokemonSearchComponent
    */
   @Input() mode: 'search' | 'select' = 'search';
   @Input() placeholder = 'Search Pokémon...';
+
+  /** `compact` shrinks the field to a 3rem control height for dense rows. */
+  @Input() density: 'comfortable' | 'compact' = 'comfortable';
+
+  /**
+   * Blocks edits without disabling the form control, so a locked selection is
+   * still part of the parent form's value.
+   */
+  @Input({ transform: booleanAttribute }) locked = false;
+
   @Input() takenIds: (string | null | undefined)[] = [];
 
   @Output() pokemonSelected = new EventEmitter<DraftPokemon>();
@@ -185,6 +196,7 @@ export class PokemonSearchComponent
   }
 
   setOpen(value: boolean): void {
+    if (value && this.locked) return;
     if (value && this.fieldEl)
       this.panelWidth = this.fieldEl.nativeElement.offsetWidth;
     this.isOpen = value;
@@ -199,7 +211,7 @@ export class PokemonSearchComponent
   }
 
   beginEdit(): void {
-    if (this.disabled) return;
+    if (this.disabled || this.locked) return;
     this.isEditing = true;
     this.query.setValue('');
     setTimeout(() => {

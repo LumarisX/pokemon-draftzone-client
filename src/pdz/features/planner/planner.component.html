@@ -1,39 +1,79 @@
 @if (plannerForm) {
   <div class="planner" (keydown.enter)="$event.preventDefault()">
     <div class="planner__drafts">
-      <div class="planner__draft-list scrollbar-hidden">
+      <div
+        class="planner__draft-list"
+        role="tablist"
+        aria-label="Draft plans"
+        aria-orientation="horizontal"
+      >
         @for (draftCtrl of draftArray.controls; track draftCtrl) {
           <div
+            #tabEl
             class="planner__draft"
             [class.planner__draft--active]="$index === selectedDraft()"
+            [class.planner__draft--confirm]="pendingDeleteIndex() === $index"
+            [id]="'planner-tab-' + $index"
+            role="tab"
+            [attr.aria-selected]="$index === selectedDraft()"
+            [attr.tabindex]="$index === selectedDraft() ? 0 : -1"
             (click)="selectDraft($index)"
+            (keydown)="onTabKeydown($event, $index)"
           >
             <input
               class="planner__draft-name"
               type="text"
               spellcheck="false"
               aria-label="Draft plan name"
+              [attr.title]="draftCtrl.controls.draftName.value"
+              [style.width.ch]="nameWidthCh(draftCtrl.controls.draftName.value)"
               [formControl]="draftCtrl.controls.draftName"
+              (dblclick)="selectNameText($event)"
             />
-            <button
-              type="button"
-              class="planner__draft-action"
-              aria-label="Duplicate draft plan"
-              [disabled]="isAtDraftLimit"
-              (click)="copyToNew($index); $event.stopPropagation()"
-            >
-              <pdz-icon name="content_copy" [size]="18"></pdz-icon>
-            </button>
-            @if (draftArray.controls.length > 1) {
-              <button
-                type="button"
-                class="planner__draft-action planner__draft-action--danger"
-                aria-label="Delete draft plan"
-                (click)="deletePlan($index); $event.stopPropagation()"
-              >
-                <pdz-icon name="delete_forever" [size]="18"></pdz-icon>
-              </button>
-            }
+            <div class="planner__draft-actions">
+              @if (pendingDeleteIndex() === $index) {
+                <button
+                  type="button"
+                  class="planner__draft-action"
+                  aria-label="Cancel delete"
+                  (click)="cancelDelete(); $event.stopPropagation()"
+                >
+                  <pdz-icon name="close" [size]="18"></pdz-icon>
+                </button>
+                <button
+                  type="button"
+                  class="planner__draft-action planner__draft-action--danger"
+                  aria-label="Confirm delete draft plan"
+                  (click)="confirmDelete($index); $event.stopPropagation()"
+                >
+                  <pdz-icon
+                    name="delete_forever"
+                    [size]="18"
+                    [fill]="true"
+                  ></pdz-icon>
+                </button>
+              } @else {
+                <button
+                  type="button"
+                  class="planner__draft-action"
+                  aria-label="Duplicate draft plan"
+                  [disabled]="isAtDraftLimit"
+                  (click)="copyToNew($index); $event.stopPropagation()"
+                >
+                  <pdz-icon name="content_copy" [size]="18"></pdz-icon>
+                </button>
+                @if (draftArray.controls.length > 1) {
+                  <button
+                    type="button"
+                    class="planner__draft-action planner__draft-action--danger"
+                    aria-label="Delete draft plan"
+                    (click)="requestDelete($index); $event.stopPropagation()"
+                  >
+                    <pdz-icon name="delete_forever" [size]="18"></pdz-icon>
+                  </button>
+                }
+              }
+            </div>
           </div>
         }
       </div>
@@ -52,7 +92,12 @@
         <pdz-icon name="add" [size]="20"></pdz-icon>
       </button>
 
-      <p class="planner__save-state" role="status" aria-live="polite">
+      <p
+        class="planner__save-state"
+        [class.planner__save-state--saved]="!hasUnsavedEdits()"
+        role="status"
+        aria-live="polite"
+      >
         @if (hasUnsavedEdits()) {
           <pdz-icon name="sync" [size]="16"></pdz-icon>
           Saving…
@@ -63,7 +108,11 @@
       </p>
     </div>
 
-    <div class="planner__body">
+    <div
+      class="planner__body"
+      role="tabpanel"
+      [attr.aria-labelledby]="'planner-tab-' + selectedDraft()"
+    >
       @if (isLargeScreen()) {
         <section
           class="planner__panel"
@@ -95,16 +144,31 @@
       }
 
       <section class="planner__main" aria-label="Draft analysis">
-        <div class="planner__board">
+        <div class="planner__toolbar">
           @if (!isLargeScreen()) {
-            <pdz-planner-settings
-              [draftFormGroup]="draftFormGroup"
-            ></pdz-planner-settings>
-            <pdz-planner-team
-              [draftFormGroup]="draftFormGroup"
-            ></pdz-planner-team>
+            <button
+              type="button"
+              class="planner__panel-toggle"
+              aria-label="Draft plan setup"
+              aria-controls="planner-setup-drawer"
+              [attr.aria-expanded]="panelOpen()"
+              (click)="togglePanel()"
+            >
+              <pdz-icon name="tune" [size]="18"></pdz-icon>
+              <span>Setup</span>
+            </button>
           }
 
+          <pdz-animated-selector
+            class="planner__views"
+            direction="horizontal"
+            [options]="viewOptions"
+            [selected]="mainView()"
+            (selectedChange)="setMainView($event)"
+          ></pdz-animated-selector>
+        </div>
+
+        <div class="planner__board" [hidden]="mainView() !== 'analysis'">
           @if (summary(); as summaryData) {
             <pdz-planner-summary [summary]="summaryData"></pdz-planner-summary>
           }
@@ -122,22 +186,6 @@
             ></pdz-planner-coverage>
           }
 
-          <pdz-planner-widget
-            class="planner__finder"
-            widgetId="find"
-            label="Find Pokémon"
-            [fill]="true"
-            #finder
-          >
-            @if (!finder.collapsed()) {
-              <pdz-pokemon-search-core
-                [rulesetId]="
-                  draftFormGroup.controls.ruleset.value || 'Gen9 NatDex'
-                "
-              ></pdz-pokemon-search-core>
-            }
-          </pdz-planner-widget>
-
           @if (!hasAnalysis()) {
             <p class="planner__empty">
               Add Pokémon to your team to see summary, typing, move and coverage
@@ -145,7 +193,64 @@
             </p>
           }
         </div>
+
+        <div class="planner__finder" [hidden]="mainView() !== 'find'">
+          <p
+            class="planner__finder-status"
+            role="status"
+            aria-live="polite"
+            [class.planner__finder-status--shown]="!!addFeedback()"
+          >
+            {{ addFeedback() }}
+          </p>
+
+          <pdz-pokemon-search-core
+            embedded
+            selectable
+            [rulesetId]="draftFormGroup.controls.ruleset.value || 'Gen9 NatDex'"
+            [takenIds]="takenIds()"
+            (pokemonSelected)="addToTeam($event)"
+          ></pdz-pokemon-search-core>
+        </div>
       </section>
+
+      @if (!isLargeScreen()) {
+        <div
+          class="planner__scrim"
+          [class.planner__scrim--open]="panelOpen()"
+          (click)="closePanel()"
+        ></div>
+
+        <aside
+          id="planner-setup-drawer"
+          class="planner__drawer"
+          [class.planner__drawer--open]="panelOpen()"
+          [attr.inert]="panelOpen() ? null : ''"
+          role="dialog"
+          aria-label="Draft plan setup"
+        >
+          <div class="planner__drawer-header">
+            <span class="planner__drawer-title">Setup</span>
+            <button
+              type="button"
+              class="planner__drawer-close"
+              aria-label="Close draft plan setup"
+              (click)="closePanel()"
+            >
+              <pdz-icon name="close" [size]="20"></pdz-icon>
+            </button>
+          </div>
+
+          <div class="planner__panel-content">
+            <pdz-planner-settings
+              [draftFormGroup]="draftFormGroup"
+            ></pdz-planner-settings>
+            <pdz-planner-team
+              [draftFormGroup]="draftFormGroup"
+            ></pdz-planner-team>
+          </div>
+        </aside>
+      }
     </div>
   </div>
 } @else {

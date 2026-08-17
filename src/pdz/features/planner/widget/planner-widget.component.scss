@@ -1,5 +1,3 @@
-@use "pdz-theming" as pdz;
-@use "mixins/buttons" as *;
 @use "mixins/widgets" as *;
 
 :host {
@@ -12,39 +10,5 @@
 
   &--fill {
     width: 100%;
-  }
-
-  &--collapsed {
-    .widget-header {
-      padding-bottom: 0;
-    }
-
-    .widget-options,
-    .widget-body {
-      display: none;
-    }
-  }
-}
-
-.widget-toggle {
-  @include flat-button(
-    (
-      padding: 0 pdz.space(2xs),
-      border-radius: pdz.shape(corner-sm),
-      border-color: transparent,
-      color: inherit,
-      background-hover: pdz.color(surface-container-high),
-      box-shadow-hover: none,
-    )
-  );
-  display: flex;
-  align-items: center;
-  gap: pdz.space(2xs);
-  min-width: 0;
-  color: inherit;
-
-  pdz-icon {
-    flex-shrink: 0;
-    color: pdz.color(on-surface-variant);
   }
 }

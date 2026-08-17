@@ -2,6 +2,12 @@
 @use "mixins/buttons" as *;
 @use "mixins/widgets" as *;
 
+@keyframes planner-save-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 :host {
   display: block;
   height: 100%;
@@ -17,64 +23,102 @@
     display: flex;
     flex-shrink: 0;
     align-items: flex-end;
-    gap: pdz.space(xs);
-    padding: 0 pdz.space(sm);
+    gap: pdz.space(sm);
+    padding: pdz.space(sm) pdz.space(sm) 0;
     max-width: 100%;
     overflow-y: clip;
-    border-bottom: 2px solid pdz.color(outline);
+    background-color: pdz.color(surface);
+    border-bottom: 1px solid pdz.color(outline-variant);
   }
 
   &__draft-list {
     display: flex;
     align-items: flex-end;
-    gap: pdz.space(xs);
-    height: 2.5rem;
+    gap: 2px;
     overflow-x: auto;
+    overflow-y: clip;
   }
 
   &__draft {
+    position: relative;
     display: flex;
+    flex-shrink: 0;
     align-items: center;
-    gap: pdz.space(2xs);
-    min-height: 1.5rem;
-    padding: pdz.space(xs) pdz.space(xs) 0;
+    height: 1.75rem;
+    margin-bottom: -1px;
+    padding: 0 pdz.space(2xs) 0 pdz.space(sm);
+    border: 1px solid pdz.color(outline-variant);
+    border-bottom-color: transparent;
     border-radius: pdz.shape(corner-sm) pdz.shape(corner-sm) 0 0;
-    background-color: pdz.color(secondary-container);
-    color: pdz.color(on-secondary-container);
-    box-shadow: var(--pdz-level-1);
+    background-color: pdz.color(surface-container-low);
+    color: pdz.color(on-surface-variant);
     cursor: pointer;
-    @include pdz.apply-typography(label-xs);
+    font-family: var(--pdz-font-fancy);
+    font-size: 0.85rem;
+    line-height: 1.1rem;
     transition:
-      min-height 0.2s ease,
-      box-shadow 0.2s ease,
-      color 0.2s ease,
-      background-color 0.2s ease,
-      font-size 0.2s ease;
+      color 0.15s ease,
+      background-color 0.15s ease,
+      height 0.15s ease,
+      border-color 0.15s ease;
+
+    &:hover {
+      background-color: pdz.color(surface-container);
+      color: pdz.color(on-surface);
+    }
+
+    &:focus-visible {
+      z-index: 1;
+      outline: 2px solid pdz.color(primary);
+      outline-offset: -2px;
+    }
 
     &--active {
-      min-height: 2rem;
-      background-color: pdz.color(primary-container);
-      color: pdz.color(on-primary-container);
-      box-shadow: var(--pdz-level-2);
-      @include pdz.apply-typography(label-sm);
+      height: 2rem;
 
-      .planner__draft-name:focus {
-        margin-bottom: 0;
-        border-bottom: 1px solid currentcolor;
+      z-index: 1;
+      background-color: pdz.color(background);
+      color: pdz.color(on-surface);
+      font-weight: var(--pdz-font-weight-bold);
+
+      &:hover {
+        background-color: pdz.color(background);
+      }
+
+      &::after {
+        content: "";
+        position: absolute;
+        right: -1px;
+        bottom: -1px;
+        left: -1px;
+        height: 2px;
+        border-radius: pdz.shape(corner-full);
+        background-color: pdz.color(primary);
+      }
+    }
+
+    &--confirm {
+      background-color: pdz.color(error-container);
+      border-color: pdz.color(error);
+      color: pdz.color(on-error-container);
+
+      &:hover {
+        background-color: pdz.color(error-container);
       }
     }
   }
 
   &__draft-name {
-    width: 6rem;
-    padding: 0 pdz.space(xs);
-    margin-bottom: 1px;
+    width: 4ch;
+    min-width: 4ch;
+    max-width: 22ch;
+    padding: 0 pdz.space(3xs);
     border: none;
     background: transparent;
     color: inherit;
-    font-family: var(--pdz-font-fancy);
-    font-size: inherit;
-    line-height: 1.25rem;
+    font: inherit;
+    overflow: hidden;
+    white-space: nowrap;
     text-overflow: ellipsis;
 
     &:focus {
@@ -82,54 +126,173 @@
     }
   }
 
+  &__draft-actions {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: pdz.space(3xs);
+    margin-left: pdz.space(3xs);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease;
+  }
+
+  &__draft:hover &__draft-actions,
+  &__draft:focus-within &__draft-actions,
+  &__draft--active &__draft-actions,
+  &__draft--confirm &__draft-actions {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
   &__draft-action {
-    @include icon-button(
-      (
-        width: 1.5rem,
-        height: 1.5rem,
-        padding: 0,
-        border-radius: pdz.shape(corner-full),
-        background-hover: pdz.color(surface-container-high),
-      )
-    );
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 1.15rem;
+    height: 1.15rem;
+    padding: 0;
+    border: none;
+    background: transparent;
     color: inherit;
+    cursor: pointer;
+    opacity: 0.75;
+    transition:
+      color 0.15s ease,
+      opacity 0.15s ease;
 
     &:not(:disabled):hover {
       color: pdz.color(primary);
+      opacity: 1;
     }
 
     &--danger:not(:disabled):hover {
       color: pdz.color(error);
     }
+
+    &:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    &:focus-visible {
+      opacity: 1;
+      outline: 2px solid pdz.color(primary);
+      outline-offset: 1px;
+    }
+  }
+
+  &__toolbar {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    flex-shrink: 0;
+    gap: pdz.space(xs);
+    padding: pdz.space(sm) pdz.space(sm) 0;
+  }
+
+  &__panel-toggle {
+    @include flat-button(
+      (
+        padding: pdz.space(2xs) pdz.space(sm),
+        gap: pdz.space(2xs),
+        border-radius: pdz.shape(corner-full),
+        border-width: 1px,
+        border-color: pdz.color(outline-variant),
+        background: pdz.color(surface),
+        background-hover: pdz.color(surface-container),
+        color: pdz.color(on-surface-variant),
+        color-hover: pdz.color(on-surface),
+      )
+    );
+    grid-column: 1;
+    justify-self: start;
+    flex-shrink: 0;
+    font-family: var(--pdz-font-fancy);
+    @include pdz.apply-typography(label-sm);
+
+    @media (max-width: 480px) {
+      padding: pdz.space(2xs);
+
+      span {
+        display: none;
+      }
+    }
+  }
+
+  &__views {
+    --pdz-selector-option-min-width: 6rem;
+    grid-column: 2;
+    justify-self: center;
+    max-width: 100%;
+    align-self: center;
+    padding: 2px;
+
+    @media (max-width: 480px) {
+      --pdz-selector-option-min-width: 4.75rem;
+    }
+    border: 1px solid pdz.color(outline-variant);
+    border-radius: pdz.shape(corner-full);
+    font-family: var(--pdz-font-fancy);
+    @include pdz.apply-typography(label-sm);
   }
 
   &__save-state {
     display: flex;
     flex-shrink: 0;
+    align-self: center;
     align-items: center;
     gap: pdz.space(3xs);
-    margin: 0 0 pdz.space(2xs) auto;
-    padding-left: pdz.space(sm);
+    margin-left: auto;
+    padding: pdz.space(3xs) pdz.space(sm);
+    border-radius: pdz.shape(corner-full);
     color: pdz.color(on-surface-variant);
+    background-color: pdz.color(surface-container-high);
     white-space: nowrap;
     @include pdz.apply-typography(label-2xs);
+    transition:
+      color 0.2s ease,
+      background-color 0.2s ease;
+
+    pdz-icon {
+      animation: planner-save-spin 0.9s linear infinite;
+    }
+
+    &--saved {
+      color: pdz.color(on-positive-container);
+      background-color: pdz.color(positive-container);
+
+      pdz-icon {
+        color: pdz.color(positive);
+        animation: none;
+      }
+    }
   }
 
   &__add {
-    @include icon-button-secondary(
+    @include icon-button(
       (
-        width: 2rem,
-        height: 1.75rem,
+        width: 1.9rem,
+        height: 1.9rem,
         padding: 0,
-        border-radius: pdz.shape(corner-sm) pdz.shape(corner-sm) 0 0,
-        box-shadow-hover: var(--pdz-level-2),
+        border: 1px dashed pdz.color(outline),
+        border-radius: pdz.shape(corner-sm),
+        background-hover: pdz.color(surface-container),
       )
     );
     flex-shrink: 0;
-    box-shadow: var(--pdz-level-1);
+    margin-bottom: pdz.space(2xs);
+    color: pdz.color(on-surface-variant);
+
+    &:not(:disabled):hover {
+      color: pdz.color(on-surface);
+      border-color: pdz.color(outline);
+    }
   }
 
   &__body {
+    position: relative;
     display: flex;
     flex: 1 1 auto;
     min-width: 0;
@@ -153,24 +316,15 @@
     overflow-y: auto;
   }
 
-  // The editor column: settings sits on top, the team list takes the rest and
-  // scrolls on its own so the panel itself never scrolls.
   &__panel-content {
     display: flex;
     flex: 1 1 auto;
     flex-direction: column;
     gap: pdz.space(md);
+    width: 100%;
+    min-width: 0;
     min-height: 0;
     padding: pdz.space(md);
-    overflow: hidden;
-
-    > * {
-      width: 100%;
-      padding: pdz.space(md);
-      border-radius: pdz.shape(corner-lg);
-      background-color: pdz.color(surface);
-      box-shadow: var(--pdz-level-3);
-    }
 
     pdz-planner-settings {
       flex: 0 0 auto;
@@ -182,7 +336,86 @@
     }
   }
 
-  // The analysis board: every widget rendered at once, wrapping to fill.
+  &__board[hidden],
+  &__finder[hidden] {
+    display: none;
+  }
+
+  &__scrim {
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    background: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity 0.25s ease,
+      visibility 0.25s ease;
+
+    &--open {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+
+  &__drawer {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    z-index: 21;
+    display: flex;
+    flex-direction: column;
+    width: min(24rem, 88%);
+    background-color: pdz.color(surface);
+    border-inline-end: 1px solid pdz.color(outline-variant);
+    box-shadow: var(--pdz-level-3);
+    transform: translateX(-100%);
+    visibility: hidden;
+    transition:
+      transform 0.25s ease,
+      visibility 0.25s ease;
+
+    &--open {
+      transform: translateX(0);
+      visibility: visible;
+    }
+
+    .planner__panel-content {
+      overflow-y: auto;
+    }
+  }
+
+  &__drawer-header {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: space-between;
+    gap: pdz.space(sm);
+    padding: pdz.space(xs) pdz.space(xs) pdz.space(xs) pdz.space(md);
+    border-bottom: 1px solid pdz.color(outline-variant);
+    background-color: pdz.color(surface-container-low);
+  }
+
+  &__drawer-title {
+    color: pdz.color(on-surface);
+    font-family: var(--pdz-font-fancy);
+    @include pdz.apply-typography(label-md);
+  }
+
+  &__drawer-close {
+    @include icon-button(
+      (
+        width: 2rem,
+        height: 2rem,
+        padding: 0,
+        border-radius: pdz.shape(corner-full),
+        background-hover: pdz.color(surface-container-high),
+      )
+    );
+    flex-shrink: 0;
+    color: pdz.color(on-surface-variant);
+  }
+
   &__board {
     @include widget-container();
     padding: pdz.space(lg) pdz.space(sm);
@@ -191,15 +424,6 @@
       padding: pdz.space(sm);
     }
 
-    // Only rendered here below the panel breakpoint, where they should span
-    // the board rather than shrink to their content.
-    pdz-planner-settings,
-    pdz-planner-team {
-      width: 100%;
-      max-width: 32rem;
-    }
-
-    // Nested so it outranks the card chrome `widget-container()` puts on `> *`.
     .planner__empty {
       flex-basis: 100%;
       width: auto;
@@ -211,16 +435,33 @@
       box-shadow: none;
       @include pdz.apply-typography(body-sm);
     }
+  }
 
-    .planner__finder {
-      @include widget-card();
-      width: 44rem;
-      max-width: 100%;
+  &__finder {
+    display: flex;
+    flex-direction: column;
+    gap: pdz.space(sm);
+    width: 100%;
+    padding: pdz.space(lg) pdz.space(md);
 
-      .widget-body {
-        min-height: 28rem;
-        overflow-x: visible;
-      }
+    @media (max-width: 768px) {
+      padding: pdz.space(sm);
+    }
+  }
+
+  &__finder-status {
+    margin: 0;
+    padding: pdz.space(3xs) pdz.space(sm);
+    border-radius: pdz.shape(corner-full);
+    align-self: flex-start;
+    color: pdz.color(on-positive-container);
+    background-color: pdz.color(positive-container);
+    opacity: 0;
+    @include pdz.apply-typography(label-2xs);
+    transition: opacity 0.2s ease;
+
+    &--shown {
+      opacity: 1;
     }
   }
 

@@ -1,7 +1,5 @@
 @if (summary) {
-  <pdz-planner-widget widgetId="summary" label="Draft Summary" #widget>
-    @if (!widget.collapsed()) {
-      <pdz-summary-core [summary]="summary"></pdz-summary-core>
-    }
+  <pdz-planner-widget label="Draft Summary">
+    <pdz-summary-core [summary]="summary"></pdz-summary-core>
   </pdz-planner-widget>
 }

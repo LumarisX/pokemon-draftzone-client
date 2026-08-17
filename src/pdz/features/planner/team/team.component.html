@@ -1,9 +1,5 @@
 @if (draftFormGroup) {
   <div class="planner-team">
-    <div class="widget-header">
-      <div class="widget-label">Team</div>
-    </div>
-
     <div class="planner-team__controls">
       <div class="planner-team__control">
         <span class="planner-team__control-label">Size</span>
@@ -65,6 +61,15 @@
           />
         </div>
       }
+
+      <button
+        type="button"
+        class="planner-team__clear"
+        [disabled]="!clearableCount"
+        (click)="clearTeam()"
+      >
+        Clear
+      </button>
     </div>
 
     <div
@@ -76,6 +81,8 @@
         <div
           class="planner-team__row"
           [class.planner-team__row--reserve]="$index >= min"
+          [class.planner-team__row--empty]="!teamCtrl.controls.pokemon.value"
+          [class.planner-team__row--locked]="teamCtrl.controls.locked.value"
           cdkDrag
         >
           <div class="planner-team__drag-preview" *cdkDragPreview>
@@ -90,16 +97,24 @@
           <button
             type="button"
             class="planner-team__handle"
-            aria-label="Reorder Pokémon"
+            [attr.aria-label]="'Reorder slot ' + ($index + 1)"
+            [title]="$index >= min ? 'Reserve slot' : 'Starter slot'"
             cdkDragHandle
           >
-            <pdz-icon name="drag_indicator" [size]="20"></pdz-icon>
+            <span class="planner-team__slot">{{ $index + 1 }}</span>
+            <pdz-icon
+              class="planner-team__grip"
+              name="drag_indicator"
+              [size]="18"
+            ></pdz-icon>
           </button>
 
           <pdz-pokemon-search
             class="planner-team__pokemon"
             mode="select"
+            density="compact"
             placeholder="Add Pokémon..."
+            [locked]="teamCtrl.controls.locked.value"
             [ruleset]="draftFormGroup.controls.ruleset.value"
             [takenIds]="takenIdsFor($index)"
             [formControl]="teamCtrl.controls.pokemon"
@@ -107,16 +122,15 @@
           ></pdz-pokemon-search>
 
           <div class="planner-team__meta">
-            <label class="planner-team__value">
-              <span class="planner-team__value-label">
-                {{ isPoints ? "Points" : "Tier" }}
-              </span>
+            <div class="planner-team__value">
               @if (isPoints) {
                 <input
                   class="planner-team__value-input"
                   type="number"
                   inputmode="numeric"
                   placeholder="0"
+                  [readonly]="teamCtrl.controls.locked.value"
+                  [attr.aria-label]="'Points for slot ' + ($index + 1)"
                   [formControl]="teamCtrl.controls.value"
                 />
               } @else {
@@ -124,23 +138,38 @@
                   class="planner-team__value-input"
                   type="text"
                   spellcheck="false"
+                  placeholder="—"
+                  [readonly]="teamCtrl.controls.locked.value"
+                  [attr.aria-label]="'Tier for slot ' + ($index + 1)"
                   [formControl]="teamCtrl.controls.tier"
                 />
               }
-            </label>
+              <span class="planner-team__value-unit" aria-hidden="true">
+                {{ isPoints ? "points" : "tier" }}
+              </span>
+            </div>
 
-            <label class="planner-team__flag" title="Captain">
-              <input type="checkbox" [formControl]="teamCtrl.controls.capt" />
-              <span class="planner-team__flag-label">Capt</span>
-            </label>
-
-            <label class="planner-team__flag" title="Already drafted">
-              <input
-                type="checkbox"
-                [formControl]="teamCtrl.controls.drafted"
-              />
-              <span class="planner-team__flag-label">Drafted</span>
-            </label>
+            <button
+              type="button"
+              class="planner-team__lock"
+              [class.planner-team__lock--on]="teamCtrl.controls.locked.value"
+              [attr.aria-pressed]="teamCtrl.controls.locked.value"
+              [attr.aria-label]="
+                teamCtrl.controls.locked.value ? 'Unlock slot' : 'Lock slot'
+              "
+              [title]="
+                teamCtrl.controls.locked.value
+                  ? 'Unlock — allow edits and clearing'
+                  : 'Lock — keep this pick when clearing'
+              "
+              (click)="toggle(teamCtrl.controls.locked)"
+            >
+              <pdz-icon
+                [name]="teamCtrl.controls.locked.value ? 'lock' : 'lock_open'"
+                [size]="18"
+                [fill]="teamCtrl.controls.locked.value"
+              ></pdz-icon>
+            </button>
           </div>
         </div>
       }

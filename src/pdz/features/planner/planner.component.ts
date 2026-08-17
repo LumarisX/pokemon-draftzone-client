@@ -1,11 +1,13 @@
 import {
   Component,
+  ElementRef,
   HostListener,
   OnDestroy,
   OnInit,
   computed,
   inject,
   signal,
+  viewChildren,
 } from '@angular/core';
 import {
   FormArray,
@@ -20,6 +22,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ensureNumber, ensureString } from '@pdz/core/utils';
 import { getNameByPid } from '@pdz/shared/data/namedex';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
+import {
+  AnimatedSelectorComponent,
+  AnimatedSelectorOption,
+} from '@pdz/shared/inputs/animated-selector/animated-selector.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { debounceTime, distinctUntilChanged, merge } from 'rxjs';
 import { DraftPokemon } from '../drafts/draft.model';
@@ -37,14 +43,12 @@ import { PlannerSettingsComponent } from './settings/settings.component';
 import { PlannerSummaryComponent } from './summary/summary.component';
 import { PlannerTeamComponent } from './team/team.component';
 import { PlannerTypechartComponent } from './typechart/typechart.component';
-import { PlannerWidgetComponent } from './widget/planner-widget.component';
 
 interface LSTeamData {
   id: string;
   value: number | null;
   tier: string;
-  capt: boolean;
-  drafted: boolean;
+  locked: boolean;
 }
 
 export interface LSDraftData {
@@ -58,12 +62,16 @@ export interface LSDraftData {
   team: LSTeamData[];
 }
 
+type PlannerView = 'analysis' | 'find';
+
 const MAX_DRAFTS = 9;
 const AUTOSAVE_DEBOUNCE_MS = 800;
+const ADD_FEEDBACK_MS = 2500;
 const LARGE_SCREEN_QUERY = '(min-width: 1024px)';
 const DEFAULT_PANEL_RATIO = 0.34;
 const MIN_PANEL_RATIO = 0.2;
 const MAX_PANEL_RATIO = 0.6;
+const DEFAULT_PANEL_MAX_WIDTH_REM = 32;
 
 @Component({
   selector: 'pdz-planner',
@@ -72,6 +80,7 @@ const MAX_PANEL_RATIO = 0.6;
   imports: [
     ReactiveFormsModule,
     FormsModule,
+    AnimatedSelectorComponent,
     IconComponent,
     LoadingComponent,
     MoveComponent,
@@ -80,7 +89,6 @@ const MAX_PANEL_RATIO = 0.6;
     PlannerSummaryComponent,
     PlannerTeamComponent,
     PlannerTypechartComponent,
-    PlannerWidgetComponent,
     PokemonSearchCoreComponent,
   ],
 })
@@ -100,19 +108,36 @@ export class PlannerComponent implements OnInit, OnDestroy {
   movechart = signal<MoveChart | undefined>(undefined);
   coverage = signal<Coverage | undefined>(undefined);
 
+  mainView = signal<PlannerView>('analysis');
+  takenIds = signal<string[]>([]);
+  addFeedback = signal<string | null>(null);
+
+  readonly viewOptions: AnimatedSelectorOption<PlannerView>[] = [
+    { value: 'analysis', label: 'Analysis', icon: 'insights' },
+    { value: 'find', label: 'Find', icon: 'search' },
+  ];
+
   isLargeScreen = signal(false);
+  panelOpen = signal(false);
   panelRatio = signal(DEFAULT_PANEL_RATIO);
   isResizing = signal(false);
   hasUnsavedEdits = signal(false);
+  pendingDeleteIndex = signal<number | null>(null);
+
+  private readonly tabRefs = viewChildren<ElementRef<HTMLElement>>('tabEl');
 
   private lastSavedJson?: string;
+  private pendingDeleteTimeoutId?: ReturnType<typeof setTimeout>;
+  private addFeedbackTimeoutId?: ReturnType<typeof setTimeout>;
   private resizingPointerId: number | null = null;
   private resizeStartX = 0;
   private resizeStartRatio = DEFAULT_PANEL_RATIO;
   private resizeContainerWidth = 1;
   private largeScreenQuery?: MediaQueryList;
-  private readonly onLargeScreenChange = (event: MediaQueryListEvent) =>
+  private readonly onLargeScreenChange = (event: MediaQueryListEvent) => {
     this.isLargeScreen.set(event.matches);
+    if (event.matches) this.panelOpen.set(false);
+  };
 
   hasAnalysis = computed(
     () =>
@@ -122,7 +147,11 @@ export class PlannerComponent implements OnInit, OnDestroy {
       !!this.coverage(),
   );
 
-  panelFlex = computed(() => `0 0 ${(this.panelRatio() * 100).toFixed(2)}%`);
+  panelFlex = computed(() => {
+    const percent = `${(this.panelRatio() * 100).toFixed(2)}%`;
+    if (this.panelRatio() !== DEFAULT_PANEL_RATIO) return `0 0 ${percent}`;
+    return `0 0 min(${DEFAULT_PANEL_MAX_WIDTH_REM}rem, ${percent})`;
+  });
 
   ngOnInit(): void {
     const importedDraft = this.takeImportedDraft();
@@ -165,6 +194,8 @@ export class PlannerComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.flushPendingSave();
+    clearTimeout(this.pendingDeleteTimeoutId);
+    clearTimeout(this.addFeedbackTimeoutId);
     this.largeScreenQuery?.removeEventListener(
       'change',
       this.onLargeScreenChange,
@@ -204,23 +235,142 @@ export class PlannerComponent implements OnInit, OnDestroy {
   }
 
   selectDraft(index: number): void {
+    this.cancelDelete();
     this.selectedDraft.set(index);
     this.updateDetails();
   }
 
+  setMainView(view: PlannerView): void {
+    this.mainView.set(view);
+  }
+
+  togglePanel(): void {
+    this.panelOpen.update((open) => !open);
+  }
+
+  closePanel(): void {
+    this.panelOpen.set(false);
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscape(): void {
+    if (document.querySelector('.cdk-overlay-pane')) return;
+    this.closePanel();
+  }
+
+  addToTeam(pokemon: { id: string; name: string }): void {
+    const slotIndex = this.teamFormArray.controls.findIndex(
+      (control) =>
+        !control.controls.locked.value && !control.controls.pokemon.value?.id,
+    );
+
+    if (slotIndex === -1) {
+      this.showAddFeedback('No open slot — clear or unlock one first.');
+      return;
+    }
+
+    this.teamFormArray
+      .at(slotIndex)
+      .controls.pokemon.setValue({ id: pokemon.id, name: pokemon.name });
+    this.showAddFeedback(`Added ${pokemon.name} to slot ${slotIndex + 1}.`);
+  }
+
+  private showAddFeedback(message: string): void {
+    this.addFeedback.set(message);
+    clearTimeout(this.addFeedbackTimeoutId);
+    this.addFeedbackTimeoutId = setTimeout(
+      () => this.addFeedback.set(null),
+      ADD_FEEDBACK_MS,
+    );
+  }
+
+  onTabKeydown(event: KeyboardEvent, index: number): void {
+    if (event.target !== event.currentTarget) return;
+    const lastIndex = this.draftSize - 1;
+    let nextIndex: number;
+
+    switch (event.key) {
+      case 'ArrowRight':
+        nextIndex = index === lastIndex ? 0 : index + 1;
+        break;
+      case 'ArrowLeft':
+        nextIndex = index === 0 ? lastIndex : index - 1;
+        break;
+      case 'Home':
+        nextIndex = 0;
+        break;
+      case 'End':
+        nextIndex = lastIndex;
+        break;
+      default:
+        return;
+    }
+
+    event.preventDefault();
+    this.selectDraft(nextIndex);
+    this.tabRefs()[nextIndex]?.nativeElement.focus();
+  }
+
+  /**
+   * The rename input fills most of the tab, so a plain click to switch tabs
+   * also focuses it — select-on-focus would make every tab switch look like
+   * it entered rename mode. Only double-click (an explicit "let me rename
+   * this") selects the text for a fast overwrite.
+   */
+  selectNameText(event: MouseEvent): void {
+    (event.target as HTMLInputElement).select();
+  }
+
+  /** Keeps the rename input hugging its text instead of leaving dead space. */
+  nameWidthCh(name: string | null | undefined): number {
+    return Math.min(Math.max((name ?? '').length, 4), 22) + 1;
+  }
+
+  /**
+   * Delete is a two-step confirm: the first click arms the tab (icon swaps
+   * to confirm/cancel) and the second click within the window commits it.
+   * There's no undo once a plan is removed, so a stray click shouldn't be
+   * able to destroy one.
+   */
+  requestDelete(index: number): void {
+    if (this.pendingDeleteIndex() === index) {
+      this.confirmDelete(index);
+      return;
+    }
+    this.pendingDeleteIndex.set(index);
+    clearTimeout(this.pendingDeleteTimeoutId);
+    this.pendingDeleteTimeoutId = setTimeout(
+      () => this.pendingDeleteIndex.set(null),
+      4000,
+    );
+  }
+
+  confirmDelete(index: number): void {
+    clearTimeout(this.pendingDeleteTimeoutId);
+    this.pendingDeleteIndex.set(null);
+    this.deletePlan(index);
+  }
+
+  cancelDelete(): void {
+    clearTimeout(this.pendingDeleteTimeoutId);
+    this.pendingDeleteIndex.set(null);
+  }
+
   deletePlan(index: number): void {
     this.draftArray.removeAt(index);
-    this.selectDraft(0);
+    this.selectDraft(Math.min(index, this.draftSize - 1));
   }
 
   addDraft(): void {
     if (this.isAtDraftLimit) return;
+    this.cancelDelete();
     this.draftArray.push(this.createDraftFormGroup({}));
     this.selectDraft(this.draftSize - 1);
   }
 
   copyToNew(index: number): void {
     if (this.isAtDraftLimit) return;
+    this.cancelDelete();
     const draftCopy = this.draftArray.at(index).clone();
     this.setDraftFormGroupSubscriptions(draftCopy);
     this.draftArray.push(draftCopy);
@@ -285,6 +435,8 @@ export class PlannerComponent implements OnInit, OnDestroy {
           group.controls.pokemon.value.id !== '',
       )
       .map((group) => group.controls.pokemon.value!.id);
+
+    this.takenIds.set(team);
 
     if (!team.length) {
       this.typechart.set({ team: [] });
@@ -395,8 +547,7 @@ export class PlannerComponent implements OnInit, OnDestroy {
       typeof team.id === 'string' &&
       (typeof team.value === 'number' || team.value === null) &&
       typeof team.tier === 'string' &&
-      typeof team.capt === 'boolean' &&
-      typeof team.drafted === 'boolean'
+      (team.locked === undefined || typeof team.locked === 'boolean')
     );
   }
 
@@ -439,10 +590,9 @@ export class PlannerComponent implements OnInit, OnDestroy {
       totalPoints: number;
       team: Partial<{
         pokemon: DraftPokemon | null;
-        capt: boolean;
         tier: string;
         value: number | null;
-        drafted: boolean;
+        locked: boolean;
       }>[];
     }>[],
   ): void {
@@ -467,10 +617,9 @@ export class PlannerComponent implements OnInit, OnDestroy {
       team: draft.team
         ?.map((pokemonData) => ({
           id: pokemonData.pokemon?.id,
-          capt: pokemonData.capt,
           tier: pokemonData.tier,
           value: pokemonData.value,
-          drafted: pokemonData.drafted,
+          locked: pokemonData.locked,
         }))
         .filter(
           (pokemonData) =>
@@ -509,29 +658,23 @@ function maxValidator(max: number) {
 
 export class TeamFormGroup extends FormGroup<{
   pokemon: FormControl<DraftPokemon | null>;
-  capt: FormControl<boolean>;
   tier: FormControl<string>;
   value: FormControl<number | null>;
-  drafted: FormControl<boolean>;
+  locked: FormControl<boolean>;
 }> {
   constructor(data?: {
     name?: string;
     id?: string;
     value?: number | null;
     tier?: string;
-    capt?: boolean;
-    drafted?: boolean;
+    locked?: boolean;
   }) {
     super({
-      capt: new FormControl(data?.capt ?? false, {
-        nonNullable: true,
-        validators: [Validators.required],
-      }),
       tier: new FormControl(data?.tier ?? '', {
         nonNullable: true,
       }),
       value: new FormControl(data?.value ?? null),
-      drafted: new FormControl(data?.drafted ?? false, {
+      locked: new FormControl(data?.locked ?? false, {
         nonNullable: true,
       }),
       pokemon: new FormControl(
@@ -545,10 +688,9 @@ export class TeamFormGroup extends FormGroup<{
   clone(): TeamFormGroup {
     return new TeamFormGroup({
       id: this.controls.pokemon?.value?.id,
-      capt: this.controls.capt.value,
       tier: this.controls.tier.value,
       value: this.controls.value.value ?? undefined,
-      drafted: this.controls.drafted.value,
+      locked: this.controls.locked.value,
     });
   }
 }

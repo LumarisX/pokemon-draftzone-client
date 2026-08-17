@@ -16,7 +16,7 @@ import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { TeambuilderService } from '../teambuilder.service';
 import { typeColor } from '@pdz/core/utils/styling';
 import { MatchupData, TypeChartPokemon } from '../../../matchup-interface';
-import { AnimatedSelectorComponent } from '../animated-selector/animated-selector.component';
+import { AnimatedSelectorComponent } from '@pdz/shared/inputs/animated-selector/animated-selector.component';
 import {
   getNatureValue,
   isJumpPoint,

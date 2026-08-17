@@ -108,8 +108,7 @@ export class DraftPreviewComponent {
     const plannerData: Partial<LSDraftData> = {
       team: draft.team.map((t) => ({
         id: t.id,
-        capt: !!(t.capt?.dmax || t.capt?.tera?.length || t.capt?.z?.length),
-        drafted: true,
+        locked: true,
         value: null,
         tier: '',
       })),
