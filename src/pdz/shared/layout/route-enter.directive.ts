@@ -1,4 +1,11 @@
-import { DestroyRef, Directive, ElementRef, inject } from '@angular/core';
+import {
+  afterNextRender,
+  DestroyRef,
+  Directive,
+  ElementRef,
+  inject,
+  Injector,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterOutlet } from '@angular/router';
 
@@ -11,11 +18,14 @@ export class RouteEnterDirective {
   private readonly el = inject<ElementRef<HTMLElement>>(ElementRef);
   private readonly outlet = inject(RouterOutlet);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly injector = inject(Injector);
 
   constructor() {
     this.outlet.activateEvents
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => this.play());
+      .subscribe(() =>
+        afterNextRender(() => this.play(), { injector: this.injector }),
+      );
   }
 
   private play(): void {
