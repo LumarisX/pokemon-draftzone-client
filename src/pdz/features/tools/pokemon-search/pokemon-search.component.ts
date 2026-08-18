@@ -9,12 +9,18 @@ import {
   OPERATOR_MAP,
   SearchFilter,
 } from './pokemon-search.types';
+import { PageComponent } from '@pdz/shared/layout/page/page.component';
 
 @Component({
   selector: 'pdz-pokemon-search',
   templateUrl: './pokemon-search.component.html',
   styleUrl: './pokemon-search.component.scss',
-  imports: [CommonModule, PokemonSearchCoreComponent, IconComponent],
+  imports: [
+    CommonModule,
+    PokemonSearchCoreComponent,
+    IconComponent,
+    PageComponent,
+  ],
 })
 export class PokemonSearchComponent {
   private router = inject(Router);

@@ -1,15 +1,9 @@
 @use "pdz-theming" as pdz;
 
 .about-page {
-  padding: pdz.space(2xl);
-  margin-inline: auto;
   display: flex;
   flex-direction: column;
   gap: pdz.space(lg);
-
-  @include pdz.respond-above(large) {
-    padding-inline: 8rem;
-  }
 }
 
 .about-page__title {

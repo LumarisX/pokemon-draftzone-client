@@ -1,27 +1,29 @@
-<div class="support-page">
-  <h1 class="support-page__title">Support the Site</h1>
+<pdz-page width="default">
+  <div class="support-page">
+    <h1 class="support-page__title">Support the Site</h1>
 
-  @for (dev of developers; track dev) {
-    <div class="developer-card">
-      <h2 class="developer-card__name">{{ dev.name }}</h2>
+    @for (dev of developers; track dev) {
+      <div class="developer-card">
+        <h2 class="developer-card__name">{{ dev.name }}</h2>
 
-      <div class="developer-card__links">
-        @for (link of dev.links; track link) {
-          <a
-            [href]="link.href"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="support-link"
-            [attr.aria-label]="'Support ' + dev.name + ' on ' + link.name"
-          >
-            <img
-              class="support-link__icon"
-              [src]="link.iconSrc"
-              [alt]="link.name + ' logo'"
-            />
-          </a>
-        }
+        <div class="developer-card__links">
+          @for (link of dev.links; track link) {
+            <a
+              [href]="link.href"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="support-link"
+              [attr.aria-label]="'Support ' + dev.name + ' on ' + link.name"
+            >
+              <img
+                class="support-link__icon"
+                [src]="link.iconSrc"
+                [alt]="link.name + ' logo'"
+              />
+            </a>
+          }
+        </div>
       </div>
-    </div>
-  }
-</div>
+    }
+  </div>
+</pdz-page>

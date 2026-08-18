@@ -6,7 +6,6 @@
 :host {
   display: block;
   min-height: 100vh;
-  padding: pdz.space(lg);
   background-color: pdz.color(surface);
 }
 
@@ -14,7 +13,6 @@
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  padding-top: pdz.space(3xl);
 
   &__card {
     @include pdz-card("menu");
@@ -193,16 +191,6 @@
         opacity: 0.5;
         cursor: not-allowed;
       }
-    }
-  }
-}
-
-@include respond-above("medium") {
-  .external-link {
-    padding-top: pdz.space(4xl);
-
-    &__actions {
-      justify-content: flex-end;
     }
   }
 }

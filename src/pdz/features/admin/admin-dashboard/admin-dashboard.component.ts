@@ -1,6 +1,7 @@
 import { DecimalPipe } from '@angular/common';
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
+import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import {
   AdminService,
   AgeSegment,
@@ -15,10 +16,7 @@ import {
 } from '../admin.service';
 import { BarChartComponent, BarDatum } from '../charts/bar-chart.component';
 import { PieChartComponent, PieDatum } from '../charts/pie-chart.component';
-import {
-  SeriesPoint,
-  TimeSeriesChartComponent,
-} from '../charts/time-series-chart.component';
+import { TimeSeriesChartComponent } from '../charts/time-series-chart.component';
 
 interface SummaryCard {
   label: string;
@@ -60,6 +58,7 @@ function titleCase(value: string): string {
     TimeSeriesChartComponent,
     PieChartComponent,
     BarChartComponent,
+    PageComponent,
   ],
   templateUrl: './admin-dashboard.component.html',
   styleUrl: './admin-dashboard.component.scss',

@@ -3,7 +3,6 @@
 :host {
   display: block;
   width: 100%;
-  height: 100%;
 }
 
 $spacing-sm: 0.5rem;
@@ -21,8 +20,6 @@ $font-nasa: var(--pdz-font-display);
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: 100%;
-  padding: $spacing-lg;
   gap: $spacing-lg;
 
   &__title {

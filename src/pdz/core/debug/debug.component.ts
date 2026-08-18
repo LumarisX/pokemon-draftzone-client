@@ -1,9 +1,10 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { AuthService } from '../services/auth0.service';
+import { PageComponent } from '@pdz/shared/layout/page/page.component';
 
 @Component({
   selector: 'pdz-debug',
-  imports: [],
+  imports: [PageComponent],
   templateUrl: './debug.component.html',
   styleUrl: './debug.component.scss',
 })

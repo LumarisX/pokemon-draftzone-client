@@ -2,11 +2,7 @@
 @use "mixins/buttons" as *;
 
 .debug-page {
-  padding: pdz.space(sm);
-
-  @media (min-width: 768px) {
-    padding: pdz.space(lg);
-  }
+  display: block;
 }
 
 .debug-panel {

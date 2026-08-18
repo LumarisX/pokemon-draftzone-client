@@ -1,74 +1,76 @@
-<div class="debug-page">
-  <div class="debug-panel">
-    <h2 class="debug-panel__title">Debugging Information</h2>
-    <div class="debug-field">
-      <span class="debug-field__label">Browser:</span> {{ debugData.browser }}
-    </div>
-    <div class="debug-field">
-      <span class="debug-field__label">Operating System:</span>
-      {{ debugData.os }}
-    </div>
-    <div class="debug-field">
-      <span class="debug-field__label">User Agent:</span>
-      {{ debugData.userAgent }}
-    </div>
-    <div class="debug-field">
-      <span class="debug-field__label">Screen Resolution:</span>
-      {{ debugData.screenResolution }}
-    </div>
-    <div class="debug-field">
-      <span class="debug-field__label">Current Time (Local):</span>
-      {{ debugData.localTimeWithZone }}
-    </div>
-    <div class="debug-field">
-      <span class="debug-field__label">Current Time (UTC):</span>
-      {{ debugData.utcTime }}
-    </div>
-    <div class="debug-field">
-      <span class="debug-field__label">Device Type:</span>
-      {{ debugData.deviceType }}
-    </div>
-    <div class="debug-field">
-      <span class="debug-field__label">Memory Usage:</span>
-      <ul class="debug-field__list">
-        @if (debugData.memoryUsage.jsHeapSizeLimit !== "N/A") {
-          <li>
-            JS Heap Size Limit:
-            {{ convertToMB(debugData.memoryUsage.jsHeapSizeLimit) }} MB
-          </li>
-        }
-        @if (debugData.memoryUsage.totalJSHeapSize !== "N/A") {
-          <li>
-            Total JS Heap Size:
-            {{ convertToMB(debugData.memoryUsage.totalJSHeapSize) }} MB
-          </li>
-        }
-        @if (debugData.memoryUsage.usedJSHeapSize !== "N/A") {
-          <li>
-            Used JS Heap Size:
-            {{ convertToMB(debugData.memoryUsage.usedJSHeapSize) }} MB
-          </li>
-        }
-        @if (debugData.memoryUsage.jsHeapSizeLimit === "N/A") {
-          <li>Memory info not available</li>
-        }
-      </ul>
-    </div>
-    <div class="debug-field debug-field--block">
-      <span class="debug-field__label">Login ID:</span>
-      {{ debugData.loginId || "Not logged in" }}
-    </div>
-    <div class="debug-field debug-field--block">
-      <div class="debug-field__label">Planner:</div>
-      <div class="debug-field__blob">{{ debugData.localstorage.planner }}</div>
-    </div>
-    <div class="debug-actions">
-      <button class="debug-actions__copy" (click)="copyToClipboard()">
-        Export to Clipboard
-      </button>
-      <button class="debug-actions__download" (click)="downloadAsTxt()">
-        Download as .txt
-      </button>
+<pdz-page width="narrow">
+  <div class="debug-page">
+    <div class="debug-panel">
+      <h2 class="debug-panel__title">Debugging Information</h2>
+      <div class="debug-field">
+        <span class="debug-field__label">Browser:</span> {{ debugData.browser }}
+      </div>
+      <div class="debug-field">
+        <span class="debug-field__label">Operating System:</span>
+        {{ debugData.os }}
+      </div>
+      <div class="debug-field">
+        <span class="debug-field__label">User Agent:</span>
+        {{ debugData.userAgent }}
+      </div>
+      <div class="debug-field">
+        <span class="debug-field__label">Screen Resolution:</span>
+        {{ debugData.screenResolution }}
+      </div>
+      <div class="debug-field">
+        <span class="debug-field__label">Current Time (Local):</span>
+        {{ debugData.localTimeWithZone }}
+      </div>
+      <div class="debug-field">
+        <span class="debug-field__label">Current Time (UTC):</span>
+        {{ debugData.utcTime }}
+      </div>
+      <div class="debug-field">
+        <span class="debug-field__label">Device Type:</span>
+        {{ debugData.deviceType }}
+      </div>
+      <div class="debug-field">
+        <span class="debug-field__label">Memory Usage:</span>
+        <ul class="debug-field__list">
+          @if (debugData.memoryUsage.jsHeapSizeLimit !== "N/A") {
+            <li>
+              JS Heap Size Limit:
+              {{ convertToMB(debugData.memoryUsage.jsHeapSizeLimit) }} MB
+            </li>
+          }
+          @if (debugData.memoryUsage.totalJSHeapSize !== "N/A") {
+            <li>
+              Total JS Heap Size:
+              {{ convertToMB(debugData.memoryUsage.totalJSHeapSize) }} MB
+            </li>
+          }
+          @if (debugData.memoryUsage.usedJSHeapSize !== "N/A") {
+            <li>
+              Used JS Heap Size:
+              {{ convertToMB(debugData.memoryUsage.usedJSHeapSize) }} MB
+            </li>
+          }
+          @if (debugData.memoryUsage.jsHeapSizeLimit === "N/A") {
+            <li>Memory info not available</li>
+          }
+        </ul>
+      </div>
+      <div class="debug-field debug-field--block">
+        <span class="debug-field__label">Login ID:</span>
+        {{ debugData.loginId || "Not logged in" }}
+      </div>
+      <div class="debug-field debug-field--block">
+        <div class="debug-field__label">Planner:</div>
+        <div class="debug-field__blob">{{ debugData.localstorage.planner }}</div>
+      </div>
+      <div class="debug-actions">
+        <button class="debug-actions__copy" (click)="copyToClipboard()">
+          Export to Clipboard
+        </button>
+        <button class="debug-actions__download" (click)="downloadAsTxt()">
+          Download as .txt
+        </button>
+      </div>
     </div>
   </div>
-</div>
+</pdz-page>

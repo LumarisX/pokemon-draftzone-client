@@ -1,93 +1,97 @@
-<div class="pokemon-search">
-  <div class="toolbar">
-    <h2 class="toolbar__title">Pokémon Search</h2>
-    <div class="toolbar__spacer"></div>
-    <button
-      type="button"
-      class="toolbar__action"
-      [class.is-active]="bookmarksPanelOpen"
-      (click)="openBookmarksPanel()"
-      aria-label="Saved searches"
-    >
-      <pdz-icon name="bookmarks"></pdz-icon>
-    </button>
-  </div>
-
-  <pdz-pokemon-search-core></pdz-pokemon-search-core>
-</div>
-
-@if (bookmarksPanelOpen) {
-  <div
-    class="bookmarks-backdrop"
-    (click)="closeBookmarksPanel()"
-    aria-hidden="true"
-  ></div>
-  <aside
-    class="bookmarks-panel"
-    role="dialog"
-    aria-label="Saved searches"
-    aria-modal="true"
-  >
-    <div class="bookmarks-panel__header">
-      <h3 class="bookmarks-panel__title">Saved Searches</h3>
+<pdz-page>
+  <div class="pokemon-search">
+    <div class="toolbar">
+      <h2 class="toolbar__title">Pokémon Search</h2>
+      <div class="toolbar__spacer"></div>
       <button
         type="button"
-        class="bookmarks-panel__close"
-        (click)="closeBookmarksPanel()"
-        aria-label="Close saved searches"
+        class="toolbar__action"
+        [class.is-active]="bookmarksPanelOpen"
+        (click)="openBookmarksPanel()"
+        aria-label="Saved searches"
       >
-        <pdz-icon name="close"></pdz-icon>
+        <pdz-icon name="bookmarks"></pdz-icon>
       </button>
     </div>
-    <div class="bookmarks-panel__body">
-      @if (savedSearches.length === 0) {
-        <div class="bookmarks-panel__empty">
-          <pdz-icon name="bookmark_add"></pdz-icon>
-          <p>No saved searches yet.</p>
-          <p class="bookmarks-panel__empty-hint">
-            Use the bookmark button while viewing results to save a search.
-          </p>
-        </div>
-      } @else {
-        @for (search of savedSearches; track search.savedAt) {
-          <div>
-            <div class="bookmarks-panel__item-date">
-              {{ formatSavedDate(search.savedAt) }}
-            </div>
-            <div class="bookmarks-panel__item">
-              <button
-                type="button"
-                class="bookmarks-panel__load"
-                (click)="loadSavedSearch(search)"
-              >
-                @let label = getSearchLabel(search);
-                <div class="bookmarks-panel__item-filters">
-                  @for (chip of label.chips; track $index) {
-                    <span class="bookmarks-panel__filter-chip">{{ chip }}</span>
-                  }
-                  @if (label.remainder > 0) {
-                    <span
-                      class="bookmarks-panel__filter-chip bookmarks-panel__filter-chip--more"
-                      >+{{ label.remainder }} more</span
-                    >
-                  }
-                </div>
-                <span class="bookmarks-panel__item-meta">{{
-                  getSearchMeta(search)
-                }}</span>
-              </button>
-              <button
-                type="button"
-                class="bookmarks-panel__delete"
-                (click)="deleteSavedSearch(search)"
-                aria-label="Delete saved search"
-              >
-                <pdz-icon name="bookmark_remove"></pdz-icon>
-              </button>
-            </div>
+
+    <pdz-pokemon-search-core></pdz-pokemon-search-core>
+  </div>
+
+  @if (bookmarksPanelOpen) {
+    <div
+      class="bookmarks-backdrop"
+      (click)="closeBookmarksPanel()"
+      aria-hidden="true"
+    ></div>
+    <aside
+      class="bookmarks-panel"
+      role="dialog"
+      aria-label="Saved searches"
+      aria-modal="true"
+    >
+      <div class="bookmarks-panel__header">
+        <h3 class="bookmarks-panel__title">Saved Searches</h3>
+        <button
+          type="button"
+          class="bookmarks-panel__close"
+          (click)="closeBookmarksPanel()"
+          aria-label="Close saved searches"
+        >
+          <pdz-icon name="close"></pdz-icon>
+        </button>
+      </div>
+      <div class="bookmarks-panel__body">
+        @if (savedSearches.length === 0) {
+          <div class="bookmarks-panel__empty">
+            <pdz-icon name="bookmark_add"></pdz-icon>
+            <p>No saved searches yet.</p>
+            <p class="bookmarks-panel__empty-hint">
+              Use the bookmark button while viewing results to save a search.
+            </p>
           </div>
+        } @else {
+          @for (search of savedSearches; track search.savedAt) {
+            <div>
+              <div class="bookmarks-panel__item-date">
+                {{ formatSavedDate(search.savedAt) }}
+              </div>
+              <div class="bookmarks-panel__item">
+                <button
+                  type="button"
+                  class="bookmarks-panel__load"
+                  (click)="loadSavedSearch(search)"
+                >
+                  @let label = getSearchLabel(search);
+                  <div class="bookmarks-panel__item-filters">
+                    @for (chip of label.chips; track $index) {
+                      <span class="bookmarks-panel__filter-chip">{{
+                        chip
+                      }}</span>
+                    }
+                    @if (label.remainder > 0) {
+                      <span
+                        class="bookmarks-panel__filter-chip bookmarks-panel__filter-chip--more"
+                        >+{{ label.remainder }} more</span
+                      >
+                    }
+                  </div>
+                  <span class="bookmarks-panel__item-meta">{{
+                    getSearchMeta(search)
+                  }}</span>
+                </button>
+                <button
+                  type="button"
+                  class="bookmarks-panel__delete"
+                  (click)="deleteSavedSearch(search)"
+                  aria-label="Delete saved search"
+                >
+                  <pdz-icon name="bookmark_remove"></pdz-icon>
+                </button>
+              </div>
+            </div>
+          }
         }
-      }
-    </div>
-  </aside>
-}
+      </div>
+    </aside>
+  }
+</pdz-page>

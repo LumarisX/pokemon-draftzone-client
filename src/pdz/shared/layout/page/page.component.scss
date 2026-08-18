@@ -1,0 +1,53 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+.pdz-page__inner {
+  width: 100%;
+  margin-inline: auto;
+  padding-inline: pdz.space(md);
+  padding-block: pdz.space(lg);
+
+  @include pdz.respond-above(medium) {
+    padding-inline: pdz.space(lg);
+    padding-block: pdz.space(xl);
+  }
+}
+
+:host([data-width="narrow"]) .pdz-page__inner {
+  max-width: 40rem;
+}
+
+:host([data-width="default"]) .pdz-page__inner {
+  max-width: 64rem;
+}
+
+:host([data-width="wide"]) .pdz-page__inner {
+  max-width: 96rem;
+}
+
+:host([data-width="full"]) .pdz-page__inner {
+  max-width: none;
+}
+
+:host(.pdz-page--fill) {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+:host(.pdz-page--fill) .pdz-page__inner {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+:host(.pdz-page--flush) .pdz-page__inner {
+  padding-inline: 0;
+  padding-block: 0;
+}

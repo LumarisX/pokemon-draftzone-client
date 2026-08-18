@@ -5,12 +5,13 @@ import { DRAFT_OVERVIEW_PATH } from '@pdz/core/route-paths';
 import { DraftPokemon } from '../../drafts/draft.model';
 import { DataService } from '@pdz/core/services/data.service';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
+import { PageComponent } from '@pdz/shared/layout/page/page.component';
 
 @Component({
   selector: 'pdz-random-draft',
   templateUrl: './random-draft.component.html',
   styleUrl: './random-draft.component.scss',
-  imports: [SpriteComponent, RouterModule, FormsModule],
+  imports: [SpriteComponent, RouterModule, FormsModule, PageComponent],
 })
 export class RandomDraftComponent {
   private dataService = inject(DataService);

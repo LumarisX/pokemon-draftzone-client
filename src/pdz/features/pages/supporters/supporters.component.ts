@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { PageComponent } from '@pdz/shared/layout/page/page.component';
 
 interface DevLink {
   name: string;
@@ -14,7 +15,7 @@ interface Developer {
 
 @Component({
   selector: 'pdz-supporters',
-  imports: [RouterModule],
+  imports: [RouterModule, PageComponent],
   templateUrl: './supporters.component.html',
   styleUrl: './supporters.component.scss',
 })

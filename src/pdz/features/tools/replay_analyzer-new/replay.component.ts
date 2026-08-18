@@ -8,6 +8,7 @@ import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { ReplayChartComponent } from './replay-chart/replay-chart.component';
 import { ReplayAnalysis, ReplayPlayer } from './replay.interface';
+import { PageComponent } from '@pdz/shared/layout/page/page.component';
 
 @Component({
   selector: 'pdz-replay-analyzer',
@@ -19,8 +20,7 @@ import { ReplayAnalysis, ReplayPlayer } from './replay.interface';
     FormsModule,
     IconComponent,
     SpriteComponent,
-    ReplayChartComponent,
-  ],
+    ReplayChartComponent, PageComponent],
 })
 export class ReplayComponent implements OnInit {
   private readonly advancedDetailsStorageKey =
