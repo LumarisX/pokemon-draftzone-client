@@ -8,7 +8,7 @@ import { DraftPokemon } from '../draft.model';
 import { matchupPath, MatchupService } from './matchup.service';
 import { TeambuilderService } from './widgets/teambuilder/teambuilder.service';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
-import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
+import { SkeletonComponent } from '@pdz/shared/data/skeleton/skeleton.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { MatchupData, TypeChartPokemon } from './matchup-interface';
 import { MatchupComponent } from './matchup/matchup.component';
@@ -23,7 +23,7 @@ import { ShareDialogComponent } from './share-dialog/share-dialog.component';
   templateUrl: 'matchup-overview.component.html',
   styleUrls: ['./matchup.scss', './matchup-overview.component.scss'],
   imports: [
-    LoadingComponent,
+    SkeletonComponent,
     MatchupComponent,
     RouterModule,
     MatIconModule,
@@ -38,6 +38,9 @@ export class MatchupOverviewComponent implements OnInit {
   private errorService = inject(ErrorService);
   private meta = inject(Meta);
   private dialog = inject(MatDialog);
+
+  readonly skeletonDetails = [0, 1, 2, 3];
+  readonly skeletonWidgets = ['14rem', '10rem', '18rem', '12rem'];
 
   matchupData?: MatchupData;
   matchupId!: string;

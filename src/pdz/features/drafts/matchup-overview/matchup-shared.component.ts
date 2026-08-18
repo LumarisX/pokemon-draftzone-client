@@ -4,19 +4,22 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { MatchupService } from './matchup.service';
 import { MatchupData, Summary } from './matchup-interface';
 import { MatchupComponent } from './matchup/matchup.component';
-import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
+import { SkeletonComponent } from '@pdz/shared/data/skeleton/skeleton.component';
 
 
 @Component({
   selector: 'pdz-matchup-shared',
   templateUrl: 'matchup-shared.component.html',
   styleUrl: './matchup.scss',
-  imports: [LoadingComponent, MatchupComponent, RouterModule],
+  imports: [SkeletonComponent, MatchupComponent, RouterModule],
 })
 export class MatchupSharedComponent implements AfterViewInit {
   private route = inject(ActivatedRoute);
   private matchupService = inject(MatchupService);
   private meta = inject(Meta);
+
+  readonly skeletonDetails = [0, 1, 2, 3];
+  readonly skeletonWidgets = ['14rem', '10rem', '18rem', '12rem'];
 
   matchupId = '';
   matchupData: MatchupData | null = null;

@@ -5,7 +5,46 @@
 
   <div class="standings__body">
     @if (isLoading) {
-      <pdz-loading></pdz-loading>
+      <div
+        class="standings__skeleton"
+        role="status"
+        aria-label="Loading standings"
+      >
+        @for (table of skeletonTables; track $index) {
+          <div class="standings-skeleton">
+            <div class="standings-skeleton__head">
+              <pdz-skeleton
+                variant="block"
+                width="8rem"
+                height="0.875rem"
+              ></pdz-skeleton>
+            </div>
+            <div class="standings-skeleton__rows">
+              @for (row of skeletonRows; track $index) {
+                <div class="standings-skeleton__row">
+                  <pdz-skeleton
+                    variant="block"
+                    width="1.25rem"
+                    height="0.75rem"
+                  ></pdz-skeleton>
+                  <pdz-skeleton variant="circle" width="1.75rem"></pdz-skeleton>
+                  <pdz-skeleton variant="block" height="0.75rem"></pdz-skeleton>
+                  <pdz-skeleton
+                    variant="block"
+                    width="4.5rem"
+                    height="0.75rem"
+                  ></pdz-skeleton>
+                  <pdz-skeleton
+                    variant="block"
+                    width="6rem"
+                    height="0.75rem"
+                  ></pdz-skeleton>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
     } @else if (error) {
       <p class="standings__empty standings__empty--error">{{ error }}</p>
     } @else {

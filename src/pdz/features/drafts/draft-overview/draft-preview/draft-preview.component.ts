@@ -7,7 +7,7 @@ import { Draft } from '../../draft.model';
 import { TournamentDetails } from '../../../league-zone/league.model';
 import { DraftService } from '../draft.service';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
-import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
+import { SkeletonComponent } from '@pdz/shared/data/skeleton/skeleton.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { LSDraftData } from '../../../planner/plannner.component';
 import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
@@ -22,12 +22,15 @@ import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service
     MatTooltipModule,
     SpriteComponent,
     IconComponent,
-    LoadingComponent,
+    SkeletonComponent,
   ],
 })
 export class DraftPreviewComponent {
   private draftService = inject(DraftService);
   private leagueService = inject(LeagueZoneService);
+
+  readonly skeletonCards = [0, 1, 2];
+  readonly skeletonSprites = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 
   drafts?: Draft[];
   tournaments?: TournamentDetails[];

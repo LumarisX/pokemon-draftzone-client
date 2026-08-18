@@ -12,7 +12,47 @@
   </div>
 
   @if (!drafts) {
-    <pdz-loading></pdz-loading>
+    <div class="drafts-grid" role="status" aria-label="Loading your drafts">
+      @for (card of skeletonCards; track $index) {
+        <div class="draft-card draft-card--skeleton">
+          <div class="card-header">
+            <div class="card-title">
+              <pdz-skeleton
+                variant="block"
+                width="70%"
+                height="1.125rem"
+              ></pdz-skeleton>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="body-header">
+              <pdz-skeleton
+                variant="block"
+                width="9rem"
+                height="0.75rem"
+              ></pdz-skeleton>
+            </div>
+            <div class="sprites">
+              @for (sprite of skeletonSprites; track $index) {
+                <pdz-skeleton variant="circle" width="2.25rem"></pdz-skeleton>
+              }
+            </div>
+          </div>
+          <div class="card-footer">
+            <pdz-skeleton
+              variant="block"
+              width="4.5rem"
+              height="1.5rem"
+            ></pdz-skeleton>
+            <pdz-skeleton
+              variant="block"
+              width="3.5rem"
+              height="1.5rem"
+            ></pdz-skeleton>
+          </div>
+        </div>
+      }
+    </div>
   } @else {
     @if (loadError) {
       <div class="load-error">
@@ -132,17 +172,13 @@
                     <button
                       class="menu-item"
                       disabled
-                      (click)="
-                        setMenuState(draft.slug, 'confirm-archive')
-                      "
+                      (click)="setMenuState(draft.slug, 'confirm-archive')"
                     >
                       <pdz-icon name="archive"></pdz-icon> Archive
                     </button>
                     <button
                       class="menu-item"
-                      (click)="
-                        setMenuState(draft.slug, 'confirm-delete')
-                      "
+                      (click)="setMenuState(draft.slug, 'confirm-delete')"
                     >
                       <pdz-icon name="delete_forever"></pdz-icon>
                       Delete
@@ -207,9 +243,7 @@
                   [routerLink]="['/', draftPath, draft.slug]"
                   >Matches</a
                 >
-                <a
-                  class="footer-link"
-                  [routerLink]="[draft.slug, 'stats']"
+                <a class="footer-link" [routerLink]="[draft.slug, 'stats']"
                   >Stats</a
                 >
               }

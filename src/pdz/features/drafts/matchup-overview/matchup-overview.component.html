@@ -61,5 +61,46 @@
     <pdz-icon name="build" size="lg" />
   </button>
 } @else {
-  <pdz-loading></pdz-loading>
+  <div class="matchup-main" role="status" aria-label="Loading matchup">
+    <div class="matchup-header">
+      <pdz-skeleton variant="block" width="4rem" height="2rem"></pdz-skeleton>
+      <div class="details-spacer">
+        <div class="details-container">
+          @for (detail of skeletonDetails; track $index) {
+            <div class="detail-container">
+              <pdz-skeleton
+                variant="block"
+                width="4rem"
+                height="0.8rem"
+              ></pdz-skeleton>
+              <pdz-skeleton
+                variant="block"
+                width="5.5rem"
+                height="1rem"
+              ></pdz-skeleton>
+            </div>
+          }
+        </div>
+      </div>
+      <pdz-skeleton variant="block" width="4rem" height="2rem"></pdz-skeleton>
+    </div>
+
+    <div class="matchup-body matchup-skeleton__body">
+      @for (widget of skeletonWidgets; track $index) {
+        <div class="matchup-skeleton__widget" [style.height]="widget">
+          <div class="matchup-skeleton__widget-head">
+            <pdz-skeleton
+              variant="block"
+              width="7rem"
+              height="0.875rem"
+            ></pdz-skeleton>
+          </div>
+          <pdz-skeleton
+            class="matchup-skeleton__widget-body"
+            variant="block"
+          ></pdz-skeleton>
+        </div>
+      }
+    </div>
+  </div>
 }

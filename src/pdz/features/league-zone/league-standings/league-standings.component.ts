@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
+import { SkeletonComponent } from '@pdz/shared/data/skeleton/skeleton.component';
 import { LeagueZoneService } from '../league-zone.service';
 import { StageSwitcherComponent } from '../league-widgets/stage-switcher/stage-switcher.component';
 import { League } from '../league.interface';
@@ -15,7 +15,7 @@ import { TeamStandingsComponent } from './team-standings/team-standings.componen
     TeamStandingsComponent,
     PokemonStandingsComponent,
     RouterModule,
-    LoadingComponent,
+    SkeletonComponent,
     StageSwitcherComponent,
   ],
   templateUrl: './league-standings.component.html',
@@ -33,6 +33,9 @@ export class LeagueStandingsComponent implements OnInit {
   // next to just the playoffs' Pokémon standings, or vice versa.
   teamFilter = 'all';
   pokemonFilter = 'all';
+
+  readonly skeletonTables = [0, 1];
+  readonly skeletonRows = [0, 1, 2, 3, 4, 5, 6, 7];
 
   ngOnInit() {
     this.loadStandings();

@@ -157,3 +157,23 @@
 .cards__spacer {
   flex: 1;
 }
+
+.skeletons {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: pdz.space(lg);
+  align-items: start;
+}
+
+.skeletons__demo {
+  display: grid;
+  gap: pdz.space(sm);
+  padding: pdz.space(lg);
+  border: 1px solid pdz.color(outline-variant);
+  border-radius: pdz.shape(corner-md);
+}
+
+.skeletons__name {
+  @include pdz.text(label);
+  color: pdz.color(on-surface-variant);
+}

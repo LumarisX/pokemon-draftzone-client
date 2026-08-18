@@ -3,7 +3,7 @@ import { Component, computed, inject, OnDestroy, signal } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { getNameByPid, PokemonId } from '@pdz/shared/data/namedex';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
-import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
+import { SkeletonComponent } from '@pdz/shared/data/skeleton/skeleton.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { Subject, takeUntil } from 'rxjs';
 import { League } from '../league.interface';
@@ -31,7 +31,7 @@ type GameSlot = {
     CommonModule,
     RouterModule,
     IconComponent,
-    LoadingComponent,
+    SkeletonComponent,
     SpriteComponent,
     LeagueChatComponent,
     MatchupReportComponent,
@@ -50,6 +50,7 @@ export class LeagueMatchupComponent implements OnDestroy {
 
   matchup = signal<MatchupDetail | null>(null);
   loading = signal(true);
+  readonly skeletonSides = [0, 1];
   loadError = signal<string | null>(null);
   selectedGame = signal(0);
   reportOpen = signal(false);

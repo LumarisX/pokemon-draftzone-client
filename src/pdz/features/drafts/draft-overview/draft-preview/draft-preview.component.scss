@@ -190,3 +190,11 @@
     }
   }
 }
+
+.draft-card--skeleton {
+  pointer-events: none;
+
+  .sprites pdz-skeleton {
+    justify-self: center;
+  }
+}

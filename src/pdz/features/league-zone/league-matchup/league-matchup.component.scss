@@ -14,13 +14,6 @@
   height: 100%;
   overflow: auto;
 
-  &__loading {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 12rem;
-  }
-
   &__message {
     @include pdz-league-section-message();
 
@@ -601,5 +594,31 @@
 
   &__empty {
     @include pdz-league-section-message();
+  }
+}
+
+.matchup-skeleton {
+  &__title {
+    flex: 1;
+    min-width: 8rem;
+    max-width: 18rem;
+  }
+
+  &__cta {
+    margin: pdz.space(md) pdz.space(lg) 0;
+  }
+
+  &__identity {
+    display: flex;
+    align-items: center;
+    gap: pdz.space(sm);
+  }
+
+  &__names {
+    display: flex;
+    flex-direction: column;
+    gap: pdz.space(2xs);
+    flex: 1;
+    min-width: 0;
   }
 }

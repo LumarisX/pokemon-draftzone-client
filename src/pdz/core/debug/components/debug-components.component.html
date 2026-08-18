@@ -304,3 +304,53 @@
     </pdz-card>
   </div>
 </section>
+
+<section class="section">
+  <h2 class="section__title">Skeleton</h2>
+  <p class="section__hint">
+    Placeholders that hold the layout while data loads, so the page settles once
+    instead of snapping. The sheen is sized in viewport units, so siblings sweep
+    together rather than each at its own speed.
+  </p>
+
+  <h3 class="section__sub">Variants</h3>
+  <div class="skeletons">
+    <div class="skeletons__demo">
+      <span class="skeletons__name">text</span>
+      <pdz-skeleton [lines]="3"></pdz-skeleton>
+    </div>
+    <div class="skeletons__demo">
+      <span class="skeletons__name">block</span>
+      <pdz-skeleton variant="block" height="4rem"></pdz-skeleton>
+    </div>
+    <div class="skeletons__demo">
+      <span class="skeletons__name">circle</span>
+      <pdz-skeleton variant="circle" width="3rem"></pdz-skeleton>
+    </div>
+  </div>
+
+  <h3 class="section__sub">In a card — mirrors the shape of the real content</h3>
+  <div class="cards">
+    <pdz-card>
+      <div pdz-card-header>
+        <pdz-skeleton variant="circle" width="1.5rem"></pdz-skeleton>
+        <pdz-skeleton variant="block" width="8rem" height="0.875rem"></pdz-skeleton>
+      </div>
+      <pdz-skeleton [lines]="3"></pdz-skeleton>
+      <div pdz-card-footer>
+        <pdz-skeleton variant="block" width="5rem" height="1rem"></pdz-skeleton>
+      </div>
+    </pdz-card>
+
+    <pdz-card>
+      <div pdz-card-header>Loaded, for comparison</div>
+      <p class="cards__text">
+        The skeleton next to this card occupies the same box, so the swap costs
+        no reflow.
+      </p>
+      <div pdz-card-footer>
+        <button pdz-button size="sm" variant="ghost" color="neutral">Open</button>
+      </div>
+    </pdz-card>
+  </div>
+</section>

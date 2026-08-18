@@ -21,6 +21,21 @@
             <p class="detail-title">Format</p>
             <p class="detail-text">{{ matchupData.details.format }}</p>
           </div>
+        } @else {
+          @for (detail of skeletonDetails; track $index) {
+            <div class="detail-container">
+              <pdz-skeleton
+                variant="block"
+                width="4rem"
+                height="0.8rem"
+              ></pdz-skeleton>
+              <pdz-skeleton
+                variant="block"
+                width="5.5rem"
+                height="1rem"
+              ></pdz-skeleton>
+            </div>
+          }
         }
       </div>
     </div>
@@ -32,6 +47,26 @@
       [options]="{ notes: 'view-only' }"
     ></pdz-matchup>
   } @else {
-    <pdz-loading></pdz-loading>
+    <div
+      class="matchup-body matchup-skeleton__body"
+      role="status"
+      aria-label="Loading matchup"
+    >
+      @for (widget of skeletonWidgets; track $index) {
+        <div class="matchup-skeleton__widget" [style.height]="widget">
+          <div class="matchup-skeleton__widget-head">
+            <pdz-skeleton
+              variant="block"
+              width="7rem"
+              height="0.875rem"
+            ></pdz-skeleton>
+          </div>
+          <pdz-skeleton
+            class="matchup-skeleton__widget-body"
+            variant="block"
+          ></pdz-skeleton>
+        </div>
+      }
+    </div>
   }
 </div>

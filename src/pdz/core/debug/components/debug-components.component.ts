@@ -17,6 +17,7 @@ import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 import { CheckComponent } from '@pdz/shared/inputs/choice/check.component';
 import { ChoiceDirective } from '@pdz/shared/inputs/choice/choice.directive';
 import { CardComponent, CardPadding, CardTone } from '@pdz/shared/data/card/card.component';
+import { SkeletonComponent } from '@pdz/shared/data/skeleton/skeleton.component';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 
 const THEME_ATTR = 'pdz-theme';
@@ -24,7 +25,7 @@ const MODE_ATTR = 'pdz-theme-mode';
 
 @Component({
   selector: 'pdz-debug-components',
-  imports: [ButtonComponent, IconComponent, FieldComponent, InputDirective, ReactiveFormsModule, CheckComponent, ChoiceDirective, CardComponent],
+  imports: [ButtonComponent, IconComponent, FieldComponent, InputDirective, ReactiveFormsModule, CheckComponent, ChoiceDirective, CardComponent, SkeletonComponent],
   templateUrl: './debug-components.component.html',
   styleUrl: './debug-components.component.scss',
 })

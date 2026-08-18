@@ -143,3 +143,31 @@
     box-shadow: var(--pdz-level-3);
   }
 }
+
+.matchup-skeleton {
+  &__body {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+    gap: pdz.space(lg);
+    align-items: start;
+  }
+
+  &__widget {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid pdz.color(outline-variant);
+    border-radius: pdz.shape(corner-md);
+    background-color: pdz.color(surface-container-lowest);
+    overflow: hidden;
+  }
+
+  &__widget-head {
+    padding: pdz.space(sm) pdz.space(md);
+    border-bottom: 1px solid pdz.color(outline-variant);
+  }
+
+  &__widget-body {
+    flex: 1;
+    margin: pdz.space(md);
+  }
+}

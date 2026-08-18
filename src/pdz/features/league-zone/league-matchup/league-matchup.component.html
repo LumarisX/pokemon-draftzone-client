@@ -42,7 +42,70 @@
 </ng-template>
 
 @if (loading()) {
-  <div class="matchup__loading"><pdz-loading></pdz-loading></div>
+  <div class="matchup" role="status" aria-label="Loading matchup">
+    <header class="matchup__header">
+      <pdz-skeleton variant="block" width="5.5rem" height="1rem"></pdz-skeleton>
+      <pdz-skeleton
+        class="matchup-skeleton__title"
+        variant="block"
+        height="1.5rem"
+      ></pdz-skeleton>
+      <pdz-skeleton
+        variant="block"
+        width="5rem"
+        height="1.25rem"
+        radius="999px"
+      ></pdz-skeleton>
+    </header>
+
+    <pdz-skeleton
+      class="matchup-skeleton__cta"
+      variant="block"
+      height="3.5rem"
+    ></pdz-skeleton>
+
+    <section class="scoreboard">
+      @for (side of skeletonSides; track $index) {
+        <div class="scoreboard__side">
+          <div class="matchup-skeleton__identity">
+            <pdz-skeleton variant="circle" width="3rem"></pdz-skeleton>
+            <div class="matchup-skeleton__names">
+              <pdz-skeleton
+                variant="block"
+                width="70%"
+                height="1rem"
+              ></pdz-skeleton>
+              <pdz-skeleton
+                variant="block"
+                width="45%"
+                height="0.75rem"
+              ></pdz-skeleton>
+            </div>
+          </div>
+          <pdz-skeleton
+            variant="block"
+            width="60%"
+            height="0.75rem"
+          ></pdz-skeleton>
+        </div>
+
+        @if ($first) {
+          <div class="scoreboard__center">
+            <pdz-skeleton
+              variant="block"
+              width="4.5rem"
+              height="1.75rem"
+            ></pdz-skeleton>
+            <pdz-skeleton
+              variant="block"
+              width="6rem"
+              height="0.75rem"
+            ></pdz-skeleton>
+          </div>
+        }
+      }
+    </section>
+  </div>
 } @else if (loadError()) {
   <p class="matchup__message matchup__message--error">{{ loadError() }}</p>
 } @else if (matchup(); as m) {
