@@ -49,8 +49,7 @@
       font-weight: bold;
     }
     .value {
-      font-size: 2rem;
-      font-weight: bold;
+      @include pdz.text(headline, $family: false);
       color: var(--mat-sys-primary);
     }
   }

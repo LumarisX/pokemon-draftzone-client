@@ -10,8 +10,7 @@
 .admin-header {
   h1 {
     margin: 0;
-    font-size: pdz.font-size(xl);
-    font-weight: 700;
+    @include pdz.text(title, $family: false);
     color: pdz.color(on-surface);
   }
 }
@@ -32,15 +31,13 @@
   border: 1px solid pdz.color(outline-variant);
 
   .value {
-    font-size: pdz.font-size(xl);
-    font-weight: 700;
+    @include pdz.text(title, $family: false);
     line-height: 1.1;
     color: pdz.color(on-surface);
   }
 
   .label {
-    font-size: pdz.font-size(sm);
-    font-weight: 600;
+    @include pdz.text(body-sm-strong, $family: false);
     color: pdz.color(on-surface);
   }
 
@@ -58,8 +55,7 @@
   gap: pdz.space(md);
 
   .controls-label {
-    font-size: pdz.font-size(sm);
-    font-weight: 600;
+    @include pdz.text(body-sm-strong, $family: false);
     color: pdz.color(on-surface-variant);
   }
 }
@@ -139,8 +135,7 @@
 
     h2 {
       margin: 0;
-      font-size: pdz.font-size(md);
-      font-weight: 600;
+      @include pdz.text(card-title, $family: false);
       color: pdz.color(on-surface);
     }
 

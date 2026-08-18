@@ -22,8 +22,7 @@
   margin-bottom: pdz.space(lg);
   min-height: 40px;
   .title {
-    font-size: pdz.font-size(2xl);
-    font-weight: 600;
+    @include pdz.text(headline, $family: false);
     margin: 0;
   }
 

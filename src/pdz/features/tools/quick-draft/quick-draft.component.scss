@@ -72,8 +72,7 @@ h3 {
 }
 
 .option-tier {
-  font-size: pdz.font-size(sm);
-  font-weight: 800;
+  @include pdz.text(field-label, $family: false);
   font-family: var(--pdz-font-body);
   color: pdz.color(primary-accent);
 }

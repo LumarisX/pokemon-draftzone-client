@@ -37,8 +37,7 @@
 
   .combine-toggle {
     font-family: var(--pdz-font-body);
-    font-size: pdz.font-size(xs);
-    font-weight: 600;
+    @include pdz.text(label, $family: false);
     padding: 0.15rem 0.5rem;
     border-radius: pdz.shape(corner-xs);
     border: 1px solid pdz.color(on-primary);
@@ -124,8 +123,7 @@
     span {
       @include pdz.numeric;
       width: 100%;
-      font-weight: 600;
-      font-size: pdz.font-size(md);
+      @include pdz.text(card-title, $family: false);
       text-align: center;
     }
     mat-icon {
@@ -195,8 +193,7 @@
       background-color: pdz.color(surface-container);
       color: pdz.color(surface-container);
       text-align: center;
-      font-weight: var(--pdz-font-weight-bold);
-      font-size: pdz.font-size(sm);
+      @include pdz.text(field-label, $family: false);
       line-height: 1.5rem;
       border-radius: pdz.shape(corner-xs);
       height: 1.5rem;
@@ -232,8 +229,7 @@
       width: 1.5rem;
       height: 0.75rem;
       text-align: center;
-      font-weight: var(--pdz-font-weight-bold);
-      font-size: pdz.font-size(xs);
+      @include pdz.text(label-strong, $family: false);
     }
 
     .streak {

@@ -97,6 +97,5 @@
 }
 
 .quick-details__value {
-  font-size: pdz.font-size(lg);
-  font-weight: 700;
+  @include pdz.text(subtitle, $family: false);
 }

@@ -145,15 +145,13 @@
     border-radius: pdz.shape(corner-xs);
     background: pdz.color(primary);
     color: pdz.color(on-primary);
-    font-size: pdz.font-size(xs);
-    font-weight: 700;
+    @include pdz.text(label-strong, $family: false);
     flex-shrink: 0;
   }
 
   &__option-tier {
     color: pdz.color(on-surface-variant);
-    font-size: pdz.font-size(xs);
-    font-weight: 600;
+    @include pdz.text(label, $family: false);
     flex-shrink: 0;
   }
 

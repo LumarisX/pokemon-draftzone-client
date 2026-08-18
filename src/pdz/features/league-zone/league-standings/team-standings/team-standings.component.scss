@@ -74,8 +74,7 @@
     span {
       @include pdz.numeric;
       width: 100%;
-      font-weight: 600;
-      font-size: pdz.font-size(md);
+      @include pdz.text(card-title, $family: false);
       text-align: center;
     }
     mat-icon {
@@ -152,8 +151,7 @@
       width: 1.5rem;
       height: 0.75rem;
       text-align: center;
-      font-weight: var(--pdz-font-weight-bold);
-      font-size: pdz.font-size(xs);
+      @include pdz.text(label-strong, $family: false);
       &--big {
         width: 2.5rem;
       }

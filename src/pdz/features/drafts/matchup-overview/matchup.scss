@@ -110,14 +110,12 @@
   gap: pdz.space(2xs);
   text-align: center;
   .detail-title {
-    font-weight: var(--pdz-font-weight-bold);
-    font-size: pdz.font-size(sm);
+    @include pdz.text(field-label, $family: false);
     line-height: 0.8rem;
     color: pdz.color(primary-accent);
   }
   .detail-text {
-    font-weight: var(--pdz-font-weight-bold);
-    font-size: pdz.font-size(md);
+    @include pdz.text(card-title, $family: false);
     line-height: 1rem;
     color: pdz.color(on-surface);
   }

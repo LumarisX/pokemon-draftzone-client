@@ -27,8 +27,7 @@
 
 .pie-center-value {
   fill: pdz.color(on-surface);
-  font-size: pdz.font-size(xl);
-  font-weight: 700;
+  @include pdz.text(title, $family: false);
 }
 
 .pie-center-label {

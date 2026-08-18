@@ -84,8 +84,7 @@
 .random-actions__btn {
   padding: 0.125rem;
   font: inherit;
-  font-size: pdz.font-size(sm);
-  font-weight: 600;
+  @include pdz.text(body-sm-strong, $family: false);
   background: pdz.color(menu-container);
   color: pdz.color(on-menu-container);
   border: 2px solid pdz.color(menu-border);

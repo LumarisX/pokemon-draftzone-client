@@ -46,8 +46,7 @@
 }
 
 .column-name {
-  font-weight: 600;
-  font-size: pdz.font-size(md);
+  @include pdz.text(card-title, $family: false);
   color: pdz.color(on-surface);
 }
 

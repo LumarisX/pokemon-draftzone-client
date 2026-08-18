@@ -110,8 +110,7 @@
 }
 
 .converter-field__label {
-  font-weight: 700;
-  font-size: pdz.font-size(sm);
+  @include pdz.text(field-label, $family: false);
   color: pdz.color(on-surface-variant);
 }
 

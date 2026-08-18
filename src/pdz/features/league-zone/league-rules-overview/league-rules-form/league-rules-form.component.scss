@@ -125,9 +125,8 @@
   border: 1px solid pdz.color(menu-border);
   border-radius: pdz.shape(corner-sm);
   cursor: pointer;
-  font-weight: 600;
   transition: all pdz.duration(base) pdz.easing(standard);
-  font-size: pdz.font-size(sm);
+  @include pdz.text(body-sm-strong, $family: false);
 
   &:hover:not(:disabled) {
     background: pdz.color(menu-darker);
@@ -224,8 +223,7 @@
   border: none;
   border-radius: pdz.shape(corner-md);
   cursor: pointer;
-  font-weight: 600;
-  font-size: pdz.font-size(md);
+  @include pdz.text(card-title, $family: false);
   transition: all pdz.duration(base) pdz.easing(standard);
 
   &:hover:not(:disabled) {

@@ -21,8 +21,7 @@
   border-radius: pdz.shape(corner-xs);
   height: 2.5rem;
   width: 2.5rem;
-  font-size: pdz.font-size(xs);
-  font-weight: bold;
+  @include pdz.text(label-strong, $family: false);
   overflow: hidden;
   &.type-colored {
     color: pdz.color(on-primary, white);
@@ -222,8 +221,7 @@ tbody {
   border-radius: pdz.shape(corner-xs);
   height: 2.5rem;
   width: 2.5rem;
-  font-size: 0.75rem;
-  font-weight: bold;
+  @include pdz.text(label-strong, $family: false);
 }
 
 .stat-wrapper {
@@ -233,8 +231,7 @@ tbody {
   border-radius: pdz.shape(corner-xs);
   height: 1.5rem;
   width: 2.5rem;
-  font-size: pdz.font-size(xs);
-  font-weight: bold;
+  @include pdz.text(label-strong, $family: false);
   overflow: hidden;
   box-shadow: var(--pdz-level-1);
 }

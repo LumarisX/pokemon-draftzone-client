@@ -215,8 +215,7 @@
   gap: pdz.space(md);
 
   &__title {
-    font-size: var(--pdz-font-size-md);
-    font-weight: 600;
+    @include pdz.text(card-title, $family: false);
   }
 }
 
@@ -338,8 +337,7 @@
 
   &--header {
     color: pdz.color(on-surface-variant);
-    font-size: var(--pdz-font-size-xs);
-    font-weight: 600;
+    @include pdz.text(label, $family: false);
     padding-bottom: pdz.space(2xs);
     border-bottom: 1px solid pdz.color(outline-variant);
     margin-bottom: pdz.space(2xs);

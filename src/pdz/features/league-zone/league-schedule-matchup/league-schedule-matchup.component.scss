@@ -55,8 +55,7 @@
         font-size: pdz.font-size(xs);
       }
       .coach-name {
-        font-size: pdz.font-size(sm);
-        font-weight: 600;
+        @include pdz.text(body-sm-strong, $family: false);
       }
     }
   }
@@ -73,8 +72,7 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      font-weight: var(--pdz-font-weight-bold);
-      font-size: pdz.font-size(sm);
+      @include pdz.text(field-label, $family: false);
     }
     mat-icon {
       position: absolute;
@@ -122,10 +120,9 @@
       column-gap: 0.25rem;
       .score-box {
         width: 1.25rem;
-        line-height: 1.25rem;
         text-align: center;
-        font-weight: var(--pdz-font-weight-bold);
-        font-size: pdz.font-size(md);
+        @include pdz.text(card-title, $family: false);
+        line-height: 1.25rem;
         height: 1.25rem;
         border-radius: pdz.shape(corner-xs);
         box-shadow: var(--pdz-level-1);
@@ -165,8 +162,7 @@
       column-gap: 0.25rem;
       align-items: center;
       .match-score {
-        font-weight: 600;
-        font-size: pdz.font-size(lg);
+        @include pdz.text(subtitle, $family: false);
 
         text-align: center;
         &.positive {

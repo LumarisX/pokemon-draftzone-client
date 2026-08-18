@@ -99,9 +99,8 @@
   background-color: pdz.color(surface-container);
   color: pdz.color(surface-container);
   text-align: center;
-  font-size: pdz.font-size(sm);
+  @include pdz.text(field-label, $family: false);
   line-height: 1.75rem;
-  font-weight: var(--pdz-font-weight-bold);
   border-radius: pdz.shape(corner-xs);
   height: 1.75rem;
   width: 1.75rem;

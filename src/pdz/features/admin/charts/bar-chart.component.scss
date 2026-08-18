@@ -17,8 +17,7 @@
 }
 
 .bar-labels text {
-  font-size: 12px;
-  font-weight: 600;
+  @include pdz.text(label, $family: false);
   fill: pdz.color(on-surface);
 }
 

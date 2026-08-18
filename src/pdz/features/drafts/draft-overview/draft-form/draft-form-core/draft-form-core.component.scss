@@ -50,8 +50,7 @@
 
   &__title {
     margin: 0;
-    font-size: pdz.font-size(lg);
-    font-weight: 700;
+    @include pdz.text(subtitle, $family: false);
     line-height: 1.2;
     white-space: nowrap;
   }
@@ -98,8 +97,7 @@
     align-items: center;
     gap: pdz.space(xs);
     margin: 0 0 pdz.space(md);
-    font-size: pdz.font-size(md);
-    font-weight: 700;
+    @include pdz.text(card-title, $family: false);
     color: pdz.color(on-surface);
 
     pdz-icon {
@@ -108,8 +106,7 @@
   }
 
   &__panel-count {
-    font-size: pdz.font-size(xs);
-    font-weight: 700;
+    @include pdz.text(label-strong, $family: false);
     min-width: 1.5rem;
     text-align: center;
     padding: 0.125rem pdz.space(xs);
@@ -155,8 +152,7 @@
   gap: pdz.space(2xs);
 
   &__label {
-    font-weight: 700;
-    font-size: pdz.font-size(sm);
+    @include pdz.text(field-label, $family: false);
     color: pdz.color(on-surface-variant);
   }
 
@@ -190,8 +186,7 @@
   }
 
   &__error {
-    font-size: pdz.font-size(xs);
-    font-weight: 600;
+    @include pdz.text(label, $family: false);
     color: pdz.color(error);
   }
 }

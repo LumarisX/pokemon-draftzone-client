@@ -8,9 +8,8 @@
     padding: pdz.space(lg);
 
     h2 {
-      font-size: pdz.font-size(lg);
+      @include pdz.text(subtitle, $family: false);
       line-height: pdz.leading(snug);
-      font-weight: 600;
       text-align: center;
       color: pdz.color("on-surface");
       margin: 0 0 pdz.space(xl) 0;

@@ -7,8 +7,7 @@
 }
 
 .about-page__title {
-  font-size: pdz.font-size(xl);
-  font-weight: 600;
+  @include pdz.text(title, $family: false);
 }
 
 .about-grid {
@@ -56,8 +55,7 @@
 
 .about-section__heading {
   margin-bottom: pdz.space(sm);
-  font-size: pdz.font-size(lg);
-  font-weight: 600;
+  @include pdz.text(subtitle, $family: false);
 }
 
 .about-section__text {

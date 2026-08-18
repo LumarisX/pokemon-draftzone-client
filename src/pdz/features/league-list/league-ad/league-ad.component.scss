@@ -324,8 +324,7 @@
   padding: pdz.space(2xs) pdz.space(sm);
   border-radius: pdz.shape(corner-full);
   box-shadow: var(--pdz-level-1);
-  font-size: pdz.font-size(xs);
-  font-weight: var(--pdz-font-weight-semibold);
+  @include pdz.text(label, $family: false);
   text-transform: capitalize;
   white-space: nowrap;
 

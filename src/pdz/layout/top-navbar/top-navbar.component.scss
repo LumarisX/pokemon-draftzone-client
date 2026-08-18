@@ -158,8 +158,7 @@
   background-color: pdz.color(error);
   color: pdz.color(on-error);
   font-family: var(--pdz-font-body);
-  font-size: pdz.font-size(xs);
-  font-weight: 700;
+  @include pdz.text(label-strong, $family: false);
   line-height: 1;
 
   &--dot {

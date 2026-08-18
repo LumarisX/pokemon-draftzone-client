@@ -12,8 +12,7 @@
     padding-bottom: pdz.space(xs);
     border-bottom: 1px solid pdz.color(primary-border);
     font-family: var(--pdz-font-display);
-    font-weight: 700;
-    font-size: pdz.font-size(lg);
+    @include pdz.text(subtitle, $family: false);
     color: pdz.color(primary-accent);
   }
 
@@ -112,8 +111,7 @@
   gap: pdz.space(2xs);
 
   &__label {
-    font-weight: 700;
-    font-size: pdz.font-size(sm);
+    @include pdz.text(field-label, $family: false);
     color: pdz.color(on-surface-variant);
   }
 

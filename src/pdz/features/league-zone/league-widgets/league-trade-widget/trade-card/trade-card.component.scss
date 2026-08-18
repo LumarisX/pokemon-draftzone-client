@@ -32,8 +32,7 @@ $trade-sprite-size: 2rem;
 }
 
 .trade-header {
-  font-weight: 600;
-  font-size: pdz.font-size(sm);
+  @include pdz.text(body-sm-strong, $family: false);
   color: pdz.color(on-surface-variant);
   padding-bottom: $trade-item-spacing * 0.5;
   border-bottom: 1px solid pdz.color(primary-border);

@@ -172,8 +172,7 @@
 
   &__empty-title {
     margin: 0;
-    font-weight: 700;
-    font-size: pdz.font-size(md);
+    @include pdz.text(card-title, $family: false);
     color: pdz.color(on-surface);
   }
 
@@ -290,8 +289,7 @@
   }
 
   &__invalid-label {
-    font-size: pdz.font-size(sm);
-    font-weight: 600;
+    @include pdz.text(body-sm-strong, $family: false);
     color: pdz.color(error);
     white-space: nowrap;
   }
@@ -342,10 +340,9 @@
     align-items: center;
     gap: pdz.space(xs);
     margin: 0;
-    font-size: pdz.font-size(sm);
-    font-weight: 700;
-    text-transform: uppercase;
+    @include pdz.text(field-label, $family: false);
     letter-spacing: 0.05em;
+    text-transform: uppercase;
     color: pdz.color(on-surface-variant);
   }
 
@@ -427,8 +424,7 @@
   }
 
   &__title {
-    font-size: pdz.font-size(sm);
-    font-weight: 600;
+    @include pdz.text(body-sm-strong, $family: false);
   }
 
   &__count {
@@ -536,8 +532,7 @@
   gap: pdz.space(2xs);
 
   &__label {
-    font-weight: 700;
-    font-size: pdz.font-size(sm);
+    @include pdz.text(field-label, $family: false);
     color: pdz.color(on-surface-variant);
   }
 

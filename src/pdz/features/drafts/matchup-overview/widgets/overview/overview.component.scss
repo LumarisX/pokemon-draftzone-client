@@ -113,8 +113,7 @@
         }
         &.header {
           > div {
-            font-size: pdz.font-size(sm);
-            font-weight: var(--pdz-font-weight-bold);
+            @include pdz.text(field-label, $family: false);
           }
 
           .speed-cell,

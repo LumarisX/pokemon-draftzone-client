@@ -94,8 +94,7 @@
     padding: pdz.space(2xs);
     display: flex;
     align-items: end;
-    font-size: pdz.font-size(xs);
-    font-weight: 650;
+    @include pdz.text(label-strong, $family: false);
     line-height: 0.75rem;
     overflow: hidden;
     height: 1.625rem;
@@ -137,8 +136,7 @@
       }
     }
     .team-card-name {
-      font-size: pdz.font-size(sm);
-      font-weight: 600;
+      @include pdz.text(body-sm-strong, $family: false);
       line-height: 0.8rem;
       max-width: 100%;
       white-space: nowrap;
@@ -172,8 +170,7 @@
       margin-top: 1px;
       margin-bottom: -1px;
     }
-    font-weight: var(--pdz-font-weight-bold);
-    font-size: pdz.font-size(xl);
+    @include pdz.text(title, $family: false);
     display: flex;
     align-items: center;
     column-gap: 0.5rem;
@@ -196,9 +193,8 @@
 
       .pick-label {
         color: pdz.color(primary-accent);
+        @include pdz.text(body-sm-strong, $family: false);
         line-height: 0.8rem;
-        font-size: pdz.font-size(sm);
-        font-weight: 600;
       }
       .choice-container {
         display: flex;
@@ -381,8 +377,7 @@
         }
 
         .pick-text {
-          font-size: pdz.font-size(xs);
-          font-weight: var(--pdz-font-weight-bold);
+          @include pdz.text(label-strong, $family: false);
           line-height: 0.75rem;
         }
 
@@ -540,9 +535,8 @@
 }
 
 .skip-time {
-  font-size: pdz.font-size(xl);
+  @include pdz.text(title, $family: false);
   font-family: var(--pdz-font-display);
-  font-weight: bold;
 }
 
 .pause-time {
@@ -560,9 +554,8 @@
 }
 
 .league-name {
-  font-size: pdz.font-size(md);
+  @include pdz.text(card-title, $family: false);
   font-family: var(--pdz-font-display);
-  font-weight: bold;
   overflow: hidden;
 }
 .division-name {
@@ -626,12 +619,11 @@
 }
 
 .draft-status {
-  font-size: pdz.font-size(sm);
+  @include pdz.text(field-label, $family: false);
   font-family: var(--pdz-font-display);
   overflow: hidden;
   padding: 0.125rem 0.5rem;
   border-radius: pdz.shape(corner-sm);
-  font-weight: bold;
 }
 
 @media (max-width: 992px) {

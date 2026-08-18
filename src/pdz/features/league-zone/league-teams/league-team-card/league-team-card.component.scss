@@ -29,8 +29,7 @@
 
       .team-name {
         text-align: center;
-        font-weight: 600;
-        font-size: pdz.font-size(md);
+        @include pdz.text(card-title, $family: false);
         margin: 0 0 0.2em 0;
       }
 
@@ -38,8 +37,7 @@
         .team-coach {
           text-align: center;
           color: pdz.color(primary-accent);
-          font-weight: 600;
-          font-size: pdz.font-size(sm);
+          @include pdz.text(body-sm-strong, $family: false);
           margin: 0;
         }
       }
@@ -101,8 +99,7 @@
 
       .team-timezone {
         color: pdz.color(secondary-accent);
-        font-size: pdz.font-size(sm);
-        font-weight: 600;
+        @include pdz.text(body-sm-strong, $family: false);
       }
     }
 

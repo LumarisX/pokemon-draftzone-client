@@ -665,10 +665,9 @@ button:disabled {
   }
 
   &__stat-value {
-    font-size: pdz.font-size(sm);
-    font-weight: 700;
-    color: pdz.color(on-surface);
+    @include pdz.text(field-label, $family: false);
     line-height: 1.2;
+    color: pdz.color(on-surface);
   }
 
   &__empty {

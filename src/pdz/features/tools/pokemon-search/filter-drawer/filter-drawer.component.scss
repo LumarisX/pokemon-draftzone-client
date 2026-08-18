@@ -27,8 +27,7 @@
   }
 
   &__field-name {
-    font-size: pdz.font-size(sm);
-    font-weight: 700;
+    @include pdz.text(field-label, $family: false);
     color: pdz.color(on-surface);
   }
 

@@ -24,8 +24,7 @@
 
   .news-date {
     color: pdz.color(primary-accent);
-    font-weight: var(--pdz-font-weight-bold);
-    font-size: pdz.font-size(lg);
+    @include pdz.text(subtitle, $family: false);
   }
   .news-title {
     color: pdz.color(on-surface);

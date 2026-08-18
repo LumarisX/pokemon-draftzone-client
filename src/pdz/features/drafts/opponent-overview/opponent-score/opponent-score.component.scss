@@ -29,8 +29,7 @@ $xl: 1280px;
 
 .score-bar__title {
   flex-grow: 1;
-  font-weight: 700;
-  font-size: pdz.font-size(xl);
+  @include pdz.text(title, $family: false);
   text-align: center;
 }
 
@@ -349,8 +348,7 @@ $xl: 1280px;
   text-overflow: ellipsis;
   white-space: nowrap;
   padding: 0 pdz.space(sm);
-  font-weight: 600;
-  font-size: pdz.font-size(lg);
+  @include pdz.text(subtitle, $family: false);
 
   &--end {
     text-align: right;
@@ -461,8 +459,7 @@ $xl: 1280px;
 
 .mon__kills-title {
   width: 100%;
-  font-size: pdz.font-size(xs);
-  font-weight: 600;
+  @include pdz.text(label, $family: false);
   text-align: center;
 }
 

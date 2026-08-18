@@ -46,8 +46,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: pdz.font-size(sm);
-  font-weight: 600;
+  @include pdz.text(body-sm-strong, $family: false);
   margin-bottom: pdz.space(sm);
 
   &__results {
@@ -91,8 +90,7 @@
 
   &__label {
     display: block;
-    font-size: pdz.font-size(sm);
-    font-weight: 700;
+    @include pdz.text(field-label, $family: false);
     color: pdz.color(on-surface-variant);
     margin-bottom: pdz.space(2xs);
   }

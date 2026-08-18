@@ -24,11 +24,10 @@
     padding: 0.125rem 0.25rem;
     .modifier {
       height: 1rem;
-      line-height: 1rem;
       overflow: hidden;
       padding: 0 0.25rem;
-      font-weight: var(--pdz-font-weight-bold);
-      font-size: pdz.font-size(xs);
+      @include pdz.text(label-strong, $family: false);
+      line-height: 1rem;
       border: 1px solid pdz.color(on-primary-container);
       background-color: pdz.color(primary-subtle);
       color: pdz.color(on-primary-container);

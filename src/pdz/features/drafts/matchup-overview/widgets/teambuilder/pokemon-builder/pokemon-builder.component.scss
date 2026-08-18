@@ -369,8 +369,7 @@ input {
       }
 
       .speed {
-        font-weight: 700;
-        font-size: pdz.font-size(md);
+        @include pdz.text(card-title, $family: false);
         color: pdz.color(on-surface);
         text-align: center;
         font-variant-numeric: tabular-nums;
@@ -405,8 +404,7 @@ input {
 
       .placeholder-content {
         color: pdz.color(primary-accent);
-        font-weight: 600;
-        font-size: pdz.font-size(sm);
+        @include pdz.text(body-sm-strong, $family: false);
       }
     }
 
@@ -524,8 +522,7 @@ input {
         height: $stat-field-size;
         border-radius: pdz.shape(corner-xs);
         cursor: pointer;
-        font-weight: 600;
-        font-size: pdz.font-size(md);
+        @include pdz.text(card-title, $family: false);
         background: pdz.color(neutral);
         color: pdz.color(on-surface-variant);
 
@@ -670,8 +667,7 @@ input {
     border-bottom: 1px solid pdz.color(menu-border);
     background: pdz.color(surface);
     width: 100%;
-    font-weight: 600;
-    font-size: pdz.font-size(sm);
+    @include pdz.text(body-sm-strong, $family: false);
     position: sticky;
     text-align: center;
     white-space: nowrap;
@@ -728,8 +724,7 @@ input {
   &__type-badge {
     padding: 0.125rem 0.5rem;
     border-radius: pdz.shape(corner-xs);
-    font-size: pdz.font-size(xs);
-    font-weight: 600;
+    @include pdz.text(label, $family: false);
     text-align: center;
     color: white;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);

@@ -28,8 +28,6 @@
 }
 
 .pdz-field__error {
-  @include pdz.text(body-sm, $family: false);
-  font-size: pdz.font-size(xs);
-  font-weight: pdz.font-weight(semibold);
+  @include pdz.text(label, $family: false);
   color: pdz.color(error);
 }

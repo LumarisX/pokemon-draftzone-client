@@ -3,6 +3,7 @@ import { join, relative, sep } from "node:path";
 
 const ROOT = process.cwd();
 const SCAN = join(ROOT, "src", "pdz");
+const TYPE_TOKENS = join(ROOT, "src", "styles", "tokens", "_typography.scss");
 
 const GLYPH_SIZED = /icon|sprite|symbol|close-button/i;
 const SVG_TEXT = /(^|[\s>])text([\s>.,:]|$)/i;
@@ -32,6 +33,7 @@ const ALLOW_BY_RULE = {
     ...UNTOKENIZED_ORPHANS,
     ...BESPOKE_DENSITY,
   ]),
+  "unroled-type": new Set([]),
 };
 
 const RULES = [
@@ -52,6 +54,56 @@ const RULES = [
     msg: "raw easing; use pdz.easing(standard|exit|linear)",
   },
 ];
+
+const WEIGHT_ALIAS = {
+  bold: "700",
+  semibold: "600",
+  medium: "500",
+  regular: "400",
+  normal: "400",
+};
+
+function loadTypeRoles() {
+  const src = readFileSync(TYPE_TOKENS, "utf8");
+  const mapBody = (name) => {
+    const m = src.match(new RegExp("\\$" + name + ":\\s*\\(([\\s\\S]*?)\\n\\);"));
+    return m ? m[1] : "";
+  };
+
+  const sizeToToken = new Map();
+  for (const line of mapBody("font-size").split("\n")) {
+    const m = line.match(/^\s*([\w-]+):\s*([^,]+),/);
+    if (m) sizeToToken.set(m[2].trim(), m[1]);
+  }
+
+  const roleByPair = new Map();
+  for (const m of mapBody("text").matchAll(/^ {2}([\w-]+):\s*\(([\s\S]*?)^ {2}\),/gm)) {
+    const size = (m[2].match(/font-size:\s*([^,\n]+),/) || [])[1];
+    const weight = (m[2].match(/font-weight:\s*([^,\n]+),/) || [])[1];
+    const token = size && sizeToToken.get(size.trim());
+    const pair = token && weight && `${token}/${weight.trim()}`;
+    if (pair && !roleByPair.has(pair)) roleByPair.set(pair, m[1]);
+  }
+  return { sizeToToken, roleByPair };
+}
+
+const { sizeToToken, roleByPair } = loadTypeRoles();
+
+function normalizeSize(value) {
+  const named =
+    value.match(/pdz\.font-size\((\w+)\)/) ||
+    value.match(/var\(--pdz-font-size-([\w-]+)\)/);
+  if (named) return named[1];
+  return sizeToToken.get(value.trim()) ?? null;
+}
+
+function normalizeWeight(value) {
+  const named =
+    value.match(/var\(--pdz-font-weight-(\w+)\)/) ||
+    value.match(/pdz\.font-weight\((\w+)\)/);
+  const raw = named ? named[1] : value.trim();
+  return WEIGHT_ALIAS[raw] ?? raw;
+}
 
 function walk(dir, out = []) {
   for (const name of readdirSync(dir)) {
@@ -77,6 +129,29 @@ function selectorPath(lines, upto) {
   return stack.join(" ");
 }
 
+function blocksOf(lines) {
+  const stack = [];
+  const done = [];
+  lines.forEach((line, i) => {
+    const code = line.replace(/\/\/.*$/, "");
+    for (const ch of code) {
+      if (ch === "{") stack.push({ decls: new Map(), hasTextMixin: false });
+      else if (ch === "}") {
+        const block = stack.pop();
+        if (block) done.push(block);
+      }
+    }
+    const top = stack[stack.length - 1];
+    if (!top) return;
+    if (/@include\s+pdz\.text\(/.test(code)) top.hasTextMixin = true;
+    const decl = code.match(/^\s*(font-size|font-weight)\s*:\s*([^;]+);\s*$/);
+    if (decl && !/!important/.test(decl[2])) {
+      top.decls.set(decl[1], { value: decl[2].trim(), line: i + 1, raw: line });
+    }
+  });
+  return done;
+}
+
 let violations = 0;
 
 for (const file of walk(SCAN)) {
@@ -97,6 +172,22 @@ for (const file of walk(SCAN)) {
       violations++;
     }
   });
+
+  if (ALLOW_BY_RULE["unroled-type"].has(rel)) continue;
+  for (const block of blocksOf(lines)) {
+    if (block.hasTextMixin) continue;
+    const size = block.decls.get("font-size");
+    const weight = block.decls.get("font-weight");
+    if (!size || !weight) continue;
+    const role = roleByPair.get(
+      `${normalizeSize(size.value)}/${normalizeWeight(weight.value)}`,
+    );
+    if (!role) continue;
+    console.error(
+      `${rel}:${size.line}  unroled-type: font-size + font-weight in one block; use @include pdz.text(${role})\n    ${size.raw.trim()}\n    ${weight.raw.trim()}`,
+    );
+    violations++;
+  }
 }
 
 if (violations) {

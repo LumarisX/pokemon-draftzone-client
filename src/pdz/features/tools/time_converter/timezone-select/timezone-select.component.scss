@@ -8,8 +8,7 @@
 
 .timezone-select {
   &__label {
-    font-weight: 700;
-    font-size: pdz.font-size(sm);
+    @include pdz.text(field-label, $family: false);
     color: pdz.color(on-surface-variant);
   }
 
@@ -107,10 +106,9 @@
 
   &__group-label {
     padding: pdz.space(xs) pdz.space(sm) pdz.space(2xs);
-    font-size: pdz.font-size(xs);
-    font-weight: 700;
-    text-transform: uppercase;
+    @include pdz.text(label-strong, $family: false);
     letter-spacing: 0.05em;
+    text-transform: uppercase;
     color: pdz.color(on-surface-variant);
 
     &:not(:first-child) {

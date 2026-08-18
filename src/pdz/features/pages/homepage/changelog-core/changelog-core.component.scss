@@ -25,8 +25,7 @@
 
 .changelog-date {
   color: pdz.color(primary-accent);
-  font-weight: var(--pdz-font-weight-bold);
-  font-size: pdz.font-size(lg);
+  @include pdz.text(subtitle, $family: false);
 }
 
 .changelog-title {
@@ -58,11 +57,10 @@
 
 .changelog-category {
   &__label {
-    font-size: pdz.font-size(sm);
-    font-weight: var(--pdz-font-weight-bold);
+    @include pdz.text(field-label, $family: false);
+    letter-spacing: 0.05em;
     font-family: var(--pdz-font-display);
     text-transform: uppercase;
-    letter-spacing: 0.05em;
   }
 
   &__list {
