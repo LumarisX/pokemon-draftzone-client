@@ -33,20 +33,18 @@
             } @else if (section.type === "buttons") {
               @for (button of section.buttons; track $index) {
                 @if (button.href) {
-                  <a
+                  <a pdz-button
                     [href]="button.href"
                     [disabled]="button.disabled"
                     [target]="button.newWindow ? '_blank' : undefined"
-                    mat-flat-button
                   >
                     {{ button.text }}
                   </a>
                 } @else {
-                  <a
+                  <a pdz-button
                     [routerLink]="button.link"
                     [disabled]="button.disabled"
                     [target]="button.newWindow ? '_blank' : undefined"
-                    mat-flat-button
                   >
                     {{ button.text }}
                   </a>
@@ -62,20 +60,18 @@
                       } @else if (colSection.type === "buttons") {
                         @for (button of colSection.buttons; track $index) {
                           @if (button.href) {
-                            <a
+                            <a pdz-button
                               [href]="button.href"
                               [disabled]="button.disabled"
                               [target]="button.newWindow ? '_blank' : undefined"
-                              mat-flat-button
                             >
                               {{ button.text }}
                             </a>
                           } @else {
-                            <a
+                            <a pdz-button
                               [routerLink]="button.link"
                               [disabled]="button.disabled"
                               [target]="button.newWindow ? '_blank' : undefined"
-                              mat-flat-button
                             >
                               {{ button.text }}
                             </a>

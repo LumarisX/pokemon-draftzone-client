@@ -9,7 +9,6 @@ import {
   signal,
 } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
@@ -66,7 +65,6 @@ interface EditableTier {
   imports: [
     CommonModule,
     MatIconModule,
-    MatButtonModule,
     FormsModule,
     MatTooltipModule,
     MatSnackBarModule,

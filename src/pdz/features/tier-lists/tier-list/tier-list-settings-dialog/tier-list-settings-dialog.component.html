@@ -76,17 +76,14 @@
   </div>
 
   <div mat-dialog-actions align="end" class="settings-dialog__actions">
-    <button
-      mat-button
+    <button pdz-button variant="ghost" color="neutral"
       type="button"
       (click)="onCancel()"
       [disabled]="isSaving()"
     >
       Cancel
     </button>
-    <button
-      mat-flat-button
-      color="primary"
+    <button pdz-button
       type="submit"
       [disabled]="form.invalid || isSaving()"
     >

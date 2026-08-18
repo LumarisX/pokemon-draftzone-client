@@ -4,6 +4,11 @@
       <h1 class="wheel-page__title">Wheel Randomizer</h1>
     </div>
     <button
+      pdz-button
+      iconOnly
+      pill
+      variant="ghost"
+      color="neutral"
       type="button"
       class="wheel-page__options"
       (click)="optionsDialog.open()"
@@ -123,6 +128,9 @@
       <div class="result" role="status" aria-live="polite">
         @if (winner(); as won) {
           <button
+            pdz-button
+            variant="tonal"
+            color="neutral"
             type="button"
             class="result__action"
             [disabled]="winnerActed() || won.weight <= 1"
@@ -154,8 +162,11 @@
           </div>
 
           <button
+            pdz-button
+            variant="tonal"
+            color="danger"
             type="button"
-            class="result__action result__action--danger"
+            class="result__action"
             [disabled]="winnerActed()"
             [attr.aria-label]="'Remove ' + won.label"
             (click)="removeWinner()"
@@ -214,6 +225,10 @@
               />
               <div class="item-row__weight">
                 <button
+                  pdz-button
+                  iconOnly
+                  size="sm"
+                  variant="tonal"
                   type="button"
                   class="item-row__step"
                   [disabled]="spinning() || slice.weight <= 1"
@@ -234,6 +249,10 @@
                   (blur)="restoreWeight($event, slice.weight)"
                 />
                 <button
+                  pdz-button
+                  iconOnly
+                  size="sm"
+                  variant="tonal"
                   type="button"
                   class="item-row__step"
                   [disabled]="spinning() || slice.weight >= maxWeight"
@@ -244,6 +263,11 @@
                 </button>
               </div>
               <button
+                pdz-button
+                iconOnly
+                size="sm"
+                variant="ghost"
+                color="neutral"
                 type="button"
                 class="item-row__remove"
                 [disabled]="spinning()"
@@ -279,6 +303,7 @@
             (input)="draftLabel.set($any($event.target).value)"
           />
           <button
+            pdz-button
             type="submit"
             class="item-editor__submit"
             [disabled]="spinning() || !draftLabel().trim()"
@@ -301,8 +326,11 @@
           <h2 class="history__title">History</h2>
           @if (history().length) {
             <button
+              pdz-button
+              variant="link"
+              size="sm"
+              color="neutral"
               type="button"
-              class="history__clear"
               (click)="clearHistory()"
             >
               Clear

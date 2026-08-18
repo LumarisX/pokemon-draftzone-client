@@ -14,7 +14,6 @@ import {
   Output,
   inject,
 } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { Stat } from '@pdz/shared/data';
 import { Pokemon } from '@pdz/core/utils/pokemon';
@@ -23,6 +22,7 @@ import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { QDSettings } from '../quick-draft-setting/quick-draft-setting.component';
 import { typeColor } from '@pdz/core/utils/styling';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
 export type QDPokemon = Pokemon<{
   tier: string;
@@ -39,9 +39,7 @@ export type QDPokemon = Pokemon<{
     CommonModule,
     MatIconModule,
     SpriteComponent,
-    LoadingComponent,
-    MatButtonModule,
-  ],
+    LoadingComponent, ButtonComponent],
   templateUrl: './quick-draft-picks.component.html',
   styleUrls: [
     './quick-draft-picks.component.scss',

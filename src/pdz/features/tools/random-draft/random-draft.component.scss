@@ -47,15 +47,6 @@
 
 .random-btn {
   width: fit-content;
-  padding: pdz.space(xs) pdz.space(sm);
-  background: pdz.color(menu-container);
-  color: pdz.color(on-menu-container);
-  border: 1px solid pdz.color(menu-border);
-  border-radius: pdz.shape(corner-full);
-  cursor: pointer;
-  transition:
-    background-color 0.15s ease-in-out,
-    border-color 0.15s ease-in-out;
 
   &:hover {
     background: pdz.color(menu-container-hover);

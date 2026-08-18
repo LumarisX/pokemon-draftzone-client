@@ -23,7 +23,7 @@
           </div>
           <div class="button-bar">
             <div class="button-spacer"></div>
-            <button type="button" mat-flat-button matStepperNext>Next</button>
+            <button pdz-button type="button" matStepperNext>Next</button>
           </div>
         </ng-template>
       </form>
@@ -48,9 +48,9 @@
         </div>
 
         <div class="button-bar">
-          <button type="button" mat-flat-button matStepperPrevious>Back</button>
+          <button pdz-button variant="outlined" color="neutral" type="button" matStepperPrevious>Back</button>
           <div class="button-spacer"></div>
-          <button type="button" mat-flat-button matStepperNext>Next</button>
+          <button pdz-button type="button" matStepperNext>Next</button>
         </div>
       </ng-template>
     </mat-step>
@@ -74,9 +74,9 @@
         </div>
 
         <div class="button-bar">
-          <button type="button" mat-flat-button matStepperPrevious>Back</button>
+          <button pdz-button variant="outlined" color="neutral" type="button" matStepperPrevious>Back</button>
           <div class="button-spacer"></div>
-          <button type="submit" mat-flat-button (click)="onSubmit()">
+          <button pdz-button type="submit" (click)="onSubmit()">
             Submit
           </button>
         </div>

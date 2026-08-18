@@ -1,0 +1,113 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+  padding: pdz.space(xl) pdz.space(lg);
+}
+
+.gallery__title {
+  @include pdz.text(headline);
+}
+
+.gallery__note {
+  @include pdz.text(body-sm);
+  color: pdz.color(on-surface-variant);
+  margin-top: pdz.space(xs);
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(sm);
+  margin-top: pdz.space(lg);
+  padding-bottom: pdz.space(lg);
+  border-bottom: 1px solid pdz.color(outline-variant);
+}
+
+.controls__row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: pdz.space(xs);
+}
+
+.controls__label {
+  @include pdz.text(label);
+  color: pdz.color(on-surface-variant);
+  width: 4rem;
+  flex-shrink: 0;
+}
+
+.section {
+  margin-top: pdz.space(2xl);
+}
+
+.section__title {
+  @include pdz.text(title);
+  margin-bottom: pdz.space(md);
+}
+
+.section__hint {
+  @include pdz.text(body-sm);
+  color: pdz.color(on-surface-variant);
+  margin-top: pdz.space(sm);
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: pdz.space(md);
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(sm);
+  max-width: 24rem;
+  margin-top: pdz.space(md);
+}
+
+.matrix {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(sm);
+  width: fit-content;
+}
+
+.matrix__row {
+  display: grid;
+  grid-template-columns: 6rem repeat(4, minmax(8rem, 1fr));
+  align-items: center;
+  gap: pdz.space(md);
+}
+
+.matrix__label,
+.matrix__col-head {
+  @include pdz.text(label);
+  color: pdz.color(on-surface-variant);
+}
+
+.matrix__cell {
+  display: flex;
+}
+
+.surfaces {
+  display: flex;
+  flex-wrap: wrap;
+  gap: pdz.space(lg);
+}
+
+.surfaces__panel {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(sm);
+  padding: pdz.space(lg);
+  border: 1px solid pdz.color(outline-variant);
+  border-radius: pdz.shape(corner-md);
+}
+
+.surfaces__name {
+  @include pdz.text(label);
+  color: pdz.color(on-surface-variant);
+}

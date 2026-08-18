@@ -1,7 +1,6 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
 import { MatSortModule, Sort } from '@angular/material/sort';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
@@ -9,6 +8,7 @@ import { DRAFT_OVERVIEW_PATH } from '@pdz/core/route-paths';
 import { DraftService, PokemonStat } from '../draft.service';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
 @Component({
   selector: 'pdz-draft-stats',
@@ -20,9 +20,7 @@ import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
     SpriteComponent,
     LoadingComponent,
     CdkTableModule,
-    MatSortModule,
-    MatButtonModule,
-  ],
+    MatSortModule, ButtonComponent],
 })
 export class DraftStatsComponent implements OnInit {
   private draftService = inject(DraftService);

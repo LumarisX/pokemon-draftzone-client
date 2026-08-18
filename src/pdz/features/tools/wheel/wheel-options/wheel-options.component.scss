@@ -41,23 +41,7 @@
     @include text(subtitle);
   }
 
-  &__close {
-    @include icon-button(
-      (
-        width: 2rem,
-        height: 2rem,
-        border-radius: pdz.shape(corner-sm),
-      )
-    );
-    color: pdz.color(on-surface-variant);
-
-    &:hover {
-      background: pdz.color(surface-container-high);
-      color: pdz.color(on-surface);
-    }
-  }
-
-  &__group {
+    &__group {
     display: flex;
     flex-direction: column;
     gap: pdz.space(md);
@@ -70,18 +54,7 @@
     gap: pdz.space(sm);
   }
 
-  &__link {
-    @include flat-button(
-      (
-        padding: 0,
-        font-size: 0.8rem,
-      )
-    );
-    color: pdz.color(primary-accent);
-    text-decoration: underline;
-  }
-
-  &__hint {
+    &__hint {
     @include text(body-sm);
     color: pdz.color(on-surface-variant);
 
@@ -128,21 +101,11 @@
     gap: pdz.space(sm);
   }
 
-  &__button {
-    @include flat-button-primary(
-      (
-        padding: pdz.space(sm) pdz.space(md),
-        border-radius: pdz.shape(corner-sm),
-        font-size: 0.9rem,
-      )
-    );
+  &__file {
+    cursor: pointer;
 
-    &--file {
-      cursor: pointer;
-
-      input {
-        display: none;
-      }
+    input {
+      display: none;
     }
   }
 }

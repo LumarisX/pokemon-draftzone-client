@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
 import {
   MatDialogActions,
   MatDialogClose,
@@ -8,6 +7,7 @@ import {
   MatDialogTitle,
 } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
 @Component({
   selector: 'pdz-dialog-animations-example-dialog',
@@ -16,16 +16,14 @@ import { MatIconModule } from '@angular/material/icon';
       Please delete a draft plan before continuing.
     </mat-dialog-content>
     <mat-dialog-actions>
-      <button mat-button mat-dialog-close cdkFocusInitial>Ok</button>
+      <button pdz-button mat-dialog-close cdkFocusInitial>Ok</button>
     </mat-dialog-actions>`,
   imports: [
-    MatButtonModule,
     MatDialogActions,
     MatDialogClose,
     MatDialogTitle,
     MatDialogContent,
-    MatIconModule,
-  ],
+    MatIconModule, ButtonComponent],
   styles: `
     @use '@angular/material' as mat;
     mat-dialog-container {

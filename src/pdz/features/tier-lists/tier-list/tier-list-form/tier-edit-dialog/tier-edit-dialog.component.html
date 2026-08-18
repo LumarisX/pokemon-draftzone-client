@@ -26,10 +26,8 @@
     </div>
   </div>
   <div mat-dialog-actions align="end">
-    <button mat-button type="button" (click)="closeDialog()">Cancel</button>
-    <button
-      mat-raised-button
-      color="primary"
+    <button pdz-button variant="ghost" color="neutral" type="button" (click)="closeDialog()">Cancel</button>
+    <button pdz-button
       type="submit"
       [disabled]="form.invalid"
     >

@@ -21,10 +21,9 @@
       [formControl]="selectedForm"
     />
     @if (selectedForm.value) {
-      <button
+      <button pdz-button iconOnly variant="ghost" color="neutral"
         type="button"
         matSuffix
-        mat-icon-button
         (click)="clearSelection($event)"
       >
         <pdz-icon name="close_small"></pdz-icon>

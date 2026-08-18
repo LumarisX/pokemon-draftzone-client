@@ -1,6 +1,5 @@
 import { AsyncPipe } from '@angular/common';
 import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
 import { toPSString } from '../../../drafts/matchup-overview/widgets/teambuilder/teambuilder.utils';
 import { DRAFT_OVERVIEW_PATH, TOOLS_PATH } from '@pdz/core/route-paths';
@@ -10,10 +9,11 @@ import { QDSettings } from '../quick-draft-setting/quick-draft-setting.component
 import { typeColor } from '@pdz/core/utils/styling';
 import { AuthService } from '@pdz/core/services/auth0.service';
 import { HttpClient } from '@angular/common/http';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
 @Component({
   selector: 'pdz-quick-draft-final',
-  imports: [SpriteComponent, MatButtonModule, RouterLink, AsyncPipe],
+  imports: [SpriteComponent, RouterLink, AsyncPipe, ButtonComponent],
   templateUrl: './quick-draft-final.component.html',
   styleUrls: [
     './quick-draft-final.component.scss',

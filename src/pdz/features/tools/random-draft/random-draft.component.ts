@@ -6,12 +6,13 @@ import { DraftPokemon } from '../../drafts/draft.model';
 import { DataService } from '@pdz/core/services/data.service';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
 @Component({
   selector: 'pdz-random-draft',
   templateUrl: './random-draft.component.html',
   styleUrl: './random-draft.component.scss',
-  imports: [SpriteComponent, RouterModule, FormsModule, PageComponent],
+  imports: [SpriteComponent, RouterModule, FormsModule, PageComponent, ButtonComponent],
 })
 export class RandomDraftComponent {
   private dataService = inject(DataService);

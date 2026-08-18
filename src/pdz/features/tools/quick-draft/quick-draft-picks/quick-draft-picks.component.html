@@ -165,8 +165,7 @@
     </div>
   </div>
 </div>
-<button
-  mat-stroked-button
+<button pdz-button variant="outlined" color="neutral"
   [disabled]="this.settings.rerolls <= 0"
   (click)="rerollPicks()"
 >
@@ -174,8 +173,7 @@
   <mat-icon class="small-icon">close</mat-icon>
   <span>{{ settings.rerolls }}</span>
 </button>
-<button
-  mat-flat-button
+<button pdz-button
   [disabled]="selectedOption === null"
   (click)="draftOption()"
 >

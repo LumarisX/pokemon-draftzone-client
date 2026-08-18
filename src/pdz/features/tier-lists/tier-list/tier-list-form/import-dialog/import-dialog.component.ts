@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
 import {
   MAT_DIALOG_DATA,
   MatDialogModule,
@@ -9,6 +8,7 @@ import {
 } from '@angular/material/dialog';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
 export interface ImportColumn {
   csvHeader: string;
@@ -33,10 +33,8 @@ const NEW_TIER = '__NEW_TIER__';
     CommonModule,
     FormsModule,
     MatDialogModule,
-    MatButtonModule,
     MatSelectModule,
-    MatFormFieldModule,
-  ],
+    MatFormFieldModule, ButtonComponent],
   templateUrl: './import-dialog.component.html',
   styleUrls: ['./import-dialog.component.scss'],
 })

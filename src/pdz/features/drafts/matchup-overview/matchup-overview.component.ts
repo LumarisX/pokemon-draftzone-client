@@ -1,5 +1,4 @@
 import { Component, HostListener, inject, OnInit } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { Meta } from '@angular/platform-browser';
@@ -27,7 +26,6 @@ import { ShareDialogComponent } from './share-dialog/share-dialog.component';
     LoadingComponent,
     MatchupComponent,
     RouterModule,
-    MatButtonModule,
     MatIconModule,
     MatchupTeambuilderComponent,
     IconComponent,

@@ -10,7 +10,6 @@ import {
   ViewChild,
   inject,
 } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import {
@@ -24,6 +23,7 @@ import {
 } from 'rxjs';
 import { UploadService } from '@pdz/core/services/upload.service';
 import { HostedImageComponent } from '@pdz/shared/images/hosted-image/hosted-image.componet';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import {
   FILE_PREVIEW_DATA_TOKEN,
   FileUploadPreviewComponent,
@@ -33,10 +33,8 @@ import {
   selector: 'pdz-upload-image',
   imports: [
     HostedImageComponent,
-    MatButtonModule,
     MatIconModule,
-    MatProgressBarModule,
-  ],
+    MatProgressBarModule, ButtonComponent],
   templateUrl: './upload-image.component.html',
   styleUrls: ['./upload-image.component.scss'],
 })

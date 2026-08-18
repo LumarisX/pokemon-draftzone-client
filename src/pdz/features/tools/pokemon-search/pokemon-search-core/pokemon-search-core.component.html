@@ -156,6 +156,11 @@
 
       @if (filters.length > 0) {
         <button
+          pdz-button
+          variant="ghost"
+          color="neutral"
+          size="sm"
+          pill
           type="button"
           class="pokemon-search__clear-all"
           (click)="resetFilters()"
@@ -193,6 +198,10 @@
 
     <div class="pokemon-results__header-controls">
       <button
+        pdz-button
+        iconOnly
+        variant="outlined"
+        color="neutral"
         type="button"
         class="pokemon-results__icon-btn"
         [class.is-bookmarked]="isBookmarked"
@@ -207,6 +216,10 @@
         ></pdz-icon>
       </button>
       <button
+        pdz-button
+        iconOnly
+        variant="outlined"
+        color="neutral"
         type="button"
         class="pokemon-results__icon-btn"
         [class.is-copied]="copyLinkSuccess"

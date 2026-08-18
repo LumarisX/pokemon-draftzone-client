@@ -1,0 +1,232 @@
+@use "sass:map";
+@use "pdz-theming" as pdz;
+
+$colors: (
+  primary: (
+    solid: primary,
+    on-solid: on-primary,
+    hover-solid: primary-accent,
+    container: primary-container,
+    on-container: on-primary-container,
+    container-hover: primary-container-hover,
+    accent: primary-accent,
+    border: primary-border,
+    subtle: primary-container-low,
+  ),
+  secondary: (
+    solid: secondary,
+    on-solid: on-secondary,
+    hover-solid: secondary-accent,
+    container: secondary-container,
+    on-container: on-secondary-container,
+    container-hover: secondary-container-hover,
+    accent: secondary-accent,
+    border: secondary-border,
+    subtle: secondary-container-low,
+  ),
+  neutral: (
+    solid: surface-container-highest,
+    on-solid: on-surface,
+    hover-solid: surface-container-high,
+    container: surface-container,
+    on-container: on-surface,
+    container-hover: surface-container-high,
+    accent: on-surface,
+    border: outline-variant,
+    subtle: surface-container-low,
+  ),
+  danger: (
+    solid: error,
+    on-solid: on-error,
+    hover-solid: error,
+    container: error-container,
+    on-container: on-error-container,
+    container-hover: error-container,
+    accent: error,
+    border: error-border,
+    subtle: error-container,
+  ),
+);
+
+$sizes: (
+  sm: (
+    height: 1.75rem,
+    pad: pdz.space(sm),
+    gap: pdz.space(2xs),
+    radius: pdz.shape(corner-xs),
+  ),
+  md: (
+    height: 2.25rem,
+    pad: pdz.space(md),
+    gap: pdz.space(xs),
+    radius: pdz.shape(corner-sm),
+  ),
+  lg: (
+    height: 2.75rem,
+    pad: pdz.space(lg),
+    gap: pdz.space(xs),
+    radius: pdz.shape(corner-sm),
+  ),
+);
+
+:host {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  border: 1px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  user-select: none;
+  transition:
+    background-color 140ms ease,
+    border-color 140ms ease,
+    color 140ms ease;
+}
+
+.pdz-btn__content {
+  display: inline-flex;
+  align-items: center;
+  flex-direction: inherit;
+  gap: inherit;
+}
+
+:host(.pdz-btn--block) {
+  display: flex;
+  width: 100%;
+}
+
+:host(.pdz-btn--pill) {
+  border-radius: pdz.shape(corner-full);
+}
+
+@each $name, $s in $sizes {
+  :host([data-size="#{$name}"]) {
+    min-height: map.get($s, height);
+    padding-inline: map.get($s, pad);
+    border-radius: map.get($s, radius);
+    gap: map.get($s, gap);
+
+    @if $name == sm {
+      @include pdz.text(label, $family: false);
+    } @else if $name == md {
+      @include pdz.text(body-sm, $family: false);
+    } @else {
+      @include pdz.text(body, $family: false);
+    }
+    font-weight: pdz.font-weight(semibold);
+  }
+
+  :host([data-size="#{$name}"].pdz-btn--icon) {
+    padding-inline: 0;
+    width: map.get($s, height);
+    aspect-ratio: 1;
+  }
+}
+
+@each $name, $c in $colors {
+  $solid: map.get($c, solid);
+  $on-solid: map.get($c, on-solid);
+  $hover-solid: map.get($c, hover-solid);
+  $container: map.get($c, container);
+  $on-container: map.get($c, on-container);
+  $container-hover: map.get($c, container-hover);
+  $accent: map.get($c, accent);
+  $border: map.get($c, border);
+  $subtle: map.get($c, subtle);
+
+  :host([data-color="#{$name}"][data-variant="filled"]) {
+    background-color: pdz.color($solid);
+    color: pdz.color($on-solid);
+
+    &:hover:not(:disabled) {
+      background-color: pdz.color($hover-solid);
+    }
+  }
+
+  :host([data-color="#{$name}"][data-variant="tonal"]) {
+    background-color: pdz.color($container);
+    color: pdz.color($on-container);
+
+    &:hover:not(:disabled) {
+      background-color: pdz.color($container-hover);
+    }
+  }
+
+  :host([data-color="#{$name}"][data-variant="outlined"]) {
+    border-color: pdz.color($border);
+    color: pdz.color($accent);
+
+    &:hover:not(:disabled) {
+      background-color: pdz.color($subtle);
+    }
+  }
+
+  :host([data-color="#{$name}"][data-variant="ghost"]) {
+    color: pdz.color($accent);
+
+    &:hover:not(:disabled) {
+      background-color: pdz.color($subtle);
+    }
+  }
+
+  :host([data-color="#{$name}"][data-variant="link"]) {
+    color: pdz.color($accent);
+    min-height: 0;
+    padding-inline: 0;
+    border-radius: pdz.shape(corner-xs);
+
+    &:hover:not(:disabled) {
+      text-decoration: underline;
+      text-underline-offset: 0.15em;
+    }
+  }
+}
+
+:host(:focus-visible) {
+  outline: 2px solid pdz.color(primary-accent);
+  outline-offset: 2px;
+}
+
+:host(:active:not(:disabled)) {
+  transform: translateY(0.5px);
+}
+
+:host(:disabled),
+:host([aria-disabled="true"]) {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+:host(.pdz-btn--loading) .pdz-btn__content {
+  visibility: hidden;
+}
+
+.pdz-btn__spinner {
+  position: absolute;
+  width: 1em;
+  height: 1em;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: pdz-btn-spin 600ms linear infinite;
+}
+
+@keyframes pdz-btn-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :host {
+    transition: none;
+  }
+
+  .pdz-btn__spinner {
+    animation-duration: 2s;
+  }
+}

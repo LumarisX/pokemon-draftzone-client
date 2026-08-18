@@ -21,6 +21,7 @@ import { RulesetSelectComponent } from '@pdz/shared/dropdowns/ruleset-select/rul
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { FilterDrawerComponent } from '../filter-drawer/filter-drawer.component';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import {
   DraftFilter,
   FIELD_CATEGORIES,
@@ -45,8 +46,7 @@ import {
     IconComponent,
     PokemonTypeComponent,
     FilterDrawerComponent,
-    RulesetSelectComponent,
-  ],
+    RulesetSelectComponent, ButtonComponent],
   templateUrl: './pokemon-search-core.component.html',
   styleUrl: './pokemon-search-core.component.scss',
 })

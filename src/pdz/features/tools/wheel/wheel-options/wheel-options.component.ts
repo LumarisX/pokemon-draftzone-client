@@ -10,6 +10,7 @@ import {
 } from '@angular/core';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { WheelStorageService } from '../wheel-storage.service';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import {
   clampRimArc,
   clampSpinSeconds,
@@ -26,7 +27,7 @@ import {
 
 @Component({
   selector: 'pdz-wheel-options',
-  imports: [IconComponent],
+  imports: [IconComponent, ButtonComponent],
   templateUrl: './wheel-options.component.html',
   styleUrl: './wheel-options.component.scss',
 })

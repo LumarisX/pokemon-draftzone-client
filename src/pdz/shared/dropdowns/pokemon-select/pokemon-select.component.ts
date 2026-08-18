@@ -23,7 +23,6 @@ import {
   ReactiveFormsModule,
   ValidatorFn,
 } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 
 import { MatInputModule } from '@angular/material/input';
@@ -40,6 +39,7 @@ import { DraftPokemon } from '@pdz/features/drafts/draft.model';
 import { DataService } from '@pdz/core/services/data.service';
 import { IconComponent } from '../../images/icon/icon.component';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
 @Component({
   selector: 'pdz-pokemon-select',
@@ -50,11 +50,9 @@ import { SpriteComponent } from '../../images/sprite/sprite.component';
     MatInputModule,
     FormsModule,
     ReactiveFormsModule,
-    MatButtonModule,
     ScrollingModule,
     SpriteComponent,
-    IconComponent,
-  ],
+    IconComponent, ButtonComponent],
   templateUrl: './pokemon-select.component.html',
   styleUrl: './pokemon-select.component.scss',
   providers: [

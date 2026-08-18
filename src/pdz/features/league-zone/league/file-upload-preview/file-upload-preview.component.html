@@ -23,8 +23,8 @@
       </div>
     </mat-card-content>
     <mat-card-actions align="end">
-      <button mat-button (click)="onCancel()">Cancel</button>
-      <button mat-raised-button color="primary" (click)="onConfirm()">
+      <button pdz-button variant="ghost" color="neutral" (click)="onCancel()">Cancel</button>
+      <button pdz-button (click)="onConfirm()">
         Okay & Upload
       </button>
     </mat-card-actions>
@@ -34,7 +34,7 @@
     <mat-card-content>
       <p>No file data available.</p>
       <mat-card-actions align="end">
-        <button mat-button (click)="onCancel()">Close</button>
+        <button pdz-button variant="ghost" color="neutral" (click)="onCancel()">Close</button>
       </mat-card-actions>
     </mat-card-content>
   </mat-card>

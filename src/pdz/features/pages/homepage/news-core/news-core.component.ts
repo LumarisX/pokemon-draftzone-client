@@ -2,13 +2,13 @@ import { Component, OnInit, inject } from '@angular/core';
 import { NEWS } from './news.data';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { MatButtonModule } from '@angular/material/button';
 import { MarkdownModule } from 'ngx-markdown';
 import { UnreadService } from '../unread.service';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
 @Component({
   selector: 'pdz-news-core',
-  imports: [CommonModule, RouterLink, MatButtonModule, MarkdownModule],
+  imports: [CommonModule, RouterLink, MarkdownModule, ButtonComponent],
   templateUrl: './news-core.component.html',
   styleUrl: './news-core.component.scss',
 })

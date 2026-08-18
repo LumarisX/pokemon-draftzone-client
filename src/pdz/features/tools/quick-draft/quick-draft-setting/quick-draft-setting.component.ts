@@ -10,10 +10,10 @@ import {
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
 import { MatSliderModule } from '@angular/material/slider';
 import { FormatSelectComponent } from '@pdz/shared/dropdowns/format-select/format.component';
 import { RulesetSelectComponent } from '@pdz/shared/dropdowns/ruleset-select/ruleset.component';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
 export type QDSettings = {
   rerolls: number;
@@ -34,9 +34,7 @@ type Template = {
     FormsModule,
     FormatSelectComponent,
     RulesetSelectComponent,
-    MatButtonModule,
-    MatSliderModule,
-  ],
+    MatSliderModule, ButtonComponent],
   templateUrl: './quick-draft-setting.component.html',
   styleUrls: [
     './quick-draft-setting.component.scss',

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { MatButtonModule } from '@angular/material/button';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
 @Component({
   selector: 'pdz-confirm-delete-dialog',
@@ -10,11 +10,11 @@ import { MatButtonModule } from '@angular/material/button';
       <p>Are you sure you want to delete this matchup?</p>
     </div>
     <div mat-dialog-actions>
-      <button mat-button (click)="onNoClick()">No</button>
-      <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Yes</button>
+      <button pdz-button variant="ghost" color="neutral" (click)="onNoClick()">No</button>
+      <button pdz-button color="danger" [mat-dialog-close]="true" cdkFocusInitial>Yes</button>
     </div>
   `,
-  imports: [MatDialogModule, MatButtonModule],
+  imports: [MatDialogModule, ButtonComponent],
 })
 export class ConfirmDeleteDialogComponent {
   constructor(public dialogRef: MatDialogRef<ConfirmDeleteDialogComponent>) {}

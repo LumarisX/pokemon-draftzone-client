@@ -204,13 +204,6 @@ button:disabled {
   }
 
   &__clear-all {
-    padding: pdz.space(2xs) pdz.space(sm);
-    border: none;
-    border-radius: 2rem;
-    color: pdz.color(on-surface-variant);
-    font: inherit;
-    font-size: pdz.font-size(sm);
-    cursor: pointer;
     opacity: 0.7;
 
     &:hover {
@@ -412,19 +405,6 @@ button:disabled {
   }
 
   &__icon-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: pdz.space(2xs) pdz.space(xs);
-    border: 1px solid pdz.color(outline-variant);
-    border-radius: pdz.shape(corner-sm);
-    background: pdz.color(surface);
-    color: pdz.color(on-surface-variant);
-    cursor: pointer;
-    transition:
-      background 120ms ease,
-      color 120ms ease,
-      border-color 120ms ease;
 
     pdz-icon {
       display: flex;

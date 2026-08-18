@@ -19,8 +19,7 @@
             }
           </mat-chip-set>
           <div class="add-spacer"></div>
-          <button
-            mat-flat-button
+          <button pdz-button
             (click)="toggleImporting(false); importPokemon()"
           >
             Confirm
@@ -53,8 +52,7 @@
             label="Add Pokemon"
           ></pdz-pokemon-select>
 
-          <button
-            mat-icon-button
+          <button pdz-button iconOnly variant="ghost" color="neutral"
             class="capt-button"
             cdkOverlayOrigin
             (click)="teamOption = true"
@@ -104,7 +102,7 @@
         </div>
 
         <div class="add-spacer"></div>
-        <button mat-flat-button (click)="toggleImporting(true)">Import</button>
+        <button pdz-button (click)="toggleImporting(true)">Import</button>
       </div>
       <div class="team-container">
         @if (teamArray.value.length > 0) {
@@ -180,7 +178,7 @@
                     </div>
                   </div>
                   <div class="setting-icon-container">
-                    <button mat-icon-button>
+                    <button pdz-button iconOnly variant="ghost" color="neutral">
                       <mat-icon
                         class="settings-icon"
                         [@rotateIcon]="
@@ -190,8 +188,7 @@
                         settings
                       </mat-icon>
                     </button>
-                    <button
-                      mat-icon-button
+                    <button pdz-button iconOnly variant="ghost" color="neutral"
                       (click)="deletePokemon(index); $event.stopPropagation()"
                     >
                       <mat-icon>delete</mat-icon>

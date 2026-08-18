@@ -3,8 +3,11 @@
     <header class="options__header">
       <h2 class="options__title">Wheel options</h2>
       <button
+        pdz-button
+        iconOnly
+        variant="ghost"
+        color="neutral"
         type="button"
-        class="options__close"
         aria-label="Close options"
         (click)="close()"
       >
@@ -68,7 +71,7 @@
     <section class="options__group">
       <div class="options__group-head">
         <h3 class="options__subtitle">Items</h3>
-        <button type="button" class="options__link" (click)="refreshJson()">
+        <button pdz-button variant="link" size="sm" type="button" (click)="refreshJson()">
           Reset to current
         </button>
       </div>
@@ -96,19 +99,19 @@
       }
 
       <div class="options__actions">
-        <button type="button" class="options__button" (click)="applyJson()">
+        <button pdz-button variant="tonal" type="button" (click)="applyJson()">
           <pdz-icon name="download" [size]="16"></pdz-icon>
           <span>Import</span>
         </button>
-        <button type="button" class="options__button" (click)="copyJson()">
+        <button pdz-button variant="tonal" type="button" (click)="copyJson()">
           <pdz-icon name="content_copy" [size]="16"></pdz-icon>
           <span>Copy</span>
         </button>
-        <button type="button" class="options__button" (click)="download()">
+        <button pdz-button variant="tonal" type="button" (click)="download()">
           <pdz-icon name="save" [size]="16"></pdz-icon>
           <span>Export file</span>
         </button>
-        <label class="options__button options__button--file">
+        <label pdz-button variant="tonal" class="options__file">
           <pdz-icon name="upload_file" [size]="16"></pdz-icon>
           <span>Load file</span>
           <input

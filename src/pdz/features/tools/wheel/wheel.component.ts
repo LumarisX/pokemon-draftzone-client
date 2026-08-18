@@ -16,6 +16,7 @@ import {
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { WheelOptionsComponent } from './wheel-options/wheel-options.component';
 import { WheelStorageService } from './wheel-storage.service';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import {
   clampWeight,
   defaultItems,
@@ -161,8 +162,7 @@ function drumSqueeze(angle: number, shape: DrumShape): number {
     CdkDragHandle,
     CdkDropList,
     IconComponent,
-    WheelOptionsComponent,
-  ],
+    WheelOptionsComponent, ButtonComponent],
   templateUrl: './wheel.component.html',
   styleUrl: './wheel.component.scss',
 })

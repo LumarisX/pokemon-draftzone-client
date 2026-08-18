@@ -1,0 +1,149 @@
+<header class="gallery__head">
+  <h1 class="gallery__title">Component Gallery</h1>
+  <p class="gallery__note">
+    Scratch surface for shared components. Nothing here is wired into the app
+    yet.
+  </p>
+
+  <div class="controls">
+    <div class="controls__row">
+      <span class="controls__label">Theme</span>
+      @for (t of themes; track t) {
+        <button
+          pdz-button
+          variant="outlined"
+          color="neutral"
+          size="sm"
+          [color]="theme() === t ? 'primary' : 'neutral'"
+          [variant]="theme() === t ? 'tonal' : 'outlined'"
+          (click)="theme.set(t)"
+        >
+          {{ t }}
+        </button>
+      }
+    </div>
+    <div class="controls__row">
+      <span class="controls__label">Mode</span>
+      @for (m of ['light', 'dark']; track m) {
+        <button
+          pdz-button
+          size="sm"
+          [color]="mode() === m ? 'primary' : 'neutral'"
+          [variant]="mode() === m ? 'tonal' : 'outlined'"
+          (click)="mode.set(m === 'dark' ? 'dark' : 'light')"
+        >
+          {{ m }}
+        </button>
+      }
+    </div>
+  </div>
+</header>
+
+<section class="section">
+  <h2 class="section__title">Button — variant × color</h2>
+  <div class="matrix">
+    <div class="matrix__row matrix__row--head">
+      <span class="matrix__label"></span>
+      @for (c of colors; track c) {
+        <span class="matrix__col-head">{{ c }}</span>
+      }
+    </div>
+    @for (v of variants; track v) {
+      <div class="matrix__row">
+        <span class="matrix__label">{{ v }}</span>
+        @for (c of colors; track c) {
+          <span class="matrix__cell">
+            <button pdz-button [variant]="v" [color]="c">Draft</button>
+          </span>
+        }
+      </div>
+    }
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="section__title">Sizes</h2>
+  <div class="row">
+    @for (s of sizes; track s) {
+      <button pdz-button [size]="s">Size {{ s }}</button>
+    }
+    @for (s of sizes; track s) {
+      <button pdz-button variant="outlined" [size]="s">
+        <pdz-icon name="add" [size]="16"></pdz-icon>
+        With icon
+      </button>
+    }
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="section__title">Icon only</h2>
+  <div class="row">
+    @for (s of sizes; track s) {
+      <button pdz-button iconOnly [size]="s" aria-label="Add">
+        <pdz-icon name="add" [size]="16"></pdz-icon>
+      </button>
+    }
+    @for (v of variants; track v) {
+      @if (v !== 'link') {
+        <button pdz-button iconOnly [variant]="v" aria-label="Edit">
+          <pdz-icon name="edit" [size]="16"></pdz-icon>
+        </button>
+      }
+    }
+    <button pdz-button iconOnly variant="ghost" color="danger" aria-label="Delete">
+      <pdz-icon name="delete" [size]="16"></pdz-icon>
+    </button>
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="section__title">States</h2>
+  <div class="row">
+    <button pdz-button>Default</button>
+    <button pdz-button disabled>Disabled</button>
+    <button pdz-button variant="outlined" disabled>Disabled outlined</button>
+    <button pdz-button [loading]="true">Saving</button>
+    <button pdz-button variant="tonal" [loading]="true">Loading tonal</button>
+    <button pdz-button color="danger" (click)="toggleLoading()">
+      Toggle demo
+    </button>
+    <button pdz-button color="secondary" [loading]="loadingDemo()">
+      Demo target
+    </button>
+  </div>
+  <p class="section__hint">
+    Tab through the row above to check focus rings.
+  </p>
+</section>
+
+<section class="section">
+  <h2 class="section__title">Anchor + block</h2>
+  <div class="row">
+    <a pdz-button href="/tools">Anchor as button</a>
+    <a pdz-button variant="link" href="/tools">Anchor as link</a>
+  </div>
+  <div class="stack">
+    <button pdz-button block>Block filled</button>
+    <button pdz-button block variant="outlined" color="neutral">
+      Block outlined
+    </button>
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="section__title">On elevated surfaces</h2>
+  <div class="surfaces">
+    @for (surface of ['surface', 'surface-container', 'surface-container-high']; track surface) {
+      <div class="surfaces__panel" [style.background]="'var(--pdz-color-' + surface + ')'">
+        <span class="surfaces__name">{{ surface }}</span>
+        <div class="row">
+          <button pdz-button size="sm">Filled</button>
+          <button pdz-button size="sm" variant="tonal">Tonal</button>
+          <button pdz-button size="sm" variant="outlined">Outlined</button>
+          <button pdz-button size="sm" variant="ghost">Ghost</button>
+        </div>
+      </div>
+    }
+  </div>
+</section>

@@ -17,7 +17,6 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -30,6 +29,7 @@ import { DraftPokemon } from '../../../drafts/draft.model';
 import { DataService } from '@pdz/core/services/data.service';
 import { FormatSelectComponent } from '@pdz/shared/dropdowns/format-select/format.component';
 import { RulesetSelectComponent } from '@pdz/shared/dropdowns/ruleset-select/ruleset.component';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import {
   PokemonFormGroup,
   TeamFormComponent,
@@ -41,14 +41,12 @@ import {
     RouterModule,
     ReactiveFormsModule,
     MatInputModule,
-    MatButtonModule,
     MatDividerModule,
     MatStepperModule,
     MatIconModule,
     FormatSelectComponent,
     TeamFormComponent,
-    RulesetSelectComponent,
-  ],
+    RulesetSelectComponent, ButtonComponent],
   providers: [
     {
       provide: STEPPER_GLOBAL_OPTIONS,

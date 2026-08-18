@@ -8,9 +8,9 @@ import { RouterModule } from '@angular/router';
 import { MatSidenavModule } from '@angular/material/sidenav'; // Retained for sidenav structure
 import { MatListModule } from '@angular/material/list'; // Retained for list structure & accessibility
 import { MatIconModule } from '@angular/material/icon'; // Retained for easy icon usage
-import { MatButtonModule } from '@angular/material/button'; // Retained for button structure, will be restyled
 import { MatDividerModule } from '@angular/material/divider'; // Retained for semantic dividers, will be restyled
 import { MatTabsModule } from '@angular/material/tabs';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
 @Component({
   selector: 'pdz-league-sidebar',
@@ -20,9 +20,7 @@ import { MatTabsModule } from '@angular/material/tabs';
     MatListModule,
     MatIconModule,
     MatTabsModule,
-    MatButtonModule,
-    MatDividerModule,
-  ],
+    MatDividerModule, ButtonComponent],
   templateUrl: './league-sidebar.component.html', // Links to updated HTML
   styleUrls: ['./league-sidebar.component.scss'], // Links to updated SCSS
 })
@@ -119,7 +117,7 @@ export class LeagueSidebarComponent {
   <div class="sidebar-spacer"></div>
 
   <div class="manage-button-wrapper">
-    <a mat-stroked-button routerLink="../manage" class="manage-button custom-manage-button"> <mat-icon>settings</mat-icon>
+    <a pdz-button variant="outlined" color="neutral" routerLink="../manage" class="manage-button custom-manage-button"> <mat-icon>settings</mat-icon>
       Manage
     </a>
   </div>
@@ -355,7 +353,7 @@ $sidebar-active-indicator-color: $sidebar-accent-color-teal; // Teal for active 
   border-top: 1px solid $sidebar-divider-color;
 }
 
-// Custom styling for the "Manage" button (overriding mat-stroked-button)
+// Custom styling for the "Manage" button
 .custom-manage-button {
   width: 100%;
   display: flex;
@@ -386,7 +384,6 @@ $sidebar-active-indicator-color: $sidebar-accent-color-teal; // Teal for active 
     }
   }
 
-  // Remove ripple if present from mat-button
   // .mat-ripple-element {
   //   display: none !important;
   // }

@@ -5,7 +5,6 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
 import {
   MAT_DIALOG_DATA,
   MatDialogModule,
@@ -13,6 +12,7 @@ import {
 } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
 export interface TierDialogData {
   tier?: { name: string; cost?: number };
@@ -27,11 +27,9 @@ export interface TierDialogResult {
   selector: 'pdz-tier-edit-dialog',
   imports: [
     MatDialogModule,
-    MatButtonModule,
     ReactiveFormsModule,
     MatFormFieldModule,
-    MatInputModule,
-  ],
+    MatInputModule, ButtonComponent],
   templateUrl: './tier-edit-dialog.component.html',
   styleUrls: ['./tier-edit-dialog.component.scss'],
 })

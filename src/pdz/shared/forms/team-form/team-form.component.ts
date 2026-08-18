@@ -31,7 +31,6 @@ import {
   MatAutocompleteModule,
   MatAutocompleteSelectedEvent,
 } from '@angular/material/autocomplete';
-import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
 import { MatRippleModule } from '@angular/material/core';
@@ -49,6 +48,7 @@ import { DataService } from '@pdz/core/services/data.service';
 import { PokemonSelectComponent } from '../../dropdowns/pokemon-select/pokemon-select.component';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { SlideToggleComponent } from '../../inputs/slide-toggle/slide-toggle.component';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
 @Component({
   selector: 'pdz-team-form',
@@ -57,7 +57,6 @@ import { SlideToggleComponent } from '../../inputs/slide-toggle/slide-toggle.com
     ReactiveFormsModule,
     OverlayModule,
     FormsModule,
-    MatButtonModule,
     MatInputModule,
     MatChipsModule,
     MatIconModule,
@@ -73,8 +72,7 @@ import { SlideToggleComponent } from '../../inputs/slide-toggle/slide-toggle.com
     CdkDropList,
     CdkDragHandle,
     CdkDragPreview,
-    PokemonSelectComponent,
-  ],
+    PokemonSelectComponent, ButtonComponent],
   templateUrl: './team-form.component.html',
   styleUrl: './team-form.component.scss',
   providers: [

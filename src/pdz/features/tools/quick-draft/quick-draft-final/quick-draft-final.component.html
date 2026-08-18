@@ -1,7 +1,6 @@
 <h2>Draft Complete!</h2>
 <div class="qd-options-bar">
-  <button
-    mat-raised-button
+  <button pdz-button
     [routerLink]="['/', draftPath, 'new']"
     [queryParams]="{
       team: teamIds,
@@ -28,10 +27,9 @@
       [value]="(loggedInUser | async)?.username ?? 'Pokemon DraftZone'"
     />
     <input type="hidden" name="notes" [value]="notes" />
-    <button mat-raised-button type="submit">To PokePaste</button>
+    <button pdz-button type="submit">To PokePaste</button>
   </form>
-  <button
-    mat-raised-button
+  <button pdz-button
     [routerLink]="['/', toolsPath, 'quick-matchup']"
     [queryParams]="{
       team1: teamIds,
@@ -68,4 +66,4 @@
     }
   </div>
 </div>
-<button mat-flat-button (click)="restart()">Draft Again</button>
+<button pdz-button (click)="restart()">Draft Again</button>

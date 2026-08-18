@@ -8,7 +8,6 @@ import {
   ValidationErrors,
   Validators,
 } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
 import {
   MAT_DIALOG_DATA,
   MatDialogModule,
@@ -20,6 +19,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { first } from 'rxjs/operators';
 import { TierListService } from '../../tier-list.service';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
 export interface TierListSettingsDialogData {
   name: string;
@@ -43,13 +43,11 @@ function draftCountValidator(
   imports: [
     CommonModule,
     MatDialogModule,
-    MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
     MatIconModule,
     MatProgressSpinnerModule,
-    ReactiveFormsModule,
-  ],
+    ReactiveFormsModule, ButtonComponent],
   templateUrl: './tier-list-settings-dialog.component.html',
   styleUrls: ['./tier-list-settings-dialog.component.scss'],
 })

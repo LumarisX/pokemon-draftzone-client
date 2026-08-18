@@ -18,7 +18,6 @@ import {
   NonNullableFormBuilder,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
 import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
@@ -26,6 +25,7 @@ import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { DraftPokemon } from '../../../draft.model';
 import { SpeedChart, Speedtier } from '../../matchup-interface';
 import { SpeedtierComponent } from './speedtier/speedtier.component';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
 @Component({
   selector: 'pdz-speedchart',
@@ -37,11 +37,9 @@ import { SpeedtierComponent } from './speedtier/speedtier.component';
     ReactiveFormsModule,
     SpriteComponent,
     SpeedtierComponent,
-    MatButtonModule,
     MatIconModule,
     MatCheckboxModule,
-    OverlayModule,
-  ],
+    OverlayModule, ButtonComponent],
 })
 export class SpeedchartComponent implements OnInit, OnDestroy, AfterViewInit {
   private fb = inject(NonNullableFormBuilder);

@@ -16,7 +16,6 @@ import {
   viewChild,
 } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -54,7 +53,6 @@ import {
   imports: [
     CommonModule,
     MatIconModule,
-    MatButtonModule,
     MatDialogModule,
     RouterModule,
     FormsModule,
