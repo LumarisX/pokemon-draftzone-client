@@ -1,0 +1,67 @@
+@use "sass:map";
+@use "pdz-theming" as pdz;
+
+$tones: (
+  lowest: surface-container-lowest,
+  low: surface-container-low,
+  default: surface-container,
+  high: surface-container-high,
+);
+
+$paddings: (
+  none: 0,
+  sm: pdz.space(sm),
+  md: pdz.space(lg),
+  lg: pdz.space(xl),
+);
+
+:host {
+  display: block;
+  border: 1px solid pdz.color(outline-variant);
+  border-radius: pdz.shape(corner-md);
+  color: pdz.color(on-surface);
+  overflow: hidden;
+}
+
+@each $name, $token in $tones {
+  :host([data-tone="#{$name}"]) {
+    background-color: pdz.color($token);
+  }
+}
+
+@each $name, $value in $paddings {
+  :host([data-padding="#{$name}"]) .pdz-card__body {
+    padding: $value;
+  }
+}
+
+.pdz-card__body {
+  display: block;
+}
+
+:host(.pdz-card--interactive) {
+  cursor: pointer;
+  transition:
+    border-color 140ms ease,
+    background-color 140ms ease;
+
+  &:hover {
+    border-color: pdz.color(primary-border);
+    background-color: pdz.color(surface-container);
+  }
+
+  &:focus-visible {
+    outline: 2px solid pdz.color(primary-accent);
+    outline-offset: 2px;
+  }
+}
+
+:host(.pdz-card--elevated) {
+  box-shadow: var(--pdz-level-2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :host(.pdz-card--interactive) {
+    transition: none;
+  }
+}

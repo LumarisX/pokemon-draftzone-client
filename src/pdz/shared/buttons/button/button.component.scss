@@ -86,20 +86,65 @@ $sizes: (
     color 140ms ease;
 }
 
-.pdz-btn__content {
-  display: inline-flex;
-  align-items: center;
-  flex-direction: inherit;
-  gap: inherit;
+@each $name, $c in $colors {
+  :host([data-color="#{$name}"]) {
+    --pdz-btn-solid: #{pdz.color(map.get($c, solid))};
+    --pdz-btn-on-solid: #{pdz.color(map.get($c, on-solid))};
+    --pdz-btn-hover-solid: #{pdz.color(map.get($c, hover-solid))};
+    --pdz-btn-container: #{pdz.color(map.get($c, container))};
+    --pdz-btn-on-container: #{pdz.color(map.get($c, on-container))};
+    --pdz-btn-container-hover: #{pdz.color(map.get($c, container-hover))};
+    --pdz-btn-accent: #{pdz.color(map.get($c, accent))};
+    --pdz-btn-border: #{pdz.color(map.get($c, border))};
+    --pdz-btn-subtle: #{pdz.color(map.get($c, subtle))};
+  }
 }
 
-:host(.pdz-btn--block) {
-  display: flex;
-  width: 100%;
+:host([data-variant="filled"]) {
+  background-color: var(--pdz-btn-solid);
+  color: var(--pdz-btn-on-solid);
+
+  &:hover:not(:disabled) {
+    background-color: var(--pdz-btn-hover-solid);
+  }
 }
 
-:host(.pdz-btn--pill) {
-  border-radius: pdz.shape(corner-full);
+:host([data-variant="tonal"]) {
+  background-color: var(--pdz-btn-container);
+  color: var(--pdz-btn-on-container);
+
+  &:hover:not(:disabled) {
+    background-color: var(--pdz-btn-container-hover);
+  }
+}
+
+:host([data-variant="outlined"]) {
+  border-color: var(--pdz-btn-border);
+  color: var(--pdz-btn-accent);
+
+  &:hover:not(:disabled) {
+    background-color: var(--pdz-btn-subtle);
+  }
+}
+
+:host([data-variant="ghost"]) {
+  color: var(--pdz-btn-accent);
+
+  &:hover:not(:disabled) {
+    background-color: var(--pdz-btn-subtle);
+  }
+}
+
+:host([data-variant="link"]) {
+  color: var(--pdz-btn-accent);
+  min-height: 0;
+  padding-inline: 0;
+  border-radius: pdz.shape(corner-xs);
+
+  &:hover:not(:disabled) {
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+  }
 }
 
 @each $name, $s in $sizes {
@@ -126,63 +171,20 @@ $sizes: (
   }
 }
 
-@each $name, $c in $colors {
-  $solid: map.get($c, solid);
-  $on-solid: map.get($c, on-solid);
-  $hover-solid: map.get($c, hover-solid);
-  $container: map.get($c, container);
-  $on-container: map.get($c, on-container);
-  $container-hover: map.get($c, container-hover);
-  $accent: map.get($c, accent);
-  $border: map.get($c, border);
-  $subtle: map.get($c, subtle);
+.pdz-btn__content {
+  display: inline-flex;
+  align-items: center;
+  flex-direction: inherit;
+  gap: inherit;
+}
 
-  :host([data-color="#{$name}"][data-variant="filled"]) {
-    background-color: pdz.color($solid);
-    color: pdz.color($on-solid);
+:host(.pdz-btn--block) {
+  display: flex;
+  width: 100%;
+}
 
-    &:hover:not(:disabled) {
-      background-color: pdz.color($hover-solid);
-    }
-  }
-
-  :host([data-color="#{$name}"][data-variant="tonal"]) {
-    background-color: pdz.color($container);
-    color: pdz.color($on-container);
-
-    &:hover:not(:disabled) {
-      background-color: pdz.color($container-hover);
-    }
-  }
-
-  :host([data-color="#{$name}"][data-variant="outlined"]) {
-    border-color: pdz.color($border);
-    color: pdz.color($accent);
-
-    &:hover:not(:disabled) {
-      background-color: pdz.color($subtle);
-    }
-  }
-
-  :host([data-color="#{$name}"][data-variant="ghost"]) {
-    color: pdz.color($accent);
-
-    &:hover:not(:disabled) {
-      background-color: pdz.color($subtle);
-    }
-  }
-
-  :host([data-color="#{$name}"][data-variant="link"]) {
-    color: pdz.color($accent);
-    min-height: 0;
-    padding-inline: 0;
-    border-radius: pdz.shape(corner-xs);
-
-    &:hover:not(:disabled) {
-      text-decoration: underline;
-      text-underline-offset: 0.15em;
-    }
-  }
+:host(.pdz-btn--pill) {
+  border-radius: pdz.shape(corner-full);
 }
 
 :host(:focus-visible) {

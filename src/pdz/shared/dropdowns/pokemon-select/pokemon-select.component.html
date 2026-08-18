@@ -4,17 +4,16 @@
   #trigger="cdkOverlayOrigin"
   #pokemonForm
 >
-  <mat-form-field class="pokemon-select__field" [appearance]="appearance">
+  <label pdz-field label="{{ label }}" class="pokemon-select__field">
     @if (showSprite !== null && setPokemon) {
       <div matPrefix class="selected-sprite">
         <pdz-sprite flipped [pokemon]="setPokemon"></pdz-sprite>
       </div>
     }
-    <mat-label>{{ label }}</mat-label>
     <input
       type="text"
       spellcheck="false"
-      matInput
+      pdz-input
       (focus)="setOpen(true)"
       (input)="setOpen(true)"
       (blur)="onBlur()"
@@ -31,9 +30,9 @@
     }
 
     @if (selectedForm.hasError("illegal")) {
-      <mat-error>Pokemon is <strong>illegal</strong></mat-error>
+      <span pdz-error>Pokemon is <strong>illegal</strong></span>
     }
-  </mat-form-field>
+  </label>
 </form>
 
 <ng-template

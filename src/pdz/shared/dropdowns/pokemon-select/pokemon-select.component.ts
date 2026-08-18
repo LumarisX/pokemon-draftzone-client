@@ -23,9 +23,7 @@ import {
   ReactiveFormsModule,
   ValidatorFn,
 } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
 
-import { MatInputModule } from '@angular/material/input';
 import { BehaviorSubject, combineLatest, fromEvent, of, Subject } from 'rxjs';
 import {
   debounceTime,
@@ -40,19 +38,19 @@ import { DataService } from '@pdz/core/services/data.service';
 import { IconComponent } from '../../images/icon/icon.component';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
+import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 
 @Component({
   selector: 'pdz-pokemon-select',
   imports: [
     CommonModule,
-    MatFormFieldModule,
     OverlayModule,
-    MatInputModule,
     FormsModule,
     ReactiveFormsModule,
     ScrollingModule,
     SpriteComponent,
-    IconComponent, ButtonComponent],
+    IconComponent, ButtonComponent, FieldComponent, InputDirective],
   templateUrl: './pokemon-select.component.html',
   styleUrl: './pokemon-select.component.scss',
   providers: [

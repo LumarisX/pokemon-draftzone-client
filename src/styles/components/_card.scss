@@ -1,0 +1,32 @@
+@use "sass:map";
+@use "pdz-theming" as pdz;
+
+$paddings: (
+  none: 0,
+  sm: pdz.space(sm),
+  md: pdz.space(lg),
+  lg: pdz.space(xl),
+);
+
+[pdz-card-header],
+[pdz-card-footer] {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(sm);
+}
+
+[pdz-card-header] {
+  border-bottom: 1px solid pdz.color(outline-variant);
+  font-weight: pdz.font-weight(semibold);
+}
+
+[pdz-card-footer] {
+  border-top: 1px solid pdz.color(outline-variant);
+}
+
+@each $name, $value in $paddings {
+  .pdz-card[data-padding="#{$name}"] > [pdz-card-header],
+  .pdz-card[data-padding="#{$name}"] > [pdz-card-footer] {
+    padding: $value;
+  }
+}

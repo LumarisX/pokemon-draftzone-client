@@ -1,0 +1,34 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: pdz.space(sm);
+  cursor: pointer;
+  color: pdz.color(on-surface);
+}
+
+:host(.pdz-check--reverse) {
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+}
+
+:host(:has(input:disabled)) {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.pdz-check__body {
+  display: grid;
+  gap: pdz.space(3xs);
+}
+
+.pdz-check__label {
+  @include pdz.text(body-sm, $family: false);
+}
+
+.pdz-check__description {
+  @include pdz.text(body-sm, $family: false);
+  font-size: pdz.font-size(xs);
+  color: pdz.color(on-surface-variant);
+}

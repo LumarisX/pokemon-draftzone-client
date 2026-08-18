@@ -22,16 +22,15 @@
           }
         </div>
 
-        <mat-form-field appearance="outline" class="column-select">
-          <mat-label>Map to</mat-label>
-          <mat-select [(ngModel)]="columnMappings[$index]">
-            <mat-option [value]="EXCLUDE">— Exclude —</mat-option>
-            <mat-option [value]="NEW_TIER">+ New tier "{{ col.csvHeader }}"</mat-option>
+        <label pdz-field label="Map to" class="column-select">
+          <select pdz-input [(ngModel)]="columnMappings[$index]">
+            <option [value]="EXCLUDE">— Exclude —</option>
+            <option [value]="NEW_TIER">+ New tier "{{ col.csvHeader }}"</option>
             @for (opt of tierOptions; track opt.value) {
-              <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+              <option [value]="opt.value">{{ opt.label }}</option>
             }
-          </mat-select>
-        </mat-form-field>
+          </select>
+        </label>
       </div>
     }
   </div>

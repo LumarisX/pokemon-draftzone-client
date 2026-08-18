@@ -1,0 +1,94 @@
+@use "pdz-theming" as pdz;
+
+.pdz-choice {
+  appearance: none;
+  flex-shrink: 0;
+  display: grid;
+  place-content: center;
+  width: 1.125rem;
+  height: 1.125rem;
+  margin: 0;
+  border: 1px solid pdz.color(outline);
+  border-radius: pdz.shape(corner-xs);
+  background: pdz.color(surface);
+  cursor: inherit;
+  transition:
+    background-color 120ms ease,
+    border-color 120ms ease;
+
+  &::before {
+    content: "";
+    transform: scale(0);
+    transition: transform 120ms ease;
+    background: pdz.color(on-primary);
+  }
+
+  &:hover:not(:disabled):not(:checked) {
+    border-color: pdz.color(primary-accent);
+  }
+
+  &:checked {
+    background: pdz.color(primary);
+    border-color: pdz.color(primary);
+  }
+
+  &:checked::before {
+    transform: scale(1);
+  }
+
+  &:focus-visible {
+    outline: 2px solid pdz.color(primary-accent);
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    background: pdz.color(surface-container);
+  }
+}
+
+.pdz-choice[type="checkbox"] {
+  &::before {
+    width: 0.7rem;
+    height: 0.7rem;
+    clip-path: polygon(
+      14% 44%,
+      0 65%,
+      36% 100%,
+      100% 22%,
+      84% 6%,
+      36% 68%
+    );
+  }
+
+  &:indeterminate {
+    background: pdz.color(primary);
+    border-color: pdz.color(primary);
+  }
+
+  &:indeterminate::before {
+    width: 0.6rem;
+    height: 2px;
+    clip-path: none;
+    border-radius: 1px;
+    transform: scale(1);
+  }
+}
+
+.pdz-choice[type="radio"] {
+  border-radius: pdz.shape(corner-full);
+
+  &::before {
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: pdz.shape(corner-full);
+  }
+}
+
+.pdz-choice--invalid {
+  border-color: pdz.color(error);
+
+  &:focus-visible {
+    outline-color: pdz.color(error);
+  }
+}

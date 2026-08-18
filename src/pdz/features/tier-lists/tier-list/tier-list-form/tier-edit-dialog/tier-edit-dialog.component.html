@@ -2,27 +2,25 @@
 <form [formGroup]="form" (ngSubmit)="onSave()">
   <div mat-dialog-content class="dialog-layout">
     <div class="details-container">
-      <mat-form-field appearance="outline" class="form-field-full-width">
-        <mat-label>Tier Name</mat-label>
-        <input matInput formControlName="name" placeholder="e.g. S, A, B" />
+      <label pdz-field label="Tier Name" required class="form-field-full-width">
+        <input pdz-input formControlName="name" placeholder="e.g. S, A, B" />
         @if (
           form.get("name")?.hasError("required") && form.get("name")?.touched
         ) {
-          <mat-error>Tier name is required</mat-error>
+          <span pdz-error>Tier name is required</span>
         }
         @if (form.get("name")?.hasError("maxlength")) {
-          <mat-error>Tier name cannot exceed 30 characters</mat-error>
+          <span pdz-error>Tier name cannot exceed 30 characters</span>
         }
-      </mat-form-field>
-      <mat-form-field appearance="outline" class="form-field-full-width">
-        <mat-label>Cost (Points)</mat-label>
-        <input type="number" matInput formControlName="cost" />
+      </label>
+      <label pdz-field label="Cost (Points)" required class="form-field-full-width">
+        <input type="number" pdz-input formControlName="cost" />
         @if (
           form.get("cost")?.hasError("required") && form.get("cost")?.touched
         ) {
-          <mat-error>Required</mat-error>
+          <span pdz-error>Required</span>
         }
-      </mat-form-field>
+      </label>
     </div>
   </div>
   <div mat-dialog-actions align="end">

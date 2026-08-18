@@ -3,6 +3,9 @@
 @use "mat-styles";
 @use "pdz-theming" as pdz;
 @use "tokens/breakpoints";
+@use "components/input";
+@use "components/choice";
+@use "components/card";
 
 @include pdz-theming.init-tokens();
 

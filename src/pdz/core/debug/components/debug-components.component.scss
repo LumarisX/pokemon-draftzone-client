@@ -111,3 +111,49 @@
   @include pdz.text(label);
   color: pdz.color(on-surface-variant);
 }
+
+.fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 20rem));
+  gap: pdz.space(lg);
+}
+
+.choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: pdz.space(3xl);
+}
+
+.choices__col {
+  display: grid;
+  gap: pdz.space(md);
+  align-content: start;
+}
+
+.choices__group {
+  display: grid;
+  gap: pdz.space(xs);
+}
+
+.section__sub {
+  @include pdz.text(label);
+  color: pdz.color(on-surface-variant);
+  margin: pdz.space(lg) 0 pdz.space(sm);
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: pdz.space(lg);
+  align-items: start;
+}
+
+.cards__text {
+  @include pdz.text(body-sm);
+  color: pdz.color(on-surface-variant);
+  margin-top: pdz.space(2xs);
+}
+
+.cards__spacer {
+  flex: 1;
+}

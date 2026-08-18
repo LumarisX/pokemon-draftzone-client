@@ -1,0 +1,72 @@
+@use "pdz-theming" as pdz;
+
+.pdz-input {
+  width: 100%;
+  min-height: 2.25rem;
+  padding: pdz.space(xs) pdz.space(sm);
+  border: 1px solid pdz.color(outline);
+  border-radius: pdz.shape(corner-sm);
+  background: pdz.color(surface);
+  color: pdz.color(on-surface);
+  font: inherit;
+  transition:
+    border-color 140ms ease,
+    box-shadow 140ms ease;
+
+  &::placeholder {
+    color: pdz.color(on-surface-variant);
+  }
+
+  &:hover:not(:disabled):not(:focus) {
+    border-color: pdz.color(outline);
+  }
+
+  &:focus,
+  &:focus-visible {
+    outline: none;
+    border-color: pdz.color(primary-accent);
+    box-shadow: 0 0 0 2px pdz.color(primary-container);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background: pdz.color(surface-container);
+  }
+
+  &[data-size="sm"] {
+    min-height: 1.75rem;
+    padding: pdz.space(2xs) pdz.space(xs);
+    font-size: pdz.font-size(sm);
+  }
+}
+
+.pdz-input--invalid {
+  border-color: pdz.color(error);
+
+  &:focus {
+    border-color: pdz.color(error);
+    box-shadow: 0 0 0 2px pdz.color(error-container);
+  }
+}
+
+textarea.pdz-input {
+  min-height: 4.5rem;
+  resize: vertical;
+}
+
+select.pdz-input {
+  cursor: pointer;
+}
+
+[pdz-error] {
+  font-size: pdz.font-size(xs);
+  font-weight: pdz.font-weight(semibold);
+  color: pdz.color(error);
+}
+
+[pdz-hint] {
+  justify-self: end;
+  font-size: pdz.font-size(xs);
+  color: pdz.color(on-surface-variant);
+}

@@ -5,63 +5,59 @@
 
 <form [formGroup]="form" (ngSubmit)="onSave()">
   <div mat-dialog-content class="settings-dialog__content">
-    <mat-form-field appearance="outline" class="field--full">
-      <mat-label>Title</mat-label>
+    <label pdz-field label="Title" required class="field--full">
       <input
-        matInput
+        pdz-input
         formControlName="name"
         placeholder="Enter tier list title"
       />
       @if (
         form.get("name")?.hasError("required") && form.get("name")?.touched
       ) {
-        <mat-error>Title is required</mat-error>
+        <span pdz-error>Title is required</span>
       }
       @if (form.get("name")?.hasError("maxlength")) {
-        <mat-error>Title must be 100 characters or fewer</mat-error>
+        <span pdz-error>Title must be 100 characters or fewer</span>
       }
-    </mat-form-field>
+    </label>
 
-    <mat-form-field appearance="outline" class="field--full">
-      <mat-label>Description</mat-label>
+    <label pdz-field label="Description" class="field--full">
       <textarea
-        matInput
+        pdz-input
         formControlName="description"
         placeholder="Optional description for this tier list"
         rows="3"
       ></textarea>
       @if (form.get("description")?.hasError("maxlength")) {
-        <mat-error>Description must be 500 characters or fewer</mat-error>
+        <span pdz-error>Description must be 500 characters or fewer</span>
       }
-    </mat-form-field>
+    </label>
 
     <div class="settings-dialog__group-label">Draft Count</div>
     <div class="settings-dialog__row" formGroupName="draftCount">
-      <mat-form-field appearance="outline" class="field--half">
-        <mat-label>Min Picks</mat-label>
+      <label pdz-field label="Min Picks" class="field--half">
         <input
-          matInput
+          pdz-input
           type="number"
           formControlName="min"
           placeholder="e.g. 10"
         />
         @if (form.get("draftCount")?.get("min")?.hasError("min")) {
-          <mat-error>Must be 0 or more</mat-error>
+          <span pdz-error>Must be 0 or more</span>
         }
-      </mat-form-field>
+      </label>
 
-      <mat-form-field appearance="outline" class="field--half">
-        <mat-label>Max Picks</mat-label>
+      <label pdz-field label="Max Picks" class="field--half">
         <input
-          matInput
+          pdz-input
           type="number"
           formControlName="max"
           placeholder="e.g. 15"
         />
         @if (form.get("draftCount")?.get("max")?.hasError("min")) {
-          <mat-error>Must be at least 1</mat-error>
+          <span pdz-error>Must be at least 1</span>
         }
-      </mat-form-field>
+      </label>
     </div>
     @if (
       form.get("draftCount")?.hasError("draftCountInvalid") &&

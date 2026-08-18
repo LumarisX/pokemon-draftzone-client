@@ -10,11 +10,12 @@ import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatInputModule } from '@angular/material/input';
 import { PokemonSelectComponent } from '@pdz/shared/dropdowns/pokemon-select/pokemon-select.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { DraftFormGroup } from '../plannner.component';
+import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
+import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 
 @Component({
   selector: 'pdz-planner-team',
@@ -24,7 +25,6 @@ import { DraftFormGroup } from '../plannner.component';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    MatInputModule,
     IconComponent,
     MatCheckboxModule,
     PokemonSelectComponent,
@@ -32,8 +32,7 @@ import { DraftFormGroup } from '../plannner.component';
     CdkDropList,
     CdkDragHandle,
     CdkDragPreview,
-    SpriteComponent,
-  ],
+    SpriteComponent, FieldComponent, InputDirective],
 })
 export class PlannerTeamComponent {
   @Input()

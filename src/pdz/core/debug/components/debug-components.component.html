@@ -147,3 +147,160 @@
     }
   </div>
 </section>
+
+<section class="section">
+  <h2 class="section__title">Field</h2>
+  <div class="fields">
+    <label pdz-field label="League name" hint="Shown publicly">
+      <input pdz-input type="text" placeholder="Sunday Draft League" />
+    </label>
+
+    <label pdz-field label="Points" required>
+      <input pdz-input type="number" value="120" />
+    </label>
+
+    <label pdz-field label="Format">
+      <select pdz-input>
+        <option>Singles</option>
+        <option>VGC</option>
+      </select>
+    </label>
+
+    <label pdz-field label="Rules" hint="Markdown supported">
+      <textarea pdz-input rows="3" placeholder="House rules..."></textarea>
+    </label>
+
+    <label pdz-field label="Team name" error="This field is required." required>
+      <input pdz-input type="text" />
+    </label>
+
+    <label pdz-field label="Disabled">
+      <input pdz-input type="text" value="Locked" disabled />
+    </label>
+
+    <label pdz-field label="Auto-validated" required>
+      <input pdz-input type="text" [formControl]="requiredCtrl" />
+    </label>
+
+    <label pdz-field label="Small" hint="size=sm">
+      <input pdz-input size="sm" type="text" placeholder="Compact" />
+    </label>
+  </div>
+  <div class="row" style="margin-top: 1rem">
+    <button pdz-button size="sm" variant="outlined" color="neutral" (click)="touchRequired()">
+      Touch the auto-validated field
+    </button>
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="section__title">Checkbox &amp; radio</h2>
+  <div class="choices">
+    <div class="choices__col">
+      <span class="surfaces__name">Checkbox</span>
+      <label pdz-check label="Include shinies">
+        <input pdz-checkbox type="checkbox" />
+      </label>
+      <label pdz-check label="Captain" description="Only one per team.">
+        <input pdz-checkbox type="checkbox" checked />
+      </label>
+      <label pdz-check label="Indeterminate">
+        <input pdz-checkbox type="checkbox" #ind (click)="ind.indeterminate = false" />
+      </label>
+      <label pdz-check label="Disabled">
+        <input pdz-checkbox type="checkbox" disabled />
+      </label>
+      <label pdz-check label="Disabled + checked">
+        <input pdz-checkbox type="checkbox" checked disabled />
+      </label>
+      <label pdz-check label="Label before" labelBefore>
+        <input pdz-checkbox type="checkbox" />
+      </label>
+    </div>
+
+    <div class="choices__col">
+      <span class="surfaces__name">Radio</span>
+      <label pdz-check label="Snake draft" description="Order reverses each round.">
+        <input pdz-radio type="radio" name="order" value="snake" checked />
+      </label>
+      <label pdz-check label="Linear draft">
+        <input pdz-radio type="radio" name="order" value="linear" />
+      </label>
+      <label pdz-check label="Random each round">
+        <input pdz-radio type="radio" name="order" value="random" />
+      </label>
+      <label pdz-check label="Disabled option">
+        <input pdz-radio type="radio" name="order" value="none" disabled />
+      </label>
+    </div>
+
+    <div class="choices__col">
+      <span class="surfaces__name">In a field</span>
+      <label pdz-field label="Visibility" hint="Controls who can see the draft.">
+        <span class="choices__group">
+          <label pdz-check label="Public">
+            <input pdz-radio type="radio" name="vis" value="public" checked />
+          </label>
+          <label pdz-check label="Unlisted">
+            <input pdz-radio type="radio" name="vis" value="unlisted" />
+          </label>
+        </span>
+      </label>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="section__title">Card</h2>
+
+  <h3 class="section__sub">Tones — resting surfaces use border + tint, no shadow</h3>
+  <div class="cards">
+    @for (t of tones; track t) {
+      <pdz-card [tone]="t">
+        <strong>{{ t }}</strong>
+        <p class="cards__text">A resting surface. No shadow by design.</p>
+      </pdz-card>
+    }
+  </div>
+
+  <h3 class="section__sub">Padding</h3>
+  <div class="cards">
+    @for (p of paddings; track p) {
+      <pdz-card [padding]="p">
+        <strong>padding={{ p }}</strong>
+      </pdz-card>
+    }
+  </div>
+
+  <h3 class="section__sub">Header / footer</h3>
+  <div class="cards">
+    <pdz-card>
+      <div pdz-card-header>
+        Season 12
+        <span class="cards__spacer"></span>
+        <button pdz-button size="sm" variant="ghost" color="neutral" iconOnly aria-label="Edit">
+          <pdz-icon name="edit" [size]="16"></pdz-icon>
+        </button>
+      </div>
+      <p class="cards__text">
+        Body content sits between the header and footer rules.
+      </p>
+      <div pdz-card-footer>
+        <button pdz-button size="sm" variant="ghost" color="neutral">Cancel</button>
+        <button pdz-button size="sm">Save</button>
+      </div>
+    </pdz-card>
+
+    <pdz-card interactive>
+      <strong>Interactive</strong>
+      <p class="cards__text">Hover and tab to me — border shifts, focus ring shows.</p>
+    </pdz-card>
+
+    <pdz-card elevated>
+      <strong>Elevated</strong>
+      <p class="cards__text">
+        Opt-in shadow. Only for surfaces that actually float.
+      </p>
+    </pdz-card>
+  </div>
+</section>

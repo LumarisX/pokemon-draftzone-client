@@ -36,7 +36,6 @@ import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
 import { MatRippleModule } from '@angular/material/core';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTabChangeEvent, MatTabsModule } from '@angular/material/tabs';
 import { BehaviorSubject, Observable, of } from 'rxjs';
@@ -49,6 +48,8 @@ import { PokemonSelectComponent } from '../../dropdowns/pokemon-select/pokemon-s
 import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { SlideToggleComponent } from '../../inputs/slide-toggle/slide-toggle.component';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
+import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 
 @Component({
   selector: 'pdz-team-form',
@@ -57,7 +58,6 @@ import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
     ReactiveFormsModule,
     OverlayModule,
     FormsModule,
-    MatInputModule,
     MatChipsModule,
     MatIconModule,
     MatSlideToggleModule,
@@ -72,7 +72,7 @@ import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
     CdkDropList,
     CdkDragHandle,
     CdkDragPreview,
-    PokemonSelectComponent, ButtonComponent],
+    PokemonSelectComponent, ButtonComponent, FieldComponent, InputDirective],
   templateUrl: './team-form.component.html',
   styleUrl: './team-form.component.scss',
   providers: [

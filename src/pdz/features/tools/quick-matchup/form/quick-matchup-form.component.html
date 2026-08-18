@@ -32,14 +32,13 @@
       <ng-template matStepLabel>Team 1</ng-template>
       <ng-template matStepContent>
         <div class="team-container">
-          <mat-form-field>
-            <mat-label>Team Name</mat-label>
+          <label pdz-field label="Team Name">
             <input
-              matInput
+              pdz-input
               [formControl]="quickForm.controls.side1.controls.teamName"
               spellcheck="false"
             />
-          </mat-form-field>
+          </label>
           <pdz-team-form
             [pokemonList$]="pokemonList$"
             [ruleset]="quickForm.controls.details.controls.ruleset.value"
@@ -58,14 +57,13 @@
       <ng-template matStepLabel>Team 2</ng-template>
       <ng-template matStepContent>
         <div class="team-container alternate">
-          <mat-form-field>
-            <mat-label>Team Name</mat-label>
+          <label pdz-field label="Team Name">
             <input
-              matInput
+              pdz-input
               [formControl]="quickForm.controls.side2.controls.teamName"
               spellcheck="false"
             />
-          </mat-form-field>
+          </label>
           <pdz-team-form
             [pokemonList$]="pokemonList$"
             [ruleset]="quickForm.controls.details.controls.ruleset.value"

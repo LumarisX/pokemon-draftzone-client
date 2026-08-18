@@ -60,28 +60,25 @@
             </td>
             @if (isPoints) {
               <td>
-                <mat-form-field class="value-input" appearance="outline">
-                  <mat-label>Points</mat-label>
+                <label pdz-field label="Points" class="value-input">
                   <input
-                    matInput
+                    pdz-input
                     type="number"
                     placeholder="0"
                     [formControl]="teamCtrl.controls.value"
                   />
-                </mat-form-field>
+                </label>
               </td>
             } @else {
               <td>
-                <mat-form-field class="value-input" appearance="outline">
-                  <mat-label>Tier</mat-label>
-
+                <label pdz-field label="Tier" class="value-input">
                   <input
-                    matInput
+                    pdz-input
                     type="text"
                     spellcheck="false"
                     [formControl]="teamCtrl.controls.tier"
                   />
-                </mat-form-field>
+                </label>
               </td>
             }
             <td class="col-checkbox">

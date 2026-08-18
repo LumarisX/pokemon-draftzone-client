@@ -25,19 +25,18 @@
             Confirm
           </button>
         </div>
-        <mat-form-field floatLabel="always">
-          <mat-label>Pokemon</mat-label>
+        <label pdz-field label="Pokemon">
           <textarea
             placeholder="Add pokemon..."
             spellcheck="false"
-            matInput
+            pdz-input
             [(ngModel)]="importInput"
             (keydown.enter)="handlePokemonInput($event)"
             cdkTextareaAutosize
             cdkAutosizeMinRows="5"
             cdkAutosizeMaxRows="18"
           ></textarea>
-        </mat-form-field>
+        </label>
       </div>
     } @else {
       <div class="add-bar">
@@ -386,23 +385,20 @@
                         >
                           Shiny
                         </pdz-slide-toggle>
-                        <mat-form-field class="small-form">
-                          <mat-label>Nickname</mat-label>
+                        <label pdz-field label="Nickname" class="small-form">
                           <input
                             maxlength="18"
-                            matInput
+                            pdz-input
                             [formControl]="monGroup.controls.nickname"
                           />
                           @if (
                             monGroup.controls.nickname.value &&
                             monGroup.controls.nickname.value.length > 13
                           ) {
-                            <mat-hint align="end"
-                              >{{ monGroup.controls.nickname.value.length }} /
-                              18</mat-hint
-                            >
+                            <span pdz-hint>{{ monGroup.controls.nickname.value.length }} /
+                              18</span>
                           }
-                        </mat-form-field>
+                        </label>
                       </div>
                     </mat-tab>
                     <mat-tab>
@@ -415,8 +411,7 @@
                       <div class="advanced-container">
                         @if (monGroup.formeList && monGroup.formeList.length) {
                           <div>
-                            <mat-form-field>
-                              <mat-label>Formes</mat-label>
+                            <label pdz-field label="Formes">
                               <mat-chip-grid #formeChipGrid>
                                 @for (
                                   forme of monGroup.controls.formes.value;
@@ -461,7 +456,7 @@
                                   formeOption of monGroup.formeList;
                                   track formeOption
                                 ) {
-                                  <mat-option
+                                  <option
                                     [value]="formeOption"
                                     [disabled]="
                                       isSelected(
@@ -478,15 +473,14 @@
                                       ></pdz-sprite>
                                       <span> {{ formeOption.name }} </span>
                                     </div>
-                                  </mat-option>
+                                  </option>
                                 }
                               </mat-autocomplete>
-                            </mat-form-field>
+                            </label>
                           </div>
                         }
                         <div class="modifier-container">
-                          <mat-form-field>
-                            <mat-label>Additional Moves</mat-label>
+                          <label pdz-field label="Additional Moves">
                             <mat-chip-grid #moveChipGrid>
                               @for (
                                 move of monGroup.controls.moves.value;
@@ -511,9 +505,8 @@
                                 addChip(monGroup.controls.moves, $event)
                               "
                             />
-                          </mat-form-field>
-                          <mat-form-field>
-                            <mat-label>New Abilities</mat-label>
+                          </label>
+                          <label pdz-field label="New Abilities">
                             <mat-chip-grid #abilityChipGrid>
                               @for (
                                 move of monGroup.controls.abilities.value;
@@ -541,7 +534,7 @@
                                 addChip(monGroup.controls.abilities, $event)
                               "
                             />
-                          </mat-form-field>
+                          </label>
                         </div>
                       </div>
                     </mat-tab>

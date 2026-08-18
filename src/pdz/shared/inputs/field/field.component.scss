@@ -1,0 +1,35 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: grid;
+  gap: pdz.space(2xs);
+}
+
+:host(.pdz-field--inline) {
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: pdz.space(sm);
+}
+
+.pdz-field__label {
+  @include pdz.text(label, $family: false);
+  color: pdz.color(on-surface-variant);
+}
+
+.pdz-field__required {
+  color: pdz.color(error);
+  margin-inline-start: pdz.space(3xs);
+}
+
+.pdz-field__hint {
+  @include pdz.text(body-sm, $family: false);
+  font-size: pdz.font-size(xs);
+  color: pdz.color(on-surface-variant);
+}
+
+.pdz-field__error {
+  @include pdz.text(body-sm, $family: false);
+  font-size: pdz.font-size(xs);
+  font-weight: pdz.font-weight(semibold);
+  color: pdz.color(error);
+}

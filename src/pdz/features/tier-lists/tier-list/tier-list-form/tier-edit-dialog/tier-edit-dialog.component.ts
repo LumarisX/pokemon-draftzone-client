@@ -10,9 +10,9 @@ import {
   MatDialogModule,
   MatDialogRef,
 } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
+import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 
 export interface TierDialogData {
   tier?: { name: string; cost?: number };
@@ -27,9 +27,7 @@ export interface TierDialogResult {
   selector: 'pdz-tier-edit-dialog',
   imports: [
     MatDialogModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule, ButtonComponent],
+    ReactiveFormsModule, ButtonComponent, FieldComponent, InputDirective],
   templateUrl: './tier-edit-dialog.component.html',
   styleUrls: ['./tier-edit-dialog.component.scss'],
 })

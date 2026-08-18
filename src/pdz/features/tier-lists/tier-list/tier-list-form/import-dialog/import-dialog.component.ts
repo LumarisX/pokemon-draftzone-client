@@ -6,9 +6,9 @@ import {
   MatDialogModule,
   MatDialogRef,
 } from '@angular/material/dialog';
-import { MatSelectModule } from '@angular/material/select';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
+import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 
 export interface ImportColumn {
   csvHeader: string;
@@ -32,9 +32,7 @@ const NEW_TIER = '__NEW_TIER__';
   imports: [
     CommonModule,
     FormsModule,
-    MatDialogModule,
-    MatSelectModule,
-    MatFormFieldModule, ButtonComponent],
+    MatDialogModule, ButtonComponent, FieldComponent, InputDirective],
   templateUrl: './import-dialog.component.html',
   styleUrls: ['./import-dialog.component.scss'],
 })

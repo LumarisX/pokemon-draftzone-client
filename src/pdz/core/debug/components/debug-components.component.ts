@@ -12,13 +12,19 @@ import {
   ButtonVariant,
 } from '@pdz/shared/buttons/button/button.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
+import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
+import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
+import { CheckComponent } from '@pdz/shared/inputs/choice/check.component';
+import { ChoiceDirective } from '@pdz/shared/inputs/choice/choice.directive';
+import { CardComponent, CardPadding, CardTone } from '@pdz/shared/data/card/card.component';
+import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 
 const THEME_ATTR = 'pdz-theme';
 const MODE_ATTR = 'pdz-theme-mode';
 
 @Component({
   selector: 'pdz-debug-components',
-  imports: [ButtonComponent, IconComponent],
+  imports: [ButtonComponent, IconComponent, FieldComponent, InputDirective, ReactiveFormsModule, CheckComponent, ChoiceDirective, CardComponent],
   templateUrl: './debug-components.component.html',
   styleUrl: './debug-components.component.scss',
 })
@@ -67,6 +73,21 @@ export class DebugComponentsComponent {
     } else {
       root.setAttribute(attr, value);
     }
+  }
+
+  readonly requiredCtrl = new FormControl('', Validators.required);
+
+  touchRequired() {
+    this.requiredCtrl.markAsTouched();
+  }
+
+  readonly tones: CardTone[] = ['lowest', 'low', 'default', 'high'];
+  readonly paddings: CardPadding[] = ['none', 'sm', 'md', 'lg'];
+
+  indeterminate = true;
+
+  setIndeterminate(el: HTMLInputElement) {
+    el.indeterminate = this.indeterminate;
   }
 
   toggleLoading() {
