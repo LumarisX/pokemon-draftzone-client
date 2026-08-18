@@ -58,22 +58,22 @@
         <h2 class="roster__title">Draft Roster</h2>
       </header>
       @if (teamData && teamData.draft.length) {
-        <div class="stats-table-wrapper">
-          <table class="stats-table">
+        <div class="pdz-table-wrapper stats-table-wrapper">
+          <table class="pdz-table stats-table" data-header="primary" data-sticky>
             <thead>
               <tr>
-                <th class="col-sprite"></th>
+                <th class="col-sprite pdz-table__center"></th>
                 <th class="col-name">Pokémon</th>
-                <th class="col-stat">Brought</th>
-                <th class="col-stat">Kills</th>
-                <th class="col-stat">Deaths</th>
-                <th class="col-stat">K/D Ratio</th>
+                <th class="col-stat pdz-table__num">Brought</th>
+                <th class="col-stat pdz-table__num">Kills</th>
+                <th class="col-stat pdz-table__num">Deaths</th>
+                <th class="col-stat pdz-table__num">K/D Ratio</th>
               </tr>
             </thead>
             <tbody>
               @for (pokemon of teamData.draft; track pokemon.id) {
                 <tr>
-                  <td class="cell-sprite">
+                  <td class="cell-sprite pdz-table__center">
                     <pdz-sprite flipped [pokemon]="pokemon"></pdz-sprite>
                   </td>
                   <td class="cell-name">
@@ -87,10 +87,10 @@
                       </div>
                     </div>
                   </td>
-                  <td class="cell-stat">{{ pokemon.record?.brought ?? 0 }}</td>
-                  <td class="cell-stat">{{ pokemon.record?.kills ?? 0 }}</td>
-                  <td class="cell-stat">{{ pokemon.record?.deaths ?? 0 }}</td>
-                  <td class="cell-stat">
+                  <td class="cell-stat pdz-table__num">{{ pokemon.record?.brought ?? 0 }}</td>
+                  <td class="cell-stat pdz-table__num">{{ pokemon.record?.kills ?? 0 }}</td>
+                  <td class="cell-stat pdz-table__num">{{ pokemon.record?.deaths ?? 0 }}</td>
+                  <td class="cell-stat pdz-table__num">
                     @if (pokemon.record?.deaths) {
                       {{
                         (
@@ -111,12 +111,12 @@
             </tbody>
             <tfoot>
               <tr>
-                <th class="col-sprite"></th>
+                <th class="col-sprite pdz-table__center"></th>
                 <th class="col-name">{{ rosterTotal.cost }}</th>
-                <th class="col-stat"></th>
-                <th class="col-stat">{{ rosterTotal.kills }}</th>
-                <th class="col-stat">{{ rosterTotal.deaths }}</th>
-                <th class="col-stat"></th>
+                <th class="col-stat pdz-table__num"></th>
+                <th class="col-stat pdz-table__num">{{ rosterTotal.kills }}</th>
+                <th class="col-stat pdz-table__num">{{ rosterTotal.deaths }}</th>
+                <th class="col-stat pdz-table__num"></th>
               </tr>
             </tfoot>
           </table>

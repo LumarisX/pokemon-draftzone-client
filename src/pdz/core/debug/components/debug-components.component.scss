@@ -177,3 +177,11 @@
   @include pdz.text(label);
   color: pdz.color(on-surface-variant);
 }
+
+.tables__demo {
+  border: 1px solid pdz.color(outline-variant);
+}
+
+.tables__demo--scroll {
+  --pdz-table-max-height: 14rem;
+}

@@ -190,3 +190,11 @@ body {
 .mdc-notched-outline__notch {
   border-right: none;
 }
+
+.pdz-table th.pdz-table__num .mat-sort-header-container {
+  justify-content: flex-end;
+}
+
+.pdz-table th.pdz-table__center .mat-sort-header-container {
+  justify-content: center;
+}

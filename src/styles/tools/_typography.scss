@@ -33,6 +33,11 @@
   letter-spacing: 0.06em;
 }
 
+@mixin numeric {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
 @function font($family-name) {
   @if not map.has-key(type-tokens.$fonts, $family-name) {
     @error "'#{$family-name}' is not a valid PDZ font family token. Available tokens: #{map.keys(type-tokens.$fonts)}";

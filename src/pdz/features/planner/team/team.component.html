@@ -1,14 +1,19 @@
 @if (draftFormGroup && draftFormGroup.controls.team) {
   <div class="table-container">
-    <table>
+    <table
+      class="pdz-table"
+      data-header="primary"
+      data-sticky
+      data-density="compact"
+    >
       <thead>
         <tr>
           <th></th>
           <th></th>
           <th>Name</th>
           <th>Value</th>
-          <th>Captain</th>
-          <th>Drafted</th>
+          <th class="pdz-table__center">Captain</th>
+          <th class="pdz-table__center">Drafted</th>
         </tr>
       </thead>
       <tbody cdkDropList (cdkDropListDropped)="drop($event)" class="team-list">
@@ -81,12 +86,12 @@
                 </label>
               </td>
             }
-            <td class="col-checkbox">
+            <td class="col-checkbox pdz-table__center">
               <mat-checkbox
                 [formControl]="teamCtrl.controls.capt"
               ></mat-checkbox>
             </td>
-            <td class="col-checkbox">
+            <td class="col-checkbox pdz-table__center">
               <mat-checkbox
                 [formControl]="teamCtrl.controls.drafted"
               ></mat-checkbox>

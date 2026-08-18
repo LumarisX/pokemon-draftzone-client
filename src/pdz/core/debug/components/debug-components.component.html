@@ -354,3 +354,107 @@
     </pdz-card>
   </div>
 </section>
+
+<section class="section">
+  <h2 class="section__title">Table</h2>
+  <p class="section__hint">
+    Every table in a stats app is a comparison. Digits are tabular so a column
+    stays put as values change, numeric columns are right-aligned so magnitudes
+    line up, and rows respond to hover so the eye can hold a line across.
+  </p>
+
+  <h3 class="section__sub">Default — subtle header, hover rows</h3>
+  <div class="pdz-table-wrapper tables__demo">
+    <table class="pdz-table">
+      <thead>
+        <tr>
+          <th>Pokémon</th>
+          <th class="pdz-table__num">Brought</th>
+          <th class="pdz-table__num">Kills</th>
+          <th class="pdz-table__num">Deaths</th>
+          <th class="pdz-table__num">K/D</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of tableRows; track row.name) {
+          <tr>
+            <td>{{ row.name }}</td>
+            <td class="pdz-table__num">{{ row.brought }}</td>
+            <td class="pdz-table__num">{{ row.kills }}</td>
+            <td class="pdz-table__num">{{ row.deaths }}</td>
+            <td class="pdz-table__num">{{ row.kdr }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="section__sub">
+    Primary header, zebra rows, compact density, totals footer
+  </h3>
+  <div class="pdz-table-wrapper tables__demo">
+    <table
+      class="pdz-table"
+      data-header="primary"
+      data-density="compact"
+      data-zebra
+    >
+      <thead>
+        <tr>
+          <th>Pokémon</th>
+          <th class="pdz-table__num">Brought</th>
+          <th class="pdz-table__num">Kills</th>
+          <th class="pdz-table__num">Deaths</th>
+          <th class="pdz-table__num">K/D</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of tableRows; track row.name) {
+          <tr>
+            <td>{{ row.name }}</td>
+            <td class="pdz-table__num">{{ row.brought }}</td>
+            <td class="pdz-table__num">{{ row.kills }}</td>
+            <td class="pdz-table__num">{{ row.deaths }}</td>
+            <td class="pdz-table__num">{{ row.kdr }}</td>
+          </tr>
+        }
+      </tbody>
+      <tfoot>
+        <tr>
+          <th>Total</th>
+          <th class="pdz-table__num">{{ tableTotals.brought }}</th>
+          <th class="pdz-table__num">{{ tableTotals.kills }}</th>
+          <th class="pdz-table__num">{{ tableTotals.deaths }}</th>
+          <th class="pdz-table__num"></th>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <h3 class="section__sub">Sticky header — scroll the body</h3>
+  <div class="pdz-table-wrapper tables__demo tables__demo--scroll">
+    <table class="pdz-table" data-header="primary" data-sticky data-zebra>
+      <thead>
+        <tr>
+          <th>Pokémon</th>
+          <th class="pdz-table__num">Brought</th>
+          <th class="pdz-table__num">Kills</th>
+          <th class="pdz-table__num">Deaths</th>
+          <th class="pdz-table__num">K/D</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of tableRowsLong; track $index) {
+          <tr>
+            <td>{{ row.name }}</td>
+            <td class="pdz-table__num">{{ row.brought }}</td>
+            <td class="pdz-table__num">{{ row.kills }}</td>
+            <td class="pdz-table__num">{{ row.deaths }}</td>
+            <td class="pdz-table__num">{{ row.kdr }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>
+

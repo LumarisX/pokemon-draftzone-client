@@ -140,10 +140,8 @@
       display: flex;
       flex-direction: column;
       .roster-table {
-        width: 100%;
         height: 100%;
         table-layout: fixed;
-        border-collapse: collapse;
         display: flex;
         flex-direction: column;
 
@@ -169,32 +167,20 @@
 
         th,
         td {
-          padding: 0.5rem 0.4rem;
-          text-align: left;
-          vertical-align: middle;
-          border-bottom: 1px solid pdz.color(primary-border);
           overflow: hidden;
           text-overflow: ellipsis;
-        }
-
-        th {
-          font-weight: 600;
-          background-color: pdz.color(primary);
-          color: pdz.color(on-primary);
-          white-space: nowrap;
         }
 
         th.col-sprite,
         td.cell-sprite {
           width: 3rem;
-          text-align: center;
         }
 
         th.col-capt,
         td.cell-capt {
           width: 4rem;
-          text-align: center;
           white-space: nowrap;
+
           mat-icon {
             color: pdz.color(primary-accent);
           }
@@ -203,14 +189,12 @@
         th.col-tier,
         td.cell-tier {
           width: 4.5rem;
-          text-align: center;
           white-space: nowrap;
         }
 
         th.col-record,
         td.cell-record {
           width: 3.5rem;
-          text-align: center;
           white-space: nowrap;
         }
 
@@ -218,12 +202,6 @@
         td.cell-name {
           white-space: normal;
           line-height: 1rem;
-        }
-
-        tr:last-child {
-          td {
-            border-bottom: none;
-          }
         }
       }
     }

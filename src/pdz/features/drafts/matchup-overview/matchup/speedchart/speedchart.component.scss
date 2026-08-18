@@ -61,6 +61,7 @@
         }
 
         .base-speed-label {
+          @include pdz.numeric;
           text-align: center;
           line-height: 2rem;
           font-weight: var(--pdz-font-weight-bold);
@@ -159,6 +160,7 @@
             }
             .top-speed,
             .bot-speed {
+              @include pdz.numeric;
               line-height: 1rem;
               font-weight: var(--pdz-font-weight-bold);
             }

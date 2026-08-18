@@ -55,21 +55,21 @@
   <div class="team-body">
     @if (data === "overview") {
       <div class="table-wrapper">
-        <table class="roster-table">
+        <table class="pdz-table roster-table" data-header="primary" data-density="compact">
           <thead>
             <tr>
-              <th class="col-sprite"></th>
+              <th class="col-sprite pdz-table__center"></th>
               <th class="col-name">Name</th>
               @if (hasCapt()) {
-                <th class="col-capt">Capt</th>
+                <th class="col-capt pdz-table__center">Capt</th>
               }
-              <th class="col-tier">Tier</th>
+              <th class="col-tier pdz-table__num">Tier</th>
             </tr>
           </thead>
           <tbody>
             @for (pokemon of teamDetails.draft; track pokemon) {
               <tr>
-                <td class="cell-sprite">
+                <td class="cell-sprite pdz-table__center">
                   <div class="sprite-wrapper">
                     <pdz-sprite [pokemon]="pokemon" flipped></pdz-sprite>
                   </div>
@@ -78,7 +78,7 @@
                   {{ pokemon.name }}
                 </td>
                 @if (hasCapt()) {
-                  <td class="cell-capt">
+                  <td class="cell-capt pdz-table__center">
                     @if (pokemon.capt?.tera) {
                       <mat-icon svgIcon="tera"></mat-icon>
                     }
@@ -90,7 +90,7 @@
                     }
                   </td>
                 }
-                <td class="cell-tier">
+                <td class="cell-tier pdz-table__num">
                   {{ pokemon.cost }}
                 </td>
               </tr>
@@ -98,12 +98,12 @@
           </tbody>
           <tfoot>
             <tr>
-              <th class="col-sprite"></th>
+              <th class="col-sprite pdz-table__center"></th>
               <th class="col-name"></th>
               @if (hasCapt()) {
-                <th class="col-capt">{{ totalCaptCount() }}</th>
+                <th class="col-capt pdz-table__center">{{ totalCaptCount() }}</th>
               }
-              <th class="col-tier">{{ totalCost() }}</th>
+              <th class="col-tier pdz-table__num">{{ totalCost() }}</th>
             </tr>
           </tfoot>
         </table>
@@ -111,20 +111,20 @@
     }
     @if (data === "stats") {
       <div class="table-wrapper">
-        <table class="roster-table">
+        <table class="pdz-table roster-table" data-header="primary" data-density="compact">
           <thead>
             <tr>
-              <th class="col-sprite"></th>
+              <th class="col-sprite pdz-table__center"></th>
               <th class="col-name">Name</th>
-              <th class="col-record">Games</th>
-              <th class="col-record">Wins</th>
-              <th class="col-record">Loses</th>
+              <th class="col-record pdz-table__num">Games</th>
+              <th class="col-record pdz-table__num">Wins</th>
+              <th class="col-record pdz-table__num">Loses</th>
             </tr>
           </thead>
           <tbody>
             @for (pokemon of teamDetails.draft; track pokemon) {
               <tr>
-                <td class="cell-sprite">
+                <td class="cell-sprite pdz-table__center">
                   <div class="sprite-wrapper">
                     <pdz-sprite flipped [pokemon]="pokemon"></pdz-sprite>
                   </div>
@@ -132,13 +132,13 @@
                 <td class="cell-name">
                   {{ pokemon.name }}
                 </td>
-                <td class="cell-record">
+                <td class="cell-record pdz-table__num">
                   {{ pokemon.record?.brought ?? 0 }}
                 </td>
-                <td class="cell-record">
+                <td class="cell-record pdz-table__num">
                   {{ pokemon.record?.kills ?? 0 }}
                 </td>
-                <td class="cell-record">
+                <td class="cell-record pdz-table__num">
                   {{ pokemon.record?.deaths ?? 0 }}
                 </td>
               </tr>

@@ -30,33 +30,9 @@
 
 table {
   table-layout: fixed;
-
-  thead tr {
-    top: 0px;
-    z-index: 1100;
-    background-color: pdz.color(primary);
-    color: pdz.color(on-primary);
-    border-bottom: 2px pdz.color(primary-border) solid;
-    position: sticky;
-    font-size: var(--pdz-font-size-xs);
-  }
-  tbody {
-    td {
-      text-align: center;
-      padding: 0.25rem 0 0.25rem 0.5rem;
-      width: fit-content;
-      &:last-child {
-        padding-right: 0.5rem;
-      }
-    }
-  }
 }
 .preview-sprite {
   height: 4rem;
-}
-
-.team-item:not(:last-child) {
-  border-bottom: 1px pdz.color(primary-border) solid;
 }
 
 .value-input {

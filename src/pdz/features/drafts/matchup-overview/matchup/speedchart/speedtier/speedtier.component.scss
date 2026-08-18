@@ -10,6 +10,7 @@
     align-self: center;
   }
   .speed-label {
+    @include pdz.numeric;
     line-height: 2rem;
     font-weight: var(--pdz-font-weight-bold);
     color: pdz.color(on-primary-container);

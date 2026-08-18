@@ -1,0 +1,146 @@
+@use "sass:map";
+@use "pdz-theming" as pdz;
+
+$densities: (
+  compact: (
+    pdz.space(2xs) pdz.space(sm),
+  ),
+  default: (
+    pdz.space(sm) pdz.space(md),
+  ),
+  relaxed: (
+    pdz.space(md) pdz.space(lg),
+  ),
+);
+
+$header-tones: (
+  subtle: (
+    background: surface-container-high,
+    foreground: on-surface-variant,
+  ),
+  primary: (
+    background: primary,
+    foreground: on-primary,
+  ),
+);
+
+.pdz-table-wrapper {
+  width: 100%;
+  max-height: var(--pdz-table-max-height, none);
+  overflow: auto;
+  border-radius: pdz.shape(corner-lg);
+  background: pdz.color(surface);
+}
+
+.pdz-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: pdz.color(on-surface);
+  @include pdz.numeric;
+
+  th,
+  td {
+    padding: map.get($densities, default);
+    text-align: left;
+    vertical-align: middle;
+  }
+
+  thead th {
+    @include pdz.text(label);
+    @include pdz.caps;
+    background: pdz.color(surface-container-high);
+    color: pdz.color(on-surface-variant);
+    white-space: nowrap;
+    border-bottom: 1px solid pdz.color(outline);
+  }
+
+  tbody tr {
+    transition: background-color pdz.duration(base) pdz.easing(standard);
+
+    &:not(:last-child) {
+      border-bottom: 1px solid pdz.color(outline-variant);
+    }
+
+    &:hover {
+      background: pdz.color(surface-container);
+    }
+  }
+
+  tfoot th,
+  tfoot td {
+    @include pdz.text(label);
+    background: pdz.color(surface-container-high);
+    color: pdz.color(on-surface-variant);
+    white-space: nowrap;
+    border-top: 1px solid pdz.color(outline);
+  }
+
+  th.pdz-table__num,
+  td.pdz-table__num {
+    @include pdz.numeric;
+    text-align: right;
+  }
+
+  th.pdz-table__center,
+  td.pdz-table__center {
+    text-align: center;
+  }
+}
+
+@each $name, $padding in $densities {
+  .pdz-table[data-density="#{$name}"] {
+    th,
+    td {
+      padding: $padding;
+    }
+  }
+}
+
+@each $name, $tone in $header-tones {
+  .pdz-table[data-header="#{$name}"] {
+    thead th,
+    tfoot th,
+    tfoot td {
+      background: pdz.color(map.get($tone, background));
+      color: pdz.color(map.get($tone, foreground));
+    }
+  }
+}
+
+.pdz-table[data-zebra] tbody tr:nth-child(even) {
+  background: color-mix(in srgb, pdz.color(on-surface) 4%, transparent);
+
+  &:hover {
+    background: pdz.color(surface-container);
+  }
+}
+
+.pdz-table[data-sticky] thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.pdz-table tbody tr.pdz-table__row--interactive {
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid pdz.color(primary-accent);
+    outline-offset: -2px;
+  }
+}
+
+.pdz-table tbody tr.pdz-table__row--selected {
+  background: pdz.color(primary-container);
+  color: pdz.color(on-primary-container);
+
+  &:hover {
+    background: pdz.color(primary-container-hover);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pdz-table tbody tr {
+    transition: none;
+  }
+}

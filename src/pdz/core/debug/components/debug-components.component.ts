@@ -46,6 +46,25 @@ export class DebugComponentsComponent {
   readonly sizes: ButtonSize[] = ['sm', 'md', 'lg'];
   readonly themes = ['classic', 'classic-reverse', 'fern', 'shiny', 'sunset'];
 
+  readonly tableRows = [
+    { name: 'Iron Valiant', brought: 9, kills: 14, deaths: 6, kdr: '2.33' },
+    { name: 'Great Tusk', brought: 11, kills: 8, deaths: 9, kdr: '0.89' },
+    { name: 'Gholdengo', brought: 7, kills: 111, deaths: 3, kdr: '37.00' },
+    { name: 'Dragapult', brought: 12, kills: 21, deaths: 11, kdr: '1.91' },
+  ];
+
+  readonly tableTotals = {
+    brought: 39,
+    kills: 154,
+    deaths: 29,
+  };
+
+  readonly tableRowsLong = [
+    ...this.tableRows,
+    ...this.tableRows,
+    ...this.tableRows,
+  ];
+
   theme = signal('classic');
   mode = signal<'light' | 'dark'>('light');
   loadingDemo = signal(false);

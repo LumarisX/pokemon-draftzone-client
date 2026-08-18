@@ -6,6 +6,7 @@
 @use "components/input";
 @use "components/choice";
 @use "components/card";
+@use "components/table";
 
 @include pdz-theming.init-tokens();
 
@@ -336,6 +337,10 @@ $option-lineheight: 3rem;
 
 .pdz-caps {
   @include pdz.caps;
+}
+
+.pdz-nums {
+  @include pdz.numeric;
 }
 
 markdown {

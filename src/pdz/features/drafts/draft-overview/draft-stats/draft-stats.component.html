@@ -9,8 +9,11 @@
 @if (teamStats.value.length > 0) {
   <div class="content-container">
     <div class="table-container">
-      <div class="table-wrapper">
+      <div class="pdz-table-wrapper table-wrapper">
         <table
+          class="pdz-table"
+          data-zebra
+          data-sticky
           cdk-table
           [dataSource]="teamStats"
           matSort
@@ -18,8 +21,8 @@
           (matSortChange)="sort($event)"
         >
           <ng-container cdkColumnDef="sprite">
-            <th cdk-header-cell *cdkHeaderCellDef></th>
-            <td cdk-cell *cdkCellDef="let element">
+            <th class="pdz-table__center" cdk-header-cell *cdkHeaderCellDef></th>
+            <td class="pdz-table__center" cdk-cell *cdkCellDef="let element">
               <div class="sprite-wrapper">
                 <pdz-sprite flipped [pokemon]="element.pokemon"></pdz-sprite>
               </div>
@@ -36,6 +39,7 @@
 
           <ng-container cdkColumnDef="gb">
             <th
+              class="pdz-table__num"
               mat-sort-header="gb"
               start="desc"
               cdk-header-cell
@@ -43,11 +47,12 @@
             >
               Games Brought
             </th>
-            <td cdk-cell *cdkCellDef="let element">{{ element.brought }}</td>
+            <td class="pdz-table__num" cdk-cell *cdkCellDef="let element">{{ element.brought }}</td>
           </ng-container>
 
           <ng-container cdkColumnDef="dk">
             <th
+              class="pdz-table__num"
               mat-sort-header="dk"
               start="desc"
               cdk-header-cell
@@ -55,11 +60,12 @@
             >
               Direct Kills
             </th>
-            <td cdk-cell *cdkCellDef="let element">{{ element.kills }}</td>
+            <td class="pdz-table__num" cdk-cell *cdkCellDef="let element">{{ element.kills }}</td>
           </ng-container>
 
           <ng-container cdkColumnDef="ik">
             <th
+              class="pdz-table__num"
               mat-sort-header="ik"
               start="desc"
               cdk-header-cell
@@ -67,11 +73,12 @@
             >
               Indirect Kills
             </th>
-            <td cdk-cell *cdkCellDef="let element">{{ element.indirect }}</td>
+            <td class="pdz-table__num" cdk-cell *cdkCellDef="let element">{{ element.indirect }}</td>
           </ng-container>
 
           <ng-container cdkColumnDef="deaths">
             <th
+              class="pdz-table__num"
               mat-sort-header="deaths"
               start="desc"
               cdk-header-cell
@@ -79,11 +86,12 @@
             >
               Deaths
             </th>
-            <td cdk-cell *cdkCellDef="let element">{{ element.deaths }}</td>
+            <td class="pdz-table__num" cdk-cell *cdkCellDef="let element">{{ element.deaths }}</td>
           </ng-container>
 
           <ng-container cdkColumnDef="kdr">
             <th
+              class="pdz-table__num"
               mat-sort-header="kdr"
               start="desc"
               cdk-header-cell
@@ -91,13 +99,14 @@
             >
               Kills/Deaths
             </th>
-            <td cdk-cell *cdkCellDef="let element">
+            <td class="pdz-table__num" cdk-cell *cdkCellDef="let element">
               {{ element.kdr | number: "1.0-2" }}
             </td>
           </ng-container>
 
           <ng-container cdkColumnDef="kpg">
             <th
+              class="pdz-table__num"
               mat-sort-header="kpg"
               start="desc"
               cdk-header-cell
@@ -105,7 +114,7 @@
             >
               Kills/Game
             </th>
-            <td cdk-cell *cdkCellDef="let element">
+            <td class="pdz-table__num" cdk-cell *cdkCellDef="let element">
               {{ element.kpg | number: "1.0-2" }}
             </td>
           </ng-container>

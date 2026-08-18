@@ -275,123 +275,53 @@
 }
 
 .stats-table-wrapper {
-  background: pdz.color(surface);
-  border-radius: pdz.shape(corner-lg);
-  overflow: auto;
-
   .stats-table {
-    width: 100%;
-    border-collapse: collapse;
+    th.col-sprite {
+      width: 5rem;
+    }
 
-    thead {
-      tr {
-        background: pdz.color(primary);
-        color: pdz.color(on-primary);
+    th.col-stat {
+      width: 4rem;
+    }
 
-        th {
-          @include text(label);
-          padding: pdz.space(sm) pdz.space(md);
-          text-align: left;
-          white-space: nowrap;
+    td.cell-sprite {
+      width: 5rem;
 
-          &.col-sprite {
-            width: 5rem;
-            text-align: center;
-          }
-
-          &.col-stat {
-            width: 4rem;
-            text-align: center;
-          }
-        }
+      pdz-sprite {
+        display: inline-block;
+        width: 3rem;
+        height: 3rem;
       }
     }
 
-    tbody {
-      tr {
-        transition: background-color pdz.duration(base) pdz.easing(standard);
+    td.cell-name .name-cell {
+      display: flex;
+      flex-direction: column;
+      gap: pdz.space(2xs);
 
-        &:hover {
-          background: pdz.color(surface-container);
-        }
+      .name {
+        @include text(body);
+        font-weight: 600;
+        color: pdz.color(on-surface);
+      }
 
-        &:not(:last-child) {
-          border-bottom: 1px solid pdz.color(outline-variant);
-        }
+      .details {
+        display: flex;
+        align-items: center;
+        color: pdz.color(primary-accent);
+        gap: pdz.space(2xs);
+      }
 
-        td {
-          padding: pdz.space(sm) pdz.space(md);
-          vertical-align: middle;
-
-          &.cell-sprite {
-            text-align: center;
-            width: 5rem;
-
-            pdz-sprite {
-              display: inline-block;
-              width: 3rem;
-              height: 3rem;
-            }
-          }
-
-          &.cell-name {
-            .name-cell {
-              display: flex;
-              flex-direction: column;
-              gap: pdz.space(2xs);
-
-              .name {
-                @include text(body);
-                font-weight: 600;
-                color: pdz.color(on-surface);
-              }
-
-              .details {
-                display: flex;
-                align-items: center;
-                color: pdz.color(primary-accent);
-                gap: pdz.space(2xs);
-              }
-
-              .cost {
-                @include text(label);
-                font-weight: 500;
-              }
-            }
-          }
-
-          &.cell-stat {
-            @include text(body);
-            text-align: center;
-            font-weight: 500;
-            color: pdz.color(on-surface-variant);
-          }
-        }
+      .cost {
+        @include text(label);
+        font-weight: 500;
       }
     }
 
-    tfoot {
-      tr {
-        background: pdz.color(primary);
-        color: pdz.color(on-primary);
-
-        th {
-          @include text(label);
-          padding: pdz.space(sm) pdz.space(md);
-          text-align: left;
-          white-space: nowrap;
-
-          &.col-sprite {
-            width: 5rem;
-            text-align: center;
-          }
-
-          &.col-stat {
-            width: 4rem;
-            text-align: center;
-          }
-        }
-      }
+    td.cell-stat {
+      @include text(body);
+      font-weight: 500;
+      color: pdz.color(on-surface-variant);
     }
   }
 }

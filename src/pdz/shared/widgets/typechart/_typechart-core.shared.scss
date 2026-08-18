@@ -36,6 +36,7 @@
 
 td,
 th {
+  @include pdz.numeric;
   transition: opacity pdz.duration(fast) pdz.easing(standard);
   text-align: center;
   color: pdz.color(on-primary, white);
