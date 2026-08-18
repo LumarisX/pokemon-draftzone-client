@@ -36,7 +36,7 @@
   border-radius: pdz.shape(corner-md);
   cursor: pointer;
   font-weight: 600;
-  transition: all 0.2s ease;
+  transition: all pdz.duration(base) pdz.easing(standard);
 
   &:hover:not(:disabled) {
     background: pdz.color(primary-darker);
@@ -54,7 +54,7 @@
   padding: pdz.space(md);
   border-radius: pdz.shape(corner-md);
   font-weight: 500;
-  animation: slideIn 0.3s ease;
+  animation: slideIn pdz.duration(slow) pdz.easing(standard);
 
   &.success {
     background: pdz.color(success-container);
@@ -126,7 +126,7 @@
   border-radius: pdz.shape(corner-sm);
   cursor: pointer;
   font-weight: 600;
-  transition: all 0.2s ease;
+  transition: all pdz.duration(base) pdz.easing(standard);
   font-size: pdz.font-size(sm);
 
   &:hover:not(:disabled) {
@@ -168,7 +168,7 @@
   background: pdz.color(surface);
   color: pdz.color(on-surface);
   font-size: pdz.font-size(md);
-  transition: all 0.2s ease;
+  transition: all pdz.duration(base) pdz.easing(standard);
   box-sizing: border-box;
 
   &:focus {
@@ -193,7 +193,7 @@
   font-family: "Courier New", monospace;
   font-size: pdz.font-size(sm);
   resize: vertical;
-  transition: all 0.2s ease;
+  transition: all pdz.duration(base) pdz.easing(standard);
   box-sizing: border-box;
   line-height: 1.5;
 
@@ -226,7 +226,7 @@
   cursor: pointer;
   font-weight: 600;
   font-size: pdz.font-size(md);
-  transition: all 0.2s ease;
+  transition: all pdz.duration(base) pdz.easing(standard);
 
   &:hover:not(:disabled) {
     background: pdz.color(primary-darker);

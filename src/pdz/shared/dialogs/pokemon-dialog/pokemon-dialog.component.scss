@@ -17,8 +17,8 @@
   border-bottom: 2px solid transparent;
   margin-bottom: -1px;
   transition:
-    color 0.15s,
-    border-color 0.15s;
+    color pdz.duration(base) pdz.easing(standard),
+    border-color pdz.duration(base) pdz.easing(standard);
   display: inline-flex;
   align-items: center;
   gap: pdz.space(2xs);
@@ -138,7 +138,7 @@
     padding: pdz.space(2xs) pdz.space(sm);
     @include text(body-sm);
     white-space: nowrap;
-    transition: background-color 0.1s ease;
+    transition: background-color pdz.duration(fast) pdz.easing(standard);
     border-top: 1px solid pdz.color(outline-variant);
 
     &:hover {
@@ -169,7 +169,7 @@
     text-align: center;
     cursor: pointer;
     user-select: none;
-    transition: background-color 120ms ease;
+    transition: background-color pdz.duration(fast) pdz.easing(standard);
     overflow: hidden;
 
     &:hover {
@@ -264,7 +264,7 @@
   background: transparent;
   color: pdz.color(on-surface-variant);
   cursor: pointer;
-  transition: background-color 0.15s;
+  transition: background-color pdz.duration(base) pdz.easing(standard);
 
   &:hover {
     background-color: pdz.color(surface-container-high);
@@ -283,7 +283,7 @@
   background: transparent;
   color: pdz.color(on-surface-variant);
   cursor: pointer;
-  transition: background-color 0.15s;
+  transition: background-color pdz.duration(base) pdz.easing(standard);
 
   &:hover:not(:disabled) {
     background-color: pdz.color(surface-container-high);
@@ -478,7 +478,7 @@
   &__bar {
     height: 100%;
     border-radius: pdz.shape(corner-full);
-    transition: width 0.3s ease;
+    transition: width pdz.duration(slow) pdz.easing(standard);
     min-width: 2px;
     border-right: 1px solid pdz.color(outline-variant);
   }
@@ -559,8 +559,8 @@
   font-weight: 600;
   cursor: pointer;
   transition:
-    background-color 0.15s,
-    opacity 0.15s;
+    background-color pdz.duration(base) pdz.easing(standard),
+    opacity pdz.duration(base) pdz.easing(standard);
 
   &--primary {
     background-color: pdz.color(primary);

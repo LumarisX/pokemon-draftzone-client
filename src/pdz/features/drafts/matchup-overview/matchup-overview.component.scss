@@ -1,7 +1,7 @@
 @use "mixins/buttons" as *;
 @use "pdz-theming" as pdz;
 
-$transition-duration: 0.2s;
+$transition-duration: pdz.duration(base);
 
 :host {
   position: relative;
@@ -13,7 +13,7 @@ $transition-duration: 0.2s;
   .matchup-main {
     flex: 1;
     min-width: 0;
-    transition: flex $transition-duration ease-in-out;
+    transition: flex $transition-duration pdz.easing(standard);
   }
 
   .matchup-teambuilder-panel {
@@ -23,7 +23,7 @@ $transition-duration: 0.2s;
     height: 100%;
     background-color: pdz.color(surface);
     box-shadow: var(--pdz-level-2);
-    transition: width $transition-duration ease-in-out;
+    transition: width $transition-duration pdz.easing(standard);
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -42,13 +42,13 @@ $transition-duration: 0.2s;
       visibility: hidden;
       pointer-events: none;
       transition:
-        width $transition-duration ease-in-out,
-        visibility 0s ease-in-out $transition-duration;
+        width $transition-duration pdz.easing(standard),
+        visibility pdz.duration(none) pdz.easing(standard) $transition-duration;
 
       &.is-open {
         visibility: visible;
         pointer-events: auto;
-        transition: width $transition-duration ease-in-out;
+        transition: width $transition-duration pdz.easing(standard);
       }
     }
 
@@ -61,7 +61,7 @@ $transition-duration: 0.2s;
       cursor: ew-resize;
       background: transparent;
       z-index: 10001;
-      transition: background-color 0.15s ease;
+      transition: background-color pdz.duration(base) pdz.easing(standard);
 
       &:hover {
         background-color: pdz.color(outline);
@@ -78,7 +78,7 @@ $transition-duration: 0.2s;
         border-radius: 2px;
         background-color: pdz.color(outline-variant);
         opacity: 0;
-        transition: opacity 0.15s ease;
+        transition: opacity pdz.duration(base) pdz.easing(standard);
       }
 
       &:hover::before {
@@ -103,7 +103,7 @@ $transition-duration: 0.2s;
       bottom: pdz.space(lg);
       right: 0.675rem;
       z-index: 10000;
-      transition: all 0.2s ease-in-out;
+      transition: all pdz.duration(base) pdz.easing(standard);
       display: flex;
       align-items: center;
 

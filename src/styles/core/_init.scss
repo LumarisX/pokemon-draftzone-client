@@ -4,6 +4,7 @@
 @use "tokens/shape" as shape-tokens;
 @use "tokens/spacing" as spacing-tokens;
 @use "tokens/shadows" as shadow-tokens;
+@use "tokens/motion" as motion-tokens;
 @use "tokens/typography" as type-tokens;
 @use "tokens/breakpoints" as bp-tokens;
 @use "themes" as pdz-themes;
@@ -39,6 +40,14 @@
       --pdz-space-#{$name}: #{$value};
     }
 
+    // Motion
+    @each $name, $value in motion-tokens.$duration {
+      --pdz-duration-#{$name}: #{$value};
+    }
+    @each $name, $value in motion-tokens.$easing {
+      --pdz-easing-#{$name}: #{$value};
+    }
+
     // Typography
     @each $name, $value in type-tokens.$fonts {
       --pdz-font-#{$name}: #{$value};
@@ -70,5 +79,13 @@
 
     // Default color scheme alias
     @include apply-scheme("menu");
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :root {
+      @each $name in map.keys(motion-tokens.$duration) {
+        --pdz-duration-#{$name}: 0ms;
+      }
+    }
   }
 }

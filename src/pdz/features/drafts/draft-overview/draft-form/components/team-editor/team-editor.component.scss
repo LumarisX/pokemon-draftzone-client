@@ -193,8 +193,8 @@
   background: pdz.color(surface);
   overflow: hidden;
   transition:
-    border-color 0.15s ease-in-out,
-    box-shadow 0.15s ease-in-out;
+    border-color pdz.duration(base) pdz.easing(standard),
+    box-shadow pdz.duration(base) pdz.easing(standard);
 
   &--expanded {
     border-color: pdz.color(primary-border);
@@ -307,7 +307,7 @@
     );
 
     &--expand pdz-icon {
-      transition: transform 0.2s ease-in-out;
+      transition: transform pdz.duration(base) pdz.easing(standard);
     }
   }
 
@@ -322,7 +322,7 @@
     padding: pdz.space(md) pdz.space(lg) pdz.space(lg);
     border-top: 1px solid pdz.color(outline-variant);
     background: pdz.color(surface-container-lowest);
-    animation: pokemon-card-expand 0.18s ease-out;
+    animation: pokemon-card-expand pdz.duration(base) pdz.easing(standard);
   }
 
   &__section {
@@ -379,7 +379,7 @@
 }
 
 .cdk-drop-list-dragging .pokemon-card:not(.cdk-drag-dragging) {
-  transition: transform 0.2s ease-in-out;
+  transition: transform pdz.duration(base) pdz.easing(standard);
 }
 
 // ---------------------------------------------------------------------------
@@ -472,9 +472,9 @@
     opacity: 0.45;
     filter: grayscale(0.6);
     transition:
-      opacity 0.1s ease-in-out,
-      filter 0.1s ease-in-out,
-      transform 0.1s ease-in-out;
+      opacity pdz.duration(fast) pdz.easing(standard),
+      filter pdz.duration(fast) pdz.easing(standard),
+      transform pdz.duration(fast) pdz.easing(standard);
 
     img {
       width: 100%;

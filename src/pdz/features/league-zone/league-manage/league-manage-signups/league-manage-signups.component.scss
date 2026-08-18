@@ -134,7 +134,7 @@
   &__toggle-icon {
     display: inline-flex;
     color: pdz.color(on-surface-variant);
-    transition: transform 0.2s ease;
+    transition: transform pdz.duration(base) pdz.easing(standard);
 
     &--collapsed {
       transform: rotate(-90deg);
@@ -152,8 +152,8 @@
   background: pdz.color(surface);
   overflow: hidden;
   transition:
-    box-shadow 0.2s ease,
-    border-color 0.2s ease;
+    box-shadow pdz.duration(base) pdz.easing(standard),
+    border-color pdz.duration(base) pdz.easing(standard);
 
   &--selected {
     border-color: pdz.color(primary-accent);
@@ -190,7 +190,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: opacity 0.2s ease;
+    transition: opacity pdz.duration(base) pdz.easing(standard);
 
     img {
       width: 100%;
@@ -301,9 +301,9 @@
     cursor: pointer;
     flex-shrink: 0;
     transition:
-      opacity 0.2s ease,
-      background 0.2s ease,
-      color 0.2s ease;
+      opacity pdz.duration(base) pdz.easing(standard),
+      background pdz.duration(base) pdz.easing(standard),
+      color pdz.duration(base) pdz.easing(standard);
 
     &:hover,
     &:focus-visible {

@@ -9,9 +9,8 @@
   background: pdz.color(surface);
   color: pdz.color(on-surface);
   font: inherit;
-  transition:
-    border-color 140ms ease,
-    box-shadow 140ms ease;
+  transition: border-color pdz.duration(base) pdz.easing(standard),
+    box-shadow pdz.duration(base) pdz.easing(standard);
 
   &::placeholder {
     color: pdz.color(on-surface-variant);

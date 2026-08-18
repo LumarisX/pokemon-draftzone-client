@@ -79,7 +79,7 @@
     text-transform: capitalize;
     cursor: pointer;
     color: pdz.color(on-surface);
-    transition: background 0.15s ease;
+    transition: background pdz.duration(base) pdz.easing(standard);
 
     &:not(:last-child) {
       border-right: 1px solid pdz.color(outline-variant);

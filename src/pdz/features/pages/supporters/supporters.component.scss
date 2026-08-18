@@ -68,9 +68,9 @@ $font-nasa: var(--pdz-font-display);
   background-color: pdz.color(surface-container-low);
   border: 1px solid transparent;
   transition:
-    background-color 0.2s ease-in-out,
-    border-color 0.2s ease-in-out,
-    box-shadow 0.2s ease-in-out;
+    background-color pdz.duration(base) pdz.easing(standard),
+    border-color pdz.duration(base) pdz.easing(standard),
+    box-shadow pdz.duration(base) pdz.easing(standard);
   cursor: pointer;
   text-decoration: none;
   &:hover {

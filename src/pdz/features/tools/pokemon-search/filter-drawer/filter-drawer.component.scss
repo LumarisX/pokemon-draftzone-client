@@ -8,7 +8,7 @@
   border: 1px solid pdz.color(outline-variant);
   border-radius: pdz.shape(corner-md);
   background: pdz.color(surface-container-low);
-  animation: drawerSlideIn 0.15s ease-out;
+  animation: drawerSlideIn pdz.duration(base) pdz.easing(standard);
   overflow: hidden;
 
   &__header {

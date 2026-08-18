@@ -192,7 +192,7 @@
     color: pdz.color(on-surface);
     @include text(body);
     padding: pdz.space(sm) pdz.space(md);
-    transition: border-color 0.15s ease;
+    transition: border-color pdz.duration(base) pdz.easing(standard);
     width: 100%;
     box-sizing: border-box;
 
@@ -227,8 +227,8 @@
   cursor: pointer;
   background: pdz.color(surface);
   transition:
-    background 0.15s ease,
-    border-color 0.15s ease;
+    background pdz.duration(base) pdz.easing(standard),
+    border-color pdz.duration(base) pdz.easing(standard);
 
   &:has(input:checked) {
     background: pdz.color(primary-container-low);
@@ -383,7 +383,7 @@
 }
 
 .cdk-drop-list-dragging .order-panel__row:not(.cdk-drag-dragging) {
-  transition: transform 0.2s ease-in-out;
+  transition: transform pdz.duration(base) pdz.easing(standard);
 }
 
 // ── Rounds ────────────────────────────────────────────────────────────────────
@@ -452,7 +452,7 @@
   border: 2px solid pdz.color(outline-variant);
   border-radius: pdz.shape(corner-sm);
   background: pdz.color(surface);
-  transition: border-color 120ms ease;
+  transition: border-color pdz.duration(fast) pdz.easing(standard);
 
   &--picked {
     border-color: pdz.color(primary-border);

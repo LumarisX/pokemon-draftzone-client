@@ -26,7 +26,7 @@
     border-radius: pdz.shape(corner-sm);
     background: pdz.color(surface);
     cursor: text;
-    transition: border-color 0.15s ease-in-out;
+    transition: border-color pdz.duration(base) pdz.easing(standard);
 
     &:focus-within {
       outline: 2px solid pdz.color(primary-accent);

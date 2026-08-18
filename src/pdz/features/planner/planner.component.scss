@@ -72,13 +72,13 @@
 
     .draft-tab {
       transition:
-        height 0.2s ease,
-        min-height 0.2s ease,
-        box-shadow 0.2s ease,
-        color 0.2s ease,
-        border-color 0.2s ease,
-        background-color 0.2s ease,
-        font-size 0.2s ease;
+        height pdz.duration(base) pdz.easing(standard),
+        min-height pdz.duration(base) pdz.easing(standard),
+        box-shadow pdz.duration(base) pdz.easing(standard),
+        color pdz.duration(base) pdz.easing(standard),
+        border-color pdz.duration(base) pdz.easing(standard),
+        background-color pdz.duration(base) pdz.easing(standard),
+        font-size pdz.duration(base) pdz.easing(standard);
       input {
         &:focus {
           outline: none;

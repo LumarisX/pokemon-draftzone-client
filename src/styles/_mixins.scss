@@ -34,10 +34,10 @@
 @mixin shadow-hover-effect(
   $hover-shadow: var(--pdz-level-2),
   $initial-shadow: var(--pdz-level-1),
-  $duration: 0.3s
+  $duration: pdz.duration(slow)
 ) {
   box-shadow: $initial-shadow;
-  transition: box-shadow $duration ease;
+  transition: box-shadow $duration pdz.easing(standard);
 
   &:hover {
     box-shadow: $hover-shadow;
@@ -47,10 +47,10 @@
 @mixin background-hover-effect(
   $hover-background: inherit,
   $initial-background: inherit,
-  $duration: 0.3s
+  $duration: pdz.duration(slow)
 ) {
   background-color: $initial-background;
-  transition: background-color $duration ease;
+  transition: background-color $duration pdz.easing(standard);
 
   &:hover {
     background-color: $hover-background;

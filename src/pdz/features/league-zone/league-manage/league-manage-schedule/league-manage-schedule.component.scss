@@ -26,7 +26,7 @@
   border: none;
   border-radius: pdz.shape(corner-md);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all pdz.duration(base) pdz.easing(standard);
   font-weight: 600;
   text-decoration: none;
   display: inline-flex;
@@ -118,7 +118,7 @@
   background: pdz.color(menu-container);
   color: pdz.color(on-menu-container);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all pdz.duration(base) pdz.easing(standard);
 
   &:hover:not(:disabled):not(.round-chip--active) {
     background: pdz.color(menu-container-hover);
@@ -159,7 +159,7 @@
     cursor: pointer;
     color: pdz.color(on-surface);
     font-size: var(--pdz-font-size-lg);
-    transition: background-color 0.2s ease;
+    transition: background-color pdz.duration(base) pdz.easing(standard);
 
     &:hover {
       background: pdz.color(surface-container-low);
@@ -176,7 +176,7 @@
   &__toggle-icon {
     flex-shrink: 0;
     font-size: var(--pdz-font-size-xl);
-    transition: transform 0.2s ease;
+    transition: transform pdz.duration(base) pdz.easing(standard);
   }
 
   &__title {
@@ -445,7 +445,7 @@
   cursor: pointer;
   font-size: var(--pdz-font-size-sm);
   font-weight: 500;
-  transition: all 0.2s ease;
+  transition: all pdz.duration(base) pdz.easing(standard);
   min-width: 50px;
 
   &:hover {

@@ -64,9 +64,9 @@
     opacity: 0.5;
     cursor: pointer;
     transition:
-      opacity 0.2s ease,
-      background 0.2s ease,
-      color 0.2s ease;
+      opacity pdz.duration(base) pdz.easing(standard),
+      background pdz.duration(base) pdz.easing(standard),
+      color pdz.duration(base) pdz.easing(standard);
 
     &:hover,
     &:focus-visible {
@@ -230,7 +230,7 @@
     }
 
     tbody tr {
-      transition: background-color 0.2s ease;
+      transition: background-color pdz.duration(base) pdz.easing(standard);
 
       &:hover {
         background: pdz.color(surface-container);

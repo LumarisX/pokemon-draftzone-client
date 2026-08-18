@@ -45,10 +45,14 @@
     background: transparent;
     color: pdz.color(on-primary);
     cursor: pointer;
-    transition: background-color 0.15s ease;
+    transition: background-color pdz.duration(base) pdz.easing(standard);
 
     &:hover {
-      background-color: color-mix(in srgb, pdz.color(on-primary) 20%, transparent);
+      background-color: color-mix(
+        in srgb,
+        pdz.color(on-primary) 20%,
+        transparent
+      );
     }
 
     &--on {

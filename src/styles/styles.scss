@@ -46,7 +46,7 @@
   --pdz-scrollbar-thumb-gap-hover: 0.0625rem;
   --pdz-scrollbar-thumb-gap-active: 0.03125rem;
   --pdz-scrollbar-hover-glow-size: 0.1875rem;
-  --pdz-scrollbar-transition-ms: 180ms;
+  --pdz-scrollbar-transition-ms: var(--pdz-duration-base);
   --pdz-scrollbar-fade-delay-ms: 2200ms;
 }
 
@@ -83,9 +83,9 @@
   min-height: 2rem;
   min-width: 2rem;
   transition:
-    background-color var(--pdz-scrollbar-transition-ms) ease,
-    border-width var(--pdz-scrollbar-transition-ms) ease,
-    box-shadow var(--pdz-scrollbar-transition-ms) ease;
+    background-color var(--pdz-scrollbar-transition-ms) pdz.easing(standard),
+    border-width var(--pdz-scrollbar-transition-ms) pdz.easing(standard),
+    box-shadow var(--pdz-scrollbar-transition-ms) pdz.easing(standard);
   transition-delay: var(--pdz-scrollbar-fade-delay-ms);
 }
 
@@ -101,7 +101,7 @@
   background-color: var(--pdz-scrollbar-thumb-idle);
   box-shadow: 0 0 0 var(--pdz-scrollbar-hover-glow-size)
     color-mix(in srgb, var(--pdz-scrollbar-thumb-idle) 32%, transparent);
-  transition-delay: 0ms;
+  transition-delay: pdz.duration(none);
 }
 
 :where(*):not(input):not(select):not(
@@ -124,7 +124,7 @@
   background-color: var(--pdz-scrollbar-thumb-active);
   box-shadow: 0 0 0 var(--pdz-scrollbar-hover-glow-size)
     color-mix(in srgb, var(--pdz-scrollbar-thumb-active) 45%, transparent);
-  transition-delay: 0ms;
+  transition-delay: pdz.duration(none);
 }
 
 .pdz-scrollbar-native,
@@ -172,14 +172,14 @@
   :where(*):not(input):not(select):not(progress)::-webkit-scrollbar-thumb {
     border-width: var(--pdz-scrollbar-thumb-gap-hover);
     background-color: var(--pdz-scrollbar-thumb-idle);
-    transition-delay: 0ms;
+    transition-delay: pdz.duration(none);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   :where(*):not(input):not(select):not(progress)::-webkit-scrollbar-thumb {
     transition: none;
-    transition-delay: 0ms;
+    transition-delay: pdz.duration(none);
   }
 }
 
@@ -216,6 +216,21 @@
     .mat-mdc-select-panel {
       max-height: calc(100vh - 12px - var(--overlay-top, 0px)) !important;
     }
+  }
+}
+
+.pdz-route-enter {
+  animation: pdz-route-enter pdz.duration(base) pdz.easing(standard) both;
+}
+
+@keyframes pdz-route-enter {
+  from {
+    opacity: 0;
+    transform: translateY(2px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
   }
 }
 
@@ -406,7 +421,7 @@ markdown {
 
   a {
     text-decoration: none;
-    transition: color 0.2s ease;
+    transition: color pdz.duration(base) pdz.easing(standard);
 
     &:hover {
       text-decoration: underline;

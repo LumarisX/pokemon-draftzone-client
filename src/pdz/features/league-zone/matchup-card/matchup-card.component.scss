@@ -16,8 +16,8 @@ $mark-width: 3px;
   border-radius: pdz.shape("corner-lg");
   background: pdz.color("surface-container-lowest");
   transition:
-    box-shadow 150ms ease,
-    border-color 150ms ease;
+    box-shadow pdz.duration(base) pdz.easing(standard),
+    border-color pdz.duration(base) pdz.easing(standard);
 
   &:hover {
     box-shadow: var(--pdz-level-2);
@@ -62,7 +62,7 @@ $mark-width: 3px;
     align-items: center;
     gap: pdz.space(3xs);
     opacity: 0;
-    transition: opacity 120ms ease;
+    transition: opacity pdz.duration(fast) pdz.easing(standard);
   }
 
   &:hover &__actions,
@@ -107,7 +107,7 @@ $mark-width: 3px;
     color: pdz.color("on-surface");
     text-decoration: none;
     box-sizing: border-box;
-    transition: background-color 120ms ease;
+    transition: background-color pdz.duration(fast) pdz.easing(standard);
 
     & + & {
       border-top: 1px solid pdz.color("outline-variant");
@@ -240,9 +240,9 @@ $mark-width: 3px;
     white-space: nowrap;
     cursor: pointer;
     transition:
-      background-color 120ms ease,
-      border-color 120ms ease,
-      color 120ms ease;
+      background-color pdz.duration(fast) pdz.easing(standard),
+      border-color pdz.duration(fast) pdz.easing(standard),
+      color pdz.duration(fast) pdz.easing(standard);
 
     &:hover {
       border-color: pdz.color("primary-border");
@@ -297,8 +297,8 @@ $mark-width: 3px;
     text-decoration: none;
     @include text(label);
     transition:
-      background-color 120ms ease,
-      color 120ms ease;
+      background-color pdz.duration(fast) pdz.easing(standard),
+      color pdz.duration(fast) pdz.easing(standard);
 
     &:hover {
       background: pdz.color("secondary");

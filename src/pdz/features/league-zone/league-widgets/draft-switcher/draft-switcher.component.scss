@@ -11,7 +11,7 @@
     @include flat-button-primary();
     padding: pdz.space(2xs) pdz.space(md);
     border-radius: pdz.shape(corner-sm);
-    transition: all 0.2s ease;
+    transition: all pdz.duration(base) pdz.easing(standard);
 
     &--active {
       background-color: pdz.color(primary);

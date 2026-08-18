@@ -270,7 +270,7 @@ section {
 
 .direction-btn {
   mat-icon {
-    transition: transform 0.3s ease-in-out;
+    transition: transform pdz.duration(slow) pdz.easing(standard);
   }
 
   &.up mat-icon {

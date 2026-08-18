@@ -52,8 +52,8 @@
     font: inherit;
     cursor: pointer;
     transition:
-      background 0.1s,
-      color 0.1s;
+      background pdz.duration(fast) pdz.easing(standard),
+      color pdz.duration(fast) pdz.easing(standard);
 
     &.is-active {
       border-color: pdz.color(primary-border);
@@ -84,7 +84,7 @@
     font: inherit;
     font-weight: 700;
     cursor: pointer;
-    transition: background 0.1s;
+    transition: background pdz.duration(fast) pdz.easing(standard);
 
     &:hover {
       background: pdz.color(primary-container-hover);

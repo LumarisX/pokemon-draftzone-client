@@ -1,3 +1,5 @@
+@use "pdz-theming" as pdz;
+
 .notification-container {
   position: fixed;
   top: 4rem;
@@ -19,7 +21,7 @@
   justify-content: space-between;
   min-width: 250px;
   max-width: 350px;
-  animation: fade-in 0.3s ease-out forwards;
+  animation: fade-in pdz.duration(slow) pdz.easing(standard) forwards;
 }
 
 .notification-box.success {
@@ -48,7 +50,7 @@
 }
 
 .notification-box.fade-out {
-  animation: fade-out 0.5s ease-out forwards;
+  animation: fade-out pdz.duration(slow) pdz.easing(exit) forwards;
 }
 
 @keyframes fade-in {

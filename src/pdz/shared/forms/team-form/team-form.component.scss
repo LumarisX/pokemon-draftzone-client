@@ -328,7 +328,7 @@
 }
 
 .settings-icon {
-  transition: transform 1s ease-in-out;
+  transition: transform pdz.duration(base) pdz.easing(standard);
 
   .cdk-accordion-item[aria-expanded="true"] & {
     transform: rotate(180deg);

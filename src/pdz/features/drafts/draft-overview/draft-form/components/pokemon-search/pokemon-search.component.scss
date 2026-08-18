@@ -16,7 +16,7 @@
     border-radius: pdz.shape(corner-sm);
     background: pdz.color(surface);
     color: pdz.color(on-surface);
-    transition: border-color 0.15s ease-in-out;
+    transition: border-color pdz.duration(base) pdz.easing(standard);
 
     &:focus-within {
       outline: 2px solid pdz.color(primary-accent);
@@ -104,7 +104,7 @@
     padding: 0 pdz.space(sm);
     cursor: pointer;
     color: pdz.color(on-surface);
-    transition: background-color 0.1s ease-in-out;
+    transition: background-color pdz.duration(fast) pdz.easing(standard);
 
     pdz-sprite {
       width: 40px;

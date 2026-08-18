@@ -61,9 +61,9 @@ input {
     font-weight: 600;
     color: pdz.color(on-surface-variant);
     transition:
-      background-color 120ms ease,
-      transform 120ms ease,
-      box-shadow 120ms ease;
+      background-color pdz.duration(fast) pdz.easing(standard),
+      transform pdz.duration(fast) pdz.easing(standard),
+      box-shadow pdz.duration(fast) pdz.easing(standard);
 
     &:hover {
       transform: translateY(-1px);
@@ -204,8 +204,8 @@ input {
   min-height: 2.5rem;
   overflow: hidden;
   transition:
-    border-color 120ms ease,
-    box-shadow 120ms ease;
+    border-color pdz.duration(fast) pdz.easing(standard),
+    box-shadow pdz.duration(fast) pdz.easing(standard);
 
   @include dropdown.autocomplete-dropdown(16rem, 1.25rem, true);
 
@@ -234,7 +234,7 @@ input {
     color: pdz.color(on-surface);
     @include text(body-sm);
     padding: 0 0.25rem;
-    transition: color 120ms ease;
+    transition: color pdz.duration(fast) pdz.easing(standard);
 
     &::placeholder {
       color: pdz.color(on-surface-variant);
@@ -264,8 +264,8 @@ input {
     align-items: center;
     overflow: hidden;
     transition:
-      border-color 120ms ease,
-      box-shadow 120ms ease;
+      border-color pdz.duration(fast) pdz.easing(standard),
+      box-shadow pdz.duration(fast) pdz.easing(standard);
   }
 
   &__header {
@@ -329,9 +329,9 @@ input {
       border-radius: pdz.shape(corner-sm);
       border: 1px solid pdz.color(menu-border);
       transition:
-        transform 120ms ease,
-        box-shadow 120ms ease,
-        opacity 200ms ease;
+        transform pdz.duration(fast) pdz.easing(standard),
+        box-shadow pdz.duration(fast) pdz.easing(standard),
+        opacity pdz.duration(base) pdz.easing(standard);
 
       &:last-child {
         margin-bottom: 0;
@@ -572,9 +572,9 @@ input {
   border-radius: pdz.shape(corner-sm);
   border: 1px solid pdz.color(menu-border);
   transition:
-    transform 120ms ease,
-    box-shadow 120ms ease,
-    background-color 120ms ease;
+    transform pdz.duration(fast) pdz.easing(standard),
+    box-shadow pdz.duration(fast) pdz.easing(standard),
+    background-color pdz.duration(fast) pdz.easing(standard);
 
   &.selected {
     transform: translateY(-2px);
@@ -697,7 +697,7 @@ input {
     padding: 0.375rem 0 0.375rem 0.75rem;
     cursor: pointer;
     white-space: nowrap;
-    transition: background-color 0.1s ease-in-out;
+    transition: background-color pdz.duration(fast) pdz.easing(standard);
 
     &:hover {
       background: pdz-color-rgba(menu-hover, 0.15);
@@ -741,7 +741,7 @@ input {
     text-align: center;
     cursor: pointer;
     user-select: none;
-    transition: background-color 120ms ease;
+    transition: background-color pdz.duration(fast) pdz.easing(standard);
     flex: 1;
 
     &:hover {

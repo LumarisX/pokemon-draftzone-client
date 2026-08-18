@@ -54,8 +54,8 @@ $background-color: pdz.color(surface);
     font-family: inherit;
     resize: none;
     transition:
-      border-color 0.15s ease-in-out,
-      box-shadow 0.15s ease-in-out;
+      border-color pdz.duration(base) pdz.easing(standard),
+      box-shadow pdz.duration(base) pdz.easing(standard);
 
     &:focus {
       outline: none;
@@ -74,7 +74,7 @@ $background-color: pdz.color(surface);
     cursor: pointer;
     font-weight: 500;
     align-self: flex-end;
-    transition: background-color 0.2s;
+    transition: background-color pdz.duration(base) pdz.easing(standard);
 
     &:hover {
       background: $primary-hover-color;

@@ -169,7 +169,7 @@
     border-radius: pdz.shape(corner-sm);
     cursor: pointer;
     font-weight: 500;
-    transition: background-color 0.2s;
+    transition: background-color pdz.duration(base) pdz.easing(standard);
 
     &-confirm {
       background-color: pdz.color(error);

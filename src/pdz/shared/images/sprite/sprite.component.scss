@@ -1,3 +1,5 @@
+@use "pdz-theming" as pdz;
+
 :host {
   display: inline-flex;
 }
@@ -28,9 +30,9 @@
   justify-content: center;
   align-items: center;
   transition:
-    transform 0.35s ease,
-    filter 0.35s ease,
-    opacity 0.35s ease;
+    transform pdz.duration(slow) pdz.easing(standard),
+    filter pdz.duration(slow) pdz.easing(standard),
+    opacity pdz.duration(slow) pdz.easing(standard);
 
   pdz-sprite-image {
     width: 100%;

@@ -57,7 +57,7 @@
   padding: pdz.space(lg) pdz.space(md);
   border-radius: pdz.shape(corner-lg);
   box-shadow: var(--pdz-level-2);
-  transition: all 0.2s ease;
+  transition: all pdz.duration(base) pdz.easing(standard);
   text-decoration: none;
   gap: pdz.space(xs);
   min-height: 80px;

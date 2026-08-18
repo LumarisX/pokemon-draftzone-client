@@ -44,7 +44,7 @@
     color: pdz.color(on-surface);
     min-height: 2.75rem;
     line-height: 1.5;
-    transition: border-color 0.2s ease;
+    transition: border-color pdz.duration(base) pdz.easing(standard);
 
     &:focus {
       outline: none;
@@ -73,7 +73,7 @@
   border: none;
   cursor: pointer;
   font-weight: 600;
-  transition: all 0.2s ease-in-out;
+  transition: all pdz.duration(base) pdz.easing(standard);
 
   &--primary {
     @include flat-button-primary();

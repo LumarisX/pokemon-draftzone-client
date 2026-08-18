@@ -181,7 +181,7 @@
   border-radius: pdz.shape(corner-md);
   text-decoration: none;
   color: inherit;
-  transition: all 0.18s ease;
+  transition: all pdz.duration(base) pdz.easing(standard);
 
   &:hover {
     background: pdz.color("surface-container");

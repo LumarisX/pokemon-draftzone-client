@@ -42,8 +42,8 @@ $paddings: (
 :host(.pdz-card--interactive) {
   cursor: pointer;
   transition:
-    border-color 140ms ease,
-    background-color 140ms ease;
+    border-color pdz.duration(base) pdz.easing(standard),
+    background-color pdz.duration(base) pdz.easing(standard);
 
   &:hover {
     border-color: pdz.color(primary-border);

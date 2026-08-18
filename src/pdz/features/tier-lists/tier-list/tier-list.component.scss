@@ -192,10 +192,10 @@
   border-radius: pdz.shape(corner-sm);
   cursor: pointer;
   transition:
-    background-color 0.15s ease,
-    border-color 0.15s ease,
-    box-shadow 0.15s ease,
-    transform 0.1s ease;
+    background-color pdz.duration(base) pdz.easing(standard),
+    border-color pdz.duration(base) pdz.easing(standard),
+    box-shadow pdz.duration(base) pdz.easing(standard),
+    transform pdz.duration(fast) pdz.easing(standard);
   position: relative;
   user-select: none;
 

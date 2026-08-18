@@ -42,9 +42,9 @@
     color: pdz.color(on-surface-variant);
     cursor: pointer;
     transition:
-      background 120ms ease,
-      color 120ms ease,
-      border-color 120ms ease;
+      background pdz.duration(fast) pdz.easing(standard),
+      color pdz.duration(fast) pdz.easing(standard),
+      border-color pdz.duration(fast) pdz.easing(standard);
 
     &:hover,
     &.is-active {
@@ -60,7 +60,7 @@
   inset: 0;
   z-index: 5500;
   background: color-mix(in srgb, pdz.color(on-surface) 30%, transparent);
-  animation: fadeIn 0.15s ease-out;
+  animation: fadeIn pdz.duration(base) pdz.easing(standard);
 }
 
 .bookmarks-panel {
@@ -77,7 +77,7 @@
   right: 0;
   max-height: 80vh;
   border-radius: pdz.shape(corner-lg) pdz.shape(corner-lg) 0 0;
-  animation: slideUp 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: slideUp pdz.duration(slow) pdz.easing(standard);
 
   @include respond-above(medium) {
     // Desktop: panel from right
@@ -88,7 +88,7 @@
     width: min(22rem, 100vw);
     max-height: none;
     border-radius: 0;
-    animation: slideInRight 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: slideInRight pdz.duration(slow) pdz.easing(standard);
   }
 
   &__header {
@@ -118,8 +118,8 @@
     color: pdz.color(on-surface-variant);
     cursor: pointer;
     transition:
-      background 120ms ease,
-      color 120ms ease;
+      background pdz.duration(fast) pdz.easing(standard),
+      color pdz.duration(fast) pdz.easing(standard);
 
     &:hover {
       background: pdz.color(surface-container-high);
@@ -167,7 +167,7 @@
     border-radius: pdz.shape(corner-sm);
     background: pdz.color(surface);
     overflow: hidden;
-    transition: border-color 120ms ease;
+    transition: border-color pdz.duration(fast) pdz.easing(standard);
 
     &:hover {
       border-color: pdz.color(primary-border);
@@ -186,7 +186,7 @@
     cursor: pointer;
     color: inherit;
     font: inherit;
-    transition: background 120ms ease;
+    transition: background pdz.duration(fast) pdz.easing(standard);
 
     &:hover {
       background: pdz.color(surface-container);
@@ -252,8 +252,8 @@
     color: pdz.color(on-surface-variant);
     cursor: pointer;
     transition:
-      background 120ms ease,
-      color 120ms ease;
+      background pdz.duration(fast) pdz.easing(standard),
+      color pdz.duration(fast) pdz.easing(standard);
     flex-shrink: 0;
 
     &:hover {

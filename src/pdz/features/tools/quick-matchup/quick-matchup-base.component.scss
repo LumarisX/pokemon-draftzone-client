@@ -41,7 +41,7 @@
   font: inherit;
   font-size: pdz.font-size(sm);
   cursor: pointer;
-  transition: background-color 0.15s ease-in-out;
+  transition: background-color pdz.duration(base) pdz.easing(standard);
 
   &:hover,
   &:focus-visible {

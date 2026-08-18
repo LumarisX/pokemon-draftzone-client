@@ -35,8 +35,8 @@
   text-decoration: none;
   cursor: pointer;
   transition:
-    background-color 0.15s ease-in-out,
-    border-color 0.15s ease-in-out;
+    background-color pdz.duration(base) pdz.easing(standard),
+    border-color pdz.duration(base) pdz.easing(standard);
 
   &:hover {
     background: pdz.color(menu-container-hover);

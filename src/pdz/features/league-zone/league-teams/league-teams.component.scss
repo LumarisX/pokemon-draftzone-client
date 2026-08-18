@@ -55,7 +55,7 @@
     border-radius: pdz.shape(corner-sm);
     cursor: pointer;
     color: pdz.color(on-surface);
-    transition: background-color 0.2s ease;
+    transition: background-color pdz.duration(base) pdz.easing(standard);
 
     &:hover {
       background: pdz.color(surface-container-low);

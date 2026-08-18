@@ -126,7 +126,7 @@
           width: calc(100% / 3);
           height: 2px;
           background-color: pdz.color(primary-border);
-          transition: transform 0.3s ease-in-out;
+          transition: transform pdz.duration(slow) pdz.easing(standard);
         }
       }
 

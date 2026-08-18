@@ -183,7 +183,7 @@
   padding: pdz.space(xs);
   border-radius: pdz.shape(corner-full);
   color: inherit;
-  transition: background-color 0.15s ease;
+  transition: background-color pdz.duration(base) pdz.easing(standard);
 
   &:hover {
     background-color: pdz.color(surface-variant);

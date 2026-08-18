@@ -20,7 +20,7 @@
   color: pdz.color(on-menu-container);
   border: 1px solid pdz.color(menu-border);
   border-radius: pdz.shape(corner-xxs);
-  transition: background-color 0.15s ease-in-out;
+  transition: background-color pdz.duration(base) pdz.easing(standard);
 
   &:hover {
     background: pdz.color(menu-container-hover);
@@ -92,8 +92,8 @@
   border-radius: pdz.shape(corner-xxs);
   cursor: pointer;
   transition:
-    background-color 0.15s ease-in-out,
-    border-color 0.15s ease-in-out;
+    background-color pdz.duration(base) pdz.easing(standard),
+    border-color pdz.duration(base) pdz.easing(standard);
 
   &:hover {
     background: pdz.color(menu-container-hover);

@@ -107,7 +107,7 @@
     @include flat-button-primary();
     padding: pdz.space(sm) pdz.space(md);
     border-radius: pdz.shape(corner-sm);
-    transition: all 0.2s ease;
+    transition: all pdz.duration(base) pdz.easing(standard);
     text-align: center;
 
     @include respond-above(medium) {
@@ -187,7 +187,6 @@
     flex-direction: column;
 
     gap: pdz.space(sm);
-
   }
 }
 

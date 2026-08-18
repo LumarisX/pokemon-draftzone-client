@@ -23,7 +23,7 @@
     display: block;
     user-select: none;
     pointer-events: none;
-    transition: opacity 0.15s ease-in-out;
+    transition: opacity pdz.duration(base) pdz.easing(standard);
 
     &.flip {
       transform: scaleX(-1);

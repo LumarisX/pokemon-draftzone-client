@@ -58,7 +58,7 @@ $navbar-height: 3.5rem;
     background: pdz.color(surface);
     box-shadow: var(--pdz-level-3);
     transform: translateX(-100%);
-    transition: transform 0.25s ease;
+    transition: transform pdz.duration(slow) pdz.easing(standard);
 
     @include respond-above(medium) {
       position: static;
@@ -96,8 +96,8 @@ $navbar-height: 3.5rem;
     opacity: 0;
     visibility: hidden;
     transition:
-      opacity 0.25s ease,
-      visibility 0.25s ease;
+      opacity pdz.duration(slow) pdz.easing(standard),
+      visibility pdz.duration(slow) pdz.easing(standard);
 
     @include respond-above(medium) {
       display: none;

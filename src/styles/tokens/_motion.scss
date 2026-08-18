@@ -1,0 +1,12 @@
+$duration: (
+  none: 0ms,
+  fast: 120ms,
+  base: 180ms,
+  slow: 240ms,
+);
+
+$easing: (
+  standard: cubic-bezier(0.2, 0, 0, 1),
+  exit: cubic-bezier(0.3, 0, 0.8, 0.15),
+  linear: linear,
+);

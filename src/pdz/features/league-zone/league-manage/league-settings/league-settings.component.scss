@@ -102,7 +102,7 @@
     color: pdz.color(on-surface);
     @include text(body);
     padding: pdz.space(sm) pdz.space(md);
-    transition: border-color 0.15s ease;
+    transition: border-color pdz.duration(base) pdz.easing(standard);
     width: 100%;
     box-sizing: border-box;
 
@@ -133,7 +133,7 @@
     @include text(body);
     padding: pdz.space(sm) pdz.space(md);
     resize: vertical;
-    transition: border-color 0.15s ease;
+    transition: border-color pdz.duration(base) pdz.easing(standard);
     width: 100%;
     box-sizing: border-box;
 
@@ -206,8 +206,8 @@
   cursor: pointer;
   background: pdz.color(surface);
   transition:
-    background 0.15s ease,
-    border-color 0.15s ease;
+    background pdz.duration(base) pdz.easing(standard),
+    border-color pdz.duration(base) pdz.easing(standard);
 
   &:has(input:checked) {
     background: pdz.color(primary-container-low);
@@ -243,8 +243,8 @@
   cursor: pointer;
   background: pdz.color(surface);
   transition:
-    background 0.15s ease,
-    border-color 0.15s ease;
+    background pdz.duration(base) pdz.easing(standard),
+    border-color pdz.duration(base) pdz.easing(standard);
 
   &:has(input:checked) {
     background: pdz.color(primary-container-low);
@@ -304,8 +304,8 @@
   cursor: pointer;
   @include text(label);
   transition:
-    background 0.15s ease,
-    opacity 0.15s ease;
+    background pdz.duration(base) pdz.easing(standard),
+    opacity pdz.duration(base) pdz.easing(standard);
 
   &:disabled {
     opacity: 0.5;

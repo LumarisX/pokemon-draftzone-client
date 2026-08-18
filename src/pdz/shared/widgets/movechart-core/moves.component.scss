@@ -38,10 +38,10 @@
   @include text(label);
   cursor: pointer;
   transition:
-    background-color 0.15s ease,
-    border-color 0.15s ease,
-    color 0.15s ease,
-    box-shadow 0.15s ease;
+    background-color pdz.duration(base) pdz.easing(standard),
+    border-color pdz.duration(base) pdz.easing(standard),
+    color pdz.duration(base) pdz.easing(standard),
+    box-shadow pdz.duration(base) pdz.easing(standard);
 
   &:hover:not(.selected):not(.excluded) {
     background-color: var(--pdz-cmp-movechart-hover);
@@ -96,8 +96,8 @@
   border: none;
   cursor: pointer;
   transition:
-    background-color 0.15s ease,
-    color 0.15s ease;
+    background-color pdz.duration(base) pdz.easing(standard),
+    color pdz.duration(base) pdz.easing(standard);
 
   &:hover:not(.is-active) {
     background-color: var(--pdz-cmp-movechart-hover);
@@ -118,8 +118,8 @@
   outline: none;
   padding: pdz.space(2xs) pdz.space(sm);
   transition:
-    border-color 0.15s ease,
-    box-shadow 0.15s ease;
+    border-color pdz.duration(base) pdz.easing(standard),
+    box-shadow pdz.duration(base) pdz.easing(standard);
   width: 14rem;
 
   &::placeholder {
@@ -159,10 +159,10 @@
   border-radius: pdz.shape(corner-sm);
   width: 100%;
   transition:
-    background-color 0.15s ease,
-    border-color 0.15s ease,
-    color 0.15s ease,
-    box-shadow 0.15s ease;
+    background-color pdz.duration(base) pdz.easing(standard),
+    border-color pdz.duration(base) pdz.easing(standard),
+    color pdz.duration(base) pdz.easing(standard),
+    box-shadow pdz.duration(base) pdz.easing(standard);
 }
 
 .card-details {
@@ -281,10 +281,10 @@
   border: 1px solid var(--pdz-cmp-movechart-border);
   border-radius: pdz.shape(corner-sm);
   transition:
-    background-color 0.15s ease,
-    border-color 0.15s ease,
-    color 0.15s ease,
-    box-shadow 0.15s ease;
+    background-color pdz.duration(base) pdz.easing(standard),
+    border-color pdz.duration(base) pdz.easing(standard),
+    color pdz.duration(base) pdz.easing(standard),
+    box-shadow pdz.duration(base) pdz.easing(standard);
 }
 
 .move-details {

@@ -56,7 +56,7 @@
     text-decoration: none;
     border-radius: pdz.shape(corner-sm);
     border-left: 3px solid transparent;
-    transition: all 0.2s ease;
+    transition: all pdz.duration(base) pdz.easing(standard);
 
     &:hover {
       background: pdz.color(surface-container-low);

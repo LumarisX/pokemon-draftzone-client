@@ -50,7 +50,7 @@
     font-size: pdz.font-size(xs);
     line-height: pdz.leading(tight);
     cursor: pointer;
-    transition: all 160ms ease;
+    transition: all pdz.duration(base) pdz.easing(standard);
 
     &:hover {
       border-color: pdz.color("primary");

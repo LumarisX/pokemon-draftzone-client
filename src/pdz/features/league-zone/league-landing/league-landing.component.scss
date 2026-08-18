@@ -114,8 +114,8 @@
   text-decoration: none;
   color: inherit;
   transition:
-    box-shadow 0.2s ease,
-    transform 0.2s ease;
+    box-shadow pdz.duration(base) pdz.easing(standard),
+    transform pdz.duration(base) pdz.easing(standard);
   border-left: 4px solid transparent;
 
   &:hover {
@@ -246,7 +246,7 @@
     padding: pdz.space(xs) pdz.space(md);
     border-radius: pdz.shape(corner-full);
     text-decoration: none;
-    transition: background 0.15s ease;
+    transition: background pdz.duration(base) pdz.easing(standard);
 
     &:hover {
       background: rgba(88, 101, 242, 0.2);

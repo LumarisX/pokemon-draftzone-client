@@ -3,13 +3,19 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
+import { RouteEnterDirective } from '@pdz/shared/layout/route-enter.directive';
 import { TournamentNavComponent } from '../tournament-nav/tournament-nav.component';
 
 @Component({
   selector: 'pdz-tournament-layout',
   templateUrl: './tournament-layout.component.html',
   styleUrl: './tournament-layout.component.scss',
-  imports: [RouterOutlet, TournamentNavComponent, IconComponent],
+  imports: [
+    RouterOutlet,
+    RouteEnterDirective,
+    TournamentNavComponent,
+    IconComponent,
+  ],
 })
 export class TournamentLayoutComponent {
   private router = inject(Router);

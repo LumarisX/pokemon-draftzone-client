@@ -5,13 +5,20 @@ import { RouterOutlet } from '@angular/router';
 import { svgIconPaths } from '@pdz/shared/images/icon/icon.component';
 import { ErrorComponent } from './layout/error/error.component';
 import { TopNavbarComponent } from './layout/top-navbar/top-navbar.component';
+import { RouteEnterDirective } from './shared/layout/route-enter.directive';
 import { TooltipComponent } from './shared/tooltip/tooltip.component';
 
 @Component({
   selector: 'pdz-root',
   templateUrl: './pdz.component.html',
   styleUrl: './pdz.component.scss',
-  imports: [RouterOutlet, TopNavbarComponent, ErrorComponent, TooltipComponent],
+  imports: [
+    RouterOutlet,
+    RouteEnterDirective,
+    TopNavbarComponent,
+    ErrorComponent,
+    TooltipComponent,
+  ],
 })
 export class PDZComponent {
   private matIconRegistry = inject(MatIconRegistry);

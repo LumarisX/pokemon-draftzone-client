@@ -156,7 +156,7 @@
   border-radius: pdz.shape(corner-full);
   cursor: row-resize;
   touch-action: none;
-  transition: background-color 0.15s ease;
+  transition: background-color pdz.duration(base) pdz.easing(standard);
 
   &::before {
     content: "";
@@ -174,7 +174,7 @@
     border-radius: pdz.shape(corner-full);
     background-color: pdz.color(outline);
     opacity: 0.7;
-    transition: background-color 0.15s ease;
+    transition: background-color pdz.duration(base) pdz.easing(standard);
   }
 }
 
@@ -256,8 +256,8 @@
     min-height: 100px;
     contain: layout style;
     transition:
-      background-color 0.2s ease,
-      box-shadow 0.2s ease;
+      background-color pdz.duration(base) pdz.easing(standard),
+      box-shadow pdz.duration(base) pdz.easing(standard);
 
     &.is-drag-over {
       background-color: pdz.color(primary-container-low);
@@ -340,9 +340,9 @@
   border-radius: pdz.shape(corner-xs);
   cursor: grab;
   transition:
-    background-color 0.2s ease,
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
+    background-color pdz.duration(base) pdz.easing(standard),
+    border-color pdz.duration(base) pdz.easing(standard),
+    box-shadow pdz.duration(base) pdz.easing(standard);
   position: relative;
   user-select: none;
   touch-action: none;
@@ -395,7 +395,7 @@
     display: flex;
     gap: pdz.space(2xs);
     opacity: 0.7;
-    transition: opacity 0.2s ease;
+    transition: opacity pdz.duration(base) pdz.easing(standard);
   }
 
   &:hover &__actions {
@@ -433,7 +433,7 @@
   border: 2px dashed pdz.color(outline);
   border-radius: pdz.shape(corner-md);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all pdz.duration(base) pdz.easing(standard);
   color: pdz.color(on-surface-variant);
   flex-shrink: 0;
 

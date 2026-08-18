@@ -25,18 +25,31 @@ const UNTOKENIZED_ORPHANS = [
 
 const BESPOKE_DENSITY = ["src/pdz/features/tools/wheel/wheel.component.scss"];
 
-const ALLOW = new Set([
-  ...BESPOKE_DISPLAY,
-  ...COORDINATED_BADGE,
-  ...UNTOKENIZED_ORPHANS,
-  ...BESPOKE_DENSITY,
-]);
+const ALLOW_BY_RULE = {
+  "raw-font-size": new Set([
+    ...BESPOKE_DISPLAY,
+    ...COORDINATED_BADGE,
+    ...UNTOKENIZED_ORPHANS,
+    ...BESPOKE_DENSITY,
+  ]),
+};
 
 const RULES = [
   {
     id: "raw-font-size",
     re: /font-size\s*:\s*[0-9.]+(rem|px)\s*(;|$)/,
     msg: "raw font-size; use pdz.font-size(<token>) or @include pdz.text(<role>)",
+    glyphExempt: true,
+  },
+  {
+    id: "raw-duration",
+    re: /transition[^;]*(?<![\w.-])[0-9.]+m?s(?![\w-])/,
+    msg: "raw transition duration; use pdz.duration(none|fast|base|slow)",
+  },
+  {
+    id: "raw-easing",
+    re: /transition[^;]*(?:(?<![\w-])(?:ease-in-out|ease-in|ease-out|ease)(?![\w-])|cubic-bezier\()/,
+    msg: "raw easing; use pdz.easing(standard|exit|linear)",
   },
 ];
 
@@ -68,16 +81,18 @@ let violations = 0;
 
 for (const file of walk(SCAN)) {
   const rel = relative(ROOT, file).split(sep).join("/");
-  if (ALLOW.has(rel)) continue;
 
   const lines = readFileSync(file, "utf8").split(/\r?\n/);
 
   lines.forEach((line, i) => {
     if (/,\s*$/.test(line)) return;
     for (const rule of RULES) {
+      if (ALLOW_BY_RULE[rule.id]?.has(rel)) continue;
       if (!rule.re.test(line)) continue;
-      const path = selectorPath(lines, i);
-      if (GLYPH_SIZED.test(path) || SVG_TEXT.test(path)) return;
+      if (rule.glyphExempt) {
+        const path = selectorPath(lines, i);
+        if (GLYPH_SIZED.test(path) || SVG_TEXT.test(path)) continue;
+      }
       console.error(`${rel}:${i + 1}  ${rule.id}: ${rule.msg}\n    ${line.trim()}`);
       violations++;
     }

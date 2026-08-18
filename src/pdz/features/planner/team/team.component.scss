@@ -104,11 +104,11 @@ table {
 }
 
 .cdk-drag-animating {
-  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+  transition: transform pdz.duration(slow) pdz.easing(standard);
 }
 
 .team-list.cdk-drop-list-dragging .team-item:not(.cdk-drag-placeholder) {
-  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+  transition: transform pdz.duration(slow) pdz.easing(standard);
 }
 
 .cdk-drag-placeholder {

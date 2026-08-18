@@ -178,7 +178,7 @@
   align-items: center;
   justify-content: center;
   font-weight: 600;
-  transition: all 0.2s ease-in-out;
+  transition: all pdz.duration(base) pdz.easing(standard);
 
   &--primary {
     @include flat-button-primary();
@@ -221,7 +221,7 @@
     color: pdz.color(on-surface);
     min-height: 2.75rem;
     line-height: 1.5;
-    transition: border-color 0.2s ease;
+    transition: border-color pdz.duration(base) pdz.easing(standard);
 
     &:focus {
       outline: none;
@@ -305,7 +305,7 @@
   appearance: none;
   cursor: pointer;
   position: relative;
-  transition: border-color 0.2s ease;
+  transition: border-color pdz.duration(base) pdz.easing(standard);
 
   &:checked {
     border-color: pdz.color(primary-accent);
@@ -349,7 +349,7 @@
   appearance: none;
   cursor: pointer;
   position: relative;
-  transition: all 0.2s ease;
+  transition: all pdz.duration(base) pdz.easing(standard);
   margin-top: 0.125rem;
 
   &:checked {
@@ -379,7 +379,7 @@
 .link {
   color: pdz.color(primary-accent);
   text-decoration: none;
-  transition: color 0.2s ease;
+  transition: color pdz.duration(base) pdz.easing(standard);
 
   &:hover {
     color: pdz.color(primary-darker);

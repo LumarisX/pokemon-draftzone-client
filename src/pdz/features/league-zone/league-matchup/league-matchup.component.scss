@@ -99,8 +99,8 @@
   color: pdz.color("on-primary");
   text-decoration: none;
   transition:
-    transform 120ms ease,
-    box-shadow 120ms ease;
+    transform pdz.duration(fast) pdz.easing(standard),
+    box-shadow pdz.duration(fast) pdz.easing(standard);
 
   &:hover {
     box-shadow: var(--pdz-level-3);
@@ -143,7 +143,7 @@
 
   &__arrow {
     flex: none;
-    transition: transform 120ms ease;
+    transition: transform pdz.duration(fast) pdz.easing(standard);
   }
 
   &:hover &__arrow {
@@ -248,7 +248,7 @@
     color: pdz.color("on-surface-variant");
     cursor: pointer;
     @include text(label);
-    transition: all 120ms ease;
+    transition: all pdz.duration(fast) pdz.easing(standard);
 
     &:hover {
       border-color: pdz.color("primary-border");

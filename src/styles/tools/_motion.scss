@@ -1,0 +1,16 @@
+@use "sass:map";
+@use "tokens/motion" as motion-tokens;
+
+@function duration($duration-name) {
+  @if not map.has-key(motion-tokens.$duration, $duration-name) {
+    @error "'#{$duration-name}' is not a valid PDZ duration token. Available tokens: #{map.keys(motion-tokens.$duration)}";
+  }
+  @return var(--pdz-duration-#{$duration-name});
+}
+
+@function easing($easing-name) {
+  @if not map.has-key(motion-tokens.$easing, $easing-name) {
+    @error "'#{$easing-name}' is not a valid PDZ easing token. Available tokens: #{map.keys(motion-tokens.$easing)}";
+  }
+  @return var(--pdz-easing-#{$easing-name});
+}

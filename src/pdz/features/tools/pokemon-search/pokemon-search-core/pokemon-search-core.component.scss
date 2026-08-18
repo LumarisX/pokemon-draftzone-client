@@ -91,7 +91,7 @@ button:disabled {
       background: pdz.color(primary-container);
       border: 1px solid pdz.color(primary-border);
       border-radius: calc(pdz.shape(corner-sm) - 2px);
-      transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1);
+      transition: transform pdz.duration(base) pdz.easing(standard);
       pointer-events: none;
       z-index: 0;
     }
@@ -111,7 +111,7 @@ button:disabled {
     background: transparent;
     color: pdz.color(on-surface-variant);
     white-space: nowrap;
-    transition: color 150ms ease;
+    transition: color pdz.duration(base) pdz.easing(standard);
 
     &.is-active {
       border-color: transparent;
@@ -140,7 +140,7 @@ button:disabled {
     font: inherit;
     font-size: pdz.font-size(sm);
     cursor: pointer;
-    transition: background 0.1s;
+    transition: background pdz.duration(fast) pdz.easing(standard);
     width: fit-content;
 
     &:hover {
@@ -235,7 +235,7 @@ button:disabled {
       color-mix(in srgb, pdz.color(on-surface) 12%, transparent);
     display: grid;
     gap: pdz.space(sm);
-    animation: fieldMenuIn 0.12s ease-out;
+    animation: fieldMenuIn pdz.duration(fast) pdz.easing(standard);
   }
 
   &__field-menu-category {
@@ -386,12 +386,12 @@ button:disabled {
     color: pdz.color(on-surface-variant);
     cursor: pointer;
     transition:
-      background 120ms ease,
-      color 120ms ease;
+      background pdz.duration(fast) pdz.easing(standard),
+      color pdz.duration(fast) pdz.easing(standard);
 
     pdz-icon {
       display: flex;
-      transition: transform 250ms cubic-bezier(0.4, 0, 0.2, 1);
+      transition: transform pdz.duration(slow) pdz.easing(standard);
     }
 
     &.is-desc pdz-icon {
@@ -405,7 +405,6 @@ button:disabled {
   }
 
   &__icon-btn {
-
     pdz-icon {
       display: flex;
     }
@@ -472,7 +471,7 @@ button:disabled {
       background: pdz.color(primary-container);
       border: 1px solid pdz.color(primary-border);
       border-radius: calc(pdz.shape(corner-sm) - 2px);
-      transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1);
+      transition: transform pdz.duration(base) pdz.easing(standard);
       pointer-events: none;
       z-index: 0;
     }
@@ -491,7 +490,7 @@ button:disabled {
     background: transparent;
     color: pdz.color(on-surface-variant);
     cursor: pointer;
-    transition: color 150ms ease;
+    transition: color pdz.duration(base) pdz.easing(standard);
   }
 
   &__view-button.is-active {
@@ -520,9 +519,9 @@ button:disabled {
     color: pdz.color(on-surface);
     cursor: pointer;
     transition:
-      transform 120ms ease,
-      box-shadow 120ms ease,
-      border-color 120ms ease;
+      transform pdz.duration(fast) pdz.easing(standard),
+      box-shadow pdz.duration(fast) pdz.easing(standard),
+      border-color pdz.duration(fast) pdz.easing(standard);
   }
 
   &__card:hover {
@@ -571,8 +570,8 @@ button:disabled {
     cursor: pointer;
     text-align: left;
     transition:
-      border-color 120ms ease,
-      box-shadow 120ms ease;
+      border-color pdz.duration(fast) pdz.easing(standard),
+      box-shadow pdz.duration(fast) pdz.easing(standard);
 
     &:hover {
       box-shadow: var(--pdz-level-2);

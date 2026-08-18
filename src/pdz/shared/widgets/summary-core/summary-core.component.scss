@@ -79,7 +79,7 @@ $border: 1px solid $border-color;
     .summary__cell--stat {
       border-top: $border;
       border-bottom: $border;
-      transition: background-color 0.3s ease;
+      transition: background-color pdz.duration(slow) pdz.easing(standard);
     }
 
     .summary__cell--stat-start {

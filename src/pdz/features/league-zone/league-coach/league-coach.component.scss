@@ -178,8 +178,8 @@
   text-decoration: none;
   color: pdz.color(on-surface);
   transition:
-    background 0.15s ease,
-    border-color 0.15s ease;
+    background pdz.duration(base) pdz.easing(standard),
+    border-color pdz.duration(base) pdz.easing(standard);
 
   &:hover {
     background: pdz.color(primary-container-hover);

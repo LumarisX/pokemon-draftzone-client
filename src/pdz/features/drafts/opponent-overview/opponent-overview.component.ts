@@ -8,6 +8,7 @@ import { DRAFT_OVERVIEW_PATH } from '@pdz/core/route-paths';
 import { Draft } from '../draft.model';
 import { DraftService } from '../draft-overview/draft.service';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
+import { RouteEnterDirective } from '@pdz/shared/layout/route-enter.directive';
 
 @Component({
   selector: 'pdz-opponent-overview',
@@ -17,6 +18,7 @@ import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
     ReactiveFormsModule,
     MatIconModule,
     SpriteComponent,
+    RouteEnterDirective,
   ],
   templateUrl: './opponent-overview.component.html',
   styleUrl: './opponent-overview.component.scss',

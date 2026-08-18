@@ -12,14 +12,13 @@
   border-radius: pdz.shape(corner-xs);
   background: pdz.color(surface);
   cursor: inherit;
-  transition:
-    background-color 120ms ease,
-    border-color 120ms ease;
+  transition: background-color pdz.duration(fast) pdz.easing(standard),
+    border-color pdz.duration(fast) pdz.easing(standard);
 
   &::before {
     content: "";
     transform: scale(0);
-    transition: transform 120ms ease;
+    transition: transform pdz.duration(fast) pdz.easing(standard);
     background: pdz.color(on-primary);
   }
 

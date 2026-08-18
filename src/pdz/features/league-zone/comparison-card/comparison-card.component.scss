@@ -16,7 +16,7 @@ $container-padding: pdz.space(md);
   border-radius: var(--card-border-radius);
   padding: $container-padding;
   position: relative;
-  transition: all 0.3s ease-in-out;
+  transition: all pdz.duration(slow) pdz.easing(standard);
   &.expandable {
     cursor: pointer;
   }
@@ -118,7 +118,7 @@ $container-padding: pdz.space(md);
   left: 50%;
   transform: translateX(-50%);
   color: pdz.color(primary-border);
-  transition: transform 0.3s ease-in-out;
+  transition: transform pdz.duration(slow) pdz.easing(standard);
 }
 
 .status {
@@ -127,7 +127,7 @@ $container-padding: pdz.space(md);
   font-size: pdz.font-size(xs);
   user-select: none;
   line-height: 0.7rem;
-  transition: transform 0.3s ease-in-out;
+  transition: transform pdz.duration(slow) pdz.easing(standard);
   border: 1px solid pdz.color(primary-border);
   color: gray;
   &.active {
@@ -152,7 +152,7 @@ $container-padding: pdz.space(md);
   padding-top: $container-padding;
   margin-top: 0.5rem;
   border-top: 1px solid pdz.color(primary-border);
-  animation: fadeIn 0.3s ease-in-out;
+  animation: fadeIn pdz.duration(slow) pdz.easing(standard);
 }
 
 @keyframes fadeIn {

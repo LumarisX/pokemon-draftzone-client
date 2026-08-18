@@ -27,7 +27,7 @@
     font: inherit;
     text-align: left;
     cursor: pointer;
-    transition: border-color 0.15s ease-in-out;
+    transition: border-color pdz.duration(base) pdz.easing(standard);
 
     &:focus-visible,
     &--open {
@@ -56,7 +56,7 @@
   &__chevron {
     flex-shrink: 0;
     color: pdz.color(on-surface-variant);
-    transition: transform 0.2s ease-in-out;
+    transition: transform pdz.duration(base) pdz.easing(standard);
   }
 
   &__panel {
@@ -98,7 +98,7 @@
     font: inherit;
     text-align: left;
     cursor: pointer;
-    transition: background-color 0.1s ease-in-out;
+    transition: background-color pdz.duration(fast) pdz.easing(standard);
 
     &:hover,
     &--highlighted {

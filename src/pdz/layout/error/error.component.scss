@@ -44,10 +44,10 @@
   box-shadow: var(--pdz-level-2);
   overflow-wrap: anywhere;
   pointer-events: auto;
-  animation: toast-in 280ms ease forwards;
+  animation: toast-in pdz.duration(slow) pdz.easing(standard) forwards;
 
   &--leaving {
-    animation: toast-out 500ms ease forwards;
+    animation: toast-out pdz.duration(slow) pdz.easing(exit) forwards;
   }
 
   // ---- Header -------------------------------------------------------------
@@ -98,7 +98,7 @@
     background: transparent;
     color: pdz.color("on-surface-variant");
     cursor: pointer;
-    transition: background 0.15s ease;
+    transition: background pdz.duration(base) pdz.easing(standard);
 
     &:hover {
       background: pdz.color("surface-container-highest");
@@ -140,7 +140,7 @@
   }
 
   &__expand-chevron {
-    transition: transform 0.15s ease;
+    transition: transform pdz.duration(base) pdz.easing(standard);
 
     &--open {
       transform: rotate(180deg);
@@ -218,9 +218,9 @@
     cursor: pointer;
     @include text(label);
     transition:
-      background 0.15s ease,
-      color 0.15s ease,
-      border-color 0.15s ease;
+      background pdz.duration(base) pdz.easing(standard),
+      color pdz.duration(base) pdz.easing(standard),
+      border-color pdz.duration(base) pdz.easing(standard);
 
     &:hover {
       background: pdz.color("surface-container-highest");

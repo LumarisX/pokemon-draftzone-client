@@ -77,7 +77,7 @@
   color: pdz.color(on-menu-container);
   border: 1px solid pdz.color(menu-border);
   border-radius: pdz.shape(corner-sm);
-  transition: all 0.2s ease-in-out;
+  transition: all pdz.duration(base) pdz.easing(standard);
 
   &:focus {
     outline: none;
@@ -153,7 +153,7 @@
   cursor: pointer;
   padding: pdz.space(xs) pdz.space(sm);
   border-radius: pdz.shape(corner-xs);
-  transition: background-color 0.15s ease;
+  transition: background-color pdz.duration(base) pdz.easing(standard);
 
   &:hover {
     background-color: pdz.color(menu-container-hover);

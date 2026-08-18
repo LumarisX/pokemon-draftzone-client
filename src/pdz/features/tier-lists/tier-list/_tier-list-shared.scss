@@ -47,7 +47,7 @@
         color: pdz.color(on-surface);
         @include text(body-sm);
         min-width: 180px;
-        transition: border-color 0.15s ease;
+        transition: border-color pdz.duration(base) pdz.easing(standard);
 
         &:focus {
           outline: 2px solid pdz.color(primary-accent);
@@ -102,7 +102,7 @@
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23888'/%3E%3C/svg%3E");
       background-repeat: no-repeat;
       background-position: right pdz.space(sm) center;
-      transition: border-color 0.15s ease;
+      transition: border-color pdz.duration(base) pdz.easing(standard);
 
       &:focus {
         outline: 2px solid pdz.color(primary-accent);
@@ -128,7 +128,7 @@
     border-radius: pdz.shape(corner-full);
     cursor: pointer;
     @include text(label);
-    transition: all 0.2s ease;
+    transition: all pdz.duration(base) pdz.easing(standard);
     white-space: nowrap;
 
     mat-icon {
@@ -174,7 +174,7 @@
     border-radius: pdz.shape(corner-full);
     cursor: pointer;
     color: pdz.color(on-surface-variant);
-    transition: all 0.2s ease;
+    transition: all pdz.duration(base) pdz.easing(standard);
 
     mat-icon {
       font-size: 1.25rem;

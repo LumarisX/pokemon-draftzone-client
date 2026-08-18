@@ -87,7 +87,7 @@
   color: pdz.color(on-surface);
   @include text(body);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all pdz.duration(base) pdz.easing(standard);
 
   &:hover:not(:disabled) {
     border-color: pdz.color(outline);
@@ -129,7 +129,7 @@
   background: pdz.color(surface);
   color: pdz.color(on-surface);
   @include text(body);
-  transition: all 0.2s ease;
+  transition: all pdz.duration(base) pdz.easing(standard);
 
   &:focus {
     outline: none;
@@ -167,7 +167,7 @@
   border-radius: pdz.shape(corner-sm);
   background: pdz.color(surface);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all pdz.duration(base) pdz.easing(standard);
   user-select: none;
 
   &:hover {
@@ -320,7 +320,7 @@
   &__summary::after {
     content: "▸";
     color: pdz.color(on-surface-variant);
-    transition: transform 0.2s ease;
+    transition: transform pdz.duration(base) pdz.easing(standard);
   }
 
   &[open] &__summary::after {
@@ -517,7 +517,7 @@
   border: none;
   border-radius: pdz.shape(corner-md);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all pdz.duration(base) pdz.easing(standard);
   font-weight: 600;
   text-decoration: none;
   display: inline-flex;

@@ -37,7 +37,7 @@
 }
 
 .pie-slice {
-  transition: opacity 0.15s ease;
+  transition: opacity pdz.duration(base) pdz.easing(standard);
   cursor: default;
   stroke: pdz.color(surface);
   stroke-width: 1;

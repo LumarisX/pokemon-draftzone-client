@@ -60,7 +60,7 @@ $base-button-defaults: (
   opacity-disabled: 0.6,
   cursor-disabled: not-allowed,
   cursor: pointer,
-  transition: all 0.2s ease-in-out,
+  transition: all pdz.duration(base) pdz.easing(standard),
 ) !default;
 
 // ----------------------------------------------------------------------------
@@ -249,7 +249,7 @@ $float-button-defaults: (
   border: 1px solid pdz.color(menu-border),
   color: pdz.color(on-menu-container),
   color-disabled: pdz.color(on-surface-disabled),
-  transition: all 0.2s ease-in-out,
+  transition: all pdz.duration(base) pdz.easing(standard),
   icon-size: 2rem,
 ) !default;
 
@@ -299,8 +299,8 @@ $float-buttons-defaults: (
   z-index: 10000,
   radial-radius: 6rem,
   icon-size: 2rem,
-  transition-base: 220ms ease,
-  transition-opacity: 180ms ease,
+  transition-base: pdz.duration(slow) pdz.easing(standard),
+  transition-opacity: pdz.duration(base) pdz.easing(standard),
   button-scale: 0.85,
   stagger-delay: 40ms,
 ) !default;
@@ -396,7 +396,7 @@ $float-buttons-defaults: (
 
   // Staggered animation delays for smooth sequential appearance
   .radial-stack.open > button:nth-of-type(2).tool-button {
-    transition-delay: 0ms;
+    transition-delay: pdz.duration(none);
   }
   .radial-stack.open > button:nth-of-type(3).tool-button {
     transition-delay: #{map.get($config, "stagger-delay")};

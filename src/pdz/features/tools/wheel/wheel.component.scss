@@ -131,7 +131,7 @@
     border: none;
     background: none;
     cursor: pointer;
-    transition: transform 0.15s ease-out;
+    transition: transform pdz.duration(base) pdz.easing(standard);
 
     @container (min-width: 30rem) {
       width: auto;
@@ -230,8 +230,8 @@
     opacity: 0;
     transform: translate(-50%, -100%);
     transition:
-      opacity 0.15s ease-out,
-      transform 0.15s ease-out;
+      opacity pdz.duration(base) pdz.easing(standard),
+      transform pdz.duration(base) pdz.easing(standard);
 
     &--visible {
       opacity: 1;
@@ -365,8 +365,6 @@
     }
   }
 
-
-
   &__duplicate {
     @include text(body-sm);
     display: flex;
@@ -448,8 +446,6 @@
     flex: none;
   }
 
-
-
   &__value {
     @include text(body-sm);
     width: 2.75rem;
@@ -483,7 +479,7 @@
 }
 
 .item-editor__list.cdk-drop-list-dragging .item-row:not(.cdk-drag-dragging) {
-  transition: transform 0.2s ease-in-out;
+  transition: transform pdz.duration(base) pdz.easing(standard);
 }
 
 .history {
@@ -506,8 +502,6 @@
     @include text(subtitle);
     color: pdz.color(on-surface);
   }
-
-
 
   &__list {
     display: flex;
@@ -581,7 +575,7 @@
   height: 13rem;
   min-width: 0;
   cursor: pointer;
-  transition: transform 0.15s ease-out;
+  transition: transform pdz.duration(base) pdz.easing(standard);
 
   @container (min-width: 30rem) {
     width: auto;

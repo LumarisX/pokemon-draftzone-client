@@ -72,8 +72,8 @@
     border: 2px solid var(--pdz-slider-thumb-ring);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
     transition:
-      transform 0.1s ease,
-      box-shadow 0.1s ease;
+      transform pdz.duration(fast) pdz.easing(standard),
+      box-shadow pdz.duration(fast) pdz.easing(standard);
   }
   &::-moz-range-thumb {
     width: var(--pdz-slider-thumb);
@@ -83,8 +83,8 @@
     border: 2px solid var(--pdz-slider-thumb-ring);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
     transition:
-      transform 0.1s ease,
-      box-shadow 0.1s ease;
+      transform pdz.duration(fast) pdz.easing(standard),
+      box-shadow pdz.duration(fast) pdz.easing(standard);
   }
 
   // ---- Interaction ----
@@ -127,7 +127,7 @@
   white-space: nowrap;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 0.12s ease;
+  transition: opacity pdz.duration(fast) pdz.easing(standard);
 }
 
 .slider:hover .slider__bubble,

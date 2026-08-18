@@ -231,7 +231,7 @@
   border: none;
   cursor: pointer;
   font-weight: 600;
-  transition: all 0.2s ease-in-out;
+  transition: all pdz.duration(base) pdz.easing(standard);
 
   &--primary {
     @include flat-button-primary();
