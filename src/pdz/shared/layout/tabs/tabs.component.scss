@@ -1,0 +1,90 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+}
+
+.pdz-tabs__list {
+  position: relative;
+  display: flex;
+  gap: pdz.space(xs);
+  border-bottom: 1px solid pdz.color(outline-variant);
+  overflow-x: auto;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+:host([data-align="stretch"]) .pdz-tabs__tab {
+  flex: 1;
+}
+
+.pdz-tabs__tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: pdz.space(xs);
+  flex: none;
+  padding: pdz.space(sm) pdz.space(md);
+  border: none;
+  border-radius: pdz.shape(corner-xs) pdz.shape(corner-xs) 0 0;
+  background: transparent;
+  color: pdz.color(on-surface-variant);
+  cursor: pointer;
+  white-space: nowrap;
+  text-transform: inherit;
+  @include pdz.text(body-sm, $family: false);
+  font-weight: pdz.font-weight(semibold);
+  transition:
+    color pdz.duration(fast) pdz.easing(standard),
+    background-color pdz.duration(fast) pdz.easing(standard);
+
+  &:hover:not(:disabled) {
+    color: pdz.color(on-surface);
+    background-color: pdz.color(surface-container);
+  }
+
+  &:focus-visible {
+    outline: 2px solid pdz.color(primary-accent);
+    outline-offset: -2px;
+  }
+
+  &:disabled {
+    color: pdz.color(on-surface-disabled);
+    cursor: not-allowed;
+  }
+}
+
+.pdz-tabs__tab--active {
+  color: pdz.color(primary-accent);
+}
+
+.pdz-tabs__indicator {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  width: 0;
+  border-radius: pdz.shape(corner-full) pdz.shape(corner-full) 0 0;
+  background-color: pdz.color(primary-accent);
+  transition:
+    transform pdz.duration(base) pdz.easing(standard),
+    width pdz.duration(base) pdz.easing(standard);
+}
+
+.pdz-tabs__panel {
+  padding-top: pdz.space(lg);
+
+  &:focus-visible {
+    outline: 2px solid pdz.color(primary-accent);
+    outline-offset: 2px;
+  }
+}
+
+@media (forced-colors: active) {
+  .pdz-tabs__tab--active {
+    border-bottom: 2px solid CanvasText;
+  }
+}

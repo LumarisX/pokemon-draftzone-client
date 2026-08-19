@@ -1,0 +1,158 @@
+@use "sass:map";
+@use "pdz-theming" as pdz;
+
+$sizes: (
+  sm: 24rem,
+  md: 34rem,
+  lg: 52rem,
+  full: 100%,
+);
+
+:host {
+  display: contents;
+}
+
+.pdz-dialog__surface {
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
+  max-height: 100%;
+  padding: pdz.space(lg);
+  border: none;
+  background: transparent;
+  overflow: hidden;
+  opacity: 0;
+  transition:
+    opacity pdz.duration(base) pdz.easing(standard),
+    display pdz.duration(base) pdz.easing(standard) allow-discrete,
+    overlay pdz.duration(base) pdz.easing(standard) allow-discrete;
+
+  &[open] {
+    display: grid;
+    place-items: center;
+    opacity: 1;
+  }
+}
+
+@starting-style {
+  .pdz-dialog__surface[open] {
+    opacity: 0;
+  }
+}
+
+.pdz-dialog__surface::backdrop {
+  background-color: pdz.color-rgba(scrim, 0.5);
+  opacity: 0;
+  transition:
+    opacity pdz.duration(base) pdz.easing(standard),
+    display pdz.duration(base) pdz.easing(standard) allow-discrete,
+    overlay pdz.duration(base) pdz.easing(standard) allow-discrete;
+}
+
+.pdz-dialog__surface[open]::backdrop {
+  opacity: 1;
+}
+
+@starting-style {
+  .pdz-dialog__surface[open]::backdrop {
+    opacity: 0;
+  }
+}
+
+.pdz-dialog__panel {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-height: 100%;
+  border: 1px solid pdz.color(outline-variant);
+  border-radius: pdz.shape(corner-lg);
+  background-color: pdz.color(surface-container-low);
+  color: pdz.color(on-surface);
+  box-shadow: var(--pdz-level-5);
+  overflow: hidden;
+  transform: translateY(0.5rem) scale(0.98);
+  transition: transform pdz.duration(base) pdz.easing(standard);
+}
+
+.pdz-dialog__surface[open] .pdz-dialog__panel {
+  transform: none;
+}
+
+@starting-style {
+  .pdz-dialog__surface[open] .pdz-dialog__panel {
+    transform: translateY(0.5rem) scale(0.98);
+  }
+}
+
+@each $name, $width in $sizes {
+  .pdz-dialog__surface[data-size="#{$name}"] .pdz-dialog__panel {
+    max-width: $width;
+  }
+}
+
+.pdz-dialog__surface[data-size="full"] .pdz-dialog__panel {
+  height: 100%;
+}
+
+.pdz-dialog__header {
+  display: flex;
+  align-items: flex-start;
+  gap: pdz.space(md);
+  padding: pdz.space(lg);
+  border-bottom: 1px solid pdz.color(outline-variant);
+
+  &:not(:has(.pdz-dialog__heading)):not(:has(.pdz-dialog__subheading)) {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+}
+
+.pdz-dialog__titles {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(2xs);
+  flex: 1;
+  min-width: 0;
+}
+
+.pdz-dialog__heading {
+  @include pdz.text(title);
+  margin: 0;
+}
+
+.pdz-dialog__subheading {
+  @include pdz.text(body-sm);
+  margin: 0;
+  color: pdz.color(on-surface-variant);
+}
+
+.pdz-dialog__close {
+  flex: none;
+  margin: calc(#{pdz.space(xs)} * -1) calc(#{pdz.space(xs)} * -1) 0 0;
+}
+
+.pdz-dialog__body {
+  padding: pdz.space(lg);
+  overflow-y: auto;
+  flex: 1;
+}
+
+.pdz-dialog__footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: pdz.space(sm);
+  padding: pdz.space(lg);
+  border-top: 1px solid pdz.color(outline-variant);
+  background-color: pdz.color(surface-container);
+
+  &:empty {
+    display: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .pdz-dialog__panel {
+    border: 1px solid CanvasText;
+  }
+}

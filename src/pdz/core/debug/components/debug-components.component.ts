@@ -19,13 +19,32 @@ import { ChoiceDirective } from '@pdz/shared/inputs/choice/choice.directive';
 import { CardComponent, CardPadding, CardTone } from '@pdz/shared/data/card/card.component';
 import { SkeletonComponent } from '@pdz/shared/data/skeleton/skeleton.component';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ToastService, ToastTone } from '@pdz/shared/feedback/toast/toast.service';
+import {
+  BadgeComponent,
+  BadgeTone,
+  BadgeVariant,
+} from '@pdz/shared/data/badge/badge.component';
+import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
+import { TabsComponent } from '@pdz/shared/layout/tabs/tabs.component';
+import {
+  TabComponent,
+  TabLabelDirective,
+} from '@pdz/shared/layout/tabs/tab.component';
+import {
+  DialogComponent,
+  DialogSize,
+} from '@pdz/shared/dialogs/dialog/dialog.component';
+import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
+import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
+import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
 
 const THEME_ATTR = 'pdz-theme';
 const MODE_ATTR = 'pdz-theme-mode';
 
 @Component({
   selector: 'pdz-debug-components',
-  imports: [ButtonComponent, IconComponent, FieldComponent, InputDirective, ReactiveFormsModule, CheckComponent, ChoiceDirective, CardComponent, SkeletonComponent],
+  imports: [ButtonComponent, IconComponent, FieldComponent, InputDirective, ReactiveFormsModule, CheckComponent, ChoiceDirective, CardComponent, SkeletonComponent, BadgeComponent, EmptyStateComponent, TabsComponent, TabComponent, TabLabelDirective, DialogComponent, SelectComponent, SelectOptionComponent],
   templateUrl: './debug-components.component.html',
   styleUrl: './debug-components.component.scss',
 })
@@ -52,6 +71,8 @@ export class DebugComponentsComponent {
     { name: 'Gholdengo', brought: 7, kills: 111, deaths: 3, kdr: '37.00' },
     { name: 'Dragapult', brought: 12, kills: 21, deaths: 11, kdr: '1.91' },
   ];
+
+  readonly tableDensities = ['compact', 'default', 'relaxed'];
 
   readonly tableTotals = {
     brought: 39,
@@ -113,4 +134,154 @@ export class DebugComponentsComponent {
   toggleLoading() {
     this.loadingDemo.update((v) => !v);
   }
+
+  private readonly toast = inject(ToastService);
+
+  readonly toastTones: ToastTone[] = ['success', 'error', 'warning', 'info'];
+
+  fireToast(tone: ToastTone) {
+    this.toast.show({ tone, message: TOAST_SAMPLES[tone] });
+  }
+
+  fireWithTitle() {
+    this.toast.success('Trade with Team Rocket is now pending approval.', {
+      title: 'Trade submitted',
+    });
+  }
+
+  fireWithAction() {
+    this.toast.warning('Gholdengo was removed from your draft.', {
+      title: 'Pick removed',
+      action: { label: 'Undo', run: () => this.toast.info('Pick restored.') },
+    });
+  }
+
+  fireSticky() {
+    this.toast.error('Could not reach the server. Your changes were not saved.', {
+      title: 'Save failed',
+      duration: 0,
+      action: { label: 'Retry', run: () => this.toast.success('Saved.') },
+    });
+  }
+
+  fireUndismissable() {
+    this.toast.info('Syncing standings…', { dismissible: false });
+  }
+
+  fireBurst() {
+    for (let i = 1; i <= 6; i++) {
+      this.toast.info(`Queued notification ${i} of 6.`, { duration: 6000 });
+    }
+  }
+
+  clearToasts() {
+    this.toast.clear();
+  }
+
+  readonly badgeTones: BadgeTone[] = [
+    'neutral',
+    'primary',
+    'success',
+    'warning',
+    'danger',
+    'info',
+  ];
+  readonly badgeVariants: BadgeVariant[] = ['solid', 'soft', 'outline'];
+
+  readonly plannerTab = signal(0);
+
+  private readonly dialogs = inject(DialogService);
+
+  readonly generations = ['Gen 7', 'Gen 8', 'Gen 9'];
+  readonly generation = signal<string | undefined>(undefined);
+
+  readonly formats = [
+    { id: 'singles', name: 'Singles', group: 'Battle style' },
+    { id: 'doubles', name: 'Doubles', group: 'Battle style' },
+    { id: 'vgc', name: 'VGC', group: 'Battle style', disabled: true },
+    { id: 'snake', name: 'Snake', group: 'Draft style' },
+    { id: 'auction', name: 'Auction', group: 'Draft style' },
+  ];
+  readonly format = signal<string | undefined>('doubles');
+
+  readonly rulesets = ['Standard', 'No restricted', 'Anything goes'];
+  readonly rulesetCtrl = new FormControl<string | null>(
+    null,
+    Validators.required,
+  );
+
+  readonly mon = signal<string | undefined>(undefined);
+  readonly manyOptions = [
+    'Iron Valiant', 'Great Tusk', 'Gholdengo', 'Dragapult', 'Kingambit',
+    'Landorus-Therian', 'Rotom-Wash', 'Ting-Lu', 'Zamazenta', 'Ogerpon',
+    'Rillaboom', 'Urshifu', 'Volcarona', 'Garganacl', 'Corviknight',
+  ];
+
+  readonly dialogSizes: DialogSize[] = ['sm', 'md', 'lg', 'full'];
+  readonly sizeDialogOpen = signal(false);
+  readonly lockedDialogOpen = signal(false);
+  readonly dialogSize = signal<DialogSize>('md');
+  readonly dialogResult = signal('—');
+  readonly dialogFormat = signal<string | undefined>(undefined);
+
+  openSize(size: DialogSize) {
+    this.dialogSize.set(size);
+    this.sizeDialogOpen.set(true);
+  }
+
+  toastFromOpenDialog() {
+    this.toast.success('Saved while the dialog is still open.');
+  }
+
+  openLocked() {
+    this.lockedDialogOpen.set(true);
+  }
+
+  async openConfirm() {
+    const ok = await this.dialogs.confirm('Reset the draft board?', {
+      message: 'Every pick is cleared. This cannot be undone.',
+      confirmLabel: 'Reset',
+    });
+    this.dialogResult.set(ok ? 'confirmed' : 'cancelled');
+  }
+
+  async openDestructive() {
+    const ok = await this.dialogs.confirm('Delete this tournament?', {
+      message: 'All teams, matchups and standings go with it.',
+      confirmLabel: 'Delete',
+      confirmColor: 'danger',
+    });
+    this.dialogResult.set(ok ? 'deleted' : 'cancelled');
+    if (ok) this.toast.success('Tournament deleted.');
+  }
+
+  async openToastFromDialog() {
+    const ok = await this.dialogs.confirm('Save these settings?', {
+      message:
+        'Confirm, and a toast fires while the dialog is still closing — it must land above the backdrop.',
+      confirmLabel: 'Save',
+    });
+    if (ok) this.toast.success('Settings saved.');
+    this.dialogResult.set(ok ? 'saved' : 'cancelled');
+  }
+
+  readonly manyTabs = [
+    'Overview',
+    'Roster',
+    'Trades',
+    'Schedule',
+    'Standings',
+    'Statistics',
+    'Draft board',
+    'Power rankings',
+    'Chat',
+    'Settings',
+  ];
 }
+
+const TOAST_SAMPLES: Record<string, string> = {
+  success: 'Draft saved.',
+  error: 'Could not save your draft.',
+  warning: 'Two picks are over the point limit.',
+  info: 'Standings refresh every five minutes.',
+};

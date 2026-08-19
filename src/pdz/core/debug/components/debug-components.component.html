@@ -363,7 +363,7 @@
     line up, and rows respond to hover so the eye can hold a line across.
   </p>
 
-  <h3 class="section__sub">Default — subtle header, hover rows</h3>
+  <h3 class="section__sub">Default</h3>
   <div class="pdz-table-wrapper tables__demo">
     <table class="pdz-table">
       <thead>
@@ -376,7 +376,7 @@
         </tr>
       </thead>
       <tbody>
-        @for (row of tableRows; track row.name) {
+        @for (row of tableRows; track $index) {
           <tr>
             <td>{{ row.name }}</td>
             <td class="pdz-table__num">{{ row.brought }}</td>
@@ -389,16 +389,43 @@
     </table>
   </div>
 
-  <h3 class="section__sub">
-    Primary header, zebra rows, compact density, totals footer
-  </h3>
+  <h3 class="section__sub">Density</h3>
+  <p class="section__hint">
+    Only the padding moves. Each step also insets the first and last cell
+    further than the ones between, so content clears the container's corner
+    radius instead of crowding it.
+  </p>
+  @for (density of tableDensities; track density) {
+    <p class="tables__name">{{ density }}</p>
+    <div class="pdz-table-wrapper tables__demo">
+      <table class="pdz-table" [attr.data-density]="density">
+        <thead>
+          <tr>
+            <th>Pokémon</th>
+            <th class="pdz-table__num">Brought</th>
+            <th class="pdz-table__num">Kills</th>
+            <th class="pdz-table__num">Deaths</th>
+            <th class="pdz-table__num">K/D</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of tableRows; track $index) {
+            <tr>
+                <td>{{ row.name }}</td>
+                <td class="pdz-table__num">{{ row.brought }}</td>
+                <td class="pdz-table__num">{{ row.kills }}</td>
+                <td class="pdz-table__num">{{ row.deaths }}</td>
+                <td class="pdz-table__num">{{ row.kdr }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+  <h3 class="section__sub">Primary header, zebra rows, totals footer</h3>
   <div class="pdz-table-wrapper tables__demo">
-    <table
-      class="pdz-table"
-      data-header="primary"
-      data-density="compact"
-      data-zebra
-    >
+    <table class="pdz-table" data-header="primary" data-zebra>
       <thead>
         <tr>
           <th>Pokémon</th>
@@ -409,7 +436,7 @@
         </tr>
       </thead>
       <tbody>
-        @for (row of tableRows; track row.name) {
+        @for (row of tableRows; track $index) {
           <tr>
             <td>{{ row.name }}</td>
             <td class="pdz-table__num">{{ row.brought }}</td>
@@ -431,9 +458,14 @@
     </table>
   </div>
 
-  <h3 class="section__sub">Sticky header — scroll the body</h3>
+  <h3 class="section__sub">Sticky header</h3>
+  <p class="section__hint">
+    Identical to the table above apart from <code>data-sticky</code>, plus a
+    <code>--pdz-table-max-height</code> on the wrapper to give it something to
+    scroll against.
+  </p>
   <div class="pdz-table-wrapper tables__demo tables__demo--scroll">
-    <table class="pdz-table" data-header="primary" data-sticky data-zebra>
+    <table class="pdz-table" data-header="primary" data-zebra data-sticky>
       <thead>
         <tr>
           <th>Pokémon</th>
@@ -457,4 +489,3 @@
     </table>
   </div>
 </section>
-

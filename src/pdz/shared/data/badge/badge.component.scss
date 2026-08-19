@@ -1,0 +1,137 @@
+@use "sass:map";
+@use "pdz-theming" as pdz;
+
+$tones: (
+  neutral: (
+    solid: surface-inverse,
+    on-solid: on-surface-inverse,
+    soft: surface-container-high,
+    on-soft: on-surface-variant,
+    line: outline,
+  ),
+  primary: (
+    solid: primary,
+    on-solid: on-primary,
+    soft: primary-container,
+    on-soft: on-primary-container,
+    line: primary-border,
+  ),
+  success: (
+    solid: success,
+    on-solid: on-success,
+    soft: success-container,
+    on-soft: on-success-container,
+    line: success-border,
+  ),
+  warning: (
+    solid: warning,
+    on-solid: on-warning,
+    soft: warning-container,
+    on-soft: on-warning-container,
+    line: warning-border,
+  ),
+  danger: (
+    solid: error,
+    on-solid: on-error,
+    soft: error-container,
+    on-soft: on-error-container,
+    line: error-border,
+  ),
+  info: (
+    solid: info,
+    on-solid: on-info,
+    soft: info-container,
+    on-soft: on-info-container,
+    line: info,
+  ),
+);
+
+:host {
+  --pdz-badge-solid: #{pdz.color(error)};
+  --pdz-badge-on-solid: #{pdz.color(on-error)};
+  --pdz-badge-soft: #{pdz.color(error-container)};
+  --pdz-badge-on-soft: #{pdz.color(on-error-container)};
+  --pdz-badge-line: #{pdz.color(error-border)};
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  border-radius: pdz.shape(corner-full);
+  font-family: var(--pdz-font-body);
+  line-height: 1;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+@each $name, $tokens in $tones {
+  :host([data-tone="#{$name}"]) {
+    --pdz-badge-solid: #{pdz.color(map.get($tokens, solid))};
+    --pdz-badge-on-solid: #{pdz.color(map.get($tokens, on-solid))};
+    --pdz-badge-soft: #{pdz.color(map.get($tokens, soft))};
+    --pdz-badge-on-soft: #{pdz.color(map.get($tokens, on-soft))};
+    --pdz-badge-line: #{pdz.color(map.get($tokens, line))};
+  }
+}
+
+:host([data-variant="solid"]) {
+  background-color: var(--pdz-badge-solid);
+  color: var(--pdz-badge-on-solid);
+}
+
+:host([data-variant="soft"]) {
+  background-color: var(--pdz-badge-soft);
+  color: var(--pdz-badge-on-soft);
+}
+
+:host([data-variant="outline"]) {
+  border-color: var(--pdz-badge-line);
+  color: var(--pdz-badge-on-soft);
+}
+
+:host([data-size="md"]) {
+  @include pdz.text(label-strong, $family: false);
+  min-width: 1.25rem;
+  height: 1.25rem;
+  padding-inline: pdz.space(xs);
+}
+
+:host([data-size="sm"]) {
+  @include pdz.text(label-strong, $family: false);
+  min-width: 1rem;
+  height: 1rem;
+  padding-inline: pdz.space(2xs);
+}
+
+:host(.pdz-badge--dot) {
+  padding: 0;
+  min-width: 0;
+}
+
+:host([data-size="md"].pdz-badge--dot) {
+  width: 0.55rem;
+  height: 0.55rem;
+}
+
+:host([data-size="sm"].pdz-badge--dot) {
+  width: 0.4rem;
+  height: 0.4rem;
+}
+
+:host(.pdz-badge--floating) {
+  position: absolute;
+  top: 0;
+  inset-inline-end: 0;
+  transform: translate(35%, -35%);
+  box-shadow: 0 0 0 2px pdz.color(background);
+}
+
+:host(.pdz-badge--dot.pdz-badge--floating) {
+  transform: translate(15%, -15%);
+}
+
+@media (forced-colors: active) {
+  :host {
+    border-color: CanvasText;
+  }
+}

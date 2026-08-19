@@ -1,0 +1,16 @@
+@use "pdz-theming" as pdz;
+
+body.pdz-dialog-scroll-lock {
+  overflow: hidden;
+}
+
+.pdz-dialog-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: pdz.space(sm);
+  margin: pdz.space(lg) calc(#{pdz.space(lg)} * -1) calc(#{pdz.space(lg)} * -1);
+  padding: pdz.space(lg);
+  border-top: 1px solid pdz.color(outline-variant);
+  background-color: pdz.color(surface-container);
+}

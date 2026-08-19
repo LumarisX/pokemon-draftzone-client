@@ -160,6 +160,10 @@
             width: 100%;
             table-layout: fixed;
           }
+
+          tr:last-child {
+            border-bottom: 1px solid pdz.color(outline-variant);
+          }
         }
 
         th,
@@ -168,9 +172,14 @@
           text-overflow: ellipsis;
         }
 
+        tfoot th,
+        tfoot td {
+          border-top: 0;
+        }
+
         th.col-sprite,
         td.cell-sprite {
-          width: 3rem;
+          width: 3.5rem;
         }
 
         th.col-capt,

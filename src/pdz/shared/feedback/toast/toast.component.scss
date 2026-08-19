@@ -1,0 +1,187 @@
+@use "sass:map";
+@use "pdz-theming" as pdz;
+
+$tones: (
+  success: (
+    surface: success-container,
+    ink: on-success-container,
+    accent: success,
+    border: success-border,
+  ),
+  error: (
+    surface: error-container,
+    ink: on-error-container,
+    accent: error,
+    border: error-border,
+  ),
+  warning: (
+    surface: warning-container,
+    ink: on-warning-container,
+    accent: warning,
+    border: warning-border,
+  ),
+  info: (
+    surface: info-container,
+    ink: on-info-container,
+    accent: info,
+    border: null,
+  ),
+);
+
+:host {
+  --pdz-toast-surface: #{pdz.color(surface-container-high)};
+  --pdz-toast-ink: #{pdz.color(on-surface)};
+  --pdz-toast-accent: #{pdz.color(primary)};
+  --pdz-toast-border: #{pdz.color(outline-variant)};
+
+  display: flex;
+  align-items: flex-start;
+  gap: pdz.space(md);
+  width: min(24rem, calc(100vw - #{pdz.space(2xl)}));
+  padding: pdz.space(md) pdz.space(lg);
+  border: 1px solid var(--pdz-toast-border);
+  border-left: 3px solid var(--pdz-toast-accent);
+  border-radius: pdz.shape(corner-sm);
+  background-color: var(--pdz-toast-surface);
+  color: var(--pdz-toast-ink);
+  box-shadow: var(--pdz-level-3);
+  pointer-events: auto;
+  animation: pdz-toast-enter pdz.duration(slow) pdz.easing(standard) both;
+}
+
+@each $name, $tokens in $tones {
+  :host([data-tone="#{$name}"]) {
+    --pdz-toast-surface: #{pdz.color(map.get($tokens, surface))};
+    --pdz-toast-ink: #{pdz.color(map.get($tokens, ink))};
+    --pdz-toast-accent: #{pdz.color(map.get($tokens, accent))};
+
+    @if map.get($tokens, border) {
+      --pdz-toast-border: #{pdz.color(map.get($tokens, border))};
+    } @else {
+      --pdz-toast-border: #{color-mix(
+          in srgb,
+          pdz.color(map.get($tokens, accent)) 30%,
+          transparent
+        )};
+    }
+  }
+}
+
+:host(.pdz-toast--leaving) {
+  animation: pdz-toast-leave pdz.duration(base) pdz.easing(exit) both;
+}
+
+.pdz-toast__icon {
+  color: var(--pdz-toast-accent);
+  flex: none;
+  margin-top: pdz.space(3xs);
+}
+
+.pdz-toast__body {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(2xs);
+  min-width: 0;
+  flex: 1;
+}
+
+.pdz-toast__heading {
+  @include pdz.text(body-sm-strong);
+  margin: 0;
+}
+
+.pdz-toast__message {
+  @include pdz.text(body-sm);
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.pdz-toast__action,
+.pdz-toast__close {
+  flex: none;
+  color: inherit;
+}
+
+.pdz-toast__action {
+  align-self: center;
+}
+
+.pdz-toast__close {
+  margin-right: calc(#{pdz.space(sm)} * -1);
+}
+
+.pdz-toast__timer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+  pointer-events: none;
+  overflow: visible;
+}
+
+.pdz-toast__timer-track,
+.pdz-toast__timer-sweep {
+  fill: none;
+  stroke-width: 1.5;
+}
+
+.pdz-toast__timer-track {
+  stroke: color-mix(in srgb, currentColor 20%, transparent);
+}
+
+.pdz-toast__timer-sweep {
+  stroke: var(--pdz-toast-accent);
+  stroke-linecap: round;
+  stroke-dasharray: 65.97;
+  animation: pdz-toast-countdown pdz.easing(linear) forwards;
+}
+
+:host(:hover) .pdz-toast__timer-sweep,
+:host(:focus-within) .pdz-toast__timer-sweep {
+  animation-play-state: paused;
+}
+
+@keyframes pdz-toast-countdown {
+  from {
+    stroke-dashoffset: 0;
+  }
+  to {
+    stroke-dashoffset: 65.97;
+  }
+}
+
+@keyframes pdz-toast-enter {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes pdz-toast-leave {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+  to {
+    opacity: 0;
+    transform: translateY(0.5rem) scale(0.98);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :host,
+  :host(.pdz-toast--leaving) {
+    animation-duration: 1ms;
+  }
+}
+
+@media (forced-colors: active) {
+  :host {
+    border: 1px solid CanvasText;
+  }
+}

@@ -7,6 +7,7 @@
 @use "components/choice";
 @use "components/card";
 @use "components/table";
+@use "components/dialog";
 
 @include pdz-theming.init-tokens();
 

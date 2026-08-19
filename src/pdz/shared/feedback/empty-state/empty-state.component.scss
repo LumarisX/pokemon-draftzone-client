@@ -1,0 +1,75 @@
+@use "sass:map";
+@use "pdz-theming" as pdz;
+
+$sizes: (
+  sm: (
+    gap: pdz.space(xs),
+    pad: pdz.space(md),
+  ),
+  md: (
+    gap: pdz.space(sm),
+    pad: pdz.space(xl),
+  ),
+  lg: (
+    gap: pdz.space(md),
+    pad: pdz.space(3xl),
+  ),
+);
+
+:host {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: pdz.color(on-surface-variant);
+}
+
+@each $name, $tokens in $sizes {
+  :host([data-size="#{$name}"]) {
+    gap: map.get($tokens, gap);
+    padding: map.get($tokens, pad);
+  }
+}
+
+:host(.pdz-empty-state--bordered) {
+  border: 1px dashed pdz.color(outline-variant);
+  border-radius: pdz.shape(corner-md);
+}
+
+.pdz-empty-state__icon {
+  color: pdz.color(outline);
+}
+
+.pdz-empty-state__heading {
+  @include pdz.text(card-title);
+  margin: 0;
+  color: pdz.color(on-surface);
+}
+
+.pdz-empty-state__message {
+  @include pdz.text(body-sm);
+  margin: 0;
+  max-width: 40ch;
+  text-wrap: pretty;
+}
+
+.pdz-empty-state__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: pdz.space(sm);
+
+  &:empty {
+    display: none;
+  }
+}
+
+:host([data-size="sm"]) {
+  flex-direction: row;
+  flex-wrap: wrap;
+
+  .pdz-empty-state__heading {
+    @include pdz.text(body-sm-strong);
+  }
+}

@@ -3,15 +3,38 @@
 
 $densities: (
   compact: (
-    pdz.space(2xs) pdz.space(sm),
+    block: pdz.space(xs),
+    inline: pdz.space(sm),
+    edge: pdz.space(md),
   ),
   default: (
-    pdz.space(sm) pdz.space(md),
+    block: pdz.space(sm),
+    inline: pdz.space(md),
+    edge: pdz.space(lg),
   ),
   relaxed: (
-    pdz.space(md) pdz.space(lg),
+    block: pdz.space(md),
+    inline: pdz.space(lg),
+    edge: pdz.space(xl),
   ),
 );
+
+@mixin density($name) {
+  $steps: map.get($densities, $name);
+
+  th,
+  td {
+    padding: map.get($steps, block) map.get($steps, inline);
+
+    &:first-child {
+      padding-left: map.get($steps, edge);
+    }
+
+    &:last-child {
+      padding-right: map.get($steps, edge);
+    }
+  }
+}
 
 $header-tones: (
   subtle: (
@@ -38,9 +61,10 @@ $header-tones: (
   color: pdz.color(on-surface);
   @include pdz.numeric;
 
+  @include density(default);
+
   th,
   td {
-    padding: map.get($densities, default);
     text-align: left;
     vertical-align: middle;
   }
@@ -87,12 +111,9 @@ $header-tones: (
   }
 }
 
-@each $name, $padding in $densities {
+@each $name, $steps in $densities {
   .pdz-table[data-density="#{$name}"] {
-    th,
-    td {
-      padding: $padding;
-    }
+    @include density($name);
   }
 }
 

@@ -1,0 +1,32 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  position: fixed;
+  z-index: 10200;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  overflow: visible;
+  inset-block-start: auto;
+  inset-block-end: pdz.space(lg);
+  inset-inline: pdz.space(sm);
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: stretch;
+  gap: pdz.space(sm);
+  pointer-events: none;
+}
+
+@include pdz.respond-above(small) {
+  :host {
+    inset-inline: auto pdz.space(lg);
+    align-items: flex-end;
+  }
+}
+
+@supports selector(:popover-open) {
+  :host([popover]:not(:popover-open)) {
+    display: none;
+  }
+}
