@@ -3,10 +3,10 @@ import {
   ElementRef,
   EventEmitter,
   inject,
-  Input,
   Output,
   signal,
   ViewChild,
+  input,
 } from '@angular/core';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { WheelStorageService } from '../wheel-storage.service';
@@ -34,8 +34,8 @@ import {
 export class WheelOptionsComponent {
   private readonly storage = inject(WheelStorageService);
 
-  @Input({ required: true }) options!: WheelOptions;
-  @Input() items: StoredWheelItem[] = [];
+  readonly options = input.required<WheelOptions>();
+  readonly items = input<StoredWheelItem[]>([]);
 
   @Output() optionsChange = new EventEmitter<WheelOptions>();
   @Output() itemsImport = new EventEmitter<StoredWheelItem[]>();
@@ -54,7 +54,7 @@ export class WheelOptionsComponent {
   readonly notice = signal<string | null>(null);
 
   open(): void {
-    this.json.set(this.storage.serialize(this.items));
+    this.json.set(this.storage.serialize(this.items()));
     this.error.set(null);
     this.notice.set(null);
     this.dialog.nativeElement.showModal();
@@ -72,7 +72,7 @@ export class WheelOptionsComponent {
     const parsed = Number.parseFloat(raw);
     if (!Number.isFinite(parsed)) return;
     this.optionsChange.emit({
-      ...this.options,
+      ...this.options(),
       spinSeconds: clampSpinSeconds(parsed),
     });
   }
@@ -80,20 +80,23 @@ export class WheelOptionsComponent {
   setTurns(raw: string): void {
     const parsed = Number.parseInt(raw, 10);
     if (!Number.isFinite(parsed)) return;
-    this.optionsChange.emit({ ...this.options, minTurns: clampTurns(parsed) });
+    this.optionsChange.emit({
+      ...this.options(),
+      minTurns: clampTurns(parsed),
+    });
   }
 
   setRimArc(raw: string): void {
     const parsed = Number.parseFloat(raw);
     if (!Number.isFinite(parsed)) return;
     this.optionsChange.emit({
-      ...this.options,
+      ...this.options(),
       rimArc: clampRimArc(parsed),
     });
   }
 
   refreshJson(): void {
-    this.json.set(this.storage.serialize(this.items));
+    this.json.set(this.storage.serialize(this.items()));
     this.error.set(null);
     this.notice.set(null);
   }
@@ -124,7 +127,7 @@ export class WheelOptionsComponent {
   }
 
   download(): void {
-    const blob = new Blob([this.storage.serialize(this.items)], {
+    const blob = new Blob([this.storage.serialize(this.items())], {
       type: 'application/json',
     });
     const url = URL.createObjectURL(blob);

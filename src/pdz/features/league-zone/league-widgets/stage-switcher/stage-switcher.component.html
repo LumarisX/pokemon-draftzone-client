@@ -1,20 +1,20 @@
-@if (stages.length || allStagesLabel) {
+@if (stages.length || allStagesLabel()) {
   <nav class="stage-switcher">
-    @if (allStagesLabel) {
+    @if (allStagesLabel()) {
       <button
         type="button"
         class="stage-switcher__tab"
-        [class.stage-switcher__tab--active]="currentStageSlug === 'all'"
+        [class.stage-switcher__tab--active]="currentStageSlug() === 'all'"
         (click)="selectStage('all')"
       >
-        {{ allStagesLabel }}
+        {{ allStagesLabel() }}
       </button>
     }
     @for (stage of stages; track stage.slug) {
       <button
         type="button"
         class="stage-switcher__tab"
-        [class.stage-switcher__tab--active]="stage.slug === currentStageSlug"
+        [class.stage-switcher__tab--active]="stage.slug === currentStageSlug()"
         (click)="selectStage(stage.slug)"
       >
         {{ getStageLabel(stage) }}

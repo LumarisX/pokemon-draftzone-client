@@ -8,7 +8,6 @@ import {
   EventEmitter,
   inject,
   input,
-  Input,
   OnDestroy,
   OnInit,
   Output,
@@ -73,7 +72,7 @@ export class TierListComponent implements OnInit, OnDestroy {
   private dialog = inject(MatDialog);
   private destroy$ = new Subject<void>();
 
-  @Input() header?: string;
+  readonly header = input<string>();
   /** Extra pokemon IDs to treat as drafted (e.g. local pending picks not yet saved). */
   localDraftedIds = input<string[]>([]);
   drafted = signal<{ [division: string]: { pokemonId: string }[] }>({});
@@ -88,8 +87,7 @@ export class TierListComponent implements OnInit, OnDestroy {
   /** The tier currently expanded to fill the whole width (hiding the others), if any. */
   expandedTierName = signal<string | null>(null);
 
-  private tiersContainer =
-    viewChild<ElementRef<HTMLElement>>('tiersContainer');
+  private tiersContainer = viewChild<ElementRef<HTMLElement>>('tiersContainer');
 
   readonly SortOptions = SORT_OPTIONS;
   readonly types = TYPES;
@@ -298,11 +296,9 @@ export class TierListComponent implements OnInit, OnDestroy {
     this.menu = null;
   }
 
-  @Input()
-  buttonText?: string;
+  readonly buttonText = input<string>();
 
-  @Input()
-  altButtonText?: string;
+  readonly altButtonText = input<string>();
 
   @Output() pokemonSelected = new EventEmitter<{
     id: string;
@@ -383,17 +379,19 @@ export class TierListComponent implements OnInit, OnDestroy {
   ): PokemonDialogData {
     const isDrafted = this.isPokemonDrafted(pokemon) || this.isBanTier(tier);
     const buttons: PokemonDialogButton[] = [];
-    if (this.buttonText && tier.cost != null) {
+    const buttonText = this.buttonText();
+    if (buttonText && tier.cost != null) {
       buttons.push({
-        label: this.buttonText,
+        label: buttonText,
         result: { action: 'draft', teraCapt: false, pokemon, tier },
         variant: 'primary',
         disabled: isDrafted,
       });
     }
-    if (this.altButtonText && pokemon.addons?.length) {
+    const altButtonText = this.altButtonText();
+    if (altButtonText && pokemon.addons?.length) {
       buttons.push({
-        label: this.altButtonText,
+        label: altButtonText,
         result: { action: 'draft', teraCapt: true, pokemon, tier },
         variant: 'secondary',
         disabled: isDrafted,
@@ -438,7 +436,9 @@ export class TierListComponent implements OnInit, OnDestroy {
   }
 
   toggleTierExpanded(tier: LeagueTier): void {
-    this.expandedTierName.update((name) => (name === tier.name ? null : tier.name));
+    this.expandedTierName.update((name) =>
+      name === tier.name ? null : tier.name,
+    );
   }
 
   makeWarningString(pokemon: TierPokemon) {

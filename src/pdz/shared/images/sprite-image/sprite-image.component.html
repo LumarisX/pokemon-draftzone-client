@@ -1,8 +1,8 @@
-<div class="sprite-container" [style.width]="size" [style.height]="size">
-  @if (pokemon.id) {
+<div class="sprite-container" [style.width]="size()" [style.height]="size()">
+  @if (pokemon().id) {
     <img
-      [matTooltip]="tooltipPosition ? pokemonName : ''"
-      [matTooltipPosition]="tooltipPosition ?? 'above'"
+      [matTooltip]="tooltipPosition() ? pokemonName : ''"
+      [matTooltipPosition]="tooltipPosition() ?? 'above'"
       [ngClass]="classes"
       [src]="path"
       [alt]="pokemonName + ' sprite'"

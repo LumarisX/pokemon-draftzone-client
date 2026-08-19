@@ -6,6 +6,7 @@ import {
   Input,
   Output,
   ViewChild,
+  input,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
@@ -28,8 +29,8 @@ let nextId = 0;
 export class TimezoneSelectComponent {
   readonly selectId = `pdz-timezone-select-${nextId++}`;
 
-  @Input() label = '';
-  @Input() value?: TimeZone;
+  readonly label = input('');
+  readonly value = input<TimeZone>();
   @Output() valueChange = new EventEmitter<TimeZone>();
 
   @Input() set zones(value: TimeZone[]) {
@@ -54,10 +55,9 @@ export class TimezoneSelectComponent {
   highlighted: TimeZone | null = null;
 
   get triggerLabel(): string {
-    if (!this.value) return 'Select a time zone...';
-    return this.value.short
-      ? `${this.value.short} (${this.value.utc})`
-      : this.value.utc;
+    const value = this.value();
+    if (!value) return 'Select a time zone...';
+    return value.short ? `${value.short} (${value.utc})` : value.utc;
   }
 
   get options(): TimeZone[] {
@@ -92,7 +92,7 @@ export class TimezoneSelectComponent {
   open(): void {
     this.search = '';
     this.applyFilter();
-    this.highlighted = this.value ?? this.options[0] ?? null;
+    this.highlighted = this.value() ?? this.options[0] ?? null;
     this.isOpen = true;
     setTimeout(() => this.searchEl?.nativeElement.focus());
   }
@@ -110,7 +110,8 @@ export class TimezoneSelectComponent {
   }
 
   isSelected(zone: TimeZone): boolean {
-    return this.value?.name === zone.name && this.value?.short === zone.short;
+    const value = this.value();
+    return value?.name === zone.name && value?.short === zone.short;
   }
 
   handleTriggerKeydown(event: KeyboardEvent): void {

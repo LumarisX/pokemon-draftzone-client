@@ -1,10 +1,10 @@
-@if (teamArray) {
+@if (teamArray()) {
   <div class="main-container">
     @if (importing) {
       <div class="import-container">
         <div class="add-bar">
           <mat-chip-set #importChipGrid>
-            @for (monGroup of teamArray.controls; track $index) {
+            @for (monGroup of teamArray().controls; track $index) {
               <mat-chip>
                 <pdz-sprite
                   matChipAvatar
@@ -19,9 +19,7 @@
             }
           </mat-chip-set>
           <div class="add-spacer"></div>
-          <button pdz-button
-            (click)="toggleImporting(false); importPokemon()"
-          >
+          <button pdz-button (click)="toggleImporting(false); importPokemon()">
             Confirm
           </button>
         </div>
@@ -43,7 +41,7 @@
         <div>
           <pdz-pokemon-select
             #pokemonInput
-            [ruleset]="ruleset"
+            [ruleset]="ruleset()"
             (pokemonSelected)="
               addPokemon($event); pokemonInput.clearSelection()
             "
@@ -51,7 +49,11 @@
             label="Add Pokemon"
           ></pdz-pokemon-select>
 
-          <button pdz-button iconOnly variant="ghost" color="neutral"
+          <button
+            pdz-button
+            iconOnly
+            variant="ghost"
+            color="neutral"
             class="capt-button"
             cdkOverlayOrigin
             (click)="teamOption = true"
@@ -104,14 +106,14 @@
         <button pdz-button (click)="toggleImporting(true)">Import</button>
       </div>
       <div class="team-container">
-        @if (teamArray.value.length > 0) {
+        @if (teamArray().value.length > 0) {
           <cdk-accordion
             #movechartAccordion
             cdkDropList
             (cdkDropListDropped)="drop($event)"
           >
             @for (
-              monGroup of teamArray.controls;
+              monGroup of teamArray().controls;
               track monGroup;
               let index = $index
             ) {
@@ -187,7 +189,11 @@
                         settings
                       </mat-icon>
                     </button>
-                    <button pdz-button iconOnly variant="ghost" color="neutral"
+                    <button
+                      pdz-button
+                      iconOnly
+                      variant="ghost"
+                      color="neutral"
                       (click)="deletePokemon(index); $event.stopPropagation()"
                     >
                       <mat-icon>delete</mat-icon>
@@ -395,8 +401,10 @@
                             monGroup.controls.nickname.value &&
                             monGroup.controls.nickname.value.length > 13
                           ) {
-                            <span pdz-hint>{{ monGroup.controls.nickname.value.length }} /
-                              18</span>
+                            <span pdz-hint
+                              >{{ monGroup.controls.nickname.value.length }} /
+                              18</span
+                            >
                           }
                         </label>
                       </div>

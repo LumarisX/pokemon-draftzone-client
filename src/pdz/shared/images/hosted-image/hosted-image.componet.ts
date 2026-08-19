@@ -1,5 +1,5 @@
 // Needed for [src], [alt] etc. if standalone
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { environment } from '@pdz/environments/environment';
 
 @Component({
@@ -8,10 +8,10 @@ import { environment } from '@pdz/environments/environment';
   template: `<img
     [src]="hasError ? fallbackImageUrl : imageUrl"
     [alt]="effectiveAlt"
-    [attr.width]="width"
-    [attr.height]="height"
-    [attr.loading]="loading"
-    [class]="cssClass"
+    [attr.width]="width()"
+    [attr.height]="height()"
+    [attr.loading]="loading()"
+    [class]="cssClass()"
     (error)="handleError()"
   />`,
   styles: `
@@ -29,27 +29,28 @@ import { environment } from '@pdz/environments/environment';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HostedImageComponent {
-  @Input({ required: true }) key!: string;
-  @Input() alt: string = '';
-  @Input() width?: string | number;
-  @Input() height?: string | number;
-  @Input() cssClass?: string;
-  @Input() loading: 'eager' | 'lazy' = 'lazy';
+  readonly key = input.required<string>();
+  readonly alt = input<string>('');
+  readonly width = input<string | number>();
+  readonly height = input<string | number>();
+  readonly cssClass = input<string>();
+  readonly loading = input<'eager' | 'lazy'>('lazy');
 
   private readonly imageBaseUrl = environment.bucketUrl;
   public hasError = false;
   public fallbackImageUrl = 'assets/images/placeholder.png'; //TODO add later
 
   get imageUrl(): string {
-    if (!this.key) {
+    const key = this.key();
+    if (!key) {
       this.handleError();
       return '';
     }
-    return `${this.imageBaseUrl}/${this.key}`;
+    return `${this.imageBaseUrl}/${key}`;
   }
 
   get effectiveAlt(): string {
-    return this.alt || `Image for ${this.key}`;
+    return this.alt() || `Image for ${this.key()}`;
   }
 
   handleError(): void {

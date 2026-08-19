@@ -10,9 +10,6 @@
   z-index: pdz.z(navbar);
 }
 
-// ----------------------------------------------------------------------------
-// Bar
-// ----------------------------------------------------------------------------
 .navbar {
   display: flex;
   align-items: center;
@@ -28,9 +25,6 @@
   flex: 1 1 auto;
 }
 
-// ----------------------------------------------------------------------------
-// Icon button (mobile menu trigger)
-// ----------------------------------------------------------------------------
 .icon-btn {
   position: relative;
   @include icon-button-menu(
@@ -43,9 +37,6 @@
   );
 }
 
-// ----------------------------------------------------------------------------
-// Tabs (desktop) — also used as the "Other Tools" trigger button
-// ----------------------------------------------------------------------------
 .menu-tab {
   display: inline-flex;
   align-items: center;
@@ -61,7 +52,6 @@
   text-decoration: none;
   cursor: pointer;
   white-space: nowrap;
-  background-color: inherit;
   transition: background-color pdz.duration(slow) pdz.easing(standard);
 
   &:hover {
@@ -69,7 +59,6 @@
     color: pdz.color(on-surface);
   }
 
-  // Active (current route): keep normal text color, add a primary underline bar.
   &.active {
     color: pdz.color(on-surface);
 
@@ -90,9 +79,6 @@
   }
 }
 
-// ----------------------------------------------------------------------------
-// Home logo button
-// ----------------------------------------------------------------------------
 .home-btn {
   position: relative;
   @include flat-button(
@@ -104,9 +90,6 @@
   );
 }
 
-// ----------------------------------------------------------------------------
-// Store button — mobile first
-// ----------------------------------------------------------------------------
 .store-button {
   margin: 0 pdz.space(xs);
   @include flat-button(
@@ -127,9 +110,6 @@
   }
 }
 
-// ----------------------------------------------------------------------------
-// Dropdown panels (rendered via CDK overlay)
-// ----------------------------------------------------------------------------
 .menu-panel {
   @include menu-panel;
 }
@@ -146,9 +126,6 @@
   @include menu-divider;
 }
 
-// ----------------------------------------------------------------------------
-// Badge
-// ----------------------------------------------------------------------------
 .nav-badge {
   display: inline-flex;
   align-items: center;
@@ -175,9 +152,6 @@
   }
 }
 
-// ----------------------------------------------------------------------------
-// Responsive nav — mobile first
-// ----------------------------------------------------------------------------
 .mobile-menu {
   display: inline-flex;
 }

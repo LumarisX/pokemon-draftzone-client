@@ -1,11 +1,11 @@
 <form
-  [class]="'form-container ' + class"
+  [class]="'form-container ' + class()"
   cdkOverlayOrigin
   #trigger="cdkOverlayOrigin"
   #pokemonForm
 >
-  <label pdz-field label="{{ label }}" class="pokemon-select__field">
-    @if (showSprite !== null && setPokemon) {
+  <label pdz-field label="{{ label() }}" class="pokemon-select__field">
+    @if (showSprite() !== null && setPokemon) {
       <div matPrefix class="selected-sprite">
         <pdz-sprite flipped [pokemon]="setPokemon"></pdz-sprite>
       </div>
@@ -20,7 +20,11 @@
       [formControl]="selectedForm"
     />
     @if (selectedForm.value) {
-      <button pdz-button iconOnly variant="ghost" color="neutral"
+      <button
+        pdz-button
+        iconOnly
+        variant="ghost"
+        color="neutral"
         type="button"
         matSuffix
         (click)="clearSelection($event)"

@@ -1,22 +1,22 @@
 <div
   class="pdz-slide-toggle"
   [class.checked]="checkedState"
-  [class.disabled]="disabled"
+  [class.disabled]="disabled()"
   (click)="toggle()"
 >
   <span class="toggle-track">
     <span class="toggle-thumb">
       @if (checkedState) {
-        @if (onSVG) {
-          <mat-icon class="toggle-icon" [svgIcon]="onSVG"></mat-icon>
+        @if (onSVG()) {
+          <mat-icon class="toggle-icon" [svgIcon]="onSVG()!"></mat-icon>
         } @else {
-          <mat-icon class="toggle-icon">{{ onIcon }}</mat-icon>
+          <mat-icon class="toggle-icon">{{ onIcon() }}</mat-icon>
         }
       } @else {
-        @if (offSVG) {
-          <mat-icon class="toggle-icon" [svgIcon]="offSVG"></mat-icon>
+        @if (offSVG()) {
+          <mat-icon class="toggle-icon" [svgIcon]="offSVG()!"></mat-icon>
         } @else {
-          <mat-icon class="toggle-icon">{{ offIcon }}</mat-icon>
+          <mat-icon class="toggle-icon">{{ offIcon() }}</mat-icon>
         }
       }
     </span>

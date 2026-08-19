@@ -9,10 +9,10 @@
     </div>
   </div>
   <div class="widget-body">
-    @for (pokemon of coverage[selectedTeam]; track pokemon) {
+    @for (pokemon of coverage()[selectedTeam]; track pokemon) {
       <pdz-coverage
         [pokemon]="pokemon"
-        [typechart]="typecharts[(selectedTeam + 1) % typecharts.length]"
+        [typechart]="typecharts()[(selectedTeam + 1) % typecharts().length]"
         [abilities]="abilities"
       ></pdz-coverage>
     }

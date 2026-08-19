@@ -7,6 +7,7 @@ import {
   SimpleChanges,
   ViewChild,
   ViewContainerRef,
+  input,
 } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
@@ -69,7 +70,7 @@ export const svgIconPaths: Readonly<Record<string, string>> = {
         class="material-symbols-outlined"
         [style.fontSize.px]="computedHeight ?? 24"
         [style.fontVariationSettings]="fontSettings"
-        [attr.aria-label]="ariaLabel"
+        [attr.aria-label]="ariaLabel()"
       >
         {{ name }}
       </span>
@@ -130,16 +131,16 @@ export class IconComponent implements OnChanges {
     return this._name;
   }
 
-  @Input() size: number | 'sm' | 'md' | 'lg' | 'xl' = 24;
-  @Input() width?: number | 'sm' | 'md' | 'lg' | 'xl';
-  @Input() height?: number | 'sm' | 'md' | 'lg' | 'xl';
-  @Input({ transform: booleanAttribute }) square = false;
+  readonly size = input<number | 'sm' | 'md' | 'lg' | 'xl'>(24);
+  readonly width = input<number | 'sm' | 'md' | 'lg' | 'xl'>();
+  readonly height = input<number | 'sm' | 'md' | 'lg' | 'xl'>();
+  readonly square = input(false, { transform: booleanAttribute });
 
-  @Input() weight: number = 400;
-  @Input({ transform: booleanAttribute }) fill = false;
-  @Input() grade: -25 | 0 | 200 = 0;
-  @Input() opticalSize: number = 24;
-  @Input() ariaLabel?: string;
+  readonly weight = input<number>(400);
+  readonly fill = input(false, { transform: booleanAttribute });
+  readonly grade = input<-25 | 0 | 200>(0);
+  readonly opticalSize = input<number>(24);
+  readonly ariaLabel = input<string>();
 
   svgIcon$?: Observable<SafeHtml>;
 
@@ -156,8 +157,9 @@ export class IconComponent implements OnChanges {
   ) {}
 
   get computedWidth(): number | undefined {
-    if (this.width !== undefined) {
-      if (typeof this.width === 'number') return this.width;
+    const width = this.width();
+    if (width !== undefined) {
+      if (typeof width === 'number') return width;
       const sizeMap: Record<string, number> = {
         xs: 16,
         sm: 20,
@@ -165,11 +167,12 @@ export class IconComponent implements OnChanges {
         lg: 32,
         xl: 48,
       };
-      return sizeMap[this.width] || 24;
+      return sizeMap[width] || 24;
     }
-    if (this.height !== undefined) {
-      if (this.square) {
-        if (typeof this.height === 'number') return this.height;
+    const height = this.height();
+    if (height !== undefined) {
+      if (this.square()) {
+        if (typeof height === 'number') return height;
         const sizeMap: Record<string, number> = {
           xs: 16,
           sm: 20,
@@ -177,11 +180,12 @@ export class IconComponent implements OnChanges {
           lg: 32,
           xl: 48,
         };
-        return sizeMap[this.height] || 24;
+        return sizeMap[height] || 24;
       }
       return undefined;
     }
-    if (typeof this.size === 'number') return this.size;
+    const size = this.size();
+    if (typeof size === 'number') return size;
     const sizeMap: Record<string, number> = {
       xs: 16,
       sm: 20,
@@ -189,12 +193,13 @@ export class IconComponent implements OnChanges {
       lg: 32,
       xl: 48,
     };
-    return sizeMap[this.size] || 24;
+    return sizeMap[size] || 24;
   }
 
   get computedHeight(): number | undefined {
-    if (this.height !== undefined) {
-      if (typeof this.height === 'number') return this.height;
+    const height = this.height();
+    if (height !== undefined) {
+      if (typeof height === 'number') return height;
       const sizeMap: Record<string, number> = {
         xs: 16,
         sm: 20,
@@ -202,11 +207,12 @@ export class IconComponent implements OnChanges {
         lg: 32,
         xl: 48,
       };
-      return sizeMap[this.height] || 24;
+      return sizeMap[height] || 24;
     }
-    if (this.width !== undefined) {
-      if (this.square) {
-        if (typeof this.width === 'number') return this.width;
+    const width = this.width();
+    if (width !== undefined) {
+      if (this.square()) {
+        if (typeof width === 'number') return width;
         const sizeMap: Record<string, number> = {
           xs: 16,
           sm: 20,
@@ -214,11 +220,12 @@ export class IconComponent implements OnChanges {
           lg: 32,
           xl: 48,
         };
-        return sizeMap[this.width] || 24;
+        return sizeMap[width] || 24;
       }
       return undefined;
     }
-    if (typeof this.size === 'number') return this.size;
+    const size = this.size();
+    if (typeof size === 'number') return size;
     const sizeMap: Record<string, number> = {
       xs: 16,
       sm: 20,
@@ -226,11 +233,11 @@ export class IconComponent implements OnChanges {
       lg: 32,
       xl: 48,
     };
-    return sizeMap[this.size] || 24;
+    return sizeMap[size] || 24;
   }
 
   get fontSettings(): string {
-    return `'OPSZ' ${this.opticalSize}, 'wght' ${this.weight}, 'FILL' ${this.fill ? 1 : 0}, 'GRAD' ${this.grade}`;
+    return `'OPSZ' ${this.opticalSize()}, 'wght' ${this.weight()}, 'FILL' ${this.fill() ? 1 : 0}, 'GRAD' ${this.grade()}`;
   }
 
   ngOnChanges(changes: SimpleChanges): void {

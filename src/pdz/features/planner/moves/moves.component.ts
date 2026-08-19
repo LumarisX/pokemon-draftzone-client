@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { MoveCoreComponent } from '@pdz/shared/widgets/movechart-core/moves.component';
 import { MoveChart } from '../../drafts/matchup-overview/matchup-interface';
 
@@ -9,6 +9,5 @@ import { MoveChart } from '../../drafts/matchup-overview/matchup-interface';
   imports: [MoveCoreComponent],
 })
 export class MoveComponent {
-  @Input()
-  movechart?: MoveChart;
+  readonly movechart = input<MoveChart>();
 }

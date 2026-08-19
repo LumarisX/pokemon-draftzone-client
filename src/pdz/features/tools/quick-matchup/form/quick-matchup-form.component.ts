@@ -4,10 +4,10 @@ import {
   Component,
   EventEmitter,
   inject,
-  Input,
   OnDestroy,
   OnInit,
   Output,
+  input,
 } from '@angular/core';
 import {
   AbstractControl,
@@ -46,7 +46,11 @@ import {
     MatIconModule,
     FormatSelectComponent,
     TeamFormComponent,
-    RulesetSelectComponent, ButtonComponent, FieldComponent, InputDirective],
+    RulesetSelectComponent,
+    ButtonComponent,
+    FieldComponent,
+    InputDirective,
+  ],
   providers: [
     {
       provide: STEPPER_GLOBAL_OPTIONS,
@@ -70,8 +74,7 @@ export class QuickMatchupFormComponent implements OnInit, OnDestroy {
 
   destroy$ = new Subject<void>();
   pokemonList$ = new BehaviorSubject<DraftPokemon[]>([]);
-  @Input()
-  quickForm: QuickForm | undefined;
+  readonly quickForm = input<QuickForm>();
 
   @Output() formSubmitted = new EventEmitter<QuickForm>();
 
@@ -91,7 +94,8 @@ export class QuickMatchupFormComponent implements OnInit, OnDestroy {
             : [params['team2']]
           ).map((pid) => ({ id: pid, name: getNameByPid(pid) }))
         : undefined;
-      if (!this.quickForm) {
+      const quickForm = this.quickForm();
+      if (!quickForm) {
         this.quickForm = new QuickForm(this.pokemonList$, {
           ruleset,
           format,
@@ -99,7 +103,7 @@ export class QuickMatchupFormComponent implements OnInit, OnDestroy {
           team2,
         });
       }
-      this.quickForm.controls.details.controls.ruleset.valueChanges
+      quickForm.controls.details.controls.ruleset.valueChanges
         .pipe(
           filter((ruleset) => ruleset !== null),
           takeUntil(this.destroy$),
@@ -107,10 +111,8 @@ export class QuickMatchupFormComponent implements OnInit, OnDestroy {
         .subscribe((ruleset) => {
           this.loadPokemonList(ruleset);
         });
-      this.loadPokemonList(
-        this.quickForm.controls.details.controls.ruleset.value,
-      );
-      this.quickForm.setValidators(this.validateDraftForm);
+      this.loadPokemonList(quickForm.controls.details.controls.ruleset.value);
+      quickForm.setValidators(this.validateDraftForm);
       this.location.replaceState(this.location.path().split('?')[0]);
     });
   }
@@ -123,10 +125,10 @@ export class QuickMatchupFormComponent implements OnInit, OnDestroy {
   private loadPokemonList(ruleset: string): void {
     this.dataService.getPokemonList(ruleset).subscribe((list) => {
       this.pokemonList$.next(list);
-      this.quickForm?.controls.side1.controls.team.controls.forEach((group) => {
+      quickForm?.controls.side1.controls.team.controls.forEach((group) => {
         group.controls.pokemon.updateValueAndValidity();
       });
-      this.quickForm?.controls.side2.controls.team.controls.forEach((group) => {
+      quickForm?.controls.side2.controls.team.controls.forEach((group) => {
         group.controls.pokemon.updateValueAndValidity();
       });
     });
@@ -145,14 +147,15 @@ export class QuickMatchupFormComponent implements OnInit, OnDestroy {
   }
 
   onSubmit() {
-    if (!this.quickForm) return;
-    if (this.quickForm.valid) {
-      this.formSubmitted.emit(this.quickForm);
+    const quickForm = this.quickForm();
+    if (!quickForm) return;
+    if (quickForm.valid) {
+      this.formSubmitted.emit(quickForm);
       console.log('Form is valid.');
-      console.log(this.quickForm.value);
-      console.log(this.quickForm.toValue());
+      console.log(quickForm.value);
+      console.log(quickForm.toValue());
     } else {
-      console.log('draft', this.quickForm.valid, this.quickForm.errors);
+      console.log('draft', quickForm.valid, quickForm.errors);
 
       console.log('Form is invalid.');
     }

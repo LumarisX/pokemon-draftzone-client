@@ -2,10 +2,10 @@ import {
   Component,
   EventEmitter,
   HostListener,
-  Input,
   OnChanges,
   Output,
   SimpleChanges,
+  input,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TYPES } from '@pdz/shared/data';
@@ -26,9 +26,9 @@ import {
   styleUrl: './filter-drawer.component.scss',
 })
 export class FilterDrawerComponent implements OnChanges {
-  @Input() fields: FieldDefinition[] = [];
-  @Input() initialFilter: DraftFilter | null = null;
-  @Input() isEditing = false;
+  readonly fields = input<FieldDefinition[]>([]);
+  readonly initialFilter = input<DraftFilter | null>(null);
+  readonly isEditing = input(false);
   @Output() apply = new EventEmitter<SearchFilter>();
   @Output() cancel = new EventEmitter<void>();
 
@@ -40,16 +40,16 @@ export class FilterDrawerComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['initialFilter']) {
-      this.draft = this.initialFilter
-        ? structuredClone(this.initialFilter)
+      const initialFilter = this.initialFilter();
+      this.draft = initialFilter
+        ? structuredClone(initialFilter)
         : this.buildDefaultDraft();
     }
   }
 
   get currentFieldDef(): FieldDefinition {
-    return (
-      this.fields.find((f) => f.key === this.draft.field) ?? this.fields[0]
-    );
+    const fields = this.fields();
+    return fields.find((f) => f.key === this.draft.field) ?? fields[0];
   }
 
   get isTypeField(): boolean {
@@ -59,7 +59,7 @@ export class FilterDrawerComponent implements OnChanges {
   get fieldCategories(): string[] {
     const seen = new Set<string>();
     const cats: string[] = [];
-    for (const f of this.fields) {
+    for (const f of this.fields()) {
       const cat = f.category ?? 'Other';
       if (!seen.has(cat)) {
         seen.add(cat);
@@ -74,7 +74,7 @@ export class FilterDrawerComponent implements OnChanges {
   }
 
   fieldsInCategory(category: string): FieldDefinition[] {
-    return this.fields.filter((f) => (f.category ?? 'Other') === category);
+    return this.fields().filter((f) => (f.category ?? 'Other') === category);
   }
 
   onFieldChange(): void {
@@ -124,7 +124,8 @@ export class FilterDrawerComponent implements OnChanges {
   }
 
   private buildDefaultDraft(): DraftFilter {
-    if (!this.fields.length) {
+    const fields = this.fields();
+    if (!fields.length) {
       return {
         field: 'name',
         operator: 'contains',
@@ -133,7 +134,7 @@ export class FilterDrawerComponent implements OnChanges {
         moveFilters: [],
       };
     }
-    const field = this.fields[0];
+    const field = fields[0];
     return {
       field: field.key,
       operator: field.operators[0],

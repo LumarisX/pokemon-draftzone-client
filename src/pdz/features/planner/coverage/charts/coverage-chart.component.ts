@@ -1,10 +1,10 @@
 import {
   Component,
   ElementRef,
-  Input,
   OnChanges,
   OnDestroy,
   inject,
+  input,
 } from '@angular/core';
 import * as d3 from 'd3';
 import { SpriteService } from '@pdz/core/services/sprite.service';
@@ -45,16 +45,17 @@ export class CoverageChartComponent implements OnChanges, OnDestroy {
   private el = inject(ElementRef);
   private spriteService = inject(SpriteService);
 
-  @Input({ required: true }) data!: CoveragePokemon;
-  @Input() interactive = false;
-  @Input() strokeWidth?: number;
+  readonly data = input.required<CoveragePokemon>();
+  readonly interactive = input(false);
+  readonly strokeWidth = input<number>();
 
   chartData!: CoveragePokemon;
   private svg!: d3.Selection<d3.BaseType, unknown, null, undefined>;
 
   ngOnChanges(): void {
-    if (!this.data) return;
-    this.chartData = this.data;
+    const data = this.data();
+    if (!data) return;
+    this.chartData = data;
     this.destroyChart();
     this.createSunburst();
   }
@@ -125,8 +126,8 @@ export class CoverageChartComponent implements OnChanges, OnDestroy {
     const width = 800;
     const height = width;
     const radius = width / 6;
-    const interactive = this.interactive;
-    const stroke = this.strokeWidth ?? (interactive ? 4 : 10);
+    const interactive = this.interactive();
+    const stroke = this.strokeWidth() ?? (interactive ? 4 : 10);
 
     // Compute the layout.
     const hierarchy = d3.hierarchy(hierarchyData).sum((d) => d.value ?? 0);

@@ -2,10 +2,10 @@ import {
   Component,
   EventEmitter,
   inject,
-  Input,
   OnDestroy,
   OnInit,
   Output,
+  input,
 } from '@angular/core';
 import {
   AbstractControl,
@@ -51,13 +51,13 @@ export class DraftFormCoreComponent implements OnInit, OnDestroy {
 
   readonly draftPath = DRAFT_OVERVIEW_PATH;
 
-  @Input() title = 'New Draft';
-  @Input() submitLabel = 'Save Draft';
-  @Input() params: Partial<Draft> = {};
+  readonly title = input('New Draft');
+  readonly submitLabel = input('Save Draft');
+  readonly params = input<Partial<Draft>>({});
   @Output() formSubmitted = new EventEmitter<DraftFormData>();
 
   ngOnInit(): void {
-    this.draftForm = new DraftForm(this.params, this.pokemonList$);
+    this.draftForm = new DraftForm(this.params(), this.pokemonList$);
     this.draftForm.controls.details.controls.ruleset.valueChanges
       .pipe(
         filter((ruleset) => ruleset !== null),

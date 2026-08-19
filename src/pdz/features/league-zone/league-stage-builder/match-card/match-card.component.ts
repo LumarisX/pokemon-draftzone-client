@@ -2,8 +2,8 @@ import {
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
-  Input,
   Output,
+  input,
 } from '@angular/core';
 import {
   BracketTeamFlex,
@@ -23,7 +23,7 @@ import {
   template: `
     <pdz-matchup-card
       [card]="card"
-      [editable]="editable"
+      [editable]="editable()"
       (edit)="edit.emit($event)"
       (remove)="remove.emit($event)"
       (focusSource)="focusMatch.emit($event)"
@@ -36,12 +36,12 @@ import {
   `,
 })
 export class MatchCardComponent {
-  @Input({ required: true }) match!: FlexBracketMatch;
-  @Input({ required: true }) allMatches: FlexBracketMatch[] = [];
-  @Input() teams: BracketTeamFlex[] = [];
-  @Input() labels = new Map<string, string>();
-  @Input() editable = false;
-  @Input() matchupLinkBase?: string[] | null;
+  readonly match = input.required<FlexBracketMatch>();
+  readonly allMatches = input.required<FlexBracketMatch[]>();
+  readonly teams = input<BracketTeamFlex[]>([]);
+  readonly labels = input(new Map<string, string>());
+  readonly editable = input(false);
+  readonly matchupLinkBase = input<string[] | null>();
 
   @Output() edit = new EventEmitter<string>();
   @Output() remove = new EventEmitter<string>();
@@ -55,64 +55,68 @@ export class MatchCardComponent {
     const viewLink = this.viewLink(slots);
 
     return {
-      id: this.match.id,
+      id: this.match().id,
       label: this.label,
       decided: this.decided,
-      forfeit: !!this.match.forfeit,
+      forfeit: !!this.match().forfeit,
       slots,
       viewLink,
       breakdownLink:
         viewLink && !this.decided ? [...viewLink, 'breakdown'] : null,
-      replays: this.editable ? [] : this.replays,
+      replays: this.editable() ? [] : this.replays,
     };
   }
 
   private get label(): string {
-    return this.match.label ?? this.labels.get(this.match.id) ?? 'Match';
+    const match = this.match();
+    return match.label ?? this.labels().get(match.id) ?? 'Match';
   }
 
   private get decided(): boolean {
-    return this.match.winner !== undefined;
+    return this.match().winner !== undefined;
   }
 
   private get replays(): string[] {
-    if (this.match.replays?.length) return this.match.replays;
-    return this.match.replay ? [this.match.replay] : [];
+    const match = this.match();
+    if (match.replays?.length) return match.replays;
+    return match.replay ? [match.replay] : [];
   }
 
-  private viewLink(
-    slots: [MatchupCardSlot, MatchupCardSlot],
-  ): string[] | null {
-    if (this.editable) return null;
-    if (!this.matchupLinkBase?.length || !this.match.slug) return null;
+  private viewLink(slots: [MatchupCardSlot, MatchupCardSlot]): string[] | null {
+    if (this.editable()) return null;
+    const match = this.match();
+    const matchupLinkBase = this.matchupLinkBase();
+    if (!matchupLinkBase?.length || !match.slug) return null;
     if (slots.some((slot) => slot.pending)) return null;
-    return [...this.matchupLinkBase, 'matchups', this.match.slug];
+    return [...matchupLinkBase, 'matchups', match.slug];
   }
 
   private slotAt(index: 0 | 1): MatchupCardSlot {
-    const raw = index === 0 ? this.match.a : this.match.b;
+    const raw = index === 0 ? this.match().a : this.match().b;
     const { team, placeholder, sourceId } = resolveSlot(
       raw,
-      this.teams,
-      this.allMatches,
-      this.labels,
+      this.teams(),
+      this.allMatches(),
+      this.labels(),
     );
 
+    const match = this.match();
+    const matchupLinkBase = this.matchupLinkBase();
     return {
       name: team?.teamName ?? placeholder ?? 'TBD',
       coach: team?.coachName ?? null,
       logo: team?.logo,
       pending: !team,
       status:
-        this.match.winner === undefined
+        match.winner === undefined
           ? 'undecided'
-          : this.match.winner === index
+          : match.winner === index
             ? 'winner'
             : 'loser',
-      score: this.decided ? (this.match.score?.[index] ?? null) : null,
+      score: this.decided ? (this.match().score?.[index] ?? null) : null,
       link:
-        team?.teamSlug && this.matchupLinkBase?.length
-          ? [...this.matchupLinkBase, 'teams', team.teamSlug]
+        team?.teamSlug && matchupLinkBase?.length
+          ? [...matchupLinkBase, 'teams', team.teamSlug]
           : null,
       sourceId: team ? null : sourceId,
     };

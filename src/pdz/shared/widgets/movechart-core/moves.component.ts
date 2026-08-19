@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MoveChart } from '@pdz/features/drafts/matchup-overview/matchup-interface';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
@@ -20,8 +20,7 @@ import { PokemonTypeComponent } from '@pdz/shared/dialogs/pokemon-type/pokemon-t
   ],
 })
 export class MoveCoreComponent {
-  @Input()
-  movechart?: MoveChart;
+  readonly movechart = input<MoveChart>();
 
   private static readonly VIEW_KEY = 'matchup_moves_view';
 
@@ -63,10 +62,11 @@ export class MoveCoreComponent {
   }
 
   get filteredMoves() {
-    if (!this.movechart) return [];
+    const movechart = this.movechart();
+    if (!movechart) return [];
     const query = this.searchQuery.trim().toLowerCase();
 
-    return this.movechart.moves.filter((move) => {
+    return movechart.moves.filter((move) => {
       const matchesTag =
         this.selectedTags.size === 0 ||
         (move.tags.some(
@@ -85,8 +85,9 @@ export class MoveCoreComponent {
   }
 
   getPokemon(pid: string): Pokemon | undefined {
-    if (!this.movechart) return undefined;
-    return this.movechart.pokemon.find((p) => p.id === pid);
+    const movechart = this.movechart();
+    if (!movechart) return undefined;
+    return movechart.pokemon.find((p) => p.id === pid);
   }
 
   toggleDescription(name: string) {

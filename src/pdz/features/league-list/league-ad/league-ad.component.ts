@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, input } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { MarkdownModule } from 'ngx-markdown';
 import { EXTERNAL_LINK_PATH } from '@pdz/core/route-paths';
@@ -20,9 +20,9 @@ export type LeagueAdMode = 'public' | 'manage';
   imports: [CommonModule, RouterModule, MarkdownModule, BallSVG, CoinSVG],
 })
 export class LeagueAdComponent implements OnInit {
-  @Input() league!: LeagueAd;
-  @Input() index: number = 0;
-  @Input() mode: LeagueAdMode = 'public';
+  readonly league = input.required<LeagueAd>();
+  readonly index = input<number>(0);
+  readonly mode = input<LeagueAdMode>('public');
 
   @Output() delete = new EventEmitter<string>();
 
@@ -43,12 +43,13 @@ export class LeagueAdComponent implements OnInit {
   }
 
   private calculateSeasonWeeks(): void {
-    if (!this.league.seasonEnd || !this.league.seasonStart) {
+    const league = this.league();
+    if (!league.seasonEnd || !league.seasonStart) {
       return;
     }
 
-    const startTime = new Date(this.league.seasonStart).getTime();
-    const endTime = new Date(this.league.seasonEnd).getTime();
+    const startTime = new Date(league.seasonStart).getTime();
+    const endTime = new Date(league.seasonEnd).getTime();
     const timeDiff = Math.abs(endTime - startTime);
 
     this.weeks = Math.round(timeDiff / this.MILLISECONDS_IN_WEEK);
@@ -63,7 +64,7 @@ export class LeagueAdComponent implements OnInit {
   }
 
   hasTag(tag: string): boolean {
-    return this.league.tags.includes(tag);
+    return this.league().tags.includes(tag);
   }
 
   formatLink(link: string): string {
@@ -80,6 +81,6 @@ export class LeagueAdComponent implements OnInit {
   }
 
   onDelete(): void {
-    this.delete.emit(this.league._id);
+    this.delete.emit(this.league()._id);
   }
 }

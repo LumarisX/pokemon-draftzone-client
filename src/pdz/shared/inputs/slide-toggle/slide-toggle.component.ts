@@ -5,10 +5,10 @@ import {
   forwardRef,
   HostBinding,
   HostListener,
-  Input,
   Output,
   Renderer2,
   inject,
+  input,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
@@ -30,13 +30,13 @@ export class SlideToggleComponent implements ControlValueAccessor {
   private renderer = inject(Renderer2);
   private elRef = inject(ElementRef);
 
-  @Input() disabled = false;
-  @Input() label?: string;
-  @Input() onIcon = 'check';
-  @Input() offIcon = 'remove';
-  @Input() onSVG?: string;
-  @Input() offSVG?: string;
-  @Input() labelPosition: 'before' | 'after' = 'after';
+  disabled = input(false);
+  readonly label = input<string>();
+  readonly onIcon = input('check');
+  readonly offIcon = input('remove');
+  readonly onSVG = input<string>();
+  readonly offSVG = input<string>();
+  readonly labelPosition = input<'before' | 'after'>('after');
   @HostBinding('class.checked') checkedState = false;
 
   @Output() checkedChange = new EventEmitter<boolean>();
@@ -64,11 +64,11 @@ export class SlideToggleComponent implements ControlValueAccessor {
   }
 
   setDisabledState(isDisabled: boolean): void {
-    this.disabled = isDisabled;
+    this.disabled.apply(isDisabled);
   }
 
   toggle(): void {
-    if (this.disabled) return;
+    if (this.disabled()) return;
     this.checkedState = !this.checkedState;
     this.onChange(this.checkedState);
     this.onTouched();

@@ -2,9 +2,9 @@ import {
   Component,
   HostListener,
   inject,
-  Input,
   OnDestroy,
   OnInit,
+  input,
 } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatIcon } from '@angular/material/icon';
@@ -31,12 +31,9 @@ import { MatchupService } from '../../matchup.service';
   styleUrls: ['../../matchup.scss', './notes.component.scss'],
 })
 export class MatchupNotesComponent implements OnInit, OnDestroy {
-  @Input({ required: true })
-  matchupId!: string;
-  @Input({ required: true })
-  notes!: string;
-  @Input({ required: true })
-  mode!: 'view-only' | 'editable';
+  readonly matchupId = input.required<string>();
+  readonly notes = input.required<string>();
+  readonly mode = input.required<'view-only' | 'editable'>();
   previewMode: boolean = false;
 
   matchupService = inject(MatchupService);
@@ -50,7 +47,7 @@ export class MatchupNotesComponent implements OnInit, OnDestroy {
       .pipe(debounceTime(3000), distinctUntilChanged())
       .subscribe((value) => {
         this.matchupService
-          .updateNotes(this.matchupId, value)
+          .updateNotes(this.matchupId(), value)
           .subscribe((response) => {
             console.log('Note saved');
           });
@@ -63,13 +60,14 @@ export class MatchupNotesComponent implements OnInit, OnDestroy {
   }
 
   private flushNotes(): void {
-    if (this.notes !== this.lastSaved) {
+    const notes = this.notes();
+    if (notes !== this.lastSaved) {
       this.matchupService
-        .updateNotes(this.matchupId, this.notes)
+        .updateNotes(this.matchupId(), notes)
         .subscribe((response) => {
           console.log('Note saved');
         });
-      this.lastSaved = this.notes;
+      this.lastSaved = notes;
     }
   }
 
@@ -84,6 +82,6 @@ export class MatchupNotesComponent implements OnInit, OnDestroy {
   }
 
   isPreview(): boolean {
-    return this.previewMode || this.mode === 'view-only';
+    return this.previewMode || this.mode() === 'view-only';
   }
 }

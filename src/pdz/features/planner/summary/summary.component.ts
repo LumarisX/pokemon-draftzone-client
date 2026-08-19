@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { SummaryCoreComponent } from '@pdz/shared/widgets/summary-core/summary-core.component';
 import { Summary } from '../../drafts/matchup-overview/matchup-interface';
 
@@ -9,6 +9,5 @@ import { Summary } from '../../drafts/matchup-overview/matchup-interface';
   imports: [SummaryCoreComponent],
 })
 export class PlannerSummaryComponent {
-  @Input()
-  summary?: Summary;
+  readonly summary = input<Summary>();
 }

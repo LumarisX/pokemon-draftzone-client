@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnChanges } from '@angular/core';
+import { Component, OnChanges, input } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import {
@@ -25,12 +25,12 @@ import { IconComponent } from '@pdz/shared/images/icon/icon.component';
   styleUrls: ['./trade-card.component.scss'],
 })
 export class TradeCardComponent implements OnChanges {
-  @Input({ required: true }) tradeLog!: TradeLog;
+  readonly tradeLog = input.required<TradeLog>();
   /**
    * Index of the stage's current round. A trade only counts as active once
    * this reaches its `activeRound`; -1 means no round has been played yet.
    */
-  @Input() currentRoundIndex = -1;
+  readonly currentRoundIndex = input(-1);
 
   private readonly DRAFT_POOL_NAME = 'Draft Pool';
 
@@ -45,8 +45,8 @@ export class TradeCardComponent implements OnChanges {
   status: StatusEntity = { label: 'Pending' };
 
   ngOnChanges(): void {
-    const from = this.tradeLog.side1;
-    const to = this.tradeLog.side2;
+    const from = this.tradeLog().side1;
+    const to = this.tradeLog().side2;
 
     this.leftEntity = {
       logoUrl: from.team?.logo,
@@ -68,9 +68,10 @@ export class TradeCardComponent implements OnChanges {
    * effect once it has been approved *and* its round has come around.
    */
   private resolveStatus(): StatusEntity {
-    if (this.tradeLog.status === 'REJECTED') return { label: 'Rejected' };
-    if (this.tradeLog.status === 'PENDING') return { label: 'Pending' };
-    return this.tradeLog.activeRound <= this.currentRoundIndex
+    const tradeLog = this.tradeLog();
+    if (tradeLog.status === 'REJECTED') return { label: 'Rejected' };
+    if (tradeLog.status === 'PENDING') return { label: 'Pending' };
+    return tradeLog.activeRound <= this.currentRoundIndex()
       ? { label: 'Active', active: true }
       : { label: 'Upcoming' };
   }

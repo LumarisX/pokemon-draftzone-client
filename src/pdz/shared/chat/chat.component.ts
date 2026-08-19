@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, input } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -20,10 +20,10 @@ export class ChatComponent implements OnInit, OnDestroy {
   newMessage: string = '';
   private messageSubscription!: Subscription;
 
-  @Input({ required: true }) roomId!: string;
+  readonly roomId = input.required<string>();
 
   ngOnInit(): void {
-    this.chatService.joinRoom(this.roomId);
+    this.chatService.joinRoom(this.roomId());
     this.messageSubscription = this.chatService.messages$.subscribe(
       (message) => {
         this.messages.push(message);
@@ -48,7 +48,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     if (this.newMessage.trim()) {
       this.auth.user$.subscribe((user) => {
         this.chatService.sendMessage(
-          this.roomId,
+          this.roomId(),
           this.newMessage,
           user?.username,
         );

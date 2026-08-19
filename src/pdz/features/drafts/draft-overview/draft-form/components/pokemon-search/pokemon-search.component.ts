@@ -7,11 +7,11 @@ import {
   Component,
   ElementRef,
   EventEmitter,
-  Input,
   OnDestroy,
   OnInit,
   Output,
   ViewChild,
+  input,
 } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { BehaviorSubject, Subject, combineLatest } from 'rxjs';
@@ -51,9 +51,9 @@ export class PokemonSearchComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   private blurTimeout?: ReturnType<typeof setTimeout>;
 
-  @Input({ required: true }) options$!: BehaviorSubject<DraftPokemon[]>;
-  @Input() placeholder = 'Search Pokémon...';
-  @Input() takenIds: (string | null | undefined)[] = [];
+  readonly options$ = input.required<BehaviorSubject<DraftPokemon[]>>();
+  readonly placeholder = input('Search Pokémon...');
+  readonly takenIds = input<(string | null | undefined)[]>([]);
 
   @Output() pokemonSelected = new EventEmitter<DraftPokemon>();
 
@@ -79,7 +79,7 @@ export class PokemonSearchComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     combineLatest([
-      this.options$,
+      this.options$(),
       this.query.valueChanges.pipe(
         startWith(''),
         debounceTime(100),
@@ -121,7 +121,7 @@ export class PokemonSearchComponent implements OnInit, OnDestroy {
   }
 
   isTaken(option: DraftPokemon): boolean {
-    return this.takenIds.includes(option.id);
+    return this.takenIds().includes(option.id);
   }
 
   costOf(option: DraftPokemon): number | undefined {

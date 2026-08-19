@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnChanges, SimpleChanges, input } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { PlusSignPipe } from '@pdz/shared/pipes/plus-sign.pipe';
@@ -13,9 +13,9 @@ type SortKey = 'brought' | 'kills' | 'deaths' | 'diff';
   styleUrls: ['./pokemon-standings.component.scss'],
 })
 export class PokemonStandingsComponent implements OnChanges {
-  @Input({ required: true }) standingData!: League.PokemonStanding[];
+  readonly standingData = input.required<League.PokemonStanding[]>();
   sortedData: League.PokemonStanding[] = [];
-  @Input() showCount: number = 100;
+  readonly showCount = input<number>(100);
   activeSort: SortKey = 'diff';
   isSortDescending: boolean = true;
   combineTeams = false;
@@ -23,7 +23,7 @@ export class PokemonStandingsComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     if (
       (changes['standingData'] || changes['showCount']) &&
-      this.standingData.length > 0
+      this.standingData().length > 0
     ) {
       this.applySort();
     }
@@ -47,8 +47,8 @@ export class PokemonStandingsComponent implements OnChanges {
 
   private applySort() {
     const data = this.combineTeams
-      ? combineByPokemon(this.standingData)
-      : this.standingData.slice();
+      ? combineByPokemon(this.standingData())
+      : this.standingData().slice();
 
     this.sortedData = data
       .sort((a, b) => {
@@ -77,7 +77,7 @@ export class PokemonStandingsComponent implements OnChanges {
             return 0;
         }
       })
-      .slice(0, this.showCount);
+      .slice(0, this.showCount());
   }
 }
 

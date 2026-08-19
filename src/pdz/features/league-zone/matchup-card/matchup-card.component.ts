@@ -3,8 +3,8 @@ import {
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
-  Input,
   Output,
+  input,
 } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
@@ -19,8 +19,8 @@ import { MatchupCard } from './matchup-card.model';
   styleUrl: './matchup-card.component.scss',
 })
 export class MatchupCardComponent {
-  @Input({ required: true }) card!: MatchupCard;
-  @Input() editable = false;
+  readonly card = input.required<MatchupCard>();
+  readonly editable = input(false);
 
   @Output() edit = new EventEmitter<string>();
   @Output() remove = new EventEmitter<string>();
@@ -29,14 +29,12 @@ export class MatchupCardComponent {
   protected readonly getLogoUrl = getLogoUrl;
 
   protected get hasHeader(): boolean {
-    return !!this.card.label || this.editable || this.card.forfeit;
+    const card = this.card();
+    return !!card.label || this.editable() || card.forfeit;
   }
 
   protected get hasFooter(): boolean {
-    return (
-      !!this.card.viewLink ||
-      !!this.card.breakdownLink ||
-      this.card.replays.length > 0
-    );
+    const card = this.card();
+    return !!card.viewLink || !!card.breakdownLink || card.replays.length > 0;
   }
 }

@@ -7,7 +7,7 @@ import {
   moveItemInArray,
 } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { PokemonSelectComponent } from '@pdz/shared/dropdowns/pokemon-select/pokemon-select.component';
@@ -32,19 +32,21 @@ import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
     CdkDropList,
     CdkDragHandle,
     CdkDragPreview,
-    SpriteComponent, FieldComponent, InputDirective],
+    SpriteComponent,
+    FieldComponent,
+    InputDirective,
+  ],
 })
 export class PlannerTeamComponent {
-  @Input()
-  draftFormGroup?: DraftFormGroup;
+  readonly draftFormGroup = input<DraftFormGroup>();
 
   get min() {
-    return this.draftFormGroup?.controls.min.value ?? 0;
+    return this.draftFormGroup()?.controls.min.value ?? 0;
   }
 
   get remainingPokemon() {
     const tiered =
-      this.draftFormGroup?.controls.team?.value.filter(
+      this.draftFormGroup()?.controls.team?.value.filter(
         (form) => form.pokemon?.id && form.pokemon.id != '',
       ).length || 0;
     const mons = this.min - tiered;
@@ -52,24 +54,24 @@ export class PlannerTeamComponent {
   }
 
   get isPoints() {
+    const draftFormGroup = this.draftFormGroup();
     return (
-      !this.draftFormGroup ||
-      this.draftFormGroup?.controls.system.value === 'points'
+      !draftFormGroup || draftFormGroup?.controls.system.value === 'points'
     );
   }
 
   get remainingPoints(): number {
-    const teamControls = this.draftFormGroup?.controls.team.controls ?? [];
+    const teamControls = this.draftFormGroup()?.controls.team.controls ?? [];
     const totalUsed = teamControls.reduce(
       (sum, control) => sum + (control.controls.value.value ?? 0),
       0,
     );
-    return this.draftFormGroup!.controls.totalPoints.value - totalUsed;
+    return this.draftFormGroup()!.controls.totalPoints.value - totalUsed;
   }
 
   onClear(index: number) {
     const controls =
-      this.draftFormGroup!.controls.team.controls[index].controls;
+      this.draftFormGroup()!.controls.team.controls[index].controls;
     controls.capt.setValue(false);
     controls.drafted.setValue(false);
     controls.tier.setValue('');
@@ -77,9 +79,10 @@ export class PlannerTeamComponent {
   }
 
   drop(event: CdkDragDrop<string[]>) {
-    if (this.draftFormGroup)
+    const draftFormGroup = this.draftFormGroup();
+    if (draftFormGroup)
       moveItemInArray(
-        this.draftFormGroup.controls.team.controls,
+        draftFormGroup.controls.team.controls,
         event.previousIndex,
         event.currentIndex,
       );

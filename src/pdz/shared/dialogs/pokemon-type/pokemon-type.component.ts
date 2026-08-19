@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { IconComponent } from '../../images/icon/icon.component';
 
 @Component({
@@ -8,18 +8,20 @@ import { IconComponent } from '../../images/icon/icon.component';
   styleUrl: './pokemon-type.component.scss',
 })
 export class PokemonTypeComponent {
-  @Input({ required: true }) type!: string;
-  @Input() size: 'small' | 'medium' | 'large' = 'medium';
-  @Input() display: 'icon' | 'text' | 'both' = 'text';
-  @Input() direction: 'row' | 'column' = 'row';
-  @Input() disabled = false;
+  readonly type = input.required<string>();
+  readonly size = input<'small' | 'medium' | 'large'>('medium');
+  readonly display = input<'icon' | 'text' | 'both'>('text');
+  readonly direction = input<'row' | 'column'>('row');
+  readonly disabled = input(false);
 
   get color(): string {
-    return PokemonTypeComponent.typeColor(this.type) ?? 'var(--pdz-color-text)';
+    return (
+      PokemonTypeComponent.typeColor(this.type()) ?? 'var(--pdz-color-text)'
+    );
   }
 
   get typeIconName(): string | null {
-    const key = `type-${this.type.toLowerCase()}`;
+    const key = `type-${this.type().toLowerCase()}`;
     // Stellar and unknown types don't have gen9 icons
     if (
       ![
@@ -41,7 +43,7 @@ export class PokemonTypeComponent {
         'rock',
         'steel',
         'water',
-      ].includes(this.type.toLowerCase())
+      ].includes(this.type().toLowerCase())
     ) {
       return null;
     }
@@ -49,8 +51,8 @@ export class PokemonTypeComponent {
   }
 
   get iconSize(): number {
-    if (this.direction === 'column') return 22;
-    switch (this.size) {
+    if (this.direction() === 'column') return 22;
+    switch (this.size()) {
       case 'small':
         return 10;
       case 'large':

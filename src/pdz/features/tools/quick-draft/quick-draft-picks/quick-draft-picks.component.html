@@ -165,17 +165,17 @@
     </div>
   </div>
 </div>
-<button pdz-button variant="outlined" color="neutral"
-  [disabled]="this.settings.rerolls <= 0"
+<button
+  pdz-button
+  variant="outlined"
+  color="neutral"
+  [disabled]="this.settings().rerolls <= 0"
   (click)="rerollPicks()"
 >
   <mat-icon>refresh</mat-icon>
   <mat-icon class="small-icon">close</mat-icon>
-  <span>{{ settings.rerolls }}</span>
+  <span>{{ settings().rerolls }}</span>
 </button>
-<button pdz-button
-  [disabled]="selectedOption === null"
-  (click)="draftOption()"
->
+<button pdz-button [disabled]="selectedOption === null" (click)="draftOption()">
   Draft Selected
 </button>

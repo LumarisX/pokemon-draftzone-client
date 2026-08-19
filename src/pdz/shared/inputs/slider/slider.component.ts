@@ -2,8 +2,8 @@ import {
   Component,
   EventEmitter,
   forwardRef,
-  Input,
   Output,
+  input,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
@@ -20,12 +20,12 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
   ],
 })
 export class SliderComponent implements ControlValueAccessor {
-  @Input() min = 0;
-  @Input() max = 100;
-  @Input() step = 1;
-  @Input() disabled = false;
-  @Input() color?: string;
-  @Input() showValue = false;
+  readonly min = input(0);
+  readonly max = input(100);
+  readonly step = input(1);
+  disabled = input(false);
+  readonly color = input<string>();
+  readonly showValue = input(false);
 
   @Output() valueChange = new EventEmitter<number>();
 
@@ -35,14 +35,14 @@ export class SliderComponent implements ControlValueAccessor {
   private onTouched: () => void = () => {};
 
   get fillPercent(): number {
-    const range = this.max - this.min;
+    const range = this.max() - this.min();
     if (range <= 0) return 0;
-    const clamped = Math.min(Math.max(this.value, this.min), this.max);
-    return ((clamped - this.min) / range) * 100;
+    const clamped = Math.min(Math.max(this.value, this.min()), this.max());
+    return ((clamped - this.min()) / range) * 100;
   }
 
   writeValue(value: number): void {
-    this.value = value ?? this.min;
+    this.value = value ?? this.min();
   }
 
   registerOnChange(fn: (value: number) => void): void {
@@ -54,7 +54,7 @@ export class SliderComponent implements ControlValueAccessor {
   }
 
   setDisabledState(isDisabled: boolean): void {
-    this.disabled = isDisabled;
+    this.disabled.apply(isDisabled);
   }
 
   onInput(event: Event): void {

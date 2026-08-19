@@ -3,11 +3,11 @@ import {
   Component,
   EventEmitter,
   inject,
-  Input,
   OnDestroy,
   OnInit,
   Output,
   signal,
+  input,
 } from '@angular/core';
 import {
   FormArray,
@@ -75,8 +75,8 @@ type MatchupPokemonSummary = {
   styleUrl: './matchup-report.component.scss',
 })
 export class MatchupReportComponent implements OnInit, OnDestroy {
-  @Input({ required: true }) matchup!: MatchupDetail;
-  @Input({ required: true }) matchupSlug!: string;
+  readonly matchup = input.required<MatchupDetail>();
+  readonly matchupSlug = input.required<string>();
 
   @Output() submitted = new EventEmitter<void>();
 
@@ -123,9 +123,10 @@ export class MatchupReportComponent implements OnInit, OnDestroy {
   ];
 
   ngOnInit(): void {
-    const seed = this.matchup.report?.matches.length
-      ? this.matchup.report.matches
-      : this.matchup.matches;
+    const matchup = this.matchup();
+    const seed = matchup.report?.matches.length
+      ? matchup.report.matches
+      : matchup.matches;
     this.form = this.fb.group({
       games: this.fb.array(
         seed.length
@@ -148,7 +149,7 @@ export class MatchupReportComponent implements OnInit, OnDestroy {
       forfeitWinner: this.fb.control<MatchupSideKey | null>(null),
       manualScoreTeam1: this.fb.control(0, { nonNullable: true }),
       manualScoreTeam2: this.fb.control(0, { nonNullable: true }),
-      notes: this.fb.control(this.matchup.report?.notes ?? '', {
+      notes: this.fb.control(this.matchup().report?.notes ?? '', {
         nonNullable: true,
       }),
     });
@@ -178,7 +179,9 @@ export class MatchupReportComponent implements OnInit, OnDestroy {
   }
 
   rosterControls(game: GameForm, side: MatchupSideKey): PokemonStatsForm[] {
-    return side === 'side1' ? game.controls.team1.controls : game.controls.team2.controls;
+    return side === 'side1'
+      ? game.controls.team1.controls
+      : game.controls.team2.controls;
   }
 
   nameOf(id: PokemonId): string {
@@ -191,7 +194,9 @@ export class MatchupReportComponent implements OnInit, OnDestroy {
   }
 
   teamName(side: MatchupSideKey): string {
-    return side === 'side1' ? this.matchup.team1.name : this.matchup.team2.name;
+    return side === 'side1'
+      ? this.matchup().team1.name
+      : this.matchup().team2.name;
   }
 
   addGame(): void {
@@ -289,8 +294,7 @@ export class MatchupReportComponent implements OnInit, OnDestroy {
     const team1 = game.controls.team1.controls;
     const team2 = game.controls.team2.controls;
     const brought = (roster: PokemonStatsForm[]) =>
-      roster.filter((control) => control.controls.status.value !== null)
-        .length;
+      roster.filter((control) => control.controls.status.value !== null).length;
     const kills = (roster: PokemonStatsForm[]) =>
       roster.reduce(
         (sum, control) =>
@@ -426,7 +430,7 @@ export class MatchupReportComponent implements OnInit, OnDestroy {
     this.saveError.set(null);
 
     this.leagueService
-      .submitMatchupReport(this.matchupSlug, this.buildPayload())
+      .submitMatchupReport(this.matchupSlug(), this.buildPayload())
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: () => {
@@ -499,7 +503,13 @@ export class MatchupReportComponent implements OnInit, OnDestroy {
 
   private rosterPayload(game: GameForm, side: MatchupSideKey) {
     return this.rosterControls(game, side).reduce<
-      Record<string, { kills: { direct: number; indirect: number; teammate: number }; status: 'brought' | 'survived' | 'fainted' }>
+      Record<
+        string,
+        {
+          kills: { direct: number; indirect: number; teammate: number };
+          status: 'brought' | 'survived' | 'fainted';
+        }
+      >
     >((acc, control) => {
       const { id, status, direct, indirect, teammate } = control.getRawValue();
       if (status) acc[id] = { kills: { direct, indirect, teammate }, status };
@@ -512,13 +522,25 @@ export class MatchupReportComponent implements OnInit, OnDestroy {
     winner: MatchupSideKey | null;
     team1Score?: number;
     team2Score?: number;
-    team1: Record<string, { kills?: { direct?: number; indirect?: number; teammate?: number }; status: 'brought' | 'survived' | 'fainted' }>;
-    team2: Record<string, { kills?: { direct?: number; indirect?: number; teammate?: number }; status: 'brought' | 'survived' | 'fainted' }>;
+    team1: Record<
+      string,
+      {
+        kills?: { direct?: number; indirect?: number; teammate?: number };
+        status: 'brought' | 'survived' | 'fainted';
+      }
+    >;
+    team2: Record<
+      string,
+      {
+        kills?: { direct?: number; indirect?: number; teammate?: number };
+        status: 'brought' | 'survived' | 'fainted';
+      }
+    >;
   }): GameForm {
-    const team1 = this.matchup.team1.draft.map((pokemon) =>
+    const team1 = this.matchup().team1.draft.map((pokemon) =>
       this.buildPokemon(pokemon.id, seed?.team1?.[pokemon.id]),
     );
-    const team2 = this.matchup.team2.draft.map((pokemon) =>
+    const team2 = this.matchup().team2.draft.map((pokemon) =>
       this.buildPokemon(pokemon.id, seed?.team2?.[pokemon.id]),
     );
     const survivorsOf = (roster: PokemonStatsForm[]) =>
@@ -569,10 +591,13 @@ export class MatchupReportComponent implements OnInit, OnDestroy {
     const players = analysis.players.slice(0, 2);
     if (players.length < 2) return;
 
-    const team1Ids = new Set(this.matchup.team1.draft.map((mon) => mon.id));
-    const team2Ids = new Set(this.matchup.team2.draft.map((mon) => mon.id));
+    const team1Ids = new Set(this.matchup().team1.draft.map((mon) => mon.id));
+    const team2Ids = new Set(this.matchup().team2.draft.map((mon) => mon.id));
     const overlap = (player: ReplayPlayer, ids: Set<string>) =>
-      player.team.reduce((count, mon) => (ids.has(mon.id) ? count + 1 : count), 0);
+      player.team.reduce(
+        (count, mon) => (ids.has(mon.id) ? count + 1 : count),
+        0,
+      );
 
     const [first, second] = players;
     const straight =

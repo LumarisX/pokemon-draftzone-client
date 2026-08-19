@@ -2,7 +2,7 @@
   <div class="sprite-container">
     <div class="sprite-spacer">
       <div class="sprite-wrapper">
-        <pdz-sprite [pokemon]="pokemon" flipped></pdz-sprite>
+        <pdz-sprite [pokemon]="pokemon()" flipped></pdz-sprite>
       </div>
     </div>
     <button class="reset-button" (click)="resetRecommended()">Reset</button>
@@ -15,7 +15,7 @@
         alt="Physical Moves"
       />
       <div class="pdz-types">
-        @for (move of pokemon.coverage.physical; track move) {
+        @for (move of pokemon().coverage.physical; track move) {
           <button
             type="button"
             class="coverage-type-btn"
@@ -39,7 +39,7 @@
         alt="Special Moves"
       />
       <div class="pdz-types">
-        @for (move of pokemon.coverage.special; track move) {
+        @for (move of pokemon().coverage.special; track move) {
           <button
             type="button"
             class="coverage-type-btn"

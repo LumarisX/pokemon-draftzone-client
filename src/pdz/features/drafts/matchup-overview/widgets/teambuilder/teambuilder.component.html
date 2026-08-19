@@ -65,7 +65,7 @@
         <h2>Add new Pokemon</h2>
       </div>
       <div class="teambuilder__options">
-        @for (pokemon of matchupData.summary[0].team; track $index) {
+        @for (pokemon of matchupData().summary[0].team; track $index) {
           <button
             class="teambuilder__pokemon-option"
             [disabled]="isPokemonInTeam(pokemon)"
@@ -89,7 +89,7 @@
     } @else if (team[tab]) {
       <pdz-matchup-pokemon-builder
         [pokemon]="team[tab]"
-        [matchupData]="matchupData"
+        [matchupData]="matchupData()"
         [team]="team"
         [(view)]="view"
         (pokemonChange)="saveTeam()"

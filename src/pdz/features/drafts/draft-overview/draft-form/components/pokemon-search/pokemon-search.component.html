@@ -11,7 +11,7 @@
     spellcheck="false"
     autocomplete="off"
     [formControl]="query"
-    [placeholder]="placeholder"
+    [placeholder]="placeholder()"
     (focus)="setOpen(true)"
     (input)="setOpen(true)"
     (blur)="onBlur()"
@@ -61,12 +61,16 @@
           (click)="selectOption(option)"
         >
           @if (costOf(option) !== undefined) {
-            <span class="pokemon-search__option-cost">{{ costOf(option) }}</span>
+            <span class="pokemon-search__option-cost">{{
+              costOf(option)
+            }}</span>
           }
           <pdz-sprite flipped [pokemon]="option"></pdz-sprite>
           <span class="pokemon-search__option-name">{{ option.name }}</span>
           @if (tierOf(option)) {
-            <span class="pokemon-search__option-tier">{{ tierOf(option) }}</span>
+            <span class="pokemon-search__option-tier">{{
+              tierOf(option)
+            }}</span>
           }
         </div>
       </cdk-virtual-scroll-viewport>

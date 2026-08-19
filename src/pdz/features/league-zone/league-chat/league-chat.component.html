@@ -2,7 +2,7 @@
   <header class="chat__header">
     <h2 class="chat__title">
       <pdz-icon name="forum" [size]="18"></pdz-icon>
-      <span>{{ heading }}</span>
+      <span>{{ heading() }}</span>
     </h2>
   </header>
 
@@ -54,7 +54,7 @@
         class="chat__input"
         rows="2"
         maxlength="1000"
-        [placeholder]="placeholder"
+        [placeholder]="placeholder()"
         [(ngModel)]="draft"
         (keydown)="onKeydown($event)"
       ></textarea>

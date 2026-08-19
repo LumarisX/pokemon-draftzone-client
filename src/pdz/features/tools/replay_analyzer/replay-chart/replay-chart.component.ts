@@ -2,10 +2,10 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
-  Input,
   OnChanges,
   SimpleChanges,
   inject,
+  input,
 } from '@angular/core';
 import * as d3 from 'd3';
 import { ReplayPlayer } from '../replay.interface';
@@ -35,7 +35,7 @@ export class ReplayChartComponent implements AfterViewInit, OnChanges {
   private graph!: d3.Selection<SVGGElement, unknown, null, undefined>;
   private tooltipText!: d3.Selection<SVGTextElement, unknown, null, undefined>;
 
-  @Input({ required: true }) data!: ReplayPlayer[];
+  readonly data = input.required<ReplayPlayer[]>();
 
   totalPercent = 100;
 
@@ -61,11 +61,12 @@ export class ReplayChartComponent implements AfterViewInit, OnChanges {
   private renderChart(): void {
     this.clear();
 
-    if (!this.data.length) {
+    const data = this.data();
+    if (!data.length) {
       return;
     }
 
-    const largestTeamSize = this.data.reduce(
+    const largestTeamSize = data.reduce(
       (maxTeamSize, player) => Math.max(maxTeamSize, player.team.length),
       0,
     );
@@ -77,7 +78,7 @@ export class ReplayChartComponent implements AfterViewInit, OnChanges {
     this.totalPercent = largestTeamSize * 100;
     this.createSvg();
     this.createTooltip();
-    this.drawLines(this.data);
+    this.drawLines(data);
     this.addLegend();
   }
 
@@ -228,7 +229,7 @@ export class ReplayChartComponent implements AfterViewInit, OnChanges {
 
     const legendItems = legend
       .selectAll('.replay-chart__legend-item')
-      .data(this.data.map((d) => d.username))
+      .data(this.data().map((d) => d.username))
       .enter()
       .append('g')
       .attr('class', 'replay-chart__legend-item')

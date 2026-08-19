@@ -12,13 +12,13 @@ import {
   Component,
   ElementRef,
   EventEmitter,
-  Input,
   NgZone,
   OnChanges,
   OnDestroy,
   Output,
   ViewChild,
   inject,
+  input,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
@@ -120,11 +120,11 @@ const STAGE_TYPES: Record<string, { label: string; icon: string }> = {
 export class StageBuilderComponent implements OnChanges, OnDestroy {
   private readonly zone = inject(NgZone);
 
-  @Input({ required: true }) draft!: BuilderDraft;
-  @Input() teamsByStage = new Map<string, BracketTeamFlex[]>();
-  @Input() editable = false;
-  @Input() matchupLinkBase?: string[] | null;
-  @Input() currentRoundIndex = -1;
+  readonly draft = input.required<BuilderDraft>();
+  readonly teamsByStage = input(new Map<string, BracketTeamFlex[]>());
+  readonly editable = input(false);
+  readonly matchupLinkBase = input<string[] | null>();
+  readonly currentRoundIndex = input(-1);
 
   @Output() draftChange = new EventEmitter<BuilderDraft>();
   @Output() editMatch = new EventEmitter<string>();
@@ -157,8 +157,9 @@ export class StageBuilderComponent implements OnChanges, OnDestroy {
     ).find((el) => el.dataset['matchId'] === matchId);
     if (!node) return;
 
-    const still = window.matchMedia?.('(prefers-reduced-motion: reduce)')
-      .matches;
+    const still = window.matchMedia?.(
+      '(prefers-reduced-motion: reduce)',
+    ).matches;
     node.scrollIntoView({
       behavior: still ? 'auto' : 'smooth',
       block: 'center',
@@ -211,7 +212,7 @@ export class StageBuilderComponent implements OnChanges, OnDestroy {
   }
 
   get rounds(): BuilderRound[] {
-    return this.draft?.rounds ?? [];
+    return this.draft()?.rounds ?? [];
   }
 
   protected trackRound = (_: number, round: BuilderRound) => round.key;
@@ -224,15 +225,16 @@ export class StageBuilderComponent implements OnChanges, OnDestroy {
   protected labels = new Map<string, string>();
 
   protected teamsFor(stageKey: string): BracketTeamFlex[] {
-    return this.teamsByStage.get(stageKey) ?? [];
+    return this.teamsByStage().get(stageKey) ?? [];
   }
 
   private rebuild(): void {
-    if (!this.draft) return;
+    const draft = this.draft();
+    if (!draft) return;
 
-    const spans = stageSpans(this.draft, this.emptyStageRounds);
+    const spans = stageSpans(draft, this.emptyStageRounds);
     const stageOf = (key: string) =>
-      this.draft.stages.find((s) => s.key === key);
+      this.draft().stages.find((s) => s.key === key);
     const columnOf = assignColumns(spans);
     this.columnCount = Math.max(1, new Set(columnOf.values()).size);
     const reachable = this.reachableRounds(spans, columnOf);
@@ -253,7 +255,7 @@ export class StageBuilderComponent implements OnChanges, OnDestroy {
         title: stage?.name ?? span.key,
         typeLabel: type?.label ?? '',
         typeIcon: type?.icon ?? 'dashboard',
-        matchCount: this.draft.matches.filter(
+        matchCount: this.draft().matches.filter(
           (match) => stageKeyOf(match) === span.key,
         ).length,
         public: stage?.public !== false,
@@ -266,7 +268,7 @@ export class StageBuilderComponent implements OnChanges, OnDestroy {
           stageKey: span.key,
           round,
           inSpan: round >= span.firstRound && round <= span.lastRound,
-          matches: cellMatches(this.draft.matches, span.key, round),
+          matches: cellMatches(this.draft().matches, span.key, round),
         })),
       };
     });
@@ -288,7 +290,9 @@ export class StageBuilderComponent implements OnChanges, OnDestroy {
     }
 
     const distance = (span: StageSpan, round: number) =>
-      round < span.firstRound ? span.firstRound - round : round - span.lastRound;
+      round < span.firstRound
+        ? span.firstRound - round
+        : round - span.lastRound;
 
     for (const column of byColumn.values()) {
       const stacked = [...column].sort((a, b) => a.firstRound - b.firstRound);
@@ -323,16 +327,16 @@ export class StageBuilderComponent implements OnChanges, OnDestroy {
   private commit(draft: BuilderDraft): void {
     this.draft = trimAutoRounds(padRounds(draft));
     this.rebuild();
-    this.draftChange.emit(this.draft);
+    this.draftChange.emit(this.draft());
   }
 
   protected onDrop(event: CdkDragDrop<BuilderCell>): void {
     const matchId = event.item.data as string;
     const target = event.container.data;
     this.commit({
-      ...this.draft,
+      ...this.draft(),
       matches: moveMatch(
-        this.draft.matches,
+        this.draft().matches,
         matchId,
         target.stageKey,
         target.round,
@@ -343,25 +347,21 @@ export class StageBuilderComponent implements OnChanges, OnDestroy {
 
   protected onAddMatch(cell: BuilderCell): void {
     this.commit({
-      ...this.draft,
-      matches: addMatchToRound(
-        this.draft.matches,
-        cell.stageKey,
-        cell.round,
-      ),
+      ...this.draft(),
+      matches: addMatchToRound(this.draft().matches, cell.stageKey, cell.round),
     });
   }
 
   protected onRemoveMatch(matchId: string): void {
     this.commit({
-      ...this.draft,
-      matches: deleteMatch(this.draft.matches, matchId),
+      ...this.draft(),
+      matches: deleteMatch(this.draft().matches, matchId),
     });
   }
 
   protected onInsertRound(index: number): void {
     this.commit(
-      insertRound(this.draft, index, {
+      insertRound(this.draft(), index, {
         name: `Round ${this.rounds.length + 1}`,
       }),
     );
@@ -369,22 +369,22 @@ export class StageBuilderComponent implements OnChanges, OnDestroy {
 
   protected onRemoveRound(index: number): void {
     if (!this.canRemoveRound(index)) return;
-    this.commit(removeRound(this.draft, index));
+    this.commit(removeRound(this.draft(), index));
   }
 
   protected canRemoveRound(index: number): boolean {
-    return this.rounds.length > 1 && roundIsEmpty(this.draft, index);
+    return this.rounds.length > 1 && roundIsEmpty(this.draft(), index);
   }
 
   protected onMoveRound(index: number, delta: -1 | 1): void {
-    this.commit(reorderRounds(this.draft, index, index + delta));
+    this.commit(reorderRounds(this.draft(), index, index + delta));
   }
 
   protected onRenameRound(index: number, name: string): void {
     const rounds = this.rounds.map((round, i) =>
       i === index ? { ...claimRound(round), name } : round,
     );
-    this.commit({ ...this.draft, rounds });
+    this.commit({ ...this.draft(), rounds });
   }
 
   protected onRoundDeadline(index: number, value: string): void {
@@ -396,7 +396,7 @@ export class StageBuilderComponent implements OnChanges, OnDestroy {
           }
         : round,
     );
-    this.commit({ ...this.draft, rounds });
+    this.commit({ ...this.draft(), rounds });
   }
 
   protected deadlineValue(round: BuilderRound): string {
@@ -414,14 +414,15 @@ export class StageBuilderComponent implements OnChanges, OnDestroy {
     const span = this.stages.find((s) => s.key === stageKey)?.span;
     if (!span) return;
 
-    if (!this.draft.matches.some((m) => stageKeyOf(m) === stageKey)) {
+    const draft = this.draft();
+    if (!draft.matches.some((m) => stageKeyOf(m) === stageKey)) {
       const round = Math.max(0, span.firstRound + delta);
       this.emptyStageRounds.set(stageKey, round);
-      this.commit(padRounds({ ...this.draft }));
+      this.commit(padRounds({ ...draft }));
       return;
     }
 
-    this.commit(moveStage(this.draft, stageKey, delta));
+    this.commit(moveStage(draft, stageKey, delta));
   }
 
   protected canMoveStage(stage: StageBox, delta: -1 | 1): boolean {
@@ -430,8 +431,8 @@ export class StageBuilderComponent implements OnChanges, OnDestroy {
 
   protected onToggleStageVisibility(stageKey: string): void {
     this.commit({
-      ...this.draft,
-      stages: this.draft.stages.map((stage) =>
+      ...this.draft(),
+      stages: this.draft().stages.map((stage) =>
         stage.key === stageKey
           ? { ...stage, public: stage.public === false }
           : stage,

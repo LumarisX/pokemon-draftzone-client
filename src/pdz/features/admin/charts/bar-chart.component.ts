@@ -2,10 +2,10 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
-  Input,
   OnChanges,
   OnDestroy,
   ViewChild,
+  input,
 } from '@angular/core';
 import * as d3 from 'd3';
 
@@ -30,8 +30,8 @@ const MARGIN = { top: 6, right: 44, bottom: 6, left: 104 };
 export class BarChartComponent implements AfterViewInit, OnChanges, OnDestroy {
   @ViewChild('svg', { static: true }) svgRef!: ElementRef<SVGSVGElement>;
 
-  @Input() data: BarDatum[] = [];
-  @Input() color = 'var(--pdz-color-primary)';
+  readonly data = input<BarDatum[]>([]);
+  readonly color = input('var(--pdz-color-primary)');
 
   readonly width = WIDTH;
   height = ROW_HEIGHT * 4 + MARGIN.top + MARGIN.bottom;
@@ -55,8 +55,9 @@ export class BarChartComponent implements AfterViewInit, OnChanges, OnDestroy {
     const svg = d3.select(this.svgRef.nativeElement);
     svg.selectAll('*').remove();
 
-    const rows = this.data ?? [];
-    this.height = Math.max(1, rows.length) * ROW_HEIGHT + MARGIN.top + MARGIN.bottom;
+    const rows = this.data() ?? [];
+    this.height =
+      Math.max(1, rows.length) * ROW_HEIGHT + MARGIN.top + MARGIN.bottom;
 
     if (rows.length === 0) {
       svg
@@ -107,7 +108,7 @@ export class BarChartComponent implements AfterViewInit, OnChanges, OnDestroy {
       .attr('y', (d) => y(d.label) ?? 0)
       .attr('height', y.bandwidth())
       .attr('width', (d) => Math.max(0, x(d.value)))
-      .attr('fill', this.color)
+      .attr('fill', this.color())
       .attr('rx', 2);
 
     // Value labels at the end of each bar.

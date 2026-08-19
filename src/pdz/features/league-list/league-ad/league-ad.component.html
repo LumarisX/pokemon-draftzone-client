@@ -1,19 +1,19 @@
 <div class="league-ad-card" [ngClass]="teamClass">
   <div class="card-header">
-    <h2 class="card-title">{{ league.leagueName }}</h2>
+    <h2 class="card-title">{{ league().leagueName }}</h2>
     <div class="header-right">
-      @if (mode === "manage") {
-        <div class="status-badge" [ngClass]="getStatusClass(league.status)">
-          {{ league.status | titlecase }}
+      @if (mode() === "manage") {
+        <div class="status-badge" [ngClass]="getStatusClass(league().status)">
+          {{ league().status | titlecase }}
         </div>
       } @else {
         <div class="tag-icons">
-          @for (skill of league.skillLevels; track skill) {
+          @for (skill of league().skillLevels; track skill) {
             <div class="tag-icon">
               <pdz-ball-svg [ballType]="SKILLBALLS[skill]"></pdz-ball-svg>
             </div>
           }
-          @if (league.prizeValue) {
+          @if (league().prizeValue) {
             <div class="tag-icon">
               <pdz-coin-svg></pdz-coin-svg>
             </div>
@@ -28,63 +28,63 @@
       <div class="meta-grid">
         <div class="meta-item">
           <span class="meta-label"
-            >{{ "Format" + (league.formats.length > 1 ? "s" : "") }}
+            >{{ "Format" + (league().formats.length > 1 ? "s" : "") }}
           </span>
-          <span class="meta-value">{{ league.formats.join(", ") }}</span>
+          <span class="meta-value">{{ league().formats.join(", ") }}</span>
         </div>
         <div class="meta-item">
           <span class="meta-label"
-            >{{ "Ruleset" + (league.rulesets.length > 1 ? "s" : "") }}
+            >{{ "Ruleset" + (league().rulesets.length > 1 ? "s" : "") }}
           </span>
-          <span class="meta-value">{{ league.rulesets.join(", ") }}</span>
+          <span class="meta-value">{{ league().rulesets.join(", ") }}</span>
         </div>
         <div class="meta-item">
           <span class="meta-label"
-            >{{ "Platform" + (league.platforms.length > 1 ? "s" : "") }}
+            >{{ "Platform" + (league().platforms.length > 1 ? "s" : "") }}
           </span>
-          <span class="meta-value">{{ league.platforms.join(", ") }}</span>
+          <span class="meta-value">{{ league().platforms.join(", ") }}</span>
         </div>
         <div class="meta-item">
           <span class="meta-label">Closes At</span>
-          <span class="meta-value">{{ league.closesAt | date }}</span>
+          <span class="meta-value">{{ league().closesAt | date }}</span>
         </div>
       </div>
 
-      @if (league.description) {
+      @if (league().description) {
         <div class="description-content">
           <span class="description-label">About</span>
 
           <div class="markdown-preview">
-            <markdown [data]="league.description"></markdown>
+            <markdown [data]="league().description"></markdown>
           </div>
         </div>
       }
     </div>
 
-    @if (mode === "manage") {
+    @if (mode() === "manage") {
       <div class="league-details">
-        @if (league.leagueDoc) {
+        @if (league().leagueDoc) {
           <div class="link-section">
             <label>Details:</label>
             <a
-              [href]="formatLink(league.leagueDoc)"
+              [href]="formatLink(league().leagueDoc)"
               target="_blank"
               rel="noopener noreferrer"
             >
-              {{ league.leagueDoc }}
+              {{ league().leagueDoc }}
             </a>
           </div>
         }
 
-        @if (league.signupLink) {
+        @if (league().signupLink) {
           <div class="link-section">
             <label>Signup:</label>
             <a
-              [href]="formatLink(league.signupLink)"
+              [href]="formatLink(league().signupLink)"
               target="_blank"
               rel="noopener noreferrer"
             >
-              {{ league.signupLink }}
+              {{ league().signupLink }}
             </a>
           </div>
         }
@@ -92,13 +92,13 @@
     }
 
     <div class="league-info-section">
-      @if (league.seasonStart || league.seasonEnd) {
+      @if (league().seasonStart || league().seasonEnd) {
         <div class="info-item">
           <strong>Season:</strong>
           <span class="info-content">
-            {{ league.seasonStart | date }}
-            @if (league.seasonEnd) {
-              - {{ league.seasonEnd | date }}
+            {{ league().seasonStart | date }}
+            @if (league().seasonEnd) {
+              - {{ league().seasonEnd | date }}
               @if (weeks) {
                 ({{ weeks }} weeks)
               }
@@ -107,7 +107,7 @@
         </div>
       }
 
-      @if (league.prizeValue > 0) {
+      @if (league().prizeValue > 0) {
         <div class="info-item prize-section">
           <strong>Prize Pool:</strong>
           <div class="prize-icons">
@@ -121,10 +121,10 @@
   </div>
 
   <div class="card-footer">
-    @if (mode === "public") {
-      @if (league.serverLink) {
+    @if (mode() === "public") {
+      @if (league().serverLink) {
         <a
-          [href]="getExternalLinkUrl(league.serverLink)"
+          [href]="getExternalLinkUrl(league().serverLink)"
           class="footer-link details-button"
           target="_blank"
           rel="noopener noreferrer"
@@ -132,9 +132,9 @@
           Join Server
         </a>
       }
-      @if (league.leagueDoc) {
+      @if (league().leagueDoc) {
         <a
-          [href]="getExternalLinkUrl(league.leagueDoc)"
+          [href]="getExternalLinkUrl(league().leagueDoc)"
           class="footer-link details-button"
           target="_blank"
           rel="noopener noreferrer"
@@ -142,13 +142,13 @@
           View Details
         </a>
       }
-      @if (league.hosted) {
-        <a [routerLink]="league.signupLink" class="footer-link signup-button">
+      @if (league().hosted) {
+        <a [routerLink]="league().signupLink" class="footer-link signup-button">
           Sign Up
         </a>
       } @else {
         <a
-          [href]="getExternalLinkUrl(league.signupLink)"
+          [href]="getExternalLinkUrl(league().signupLink)"
           class="footer-link signup-button"
           target="_blank"
           rel="noopener noreferrer"

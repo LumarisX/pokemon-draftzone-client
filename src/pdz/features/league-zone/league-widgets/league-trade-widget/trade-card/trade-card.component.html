@@ -2,7 +2,9 @@
   [entityLeft]="leftEntity"
   [entityRight]="rightEntity"
   [centerText]="
-    tradeLog.side2.team && tradeLog.side1.team ? 'Team to Team' : 'Free Agency'
+    tradeLog().side2.team && tradeLog().side1.team
+      ? 'Team to Team'
+      : 'Free Agency'
   "
   [status]="status"
   [allowToggle]="true"
@@ -11,7 +13,7 @@
   <div cardExpandedContent class="trade-details-content">
     <div class="trade-columns">
       <div class="trade-column from-column">
-        @for (pokemon of tradeLog.side1.pokemon; track pokemon.id) {
+        @for (pokemon of tradeLog().side1.pokemon; track pokemon.id) {
           <div class="trade-item">
             <div class="pokemon-info">
               <div class="pokemon-tier primary">{{ pokemon.cost }}</div>
@@ -27,8 +29,8 @@
             </div>
             <div
               class="trade-arrow-indicator"
-              [class.pickup]="!tradeLog.side1.team"
-              [class.drop]="!tradeLog.side2.team"
+              [class.pickup]="!tradeLog().side1.team"
+              [class.drop]="!tradeLog().side2.team"
             >
               <pdz-icon name="arrow_forward" [size]="20" [weight]="600" />
             </div>
@@ -41,12 +43,12 @@
         <pdz-icon name="swap_horiz" />
       </div>
       <div class="trade-column to-column">
-        @for (pokemon of tradeLog.side2.pokemon; track pokemon.id) {
+        @for (pokemon of tradeLog().side2.pokemon; track pokemon.id) {
           <div class="trade-item">
             <div
               class="trade-arrow-indicator"
-              [class.pickup]="!tradeLog.side2.team"
-              [class.drop]="!tradeLog.side1.team"
+              [class.pickup]="!tradeLog().side2.team"
+              [class.drop]="!tradeLog().side1.team"
             >
               <pdz-icon name="arrow_back" [size]="20" [weight]="600" />
             </div>

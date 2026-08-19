@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, input } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import {
@@ -39,13 +39,12 @@ export class TypestatsCoreComponent implements OnInit, OnDestroy {
     if (value) this.sortedTeam.next([...value.team]);
   }
 
-  @Input()
-  scoringRanges: {
+  readonly scoringRanges = input<{
     weak: ScoreRange[];
     resist: ScoreRange[];
     count: ScoreRange[];
     diff: ScoreRange[];
-  } = {
+  }>({
     weak: [
       { min: 6, max: Infinity, colorClass: 'pdz-scale-negative-5' },
       { min: 5, max: 6, colorClass: 'pdz-scale-negative-4' },
@@ -80,7 +79,7 @@ export class TypestatsCoreComponent implements OnInit, OnDestroy {
       { min: -2, max: -1, colorClass: 'pdz-scale-negative-4' },
       { min: -Infinity, max: -2, colorClass: 'pdz-scale-negative-5' },
     ],
-  };
+  });
 
   get typechart() {
     return this.$typechart.value;
@@ -158,19 +157,19 @@ export class TypestatsCoreComponent implements OnInit, OnDestroy {
   }
 
   weakColor(weak: number): string {
-    return this.getColorFromRanges(weak, this.scoringRanges.weak);
+    return this.getColorFromRanges(weak, this.scoringRanges().weak);
   }
 
   resistColor(resist: number): string {
-    return this.getColorFromRanges(resist, this.scoringRanges.resist);
+    return this.getColorFromRanges(resist, this.scoringRanges().resist);
   }
 
   countColor(count: number): string {
-    return this.getColorFromRanges(count, this.scoringRanges.count);
+    return this.getColorFromRanges(count, this.scoringRanges().count);
   }
 
   diffColor(diff: number): string {
-    return this.getColorFromRanges(diff, this.scoringRanges.diff);
+    return this.getColorFromRanges(diff, this.scoringRanges().diff);
   }
 
   private getColorFromRanges(value: number, ranges: ScoreRange[]): string {

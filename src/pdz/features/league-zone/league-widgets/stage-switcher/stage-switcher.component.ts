@@ -3,10 +3,10 @@ import {
   Component,
   EventEmitter,
   inject,
-  Input,
   OnDestroy,
   OnInit,
   Output,
+  input,
 } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { LeagueZoneService } from '../../league-zone.service';
@@ -22,13 +22,13 @@ export class StageSwitcherComponent implements OnInit, OnDestroy {
   private leagueService = inject(LeagueZoneService);
   private readonly destroy$ = new Subject<void>();
 
-  @Input() currentStageSlug: string | null = null;
+  readonly currentStageSlug = input<string | null>(null);
   /**
    * When set, prepends a leading pill (slug `'all'`) with this label, for
    * callers that combine every stage's data into one view instead of
    * picking a single stage.
    */
-  @Input() allStagesLabel: string | null = null;
+  readonly allStagesLabel = input<string | null>(null);
   @Output() stageSelected = new EventEmitter<string>();
 
   stages: League.StageSummary[] = [];
@@ -50,7 +50,7 @@ export class StageSwitcherComponent implements OnInit, OnDestroy {
   }
 
   selectStage(stageSlug: string): void {
-    if (stageSlug === this.currentStageSlug) return;
+    if (stageSlug === this.currentStageSlug()) return;
     this.stageSelected.emit(stageSlug);
   }
 

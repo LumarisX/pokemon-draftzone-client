@@ -1,11 +1,12 @@
 <h2>Draft Complete!</h2>
 <div class="qd-options-bar">
-  <button pdz-button
+  <button
+    pdz-button
     [routerLink]="['/', draftPath, 'new']"
     [queryParams]="{
       team: teamIds,
-      format: settings.format,
-      ruleset: settings.ruleset,
+      format: settings().format,
+      ruleset: settings().ruleset,
     }"
   >
     Save To New League
@@ -29,12 +30,13 @@
     <input type="hidden" name="notes" [value]="notes" />
     <button pdz-button type="submit">To PokePaste</button>
   </form>
-  <button pdz-button
+  <button
+    pdz-button
     [routerLink]="['/', toolsPath, 'quick-matchup']"
     [queryParams]="{
       team1: teamIds,
-      format: settings.format,
-      ruleset: settings.ruleset,
+      format: settings().format,
+      ruleset: settings().ruleset,
     }"
   >
     Save To Quick Matchup
@@ -43,7 +45,7 @@
 
 <div class="draft-container-wrapper">
   <div class="draft-container">
-    @for (pokemon of draft; track $index) {
+    @for (pokemon of draft(); track $index) {
       <div class="draft-pokemon">
         <div class="sprite-wrapper">
           <pdz-sprite [pokemon]="pokemon"></pdz-sprite>

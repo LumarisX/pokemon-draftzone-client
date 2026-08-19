@@ -2,10 +2,10 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
-  Input,
   OnChanges,
   OnDestroy,
   ViewChild,
+  input,
 } from '@angular/core';
 import * as d3 from 'd3';
 
@@ -48,20 +48,20 @@ export class TimeSeriesChartComponent
   @ViewChild('tooltip', { static: true })
   tooltipRef!: ElementRef<HTMLDivElement>;
 
-  @Input() data: SeriesPoint[] = [];
-  @Input() type: 'line' | 'bar' = 'line';
-  @Input() bucket: BucketUnit = 'day';
+  readonly data = input<SeriesPoint[]>([]);
+  readonly type = input<'line' | 'bar'>('line');
+  readonly bucket = input<BucketUnit>('day');
   /** A CSS color or variable for the primary series. */
-  @Input() color = 'var(--pdz-color-primary)';
+  readonly color = input('var(--pdz-color-primary)');
   /** A CSS color or variable for the (secondary) trendline. */
-  @Input() trendColor = 'var(--pdz-color-secondary)';
+  readonly trendColor = input('var(--pdz-color-secondary)');
   /** Fit a trendline through the data. */
-  @Input() trend: TrendKind = 'none';
+  readonly trend = input<TrendKind>('none');
   /** Degree used when `trend === 'polynomial'`. */
-  @Input() trendDegree = 3;
+  readonly trendDegree = input(3);
   /** Window size (in buckets) used when `trend === 'movingAverage'`. */
-  @Input() trendWindow = 4;
-  @Input() valueLabel = 'Users';
+  readonly trendWindow = input(4);
+  readonly valueLabel = input('Users');
 
   // `width` tracks the container so the chart fills its card at a constant
   // height instead of scaling its height up on very wide layouts.
@@ -102,7 +102,7 @@ export class TimeSeriesChartComponent
     svg.attr('viewBox', `0 0 ${this.width} ${this.height}`);
     svg.selectAll('*').remove();
 
-    const points: ChartPoint[] = (this.data ?? [])
+    const points: ChartPoint[] = (this.data() ?? [])
       .map((d) => ({ date: new Date(d.date), count: d.count }))
       .filter((d) => !isNaN(d.date.getTime()));
 
@@ -128,10 +128,11 @@ export class TimeSeriesChartComponent
       .domain(d3.extent(points, (d) => d.date) as [Date, Date])
       .range([0, innerW]);
 
+    const trend = this.trend();
     const trendValues =
-      this.trend === 'none'
+      trend === 'none'
         ? []
-        : fitTrend(points, this.trend, this.trendDegree, this.trendWindow);
+        : fitTrend(points, trend, this.trendDegree(), this.trendWindow());
 
     const maxCount = Math.max(
       d3.max(points, (d) => d.count) ?? 0,
@@ -166,7 +167,7 @@ export class TimeSeriesChartComponent
           .attr('class', 'ts-gridline'),
       );
 
-    if (this.type === 'line') {
+    if (this.type() === 'line') {
       this.renderLine(g, points, x, y, innerH);
     } else {
       this.renderBars(g, points, x, y, innerH);
@@ -201,14 +202,14 @@ export class TimeSeriesChartComponent
 
     g.append('path')
       .datum(points)
-      .attr('fill', this.color)
+      .attr('fill', this.color())
       .attr('fill-opacity', 0.12)
       .attr('d', area);
 
     g.append('path')
       .datum(points)
       .attr('fill', 'none')
-      .attr('stroke', this.color)
+      .attr('stroke', this.color())
       .attr('stroke-width', 2)
       .attr('d', line);
   }
@@ -231,7 +232,7 @@ export class TimeSeriesChartComponent
       .attr('y', (d) => y(d.count))
       .attr('width', barW)
       .attr('height', (d) => innerH - y(d.count))
-      .attr('fill', this.color)
+      .attr('fill', this.color())
       .attr('rx', 1);
   }
 
@@ -252,7 +253,7 @@ export class TimeSeriesChartComponent
       .datum(trendValues)
       .attr('class', 'ts-trend')
       .attr('fill', 'none')
-      .attr('stroke', this.trendColor)
+      .attr('stroke', this.trendColor())
       .attr('stroke-width', 2)
       .attr('stroke-opacity', 0.45)
       .attr('stroke-dasharray', '6 4')
@@ -271,7 +272,7 @@ export class TimeSeriesChartComponent
     const tooltip = this.tooltipRef.nativeElement;
     const host = this.svgRef.nativeElement.parentElement as HTMLElement;
     const fullFormat = d3.timeFormat(
-      this.bucket === 'month' ? '%B %Y' : '%b %d, %Y',
+      this.bucket() === 'month' ? '%B %Y' : '%b %d, %Y',
     );
     const bisect = d3.bisector<ChartPoint, Date>((d) => d.date).center;
 
@@ -289,12 +290,12 @@ export class TimeSeriesChartComponent
         const point = points[bisect(points, date)];
         if (!point) return;
 
-        if (this.type === 'line') {
+        if (this.type() === 'line') {
           focus
             .attr('display', null)
             .attr('cx', x(point.date))
             .attr('cy', y(point.count))
-            .attr('fill', this.color);
+            .attr('fill', this.color());
         }
 
         const hostRect = host.getBoundingClientRect();
@@ -303,9 +304,7 @@ export class TimeSeriesChartComponent
         const py = (MARGIN.top + y(point.count)) * scale;
 
         tooltip.hidden = false;
-        tooltip.innerHTML = `<strong>${point.count.toLocaleString()}</strong> ${
-          this.valueLabel
-        }<br><span class="ts-tooltip-date">${fullFormat(point.date)}</span>`;
+        tooltip.innerHTML = `<strong>${point.count.toLocaleString()}</strong> ${this.valueLabel()}<br><span class="ts-tooltip-date">${fullFormat(point.date)}</span>`;
         tooltip.style.left = `${px}px`;
         tooltip.style.top = `${py}px`;
       })
@@ -316,7 +315,7 @@ export class TimeSeriesChartComponent
   }
 
   private axisFormat(): (d: Date) => string {
-    if (this.bucket === 'month') return d3.timeFormat('%b %Y');
+    if (this.bucket() === 'month') return d3.timeFormat('%b %Y');
     return d3.timeFormat('%b %d');
   }
 }

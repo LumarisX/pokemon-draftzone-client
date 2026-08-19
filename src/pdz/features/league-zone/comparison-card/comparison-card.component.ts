@@ -2,9 +2,9 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  Input,
   OnInit,
   signal,
+  input,
 } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { getLogoUrl } from '../league.util';
@@ -29,25 +29,25 @@ export interface StatusEntity {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ComparisonCardComponent implements OnInit {
-  @Input({ required: true }) entityLeft!: ComparisonEntity;
-  @Input({ required: true }) entityRight!: ComparisonEntity;
-  @Input() entityLeftLogoClasses: string | Record<string, boolean> = {};
-  @Input() entityRightLogoClasses: string | Record<string, boolean> = {};
-  @Input() centerText: string | null = null;
-  @Input() centerIcon: string | null = null;
-  @Input() allowToggle: boolean = true;
-  @Input() initiallyOpen: boolean = false;
-  @Input() status?: StatusEntity;
+  readonly entityLeft = input.required<ComparisonEntity>();
+  readonly entityRight = input.required<ComparisonEntity>();
+  readonly entityLeftLogoClasses = input<string | Record<string, boolean>>({});
+  readonly entityRightLogoClasses = input<string | Record<string, boolean>>({});
+  readonly centerText = input<string | null>(null);
+  readonly centerIcon = input<string | null>(null);
+  readonly allowToggle = input<boolean>(true);
+  readonly initiallyOpen = input<boolean>(false);
+  readonly status = input<StatusEntity>();
 
   private _isOpen = signal<boolean>(false);
   isOpen = this._isOpen.asReadonly();
 
   ngOnInit(): void {
-    this._isOpen.set(this.initiallyOpen);
+    this._isOpen.set(this.initiallyOpen());
   }
 
   toggleOpen(): void {
-    if (this.allowToggle) {
+    if (this.allowToggle()) {
       this._isOpen.update((open) => !open);
     }
   }

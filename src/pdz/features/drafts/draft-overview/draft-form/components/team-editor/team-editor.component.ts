@@ -6,7 +6,7 @@ import {
   CdkDropList,
   moveItemInArray,
 } from '@angular/cdk/drag-drop';
-import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
+import { Component, EventEmitter, Output, inject, input } from '@angular/core';
 import {
   FormArray,
   FormControl,
@@ -46,9 +46,9 @@ type CaptKind = 'tera' | 'z' | 'dmax';
 export class TeamEditorComponent {
   private dataService = inject(DataService);
 
-  @Input({ required: true }) ruleset!: string;
-  @Input({ required: true }) teamArray!: FormArray<PokemonFormGroup>;
-  @Input({ required: true }) pokemonList$!: BehaviorSubject<DraftPokemon[]>;
+  readonly ruleset = input.required<string>();
+  readonly teamArray = input.required<FormArray<PokemonFormGroup>>();
+  readonly pokemonList$ = input.required<BehaviorSubject<DraftPokemon[]>>();
 
   @Output() isImporting = new EventEmitter<boolean>();
 
@@ -60,7 +60,7 @@ export class TeamEditorComponent {
   expanded = new Set<PokemonFormGroup>();
 
   get takenIds(): (string | null | undefined)[] {
-    return this.teamArray.controls.map(
+    return this.teamArray().controls.map(
       (group) => group.controls.pokemon.value?.id,
     );
   }
@@ -79,23 +79,24 @@ export class TeamEditorComponent {
   }
 
   addPokemon(pokemon: DraftPokemon): void {
-    const alreadyAdded = this.teamArray.controls.some(
+    const alreadyAdded = this.teamArray().controls.some(
       (control) => control.controls.pokemon.value?.id === pokemon.id,
     );
     if (alreadyAdded) return;
-    const newGroup = new PokemonFormGroup(pokemon, this.pokemonList$);
-    this.teamArray.push(newGroup);
+    const newGroup = new PokemonFormGroup(pokemon, this.pokemonList$());
+    this.teamArray().push(newGroup);
     newGroup.controls.pokemon.updateValueAndValidity();
   }
 
   deletePokemon(index: number): void {
-    this.expanded.delete(this.teamArray.controls[index]);
-    this.teamArray.removeAt(index);
+    const teamArray = this.teamArray();
+    this.expanded.delete(teamArray.controls[index]);
+    teamArray.removeAt(index);
   }
 
   drop(event: CdkDragDrop<PokemonFormGroup[]>): void {
     moveItemInArray(
-      this.teamArray.controls,
+      this.teamArray().controls,
       event.previousIndex,
       event.currentIndex,
     );
@@ -113,10 +114,10 @@ export class TeamEditorComponent {
       .map((name) => name.trim())
       .filter((name) => name.length > 0);
     pokemonNames.forEach((name) => {
-      this.teamArray.push(
+      this.teamArray().push(
         new PokemonFormGroup(
           { id: getPidByName(name), name },
-          this.pokemonList$,
+          this.pokemonList$(),
         ),
       );
     });
@@ -128,7 +129,7 @@ export class TeamEditorComponent {
     if (group.controls.pokemon.invalid) return;
     if (group.formeList === undefined && group.controls.pokemon.value?.id) {
       this.dataService
-        .getFormes(this.ruleset, group.controls.pokemon.value.id)
+        .getFormes(this.ruleset(), group.controls.pokemon.value.id)
         .subscribe((formes) => {
           group.formeList = formes;
         });
@@ -170,20 +171,21 @@ export class TeamEditorComponent {
   }
 
   captState(kind: CaptKind): 'all' | 'some' | 'none' {
-    if (!this.teamArray.length) return 'none';
+    const teamArray = this.teamArray();
+    if (!teamArray.length) return 'none';
     const isOn = (group: PokemonFormGroup): boolean => {
       if (kind === 'dmax') return !!group.controls.dmax.value;
       const value = group.controls[kind].value;
       return !!value && value.length > 0;
     };
-    const onCount = this.teamArray.controls.filter(isOn).length;
+    const onCount = teamArray.controls.filter(isOn).length;
     if (onCount === 0) return 'none';
-    return onCount === this.teamArray.length ? 'all' : 'some';
+    return onCount === teamArray.length ? 'all' : 'some';
   }
 
   toggleTeamCapt(kind: CaptKind): void {
     const turnOn = this.captState(kind) !== 'all';
-    this.teamArray.controls.forEach((group) => {
+    this.teamArray().controls.forEach((group) => {
       if (kind === 'dmax') {
         group.controls.dmax.setValue(turnOn);
       } else if (kind === 'tera') {

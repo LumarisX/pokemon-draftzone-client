@@ -1,4 +1,4 @@
-@if (draftFormGroup && draftFormGroup.controls.team) {
+@if (draftFormGroup() && draftFormGroup().controls.team) {
   <div class="table-container">
     <table
       class="pdz-table"
@@ -18,7 +18,7 @@
       </thead>
       <tbody cdkDropList (cdkDropListDropped)="drop($event)" class="team-list">
         @for (
-          teamCtrl of draftFormGroup.controls.team.controls;
+          teamCtrl of draftFormGroup().controls.team.controls;
           track teamCtrl
         ) {
           <tr
@@ -56,7 +56,7 @@
               <div class="pokemon-input">
                 <pdz-pokemon-select
                   (selectionCleared)="onClear($index)"
-                  [ruleset]="draftFormGroup.controls.ruleset.value"
+                  [ruleset]="draftFormGroup().controls.ruleset.value"
                   [formControl]="teamCtrl.controls.pokemon"
                   appearance="outline"
                 ></pdz-pokemon-select>

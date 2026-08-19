@@ -1,4 +1,4 @@
-import { Component, Input, QueryList, ViewChildren } from '@angular/core';
+import { Component, QueryList, ViewChildren, input } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { SwapOpponentButton } from '@pdz/shared/buttons/swap-opponent/swap-opponent.component';
@@ -18,8 +18,8 @@ import { CoverageComponent } from './coverage/coverage.component';
   styleUrls: ['../../matchup.scss', './coveragechart.component.scss'],
 })
 export class CoveragechartComponent {
-  @Input() coverage!: CoverageChart[][];
-  @Input() typecharts!: TypeChart[];
+  readonly coverage = input.required<CoverageChart[][]>();
+  readonly typecharts = input.required<TypeChart[]>();
   opponent: boolean = false;
   abilities: boolean = true;
   get selectedTeam(): number {

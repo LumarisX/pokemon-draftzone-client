@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { SwapOpponentButton } from '@pdz/shared/buttons/swap-opponent/swap-opponent.component';
@@ -18,6 +18,6 @@ import { MoveChart } from '../../matchup-interface';
   ],
 })
 export class MovechartComponent {
-  @Input() teams!: MoveChart[];
+  readonly teams = input.required<MoveChart[]>();
   opponent: boolean = true;
 }

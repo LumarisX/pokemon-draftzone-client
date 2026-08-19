@@ -1,12 +1,12 @@
 <div class="header">
-  <div class="header__title">{{ pokemon.name }}</div>
+  <div class="header__title">{{ pokemon().name }}</div>
   <div class="view-tabs" role="tablist" aria-label="Pokemon view tabs">
     <div
       class="view-tab view-tab--details"
       role="tab"
       tabindex="0"
-      [attr.aria-selected]="view === 'details'"
-      [class.active]="view === 'details'"
+      [attr.aria-selected]="view() === 'details'"
+      [class.active]="view() === 'details'"
       (click)="selectView('details', $event)"
       (keydown.enter)="selectView('details', $event)"
       (keydown.space)="selectView('details', $event)"
@@ -17,8 +17,8 @@
       class="view-tab view-tab--moves"
       role="tab"
       tabindex="0"
-      [attr.aria-selected]="view === 'moves'"
-      [class.active]="view === 'moves'"
+      [attr.aria-selected]="view() === 'moves'"
+      [class.active]="view() === 'moves'"
       (click)="selectMoveView($event)"
       (keydown.enter)="selectMoveView($event)"
       (keydown.space)="selectMoveView($event)"
@@ -29,8 +29,8 @@
       class="view-tab view-tab--stats"
       role="tab"
       tabindex="0"
-      [attr.aria-selected]="view === 'stats'"
-      [class.active]="view === 'stats'"
+      [attr.aria-selected]="view() === 'stats'"
+      [class.active]="view() === 'stats'"
       (click)="selectView('stats', $event)"
       (keydown.enter)="selectView('stats', $event)"
       (keydown.space)="selectView('stats', $event)"
@@ -63,7 +63,7 @@
     </div> -->
   </div>
 </div>
-@switch (view) {
+@switch (view()) {
   @case ("details") {
     <div class="view view--details">
       <div class="section">
@@ -74,7 +74,7 @@
               id="nickname"
               type="text"
               class="input-field__input"
-              [(ngModel)]="pokemon.nickname"
+              [(ngModel)]="pokemon().nickname"
               (ngModelChange)="pokemonChange.emit()"
               placeholder="Enter nickname"
             />
@@ -82,18 +82,18 @@
         </div>
         <pdz-animated-selector
           [options]="[255, 0]"
-          [selected]="pokemon.happiness"
+          [selected]="pokemon().happiness"
           [label]="'Happiness'"
           direction="horizontal"
-          [(ngModel)]="pokemon.happiness"
+          [(ngModel)]="pokemon().happiness"
           (ngModelChange)="pokemonChange.emit()"
         />
         <pdz-animated-selector
-          [options]="getGenderOptions(pokemon)"
-          [selected]="pokemon.gender"
+          [options]="getGenderOptions(pokemon())"
+          [selected]="pokemon().gender"
           label="Gender"
           direction="horizontal"
-          [(ngModel)]="pokemon.gender"
+          [(ngModel)]="pokemon().gender"
           (ngModelChange)="pokemonChange.emit()"
         />
       </div>
@@ -118,7 +118,7 @@
               />
             }
             <span class="dropdown-label">{{
-              pokemon.item || "Select Item"
+              pokemon().item || "Select Item"
             }}</span>
             <span class="dropdown-arrow" aria-hidden="true">▾</span>
           </div>
@@ -142,7 +142,7 @@
                   @for (item of filteredItems; track item.id) {
                     <li
                       class="dropdown-item"
-                      [class.selected]="item.name === pokemon.item"
+                      [class.selected]="item.name === pokemon().item"
                       role="option"
                       (click)="selectItem(item.name, $event)"
                     >
@@ -171,23 +171,23 @@
         >
           <label for="tera" class="input-field__label">Tera</label>
           <div class="dropdown-control" #teraControl>
-            @if (pokemon.teraType) {
+            @if (pokemon().teraType) {
               <img
-                [src]="getTeraIcon(pokemon.teraType)"
+                [src]="getTeraIcon(pokemon().teraType)"
                 class="dropdown-icon"
                 width="20"
                 height="20"
-                [alt]="pokemon.teraType + ' icon'"
+                [alt]="pokemon().teraType + ' icon'"
               />
             }
             <span class="dropdown-label">{{
-              pokemon.teraType || "Select Tera"
+              pokemon().teraType || "Select Tera"
             }}</span>
             <span class="dropdown-arrow" aria-hidden="true">▾</span>
           </div>
           @if (openDropdown === "tera") {
             <ul class="dropdown-list" role="listbox">
-              @for (type of pokemon.teraTypes; track type) {
+              @for (type of pokemon().teraTypes; track type) {
                 <li
                   class="dropdown-item"
                   role="option"
@@ -207,10 +207,10 @@
           }
         </div>
         <pdz-animated-selector
-          [options]="pokemon.abilities"
-          [selected]="pokemon.ability"
+          [options]="pokemon().abilities"
+          [selected]="pokemon().ability"
           label="Ability"
-          [(ngModel)]="pokemon.ability"
+          [(ngModel)]="pokemon().ability"
           (ngModelChange)="pokemonChange.emit()"
         />
       </div>
@@ -220,7 +220,7 @@
           <label for="shiny" class="input-field__label">Shiny</label>
           <div class="input-field__container">
             <input
-              [(ngModel)]="pokemon.shiny"
+              [(ngModel)]="pokemon().shiny"
               (ngModelChange)="pokemonChange.emit()"
               type="checkbox"
             />
@@ -231,7 +231,7 @@
             <label for="export" class="input-field__label">Export</label>
             <button
               class="input-field__button"
-              (click)="copyToClipboard(pokemon.export())"
+              (click)="copyToClipboard(pokemon().export())"
             >
               <pdz-icon [size]="16" name="content_copy" />
             </button>
@@ -240,7 +240,7 @@
             <textarea
               id="export"
               spellcheck="false"
-              [value]="pokemon.export()"
+              [value]="pokemon().export()"
             ></textarea>
           </div>
         </div>
@@ -255,13 +255,13 @@
             <button
               class="button button--moves"
               [class.selected]="selectedMove === moveSlot"
-              [class.set]="pokemon.moves[moveSlot]"
+              [class.set]="pokemon().moves[moveSlot]"
               [style.background]="
-                typeColor(getMoveFromLearnset(pokemon.moves[moveSlot])?.type)
+                typeColor(getMoveFromLearnset(pokemon().moves[moveSlot])?.type)
               "
               (click)="selectedMove = moveSlot"
             >
-              {{ pokemon.moves[moveSlot] || "Select Move" }}
+              {{ pokemon().moves[moveSlot] || "Select Move" }}
             </button>
           }
         </div>
@@ -374,7 +374,7 @@
         </div>
       </div>
       <div class="view__section--coverage">
-        @for (pokemon of matchupData.typechart[1].team; track pokemon.id) {
+        @for (pokemon of matchupData().typechart[1].team; track pokemon.id) {
           <div
             class="sprite-wrapper"
             [style.background-color]="getCoverageEffectiveness(pokemon)"
@@ -397,11 +397,12 @@
                   {{ stat.full }}
                 </label>
                 @if (
-                  pokemon.stats[stat.id].get() != pokemon.stats[stat.id].mid()
+                  pokemon().stats[stat.id].get() !=
+                  pokemon().stats[stat.id].mid()
                 ) {
                   <button
                     class="btn-reset"
-                    (click)="pokemon.stats[stat.id].reset()"
+                    (click)="pokemon().stats[stat.id].reset()"
                   >
                     Reset
                   </button>
@@ -414,32 +415,32 @@
                   <span
                     class="base-value"
                     [style.background-color]="
-                      statColor(pokemon.stats[stat.id].base)
+                      statColor(pokemon().stats[stat.id].base)
                     "
-                    >{{ pokemon.stats[stat.id].base }}</span
+                    >{{ pokemon().stats[stat.id].base }}</span
                   >
                 </div>
                 <input
                   [id]="'stat-' + $index"
                   type="range"
                   [style.accent-color]="getSliderColor(stat.id)"
-                  [min]="pokemon.stats[stat.id].min()"
-                  [max]="pokemon.stats[stat.id].max()"
+                  [min]="pokemon().stats[stat.id].min()"
+                  [max]="pokemon().stats[stat.id].max()"
                   class="slider slider-stat"
-                  [ngModel]="pokemon.stats[stat.id].get()"
+                  [ngModel]="pokemon().stats[stat.id].get()"
                   (ngModelChange)="
-                    pokemon.stats[stat.id].set($event); pokemonChange.emit()
+                    pokemon().stats[stat.id].set($event); pokemonChange.emit()
                   "
                 />
                 <input
                   class="input input-stat"
                   [id]="'stat-' + $index"
                   type="number"
-                  [min]="pokemon.stats[stat.id].min()"
-                  [max]="pokemon.stats[stat.id].max()"
-                  [ngModel]="pokemon.stats[stat.id].get()"
+                  [min]="pokemon().stats[stat.id].min()"
+                  [max]="pokemon().stats[stat.id].max()"
+                  [ngModel]="pokemon().stats[stat.id].get()"
                   (ngModelChange)="
-                    pokemon.stats[stat.id].set($event); pokemonChange.emit()
+                    pokemon().stats[stat.id].set($event); pokemonChange.emit()
                   "
                 />
               </div>
@@ -456,7 +457,7 @@
                       [max]="252"
                       [step]="getStep()"
                       class="input input-stat"
-                      [(ngModel)]="pokemon!.stats[stat.id].evs"
+                      [(ngModel)]="pokemon!().stats[stat.id].evs"
                       (ngModelChange)="pokemonChange.emit()"
                     />
                   </div>
@@ -470,7 +471,7 @@
                       [min]="0"
                       [max]="31"
                       class="input input-stat"
-                      [(ngModel)]="pokemon!.stats[stat.id].ivs"
+                      [(ngModel)]="pokemon!().stats[stat.id].ivs"
                       (ngModelChange)="pokemonChange.emit()"
                     />
                   </div>
@@ -504,14 +505,14 @@
                   <div class="nature-buttons">
                     <button
                       class="btn-nature btn-positive"
-                      [class.active]="pokemon.nature.boost === stat.id"
+                      [class.active]="pokemon().nature.boost === stat.id"
                       (click)="setNature(stat.id, 'positive')"
                     >
                       +
                     </button>
                     <button
                       class="btn-nature btn-negative"
-                      [class.active]="pokemon.nature.drop === stat.id"
+                      [class.active]="pokemon().nature.drop === stat.id"
                       (click)="setNature(stat.id, 'negative')"
                     >
                       -

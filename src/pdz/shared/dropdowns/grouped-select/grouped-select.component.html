@@ -1,6 +1,6 @@
-@if (label) {
+@if (label()) {
   <label class="grouped-select__label" [id]="selectId + '-label'">
-    {{ label }}
+    {{ label() }}
   </label>
 }
 <button
@@ -41,18 +41,18 @@
   (detach)="close()"
 >
   <div class="grouped-select__panel" role="listbox">
-    @for (group of groups; track group[0]) {
+    @for (group of groups(); track group[0]) {
       <div class="grouped-select__group-label">{{ group[0] }}</div>
       @for (option of group[1]; track option.id) {
         <button
           type="button"
           class="grouped-select__option"
           role="option"
-          [class.grouped-select__option--selected]="option.id === value"
+          [class.grouped-select__option--selected]="option.id === value()"
           [class.grouped-select__option--highlighted]="
             option.id === highlightedId
           "
-          [attr.aria-selected]="option.id === value"
+          [attr.aria-selected]="option.id === value()"
           [title]="option.desc ?? ''"
           (click)="select(option)"
         >

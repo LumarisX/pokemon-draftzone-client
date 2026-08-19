@@ -1,6 +1,6 @@
 <div
   class="builder pdz-scrollbar-visible"
-  [class.builder--readonly]="!editable"
+  [class.builder--readonly]="!editable()"
   cdkScrollable
 >
   <div
@@ -26,11 +26,11 @@
 
       <div
         class="gutter"
-        [class.gutter--current]="$index === currentRoundIndex"
+        [class.gutter--current]="$index === currentRoundIndex()"
         [style.grid-row]="$index + 1"
       >
         <div class="gutter__row">
-          @if (editable) {
+          @if (editable()) {
             <input
               class="gutter__name"
               type="text"
@@ -93,7 +93,7 @@
               <span class="gutter__name gutter__name--static">{{
                 round.name
               }}</span>
-              @if ($index === currentRoundIndex) {
+              @if ($index === currentRoundIndex()) {
                 <span class="gutter__badge">Live</span>
               }
             </span>
@@ -128,7 +128,7 @@
             <span class="stage__count">{{ stage.matchCount }}</span>
           </span>
 
-          @if (editable) {
+          @if (editable()) {
             <button
               type="button"
               class="stage__visibility"
@@ -185,7 +185,7 @@
           [id]="cell.id"
           [cdkDropListData]="cell"
           [cdkDropListConnectedTo]="cellIds"
-          [cdkDropListDisabled]="!editable"
+          [cdkDropListDisabled]="!editable()"
           [style.grid-row]="cell.round + 1"
           [style.grid-column]="stage.column"
           (cdkDropListDropped)="onDrop($event)"
@@ -199,11 +199,11 @@
             >
               <pdz-match-card
                 [match]="match"
-                [allMatches]="draft.matches"
+                [allMatches]="draft().matches"
                 [teams]="teamsFor(stage.key)"
                 [labels]="labels"
-                [editable]="editable"
-                [matchupLinkBase]="matchupLinkBase"
+                [editable]="editable()"
+                [matchupLinkBase]="matchupLinkBase()"
                 (edit)="editMatch.emit($event)"
                 (remove)="onRemoveMatch($event)"
                 (focusMatch)="onFocusMatch($event)"
@@ -213,7 +213,7 @@
             </div>
           }
 
-          @if (editable && cell.inSpan) {
+          @if (editable() && cell.inSpan) {
             <button type="button" class="cell__add" (click)="onAddMatch(cell)">
               <pdz-icon name="add" size="sm"></pdz-icon>
               <span>Match</span>
@@ -223,7 +223,7 @@
       }
     }
 
-    @if (editable) {
+    @if (editable()) {
       @for (round of rounds; track trackRound($index, round)) {
         <button
           type="button"

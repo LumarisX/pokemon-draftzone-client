@@ -2,9 +2,9 @@ import {
   Component,
   OnInit,
   ElementRef,
-  Input,
   OnChanges,
   inject,
+  input,
 } from '@angular/core';
 import * as d3 from 'd3';
 
@@ -15,12 +15,14 @@ import * as d3 from 'd3';
 export class EffectivenessChartComponent implements OnInit, OnChanges {
   private el = inject(ElementRef);
 
-  @Input('data') data: {
-    category: string;
-    se: number;
-    e: number;
-    ne: number;
-  }[] = [];
+  readonly data = input<
+    {
+      category: string;
+      se: number;
+      e: number;
+      ne: number;
+    }[]
+  >([]);
   svg: any;
   margin = { top: 0, right: 0, bottom: 0, left: 0 };
   padding = 0;
@@ -28,11 +30,11 @@ export class EffectivenessChartComponent implements OnInit, OnChanges {
   viewBoxHeight = 25;
   ngOnInit(): void {
     this.createSvg();
-    this.drawBars(this.data);
+    this.drawBars(this.data());
   }
 
   ngOnChanges(): void {
-    if (this.svg) this.drawBars(this.data);
+    if (this.svg) this.drawBars(this.data());
   }
 
   createSvg(): void {

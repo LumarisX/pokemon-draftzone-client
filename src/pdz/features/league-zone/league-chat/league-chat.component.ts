@@ -3,12 +3,12 @@ import {
   Component,
   ElementRef,
   inject,
-  Input,
   OnChanges,
   OnDestroy,
   OnInit,
   signal,
   ViewChild,
+  input,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
@@ -25,12 +25,12 @@ const POLL_INTERVAL_MS = 10000;
   styleUrl: './league-chat.component.scss',
 })
 export class LeagueChatComponent implements OnInit, OnChanges, OnDestroy {
-  @Input({ required: true }) channel!: ChatChannel;
-  @Input() target?: string;
-  @Input() heading = 'Chat';
-  @Input() placeholder = 'Write a message…';
+  readonly channel = input.required<ChatChannel>();
+  readonly target = input<string>();
+  readonly heading = input('Chat');
+  readonly placeholder = input('Write a message…');
   /** Team ids that align a message to the right-hand side of the log. */
-  @Input() ownTeamIds: string[] = [];
+  readonly ownTeamIds = input<string[]>([]);
 
   @ViewChild('log') private log?: ElementRef<HTMLDivElement>;
 
@@ -79,12 +79,12 @@ export class LeagueChatComponent implements OnInit, OnChanges, OnDestroy {
 
   isOwnSide(message: ChatMessage): boolean {
     if (message.isViewer) return true;
-    return !!message.teamId && this.ownTeamIds.includes(message.teamId);
+    return !!message.teamId && this.ownTeamIds().includes(message.teamId);
   }
 
   showsRole(message: ChatMessage): boolean {
     if (message.role === 'organizer') return message.author !== 'Organizer';
-    return message.role === 'coach' && this.channel === 'spectator';
+    return message.role === 'coach' && this.channel() === 'spectator';
   }
 
   roleLabel(message: ChatMessage): string {
@@ -112,7 +112,7 @@ export class LeagueChatComponent implements OnInit, OnChanges, OnDestroy {
     this.error.set(null);
 
     this.leagueService
-      .sendChatMessage(this.channel, text, this.target)
+      .sendChatMessage(this.channel(), text, this.target())
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: ({ message }) => {
@@ -152,12 +152,12 @@ export class LeagueChatComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private currentRoomKey(): string {
-    return `${this.channel}:${this.target ?? ''}`;
+    return `${this.channel()}:${this.target() ?? ''}`;
   }
 
   private refresh(initial: boolean): void {
     this.leagueService
-      .getChatMessages(this.channel, this.target)
+      .getChatMessages(this.channel(), this.target())
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (room) => {

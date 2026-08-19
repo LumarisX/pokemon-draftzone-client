@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
+import { Component, EventEmitter, Output, inject, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { toPSString } from '../../../drafts/matchup-overview/widgets/teambuilder/teambuilder.utils';
 import { DRAFT_OVERVIEW_PATH, TOOLS_PATH } from '@pdz/core/route-paths';
@@ -24,11 +24,9 @@ export class QuickDraftFinalComponent {
   private authService = inject(AuthService);
   private http = inject(HttpClient);
 
-  @Input({ required: true })
-  draft!: QDPokemon[];
+  readonly draft = input.required<QDPokemon[]>();
 
-  @Input({ required: true })
-  settings!: QDSettings;
+  readonly settings = input.required<QDSettings>();
 
   @Output()
   restartDraft = new EventEmitter<void>();
@@ -37,14 +35,16 @@ export class QuickDraftFinalComponent {
   toolsPath = TOOLS_PATH;
 
   get teamIds() {
-    return this.draft.map((pokemon) => pokemon.id);
+    return this.draft().map((pokemon) => pokemon.id);
   }
 
   typeColor = typeColor;
 
   toPokepaste() {
     this.newPokepaste(
-      this.draft.map((pokemon) => pokemon.name).join('\n'),
+      this.draft()
+        .map((pokemon) => pokemon.name)
+        .join('\n'),
     ).subscribe((response) => {
       console.log(response);
     });
@@ -59,11 +59,13 @@ export class QuickDraftFinalComponent {
   }
 
   get teamPaste() {
-    return this.draft.map((pokemon) => toPSString(pokemon)).join('\n');
+    return this.draft()
+      .map((pokemon) => toPSString(pokemon))
+      .join('\n');
   }
 
   get psformat() {
-    return this.settings.format;
+    return this.settings().format;
   }
 
   get notes() {

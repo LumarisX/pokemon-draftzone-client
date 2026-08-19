@@ -3,10 +3,10 @@ import {
   Component,
   EventEmitter,
   inject,
-  Input,
   OnDestroy,
   OnInit,
   Output,
+  input,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
@@ -44,8 +44,8 @@ type Tab = number | 'add' | 'export';
   ],
 })
 export class MatchupTeambuilderComponent implements OnInit, OnDestroy {
-  @Input({ required: true }) matchupId!: string;
-  @Input({ required: true }) matchupData!: MatchupData;
+  readonly matchupId = input.required<string>();
+  readonly matchupData = input.required<MatchupData>();
   team!: PokemonBuilder[];
   @Output() closePanel = new EventEmitter<void>();
 
@@ -76,11 +76,11 @@ export class MatchupTeambuilderComponent implements OnInit, OnDestroy {
     const existing = localStorage.getItem(this.LOCAL_STORAGE_TEAM_KEY);
     if (existing) {
       const teamData = JSON.parse(existing);
-      if (teamData[this.matchupId]) {
-        const savedTeam = teamData[this.matchupId].team;
+      if (teamData[this.matchupId()]) {
+        const savedTeam = teamData[this.matchupId()].team;
         savedTeam.forEach((pokemonJson: PokemonJson) => {
           this.teambuilderService
-            .getPokemonData(pokemonJson.id, this.matchupData.details.ruleset)
+            .getPokemonData(pokemonJson.id, this.matchupData().details.ruleset)
             .pipe(takeUntil(this.destroy$))
             .subscribe((pokemonData) => {
               this.team.push(PokemonBuilder.fromJson(pokemonJson, pokemonData));
@@ -95,13 +95,13 @@ export class MatchupTeambuilderComponent implements OnInit, OnDestroy {
     then: ((pokemon: Pokemon<PokemonData>) => void) | null = null,
   ) {
     this.teambuilderService
-      .getPokemonData(pokemon.id, this.matchupData.details.ruleset)
+      .getPokemonData(pokemon.id, this.matchupData().details.ruleset)
       .pipe(takeUntil(this.destroy$))
       .subscribe((pokemonData) => {
         const pokemonSet = PokemonBuilder.fromTeambuilder(pokemonData, {
           shiny: pokemon.shiny,
           nickname: pokemon.nickname,
-          level: this.matchupData.details.level,
+          level: this.matchupData().details.level,
         });
         this.team.push(pokemonSet);
         this.saveTeamSubject.next();
@@ -162,7 +162,7 @@ export class MatchupTeambuilderComponent implements OnInit, OnDestroy {
   private performSaveTeam() {
     const existing = localStorage.getItem(this.LOCAL_STORAGE_TEAM_KEY);
     const teamData = existing ? JSON.parse(existing) : {};
-    teamData[this.matchupId] = this.formatTeamForStorage();
+    teamData[this.matchupId()] = this.formatTeamForStorage();
     localStorage.setItem(this.LOCAL_STORAGE_TEAM_KEY, JSON.stringify(teamData));
   }
 }

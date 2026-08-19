@@ -1,5 +1,5 @@
 <div class="auction-house">
-  <h3>Live Auctions for {{ tournamentId }}</h3>
+  <h3>Live Auctions for {{ tournamentId() }}</h3>
 
   @for (auction of auctionArray; track $index) {
     <div class="auction-container">

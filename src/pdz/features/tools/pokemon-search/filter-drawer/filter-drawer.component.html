@@ -2,7 +2,7 @@
   class="filter-drawer"
   role="dialog"
   [attr.aria-label]="
-    isEditing
+    isEditing()
       ? 'Edit ' + currentFieldDef.label + ' filter'
       : 'Add ' + currentFieldDef.label + ' filter'
   "
@@ -10,7 +10,7 @@
   <div class="filter-drawer__header">
     <div class="filter-drawer__field-info">
       <span class="filter-drawer__field-name">{{ currentFieldDef.label }}</span>
-      @if (isEditing) {
+      @if (isEditing()) {
         <pdz-icon
           class="filter-drawer__edit-badge"
           name="edit"

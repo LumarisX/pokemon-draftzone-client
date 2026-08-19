@@ -9,6 +9,7 @@ import {
   OnInit,
   ViewChild,
   inject,
+  input,
 } from '@angular/core';
 import {
   FormArray,
@@ -39,7 +40,9 @@ import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
     SpeedtierComponent,
     MatIconModule,
     MatCheckboxModule,
-    OverlayModule, ButtonComponent],
+    OverlayModule,
+    ButtonComponent,
+  ],
 })
 export class SpeedchartComponent implements OnInit, OnDestroy, AfterViewInit {
   private fb = inject(NonNullableFormBuilder);
@@ -95,8 +98,7 @@ export class SpeedchartComponent implements OnInit, OnDestroy, AfterViewInit {
       )
       .sort((x, y) => y.speed - x.speed);
   }
-  @Input()
-  level = 100;
+  readonly level = input(100);
   filterOpen: boolean = false;
   pokemons: (DraftPokemon & { spe: number; team: number })[] = [];
   enabledMons: [string | null, string | null] = [null, null];

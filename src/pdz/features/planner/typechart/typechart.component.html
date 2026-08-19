@@ -8,7 +8,7 @@
       </div>
     </div>
     <pdz-typechart-core
-      [typechart]="typechart"
+      [typechart]="typechart()"
       [abilities]="abilities"
       (togglePokemon)="typestats.summarize()"
     ></pdz-typechart-core>
@@ -19,7 +19,7 @@
     </div>
     <pdz-typestats-core
       #typestats
-      [typechart]="typechart"
+      [typechart]="typechart()"
       [abilities]="abilities"
     ></pdz-typestats-core>
   </div>

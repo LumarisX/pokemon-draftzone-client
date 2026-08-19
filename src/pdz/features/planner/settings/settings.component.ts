@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { DRAFT_OVERVIEW_PATH } from '@pdz/core/route-paths';
@@ -18,18 +18,17 @@ import { DraftFormGroup } from '../plannner.component';
   ],
 })
 export class PlannerSettingsComponent {
-  @Input()
-  draftFormGroup?: DraftFormGroup;
+  readonly draftFormGroup = input<DraftFormGroup>();
 
   draftPath = DRAFT_OVERVIEW_PATH;
 
   get isPoints() {
-    return this.draftFormGroup?.controls.system.value === 'points';
+    return this.draftFormGroup()?.controls.system.value === 'points';
   }
 
   get teamIds() {
-    return this.draftFormGroup?.controls.team.value
-      .map((pokemon) => pokemon.pokemon?.id)
+    return this.draftFormGroup()
+      ?.controls.team.value.map((pokemon) => pokemon.pokemon?.id)
       .filter((id) => id != undefined)
       .filter((id) => id != '');
   }

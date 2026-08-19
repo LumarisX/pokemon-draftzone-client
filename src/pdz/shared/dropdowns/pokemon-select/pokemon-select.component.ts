@@ -14,6 +14,7 @@ import {
   OnInit,
   Output,
   ViewChild,
+  input,
 } from '@angular/core';
 import {
   AbstractControl,
@@ -50,7 +51,11 @@ import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
     ReactiveFormsModule,
     ScrollingModule,
     SpriteComponent,
-    IconComponent, ButtonComponent, FieldComponent, InputDirective],
+    IconComponent,
+    ButtonComponent,
+    FieldComponent,
+    InputDirective,
+  ],
   templateUrl: './pokemon-select.component.html',
   styleUrl: './pokemon-select.component.scss',
   providers: [
@@ -87,15 +92,12 @@ export class PokemonSelectComponent implements OnInit, OnDestroy {
 
   private ruleset$ = new BehaviorSubject<string | null>(null);
 
-  @Input()
-  label: string = 'Pokémon';
+  readonly label = input<string>('Pokémon');
 
-  @Input() appearance: 'fill' | 'outline' = 'fill';
-  @Input()
-  showSprite: string | null = null;
+  readonly appearance = input<'fill' | 'outline'>('fill');
+  readonly showSprite = input<string | null>(null);
 
-  @Input()
-  class: string | string[] = '';
+  readonly class = input<string | string[]>('');
 
   @Input({ required: true })
   set ruleset(value: string | null) {

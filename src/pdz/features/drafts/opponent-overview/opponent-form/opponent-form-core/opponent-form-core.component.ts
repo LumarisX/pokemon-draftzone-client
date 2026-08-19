@@ -1,4 +1,11 @@
-import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  OnInit,
+  Output,
+  inject,
+  input,
+} from '@angular/core';
 import {
   AbstractControl,
   FormArray,
@@ -20,7 +27,12 @@ import { Opponent } from '../../opponent.model';
 
 @Component({
   selector: 'pdz-opponent-form-core',
-  imports: [RouterModule, ReactiveFormsModule, IconComponent, TeamEditorComponent],
+  imports: [
+    RouterModule,
+    ReactiveFormsModule,
+    IconComponent,
+    TeamEditorComponent,
+  ],
   templateUrl: './opponent-form-core.component.html',
   styleUrl: './opponent-form-core.component.scss',
 })
@@ -37,9 +49,9 @@ export class OpponentFormCoreComponent implements OnInit {
   readonly draftPath = DRAFT_OVERVIEW_PATH;
   teamId: string = '';
 
-  @Input() title = 'New Opponent';
-  @Input() submitLabel = 'Save Opponent';
-  @Input() params: Partial<Opponent> = {};
+  readonly title = input('New Opponent');
+  readonly submitLabel = input('Save Opponent');
+  readonly params = input<Partial<Opponent>>({});
   @Output() formSubmitted = new EventEmitter<OpponentFormData>();
 
   ruleset!: string;
@@ -52,7 +64,7 @@ export class OpponentFormCoreComponent implements OnInit {
         return this.draftService.getDraft(this.teamId);
       }),
     );
-    this.opponentForm = new OpponentForm(this.params, this.pokemonList$);
+    this.opponentForm = new OpponentForm(this.params(), this.pokemonList$);
     this.draft.subscribe((draft) => {
       this.ruleset = draft.ruleset;
       this.dataService.getPokemonList(draft.ruleset).subscribe((pokemon) => {

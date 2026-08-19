@@ -7,7 +7,6 @@
   gap: pdz.space(sm);
 }
 
-// ─── Hero ────────────────────────────────────────────────────────────────
 .hero {
   display: flex;
   flex-direction: column;
@@ -68,7 +67,6 @@
   }
 }
 
-// ─── Quick links ─────────────────────────────────────────────────────────
 .links {
   display: flex;
   flex-direction: column;
@@ -112,7 +110,6 @@
   text-decoration: none;
   cursor: pointer;
   white-space: nowrap;
-  background-color: inherit;
   transition: background-color pdz.duration(slow) pdz.easing(standard);
 
   &:hover {
@@ -120,7 +117,6 @@
     color: pdz.color(on-surface);
   }
 
-  // Ongoing-draft sublabel: wraps onto its own line beneath the link label.
   &__status {
     @include text(label);
     color: pdz.color(primary-accent);
@@ -133,7 +129,6 @@
     }
   }
 
-  // Active (current route): mark by coloring the label primary.
   &.active {
     color: pdz.color(primary-accent);
 

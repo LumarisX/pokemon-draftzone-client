@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, input } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { LeagueZoneService } from '../../league-zone.service';
 import { TradeLog } from '../../league.interface';
@@ -14,7 +14,7 @@ export class LeagueTradeWidgetComponent implements OnInit, OnDestroy {
   leagueService = inject(LeagueZoneService);
   private readonly destroy$ = new Subject<void>();
 
-  @Input() stageSlug!: string;
+  readonly stageSlug = input.required<string>();
 
   tradeRounds?: { name: string; trades: TradeLog[] }[];
   currentRoundIndex = -1;

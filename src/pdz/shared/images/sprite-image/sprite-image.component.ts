@@ -4,13 +4,13 @@ import {
   ChangeDetectorRef,
   Component,
   EventEmitter,
-  Input,
   OnChanges,
   OnDestroy,
   Output,
   SimpleChanges,
   booleanAttribute,
   inject,
+  input,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -42,25 +42,21 @@ export class SpriteImageComponent implements OnChanges, OnDestroy {
         takeUntilDestroyed(),
       )
       .subscribe(() => {
-        if (this.pokemon?.id) {
-          this.updateData(this.pokemon);
+        const pokemon = this.pokemon();
+        if (pokemon?.id) {
+          this.updateData(pokemon);
           this.cdr.markForCheck();
         }
       });
   }
 
-  @Input({ required: true }) pokemon!: SpritePokemon;
-  @Input() tooltipPosition:
-    | 'before'
-    | 'after'
-    | 'above'
-    | 'below'
-    | 'left'
-    | 'right'
-    | null = null;
-  @Input() size?: string;
-  @Input({ transform: booleanAttribute }) flipped = false;
-  @Input() disabled?: boolean = false;
+  readonly pokemon = input.required<SpritePokemon>();
+  readonly tooltipPosition = input<
+    'before' | 'after' | 'above' | 'below' | 'left' | 'right' | null
+  >(null);
+  readonly size = input<string>();
+  readonly flipped = input(false, { transform: booleanAttribute });
+  readonly disabled = input<boolean | undefined>(false);
 
   @Output() loadedEvent = new EventEmitter<void>();
 
@@ -74,28 +70,29 @@ export class SpriteImageComponent implements OnChanges, OnDestroy {
   private _destroyed = false;
 
   protected get pokemonName(): string {
-    return this.pokemon?.name ?? 'Unknown';
+    return this.pokemon()?.name ?? 'Unknown';
   }
 
   protected get classes(): string[] {
     const classes = [...this._baseClasses];
     const isUnknownSprite = this.path === this.UNKNOWN_SPRITE_PATH;
     if (!isUnknownSprite) {
-      const shouldFlip = this.flipped !== this._baseFlip;
+      const shouldFlip = this.flipped() !== this._baseFlip;
 
       if (shouldFlip) {
         classes.push('flip');
       }
     }
-    if (this.disabled) {
+    if (this.disabled()) {
       classes.push('disabled');
     }
     return classes;
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['pokemon'] && this.pokemon?.id) {
-      this.updateData(this.pokemon);
+    const pokemon = this.pokemon();
+    if (changes['pokemon'] && pokemon?.id) {
+      this.updateData(pokemon);
     }
   }
 

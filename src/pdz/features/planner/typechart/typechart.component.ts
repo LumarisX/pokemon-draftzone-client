@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { TypechartCoreComponent } from '@pdz/shared/widgets/typechart/typechart-core/typechart-core.component';
@@ -18,8 +18,7 @@ import { TypeChart } from '../../drafts/matchup-overview/matchup-interface';
   ],
 })
 export class PlannerTypechartComponent {
-  @Input()
-  typechart?: TypeChart;
+  readonly typechart = input<TypeChart>();
 
   abilities: boolean = true;
 }

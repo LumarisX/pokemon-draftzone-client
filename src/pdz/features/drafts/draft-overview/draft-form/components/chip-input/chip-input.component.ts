@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 
@@ -9,24 +9,25 @@ import { IconComponent } from '@pdz/shared/images/icon/icon.component';
   styleUrl: './chip-input.component.scss',
 })
 export class ChipInputComponent {
-  @Input({ required: true }) control!: FormControl<string[]>;
-  @Input() label = '';
-  @Input() placeholder = 'Add...';
+  readonly control = input.required<FormControl<string[]>>();
+  readonly label = input('');
+  readonly placeholder = input('Add...');
 
   inputValue = '';
 
   add(input: HTMLInputElement): void {
     const value = input.value.trim();
-    if (value && !this.control.value.includes(value)) {
-      this.control.setValue([...this.control.value, value]);
+    const control = this.control();
+    if (value && !control.value.includes(value)) {
+      control.setValue([...control.value, value]);
     }
     input.value = '';
   }
 
   remove(index: number): void {
-    const updated = [...this.control.value];
+    const updated = [...this.control().value];
     updated.splice(index, 1);
-    this.control.setValue(updated);
+    this.control().setValue(updated);
   }
 
   handleKeydown(event: KeyboardEvent, input: HTMLInputElement): void {
@@ -34,7 +35,7 @@ export class ChipInputComponent {
       event.preventDefault();
       this.add(input);
     } else if (event.key === 'Backspace' && !input.value) {
-      const chips = this.control.value;
+      const chips = this.control().value;
       if (chips.length) this.remove(chips.length - 1);
     }
   }

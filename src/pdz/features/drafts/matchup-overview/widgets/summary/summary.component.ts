@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SwapOpponentButton } from '@pdz/shared/buttons/swap-opponent/swap-opponent.component';
 import { SummaryCoreComponent } from '@pdz/shared/widgets/summary-core/summary-core.component';
@@ -16,7 +16,6 @@ import { Summary } from '../../matchup-interface';
   ],
 })
 export class SummaryComponent {
-  @Input()
-  summaries: Summary[] = [];
+  readonly summaries = input<Summary[]>([]);
   opponent: boolean = true;
 }

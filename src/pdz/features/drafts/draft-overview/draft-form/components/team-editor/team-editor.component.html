@@ -37,12 +37,12 @@
     <div class="team-editor__toolbar">
       <pdz-pokemon-search
         class="team-editor__search"
-        [options$]="pokemonList$"
+        [options$]="pokemonList$()"
         [takenIds]="takenIds"
         (pokemonSelected)="addPokemon($event)"
       ></pdz-pokemon-search>
 
-      @if (teamArray.length) {
+      @if (teamArray().length) {
         <div
           class="team-editor__capt-group"
           role="group"
@@ -101,14 +101,14 @@
     </div>
   }
 
-  @if (teamArray.length) {
+  @if (teamArray().length) {
     <div
       class="team-editor__list"
       cdkDropList
       (cdkDropListDropped)="drop($event)"
     >
       @for (
-        monGroup of teamArray.controls;
+        monGroup of teamArray().controls;
         track monGroup;
         let index = $index
       ) {

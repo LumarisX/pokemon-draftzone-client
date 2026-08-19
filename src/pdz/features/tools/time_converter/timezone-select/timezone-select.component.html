@@ -1,6 +1,6 @@
-@if (label) {
+@if (label()) {
   <label class="timezone-select__label" [id]="selectId + '-label'">
-    {{ label }}
+    {{ label() }}
   </label>
 }
 <button
@@ -16,7 +16,7 @@
   (click)="toggle()"
   (keydown)="handleTriggerKeydown($event)"
 >
-  <span class="timezone-select__value" [title]="value?.name ?? ''">
+  <span class="timezone-select__value" [title]="value()?.name ?? ''">
     {{ triggerLabel }}
   </span>
   <pdz-icon

@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -46,7 +46,9 @@ import {
     IconComponent,
     PokemonTypeComponent,
     FilterDrawerComponent,
-    RulesetSelectComponent, ButtonComponent],
+    RulesetSelectComponent,
+    ButtonComponent,
+  ],
   templateUrl: './pokemon-search-core.component.html',
   styleUrl: './pokemon-search-core.component.scss',
 })
@@ -65,7 +67,7 @@ export class PokemonSearchCoreComponent implements OnInit, OnDestroy {
   readonly fields = FIELD_DEFINITIONS;
   readonly operatorMap = OPERATOR_MAP;
 
-  @Input() rulesetId?: string;
+  readonly rulesetId = input<string>();
 
   copyLinkSuccess = false;
   isBookmarked = false;
@@ -130,7 +132,8 @@ export class PokemonSearchCoreComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    if (this.rulesetId) this.selectedRuleset = this.rulesetId;
+    const rulesetId = this.rulesetId();
+    if (rulesetId) this.selectedRuleset = rulesetId;
 
     this.checkIfBookmarked();
     this.unlistenUrl = this.location.onUrlChange(() =>
@@ -142,7 +145,7 @@ export class PokemonSearchCoreComponent implements OnInit, OnDestroy {
 
     this.route.queryParams.subscribe((params) => {
       if (params['format']) this.selectedFormat = params['format'];
-      if (!this.rulesetId && params['ruleset'])
+      if (!this.rulesetId() && params['ruleset'])
         this.selectedRuleset = params['ruleset'];
 
       const urlSearchMode = params['searchMode'];

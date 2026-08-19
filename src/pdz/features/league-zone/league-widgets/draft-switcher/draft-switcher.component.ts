@@ -2,10 +2,10 @@ import {
   Component,
   EventEmitter,
   inject,
-  Input,
   OnDestroy,
   OnInit,
   Output,
+  input,
 } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { LeagueZoneService } from '../../league-zone.service';
@@ -27,7 +27,7 @@ export class DraftSwitcherComponent implements OnInit, OnDestroy {
   private leagueService = inject(LeagueZoneService);
   private readonly destroy$ = new Subject<void>();
 
-  @Input() currentDraftSlug: string | null = null;
+  readonly currentDraftSlug = input<string | null>(null);
   @Output() draftSelected = new EventEmitter<string>();
 
   drafts: { name: string; draftSlug: string }[] = [];
@@ -49,7 +49,7 @@ export class DraftSwitcherComponent implements OnInit, OnDestroy {
   }
 
   selectDraft(draftSlug: string): void {
-    if (draftSlug === this.currentDraftSlug) return;
+    if (draftSlug === this.currentDraftSlug()) return;
     this.draftSelected.emit(draftSlug);
   }
 }

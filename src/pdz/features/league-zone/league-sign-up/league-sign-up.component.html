@@ -6,7 +6,7 @@
     (ngSubmit)="onSubmit()"
     class="sign-up__container"
   >
-    @if (!embedded) {
+    @if (!embedded()) {
       <!-- Toolbar header (matches tier-list toolbar) -->
       <div class="toolbar">
         <h1 class="toolbar__title">{{ leagueInfo.name }}</h1>

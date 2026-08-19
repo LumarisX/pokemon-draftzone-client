@@ -3,9 +3,9 @@ import {
   Component,
   ElementRef,
   EventEmitter,
-  Input,
   Output,
   ViewChild,
+  input,
 } from '@angular/core';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 
@@ -25,9 +25,9 @@ export type SelectOptionGroup = [
 export class GroupedSelectComponent {
   readonly selectId = `pdz-grouped-select-${nextId++}`;
 
-  @Input() label = '';
-  @Input() groups: SelectOptionGroup[] = [];
-  @Input() value: string | undefined;
+  readonly label = input('');
+  readonly groups = input<SelectOptionGroup[]>([]);
+  readonly value = input<string>();
   @Output() valueChange = new EventEmitter<string>();
 
   @ViewChild('triggerEl') triggerEl?: ElementRef<HTMLButtonElement>;
@@ -36,18 +36,18 @@ export class GroupedSelectComponent {
   highlightedId: string | null = null;
 
   get flatOptions(): { name: string; id: string; desc?: string }[] {
-    return this.groups.flatMap((group) => group[1]);
+    return this.groups().flatMap((group) => group[1]);
   }
 
   get selectedOption():
     | { name: string; id: string; desc?: string }
     | undefined {
-    return this.flatOptions.find((option) => option.id === this.value);
+    return this.flatOptions.find((option) => option.id === this.value());
   }
 
   get selectedGroupName(): string | undefined {
-    return this.groups.find((group) =>
-      group[1].some((option) => option.id === this.value),
+    return this.groups().find((group) =>
+      group[1].some((option) => option.id === this.value()),
     )?.[0];
   }
 
@@ -65,7 +65,7 @@ export class GroupedSelectComponent {
 
   open(): void {
     if (!this.flatOptions.length) return;
-    this.highlightedId = this.value ?? this.flatOptions[0]?.id ?? null;
+    this.highlightedId = this.value() ?? this.flatOptions[0]?.id ?? null;
     this.isOpen = true;
   }
 

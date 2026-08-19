@@ -1,4 +1,4 @@
-import { Component, HostBinding, Input } from '@angular/core';
+import { Component, HostBinding, input } from '@angular/core';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { Speedtier } from '../../../matchup-interface';
 
@@ -9,10 +9,9 @@ import { Speedtier } from '../../../matchup-interface';
   imports: [SpriteComponent],
 })
 export class SpeedtierComponent {
-  @Input() tier!: Speedtier;
+  readonly tier = input.required<Speedtier>();
   @HostBinding('class.alternate')
-  @Input()
-  alternate = false;
+  readonly alternate = input(false);
 
   modifierPath(modifier: string): string {
     switch (modifier) {

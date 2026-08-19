@@ -1,13 +1,13 @@
 <div class="tier-row">
   <div class="sprite-wrapper">
-    <pdz-sprite [pokemon]="tier.pokemon" flipped></pdz-sprite>
+    <pdz-sprite [pokemon]="tier().pokemon" flipped></pdz-sprite>
   </div>
   <div class="modifier-container">
-    @for (modifier of tier.modifiers; track modifier) {
+    @for (modifier of tier().modifiers; track modifier) {
       <div class="modifier">{{ modifier }}</div>
     }
   </div>
   <div class="speed-label">
-    {{ tier.speed }}
+    {{ tier().speed }}
   </div>
 </div>

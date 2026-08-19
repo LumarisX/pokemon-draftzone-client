@@ -5,7 +5,7 @@
         type="button"
         class="draft-switcher__tab"
         [class.draft-switcher__tab--active]="
-          draft.draftSlug === currentDraftSlug
+          draft.draftSlug === currentDraftSlug()
         "
         (click)="selectDraft(draft.draftSlug)"
       >

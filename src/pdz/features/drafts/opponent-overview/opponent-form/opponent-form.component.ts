@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DRAFT_OVERVIEW_PATH } from '@pdz/core/route-paths';
 import { Draft } from '../../draft.model';
@@ -29,7 +29,7 @@ export class OpponentFormComponent implements OnInit {
   submitLabel: string = '';
   isEditMode = false;
 
-  @Input() draft: Draft | undefined;
+  readonly draft = input<Draft>();
 
   ngOnInit(): void {
     this.teamId = this.route.parent!.snapshot.paramMap.get('teamId') ?? '';

@@ -1,7 +1,11 @@
 <div class="widget-container">
   <div class="widget-header">
     <div class="widget-label">Speed Tiers</div>
-    <button pdz-button iconOnly variant="ghost" color="neutral"
+    <button
+      pdz-button
+      iconOnly
+      variant="ghost"
+      color="neutral"
       cdkOverlayOrigin
       #trigger="cdkOverlayOrigin"
       (click)="filterOpen = !filterOpen"
@@ -67,7 +71,7 @@
     <div class="tiers-main">
       <div class="tiers-titles">
         <div class="section-title">Speed Tier Groups</div>
-        <div class="section-title">Lvl {{ level }}</div>
+        <div class="section-title">Lvl {{ level() }}</div>
       </div>
       <div class="tiers-container" #tiersContainer>
         @for (group of speedGroups | async; track group) {

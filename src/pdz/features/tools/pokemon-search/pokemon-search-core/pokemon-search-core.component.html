@@ -50,7 +50,7 @@
         <pdz-format-select [(ngModel)]="selectedFormat"></pdz-format-select>
       </div> -->
 
-    @if (!rulesetId) {
+    @if (!rulesetId()) {
       <div class="pokemon-search__field pokemon-search__field--end">
         <pdz-ruleset-select
           [(ngModel)]="selectedRuleset"

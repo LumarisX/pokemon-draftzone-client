@@ -3,10 +3,10 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
-  Input,
   OnChanges,
   OnDestroy,
   ViewChild,
+  input,
 } from '@angular/core';
 import * as d3 from 'd3';
 
@@ -56,9 +56,9 @@ const DEFAULT_COLORS = [
 export class PieChartComponent implements AfterViewInit, OnChanges, OnDestroy {
   @ViewChild('svg', { static: true }) svgRef!: ElementRef<SVGSVGElement>;
 
-  @Input() data: PieDatum[] = [];
-  @Input() colors: string[] = DEFAULT_COLORS;
-  @Input() centerLabel = 'total';
+  readonly data = input<PieDatum[]>([]);
+  readonly colors = input<string[]>(DEFAULT_COLORS);
+  readonly centerLabel = input('total');
 
   readonly size = SIZE;
   legend: LegendRow[] = [];
@@ -79,14 +79,14 @@ export class PieChartComponent implements AfterViewInit, OnChanges, OnDestroy {
   }
 
   private colorFor(i: number): string {
-    return this.colors[i % this.colors.length];
+    return this.colors()[i % this.colors().length];
   }
 
   private render(): void {
     const svg = d3.select(this.svgRef.nativeElement);
     svg.selectAll('*').remove();
 
-    const rows = (this.data ?? []).filter((d) => d.value > 0);
+    const rows = (this.data() ?? []).filter((d) => d.value > 0);
     const total = d3.sum(rows, (d) => d.value);
 
     this.legend = rows.map((row, i) => ({
@@ -135,7 +135,7 @@ export class PieChartComponent implements AfterViewInit, OnChanges, OnDestroy {
       .attr('class', 'pie-center-label')
       .attr('text-anchor', 'middle')
       .attr('dy', '1.1em')
-      .text(this.centerLabel);
+      .text(this.centerLabel());
 
     g.selectAll('path.pie-slice')
       .data(pie(rows))
@@ -148,12 +148,13 @@ export class PieChartComponent implements AfterViewInit, OnChanges, OnDestroy {
         const pct = ((d.data.value / total) * 100).toFixed(1);
         centerValue.text(d.data.value.toLocaleString());
         centerLabel.text(`${d.data.label} · ${pct}%`);
-        g.selectAll<SVGPathElement, d3.PieArcDatum<PieDatum>>('path.pie-slice')
-          .attr('opacity', (_p, j) => (j === i ? 1 : 0.4));
+        g.selectAll<SVGPathElement, d3.PieArcDatum<PieDatum>>(
+          'path.pie-slice',
+        ).attr('opacity', (_p, j) => (j === i ? 1 : 0.4));
       })
       .on('mouseleave', () => {
         centerValue.text(total.toLocaleString());
-        centerLabel.text(this.centerLabel);
+        centerLabel.text(this.centerLabel());
         g.selectAll('path.pie-slice').attr('opacity', 1);
       });
   }

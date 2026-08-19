@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { PlusSignPipe } from '@pdz/shared/pipes/plus-sign.pipe';
 import { League } from '../../league.interface';
@@ -12,10 +12,10 @@ import { getLogoUrl } from '../../league.util';
   styleUrls: ['./team-standings.component.scss'],
 })
 export class TeamStandingsComponent {
-  @Input({ required: true }) standingData!: League.TeamStandingsTable;
+  readonly standingData = input.required<League.TeamStandingsTable>();
 
   getDiffValue(team: League.TeamStandingData): number {
-    return this.standingData.diffMode === 'game'
+    return this.standingData().diffMode === 'game'
       ? team.gameDiff
       : team.pokemonDiff;
   }

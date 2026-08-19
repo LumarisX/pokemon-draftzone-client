@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 
 export const BALLHEX: {
   [key: string]: {
@@ -37,26 +37,25 @@ export const BALLHEX: {
       cx="12"
       cy="12"
       r="10"
-      [attr.fill]="BALLHEX[ballType].outer || '#000'"
+      [attr.fill]="BALLHEX[ballType()].outer || '#000'"
     />
     <path
       d="M21.9012 13H16.8506C16.3873 15.2822 14.3696 17 11.9506 17C9.53167 17 7.51391 15.2822 7.05064 13H2C2.50172 18.0533 6.76528 22 11.9506 22C17.136 22 21.3995 18.0533 21.9012 13Z"
-      [attr.fill]="BALLHEX[ballType].bottom || '#FFF'"
+      [attr.fill]="BALLHEX[ballType()].bottom || '#FFF'"
     />
     <path
       d="M21.9012 11C21.3995 5.94668 17.136 2 11.9506 2C6.76528 2 2.50172 5.94668 2 11H7.05064C7.51391 8.71776 9.53167 7 11.9506 7C14.3696 7 16.3873 8.71776 16.8506 11H21.9012Z"
-      [attr.fill]="BALLHEX[ballType].top || '#FFF'"
+      [attr.fill]="BALLHEX[ballType()].top || '#FFF'"
     />
     <circle
       cx="12"
       cy="12"
       r="3.2"
-      [attr.fill]="BALLHEX[ballType].inner || '#FFF'"
+      [attr.fill]="BALLHEX[ballType()].inner || '#FFF'"
     />
   </svg> `,
 })
 export class BallSVG {
-  @Input()
-  ballType: keyof typeof BALLHEX = 'plain';
+  readonly ballType = input<keyof typeof BALLHEX>('plain');
   BALLHEX = BALLHEX;
 }

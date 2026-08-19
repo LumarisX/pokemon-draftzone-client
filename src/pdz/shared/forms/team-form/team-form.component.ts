@@ -16,7 +16,7 @@ import {
 } from '@angular/cdk/drag-drop';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
+import { Component, EventEmitter, Output, inject, input } from '@angular/core';
 import {
   AbstractControl,
   AsyncValidatorFn,
@@ -72,7 +72,11 @@ import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
     CdkDropList,
     CdkDragHandle,
     CdkDragPreview,
-    PokemonSelectComponent, ButtonComponent, FieldComponent, InputDirective],
+    PokemonSelectComponent,
+    ButtonComponent,
+    FieldComponent,
+    InputDirective,
+  ],
   templateUrl: './team-form.component.html',
   styleUrl: './team-form.component.scss',
   providers: [
@@ -101,12 +105,9 @@ import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 export class TeamFormComponent {
   private dataService = inject(DataService);
 
-  @Input()
-  ruleset!: string;
-  @Input()
-  teamArray!: FormArray<PokemonFormGroup>;
-  @Input()
-  pokemonList$!: BehaviorSubject<DraftPokemon[]>;
+  readonly ruleset = input.required<string>();
+  readonly teamArray = input.required<FormArray<PokemonFormGroup>>();
+  readonly pokemonList$ = input.required<BehaviorSubject<DraftPokemon[]>>();
 
   @Output()
   isImporting = new EventEmitter<boolean>();
@@ -150,7 +151,7 @@ export class TeamFormComponent {
 
   drop(event: CdkDragDrop<string[]>) {
     moveItemInArray(
-      this.teamArray.controls,
+      this.teamArray().controls,
       event.previousIndex,
       event.currentIndex,
     );
@@ -167,10 +168,10 @@ export class TeamFormComponent {
       .map((name) => name.trim())
       .filter((name) => name.length > 0);
     pokemonNames.forEach((name) => {
-      this.teamArray.push(
+      this.teamArray().push(
         new PokemonFormGroup(
           { id: getPidByName(name), name },
-          this.pokemonList$,
+          this.pokemonList$(),
         ),
       );
     });
@@ -178,20 +179,21 @@ export class TeamFormComponent {
   }
 
   addPokemon(pokemon: DraftPokemon | null) {
+    const teamArray = this.teamArray();
     if (
       pokemon &&
-      this.teamArray.controls.every(
+      teamArray.controls.every(
         (pControl) => pControl.value.pokemon?.id !== pokemon.id,
       )
     ) {
-      const newGroup = new PokemonFormGroup(pokemon, this.pokemonList$);
-      this.teamArray.push(newGroup);
+      const newGroup = new PokemonFormGroup(pokemon, this.pokemonList$());
+      teamArray.push(newGroup);
       newGroup.controls.pokemon.updateValueAndValidity();
     }
   }
 
   deletePokemon(index: number) {
-    this.teamArray.removeAt(index);
+    this.teamArray().removeAt(index);
   }
 
   addAllTypes(control: FormControl<string[] | null>, types: readonly string[]) {
@@ -227,14 +229,14 @@ export class TeamFormComponent {
   }
 
   checkPartial(controlName: string) {
-    return this.teamArray.controls.some((control) => {
+    return this.teamArray().controls.some((control) => {
       let valid = this.validControl(control.get(controlName));
       return valid;
     });
   }
 
   checkTeraPartial() {
-    return this.teamArray.controls.some((control) => {
+    return this.teamArray().controls.some((control) => {
       let valid =
         control.controls.tera.value && control.controls.tera.value.length > 0;
       return valid;
@@ -242,7 +244,7 @@ export class TeamFormComponent {
   }
 
   isAllSelected(controlName: string): boolean {
-    return this.teamArray.controls.every((group) => {
+    return this.teamArray().controls.every((group) => {
       const value = group.get(controlName)?.value;
       if (Array.isArray(value)) return value.length;
       return value;
@@ -250,7 +252,7 @@ export class TeamFormComponent {
   }
 
   partialSelected(controlName: string): boolean {
-    const hasSelected = this.teamArray.controls.some((group) => {
+    const hasSelected = this.teamArray().controls.some((group) => {
       const value = group.get(controlName)?.value;
       if (Array.isArray(value)) return value.length;
       return value;
@@ -260,7 +262,7 @@ export class TeamFormComponent {
   }
 
   toggleTeamControl(controlName: string, isChecked: boolean): void {
-    this.teamArray.controls.forEach((group) => {
+    this.teamArray().controls.forEach((group) => {
       group.get(controlName)?.setValue(isChecked ? [...this.teraTypes] : null);
       group.get(controlName)?.markAsTouched();
     });
@@ -285,7 +287,7 @@ export class TeamFormComponent {
     if (group.controls.pokemon.invalid) return;
     if (group.formeList === undefined) {
       this.dataService
-        .getFormes(this.ruleset, group.controls.pokemon.value.id)
+        .getFormes(this.ruleset(), group.controls.pokemon.value.id)
         .subscribe((formes) => {
           group.formeList = formes;
         });

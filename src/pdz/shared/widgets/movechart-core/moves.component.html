@@ -1,4 +1,4 @@
-@if (movechart) {
+@if (movechart()) {
   <div class="movechart-toolbar">
     <div class="toolbar-search-row">
       <div class="movechart-view-toggle" role="group" aria-label="View mode">
@@ -31,7 +31,7 @@
       </div>
     </div>
     <div class="tag-filters" (contextmenu)="$event.preventDefault()">
-      @for (tag of movechart.tags; track tag) {
+      @for (tag of movechart()?.tags; track tag) {
         <button
           class="tag-btn"
           [class.selected]="selectedTags.get(tag) === 'enable'"

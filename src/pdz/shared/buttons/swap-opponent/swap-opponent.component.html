@@ -1,6 +1,10 @@
-<button pdz-button iconOnly variant="ghost" color="neutral"
+<button
+  pdz-button
+  iconOnly
+  variant="ghost"
+  color="neutral"
   (click)="toggleOpponent()"
-  [ngClass]="{ opponent: opponent }"
+  [ngClass]="{ opponent: opponent() }"
 >
   <mat-icon>cycle</mat-icon>
 </button>

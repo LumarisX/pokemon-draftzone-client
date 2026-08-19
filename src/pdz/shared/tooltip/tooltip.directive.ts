@@ -1,11 +1,11 @@
-import { Directive, ElementRef, HostListener, Input } from '@angular/core';
+import { Directive, ElementRef, HostListener, input } from '@angular/core';
 import { TooltipService } from './tooltip.service';
 
 @Directive({
   selector: 'pdz-[pdzTooltip]',
 })
 export class TooltipDirective {
-  @Input('pdzTooltip') content: string | null = null;
+  readonly content = input<string | null>(null, { alias: 'pdzTooltip' });
 
   constructor(
     private el: ElementRef,
@@ -17,8 +17,9 @@ export class TooltipDirective {
     const rect = this.el.nativeElement.getBoundingClientRect();
     const left = rect.left + rect.width / 2;
     const top = rect.top;
-    if (this.content) {
-      this.tooltipService.show(this.content, left, top);
+    const content = this.content();
+    if (content) {
+      this.tooltipService.show(content, left, top);
     }
   }
 

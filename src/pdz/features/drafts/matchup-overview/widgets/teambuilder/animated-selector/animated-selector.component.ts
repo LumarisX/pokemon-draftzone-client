@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
-  Input,
   Output,
   EventEmitter,
   OnChanges,
@@ -10,6 +9,7 @@ import {
   ElementRef,
   AfterViewInit,
   forwardRef,
+  input,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
@@ -36,10 +36,10 @@ export interface AnimatedSelectorOption<T> {
 export class AnimatedSelectorComponent<T = string>
   implements OnChanges, AfterViewInit, ControlValueAccessor
 {
-  @Input({ required: true }) options: (T | AnimatedSelectorOption<T>)[] = [];
-  @Input() selected: T | null = null;
-  @Input() label?: string;
-  @Input() direction: 'vertical' | 'horizontal' = 'vertical';
+  readonly options = input.required<(T | AnimatedSelectorOption<T>)[]>();
+  readonly selected = input<T | null>(null);
+  readonly label = input<string>();
+  readonly direction = input<'vertical' | 'horizontal'>('vertical');
   @Output() selectedChange = new EventEmitter<T>();
 
   @ViewChild('selector', { static: false }) selectorRef?: ElementRef;
@@ -78,7 +78,7 @@ export class AnimatedSelectorComponent<T = string>
 
   selectOption(option: T | AnimatedSelectorOption<T>) {
     const value = this.isOptionObject(option) ? option.value : option;
-    if (value === this.selected) return;
+    if (value === this.selected()) return;
     this.selected = value;
     this.selectedChange.emit(value);
     this.onChange(value);
@@ -115,8 +115,8 @@ export class AnimatedSelectorComponent<T = string>
   private updateHighlightPosition() {
     if (!this.selectorRef || !this.highlightBarRef) return;
 
-    const selectedIndex = this.options.findIndex(
-      (o) => this.getOptionValue(o) === this.selected,
+    const selectedIndex = this.options().findIndex(
+      (o) => this.getOptionValue(o) === this.selected(),
     );
     if (selectedIndex === -1) return;
 
@@ -129,7 +129,7 @@ export class AnimatedSelectorComponent<T = string>
     if (buttons[selectedIndex]) {
       const button = buttons[selectedIndex];
 
-      if (this.direction === 'horizontal') {
+      if (this.direction() === 'horizontal') {
         const offset = button.offsetLeft;
         const width = button.offsetWidth;
         highlightEl.style.transform = `translateX(${offset}px)`;

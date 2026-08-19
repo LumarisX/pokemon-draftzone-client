@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { MatchupData } from '../matchup-interface';
 import { MovechartComponent } from '../widgets/movechart/movechart.component';
@@ -25,9 +25,11 @@ import { SpeedchartComponent } from './speedchart/speedchart.component';
   ],
 })
 export class MatchupComponent {
-  @Input({ required: true }) matchupData!: MatchupData;
-  @Input() matchupId?: string;
-  @Input() options: { notes: 'view-only' | 'editable' } = {
+  readonly matchupData = input.required<MatchupData>();
+  readonly matchupId = input<string>();
+  readonly options = input<{
+    notes: 'view-only' | 'editable';
+  }>({
     notes: 'editable',
-  };
+  });
 }

@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, input } from '@angular/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ExtendedType } from '@pdz/shared/data';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
@@ -26,7 +26,7 @@ export class CoverageComponent implements OnInit, OnDestroy {
       : null;
   isMobile = this.mediaQuery?.matches ?? false;
 
-  @Input({ required: true }) typechart!: TypeChart;
+  readonly typechart = input.required<TypeChart>();
   coverage: {
     pokemon: DraftPokemon & {
       weak: [
@@ -45,8 +45,7 @@ export class CoverageComponent implements OnInit, OnDestroy {
   e: number = 0;
   ne: number = 0;
 
-  @Input()
-  pokemon!: CoverageChart;
+  readonly pokemon = input.required<CoverageChart>();
 
   _abilities!: boolean;
   @Input({ required: true })
@@ -74,12 +73,12 @@ export class CoverageComponent implements OnInit, OnDestroy {
 
   updateCoverage() {
     const selectedMoves = [
-      ...this.pokemon.coverage.physical
-        .concat(this.pokemon.coverage.special)
+      ...this.pokemon()
+        .coverage.physical.concat(this.pokemon().coverage.special)
         .filter((move) => move.selected),
     ];
-    this.coverage = this.typechart.team
-      .map((pokemon) => ({
+    this.coverage = this.typechart()
+      .team.map((pokemon) => ({
         pokemon,
         max: Math.max(
           ...selectedMoves.map(
@@ -106,10 +105,10 @@ export class CoverageComponent implements OnInit, OnDestroy {
   }
 
   resetRecommended() {
-    this.pokemon.coverage.physical.forEach((move) => {
+    this.pokemon().coverage.physical.forEach((move) => {
       move.selected = move.recommended;
     });
-    this.pokemon.coverage.special.forEach((move) => {
+    this.pokemon().coverage.special.forEach((move) => {
       move.selected = move.recommended;
     });
     this.updateCoverage();

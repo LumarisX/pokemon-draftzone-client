@@ -19,7 +19,7 @@
       <div class="field">
         <label class="field__label" for="wheel-spin-seconds">
           Spin time
-          <span class="field__value">{{ options.spinSeconds }}s</span>
+          <span class="field__value">{{ options().spinSeconds }}s</span>
         </label>
         <input
           id="wheel-spin-seconds"
@@ -28,7 +28,7 @@
           [min]="minSeconds"
           [max]="maxSeconds"
           step="0.5"
-          [value]="options.spinSeconds"
+          [value]="options().spinSeconds"
           (input)="setSpinSeconds($any($event.target).value)"
         />
       </div>
@@ -36,7 +36,7 @@
       <div class="field">
         <label class="field__label" for="wheel-turns">
           Minimum turns
-          <span class="field__value">{{ options.minTurns }}</span>
+          <span class="field__value">{{ options().minTurns }}</span>
         </label>
         <input
           id="wheel-turns"
@@ -45,7 +45,7 @@
           [min]="minTurns"
           [max]="maxTurns"
           step="1"
-          [value]="options.minTurns"
+          [value]="options().minTurns"
           (input)="setTurns($any($event.target).value)"
         />
       </div>
@@ -53,7 +53,7 @@
       <div class="field">
         <label class="field__label" for="wheel-rim-arc">
           Rim view
-          <span class="field__value">{{ options.rimArc }}&deg;</span>
+          <span class="field__value">{{ options().rimArc }}&deg;</span>
         </label>
         <input
           id="wheel-rim-arc"
@@ -62,7 +62,7 @@
           [min]="minRimArc"
           [max]="maxRimArc"
           step="2"
-          [value]="options.rimArc"
+          [value]="options().rimArc"
           (input)="setRimArc($any($event.target).value)"
         />
       </div>
@@ -71,7 +71,13 @@
     <section class="options__group">
       <div class="options__group-head">
         <h3 class="options__subtitle">Items</h3>
-        <button pdz-button variant="link" size="sm" type="button" (click)="refreshJson()">
+        <button
+          pdz-button
+          variant="link"
+          size="sm"
+          type="button"
+          (click)="refreshJson()"
+        >
           Reset to current
         </button>
       </div>

@@ -9,10 +9,10 @@ import { CommonModule } from '@angular/common';
 import {
   Component,
   EventEmitter,
-  Input,
   OnInit,
   Output,
   inject,
+  input,
 } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { Stat } from '@pdz/shared/data';
@@ -39,7 +39,9 @@ export type QDPokemon = Pokemon<{
     CommonModule,
     MatIconModule,
     SpriteComponent,
-    LoadingComponent, ButtonComponent],
+    LoadingComponent,
+    ButtonComponent,
+  ],
   templateUrl: './quick-draft-picks.component.html',
   styleUrls: [
     './quick-draft-picks.component.scss',
@@ -75,8 +77,7 @@ export type QDPokemon = Pokemon<{
 export class QuickDraftPicksComponent implements OnInit {
   private dataService = inject(DataService);
 
-  @Input({ required: true })
-  settings!: QDSettings;
+  readonly settings = input.required<QDSettings>();
 
   @Output()
   finalDraft = new EventEmitter<QDPokemon[]>();
@@ -93,7 +94,7 @@ export class QuickDraftPicksComponent implements OnInit {
     [];
 
   get totalPicks() {
-    return this.settings.tiers.reduce((count, tier) => {
+    return this.settings().tiers.reduce((count, tier) => {
       return count + tier[1];
     }, 0);
   }
@@ -116,8 +117,8 @@ export class QuickDraftPicksComponent implements OnInit {
     this.dataService
       .getRandom(
         this.optionCount,
-        this.settings.ruleset,
-        this.settings.format,
+        this.settings().ruleset,
+        this.settings().format,
         {
           tier: tier[0],
           banned: this.draft
@@ -137,13 +138,13 @@ export class QuickDraftPicksComponent implements OnInit {
   }
 
   rerollPicks() {
-    if (this.settings.rerolls <= 0) return;
+    if (this.settings().rerolls <= 0) return;
     this.draftOptions!.forEach((_, i) => {
       this.animationStates[i] = 'unselected-disappear';
     });
     setTimeout(() => {
       this.getRandomOptions();
-      this.settings.rerolls -= 1;
+      this.settings().rerolls -= 1;
     }, 400);
   }
 
@@ -172,9 +173,9 @@ export class QuickDraftPicksComponent implements OnInit {
   }
 
   private getPick(pick: number): [string, number] {
-    for (let i = 0; i < this.settings.tiers.length; i++) {
-      if (pick < this.settings.tiers[i][1]) return this.settings.tiers[i];
-      pick -= this.settings.tiers[i][1];
+    for (let i = 0; i < this.settings().tiers.length; i++) {
+      if (pick < this.settings().tiers[i][1]) return this.settings().tiers[i];
+      pick -= this.settings().tiers[i][1];
     }
     return ['err', 0];
   }

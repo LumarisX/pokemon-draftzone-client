@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, input } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { LeagueZoneService } from '../../league-zone.service';
 import { MatchupCardComponent } from '../../matchup-card/matchup-card.component';
@@ -29,11 +29,11 @@ export class LeagueScheduleWidgetComponent implements OnInit, OnDestroy {
 
   scheduleRounds?: ScheduleRoundView[];
 
-  @Input() roundFilter?: 'current' | 'past';
+  readonly roundFilter = input<'current' | 'past'>();
 
   ngOnInit(): void {
     this.leagueService
-      .getSchedule({ round: this.roundFilter })
+      .getSchedule({ round: this.roundFilter() })
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (data) => {
