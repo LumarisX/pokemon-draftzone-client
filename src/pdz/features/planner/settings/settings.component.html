@@ -1,11 +1,11 @@
-@if (draftFormGroup()) {
+@if (draftFormGroup(); as draftFormGroup) {
   <div class="settings">
     <div class="settings__row">
       <pdz-format-select
-        [formControl]="draftFormGroup().controls.format"
+        [formControl]="draftFormGroup.controls.format"
       ></pdz-format-select>
       <pdz-ruleset-select
-        [formControl]="draftFormGroup().controls.ruleset"
+        [formControl]="draftFormGroup.controls.ruleset"
       ></pdz-ruleset-select>
     </div>
 
@@ -15,7 +15,7 @@
         <input
           id="settings-min"
           type="number"
-          [formControl]="draftFormGroup().controls.min"
+          [formControl]="draftFormGroup.controls.min"
           min="0"
           max="18"
         />
@@ -25,7 +25,7 @@
         <input
           id="settings-max"
           type="number"
-          [formControl]="draftFormGroup().controls.max"
+          [formControl]="draftFormGroup.controls.max"
           min="0"
           max="18"
         />
@@ -40,19 +40,17 @@
             type="button"
             class="settings__seg-btn"
             [class.is-active]="
-              draftFormGroup().controls.system.value === 'points'
+              draftFormGroup.controls.system.value === 'points'
             "
-            (click)="draftFormGroup().controls.system.setValue('points')"
+            (click)="draftFormGroup.controls.system.setValue('points')"
           >
             Points
           </button>
           <button
             type="button"
             class="settings__seg-btn"
-            [class.is-active]="
-              draftFormGroup().controls.system.value === 'tiers'
-            "
-            (click)="draftFormGroup().controls.system.setValue('tiers')"
+            [class.is-active]="draftFormGroup.controls.system.value === 'tiers'"
+            (click)="draftFormGroup.controls.system.setValue('tiers')"
           >
             Tiers
           </button>
@@ -63,7 +61,7 @@
         <input
           id="settings-total-points"
           type="number"
-          [formControl]="draftFormGroup().controls.totalPoints"
+          [formControl]="draftFormGroup.controls.totalPoints"
         />
       </div>
     </div>
@@ -74,8 +72,8 @@
         [routerLink]="['/', draftPath, 'new']"
         [queryParams]="{
           team: teamIds,
-          format: draftFormGroup().controls.format.value,
-          ruleset: draftFormGroup().controls.ruleset.value,
+          format: draftFormGroup.controls.format.value,
+          ruleset: draftFormGroup.controls.ruleset.value,
         }"
       >
         Save to New League

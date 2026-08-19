@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, input } from '@angular/core';
+import { Component, EventEmitter, Output, input, signal } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { SwapOpponentButton } from '@pdz/shared/buttons/swap-opponent/swap-opponent.component';
@@ -22,7 +22,7 @@ import { TypeChart, TypeChartPokemon } from '../../matchup-interface';
 export class TypechartComponent {
   readonly typecharts = input.required<TypeChart[]>();
   abilities: boolean = true;
-  readonly shownTeam = input<number>(1);
+  readonly shownTeam = signal(1);
   @Output()
   togglePokemon = new EventEmitter<TypeChartPokemon>();
 

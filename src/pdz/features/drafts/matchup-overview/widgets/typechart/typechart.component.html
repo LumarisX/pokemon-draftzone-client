@@ -6,7 +6,10 @@
         >Abilities</mat-slide-toggle
       >
       @if (typecharts().length > 1) {
-        <pdz-swap-opponent [(ngModel)]="shownTeam()"></pdz-swap-opponent>
+        <pdz-swap-opponent
+          [ngModel]="shownTeam()"
+          (ngModelChange)="shownTeam.set($event)"
+        ></pdz-swap-opponent>
       }
     </div>
   </div>

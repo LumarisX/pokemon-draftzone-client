@@ -121,7 +121,8 @@ export class TimeConverterComponent {
     }
   }
 
-  setZone(side: Side, zone: TimeZone): void {
+  setZone(side: Side, zone: TimeZone | undefined): void {
+    if (!zone) return;
     if (side === 'local') {
       this.localZone = zone;
     } else {

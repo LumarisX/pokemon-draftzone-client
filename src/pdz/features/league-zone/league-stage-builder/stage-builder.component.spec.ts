@@ -2,7 +2,11 @@ import { ChangeDetectorRef } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FlexBracketMatch } from '../league-bracket/bracket.model';
 import { StageBuilderComponent } from './stage-builder.component';
-import { BuilderDraft, BuilderStage, nextRoundKey } from './stage-builder.model';
+import {
+  BuilderDraft,
+  BuilderStage,
+  nextRoundKey,
+} from './stage-builder.model';
 
 function match(
   id: string,
@@ -69,7 +73,7 @@ describe('StageBuilderComponent drop targets', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(StageBuilderComponent);
-    fixture.componentInstance.editable = true;
+    fixture.componentRef.setInput('editable', true);
   });
 
   const host = (): HTMLElement => fixture.nativeElement;
@@ -81,7 +85,7 @@ describe('StageBuilderComponent drop targets', () => {
   }
 
   function render(draft: BuilderDraft): void {
-    fixture.componentInstance.draft = draft;
+    fixture.componentRef.setInput('draft', draft);
     fixture.componentInstance.ngOnChanges();
     fixture.detectChanges();
   }
@@ -171,7 +175,7 @@ describe('StageBuilderComponent drop targets', () => {
     render(draft);
 
     const emitted: BuilderDraft[] = [];
-    fixture.componentInstance.draftChange.subscribe((d) => emitted.push(d));
+    fixture.componentInstance.draft.subscribe((d) => emitted.push(d));
 
     fixture.componentInstance['onDrop']({
       item: { data: 'm1' },
@@ -184,9 +188,9 @@ describe('StageBuilderComponent drop targets', () => {
     expect(emitted[0].matches[0].round).toBe(3);
     expect(dropListIds()).toContain('cell_groups_3');
     expect(
-      Array.from(
-        host().querySelectorAll<HTMLElement>('.cell--outside'),
-      ).map((c) => c.id),
+      Array.from(host().querySelectorAll<HTMLElement>('.cell--outside')).map(
+        (c) => c.id,
+      ),
     ).not.toContain('cell_groups_3');
   });
 });

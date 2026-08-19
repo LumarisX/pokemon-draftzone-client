@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit, inject, input } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { interval, Subscription } from 'rxjs';
@@ -16,7 +16,7 @@ export class LeagueAuctionComponent implements OnInit, OnDestroy {
   private auctionService = inject(AuctionService);
   private route = inject(ActivatedRoute);
 
-  readonly tournamentId = input.required<string>();
+  readonly tournamentId = signal('');
 
   auctions = new Map<string, any>();
   bidAmounts = new Map<string, number>();
@@ -29,7 +29,7 @@ export class LeagueAuctionComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
-      this.tournamentId = params['tournamentId']!;
+      this.tournamentId.set(params['tournamentId']!);
       this.auctionService.joinAuction(this.tournamentId());
 
       this.subs.add(

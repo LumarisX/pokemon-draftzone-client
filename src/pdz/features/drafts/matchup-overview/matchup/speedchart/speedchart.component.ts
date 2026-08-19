@@ -9,7 +9,7 @@ import {
   OnInit,
   ViewChild,
   inject,
-  input,
+  model,
 } from '@angular/core';
 import {
   FormArray,
@@ -49,7 +49,7 @@ export class SpeedchartComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @Input()
   set speedchart(value: SpeedChart) {
-    this.level = value.level;
+    this.level.set(value.level);
     this.setModifiers(value.modifiers);
     const entries = value.teams.flatMap((team, teamIndex) =>
       team.flatMap((pokemon) => {
@@ -98,7 +98,7 @@ export class SpeedchartComponent implements OnInit, OnDestroy, AfterViewInit {
       )
       .sort((x, y) => y.speed - x.speed);
   }
-  readonly level = input(100);
+  readonly level = model(100);
   filterOpen: boolean = false;
   pokemons: (DraftPokemon & { spe: number; team: number })[] = [];
   enabledMons: [string | null, string | null] = [null, null];

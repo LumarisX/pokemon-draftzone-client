@@ -63,15 +63,15 @@
 
     @if (mode() === "manage") {
       <div class="league-details">
-        @if (league().leagueDoc) {
+        @if (league().leagueDoc; as leagueDoc) {
           <div class="link-section">
             <label>Details:</label>
             <a
-              [href]="formatLink(league().leagueDoc)"
+              [href]="formatLink(leagueDoc)"
               target="_blank"
               rel="noopener noreferrer"
             >
-              {{ league().leagueDoc }}
+              {{ leagueDoc }}
             </a>
           </div>
         }
@@ -122,9 +122,9 @@
 
   <div class="card-footer">
     @if (mode() === "public") {
-      @if (league().serverLink) {
+      @if (league().serverLink; as serverLink) {
         <a
-          [href]="getExternalLinkUrl(league().serverLink)"
+          [href]="getExternalLinkUrl(serverLink)"
           class="footer-link details-button"
           target="_blank"
           rel="noopener noreferrer"
@@ -132,9 +132,9 @@
           Join Server
         </a>
       }
-      @if (league().leagueDoc) {
+      @if (league().leagueDoc; as leagueDoc) {
         <a
-          [href]="getExternalLinkUrl(league().leagueDoc)"
+          [href]="getExternalLinkUrl(leagueDoc)"
           class="footer-link details-button"
           target="_blank"
           rel="noopener noreferrer"

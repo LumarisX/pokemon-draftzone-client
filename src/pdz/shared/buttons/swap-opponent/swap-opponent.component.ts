@@ -5,7 +5,7 @@ import {
   EventEmitter,
   forwardRef,
   Output,
-  input,
+  model,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
@@ -26,29 +26,27 @@ import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
   ],
 })
 export class SwapOpponentButton implements ControlValueAccessor {
-  readonly opponent = input<number | BooleanInput>();
+  readonly opponent = model<number | BooleanInput>();
 
   @Output()
   opponentChanged = new EventEmitter<number | boolean>();
   constructor() {}
 
   toggleOpponent() {
-    const opponent = this.opponent();
-    if (typeof opponent === 'number') {
-      this.opponent = opponent === 1 ? 0 : 1;
-    } else {
-      this.opponent = !opponent;
-    }
-    this.onChange(opponent);
+    const current = this.opponent();
+    const next =
+      typeof current === 'number' ? (current === 1 ? 0 : 1) : !current;
+    this.opponent.set(next);
+    this.onChange(next);
     this.onTouched();
-    this.opponentChanged.emit(opponent);
+    this.opponentChanged.emit(next);
   }
 
   private onTouched: () => void = () => {};
   private onChange: (value: number | BooleanInput) => void = () => {};
 
   writeValue(value: BooleanInput): void {
-    this.opponent = value;
+    this.opponent.set(value);
   }
 
   registerOnChange(fn: (value: any) => void): void {

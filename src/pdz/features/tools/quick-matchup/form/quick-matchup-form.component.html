@@ -1,4 +1,4 @@
-@if (quickForm()) {
+@if (quickForm(); as quickForm) {
   <mat-stepper
     #stepper
     class="pokemon-form-container"
@@ -7,10 +7,10 @@
   >
     <mat-step
       state="details"
-      [stepControl]="quickForm().controls.details"
+      [stepControl]="quickForm.controls.details"
       errorMessage="Name is required."
     >
-      <form [formGroup]="quickForm().controls.details">
+      <form [formGroup]="quickForm.controls.details">
         <ng-template matStepLabel>Details</ng-template>
         <ng-template matStepContent>
           <div class="details-form-container">
@@ -35,14 +35,14 @@
           <label pdz-field label="Team Name">
             <input
               pdz-input
-              [formControl]="quickForm().controls.side1.controls.teamName"
+              [formControl]="quickForm.controls.side1.controls.teamName"
               spellcheck="false"
             />
           </label>
           <pdz-team-form
             [pokemonList$]="pokemonList$"
-            [ruleset]="quickForm().controls.details.controls.ruleset.value"
-            [teamArray]="quickForm().controls.side1.controls.team"
+            [ruleset]="quickForm.controls.details.controls.ruleset.value"
+            [teamArray]="quickForm.controls.side1.controls.team"
           ></pdz-team-form>
         </div>
 
@@ -68,14 +68,14 @@
           <label pdz-field label="Team Name">
             <input
               pdz-input
-              [formControl]="quickForm().controls.side2.controls.teamName"
+              [formControl]="quickForm.controls.side2.controls.teamName"
               spellcheck="false"
             />
           </label>
           <pdz-team-form
             [pokemonList$]="pokemonList$"
-            [ruleset]="quickForm().controls.details.controls.ruleset.value"
-            [teamArray]="quickForm().controls.side2.controls.team"
+            [ruleset]="quickForm.controls.details.controls.ruleset.value"
+            [teamArray]="quickForm.controls.side2.controls.team"
           ></pdz-team-form>
         </div>
 

@@ -5,6 +5,7 @@ import {
   OnDestroy,
   OnInit,
   input,
+  model,
 } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatIcon } from '@angular/material/icon';
@@ -32,7 +33,7 @@ import { MatchupService } from '../../matchup.service';
 })
 export class MatchupNotesComponent implements OnInit, OnDestroy {
   readonly matchupId = input.required<string>();
-  readonly notes = input.required<string>();
+  readonly notes = model.required<string>();
   readonly mode = input.required<'view-only' | 'editable'>();
   previewMode: boolean = false;
 
@@ -56,6 +57,7 @@ export class MatchupNotesComponent implements OnInit, OnDestroy {
   }
 
   onNotesChange(value: string) {
+    this.notes.set(value);
     this.notesChange$.next(value);
   }
 

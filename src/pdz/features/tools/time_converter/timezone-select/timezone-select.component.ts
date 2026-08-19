@@ -2,11 +2,10 @@ import { OverlayModule } from '@angular/cdk/overlay';
 import {
   Component,
   ElementRef,
-  EventEmitter,
   Input,
-  Output,
   ViewChild,
   input,
+  model,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
@@ -30,8 +29,7 @@ export class TimezoneSelectComponent {
   readonly selectId = `pdz-timezone-select-${nextId++}`;
 
   readonly label = input('');
-  readonly value = input<TimeZone>();
-  @Output() valueChange = new EventEmitter<TimeZone>();
+  readonly value = model<TimeZone>();
 
   @Input() set zones(value: TimeZone[]) {
     this._zones = value;
@@ -104,8 +102,7 @@ export class TimezoneSelectComponent {
   }
 
   select(zone: TimeZone): void {
-    this.value = zone;
-    this.valueChange.emit(zone);
+    this.value.set(zone);
     this.close();
   }
 

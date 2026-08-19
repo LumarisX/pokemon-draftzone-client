@@ -29,13 +29,13 @@
     </div>
 
     <div class="center-container">
-      @if (status()) {
+      @if (status(); as status) {
         <div
           class="status"
-          [class.active]="status().active"
-          [class.link]="status().link"
+          [class.active]="status.active"
+          [class.link]="status.link"
         >
-          {{ status().label }}
+          {{ status.label }}
         </div>
       }
       <div class="center-action-area" (click)="stopPropagation($event)">

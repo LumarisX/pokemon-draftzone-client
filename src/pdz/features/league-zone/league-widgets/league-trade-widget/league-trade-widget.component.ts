@@ -14,7 +14,7 @@ export class LeagueTradeWidgetComponent implements OnInit, OnDestroy {
   leagueService = inject(LeagueZoneService);
   private readonly destroy$ = new Subject<void>();
 
-  readonly stageSlug = input.required<string>();
+  readonly stageSlug = input<string>();
 
   tradeRounds?: { name: string; trades: TradeLog[] }[];
   currentRoundIndex = -1;

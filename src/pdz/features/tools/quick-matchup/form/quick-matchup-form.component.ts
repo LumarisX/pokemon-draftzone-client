@@ -7,7 +7,7 @@ import {
   OnDestroy,
   OnInit,
   Output,
-  input,
+  model,
 } from '@angular/core';
 import {
   AbstractControl,
@@ -74,7 +74,7 @@ export class QuickMatchupFormComponent implements OnInit, OnDestroy {
 
   destroy$ = new Subject<void>();
   pokemonList$ = new BehaviorSubject<DraftPokemon[]>([]);
-  readonly quickForm = input<QuickForm>();
+  readonly quickForm = model<QuickForm>();
 
   @Output() formSubmitted = new EventEmitter<QuickForm>();
 
@@ -94,15 +94,17 @@ export class QuickMatchupFormComponent implements OnInit, OnDestroy {
             : [params['team2']]
           ).map((pid) => ({ id: pid, name: getNameByPid(pid) }))
         : undefined;
-      const quickForm = this.quickForm();
-      if (!quickForm) {
-        this.quickForm = new QuickForm(this.pokemonList$, {
-          ruleset,
-          format,
-          team1,
-          team2,
-        });
+      if (!this.quickForm()) {
+        this.quickForm.set(
+          new QuickForm(this.pokemonList$, {
+            ruleset,
+            format,
+            team1,
+            team2,
+          }),
+        );
       }
+      const quickForm = this.quickForm()!;
       quickForm.controls.details.controls.ruleset.valueChanges
         .pipe(
           filter((ruleset) => ruleset !== null),
@@ -125,12 +127,16 @@ export class QuickMatchupFormComponent implements OnInit, OnDestroy {
   private loadPokemonList(ruleset: string): void {
     this.dataService.getPokemonList(ruleset).subscribe((list) => {
       this.pokemonList$.next(list);
-      quickForm?.controls.side1.controls.team.controls.forEach((group) => {
-        group.controls.pokemon.updateValueAndValidity();
-      });
-      quickForm?.controls.side2.controls.team.controls.forEach((group) => {
-        group.controls.pokemon.updateValueAndValidity();
-      });
+      this.quickForm()?.controls.side1.controls.team.controls.forEach(
+        (group) => {
+          group.controls.pokemon.updateValueAndValidity();
+        },
+      );
+      this.quickForm()?.controls.side2.controls.team.controls.forEach(
+        (group) => {
+          group.controls.pokemon.updateValueAndValidity();
+        },
+      );
     });
   }
 

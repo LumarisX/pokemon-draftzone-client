@@ -7,6 +7,7 @@ import {
   OnInit,
   Output,
   input,
+  model,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { getNature, Stat, STATS, StatsTable, TeraType } from '@pdz/shared/data';
@@ -61,8 +62,7 @@ export class MatchupPokemonBuilderComponent implements OnInit, OnDestroy {
   readonly pokemon = input.required<PokemonBuilder>();
   readonly matchupData = input.required<MatchupData>();
   readonly team = input.required<PokemonBuilder[]>();
-  readonly view = input<PokemonBuilderView>('details');
-  @Output() viewChange = new EventEmitter<PokemonBuilderView>();
+  readonly view = model<PokemonBuilderView>('details');
   @Output() pokemonChange = new EventEmitter<void>();
 
   private teambuilderService = inject(TeambuilderService);
@@ -182,7 +182,7 @@ export class MatchupPokemonBuilderComponent implements OnInit, OnDestroy {
       }
       event.stopPropagation();
     }
-    this.view = viewName;
+    this.view.set(viewName);
   }
 
   selectMoveView($event?: Event) {

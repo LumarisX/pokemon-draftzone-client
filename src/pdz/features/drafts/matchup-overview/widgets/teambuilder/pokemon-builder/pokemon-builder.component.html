@@ -457,7 +457,7 @@
                       [max]="252"
                       [step]="getStep()"
                       class="input input-stat"
-                      [(ngModel)]="pokemon!().stats[stat.id].evs"
+                      [(ngModel)]="pokemon().stats[stat.id].evs"
                       (ngModelChange)="pokemonChange.emit()"
                     />
                   </div>
@@ -471,14 +471,14 @@
                       [min]="0"
                       [max]="31"
                       class="input input-stat"
-                      [(ngModel)]="pokemon!().stats[stat.id].ivs"
+                      [(ngModel)]="pokemon().stats[stat.id].ivs"
                       (ngModelChange)="pokemonChange.emit()"
                     />
                   </div>
                 </div>
                 @if (stat.id === "hp") {
                   <div class="hp-rating">
-                    @let rating = hpRating(pokemon.stats[stat.id].get());
+                    @let rating = hpRating(pokemon().stats[stat.id].get());
                     <pdz-icon
                       class="hp-star"
                       type="material"

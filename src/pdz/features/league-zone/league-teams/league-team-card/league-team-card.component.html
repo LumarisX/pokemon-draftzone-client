@@ -14,14 +14,10 @@
         <span class="team-timezone">
           {{ getCurrentTimeInTimezone(teamDetails().timezone) }}
         </span>
-        @if (teamDetails().record) {
+        @if (teamDetails().record; as record) {
           <span class="team-record">
-            <span class="team-record__wins">{{
-              teamDetails().record.wins
-            }}</span>
-            <span class="team-record__losses">{{
-              teamDetails().record.losses
-            }}</span>
+            <span class="team-record__wins">{{ record.wins }}</span>
+            <span class="team-record__losses">{{ record.losses }}</span>
             <!-- <span
               class="team-record__diff"
               [ngClass]="{

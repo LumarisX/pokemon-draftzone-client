@@ -19,6 +19,7 @@ import {
   ViewChild,
   inject,
   input,
+  model,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
@@ -120,13 +121,12 @@ const STAGE_TYPES: Record<string, { label: string; icon: string }> = {
 export class StageBuilderComponent implements OnChanges, OnDestroy {
   private readonly zone = inject(NgZone);
 
-  readonly draft = input.required<BuilderDraft>();
+  readonly draft = model.required<BuilderDraft>();
   readonly teamsByStage = input(new Map<string, BracketTeamFlex[]>());
   readonly editable = input(false);
   readonly matchupLinkBase = input<string[] | null>();
   readonly currentRoundIndex = input(-1);
 
-  @Output() draftChange = new EventEmitter<BuilderDraft>();
   @Output() editMatch = new EventEmitter<string>();
   @Output() addStage = new EventEmitter<number>();
 
@@ -325,9 +325,8 @@ export class StageBuilderComponent implements OnChanges, OnDestroy {
   }
 
   private commit(draft: BuilderDraft): void {
-    this.draft = trimAutoRounds(padRounds(draft));
+    this.draft.set(trimAutoRounds(padRounds(draft)));
     this.rebuild();
-    this.draftChange.emit(this.draft());
   }
 
   protected onDrop(event: CdkDragDrop<BuilderCell>): void {

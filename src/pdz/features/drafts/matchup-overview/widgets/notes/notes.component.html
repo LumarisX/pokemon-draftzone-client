@@ -20,7 +20,7 @@
       <markdown [data]="notes()"></markdown>
     } @else {
       <textarea
-        [(ngModel)]="notes()"
+        [ngModel]="notes()"
         (ngModelChange)="onNotesChange($event)"
       ></textarea>
     }

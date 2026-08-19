@@ -1,8 +1,6 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
-  Output,
-  EventEmitter,
   OnChanges,
   SimpleChanges,
   ViewChild,
@@ -10,6 +8,7 @@ import {
   AfterViewInit,
   forwardRef,
   input,
+  model,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
@@ -37,10 +36,9 @@ export class AnimatedSelectorComponent<T = string>
   implements OnChanges, AfterViewInit, ControlValueAccessor
 {
   readonly options = input.required<(T | AnimatedSelectorOption<T>)[]>();
-  readonly selected = input<T | null>(null);
+  readonly selected = model<T | null>(null);
   readonly label = input<string>();
   readonly direction = input<'vertical' | 'horizontal'>('vertical');
-  @Output() selectedChange = new EventEmitter<T>();
 
   @ViewChild('selector', { static: false }) selectorRef?: ElementRef;
   @ViewChild('highlightBar', { static: false }) highlightBarRef?: ElementRef;
@@ -60,7 +58,7 @@ export class AnimatedSelectorComponent<T = string>
 
   // ControlValueAccessor implementation
   writeValue(value: T | null): void {
-    this.selected = value;
+    this.selected.set(value);
     setTimeout(() => this.updateHighlightPosition(), 0);
   }
 
@@ -79,8 +77,7 @@ export class AnimatedSelectorComponent<T = string>
   selectOption(option: T | AnimatedSelectorOption<T>) {
     const value = this.isOptionObject(option) ? option.value : option;
     if (value === this.selected()) return;
-    this.selected = value;
-    this.selectedChange.emit(value);
+    this.selected.set(value);
     this.onChange(value);
     this.onTouched();
     setTimeout(() => this.updateHighlightPosition(), 0);
