@@ -1,0 +1,181 @@
+<section class="landing__hero">
+  <div class="landing__hero-inner">
+    <h1 class="landing__title">Find a draft league that fits your schedule</h1>
+    <p class="landing__subtitle">
+      Browse leagues taking coaches right now &mdash; filter by format and see
+      when signups close.
+    </p>
+
+    <div class="landing__search">
+      <label pdz-field class="landing__search-field">
+        <span class="landing__search-icon" aria-hidden="true">
+          <pdz-icon name="search" [size]="18" />
+        </span>
+        <input
+          pdz-input
+          type="search"
+          class="landing__search-input"
+          placeholder="Search leagues by name or host"
+          aria-label="Search leagues by name or host"
+          [ngModel]="query()"
+          (ngModelChange)="onQueryInput($event)"
+        />
+      </label>
+
+      <pdz-select
+        class="landing__search-select"
+        placeholder="Any format"
+        aria-label="Filter by format"
+        [(value)]="format"
+      >
+        <pdz-option [value]="''" label="Any format" />
+        @for (option of formats(); track option) {
+          <pdz-option [value]="option" [label]="option" />
+        }
+      </pdz-select>
+    </div>
+  </div>
+</section>
+
+<section class="landing__results">
+  <div class="landing__results-inner">
+    <div class="landing__results-header">
+      <h2 class="landing__section-title">Open for signups</h2>
+      @if (!loading() && !failed()) {
+        <span class="landing__count">
+          {{ matches().length }}
+          {{ matches().length === 1 ? "league" : "leagues" }}
+        </span>
+      }
+      <span class="landing__spacer"></span>
+      @if (filtering()) {
+        <button pdz-button variant="ghost" color="neutral" size="sm" (click)="clearFilters()">
+          Clear filters
+        </button>
+      }
+      <a pdz-button variant="outlined" size="sm" [routerLink]="leagueListPath">
+        Browse all
+      </a>
+    </div>
+
+    @if (loading()) {
+      <div class="landing__grid">
+        @for (slot of previewSlots; track $index) {
+          <pdz-card tone="lowest" padding="lg">
+            <div class="landing__league-skeleton">
+              <pdz-skeleton variant="block" width="2.75rem" height="2.75rem" radius="0.625rem" />
+              <pdz-skeleton [lines]="2" />
+              <pdz-skeleton variant="block" height="1.5rem" radius="999px" />
+            </div>
+          </pdz-card>
+        }
+      </div>
+    } @else if (failed()) {
+      <pdz-empty-state
+        bordered
+        icon="error"
+        heading="Could not load leagues"
+        message="Something went wrong reaching the league list. Please refresh and try again."
+      >
+        <a pdz-button variant="outlined" size="md" [routerLink]="leagueListPath" pdz-empty-state-actions>
+          Open the league list
+        </a>
+      </pdz-empty-state>
+    } @else if (!preview().length) {
+      <pdz-empty-state
+        bordered
+        icon="search_off"
+        heading="No open leagues match"
+        [message]="
+          filtering()
+            ? 'Try a different format or clear your filters.'
+            : 'No leagues are taking coaches right now. Check back soon.'
+        "
+      >
+        @if (filtering()) {
+          <button pdz-button variant="outlined" size="md" (click)="clearFilters()" pdz-empty-state-actions>
+            Clear filters
+          </button>
+        }
+      </pdz-empty-state>
+    } @else {
+      <div class="landing__grid">
+        @for (league of preview(); track league._id) {
+          <a class="landing__league-link" [routerLink]="leagueListPath">
+            <pdz-card tone="lowest" padding="lg" interactive>
+              <div class="landing__league">
+                <div class="landing__league-head">
+                  <span class="landing__league-mark" aria-hidden="true">
+                    <pdz-icon name="trophy" [size]="22" />
+                  </span>
+                  <div class="landing__league-ident">
+                    <h3 class="landing__league-name">{{ league.leagueName }}</h3>
+                    <span class="landing__league-host">
+                      Hosted by {{ league.organizer }}
+                    </span>
+                  </div>
+                </div>
+
+                <div class="landing__league-chips">
+                  @if (league.hosted) {
+                    <pdz-badge tone="primary" variant="soft" size="sm" label="On DraftZone" />
+                  }
+                  @for (chip of chipsFor(league); track chip) {
+                    <pdz-badge tone="neutral" variant="soft" size="sm" [label]="chip" />
+                  }
+                </div>
+
+                <span class="landing__spacer"></span>
+
+                <div class="landing__league-meta">
+                  <pdz-icon name="event" [size]="16" aria-hidden="true" />
+                  <span>Signups close {{ league.closesAt | date: "MMM d" }}</span>
+                </div>
+              </div>
+            </pdz-card>
+          </a>
+        }
+      </div>
+    }
+  </div>
+</section>
+
+<section class="landing__promos">
+  <div class="landing__promos-inner">
+    <pdz-card tone="lowest" padding="lg">
+      <div class="landing__promo">
+        <span class="landing__promo-mark landing__promo-mark--primary" aria-hidden="true">
+          <pdz-icon name="draft" [size]="26" />
+        </span>
+        <div class="landing__promo-copy">
+          <h3 class="landing__promo-title">Already in a league?</h3>
+          <p class="landing__promo-text">
+            Jump back into your board, or start a new draft.
+          </p>
+        </div>
+        <span class="landing__spacer"></span>
+        <a pdz-button variant="tonal" size="md" [routerLink]="draftsPath">
+          My Drafts
+        </a>
+      </div>
+    </pdz-card>
+
+    <pdz-card tone="lowest" padding="lg">
+      <div class="landing__promo">
+        <span class="landing__promo-mark landing__promo-mark--secondary" aria-hidden="true">
+          <pdz-icon name="groups" [size]="26" />
+        </span>
+        <div class="landing__promo-copy">
+          <h3 class="landing__promo-title">Running a league?</h3>
+          <p class="landing__promo-text">
+            List it here and fill your roster from the community.
+          </p>
+        </div>
+        <span class="landing__spacer"></span>
+        <a pdz-button variant="outlined" color="secondary" size="md" [routerLink]="newAdPath">
+          List a league
+        </a>
+      </div>
+    </pdz-card>
+  </div>
+</section>
