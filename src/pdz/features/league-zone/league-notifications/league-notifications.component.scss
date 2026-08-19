@@ -4,7 +4,7 @@
   position: fixed;
   top: 4rem;
   right: 20px;
-  z-index: 10000; /* Ensure it floats above other content */
+  z-index: pdz.z(toast); /* Ensure it floats above other content */
   display: flex;
   flex-direction: column;
   gap: 10px;

@@ -88,7 +88,7 @@ input {
   border-radius: 0.5rem;
   box-shadow: var(--mat-sys-level2);
   font-size: 1rem;
-  z-index: 1000;
+  z-index: pdz.z(popover);
 }
 
 .custom-dropdown-item {

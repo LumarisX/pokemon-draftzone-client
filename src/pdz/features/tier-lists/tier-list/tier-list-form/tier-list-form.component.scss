@@ -92,7 +92,7 @@
   border: 1px solid pdz.color(outline-variant);
   border-radius: pdz.shape(corner-sm);
   box-shadow: var(--pdz-level-3);
-  z-index: 2100;
+  z-index: pdz.z(popover);
   min-width: 9rem;
   padding: pdz.space(2xs);
 

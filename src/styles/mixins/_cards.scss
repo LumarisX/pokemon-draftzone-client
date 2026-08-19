@@ -150,7 +150,7 @@
       color: map.get($config, "on-menu");
       border-radius: pdz.shape(corner-sm);
       box-shadow: var(--pdz-level-2);
-      z-index: 10;
+      z-index: pdz.z(popover);
       width: map.get($config, "menu-width");
       padding: pdz.space(sm) 0;
       display: flex;

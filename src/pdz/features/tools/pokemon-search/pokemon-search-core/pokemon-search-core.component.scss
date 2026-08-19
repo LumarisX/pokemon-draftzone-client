@@ -215,14 +215,14 @@ button:disabled {
   &__field-menu-backdrop {
     position: fixed;
     inset: 0;
-    z-index: 99;
+    z-index: pdz.z(popover-backdrop);
   }
 
   &__field-menu {
     position: absolute;
     top: calc(100% + 0.375rem);
     left: 0;
-    z-index: 100;
+    z-index: pdz.z(popover);
     min-width: 18rem;
     max-width: 26rem;
     max-height: 22rem;
@@ -696,68 +696,5 @@ button:disabled {
     font-size: pdz.font-size(sm);
     color: pdz.color(on-surface-variant);
     opacity: 0.65;
-  }
-}
-
-.pokemon-summary-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 30;
-  display: grid;
-  place-items: center;
-  padding: pdz.space(md);
-  background: rgba(0, 0, 0, 0.55);
-
-  &__dialog {
-    width: min(30rem, 100%);
-    padding: pdz.space(md);
-    border: 1px solid pdz.color(outline-variant);
-    border-radius: pdz.shape(corner-lg);
-    background: pdz.color(surface-container-high);
-    box-shadow: var(--pdz-level-3);
-  }
-
-  &__close {
-    margin-left: auto;
-    display: block;
-    padding: pdz.space(xs) pdz.space(sm);
-    border: 1px solid pdz.color(outline);
-    border-radius: pdz.shape(corner-sm);
-    background: pdz.color(surface);
-    color: pdz.color(on-surface);
-    cursor: pointer;
-  }
-
-  &__content {
-    display: grid;
-    justify-items: center;
-    gap: pdz.space(sm);
-    text-align: center;
-  }
-
-  &__name {
-    margin: 0;
-    color: pdz.color(on-surface);
-  }
-
-  &__abilities {
-    width: 100%;
-    text-align: left;
-  }
-
-  &__label {
-    margin: 0 0 pdz.space(2xs) 0;
-    font-weight: 700;
-    color: pdz.color(on-surface-variant);
-  }
-
-  ul {
-    margin: 0;
-    padding-left: 1.1rem;
-  }
-
-  li,
-  p {
-    color: pdz.color(on-surface);
   }
 }

@@ -112,9 +112,11 @@
   text-decoration: none;
   cursor: pointer;
   white-space: nowrap;
-  @include background-hover-effect(pdz.color(surface-container));
+  background-color: inherit;
+  transition: background-color pdz.duration(slow) pdz.easing(standard);
 
   &:hover {
+    background-color: pdz.color(surface-container);
     color: pdz.color(on-surface);
   }
 

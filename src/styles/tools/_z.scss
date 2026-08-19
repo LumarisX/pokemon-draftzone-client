@@ -1,0 +1,9 @@
+@use "sass:map";
+@use "tokens/z-layers" as z-tokens;
+
+@function z($layer-name) {
+  @if not map.has-key(z-tokens.$z-layers, $layer-name) {
+    @error "'#{$layer-name}' is not a valid PDZ stacking layer. Available layers: #{map.keys(z-tokens.$z-layers)}. For ordering inside a stacking context your component owns, use a bare integer 0-9 instead.";
+  }
+  @return var(--pdz-z-#{$layer-name});
+}

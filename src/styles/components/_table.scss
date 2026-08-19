@@ -139,7 +139,7 @@ $header-tones: (
 .pdz-table[data-sticky] thead th {
   position: sticky;
   top: 0;
-  z-index: 2;
+  z-index: pdz.z(sticky);
 }
 
 .pdz-table tbody tr.pdz-table__row--interactive {

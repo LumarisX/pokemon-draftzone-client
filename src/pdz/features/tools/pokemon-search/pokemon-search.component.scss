@@ -58,14 +58,14 @@
 .bookmarks-backdrop {
   position: fixed;
   inset: 0;
-  z-index: 5500;
+  z-index: pdz.z(panel-backdrop);
   background: color-mix(in srgb, pdz.color(on-surface) 30%, transparent);
   animation: fadeIn pdz.duration(base) pdz.easing(standard);
 }
 
 .bookmarks-panel {
   position: fixed;
-  z-index: 5501;
+  z-index: pdz.z(panel);
   display: flex;
   flex-direction: column;
   background: pdz.color(surface-container-low);

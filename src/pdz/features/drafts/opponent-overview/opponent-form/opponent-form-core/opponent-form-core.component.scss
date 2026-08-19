@@ -25,7 +25,7 @@
   &__header {
     position: sticky;
     top: 0;
-    z-index: 30;
+    z-index: pdz.z(sticky);
     padding: pdz.space(sm) pdz.space(lg);
     background: pdz.color(background);
   }

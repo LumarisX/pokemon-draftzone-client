@@ -46,7 +46,7 @@
   }
 
   .credit-link {
-    z-index: 2000;
+    z-index: 1;
   }
 }
 
@@ -201,7 +201,7 @@
 
 .theme-options {
   position: absolute;
-  z-index: 500;
+  z-index: pdz.z(popover);
   left: 0;
   right: 0;
   margin-top: 0.5rem;
@@ -268,7 +268,7 @@
 
 .custom-options {
   position: absolute;
-  z-index: 500;
+  z-index: pdz.z(popover);
   left: 0;
   min-width: 100%;
   margin-top: 0.5rem;

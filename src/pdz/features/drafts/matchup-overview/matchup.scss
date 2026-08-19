@@ -46,7 +46,6 @@
     align-items: center;
     padding: pdz.space(sm);
     column-gap: 1rem;
-    z-index: 5001;
     pointer-events: none;
 
     button {
@@ -67,7 +66,7 @@
         pointer-events: auto;
         display: flex;
         flex-wrap: wrap;
-        z-index: 5001;
+        z-index: 1;
         margin-top: -0.75rem;
         padding: 0.25rem 1rem;
         border-radius: 0 0 pdz.shape(corner-sm) pdz.shape(corner-sm);

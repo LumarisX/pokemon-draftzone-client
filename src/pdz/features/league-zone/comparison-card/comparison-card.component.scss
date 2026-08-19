@@ -131,7 +131,7 @@ $container-padding: pdz.space(md);
   border: 1px solid pdz.color(primary-border);
   color: gray;
   &.active {
-    z-index: 100;
+    z-index: 1;
     background-color: pdz.color(primary);
     color: pdz.color(on-primary);
   }

@@ -77,7 +77,7 @@
   box-shadow: var(--pdz-level-3);
   border-radius: pdz.shape(corner-md);
   width: 18rem;
-  z-index: 100;
+  z-index: pdz.z(popover);
 
   &__title {
     @include text(title);

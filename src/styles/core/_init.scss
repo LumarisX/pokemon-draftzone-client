@@ -5,6 +5,7 @@
 @use "tokens/spacing" as spacing-tokens;
 @use "tokens/shadows" as shadow-tokens;
 @use "tokens/motion" as motion-tokens;
+@use "tokens/z-layers" as z-tokens;
 @use "tokens/typography" as type-tokens;
 @use "tokens/breakpoints" as bp-tokens;
 @use "themes" as pdz-themes;
@@ -48,6 +49,11 @@
       --pdz-easing-#{$name}: #{$value};
     }
 
+    // Stacking layers
+    @each $name, $value in z-tokens.$z-layers {
+      --pdz-z-#{$name}: #{$value};
+    }
+
     // Typography
     @each $name, $value in type-tokens.$fonts {
       --pdz-font-#{$name}: #{$value};
@@ -67,6 +73,11 @@
 
     // Default theme (classic light)
     @include apply-theme(map.get(map.get(pdz-themes.$themes, classic), light));
+
+    // Pre-hydration fallback (OS preference)
+    @media (prefers-color-scheme: dark) {
+      @include apply-theme(map.get(map.get(pdz-themes.$themes, classic), dark));
+    }
 
     // All theme / mode variants
     @each $theme-name, $variations in pdz-themes.$themes {

@@ -38,7 +38,7 @@ $transition-duration: pdz.duration(base);
       top: 0;
       right: 0;
       width: 100%;
-      z-index: 10002;
+      z-index: pdz.z(panel);
       visibility: hidden;
       pointer-events: none;
       transition:
@@ -60,7 +60,7 @@ $transition-duration: pdz.duration(base);
       height: 100%;
       cursor: ew-resize;
       background: transparent;
-      z-index: 10001;
+      z-index: 2;
       transition: background-color pdz.duration(base) pdz.easing(standard);
 
       &:hover {
@@ -102,7 +102,7 @@ $transition-duration: pdz.duration(base);
       padding: pdz.space(sm);
       bottom: pdz.space(lg);
       right: 0.675rem;
-      z-index: 10000;
+      z-index: pdz.z(fab);
       transition: all pdz.duration(base) pdz.easing(standard);
       display: flex;
       align-items: center;

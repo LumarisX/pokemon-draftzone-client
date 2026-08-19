@@ -296,7 +296,7 @@ $float-buttons-defaults: (
   position: sticky,
   bottom: pdz.space(lg),
   margin-right: pdz.space(lg),
-  z-index: 10000,
+  z-index: pdz.z(fab),
   radial-radius: 6rem,
   icon-size: 2rem,
   transition-base: pdz.duration(slow) pdz.easing(standard),

@@ -61,7 +61,7 @@
   .standing-table__cell--head {
     position: sticky;
     top: 0;
-    z-index: 10;
+    z-index: pdz.z(sticky);
     justify-content: center;
     background-color: pdz.color(surface);
     border-bottom: 2px solid pdz.color(primary-border);

@@ -132,7 +132,7 @@
       opacity pdz.duration(fast) pdz.easing(standard),
       transform pdz.duration(fast) pdz.easing(standard),
       background-color pdz.duration(fast) pdz.easing(standard);
-    z-index: 10;
+    z-index: 2;
 
     &:hover {
       background-color: pdz.color(error);

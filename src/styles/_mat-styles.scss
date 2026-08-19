@@ -184,7 +184,7 @@ body {
   }
 }
 .cdk-overlay-container {
-  z-index: 6000 !important;
+  z-index: pdz.z(overlay) !important;
 }
 
 .mdc-notched-outline__notch {

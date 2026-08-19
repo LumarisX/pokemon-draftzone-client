@@ -3,7 +3,9 @@ import { join, relative, sep } from "node:path";
 
 const ROOT = process.cwd();
 const SCAN = join(ROOT, "src", "pdz");
+const SCAN_STYLES = join(ROOT, "src", "styles");
 const TYPE_TOKENS = join(ROOT, "src", "styles", "tokens", "_typography.scss");
+const Z_TOKENS = join(ROOT, "src", "styles", "tokens", "_z-layers.scss");
 
 const GLYPH_SIZED = /icon|sprite|symbol|close-button/i;
 const SVG_TEXT = /(^|[\s>])text([\s>.,:]|$)/i;
@@ -52,6 +54,12 @@ const RULES = [
     id: "raw-easing",
     re: /transition[^;]*(?:(?<![\w-])(?:ease-in-out|ease-in|ease-out|ease)(?![\w-])|cubic-bezier\()/,
     msg: "raw easing; use pdz.easing(standard|exit|linear)",
+  },
+  {
+    id: "raw-z-index",
+    re: /z-index\s*:\s*-?\d{2,}/,
+    msg: "raw z-index; use pdz.z(<layer>) for a page-level surface, or a bare 0-9 for ordering inside a stacking context you own",
+    styles: true,
   },
 ];
 
@@ -152,16 +160,37 @@ function blocksOf(lines) {
   return done;
 }
 
-let violations = 0;
+function checkZLayerOrder() {
+  const rel = "src/styles/tokens/_z-layers.scss";
+  const body = (readFileSync(Z_TOKENS, "utf8").match(/\$z-layers:\s*\(([\s\S]*?)\n\);/) || [])[1] || "";
+  const rungs = [...body.matchAll(/^\s*([\w-]+):\s*(-?\d+)/gm)].map((m) => [m[1], Number(m[2])]);
+  let bad = 0;
+  if (rungs.length && rungs[0][1] < 10) {
+    console.error(`${rel}  z-layer-order: lowest rung '${rungs[0][0]}' (${rungs[0][1]}) must be >= 10 to clear the local band`);
+    bad++;
+  }
+  for (let i = 1; i < rungs.length; i++) {
+    const [name, value] = rungs[i];
+    const [prev, prevValue] = rungs[i - 1];
+    if (value > prevValue) continue;
+    console.error(`${rel}  z-layer-order: '${name}' (${value}) must sit above '${prev}' (${prevValue}); the map is read bottom-to-top`);
+    bad++;
+  }
+  return bad;
+}
 
-for (const file of walk(SCAN)) {
+let violations = checkZLayerOrder();
+
+for (const file of [...walk(SCAN), ...walk(SCAN_STYLES)]) {
   const rel = relative(ROOT, file).split(sep).join("/");
+  const inStyles = rel.startsWith("src/styles/");
 
   const lines = readFileSync(file, "utf8").split(/\r?\n/);
 
   lines.forEach((line, i) => {
-    if (/,\s*$/.test(line)) return;
     for (const rule of RULES) {
+      if (/,\s*$/.test(line) && rule.id !== "raw-z-index") continue;
+      if (inStyles && !rule.styles) continue;
       if (ALLOW_BY_RULE[rule.id]?.has(rel)) continue;
       if (!rule.re.test(line)) continue;
       if (rule.glyphExempt) {
@@ -173,7 +202,7 @@ for (const file of walk(SCAN)) {
     }
   });
 
-  if (ALLOW_BY_RULE["unroled-type"].has(rel)) continue;
+  if (inStyles || ALLOW_BY_RULE["unroled-type"].has(rel)) continue;
   for (const block of blocksOf(lines)) {
     if (block.hasTextMixin) continue;
     const size = block.decls.get("font-size");

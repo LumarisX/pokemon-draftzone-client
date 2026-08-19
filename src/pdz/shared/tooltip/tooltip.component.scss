@@ -8,7 +8,7 @@
   padding: pdz.space(xs) pdz.space(sm);
   border-radius: pdz.shape(corner-xs);
   font-size: var(--pdz-font-sm);
-  z-index: 1000;
+  z-index: pdz.z(tooltip);
   pointer-events: none;
   transform: translate(-50%, -100%);
 }

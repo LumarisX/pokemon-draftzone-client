@@ -1,10 +1,38 @@
 <!doctype html>
-<html lang="en" theme-name="classic">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <title>Pokemon DraftZone</title>
     <base href="/" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script>
+      (function () {
+        var theme = 'classic',
+          ldMode = 'device';
+        try {
+          var stored = JSON.parse(localStorage.getItem('user-settings')) || {};
+          if (stored.themeOverride !== '6526' && stored.theme != null)
+            theme = stored.theme;
+          if (stored.ldMode) ldMode = stored.ldMode;
+        } catch (e) {}
+        var isDark =
+          ldMode === 'dark' ||
+          (ldMode !== 'light' &&
+            window.matchMedia &&
+            window.matchMedia('(prefers-color-scheme: dark)').matches);
+        var root = document.documentElement;
+        root.setAttribute('pdz-theme', theme);
+        root.setAttribute('pdz-theme-mode', isDark ? 'dark' : 'light');
+        root.classList.add(isDark ? 'dark' : 'light');
+      })();
+    </script>
+    <link
+      rel="preload"
+      href="/assets/fonts/nasalization-pd.otf"
+      as="font"
+      type="font/otf"
+      crossorigin
+    />
     <link rel="icon" type="image/x-icon" href="./assets/favicon.ico" />
     <!-- Pokemon Draftzone logo and images created by @Mr.Twang -->
     <meta name="title" content="Pokemon DraftZone" />
@@ -25,7 +53,7 @@
     />
     <link rel="manifest" href="manifest.webmanifest" />
   </head>
-  <body sub-theme="prime" pdz-theme="normal" pdz-theme-mode="light">
+  <body>
     <pdz-root></pdz-root>
     <noscript
       >Please enable JavaScript to continue using this application.</noscript
