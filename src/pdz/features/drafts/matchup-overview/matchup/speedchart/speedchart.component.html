@@ -10,7 +10,7 @@
       #trigger="cdkOverlayOrigin"
       (click)="filterOpen = !filterOpen"
     >
-      <mat-icon>filter_list</mat-icon>
+      <pdz-icon name="filter_list"></pdz-icon>
     </button>
     <ng-template
       cdkConnectedOverlay
@@ -61,7 +61,7 @@
             </div>
             <div class="speed-icon">
               @if (enabledMons[pokemon.team] === pokemon.id) {
-                <mat-icon>lock</mat-icon>
+                <pdz-icon name="lock"></pdz-icon>
               }
             </div>
           </div>

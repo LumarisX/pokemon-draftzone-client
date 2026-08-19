@@ -19,7 +19,7 @@ import {
 } from '@angular/forms';
 import { MatDividerModule } from '@angular/material/divider';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { MatStepperModule } from '@angular/material/stepper';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { BehaviorSubject, filter, Subject, takeUntil } from 'rxjs';
@@ -43,7 +43,7 @@ import {
     ReactiveFormsModule,
     MatDividerModule,
     MatStepperModule,
-    MatIconModule,
+    IconComponent,
     FormatSelectComponent,
     TeamFormComponent,
     RulesetSelectComponent,

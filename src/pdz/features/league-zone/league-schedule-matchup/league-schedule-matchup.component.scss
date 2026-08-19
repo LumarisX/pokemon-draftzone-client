@@ -14,7 +14,7 @@
   padding: pdz.space(md);
   &.open {
     .versus-container {
-      mat-icon {
+      pdz-icon {
         display: none;
       }
     }
@@ -74,7 +74,7 @@
       transform: translate(-50%, -50%);
       @include pdz.text(field-label, $family: false);
     }
-    mat-icon {
+    pdz-icon {
       position: absolute;
       bottom: -0.75rem;
       left: 50%;
@@ -135,7 +135,7 @@
         &.negative {
           color: lightcoral;
         }
-        mat-icon {
+        pdz-icon {
           font-size: 1.2rem;
           width: fit-content;
           line-height: 1.25rem;

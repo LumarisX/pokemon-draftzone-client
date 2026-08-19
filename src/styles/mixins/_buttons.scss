@@ -277,7 +277,7 @@ $float-button-defaults: (
     border-width: 0;
   }
 
-  mat-icon {
+  pdz-icon {
     display: flex;
     width: fit-content;
     height: fit-content;
@@ -321,7 +321,7 @@ $float-buttons-defaults: (
   --radial-radius: #{map.get($config, "radial-radius")};
   overflow: visible;
   // Icon sizing for Material icons
-  mat-icon {
+  pdz-icon {
     display: flex;
     width: fit-content;
     height: fit-content;

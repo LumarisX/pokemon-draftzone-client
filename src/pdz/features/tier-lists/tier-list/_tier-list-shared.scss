@@ -60,7 +60,7 @@
         }
       }
 
-      mat-icon {
+      pdz-icon {
         position: absolute;
         left: pdz.space(sm);
         color: pdz.color(on-surface-variant);
@@ -79,7 +79,7 @@
     display: flex;
     align-items: center;
 
-    mat-icon {
+    pdz-icon {
       position: absolute;
       left: pdz.space(sm);
       font-size: 1.125rem;
@@ -131,7 +131,7 @@
     transition: all pdz.duration(base) pdz.easing(standard);
     white-space: nowrap;
 
-    mat-icon {
+    pdz-icon {
       font-size: 1.25rem;
       width: 1.25rem;
       height: 1.25rem;
@@ -176,7 +176,7 @@
     color: pdz.color(on-surface-variant);
     transition: all pdz.duration(base) pdz.easing(standard);
 
-    mat-icon {
+    pdz-icon {
       font-size: 1.25rem;
       width: 1.25rem;
       height: 1.25rem;
@@ -185,7 +185,7 @@
     &:hover {
       background-color: pdz.color(surface-container-highest);
 
-      mat-icon {
+      pdz-icon {
         color: pdz.color(primary-accent);
       }
     }
@@ -279,7 +279,7 @@
       color: pdz.color(on-primary-container);
       opacity: 0.7;
 
-      mat-icon {
+      pdz-icon {
         font-size: 0.85rem;
         width: 0.85rem;
         height: 0.85rem;
@@ -310,7 +310,7 @@
       line-height: 1.5;
       opacity: 0.85;
 
-      mat-icon {
+      pdz-icon {
         font-size: 0.8rem;
         width: 0.8rem;
         height: 0.8rem;

@@ -172,8 +172,9 @@
   [disabled]="this.settings().rerolls <= 0"
   (click)="rerollPicks()"
 >
-  <mat-icon>refresh</mat-icon>
-  <mat-icon class="small-icon">close</mat-icon>
+  <pdz-icon name="refresh"></pdz-icon>
+  <pdz-icon class="small-icon" name="close"></pdz-icon>
+
   <span>{{ settings().rerolls }}</span>
 </button>
 <button pdz-button [disabled]="selectedOption === null" (click)="draftOption()">

@@ -80,72 +80,72 @@
           <div class="pdz-table-wrapper stats-table-wrapper">
             <table class="pdz-table stats-table" data-header="primary">
               <thead>
-              <tr>
-                <th class="col-sprite pdz-table__center"></th>
-                <th class="col-name">Pokémon</th>
-                <th class="col-stat pdz-table__num">Brought</th>
-                <th class="col-stat pdz-table__num">Kills</th>
-                <th class="col-stat pdz-table__num">Deaths</th>
-                <th class="col-stat pdz-table__num">K/D Ratio</th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (pokemon of teamData.draft; track pokemon.id) {
                 <tr>
-                  <td class="cell-sprite pdz-table__center">
-                    <pdz-sprite flipped [pokemon]="pokemon"></pdz-sprite>
-                  </td>
-                  <td class="cell-name">
-                    <div class="name-cell">
-                      <span class="name">{{ pokemon.name }}</span>
-                      <div class="details">
-                        <span class="cost">{{ pokemon.cost }}</span>
-                        @if (pokemon.capt && pokemon.capt.tera) {
-                          <pdz-icon name="tera" [size]="16"></pdz-icon>
-                        }
-                      </div>
-                    </div>
-                  </td>
-                  <td class="cell-stat pdz-table__num">
-                    {{ pokemon.record?.brought ?? 0 }}
-                  </td>
-                  <td class="cell-stat pdz-table__num">
-                    {{ pokemon.record?.kills ?? 0 }}
-                  </td>
-                  <td class="cell-stat pdz-table__num">
-                    {{ pokemon.record?.deaths ?? 0 }}
-                  </td>
-                  <td class="cell-stat pdz-table__num">
-                    @if (pokemon.record?.deaths) {
-                      {{
-                        (
-                          (pokemon.record?.kills ?? 0) /
-                          (pokemon.record?.deaths ?? 1)
-                        ).toFixed(1)
-                      }}
-                    } @else {
-                      {{
-                        (pokemon.record?.kills ?? 0) > 0
-                          ? pokemon.record?.kills
-                          : "—"
-                      }}
-                    }
-                  </td>
+                  <th class="col-sprite pdz-table__center"></th>
+                  <th class="col-name">Pokémon</th>
+                  <th class="col-stat pdz-table__num">Brought</th>
+                  <th class="col-stat pdz-table__num">Kills</th>
+                  <th class="col-stat pdz-table__num">Deaths</th>
+                  <th class="col-stat pdz-table__num">K/D Ratio</th>
                 </tr>
-              }
-            </tbody>
-            <tfoot>
-              <tr>
-                <th class="col-sprite pdz-table__center"></th>
-                <th class="col-name">{{ total.cost }}</th>
-                <th class="col-stat pdz-table__num"></th>
-                <th class="col-stat pdz-table__num">{{ total.kill }}</th>
-                <th class="col-stat pdz-table__num">{{ total.deaths }}</th>
-                <th class="col-stat pdz-table__num"></th>
-              </tr>
-            </tfoot>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                @for (pokemon of teamData.draft; track pokemon.id) {
+                  <tr>
+                    <td class="cell-sprite pdz-table__center">
+                      <pdz-sprite flipped [pokemon]="pokemon"></pdz-sprite>
+                    </td>
+                    <td class="cell-name">
+                      <div class="name-cell">
+                        <span class="name">{{ pokemon.name }}</span>
+                        <div class="details">
+                          <span class="cost">{{ pokemon.cost }}</span>
+                          @if (pokemon.capt && pokemon.capt.tera) {
+                            <pdz-icon name="tera" [size]="16"></pdz-icon>
+                          }
+                        </div>
+                      </div>
+                    </td>
+                    <td class="cell-stat pdz-table__num">
+                      {{ pokemon.record?.brought ?? 0 }}
+                    </td>
+                    <td class="cell-stat pdz-table__num">
+                      {{ pokemon.record?.kills ?? 0 }}
+                    </td>
+                    <td class="cell-stat pdz-table__num">
+                      {{ pokemon.record?.deaths ?? 0 }}
+                    </td>
+                    <td class="cell-stat pdz-table__num">
+                      @if (pokemon.record?.deaths) {
+                        {{
+                          (
+                            (pokemon.record?.kills ?? 0) /
+                            (pokemon.record?.deaths ?? 1)
+                          ).toFixed(1)
+                        }}
+                      } @else {
+                        {{
+                          (pokemon.record?.kills ?? 0) > 0
+                            ? pokemon.record?.kills
+                            : "—"
+                        }}
+                      }
+                    </td>
+                  </tr>
+                }
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th class="col-sprite pdz-table__center"></th>
+                  <th class="col-name">{{ total.cost }}</th>
+                  <th class="col-stat pdz-table__num"></th>
+                  <th class="col-stat pdz-table__num">{{ total.kill }}</th>
+                  <th class="col-stat pdz-table__num">{{ total.deaths }}</th>
+                  <th class="col-stat pdz-table__num"></th>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
         } @else {
           <p class="section-message">No Pokémon drafted yet.</p>
         }
@@ -199,7 +199,7 @@
             <h2 class="team-coach">{{ teamData.coach }}</h2>
             <div class="team-info-bar">
               <span class="team-timezone">
-                <mat-icon>schedule</mat-icon>
+                <pdz-icon name="schedule"></pdz-icon>
                 {{ getCurrentTimeInTimezone(teamData.timezone) }} </span
               >x
             </div>

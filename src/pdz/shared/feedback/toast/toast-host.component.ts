@@ -37,8 +37,6 @@ import { Toast, ToastService } from './toast.service';
   host: {
     class: 'pdz-toast-host',
     popover: 'manual',
-    'aria-live': 'polite',
-    'aria-atomic': 'false',
   },
 })
 export class ToastHostComponent {

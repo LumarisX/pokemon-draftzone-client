@@ -8,14 +8,14 @@
           [class.up]="directionUp"
           (click)="toggleDirection()"
         >
-          <mat-icon>arrow_downward</mat-icon>
+          <pdz-icon name="arrow_downward"></pdz-icon>
         </button>
         <button
           [routerLink]="['/', draftPath, this.teamId, 'form']"
           class="option-btn"
           [queryParams]="{ stage: `Week ${(this.matchups?.length ?? 0) + 1}` }"
         >
-          <mat-icon>add</mat-icon>
+          <pdz-icon name="add"></pdz-icon>
         </button>
       </div>
     </div>
@@ -50,7 +50,7 @@
                   class="more-btn"
                   (click)="toggleMenu(matchup._id, $event)"
                 >
-                  <mat-icon>more_vert</mat-icon>
+                  <pdz-icon name="more_vert"></pdz-icon>
                 </button>
 
                 @if (openDropdown === matchup._id) {
@@ -60,7 +60,8 @@
                         class="menu-item"
                         [routerLink]="['matchup', matchup._id]"
                       >
-                        <mat-icon> search_insights </mat-icon> View Matchup
+                        <pdz-icon name=" search_insights "></pdz-icon> View
+                        Matchup
                       </button>
                     }
                     <button
@@ -68,14 +69,14 @@
                       routerLink="form"
                       [queryParams]="{ matchup: matchup._id }"
                     >
-                      <mat-icon>edit_document</mat-icon> Edit Match
+                      <pdz-icon name="edit_document"></pdz-icon> Edit Match
                     </button>
                     <button
                       routerLink="score"
                       [queryParams]="{ matchup: matchup._id }"
                       class="menu-item"
                     >
-                      <mat-icon>scoreboard</mat-icon>
+                      <pdz-icon name="scoreboard"></pdz-icon>
                       @if (matchup.score) {
                         Edit
                       } @else {
@@ -87,7 +88,7 @@
                       (click)="deleteMatchup(matchup._id)"
                       class="menu-item"
                     >
-                      <mat-icon>delete_forever</mat-icon> Delete
+                      <pdz-icon name="delete_forever"></pdz-icon> Delete
                     </button>
                   </div>
                 }
@@ -153,8 +154,16 @@
               matSortDisableClear
             >
               <ng-container cdkColumnDef="sprite">
-                <th class="pdz-table__center" cdk-header-cell *cdkHeaderCellDef></th>
-                <td class="pdz-table__center" cdk-cell *cdkCellDef="let element">
+                <th
+                  class="pdz-table__center"
+                  cdk-header-cell
+                  *cdkHeaderCellDef
+                ></th>
+                <td
+                  class="pdz-table__center"
+                  cdk-cell
+                  *cdkCellDef="let element"
+                >
                   <div class="sprite-wrapper">
                     <pdz-sprite
                       [flipped]="true"
@@ -173,7 +182,12 @@
               </ng-container>
 
               <ng-container cdkColumnDef="gb">
-                <th class="pdz-table__num" cdk-header-cell *cdkHeaderCellDef mat-sort-header="gb">
+                <th
+                  class="pdz-table__num"
+                  cdk-header-cell
+                  *cdkHeaderCellDef
+                  mat-sort-header="gb"
+                >
                   Games Brought
                 </th>
                 <td class="pdz-table__num" cdk-cell *cdkCellDef="let element">
@@ -182,7 +196,12 @@
               </ng-container>
 
               <ng-container cdkColumnDef="dk">
-                <th class="pdz-table__num" cdk-header-cell *cdkHeaderCellDef mat-sort-header="dk">
+                <th
+                  class="pdz-table__num"
+                  cdk-header-cell
+                  *cdkHeaderCellDef
+                  mat-sort-header="dk"
+                >
                   Direct Kills
                 </th>
                 <td class="pdz-table__num" cdk-cell *cdkCellDef="let element">
@@ -191,7 +210,12 @@
               </ng-container>
 
               <ng-container cdkColumnDef="ik">
-                <th class="pdz-table__num" cdk-header-cell *cdkHeaderCellDef mat-sort-header="ik">
+                <th
+                  class="pdz-table__num"
+                  cdk-header-cell
+                  *cdkHeaderCellDef
+                  mat-sort-header="ik"
+                >
                   Indirect Kills
                 </th>
                 <td class="pdz-table__num" cdk-cell *cdkCellDef="let element">
@@ -200,7 +224,12 @@
               </ng-container>
 
               <ng-container cdkColumnDef="deaths">
-                <th class="pdz-table__num" cdk-header-cell *cdkHeaderCellDef mat-sort-header="deaths">
+                <th
+                  class="pdz-table__num"
+                  cdk-header-cell
+                  *cdkHeaderCellDef
+                  mat-sort-header="deaths"
+                >
                   Deaths
                 </th>
                 <td class="pdz-table__num" cdk-cell *cdkCellDef="let element">
@@ -209,7 +238,12 @@
               </ng-container>
 
               <ng-container cdkColumnDef="kdr">
-                <th class="pdz-table__num" cdk-header-cell *cdkHeaderCellDef mat-sort-header="kdr">
+                <th
+                  class="pdz-table__num"
+                  cdk-header-cell
+                  *cdkHeaderCellDef
+                  mat-sort-header="kdr"
+                >
                   Kills/Deaths
                 </th>
                 <td class="pdz-table__num" cdk-cell *cdkCellDef="let element">
@@ -218,7 +252,12 @@
               </ng-container>
 
               <ng-container cdkColumnDef="kpg">
-                <th class="pdz-table__num" cdk-header-cell *cdkHeaderCellDef mat-sort-header="kpg">
+                <th
+                  class="pdz-table__num"
+                  cdk-header-cell
+                  *cdkHeaderCellDef
+                  mat-sort-header="kpg"
+                >
                   Kills/Game
                 </th>
                 <td class="pdz-table__num" cdk-cell *cdkCellDef="let element">

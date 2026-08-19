@@ -4,7 +4,7 @@
   <div class="toolbar__spacer"></div>
 
   <div class="toolbar__search">
-    <mat-icon>search</mat-icon>
+    <pdz-icon name="search"></pdz-icon>
     <input
       type="text"
       placeholder="Search Pokémon..."
@@ -17,13 +17,13 @@
         (click)="searchText.set('')"
         aria-label="Clear search"
       >
-        <mat-icon>close</mat-icon>
+        <pdz-icon name="close"></pdz-icon>
       </button>
     }
   </div>
 
   <div class="sort-control">
-    <mat-icon>sort</mat-icon>
+    <pdz-icon name="sort"></pdz-icon>
     <select [ngModel]="sortBy()" (ngModelChange)="sortBy.set($event)">
       @for (option of SortOptions; track option) {
         <option [value]="option">{{ option }}</option>
@@ -39,7 +39,7 @@
       class="action-button"
       (click)="menu = menu === 'filter' ? null : 'filter'"
     >
-      <mat-icon>filter_list</mat-icon>
+      <pdz-icon name="filter_list"></pdz-icon>
       Filter
       @if (filteredTypes().length < types.length) {
         <span class="filter-badge"
@@ -85,7 +85,7 @@
 
   @if (divisionNames.length > 1) {
     <div class="sort-control">
-      <mat-icon>groups</mat-icon>
+      <pdz-icon name="groups"></pdz-icon>
       <select
         [ngModel]="selectedDivision()"
         (ngModelChange)="selectedDivision.set($event)"
@@ -104,7 +104,9 @@
       (click)="showDrafted = !showDrafted"
       matTooltip="{{ showDrafted ? 'Hide drafted' : 'Show drafted' }}"
     >
-      <mat-icon>{{ showDrafted ? "visibility" : "visibility_off" }}</mat-icon>
+      <pdz-icon
+        [name]="showDrafted ? 'visibility' : 'visibility_off'"
+      ></pdz-icon>
       Drafted
     </button>
   }
@@ -143,7 +145,7 @@
                 <span class="tier__name">{{ tier.name }}</span>
                 @if (tier.cost != null && tier.cost !== 0) {
                   <span class="tier__cost">
-                    <mat-icon>currency_ruble</mat-icon>{{ tier.cost }}
+                    <pdz-icon name="currency_ruble"></pdz-icon>{{ tier.cost }}
                   </span>
                 }
               </div>
@@ -206,11 +208,11 @@
                     </div>
                   }
                   @if (pokemon.banned || pokemon.notes) {
-                    <mat-icon
+                    <pdz-icon
                       class="pokemon-entry__ban-icon"
                       [matTooltip]="makeWarningString(pokemon)"
-                      >warning</mat-icon
-                    >
+                      name="warning"
+                    ></pdz-icon>
                   }
                 </div>
               </div>

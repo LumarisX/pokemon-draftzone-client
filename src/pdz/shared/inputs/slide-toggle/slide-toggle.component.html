@@ -8,15 +8,15 @@
     <span class="toggle-thumb">
       @if (checkedState) {
         @if (onSVG()) {
-          <mat-icon class="toggle-icon" [svgIcon]="onSVG()!"></mat-icon>
+          <pdz-icon class="toggle-icon" [name]="onSVG()!"></pdz-icon>
         } @else {
-          <mat-icon class="toggle-icon">{{ onIcon() }}</mat-icon>
+          <pdz-icon class="toggle-icon" [name]="offIcon()"></pdz-icon>
         }
       } @else {
         @if (offSVG()) {
-          <mat-icon class="toggle-icon" [svgIcon]="offSVG()!"></mat-icon>
+          <pdz-icon class="toggle-icon" [name]="offSVG()!"></pdz-icon>
         } @else {
-          <mat-icon class="toggle-icon">{{ offIcon() }}</mat-icon>
+          <pdz-icon class="toggle-icon" [name]="offIcon()"></pdz-icon>
         }
       }
     </span>

@@ -13,7 +13,7 @@ import {
   MatDialogModule,
   MatDialogRef,
 } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { first } from 'rxjs/operators';
 import { TierListService } from '../../tier-list.service';
@@ -43,9 +43,13 @@ function draftCountValidator(
   imports: [
     CommonModule,
     MatDialogModule,
-    MatIconModule,
+    IconComponent,
     MatProgressSpinnerModule,
-    ReactiveFormsModule, ButtonComponent, FieldComponent, InputDirective],
+    ReactiveFormsModule,
+    ButtonComponent,
+    FieldComponent,
+    InputDirective,
+  ],
   templateUrl: './tier-list-settings-dialog.component.html',
   styleUrls: ['./tier-list-settings-dialog.component.scss'],
 })

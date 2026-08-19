@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, input } from '@angular/core';
-import { MatIconModule } from '@angular/material/icon';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { RouterLink } from '@angular/router';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { League } from '../../league.interface';
@@ -8,7 +8,7 @@ import { getLogoUrl } from '../../league.util';
 
 @Component({
   selector: 'pdz-league-team-card',
-  imports: [CommonModule, SpriteComponent, MatIconModule, RouterLink],
+  imports: [CommonModule, SpriteComponent, IconComponent, RouterLink],
   templateUrl: './league-team-card.component.html',
   styleUrls: ['./league-team-card.component.scss', '../../league.scss'],
 })

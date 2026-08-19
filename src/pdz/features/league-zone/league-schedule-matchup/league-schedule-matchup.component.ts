@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { MatIconModule } from '@angular/material/icon';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 
 @Component({
   selector: 'pdz-league-schedule-matchup',
-  imports: [CommonModule, MatIconModule, SpriteComponent],
+  imports: [CommonModule, IconComponent, SpriteComponent],
   templateUrl: './league-schedule-matchup.component.html',
   styleUrls: ['./league-schedule-matchup.component.scss'],
 })

@@ -55,11 +55,11 @@
             <div class="rank-cell">
               @if (team.direction !== undefined) {
                 @if (team.direction > 0) {
-                  <mat-icon class="positive">arrow_upward</mat-icon>
+                  <pdz-icon class="positive" name="arrow_upward"></pdz-icon>
                 } @else if (team.direction < 0) {
-                  <mat-icon class="negative">arrow_downward</mat-icon>
+                  <pdz-icon class="negative" name="arrow_downward"></pdz-icon>
                 } @else {
-                  <mat-icon>remove</mat-icon>
+                  <pdz-icon name="remove"></pdz-icon>
                 }
               }
               <span>

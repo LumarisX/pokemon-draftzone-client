@@ -53,7 +53,7 @@
     cursor: pointer;
     display: flex;
     align-items: center;
-    mat-icon {
+    pdz-icon {
       font-size: 1.2rem;
       height: fit-content;
       width: fit-content;
@@ -98,7 +98,7 @@
         box-shadow: var(--pdz-level-2);
         font-size: var(--pdz-font-size-sm);
         min-height: 2rem;
-        mat-icon {
+        pdz-icon {
           &:hover {
             color: pdz.color(primary-accent);
           }

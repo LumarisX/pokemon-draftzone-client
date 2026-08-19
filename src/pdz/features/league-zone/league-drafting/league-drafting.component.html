@@ -136,7 +136,7 @@
                       >
                         @if ($index) {
                           <button (click)="moveUp(picks, $index)">
-                            <mat-icon>arrow_upward_alt</mat-icon>
+                            <pdz-icon name="arrow_upward_alt"></pdz-icon>
                           </button>
                         }
                         <button
@@ -245,7 +245,7 @@
               >
                 <div class="round-label">
                   <span>Round {{ roundIndex + 1 }}</span>
-                  <mat-icon>trending_flat</mat-icon>
+                  <pdz-icon name="trending_flat"></pdz-icon>
                 </div>
                 <div class="card-container">
                   @for (position of round; track $index) {
@@ -278,7 +278,7 @@
                           ) {
                             @if (this.draftDetails.status === "PAUSED") {
                               <span class="pause-time">
-                                <mat-icon>pause</mat-icon>
+                                <pdz-icon name="pause"></pdz-icon>
                               </span>
                             } @else if (noTimer) {
                               <span class="skip-time" title="No timer">
@@ -290,7 +290,7 @@
                               </span>
                             }
                           } @else {
-                            <mat-icon svgIcon="pokeball"></mat-icon>
+                            <pdz-icon svgIcon="pokeball" name=""></pdz-icon>
                           }
                         </div>
                         <div class="team-card-name">

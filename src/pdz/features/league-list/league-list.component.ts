@@ -1,7 +1,7 @@
 import { Component, HostListener, OnInit, inject } from '@angular/core';
 import { forkJoin } from 'rxjs';
 import { FormsModule } from '@angular/forms';
-import { MatIconModule } from '@angular/material/icon';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { RouterModule } from '@angular/router';
 import { DataService } from '@pdz/core/services/data.service';
 import { LeagueAd, LeagueAdsService } from './league-ads.service';
@@ -12,7 +12,7 @@ import { LeagueAdComponent } from './league-ad/league-ad.component';
   selector: 'pdz--league-ad-list',
   templateUrl: './league-list.component.html',
   styleUrls: ['./league-list.component.scss'],
-  imports: [FormsModule, LeagueAdComponent, RouterModule, MatIconModule],
+  imports: [FormsModule, LeagueAdComponent, RouterModule, IconComponent],
 })
 export class LeagueAdListComponent implements OnInit {
   private leagueService = inject(LeagueAdsService);

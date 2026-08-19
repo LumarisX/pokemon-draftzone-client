@@ -11,7 +11,7 @@ import {
   model,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { MatIconModule } from '@angular/material/icon';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 
 export interface AnimatedSelectorOption<T> {
   value: T;
@@ -23,7 +23,7 @@ export interface AnimatedSelectorOption<T> {
   selector: 'pdz-animated-selector',
   templateUrl: './animated-selector.component.html',
   styleUrls: ['./animated-selector.component.scss'],
-  imports: [CommonModule, MatIconModule],
+  imports: [CommonModule, IconComponent],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,

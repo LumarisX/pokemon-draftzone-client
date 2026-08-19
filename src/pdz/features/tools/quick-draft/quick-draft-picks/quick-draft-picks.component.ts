@@ -14,7 +14,7 @@ import {
   inject,
   input,
 } from '@angular/core';
-import { MatIconModule } from '@angular/material/icon';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { Stat } from '@pdz/shared/data';
 import { Pokemon } from '@pdz/core/utils/pokemon';
 import { DataService } from '@pdz/core/services/data.service';
@@ -37,7 +37,7 @@ export type QDPokemon = Pokemon<{
   selector: 'pdz-quick-draft-picks',
   imports: [
     CommonModule,
-    MatIconModule,
+    IconComponent,
     SpriteComponent,
     LoadingComponent,
     ButtonComponent,

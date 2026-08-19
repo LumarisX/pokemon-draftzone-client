@@ -8,12 +8,12 @@ import {
   model,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { MatIconModule } from '@angular/material/icon';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
 @Component({
   selector: 'pdz-swap-opponent',
-  imports: [CommonModule, MatIconModule, ButtonComponent],
+  imports: [CommonModule, IconComponent, ButtonComponent],
   templateUrl: './swap-opponent.component.html',
   styleUrl: './swap-opponent.component.scss',
 

@@ -42,11 +42,11 @@
           routerLink="../edit"
           [queryParams]="{ draft: draft.slug | json }"
         >
-          <mat-icon>edit</mat-icon>
+          <pdz-icon name="edit"></pdz-icon>
         </button>
         <a [href]="draft.doc" target="_blank" [class.disabled]="!draft.doc"
-          ><mat-icon>dataset_linked</mat-icon></a
-        >
+          ><pdz-icon name="dataset_linked"></pdz-icon
+        ></a>
       </div>
     }
   </div>

@@ -48,11 +48,11 @@
 // ─── Icon button (form-specific modifiers) ────────────────────────────────
 
 .icon-button {
-  &--delete:hover mat-icon {
+  &--delete:hover pdz-icon {
     color: pdz.color(error);
   }
 
-  &--edit mat-icon {
+  &--edit pdz-icon {
     color: pdz.color(primary-accent);
   }
 }
@@ -110,7 +110,7 @@
     @include text(body-sm);
     text-align: left;
 
-    mat-icon {
+    pdz-icon {
       font-size: 1.1rem;
       width: 1.1rem;
       height: 1.1rem;
@@ -235,7 +235,7 @@
       min-height: 20px;
       opacity: 0.5;
 
-      mat-icon {
+      pdz-icon {
         font-size: 14px;
         width: 14px;
         height: 14px;
@@ -371,7 +371,7 @@
     box-shadow: var(--pdz-level-2);
     z-index: 1;
 
-    mat-icon {
+    pdz-icon {
       font-size: 1rem;
       width: 1rem;
       height: 1rem;
@@ -437,7 +437,7 @@
   color: pdz.color(on-surface-variant);
   flex-shrink: 0;
 
-  mat-icon {
+  pdz-icon {
     font-size: 2.5rem;
     width: 2.5rem;
     height: 2.5rem;
@@ -460,7 +460,7 @@
   border-radius: pdz.shape(corner-full);
   @include text(label);
 
-  mat-icon {
+  pdz-icon {
     font-size: 1rem;
     width: 1rem;
     height: 1rem;
@@ -478,7 +478,7 @@
   @include text(label);
   font-weight: 600;
 
-  mat-icon {
+  pdz-icon {
     font-size: 1rem;
     width: 1rem;
     height: 1rem;
@@ -496,7 +496,7 @@
   @include text(label);
   font-weight: 600;
 
-  mat-icon {
+  pdz-icon {
     font-size: 1rem;
     width: 1rem;
     height: 1rem;
@@ -507,7 +507,7 @@
     height: 1.5rem;
     margin-left: pdz.space(xs);
 
-    mat-icon {
+    pdz-icon {
       font-size: 1rem;
       width: 1rem;
       height: 1rem;

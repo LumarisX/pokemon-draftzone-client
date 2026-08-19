@@ -6,7 +6,7 @@ import {
   signal,
   input,
 } from '@angular/core';
-import { MatIconModule } from '@angular/material/icon';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { getLogoUrl } from '../league.util';
 
 export interface ComparisonEntity {
@@ -23,7 +23,7 @@ export interface StatusEntity {
 
 @Component({
   selector: 'pdz-comparison-card',
-  imports: [CommonModule, MatIconModule],
+  imports: [CommonModule, IconComponent],
   templateUrl: './comparison-card.component.html',
   styleUrls: ['./comparison-card.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -7,7 +7,7 @@ import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { MatSidenavModule } from '@angular/material/sidenav'; // Retained for sidenav structure
 import { MatListModule } from '@angular/material/list'; // Retained for list structure & accessibility
-import { MatIconModule } from '@angular/material/icon'; // Retained for easy icon usage
+import { IconComponent } from '@pdz/shared/images/icon/icon.component'; // Retained for easy icon usage
 import { MatDividerModule } from '@angular/material/divider'; // Retained for semantic dividers, will be restyled
 import { MatTabsModule } from '@angular/material/tabs';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
@@ -18,9 +18,11 @@ import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
     RouterModule,
     MatSidenavModule,
     MatListModule,
-    MatIconModule,
+    IconComponent,
     MatTabsModule,
-    MatDividerModule, ButtonComponent],
+    MatDividerModule,
+    ButtonComponent,
+  ],
   templateUrl: './league-sidebar.component.html', // Links to updated HTML
   styleUrls: ['./league-sidebar.component.scss'], // Links to updated SCSS
 })
@@ -62,10 +64,10 @@ export class LeagueSidebarComponent {
   <mat-divider class="header-divider"></mat-divider>
 
   <a mat-list-item (click)="toggleLeague()" [class.expanded]="leagueExpanded" class="expandable-main-item">
-    <mat-icon matListItemIcon>gavel</mat-icon>
+    <pdz-icon matListItemIcon name="gavel"></pdz-icon>
     <span matListItemTitle>League</span>
     <span class="menu-spacer"></span>
-    <mat-icon matListItemIcon class="expansion-indicator">{{ leagueExpanded ? 'expand_less' : 'expand_more' }}</mat-icon>
+    <pdz-icon matListItemIcon class="expansion-indicator" name="{{ leagueExpanded ? 'expand_less' : 'expand_more' }}"></pdz-icon>
   </a>
   @if (leagueExpanded) {
     <mat-nav-list class="submenu-container">
@@ -76,10 +78,10 @@ export class LeagueSidebarComponent {
   <mat-divider class="menu-item-divider"></mat-divider>
 
   <a mat-list-item (click)="toggleStandings()" [class.expanded]="standingsExpanded" class="expandable-main-item">
-    <mat-icon matListItemIcon>leaderboard</mat-icon>
+    <pdz-icon matListItemIcon name="leaderboard"></pdz-icon>
     <span matListItemTitle>Standings</span>
     <span class="menu-spacer"></span>
-    <mat-icon matListItemIcon class="expansion-indicator">{{ standingsExpanded ? 'expand_less' : 'expand_more' }}</mat-icon>
+    <pdz-icon matListItemIcon class="expansion-indicator" name="{{ standingsExpanded ? 'expand_less' : 'expand_more' }}"></pdz-icon>
   </a>
   @if (standingsExpanded) {
     <mat-nav-list class="submenu-container">
@@ -92,10 +94,10 @@ export class LeagueSidebarComponent {
   <mat-divider class="menu-item-divider"></mat-divider>
 
   <a mat-list-item (click)="toggleMyTeam()" [class.expanded]="myTeamExpanded" class="expandable-main-item">
-    <mat-icon matListItemIcon>group</mat-icon>
+    <pdz-icon matListItemIcon name="group"></pdz-icon>
     <span matListItemTitle>My Team</span>
     <span class="menu-spacer"></span>
-    <mat-icon matListItemIcon class="expansion-indicator">{{ myTeamExpanded ? 'expand_less' : 'expand_more' }}</mat-icon>
+    <pdz-icon matListItemIcon class="expansion-indicator" name="{{ myTeamExpanded ? 'expand_less' : 'expand_more' }}"></pdz-icon>
   </a>
   @if (myTeamExpanded) {
     <mat-nav-list class="submenu-container">
@@ -109,7 +111,7 @@ export class LeagueSidebarComponent {
   }
   <mat-divider class="menu-item-divider"></mat-divider>
 
-  <a mat-list-item routerLink="./schedule" routerLinkActive="active-main-link" class="main-menu-item"> <mat-icon matListItemIcon>event</mat-icon>
+  <a mat-list-item routerLink="./schedule" routerLinkActive="active-main-link" class="main-menu-item"> <pdz-icon matListItemIcon name="event"></pdz-icon>
     <span matListItemTitle>Schedule</span>
   </a>
   <mat-divider class="menu-item-divider"></mat-divider>
@@ -117,7 +119,7 @@ export class LeagueSidebarComponent {
   <div class="sidebar-spacer"></div>
 
   <div class="manage-button-wrapper">
-    <a pdz-button variant="outlined" color="neutral" routerLink="../manage" class="manage-button custom-manage-button"> <mat-icon>settings</mat-icon>
+    <a pdz-button variant="outlined" color="neutral" routerLink="../manage" class="manage-button custom-manage-button"> <pdz-icon name="settings"></pdz-icon>
       Manage
     </a>
   </div>
@@ -176,7 +178,7 @@ $sidebar-active-indicator-color: $sidebar-accent-color-teal; // Teal for active 
       padding: 0 !important; // Remove Material's internal padding
     }
 
-    .mat-icon {
+    .pdz-icon {
       color: $sidebar-icon-color !important; // Icon color
       margin-right: 16px !important;
       transition: color 0.2s ease-in-out;
@@ -185,7 +187,7 @@ $sidebar-active-indicator-color: $sidebar-accent-color-teal; // Teal for active 
     &:hover {
       background-color: $sidebar-hover-background !important;
       color: $sidebar-hover-text-color !important;
-      .mat-icon {
+      .pdz-icon {
         color: $sidebar-hover-text-color !important;
       }
     }
@@ -254,7 +256,7 @@ $sidebar-active-indicator-color: $sidebar-accent-color-teal; // Teal for active 
 .expandable-main-item.expanded {
   background-color: $sidebar-hover-background !important; // Light background when expanded
   // color: $sidebar-active-text-color !important; // Text color can remain hover or become active
-  .mat-icon {
+  .pdz-icon {
     // color: $sidebar-active-text-color !important;
   }
   .expansion-indicator {
@@ -268,7 +270,7 @@ $sidebar-active-indicator-color: $sidebar-accent-color-teal; // Teal for active 
   color: $sidebar-active-text-color !important;
   font-weight: 500 !important; // Slightly bolder for active
 
-  .mat-icon {
+  .pdz-icon {
     color: $sidebar-active-text-color !important;
   }
 
@@ -316,7 +318,7 @@ $sidebar-active-indicator-color: $sidebar-accent-color-teal; // Teal for active 
     font-size: 0.9rem;
 
     // If submenu items have icons, adjust padding-left and icon margin
-    .mat-icon { // If submenu items were to have icons
+    .pdz-icon { // If submenu items were to have icons
        margin-left: -28px; // Adjust to align with main item icons
     }
   }
@@ -370,7 +372,7 @@ $sidebar-active-indicator-color: $sidebar-accent-color-teal; // Teal for active 
   border-radius: 4px !important; // Custom border radius
   box-shadow: none !important; // Remove Material shadow
 
-  .mat-icon {
+  .pdz-icon {
     margin-right: 8px !important;
     color: $sidebar-icon-color !important; // Match icon color
   }
@@ -379,7 +381,7 @@ $sidebar-active-indicator-color: $sidebar-accent-color-teal; // Teal for active 
     background-color: $sidebar-hover-background !important;
     color: $sidebar-hover-text-color !important;
     border-color: $sidebar-hover-text-color !important;
-    .mat-icon {
+    .pdz-icon {
       color: $sidebar-hover-text-color !important;
     }
   }

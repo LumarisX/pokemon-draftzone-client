@@ -2,7 +2,7 @@
   <h1 class="page-header__title">Open Leagues</h1>
   <div class="page-header__actions">
     <button routerLink="manage/new" class="add-button">
-      <mat-icon>add</mat-icon>
+      <pdz-icon name="add"></pdz-icon>
     </button>
     <button routerLink="manage" class="manage-button">My League Ads</button>
   </div>
@@ -17,7 +17,10 @@
   <div class="toolbar__controls">
     <!-- Filter Button -->
     <div class="menu-trigger">
-      <mat-icon (click)="toggleMenu('filter', $event)">filter_list</mat-icon>
+      <pdz-icon
+        (click)="toggleMenu('filter', $event)"
+        name="filter_list"
+      ></pdz-icon>
       @if (menu === "filter") {
         <div class="dropdown" (click)="$event.stopPropagation()">
           <h3 class="dropdown__title">Filter Options</h3>
@@ -76,7 +79,7 @@
 
     <!-- Sort Options -->
     <div class="menu-trigger">
-      <mat-icon (click)="toggleMenu('sort', $event)">sort</mat-icon>
+      <pdz-icon (click)="toggleMenu('sort', $event)" name="sort"></pdz-icon>
       @if (menu === "sort") {
         <div class="dropdown" (click)="$event.stopPropagation()">
           <div class="filter-group">

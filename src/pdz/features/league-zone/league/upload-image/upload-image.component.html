@@ -9,11 +9,8 @@
     accept="image/*"
   />
 
-  <button pdz-button
-    (click)="openFileInput()"
-    [disabled]="isUploading"
-  >
-    <mat-icon>upload_file</mat-icon>
+  <button pdz-button (click)="openFileInput()" [disabled]="isUploading">
+    <pdz-icon name="upload_file"></pdz-icon>
     Choose File
   </button>
 </div>

@@ -1,17 +1,17 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatIconModule } from '@angular/material/icon';
 import { MatSortModule, Sort } from '@angular/material/sort';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { Subject, debounceTime, takeUntil } from 'rxjs';
-import { LeagueZoneService } from '../../league-zone.service';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
+import { Subject, debounceTime, takeUntil } from 'rxjs';
 import { PlannerCoverageComponent } from '../../../planner/coverage/coverage.component';
 import { MoveComponent } from '../../../planner/moves/moves.component';
 import { PlannerSummaryComponent } from '../../../planner/summary/summary.component';
 import { PlannerTypechartComponent } from '../../../planner/typechart/typechart.component';
+import { LeagueZoneService } from '../../league-zone.service';
 import { League } from '../../league.interface';
 
 @Component({
@@ -19,7 +19,7 @@ import { League } from '../../league.interface';
   imports: [
     LoadingComponent,
     PlannerSummaryComponent,
-    MatIconModule,
+    IconComponent,
     PlannerTypechartComponent,
     MoveComponent,
     PlannerCoverageComponent,

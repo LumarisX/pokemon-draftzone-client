@@ -19,9 +19,15 @@
             >
               <input formControlName="draftName" />
 
-              <mat-icon (click)="copyToNew($index)">content_copy</mat-icon>
+              <pdz-icon
+                (click)="copyToNew($index)"
+                name="content_copy"
+              ></pdz-icon>
               @if (draftArray.controls.length > 1) {
-                <mat-icon (click)="deletePlan($index)">delete_forever</mat-icon>
+                <pdz-icon
+                  (click)="deletePlan($index)"
+                  name="delete_forever"
+                ></pdz-icon>
               }
             </div>
           }
@@ -30,7 +36,7 @@
           (click)="addDraft(this.createDraftFormGroup({}))"
           class="add-tab tab"
         >
-          <mat-icon>add</mat-icon>
+          <pdz-icon name="add"></pdz-icon>
         </button>
       </div>
       <div [formGroup]="draftFormGroup" class="widget-container">

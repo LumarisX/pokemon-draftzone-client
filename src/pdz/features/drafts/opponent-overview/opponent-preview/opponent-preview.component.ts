@@ -9,7 +9,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { MatSort, MatSortModule, Sort } from '@angular/material/sort';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { BehaviorSubject, catchError, forkJoin, of, take } from 'rxjs';
@@ -36,7 +36,7 @@ type Matchup = Opponent & {
     RouterModule,
     SpriteComponent,
     LoadingComponent,
-    MatIconModule,
+    IconComponent,
     MatSortModule,
     MatDialogModule,
     CdkTableModule,

@@ -1,12 +1,12 @@
 import { Location } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
-import { MatIconModule } from '@angular/material/icon';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
 
 @Component({
   selector: 'pdz-external-link',
-  imports: [MatIconModule, PageComponent],
+  imports: [IconComponent, PageComponent],
   templateUrl: './external-link.component.html',
   styleUrl: './external-link.component.scss',
 })

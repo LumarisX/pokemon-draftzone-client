@@ -2,12 +2,9 @@ import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { MatIconModule } from '@angular/material/icon';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LeagueAdComponent } from '../league-ad/league-ad.component';
-import {
-  LeagueAdsService,
-  LeagueAd,
-} from '../league-ads.service';
+import { LeagueAdsService, LeagueAd } from '../league-ads.service';
 
 type FilterStatus = 'All' | 'Pending' | 'Approved' | 'Denied';
 
@@ -15,7 +12,7 @@ type FilterStatus = 'All' | 'Pending' | 'Approved' | 'Denied';
   selector: 'pdz-league-manage',
   templateUrl: './league-manage.component.html',
   styleUrls: ['./league-manage.component.scss'],
-  imports: [FormsModule, RouterModule, MatIconModule, LeagueAdComponent],
+  imports: [FormsModule, RouterModule, IconComponent, LeagueAdComponent],
 })
 export class LeagueManageComponent implements OnInit {
   private leagueService = inject(LeagueAdsService);

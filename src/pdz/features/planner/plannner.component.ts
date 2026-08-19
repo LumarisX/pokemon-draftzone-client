@@ -19,7 +19,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { MatTab, MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -79,7 +79,7 @@ export interface LSDraftData {
     ReactiveFormsModule,
     FormsModule,
     MatTabsModule,
-    MatIconModule,
+    IconComponent,
     MatDialogModule,
     PlannerCoverageComponent,
     PlannerSettingsComponent,

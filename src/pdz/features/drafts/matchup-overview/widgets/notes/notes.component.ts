@@ -2,14 +2,14 @@ import {
   Component,
   HostListener,
   inject,
-  OnDestroy,
-  OnInit,
   input,
   model,
+  OnDestroy,
+  OnInit,
 } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatIcon } from '@angular/material/icon';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { MarkdownComponent } from 'ngx-markdown';
 import {
   debounceTime,
@@ -25,8 +25,8 @@ import { MatchupService } from '../../matchup.service';
     FormsModule,
     ReactiveFormsModule,
     MatSlideToggleModule,
-    MatIcon,
     MarkdownComponent,
+    IconComponent,
   ],
   templateUrl: './notes.component.html',
   styleUrls: ['../../matchup.scss', './notes.component.scss'],

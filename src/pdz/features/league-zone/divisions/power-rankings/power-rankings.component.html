@@ -11,9 +11,9 @@
           (click)="toggleDropdown()"
         >
           <span> {{ selectedTeam.info.name }} </span
-          ><mat-icon>{{
-            isDropdownOpen ? "arrow_drop_up" : "arrow_drop_down"
-          }}</mat-icon>
+          ><pdz-icon
+            [name]="isDropdownOpen ? 'arrow_drop_up' : 'arrow_drop_down'"
+          ></pdz-icon>
         </button>
         @if (isDropdownOpen) {
           <div class="custom-dropdown-menu">
@@ -65,18 +65,18 @@
                   <div class="name-label">{{ pokemon.name }}</div>
                   <div class="capt-row">
                     @if (pokemon.capt?.tera) {
-                      <mat-icon
+                      <pdz-icon
                         [matTooltip]="
                           pokemon.capt!.tera!.length
                             ? pokemon.capt!.tera!.join(', ')
                             : 'All Types'
                         "
                         matTooltipPosition="below"
-                        svgIcon="tera"
-                      ></mat-icon>
+                        name="tera"
+                      ></pdz-icon>
                     }
                     @if (pokemon.capt?.z) {
-                      <mat-icon
+                      <pdz-icon
                         [matTooltip]="
                           pokemon.capt!.z!.length &&
                           pokemon.capt!.z!.length < 18
@@ -84,11 +84,11 @@
                             : 'All Types'
                         "
                         matTooltipPosition="below"
-                        svgIcon="z"
-                      ></mat-icon>
+                        name="z"
+                      ></pdz-icon>
                     }
                     @if (pokemon.capt?.dmax) {
-                      <mat-icon svgIcon="dmax"></mat-icon>
+                      <pdz-icon svgIcon="dmax" name=""></pdz-icon>
                     }
                   </div>
                 </div>

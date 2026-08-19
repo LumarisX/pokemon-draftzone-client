@@ -1,11 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatIconModule } from '@angular/material/icon';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatTabsModule } from '@angular/material/tabs';
-import { BehaviorSubject, debounceTime, Subject, takeUntil } from 'rxjs';
 import { Type, TYPES } from '@pdz/shared/data';
+import { BehaviorSubject, debounceTime, Subject, takeUntil } from 'rxjs';
 import {
   Coverage,
   CoveragePokemon,
@@ -25,7 +24,6 @@ import { CoverageTeamChartComponent } from './charts/coverage-team-chart.compone
     CoverageTeamChartComponent,
     MatSliderModule,
     MatTabsModule,
-    MatIconModule,
   ],
 })
 export class PlannerCoverageComponent implements OnInit, OnDestroy {

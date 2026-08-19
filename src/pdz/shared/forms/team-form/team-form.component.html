@@ -13,7 +13,7 @@
                 ></pdz-sprite>
                 {{ monGroup.controls.pokemon.value.name }}
                 <button matChipRemove (click)="deletePokemon($index)">
-                  <mat-icon>cancel</mat-icon>
+                  <pdz-icon name="cancel"></pdz-icon>
                 </button>
               </mat-chip>
             }
@@ -59,7 +59,7 @@
             (click)="teamOption = true"
             #trigger="cdkOverlayOrigin"
           >
-            <mat-icon svgIcon="capt"></mat-icon>
+            <pdz-icon svgIcon="capt" name=""></pdz-icon>
           </button>
 
           <ng-template
@@ -80,7 +80,7 @@
                 (change)="toggleTeamControl('tera', $event.checked)"
               >
                 <span> Team Tera</span>
-                <mat-icon svgIcon="tera"></mat-icon>
+                <pdz-icon svgIcon="tera" name=""></pdz-icon>
               </mat-checkbox>
               <mat-checkbox
                 [checked]="isAllSelected('z')"
@@ -88,7 +88,7 @@
                 (change)="toggleTeamControl('z', $event.checked)"
               >
                 <span> Team Z</span>
-                <mat-icon svgIcon="z"></mat-icon>
+                <pdz-icon svgIcon="z" name=""></pdz-icon>
               </mat-checkbox>
               <mat-checkbox
                 [checked]="isAllSelected('dmax')"
@@ -96,7 +96,7 @@
                 (change)="toggleTeamControl('dmax', $event.checked)"
               >
                 <span>Team Dynamax</span>
-                <mat-icon svgIcon="dmax"></mat-icon>
+                <pdz-icon svgIcon="dmax" name=""></pdz-icon>
               </mat-checkbox>
             </div>
           </ng-template>
@@ -130,14 +130,16 @@
                     >
                     </pdz-sprite>
                   } @else {
-                    <mat-icon class="preview-warning">warning</mat-icon>
+                    <pdz-icon class="preview-warning" name="warning"></pdz-icon>
                   }
                 </div>
                 <button (click)="accordionItem.toggle()" class="item-header">
                   <div class="pokemon-header">
-                    <mat-icon class="drag-icon" cdkDragHandle
-                      >drag_indicator</mat-icon
-                    >
+                    <pdz-icon
+                      class="drag-icon"
+                      cdkDragHandle
+                      name="drag_indicator"
+                    ></pdz-icon>
                     @if (monGroup.valid) {
                       <pdz-sprite
                         class="preview-sprite"
@@ -149,7 +151,10 @@
                         }"
                       ></pdz-sprite>
                     } @else {
-                      <mat-icon class="preview-warning">warning</mat-icon>
+                      <pdz-icon
+                        class="preview-warning"
+                        name="warning"
+                      ></pdz-icon>
                     }
                     <div class="name-container">
                       <div class="name-title">
@@ -164,30 +169,30 @@
                           monGroup.controls.tera.value &&
                           monGroup.controls.tera.value.length > 0
                         ) {
-                          <mat-icon svgIcon="tera"></mat-icon>
+                          <pdz-icon svgIcon="tera" name=""></pdz-icon>
                         }
                         @if (
                           monGroup.controls.z.value &&
                           monGroup.controls.z.value.length > 0
                         ) {
-                          <mat-icon svgIcon="z"></mat-icon>
+                          <pdz-icon svgIcon="z" name=""></pdz-icon>
                         }
                         @if (monGroup.controls.dmax.value) {
-                          <mat-icon svgIcon="dmax"></mat-icon>
+                          <pdz-icon svgIcon="dmax" name=""></pdz-icon>
                         }
                       </div>
                     </div>
                   </div>
                   <div class="setting-icon-container">
                     <button pdz-button iconOnly variant="ghost" color="neutral">
-                      <mat-icon
+                      <pdz-icon
                         class="settings-icon"
                         [@rotateIcon]="
                           accordionItem.expanded ? 'expanded' : 'collapsed'
                         "
+                        name="settings"
                       >
-                        settings
-                      </mat-icon>
+                      </pdz-icon>
                     </button>
                     <button
                       pdz-button
@@ -196,7 +201,7 @@
                       color="neutral"
                       (click)="deletePokemon(index); $event.stopPropagation()"
                     >
-                      <mat-icon>delete</mat-icon>
+                      <pdz-icon name="delete"></pdz-icon>
                     </button>
                   </div>
                 </button>
@@ -215,7 +220,7 @@
                       <ng-template mat-tab-label>
                         <span>Captain</span>
                         <span class="tab-icon-wrapper">
-                          <mat-icon svgIcon="capt"></mat-icon>
+                          <pdz-icon svgIcon="capt" name=""></pdz-icon>
                         </span>
                       </ng-template>
                       <div class="captain-container">
@@ -268,7 +273,7 @@
                                 >
                                   None
                                 </button>
-                                <mat-icon svgIcon="tera"></mat-icon>
+                                <pdz-icon svgIcon="tera" name=""></pdz-icon>
                                 <button
                                   (click)="
                                     addAllTypes(
@@ -331,7 +336,7 @@
                                 >
                                   None
                                 </button>
-                                <mat-icon svgIcon="z"></mat-icon>
+                                <pdz-icon svgIcon="z" name=""></pdz-icon>
                                 <button
                                   (click)="
                                     addAllTypes(monGroup.controls.z, zTypes)
@@ -380,7 +385,7 @@
                       <ng-template mat-tab-label>
                         <span>Cosmetics</span>
                         <div class="tab-icon-wrapper">
-                          <mat-icon svgIcon="shiny"></mat-icon>
+                          <pdz-icon svgIcon="shiny" name=""></pdz-icon>
                         </div>
                       </ng-template>
                       <div class="cosmetic-container">
@@ -413,7 +418,7 @@
                       <ng-template mat-tab-label>
                         <span>Advanced</span>
                         <span class="tab-icon-wrapper">
-                          <mat-icon>construction</mat-icon>
+                          <pdz-icon name="construction"></pdz-icon>
                         </span>
                       </ng-template>
                       <div class="advanced-container">
@@ -440,7 +445,7 @@
                                     ></pdz-sprite>
                                     {{ forme.name }}
                                     <button matChipRemove>
-                                      <mat-icon>cancel</mat-icon>
+                                      <pdz-icon name="cancel"></pdz-icon>
                                     </button>
                                   </mat-chip-row>
                                 }
@@ -501,7 +506,7 @@
                                 >
                                   {{ move }}
                                   <button matChipRemove>
-                                    <mat-icon>cancel</mat-icon>
+                                    <pdz-icon name="cancel"></pdz-icon>
                                   </button>
                                 </mat-chip-row>
                               }
@@ -530,7 +535,7 @@
                                 >
                                   {{ move }}
                                   <button matChipRemove>
-                                    <mat-icon>cancel</mat-icon>
+                                    <pdz-icon name="cancel"></pdz-icon>
                                   </button>
                                 </mat-chip-row>
                               }

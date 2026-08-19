@@ -5,11 +5,11 @@
       @if (mode() !== "view-only") {
         @if (previewMode) {
           <button (click)="previewMode = false">
-            <mat-icon>edit_note</mat-icon>
+            <pdz-icon name="edit_note"></pdz-icon>
           </button>
         } @else {
           <button (click)="previewMode = true">
-            <mat-icon>preview</mat-icon>
+            <pdz-icon name="preview"></pdz-icon>
           </button>
         }
       }

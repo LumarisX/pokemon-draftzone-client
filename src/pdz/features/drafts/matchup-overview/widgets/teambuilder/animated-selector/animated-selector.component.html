@@ -16,7 +16,7 @@
         [attr.aria-pressed]="getOptionValue(option) === selected()"
       >
         @if (getOptionIcon(option); as icon) {
-          <mat-icon>{{ getOptionIcon(option) }}</mat-icon>
+          <pdz-icon name="{{ getOptionIcon(option) }}"></pdz-icon>
         }
         @if (getOptionLabel(option)) {
           <span class="selector-option__label">{{

@@ -2,8 +2,11 @@ import { CommonModule } from '@angular/common';
 import { HttpEventType, HttpResponse } from '@angular/common/http';
 import { Component, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, RouterModule } from '@angular/router';
+import { UploadService } from '@pdz/core/services/upload.service';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
+import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
+import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { interval, Observable, of, Subject, switchMap } from 'rxjs';
 import {
   distinctUntilChanged,
@@ -12,13 +15,9 @@ import {
   map,
   takeUntil,
 } from 'rxjs/operators';
-import { UploadService } from '@pdz/core/services/upload.service';
-import { IconComponent } from '@pdz/shared/images/icon/icon.component';
-import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
-import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
-import { LeagueZoneService } from '../league-zone.service';
 import { LeagueScheduleWidgetComponent } from '../league-widgets/league-schedule-widget/league-schedule-widget.component';
 import { LeagueTradeWidgetComponent } from '../league-widgets/league-trade-widget/league-trade-widget.component';
+import { LeagueZoneService } from '../league-zone.service';
 import { League, TradeLog } from '../league.interface';
 import { getLogoUrl } from '../league.util';
 import {
@@ -51,7 +50,6 @@ const ALLOWED_LOGO_TYPES = [
     CommonModule,
     RouterModule,
     LoadingComponent,
-    MatIconModule,
     IconComponent,
     SpriteComponent,
     LeagueTradeWidgetComponent,

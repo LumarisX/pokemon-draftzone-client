@@ -4,7 +4,7 @@ import { Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { InjectionToken } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
-import { MatIconModule } from '@angular/material/icon';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 export const OVERLAY_REF_TOKEN = new InjectionToken<OverlayRef>('OverlayRef');
 export const FILE_PREVIEW_DATA_TOKEN = new InjectionToken<FilePreviewData>(
@@ -16,7 +16,7 @@ export interface FilePreviewData {
 
 @Component({
   selector: 'pdz-file-upload-preview',
-  imports: [MatCardModule, MatIconModule, ButtonComponent],
+  imports: [MatCardModule, IconComponent, ButtonComponent],
   templateUrl: './file-upload-preview.component.html',
   styleUrls: ['./file-upload-preview.component.scss'],
 })

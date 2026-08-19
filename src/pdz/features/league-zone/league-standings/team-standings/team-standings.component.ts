@@ -1,13 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component, input } from '@angular/core';
-import { MatIconModule } from '@angular/material/icon';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { PlusSignPipe } from '@pdz/shared/pipes/plus-sign.pipe';
 import { League } from '../../league.interface';
 import { getLogoUrl } from '../../league.util';
 
 @Component({
   selector: 'pdz-team-standings',
-  imports: [CommonModule, MatIconModule, PlusSignPipe],
+  imports: [CommonModule, IconComponent, PlusSignPipe],
   templateUrl: './team-standings.component.html',
   styleUrls: ['./team-standings.component.scss'],
 })

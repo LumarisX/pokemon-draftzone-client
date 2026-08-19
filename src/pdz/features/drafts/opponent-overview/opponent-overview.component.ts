@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MatIconModule } from '@angular/material/icon';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { Observable, switchMap } from 'rxjs';
 import { DRAFT_OVERVIEW_PATH } from '@pdz/core/route-paths';
@@ -16,7 +16,7 @@ import { RouteEnterDirective } from '@pdz/shared/layout/route-enter.directive';
     CommonModule,
     RouterModule,
     ReactiveFormsModule,
-    MatIconModule,
+    IconComponent,
     SpriteComponent,
     RouteEnterDirective,
   ],

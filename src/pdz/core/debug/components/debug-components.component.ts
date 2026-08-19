@@ -1,50 +1,49 @@
-import {
-  Component,
-  DestroyRef,
-  effect,
-  inject,
-  signal,
-} from '@angular/core';
+import { Component, DestroyRef, effect, inject, signal } from '@angular/core';
+import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
   ButtonColor,
   ButtonComponent,
   ButtonSize,
   ButtonVariant,
 } from '@pdz/shared/buttons/button/button.component';
-import { IconComponent } from '@pdz/shared/images/icon/icon.component';
-import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
-import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
-import { CheckComponent } from '@pdz/shared/inputs/choice/check.component';
-import { ChoiceDirective } from '@pdz/shared/inputs/choice/choice.directive';
-import { CardComponent, CardPadding, CardTone } from '@pdz/shared/data/card/card.component';
-import { SkeletonComponent } from '@pdz/shared/data/skeleton/skeleton.component';
-import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ToastService, ToastTone } from '@pdz/shared/feedback/toast/toast.service';
 import {
-  BadgeComponent,
   BadgeTone,
   BadgeVariant,
 } from '@pdz/shared/data/badge/badge.component';
-import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
-import { TabsComponent } from '@pdz/shared/layout/tabs/tabs.component';
 import {
-  TabComponent,
-  TabLabelDirective,
-} from '@pdz/shared/layout/tabs/tab.component';
-import {
-  DialogComponent,
-  DialogSize,
-} from '@pdz/shared/dialogs/dialog/dialog.component';
+  CardComponent,
+  CardPadding,
+  CardTone,
+} from '@pdz/shared/data/card/card.component';
+import { SkeletonComponent } from '@pdz/shared/data/skeleton/skeleton.component';
+import { DialogSize } from '@pdz/shared/dialogs/dialog/dialog.component';
 import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
-import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
-import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
+import {
+  ToastService,
+  ToastTone,
+} from '@pdz/shared/feedback/toast/toast.service';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
+import { CheckComponent } from '@pdz/shared/inputs/choice/check.component';
+import { ChoiceDirective } from '@pdz/shared/inputs/choice/choice.directive';
+import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
+import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 
 const THEME_ATTR = 'pdz-theme';
 const MODE_ATTR = 'pdz-theme-mode';
 
 @Component({
   selector: 'pdz-debug-components',
-  imports: [ButtonComponent, IconComponent, FieldComponent, InputDirective, ReactiveFormsModule, CheckComponent, ChoiceDirective, CardComponent, SkeletonComponent, BadgeComponent, EmptyStateComponent, TabsComponent, TabComponent, TabLabelDirective, DialogComponent, SelectComponent, SelectOptionComponent],
+  imports: [
+    ButtonComponent,
+    IconComponent,
+    FieldComponent,
+    InputDirective,
+    ReactiveFormsModule,
+    CheckComponent,
+    ChoiceDirective,
+    CardComponent,
+    SkeletonComponent,
+  ],
   templateUrl: './debug-components.component.html',
   styleUrl: './debug-components.component.scss',
 })
@@ -157,11 +156,14 @@ export class DebugComponentsComponent {
   }
 
   fireSticky() {
-    this.toast.error('Could not reach the server. Your changes were not saved.', {
-      title: 'Save failed',
-      duration: 0,
-      action: { label: 'Retry', run: () => this.toast.success('Saved.') },
-    });
+    this.toast.error(
+      'Could not reach the server. Your changes were not saved.',
+      {
+        title: 'Save failed',
+        duration: 0,
+        action: { label: 'Retry', run: () => this.toast.success('Saved.') },
+      },
+    );
   }
 
   fireUndismissable() {
@@ -212,9 +214,21 @@ export class DebugComponentsComponent {
 
   readonly mon = signal<string | undefined>(undefined);
   readonly manyOptions = [
-    'Iron Valiant', 'Great Tusk', 'Gholdengo', 'Dragapult', 'Kingambit',
-    'Landorus-Therian', 'Rotom-Wash', 'Ting-Lu', 'Zamazenta', 'Ogerpon',
-    'Rillaboom', 'Urshifu', 'Volcarona', 'Garganacl', 'Corviknight',
+    'Iron Valiant',
+    'Great Tusk',
+    'Gholdengo',
+    'Dragapult',
+    'Kingambit',
+    'Landorus-Therian',
+    'Rotom-Wash',
+    'Ting-Lu',
+    'Zamazenta',
+    'Ogerpon',
+    'Rillaboom',
+    'Urshifu',
+    'Volcarona',
+    'Garganacl',
+    'Corviknight',
   ];
 
   readonly dialogSizes: DialogSize[] = ['sm', 'md', 'lg', 'full'];

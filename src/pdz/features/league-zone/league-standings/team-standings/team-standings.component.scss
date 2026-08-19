@@ -77,7 +77,7 @@
       @include pdz.text(card-title, $family: false);
       text-align: center;
     }
-    mat-icon {
+    pdz-icon {
       height: fit-content;
       overflow: hidden;
       object-fit: contain;
@@ -137,7 +137,6 @@
         }
       }
     }
-
   }
 
   .records-container {

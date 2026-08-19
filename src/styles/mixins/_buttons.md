@@ -295,7 +295,7 @@ Icon button with menu theme colors.
 
 ```html
 <button class="icon-btn">
-  <mat-icon>close</mat-icon>
+  <pdz-icon name="close"></pdz-icon>
 </button>
 ```
 
@@ -359,7 +359,7 @@ $float-button-defaults: (
 
 ```html
 <button class="fab">
-  <mat-icon>add</mat-icon>
+  <pdz-icon name="add"></pdz-icon>
 </button>
 ```
 
@@ -408,20 +408,20 @@ $float-buttons-defaults: (
   <div class="radial-stack" [class.open]="isOpen">
     <!-- Main toggle button -->
     <button class="open-tools-button" (click)="toggleMenu()">
-      <mat-icon>{{ isOpen ? 'close' : 'menu' }}</mat-icon>
+      <pdz-icon name="{{ isOpen ? 'close' : 'menu' }}"></pdz-icon>
     </button>
 
     <!-- Radial action buttons (hidden by default) -->
     <button class="tool-button" (click)="action1()">
-      <mat-icon>edit</mat-icon>
+      <pdz-icon name="edit"></pdz-icon>
     </button>
 
     <button class="tool-button" (click)="action2()">
-      <mat-icon>delete</mat-icon>
+      <pdz-icon name="delete"></pdz-icon>
     </button>
 
     <button class="tool-button" (click)="action3()">
-      <mat-icon>share</mat-icon>
+      <pdz-icon name="share"></pdz-icon>
     </button>
   </div>
 </div>
@@ -734,13 +734,13 @@ Ensure keyboard navigation is visible:
 ```html
 <div class="toolbar">
   <button class="tool-btn" aria-label="Edit">
-    <mat-icon>edit</mat-icon>
+    <pdz-icon name="edit"></pdz-icon>
   </button>
   <button class="tool-btn" aria-label="Delete">
-    <mat-icon>delete</mat-icon>
+    <pdz-icon name="delete"></pdz-icon>
   </button>
   <button class="tool-btn" aria-label="Share">
-    <mat-icon>share</mat-icon>
+    <pdz-icon name="share"></pdz-icon>
   </button>
 </div>
 ```
@@ -822,7 +822,7 @@ export class LoadingButtonComponent {
     button {
       padding: var(--pdz-space-sm);
 
-      mat-icon {
+      pdz-icon {
         font-size: 1.5rem;
       }
     }

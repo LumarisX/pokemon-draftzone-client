@@ -227,7 +227,6 @@ section {
       left: 0.5rem;
     }
   }
-
 }
 
 .button-container {
@@ -251,11 +250,11 @@ section {
 }
 
 .direction-btn {
-  mat-icon {
+  pdz-icon {
     transition: transform pdz.duration(slow) pdz.easing(standard);
   }
 
-  &.up mat-icon {
+  &.up pdz-icon {
     transform: rotate(180deg);
   }
 }

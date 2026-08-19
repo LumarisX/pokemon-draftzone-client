@@ -108,14 +108,14 @@
                   />
                 </mat-form-field>
                 <button
-                  mat-icon-button
+                  pdz-icon-button
                   color="warn"
                   type="button"
                   (click)="removeRulePoint(i, pIndex)"
                   matTooltip="Remove Point"
                   [disabled]="getRulePoints(i).controls.length <= 1"
                 >
-                  <mat-icon>remove_circle_outline</mat-icon>
+                  <pdz-icon name="remove_circle_outline"></pdz-icon>
                 </button>
               </div>
             }
@@ -126,18 +126,18 @@
               color="accent"
               class="add-point-button"
             >
-              <mat-icon>add_circle_outline</mat-icon> Add Point
+              <pdz-icon name="add_circle_outline"></pdz-icon> Add Point
             </button>
           </div>
           <button
-            mat-icon-button
+            pdz-icon-button
             color="warn"
             type="button"
             (click)="removeRuleItem(i)"
             matTooltip="Remove Rule Section"
             class="remove-section-button"
           >
-            <mat-icon>delete_outline</mat-icon>
+            <pdz-icon name="delete_outline"></pdz-icon>
           </button>
           @if (i < rulesItems.controls.length - 1) {
             <mat-divider></mat-divider>
@@ -153,7 +153,7 @@
       color="primary"
       class="add-section-button"
     >
-      <mat-icon>add</mat-icon> Add Rule Section
+      <pdz-icon name="add"></pdz-icon> Add Rule Section
     </button>
 
     <div class="step-actions">
@@ -200,14 +200,14 @@
             }
           </mat-form-field>
           <button
-            mat-icon-button
+            pdz-icon-button
             color="warn"
             type="button"
             (click)="removeDivisionGroup(i)"
             matTooltip="Remove Division"
             [disabled]="divisionGroups.controls.length <= 1"
           >
-            <mat-icon>remove_circle_outline</mat-icon>
+            <pdz-icon name="remove_circle_outline"></pdz-icon>
           </button>
         </div>
       }
@@ -219,7 +219,7 @@
       (click)="addDivisionGroup()"
       color="primary"
     >
-      <mat-icon>add</mat-icon> Add Division
+      <pdz-icon name="add"></pdz-icon> Add Division
     </button>
 
     @if (
@@ -290,13 +290,13 @@
             }
           </mat-form-field>
           <button
-            mat-icon-button
+            pdz-icon-button
             color="warn"
             type="button"
             (click)="removeBracketItem(i)"
             matTooltip="Remove Bracket"
           >
-            <mat-icon>delete_outline</mat-icon>
+            <pdz-icon name="delete_outline"></pdz-icon>
           </button>
           @if (i < scheduleBrackets.controls.length - 1) {
             <mat-divider></mat-divider>
@@ -311,7 +311,7 @@
       (click)="addBracketItem()"
       color="primary"
     >
-      <mat-icon>add</mat-icon> Add Bracket
+      <pdz-icon name="add"></pdz-icon> Add Bracket
     </button>
 
     <div class="step-actions">

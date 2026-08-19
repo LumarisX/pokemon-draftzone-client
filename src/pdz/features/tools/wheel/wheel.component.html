@@ -125,7 +125,7 @@
         </div>
       </div>
 
-      <div class="result" role="status" aria-live="polite">
+      <div class="result" role="status">
         @if (winner(); as won) {
           <button
             pdz-button
@@ -209,9 +209,7 @@
               <span
                 class="item-row__swatch"
                 cdkDragHandle
-                [class.item-row__swatch--disabled]="
-                  spinning() || filtering()
-                "
+                [class.item-row__swatch--disabled]="spinning() || filtering()"
                 [style.background]="slice.color"
                 title="Drag to reorder"
               ></span>

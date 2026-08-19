@@ -23,7 +23,7 @@
                 class="more-btn"
                 (click)="toggleMenu(archive._id, $event)"
               >
-                <mat-icon>more_vert</mat-icon>
+                <pdz-icon name="more_vert"></pdz-icon>
               </button>
 
               @if (openDropdown === archive._id) {
@@ -32,7 +32,7 @@
                     class="menu-item"
                     (click)="setMenuState(archive._id, 'confirm-delete')"
                   >
-                    <mat-icon>delete_forever</mat-icon>
+                    <pdz-icon name="delete_forever"></pdz-icon>
                     Delete
                   </button>
                 </div>

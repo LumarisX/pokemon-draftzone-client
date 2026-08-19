@@ -1,22 +1,19 @@
 import { Component, HostListener, inject, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
 import { Meta } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { DRAFT_OVERVIEW_PATH, LEAGUE_ZONE_PATH } from '@pdz/core/route-paths';
-import { DraftPokemon } from '../draft.model';
-import { matchupPath, MatchupService } from './matchup.service';
-import { TeambuilderService } from './widgets/teambuilder/teambuilder.service';
-import { IconComponent } from '@pdz/shared/images/icon/icon.component';
+import { ErrorService } from '@pdz/layout/error/error.service';
 import { SkeletonComponent } from '@pdz/shared/data/skeleton/skeleton.component';
-import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
+import { DraftPokemon } from '../draft.model';
 import { MatchupData, TypeChartPokemon } from './matchup-interface';
+import { matchupPath, MatchupService } from './matchup.service';
 import { MatchupComponent } from './matchup/matchup.component';
+import { ShareDialogComponent } from './share-dialog/share-dialog.component';
 import { PokemonBuilder } from './widgets/teambuilder/pokemon-builder/pokemon-builder.model';
 import { MatchupTeambuilderComponent } from './widgets/teambuilder/teambuilder.component';
-import { ErrorService } from '@pdz/layout/error/error.service';
-import { ShareDialogComponent } from './share-dialog/share-dialog.component';
-
+import { TeambuilderService } from './widgets/teambuilder/teambuilder.service';
 
 @Component({
   selector: 'pdz-matchup-overview',
@@ -26,7 +23,6 @@ import { ShareDialogComponent } from './share-dialog/share-dialog.component';
     SkeletonComponent,
     MatchupComponent,
     RouterModule,
-    MatIconModule,
     MatchupTeambuilderComponent,
     IconComponent,
   ],

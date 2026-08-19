@@ -5,9 +5,10 @@
   [ngClass]="{ open: isOpen() }"
 >
   @if (allowToggle()) {
-    <mat-icon class="toggle-icon"
-      >keyboard_arrow_{{ isOpen() ? "up" : "down" }}</mat-icon
-    >
+    <pdz-icon
+      class="toggle-icon"
+      [name]="isOpen() ? 'keyboard_arrow_up' : 'keyboard_arrow_down'"
+    ></pdz-icon>
   }
 
   <div class="comparison-header">
@@ -46,7 +47,7 @@
         <div class="center-text">{{ centerText() }}</div>
       } @else if (centerIcon()) {
         <div class="center-icon">
-          <mat-icon>{{ centerIcon() }}</mat-icon>
+          <pdz-icon [name]="centerIcon()!"></pdz-icon>
         </div>
       }
     </div>

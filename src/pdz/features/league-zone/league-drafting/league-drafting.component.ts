@@ -7,22 +7,21 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
-import { interval, Observable, Subject, takeUntil } from 'rxjs';
-import { finalize } from 'rxjs/operators';
+import { WebSocketService } from '@pdz/core/services/ws.service';
+import { PokemonTypeComponent } from '@pdz/shared/dialogs/pokemon-type/pokemon-type.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
-import { LeagueNotificationService } from '../league-notification.service';
-import { LeagueZoneService } from '../league-zone.service';
-import { WebSocketService } from '@pdz/core/services/ws.service';
-import { TierListComponent } from '../../tier-lists/tier-list/tier-list.component';
 import { NumberSuffixPipe } from '@pdz/shared/pipes/number-suffix.pipe';
+import { interval, Observable, Subject, takeUntil } from 'rxjs';
+import { finalize } from 'rxjs/operators';
+import { TierListComponent } from '../../tier-lists/tier-list/tier-list.component';
+import { LeagueNotificationService } from '../league-notification.service';
 import { LeagueNotificationsComponent } from '../league-notifications/league-notifications.component';
+import { LeagueZoneService } from '../league-zone.service';
 import { League } from '../league.interface';
 import { formatCountdown } from '../league.util';
-import { PokemonTypeComponent } from '@pdz/shared/dialogs/pokemon-type/pokemon-type.component';
 
 interface DraftAddedEvent {
   draftSlug: string;
@@ -90,12 +89,11 @@ type DraftDetailsResponse =
     CommonModule,
     TierListComponent,
     SpriteComponent,
-    MatIconModule,
+    IconComponent,
     NumberSuffixPipe,
     LoadingComponent,
     RouterModule,
     LeagueNotificationsComponent,
-    IconComponent,
     PokemonTypeComponent,
   ],
   templateUrl: './league-drafting.component.html',
@@ -364,7 +362,8 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
         this.currentPick = data.currentPick;
         this.canDraftCounts = data.canDraftCounts ?? {};
         this.startCountdown();
-        const teamName = this.teamsMap.get(data.nextTeam)?.name ?? 'Unknown team';
+        const teamName =
+          this.teamsMap.get(data.nextTeam)?.name ?? 'Unknown team';
         this.notificationService.show(
           `Now drafting: ${teamName}${this.pickTimeSuffix()}`,
           'info',
@@ -479,7 +478,9 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
   /** The current picking team, derived the same way the round table highlights it. */
   private currentPickingTeam(): League.LeagueTeam | undefined {
     if (!this.currentPick) return undefined;
-    return this.draftRounds[this.currentPick.round]?.[this.currentPick.position];
+    return this.draftRounds[this.currentPick.round]?.[
+      this.currentPick.position
+    ];
   }
 
   /** " — Xm to pick" suffix for turn-change notifications; empty when there's no active clock. */

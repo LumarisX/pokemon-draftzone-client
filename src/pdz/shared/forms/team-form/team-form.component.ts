@@ -35,7 +35,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
 import { MatRippleModule } from '@angular/material/core';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTabChangeEvent, MatTabsModule } from '@angular/material/tabs';
 import { BehaviorSubject, Observable, of } from 'rxjs';
@@ -59,7 +59,7 @@ import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
     OverlayModule,
     FormsModule,
     MatChipsModule,
-    MatIconModule,
+    IconComponent,
     MatSlideToggleModule,
     MatTabsModule,
     MatCheckboxModule,

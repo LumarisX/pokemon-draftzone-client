@@ -36,16 +36,16 @@
         [ngClass]="{ pressed: data === 'overview' }"
         (click)="data = 'overview'"
       >
-        <mat-icon>list</mat-icon>
+        <pdz-icon name="list"></pdz-icon>
       </button>
       <button
         [ngClass]="{ pressed: data === 'stats' }"
         (click)="data = 'stats'"
       >
-        <mat-icon>show_chart</mat-icon>
+        <pdz-icon name="show_chart"></pdz-icon>
       </button>
       <button [routerLink]="'../teams/' + teamDetails().slug">
-        <mat-icon>open_in_new</mat-icon>
+        <pdz-icon name="open_in_new"></pdz-icon>
       </button>
     </div>
   </div>
@@ -82,13 +82,13 @@
                 @if (hasCapt()) {
                   <td class="cell-capt pdz-table__center">
                     @if (pokemon.capt?.tera) {
-                      <mat-icon svgIcon="tera"></mat-icon>
+                      <pdz-icon svgIcon="tera" name=""></pdz-icon>
                     }
                     @if (pokemon.capt?.z) {
-                      <mat-icon svgIcon="z"></mat-icon>
+                      <pdz-icon svgIcon="z" name=""></pdz-icon>
                     }
                     @if (pokemon.capt?.dmax) {
-                      <mat-icon svgIcon="dmax"></mat-icon>
+                      <pdz-icon svgIcon="dmax" name=""></pdz-icon>
                     }
                   </td>
                 }

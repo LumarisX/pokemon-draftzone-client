@@ -3,30 +3,29 @@ import {
   Component,
   EventEmitter,
   inject,
+  input,
   OnDestroy,
   OnInit,
   Output,
-  input,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatIconModule } from '@angular/material/icon';
-import { Subject } from 'rxjs';
-import { debounceTime, takeUntil } from 'rxjs/operators';
+import { Pokemon } from '@pdz/core/utils/pokemon';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
+import { Subject } from 'rxjs';
+import { debounceTime, takeUntil } from 'rxjs/operators';
 import { DraftPokemon } from '../../../draft.model';
-import { TeambuilderService } from './teambuilder.service';
-import {
-  PokemonBuilder,
-  PokemonData,
-  PokemonJson,
-} from './pokemon-builder/pokemon-builder.model';
 import { MatchupData } from '../../matchup-interface';
 import {
   MatchupPokemonBuilderComponent,
   PokemonBuilderView,
 } from './pokemon-builder/pokemon-builder.component';
-import { isPokemon, Pokemon } from '@pdz/core/utils/pokemon';
+import {
+  PokemonBuilder,
+  PokemonData,
+  PokemonJson,
+} from './pokemon-builder/pokemon-builder.model';
+import { TeambuilderService } from './teambuilder.service';
 
 type Tab = number | 'add' | 'export';
 
@@ -38,7 +37,6 @@ type Tab = number | 'add' | 'export';
     CommonModule,
     FormsModule,
     SpriteComponent,
-    MatIconModule,
     MatchupPokemonBuilderComponent,
     IconComponent,
   ],

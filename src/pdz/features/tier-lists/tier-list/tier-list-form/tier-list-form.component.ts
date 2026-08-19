@@ -10,16 +10,15 @@ import {
 } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
+import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
+import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
 import { TierPokemon } from '../../tier-list.model';
 import { TierListService } from '../../tier-list.service';
-import { IconComponent } from '@pdz/shared/images/icon/icon.component';
-import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
-import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import {
   TierListSettingsDialogComponent,
   TierListSettingsDialogData,
@@ -39,7 +38,6 @@ import {
   TierDialogResult,
   TierEditDialogComponent,
 } from './tier-edit-dialog/tier-edit-dialog.component';
-import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
 
 export type EditTierPokemon = TierPokemon;
 
@@ -64,7 +62,6 @@ interface EditableTier {
   selector: 'pdz-tier-list-form',
   imports: [
     CommonModule,
-    MatIconModule,
     FormsModule,
     MatTooltipModule,
     MatSnackBarModule,

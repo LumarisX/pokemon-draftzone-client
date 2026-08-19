@@ -1,23 +1,19 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnChanges, input } from '@angular/core';
-import { MatIconModule } from '@angular/material/icon';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import {
   ComparisonCardComponent,
   ComparisonEntity,
   StatusEntity,
-} from '../../../comparison-card/comparison-card.component'; // Adjust path
+} from '../../../comparison-card/comparison-card.component';
 import { TradeLog } from '../../../league.interface';
-import { IconComponent } from '@pdz/shared/images/icon/icon.component';
-
-// Define interfaces matching your tradeLog structure (simplified example)
 
 @Component({
   selector: 'pdz-trade-card',
   imports: [
     ComparisonCardComponent,
     SpriteComponent,
-    MatIconModule,
     CommonModule,
     IconComponent,
   ],
@@ -26,10 +22,7 @@ import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 })
 export class TradeCardComponent implements OnChanges {
   readonly tradeLog = input.required<TradeLog>();
-  /**
-   * Index of the stage's current round. A trade only counts as active once
-   * this reaches its `activeRound`; -1 means no round has been played yet.
-   */
+
   readonly currentRoundIndex = input(-1);
 
   private readonly DRAFT_POOL_NAME = 'Draft Pool';
@@ -63,10 +56,6 @@ export class TradeCardComponent implements OnChanges {
     this.status = this.resolveStatus();
   }
 
-  /**
-   * Mirrors the server's roster walk (getRosterByRound): a trade is only in
-   * effect once it has been approved *and* its round has come around.
-   */
   private resolveStatus(): StatusEntity {
     const tradeLog = this.tradeLog();
     if (tradeLog.status === 'REJECTED') return { label: 'Rejected' };

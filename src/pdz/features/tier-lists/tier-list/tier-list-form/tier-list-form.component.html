@@ -12,7 +12,7 @@
 
     @if (hasUnsavedChanges()) {
       <div class="unsaved-indicator">
-        <mat-icon>edit</mat-icon>
+        <pdz-icon name="edit"></pdz-icon>
         <span>Unsaved changes</span>
       </div>
     }
@@ -26,7 +26,7 @@
         (click)="undo()"
         matTooltip="Undo (Ctrl+Z)"
       >
-        <mat-icon>undo</mat-icon>
+        <pdz-icon name="undo"></pdz-icon>
       </button>
       <button
         class="icon-button"
@@ -34,12 +34,12 @@
         (click)="redo()"
         matTooltip="Redo (Ctrl+Y)"
       >
-        <mat-icon>redo</mat-icon>
+        <pdz-icon name="redo"></pdz-icon>
       </button>
     </div>
 
     <div class="toolbar__search">
-      <mat-icon>search</mat-icon>
+      <pdz-icon name="search"></pdz-icon>
       <input
         type="text"
         placeholder="Search Pokemon..."
@@ -50,7 +50,7 @@
 
     <div class="toolbar__actions">
       <div class="sort-control">
-        <mat-icon>sort</mat-icon>
+        <pdz-icon name="sort"></pdz-icon>
 
         <select [ngModel]="sortBy()" (ngModelChange)="setSortOption($event)">
           @for (option of sortOptions; track option.value) {
@@ -164,7 +164,7 @@
                   >
                     @if (isPokemonSelected(pokemon)) {
                       <div class="pokemon-entry__select-indicator">
-                        <mat-icon>check_circle</mat-icon>
+                        <pdz-icon name="check_circle"></pdz-icon>
                       </div>
                     }
 
@@ -182,7 +182,7 @@
                         (click)="onEditPokemon(pokemon, untiered()!, $event)"
                         matTooltip="Edit Pokemon"
                       >
-                        <mat-icon>edit</mat-icon>
+                        <pdz-icon name="edit"></pdz-icon>
                       </button>
                     </div>
                   </div>
@@ -245,7 +245,7 @@
                   >
                     @if (isPokemonSelected(pokemon)) {
                       <div class="pokemon-entry__select-indicator">
-                        <mat-icon>check_circle</mat-icon>
+                        <pdz-icon name="check_circle"></pdz-icon>
                       </div>
                     }
 
@@ -263,7 +263,7 @@
                         (click)="onEditPokemon(pokemon, banned()!, $event)"
                         matTooltip="Edit Pokemon"
                       >
-                        <mat-icon>edit</mat-icon>
+                        <pdz-icon name="edit"></pdz-icon>
                       </button>
                     </div>
                   </div>
@@ -284,7 +284,7 @@
                   <span class="tier__name">{{ tier.name }}</span>
                   @if (tier.cost != null) {
                     <span class="tier__cost">
-                      <mat-icon>currency_ruble</mat-icon>{{ tier.cost }}
+                      <pdz-icon name="currency_ruble"></pdz-icon>{{ tier.cost }}
                     </span>
                   }
                 </div>
@@ -296,14 +296,14 @@
                     (click)="editTier(tier)"
                     matTooltip="Edit tier"
                   >
-                    <mat-icon>edit</mat-icon>
+                    <pdz-icon name="edit"></pdz-icon>
                   </button>
                   <button
                     class="icon-button icon-button--delete"
                     (click)="deleteTier(tierIndex)"
                     matTooltip="Delete tier"
                   >
-                    <mat-icon>delete</mat-icon>
+                    <pdz-icon name="delete"></pdz-icon>
                   </button>
                 </div>
                 <div class="tier__actions-row">
@@ -313,7 +313,7 @@
                     (click)="moveTier(tierIndex, tierIndex - 1)"
                     matTooltip="Move tier left"
                   >
-                    <mat-icon>arrow_back</mat-icon>
+                    <pdz-icon name="arrow_back"></pdz-icon>
                   </button>
                   <button
                     class="icon-button"
@@ -321,7 +321,7 @@
                     (click)="moveTier(tierIndex, tierIndex + 1)"
                     matTooltip="Move tier right"
                   >
-                    <mat-icon>arrow_forward</mat-icon>
+                    <pdz-icon name="arrow_forward"></pdz-icon>
                   </button>
                 </div>
               </div>
@@ -359,7 +359,7 @@
                   >
                     @if (isPokemonSelected(pokemon)) {
                       <div class="pokemon-entry__select-indicator">
-                        <mat-icon>check_circle</mat-icon>
+                        <pdz-icon name="check_circle"></pdz-icon>
                       </div>
                     }
 
@@ -377,7 +377,7 @@
                         (click)="onEditPokemon(pokemon, tier, $event)"
                         matTooltip="Edit Pokemon"
                       >
-                        <mat-icon>edit</mat-icon>
+                        <pdz-icon name="edit"></pdz-icon>
                       </button>
                     </div>
                   </div>
@@ -393,7 +393,7 @@
           (click)="addNewTier()"
           matTooltip="Add new tier"
         >
-          <mat-icon>add</mat-icon>
+          <pdz-icon name="add"></pdz-icon>
         </div>
       </div>
     }

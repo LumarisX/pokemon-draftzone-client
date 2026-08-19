@@ -17,16 +17,12 @@ import {
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
-import { Subject } from 'rxjs';
-import { first, takeUntil } from 'rxjs/operators';
-import { Type, TYPES } from '@pdz/shared/data';
-import { Pokemon } from '@pdz/core/utils/pokemon';
-import { LeagueTier, TierPokemon } from '../tier-list.model';
-import { TierListService } from '../tier-list.service';
 import { WebSocketService } from '@pdz/core/services/ws.service';
+import { Pokemon } from '@pdz/core/utils/pokemon';
+import { typeColor } from '@pdz/core/utils/styling';
+import { Type, TYPES } from '@pdz/shared/data';
 import {
   PokemonDialogButton,
   PokemonDialogComponent,
@@ -36,8 +32,11 @@ import { PokemonTypeComponent } from '@pdz/shared/dialogs/pokemon-type/pokemon-t
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
-import { typeColor } from '@pdz/core/utils/styling';
+import { Subject } from 'rxjs';
+import { first, takeUntil } from 'rxjs/operators';
 import { League } from '../../league-zone/league.interface';
+import { LeagueTier, TierPokemon } from '../tier-list.model';
+import { TierListService } from '../tier-list.service';
 import {
   filterBySearch,
   makeBanString,
@@ -51,7 +50,6 @@ import {
   templateUrl: './tier-list.component.html',
   imports: [
     CommonModule,
-    MatIconModule,
     MatDialogModule,
     RouterModule,
     FormsModule,

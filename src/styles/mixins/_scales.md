@@ -571,7 +571,7 @@ Don't rely solely on color - include text or icons:
 ```html
 <!-- ✅ Good - Color + text -->
 <div class="pdz-scale-positive-5">
-  <mat-icon>trending_up</mat-icon>
+  <pdz-icon name="trending_up"></pdz-icon>
   <span>Strong Advantage (+5)</span>
 </div>
 
@@ -639,7 +639,7 @@ Ensure scales work for colorblind users:
 ```html
 <!-- ✅ Good - Multiple indicators -->
 <div class="stat pdz-scale-positive-5" data-value="+5">
-  <mat-icon class="trend-icon">arrow_upward</mat-icon>
+  <pdz-icon class="trend-icon" name="arrow_upward"></pdz-icon>
   <span class="stat-value">+5</span>
   <span class="stat-label">Strong</span>
 </div>

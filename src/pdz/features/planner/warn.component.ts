@@ -6,7 +6,6 @@ import {
   MatDialogRef,
   MatDialogTitle,
 } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
 @Component({
@@ -23,7 +22,8 @@ import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
     MatDialogClose,
     MatDialogTitle,
     MatDialogContent,
-    MatIconModule, ButtonComponent],
+    ButtonComponent,
+  ],
   styles: `
     @use '@angular/material' as mat;
     mat-dialog-container {

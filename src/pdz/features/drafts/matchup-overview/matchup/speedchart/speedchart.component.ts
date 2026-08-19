@@ -20,7 +20,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatIconModule } from '@angular/material/icon';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { DraftPokemon } from '../../../draft.model';
@@ -38,7 +38,7 @@ import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
     ReactiveFormsModule,
     SpriteComponent,
     SpeedtierComponent,
-    MatIconModule,
+    IconComponent,
     MatCheckboxModule,
     OverlayModule,
     ButtonComponent,

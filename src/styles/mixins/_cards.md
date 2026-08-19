@@ -63,17 +63,17 @@ The `pdz-card()` mixin creates a complete card component with:
 
     <div class="card-menu">
       <button class="more-btn">
-        <mat-icon>more_vert</mat-icon>
+        <pdz-icon name="more_vert"></pdz-icon>
       </button>
 
       @if (showMenu) {
       <div class="menu-dropdown">
         <button class="menu-item" (click)="edit()">
-          <mat-icon>edit</mat-icon>
+          <pdz-icon name="edit"></pdz-icon>
           <span>Edit</span>
         </button>
         <button class="menu-item" (click)="delete()">
-          <mat-icon>delete</mat-icon>
+          <pdz-icon name="delete"></pdz-icon>
           <span>Delete</span>
         </button>
       </div>
@@ -273,16 +273,16 @@ Dropdown menu for card actions.
 ```html
 <div class="card-menu">
   <button class="more-btn">
-    <mat-icon>more_vert</mat-icon>
+    <pdz-icon name="more_vert"></pdz-icon>
   </button>
 
   <div class="menu-dropdown" *ngIf="isMenuOpen">
     <button class="menu-item" (click)="action1()">
-      <mat-icon>edit</mat-icon>
+      <pdz-icon name="edit"></pdz-icon>
       <span>Edit</span>
     </button>
     <button class="menu-item" (click)="action2()">
-      <mat-icon>delete</mat-icon>
+      <pdz-icon name="delete"></pdz-icon>
       <span>Delete</span>
     </button>
   </div>
@@ -587,21 +587,21 @@ Override specific colors while maintaining theme structure:
         <div class="card-title">{{ title }}</div>
         <div class="card-menu">
           <button class="more-btn" (click)="toggleMenu($event)">
-            <mat-icon>more_vert</mat-icon>
+            <pdz-icon name="more_vert"></pdz-icon>
           </button>
 
           @if (showMenu) {
             <div class="menu-dropdown">
               <button class="menu-item" (click)="edit()">
-                <mat-icon>edit</mat-icon>
+                <pdz-icon name="edit"></pdz-icon>
                 <span>Edit</span>
               </button>
               <button class="menu-item" (click)="duplicate()">
-                <mat-icon>content_copy</mat-icon>
+                <pdz-icon name="content_copy"></pdz-icon>
                 <span>Duplicate</span>
               </button>
               <button class="menu-item" (click)="delete()" [disabled]="!canDelete">
-                <mat-icon>delete</mat-icon>
+                <pdz-icon name="delete"></pdz-icon>
                 <span>Delete</span>
               </button>
             </div>
@@ -919,7 +919,7 @@ Add proper ARIA attributes:
 
     <div class="card-menu">
       <button class="more-btn" aria-label="Open actions menu" [attr.aria-expanded]="showMenu">
-        <mat-icon>more_vert</mat-icon>
+        <pdz-icon name="more_vert"></pdz-icon>
       </button>
     </div>
   </div>

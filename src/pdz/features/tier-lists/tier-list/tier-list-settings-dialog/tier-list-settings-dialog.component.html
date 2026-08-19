@@ -1,5 +1,5 @@
 <h2 mat-dialog-title class="settings-dialog__title">
-  <mat-icon>settings</mat-icon>
+  <pdz-icon name="settings"></pdz-icon>
   Tier List Settings
 </h2>
 
@@ -72,17 +72,17 @@
   </div>
 
   <div mat-dialog-actions align="end" class="settings-dialog__actions">
-    <button pdz-button variant="ghost" color="neutral"
+    <button
+      pdz-button
+      variant="ghost"
+      color="neutral"
       type="button"
       (click)="onCancel()"
       [disabled]="isSaving()"
     >
       Cancel
     </button>
-    <button pdz-button
-      type="submit"
-      [disabled]="form.invalid || isSaving()"
-    >
+    <button pdz-button type="submit" [disabled]="form.invalid || isSaving()">
       @if (isSaving()) {
         <mat-progress-spinner
           diameter="16"

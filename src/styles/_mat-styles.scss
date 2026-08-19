@@ -172,7 +172,7 @@ body {
   border-radius: pdz.shape(corner-lg);
   box-shadow: var(--pdz-level-3);
   padding: pdz.space(xs);
-  mat-icon {
+  pdz-icon {
     color: var(--pdz-primary);
   }
   label {

@@ -2,11 +2,11 @@
 @use "pdz-theming" as pdz;
 
 button {
-  mat-icon {
+  pdz-icon {
     transition: transform pdz.duration(slow) pdz.easing(standard);
   }
 
-  &.opponent mat-icon {
+  &.opponent pdz-icon {
     transform: rotate(180deg);
   }
   @include mat.icon-button-overrides(

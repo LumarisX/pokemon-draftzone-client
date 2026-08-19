@@ -16,17 +16,17 @@
           />
         } @else {
           <div class="file-preview-placeholder">
-            <mat-icon class="file-icon">insert_drive_file</mat-icon>
+            <pdz-icon class="file-icon" name="insert_drive_file"></pdz-icon>
             <span>{{ file.type || "File" }}</span>
           </div>
         }
       </div>
     </mat-card-content>
     <mat-card-actions align="end">
-      <button pdz-button variant="ghost" color="neutral" (click)="onCancel()">Cancel</button>
-      <button pdz-button (click)="onConfirm()">
-        Okay & Upload
+      <button pdz-button variant="ghost" color="neutral" (click)="onCancel()">
+        Cancel
       </button>
+      <button pdz-button (click)="onConfirm()">Okay & Upload</button>
     </mat-card-actions>
   </mat-card>
 } @else {
@@ -34,7 +34,9 @@
     <mat-card-content>
       <p>No file data available.</p>
       <mat-card-actions align="end">
-        <button pdz-button variant="ghost" color="neutral" (click)="onCancel()">Close</button>
+        <button pdz-button variant="ghost" color="neutral" (click)="onCancel()">
+          Close
+        </button>
       </mat-card-actions>
     </mat-card-content>
   </mat-card>

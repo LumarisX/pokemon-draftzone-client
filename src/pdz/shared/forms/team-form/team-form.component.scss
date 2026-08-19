@@ -45,7 +45,7 @@
           cursor: move;
         }
 
-        mat-icon {
+        pdz-icon {
           color: pdz.color(on-surface-variant);
           &.preview-warning {
             color: pdz.color(error);
@@ -254,7 +254,7 @@
         @include pdz.text(body-sm-strong, $family: false);
         line-height: 0.8rem;
 
-        mat-icon {
+        pdz-icon {
           margin: 0 0.125rem;
           height: 1.25rem;
           width: 1.25rem;
@@ -345,7 +345,7 @@ mat-tab-group {
     margin-left: 0.25rem;
     height: 1rem;
     width: 1rem;
-    mat-icon {
+    pdz-icon {
       height: 100%;
       width: 100%;
       font-size: 1rem;

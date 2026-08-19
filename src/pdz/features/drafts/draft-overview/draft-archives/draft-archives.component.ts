@@ -6,7 +6,6 @@ import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { Archive } from '../archive-stats/archive.model';
 import { ArchiveService } from './archive.service';
 import { DRAFT_OVERVIEW_PATH } from '@pdz/core/route-paths';
-import { MatIconModule } from '@angular/material/icon';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 
 @Component({
@@ -19,7 +18,6 @@ import { IconComponent } from '@pdz/shared/images/icon/icon.component';
     RouterModule,
     SpriteComponent,
     LoadingComponent,
-    MatIconModule,
     IconComponent,
   ],
 })

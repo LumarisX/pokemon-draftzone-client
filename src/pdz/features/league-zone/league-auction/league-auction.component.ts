@@ -4,11 +4,11 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { interval, Subscription } from 'rxjs';
 import { AuctionService } from './auction.service';
-import { MatIconModule } from '@angular/material/icon';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 @Component({
   selector: 'pdz-league-auction',
-  imports: [CommonModule, FormsModule, MatIconModule, SpriteComponent],
+  imports: [CommonModule, FormsModule, IconComponent, SpriteComponent],
   templateUrl: './league-auction.component.html',
   styleUrl: './league-auction.component.scss',
 })

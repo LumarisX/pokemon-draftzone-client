@@ -60,7 +60,7 @@
           font-size: pdz.font-size(sm);
           font-family: var(--pdz-font-display);
 
-          mat-icon {
+          pdz-icon {
             color: pdz.color(primary-border);
             font-size: 1.5rem;
             height: fit-content;
@@ -129,7 +129,7 @@
       justify-content: center;
       height: 4rem;
       width: 4rem;
-      mat-icon {
+      pdz-icon {
         color: pdz.color(primary-accent);
         height: 1.5rem;
         width: 1.5rem;
@@ -218,7 +218,7 @@
           font-size: pdz.font-size(sm);
           border-radius: pdz.shape(corner-sm);
           box-shadow: var(--pdz-level-1);
-          mat-icon {
+          pdz-icon {
             font-size: 0.8rem;
             width: fit-content;
             height: fit-content;
@@ -239,7 +239,7 @@
           font-size: pdz.font-size(sm);
           border-radius: pdz.shape(corner-sm);
           box-shadow: var(--pdz-level-1);
-          mat-icon {
+          pdz-icon {
             font-size: 0.8rem;
             width: fit-content;
             height: fit-content;
@@ -558,7 +558,7 @@
   justify-content: center;
   box-sizing: border-box;
 
-  mat-icon.mat-icon {
+  pdz-icon.pdz-icon {
     font-size: 3rem !important;
     height: 3rem !important;
     width: 3rem !important;

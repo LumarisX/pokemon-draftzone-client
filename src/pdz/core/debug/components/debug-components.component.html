@@ -24,7 +24,7 @@
     </div>
     <div class="controls__row">
       <span class="controls__label">Mode</span>
-      @for (m of ['light', 'dark']; track m) {
+      @for (m of ["light", "dark"]; track m) {
         <button
           pdz-button
           size="sm"
@@ -85,13 +85,19 @@
       </button>
     }
     @for (v of variants; track v) {
-      @if (v !== 'link') {
+      @if (v !== "link") {
         <button pdz-button iconOnly [variant]="v" aria-label="Edit">
           <pdz-icon name="edit" [size]="16"></pdz-icon>
         </button>
       }
     }
-    <button pdz-button iconOnly variant="ghost" color="danger" aria-label="Delete">
+    <button
+      pdz-button
+      iconOnly
+      variant="ghost"
+      color="danger"
+      aria-label="Delete"
+    >
       <pdz-icon name="delete" [size]="16"></pdz-icon>
     </button>
   </div>
@@ -112,9 +118,7 @@
       Demo target
     </button>
   </div>
-  <p class="section__hint">
-    Tab through the row above to check focus rings.
-  </p>
+  <p class="section__hint">Tab through the row above to check focus rings.</p>
 </section>
 
 <section class="section">
@@ -134,8 +138,14 @@
 <section class="section">
   <h2 class="section__title">On elevated surfaces</h2>
   <div class="surfaces">
-    @for (surface of ['surface', 'surface-container', 'surface-container-high']; track surface) {
-      <div class="surfaces__panel" [style.background]="'var(--pdz-color-' + surface + ')'">
+    @for (
+      surface of ["surface", "surface-container", "surface-container-high"];
+      track surface
+    ) {
+      <div
+        class="surfaces__panel"
+        [style.background]="'var(--pdz-color-' + surface + ')'"
+      >
         <span class="surfaces__name">{{ surface }}</span>
         <div class="row">
           <button pdz-button size="sm">Filled</button>
@@ -187,7 +197,13 @@
     </label>
   </div>
   <div class="row" style="margin-top: 1rem">
-    <button pdz-button size="sm" variant="outlined" color="neutral" (click)="touchRequired()">
+    <button
+      pdz-button
+      size="sm"
+      variant="outlined"
+      color="neutral"
+      (click)="touchRequired()"
+    >
       Touch the auto-validated field
     </button>
   </div>
@@ -205,7 +221,12 @@
         <input pdz-checkbox type="checkbox" checked />
       </label>
       <label pdz-check label="Indeterminate">
-        <input pdz-checkbox type="checkbox" #ind (click)="ind.indeterminate = false" />
+        <input
+          pdz-checkbox
+          type="checkbox"
+          #ind
+          (click)="ind.indeterminate = false"
+        />
       </label>
       <label pdz-check label="Disabled">
         <input pdz-checkbox type="checkbox" disabled />
@@ -220,7 +241,11 @@
 
     <div class="choices__col">
       <span class="surfaces__name">Radio</span>
-      <label pdz-check label="Snake draft" description="Order reverses each round.">
+      <label
+        pdz-check
+        label="Snake draft"
+        description="Order reverses each round."
+      >
         <input pdz-radio type="radio" name="order" value="snake" checked />
       </label>
       <label pdz-check label="Linear draft">
@@ -236,7 +261,11 @@
 
     <div class="choices__col">
       <span class="surfaces__name">In a field</span>
-      <label pdz-field label="Visibility" hint="Controls who can see the draft.">
+      <label
+        pdz-field
+        label="Visibility"
+        hint="Controls who can see the draft."
+      >
         <span class="choices__group">
           <label pdz-check label="Public">
             <input pdz-radio type="radio" name="vis" value="public" checked />
@@ -253,7 +282,9 @@
 <section class="section">
   <h2 class="section__title">Card</h2>
 
-  <h3 class="section__sub">Tones — resting surfaces use border + tint, no shadow</h3>
+  <h3 class="section__sub">
+    Tones — resting surfaces use border + tint, no shadow
+  </h3>
   <div class="cards">
     @for (t of tones; track t) {
       <pdz-card [tone]="t">
@@ -278,7 +309,14 @@
       <div pdz-card-header>
         Season 12
         <span class="cards__spacer"></span>
-        <button pdz-button size="sm" variant="ghost" color="neutral" iconOnly aria-label="Edit">
+        <button
+          pdz-button
+          size="sm"
+          variant="ghost"
+          color="neutral"
+          iconOnly
+          aria-label="Edit"
+        >
           <pdz-icon name="edit" [size]="16"></pdz-icon>
         </button>
       </div>
@@ -286,14 +324,18 @@
         Body content sits between the header and footer rules.
       </p>
       <div pdz-card-footer>
-        <button pdz-button size="sm" variant="ghost" color="neutral">Cancel</button>
+        <button pdz-button size="sm" variant="ghost" color="neutral">
+          Cancel
+        </button>
         <button pdz-button size="sm">Save</button>
       </div>
     </pdz-card>
 
     <pdz-card interactive>
       <strong>Interactive</strong>
-      <p class="cards__text">Hover and tab to me — border shifts, focus ring shows.</p>
+      <p class="cards__text">
+        Hover and tab to me — border shifts, focus ring shows.
+      </p>
     </pdz-card>
 
     <pdz-card elevated>
@@ -329,12 +371,18 @@
     </div>
   </div>
 
-  <h3 class="section__sub">In a card — mirrors the shape of the real content</h3>
+  <h3 class="section__sub">
+    In a card — mirrors the shape of the real content
+  </h3>
   <div class="cards">
     <pdz-card>
       <div pdz-card-header>
         <pdz-skeleton variant="circle" width="1.5rem"></pdz-skeleton>
-        <pdz-skeleton variant="block" width="8rem" height="0.875rem"></pdz-skeleton>
+        <pdz-skeleton
+          variant="block"
+          width="8rem"
+          height="0.875rem"
+        ></pdz-skeleton>
       </div>
       <pdz-skeleton [lines]="3"></pdz-skeleton>
       <div pdz-card-footer>
@@ -349,7 +397,9 @@
         no reflow.
       </p>
       <div pdz-card-footer>
-        <button pdz-button size="sm" variant="ghost" color="neutral">Open</button>
+        <button pdz-button size="sm" variant="ghost" color="neutral">
+          Open
+        </button>
       </div>
     </pdz-card>
   </div>
@@ -411,11 +461,11 @@
         <tbody>
           @for (row of tableRows; track $index) {
             <tr>
-                <td>{{ row.name }}</td>
-                <td class="pdz-table__num">{{ row.brought }}</td>
-                <td class="pdz-table__num">{{ row.kills }}</td>
-                <td class="pdz-table__num">{{ row.deaths }}</td>
-                <td class="pdz-table__num">{{ row.kdr }}</td>
+              <td>{{ row.name }}</td>
+              <td class="pdz-table__num">{{ row.brought }}</td>
+              <td class="pdz-table__num">{{ row.kills }}</td>
+              <td class="pdz-table__num">{{ row.deaths }}</td>
+              <td class="pdz-table__num">{{ row.kdr }}</td>
             </tr>
           }
         </tbody>

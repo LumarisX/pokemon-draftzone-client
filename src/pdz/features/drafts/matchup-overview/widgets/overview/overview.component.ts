@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { MatIconModule } from '@angular/material/icon';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { MatSortModule, Sort } from '@angular/material/sort';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { compare } from '@pdz/core/utils';
@@ -19,7 +19,7 @@ import { StatsTable } from '@pdz/shared/data';
     SpriteComponent,
     MatSortModule,
     MatTooltipModule,
-    MatIconModule,
+    IconComponent,
   ],
 })
 export class OverviewComponent {
