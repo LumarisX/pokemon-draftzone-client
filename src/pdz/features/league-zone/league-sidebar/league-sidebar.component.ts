@@ -10,7 +10,6 @@ import { MatListModule } from '@angular/material/list'; // Retained for list str
 import { IconComponent } from '@pdz/shared/images/icon/icon.component'; // Retained for easy icon usage
 import { MatDividerModule } from '@angular/material/divider'; // Retained for semantic dividers, will be restyled
 import { MatTabsModule } from '@angular/material/tabs';
-import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
 @Component({
   selector: 'pdz-league-sidebar',
@@ -21,7 +20,6 @@ import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
     IconComponent,
     MatTabsModule,
     MatDividerModule,
-    ButtonComponent,
   ],
   templateUrl: './league-sidebar.component.html', // Links to updated HTML
   styleUrls: ['./league-sidebar.component.scss'], // Links to updated SCSS
