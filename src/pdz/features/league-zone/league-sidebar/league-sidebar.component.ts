@@ -445,39 +445,3 @@ html, body {
   background-color: #f4f6f9; // A common dashboard content area background color
 }
 */
-
-// --------------------------------------------------------------------------------
-// 6. Standalone Setup (No changes from v2, ensure provideAnimationsAsync is used)
-// main.ts:
-// import { bootstrapApplication } from '@angular/platform-browser';
-// import { provideRouter } from '@angular/router';
-// import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-// import { AppComponent } from './pdz/app.component';
-// import { routes } from './pdz/app.routes';
-
-// bootstrapApplication(AppComponent, {
-//   providers: [
-//     provideRouter(routes),
-//     provideAnimationsAsync()
-//   ]
-// })
-// .catch(err => console.error(err));
-
-// app.component.ts (standalone):
-// import { Component } from '@angular/core';
-// import { RouterModule } from '@angular/router';
-// import { MatSidenavModule } from '@angular/material/sidenav';
-// import { LeagueSidebarComponent } from './league-sidebar/league-sidebar.component';
-
-// @Component({
-//   selector: 'pdz-root',
-// //   imports: [
-//     RouterModule,
-//     MatSidenavModule,
-//     LeagueSidebarComponent
-//   ],
-//   templateUrl: './app.component.html',
-//   styleUrls: ['./app.component.scss'],
-// })
-// export class AppComponent {}
-// --------------------------------------------------------------------------------

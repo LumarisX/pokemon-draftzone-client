@@ -78,6 +78,26 @@ h2 {
   gap: 0;
 
   .custom-options-container {
+    display: grid;
+    grid-template-rows: 1fr;
+    visibility: visible;
+    opacity: 1;
+    transition:
+      grid-template-rows pdz.duration(base) pdz.easing(standard),
+      opacity pdz.duration(base) pdz.easing(standard),
+      visibility pdz.duration(base) pdz.easing(standard);
+
+    &--collapsed {
+      grid-template-rows: 0fr;
+      visibility: hidden;
+      opacity: 0;
+    }
+
+    &__inner {
+      min-height: 0;
+      overflow: hidden;
+    }
+
     .custom-option {
       width: fit-content;
       display: flex;

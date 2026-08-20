@@ -1,10 +1,3 @@
-import {
-  animate,
-  state,
-  style,
-  transition,
-  trigger,
-} from '@angular/animations';
 import { CdkAccordionModule } from '@angular/cdk/accordion';
 import {
   CdkDrag,
@@ -84,22 +77,6 @@ import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
       provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
       useValue: { appearance: 'outline' },
     },
-  ],
-  animations: [
-    trigger('rotateIcon', [
-      state('expanded', style({ transform: 'rotate(180deg)' })),
-      state('collapsed', style({ transform: 'rotate(0deg)' })),
-      transition('collapsed => expanded', animate('500ms ease-in-out')),
-      transition('expanded => collapsed', animate('500ms ease-in-out')),
-    ]),
-    trigger('expandCollapse', [
-      state(
-        'collapsed',
-        style({ height: '0px', opacity: 0, overflow: 'hidden' }),
-      ),
-      state('expanded', style({ height: '*', opacity: 1 })),
-      transition('collapsed <=> expanded', [animate('500ms ease-in-out')]),
-    ]),
   ],
 })
 export class TeamFormComponent {

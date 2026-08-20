@@ -6,7 +6,6 @@ import {
 } from '@angular/core';
 import { provideRouter, withRouterConfig } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideServiceWorker } from '@angular/service-worker';
 import { provideAuth0, authHttpInterceptorFn } from '@auth0/auth0-angular';
 import { MARKED_OPTIONS, provideMarkdown } from 'ngx-markdown';
@@ -25,8 +24,6 @@ export const pdzConfig: ApplicationConfig = {
       routes,
       withRouterConfig({ paramsInheritanceStrategy: 'always' }),
     ),
-    provideAnimations(),
-
     provideHttpClient(
       withInterceptors([authRecoveryInterceptor, authHttpInterceptorFn]),
     ),

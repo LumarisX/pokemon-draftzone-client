@@ -33,30 +33,33 @@
   <div class="button-header">Custom</div>
   <div
     class="custom-options-container"
-    [@expandCollapse]="selectedTemplate === null ? 'expanded' : 'collapsed'"
+    [class.custom-options-container--collapsed]="selectedTemplate !== null"
   >
-    <div class="custom-option">
-      <span class="option-label">
-        Rerolls: {{ customTemplateForm.rerolls }}
-      </span>
-      <mat-slider showTickMarks min="0" max="10" step="1">
-        <input matSliderThumb [(ngModel)]="customTemplateForm.rerolls" />
-      </mat-slider>
-    </div>
-    <div class="custom-tier-options">
-      @for (tier of customTemplateTiers; track $index) {
-        <div class="custom-option">
-          <span class="option-label"> {{ tier[0] }}: {{ tier[1] }} </span>
-          <mat-slider showTickMarks min="0" max="10" step="1">
-            <input matSliderThumb [(ngModel)]="tier[1]" />
-          </mat-slider>
-        </div>
-      }
+    <div class="custom-options-container__inner">
+      <div class="custom-option">
+        <span class="option-label">
+          Rerolls: {{ customTemplateForm.rerolls }}
+        </span>
+        <mat-slider showTickMarks min="0" max="10" step="1">
+          <input matSliderThumb [(ngModel)]="customTemplateForm.rerolls" />
+        </mat-slider>
+      </div>
+      <div class="custom-tier-options">
+        @for (tier of customTemplateTiers; track $index) {
+          <div class="custom-option">
+            <span class="option-label"> {{ tier[0] }}: {{ tier[1] }} </span>
+            <mat-slider showTickMarks min="0" max="10" step="1">
+              <input matSliderThumb [(ngModel)]="tier[1]" />
+            </mat-slider>
+          </div>
+        }
+      </div>
     </div>
   </div>
 </div>
 <div class="qd-spacer"></div>
-<button pdz-button
+<button
+  pdz-button
   class="continue-button"
   (click)="continue()"
   [disabled]="validTemplate()"

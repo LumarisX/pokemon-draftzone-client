@@ -133,7 +133,11 @@
                     <pdz-icon class="preview-warning" name="warning"></pdz-icon>
                   }
                 </div>
-                <button (click)="accordionItem.toggle()" class="item-header">
+                <button
+                  (click)="accordionItem.toggle()"
+                  class="item-header"
+                  [attr.aria-expanded]="accordionItem.expanded"
+                >
                   <div class="pokemon-header">
                     <pdz-icon
                       class="drag-icon"
@@ -185,13 +189,7 @@
                   </div>
                   <div class="setting-icon-container">
                     <button pdz-button iconOnly variant="ghost" color="neutral">
-                      <pdz-icon
-                        class="settings-icon"
-                        [@rotateIcon]="
-                          accordionItem.expanded ? 'expanded' : 'collapsed'
-                        "
-                        name="settings"
-                      >
+                      <pdz-icon class="settings-icon" name="settings">
                       </pdz-icon>
                     </button>
                     <button
@@ -206,10 +204,8 @@
                   </div>
                 </button>
                 <div
-                  [@expandCollapse]="
-                    accordionItem.expanded ? 'expanded' : 'collapsed'
-                  "
                   class="accordion-content"
+                  [class.accordion-content--collapsed]="!accordionItem.expanded"
                 >
                   <mat-tab-group
                     dynamicHeight

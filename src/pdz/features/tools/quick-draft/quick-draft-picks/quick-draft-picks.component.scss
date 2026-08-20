@@ -13,11 +13,30 @@
   min-height: fit-content;
   max-height: fit-content;
   user-select: none;
+  animation: draft-option-enter pdz.duration(slow) pdz.easing(standard);
+  transition:
+    opacity pdz.duration(slow) pdz.easing(exit),
+    transform pdz.duration(slow) pdz.easing(exit);
   .sprite-wrapper {
     max-height: 16rem;
     max-width: 16rem;
     width: 100%;
     height: 100%;
+  }
+
+  &--exit {
+    opacity: 0;
+  }
+
+  &--exit-selected {
+    transform: translateY(-50%);
+  }
+}
+
+@keyframes draft-option-enter {
+  from {
+    opacity: 0;
+    transform: translateY(50%);
   }
 }
 

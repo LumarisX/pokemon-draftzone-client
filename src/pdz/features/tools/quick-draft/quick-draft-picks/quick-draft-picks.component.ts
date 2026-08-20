@@ -1,10 +1,3 @@
-import {
-  animate,
-  state,
-  style,
-  transition,
-  trigger,
-} from '@angular/animations';
 import { CommonModule } from '@angular/common';
 import {
   Component,
@@ -23,6 +16,10 @@ import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { QDSettings } from '../quick-draft-setting/quick-draft-setting.component';
 import { typeColor } from '@pdz/core/utils/styling';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+
+const OPTION_EXIT_MS = 240;
+
+export type OptionExit = 'selected' | 'unselected' | null;
 
 export type QDPokemon = Pokemon<{
   tier: string;
@@ -47,32 +44,6 @@ export type QDPokemon = Pokemon<{
     './quick-draft-picks.component.scss',
     '../quick-draft.component.scss',
   ],
-  animations: [
-    trigger('optionAnimation', [
-      state(
-        'selected-disappear',
-        style({
-          opacity: 0,
-          transform: 'translateY(-50%)',
-        }),
-      ),
-      state(
-        'unselected-disappear',
-        style({
-          opacity: 0,
-        }),
-      ),
-      transition('* => selected-disappear', [animate('400ms ease-out')]),
-      transition('* => unselected-disappear', [animate('400ms ease-out')]),
-      transition('void => *', [
-        style({ opacity: 0, transform: 'translateY(50%)' }),
-        animate(
-          '300ms ease-out',
-          style({ opacity: 1, transform: 'translateY(0)' }),
-        ),
-      ]),
-    ]),
-  ],
 })
 export class QuickDraftPicksComponent implements OnInit {
   private dataService = inject(DataService);
@@ -90,8 +61,7 @@ export class QuickDraftPicksComponent implements OnInit {
 
   optionCount = 3;
 
-  animationStates: ('void' | 'selected-disappear' | 'unselected-disappear')[] =
-    [];
+  optionExits: OptionExit[] = [];
 
   get totalPicks() {
     return this.settings().tiers.reduce((count, tier) => {
@@ -129,7 +99,7 @@ export class QuickDraftPicksComponent implements OnInit {
       .subscribe((data) => {
         if (data.length) {
           this.draftOptions = data;
-          this.animationStates = data.map(() => 'void');
+          this.optionExits = data.map(() => null);
         } else {
           tier[1] = this.currentPick;
           this.checkNext();
@@ -140,28 +110,25 @@ export class QuickDraftPicksComponent implements OnInit {
   rerollPicks() {
     if (this.settings().rerolls <= 0) return;
     this.draftOptions!.forEach((_, i) => {
-      this.animationStates[i] = 'unselected-disappear';
+      this.optionExits[i] = 'unselected';
     });
     setTimeout(() => {
       this.getRandomOptions();
       this.settings().rerolls -= 1;
-    }, 400);
+    }, OPTION_EXIT_MS);
   }
 
   draftOption() {
     if (this.selectedOption === null || !this.draftOptions) return;
     this.draftOptions.forEach((_, i) => {
-      if (i === this.selectedOption) {
-        this.animationStates[i] = 'selected-disappear';
-      } else {
-        this.animationStates[i] = 'unselected-disappear';
-      }
+      this.optionExits[i] =
+        i === this.selectedOption ? 'selected' : 'unselected';
     });
     setTimeout(() => {
       this.draft[this.currentPick] = this.draftOptions![this.selectedOption!];
       this.currentPick++;
       this.checkNext();
-    }, 400);
+    }, OPTION_EXIT_MS);
   }
 
   private checkNext() {

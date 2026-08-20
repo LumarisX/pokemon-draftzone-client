@@ -89,9 +89,11 @@
               class="draft-option qd-option"
               [ngClass]="{
                 selected: $index == selectedOption,
+                'draft-option--exit': optionExits[$index] !== null,
+                'draft-option--exit-selected':
+                  optionExits[$index] === 'selected',
               }"
               (click)="clickOption($index)"
-              [@optionAnimation]="animationStates[$index]"
             >
               <div class="sprite-wrapper">
                 <pdz-sprite [pokemon]="draftOption" />

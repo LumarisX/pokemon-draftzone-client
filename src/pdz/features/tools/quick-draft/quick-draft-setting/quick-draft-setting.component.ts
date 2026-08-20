@@ -1,12 +1,3 @@
-import {
-  animate,
-  group,
-  query,
-  state,
-  style,
-  transition,
-  trigger,
-} from '@angular/animations';
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -39,41 +30,6 @@ type Template = {
   styleUrls: [
     './quick-draft-setting.component.scss',
     '../quick-draft.component.scss',
-  ],
-  animations: [
-    trigger('expandCollapse', [
-      state(
-        'collapsed',
-        style({
-          height: '0',
-          overflow: 'hidden',
-          paddingTop: '0',
-          paddingBottom: '0',
-          opacity: '0',
-        }),
-      ),
-      state(
-        'expanded',
-        style({
-          height: '*',
-          overflow: 'hidden',
-          opacity: '1',
-        }),
-      ),
-      transition('collapsed <=> expanded', [
-        group([
-          query(
-            '.custom-options-container',
-            [
-              style({ opacity: 0 }),
-              animate('300ms ease-in-out', style({ opacity: 1 })),
-            ],
-            { optional: true },
-          ),
-          animate('300ms ease-in-out'),
-        ]),
-      ]),
-    ]),
   ],
 })
 export class QuickDraftSettingComponent {
