@@ -1,5 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { LeagueZoneService } from '../league-zone.service';
@@ -18,6 +19,7 @@ type DraftGroup = {
     LeagueTeamCardComponent,
     LoadingComponent,
     RouterModule,
+    ButtonComponent,
     IconComponent,
   ],
   templateUrl: './league-teams.component.html',

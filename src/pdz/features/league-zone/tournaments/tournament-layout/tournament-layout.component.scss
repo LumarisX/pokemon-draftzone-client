@@ -28,18 +28,8 @@ $navbar-height: 3.5rem;
 
   // ─── Mobile nav trigger ────────────────────────────────────────────────
   &__nav-toggle {
-    display: inline-flex;
-    align-items: center;
-    gap: pdz.space(xs);
     align-self: flex-start;
-    padding: pdz.space(xs) pdz.space(md);
-    border: 1px solid pdz.color(outline-variant);
-    border-radius: pdz.shape(corner-sm);
-    background: pdz.color(surface);
-    color: pdz.color(on-surface);
     font-family: var(--pdz-font-display);
-    font-size: pdz.font-size(md);
-    cursor: pointer;
 
     @include respond-above(medium) {
       display: none;

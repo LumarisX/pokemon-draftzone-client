@@ -1,17 +1,17 @@
 <div class="standing-container">
   <div class="standing-header">
-    <div class="standing-header-title">
-      <span>Pokemon Standings</span>
-      <button
-        type="button"
-        class="combine-toggle"
-        [class.combine-toggle--on]="combineTeams"
-        [attr.aria-pressed]="combineTeams"
-        (click)="toggleCombineTeams()"
-      >
-        Combine Teams
-      </button>
-    </div>
+    <span class="standing-header-title">Pokemon Standings</span>
+    <button
+      pdz-button
+      size="sm"
+      variant="outlined"
+      class="combine-toggle"
+      [class.combine-toggle--on]="combineTeams"
+      [attr.aria-pressed]="combineTeams"
+      (click)="toggleCombineTeams()"
+    >
+      Combine Teams
+    </button>
   </div>
   <div class="standing-table-wrapper">
     <div class="standing-table" role="table" aria-label="Pokemon standings">

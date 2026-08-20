@@ -1,56 +1,32 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { Notification } from './league-notifications/notification.model';
+import { Injectable, inject } from '@angular/core';
+import {
+  ToastService,
+  ToastTone,
+} from '@pdz/shared/feedback/toast/toast.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class LeagueNotificationService {
-  private notificationsSubject: BehaviorSubject<Notification[]> =
-    new BehaviorSubject<Notification[]>([]);
-  public notifications$: Observable<Notification[]> =
-    this.notificationsSubject.asObservable();
-
+  private readonly toast = inject(ToastService);
+  private readonly toastIds = new Map<string, number>();
   private notificationIdCounter = 0;
-  private readonly FADE_OUT_DURATION = 500; // Milliseconds, matches SCSS animation duration
 
-  constructor() {}
-
-  show(
-    message: string,
-    type: 'success' | 'error' | 'info' | 'warning' = 'info',
-    timeout: number = 10000,
-  ): void {
+  show(message: string, type: ToastTone = 'info', timeout?: number): string {
     const id = `notification-${this.notificationIdCounter++}`;
-    const newNotification: Notification = {
-      id,
+    const toastId = this.toast.show({
       message,
-      type,
-      timeout,
-      fadingOut: false,
-    };
-    const currentNotifications = this.notificationsSubject.getValue();
-    this.notificationsSubject.next([newNotification, ...currentNotifications]); // Newest on top
-
-    if (timeout > 0) {
-      setTimeout(() => this.dismiss(id), timeout);
-    }
+      tone: type,
+      ...(timeout === undefined ? {} : { duration: timeout }),
+    });
+    this.toastIds.set(id, toastId);
+    return id;
   }
 
   dismiss(id: string): void {
-    let currentNotifications = this.notificationsSubject.getValue();
-    const notificationToFade = currentNotifications.find((n) => n.id === id);
-
-    if (notificationToFade) {
-      notificationToFade.fadingOut = true;
-      this.notificationsSubject.next([...currentNotifications]); // Trigger change detection to apply fade-out class
-
-      setTimeout(() => {
-        currentNotifications = this.notificationsSubject.getValue();
-        this.notificationsSubject.next(
-          currentNotifications.filter((n) => n.id !== id),
-        );
-      }, this.FADE_OUT_DURATION);
-    }
+    const toastId = this.toastIds.get(id);
+    if (toastId === undefined) return;
+    this.toastIds.delete(id);
+    this.toast.dismiss(toastId);
   }
 }

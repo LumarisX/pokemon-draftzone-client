@@ -12,6 +12,7 @@ import {
 } from '@pdz/features/drafts/draft-overview/draft-form/components/pokemon-search/pokemon-search.component';
 import { TierListService } from '@pdz/features/tier-lists/tier-list.service';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { BehaviorSubject, catchError, forkJoin, of, take } from 'rxjs';
@@ -42,6 +43,7 @@ type TradeOption = PokemonSearchOption & { cost: number; tier: string };
   imports: [
     CommonModule,
     MatDialogModule,
+    ButtonComponent,
     PokemonSearchComponent,
     SpriteComponent,
     IconComponent,

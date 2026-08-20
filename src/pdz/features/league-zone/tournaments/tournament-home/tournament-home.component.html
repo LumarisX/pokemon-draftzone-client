@@ -6,51 +6,65 @@
   <section class="dashboard">
     <div class="dashboard__identity">
       <!-- ── Team info ─────────────────────────────────────────────── -->
-      <article class="info-card team-info">
+      <pdz-card class="info-card">
         <button
-          type="button"
+          pdz-button
+          variant="ghost"
+          color="neutral"
+          size="sm"
+          iconOnly
+          pill
           class="info-card__edit"
           aria-label="Edit team info"
           (click)="openTeamEdit()"
         >
-          <pdz-icon name="edit" [size]="16"></pdz-icon>
+          <pdz-icon aria-hidden="true" name="edit" [size]="16" />
         </button>
-        <img
-          class="team-info__logo"
-          [src]="getTeamLogoUrl(profile.logo)"
-          alt=""
-        />
-        <div class="info-card__name">{{ profile.teamName }}</div>
-      </article>
+        <div class="team-info">
+          <img
+            class="team-info__logo"
+            [src]="getTeamLogoUrl(profile.logo)"
+            alt=""
+          />
+          <div class="info-card__name">{{ profile.teamName }}</div>
+        </div>
+      </pdz-card>
 
       <!-- ── Coach info ────────────────────────────────────────────── -->
-      <article class="info-card coach-info">
+      <pdz-card class="info-card">
         <button
-          type="button"
+          pdz-button
+          variant="ghost"
+          color="neutral"
+          size="sm"
+          iconOnly
+          pill
           class="info-card__edit"
           aria-label="Edit coach info"
           (click)="openCoachEdit()"
         >
-          <pdz-icon name="edit" [size]="16"></pdz-icon>
+          <pdz-icon aria-hidden="true" name="edit" [size]="16" />
         </button>
-        <div class="info-card__name">{{ profile.name }}</div>
-        <div class="coach-info__details">
-          <div class="coach-info__field">
-            <span class="coach-info__label">Showdown</span>
-            <span class="coach-info__value">{{ profile.gameName }}</span>
-          </div>
-          <div class="coach-info__field">
-            <span class="coach-info__label">Discord</span>
-            <span class="coach-info__value">{{ profile.discordName }}</span>
-          </div>
-          @if (currentTime) {
-            <div class="coach-info__time" [title]="profile.timezone">
-              <pdz-icon name="schedule" [size]="16"></pdz-icon>
-              <span>{{ currentTime }}</span>
+        <div class="coach-info">
+          <div class="info-card__name">{{ profile.name }}</div>
+          <div class="coach-info__details">
+            <div class="coach-info__field">
+              <span class="coach-info__label">Showdown</span>
+              <span class="coach-info__value">{{ profile.gameName }}</span>
             </div>
-          }
+            <div class="coach-info__field">
+              <span class="coach-info__label">Discord</span>
+              <span class="coach-info__value">{{ profile.discordName }}</span>
+            </div>
+            @if (currentTime) {
+              <div class="coach-info__time" [title]="profile.timezone">
+                <pdz-icon aria-hidden="true" name="schedule" [size]="16" />
+                <span>{{ currentTime }}</span>
+              </div>
+            }
+          </div>
         </div>
-      </article>
+      </pdz-card>
     </div>
 
     <article class="roster">
@@ -59,15 +73,19 @@
       </header>
       @if (teamData && teamData.draft.length) {
         <div class="pdz-table-wrapper stats-table-wrapper">
-          <table class="pdz-table stats-table" data-header="primary" data-sticky>
+          <table
+            class="pdz-table stats-table"
+            data-header="primary"
+            data-sticky
+          >
             <thead>
               <tr>
                 <th class="col-sprite pdz-table__center"></th>
                 <th class="col-name">Pokémon</th>
-                <th class="col-stat pdz-table__num">Brought</th>
-                <th class="col-stat pdz-table__num">Kills</th>
-                <th class="col-stat pdz-table__num">Deaths</th>
-                <th class="col-stat pdz-table__num">K/D Ratio</th>
+                <th class="col-stat pdz-table__num pdz-table__center">Brought</th>
+                <th class="col-stat pdz-table__num pdz-table__center">Kills</th>
+                <th class="col-stat pdz-table__num pdz-table__center">Deaths</th>
+                <th class="col-stat pdz-table__num pdz-table__center">K/D Ratio</th>
               </tr>
             </thead>
             <tbody>
@@ -87,10 +105,16 @@
                       </div>
                     </div>
                   </td>
-                  <td class="cell-stat pdz-table__num">{{ pokemon.record?.brought ?? 0 }}</td>
-                  <td class="cell-stat pdz-table__num">{{ pokemon.record?.kills ?? 0 }}</td>
-                  <td class="cell-stat pdz-table__num">{{ pokemon.record?.deaths ?? 0 }}</td>
-                  <td class="cell-stat pdz-table__num">
+                  <td class="cell-stat pdz-table__num pdz-table__center">
+                    {{ pokemon.record?.brought ?? 0 }}
+                  </td>
+                  <td class="cell-stat pdz-table__num pdz-table__center">
+                    {{ pokemon.record?.kills ?? 0 }}
+                  </td>
+                  <td class="cell-stat pdz-table__num pdz-table__center">
+                    {{ pokemon.record?.deaths ?? 0 }}
+                  </td>
+                  <td class="cell-stat pdz-table__num pdz-table__center">
                     @if (pokemon.record?.deaths) {
                       {{
                         (
@@ -113,34 +137,28 @@
               <tr>
                 <th class="col-sprite pdz-table__center"></th>
                 <th class="col-name">{{ rosterTotal.cost }}</th>
-                <th class="col-stat pdz-table__num"></th>
-                <th class="col-stat pdz-table__num">{{ rosterTotal.kills }}</th>
-                <th class="col-stat pdz-table__num">{{ rosterTotal.deaths }}</th>
-                <th class="col-stat pdz-table__num"></th>
+                <th class="col-stat pdz-table__num pdz-table__center"></th>
+                <th class="col-stat pdz-table__num pdz-table__center">{{ rosterTotal.kills }}</th>
+                <th class="col-stat pdz-table__num pdz-table__center">
+                  {{ rosterTotal.deaths }}
+                </th>
+                <th class="col-stat pdz-table__num pdz-table__center"></th>
               </tr>
             </tfoot>
           </table>
         </div>
       } @else if (profile.draft && !rosterLoading) {
-        <article class="no-roster">
-          @if (draftCountdown; as countdown) {
-            <p class="no-roster__text">
-              @if (countdown.phase === "start") {
-                The draft will start in {{ countdown.display }}.
-              } @else {
-                The draft will end in {{ countdown.display }}.
-              }
-            </p>
-          } @else {
-            <p class="no-roster__text">
-              Register your team before the deadline or you will not participate
-              in the tournament.
-            </p>
-          }
-          <a class="no-roster__cta" [routerLink]="draftLink">
-            <span> Draft</span>
+        <pdz-empty-state
+          class="no-roster"
+          bordered
+          icon="event_upcoming"
+          heading="No roster yet"
+          [message]="noRosterMessage"
+        >
+          <a pdz-button pdz-empty-state-actions [routerLink]="draftLink">
+            Draft
           </a>
-        </article>
+        </pdz-empty-state>
       }
     </article>
   </section>

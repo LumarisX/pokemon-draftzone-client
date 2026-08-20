@@ -33,11 +33,17 @@ import { LeagueManageService } from '../league-manage.service';
 import { LeagueZoneService } from '../../league-zone.service';
 import { getLeagueLogoUrl } from '../../league.util';
 import { TierListService } from '@pdz/features/tier-lists/tier-list.service';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
 const NON_DRAFTABLE_TIER_NAMES = new Set(['untiered', 'ban', 'banned']);
 
 const MAX_LOGO_SIZE = 5 * 1024 * 1024; // 5MB
-const ALLOWED_LOGO_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+const ALLOWED_LOGO_TYPES = [
+  'image/jpeg',
+  'image/png',
+  'image/gif',
+  'image/webp',
+];
 
 @Component({
   selector: 'pdz-league-settings',
@@ -47,6 +53,7 @@ const ALLOWED_LOGO_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'
     RouterModule,
     IconComponent,
     LoadingComponent,
+    ButtonComponent,
   ],
   templateUrl: './league-settings.component.html',
   styleUrl: './league-settings.component.scss',
@@ -74,7 +81,9 @@ export class LeagueSettingsComponent implements OnInit, OnDestroy {
   logoUploadError: string | null = null;
 
   get displayedLogoKey(): string | null {
-    return this.pendingLogo !== undefined ? this.pendingLogo : this.currentLogoKey;
+    return this.pendingLogo !== undefined
+      ? this.pendingLogo
+      : this.currentLogoKey;
   }
 
   get displayedLogoUrl(): string | undefined {
@@ -129,7 +138,10 @@ export class LeagueSettingsComponent implements OnInit, OnDestroy {
       tradePointLimitEnabled: [false],
       tradePointLimit: [0, Validators.min(0)],
       tierRequirements: this.fb.array<
-        FormGroup<{ tierName: FormControl<string>; required: FormControl<number> }>
+        FormGroup<{
+          tierName: FormControl<string>;
+          required: FormControl<number>;
+        }>
       >([]),
       adAdvertise: [false],
       adSkillFrom: ['0'],
@@ -214,7 +226,8 @@ export class LeagueSettingsComponent implements OnInit, OnDestroy {
           this.availableTierNames = tierList.tierList
             .map((tier) => tier.name)
             .filter(
-              (name) => !NON_DRAFTABLE_TIER_NAMES.has(name.trim().toLowerCase()),
+              (name) =>
+                !NON_DRAFTABLE_TIER_NAMES.has(name.trim().toLowerCase()),
             );
           this.tierRequirementsArray.clear();
           for (const tierName of this.availableTierNames) {
@@ -256,11 +269,7 @@ export class LeagueSettingsComponent implements OnInit, OnDestroy {
   }
 
   save(): void {
-    if (
-      this.form.invalid ||
-      this.isSaving ||
-      this.tierRequirementsExceedMax
-    )
+    if (this.form.invalid || this.isSaving || this.tierRequirementsExceedMax)
       return;
 
     const v = this.form.value;
@@ -359,10 +368,7 @@ export class LeagueSettingsComponent implements OnInit, OnDestroy {
           const key = res.key;
           return this.uploadService.uploadToS3(res.url, file).pipe(
             tap((event) => {
-              if (
-                event.type === HttpEventType.UploadProgress &&
-                event.total
-              ) {
+              if (event.type === HttpEventType.UploadProgress && event.total) {
                 this.logoUploadProgress = Math.round(
                   (100 * event.loaded) / event.total,
                 );

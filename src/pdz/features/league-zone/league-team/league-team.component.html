@@ -8,13 +8,20 @@
               <h1 class="team-header__team-name">{{ teamData.name }}</h1>
               @if (teamData.isCoach) {
                 <button
-                  type="button"
-                  class="team-header__edit"
-                  aria-label="Edit team info"
+                  pdz-button
+                  iconOnly
+                  variant="ghost"
+                  size="sm"
+                  color="neutral"
                   [disabled]="saving"
+                  aria-label="Edit team info"
                   (click)="openTeamEdit()"
                 >
-                  <pdz-icon name="edit" [size]="16"></pdz-icon>
+                  <pdz-icon
+                    name="edit"
+                    [size]="16"
+                    aria-hidden="true"
+                  ></pdz-icon>
                 </button>
               }
             </div>
@@ -22,13 +29,20 @@
               <h2 class="team-header__coach-name">{{ teamData.coach }}</h2>
               @if (teamData.isCoach) {
                 <button
-                  type="button"
-                  class="team-header__edit"
-                  aria-label="Edit coach info"
+                  pdz-button
+                  iconOnly
+                  variant="ghost"
+                  size="sm"
+                  color="neutral"
                   [disabled]="saving"
+                  aria-label="Edit coach info"
                   (click)="openCoachEdit()"
                 >
-                  <pdz-icon name="edit" [size]="16"></pdz-icon>
+                  <pdz-icon
+                    name="edit"
+                    [size]="16"
+                    aria-hidden="true"
+                  ></pdz-icon>
                 </button>
               }
             </div>
@@ -83,10 +97,10 @@
                 <tr>
                   <th class="col-sprite pdz-table__center"></th>
                   <th class="col-name">Pokémon</th>
-                  <th class="col-stat pdz-table__num">Brought</th>
-                  <th class="col-stat pdz-table__num">Kills</th>
-                  <th class="col-stat pdz-table__num">Deaths</th>
-                  <th class="col-stat pdz-table__num">K/D Ratio</th>
+                  <th class="col-stat pdz-table__num pdz-table__center">Brought</th>
+                  <th class="col-stat pdz-table__num pdz-table__center">Kills</th>
+                  <th class="col-stat pdz-table__num pdz-table__center">Deaths</th>
+                  <th class="col-stat pdz-table__num pdz-table__center">K/D Ratio</th>
                 </tr>
               </thead>
               <tbody>
@@ -106,16 +120,16 @@
                         </div>
                       </div>
                     </td>
-                    <td class="cell-stat pdz-table__num">
+                    <td class="cell-stat pdz-table__num pdz-table__center">
                       {{ pokemon.record?.brought ?? 0 }}
                     </td>
-                    <td class="cell-stat pdz-table__num">
+                    <td class="cell-stat pdz-table__num pdz-table__center">
                       {{ pokemon.record?.kills ?? 0 }}
                     </td>
-                    <td class="cell-stat pdz-table__num">
+                    <td class="cell-stat pdz-table__num pdz-table__center">
                       {{ pokemon.record?.deaths ?? 0 }}
                     </td>
-                    <td class="cell-stat pdz-table__num">
+                    <td class="cell-stat pdz-table__num pdz-table__center">
                       @if (pokemon.record?.deaths) {
                         {{
                           (
@@ -138,10 +152,10 @@
                 <tr>
                   <th class="col-sprite pdz-table__center"></th>
                   <th class="col-name">{{ total.cost }}</th>
-                  <th class="col-stat pdz-table__num"></th>
-                  <th class="col-stat pdz-table__num">{{ total.kill }}</th>
-                  <th class="col-stat pdz-table__num">{{ total.deaths }}</th>
-                  <th class="col-stat pdz-table__num"></th>
+                  <th class="col-stat pdz-table__num pdz-table__center"></th>
+                  <th class="col-stat pdz-table__num pdz-table__center">{{ total.kill }}</th>
+                  <th class="col-stat pdz-table__num pdz-table__center">{{ total.deaths }}</th>
+                  <th class="col-stat pdz-table__num pdz-table__center"></th>
                 </tr>
               </tfoot>
             </table>
@@ -156,12 +170,13 @@
         <h3>Trades</h3>
         @if (teamData.isCoach) {
           <button
-            type="button"
-            class="section-header__action"
+            pdz-button
+            variant="outlined"
+            size="sm"
             (click)="openTradePropose()"
           >
-            <pdz-icon name="add" [size]="16"></pdz-icon>
-            <span>New Trade</span>
+            <pdz-icon name="add" [size]="16" aria-hidden="true"></pdz-icon>
+            New Trade
           </button>
         }
       </div>

@@ -1,55 +1,62 @@
-<h1 mat-dialog-title>Edit Team Info</h1>
 <form [formGroup]="form" (ngSubmit)="onSave()">
-  <div mat-dialog-content class="dialog-body">
-    <div class="form-field">
-      <label for="team-name" class="form-field__label">
-        Team Name <span class="required">*</span>
-      </label>
+  <div class="dialog-body">
+    <label pdz-field label="Team Name" required>
       <input
-        id="team-name"
-        type="text"
-        class="form-field__input"
+        pdz-input
         placeholder="The Double Helixes"
         formControlName="teamName"
       />
-      @if (
-        form.get("teamName")?.hasError("required") &&
-        form.get("teamName")?.touched
-      ) {
-        <span class="form-field__error">Required</span>
+      @if (form.controls.teamName.touched && form.controls.teamName.invalid) {
+        <span pdz-error>Required</span>
       }
-    </div>
+    </label>
 
-    <div class="form-field">
-      <label class="form-field__label">Team Logo</label>
+    <div pdz-field label="Team Logo" hint="PNG or SVG, square works best.">
       <div class="logo-edit">
-        <img class="logo-edit__preview" [src]="previewUrl" alt="Team logo" />
-        <div class="logo-edit__controls">
-          <input
-            #logoInput
-            type="file"
-            class="file-input-hidden"
-            accept="image/*"
-            (change)="onLogoChange($event)"
-          />
-          <button
-            type="button"
-            class="form-field__input file-input-button"
-            (click)="logoInput.click()"
-          >
-            {{ logoFileName || "Choose File" }}
-          </button>
-        </div>
+        <span class="logo-edit__preview">
+          @if (previewUrl(); as url) {
+            <img class="logo-edit__image" [src]="url" alt="Team logo preview" />
+          } @else {
+            <pdz-icon name="image" [size]="32" aria-hidden="true" />
+          }
+        </span>
+        <input
+          #logoInput
+          type="file"
+          class="logo-edit__input"
+          accept="image/png,image/svg+xml"
+          (change)="onLogoChange($event)"
+        />
+        <button
+          pdz-button
+          type="button"
+          variant="outlined"
+          color="neutral"
+          class="logo-edit__picker"
+          (click)="logoInput.click()"
+        >
+          <pdz-icon aria-hidden="true" name="upload_file" [size]="16" />
+          <span class="logo-edit__filename">{{
+            logoFileName() || "Choose file"
+          }}</span>
+        </button>
       </div>
+      @if (logoError(); as message) {
+        <span pdz-error>{{ message }}</span>
+      }
     </div>
   </div>
 
-  <div mat-dialog-actions align="end">
-    <button type="button" class="btn btn--secondary" (click)="closeDialog()">
+  <div class="pdz-dialog-actions">
+    <button
+      pdz-button
+      type="button"
+      variant="outlined"
+      color="neutral"
+      (click)="ref.close()"
+    >
       Cancel
     </button>
-    <button type="submit" class="btn btn--primary" [disabled]="form.invalid">
-      Save Changes
-    </button>
+    <button pdz-button type="submit">Save Changes</button>
   </div>
 </form>

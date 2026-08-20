@@ -109,6 +109,11 @@ $header-tones: (
   td.pdz-table__center {
     text-align: center;
   }
+
+  th.pdz-table__num.pdz-table__center,
+  td.pdz-table__num.pdz-table__center {
+    text-align: center;
+  }
 }
 
 @each $name, $steps in $densities {

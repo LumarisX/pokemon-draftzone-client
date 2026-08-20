@@ -69,7 +69,7 @@
     </div>
 
     <div class="step-actions">
-      <button mat-raised-button color="primary" matStepperNext>Next</button>
+      <button pdz-button type="submit" matStepperNext>Next</button>
     </div>
   </mat-step>
 
@@ -108,36 +108,45 @@
                   />
                 </mat-form-field>
                 <button
-                  pdz-icon-button
-                  color="warn"
+                  pdz-button
+                  iconOnly
+                  variant="ghost"
+                  color="danger"
                   type="button"
+                  aria-label="Remove point"
+                  pdzTooltip="Remove Point"
                   (click)="removeRulePoint(i, pIndex)"
-                  matTooltip="Remove Point"
                   [disabled]="getRulePoints(i).controls.length <= 1"
                 >
-                  <pdz-icon name="remove_circle_outline"></pdz-icon>
+                  <pdz-icon name="remove_circle_outline" aria-hidden="true"></pdz-icon>
                 </button>
               </div>
             }
             <button
-              mat-stroked-button
+              pdz-button
+              variant="outlined"
+              color="secondary"
+              size="sm"
               type="button"
-              (click)="addRulePoint(i)"
-              color="accent"
               class="add-point-button"
+              (click)="addRulePoint(i)"
             >
-              <pdz-icon name="add_circle_outline"></pdz-icon> Add Point
+              <pdz-icon name="add_circle_outline" aria-hidden="true"></pdz-icon>
+              Add Point
             </button>
           </div>
           <button
-            pdz-icon-button
-            color="warn"
+            pdz-button
+            iconOnly
+            variant="ghost"
+            color="danger"
             type="button"
-            (click)="removeRuleItem(i)"
-            matTooltip="Remove Rule Section"
+            aria-label="Remove rule section"
+            pdzTooltip="Remove Rule Section"
             class="remove-section-button"
+            (click)="removeRuleItem(i)"
           >
-            <pdz-icon name="delete_outline"></pdz-icon>
+            <pdz-icon name="delete_outline" aria-hidden="true"></pdz-icon>
           </button>
           @if (i < rulesItems.controls.length - 1) {
             <mat-divider></mat-divider>
@@ -147,18 +156,26 @@
     </div>
 
     <button
-      mat-flat-button
+      pdz-button
       type="button"
-      (click)="addRuleItem()"
-      color="primary"
       class="add-section-button"
+      (click)="addRuleItem()"
     >
-      <pdz-icon name="add"></pdz-icon> Add Rule Section
+      <pdz-icon name="add" aria-hidden="true"></pdz-icon>
+      Add Rule Section
     </button>
 
     <div class="step-actions">
-      <button mat-button matStepperPrevious>Back</button>
-      <button mat-raised-button color="primary" matStepperNext>Next</button>
+      <button
+        pdz-button
+        type="submit"
+        variant="ghost"
+        color="neutral"
+        matStepperPrevious
+      >
+        Back
+      </button>
+      <button pdz-button type="submit" matStepperNext>Next</button>
     </div>
   </mat-step>
 
@@ -200,26 +217,30 @@
             }
           </mat-form-field>
           <button
-            pdz-icon-button
-            color="warn"
+            pdz-button
+            iconOnly
+            variant="ghost"
+            color="danger"
             type="button"
+            aria-label="Remove division"
+            pdzTooltip="Remove Division"
             (click)="removeDivisionGroup(i)"
-            matTooltip="Remove Division"
             [disabled]="divisionGroups.controls.length <= 1"
           >
-            <pdz-icon name="remove_circle_outline"></pdz-icon>
+            <pdz-icon name="remove_circle_outline" aria-hidden="true"></pdz-icon>
           </button>
         </div>
       }
     </div>
 
     <button
-      mat-stroked-button
+      pdz-button
+      variant="outlined"
       type="button"
       (click)="addDivisionGroup()"
-      color="primary"
     >
-      <pdz-icon name="add"></pdz-icon> Add Division
+      <pdz-icon name="add" aria-hidden="true"></pdz-icon>
+      Add Division
     </button>
 
     @if (
@@ -230,8 +251,16 @@
     }
 
     <div class="step-actions">
-      <button mat-button matStepperPrevious>Back</button>
-      <button mat-raised-button color="primary" matStepperNext>Next</button>
+      <button
+        pdz-button
+        type="submit"
+        variant="ghost"
+        color="neutral"
+        matStepperPrevious
+      >
+        Back
+      </button>
+      <button pdz-button type="submit" matStepperNext>Next</button>
     </div>
   </mat-step>
 
@@ -290,13 +319,16 @@
             }
           </mat-form-field>
           <button
-            pdz-icon-button
-            color="warn"
+            pdz-button
+            iconOnly
+            variant="ghost"
+            color="danger"
             type="button"
+            aria-label="Remove bracket"
+            pdzTooltip="Remove Bracket"
             (click)="removeBracketItem(i)"
-            matTooltip="Remove Bracket"
           >
-            <pdz-icon name="delete_outline"></pdz-icon>
+            <pdz-icon name="delete_outline" aria-hidden="true"></pdz-icon>
           </button>
           @if (i < scheduleBrackets.controls.length - 1) {
             <mat-divider></mat-divider>
@@ -306,17 +338,25 @@
     </div>
 
     <button
-      mat-flat-button
+      pdz-button
       type="button"
       (click)="addBracketItem()"
-      color="primary"
     >
-      <pdz-icon name="add"></pdz-icon> Add Bracket
+      <pdz-icon name="add" aria-hidden="true"></pdz-icon>
+      Add Bracket
     </button>
 
     <div class="step-actions">
-      <button mat-button matStepperPrevious>Back</button>
-      <button mat-raised-button color="primary" matStepperNext>Next</button>
+      <button
+        pdz-button
+        type="submit"
+        variant="ghost"
+        color="neutral"
+        matStepperPrevious
+      >
+        Back
+      </button>
+      <button pdz-button type="submit" matStepperNext>Next</button>
     </div>
   </mat-step>
 
@@ -369,10 +409,20 @@
     </section>
 
     <div class="step-actions">
-      <button mat-button matStepperPrevious>Back</button>
       <button
-        mat-raised-button
-        color="accent"
+        pdz-button
+        type="submit"
+        variant="ghost"
+        color="neutral"
+        matStepperPrevious
+      >
+        Back
+      </button>
+      <button
+        pdz-button
+        type="button"
+        color="secondary"
+        size="lg"
         (click)="createLeague()"
         [disabled]="leagueForm.invalid"
       >

@@ -91,33 +91,11 @@
   }
 }
 
-.navigation-tabs {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: pdz.space(sm);
-  padding: pdz.space(sm);
-  border-bottom: 1px solid pdz.color(outline-variant);
+pdz-tab-nav {
+  padding-inline: pdz.space(sm);
 
   @include respond-above(medium) {
-    grid-template-columns: repeat(5, 1fr);
-    padding: pdz.space(md) pdz.space(lg);
-  }
-
-  &__tab {
-    @include flat-button-primary();
-    padding: pdz.space(sm) pdz.space(md);
-    border-radius: pdz.shape(corner-sm);
-    transition: all pdz.duration(base) pdz.easing(standard);
-    text-align: center;
-
-    @include respond-above(medium) {
-      padding: pdz.space(sm) pdz.space(lg);
-    }
-
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--pdz-level-1);
-    }
+    padding-inline: pdz.space(lg);
   }
 }
 

@@ -1,90 +1,108 @@
-import { CommonModule } from '@angular/common';
-import { Component, inject, OnDestroy } from '@angular/core';
 import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+  ChangeDetectionStrategy,
+  Component,
+  OnDestroy,
+  inject,
+  signal,
+} from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import {
-  MAT_DIALOG_DATA,
-  MatDialogModule,
-  MatDialogRef,
-} from '@angular/material/dialog';
+  DIALOG_DATA,
+  DialogRef,
+} from '@pdz/shared/dialogs/dialog/dialog.service';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
+import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
+import { FieldErrorDirective } from '@pdz/shared/inputs/field/field-message.directive';
+import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 
 export interface TeamEditDialogData {
   teamName: string;
-  /** Resolved URL of the current logo, used for the preview. */
   logoUrl?: string;
 }
 
 export interface TeamEditDialogResult {
   teamName: string;
-  /** The newly chosen logo file, or null if the logo was left unchanged. */
   logoFile: File | null;
 }
 
+const ACCEPTED_LOGO_TYPES = ['image/png', 'image/svg+xml'];
+const MAX_LOGO_BYTES = 2 * 1024 * 1024;
+
 @Component({
   selector: 'pdz-team-edit-dialog',
-  imports: [CommonModule, ReactiveFormsModule, MatDialogModule],
+  imports: [
+    ReactiveFormsModule,
+    ButtonComponent,
+    FieldComponent,
+    FieldErrorDirective,
+    InputDirective,
+    IconComponent,
+  ],
   templateUrl: './team-edit-dialog.component.html',
   styleUrl: './team-edit-dialog.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TeamEditDialogComponent implements OnDestroy {
-  private fb = inject(FormBuilder);
-  dialogRef =
-    inject<MatDialogRef<TeamEditDialogComponent, TeamEditDialogResult | null>>(
-      MatDialogRef,
-    );
-  data = inject<TeamEditDialogData>(MAT_DIALOG_DATA);
+  private readonly fb = inject(FormBuilder);
+  protected readonly ref = inject(DialogRef) as DialogRef<TeamEditDialogResult>;
+  protected readonly data = inject<TeamEditDialogData>(DIALOG_DATA);
 
-  // Built at construction (not ngOnInit) so the field is populated from the
-  // injected team data before the dialog view first renders.
-  form: FormGroup = this.fb.group({
+  protected readonly form = this.fb.nonNullable.group({
     teamName: [this.data.teamName ?? '', Validators.required],
   });
-  logoFile: File | null = null;
-  logoFileName = '';
-  previewUrl = this.data.logoUrl;
 
-  /** Object URL we created for the local preview, tracked so we can revoke it. */
+  protected readonly logoFileName = signal('');
+  protected readonly logoError = signal<string | null>(null);
+  protected readonly previewUrl = signal(this.data.logoUrl);
+
+  private logoFile: File | null = null;
   private objectUrl?: string;
 
   ngOnDestroy(): void {
     this.revokeObjectUrl();
   }
 
-  onLogoChange(event: Event): void {
+  protected onLogoChange(event: Event): void {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0] ?? null;
 
+    if (file && !ACCEPTED_LOGO_TYPES.includes(file.type)) {
+      input.value = '';
+      this.logoError.set('Logo must be a PNG or SVG file.');
+      return;
+    }
+
+    if (file && file.size > MAX_LOGO_BYTES) {
+      input.value = '';
+      this.logoError.set('Logo must be 2 MB or smaller.');
+      return;
+    }
+
     this.revokeObjectUrl();
+    this.logoError.set(null);
 
     if (file) {
       this.logoFile = file;
-      this.logoFileName = file.name;
+      this.logoFileName.set(file.name);
       this.objectUrl = URL.createObjectURL(file);
-      this.previewUrl = this.objectUrl;
+      this.previewUrl.set(this.objectUrl);
     } else {
       this.logoFile = null;
-      this.logoFileName = '';
-      this.previewUrl = this.data.logoUrl;
+      this.logoFileName.set('');
+      this.previewUrl.set(this.data.logoUrl);
     }
   }
 
-  onSave(): void {
+  protected onSave(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
-    this.dialogRef.close({
-      teamName: this.form.value.teamName,
+    this.ref.close({
+      teamName: this.form.getRawValue().teamName,
       logoFile: this.logoFile,
     });
-  }
-
-  closeDialog(): void {
-    this.dialogRef.close(null);
   }
 
   private revokeObjectUrl(): void {

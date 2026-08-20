@@ -2,7 +2,7 @@ import { Directive, ElementRef, HostListener, input } from '@angular/core';
 import { TooltipService } from './tooltip.service';
 
 @Directive({
-  selector: 'pdz-[pdzTooltip]',
+  selector: '[pdzTooltip]',
 })
 export class TooltipDirective {
   readonly content = input<string | null>(null, { alias: 'pdzTooltip' });

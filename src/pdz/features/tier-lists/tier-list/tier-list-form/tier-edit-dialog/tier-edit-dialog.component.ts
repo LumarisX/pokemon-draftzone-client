@@ -12,6 +12,7 @@ import {
 } from '@angular/material/dialog';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
+import { FieldErrorDirective } from '@pdz/shared/inputs/field/field-message.directive';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 
 export interface TierDialogData {
@@ -27,7 +28,12 @@ export interface TierDialogResult {
   selector: 'pdz-tier-edit-dialog',
   imports: [
     MatDialogModule,
-    ReactiveFormsModule, ButtonComponent, FieldComponent, InputDirective],
+    ReactiveFormsModule,
+    ButtonComponent,
+    FieldComponent,
+    FieldErrorDirective,
+    InputDirective,
+  ],
   templateUrl: './tier-edit-dialog.component.html',
   styleUrls: ['./tier-edit-dialog.component.scss'],
 })

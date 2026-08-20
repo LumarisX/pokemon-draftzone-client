@@ -7,7 +7,9 @@
     <div class="team-name">
       <div class="custom-dropdown-container">
         <button
+          type="button"
           class="my-draft-title draft-section-title"
+          [attr.aria-expanded]="isDropdownOpen"
           (click)="toggleDropdown()"
         >
           <span> {{ selectedTeam.info.name }} </span

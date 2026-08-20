@@ -73,48 +73,6 @@
   }
 }
 
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: pdz.space(2xs);
-  padding: pdz.space(sm) pdz.space(md);
-  border: 1px solid pdz.color("outline");
-  border-radius: pdz.shape("corner-sm");
-  background: pdz.color("surface-container");
-  color: pdz.color("on-surface");
-  cursor: pointer;
-  @include text(label);
-
-  &:hover:not(:disabled) {
-    background: pdz.color("surface-container-high");
-  }
-
-  &:disabled {
-    color: pdz.color("on-surface-disabled");
-    cursor: default;
-  }
-
-  &--primary {
-    background: pdz.color("primary");
-    border-color: pdz.color("primary");
-    color: pdz.color("on-primary");
-
-    &:hover:not(:disabled) {
-      background: pdz.color("primary-darker");
-    }
-  }
-
-  &--danger {
-    border-color: pdz.color("error-border");
-    color: pdz.color("error");
-
-    &:hover:not(:disabled) {
-      background: pdz.color("error-container");
-      color: pdz.color("on-error-container");
-    }
-  }
-}
-
 .panel {
   flex: 0 1 auto;
   min-height: 0;

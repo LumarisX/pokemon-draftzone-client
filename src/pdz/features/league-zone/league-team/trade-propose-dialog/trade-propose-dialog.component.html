@@ -121,12 +121,18 @@
 </div>
 
 <div mat-dialog-actions align="end">
-  <button type="button" class="btn btn--secondary" (click)="closeDialog()">
+  <button
+    pdz-button
+    type="button"
+    variant="ghost"
+    color="neutral"
+    (click)="closeDialog()"
+  >
     Cancel
   </button>
   <button
+    pdz-button
     type="button"
-    class="btn btn--primary"
     [disabled]="!canSubmit"
     (click)="onSubmit()"
   >

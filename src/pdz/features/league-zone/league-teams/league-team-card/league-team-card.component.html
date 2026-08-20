@@ -33,20 +33,37 @@
     </div>
     <div class="view-container">
       <button
-        [ngClass]="{ pressed: data === 'overview' }"
+        pdz-button
+        iconOnly
+        variant="ghost"
+        size="sm"
+        aria-label="Show roster overview"
+        [attr.aria-pressed]="data === 'overview'"
         (click)="data = 'overview'"
       >
-        <pdz-icon name="list"></pdz-icon>
+        <pdz-icon name="list" aria-hidden="true"></pdz-icon>
       </button>
       <button
-        [ngClass]="{ pressed: data === 'stats' }"
+        pdz-button
+        iconOnly
+        variant="ghost"
+        size="sm"
+        aria-label="Show team stats"
+        [attr.aria-pressed]="data === 'stats'"
         (click)="data = 'stats'"
       >
-        <pdz-icon name="show_chart"></pdz-icon>
+        <pdz-icon name="show_chart" aria-hidden="true"></pdz-icon>
       </button>
-      <button [routerLink]="'../teams/' + teamDetails().slug">
-        <pdz-icon name="open_in_new"></pdz-icon>
-      </button>
+      <a
+        pdz-button
+        iconOnly
+        variant="ghost"
+        size="sm"
+        aria-label="Open full team page"
+        [routerLink]="'../teams/' + teamDetails().slug"
+      >
+        <pdz-icon name="open_in_new" aria-hidden="true"></pdz-icon>
+      </a>
     </div>
   </div>
 

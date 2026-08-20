@@ -44,22 +44,25 @@
                   (change)="onLogoFileSelected($event)"
                 />
                 <button
-                  type="button"
-                  class="btn btn--secondary"
+                  pdz-button
+                  color="neutral"
+                  size="md"
                   (click)="openLogoInput()"
                   [disabled]="isUploadingLogo"
                 >
-                  <pdz-icon name="upload" [size]="18"></pdz-icon>
+                  <pdz-icon name="upload" [size]="18" aria-hidden="true"></pdz-icon>
                   {{ displayedLogoKey ? "Change Logo" : "Upload Logo" }}
                 </button>
                 @if (displayedLogoKey) {
                   <button
                     type="button"
-                    class="btn btn--secondary"
+                    pdz-button
+                    color="neutral"
+                    size="md"
                     (click)="removeLogo()"
                     [disabled]="isUploadingLogo"
                   >
-                    <pdz-icon name="delete" [size]="18"></pdz-icon>
+                    <pdz-icon name="delete" [size]="18" aria-hidden="true"></pdz-icon>
                     Remove
                   </button>
                 }
@@ -405,9 +408,11 @@
           <div class="form-field">
             <label class="checkbox-option">
               <input type="checkbox" formControlName="pointTotalEnabled" />
-              <span class="checkbox-option__label">Limit total draft points</span>
+              <span class="checkbox-option__label"
+                >Limit total draft points</span
+              >
             </label>
-            @if (form.get('pointTotalEnabled')?.value) {
+            @if (form.get("pointTotalEnabled")?.value) {
               <input
                 id="pointTotal"
                 class="form-field__input form-field__input--number"
@@ -426,7 +431,7 @@
               <input type="checkbox" formControlName="tradePointLimitEnabled" />
               <span class="checkbox-option__label">Limit trade points</span>
             </label>
-            @if (form.get('tradePointLimitEnabled')?.value) {
+            @if (form.get("tradePointLimitEnabled")?.value) {
               <input
                 id="tradePointLimit"
                 class="form-field__input form-field__input--number"
@@ -576,8 +581,9 @@
           </div>
         }
         <button
-          type="button"
-          class="btn btn--secondary"
+          pdz-button
+          color="neutral"
+          size="md"
           (click)="cancel()"
           [disabled]="isSaving"
         >
@@ -585,14 +591,15 @@
         </button>
         <button
           type="submit"
-          class="btn btn--primary"
-          [disabled]="form.invalid || isSaving || tierRequirementsExceedMax"
+          pdz-button
+          size="md"
+          [loading]="isSaving"
+          [disabled]="form.invalid || tierRequirementsExceedMax"
         >
           @if (isSaving) {
-            <pdz-icon name="progress_activity" [size]="18"></pdz-icon>
             Saving…
           } @else {
-            <pdz-icon name="save" [size]="18"></pdz-icon>
+            <pdz-icon name="save" [size]="18" aria-hidden="true"></pdz-icon>
             Save Settings
           }
         </button>

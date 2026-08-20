@@ -16,6 +16,12 @@ import {
   CardTone,
 } from '@pdz/shared/data/card/card.component';
 import { SkeletonComponent } from '@pdz/shared/data/skeleton/skeleton.component';
+import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
+import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented-option.component';
+import { DisclosureComponent } from '@pdz/shared/layout/disclosure/disclosure.component';
+import { TabNavComponent } from '@pdz/shared/layout/tab-nav/tab-nav.component';
+import { TabNavLinkDirective } from '@pdz/shared/layout/tab-nav/tab-nav-link.directive';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 import { DialogSize } from '@pdz/shared/dialogs/dialog/dialog.component';
 import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
 import {
@@ -43,6 +49,13 @@ const MODE_ATTR = 'pdz-theme-mode';
     ChoiceDirective,
     CardComponent,
     SkeletonComponent,
+    SegmentedComponent,
+    SegmentedOptionComponent,
+    DisclosureComponent,
+    TabNavComponent,
+    TabNavLinkDirective,
+    RouterLink,
+    RouterLinkActive,
   ],
   templateUrl: './debug-components.component.html',
   styleUrl: './debug-components.component.scss',
@@ -84,6 +97,10 @@ export class DebugComponentsComponent {
     ...this.tableRows,
     ...this.tableRows,
   ];
+
+  reportMode = signal<unknown>('standard');
+  winner = signal<unknown>('side1');
+  secondOpen = signal(true);
 
   theme = signal('classic');
   mode = signal<'light' | 'dark'>('light');

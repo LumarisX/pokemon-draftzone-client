@@ -1,8 +1,16 @@
 <div class="teams">
   <div class="teams__header">
-    <button type="button" class="teams__back" [routerLink]="['../']">
-      <pdz-icon name="arrow_back" size="sm"></pdz-icon> Back
-    </button>
+    <a
+      pdz-button
+      variant="ghost"
+      color="neutral"
+      size="sm"
+      class="teams__back"
+      [routerLink]="['../']"
+    >
+      <pdz-icon name="arrow_back" size="sm" aria-hidden="true"></pdz-icon>
+      Back
+    </a>
     <h1 class="teams__title">League Teams</h1>
   </div>
   <div class="teams__body">
@@ -13,6 +21,7 @@
             type="button"
             class="draft__header"
             [class.draft__header--collapsed]="!isOpen(group)"
+            [attr.aria-expanded]="isOpen(group)"
             (click)="toggle(group)"
           >
             <pdz-icon

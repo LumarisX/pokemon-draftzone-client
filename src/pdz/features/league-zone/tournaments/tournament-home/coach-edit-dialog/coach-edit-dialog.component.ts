@@ -1,16 +1,13 @@
-import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
-import {
-  MAT_DIALOG_DATA,
-  MatDialogModule,
-  MatDialogRef,
-} from '@angular/material/dialog';
+  DIALOG_DATA,
+  DialogRef,
+} from '@pdz/shared/dialogs/dialog/dialog.service';
+import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
+import { FieldErrorDirective } from '@pdz/shared/inputs/field/field-message.directive';
+import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 
 export interface CoachEditDialogData {
   name: string;
@@ -23,36 +20,38 @@ export type CoachEditDialogResult = CoachEditDialogData;
 
 @Component({
   selector: 'pdz-coach-edit-dialog',
-  imports: [CommonModule, ReactiveFormsModule, MatDialogModule],
+  imports: [
+    ReactiveFormsModule,
+    ButtonComponent,
+    FieldComponent,
+    FieldErrorDirective,
+    InputDirective,
+  ],
   templateUrl: './coach-edit-dialog.component.html',
   styleUrl: './coach-edit-dialog.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CoachEditDialogComponent {
-  private fb = inject(FormBuilder);
-  dialogRef =
-    inject<
-      MatDialogRef<CoachEditDialogComponent, CoachEditDialogResult | null>
-    >(MatDialogRef);
-  data = inject<CoachEditDialogData>(MAT_DIALOG_DATA);
+  private readonly fb = inject(FormBuilder);
+  protected readonly ref = inject(
+    DialogRef,
+  ) as DialogRef<CoachEditDialogResult>;
+  protected readonly data = inject<CoachEditDialogData>(DIALOG_DATA);
 
-  timezones = Intl.supportedValuesOf('timeZone');
+  protected readonly timezones = Intl.supportedValuesOf('timeZone');
 
-  form: FormGroup = this.fb.group({
+  protected readonly form = this.fb.nonNullable.group({
     name: [this.data.name ?? '', Validators.required],
     gameName: [this.data.gameName ?? '', Validators.required],
     discordName: [this.data.discordName ?? '', Validators.required],
     timezone: [this.data.timezone ?? '', Validators.required],
   });
 
-  onSave(): void {
+  protected onSave(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
-    this.dialogRef.close(this.form.value as CoachEditDialogResult);
-  }
-
-  closeDialog(): void {
-    this.dialogRef.close(null);
+    this.ref.close(this.form.getRawValue());
   }
 }

@@ -1,4 +1,3 @@
-<pdz-league-notifications></pdz-league-notifications>
 
 <div class="page-header">
   <div class="page-header__heading">
@@ -34,50 +33,63 @@
   <div class="page-header__actions">
     @if (status === "IN_PROGRESS") {
       <button
+        pdz-button
+        iconOnly
+        size="lg"
+        color="secondary"
         type="button"
-        class="icon-btn"
         aria-label="Pause timer"
         (click)="setState('pause')"
       >
-        <pdz-icon name="pause" size="md"></pdz-icon>
+        <pdz-icon name="pause" size="md" aria-hidden="true"></pdz-icon>
       </button>
     } @else {
       <button
+        pdz-button
+        iconOnly
+        size="lg"
         type="button"
-        class="icon-btn icon-btn--accent"
         aria-label="Play timer"
         (click)="setState('play')"
       >
-        <pdz-icon name="play_arrow" size="md"></pdz-icon>
+        <pdz-icon name="play_arrow" size="md" aria-hidden="true"></pdz-icon>
       </button>
     }
     <button
+      pdz-button
+      iconOnly
+      size="lg"
+      color="secondary"
       type="button"
-      class="icon-btn"
       aria-label="Skip turn"
       (click)="skipNext()"
     >
-      <pdz-icon name="skip_next" size="md"></pdz-icon>
+      <pdz-icon name="skip_next" size="md" aria-hidden="true"></pdz-icon>
     </button>
     @if (noTimer) {
       <button
+        pdz-button
+        iconOnly
+        size="lg"
         type="button"
-        class="icon-btn icon-btn--accent"
         aria-label="Enable pick timer"
-        title="Timer disabled — click to re-enable"
+        pdzTooltip="Timer disabled — click to re-enable"
         (click)="toggleNoTimer()"
       >
-        <pdz-icon name="timer_off" size="md"></pdz-icon>
+        <pdz-icon name="timer_off" size="md" aria-hidden="true"></pdz-icon>
       </button>
     } @else {
       <button
+        pdz-button
+        iconOnly
+        size="lg"
+        color="secondary"
         type="button"
-        class="icon-btn"
         aria-label="Disable pick timer"
-        title="Click to run the draft with no timer"
+        pdzTooltip="Click to run the draft with no timer"
         (click)="toggleNoTimer()"
       >
-        <pdz-icon name="timer" size="md"></pdz-icon>
+        <pdz-icon name="timer" size="md" aria-hidden="true"></pdz-icon>
       </button>
     }
   </div>

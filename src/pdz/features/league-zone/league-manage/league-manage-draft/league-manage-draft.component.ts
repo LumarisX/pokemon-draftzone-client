@@ -17,8 +17,9 @@ import { DraftDetails, LeagueManageService } from '../league-manage.service';
 import { LeagueZoneService } from '../../league-zone.service';
 import { WebSocketService } from '@pdz/core/services/ws.service';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
-import { LeagueNotificationsComponent } from '../../league-notifications/league-notifications.component';
+import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
 import { League } from '../../league.interface';
 import { formatCountdown } from '../../league.util';
 
@@ -63,8 +64,9 @@ export interface DraftTurnRound {
   imports: [
     PokemonSearchComponent,
     SpriteComponent,
+    ButtonComponent,
     IconComponent,
-    LeagueNotificationsComponent,
+    TooltipDirective,
     CdkDropList,
     CdkDrag,
     CdkDragHandle,

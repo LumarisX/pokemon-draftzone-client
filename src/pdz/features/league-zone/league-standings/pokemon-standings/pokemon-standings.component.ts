@@ -3,12 +3,13 @@ import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { PlusSignPipe } from '@pdz/shared/pipes/plus-sign.pipe';
 import { League } from '../../league.interface';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
 type SortKey = 'brought' | 'kills' | 'deaths' | 'diff';
 
 @Component({
   selector: 'pdz-pokemon-standings',
-  imports: [IconComponent, SpriteComponent, PlusSignPipe],
+  imports: [IconComponent, SpriteComponent, ButtonComponent, PlusSignPipe],
   templateUrl: './pokemon-standings.component.html',
   styleUrls: ['./pokemon-standings.component.scss'],
 })

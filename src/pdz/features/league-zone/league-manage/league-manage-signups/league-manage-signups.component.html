@@ -176,7 +176,9 @@
               target="_blank"
               rel="noopener"
               class="signup-card__team-link"
-              [attr.aria-label]="'View team ' + signup.teamName + ' in a new tab'"
+              [attr.aria-label]="
+                'View team ' + signup.teamName + ' in a new tab'
+              "
             >
               <pdz-icon name="open_in_new" [size]="14"></pdz-icon>
             </a>
@@ -190,7 +192,9 @@
     <section class="pool">
       <header class="pool__header">
         <h3 class="pool__title">{{ draft?.name ?? "No Draft" }}</h3>
-        <span class="pool__count">{{ signUpInDraft(draft?.draftSlug).length }}</span>
+        <span class="pool__count">{{
+          signUpInDraft(draft?.draftSlug).length
+        }}</span>
         <button
           type="button"
           class="pool__move-btn"

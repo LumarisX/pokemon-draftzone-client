@@ -1,0 +1,122 @@
+@use "sass:map";
+@use "pdz-theming" as pdz;
+
+$sizes: (
+  sm: (
+    height: 1.75rem,
+    pad: pdz.space(sm),
+    gap: pdz.space(2xs),
+    role: label,
+  ),
+  md: (
+    height: 2.25rem,
+    pad: pdz.space(md),
+    gap: pdz.space(xs),
+    role: body-sm-strong,
+  ),
+  lg: (
+    height: 2.75rem,
+    pad: pdz.space(lg),
+    gap: pdz.space(xs),
+    role: body-sm-strong,
+  ),
+);
+
+:host {
+  display: inline-flex;
+  max-width: 100%;
+}
+
+:host([data-align="stretch"]) {
+  display: flex;
+  width: 100%;
+
+  .pdz-segmented__option {
+    flex: 1 1 auto;
+  }
+}
+
+.pdz-segmented__list {
+  position: relative;
+  display: inline-flex;
+  min-width: 0;
+  padding: pdz.space(3xs);
+  gap: pdz.space(3xs);
+  border: 1px solid pdz.color(outline-variant);
+  border-radius: pdz.shape(corner-md);
+  background: pdz.color(surface-container-low);
+}
+
+.pdz-segmented__indicator {
+  position: absolute;
+  top: pdz.space(3xs);
+  left: 0;
+  width: 0;
+  opacity: 0;
+  border-radius: pdz.shape(corner-sm);
+  background: pdz.color(primary);
+  box-shadow: var(--pdz-level-1);
+  pointer-events: none;
+
+  &[data-ready] {
+    transition:
+      transform pdz.duration(base) pdz.easing(standard),
+      width pdz.duration(base) pdz.easing(standard),
+      opacity pdz.duration(fast) pdz.easing(standard);
+  }
+}
+
+:host([data-align="stretch"]) .pdz-segmented__list {
+  flex: 1 1 auto;
+}
+
+.pdz-segmented__option {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  border: none;
+  border-radius: pdz.shape(corner-sm);
+  background: transparent;
+  color: pdz.color(on-surface-variant);
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background-color pdz.duration(fast) pdz.easing(standard),
+    color pdz.duration(fast) pdz.easing(standard);
+
+  &:hover:not(:disabled):not(.pdz-segmented__option--checked) {
+    background: pdz.color(surface-container-high);
+    color: pdz.color(on-surface);
+  }
+
+  &:focus-visible {
+    outline: 2px solid pdz.color(primary-accent);
+    outline-offset: -2px;
+  }
+
+  &:disabled {
+    color: pdz.color(on-surface-disabled);
+    cursor: default;
+  }
+
+  &--checked {
+    color: pdz.color(on-primary);
+  }
+}
+
+.pdz-segmented__label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@each $name, $s in $sizes {
+  :host([data-size="#{$name}"]) .pdz-segmented__option {
+    min-height: map.get($s, height);
+    padding-inline: map.get($s, pad);
+    gap: map.get($s, gap);
+    @include pdz.text(map.get($s, role), $family: false);
+  }
+}

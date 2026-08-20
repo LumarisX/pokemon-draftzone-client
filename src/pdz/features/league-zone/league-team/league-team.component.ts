@@ -4,6 +4,7 @@ import { Component, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { UploadService } from '@pdz/core/services/upload.service';
+import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
@@ -35,6 +36,7 @@ import {
   TradeProposeDialogData,
   TradeProposeDialogResult,
 } from './trade-propose-dialog/trade-propose-dialog.component';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
 const MAX_LOGO_SIZE = 5 * 1024 * 1024;
 const ALLOWED_LOGO_TYPES = [
@@ -48,6 +50,7 @@ const ALLOWED_LOGO_TYPES = [
   selector: 'pdz-league-team',
   imports: [
     CommonModule,
+    ButtonComponent,
     RouterModule,
     LoadingComponent,
     IconComponent,
@@ -62,6 +65,7 @@ export class LeagueTeamComponent implements OnInit, OnDestroy {
   private readonly leagueService = inject(LeagueZoneService);
   private readonly route = inject(ActivatedRoute);
   private readonly dialog = inject(MatDialog);
+  private readonly dialogs = inject(DialogService);
   private readonly uploadService = inject(UploadService);
 
   teamData?: League.LeagueTeam;
@@ -175,48 +179,44 @@ export class LeagueTeamComponent implements OnInit, OnDestroy {
       });
   }
 
-  openTeamEdit(): void {
+  async openTeamEdit(): Promise<void> {
     const team = this.teamData;
     if (!team?.isCoach) return;
 
-    this.dialog
-      .open(TeamEditDialogComponent, {
-        width: '32rem',
-        maxWidth: '95vw',
-        autoFocus: 'first-tabbable',
-        data: {
-          teamName: team.name,
-          logoUrl: this.getLogoUrl(team.logo),
-        } satisfies TeamEditDialogData,
-      })
-      .afterClosed()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((result: TeamEditDialogResult | null | undefined) => {
-        if (result) this.saveTeamEdit(result);
-      });
+    const result = await this.dialogs.open<
+      TeamEditDialogComponent,
+      TeamEditDialogResult,
+      TeamEditDialogData
+    >(TeamEditDialogComponent, {
+      heading: 'Edit Team Info',
+      data: {
+        teamName: team.name,
+        logoUrl: this.getLogoUrl(team.logo),
+      },
+    }).closed;
+
+    if (result) this.saveTeamEdit(result);
   }
 
-  openCoachEdit(): void {
+  async openCoachEdit(): Promise<void> {
     const team = this.teamData;
     if (!team?.isCoach) return;
 
-    this.dialog
-      .open(CoachEditDialogComponent, {
-        width: '32rem',
-        maxWidth: '95vw',
-        autoFocus: 'first-tabbable',
-        data: {
-          name: team.coach,
-          gameName: team.gameName ?? '',
-          discordName: team.discordName ?? '',
-          timezone: team.timezone ?? '',
-        } satisfies CoachEditDialogData,
-      })
-      .afterClosed()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((result: CoachEditDialogResult | null | undefined) => {
-        if (result) this.saveCoachEdit(result);
-      });
+    const result = await this.dialogs.open<
+      CoachEditDialogComponent,
+      CoachEditDialogResult,
+      CoachEditDialogData
+    >(CoachEditDialogComponent, {
+      heading: 'Edit Coach Info',
+      data: {
+        name: team.coach,
+        gameName: team.gameName ?? '',
+        discordName: team.discordName ?? '',
+        timezone: team.timezone ?? '',
+      },
+    }).closed;
+
+    if (result) this.saveCoachEdit(result);
   }
 
   openTradePropose(): void {

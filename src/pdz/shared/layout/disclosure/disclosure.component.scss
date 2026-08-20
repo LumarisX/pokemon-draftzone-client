@@ -1,0 +1,91 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+  min-width: 0;
+}
+
+:host([data-tone="panel"]) {
+  border: 1px solid pdz.color(outline-variant);
+  border-radius: pdz.shape(corner-lg);
+  background: pdz.color(surface-container-low);
+  overflow: hidden;
+}
+
+.pdz-disclosure__header {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(xs);
+  width: 100%;
+  padding-inline-end: pdz.space(md);
+}
+
+.pdz-disclosure__toggle {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(xs);
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: pdz.space(sm) pdz.space(md);
+  border: none;
+  background: transparent;
+  color: pdz.color(on-surface);
+  text-align: start;
+  cursor: pointer;
+  @include pdz.text(card-title, $family: false);
+
+  &:hover:not(:disabled) {
+    background: pdz.color(surface-container);
+  }
+
+  &:focus-visible {
+    outline: 2px solid pdz.color(primary-accent);
+    outline-offset: -2px;
+  }
+
+  &:disabled {
+    color: pdz.color(on-surface-disabled);
+    cursor: default;
+  }
+}
+
+.pdz-disclosure__chevron {
+  flex-shrink: 0;
+  color: pdz.color(on-surface-variant);
+  transition: transform pdz.duration(base) pdz.easing(standard);
+}
+
+:host(.pdz-disclosure--open) .pdz-disclosure__chevron {
+  transform: rotate(90deg);
+}
+
+.pdz-disclosure__heading {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.pdz-disclosure__trailing {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: pdz.space(xs);
+}
+
+.pdz-disclosure__panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  visibility: hidden;
+  transition:
+    grid-template-rows pdz.duration(base) pdz.easing(standard),
+    visibility pdz.duration(base) pdz.easing(standard);
+}
+
+:host(.pdz-disclosure--open) .pdz-disclosure__panel {
+  grid-template-rows: 1fr;
+  visibility: visible;
+}
+
+.pdz-disclosure__panel-inner {
+  min-height: 0;
+  overflow: hidden;
+}

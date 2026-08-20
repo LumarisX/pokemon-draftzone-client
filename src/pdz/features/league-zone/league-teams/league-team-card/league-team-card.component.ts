@@ -5,10 +5,17 @@ import { RouterLink } from '@angular/router';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { League } from '../../league.interface';
 import { getLogoUrl } from '../../league.util';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
 @Component({
   selector: 'pdz-league-team-card',
-  imports: [CommonModule, SpriteComponent, IconComponent, RouterLink],
+  imports: [
+    CommonModule,
+    ButtonComponent,
+    SpriteComponent,
+    IconComponent,
+    RouterLink,
+  ],
   templateUrl: './league-team-card.component.html',
   styleUrls: ['./league-team-card.component.scss', '../../league.scss'],
 })

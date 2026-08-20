@@ -18,7 +18,6 @@ import { interval, Observable, Subject, takeUntil } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { TierListComponent } from '../../tier-lists/tier-list/tier-list.component';
 import { LeagueNotificationService } from '../league-notification.service';
-import { LeagueNotificationsComponent } from '../league-notifications/league-notifications.component';
 import { LeagueZoneService } from '../league-zone.service';
 import { League } from '../league.interface';
 import { formatCountdown } from '../league.util';
@@ -93,7 +92,6 @@ type DraftDetailsResponse =
     NumberSuffixPipe,
     LoadingComponent,
     RouterModule,
-    LeagueNotificationsComponent,
     PokemonTypeComponent,
   ],
   templateUrl: './league-drafting.component.html',

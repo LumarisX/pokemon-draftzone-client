@@ -261,11 +261,7 @@
 
     <div class="choices__col">
       <span class="surfaces__name">In a field</span>
-      <label
-        pdz-field
-        label="Visibility"
-        hint="Controls who can see the draft."
-      >
+      <div pdz-field label="Visibility" hint="Controls who can see the draft.">
         <span class="choices__group">
           <label pdz-check label="Public">
             <input pdz-radio type="radio" name="vis" value="public" checked />
@@ -274,7 +270,7 @@
             <input pdz-radio type="radio" name="vis" value="unlisted" />
           </label>
         </span>
-      </label>
+      </div>
     </div>
   </div>
 </section>
@@ -538,4 +534,72 @@
       </tbody>
     </table>
   </div>
+</section>
+
+<section class="section">
+  <h2 class="section__title">Segmented</h2>
+  <div class="row">
+    <pdz-segmented [(value)]="reportMode" aria-label="Report mode">
+      <pdz-segmented-option value="standard" label="Standard" />
+      <pdz-segmented-option value="forfeit" label="Forfeit" />
+      <pdz-segmented-option value="dispute" label="Dispute" />
+    </pdz-segmented>
+  </div>
+  <p class="section__note">Selected: {{ reportMode() }}</p>
+
+  <div class="row">
+    <pdz-segmented size="sm" [(value)]="winner" aria-label="Winner">
+      <pdz-segmented-option value="side1" label="Team A" icon="trophy" />
+      <pdz-segmented-option value="side2" label="Team B" icon="trophy" />
+    </pdz-segmented>
+
+    <pdz-segmented size="lg" [(value)]="winner" aria-label="Winner, large">
+      <pdz-segmented-option value="side1" label="Team A" />
+      <pdz-segmented-option value="side2" label="Team B" />
+      <pdz-segmented-option value="tie" label="Tie" disabled />
+    </pdz-segmented>
+  </div>
+
+  <div class="row">
+    <pdz-segmented align="stretch" [(value)]="reportMode" aria-label="Stretched">
+      <pdz-segmented-option value="standard" label="Standard" />
+      <pdz-segmented-option value="forfeit" label="Forfeit" />
+      <pdz-segmented-option value="dispute" label="Dispute" />
+    </pdz-segmented>
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="section__title">Disclosure</h2>
+  <pdz-disclosure heading="Round 1" tone="panel">
+    <div style="padding: 1rem">Panel body — collapses to content height.</div>
+  </pdz-disclosure>
+
+  <pdz-disclosure tone="panel" [(open)]="secondOpen">
+    <span pdz-disclosure-heading>Round 2 <em>(rich heading)</em></span>
+    <span pdz-disclosure-trailing>
+      <button pdz-button size="sm" variant="ghost">Edit</button>
+    </span>
+    <div style="padding: 1rem">
+      Open state is two-way bound — currently {{ secondOpen() }}.
+    </div>
+  </pdz-disclosure>
+
+  <pdz-disclosure heading="Disabled section" tone="panel" disabled>
+    <div style="padding: 1rem">Never reachable.</div>
+  </pdz-disclosure>
+</section>
+
+<section class="section">
+  <h2 class="section__title">Tab nav</h2>
+  <p class="section__note">
+    Real links with <code>aria-current="page"</code> — not a tablist, because
+    these navigate. Use <code>pdz-tabs</code> for in-place panels.
+  </p>
+  <pdz-tab-nav label="Debug sections">
+    <a pdz-tab-link routerLink="/debug/components" routerLinkActive>
+      Components
+    </a>
+    <a pdz-tab-link routerLink="/debug/sprites" routerLinkActive>Sprites</a>
+  </pdz-tab-nav>
 </section>

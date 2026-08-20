@@ -15,12 +15,12 @@ import { ReactiveFormsModule } from '@angular/forms'; // Import ReactiveFormsMod
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatDividerModule } from '@angular/material/divider';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
 import { UploadImageComponent } from '../league/upload-image/upload-image.component';
 import { DataService } from '@pdz/core/services/data.service';
 
@@ -36,12 +36,12 @@ import { DataService } from '@pdz/core/services/data.service';
     MatStepperModule,
     MatFormFieldModule,
     MatInputModule,
-    MatButtonModule,
     MatSelectModule,
     IconComponent,
     MatRadioModule,
     MatDividerModule,
-    MatTooltipModule,
+    ButtonComponent,
+    TooltipDirective,
     UploadImageComponent,
     // PdzUploadButtonComponent, // <-- Add your upload button component here if it's standalone
   ],

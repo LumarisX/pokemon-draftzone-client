@@ -19,7 +19,7 @@ import {
   takeUntil,
   tap,
 } from 'rxjs';
-import { MatDialog } from '@angular/material/dialog';
+import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LeagueZoneService } from '../../league-zone.service';
 import { League } from '../../league.interface';
@@ -28,10 +28,12 @@ import { UploadService } from '@pdz/core/services/upload.service';
 import {
   CoachEditDialogComponent,
   CoachEditDialogData,
+  CoachEditDialogResult,
 } from '../../tournaments/tournament-home/coach-edit-dialog/coach-edit-dialog.component';
 import {
   TeamEditDialogComponent,
   TeamEditDialogData,
+  TeamEditDialogResult,
 } from '../../tournaments/tournament-home/team-edit-dialog/team-edit-dialog.component';
 
 type SignUpEntry = League.LeagueSignUp & {
@@ -73,7 +75,7 @@ export class LeagueManageSignupsComponent implements OnInit, OnDestroy {
   route = inject(ActivatedRoute);
   leagueService = inject(LeagueZoneService);
   uploadService = inject(UploadService);
-  private dialog = inject(MatDialog);
+  private dialogs = inject(DialogService);
 
   uploadingForId: string | null = null;
   uploadErrorById: Record<string, string> = {};
@@ -166,16 +168,22 @@ export class LeagueManageSignupsComponent implements OnInit, OnDestroy {
           uploadedFileKey = response.key;
         }),
         switchMap((response) => {
-          if (!response?.url) throw new Error('Failed to get pre-signed URL from server');
+          if (!response?.url)
+            throw new Error('Failed to get pre-signed URL from server');
           return this.uploadService.uploadToS3(response.url, file);
         }),
         switchMap((s3Response) => {
           if (s3Response.type === HttpEventType.UploadProgress) return of(null);
           if (s3Response instanceof HttpResponse) {
             if (s3Response.ok && uploadedFileKey) {
-              return this.leagueService.updateCoachLogo(signup.id, uploadedFileKey);
+              return this.leagueService.updateCoachLogo(
+                signup.id,
+                uploadedFileKey,
+              );
             }
-            throw new Error(`S3 upload failed with status: ${s3Response.status}`);
+            throw new Error(
+              `S3 upload failed with status: ${s3Response.status}`,
+            );
           }
           return of(null);
         }),
@@ -291,51 +299,45 @@ export class LeagueManageSignupsComponent implements OnInit, OnDestroy {
     this.modified = false;
   }
 
-  openTeamEdit(signup: SignUpEntry): void {
-    const dialogRef = this.dialog.open(TeamEditDialogComponent, {
-      width: '32rem',
-      maxWidth: '95vw',
-      autoFocus: 'first-tabbable',
+  async openTeamEdit(signup: SignUpEntry): Promise<void> {
+    const result = await this.dialogs.open<
+      TeamEditDialogComponent,
+      TeamEditDialogResult,
+      TeamEditDialogData
+    >(TeamEditDialogComponent, {
+      heading: 'Edit Team Info',
       data: {
         teamName: signup.teamName,
         logoUrl: signup.logo || undefined,
-      } satisfies TeamEditDialogData,
-    });
+      },
+    }).closed;
 
-    dialogRef
-      .afterClosed()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((result) => {
-        if (!result) return;
-        signup.teamName = result.teamName;
-        if (result.logoFile) {
-          this.uploadLogo(signup, result.logoFile);
-        }
-      });
+    if (!result) return;
+    signup.teamName = result.teamName;
+    if (result.logoFile) {
+      this.uploadLogo(signup, result.logoFile);
+    }
   }
 
-  openCoachEdit(signup: SignUpEntry): void {
-    const dialogRef = this.dialog.open(CoachEditDialogComponent, {
-      width: '32rem',
-      maxWidth: '95vw',
-      autoFocus: 'first-tabbable',
+  async openCoachEdit(signup: SignUpEntry): Promise<void> {
+    const result = await this.dialogs.open<
+      CoachEditDialogComponent,
+      CoachEditDialogResult,
+      CoachEditDialogData
+    >(CoachEditDialogComponent, {
+      heading: 'Edit Coach Info',
       data: {
         name: signup.name,
         gameName: signup.gameName,
         discordName: signup.discordName,
         timezone: signup.timezone,
-      } satisfies CoachEditDialogData,
-    });
+      },
+    }).closed;
 
-    dialogRef
-      .afterClosed()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((result) => {
-        if (!result) return;
-        signup.name = result.name;
-        signup.gameName = result.gameName;
-        signup.discordName = result.discordName;
-        signup.timezone = result.timezone;
-      });
+    if (!result) return;
+    signup.name = result.name;
+    signup.gameName = result.gameName;
+    signup.discordName = result.discordName;
+    signup.timezone = result.timezone;
   }
 }

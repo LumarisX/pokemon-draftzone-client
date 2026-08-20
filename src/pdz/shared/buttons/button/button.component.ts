@@ -11,6 +11,7 @@ import {
 export type ButtonVariant = 'filled' | 'tonal' | 'outlined' | 'ghost' | 'link';
 export type ButtonColor = 'primary' | 'secondary' | 'neutral' | 'danger';
 export type ButtonSize = 'sm' | 'md' | 'lg';
+export type ButtonType = 'button' | 'submit' | 'reset';
 
 @Component({
   selector: 'button[pdz-button], a[pdz-button], label[pdz-button]',
@@ -31,6 +32,7 @@ export type ButtonSize = 'sm' | 'md' | 'lg';
     '[class.pdz-btn--loading]': 'loading()',
     '[class.pdz-btn--block]': 'block()',
     '[class.pdz-btn--pill]': 'pill()',
+    '[attr.type]': 'isButton ? type() : null',
     '[attr.aria-busy]': 'loading() ? true : null',
     '[attr.disabled]': 'nativeDisabled()',
     '[attr.aria-disabled]': 'inert() ? true : null',
@@ -46,6 +48,7 @@ export class ButtonComponent {
   loading = input(false, { transform: booleanAttribute });
   block = input(false, { transform: booleanAttribute });
   pill = input(false, { transform: booleanAttribute });
+  type = input<ButtonType>('button');
 
   protected readonly isButton =
     inject(ElementRef).nativeElement.tagName === 'BUTTON';

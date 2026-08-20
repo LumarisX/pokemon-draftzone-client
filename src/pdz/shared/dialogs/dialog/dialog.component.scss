@@ -21,6 +21,7 @@ $sizes: (
   border: none;
   background: transparent;
   overflow: hidden;
+  place-items: center;
   opacity: 0;
   transition:
     opacity pdz.duration(base) pdz.easing(standard),
@@ -29,7 +30,6 @@ $sizes: (
 
   &[open] {
     display: grid;
-    place-items: center;
     opacity: 1;
   }
 }

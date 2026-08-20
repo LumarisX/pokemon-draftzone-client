@@ -247,6 +247,7 @@
             type="button"
             class="games__report-toggle"
             [class.games__report-toggle--open]="reportOpen()"
+            [attr.aria-expanded]="reportOpen()"
             (click)="toggleReport()"
           >
             <pdz-icon

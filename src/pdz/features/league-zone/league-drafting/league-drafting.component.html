@@ -1,4 +1,3 @@
-<pdz-league-notifications></pdz-league-notifications>
 @if (isLoading) {
   <pdz-loading></pdz-loading>
 } @else {
@@ -35,8 +34,10 @@
         <div class="draft-section">
           <div class="custom-dropdown-container">
             <button
+              type="button"
               class="my-draft-title draft-section-title"
               [disabled]="draftDetails.visibility === 'SELF'"
+              [attr.aria-expanded]="isDropdownOpen"
               (click)="toggleDropdown()"
             >
               <span>{{ selectedTeam.name }} </span>

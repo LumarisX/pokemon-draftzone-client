@@ -225,24 +225,3 @@
   gap: pdz.space(sm);
 }
 
-.btn {
-  padding: pdz.space(sm) pdz.space(lg);
-  border-radius: pdz.shape(corner-sm);
-  border: none;
-  cursor: pointer;
-  font-weight: 600;
-  transition: all pdz.duration(base) pdz.easing(standard);
-
-  &--primary {
-    @include flat-button-primary();
-  }
-
-  &--secondary {
-    @include flat-button-menu();
-  }
-
-  &:disabled {
-    cursor: not-allowed;
-    opacity: 0.6;
-  }
-}

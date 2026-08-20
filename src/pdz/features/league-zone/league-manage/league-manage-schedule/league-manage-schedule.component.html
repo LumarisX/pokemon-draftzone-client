@@ -50,6 +50,7 @@
           class="stage__header"
           (click)="toggleStage(stage._id)"
           [class.stage__header--collapsed]="!isStageOpen(stage._id)"
+          [attr.aria-expanded]="isStageOpen(stage._id)"
         >
           <pdz-icon
             class="stage__toggle-icon"
@@ -193,6 +194,7 @@
                       type="button"
                       class="matchup-summary__header"
                       (click)="toggleMatchupSummary(matchup.id)"
+                      [attr.aria-expanded]="isMatchupSummaryOpen(matchup.id)"
                     >
                       <pdz-icon
                         class="matchup-summary__toggle-icon"
@@ -274,6 +276,9 @@
                             type="button"
                             class="match-card__toggle"
                             (click)="toggleMatch(matchup.id, matchIndex)"
+                            [attr.aria-expanded]="
+                              isMatchOpen(matchup.id, matchIndex)
+                            "
                           >
                             <pdz-icon
                               class="match-card__toggle-icon"

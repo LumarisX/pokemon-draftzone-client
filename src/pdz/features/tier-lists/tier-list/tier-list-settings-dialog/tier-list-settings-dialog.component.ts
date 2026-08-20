@@ -19,6 +19,7 @@ import { first } from 'rxjs/operators';
 import { TierListService } from '../../tier-list.service';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
+import { FieldErrorDirective } from '@pdz/shared/inputs/field/field-message.directive';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 
 export interface TierListSettingsDialogData {
@@ -48,6 +49,7 @@ function draftCountValidator(
     ReactiveFormsModule,
     ButtonComponent,
     FieldComponent,
+    FieldErrorDirective,
     InputDirective,
   ],
   templateUrl: './tier-list-settings-dialog.component.html',

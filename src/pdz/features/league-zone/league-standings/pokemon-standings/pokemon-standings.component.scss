@@ -21,29 +21,22 @@
   .standing-header {
     overflow: hidden;
     display: flex;
-    flex-direction: column;
     flex-shrink: 0;
+    align-items: center;
+    justify-content: space-between;
+    background-color: pdz.color(primary);
+    color: pdz.color(on-primary);
+    padding: 0.25rem 0.5rem;
+    gap: 0.5rem;
     .standing-header-title {
       font-family: var(--pdz-font-display);
-      padding: 0.25rem 0.5rem;
-      background-color: pdz.color(primary);
-      color: pdz.color(on-primary);
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.5rem;
     }
   }
 
   .combine-toggle {
-    font-family: var(--pdz-font-body);
-    @include pdz.text(label, $family: false);
-    padding: 0.15rem 0.5rem;
-    border-radius: pdz.shape(corner-xs);
-    border: 1px solid pdz.color(on-primary);
-    background: transparent;
     color: pdz.color(on-primary);
-    cursor: pointer;
+
     transition: background-color pdz.duration(base) pdz.easing(standard);
 
     &:hover {

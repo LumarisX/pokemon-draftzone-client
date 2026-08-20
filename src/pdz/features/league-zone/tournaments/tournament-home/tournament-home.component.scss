@@ -1,6 +1,5 @@
 @use "pdz-theming" as pdz;
 @use "mixins" as *;
-@use "mixins/buttons" as *;
 
 :host {
   display: block;
@@ -34,10 +33,6 @@
 // ─── Info cards (team / coach) ─────────────────────────────────────────────
 .info-card {
   position: relative;
-  padding: pdz.space(lg);
-  border-radius: pdz.shape(corner-md);
-  border: 1px solid pdz.color(outline-variant);
-  background: pdz.color(surface);
 
   &__name {
     @include text(subtitle);
@@ -48,51 +43,17 @@
     word-break: break-word;
   }
 
-  // Subtle edit affordance tucked into the top corner.
   &__edit {
     position: absolute;
     top: pdz.space(xs);
     inset-inline-end: pdz.space(xs);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: pdz.space(xs);
-    border: none;
-    border-radius: pdz.shape(corner-full);
-    background: transparent;
-    color: pdz.color(on-surface-variant);
     opacity: 0.5;
-    cursor: pointer;
-    transition:
-      opacity pdz.duration(base) pdz.easing(standard),
-      background pdz.duration(base) pdz.easing(standard),
-      color pdz.duration(base) pdz.easing(standard);
+    transition: opacity pdz.duration(base) pdz.easing(standard);
 
     &:hover,
     &:focus-visible {
       opacity: 1;
-      color: pdz.color(on-surface);
-      background: pdz.color(surface-container-high);
     }
-  }
-}
-
-.status-badge {
-  @include text(label);
-  display: inline-flex;
-  align-items: center;
-  padding: pdz.space(xs) pdz.space(sm);
-  border-radius: pdz.shape(corner-full);
-  font-weight: 700;
-
-  &--active {
-    background: pdz.color(success-container);
-    color: pdz.color(on-success-container);
-  }
-
-  &--pending {
-    background: pdz.color(warning-container);
-    color: pdz.color(on-warning-container);
   }
 }
 
@@ -100,7 +61,6 @@
   display: flex;
   align-items: center;
   gap: pdz.space(md);
-  height: 100%;
   &__logo {
     width: 4.5rem;
     height: 4.5rem;
@@ -113,7 +73,6 @@
   display: flex;
   flex-direction: column;
   gap: pdz.space(md);
-  height: 100%;
 
   &__details {
     display: flex;
@@ -174,27 +133,7 @@
 
 // ─── Empty roster prompt ─────────────────────────────────────────────────
 .no-roster {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: pdz.space(md);
   max-width: 42rem;
-  padding: pdz.space(lg);
-  border-radius: pdz.shape(corner-md);
-  box-shadow: var(--pdz-level-2);
-  &__text {
-    @include text(body);
-    color: pdz.color(on-surface-variant);
-    margin: 0;
-  }
-
-  &__cta {
-    @include flat-button-primary();
-    display: inline-flex;
-    align-items: center;
-    gap: pdz.space(xs);
-    text-decoration: none;
-  }
 }
 
 .stats-table-wrapper {
@@ -246,67 +185,6 @@
     td.cell-stat {
       @include text(body);
       font-weight: 600;
-      color: pdz.color(on-surface-variant);
-    }
-  }
-}
-
-// ─── Cards ───────────────────────────────────────────────────────────────
-.card {
-  padding: pdz.space(lg);
-  border-radius: pdz.shape(corner-sm);
-  border: 1px solid pdz.color(outline-variant);
-  background: pdz.color(surface);
-
-  &__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: pdz.space(md);
-    flex-wrap: wrap;
-    margin-bottom: pdz.space(md);
-  }
-
-  &__title {
-    @include text(title);
-    margin: 0 0 pdz.space(md);
-    color: pdz.color(on-surface);
-  }
-
-  &__header &__title {
-    margin: 0;
-  }
-
-  &__note {
-    @include text(body-sm);
-    color: pdz.color(on-surface-variant);
-    margin: 0 0 pdz.space(md);
-    padding: pdz.space(sm);
-    border-radius: pdz.shape(corner-xs);
-    background: pdz.color(surface-container-low);
-    border-left: 3px solid pdz.color(warning);
-  }
-
-  &--standings {
-    overflow-x: auto;
-  }
-}
-
-.checklist {
-  display: flex;
-  flex-direction: column;
-  gap: pdz.space(xs);
-  margin-bottom: pdz.space(md);
-
-  &__item {
-    display: flex;
-    align-items: center;
-    gap: pdz.space(xs);
-    @include text(body);
-    color: pdz.color(on-surface);
-
-    &--done {
-      text-decoration: line-through;
       color: pdz.color(on-surface-variant);
     }
   }

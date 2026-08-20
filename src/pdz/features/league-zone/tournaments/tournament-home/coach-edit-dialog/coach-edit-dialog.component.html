@@ -1,83 +1,55 @@
-<h1 mat-dialog-title>Edit Coach Info</h1>
 <form [formGroup]="form" (ngSubmit)="onSave()">
-  <div mat-dialog-content class="dialog-body">
-    <div class="form-field">
-      <label for="coach-name" class="form-field__label">
-        Display Name <span class="required">*</span>
-      </label>
-      <input
-        id="coach-name"
-        type="text"
-        class="form-field__input"
-        placeholder="Deoxys"
-        formControlName="name"
-      />
-      @if (form.get("name")?.hasError("required") && form.get("name")?.touched) {
-        <span class="form-field__error">Required</span>
+  <div class="dialog-body">
+    <label pdz-field label="Display Name" required>
+      <input pdz-input placeholder="Deoxys" formControlName="name" />
+      @if (form.controls.name.touched && form.controls.name.invalid) {
+        <span pdz-error>Required</span>
       }
-    </div>
+    </label>
 
-    <div class="form-field">
-      <label for="coach-gameName" class="form-field__label">
-        Showdown Name <span class="required">*</span>
-      </label>
-      <input
-        id="coach-gameName"
-        type="text"
-        class="form-field__input"
-        placeholder="Deoxys-II"
-        formControlName="gameName"
-      />
-      @if (
-        form.get("gameName")?.hasError("required") &&
-        form.get("gameName")?.touched
-      ) {
-        <span class="form-field__error">Required</span>
+    <label pdz-field label="Showdown Name" required>
+      <input pdz-input placeholder="Deoxys-II" formControlName="gameName" />
+      @if (form.controls.gameName.touched && form.controls.gameName.invalid) {
+        <span pdz-error>Required</span>
       }
-    </div>
+    </label>
 
-    <div class="form-field">
-      <label for="coach-discordName" class="form-field__label">
-        Discord Username <span class="required">*</span>
-      </label>
+    <label pdz-field label="Discord Username" required>
       <input
-        id="coach-discordName"
-        type="text"
-        class="form-field__input"
+        pdz-input
         placeholder="Deoxys#0386"
         formControlName="discordName"
       />
       @if (
-        form.get("discordName")?.hasError("required") &&
-        form.get("discordName")?.touched
+        form.controls.discordName.touched && form.controls.discordName.invalid
       ) {
-        <span class="form-field__error">Required</span>
+        <span pdz-error>Required</span>
       }
-    </div>
+    </label>
 
-    <div class="form-field">
-      <label for="coach-timezone" class="form-field__label">
-        Time Zone <span class="required">*</span>
-      </label>
-      <select
-        id="coach-timezone"
-        class="form-field__input"
-        formControlName="timezone"
-      >
+    <label pdz-field label="Time Zone" required>
+      <select pdz-input formControlName="timezone">
         <option value="" disabled>Select a timezone</option>
-        @for (tz of timezones; track $index) {
+        @for (tz of timezones; track tz) {
           <option [value]="tz">{{ tz }}</option>
         }
       </select>
-    </div>
+      @if (form.controls.timezone.touched && form.controls.timezone.invalid) {
+        <span pdz-error>Required</span>
+      }
+    </label>
   </div>
 
-  <div mat-dialog-actions align="end">
-    <button type="button" class="btn btn--secondary" (click)="closeDialog()">
+  <div class="pdz-dialog-actions">
+    <button
+      pdz-button
+      type="button"
+      variant="outlined"
+      color="neutral"
+      (click)="ref.close()"
+    >
       Cancel
     </button>
-    <button type="submit" class="btn btn--primary" [disabled]="form.invalid">
-      Save Changes
-    </button>
+    <button pdz-button type="submit">Save Changes</button>
   </div>
 </form>

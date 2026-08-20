@@ -2,6 +2,8 @@ import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
+import { TabNavComponent } from '@pdz/shared/layout/tab-nav/tab-nav.component';
+import { TabNavLinkDirective } from '@pdz/shared/layout/tab-nav/tab-nav-link.directive';
 import { LeagueZoneService } from '../../league-zone.service';
 import { LeagueScheduleWidgetComponent } from '../../league-widgets/league-schedule-widget/league-schedule-widget.component';
 import { LeagueTradeWidgetComponent } from '../../league-widgets/league-trade-widget/league-trade-widget.component';
@@ -14,6 +16,8 @@ import { getLeagueLogoUrl } from '../../league.util';
   imports: [
     RouterModule,
     IconComponent,
+    TabNavComponent,
+    TabNavLinkDirective,
     LeagueTradeWidgetComponent,
     LeagueScheduleWidgetComponent,
     StageSwitcherComponent,
@@ -32,10 +36,6 @@ export class DivisionDashboardComponent implements OnInit, OnDestroy {
   logo?: string;
   matchupStage?: League.Stage = undefined;
 
-  // This page is draft-scoped (drafts/:draftSlug), not stage-scoped, so
-  // leagueZoneService.stageSlug() (route-derived) is always null here. Resolve
-  // a real default — the tournament's first stage — for the embedded
-  // schedule/trade widgets and the switcher's initial selection.
   private readonly selectedStageSlug = signal<string | null>(null);
 
   ngOnInit(): void {

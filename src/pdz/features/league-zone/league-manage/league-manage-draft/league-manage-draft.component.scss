@@ -83,23 +83,6 @@
   }
 }
 
-.icon-btn {
-  @include icon-button-secondary(
-    (
-      width: 2.75rem,
-      height: 2.75rem,
-    )
-  );
-
-  &--accent {
-    @include icon-button-primary(
-      (
-        width: 2.75rem,
-        height: 2.75rem,
-      )
-    );
-  }
-}
 
 // ── Settings / order panel layout ────────────────────────────────────────────
 // Stacked on mobile; side by side (equal width, equal height) from `large` up.

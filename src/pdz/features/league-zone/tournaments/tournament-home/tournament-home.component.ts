@@ -1,7 +1,9 @@
-import { CommonModule } from '@angular/common';
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
 import { RouterModule } from '@angular/router';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { CardComponent } from '@pdz/shared/data/card/card.component';
+import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
+import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
@@ -13,10 +15,12 @@ import { formatCountdown, getLogoUrl } from '../../league.util';
 import {
   CoachEditDialogComponent,
   CoachEditDialogData,
+  CoachEditDialogResult,
 } from './coach-edit-dialog/coach-edit-dialog.component';
 import {
   TeamEditDialogComponent,
   TeamEditDialogData,
+  TeamEditDialogResult,
 } from './team-edit-dialog/team-edit-dialog.component';
 
 @Component({
@@ -24,8 +28,10 @@ import {
   templateUrl: './tournament-home.component.html',
   styleUrl: './tournament-home.component.scss',
   imports: [
-    CommonModule,
     RouterModule,
+    ButtonComponent,
+    CardComponent,
+    EmptyStateComponent,
     IconComponent,
     LoadingComponent,
     LeagueSignUpComponent,
@@ -34,7 +40,7 @@ import {
 })
 export class TournamentHomeComponent implements OnInit, OnDestroy {
   readonly leagueService = inject(LeagueZoneService);
-  private readonly dialog = inject(MatDialog);
+  private readonly dialogs = inject(DialogService);
   private readonly destroy$ = new Subject<void>();
 
   profile: League.CoachProfile | null = null;
@@ -54,6 +60,16 @@ export class TournamentHomeComponent implements OnInit, OnDestroy {
   private countdownTimer?: ReturnType<typeof setInterval>;
 
   getTeamLogoUrl = getLogoUrl;
+
+  get noRosterMessage(): string {
+    const countdown = this.draftCountdown;
+    if (!countdown) {
+      return 'Register your team before the deadline or you will not participate in the tournament.';
+    }
+    return countdown.phase === 'start'
+      ? `The draft will start in ${countdown.display}.`
+      : `The draft will end in ${countdown.display}.`;
+  }
 
   get draftLink(): string[] {
     const leagueSlug = this.leagueService.leagueSlug();
@@ -188,52 +204,46 @@ export class TournamentHomeComponent implements OnInit, OnDestroy {
       });
   }
 
-  openCoachEdit(): void {
+  async openCoachEdit(): Promise<void> {
     if (!this.profile) return;
-    const dialogRef = this.dialog.open(CoachEditDialogComponent, {
-      width: '32rem',
-      maxWidth: '95vw',
-      autoFocus: 'first-tabbable',
+    const result = await this.dialogs.open<
+      CoachEditDialogComponent,
+      CoachEditDialogResult,
+      CoachEditDialogData
+    >(CoachEditDialogComponent, {
+      heading: 'Edit Coach Info',
       data: {
         name: this.profile.name,
         gameName: this.profile.gameName,
         discordName: this.profile.discordName,
         timezone: this.profile.timezone,
-      } satisfies CoachEditDialogData,
-    });
+      },
+    }).closed;
 
-    dialogRef
-      .afterClosed()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((result) => {
-        if (!result || !this.profile) return;
-        // TODO: persist via the backend once a coach-profile update endpoint
-        // exists. For now we only reflect the change in the local UI.
-        this.profile = { ...this.profile, ...result };
-        this.updateClock();
-      });
+    if (!result || !this.profile) return;
+    // TODO: persist via the backend once a coach-profile update endpoint
+    // exists. For now we only reflect the change in the local UI.
+    this.profile = { ...this.profile, ...result };
+    this.updateClock();
   }
 
-  openTeamEdit(): void {
+  async openTeamEdit(): Promise<void> {
     if (!this.profile) return;
-    const dialogRef = this.dialog.open(TeamEditDialogComponent, {
-      width: '32rem',
-      maxWidth: '95vw',
-      autoFocus: 'first-tabbable',
+    const result = await this.dialogs.open<
+      TeamEditDialogComponent,
+      TeamEditDialogResult,
+      TeamEditDialogData
+    >(TeamEditDialogComponent, {
+      heading: 'Edit Team Info',
       data: {
         teamName: this.profile.teamName,
         logoUrl: this.getTeamLogoUrl(this.profile.logo),
-      } satisfies TeamEditDialogData,
-    });
+      },
+    }).closed;
 
-    dialogRef
-      .afterClosed()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((result) => {
-        if (!result || !this.profile) return;
-        // TODO: persist the team name and upload the new logo once the backend
-        // endpoint exists. For now we only reflect the name in the local UI.
-        this.profile = { ...this.profile, teamName: result.teamName };
-      });
+    if (!result || !this.profile) return;
+    // TODO: persist the team name and upload the new logo once the backend
+    // endpoint exists. For now we only reflect the name in the local UI.
+    this.profile = { ...this.profile, teamName: result.teamName };
   }
 }

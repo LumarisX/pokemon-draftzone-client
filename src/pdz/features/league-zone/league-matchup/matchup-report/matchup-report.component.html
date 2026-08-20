@@ -322,6 +322,7 @@
       <button
         type="button"
         class="report__summary-header"
+        [attr.aria-expanded]="summaryOpen()"
         (click)="toggleSummary()"
       >
         <pdz-icon
