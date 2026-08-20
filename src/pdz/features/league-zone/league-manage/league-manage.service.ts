@@ -64,6 +64,27 @@ export class LeagueManageService {
     );
   }
 
+  /**
+   * Names the side that leaves a match whose result cannot say so itself.
+   *
+   * The fix for a bracket stalled by a double forfeit: it decides nothing, so
+   * the matches below it can never be filled until an organizer picks a side —
+   * or `'none'` to rule that nobody advances. `null` withdraws the decision and
+   * puts the bracket back on the recorded result.
+   */
+  setMatchupAdvancement(
+    matchupSlug: string,
+    advances: 'side1' | 'side2' | 'none' | null,
+  ) {
+    return this.apiService.post<{
+      message: string;
+      advances: 'side1' | 'side2' | 'none' | null;
+    }>(
+      `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/matchups/${matchupSlug}/advancement`,
+      { advances },
+    );
+  }
+
   setPick(
     tournamentSlug: string,
     pick: {

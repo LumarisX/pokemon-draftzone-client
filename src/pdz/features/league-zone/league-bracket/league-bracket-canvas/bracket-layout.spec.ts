@@ -48,7 +48,9 @@ describe('computePositionCenters', () => {
 
   it('centers a match with two inputs at their average', () => {
     const centers = computePositionCenters(fourTeamMatches(), MATCH_H);
-    expect(centers.get('f')).toBe((centers.get('s1')! + centers.get('s2')!) / 2);
+    expect(centers.get('f')).toBe(
+      (centers.get('s1')! + centers.get('s2')!) / 2,
+    );
   });
 
   it('inherits the center of a single resolved input', () => {
@@ -94,13 +96,188 @@ describe('resolveSlot', () => {
   it('labels pending winner/loser slots with the source match label', () => {
     const labels = new Map([['s1', 'Match 1']]);
     const matches = fourTeamMatches();
-    expect(
-      resolveSlot(winnerOf('s1'), [], matches, labels).placeholder,
-    ).toBe('Winner of Match 1');
+    expect(resolveSlot(winnerOf('s1'), [], matches, labels).placeholder).toBe(
+      'Winner of Match 1',
+    );
     expect(
       resolveSlot({ type: 'loser', from: 's1' }, [], matches, labels)
         .placeholder,
     ).toBe('Loser of Match 1');
+  });
+
+  // A double forfeit reaches the client as "no winner, forfeited". Left as
+  // "Winner of Match 1" it reads as a result still to come, when in fact
+  // nothing will ever fill the slot.
+  it('names a double forfeit rather than promising a winner that cannot come', () => {
+    const labels = new Map([['s1', 'Match 1']]);
+    const matches = fourTeamMatches();
+    matches[0].forfeit = true;
+
+    const resolved = resolveSlot(winnerOf('s1'), [], matches, labels);
+    expect(resolved.team).toBeNull();
+    expect(resolved.placeholder).toBe('Double forfeit in Match 1');
+    // Still points at the match to open, which is where the fix is made.
+    expect(resolved.sourceId).toBe('s1');
+  });
+
+  it('advances the side an organizer picked out of a double forfeit', () => {
+    const data = fourTeamData();
+    data.matches[0].forfeit = true;
+    data.matches[0].advances = 'side2';
+
+    const resolved = resolveSlot(winnerOf('s1'), data.teams, data.matches);
+    expect(resolved.team?.teamName).toBe('Delta');
+  });
+
+  it('routes the other side of an override into the loser slot', () => {
+    const data = fourTeamData();
+    data.matches[0].forfeit = true;
+    data.matches[0].advances = 'side2';
+
+    const resolved = resolveSlot(
+      { type: 'loser', from: 's1' },
+      data.teams,
+      data.matches,
+    );
+    expect(resolved.team?.teamName).toBe('Alpha');
+  });
+
+  it('shows an explicit "no winner" once an organizer rules nobody advances', () => {
+    const labels = new Map([['s1', 'Match 1']]);
+    const data = fourTeamData();
+    data.matches[0].forfeit = true;
+    data.matches[0].advances = 'none';
+
+    expect(
+      resolveSlot(winnerOf('s1'), data.teams, data.matches, labels).placeholder,
+    ).toBe('No winner from Match 1');
+    expect(
+      resolveSlot(
+        { type: 'loser', from: 's1' },
+        data.teams,
+        data.matches,
+        labels,
+      ).placeholder,
+    ).toBe('No loser from Match 1');
+  });
+
+  // The shape from a real bracket: two double forfeits feed one match, so that
+  // match has nobody to play it, and the match after *it* is stranded too.
+  // Stopping the deadness one hop short left the last one advertising a
+  // "Winner of Match 13" that could never arrive.
+  it('carries deadness through a match that itself can never be played', () => {
+    const matches: FlexBracketMatch[] = [
+      {
+        id: 'm2',
+        round: 0,
+        position: 0,
+        a: seed(1),
+        b: seed(2),
+        forfeit: true,
+      },
+      {
+        id: 'm3',
+        round: 0,
+        position: 1,
+        a: seed(3),
+        b: seed(4),
+        forfeit: true,
+      },
+      {
+        id: 'm13',
+        round: 1,
+        position: 0,
+        a: winnerOf('m2'),
+        b: winnerOf('m3'),
+      },
+      { id: 'm21', round: 2, position: 0, a: winnerOf('m13'), b: seed(5) },
+    ];
+    const labels = new Map([
+      ['m2', 'Match 2'],
+      ['m13', 'Match 13'],
+    ]);
+
+    expect(resolveSlot(winnerOf('m13'), [], matches, labels).placeholder).toBe(
+      'No winner from Match 13',
+    );
+    // The match one hop up still names the forfeit, which is the actionable one.
+    expect(resolveSlot(winnerOf('m2'), [], matches, labels).placeholder).toBe(
+      'Double forfeit in Match 2',
+    );
+  });
+
+  it('unblocks the whole chain once the stranded match is ruled on', () => {
+    const teams = [
+      { teamName: 'Alpha', coachName: 'A', seed: 1 },
+      { teamName: 'Echo', coachName: 'E', seed: 5 },
+    ];
+    const matches: FlexBracketMatch[] = [
+      {
+        id: 'm2',
+        round: 0,
+        position: 0,
+        a: seed(1),
+        b: seed(2),
+        forfeit: true,
+      },
+      {
+        id: 'm13',
+        round: 1,
+        position: 0,
+        a: winnerOf('m2'),
+        b: seed(9),
+        advances: 'none',
+      },
+      {
+        id: 'm21',
+        round: 2,
+        position: 0,
+        a: winnerOf('m13'),
+        b: seed(5),
+        advances: 'side2',
+      },
+      { id: 'm30', round: 3, position: 0, a: winnerOf('m21'), b: seed(9) },
+    ];
+
+    expect(resolveSlot(winnerOf('m21'), teams, matches).team?.teamName).toBe(
+      'Echo',
+    );
+  });
+
+  // Everything above must not make an ordinary unplayed match look dead.
+  it('still calls an unplayed match pending, not dead', () => {
+    const labels = new Map([['s1', 'Match 1']]);
+    const matches: FlexBracketMatch[] = [
+      { id: 's1', round: 0, position: 0, a: seed(1), b: seed(2) },
+      { id: 's2', round: 1, position: 0, a: winnerOf('s1'), b: seed(3) },
+      { id: 'f', round: 2, position: 0, a: winnerOf('s2'), b: seed(4) },
+    ];
+
+    expect(resolveSlot(winnerOf('s1'), [], matches, labels).placeholder).toBe(
+      'Winner of Match 1',
+    );
+    expect(resolveSlot(winnerOf('s2'), [], matches).placeholder).toBe(
+      'Winner of s2',
+    );
+  });
+
+  it('does not hang on a cycle between two matches', () => {
+    const matches: FlexBracketMatch[] = [
+      { id: 'a', round: 0, position: 0, a: winnerOf('b'), b: seed(1) },
+      { id: 'b', round: 0, position: 1, a: winnerOf('a'), b: seed(2) },
+    ];
+
+    expect(() => resolveSlot(winnerOf('a'), [], matches)).not.toThrow();
+  });
+
+  it('overrules a recorded winner when an override disagrees', () => {
+    const data = fourTeamData();
+    data.matches[0].winner = 0; // Alpha won on the sheet
+    data.matches[0].advances = 'side2';
+
+    expect(
+      resolveSlot(winnerOf('s1'), data.teams, data.matches).team?.teamName,
+    ).toBe('Delta');
   });
 });
 
@@ -183,9 +360,7 @@ describe('computeBracketLayout', () => {
     expect(fromS1.x1).toBeCloseTo(s1.portX[1]);
 
     // Undecided: dashed line from the card's horizontal center.
-    const fromS2 = layout.connectors.find(
-      (c) => c.x1 === s2.x + s2.w / 2,
-    )!;
+    const fromS2 = layout.connectors.find((c) => c.x1 === s2.x + s2.w / 2)!;
     expect(fromS2.decided).toBe(false);
   });
 
@@ -218,12 +393,8 @@ describe('computeBracketLayout', () => {
     // m4 is pushed to its right by at least the minimum gap.
     expect(m4.x).toBeGreaterThanOrEqual(m3.x + m3.w + MATCH_GAP);
     // Loser lines are red-classed, winner lines green-classed.
-    expect(
-      layout.connectors.filter((c) => c.cls === 'loser').length,
-    ).toBe(2);
-    expect(
-      layout.connectors.filter((c) => c.cls === 'winner').length,
-    ).toBe(2);
+    expect(layout.connectors.filter((c) => c.cls === 'loser').length).toBe(2);
+    expect(layout.connectors.filter((c) => c.cls === 'winner').length).toBe(2);
 
     // Lines leaving the same undecided card are fanned apart at the origin...
     const m1 = layout.matches.find((m) => m.id === 'm1')!;

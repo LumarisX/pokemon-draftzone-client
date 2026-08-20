@@ -16,6 +16,8 @@ export interface MatchupCard {
   label: string;
   decided: boolean;
   forfeit: boolean;
+  /** Advanced by an organizer's ruling rather than by a played result. */
+  advanced?: boolean;
   slots: [MatchupCardSlot, MatchupCardSlot];
   viewLink: string[] | null;
   breakdownLink: string[] | null;

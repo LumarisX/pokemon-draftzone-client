@@ -54,13 +54,12 @@ export function toBuilderDraft(bracket: TournamentBracket): BuilderDraft {
     ...(match.replays?.length ? { replays: match.replays } : {}),
     ...(match.score ? { score: match.score } : {}),
     ...(match.forfeit ? { forfeit: match.forfeit } : {}),
+    ...(match.advances ? { advances: match.advances } : {}),
     ...(match.label ? { label: match.label } : {}),
   }));
 
   return padRounds({
-    rounds: rounds.length
-      ? rounds
-      : [{ key: nextRoundKey(), name: 'Round 1' }],
+    rounds: rounds.length ? rounds : [{ key: nextRoundKey(), name: 'Round 1' }],
     stages,
     matches,
   });

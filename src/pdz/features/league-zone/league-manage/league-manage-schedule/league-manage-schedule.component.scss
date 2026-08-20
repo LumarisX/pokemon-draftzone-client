@@ -267,6 +267,45 @@
   }
 }
 
+// The fix for a bracket a double forfeit has stalled. Styled as a warning
+// rather than an ordinary field: it only appears when something is wrong, and
+// leaving it undecided keeps every later match unplayable.
+.advancement {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(sm);
+  padding: pdz.space(sm) pdz.space(md);
+  border-radius: pdz.shape(corner-md);
+  background: pdz.color(warning-container);
+  border-left: 3px solid pdz.color(warning);
+
+  &__header {
+    display: flex;
+    align-items: flex-start;
+    gap: pdz.space(sm);
+  }
+
+  &__icon {
+    color: pdz.color(warning);
+    flex-shrink: 0;
+  }
+
+  &__title {
+    font-weight: 600;
+    color: pdz.color(on-warning-container);
+  }
+
+  &__hint {
+    font-size: var(--pdz-font-size-sm);
+    color: pdz.color(on-warning-container);
+  }
+
+  &__error {
+    font-size: var(--pdz-font-size-xs);
+    color: pdz.color(error);
+  }
+}
+
 .score-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
