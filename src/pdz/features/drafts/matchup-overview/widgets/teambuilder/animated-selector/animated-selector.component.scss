@@ -122,8 +122,7 @@
 }
 
 .selector-option__label {
-  font-size: pdz.font-size(md);
-  font-weight: 500;
+  @include pdz.text(card-title, $family: false);
   color: pdz.color(on-surface);
   transition:
     color pdz.duration(base) pdz.easing(standard),

@@ -441,8 +441,7 @@
   border: 1px solid pdz.color(outline-variant);
   border-radius: pdz.shape(corner-sm);
   cursor: pointer;
-  font-size: var(--pdz-font-size-sm);
-  font-weight: 500;
+  @include pdz.text(body-sm-strong, $family: false);
   transition: all pdz.duration(base) pdz.easing(standard);
   min-width: 50px;
 

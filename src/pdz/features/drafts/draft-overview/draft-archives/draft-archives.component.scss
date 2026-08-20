@@ -68,7 +68,7 @@
 
   p {
     margin: 0;
-    font-weight: 500;
+    font-weight: 600;
   }
 
   .confirmation-buttons {
@@ -81,7 +81,7 @@
     padding: pdz.space(sm) pdz.space(md);
     border-radius: pdz.shape(corner-sm);
     cursor: pointer;
-    font-weight: 500;
+    font-weight: 600;
     transition: background-color pdz.duration(base) pdz.easing(standard);
 
     &-confirm {

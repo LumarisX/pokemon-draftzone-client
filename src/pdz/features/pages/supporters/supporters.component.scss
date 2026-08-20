@@ -25,7 +25,7 @@ $font-nasa: var(--pdz-font-display);
   &__title {
     font-family: $font-nasa;
     font-size: pdz.font-size(xl);
-    font-weight: 500;
+    font-weight: 600;
     color: pdz.color(on-surface);
     text-align: center;
     margin-bottom: $spacing-md;
@@ -45,7 +45,7 @@ $font-nasa: var(--pdz-font-display);
   border: 1px solid pdz.color(primary-border);
   &__name {
     font-size: pdz.font-size(lg);
-    font-weight: 500;
+    font-weight: 600;
     color: pdz.color(on-surface-variant);
     margin: 0;
   }

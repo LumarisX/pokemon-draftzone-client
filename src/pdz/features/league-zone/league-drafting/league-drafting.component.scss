@@ -214,8 +214,7 @@
           align-items: center;
           column-gap: 0.125rem;
           padding: 0 0.25rem;
-          font-weight: 500;
-          font-size: pdz.font-size(sm);
+          @include pdz.text(body-sm-strong, $family: false);
           border-radius: pdz.shape(corner-sm);
           box-shadow: var(--pdz-level-1);
           pdz-icon {
@@ -235,8 +234,7 @@
           align-items: center;
           column-gap: 0.125rem;
           padding: 0 0.25rem;
-          font-weight: 500;
-          font-size: pdz.font-size(sm);
+          @include pdz.text(body-sm-strong, $family: false);
           border-radius: pdz.shape(corner-sm);
           box-shadow: var(--pdz-level-1);
           pdz-icon {
@@ -350,7 +348,7 @@
           white-space: nowrap;
         }
         .my-pokemon-tier {
-          font-weight: 500;
+          font-weight: 600;
           font-family: var(--pdz-font-display);
           flex-shrink: 0;
           width: 1.5rem;
@@ -422,7 +420,7 @@
           }
           .my-pokemon-name,
           .my-pokemon-tier {
-            font-weight: 500;
+            font-weight: 600;
             font-family: var(--pdz-font-display);
             max-width: 100%;
           }
@@ -507,7 +505,7 @@
 
   .tier-requirements-warning {
     @include pdz.text(label);
-    font-weight: 500;
+    font-weight: 600;
   }
 
   .save-button {

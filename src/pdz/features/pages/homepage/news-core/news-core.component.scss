@@ -62,8 +62,7 @@
   align-self: center;
   .image-title {
     padding-left: 0.25rem;
-    font-size: pdz.font-size(sm);
-    font-weight: 500;
+    @include pdz.text(body-sm-strong, $family: false);
     font-family: var(--pdz-font-display);
     color: pdz.color(secondary-accent);
   }

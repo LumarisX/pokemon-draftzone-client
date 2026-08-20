@@ -53,7 +53,7 @@
 .save-message {
   padding: pdz.space(md);
   border-radius: pdz.shape(corner-md);
-  font-weight: 500;
+  font-weight: 600;
   animation: slideIn pdz.duration(slow) pdz.easing(standard);
 
   &.success {
