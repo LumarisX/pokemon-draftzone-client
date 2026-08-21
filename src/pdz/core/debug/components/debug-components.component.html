@@ -285,6 +285,24 @@
     }
   </div>
 
+  <h3 class="section__sub">
+    Colors — <code>color</code> tints container, header and border; it
+    overrides <code>tone</code>
+  </h3>
+  <div class="cards">
+    @for (c of cardColors; track c) {
+      <pdz-card [color]="c" interactive>
+        <div pdz-card-header>{{ c }}</div>
+        <p class="cards__text">
+          Header picks up the tint, body stays on the container step.
+        </p>
+        <div pdz-card-footer>
+          <a pdz-button size="sm" variant="ghost" color="neutral">Details</a>
+        </div>
+      </pdz-card>
+    }
+  </div>
+
   <h3 class="section__sub">Padding</h3>
   <div class="cards">
     @for (p of paddings; track p) {
@@ -333,6 +351,72 @@
       <strong>Elevated</strong>
       <p class="cards__text">
         Opt-in shadow. Only for surfaces that actually float.
+      </p>
+    </pdz-card>
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="section__title">Menu</h2>
+  <p class="section__hint">
+    Native popover, so it escapes card overflow. Tab to a trigger, then
+    arrow/Home/End/first-letter to move, Escape to close.
+  </p>
+
+  <div class="menus">
+    <pdz-menu aria-label="Draft actions">
+      <button pdz-button variant="tonal" color="neutral" pdz-menu-trigger>
+        Actions
+        <pdz-icon name="expand_more" [size]="18"></pdz-icon>
+      </button>
+      <button pdz-menu-item icon="edit_document">Edit Team</button>
+      <button pdz-menu-item icon="event_list">Open in Planner</button>
+      <button pdz-menu-item icon="archive" disabled>Archive</button>
+      <button pdz-menu-item icon="delete_forever" tone="danger">Delete</button>
+    </pdz-menu>
+
+    <pdz-menu align="start" aria-label="Start aligned">
+      <button
+        pdz-button
+        iconOnly
+        variant="ghost"
+        color="neutral"
+        pdz-menu-trigger
+        aria-label="More"
+      >
+        <pdz-icon name="more_vert"></pdz-icon>
+      </button>
+      <a pdz-menu-item icon="search_insights" routerLink="./">View Matchup</a>
+      <a pdz-menu-item icon="scoreboard" routerLink="./">Add Score</a>
+    </pdz-menu>
+  </div>
+
+  <h3 class="section__sub">Inside a card, near the viewport edge</h3>
+  <div class="cards">
+    <pdz-card color="primary" padding="none">
+      <div pdz-card-header>
+        <span>Clipping check</span>
+        <span class="cards__spacer"></span>
+        <pdz-menu aria-label="Card actions">
+          <button
+            pdz-button
+            iconOnly
+            variant="ghost"
+            color="neutral"
+            pdz-menu-trigger
+            aria-label="More"
+          >
+            <pdz-icon name="more_vert"></pdz-icon>
+          </button>
+          <button pdz-menu-item icon="edit_document">Edit</button>
+          <button pdz-menu-item icon="delete_forever" tone="danger">
+            Delete
+          </button>
+        </pdz-menu>
+      </div>
+      <p class="cards__text cards__inset">
+        The card sets <code>overflow: hidden</code>. The panel still renders in
+        full.
       </p>
     </pdz-card>
   </div>

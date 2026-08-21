@@ -1,7 +1,4 @@
-@use "mixins" as *;
-@use "mixins/buttons" as *;
 @use "pdz-theming" as pdz;
-@use "mixins/cards" as *;
 
 :host {
   display: block;
@@ -20,6 +17,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: pdz.space(lg);
+
   .title {
     font-family: var(--pdz-font-display);
     @include pdz.text(headline, $family: false);
@@ -38,79 +36,47 @@
   gap: pdz.space(lg);
 }
 
-.empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: pdz.space(md);
-  padding: pdz.space(xl) pdz.space(lg);
-  max-width: 52rem;
-  margin: 0 auto;
-
-  &__title {
-    margin: 0;
-    color: pdz.color(on-primary-container);
-    font-family: var(--pdz-font-display);
-    font-size: clamp(1.25rem, 2.5vw, 1.75rem);
-    line-height: 1.2;
-  }
-
-  &__text {
-    margin: 0;
-    color: pdz.color(on-primary-container);
-    max-width: 38ch;
-    opacity: 0.88;
-  }
-
-  &__actions {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-  }
-
-  &__button {
-    @include flat-button-primary();
-    display: inline-flex;
-    align-items: center;
-    gap: pdz.space(xs);
-  }
-}
-
-@include respond-above("medium") {
-  .empty-state {
-    padding: pdz.space(2xl) pdz.space(xl);
-  }
-}
-
-.draft-card {
-  @include pdz-card("primary");
-  .card-header {
-    .league-name {
-      @include text(subtitle);
-    }
-
-    .card-title > .league-label {
-      display: block;
-      margin-bottom: pdz.space(2xs);
-      @include text(label);
-      color: pdz.color(on-surface-variant);
-    }
-  }
-}
-
-.title-row {
+.card-title {
   display: flex;
   align-items: center;
   gap: pdz.space(xs);
+  flex-grow: 1;
   min-width: 0;
 
   .league-name {
+    @include pdz.text(subtitle);
+    margin: 0;
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+
+  &:has(.league-label) {
+    flex-direction: column;
+    align-items: stretch;
+    gap: pdz.space(2xs);
+  }
+
+  .league-label {
+    @include pdz.text(label);
+    color: pdz.color(on-surface-variant);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.body-header {
+  @include pdz.text(body-sm);
+  margin: 0 0 pdz.space(xs);
+  color: pdz.color(on-surface-variant);
+}
+
+.sprites {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(36px, 1fr));
+  gap: pdz.space(sm);
 }
 
 .draft-warning {
@@ -140,50 +106,6 @@
   border-radius: pdz.shape(corner-sm);
   background-color: pdz.color(danger-container);
   color: pdz.color(on-danger-container);
-}
-
-.confirmation {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  p {
-    margin: 0;
-    font-weight: 600;
-  }
-
-  .confirmation-buttons {
-    display: flex;
-    gap: pdz.space(sm);
-  }
-
-  .btn {
-    border: none;
-    padding: pdz.space(sm) pdz.space(md);
-    border-radius: pdz.shape(corner-sm);
-    cursor: pointer;
-    font-weight: 600;
-    transition: background-color pdz.duration(base) pdz.easing(standard);
-
-    &-confirm {
-      background-color: pdz.color(danger);
-      color: pdz.color(on-danger);
-
-      &:hover {
-        opacity: 0.8;
-      }
-    }
-
-    &-cancel {
-      background-color: transparent;
-      color: pdz.color(on-primary-container);
-
-      &:hover {
-        background-color: pdz.color(primary-container-hover);
-      }
-    }
-  }
 }
 
 .draft-card--skeleton {

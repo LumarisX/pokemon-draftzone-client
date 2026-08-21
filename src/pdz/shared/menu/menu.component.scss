@@ -1,0 +1,25 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: inline-flex;
+}
+
+.pdz-menu__panel {
+  position: fixed;
+  inset: auto;
+  margin: 0;
+  padding: pdz.space(2xs);
+  min-width: 10rem;
+  max-width: 20rem;
+  border: 1px solid pdz.color(outline-variant);
+  border-radius: pdz.shape(corner-sm);
+  background-color: pdz.color(surface-container-low);
+  color: pdz.color(on-surface);
+  box-shadow: var(--pdz-level-3);
+  overflow-y: auto;
+
+  &:popover-open {
+    display: flex;
+    flex-direction: column;
+  }
+}

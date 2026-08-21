@@ -165,6 +165,17 @@
   flex: 1;
 }
 
+.cards__inset {
+  padding: pdz.space(lg);
+}
+
+.menus {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(lg);
+  flex-wrap: wrap;
+}
+
 .skeletons {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));

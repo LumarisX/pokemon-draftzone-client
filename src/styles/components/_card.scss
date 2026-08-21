@@ -8,20 +8,95 @@ $paddings: (
   lg: pdz.space(xl),
 );
 
+$tones: (
+  lowest: (
+    bg: surface-container-lowest,
+    hover: surface-container-low,
+  ),
+  low: (
+    bg: surface-container-low,
+    hover: surface-container,
+  ),
+  default: (
+    bg: surface-container,
+    hover: surface-container-high,
+  ),
+  high: (
+    bg: surface-container-high,
+    hover: surface-container-highest,
+  ),
+);
+
+$colors: (
+  primary: (
+    bg: primary-container,
+    fg: on-primary-container,
+    border: primary-border,
+    header: primary-container-high,
+    hover: primary-container-hover,
+    accent: primary-accent,
+  ),
+  secondary: (
+    bg: secondary-container,
+    fg: on-secondary-container,
+    border: secondary-border,
+    header: secondary-container-high,
+    hover: secondary-container-hover,
+    accent: secondary-accent,
+  ),
+  danger: (
+    bg: danger-container,
+    fg: on-danger-container,
+    border: danger-border,
+    header: danger-container,
+    hover: danger-container,
+    accent: danger,
+  ),
+);
+
+.pdz-card {
+  --pdz-card-bg: #{pdz.color(surface-container-low)};
+  --pdz-card-fg: #{pdz.color(on-surface)};
+  --pdz-card-border: #{pdz.color(outline-variant)};
+  --pdz-card-header-bg: transparent;
+  --pdz-card-hover-bg: #{pdz.color(surface-container)};
+  --pdz-card-accent: #{pdz.color(primary-accent)};
+}
+
+@each $name, $tone in $tones {
+  .pdz-card[data-tone="#{$name}"] {
+    --pdz-card-bg: #{pdz.color(map.get($tone, bg))};
+    --pdz-card-hover-bg: #{pdz.color(map.get($tone, hover))};
+  }
+}
+
+@each $name, $c in $colors {
+  .pdz-card[data-color="#{$name}"] {
+    --pdz-card-bg: #{pdz.color(map.get($c, bg))};
+    --pdz-card-fg: #{pdz.color(map.get($c, fg))};
+    --pdz-card-border: #{pdz.color(map.get($c, border))};
+    --pdz-card-header-bg: #{pdz.color(map.get($c, header))};
+    --pdz-card-hover-bg: #{pdz.color(map.get($c, hover))};
+    --pdz-card-accent: #{pdz.color(map.get($c, accent))};
+  }
+}
+
 [pdz-card-header],
 [pdz-card-footer] {
   display: flex;
   align-items: center;
   gap: pdz.space(sm);
+  flex: none;
 }
 
 [pdz-card-header] {
-  border-bottom: 1px solid pdz.color(outline-variant);
+  border-bottom: 1px solid var(--pdz-card-border, #{pdz.color(outline-variant)});
+  background-color: var(--pdz-card-header-bg, transparent);
   font-weight: pdz.font-weight(semibold);
 }
 
 [pdz-card-footer] {
-  border-top: 1px solid pdz.color(outline-variant);
+  border-top: 1px solid var(--pdz-card-border, #{pdz.color(outline-variant)});
 }
 
 @each $name, $value in $paddings {

@@ -11,10 +11,14 @@ import {
   BadgeVariant,
 } from '@pdz/shared/data/badge/badge.component';
 import {
+  CardColor,
   CardComponent,
   CardPadding,
   CardTone,
 } from '@pdz/shared/data/card/card.component';
+import { MenuComponent } from '@pdz/shared/menu/menu.component';
+import { MenuItemComponent } from '@pdz/shared/menu/menu-item.component';
+import { MenuTriggerDirective } from '@pdz/shared/menu/menu-trigger.directive';
 import { SkeletonComponent } from '@pdz/shared/data/skeleton/skeleton.component';
 import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
 import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented-option.component';
@@ -55,6 +59,9 @@ const MODE_ATTR = 'pdz-theme-mode';
     CheckComponent,
     ChoiceDirective,
     CardComponent,
+    MenuComponent,
+    MenuItemComponent,
+    MenuTriggerDirective,
     SkeletonComponent,
     SegmentedComponent,
     SegmentedOptionComponent,
@@ -151,6 +158,12 @@ export class DebugComponentsComponent {
   }
 
   readonly tones: CardTone[] = ['lowest', 'low', 'default', 'high'];
+  readonly cardColors: CardColor[] = [
+    'surface',
+    'primary',
+    'secondary',
+    'danger',
+  ];
   readonly paddings: CardPadding[] = ['none', 'sm', 'md', 'lg'];
 
   indeterminate = true;

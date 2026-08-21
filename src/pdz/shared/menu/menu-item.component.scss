@@ -1,0 +1,66 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(sm);
+  width: 100%;
+  padding: pdz.space(sm) pdz.space(md);
+  border: none;
+  border-radius: pdz.shape(corner-xs);
+  background: transparent;
+  color: pdz.color(on-surface);
+  cursor: pointer;
+  text-align: left;
+  text-decoration: none;
+  white-space: nowrap;
+  @include pdz.text(body-sm, $family: false);
+  transition: background-color pdz.duration(fast) pdz.easing(standard);
+
+  &:hover,
+  &:focus-visible {
+    background-color: pdz.color(surface-container-highest);
+  }
+
+  &:focus-visible {
+    outline: 2px solid pdz.color(primary-accent);
+    outline-offset: -2px;
+  }
+}
+
+:host([data-tone="danger"]) {
+  color: pdz.color(danger);
+
+  &:hover,
+  &:focus-visible {
+    background-color: pdz.color(danger-container);
+    color: pdz.color(on-danger-container);
+  }
+}
+
+:host(:disabled),
+:host([aria-disabled="true"]) {
+  color: pdz.color(on-surface-disabled);
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.pdz-menu-item__icon {
+  flex: none;
+  color: pdz.color(on-surface-variant);
+}
+
+.pdz-menu-item__label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+:host([data-tone="danger"]) .pdz-menu-item__icon {
+  color: inherit;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :host {
+    transition: none;
+  }
+}

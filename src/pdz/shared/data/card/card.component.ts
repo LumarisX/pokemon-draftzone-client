@@ -6,6 +6,7 @@ import {
 } from '@angular/core';
 
 export type CardTone = 'lowest' | 'low' | 'default' | 'high';
+export type CardColor = 'surface' | 'primary' | 'secondary' | 'danger';
 export type CardPadding = 'none' | 'sm' | 'md' | 'lg';
 
 @Component({
@@ -22,6 +23,7 @@ export type CardPadding = 'none' | 'sm' | 'md' | 'lg';
   host: {
     class: 'pdz-card',
     '[attr.data-tone]': 'tone()',
+    '[attr.data-color]': 'color()',
     '[attr.data-padding]': 'padding()',
     '[class.pdz-card--interactive]': 'interactive()',
     '[class.pdz-card--elevated]': 'elevated()',
@@ -29,6 +31,7 @@ export type CardPadding = 'none' | 'sm' | 'md' | 'lg';
 })
 export class CardComponent {
   tone = input<CardTone>('low');
+  color = input<CardColor>('surface');
   padding = input<CardPadding>('md');
   interactive = input(false, { transform: booleanAttribute });
   elevated = input(false, { transform: booleanAttribute });
