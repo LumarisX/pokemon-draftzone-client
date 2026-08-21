@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 import { AuthGuard } from '@auth0/auth0-angular';
 import { ArchiveStatsComponent } from './archive-stats/archive-stats.component';
-import { DraftArchiveComponent } from './draft-archives/draft-archives.component';
 import { DraftFormEditComponent } from './draft-form/draft-form-edit/draft-form-edit.component';
 import { DraftFormNewComponent } from './draft-form/draft-form-new/draft-form-new.component';
 import { DraftPreviewComponent } from './draft-preview/draft-preview.component';
@@ -23,11 +22,7 @@ export const routes: Routes = [
     component: DraftFormEditComponent,
     canActivate: [AuthGuard],
   },
-  {
-    path: 'archives',
-    component: DraftArchiveComponent,
-    canActivate: [AuthGuard],
-  },
+
   {
     path: ':teamId/stats',
     component: DraftStatsComponent,

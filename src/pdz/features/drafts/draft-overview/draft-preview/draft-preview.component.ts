@@ -22,6 +22,9 @@ import { TournamentDetails } from '../../../league-zone/league.model';
 import { LSDraftData } from '../../../planner/planner.component';
 import { Draft } from '../../draft.model';
 import { DraftService } from '../draft.service';
+import { DisclosureComponent } from '@pdz/shared/layout/disclosure/disclosure.component';
+import { Archive } from '../archive-stats/archive.model';
+import { ArchiveService } from '../archive.service';
 
 type Score = { wins: number; losses: number };
 
@@ -43,11 +46,13 @@ type Score = { wins: number; losses: number };
     MenuItemComponent,
     MenuTriggerDirective,
     SkeletonComponent,
+    DisclosureComponent,
   ],
 })
 export class DraftPreviewComponent {
   private draftService = inject(DraftService);
   private leagueService = inject(LeagueZoneService);
+  private archiveService = inject(ArchiveService);
   private dialogs = inject(DialogService);
 
   readonly skeletonCards = [0, 1, 2];
@@ -55,12 +60,14 @@ export class DraftPreviewComponent {
 
   drafts?: Draft[];
   tournaments?: TournamentDetails[];
+  archives?: Archive[];
   loadError = false;
   draftPath = DRAFT_OVERVIEW_PATH;
 
   ngOnInit() {
     this.loadDrafts();
     this.loadTournaments();
+    this.loadArchives();
   }
 
   loadDrafts() {
@@ -84,6 +91,18 @@ export class DraftPreviewComponent {
     this.leagueService.getTournamentsList().subscribe({
       next: (data) => {
         this.tournaments = data.tournaments;
+      },
+      error: (error) => {
+        console.error('Failed to load tournaments', error);
+        this.tournaments = [];
+      },
+    });
+  }
+
+  loadArchives() {
+    this.archiveService.getDraftsList().subscribe({
+      next: (data) => {
+        this.archives = data;
       },
       error: (error) => {
         console.error('Failed to load tournaments', error);

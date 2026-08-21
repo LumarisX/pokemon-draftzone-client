@@ -3,13 +3,13 @@
 :host {
   display: block;
   width: 100%;
-  padding: 0;
+  padding: pdz.space(md);
 }
 
 .drafts-container {
-  padding: pdz.space(md);
-  width: 100%;
-  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(md);
 }
 
 .header {

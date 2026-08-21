@@ -1,9 +1,5 @@
-@use "@angular/material" as mat;
 @use "tokens/breakpoints" as *;
 @use "mixins" as *;
-@use "tools/typography" as *;
-@use "mixins/buttons" as *;
-@use "mixins/cards" as *;
 @use "pdz-theming" as pdz;
 
 :host {
@@ -67,87 +63,35 @@ section {
   &:hover {
     box-shadow: var(--pdz-level-2);
   }
-  @include pdz-card("secondary");
-  .card-header {
-    .matchup-stage {
-      font-size: pdz.font-size(sm);
-      margin-right: pdz.space(md);
-    }
-
-    .matchup-team-info-container {
-      font-family: var(--pdz-font-display);
-      display: flex;
-      gap: 0.25rem;
-      align-items: center;
-      flex-grow: 1;
-    }
-  }
 }
 
-.matchup-info {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  min-width: 180px;
-}
-
-.options-container {
+.card-title {
   display: flex;
   align-items: center;
-  gap: 0.125rem;
-  flex-shrink: 0;
-}
-
-.pokemon-container {
-  display: flex;
-  overflow-x: auto;
-  padding: 0 0.5rem;
-  gap: 0.125rem;
-  scrollbar-gutter: stable;
-  justify-content: center;
-  flex-basis: 100%;
-  order: 3;
-
-  scrollbar-width: thin;
-  scrollbar-color: rgba(0, 0, 0, 0.5) transparent;
-
-  @include respond-above(medium) {
-    flex-basis: auto;
-    flex-grow: 1;
-    order: 0;
-    justify-content: center;
-  }
-
-  &::-webkit-scrollbar {
-    width: 12px;
-  }
-  &::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  &::-webkit-scrollbar-thumb {
-    border-radius: 6px;
-    border: 3px solid transparent;
-    background-clip: content-box;
-    background-color: rgba(0, 0, 0, 0.5);
-  }
+  gap: pdz.space(xs);
+  flex-grow: 1;
+  min-width: 0;
 }
 
 .matchup-team-info {
   justify-content: center;
   display: flex;
   flex-direction: column;
-  min-width: 12rem;
+  min-width: 0;
+
   .team-name,
   .coach-name {
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
   }
+
   .coach-name {
-    font-size: pdz.font-size(sm);
-    line-height: 0.9rem;
+    @include pdz.text(body-sm);
+    color: pdz.color(on-surface-variant);
   }
 }
+
 .matchup-logo {
   flex-shrink: 0;
   overflow: hidden;
@@ -155,10 +99,23 @@ section {
   box-shadow: var(--pdz-level-1);
   height: 3rem;
   width: 3rem;
+
   img {
     aspect-ratio: 1/1;
     object-fit: contain;
   }
+}
+
+.body-header {
+  @include pdz.text(body-sm);
+  margin: 0 0 pdz.space(xs);
+  color: pdz.color(on-surface-variant);
+}
+
+.sprites {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(36px, 1fr));
+  gap: pdz.space(sm);
 }
 
 .section-header {
@@ -214,39 +171,12 @@ section {
       background-color: pdz.color(secondary-container);
     }
   }
-
-  .title-bar {
-    position: relative;
-    padding: pdz.space(lg);
-  }
-
-  .back-button {
-    @include respond-above(medium) {
-      position: absolute;
-      top: 0.5rem;
-      left: 0.5rem;
-    }
-  }
 }
 
 .button-container {
   display: flex;
   gap: 0.5rem;
   align-items: stretch;
-  .option-btn {
-    @include icon-button-secondary();
-  }
-  .matchup-btn {
-    @include flat-button-secondary();
-  }
-}
-
-.no-matchups {
-  display: flex;
-  width: 100%;
-  justify-content: center;
-  opacity: 60%;
-  font: var(--pdz-font-size-lg);
 }
 
 .direction-btn {

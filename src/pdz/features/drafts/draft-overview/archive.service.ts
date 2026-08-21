@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { ApiService } from '@pdz/core/services/api.service';
-import { Archive } from '../archive-stats/archive.model';
+import { Archive } from './archive-stats/archive.model';
 
 @Injectable({
   providedIn: 'root',

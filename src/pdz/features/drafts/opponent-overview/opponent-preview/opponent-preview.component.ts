@@ -3,28 +3,35 @@ import { CommonModule } from '@angular/common';
 import {
   AfterViewInit,
   Component,
-  HostListener,
   inject,
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSort, MatSortModule, Sort } from '@angular/material/sort';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { DRAFT_OVERVIEW_PATH } from '@pdz/core/route-paths';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import {
+  BadgeComponent,
+  BadgeTone,
+} from '@pdz/shared/data/badge/badge.component';
+import { CardComponent } from '@pdz/shared/data/card/card.component';
+import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
+import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
+import { MenuComponent } from '@pdz/shared/menu/menu.component';
+import { MenuItemComponent } from '@pdz/shared/menu/menu-item.component';
+import { MenuTriggerDirective } from '@pdz/shared/menu/menu-trigger.directive';
 import { BehaviorSubject, catchError, forkJoin, of, take } from 'rxjs';
 import { DraftService, PokemonStat } from '../../draft-overview/draft.service';
 import { Opponent } from '../opponent.model';
-import { ConfirmDeleteDialogComponent } from './confirm-delete-dialog.component';
 
 type Matchup = Opponent & {
   score?: [number, number] | null;
   scoreString?: string;
-  scoreClass?: string;
+  scoreTone?: BadgeTone;
   logo?: string | null;
 };
 
@@ -39,17 +46,19 @@ type Matchup = Opponent & {
     LoadingComponent,
     IconComponent,
     MatSortModule,
-    MatDialogModule,
     CdkTableModule,
     ButtonComponent,
+    BadgeComponent,
+    CardComponent,
+    EmptyStateComponent,
+    MenuComponent,
+    MenuItemComponent,
+    MenuTriggerDirective,
   ],
 })
 export class OpponentTeamPreviewComponent implements OnInit, AfterViewInit {
   @ViewChild(MatSort) matSort?: MatSort;
   private readonly defaultSort: Sort = { active: 'kpg', direction: 'desc' };
-
-  readonly skeletonCards = [0, 1, 2];
-  readonly skeletonSprites = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 
   ngAfterViewInit(): void {
     if (this.matSort) {
@@ -59,7 +68,7 @@ export class OpponentTeamPreviewComponent implements OnInit, AfterViewInit {
   }
   private draftService = inject(DraftService);
   private route = inject(ActivatedRoute);
-  private dialog = inject(MatDialog);
+  private dialogs = inject(DialogService);
 
   index = 0;
   matchups?: Matchup[];
@@ -76,12 +85,6 @@ export class OpponentTeamPreviewComponent implements OnInit, AfterViewInit {
     'kdr',
     'kpg',
   ];
-
-  menuState: {
-    [key: string]: '' | 'confirm-archive' | 'confirm-delete';
-  } = {};
-
-  openDropdown: string | null = null;
 
   ngOnInit(): void {
     this.teamId = this.route.snapshot.paramMap.get('teamId') ?? '';
@@ -115,7 +118,7 @@ export class OpponentTeamPreviewComponent implements OnInit, AfterViewInit {
             ...m,
             score,
             scoreString: this.getScoreString(score),
-            scoreClass: this.getScoreClass(score),
+            scoreTone: this.getScoreTone(score),
           };
         });
       }
@@ -125,37 +128,6 @@ export class OpponentTeamPreviewComponent implements OnInit, AfterViewInit {
         this.sort(this.defaultSort);
       }
     });
-  }
-
-  score(matchup: Opponent): [number, number] | null {
-    if (matchup.matches.length > 1) {
-      let aScore = 0;
-      let bScore = 0;
-      matchup.matches.forEach((match) => {
-        if (match.winner === 'a') {
-          aScore++;
-        } else if (match.winner === 'b') {
-          bScore++;
-        }
-      });
-      return [aScore, bScore];
-    } else if (matchup.matches.length > 0) {
-      return [matchup.matches[0].aTeam.score, matchup.matches[0].bTeam.score];
-    } else {
-      return null;
-    }
-  }
-
-  scoreString(matchup: Opponent) {
-    if (matchup.score) return `${matchup.score[0]} - ${matchup.score[1]}`;
-    return `Unscored`;
-  }
-
-  scoreClass(matchup: Opponent) {
-    if (!matchup.score) return 'pdz-background-neut';
-    if (matchup.score[0] > matchup.score[1]) return 'pdz-background-pos';
-    if (matchup.score[0] < matchup.score[1]) return 'pdz-background-neg';
-    return 'pdz-background-neut';
   }
 
   private calculateScore(matchup: Opponent): [number, number] | null {
@@ -189,27 +161,24 @@ export class OpponentTeamPreviewComponent implements OnInit, AfterViewInit {
     return `Unscored`;
   }
 
-  private getScoreClass(score: [number, number] | null): string {
-    if (!score) return 'pdz-background-neut';
-    if (score[0] > score[1]) return 'pdz-background-pos';
-    if (score[0] < score[1]) return 'pdz-background-neg';
-    return 'pdz-background-neut';
+  private getScoreTone(score: [number, number] | null): BadgeTone {
+    if (!score) return 'neutral';
+    if (score[0] > score[1]) return 'success';
+    if (score[0] < score[1]) return 'danger';
+    return 'neutral';
   }
 
-  deleteMatchup(matchupId: string) {
-    const dialogRef = this.dialog.open(ConfirmDeleteDialogComponent);
+  async deleteMatchup(matchupId: string) {
+    const confirmed = await this.dialogs.confirm('Delete matchup', {
+      message: 'Are you sure you want to delete this matchup?',
+      confirmLabel: 'Delete',
+      confirmColor: 'danger',
+    });
+    if (!confirmed) return;
 
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        this.draftService.deleteMatchup(matchupId, this.teamId).subscribe({
-          next: () => {
-            this.reload();
-          },
-          error: (error) => {
-            console.error('Error!', error);
-          },
-        });
-      }
+    this.draftService.deleteMatchup(matchupId, this.teamId).subscribe({
+      next: () => this.reload(),
+      error: (error) => console.error('Failed to delete matchup', error),
     });
   }
 
@@ -259,22 +228,6 @@ export class OpponentTeamPreviewComponent implements OnInit, AfterViewInit {
       });
       this.teamStats.next(sortedData);
     }
-  }
-
-  toggleMenu(matchupId: string, event: MouseEvent) {
-    event.stopPropagation();
-    if (this.openDropdown !== matchupId) {
-      this.openDropdown = matchupId;
-    }
-  }
-
-  @HostListener('document:click', ['$event'])
-  onDocumentClick(event: MouseEvent): void {
-    this.closeDropdown();
-  }
-
-  closeDropdown(): void {
-    this.openDropdown = null;
   }
 
   openReplays(matchup: Matchup) {

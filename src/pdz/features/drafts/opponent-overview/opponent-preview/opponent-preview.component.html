@@ -8,6 +8,8 @@
           iconOnly
           variant="tonal"
           color="secondary"
+          class="direction-btn"
+          aria-label="Reverse order"
           [class.up]="directionUp"
           (click)="toggleDirection()"
         >
@@ -30,13 +32,8 @@
     } @else {
       <div class="matchups-container">
         @for (matchup of matchups; track $index) {
-          <div class="matchup-card">
-            <div class="card-header">
-              @if (matchup.score) {
-                <div class="card-score" [ngClass]="matchup.scoreClass">
-                  {{ matchup.scoreString }}
-                </div>
-              }
+          <pdz-card class="matchup-card" color="secondary" padding="sm">
+            <div pdz-card-header>
               <div class="card-title">
                 @if (matchup.logo) {
                   <div class="matchup-logo">
@@ -51,89 +48,110 @@
                 </div>
               </div>
 
-              <div class="card-menu">
+              @if (matchup.score) {
+                <pdz-badge variant="soft" [tone]="matchup.scoreTone ?? 'neutral'">{{
+                  matchup.scoreString
+                }}</pdz-badge>
+              }
+
+              <pdz-menu aria-label="Match actions">
                 <button
-                  class="more-btn"
-                  (click)="toggleMenu(matchup._id, $event)"
+                  pdz-button
+                  iconOnly
+                  size="sm"
+                  variant="ghost"
+                  color="secondary"
+                  pdz-menu-trigger
+                  [attr.aria-label]="'Actions for ' + matchup.teamName"
                 >
                   <pdz-icon name="more_vert"></pdz-icon>
                 </button>
-
-                @if (openDropdown === matchup._id) {
-                  <div class="menu-dropdown">
-                    @if (matchup.score) {
-                      <button
-                        class="menu-item"
-                        [routerLink]="['matchup', matchup._id]"
-                      >
-                        <pdz-icon name=" search_insights "></pdz-icon> View
-                        Matchup
-                      </button>
-                    }
-                    <button
-                      class="menu-item"
-                      routerLink="form"
-                      [queryParams]="{ matchup: matchup._id }"
-                    >
-                      <pdz-icon name="edit_document"></pdz-icon> Edit Match
-                    </button>
-                    <button
-                      routerLink="score"
-                      [queryParams]="{ matchup: matchup._id }"
-                      class="menu-item"
-                    >
-                      <pdz-icon name="scoreboard"></pdz-icon>
-                      @if (matchup.score) {
-                        Edit
-                      } @else {
-                        Add
-                      }
-                      Score
-                    </button>
-                    <button
-                      (click)="deleteMatchup(matchup._id)"
-                      class="menu-item"
-                    >
-                      <pdz-icon name="delete_forever"></pdz-icon> Delete
-                    </button>
-                  </div>
+                @if (matchup.score) {
+                  <a
+                    pdz-menu-item
+                    icon="search_insights"
+                    [routerLink]="['matchup', matchup._id]"
+                    >View Matchup</a
+                  >
                 }
-              </div>
-            </div>
-
-            <div class="card-body">
-              <div class="body-header">
-                {{ matchup.stage }}
-              </div>
-              <div class="sprites">
-                @for (pokemon of matchup.team; track pokemon.name) {
-                  <pdz-sprite
-                    [pokemon]="pokemon"
-                    [class.unresolved-sprite]="pokemon.unresolved"
-                  ></pdz-sprite>
-                }
-              </div>
-            </div>
-
-            <div class="card-footer">
-              @if (matchup.score) {
                 <a
+                  pdz-menu-item
+                  icon="edit_document"
+                  routerLink="form"
+                  [queryParams]="{ matchup: matchup._id }"
+                  >Edit Match</a
+                >
+                <a
+                  pdz-menu-item
+                  icon="scoreboard"
+                  routerLink="score"
+                  [queryParams]="{ matchup: matchup._id }"
+                  >{{ matchup.score ? "Edit" : "Add" }} Score</a
+                >
+                <button
+                  pdz-menu-item
+                  icon="delete_forever"
+                  tone="danger"
+                  (click)="deleteMatchup(matchup._id)"
+                >
+                  Delete
+                </button>
+              </pdz-menu>
+            </div>
+
+            <p class="body-header">{{ matchup.stage }}</p>
+            <div class="sprites">
+              @for (pokemon of matchup.team; track pokemon.name) {
+                <pdz-sprite
+                  [pokemon]="pokemon"
+                  [class.unresolved-sprite]="pokemon.unresolved"
+                ></pdz-sprite>
+              }
+            </div>
+
+            <div pdz-card-footer>
+              @if (matchup.score) {
+                <button
+                  pdz-button
+                  size="sm"
+                  variant="ghost"
+                  color="secondary"
+                  [disabled]="!matchup.matches.length"
                   (click)="openReplays(matchup)"
-                  class="footer-link"
-                  [class.disabled]="!matchup.matches.length"
-                  >{{ "View Replay" + (matchup.matches.length > 1 ? "s" : "") }}
-                </a>
+                >
+                  {{ "View Replay" + (matchup.matches.length > 1 ? "s" : "") }}
+                </button>
               } @else {
-                <a class="footer-link" [routerLink]="['matchup', matchup._id]"
+                <a
+                  pdz-button
+                  size="sm"
+                  variant="ghost"
+                  color="secondary"
+                  [routerLink]="['matchup', matchup._id]"
                   >View Matchup</a
                 >
               }
             </div>
-          </div>
+          </pdz-card>
         } @empty {
-          <div class="no-matchups">
-            Click the [+] to add your first opponent!
-          </div>
+          <pdz-empty-state
+            icon="groups"
+            heading="No matches yet"
+            message="Add your first opponent to start prepping for the season."
+          >
+            <div pdz-empty-state-actions>
+              <a
+                pdz-button
+                size="sm"
+                color="secondary"
+                [routerLink]="['/', draftPath, this.teamId, 'form']"
+                [queryParams]="{ stage: 'Week 1' }"
+              >
+                <pdz-icon name="add"></pdz-icon>
+                Add Opponent
+              </a>
+            </div>
+          </pdz-empty-state>
         }
       </div>
     }
