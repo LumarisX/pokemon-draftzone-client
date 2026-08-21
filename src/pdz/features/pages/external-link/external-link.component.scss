@@ -84,9 +84,9 @@
 
   &__warnings {
     padding: pdz.space(md);
-    background-color: pdz.color(error-container);
+    background-color: pdz.color(danger-container);
     border-radius: pdz.shape(corner-sm);
-    border: 1px solid pdz.color(error-border);
+    border: 1px solid pdz.color(danger-border);
   }
 
   &__warnings-header {
@@ -94,7 +94,7 @@
     align-items: center;
     gap: pdz.space(sm);
     margin-bottom: pdz.space(sm);
-    color: pdz.color(error);
+    color: pdz.color(danger);
     font-weight: 600;
 
     pdz-icon {
@@ -107,7 +107,7 @@
   &__warnings-list {
     margin: 0;
     padding-left: pdz.space(lg);
-    color: pdz.color(on-error-container);
+    color: pdz.color(on-danger-container);
     list-style-type: disc;
 
     li {

@@ -117,7 +117,7 @@
   display: inline-flex;
   align-items: center;
   flex-shrink: 0;
-  color: pdz.color(error);
+  color: pdz.color(danger);
   text-decoration: none;
   cursor: pointer;
 
@@ -138,8 +138,8 @@
   margin-bottom: pdz.space(md);
   padding: pdz.space(sm) pdz.space(md);
   border-radius: pdz.shape(corner-sm);
-  background-color: pdz.color(error-container);
-  color: pdz.color(on-error-container);
+  background-color: pdz.color(danger-container);
+  color: pdz.color(on-danger-container);
 }
 
 .confirmation {
@@ -167,8 +167,8 @@
     transition: background-color pdz.duration(base) pdz.easing(standard);
 
     &-confirm {
-      background-color: pdz.color(error);
-      color: pdz.color(on-error);
+      background-color: pdz.color(danger);
+      color: pdz.color(on-danger);
 
       &:hover {
         opacity: 0.8;

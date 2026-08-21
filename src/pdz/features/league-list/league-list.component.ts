@@ -1,18 +1,25 @@
 import { Component, HostListener, OnInit, inject } from '@angular/core';
-import { forkJoin } from 'rxjs';
 import { FormsModule } from '@angular/forms';
-import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { RouterModule } from '@angular/router';
 import { DataService } from '@pdz/core/services/data.service';
-import { LeagueAd, LeagueAdsService } from './league-ads.service';
 import { UnreadService } from '@pdz/features/pages/homepage/unread.service';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
+import { forkJoin } from 'rxjs';
 import { LeagueAdComponent } from './league-ad/league-ad.component';
+import { LeagueAd, LeagueAdsService } from './league-ads.service';
 
 @Component({
   selector: 'pdz--league-ad-list',
   templateUrl: './league-list.component.html',
   styleUrls: ['./league-list.component.scss'],
-  imports: [FormsModule, LeagueAdComponent, RouterModule, IconComponent],
+  imports: [
+    FormsModule,
+    LeagueAdComponent,
+    RouterModule,
+    IconComponent,
+    ButtonComponent,
+  ],
 })
 export class LeagueAdListComponent implements OnInit {
   private leagueService = inject(LeagueAdsService);
@@ -57,9 +64,6 @@ export class LeagueAdListComponent implements OnInit {
     ]).subscribe(([external, hosted]) => {
       this.leagues = [...hosted, ...external];
       this.filteredLeagues = [...this.leagues];
-      // TODO: also persist this to the server (lastCheckedAdsAt) when logged
-      // in, so the "unread ads" badge survives across devices instead of
-      // relying solely on localStorage.
       localStorage.setItem('leagueTime', Date.now().toString());
       this.unreadService.leagueCount.next('');
       this.sortLeagues();

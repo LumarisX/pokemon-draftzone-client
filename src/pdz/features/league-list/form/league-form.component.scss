@@ -55,7 +55,7 @@
   font-weight: 600;
 
   .required {
-    color: pdz.color(error);
+    color: pdz.color(danger);
     margin-left: 2px;
   }
 }
@@ -101,10 +101,10 @@
   }
 
   &.is-invalid {
-    border-color: pdz.color(error);
+    border-color: pdz.color(danger);
 
     &:focus {
-      box-shadow: 0 0 0 2px pdz.color(error-container);
+      box-shadow: 0 0 0 2px pdz.color(danger-container);
     }
   }
 }
@@ -142,7 +142,7 @@
   overflow-y: auto;
 
   &.is-invalid {
-    border-color: pdz.color(error);
+    border-color: pdz.color(danger);
   }
 }
 
@@ -176,7 +176,7 @@
 
 .error-message {
   @include text(body-sm);
-  color: pdz.color(error);
+  color: pdz.color(danger);
   margin-top: pdz.space(xs);
   display: block;
 }

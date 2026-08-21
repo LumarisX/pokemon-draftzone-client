@@ -1,127 +1,53 @@
+@use "tools/accent" as accent;
 @use "tools/theme" as theme;
 
 $theme-overrides: (
-  light: (
-    // Primary Theme (Orange)
-    primary: "orange-600",
-    primary-accent: "orange-700",
-    primary-lighter: "orange-400",
-    primary-darker: "orange-600",
-    on-primary: "white",
-    primary-container: "orange-150",
-    primary-container-low: "orange-100",
-    primary-container-high: "orange-300",
-    primary-container-hover: "orange-200",
-    on-primary-container: "orange-900",
-    primary-hover: "orange-350",
-    primary-border: "orange-250",
-    primary-subtle: "orange-100",
-    primary-gradient: linear-gradient(
-        135deg,
-        var(--pdz-color-orange-500),
-        var(--pdz-color-orange-300)
-      ),
-    // Secondary Theme (Cyan)
-    secondary: "cyan-650",
-    secondary-accent: "cyan-700",
-    secondary-lighter: "cyan-400",
-    secondary-darker: "cyan-600",
-    on-secondary: "white",
-    secondary-container: "cyan-150",
-    secondary-container-low: "cyan-100",
-    secondary-container-high: "cyan-300",
-    secondary-container-hover: "cyan-200",
-    on-secondary-container: "cyan-900",
-    secondary-hover: "cyan-350",
-    secondary-border: "cyan-250",
-    secondary-subtle: "cyan-100",
-    secondary-gradient: linear-gradient(
-        135deg,
-        var(--pdz-color-cyan-500),
-        var(--pdz-color-cyan-300)
-      ),
-    // Logo Colors
-    logo-top: "orange-500",
-    logo-bottom: "cyan-500",
+  light: accent.apply(
+      (
+        // Logo Colors
+        logo-top: "orange-450",
+        logo-bottom: "cyan-450",
 
-    // Loading Colors
-    loading-primary-high: "orange-600",
-    loading-primary-low: "orange-400",
-    loading-secondary-high: "cyan-600",
-    loading-secondary-low: "cyan-400",
+        // Loading Colors
+        loading-primary-high: "orange-550",
+        loading-primary-low: "orange-300",
+        loading-secondary-high: "cyan-550",
+        loading-secondary-low: "cyan-300",
 
-    // Semantic Data Colors
-    positive: "mint-400",
-    on-positive: "mint-950",
-    positive-container: "mint-900",
-    on-positive-container: "mint-100",
-    negative: "rose-250",
-    on-negative: "rose-950",
-    negative-container: "rose-900",
-    on-negative-container: "rose-100",
+        // Hero
+        hero: linear-gradient(
+            135deg,
+            var(--pdz-color-orange-350),
+            var(--pdz-color-orange-175)
+          ),
+      ),
+      "orange",
+      "cyan",
+      light
+    ),
+  dark: accent.apply(
+      (
+        // Logo Colors
+        logo-top: "orange-400",
+        logo-bottom: "cyan-400",
 
-    hero: linear-gradient(
-        135deg,
-        var(--pdz-color-orange-400),
-        var(--pdz-color-orange-200)
-      ),
-  ),
-  dark: (
-    // Primary Theme (Orange)
-    primary: "orange-500",
-    primary-accent: "orange-400",
-    primary-lighter: "orange-400",
-    primary-darker: "orange-600",
-    on-primary: "orange-950",
-    primary-container: "orange-900",
-    primary-container-low: "orange-950",
-    primary-container-high: "orange-850",
-    primary-container-hover: "orange-800",
-    on-primary-container: "orange-200",
-    primary-hover: "orange-550",
-    primary-border: "orange-700",
-    primary-subtle: "orange-900",
-    primary-gradient: linear-gradient(
-        135deg,
-        var(--pdz-color-orange-500),
-        var(--pdz-color-orange-300)
-      ),
-    // Secondary Theme (Cyan)
-    secondary: "cyan-500",
-    secondary-accent: "cyan-400",
-    secondary-lighter: "cyan-400",
-    secondary-darker: "cyan-600",
-    on-secondary: "cyan-950",
-    secondary-container: "cyan-900",
-    secondary-container-low: "cyan-950",
-    secondary-container-high: "cyan-850",
-    secondary-container-hover: "cyan-800",
-    on-secondary-container: "cyan-200",
-    secondary-hover: "cyan-550",
-    secondary-border: "cyan-700",
-    secondary-subtle: "cyan-900",
-    secondary-gradient: linear-gradient(
-        135deg,
-        var(--pdz-color-cyan-500),
-        var(--pdz-color-cyan-300)
-      ),
-    // Logo Colors
-    logo-top: "orange-500",
-    logo-bottom: "cyan-500",
+        // Loading Colors
+        loading-primary-high: "orange-350",
+        loading-primary-low: "orange-550",
+        loading-secondary-high: "cyan-350",
+        loading-secondary-low: "cyan-550",
 
-    // Loading Colors
-    loading-primary-high: "orange-600",
-    loading-primary-low: "orange-400",
-    loading-secondary-high: "cyan-600",
-    loading-secondary-low: "cyan-400",
-
-    // Hero
-    hero: linear-gradient(
-        135deg,
-        var(--pdz-color-orange-500),
-        var(--pdz-color-orange-300)
+        // Hero
+        hero: linear-gradient(
+            135deg,
+            var(--pdz-color-orange-400),
+            var(--pdz-color-orange-250)
+          ),
       ),
-  ),
+      "orange",
+      "cyan",
+      dark
+    ),
 );
 
 $theme: theme.build-pdz-theme($theme-overrides);

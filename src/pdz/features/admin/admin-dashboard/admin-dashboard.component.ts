@@ -17,6 +17,8 @@ import {
 import { BarChartComponent, BarDatum } from '../charts/bar-chart.component';
 import { PieChartComponent, PieDatum } from '../charts/pie-chart.component';
 import { TimeSeriesChartComponent } from '../charts/time-series-chart.component';
+import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
+import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented-option.component';
 
 interface SummaryCard {
   label: string;
@@ -59,6 +61,8 @@ function titleCase(value: string): string {
     PieChartComponent,
     BarChartComponent,
     PageComponent,
+    SegmentedComponent,
+    SegmentedOptionComponent,
   ],
   templateUrl: './admin-dashboard.component.html',
   styleUrl: './admin-dashboard.component.scss',
@@ -94,8 +98,8 @@ export class AdminDashboardComponent implements OnInit {
     this.loadSettings();
   }
 
-  setBucket(bucket: BucketUnit): void {
-    if (bucket === this.bucket()) return;
+  setBucket(bucket: BucketUnit | undefined): void {
+    if (bucket === undefined || bucket === this.bucket()) return;
     this.bucket.set(bucket);
     this.loadSeries();
   }

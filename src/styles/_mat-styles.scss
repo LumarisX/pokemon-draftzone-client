@@ -24,10 +24,10 @@
       tertiary-container: pdz.color(secondary-container),
       on-tertiary-container: pdz.color(on-secondary-container),
       // Error Palette
-      error: pdz.color(error),
-      on-error: pdz.color(on-error),
-      error-container: pdz.color(error-container),
-      on-error-container: pdz.color(on-error-container),
+      error: pdz.color(danger),
+      on-error: pdz.color(on-danger),
+      error-container: pdz.color(danger-container),
+      on-error-container: pdz.color(on-danger-container),
       // Surface Palette
       background: pdz.color(background),
       on-background: pdz.color(on-surface),
@@ -94,16 +94,16 @@ body {
 .dialog-warn {
   @include mat.dialog-overrides(
     (
-      container-color: pdz.color(error-container),
-      subhead-color: pdz.color(error),
-      supporting-text-color: pdz.color(on-error-container),
+      container-color: pdz.color(danger-container),
+      subhead-color: pdz.color(danger),
+      supporting-text-color: pdz.color(on-danger-container),
     )
   );
 
   @include mat.button-overrides(
     (
-      text-label-text-color: pdz.color(error),
-      text-state-layer-color: pdz.color(error),
+      text-label-text-color: pdz.color(danger),
+      text-state-layer-color: pdz.color(danger),
     )
   );
 }

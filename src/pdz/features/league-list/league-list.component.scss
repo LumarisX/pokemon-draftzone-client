@@ -24,24 +24,6 @@
   }
 }
 
-.add-button {
-  @include icon-button-menu(
-    (
-      width: 2.5rem,
-      height: 2.5rem,
-    )
-  );
-}
-
-.manage-button {
-  @include flat-button-menu(
-    (
-      padding: pdz.space(xs) pdz.space(md),
-      height: 2.5rem,
-    )
-  );
-}
-
 .toolbar {
   display: flex;
   justify-content: space-between;

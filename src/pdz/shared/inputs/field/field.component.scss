@@ -17,7 +17,7 @@
 }
 
 .pdz-field__required {
-  color: pdz.color(error);
+  color: pdz.color(danger);
   margin-inline-start: pdz.space(3xs);
 }
 
@@ -29,5 +29,5 @@
 
 .pdz-field__error {
   @include pdz.text(label, $family: false);
-  color: pdz.color(error);
+  color: pdz.color(danger);
 }

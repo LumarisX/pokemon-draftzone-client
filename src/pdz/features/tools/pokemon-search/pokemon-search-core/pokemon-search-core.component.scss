@@ -208,7 +208,7 @@ button:disabled {
 
     &:hover {
       opacity: 1;
-      color: pdz.color(error);
+      color: pdz.color(danger);
     }
   }
 
@@ -444,8 +444,8 @@ button:disabled {
 
   &__error {
     margin: 0;
-    color: pdz.color(on-error-container);
-    background: pdz.color(error-container);
+    color: pdz.color(on-danger-container);
+    background: pdz.color(danger-container);
     border-radius: pdz.shape(corner-sm);
     padding: pdz.space(xs) pdz.space(sm);
   }

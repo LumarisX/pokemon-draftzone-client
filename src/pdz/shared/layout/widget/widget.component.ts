@@ -8,6 +8,12 @@ import { CardComponent, CardTone } from '@pdz/shared/data/card/card.component';
 
 export type WidgetPadding = 'none' | 'md';
 
+/**
+ * `stretch` lets content fill the card. `center` keeps content at its natural
+ * width and centres it — for tables and charts that look wrong stretched.
+ */
+export type WidgetAlign = 'stretch' | 'center';
+
 @Component({
   selector: 'pdz-widget',
   imports: [CardComponent],
@@ -30,6 +36,7 @@ export type WidgetPadding = 'none' | 'md';
     class: 'pdz-widget',
     '[class.pdz-widget--fill]': 'fill()',
     '[attr.data-padding]': 'padding()',
+    '[attr.data-align]': 'align()',
   },
 })
 export class WidgetComponent {
@@ -38,6 +45,7 @@ export class WidgetComponent {
 
   /** Body padding. Use `none` when the projected content manages its own. */
   readonly padding = input<WidgetPadding>('md');
+  readonly align = input<WidgetAlign>('stretch');
   readonly elevated = input(false, { transform: booleanAttribute });
 
   /**

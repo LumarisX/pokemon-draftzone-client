@@ -124,17 +124,17 @@
   }
 
   &--banned {
-    border-color: pdz.color(error);
+    border-color: pdz.color(danger);
 
     .tier__header {
-      background-color: pdz.color(error-container);
-      color: pdz.color(on-error-container);
-      border-bottom-color: pdz.color(error);
+      background-color: pdz.color(danger-container);
+      color: pdz.color(on-danger-container);
+      border-bottom-color: pdz.color(danger);
     }
 
     .tier__name,
     .tier__cost {
-      color: pdz.color(on-error-container);
+      color: pdz.color(on-danger-container);
     }
   }
 
@@ -265,7 +265,7 @@
 
   &__ban-icon {
     flex-shrink: 0;
-    color: pdz.color(error);
+    color: pdz.color(danger);
     font-size: 16px;
     width: 16px;
     height: 16px;
@@ -305,11 +305,11 @@
   padding: pdz.space(2xs);
 
   &.tier--banned {
-    border-color: pdz.color(error);
+    border-color: pdz.color(danger);
 
     .tier__label {
-      background-color: pdz.color(error);
-      color: pdz.color(on-error);
+      background-color: pdz.color(danger);
+      color: pdz.color(on-danger);
     }
   }
 

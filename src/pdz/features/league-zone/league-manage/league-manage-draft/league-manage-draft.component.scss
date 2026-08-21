@@ -631,8 +631,8 @@
   }
 
   &__btn--clear:hover:not(:disabled) {
-    border-color: pdz.color(error);
-    color: pdz.color(error);
+    border-color: pdz.color(danger);
+    color: pdz.color(danger);
   }
 
   &__btn--rewind:hover:not(:disabled) {

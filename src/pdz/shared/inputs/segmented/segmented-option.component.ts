@@ -12,8 +12,8 @@ import { PDZ_SEGMENTED } from './segmented.token';
   template: '',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SegmentedOptionComponent {
-  value = input.required<unknown>();
+export class SegmentedOptionComponent<T = unknown> {
+  value = input.required<T>();
   label = input.required<string>();
   icon = input<string>();
   trailingIcon = input<string>();

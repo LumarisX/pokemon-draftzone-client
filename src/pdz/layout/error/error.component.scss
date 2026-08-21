@@ -39,7 +39,7 @@
   background: pdz.color("surface-container-low");
   color: pdz.color("on-surface");
   border: 1px solid pdz.color("outline-variant");
-  border-left: 3px solid pdz.color("error");
+  border-left: 3px solid pdz.color("danger");
   border-radius: pdz.shape(corner-md);
   box-shadow: var(--pdz-level-2);
   overflow-wrap: anywhere;
@@ -59,7 +59,7 @@
 
   &__icon {
     flex-shrink: 0;
-    color: pdz.color("error");
+    color: pdz.color("danger");
   }
 
   &__titles {
@@ -229,14 +229,14 @@
 
     &--primary {
       border-color: transparent;
-      background: pdz.color("error");
-      color: pdz.color("on-error");
+      background: pdz.color("danger");
+      color: pdz.color("on-danger");
       font-weight: 600;
 
       &:hover {
-        background: pdz.color("error");
+        background: pdz.color("danger");
         filter: brightness(1.06);
-        color: pdz.color("on-error");
+        color: pdz.color("on-danger");
       }
 
       &:disabled {

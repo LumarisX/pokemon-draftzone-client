@@ -177,17 +177,17 @@
     }
 
     &--invalid {
-      border-color: pdz.color(error);
+      border-color: pdz.color(danger);
 
       &:focus {
-        outline-color: pdz.color(error);
+        outline-color: pdz.color(danger);
       }
     }
   }
 
   &__error {
     @include pdz.text(label, $family: false);
-    color: pdz.color(error);
+    color: pdz.color(danger);
   }
 }
 

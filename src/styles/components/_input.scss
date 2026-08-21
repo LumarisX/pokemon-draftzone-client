@@ -41,11 +41,11 @@
 }
 
 .pdz-input--invalid {
-  border-color: pdz.color(error);
+  border-color: pdz.color(danger);
 
   &:focus {
-    border-color: pdz.color(error);
-    box-shadow: 0 0 0 2px pdz.color(error-container);
+    border-color: pdz.color(danger);
+    box-shadow: 0 0 0 2px pdz.color(danger-container);
   }
 }
 
@@ -61,7 +61,7 @@ select.pdz-input {
 [pdz-error] {
   font-size: pdz.font-size(xs);
   font-weight: pdz.font-weight(semibold);
-  color: pdz.color(error);
+  color: pdz.color(danger);
 }
 
 [pdz-hint] {

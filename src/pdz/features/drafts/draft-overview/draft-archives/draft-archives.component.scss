@@ -85,8 +85,8 @@
     transition: background-color pdz.duration(base) pdz.easing(standard);
 
     &-confirm {
-      background-color: pdz.color(error);
-      color: pdz.color(on-error);
+      background-color: pdz.color(danger);
+      color: pdz.color(on-danger);
 
       &:hover {
         opacity: 0.8;

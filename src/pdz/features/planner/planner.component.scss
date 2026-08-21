@@ -96,12 +96,12 @@
     }
 
     &--confirm {
-      background-color: pdz.color(error-container);
-      border-color: pdz.color(error);
-      color: pdz.color(on-error-container);
+      background-color: pdz.color(danger-container);
+      border-color: pdz.color(danger);
+      color: pdz.color(on-danger-container);
 
       &:hover {
-        background-color: pdz.color(error-container);
+        background-color: pdz.color(danger-container);
       }
     }
   }
@@ -166,7 +166,7 @@
     }
 
     &--danger:not(:disabled):hover {
-      color: pdz.color(error);
+      color: pdz.color(danger);
     }
 
     &:disabled {

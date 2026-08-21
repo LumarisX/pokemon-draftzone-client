@@ -134,8 +134,8 @@
   height: 1.1rem;
   padding: 0 0.3rem;
   border-radius: pdz.shape(corner-full);
-  background-color: pdz.color(error);
-  color: pdz.color(on-error);
+  background-color: pdz.color(danger);
+  color: pdz.color(on-danger);
   font-family: var(--pdz-font-body);
   @include pdz.text(label-strong, $family: false);
   line-height: 1;

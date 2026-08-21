@@ -99,12 +99,12 @@
   }
 
   &.filter-denied {
-    background-color: pdz.color(error-container);
-    color: pdz.color(on-error-container);
+    background-color: pdz.color(danger-container);
+    color: pdz.color(on-danger-container);
 
     &:hover {
-      background-color: pdz.color(error);
-      color: pdz.color(on-error);
+      background-color: pdz.color(danger);
+      color: pdz.color(on-danger);
     }
   }
 }

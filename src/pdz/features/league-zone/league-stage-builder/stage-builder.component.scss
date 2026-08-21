@@ -171,8 +171,8 @@ $gutter-width: var(--gutter-width, 11rem);
     }
 
     &--danger:hover:not(:disabled) {
-      background: pdz.color("error-container");
-      color: pdz.color("on-error-container");
+      background: pdz.color("danger-container");
+      color: pdz.color("on-danger-container");
     }
 
     &:disabled {

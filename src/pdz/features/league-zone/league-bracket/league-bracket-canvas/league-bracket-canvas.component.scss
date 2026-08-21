@@ -67,8 +67,8 @@
       color: pdz.color("on-primary");
 
       &:hover {
-        background: pdz.color("primary-darker");
-        border-color: pdz.color("primary-darker");
+        background: pdz.color("primary-hover");
+        border-color: pdz.color("primary-hover");
         color: pdz.color("on-primary");
       }
 

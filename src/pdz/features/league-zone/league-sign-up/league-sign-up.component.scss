@@ -248,7 +248,7 @@
 
   &__error {
     @include text(label);
-    color: pdz.color(error);
+    color: pdz.color(danger);
   }
 
   &__hint {
@@ -275,7 +275,7 @@
 }
 
 .required {
-  color: pdz.color(error);
+  color: pdz.color(danger);
 }
 
 // ─── Radio Group ──────────────────────────────────────────────────────────
@@ -382,7 +382,7 @@
   transition: color pdz.duration(base) pdz.easing(standard);
 
   &:hover {
-    color: pdz.color(primary-darker);
+    color: pdz.color(primary-hover);
     text-decoration: underline;
   }
 

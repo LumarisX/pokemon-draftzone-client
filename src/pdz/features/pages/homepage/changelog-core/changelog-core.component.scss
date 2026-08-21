@@ -83,6 +83,6 @@
   }
 
   &--removed .changelog-category__label {
-    color: pdz.color(error);
+    color: pdz.color(danger);
   }
 }

@@ -9,10 +9,10 @@ $tones: (
     border: success-border,
   ),
   error: (
-    surface: error-container,
-    ink: on-error-container,
-    accent: error,
-    border: error-border,
+    surface: danger-container,
+    ink: on-danger-container,
+    accent: danger,
+    border: danger-border,
   ),
   warning: (
     surface: warning-container,
@@ -24,7 +24,7 @@ $tones: (
     surface: info-container,
     ink: on-info-container,
     accent: info,
-    border: null,
+    border: info-border,
   ),
 );
 
@@ -54,16 +54,7 @@ $tones: (
     --pdz-toast-surface: #{pdz.color(map.get($tokens, surface))};
     --pdz-toast-ink: #{pdz.color(map.get($tokens, ink))};
     --pdz-toast-accent: #{pdz.color(map.get($tokens, accent))};
-
-    @if map.get($tokens, border) {
-      --pdz-toast-border: #{pdz.color(map.get($tokens, border))};
-    } @else {
-      --pdz-toast-border: #{color-mix(
-          in srgb,
-          pdz.color(map.get($tokens, accent)) 30%,
-          transparent
-        )};
-    }
+    --pdz-toast-border: #{pdz.color(map.get($tokens, border))};
   }
 }
 

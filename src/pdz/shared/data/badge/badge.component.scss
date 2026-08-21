@@ -31,27 +31,27 @@ $tones: (
     line: warning-border,
   ),
   danger: (
-    solid: error,
-    on-solid: on-error,
-    soft: error-container,
-    on-soft: on-error-container,
-    line: error-border,
+    solid: danger,
+    on-solid: on-danger,
+    soft: danger-container,
+    on-soft: on-danger-container,
+    line: danger-border,
   ),
   info: (
     solid: info,
     on-solid: on-info,
     soft: info-container,
     on-soft: on-info-container,
-    line: info,
+    line: info-border,
   ),
 );
 
 :host {
-  --pdz-badge-solid: #{pdz.color(error)};
-  --pdz-badge-on-solid: #{pdz.color(on-error)};
-  --pdz-badge-soft: #{pdz.color(error-container)};
-  --pdz-badge-on-soft: #{pdz.color(on-error-container)};
-  --pdz-badge-line: #{pdz.color(error-border)};
+  --pdz-badge-solid: #{pdz.color(danger)};
+  --pdz-badge-on-solid: #{pdz.color(on-danger)};
+  --pdz-badge-soft: #{pdz.color(danger-container)};
+  --pdz-badge-on-soft: #{pdz.color(on-danger-container)};
+  --pdz-badge-line: #{pdz.color(danger-border)};
 
   display: inline-flex;
   align-items: center;

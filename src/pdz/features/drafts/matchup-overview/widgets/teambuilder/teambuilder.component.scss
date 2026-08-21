@@ -122,8 +122,8 @@
     width: 1.25rem;
     height: 1.25rem;
     padding: 0;
-    background-color: pdz.color(error-container);
-    color: pdz.color(on-error-container);
+    background-color: pdz.color(danger-container);
+    color: pdz.color(on-danger-container);
     border: none;
     border-radius: 50%;
     cursor: pointer;
@@ -135,7 +135,7 @@
     z-index: 2;
 
     &:hover {
-      background-color: pdz.color(error);
+      background-color: pdz.color(danger);
       transform: scale(1.1);
     }
 

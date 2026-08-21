@@ -223,10 +223,10 @@
     width: 1.5rem;
     height: 1.5rem;
     padding: 0;
-    border: 1px solid pdz.color(error);
+    border: 1px solid pdz.color(danger);
     border-radius: pdz.shape(corner-xs);
-    background: pdz.color(error-container);
-    color: pdz.color(on-error-container);
+    background: pdz.color(danger-container);
+    color: pdz.color(on-danger-container);
     font: inherit;
     font-size: pdz.font-size(xs);
     cursor: pointer;

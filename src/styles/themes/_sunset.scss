@@ -1,171 +1,72 @@
+@use "tools/accent" as accent;
 @use "tools/theme" as theme;
 
 $theme-overrides: (
-  light: (
-    // Surface Colors (Orange-tinted)
-    surface: "orange-50",
-    surface-variant: "orange-300",
-    surface-container-low: "orange-100",
-    surface-container: "orange-150",
-    surface-container-high: "orange-200",
-    surface-container-highest: "orange-300",
-    on-surface: "orange-950",
-    on-surface-variant: "orange-900",
+  light: accent.apply(
+      (
+        // Surface Colors (Orange-tinted)
+        surface: "orange-25",
+        surface-variant: "orange-100",
+        surface-container-low: "orange-25",
+        surface-container: "orange-50",
+        surface-container-high: "orange-75",
+        surface-container-highest: "orange-100",
+        on-surface: "orange-950",
+        on-surface-variant: "orange-900",
 
-    // Primary Theme (Purple)
-    primary: "purple-600",
-    primary-accent: "purple-600",
-    primary-lighter: "purple-400",
-    primary-darker: "purple-600",
-    on-primary: "white",
-    primary-container: "purple-150",
-    primary-container-low: "purple-100",
-    primary-container-high: "purple-300",
-    primary-container-hover: "purple-200",
-    on-primary-container: "purple-900",
-    primary-hover: "purple-350",
-    primary-border: "purple-250",
-    primary-subtle: "purple-100",
-    primary-gradient: linear-gradient(
-        135deg,
-        var(--pdz-color-purple-500),
-        var(--pdz-color-purple-300)
+        // Menu Theme (Orange)
+        menu: "orange-550",
+        menu-lighter: "orange-450",
+        menu-darker: "orange-650",
+        menu-container: "orange-50",
+        menu-container-low: "orange-25",
+        menu-container-high: "orange-125",
+        menu-container-hover: "orange-75",
+        on-menu-container: "orange-950",
+        menu-hover: "orange-400",
+        menu-border: "orange-200",
+        menu-subtle: "orange-50",
+
+        // Logo Colors
+        logo-top: "purple-450",
+        logo-bottom: "pink-450",
+
+        // Loading Colors
+        loading-primary-high: "purple-550",
+        loading-primary-low: "purple-300",
+        loading-secondary-high: "pink-550",
+        loading-secondary-low: "pink-300",
+
+        // Hero
+        hero: url("/assets/images/hero/hero_sunset.webp"),
       ),
-    // Secondary Theme (Pink)
-    secondary: "pink-600",
-    secondary-accent: "pink-650",
-    secondary-lighter: "pink-400",
-    secondary-darker: "pink-600",
-    on-secondary: "white",
-    secondary-container: "pink-150",
-    secondary-container-low: "pink-100",
-    secondary-container-high: "pink-300",
-    secondary-container-hover: "pink-200",
-    on-secondary-container: "pink-900",
-    secondary-hover: "pink-350",
-    secondary-border: "pink-250",
-    secondary-subtle: "pink-100",
-    secondary-gradient: linear-gradient(
-        135deg,
-        var(--pdz-color-pink-500),
-        var(--pdz-color-pink-300)
+      "purple",
+      "pink",
+      light
+    ),
+  dark: accent.apply(
+      (
+        // Logo Colors
+        logo-top: "purple-400",
+        logo-bottom: "pink-400",
+
+        // Loading Colors
+        loading-primary-high: "purple-350",
+        loading-primary-low: "purple-550",
+        loading-secondary-high: "pink-350",
+        loading-secondary-low: "pink-550",
+
+        // Hero
+        hero: linear-gradient(
+            135deg,
+            var(--pdz-color-purple-400),
+            var(--pdz-color-purple-250)
+          ),
       ),
-    // Menu Theme (Orange)
-    menu: "orange-600",
-    menu-lighter: "orange-500",
-    menu-darker: "orange-600",
-    menu-container: "orange-150",
-    menu-container-low: "orange-100",
-    menu-container-high: "orange-350",
-    menu-container-hover: "orange-250",
-    on-menu-container: "orange-950",
-    menu-hover: "orange-400",
-    menu-border: "orange-350",
-    menu-subtle: "orange-150",
-
-    // Status Colors
-    error: "red-800",
-
-    // Disabled State
-    surface-disabled: "gray-150",
-
-    // Logo Colors
-    logo-top: "purple-500",
-    logo-bottom: "pink-500",
-
-    // Loading Colors
-    loading-primary-high: "purple-600",
-    loading-primary-low: "purple-400",
-    loading-secondary-high: "pink-600",
-    loading-secondary-low: "pink-400",
-
-    // Semantic Data Colors
-    positive: "mint-400",
-    on-positive: "mint-950",
-    positive-container: "mint-900",
-    on-positive-container: "mint-100",
-    negative: "rose-250",
-    on-negative: "rose-950",
-    negative-container: "rose-900",
-    on-negative-container: "rose-100",
-
-    // Scale Colors
-    neutral: "gray-200",
-    scale-positive: "mint-300",
-    scale-negative: "rose-300",
-    scale-positive-1: "mint-100",
-    scale-positive-2: "mint-250",
-    scale-positive-3: "mint-400",
-    scale-positive-4: "mint-500",
-    scale-positive-5: "mint-600",
-    scale-positive-6: "mint-700",
-    scale-positive-7: "mint-800",
-    scale-negative-1: "rose-100",
-    scale-negative-2: "rose-250",
-    scale-negative-3: "rose-400",
-    scale-negative-4: "rose-500",
-    scale-negative-5: "rose-600",
-    scale-negative-6: "rose-700",
-    scale-negative-7: "rose-800",
-
-    hero: url("/assets/images/hero/hero_sunset.webp"),
-  ),
-  dark: (
-    // Primary Theme (Purple)
-    primary: "purple-350",
-    primary-accent: "purple-250",
-    primary-lighter: "purple-300",
-    primary-darker: "purple-400",
-    on-primary: "purple-950",
-    primary-container: "purple-900",
-    primary-container-low: "purple-950",
-    primary-container-high: "purple-850",
-    primary-container-hover: "purple-800",
-    on-primary-container: "purple-200",
-    primary-hover: "purple-550",
-    primary-border: "purple-700",
-    primary-subtle: "purple-900",
-    primary-gradient: linear-gradient(
-        135deg,
-        var(--pdz-color-purple-500),
-        var(--pdz-color-purple-300)
-      ),
-    // Secondary Theme (Pink)
-    secondary: "pink-450",
-    secondary-accent: "pink-350",
-    secondary-lighter: "pink-350",
-    secondary-darker: "pink-550",
-    on-secondary: "pink-950",
-    secondary-container: "pink-900",
-    secondary-container-low: "pink-950",
-    secondary-container-high: "pink-850",
-    secondary-container-hover: "pink-800",
-    on-secondary-container: "pink-200",
-    secondary-hover: "pink-550",
-    secondary-border: "pink-700",
-    secondary-subtle: "pink-900",
-    secondary-gradient: linear-gradient(
-        135deg,
-        var(--pdz-color-pink-500),
-        var(--pdz-color-pink-300)
-      ),
-    // Logo Colors
-    logo-top: "purple-500",
-    logo-bottom: "pink-500",
-
-    // Loading Colors
-    loading-primary-high: "purple-600",
-    loading-primary-low: "purple-400",
-    loading-secondary-high: "pink-600",
-    loading-secondary-low: "pink-400",
-
-    // Hero
-    hero: linear-gradient(
-        135deg,
-        var(--pdz-color-purple-500),
-        var(--pdz-color-purple-300)
-      ),
-  ),
+      "purple",
+      "pink",
+      dark
+    ),
 );
 
 $theme: theme.build-pdz-theme($theme-overrides);

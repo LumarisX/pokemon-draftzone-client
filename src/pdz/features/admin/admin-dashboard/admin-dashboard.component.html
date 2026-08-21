@@ -37,6 +37,18 @@
           </button>
         }
       </div>
+      <div>
+        <pdz-segmented
+          align="stretch"
+          [(value)]="bucket"
+          (valueChange)="setBucket($event)"
+          aria-label="Stretched"
+        >
+          @for (b of buckets; track b) {
+            <pdz-segmented-option [value]="b" [label]="b" />
+          }
+        </pdz-segmented>
+      </div>
     </section>
 
     <!-- Charts -->

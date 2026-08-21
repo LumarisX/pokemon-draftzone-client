@@ -1,0 +1,169 @@
+import { readFileSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
+
+const ROOT = process.cwd();
+const SOURCE = join(ROOT, "tools", "color-source-ramps.scss");
+const TARGET = join(ROOT, "src", "styles", "tokens", "_color.scss");
+
+const LADDER = {
+  25: 0.98, 50: 0.96, 75: 0.94, 100: 0.92, 125: 0.9,
+  150: 0.88, 175: 0.86, 200: 0.84, 225: 0.82, 250: 0.8,
+  300: 0.76, 350: 0.72, 400: 0.68, 450: 0.64, 500: 0.6,
+  550: 0.553, 600: 0.506, 650: 0.459, 700: 0.412,
+  725: 0.385, 750: 0.358, 775: 0.331, 800: 0.304, 825: 0.277,
+  850: 0.25, 875: 0.223, 900: 0.196, 925: 0.169, 950: 0.142,
+};
+const STEPS = Object.keys(LADDER)
+  .map(Number)
+  .sort((a, b) => a - b);
+
+const CHROMA_GAIN = { jade: 1.18 };
+
+const GRAY_HUE = 264;
+const GRAY_MAX_CHROMA = 0.009;
+
+const ORDER = [
+  "gray", "pink", "rose", "red", "orange", "amber", "yellow",
+  "lime", "green", "mint", "jade", "cyan", "blue", "purple",
+];
+
+const LABEL = {
+  gray: "Gray", pink: "Pink", rose: "Rose", red: "Red", orange: "Orange",
+  amber: "Amber", yellow: "Yellow", lime: "Lime", green: "Green",
+  mint: "Mint", jade: "Jade", cyan: "Cyan", blue: "Blue", purple: "Purple",
+};
+
+const srgbToLinear = (c) =>
+  c / 255 <= 0.04045 ? c / 255 / 12.92 : ((c / 255 + 0.055) / 1.055) ** 2.4;
+
+const linearToSrgb = (c) =>
+  c <= 0.0031308 ? 12.92 * c : 1.055 * c ** (1 / 2.4) - 0.055;
+
+function hexToOklch(hex) {
+  const r = srgbToLinear(parseInt(hex.slice(1, 3), 16));
+  const g = srgbToLinear(parseInt(hex.slice(3, 5), 16));
+  const b = srgbToLinear(parseInt(hex.slice(5, 7), 16));
+  const l = Math.cbrt(0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b);
+  const m = Math.cbrt(0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b);
+  const s = Math.cbrt(0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b);
+  const L = 0.2104542553 * l + 0.793617785 * m - 0.0040720468 * s;
+  const A = 1.9779984951 * l - 2.428592205 * m + 0.4505937099 * s;
+  const B = 0.0259040371 * l + 0.7827717662 * m - 0.808675766 * s;
+  return { L, C: Math.hypot(A, B), H: ((Math.atan2(B, A) * 180) / Math.PI + 360) % 360 };
+}
+
+function oklchToLinearRgb(L, C, H) {
+  const h = (H * Math.PI) / 180;
+  const A = C * Math.cos(h);
+  const B = C * Math.sin(h);
+  const l = (L + 0.3963377774 * A + 0.2158037573 * B) ** 3;
+  const m = (L - 0.1055613458 * A - 0.0638541728 * B) ** 3;
+  const s = (L - 0.0894841775 * A - 1.291485548 * B) ** 3;
+  return [
+    4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s,
+    -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s,
+    -0.0041960863 * l - 0.7034186147 * m + 1.707614701 * s,
+  ];
+}
+
+const inGamut = (rgb) => rgb.every((c) => c >= -0.0005 && c <= 1.0005);
+
+function toHex(L, chroma, H) {
+  let C = chroma;
+  if (!inGamut(oklchToLinearRgb(L, C, H))) {
+    let lo = 0;
+    let hi = C;
+    for (let i = 0; i < 40; i += 1) {
+      const mid = (lo + hi) / 2;
+      if (inGamut(oklchToLinearRgb(L, mid, H))) lo = mid;
+      else hi = mid;
+    }
+    C = lo;
+  }
+  return `#${oklchToLinearRgb(L, C, H)
+    .map((c) => {
+      const clamped = Math.min(1, Math.max(0, c));
+      const byte = Math.round(Math.min(1, Math.max(0, linearToSrgb(clamped))) * 255);
+      return byte.toString(16).padStart(2, "0");
+    })
+    .join("")}`;
+}
+
+function readSourceCurves() {
+  const src = readFileSync(SOURCE, "utf8");
+  const curves = {};
+  for (const match of src.matchAll(/"([a-z]+)-(\d+)":\s*(#[0-9a-fA-F]{6})/g)) {
+    const [, name, , hex] = match;
+    (curves[name] ??= []).push(hexToOklch(hex));
+  }
+  for (const name of Object.keys(curves)) curves[name].sort((a, b) => b.L - a.L);
+  return curves;
+}
+
+function sampleCurve(curve, L) {
+  const first = curve[0];
+  const last = curve[curve.length - 1];
+  if (L >= first.L) {
+    return { C: (first.C * (1 - L)) / Math.max(1e-6, 1 - first.L), H: first.H };
+  }
+  if (L <= last.L) {
+    return { C: (last.C * L) / Math.max(1e-6, last.L), H: last.H };
+  }
+  for (let i = 0; i < curve.length - 1; i += 1) {
+    const a = curve[i];
+    const b = curve[i + 1];
+    if (L <= a.L && L >= b.L) {
+      const t = (a.L - L) / (a.L - b.L);
+      let dH = b.H - a.H;
+      if (dH > 180) dH -= 360;
+      if (dH < -180) dH += 360;
+      return { C: a.C + (b.C - a.C) * t, H: (a.H + dH * t + 360) % 360 };
+    }
+  }
+  return { C: 0, H: first.H };
+}
+
+function buildRamp(name, curves) {
+  const ramp = {};
+  if (name === "gray") {
+    for (const step of STEPS) {
+      const L = LADDER[step];
+      const t = Math.max(0, (0.6 - L) / (0.6 - LADDER[950]));
+      ramp[step] = toHex(L, GRAY_MAX_CHROMA * t, GRAY_HUE);
+    }
+    return ramp;
+  }
+  const curve = curves[name];
+  if (!curve) throw new Error(`no source ramp for "${name}" in ${SOURCE}`);
+  for (const step of STEPS) {
+    const L = LADDER[step];
+    const { C, H } = sampleCurve(curve, L);
+    ramp[step] = toHex(L, C * (CHROMA_GAIN[name] ?? 1), H);
+  }
+  return ramp;
+}
+
+function render(ramps) {
+  let out = `// Generated by tools/gen-color-ramps.mjs — do not hand-edit.
+
+$core-tokens: (
+  // Neutrals & Surfaces
+  "white": #ffffff,
+  "black": #000000,
+`;
+  for (const name of ORDER) {
+    out += `\n  // ${LABEL[name]}\n`;
+    out += `${STEPS.map((s) => `  "${name}-${s}": ${ramps[name][s]}`).join(",\n")},\n`;
+  }
+  out += `
+  // Logo Specific
+  "logo-core-color": #9c65aa
+);
+`;
+  return out;
+}
+
+const curves = readSourceCurves();
+const ramps = Object.fromEntries(ORDER.map((n) => [n, buildRamp(n, curves)]));
+writeFileSync(TARGET, render(ramps));
+console.log(`wrote ${ORDER.length} ramps x ${STEPS.length} steps -> ${TARGET}`);

@@ -117,7 +117,7 @@
   }
 
   &__header--denied {
-    border-bottom-color: pdz.color(error);
+    border-bottom-color: pdz.color(danger);
   }
 
   &__toggle {
@@ -233,7 +233,7 @@
 
   &__upload-error {
     @include text(label);
-    color: pdz.color(error);
+    color: pdz.color(danger);
   }
 
   &__team-actions {
@@ -402,8 +402,8 @@
   }
 
   &--denied {
-    background: pdz.color(error-container);
-    color: pdz.color(on-error-container);
+    background: pdz.color(danger-container);
+    color: pdz.color(on-danger-container);
     border-color: transparent;
   }
 }

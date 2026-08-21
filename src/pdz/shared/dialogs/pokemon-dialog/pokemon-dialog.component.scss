@@ -439,8 +439,8 @@
 
   &--banned {
     background-color: pdz.color(surface-container-low);
-    border-color: pdz.color(error-border);
-    color: pdz.color(error);
+    border-color: pdz.color(danger-border);
+    color: pdz.color(danger);
     box-shadow: none;
     opacity: 0.7;
   }
@@ -538,8 +538,8 @@
   }
 
   &--ban {
-    background-color: pdz.color(error-container);
-    color: pdz.color(on-error-container);
+    background-color: pdz.color(danger-container);
+    color: pdz.color(on-danger-container);
   }
 
   &__detail {

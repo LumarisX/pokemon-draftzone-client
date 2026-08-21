@@ -198,6 +198,6 @@
     @include text(label);
     margin: 0;
     padding: 0 pdz.space(md) pdz.space(sm);
-    color: pdz.color("error");
+    color: pdz.color("danger");
   }
 }

@@ -85,9 +85,9 @@
 }
 
 .pdz-choice--invalid {
-  border-color: pdz.color(error);
+  border-color: pdz.color(danger);
 
   &:focus-visible {
-    outline-color: pdz.color(error);
+    outline-color: pdz.color(danger);
   }
 }

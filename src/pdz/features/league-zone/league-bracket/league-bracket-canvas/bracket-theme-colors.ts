@@ -19,10 +19,10 @@ export const BRACKET_COLOR_TOKENS = [
   'negative',
   'negative-container',
   'primary',
-  'primary-darker',
+  'primary-hover',
   'on-primary',
   'secondary',
-  'secondary-darker',
+  'secondary-hover',
   'on-secondary',
 ] as const;
 

@@ -39,7 +39,7 @@
   transition: all pdz.duration(base) pdz.easing(standard);
 
   &:hover:not(:disabled) {
-    background: pdz.color(primary-darker);
+    background: pdz.color(primary-hover);
     transform: translateY(-2px);
     box-shadow: var(--pdz-level-2);
   }
@@ -62,8 +62,8 @@
   }
 
   &.error {
-    background: pdz.color(error-container);
-    color: pdz.color(on-error-container);
+    background: pdz.color(danger-container);
+    color: pdz.color(on-danger-container);
   }
 }
 
@@ -140,8 +140,8 @@
 
 .btn-delete {
   &:hover:not(:disabled) {
-    background: pdz.color(error);
-    color: pdz.color(on-error);
+    background: pdz.color(danger);
+    color: pdz.color(on-danger);
   }
 }
 
@@ -227,7 +227,7 @@
   transition: all pdz.duration(base) pdz.easing(standard);
 
   &:hover:not(:disabled) {
-    background: pdz.color(primary-darker);
+    background: pdz.color(primary-hover);
     transform: translateY(-2px);
     box-shadow: var(--pdz-level-3);
   }

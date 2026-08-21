@@ -1,0 +1,72 @@
+@use "sass:list";
+@use "sass:map";
+@use "sass:string";
+
+$-steps: (
+  light: (
+    "": 550,
+    "-accent": 650,
+    "-strong": 700,
+    "-soft": 350,
+    "-hover": 600,
+    "-border": 300,
+    "-subtle": 50,
+    "-container": 100,
+    "-container-low": 50,
+    "-container-high": 175,
+    "-container-hover": 150,
+  ),
+  dark: (
+    "": 400,
+    "-accent": 350,
+    "-strong": 250,
+    "-soft": 500,
+    "-hover": 350,
+    "-border": 700,
+    "-subtle": 875,
+    "-container": 825,
+    "-container-low": 875,
+    "-container-high": 775,
+    "-container-hover": 800,
+  ),
+);
+
+$-on-fill: (light: "white", dark: 925);
+$-on-container: (light: 800, dark: 100);
+$-gradient: (light: (550, 350), dark: (400, 250));
+
+@function scale($role, $hue, $mode) {
+  $out: ();
+
+  @each $suffix, $step in map.get($-steps, $mode) {
+    $out: map.set($out, "#{$role}#{$suffix}", "#{$hue}-#{$step}");
+  }
+
+  $on-fill: map.get($-on-fill, $mode);
+  @if $on-fill == "white" {
+    $out: map.set($out, "on-#{$role}", "white");
+  } @else {
+    $out: map.set($out, "on-#{$role}", "#{$hue}-#{$on-fill}");
+  }
+  $out: map.set(
+    $out,
+    "on-#{$role}-container",
+    "#{$hue}-#{map.get($-on-container, $mode)}"
+  );
+
+  $stops: map.get($-gradient, $mode);
+  $out: map.set(
+    $out,
+    "#{$role}-gradient",
+    string.unquote(
+      "linear-gradient(135deg, var(--pdz-color-#{$hue}-#{list.nth($stops, 1)}), var(--pdz-color-#{$hue}-#{list.nth($stops, 2)}))"
+    )
+  );
+
+  @return $out;
+}
+
+@function apply($base, $primary-hue, $secondary-hue, $mode) {
+  $out: map.merge($base, scale(primary, $primary-hue, $mode));
+  @return map.merge($out, scale(secondary, $secondary-hue, $mode));
+}

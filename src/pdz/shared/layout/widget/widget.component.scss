@@ -50,3 +50,14 @@ pdz-card {
 :host([data-padding="none"]) .pdz-widget__body {
   padding: 0;
 }
+
+// The card fills its grid cell, but the content keeps its natural width and
+// centres — stretching a stat table or type grid pulls its columns apart.
+:host([data-align="center"]) .pdz-widget__body {
+  display: grid;
+  justify-content: center;
+
+  > * {
+    max-width: 100%;
+  }
+}

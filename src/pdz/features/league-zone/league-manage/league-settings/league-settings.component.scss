@@ -113,10 +113,10 @@
     }
 
     &--invalid {
-      border-color: pdz.color(error);
+      border-color: pdz.color(danger);
 
       &:focus {
-        box-shadow: 0 0 0 2px pdz.color(error-container);
+        box-shadow: 0 0 0 2px pdz.color(danger-container);
       }
     }
 
@@ -149,7 +149,7 @@
     color: pdz.color(on-surface-variant);
 
     &--error {
-      color: pdz.color(error);
+      color: pdz.color(danger);
     }
   }
 }
@@ -289,7 +289,7 @@
     align-items: center;
     gap: pdz.space(xs);
     @include text(label);
-    color: pdz.color(error);
+    color: pdz.color(danger);
     margin-right: auto;
   }
 }
@@ -317,7 +317,7 @@
     color: pdz.color(on-primary);
 
     &:hover:not(:disabled) {
-      background: pdz.color(primary-darker);
+      background: pdz.color(primary-hover);
     }
   }
 

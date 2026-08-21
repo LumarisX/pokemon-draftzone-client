@@ -86,8 +86,8 @@ let nextSegmentedId = 0;
     '[attr.data-variant]': 'variant()',
   },
 })
-export class SegmentedComponent implements ControlValueAccessor {
-  value = model<unknown>(undefined);
+export class SegmentedComponent<T = unknown> implements ControlValueAccessor {
+  value = model<T>();
   disabled = model(false, { alias: 'disabled' });
   size = input<SegmentedSize>('md');
   align = input<SegmentedAlign>('start');
@@ -119,7 +119,7 @@ export class SegmentedComponent implements ControlValueAccessor {
     return this.options().findIndex((option) => !option.disabled());
   });
 
-  private onChange: (value: unknown) => void = () => {};
+  private onChange: (value: T) => void = () => {};
   private onTouched: () => void = () => {};
 
   constructor() {
@@ -168,8 +168,11 @@ export class SegmentedComponent implements ControlValueAccessor {
   protected select(index: number) {
     const option = this.options()[index];
     if (!option || option.disabled() || this.disabled()) return;
-    this.value.set(option.value());
-    this.onChange(option.value());
+
+    const selectedValue = option.value() as T;
+
+    this.value.set(selectedValue);
+    this.onChange(selectedValue);
     this.onTouched();
   }
 
@@ -214,11 +217,11 @@ export class SegmentedComponent implements ControlValueAccessor {
     return undefined;
   }
 
-  writeValue(value: unknown) {
+  writeValue(value: T) {
     this.value.set(value);
   }
 
-  registerOnChange(fn: (value: unknown) => void) {
+  registerOnChange(fn: (value: T) => void) {
     this.onChange = fn;
   }
 

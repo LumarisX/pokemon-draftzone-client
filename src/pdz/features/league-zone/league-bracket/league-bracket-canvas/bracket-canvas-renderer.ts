@@ -480,7 +480,7 @@ function drawMatchCard(
       state.hoveredMatchId === match.id;
     ctx.globalAlpha = enabled ? 1 : 0.5;
     if (enabled) {
-      ctx.fillStyle = pillHovered ? c['primary-darker'] : c['primary'];
+      ctx.fillStyle = pillHovered ? c['primary-hover'] : c['primary'];
       roundedRect(ctx, pill.x + offsetX, pill.y + offsetY, pill.w, pill.h, pill.h / 2);
       ctx.fill();
       ctx.fillStyle = c['on-primary'];

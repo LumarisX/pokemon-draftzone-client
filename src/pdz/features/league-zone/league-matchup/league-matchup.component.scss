@@ -18,7 +18,7 @@
     @include pdz-league-section-message();
 
     &--error {
-      color: pdz.color(error);
+      color: pdz.color(danger);
     }
   }
 
@@ -395,7 +395,7 @@
     @include text(label);
     flex-basis: 100%;
     margin: 0;
-    color: pdz.color("error");
+    color: pdz.color("danger");
   }
 }
 

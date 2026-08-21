@@ -396,9 +396,9 @@
     }
 
     &--rejected {
-      background: pdz.color(error-container);
-      color: pdz.color(on-error-container);
-      border-color: pdz.color(error);
+      background: pdz.color(danger-container);
+      color: pdz.color(on-danger-container);
+      border-color: pdz.color(danger);
     }
   }
 
@@ -432,11 +432,11 @@
     }
 
     &--reject {
-      color: pdz.color(error);
+      color: pdz.color(danger);
 
       &:hover:not(:disabled) {
-        background: pdz.color(error-container);
-        border-color: pdz.color(error);
+        background: pdz.color(danger-container);
+        border-color: pdz.color(danger);
       }
     }
 
@@ -448,7 +448,7 @@
 
   &__error {
     @include text(body-sm);
-    color: pdz.color(error);
+    color: pdz.color(danger);
     margin: pdz.space(2xs) 0 0;
   }
 

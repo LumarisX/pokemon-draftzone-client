@@ -45,7 +45,7 @@
 }
 
 :host(.pdz-select--invalid) .pdz-select__trigger {
-  border-color: pdz.color(error);
+  border-color: pdz.color(danger);
 }
 
 .pdz-select__trigger--placeholder .pdz-select__value {

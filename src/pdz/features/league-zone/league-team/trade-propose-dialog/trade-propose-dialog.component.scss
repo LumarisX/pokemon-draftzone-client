@@ -52,7 +52,7 @@
 
   &__error {
     @include text(body);
-    color: pdz.color(error);
+    color: pdz.color(danger);
     margin: 0;
   }
 }
@@ -174,7 +174,7 @@
     &:hover,
     &:focus-visible {
       background: pdz.color(surface-container-high);
-      color: pdz.color(error);
+      color: pdz.color(danger);
     }
   }
 }
@@ -200,7 +200,7 @@
     color: pdz.color(on-surface-variant);
 
     &--over {
-      color: pdz.color(error);
+      color: pdz.color(danger);
     }
 
     &--under {
@@ -216,7 +216,7 @@
 
   &__warning {
     @include text(body-sm);
-    color: pdz.color(error);
+    color: pdz.color(danger);
     margin: 0;
   }
 }

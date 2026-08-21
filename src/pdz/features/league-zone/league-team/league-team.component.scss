@@ -114,7 +114,7 @@
 
   &__error {
     @include text(body-sm);
-    color: pdz.color(error);
+    color: pdz.color(danger);
     margin: 0;
   }
 
@@ -219,7 +219,7 @@
     @include pdz-league-section-message();
 
     &--error {
-      color: pdz.color(error);
+      color: pdz.color(danger);
       font-style: normal;
     }
   }

@@ -2,12 +2,6 @@
 @use "pdz-theming" as pdz;
 
 .matchup-main {
-  background: linear-gradient(
-    to right,
-    pdz.color(primary-subtle),
-    pdz.color(background),
-    pdz.color(secondary-subtle)
-  );
   height: 100%;
   overflow-y: auto;
 
@@ -91,7 +85,6 @@
     color: pdz.color(on-surface);
   }
 }
-
 
 .matchup-skeleton {
   &__body {

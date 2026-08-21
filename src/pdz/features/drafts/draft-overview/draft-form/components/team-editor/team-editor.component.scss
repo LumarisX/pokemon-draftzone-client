@@ -200,7 +200,7 @@
   }
 
   &--invalid {
-    border-color: pdz.color(error);
+    border-color: pdz.color(danger);
   }
 
   &.cdk-drag-dragging {
@@ -242,7 +242,7 @@
     align-items: center;
     justify-content: center;
     width: 3rem;
-    color: pdz.color(error);
+    color: pdz.color(danger);
     flex-shrink: 0;
   }
 
@@ -290,7 +290,7 @@
 
   &__invalid-label {
     @include pdz.text(body-sm-strong, $family: false);
-    color: pdz.color(error);
+    color: pdz.color(danger);
     white-space: nowrap;
   }
 

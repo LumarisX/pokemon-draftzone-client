@@ -36,7 +36,7 @@
 
   &__error {
     @include text(label);
-    color: pdz.color(error);
+    color: pdz.color(danger);
     margin: 0;
   }
 

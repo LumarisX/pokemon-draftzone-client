@@ -26,8 +26,8 @@ const RADIUS = SIZE / 2;
 const DEFAULT_COLORS = [
   'var(--pdz-color-primary)',
   'var(--pdz-color-secondary)',
-  'var(--pdz-color-secondary-lighter)',
-  'var(--pdz-color-secondary-darker)',
+  'var(--pdz-color-secondary-soft)',
+  'var(--pdz-color-secondary-strong)',
 ];
 
 @Component({

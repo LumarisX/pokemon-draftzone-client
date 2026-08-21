@@ -49,7 +49,7 @@ $container-padding: pdz.space(md);
     background-color: pdz.color(success);
   }
   &.negative {
-    background-color: pdz.color(error);
+    background-color: pdz.color(danger);
   }
 }
 

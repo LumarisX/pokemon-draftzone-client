@@ -103,7 +103,7 @@
 
   &__error {
     font-size: var(--pdz-font-size-xs);
-    color: pdz.color(error);
+    color: pdz.color(danger);
   }
 }
 
@@ -262,7 +262,7 @@
   &__error {
     flex-basis: 100%;
     font-size: var(--pdz-font-size-xs);
-    color: pdz.color(error);
+    color: pdz.color(danger);
   }
 }
 
@@ -301,7 +301,7 @@
 
   &__error {
     font-size: var(--pdz-font-size-xs);
-    color: pdz.color(error);
+    color: pdz.color(danger);
   }
 }
 
@@ -440,7 +440,7 @@
   }
 
   &__error {
-    color: pdz.color(error);
+    color: pdz.color(danger);
     font-size: var(--pdz-font-size-sm);
   }
 
@@ -603,8 +603,8 @@ select {
   }
 
   &.btn-error {
-    background: pdz.color(error-container);
-    color: pdz.color(on-error-container);
+    background: pdz.color(danger-container);
+    color: pdz.color(on-danger-container);
   }
 
   &:disabled {
@@ -630,7 +630,7 @@ select {
 
 .save-error {
   font-size: var(--pdz-font-size-xs);
-  color: pdz.color(error);
+  color: pdz.color(danger);
   max-width: 200px;
   text-align: right;
 }
@@ -639,9 +639,9 @@ select {
   @include flat-button(
     (
       background: transparent,
-      background-hover: pdz.color(error-container),
-      color: pdz.color(error),
-      color-hover: pdz.color(on-error-container),
+      background-hover: pdz.color(danger-container),
+      color: pdz.color(danger),
+      color-hover: pdz.color(on-danger-container),
     )
   );
 }
