@@ -23,11 +23,63 @@
       outline-offset: 1px;
       border-color: pdz.color(primary-accent);
     }
+
+    &--disabled {
+      opacity: 0.6;
+      background: pdz.color(surface-disabled);
+      color: pdz.color(on-surface-disabled);
+    }
+
+    &--compact {
+      min-height: 3rem;
+      padding: 0 pdz.space(xs);
+      gap: pdz.space(xs);
+
+      .pokemon-search__selection {
+        gap: pdz.space(xs);
+      }
+
+      .pokemon-search__selection-sprite {
+        width: 2.75rem;
+        height: 2.75rem;
+      }
+    }
   }
 
   &__icon {
     color: pdz.color(on-surface-variant);
     flex-shrink: 0;
+  }
+
+  &__selection {
+    display: flex;
+    flex: 1;
+    min-width: 0;
+    align-items: center;
+    gap: pdz.space(sm);
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: text;
+
+    &:disabled {
+      cursor: not-allowed;
+    }
+  }
+
+  &__selection-sprite {
+    width: 2.5rem;
+    height: 2.5rem;
+    flex-shrink: 0;
+  }
+
+  &__selection-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   &__input {

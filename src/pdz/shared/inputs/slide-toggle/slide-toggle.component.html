@@ -6,19 +6,7 @@
 >
   <span class="toggle-track">
     <span class="toggle-thumb">
-      @if (checkedState) {
-        @if (onSVG()) {
-          <pdz-icon class="toggle-icon" [name]="onSVG()!"></pdz-icon>
-        } @else {
-          <pdz-icon class="toggle-icon" [name]="offIcon()"></pdz-icon>
-        }
-      } @else {
-        @if (offSVG()) {
-          <pdz-icon class="toggle-icon" [name]="offSVG()!"></pdz-icon>
-        } @else {
-          <pdz-icon class="toggle-icon" [name]="offIcon()"></pdz-icon>
-        }
-      }
+      <pdz-icon class="toggle-icon" [name]="iconName" [size]="18"></pdz-icon>
     </span>
   </span>
   <ng-content></ng-content>

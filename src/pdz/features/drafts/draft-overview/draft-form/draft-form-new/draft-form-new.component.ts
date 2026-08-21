@@ -22,16 +22,19 @@ export class DraftFormNewComponent implements OnInit {
   private draftService = inject(DraftService);
   private location = inject(Location);
 
-  params: { team?: DraftPokemon[] } = {};
+  params: { team?: DraftPokemon[]; format?: string; ruleset?: string } = {};
 
   ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
-      if ('team' in params) {
+      if ('team' in params)
         this.params.team = (params['team'] as string[]).map((id) => ({
           id: id,
           name: getNameByPid(id),
         }));
-      }
+      if ('format' in params) this.params.format = params['format'] as string;
+      if ('ruleset' in params)
+        this.params.ruleset = params['ruleset'] as string;
+
       this.location.replaceState(this.location.path().split('?')[0]);
     });
   }

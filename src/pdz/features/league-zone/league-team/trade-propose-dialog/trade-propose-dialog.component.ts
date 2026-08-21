@@ -9,7 +9,7 @@ import { DraftPokemon } from '@pdz/features/drafts/draft.model';
 import {
   PokemonSearchComponent,
   PokemonSearchOption,
-} from '@pdz/features/drafts/draft-overview/draft-form/components/pokemon-search/pokemon-search.component';
+} from '@pdz/shared/dropdowns/pokemon-search/pokemon-search.component';
 import { TierListService } from '@pdz/features/tier-lists/tier-list.service';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';

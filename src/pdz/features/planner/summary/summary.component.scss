@@ -1,20 +1,4 @@
-@use "pdz-theming" as pdz;
-
-.content-container {
-  display: flex;
-  width: 100%;
-  min-width: fit-content;
-  height: 100%;
-  min-height: fit-content;
-  justify-content: center;
-}
-
-.table-wrapper {
-  padding: pdz.space(lg);
-  min-width: fit-content;
-  width: fit-content;
-  height: fit-content;
-  border-radius: pdz.shape(corner-lg);
-  background-color: pdz.color(surface);
-  box-shadow: var(--pdz-level-3);
+:host {
+  display: block;
+  max-width: 100%;
 }

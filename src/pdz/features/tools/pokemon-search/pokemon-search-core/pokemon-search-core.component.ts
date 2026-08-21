@@ -19,6 +19,7 @@ import {
 import { PokemonTypeComponent } from '@pdz/shared/dialogs/pokemon-type/pokemon-type.component';
 import { RulesetSelectComponent } from '@pdz/shared/dropdowns/ruleset-select/ruleset.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
+import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { FilterDrawerComponent } from '../filter-drawer/filter-drawer.component';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
@@ -44,6 +45,7 @@ import {
     MatDialogModule,
     SpriteComponent,
     IconComponent,
+    LoadingComponent,
     PokemonTypeComponent,
     FilterDrawerComponent,
     RulesetSelectComponent,
@@ -67,7 +69,34 @@ export class PokemonSearchCoreComponent implements OnInit, OnDestroy {
   readonly fields = FIELD_DEFINITIONS;
   readonly operatorMap = OPERATOR_MAP;
 
+<<<<<<< HEAD
   readonly rulesetId = input<string>();
+=======
+  @Input()
+  set rulesetId(value: string | undefined) {
+    this.hostRulesetId = value;
+    if (!value || value === this.selectedRuleset) return;
+    this.selectedRuleset = value;
+    if (this.activeFilterCriteria.length) this.search();
+  }
+  get rulesetId(): string | undefined {
+    return this.hostRulesetId;
+  }
+
+  @Input({ transform: booleanAttribute }) embedded = false;
+
+  @Input({ transform: booleanAttribute }) selectable = false;
+
+  @Input()
+  set takenIds(value: readonly string[] | undefined) {
+    this.takenIdSet = new Set(value ?? []);
+  }
+
+  @Output() pokemonSelected = new EventEmitter<{ id: string; name: string }>();
+
+  private hostRulesetId?: string;
+  private takenIdSet = new Set<string>();
+>>>>>>> planner-update
 
   copyLinkSuccess = false;
   isBookmarked = false;
@@ -132,8 +161,12 @@ export class PokemonSearchCoreComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+<<<<<<< HEAD
     const rulesetId = this.rulesetId();
     if (rulesetId) this.selectedRuleset = rulesetId;
+=======
+    if (this.embedded) return;
+>>>>>>> planner-update
 
     this.checkIfBookmarked();
     this.unlistenUrl = this.location.onUrlChange(() =>
@@ -143,39 +176,48 @@ export class PokemonSearchCoreComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => this.checkIfBookmarked());
 
+<<<<<<< HEAD
     this.route.queryParams.subscribe((params) => {
       if (params['format']) this.selectedFormat = params['format'];
       if (!this.rulesetId() && params['ruleset'])
         this.selectedRuleset = params['ruleset'];
+=======
+    this.route.queryParams
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((params) => {
+        if (params['format']) this.selectedFormat = params['format'];
+        if (!this.rulesetId && params['ruleset'])
+          this.selectedRuleset = params['ruleset'];
+>>>>>>> planner-update
 
-      const urlSearchMode = params['searchMode'];
+        const urlSearchMode = params['searchMode'];
 
-      if (urlSearchMode === 'quick') {
-        const q = (params['q'] ?? '').trim();
-        if (!q) return;
-        const sig = `quick:${q}`;
-        if (sig === this.lastAppliedQuerySignature) return;
-        this.lastAppliedQuerySignature = sig;
-        this.searchMode = 'quick';
-        this.quickName = q;
-        this.quickSearch();
-        return;
-      }
+        if (urlSearchMode === 'quick') {
+          const q = (params['q'] ?? '').trim();
+          if (!q) return;
+          const sig = `quick:${q}`;
+          if (sig === this.lastAppliedQuerySignature) return;
+          this.lastAppliedQuerySignature = sig;
+          this.searchMode = 'quick';
+          this.quickName = q;
+          this.quickSearch();
+          return;
+        }
 
-      const incomingQuery = params['query'];
-      if (!incomingQuery) return;
+        const incomingQuery = params['query'];
+        if (!incomingQuery) return;
 
-      const parsed = this.parseIncomingQuery(incomingQuery);
-      if (!parsed) return;
+        const parsed = this.parseIncomingQuery(incomingQuery);
+        if (!parsed) return;
 
-      const parsedSignature = JSON.stringify(parsed);
-      if (parsedSignature === this.lastAppliedQuerySignature) return;
+        const parsedSignature = JSON.stringify(parsed);
+        if (parsedSignature === this.lastAppliedQuerySignature) return;
 
-      this.lastAppliedQuerySignature = parsedSignature;
-      this.searchMode = 'advanced';
-      this.applyRequest(parsed);
-      this.search();
-    });
+        this.lastAppliedQuerySignature = parsedSignature;
+        this.searchMode = 'advanced';
+        this.applyRequest(parsed);
+        this.search();
+      });
   }
 
   ngOnDestroy(): void {
@@ -394,6 +436,15 @@ export class PokemonSearchCoreComponent implements OnInit, OnDestroy {
     this.viewMode = mode;
   }
 
+  isTaken(pokemon: PokemonFullData): boolean {
+    return this.takenIdSet.has(pokemon.id);
+  }
+
+  selectPokemon(pokemon: PokemonFullData): void {
+    if (!this.selectable || this.isTaken(pokemon)) return;
+    this.pokemonSelected.emit({ id: pokemon.id, name: pokemon.name });
+  }
+
   onSortFieldChange(): void {
     const opt = this.sortFieldOptions.find((o) => o.value === this.sortField);
     if (opt) this.sortDir = opt.defaultDir;
@@ -481,6 +532,7 @@ export class PokemonSearchCoreComponent implements OnInit, OnDestroy {
   }
 
   private updateURLQuery(queryValue: SearchPokemonRequest): void {
+    if (this.embedded) return;
     const currentPath = this.location.path().split('?')[0];
     const queryParts = [
       `format=${encodeURIComponent(this.selectedFormat)}`,

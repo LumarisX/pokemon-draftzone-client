@@ -4,7 +4,8 @@ import { RouterModule } from '@angular/router';
 import { DRAFT_OVERVIEW_PATH } from '@pdz/core/route-paths';
 import { FormatSelectComponent } from '@pdz/shared/dropdowns/format-select/format.component';
 import { RulesetSelectComponent } from '@pdz/shared/dropdowns/ruleset-select/ruleset.component';
-import { DraftFormGroup } from '../plannner.component';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
+import { DraftFormGroup } from '../planner.component';
 
 @Component({
   selector: 'pdz-planner-settings',
@@ -15,6 +16,7 @@ import { DraftFormGroup } from '../plannner.component';
     RouterModule,
     RulesetSelectComponent,
     FormatSelectComponent,
+    IconComponent,
   ],
 })
 export class PlannerSettingsComponent {

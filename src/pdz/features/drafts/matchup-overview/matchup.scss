@@ -1,4 +1,6 @@
+@forward "mixins/widgets";
 @use "mixins/buttons" as *;
+@use "mixins/widgets" as *;
 @use "pdz-theming" as pdz;
 
 .widget-container {

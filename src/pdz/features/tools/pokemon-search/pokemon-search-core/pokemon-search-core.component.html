@@ -191,7 +191,7 @@
 
   <div class="pokemon-results__header">
     @if (isLoading) {
-      <p class="pokemon-results__meta">Searching...</p>
+      <pdz-loading class="pokemon-results__loading"></pdz-loading>
     } @else {
       <p class="pokemon-results__meta">{{ results.length }} results</p>
     }
@@ -280,75 +280,117 @@
     @if (viewMode === "grid") {
       <div class="pokemon-results__grid">
         @for (pokemon of results; track pokemon.id + "-" + $index) {
-          <button
-            type="button"
-            class="pokemon-results__card"
-            (click)="openSummary(pokemon)"
-          >
-            <pdz-sprite
-              flipped
-              size="4rem"
-              [pokemon]="pokemon"
-              class="pokemon-results__sprite"
-            ></pdz-sprite>
-            <span class="pokemon-results__card-name">{{ pokemon.name }}</span>
-          </button>
+          <div class="pokemon-results__cell">
+            <button
+              type="button"
+              class="pokemon-results__card"
+              [class.pokemon-results__card--taken]="
+                selectable && isTaken(pokemon)
+              "
+              [attr.title]="
+                selectable && isTaken(pokemon) ? 'Already on your team' : null
+              "
+              (click)="openSummary(pokemon)"
+            >
+              <pdz-sprite
+                flipped
+                size="4rem"
+                [pokemon]="pokemon"
+                class="pokemon-results__sprite"
+              ></pdz-sprite>
+              <span class="pokemon-results__card-name">{{ pokemon.name }}</span>
+            </button>
+            @if (selectable && !isTaken(pokemon)) {
+              <button
+                type="button"
+                class="pokemon-results__select"
+                [attr.aria-label]="'Add ' + pokemon.name + ' to your team'"
+                title="Add to team"
+                (click)="selectPokemon(pokemon)"
+              >
+                <pdz-icon name="add" [size]="16"></pdz-icon>
+              </button>
+            }
+          </div>
         }
       </div>
     } @else {
       <div class="pokemon-results__list">
         @for (pokemon of results; track pokemon.id + "-" + $index) {
-          <button
-            type="button"
-            class="pokemon-results__list-row"
-            (click)="openSummary(pokemon)"
-          >
-            <div class="pokemon-results__list-main">
-              <pdz-sprite flipped [pokemon]="pokemon" size="4rem"></pdz-sprite>
-              <p class="pokemon-results__list-name">{{ pokemon.name }}</p>
-              <div class="pokemon-results__list-types">
-                @for (type of pokemon.types; track $index) {
-                  <pdz-pokemon-type
-                    display="both"
-                    [type]="type"
-                  ></pdz-pokemon-type>
-                }
-              </div>
-              <div class="pokemon-results__list-abilities">
-                @for (ability of pokemon.abilities; track $index) {
-                  <span class="pokemon-results__list-ability">{{
-                    ability
-                  }}</span>
-                }
-              </div>
-              <div class="pokemon-results__list-stats">
-                @for (stat of statList; track stat.key) {
-                  <div
-                    class="pokemon-results__stat-cube"
-                    [style.background-color]="
-                      statColor(pokemon.baseStats[stat.key])
-                    "
-                  >
-                    <span class="pokemon-results__stat-label">{{
-                      stat.label
+          <div class="pokemon-results__cell pokemon-results__cell--list">
+            @if (selectable && !isTaken(pokemon)) {
+              <button
+                type="button"
+                class="pokemon-results__select pokemon-results__select--list"
+                [attr.aria-label]="'Add ' + pokemon.name + ' to your team'"
+                title="Add to team"
+                (click)="selectPokemon(pokemon)"
+              >
+                <pdz-icon name="add" [size]="16"></pdz-icon>
+              </button>
+            }
+            <button
+              type="button"
+              class="pokemon-results__list-row"
+              [class.pokemon-results__list-row--taken]="
+                selectable && isTaken(pokemon)
+              "
+              [attr.title]="
+                selectable && isTaken(pokemon) ? 'Already on your team' : null
+              "
+              (click)="openSummary(pokemon)"
+            >
+              <div class="pokemon-results__list-main">
+                <pdz-sprite
+                  flipped
+                  [pokemon]="pokemon"
+                  size="4rem"
+                ></pdz-sprite>
+                <p class="pokemon-results__list-name">{{ pokemon.name }}</p>
+                <div class="pokemon-results__list-types">
+                  @for (type of pokemon.types; track $index) {
+                    <pdz-pokemon-type
+                      display="both"
+                      [type]="type"
+                    ></pdz-pokemon-type>
+                  }
+                </div>
+                <div class="pokemon-results__list-abilities">
+                  @for (ability of pokemon.abilities; track $index) {
+                    <span class="pokemon-results__list-ability">{{
+                      ability
                     }}</span>
+                  }
+                </div>
+                <div class="pokemon-results__list-stats">
+                  @for (stat of statList; track stat.key) {
+                    <div
+                      class="pokemon-results__stat-cube"
+                      [style.background-color]="
+                        statColor(pokemon.baseStats[stat.key])
+                      "
+                    >
+                      <span class="pokemon-results__stat-label">{{
+                        stat.label
+                      }}</span>
+                      <span class="pokemon-results__stat-value">{{
+                        pokemon.baseStats[stat.key]
+                      }}</span>
+                    </div>
+                  }
+                  <div
+                    class="pokemon-results__stat-cube pokemon-results__stat-cube--bst"
+                    [style.background-color]="bstColor(pokemon.bst)"
+                  >
+                    <span class="pokemon-results__stat-label">BST</span>
                     <span class="pokemon-results__stat-value">{{
-                      pokemon.baseStats[stat.key]
+                      pokemon.bst
                     }}</span>
                   </div>
-                }
-                <div
-                  class="pokemon-results__stat-cube pokemon-results__stat-cube--bst"
-                  [style.background-color]="bstColor(pokemon.bst)"
-                >
-                  <span class="pokemon-results__stat-label">BST</span>
-                  <span class="pokemon-results__stat-value">{{
-                    pokemon.bst
-                  }}</span>
                 </div>
               </div>
-            </div>
-          </button>
+            </button>
+          </div>
         }
       </div>
     }

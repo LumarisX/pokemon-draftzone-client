@@ -1,0 +1,115 @@
+@use "pdz-theming" as pdz;
+@use "mixins" as *;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: fit-content;
+}
+
+.animated-selector__label {
+  @include apply-typography(label-sm);
+  display: block;
+}
+
+.animated-selector {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 20rem;
+
+  &[data-direction="horizontal"] {
+    max-width: none;
+
+    .animated-selector__highlight {
+      top: 0;
+      bottom: 0;
+      left: auto;
+      right: auto;
+      transition:
+        transform 300ms cubic-bezier(0.4, 0, 0.2, 1),
+        width 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .animated-selector__options {
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: 1fr;
+    }
+
+    .selector-option {
+      min-width: var(--pdz-selector-option-min-width, 2.5rem);
+    }
+  }
+}
+
+.animated-selector__highlight {
+  position: absolute;
+  left: 0;
+  right: 0;
+  background: pdz.color(primary-container);
+  border-radius: pdz.shape(corner-full);
+  transition:
+    transform 300ms cubic-bezier(0.4, 0, 0.2, 1),
+    height 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.animated-selector__options {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(3xs);
+  z-index: 1;
+}
+
+.selector-option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: pdz.space(3xs);
+  min-width: var(--pdz-selector-option-min-width, 10rem);
+  padding: pdz.space(2xs) pdz.space(md);
+  border: none;
+  border-radius: pdz.shape(corner-full);
+  background: transparent;
+  color: pdz.color(on-surface-variant);
+  cursor: pointer;
+  white-space: nowrap;
+  user-select: none;
+  outline: none;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  transition: color 200ms ease;
+
+  &:hover:not(.selected) {
+    color: pdz.color(on-surface);
+  }
+
+  &:focus-visible {
+    outline: 2px solid pdz.color(primary);
+    outline-offset: 1px;
+  }
+
+  &.selected {
+    color: pdz.color(on-primary-container);
+    font-weight: var(--pdz-font-weight-bold);
+  }
+}
+
+.selector-option__icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.selector-option__label {
+  color: inherit;
+  font: inherit;
+}

@@ -1,9 +1,10 @@
 import { Component, input } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { SlideToggleComponent } from '@pdz/shared/inputs/slide-toggle/slide-toggle.component';
 import { TypechartCoreComponent } from '@pdz/shared/widgets/typechart/typechart-core/typechart-core.component';
 import { TypestatsCoreComponent } from '@pdz/shared/widgets/typechart/typestats-core/typestats-core.component';
 import { TypeChart } from '../../drafts/matchup-overview/matchup-interface';
+import { PlannerWidgetComponent } from '../widget/planner-widget.component';
 
 @Component({
   selector: 'pdz-planner-typechart',
@@ -12,9 +13,10 @@ import { TypeChart } from '../../drafts/matchup-overview/matchup-interface';
   imports: [
     FormsModule,
     ReactiveFormsModule,
-    MatSlideToggleModule,
+    SlideToggleComponent,
     TypechartCoreComponent,
     TypestatsCoreComponent,
+    PlannerWidgetComponent,
   ],
 })
 export class PlannerTypechartComponent {

@@ -1,125 +1,194 @@
-@let draftForm = draftFormGroup();
-@if (draftForm && draftForm.controls.team) {
-  <div class="table-container">
-    <table
-      class="pdz-table"
-      data-header="primary"
-      data-sticky
-      data-density="compact"
-    >
-      <thead>
-        <tr>
-          <th></th>
-          <th></th>
-          <th>Name</th>
-          <th>Value</th>
-          <th class="pdz-table__center">Captain</th>
-          <th class="pdz-table__center">Drafted</th>
-        </tr>
-      </thead>
-      <tbody cdkDropList (cdkDropListDropped)="drop($event)" class="team-list">
-        @for (teamCtrl of draftForm.controls.team.controls; track teamCtrl) {
-          <tr
-            cdkDrag
-            class="team-item"
-            [ngClass]="{
-              alternate: $index > min - 1,
-            }"
-          >
-            <div *cdkDragPreview>
-              @if (teamCtrl.controls.pokemon.value) {
-                <pdz-sprite flipped [pokemon]="teamCtrl.controls.pokemon.value">
-                </pdz-sprite>
-              }
-            </div>
-            <td>
-              <pdz-icon
-                class="drag-icon"
-                cdkDragHandle
-                name="drag_indicator"
-              ></pdz-icon>
-            </td>
-            <td>
-              <div class="sprite-wrapper">
-                @if (teamCtrl.controls.pokemon.value) {
-                  <pdz-sprite
-                    flipped
-                    [pokemon]="teamCtrl.controls.pokemon.value"
-                  >
-                  </pdz-sprite>
-                }
-              </div>
-            </td>
-            <td>
-              <div class="pokemon-input">
-                <pdz-pokemon-select
-                  (selectionCleared)="onClear($index)"
-                  [ruleset]="draftForm.controls.ruleset.value"
-                  [formControl]="teamCtrl.controls.pokemon"
-                  appearance="outline"
-                ></pdz-pokemon-select>
-              </div>
-              <!-- {{ teamCtrl.controls.pokemon.value | json }} -->
-            </td>
-            @if (isPoints) {
-              <td>
-                <label pdz-field label="Points" class="value-input">
-                  <input
-                    pdz-input
-                    type="number"
-                    placeholder="0"
-                    [formControl]="teamCtrl.controls.value"
-                  />
-                </label>
-              </td>
-            } @else {
-              <td>
-                <label pdz-field label="Tier" class="value-input">
-                  <input
-                    pdz-input
-                    type="text"
-                    spellcheck="false"
-                    [formControl]="teamCtrl.controls.tier"
-                  />
-                </label>
-              </td>
-            }
-            <td class="col-checkbox pdz-table__center">
-              <input pdz-checkbox [formControl]="teamCtrl.controls.capt" />
-            </td>
-            <td class="col-checkbox pdz-table__center">
-              <input pdz-checkbox [formControl]="teamCtrl.controls.drafted" />
-            </td>
-          </tr>
-        }
-      </tbody>
-    </table>
-  </div>
-  @if (isPoints) {
-    <div class="points-container">
-      <div class="points-box">
-        <div>
-          <strong>Points Remaining:</strong>
-          {{ remainingPoints }}
-        </div>
-        <div>
-          <strong>Average:</strong>
-          {{ remainingPoints / remainingPokemon | number: "1.0-2" }} ×
-          {{ remainingPokemon }} Pokémon
+@if (draftFormGroup) {
+  <div class="planner-team">
+    <div class="planner-team__controls">
+      <div class="planner-team__control">
+        <span class="planner-team__control-label">Size</span>
+        <div class="planner-team__range">
+          <input
+            class="planner-team__control-input"
+            type="number"
+            min="0"
+            max="18"
+            aria-label="Minimum team size"
+            [formControl]="draftFormGroup.controls.min"
+          />
+          <span class="planner-team__range-sep">–</span>
+          <input
+            class="planner-team__control-input"
+            type="number"
+            min="0"
+            max="18"
+            aria-label="Maximum team size"
+            [formControl]="draftFormGroup.controls.max"
+          />
         </div>
       </div>
+
+      <div class="planner-team__control">
+        <span class="planner-team__control-label" id="planner-team-system">
+          Values
+        </span>
+        <div
+          class="planner-team__segmented"
+          role="group"
+          aria-labelledby="planner-team-system"
+        >
+          @for (option of systemOptions; track option.id) {
+            <button
+              type="button"
+              class="planner-team__segment"
+              [class.planner-team__segment--active]="
+                draftFormGroup.controls.system.value === option.id
+              "
+              (click)="draftFormGroup.controls.system.setValue(option.id)"
+            >
+              {{ option.label }}
+            </button>
+          }
+        </div>
+      </div>
+
+      @if (isPoints) {
+        <div class="planner-team__control">
+          <label class="planner-team__control-label" for="planner-team-total">
+            Total
+          </label>
+          <input
+            class="planner-team__control-input planner-team__control-input--wide"
+            id="planner-team-total"
+            type="number"
+            [formControl]="draftFormGroup.controls.totalPoints"
+          />
+        </div>
+      }
+
+      <button
+        type="button"
+        class="planner-team__clear"
+        [disabled]="!clearableCount"
+        (click)="clearTeam()"
+      >
+        Clear
+      </button>
     </div>
-    <!-- <div class="points-container">
-        <table class="points-box">
-          <tr>
-            <th>Points Remaining</th>
-            <td>{{ remainingPoints }}</td>
-          </tr>
-          <tr>
-            <th>Average</th>
-            <td>{{ remainingPoints / remainingPokemon | number: "1.0-2" }}</td>
-          </tr>
-        </table>
-      </div> -->
-  }
+
+    <div
+      class="planner-team__list"
+      cdkDropList
+      (cdkDropListDropped)="drop($event)"
+    >
+      @for (teamCtrl of teamControls; track teamCtrl) {
+        <div
+          class="planner-team__row"
+          [class.planner-team__row--reserve]="$index >= min"
+          [class.planner-team__row--empty]="!teamCtrl.controls.pokemon.value"
+          [class.planner-team__row--locked]="teamCtrl.controls.locked.value"
+          cdkDrag
+        >
+          <div class="planner-team__drag-preview" *cdkDragPreview>
+            @if (teamCtrl.controls.pokemon.value) {
+              <pdz-sprite
+                flipped
+                [pokemon]="teamCtrl.controls.pokemon.value"
+              ></pdz-sprite>
+            }
+          </div>
+
+          <button
+            type="button"
+            class="planner-team__handle"
+            [attr.aria-label]="'Reorder slot ' + ($index + 1)"
+            [title]="$index >= min ? 'Reserve slot' : 'Starter slot'"
+            cdkDragHandle
+          >
+            <span class="planner-team__slot">{{ $index + 1 }}</span>
+            <pdz-icon
+              class="planner-team__grip"
+              name="drag_indicator"
+              [size]="18"
+            ></pdz-icon>
+          </button>
+
+          <pdz-pokemon-search
+            class="planner-team__pokemon"
+            mode="select"
+            density="compact"
+            placeholder="Add Pokémon..."
+            [locked]="teamCtrl.controls.locked.value"
+            [ruleset]="draftFormGroup.controls.ruleset.value"
+            [takenIds]="takenIdsFor($index)"
+            [formControl]="teamCtrl.controls.pokemon"
+            (selectionCleared)="onClear($index)"
+          ></pdz-pokemon-search>
+
+          <div class="planner-team__meta">
+            <div class="planner-team__value">
+              @if (isPoints) {
+                <input
+                  class="planner-team__value-input"
+                  type="number"
+                  inputmode="numeric"
+                  placeholder="0"
+                  [readonly]="teamCtrl.controls.locked.value"
+                  [attr.aria-label]="'Points for slot ' + ($index + 1)"
+                  [formControl]="teamCtrl.controls.value"
+                />
+              } @else {
+                <input
+                  class="planner-team__value-input"
+                  type="text"
+                  spellcheck="false"
+                  placeholder="—"
+                  [readonly]="teamCtrl.controls.locked.value"
+                  [attr.aria-label]="'Tier for slot ' + ($index + 1)"
+                  [formControl]="teamCtrl.controls.tier"
+                />
+              }
+              <span class="planner-team__value-unit" aria-hidden="true">
+                {{ isPoints ? "points" : "tier" }}
+              </span>
+            </div>
+
+            <button
+              type="button"
+              class="planner-team__lock"
+              [class.planner-team__lock--on]="teamCtrl.controls.locked.value"
+              [attr.aria-pressed]="teamCtrl.controls.locked.value"
+              [attr.aria-label]="
+                teamCtrl.controls.locked.value ? 'Unlock slot' : 'Lock slot'
+              "
+              [title]="
+                teamCtrl.controls.locked.value
+                  ? 'Unlock — allow edits and clearing'
+                  : 'Lock — keep this pick when clearing'
+              "
+              (click)="toggle(teamCtrl.controls.locked)"
+            >
+              <pdz-icon
+                [name]="teamCtrl.controls.locked.value ? 'lock' : 'lock_open'"
+                [size]="18"
+                [fill]="teamCtrl.controls.locked.value"
+              ></pdz-icon>
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+
+    @if (isPoints) {
+      <dl class="planner-team__totals">
+        <div class="planner-team__total">
+          <dt>Points Remaining</dt>
+          <dd>{{ remainingPoints }}</dd>
+        </div>
+        <div class="planner-team__total">
+          <dt>Average</dt>
+          <dd>
+            {{ remainingPoints / remainingPokemon | number: "1.0-2" }} ×
+            {{ remainingPokemon }} Pokémon
+          </dd>
+        </div>
+      </dl>
+    }
+  </div>
 }

@@ -1,12 +1,14 @@
-<div class="coverage-main">
-  @if (coverage) {
+@if (coverage) {
+  <pdz-planner-widget label="Coverage">
     <div class="chart-tooltip"></div>
     <div class="charts-container">
-      <div class="pokemon-charts-container outlined">
+      <div class="pokemon-charts-container">
         <div class="coverage-container">
-          <div class="pokemon-charts-title">
-            Pokémon Move Coverage
-          </div>
+          <<<<<<< HEAD
+          <div class="section-title font-nasa">Pokémon Move Coverage</div>
+          =======
+          <div class="pokemon-charts-title">Pokémon Move Coverage</div>
+          >>>>>>> 2dfeb20282872e4d6b1a5d1f60138084a76e8e09
           <div class="coverage-charts-wrapper">
             @for (pokemon of coverage.team; track $index) {
               <div
@@ -33,8 +35,9 @@
           }
         </div>
       </div>
-      <div class="team-chart-container outlined">
-        <div class="team-chart-title">Team Coverage</div>
+
+      <div class="team-chart-container">
+        <div class="section-title font-nasa">Team Coverage</div>
         <div
           class="team-options-container"
           [attr.data-selected]="category.value"
@@ -72,16 +75,20 @@
           </div>
         </div>
         <pdz-coverage-team-chart [data]="teamData"></pdz-coverage-team-chart>
-        <div class="slider-container">
+        <label class="slider-container">
           <span>Minimum Move BP</span>
-          <mat-slider min="20" max="120" step="10" showTickMarks discrete>
-            <input [formControl]="sliderControl" matSliderThumb />
-          </mat-slider>
-        </div>
+          <pdz-slider
+            [min]="20"
+            [max]="120"
+            [step]="10"
+            [showValue]="true"
+            [formControl]="sliderControl"
+          ></pdz-slider>
+        </label>
       </div>
     </div>
-  }
-</div>
+  </pdz-planner-widget>
+}
 <svg xmlns="http://www.w3.org/2000/svg" width="0" height="0">
   <defs>
     <filter id="background-shadow" x="-50%" y="-50%" width="200%" height="200%">

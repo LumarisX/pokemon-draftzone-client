@@ -8,76 +8,18 @@
         [formControl]="draftFormGroup.controls.ruleset"
       ></pdz-ruleset-select>
     </div>
-
-    <div class="settings__row">
-      <div class="settings__field">
-        <label for="settings-min">Minimum</label>
-        <input
-          id="settings-min"
-          type="number"
-          [formControl]="draftFormGroup.controls.min"
-          min="0"
-          max="18"
-        />
-      </div>
-      <div class="settings__field">
-        <label for="settings-max">Maximum</label>
-        <input
-          id="settings-max"
-          type="number"
-          [formControl]="draftFormGroup.controls.max"
-          min="0"
-          max="18"
-        />
-      </div>
-    </div>
-
-    <div class="settings__row">
-      <div class="settings__field settings__field">
-        <label>Value Type</label>
-        <div class="settings__segmented" role="group" aria-label="Value type">
-          <button
-            type="button"
-            class="settings__seg-btn"
-            [class.is-active]="
-              draftFormGroup.controls.system.value === 'points'
-            "
-            (click)="draftFormGroup.controls.system.setValue('points')"
-          >
-            Points
-          </button>
-          <button
-            type="button"
-            class="settings__seg-btn"
-            [class.is-active]="draftFormGroup.controls.system.value === 'tiers'"
-            (click)="draftFormGroup.controls.system.setValue('tiers')"
-          >
-            Tiers
-          </button>
-        </div>
-      </div>
-      <div class="settings__field" [class.is-hidden]="!isPoints">
-        <label for="settings-total-points">Total Points</label>
-        <input
-          id="settings-total-points"
-          type="number"
-          [formControl]="draftFormGroup.controls.totalPoints"
-        />
-      </div>
-    </div>
-
-    <div class="settings__actions">
-      <a
-        class="settings__save-button"
-        [routerLink]="['/', draftPath, 'new']"
-        [queryParams]="{
-          team: teamIds,
-          format: draftFormGroup.controls.format.value,
-          ruleset: draftFormGroup.controls.ruleset.value,
-        }"
-      >
-        Save to New League
-      </a>
-    </div>
+    <a
+      class="planner-settings__save"
+      [routerLink]="['/', draftPath, 'new']"
+      [queryParams]="{
+        team: teamIds,
+        format: draftFormGroup.controls.format.value,
+        ruleset: draftFormGroup.controls.ruleset.value,
+      }"
+      title="Save to New League"
+      aria-label="Save to New League"
+    >
+      <pdz-icon name="save" [size]="20" ariaLabel="Save"></pdz-icon>
+    </a>
   </div>
 }

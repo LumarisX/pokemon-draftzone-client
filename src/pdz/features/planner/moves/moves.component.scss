@@ -1,26 +1,22 @@
 @use "pdz-theming" as pdz;
 
-.main-container {
-  display: flex;
-  width: 100%;
-  min-width: fit-content;
-  height: 100%;
-  max-height: 100%;
-  justify-content: center;
-}
-
-pdz-moves-core {
-  padding: pdz.space(lg);
-  width: fit-content;
-  max-width: 50rem;
-  height: 100%;
-  border-radius: pdz.shape(corner-lg);
-  background-color: pdz.color(surface);
-  box-shadow: var(--pdz-level-3);
+:host {
+  display: block;
+  max-width: 100%;
 
   --pdz-cmp-movechart-color: #{pdz.color(primary)};
   --pdz-cmp-movechart-on-container: #{pdz.color(on-primary-container)};
   --pdz-cmp-movechart-container: #{pdz.color(primary-container)};
   --pdz-cmp-movechart-hover: #{pdz.color(primary-container-low)};
   --pdz-cmp-movechart-border: #{pdz.color(primary-border)};
+}
+
+.movechart-wrapper {
+  display: flex;
+  flex-direction: column;
+  max-width: 34rem;
+  max-height: 48rem;
+  min-height: 0;
+  padding: pdz.space(xs);
+  overflow: hidden;
 }

@@ -9,7 +9,7 @@ import { DraftService } from '../draft.service';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { SkeletonComponent } from '@pdz/shared/data/skeleton/skeleton.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
-import { LSDraftData } from '../../../planner/plannner.component';
+import { LSDraftData } from '../../../planner/planner.component';
 import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
@@ -109,8 +109,7 @@ export class DraftPreviewComponent {
     const plannerData: Partial<LSDraftData> = {
       team: draft.team.map((t) => ({
         id: t.id,
-        capt: !!(t.capt?.dmax || t.capt?.tera?.length || t.capt?.z?.length),
-        drafted: true,
+        locked: true,
         value: null,
         tier: '',
       })),

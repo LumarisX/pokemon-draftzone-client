@@ -1,58 +1,426 @@
 @use "pdz-theming" as pdz;
+@use "mixins/buttons" as *;
 
 :host {
   display: flex;
   flex-direction: column;
   max-width: 100%;
-  height: 100%;
+  min-height: 0;
 }
 
-.points-container {
-  flex-grow: 0;
-  border-top: 2px pdz.color(outline) solid;
+.planner-team {
   display: flex;
+  flex: 1 1 auto;
   flex-direction: column;
+  min-height: 0;
+  width: 100%;
 
-  th {
-    text-align: end;
+  &__controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: pdz.space(xs) pdz.space(md);
+    flex-shrink: 0;
+    padding: 0 pdz.space(sm) pdz.space(xs);
   }
 
-  td,
-  th {
-    padding: 0rem 0.5rem;
+  &__control {
+    display: flex;
+    align-items: center;
+    gap: pdz.space(xs);
   }
-}
 
-.table-container {
-  flex-grow: 1;
-  overflow-y: auto;
-}
+  &__clear {
+    @include flat-button(
+      (
+        padding: pdz.space(3xs) pdz.space(xs),
+        gap: pdz.space(2xs),
+        border-radius: pdz.shape(corner-xs),
+        border-width: 1px,
+        border-color: pdz.color(outline-variant),
+        background: pdz.color(surface),
+        background-hover: pdz.color(error-container),
+        border-color-hover: pdz.color(error-border),
+        color: pdz.color(on-surface-variant),
+        color-hover: pdz.color(on-error-container),
+        box-shadow-hover: none,
+      )
+    );
+    margin-left: auto;
+    @include pdz.apply-typography(label-xs);
 
-table {
-  table-layout: fixed;
-}
-.preview-sprite {
-  height: 4rem;
-}
+    &:focus-visible {
+      outline: 2px solid pdz.color(primary);
+      outline-offset: 1px;
+    }
 
-.value-input {
-  width: 5rem;
+    &:disabled {
+      color: pdz.color(on-surface-disabled);
+    }
+  }
 
-  input {
+  &__control-label {
+    color: pdz.color(on-surface-variant);
+    font-weight: var(--pdz-font-weight-bold);
+    @include pdz.apply-typography(label-2xs);
+  }
+
+  &__control-input {
+    width: 2.75rem;
+    padding: pdz.space(3xs) pdz.space(2xs);
+    border: 1px solid pdz.color(outline);
+    border-radius: pdz.shape(corner-xs);
+    background: pdz.color(surface);
+    color: pdz.color(on-surface);
+    font: inherit;
     text-align: center;
+    appearance: textfield;
+    @include pdz.apply-typography(body-sm);
+
     &::-webkit-inner-spin-button,
     &::-webkit-outer-spin-button {
       appearance: none;
       margin: 0;
     }
-    &::-moz-number-spin-box,
-    &::-moz-number-spin-buttons {
-      display: none;
+
+    &:focus {
+      outline: 2px solid pdz.color(primary);
+      outline-offset: 1px;
+      border-color: pdz.color(primary);
     }
-    -moz-appearance: textfield;
+
+    &--wide {
+      width: 3.75rem;
+    }
+  }
+
+  &__range {
+    display: flex;
+    align-items: center;
+    gap: pdz.space(3xs);
+  }
+
+  &__range-sep {
+    color: pdz.color(on-surface-variant);
+  }
+
+  &__segmented {
+    display: inline-flex;
+    align-items: center;
+    gap: pdz.space(3xs);
+    padding: pdz.space(3xs);
+    border: 1px solid pdz.color(outline);
+    border-radius: pdz.shape(corner-xs);
+    background: pdz.color(surface);
+  }
+
+  &__segment {
+    @include flat-button(
+      (
+        padding: pdz.space(3xs) pdz.space(xs),
+        border-radius: pdz.shape(corner-xs),
+        color: pdz.color(on-surface-variant),
+        background-hover: pdz.color(surface-container),
+        box-shadow-hover: none,
+      )
+    );
+    @include pdz.apply-typography(label-xs);
+
+    &--active {
+      border-color: pdz.color(primary-border);
+      background: pdz.color(primary-container);
+      color: pdz.color(on-primary-container);
+
+      &:not(:disabled):not(.disabled):hover {
+        background: pdz.color(primary-container-hover);
+      }
+    }
+  }
+
+  &__list {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    padding: pdz.space(sm);
+    display: flex;
+    flex-direction: column;
+    gap: pdz.space(xs);
+    container-type: inline-size;
+    container-name: planner-rows;
+  }
+
+  @container planner-rows (max-width: 24rem) {
+    .planner-team__value {
+      width: 3.5rem;
+    }
+
+    .planner-team__pokemon {
+      flex-basis: 7rem;
+    }
+  }
+
+  &__row {
+    --planner-row-control: 3rem;
+    --planner-row-accent: transparent;
+
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: pdz.space(xs);
+    padding: pdz.space(2xs) pdz.space(xs);
+    border: 1px solid pdz.color(outline-variant);
+    border-radius: pdz.shape(corner-sm);
+    background: pdz.color(surface-container-lowest);
+    overflow: hidden;
+    transition:
+      border-color 0.15s ease-in-out,
+      background-color 0.15s ease-in-out;
+
+    &::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 3px;
+      background: var(--planner-row-accent);
+      transition: background 0.15s ease-in-out;
+    }
+
+    &:hover {
+      border-color: pdz.color(outline);
+      background: pdz.color(surface-container-low);
+    }
+
+    &:focus-within {
+      border-color: pdz.color(primary-border);
+    }
+
+    &--reserve {
+      background: pdz.color(surface-container-low);
+      border-style: dashed;
+    }
+
+    &--empty {
+      background: transparent;
+    }
+
+    &--locked {
+      --planner-row-accent: #{pdz.color(primary)};
+
+      border-style: solid;
+    }
+
+    &.cdk-drag-placeholder {
+      opacity: 0;
+    }
+
+    &.cdk-drag-animating {
+      transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+    }
+  }
+
+  &__list.cdk-drop-list-dragging &__row:not(.cdk-drag-placeholder) {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+  }
+
+  &__handle {
+    @include icon-button(
+      (
+        width: 1.5rem,
+        height: var(--planner-row-control),
+        padding: 0,
+        border-radius: pdz.shape(corner-xs),
+        background-hover: pdz.color(surface-container-high),
+        box-shadow-hover: none,
+      )
+    );
+    position: relative;
+    flex-shrink: 0;
+    color: pdz.color(on-surface-variant);
+    cursor: grab;
+
+    &:active {
+      cursor: grabbing;
+    }
+  }
+
+  &__slot {
+    color: pdz.color(on-surface-variant);
+    font-variant-numeric: tabular-nums;
+    transition: opacity 0.15s ease-in-out;
+    @include pdz.apply-typography(label-xs);
+  }
+
+  &__grip {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.15s ease-in-out;
+  }
+
+  &__row--reserve &__slot {
+    opacity: 0.6;
+  }
+
+  @media (hover: hover) {
+    &__row:hover &__slot,
+    &__handle:focus-visible &__slot {
+      opacity: 0;
+    }
+
+    &__row:hover &__grip,
+    &__handle:focus-visible &__grip {
+      opacity: 1;
+    }
+  }
+
+  @media (hover: none) {
+    &__slot {
+      opacity: 0;
+    }
+
+    &__grip {
+      opacity: 1;
+    }
+  }
+
+  &__pokemon {
+    flex: 1 1 9rem;
+    min-width: 0;
+  }
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    gap: pdz.space(xs);
+    margin-left: auto;
+  }
+
+  &__value {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 4.5rem;
+    height: var(--planner-row-control);
+    padding: 0 pdz.space(2xs);
+    border: 1px solid pdz.color(outline);
+    border-radius: pdz.shape(corner-xs);
+    background: pdz.color(surface);
+
+    &:focus-within {
+      outline: 2px solid pdz.color(primary);
+      outline-offset: 1px;
+      border-color: pdz.color(primary);
+    }
+  }
+
+  &__value-input {
+    width: 100%;
+    min-width: 0;
+    padding: 0;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: pdz.color(on-surface);
+    font: inherit;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.15;
+    text-align: center;
     appearance: textfield;
+
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+      appearance: none;
+      margin: 0;
+    }
+
+    &::placeholder {
+      color: pdz.color(on-surface-variant);
+    }
+  }
+
+  &__value-unit {
+    flex-shrink: 0;
+    color: pdz.color(on-surface-variant);
+    line-height: 1;
+    text-align: center;
+    letter-spacing: 0.04em;
+    @include pdz.apply-typography(label-2xs);
+  }
+
+  &__lock {
+    @include flat-button(
+      (
+        width: 2.25rem,
+        height: var(--planner-row-control),
+        padding: 0,
+        border-radius: pdz.shape(corner-xs),
+        border-width: 1px,
+        border-color: pdz.color(outline-variant),
+        background: pdz.color(surface),
+        background-hover: pdz.color(surface-container-high),
+        color: pdz.color(on-surface-variant),
+        box-shadow-hover: none,
+      )
+    );
+    flex-shrink: 0;
+
+    &:focus-visible {
+      outline: 2px solid pdz.color(primary);
+      outline-offset: 1px;
+    }
+
+    &--on {
+      border-color: pdz.color(primary-border);
+      background: pdz.color(primary-container);
+      color: pdz.color(on-primary-container);
+
+      &:not(:disabled):hover {
+        background: pdz.color(primary-container-hover);
+      }
+    }
+  }
+
+  &__totals {
+    flex-shrink: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: pdz.space(sm) pdz.space(lg);
+    margin: pdz.space(sm) pdz.space(2xs) 0;
+    padding: pdz.space(sm) pdz.space(md);
+    border: 1px solid pdz.color(outline-variant);
+    border-radius: pdz.shape(corner-sm);
+    background: pdz.color(surface-container-low);
+  }
+
+  &__total {
+    display: flex;
+    align-items: baseline;
+    gap: pdz.space(xs);
+
+    dt {
+      color: pdz.color(on-surface-variant);
+      font-weight: var(--pdz-font-weight-bold);
+      @include pdz.apply-typography(label-sm);
+    }
+
+    dd {
+      margin: 0;
+      @include pdz.apply-typography(body-sm);
+    }
+  }
+
+  &__drag-preview {
+    width: 4rem;
+    height: 4rem;
+    border-radius: pdz.shape(corner-xs);
+    box-shadow: var(--pdz-level-3);
   }
 }
+<<<<<<< HEAD
 
 .pokemon-input {
   width: 12rem;
@@ -95,3 +463,5 @@ table {
   width: 4rem;
   height: 4rem;
 }
+=======
+>>>>>>> planner-update

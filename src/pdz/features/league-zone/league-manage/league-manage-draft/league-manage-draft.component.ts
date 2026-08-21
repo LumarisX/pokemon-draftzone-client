@@ -9,7 +9,7 @@ import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject, interval, Subject, takeUntil } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { DraftPokemon } from '../../../drafts/draft.model';
-import { PokemonSearchComponent } from '../../../drafts/draft-overview/draft-form/components/pokemon-search/pokemon-search.component';
+import { PokemonSearchComponent } from '@pdz/shared/dropdowns/pokemon-search/pokemon-search.component';
 import { TierListService } from '../../../tier-lists/tier-list.service';
 import { PokemonId } from '@pdz/shared/data/namedex';
 import { LeagueNotificationService } from '../../league-notification.service';
