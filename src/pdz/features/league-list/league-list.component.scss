@@ -106,7 +106,7 @@
     color: pdz.color(on-surface);
 
     &:focus {
-      outline: 2px solid pdz.color(primary);
+      outline: 2px solid pdz.color(primary-accent);
       outline-offset: 1px;
     }
   }

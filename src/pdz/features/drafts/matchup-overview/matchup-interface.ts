@@ -218,7 +218,6 @@ export type MatchupData = {
   details: {
     leagueName: string;
     stage: string;
-    gameTime: string;
     format: string;
     ruleset: string;
     level: number;

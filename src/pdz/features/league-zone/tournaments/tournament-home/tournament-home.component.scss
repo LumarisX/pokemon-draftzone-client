@@ -161,7 +161,7 @@
   max-width: 42rem;
 
   &__header {
-    border-bottom: 2px solid pdz.color(primary);
+    border-bottom: 2px solid pdz.color(primary-accent);
     padding: 0 pdz.space(xs) pdz.space(2xs);
   }
 
@@ -271,7 +271,7 @@
           .details {
             display: flex;
             align-items: center;
-            color: pdz.color(primary);
+            color: pdz.color(primary-accent);
             gap: pdz.space(2xs);
           }
 

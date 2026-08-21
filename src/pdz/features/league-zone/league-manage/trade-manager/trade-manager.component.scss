@@ -47,7 +47,7 @@
     align-items: baseline;
     justify-content: space-between;
     gap: pdz.space(sm);
-    border-bottom: 2px solid pdz.color(primary);
+    border-bottom: 2px solid pdz.color(primary-accent);
     padding-bottom: pdz.space(2xs);
     margin: 0;
   }
@@ -157,7 +157,7 @@
 
     &:focus {
       outline: none;
-      border-color: pdz.color(primary);
+      border-color: pdz.color(primary-accent);
     }
 
     &--number {

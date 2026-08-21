@@ -66,7 +66,7 @@
     &--active {
       background: pdz.color(primary-container);
       color: pdz.color(on-primary-container);
-      border-left-color: pdz.color(primary);
+      border-left-color: pdz.color(primary-accent);
       font-weight: 600;
     }
   }

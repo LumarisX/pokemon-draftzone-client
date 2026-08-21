@@ -47,7 +47,7 @@
         display: flex;
         flex-direction: column;
         .round-label {
-          color: pdz.color(primary);
+          color: pdz.color(primary-accent);
           display: flex;
           height: fit-content;
           width: fit-content;
@@ -99,7 +99,7 @@
     line-height: 0.75rem;
     overflow: hidden;
     height: 1.625rem;
-    color: pdz.color(secondary);
+    color: pdz.color(secondary-accent);
     span {
       padding: 0 0.25rem;
     }
@@ -132,7 +132,7 @@
       height: 4rem;
       width: 4rem;
       mat-icon {
-        color: pdz.color(primary);
+        color: pdz.color(primary-accent);
         height: 1.5rem;
         width: 1.5rem;
       }
@@ -196,7 +196,7 @@
       }
 
       .pick-label {
-        color: pdz.color(primary);
+        color: pdz.color(primary-accent);
         line-height: 0.8rem;
         font-size: 0.8rem;
         font-weight: 600;
@@ -267,7 +267,7 @@
       width: 100%;
       padding: pdz.space(xs);
       background-color: pdz.color(primary-container);
-      border-bottom: 2px solid pdz.color(primary);
+      border-bottom: 2px solid pdz.color(primary-accent);
       span {
         flex-grow: 1;
       }
@@ -294,19 +294,19 @@
 
         &:hover {
           background-color: pdz.color(primary-container-low);
-          border-color: pdz.color(primary);
+          border-color: pdz.color(primary-accent);
           box-shadow: var(--pdz-level-2);
           transform: translateY(-1px);
         }
 
         &.selected-pick {
           background-color: pdz.color(primary-container);
-          border-color: pdz.color(primary);
+          border-color: pdz.color(primary-accent);
           box-shadow: var(--pdz-level-2);
         }
         &.pending-pick {
           border-style: dashed;
-          border-color: pdz.color(secondary);
+          border-color: pdz.color(secondary-accent);
         }
         transition:
           background-color 0.15s ease,
@@ -329,7 +329,7 @@
           margin-left: auto;
         }
         .my-pokemon-index {
-          color: pdz.color(primary);
+          color: pdz.color(primary-accent);
           width: 1.5rem;
           min-width: 1.5rem;
           height: 1.5rem;
@@ -391,7 +391,7 @@
           display: flex;
           width: 100%;
           align-items: center;
-          color: pdz.color(primary);
+          color: pdz.color(primary-accent);
         }
 
         .my-draft-pick {
@@ -404,7 +404,7 @@
           column-gap: 0.25rem;
           border-radius: pdz.shape(corner-sm);
           box-shadow: var(--pdz-level-1);
-          border: 2px solid pdz.color(primary);
+          border: 2px solid pdz.color(primary-accent);
           color: pdz.color(on-primary);
 
           &:not(.backup) {
@@ -415,14 +415,14 @@
           }
 
           &.backup {
-            color: pdz.color(primary);
+            color: pdz.color(primary-accent);
           }
           .my-pokemon-sprite {
             width: 2.5rem;
             height: 2.5rem;
           }
           .my-pokemon-index {
-            color: pdz.color(primary);
+            color: pdz.color(primary-accent);
             width: 1.25rem;
             text-align: center;
           }
@@ -445,7 +445,7 @@
         }
 
         .no-pick {
-          color: pdz.color(primary);
+          color: pdz.color(primary-accent);
           padding: 0.125rem 0;
           text-align: center;
           align-self: center;
@@ -464,11 +464,11 @@
 // queued for later turns are secondary instead.
 .my-draft-pokemon.my-pick:not(.ready) .my-draft-picks {
   .my-draft-pick-container {
-    color: pdz.color(secondary);
+    color: pdz.color(secondary-accent);
   }
 
   .my-draft-pick {
-    border-color: pdz.color(secondary);
+    border-color: pdz.color(secondary-accent);
 
     &:not(.backup) {
       background-color: pdz.color(secondary);
@@ -476,16 +476,16 @@
     }
 
     &.backup {
-      color: pdz.color(secondary);
+      color: pdz.color(secondary-accent);
     }
 
     .my-pokemon-index {
-      color: pdz.color(secondary);
+      color: pdz.color(secondary-accent);
     }
   }
 
   .no-pick {
-    color: pdz.color(secondary);
+    color: pdz.color(secondary-accent);
   }
 }
 

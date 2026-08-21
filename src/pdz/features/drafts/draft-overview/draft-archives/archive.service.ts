@@ -73,17 +73,4 @@ export class ArchiveService {
       scoreData,
     );
   }
-
-  //Currently Unused
-  getGameTime(matchupId: string, teamId: string) {
-    return this.apiService.get(`archive/${teamId}/${matchupId}/schedule`);
-  }
-
-  //Currently Unused
-  scheduleMatchup(matchupId: string, teamId: string, timeData: Object) {
-    return this.apiService.patch(
-      `archive/${teamId}/${matchupId}/schedule`,
-      timeData,
-    );
-  }
 }

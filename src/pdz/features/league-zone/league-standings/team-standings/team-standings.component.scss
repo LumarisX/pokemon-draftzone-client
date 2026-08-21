@@ -83,7 +83,7 @@
       object-fit: contain;
       font-size: 1.2rem;
       font-weight: var(--pdz-font-weight-bold);
-      color: pdz.color(primary);
+      color: pdz.color(primary-accent);
       &.positive {
         color: pdz.color(positive);
       }
@@ -108,7 +108,7 @@
       line-height: 1rem;
     }
     .coach-names {
-      color: pdz.color(secondary);
+      color: pdz.color(secondary-accent);
       font-size: 0.8rem;
       line-height: 1rem;
     }

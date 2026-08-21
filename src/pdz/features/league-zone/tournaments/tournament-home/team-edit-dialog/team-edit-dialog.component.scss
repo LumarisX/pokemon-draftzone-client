@@ -10,7 +10,7 @@
     (
       subhead-weight: 700,
       subhead-font: var(--pdz-font-fancy),
-      subhead-color: pdz.color(primary),
+      subhead-color: pdz.color(primary-accent),
       subhead-size: 1.2em,
     )
   );
@@ -48,7 +48,7 @@
 
     &:focus {
       outline: none;
-      border-color: pdz.color(primary);
+      border-color: pdz.color(primary-accent);
     }
   }
 

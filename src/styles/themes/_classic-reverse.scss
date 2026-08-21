@@ -3,7 +3,8 @@
 $theme-overrides: (
   light: (
     // Primary Theme (Orange)
-    primary: "orange-500",
+    primary: "orange-600",
+    primary-accent: "orange-700",
     primary-lighter: "orange-400",
     primary-darker: "orange-600",
     on-primary: "white",
@@ -21,7 +22,8 @@ $theme-overrides: (
         var(--pdz-color-orange-300)
       ),
     // Secondary Theme (Cyan)
-    secondary: "cyan-500",
+    secondary: "cyan-650",
+    secondary-accent: "cyan-700",
     secondary-lighter: "cyan-400",
     secondary-darker: "cyan-600",
     on-secondary: "white",
@@ -67,12 +69,13 @@ $theme-overrides: (
   dark: (
     // Primary Theme (Orange)
     primary: "orange-500",
+    primary-accent: "orange-400",
     primary-lighter: "orange-400",
     primary-darker: "orange-600",
     on-primary: "orange-950",
     primary-container: "orange-900",
-    primary-container-low: "orange-850",
-    primary-container-high: "orange-950",
+    primary-container-low: "orange-950",
+    primary-container-high: "orange-850",
     primary-container-hover: "orange-800",
     on-primary-container: "orange-200",
     primary-hover: "orange-550",
@@ -85,12 +88,13 @@ $theme-overrides: (
       ),
     // Secondary Theme (Cyan)
     secondary: "cyan-500",
+    secondary-accent: "cyan-400",
     secondary-lighter: "cyan-400",
     secondary-darker: "cyan-600",
     on-secondary: "cyan-950",
     secondary-container: "cyan-900",
-    secondary-container-low: "cyan-850",
-    secondary-container-high: "cyan-950",
+    secondary-container-low: "cyan-950",
+    secondary-container-high: "cyan-850",
     secondary-container-hover: "cyan-800",
     on-secondary-container: "cyan-200",
     secondary-hover: "cyan-550",

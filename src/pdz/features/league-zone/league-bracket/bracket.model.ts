@@ -62,6 +62,13 @@ export interface FlexBracketMatch {
   score?: [number, number];
   /** A forfeit — the score is the configured game difference, not a result. */
   forfeit?: boolean;
+  /**
+   * Organizer override for which side leaves this match, set where the result
+   * cannot say — a double forfeit decides nothing, so without one every slot
+   * below it stays empty and the rest of the bracket is unplayable.
+   * `'none'` is the deliberate answer that nobody advances.
+   */
+  advances?: 'side1' | 'side2' | 'none' | null;
   /** Override the auto-generated match label. */
   label?: string;
 }

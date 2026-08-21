@@ -5,6 +5,7 @@ import { RouterModule } from '@angular/router';
   selector: 'pdz-about',
   imports: [RouterModule],
   templateUrl: './about.component.html',
+  styleUrl: './about.component.scss',
 })
 export class AboutComponent {
   constructor() {}

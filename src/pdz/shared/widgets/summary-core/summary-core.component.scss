@@ -49,11 +49,11 @@ $border: 1px solid $border-color;
     }
 
     &--sorted {
-      color: pdz.color(primary);
+      color: pdz.color(primary-accent);
       font-weight: 700;
 
       &.summary__header--reversed {
-        color: pdz.color(secondary);
+        color: pdz.color(secondary-accent);
       }
     }
   }

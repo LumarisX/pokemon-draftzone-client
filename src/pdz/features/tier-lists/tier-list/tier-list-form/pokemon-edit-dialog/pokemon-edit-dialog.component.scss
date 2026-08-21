@@ -14,7 +14,7 @@
     font-family: var(--pdz-font-fancy);
     font-weight: 700;
     font-size: 1.2rem;
-    color: pdz.color(primary);
+    color: pdz.color(primary-accent);
   }
 
   &__body {
@@ -127,9 +127,9 @@
     font: inherit;
 
     &:focus {
-      outline: 2px solid pdz.color(primary);
+      outline: 2px solid pdz.color(primary-accent);
       outline-offset: 1px;
-      border-color: pdz.color(primary);
+      border-color: pdz.color(primary-accent);
     }
   }
 }

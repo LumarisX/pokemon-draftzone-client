@@ -19,9 +19,9 @@
     transition: border-color 0.15s ease-in-out;
 
     &:focus-within {
-      outline: 2px solid pdz.color(primary);
+      outline: 2px solid pdz.color(primary-accent);
       outline-offset: 1px;
-      border-color: pdz.color(primary);
+      border-color: pdz.color(primary-accent);
     }
 
     &--disabled {

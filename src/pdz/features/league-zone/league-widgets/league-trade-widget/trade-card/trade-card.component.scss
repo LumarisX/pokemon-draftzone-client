@@ -99,7 +99,7 @@ $trade-sprite-size: 2rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: pdz.color(primary);
+  color: pdz.color(primary-accent);
   flex-shrink: 0;
 
   &.pickup pdz-icon {

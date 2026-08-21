@@ -14,16 +14,16 @@ $defaults: (
     surface-container-low: "gray-100",
     surface-container: "gray-150",
     surface-container-high: "gray-200",
-    surface-container-highest: "gray-300",
+    surface-container-highest: "gray-250",
     on-surface: "gray-950",
     on-surface-variant: "gray-900",
     outline: "gray-550",
     outline-variant: "gray-300",
 
     // Menu Theme
-    menu: "gray-500",
-    menu-lighter: "gray-400",
-    menu-darker: "gray-600",
+    menu: "gray-550",
+    menu-lighter: "gray-450",
+    menu-darker: "gray-650",
     on-menu: "white",
     menu-container: "gray-150",
     menu-container-low: "gray-100",
@@ -39,7 +39,7 @@ $defaults: (
         var(--pdz-color-gray-100)
       ),
     // Status Colors
-    error: "red-500",
+    error: "red-550",
     on-error: "white",
     error-border: "red-200",
     error-container: "red-100",
@@ -49,7 +49,7 @@ $defaults: (
     warning-border: "amber-300",
     warning-container: "amber-200",
     on-warning-container: "amber-900",
-    success: "green-700",
+    success: "green-800",
     on-success: "white",
     success-border: "green-300",
     success-container: "green-200",
@@ -70,6 +70,7 @@ $defaults: (
     // Effects
     shadow: #4d4d4d,
     scrim: "black",
+    elevation-highlight: rgba(255, 255, 255, 0),
 
     // Logo Colors (default rings use orange)
     logo-ring-1: "orange-200",
@@ -100,9 +101,10 @@ $defaults: (
     scale-negative: "rose-300",
     // Primary Theme (Cyan)
     primary: "cyan-500",
+    primary-accent: "cyan-700",
     primary-lighter: "cyan-400",
     primary-darker: "cyan-600",
-    on-primary: "white",
+    on-primary: "cyan-950",
     primary-container: "cyan-150",
     primary-container-low: "cyan-100",
     primary-container-high: "cyan-300",
@@ -118,9 +120,10 @@ $defaults: (
       ),
     // Secondary Theme (Orange)
     secondary: "orange-500",
+    secondary-accent: "orange-700",
     secondary-lighter: "orange-400",
     secondary-darker: "orange-600",
-    on-secondary: "white",
+    on-secondary: "orange-950",
     secondary-container: "orange-150",
     secondary-container-low: "orange-100",
     secondary-container-high: "orange-300",
@@ -169,32 +172,32 @@ $defaults: (
   ),
   dark: (
     // Surface Colors
-    background: "gray-950",
-    surface: "gray-900",
-    surface-variant: "gray-750",
-    surface-container-lowest: "black",
-    surface-container-low: "gray-850",
-    surface-container: "gray-700",
-    surface-container-high: "gray-750",
-    surface-container-highest: "gray-650",
+    background: "gray-875",
+    surface: "gray-850",
+    surface-variant: "gray-775",
+    surface-container-lowest: "gray-925",
+    surface-container-low: "gray-825",
+    surface-container: "gray-800",
+    surface-container-high: "gray-775",
+    surface-container-highest: "gray-750",
     on-surface: "gray-100",
-    on-surface-variant: "gray-400",
+    on-surface-variant: "gray-250",
     outline: "gray-600",
-    outline-variant: "gray-800",
+    outline-variant: "gray-700",
 
     // Menu Theme
     menu: "gray-100",
     menu-lighter: "gray-200",
     menu-darker: "gray-50",
     on-menu: "gray-950",
-    menu-container: "gray-900",
-    menu-container-low: "gray-850",
+    menu-container: "gray-825",
+    menu-container-low: "gray-875",
     menu-container-high: "gray-800",
-    menu-container-hover: "gray-800",
+    menu-container-hover: "gray-775",
     on-menu-container: "gray-200",
     menu-hover: "gray-550",
     menu-border: "gray-700",
-    menu-subtle: "gray-950",
+    menu-subtle: "gray-875",
     menu-gradient: linear-gradient(
         135deg,
         var(--pdz-color-gray-800),
@@ -219,7 +222,7 @@ $defaults: (
     on-info-container: "blue-200",
 
     // Disabled State
-    surface-disabled: "gray-800",
+    surface-disabled: "gray-825",
     on-surface-disabled: "gray-600",
 
     // Inverse Colors
@@ -229,6 +232,7 @@ $defaults: (
     // Effects
     shadow: "black",
     scrim: "black",
+    elevation-highlight: rgba(255, 255, 255, 0.07),
 
     // Logo Colors (default rings use orange)
     logo-ring-1: "orange-200",
@@ -243,28 +247,29 @@ $defaults: (
     logo-background: "white",
 
     // Semantic Data Colors
-    positive: "mint-700",
-    on-positive: "white",
+    positive: "mint-600",
+    on-positive: "mint-950",
     positive-container: "mint-900",
     on-positive-container: "mint-100",
-    negative: "rose-800",
-    on-negative: "white",
+    negative: "rose-500",
+    on-negative: "rose-950",
     negative-container: "rose-900",
     on-negative-container: "rose-100",
     neutral: "gray-700",
 
     // Scale Colors
-    scale-neutral: "gray-950",
+    scale-neutral: "gray-875",
     scale-positive: "mint-850",
     scale-negative: "rose-850",
     // Primary Theme (Cyan)
     primary: "cyan-500",
+    primary-accent: "cyan-400",
     primary-lighter: "cyan-400",
     primary-darker: "cyan-600",
     on-primary: "cyan-950",
     primary-container: "cyan-900",
-    primary-container-low: "cyan-850",
-    primary-container-high: "cyan-950",
+    primary-container-low: "cyan-950",
+    primary-container-high: "cyan-850",
     primary-container-hover: "cyan-800",
     on-primary-container: "cyan-200",
     primary-hover: "cyan-550",
@@ -277,12 +282,13 @@ $defaults: (
       ),
     // Secondary Theme (Orange)
     secondary: "orange-500",
+    secondary-accent: "orange-400",
     secondary-lighter: "orange-400",
     secondary-darker: "orange-600",
     on-secondary: "orange-950",
     secondary-container: "orange-900",
-    secondary-container-low: "orange-850",
-    secondary-container-high: "orange-950",
+    secondary-container-low: "orange-950",
+    secondary-container-high: "orange-850",
     secondary-container-hover: "orange-800",
     on-secondary-container: "orange-200",
     secondary-hover: "orange-550",

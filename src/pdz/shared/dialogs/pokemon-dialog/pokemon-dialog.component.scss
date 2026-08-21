@@ -28,8 +28,8 @@
   }
 
   &--active {
-    color: pdz.color(primary);
-    border-bottom-color: pdz.color(primary);
+    color: pdz.color(primary-accent);
+    border-bottom-color: pdz.color(primary-accent);
     font-weight: 600;
   }
 

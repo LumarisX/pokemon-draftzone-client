@@ -3,7 +3,8 @@
 $theme-overrides: (
   light: (
     // Primary Theme (jade)
-    primary: "jade-500",
+    primary: "jade-650",
+    primary-accent: "jade-750",
     primary-lighter: "jade-400",
     primary-darker: "jade-600",
     on-primary: "white",
@@ -21,7 +22,8 @@ $theme-overrides: (
         var(--pdz-color-jade-300)
       ),
     // Secondary Theme (blue)
-    secondary: "blue-500",
+    secondary: "blue-550",
+    secondary-accent: "blue-600",
     secondary-lighter: "blue-400",
     secondary-darker: "blue-600",
     on-secondary: "white",
@@ -69,12 +71,13 @@ $theme-overrides: (
   dark: (
     // Primary Theme (jade)
     primary: "jade-500",
+    primary-accent: "jade-400",
     primary-lighter: "jade-400",
     primary-darker: "jade-600",
     on-primary: "jade-950",
     primary-container: "jade-900",
-    primary-container-low: "jade-850",
-    primary-container-high: "jade-950",
+    primary-container-low: "jade-950",
+    primary-container-high: "jade-850",
     primary-container-hover: "jade-800",
     on-primary-container: "jade-200",
     primary-hover: "jade-550",
@@ -86,13 +89,14 @@ $theme-overrides: (
         var(--pdz-color-jade-300)
       ),
     // Secondary Theme (blue)
-    secondary: "blue-500",
-    secondary-lighter: "blue-400",
-    secondary-darker: "blue-600",
+    secondary: "blue-450",
+    secondary-accent: "blue-400",
+    secondary-lighter: "blue-350",
+    secondary-darker: "blue-550",
     on-secondary: "blue-950",
     secondary-container: "blue-900",
-    secondary-container-low: "blue-850",
-    secondary-container-high: "blue-950",
+    secondary-container-low: "blue-950",
+    secondary-container-high: "blue-850",
     secondary-container-hover: "blue-800",
     on-secondary-container: "blue-200",
     secondary-hover: "blue-550",

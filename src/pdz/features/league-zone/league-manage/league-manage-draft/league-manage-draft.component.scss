@@ -68,7 +68,7 @@
 
     &--completed {
       background: pdz.color(primary-container-low);
-      color: pdz.color(primary);
+      color: pdz.color(primary-accent);
     }
   }
 
@@ -144,7 +144,7 @@
   &__title {
     @include apply-typography(title-sm);
     font-family: var(--pdz-font-fancy);
-    color: pdz.color(primary);
+    color: pdz.color(primary-accent);
     margin: 0;
   }
 
@@ -198,7 +198,7 @@
 
     &:focus {
       outline: none;
-      border-color: pdz.color(primary);
+      border-color: pdz.color(primary-accent);
       box-shadow: 0 0 0 2px pdz.color(primary-subtle);
     }
   }
@@ -236,7 +236,7 @@
   }
 
   input {
-    accent-color: pdz.color(primary);
+    accent-color: pdz.color(primary-accent);
     width: 1rem;
     height: 1rem;
     flex-shrink: 0;
@@ -271,7 +271,7 @@
   &__title {
     @include apply-typography(title-sm);
     font-family: var(--pdz-font-fancy);
-    color: pdz.color(primary);
+    color: pdz.color(primary-accent);
     margin: 0;
   }
 
@@ -284,7 +284,7 @@
     cursor: pointer;
 
     input {
-      accent-color: pdz.color(primary);
+      accent-color: pdz.color(primary-accent);
     }
   }
 
@@ -372,7 +372,7 @@
 
   &__dirty {
     @include apply-typography(label-sm);
-    color: pdz.color(primary);
+    color: pdz.color(primary-accent);
   }
 
   &__locked {
@@ -410,7 +410,7 @@
   &__title {
     @include apply-typography(title-sm);
     font-family: var(--pdz-font-fancy);
-    color: pdz.color(primary);
+    color: pdz.color(primary-accent);
     margin: 0;
   }
 
@@ -460,7 +460,7 @@
   }
 
   &--current {
-    border-color: pdz.color(primary);
+    border-color: pdz.color(primary-accent);
     background: pdz.color(primary-container);
     color: pdz.color(on-primary-container);
   }
@@ -474,7 +474,7 @@
   // the field's offsetWidth during change detection, so a card that grows when
   // the editor opens hands the overlay a stale width (NG0100).
   &--editing {
-    border-color: pdz.color(primary);
+    border-color: pdz.color(primary-accent);
   }
 
   &--pending {
@@ -512,7 +512,7 @@
   &__team {
     @include apply-typography(label-md);
     font-weight: 650;
-    color: pdz.color(secondary);
+    color: pdz.color(secondary-accent);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -579,7 +579,7 @@
     padding: 0 pdz.space(2xs);
     border-radius: pdz.shape(corner-xs);
     background: pdz.color(surface-container-low);
-    color: pdz.color(primary);
+    color: pdz.color(primary-accent);
     font-family: var(--pdz-font-fancy);
     overflow: hidden;
     text-overflow: ellipsis;
@@ -598,7 +598,7 @@
     @include apply-typography(label-sm);
 
     pdz-icon {
-      color: pdz.color(primary);
+      color: pdz.color(primary-accent);
     }
   }
 
@@ -628,8 +628,8 @@
     cursor: pointer;
 
     &:hover:not(:disabled) {
-      border-color: pdz.color(primary);
-      color: pdz.color(primary);
+      border-color: pdz.color(primary-accent);
+      color: pdz.color(primary-accent);
     }
 
     &:disabled {
@@ -654,8 +654,8 @@
   }
 
   &__btn--rewind:hover:not(:disabled) {
-    border-color: pdz.color(secondary);
-    color: pdz.color(secondary);
+    border-color: pdz.color(secondary-accent);
+    color: pdz.color(secondary-accent);
   }
 }
 

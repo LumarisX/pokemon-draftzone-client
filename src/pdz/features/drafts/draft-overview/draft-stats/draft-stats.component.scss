@@ -66,3 +66,15 @@ tr td:last-child {
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
 }
+
+.stats-title-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.stats-title {
+  font-family: var(--pdz-font-fancy);
+  font-size: 1.875rem;
+  font-weight: 700;
+  text-align: center;
+}

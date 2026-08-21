@@ -121,7 +121,7 @@
   // Ongoing-draft sublabel: wraps onto its own line beneath the link label.
   &__status {
     @include apply-typography(label-xs);
-    color: pdz.color(primary);
+    color: pdz.color(primary-accent);
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -133,10 +133,10 @@
 
   // Active (current route): mark by coloring the label primary.
   &.active {
-    color: pdz.color(primary);
+    color: pdz.color(primary-accent);
 
     &:hover {
-      color: pdz.color(primary);
+      color: pdz.color(primary-accent);
     }
   }
 }

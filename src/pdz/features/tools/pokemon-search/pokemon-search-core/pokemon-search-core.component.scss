@@ -148,8 +148,8 @@ button:disabled {
     }
 
     &.is-editing {
-      border-color: pdz.color(primary);
-      outline: 2px solid pdz.color(primary);
+      border-color: pdz.color(primary-accent);
+      outline: 2px solid pdz.color(primary-accent);
       outline-offset: 1px;
     }
 
@@ -436,13 +436,13 @@ button:disabled {
     }
 
     &.is-bookmarked {
-      color: pdz.color(primary);
+      color: pdz.color(primary-accent);
       background: pdz.color(primary-container-low);
       border-color: pdz.color(primary-border);
 
       &:hover {
         background: pdz.color(primary-container-hover);
-        color: pdz.color(primary);
+        color: pdz.color(primary-accent);
       }
     }
 
@@ -609,7 +609,7 @@ button:disabled {
   }
 
   &__card:focus-visible {
-    outline: 1px solid pdz.color(primary);
+    outline: 1px solid pdz.color(primary-accent);
   }
 
   &__card-name {
@@ -658,7 +658,7 @@ button:disabled {
     }
 
     &:focus-visible {
-      outline: 2px solid pdz.color(primary);
+      outline: 2px solid pdz.color(primary-accent);
       outline-offset: 2px;
     }
   }

@@ -125,9 +125,9 @@
     font: inherit;
 
     &:focus {
-      outline: 2px solid pdz.color(primary);
+      outline: 2px solid pdz.color(primary-accent);
       outline-offset: 1px;
-      border-color: pdz.color(primary);
+      border-color: pdz.color(primary-accent);
     }
   }
 
@@ -553,9 +553,9 @@
     font: inherit;
 
     &:focus {
-      outline: 2px solid pdz.color(primary);
+      outline: 2px solid pdz.color(primary-accent);
       outline-offset: 1px;
-      border-color: pdz.color(primary);
+      border-color: pdz.color(primary-accent);
     }
   }
 
@@ -587,4 +587,8 @@
   .pokemon-card__invalid-label {
     white-space: normal;
   }
+}
+
+.pokemon-card__name {
+  font-family: var(--pdz-font-fancy);
 }

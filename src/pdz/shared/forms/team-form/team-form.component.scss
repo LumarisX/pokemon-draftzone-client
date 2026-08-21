@@ -70,6 +70,7 @@
             column-gap: 0.25rem;
 
             .name-title {
+              font-family: var(--pdz-font-fancy);
               flex-shrink: 1;
               min-width: 0;
 
@@ -243,7 +244,7 @@
       .allnone-container {
         color: pdz.color(on-primary);
         font-weight: 600;
-        border: 2px solid pdz.color(primary);
+        border: 2px solid pdz.color(primary-accent);
         background-color: pdz.color(primary);
         height: 1.5rem;
         display: flex;
@@ -385,4 +386,10 @@ mat-form-field {
   textarea {
     resize: none;
   }
+}
+
+.forme-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }

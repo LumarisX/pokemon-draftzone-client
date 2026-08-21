@@ -4,8 +4,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { Meta } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import dayjs from 'dayjs';
-import duration from 'dayjs/plugin/duration';
 import { DRAFT_OVERVIEW_PATH, LEAGUE_ZONE_PATH } from '@pdz/core/route-paths';
 import { DraftPokemon } from '../draft.model';
 import { matchupPath, MatchupService } from './matchup.service';
@@ -20,7 +18,6 @@ import { MatchupTeambuilderComponent } from './widgets/teambuilder/teambuilder.c
 import { ErrorService } from '@pdz/layout/error/error.service';
 import { ShareDialogComponent } from './share-dialog/share-dialog.component';
 
-dayjs.extend(duration);
 
 @Component({
   selector: 'pdz-matchup-overview',
@@ -48,7 +45,6 @@ export class MatchupOverviewComponent implements OnInit {
   matchupId!: string;
   shareUrl?: string;
   tournamentId?: string;
-  timeString?: string;
   draftPath = DRAFT_OVERVIEW_PATH;
   backLink: unknown[] = ['/' + DRAFT_OVERVIEW_PATH];
 
@@ -123,21 +119,6 @@ export class MatchupOverviewComponent implements OnInit {
       matchup$.subscribe({
         next: (data) => {
           this.matchupData = <MatchupData>data;
-          if ('gameTime' in this.matchupData) {
-            let gameTime = dayjs(this.matchupData.details.gameTime);
-            if (gameTime.isValid()) {
-              const currentTime = dayjs();
-              if (!gameTime.isBefore(currentTime)) {
-                const dur = dayjs.duration(gameTime.diff(currentTime));
-                const days = Math.floor(Math.abs(dur.asDays()));
-                const hours = Math.abs(dur.hours());
-                this.timeString =
-                  days > 0 ? `${days} days ${hours} hours` : `${hours} hours`;
-              } else {
-                this.timeString = 'Already past';
-              }
-            }
-          }
           if (this.matchupData) {
             this.meta.updateTag({
               name: 'og:title',

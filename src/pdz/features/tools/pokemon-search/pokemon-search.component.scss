@@ -225,7 +225,7 @@
     &--more {
       background: transparent;
       border-color: transparent;
-      color: pdz.color(primary);
+      color: pdz.color(primary-accent);
       font-style: italic;
       max-width: none;
     }
@@ -233,7 +233,7 @@
 
   &__item-meta {
     @include apply-typography(body-sm);
-    color: pdz.color(primary);
+    color: pdz.color(primary-accent);
   }
 
   &__item-date {

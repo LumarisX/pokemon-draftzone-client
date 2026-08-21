@@ -195,7 +195,7 @@
       transform: translateY(-2px);
       box-shadow: var(--pdz-level-2);
       background: pdz.color(menu-container);
-      border-color: pdz.color(primary);
+      border-color: pdz.color(primary-accent);
     }
 
     &:active:not(:disabled) {

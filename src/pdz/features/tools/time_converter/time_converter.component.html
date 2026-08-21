@@ -1,204 +1,126 @@
-<div class="p-2 min-h-full flex flex-col gap-4 items-center justify-center">
-  <div class="text-center font-nasa text-2xl"></div>
-
-  <mat-card>
-    <mat-card-header class="text-center font-nasa text-lg">
-      <mat-card-title>Time Converter</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <p>
-        <span class="font-bold">Local Time: </span>
-        {{ formatDate(localDateTime) }}
+<div class="converter-page">
+  <section class="converter-summary">
+    <h2 class="converter-summary__title">Time Converter</h2>
+    <div class="converter-summary__rows">
+      <p class="converter-summary__row">
+        <span class="converter-summary__label">Local Time</span>
+        <span class="converter-summary__value">{{
+          formatDisplay("local")
+        }}</span>
       </p>
-      <p>
-        <span class="font-bold">Opponent's Time: </span>
-        {{ formatDate(opponentDateTime) }}
+      <p class="converter-summary__row">
+        <span class="converter-summary__label">Opponent's Time</span>
+        <span class="converter-summary__value">{{
+          formatDisplay("opponent")
+        }}</span>
       </p>
-      <div
-        class="flex items-center mat-level-2 rounded-lg p-1 space-x-2 justify-center"
+    </div>
+    <div class="converter-stamp">
+      <pdz-icon name="discord" [size]="18"></pdz-icon>
+      <code class="converter-stamp__code">{{ discordTimestamp }}</code>
+      <button
+        type="button"
+        class="converter-stamp__copy"
+        [attr.aria-label]="copied ? 'Copied' : 'Copy Discord timestamp'"
+        [cdkCopyToClipboard]="discordTimestamp"
+        (click)="copy()"
       >
-        <div>
-          <img
-            class="h-4"
-            src="../../../assets/icons/media/discord-mark-blue.svg"
-          />
-        </div>
-        <div>
-          {{ discordTimestamp }}
-        </div>
-        @if (copied) {
-          <button matSuffix mat-icon-button>
-            <mat-icon>check</mat-icon>
-          </button>
-        } @else {
-          <button
-            matSuffix
-            mat-icon-button
-            [cdkCopyToClipboard]="discordTimestamp"
-            (click)="copy()"
-          >
-            <mat-icon>content_copy</mat-icon>
-          </button>
-        }
-      </div>
-    </mat-card-content>
-  </mat-card>
-  <div class="flex flex-col md:flex-row gap-8">
-    <div class="time-container">
-      <mat-form-field class="w-full">
-        <mat-label>Local Time Zone</mat-label>
-        <input
-          type="text"
-          [formControl]="localInput"
-          matInput
-          [matAutocomplete]="auto"
-        />
-        <mat-autocomplete
-          (optionSelected)="updateTZ('local')"
-          [displayWith]="shortFn"
-          #auto="matAutocomplete"
-        >
-          @if (filteredTZShort.length > 0) {
-            <mat-optgroup label="Abbreviated" class="mat-sticky">
-              @for (tz of filteredTZShort; track $index) {
-                <mat-option [value]="tz">{{
-                  tz.short + " (" + tz.utc + ")"
-                }}</mat-option>
-              }
-            </mat-optgroup>
-          }
-          <mat-optgroup label="Locations">
-            @for (tz of filteredTZ; track $index) {
-              <mat-option [value]="tz">{{
-                tz.name + " (" + tz.short + ")"
-              }}</mat-option>
-            }
-          </mat-optgroup>
-        </mat-autocomplete>
-      </mat-form-field>
-      <mat-form-field class="w-full">
-        <mat-label>Local date</mat-label>
-        <input
-          matInput
-          [matDatepicker]="localDatepicker"
-          [value]="localDateTime"
-          (dateInput)="updateTime('local', $event.value)"
-        />
-        <mat-datepicker #localDatepicker />
-        <mat-datepicker-toggle [for]="localDatepicker" matSuffix />
-      </mat-form-field>
-      <mat-form-field class="w-full">
-        <mat-label>Local time</mat-label>
-        <input
-          matInput
-          [matTimepicker]="localTimepicker"
-          [value]="localDateTime"
-          (valueChange)="updateTime('local', $event)"
-        />
-        <mat-timepicker #localTimepicker />
-        <mat-timepicker-toggle [for]="localTimepicker" matSuffix />
-      </mat-form-field>
-      <div class="w-full flex flex-col items-center">
-        <div class="slider-icons-bar">
-          <mat-icon class="slider-icon">nightlight</mat-icon>
-          <mat-icon class="slider-icon">wb_twilight</mat-icon>
-          <mat-icon class="slider-icon">sunny</mat-icon>
-          <mat-icon class="slider-icon">wb_twilight</mat-icon>
-          <mat-icon class="slider-icon">nightlight</mat-icon>
-        </div>
-        <mat-slider
-          min="0"
-          max="1439"
-          step="15"
-          showTickMarks
-          discrete
-          [displayWith]="sliderFn"
-        >
-          <input matSliderThumb [(ngModel)]="localTime" />
-        </mat-slider>
-      </div>
+        <pdz-icon [name]="copied ? 'check' : 'content_copy'" [size]="18" />
+      </button>
     </div>
-    <div class="time-container">
-      <mat-form-field class="w-full">
-        <mat-label>Opponent Time Zone</mat-label>
-        <input
-          type="text"
-          [formControl]="opponentInput"
-          matInput
-          [matAutocomplete]="auto"
-        />
-        <mat-autocomplete
-          (optionSelected)="updateTZ('opponent')"
-          [displayWith]="shortFn"
-          #auto="matAutocomplete"
-        >
-          @if (filteredTZShort.length > 0) {
-            <mat-optgroup label="Abbreviated" class="mat-sticky">
-              @for (tz of filteredTZShort; track $index) {
-                <mat-option [value]="tz">{{
-                  tz.short + " (" + tz.utc + ")"
-                }}</mat-option>
-              }
-            </mat-optgroup>
-          }
-          <mat-optgroup label="Locations">
-            @for (tz of filteredTZ; track $index) {
-              <mat-option [value]="tz">{{
-                tz.name + " (" + tz.short + ")"
-              }}</mat-option>
-            }
-          </mat-optgroup>
-        </mat-autocomplete>
-      </mat-form-field>
-      <mat-form-field class="w-full">
-        <mat-label>Opponent date</mat-label>
-        <input
-          matInput
-          [matDatepicker]="oppDatepicker"
-          [value]="opponentDateTime"
-          (dateInput)="updateTime('opponent', $event.value)"
-        />
-        <mat-datepicker #oppDatepicker />
-        <mat-datepicker-toggle [for]="oppDatepicker" matSuffix />
-      </mat-form-field>
-      <mat-form-field class="w-full">
-        <mat-label>Opponent time</mat-label>
-        <input
-          matInput
-          [matTimepicker]="oppTimepicker"
-          [value]="opponentDateTime"
-          (valueChange)="updateTime('opponent', $event)"
-        />
-        <mat-timepicker #oppTimepicker />
-        <mat-timepicker-toggle [for]="oppTimepicker" matSuffix />
-      </mat-form-field>
+  </section>
 
-      <div class="w-full flex flex-col items-center">
-        <div class="slider-icons-bar">
-          <mat-icon class="slider-icon">nightlight</mat-icon>
-          <mat-icon class="slider-icon">wb_twilight</mat-icon>
-          <mat-icon class="slider-icon">sunny</mat-icon>
-          <mat-icon class="slider-icon">wb_twilight</mat-icon>
-          <mat-icon class="slider-icon">nightlight</mat-icon>
-        </div>
-        <mat-slider
-          min="0"
-          max="1439"
-          step="15"
-          showTickMarks
-          discrete
-          [displayWith]="sliderFn"
-        >
-          <input matSliderThumb [(ngModel)]="opponentTime" />
-        </mat-slider>
+  <div class="converter-columns">
+    <section class="converter-side">
+      <h3 class="converter-side__title">You</h3>
+      <pdz-timezone-select
+        label="Local Time Zone"
+        [zones]="timeZones"
+        [shortZones]="timeZonesShort"
+        [value]="localZone"
+        (valueChange)="setZone('local', $event)"
+      />
+      <div class="converter-field">
+        <label class="converter-field__label" for="local-date">Date</label>
+        <input
+          id="local-date"
+          class="converter-field__input"
+          type="date"
+          [(ngModel)]="localDate"
+          (ngModelChange)="sync('local')"
+        />
       </div>
-    </div>
+      <div class="converter-field">
+        <label class="converter-field__label" for="local-time">Time</label>
+        <input
+          id="local-time"
+          class="converter-field__input"
+          type="time"
+          [(ngModel)]="localTime"
+          (ngModelChange)="sync('local')"
+        />
+      </div>
+      <div class="converter-slider">
+        <div class="converter-slider__icons">
+          <pdz-icon name="nightlight" [size]="18" />
+          <pdz-icon name="wb_twilight" [size]="18" />
+          <pdz-icon name="sunny" [size]="18" />
+          <pdz-icon name="wb_twilight" [size]="18" />
+          <pdz-icon name="nightlight" [size]="18" />
+        </div>
+        <pdz-slider
+          [min]="0"
+          [max]="1425"
+          [step]="15"
+          [(ngModel)]="localMinutes"
+        />
+      </div>
+    </section>
+
+    <section class="converter-side">
+      <h3 class="converter-side__title">Opponent</h3>
+      <pdz-timezone-select
+        label="Opponent Time Zone"
+        [zones]="timeZones"
+        [shortZones]="timeZonesShort"
+        [value]="opponentZone"
+        (valueChange)="setZone('opponent', $event)"
+      />
+      <div class="converter-field">
+        <label class="converter-field__label" for="opponent-date">Date</label>
+        <input
+          id="opponent-date"
+          class="converter-field__input"
+          type="date"
+          [(ngModel)]="opponentDate"
+          (ngModelChange)="sync('opponent')"
+        />
+      </div>
+      <div class="converter-field">
+        <label class="converter-field__label" for="opponent-time">Time</label>
+        <input
+          id="opponent-time"
+          class="converter-field__input"
+          type="time"
+          [(ngModel)]="opponentTime"
+          (ngModelChange)="sync('opponent')"
+        />
+      </div>
+      <div class="converter-slider">
+        <div class="converter-slider__icons">
+          <pdz-icon name="nightlight" [size]="18" />
+          <pdz-icon name="wb_twilight" [size]="18" />
+          <pdz-icon name="sunny" [size]="18" />
+          <pdz-icon name="wb_twilight" [size]="18" />
+          <pdz-icon name="nightlight" [size]="18" />
+        </div>
+        <pdz-slider
+          [min]="0"
+          [max]="1425"
+          [step]="15"
+          [(ngModel)]="opponentMinutes"
+        />
+      </div>
+    </section>
   </div>
 </div>
-<!-- 
-<div>
-  <div>{{ localTimeZone | json }}</div>
-  <div>{{ opponentTimeZone | json }}</div>
-  <div>{{ localDateTime }}</div>
-  <div>{{ opponentDateTime }}</div>
-</div> -->

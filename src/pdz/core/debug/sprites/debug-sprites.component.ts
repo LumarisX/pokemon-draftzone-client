@@ -6,6 +6,7 @@ import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 @Component({
   selector: 'pdz-debug-sprites',
   templateUrl: './debug-sprites.component.html',
+  styleUrl: './debug-sprites.component.scss',
   imports: [SpriteComponent, MatTooltipModule],
 })
 export class DebugSpritesComponent {

@@ -9,6 +9,7 @@ import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 @Component({
   selector: 'pdz-random-draft',
   templateUrl: './random-draft.component.html',
+  styleUrl: './random-draft.component.scss',
   imports: [SpriteComponent, RouterModule, FormsModule],
 })
 export class RandomDraftComponent {

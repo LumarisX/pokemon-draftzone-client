@@ -41,7 +41,7 @@
 }
 
 .qd-reroll {
-  color: pdz.color(primary);
+  color: pdz.color(primary-accent);
   font-size: 1.5rem;
   align-items: center;
   display: flex;
@@ -58,7 +58,7 @@
     }
   }
   &:hover {
-    border: 1px solid pdz.color(primary);
+    border: 1px solid pdz.color(primary-accent);
   }
 }
 
@@ -184,7 +184,7 @@
 }
 
 .active-pick {
-  color: pdz.color(primary);
+  color: pdz.color(primary-accent);
 }
 
 .no-selected {
@@ -216,7 +216,7 @@
   text-align: center;
   column-gap: 1rem;
   font-size: 0.8rem;
-  color: pdz.color(primary);
+  color: pdz.color(primary-accent);
 }
 
 .option-stats {

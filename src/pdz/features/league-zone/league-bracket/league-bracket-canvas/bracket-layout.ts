@@ -236,6 +236,60 @@ export interface ResolvedSlot {
 }
 
 /**
+ * Which side of a match leaves it, mirroring the server's `advancingSides`.
+ *
+ * `advances` is the organizer's override, and it answers a question `winner`
+ * cannot: a double forfeit is a settled result with no winning side, so
+ * without one there is nobody to draw into the next match's slot.
+ */
+export function advancingSideIndex(
+  match: FlexBracketMatch,
+  outcome: 'winner' | 'loser',
+): 0 | 1 | null {
+  const winnerIndex =
+    match.advances === 'none'
+      ? null
+      : match.advances === 'side1'
+        ? 0
+        : match.advances === 'side2'
+          ? 1
+          : (match.winner ?? null);
+  if (winnerIndex === null) return null;
+  if (outcome === 'winner') return winnerIndex;
+  return winnerIndex === 0 ? 1 : 0;
+}
+
+/**
+ * Whether a match will never send anyone onward, as opposed to not having done
+ * so yet. Mirrors the server's `yieldsNobody` + `isSettledOrDead`.
+ *
+ * The recursive half is the one that matters here. A double forfeit strands the
+ * match after it, and that match then strands the one after *it* — nobody can
+ * play it, so it can never produce a winner either. Checking only the source's
+ * own result stops the deadness one hop short, and the match two rounds later
+ * goes on advertising a "Winner of ..." that can never arrive.
+ */
+function producesNobody(
+  match: FlexBracketMatch,
+  allMatches: FlexBracketMatch[],
+  depth = 0,
+): boolean {
+  if (depth > 20) return false;
+  if (advancingSideIndex(match, 'winner') !== null) return false;
+
+  // Ruled on by an organizer, or settled by a result with no winning side.
+  if (match.advances === 'none') return true;
+  if (match.winner === undefined && match.forfeit) return true;
+
+  // Unplayable: a side of it is fed by a slot nothing will ever arrive in.
+  return ([match.a, match.b] as const).some((slot) => {
+    if (slot.type !== 'winner' && slot.type !== 'loser') return false;
+    const src = allMatches.find((m) => m.id === slot.from);
+    return !!src && producesNobody(src, allMatches, depth + 1);
+  });
+}
+
+/**
  * Resolves a slot to its actual team by recursively following winner/loser chains.
  * Returns a placeholder when the source match has not yet been played.
  */
@@ -257,40 +311,40 @@ export function resolveSlot(
     };
   }
 
-  if (slot.type === 'winner') {
+  if (slot.type === 'winner' || slot.type === 'loser') {
     const src = allMatches.find((m) => m.id === slot.from);
-    if (src?.winner !== undefined) {
-      const advancingSlot = src.winner === 0 ? src.a : src.b;
-      return resolveSlot(
-        advancingSlot,
-        teams,
-        allMatches,
-        matchLabels,
-        depth + 1,
-      );
-    }
-    return {
-      team: null,
-      placeholder: `Winner of ${matchLabels?.get(slot.from) ?? slot.from}`,
-      sourceId: slot.from,
-    };
-  }
+    const label = matchLabels?.get(slot.from) ?? slot.from;
+    const outcome = slot.type === 'winner' ? 'Winner' : 'Loser';
 
-  if (slot.type === 'loser') {
-    const src = allMatches.find((m) => m.id === slot.from);
-    if (src?.winner !== undefined) {
-      const eliminatedSlot = src.winner === 0 ? src.b : src.a;
-      return resolveSlot(
-        eliminatedSlot,
-        teams,
-        allMatches,
-        matchLabels,
-        depth + 1,
-      );
+    if (src) {
+      const sideIndex = advancingSideIndex(src, slot.type);
+      if (sideIndex !== null) {
+        return resolveSlot(
+          sideIndex === 0 ? src.a : src.b,
+          teams,
+          allMatches,
+          matchLabels,
+          depth + 1,
+        );
+      }
+      // Nobody is leaving that match, ever. "Winner of Match 4" would read as a
+      // result still to come, when in fact the slot is empty for good unless an
+      // organizer says who advances.
+      if (producesNobody(src, allMatches)) {
+        // A double forfeit reaches the client as "no winner, forfeited". Naming
+        // it is more use than "no winner": it says what happened, and it is the
+        // match an organizer has to open to fix the chain.
+        const reason =
+          src.winner === undefined && src.forfeit && src.advances !== 'none'
+            ? `Double forfeit in ${label}`
+            : `No ${outcome.toLowerCase()} from ${label}`;
+        return { team: null, placeholder: reason, sourceId: slot.from };
+      }
     }
+
     return {
       team: null,
-      placeholder: `Loser of ${matchLabels?.get(slot.from) ?? slot.from}`,
+      placeholder: `${outcome} of ${label}`,
       sourceId: slot.from,
     };
   }
@@ -363,11 +417,15 @@ export function autoSectionTitle(kind: string): string {
 // ─── Full layout computation ──────────────────────────────────────────────────
 
 function slotStatus(
-  winner: 0 | 1 | undefined,
+  match: FlexBracketMatch,
   slotIndex: 0 | 1,
 ): 'winner' | 'loser' | 'undecided' {
-  if (winner === undefined) return 'undecided';
-  return winner === slotIndex ? 'winner' : 'loser';
+  // Not `match.winner`: an organizer ruling who advances out of a stalled match
+  // settles it just as a played result does, and a card that ignored the ruling
+  // would keep drawing both sides as undecided.
+  const advancing = advancingSideIndex(match, 'winner');
+  if (advancing === null) return 'undecided';
+  return advancing === slotIndex ? 'winner' : 'loser';
 }
 
 /**
@@ -515,13 +573,11 @@ export function computeBracketLayout(
       const destSection = dest.section ?? 'main';
       const srcCol = colIdxOf(src);
       const destCol = colIdxOf(dest);
-      const decided = src.winner !== undefined;
+      const advancing = advancingSideIndex(src, raw.type);
+      const decided = advancing !== null;
 
       const x1Rel = decided
-        ? relPortOffset(
-            src.id,
-            raw.type === 'winner' ? src.winner! : ((1 - src.winner!) as 0 | 1),
-          )
+        ? relPortOffset(src.id, advancing)
         : (positionCenters.get(src.id) ?? 0);
       const x2Rel = relPortOffset(dest.id, slotIndex as 0 | 1);
 
@@ -623,7 +679,9 @@ export function computeBracketLayout(
   const laneY = (c: number, lane: number): number => {
     const h = corridorH(c);
     const lanes = laneTotals.get(c) ?? 1;
-    return headerTop(c) - h + (h - (lanes - 1) * LANE_STEP) / 2 + lane * LANE_STEP;
+    return (
+      headerTop(c) - h + (h - (lanes - 1) * LANE_STEP) / 2 + lane * LANE_STEP
+    );
   };
 
   // Vertical band runs share a lane when their y-spans don't overlap (greedy
@@ -742,8 +800,8 @@ export function computeBracketLayout(
           slotY: [slotAY, slotBY],
           portX: [x + COL_W * 0.3, x + COL_W * 0.7],
           slots: [
-            { raw: m.a, ...resolvedA, status: slotStatus(m.winner, 0) },
-            { raw: m.b, ...resolvedB, status: slotStatus(m.winner, 1) },
+            { raw: m.a, ...resolvedA, status: slotStatus(m, 0) },
+            { raw: m.b, ...resolvedB, status: slotStatus(m, 1) },
           ],
         });
 
@@ -830,11 +888,8 @@ export function computeBracketLayout(
     let x1 = src.x + src.w / 2;
     if (r.decided) {
       const sourceMatch = matchById.get(r.fromId)!;
-      const rowIndex: 0 | 1 =
-        r.cls === 'winner'
-          ? sourceMatch.winner!
-          : ((1 - sourceMatch.winner!) as 0 | 1);
-      x1 = src.portX[rowIndex];
+      const rowIndex = advancingSideIndex(sourceMatch, r.cls);
+      if (rowIndex !== null) x1 = src.portX[rowIndex];
     }
 
     connectors.push({
