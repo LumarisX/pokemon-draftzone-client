@@ -7,6 +7,7 @@ import { NgControl } from '@angular/forms';
     class: 'pdz-choice',
     '[class.pdz-choice--invalid]': 'showInvalid',
     '[attr.aria-invalid]': 'showInvalid ? true : null',
+    '[attr.type]': 'type()',
   },
 })
 export class ChoiceDirective {
@@ -15,6 +16,7 @@ export class ChoiceDirective {
     self: true,
   });
 
+  type = input<string>('checkbox');
   invalid = input<boolean | null>(null);
 
   protected get showInvalid(): boolean {

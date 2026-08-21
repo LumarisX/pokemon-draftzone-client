@@ -85,14 +85,10 @@
               </td>
             }
             <td class="col-checkbox pdz-table__center">
-              <mat-checkbox
-                [formControl]="teamCtrl.controls.capt"
-              ></mat-checkbox>
+              <input pdz-checkbox [formControl]="teamCtrl.controls.capt" />
             </td>
             <td class="col-checkbox pdz-table__center">
-              <mat-checkbox
-                [formControl]="teamCtrl.controls.drafted"
-              ></mat-checkbox>
+              <input pdz-checkbox [formControl]="teamCtrl.controls.drafted" />
             </td>
           </tr>
         }

@@ -19,14 +19,15 @@ import {
   NonNullableFormBuilder,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { MatCheckboxModule } from '@angular/material/checkbox';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
-import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
+import { CheckComponent } from '@pdz/shared/inputs/choice/check.component';
+import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import { DraftPokemon } from '../../../draft.model';
 import { SpeedChart, Speedtier } from '../../matchup-interface';
 import { SpeedtierComponent } from './speedtier/speedtier.component';
-import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { ChoiceDirective } from '@pdz/shared/inputs/choice/choice.directive';
 
 @Component({
   selector: 'pdz-speedchart',
@@ -39,9 +40,10 @@ import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
     SpriteComponent,
     SpeedtierComponent,
     IconComponent,
-    MatCheckboxModule,
+    CheckComponent,
     OverlayModule,
     ButtonComponent,
+    ChoiceDirective,
   ],
 })
 export class SpeedchartComponent implements OnInit, OnDestroy, AfterViewInit {

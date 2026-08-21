@@ -23,9 +23,11 @@ import { DataService } from '@pdz/core/services/data.service';
 import { DRAFT_OVERVIEW_PATH } from '@pdz/core/route-paths';
 import { FormatSelectComponent } from '@pdz/shared/dropdowns/format-select/format.component';
 import { RulesetSelectComponent } from '@pdz/shared/dropdowns/ruleset-select/ruleset.component';
-import { PokemonFormGroup } from '@pdz/shared/forms/team-form/team-form.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
-import { TeamEditorComponent } from '../components/team-editor/team-editor.component';
+import {
+  PokemonFormGroup,
+  TeamEditorComponent,
+} from '../components/team-editor/team-editor.component';
 
 @Component({
   selector: 'pdz-draft-form-core',

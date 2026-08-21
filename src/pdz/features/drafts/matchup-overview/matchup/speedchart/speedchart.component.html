@@ -25,13 +25,10 @@
         <div class="reset-button" (click)="resetModifiers()">Reset</div>
         @for (modifier of getModifiers(); track $index) {
           <div class="option-row">
-            <mat-checkbox [formControl]="modifier[1].at(0)"></mat-checkbox>
+            <input pdz-checkbox [formControl]="modifier[1].at(0)" />
 
             <span class="filter-label">{{ modifier[0] }}</span>
-            <mat-checkbox
-              class="alternate"
-              [formControl]="modifier[1].at(1)"
-            ></mat-checkbox>
+            <input pdz-checkbox [formControl]="modifier[1].at(1)" />
           </div>
         }
       </div>

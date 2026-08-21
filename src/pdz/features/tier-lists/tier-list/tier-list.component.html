@@ -50,7 +50,7 @@
     @if (menu === "filter") {
       <div class="filter-dropdown">
         <div class="filter-dropdown__header">
-          <mat-checkbox
+          <input pdz-checkbox
             [checked]="selectedTypes().length === types.length"
             [indeterminate]="
               selectedTypes().length > 0 &&
@@ -69,10 +69,10 @@
         <div class="filter-dropdown__list">
           @for (type of types; track $index; let i = $index) {
             <label class="filter-type-option">
-              <mat-checkbox
+              <input pdz-checkbox
                 [checked]="selectedTypes().includes(type)"
                 (change)="updateFilter($event.checked, i)"
-              ></mat-checkbox>
+              />
               <div class="pdz-type" [style.background-color]="typeColor(type)">
                 <span class="pdz-type__text">{{ type }}</span>
               </div>

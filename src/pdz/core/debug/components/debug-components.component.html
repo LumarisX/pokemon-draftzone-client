@@ -215,27 +215,22 @@
     <div class="choices__col">
       <span class="surfaces__name">Checkbox</span>
       <label pdz-check label="Include shinies">
-        <input pdz-checkbox type="checkbox" />
+        <input pdz-checkbox />
       </label>
       <label pdz-check label="Captain" description="Only one per team.">
-        <input pdz-checkbox type="checkbox" checked />
+        <input pdz-checkbox checked />
       </label>
       <label pdz-check label="Indeterminate">
-        <input
-          pdz-checkbox
-          type="checkbox"
-          #ind
-          (click)="ind.indeterminate = false"
-        />
+        <input pdz-checkbox #ind (click)="ind.indeterminate = false" />
       </label>
       <label pdz-check label="Disabled">
-        <input pdz-checkbox type="checkbox" disabled />
+        <input pdz-checkbox disabled />
       </label>
       <label pdz-check label="Disabled + checked">
-        <input pdz-checkbox type="checkbox" checked disabled />
+        <input pdz-checkbox checked disabled />
       </label>
       <label pdz-check label="Label before" labelBefore>
-        <input pdz-checkbox type="checkbox" />
+        <input pdz-checkbox />
       </label>
     </div>
 

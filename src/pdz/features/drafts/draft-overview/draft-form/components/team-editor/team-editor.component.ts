@@ -8,17 +8,20 @@ import {
 } from '@angular/cdk/drag-drop';
 import { Component, EventEmitter, Output, inject, input } from '@angular/core';
 import {
+  AbstractControl,
+  AsyncValidatorFn,
   FormArray,
   FormControl,
+  FormGroup,
   FormsModule,
   ReactiveFormsModule,
+  ValidationErrors,
 } from '@angular/forms';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, filter, map, Observable, of, take } from 'rxjs';
 import { TERATYPES, TYPES } from '@pdz/shared/data';
 import { getPidByName } from '@pdz/shared/data/namedex';
 import { DraftPokemon } from '@pdz/features/drafts/draft.model';
 import { DataService } from '@pdz/core/services/data.service';
-import { PokemonFormGroup } from '@pdz/shared/forms/team-form/team-form.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { ChipInputComponent } from '../chip-input/chip-input.component';
@@ -208,4 +211,95 @@ export class TeamEditorComponent {
   zIconPath(type: string): string {
     return `assets/icons/z_types/${type}_Z_Crystal.png`;
   }
+}
+
+export class PokemonFormGroup extends FormGroup<{
+  pokemon: FormControl<DraftPokemon>;
+  shiny: FormControl<boolean | null>;
+  nickname: FormControl<string>;
+  tera: FormControl<string[] | null>;
+  z: FormControl<string[] | null>;
+  dmax: FormControl<boolean | null>;
+  formes: FormControl<DraftPokemon[]>;
+  moves: FormControl<string[]>;
+  abilities: FormControl<string[]>;
+}> {
+  formeList?: DraftPokemon[];
+  constructor(
+    pokemon: DraftPokemon,
+    pokemonList: BehaviorSubject<DraftPokemon[]>,
+  ) {
+    super({
+      pokemon: new FormControl<DraftPokemon>(pokemon, {
+        nonNullable: true,
+        asyncValidators: [pokemonAsyncValidator(pokemonList)],
+      }),
+      shiny: new FormControl<boolean | null>(!!pokemon.shiny),
+      nickname: new FormControl<string>(pokemon.nickname ?? '', {
+        nonNullable: true,
+      }),
+      tera: new FormControl<string[] | null>(pokemon.capt?.tera ?? null),
+      z: new FormControl<string[] | null>(pokemon.capt?.z ?? null),
+      dmax: new FormControl<boolean | null>(!!pokemon.capt?.dmax),
+      formes: new FormControl<DraftPokemon[]>(pokemon.draftFormes ?? [], {
+        nonNullable: true,
+      }),
+      moves: new FormControl<string[]>(pokemon.modifiers?.moves ?? [], {
+        nonNullable: true,
+      }),
+      abilities: new FormControl<string[]>(pokemon.modifiers?.abilities ?? [], {
+        nonNullable: true,
+      }),
+    });
+    this.controls.pokemon.updateValueAndValidity();
+  }
+
+  toPokemon(): DraftPokemon {
+    const capt = {
+      tera: this.controls.tera.value?.length
+        ? this.controls.tera.value
+        : undefined,
+      z: this.controls.z.value?.length ? this.controls.z.value : undefined,
+      dmax: this.controls.dmax.value || undefined,
+    };
+
+    const modifiers = {
+      moves: this.controls.moves.value?.length
+        ? this.controls.moves.value
+        : undefined,
+      abilities: this.controls.abilities.value?.length
+        ? this.controls.abilities.value
+        : undefined,
+    };
+
+    return {
+      id: this.controls.pokemon.value.id,
+      name: this.controls.pokemon.value.name,
+      shiny: this.controls.shiny.value || undefined,
+      nickname: this.controls.nickname.value || undefined,
+      draftFormes: this.controls.formes.value?.length
+        ? this.controls.formes.value
+        : undefined,
+      modifiers: Object.values(modifiers).some(Boolean) ? modifiers : undefined,
+      capt: Object.values(capt).some(Boolean) ? capt : undefined,
+    };
+  }
+}
+
+function pokemonAsyncValidator(
+  pokemonList$: BehaviorSubject<DraftPokemon[]>,
+): AsyncValidatorFn {
+  return (control: AbstractControl): Observable<ValidationErrors | null> => {
+    const pokemon = control.value;
+    if (!pokemon || !pokemon.id) return of({ invalidPokemon: true });
+
+    return pokemonList$.pipe(
+      filter((list) => list.length > 0), // Wait until the list is populated
+      take(1), // Take the first populated list and complete
+      map((pokemonList) => {
+        const exists = pokemonList.some((p) => p.id === pokemon.id);
+        return exists ? null : { invalidPokemon: true };
+      }),
+    );
+  };
 }

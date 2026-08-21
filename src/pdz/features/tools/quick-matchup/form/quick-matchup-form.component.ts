@@ -1,13 +1,12 @@
-import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 import { Location } from '@angular/common';
 import {
   Component,
   EventEmitter,
   inject,
+  model,
   OnDestroy,
   OnInit,
   Output,
-  model,
 } from '@angular/core';
 import {
   AbstractControl,
@@ -17,53 +16,28 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { MatDividerModule } from '@angular/material/divider';
-import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
-import { IconComponent } from '@pdz/shared/images/icon/icon.component';
-import { MatStepperModule } from '@angular/material/stepper';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import { BehaviorSubject, filter, Subject, takeUntil } from 'rxjs';
-import { getNameByPid } from '@pdz/shared/data/namedex';
-import { DraftPokemon } from '../../../drafts/draft.model';
 import { DataService } from '@pdz/core/services/data.service';
-import { FormatSelectComponent } from '@pdz/shared/dropdowns/format-select/format.component';
-import { RulesetSelectComponent } from '@pdz/shared/dropdowns/ruleset-select/ruleset.component';
-import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
-import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
-import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 import {
   PokemonFormGroup,
-  TeamFormComponent,
-} from '@pdz/shared/forms/team-form/team-form.component';
+  TeamEditorComponent,
+} from '@pdz/features/drafts/draft-overview/draft-form/components/team-editor/team-editor.component';
+import { DraftPokemon } from '@pdz/features/drafts/draft.model';
+import { getNameByPid } from '@pdz/shared/data/namedex';
+import { FormatSelectComponent } from '@pdz/shared/dropdowns/format-select/format.component';
+import { RulesetSelectComponent } from '@pdz/shared/dropdowns/ruleset-select/ruleset.component';
+import { BehaviorSubject, filter, Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'pdz-quick-matchup-form',
   imports: [
     RouterModule,
     ReactiveFormsModule,
-    MatDividerModule,
-    MatStepperModule,
-    IconComponent,
     FormatSelectComponent,
-    TeamFormComponent,
     RulesetSelectComponent,
-    ButtonComponent,
-    FieldComponent,
-    InputDirective,
+    TeamEditorComponent,
   ],
-  providers: [
-    {
-      provide: STEPPER_GLOBAL_OPTIONS,
-      useValue: {
-        displayDefaultIndicatorType: false,
-        useValue: { showError: true },
-      },
-    },
-    {
-      provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
-      useValue: { appearance: 'outline' },
-    },
-  ],
+
   templateUrl: './quick-matchup-form.component.html',
   styleUrl: './quick-matchup-form.component.scss',
 })
@@ -173,6 +147,21 @@ export class QuickMatchupFormComponent implements OnInit, OnDestroy {
       trimmed = 'https://' + trimmed;
     }
     window.open(trimmed, '_blank');
+  }
+
+  submitAttempted = false;
+  isImporting = false;
+
+  showError(control: FormControl, error: string): boolean {
+    return control.hasError(error) && (control.touched || this.submitAttempted);
+  }
+
+  get side1Count(): number {
+    return this.quickForm()?.controls.side1.controls.team.length ?? 0;
+  }
+
+  get side2Count(): number {
+    return this.quickForm()?.controls.side2.controls.team.length ?? 0;
   }
 }
 

@@ -17,8 +17,10 @@ import {
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { DRAFT_OVERVIEW_PATH } from '@pdz/core/route-paths';
 import { DataService } from '@pdz/core/services/data.service';
-import { TeamEditorComponent } from '@pdz/features/drafts/draft-overview/draft-form/components/team-editor/team-editor.component';
-import { PokemonFormGroup } from '@pdz/shared/forms/team-form/team-form.component';
+import {
+  PokemonFormGroup,
+  TeamEditorComponent,
+} from '@pdz/features/drafts/draft-overview/draft-form/components/team-editor/team-editor.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { BehaviorSubject, Observable, switchMap } from 'rxjs';
 import { DraftService } from '../../../draft-overview/draft.service';
