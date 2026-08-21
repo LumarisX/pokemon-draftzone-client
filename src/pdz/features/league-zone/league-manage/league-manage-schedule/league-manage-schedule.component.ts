@@ -105,6 +105,10 @@ export class LeagueManageScheduleComponent {
     string,
     { loading: boolean; error?: string }
   >();
+  private advancementState = new Map<
+    string,
+    { loading: boolean; error?: string }
+  >();
 
   /**
    * Named "stages" historically; these are the tournament's rounds, each
@@ -427,6 +431,55 @@ export class LeagueManageScheduleComponent {
           });
         },
       });
+  }
+
+  // ── Bracket advancement ────────────────────────────────────────────────────
+  //
+  // A double forfeit is a settled result with no winning side, so nothing moves
+  // into the matches below it and the bracket stalls — both on the page and in
+  // the data. These name the side that advances anyway, or rule that none does.
+
+  /** Whether to offer the control at all: it is a fix, not a routine field. */
+  needsAdvancement(matchup: League.Matchup): boolean {
+    return !!matchup.advancementBlocked || !!matchup.advances;
+  }
+
+  advancementValue(matchup: League.Matchup): string {
+    return matchup.advances ?? '';
+  }
+
+  setAdvancement(matchup: League.Matchup, value: string): void {
+    if (this.advancementState.get(matchup.id)?.loading) return;
+    const advances =
+      value === 'side1' || value === 'side2' || value === 'none' ? value : null;
+
+    this.advancementState.set(matchup.id, { loading: true });
+
+    this.leagueManageService
+      .setMatchupAdvancement(matchup.slug, advances)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.advancementState.delete(matchup.id);
+          // A reload rather than a local patch: the answer refills slots in
+          // other rounds, and those cards are on this same page.
+          this.loadSchedule();
+        },
+        error: (error) => {
+          this.advancementState.set(matchup.id, {
+            loading: false,
+            error: error?.message || 'Failed to set the advancement.',
+          });
+        },
+      });
+  }
+
+  isSettingAdvancement(matchupId: string): boolean {
+    return this.advancementState.get(matchupId)?.loading ?? false;
+  }
+
+  getAdvancementError(matchupId: string): string | undefined {
+    return this.advancementState.get(matchupId)?.error;
   }
 
   isReviewing(matchupId: string): boolean {

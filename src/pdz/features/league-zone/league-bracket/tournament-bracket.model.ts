@@ -72,6 +72,11 @@ export interface TournamentBracketMatch {
   winner?: 0 | 1;
   /** A forfeit: the score below is the configured game difference, not a result. */
   forfeit?: boolean;
+  /**
+   * Organizer override for which side advances, set only where the result
+   * could not decide — see `FlexBracketMatch.advances`.
+   */
+  advances?: 'side1' | 'side2' | 'none' | null;
   /** Games won, `[side1, side2]`. */
   score?: [number, number];
   scheduledDate?: string | null;

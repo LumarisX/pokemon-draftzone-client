@@ -121,6 +121,18 @@ export namespace League {
     scheduledDate?: Date;
     notes?: string;
     winner?: MatchupWinner;
+    /**
+     * Organizer override for which side leaves this match. Only ever set where
+     * the result could not decide — a double forfeit advances nobody, so every
+     * bracket slot below it stays empty until an organizer answers.
+     * `'none'` is the answer that nobody advances.
+     */
+    advances?: 'side1' | 'side2' | 'none' | null;
+    /**
+     * Organizer-only: this match has stopped the bracket — it is settled with
+     * no side leaving it while something downstream is still waiting on one.
+     */
+    advancementBlocked?: boolean;
     /** Organizer-only: present when the schedule was fetched by an organizer. */
     status?: 'pending' | 'approved';
     /** Organizer-only: a coach-submitted result awaiting approve/reject. */

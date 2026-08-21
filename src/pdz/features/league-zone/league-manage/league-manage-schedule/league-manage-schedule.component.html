@@ -189,6 +189,52 @@
                     </div>
                   </div>
 
+                  @if (needsAdvancement(matchup)) {
+                    <div class="advancement">
+                      <div class="advancement__header">
+                        <pdz-icon
+                          class="advancement__icon"
+                          name="warning"
+                        ></pdz-icon>
+                        <div>
+                          <div class="advancement__title">Bracket stuck</div>
+                          @if (matchup.team1.id || matchup.team2.id) {
+                            <div class="advancement__hint">
+                              Nobody advanced. Pick who moves on.
+                            </div>
+                          } @else {
+                            <div class="advancement__hint">
+                              Both sides are empty. Fix the earlier matches
+                              first.
+                            </div>
+                          }
+                        </div>
+                      </div>
+                      <div class="field">
+                        <label>Advances</label>
+                        <select
+                          [value]="advancementValue(matchup)"
+                          [disabled]="isSettingAdvancement(matchup.id)"
+                          (change)="
+                            setAdvancement(matchup, $any($event.target).value)
+                          "
+                        >
+                          <option value="">Undecided</option>
+                          @if (matchup.team1.id) {
+                            <option value="side1">{{ matchup.team1.name }}</option>
+                          }
+                          @if (matchup.team2.id) {
+                            <option value="side2">{{ matchup.team2.name }}</option>
+                          }
+                          <option value="none">Nobody</option>
+                        </select>
+                      </div>
+                      @if (getAdvancementError(matchup.id); as advanceError) {
+                        <div class="advancement__error">{{ advanceError }}</div>
+                      }
+                    </div>
+                  }
+
                   <div class="matchup-summary">
                     <button
                       type="button"
