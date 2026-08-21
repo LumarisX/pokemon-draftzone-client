@@ -9,8 +9,8 @@ import {
 import { CommonModule } from '@angular/common';
 import { Component, input } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatCheckboxModule } from '@angular/material/checkbox';
 import { PokemonSelectComponent } from '@pdz/shared/dropdowns/pokemon-select/pokemon-select.component';
+import { ChoiceDirective } from '@pdz/shared/inputs/choice/choice.directive';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { DraftFormGroup } from '../plannner.component';
@@ -26,7 +26,7 @@ import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
     FormsModule,
     ReactiveFormsModule,
     IconComponent,
-    MatCheckboxModule,
+    ChoiceDirective,
     PokemonSelectComponent,
     CdkDrag,
     CdkDropList,

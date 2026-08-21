@@ -104,6 +104,11 @@
   border-radius: pdz.shape(corner-xs);
   cursor: pointer;
 
+  label {
+    flex: 1;
+    cursor: pointer;
+  }
+
   &:hover {
     background-color: pdz.color(surface-container-highest);
   }

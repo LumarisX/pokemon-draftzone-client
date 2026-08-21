@@ -50,15 +50,20 @@
     @if (menu === "filter") {
       <div class="filter-dropdown">
         <div class="filter-dropdown__header">
-          <input pdz-checkbox
-            [checked]="selectedTypes().length === types.length"
-            [indeterminate]="
-              selectedTypes().length > 0 &&
-              selectedTypes().length < types.length
-            "
-            (change)="updateFilter($event.checked)"
-            >All Types</mat-checkbox
-          >
+          <div class="filter-type-option">
+            <input
+              pdz-checkbox
+              #allTypes
+              id="filter-all-types"
+              [checked]="selectedTypes().length === types.length"
+              [indeterminate]="
+                selectedTypes().length > 0 &&
+                selectedTypes().length < types.length
+              "
+              (change)="updateFilter(allTypes.checked)"
+            />
+            <label for="filter-all-types">All Types</label>
+          </div>
           <button
             class="action-button action-button--primary action-button--sm"
             (click)="applyFilter()"
@@ -68,15 +73,22 @@
         </div>
         <div class="filter-dropdown__list">
           @for (type of types; track $index; let i = $index) {
-            <label class="filter-type-option">
-              <input pdz-checkbox
+            <div class="filter-type-option">
+              <input
+                pdz-checkbox
+                #typeBox
+                [attr.id]="'filter-type-' + type"
                 [checked]="selectedTypes().includes(type)"
-                (change)="updateFilter($event.checked, i)"
+                (change)="updateFilter(typeBox.checked, i)"
               />
-              <div class="pdz-type" [style.background-color]="typeColor(type)">
+              <label
+                class="pdz-type"
+                [attr.for]="'filter-type-' + type"
+                [style.background-color]="typeColor(type)"
+              >
                 <span class="pdz-type__text">{{ type }}</span>
-              </div>
-            </label>
+              </label>
+            </div>
           }
         </div>
       </div>

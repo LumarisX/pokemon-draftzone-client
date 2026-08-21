@@ -22,7 +22,6 @@ import {
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
-import { CheckComponent } from '@pdz/shared/inputs/choice/check.component';
 import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import { DraftPokemon } from '../../../draft.model';
 import { SpeedChart, Speedtier } from '../../matchup-interface';
@@ -40,7 +39,6 @@ import { ChoiceDirective } from '@pdz/shared/inputs/choice/choice.directive';
     SpriteComponent,
     SpeedtierComponent,
     IconComponent,
-    CheckComponent,
     OverlayModule,
     ButtonComponent,
     ChoiceDirective,

@@ -383,9 +383,15 @@
                   <pdz-icon name="shiny" [size]="16"></pdz-icon>
                   Shiny
                 </button>
-                <label class="form-field">
-                  <span class="form-field__label">Nickname</span>
+                <div class="form-field">
+                  <label
+                    class="form-field__label"
+                    [attr.for]="uid + '-nickname-' + index"
+                  >
+                    Nickname
+                  </label>
                   <input
+                    [attr.id]="uid + '-nickname-' + index"
                     class="form-field__input"
                     type="text"
                     maxlength="18"
@@ -397,7 +403,7 @@
                       {{ monGroup.controls.nickname.value.length }}/18
                     </span>
                   }
-                </label>
+                </div>
               </section>
 
               <section class="pokemon-card__section">

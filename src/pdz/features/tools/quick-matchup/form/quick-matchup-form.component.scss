@@ -39,15 +39,6 @@
     margin: 0 auto;
   }
 
-  &__back {
-    @include icon-button(
-      (
-        color: pdz.color(on-surface),
-        background-hover: pdz.color(surface-container-high),
-      )
-    );
-  }
-
   &__title {
     margin: 0;
     @include pdz.text(subtitle, $family: false);
@@ -89,6 +80,10 @@
 
     &--team {
       min-height: 24rem;
+
+      .form-field {
+        margin-bottom: pdz.space(md);
+      }
     }
   }
 
@@ -118,28 +113,6 @@
   &__form {
     display: grid;
     gap: pdz.space(md);
-  }
-
-  &__doc-row {
-    display: flex;
-    align-items: center;
-    gap: pdz.space(xs);
-
-    .form-field__input {
-      flex: 1;
-      min-width: 0;
-    }
-  }
-
-  &__doc-open {
-    @include icon-button(
-      (
-        width: 2.5rem,
-        height: 2.5rem,
-        color: pdz.color(on-surface-variant),
-        background-hover: pdz.color(surface-container-high),
-      )
-    );
   }
 }
 

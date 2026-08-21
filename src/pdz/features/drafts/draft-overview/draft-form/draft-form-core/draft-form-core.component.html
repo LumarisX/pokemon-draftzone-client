@@ -30,9 +30,12 @@
           [formGroup]="draftForm.controls.details"
           (ngSubmit)="onSubmit()"
         >
-          <label class="form-field">
-            <span class="form-field__label">League Name</span>
+          <div class="form-field">
+            <label class="form-field__label" for="draft-league-name">
+              League Name
+            </label>
             <input
+              id="draft-league-name"
               class="form-field__input"
               type="text"
               spellcheck="false"
@@ -49,11 +52,14 @@
                 League name must contain at least one letter or number
               </span>
             }
-          </label>
+          </div>
 
-          <label class="form-field">
-            <span class="form-field__label">Team Name</span>
+          <div class="form-field">
+            <label class="form-field__label" for="draft-team-name">
+              Team Name
+            </label>
             <input
+              id="draft-team-name"
               class="form-field__input"
               type="text"
               spellcheck="false"
@@ -65,25 +71,31 @@
             @if (showError(teamNameControl, "required")) {
               <span class="form-field__error">Team name is required</span>
             }
-          </label>
+          </div>
 
-          <label class="form-field">
-            <span class="form-field__label">Coach Name</span>
+          <div class="form-field">
+            <label class="form-field__label" for="draft-coach"
+              >Coach Name</label
+            >
             <input
+              id="draft-coach"
               class="form-field__input"
               type="text"
               spellcheck="false"
               formControlName="coach"
             />
-          </label>
+          </div>
 
           <pdz-format-select formControlName="format"></pdz-format-select>
           <pdz-ruleset-select formControlName="ruleset"></pdz-ruleset-select>
 
-          <label class="form-field">
-            <span class="form-field__label">Document Link</span>
+          <div class="form-field">
+            <label class="form-field__label" for="draft-doc">
+              Document Link
+            </label>
             <div class="draft-builder__doc-row">
               <input
+                id="draft-doc"
                 class="form-field__input"
                 type="text"
                 spellcheck="false"
@@ -101,7 +113,7 @@
                 <pdz-icon name="open_in_new" [size]="20"></pdz-icon>
               </button>
             </div>
-          </label>
+          </div>
         </form>
       </aside>
 

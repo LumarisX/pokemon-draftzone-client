@@ -15,7 +15,6 @@ import {
   viewChild,
 } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
 import { RouterModule } from '@angular/router';
@@ -30,6 +29,7 @@ import {
 } from '@pdz/shared/dialogs/pokemon-dialog/pokemon-dialog.component';
 import { PokemonTypeComponent } from '@pdz/shared/dialogs/pokemon-type/pokemon-type.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
+import { ChoiceDirective } from '@pdz/shared/inputs/choice/choice.directive';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { Subject } from 'rxjs';
@@ -53,7 +53,7 @@ import {
     MatDialogModule,
     RouterModule,
     FormsModule,
-    MatCheckboxModule,
+    ChoiceDirective,
     TooltipDirective,
     ReactiveFormsModule,
     LoadingComponent,

@@ -26,7 +26,7 @@ import { DraftPokemon } from '@pdz/features/drafts/draft.model';
 import { getNameByPid } from '@pdz/shared/data/namedex';
 import { FormatSelectComponent } from '@pdz/shared/dropdowns/format-select/format.component';
 import { RulesetSelectComponent } from '@pdz/shared/dropdowns/ruleset-select/ruleset.component';
-import { BehaviorSubject, filter, Subject, takeUntil } from 'rxjs';
+import { BehaviorSubject, filter, Subject, take, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'pdz-quick-matchup-form',
@@ -52,8 +52,11 @@ export class QuickMatchupFormComponent implements OnInit, OnDestroy {
 
   @Output() formSubmitted = new EventEmitter<QuickForm>();
 
+  submitAttempted = false;
+  isImporting = false;
+
   ngOnInit(): void {
-    this.route.queryParams.subscribe((params) => {
+    this.route.queryParams.pipe(take(1)).subscribe((params) => {
       const format: string | undefined = params['format'];
       const ruleset: string | undefined = params['ruleset'];
       const team1: DraftPokemon[] | undefined = params['team1']
@@ -89,6 +92,7 @@ export class QuickMatchupFormComponent implements OnInit, OnDestroy {
         });
       this.loadPokemonList(quickForm.controls.details.controls.ruleset.value);
       quickForm.setValidators(this.validateDraftForm);
+      quickForm.updateValueAndValidity();
       this.location.replaceState(this.location.path().split('?')[0]);
     });
   }
@@ -129,31 +133,10 @@ export class QuickMatchupFormComponent implements OnInit, OnDestroy {
   onSubmit() {
     const quickForm = this.quickForm();
     if (!quickForm) return;
+    this.submitAttempted = true;
     if (quickForm.valid) {
       this.formSubmitted.emit(quickForm);
-      console.log('Form is valid.');
-      console.log(quickForm.value);
-      console.log(quickForm.toValue());
-    } else {
-      console.log('draft', quickForm.valid, quickForm.errors);
-
-      console.log('Form is invalid.');
     }
-  }
-
-  openLink(url: string) {
-    let trimmed = url.trim();
-    if (trimmed && !/^https?:\/\//i.test(trimmed)) {
-      trimmed = 'https://' + trimmed;
-    }
-    window.open(trimmed, '_blank');
-  }
-
-  submitAttempted = false;
-  isImporting = false;
-
-  showError(control: FormControl, error: string): boolean {
-    return control.hasError(error) && (control.touched || this.submitAttempted);
   }
 
   get side1Count(): number {

@@ -47,7 +47,10 @@ type CaptKind = 'tera' | 'z' | 'dmax';
   styleUrl: './team-editor.component.scss',
 })
 export class TeamEditorComponent {
+  private static instanceCount = 0;
   private dataService = inject(DataService);
+
+  readonly uid = `team-editor-${TeamEditorComponent.instanceCount++}`;
 
   readonly ruleset = input.required<string>();
   readonly teamArray = input.required<FormArray<PokemonFormGroup>>();

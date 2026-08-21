@@ -1,46 +1,94 @@
 @if (quickForm(); as quickForm) {
-  <div class="draft-builder__body">
-    <aside class="draft-builder__panel draft-builder__panel--details">
-      <h2 class="draft-builder__panel-title">League Details</h2>
-      <form
-        class="draft-builder__form"
-        [formGroup]="quickForm.controls.details"
-        (ngSubmit)="onSubmit()"
-      >
-        <pdz-format-select formControlName="format"></pdz-format-select>
-        <pdz-ruleset-select formControlName="ruleset"></pdz-ruleset-select>
-      </form>
-    </aside>
-
-    <section class="draft-builder__panel draft-builder__panel--team">
-      <div class="draft-builder__panel-header">
-        <h2 class="draft-builder__panel-title">
-          Team 1
-          <span class="draft-builder__panel-count">{{ side1Count }}</span>
-        </h2>
+  <div class="draft-builder">
+    <header class="draft-builder__header">
+      <div class="draft-builder__header-inner">
+        <h1 class="draft-builder__title">Quick Matchup</h1>
+        <span class="draft-builder__spacer"></span>
+        @if (submitAttempted && quickForm.hasError("emptyTeam")) {
+          <span class="form-field__error"
+            >Both teams need at least one Pokémon</span
+          >
+        }
+        <button
+          type="button"
+          class="draft-builder__submit"
+          [disabled]="isImporting"
+          (click)="onSubmit()"
+        >
+          Compare
+        </button>
       </div>
+    </header>
 
-      <pdz-team-editor
-        [pokemonList$]="pokemonList$"
-        [ruleset]="quickForm.controls.details.controls.ruleset.value"
-        [teamArray]="quickForm.controls.side1.controls.team"
-        (isImporting)="isImporting = $event"
-      ></pdz-team-editor>
-    </section>
-    <section class="draft-builder__panel draft-builder__panel--team">
-      <div class="draft-builder__panel-header">
-        <h2 class="draft-builder__panel-title">
-          Team 2
-          <span class="draft-builder__panel-count">{{ side2Count }}</span>
-        </h2>
-      </div>
+    <div class="draft-builder__body">
+      <aside class="draft-builder__panel draft-builder__panel--details">
+        <h2 class="draft-builder__panel-title">Matchup Details</h2>
+        <form
+          class="draft-builder__form"
+          [formGroup]="quickForm.controls.details"
+          (ngSubmit)="onSubmit()"
+        >
+          <pdz-format-select formControlName="format"></pdz-format-select>
+          <pdz-ruleset-select formControlName="ruleset"></pdz-ruleset-select>
+        </form>
+      </aside>
 
-      <pdz-team-editor
-        [pokemonList$]="pokemonList$"
-        [ruleset]="quickForm.controls.details.controls.ruleset.value"
-        [teamArray]="quickForm.controls.side2.controls.team"
-        (isImporting)="isImporting = $event"
-      ></pdz-team-editor>
-    </section>
+      <section class="draft-builder__panel draft-builder__panel--team">
+        <div class="draft-builder__panel-header">
+          <h2 class="draft-builder__panel-title">
+            Team 1
+            <span class="draft-builder__panel-count">{{ side1Count }}</span>
+          </h2>
+        </div>
+
+        <div class="form-field">
+          <label class="form-field__label" for="side1-team-name"
+            >Team Name</label
+          >
+          <input
+            id="side1-team-name"
+            class="form-field__input"
+            type="text"
+            spellcheck="false"
+            [formControl]="quickForm.controls.side1.controls.teamName"
+          />
+        </div>
+
+        <pdz-team-editor
+          [pokemonList$]="pokemonList$"
+          [ruleset]="quickForm.controls.details.controls.ruleset.value"
+          [teamArray]="quickForm.controls.side1.controls.team"
+          (isImporting)="isImporting = $event"
+        ></pdz-team-editor>
+      </section>
+      <section class="draft-builder__panel draft-builder__panel--team">
+        <div class="draft-builder__panel-header">
+          <h2 class="draft-builder__panel-title">
+            Team 2
+            <span class="draft-builder__panel-count">{{ side2Count }}</span>
+          </h2>
+        </div>
+
+        <div class="form-field">
+          <label class="form-field__label" for="side2-team-name"
+            >Team Name</label
+          >
+          <input
+            id="side2-team-name"
+            class="form-field__input"
+            type="text"
+            spellcheck="false"
+            [formControl]="quickForm.controls.side2.controls.teamName"
+          />
+        </div>
+
+        <pdz-team-editor
+          [pokemonList$]="pokemonList$"
+          [ruleset]="quickForm.controls.details.controls.ruleset.value"
+          [teamArray]="quickForm.controls.side2.controls.team"
+          (isImporting)="isImporting = $event"
+        ></pdz-team-editor>
+      </section>
+    </div>
   </div>
 }
