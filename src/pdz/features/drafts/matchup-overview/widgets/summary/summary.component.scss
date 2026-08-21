@@ -1,8 +1,12 @@
 @use "pdz-theming" as pdz;
 
-.widget-container {
+:host {
+  display: block;
+  max-width: 100%;
+
   --pdz-cmp-summary-border: #{pdz.color(primary-border)};
-  &.alternate {
-    --pdz-cmp-summary-border: #{pdz.color(secondary-border)};
-  }
+}
+
+:host(.alternate) {
+  --pdz-cmp-summary-border: #{pdz.color(secondary-border)};
 }

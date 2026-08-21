@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
+import { CardComponent } from '@pdz/shared/data/card/card.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { MatSortModule, Sort } from '@angular/material/sort';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
@@ -13,13 +14,14 @@ import { StatsTable } from '@pdz/shared/data';
 @Component({
   selector: 'pdz-overview',
   templateUrl: './overview.component.html',
-  styleUrls: ['../../matchup.scss', './overview.component.scss'],
+  styleUrl: './overview.component.scss',
   imports: [
     CommonModule,
     SpriteComponent,
     MatSortModule,
     TooltipDirective,
     IconComponent,
+    CardComponent,
   ],
 })
 export class OverviewComponent {

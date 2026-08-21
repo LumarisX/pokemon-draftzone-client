@@ -5,7 +5,9 @@
         <span class="planner-team__control-label">Size</span>
         <div class="planner-team__range">
           <input
-            class="planner-team__control-input"
+            pdz-input
+            size="sm"
+            class="planner-team__num"
             type="number"
             min="0"
             max="18"
@@ -14,7 +16,9 @@
           />
           <span class="planner-team__range-sep">–</span>
           <input
-            class="planner-team__control-input"
+            pdz-input
+            size="sm"
+            class="planner-team__num"
             type="number"
             min="0"
             max="18"
@@ -28,24 +32,15 @@
         <span class="planner-team__control-label" id="planner-team-system">
           Values
         </span>
-        <div
-          class="planner-team__segmented"
-          role="group"
+        <pdz-segmented
+          size="sm"
+          variant="tonal"
           aria-labelledby="planner-team-system"
+          [formControl]="draftFormGroup.controls.system"
         >
-          @for (option of systemOptions; track option.id) {
-            <button
-              type="button"
-              class="planner-team__segment"
-              [class.planner-team__segment--active]="
-                draftFormGroup.controls.system.value === option.id
-              "
-              (click)="draftFormGroup.controls.system.setValue(option.id)"
-            >
-              {{ option.label }}
-            </button>
-          }
-        </div>
+          <pdz-segmented-option value="points" label="Points" />
+          <pdz-segmented-option value="tiers" label="Tiers" />
+        </pdz-segmented>
       </div>
 
       @if (isPoints) {
@@ -54,7 +49,9 @@
             Total
           </label>
           <input
-            class="planner-team__control-input planner-team__control-input--wide"
+            pdz-input
+            size="sm"
+            class="planner-team__num planner-team__num--wide"
             id="planner-team-total"
             type="number"
             [formControl]="draftFormGroup.controls.totalPoints"
@@ -64,6 +61,7 @@
 
       <button
         pdz-button
+        class="planner-team__clear"
         variant="ghost"
         color="danger"
         size="sm"
@@ -100,7 +98,7 @@
             type="button"
             class="planner-team__handle"
             [attr.aria-label]="'Reorder slot ' + ($index + 1)"
-            [title]="$index >= min ? 'Reserve slot' : 'Starter slot'"
+            [pdzTooltip]="$index >= min ? 'Reserve slot' : 'Starter slot'"
             cdkDragHandle
           >
             <span class="planner-team__slot">{{ $index + 1 }}</span>
@@ -152,14 +150,17 @@
             </div>
 
             <button
-              type="button"
+              pdz-button
+              iconOnly
+              size="sm"
               class="planner-team__lock"
-              [class.planner-team__lock--on]="teamCtrl.controls.locked.value"
+              [variant]="teamCtrl.controls.locked.value ? 'tonal' : 'outlined'"
+              [color]="teamCtrl.controls.locked.value ? 'primary' : 'neutral'"
               [attr.aria-pressed]="teamCtrl.controls.locked.value"
               [attr.aria-label]="
                 teamCtrl.controls.locked.value ? 'Unlock slot' : 'Lock slot'
               "
-              [title]="
+              [pdzTooltip]="
                 teamCtrl.controls.locked.value
                   ? 'Unlock — allow edits and clearing'
                   : 'Lock — keep this pick when clearing'

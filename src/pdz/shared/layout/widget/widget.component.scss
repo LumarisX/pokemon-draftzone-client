@@ -1,0 +1,52 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+}
+
+:host(.pdz-widget--fill) {
+  width: 100%;
+}
+
+pdz-card {
+  height: 100%;
+}
+
+.pdz-widget__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: pdz.space(sm);
+  width: 100%;
+  padding: pdz.space(sm) pdz.space(md);
+  border-bottom: 1px solid pdz.color(outline-variant);
+}
+
+.pdz-widget__label {
+  font-family: pdz.font(display);
+  @include pdz.text(card-title, $family: false);
+  color: pdz.color(on-surface);
+}
+
+.pdz-widget__options {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(2xs);
+
+  &:empty {
+    display: none;
+  }
+}
+
+.pdz-widget__body {
+  max-width: 100%;
+  width: 100%;
+  padding: pdz.space(md);
+  overflow-x: auto;
+}
+
+:host([data-padding="none"]) .pdz-widget__body {
+  padding: 0;
+}

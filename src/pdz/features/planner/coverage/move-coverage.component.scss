@@ -1,0 +1,78 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+  max-width: 100%;
+}
+
+.move-coverage {
+  display: flex;
+  align-items: flex-start;
+  gap: pdz.space(md);
+  max-width: 100%;
+
+  @media (max-width: 640px) {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  &__rail {
+    flex-shrink: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 6rem);
+    gap: pdz.space(2xs);
+    max-height: 18rem;
+    overflow-y: auto;
+
+    @media (max-width: 640px) {
+      grid-template-columns: repeat(auto-fit, 6rem);
+      max-height: none;
+      justify-content: center;
+    }
+  }
+
+  &__thumb {
+    display: block;
+    width: 6rem;
+    height: 6rem;
+    padding: pdz.space(3xs);
+    border: 1px solid transparent;
+    border-radius: pdz.shape(corner-sm);
+    background: transparent;
+    cursor: pointer;
+    transition:
+      border-color pdz.duration(fast) pdz.easing(standard),
+      background-color pdz.duration(fast) pdz.easing(standard);
+
+    &:hover:not(&--selected) {
+      background: pdz.color(surface-container-high);
+    }
+
+    &:focus-visible {
+      outline: 2px solid pdz.color(primary-accent);
+      outline-offset: -2px;
+    }
+
+    &--selected {
+      border-color: pdz.color(primary-border);
+      background: pdz.color(primary-container);
+    }
+  }
+
+  &__detail {
+    flex: 0 1 18rem;
+    width: 18rem;
+    max-width: 100%;
+  }
+}
+
+.chart-tooltip {
+  position: fixed;
+  background-color: pdz.color(secondary);
+  color: pdz.color(on-secondary);
+  padding: pdz.space(3xs) pdz.space(xs);
+  border-radius: pdz.shape(corner-xs);
+  font-size: pdz.font-size(xs);
+  pointer-events: none;
+  opacity: 0;
+}

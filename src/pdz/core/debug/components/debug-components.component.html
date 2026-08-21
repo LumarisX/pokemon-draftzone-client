@@ -532,6 +532,53 @@
 </section>
 
 <section class="section">
+  <h2 class="section__title">Slide toggle</h2>
+  <p class="section__note">
+    Wraps a native <code>input[type=checkbox][role=switch]</code>: focusable,
+    Space-togglable, and label-clickable for free.
+  </p>
+  <div class="row">
+    <pdz-slide-toggle [(checked)]="abilities">Abilities</pdz-slide-toggle>
+    <pdz-slide-toggle size="sm" [(checked)]="abilities">Small</pdz-slide-toggle>
+    <pdz-slide-toggle label="Label input" [(checked)]="abilities" />
+    <pdz-slide-toggle labelBefore [(checked)]="abilities">
+      Label before
+    </pdz-slide-toggle>
+  </div>
+  <div class="row" style="margin-top: 1rem">
+    <pdz-slide-toggle onIcon="tera" offIcon="tera" [(checked)]="abilities">
+      Custom icons
+    </pdz-slide-toggle>
+    <pdz-slide-toggle disabled>Disabled off</pdz-slide-toggle>
+    <pdz-slide-toggle disabled [checked]="true">Disabled on</pdz-slide-toggle>
+    <pdz-slide-toggle />
+  </div>
+  <p class="section__note">Checked: {{ abilities() }}</p>
+</section>
+
+<section class="section">
+  <h2 class="section__title">Widget</h2>
+  <p class="section__note">
+    Card shell for a board panel: header label, projected
+    <code>[widget-options]</code> controls, body. Border-defined — no shadow
+    unless <code>elevated</code> is set.
+  </p>
+  <div class="row">
+    <pdz-widget label="Draft Summary">
+      <div style="padding: 0.5rem 0">Sizes to its content by default.</div>
+    </pdz-widget>
+
+    <pdz-widget label="Type Chart">
+      <pdz-segmented widget-options size="sm" variant="tonal" [(value)]="winner">
+        <pdz-segmented-option value="side1" label="Team A" />
+        <pdz-segmented-option value="side2" label="Team B" />
+      </pdz-segmented>
+      <div style="padding: 0.5rem 0">With header controls.</div>
+    </pdz-widget>
+  </div>
+</section>
+
+<section class="section">
   <h2 class="section__title">Segmented</h2>
   <div class="row">
     <pdz-segmented [(value)]="reportMode" aria-label="Report mode">
@@ -564,6 +611,22 @@
       <pdz-segmented-option value="standard" label="Standard" />
       <pdz-segmented-option value="forfeit" label="Forfeit" />
       <pdz-segmented-option value="dispute" label="Dispute" />
+    </pdz-segmented>
+  </div>
+
+  <div class="row">
+    <pdz-segmented [(value)]="reportMode" aria-label="Filled variant">
+      <pdz-segmented-option value="standard" label="Filled" />
+      <pdz-segmented-option value="forfeit" label="Default" />
+    </pdz-segmented>
+
+    <pdz-segmented
+      variant="tonal"
+      [(value)]="reportMode"
+      aria-label="Tonal variant"
+    >
+      <pdz-segmented-option value="standard" label="Tonal" />
+      <pdz-segmented-option value="forfeit" label="Softer" />
     </pdz-segmented>
   </div>
 </section>

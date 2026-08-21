@@ -78,15 +78,14 @@
         }
       </div>
       <button
-        type="button"
+        pdz-button
+        iconOnly
+        variant="outlined"
+        color="neutral"
+        size="sm"
         class="planner__add"
         aria-label="Add draft plan"
         [disabled]="isAtDraftLimit"
-        [title]="
-          isAtDraftLimit
-            ? 'Delete a draft plan before adding another'
-            : 'Add draft plan'
-        "
         (click)="addDraft()"
       >
         <pdz-icon name="add" [size]="20"></pdz-icon>
@@ -147,7 +146,11 @@
         <div class="planner__toolbar">
           @if (!isLargeScreen()) {
             <button
-              type="button"
+              pdz-button
+              pill
+              variant="outlined"
+              color="neutral"
+              size="sm"
               class="planner__panel-toggle"
               aria-label="Draft plan setup"
               aria-controls="planner-setup-drawer"
@@ -159,13 +162,20 @@
             </button>
           }
 
-          <pdz-animated-selector
+          <pdz-segmented
             class="planner__views"
-            direction="horizontal"
-            [options]="viewOptions"
-            [selected]="mainView()"
-            (selectedChange)="setMainView($event)"
-          ></pdz-animated-selector>
+            variant="tonal"
+            aria-label="Draft analysis view"
+            [value]="mainView()"
+            (valueChange)="setMainView($any($event))"
+          >
+            <pdz-segmented-option
+              value="analysis"
+              label="Analysis"
+              icon="insights"
+            />
+            <pdz-segmented-option value="find" label="Find" icon="search" />
+          </pdz-segmented>
         </div>
 
         <div class="planner__board" [hidden]="mainView() !== 'analysis'">
@@ -181,16 +191,21 @@
             <pdz-planner-moves [movechart]="movechartData"></pdz-planner-moves>
           }
           @if (coverage(); as coverageData) {
-            <pdz-planner-coverage
+            <pdz-planner-move-coverage
               [coverage]="coverageData"
-            ></pdz-planner-coverage>
+            ></pdz-planner-move-coverage>
+            <pdz-planner-team-coverage
+              [coverage]="coverageData"
+            ></pdz-planner-team-coverage>
           }
 
           @if (!hasAnalysis()) {
-            <p class="planner__empty">
-              Add Pokémon to your team to see summary, typing, move and coverage
-              breakdowns here.
-            </p>
+            <pdz-empty-state
+              class="planner__empty"
+              icon="insights"
+              heading="No analysis yet"
+              message="Add Pokémon to your team to see summary, typing, move and coverage breakdowns here."
+            ></pdz-empty-state>
           }
         </div>
 
@@ -232,7 +247,11 @@
           <div class="planner__drawer-header">
             <span class="planner__drawer-title">Setup</span>
             <button
-              type="button"
+              pdz-button
+              iconOnly
+              pill
+              variant="ghost"
+              color="neutral"
               class="planner__drawer-close"
               aria-label="Close draft plan setup"
               (click)="closePanel()"

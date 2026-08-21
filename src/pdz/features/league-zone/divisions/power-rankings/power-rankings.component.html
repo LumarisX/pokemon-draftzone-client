@@ -112,9 +112,12 @@
       ></pdz-planner-moves>
     </div>
     <div class="coverage-wrapper">
-      <pdz-planner-coverage
+      <pdz-planner-move-coverage
         [coverage]="selectedTeam.coverage"
-      ></pdz-planner-coverage>
+      ></pdz-planner-move-coverage>
+      <pdz-planner-team-coverage
+        [coverage]="selectedTeam.coverage"
+      ></pdz-planner-team-coverage>
     </div>
   </div>
   <div class="score-comparison">

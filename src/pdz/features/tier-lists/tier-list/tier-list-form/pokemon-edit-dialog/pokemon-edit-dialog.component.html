@@ -6,7 +6,7 @@
       <div class="edit-dialog__sprite">
         <pdz-sprite size="100%" [pokemon]="spritePokemon"></pdz-sprite>
       </div>
-      <pdz-slide-toggle onSVG="tera" offSVG="tera">Tera</pdz-slide-toggle>
+      <pdz-slide-toggle onIcon="tera" offIcon="tera">Tera</pdz-slide-toggle>
       @if (
         data.pokemon.originalTierName &&
         data.pokemon.originalTierName !== data.currentTier.name

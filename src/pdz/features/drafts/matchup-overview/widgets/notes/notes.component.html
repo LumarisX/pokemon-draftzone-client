@@ -1,21 +1,21 @@
-<div class="widget-container">
-  <div class="widget-header">
-    <div class="widget-label">Notes</div>
-    <div class="widget-options">
-      @if (mode() !== "view-only") {
-        @if (previewMode) {
-          <button (click)="previewMode = false">
-            <pdz-icon name="edit_note"></pdz-icon>
-          </button>
-        } @else {
-          <button (click)="previewMode = true">
-            <pdz-icon name="preview"></pdz-icon>
-          </button>
-        }
-      }
-    </div>
-  </div>
-  <div class="widget-body" [class.preview]="isPreview()">
+<pdz-widget label="Notes" padding="none">
+  @if (mode() !== "view-only") {
+    <button
+      pdz-button
+      iconOnly
+      widget-options
+      variant="ghost"
+      color="neutral"
+      size="sm"
+      [attr.aria-label]="previewMode ? 'Edit notes' : 'Preview notes'"
+      [pdzTooltip]="previewMode ? 'Edit notes' : 'Preview notes'"
+      (click)="previewMode = !previewMode"
+    >
+      <pdz-icon [name]="previewMode ? 'edit_note' : 'preview'"></pdz-icon>
+    </button>
+  }
+
+  <div class="notes-body" [class.notes-body--preview]="isPreview()">
     @if (isPreview()) {
       <markdown [data]="notes()"></markdown>
     } @else {
@@ -25,4 +25,4 @@
       ></textarea>
     }
   </div>
-</div>
+</pdz-widget>

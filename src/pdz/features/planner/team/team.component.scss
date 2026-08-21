@@ -31,34 +31,7 @@
   }
 
   &__clear {
-    @include flat-button(
-      (
-        padding: pdz.space(3xs) pdz.space(xs),
-        gap: pdz.space(2xs),
-        border-radius: pdz.shape(corner-xs),
-        border-width: 1px,
-        border-color: pdz.color(outline-variant),
-        background: pdz.color(surface),
-        background-hover: pdz.color(error-container),
-        border-color-hover: pdz.color(error-border),
-        color: pdz.color(on-surface-variant),
-        color-hover: pdz.color(on-error-container),
-        box-shadow-hover: none,
-      )
-    );
     margin-left: auto;
-    @include pdz.text(label);
-    @include pdz.caps;
-    font-size: pdz.font-size(2xs);
-
-    &:focus-visible {
-      outline: 2px solid pdz.color(primary);
-      outline-offset: 1px;
-    }
-
-    &:disabled {
-      color: pdz.color(on-surface-disabled);
-    }
   }
 
   &__control-label {
@@ -68,28 +41,15 @@
     font-size: pdz.font-size(2xs);
   }
 
-  &__control-input {
+  &__num {
     width: 2.75rem;
-    padding: pdz.space(3xs) pdz.space(2xs);
-    border: 1px solid pdz.color(outline);
-    border-radius: pdz.shape(corner-xs);
-    background: pdz.color(surface);
-    color: pdz.color(on-surface);
-    font: inherit;
     text-align: center;
     appearance: textfield;
-    @include pdz.text(body-sm);
 
     &::-webkit-inner-spin-button,
     &::-webkit-outer-spin-button {
       appearance: none;
       margin: 0;
-    }
-
-    &:focus {
-      outline: 2px solid pdz.color(primary);
-      outline-offset: 1px;
-      border-color: pdz.color(primary);
     }
 
     &--wide {
@@ -105,41 +65,6 @@
 
   &__range-sep {
     color: pdz.color(on-surface-variant);
-  }
-
-  &__segmented {
-    display: inline-flex;
-    align-items: center;
-    gap: pdz.space(3xs);
-    padding: pdz.space(3xs);
-    border: 1px solid pdz.color(outline);
-    border-radius: pdz.shape(corner-xs);
-    background: pdz.color(surface);
-  }
-
-  &__segment {
-    @include flat-button(
-      (
-        padding: pdz.space(3xs) pdz.space(xs),
-        border-radius: pdz.shape(corner-xs),
-        color: pdz.color(on-surface-variant),
-        background-hover: pdz.color(surface-container),
-        box-shadow-hover: none,
-      )
-    );
-    @include pdz.text(label);
-    @include pdz.caps;
-    font-size: pdz.font-size(2xs);
-
-    &--active {
-      border-color: pdz.color(primary-border);
-      background: pdz.color(primary-container);
-      color: pdz.color(on-primary-container);
-
-      &:not(:disabled):not(.disabled):hover {
-        background: pdz.color(primary-container-hover);
-      }
-    }
   }
 
   &__list {
@@ -361,36 +286,9 @@
   }
 
   &__lock {
-    @include flat-button(
-      (
-        width: 2.25rem,
-        height: var(--planner-row-control),
-        padding: 0,
-        border-radius: pdz.shape(corner-xs),
-        border-width: 1px,
-        border-color: pdz.color(outline-variant),
-        background: pdz.color(surface),
-        background-hover: pdz.color(surface-container-high),
-        color: pdz.color(on-surface-variant),
-        box-shadow-hover: none,
-      )
-    );
     flex-shrink: 0;
-
-    &:focus-visible {
-      outline: 2px solid pdz.color(primary);
-      outline-offset: 1px;
-    }
-
-    &--on {
-      border-color: pdz.color(primary-border);
-      background: pdz.color(primary-container);
-      color: pdz.color(on-primary-container);
-
-      &:not(:disabled):hover {
-        background: pdz.color(primary-container-hover);
-      }
-    }
+    width: 2.25rem;
+    height: var(--planner-row-control);
   }
 
   &__totals {

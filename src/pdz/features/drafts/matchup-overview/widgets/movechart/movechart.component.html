@@ -1,11 +1,9 @@
-<div class="widget-container" [class.alternate]="opponent">
-  <div class="widget-header">
-    <div class="widget-label">Learned Moves</div>
-    <pdz-swap-opponent [(ngModel)]="opponent"></pdz-swap-opponent>
-  </div>
+<pdz-widget label="Learned Moves" padding="none">
+  <pdz-swap-opponent widget-options [(ngModel)]="opponent"></pdz-swap-opponent>
+
   <div class="movechart-wrapper">
     <pdz-moves-core
       [movechart]="opponent ? teams()[1] : teams()[0]"
     ></pdz-moves-core>
   </div>
-</div>
+</pdz-widget>

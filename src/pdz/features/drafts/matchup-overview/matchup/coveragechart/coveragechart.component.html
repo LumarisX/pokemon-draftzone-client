@@ -1,14 +1,12 @@
-<div class="widget-container" [class.alternate]="opponent">
-  <div class="widget-header">
-    <div class="widget-label">Coverage</div>
-    <div class="widget-options">
-      <mat-slide-toggle [(ngModel)]="abilities" labelPosition="before"
-        >Abilities</mat-slide-toggle
-      >
-      <pdz-swap-opponent [(ngModel)]="opponent"></pdz-swap-opponent>
-    </div>
-  </div>
-  <div class="widget-body">
+<pdz-widget label="Coverage" padding="none">
+  <ng-container widget-options>
+    <pdz-slide-toggle labelBefore size="sm" [(ngModel)]="abilities">
+      Abilities
+    </pdz-slide-toggle>
+    <pdz-swap-opponent [(ngModel)]="opponent"></pdz-swap-opponent>
+  </ng-container>
+
+  <div class="coverage-list">
     @for (pokemon of coverage()[selectedTeam]; track pokemon) {
       <pdz-coverage
         [pokemon]="pokemon"
@@ -17,4 +15,4 @@
       ></pdz-coverage>
     }
   </div>
-</div>
+</pdz-widget>

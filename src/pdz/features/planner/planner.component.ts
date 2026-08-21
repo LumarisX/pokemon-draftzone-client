@@ -21,11 +21,11 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { ensureNumber, ensureString } from '@pdz/core/utils';
 import { getNameByPid } from '@pdz/shared/data/namedex';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
-import {
-  AnimatedSelectorComponent,
-  AnimatedSelectorOption,
-} from '@pdz/shared/inputs/animated-selector/animated-selector.component';
+import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented-option.component';
+import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { debounceTime, distinctUntilChanged, merge } from 'rxjs';
 import { DraftPokemon } from '../drafts/draft.model';
@@ -36,7 +36,8 @@ import {
   TypeChart,
 } from '../drafts/matchup-overview/matchup-interface';
 import { PokemonSearchCoreComponent } from '../tools/pokemon-search/pokemon-search-core/pokemon-search-core.component';
-import { PlannerCoverageComponent } from './coverage/coverage.component';
+import { PlannerMoveCoverageComponent } from './coverage/move-coverage.component';
+import { PlannerTeamCoverageComponent } from './coverage/team-coverage.component';
 import { MoveComponent } from './moves/moves.component';
 import { PlannerService } from './planner.service';
 import { PlannerSettingsComponent } from './settings/settings.component';
@@ -80,11 +81,15 @@ const DEFAULT_PANEL_MAX_WIDTH_REM = 32;
   imports: [
     ReactiveFormsModule,
     FormsModule,
-    AnimatedSelectorComponent,
+    ButtonComponent,
+    EmptyStateComponent,
     IconComponent,
+    SegmentedComponent,
+    SegmentedOptionComponent,
     LoadingComponent,
     MoveComponent,
-    PlannerCoverageComponent,
+    PlannerMoveCoverageComponent,
+    PlannerTeamCoverageComponent,
     PlannerSettingsComponent,
     PlannerSummaryComponent,
     PlannerTeamComponent,
@@ -111,11 +116,6 @@ export class PlannerComponent implements OnInit, OnDestroy {
   mainView = signal<PlannerView>('analysis');
   takenIds = signal<string[]>([]);
   addFeedback = signal<string | null>(null);
-
-  readonly viewOptions: AnimatedSelectorOption<PlannerView>[] = [
-    { value: 'analysis', label: 'Analysis', icon: 'insights' },
-    { value: 'find', label: 'Find', icon: 'search' },
-  ];
 
   isLargeScreen = signal(false);
   panelOpen = signal(false);

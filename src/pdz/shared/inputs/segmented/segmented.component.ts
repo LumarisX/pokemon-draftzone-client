@@ -22,6 +22,7 @@ import { PDZ_SEGMENTED } from './segmented.token';
 
 export type SegmentedSize = 'sm' | 'md' | 'lg';
 export type SegmentedAlign = 'start' | 'stretch';
+export type SegmentedVariant = 'filled' | 'tonal';
 
 let nextSegmentedId = 0;
 
@@ -58,6 +59,9 @@ let nextSegmentedId = 0;
             <pdz-icon aria-hidden="true" [name]="icon" [size]="16" />
           }
           <span class="pdz-segmented__label">{{ option.label() }}</span>
+          @if (option.trailingIcon(); as trailing) {
+            <pdz-icon aria-hidden="true" [name]="trailing" [size]="16" />
+          }
         </button>
       }
     </div>
@@ -79,6 +83,7 @@ let nextSegmentedId = 0;
     class: 'pdz-segmented',
     '[attr.data-size]': 'size()',
     '[attr.data-align]': 'align()',
+    '[attr.data-variant]': 'variant()',
   },
 })
 export class SegmentedComponent implements ControlValueAccessor {
@@ -86,6 +91,7 @@ export class SegmentedComponent implements ControlValueAccessor {
   disabled = model(false, { alias: 'disabled' });
   size = input<SegmentedSize>('md');
   align = input<SegmentedAlign>('start');
+  variant = input<SegmentedVariant>('filled');
   ariaLabel = input<string | undefined>(undefined, { alias: 'aria-label' });
   ariaLabelledby = input<string | undefined>(undefined, {
     alias: 'aria-labelledby',

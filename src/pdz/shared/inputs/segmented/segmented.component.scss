@@ -22,9 +22,23 @@ $sizes: (
   ),
 );
 
+$track-radius: pdz.shape(corner-md);
+$track-pad: pdz.space(3xs);
+$inner-radius: calc(#{$track-radius} - #{$track-pad});
+
 :host {
   display: inline-flex;
   max-width: 100%;
+
+  --pdz-segmented-indicator: #{pdz.color(primary)};
+  --pdz-segmented-on-indicator: #{pdz.color(on-primary)};
+  --pdz-segmented-indicator-shadow: var(--pdz-level-1);
+}
+
+:host([data-variant="tonal"]) {
+  --pdz-segmented-indicator: #{pdz.color(primary-container)};
+  --pdz-segmented-on-indicator: #{pdz.color(on-primary-container)};
+  --pdz-segmented-indicator-shadow: none;
 }
 
 :host([data-align="stretch"]) {
@@ -40,22 +54,22 @@ $sizes: (
   position: relative;
   display: inline-flex;
   min-width: 0;
-  padding: pdz.space(3xs);
-  gap: pdz.space(3xs);
+  padding: $track-pad;
+  gap: $track-pad;
   border: 1px solid pdz.color(outline-variant);
-  border-radius: pdz.shape(corner-md);
-  background: pdz.color(surface-container-low);
+  border-radius: $track-radius;
+  background: pdz.color(surface);
 }
 
 .pdz-segmented__indicator {
   position: absolute;
-  top: pdz.space(3xs);
+  top: $track-pad;
   left: 0;
   width: 0;
   opacity: 0;
-  border-radius: pdz.shape(corner-sm);
-  background: pdz.color(primary);
-  box-shadow: var(--pdz-level-1);
+  border-radius: $inner-radius;
+  background: var(--pdz-segmented-indicator);
+  box-shadow: var(--pdz-segmented-indicator-shadow);
   pointer-events: none;
 
   &[data-ready] {
@@ -78,7 +92,7 @@ $sizes: (
   justify-content: center;
   min-width: 0;
   border: none;
-  border-radius: pdz.shape(corner-sm);
+  border-radius: $inner-radius;
   background: transparent;
   color: pdz.color(on-surface-variant);
   cursor: pointer;
@@ -103,7 +117,7 @@ $sizes: (
   }
 
   &--checked {
-    color: pdz.color(on-primary);
+    color: var(--pdz-segmented-on-indicator);
   }
 }
 

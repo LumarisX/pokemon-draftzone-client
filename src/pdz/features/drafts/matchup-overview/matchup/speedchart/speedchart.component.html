@@ -1,11 +1,12 @@
-<div class="widget-container">
-  <div class="widget-header">
-    <div class="widget-label">Speed Tiers</div>
+<pdz-widget label="Speed Tiers">
+  <ng-container widget-options>
     <button
       pdz-button
       iconOnly
+      size="sm"
       variant="ghost"
       color="neutral"
+      aria-label="Filter speed tiers"
       cdkOverlayOrigin
       #trigger="cdkOverlayOrigin"
       (click)="filterOpen = !filterOpen"
@@ -33,7 +34,8 @@
         }
       </div>
     </ng-template>
-  </div>
+  </ng-container>
+
   <div class="speed-main">
     <div class="base-tiers-container">
       <div class="section-title">Base Speed</div>
@@ -114,4 +116,4 @@
       </div>
     </div>
   </div>
-</div>
+</pdz-widget>

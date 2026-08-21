@@ -1,25 +1,25 @@
-<div
-  class="pdz-slide-toggle"
-  [class.checked]="checkedState"
-  [class.disabled]="isDisabled()"
-  (click)="toggle()"
+<label
+  class="pdz-slide-toggle__root"
+  [class.pdz-slide-toggle__root--reverse]="labelBefore()"
 >
-  <span class="toggle-track">
-    <span class="toggle-thumb">
-      @if (checkedState) {
-        @if (onSVG()) {
-          <pdz-icon class="toggle-icon" [name]="onSVG()!"></pdz-icon>
-        } @else {
-          <pdz-icon class="toggle-icon" [name]="onIcon()"></pdz-icon>
+  <span class="pdz-slide-toggle__control">
+    <input
+      class="pdz-slide-toggle__input"
+      type="checkbox"
+      role="switch"
+      [checked]="checked()"
+      [disabled]="isDisabled()"
+      (change)="toggle($event)"
+      (blur)="onTouched()"
+    />
+    <span class="pdz-slide-toggle__track" aria-hidden="true">
+      <span class="pdz-slide-toggle__thumb">
+        @if (icon(); as name) {
+          <pdz-icon [name]="name" [size]="iconSize()" />
         }
-      } @else {
-        @if (offSVG()) {
-          <pdz-icon class="toggle-icon" [name]="offSVG()!"></pdz-icon>
-        } @else {
-          <pdz-icon class="toggle-icon" [name]="offIcon()"></pdz-icon>
-        }
-      }
+      </span>
     </span>
   </span>
-  <ng-content></ng-content>
-</div>
+
+  <span class="pdz-slide-toggle__label">{{ label() }}<ng-content /></span>
+</label>

@@ -1,0 +1,31 @@
+@if (coverage; as coverageData) {
+  <pdz-widget label="Move Coverage">
+    <div class="move-coverage">
+      <div class="move-coverage__rail" role="group" aria-label="Pick a Pokémon">
+        @for (pokemon of coverageData.team; track pokemon.id) {
+          <button
+            type="button"
+            class="move-coverage__thumb"
+            [class.move-coverage__thumb--selected]="pokemon === selected"
+            [attr.aria-pressed]="pokemon === selected"
+            [attr.aria-label]="nameOf(pokemon)"
+            (click)="selected = pokemon"
+          >
+            <pdz-coverage-chart [data]="pokemon"></pdz-coverage-chart>
+          </button>
+        }
+      </div>
+
+      @if (selected; as selectedPokemon) {
+        <div class="move-coverage__detail">
+          <pdz-coverage-chart
+            [data]="selectedPokemon"
+            [interactive]="true"
+          ></pdz-coverage-chart>
+        </div>
+      }
+    </div>
+  </pdz-widget>
+}
+
+<div class="chart-tooltip"></div>

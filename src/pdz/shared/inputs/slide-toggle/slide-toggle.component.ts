@@ -1,25 +1,24 @@
 import {
+  ChangeDetectionStrategy,
   Component,
-  ElementRef,
-  EventEmitter,
-  forwardRef,
-  HostBinding,
-  HostListener,
-  Output,
-  Renderer2,
+  booleanAttribute,
   computed,
-  inject,
+  forwardRef,
   input,
+  model,
   signal,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
+
+export type SlideToggleSize = 'sm' | 'md';
 
 @Component({
   selector: 'pdz-slide-toggle',
   imports: [IconComponent],
   templateUrl: './slide-toggle.component.html',
   styleUrls: ['./slide-toggle.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -27,38 +26,35 @@ import { IconComponent } from '@pdz/shared/images/icon/icon.component';
       multi: true,
     },
   ],
+  host: {
+    class: 'pdz-slide-toggle',
+    '[attr.data-size]': 'size()',
+  },
 })
 export class SlideToggleComponent implements ControlValueAccessor {
-  private renderer = inject(Renderer2);
-  private elRef = inject(ElementRef);
-
-  readonly disabled = input(false);
+  readonly checked = model(false);
+  readonly disabled = input(false, { transform: booleanAttribute });
+  readonly size = input<SlideToggleSize>('md');
   readonly label = input<string>();
+  readonly labelBefore = input(false, { transform: booleanAttribute });
   readonly onIcon = input('check');
   readonly offIcon = input('remove');
-  readonly onSVG = input<string>();
-  readonly offSVG = input<string>();
-  readonly labelPosition = input<'before' | 'after'>('after');
 
   private readonly formDisabled = signal(false);
   readonly isDisabled = computed(() => this.disabled() || this.formDisabled());
 
-  @HostBinding('class.checked') checkedState = false;
+  protected readonly icon = computed(() =>
+    this.checked() ? this.onIcon() : this.offIcon(),
+  );
+  protected readonly iconSize = computed(() =>
+    this.size() === 'sm' ? 10 : 14,
+  );
 
-  @Output() checkedChange = new EventEmitter<boolean>();
-  @Output() checked = new EventEmitter<void>();
-  @Output() unchecked = new EventEmitter<void>();
-
-  private onChange = (value: boolean) => {};
-  private onTouched = () => {};
+  private onChange: (value: boolean) => void = () => {};
+  protected onTouched: () => void = () => {};
 
   writeValue(value: boolean): void {
-    this.checkedState = value;
-    this.renderer.setAttribute(
-      this.elRef.nativeElement,
-      'aria-checked',
-      String(value),
-    );
+    this.checked.set(!!value);
   }
 
   registerOnChange(fn: (value: boolean) => void): void {
@@ -73,22 +69,10 @@ export class SlideToggleComponent implements ControlValueAccessor {
     this.formDisabled.set(isDisabled);
   }
 
-  toggle(): void {
-    if (this.isDisabled()) return;
-    this.checkedState = !this.checkedState;
-    this.onChange(this.checkedState);
+  protected toggle(event: Event): void {
+    const next = (event.target as HTMLInputElement).checked;
+    this.checked.set(next);
+    this.onChange(next);
     this.onTouched();
-    this.checkedChange.emit(this.checkedState);
-    if (this.checkedState) {
-      this.checked.emit();
-    } else {
-      this.unchecked.emit();
-    }
-  }
-
-  @HostListener('keydown.space', ['$event'])
-  handleKeydown(event: Event): void {
-    event.preventDefault();
-    this.toggle();
   }
 }

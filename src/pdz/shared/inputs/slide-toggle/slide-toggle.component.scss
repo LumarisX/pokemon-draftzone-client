@@ -1,58 +1,156 @@
+@use "sass:map";
 @use "pdz-theming" as pdz;
 
-.pdz-slide-toggle {
-  display: flex;
+$sizes: (
+  sm: (
+    track-w: 2rem,
+    track-h: 1.125rem,
+    thumb: 0.875rem,
+  ),
+  md: (
+    track-w: 2.75rem,
+    track-h: 1.5rem,
+    thumb: 1.25rem,
+  ),
+);
+
+:host {
+  display: inline-flex;
+  max-width: 100%;
+
+  --pdz-switch-pad: 2px;
+  --pdz-switch-track: #{pdz.color(surface-container-high)};
+  --pdz-switch-track-border: #{pdz.color(outline)};
+  --pdz-switch-thumb-bg: #{pdz.color(surface)};
+  --pdz-switch-thumb-fg: #{pdz.color(on-surface-variant)};
+  --pdz-switch-thumb-border: #{pdz.color(outline)};
+}
+
+:host(:has(.pdz-slide-toggle__input:checked)) {
+  --pdz-switch-track: #{pdz.color(primary)};
+  --pdz-switch-track-border: #{pdz.color(primary)};
+  --pdz-switch-thumb-fg: #{pdz.color(primary)};
+  --pdz-switch-thumb-border: #{pdz.color(primary)};
+}
+
+@each $name, $s in $sizes {
+  :host([data-size="#{$name}"]) {
+    --pdz-switch-track-w: #{map.get($s, track-w)};
+    --pdz-switch-track-h: #{map.get($s, track-h)};
+    --pdz-switch-thumb: #{map.get($s, thumb)};
+  }
+}
+
+.pdz-slide-toggle__root {
+  display: inline-flex;
   align-items: center;
+  min-width: 0;
   cursor: pointer;
   user-select: none;
-  gap: 8px;
+  color: pdz.color(on-surface);
 
-  &.disabled {
-    cursor: not-allowed;
-    opacity: 0.5;
+  &--reverse {
+    flex-direction: row-reverse;
   }
+}
 
-  .toggle-track {
-    width: 3.5rem;
-    border: 0.125em solid pdz.color(primary-accent);
-    height: 1rem;
-    background-color: pdz.color(surface);
-    border-radius: 1rem;
-    position: relative;
-    transition: background-color pdz.duration(slow) pdz.easing(standard);
+:host(:has(.pdz-slide-toggle__input:disabled)) .pdz-slide-toggle__root {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.pdz-slide-toggle__control {
+  position: relative;
+  flex-shrink: 0;
+  display: inline-flex;
+  width: var(--pdz-switch-track-w);
+  height: var(--pdz-switch-track-h);
+}
+
+.pdz-slide-toggle__input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: inherit;
+}
+
+.pdz-slide-toggle__track {
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  border: 1px solid var(--pdz-switch-track-border);
+  border-radius: pdz.shape(corner-full);
+  background: var(--pdz-switch-track);
+  transition:
+    background-color pdz.duration(base) pdz.easing(standard),
+    border-color pdz.duration(base) pdz.easing(standard);
+}
+
+.pdz-slide-toggle__thumb {
+  position: absolute;
+  top: 50%;
+  left: var(--pdz-switch-pad);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--pdz-switch-thumb);
+  height: var(--pdz-switch-thumb);
+  border: 1px solid var(--pdz-switch-thumb-border);
+  border-radius: pdz.shape(corner-full);
+  background: var(--pdz-switch-thumb-bg);
+  color: var(--pdz-switch-thumb-fg);
+  transform: translate(0, -50%);
+  transition:
+    transform pdz.duration(base) pdz.easing(standard),
+    background-color pdz.duration(base) pdz.easing(standard),
+    color pdz.duration(base) pdz.easing(standard);
+}
+
+.pdz-slide-toggle__input:checked ~ .pdz-slide-toggle__track
+  .pdz-slide-toggle__thumb {
+  transform: translate(
+    calc(
+      var(--pdz-switch-track-w) - var(--pdz-switch-thumb) -
+        (2 * var(--pdz-switch-pad))
+    ),
+    -50%
+  );
+}
+
+.pdz-slide-toggle__input:focus-visible ~ .pdz-slide-toggle__track {
+  outline: 2px solid pdz.color(primary-accent);
+  outline-offset: 2px;
+}
+
+.pdz-slide-toggle__input:hover:not(:disabled):not(:checked)
+  ~ .pdz-slide-toggle__track {
+  border-color: pdz.color(primary-accent);
+}
+
+.pdz-slide-toggle__label {
+  @include pdz.text(body-sm, $family: false);
+  min-width: 0;
+
+  &:empty {
+    display: none;
   }
+}
 
-  .toggle-thumb {
-    width: 1.5rem;
-    height: 1.5rem;
-    background-color: pdz.color(primary-border);
-    color: pdz.color(surface-variant);
-    border-radius: 50%;
-    position: absolute;
-    padding: 0.125rem;
-    top: 50%;
-    left: -2px;
-    transform: translateY(-50%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform pdz.duration(fast) pdz.easing(standard);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+.pdz-slide-toggle__label:not(:empty) {
+  margin-inline-start: pdz.space(sm);
+}
 
-    &:hover {
-      background-color: pdz.color(on-surface-variant);
-    }
-  }
+.pdz-slide-toggle__root--reverse .pdz-slide-toggle__label:not(:empty) {
+  margin-inline: 0 pdz.space(sm);
+}
 
-  &.checked {
-    .toggle-track {
-      background-color: pdz.color(primary);
-    }
-
-    .toggle-thumb {
-      transform: translate(2em, -50%);
-      background-color: pdz.color(on-primary);
-      color: pdz.color(primary-border);
-    }
+@media (prefers-reduced-motion: reduce) {
+  .pdz-slide-toggle__track,
+  .pdz-slide-toggle__thumb {
+    transition: none;
   }
 }

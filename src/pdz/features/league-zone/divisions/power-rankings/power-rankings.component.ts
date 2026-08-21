@@ -7,7 +7,8 @@ import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { Subject, debounceTime, takeUntil } from 'rxjs';
-import { PlannerCoverageComponent } from '../../../planner/coverage/coverage.component';
+import { PlannerMoveCoverageComponent } from '../../../planner/coverage/move-coverage.component';
+import { PlannerTeamCoverageComponent } from '../../../planner/coverage/team-coverage.component';
 import { MoveComponent } from '../../../planner/moves/moves.component';
 import { PlannerSummaryComponent } from '../../../planner/summary/summary.component';
 import { PlannerTypechartComponent } from '../../../planner/typechart/typechart.component';
@@ -22,7 +23,8 @@ import { League } from '../../league.interface';
     IconComponent,
     PlannerTypechartComponent,
     MoveComponent,
-    PlannerCoverageComponent,
+    PlannerMoveCoverageComponent,
+    PlannerTeamCoverageComponent,
     CdkTableModule,
     ReactiveFormsModule,
     FormsModule,

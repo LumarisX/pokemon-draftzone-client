@@ -1,0 +1,35 @@
+@if (coverage) {
+  <pdz-widget label="Team Coverage">
+    <pdz-segmented
+      widget-options
+      size="sm"
+      variant="tonal"
+      aria-label="Team coverage category"
+      [formControl]="category"
+    >
+      <pdz-segmented-option value="physical" label="Physical" icon="physical" />
+      <pdz-segmented-option
+        value="mixed"
+        label="Mixed"
+        icon="physical"
+        trailingIcon="special"
+      />
+      <pdz-segmented-option value="special" label="Special" icon="special" />
+    </pdz-segmented>
+
+    <div class="team-coverage">
+      <pdz-coverage-team-chart [data]="teamData"></pdz-coverage-team-chart>
+
+      <label class="team-coverage__slider">
+        <span>Minimum Move BP</span>
+        <pdz-slider
+          [min]="20"
+          [max]="120"
+          [step]="10"
+          [showValue]="true"
+          [formControl]="sliderControl"
+        ></pdz-slider>
+      </label>
+    </div>
+  </pdz-widget>
+}

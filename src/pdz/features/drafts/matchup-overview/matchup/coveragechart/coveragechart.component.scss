@@ -1,29 +1,34 @@
 @use "pdz-theming" as pdz;
 
-.widget-body {
+:host {
+  display: block;
+  max-width: 100%;
+
+  --pdz-cmp-coverage-border: #{pdz.color(primary-border)};
+  --pdz-cmp-coverage-hover: #{pdz.color(primary-hover)};
+  --pdz-cmp-coverage-color: #{pdz.color(primary)};
+  --pdz-cmp-coverage-on-color: #{pdz.color(on-primary)};
+}
+
+:host(.alternate) {
+  --pdz-cmp-coverage-border: #{pdz.color(secondary-border)};
+  --pdz-cmp-coverage-hover: #{pdz.color(secondary-hover)};
+  --pdz-cmp-coverage-color: #{pdz.color(secondary)};
+  --pdz-cmp-coverage-on-color: #{pdz.color(on-secondary)};
+}
+
+.coverage-list {
   display: flex;
   flex-direction: column;
   overflow-y: auto;
   scrollbar-gutter: stable;
   max-height: 50rem;
   max-width: 40rem;
+  padding: pdz.space(md);
   row-gap: 0.5rem;
 }
 
 coverage {
   border: 1px solid var(--pdz-cmp-coverage-border, pdz.color(menu-border));
   border-radius: pdz.shape(corner-lg);
-}
-
-.widget-container {
-  --pdz-cmp-coverage-border: #{pdz.color(primary-border)};
-  --pdz-cmp-coverage-hover: #{pdz.color(primary-hover)};
-  --pdz-cmp-coverage-color: #{pdz.color(primary)};
-  --pdz-cmp-coverage-on-color: #{pdz.color(on-primary)};
-  &.alternate {
-    --pdz-cmp-coverage-border: #{pdz.color(secondary-border)};
-    --pdz-cmp-coverage-hover: #{pdz.color(secondary-hover)};
-    --pdz-cmp-coverage-color: #{pdz.color(secondary)};
-    --pdz-cmp-coverage-on-color: #{pdz.color(on-secondary)};
-  }
 }

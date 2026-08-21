@@ -8,8 +8,10 @@ import {
   OnInit,
 } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
+import { WidgetComponent } from '@pdz/shared/layout/widget/widget.component';
+import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
 import { MarkdownComponent } from 'ngx-markdown';
 import {
   debounceTime,
@@ -24,12 +26,14 @@ import { MatchupService } from '../../matchup.service';
   imports: [
     FormsModule,
     ReactiveFormsModule,
-    MatSlideToggleModule,
     MarkdownComponent,
     IconComponent,
+    ButtonComponent,
+    TooltipDirective,
+    WidgetComponent,
   ],
   templateUrl: './notes.component.html',
-  styleUrls: ['../../matchup.scss', './notes.component.scss'],
+  styleUrl: './notes.component.scss',
 })
 export class MatchupNotesComponent implements OnInit, OnDestroy {
   readonly matchupId = input.required<string>();

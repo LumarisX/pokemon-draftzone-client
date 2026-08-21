@@ -28,6 +28,8 @@ import {
 } from '@pdz/shared/dialogs/dialog/dialog.component';
 import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
 import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
+import { WidgetComponent } from '@pdz/shared/layout/widget/widget.component';
+import { SlideToggleComponent } from '@pdz/shared/inputs/slide-toggle/slide-toggle.component';
 import { TooltipPosition } from '@pdz/shared/tooltip/tooltip-placement';
 import {
   ToastService,
@@ -63,6 +65,8 @@ const MODE_ATTR = 'pdz-theme-mode';
     RouterLinkActive,
     TooltipDirective,
     DialogComponent,
+    WidgetComponent,
+    SlideToggleComponent,
   ],
   templateUrl: './debug-components.component.html',
   styleUrl: './debug-components.component.scss',
@@ -108,6 +112,7 @@ export class DebugComponentsComponent {
   reportMode = signal<unknown>('standard');
   winner = signal<unknown>('side1');
   secondOpen = signal(true);
+  abilities = signal(true);
 
   theme = signal('classic');
   mode = signal<'light' | 'dark'>('light');

@@ -165,16 +165,15 @@ export class CoverageChartComponent implements OnChanges, OnDestroy {
 
     this.svg = svg;
 
-    const borderWidth = 0;
+    const borderWidth = 2;
 
     const background = svg
       .append('circle')
       .datum(root)
       .attr('r', (width + borderWidth) / 2)
       .attr('fill', 'var(--pdz-color-surface)')
-      .attr('stroke', 'var(--pdz-color-primary-border)')
+      .attr('stroke', 'var(--pdz-color-outline-variant)')
       .attr('stroke-width', borderWidth)
-      .attr('filter', 'url(#background-shadow)')
       .attr('pointer-events', 'all');
 
     // Append the arcs.

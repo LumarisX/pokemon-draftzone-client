@@ -1,31 +1,38 @@
 @use "pdz-theming" as pdz;
-@use "mixins/buttons" as *;
 
-.widget-body {
+:host {
+  display: block;
+  max-width: 100%;
+}
+
+.notes-body {
   display: flex;
   flex-direction: column;
   overflow-y: auto;
   scrollbar-gutter: stable;
   max-width: 40rem;
   row-gap: 0.5rem;
-  width: 30rem !important;
+  width: 30rem;
   height: 40rem;
+  margin: pdz.space(md);
   border-radius: pdz.shape(corner-lg);
   padding: 1rem;
-  background-color: var(--pdz-cmp-coverage-on-color, inherit);
+  color: pdz.color(on-surface);
+  background-color: pdz.color(surface-container-lowest);
   border: 2px dashed pdz-color-rgba(menu-border, 0.75);
 
   @media (min-width: 768px) {
     height: 50rem;
   }
 
-  &.preview {
+  &--preview {
     border: 2px solid pdz.color(menu-border);
   }
 
-  &:focus {
+  &:focus-within {
     border-color: pdz.color(menu-border);
   }
+
   textarea {
     width: 100%;
     height: 100%;
@@ -42,30 +49,4 @@
       font-style: italic;
     }
   }
-}
-
-button {
-  @include icon-button-menu();
-}
-
-coverage {
-  border: 1px solid var(--pdz-cmp-coverage-border, pdz.color(menu-border));
-  border-radius: pdz.shape(corner-lg);
-}
-
-.widget-container {
-  --pdz-cmp-coverage-border: #{pdz.color(primary-border)};
-  --pdz-cmp-coverage-hover: #{pdz.color(primary-hover)};
-  --pdz-cmp-coverage-color: #{pdz.color(primary)};
-  --pdz-cmp-coverage-on-color: #{pdz.color(on-primary)};
-  &.alternate {
-    --pdz-cmp-coverage-border: #{pdz.color(secondary-border)};
-    --pdz-cmp-coverage-hover: #{pdz.color(secondary-hover)};
-    --pdz-cmp-coverage-color: #{pdz.color(secondary)};
-    --pdz-cmp-coverage-on-color: #{pdz.color(on-secondary)};
-  }
-}
-
-.widget-header {
-  min-height: 3rem;
 }

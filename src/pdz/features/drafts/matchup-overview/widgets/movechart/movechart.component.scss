@@ -1,5 +1,24 @@
 @use "pdz-theming" as pdz;
 
+:host {
+  display: block;
+  max-width: 100%;
+
+  --pdz-cmp-movechart-color: #{pdz.color(primary)};
+  --pdz-cmp-movechart-on-container: #{pdz.color(on-primary-container)};
+  --pdz-cmp-movechart-container: #{pdz.color(primary-container)};
+  --pdz-cmp-movechart-hover: #{pdz.color(primary-container-low)};
+  --pdz-cmp-movechart-border: #{pdz.color(primary-border)};
+}
+
+:host(.alternate) {
+  --pdz-cmp-movechart-color: #{pdz.color(secondary)};
+  --pdz-cmp-movechart-on-container: #{pdz.color(on-secondary-container)};
+  --pdz-cmp-movechart-container: #{pdz.color(secondary-container)};
+  --pdz-cmp-movechart-hover: #{pdz.color(secondary-container-low)};
+  --pdz-cmp-movechart-border: #{pdz.color(secondary-border)};
+}
+
 .movechart-wrapper {
   max-width: 30rem;
   padding: pdz.space(xs);
@@ -8,19 +27,4 @@
   max-height: 48rem;
   min-height: 0;
   overflow: hidden;
-}
-
-.widget-container {
-  --pdz-cmp-movechart-color: #{pdz.color(primary)};
-  --pdz-cmp-movechart-on-container: #{pdz.color(on-primary-container)};
-  --pdz-cmp-movechart-container: #{pdz.color(primary-container)};
-  --pdz-cmp-movechart-hover: #{pdz.color(primary-container-low)};
-  --pdz-cmp-movechart-border: #{pdz.color(primary-border)};
-  &.alternate {
-    --pdz-cmp-movechart-color: #{pdz.color(secondary)};
-    --pdz-cmp-movechart-on-container: #{pdz.color(on-secondary-container)};
-    --pdz-cmp-movechart-container: #{pdz.color(secondary-container)};
-    --pdz-cmp-movechart-hover: #{pdz.color(secondary-container-low)};
-    --pdz-cmp-movechart-border: #{pdz.color(secondary-border)};
-  }
 }

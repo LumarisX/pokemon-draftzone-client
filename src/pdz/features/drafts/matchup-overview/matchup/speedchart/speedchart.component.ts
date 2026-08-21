@@ -22,6 +22,7 @@ import {
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
+import { WidgetComponent } from '@pdz/shared/layout/widget/widget.component';
 import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import { DraftPokemon } from '../../../draft.model';
 import { SpeedChart, Speedtier } from '../../matchup-interface';
@@ -31,7 +32,7 @@ import { ChoiceDirective } from '@pdz/shared/inputs/choice/choice.directive';
 @Component({
   selector: 'pdz-speedchart',
   templateUrl: './speedchart.component.html',
-  styleUrls: ['../../matchup.scss', './speedchart.component.scss'],
+  styleUrl: './speedchart.component.scss',
   imports: [
     CommonModule,
     FormsModule,
@@ -42,6 +43,7 @@ import { ChoiceDirective } from '@pdz/shared/inputs/choice/choice.directive';
     OverlayModule,
     ButtonComponent,
     ChoiceDirective,
+    WidgetComponent,
   ],
 })
 export class SpeedchartComponent implements OnInit, OnDestroy, AfterViewInit {

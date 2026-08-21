@@ -16,6 +16,7 @@ export class SegmentedOptionComponent {
   value = input.required<unknown>();
   label = input.required<string>();
   icon = input<string>();
+  trailingIcon = input<string>();
   disabled = input(false, { transform: booleanAttribute });
 
   readonly group = inject(PDZ_SEGMENTED, { optional: true });

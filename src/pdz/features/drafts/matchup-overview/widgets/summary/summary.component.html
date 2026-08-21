@@ -1,11 +1,7 @@
-<div class="widget-container" [class.alternate]="opponent">
-  <div class="widget-header">
-    <div class="widget-label">Draft Summary</div>
-    <pdz-swap-opponent [(ngModel)]="opponent"></pdz-swap-opponent>
-  </div>
-  <div class="widget-body">
-    <pdz-summary-core
-      [summary]="opponent ? summaries()[1] : summaries()[0]"
-    ></pdz-summary-core>
-  </div>
-</div>
+<pdz-widget label="Draft Summary">
+  <pdz-swap-opponent widget-options [(ngModel)]="opponent"></pdz-swap-opponent>
+
+  <pdz-summary-core
+    [summary]="opponent ? summaries()[1] : summaries()[0]"
+  ></pdz-summary-core>
+</pdz-widget>

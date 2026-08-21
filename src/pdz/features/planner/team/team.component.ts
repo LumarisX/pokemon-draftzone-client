@@ -13,6 +13,10 @@ import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { PokemonSearchComponent } from '@pdz/shared/dropdowns/pokemon-search/pokemon-search.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
+import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
+import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented-option.component';
+import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
+import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
 import { DraftFormGroup } from '../planner.component';
 
 @Component({
@@ -31,15 +35,14 @@ import { DraftFormGroup } from '../planner.component';
     PokemonSearchComponent,
     SpriteComponent,
     ButtonComponent,
+    InputDirective,
+    SegmentedComponent,
+    SegmentedOptionComponent,
+    TooltipDirective,
   ],
 })
 export class PlannerTeamComponent {
   @Input() draftFormGroup?: DraftFormGroup;
-
-  readonly systemOptions = [
-    { id: 'points', label: 'Points' },
-    { id: 'tiers', label: 'Tiers' },
-  ];
 
   get teamControls() {
     return this.draftFormGroup?.controls.team.controls ?? [];
